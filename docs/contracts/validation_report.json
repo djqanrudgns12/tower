@@ -1,0 +1,129 @@
+{
+  "checkedAt": "2026-10-27",
+  "scope": "Design arithmetic and map structure only. No game runtime, device, education or balance approval.",
+  "checks": [
+    {
+      "name": "map count and grade coverage",
+      "status": "passed"
+    },
+    {
+      "name": "garden_u: unique orthogonal route and length",
+      "status": "passed"
+    },
+    {
+      "name": "garden_u: 20 distinct in-bounds off-path slots",
+      "status": "passed"
+    },
+    {
+      "name": "garden_u: all slots reach route with a base tower",
+      "status": "passed"
+    },
+    {
+      "name": "river_z: unique orthogonal route and length",
+      "status": "passed"
+    },
+    {
+      "name": "river_z: 20 distinct in-bounds off-path slots",
+      "status": "passed"
+    },
+    {
+      "name": "river_z: all slots reach route with a base tower",
+      "status": "passed"
+    },
+    {
+      "name": "courtyard: unique orthogonal route and length",
+      "status": "passed"
+    },
+    {
+      "name": "courtyard: 20 distinct in-bounds off-path slots",
+      "status": "passed"
+    },
+    {
+      "name": "courtyard: all slots reach route with a base tower",
+      "status": "passed"
+    },
+    {
+      "name": "snow_step: unique orthogonal route and length",
+      "status": "passed"
+    },
+    {
+      "name": "snow_step: 20 distinct in-bounds off-path slots",
+      "status": "passed"
+    },
+    {
+      "name": "snow_step: all slots reach route with a base tower",
+      "status": "passed"
+    },
+    {
+      "name": "archer upgrade total 435 and sale 261",
+      "status": "passed"
+    },
+    {
+      "name": "random guessing vocabulary PT negative in four difficulties",
+      "status": "passed"
+    },
+    {
+      "name": "wave1 no-defense defeats all gate settings",
+      "status": "passed"
+    }
+  ],
+  "maps": [
+    {
+      "id": "garden_u",
+      "pathLength": 17,
+      "slotCount": 20,
+      "maxNearestPathDistance": 1,
+      "spearReachableSlots": 20,
+      "baseTravelSeconds": 24,
+      "balanceValidated": false
+    },
+    {
+      "id": "river_z",
+      "pathLength": 18,
+      "slotCount": 20,
+      "maxNearestPathDistance": 1,
+      "spearReachableSlots": 20,
+      "baseTravelSeconds": 24,
+      "balanceValidated": false
+    },
+    {
+      "id": "courtyard",
+      "pathLength": 22,
+      "slotCount": 20,
+      "maxNearestPathDistance": 2,
+      "spearReachableSlots": 17,
+      "baseTravelSeconds": 24,
+      "balanceValidated": false
+    },
+    {
+      "id": "snow_step",
+      "pathLength": 18,
+      "slotCount": 20,
+      "maxNearestPathDistance": 1,
+      "spearReachableSlots": 20,
+      "baseTravelSeconds": 24,
+      "balanceValidated": false
+    }
+  ],
+  "archer": {
+    "upgrades": [
+      40,
+      70,
+      110,
+      155
+    ],
+    "total": 435,
+    "sale": 261
+  },
+  "randomGuessPt": [
+    -1.25,
+    -2.25,
+    -2.5,
+    -3.75
+  ],
+  "productionEstimate": {
+    "towerIndependentFrames": 1200,
+    "questions": 1200,
+    "initialReviewerQuestionUnits": 3600
+  }
+}

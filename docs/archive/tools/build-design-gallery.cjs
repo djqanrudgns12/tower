@@ -1,0 +1,22 @@
+const fs=require('node:fs');
+const path=require('node:path');
+const dir=path.resolve(__dirname,'../docs/design-v0.3');
+const {variants}=JSON.parse(fs.readFileSync(path.join(dir,'manifest.json'),'utf8'));
+for(const v of variants){if(!fs.existsSync(path.join(dir,v.file)))throw Error('Missing '+v.file);}
+const html=`<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>어휘력 디펜스 · 새 게임 아트 10안</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#101114;color:#f5f5f5;font-family:"Malgun Gothic","Apple SD Gothic Neo",sans-serif}main{max-width:1440px;margin:auto;padding:24px}header{display:flex;justify-content:space-between;align-items:flex-start;gap:20px;flex-wrap:wrap;margin-bottom:20px}h1{font-size:23px;margin:0 0 8px;letter-spacing:-.5px}p{margin:0;color:#bbbfc7;font-size:14px;line-height:1.6}a{color:#fff}button{font:inherit;cursor:pointer}button:focus-visible,a:focus-visible{outline:3px solid #ffcb45;outline-offset:4px}.thumbs{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;margin-bottom:24px}.thumb{border:2px solid transparent;padding:0;background:#202228;color:#fff;text-align:left;min-width:0}.thumb[aria-pressed="true"]{border-color:#ffcb45}.thumb img{width:100%;aspect-ratio:1.6;object-fit:contain;display:block;background:#111}.thumb span{display:block;padding:10px 8px;font-size:13px;line-height:1.5}.thumb b{color:#ffcb45;margin-right:7px}.detail-head{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:12px;flex-wrap:wrap}.detail-head h2{font-size:22px;margin:0 0 5px}.detail-head a{padding:10px 14px;border:1px solid #5a5d65;text-decoration:none;font-size:13px}.hero{display:block;width:100%;height:auto;background:#17191d}footer{margin-top:16px;color:#b2b5bd;font-size:13px;line-height:1.7}kbd{font-size:12px;border:1px solid #555;padding:2px 5px}.compare{display:none}@media(max-width:700px){main{padding:14px}.thumbs{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}header h1{font-size:20px}.detail-head h2{font-size:19px}.thumb span{font-size:12px}.shortcut{display:none}}@media print{body{background:#fff;color:#111}.thumbs,.detail,header .shortcut{display:none}.compare{display:grid;grid-template-columns:1fr 1fr;gap:12px}.compare figure{margin:0;break-inside:avoid}.compare img{width:100%}.compare figcaption{font-size:14px;margin:5px 0}}
+</style></head><body><main>
+<header><div><h1>어휘력 디펜스 · 새 게임 아트 10안</h1><p>전장·타워·몬스터·전투 효과·게임 HUD를 함께 비교합니다.</p></div><p class="shortcut"><kbd>←</kbd> <kbd>→</kbd> 시안 이동</p></header>
+<nav class="thumbs" aria-label="게임 아트 방향 선택">${variants.map((v,i)=>`<button type="button" class="thumb" data-index="${i}" aria-pressed="${i===0}"><img src="${v.file}" alt="${v.name} 게임 화면"><span><b>${v.id}</b>${v.name}</span></button>`).join('')}</nav>
+<section class="detail" aria-label="선택한 시안"><div class="detail-head"><div aria-live="polite"><h2 id="name">01 철벽 원정대</h2><p id="style">${variants[0].style}</p></div><a id="original" href="${variants[0].file}" target="_blank" rel="noopener">원본 크게 보기</a></div><img class="hero" id="hero" src="${variants[0].file}" alt="철벽 원정대 게임 아트 시안"></section>
+<div class="compare">${variants.map(v=>`<figure><img src="${v.file}" alt="${v.name}"><figcaption>${v.id} ${v.name} · ${v.style}</figcaption></figure>`).join('')}</div>
+<footer>화풍 선택용 콘셉트입니다. 실제 게임 구현 시 글자·수치·경로는 PRD에 맞추고, 타워·적·배경·효과는 별도 자산으로 제작합니다.<br>06·09는 수정본을 표시합니다. 원하는 번호와 마음에 드는 요소를 채팅에 알려주세요.</footer>
+</main><script>
+const variants=${JSON.stringify(variants.map(({id,name,style,file})=>({id,name,style,file})))};let selected=0;
+function select(index){selected=(index+variants.length)%variants.length;const v=variants[selected];document.getElementById('hero').src=v.file;document.getElementById('hero').alt=v.name+' 게임 아트 시안';document.getElementById('name').textContent=v.id+' '+v.name;document.getElementById('style').textContent=v.style;document.getElementById('original').href=v.file;document.querySelectorAll('.thumb').forEach((b,i)=>b.setAttribute('aria-pressed',String(i===selected)));}
+document.querySelectorAll('.thumb').forEach((b,i)=>b.addEventListener('click',()=>select(i)));document.addEventListener('keydown',e=>{if(e.key==='ArrowRight'){e.preventDefault();select(selected+1)}if(e.key==='ArrowLeft'){e.preventDefault();select(selected-1)}});
+</script></body></html>`;
+fs.writeFileSync(path.join(dir,'index.html'),html);
+console.log('10개 게임 아트 비교 화면 생성 완료');

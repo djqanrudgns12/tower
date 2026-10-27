@@ -1,0 +1,76 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:vocabulary-td:question-draft:0.2",
+  "title": "Gemini question draft delivery; never publication approval",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "batchId", "id", "revision", "status", "grade", "gradeBasis", "target", "type", "stem", "options", "correctOptionId", "explanation", "distractorRationales", "source", "review"],
+  "properties": {
+    "schemaVersion": {"const": "0.2"},
+    "batchId": {"type": "string", "minLength": 1},
+    "id": {"type": "string", "pattern": "^g[3-6]-[a-z_-]+-[0-9]{4,}$"},
+    "revision": {"type": "integer", "minimum": 1},
+    "status": {"enum": ["draft", "machine_checked"]},
+    "grade": {"enum": [3, 4, 5, 6]},
+    "gradeBasis": {
+      "type": "object", "additionalProperties": false,
+      "required": ["reference", "editionYear", "unit", "reviewed"],
+      "properties": {
+        "reference": {"type": "string", "minLength": 1},
+        "editionYear": {"type": "integer", "minimum": 2000},
+        "unit": {"type": "string", "minLength": 1},
+        "reviewed": {"type": "boolean"}
+      }
+    },
+    "target": {
+      "type": "object", "additionalProperties": false,
+      "required": ["lemma", "partOfSpeech", "senseKey"],
+      "properties": {
+        "lemma": {"type": "string", "minLength": 1},
+        "partOfSpeech": {"type": "string", "minLength": 1},
+        "senseKey": {"type": "string", "minLength": 1}
+      }
+    },
+    "type": {"enum": ["definition", "cloze", "synonym_context", "antonym_context", "usage"]},
+    "stem": {"type": "string", "minLength": 1, "maxLength": 500},
+    "options": {
+      "type": "array", "minItems": 4, "maxItems": 4, "uniqueItems": true,
+      "items": {
+        "type": "object", "additionalProperties": false, "required": ["id", "text"],
+        "properties": {"id": {"enum": ["a", "b", "c", "d"]}, "text": {"type": "string", "minLength": 1, "maxLength": 300}}
+      }
+    },
+    "correctOptionId": {"enum": ["a", "b", "c", "d"]},
+    "explanation": {"type": "string", "minLength": 1, "maxLength": 700},
+    "distractorRationales": {
+      "type": "object", "minProperties": 3, "maxProperties": 3,
+      "propertyNames": {"enum": ["a", "b", "c", "d"]},
+      "additionalProperties": {"type": "string", "minLength": 1}
+    },
+    "source": {
+      "type": "object", "additionalProperties": false,
+      "required": ["provider", "entryId", "senseId", "senseOrder", "url", "retrievedAt", "license", "evidenceHash", "evidenceArtifactId"],
+      "properties": {
+        "provider": {"enum": ["stdict", "krdict"]},
+        "entryId": {"type": "string", "minLength": 1},
+        "senseId": {"type": ["string", "null"]},
+        "senseOrder": {"type": ["integer", "null"], "minimum": 1},
+        "url": {"type": "string", "format": "uri", "pattern": "^https://"},
+        "retrievedAt": {"type": "string", "format": "date-time"},
+        "license": {"type": "string", "minLength": 1},
+        "evidenceHash": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "evidenceArtifactId": {"type": "string", "minLength": 1}
+      },
+      "anyOf": [
+        {"properties": {"senseId": {"type": "string", "minLength": 1}}},
+        {"properties": {"senseOrder": {"type": "integer", "minimum": 1}}}
+      ]
+    },
+    "review": {
+      "type": "object", "additionalProperties": false,
+      "required": ["reviewerId", "reviewedAt"],
+      "properties": {"reviewerId": {"type": "null"}, "reviewedAt": {"type": "null"}}
+    }
+  },
+  "$comment": "Semantic lint must additionally verify unique option IDs/text after NFC; correctOptionId membership; exactly the three wrong-option rationale keys; grade/id consistency; real source and sense/evidence matching; approved gradeBasis provenance. Structural validation cannot prove a unique correct answer."
+}
