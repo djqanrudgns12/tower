@@ -5,8 +5,19 @@ jobId: REVIEW-CORE-001
 status: READY
 owner: Codex (총괄이 아닌 검토 역할, 새 문맥)
 commander: Claude Opus 5.5 (P1 첫 구현 총괄)
-baseCommit: 발행 직전 값
-contractHash: 발행 직전 `node tools/contract-hash.mjs REVIEW-CORE-001` 출력
+baseCommit: ee5833846f0aa227ea3a6e2fe89257b02bae0e33  # docs/prd-v0-5, 2026-10-28 발행 준비
+contractHash:  # node tools/contract-hash.mjs REVIEW-CORE-001 — inputFiles별 SHA-256
+  vocabulary_td_prd_v0_5.md: 5d6f25e96aee6e07c31ea33d968cfbc210a9336ab4fb5235284db6cb0f20056a
+  docs/contracts/balance.candidate.v0.3.json: b78019a76b39609353b6eb3dceabc698428fc5393cea5f30ebaa24762def0bb3
+  src/domain/run.ts: 044a47f4a659e265f51e0e19ebee8de1c2d7e7d6459770d66dac9006be38a239
+  src/domain/combat.ts: 61135af888fdfd3358814f466940579ea043106516b1d15e64441e5e4dc6a1be
+  src/domain/quiz.ts: 57dd2d639f87d829b97af6f243bdcde3a15c7b85f8d7ca62d982c9ab14d89d6c
+  src/domain/waves.ts: f26d0826acff0e83dc23e5868827a529ca958177476f869369f49ccc1aea43c2
+  src/domain/towers.ts: 355faee47f292ace3699e050a8aec93bedc664d358a1315c33868122f97f24dd
+  src/domain/num.ts: fc47ff06493197791599df8ce6d1864a05180d17eff96554d1fff1b7b1964046
+  src/domain/rng.ts: ae349ed8cbd2367580a392bb790926b1db5907e962d6ed992d3b9d0432121fee
+  src/application/RunController.ts: 234fdb756ba5232b31e98802a976714ffc6488fcecea73864f5430735f367a33
+  tests/unit/run.test.ts: d773a0f620a0bf9ac4184b36f1fab0541a09b9d487c0e2c465a525541b59b320
 inputFiles:
   - vocabulary_td_prd_v0_5.md
   - docs/contracts/balance.candidate.v0.3.json

@@ -26,7 +26,7 @@ PRD v0.5대로 P1을 구현했다. 라이브러리는 npm 레지스트리에서 
 
 ## 다음 첫 행동
 
-1. READY 패키지 네 개의 `baseCommit`·`contractHash`를 `node tools/contract-hash.mjs <jobId>`로 채워 발행한다(게시판을 RUNNING으로).
+1. READY 네 개는 발행 준비됨(머리말 채움, 작업 폴더 `../tower-wp/<jobId>`). [발행용 프롬프트](work-packages/DISPATCH.md)를 각 모델에 보내고, 보낸 것만 게시판에서 RUNNING으로 바꾼다.
 2. 기다리는 동안 총괄은 P1-REST(연습 판, 설치 자리 목록, 문맥 손실 복구, 철회 목록)를 진행한다. 원화·문항이 오면 work-packages/README의 ‘받을 때’ 절차를 따른다.
 
 ## 보존/복구

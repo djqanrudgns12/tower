@@ -5,8 +5,13 @@ jobId: Q20-001
 status: READY
 owner: Argon 4
 commander: Claude Opus 5.5 (P1 첫 구현 총괄)
-baseCommit: 발행 직전 git rev-parse HEAD 값
-contractHash: 발행 직전 `node tools/contract-hash.mjs Q20-001` 출력
+baseCommit: ee5833846f0aa227ea3a6e2fe89257b02bae0e33  # docs/prd-v0-5, 2026-10-28 발행 준비
+contractHash:  # node tools/contract-hash.mjs Q20-001 — inputFiles별 SHA-256
+  vocabulary_td_prd_v0_5.md: 5d6f25e96aee6e07c31ea33d968cfbc210a9336ab4fb5235284db6cb0f20056a
+  docs/contracts/question-draft.schema.json: 68fc9985ebcdd333aeb36457c612a2a406b9f7d32d7feec7494258e30375f097
+  src/contracts/questionDraft.ts: 2eb607006cc825ec8573d0b235fe5d0cbc131fa45e0aa632bf8b7e66af1e2b6f
+  src/content/lint.ts: b5df964bf9b5c66b26639a211a5a7cb6e888d4d42514881c0dc6fab4ceeadd5c
+  src/content/questions/grade3.dev.json: 243ed5b527bf6e8551e2d4da77bfccae7e25bd7c65506de20adee6a251e9800b
 inputFiles:
   - vocabulary_td_prd_v0_5.md
   - docs/contracts/question-draft.schema.json

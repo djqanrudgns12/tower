@@ -9,7 +9,9 @@ const jobId = process.argv[2];
 if (!jobId) { console.error('사용: node tools/contract-hash.mjs <jobId>'); process.exit(2); }
 const request = fs.readFileSync(path.join(root, 'docs/work-packages', jobId, 'REQUEST.md'), 'utf8');
 const block = request.slice(request.indexOf('inputFiles:'), request.indexOf('\n', request.indexOf('allowedPaths:')) === -1 ? undefined : request.indexOf('allowedPaths:'));
-const files = [...block.matchAll(/^\s+- ([^\s#]+)/gm)].map(m => m[1]).filter(f => fs.existsSync(path.join(root, f)) && fs.statSync(path.join(root, f)).isFile());
+const files = [...block.matchAll(/^\s+- ([^\s#]+)/gm)].map(m => m[1]);
+const missing = files.filter(f => !fs.existsSync(path.join(root, f)) || !fs.statSync(path.join(root, f)).isFile());
+if (missing.length) { console.error(`inputFiles에 없는 파일: ${missing.join(', ')}`); process.exit(1); }
 const readGit = p => (fs.existsSync(path.join(root, '.git', p)) ? fs.readFileSync(path.join(root, '.git', p), 'utf8').trim() : null);
 const headRef = readGit('HEAD') ?? 'unknown';
 const head = headRef.startsWith('ref: ') ? `${readGit(headRef.slice(5)) ?? 'unborn'} (${headRef.slice(5)})` : headRef;

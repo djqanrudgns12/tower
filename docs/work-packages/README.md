@@ -1,6 +1,6 @@
 # 작업 패키지
 
-P1 첫 구현(2026-10-28, 총괄 Claude Opus 5.5) 뒤 병렬로 맡길 일이다. 각 폴더의 `REQUEST.md`를 그대로 해당 모델에 전달하고, 결과는 같은 폴더의 `RETURN.md`와 허용 경로의 파일로 받는다. 상태는 [작업 게시판](../EXECUTION_BOARD.md)이 기준이다. 아직 어느 것도 발행하지 않았다.
+P1 첫 구현(2026-10-28, 총괄 Claude Opus 5.5) 뒤 병렬로 맡길 일이다. 각 폴더의 `REQUEST.md`를 그대로 해당 모델에 전달하고, 결과는 같은 폴더의 `RETURN.md`와 허용 경로의 파일로 받는다. 상태는 [작업 게시판](../EXECUTION_BOARD.md)이 기준이다. READY 네 개는 발행 준비를 마쳤고(머리말 채움·작업 폴더 생성), 붙여 넣을 프롬프트는 [DISPATCH.md](DISPATCH.md)에 있다. 아직 어느 것도 보내지 않았다.
 
 | jobId | 담당 | 상태 | 선행 | 소유 경로 |
 |---|---|---|---|---|
@@ -16,8 +16,9 @@ READY 네 개는 소유 경로가 겹치지 않아 **동시에** 보낼 수 있�
 ## 발행 순서
 
 1. 현재 변경을 커밋하고 `git rev-parse HEAD`를 REQUEST의 `baseCommit`에 적는다.
-2. `node tools/contract-hash.mjs <jobId>`로 입력 계약 해시를 찍어 REQUEST 머리말에 붙인다.
-3. 게시판에서 상태를 RUNNING으로 바꾸고 담당·발행 시각을 적는다(실제로 보낸 것만).
+2. `node tools/contract-hash.mjs <jobId>`로 입력 계약 해시를 찍어 REQUEST 머리말에 붙인다(inputFiles에 없는 파일이 있으면 도구가 실패한다).
+3. 작업마다 `git worktree add -b wp/<jobId> ../tower-wp/<jobId> <baseCommit>`로 전용 폴더를 만들고 채운 REQUEST.md를 복사한다. 한 폴더를 같이 쓰면 미완성 문항·원화가 다른 작업의 `npm test`를 깨뜨리고, e2e가 남의 5173 서버를 재사용한다.
+4. 게시판에서 상태를 RUNNING으로 바꾸고 담당·발행 시각을 적는다(실제로 보낸 것만).
 
 ## 받을 때(총괄)
 

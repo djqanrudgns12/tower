@@ -5,8 +5,13 @@ jobId: ART-SAMPLE-001
 status: READY
 owner: Codex (이미지 생성 전용 세션. 총괄 세션과 역할을 나눈다)
 commander: Claude Opus 5.5 (P1 첫 구현 총괄)
-baseCommit: 발행 직전 git rev-parse HEAD 값
-contractHash: 발행 직전 `node tools/contract-hash.mjs ART-SAMPLE-001` 출력
+baseCommit: ee5833846f0aa227ea3a6e2fe89257b02bae0e33  # docs/prd-v0-5, 2026-10-28 발행 준비
+contractHash:  # node tools/contract-hash.mjs ART-SAMPLE-001 — inputFiles별 SHA-256
+  docs/assets/design-41-kingdom-expedition.png: 5150cb167deb846dfde633f6e5b0468a0053072435f2d92c485b869801643b13
+  vocabulary_td_prd_v0_5.md: 5d6f25e96aee6e07c31ea33d968cfbc210a9336ab4fb5235284db6cb0f20056a
+  src/contracts/assetManifest.ts: 7d2cf0b7aa6d50b7d63fd64765bbce56165469f6878bd45f180674b2c3f3b8e7
+  src/game/assets.ts: ff2ec2c8510210ee890b41e0f955c8504635ce47cefc3a802ed067a108ae2421
+  docs/archive/design-v0.7/prompts.json: 3b2c9fbeacce6537f5a2a9eac6921a9ce12f8ceb63a751ce109840882d90f00b
 inputFiles:
   - docs/assets/design-41-kingdom-expedition.png
   - vocabulary_td_prd_v0_5.md
@@ -20,7 +25,7 @@ forbiddenPaths:
   - public/**
   - docs/** (이 REQUEST 옆 RETURN.md만 예외)
   - package.json, package-lock.json
-deliverable: 아래 표의 PNG 15장 + manifest.json + 32/48/64px 참고판 1장 + RETURN.md
+deliverable: 아래 표의 PNG 16장(표 12행, 걷기 4·대장 2포즈 포함) + manifest.json + 32/48/64px 참고판 1장 + RETURN.md
 returnPath: docs/work-packages/ART-SAMPLE-001/RETURN.md
 ```
 

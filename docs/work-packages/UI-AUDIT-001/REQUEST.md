@@ -5,8 +5,14 @@ jobId: UI-AUDIT-001
 status: READY
 owner: Argon 4
 commander: Claude Opus 5.5 (P1 첫 구현 총괄)
-baseCommit: 발행 직전 값
-contractHash: 발행 직전 `node tools/contract-hash.mjs UI-AUDIT-001` 출력
+baseCommit: ee5833846f0aa227ea3a6e2fe89257b02bae0e33  # docs/prd-v0-5, 2026-10-28 발행 준비
+contractHash:  # node tools/contract-hash.mjs UI-AUDIT-001 — inputFiles별 SHA-256
+  vocabulary_td_prd_v0_5.md: 5d6f25e96aee6e07c31ea33d968cfbc210a9336ab4fb5235284db6cb0f20056a
+  docs/assets/design-41-kingdom-expedition.png: 5150cb167deb846dfde633f6e5b0468a0053072435f2d92c485b869801643b13
+  src/ui/styles/global.css: b56b448480523af7298c9bc93402e70d0e632c00dc42eb50c0a229796be5ab65
+  src/ui/kit.module.css: 907abaee60c23d2e1e0fdc5efc471301df9971c4ef721fb7cecc43a785e9c120
+  src/ui/copy.ts: fd4799756d2a9432d77ea9a243bb3e900fa153826a0199bb6d42d0a731af658c
+  tests/e2e/play.spec.ts: 3aea535a15079df01bea54218ff0fc9d80bada2686604fe41a122ef972436276
 inputFiles:
   - vocabulary_td_prd_v0_5.md
   - docs/assets/design-41-kingdom-expedition.png
