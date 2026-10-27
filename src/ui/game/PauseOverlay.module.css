@@ -1,0 +1,10 @@
+.layer { position: fixed; inset: 0; z-index: 100; background: var(--edge); display: grid; place-items: center; padding: var(--s4); overflow: auto; }
+.box { width: min(420px, 100%); padding: var(--s5); display: grid; gap: var(--s3); }
+.title { font-size: 22px; }
+.stack { display: grid; gap: var(--s2); }
+.fonts { border: 1px solid var(--ink-soft); border-radius: var(--r-input); padding: var(--s2) var(--s3); display: flex; flex-wrap: wrap; gap: var(--s3); margin: 0; }
+.fonts legend { font-size: 14px; padding: 0 var(--s1); }
+.font { display: flex; align-items: center; gap: var(--s1); min-height: var(--touch); }
+.font input { width: 20px; height: 20px; }
+.confirm { display: grid; gap: var(--s2); padding: var(--s3); border: 2px solid var(--danger); border-radius: var(--r-input); }
+.row { display: flex; gap: var(--s2); }

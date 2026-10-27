@@ -1,0 +1,30 @@
+.panel { display: grid; gap: var(--s2); align-content: start; }
+.title { font-weight: 700; font-size: 16px; }
+.list { display: grid; gap: var(--s2); }
+.listCompact { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--s2); }
+.item, .branch {
+  display: flex; align-items: center; gap: var(--s2); text-align: left; min-height: 56px; padding: var(--s1) var(--s2);
+  background: var(--paper); border: 2px solid var(--edge); border-radius: var(--r-input); box-shadow: var(--shadow);
+}
+.listCompact .item { flex-direction: column; justify-content: center; text-align: center; min-height: 72px; gap: 2px; }
+.item:active, .branch:active { transform: translateY(1px); box-shadow: 0 1px 0 rgba(58, 41, 30, 0.35); }
+.picked { outline: 3px solid var(--blue); outline-offset: -1px; }
+.itemText { display: grid; flex: 1; min-width: 0; }
+.name { font-weight: 700; font-size: 15px; }
+.role { font-size: 13px; color: var(--ink-soft); line-height: 1.4; }
+.price { font-weight: 700; font-size: 14px; white-space: nowrap; }
+.price::after { content: ' 골드'; font-weight: 400; }
+.price[data-short='true'] { color: var(--danger); }
+.stats { display: flex; flex-wrap: wrap; gap: var(--s1) var(--s3); font-size: 14px; }
+.effect { font-size: 13px; }
+.upgrade { display: grid; justify-items: center; line-height: 1.25; padding: 4px 0; }
+.delta { font-weight: 400; font-size: 13px; }
+.nameRow { display: flex; justify-content: space-between; align-items: baseline; gap: var(--s2); }
+.row { display: flex; gap: var(--s2); flex-wrap: wrap; }
+.header { display: flex; align-items: center; gap: var(--s3); }
+.level { font-weight: 400; font-size: 13px; }
+.icon { position: relative; flex: none; display: inline-block; overflow: visible; }
+.icon img { position: absolute; left: 0; image-rendering: auto; }
+.branchMark { width: 22px; height: 22px; flex: none; border: 3px solid var(--edge); }
+.branchMark[data-branch='A'] { border-radius: 50%; background: var(--blue); }
+.branchMark[data-branch='B'] { transform: rotate(45deg) scale(0.82); background: var(--danger); }

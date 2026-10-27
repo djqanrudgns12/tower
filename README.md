@@ -1,36 +1,55 @@
 # tower — 어휘력 타워 디펜스
 
-**현재 기준은 PRD v0.5입니다. 제품 구현은 미착수입니다.**
+초등 3~6학년이 한국어 어휘 문제를 풀어 골드를 모으고, 타워로 성문을 지키는 웹게임입니다.
+**현재 기준은 PRD v0.5이고, P1 첫 구현(3학년·정원 맵·타워 3종)이 끝났습니다.** 원화는 같은 규격의 임시 그림이고, 문항은 검수 전 개발용입니다.
 
-- [제작 PRD v0.5](vocabulary_td_prd_v0_5.md): 게임 규칙·41번 화풍·화면 모드·학생용 표시·맵·보상·저장·기술 스택·출시 기준.
-- [v0.5 점검 근거](docs/prd_v0_5_review.md): 근사 시뮬레이션·화면 산술·숫자 범위·의존성 조사로 찾은 결함과 조치, 사용자 확정 결정.
-- [모델 작업 지시문](docs/model_work_orders_v0_5.md): 병렬 패키지·모델별 요청·반환·Codex↔Claude 총괄 교대.
-- [현재 게시판](docs/EXECUTION_BOARD.md), [인계서](docs/HANDOFF.md): 미착수 작업과 다음 첫 실행.
-- [확정 화풍](docs/style-lock-v1.md): 보존한 41번 왕국 원정대 원본.
-- [데이터 계약과 검산](docs/contracts/README.md): 4맵 좌표 후보·제품 기본값·밸런스 후보·문항 초안 스키마.
+## 실행
 
-Codex(Astra)와 Claude(Opus)가 총괄을 교대하고, 한 총괄 아래 독립 작업을 병렬로 진행합니다. Codex는 어려운 핵심 구현과 이미지 생성, Claude는 어려운 구현·리깅, Argon 4는 소규모 작업·UI/UX·문항 제작을 맡습니다. 실제 외부 작업은 아직 발행하지 않았습니다.
-
-41번의 밝은 모험 화풍은 유지합니다. 넓은 화면은 전장+우측 관리 레일(224px, HUD 포함)+하단 문제, 좁은 화면은 HUD/전장/도구/문제를 쌓으며 칸 크기 계산으로 둘 중 하나를 고릅니다. ‘모르겠어요’ 0점·난이도 한국어 표시·배속 없음·HP 성장 115%는 사용자 확정(2026-10-28)입니다. 15×9 지도·초반 완충 등 나머지 밸런스 후보 0.3 수치는 검증할 작업 기본값이며 밸런스 승인 결과가 아닙니다.
-
-## 문서 검사
-
-패키지 설치 없이 Node.js로 실행합니다.
+Node 24(`.node-version`)에서 실행합니다.
 
 ```sh
-node tools/validate-plan.mjs
+npm ci
 ```
-
-현재 문서의 로컬 링크·절 참조·PRD 표와 계약 JSON의 일치·화면 모드 계산표·맵 설치칸 품질·원본 해시만 검사합니다. 게임 실행·브라우저·실기기·밸런스 시험이 아닙니다. 실제 결과는 [검산 보고서](docs/contracts/prd_v0_5_validation.json)에 남습니다.
 
 ```sh
-node tools/balance-sketch.mjs
+npm run dev
 ```
 
-PRD 수치를 쓰는 **근사** 전투·경제 모델입니다(궁수·포탑·서리·마법탑만). 수치를 바꾸기 전 방향을 보는 용도이며 제품 엔진이 생기면 폐기합니다. `--growth 112 --no-ramp`로 이전 후보와 비교할 수 있습니다.
+브라우저에서 `http://localhost:5173`을 엽니다.
 
-`tools/build-plan.mjs`는 기본 실행에서 파일을 수정하지 않습니다. `--legacy-v0.3`은 과거 PRD/7×7 후보를 재생성하는 이력 작업 전용이므로 일반 작업에서 실행하지 않습니다.
+## 검사
 
-## 보존과 다음 단계
+```sh
+npm run verify
+```
 
-원문 v0.1·통합 v0.3·Codex v0.4·41번 PNG는 보존합니다. 과거 v0.2 상세 문서와 archive는 이력이며 현재 요구를 대체하지 않습니다. 이번 요청은 문서 점검·보강이므로 앱 생성·설치·이미지 생성·DB·공개 배포는 실행하지 않았습니다. 이후 구현 요청이 오면 PRD §18의 P1부터 진행합니다. 이 저장소에는 아직 제품 package.json/lockfile이 없습니다.
+타입 검사(앱·시험) → ESLint(계층 경계 포함) → 단위·속성 시험 → PRD 문서 검산 → 문항 검사를 한 번에 돌립니다. 실제 브라우저 흐름은 따로 돌립니다(처음 한 번 `npx playwright install chromium`).
+
+```sh
+npm run test:e2e
+```
+
+캡처는 `test-results/shots/`에 남습니다. `npm run simulate:balance`는 PRD 수치의 **근사** 모델이며 엔진 시뮬레이터가 생기면 폐기합니다.
+
+## 구조
+
+| 경로 | 책임 | 의존하지 않는 것 |
+|---|---|---|
+| `src/domain/` | 30Hz 고정 틱 전투·경제·문항 흐름·명령(순수 함수, 안전 정수) | React·Phaser·저장소 |
+| `src/contracts/` | Zod 런타임 계약(밸런스·맵·문제은행·초안·검토·에셋 manifest) | 화면 |
+| `src/content/` | `docs/contracts/*.json`과 문제은행을 검사해 싣기, 문항 의미 검사 | 화면 |
+| `src/application/` | `RunController`(유일한 상태 작성자, 루프·저장·정지), 세션 서비스 | 특정 DB 세부 |
+| `src/persistence/` | IndexedDB 2슬롯 스냅샷·기록, Web Locks, 설정 | 전투 규칙 |
+| `src/game/` | Phaser 전장(임시 그림·manifest 원화 대체·확대·미니맵), 보행 자세 | 보상 판정 |
+| `src/ui/` | React 화면·문제판·관리 패널·정지층 | Phaser·저장소 직접 호출 |
+
+밸런스 수치의 원본은 `docs/contracts/balance.candidate.v0.3.json` 하나이며 PRD 표와 `npm run validate:plan`이 대조합니다.
+
+## 문서
+
+- [제작 PRD v0.5](vocabulary_td_prd_v0_5.md) — §18.4에 P1 구현 기록
+- [v0.5 점검 근거](docs/prd_v0_5_review.md), [인계서](docs/HANDOFF.md), [작업 게시판](docs/EXECUTION_BOARD.md)
+- [작업 패키지](docs/work-packages/README.md) — Codex 원화·Argon 문항·UI 점검·독립 검토 지시서
+- [확정 화풍](docs/style-lock-v1.md), [데이터 계약](docs/contracts/README.md)
+
+원문 v0.1·v0.3·v0.4·41번 PNG는 보존하며 검산 도구가 해시를 확인합니다. `tools/build-plan.mjs --legacy-v0.3`은 이력 재생성 전용입니다.

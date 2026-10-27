@@ -1,0 +1,50 @@
+{
+  "name": "vocabulary-tower-defense",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "engines": {
+    "node": ">=24.0.0"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -p tsconfig.json && vite build",
+    "preview": "vite preview",
+    "typecheck": "tsc -p tsconfig.json && tsc -p tsconfig.test.json",
+    "lint": "eslint .",
+    "test": "vitest run tests/unit",
+    "test:e2e": "playwright test",
+    "validate:plan": "node tools/validate-plan.mjs",
+    "validate:content": "vitest run tests/unit/content.test.ts",
+    "validate:assets": "vitest run tests/unit/content.test.ts -t manifest",
+    "simulate:balance": "node tools/balance-sketch.mjs",
+    "verify": "npm run typecheck && npm run lint && npm run test && npm run validate:plan && npm run validate:content",
+    "blind-input": "node tools/make-blind-input.mjs"
+  },
+  "dependencies": {
+    "idb": "8.0.4",
+    "phaser": "4.2.1",
+    "pretendard": "1.3.9",
+    "react": "19.3.1",
+    "react-dom": "19.3.1",
+    "zod": "4.6.7"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "4.14.0",
+    "@eslint/js": "10.0.1",
+    "@playwright/test": "1.64.1",
+    "@types/node": "24.19.2",
+    "@types/react": "19.3.0",
+    "@types/react-dom": "19.3.0",
+    "@vitejs/plugin-react": "6.1.2",
+    "eslint": "10.13.0",
+    "eslint-plugin-react-hooks": "7.1.1",
+    "fake-indexeddb": "6.2.6",
+    "fast-check": "4.10.2",
+    "globals": "17.13.0",
+    "typescript": "6.0.3",
+    "typescript-eslint": "8.72.1",
+    "vite": "8.3.5",
+    "vitest": "5.0.5"
+  }
+}

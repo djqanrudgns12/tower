@@ -1,21 +1,21 @@
 # 현재 작업 게시판
 
-기준일: 2026-10-28 · 현재 구간: **PRD 점검·보강(v0.5)** · 제품 구현: **미착수**
+기준일: 2026-10-28 · 현재 구간: **P1 첫 완성 구간 — 구현됨, 독립 검토·원화·검수 문항 대기** · 총괄: Claude Opus 5.5(Claude Code)
 
-현재 문서 작업자: Claude Opus 5.5(Claude Code). 이전 v0.4 문서 작업자: Codex. 외부 Argon/Codex 실행 및 실제 공동검수 반환물은 없다. 아래 READY는 미래 작업 정의이며 발행/실행 완료가 아니다. 제품 구현 총괄은 다음 구현 요청 시 지정한다. 출발 제안은 Codex→Claude→Codex 교대다.
+기준: docs/prd-v0-5 브랜치. P1 구현은 `9634d00` 다음 commit에 들어 있다(`git log -1 --format=%h -- src`). 작업 패키지를 발행할 때는 그때의 `git rev-parse HEAD`를 REQUEST의 `baseCommit`에 적는다. 아래 READY는 정의만 했고 아무것도 외부 모델에 보내지 않았다.
 
-기준 commit: `fe625edf2f6a19c992a204e4d52934cce9501690`. 이번 점검 시작 때 Codex의 v0.4 변경이 미커밋 상태였고 보존했다. 이번 문서 변경도 미커밋이다. 현재 PRD는 [v0.5](../vocabulary_td_prd_v0_5.md), 요청/반환/인계 규격은 [작업 지시서](model_work_orders_v0_5.md)다.
-
-| jobId | 상태 | 다음 담당 역할 | 소유 범위(구현 시 정확한 파일 확정) | 선행 입력 |
+| jobId | 상태 | 담당 | 소유 범위 | 선행 |
 |---|---|---|---|---|
-| CORE-P1 | READY·미발행 | 현 총괄 Codex 또는 Claude | domain/application/persistence·공유 계약 | 구현 지시·버전 호환성 표본·`balance.candidate.v0.3` 스키마 |
-| UI-Q-001 | READY·미발행 | Argon 4 | ui/question·전용 CSS/fixture | QuestionPanelProps·토큰 고정·§12.5 3구획·§12.8 반려표 |
-| UI-M-001 | READY·미발행 | Argon 4 | ui/management·전용 CSS/fixture | 거래 event·토큰 고정·§12.1 R/S 모드·설치 미리보기 |
-| ART-SAMPLE | READY·미발행 | Codex 이미지 작업 | 지정 asset-source/incoming | asset ID·레이어·수량 고정·§11.1 가져오지 않을 요소 |
-| RIG-001 | READY·미발행 | Claude 또는 Codex 별도 작업 | game/animation·전용 fixture | 실제 인수 원본·pivot/muzzle |
-| Q20-001 | READY·미발행 | Argon 4 | 지정 content-source/batch | 실제 의미·학년 근거 확보·§9.2 읽기 수준 규칙 |
-| SIM-S11 | READY·미발행 | 현 총괄 | tools/·tests/ 시뮬레이터 | CORE-P1 엔진, §17.3 표 형식, `balance-sketch` 대체 |
+| CORE-P1 | 구현됨 · 독립 검토 대기 | 총괄 Claude | `src/domain/**`, `src/application/**`, `src/persistence/**`, 공유 계약 | — |
+| [REVIEW-CORE-001](work-packages/REVIEW-CORE-001/REQUEST.md) | READY·미발행 | Codex(검토 문맥) | `tests/review/**` | — |
+| [ART-SAMPLE-001](work-packages/ART-SAMPLE-001/REQUEST.md) | READY·미발행 | Codex 이미지 | `asset-source/incoming/ART-SAMPLE-001/**` | — |
+| [Q20-001](work-packages/Q20-001/REQUEST.md) | READY·미발행 | Argon 4 | `content-source/batches/Q20-001/**` | — |
+| [UI-AUDIT-001](work-packages/UI-AUDIT-001/REQUEST.md) | READY·미발행 | Argon 4 | `src/ui/**/*.module.css`(공통 제외) | — |
+| [QR-001/QR-002](work-packages/QR-001/REQUEST.md) | HOLD | Codex·Claude 새 문맥 | `content-source/reviews/Q20-001/*` | Q20-001 반환 |
+| [RIG-001](work-packages/RIG-001/REQUEST.md) | HOLD | Claude/Codex | `src/game/animation/**` | ART-SAMPLE-001 인수 |
+| P1-REST | READY | 총괄 | 연습 판·소리·설치 자리 목록·문맥 손실·철회 목록 | 위 검토 반영 |
+| CORE-P2 | 계획 | 다음 총괄(PRD 출발안: Claude) | 나머지 타워 7종·분기 14개·4~6학년 맵/은행 | G2 통과 |
 
-총괄만 공유 schema/package/lockfile/전역 토큰/라우터/인덱스를 수정한다. 같은 파일 소유권을 두 작업에 주지 않는다. 모든 작업자는 RETURN만 제출하고 ACCEPTED는 총괄이 검사 후 부여한다. 교대 때 RUNNING job의 계약과 소유권을 보존한다.
+READY 네 개(REVIEW-CORE-001, ART-SAMPLE-001, Q20-001, UI-AUDIT-001)는 소유 경로가 겹치지 않아 동시에 보낼 수 있다. 총괄만 공유 schema/package/lockfile/전역 토큰/라우터/인덱스를 수정한다. ACCEPTED는 총괄이 검사 후 부여한다.
 
-현재 측정된 제품 성과: 없음. 앱 빌드·게임 시험·브라우저·실기기·엔진 밸런스·외부 공동검수·배포는 미실행. 근사 모델(`tools/balance-sketch.mjs`) 결과는 PRD §17.3과 [점검 근거](prd_v0_5_review.md)에 있으며 제품 성과가 아니다. 문서 검산 결과는 [검산 보고서](contracts/prd_v0_5_validation.json)를 따른다.
+측정된 성과(2026-10-28, 이 작업 트리): 도메인·콘텐츠 단위·속성 시험, Playwright e2e 4개(1440×900 한 판 흐름·정지 가림, 390×844 넘침·확대, 1366×650 R 모드, axe 0건), 배포 빌드 성공(JS gzip 약 494KB). 실기기·장시간 성능·엔진 밸런스·실제 원화·공동검수·배포는 미실행. 최신 결과는 [인계서](HANDOFF.md)의 검증 절을 따른다.

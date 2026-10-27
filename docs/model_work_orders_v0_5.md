@@ -4,6 +4,8 @@
 
 현재 기준: [PRD v0.5](../vocabulary_td_prd_v0_5.md) §18~19. 프로젝트 루트는 `/Users/bodyking/Desktop/vibecoding/tower`. 다른 컴퓨터에서는 실제 checkout 경로로 바꾼다. 사용자가 구현을 지시한 후 총괄이 job별 빈 값을 채워 발행한다. 빈값/추정 hash를 채운 것처럼 보고하지 않는다.
 
+> **발행용 지시서:** P1 첫 구현 뒤의 실제 작업 지시서는 [work-packages](work-packages/README.md)에 있다(ART-SAMPLE-001·Q20-001·UI-AUDIT-001·REVIEW-CORE-001·QR-001·RIG-001). 이 문서는 그 양식과 원칙이다.
+
 ## 1. 운영 방식
 
 **작업 묶음은 병렬, 총괄은 한 명, 교대는 인계서 한 번**이다. Codex(Astra)와 Claude(Opus)가 전체 지휘를 교대하고, Argon 4는 한정된 UI/UX·소규모 구현·문항 작업을 맡는다. Codex는 이미지 생성 수단도 운용한다. Claude는 리깅/애니메이션과 어려운 구현을 맡을 수 있다. 역할은 모델의 서열표가 아니다.

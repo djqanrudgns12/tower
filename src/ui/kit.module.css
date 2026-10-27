@@ -1,0 +1,38 @@
+/* 공용 조작부: 목재 키·양피지 판. 눌림은 1px 이동과 그림자 축소로만 표현한다(PRD §11.4, §12.8). */
+.button {
+  min-height: var(--touch);
+  padding: 0 var(--s4);
+  border: 2px solid var(--edge);
+  border-radius: var(--r-input);
+  background: var(--paper);
+  box-shadow: var(--shadow);
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--s2);
+  transition: transform 80ms, box-shadow 80ms, background-color 80ms;
+  touch-action: manipulation;
+  user-select: none;
+}
+.button:hover:not(:disabled) { filter: brightness(1.04); }
+.button:active:not(:disabled) { transform: translateY(1px); box-shadow: 0 1px 0 rgba(58, 41, 30, 0.35); }
+.button:disabled { background: var(--stone); color: var(--ink-soft); box-shadow: none; border-color: var(--ink-soft); }
+.primary { background: var(--green); color: var(--paper); border-color: var(--edge); }
+.danger { background: var(--danger); color: var(--paper); }
+.quiet { background: transparent; box-shadow: none; border-color: transparent; text-decoration: underline; text-underline-offset: 3px; font-weight: 400; }
+.quiet:hover:not(:disabled) { filter: none; color: var(--blue); }
+.block { width: 100%; }
+.big { min-height: 56px; font-size: 18px; }
+
+.board {
+  background: var(--parchment);
+  border: 6px solid var(--wood);
+  border-radius: var(--r-panel);
+  outline: 2px solid var(--edge);
+  outline-offset: -2px;
+  box-shadow: var(--shadow);
+}
+
+.reason { color: var(--danger); font-size: 14px; min-height: 21px; }
+.muted { color: var(--ink-soft); font-size: 14px; }

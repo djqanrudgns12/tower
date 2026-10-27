@@ -16,7 +16,6 @@ const round5 = x => 5 * Math.floor(x / 5 + 0.5);
 const growth = Number(flag('growth', B.waves.hpGrowthPercent));
 const ramp = !args.includes('--no-ramp');
 const KINDS = ['walker', 'runner', 'brute', 'shell', 'wisp', 'swarm'];
-const MODELED = ['archer', 'cannon', 'frost', 'mage'];
 const BRANCH_A = { archer: { intervalBP: 8000 }, cannon: { splash: 1050, maxTargets: 6 }, frost: { slowBP: 4000, slowMs: 2500 }, mage: { damageBP: 14000 } };
 const STRATS = {
   novice: { attentionMs: 30000, randomSlots: true, pattern: ['archer', 'archer', 'cannon', 'frost', 'archer', 'cannon', 'mage', 'archer', 'cannon', 'mage'], upgradeAfterTowers: 6 },

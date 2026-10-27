@@ -1,49 +1,34 @@
 # 다음 총괄·다음 컴퓨터 인계
 
-기준일: 2026-10-28 · 현재 요청: PRD 점검·고도화 · 제품 구현 미착수 · 마지막 문서 작업자: Claude Opus 5.5(Claude Code)
+기준일: 2026-10-28 · 현재 구간: P1 첫 완성 구간 구현됨 · 총괄: Claude Opus 5.5(Claude Code) · 브랜치 `docs/prd-v0-5`, P1 구현은 `9634d00` 다음 commit(`git log -1 --format=%h -- src`로 확인). push 안 함
 
-## 현재 읽을 파일
+## 먼저 읽을 것
 
-1. [제작 PRD v0.5](../vocabulary_td_prd_v0_5.md): 단일 현재 원본. §0.4 변경 목록, §18 제작 순서, §19 병렬/교대 운영.
-2. [v0.5 점검 근거](prd_v0_5_review.md): 결함 E01~E24, 바꾸지 않은 것, **사용자 확정 결정 4개**.
-3. [41번 원화와 기준](style-lock-v1.md), [작업 게시판](EXECUTION_BOARD.md), [복사용 작업/인계 지시문](model_work_orders_v0_5.md).
-4. [계약 파일 목록](contracts/README.md), [이번 문서 검산 결과](contracts/prd_v0_5_validation.json).
-
-최신 사용자 지시 → PRD v0.5 확정 요구 → v0.5 작업 기본값 → 과거 문서 순으로 적용한다. v0.1/v0.3/v0.4는 보존 원문이고 v0.2 상세계획의 미정/다른 역할/7×7 지도는 현재 규격이 아니다. v0.5는 직접 편집한다.
+1. [제작 PRD v0.5](../vocabulary_td_prd_v0_5.md) — §18.4 P1 구현 기록, 확정 결정은 §0.2.
+2. [작업 게시판](EXECUTION_BOARD.md), [작업 패키지](work-packages/README.md).
+3. [README](../README.md) — 실행·검사 명령과 모듈 경계.
+4. [v0.5 점검 근거](prd_v0_5_review.md) — 밸런스 근사 결과와 남은 위험.
 
 ## 이번에 실제로 한 것
 
-Codex가 쓴 v0.4와 부속 문서·계약·41번 원화·과거 시안 기록·원문 v0.1의 해당 절을 검토했다. 수치를 실제로 돌려 보기 위해 PRD 수치를 그대로 쓰는 근사 모델 `tools/balance-sketch.mjs`를 만들고 실행했으며, 화면 칸 크기·문제판 높이·숫자 범위·부동소수 오차·npm 레지스트리 호환 범위를 계산·조회했다. 그 결과로 v0.5를 만들었다.
+PRD v0.5대로 P1을 구현했다. 라이브러리는 npm 레지스트리에서 확인한 현재 버전으로 정확히 잠갔다(Phaser 4.2.1, React 19.3.1, Vite 8.3.5, TypeScript 6.0.3, Zod 4.6.7, idb 8.0.4, Vitest 5.0.5, Playwright 1.64.1). Phaser 4 API는 패키지에 들어 있는 공식 마이그레이션 문서·타입 정의로 확인했고(Canvas 렌더러 폐기 예정, `roundPixels` 기본 false, tint 모드 변경), rolldown의 폐기 예정 옵션(`advancedChunks`) 대신 `codeSplitting`을 썼다. xorshift32는 Marsaglia(2003) C 원형과 출력 5개를 대조해 골든 벡터로 고정했다. IndexedDB는 Chrome 121부터 기본 durability가 relaxed라는 공식 안내에 따라 주기 저장은 기본, ‘저장 후 나가기’·종료 기록은 strict로 쓴다.
 
-핵심 변경: 1~3웨이브 등장 간격 완화와 HP 성장 115%(밸런스 후보 0.3, [balance.candidate.v0.3.json](contracts/balance.candidate.v0.3.json)), ‘모르겠어요’ 0점, 웨이브 목표 10~15, 칸 크기 계산식의 R/S 화면 모드(R은 HUD를 관리 레일에), 문제판 3구획, 터치40·마우스28px 확대 기준, 학생용 표시 규칙, 전투 문항 읽기 부담 상한, UI 반려 체크리스트, 안전 정수 Number·정수 ms·1칸=1000, 2슬롯 스냅샷+Web Locks 저장, 기술 스택 관측 버전과 TypeScript/린터 함정. 검산 도구는 PRD 표와 밸런스 JSON 대조, 화면 모드 표 재계산, 설치칸 품질, v0.4 보존 해시를 새로 검사한다.
+구현 중 바로잡은 것: 첫 텍스처 생성 때마다 성능 정지가 뜨던 루프(일회성 끊김은 버리고 반복만 정지, PRD §14 갱신), 화면이 저장소를 직접 부르던 경계 위반(세션 서비스로 이동), 렌더 중 ref 읽기(React Compiler 규칙), 문항 ID 규칙과 어긋난 Argon 지시서 예시, 시험 기대값 산술 오류 1건(최대 나머지 14/6/4).
 
-게임 시험·앱 빌드·브라우저·실기기·엔진 밸런스 시뮬레이션·실제 이미지/리깅·문항 공동검수·외부 모델 실행·배포는 미실행이다. 근사 모델 결과는 방향을 보는 증거다.
+## 검증(이 작업 트리에서 실제 실행)
 
-## 사용자 확정 결정
+- `npm run typecheck`, `npx eslint .` 통과.
+- `npm test`: 도메인·콘텐츠 단위·속성 시험 통과(A01~A18·A30~A36 대응, fast-check 불변식 포함).
+- `npm run test:e2e`: 4개 통과 — 1440×900 새 게임→준비→설치→전투→정지 중 문제 DOM 제거→재개, 390×844 가로 넘침 0·확대 선택·미니맵, 1366×650 R 모드·칸 ≥44px, axe 위반 0.
+- `npm run build` 성공. JS gzip 약 494KB(Phaser 357KB), 글꼴은 unicode-range 서브셋.
+- 문항 파이프라인(초안→sidecar→근거 해시→정답 없는 검토 입력→JS/TS 해시 일치)을 임시 복사본의 합성 문항으로 확인.
+- 미실행: 실기기(iOS Safari·Android), 30분 장시간 성능, 엔진 밸런스 시뮬레이션(S11), 실제 원화, Argon/Codex 작업, 공동검수, 배포.
 
-2026-10-28 사용자가 ‘모르겠어요’ 0점, 난이도 한국어 표시, 배속 없음, HP 성장 115%를 확정했다. PRD v0.5에 [확정]으로 표시했고 JSON 두 곳(`product.defaults.v0.5`의 `userDecisions`, `balance.candidate.v0.3`의 `userConfirmed`)에 기록했다. 이 값은 사용자 결정 없이 바꾸지 않는다. 성장률이 목표 시간과 안 맞으면 PRD §8.2 순서대로 다른 수단을 먼저 쓰고, 그래도 필요하면 근거를 들어 사용자에게 묻는다.
+## 다음 첫 행동
 
-## 운영 방향
+1. READY 패키지 네 개의 `baseCommit`·`contractHash`를 `node tools/contract-hash.mjs <jobId>`로 채워 발행한다(게시판을 RUNNING으로).
+2. 기다리는 동안 총괄은 P1-REST(연습 판, 설치 자리 목록, 문맥 손실 복구, 철회 목록)를 진행한다. 원화·문항이 오면 work-packages/README의 ‘받을 때’ 절차를 따른다.
 
-사용자 환경은 Astra, Argon 4/Gemini Ultra, Opus/Max5×다. Codex(Astra)와 Claude(Opus)가 전수 지휘를 교대한다. 주 총괄은 항상1명이며 어려운 핵심 구현·통합을 맡는다. Codex는 이미지 생성, Claude는 리깅/애니메이션도 담당한다. Argon은 소규모 독립 작업·UI/UX·문항 제작. 지속적인 모델 간 대화 대신 REQUEST/RETURN/HANDOFF 파일로 전달한다.
+## 보존/복구
 
-소유 파일이 다른 작업은 병렬로 진행한다. 공유 계약/package/전역 토큰은 총괄만 작성한다. 교대 후 기존 RUNNING job의 입력·소유권을 보존하고 미완료부터 이어간다. 아직 모든 job은 READY·미발행이다.
-
-## 구현을 요청받은 다음의 첫 행동
-
-현재 git diff와 사용자 변경 확인 → 주 총괄/소유권 기록 → PRD §10/20 계약, §6 맵, `balance.candidate.v0.3.json`을 Zod 스키마로 잠금 → §13.1 관측값을 출발점으로 호환성 표본에서 정확한 의존성 잠금(TypeScript는 typescript-eslint 지원 범위 안) → P1의 1→6웨이브 구간 구현. UI 패키지는 고정 props/event/fixture로 병렬 발행하고 RETURN에 §12.8 체크리스트를 받는다. 이미지/리깅은 규격과 실제 원본 hash로 연결한다. 미승인 문항은 내부 fixture로만 사용한다.
-
-P1은 궁수/포탑/서리와 5웨이브 편성의 기본/빠른/튼튼/껍질+보스가 필요하다. 4→5→6, 보스 처치/누출/0HP, 생존 보상1회, ‘모르겠어요’, 정지·해설·저장복귀까지 연결한다. 엔진이 서면 `balance-sketch`를 엔진 시뮬레이터로 바꾸고 §17.3 표를 다시 잰다. 새 시안10개 생성·모든30외형 동시 제작부터 시작하지 않는다.
-
-**이 문서를 읽는 것 자체는 구현 지시가 아니다. 현재 작업은 PRD 점검·보강까지다.**
-
-## 보존/복구/검사
-
-작업 시작 commit `fe625edf2f6a19c992a204e4d52934cce9501690`. 이번 점검 시작 시 Codex의 v0.4 작업이 미커밋 상태로 남아 있었고 이를 덮지 않았다(v0.4 문서는 맨 위 이력 안내 한 줄만 추가). 이번 변경도 미커밋이며 commit/push/배포하지 않았다. 원본 v0.1/v0.3/v0.4·41번 PNG 해시는 검산 도구와 보고서에 있다. 광범위 reset/clean으로 복구하지 말고 해당 commit과 필요한 파일만 비교한다.
-
-```sh
-node tools/validate-plan.mjs
-node tools/balance-sketch.mjs
-```
-
-이미 같은 작업 트리에서 통과했다면 결과를 재사용한다. 과거 build-plan은 기본 실행에서 수정하지 않으며, `--legacy-v0.3`는 이력 재생성 전용이다. archive의 삭제된 이미지 참조/예전 절대경로를 실행 의존성으로 되살리지 않는다.
+원문 v0.1·v0.3·v0.4·41번 PNG는 검산 도구가 해시를 확인한다. 광범위 reset/clean으로 복구하지 말고 해당 commit의 필요한 파일만 비교한다. `.claude/launch.json`은 미리보기 서버 설정이다.
