@@ -1,0 +1,125 @@
+{
+  "schemaVersion": "0.4",
+  "status": "implementation-defaults-not-validated-balance",
+  "balanceVersion": "0.2-candidate",
+  "rulesVersion": "0.3-candidate",
+  "mapVersion": "0.4-candidate",
+  "styleId": "design-41-kingdom-expedition",
+  "referenceSha256": "5150cb167deb846dfde633f6e5b0468a0053072435f2d92c485b869801643b13",
+  "pilot": {
+    "grade": 3,
+    "mapId": "garden_u",
+    "difficulty": "Normal",
+    "approvedQuestionsMin": 30,
+    "publicApprovedQuestionsPerGradeMin": 300,
+    "publicDistinctLemmasPerGradeMin": 150
+  },
+  "layout": {
+    "frameMaxPx": 1440,
+    "wideMinWidthPx": 1180,
+    "wideMinHeightPx": 720,
+    "railWidthPx": 224,
+    "hudHeightPx": 44,
+    "questionBaseHeightPx": 208,
+    "touchMinPx": 44,
+    "phoneMaxWidthPx": 767,
+    "autoMagnifyBelowCellPx": 44,
+    "magnifiedCellMinPx": 48,
+    "questionFontPx": [
+      18,
+      21,
+      24
+    ],
+    "longOptionColumns": 1,
+    "shortOptionColumns": 2,
+    "twoColumnMinWidthPx": 480,
+    "twoColumnMaxLines": 2,
+    "mapAspect": [
+      15,
+      9
+    ]
+  },
+  "milestone": {
+    "every": 5,
+    "bossCount": 1,
+    "additionalBossMultiplier": 1,
+    "survivalGold": {
+      "Easy": 30,
+      "Normal": 40,
+      "Hard": 50,
+      "Crazy": 60
+    },
+    "survivalPt": 0,
+    "allowLeakedBossSurvival": true,
+    "scaleWithMilestoneIndex": false,
+    "rewardType": "MILESTONE_SURVIVAL",
+    "idempotencyKey": "runId:wave:milestone_survival"
+  },
+  "mood": {
+    "transitionMs": 600,
+    "applyAt": "PREP_QUIZ_ENTER",
+    "restore": "immediate",
+    "paletteVariantCount": 2,
+    "entries": [
+      {
+        "id": "clear",
+        "tint": null,
+        "alpha": 0
+      },
+      {
+        "id": "breeze",
+        "tint": "#b8dba0",
+        "alpha": 0.04
+      },
+      {
+        "id": "warm",
+        "tint": "#e2b66b",
+        "alpha": 0.06
+      },
+      {
+        "id": "gathering",
+        "tint": "#9faeb4",
+        "alpha": 0.05
+      },
+      {
+        "id": "milestone",
+        "tint": "#b68a60",
+        "alpha": 0.08
+      }
+    ]
+  },
+  "runtime": {
+    "domainHz": 30,
+    "maxEnemies": 64,
+    "maxTowers": 20,
+    "checkpointEveryTicks": 60,
+    "maxCatchUpTicksPerFrame": 5,
+    "performancePauseAfterMs": 250,
+    "maxRenderDpr": 2,
+    "decorationParticles": {
+      "simple": 40,
+      "full": 120
+    },
+    "visualProjectileLimit": 256
+  },
+  "authoring": {
+    "commanderAtATime": 1,
+    "ownerPerFile": 1,
+    "handoffRequiredOnCommanderChange": true,
+    "imageProducer": "Codex image-generation tool",
+    "smallTaskProducer": "Argon 4",
+    "commanders": [
+      "Codex / Astra",
+      "Claude / Opus"
+    ],
+    "mode": "parallel-owned-packages-with-file-handoff"
+  },
+  "approval": {
+    "userStyleApproved": true,
+    "runtimeVerified": false,
+    "deviceVerified": false,
+    "balanceApproved": false,
+    "externalReviewExecuted": false,
+    "releaseApproved": false
+  }
+}

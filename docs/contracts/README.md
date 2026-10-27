@@ -1,15 +1,15 @@
-# 계약 파일의 상태
+# 현재 제작 계약과 검산
 
-> v0.3 인계: 아래 7×7 맵은 과거 구조 검산용입니다. 사용자가 요청한 긴 경로·큰 기물·영구 장식이 있는 최종 맵으로 채택하지 않습니다. 실제 좌표·설치 수는 PRD v0.3 §25를 기준으로 다시 정합니다.
+현재 요구는 [PRD v0.5](../../vocabulary_td_prd_v0_5.md)다. PRD와 JSON이 다르면 조용히 한쪽을 선택하지 않고 같은 변경에서 맞춘다. `node tools/validate-plan.mjs`가 주요 표의 일치를 검사한다.
 
-- `maps.candidate.v0.2.json`: 원문 경로에 실제 설치 칸20개씩 배정한 구조 검증 후보. 전투 밸런스 승인 아님.
-- `validation_report.json`: `node tools/validate-plan.mjs` 실행 결과. 16개 산술·구조 검사 통과, 게임/실기기/교육 검사 미실행.
-- `question-draft.schema.json`: Gemini 초안 인수용 JSON Schema. 생성 담당의 공동검수 승인 자체 처리를 막기 위해 status는 draft/machine_checked, review는 null만 허용.
+| 파일 | 역할 | 상태 |
+|---|---|---|
+| [maps.candidate.v0.4.json](maps.candidate.v0.4.json) | 15×9·4개 긴 경로·80개 지정 슬롯·영구 장식 | 좌표 후보, 게임 밸런스 미검증(v0.5에서 좌표 변경 없음) |
+| [product.defaults.v0.5.json](product.defaults.v0.5.json) | 화면 R/S 모드·확대 기준·고비보상·무드·‘모르겠어요’·숫자/저장 방식·학생용 표시 | 작업 기본값, 제품 승인 아님 |
+| [balance.candidate.v0.3.json](balance.candidate.v0.3.json) | 난이도·적·타워 Lv1·강화·웨이브 생성식(정수 ms·BP·milli 단위) | 밸런스 후보, Lv3 분기는 P2에 추가 |
+| [question-draft.schema.json](question-draft.schema.json) | 실제 초안 스키마0.2 | draft/machine_checked 전용 |
+| [prd_v0_5_validation.json](prd_v0_5_validation.json) | 현재 문서/계약/좌표/해시 검사 실제 결과 | 제품 실행 시험과 구분 |
 
-문항 스키마의 최대 길이500/300/700은 비정상 payload 방어 상한이다. 미술·문항 계약에 적은 짧은 문장 목표와 다르며 실제 화면/읽기량 검토를 대체하지 않는다. `format` 검사 활성화와 의미 검사는 구현 단계에서 연결한다. 스키마 구조가 맞는다고 출처/정답이 참인 것은 아니다.
+이력: `product.defaults.v0.4.json`·`prd_v0_4_validation.json`은 v0.4 기준, `maps.candidate.v0.2.json`·`validation_report.json`은 과거7×7/산술 검산이다. 현재 계약으로 가져오지 않는다. 제품의 런타임 schema/게시 은행/리깅 manifest는 구현 단계에 작성한다. 현재 JSON 후보를 곧바로 승인 콘텐츠로 배포하지 않는다.
 
-`gradeBasis.reviewed`는 문항 승인과 별개인 어휘 목록의 선행 검수 결과다. Gemini가 임의로 true로 바꾸지 못하도록 실제 레지스트리와 대조한다. 사전별 senseId/senseOrder 차이는 어댑터에서 정규화한다.
-
-공개용 스키마와 게시 파이프라인은 실제 검수 레지스트리의 revision/hash 일치를 요구하도록 별도로 구현한다. 제작용 근거 원본과 학생 배포 파일을 같은 폴더에 넣지 않는다.
-
-개발 착수 시 이 계약을 Zod 타입/런타임 검사로 옮기고 JSON Schema를 생성하도록 바꾼다. 이후 Zod와 JSON Schema를 서로 다른 수동 원천으로 유지하지 않는다. 스키마 의미 검사·런타임 엔진은 아직 구현하지 않았다.
+초안의 추가 제작 정보는 sidecar에 두고 스키마의 additionalProperties:false를 우회하지 않는다. `readingLoad`는 게시 빌드가 계산해 게시본에만 넣는다. 게시본은 실제 공동검수 레지스트리와 id/revision/hash를 연결해 생성한다. JSON 스키마만으로 문항 정답의 유일성은 증명할 수 없다.

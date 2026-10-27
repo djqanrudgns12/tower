@@ -1,5 +1,9 @@
 import fs from 'node:fs';
 import path from 'node:path';
+if (!process.argv.includes('--legacy-v0.3')) {
+  console.log('현재 PRD는 vocabulary_td_prd_v0_4.md이며 직접 편집합니다. 과거 생성은 명시적 --legacy-v0.3에서만 실행됩니다.');
+  process.exit(0);
+}
 const root = path.resolve(import.meta.dirname, '..');
 const read = p => fs.readFileSync(path.join(root, p), 'utf8');
 const write = (p, s) => { fs.mkdirSync(path.dirname(path.join(root,p)), {recursive:true}); fs.writeFileSync(path.join(root,p), s, 'utf8'); };

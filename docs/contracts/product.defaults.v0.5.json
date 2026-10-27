@@ -1,0 +1,227 @@
+{
+  "schemaVersion": "0.5",
+  "status": "implementation-defaults-not-validated-balance",
+  "balanceVersion": "0.3-candidate",
+  "rulesVersion": "0.4-candidate",
+  "mapVersion": "0.4-candidate",
+  "styleId": "design-41-kingdom-expedition",
+  "referenceSha256": "5150cb167deb846dfde633f6e5b0468a0053072435f2d92c485b869801643b13",
+  "pilot": {
+    "grade": 3,
+    "mapId": "garden_u",
+    "difficulty": "Normal",
+    "approvedQuestionsMin": 30,
+    "publicApprovedQuestionsPerGradeMin": 300,
+    "publicDistinctLemmasPerGradeMin": 150
+  },
+  "layout": {
+    "frameMaxPx": 1440,
+    "outerPaddingPx": {
+      "default": 16,
+      "phoneBelowWidthPx": 600,
+      "phone": 8
+    },
+    "modes": {
+      "R": {
+        "railWidthPx": 224,
+        "railGapPx": 12,
+        "hudInRail": true,
+        "railHudHeightPx": 88,
+        "verticalGapPx": 8,
+        "questionBaseHeightPx": 208
+      },
+      "S": {
+        "hudHeightPx": 44,
+        "toolbarHeightPx": 44,
+        "verticalGapPx": 8,
+        "questionBaseHeightPx": 208,
+        "phoneQuestionHeight": "content"
+      }
+    },
+    "modeRule": "W<600 -> S; else R if cellR >= cellS and cellR >= 24 else S",
+    "railWidthPx": 224,
+    "hudHeightPx": 44,
+    "questionBaseHeightPx": 208,
+    "questionWideInnerMinPx": 720,
+    "questionSideColumnPx": 240,
+    "questionWideHeightBudgetPx": 183,
+    "touchMinPx": 44,
+    "magnifyBelowCellPx": {
+      "coarse": 40,
+      "fine": 28
+    },
+    "magnifiedCellMinPx": 48,
+    "portraitHintBelowHeightPx": 480,
+    "questionFontPx": [
+      18,
+      21,
+      24
+    ],
+    "optionGrid": {
+      "twoByTwoMinCellWidthPx": 160,
+      "twoByTwoMaxLines": 2,
+      "measure": "rendered"
+    },
+    "mapAspect": [
+      15,
+      9
+    ],
+    "radiusPx": [
+      4,
+      8
+    ],
+    "spacingScalePx": [
+      4,
+      8,
+      12,
+      16,
+      24
+    ],
+    "fontWeights": [
+      400,
+      700
+    ]
+  },
+  "milestone": {
+    "every": 5,
+    "bossCount": 1,
+    "additionalBossMultiplier": 1,
+    "survivalGold": {
+      "Easy": 30,
+      "Normal": 40,
+      "Hard": 50,
+      "Crazy": 60
+    },
+    "survivalPt": 0,
+    "allowLeakedBossSurvival": true,
+    "scaleWithMilestoneIndex": false,
+    "rewardType": "MILESTONE_SURVIVAL",
+    "idempotencyKey": "runId:wave:milestone_survival"
+  },
+  "mood": {
+    "transitionMs": 600,
+    "applyAt": "PREP_QUIZ_ENTER",
+    "restore": "immediate",
+    "paletteVariantCount": 2,
+    "entries": [
+      {
+        "id": "clear",
+        "tint": null,
+        "alpha": 0
+      },
+      {
+        "id": "breeze",
+        "tint": "#b8dba0",
+        "alpha": 0.04
+      },
+      {
+        "id": "warm",
+        "tint": "#e2b66b",
+        "alpha": 0.06
+      },
+      {
+        "id": "gathering",
+        "tint": "#9faeb4",
+        "alpha": 0.05
+      },
+      {
+        "id": "milestone",
+        "tint": "#b68a60",
+        "alpha": 0.08
+      }
+    ]
+  },
+  "runtime": {
+    "domainHz": 30,
+    "maxEnemies": 64,
+    "maxTowers": 20,
+    "checkpointEveryTicks": 60,
+    "maxCatchUpTicksPerFrame": 5,
+    "performancePauseAfterMs": 250,
+    "maxRenderDpr": 2,
+    "decorationParticles": {
+      "simple": 40,
+      "full": 120
+    },
+    "visualProjectileLimit": 256,
+    "numeric": {
+      "representation": "safe-integer Number",
+      "bigint": false,
+      "timeUnit": "ms",
+      "distanceUnitPerCell": 1000,
+      "hpUnitPerHp": 1000,
+      "onUnsafe": "RECOVERY_REQUIRED(NUMERIC_LIMIT)"
+    },
+    "save": {
+      "mode": "two-slot-full-snapshot",
+      "periodicTicks": 60,
+      "afterRewardCommands": true,
+      "ownership": "WebLocks",
+      "fallbackLease": false
+    }
+  },
+  "authoring": {
+    "commanderAtATime": 1,
+    "ownerPerFile": 1,
+    "handoffRequiredOnCommanderChange": true,
+    "imageProducer": "Codex image-generation tool",
+    "smallTaskProducer": "Argon 4",
+    "commanders": [
+      "Codex / Astra",
+      "Claude / Opus"
+    ],
+    "mode": "parallel-owned-packages-with-file-handoff"
+  },
+  "approval": {
+    "userStyleApproved": true,
+    "runtimeVerified": false,
+    "deviceVerified": false,
+    "balanceApproved": false,
+    "externalReviewExecuted": false,
+    "releaseApproved": false,
+    "userConfirmedSkipZero": true,
+    "userConfirmedKoreanDifficultyLabels": true,
+    "userConfirmedNoSpeedControl": true,
+    "userConfirmedHpGrowth115": true
+  },
+  "balanceContract": "docs/contracts/balance.candidate.v0.3.json",
+  "skip": {
+    "pt": 0,
+    "gold": 0,
+    "resetsStreak": true,
+    "countsAsPrepAttempt": true,
+    "feedbackMinMs": 4000,
+    "record": "skipped"
+  },
+  "questionSelection": {
+    "battleReadingLoadMaxSyllables": {
+      "3": 70,
+      "4": 80,
+      "5": 90,
+      "6": 100
+    },
+    "relaxOrder": [
+      "readingLoad",
+      "senseHistory",
+      "questionHistory"
+    ],
+    "prepAndWrapupReadingLoadLimit": null
+  },
+  "displayLabels": {
+    "difficulty": {
+      "Easy": "쉬움",
+      "Normal": "보통",
+      "Hard": "어려움",
+      "Crazy": "아주 어려움"
+    },
+    "pt": "점수",
+    "mage": "마법탑"
+  },
+  "userDecisions": {
+    "date": "2026-10-28",
+    "skipPt": 0,
+    "difficultyLabels": "Korean",
+    "battleSpeedControl": false,
+    "hpGrowthPercent": 115
+  }
+}
