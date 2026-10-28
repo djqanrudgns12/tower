@@ -85,6 +85,56 @@ test('390×844 휴대폰: 가로 넘침 없음, 문제 전체가 보이고 확�
   await page.getByRole('button', { name: '전체 지도' }).click();
 });
 
+test('키보드: 전장 화살표·Enter로 자리를 고르고, 설치 자리 목록으로도 고른다(PRD §12.4)', async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await newGame(page);
+  await finishPrep(page);
+  const field = page.getByRole('application', { name: /전장/ });
+  await field.focus();
+  // 첫 자리(가로 1, 세로 1)에서 오른쪽으로 한 칸 → 가로 4, 세로 1.
+  await page.keyboard.press('ArrowRight');
+  await expect(page.getByText('자리 2 · 가로 4, 세로 1 · 비어 있음', { exact: true }).first()).toBeAttached();
+  // 전장에 포커스가 있을 때 숫자 키는 문제 답이 아니다. Enter로 자리를 고른다.
+  await page.keyboard.press('Enter');
+  await expect(page.getByText('어떤 타워를 놓을까요?')).toBeVisible();
+  await page.keyboard.press('Escape');
+  await expect(page.getByText('어떤 타워를 놓을까요?')).toHaveCount(0);
+  await page.getByText(/설치 자리 목록/).click();
+  await page.getByRole('button', { name: '자리 9 · 가로 9, 세로 3 · 비어 있음' }).click();
+  await expect(page.getByText('어떤 타워를 놓을까요?')).toBeInViewport();
+  // 목록은 접히고 포커스는 관리 패널의 첫 타워로 간다.
+  await expect(page.getByRole('option', { name: /궁수탑/ })).toBeFocused();
+  await shot(page, 'desktop-slot-list');
+});
+
+test('WebGL 문맥 손실: 멈추고, 화면이 돌아온 뒤 계속하면 같은 문제로 이어진다(PRD §12.7)', async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await newGame(page);
+  const stem = await page.getByRole('region', { name: '어휘 문제' }).locator('p').first().innerText();
+  // 잃은 문맥에서는 확장을 다시 얻을 수 없으므로 처음 얻은 것을 window에 둔다.
+  const lose = (restore: boolean) => page.evaluate(r => {
+    const w = window as unknown as { loseExt?: WEBGL_lose_context };
+    if (!w.loseExt) {
+      const canvas = document.querySelector('canvas')!;
+      const gl = (canvas.getContext('webgl2') ?? canvas.getContext('webgl')) as WebGLRenderingContext;
+      w.loseExt = gl.getExtension('WEBGL_lose_context')!;
+    }
+    if (r) w.loseExt.restoreContext(); else w.loseExt.loseContext();
+  }, restore);
+  await lose(false);
+  await expect(page.getByRole('dialog')).toContainText('화면을 다시 그리는 중이에요');
+  await expect(page.getByRole('button', { name: '계속하기' })).toHaveAttribute('aria-disabled', 'true');
+  // 막힌 ‘계속’은 눌러도 풀리지 않는다(aria-disabled라 Playwright 기본 클릭은 기다리므로 강제로 누른다).
+  await page.getByRole('button', { name: '계속하기' }).click({ force: true });
+  await expect(page.getByRole('dialog')).toBeVisible();
+  await lose(true);
+  await expect(page.getByRole('dialog')).toContainText('화면이 잠시 꺼졌다가 돌아왔어요');
+  await page.getByRole('button', { name: '계속하기' }).click();
+  await expect(page.getByRole('dialog')).toHaveCount(0);
+  await expect(page.getByRole('region', { name: '어휘 문제' }).locator('p').first()).toHaveText(stem);
+  await shot(page, 'desktop-context-restored');
+});
+
 test('1366×650 크롬북: R 모드와 칸 크기', async ({ page }) => {
   await page.setViewportSize({ width: 1366, height: 650 });
   await newGame(page);

@@ -324,7 +324,7 @@ export class BattleScene extends Phaser.Scene {
   private drawOverlay(s: RunState) {
     const sel = this.bridge.selection;
     const tower = sel.towerId !== null ? s.towers.find(t => t.id === sel.towerId) ?? null : null;
-    const key = `${sel.slotId}|${sel.towerId}|${sel.previewType}|${sel.previewBranch}|${tower?.level}|${tower?.branch}|${s.phase}|${s.towers.length}|${this.bridge.magnify}`;
+    const key = `${sel.slotId}|${sel.towerId}|${sel.previewType}|${sel.previewBranch}|${tower?.level}|${tower?.branch}|${s.phase}|${s.towers.length}|${this.bridge.magnify}|${this.bridge.keyboardSlotId}`;
     if (key === this.overlayKey) return;
     this.overlayKey = key;
     const g = this.overlay.clear();
@@ -349,6 +349,12 @@ export class BattleScene extends Phaser.Scene {
       }
       g.lineStyle(4, PALETTE.outline, 1).strokeRoundedRect(cell.x * CELL_PX + 2, cell.y * CELL_PX + 2, CELL_PX - 4, CELL_PX - 4, 10);
       g.lineStyle(3, 0xf4d35e, 1).strokeRoundedRect(cell.x * CELL_PX + 3, cell.y * CELL_PX + 3, CELL_PX - 6, CELL_PX - 6, 9);
+    }
+    // 키보드 커서: 선택(금색)과 구별되는 파란 이중 테두리. 포커스가 전장에 있을 때만 보인다.
+    const cursor = this.bridge.keyboardSlotId ? map.slots.find(slot => slot.id === this.bridge.keyboardSlotId) : null;
+    if (cursor) {
+      g.lineStyle(5, 0xf5ebd4, 1).strokeRoundedRect(cursor.x * CELL_PX - 1, cursor.y * CELL_PX - 1, CELL_PX + 2, CELL_PX + 2, 12);
+      g.lineStyle(3, 0x245b88, 1).strokeRoundedRect(cursor.x * CELL_PX - 1, cursor.y * CELL_PX - 1, CELL_PX + 2, CELL_PX + 2, 12);
     }
   }
 }

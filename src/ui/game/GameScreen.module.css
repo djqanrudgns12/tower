@@ -21,3 +21,16 @@
 .notice[data-tone='reward'] { color: var(--gold); }
 .notice[data-tone='warn'] { outline: 2px solid var(--gold); outline-offset: -2px; }
 .fullMap { position: absolute; left: var(--s2); top: var(--s2); }
+/* 전장 키보드 포커스: 캔버스 안쪽에 그려 바깥 테두리에 잘리지 않게 한다(PRD §12.6 focus 2px+간격). */
+.field [data-keyscope='field']:focus-visible { outline: 3px solid var(--blue); outline-offset: -5px; }
+/* 설치 자리 목록(PRD §12.4): 보조 접근 경로라 기본은 접어 둔다. */
+.slotList { margin-top: var(--s2); font-size: 14px; }
+.slotList > summary { min-height: var(--touch); display: flex; align-items: center; cursor: pointer; font-weight: 700; color: var(--ink-soft); }
+.slotItems { margin: var(--s1) 0 0; padding: 0; list-style: none; display: grid; gap: var(--s1); }
+.slotButton {
+  width: 100%; min-height: var(--touch); padding: var(--s1) var(--s2); text-align: left; font-size: 14px; word-break: keep-all;
+  background: var(--paper); border: 1px solid var(--ink-soft); border-radius: var(--r-input);
+}
+.slotButton:hover { filter: brightness(1.04); }
+.slotButton:active { transform: translateY(1px); }
+.slotButton[aria-current='true'] { outline: 3px solid var(--blue); outline-offset: -1px; }

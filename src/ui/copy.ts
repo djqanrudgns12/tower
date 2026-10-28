@@ -21,11 +21,13 @@ export const PAUSE_COPY: Record<PauseReason, string> = {
   HIDDEN: '화면을 떠나서 멈췄어요.',
   PERFORMANCE: '기기가 잠시 느려져서 멈췄어요.',
   RESTORED: '저장한 곳에서 다시 시작해요. 준비되면 계속을 눌러 주세요.',
-  CONTEXT_LOST: '화면을 다시 그리는 중이에요.',
+  CONTEXT_LOST: '화면이 잠시 꺼졌다가 돌아왔어요. 준비되면 계속을 눌러 주세요.',
   STORAGE: '아직 저장되지 않았어요.',
   OWNERSHIP: '다른 창에서 이 게임을 하고 있어요.',
   NUMERIC_LIMIT: '이 판은 숫자가 너무 커져 더 진행할 수 없어요. 지금까지의 기록은 남아 있어요.',
 };
+
+export const RENDER_WAIT = '화면을 다시 그리는 중이에요. 잠시만 기다려 주세요. 오래 걸리면 저장하고 나간 뒤 다시 열어 주세요.';
 
 export function commandErrorText(error: CommandError, extra?: { need?: number }): string {
   switch (error) {

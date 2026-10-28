@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useLayoutEffect, useState, useSyncExternalStore } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useRef, useState, useSyncExternalStore } from 'react';
 import type { BranchId, TowerId } from '../../contracts/balance';
 import type { OptionId } from '../../contracts/questions';
 import type { RunController } from '../../application/RunController';
@@ -13,6 +13,7 @@ import { Hud } from './Hud';
 import { ManagementPanel, type PanelMode } from './ManagementPanel';
 import { PauseOverlay } from './PauseOverlay';
 import { QuestionPanel } from './QuestionPanel';
+import { nextSlot, SlotList, slotDescription, type Arrow } from './SlotList';
 
 interface Props {
   controller: RunController;
@@ -35,6 +36,10 @@ export function GameScreen({ controller, towers, notice, fontScale, reducedMotio
   const [icons, setIcons] = useState<Record<string, string>>({});
   const [flash, setFlash] = useState<string | null>(null);
   const [confirmEmpty, setConfirmEmpty] = useState(false);
+  // 전장 키보드 커서(PRD §12.4). 포커스가 전장에 있을 때만 그린다.
+  const [cursor, setCursor] = useState<string | null>(null);
+  const [fieldFocused, setFieldFocused] = useState(false);
+  const panelRef = useRef<HTMLDivElement>(null);
   const paused = view.pause.length > 0;
   // 선택한 타워가 팔리거나 사라지면 선택이 없는 것으로 본다(렌더 중 파생, effect로 setState하지 않음).
   const towerGone = rawSelection.towerId !== null && !view.towers.some(t => t.id === rawSelection.towerId);
@@ -56,7 +61,32 @@ export function GameScreen({ controller, towers, notice, fontScale, reducedMotio
 
   // 브리지는 판 하나 동안 같은 객체. Phaser는 매 프레임 selection·magnify를 읽는다.
   const [bridge] = useState(() => new FieldBridgeHandle(controller));
-  useLayoutEffect(() => { bridge.update({ selection, magnify, reducedMotion, onTap, onIcons: setIcons }); }, [bridge, selection, magnify, reducedMotion, onTap]);
+  const keyboardSlotId = fieldFocused ? cursor : null;
+  useLayoutEffect(() => { bridge.update({ selection, magnify, keyboardSlotId, reducedMotion, onTap, onIcons: setIcons }); }, [bridge, selection, magnify, keyboardSlotId, reducedMotion, onTap]);
+
+  const pickSlot = useCallback((slotId: string) => {
+    const tower = view.towers.find(t => t.slotId === slotId);
+    onTap(tower ? { kind: 'tower', towerId: tower.id, slotId } : { kind: 'slot', slotId });
+  }, [view.towers, onTap]);
+
+  const onFieldKey = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    const slots = controller.ctx.map.slots;
+    if (e.key === 'ArrowUp' || e.key === 'ArrowDown' || e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
+      e.preventDefault();
+      setCursor(c => nextSlot(slots, c, e.key as Arrow));
+    } else if ((e.key === 'Enter' || e.key === ' ') && cursor) {
+      e.preventDefault();
+      pickSlot(cursor);
+    } else if (e.key === 'Escape') {
+      e.preventDefault();
+      clear();
+    }
+  };
+  const onFieldFocus = () => {
+    setFieldFocused(true);
+    // 처음 들어오면 선택한 자리, 없으면 첫 자리에서 시작한다.
+    setCursor(c => c ?? selection.slotId ?? view.towers.find(t => t.id === selection.towerId)?.slotId ?? controller.ctx.map.slots[0]?.id ?? null);
+  };
 
   useEffect(() => { controller.start(); return () => controller.stop(); }, [controller]);
   useEffect(() => { if (view.phase === 'GAME_OVER') { const t = setTimeout(() => onExit('over'), 900); return () => clearTimeout(t); } return undefined; }, [view.phase, onExit]);
@@ -109,6 +139,19 @@ export function GameScreen({ controller, towers, notice, fontScale, reducedMotio
     />
   );
 
+  // 목록에서 고르면 관리 패널의 첫 조작으로 포커스를 옮긴다. 목록 아래에 있던 학생이 위로 찾아 올라가지 않게 한다.
+  const pickFromList = (slotId: string) => {
+    pickSlot(slotId);
+    if (layout.mode === 'S') setTrayOpen(true);
+    requestAnimationFrame(() => panelRef.current?.querySelector<HTMLElement>('button:not(:disabled)')?.focus());
+  };
+  const slotList = (
+    <SlotList
+      ctx={controller.ctx} view={view} towers={towers} onPick={pickFromList}
+      selectedSlotId={selection.slotId ?? view.towers.find(t => t.id === selection.towerId)?.slotId ?? null}
+    />
+  );
+
   const bottom = view.phase === 'BUILD' ? (
     <section className={`${kit.board} ${css.build}`} aria-label="전투 준비">
       <div>
@@ -139,7 +182,12 @@ export function GameScreen({ controller, towers, notice, fontScale, reducedMotio
 
   const field = (
     <div className={css.field} style={{ width: layout.mapW, height: layout.mapH }}>
-      <PhaserBattlefield bridge={bridge} width={layout.mapW} height={layout.mapH} label={`전장: 웨이브 ${view.wave}, 성문 ${view.gateHp}/${view.gateMaxHp}, 타워 ${view.towers.length}개`} />
+      <PhaserBattlefield
+        bridge={bridge} width={layout.mapW} height={layout.mapH} label={`전장: 웨이브 ${view.wave}, 성문 ${view.gateHp}/${view.gateMaxHp}, 타워 ${view.towers.length}개`}
+        hintId="field-keys" onKeyDown={onFieldKey} onFocus={onFieldFocus} onBlur={() => setFieldFocused(false)}
+      />
+      <p id="field-keys" className="sr-only">화살표로 설치 자리를 옮기고 Enter로 고릅니다. Esc는 선택을 풉니다.</p>
+      <p className="sr-only" aria-live="polite">{keyboardSlotId ? slotDescription(controller.ctx, view, keyboardSlotId) : ''}</p>
       <div className={css.notices} aria-live="polite">
         {view.notices.map(n => <p key={n.id} className={css.notice} data-tone={n.tone}>{n.text}</p>)}
       </div>
@@ -157,7 +205,7 @@ export function GameScreen({ controller, towers, notice, fontScale, reducedMotio
             <aside className={`${kit.board} ${css.rail}`} style={{ height: layout.mapH }} aria-label="타워 관리">
               <Hud view={view} mode="R" onPause={() => controller.pause('USER')} />
               {notice && <p className={css.hint} role="status">{notice}</p>}
-              <div className={css.railBody}>{panel}<p className={kit.reason} role="status">{flash}</p></div>
+              <div className={css.railBody}><div ref={panelRef}>{panel}</div><p className={kit.reason} role="status">{flash}</p>{slotList}</div>
             </aside>
             <div className={css.bottom}>{bottom}</div>
           </>
@@ -171,14 +219,14 @@ export function GameScreen({ controller, towers, notice, fontScale, reducedMotio
               <button type="button" className={kit.button} aria-expanded={trayOpen} onClick={() => setTrayOpen(o => !o)}>{trayOpen ? '관리 접기' : '타워 관리'}</button>
               <span className={kit.muted}>{selection.towerId !== null ? '선택한 타워' : selection.slotId ? '빈 자리 선택됨' : view.phase === 'BATTLE' ? '전투 중에도 설치·강화할 수 있어요' : ''}</span>
             </div>
-            {trayOpen && <div className={`${kit.board} ${css.tray}`}>{panel}<p className={kit.reason} role="status">{flash}</p></div>}
+            {trayOpen && <div className={`${kit.board} ${css.tray}`}><div ref={panelRef}>{panel}</div><p className={kit.reason} role="status">{flash}</p>{slotList}</div>}
             {bottom}
           </>
         )}
       </main>
       {paused && view.phase !== 'GAME_OVER' && (
         <PauseOverlay
-          reasons={view.pause} canSave={controller.persist} fontScale={fontScale} saveError={view.saveStatus === 'error'}
+          reasons={view.pause} renderLost={view.renderLost} canSave={controller.persist} fontScale={fontScale} saveError={view.saveStatus === 'error'}
           onResume={() => controller.resume()} onFont={onFont}
           onSaveExit={async () => { const ok = await controller.saveAndExit(); if (ok) onExit('saved'); return ok; }}
           onRetrySave={() => controller.retrySave()}

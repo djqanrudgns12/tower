@@ -42,6 +42,7 @@ export class RunController {
   /** 대기 명령을 미리 적용해 본 사본. 화면이 거부 이유를 바로 받도록 하되 실제 상태는 틱 경계에서만 바꾼다. */
   private trial: RunState | null = null;
   private ownership: Ownership | null;
+  private renderLost = false;
   saveStatus: SaveStatus;
   notices: Notice[] = [];
   readonly persist: boolean;
@@ -55,7 +56,7 @@ export class RunController {
     this.saveStatus = this.persist ? 'saved' : 'disabled';
     // 이어하기 사이에 철회된 미제출 문항은 시작 전에 바꾼다(PRD §9.5).
     replaceUnavailableQuestion(ctx, state);
-    this.view = { ...selectView(ctx, state), notices: [], saveStatus: this.saveStatus };
+    this.view = { ...selectView(ctx, state), notices: [], saveStatus: this.saveStatus, renderLost: false };
     this.key = viewKey(state);
   }
 
@@ -116,12 +117,30 @@ export class RunController {
 
   pause(reason: PauseReason) { this.dispatch({ type: 'pause', reason }); }
 
-  /** ‘계속’ 버튼: 학생이 풀 수 있는 이유만 지운다. */
+  /** ‘계속’ 버튼: 학생이 풀 수 있는 이유만 지운다. 화면이 아직 돌아오지 않았으면 CONTEXT_LOST는 남긴다. */
   resume() {
-    for (const reason of USER_CLEARABLE) if (this.s.pause.includes(reason)) applyCommand(this.ctx, this.s, { type: 'resume', reason });
+    for (const reason of USER_CLEARABLE) {
+      if (reason === 'CONTEXT_LOST' && this.renderLost) continue;
+      if (this.s.pause.includes(reason)) applyCommand(this.ctx, this.s, { type: 'resume', reason });
+    }
     this.acc = 0;
     this.last = performance.now();
     this.publish([]);
+  }
+
+  /**
+   * WebGL 문맥 손실(PRD §12.7 CONTEXT_LOST). 보이지 않는 전장에서 전투가 흐르지 않게 정지한다.
+   * 렌더러가 자원을 되살리면 정지는 그대로 두고 학생이 ‘계속’을 누른다(§14 수동 재개).
+   */
+  rendererLost() {
+    this.renderLost = true;
+    this.pause('CONTEXT_LOST');
+    this.refresh();
+  }
+
+  rendererRestored() {
+    this.renderLost = false;
+    this.refresh();
   }
 
   /** 저장 후 나가기. 밀린 저장까지 모두 끝나야 성공을 알린다(PRD §14.1). */
@@ -240,7 +259,7 @@ export class RunController {
   }
 
   private refresh() {
-    this.view = { ...selectView(this.ctx, this.s), notices: this.notices, saveStatus: this.saveStatus };
+    this.view = { ...selectView(this.ctx, this.s), notices: this.notices, saveStatus: this.saveStatus, renderLost: this.renderLost };
     for (const l of this.listeners) l();
   }
 

@@ -43,7 +43,7 @@ export function QuestionPanel({ question, wide, onAnswer, onSkip, onNext }: Prop
   useEffect(() => {
     const down = (e: KeyboardEvent) => {
       if (e.repeat || e.isComposing || e.altKey || e.ctrlKey || e.metaKey) return;
-      if ((e.target as HTMLElement | null)?.closest('input, textarea, [contenteditable]')) return;
+      if ((e.target as HTMLElement | null)?.closest('input, textarea, [contenteditable], [data-keyscope="field"]')) return;
       if (!keyReady.current) return;
       const index = ['1', '2', '3', '4'].indexOf(e.key);
       if (index >= 0 && !answered) { e.preventDefault(); onAnswer(question.options[index]!.id); }

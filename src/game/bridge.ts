@@ -16,6 +16,8 @@ export interface FieldBridge {
   selection: FieldSelection;
   /** 작은 화면에서 선택 칸 주변 확대(PRD §12.4). */
   magnify: boolean;
+  /** 전장에 키보드 포커스가 있을 때 화살표로 옮기는 자리. 선택과 별개다(PRD §12.4). */
+  keyboardSlotId: string | null;
   reducedMotion: boolean;
   onTap(tap: FieldTap): void;
   /** 전장 그림과 같은 원본의 DOM 아이콘(data URL). */
@@ -26,10 +28,11 @@ export interface FieldBridge {
 export class FieldBridgeHandle implements FieldBridge {
   selection: FieldSelection = { slotId: null, towerId: null, previewType: null, previewBranch: null };
   magnify = false;
+  keyboardSlotId: string | null = null;
   reducedMotion = false;
   onTap: (tap: FieldTap) => void = () => undefined;
   onIcons?: (icons: Record<string, string>) => void;
   readonly controller: RunController;
   constructor(controller: RunController) { this.controller = controller; }
-  update(next: Partial<Pick<FieldBridge, 'selection' | 'magnify' | 'reducedMotion' | 'onTap' | 'onIcons'>>) { Object.assign(this, next); }
+  update(next: Partial<Pick<FieldBridge, 'selection' | 'magnify' | 'keyboardSlotId' | 'reducedMotion' | 'onTap' | 'onIcons'>>) { Object.assign(this, next); }
 }

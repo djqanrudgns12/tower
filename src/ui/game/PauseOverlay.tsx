@@ -1,12 +1,14 @@
 import { useEffect, useRef, useState } from 'react';
 import type { PauseReason } from '../../domain/types';
 import type { FontScale } from '../../application/session';
-import { PAUSE_COPY } from '../copy';
+import { PAUSE_COPY, RENDER_WAIT } from '../copy';
 import kit from '../kit.module.css';
 import css from './PauseOverlay.module.css';
 
 interface Props {
   reasons: PauseReason[];
+  /** 화면(WebGL)이 아직 돌아오지 않았다. ‘계속’을 막되 포커스는 받도록 aria-disabled를 쓴다. */
+  renderLost: boolean;
   canSave: boolean;
   fontScale: FontScale;
   saveError: boolean;
@@ -37,7 +39,7 @@ export function PauseOverlay(p: Props) {
     <div className={css.layer} role="dialog" aria-modal="true" aria-labelledby="pause-title">
       <div className={`${kit.board} ${css.box}`}>
         <h2 id="pause-title" className={css.title}>{blocked ? '잠깐만요' : '일시정지'}</h2>
-        <p>{PAUSE_COPY[main]}</p>
+        <p>{p.renderLost && !blocked ? RENDER_WAIT : PAUSE_COPY[main]}</p>
         {p.reasons.includes('STORAGE') ? (
           <div className={css.stack}>
             <button ref={first} type="button" className={`${kit.button} ${kit.primary} ${kit.big}`} disabled={busy} aria-busy={busy} onClick={async () => { setBusy(true); await p.onRetrySave(); setBusy(false); }}>다시 저장하기</button>
@@ -50,7 +52,7 @@ export function PauseOverlay(p: Props) {
           </div>
         ) : (
           <div className={css.stack}>
-            <button ref={first} type="button" className={`${kit.button} ${kit.primary} ${kit.big}`} onClick={p.onResume}>계속하기</button>
+            <button ref={first} type="button" className={`${kit.button} ${kit.primary} ${kit.big}`} aria-disabled={p.renderLost || undefined} onClick={() => { if (!p.renderLost) p.onResume(); }}>계속하기</button>
             <fieldset className={css.fonts}>
               <legend>글자 크기</legend>
               {(['base', 'large', 'xlarge'] as const).map((f, i) => (
