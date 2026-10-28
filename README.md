@@ -29,7 +29,7 @@ npm run verify
 npm run test:e2e
 ```
 
-캡처는 `test-results/shots/`에 남습니다. `npm run simulate:balance`는 PRD 수치의 **근사** 모델이며 엔진 시뮬레이터가 생기면 폐기합니다.
+캡처는 `test-results/shots/`에 남습니다. `npm run simulate:balance`는 제품 엔진으로 가상 플레이어를 돌리는 밸런스 시뮬레이터(S11)입니다. `--diffs Normal --strats novice --set 경로=값`으로 조건과 후보 수치를 바꿔 잴 수 있고, 계약 파일은 바꾸지 않습니다. 학생 실측이 아닙니다.
 
 ## 구조
 

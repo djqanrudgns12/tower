@@ -1,0 +1,224 @@
+import { balanceSchema, type Balance, type BranchId, type DifficultyId, type TowerId } from '../../src/contracts/balance';
+import { BALANCE, gradeContent, MAPS, PILOT_TOWERS, toRuntime } from '../../src/content';
+import { createContext, type GameContext } from '../../src/domain/context';
+import { center, dist2, positionAt } from '../../src/domain/geometry';
+import { msToTicks, TICK_HZ } from '../../src/domain/num';
+import { intBelow, shuffle, u32, type Rng } from '../../src/domain/rng';
+import { advanceTick, applyCommand, createRun, type Command } from '../../src/domain/run';
+import { attackIntervalTicks, buildCost, needsBranch, towerStats, upgradeCost } from '../../src/domain/towers';
+import type { Phase } from '../../src/domain/types';
+
+// S11 엔진 밸런스 시뮬레이터(PRD §17.3, §18.1). 판정은 제품 domain 엔진(createRun·applyCommand·advanceTick)이 하고,
+// 여기서는 가상 플레이어(읽기 시간·정답률·돈 쓰는 습관)만 흉내 낸다. 학생 실측이 아니다.
+
+export type StrategyId = 'novice' | 'balanced' | 'focused';
+
+interface Strategy {
+  /** 전투 중 돈을 쓰러 오는 간격. */
+  attentionMs: number;
+  /** true면 칸을 무작위로 고른다. false면 경로를 많이 덮는 칸부터. */
+  randomSlots: boolean;
+  pattern: TowerId[];
+  /** 타워가 이만큼 생기기 전에는 강화하지 않는다. */
+  upgradeAfterTowers: number;
+}
+
+// tools/balance-sketch.mjs의 가상 플레이어를 이어받았다. 마법탑은 P1 범위 밖이라 뺐다.
+export const STRATEGIES: Record<StrategyId, Strategy> = {
+  novice: { attentionMs: 30000, randomSlots: true, pattern: ['archer', 'archer', 'cannon', 'frost', 'archer', 'cannon', 'archer', 'cannon'], upgradeAfterTowers: 6 },
+  balanced: { attentionMs: 20000, randomSlots: false, pattern: ['archer', 'archer', 'cannon', 'frost', 'archer', 'cannon', 'archer', 'cannon'], upgradeAfterTowers: 0 },
+  focused: { attentionMs: 20000, randomSlots: false, pattern: ['archer'], upgradeAfterTowers: 0 },
+};
+
+export interface SimOptions {
+  mapId: string;
+  difficulty: DifficultyId;
+  /** 정답 확률(0~1). */
+  accuracy: number;
+  /** 문항을 읽고 고르는 평균 시간(초). 실제로는 ±25% 안에서 흔들린다. */
+  readSec: number;
+  strategy: StrategyId;
+  seed: number;
+  /** 웨이브 사이 배치 시간(초). */
+  buildSec?: number;
+  /** 이 웨이브를 넘기면 멈춘다(무한 웨이브 상한). */
+  maxWaves?: number;
+  towers?: TowerId[];
+  /** 조정 후보를 잴 때 쓰는 밸런스. 없으면 계약 파일 그대로. */
+  balance?: Balance;
+}
+
+export interface SimResult {
+  completedWave: number;
+  endReason: 'DEFEAT' | 'WAVE_CAP';
+  minutes: number;
+  /** 단계별 능동 시간(분). */
+  phaseMinutes: Record<Phase, number>;
+  firstEvoWave: number | null;
+  bossKills: number;
+  bossLeaks: number;
+  correct: number;
+  wrong: number;
+  /** 문항 PT ÷ (문항 PT + 처치 PT). */
+  vocabPtShare: number;
+  /** 정답 골드 ÷ 시작 골드를 뺀 전체 골드 유입. */
+  answerGoldShare: number;
+  goldEarned: number;
+}
+
+export { BALANCE, MAPS };
+
+const BRANCH: BranchId = 'A';
+const WRONG_FEEDBACK_READ_MS = 1000;
+
+const contexts = new WeakMap<Balance, Map<string, GameContext>>();
+
+/** 맵만 바꾼 정규 문맥. 은행은 3학년 개발용 은행을 쓴다(문항 내용은 결과에 영향이 없다). */
+export function simContext(mapId: string, difficulty: DifficultyId, balance: Balance = BALANCE): GameContext {
+  let byKey = contexts.get(balance);
+  if (!byKey) { byKey = new Map(); contexts.set(balance, byKey); }
+  const key = `${mapId}/${difficulty}`;
+  let ctx = byKey.get(key);
+  if (!ctx) {
+    const map = MAPS.find(m => m.id === mapId);
+    const bank = gradeContent(3).bank;
+    if (!map || !bank) throw new Error(`알 수 없는 맵 또는 은행: ${mapId}`);
+    ctx = createContext({ balance, difficulty, map, questions: toRuntime(bank), battleReadingLoadMax: 70 });
+    byKey.set(key, ctx);
+  }
+  return ctx;
+}
+
+/** `waves.count.step=3` 같은 경로=값 목록을 계약 밸런스 사본에 덮어쓰고 스키마로 다시 검사한다. */
+export function withOverrides(sets: readonly string[]): Balance {
+  const draft = structuredClone(BALANCE) as unknown as Record<string, unknown>;
+  for (const set of sets) {
+    const eq = set.indexOf('=');
+    const keys = set.slice(0, eq).split('.');
+    if (eq < 1 || keys.some(k => !k)) throw new Error(`--set 형식은 경로=값: ${set}`);
+    let node = draft;
+    for (const k of keys.slice(0, -1)) {
+      if (typeof node[k] !== 'object' || node[k] === null) throw new Error(`없는 밸런스 경로: ${set}`);
+      node = node[k] as Record<string, unknown>;
+    }
+    const last = keys.at(-1)!;
+    if (!(last in node)) throw new Error(`없는 밸런스 경로: ${set}`);
+    node[last] = JSON.parse(set.slice(eq + 1));
+  }
+  const parsed = balanceSchema.parse(draft);
+  if (sets.length) parsed.balanceVersion = `${BALANCE.balanceVersion}+sim`;
+  return parsed;
+}
+
+/** 칸 중심에서 사거리 안에 드는 경로 길이(칸). 0.1칸 간격 표본. */
+function coverage(ctx: GameContext, slotId: string, range: number, cache: Map<string, number>): number {
+  const key = `${slotId}:${range}`;
+  const hit = cache.get(key);
+  if (hit !== undefined) return hit;
+  const slot = ctx.map.slots.find(x => x.id === slotId)!;
+  const sx = center(slot.x), sy = center(slot.y), r2 = range * range;
+  let n = 0;
+  for (let p = 0; p <= ctx.path.length; p += 100) {
+    const at = positionAt(ctx.path, p);
+    if (dist2(at.x, at.y, sx, sy) <= r2) n++;
+  }
+  cache.set(key, n / 10);
+  return n / 10;
+}
+
+/** 가상 플레이어가 보는 대략의 가치: 초당 피해 × 덮는 경로. 범위 공격 ×2, 감속 +6(balance-sketch와 같은 어림). */
+function value(ctx: GameContext, type: TowerId, level: number, branch: BranchId | null, slotId: string, cache: Map<string, number>): number {
+  const st = towerStats(ctx.balance, type, level, branch);
+  const perSec = (st.damage / 1000) * (TICK_HZ / attackIntervalTicks(ctx.balance, st, 0));
+  const base = st.splashRadius > 0 ? perSec * 2 : st.slowBP > 0 ? perSec + 6 : perSec;
+  return (base * coverage(ctx, slotId, st.range, cache)) / 4;
+}
+
+export function simulateRun(opt: SimOptions): SimResult {
+  const ctx = simContext(opt.mapId, opt.difficulty, opt.balance);
+  const towers = opt.towers ?? PILOT_TOWERS;
+  const s = createRun(ctx, {
+    runId: `s11-${opt.seed}`, playerId: 'sim', nickname: '시뮬', grade: 3, difficulty: opt.difficulty, mapId: ctx.map.id, seed: opt.seed,
+    bankId: 'g3-dev', bankVersion: 'sim', contentMode: 'development', availableTowers: [...towers], rankingEligibility: 'personal', createdAt: '2026-10-28T00:00:00.000Z',
+  });
+  const strat = STRATEGIES[opt.strategy];
+  const pattern = strat.pattern.filter(t => towers.includes(t));
+  // 플레이어의 선택은 엔진 난수와 다른 흐름을 쓴다. 같은 seed면 같은 판이 나온다.
+  const rng: Rng = { s: (opt.seed * 2654435761 + 0x5bd1e995) >>> 0 || 1 };
+  const cache = new Map<string, number>();
+  const slotOrder = ctx.map.slots.map(x => x.id).sort((a, b) => coverage(ctx, b, 2500, cache) - coverage(ctx, a, 2500, cache) || a.localeCompare(b));
+  if (strat.randomSlots) shuffle(rng, slotOrder);
+
+  const maxWaves = opt.maxWaves ?? 60;
+  const attention = msToTicks(strat.attentionMs);
+  const readTicks = () => Math.round(opt.readSec * TICK_HZ * (0.75 + (u32(rng) / 0x100000000) * 0.5));
+  const phaseTicks: Record<Phase, number> = { PREP_QUIZ: 0, BUILD: 0, BATTLE: 0, WAVE_WRAPUP: 0, GAME_OVER: 0 };
+  let firstEvoWave: number | null = null;
+  let encId = -1, answerAt = 0, startAt = -1, spendAt = 0;
+
+  const run = (cmd: Command) => {
+    const r = applyCommand(ctx, s, cmd);
+    if (!r.ok) throw new Error(`시뮬레이터 명령 거부: ${cmd.type} → ${r.error} (wave ${s.wave}, tick ${s.tick})`);
+  };
+
+  const spend = () => {
+    for (;;) {
+      const options: Array<{ cost: number; gain: number; cmd: Command }> = [];
+      const free = slotOrder.find(id => !s.towers.some(t => t.slotId === id));
+      if (free && pattern.length) {
+        const type = pattern[s.towers.length % pattern.length]!;
+        options.push({ cost: buildCost(ctx.balance, type), gain: value(ctx, type, 1, null, free, cache), cmd: { type: 'build', slotId: free, tower: type } });
+      }
+      if (s.towers.length >= strat.upgradeAfterTowers) for (const t of s.towers) {
+        const cost = upgradeCost(ctx.balance, t.type, t.level);
+        if (cost === null) continue;
+        const branch = needsBranch(ctx.balance, t.level) ? BRANCH : undefined;
+        const gain = value(ctx, t.type, t.level + 1, branch ?? t.branch, t.slotId, cache) - value(ctx, t.type, t.level, t.branch, t.slotId, cache);
+        options.push({ cost, gain, cmd: branch ? { type: 'upgrade', towerId: t.id, branch } : { type: 'upgrade', towerId: t.id } });
+      }
+      // 가성비가 가장 좋은 것 하나를 노리고, 돈이 모자라면 모은다.
+      const best = options.sort((a, b) => b.gain / b.cost - a.gain / a.cost)[0];
+      if (!best || best.cost > s.gold) return;
+      run(best.cmd);
+      if (best.cmd.type === 'upgrade' && firstEvoWave === null && s.towers.some(t => t.branch !== null)) firstEvoWave = s.wave;
+    }
+  };
+
+  while (s.phase !== 'GAME_OVER' && s.completedWave < maxWaves) {
+    const enc = s.quiz.current;
+    if (enc && !enc.answer) {
+      if (enc.id !== encId) { encId = enc.id; answerAt = s.tick + readTicks(); }
+      if (s.tick >= answerAt) {
+        const q = ctx.questions.get(enc.questionId)!;
+        const wrong = q.options.filter(o => o.id !== q.correctOptionId);
+        const correct = u32(rng) / 0x100000000 < opt.accuracy;
+        run({ type: 'answer', encounterId: enc.id, choice: correct ? q.correctOptionId : wrong[intBelow(rng, wrong.length)]!.id });
+      }
+    }
+    const fb = s.quiz.feedback;
+    if (fb && fb.autoAdvanceTick === null && fb.nextEnabledTick !== null && s.tick >= fb.nextEnabledTick + msToTicks(WRONG_FEEDBACK_READ_MS)) run({ type: 'next', encounterId: fb.encounterId });
+    if (s.phase === 'BUILD') {
+      if (startAt < 0) { spend(); startAt = s.tick + msToTicks((opt.buildSec ?? 8) * 1000); }
+      if (s.tick >= startAt) { run({ type: 'startBattle' }); startAt = -1; spendAt = s.tick + attention; }
+    } else if (s.phase === 'BATTLE' && s.tick >= spendAt) { spend(); spendAt = s.tick + attention; }
+    phaseTicks[s.phase]++;
+    advanceTick(ctx, s);
+  }
+
+  const st = s.stats;
+  const toMin = (ticks: number) => ticks / TICK_HZ / 60;
+  return {
+    completedWave: s.completedWave,
+    endReason: s.phase === 'GAME_OVER' ? 'DEFEAT' : 'WAVE_CAP',
+    minutes: toMin(st.activeTicks),
+    phaseMinutes: { PREP_QUIZ: toMin(phaseTicks.PREP_QUIZ), BUILD: toMin(phaseTicks.BUILD), BATTLE: toMin(phaseTicks.BATTLE), WAVE_WRAPUP: toMin(phaseTicks.WAVE_WRAPUP), GAME_OVER: 0 },
+    firstEvoWave,
+    bossKills: st.bossKills,
+    bossLeaks: st.bossLeaks,
+    correct: st.correct,
+    wrong: st.wrong,
+    vocabPtShare: st.ptFromQuestions / Math.max(1, st.ptFromQuestions + st.ptFromKills),
+    answerGoldShare: (st.correct * ctx.difficulty.correctGold) / Math.max(1, st.goldEarned),
+    goldEarned: st.goldEarned,
+  };
+}

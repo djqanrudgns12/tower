@@ -13,6 +13,8 @@ import type { FieldBridge } from './bridge';
 
 const toWorld = (milli: number) => (milli * CELL_PX) / 1000;
 const DEPTH = { ground: 0, mood: 1, overlay: 5, units: 10, projectiles: 2000, fx: 2100, ui: 3000 };
+/** deco.stele.r1 원화에서 비석 면 가운데의 세로 위치(원화 높이 대비, 면은 약 28~130/192px). */
+const STELE_FACE_Y = 0.41;
 
 interface EnemyView { sprite: Phaser.GameObjects.Image; badge: Phaser.GameObjects.Image | null; prev: number; cur: number; phase: number; flashUntil: number; facing: 1 | -1 }
 interface TowerView { body: Phaser.GameObjects.Image; weapon: Phaser.GameObjects.Image; pips: Phaser.GameObjects.Graphics; level: number; branch: string | null; recoilUntil: number; angle: number }
@@ -60,15 +62,19 @@ export class BattleScene extends Phaser.Scene {
     for (const key of ['tower.archer', 'tower.archer.weapon', 'tower.cannon', 'tower.cannon.weapon', 'tower.frost', 'tower.frost.weapon']) icons[key] = this.textures.getBase64(key);
     this.bridge.onIcons?.(icons);
     this.add.image(0, 0, ASSETS.ground.key).setOrigin(0).setScale(1 / TEX).setDepth(DEPTH.ground);
+    const decor = new Map<string, Phaser.GameObjects.Image>();
     for (const d of map.decorations) {
       const [dx, dy] = d.cells[0]!;
       const key = d.kind === 'culture' ? 'deco.stele' : 'deco.tree';
-      if ((d.kind === 'culture' ? has.stele : has.tree) && (d.kind === 'culture' || isTreeCell(dx, dy))) this.placeDecor(key, dx, dy);
+      if ((d.kind === 'culture' ? has.stele : has.tree) && (d.kind === 'culture' || isTreeCell(dx, dy))) decor.set(`${dx},${dy}`, this.placeDecor(key, dx, dy));
     }
     if (has.gate) this.placeDecor('map.gate', map.exitCell[0], map.exitCell[1]);
     for (const d of map.decorations) if (d.kind === 'culture') {
       const [x, y] = d.cells[0]!;
-      this.add.text((x + 0.5) * CELL_PX, (y + 0.42) * CELL_PX, '가', { fontFamily: 'Pretendard Variable, Pretendard, sans-serif', fontSize: '20px', fontStyle: '700', color: '#5c5650', resolution: 2 }).setOrigin(0.5).setDepth(DEPTH.overlay);
+      // 원화 비석은 칸보다 위로 솟아 있으므로 비석 면 가운데에 새기고, 비석 바로 위 깊이에 둔다.
+      const art = decor.get(`${x},${y}`);
+      const glyphY = art ? art.y - (art.originY - STELE_FACE_Y) * art.displayHeight : (y + 0.42) * CELL_PX;
+      this.add.text((x + 0.5) * CELL_PX, glyphY, '가', { fontFamily: 'Pretendard Variable, Pretendard, sans-serif', fontSize: '20px', fontStyle: '700', color: '#463c35', resolution: 2 }).setOrigin(0.5).setDepth(art ? art.depth + 0.1 : DEPTH.overlay);
     }
     this.mood = this.add.rectangle(0, 0, WORLD_W, WORLD_H, 0xffffff, 0).setOrigin(0).setDepth(DEPTH.mood);
     this.overlay = this.add.graphics().setDepth(DEPTH.overlay);
@@ -89,7 +95,7 @@ export class BattleScene extends Phaser.Scene {
     const img = this.add.image((x + 0.5) * CELL_PX, (y + 0.5) * CELL_PX, key);
     const src = img.texture.getSourceImage() as { width: number; height: number };
     const cells = key === 'map.gate' ? 1.8 : 1.05;
-    img.setOrigin(0.5, key === 'map.gate' ? 0.75 : 0.85).setDisplaySize(CELL_PX * cells, (CELL_PX * cells * src.height) / src.width).setDepth(DEPTH.units + (y + 0.5) * CELL_PX);
+    return img.setOrigin(0.5, key === 'map.gate' ? 0.75 : 0.85).setDisplaySize(CELL_PX * cells, (CELL_PX * cells * src.height) / src.width).setDepth(DEPTH.units + (y + 0.5) * CELL_PX);
   }
 
   /** 캔버스 크기가 바뀌면 React 쪽에서 호출한다. */
