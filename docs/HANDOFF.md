@@ -1,6 +1,6 @@
 # 다음 총괄·다음 컴퓨터 인계
 
-기준일: 2026-10-28 · 현재 구간: P1 첫 완성 구간, 1차 작업 패키지 수합 완료 · 총괄: Claude Opus 5.5(Claude Code) · 브랜치 `main`(`bad6e76`) 위에 **수합 변경이 커밋되지 않은 채** 있다. push 안 함
+기준일: 2026-10-28 · 현재 구간: P1 첫 완성 구간, 1차 작업 패키지 수합 완료·2차 발행 준비 · 총괄: Claude Opus 5.5(Claude Code) · 브랜치 `p1/intake-round1`(수합 `bc3ee07`). push 안 함. 다른 컴퓨터에서 이어 하려면 이 브랜치를 push해야 한다
 
 ## 먼저 읽을 것
 
@@ -31,11 +31,10 @@
 
 ## 다음 첫 행동
 
-1. 수합 변경을 커밋한다(사용자 승인 뒤). 그 commit으로 QR-001·QR-002·RIG-001의 머리말(`baseCommit`·`contractHash`)을 채우고 작업 폴더를 만든 뒤 [발행용 프롬프트](work-packages/DISPATCH.md)를 보낸다. QR 폴더는 정답 원본을 빼는 sparse checkout을 쓴다.
-2. 1차 작업 폴더 네 개를 지운다(`git worktree remove ../tower-wp/<jobId>` 후 `git branch -D wp/<jobId>`).
-3. 기다리는 동안 총괄은 P1-REST 나머지(첫 연습 판, 설치 자리 목록, WebGL 문맥 손실 복구, 소리)를 진행한다.
-4. QR 두 보고서가 오면 QR-001 REQUEST의 승인 규칙대로 판정하고, 통과 revision만 3학년 은행 빌드에 넣는다.
+1. 2차 세 작업은 머리말(`baseCommit` `bc3ee07`·`contractHash`)과 작업 폴더(`../tower-wp/QR-001`, `QR-002`, `RIG-001`)가 준비되어 있다. [발행용 프롬프트](work-packages/DISPATCH.md)를 각 모델의 새 대화에 보내고, 보낸 것만 게시판에서 RUNNING으로 바꾼다. QR 폴더에는 정답 원본이 없다(sparse checkout, `git sparse-checkout list`로 확인).
+2. 기다리는 동안 총괄은 P1-REST 나머지(설치 자리 목록, WebGL 문맥 손실 복구, 첫 연습 판, 소리)를 진행한다. RIG-001이 도는 동안 `src/game/animation/**`는 고치지 않는다.
+3. QR 두 보고서가 오면 QR-001 REQUEST의 승인 규칙대로 판정하고, 통과 revision만 3학년 은행 빌드에 넣는다.
 
 ## 하지 말 것·보존
 
-원문 v0.1·v0.3·v0.4·41번 PNG는 검산 도구가 해시를 확인한다. 광범위 reset/clean으로 복구하지 말고 해당 commit의 필요한 파일만 비교한다. 1차 작업 폴더는 수합 변경이 커밋되기 전까지 반환 원본의 백업이므로 먼저 지우지 않는다. `.claude/launch.json`은 미리보기 서버 설정이다.
+원문 v0.1·v0.3·v0.4·41번 PNG는 검산 도구가 해시를 확인한다. 광범위 reset/clean으로 복구하지 말고 해당 commit의 필요한 파일만 비교한다. `asset-source/**`는 납품 증거라 `.gitattributes`에서 줄바꿈 변환을 끄고 바이트 그대로 둔다(`SHA256SUMS.txt`와 일치). `.claude/launch.json`은 미리보기 서버 설정이다.

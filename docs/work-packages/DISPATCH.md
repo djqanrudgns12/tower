@@ -2,18 +2,20 @@
 
 ## 2차(2026-10-28 준비) — QR-001 · QR-002 · RIG-001
 
-1차 네 작업은 반환·수합되었다(아래 ‘1차’ 절은 이력). 2차는 **수합 변경을 커밋한 뒤** 그 commit을 `<baseCommit>`으로 쓴다. 총괄이 커밋 직후 아래 순서로 준비하고, 이 문서와 REQUEST 머리말의 `<baseCommit>`·`contractHash`를 실제 값으로 바꾼 다음 보낸다.
+1차 네 작업은 반환·수합되었다(아래 ‘1차’ 절은 이력). 2차 기준 commit은 `bc3ee0720912d33ff2b96602c365cfdd38e37521`(브랜치 `p1/intake-round1`)이다. 총괄이 아래 순서로 머리말을 채우고 작업 폴더를 만들었다(2026-10-28). 작업 폴더의 `git status`에는 채운 REQUEST.md 한 줄이 보이는 것이 정상이다.
 
 ```bash
-B=$(git rev-parse HEAD)
+B=bc3ee0720912d33ff2b96602c365cfdd38e37521
 for j in QR-001 RIG-001; do node tools/contract-hash.mjs $j; done
 # QR: 정답 원본(content-source/batches)을 뺀 작업 폴더. 검토자는 정답 키를 볼 수 없다.
 for j in QR-001 QR-002; do
   git worktree add --no-checkout -b wp/$j ../tower-wp/$j $B
-  git -C ../tower-wp/$j sparse-checkout set --no-cone '/*' '!/content-source/batches/'
+  # Windows Git Bash는 '/…' 인자를 C:/Program Files/Git/… 로 바꾸므로 경로 변환을 끈다.
+  MSYS_NO_PATHCONV=1 git -C ../tower-wp/$j sparse-checkout set --no-cone '/*' '!/content-source/batches/'
   git -C ../tower-wp/$j checkout
 done
 git worktree add -b wp/RIG-001 ../tower-wp/RIG-001 $B
+# 확인: QR 폴더에는 content-source/reviews만 있고 batches가 없어야 한다.
 ```
 
 | jobId | 보낼 곳 | 작업 폴더(Windows PC) | 결과 |
@@ -37,7 +39,7 @@ git worktree add -b wp/RIG-001 ../tower-wp/RIG-001 $B
 이 폴더 안에서만 읽고 쓴다. 본 저장소 폴더(towerdeffense)나 다른 tower-wp 폴더는 열지 않는다. 이 폴더에는 정답 원본(content-source/batches)이 없다. 다른 곳에서 찾아 열지 않는다.
 
 1. 시작 확인 — 하나라도 다르면 작업하지 말고 그 출력만 보고한다.
-   - git rev-parse HEAD → <baseCommit>
+   - git rev-parse HEAD → bc3ee0720912d33ff2b96602c365cfdd38e37521
    - content-source/batches 폴더가 없다
    - npm ci 성공
    - node tools/contract-hash.mjs QR-001 의 해시가 docs/work-packages/QR-001/REQUEST.md 머리말 contractHash와 모두 같다
@@ -69,7 +71,7 @@ git worktree add -b wp/RIG-001 ../tower-wp/RIG-001 $B
 이 폴더 안에서만 읽고 쓴다.
 
 1. 시작 확인 — 하나라도 다르면 작업하지 말고 그 출력만 보고한다.
-   - git rev-parse HEAD → <baseCommit>
+   - git rev-parse HEAD → bc3ee0720912d33ff2b96602c365cfdd38e37521
    - npm ci 성공, npx playwright install chromium 성공
    - node tools/contract-hash.mjs RIG-001 의 해시가 REQUEST.md 머리말 contractHash와 모두 같다
    - 5173 포트에 떠 있는 서버가 없다(Get-NetTCPConnection -LocalPort 5173 -State Listen -ErrorAction SilentlyContinue 출력이 비어 있음)

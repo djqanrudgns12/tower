@@ -1,6 +1,6 @@
 # 작업 패키지
 
-P1 첫 구현(2026-10-28, 총괄 Claude Opus 5.5) 뒤 병렬로 맡길 일이다. 각 폴더의 `REQUEST.md`를 그대로 해당 모델에 전달하고, 결과는 같은 폴더의 `RETURN.md`와 허용 경로의 파일로 받는다. 상태는 [작업 게시판](../EXECUTION_BOARD.md)이 기준이다. 1차 네 개는 반환·수합되었다. 2차 READY(QR-001·QR-002·RIG-001)는 수합 변경을 커밋한 뒤 발행하며, 붙여 넣을 프롬프트는 [DISPATCH.md](DISPATCH.md)에 있다.
+P1 첫 구현(2026-10-28, 총괄 Claude Opus 5.5) 뒤 병렬로 맡길 일이다. 각 폴더의 `REQUEST.md`를 그대로 해당 모델에 전달하고, 결과는 같은 폴더의 `RETURN.md`와 허용 경로의 파일로 받는다. 상태는 [작업 게시판](../EXECUTION_BOARD.md)이 기준이다. 1차 네 개는 반환·수합되었다. 2차 READY(QR-001·QR-002·RIG-001)는 `bc3ee07` 기준으로 머리말과 작업 폴더를 준비했고, 붙여 넣을 프롬프트는 [DISPATCH.md](DISPATCH.md)에 있다.
 
 | jobId | 담당 | 상태 | 선행 | 소유 경로 |
 |---|---|---|---|---|
@@ -8,8 +8,8 @@ P1 첫 구현(2026-10-28, 총괄 Claude Opus 5.5) 뒤 병렬로 맡길 일이다
 | [Q20-001](Q20-001/REQUEST.md) | Argon 4 | RETURNED(공동검수 대기) | 없음 | `content-source/batches/Q20-001/**` |
 | [UI-AUDIT-001](UI-AUDIT-001/REQUEST.md) | Argon 4 | ACCEPTED | 없음 | `src/ui/**/*.module.css`(공통 제외) |
 | [REVIEW-CORE-001](REVIEW-CORE-001/REQUEST.md) | Codex 검토 | ACCEPTED | 없음 | `tests/review/**` |
-| [QR-001/QR-002](QR-001/REQUEST.md) | Codex·Claude 검토 | READY(커밋 후) | Q20-001 반환 ✓ | `content-source/reviews/Q20-001/*` |
-| [RIG-001](RIG-001/REQUEST.md) | Claude/Codex | READY(커밋 후) | ART-SAMPLE-001 인수 ✓ | `src/game/animation/**` |
+| [QR-001/QR-002](QR-001/REQUEST.md) | Codex·Claude 검토 | READY·발행 준비됨 | Q20-001 반환 ✓ | `content-source/reviews/Q20-001/*` |
+| [RIG-001](RIG-001/REQUEST.md) | Claude/Codex | READY·발행 준비됨 | ART-SAMPLE-001 인수 ✓ | `src/game/animation/**` |
 
 2차 READY 세 개는 소유 경로가 겹치지 않아 **동시에** 보낼 수 있다. QR-001(Codex)과 QR-002(Claude)는 서로 다른 새 대화이고, 둘 다 정답 원본이 없는 작업 폴더에서 돌린다.
 

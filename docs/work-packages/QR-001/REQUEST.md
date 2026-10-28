@@ -5,8 +5,11 @@ jobId: QR-001 (Codex) / QR-002 (Claude)
 status: READY (Q20-001 반환·검사 통과, 2026-10-28). 수합 변경을 커밋한 뒤 발행
 owner: QR-001 = Codex, QR-002 = Claude — 각각 새 대화 문맥
 commander: Claude Opus 5.5 (P1 첫 구현 총괄). QR-002를 맡는 Claude 세션은 총괄 세션과 다른 새 문맥이어야 한다
-baseCommit: 발행 직전 값
-contractHash: 발행 직전 `node tools/contract-hash.mjs QR-001` 출력
+baseCommit: bc3ee0720912d33ff2b96602c365cfdd38e37521  # p1/intake-round1, 2026-10-28 발행 준비
+contractHash:  # node tools/contract-hash.mjs QR-001 — inputFiles별 SHA-256
+  content-source/reviews/Q20-001/blind-input.json: 08c958c84c05841344d56c6ce5e632381c11444bb3624cfeea74e61acd01b47a
+  src/contracts/questionDraft.ts: 2eb607006cc825ec8573d0b235fe5d0cbc131fa45e0aa632bf8b7e66af1e2b6f
+  vocabulary_td_prd_v0_5.md: 17d72f080a43f384cacec8adbdda1c44c40abad019f98becd0d8dcf68f780f7e
 inputFiles:
   - content-source/reviews/Q20-001/blind-input.json
   - src/contracts/questionDraft.ts

@@ -5,6 +5,12 @@ jobId: RIG-001
 status: READY (ART-SAMPLE-001 인수 2026-10-28: tower.*·enemy.walker.0~3 integrated_pass, enemy.walker.hit·enemy.boss.* visual_pass). 수합 변경을 커밋한 뒤 발행
 owner: Claude(새 문맥) 또는 Codex 별도 세션
 commander: Claude Opus 5.5 (P1 첫 구현 총괄)
+baseCommit: bc3ee0720912d33ff2b96602c365cfdd38e37521  # p1/intake-round1, 2026-10-28 발행 준비
+contractHash:  # node tools/contract-hash.mjs RIG-001 — inputFiles별 SHA-256
+  vocabulary_td_prd_v0_5.md: 17d72f080a43f384cacec8adbdda1c44c40abad019f98becd0d8dcf68f780f7e
+  public/assets/manifest.json: 5569906e3d0241ffa176820563844be8aa7ce680f1dabe1b5d2b3fe52d0504df
+  src/game/animation/pose.ts: 25878f392d5458357198e0530082e6e2161207b74b04a28995188aae04e69f88
+  src/game/BattleScene.ts: 963c26a206416dfe67570ce2b1a82bafc5cc3d61ff599506c9981b39c7856194
 inputFiles:
   - vocabulary_td_prd_v0_5.md
   - public/assets/manifest.json
