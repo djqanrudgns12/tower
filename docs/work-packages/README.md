@@ -17,7 +17,7 @@ READY 네 개는 소유 경로가 겹치지 않아 **동시에** 보낼 수 있�
 
 1. 현재 변경을 커밋하고 `git rev-parse HEAD`를 REQUEST의 `baseCommit`에 적는다.
 2. `node tools/contract-hash.mjs <jobId>`로 입력 계약 해시를 찍어 REQUEST 머리말에 붙인다(inputFiles에 없는 파일이 있으면 도구가 실패한다).
-3. 작업마다 `git worktree add -b wp/<jobId> ../tower-wp/<jobId> <baseCommit>`로 전용 폴더를 만들고 채운 REQUEST.md를 복사한다. 한 폴더를 같이 쓰면 미완성 문항·원화가 다른 작업의 `npm test`를 깨뜨리고, e2e가 남의 5173 서버를 재사용한다.
+3. 작업마다 `git worktree add -b wp/<jobId> ../tower-wp/<jobId> <baseCommit>`로 전용 폴더를 만들고 채운 REQUEST.md를 복사한다. 한 폴더를 같이 쓰면 미완성 문항·원화가 다른 작업의 `npm test`를 깨뜨리고, e2e가 남의 5173 서버를 재사용한다. 작업 폴더와 `wp/*` 브랜치는 GitHub에 올라가지 않으므로 모델을 돌릴 컴퓨터에서 만든다. Windows에서는 먼저 `git config core.autocrlf input`을 해 둔다. 그러지 않으면 `.ts`가 CRLF로 풀려 contractHash가 맞지 않는다.
 4. 게시판에서 상태를 RUNNING으로 바꾸고 담당·발행 시각을 적는다(실제로 보낸 것만).
 
 ## 받을 때(총괄)

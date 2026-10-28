@@ -4,13 +4,14 @@ READY 네 개를 동시에 보낼 때 각 모델의 **새 대화**에 아래 블
 
 - 기준 commit: `ee5833846f0aa227ea3a6e2fe89257b02bae0e33`(docs/prd-v0-5)
 - 작업마다 전용 작업 폴더(git worktree)가 있다. 서로 다른 폴더라 한쪽이 만든 미완성 문항·원화가 다른 쪽 `npm test`를 깨뜨리지 않는다.
+- 작업 폴더는 컴퓨터마다 따로 있다(worktree와 `wp/*` 브랜치는 GitHub에 올라가지 않는다). 아래 프롬프트는 **Windows PC**(`C:\Users\User\Desktop\vibecoding\towerdeffense`) 경로로 적었다. 집 Mac에서 보낼 때는 `C:\Users\User\Desktop\vibecoding\tower-wp\` 를 `/Users/bodyking/Desktop/vibecoding/tower-wp/` 로 바꾼다. 결과도 보낸 컴퓨터의 작업 폴더에만 생긴다.
 
-| jobId | 보낼 곳 | 작업 폴더 | 브랜치 |
-|---|---|---|---|
-| Q20-001 | Argon 4, 대화 1 | `/Users/bodyking/Desktop/vibecoding/tower-wp/Q20-001` | `wp/Q20-001` |
-| UI-AUDIT-001 | Argon 4, 대화 2 | `/Users/bodyking/Desktop/vibecoding/tower-wp/UI-AUDIT-001` | `wp/UI-AUDIT-001` |
-| ART-SAMPLE-001 | Codex, 세션 1(이미지 생성 가능) | `/Users/bodyking/Desktop/vibecoding/tower-wp/ART-SAMPLE-001` | `wp/ART-SAMPLE-001` |
-| REVIEW-CORE-001 | Codex, 세션 2(새 문맥) | `/Users/bodyking/Desktop/vibecoding/tower-wp/REVIEW-CORE-001` | `wp/REVIEW-CORE-001` |
+| jobId | 보낼 곳 | 작업 폴더(Windows PC) | 작업 폴더(집 Mac) | 브랜치 |
+|---|---|---|---|---|
+| Q20-001 | Argon 4, 대화 1 | `C:\Users\User\Desktop\vibecoding\tower-wp\Q20-001` | `/Users/bodyking/Desktop/vibecoding/tower-wp/Q20-001` | `wp/Q20-001` |
+| UI-AUDIT-001 | Argon 4, 대화 2 | `C:\Users\User\Desktop\vibecoding\tower-wp\UI-AUDIT-001` | `/Users/bodyking/Desktop/vibecoding/tower-wp/UI-AUDIT-001` | `wp/UI-AUDIT-001` |
+| ART-SAMPLE-001 | Codex, 세션 1(이미지 생성 가능) | `C:\Users\User\Desktop\vibecoding\tower-wp\ART-SAMPLE-001` | `/Users/bodyking/Desktop/vibecoding/tower-wp/ART-SAMPLE-001` | `wp/ART-SAMPLE-001` |
+| REVIEW-CORE-001 | Codex, 세션 2(새 문맥) | `C:\Users\User\Desktop\vibecoding\tower-wp\REVIEW-CORE-001` | `/Users/bodyking/Desktop/vibecoding/tower-wp/REVIEW-CORE-001` | `wp/REVIEW-CORE-001` |
 
 각 폴더의 `git status`에는 총괄이 머리말(`baseCommit`·`contractHash`)을 채운 `REQUEST.md` 한 줄이 보이는 것이 정상이다. 모델은 커밋하지 않는다. 총괄이 폴더에서 결과를 받아 [작업 패키지](README.md)의 ‘받을 때’ 절차로 들인다.
 
@@ -21,8 +22,8 @@ READY 네 개를 동시에 보낼 때 각 모델의 **새 대화**에 아래 블
 
 너는 초등 3~6학년용 한국어 어휘 타워 디펜스 웹게임의 문항 작성자다. 총괄은 Claude Opus 5.5이고, 너는 이 작업 하나만 맡는다. 다른 모델들이 다른 폴더에서 동시에 일하고 있다.
 
-작업 폴더: /Users/bodyking/Desktop/vibecoding/tower-wp/Q20-001
-이 폴더 안에서만 읽고 쓴다. 옆의 tower 폴더나 다른 tower-wp 폴더는 열지 않는다.
+작업 폴더: C:\Users\User\Desktop\vibecoding\tower-wp\Q20-001
+이 폴더 안에서만 읽고 쓴다. 본 저장소 폴더(towerdeffense)나 다른 tower-wp 폴더는 열지 않는다.
 
 1. 시작 확인 — 하나라도 다르면 작업하지 말고 그 출력만 보고한다.
    - git rev-parse HEAD → ee5833846f0aa227ea3a6e2fe89257b02bae0e33
@@ -54,15 +55,15 @@ READY 네 개를 동시에 보낼 때 각 모델의 **새 대화**에 아래 블
 
 너는 초등 3~6학년용 한국어 어휘 타워 디펜스 웹게임의 UI 점검자다. 총괄은 Claude Opus 5.5이고, 너는 이 작업 하나만 맡는다. 다른 모델들이 다른 폴더에서 동시에 일하고 있다.
 
-작업 폴더: /Users/bodyking/Desktop/vibecoding/tower-wp/UI-AUDIT-001
-이 폴더 안에서만 읽고 쓴다. 옆의 tower 폴더나 다른 tower-wp 폴더는 열지 않는다.
+작업 폴더: C:\Users\User\Desktop\vibecoding\tower-wp\UI-AUDIT-001
+이 폴더 안에서만 읽고 쓴다. 본 저장소 폴더(towerdeffense)나 다른 tower-wp 폴더는 열지 않는다.
 
 1. 시작 확인 — 하나라도 다르면 작업하지 말고 그 출력만 보고한다.
    - git rev-parse HEAD → ee5833846f0aa227ea3a6e2fe89257b02bae0e33
    - git status --short → docs/work-packages/UI-AUDIT-001/REQUEST.md 한 줄(총괄이 머리말을 채운 것)
    - npm ci 성공, npx playwright install chromium 성공
    - node tools/contract-hash.mjs UI-AUDIT-001 의 해시가 REQUEST.md 머리말 contractHash와 모두 같다
-   - lsof -nP -iTCP:5173 -sTCP:LISTEN 출력이 비어 있다. e2e는 5173에 이미 떠 있는 서버를 그대로 쓰므로, 다른 폴더의 서버가 떠 있으면 남의 화면을 검사하게 된다. 비어 있지 않으면 멈추고 보고한다.
+   - 5173 포트에 떠 있는 서버가 없다. Windows PowerShell: Get-NetTCPConnection -LocalPort 5173 -State Listen -ErrorAction SilentlyContinue / macOS: lsof -nP -iTCP:5173 -sTCP:LISTEN 의 출력이 비어 있어야 한다. e2e는 5173에 이미 떠 있는 서버를 그대로 쓰므로, 다른 폴더의 서버가 떠 있으면 남의 화면을 검사하게 된다. 비어 있지 않으면 멈추고 보고한다.
 
 2. 할 일 — docs/work-packages/UI-AUDIT-001/REQUEST.md를 끝까지 읽고 그대로 따른다. 이 메시지와 요청서가 다르면 요청서가 우선이다.
    - 먼저 npm run test:e2e 를 한 번 돌리고 test-results/shots/ 를 test-results/before/ 로 복사해 ‘전’ 캡처로 쓴다.
@@ -85,8 +86,8 @@ READY 네 개를 동시에 보낼 때 각 모델의 **새 대화**에 아래 블
 
 너는 초등 3~6학년용 한국어 어휘 타워 디펜스 웹게임의 2D 원화 제작자다. 총괄은 Claude Opus 5.5이고, 너는 이 작업 하나만 맡는다. 다른 모델들이 다른 폴더에서 동시에 일하고 있다.
 
-작업 폴더: /Users/bodyking/Desktop/vibecoding/tower-wp/ART-SAMPLE-001
-이 폴더 안에서만 읽고 쓴다. 옆의 tower 폴더나 다른 tower-wp 폴더는 열지 않는다.
+작업 폴더: C:\Users\User\Desktop\vibecoding\tower-wp\ART-SAMPLE-001
+이 폴더 안에서만 읽고 쓴다. 본 저장소 폴더(towerdeffense)나 다른 tower-wp 폴더는 열지 않는다.
 
 1. 시작 확인 — 하나라도 다르면 작업하지 말고 그 출력만 보고한다.
    - git rev-parse HEAD → ee5833846f0aa227ea3a6e2fe89257b02bae0e33
@@ -119,8 +120,8 @@ READY 네 개를 동시에 보낼 때 각 모델의 **새 대화**에 아래 블
 
 너는 초등 3~6학년용 한국어 어휘 타워 디펜스 웹게임의 독립 검토자다. 엔진은 총괄 Claude Opus 5.5가 구현했고, 너는 구현자와 같은 맹점을 갖지 않도록 PRD 문장만을 기준으로 검토한다. 다른 모델들이 다른 폴더에서 동시에 일하고 있다.
 
-작업 폴더: /Users/bodyking/Desktop/vibecoding/tower-wp/REVIEW-CORE-001
-이 폴더 안에서만 읽고 쓴다. 옆의 tower 폴더나 다른 tower-wp 폴더는 열지 않는다.
+작업 폴더: C:\Users\User\Desktop\vibecoding\tower-wp\REVIEW-CORE-001
+이 폴더 안에서만 읽고 쓴다. 본 저장소 폴더(towerdeffense)나 다른 tower-wp 폴더는 열지 않는다.
 
 1. 시작 확인 — 하나라도 다르면 작업하지 말고 그 출력만 보고한다.
    - git rev-parse HEAD → ee5833846f0aa227ea3a6e2fe89257b02bae0e33
@@ -150,3 +151,4 @@ READY 네 개를 동시에 보낼 때 각 모델의 **새 대화**에 아래 블
 - 실제로 보낸 작업만 [작업 게시판](../EXECUTION_BOARD.md)에서 RUNNING으로 바꾸고 보낸 시각을 적는다.
 - 반환되면 그 작업 폴더에서 `git status --short`로 허용 경로만 바뀌었는지 보고, 허용 경로의 파일만 본 저장소로 들인다.
 - 다 받은 뒤 작업 폴더를 지운다: `git worktree remove ../tower-wp/<jobId>` 후 `git branch -D wp/<jobId>`.
+- 다른 컴퓨터로 옮겨 이어 하려면, 받은 결과를 본 저장소에 커밋·push한 뒤 옮긴다. 작업 폴더째로는 옮겨지지 않는다.
