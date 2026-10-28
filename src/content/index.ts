@@ -6,6 +6,7 @@ import { mapsFileSchema, type MapConfig } from '../contracts/maps';
 import { bankFileSchema, readingLoad, retractionListSchema, type BankFile, type RetractionList } from '../contracts/questions';
 import { createContext, type GameContext, type RuntimeQuestion } from '../domain/context';
 import grade3Dev from './questions/grade3.dev.json';
+import practiceJson from './questions/practice.json';
 import retractionsJson from './retractions.json';
 
 // 계약 JSON을 런타임 스키마로 한 번 검사한 뒤 쓴다. 숨은 상수를 화면·도메인에 따로 두지 않는다(PRD §10.1).
@@ -41,6 +42,25 @@ export function reviewQuestions(grade: number): ReadonlyMap<string, RuntimeQuest
   const { bank } = gradeContent(grade);
   return new Map(bank ? toRuntime(bank).map(q => [q.id, q] as const) : []);
 }
+
+/**
+ * 첫 연습 판(PRD §12.2): 문제 1개 → 골드 → 궁수 설치 → 적 3마리 → 생존 회복. 정규 규칙은 그대로 두고
+ * 시도 수·마릿수·등장 간격만 줄인다. 문항은 연습 전용 묶음이며 정규 은행·기록에 쓰지 않는다.
+ */
+export const PRACTICE = { grade: 3, difficulty: 'Easy' as DifficultyId, seed: 20261028, enemies: 3, spawnIntervalMs: 2200 };
+const practiceBank = bankFileSchema.parse(practiceJson);
+
+export function practiceContext(): GameContext {
+  const balance = structuredClone(BALANCE);
+  balance.balanceVersion = `${BALANCE.balanceVersion}+practice`;
+  balance.run.prepAttempts.firstWave = 1;
+  balance.waves.count = { ...balance.waves.count, base: PRACTICE.enemies, step: 0 };
+  balance.waves.spawnIntervalMs = { ...balance.waves.spawnIntervalMs, overrides: { 1: PRACTICE.spawnIntervalMs } };
+  const { map } = gradeContent(PRACTICE.grade);
+  return createContext({ balance, difficulty: PRACTICE.difficulty, map, questions: toRuntime(practiceBank), battleReadingLoadMax: 70 });
+}
+
+export const PRACTICE_BANK = { bankId: practiceBank.bankId, bankVersion: practiceBank.bankVersion };
 
 export class ContentUnavailableError extends Error {
   constructor(message: string) { super(message); this.name = 'ContentUnavailableError'; }

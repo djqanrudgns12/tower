@@ -1,5 +1,5 @@
 import type { DifficultyId } from '../contracts/balance';
-import { ContentUnavailableError, contextFor, gradeContent, PILOT_TOWERS } from '../content';
+import { ContentUnavailableError, contextFor, gradeContent, PILOT_TOWERS, PRACTICE, PRACTICE_BANK, practiceContext } from '../content';
 import type { GameContext } from '../domain/context';
 import { createRun } from '../domain/run';
 import type { RunState } from '../domain/types';
@@ -47,6 +47,19 @@ export function startNewRun(input: { grade: number; difficulty: DifficultyId; ni
     availableTowers: [...PILOT_TOWERS], rankingEligibility: 'personal', createdAt: new Date().toISOString(),
   });
   return own(state, 0);
+}
+
+/**
+ * 첫 연습 판(PRD §12.2). 저장·기록·소유권 없이 메모리에서만 돈다. 고정 seed라 정규 판의 seed·점수·첫 5문항에 영향이 없다.
+ */
+export function startPractice(playerId: string): RunController {
+  const ctx = practiceContext();
+  const state = createRun(ctx, {
+    runId: `practice-${crypto.randomUUID()}`, playerId, nickname: '연습', grade: PRACTICE.grade, difficulty: PRACTICE.difficulty,
+    mapId: ctx.map.id, seed: PRACTICE.seed, bankId: PRACTICE_BANK.bankId, bankVersion: PRACTICE_BANK.bankVersion,
+    contentMode: 'development', availableTowers: [...PILOT_TOWERS], rankingEligibility: 'personal', createdAt: new Date().toISOString(),
+  });
+  return new RunController(ctx, state, { saveSeq: 0, ownership: null });
 }
 
 /** 시작 때의 규칙·밸런스·맵·은행 버전이 그대로일 때만 이어한다(PRD §14.2). 재개는 정지 상태로 시작한다. */

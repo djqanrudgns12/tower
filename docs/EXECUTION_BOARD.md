@@ -13,7 +13,8 @@
 | [Q20-001](work-packages/Q20-001/RETURN.md) | **RETURNED · 공동검수 대기** — 검사 통과, 정답 없는 입력 생성됨 | Argon 4 | `content-source/batches/Q20-001/**` | — |
 | [QR-001/QR-002](work-packages/QR-001/REQUEST.md) | **READY·발행 준비됨** | Codex·Claude 새 문맥 | `content-source/reviews/Q20-001/*` | Q20-001 반환 ✓ |
 | [RIG-001](work-packages/RIG-001/REQUEST.md) | **READY·발행 준비됨** | Claude 새 문맥 또는 Codex | `src/game/animation/**` | ART-SAMPLE-001 인수 ✓ |
-| P1-REST | 진행 중 — A26 철회 목록 완료 | 총괄 | 연습 판·소리·설치 자리 목록·문맥 손실 | — |
+| P1-REST | 소리만 남음 — A26 철회 목록·설치 자리 목록·문맥 손실 복구·첫 연습 판 완료 | 총괄 | 소리(음원 작업 필요) | 음원 묶음 |
+| QR-PRACTICE | 계획 | Codex·Claude 검토 | 연습 전용 4문항(`src/content/questions/practice.json`) 공동검수 | 공개 전 |
 | ART-002 | 계획 | Codex 이미지 | 지면·설치 돌·작은 장식(아직 임시 그림과 섞여 보임) | ART-SAMPLE-001 ✓ |
 | CORE-P2 | 계획 | 다음 총괄(PRD 출발안: Claude) | 나머지 타워 7종·분기 14개·4~6학년 맵/은행 | G2 통과 |
 
@@ -21,4 +22,4 @@ READY 세 개는 소유 경로가 겹치지 않는다. QR-001·QR-002는 정답 
 
 1차 작업 폴더와 `wp/*` 브랜치는 반환물이 본 저장소와 같음을 확인한 뒤 지웠다. UI-AUDIT-001의 전후 캡처와 원래 CSS 패치는 [UI-AUDIT-001 폴더](work-packages/UI-AUDIT-001/)의 `shots/`·`returned-css.patch`로 보존했다. RIG-001이 도는 동안 총괄은 `src/game/animation/**`를 고치지 않는다.
 
-측정된 성과(2026-10-28, 이 작업 트리): 타입·ESLint, 단위·속성 시험 61개, PRD 검산 48개, 문항·에셋 manifest 검사, Playwright e2e 4개(실제 원화 포함), 배포 빌드(JS gzip 약 501KB). 실기기·장시간 성능·엔진 밸런스·공동검수·리깅 인수·배포는 미실행. 최신 결과는 [인계서](HANDOFF.md)의 검증 절을 따른다.
+측정된 성과(2026-10-28, 이 작업 트리): 타입·ESLint, 단위·속성 시험 70개, PRD 검산 48개, 문항·에셋 manifest 검사, Playwright e2e 7개(실제 원화·키보드·문맥 손실·연습 판 포함), 배포 빌드(JS gzip 약 504KB). 실기기·장시간 성능·엔진 밸런스·공동검수·리깅 인수·배포는 미실행. 최신 결과는 [인계서](HANDOFF.md)의 검증 절을 따른다.

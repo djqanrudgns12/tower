@@ -13,6 +13,7 @@ import { Hud } from './Hud';
 import { ManagementPanel, type PanelMode } from './ManagementPanel';
 import { PauseOverlay } from './PauseOverlay';
 import { QuestionPanel } from './QuestionPanel';
+import { practiceCoach } from './practiceCoach';
 import { nextSlot, SlotList, slotDescription, type Arrow } from './SlotList';
 
 interface Props {
@@ -23,11 +24,13 @@ interface Props {
   reducedMotion: boolean;
   onFont(scale: FontScale): void;
   onExit(reason: 'saved' | 'over' | 'abandon'): void;
+  /** 첫 연습 판(PRD §12.2). 있으면 안내 문장·건너뛰기·연습 끝 패널을 보인다. */
+  practice?: { onFinish(next: 'new' | 'again' | 'home'): void };
 }
 
 const EMPTY: FieldSelection = { slotId: null, towerId: null, previewType: null, previewBranch: null };
 
-export function GameScreen({ controller, towers, notice, fontScale, reducedMotion, onFont, onExit }: Props) {
+export function GameScreen({ controller, towers, notice, fontScale, reducedMotion, onFont, onExit, practice }: Props) {
   const view = useSyncExternalStore(controller.subscribe, controller.getView);
   const layout = useLayout();
   const [rawSelection, setSelection] = useState<FieldSelection>(EMPTY);
@@ -91,6 +94,15 @@ export function GameScreen({ controller, towers, notice, fontScale, reducedMotio
   useEffect(() => { controller.start(); return () => controller.stop(); }, [controller]);
   useEffect(() => { if (view.phase === 'GAME_OVER') { const t = setTimeout(() => onExit('over'), 900); return () => clearTimeout(t); } return undefined; }, [view.phase, onExit]);
 
+  // 연습은 첫 웨이브를 지키고 성문이 회복되면 끝난다. 다음 준비로 넘어가지 않게 루프를 멈춘다.
+  const practiceDone = !!practice && view.completedWave >= 1;
+  useEffect(() => { if (practiceDone) controller.stop(); }, [practiceDone, controller]);
+  const coach = practice ? practiceCoach(view, selection) : null;
+  const coachLine = (at: NonNullable<typeof coach>['at']) => (coach?.at === at ? <p className={css.coach} role="status">{coach.text}</p> : null);
+  // 연습이 끝나면 관리 패널(다음 웨이브 잠금 문구 등) 대신 한 줄만 둔다.
+  const practiceRest = <p className={kit.muted}>연습이 끝났어요. 아래에서 다음 할 일을 골라요.</p>;
+  const skip = practice && !practiceDone ? <button type="button" className={`${kit.button} ${kit.quiet}`} onClick={() => practice.onFinish('home')}>연습 건너뛰기</button> : null;
+
   const result = (r: ReturnType<RunController['dispatch']>, need?: number): r is Extract<typeof r, { ok: true }> => {
     if (!r.ok) setFlash(commandErrorText(r.error, need !== undefined ? { need } : undefined));
     else setFlash(null);
@@ -152,11 +164,22 @@ export function GameScreen({ controller, towers, notice, fontScale, reducedMotio
     />
   );
 
-  const bottom = view.phase === 'BUILD' ? (
+  const bottom = practiceDone ? (
+    <section className={`${kit.board} ${css.build}`} aria-label="연습 끝">
+      <div>
+        <p className={css.buildTitle}>연습을 마쳤어요</p>
+        <p className={kit.muted}>성문이 다시 가득 찼어요. 문제를 풀어 골드를 모으고, 타워로 성문을 지키면 돼요.</p>
+      </div>
+      <div className={css.row}>
+        <button type="button" className={`${kit.button} ${kit.primary} ${kit.big}`} onClick={() => practice.onFinish('new')}>새 게임 시작</button>
+        <button type="button" className={kit.button} onClick={() => practice.onFinish('again')}>연습 다시 하기</button>
+      </div>
+    </section>
+  ) : view.phase === 'BUILD' ? (
     <section className={`${kit.board} ${css.build}`} aria-label="전투 준비">
       <div>
         <p className={css.buildTitle}>{view.wave}웨이브 준비 완료</p>
-        <p className={kit.muted}>{view.towers.length === 0 ? '빈 돌 받침을 눌러 첫 타워를 놓아 보세요.' : '타워를 더 놓거나 강화한 뒤 전투를 시작하세요.'}</p>
+        {coach?.at === 'start' ? coachLine('start') : <p className={kit.muted}>{view.towers.length === 0 ? '빈 돌 받침을 눌러 첫 타워를 놓아 보세요.' : '타워를 더 놓거나 강화한 뒤 전투를 시작하세요.'}</p>}
       </div>
       {confirmEmpty ? (
         <div className={css.row}>
@@ -174,6 +197,7 @@ export function GameScreen({ controller, towers, notice, fontScale, reducedMotio
   ) : view.question && !paused ? (
     <div className={css.questionWrap}>
       {view.phase === 'WAVE_WRAPUP' && <p className={css.wrapup}>전투가 끝났어요. 이 문제만 풀고 다음으로 가요.</p>}
+      {coachLine('question')}
       <QuestionPanel question={view.question} wide={layout.wideQuestion} onAnswer={onAnswer} onSkip={onSkip} onNext={onNext} />
     </div>
   ) : view.phase === 'GAME_OVER' ? (
@@ -192,6 +216,7 @@ export function GameScreen({ controller, towers, notice, fontScale, reducedMotio
         {view.notices.map(n => <p key={n.id} className={css.notice} data-tone={n.tone}>{n.text}</p>)}
       </div>
       {magnify && <button type="button" className={`${kit.button} ${css.fullMap}`} onClick={clear}>전체 지도</button>}
+      {coach?.at === 'field' && <div className={css.coachField}>{coachLine('field')}</div>}
     </div>
   );
 
@@ -205,7 +230,7 @@ export function GameScreen({ controller, towers, notice, fontScale, reducedMotio
             <aside className={`${kit.board} ${css.rail}`} style={{ height: layout.mapH }} aria-label="타워 관리">
               <Hud view={view} mode="R" onPause={() => controller.pause('USER')} />
               {notice && <p className={css.hint} role="status">{notice}</p>}
-              <div className={css.railBody}><div ref={panelRef}>{panel}</div><p className={kit.reason} role="status">{flash}</p>{slotList}</div>
+              <div className={css.railBody}>{practiceDone ? practiceRest : <>{skip}{coachLine('panel')}<div ref={panelRef}>{panel}</div><p className={kit.reason} role="status">{flash}</p>{slotList}</>}</div>
             </aside>
             <div className={css.bottom}>{bottom}</div>
           </>
@@ -217,9 +242,10 @@ export function GameScreen({ controller, towers, notice, fontScale, reducedMotio
             {field}
             <div className={css.toolbar}>
               <button type="button" className={kit.button} aria-expanded={trayOpen} onClick={() => setTrayOpen(o => !o)}>{trayOpen ? '관리 접기' : '타워 관리'}</button>
+              {skip}
               <span className={kit.muted}>{selection.towerId !== null ? '선택한 타워' : selection.slotId ? '빈 자리 선택됨' : view.phase === 'BATTLE' ? '전투 중에도 설치·강화할 수 있어요' : ''}</span>
             </div>
-            {trayOpen && <div className={`${kit.board} ${css.tray}`}><div ref={panelRef}>{panel}</div><p className={kit.reason} role="status">{flash}</p>{slotList}</div>}
+            {trayOpen && <div className={`${kit.board} ${css.tray}`}>{practiceDone ? practiceRest : <>{coachLine('panel')}<div ref={panelRef}>{panel}</div><p className={kit.reason} role="status">{flash}</p>{slotList}</>}</div>}
             {bottom}
           </>
         )}

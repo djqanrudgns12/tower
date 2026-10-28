@@ -1,0 +1,97 @@
+{
+  "bankId": "practice",
+  "bankVersion": "0.1.0-practice",
+  "grade": 3,
+  "status": "dev_fixture",
+  "note": "첫 연습 판 전용(PRD §12.2). 정규 은행·기록·공개 랭킹에 쓰지 않는다. 정규 콘텐츠의 미승인 문항을 연습에 보이지 않도록 따로 만든 쉬운 안내 문항이다.",
+  "questions": [
+    {
+      "id": "g3-practice-0001",
+      "revision": 1,
+      "status": "dev_fixture",
+      "grade": 3,
+      "type": "definition",
+      "target": { "lemma": "기쁘다", "partOfSpeech": "형용사", "senseKey": "기쁘다/형용사/1" },
+      "stem": "‘기쁘다’의 뜻으로 알맞은 것은?",
+      "options": [
+        { "id": "a", "text": "마음이 즐겁고 흐뭇하다" },
+        { "id": "b", "text": "몸이 몹시 아프다" },
+        { "id": "c", "text": "날씨가 아주 춥다" },
+        { "id": "d", "text": "배가 몹시 고프다" }
+      ],
+      "correctOptionId": "a",
+      "explanation": "‘기쁘다’는 바라던 일이 이루어져 마음이 즐겁고 흐뭇하다는 뜻이에요.",
+      "distractorRationales": {
+        "b": "‘몸이 몹시 아프다’는 몸의 상태를 나타내는 말이에요.",
+        "c": "‘날씨가 아주 춥다’는 날씨를 나타내는 말이에요.",
+        "d": "‘배가 몹시 고프다’는 먹고 싶은 상태를 나타내는 말이에요."
+      }
+    },
+    {
+      "id": "g3-practice-0002",
+      "revision": 1,
+      "status": "dev_fixture",
+      "grade": 3,
+      "type": "antonym_context",
+      "target": { "lemma": "크다", "partOfSpeech": "형용사", "senseKey": "크다/형용사/1" },
+      "stem": "‘코끼리는 몸집이 커요’에서 ‘커요’와 뜻이 반대인 것은?",
+      "options": [
+        { "id": "a", "text": "넓어요" },
+        { "id": "b", "text": "작아요" },
+        { "id": "c", "text": "높아요" },
+        { "id": "d", "text": "길어요" }
+      ],
+      "correctOptionId": "b",
+      "explanation": "‘크다’는 몸집이나 부피가 보통보다 더하다는 뜻이라 ‘작다’와 반대예요.",
+      "distractorRationales": {
+        "a": "‘넓어요’는 면이나 자리가 크다는 뜻이라 반대말이 아니에요.",
+        "c": "‘높아요’는 위로 길다는 뜻이라 반대말이 아니에요.",
+        "d": "‘길어요’는 두 끝이 멀다는 뜻이라 반대말이 아니에요."
+      }
+    },
+    {
+      "id": "g3-practice-0003",
+      "revision": 1,
+      "status": "dev_fixture",
+      "grade": 3,
+      "type": "cloze",
+      "target": { "lemma": "우산", "partOfSpeech": "명사", "senseKey": "우산/명사/1" },
+      "stem": "비가 와서 (    )을 쓰고 학교에 갔어요.",
+      "options": [
+        { "id": "a", "text": "연필" },
+        { "id": "b", "text": "접시" },
+        { "id": "c", "text": "우산" },
+        { "id": "d", "text": "베개" }
+      ],
+      "correctOptionId": "c",
+      "explanation": "‘우산’은 비를 막으려고 머리 위에 받쳐 쓰는 물건이에요.",
+      "distractorRationales": {
+        "a": "‘연필’은 글씨를 쓰는 물건이라 비를 막지 못해요.",
+        "b": "‘접시’는 음식을 담는 그릇이라 문장에 어울리지 않아요.",
+        "d": "‘베개’는 잘 때 머리를 받치는 물건이라 어울리지 않아요."
+      }
+    },
+    {
+      "id": "g3-practice-0004",
+      "revision": 1,
+      "status": "dev_fixture",
+      "grade": 3,
+      "type": "synonym_context",
+      "target": { "lemma": "빠르다", "partOfSpeech": "형용사", "senseKey": "빠르다/형용사/1" },
+      "stem": "‘토끼는 아주 빨라요’에서 ‘빨라요’와 뜻이 가장 비슷한 것은?",
+      "options": [
+        { "id": "a", "text": "느려요" },
+        { "id": "b", "text": "무거워요" },
+        { "id": "c", "text": "조용해요" },
+        { "id": "d", "text": "날쌔요" }
+      ],
+      "correctOptionId": "d",
+      "explanation": "‘빠르다’와 ‘날쌔다’는 모두 움직임이 재빠르다는 뜻이에요.",
+      "distractorRationales": {
+        "a": "‘느려요’는 움직임이 더디다는 뜻이라 반대에 가까워요.",
+        "b": "‘무거워요’는 무게가 많이 나간다는 뜻이에요.",
+        "c": "‘조용해요’는 소리가 없다는 뜻이에요."
+      }
+    }
+  ]
+}

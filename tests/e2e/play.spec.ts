@@ -55,7 +55,7 @@ test('1440×900: 준비 → 설치 → 전투 → 정지 가림 → 재개', asy
   await page.getByRole('option', { name: /궁수탑/ }).click();
   await shot(page, 'desktop-preview');
   await page.getByRole('button', { name: '설치 · 60골드' }).click();
-  await expect(page.getByText('레벨 1')).toBeVisible();
+  await expect(page.getByText('레벨 1', { exact: true })).toBeVisible();
   await shot(page, 'desktop-built');
 
   await page.getByRole('button', { name: '전투 시작' }).click();
@@ -133,6 +133,36 @@ test('WebGL 문맥 손실: 멈추고, 화면이 돌아온 뒤 계속하면 같�
   await expect(page.getByRole('dialog')).toHaveCount(0);
   await expect(page.getByRole('region', { name: '어휘 문제' }).locator('p').first()).toHaveText(stem);
   await shot(page, 'desktop-context-restored');
+});
+
+test('첫 연습 판: 문제 1개 → 궁수 설치 → 적 3마리 → 회복, 안내는 조작 옆 한 문장(PRD §12.2)', async ({ page }) => {
+  test.setTimeout(180_000);
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto('/');
+  await page.evaluate(() => { indexedDB.deleteDatabase('vocabulary-td'); localStorage.clear(); });
+  await page.reload();
+  await page.getByRole('button', { name: '처음이라면 연습부터' }).click();
+  await expect(page.getByText('문제를 풀면 골드를 받아요. 알맞은 답을 눌러 보세요.')).toBeVisible();
+  await expect(page.getByText('준비 1/1')).toBeVisible();
+  await shot(page, 'practice-question');
+  await finishPrep(page);
+  await expect(page.getByText('길 옆 빈 돌 받침을 눌러 타워 자리를 골라요.')).toBeVisible();
+  await tapCell(page, 8, 2);
+  await expect(page.getByText('타워를 하나 골라요. 처음에는 빠르게 쏘는 궁수탑이 좋아요.')).toBeVisible();
+  await page.getByRole('option', { name: /궁수탑/ }).click();
+  await page.getByRole('button', { name: '설치 · 60골드' }).click();
+  await expect(page.getByText('‘전투 시작’을 누르면 적 3마리가 길을 따라와요.')).toBeVisible();
+  await shot(page, 'practice-start');
+  await page.getByRole('button', { name: '전투 시작' }).click();
+  await expect(page.getByText('연습을 마쳤어요')).toBeVisible({ timeout: 90_000 });
+  await shot(page, 'practice-done');
+  await page.getByRole('button', { name: '새 게임 시작' }).click();
+  await expect(page.getByRole('textbox')).toBeVisible();
+  // 다시 홈에 오면 연습 권유 대신 ‘연습하기’가 보인다. 연습은 기록에 남지 않는다.
+  await page.getByRole('button', { name: '뒤로' }).click();
+  await expect(page.getByRole('button', { name: '연습하기' })).toBeVisible();
+  await page.getByRole('button', { name: '내 기록' }).click();
+  await expect(page.getByText('아직 기록이 없어요')).toBeVisible();
 });
 
 test('1366×650 크롬북: R 모드와 칸 크기', async ({ page }) => {

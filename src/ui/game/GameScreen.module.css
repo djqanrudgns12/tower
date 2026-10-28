@@ -34,3 +34,6 @@
 .slotButton:hover { filter: brightness(1.04); }
 .slotButton:active { transform: translateY(1px); }
 .slotButton[aria-current='true'] { outline: 3px solid var(--blue); outline-offset: -1px; }
+/* 첫 연습 판 안내(PRD §12.2): 해당 조작 옆 한 문장. 알림(어두운 띠)과 구별되는 밝은 판에 파란 테두리. */
+.coach { margin: 0; padding: var(--s1) var(--s3); background: var(--paper); color: var(--ink); border: 2px solid var(--blue); border-radius: var(--r-input); font-size: 15px; font-weight: 700; }
+.coachField { position: absolute; left: 50%; bottom: var(--s2); transform: translateX(-50%); max-width: 90%; width: max-content; pointer-events: none; }

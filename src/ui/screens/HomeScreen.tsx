@@ -8,14 +8,17 @@ interface Props {
   settings: Settings;
   onNew(): void;
   onResume(): void;
+  onPractice(): void;
   onRecords(): void;
   onGuide(): void;
   onSettings(patch: Partial<Settings>): void;
 }
 
 /** 첫 화면: 활성 저장이 있으면 이어하기를 먼저 보인다. 손상된 저장은 조용히 지우지 않고 알린다(PRD §12.2). */
-export function HomeScreen({ saved, message, settings, onNew, onResume, onRecords, onGuide, onSettings }: Props) {
+export function HomeScreen({ saved, message, settings, onNew, onResume, onPractice, onRecords, onGuide, onSettings }: Props) {
   const canResume = saved?.kind === 'ok';
+  // 처음 온 학생에게는 연습을 먼저 권한다. 건너뛰어도 되고, 나중에 ‘연습하기’로 다시 볼 수 있다(PRD §12.2).
+  const suggestPractice = !canResume && !settings.practiceSeen;
   return (
     <main className={css.page}>
       <div className={`${kit.board} ${css.card}`}>
@@ -31,8 +34,12 @@ export function HomeScreen({ saved, message, settings, onNew, onResume, onRecord
               이어하기 · {saved.state.config.nickname} · {Math.max(1, saved.state.wave)}웨이브
             </button>
           )}
-          <button type="button" className={`${kit.button} ${canResume ? '' : kit.primary} ${kit.big}`} onClick={onNew}>새 게임</button>
+          {suggestPractice && (
+            <button type="button" className={`${kit.button} ${kit.primary} ${kit.big}`} onClick={onPractice}>처음이라면 연습부터</button>
+          )}
+          <button type="button" className={`${kit.button} ${canResume || suggestPractice ? '' : kit.primary} ${kit.big}`} onClick={onNew}>새 게임</button>
           <div className={css.row}>
+            {!suggestPractice && <button type="button" className={kit.button} onClick={onPractice}>연습하기</button>}
             <button type="button" className={kit.button} onClick={onGuide}>사용 설명서</button>
             <button type="button" className={kit.button} onClick={onRecords}>내 기록</button>
           </div>

@@ -1,6 +1,10 @@
 // 환경설정은 기기에 따로 저장하며 전투 판정에 영향을 주지 않는다(PRD §2, §17.1).
 export type FontScale = 'base' | 'large' | 'xlarge';
-export interface Settings { fontScale: FontScale; reducedMotion: boolean; lastDifficulty: string; lastNickname: string; playerId: string }
+export interface Settings {
+  fontScale: FontScale; reducedMotion: boolean; lastDifficulty: string; lastNickname: string; playerId: string;
+  /** 첫 연습 판을 마치거나 건너뛰었다. 홈에서 연습 권유를 그만 보인다(PRD §12.2). */
+  practiceSeen: boolean;
+}
 
 const KEY = 'vocabulary-td.settings';
 
@@ -10,6 +14,7 @@ const defaults = (): Settings => ({
   lastDifficulty: 'Normal',
   lastNickname: '',
   playerId: crypto.randomUUID(),
+  practiceSeen: false,
 });
 
 export function loadSettings(): Settings {
