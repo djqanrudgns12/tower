@@ -7,7 +7,7 @@
 작업은 GitHub의 브랜치 **`p1/intake-round1`**에 push되어 있다. `main`은 아직 `bad6e76`(이 구간 이전)이며 병합하지 않았다.
 
 ```bash
-cd /Users/bodyking/Desktop/vibecoding/towerdeffense
+cd /Users/bodyking/Desktop/vibecoding/tower   # 집 Mac의 저장소 폴더 이름은 tower다
 git status --short          # 비어 있어야 한다. 무언가 있으면 먼저 확인한다.
 git fetch origin
 git switch p1/intake-round1 # 처음이면 origin/p1/intake-round1을 따라가는 로컬 브랜치가 생긴다

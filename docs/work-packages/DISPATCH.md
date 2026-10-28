@@ -7,20 +7,23 @@
 ```bash
 B=bc3ee0720912d33ff2b96602c365cfdd38e37521
 for j in QR-001 RIG-001; do node tools/contract-hash.mjs $j; done
-# QR: 정답 원본(content-source/batches)을 뺀 작업 폴더. 검토자는 정답 키를 볼 수 없다.
+# QR: 정답 원본(content-source/batches)과 정답 열이 있는 Q20-001 반환서를 뺀 작업 폴더.
 for j in QR-001 QR-002; do
   git worktree add --no-checkout -b wp/$j ../tower-wp/$j $B
   # Windows Git Bash는 '/…' 인자를 C:/Program Files/Git/… 로 바꾸므로 경로 변환을 끈다.
-  MSYS_NO_PATHCONV=1 git -C ../tower-wp/$j sparse-checkout set --no-cone '/*' '!/content-source/batches/'
+  MSYS_NO_PATHCONV=1 git -C ../tower-wp/$j sparse-checkout set --no-cone '/*' '!/content-source/batches/' '!/docs/work-packages/Q20-001/RETURN.md'
   git -C ../tower-wp/$j checkout
 done
 git worktree add -b wp/RIG-001 ../tower-wp/RIG-001 $B
 # 채운 머리말을 작업 폴더로 복사한다(작업 폴더는 bc3ee07이라 머리말이 비어 있다).
 for j in QR-001 QR-002; do cp docs/work-packages/QR-001/REQUEST.md ../tower-wp/$j/docs/work-packages/QR-001/REQUEST.md; done
 cp docs/work-packages/RIG-001/REQUEST.md ../tower-wp/RIG-001/docs/work-packages/RIG-001/REQUEST.md
-# 확인: QR 폴더에는 content-source/reviews만 있고 batches가 없어야 한다.
+# 확인: QR 폴더에는 content-source/reviews만 있고 batches가 없어야 한다. Q20-001 폴더에는 REQUEST.md만 있어야 한다.
 ls ../tower-wp/QR-001/content-source ../tower-wp/QR-002/content-source
+ls ../tower-wp/QR-001/docs/work-packages/Q20-001 ../tower-wp/QR-002/docs/work-packages/Q20-001
 ```
+
+2026-10-28 집 Mac 점검: 처음 명령은 `docs/work-packages/Q20-001/RETURN.md`(20문항의 `정답` 열)를 검토자 폴더에 남겼다. 위 명령으로 고쳤다. Windows PC에 이미 만든 QR 폴더에는 이 파일이 남아 있으므로 거기서는 보내지 않는다. sparse checkout은 작업 트리에서만 빼므로 검토자는 `git show`·`git log -p`로 이력을 열 수 있고, `src/content/questions/grade3.dev.json`(개발용 은행)에 같은 표제어 16개가 있다. 프롬프트에서 둘 다 금지한다.
 
 `MSYS_NO_PATHCONV=1`은 Windows Git Bash용이고 Mac에서는 아무 효과가 없으니 그대로 두어도 된다. Windows에서는 먼저 `git config core.autocrlf input`을 해 둔다(Mac은 필요 없음).
 
@@ -44,7 +47,7 @@ ls ../tower-wp/QR-001/content-source ../tower-wp/QR-002/content-source
         QR-002(Claude): 결과 content-source/reviews/Q20-001/claude.json, 반환서 docs/work-packages/QR-001/RETURN-QR-002.md
 
 작업 폴더: C:\Users\User\Desktop\vibecoding\tower-wp\<QR-001 또는 QR-002>
-이 폴더 안에서만 읽고 쓴다. 본 저장소 폴더(towerdeffense)나 다른 tower-wp 폴더는 열지 않는다. 이 폴더에는 정답 원본(content-source/batches)이 없다. 다른 곳에서 찾아 열지 않는다.
+이 폴더 안에서만 읽고 쓴다. 본 저장소 폴더(Windows: towerdeffense, Mac: tower)나 다른 tower-wp 폴더는 열지 않는다. 이 폴더에는 정답 원본(content-source/batches)이 없다. 다른 곳에서 찾아 열지 않는다. git show·git log -p·git cat-file 등으로 이력의 파일을 열지 않고, 개발용 은행 src/content/questions/** 도 열지 않는다.
 
 1. 시작 확인 — 하나라도 다르면 작업하지 말고 그 출력만 보고한다.
    - git rev-parse HEAD → bc3ee0720912d33ff2b96602c365cfdd38e37521
