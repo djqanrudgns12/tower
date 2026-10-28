@@ -40,6 +40,7 @@ for (const mapId of maps) for (const difficulty of diffs) for (const strategy of
     wave1Fail: `${rs.filter(r => r.completedWave === 0).length}/${seeds}`,
     firstEvo: median(rs.map(r => r.firstEvoWave ?? 99)),
     bossKill: bossTotal ? r2(rs.reduce((a, r) => a + r.bossKills, 0) / bossTotal) : null,
+    boss5: (b5 => (b5.length ? r2(b5.filter(b => b.killed).length / b5.length) : null))(rs.flatMap(r => r.bosses.filter(b => b.wave === 5))),
     vocabPt: r2(median(rs.map(r => r.vocabPtShare))),
     answerGold: r2(median(rs.map(r => r.answerGoldShare))),
     capped: rs.filter(r => r.endReason === 'WAVE_CAP').length,

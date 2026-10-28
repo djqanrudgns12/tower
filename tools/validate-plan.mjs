@@ -17,7 +17,7 @@ const prdPath = 'vocabulary_td_prd_v0_5.md';
 const prd = read(prdPath);
 const data = json('docs/contracts/maps.candidate.v0.4.json');
 const defaults = json('docs/contracts/product.defaults.v0.5.json');
-const balance = json('docs/contracts/balance.candidate.v0.3.json');
+const balance = json('docs/contracts/balance.candidate.v0.4.json');
 const reportPath = 'docs/contracts/prd_v0_5_validation.json';
 const preserved = {
   'docs/assets/design-41-kingdom-expedition.png': '5150cb167deb846dfde633f6e5b0468a0053072435f2d92c485b869801643b13',
@@ -240,7 +240,7 @@ run('현재 진입 문서의 PRD 연결', () => {
 const report = {
   reviewedForDate: '2026-10-28', generatedAt: new Date().toISOString(),
   scope: '현재 문서의 링크·계약 일치·좌표 구조·설치칸 품질·화면 모드 산술·보존 해시만 검사. 게임·브라우저·기기·밸런스·교육·외부 검수·공개 승인 아님.',
-  sourceHashes: Object.fromEntries([...docs, 'docs/contracts/maps.candidate.v0.4.json', 'docs/contracts/product.defaults.v0.5.json', 'docs/contracts/balance.candidate.v0.3.json'].map(p => [p, hash(p)])),
+  sourceHashes: Object.fromEntries([...docs, 'docs/contracts/maps.candidate.v0.4.json', 'docs/contracts/product.defaults.v0.5.json', 'docs/contracts/balance.candidate.v0.4.json'].map(p => [p, hash(p)])),
   checks, localLinksChecked: links, maps: mapMetrics, preserved,
   passed: checks.filter(x => x.status === 'passed').length,
   failed: checks.filter(x => x.status === 'failed').length,

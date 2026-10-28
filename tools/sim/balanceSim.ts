@@ -57,6 +57,8 @@ export interface SimResult {
   firstEvoWave: number | null;
   bossKills: number;
   bossLeaks: number;
+  /** 보스가 나온 웨이브별 처치 여부. */
+  bosses: Array<{ wave: number; killed: boolean }>;
   correct: number;
   wrong: number;
   /** 문항 PT ÷ (문항 PT + 처치 PT). */
@@ -154,6 +156,7 @@ export function simulateRun(opt: SimOptions): SimResult {
   const readTicks = () => Math.round(opt.readSec * TICK_HZ * (0.75 + (u32(rng) / 0x100000000) * 0.5));
   const phaseTicks: Record<Phase, number> = { PREP_QUIZ: 0, BUILD: 0, BATTLE: 0, WAVE_WRAPUP: 0, GAME_OVER: 0 };
   let firstEvoWave: number | null = null;
+  const bosses: SimResult['bosses'] = [];
   let encId = -1, answerAt = 0, startAt = -1, spendAt = 0;
 
   const run = (cmd: Command) => {
@@ -202,7 +205,7 @@ export function simulateRun(opt: SimOptions): SimResult {
       if (s.tick >= startAt) { run({ type: 'startBattle' }); startAt = -1; spendAt = s.tick + attention; }
     } else if (s.phase === 'BATTLE' && s.tick >= spendAt) { spend(); spendAt = s.tick + attention; }
     phaseTicks[s.phase]++;
-    advanceTick(ctx, s);
+    for (const e of advanceTick(ctx, s)) if ((e.type === 'kill' || e.type === 'leak') && e.kind === 'boss') bosses.push({ wave: s.wave, killed: e.type === 'kill' });
   }
 
   const st = s.stats;
@@ -215,6 +218,7 @@ export function simulateRun(opt: SimOptions): SimResult {
     firstEvoWave,
     bossKills: st.bossKills,
     bossLeaks: st.bossLeaks,
+    bosses,
     correct: st.correct,
     wrong: st.wrong,
     vocabPtShare: st.ptFromQuestions / Math.max(1, st.ptFromQuestions + st.ptFromKills),

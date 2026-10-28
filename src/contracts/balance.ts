@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-// docs/contracts/balance.candidate.v0.3.json의 런타임 계약. 단위는 정수 ms·BP(10000=1.0)·milli.
+// docs/contracts/balance.candidate.v0.4.json의 런타임 계약. 단위는 정수 ms·BP(10000=1.0)·milli.
 const int = z.number().int().refine(Number.isSafeInteger, '안전 정수가 아니다');
 const nonNeg = int.min(0);
 const bp = int.min(0).max(100000);

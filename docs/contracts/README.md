@@ -6,7 +6,8 @@
 |---|---|---|
 | [maps.candidate.v0.4.json](maps.candidate.v0.4.json) | 15×9·4개 긴 경로·80개 지정 슬롯·영구 장식 | 좌표 후보, 게임 밸런스 미검증(v0.5에서 좌표 변경 없음) |
 | [product.defaults.v0.5.json](product.defaults.v0.5.json) | 화면 R/S 모드·확대 기준·고비보상·무드·‘모르겠어요’·숫자/저장 방식·학생용 표시 | 작업 기본값, 제품 승인 아님 |
-| [balance.candidate.v0.3.json](balance.candidate.v0.3.json) | 난이도·적·타워 Lv1·강화·웨이브 생성식(정수 ms·BP·milli 단위) | 밸런스 후보, Lv3 분기는 P2에 추가 |
+| [balance.candidate.v0.4.json](balance.candidate.v0.4.json) | 난이도·적·타워 Lv1·강화·웨이브 생성식(정수 ms·BP·milli 단위) | 현재 밸런스 후보(S11 엔진 시뮬레이션 반영), 나머지 7종 분기는 P2에 추가 |
+| [balance.candidate.v0.3.json](balance.candidate.v0.3.json) | 이전 후보 | S11 기준선의 비교 대상으로만 보존 |
 | [question-draft.schema.json](question-draft.schema.json) | 실제 초안 스키마0.2 | draft/machine_checked 전용 |
 | [prd_v0_5_validation.json](prd_v0_5_validation.json) | 현재 문서/계약/좌표/해시 검사 실제 결과 | 제품 실행 시험과 구분 |
 

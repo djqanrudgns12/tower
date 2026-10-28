@@ -29,7 +29,7 @@ npm run verify
 npm run test:e2e
 ```
 
-캡처는 `test-results/shots/`에 남습니다. `npm run simulate:balance`는 제품 엔진으로 가상 플레이어를 돌리는 밸런스 시뮬레이터(S11)입니다. `--diffs Normal --strats novice --set 경로=값`으로 조건과 후보 수치를 바꿔 잴 수 있고, 계약 파일은 바꾸지 않습니다. 학생 실측이 아닙니다.
+캡처는 `test-results/shots/`에 남습니다. 5173 포트에 다른 작업 폴더의 서버가 떠 있으면 그 서버를 재사용하므로 `E2E_PORT=5175 npm run test:e2e`처럼 포트를 나눕니다. `npm run simulate:balance`는 제품 엔진으로 가상 플레이어를 돌리는 밸런스 시뮬레이터(S11)입니다. `--diffs Normal --strats novice --set 경로=값`으로 조건과 후보 수치를 바꿔 잴 수 있고, 계약 파일은 바꾸지 않습니다. 학생 실측이 아닙니다.
 
 ## 구조
 
@@ -43,7 +43,7 @@ npm run test:e2e
 | `src/game/` | Phaser 전장(임시 그림·manifest 원화 대체·확대·미니맵), 보행 자세 | 보상 판정 |
 | `src/ui/` | React 화면·문제판·관리 패널·정지층 | Phaser·저장소 직접 호출 |
 
-밸런스 수치의 원본은 `docs/contracts/balance.candidate.v0.3.json` 하나이며 PRD 표와 `npm run validate:plan`이 대조합니다.
+밸런스 수치의 원본은 `docs/contracts/balance.candidate.v0.4.json` 하나이며 PRD 표와 `npm run validate:plan`이 대조합니다.
 
 ## 문서
 

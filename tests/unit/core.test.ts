@@ -30,11 +30,12 @@ describe('xorshift32-v1', () => {
 describe('정수 산술', () => {
   it('정수 ms를 올림 틱으로 바꾼다(A33)', () => {
     expect([1000, 1600, 1400, 1250, 1085, 750, 4000].map(msToTicks)).toEqual([30, 48, 42, 38, 33, 23, 120]);
-    expect([1, 2, 3, 4].map(w => spawnIntervalTicks(BALANCE, w))).toEqual([48, 42, 38, 33]);
+    expect([1, 2, 3, 4].map(w => spawnIntervalTicks(BALANCE, w))).toEqual([48, 42, 38, 29]);
   });
   it('v0.4 부동소수 식이 어긋나던 41·81웨이브도 정수 ms로 계산한다', () => {
-    expect(spawnIntervalTicks(BALANCE, 41)).toBe(27);
-    expect(spawnIntervalTicks(BALANCE, 81)).toBe(21);
+    // 0.4-candidate: 41웨이브 max(650, 950-200)=750ms → 22.5틱 올림 23, 81웨이브는 하한 650ms → 19.5틱 올림 20.
+    expect(spawnIntervalTicks(BALANCE, 41)).toBe(23);
+    expect(spawnIntervalTicks(BALANCE, 81)).toBe(20);
   });
   it('round5 강화비와 60% 판매(A14): 궁수 40/70/110/155, Lv5 판매 261', () => {
     expect([1, 2, 3, 4].map(l => upgradeCost(BALANCE, 'archer', l))).toEqual([40, 70, 110, 155]);

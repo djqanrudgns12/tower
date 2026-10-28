@@ -1,4 +1,4 @@
-import balanceJson from '../../docs/contracts/balance.candidate.v0.3.json';
+import balanceJson from '../../docs/contracts/balance.candidate.v0.4.json';
 import mapsJson from '../../docs/contracts/maps.candidate.v0.4.json';
 import defaultsJson from '../../docs/contracts/product.defaults.v0.5.json';
 import { balanceSchema, type DifficultyId, type TowerId } from '../contracts/balance';

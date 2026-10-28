@@ -1,6 +1,6 @@
 # 다음 총괄·다음 컴퓨터 인계
 
-기준일: 2026-10-28 · 현재 구간: **P1 첫 완성 구간 — 1차 수합, P1-REST(소리 제외), S11 기준선 완료, 2차 작업 발행 대기, 밸런스 방향 결정 대기** · 총괄: Claude Opus 5.5(Claude Code, Windows PC → 집 Mac)
+기준일: 2026-10-28 · 현재 구간: **P1 첫 완성 구간 — 1차 수합, P1-REST(소리 제외), S11·밸런스 `0.4-candidate` 완료, 2차 작업 진행 중(QR 결과 수합 대기·RIG 진행)** · 총괄: Claude Opus 5.5(Claude Code, Windows PC → 집 Mac)
 
 ## 집 Mac에서 처음 할 일
 
@@ -39,8 +39,8 @@ Node 24(`.node-version`). 브라우저 흐름까지 보려면 `npm run test:e2e`
 | WebGL 문맥 손실 복구(§12.7) | 완료 | `RunController.rendererLost/rendererRestored` |
 | 첫 연습 판(§12.2) | 완료. 연습 전용 4문항은 공동검수 전 | `practiceContext`, `src/content/questions/practice.json` |
 | 소리 | 미착수(음원 작업을 먼저 정해야 함) | PRD §11.5 |
-| 2차 작업 QR-001·QR-002·RIG-001 | **READY.** 집 Mac에 작업 폴더 생성 완료(`../tower-wp/{QR-001,QR-002,RIG-001}`, `bc3ee07`, 해시 일치), 발행은 사용자가 전달 | [발행용 프롬프트](work-packages/DISPATCH.md) 2차 절 |
-| 엔진 밸런스 시뮬레이터(S11) | 완료, 근사 모델 폐기. Normal 기준 34.3분으로 15~25분 미달, 정답률 효과 1~2웨이브. 후보 A 측정, **사용자 결정 대기** | PRD §17.3, `docs/balance/s11-*.json`, `npm run simulate:balance` |
+| 2차 작업 QR-001·QR-002·RIG-001 | **발행됨.** 집 Mac 작업 폴더(`../tower-wp/{QR-001,QR-002,RIG-001}`, `bc3ee07`). QR 두 폴더에 결과·반환서가 생김(수합 전), RIG는 진행 중 | [작업 게시판](EXECUTION_BOARD.md) |
+| 엔진 밸런스 시뮬레이터(S11)·밸런스 | 완료, 근사 모델 폐기. 사용자가 후보 A 방향을 골라 `0.4-candidate`로 반영: Normal 기준 34.3분→23.3분, 정답률 효과 1~2→2.5~4웨이브, PRD 기준 6개 통과 | PRD §17.3, `docs/contracts/balance.candidate.v0.4.json`, `docs/balance/s11-*.json` |
 | 비석 ‘가’ 글자 | 원화 아래에 깔려 안 보이던 결함 수정 | `BattleScene.ts` `STELE_FACE_Y` |
 
 이 구간의 커밋(`bad6e76` 다음, 모두 `p1/intake-round1`):
@@ -53,7 +53,8 @@ Node 24(`.node-version`). 브라우저 흐름까지 보려면 `npm run test:e2e`
 | `0448bf6` | 첫 연습 판 |
 | `19e1c6c` | 이 인계서와 Mac용 발행 안내 |
 | `17a72d3` | 검토자 폴더의 정답 노출 차단(Q20 반환서 제외·이력·개발 은행 금지) |
-| 그다음 | 비석 글자, S11 시뮬레이터·기준선 |
+| `258161f` | 비석 글자, S11 시뮬레이터·기준선 |
+| 그다음 | 밸런스 `0.4-candidate`, 사용 설명서 준비 문항 수를 계약에서 읽기, e2e 포트 `E2E_PORT` |
 
 ## 다음 첫 행동
 
@@ -63,7 +64,7 @@ Node 24(`.node-version`). 브라우저 흐름까지 보려면 `npm run test:e2e`
 2. **반환되면 수합.** [작업 패키지](work-packages/README.md)의 ‘받을 때’ 절차를 따른다.
    - QR: 두 보고서를 `npx vitest run tests/unit/content.test.ts`로 형식 검사 → [QR-001 요청서](work-packages/QR-001/REQUEST.md)의 승인 규칙(Argon 자체 반박 + Codex + Claude 중 하나라도 fail/uncertain이면 격리, blindChoice가 정답과 다르면 자동 격리)으로 판정한다. 총괄 사전 메모: 해설 20/20이 사전 뜻과 일치, `g3-argon-0013` 보기 c ‘받아적었어요’ 띄어쓰기 의심. **통과 문항을 게임 은행으로 옮기는 빌드 도구는 아직 없다**(초안 → `bankQuestionSchema` 변환, `status: published`, 은행 버전 올림). 수합 때 총괄이 만든다.
    - RIG: `src/game/animation/**`와 `tests/unit/animation*.test.ts`만 들인다. 피격 프레임 연결처럼 `BattleScene.ts`가 필요한 요청은 총괄이 반영한다. RIG가 도는 동안 총괄은 `src/game/animation/**`를 고치지 않는다.
-3. **밸런스 방향 결정 → G2 게이트(PRD §18.2).** S11 기준선과 후보 A가 PRD §17.3에 있다. 사용자가 방향(처치 골드를 줄여 정답 비중을 키울지, 준비 문항 수)을 정하면 네 난이도로 넓혀 다시 재고 `balance.candidate`를 올린다. 그다음 4→5→6웨이브, 오답·정지·저장복귀·보상 중복 검증. 실기기 확인도 남아 있다.
+3. **G2 게이트(PRD §18.2).** 밸런스는 `0.4-candidate`로 정했다(PRD §17.3). 남은 위험: Easy 27~29분, 정답률 60% 초보형의 첫 보스 처치 0.13. 다음은 4→5→6웨이브, 오답·정지·저장복귀·보상 중복 검증과 실기기 확인이다.
 4. 그 밖의 대기 일: ART-002(지면·설치 돌·작은 장식, 지금은 임시 그림과 원화가 섞여 보임), 대장 원화 5웨이브 전투 확인, 소리용 음원 작업 정의, QR-PRACTICE(연습 전용 4문항 검토), `p1/intake-round1`을 `main`에 합칠지(PR 여부) 결정.
 
 ## 이 구간에서 바뀐 설계(코드를 읽기 전에 알 것)
@@ -75,12 +76,14 @@ Node 24(`.node-version`). 브라우저 흐름까지 보려면 `npm run test:e2e`
 - 글자 크기별 문제판 예산: `product.defaults.v0.5.json`의 `layout.questionFontExtraPx`(+0/12/28px).
 - 연습 판은 정규 규칙에 시도 수 1·적 3마리·등장 간격 2.2초만 바꾼 문맥으로 돌고, 저장·기록·소유권이 없다. 홈의 연습 권유는 설정 `practiceSeen`으로 끈다.
 - `.gitattributes`: `asset-source/**`는 줄바꿈 변환 없이 바이트 그대로 둔다(`SHA256SUMS.txt`와 일치). `asset-source`·`content-source`는 ESLint 대상에서 뺐다.
+- e2e는 이미 떠 있는 서버를 재사용한다. 작업 폴더가 5173을 쓰고 있으면 `E2E_PORT=5175 npm run test:e2e`로 포트를 나눈다.
 - PRD 질문 2건의 답: 한 번의 긴 프레임은 벽시계 시간을 버린다(§13.3), seed 0은 먼저 재매핑한 뒤 스트림 상수와 XOR(§20.1, golden vector 시험).
 
 ## 검증(2026-10-28, 집 Mac에서 실제 실행)
 
 - 전환 직후(`19e1c6c`): `npm run verify` 통과, `npm run test:e2e` 7개 통과(2.6분). Mac 첫 실행 공백은 해소.
 - 비석·S11 뒤: `npm run verify` 통과(단위·속성 시험 18파일 72개, PRD 검산 48개, 문항 검사), e2e `1440×900` 한 판 흐름 1개 통과. 비석 글자는 내장 브라우저 1440×900 연습 판에서 비석 면 위에 보이는 것을 확인했다.
+- 밸런스 `0.4-candidate` 뒤: `npm run verify` 통과(72개·48개), S11 기준 6개 통과, `E2E_PORT=5175`로 e2e `1440×900` 한 판 흐름 1개 통과(5173은 RIG-001 작업 폴더의 서버가 쓰는 중), 사용 설명서에 ‘그다음은 2문제’가 보이는 것을 브라우저로 확인했다.
 - 미실행: 나머지 e2e 6개(바뀐 범위 밖), `npm run build`, 실기기, 소리, 문항 공동검수, 리깅 인수, 배포.
 
 ## 검증(2026-10-28, Windows PC에서 실제 실행)

@@ -11,8 +11,8 @@
 | [UI-AUDIT-001](work-packages/UI-AUDIT-001/RETURN.md) | **ACCEPTED** — CSS 들임, 계약 변경 7건 반영(휴대폰 트레이 한 행은 §12.4대로 되돌림) | Argon 4 | `src/ui/**/*.module.css`(공통 제외) | — |
 | [ART-SAMPLE-001](work-packages/ART-SAMPLE-001/RETURN.md) | **ACCEPTED** — 13장 `integrated_pass`, 대장 2·피격 1은 `visual_pass` 보류 | Codex 이미지 | `asset-source/incoming/ART-SAMPLE-001/**` | — |
 | [Q20-001](work-packages/Q20-001/RETURN.md) | **RETURNED · 공동검수 대기** — 검사 통과, 정답 없는 입력 생성됨 | Argon 4 | `content-source/batches/Q20-001/**` | — |
-| [QR-001/QR-002](work-packages/QR-001/REQUEST.md) | **READY·발행 준비됨** | Codex·Claude 새 문맥 | `content-source/reviews/Q20-001/*` | Q20-001 반환 ✓ |
-| [RIG-001](work-packages/RIG-001/REQUEST.md) | **READY·발행 준비됨** | Claude 새 문맥 또는 Codex | `src/game/animation/**` | ART-SAMPLE-001 인수 ✓ |
+| [QR-001/QR-002](work-packages/QR-001/REQUEST.md) | **RUNNING → 결과 파일 생김(2026-10-28 확인, 수합 전)** — 두 작업 폴더에 `codex.json`·`claude.json`과 반환서가 있다 | Codex·Claude 새 문맥 | `content-source/reviews/Q20-001/*` | Q20-001 반환 ✓ |
+| [RIG-001](work-packages/RIG-001/REQUEST.md) | **RUNNING**(2026-10-28 확인: 작업 폴더에서 5173 개발 서버 실행 중, `src/game/animation/**` 변경 중) | Claude 새 문맥 또는 Codex | `src/game/animation/**` | ART-SAMPLE-001 인수 ✓ |
 | P1-REST | 소리만 남음 — A26 철회 목록·설치 자리 목록·문맥 손실 복구·첫 연습 판 완료 | 총괄 | 소리(음원 작업 필요) | 음원 묶음 |
 | QR-PRACTICE | 계획 | Codex·Claude 검토 | 연습 전용 4문항(`src/content/questions/practice.json`) 공동검수 | 공개 전 |
 | ART-002 | 계획 | Codex 이미지 | 지면·설치 돌·작은 장식(아직 임시 그림과 섞여 보임) | ART-SAMPLE-001 ✓ |

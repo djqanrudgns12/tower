@@ -1,3 +1,4 @@
+import { BALANCE } from '../../content';
 import kit from '../kit.module.css';
 import css from './screens.module.css';
 
@@ -10,7 +11,7 @@ export function GuideScreen({ onBack }: { onBack(): void }) {
         <section className={css.stack}>
           <h2 className={css.h2}>한 판은 이렇게 돌아가요</h2>
           <ol className={css.steps}>
-            <li><strong>준비 문제</strong>: 첫 웨이브는 5문제, 그다음은 3문제를 풀어요. 맞히면 골드를 받아요.</li>
+            <li><strong>준비 문제</strong>: 첫 웨이브는 {BALANCE.run.prepAttempts.firstWave}문제, 그다음은 {BALANCE.run.prepAttempts.laterWaves}문제를 풀어요. 맞히면 골드를 받아요.</li>
             <li><strong>타워 놓기</strong>: 빈 돌 받침을 누르고 타워를 고른 뒤 ‘설치’를 눌러요. 원 안의 밝은 길까지 공격해요.</li>
             <li><strong>전투 시작</strong>: 준비가 되면 ‘전투 시작’을 눌러요. 싸우는 동안에도 문제를 풀고 타워를 놓을 수 있어요.</li>
             <li><strong>성문 회복</strong>: 웨이브를 버티면 성문이 다시 튼튼해져요. 성문이 0이 되면 판이 끝나요.</li>

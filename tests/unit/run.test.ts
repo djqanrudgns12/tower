@@ -6,7 +6,7 @@ import { attackIntervalTicks, towerStats } from '../../src/domain/towers';
 import { answerCurrent, correctChoice, finishPrep, nearestSlots, newRun, ok, runUntil, stateHash, ticks, wrongChoice } from './helpers';
 
 describe('준비·배치·전투 흐름', () => {
-  it('A01: 1·2·3웨이브 준비는 최초 제출 5/3/3회, 오답·모르겠어요도 횟수에 포함', () => {
+  it('A01: 1·2·3웨이브 준비는 최초 제출 5/2/2회, 오답·모르겠어요도 횟수에 포함', () => {
     const { ctx, s } = newRun();
     const counts: number[] = [];
     for (let w = 1; w <= 3; w++) {
@@ -19,7 +19,7 @@ describe('준비·배치·전투 흐름', () => {
       runUntil(ctx, s, ['PREP_QUIZ', 'WAVE_WRAPUP']);
       while (s.phase === 'WAVE_WRAPUP') answerCurrent(ctx, s, 'skip');
     }
-    expect(counts).toEqual([5, 3, 3]);
+    expect(counts).toEqual([5, 2, 2]);
   });
 
   it('A02: 수동 시작 전에는 적·전투 문항·버닝이 없다', () => {
