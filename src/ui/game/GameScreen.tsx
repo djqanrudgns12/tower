@@ -61,7 +61,7 @@ export function GameScreen({ controller, towers, notice, fontScale, reducedMotio
   useEffect(() => { controller.start(); return () => controller.stop(); }, [controller]);
   useEffect(() => { if (view.phase === 'GAME_OVER') { const t = setTimeout(() => onExit('over'), 900); return () => clearTimeout(t); } return undefined; }, [view.phase, onExit]);
 
-  const result = (r: ReturnType<RunController['dispatch']>, need?: number) => {
+  const result = (r: ReturnType<RunController['dispatch']>, need?: number): r is Extract<typeof r, { ok: true }> => {
     if (!r.ok) setFlash(commandErrorText(r.error, need !== undefined ? { need } : undefined));
     else setFlash(null);
     return r.ok;
@@ -73,12 +73,14 @@ export function GameScreen({ controller, towers, notice, fontScale, reducedMotio
 
   const onBuild = () => {
     if (!selection.slotId || !selection.previewType) return;
-    const before = new Set(view.towers.map(t => t.id));
-    if (!result(controller.dispatch({ type: 'build', slotId: selection.slotId, tower: selection.previewType }))) return;
-    const built = controller.state.towers.find(t => !before.has(t.id));
+    const r = controller.dispatch({ type: 'build', slotId: selection.slotId, tower: selection.previewType });
+    if (!result(r)) return;
+    // 명령은 다음 틱에 반영되지만 새 타워 번호는 미리 정해진다. 그 번호로 선택을 옮긴다.
+    let builtId: number | null = null;
+    for (const e of r.events) if (e.type === 'towerBuilt') builtId = e.towerId;
     // 설치하면 구매 모드를 끝내고 선택을 설치된 타워로 바꾼다. 휴대폰은 트레이를 접고 전체 지도로 돌아간다(PRD §6.3, §12.4).
     if (layout.mode === 'S') { clear(); setTrayOpen(false); }
-    else if (built) { setSelection({ ...EMPTY, towerId: built.id }); setMode('tower'); }
+    else if (builtId !== null) { setSelection({ ...EMPTY, towerId: builtId }); setMode('tower'); }
   };
   const onUpgrade = (branch?: BranchId) => {
     if (selection.towerId === null) return;

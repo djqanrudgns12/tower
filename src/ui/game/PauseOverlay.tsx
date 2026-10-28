@@ -40,7 +40,7 @@ export function PauseOverlay(p: Props) {
         <p>{PAUSE_COPY[main]}</p>
         {p.reasons.includes('STORAGE') ? (
           <div className={css.stack}>
-            <button ref={first} type="button" className={`${kit.button} ${kit.primary} ${kit.big}`} disabled={busy} onClick={async () => { setBusy(true); await p.onRetrySave(); setBusy(false); }}>다시 저장하기</button>
+            <button ref={first} type="button" className={`${kit.button} ${kit.primary} ${kit.big}`} disabled={busy} aria-busy={busy} onClick={async () => { setBusy(true); await p.onRetrySave(); setBusy(false); }}>다시 저장하기</button>
             <button type="button" className={kit.button} onClick={p.onLeaveUnsaved}>저장하지 않고 나가기</button>
             <p className={kit.muted}>저장하지 않고 나가면 마지막으로 저장된 곳까지만 이어할 수 있어요.</p>
           </div>
@@ -61,7 +61,7 @@ export function PauseOverlay(p: Props) {
               ))}
             </fieldset>
             {p.canSave && (
-              <button type="button" className={kit.button} disabled={busy} onClick={async () => { setBusy(true); setFailed(false); const ok = await p.onSaveExit(); setBusy(false); if (!ok) setFailed(true); }}>
+              <button type="button" className={kit.button} disabled={busy} aria-busy={busy} onClick={async () => { setBusy(true); setFailed(false); const ok = await p.onSaveExit(); setBusy(false); if (!ok) setFailed(true); }}>
                 {busy ? '저장하는 중…' : '저장하고 나가기'}
               </button>
             )}

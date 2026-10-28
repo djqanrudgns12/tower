@@ -6,7 +6,7 @@ import type { PauseReason } from '../domain/types';
 export const DIFFICULTY_COPY: Record<DifficultyId, { label: string; hint: string }> = {
   Easy: { label: '쉬움', hint: '적이 약하고 성문이 튼튼해요' },
   Normal: { label: '보통', hint: '처음이라면 추천해요' },
-  Hard: { label: '어려움', hint: '배치에 익숙해지면 골라요' },
+  Hard: { label: '어려움', hint: '적이 더 튼튼해요' },
   Crazy: { label: '아주 어려움', hint: '성문이 아주 약해요' },
 };
 

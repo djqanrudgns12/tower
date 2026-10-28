@@ -21,7 +21,10 @@ async function finishPrep(page: Page) {
   for (let i = 0; i < 8; i++) {
     if (await page.getByRole('button', { name: '전투 시작' }).isVisible()) return;
     const panel = page.getByRole('region', { name: '어휘 문제' });
-    await panel.getByRole('group', { name: '보기' }).getByRole('button').first().click();
+    const first = panel.getByRole('group', { name: '보기' }).getByRole('button').first();
+    await first.click();
+    // 답안은 다음 논리 틱(1/30초)에 채점된다. 채점되어 보기가 잠길 때까지 기다린다.
+    await expect(first).toBeDisabled();
     const next = panel.getByRole('button', { name: '다음 문제' });
     if (await next.isVisible({ timeout: 2500 }).catch(() => false) || await panel.getByText('해설을 읽어 주세요').isVisible().catch(() => false)) {
       await expect(next).toBeEnabled({ timeout: 6000 });
@@ -52,7 +55,7 @@ test('1440×900: 준비 → 설치 → 전투 → 정지 가림 → 재개', asy
   await page.getByRole('option', { name: /궁수탑/ }).click();
   await shot(page, 'desktop-preview');
   await page.getByRole('button', { name: '설치 · 60골드' }).click();
-  await expect(page.getByText('Lv 1')).toBeVisible();
+  await expect(page.getByText('레벨 1')).toBeVisible();
   await shot(page, 'desktop-built');
 
   await page.getByRole('button', { name: '전투 시작' }).click();

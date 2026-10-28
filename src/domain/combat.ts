@@ -1,7 +1,7 @@
 import type { GameContext } from './context';
 import type { DomainEvent } from './events';
 import { dist2, positionAt } from './geometry';
-import { add, bpFloor, isqrt, mulDivCeil, safe } from './num';
+import { add, bpFloor, ceilDiv, isqrt, safe, TICK_HZ } from './num';
 import { attackIntervalTicks, towerStats } from './towers';
 import type { Enemy, Projectile, RunState, Tower } from './types';
 import { enemyMaxHp, enemyResists, enemySpeedBP } from './waves';
@@ -25,12 +25,15 @@ export function battleTick(ctx: GameContext, s: RunState, ev: DomainEvent[]): vo
     }
   }
 
-  const speedBonus = t < s.burningUntilTick ? ctx.balance.burning.attackSpeedBP : 0;
+  const speedBonus = burningBonusBP(ctx, s, t);
   for (const tower of s.towers) fire(ctx, s, tower, speedBonus, ev);
 
   move(ctx, s, ev);
   if (s.enemies.some(e => !e.alive)) s.enemies = s.enemies.filter(e => e.alive);
 }
+
+/** 버닝 중 공격 속도 보너스(PRD §5). 발사와 전투 중 구매가 같은 값을 쓴다. */
+export const burningBonusBP = (ctx: GameContext, s: RunState, tick: number) => (tick < s.burningUntilTick ? ctx.balance.burning.attackSpeedBP : 0);
 
 function spawn(ctx: GameContext, s: RunState, ev: DomainEvent[]) {
   const b = ctx.balance;
@@ -67,8 +70,7 @@ function fire(ctx: GameContext, s: RunState, tower: Tower, speedBonus: number, e
   // 표적이 없으면 준비 상태로 기다린다. 기다린 시간만큼 몰아서 쏘지 않는다(PRD §7.2).
   if (!target) return;
   const at = positionAt(ctx.path, target.progress);
-  const distance = isqrt(dist2(at.x, at.y, tower.x, tower.y));
-  const flight = Math.max(1, mulDivCeil(distance, 30, stats.projectileSpeed, 'flight'));
+  const flight = Math.max(1, flightTicks(dist2(at.x, at.y, tower.x, tower.y), stats.projectileSpeed));
   const projectile: Projectile = {
     id: s.seq.projectile++, towerId: tower.id, towerType: tower.type, fromX: tower.x, fromY: tower.y,
     targetId: stats.splashRadius > 0 ? null : target.id, toX: at.x, toY: at.y, firedTick: t, arrivalTick: t + flight,
@@ -78,6 +80,13 @@ function fire(ctx: GameContext, s: RunState, tower: Tower, speedBonus: number, e
   s.projectiles.push(projectile);
   tower.nextAttackTick = t + attackIntervalTicks(ctx.balance, stats, speedBonus);
   ev.push({ type: 'fire', projectileId: projectile.id, towerId: tower.id, towerType: tower.type });
+}
+
+/** 도착 틱 수 = ceil(거리×30/속도). 거리를 먼저 내림하면 경계에서 1틱 일찍 닿으므로 제곱 그대로 올림한다(PRD §20.3, §13.3). */
+function flightTicks(d2: number, speed: number): number {
+  const n = safe(d2 * TICK_HZ * TICK_HZ, 'flight');
+  const root = isqrt(n);
+  return ceilDiv(root * root < n ? root + 1 : root, speed);
 }
 
 function resolve(ctx: GameContext, s: RunState, p: Projectile, ev: DomainEvent[]) {

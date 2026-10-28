@@ -1,0 +1,184 @@
+[
+  {
+    "id": "tower.archer",
+    "size": 192,
+    "origin": [
+      0.5,
+      0.8125
+    ],
+    "display": 1.1,
+    "layer": "body",
+    "attempt": 2,
+    "tail": "A SMALL SQUAT wooden watchtower with a green pitched roof, four SHORT sturdy legs. NO archer, NO bow. Wider than tall, frontal shallow top-down view (not diagonal corner perspective). Entire opaque silhouette width 154px, height at most 135px on 192x192 canvas; base bottom-center at (96,156). Short broad roof, short broad platform, short legs. Do not make a tall lookout tower. Flat 2-3 shading areas, avoid complex wood grain, five-pixel thick brown outline."
+  },
+  {
+    "id": "tower.cannon",
+    "size": 192,
+    "origin": [
+      0.5,
+      0.8125
+    ],
+    "display": 1.1,
+    "layer": "body",
+    "tail": "A low round gray stone plinth with a simple sturdy wooden cannon carriage cradle on top, NO barrel and NO cannon tube. Two small bronze fittings. Broad squat silhouette 154px wide on 192x192 canvas, base bottom-center (96,156), object no more than 128px high. Slight top-down near-orthographic front, simple 2-3 shade planes."
+  },
+  {
+    "id": "tower.frost",
+    "size": 192,
+    "origin": [
+      0.5,
+      0.8125
+    ],
+    "display": 1.1,
+    "layer": "body",
+    "tail": "A low bright pale blue-white stone pedestal, broad hexagonal rounded platform with short sturdy tapered base, empty flat top. NO ice crystal (separate weapon), NO glow, NO runes. Shape distinct from wooden archer tower and circular cannon cradle. Silhouette width154px on 192x192 canvas, base bottom-center (96,156), total height90px. Simple thick dark brown outline and 2-3 flat shading planes."
+  },
+  {
+    "id": "tower.archer.weapon",
+    "size": 192,
+    "origin": [
+      0.5,
+      0.5
+    ],
+    "display": 0.8,
+    "layer": "weapon",
+    "tail": "A separate compact wooden recurve bow with green grip and exactly one nocked wooden arrow pointing horizontally RIGHT (+x), arrowhead at (176,96), pivot/grip center (96,96) on 192x192 canvas. Bow vertical, its curved wooden limbs on the right and taut string on the left. Arrow horizontal across center, small iron triangular arrowhead. No arms/person/base. Readable flat icon, thick brown outline."
+  },
+  {
+    "id": "tower.cannon.weapon",
+    "size": 192,
+    "origin": [
+      0.5,
+      0.5
+    ],
+    "display": 0.8,
+    "layer": "weapon",
+    "tail": "A separate SHORT stout dark iron cannon barrel with two simple bronze bands pointing horizontally RIGHT (+x). NO carriage, wheels, stand or base. Pivot center of barrel at (96,96); muzzle opening centered at (173,96) on 192x192 canvas. Barrel silhouette wider than tall, visible dark elliptical bore at right end. Flat color areas, thick dark brown outline."
+  },
+  {
+    "id": "tower.frost.weapon",
+    "size": 192,
+    "origin": [
+      0.5,
+      0.5
+    ],
+    "display": 0.8,
+    "layer": "weapon",
+    "tail": "One floating squat pale cyan ice crystal, single solid angular hexagonal prism with pointed top and bottom, 2-3 flat blue/cyan faces, dark brown outline. No pedestal, ring, fragments or glow. Crystal center (96,96) on 192x192 transparent canvas. Width112px height140px. Does not rotate, symmetric upright pose."
+  },
+  {
+    "id": "enemy.walker.0",
+    "size": 128,
+    "origin": [
+      0.5,
+      0.75
+    ],
+    "display": 0.72,
+    "layer": "body",
+    "tail": "The reference red goblin simplified: round red face with long pointed ears, short red nose, two tiny ivory lower tusks, black eyes, ONE small brown hair tuft, brown short sleeveless tunic, tan belt with small bronze clasp, bare red legs and feet, carries ONE short wooden spear with plain gray iron point facing RIGHT. Cute mischievous child-friendly, NOT scary. Side three-quarter profile walking RIGHT. Walk pose0 of4: LEFT foot forward planted, RIGHT foot back, feet touch y96, center ground(64,96) on128x128. Broad compact large head, height80px and entire sprite including spear width100px. Same head/body outfit must be reusable across frames. 3px outline at128."
+  },
+  {
+    "id": "enemy.walker.1",
+    "size": 128,
+    "origin": [
+      0.5,
+      0.75
+    ],
+    "display": 0.72,
+    "layer": "body",
+    "base": "enemy.walker.0",
+    "tail": "The SAME red goblin as image2, same exact face, hair, ears, expression, spear, outfit, proportions, body size and outline. Change ONLY legs and minimal arm pose to walk pose1 of4 facing RIGHT: legs crossing under body, right leg swinging forward. Keep head, torso, spear at the same coordinates as reference. Feet touch y96, ground center(64,96) on128x128. Do not redesign or add equipment."
+  },
+  {
+    "id": "enemy.walker.2",
+    "size": 128,
+    "origin": [
+      0.5,
+      0.75
+    ],
+    "display": 0.72,
+    "layer": "body",
+    "base": "enemy.walker.0",
+    "tail": "The SAME red goblin as image2, same exact face, hair, ears, expression, spear, outfit, proportions, body size and outline. Change ONLY legs and minimal arm pose to walk pose2 of4 facing RIGHT: RIGHT foot forward planted, LEFT foot behind (opposite contact to image2). Keep head, torso, spear at the same coordinates as reference. Feet touch y96, ground center(64,96) on128x128. Do not redesign."
+  },
+  {
+    "id": "enemy.walker.3",
+    "size": 128,
+    "origin": [
+      0.5,
+      0.75
+    ],
+    "display": 0.72,
+    "layer": "body",
+    "base": "enemy.walker.0",
+    "tail": "The SAME red goblin as image2, same exact face, hair, ears, expression, spear, outfit, proportions, body size and outline. Change ONLY legs and minimal arm pose to walk pose3 of4 facing RIGHT: legs crossing under body, LEFT leg swinging forward, distinct opposite crossing to pose1. Keep head, torso, spear at same coordinates as reference. Feet touch y96, ground center(64,96) on128x128. Do not redesign."
+  },
+  {
+    "id": "enemy.walker.hit",
+    "size": 128,
+    "origin": [
+      0.5,
+      0.75
+    ],
+    "display": 0.72,
+    "layer": "body",
+    "base": "enemy.walker.0",
+    "tail": "The SAME red goblin as image2, exact face design, hair, spear, outfit, size and outline. Single HIT reaction pose: small local squash of torso and head recoiling slightly left, squinting expression, both feet stay fixed on ground y96, ground center(64,96) on128x128. NO blood, stars, flash or impact effects. Keep equipment and identity unchanged."
+  },
+  {
+    "id": "enemy.boss.0",
+    "size": 192,
+    "origin": [
+      0.5,
+      0.75
+    ],
+    "display": 1.15,
+    "layer": "body",
+    "tail": "A squat purple goblin chief walking RIGHT, side three-quarter profile. Broad rounded purple face, two small cream curved horns, simple bronze forehead band, brown sleeveless leather vest with bronze bands, brown belt, bare purple feet. Two little tusks, playful determined face suitable for children. Carries a SHORT plain wooden club. No jewels or crown. Walk pose0 of2: left foot forward planted right foot back. Ground center (96,144), feet touch y144 on192x192, total silhouette width150px height125px. Simplified 2-3 shading planes."
+  },
+  {
+    "id": "enemy.boss.1",
+    "size": 192,
+    "origin": [
+      0.5,
+      0.75
+    ],
+    "display": 1.15,
+    "layer": "body",
+    "base": "enemy.boss.0",
+    "tail": "The SAME purple goblin chief as image2: identical face, horns, bronze bands, vest, belt, club, body proportions and size. Change ONLY legs and minimal arm swing to opposite walking contact pose1 of2 RIGHT: right foot forward planted and left foot back. Keep head/torso at same coordinates as reference. Ground center(96,144), feet touch y144 on192x192. No new accessories."
+  },
+  {
+    "id": "map.gate",
+    "size": 256,
+    "origin": [
+      0.5,
+      0.75
+    ],
+    "display": 1.8,
+    "layer": "decor",
+    "tail": "A broad squat closed wooden castle gate with two stout gray stone pillars, one on each side. Rounded top wooden double door with simple bronze hinge bands, dark brown outlines, no heraldry or symbols. Near-orthographic slight top-down front view. Base bottom-center(128,192) on256x256 canvas, silhouette width204px height168px. No ground tile, walls beyond the two pillars or extra scenery."
+  },
+  {
+    "id": "deco.tree",
+    "size": 192,
+    "origin": [
+      0.5,
+      0.85
+    ],
+    "display": 1.05,
+    "layer": "decor",
+    "tail": "One compact green deciduous tree with rounded broad canopy of THREE simple overlapping leafy masses, 2-3 flat shading areas, short thick warm brown trunk and small integrated roots. Dark brown outline, slight top-down view. Entire silhouette width150px height140px on192x192 canvas, bottom-center of trunk/roots at(96,163.2). No ground, grass, fruits or separate shadows."
+  },
+  {
+    "id": "deco.stele",
+    "size": 192,
+    "origin": [
+      0.5,
+      0.85
+    ],
+    "display": 1.05,
+    "layer": "decor",
+    "tail": "One blank broad squat gray stone stele with rounded head on a wide low stone foot. Absolutely NO text, letters, numbers, carvings, symbols, markings or runes. Large CLEAN EMPTY flat front face reserved for runtime Korean lettering. Slight top-down view, 2-3 shade planes, thick dark brown outline. Broad silhouette width150px height140px on192x192 canvas, base bottom-center(96,163.2). No ground tile, plants or cracks across the blank writing face."
+  }
+]

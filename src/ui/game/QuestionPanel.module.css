@@ -1,44 +1,55 @@
 /* 넓은 문제판 3구획: 지문·보기 + 오른쪽 240px 피드백(PRD §12.5). 높이 예산 183px, 기본 208px 안. */
-.panel { padding: 10px 14px; display: grid; gap: var(--s3); }
-.wide { grid-template-columns: minmax(0, 1000px) 240px; justify-content: center; align-items: start; min-height: 208px; }
-.narrow { grid-template-columns: 1fr; }
+.panel { padding: var(--s2) var(--s4); display: grid; gap: var(--s3); }
+.wide { grid-template-columns: minmax(0, 1000px) 240px; justify-content: center; align-items: start; min-height: 176px; }
+.narrow { grid-template-columns: 1fr; padding: var(--s2) var(--s3); gap: var(--s1); }
 .main { display: grid; gap: var(--s2); min-width: 0; }
+.narrow .main, .narrow .options { gap: var(--s1); }
 
-.stem { font-size: var(--q-font); line-height: 1.5; font-weight: 700; display: flex; flex-wrap: wrap; align-items: baseline; gap: var(--s2); }
+.stem { font-size: var(--q-font); line-height: 1.38; font-weight: 700; }
 .chip {
-  font-size: 13px; font-weight: 700; line-height: 1; padding: 6px 8px; border-radius: 999px;
-  background: var(--wood); color: var(--parchment); flex: none; align-self: center;
+  display: inline-block; font-size: 13px; font-weight: 700; line-height: 1;
+  padding: var(--s1) var(--s2); margin-right: var(--s2); border-radius: 999px;
+  background: var(--wood); color: var(--parchment); vertical-align: middle;
 }
 
-.options { display: grid; gap: var(--s2); }
+.options { display: grid; gap: var(--s2); grid-auto-rows: 1fr; }
 .options[data-cols='2'] { grid-template-columns: 1fr 1fr; }
 .options[data-cols='1'] { grid-template-columns: 1fr; }
 
 .option {
-  min-height: 48px; padding: 8px 12px; text-align: left;
-  display: flex; align-items: center; gap: var(--s3);
-  font-size: var(--q-font); line-height: 1.5;
+  position: relative; min-height: var(--touch); padding: var(--s1) var(--s3); text-align: left;
+  display: flex; align-items: center; gap: var(--s2);
+  font-size: var(--q-font); line-height: 1.35;
   background: var(--paper); border: 2px solid var(--edge); border-radius: var(--r-input);
-  box-shadow: var(--shadow); transition: transform 80ms, box-shadow 80ms;
+  box-shadow: var(--shadow); transition: transform 80ms, box-shadow 80ms, filter 80ms;
   touch-action: manipulation; user-select: none;
 }
-.option:not(:disabled):active { transform: translateY(1px); box-shadow: 0 1px 0 rgba(58, 41, 30, 0.35); }
+.option:hover:not(:disabled) { filter: brightness(1.04); }
+.option:not(:disabled):active { transform: translateY(1px); box-shadow: var(--shadow-pressed); }
 .option:disabled { cursor: default; color: var(--ink); }
 .num {
   flex: none; width: 26px; height: 26px; border-radius: var(--r-input); display: grid; place-items: center;
   font-size: 14px; font-weight: 700; background: var(--parchment); border: 1px solid var(--ink-soft);
 }
+.option:has(.mark) .num { visibility: hidden; }
 .optionText { flex: 1; min-width: 0; overflow-wrap: anywhere; }
 .mark { width: 22px; height: 22px; flex: none; }
+.option .mark {
+  position: absolute; left: var(--s3); width: 26px; height: 26px; padding: var(--s1);
+  border-radius: var(--r-input); background: var(--parchment); border: 1px solid currentColor;
+}
 
 .correct { outline: 3px solid var(--green); outline-offset: -1px; color: var(--green) !important; font-weight: 700; }
 .chosenWrong { outline: 3px dashed var(--danger); outline-offset: -1px; }
-.dim { opacity: 0.62; }
+.chosenWrong .mark { color: var(--danger); }
+.dim, .option.dim:disabled { color: var(--ink-soft); box-shadow: none; }
+.dim .num { color: var(--ink-soft); }
 
-.feedback { display: grid; gap: var(--s2); align-content: start; min-height: 44px; }
+.feedback { display: grid; gap: var(--s1); align-content: start; min-height: 44px; }
+.narrow .feedback:not(:has(.answer)) { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--s1) var(--s2); }
 .good { font-size: var(--q-font); font-weight: 700; color: var(--green); display: flex; align-items: center; gap: var(--s2); }
 .good .mark { color: var(--green); }
-.reward { font-weight: 400; color: var(--ink); font-size: 16px; }
-.answer { font-size: calc(var(--q-font) - 1px); font-weight: 700; }
-.why { font-size: 16px; line-height: 1.5; }
-.blank { display: inline-block; width: 4.2em; height: 1.1em; vertical-align: -0.2em; margin: 0 0.25em; border-bottom: 3px solid var(--ink); }
+.reward { font-weight: 400; color: var(--ink); font-size: 15px; }
+.answer { font-size: 15px; line-height: 1.35; font-weight: 700; }
+.why { font-size: 14px; line-height: 1.35; }
+.blank { display: inline-block; width: 4.2em; height: 1.1em; vertical-align: -0.2em; margin: 0 var(--s1); border-bottom: 3px solid var(--ink); }

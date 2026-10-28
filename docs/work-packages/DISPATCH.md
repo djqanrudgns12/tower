@@ -1,6 +1,97 @@
-# 발행용 프롬프트(2026-10-28 준비)
+# 발행용 프롬프트
 
-READY 네 개를 동시에 보낼 때 각 모델의 **새 대화**에 아래 블록을 그대로 붙여 넣는다. Argon의 두 작업, Codex의 두 작업은 서로 다른 대화로 보낸다.
+## 2차(2026-10-28 준비) — QR-001 · QR-002 · RIG-001
+
+1차 네 작업은 반환·수합되었다(아래 ‘1차’ 절은 이력). 2차는 **수합 변경을 커밋한 뒤** 그 commit을 `<baseCommit>`으로 쓴다. 총괄이 커밋 직후 아래 순서로 준비하고, 이 문서와 REQUEST 머리말의 `<baseCommit>`·`contractHash`를 실제 값으로 바꾼 다음 보낸다.
+
+```bash
+B=$(git rev-parse HEAD)
+for j in QR-001 RIG-001; do node tools/contract-hash.mjs $j; done
+# QR: 정답 원본(content-source/batches)을 뺀 작업 폴더. 검토자는 정답 키를 볼 수 없다.
+for j in QR-001 QR-002; do
+  git worktree add --no-checkout -b wp/$j ../tower-wp/$j $B
+  git -C ../tower-wp/$j sparse-checkout set --no-cone '/*' '!/content-source/batches/'
+  git -C ../tower-wp/$j checkout
+done
+git worktree add -b wp/RIG-001 ../tower-wp/RIG-001 $B
+```
+
+| jobId | 보낼 곳 | 작업 폴더(Windows PC) | 결과 |
+|---|---|---|---|
+| QR-001 | Codex, 새 세션 | `C:\Users\User\Desktop\vibecoding\tower-wp\QR-001` | `content-source/reviews/Q20-001/codex.json`, `docs/work-packages/QR-001/RETURN.md` |
+| QR-002 | Claude, 새 대화(총괄 세션이 아닌 것) | `C:\Users\User\Desktop\vibecoding\tower-wp\QR-002` | `content-source/reviews/Q20-001/claude.json`, `docs/work-packages/QR-001/RETURN-QR-002.md` |
+| RIG-001 | Claude 새 대화 또는 Codex 세션 | `C:\Users\User\Desktop\vibecoding\tower-wp\RIG-001` | `src/game/animation/**`, `tests/unit/animation*.test.ts`, `docs/work-packages/RIG-001/RETURN.md` |
+
+### QR-001 → Codex / QR-002 → Claude(각각 새 대화)
+
+두 모델에 같은 본문을 보내되 `[내 몫]` 줄과 작업 폴더만 다르게 고친다.
+
+```text
+[QR-001 또는 QR-002] 3학년 어휘 문항 20개 독립 검토(정답 키 없음)
+
+너는 대한민국 초등 3학년 어휘 문항의 독립 검토자다. 총괄은 Claude Opus 5.5이고, 너는 이 검토 하나만 맡는다. 정답 키를 받지 않았다. 다른 검토자와 상의하지 않는다.
+[내 몫] QR-001(Codex): 결과 content-source/reviews/Q20-001/codex.json, 반환서 docs/work-packages/QR-001/RETURN.md
+        QR-002(Claude): 결과 content-source/reviews/Q20-001/claude.json, 반환서 docs/work-packages/QR-001/RETURN-QR-002.md
+
+작업 폴더: C:\Users\User\Desktop\vibecoding\tower-wp\<QR-001 또는 QR-002>
+이 폴더 안에서만 읽고 쓴다. 본 저장소 폴더(towerdeffense)나 다른 tower-wp 폴더는 열지 않는다. 이 폴더에는 정답 원본(content-source/batches)이 없다. 다른 곳에서 찾아 열지 않는다.
+
+1. 시작 확인 — 하나라도 다르면 작업하지 말고 그 출력만 보고한다.
+   - git rev-parse HEAD → <baseCommit>
+   - content-source/batches 폴더가 없다
+   - npm ci 성공
+   - node tools/contract-hash.mjs QR-001 의 해시가 docs/work-packages/QR-001/REQUEST.md 머리말 contractHash와 모두 같다
+
+2. 할 일 — docs/work-packages/QR-001/REQUEST.md의 ‘검토자 지시’를 그대로 따른다. 입력은 content-source/reviews/Q20-001/blind-input.json 하나다.
+   - 먼저 문항마다 직접 풀어 blindChoice를 적는다(답이 둘 이상이면 multiple, 없으면 none). 사전 페이지는 풀고 난 뒤에 연다.
+   - 그다음 source(제시된 표준국어대사전 URL·뜻 번호를 실제로 열어 확인), uniqueness(네 보기를 문장에 넣어 보기), grade, language를 pass/fail/uncertain으로 판정한다. explanation은 uncertain으로 둔다.
+   - 의심은 findings에 구체적으로 쓴다(어느 보기를 넣으면 왜 말이 되는지, 어떤 표기가 맞춤법·띄어쓰기에 어긋나는지).
+   - 사전에 접속할 수 없으면 source를 uncertain으로 두고 그 사실을 반환서에 적는다. 근거를 지어내지 않는다.
+   - 결과는 src/contracts/questionDraft.ts 의 blindReviewSchema 형식 JSON 하나다. reviewer.freshContext=true, reviewer.model은 실제 모델명.
+
+3. 범위
+   - 쓸 수 있는 곳: [내 몫]의 두 파일뿐이다.
+   - 하지 않는다: 다른 파일 수정, 패키지 설치·업그레이드, git commit·push.
+
+4. 검사: npx vitest run tests/unit/content.test.ts 를 통과시킨다(검토 보고서 형식 검사 포함).
+
+5. 끝낼 때: 반환서에 실제 모델명·작업일·문항별 blindChoice와 fail/uncertain 목록·검사 실제 출력을 쓴다. git status --short 에 [내 몫] 파일만 보이는지 확인하고, fail 수·uncertain 수·multiple/none 수를 다섯 줄 안으로 보고한다.
+```
+
+### RIG-001 → Claude 새 대화 또는 Codex
+
+```text
+[RIG-001] 고블린 보행·피격 동작
+
+너는 초등 어휘 타워 디펜스 웹게임의 2D 동작(리깅) 담당이다. 총괄은 Claude Opus 5.5이고, 너는 이 작업 하나만 맡는다. 다른 모델들이 다른 폴더에서 동시에 일하고 있다.
+
+작업 폴더: C:\Users\User\Desktop\vibecoding\tower-wp\RIG-001
+이 폴더 안에서만 읽고 쓴다.
+
+1. 시작 확인 — 하나라도 다르면 작업하지 말고 그 출력만 보고한다.
+   - git rev-parse HEAD → <baseCommit>
+   - npm ci 성공, npx playwright install chromium 성공
+   - node tools/contract-hash.mjs RIG-001 의 해시가 REQUEST.md 머리말 contractHash와 모두 같다
+   - 5173 포트에 떠 있는 서버가 없다(Get-NetTCPConnection -LocalPort 5173 -State Listen -ErrorAction SilentlyContinue 출력이 비어 있음)
+
+2. 할 일 — docs/work-packages/RIG-001/REQUEST.md를 끝까지 읽고 그대로 따른다.
+   - 원화는 public/assets/manifest.json 의 integrated_pass 항목이다(enemy.walker.0~3). 렌더러는 enemyPose(...)의 { frame, bob, squashY }만 그린다.
+   - 발 교대가 보이고 접지 기준점이 프레임마다 흔들리지 않으며, 걸음 빠르기가 speedBP에 맞아야 한다. 정지·감소된 모션에서는 bob·squash가 0이다.
+   - 피격 프레임(enemy.walker.hit)을 쓰려면 렌더러 연결이 더 필요하다. BattleScene.ts는 고치지 말고 REQUESTED_CONTRACT_CHANGE로 적는다.
+   - npm run dev 후 브라우저 창을 앞에 두고 실제 크기와 확대에서 본다. 탭이 뒤로 가면 게임이 정지하는 것이 정상이다.
+
+3. 범위
+   - 쓸 수 있는 곳: src/game/animation/**, tests/unit/animation*.test.ts, docs/work-packages/RIG-001/RETURN.md 뿐이다.
+   - 하지 않는다: 그 밖의 파일 수정, 판정·이동 진행도·보상을 애니메이션 시간으로 만들기, 패키지 설치·업그레이드, git commit·push.
+
+4. 검사: npm run typecheck, npx eslint src/game/animation tests/unit, npm test, npm run test:e2e 통과.
+
+5. 끝낼 때: 요청서의 ‘RETURN.md’대로 바꾼 파일, 실제 크기·확대 캡처(접촉판), 프레임 시간표, 요청한 연결점 변경을 쓴다. git status --short 에 허용 경로만 보이는지 확인하고 다섯 줄 안으로 보고한다.
+```
+
+## 1차(2026-10-28 발행·반환 완료, 이력)
+
+READY 네 개를 동시에 보낼 때 각 모델의 **새 대화**에 아래 블록을 그대로 붙여 넣었다. Argon의 두 작업, Codex의 두 작업은 서로 다른 대화로 보냈다.
 
 - 기준 commit: `ee5833846f0aa227ea3a6e2fe89257b02bae0e33`(docs/prd-v0-5)
 - 작업마다 전용 작업 폴더(git worktree)가 있다. 서로 다른 폴더라 한쪽이 만든 미완성 문항·원화가 다른 쪽 `npm test`를 깨뜨리지 않는다.
@@ -15,7 +106,7 @@ READY 네 개를 동시에 보낼 때 각 모델의 **새 대화**에 아래 블
 
 각 폴더의 `git status`에는 총괄이 머리말(`baseCommit`·`contractHash`)을 채운 `REQUEST.md` 한 줄이 보이는 것이 정상이다. 모델은 커밋하지 않는다. 총괄이 폴더에서 결과를 받아 [작업 패키지](README.md)의 ‘받을 때’ 절차로 들인다.
 
-## Q20-001 → Argon 4(대화 1)
+### Q20-001 → Argon 4(대화 1)
 
 ```text
 [Q20-001] 3학년 어휘 문항 초안 20개
@@ -48,7 +139,7 @@ READY 네 개를 동시에 보낼 때 각 모델의 **새 대화**에 아래 블
 5. 끝낼 때: 요청서의 ‘RETURN.md에 쓸 것’대로 RETURN.md를 쓴다(실제 모델명·작업일·validate:content 실제 출력 포함). git status --short 에 허용 경로와 REQUEST.md 한 줄만 보이는지 확인하고, 만든 수·뺀 수·막힌 점을 다섯 줄 안으로 보고한다.
 ```
 
-## UI-AUDIT-001 → Argon 4(대화 2)
+### UI-AUDIT-001 → Argon 4(대화 2)
 
 ```text
 [UI-AUDIT-001] 화면 반려 기준 점검과 CSS 보정
@@ -79,7 +170,7 @@ READY 네 개를 동시에 보낼 때 각 모델의 **새 대화**에 아래 블
 5. 끝낼 때: 요청서의 ‘RETURN.md’ 절대로 화면×크기 점검표(pass/fail+근거), 바꾼 CSS와 이유, 제안 목록, 전후 캡처 경로(test-results/before/, test-results/shots/), test:e2e 실제 결과를 쓴다. 취향 차이는 ‘사용자 판단’으로 따로 적는다. git status --short 에 허용 경로와 REQUEST.md 한 줄만 보이는지 확인하고, fail 수·고친 수·제안 수를 다섯 줄 안으로 보고한다.
 ```
 
-## ART-SAMPLE-001 → Codex(세션 1, 이미지 생성)
+### ART-SAMPLE-001 → Codex(세션 1, 이미지 생성)
 
 ```text
 [ART-SAMPLE-001] 원화 표본 16장 + manifest
@@ -113,7 +204,7 @@ READY 네 개를 동시에 보낼 때 각 모델의 **새 대화**에 아래 블
 5. 끝낼 때: 요청서의 ‘RETURN.md에 쓸 것’대로 장별 생성 방식·실제 모델명·재생성 횟수·HOLD 사유·validate:assets 실제 출력·참고판 경로를 쓴다. 생성 성공을 visual_pass라고 적지 않는다. git status --short 에 허용 경로와 REQUEST.md 한 줄만 보이는지 확인하고, 납품 수·HOLD 수를 다섯 줄 안으로 보고한다.
 ```
 
-## REVIEW-CORE-001 → Codex(세션 2, 새 문맥)
+### REVIEW-CORE-001 → Codex(세션 2, 새 문맥)
 
 ```text
 [REVIEW-CORE-001] 게임 규칙 엔진 독립 검토

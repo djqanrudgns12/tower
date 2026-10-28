@@ -16,11 +16,14 @@ export interface Layout {
 
 const L = DEFAULTS.layout;
 
-export function computeLayout(W: number, H: number, coarse: boolean): Layout {
+export type FontScaleKey = keyof typeof L.questionFontExtraPx;
+
+/** 글자를 키우면 문제판 예산이 늘고, 그만큼 전장이 줄거나 R이 S로 바뀐다(PRD §12.1). */
+export function computeLayout(W: number, H: number, coarse: boolean, font: FontScaleKey = 'base'): Layout {
   const phone = W < L.outerPaddingPx.phoneBelowWidthPx;
   const pad = phone ? L.outerPaddingPx.phone : L.outerPaddingPx.default;
   const R = L.modes.R, S = L.modes.S;
-  const q = phone ? 300 : R.questionBaseHeightPx;
+  const q = phone ? 300 : R.questionBaseHeightPx + L.questionFontExtraPx[font];
   const cR = Math.min((W - 2 * pad - R.railWidthPx - R.railGapPx) / 15, (H - 2 * pad - R.verticalGapPx - q) / 9);
   const cSfit = Math.min((W - 2 * pad) / 15, (H - 2 * pad - S.hudHeightPx - 3 * S.verticalGapPx - S.toolbarHeightPx - q) / 9);
   const mode: 'R' | 'S' = !phone && cR >= cSfit && cR >= 24 ? 'R' : 'S';
@@ -40,15 +43,20 @@ function snapshot(): Layout {
   const vv = window.visualViewport;
   const W = Math.round(vv?.width ?? window.innerWidth), H = Math.round(vv?.height ?? window.innerHeight);
   const coarse = window.matchMedia('(any-pointer: coarse)').matches;
-  const key = `${W}x${H}:${coarse}`;
-  if (key !== cachedKey || !cached) { cachedKey = key; cached = computeLayout(W, H, coarse); }
+  const raw = document.documentElement.dataset.font;
+  const font: FontScaleKey = raw === 'large' || raw === 'xlarge' ? raw : 'base';
+  const key = `${W}x${H}:${coarse}:${font}`;
+  if (key !== cachedKey || !cached) { cachedKey = key; cached = computeLayout(W, H, coarse, font); }
   return cached;
 }
 
 function subscribe(cb: () => void) {
   window.addEventListener('resize', cb);
   window.visualViewport?.addEventListener('resize', cb);
-  return () => { window.removeEventListener('resize', cb); window.visualViewport?.removeEventListener('resize', cb); };
+  // 글자 크기는 App이 <html data-font>로 바꾼다.
+  const fontWatch = new MutationObserver(cb);
+  fontWatch.observe(document.documentElement, { attributes: true, attributeFilter: ['data-font'] });
+  return () => { window.removeEventListener('resize', cb); window.visualViewport?.removeEventListener('resize', cb); fontWatch.disconnect(); };
 }
 
 export const useLayout = () => useSyncExternalStore(subscribe, snapshot);

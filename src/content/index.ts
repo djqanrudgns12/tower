@@ -3,9 +3,10 @@ import mapsJson from '../../docs/contracts/maps.candidate.v0.4.json';
 import defaultsJson from '../../docs/contracts/product.defaults.v0.5.json';
 import { balanceSchema, type DifficultyId, type TowerId } from '../contracts/balance';
 import { mapsFileSchema, type MapConfig } from '../contracts/maps';
-import { bankFileSchema, readingLoad, type BankFile } from '../contracts/questions';
+import { bankFileSchema, readingLoad, retractionListSchema, type BankFile, type RetractionList } from '../contracts/questions';
 import { createContext, type GameContext, type RuntimeQuestion } from '../domain/context';
 import grade3Dev from './questions/grade3.dev.json';
+import retractionsJson from './retractions.json';
 
 // 계약 JSON을 런타임 스키마로 한 번 검사한 뒤 쓴다. 숨은 상수를 화면·도메인에 따로 두지 않는다(PRD §10.1).
 export const BALANCE = balanceSchema.parse(balanceJson);
@@ -13,6 +14,7 @@ export const MAPS: readonly MapConfig[] = mapsFileSchema.parse(mapsJson).maps;
 export const DEFAULTS = defaultsJson;
 
 export const PILOT_TOWERS = defaultsJson.pilot.towers as TowerId[];
+export const RETRACTIONS: RetractionList = retractionListSchema.parse(retractionsJson);
 
 const banks: Record<number, BankFile> = { 3: bankFileSchema.parse(grade3Dev) };
 
@@ -28,11 +30,28 @@ export function gradeContent(grade: number): GradeContent {
   return { grade, map, bank: banks[grade] ?? null };
 }
 
-export const toRuntime = (bank: BankFile): RuntimeQuestion[] => bank.questions.map(q => ({ ...q, readingLoad: readingLoad(q) }));
+/** 철회 목록을 겹친 뒤 남은 문항. 같은 ID라도 철회된 revision만 뺀다(PRD §9.5, A26). */
+export function toRuntime(bank: BankFile, retractions: RetractionList = RETRACTIONS): RuntimeQuestion[] {
+  const retracted = new Set(retractions.entries.map(e => `${e.questionId}@${e.revision}`));
+  return bank.questions.filter(q => !retracted.has(`${q.id}@${q.revision}`)).map(q => ({ ...q, readingLoad: readingLoad(q) }));
+}
 
-export function contextFor(grade: number, difficulty: DifficultyId): GameContext {
+/** 복습 화면용 조회. 철회된 문항은 해설을 다시 보여 주지 않는다. 문항이 하나도 없어도 던지지 않는다. */
+export function reviewQuestions(grade: number): ReadonlyMap<string, RuntimeQuestion> {
+  const { bank } = gradeContent(grade);
+  return new Map(bank ? toRuntime(bank).map(q => [q.id, q] as const) : []);
+}
+
+export class ContentUnavailableError extends Error {
+  constructor(message: string) { super(message); this.name = 'ContentUnavailableError'; }
+}
+
+export function contextFor(grade: number, difficulty: DifficultyId, retractions: RetractionList = RETRACTIONS): GameContext {
   const { map, bank } = gradeContent(grade);
-  if (!bank) throw new Error(`${grade}학년 문제은행이 아직 없다`);
+  if (!bank) throw new ContentUnavailableError(`${grade}학년 문제은행이 아직 없다`);
+  const questions = toRuntime(bank, retractions);
+  // 전부 철회되면 판을 시작·이어하지 않는다. 학생 패배가 아니라 복구 안내다(PRD §16.2).
+  if (questions.length === 0) throw new ContentUnavailableError(`${grade}학년 문항이 모두 철회되었다`);
   const caps = defaultsJson.questionSelection.battleReadingLoadMaxSyllables as Record<string, number>;
-  return createContext({ balance: BALANCE, difficulty, map, questions: toRuntime(bank), battleReadingLoadMax: caps[String(grade)] ?? 70 });
+  return createContext({ balance: BALANCE, difficulty, map, questions, battleReadingLoadMax: caps[String(grade)] ?? 70 });
 }

@@ -16,6 +16,10 @@ describe('xorshift32-v1', () => {
     expect(streamSeed(0, 'battle')).not.toBe(0);
     expect(streamSeed(0x9e3779b9, 'battle')).toBe(0x6d2b79f5);
   });
+  it('seed 0은 먼저 0x6d2b79f5로 바꾼 뒤 스트림 상수와 XOR한다(golden vector, PRD §20.1)', () => {
+    const streams = (['battle', 'question', 'option', 'visual'] as const).map(k => [streamSeed(0, k), nextU32(streamSeed(0, k))]);
+    expect(streams).toEqual([[0xf31c004c, 295862534], [0x4914137d, 2751532736], [0xdaca2897, 1690855451], [0xb386c71a, 131327912]]);
+  });
   it('거절 표본 정수는 범위 안이고 같은 상태면 같은 섞기를 낸다', () => {
     const r = { s: 99 };
     for (let i = 0; i < 2000; i++) { const v = intBelow(r, 7); expect(v).toBeGreaterThanOrEqual(0); expect(v).toBeLessThan(7); }

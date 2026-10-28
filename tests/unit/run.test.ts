@@ -164,6 +164,9 @@ describe('문항·점수(PRD §4.3~4.4, §5)', () => {
     expect(applyCommand(ctx, s, { type: 'next', encounterId: id })).toEqual({ ok: false, error: 'NEXT_NOT_READY' });
     ticks(ctx, s, 1);
     ok(ctx, s, { type: 'next', encounterId: id });
+    // 수동 전환은 그 틱의 판정 뒤에 처리한다(PRD §3.4(8)).
+    expect(s.quiz.current!.id).toBe(id);
+    ticks(ctx, s, 1);
     expect(s.quiz.current!.id).not.toBe(id);
     expect(s.quiz.history[0]!.answer!.choice).toBe('skipped');
   });
@@ -215,6 +218,7 @@ describe('문항·점수(PRD §4.3~4.4, §5)', () => {
     expect(applyCommand(ctx, s, { type: 'answer', encounterId: id, choice: 'a' })).toEqual({ ok: false, error: 'ALREADY_ANSWERED' });
     ticks(ctx, s, 120);
     ok(ctx, s, { type: 'next', encounterId: id });
+    ticks(ctx, s, 1);
     expect(s.phase).toBe('PREP_QUIZ');
   });
 
@@ -307,7 +311,8 @@ describe('거래(PRD §6.3, §7)', () => {
     expect(s.towers[0]!.nextAttackTick).toBe(scheduled);
     ok(ctx, s, { type: 'build', slotId: b!, tower: 'cannon' });
     const cannon = s.towers[1]!;
-    expect(cannon.nextAttackTick).toBe(s.tick + attackIntervalTicks(ctx.balance, towerStats(ctx.balance, 'cannon', 1, null), 0));
+    // 새 타워의 첫 간격은 구매 순간의 버닝 보너스를 쓴다(PRD §5, §7.2; REVIEW-CORE-001 R04).
+    expect(cannon.nextAttackTick).toBe(s.tick + attackIntervalTicks(ctx.balance, towerStats(ctx.balance, 'cannon', 1, null), ctx.balance.burning.attackSpeedBP));
   });
 
   it('서리 감속은 출처별로 두고 가장 강한 값만, 일반 60%·보스 30% 상한', async () => {

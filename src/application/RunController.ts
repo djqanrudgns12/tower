@@ -1,7 +1,7 @@
 import type { GameContext } from '../domain/context';
 import type { DomainEvent } from '../domain/events';
 import { NumericLimitError } from '../domain/num';
-import { advanceTick, applyCommand, type Command, type CommandResult } from '../domain/run';
+import { advanceTick, applyCommand, replaceUnavailableQuestion, type Command, type CommandResult } from '../domain/run';
 import type { PauseReason, RunState } from '../domain/types';
 import { addRecord, clearSnapshot, writeSnapshot } from '../persistence/db';
 import type { Ownership } from '../persistence/ownership';
@@ -37,6 +37,10 @@ export class RunController {
   private pendingSave: { strict: boolean } | null = null;
   private noticeSeq = 1;
   private hitches: number[] = [];
+  /** 다음 논리 틱 시작에 반영할 답안·거래(PRD §3.4(2)). */
+  private queue: Command[] = [];
+  /** 대기 명령을 미리 적용해 본 사본. 화면이 거부 이유를 바로 받도록 하되 실제 상태는 틱 경계에서만 바꾼다. */
+  private trial: RunState | null = null;
   private ownership: Ownership | null;
   saveStatus: SaveStatus;
   notices: Notice[] = [];
@@ -49,6 +53,8 @@ export class RunController {
     this.ownership = opts.ownership;
     this.persist = opts.ownership !== null;
     this.saveStatus = this.persist ? 'saved' : 'disabled';
+    // 이어하기 사이에 철회된 미제출 문항은 시작 전에 바꾼다(PRD §9.5).
+    replaceUnavailableQuestion(ctx, state);
     this.view = { ...selectView(ctx, state), notices: [], saveStatus: this.saveStatus };
     this.key = viewKey(state);
   }
@@ -88,13 +94,23 @@ export class RunController {
     this.ownership = null;
   }
 
+  /**
+   * 같은 논리 틱 사이에 들어온 답안·거래는 모았다가 다음 틱 시작에 순번대로 반영한다. 정지는 바로 채택하고,
+   * 그 틱에 모인 명령은 재개 뒤 자동 실행하지 않고 취소한다(PRD §3.4(1), §20.3). 루프가 돌지 않을 때는 바로 반영한다.
+   */
   dispatch(cmd: Command): CommandResult {
-    const result = applyCommand(this.ctx, this.s, cmd);
-    if (!result.ok) return result;
-    if (cmd.type === 'pause' || cmd.type === 'resume') this.acc = 0;
-    this.publish(result.events);
-    if (cmd.type !== 'resume') this.save(false);
-    if (cmd.type === 'quit') void this.finish();
+    if (cmd.type === 'pause') this.cancelQueued();
+    if (!this.running || cmd.type === 'pause' || cmd.type === 'resume' || cmd.type === 'quit') return this.apply(cmd);
+    this.trial ??= structuredClone(this.s);
+    let result: CommandResult;
+    try {
+      result = applyCommand(this.ctx, this.trial, cmd);
+    } catch (error) {
+      if (!(error instanceof NumericLimitError)) throw error;
+      this.halt('NUMERIC_LIMIT');
+      return { ok: false, error: 'NUMERIC_LIMIT' };
+    }
+    if (result.ok) this.queue.push(cmd);
     return result;
   }
 
@@ -108,16 +124,53 @@ export class RunController {
     this.publish([]);
   }
 
-  /** 저장 후 나가기. 저장이 끝나야 성공을 알린다(PRD §14.1). */
+  /** 저장 후 나가기. 밀린 저장까지 모두 끝나야 성공을 알린다(PRD §14.1). */
   async saveAndExit(): Promise<boolean> {
     if (!this.persist) return false;
     this.pause('USER');
     try {
       await this.flush(true);
+      while (this.saving) await this.saving;
       return this.saveStatus === 'saved';
     } catch {
       return false;
     }
+  }
+
+  private apply(cmd: Command): CommandResult {
+    let result: CommandResult;
+    try {
+      result = applyCommand(this.ctx, this.s, cmd);
+    } catch (error) {
+      // 명령은 원자적으로 반영되므로 던졌다면 상태는 그대로다. 학생 패배가 아니라 복구 정지로 바꾼다(PRD §8.6).
+      if (!(error instanceof NumericLimitError)) throw error;
+      this.halt('NUMERIC_LIMIT');
+      return { ok: false, error: 'NUMERIC_LIMIT' };
+    }
+    if (!result.ok) return result;
+    if (cmd.type === 'pause' || cmd.type === 'resume') this.acc = 0;
+    this.publish(result.events);
+    if (cmd.type !== 'resume') this.save(false);
+    if (cmd.type === 'quit') void this.finish();
+    return result;
+  }
+
+  private cancelQueued() {
+    this.queue = [];
+    this.trial = null;
+  }
+
+  private applyQueued() {
+    const queue = this.queue;
+    this.cancelQueued();
+    for (const cmd of queue) this.apply(cmd);
+  }
+
+  /** 원인이 풀려야 하는 정지(저장 실패·수치 한계). 같은 틱의 명령을 취소하고, 이 상태를 저장하지 않는다. */
+  private halt(reason: PauseReason) {
+    this.cancelQueued();
+    applyCommand(this.ctx, this.s, { type: 'pause', reason });
+    this.publish([]);
   }
 
   async retrySave(): Promise<void> {
@@ -153,13 +206,14 @@ export class RunController {
   };
 
   private step(): boolean {
+    this.applyQueued();
+    if (this.s.pause.length > 0 || this.s.phase === 'GAME_OVER') return false;
     let events: DomainEvent[];
     try {
       events = advanceTick(this.ctx, this.s);
     } catch (error) {
       if (error instanceof NumericLimitError) {
-        applyCommand(this.ctx, this.s, { type: 'pause', reason: 'NUMERIC_LIMIT' });
-        this.publish([]);
+        this.halt('NUMERIC_LIMIT');
         return false;
       }
       throw error;
@@ -174,7 +228,7 @@ export class RunController {
   private publish(events: DomainEvent[]) {
     for (const e of events) {
       if (e.type === 'waveComplete') this.notify(e.milestoneGold > 0 ? `${e.wave}웨이브 생존 +${e.milestoneGold}골드` : `${e.wave}웨이브를 지켰어요. 성문이 다시 튼튼해졌어요.`, e.milestoneGold > 0 ? 'reward' : 'info');
-      if (e.type === 'burning') this.notify('버닝! 타워가 더 빨리 공격해요 · 8초', 'reward');
+      if (e.type === 'burning') this.notify(`버닝: 타워가 더 빨리 공격해요 · ${this.ctx.balance.burning.durationMs / 1000}초`, 'reward');
       if (e.type === 'phase' && e.phase === 'BATTLE' && this.s.wave % this.ctx.balance.waves.bossEveryWaves === 0) this.notify(`${this.s.wave}웨이브 고비: 강한 적이 와요`, 'warn');
     }
     if (events.length) for (const l of this.eventListeners) l(events);
@@ -224,8 +278,7 @@ export class RunController {
       .catch(() => {
         this.saveStatus = 'error';
         // 메모리 최신 상태를 보존한 채 정지하고 같은 상태의 재저장을 제공한다(PRD §14.1).
-        applyCommand(this.ctx, this.s, { type: 'pause', reason: 'STORAGE' });
-        this.publish([]);
+        this.halt('STORAGE');
       })
       .finally(() => { this.saving = null; });
     await this.saving;

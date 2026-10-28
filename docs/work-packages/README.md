@@ -1,17 +1,17 @@
 # 작업 패키지
 
-P1 첫 구현(2026-10-28, 총괄 Claude Opus 5.5) 뒤 병렬로 맡길 일이다. 각 폴더의 `REQUEST.md`를 그대로 해당 모델에 전달하고, 결과는 같은 폴더의 `RETURN.md`와 허용 경로의 파일로 받는다. 상태는 [작업 게시판](../EXECUTION_BOARD.md)이 기준이다. READY 네 개는 발행 준비를 마쳤고(머리말 채움·작업 폴더 생성), 붙여 넣을 프롬프트는 [DISPATCH.md](DISPATCH.md)에 있다. 아직 어느 것도 보내지 않았다.
+P1 첫 구현(2026-10-28, 총괄 Claude Opus 5.5) 뒤 병렬로 맡길 일이다. 각 폴더의 `REQUEST.md`를 그대로 해당 모델에 전달하고, 결과는 같은 폴더의 `RETURN.md`와 허용 경로의 파일로 받는다. 상태는 [작업 게시판](../EXECUTION_BOARD.md)이 기준이다. 1차 네 개는 반환·수합되었다. 2차 READY(QR-001·QR-002·RIG-001)는 수합 변경을 커밋한 뒤 발행하며, 붙여 넣을 프롬프트는 [DISPATCH.md](DISPATCH.md)에 있다.
 
 | jobId | 담당 | 상태 | 선행 | 소유 경로 |
 |---|---|---|---|---|
-| [ART-SAMPLE-001](ART-SAMPLE-001/REQUEST.md) | Codex 이미지 | READY | 없음 | `asset-source/incoming/ART-SAMPLE-001/**` |
-| [Q20-001](Q20-001/REQUEST.md) | Argon 4 | READY | 없음 | `content-source/batches/Q20-001/**` |
-| [UI-AUDIT-001](UI-AUDIT-001/REQUEST.md) | Argon 4 | READY | 없음 | `src/ui/**/*.module.css`(공통 제외) |
-| [REVIEW-CORE-001](REVIEW-CORE-001/REQUEST.md) | Codex 검토 | READY | 없음 | `tests/review/**` |
-| [QR-001/QR-002](QR-001/REQUEST.md) | Codex·Claude 검토 | HOLD | Q20-001 반환 | `content-source/reviews/Q20-001/*` |
-| [RIG-001](RIG-001/REQUEST.md) | Claude/Codex | HOLD | ART-SAMPLE-001 인수 | `src/game/animation/**` |
+| [ART-SAMPLE-001](ART-SAMPLE-001/REQUEST.md) | Codex 이미지 | ACCEPTED | 없음 | `asset-source/incoming/ART-SAMPLE-001/**` |
+| [Q20-001](Q20-001/REQUEST.md) | Argon 4 | RETURNED(공동검수 대기) | 없음 | `content-source/batches/Q20-001/**` |
+| [UI-AUDIT-001](UI-AUDIT-001/REQUEST.md) | Argon 4 | ACCEPTED | 없음 | `src/ui/**/*.module.css`(공통 제외) |
+| [REVIEW-CORE-001](REVIEW-CORE-001/REQUEST.md) | Codex 검토 | ACCEPTED | 없음 | `tests/review/**` |
+| [QR-001/QR-002](QR-001/REQUEST.md) | Codex·Claude 검토 | READY(커밋 후) | Q20-001 반환 ✓ | `content-source/reviews/Q20-001/*` |
+| [RIG-001](RIG-001/REQUEST.md) | Claude/Codex | READY(커밋 후) | ART-SAMPLE-001 인수 ✓ | `src/game/animation/**` |
 
-READY 네 개는 소유 경로가 겹치지 않아 **동시에** 보낼 수 있다. Argon에게 두 개를 줄 때는 서로 다른 대화로 보낸다.
+2차 READY 세 개는 소유 경로가 겹치지 않아 **동시에** 보낼 수 있다. QR-001(Codex)과 QR-002(Claude)는 서로 다른 새 대화이고, 둘 다 정답 원본이 없는 작업 폴더에서 돌린다.
 
 ## 발행 순서
 
@@ -24,6 +24,6 @@ READY 네 개는 소유 경로가 겹치지 않아 **동시에** 보낼 수 있�
 
 - 허용 경로 밖 변경은 버리고 `REQUESTED_CONTRACT_CHANGE`만 검토한다.
 - 문항: `npm run validate:content` → `npm run blind-input -- Q20-001` → QR 발행.
-- 원화: `npm run validate:assets` → 실제 셀 배율·41번 나란히 비교(PRD §17.5 V06·V09) → 통과 항목만 `status: integrated_pass`로 바꿔 `public/assets/`로 옮긴다. 그 순간부터 게임이 PNG를 쓴다.
-- 검토: `tests/review`의 실패 시험을 하나씩 고치고 통과하면 `tests/unit`으로 옮긴다.
+- 원화: `npm run validate:assets` → 실제 셀 배율·41번 나란히 비교(PRD §17.5 V06·V09) → 통과 항목만 `status: integrated_pass`로 바꿔 `public/assets/`로 옮긴다. 그 순간부터 게임이 PNG를 쓴다. 전투 화면에서 아직 못 본 항목은 `visual_pass`로 두고 이유를 `notes`에 적는다.
+- 검토: `tests/review`의 실패 시험을 하나씩 고치고 통과하면 `tests/unit`으로 옮긴다(1차는 `tests/unit/review-core/`). 기존 시험이 결함을 기대값으로 굳혀 두었으면 그 기대값을 PRD 문장으로 고친다.
 - ACCEPTED는 총괄만 붙인다.

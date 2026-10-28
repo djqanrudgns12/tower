@@ -47,6 +47,7 @@ export function NewGameScreen({ settings, onBack, onStart }: Props) {
               </button>
             ))}
           </div>
+          <p className={kit.muted}>어려움·아주 어려움은 배치에 익숙해지면 추천해요.</p>
         </section>
         <section className={css.stack}>
           <label className={css.field}>

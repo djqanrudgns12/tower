@@ -2,7 +2,7 @@
 
 ```yaml
 jobId: QR-001 (Codex) / QR-002 (Claude)
-status: HOLD (Q20-001 RETURN 뒤 READY)
+status: READY (Q20-001 반환·검사 통과, 2026-10-28). 수합 변경을 커밋한 뒤 발행
 owner: QR-001 = Codex, QR-002 = Claude — 각각 새 대화 문맥
 commander: Claude Opus 5.5 (P1 첫 구현 총괄). QR-002를 맡는 Claude 세션은 총괄 세션과 다른 새 문맥이어야 한다
 baseCommit: 발행 직전 값
@@ -14,10 +14,12 @@ inputFiles:
 allowedPaths:
   - content-source/reviews/Q20-001/codex.json (QR-001)
   - content-source/reviews/Q20-001/claude.json (QR-002)
+  - docs/work-packages/QR-001/RETURN.md (QR-001)
+  - docs/work-packages/QR-001/RETURN-QR-002.md (QR-002)
 forbiddenPaths:
-  - content-source/batches/** (정답 키가 있는 원본은 열지 않는다)
-  - src/**, docs/** (RETURN.md 제외)
-returnPath: docs/work-packages/QR-001/RETURN.md
+  - content-source/batches/** (정답 키가 있는 원본. 작업 폴더에서 sparse checkout으로 빼 둔다)
+  - src/**, docs/** (자기 RETURN 파일 제외)
+returnPath: docs/work-packages/QR-001/RETURN.md (QR-001), docs/work-packages/QR-001/RETURN-QR-002.md (QR-002)
 ```
 
 ## 발행 절차(총괄)

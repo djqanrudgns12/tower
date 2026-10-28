@@ -2,7 +2,7 @@
 
 ```yaml
 jobId: RIG-001
-status: HOLD (ART-SAMPLE-001의 tower.*, enemy.walker.* 가 integrated_pass가 된 뒤 READY)
+status: READY (ART-SAMPLE-001 인수 2026-10-28: tower.*·enemy.walker.0~3 integrated_pass, enemy.walker.hit·enemy.boss.* visual_pass). 수합 변경을 커밋한 뒤 발행
 owner: Claude(새 문맥) 또는 Codex 별도 세션
 commander: Claude Opus 5.5 (P1 첫 구현 총괄)
 inputFiles:

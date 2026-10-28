@@ -1,34 +1,41 @@
 # 다음 총괄·다음 컴퓨터 인계
 
-기준일: 2026-10-28 · 현재 구간: P1 첫 완성 구간 구현됨 · 총괄: Claude Opus 5.5(Claude Code) · 브랜치 `docs/prd-v0-5`, P1 구현은 `9634d00` 다음 commit(`git log -1 --format=%h -- src`로 확인). push 안 함
+기준일: 2026-10-28 · 현재 구간: P1 첫 완성 구간, 1차 작업 패키지 수합 완료 · 총괄: Claude Opus 5.5(Claude Code) · 브랜치 `main`(`bad6e76`) 위에 **수합 변경이 커밋되지 않은 채** 있다. push 안 함
 
 ## 먼저 읽을 것
 
-1. [제작 PRD v0.5](../vocabulary_td_prd_v0_5.md) — §18.4 P1 구현 기록, 확정 결정은 §0.2.
-2. [작업 게시판](EXECUTION_BOARD.md), [작업 패키지](work-packages/README.md).
+1. [제작 PRD v0.5](../vocabulary_td_prd_v0_5.md) — §18.4 P1 구현·수합 기록, 확정 결정은 §0.2.
+2. [작업 게시판](EXECUTION_BOARD.md), [작업 패키지](work-packages/README.md), [발행용 프롬프트](work-packages/DISPATCH.md).
 3. [README](../README.md) — 실행·검사 명령과 모듈 경계.
-4. [v0.5 점검 근거](prd_v0_5_review.md) — 밸런스 근사 결과와 남은 위험.
+4. 반환서: [REVIEW-CORE-001](work-packages/REVIEW-CORE-001/RETURN.md), [UI-AUDIT-001](work-packages/UI-AUDIT-001/RETURN.md), [ART-SAMPLE-001](work-packages/ART-SAMPLE-001/RETURN.md), [Q20-001](work-packages/Q20-001/RETURN.md).
 
 ## 이번에 실제로 한 것
 
-PRD v0.5대로 P1을 구현했다. 라이브러리는 npm 레지스트리에서 확인한 현재 버전으로 정확히 잠갔다(Phaser 4.2.1, React 19.3.1, Vite 8.3.5, TypeScript 6.0.3, Zod 4.6.7, idb 8.0.4, Vitest 5.0.5, Playwright 1.64.1). Phaser 4 API는 패키지에 들어 있는 공식 마이그레이션 문서·타입 정의로 확인했고(Canvas 렌더러 폐기 예정, `roundPixels` 기본 false, tint 모드 변경), rolldown의 폐기 예정 옵션(`advancedChunks`) 대신 `codeSplitting`을 썼다. xorshift32는 Marsaglia(2003) C 원형과 출력 5개를 대조해 골든 벡터로 고정했다. IndexedDB는 Chrome 121부터 기본 durability가 relaxed라는 공식 안내에 따라 주기 저장은 기본, ‘저장 후 나가기’·종료 기록은 strict로 쓴다.
+1차 작업 패키지 네 개(Codex 검토·Codex 이미지·Argon 문항·Argon UI)의 반환을 받아 작업 폴더별로 허용 경로 밖 변경이 없음을 확인하고 본 저장소로 들였다.
 
-구현 중 바로잡은 것: 첫 텍스처 생성 때마다 성능 정지가 뜨던 루프(일회성 끊김은 버리고 반복만 정지, PRD §14 갱신), 화면이 저장소를 직접 부르던 경계 위반(세션 서비스로 이동), 렌더 중 ref 읽기(React Compiler 규칙), 문항 ID 규칙과 어긋난 Argon 지시서 예시, 시험 기대값 산술 오류 1건(최대 나머지 14/6/4).
+- **엔진(REVIEW-CORE-001):** 결함 10건 수정. 핵심 설계 변경은 `RunController.dispatch`다. 답안·거래는 바로 상태를 바꾸지 않고 다음 논리 틱 시작에 순번대로 반영하며, 화면에는 사본(trial)에 미리 적용한 결과를 돌려준다. 정지는 즉시 채택하고 그 틱에 모인 명령을 취소한다. 루프가 돌지 않을 때(시험)는 바로 반영한다. 수동 ‘다음 문제’는 `autoAdvanceTick = tick`으로 틱 끝 판정 뒤에 처리한다. 그래서 시험 도우미 `answerCurrent`는 ‘다음’ 뒤 한 틱을 더 돈다. 나머지: 손상 문항 교체(`replaceUnavailableQuestion`), 버닝 중 구매 간격, 오래된 이력부터 완화, 비행 틱 올림, `num.ts`의 몫·나머지 나눗셈, tick·명령 원자성, 패배 시 연속 정답 초기화.
+- **화면(UI-AUDIT-001):** CSS 들임 + 계약 변경 7건. 휴대폰 기본 3종 트레이만 §12.4대로 한 행으로 되돌렸다. 새 타워 선택은 dispatch 결과의 `towerBuilt` 번호로 옮긴다(상태 반영이 한 틱 늦으므로).
+- **원화(ART-SAMPLE-001):** `public/assets/manifest.json`에 13장 `integrated_pass`. 대장 2장·피격 1장은 `visual_pass`(이유는 manifest `notes`). 납품 원본은 `asset-source/incoming/ART-SAMPLE-001/`에 그대로 둔다.
+- **문항(Q20-001):** 검사 통과, `content-source/reviews/Q20-001/blind-input.json` 생성(정답·해설 없음 확인). 공동검수 전이라 게임 은행에는 넣지 않았다.
+- **A26:** `src/content/retractions.json` 철회 목록을 문맥 생성 때 적용. 전부 철회면 판을 열지 않는다.
+- PRD 질문 2건(긴 프레임 예외, seed 0 스트림 순서)은 §13.3·§20.1에 답했다.
 
 ## 검증(이 작업 트리에서 실제 실행)
 
-- `npm run typecheck`, `npx eslint .` 통과.
-- `npm test`: 도메인·콘텐츠 단위·속성 시험 통과(A01~A18·A30~A36 대응, fast-check 불변식 포함).
-- `npm run test:e2e`: 4개 통과 — 1440×900 새 게임→준비→설치→전투→정지 중 문제 DOM 제거→재개, 390×844 가로 넘침 0·확대 선택·미니맵, 1366×650 R 모드·칸 ≥44px, axe 위반 0.
-- `npm run build` 성공. JS gzip 약 494KB(Phaser 357KB), 글꼴은 unicode-range 서브셋.
-- 문항 파이프라인(초안→sidecar→근거 해시→정답 없는 검토 입력→JS/TS 해시 일치)을 임시 복사본의 합성 문항으로 확인.
-- 미실행: 실기기(iOS Safari·Android), 30분 장시간 성능, 엔진 밸런스 시뮬레이션(S11), 실제 원화, Argon/Codex 작업, 공동검수, 배포.
+- `npm run verify` 통과: 타입·ESLint, 단위·속성 시험 14파일 61개, PRD 검산 48개, 문항 검사.
+- `npm run validate:assets` 통과(납품·배포 manifest 둘 다).
+- `npm run test:e2e` 4개 통과(실제 원화가 실린 상태).
+- `npm run build` 성공, JS gzip 약 501KB(Phaser 357KB).
+- 1440×900 전투 실제 칸(72px)에서 원화를 41번과 나란히 확인(2배 캡처). 390×844 트레이 한 행 확인.
+- 미실행: 실기기(iOS Safari·Android), 30분 장시간 성능, 엔진 밸런스 시뮬레이션(S11), 5웨이브 대장 원화, 보행 리깅 인수, 문항 공동검수, 배포.
 
 ## 다음 첫 행동
 
-1. READY 네 개는 발행 준비됨(머리말 채움, 작업 폴더 `../tower-wp/<jobId>`). [발행용 프롬프트](work-packages/DISPATCH.md)를 각 모델에 보내고, 보낸 것만 게시판에서 RUNNING으로 바꾼다.
-2. 기다리는 동안 총괄은 P1-REST(연습 판, 설치 자리 목록, 문맥 손실 복구, 철회 목록)를 진행한다. 원화·문항이 오면 work-packages/README의 ‘받을 때’ 절차를 따른다.
+1. 수합 변경을 커밋한다(사용자 승인 뒤). 그 commit으로 QR-001·QR-002·RIG-001의 머리말(`baseCommit`·`contractHash`)을 채우고 작업 폴더를 만든 뒤 [발행용 프롬프트](work-packages/DISPATCH.md)를 보낸다. QR 폴더는 정답 원본을 빼는 sparse checkout을 쓴다.
+2. 1차 작업 폴더 네 개를 지운다(`git worktree remove ../tower-wp/<jobId>` 후 `git branch -D wp/<jobId>`).
+3. 기다리는 동안 총괄은 P1-REST 나머지(첫 연습 판, 설치 자리 목록, WebGL 문맥 손실 복구, 소리)를 진행한다.
+4. QR 두 보고서가 오면 QR-001 REQUEST의 승인 규칙대로 판정하고, 통과 revision만 3학년 은행 빌드에 넣는다.
 
-## 보존/복구
+## 하지 말 것·보존
 
-원문 v0.1·v0.3·v0.4·41번 PNG는 검산 도구가 해시를 확인한다. 광범위 reset/clean으로 복구하지 말고 해당 commit의 필요한 파일만 비교한다. `.claude/launch.json`은 미리보기 서버 설정이다.
+원문 v0.1·v0.3·v0.4·41번 PNG는 검산 도구가 해시를 확인한다. 광범위 reset/clean으로 복구하지 말고 해당 commit의 필요한 파일만 비교한다. 1차 작업 폴더는 수합 변경이 커밋되기 전까지 반환 원본의 백업이므로 먼저 지우지 않는다. `.claude/launch.json`은 미리보기 서버 설정이다.

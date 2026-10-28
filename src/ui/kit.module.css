@@ -16,10 +16,12 @@
   user-select: none;
 }
 .button:hover:not(:disabled) { filter: brightness(1.04); }
-.button:active:not(:disabled) { transform: translateY(1px); box-shadow: 0 1px 0 rgba(58, 41, 30, 0.35); }
-.button:disabled { background: var(--stone); color: var(--ink-soft); box-shadow: none; border-color: var(--ink-soft); }
+.button:active:not(:disabled) { transform: translateY(1px); box-shadow: var(--shadow-pressed); }
 .primary { background: var(--green); color: var(--paper); border-color: var(--edge); }
 .danger { background: var(--danger); color: var(--paper); }
+/* 비활성·처리 중은 변형(.primary/.danger)보다 뒤에 두어 어느 버튼에서나 같은 모양이 된다(PRD §12.6). */
+.button:disabled, .button[aria-busy='true'] { background: var(--stone); color: var(--ink-soft); box-shadow: none; border-color: var(--ink-soft); }
+.button[aria-busy='true'] { cursor: progress; }
 .quiet { background: transparent; box-shadow: none; border-color: transparent; text-decoration: underline; text-underline-offset: 3px; font-weight: 400; }
 .quiet:hover:not(:disabled) { filter: none; color: var(--blue); }
 .block { width: 100%; }

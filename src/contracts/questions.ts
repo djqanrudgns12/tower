@@ -43,6 +43,24 @@ export const bankFileSchema = z.object({
   for (const q of b.questions) if (q.grade !== b.grade || q.status !== b.status) ctx.addIssue({ code: 'custom', message: `${q.id}: 은행의 학년·상태와 다름` });
 });
 
+/**
+ * 긴급 철회 목록(PRD §9.5, §16.4). 실행 중 은행을 덮어쓰지 않고 버전이 붙은 별도 목록으로 겹쳐 적용한다.
+ * 이미 끝난 답변은 소급 변경하지 않는다. 걸려 있던 미제출 문항만 무벌점·무보상으로 바뀐다.
+ */
+export const retractionListSchema = z.object({
+  listVersion: z.string().min(1),
+  entries: z.array(z.object({
+    questionId: z.string().min(1),
+    revision: z.number().int().min(1),
+    reason: z.string().min(1),
+    retractedAt: z.iso.datetime(),
+  }).strict()),
+}).strict().superRefine((list, ctx) => {
+  const keys = list.entries.map(e => `${e.questionId}@${e.revision}`);
+  if (new Set(keys).size !== keys.length) ctx.addIssue({ code: 'custom', message: '철회 항목 중복' });
+});
+
+export type RetractionList = z.infer<typeof retractionListSchema>;
 export type BankQuestion = z.infer<typeof bankQuestionSchema>;
 export type BankFile = z.infer<typeof bankFileSchema>;
 

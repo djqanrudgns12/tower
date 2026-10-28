@@ -1,4 +1,4 @@
-import { contextFor } from '../../content';
+import { reviewQuestions } from '../../content';
 import type { RunState } from '../../domain/types';
 import { DIFFICULTY_COPY, fmtNumber } from '../copy';
 import kit from '../kit.module.css';
@@ -8,12 +8,12 @@ interface Props { state: RunState; onAgain(): void; onHome(): void }
 
 /** 결과와 복습(PRD §2.2). 복습 재풀이는 보상이 없으므로 여기서는 해설만 보여 준다. */
 export function ResultScreen({ state, onAgain, onHome }: Props) {
-  const ctx = contextFor(state.config.grade, state.config.difficulty);
+  const questions = reviewQuestions(state.config.grade);
   const answers = state.quiz.history;
   const total = answers.length;
   const accuracy = total ? Math.round((state.stats.correct / total) * 100) : 0;
-  const lemmas = new Set(answers.map(a => ctx.questions.get(a.questionId)?.target.lemma));
-  const senses = new Set(answers.map(a => ctx.questions.get(a.questionId)?.target.senseKey));
+  const lemmas = new Set(answers.map(a => questions.get(a.questionId)?.target.lemma));
+  const senses = new Set(answers.map(a => questions.get(a.questionId)?.target.senseKey));
   const review = answers.filter(a => a.answer && !a.answer.correct);
   const unique = [...new Map(review.map(a => [a.questionId, a])).values()];
   const title = state.endReason === 'DEFEAT'
@@ -43,7 +43,7 @@ export function ResultScreen({ state, onAgain, onHome }: Props) {
           {unique.length === 0 ? <p>틀리거나 넘긴 문제가 없어요.</p> : (
             <ul className={css.review}>
               {unique.map(a => {
-                const q = ctx.questions.get(a.questionId);
+                const q = questions.get(a.questionId);
                 if (!q) return null;
                 const correct = q.options.find(o => o.id === q.correctOptionId)!.text;
                 return (

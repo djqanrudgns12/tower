@@ -127,7 +127,7 @@ function BranchChoice(p: Props & { tower: TowerView; trading: boolean; lock: str
         const stats = towerStats(b, p.tower.type, 3, id);
         return (
           <button key={id} type="button" className={`${css.branch} ${chosen === id ? css.picked : ''}`} aria-pressed={chosen === id} onClick={() => p.onPreviewBranch(id)}>
-            <span className={css.branchMark} data-branch={id} aria-hidden="true" />
+            <BranchMark id={id} />
             <span className={css.itemText}>
               <span className={css.name}>{br.label}</span>
               <span className={css.role}>{br.summary}</span>
@@ -145,13 +145,22 @@ function BranchChoice(p: Props & { tower: TowerView; trading: boolean; lock: str
   );
 }
 
+/** 분기 표식: A 동그라미, B 마름모(copy.ts BRANCH_MARK). 반경 토큰을 쓰지 않도록 도형으로 그린다(PRD §12.8). */
+function BranchMark({ id }: { id: BranchId }) {
+  return (
+    <svg className={css.branchMark} data-branch={id} viewBox="0 0 22 22" aria-hidden="true">
+      {id === 'A' ? <circle cx="11" cy="11" r="8.5" /> : <polygon points="11,2 20,11 11,20 2,11" />}
+    </svg>
+  );
+}
+
 function TowerHeader({ tower, icons, ctx }: { tower: TowerView; icons: Record<string, string>; ctx: GameContext }) {
   const b = ctx.balance;
   return (
     <div className={css.header}>
       <Icon type={tower.type} icons={icons} size={56} />
       <div>
-        <p className={css.name}>{b.towers[tower.type].label} <span className={css.level}>Lv {tower.level}</span></p>
+        <p className={css.name}>{b.towers[tower.type].label} <span className={css.level}>레벨 {tower.level}</span></p>
         <p className={css.role}>{TOWER_COPY[tower.type]?.role}</p>
       </div>
     </div>
@@ -163,11 +172,14 @@ function Stats({ ctx, type, level, branch }: { ctx: GameContext; type: TowerId; 
   const s = towerStats(b, type, level, branch);
   return (
     <p className={css.stats}>
-      <span>힘 <strong>{fmtDamage(s.damage)}</strong></span>
-      <span><strong>{fmtSeconds(attackIntervalTicks(b, s, 0))}</strong></span>
-      <span><strong>{fmtCells(s.range)}</strong></span>
-      {s.slowBP > 0 && <span>느리게 <strong>{s.slowBP / 100}%</strong></span>}
-      {s.splashRadius > 0 && <span>최대 <strong>{s.maxTargets}마리</strong></span>}
+      {/* ‘힘 8 · 1초마다 · 2.5칸’(PRD §2.3). 구분점은 읽기 프로그램도 읽도록 글자로 둔다. */}
+      {[
+        <>힘 <strong>{fmtDamage(s.damage)}</strong></>,
+        <strong>{fmtSeconds(attackIntervalTicks(b, s, 0))}</strong>,
+        <strong>{fmtCells(s.range)}</strong>,
+        s.slowBP > 0 && <>느리게 <strong>{s.slowBP / 100}%</strong></>,
+        s.splashRadius > 0 && <>최대 <strong>{s.maxTargets}마리</strong></>,
+      ].filter(Boolean).map((part, i) => <span key={i}>{i > 0 && ' · '}{part}</span>)}
     </p>
   );
 }

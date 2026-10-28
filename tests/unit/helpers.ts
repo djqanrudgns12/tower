@@ -45,7 +45,8 @@ export function answerCurrent(ctx: GameContext, s: RunState, kind: 'correct' | '
   else ok(ctx, s, { type: 'answer', encounterId: id, choice: kind === 'correct' ? correctChoice(ctx, s) : wrongChoice(ctx, s) });
   const fb = s.quiz.feedback!;
   if (fb.autoAdvanceTick !== null) ticks(ctx, s, fb.autoAdvanceTick - s.tick);
-  else { ticks(ctx, s, fb.nextEnabledTick! - s.tick); ok(ctx, s, { type: 'next', encounterId: id }); }
+  // 수동 ‘다음’은 그 틱의 판정 뒤에 처리되므로 한 틱을 더 진행한다(PRD §3.4(8)).
+  else { ticks(ctx, s, fb.nextEnabledTick! - s.tick); ok(ctx, s, { type: 'next', encounterId: id }); ticks(ctx, s, 1); }
 }
 
 export function finishPrep(ctx: GameContext, s: RunState, kind: 'correct' | 'wrong' | 'skip' = 'correct') {
