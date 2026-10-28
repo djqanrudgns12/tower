@@ -2,7 +2,7 @@
 
 기준일: 2026-10-28 · 현재 구간: **P1 첫 완성 구간 — 1차 작업 패키지 수합 완료, 문항 공동검수·리깅 대기** · 총괄: Claude Opus 5.5(Claude Code)
 
-기준: 브랜치 `p1/intake-round1`. 1차 수합은 `bc3ee07`에 커밋했다(push 안 함). READY인 QR-001·QR-002·RIG-001은 `bc3ee07`을 `baseCommit`으로 머리말을 채우고 작업 폴더(`../tower-wp/<jobId>`)를 만들어 두었다. 아직 어느 모델에도 보내지 않았다. 붙여 넣을 프롬프트는 [발행용 프롬프트](work-packages/DISPATCH.md)에 있다.
+기준: 브랜치 `p1/intake-round1`(origin에 push함, `main`에는 아직 병합 안 함). 1차 수합은 `bc3ee07`. READY인 QR-001·QR-002·RIG-001은 `bc3ee07`을 `baseCommit`으로 머리말을 채워 커밋했다. 작업 폴더(`../tower-wp/<jobId>`)는 Windows PC에만 만들어 두었고, 집 Mac에서는 [발행용 프롬프트](work-packages/DISPATCH.md) 2차 절의 명령으로 새로 만든다. 아직 어느 모델에도 보내지 않았다. 붙여 넣을 프롬프트는 [발행용 프롬프트](work-packages/DISPATCH.md)에 있다.
 
 | jobId | 상태 | 담당 | 소유 범위 | 선행 |
 |---|---|---|---|---|

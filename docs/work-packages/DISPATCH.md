@@ -2,7 +2,7 @@
 
 ## 2차(2026-10-28 준비) — QR-001 · QR-002 · RIG-001
 
-1차 네 작업은 반환·수합되었다(아래 ‘1차’ 절은 이력). 2차 기준 commit은 `bc3ee0720912d33ff2b96602c365cfdd38e37521`(브랜치 `p1/intake-round1`)이다. 총괄이 아래 순서로 머리말을 채우고 작업 폴더를 만들었다(2026-10-28). 작업 폴더의 `git status`에는 채운 REQUEST.md 한 줄이 보이는 것이 정상이다.
+1차 네 작업은 반환·수합되었다(아래 ‘1차’ 절은 이력). 2차 기준 commit은 `bc3ee0720912d33ff2b96602c365cfdd38e37521`(브랜치 `p1/intake-round1`)이고, 머리말(`baseCommit`·`contractHash`)은 이미 채워 커밋했다. 작업 폴더는 컴퓨터마다 따로 만든다. 2026-10-28 Windows PC에는 만들어 두었고(아직 아무 모델에도 보내지 않음), **집 Mac에서는 아래 명령으로 새로 만든다.** 한 작업을 두 컴퓨터에서 동시에 보내지 않는다. 작업 폴더의 `git status`에는 채운 REQUEST.md 한 줄이 보이는 것이 정상이다.
 
 ```bash
 B=bc3ee0720912d33ff2b96602c365cfdd38e37521
@@ -15,14 +15,22 @@ for j in QR-001 QR-002; do
   git -C ../tower-wp/$j checkout
 done
 git worktree add -b wp/RIG-001 ../tower-wp/RIG-001 $B
+# 채운 머리말을 작업 폴더로 복사한다(작업 폴더는 bc3ee07이라 머리말이 비어 있다).
+for j in QR-001 QR-002; do cp docs/work-packages/QR-001/REQUEST.md ../tower-wp/$j/docs/work-packages/QR-001/REQUEST.md; done
+cp docs/work-packages/RIG-001/REQUEST.md ../tower-wp/RIG-001/docs/work-packages/RIG-001/REQUEST.md
 # 확인: QR 폴더에는 content-source/reviews만 있고 batches가 없어야 한다.
+ls ../tower-wp/QR-001/content-source ../tower-wp/QR-002/content-source
 ```
 
-| jobId | 보낼 곳 | 작업 폴더(Windows PC) | 결과 |
-|---|---|---|---|
-| QR-001 | Codex, 새 세션 | `C:\Users\User\Desktop\vibecoding\tower-wp\QR-001` | `content-source/reviews/Q20-001/codex.json`, `docs/work-packages/QR-001/RETURN.md` |
-| QR-002 | Claude, 새 대화(총괄 세션이 아닌 것) | `C:\Users\User\Desktop\vibecoding\tower-wp\QR-002` | `content-source/reviews/Q20-001/claude.json`, `docs/work-packages/QR-001/RETURN-QR-002.md` |
-| RIG-001 | Claude 새 대화 또는 Codex 세션 | `C:\Users\User\Desktop\vibecoding\tower-wp\RIG-001` | `src/game/animation/**`, `tests/unit/animation*.test.ts`, `docs/work-packages/RIG-001/RETURN.md` |
+`MSYS_NO_PATHCONV=1`은 Windows Git Bash용이고 Mac에서는 아무 효과가 없으니 그대로 두어도 된다. Windows에서는 먼저 `git config core.autocrlf input`을 해 둔다(Mac은 필요 없음).
+
+| jobId | 보낼 곳 | 작업 폴더(Windows PC) | 작업 폴더(집 Mac) | 결과 |
+|---|---|---|---|---|
+| QR-001 | Codex, 새 세션 | `C:\Users\User\Desktop\vibecoding\tower-wp\QR-001` | `/Users/bodyking/Desktop/vibecoding/tower-wp/QR-001` | `content-source/reviews/Q20-001/codex.json`, `docs/work-packages/QR-001/RETURN.md` |
+| QR-002 | Claude, 새 대화(총괄 세션이 아닌 것) | `C:\Users\User\Desktop\vibecoding\tower-wp\QR-002` | `/Users/bodyking/Desktop/vibecoding/tower-wp/QR-002` | `content-source/reviews/Q20-001/claude.json`, `docs/work-packages/QR-001/RETURN-QR-002.md` |
+| RIG-001 | Claude 새 대화 또는 Codex 세션 | `C:\Users\User\Desktop\vibecoding\tower-wp\RIG-001` | `/Users/bodyking/Desktop/vibecoding/tower-wp/RIG-001` | `src/game/animation/**`, `tests/unit/animation*.test.ts`, `docs/work-packages/RIG-001/RETURN.md` |
+
+아래 프롬프트는 Windows 경로로 적었다. **집 Mac에서 보낼 때는 `C:\Users\User\Desktop\vibecoding\tower-wp\` 를 `/Users/bodyking/Desktop/vibecoding/tower-wp/` 로 바꿔 붙여 넣는다.** 결과는 보낸 컴퓨터의 작업 폴더에만 생긴다.
 
 ### QR-001 → Codex / QR-002 → Claude(각각 새 대화)
 
@@ -74,7 +82,7 @@ git worktree add -b wp/RIG-001 ../tower-wp/RIG-001 $B
    - git rev-parse HEAD → bc3ee0720912d33ff2b96602c365cfdd38e37521
    - npm ci 성공, npx playwright install chromium 성공
    - node tools/contract-hash.mjs RIG-001 의 해시가 REQUEST.md 머리말 contractHash와 모두 같다
-   - 5173 포트에 떠 있는 서버가 없다(Get-NetTCPConnection -LocalPort 5173 -State Listen -ErrorAction SilentlyContinue 출력이 비어 있음)
+   - 5173 포트에 떠 있는 서버가 없다. Windows PowerShell: Get-NetTCPConnection -LocalPort 5173 -State Listen -ErrorAction SilentlyContinue / macOS: lsof -nP -iTCP:5173 -sTCP:LISTEN 의 출력이 비어 있어야 한다. e2e는 이미 떠 있는 서버를 그대로 쓰므로, 비어 있지 않으면 멈추고 보고한다.
 
 2. 할 일 — docs/work-packages/RIG-001/REQUEST.md를 끝까지 읽고 그대로 따른다.
    - 원화는 public/assets/manifest.json 의 integrated_pass 항목이다(enemy.walker.0~3). 렌더러는 enemyPose(...)의 { frame, bob, squashY }만 그린다.
