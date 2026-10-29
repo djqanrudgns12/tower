@@ -1,0 +1,392 @@
+{
+  "reviewId": "QR-004",
+  "jobId": "Q20-002",
+  "reviewer": {
+    "model": "claude-opus-5-5",
+    "tool": "Claude Code(총괄이 띄운 독립 하위 에이전트)",
+    "freshContext": true,
+    "date": "2026-10-29"
+  },
+  "items": [
+    {
+      "questionId": "g3-argon-0004",
+      "revision": 2,
+      "contentHash": "1608f807f164606daea8949fb82ce63c908bbd154880f17585ba4a7a0ca8b3ef",
+      "blindChoice": "d",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "uncertain"
+      },
+      "findings": [
+        "source: word_no=484857 ‘짐작-하다’는 뜻이 하나뿐(번호 없음)이고 senseId 281576이 그 뜻이다. 뜻풀이 ‘사정이나 형편 따위를 어림잡아 헤아리다’와 d ‘모르는 일을 대강 생각해 알다’가 같은 뜻이다.",
+        "uniqueness: a(사과), b(귀 기울여 듣기), c(참고 견디기)는 ‘표정을 보고 속마음을 ~’의 짐작하다 뜻이 아니다. d만 맞다.",
+        "language(권고, 판정에는 영향 없음): a ‘한 잘못을 미안하다고 말하다’는 주어 없이 ‘한’이 와서 수량 ‘한(하나)’으로도 읽힌다. ‘자기가 한 잘못을’ 또는 ‘잘못한 일을’이 더 자연스럽다.",
+        "language: ‘귀 기울여’ 띄어쓰기 맞음(사전에 ‘귀기울이다’ 표제어 없음).",
+        "explanation: 입력에 해설이 없어 uncertain으로 둔다(총괄 원본 대조 단계에서 채움)."
+      ]
+    },
+    {
+      "questionId": "g3-argon-0006",
+      "revision": 2,
+      "contentHash": "a1003bfb4061655394db6dc71bd2067acb103e34a77c8a7ab7eaba7a15c7186c",
+      "blindChoice": "b",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "uncertain"
+      },
+      "findings": [
+        "source: word_no=56170 ‘끈-기’ 「2」(senseId 36129) ‘쉽게 단념하지 아니하고 끈질기게 견디어 나가는 기운’이 지문의 뜻이다. 「1」 ‘물건의 끈끈한 기운’이 아니다. b와 같다.",
+        "uniqueness: a(힘), c(친화), d(잠 깨기)는 끈기의 뜻이 아니다. b만 맞다.",
+        "(참고) 지문 ‘끝까지 해냈어요’의 ‘내다’가 정답 ‘견디어 내는’에도 나오고, ‘끝까지’와 ‘포기하지 않고’가 바로 이어져 뜻을 몰라도 고를 여지가 조금 있다. 약한 단서다.",
+        "language: ‘견디어 내는’(보조용언 띄어 씀 원칙), ‘깨어나는’(사전 표제어 ‘깨어-나다’) 맞음.",
+        "explanation: 입력에 해설이 없어 uncertain으로 둔다(총괄 원본 대조 단계에서 채움)."
+      ]
+    },
+    {
+      "questionId": "g3-argon-0011",
+      "revision": 2,
+      "contentHash": "f79d80a8e791a5ce53315accb3a3ccbb424673d80148762a22fc24a39ac376c2",
+      "blindChoice": "c",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "uncertain"
+      },
+      "findings": [
+        "source: word_no=386470 ‘흐뭇-하다’는 뜻이 하나(senseId 554451) ‘마음에 흡족하여 매우 만족스럽다’이다. 빈칸 문맥과 같다.",
+        "uniqueness: 대입 결과 ‘마음이 어두웠어요/차가웠어요/비좁았어요’는 방울토마토가 익은 기쁜 장면과 맞지 않는다. c만 맞다.",
+        "language: ‘방울토마토’는 사전 표제어 ‘방울-토마토’로 붙여 씀이 맞다.",
+        "explanation: 입력에 해설이 없어 uncertain으로 둔다(총괄 원본 대조 단계에서 채움)."
+      ]
+    },
+    {
+      "questionId": "g3-argon-0013",
+      "revision": 2,
+      "contentHash": "7e41b6ded01c51712276dbb1cd12d053990882090597cd8af762db2ad7e079aa",
+      "blindChoice": "a",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "uncertain"
+      },
+      "findings": [
+        "source: word_no=112369 ‘망설-이다’ 뜻 하나(senseId 530620) ‘이리저리 생각만 하고 태도를 결정하지 못하다’. 사전의 ‘머뭇-거리다’ 뜻풀이가 ‘…선뜻 결단하여 행하지 못하고 자꾸 망설이다’여서 a와 비슷한 뜻이다.",
+        "uniqueness: c ‘서둘렀어요’는 반대 쪽, b ‘돌아다녔어요’·d ‘인사드렸어요’는 문장에는 들어가도 망설이다와 뜻이 비슷하지 않다. a만 맞다.",
+        "language: d ‘인사드렸어요’는 표준국어대사전에 ‘인사드리다’ 표제어가 없으나 접사 ‘-드리다7’(‘공손한 행위’, 몇몇 명사 뒤)이 있어 붙여 쓴 것으로 본다. ‘인사(를) 드렸어요’로 띄어도 틀리지 않는다. 오답이라 판정에 영향 없음.",
+        "explanation: 입력에 해설이 없어 uncertain으로 둔다(총괄 원본 대조 단계에서 채움)."
+      ]
+    },
+    {
+      "questionId": "g3-argon-0015",
+      "revision": 2,
+      "contentHash": "db292d63458d3ac431b3ea558f628138662a1ea6e001da66621aec1ab54560ee",
+      "blindChoice": "c",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "uncertain"
+      },
+      "findings": [
+        "source: word_no=196444 ‘소중-하다’ 뜻 하나(senseId 200316) ‘매우 귀중하다’. ‘귀-하다’(word_no=42336) 「3」 ‘아주 보배롭고 소중하다’여서 c와 비슷한 뜻이다.",
+        "uniqueness: a 심심해요, b 위험해요, d 조용해요는 소중하다와 뜻이 비슷하지 않다. c만 맞다.",
+        "grade: ‘귀하다’는 한자어(貴)지만 ‘귀한 손님·귀한 선물’처럼 흔히 쓰고 표제어 ‘소중하다’보다 어렵지 않다고 본다. ‘귀중’ 같은 더 어려운 한자어는 없다.",
+        "(참고) 정답 ‘귀해요’만 3음절이고 나머지 셋은 모두 4음절 ‘~해요’여서 길이가 다르다(PRD §9.2 단어 길이 단서).",
+        "explanation: 입력에 해설이 없어 uncertain으로 둔다(총괄 원본 대조 단계에서 채움)."
+      ]
+    },
+    {
+      "questionId": "g3-argon-0017",
+      "revision": 2,
+      "contentHash": "7653c730563e4a351b316ab6561b483c0c88ae7506dbdd33def55dc8e43ab4b3",
+      "blindChoice": "a",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "uncertain"
+      },
+      "findings": [
+        "source: word_no=472266 ‘익숙-하다’ 1「1」(senseId 20287, 첫 뜻) ‘어떤 일을 여러 번 하여 서투르지 않은 상태에 있다’. 지문 ‘여러 번 연습해서 줄넘기에 익숙해요’와 같고, 뜻풀이에 ‘서투르지 않은’이 있어 a ‘서툴러요’가 반대 뜻임이 사전으로 뒷받침된다.",
+        "uniqueness: b 가벼워요, c 깨끗해요, d 비슷해요는 반대 뜻이 아니다. a만 맞다.",
+        "language: ‘서툴러요’는 ‘서투르다’의 활용(르 불규칙)으로 맞다(‘서툴다’는 준말로 사전 표제어).",
+        "explanation: 입력에 해설이 없어 uncertain으로 둔다(총괄 원본 대조 단계에서 채움)."
+      ]
+    },
+    {
+      "questionId": "g3-argon-0021",
+      "revision": 1,
+      "contentHash": "ab5dd980c8915e4c383c508bd01dc1809c8f7e5cafb0fbe6f431bd4c93e12fc6",
+      "blindChoice": "b",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "uncertain"
+      },
+      "findings": [
+        "source: word_no=228742 ‘엉뚱-하다’ 「1」(senseId 17367) ‘상식적으로 생각하는 것과 전혀 다르다’. b ‘보통 생각하는 것과 아주 다르다’와 같다. 「2」 ‘말이나 행동이 분수에 맞지 아니하게 지나치다’보다 「1」이 지문에 맞다.",
+        "uniqueness: 뜻을 묻는 문항이라 a 밝은 표정, c 무서움, d 반가움은 엉뚱하다의 뜻이 아니다. b만 맞다.",
+        "(참고) 오답 a·c·d가 모두 기분·감정을 나타내고 정답 b만 생각과 다름을 나타내 ‘다른 하나’로 고를 여지가 있다. 약한 단서다.",
+        "explanation: 입력에 해설이 없어 uncertain으로 둔다(총괄 원본 대조 단계에서 채움)."
+      ]
+    },
+    {
+      "questionId": "g3-argon-0022",
+      "revision": 1,
+      "contentHash": "cacc9235f29871cfc2ce1cc212b9508531c53ffb896d3abb0c9fc74d6a3f68cd",
+      "blindChoice": "d",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "uncertain"
+      },
+      "findings": [
+        "source: word_no=390247 ‘간-추리다’ 「2」(senseId 334267) ‘글 따위에서 중요한 점만을 골라 간략하게 정리하다’. 「1」 ‘흐트러진 것을 가지런히 바로잡다’가 아니라 「2」가 지문 뜻이다. d와 같다.",
+        "uniqueness: a 사전 찾기, b 소리 내어 읽기, c 지우개로 고치기는 ‘읽은 글을 공책에 ~’에 맞는 간추리다의 뜻이 아니다. d만 맞다.",
+        "language: ‘찾아보다’(표제어 ‘찾아-보다’) 붙여 씀, ‘소리 내어’(표제어 ‘소리내다’ 없음) 띄어 씀 맞음.",
+        "explanation: 입력에 해설이 없어 uncertain으로 둔다(총괄 원본 대조 단계에서 채움)."
+      ]
+    },
+    {
+      "questionId": "g3-argon-0023",
+      "revision": 1,
+      "contentHash": "e7dd0125de1ba3744110f6a078786b59bd2b5887a9a385ef488eff818d2680f2",
+      "blindChoice": "c",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "uncertain"
+      },
+      "findings": [
+        "source: word_no=76900 ‘당황-하다’ 뜻 하나(senseId 126421) ‘놀라거나 다급하여 어찌할 바를 모르다’. c와 같다.",
+        "uniqueness: a 기쁨, b 되돌아봄, d 질문은 ‘발표할 말을 잊어 ~’에 맞는 뜻이 아니다. c만 맞다.",
+        "language: ‘잘되어’(표제어 ‘잘-되다’), ‘되돌아보다’(표제어 ‘되-돌아보다’) 붙여 씀 맞음.",
+        "explanation: 입력에 해설이 없어 uncertain으로 둔다(총괄 원본 대조 단계에서 채움)."
+      ]
+    },
+    {
+      "questionId": "g3-argon-0024",
+      "revision": 1,
+      "contentHash": "967c36782141385f5e6296dcbd3c47002583c726ad0764682b60ab88870eb2bc",
+      "blindChoice": "a",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "uncertain"
+      },
+      "findings": [
+        "source: word_no=386476 ‘흉내’ 뜻 하나(senseId 330060) ‘남이 하는 말이나 행동을 그대로 옮기는 짓’. a와 같다.",
+        "uniqueness: b 비밀 숨기기, c 혼자 풀기, d 물건 찾기는 흉내의 뜻이 아니다. a만 맞다.",
+        "language: ‘따라 하는’ 띄어 씀 맞음(사전에 ‘따라하다’ 표제어 없음). ‘잃어버린’·‘찾아내는’은 표제어로 붙여 씀 맞음.",
+        "explanation: 입력에 해설이 없어 uncertain으로 둔다(총괄 원본 대조 단계에서 채움)."
+      ]
+    },
+    {
+      "questionId": "g3-argon-0025",
+      "revision": 1,
+      "contentHash": "73abfda5a2d13fd3a2b43d238b59fd95c9d7be6c8da2eeb013bc50a0cc808256",
+      "blindChoice": "a",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "uncertain"
+      },
+      "findings": [
+        "source: word_no=419911 ‘또박-또박1’ 「1」(senseId 2055) ‘말이나 글씨 따위가 흐리터분하지 않고 조리 있고 또렷한 모양’. 빈칸 문맥(글씨)과 같다.",
+        "uniqueness: b ‘대충대충’은 ‘누구나 잘 알아볼 수 있게’와 어긋난다. c ‘보슬보슬’(비·가루), d ‘모락모락’(김·자람)은 글씨 쓰기와 맞지 않는다. a만 맞다.",
+        "explanation: 입력에 해설이 없어 uncertain으로 둔다(총괄 원본 대조 단계에서 채움)."
+      ]
+    },
+    {
+      "questionId": "g3-argon-0026",
+      "revision": 1,
+      "contentHash": "1f35a07936c2a6a9f6b6ed3e2abd2652c495a4ab2ed116ecbfec2c5142a0f03e",
+      "blindChoice": "d",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "uncertain"
+      },
+      "findings": [
+        "source: word_no=482362 ‘주렁-주렁’ 「1」(senseId 22837) ‘열매 따위가 많이 달려 있는 모양’. 빈칸 문맥과 같다.",
+        "uniqueness: a ‘뚜벅뚜벅’(걷는 소리), b ‘와글와글’(떠드는 소리), c ‘엉금엉금’(느리게 기는 모양)은 ‘감이 ~ 달렸어요’에 맞지 않는다. d만 맞다.",
+        "explanation: 입력에 해설이 없어 uncertain으로 둔다(총괄 원본 대조 단계에서 채움)."
+      ]
+    },
+    {
+      "questionId": "g3-argon-0027",
+      "revision": 1,
+      "contentHash": "45e05633f81cec90fc013084f1d9ec6909d7bc39e80da7e053880472123a42a9",
+      "blindChoice": "b",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "uncertain"
+      },
+      "findings": [
+        "source: word_no=403568 ‘궁금-하다’ 뜻 하나(senseId 562363) ‘무엇이 알고 싶어 마음이 몹시 답답하고 안타깝다’. 빈칸 문맥과 같다.",
+        "uniqueness: ‘무엇이 들어 있는지 무척 ~’에 a 미안해요, c 고마워요, d 느긋해요는 ‘-는지’와 이어지지 않는다. b만 맞다.",
+        "grade: d ‘느긋하다’는 고유어로 3학년에게 조금 낯설 수 있으나 오답이고 풀이를 막지 않는다.",
+        "explanation: 입력에 해설이 없어 uncertain으로 둔다(총괄 원본 대조 단계에서 채움)."
+      ]
+    },
+    {
+      "questionId": "g3-argon-0028",
+      "revision": 1,
+      "contentHash": "ccbee106e8a50f3282ea6ca83c6e6d8987b4dee8542f938638528e74dc20204c",
+      "blindChoice": "c",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "uncertain"
+      },
+      "findings": [
+        "source: word_no=457820 ‘약속’ 뜻 하나(senseId 539192) ‘다른 사람과 앞으로의 일을 어떻게 할 것인가를 미리 정하여 둠. 또는 그렇게 정한 내용.’ 빈칸 문맥과 같다.",
+        "uniqueness: ‘만나기로 한 ~을 꼭 지켰어요’에 질문·대답·자랑은 맞지 않는다. c만 맞다. 네 보기 모두 받침이 있어 ‘을’이 단서가 되지 않는다.",
+        "explanation: 입력에 해설이 없어 uncertain으로 둔다(총괄 원본 대조 단계에서 채움)."
+      ]
+    },
+    {
+      "questionId": "g3-argon-0029",
+      "revision": 1,
+      "contentHash": "5e4b594e20054d785630babb7cb0306f8c8043d772ae98992252700341a5838e",
+      "blindChoice": "d",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "uncertain"
+      },
+      "findings": [
+        "source: word_no=52927 ‘까닭’ 뜻 하나(senseId 107531) ‘일이 생기게 된 원인이나 조건’. d ‘이유’와 비슷한 뜻이다.",
+        "uniqueness: a 자리, b 소리, c 순서는 ‘웃는 ~을 물었어요’에서 까닭과 뜻이 비슷하지 않다. d만 맞다.",
+        "explanation: 입력에 해설이 없어 uncertain으로 둔다(총괄 원본 대조 단계에서 채움)."
+      ]
+    },
+    {
+      "questionId": "g3-argon-0030",
+      "revision": 1,
+      "contentHash": "492513da3db31da2755ebd1cb826d2ef4ecb290a62feb1604d90b83aedd8c877",
+      "blindChoice": "b",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "uncertain"
+      },
+      "findings": [
+        "source: word_no=485818 ‘차근-차근2’ 뜻 하나(senseId 287339) ‘말이나 행동 따위를 아주 찬찬하게 순서에 따라 조리 있게 하는 모양’이고 사전이 ‘≒차곡차곡’을 적었다. ‘차곡-차곡’(word_no=483940) 「2」도 같은 뜻풀이에 ‘=차근차근’, 용례 ‘생각을 차곡차곡 정리하다’가 있어 b가 맞다.",
+        "uniqueness: a ‘대충대충’은 반대 쪽, d ‘빙글빙글’은 돌거나 웃는 모양이다. c ‘꾸벅꾸벅’은 꾸벅꾸벅2 「1」 ‘조금도 어김없이 그대로 계속하는 모양’이 있어 문장에는 들어갈 수 있으나 차근차근(순서·조리)과 뜻이 비슷하지 않다. b만 맞다.",
+        "(참고) 정답 ‘차곡차곡’만 지문 ‘차근차근’과 첫 음절 ‘차’가 같고 ‘차○차○’ 꼴이 같아, 뜻을 몰라도 소리 연상으로 고를 수 있다.",
+        "explanation: 입력에 해설이 없어 uncertain으로 둔다(총괄 원본 대조 단계에서 채움)."
+      ]
+    },
+    {
+      "questionId": "g3-argon-0031",
+      "revision": 1,
+      "contentHash": "bf6f7a4470892dd69dcceefb953f6aa157049851f8d8ed1045232768a9674b3c",
+      "blindChoice": "c",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "uncertain"
+      },
+      "findings": [
+        "source: word_no=342293 ‘칭찬-하다’ 뜻 하나(senseId 297032) ‘좋은 점이나 착하고 훌륭한 일을 높이 평가하다’. ‘꾸짖다’는 사전 뜻풀이 ‘윗사람이 아랫사람의 잘못에 대하여 엄하게 나무라다’로 반대 뜻이다.",
+        "uniqueness: a ‘자랑하셨어요’는 반대가 아니고(뽐내는 일), b·d도 반대가 아니다. c만 맞다.",
+        "language: ‘꾸짖으셨어요’ 활용 맞음. 네 보기 모두 ‘-시-’를 넣어 높임이 고르다.",
+        "explanation: 입력에 해설이 없어 uncertain으로 둔다(총괄 원본 대조 단계에서 채움)."
+      ]
+    },
+    {
+      "questionId": "g3-argon-0032",
+      "revision": 1,
+      "contentHash": "24a9458ea6546169817198ee6f4bd027a8fa17cf8321be923e89f3cf81f2e440",
+      "blindChoice": "b",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "uncertain"
+      },
+      "findings": [
+        "source: word_no=417200 ‘떠올리다’ 「1」(senseId 551325) ‘기억을 되살려 내거나 잘 구상되지 않던 생각을 나게 하다’. 지문 뜻과 같고, ‘잊어-버리다’는 사전 뜻풀이 ‘한번 알았던 것을 모두 기억하지 못하거나…’로 반대 뜻이다.",
+        "uniqueness: a ‘기억했어요’는 비슷한 말(오답 유인), c·d는 반대가 아니다. b만 맞다.",
+        "language: ‘잊어버렸어요’는 표제어 ‘잊어-버리다’로 붙여 씀 맞음.",
+        "explanation: 입력에 해설이 없어 uncertain으로 둔다(총괄 원본 대조 단계에서 채움)."
+      ]
+    },
+    {
+      "questionId": "g3-argon-0033",
+      "revision": 1,
+      "contentHash": "988641c5ad873752f78457c0093185604218cffb9bc40184ba4ebe05a671564c",
+      "blindChoice": "d",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "uncertain"
+      },
+      "findings": [
+        "source: word_no=449133 ‘솔직-하다’ 뜻 하나(senseId 199961) ‘거짓이나 숨김이 없이 바르고 곧다’. d의 쓰임과 같다.",
+        "uniqueness: a ‘배가 솔직해요’, b ‘걸음이 솔직해요’, c ‘두 팔이 솔직해요’는 모두 말이 안 된다. d만 맞다.",
+        "language: ‘거짓 없이’ 띄어 씀 맞음(사전에 ‘거짓없이’ 표제어 없음). d는 이유(거짓 없이 말해서)와 결론(솔직해요)이 조금 되풀이되는 느낌이나 틀린 문장은 아니다.",
+        "(참고) 오답 a·b·c는 모두 ‘배·걸음·두 팔’ 같은 몸이나 동작에 ‘솔직해요’를 붙였고 정답만 사람(친구)의 태도를 말해, 문장 짜임만 보고도 고를 수 있다. 또 정답의 ‘거짓 없이’가 사전 뜻풀이를 거의 그대로 옮겨 정답 문장 안에 뜻이 들어 있다.",
+        "explanation: 입력에 해설이 없어 uncertain으로 둔다(총괄 원본 대조 단계에서 채움)."
+      ]
+    },
+    {
+      "questionId": "g3-argon-0034",
+      "revision": 1,
+      "contentHash": "a3906d0e7e4de05cff3fffa1e3c50d55c6539f9e652a04b433a7331d02b8567e",
+      "blindChoice": "a",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "uncertain"
+      },
+      "findings": [
+        "source: word_no=190832 ‘성큼성큼’ 뜻 하나(senseId 198765) ‘다리를 잇따라 높이 들어 크게 떼어 놓는 모양’. a의 쓰임과 같다.",
+        "uniqueness: b 눈 감기, c 우유 마시기, d 속삭이기에는 성큼성큼이 어울리지 않는다. a만 맞다.",
+        "language: ‘걸어갔어요’는 표제어 ‘걸어-가다’로 붙여 씀 맞음.",
+        "explanation: 입력에 해설이 없어 uncertain으로 둔다(총괄 원본 대조 단계에서 채움)."
+      ]
+    }
+  ]
+}

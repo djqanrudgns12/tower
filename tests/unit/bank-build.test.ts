@@ -1,4 +1,4 @@
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import path from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { buildBank, buildRegistry, contentHash, decide, loadBatches, MIN_PUBLISHED, type BatchInput, type Registry } from '../../tools/content/bankBuild';
@@ -41,9 +41,19 @@ describe('승인 레지스트리·게시 은행 빌드', () => {
   });
 
   it(`승인 문항이 ${MIN_PUBLISHED}개 미만이면 공개 은행을 만들지 않는다`, () => {
-    const r = buildBank(batches, buildRegistry(batches), 3);
+    const registry = buildRegistry(batches);
+    const approved = registry.entries.filter(e => e.decision === 'approved');
+    const short = { ...registry, entries: approved.slice(0, MIN_PUBLISHED - 1) };
+    const r = buildBank(batches, short, 3);
     expect(r.bank).toBeNull();
-    expect(r.approved).toBe(buildRegistry(batches).approved);
+    expect(r.approved).toBe(MIN_PUBLISHED - 1);
+  });
+
+  it('저장된 공개 은행은 승인 레지스트리에서 다시 만든 것과 같다(손으로 문항을 넣거나 고칠 수 없다)', () => {
+    const { bank } = buildBank(batches, buildRegistry(batches), 3);
+    const path3 = path.join(root, 'src/content/questions/grade3.json');
+    if (!bank) { expect(existsSync(path3)).toBe(false); return; }
+    expect(JSON.parse(readFileSync(path3, 'utf8'))).toEqual(bank);
   });
 
   it('승인 문항이 충분하면 가장 높은 승인 revision만 published 은행으로 묶고, 판 번호는 내용으로 정해진다', () => {

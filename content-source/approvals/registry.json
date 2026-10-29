@@ -1,8 +1,8 @@
 {
   "schemaVersion": "1",
   "rule": "Argon 자체 반박에서 정답만 맞음 · Codex·Claude 독립 풀이가 정답과 같고 source·uniqueness·grade·language 모두 pass · 총괄 해설 대조 pass · 게시 형식·의미 검사 통과. 하나라도 어긋나면 그 revision은 격리한다.",
-  "approved": 14,
-  "quarantined": 26,
+  "approved": 31,
+  "quarantined": 9,
   "entries": [
     {
       "questionId": "g3-argon-0001",
@@ -46,9 +46,7 @@
       "contentHash": "1608f807f164606daea8949fb82ce63c908bbd154880f17585ba4a7a0ca8b3ef",
       "decision": "quarantined",
       "reasons": [
-        "codex: 이 revision의 독립 검토 없음",
-        "claude: 이 revision의 독립 검토 없음",
-        "총괄 해설 대조 없음"
+        "codex: language uncertain"
       ]
     },
     {
@@ -76,9 +74,7 @@
       "contentHash": "a1003bfb4061655394db6dc71bd2067acb103e34a77c8a7ab7eaba7a15c7186c",
       "decision": "quarantined",
       "reasons": [
-        "codex: 이 revision의 독립 검토 없음",
-        "claude: 이 revision의 독립 검토 없음",
-        "총괄 해설 대조 없음"
+        "codex: language uncertain"
       ]
     },
     {
@@ -128,12 +124,8 @@
       "revision": 2,
       "batchId": "Q20-002",
       "contentHash": "f79d80a8e791a5ce53315accb3a3ccbb424673d80148762a22fc24a39ac376c2",
-      "decision": "quarantined",
-      "reasons": [
-        "codex: 이 revision의 독립 검토 없음",
-        "claude: 이 revision의 독립 검토 없음",
-        "총괄 해설 대조 없음"
-      ]
+      "decision": "approved",
+      "reasons": []
     },
     {
       "questionId": "g3-argon-0012",
@@ -160,12 +152,8 @@
       "revision": 2,
       "batchId": "Q20-002",
       "contentHash": "7e41b6ded01c51712276dbb1cd12d053990882090597cd8af762db2ad7e079aa",
-      "decision": "quarantined",
-      "reasons": [
-        "codex: 이 revision의 독립 검토 없음",
-        "claude: 이 revision의 독립 검토 없음",
-        "총괄 해설 대조 없음"
-      ]
+      "decision": "approved",
+      "reasons": []
     },
     {
       "questionId": "g3-argon-0014",
@@ -192,9 +180,7 @@
       "contentHash": "db292d63458d3ac431b3ea558f628138662a1ea6e001da66621aec1ab54560ee",
       "decision": "quarantined",
       "reasons": [
-        "codex: 이 revision의 독립 검토 없음",
-        "claude: 이 revision의 독립 검토 없음",
-        "총괄 해설 대조 없음"
+        "codex: grade uncertain"
       ]
     },
     {
@@ -221,12 +207,8 @@
       "revision": 2,
       "batchId": "Q20-002",
       "contentHash": "7653c730563e4a351b316ab6561b483c0c88ae7506dbdd33def55dc8e43ab4b3",
-      "decision": "quarantined",
-      "reasons": [
-        "codex: 이 revision의 독립 검토 없음",
-        "claude: 이 revision의 독립 검토 없음",
-        "총괄 해설 대조 없음"
-      ]
+      "decision": "approved",
+      "reasons": []
     },
     {
       "questionId": "g3-argon-0018",
@@ -257,168 +239,112 @@
       "revision": 1,
       "batchId": "Q20-002",
       "contentHash": "ab5dd980c8915e4c383c508bd01dc1809c8f7e5cafb0fbe6f431bd4c93e12fc6",
-      "decision": "quarantined",
-      "reasons": [
-        "codex: 이 revision의 독립 검토 없음",
-        "claude: 이 revision의 독립 검토 없음",
-        "총괄 해설 대조 없음"
-      ]
+      "decision": "approved",
+      "reasons": []
     },
     {
       "questionId": "g3-argon-0022",
       "revision": 1,
       "batchId": "Q20-002",
       "contentHash": "cacc9235f29871cfc2ce1cc212b9508531c53ffb896d3abb0c9fc74d6a3f68cd",
-      "decision": "quarantined",
-      "reasons": [
-        "codex: 이 revision의 독립 검토 없음",
-        "claude: 이 revision의 독립 검토 없음",
-        "총괄 해설 대조 없음"
-      ]
+      "decision": "approved",
+      "reasons": []
     },
     {
       "questionId": "g3-argon-0023",
       "revision": 1,
       "batchId": "Q20-002",
       "contentHash": "e7dd0125de1ba3744110f6a078786b59bd2b5887a9a385ef488eff818d2680f2",
-      "decision": "quarantined",
-      "reasons": [
-        "codex: 이 revision의 독립 검토 없음",
-        "claude: 이 revision의 독립 검토 없음",
-        "총괄 해설 대조 없음"
-      ]
+      "decision": "approved",
+      "reasons": []
     },
     {
       "questionId": "g3-argon-0024",
       "revision": 1,
       "batchId": "Q20-002",
       "contentHash": "967c36782141385f5e6296dcbd3c47002583c726ad0764682b60ab88870eb2bc",
-      "decision": "quarantined",
-      "reasons": [
-        "codex: 이 revision의 독립 검토 없음",
-        "claude: 이 revision의 독립 검토 없음",
-        "총괄 해설 대조 없음"
-      ]
+      "decision": "approved",
+      "reasons": []
     },
     {
       "questionId": "g3-argon-0025",
       "revision": 1,
       "batchId": "Q20-002",
       "contentHash": "73abfda5a2d13fd3a2b43d238b59fd95c9d7be6c8da2eeb013bc50a0cc808256",
-      "decision": "quarantined",
-      "reasons": [
-        "codex: 이 revision의 독립 검토 없음",
-        "claude: 이 revision의 독립 검토 없음",
-        "총괄 해설 대조 없음"
-      ]
+      "decision": "approved",
+      "reasons": []
     },
     {
       "questionId": "g3-argon-0026",
       "revision": 1,
       "batchId": "Q20-002",
       "contentHash": "1f35a07936c2a6a9f6b6ed3e2abd2652c495a4ab2ed116ecbfec2c5142a0f03e",
-      "decision": "quarantined",
-      "reasons": [
-        "codex: 이 revision의 독립 검토 없음",
-        "claude: 이 revision의 독립 검토 없음",
-        "총괄 해설 대조 없음"
-      ]
+      "decision": "approved",
+      "reasons": []
     },
     {
       "questionId": "g3-argon-0027",
       "revision": 1,
       "batchId": "Q20-002",
       "contentHash": "45e05633f81cec90fc013084f1d9ec6909d7bc39e80da7e053880472123a42a9",
-      "decision": "quarantined",
-      "reasons": [
-        "codex: 이 revision의 독립 검토 없음",
-        "claude: 이 revision의 독립 검토 없음",
-        "총괄 해설 대조 없음"
-      ]
+      "decision": "approved",
+      "reasons": []
     },
     {
       "questionId": "g3-argon-0028",
       "revision": 1,
       "batchId": "Q20-002",
       "contentHash": "ccbee106e8a50f3282ea6ca83c6e6d8987b4dee8542f938638528e74dc20204c",
-      "decision": "quarantined",
-      "reasons": [
-        "codex: 이 revision의 독립 검토 없음",
-        "claude: 이 revision의 독립 검토 없음",
-        "총괄 해설 대조 없음"
-      ]
+      "decision": "approved",
+      "reasons": []
     },
     {
       "questionId": "g3-argon-0029",
       "revision": 1,
       "batchId": "Q20-002",
       "contentHash": "5e4b594e20054d785630babb7cb0306f8c8043d772ae98992252700341a5838e",
-      "decision": "quarantined",
-      "reasons": [
-        "codex: 이 revision의 독립 검토 없음",
-        "claude: 이 revision의 독립 검토 없음",
-        "총괄 해설 대조 없음"
-      ]
+      "decision": "approved",
+      "reasons": []
     },
     {
       "questionId": "g3-argon-0030",
       "revision": 1,
       "batchId": "Q20-002",
       "contentHash": "492513da3db31da2755ebd1cb826d2ef4ecb290a62feb1604d90b83aedd8c877",
-      "decision": "quarantined",
-      "reasons": [
-        "codex: 이 revision의 독립 검토 없음",
-        "claude: 이 revision의 독립 검토 없음",
-        "총괄 해설 대조 없음"
-      ]
+      "decision": "approved",
+      "reasons": []
     },
     {
       "questionId": "g3-argon-0031",
       "revision": 1,
       "batchId": "Q20-002",
       "contentHash": "bf6f7a4470892dd69dcceefb953f6aa157049851f8d8ed1045232768a9674b3c",
-      "decision": "quarantined",
-      "reasons": [
-        "codex: 이 revision의 독립 검토 없음",
-        "claude: 이 revision의 독립 검토 없음",
-        "총괄 해설 대조 없음"
-      ]
+      "decision": "approved",
+      "reasons": []
     },
     {
       "questionId": "g3-argon-0032",
       "revision": 1,
       "batchId": "Q20-002",
       "contentHash": "24a9458ea6546169817198ee6f4bd027a8fa17cf8321be923e89f3cf81f2e440",
-      "decision": "quarantined",
-      "reasons": [
-        "codex: 이 revision의 독립 검토 없음",
-        "claude: 이 revision의 독립 검토 없음",
-        "총괄 해설 대조 없음"
-      ]
+      "decision": "approved",
+      "reasons": []
     },
     {
       "questionId": "g3-argon-0033",
       "revision": 1,
       "batchId": "Q20-002",
       "contentHash": "988641c5ad873752f78457c0093185604218cffb9bc40184ba4ebe05a671564c",
-      "decision": "quarantined",
-      "reasons": [
-        "codex: 이 revision의 독립 검토 없음",
-        "claude: 이 revision의 독립 검토 없음",
-        "총괄 해설 대조 없음"
-      ]
+      "decision": "approved",
+      "reasons": []
     },
     {
       "questionId": "g3-argon-0034",
       "revision": 1,
       "batchId": "Q20-002",
       "contentHash": "a3906d0e7e4de05cff3fffa1e3c50d55c6539f9e652a04b433a7331d02b8567e",
-      "decision": "quarantined",
-      "reasons": [
-        "codex: 이 revision의 독립 검토 없음",
-        "claude: 이 revision의 독립 검토 없음",
-        "총괄 해설 대조 없음"
-      ]
+      "decision": "approved",
+      "reasons": []
     }
   ]
 }

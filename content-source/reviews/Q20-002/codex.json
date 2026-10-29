@@ -1,0 +1,432 @@
+{
+  "reviewId": "QR-003",
+  "jobId": "Q20-002",
+  "reviewer": {
+    "model": "GPT-6",
+    "tool": "Codex (exec_command, web.run)",
+    "freshContext": true,
+    "date": "2026-10-29"
+  },
+  "items": [
+    {
+      "questionId": "g3-argon-0004",
+      "revision": 2,
+      "contentHash": "1608f807f164606daea8949fb82ce63c908bbd154880f17585ba4a7a0ca8b3ef",
+      "blindChoice": "d",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "uncertain",
+        "explanation": "uncertain"
+      },
+      "findings": [
+        "사전 조회 전에 blindChoice를 기록했으며 이후 변경하지 않았다.",
+        "[source pass] https://stdict.korean.go.kr/search/searchView.do?word_no=484857&searchKeywordTo=3 의 동적 본문을 같은 공식 사이트의 /search/contentViewOne.do에 word_no를 POST하여 직접 조회했다. 뜻 순서 1 및 HTML의 senseExample281576를 확인했다. 상황이나 속사정을 어림하여 헤아리는 뜻으로, 표정을 통해 속마음을 추측하는 문맥과 일치한다.",
+        "[uniqueness pass] 네 보기를 뜻으로 대입했다. a는 사과, b는 경청, c는 인내여서 속마음을 추측하는 행위와 다르고, d만 대응한다.",
+        "표정·속마음·참기·미안함 등 일상적인 마음과 행동을 다뤄 3학년의 인물 마음 이해 활동과 연결된다. 보기에서 목표어보다 어려운 한자어는 발견하지 못했다. gradeBasis의 교과서 원문은 이번 검토에서 대조하지 않았으며 단원과 문항의 연계 가능성 및 읽기 수준에 대한 독립 판단이다.",
+        "[language uncertain] a의 ‘한 잘못을 미안하다고 말하다’는 누가 한 잘못인지 생략한 관형절과 ‘잘못을 미안하다고’의 결합이 매끄럽지 않다. ‘자기가 한 잘못에 대해 미안하다고 말하다’처럼 관계를 분명히 하는 표현을 권한다. 띄어쓰기 자체는 문제없다. b의 ‘귀 기울여’는 한국어기초사전 ‘귀’의 관용구 ‘귀(를) 기울이다’와 대조했다: https://krdict.korean.go.kr/kor/dicSearch/SearchView?ParaWordNo=60201",
+        "해설은 입력에 제공되지 않아 explanation은 uncertain으로 남겼다."
+      ]
+    },
+    {
+      "questionId": "g3-argon-0006",
+      "revision": 2,
+      "contentHash": "a1003bfb4061655394db6dc71bd2067acb103e34a77c8a7ab7eaba7a15c7186c",
+      "blindChoice": "b",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "uncertain",
+        "explanation": "uncertain"
+      },
+      "findings": [
+        "사전 조회 전에 blindChoice를 기록했으며 이후 변경하지 않았다.",
+        "[source pass] https://stdict.korean.go.kr/search/searchView.do?word_no=56170&searchKeywordTo=3 의 동적 본문을 같은 공식 사이트의 /search/contentViewOne.do에 word_no를 POST하여 직접 조회했다. 뜻 순서 2 및 HTML의 senseExample36129를 확인했다. 제2뜻은 쉽게 그만두지 않고 버티어 나가는 기운으로, 끝까지 해내는 문맥과 일치한다.",
+        "[uniqueness pass] 네 보기를 명사구로 대입했다. a는 무거운 짐을 드는 힘, c는 친해지는 성향, d는 일찍 깨는 능력을 나타내며 지속적인 인내와 다르다. b만 끝까지 버티는 뜻이다.",
+        "짐 들기·친구 사귀기·잠 깨기·끝까지 하기 등 익숙한 행동을 쓴다. 제시된 독서 계획 활동과 끈기의 연계도 그럴듯하다. 보기의 한자어 포기는 일상적인 학교 표현으로 판단했다. gradeBasis의 교과서 원문은 이번 검토에서 대조하지 않았으며 단원과 문항의 연계 가능성 및 읽기 수준에 대한 독립 판단이다.",
+        "[language uncertain] c의 ‘낯선 사람과 금방 친해지는 기운’과 d의 ‘아침 일찍 잠에서 깨어나는 기운’은 각각 성향·능력을 ‘기운’으로 묶어 어색하다. 오답이어도 자연스러운 한국어 명사구가 되도록 재검토가 필요하다. ‘견디어 내는’은 표준국어대사전 내다의 보조 동사 구성 ‘-어 내다’에 맞고, ‘깨어나다’는 한 단어다. 사전: https://stdict.korean.go.kr/search/searchView.do?word_no=61405&searchKeywordTo=3 및 https://stdict.korean.go.kr/search/searchView.do?word_no=55835&searchKeywordTo=3",
+        "해설은 입력에 제공되지 않아 explanation은 uncertain으로 남겼다."
+      ]
+    },
+    {
+      "questionId": "g3-argon-0011",
+      "revision": 2,
+      "contentHash": "f79d80a8e791a5ce53315accb3a3ccbb424673d80148762a22fc24a39ac376c2",
+      "blindChoice": "c",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "uncertain"
+      },
+      "findings": [
+        "사전 조회 전에 blindChoice를 기록했으며 이후 변경하지 않았다.",
+        "[source pass] https://stdict.korean.go.kr/search/searchView.do?word_no=386470&searchKeywordTo=3 의 동적 본문을 같은 공식 사이트의 /search/contentViewOne.do에 word_no를 POST하여 직접 조회했다. 뜻 순서 1 및 HTML의 senseExample554451를 확인했다. 마음에 흡족하여 만족스러운 뜻으로, 직접 기른 열매의 성장을 보는 문맥에 맞는다.",
+        "[uniqueness pass] 마음이 어두웠어요/차가웠어요/흐뭇했어요/비좁았어요를 각각 대입했다. a·b는 부정적 마음 상태를 뒷받침할 사건이 없고 d는 공간이 좁다는 말이어서 부적절하다. 자신의 열매가 익은 통상적 성취 문맥에는 c만 적절하다. 별도 사정을 임의로 추가하여 복수 답으로 보지 않았다.",
+        "직접 기른 식물과 감정을 연결하는 생활 문맥이다. 비좁다를 포함한 보기들은 일상적인 상태를 나타내며 어려운 한자어는 없다. gradeBasis의 교과서 원문은 이번 검토에서 대조하지 않았으며 단원과 문항의 연계 가능성 및 읽기 수준에 대한 독립 판단이다.",
+        "보기 네 개는 모두 형용사 과거형으로 조사·어미가 맞는다. ‘비좁다’가 한 단어임을 사전 검색으로 확인했다. 원문의 ‘방울토마토’, ‘빨갛게’, ‘익은 모습을 보니’도 자연스럽다. https://stdict.korean.go.kr/search/searchView.do?word_no=436518&searchKeywordTo=3",
+        "해설은 입력에 제공되지 않아 explanation은 uncertain으로 남겼다."
+      ]
+    },
+    {
+      "questionId": "g3-argon-0013",
+      "revision": 2,
+      "contentHash": "7e41b6ded01c51712276dbb1cd12d053990882090597cd8af762db2ad7e079aa",
+      "blindChoice": "a",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "uncertain"
+      },
+      "findings": [
+        "사전 조회 전에 blindChoice를 기록했으며 이후 변경하지 않았다.",
+        "[source pass] https://stdict.korean.go.kr/search/searchView.do?word_no=112369&searchKeywordTo=3 의 동적 본문을 같은 공식 사이트의 /search/contentViewOne.do에 word_no를 POST하여 직접 조회했다. 뜻 순서 1 및 HTML의 senseExample530620를 확인했다. 생각만 하며 결정을 못 하는 뜻으로, 차가운 물에 들어갈지 주저하는 문맥에 맞는다.",
+        "[uniqueness pass] 차가운 수영장 물에 들어가기 전에 잠시 머뭇거렸어요/돌아다녔어요/서둘렀어요/인사드렸어요를 대입했다. b·c·d도 별도의 행동을 나타내는 문장은 만들 수 있으나 망설임과 같은 뜻은 아니다. a만 결정을 주저하는 뜻이다.",
+        "수영장 진입 전의 주저함은 경험을 떠올리며 이해할 수 있고, 보기들은 학교생활에서 접하는 행동 표현이다. 목표어보다 어려운 한자어는 발견하지 못했다. gradeBasis의 교과서 원문은 이번 검토에서 대조하지 않았으며 단원과 문항의 연계 가능성 및 읽기 수준에 대한 독립 판단이다.",
+        "‘머뭇거리다’와 ‘돌아다니다’는 사전에 등재된 한 단어다. ‘인사드렸어요’는 공손한 행위를 나타내는 접미사 ‘-드리다’를 붙인 형태로 검토했다. 네 보기 모두 해요체 과거형이며 정답만 다른 종결말투는 없다. https://stdict.korean.go.kr/search/searchView.do?word_no=114335&searchKeywordTo=3 ; https://stdict.korean.go.kr/search/searchView.do?word_no=87120&searchKeywordTo=3 ; https://stdict.korean.go.kr/search/searchView.do?word_no=92686&searchKeywordTo=3",
+        "해설은 입력에 제공되지 않아 explanation은 uncertain으로 남겼다."
+      ]
+    },
+    {
+      "questionId": "g3-argon-0015",
+      "revision": 2,
+      "contentHash": "db292d63458d3ac431b3ea558f628138662a1ea6e001da66621aec1ab54560ee",
+      "blindChoice": "c",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "uncertain",
+        "language": "pass",
+        "explanation": "uncertain"
+      },
+      "findings": [
+        "사전 조회 전에 blindChoice를 기록했으며 이후 변경하지 않았다.",
+        "[source pass] https://stdict.korean.go.kr/search/searchView.do?word_no=196444&searchKeywordTo=3 의 동적 본문을 같은 공식 사이트의 /search/contentViewOne.do에 word_no를 POST하여 직접 조회했다. 뜻 순서 1 및 HTML의 senseExample200316를 확인했다. 매우 귀중하다는 뜻이다. 별도 조회한 귀하다 제3뜻도 소중함을 나타내므로 의미 대응이 확인된다.",
+        "[uniqueness pass] 시간은 나에게 무척 심심해요/위험해요/귀해요/조용해요를 대입했다. a·b·d는 지루함·위험·고요함으로, 아끼는 가치의 뜻을 보존하지 못한다. c만 대응한다.",
+        "[grade uncertain] 보기 c의 한자어 ‘귀하다(貴하다)’는 드물다는 뜻과 소중한 가치라는 뜻을 가려야 한다. 검토자 판단으로 후자의 추상적 쓰임은 목표어 ‘소중하다’보다 낯설 수 있으며, 제시된 gradeBasis에는 이 보기까지 3학년이 이해한다는 근거가 없다. 짧다는 이유만으로 쉬운 보기로 확정하지 않았다. gradeBasis의 교과서 원문은 이번 검토에서 대조하지 않았으며 단원과 문항의 연계 가능성 및 읽기 수준에 대한 독립 판단이다.",
+        "‘귀해요’는 귀하다의 정상적인 활용이며 다른 보기와 종결말투가 같다. 사전의 활용 ‘귀하여(귀해)’와 제3뜻을 확인했다. https://stdict.korean.go.kr/search/searchView.do?word_no=42336&searchKeywordTo=3",
+        "해설은 입력에 제공되지 않아 explanation은 uncertain으로 남겼다."
+      ]
+    },
+    {
+      "questionId": "g3-argon-0017",
+      "revision": 2,
+      "contentHash": "7653c730563e4a351b316ab6561b483c0c88ae7506dbdd33def55dc8e43ab4b3",
+      "blindChoice": "a",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "uncertain"
+      },
+      "findings": [
+        "사전 조회 전에 blindChoice를 기록했으며 이후 변경하지 않았다.",
+        "[source pass] https://stdict.korean.go.kr/search/searchView.do?word_no=472266&searchKeywordTo=3 의 동적 본문을 같은 공식 사이트의 /search/contentViewOne.do에 word_no를 POST하여 직접 조회했다. 뜻 순서 1 및 HTML의 senseExample20287를 확인했다. 첫 문형의 제1뜻은 반복 경험으로 서투르지 않은 상태다. 줄넘기 연습 문맥이 이 뜻을 고정한다.",
+        "[uniqueness pass] 나는 이제 줄넘기에 서툴러요/가벼워요/깨끗해요/비슷해요를 대입해 뜻을 비교했다. a만 숙련과 반대 관계이고 b·c·d는 무게·청결·유사성의 다른 축이다. 반의어 문항이므로 a를 넣으면 원래 연습 결과와 뜻이 뒤집히는 것은 오류가 아니다.",
+        "줄넘기 연습과 서투름의 대비가 구체적이고 보기들은 기본적인 상태어다. 읽기·발표 숙련을 다루는 gradeBasis와 목표어의 연계도 그럴듯하다. gradeBasis의 교과서 원문은 이번 검토에서 대조하지 않았으며 단원과 문항의 연계 가능성 및 읽기 수준에 대한 독립 판단이다.",
+        "‘서툴러요’는 바른 활용이다. 사전 ‘서툴다’의 한 걸음 더에서 모음으로 시작하는 어미 앞에서는 ‘서툴어’가 아니라 ‘서툴러’라고 명시한 내용을 확인했다. 지문의 ‘여러 번’은 횟수 표현으로 띄어 쓴다. https://stdict.korean.go.kr/search/searchView.do?word_no=187590&searchKeywordTo=3",
+        "해설은 입력에 제공되지 않아 explanation은 uncertain으로 남겼다."
+      ]
+    },
+    {
+      "questionId": "g3-argon-0021",
+      "revision": 1,
+      "contentHash": "ab5dd980c8915e4c383c508bd01dc1809c8f7e5cafb0fbe6f431bd4c93e12fc6",
+      "blindChoice": "b",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "uncertain"
+      },
+      "findings": [
+        "사전 조회 전에 blindChoice를 기록했으며 이후 변경하지 않았다.",
+        "[source pass] https://stdict.korean.go.kr/search/searchView.do?word_no=228742&searchKeywordTo=3 의 동적 본문을 같은 공식 사이트의 /search/contentViewOne.do에 word_no를 POST하여 직접 조회했다. 뜻 순서 1 및 HTML의 senseExample17367를 확인했다. 제1뜻은 일반적으로 예상하는 것과 전혀 다른 상태로, 구름을 타고 간다는 발상과 일치한다.",
+        "[uniqueness pass] 네 풀이를 구름을 타고 간다는 발상에 대입했다. a는 밝은 기분, c는 두려움, d는 재회의 기쁨으로 발상의 비상식성을 설명하지 못한다. b만 대응한다.",
+        "구름을 타고 간다는 상상과 보통 생각의 차이가 쉽게 드러난다. 표정·기분·무서움·기쁨은 익숙한 감정 표현이며 목표어보다 어려운 한자어는 발견하지 못했다. gradeBasis의 교과서 원문은 이번 검토에서 대조하지 않았으며 단원과 문항의 연계 가능성 및 읽기 수준에 대한 독립 판단이다.",
+        "네 보기는 모두 ‘-다’로 끝나고 관형절·조사 연결이 자연스럽다. 표제어 사전에서 ‘엉뚱하다’의 표기를 확인했다. 보기의 ‘기분이 좋아’, ‘몸이 떨리다’, ‘사람을 만나’는 각각 단어를 띄어 쓴 정상적인 구다.",
+        "해설은 입력에 제공되지 않아 explanation은 uncertain으로 남겼다."
+      ]
+    },
+    {
+      "questionId": "g3-argon-0022",
+      "revision": 1,
+      "contentHash": "cacc9235f29871cfc2ce1cc212b9508531c53ffb896d3abb0c9fc74d6a3f68cd",
+      "blindChoice": "d",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "uncertain"
+      },
+      "findings": [
+        "사전 조회 전에 blindChoice를 기록했으며 이후 변경하지 않았다.",
+        "[source pass] https://stdict.korean.go.kr/search/searchView.do?word_no=390247&searchKeywordTo=3 의 동적 본문을 같은 공식 사이트의 /search/contentViewOne.do에 word_no를 POST하여 직접 조회했다. 뜻 순서 2 및 HTML의 senseExample334267를 확인했다. 제2뜻은 글에서 핵심을 골라 짧게 정리하는 것으로, 읽은 글을 공책에 정리하는 문맥과 일치한다.",
+        "[uniqueness pass] 읽은 글에 a의 사전 찾기, b의 소리 내어 읽기, c의 글자 고치기, d의 핵심 정리를 각각 대입했다. a·b·c는 정보 검색·음독·수정으로 간추리는 뜻과 다르며 d만 대응한다.",
+        "공책·글씨·지우개·사전은 학교생활 어휘다. 중요한 내용과 정리도 간추리기 활동을 설명하는 기초적인 학습 어휘로, 제시된 글의 짜임 단원과 연결된다. gradeBasis의 교과서 원문은 이번 검토에서 대조하지 않았으며 단원과 문항의 연계 가능성 및 읽기 수준에 대한 독립 판단이다.",
+        "a의 ‘찾아보다’는 사전 제2뜻에 해당하는 한 단어이고, b의 ‘소리 내어’는 명사 ‘소리’와 동사 ‘내다’의 결합이므로 띄어 쓰는 것이 맞다. 내다 제3뜻에서 소리를 밖으로 드러내는 용법을 확인했다. https://stdict.korean.go.kr/search/searchView.do?word_no=321387&searchKeywordTo=3 ; https://stdict.korean.go.kr/search/searchView.do?word_no=61405&searchKeywordTo=3",
+        "해설은 입력에 제공되지 않아 explanation은 uncertain으로 남겼다."
+      ]
+    },
+    {
+      "questionId": "g3-argon-0023",
+      "revision": 1,
+      "contentHash": "e7dd0125de1ba3744110f6a078786b59bd2b5887a9a385ef488eff818d2680f2",
+      "blindChoice": "c",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "uncertain"
+      },
+      "findings": [
+        "사전 조회 전에 blindChoice를 기록했으며 이후 변경하지 않았다.",
+        "[source pass] https://stdict.korean.go.kr/search/searchView.do?word_no=76900&searchKeywordTo=3 의 동적 본문을 같은 공식 사이트의 /search/contentViewOne.do에 word_no를 POST하여 직접 조회했다. 뜻 순서 1 및 HTML의 senseExample126421를 확인했다. 놀라거나 다급하여 행동할 바를 모르는 뜻으로, 발표할 말을 잊은 문맥에 맞는다.",
+        "[uniqueness pass] 발표할 말을 잊은 상황에 a의 기쁨, b의 차분한 회상, c의 어쩔 줄 모름, d의 질문을 각각 대입했다. b·d는 이후 가능한 행동일 뿐 당황의 뜻이 아니고 a도 맞지 않으며 c만 대응한다.",
+        "발표할 말을 잊는 상황은 학교 경험으로 이해할 수 있고 네 보기 모두 쉬운 행동과 감정 표현이다. gradeBasis의 교과서 원문은 이번 검토에서 대조하지 않았으며 단원과 문항의 연계 가능성 및 읽기 수준에 대한 독립 판단이다.",
+        "‘잘되어’는 일이 좋게 이루어진다는 합성어 ‘잘되다’의 활용이고, ‘되돌아보다’도 사전에 등재된 한 단어다. ‘어쩔 줄 모르다’의 의존 명사 ‘줄’은 앞말과 띄어 쓴다. https://stdict.korean.go.kr/search/searchView.do?word_no=278636&searchKeywordTo=3 ; https://stdict.korean.go.kr/search/searchView.do?word_no=415163&searchKeywordTo=3",
+        "해설은 입력에 제공되지 않아 explanation은 uncertain으로 남겼다."
+      ]
+    },
+    {
+      "questionId": "g3-argon-0024",
+      "revision": 1,
+      "contentHash": "967c36782141385f5e6296dcbd3c47002583c726ad0764682b60ab88870eb2bc",
+      "blindChoice": "a",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "uncertain"
+      },
+      "findings": [
+        "사전 조회 전에 blindChoice를 기록했으며 이후 변경하지 않았다.",
+        "[source pass] https://stdict.korean.go.kr/search/searchView.do?word_no=386476&searchKeywordTo=3 의 동적 본문을 같은 공식 사이트의 /search/contentViewOne.do에 word_no를 POST하여 직접 조회했다. 뜻 순서 1 및 HTML의 senseExample330060를 확인했다. 다른 이의 말이나 행동을 그대로 옮기는 뜻으로, 동생이 언니를 따라 하는 문맥과 일치한다.",
+        "[uniqueness pass] 언니 흉내 자리에 네 명사구를 대입했다. a만 언니의 행동을 옮기는 뜻이다. b의 비밀 숨기기, c의 혼자 문제 풀기, d의 물건 찾기는 흉내의 뜻이 아니다.",
+        "형제자매의 말과 행동을 따라 하는 상황 및 문제 풀기·물건 찾기는 일상적이다. 생생하게 표현하기 활동과도 연결되며 비밀 외에 어려운 한자어를 추가하지 않았다. gradeBasis의 교과서 원문은 이번 검토에서 대조하지 않았으며 단원과 문항의 연계 가능성 및 읽기 수준에 대한 독립 판단이다.",
+        "a의 ‘따라 하는’은 본용언끼리의 연결이므로 띄어 쓴 표기가 맞다. 표준국어대사전 ‘따라하다’ 검색에서 단일 표제어가 없고 국립국어원 상담에서도 항상 띄도록 안내한다. d의 ‘잃어버리다’·‘찾아내다’는 사전에 등재된 한 단어다. https://korean.go.kr/front/mcfaq/mcfaqView.do?mcfaq_seq=5811&mn_id=217&pageIndex=212 ; https://stdict.korean.go.kr/search/searchView.do?word_no=266686&searchKeywordTo=3 ; https://stdict.korean.go.kr/search/searchView.do?word_no=324693&searchKeywordTo=3",
+        "해설은 입력에 제공되지 않아 explanation은 uncertain으로 남겼다."
+      ]
+    },
+    {
+      "questionId": "g3-argon-0025",
+      "revision": 1,
+      "contentHash": "73abfda5a2d13fd3a2b43d238b59fd95c9d7be6c8da2eeb013bc50a0cc808256",
+      "blindChoice": "a",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "uncertain"
+      },
+      "findings": [
+        "사전 조회 전에 독립 풀이로 blindChoice를 파일에 기록했으며 이후 변경하지 않았다.",
+        "[source pass] https://stdict.korean.go.kr/search/searchView.do?word_no=419911&searchKeywordTo=3 의 동적 뜻풀이를 같은 공식 사이트 /search/contentViewOne.do에 word_no를 POST하여 직접 조회했다. 뜻 순서 1 및 HTML의 senseExample2055를 확인했다. 글씨를 뚜렷하고 조리 있게 쓰는 제1뜻이 이름을 알아보기 쉽게 쓰는 문맥과 일치한다.",
+        "[uniqueness pass] 이름 세 글자를 또박또박/대충대충/보슬보슬/모락모락 썼어요를 각각 대입했다. a만 누구나 알아보기 쉽게 또렷하게 쓰는 태도에 맞는다. b는 적당히 처리하는 태도로 이 목적을 충족하는 표현이 아니고, c·d는 글씨를 쓰는 모양을 나타내지 못한다.",
+        "[grade pass] 이름 쓰기라는 익숙한 활동이며 네 보기 모두 짧은 흉내말이다. 어려운 한자어는 없다. gradeBasis의 교과서 원문은 대조하지 않았으며 단원과 문항의 연계 가능성 및 읽기 수준에 대한 독립 판단이다.",
+        "[language pass] 네 보기 모두 사전에서 붙여 쓰는 부사로 확인했다. 대충대충(411955), 보슬보슬(144789/144791), 모락모락(425467). 지문의 알아볼은 합성어 알아보다(456671) 제2뜻이며 알아볼 수, 세 글자의 띄어쓰기도 적절하다. 괄호 안 번호는 이번 실행에서 조회한 표준국어대사전 word_no이며 https://stdict.korean.go.kr/search/searchView.do?word_no=번호&searchKeywordTo=3 에 대응한다.",
+        "정답 보기에만 지문의 낱말이 되풀이되거나 정답만 종결말투가 달라지는 단서는 발견하지 못했다. 해설은 제공되지 않아 explanation은 uncertain으로 남겼다."
+      ]
+    },
+    {
+      "questionId": "g3-argon-0026",
+      "revision": 1,
+      "contentHash": "1f35a07936c2a6a9f6b6ed3e2abd2652c495a4ab2ed116ecbfec2c5142a0f03e",
+      "blindChoice": "d",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "uncertain"
+      },
+      "findings": [
+        "사전 조회 전에 독립 풀이로 blindChoice를 파일에 기록했으며 이후 변경하지 않았다.",
+        "[source pass] https://stdict.korean.go.kr/search/searchView.do?word_no=482362&searchKeywordTo=3 의 동적 뜻풀이를 같은 공식 사이트 /search/contentViewOne.do에 word_no를 POST하여 직접 조회했다. 뜻 순서 1 및 HTML의 senseExample22837를 확인했다. 열매 등이 많이 매달려 있는 제1뜻이 감의 무게로 가지가 휘는 문맥과 일치한다.",
+        "[uniqueness pass] 감이 뚜벅뚜벅/와글와글/엉금엉금/주렁주렁 달렸어요를 대입했다. a는 발걸음, b는 모인 무리의 소리나 움직임, c는 느리게 걷거나 기는 모양이다. 움직이지 않는 열매가 많이 매달린 상태에는 d만 맞는다.",
+        "[grade pass] 가을 감나무와 가지가 휘는 모습을 눈앞에 그릴 수 있고 보기도 기본적인 흉내말이다. 생생한 표현 단원과 연결되며 어려운 한자어는 없다. gradeBasis의 교과서 원문은 대조하지 않았으며 단원과 문항의 연계 가능성 및 읽기 수준에 대한 독립 판단이다.",
+        "[language pass] 뚜벅뚜벅(417198), 와글와글(462823), 엉금엉금(466175)은 모두 사전에 등재된 한 단어다. 감나무 가지가 휘어질 만큼이라는 연결과 관형형 뒤 만큼을 띄운 표기도 자연스럽다. 괄호 안 번호는 이번 실행에서 조회한 표준국어대사전 word_no이며 https://stdict.korean.go.kr/search/searchView.do?word_no=번호&searchKeywordTo=3 에 대응한다.",
+        "정답 보기에만 지문의 낱말이 되풀이되거나 정답만 종결말투가 달라지는 단서는 발견하지 못했다. 해설은 제공되지 않아 explanation은 uncertain으로 남겼다."
+      ]
+    },
+    {
+      "questionId": "g3-argon-0027",
+      "revision": 1,
+      "contentHash": "45e05633f81cec90fc013084f1d9ec6909d7bc39e80da7e053880472123a42a9",
+      "blindChoice": "b",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "uncertain"
+      },
+      "findings": [
+        "사전 조회 전에 독립 풀이로 blindChoice를 파일에 기록했으며 이후 변경하지 않았다.",
+        "[source pass] https://stdict.korean.go.kr/search/searchView.do?word_no=403568&searchKeywordTo=3 의 동적 뜻풀이를 같은 공식 사이트 /search/contentViewOne.do에 word_no를 POST하여 직접 조회했다. 뜻 순서 1 및 HTML의 senseExample562363를 확인했다. 알고 싶어 답답하고 안타까운 상태라는 뜻과 무엇이 들어 있는지 알고 싶어 하는 문맥이 일치한다. 사전 문형 -ㄴ지도 입력과 맞는다.",
+        "[uniqueness pass] 무엇이 들어 있는지 무척 미안해요/궁금해요/고마워요/느긋해요를 대입했다. a·c는 사과나 감사할 근거가 없고 의문 내용과 연결되지 않는다. d도 알고 싶은 대상에 대한 상태를 나타내지 못한다. b만 자연스럽다.",
+        "[grade pass] 선물 상자 안의 내용물을 알고 싶은 경험과 미안함·고마움·느긋함은 일상적인 표현이다. 미안하다는 한자어이지만 목표어보다 어려운 표현으로 보지 않았다. gradeBasis의 교과서 원문은 대조하지 않았으며 단원과 문항의 연계 가능성 및 읽기 수준에 대한 독립 판단이다.",
+        "[language pass] 미안하다(428103), 고맙다(396122), 느긋하다(409480)의 표제어와 궁금하다의 활용을 대조했다. 네 보기의 해요체가 같고 고마워요의 활용도 맞는다. 들어 있는지는 보조 용언을 띄어 쓴 원칙 표기다. 국립국어원 답변도 확인했다: https://www.korean.go.kr/front/onlineQna/onlineQnaView.do?mn_id=216&qna_seq=326082 괄호 안 번호는 이번 실행에서 조회한 표준국어대사전 word_no이며 https://stdict.korean.go.kr/search/searchView.do?word_no=번호&searchKeywordTo=3 에 대응한다.",
+        "정답 보기에만 지문의 낱말이 되풀이되거나 정답만 종결말투가 달라지는 단서는 발견하지 못했다. 해설은 제공되지 않아 explanation은 uncertain으로 남겼다."
+      ]
+    },
+    {
+      "questionId": "g3-argon-0028",
+      "revision": 1,
+      "contentHash": "ccbee106e8a50f3282ea6ca83c6e6d8987b4dee8542f938638528e74dc20204c",
+      "blindChoice": "c",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "uncertain"
+      },
+      "findings": [
+        "사전 조회 전에 독립 풀이로 blindChoice를 파일에 기록했으며 이후 변경하지 않았다.",
+        "[source pass] https://stdict.korean.go.kr/search/searchView.do?word_no=457820&searchKeywordTo=3 의 동적 뜻풀이를 같은 공식 사이트 /search/contentViewOne.do에 word_no를 POST하여 직접 조회했다. 뜻 순서 1 및 HTML의 senseExample539192를 확인했다. 다른 사람과 앞으로 할 일을 미리 정하거나 정한 내용이라는 뜻이 친구와 만날 시간·장소를 정한 상황에 맞는다.",
+        "[uniqueness pass] 두 시에 만나기로 한 질문을/대답을/약속을/자랑을 꼭 지켰어요를 대입했다. a·b·d는 미리 정한 만남의 합의를 뜻하지 않으며 지키다와도 해당 문맥에서 맞지 않는다. c만 적절하다. 네 보기 모두 받침이 있어 조사 을만으로 답이 드러나지는 않는다.",
+        "[grade pass] 친구·도서관·시간 약속은 3학년 생활에 익숙하다. 질문·대답도 기본적인 수업 어휘이며 목표어보다 어려운 한자어는 없다. gradeBasis의 교과서 원문은 대조하지 않았으며 단원과 문항의 연계 가능성 및 읽기 수준에 대한 독립 판단이다.",
+        "[language pass] 질문(316144), 대답(408399), 자랑(474430)은 각각 한 단어인 명사로 확인했다. 두 시에, 만나기로 한의 띄어쓰기 및 약속을 지켰어요의 결합이 적절하다. 괄호 안 번호는 이번 실행에서 조회한 표준국어대사전 word_no이며 https://stdict.korean.go.kr/search/searchView.do?word_no=번호&searchKeywordTo=3 에 대응한다.",
+        "정답 보기에만 지문의 낱말이 되풀이되거나 정답만 종결말투가 달라지는 단서는 발견하지 못했다. 해설은 제공되지 않아 explanation은 uncertain으로 남겼다."
+      ]
+    },
+    {
+      "questionId": "g3-argon-0029",
+      "revision": 1,
+      "contentHash": "5e4b594e20054d785630babb7cb0306f8c8043d772ae98992252700341a5838e",
+      "blindChoice": "d",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "uncertain"
+      },
+      "findings": [
+        "사전 조회 전에 독립 풀이로 blindChoice를 파일에 기록했으며 이후 변경하지 않았다.",
+        "[source pass] https://stdict.korean.go.kr/search/searchView.do?word_no=52927&searchKeywordTo=3 의 동적 뜻풀이를 같은 공식 사이트 /search/contentViewOne.do에 word_no를 POST하여 직접 조회했다. 뜻 순서 1 및 HTML의 senseExample107531를 확인했다. 일이 생긴 원인이나 조건이라는 뜻이 친구가 웃는 원인을 묻는 문맥에 맞는다.",
+        "[uniqueness pass] 환하게 웃는 자리를/소리를/순서를/이유를 물었어요로 대입했다. a·b·c는 장소·음성·차례를 묻는 다른 내용이다. d만 웃는 원인을 묻는 원래 뜻을 보존한다. 이유(470058) 제1뜻에서도 까닭과의 대응을 확인했다.",
+        "[grade pass] 친구가 웃는 까닭을 묻는 짧은 생활 문장이다. 순서·이유는 학교 대화에서 쓰이는 기초적인 한자어로 목표어보다 과도하게 어렵지 않다고 판단했다. gradeBasis의 교과서 원문은 대조하지 않았으며 단원과 문항의 연계 가능성 및 읽기 수준에 대한 독립 판단이다.",
+        "[language pass] 자리(472092), 소리(447196), 순서(446540), 이유(470058)는 각각 한 단어인 명사다. 환하게 웃는 까닭을 물었어요의 관형절과 목적격 조사도 자연스럽다. 괄호 안 번호는 이번 실행에서 조회한 표준국어대사전 word_no이며 https://stdict.korean.go.kr/search/searchView.do?word_no=번호&searchKeywordTo=3 에 대응한다.",
+        "정답 보기에만 지문의 낱말이 되풀이되거나 정답만 종결말투가 달라지는 단서는 발견하지 못했다. 해설은 제공되지 않아 explanation은 uncertain으로 남겼다."
+      ]
+    },
+    {
+      "questionId": "g3-argon-0030",
+      "revision": 1,
+      "contentHash": "492513da3db31da2755ebd1cb826d2ef4ecb290a62feb1604d90b83aedd8c877",
+      "blindChoice": "b",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "uncertain"
+      },
+      "findings": [
+        "사전 조회 전에 독립 풀이로 blindChoice를 파일에 기록했으며 이후 변경하지 않았다.",
+        "[source pass] https://stdict.korean.go.kr/search/searchView.do?word_no=485818&searchKeywordTo=3 의 동적 뜻풀이를 같은 공식 사이트 /search/contentViewOne.do에 word_no를 POST하여 직접 조회했다. 뜻 순서 1 및 HTML의 senseExample287339를 확인했다. 말이나 행동을 순서대로 찬찬하고 조리 있게 하는 뜻이 배운 내용을 정리하는 문맥에 맞는다.",
+        "[uniqueness pass] 공책에 대충대충/차곡차곡/꾸벅꾸벅/빙글빙글 정리했어요를 대입했다. b의 차곡차곡 제2뜻은 사전에서 차근차근과 같은 뜻으로 연결되므로 단순 연상어가 아니다. a는 적당히 처리함, d는 회전·웃음으로 다르다. c의 꾸벅꾸벅은 고개 움직임 외에 빠짐없이 계속함·시키는 대로 따름의 동형어(57903)도 있지만, 조리 있게 순서를 밟는 뜻과 같지 않으므로 가장 비슷한 보기는 b 하나다.",
+        "[grade pass] 공책에 배운 내용을 정리하는 익숙한 수업 장면이다. 네 보기는 짧은 흉내말이며 어려운 한자어가 없다. 제시된 차근차근 읽기 단원과의 연계가 그럴듯하다. gradeBasis의 교과서 원문은 대조하지 않았으며 단원과 문항의 연계 가능성 및 읽기 수준에 대한 독립 판단이다.",
+        "[language pass] 차곡차곡(483940), 꾸벅꾸벅(57366/57903), 빙글빙글(167670/438395), 대충대충(411955)의 한 단어 표기를 확인했다. 차곡차곡 제2뜻의 정리하기 용례도 문맥에 맞는다. 네 보기 모두 부사로 말투 차이는 없다. 괄호 안 번호는 이번 실행에서 조회한 표준국어대사전 word_no이며 https://stdict.korean.go.kr/search/searchView.do?word_no=번호&searchKeywordTo=3 에 대응한다.",
+        "정답 보기에만 지문의 낱말이 되풀이되거나 정답만 종결말투가 달라지는 단서는 발견하지 못했다. 해설은 제공되지 않아 explanation은 uncertain으로 남겼다."
+      ]
+    },
+    {
+      "questionId": "g3-argon-0031",
+      "revision": 1,
+      "contentHash": "bf6f7a4470892dd69dcceefb953f6aa157049851f8d8ed1045232768a9674b3c",
+      "blindChoice": "c",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "uncertain"
+      },
+      "findings": [
+        "사전 조회 전에 독립 풀이로 blindChoice를 파일에 기록했으며 이후 변경하지 않았다.",
+        "[source pass] https://stdict.korean.go.kr/search/searchView.do?word_no=342293&searchKeywordTo=3 의 동적 뜻풀이를 같은 공식 사이트 /search/contentViewOne.do에 word_no를 POST하여 직접 조회했다. 뜻 순서 1 및 HTML의 senseExample297032를 확인했다. 좋은 점이나 훌륭한 일을 높이 평가하는 뜻이 바르게 줄 선 학생들에게 선생님이 하는 행동과 일치한다.",
+        "[uniqueness pass] 우리를 자랑하셨어요/기다리셨어요/꾸짖으셨어요/가르치셨어요를 대입했다. a는 장점을 드러내는 쪽으로 칭찬과 가깝고 b·d는 기다림·교육으로 반대가 아니다. c만 잘못을 나무라는 뜻으로 긍정적 평가와 반대된다. 반의어 문항이므로 바르게 선 행동과 바꾼 술어가 어울리지 않는 것은 의도된 의미 반전이다.",
+        "[grade pass] 학교에서 줄 서기와 칭찬·꾸중은 익숙한 경험이다. 네 보기 모두 교실에서 듣는 행동 표현이며 목표어보다 어려운 한자어는 없다. gradeBasis의 교과서 원문은 대조하지 않았으며 단원과 문항의 연계 가능성 및 읽기 수준에 대한 독립 판단이다.",
+        "[language pass] 자랑하다(268871), 기다리다(405064), 꾸짖다(56084), 가르치다(385150)의 표제어를 대조했다. 꾸짖으셨어요의 으시 활용이 맞고 모든 보기가 주체 높임과 해요체를 갖춰 정답만 말투가 다르지 않다. 괄호 안 번호는 이번 실행에서 조회한 표준국어대사전 word_no이며 https://stdict.korean.go.kr/search/searchView.do?word_no=번호&searchKeywordTo=3 에 대응한다.",
+        "정답 보기에만 지문의 낱말이 되풀이되거나 정답만 종결말투가 달라지는 단서는 발견하지 못했다. 해설은 제공되지 않아 explanation은 uncertain으로 남겼다."
+      ]
+    },
+    {
+      "questionId": "g3-argon-0032",
+      "revision": 1,
+      "contentHash": "24a9458ea6546169817198ee6f4bd027a8fa17cf8321be923e89f3cf81f2e440",
+      "blindChoice": "b",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "uncertain"
+      },
+      "findings": [
+        "사전 조회 전에 독립 풀이로 blindChoice를 파일에 기록했으며 이후 변경하지 않았다.",
+        "[source pass] https://stdict.korean.go.kr/search/searchView.do?word_no=417200&searchKeywordTo=3 의 동적 뜻풀이를 같은 공식 사이트 /search/contentViewOne.do에 word_no를 POST하여 직접 조회했다. 뜻 순서 1 및 HTML의 senseExample551325를 확인했다. 기억이나 생각을 되살리는 제1뜻이 가족과 겪은 즐거운 일을 회상하는 문맥과 일치한다.",
+        "[uniqueness pass] 즐거운 일을 기억했어요/잊어버렸어요/이야기했어요/기다렸어요를 대입했다. a는 원래 뜻과 가깝고 c는 말로 전달하는 행동이며 d는 앞으로 올 일을 바라는 행동이다. b만 이미 겪은 일을 기억해 내지 못한다는 뜻으로 회상과 대립한다. 잊어버리다 제1뜻과 직접 대조했다.",
+        "[grade pass] 가족과 보낸 방학을 기억하거나 잊는 상황은 이해하기 쉽다. 기억·이야기·기다림도 일상 어휘이며 어려운 한자어는 없다. gradeBasis의 교과서 원문은 대조하지 않았으며 단원과 문항의 연계 가능성 및 읽기 수준에 대한 독립 판단이다.",
+        "[language pass] 잊어버리다(274278)는 사전에 한 단어로 등재되어 잊어버렸어요로 붙이는 것이 맞다. 기억하다(50768), 이야기하다(471413), 기다리다(405064)도 확인했다. 모든 보기가 동일한 과거 해요체다. 괄호 안 번호는 이번 실행에서 조회한 표준국어대사전 word_no이며 https://stdict.korean.go.kr/search/searchView.do?word_no=번호&searchKeywordTo=3 에 대응한다.",
+        "정답 보기에만 지문의 낱말이 되풀이되거나 정답만 종결말투가 달라지는 단서는 발견하지 못했다. 해설은 제공되지 않아 explanation은 uncertain으로 남겼다."
+      ]
+    },
+    {
+      "questionId": "g3-argon-0033",
+      "revision": 1,
+      "contentHash": "988641c5ad873752f78457c0093185604218cffb9bc40184ba4ebe05a671564c",
+      "blindChoice": "d",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "uncertain"
+      },
+      "findings": [
+        "사전 조회 전에 독립 풀이로 blindChoice를 파일에 기록했으며 이후 변경하지 않았다.",
+        "[source pass] https://stdict.korean.go.kr/search/searchView.do?word_no=449133&searchKeywordTo=3 의 동적 뜻풀이를 같은 공식 사이트 /search/contentViewOne.do에 word_no를 POST하여 직접 조회했다. 뜻 순서 1 및 HTML의 senseExample199961를 확인했다. 거짓이나 숨김 없이 곧은 태도라는 뜻이 친구가 거짓 없이 말한다는 d의 상황과 일치한다.",
+        "[uniqueness pass] a는 배부름, b는 빠른 걸음, c는 짐을 든 팔의 상태를 솔직하다로 잘못 나타낸다. d만 말하는 사람의 거짓 없는 태도에 사용한다. 쓰임 판별 문항의 의도된 의미 오류와 조사·어미 오류를 구별했다.",
+        "[grade pass] 밥·형·언니·짐·팔·친구·거짓 등 구체적이고 쉬운 낱말로 구성되어 있다. 목표어 이외의 어려운 한자어는 없다. gradeBasis의 교과서 원문은 대조하지 않았으며 단원과 문항의 연계 가능성 및 읽기 수준에 대한 독립 판단이다.",
+        "[language pass] 없이(459401)는 부사로서 거짓 없이처럼 앞 명사와 띄어 쓴다. 두 팔, 많이 먹어, 빨리 달려서도 단어별 띄어쓰기에 맞고 네 보기 모두 솔직해요로 끝난다. 오답의 의미 부적합은 출제 대상인 쓰임 오류이므로 language 실패로 중복 처리하지 않았다. 괄호 안 번호는 이번 실행에서 조회한 표준국어대사전 word_no이며 https://stdict.korean.go.kr/search/searchView.do?word_no=번호&searchKeywordTo=3 에 대응한다.",
+        "정답 보기에만 지문의 낱말이 되풀이되거나 정답만 종결말투가 달라지는 단서는 발견하지 못했다. 해설은 제공되지 않아 explanation은 uncertain으로 남겼다."
+      ]
+    },
+    {
+      "questionId": "g3-argon-0034",
+      "revision": 1,
+      "contentHash": "a3906d0e7e4de05cff3fffa1e3c50d55c6539f9e652a04b433a7331d02b8567e",
+      "blindChoice": "a",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "uncertain"
+      },
+      "findings": [
+        "사전 조회 전에 독립 풀이로 blindChoice를 파일에 기록했으며 이후 변경하지 않았다.",
+        "[source pass] https://stdict.korean.go.kr/search/searchView.do?word_no=190832&searchKeywordTo=3 의 동적 뜻풀이를 같은 공식 사이트 /search/contentViewOne.do에 word_no를 POST하여 직접 조회했다. 뜻 순서 1 및 HTML의 senseExample198765를 확인했다. 다리를 크게 떼어 연이어 걷는 모양이라는 뜻이 긴 다리로 길을 걷는 a의 상황에 맞는다.",
+        "[uniqueness pass] a는 큰 걸음으로 이동하는 행위다. b의 눈 감기, c의 우유 마시기, d의 속삭임은 다리를 크게 옮기는 동작이 아니므로 성큼성큼으로 꾸밀 수 없다. a만 바른 쓰임이다.",
+        "[grade pass] 길 걷기·눈 감기·우유 마시기·속삭이기 등 구체적인 일상 행동이다. 모든 보기의 낱말이 짧고 목표어보다 어려운 한자어는 없다. gradeBasis의 교과서 원문은 대조하지 않았으며 단원과 문항의 연계 가능성 및 읽기 수준에 대한 독립 판단이다.",
+        "[language pass] 걸어가다(394972)는 합성어로 등재되어 걸어갔어요로 붙여 쓰는 것이 맞다. 속삭이다(447559)도 확인했다. 두 눈, 컵에 든, 작은 목소리로는 자연스러운 띄어쓰기이며 네 보기의 해요체가 같다. 오답의 부사·동작 의미 충돌은 쓰임 문항의 판단 대상으로 구별했다. 괄호 안 번호는 이번 실행에서 조회한 표준국어대사전 word_no이며 https://stdict.korean.go.kr/search/searchView.do?word_no=번호&searchKeywordTo=3 에 대응한다.",
+        "정답 보기에만 지문의 낱말이 되풀이되거나 정답만 종결말투가 달라지는 단서는 발견하지 못했다. 해설은 제공되지 않아 explanation은 uncertain으로 남겼다."
+      ]
+    }
+  ]
+}

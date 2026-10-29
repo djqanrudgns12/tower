@@ -17,7 +17,13 @@ export const DEFAULTS = defaultsJson;
 export const PILOT_TOWERS = defaultsJson.pilot.towers as TowerId[];
 export const RETRACTIONS: RetractionList = retractionListSchema.parse(retractionsJson);
 
+// 공개 은행(npm run build:bank가 승인 문항으로 만든 grade<N>.json, status=published)이 있으면 개발용 대신 그것을 싣는다(PRD §9.3).
+const published = import.meta.glob<unknown>('./questions/grade[3-6].json', { eager: true, import: 'default' });
 const banks: Record<number, BankFile> = { 3: bankFileSchema.parse(grade3Dev) };
+for (const raw of Object.values(published)) {
+  const bank = bankFileSchema.parse(raw);
+  banks[bank.grade] = bank;
+}
 
 export interface GradeContent {
   grade: number;
