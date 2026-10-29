@@ -2,11 +2,14 @@
 
 ```yaml
 jobId: QR-005 (Codex) / QR-006 (Claude)
-status: DRAFT  # Q20-003 수합 뒤 blind-input을 만들고 머리말을 채워 READY로 바꾼다
+status: READY  # 2026-10-29 Q20-003 수합 뒤 발행
 owner: QR-005 = Codex(agent-bridge로 깨운 새 실행, 10문항씩 두 번), QR-006 = Claude(총괄 대화가 아닌 새 문맥)
 commander: Claude Opus 5.5 (P1 첫 구현 총괄)
-baseCommit:  # Q20-003 수합 커밋
+baseCommit: f18d76524a191a40359d51c67565f40d4668ad67  # Q20-003 수합 커밋(blind-input 포함). 요청서는 작업 폴더에 복사했다
 contractHash:  # node tools/contract-hash.mjs QR-005
+  content-source/reviews/Q20-003/blind-input.json: 27e33a08983b6242f59aa8ee5a076768189a998e9c5f12c13d8ccad7af242338
+  src/contracts/questionDraft.ts: de734f28999ac8e2e1d2c0a5670ab62d622f0f195a89f951827da2d04c8ef0d8
+  vocabulary_td_prd_v0_5.md: 29efc06c360860cbb5bbf97c196b9a651a45c5e51cfedaf0dd869566255de4dc
 inputFiles:
   - content-source/reviews/Q20-003/blind-input.json
   - src/contracts/questionDraft.ts

@@ -1,6 +1,6 @@
 # 다음 총괄·다음 컴퓨터 인계
 
-기준일: 2026-10-29 · 현재 구간: **P1 첫 완성 구간 — 첫 공개 문제은행(3학년 31문항) 게임 연결, 원화 27장 적용, G2 시험 통과(실기기 제외)** · 2026-10-29부터 총괄이 `agent-bridge`로 Codex·Antigravity에 직접 전달한다 · 총괄: Claude Opus 5.5(Claude Code, Windows PC → 집 Mac)
+기준일: 2026-10-29 · 현재 구간: **P1 첫 완성 구간 — 3학년 공개 문제은행 51문항(P1 목표 30~50 충족), 원화 27장, 소리, G2 시험 통과(실기기 제외)** · 2026-10-29부터 총괄이 `agent-bridge`로 Codex·Antigravity에 직접 전달한다 · 총괄: Claude Opus 5.5(Claude Code, Windows PC → 집 Mac)
 
 ## 집 Mac에서 처음 할 일
 
@@ -33,7 +33,7 @@ Node 24(`.node-version`). 브라우저 흐름까지 보려면 `npm run test:e2e`
 | P1 엔진·화면·저장 | 구현됨, 독립 검토 결함 10건 수정 | [REVIEW-CORE-001 반환](work-packages/REVIEW-CORE-001/RETURN.md), `tests/unit/review-core/` |
 | UI 보정 | 들임 + 계약 변경 7건 반영 | [UI-AUDIT-001 반환](work-packages/UI-AUDIT-001/RETURN.md), 전후 캡처 `docs/work-packages/UI-AUDIT-001/shots/` |
 | 원화 | **27장 모두 게임 적용(`integrated_pass`)**: ART-SAMPLE-001 16장(대장 2장은 2026-10-29 5웨이브 전투로 확인) + ART-002 11장(풀·흙 질감·풀 얼룩·설치 받침·바위·입구 깃발·작은 장식). 남은 임시 그림은 P2 적(빠른·튼튼·껍질 등)과 투사체·표식 | [ART-SAMPLE-001 반환](work-packages/ART-SAMPLE-001/RETURN.md), `public/assets/manifest.json`의 `notes` |
-| 3학년 문항(Argon) | **첫 공개 은행 31문항, 게임이 싣는다.** Q20-001 승인 14·격리 6, Q20-002 승인 17·격리 3(고친 판 0004·0006·0015). `src/content/index.ts`는 `grade<N>.json`(published)이 있으면 개발용 대신 그것을 싣고, 판은 콘텐츠 모드 `published`로 시작한다 | `content-source/approvals/registry.json`(`npm run build:bank`), PRD §18.4 |
+| 3학년 문항(Argon) | **공개 은행 51문항(`pub-965fc76be294`), 게임이 싣는다.** Q20-001 승인 14·격리 6, Q20-002 승인 17·격리 3, Q20-003 승인 20(격리됐던 0004·0006·0015가 revision 3으로 통과해 격리 문항이 모두 풀림). `src/content/index.ts`는 `grade<N>.json`(published)이 있으면 개발용 대신 그것을 싣고, 판은 콘텐츠 모드 `published`로 시작한다 | `content-source/approvals/registry.json`(`npm run build:bank`), PRD §18.4 |
 | A26 철회 목록 | 완료 | `src/content/retractions.json` |
 | 설치 자리 목록·전장 키보드(§12.4) | 완료 | `src/ui/game/SlotList.tsx` |
 | WebGL 문맥 손실 복구(§12.7) | 완료 | `RunController.rendererLost/rendererRestored` |
@@ -60,7 +60,7 @@ Node 24(`.node-version`). 브라우저 흐름까지 보려면 `npm run test:e2e`
 
 ## 다음 첫 행동
 
-1. **Q20-003(Argon).** 격리된 고친 판 3개(0004·0006·0015)는 마지막 수정(revision 3)을 받고, 새 문항으로 P1 목표 50문항까지 채운다. 지적 내용은 `content-source/reviews/Q20-002/codex.json` findings. 수합 → `npm run blind-input` → QR(Codex 브리지·새 문맥 Claude) → 총괄 해설 대조 → `npm run build:bank` 순서는 이번과 같다.
+1. **P1 문항 목표 충족(51문항).** 다음 문항 확대는 G3(학년별 승인 300) 준비로, 4학년 맵·은행과 함께 계획한다. 배치 순서는 같다: Argon 초안(브리지면 근거는 총괄 `fetch-evidence`) → 수합·`npm run blind-input` → QR(Codex 브리지 10문항씩·새 문맥 Claude) → 총괄 해설 대조 → `npm run build:bank`.
 2. **Argon 전달 방법.** 브리지로 깨운 Antigravity(`agy -p --mode accept-edits`)는 파일 편집만 자동 허용되어 셸 명령·웹 페이지 열기를 못 한다. 그래서 총괄이 `npm run fetch-evidence -- <batch> <낱말…>`로 표준국어대사전 근거(뜻마다 파일·SHA-256·뜻 ID, `evidence/index.json`)를 받아 작업 폴더에 넣고, 시작 확인과 `validate:content`도 총괄이 한다. 권한을 넓히려면 사용자가 브리지 설정(`~/.agents/bridge/config.json`의 antigravity args)을 정한다. 사람이 Antigravity 앱에 붙여 넣어도 되고, 총괄은 `agent-bridge send --from claude --to antigravity --wake --cwd <작업 폴더>`로 한다(브리지 실행은 15분 상한이라 10문항씩 나눈다).
 3. **G2 게이트(PRD §18.2).** 4→5→6웨이브·오답·정지·저장복귀·보상 중복은 2026-10-29에 도메인 시험(`tests/unit/g2.test.ts`)과 브라우저 e2e(저장하고 나가기 → 이어하기)로 확인했다(PRD §18.4 ‘G2 게이트 시험’). 남은 것은 실기기(iOS Safari·Android) 확인과 장시간 성능. 밸런스 남은 위험: Easy 27~29분, 정답률 60% 초보형의 첫 보스 처치 0.13.
 4. 그 밖의 대기 일: 고블린 추가 프레임(위·아래 방향, 보폭이 긴 걸음 — RIG-001 반환서 §9, 실제 화면을 보고 ART-003으로 낼지 정함), 대장 원화 5웨이브 전투 확인, 소리용 음원 작업 정의, QR-PRACTICE(연습 전용 4문항 검토), `p1/intake-round1`을 `main`에 합칠지(PR 여부) 결정.
