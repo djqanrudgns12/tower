@@ -5,6 +5,8 @@ import type { RunController } from '../../application/RunController';
 import { FieldBridgeHandle, type FieldSelection, type FieldTap } from '../../game/bridge';
 import { PhaserBattlefield } from '../../game/PhaserBattlefield';
 import type { FontScale } from '../../application/session';
+import { DEFAULTS } from '../../content';
+import { SoundDirector } from '../audio/sound';
 import { commandErrorText } from '../copy';
 import kit from '../kit.module.css';
 import { useLayout } from '../useLayout';
@@ -22,7 +24,9 @@ interface Props {
   notice: string | null;
   fontScale: FontScale;
   reducedMotion: boolean;
+  soundOn: boolean;
   onFont(scale: FontScale): void;
+  onSound(on: boolean): void;
   onExit(reason: 'saved' | 'over' | 'abandon'): void;
   /** 첫 연습 판(PRD §12.2). 있으면 안내 문장·건너뛰기·연습 끝 패널을 보인다. */
   practice?: { onFinish(next: 'new' | 'again' | 'home'): void };
@@ -30,8 +34,19 @@ interface Props {
 
 const EMPTY: FieldSelection = { slotId: null, towerId: null, previewType: null, previewBranch: null };
 
-export function GameScreen({ controller, towers, notice, fontScale, reducedMotion, onFont, onExit, practice }: Props) {
+export function GameScreen({ controller, towers, notice, fontScale, reducedMotion, soundOn, onFont, onSound, onExit, practice }: Props) {
   const view = useSyncExternalStore(controller.subscribe, controller.getView);
+  // 소리는 도메인 사건을 듣기만 한다. 브라우저 규칙상 첫 입력 뒤에 켠다(PRD §11.5).
+  const [sound] = useState(() => new SoundDirector(DEFAULTS.audio, controller.ctx.balance.waves.bossEveryWaves));
+  useEffect(() => {
+    const unlock = () => sound.unlock();
+    window.addEventListener('pointerdown', unlock, { once: true });
+    window.addEventListener('keydown', unlock, { once: true });
+    const off = controller.onEvents(events => sound.handle(events));
+    return () => { off(); window.removeEventListener('pointerdown', unlock); window.removeEventListener('keydown', unlock); sound.dispose(); };
+  }, [controller, sound]);
+  useEffect(() => { sound.setEnabled(soundOn); }, [sound, soundOn]);
+  useEffect(() => { sound.setPaused(view.pause.length > 0 || view.phase === 'GAME_OVER'); }, [sound, view.pause.length, view.phase]);
   const layout = useLayout();
   const [rawSelection, setSelection] = useState<FieldSelection>(EMPTY);
   const [rawMode, setMode] = useState<PanelMode>('idle');
@@ -252,8 +267,8 @@ export function GameScreen({ controller, towers, notice, fontScale, reducedMotio
       </main>
       {paused && view.phase !== 'GAME_OVER' && (
         <PauseOverlay
-          reasons={view.pause} renderLost={view.renderLost} canSave={controller.persist} fontScale={fontScale} saveError={view.saveStatus === 'error'}
-          onResume={() => controller.resume()} onFont={onFont}
+          reasons={view.pause} renderLost={view.renderLost} canSave={controller.persist} fontScale={fontScale} soundOn={soundOn} saveError={view.saveStatus === 'error'}
+          onResume={() => controller.resume()} onFont={onFont} onSound={onSound}
           onSaveExit={async () => { const ok = await controller.saveAndExit(); if (ok) onExit('saved'); return ok; }}
           onRetrySave={() => controller.retrySave()}
           onQuit={() => { controller.resume(); controller.dispatch({ type: 'quit' }); }}

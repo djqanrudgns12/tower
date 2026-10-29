@@ -73,7 +73,7 @@ export function App() {
       return (
         <GameScreen
           key={screen.controller.state.config.runId} controller={screen.controller} towers={PILOT_TOWERS} notice={message}
-          fontScale={settings.fontScale} reducedMotion={settings.reducedMotion} onFont={(f: FontScale) => update({ fontScale: f })}
+          fontScale={settings.fontScale} reducedMotion={settings.reducedMotion} soundOn={settings.soundOn} onFont={(f: FontScale) => update({ fontScale: f })} onSound={(on: boolean) => update({ soundOn: on })}
           onExit={reason => (screen.practice ? finishPractice(screen.controller, 'home') : exitGame(screen.controller, reason))}
           {...(screen.practice ? { practice: { onFinish: (next: 'new' | 'again' | 'home') => finishPractice(screen.controller, next) } } : {})}
         />

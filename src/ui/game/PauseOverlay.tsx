@@ -11,9 +11,11 @@ interface Props {
   renderLost: boolean;
   canSave: boolean;
   fontScale: FontScale;
+  soundOn: boolean;
   saveError: boolean;
   onResume(): void;
   onFont(scale: FontScale): void;
+  onSound(on: boolean): void;
   onSaveExit(): Promise<boolean>;
   onRetrySave(): Promise<void>;
   onQuit(): void;
@@ -62,6 +64,10 @@ export function PauseOverlay(p: Props) {
                 </label>
               ))}
             </fieldset>
+            <label className={css.font}>
+              <input type="checkbox" checked={p.soundOn} onChange={e => p.onSound(e.target.checked)} />
+              소리
+            </label>
             {p.canSave && (
               <button type="button" className={kit.button} disabled={busy} aria-busy={busy} onClick={async () => { setBusy(true); setFailed(false); const ok = await p.onSaveExit(); setBusy(false); if (!ok) setFailed(true); }}>
                 {busy ? '저장하는 중…' : '저장하고 나가기'}

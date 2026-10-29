@@ -4,6 +4,8 @@ export interface Settings {
   fontScale: FontScale; reducedMotion: boolean; lastDifficulty: string; lastNickname: string; playerId: string;
   /** 첫 연습 판을 마치거나 건너뛰었다. 홈에서 연습 권유를 그만 보인다(PRD §12.2). */
   practiceSeen: boolean;
+  /** 소리 켜기(PRD §11.5 음소거). 전투 판정과 무관하다. */
+  soundOn: boolean;
 }
 
 const KEY = 'vocabulary-td.settings';
@@ -15,6 +17,7 @@ const defaults = (): Settings => ({
   lastNickname: '',
   playerId: crypto.randomUUID(),
   practiceSeen: false,
+  soundOn: true,
 });
 
 export function loadSettings(): Settings {

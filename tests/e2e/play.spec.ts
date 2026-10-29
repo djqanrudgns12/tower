@@ -41,6 +41,8 @@ async function tapCell(page: Page, x: number, y: number) {
 }
 
 test('1440×900: 준비 → 설치 → 전투 → 정지 가림 → 재개', async ({ page }) => {
+  const errors: string[] = [];
+  page.on('pageerror', e => errors.push(String(e)));
   await page.setViewportSize({ width: 1440, height: 900 });
   await newGame(page);
   await shot(page, 'desktop-prep');
@@ -68,6 +70,13 @@ test('1440×900: 준비 → 설치 → 전투 → 정지 가림 → 재개', asy
   // 정지 중에는 문제·보기가 DOM에서 빠진다(PRD §3.6).
   await expect(page.getByRole('region', { name: '어휘 문제' })).toHaveCount(0);
   await shot(page, 'desktop-paused');
+  // 소리(PRD §11.5): 정지 화면에서 끄고 켤 수 있고, 기기 설정에 남는다. 합성 소리는 오류 없이 켜져 있어야 한다.
+  const soundToggle = page.getByRole('checkbox', { name: '소리' });
+  await expect(soundToggle).toBeChecked();
+  await soundToggle.uncheck();
+  expect(await page.evaluate(() => JSON.parse(localStorage.getItem('vocabulary-td.settings') ?? '{}').soundOn)).toBe(false);
+  await soundToggle.check();
+  expect(errors).toEqual([]);
   await page.getByRole('button', { name: '계속하기' }).click();
   await expect(page.getByRole('region', { name: '어휘 문제' })).toBeVisible();
 });
