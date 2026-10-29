@@ -22,7 +22,7 @@
 | [ART-002](work-packages/ART-002/RETURN.md) | **ACCEPTED** — 11장 HOLD 0, 실제 전투(1440×900)에서 지면 조립으로 확인해 모두 `integrated_pass`. 총괄이 agent-bridge로 Codex에 세 번 나눠 전달(15분 상한) | Codex 이미지 | `asset-source/incoming/ART-002/**` — 정원 지면 질감·설치 받침·작은 장식 11장 | ART-SAMPLE-001 ✓ |
 | CORE-P2 | **진행 중**(2026-10-29) — P2-1 엔진, P2-2 분기 14개, P2-3 렌더러 기반, P2-4 S11 타워 효율(`npm run simulate:towers`) 완료. 밸런스 `0.4.2-candidate`(마법탑 95골드·16, 창병 70골드·7). **깃발은 PRD §7.5 ① 미달(0.30) — 사용자 결정 대기**. 남은 것: S11 기준 ②(10종 전략), ART-003 인수, P2 타워 게임에서 열기 | 총괄 | `src/domain/**`, `src/game/**`, `src/ui/game/**`, `tools/sim/**` | G2 ✓(실기기 제외) |
 | [QP-001](work-packages/QP-001/RETURN.md) / [QP-002](work-packages/QP-002/RETURN.md) | **3/4 승인, 0004 마지막 수정 검토 대기** — QP-002에서 0004(빠르다)를 바른 사용 유형으로 고침(정답 ‘강아지는 걸음이 빨라요.’). QR-009·010을 보낸다 | Argon 4·Codex·Claude | `content-source/batches/QP-00{1,2}/**` | — |
-| [ART-003](work-packages/ART-003/REQUEST.md) | **RUNNING**(2026-10-29 Codex, 브리지 네 번 중 1/4) — P2 타워 7종 몸체·무기 13장 | Codex 이미지 | `asset-source/incoming/ART-003/**` | ART-002 ✓ |
+| [ART-003](work-packages/ART-003/RETURN.md) | **수합(visual_pass)** — P2 타워 7종 13장, HOLD 0, 10종 비교판에서 실루엣 구별. P2 타워를 게임에서 열 때 전투로 확인해 `integrated_pass`로 올린다(지금은 게임이 싣지 않음) | Codex 이미지 | `asset-source/incoming/ART-003/**` | ART-002 ✓ |
 
 Q20-002의 소유 경로(`content-source/batches/Q20-002/**`)는 ART-002와 겹치지 않는다. 반환되면 QR(Codex·Claude)을 다시 돌린다. ART-002의 소유 경로(`asset-source/incoming/ART-002/**`)는 2차 수합 대상(`src/game/animation/**`, `content-source/reviews/**`)이나 총괄이 수합 때 고칠 렌더러(`src/game/**`)와 겹치지 않는다. QR-001·QR-002는 정답 키가 있는 `content-source/batches/**`를 뺀 작업 폴더에서 돌린다(발행용 프롬프트의 sparse checkout). 총괄만 공유 schema/package/lockfile/전역 토큰/라우터/인덱스를 수정한다. ACCEPTED는 총괄이 검사 후 부여한다.
 
