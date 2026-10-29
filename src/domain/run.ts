@@ -7,7 +7,7 @@ import { center } from './geometry';
 import { add, msToTicks } from './num';
 import { createEncounter } from './quiz';
 import { RNG_ALGORITHM, streamSeed } from './rng';
-import { attackIntervalTicks, buildCost, needsBranch, sellRefund, towerStats, upgradeCost } from './towers';
+import { attackIntervalTicks, attacks, buildCost, needsBranch, sellRefund, towerStats, upgradeCost } from './towers';
 import { RULES_VERSION, RUN_STATE_VERSION, type PauseReason, type RunConfig, type RunState } from './types';
 import { composeWave, hpBaseMilli, isMilestone, spawnIntervalTicks } from './waves';
 
@@ -198,14 +198,15 @@ function build(ctx: GameContext, s: RunState, slotId: string, type: TowerId, ev:
   if (!slot) return 'UNKNOWN_SLOT';
   if (s.towers.some(t => t.slotId === slotId)) return 'SLOT_TAKEN';
   const cfg = ctx.balance.towers[type];
-  if (!s.config.availableTowers.includes(type) || cfg.damageType === 'none') return 'NOT_AVAILABLE';
+  if (!s.config.availableTowers.includes(type)) return 'NOT_AVAILABLE';
   if (cfg.maxOnField && s.towers.filter(t => t.type === type).length >= cfg.maxOnField) return 'TOWER_LIMIT';
   const cost = buildCost(ctx.balance, type);
   if (s.gold < cost) return 'NOT_ENOUGH_GOLD';
   s.gold -= cost;
   const tower = { id: s.seq.tower++, type, slotId, x: center(slot.x), y: center(slot.y), level: 1, branch: null, invested: cost, nextAttackTick: null as number | null };
   // 전투 중 구매는 구매 시점부터 공격 간격 하나를 기다린다(PRD §7.2).
-  if (s.phase === 'BATTLE') tower.nextAttackTick = s.tick + attackIntervalTicks(ctx.balance, towerStats(ctx.balance, type, 1, null), burningBonusBP(ctx, s, s.tick));
+  // 깃발처럼 공격하지 않는 타워는 공격 예약이 없다.
+  if (s.phase === 'BATTLE' && attacks(ctx.balance, type)) tower.nextAttackTick = s.tick + attackIntervalTicks(ctx.balance, towerStats(ctx.balance, type, 1, null), burningBonusBP(ctx, s, s.tick));
   s.towers.push(tower);
   ev.push({ type: 'towerBuilt', towerId: tower.id, slotId, gold: -cost });
   return null;
@@ -250,7 +251,7 @@ function startBattle(ctx: GameContext, s: RunState, ev: DomainEvent[]): CommandE
   const spawnList = composeWave(b, s.wave, rng);
   s.rng.battle = rng.s;
   s.battle = { spawnList, spawnIndex: 0, nextSpawnTick: s.tick + 1, intervalTicks: spawnIntervalTicks(b, s.wave), hpBaseMilli: hpBaseMilli(b, s.wave), startedTick: s.tick };
-  for (const t of s.towers) t.nextAttackTick = s.tick + attackIntervalTicks(b, towerStats(b, t.type, t.level, t.branch), 0);
+  for (const t of s.towers) t.nextAttackTick = attacks(b, t.type) ? s.tick + attackIntervalTicks(b, towerStats(b, t.type, t.level, t.branch), 0) : null;
   s.phase = 'BATTLE';
   s.quiz.battleStreak = 0;
   s.quiz.current = createEncounter(ctx, s, 'battle');

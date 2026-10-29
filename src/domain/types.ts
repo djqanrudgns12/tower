@@ -3,7 +3,8 @@ import type { OptionId } from '../contracts/questions';
 
 // 저장·재개되는 전체 상태. 순수 JSON(숫자·문자열·배열·객체)만 쓴다(PRD §10.1, §14).
 export const RUN_STATE_VERSION = 1;
-export const RULES_VERSION = '0.4-candidate';
+/** 0.5-candidate: P2 공격 프로필(즉발·연쇄·부채꼴·화상·깃발 오라, 물리 저항 무시)과 적 화상 상태(PRD §7.1, §20.2~20.3). */
+export const RULES_VERSION = '0.5-candidate';
 
 export type Phase = 'PREP_QUIZ' | 'BUILD' | 'BATTLE' | 'WAVE_WRAPUP' | 'GAME_OVER';
 export type PauseReason = 'USER' | 'HIDDEN' | 'PERFORMANCE' | 'STORAGE' | 'CONTEXT_LOST' | 'OWNERSHIP' | 'RESTORED' | 'NUMERIC_LIMIT';
@@ -67,6 +68,8 @@ export interface QuizState {
 }
 
 export interface SlowEffect { source: number; bp: number; untilTick: number }
+/** 화상 출처(타워 ID)별 총피해 스냅샷(저항 반영 뒤 milli-HP)과 고유 만료 틱(PRD §20.2). */
+export interface BurnSource { source: number; total: number; expiresTick: number }
 
 export interface Enemy {
   id: number;
@@ -83,6 +86,10 @@ export interface Enemy {
   slows: SlowEffect[];
   stunUntilTick: number;
   stunTicksUsed: number;
+  /** 화상: 출처 목록, 적마다 하나인 피해 시계(다음 피해 틱), 4등분 나머지(PRD §20.2). */
+  burns: BurnSource[];
+  burnNextTick: number | null;
+  burnRemainder: number;
   alive: boolean;
 }
 
@@ -116,6 +123,8 @@ export interface Projectile {
   maxTargets: number;
   slowBP: number;
   slowTicks: number;
+  /** 물리 저항 효과를 줄이는 비율(석궁, PRD §7.1·§20.2). */
+  physicalResistIgnoreBP: number;
 }
 
 export interface SpawnEntry { kind: EnemyKind; elite: EliteId | null }

@@ -2,15 +2,19 @@ import type { GameContext } from './context';
 import type { DomainEvent } from './events';
 import { dist2, positionAt } from './geometry';
 import { add, bpFloor, ceilDiv, isqrt, safe, TICK_HZ } from './num';
-import { attackIntervalTicks, towerStats } from './towers';
+import { attackIntervalTicks, auraDamageBonusBP, towerStats, type TowerStats } from './towers';
 import type { Enemy, Projectile, RunState, Tower } from './types';
 import { enemyMaxHp, enemyResists, enemySpeedBP } from './waves';
 
-// 같은 틱 순서(PRD §3.4, §20.3): 만료 → 생성 → 도착 공격 → 타워 발사 → 이동/누출. 패배·완료 판정은 run.ts가 이어서 한다.
+// 같은 틱 순서(PRD §3.4, §20.3): 만료 → 생성 → 도착 공격 → 화상 → 타워 발사(즉발 포함) → 이동/누출. 패배·완료 판정은 run.ts가 이어서 한다.
 export function battleTick(ctx: GameContext, s: RunState, ev: DomainEvent[]): void {
   const t = s.tick;
   const battle = s.battle!;
-  for (const e of s.enemies) if (e.slows.length) e.slows = e.slows.filter(x => x.untilTick > t);
+  for (const e of s.enemies) {
+    if (e.slows.length) e.slows = e.slows.filter(x => x.untilTick > t);
+    // 화상 출처는 만료 틱의 마지막 피해까지 포함하므로 여기서는 지난 것만 지운다(PRD §20.2).
+    if (e.burns.length) e.burns = e.burns.filter(x => t <= x.expiresTick);
+  }
 
   while (battle.spawnIndex < battle.spawnList.length && t >= battle.nextSpawnTick) {
     spawn(ctx, s, ev);
@@ -24,6 +28,8 @@ export function battleTick(ctx: GameContext, s: RunState, ev: DomainEvent[]): vo
       for (const p of due) resolve(ctx, s, p, ev);
     }
   }
+
+  for (const e of s.enemies) if (e.alive && e.burnNextTick !== null && t >= e.burnNextTick) burnTick(ctx, s, e, ev);
 
   const speedBonus = burningBonusBP(ctx, s, t);
   for (const tower of s.towers) fire(ctx, s, tower, speedBonus, ev);
@@ -43,7 +49,7 @@ function spawn(ctx: GameContext, s: RunState, ev: DomainEvent[]) {
   const enemy: Enemy = {
     id: s.seq.enemy++, kind: entry.kind, elite: entry.elite, hp, maxHp: hp, progress: 0, moveRem: 0,
     speedBP: enemySpeedBP(b, entry.kind, entry.elite), physicalResistBP: res.physical, magicResistBP: res.magic,
-    slows: [], stunUntilTick: 0, stunTicksUsed: 0, alive: true,
+    slows: [], stunUntilTick: 0, stunTicksUsed: 0, burns: [], burnNextTick: null, burnRemainder: 0, alive: true,
   };
   s.enemies.push(enemy);
   ev.push({ type: 'spawn', enemyId: enemy.id, kind: enemy.kind });
@@ -62,6 +68,12 @@ function pickTarget(ctx: GameContext, s: RunState, x: number, y: number, range: 
   return best;
 }
 
+/** 한 번의 타격이 싣는 값. 투사체는 발사 순간의 스냅샷이고 즉발 공격은 그 자리에서 만든다. */
+type Strike = Pick<Projectile, 'towerId' | 'towerType' | 'damage' | 'damageType' | 'slowBP' | 'slowTicks' | 'physicalResistIgnoreBP'>;
+
+/** 외부 피해 보너스(깃발)는 레벨·분기·상황 배율 뒤, 저항 앞에 한 단계로 곱한다(PRD §20.2). */
+const withBonus = (damage: number, bonusBP: number) => (bonusBP > 0 ? bpFloor(damage, 10000 + bonusBP, 'damage.external') : damage);
+
 function fire(ctx: GameContext, s: RunState, tower: Tower, speedBonus: number, ev: DomainEvent[]) {
   const t = s.tick;
   if (tower.nextAttackTick === null || t < tower.nextAttackTick) return;
@@ -69,17 +81,113 @@ function fire(ctx: GameContext, s: RunState, tower: Tower, speedBonus: number, e
   const target = pickTarget(ctx, s, tower.x, tower.y, stats.range);
   // 표적이 없으면 준비 상태로 기다린다. 기다린 시간만큼 몰아서 쏘지 않는다(PRD §7.2).
   if (!target) return;
+  const bonus = auraDamageBonusBP(ctx.balance, s.towers, tower);
+  tower.nextAttackTick = t + attackIntervalTicks(ctx.balance, stats, speedBonus);
+  if (stats.instant) { strike(ctx, s, tower, stats, target, bonus, ev); return; }
   const at = positionAt(ctx.path, target.progress);
   const flight = Math.max(1, flightTicks(dist2(at.x, at.y, tower.x, tower.y), stats.projectileSpeed));
   const projectile: Projectile = {
     id: s.seq.projectile++, towerId: tower.id, towerType: tower.type, fromX: tower.x, fromY: tower.y,
     targetId: stats.splashRadius > 0 ? null : target.id, toX: at.x, toY: at.y, firedTick: t, arrivalTick: t + flight,
-    damage: stats.damage, damageType: stats.damageType, splashRadius: stats.splashRadius, maxTargets: stats.maxTargets,
-    slowBP: stats.slowBP, slowTicks: stats.slowTicks,
+    damage: withBonus(stats.damage, bonus), damageType: stats.damageType, splashRadius: stats.splashRadius, maxTargets: stats.maxTargets,
+    slowBP: stats.slowBP, slowTicks: stats.slowTicks, physicalResistIgnoreBP: stats.physicalResistIgnoreBP,
   };
   s.projectiles.push(projectile);
-  tower.nextAttackTick = t + attackIntervalTicks(ctx.balance, stats, speedBonus);
   ev.push({ type: 'fire', projectileId: projectile.id, towerId: tower.id, towerType: tower.type });
+}
+
+/**
+ * 즉발 공격(PRD §20.3): 비행 지연 없이 같은 틱에 맞힌다. 여기서 처치된 적은 다음 타워의 후보에서 빠진다.
+ * 번개는 직전 대상 중심의 연쇄, 화염은 기본 표적 방향 90도 부채꼴, 그 밖(창병·수호기사)은 기본 표적 하나다.
+ */
+function strike(ctx: GameContext, s: RunState, tower: Tower, stats: TowerStats, first: Enemy, bonus: number, ev: DomainEvent[]) {
+  const targets = stats.chainRadius > 0 ? chainTargets(ctx, s, first, stats) : stats.cone ? coneTargets(ctx, s, tower, first, stats) : [first];
+  const hits = targets.map((e, k) => ({ e, at: positionAt(ctx.path, e.progress), damage: withBonus(chainDamage(stats.damage, stats.chainFalloffBP, k), bonus) }));
+  ev.push({ type: 'strike', towerId: tower.id, towerType: tower.type, fromX: tower.x, fromY: tower.y, targets: hits.map(h => ({ enemyId: h.e.id, x: h.at.x, y: h.at.y })) });
+  for (const h of hits) {
+    const a: Strike = { towerId: tower.id, towerType: tower.type, damage: h.damage, damageType: stats.damageType, slowBP: stats.slowBP, slowTicks: stats.slowTicks, physicalResistIgnoreBP: stats.physicalResistIgnoreBP };
+    applyHit(ctx, s, a, h.e, ev);
+    if (h.e.alive && stats.burnTotal > 0) applyBurn(s, h.e, tower.id, mitigated(stats.burnTotal, h.e.magicResistBP), stats.burnTicks);
+  }
+}
+
+/** 번개 k번째 대상의 피해 = 최초 기준 피해 × 감쇠비^k, 마지막에 한 번 내림한다(PRD §20.3). 중간 곱이 커서 BigInt로 계산한다. */
+export function chainDamage(base: number, falloffBP: number, k: number): number {
+  if (k === 0) return base;
+  return Number((BigInt(base) * BigInt(falloffBP) ** BigInt(k)) / 10000n ** BigInt(k));
+}
+
+/** 첫 표적 뒤에는 직전 대상 중심 반경 안의 아직 맞지 않은 적을 거리↑ → 진행도↓ → 생성순↑로 고른다. 없으면 끝난다. */
+function chainTargets(ctx: GameContext, s: RunState, first: Enemy, stats: TowerStats): Enemy[] {
+  const chosen = [first];
+  const r2 = stats.chainRadius * stats.chainRadius;
+  while (chosen.length < stats.maxTargets) {
+    const last = positionAt(ctx.path, chosen[chosen.length - 1]!.progress);
+    const next = s.enemies
+      .filter(e => e.alive && !chosen.includes(e))
+      .map(e => { const p = positionAt(ctx.path, e.progress); return { e, d: dist2(p.x, p.y, last.x, last.y) }; })
+      .filter(c => c.d <= r2)
+      .sort((a, b) => a.d - b.d || b.e.progress - a.e.progress || a.e.id - b.e.id)[0];
+    if (!next) break;
+    chosen.push(next.e);
+  }
+  return chosen;
+}
+
+/**
+ * 화염 부채꼴: 타워에서 기본 표적 방향을 축으로 한 총각 90도. 사거리 안, 전방(dot ≥ 0), 2·dot² ≥ 거리²·축길이²인 적을
+ * 진행도↓ → 생성순↑로 최대 대상 수만큼 고른다. 정수식만 쓴다(PRD §20.2~20.3).
+ */
+function coneTargets(ctx: GameContext, s: RunState, tower: Tower, first: Enemy, stats: TowerStats): Enemy[] {
+  const f = positionAt(ctx.path, first.progress);
+  const ax = f.x - tower.x, ay = f.y - tower.y;
+  const axis2 = ax * ax + ay * ay;
+  const r2 = stats.range * stats.range;
+  return s.enemies
+    .filter(e => {
+      if (!e.alive) return false;
+      const p = positionAt(ctx.path, e.progress);
+      const dx = p.x - tower.x, dy = p.y - tower.y;
+      const d2 = dx * dx + dy * dy;
+      if (d2 > r2) return false;
+      const dot = dx * ax + dy * ay;
+      return dot >= 0 && safe(2 * dot * dot, 'cone') >= safe(d2 * axis2, 'cone');
+    })
+    .sort((a, b) => b.progress - a.progress || a.id - b.id)
+    .slice(0, stats.maxTargets);
+}
+
+/** 0.5초 화상 간격(PRD §7.1). */
+const BURN_INTERVAL_TICKS = 15;
+
+/**
+ * 화상 부여(PRD §20.2): 출처(타워)마다 총피해 스냅샷과 고유 만료를 두고, 같은 출처 재적중은 자기 값만 갱신한다.
+ * 피해 시계는 적마다 하나라서 재적중·다른 출처가 다음 피해 시각을 미루지 않는다.
+ */
+function applyBurn(s: RunState, e: Enemy, source: number, total: number, ticks: number) {
+  const expiresTick = s.tick + ticks;
+  const own = e.burns.find(b => b.source === source);
+  if (own) { own.total = total; own.expiresTick = expiresTick; }
+  else e.burns.push({ source, total, expiresTick });
+  if (e.burnNextTick === null) e.burnNextTick = s.tick + BURN_INTERVAL_TICKS;
+}
+
+/** 피해 시점마다 유효 출처 중 총피해가 가장 큰 하나(동률은 타워 생성순)를 4등분해 지급하고, 나머지는 다음으로 넘긴다. */
+function burnTick(ctx: GameContext, s: RunState, e: Enemy, ev: DomainEvent[]) {
+  const top = [...e.burns].sort((a, b) => b.total - a.total || a.source - b.source)[0];
+  if (top) {
+    const sum = top.total + e.burnRemainder;
+    const pay = Math.min(e.hp, Math.floor(sum / 4));
+    e.burnRemainder = sum % 4;
+    if (pay > 0) {
+      e.hp = safe(e.hp - pay, 'hp');
+      ev.push({ type: 'burn', enemyId: e.id, damage: pay });
+      if (e.hp === 0) { kill(ctx, s, e, positionAt(ctx.path, e.progress), ev); return; }
+    }
+  }
+  e.burnNextTick = add(e.burnNextTick!, BURN_INTERVAL_TICKS);
+  e.burns = e.burns.filter(b => s.tick < b.expiresTick);
+  if (e.burns.length === 0) { e.burnNextTick = null; e.burnRemainder = 0; }
 }
 
 /** 도착 틱 수 = ceil(거리×30/속도). 거리를 먼저 내림하면 경계에서 1틱 일찍 닿으므로 제곱 그대로 올림한다(PRD §20.3, §13.3). */
@@ -112,8 +220,14 @@ export function mitigated(damage: number, resistBP: number): number {
   return Math.max(1, bpFloor(damage, 10000 - resistBP, 'resist'));
 }
 
-function applyHit(ctx: GameContext, s: RunState, p: Projectile, e: Enemy, ev: DomainEvent[]) {
-  const resist = p.damageType === 'physical' ? e.physicalResistBP : e.magicResistBP;
+/** 물리 저항 무시는 최종 물리 저항 수치의 비율을 줄인다. 마법 저항에는 적용하지 않는다(PRD §20.2). */
+export function effectiveResistBP(e: Pick<Enemy, 'physicalResistBP' | 'magicResistBP'>, damageType: 'physical' | 'magic', ignoreBP: number): number {
+  if (damageType === 'magic') return e.magicResistBP;
+  return ignoreBP > 0 ? bpFloor(e.physicalResistBP, 10000 - ignoreBP, 'resist.ignore') : e.physicalResistBP;
+}
+
+function applyHit(ctx: GameContext, s: RunState, p: Strike, e: Enemy, ev: DomainEvent[]) {
+  const resist = effectiveResistBP(e, p.damageType, p.physicalResistIgnoreBP);
   const dealt = Math.min(e.hp, mitigated(p.damage, resist));
   e.hp = safe(e.hp - dealt, 'hp');
   const at = positionAt(ctx.path, e.progress);

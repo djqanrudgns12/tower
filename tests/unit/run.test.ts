@@ -112,7 +112,7 @@ describe('성문·처치·누출(PRD §3.3)', () => {
     const e = s.enemies[0]!;
     e.progress = ctx.path.length - 1;
     e.hp = 1;
-    s.projectiles.push({ id: 999, towerId: 1, towerType: 'archer', fromX: 0, fromY: 0, targetId: e.id, toX: 0, toY: 0, firedTick: s.tick, arrivalTick: s.tick + 1, damage: 5000, damageType: 'physical', splashRadius: 0, maxTargets: 1, slowBP: 0, slowTicks: 0 });
+    s.projectiles.push({ id: 999, towerId: 1, towerType: 'archer', fromX: 0, fromY: 0, targetId: e.id, toX: 0, toY: 0, firedTick: s.tick, arrivalTick: s.tick + 1, damage: 5000, damageType: 'physical', splashRadius: 0, maxTargets: 1, slowBP: 0, slowTicks: 0, physicalResistIgnoreBP: 0 });
     const gate = s.gateHp;
     const events = ticks(ctx, s, 1);
     expect(events.filter(x => x.type === 'kill')).toHaveLength(1);

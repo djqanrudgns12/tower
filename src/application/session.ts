@@ -2,7 +2,7 @@ import type { DifficultyId } from '../contracts/balance';
 import { ContentUnavailableError, contextFor, gradeContent, PILOT_TOWERS, PRACTICE, PRACTICE_BANK, practiceContext } from '../content';
 import type { GameContext } from '../domain/context';
 import { createRun } from '../domain/run';
-import type { RunState } from '../domain/types';
+import { RULES_VERSION, type RunState } from '../domain/types';
 import { listRecords, loadSnapshot, type LoadResult, type RunRecord } from '../persistence/db';
 import { acquireRunLock, locksSupported } from '../persistence/ownership';
 import { loadSettings, saveSettings, type FontScale, type Settings } from '../persistence/settings';
@@ -68,7 +68,7 @@ export function resumeRun(saved: Extract<LoadResult, { kind: 'ok' }>): Promise<S
   const { bank } = gradeContent(state.config.grade);
   const ctx = tryContext(state.config.grade, state.config.difficulty);
   if (!ctx) return Promise.resolve({ ok: false, message: NO_QUESTIONS });
-  if (!bank || bank.bankVersion !== state.config.bankVersion || ctx.balance.balanceVersion !== state.config.balanceVersion || ctx.map.mapVersion !== state.config.mapVersion) {
+  if (!bank || bank.bankVersion !== state.config.bankVersion || ctx.balance.balanceVersion !== state.config.balanceVersion || ctx.map.mapVersion !== state.config.mapVersion || state.config.rulesVersion !== RULES_VERSION) {
     return Promise.resolve({ ok: false, message: '게임이 바뀌어서 이 판은 이어할 수 없어요. 새 게임을 시작해 주세요.' });
   }
   if (!state.pause.includes('RESTORED')) state.pause.push('RESTORED');
