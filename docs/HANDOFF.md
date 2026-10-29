@@ -1,6 +1,6 @@
 # 다음 총괄·다음 컴퓨터 인계
 
-기준일: 2026-10-29 · 현재 구간: **P1 첫 완성 구간 — 1차 수합, P1-REST(소리 제외), S11·밸런스 `0.4-candidate`, 2차 수합(RIG·QR) 완료, ART-002 발행 준비** · 총괄: Claude Opus 5.5(Claude Code, Windows PC → 집 Mac)
+기준일: 2026-10-29 · 현재 구간: **P1 첫 완성 구간 — 2차 수합(RIG·QR), 3차 수합(ART-002·Q20-002), G2 시험 통과(실기기 제외), Q20-002 독립 검토 중** · 2026-10-29부터 총괄이 `agent-bridge`로 Codex·Antigravity에 직접 전달한다 · 총괄: Claude Opus 5.5(Claude Code, Windows PC → 집 Mac)
 
 ## 집 Mac에서 처음 할 일
 
@@ -32,15 +32,15 @@ Node 24(`.node-version`). 브라우저 흐름까지 보려면 `npm run test:e2e`
 |---|---|---|
 | P1 엔진·화면·저장 | 구현됨, 독립 검토 결함 10건 수정 | [REVIEW-CORE-001 반환](work-packages/REVIEW-CORE-001/RETURN.md), `tests/unit/review-core/` |
 | UI 보정 | 들임 + 계약 변경 7건 반영 | [UI-AUDIT-001 반환](work-packages/UI-AUDIT-001/RETURN.md), 전후 캡처 `docs/work-packages/UI-AUDIT-001/shots/` |
-| 원화 | 16장 중 14장 게임 적용(`integrated_pass`, 2026-10-29 고블린 피격 추가), 대장 2 보류(`visual_pass`). 지면·설치 받침·작은 장식은 아직 임시 그림 → ART-002 | [ART-SAMPLE-001 반환](work-packages/ART-SAMPLE-001/RETURN.md), `public/assets/manifest.json`의 `notes` |
-| 3학년 문항 20개(Argon) | **공동검수 끝: 승인 14 · 격리 6.** 공개 은행은 승인 30문항부터라 아직 없고, 게임은 개발용 은행을 쓴다 | `content-source/approvals/registry.json`(`npm run build:bank`), PRD §18.4 ‘2차 수합’ |
+| 원화 | **27장 모두 게임 적용(`integrated_pass`)**: ART-SAMPLE-001 16장(대장 2장은 2026-10-29 5웨이브 전투로 확인) + ART-002 11장(풀·흙 질감·풀 얼룩·설치 받침·바위·입구 깃발·작은 장식). 남은 임시 그림은 P2 적(빠른·튼튼·껍질 등)과 투사체·표식 | [ART-SAMPLE-001 반환](work-packages/ART-SAMPLE-001/RETURN.md), `public/assets/manifest.json`의 `notes` |
+| 3학년 문항(Argon) | Q20-001 승인 14·격리 6. Q20-002(고친 판 6 + 새 14) 수합, **독립 검토 QR-003·QR-004 진행 중.** 공개 은행은 승인 30문항부터라 아직 없고, 게임은 개발용 은행을 쓴다 | `content-source/approvals/registry.json`(`npm run build:bank`), PRD §18.4 |
 | A26 철회 목록 | 완료 | `src/content/retractions.json` |
 | 설치 자리 목록·전장 키보드(§12.4) | 완료 | `src/ui/game/SlotList.tsx` |
 | WebGL 문맥 손실 복구(§12.7) | 완료 | `RunController.rendererLost/rendererRestored` |
 | 첫 연습 판(§12.2) | 완료. 연습 전용 4문항은 공동검수 전 | `practiceContext`, `src/content/questions/practice.json` |
 | 소리 | 미착수(음원 작업을 먼저 정해야 함) | PRD §11.5 |
 | 2차 작업 QR-001·QR-002·RIG-001 | **수합 완료(ACCEPTED).** RIG 연결 4건은 총괄이 `BattleScene.ts`·`assets.ts`에 넣었다. 작업 폴더 `../tower-wp/{QR-001,QR-002,RIG-001}`은 수합을 커밋한 뒤 지운다 | [작업 게시판](EXECUTION_BOARD.md), [RIG-001 반환](work-packages/RIG-001/RETURN.md) |
-| 3차 작업 ART-002 | **READY.** 집 Mac 작업 폴더 `../tower-wp/ART-002`(`ea7ffe4`, 요청서 복사·해시 대조 완료) | [ART-002 요청서](work-packages/ART-002/REQUEST.md), [발행용 프롬프트](work-packages/DISPATCH.md) 3차 절 |
+| 3차 작업 ART-002·Q20-002 | **수합 완료.** ART-002는 ACCEPTED, Q20-002는 검토 대기. 지면은 `art.ts` `composeGroundArt`가 맵 데이터로 조립한다 | [ART-002 반환](work-packages/ART-002/RETURN.md), [Q20-002 반환](work-packages/Q20-002/RETURN.md) |
 | 엔진 밸런스 시뮬레이터(S11)·밸런스 | 완료, 근사 모델 폐기. 사용자가 후보 A 방향을 골라 `0.4-candidate`로 반영: Normal 기준 34.3분→23.3분, 정답률 효과 1~2→2.5~4웨이브, PRD 기준 6개 통과 | PRD §17.3, `docs/contracts/balance.candidate.v0.4.json`, `docs/balance/s11-*.json` |
 | 비석 ‘가’ 글자 | 원화 아래에 깔려 안 보이던 결함 수정 | `BattleScene.ts` `STELE_FACE_Y` |
 
@@ -60,9 +60,9 @@ Node 24(`.node-version`). 브라우저 흐름까지 보려면 `npm run test:e2e`
 
 ## 다음 첫 행동
 
-1. **ART-002 보내기.** [발행용 프롬프트](work-packages/DISPATCH.md) 3차 절의 프롬프트를 Codex 새 세션에 붙여 넣는다(작업 폴더 `/Users/bodyking/Desktop/vibecoding/tower-wp/ART-002`). 보낸 뒤 [작업 게시판](EXECUTION_BOARD.md)에서 RUNNING으로 바꾼다. 반환되면 질감·소품을 렌더러(`art.ts` `drawGround`)에 조립하는 일은 총괄 몫이다(요청서 ‘이번 방식’ 1~5).
-2. **Q20-002(Argon) 보내기.** [요청서](work-packages/Q20-002/REQUEST.md)와 작업 폴더 `../tower-wp/Q20-002`(`e98ae95`)를 준비했다. 프롬프트는 [발행용 프롬프트](work-packages/DISPATCH.md) 3차 절. 공개 은행에 승인 16문항 이상이 더 필요해 격리 6문항 revision 2와 새 문항 14개를 낸다. 반환되면 `npm run blind-input -- Q20-002`로 정답 없는 입력을 만들어 QR을 다시 돌리고 `npm run build:bank`로 공개 은행을 만든다. 공개 은행이 생기면 `src/content/index.ts`가 개발용 대신 그것을 싣게 바꾼다.
-3. **G2 게이트(PRD §18.2).** 4→5→6웨이브, 오답·정지·저장복귀·보상 중복 검증과 실기기 확인. 밸런스 남은 위험: Easy 27~29분, 정답률 60% 초보형의 첫 보스 처치 0.13.
+1. **QR-003·QR-004 수합.** 두 보고서(`content-source/reviews/Q20-002/{codex,claude}.json`)가 오면 형식 검사 → 총괄 해설 대조(`content-source/approvals/Q20-002.explanation.json`, Q20-001과 같은 방식) → `npm run build:bank`. 승인이 30문항 이상이면 공개 은행 `src/content/questions/grade3.json`이 생기고, `src/content/index.ts`가 개발용 대신 그것을 싣게 바꾼다.
+2. **승인이 30문항에 못 미치면** 격리 문항의 revision 3(두 번째 수정, 그래도 안 되면 뺀다)과 새 배치 Q20-003을 Argon에 낸다. 전달은 `agent-bridge send --from claude --to antigravity --wake --cwd <작업 폴더>`로 한다(브리지 실행은 15분 상한이라 10문항씩 나눈다).
+3. **G2 게이트(PRD §18.2).** 4→5→6웨이브·오답·정지·저장복귀·보상 중복은 2026-10-29에 도메인 시험(`tests/unit/g2.test.ts`)과 브라우저 e2e(저장하고 나가기 → 이어하기)로 확인했다(PRD §18.4 ‘G2 게이트 시험’). 남은 것은 실기기(iOS Safari·Android) 확인과 장시간 성능. 밸런스 남은 위험: Easy 27~29분, 정답률 60% 초보형의 첫 보스 처치 0.13.
 4. 그 밖의 대기 일: 고블린 추가 프레임(위·아래 방향, 보폭이 긴 걸음 — RIG-001 반환서 §9, 실제 화면을 보고 ART-003으로 낼지 정함), 대장 원화 5웨이브 전투 확인, 소리용 음원 작업 정의, QR-PRACTICE(연습 전용 4문항 검토), `p1/intake-round1`을 `main`에 합칠지(PR 여부) 결정.
 
 ## 이 구간에서 바뀐 설계(코드를 읽기 전에 알 것)

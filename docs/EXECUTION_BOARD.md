@@ -1,6 +1,6 @@
 # 현재 작업 게시판
 
-기준일: 2026-10-29 · 현재 구간: **P1 첫 완성 구간 — 2차 수합 완료(문항 승인 14·격리 6), ART-002 발행 준비** · 총괄: Claude Opus 5.5(Claude Code)
+기준일: 2026-10-29 · 현재 구간: **P1 첫 완성 구간 — 3차 수합(ART-002·Q20-002), G2 시험 통과(실기기 제외), Q20-002 독립 검토 중** · 총괄: Claude Opus 5.5(Claude Code)
 
 기준: 브랜치 `p1/intake-round1`(origin에 push함, `main`에는 아직 병합 안 함). 1차 수합은 `bc3ee07`, 밸런스 `0.4-candidate`는 `ea7ffe4`. 2차(QR-001·QR-002·RIG-001)는 집 Mac 작업 폴더(`bc3ee07`)에서 돌았고 2026-10-29 수합했다. 3차 ART-002는 `ea7ffe4`를 `baseCommit`으로 요청서를 쓰고 집 Mac에 작업 폴더를 만들었다(요청서는 2차 수합 커밋에 들어갔고, 작업 폴더에는 복사본을 둠). 붙여 넣을 프롬프트는 [발행용 프롬프트](work-packages/DISPATCH.md)에 있다.
 
@@ -13,10 +13,11 @@
 | [Q20-001](work-packages/Q20-001/RETURN.md) | **RETURNED · 공동검수 대기** — 검사 통과, 정답 없는 입력 생성됨 | Argon 4 | `content-source/batches/Q20-001/**` | — |
 | [QR-001/QR-002](work-packages/QR-001/REQUEST.md) | **ACCEPTED** — 독립 풀이 40/40이 정답과 같음. 총괄 해설 대조를 더해 승인 14·격리 6(`content-source/approvals/registry.json`, PRD §18.4) | Codex·Claude 새 문맥 | `content-source/reviews/Q20-001/*` | Q20-001 반환 ✓ |
 | [RIG-001](work-packages/RIG-001/RETURN.md) | **ACCEPTED** — 3파일 들임, 렌더러 연결 4건은 총괄이 반영, `enemy.walker.hit` `integrated_pass`(1440×900 전투 캡처로 확인) | Claude 새 문맥 또는 Codex | `src/game/animation/**` | ART-SAMPLE-001 인수 ✓ |
-| [Q20-002](work-packages/Q20-002/REQUEST.md) | **READY**(2026-10-29, 집 Mac 작업 폴더 준비·해시 대조 완료, 아직 보내지 않음) | Argon 4 | `content-source/batches/Q20-002/**` — 격리 6문항 revision 2 + 새 문항 14개. 공개 은행에 승인 16문항 이상이 더 필요 | QR 수합 ✓ |
+| [Q20-002](work-packages/Q20-002/RETURN.md) | **수합(검토 대기)** — 20문항(고친 판 6 + 새 14) 검사 통과, 정답 위치 a·b·c·d 각 5. 정답 없는 입력 `content-source/reviews/Q20-002/blind-input.json` | Argon 4 | `content-source/batches/Q20-002/**` — 격리 6문항 revision 2 + 새 문항 14개. 공개 은행에 승인 16문항 이상이 더 필요 | QR 수합 ✓ |
+| [QR-003/QR-004](work-packages/QR-003/REQUEST.md) | **RUNNING**(2026-10-29) — QR-003은 agent-bridge로 Codex(10문항씩 두 번), QR-004는 총괄이 띄운 새 문맥 Claude. 작업 폴더는 정답·1판 판정·Q20-002 요청서를 뺀 sparse checkout | Codex·Claude | `content-source/reviews/Q20-002/{codex,claude}.json` | Q20-002 수합 ✓ |
 | P1-REST | 소리만 남음 — A26 철회 목록·설치 자리 목록·문맥 손실 복구·첫 연습 판 완료 | 총괄 | 소리(음원 작업 필요) | 음원 묶음 |
 | QR-PRACTICE | 계획 | Codex·Claude 검토 | 연습 전용 4문항(`src/content/questions/practice.json`) 공동검수 | 공개 전 |
-| [ART-002](work-packages/ART-002/REQUEST.md) | **READY**(2026-10-29, 집 Mac 작업 폴더 준비·해시 대조 완료, 아직 보내지 않음) | Codex 이미지 | `asset-source/incoming/ART-002/**` — 정원 지면 질감·설치 받침·작은 장식 11장 | ART-SAMPLE-001 ✓ |
+| [ART-002](work-packages/ART-002/RETURN.md) | **ACCEPTED** — 11장 HOLD 0, 실제 전투(1440×900)에서 지면 조립으로 확인해 모두 `integrated_pass`. 총괄이 agent-bridge로 Codex에 세 번 나눠 전달(15분 상한) | Codex 이미지 | `asset-source/incoming/ART-002/**` — 정원 지면 질감·설치 받침·작은 장식 11장 | ART-SAMPLE-001 ✓ |
 | CORE-P2 | 계획 | 다음 총괄(PRD 출발안: Claude) | 나머지 타워 7종·분기 14개·4~6학년 맵/은행 | G2 통과 |
 
 Q20-002의 소유 경로(`content-source/batches/Q20-002/**`)는 ART-002와 겹치지 않는다. 반환되면 QR(Codex·Claude)을 다시 돌린다. ART-002의 소유 경로(`asset-source/incoming/ART-002/**`)는 2차 수합 대상(`src/game/animation/**`, `content-source/reviews/**`)이나 총괄이 수합 때 고칠 렌더러(`src/game/**`)와 겹치지 않는다. QR-001·QR-002는 정답 키가 있는 `content-source/batches/**`를 뺀 작업 폴더에서 돌린다(발행용 프롬프트의 sparse checkout). 총괄만 공유 schema/package/lockfile/전역 토큰/라우터/인덱스를 수정한다. ACCEPTED는 총괄이 검사 후 부여한다.

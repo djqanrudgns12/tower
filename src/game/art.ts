@@ -72,9 +72,84 @@ function stele(g: Phaser.GameObjects.Graphics, cx: number, cy: number) {
 }
 
 /** 지면 기본판: 풀·길·설치 받침·고정 장식·성문. 길과 슬롯은 데이터에서 그린다(PRD §6.2). */
-export interface GroundSkip { gate: boolean; tree: boolean; stele: boolean }
+export interface GroundSkip { gate: boolean; tree: boolean; stele: boolean; rock: boolean }
 
-export function drawGround(scene: Phaser.Scene, map: MapConfig, skip: GroundSkip = { gate: false, tree: false, stele: false }): void {
+/** ART-002 바닥 재료 ID. 같은 ID의 PNG가 인수되면 BattleScene.preload가 싣는다. */
+export const GROUND_ART = {
+  grass: 'ground.grass', dirt: 'ground.dirt', patches: ['ground.patch.0', 'ground.patch.1'], slot: 'slot.base',
+  small: ['deco.bush.1', 'deco.bush.0', 'deco.pebble', 'deco.flowers'], entry: 'map.entry',
+} as const;
+/** 길 시각 폭(칸): 흙과 가장자리 띠. 논리 중심선은 셀 중심이다(PRD §6.1 0.70~0.86). */
+const PATH_WIDTH = 0.76, PATH_EDGE = 0.86;
+
+/**
+ * 인수된 바닥 재료로 지면 기본판을 조립한다(ART-002 요청서 ‘이번 방식’). 풀·흙 질감이 없으면 false를 돌려
+ * 임시 그림(drawGround)을 쓰게 한다. 나무·비석·바위·성문은 BattleScene이 이미지로 세우므로 여기서 그리지 않는다.
+ */
+export function composeGroundArt(scene: Phaser.Scene, map: MapConfig): boolean {
+  const has = (key: string) => scene.textures.exists(key);
+  if (!has(GROUND_ART.grass) || !has(GROUND_ART.dirt)) return false;
+  const W = 15 * C, H = 9 * C;
+  const tex = scene.textures.createCanvas(ASSETS.ground.key, W, H);
+  if (!tex) return false;
+  const ctx = tex.getContext();
+  const src = (key: string) => scene.textures.get(key).getSourceImage() as HTMLImageElement;
+  const key = (x: number, y: number) => `${x},${y}`;
+  const path = new Set(map.pathCells.map(([x, y]) => key(x, y)));
+  const taken = new Set([...path, ...map.slots.map(s => key(s.x, s.y)), ...map.decorations.flatMap(d => d.cells.map(([x, y]) => key(x, y)))]);
+  /** 원본 비율을 지키며 cells칸 너비로 찍는다. 기준점은 manifest와 같은 비율 좌표다. */
+  const stamp = (k: string, cx: number, cy: number, cells: number, originY = 0.5) => {
+    const img = src(k), w = cells * C, h = (w * img.height) / img.width;
+    ctx.drawImage(img, cx - w / 2, cy - originY * h, w, h);
+  };
+
+  // 질감은 칸당 128px(TEX=2)로 납품되므로 원본 크기 그대로 반복한다. 얼룩은 셀 난수로 흩뿌려 2칸 반복을 깬다.
+  ctx.fillStyle = ctx.createPattern(src(GROUND_ART.grass), 'repeat')!;
+  ctx.fillRect(0, 0, W, H);
+  for (let y = 0; y < 9; y++) for (let x = 0; x < 15; x++) {
+    const r = rand01(x, y, 21), patch = GROUND_ART.patches[r < 0.12 ? 0 : 1];
+    if (r < 0.24 && has(patch) && !path.has(key(x, y))) stamp(patch, (x + 0.3 + rand01(x, y, 22) * 0.4) * C, (y + 0.3 + rand01(x, y, 23) * 0.4) * C, 1.5);
+  }
+
+  // 길: 셀 중심선을 둥근 이음으로 잇는다. 입구는 맵 끝에 있으므로 바깥으로 한 칸 더 그려 끊겨 보이지 않게 한다.
+  const pts = map.pathCells.map(([x, y]) => [(x + 0.5) * C, (y + 0.5) * C] as const);
+  const [p0, p1] = [pts[0]!, pts[1]!];
+  const start = [p0[0] + Math.sign(p0[0] - p1[0]) * C, p0[1] + Math.sign(p0[1] - p1[1]) * C] as const;
+  const stroke = (cells: number, style: string | CanvasPattern) => {
+    ctx.beginPath();
+    ctx.moveTo(start[0], start[1]);
+    for (const [px, py] of pts) ctx.lineTo(px, py);
+    ctx.lineWidth = cells * C; ctx.lineJoin = 'round'; ctx.lineCap = 'round'; ctx.strokeStyle = style;
+    ctx.stroke();
+  };
+  stroke(PATH_EDGE, `#${PALETTE.dirtEdge.toString(16).padStart(6, '0')}`);
+  stroke(PATH_WIDTH, ctx.createPattern(src(GROUND_ART.dirt), 'repeat')!);
+
+  // 설치 받침: 원본 192px가 한 칸, 기준점은 칸 중심이다.
+  for (const s of map.slots) {
+    const cx = (s.x + 0.5) * C, cy = (s.y + 0.5) * C;
+    if (has(GROUND_ART.slot)) { stamp(GROUND_ART.slot, cx, cy, 1); continue; }
+    ctx.fillStyle = `#${PALETTE.stoneDark.toString(16)}`;
+    ctx.beginPath(); ctx.roundRect(cx - 0.4 * C, cy - 0.38 * C, 0.8 * C, 0.8 * C, 0.12 * C); ctx.fill();
+  }
+
+  // 설치 불가 지면은 작은 덤불·돌·들꽃으로 채운다(PRD §6.2). 1칸 이하이고 점유 데이터가 아니다.
+  const smallCells = [0.6, 0.6, 0.5, 0.5];
+  for (let y = 0; y < 9; y++) for (let x = 0; x < 15; x++) {
+    if (taken.has(key(x, y))) continue;
+    const r = rand01(x, y, 5), i = [0.17, 0.34, 0.46, 0.58].findIndex(t => r < t);
+    const k = i < 0 ? null : GROUND_ART.small[i]!;
+    if (k && has(k)) stamp(k, (x + 0.5 + (rand01(x, y, 6) - 0.5) * 0.4) * C, (y + 0.62 + (rand01(x, y, 7) - 0.5) * 0.3) * C, smallCells[i]!, i === 3 ? 0.7 : 0.8);
+  }
+
+  // 입구 표시: 입구 칸 위 가장자리에 작게 세운다(이웃 설치 칸을 덜 가리게 0.6칸).
+  const [ex, ey] = map.entryCell;
+  if (has(GROUND_ART.entry)) stamp(GROUND_ART.entry, (ex + 0.18) * C, (ey + 0.14) * C, 0.6, 0.85);
+  tex.refresh();
+  return true;
+}
+
+export function drawGround(scene: Phaser.Scene, map: MapConfig, skip: GroundSkip = { gate: false, tree: false, stele: false, rock: false }): void {
   const g = scene.add.graphics();
   const W = 15 * C, H = 9 * C;
   g.fillStyle(PALETTE.grass, 1); g.fillRect(0, 0, W, H);
@@ -135,7 +210,7 @@ export function drawGround(scene: Phaser.Scene, map: MapConfig, skip: GroundSkip
     const cx = x * C + C / 2, cy = y * C + C / 2;
     const kind = decor.get(k);
     if (kind === 'culture') { if (!skip.stele) stele(g, cx, cy); }
-    else if (kind === 'nature') { if (isTreeCell(x, y)) { if (!skip.tree) tree(g, cx, cy, 1.05); } else rock(g, cx, cy + 10, 1.1); }
+    else if (kind === 'nature') { if (isTreeCell(x, y)) { if (!skip.tree) tree(g, cx, cy, 1.05); } else if (!skip.rock) rock(g, cx, cy + 10, 1.1); }
     else if (!path.has(k) && !slots.has(k)) {
       // 설치 불가 지면은 작은 덤불·꽃·돌로 채워 빈 잔디로 보이지 않게 한다(PRD §6.2). 1셀 이하 크기.
       const r = rand01(x, y, 5);

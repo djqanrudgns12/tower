@@ -72,6 +72,40 @@ test('1440×900: 준비 → 설치 → 전투 → 정지 가림 → 재개', asy
   await expect(page.getByRole('region', { name: '어휘 문제' })).toBeVisible();
 });
 
+test('저장하고 나가기 → 새로고침 → 이어하기: 정지 상태로 같은 골드·성문·타워에서 이어진다(PRD §14)', async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await newGame(page);
+  await finishPrep(page);
+  const slot = garden.slots.find(s => s.x === 8 && s.y === 2)!;
+  await tapCell(page, slot.x, slot.y);
+  await page.getByRole('option', { name: /궁수탑/ }).click();
+  await page.getByRole('button', { name: '설치 · 60골드' }).click();
+  await expect(page.getByText('레벨 1', { exact: true })).toBeVisible();
+  await page.getByRole('button', { name: '전투 시작' }).click();
+  await expect(page.getByText('전투 문제')).toBeVisible();
+  await page.waitForTimeout(4000);
+
+  await page.getByRole('button', { name: '일시정지' }).first().click();
+  const gold = await page.getByLabel(/^골드 \d+$/).getAttribute('aria-label');
+  const gate = await page.getByRole('meter', { name: '성문' }).getAttribute('aria-valuenow');
+  await page.getByRole('button', { name: '저장하고 나가기' }).click();
+  const resume = page.getByRole('button', { name: '이어하기 · 하늘바람 · 1웨이브' });
+  await expect(resume).toBeVisible();
+
+  await page.reload();
+  await resume.click();
+  // 이어하기는 정지 상태로 시작하고 문제는 가려져 있다(PRD §14.2, §3.6).
+  await expect(page.getByRole('dialog')).toContainText('저장한 곳에서 다시 시작해요');
+  await expect(page.getByRole('region', { name: '어휘 문제' })).toHaveCount(0);
+  await expect(page.getByLabel(/^골드 \d+$/)).toHaveAttribute('aria-label', gold!);
+  await expect(page.getByRole('meter', { name: '성문' })).toHaveAttribute('aria-valuenow', gate!);
+  await shot(page, 'desktop-restored');
+  await page.getByRole('button', { name: '계속하기' }).click();
+  await expect(page.getByRole('region', { name: '어휘 문제' })).toBeVisible();
+  await expect(page.getByText('전투 문제')).toBeVisible();
+  await expect(page.getByText(/빈 자리 19곳/)).toBeVisible();
+});
+
 test('390×844 휴대폰: 가로 넘침 없음, 문제 전체가 보이고 확대 선택이 열린다', async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await newGame(page);

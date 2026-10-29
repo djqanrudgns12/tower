@@ -1,0 +1,30 @@
+{
+  "tool": "image_gen.imagegen (내장 도구)",
+  "model": "세부 모델 버전은 도구 응답에 미노출; 원본 C2PA softwareAgent.version은 gpt-image",
+  "references": [
+    "docs/assets/design-41-kingdom-expedition.png",
+    "public/assets/deco.tree.r1.png"
+  ],
+  "jobs": [
+    {
+      "id": "ground.grass",
+      "transparent_background": false,
+      "prompt": "Use case: stylized-concept. Create ONE production 2D game ground asset for a bright Korean elementary-school tower defense game. Reference image 1 supplies the fantasy world paint style; reference image 2 supplies accepted asset rendering style. Do not reproduce the scene, tree, UI, characters, text, borders or grid. Simplified hand-painted rounded shapes, restrained 2-3 tonal steps. Ground is subordinate to towers/enemies. Very quiet low contrast, NO dark outlines, NO glow, NO vignette, NO large feature or dramatic lighting. Square image, designed to retain detail when downsampled. A seamless repeating grass ground texture only, full bleed to all four edges, absolutely opaque. Average color #7cbc4c, uniform value across tile, luminance within 8 percent. Few sparse tiny subtle grass blade marks, calm predominantly flat green surface with small soft brush flecks. No stones, flowers, paths, islands, borders, large blotches, or directional gradients. Opposite edges match perfectly both axes. Target asset 256x256."
+    },
+    {
+      "id": "ground.dirt",
+      "transparent_background": false,
+      "prompt": "Use case: stylized-concept. Create ONE production 2D game ground asset for a bright Korean elementary-school tower defense game. Reference image 1 supplies the fantasy world paint style; reference image 2 supplies accepted asset rendering style. Do not reproduce the scene, tree, UI, characters, text, borders or grid. Simplified hand-painted rounded shapes, restrained 2-3 tonal steps. Ground is subordinate to towers/enemies. Very quiet low contrast, NO dark outlines, NO glow, NO vignette, NO large feature or dramatic lighting. Square image, designed to retain detail when downsampled. A seamless repeating compacted ochre dirt surface texture only, full bleed to all four edges, absolutely opaque. Average color #dcb878, uniform value across tile, luminance within 8 percent. Few sparse very small rounded dusty pebbles similar in value to soil, delicate packed-earth brush marks. No grass, flowers, paths, path edges, cracks, islands, large stones, borders or directional gradients. Opposite edges match perfectly both axes. Target asset 256x256."
+    },
+    {
+      "id": "ground.patch.0",
+      "transparent_background": true,
+      "prompt": "Use case: stylized-concept. Create ONE production 2D game ground asset for a bright Korean elementary-school tower defense game. Reference image 1 supplies the fantasy world paint style; reference image 2 supplies accepted asset rendering style. Do not reproduce the scene, tree, UI, characters, text, borders or grid. Simplified hand-painted rounded shapes, restrained 2-3 tonal steps. Ground is subordinate to towers/enemies. Very quiet low contrast, NO dark outlines, NO glow, NO vignette, NO large feature or dramatic lighting. Square image, designed to retain detail when downsampled. ONE gently rounded irregular LIGHT grass color patch, a flat ground decal on a genuinely transparent background. Dominant muted light leaf green #98cd63. Not a bush, not a floating island or turf block. No soil edge, no thickness, no shadow, no outline. Almost flat organically rounded puddle of lawn color, very sparse delicate short grass marks inside, low contrast; soft clean naturally uneven rounded perimeter. Center the entire single patch with generous fully transparent margin on all four sides. Target asset 192x192."
+    },
+    {
+      "id": "ground.patch.1",
+      "transparent_background": true,
+      "prompt": "Use case: stylized-concept. Create ONE production 2D game ground asset for a bright Korean elementary-school tower defense game. Reference image 1 supplies the fantasy world paint style; reference image 2 supplies accepted asset rendering style. Do not reproduce the scene, tree, UI, characters, text, borders or grid. Simplified hand-painted rounded shapes, restrained 2-3 tonal steps. Ground is subordinate to towers/enemies. Very quiet low contrast, NO dark outlines, NO glow, NO vignette, NO large feature or dramatic lighting. Square image, designed to retain detail when downsampled. ONE gently rounded irregular DARK grass color patch, a flat ground decal on a genuinely transparent background. Dominant muted grass green #64a23e, with only a few small short grass tufts. Not a bush, not a floating island or turf block. No soil edge, no thickness, no shadow, no outline. Almost flat organically rounded puddle of lawn color, soft clean naturally uneven rounded perimeter. Center the entire single patch with generous fully transparent margin on all four sides. Target asset 192x192."
+    }
+  ]
+}

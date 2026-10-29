@@ -7,7 +7,7 @@ import { positionAt } from '../domain/geometry';
 import { towerStats } from '../domain/towers';
 import type { Enemy, RunState } from '../domain/types';
 import { acceptsHit, enemyPose, HIT_MS } from './animation/pose';
-import { drawGround, drawSprites, isTreeCell, PALETTE } from './art';
+import { composeGroundArt, drawGround, drawSprites, isTreeCell, PALETTE } from './art';
 import { applyManifest, ASSETS, CELL_PX, TEX, WORLD_H, WORLD_W } from './assets';
 import type { FieldBridge } from './bridge';
 
@@ -54,9 +54,9 @@ export class BattleScene extends Phaser.Scene {
 
   create() {
     const map = this.bridge.controller.ctx.map;
-    // 인수된 성문·나무·비석 원화가 있으면 지면에 굽지 않고 이미지로 세운다.
-    const has = { gate: this.textures.exists('map.gate'), tree: this.textures.exists('deco.tree'), stele: this.textures.exists('deco.stele') };
-    if (!this.textures.exists(ASSETS.ground.key)) drawGround(this, map, has);
+    // 인수된 성문·나무·비석·바위 원화가 있으면 지면에 굽지 않고 이미지로 세운다. 바닥 재료(ART-002)가 있으면 지면도 원화로 조립한다.
+    const has = { gate: this.textures.exists('map.gate'), tree: this.textures.exists('deco.tree'), stele: this.textures.exists('deco.stele'), rock: this.textures.exists('deco.rock') };
+    if (!this.textures.exists(ASSETS.ground.key) && !composeGroundArt(this, map)) drawGround(this, map, has);
     drawSprites(this);
     const icons: Record<string, string> = {};
     for (const key of ['tower.archer', 'tower.archer.weapon', 'tower.cannon', 'tower.cannon.weapon', 'tower.frost', 'tower.frost.weapon']) icons[key] = this.textures.getBase64(key);
@@ -65,8 +65,8 @@ export class BattleScene extends Phaser.Scene {
     const decor = new Map<string, Phaser.GameObjects.Image>();
     for (const d of map.decorations) {
       const [dx, dy] = d.cells[0]!;
-      const key = d.kind === 'culture' ? 'deco.stele' : 'deco.tree';
-      if ((d.kind === 'culture' ? has.stele : has.tree) && (d.kind === 'culture' || isTreeCell(dx, dy))) decor.set(`${dx},${dy}`, this.placeDecor(key, dx, dy));
+      const key = d.kind === 'culture' ? 'deco.stele' : isTreeCell(dx, dy) ? 'deco.tree' : 'deco.rock';
+      if (this.textures.exists(key)) decor.set(`${dx},${dy}`, this.placeDecor(key, dx, dy));
     }
     if (has.gate) this.placeDecor('map.gate', map.exitCell[0], map.exitCell[1]);
     for (const d of map.decorations) if (d.kind === 'culture') {
