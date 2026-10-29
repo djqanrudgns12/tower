@@ -61,7 +61,7 @@ Node 24(`.node-version`). 브라우저 흐름까지 보려면 `npm run test:e2e`
 ## 다음 첫 행동
 
 1. **ART-002 보내기.** [발행용 프롬프트](work-packages/DISPATCH.md) 3차 절의 프롬프트를 Codex 새 세션에 붙여 넣는다(작업 폴더 `/Users/bodyking/Desktop/vibecoding/tower-wp/ART-002`). 보낸 뒤 [작업 게시판](EXECUTION_BOARD.md)에서 RUNNING으로 바꾼다. 반환되면 질감·소품을 렌더러(`art.ts` `drawGround`)에 조립하는 일은 총괄 몫이다(요청서 ‘이번 방식’ 1~5).
-2. **Q20-002(Argon) 요청서 쓰기.** 공개 은행에 승인 16문항 이상이 더 필요하다. 격리 6문항은 `content-source/approvals/registry.json`의 사유대로 고친 revision 2로, 나머지는 새 문항으로 낸다. 이번 검토에서 나온 제작 주의(정답 위치가 a→b→c→d로 돌았음, 지문의 낱말이 정답 보기에만 되풀이되면 낱말을 몰라도 풀림 — 0018·0019, 정답만 사전식 뜻풀이면 문체로 풀림 — 0004)를 요청서에 넣는다. 그 뒤 QR을 다시 돌리고 `npm run build:bank`로 공개 은행을 만든다. 공개 은행이 생기면 `src/content/index.ts`가 개발용 대신 그것을 싣게 바꾼다.
+2. **Q20-002(Argon) 보내기.** [요청서](work-packages/Q20-002/REQUEST.md)와 작업 폴더 `../tower-wp/Q20-002`(`e98ae95`)를 준비했다. 프롬프트는 [발행용 프롬프트](work-packages/DISPATCH.md) 3차 절. 공개 은행에 승인 16문항 이상이 더 필요해 격리 6문항 revision 2와 새 문항 14개를 낸다. 반환되면 `npm run blind-input -- Q20-002`로 정답 없는 입력을 만들어 QR을 다시 돌리고 `npm run build:bank`로 공개 은행을 만든다. 공개 은행이 생기면 `src/content/index.ts`가 개발용 대신 그것을 싣게 바꾼다.
 3. **G2 게이트(PRD §18.2).** 4→5→6웨이브, 오답·정지·저장복귀·보상 중복 검증과 실기기 확인. 밸런스 남은 위험: Easy 27~29분, 정답률 60% 초보형의 첫 보스 처치 0.13.
 4. 그 밖의 대기 일: 고블린 추가 프레임(위·아래 방향, 보폭이 긴 걸음 — RIG-001 반환서 §9, 실제 화면을 보고 ART-003으로 낼지 정함), 대장 원화 5웨이브 전투 확인, 소리용 음원 작업 정의, QR-PRACTICE(연습 전용 4문항 검토), `p1/intake-round1`을 `main`에 합칠지(PR 여부) 결정.
 

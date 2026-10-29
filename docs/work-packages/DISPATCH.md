@@ -1,6 +1,8 @@
 # 발행용 프롬프트
 
-## 3차(2026-10-29 준비) — ART-002
+## 3차(2026-10-29 준비) — ART-002 · Q20-002
+
+ART-002와 Q20-002는 소유 경로가 겹치지 않아 동시에 보내도 된다. 기준 commit이 서로 다르다.
 
 기준 commit은 `ea7ffe4750c1f96256447e1e065bb7c2be3c8f23`(브랜치 `p1/intake-round1`)이다. 요청서는 `ea7ffe4` 다음 커밋(2차 수합)에 들어갔고, 작업 폴더는 `ea7ffe4` 기준이라 요청서를 복사해 두었다. 그래서 작업 폴더의 `git status --short`에는 `?? docs/work-packages/ART-002/` 한 줄이 보이는 것이 정상이다. 집 Mac 작업 폴더는 2026-10-29에 만들었고 해시 대조를 마쳤다. 다른 컴퓨터에서 보내려면 아래 명령으로 새로 만든다.
 
@@ -49,6 +51,52 @@ cp docs/work-packages/ART-002/REQUEST.md ../tower-wp/ART-002/docs/work-packages/
 4. 검사: npm run validate:assets 를 통과시킨다. 통과하지 못한 장은 고치거나 HOLD로 남긴다.
 
 5. 끝낼 때: 요청서의 ‘RETURN.md에 쓸 것’대로 쓴다. 생성 성공을 visual_pass라고 적지 않는다. git status --short 에 허용 경로만 보이는지 확인하고, 납품 수·HOLD 수·이음매 측정 통과 여부를 다섯 줄 안으로 보고한다.
+```
+
+### Q20-002 → Argon 4(새 대화)
+
+기준 commit은 `e98ae95024529a2ac54f71b96503d9e2c993248f`(2차 수합)이다. 요청서는 아직 커밋하지 않았으므로 작업 폴더에 복사해 두었다. 그래서 작업 폴더의 `git status --short`에는 `?? docs/work-packages/Q20-002/` 한 줄이 보이는 것이 정상이다. 집 Mac 작업 폴더는 2026-10-29에 만들었고 해시 대조를 마쳤다. Argon(Antigravity)을 Windows PC에서 쓰려면, 요청서를 커밋·push해 그 PC로 받은 뒤 아래 명령으로 새로 만들고 프롬프트의 작업 폴더 경로를 `C:\Users\User\Desktop\vibecoding\tower-wp\Q20-002`로 바꾼다. 한 작업을 두 컴퓨터에서 동시에 보내지 않는다.
+
+```bash
+B=e98ae95024529a2ac54f71b96503d9e2c993248f
+git worktree add -b wp/Q20-002 ../tower-wp/Q20-002 $B
+mkdir -p ../tower-wp/Q20-002/docs/work-packages/Q20-002
+cp docs/work-packages/Q20-002/REQUEST.md ../tower-wp/Q20-002/docs/work-packages/Q20-002/REQUEST.md
+```
+
+| jobId | 보낼 곳 | 작업 폴더(집 Mac) | 결과 |
+|---|---|---|---|
+| Q20-002 | Argon 4, 새 대화 | `/Users/bodyking/Desktop/vibecoding/tower-wp/Q20-002` | `content-source/batches/Q20-002/**`, `docs/work-packages/Q20-002/RETURN.md` |
+
+```text
+[Q20-002] 3학년 어휘 문항 2차 초안 20개(격리 6문항 고친 판 + 새 문항 14개)
+
+너는 초등 3~6학년용 한국어 어휘 타워 디펜스 웹게임의 문항 작성자다. 총괄은 Claude Opus 5.5이고, 너는 이 작업 하나만 맡는다. 1차 배치 Q20-001(20문항)은 Codex·Claude 독립 검토와 총괄 해설 대조를 거쳐 14문항이 승인되고 6문항이 격리되었다. 이번에는 격리된 6문항을 고치고 새 문항 14개를 만든다.
+
+작업 폴더: /Users/bodyking/Desktop/vibecoding/tower-wp/Q20-002
+이 폴더 안에서만 읽고 쓴다. 본 저장소 폴더(/Users/bodyking/Desktop/vibecoding/tower)나 다른 tower-wp 폴더는 열지 않는다.
+
+1. 시작 확인 — 하나라도 다르면 작업하지 말고 그 출력만 보고한다.
+   - git rev-parse HEAD → e98ae95024529a2ac54f71b96503d9e2c993248f
+   - git status --short → ?? docs/work-packages/Q20-002/ 한 줄(총괄이 복사한 요청서)
+   - npm ci 성공
+   - node tools/contract-hash.mjs Q20-002 의 해시 10개가 docs/work-packages/Q20-002/REQUEST.md 머리말 contractHash와 모두 같다
+
+2. 할 일 — docs/work-packages/Q20-002/REQUEST.md를 끝까지 읽고 그대로 따른다. 이 메시지와 요청서가 다르면 요청서가 우선이다.
+   - 가. 격리 6문항(g3-argon-0004·0006·0011·0013·0015·0017)은 같은 id, revision 2, batchId Q20-002로 고친다. 요청서 표의 ‘고칠 점’만 고치고, 뜻 번호가 같으면 Q20-001 근거 파일을 바꾸지 않고 복사한다. Q20-001 폴더는 고치지 않는다.
+   - 나. 새 문항 14개(g3-argon-0021~0034)는 Q20-001 요청서 절차 1~6대로 만든다. 교과서 단원 근거와 표준국어대사전 뜻 번호를 실제로 확인하고, 못 찾은 낱말은 rejected에 사유를 적는다. Q20-001의 목표 낱말 20개와 겹치지 않는다.
+   - 제작 주의 1~7을 20문항 모두에 적용한다. 특히 정답 위치를 무작위로(한 글자 4~6번), 지문의 단서 낱말을 정답에만 되풀이하지 않기, 네 보기 말투 맞추기, 해설·오답 이유까지 표제어보다 어려운 낱말 금지, 띄어쓰기를 지우지 않기.
+   - 웹에 접속할 수 없거나 근거를 확인할 수 없으면 근거를 지어내지 말고 그 사실을 RETURN.md에 적고 멈춘다.
+   - status는 draft 또는 machine_checked만 쓴다. 20개를 채우려고 근거 없는 문항을 넣지 않는다.
+
+3. 범위
+   - 쓸 수 있는 곳: content-source/batches/Q20-002/** 와 docs/work-packages/Q20-002/RETURN.md 뿐이다.
+   - 하지 않는다: 그 밖의 파일 수정(Q20-001 배치·검토·승인 기록·src·docs·package.json·스키마), npm run build:bank 실행, 패키지 설치·업그레이드, 검사 규칙 완화, git commit·push.
+   - 스키마나 검사 규칙이 잘못됐다고 판단되면 고치지 말고 RETURN.md에 REQUESTED_CONTRACT_CHANGE로 적는다.
+
+4. 검사: npm run validate:content 를 통과시킨다. 같은 실패가 세 번 나오면 고치기를 멈추고 시도·가설·오류 원문을 RETURN.md에 적는다.
+
+5. 끝낼 때: 요청서의 ‘RETURN.md에 쓸 것’대로 쓴다(고친 판의 전후, 정답 위치 분포, 제작 주의 확인, validate:content 실제 출력, 실제 모델명·작업일). git status --short 에 허용 경로만 보이는지 확인하고, 만든 수·뺀 수·막힌 점을 다섯 줄 안으로 보고한다.
 ```
 
 ## 2차(2026-10-28 준비, 반환 완료) — QR-001 · QR-002 · RIG-001

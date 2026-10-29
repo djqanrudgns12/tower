@@ -13,13 +13,13 @@
 | [Q20-001](work-packages/Q20-001/RETURN.md) | **RETURNED · 공동검수 대기** — 검사 통과, 정답 없는 입력 생성됨 | Argon 4 | `content-source/batches/Q20-001/**` | — |
 | [QR-001/QR-002](work-packages/QR-001/REQUEST.md) | **ACCEPTED** — 독립 풀이 40/40이 정답과 같음. 총괄 해설 대조를 더해 승인 14·격리 6(`content-source/approvals/registry.json`, PRD §18.4) | Codex·Claude 새 문맥 | `content-source/reviews/Q20-001/*` | Q20-001 반환 ✓ |
 | [RIG-001](work-packages/RIG-001/RETURN.md) | **ACCEPTED** — 3파일 들임, 렌더러 연결 4건은 총괄이 반영, `enemy.walker.hit` `integrated_pass`(1440×900 전투 캡처로 확인) | Claude 새 문맥 또는 Codex | `src/game/animation/**` | ART-SAMPLE-001 인수 ✓ |
-| Q20-002 | 계획(요청서 아직 없음) | Argon 4 | `content-source/batches/Q20-002/**` — 격리 6문항 revision 2 + 새 문항. 공개 은행에 승인 16문항 이상이 더 필요 | QR 수합 ✓ |
+| [Q20-002](work-packages/Q20-002/REQUEST.md) | **READY**(2026-10-29, 집 Mac 작업 폴더 준비·해시 대조 완료, 아직 보내지 않음) | Argon 4 | `content-source/batches/Q20-002/**` — 격리 6문항 revision 2 + 새 문항 14개. 공개 은행에 승인 16문항 이상이 더 필요 | QR 수합 ✓ |
 | P1-REST | 소리만 남음 — A26 철회 목록·설치 자리 목록·문맥 손실 복구·첫 연습 판 완료 | 총괄 | 소리(음원 작업 필요) | 음원 묶음 |
 | QR-PRACTICE | 계획 | Codex·Claude 검토 | 연습 전용 4문항(`src/content/questions/practice.json`) 공동검수 | 공개 전 |
 | [ART-002](work-packages/ART-002/REQUEST.md) | **READY**(2026-10-29, 집 Mac 작업 폴더 준비·해시 대조 완료, 아직 보내지 않음) | Codex 이미지 | `asset-source/incoming/ART-002/**` — 정원 지면 질감·설치 받침·작은 장식 11장 | ART-SAMPLE-001 ✓ |
 | CORE-P2 | 계획 | 다음 총괄(PRD 출발안: Claude) | 나머지 타워 7종·분기 14개·4~6학년 맵/은행 | G2 통과 |
 
-ART-002의 소유 경로(`asset-source/incoming/ART-002/**`)는 2차 수합 대상(`src/game/animation/**`, `content-source/reviews/**`)이나 총괄이 수합 때 고칠 렌더러(`src/game/**`)와 겹치지 않는다. QR-001·QR-002는 정답 키가 있는 `content-source/batches/**`를 뺀 작업 폴더에서 돌린다(발행용 프롬프트의 sparse checkout). 총괄만 공유 schema/package/lockfile/전역 토큰/라우터/인덱스를 수정한다. ACCEPTED는 총괄이 검사 후 부여한다.
+Q20-002의 소유 경로(`content-source/batches/Q20-002/**`)는 ART-002와 겹치지 않는다. 반환되면 QR(Codex·Claude)을 다시 돌린다. ART-002의 소유 경로(`asset-source/incoming/ART-002/**`)는 2차 수합 대상(`src/game/animation/**`, `content-source/reviews/**`)이나 총괄이 수합 때 고칠 렌더러(`src/game/**`)와 겹치지 않는다. QR-001·QR-002는 정답 키가 있는 `content-source/batches/**`를 뺀 작업 폴더에서 돌린다(발행용 프롬프트의 sparse checkout). 총괄만 공유 schema/package/lockfile/전역 토큰/라우터/인덱스를 수정한다. ACCEPTED는 총괄이 검사 후 부여한다.
 
 1차 작업 폴더와 `wp/*` 브랜치는 반환물이 본 저장소와 같음을 확인한 뒤 지웠다. UI-AUDIT-001의 전후 캡처와 원래 CSS 패치는 [UI-AUDIT-001 폴더](work-packages/UI-AUDIT-001/)의 `shots/`·`returned-css.patch`로 보존했다. RIG-001이 도는 동안 총괄은 `src/game/animation/**`를 고치지 않는다.
 
