@@ -1,6 +1,6 @@
 # 다음 총괄·다음 컴퓨터 인계
 
-기준일: 2026-10-28 · 현재 구간: **P1 첫 완성 구간 — 1차 수합, P1-REST(소리 제외), S11·밸런스 `0.4-candidate` 완료, 2차 작업 진행 중(QR 결과 수합 대기·RIG 진행)** · 총괄: Claude Opus 5.5(Claude Code, Windows PC → 집 Mac)
+기준일: 2026-10-29 · 현재 구간: **P1 첫 완성 구간 — 1차 수합, P1-REST(소리 제외), S11·밸런스 `0.4-candidate`, 2차 수합(RIG·QR) 완료, ART-002 발행 준비** · 총괄: Claude Opus 5.5(Claude Code, Windows PC → 집 Mac)
 
 ## 집 Mac에서 처음 할 일
 
@@ -32,14 +32,15 @@ Node 24(`.node-version`). 브라우저 흐름까지 보려면 `npm run test:e2e`
 |---|---|---|
 | P1 엔진·화면·저장 | 구현됨, 독립 검토 결함 10건 수정 | [REVIEW-CORE-001 반환](work-packages/REVIEW-CORE-001/RETURN.md), `tests/unit/review-core/` |
 | UI 보정 | 들임 + 계약 변경 7건 반영 | [UI-AUDIT-001 반환](work-packages/UI-AUDIT-001/RETURN.md), 전후 캡처 `docs/work-packages/UI-AUDIT-001/shots/` |
-| 원화 | 16장 중 13장 게임 적용(`integrated_pass`), 대장 2·피격 1 보류(`visual_pass`) | [ART-SAMPLE-001 반환](work-packages/ART-SAMPLE-001/RETURN.md), `public/assets/manifest.json`의 `notes` |
-| 3학년 문항 20개(Argon) | 검사 통과, 공동검수 대기. 게임 은행에는 아직 없음 | [Q20-001 반환](work-packages/Q20-001/RETURN.md), 정답 없는 입력 `content-source/reviews/Q20-001/blind-input.json` |
+| 원화 | 16장 중 14장 게임 적용(`integrated_pass`, 2026-10-29 고블린 피격 추가), 대장 2 보류(`visual_pass`). 지면·설치 받침·작은 장식은 아직 임시 그림 → ART-002 | [ART-SAMPLE-001 반환](work-packages/ART-SAMPLE-001/RETURN.md), `public/assets/manifest.json`의 `notes` |
+| 3학년 문항 20개(Argon) | **공동검수 끝: 승인 14 · 격리 6.** 공개 은행은 승인 30문항부터라 아직 없고, 게임은 개발용 은행을 쓴다 | `content-source/approvals/registry.json`(`npm run build:bank`), PRD §18.4 ‘2차 수합’ |
 | A26 철회 목록 | 완료 | `src/content/retractions.json` |
 | 설치 자리 목록·전장 키보드(§12.4) | 완료 | `src/ui/game/SlotList.tsx` |
 | WebGL 문맥 손실 복구(§12.7) | 완료 | `RunController.rendererLost/rendererRestored` |
 | 첫 연습 판(§12.2) | 완료. 연습 전용 4문항은 공동검수 전 | `practiceContext`, `src/content/questions/practice.json` |
 | 소리 | 미착수(음원 작업을 먼저 정해야 함) | PRD §11.5 |
-| 2차 작업 QR-001·QR-002·RIG-001 | **발행됨.** 집 Mac 작업 폴더(`../tower-wp/{QR-001,QR-002,RIG-001}`, `bc3ee07`). QR 두 폴더에 결과·반환서가 생김(수합 전), RIG는 진행 중 | [작업 게시판](EXECUTION_BOARD.md) |
+| 2차 작업 QR-001·QR-002·RIG-001 | **수합 완료(ACCEPTED).** RIG 연결 4건은 총괄이 `BattleScene.ts`·`assets.ts`에 넣었다. 작업 폴더 `../tower-wp/{QR-001,QR-002,RIG-001}`은 수합을 커밋한 뒤 지운다 | [작업 게시판](EXECUTION_BOARD.md), [RIG-001 반환](work-packages/RIG-001/RETURN.md) |
+| 3차 작업 ART-002 | **READY.** 집 Mac 작업 폴더 `../tower-wp/ART-002`(`ea7ffe4`, 요청서 복사·해시 대조 완료) | [ART-002 요청서](work-packages/ART-002/REQUEST.md), [발행용 프롬프트](work-packages/DISPATCH.md) 3차 절 |
 | 엔진 밸런스 시뮬레이터(S11)·밸런스 | 완료, 근사 모델 폐기. 사용자가 후보 A 방향을 골라 `0.4-candidate`로 반영: Normal 기준 34.3분→23.3분, 정답률 효과 1~2→2.5~4웨이브, PRD 기준 6개 통과 | PRD §17.3, `docs/contracts/balance.candidate.v0.4.json`, `docs/balance/s11-*.json` |
 | 비석 ‘가’ 글자 | 원화 아래에 깔려 안 보이던 결함 수정 | `BattleScene.ts` `STELE_FACE_Y` |
 
@@ -54,18 +55,15 @@ Node 24(`.node-version`). 브라우저 흐름까지 보려면 `npm run test:e2e`
 | `19e1c6c` | 이 인계서와 Mac용 발행 안내 |
 | `17a72d3` | 검토자 폴더의 정답 노출 차단(Q20 반환서 제외·이력·개발 은행 금지) |
 | `258161f` | 비석 글자, S11 시뮬레이터·기준선 |
-| 그다음 | 밸런스 `0.4-candidate`, 사용 설명서 준비 문항 수를 계약에서 읽기, e2e 포트 `E2E_PORT` |
+| `ea7ffe4` | 밸런스 `0.4-candidate`, 사용 설명서 준비 문항 수를 계약에서 읽기, e2e 포트 `E2E_PORT` |
+| 그다음 | 2차 수합(RIG 연결·피격 원화, QR 판정·승인 레지스트리·`build:bank`), ART-002 요청서 |
 
 ## 다음 첫 행동
 
-1. **2차 작업 보내기(Mac).** 집 Mac에 `../tower-wp/{QR-001,QR-002,RIG-001}`을 만들어 두었다. QR 폴더에는 `content-source/batches`와 `docs/work-packages/Q20-001/RETURN.md`(정답 열)가 **없다**. Windows PC의 QR 폴더는 Q20 반환서가 남아 있으므로 거기서 보내지 않는다. 프롬프트는 [발행용 프롬프트](work-packages/DISPATCH.md) 2차 절에서 Windows 경로를 `/Users/bodyking/Desktop/vibecoding/tower-wp/`로 바꿔 쓴다. 보낸 것만 [작업 게시판](EXECUTION_BOARD.md)에서 RUNNING으로 바꾼다. Mac에 남은 1차 작업 폴더 4개(`ART-SAMPLE-001`·`Q20-001`·`REVIEW-CORE-001`·`UI-AUDIT-001`, 반환물은 커밋과 같음)는 사용자가 지운다.
-   - QR-001 → Codex 새 세션, QR-002 → Claude 새 대화(이 총괄 문맥이 아닌 것), RIG-001 → Claude 새 대화 또는 Codex.
-   - 같은 작업을 Windows에서도 보내지 않는다. Windows 쪽 작업 폴더는 다음에 그 PC에서 `git worktree remove --force ../tower-wp/<jobId>` 후 `git branch -D wp/<jobId>`로 지운다.
-2. **반환되면 수합.** [작업 패키지](work-packages/README.md)의 ‘받을 때’ 절차를 따른다.
-   - QR: 두 보고서를 `npx vitest run tests/unit/content.test.ts`로 형식 검사 → [QR-001 요청서](work-packages/QR-001/REQUEST.md)의 승인 규칙(Argon 자체 반박 + Codex + Claude 중 하나라도 fail/uncertain이면 격리, blindChoice가 정답과 다르면 자동 격리)으로 판정한다. 총괄 사전 메모: 해설 20/20이 사전 뜻과 일치, `g3-argon-0013` 보기 c ‘받아적었어요’ 띄어쓰기 의심. **통과 문항을 게임 은행으로 옮기는 빌드 도구는 아직 없다**(초안 → `bankQuestionSchema` 변환, `status: published`, 은행 버전 올림). 수합 때 총괄이 만든다.
-   - RIG: `src/game/animation/**`와 `tests/unit/animation*.test.ts`만 들인다. 피격 프레임 연결처럼 `BattleScene.ts`가 필요한 요청은 총괄이 반영한다. RIG가 도는 동안 총괄은 `src/game/animation/**`를 고치지 않는다.
-3. **G2 게이트(PRD §18.2).** 밸런스는 `0.4-candidate`로 정했다(PRD §17.3). 남은 위험: Easy 27~29분, 정답률 60% 초보형의 첫 보스 처치 0.13. 다음은 4→5→6웨이브, 오답·정지·저장복귀·보상 중복 검증과 실기기 확인이다.
-4. 그 밖의 대기 일: ART-002(지면·설치 돌·작은 장식, 지금은 임시 그림과 원화가 섞여 보임), 대장 원화 5웨이브 전투 확인, 소리용 음원 작업 정의, QR-PRACTICE(연습 전용 4문항 검토), `p1/intake-round1`을 `main`에 합칠지(PR 여부) 결정.
+1. **ART-002 보내기.** [발행용 프롬프트](work-packages/DISPATCH.md) 3차 절의 프롬프트를 Codex 새 세션에 붙여 넣는다(작업 폴더 `/Users/bodyking/Desktop/vibecoding/tower-wp/ART-002`). 보낸 뒤 [작업 게시판](EXECUTION_BOARD.md)에서 RUNNING으로 바꾼다. 반환되면 질감·소품을 렌더러(`art.ts` `drawGround`)에 조립하는 일은 총괄 몫이다(요청서 ‘이번 방식’ 1~5).
+2. **Q20-002(Argon) 요청서 쓰기.** 공개 은행에 승인 16문항 이상이 더 필요하다. 격리 6문항은 `content-source/approvals/registry.json`의 사유대로 고친 revision 2로, 나머지는 새 문항으로 낸다. 이번 검토에서 나온 제작 주의(정답 위치가 a→b→c→d로 돌았음, 지문의 낱말이 정답 보기에만 되풀이되면 낱말을 몰라도 풀림 — 0018·0019, 정답만 사전식 뜻풀이면 문체로 풀림 — 0004)를 요청서에 넣는다. 그 뒤 QR을 다시 돌리고 `npm run build:bank`로 공개 은행을 만든다. 공개 은행이 생기면 `src/content/index.ts`가 개발용 대신 그것을 싣게 바꾼다.
+3. **G2 게이트(PRD §18.2).** 4→5→6웨이브, 오답·정지·저장복귀·보상 중복 검증과 실기기 확인. 밸런스 남은 위험: Easy 27~29분, 정답률 60% 초보형의 첫 보스 처치 0.13.
+4. 그 밖의 대기 일: 고블린 추가 프레임(위·아래 방향, 보폭이 긴 걸음 — RIG-001 반환서 §9, 실제 화면을 보고 ART-003으로 낼지 정함), 대장 원화 5웨이브 전투 확인, 소리용 음원 작업 정의, QR-PRACTICE(연습 전용 4문항 검토), `p1/intake-round1`을 `main`에 합칠지(PR 여부) 결정.
 
 ## 이 구간에서 바뀐 설계(코드를 읽기 전에 알 것)
 
@@ -78,6 +76,12 @@ Node 24(`.node-version`). 브라우저 흐름까지 보려면 `npm run test:e2e`
 - `.gitattributes`: `asset-source/**`는 줄바꿈 변환 없이 바이트 그대로 둔다(`SHA256SUMS.txt`와 일치). `asset-source`·`content-source`는 ESLint 대상에서 뺐다.
 - e2e는 이미 떠 있는 서버를 재사용한다. 작업 폴더가 5173을 쓰고 있으면 `E2E_PORT=5175 npm run test:e2e`로 포트를 나눈다.
 - PRD 질문 2건의 답: 한 번의 긴 프레임은 벽시계 시간을 버린다(§13.3), seed 0은 먼저 재매핑한 뒤 스트림 상수와 XOR(§20.1, golden vector 시험).
+
+## 검증(2026-10-29, 집 Mac에서 실제 실행)
+
+- 2차 수합 뒤: `npm run verify` 통과(PRD 검산 48개 포함, `vitest list` 기준 단위·속성 시험 82개), `npm run test:e2e` 7개 통과(2.0분, 5173 비어 있음).
+- RIG 연결: 헤드리스 Chromium 1440×900 실제 전투에서 궁수(8,2)·서리(8,0) 옆을 지나는 고블린을 48장 연속 캡처했다. 맞은 순간 피격 그림으로 바뀌고 발이 같은 지면선에 있는 것을 확인했다(캡처는 저장소 밖 임시 폴더, 내장 브라우저 창이 가려져 있으면 게임이 멈추므로 헤드리스로 대신).
+- 미실행: `npm run build`(바뀐 범위 밖, 2026-10-28 결과 재사용), 앞 창에서 사람 눈으로 보는 보행 확인, 위·아래 구간 보행, 실기기, 소리, 배포.
 
 ## 검증(2026-10-28, 집 Mac에서 실제 실행)
 

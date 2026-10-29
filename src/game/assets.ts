@@ -25,12 +25,14 @@ const tower = (id: TowerId): AssetSpec => ({ key: `tower.${id}`, width: 128, hei
 const weapon = (id: TowerId): AssetSpec => ({ key: `tower.${id}.weapon`, width: 96, height: 96, originX: 0.5, originY: 0.5, displayCells: 0.8 });
 
 export const ENEMY_DISPLAY: Record<EnemyKind, number> = { walker: 0.72, runner: 0.66, brute: 0.8, shell: 0.76, wisp: 0.7, swarm: 0.6, boss: 1.15 };
+/** 인수된 원화의 적 기준점(발 중심). 없는 종류는 임시 그림 기준점(0.5, 0.78)을 쓴다. */
+const ENEMY_ORIGIN: Partial<Record<EnemyKind, { x: number; y: number }>> = {};
 
 export const ASSETS = {
   ground: { key: 'map.ground', width: WORLD_W * TEX, height: WORLD_H * TEX, originX: 0, originY: 0, displayCells: 15 },
   towers: { archer: tower('archer'), cannon: tower('cannon'), frost: tower('frost') } as Partial<Record<TowerId, AssetSpec>>,
   weapons: { archer: weapon('archer'), cannon: weapon('cannon'), frost: weapon('frost') } as Partial<Record<TowerId, AssetSpec>>,
-  enemy: (kind: EnemyKind, frame: 0 | 1): AssetSpec => ({ key: `enemy.${kind}.${frame}`, width: kind === 'boss' ? 192 : 128, height: kind === 'boss' ? 192 : 128, originX: 0.5, originY: 0.78, displayCells: ENEMY_DISPLAY[kind] }),
+  enemy: (kind: EnemyKind, frame: 0 | 1): AssetSpec => ({ key: `enemy.${kind}.${frame}`, width: kind === 'boss' ? 192 : 128, height: kind === 'boss' ? 192 : 128, originX: ENEMY_ORIGIN[kind]?.x ?? 0.5, originY: ENEMY_ORIGIN[kind]?.y ?? 0.78, displayCells: ENEMY_DISPLAY[kind] }),
   projectile: { arrow: 'fx.arrow', ball: 'fx.ball', shard: 'fx.shard', spark: 'fx.spark', puff: 'fx.puff' },
   badge: { armored: 'badge.armored', swift: 'badge.swift' },
 } as const;
@@ -45,7 +47,7 @@ export function applyManifest(manifest: AssetManifest): AssetEntry[] {
     if (tower) ASSETS.towers[tower] = override;
     if (weapon) ASSETS.weapons[weapon] = override;
     const enemy = /^enemy\.([a-z]+)\.[01]$/.exec(a.id)?.[1] as EnemyKind | undefined;
-    if (enemy) ENEMY_DISPLAY[enemy] = a.displayCells;
+    if (enemy) { ENEMY_DISPLAY[enemy] = a.displayCells; ENEMY_ORIGIN[enemy] = { x: a.originX, y: a.originY }; }
   }
   return accepted;
 }

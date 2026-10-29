@@ -13,7 +13,7 @@ export default defineConfig(
   js.configs.recommended,
   ...tseslint.configs.recommended,
   {
-    files: ['src/**/*.{ts,tsx}', 'tests/**/*.ts', 'tools/sim/**/*.ts'],
+    files: ['src/**/*.{ts,tsx}', 'tests/**/*.ts', 'tools/sim/**/*.ts', 'tools/content/**/*.ts'],
     languageOptions: { globals: globals.browser },
     plugins: { 'react-hooks': reactHooks },
     rules: {

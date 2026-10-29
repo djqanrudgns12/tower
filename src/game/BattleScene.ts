@@ -6,7 +6,7 @@ import type { DomainEvent } from '../domain/events';
 import { positionAt } from '../domain/geometry';
 import { towerStats } from '../domain/towers';
 import type { Enemy, RunState } from '../domain/types';
-import { enemyPose } from './animation/pose';
+import { acceptsHit, enemyPose, HIT_MS } from './animation/pose';
 import { drawGround, drawSprites, isTreeCell, PALETTE } from './art';
 import { applyManifest, ASSETS, CELL_PX, TEX, WORLD_H, WORLD_W } from './assets';
 import type { FieldBridge } from './bridge';
@@ -16,7 +16,7 @@ const DEPTH = { ground: 0, mood: 1, overlay: 5, units: 10, projectiles: 2000, fx
 /** deco.stele.r1 원화에서 비석 면 가운데의 세로 위치(원화 높이 대비, 면은 약 28~130/192px). */
 const STELE_FACE_Y = 0.41;
 
-interface EnemyView { sprite: Phaser.GameObjects.Image; badge: Phaser.GameObjects.Image | null; prev: number; cur: number; phase: number; flashUntil: number; facing: 1 | -1 }
+interface EnemyView { sprite: Phaser.GameObjects.Image; badge: Phaser.GameObjects.Image | null; prev: number; cur: number; phase: number; flashUntil: number; hitAt: number | null; facing: 1 | -1 }
 interface TowerView { body: Phaser.GameObjects.Image; weapon: Phaser.GameObjects.Image; pips: Phaser.GameObjects.Graphics; level: number; branch: string | null; recoilUntil: number; angle: number }
 
 /** 전장 렌더러. 도메인 상태를 읽기만 하고 판정·보상을 만들지 않는다(PRD §11.4, §13.2). */
@@ -158,7 +158,8 @@ export class BattleScene extends Phaser.Scene {
     for (const e of events) {
       if (e.type === 'hit') {
         const v = this.enemies.get(e.enemyId);
-        if (v) v.flashUntil = this.time.now + 100;
+        // 같은 적의 피격 효과는 120ms 안에 다시 시작하지 않는다(PRD §11.4).
+        if (v && acceptsHit(v.hitAt, this.time.now)) { v.hitAt = this.time.now; v.flashUntil = this.time.now + HIT_MS; }
         this.fx(e.towerType === 'cannon' ? ASSETS.projectile.puff : e.towerType === 'frost' ? ASSETS.projectile.shard : ASSETS.projectile.spark, toWorld(e.x), toWorld(e.y) - 14, e.towerType === 'cannon' ? 0.9 : 0.55);
       } else if (e.type === 'kill') {
         for (let i = 0; i < 3; i++) this.fx(ASSETS.projectile.puff, toWorld(e.x) + (i - 1) * 9, toWorld(e.y) - 10 - (i % 2) * 6, 0.6);
@@ -265,7 +266,7 @@ export class BattleScene extends Phaser.Scene {
         const sprite = this.add.image(0, 0, spec.key).setOrigin(spec.originX, spec.originY).setDisplaySize(CELL_PX * spec.displayCells, CELL_PX * spec.displayCells);
         const badge = e.elite ? this.add.image(0, 0, ASSETS.badge[e.elite]).setDisplaySize(14, 16) : null;
         // 개체마다 보행 위상을 다르게 둔다(PRD §11.3).
-        v = { sprite, badge, prev: e.progress, cur: e.progress, phase: (e.id * 0.618034) % 1, flashUntil: 0, facing: 1 };
+        v = { sprite, badge, prev: e.progress, cur: e.progress, phase: (e.id * 0.618034) % 1, flashUntil: 0, hitAt: null, facing: 1 };
         this.enemies.set(e.id, v);
       }
       const progress = v.prev + (v.cur - v.prev) * alpha;
@@ -274,11 +275,15 @@ export class BattleScene extends Phaser.Scene {
       if (ahead.x !== p.x) v.facing = ahead.x > p.x ? 1 : -1;
       const x = toWorld(p.x), y = toWorld(p.y);
       const moving = v.cur !== v.prev && s.pause.length === 0;
-      const pose = enemyPose({ kind: e.kind, phase: v.phase, time: time / 1000, speedBP: e.speedBP, moving, frames: this.frameCount(e.kind), reducedMotion: this.bridge.reducedMotion });
+      // 걸음은 보간된 진행 거리로 맞춰 감속·맵 길이와 상관없이 발이 미끄러지지 않게 한다(RIG-001).
+      const pose = enemyPose({ kind: e.kind, phase: v.phase, time: time / 1000, speedBP: e.speedBP, moving, frames: this.frameCount(e.kind), reducedMotion: this.bridge.reducedMotion,
+        distance: toWorld(progress), ...(v.hitAt === null ? {} : { hitAge: (time - v.hitAt) / 1000 }) });
       const spec = ASSETS.enemy(e.kind, 0);
-      v.sprite.setTexture(`enemy.${e.kind}.${pose.frame}`).setPosition(x, y + CELL_PX * 0.14 - pose.bob).setFlipX(v.facing < 0).setDepth(DEPTH.units + y + 0.5)
+      const hitKey = `enemy.${e.kind}.hit`;
+      const hitArt = pose.hit && this.textures.exists(hitKey);
+      v.sprite.setTexture(hitArt ? hitKey : `enemy.${e.kind}.${pose.frame}`).setPosition(x, y + CELL_PX * 0.14 - pose.bob).setFlipX(v.facing < 0).setDepth(DEPTH.units + y + 0.5)
         .setDisplaySize(CELL_PX * spec.displayCells, CELL_PX * spec.displayCells * pose.squashY);
-      this.tint(v, e, time);
+      this.tint(v, e, time, hitArt);
       if (v.badge) v.badge.setPosition(x, y - CELL_PX * (e.kind === 'boss' ? 0.86 : 0.5)).setDepth(DEPTH.units + y + 0.6);
       if (e.hp < e.maxHp) {
         const w = e.kind === 'boss' ? 44 : 28, bx = x - w / 2, by = y - CELL_PX * (e.kind === 'boss' ? 0.78 : 0.44);
@@ -296,8 +301,9 @@ export class BattleScene extends Phaser.Scene {
     return n;
   }
 
-  private tint(v: EnemyView, e: Enemy, time: number) {
-    if (time < v.flashUntil) { v.sprite.setTint(0xffffff).setTintMode(Phaser.TintModes.FILL); return; }
+  /** 피격 원화가 있으면 그 그림이 피격을 보여 주므로 흰색 점멸을 덮지 않는다. */
+  private tint(v: EnemyView, e: Enemy, time: number, hitArt: boolean) {
+    if (time < v.flashUntil && !hitArt) { v.sprite.setTint(0xffffff).setTintMode(Phaser.TintModes.FILL); return; }
     v.sprite.setTintMode(Phaser.TintModes.MULTIPLY);
     if (e.slows.some(x => x.untilTick > this.bridge.controller.state.tick)) v.sprite.setTint(0xb9e2ff);
     else v.sprite.clearTint();

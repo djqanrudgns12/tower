@@ -1,6 +1,57 @@
 # 발행용 프롬프트
 
-## 2차(2026-10-28 준비) — QR-001 · QR-002 · RIG-001
+## 3차(2026-10-29 준비) — ART-002
+
+기준 commit은 `ea7ffe4750c1f96256447e1e065bb7c2be3c8f23`(브랜치 `p1/intake-round1`)이다. 요청서는 `ea7ffe4` 다음 커밋(2차 수합)에 들어갔고, 작업 폴더는 `ea7ffe4` 기준이라 요청서를 복사해 두었다. 그래서 작업 폴더의 `git status --short`에는 `?? docs/work-packages/ART-002/` 한 줄이 보이는 것이 정상이다. 집 Mac 작업 폴더는 2026-10-29에 만들었고 해시 대조를 마쳤다. 다른 컴퓨터에서 보내려면 아래 명령으로 새로 만든다.
+
+```bash
+B=ea7ffe4750c1f96256447e1e065bb7c2be3c8f23
+git worktree add -b wp/ART-002 ../tower-wp/ART-002 $B
+mkdir -p ../tower-wp/ART-002/docs/work-packages/ART-002
+cp docs/work-packages/ART-002/REQUEST.md ../tower-wp/ART-002/docs/work-packages/ART-002/REQUEST.md
+```
+
+| jobId | 보낼 곳 | 작업 폴더(집 Mac) | 결과 |
+|---|---|---|---|
+| ART-002 | Codex, 새 세션(이미지 생성 가능한 환경) | `/Users/bodyking/Desktop/vibecoding/tower-wp/ART-002` | `asset-source/incoming/ART-002/**`, `docs/work-packages/ART-002/RETURN.md` |
+
+### ART-002 → Codex(새 세션, 이미지 생성)
+
+```text
+[ART-002] 정원 지면·설치 받침·작은 장식 11장 + manifest
+
+너는 초등 3~6학년용 한국어 어휘 타워 디펜스 웹게임의 2D 원화 제작자다. 총괄은 Claude Opus 5.5이고, 너는 이 작업 하나만 맡는다. 1차 원화(ART-SAMPLE-001: 타워·고블린·성문·나무·비석)는 이미 게임에 들어갔고, 이번에는 그 밑의 바닥 재료를 만든다.
+
+작업 폴더: /Users/bodyking/Desktop/vibecoding/tower-wp/ART-002
+이 폴더 안에서만 읽고 쓴다. 본 저장소 폴더(/Users/bodyking/Desktop/vibecoding/tower)나 다른 tower-wp 폴더는 열지 않는다.
+
+1. 시작 확인 — 하나라도 다르면 작업하지 말고 그 출력만 보고한다.
+   - git rev-parse HEAD → ea7ffe4750c1f96256447e1e065bb7c2be3c8f23
+   - git status --short → ?? docs/work-packages/ART-002/ 한 줄(총괄이 복사한 요청서)
+   - npm ci 성공
+   - node tools/contract-hash.mjs ART-002 의 해시 9개가 docs/work-packages/ART-002/REQUEST.md 머리말 contractHash와 모두 같다
+   - 이 환경에서 실제 RGBA 알파(PNG 색 형식 6) 이미지를 생성할 수 있다. 할 수 없으면 아무것도 만들지 말고 그 사실만 보고한다.
+
+2. 할 일 — docs/work-packages/ART-002/REQUEST.md를 끝까지 읽고 그대로 따른다. 이 메시지와 요청서가 다르면 요청서가 우선이다.
+   - 맵 전체를 한 장으로 그리지 않는다. 이어 붙일 질감(ground.grass·ground.dirt)과 낱개 소품을 만들고, 조립은 총괄의 렌더러가 맵 데이터로 한다.
+   - 화풍 기준은 docs/assets/design-41-kingdom-expedition.png 와 이미 인수된 public/assets/*.png 다. 생성할 때 참조 이미지로 붙인다. 바닥 질감은 조용하게(낮은 대비, 외곽선 없음) 만든다.
+   - 납품은 표의 ID 그대로 PNG 11장이다. 크기·기준점·displayCells·layer를 표와 정확히 맞춘다. 모든 PNG는 RGBA로 저장한다.
+   - ground.grass·ground.dirt는 상하·좌우 이음매 없이 반복되어야 한다. 이음매는 스크립트로 정리해도 되며, 그때는 원본과 스크립트를 작업 폴더의 asset-source/incoming/ART-002/ 안에 남긴다. 이음매 측정값을 반환서에 적는다.
+   - slot.base는 원본 (96,157)이 타워 바닥이 닿는 점이고, 이 점이 받침 윗면 안에 들어와야 한다.
+   - 투명 배경을 만들지 못한 소품은 배경을 억지로 지우지 말고 그 ID를 HOLD로 남긴다. 같은 결함으로 세 번 실패하면 그 ID를 HOLD로 남기고 다음 ID로 넘어간다.
+   - manifest.json은 src/contracts/assetManifest.ts 스키마 그대로, status는 draft만 쓴다. sourceHash·artifactHash는 실제 파일의 SHA-256이다.
+   - tile-check.png(질감 3×3 반복)와 preview-garden_u.png·preview-garden_u@2x.png(맵 데이터대로 조립한 미리보기, 기존 타워·고블린·나무·비석·성문 포함)를 만들어 직접 본다.
+
+3. 범위
+   - 쓸 수 있는 곳: asset-source/incoming/ART-002/** 와 docs/work-packages/ART-002/RETURN.md 뿐이다.
+   - 하지 않는다: src·public·docs(RETURN.md 제외)·package.json 수정, 1차 원화 폴더 수정, public/assets로 옮기기, status를 draft 밖으로 올리기, 패키지 설치·업그레이드, git commit·push.
+
+4. 검사: npm run validate:assets 를 통과시킨다. 통과하지 못한 장은 고치거나 HOLD로 남긴다.
+
+5. 끝낼 때: 요청서의 ‘RETURN.md에 쓸 것’대로 쓴다. 생성 성공을 visual_pass라고 적지 않는다. git status --short 에 허용 경로만 보이는지 확인하고, 납품 수·HOLD 수·이음매 측정 통과 여부를 다섯 줄 안으로 보고한다.
+```
+
+## 2차(2026-10-28 준비, 반환 완료) — QR-001 · QR-002 · RIG-001
 
 1차 네 작업은 반환·수합되었다(아래 ‘1차’ 절은 이력). 2차 기준 commit은 `bc3ee0720912d33ff2b96602c365cfdd38e37521`(브랜치 `p1/intake-round1`)이고, 머리말(`baseCommit`·`contractHash`)은 이미 채워 커밋했다. 작업 폴더는 컴퓨터마다 따로 만든다. 2026-10-28 Windows PC에는 만들어 두었고(아직 아무 모델에도 보내지 않음), **집 Mac에서는 아래 명령으로 새로 만든다.** 한 작업을 두 컴퓨터에서 동시에 보내지 않는다. 작업 폴더의 `git status`에는 채운 REQUEST.md 한 줄이 보이는 것이 정상이다.
 

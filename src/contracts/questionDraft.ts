@@ -71,7 +71,25 @@ export const blindReviewSchema = z.object({
   }).strict()).min(1),
 }).strict();
 
+/**
+ * 총괄의 해설 대조(정답 키를 보는 단계). 독립 검토자가 uncertain으로 비워 둔 explanation 판정을 채운다(QR-001 승인 규칙).
+ * 해설과 오답 이유를 함께 보므로, contentHash에 없는 오답 이유는 rationalesHash로 묶는다.
+ */
+export const explanationReviewSchema = z.object({
+  batchId: z.string().min(1),
+  reviewer: z.object({ model: z.string().min(1), role: z.literal('commander'), date: z.iso.date() }).strict(),
+  items: z.array(z.object({
+    questionId: z.string().min(1),
+    revision: z.number().int().min(1),
+    contentHash: sha,
+    rationalesHash: sha,
+    explanation: z.enum(['pass', 'fail']),
+    findings: z.array(z.string()),
+  }).strict()).min(1),
+}).strict();
+
 export type QuestionDraft = z.infer<typeof questionDraftSchema>;
+export type ExplanationReview = z.infer<typeof explanationReviewSchema>;
 export type DraftSidecar = z.infer<typeof draftSidecarSchema>;
 export type BlindReview = z.infer<typeof blindReviewSchema>;
 
@@ -86,4 +104,9 @@ export function contentHashInput(q: Pick<QuestionDraft, 'id' | 'revision' | 'typ
     correctOptionId: q.correctOptionId,
     explanation: n(q.explanation),
   });
+}
+
+/** 해설 대조가 함께 본 오답 이유의 해시 입력. 보기 ID 순서로 고정한다. */
+export function rationalesHashInput(q: Pick<QuestionDraft, 'distractorRationales'>): string {
+  return JSON.stringify(Object.keys(q.distractorRationales).sort().map(id => [id, q.distractorRationales[id as keyof typeof q.distractorRationales]!.normalize('NFC')]));
 }

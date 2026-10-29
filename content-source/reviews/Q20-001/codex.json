@@ -1,0 +1,394 @@
+{
+  "reviewId": "Q20-001-codex",
+  "jobId": "QR-001",
+  "reviewer": {
+    "model": "GPT-6",
+    "tool": "Codex",
+    "freshContext": true,
+    "date": "2026-10-28"
+  },
+  "items": [
+    {
+      "questionId": "g3-argon-0001",
+      "revision": 1,
+      "contentHash": "76849ebe9d5e5bfb910e8ffc3abfa004299c6dce8483332c192537a562959d7c",
+      "blindChoice": "a",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "uncertain"
+      },
+      "findings": [
+        "source 확인: https://stdict.korean.go.kr/search/searchView.do?word_no=56781&searchKeywordTo=3 (HTTP 200). 이 페이지의 공식 본문 요청 POST https://stdict.korean.go.kr/search/contentViewOne.do, word_no=56781도 HTTP 200으로 확인했다. 뜻 1, senseId=453176에 해당하는 본문: 빈틈이 없이 차분하고 조심스럽다. HTML의 senseExample453176와 해당 뜻풀이의 연결을 확인했다. 문항이 묻는 의미와 일치한다.",
+        "uniqueness 보기별 대입: a ‘준비물을 잘 챙길 만큼 빈틈없이 차분하고 조심스럽다’는 꼼꼼한 태도와 맞는다. b ‘몸이 지쳐 움직이기 힘들다’, c ‘소리가 커서 귀가 참 아프다’, d ‘날씨가 맑고 바람이 시원하다’를 넣으면 각각 피로·소음·날씨로 의미가 바뀌며 준비물을 빈틈없이 챙기는 성질을 설명하지 않는다.",
+        "grade 판단: 준비물을 챙기는 학교생활 상황이라 3학년이 구체적으로 떠올릴 수 있다. 인물의 성격을 이해하는 단원 연결도 타당하다. gradeBasis의 단원 주제 연결에 대한 검토이며 교과서 원문에 해당 낱말이 수록되었음을 확인한 것은 아니다.",
+        "explanation uncertain: blind-input에는 해설이 없으므로 총괄의 원본 대조가 필요하다."
+      ]
+    },
+    {
+      "questionId": "g3-argon-0002",
+      "revision": 1,
+      "contentHash": "5c68d229981ddb746d57c7488ff874ea929878fbef829168daf2ac8913a94fbe",
+      "blindChoice": "b",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "uncertain"
+      },
+      "findings": [
+        "source 확인: https://stdict.korean.go.kr/search/searchView.do?word_no=481984&searchKeywordTo=3 (HTTP 200). 이 페이지의 공식 본문 요청 POST https://stdict.korean.go.kr/search/contentViewOne.do, word_no=481984도 HTTP 200으로 확인했다. 뜻 1, senseId=434067에 해당하는 본문: 온갖 힘을 다하려는 참되고 성실한 마음. HTML의 senseExample434067와 해당 뜻풀이의 연결을 확인했다. 문항이 묻는 의미와 일치한다.",
+        "uniqueness 보기별 대입: a ‘남보다 먼저 달려가려는 마음을 담아 편지를 썼어요’는 경쟁심, b ‘온갖 힘을 다하는 참된 마음을 담아 편지를 썼어요’는 정성에 해당한다. c ‘모르는 길을 혼자 찾아가는 일을 담아’, d ‘오래된 물건을 바꾸어 쓰는 일을 담아’는 편지 내용으로 읽힐 수 있으나 정성이라는 마음의 뜻과 다르다. 명사구 대입 때 목적격 조사만 맞추었다.",
+        "grade 판단: 가족에게 편지를 쓰는 친숙한 상황이며 마음을 전하는 단원과 직접 연결된다. gradeBasis의 단원 주제 연결에 대한 검토이며 교과서 원문에 해당 낱말이 수록되었음을 확인한 것은 아니다.",
+        "explanation uncertain: blind-input에는 해설이 없으므로 총괄의 원본 대조가 필요하다."
+      ]
+    },
+    {
+      "questionId": "g3-argon-0003",
+      "revision": 1,
+      "contentHash": "b2880f20b1c06841f1a352292525d8ea3d16b83627bb2a64dee422db1b78c512",
+      "blindChoice": "c",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "uncertain"
+      },
+      "findings": [
+        "source 확인: https://stdict.korean.go.kr/search/searchView.do?word_no=435620&searchKeywordTo=3 (HTTP 200). 이 페이지의 공식 본문 요청 POST https://stdict.korean.go.kr/search/contentViewOne.do, word_no=435620도 HTTP 200으로 확인했다. 뜻 2, senseId=482679에 해당하는 본문: 기쁨이나 감격이 마음에 가득 차서 벅차다. HTML의 senseExample482679와 해당 뜻풀이의 연결을 확인했다. 문항이 묻는 의미와 일치한다.",
+        "uniqueness 보기별 대입: a ‘방을 치우니 마음이 할 일이 없어 무척 심심하다’, b ‘방을 치우니 마음이 어두운 길을 걸어 겁이 나다’, c ‘방을 치우니 마음이 기쁨이 마음에 가득 차 벅차다’, d ‘방을 치우니 마음이 배가 고파서 기운이 전혀 없다’로 기계 대입하면 주어 중복이 생긴다. 뜻풀이를 문장에 풀어 쓰면 a는 무료함, b는 두려움, c는 청소 후의 벅찬 만족, d는 허기이므로 c만 뿌듯하다의 뜻이다. 정의형 보기를 완성 문장처럼 대입한 중복 자체는 원문 오류로 세지 않았다.",
+        "grade 판단: 방 청소 후의 감정을 묻는 짧은 문장으로, 글에서 재미와 감동을 이해하는 단원과 연결 가능하다. gradeBasis의 단원 주제 연결에 대한 검토이며 교과서 원문에 해당 낱말이 수록되었음을 확인한 것은 아니다.",
+        "explanation uncertain: blind-input에는 해설이 없으므로 총괄의 원본 대조가 필요하다."
+      ]
+    },
+    {
+      "questionId": "g3-argon-0004",
+      "revision": 1,
+      "contentHash": "78fc7e0058c099c56c872642b8d21473227953c6f174b8a3858463aaf490d529",
+      "blindChoice": "d",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "uncertain"
+      },
+      "findings": [
+        "source 확인: https://stdict.korean.go.kr/search/searchView.do?word_no=484857&searchKeywordTo=3 (HTTP 200). 이 페이지의 공식 본문 요청 POST https://stdict.korean.go.kr/search/contentViewOne.do, word_no=484857도 HTTP 200으로 확인했다. 뜻 1, senseId=281576에 해당하는 본문: 사정이나 형편 따위를 어림잡아 헤아리다. HTML의 senseExample281576와 해당 뜻풀이의 연결을 확인했다. 문항이 묻는 의미와 일치한다.",
+        "uniqueness 보기별 대입: a ‘표정을 보고 속마음을 약속 시간을 잊고서 늦다’, b ‘표정을 보고 속마음을 책상 위 물건을 바르게 놓다’, c ‘표정을 보고 속마음을 멀리 있는 친구를 부르다’는 속마음을 알아보는 동작이 아니며 문장 성분도 맞지 않는다. d는 뜻을 풀어 ‘표정을 보고 속마음의 사정이나 형편을 헤아리다’로 읽혀 적합하다. d의 풀이에는 사전의 ‘어림잡아’가 생략되어 있으므로 덧붙이면 추측의 뜻이 더 분명해진다. 현재도 네 보기 가운데 의미가 대응하는 것은 d뿐이다.",
+        "grade 판단: 표정에서 속마음을 추측하는 활동은 인물의 마음 이해와 맞는다. 사정·형편·헤아리다는 약간 추상적이나 3학년 어휘 학습으로 감당할 수 있다. gradeBasis의 단원 주제 연결에 대한 검토이며 교과서 원문에 해당 낱말이 수록되었음을 확인한 것은 아니다.",
+        "explanation uncertain: blind-input에는 해설이 없으므로 총괄의 원본 대조가 필요하다."
+      ]
+    },
+    {
+      "questionId": "g3-argon-0005",
+      "revision": 1,
+      "contentHash": "abee090147b679591e84d9cd39f275fb396e0f9cc3b4572bf82425cc18cd5c63",
+      "blindChoice": "a",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "uncertain"
+      },
+      "findings": [
+        "source 확인: https://stdict.korean.go.kr/search/searchView.do?word_no=267926&searchKeywordTo=3 (HTTP 200). 이 페이지의 공식 본문 요청 POST https://stdict.korean.go.kr/search/contentViewOne.do, word_no=267926도 HTTP 200으로 확인했다. 뜻 1, senseId=248380에 해당하는 본문: 말이나 행동 따위가 점잖고 무게가 있다. HTML의 senseExample248380와 해당 뜻풀이의 연결을 확인했다. 문항이 묻는 의미와 일치한다.",
+        "uniqueness 보기별 대입: a ‘인사하는 동생 모습이 말과 행동이 점잖고 무게 있다’는 뜻풀이를 풀어 읽으면 의젓한 태도를 나타낸다. b ‘키가 작고 몸무게가 가볍다’, c ‘걸음이 빨라 따라가기 어렵다’, d ‘목소리가 작아 잘 안 들리다’는 각각 체격·속도·음량이며 의젓함의 뜻이 아니다. ‘무게’는 실제 몸무게가 아닌 태도의 진중함으로 읽힌다.",
+        "grade 판단: 동생의 인사 태도라는 구체적 상황이 있다. 무게 있다는 비유적 뜻을 가르칠 필요는 있으나 인물의 태도 학습으로 타당하다. gradeBasis의 단원 주제 연결에 대한 검토이며 교과서 원문에 해당 낱말이 수록되었음을 확인한 것은 아니다.",
+        "explanation uncertain: blind-input에는 해설이 없으므로 총괄의 원본 대조가 필요하다."
+      ]
+    },
+    {
+      "questionId": "g3-argon-0006",
+      "revision": 1,
+      "contentHash": "d6aca01930028c9a61eca09e9723cb61534dba681c89461030a69b8e8f473678",
+      "blindChoice": "b",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "uncertain"
+      },
+      "findings": [
+        "source 확인: https://stdict.korean.go.kr/search/searchView.do?word_no=56170&searchKeywordTo=3 (HTTP 200). 이 페이지의 공식 본문 요청 POST https://stdict.korean.go.kr/search/contentViewOne.do, word_no=56170도 HTTP 200으로 확인했다. 뜻 2, senseId=36129에 해당하는 본문: 쉽게 단념하지 아니하고 끈질기게 견디어 나가는 기운. HTML의 senseExample36129와 해당 뜻풀이의 연결을 확인했다. 문항이 묻는 의미와 일치한다.",
+        "uniqueness 보기별 대입: a ‘무거운 짐을 한 번에 드는 기운으로 끝까지 해냈어요’는 근력, b ‘포기하지 않고 견디어 내는 기운으로 끝까지 해냈어요’는 끈기, c ‘낯선 사람과 금방 친해지는 기운으로 끝까지 해냈어요’는 사교성, d ‘아침 일찍 잠에서 깨어나는 기운으로 끝까지 해냈어요’는 기상과 관련된다. 어떤 일을 끝낼 원인이 될 수 있다는 것만으로 끈기의 정의가 되지는 않으며 b만 뜻이 같다.",
+        "grade 판단: 끝까지 해내는 생활 경험과 계획대로 독서하는 태도가 연결된다. 끈기라는 추상어를 포기하지 않는 행동으로 풀었다. gradeBasis의 단원 주제 연결에 대한 검토이며 교과서 원문에 해당 낱말이 수록되었음을 확인한 것은 아니다.",
+        "explanation uncertain: blind-input에는 해설이 없으므로 총괄의 원본 대조가 필요하다."
+      ]
+    },
+    {
+      "questionId": "g3-argon-0007",
+      "revision": 1,
+      "contentHash": "19d0ea6d60d046bd7deb83fb9c5ea83b8caa5bdf45c66597c9a9cee97a436ae1",
+      "blindChoice": "c",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "uncertain"
+      },
+      "findings": [
+        "source 확인: https://stdict.korean.go.kr/search/searchView.do?word_no=427541&searchKeywordTo=3 (HTTP 200). 이 페이지의 공식 본문 요청 POST https://stdict.korean.go.kr/search/contentViewOne.do, word_no=427541도 HTTP 200으로 확인했다. 뜻 1, senseId=422310에 해당하는 본문: 도와주거나 보살펴 주려고 마음을 씀. HTML의 senseExample422310와 해당 뜻풀이의 연결을 확인했다. 문항이 묻는 의미와 일치한다.",
+        "uniqueness 보기별 대입: a ‘무거운 짐을 든 친구를 돕는 따뜻한 소리가 돋보였어요’, b ‘…따뜻한 무게가 돋보였어요’, c ‘…따뜻한 배려가 돋보였어요’, d ‘…따뜻한 높이가 돋보였어요’를 비교했다. c는 친구를 돕는 마음과 행동을 바로 가리킨다. a는 격려하는 말소리라는 추가 상황을 만들어야 하고 제시문에는 발화 단서가 없다. b·d는 물리량으로 도움의 마음과 맞지 않는다.",
+        "grade 판단: 친구의 무거운 짐을 돕는 구체적인 상황이며 서로 존중하며 대화하는 단원과 주제상 맞는다. gradeBasis의 단원 주제 연결에 대한 검토이며 교과서 원문에 해당 낱말이 수록되었음을 확인한 것은 아니다.",
+        "explanation uncertain: blind-input에는 해설이 없으므로 총괄의 원본 대조가 필요하다."
+      ]
+    },
+    {
+      "questionId": "g3-argon-0008",
+      "revision": 1,
+      "contentHash": "cf07236d922632f8aed65e5d99606c8b4b7dea0e3ccb30bdd61efd360f378e6d",
+      "blindChoice": "d",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "uncertain"
+      },
+      "findings": [
+        "source 확인: https://stdict.korean.go.kr/search/searchView.do?word_no=443099&searchKeywordTo=3 (HTTP 200). 이 페이지의 공식 본문 요청 POST https://stdict.korean.go.kr/search/contentViewOne.do, word_no=443099도 HTTP 200으로 확인했다. 뜻 1, senseId=196945에 해당하는 본문: 마음이 가라앉지 아니하고 들떠서 두근거리다. HTML의 senseExample196945와 해당 뜻풀이의 연결을 확인했다. 문항이 묻는 의미와 일치한다.",
+        "uniqueness 보기별 대입: a ‘새 학기에 만날 친구들을 떠올리니 가슴이 두근거리며 숨겼어요’, b ‘…가슴이 두근거리며 깨웠어요’는 가슴을 행위자로 삼는 타동사 연결이 어색하고 숨기거나 깨울 대상도 없다. c ‘…가슴이 두근거리며 식었어요’는 마음이 들떠 두근거리는 흐름에 맞지 않는다. d ‘…가슴이 두근거리며 설렜어요’가 자연스럽다. ‘설레다’의 과거형 ‘설렜어요’ 표기는 맞다.",
+        "grade 판단: 새 학기 친구에 대한 감정을 다루며 생생한 표현 학습과 맞는다. 문장 길이와 활용형이 과도하게 어렵지 않다. gradeBasis의 단원 주제 연결에 대한 검토이며 교과서 원문에 해당 낱말이 수록되었음을 확인한 것은 아니다.",
+        "explanation uncertain: blind-input에는 해설이 없으므로 총괄의 원본 대조가 필요하다."
+      ]
+    },
+    {
+      "questionId": "g3-argon-0009",
+      "revision": 1,
+      "contentHash": "fbc74464ee0cc7d9f104569d2849d71199a7ff50fa5b3ac91cf2df8999ac55a2",
+      "blindChoice": "a",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "uncertain"
+      },
+      "findings": [
+        "source 확인: https://stdict.korean.go.kr/search/searchView.do?word_no=375176&searchKeywordTo=3 (HTTP 200). 이 페이지의 공식 본문 요청 POST https://stdict.korean.go.kr/search/contentViewOne.do, word_no=375176도 HTTP 200으로 확인했다. 뜻 1, senseId=315917에 해당하는 본문: 정신을 차릴 수 없을 만큼 갈팡질팡하며 다급하게 서두르는 모양. HTML의 senseExample315917와 해당 뜻풀이의 연결을 확인했다. 문항이 묻는 의미와 일치한다.",
+        "uniqueness 보기별 대입: a ‘갑자기 소나기가 내려서 사람들이 허둥지둥 지붕 밑으로 피했어요’는 급한 피신과 맞는다. b ‘…나풀나풀 지붕 밑으로 피했어요’는 가볍게 나부끼는 모습으로 급한 피신을 설명하지 않고, c ‘…반짝반짝 지붕 밑으로 피했어요’는 빛남, d ‘…소곤소곤 지붕 밑으로 피했어요’는 작은 말소리를 나타내므로 이동 동작과 맞지 않는다. 나풀거리는 옷이나 소곤거리며 나눈 대화 같은 새 사건을 보태지 않았다.",
+        "grade 판단: 소나기를 피해 서두르는 상황과 움직임을 나타내는 부사를 연결하므로 생생한 표현 단원에 타당하다. gradeBasis의 단원 주제 연결에 대한 검토이며 교과서 원문에 해당 낱말이 수록되었음을 확인한 것은 아니다.",
+        "explanation uncertain: blind-input에는 해설이 없으므로 총괄의 원본 대조가 필요하다."
+      ]
+    },
+    {
+      "questionId": "g3-argon-0010",
+      "revision": 1,
+      "contentHash": "e7afd3bad776d2bd718c4905a6311b8a2f5f322f99f5335b75839fb6020faa65",
+      "blindChoice": "b",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "uncertain"
+      },
+      "findings": [
+        "source 확인: https://stdict.korean.go.kr/search/searchView.do?word_no=178462&searchKeywordTo=3 (HTTP 200). 이 페이지의 공식 본문 요청 POST https://stdict.korean.go.kr/search/contentViewOne.do, word_no=178462도 HTTP 200으로 확인했다. 뜻 1, senseId=387891에 해당하는 본문: 남이 알아차리지 못하도록 눈치를 살펴 가면서 살며시 행동하는 모양. HTML의 senseExample387891와 해당 뜻풀이의 연결을 확인했다. 문항이 묻는 의미와 일치한다.",
+        "uniqueness 보기별 대입: a ‘잠든 아기가 깨지 않도록 눈치를 살피며 방문을 덜컹덜컹 닫았어요’는 소리와 충격을 내므로 목적에 어긋난다. b ‘…방문을 살금살금 닫았어요’는 눈치를 살피며 조심스럽게 행동한다는 뜻에 들어맞는다. c ‘…방문을 보글보글 닫았어요’는 끓는 모습, d ‘…방문을 출렁출렁 닫았어요’는 액체 등이 흔들리는 모습이어서 맞지 않는다. 사전 뜻은 걷기에만 한정하지 않으므로 문을 닫는 동작이라는 이유로 배제하지 않았다.",
+        "grade 판단: 잠든 아기를 깨우지 않으려는 구체적인 행동이 있어 부사의 뜻을 추론할 수 있다. 생생한 표현 단원과 연결 가능하다. gradeBasis의 단원 주제 연결에 대한 검토이며 교과서 원문에 해당 낱말이 수록되었음을 확인한 것은 아니다.",
+        "explanation uncertain: blind-input에는 해설이 없으므로 총괄의 원본 대조가 필요하다."
+      ]
+    },
+    {
+      "questionId": "g3-argon-0011",
+      "revision": 1,
+      "contentHash": "938dae4d1843e53f8729699c4cccb8fb0bc9b157634f1fa7358916dd0dbbcdfd",
+      "blindChoice": "c",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "uncertain"
+      },
+      "findings": [
+        "source 확인: https://stdict.korean.go.kr/search/searchView.do?word_no=386470&searchKeywordTo=3 (HTTP 200). 이 페이지의 공식 본문 요청 POST https://stdict.korean.go.kr/search/contentViewOne.do, word_no=386470도 HTTP 200으로 확인했다. 뜻 1, senseId=554451에 해당하는 본문: 마음에 흡족하여 매우 만족스럽다. HTML의 senseExample554451와 해당 뜻풀이의 연결을 확인했다. 문항이 묻는 의미와 일치한다.",
+        "uniqueness 보기별 대입: a ‘내가 심은 방울토마토가 빨갛게 익은 모습을 보니 마음이 어두웠어요’, b ‘…마음이 차가웠어요’, c ‘…마음이 흐뭇했어요’, d ‘…마음이 비좁았어요’를 비교했다. 직접 기른 열매가 잘 익은 결과에 대한 만족을 표현하는 c가 문맥에 맞는다. a·b도 문법적으로는 성립하지만 부정적인 반응을 설명할 추가 사연이 필요하며 주어진 문장에는 없다. d는 공간의 좁음을 뜻하여 자연스럽지 않다. 숨은 부정적 사연을 가정한 문법적 가능성만으로 복수 정답으로 세지 않았다.",
+        "grade 판단: 식물을 기른 경험과 만족스러운 마음을 연결하므로 경험과 관련지어 이해하는 단원에 타당하다. gradeBasis의 단원 주제 연결에 대한 검토이며 교과서 원문에 해당 낱말이 수록되었음을 확인한 것은 아니다.",
+        "explanation uncertain: blind-input에는 해설이 없으므로 총괄의 원본 대조가 필요하다."
+      ]
+    },
+    {
+      "questionId": "g3-argon-0012",
+      "revision": 1,
+      "contentHash": "956ecc60fcdae41012d70b504e8f823cd04cd523786369c58a3cd76de650da85",
+      "blindChoice": "d",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "uncertain"
+      },
+      "findings": [
+        "source 확인: https://stdict.korean.go.kr/search/searchView.do?word_no=490075&searchKeywordTo=3 (HTTP 200). 이 페이지의 공식 본문 요청 POST https://stdict.korean.go.kr/search/contentViewOne.do, word_no=490075도 HTTP 200으로 확인했다. 뜻 1, senseId=24629에 해당하는 본문: 순서에 따라 각 사람에게 돌아오는 기회라는 의미(뜻풀이 요약). HTML의 senseExample24629와 해당 뜻풀이의 연결을 확인했다. 문항이 묻는 의미와 일치한다.",
+        "uniqueness 보기별 대입: a ‘급식을 받을 때는 새치기하지 않고 한 줄로 서서 자기 모래를 기다려요’, b ‘…자기 무게를 기다려요’, c ‘…자기 날씨를 기다려요’, d ‘…자기 차례를 기다려요’ 중 d만 줄을 서서 급식을 받을 순서를 기다리는 뜻이다. a·b·c는 해당 문맥에서 기다릴 순서나 기회가 아니다.",
+        "grade 판단: 급식 줄서기는 친숙한 학교 경험이다. 정확한 낱말 선택이라는 점에서 정확하게 글 쓰기 단원과 연결 가능하다. gradeBasis의 단원 주제 연결에 대한 검토이며 교과서 원문에 해당 낱말이 수록되었음을 확인한 것은 아니다.",
+        "explanation uncertain: blind-input에는 해설이 없으므로 총괄의 원본 대조가 필요하다."
+      ]
+    },
+    {
+      "questionId": "g3-argon-0013",
+      "revision": 1,
+      "contentHash": "9c82f445c73963ecef4bb139513e063f06adec7dff029d2eb804444e8d79af16",
+      "blindChoice": "a",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "fail",
+        "explanation": "uncertain"
+      },
+      "findings": [
+        "source 확인: https://stdict.korean.go.kr/search/searchView.do?word_no=112369&searchKeywordTo=3 (HTTP 200). 이 페이지의 공식 본문 요청 POST https://stdict.korean.go.kr/search/contentViewOne.do, word_no=112369도 HTTP 200으로 확인했다. 뜻 1, senseId=530620에 해당하는 본문: 이리저리 생각만 하고 태도를 결정하지 못하다. HTML의 senseExample530620와 해당 뜻풀이의 연결을 확인했다. 문항이 묻는 의미와 일치한다.",
+        "uniqueness 보기별 대입: a ‘차가운 수영장 물에 들어가기 전에 잠시 머뭇거렸어요’는 결정을 주저함이다. b ‘…잠시 돌아다녔어요’는 이동, c ‘…잠시 받아적었어요’는 기록, d ‘…잠시 인사드렸어요’는 인사여서 뜻이 다르다. b·d가 별도 사건으로 가능하더라도 망설임의 유의어는 아니다.",
+        "language fail: 보기 c ‘받아적었어요’는 ‘받아 적었어요’로 띄어 써야 한다. ‘받다’와 ‘적다’가 이어진 구성으로, 이 문항은 띄어쓰기 오류를 고르는 문제가 아니므로 오답 보기도 올바르게 표기해야 한다. 국립국어원 한국어기초사전 ‘부르다’ 뜻 3의 ‘잘 받아 적었니?’ 용례를 실제 조회해 보조 확인했다: https://krdict.korean.go.kr/kor/dicSearch/SearchView?ParaWordNo=57304 (HTTP 200).",
+        "grade 판단: 차가운 수영장에 들어가기를 주저하는 경험을 이해할 수 있고 머뭇거리다도 일상적인 낱말이다. gradeBasis의 단원 주제 연결에 대한 검토이며 교과서 원문에 해당 낱말이 수록되었음을 확인한 것은 아니다.",
+        "explanation uncertain: blind-input에는 해설이 없으므로 총괄의 원본 대조가 필요하다."
+      ]
+    },
+    {
+      "questionId": "g3-argon-0014",
+      "revision": 1,
+      "contentHash": "34e5895b2d157f515aa8ba4bf8b72092fff3add6f3f5a4a206ff0f3c84096c3a",
+      "blindChoice": "b",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "uncertain"
+      },
+      "findings": [
+        "source 확인: https://stdict.korean.go.kr/search/searchView.do?word_no=441982&searchKeywordTo=3 (HTTP 200). 이 페이지의 공식 본문 요청 POST https://stdict.korean.go.kr/search/contentViewOne.do, word_no=441982도 HTTP 200으로 확인했다. 뜻 1, senseId=499109에 해당하는 본문: 마음에 모자라 아쉽거나 섭섭한 느낌이 있다. HTML의 senseExample499109와 해당 뜻풀이의 연결을 확인했다. 문항이 묻는 의미와 일치한다.",
+        "uniqueness 보기별 대입: a ‘단짝 친구가 작별 인사도 없이 먼저 집에 가서 시원했어요’는 후련함, b ‘…섭섭했어요’는 기대에 못 미쳐 느낀 아쉬움, c ‘…든든했어요’는 믿음과 안정감, d ‘…상쾌했어요’는 산뜻함이다. b만 서운함과 의미가 가깝다.",
+        "grade 판단: 단짝의 행동에 대한 섭섭함은 친숙한 또래 관계 경험으로 해당 단원과 연결된다. gradeBasis의 단원 주제 연결에 대한 검토이며 교과서 원문에 해당 낱말이 수록되었음을 확인한 것은 아니다.",
+        "explanation uncertain: blind-input에는 해설이 없으므로 총괄의 원본 대조가 필요하다."
+      ]
+    },
+    {
+      "questionId": "g3-argon-0015",
+      "revision": 1,
+      "contentHash": "a467ffafb84344188cccccc6f85d4bc8f9659ab049cf2a285b0d1630c28fd223",
+      "blindChoice": "c",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "uncertain"
+      },
+      "findings": [
+        "source 확인: https://stdict.korean.go.kr/search/searchView.do?word_no=196444&searchKeywordTo=3 (HTTP 200). 이 페이지의 공식 본문 요청 POST https://stdict.korean.go.kr/search/contentViewOne.do, word_no=196444도 HTTP 200으로 확인했다. 뜻 1, senseId=200316에 해당하는 본문: 매우 귀중하다. HTML의 senseExample200316와 해당 뜻풀이의 연결을 확인했다. 문항이 묻는 의미와 일치한다.",
+        "uniqueness 보기별 대입: a ‘가족과 함께 보낸 주말은 나에게 무척 심심해요’, b ‘…위험해요’, c ‘…귀중해요’, d ‘…조용해요’ 중 c만 아끼고 중요하게 여긴다는 뜻이다. a·b·d로 주말을 묘사하는 것은 가능해도 소중하다의 유의어는 아니다.",
+        "grade 판단: 가족과 보낸 시간을 귀하게 여기는 뜻이 구체적인 상황에 놓여 있으며 마음을 전하는 단원과 맞는다. gradeBasis의 단원 주제 연결에 대한 검토이며 교과서 원문에 해당 낱말이 수록되었음을 확인한 것은 아니다.",
+        "explanation uncertain: blind-input에는 해설이 없으므로 총괄의 원본 대조가 필요하다."
+      ]
+    },
+    {
+      "questionId": "g3-argon-0016",
+      "revision": 1,
+      "contentHash": "642ef3e32d747f90bf7ebd6ac0ebcbc56f43e49e7326e7b8fa52979ca025e7f3",
+      "blindChoice": "d",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "uncertain"
+      },
+      "findings": [
+        "source 확인: https://stdict.korean.go.kr/search/searchView.do?word_no=156168&searchKeywordTo=3 (HTTP 200). 이 페이지의 공식 본문 요청 POST https://stdict.korean.go.kr/search/contentViewOne.do, word_no=156168도 HTTP 200으로 확인했다. 뜻 1, senseId=178457에 해당하는 본문: 어떤 일을 꾸물거리거나 미루지 않고 꾸준하게 열심히 하는 태도가 있다. HTML의 senseExample178457와 해당 뜻풀이의 연결을 확인했다. 문항이 묻는 의미와 일치한다.",
+        "uniqueness 보기별 대입: a ‘언니는 아침마다 일찍 일어나 방을 치울 만큼 성실해요’는 부지런함과 가까운 방향이다. b ‘…다정해요’와 c ‘…용감해요’는 다른 성질이다. d ‘…게을러요’는 앞의 부지런한 행동과 모순되지만 이 문항은 반대말을 묻기 때문에 그 의미 대립이 선택 근거다. 반대말 대입 후 앞절과 모순된다는 이유로 d를 오답 처리하지 않았다.",
+        "grade 판단: 일찍 일어나 청소하는 행동으로 부지런함을 설명하여 3학년이 반대말을 판단할 수 있다. gradeBasis의 단원 주제 연결에 대한 검토이며 교과서 원문에 해당 낱말이 수록되었음을 확인한 것은 아니다.",
+        "explanation uncertain: blind-input에는 해설이 없으므로 총괄의 원본 대조가 필요하다."
+      ]
+    },
+    {
+      "questionId": "g3-argon-0017",
+      "revision": 1,
+      "contentHash": "e00e6539349e335c0599b89ab05ab9f9ca3f168b93a02e32199f8f7c381f6812",
+      "blindChoice": "a",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "fail",
+        "explanation": "uncertain"
+      },
+      "findings": [
+        "source 확인: https://stdict.korean.go.kr/search/searchView.do?word_no=472266&searchKeywordTo=3 (HTTP 200). 이 페이지의 공식 본문 요청 POST https://stdict.korean.go.kr/search/contentViewOne.do, word_no=472266도 HTTP 200으로 확인했다. 뜻 1, senseId=20287에 해당하는 본문: 어떤 일을 여러 번 하여 서투르지 않은 상태에 있다. HTML의 senseExample20287와 해당 뜻풀이의 연결을 확인했다. 문항이 묻는 의미와 일치한다.",
+        "uniqueness 보기별 대입: a ‘여러 번 연습해서 이제 줄넘기가 손에 서툴러요’, b ‘…손에 가벼워요’, c ‘…손에 깨끗해요’, d ‘…손에 비슷해요’를 비교했다. a만 익숙한 숙련 상태와 반대이며 b는 무게, c는 청결, d는 유사성이다. a를 대입했을 때 드러나는 ‘손에 서툴러요’의 부자연스러움은 원문 ‘손에 익숙해요’의 문장 구성 문제와 구분하여 아래에 기록했다.",
+        "language fail: ‘줄넘기가 손에 익숙해요’는 활동에 숙련된 사람을 나타내는 ‘익숙하다’의 문형과 ‘손에 익다’를 섞은 부자연스러운 표현이다. 사전 뜻 1은 【…에/에게】 문형으로 ‘(나는) 줄넘기에 익숙해요’처럼 숙련의 대상을 에로 표시할 수 있다. 원문은 줄넘기를 주어로, 손을 그 대상으로 두어 줄넘기 활동과 줄 도구의 해석도 흔들린다. ‘여러 번 연습해서 나는 이제 줄넘기에 익숙해요’로 고치면 숙련의 의미가 분명해진다. ‘손에 익숙하다’라는 모든 표현을 금지한다는 판정은 아니다.",
+        "grade 판단: 반복 연습과 숙련이라는 내용은 3학년에게 친숙하고 유창하게 읽고 발표하기 단원과 연결 가능하다. 문장 표현 결함은 language에서 별도 판정했다. gradeBasis의 단원 주제 연결에 대한 검토이며 교과서 원문에 해당 낱말이 수록되었음을 확인한 것은 아니다.",
+        "explanation uncertain: blind-input에는 해설이 없으므로 총괄의 원본 대조가 필요하다."
+      ]
+    },
+    {
+      "questionId": "g3-argon-0018",
+      "revision": 1,
+      "contentHash": "26fe3931d7bd2ae097e3a734f4e2c61f1e1510220ad14f1341c58f53367a8fb0",
+      "blindChoice": "b",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "uncertain"
+      },
+      "findings": [
+        "source 확인: https://stdict.korean.go.kr/search/searchView.do?word_no=403453&searchKeywordTo=3 (HTTP 200). 이 페이지의 공식 본문 요청 POST https://stdict.korean.go.kr/search/contentViewOne.do, word_no=403453도 HTTP 200으로 확인했다. 뜻 4, senseId=69514에 해당하는 본문: 글 따위를 매끄럽고 짜임새 있게 고치다. HTML의 senseExample69514와 해당 뜻풀이의 연결을 확인했다. 문항이 묻는 의미와 일치한다.",
+        "uniqueness 보기별 대입: a ‘점심에 따뜻한 국을 다듬었어요’는 완성된 국과의 결합이 부자연스럽고 글을 고치는 뜻도 아니다. b ‘일기를 읽고 문장을 다듬었어요’는 문장 수정이므로 적합하다. c ‘운동장에서 공을 다듬었어요’는 공 표면을 손질하는 다른 의미를 상상할 수 있어도 글 수정이 아니다. d ‘더워서 창문을 활짝 다듬었어요’는 ‘활짝 열다’와 혼동한 결합이다. 용례형의 의미상 부적절한 오답은 문항이 의도한 평가 대상이다.",
+        "grade 판단: 일기의 문장을 고치는 상황은 3학년 글쓰기 경험과 직접 연결된다. gradeBasis의 단원 주제 연결에 대한 검토이며 교과서 원문에 해당 낱말이 수록되었음을 확인한 것은 아니다.",
+        "explanation uncertain: blind-input에는 해설이 없으므로 총괄의 원본 대조가 필요하다."
+      ]
+    },
+    {
+      "questionId": "g3-argon-0019",
+      "revision": 1,
+      "contentHash": "7b20e6214951114835c91526e6ab1f4db59f0173dab3a2d6e9bb699864d7e1a7",
+      "blindChoice": "c",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "uncertain"
+      },
+      "findings": [
+        "source 확인: https://stdict.korean.go.kr/search/searchView.do?word_no=406433&searchKeywordTo=3 (HTTP 200). 이 페이지의 공식 본문 요청 POST https://stdict.korean.go.kr/search/contentViewOne.do, word_no=406433도 HTTP 200으로 확인했다. 뜻 1, senseId=441894에 해당하는 본문: 마음이 넓고 아량이 있다. HTML의 senseExample441894와 해당 뜻풀이의 연결을 확인했다. 문항이 묻는 의미와 일치한다.",
+        "uniqueness 보기별 대입: a ‘연필심이 뾰족하고 너그러워요’, b ‘얼음을 넣은 물이 너그러워요’, c ‘삼촌은 마음씨가 참 너그러워요’, d ‘냄비에 끓인 국이 너그러워요’를 비교했다. c만 사람의 넓은 마음씨를 표현한다. a·b·d는 마음씨를 지닌 주체가 없으며, 사전에 물 흐름이 완만하다는 다른 뜻이 있더라도 이 문항의 ‘마음씨’ 조건을 충족하지 않는다.",
+        "grade 판단: 삼촌의 마음씨를 나타내는 용례로 뜻을 구별할 수 있으며 서로 존중하는 태도와 연결된다. gradeBasis의 단원 주제 연결에 대한 검토이며 교과서 원문에 해당 낱말이 수록되었음을 확인한 것은 아니다.",
+        "explanation uncertain: blind-input에는 해설이 없으므로 총괄의 원본 대조가 필요하다."
+      ]
+    },
+    {
+      "questionId": "g3-argon-0020",
+      "revision": 1,
+      "contentHash": "b2f28cbb13267e2acc38baf361b928585c1c0894ed93013d7d15032f4f81380b",
+      "blindChoice": "d",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "uncertain"
+      },
+      "findings": [
+        "source 확인: https://stdict.korean.go.kr/search/searchView.do?word_no=212746&searchKeywordTo=3 (HTTP 200). 이 페이지의 공식 본문 요청 POST https://stdict.korean.go.kr/search/contentViewOne.do, word_no=212746도 HTTP 200으로 확인했다. 뜻 1, senseId=212993에 해당하는 본문: 굳세고 위엄스럽다. HTML의 senseExample212993와 해당 뜻풀이의 연결을 확인했다. 문항이 묻는 의미와 일치한다.",
+        "uniqueness 보기별 대입: a ‘서랍 속이 네모나고 씩씩해요’, b ‘소금을 넣은 국이 참 씩씩해요’, c ‘비에 젖은 땅이 무척 씩씩해요’, d ‘동생은 겁내지 않고 씩씩해요’ 중 d만 사람의 굳세고 겁내지 않는 태도다. a·b·c는 사물의 모양·음식·땅 상태로 제시되어 태도라는 질문 조건에 맞지 않는다. 의인화 상황을 새로 만들지 않았다.",
+        "grade 판단: 동생이 겁내지 않는 태도는 3학년이 이해할 수 있는 인물의 성격 표현이다. gradeBasis의 단원 주제 연결에 대한 검토이며 교과서 원문에 해당 낱말이 수록되었음을 확인한 것은 아니다.",
+        "explanation uncertain: blind-input에는 해설이 없으므로 총괄의 원본 대조가 필요하다."
+      ]
+    }
+  ]
+}
