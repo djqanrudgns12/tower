@@ -15,7 +15,7 @@
 | [RIG-001](work-packages/RIG-001/RETURN.md) | **ACCEPTED** — 3파일 들임, 렌더러 연결 4건은 총괄이 반영, `enemy.walker.hit` `integrated_pass`(1440×900 전투 캡처로 확인) | Claude 새 문맥 또는 Codex | `src/game/animation/**` | ART-SAMPLE-001 인수 ✓ |
 | [Q20-002](work-packages/Q20-002/RETURN.md) | **ACCEPTED** — 20문항 중 승인 17(새 14 전부, 고친 판 0011·0013·0017), 격리 3(고친 판 0004·0006·0015: Codex language·grade uncertain) | Argon 4 | `content-source/batches/Q20-002/**` — 격리 6문항 revision 2 + 새 문항 14개. 공개 은행에 승인 16문항 이상이 더 필요 | QR 수합 ✓ |
 | [QR-003/QR-004](work-packages/QR-003/RETURN.md) | **ACCEPTED** — 독립 풀이 40/40 정답과 같음. Codex fail 0·uncertain 3, Claude fail 0·uncertain 0. 총괄 해설 대조 20/20 pass. 결과: **승인 31 → 첫 공개 은행 `src/content/questions/grade3.json`(`pub-b95a56e39f57`)** | Codex·Claude | `content-source/reviews/Q20-002/{codex,claude}.json` | Q20-002 수합 ✓ |
-| Q20-003 | 계획 | Argon 4 | 격리 3문항 revision 3(마지막 수정) + 새 문항. P1 목표 30~50 중 50까지, G3는 학년별 300 | QR-003 ✓ |
+| [Q20-003](work-packages/Q20-003/REQUEST.md) | **RUNNING**(2026-10-29 총괄이 agent-bridge로 Antigravity에 1/2 전달) — 격리 3문항 revision 3(마지막 수정) + 새 문항 17개. 브리지로 깨운 Argon은 셸·웹 페이지 열기를 쓸 수 없어(accept-edits 모드), 사전 근거는 총괄이 `npm run fetch-evidence`로 조회해 넣고 검사도 총괄이 돌린다 | Argon 4 | `content-source/batches/Q20-003/**` | QR-003 ✓ |
 | P1-REST | 소리만 남음 — A26 철회 목록·설치 자리 목록·문맥 손실 복구·첫 연습 판 완료 | 총괄 | 소리(음원 작업 필요) | 음원 묶음 |
 | QR-PRACTICE | 계획 | Codex·Claude 검토 | 연습 전용 4문항(`src/content/questions/practice.json`) 공동검수 | 공개 전 |
 | [ART-002](work-packages/ART-002/RETURN.md) | **ACCEPTED** — 11장 HOLD 0, 실제 전투(1440×900)에서 지면 조립으로 확인해 모두 `integrated_pass`. 총괄이 agent-bridge로 Codex에 세 번 나눠 전달(15분 상한) | Codex 이미지 | `asset-source/incoming/ART-002/**` — 정원 지면 질감·설치 받침·작은 장식 11장 | ART-SAMPLE-001 ✓ |

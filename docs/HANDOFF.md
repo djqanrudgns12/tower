@@ -61,7 +61,7 @@ Node 24(`.node-version`). 브라우저 흐름까지 보려면 `npm run test:e2e`
 ## 다음 첫 행동
 
 1. **Q20-003(Argon).** 격리된 고친 판 3개(0004·0006·0015)는 마지막 수정(revision 3)을 받고, 새 문항으로 P1 목표 50문항까지 채운다. 지적 내용은 `content-source/reviews/Q20-002/codex.json` findings. 수합 → `npm run blind-input` → QR(Codex 브리지·새 문맥 Claude) → 총괄 해설 대조 → `npm run build:bank` 순서는 이번과 같다.
-2. **Argon 전달 방법.** 사람이 Antigravity에 붙여 넣어도 되고, 총괄은 `agent-bridge send --from claude --to antigravity --wake --cwd <작업 폴더>`로 한다(브리지 실행은 15분 상한이라 10문항씩 나눈다).
+2. **Argon 전달 방법.** 브리지로 깨운 Antigravity(`agy -p --mode accept-edits`)는 파일 편집만 자동 허용되어 셸 명령·웹 페이지 열기를 못 한다. 그래서 총괄이 `npm run fetch-evidence -- <batch> <낱말…>`로 표준국어대사전 근거(뜻마다 파일·SHA-256·뜻 ID, `evidence/index.json`)를 받아 작업 폴더에 넣고, 시작 확인과 `validate:content`도 총괄이 한다. 권한을 넓히려면 사용자가 브리지 설정(`~/.agents/bridge/config.json`의 antigravity args)을 정한다. 사람이 Antigravity 앱에 붙여 넣어도 되고, 총괄은 `agent-bridge send --from claude --to antigravity --wake --cwd <작업 폴더>`로 한다(브리지 실행은 15분 상한이라 10문항씩 나눈다).
 3. **G2 게이트(PRD §18.2).** 4→5→6웨이브·오답·정지·저장복귀·보상 중복은 2026-10-29에 도메인 시험(`tests/unit/g2.test.ts`)과 브라우저 e2e(저장하고 나가기 → 이어하기)로 확인했다(PRD §18.4 ‘G2 게이트 시험’). 남은 것은 실기기(iOS Safari·Android) 확인과 장시간 성능. 밸런스 남은 위험: Easy 27~29분, 정답률 60% 초보형의 첫 보스 처치 0.13.
 4. 그 밖의 대기 일: 고블린 추가 프레임(위·아래 방향, 보폭이 긴 걸음 — RIG-001 반환서 §9, 실제 화면을 보고 ART-003으로 낼지 정함), 대장 원화 5웨이브 전투 확인, 소리용 음원 작업 정의, QR-PRACTICE(연습 전용 4문항 검토), `p1/intake-round1`을 `main`에 합칠지(PR 여부) 결정.
 
