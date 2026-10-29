@@ -1,17 +1,17 @@
-import { balanceSchema, type Balance, type BranchId, type DifficultyId, type TowerId } from '../../src/contracts/balance';
+import { balanceSchema, TOWER_IDS, type Balance, type BranchId, type DifficultyId, type TowerId } from '../../src/contracts/balance';
 import { BALANCE, gradeContent, MAPS, PILOT_TOWERS, toRuntime } from '../../src/content';
 import { createContext, type GameContext } from '../../src/domain/context';
 import { center, dist2, positionAt } from '../../src/domain/geometry';
 import { msToTicks, TICK_HZ } from '../../src/domain/num';
 import { intBelow, shuffle, u32, type Rng } from '../../src/domain/rng';
 import { advanceTick, applyCommand, createRun, type Command } from '../../src/domain/run';
-import { attackIntervalTicks, buildCost, needsBranch, towerStats, upgradeCost } from '../../src/domain/towers';
-import type { Phase } from '../../src/domain/types';
+import { attackIntervalTicks, attacks, bannerAura, buildCost, needsBranch, towerStats, upgradeCost } from '../../src/domain/towers';
+import type { Phase, Tower } from '../../src/domain/types';
 
 // S11 엔진 밸런스 시뮬레이터(PRD §17.3, §18.1). 판정은 제품 domain 엔진(createRun·applyCommand·advanceTick)이 하고,
 // 여기서는 가상 플레이어(읽기 시간·정답률·돈 쓰는 습관)만 흉내 낸다. 학생 실측이 아니다.
 
-export type StrategyId = 'novice' | 'balanced' | 'focused';
+export type StrategyId = 'novice' | 'balanced' | 'focused' | 'balanced10';
 
 interface Strategy {
   /** 전투 중 돈을 쓰러 오는 간격. */
@@ -28,6 +28,8 @@ export const STRATEGIES: Record<StrategyId, Strategy> = {
   novice: { attentionMs: 30000, randomSlots: true, pattern: ['archer', 'archer', 'cannon', 'frost', 'archer', 'cannon', 'archer', 'cannon'], upgradeAfterTowers: 6 },
   balanced: { attentionMs: 20000, randomSlots: false, pattern: ['archer', 'archer', 'cannon', 'frost', 'archer', 'cannon', 'archer', 'cannon'], upgradeAfterTowers: 0 },
   focused: { attentionMs: 20000, randomSlots: false, pattern: ['archer'], upgradeAfterTowers: 0 },
+  /** P2: 10종을 고르게 쓰는 균형 전략(PRD §7.5 ②의 비교 대상). 지을 수 없는 종류(수호기사 2기째 등)는 건너뛴다. */
+  balanced10: { attentionMs: 20000, randomSlots: false, pattern: ['archer', 'mage', 'cannon', 'spear', 'frost', 'lightning', 'archer', 'flame', 'crossbow', 'guardian', 'banner', 'cannon'], upgradeAfterTowers: 0 },
 };
 
 export interface SimOptions {
@@ -68,7 +70,7 @@ export interface SimResult {
   goldEarned: number;
 }
 
-export { BALANCE, MAPS };
+export { BALANCE, MAPS, TOWER_IDS };
 
 const BRANCH: BranchId = 'A';
 const WRONG_FEEDBACK_READ_MS = 1000;
@@ -128,11 +130,26 @@ function coverage(ctx: GameContext, slotId: string, range: number, cache: Map<st
   return n / 10;
 }
 
-/** 가상 플레이어가 보는 대략의 가치: 초당 피해 × 덮는 경로. 범위 공격 ×2, 감속 +6(balance-sketch와 같은 어림). */
-function value(ctx: GameContext, type: TowerId, level: number, branch: BranchId | null, slotId: string, cache: Map<string, number>): number {
-  const st = towerStats(ctx.balance, type, level, branch);
-  const perSec = (st.damage / 1000) * (TICK_HZ / attackIntervalTicks(ctx.balance, st, 0));
-  const base = st.splashRadius > 0 ? perSec * 2 : st.slowBP > 0 ? perSec + 6 : perSec;
+/**
+ * 가상 플레이어가 보는 대략의 가치: 초당 피해 × 덮는 경로. 범위·부채꼴 ×2, 감속 +6(balance-sketch와 같은 어림).
+ * P2: 연쇄는 대상 수만큼 감쇠 합, 선분 ×1.3, 화상은 초당 화상 피해를 더하고, 정예·대장 배율은 ×1.1로 어림한다.
+ * 깃발은 반경 안 공격 타워 가치에 오라 비율을 곱한 합이다(towers를 넘길 때만).
+ */
+function value(ctx: GameContext, type: TowerId, level: number, branch: BranchId | null, slotId: string, cache: Map<string, number>, towers: readonly Tower[] = []): number {
+  const b = ctx.balance;
+  if (!attacks(b, type)) {
+    const slot = ctx.map.slots.find(x => x.id === slotId)!;
+    const aura = bannerAura(b, { type, level, branch });
+    const r = b.towers[type].rangeMilli;
+    return towers.filter(t => attacks(b, t.type) && dist2(t.x, t.y, center(slot.x), center(slot.y)) <= r * r)
+      .reduce((sum, t) => sum + value(ctx, t.type, t.level, t.branch, t.slotId, cache) * (aura.damageBP + aura.speedBP) / 10000, 0);
+  }
+  const st = towerStats(b, type, level, branch);
+  const perSec = (st.damage / 1000) * (TICK_HZ / attackIntervalTicks(b, st, 0));
+  let mult = st.splashRadius > 0 || st.cone ? 2 : st.lineWidth > 0 ? 1.3 : 1;
+  if (st.chainRadius > 0) { mult = 0; for (let k = 0; k < st.maxTargets; k++) mult += (st.chainFalloffBP / 10000) ** k; mult = 1 + (mult - 1) * 0.5; }
+  const burnPerSec = st.burnTicks > 0 ? (st.burnTotal / 1000) * (TICK_HZ / st.burnTicks) : 0;
+  const base = (perSec * mult + burnPerSec) * (st.eliteBossDamageBP > 10000 ? 1.1 : 1) + (st.slowBP > 0 ? 6 : 0);
   return (base * coverage(ctx, slotId, st.range, cache)) / 4;
 }
 
@@ -169,14 +186,16 @@ export function simulateRun(opt: SimOptions): SimResult {
       const options: Array<{ cost: number; gain: number; cmd: Command }> = [];
       const free = slotOrder.find(id => !s.towers.some(t => t.slotId === id));
       if (free && pattern.length) {
-        const type = pattern[s.towers.length % pattern.length]!;
-        options.push({ cost: buildCost(ctx.balance, type), gain: value(ctx, type, 1, null, free, cache), cmd: { type: 'build', slotId: free, tower: type } });
+        // 차례의 종류를 지을 수 없으면(동시 1기 제한) 다음 종류로 넘어간다.
+        const canBuild = (type: TowerId) => { const max = ctx.balance.towers[type].maxOnField; return !max || s.towers.filter(t => t.type === type).length < max; };
+        const type = Array.from({ length: pattern.length }, (_, k) => pattern[(s.towers.length + k) % pattern.length]!).find(canBuild);
+        if (type) options.push({ cost: buildCost(ctx.balance, type), gain: value(ctx, type, 1, null, free, cache, s.towers), cmd: { type: 'build', slotId: free, tower: type } });
       }
       if (s.towers.length >= strat.upgradeAfterTowers) for (const t of s.towers) {
         const cost = upgradeCost(ctx.balance, t.type, t.level);
         if (cost === null) continue;
         const branch = needsBranch(ctx.balance, t.level) ? BRANCH : undefined;
-        const gain = value(ctx, t.type, t.level + 1, branch ?? t.branch, t.slotId, cache) - value(ctx, t.type, t.level, t.branch, t.slotId, cache);
+        const gain = value(ctx, t.type, t.level + 1, branch ?? t.branch, t.slotId, cache, s.towers) - value(ctx, t.type, t.level, t.branch, t.slotId, cache, s.towers);
         options.push({ cost, gain, cmd: branch ? { type: 'upgrade', towerId: t.id, branch } : { type: 'upgrade', towerId: t.id } });
       }
       // 가성비가 가장 좋은 것 하나를 노리고, 돈이 모자라면 모은다.

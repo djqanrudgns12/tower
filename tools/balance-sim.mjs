@@ -18,6 +18,8 @@ const BALANCE = sim.withOverrides(sets);
 const maps = flag('map', 'garden_u') === 'all' ? MAPS.map(m => m.id) : list('map', 'garden_u');
 const diffs = list('diffs', Object.keys(BALANCE.difficulties).join(','));
 const strats = list('strats', 'novice,balanced,focused');
+// --towers all: P2 10종을 모두 쓸 수 있게 한다(기본은 P1 3종). balanced10 전략은 10종이 있어야 의미가 있다.
+const towers = flag('towers', '') === 'all' ? sim.TOWER_IDS : undefined;
 const accs = list('acc', '0.6,0.8,0.95').map(Number);
 const seeds = Number(flag('seeds', 6));
 const readSec = Number(flag('read', 12));
@@ -28,7 +30,7 @@ const r1 = x => Math.round(x * 10) / 10, r2 = x => Math.round(x * 100) / 100;
 const started = performance.now();
 const rows = [];
 for (const mapId of maps) for (const difficulty of diffs) for (const strategy of strats) for (const accuracy of accs) {
-  const rs = Array.from({ length: seeds }, (_, i) => sim.simulateRun({ mapId, difficulty, accuracy, readSec, strategy, seed: i + 1, maxWaves, balance: BALANCE }));
+  const rs = Array.from({ length: seeds }, (_, i) => sim.simulateRun({ mapId, difficulty, accuracy, readSec, strategy, seed: i + 1, maxWaves, balance: BALANCE, ...(towers ? { towers } : {}) }));
   const bossTotal = rs.reduce((a, r) => a + r.bossKills + r.bossLeaks, 0);
   const waves = rs.map(r => r.completedWave);
   rows.push({
@@ -61,8 +63,11 @@ if (base && readSec === 12) checks.push(['Normal 초보형 80% 한 판 15~25분'
 const hard = find('Hard', 'novice', 0.8);
 if (hard) { const [n, d] = hard.wave1Fail.split('/').map(Number); checks.push(['Hard 초보형 80% 1웨이브 패배 30% 이하', hard.wave1Fail, n / d <= 0.3]); }
 for (const diff of diffs) {
-  const f = find(diff, 'focused', 0.8), b = find(diff, 'balanced', 0.8);
-  if (f && b) checks.push([`${diff} 궁수 집중이 균형보다 1웨이브 넘게 앞서지 않음`, `${median(f._waves)} vs ${median(b._waves)}`, median(f._waves) - median(b._waves) <= 1]);
+  const f = find(diff, 'focused', 0.8);
+  for (const bal of ['balanced', 'balanced10']) {
+    const b = find(diff, bal, 0.8);
+    if (f && b) checks.push([`${diff} 궁수 집중이 ${bal}보다 1웨이브 넘게 앞서지 않음`, `${median(f._waves)} vs ${median(b._waves)}`, median(f._waves) - median(b._waves) <= 1]);
+  }
 }
 for (const diff of diffs) for (const strat of strats) {
   const lo = find(diff, strat, 0.6), hi = find(diff, strat, 0.95);
