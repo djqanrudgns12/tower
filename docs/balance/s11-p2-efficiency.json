@@ -1,0 +1,136 @@
+{
+  "measuredAt": "2026-10-29",
+  "rule": "PRD §7.5 ①: 의도한 상황에서 같은 골드의 궁수보다 15% 이상",
+  "rows": [
+    {
+      "id": "mage-shell",
+      "intent": "마법탑 · 껍질형",
+      "required": true,
+      "subjectPer100": 387,
+      "baselinePer100": 277,
+      "gold": [
+        95,
+        60
+      ],
+      "ratio": 1.4,
+      "pass": true
+    },
+    {
+      "id": "mage-armored",
+      "intent": "마법탑 · 단단한 정예",
+      "required": true,
+      "subjectPer100": 387,
+      "baselinePer100": 331,
+      "gold": [
+        95,
+        60
+      ],
+      "ratio": 1.17,
+      "pass": true
+    },
+    {
+      "id": "cannon-dense",
+      "intent": "포탑 · 밀집",
+      "required": true,
+      "subjectPer100": 576,
+      "baselinePer100": 280,
+      "gold": [
+        100,
+        60
+      ],
+      "ratio": 2.06,
+      "pass": true
+    },
+    {
+      "id": "flame-dense",
+      "intent": "화염탑 · 밀집",
+      "required": true,
+      "subjectPer100": 601,
+      "baselinePer100": 280,
+      "gold": [
+        130,
+        60
+      ],
+      "ratio": 2.15,
+      "pass": true
+    },
+    {
+      "id": "spear-choke",
+      "intent": "창병초소 · 길목",
+      "required": true,
+      "subjectPer100": 490,
+      "baselinePer100": 413,
+      "gold": [
+        70,
+        60
+      ],
+      "ratio": 1.19,
+      "pass": true
+    },
+    {
+      "id": "banner-group",
+      "intent": "깃발초소 · 강화 궁수 셋 묶음(더한 골드당)",
+      "required": true,
+      "subjectPer100": 143,
+      "baselinePer100": 480,
+      "gold": [
+        100,
+        60
+      ],
+      "ratio": 0.3,
+      "pass": false
+    },
+    {
+      "id": "crossbow-armored",
+      "intent": "석궁탑 · 단단한 정예",
+      "required": false,
+      "subjectPer100": 432,
+      "baselinePer100": 331,
+      "gold": [
+        100,
+        60
+      ],
+      "ratio": 1.31,
+      "pass": true
+    },
+    {
+      "id": "lightning-dense",
+      "intent": "번개탑 · 밀집",
+      "required": false,
+      "subjectPer100": 245,
+      "baselinePer100": 280,
+      "gold": [
+        150,
+        60
+      ],
+      "ratio": 0.88,
+      "pass": false
+    },
+    {
+      "id": "guardian-line",
+      "intent": "수호기사 · 기본 줄",
+      "required": false,
+      "subjectPer100": 269,
+      "baselinePer100": 413,
+      "gold": [
+        180,
+        60
+      ],
+      "ratio": 0.65,
+      "pass": false
+    },
+    {
+      "id": "frost-line",
+      "intent": "서리탑 · 기본 줄(보조, 직접 피해만)",
+      "required": false,
+      "subjectPer100": 139,
+      "baselinePer100": 413,
+      "gold": [
+        75,
+        60
+      ],
+      "ratio": 0.34,
+      "pass": false
+    }
+  ]
+}

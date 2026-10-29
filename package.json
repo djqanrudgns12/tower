@@ -18,6 +18,7 @@
     "validate:content": "vitest run tests/unit/content.test.ts",
     "validate:assets": "vitest run tests/unit/content.test.ts -t manifest",
     "simulate:balance": "node tools/balance-sim.mjs",
+    "simulate:towers": "node tools/tower-efficiency.mjs",
     "build:bank": "node tools/build-bank.mjs",
     "fetch-evidence": "node tools/fetch-evidence.mjs",
     "verify": "npm run typecheck && npm run lint && npm run test && npm run validate:plan && npm run validate:content",

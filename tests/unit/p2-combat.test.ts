@@ -164,12 +164,13 @@ describe('P2 Lv3 분기(PRD §7.3, §20.3) — Lv3 레벨 배율 1.7 위에 분�
     const a = arena([['mage', 8, 2]]);
     branchTo(a.s, 'mage', 'A');
     place(a.s, [{ progress: 8000 }]);
-    expect(firstHit(a.ctx, a.s)).toBe(33320);
+    // 0.4.2: 마법 피해 16 → Lv3 27200 × 집중 1.4 = 38080.
+    expect(firstHit(a.ctx, a.s)).toBe(38080);
 
     const b = arena([['mage', 8, 2]]);
     branchTo(b.s, 'mage', 'B');
     place(b.s, [{ progress: 9500 }, { progress: 9100 }, { progress: 8900 }, { progress: 8700 }]);
-    expect(allHits(b.ctx, b.s, 40)).toEqual([[100, 17850], [101, 17850], [102, 17850]]);
+    expect(allHits(b.ctx, b.s, 40)).toEqual([[100, 20400], [101, 20400], [102, 20400]]); // 27200 × 0.75
   });
 
   it('번개 A 연쇄: 최대 5대상·65%씩 / B 충격: 2대상·80%, 첫 대상 0.3초(9틱) 기절', () => {
@@ -208,12 +209,12 @@ describe('P2 Lv3 분기(PRD §7.3, §20.3) — Lv3 레벨 배율 1.7 위에 분�
     branchTo(a.s, 'spear', 'A');
     // 첫 대상 (8.6, 1.5)칸, 같은 선분 안 (8.5, 1.5)칸, 선분 밖 (8.0, 1.5)칸.
     place(a.s, [{ progress: 8100 }, { progress: 8000 }, { progress: 7500 }]);
-    expect(hits(ticks(a.ctx, a.s, 1))).toEqual([[100, 10200], [101, 10200]]);
+    expect(hits(ticks(a.ctx, a.s, 1))).toEqual([[100, 11900], [101, 11900]]); // 0.4.2: 창병 피해 7 → Lv3 11900
 
     const b = arena([['spear', 8, 2]]);
     branchTo(b.s, 'spear', 'B');
     place(b.s, [{ progress: 8000, physicalResistBP: 3500 }]);
-    expect(hits(ticks(b.ctx, b.s, 1))).toEqual([[100, 10098]]);
+    expect(hits(ticks(b.ctx, b.s, 1))).toEqual([[100, 11781]]); // 11900 × 1.2 = 14280, 저항 3500의 절반 → × 0.825
   });
 
   it('수호기사 A 결투: 정예·대장 ×1.6 / B 수호 일격: 첫 대상 중심 0.8칸, 거리순 최대 3대상에 각각 80%', () => {

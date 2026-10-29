@@ -20,7 +20,7 @@
 | P1-REST | **완료** — A26 철회 목록·설치 자리 목록·문맥 손실 복구·첫 연습 판에 이어 소리(2026-10-29, WebAudio 합성, `src/ui/audio/sound.ts`) | 총괄 | 제작 음원으로 바꾸는 일은 공개 전 별도 작업 | — |
 | QR-PRACTICE | 계획 | Codex·Claude 검토 | 연습 전용 4문항(`src/content/questions/practice.json`) 공동검수 | 공개 전 |
 | [ART-002](work-packages/ART-002/RETURN.md) | **ACCEPTED** — 11장 HOLD 0, 실제 전투(1440×900)에서 지면 조립으로 확인해 모두 `integrated_pass`. 총괄이 agent-bridge로 Codex에 세 번 나눠 전달(15분 상한) | Codex 이미지 | `asset-source/incoming/ART-002/**` — 정원 지면 질감·설치 받침·작은 장식 11장 | ART-SAMPLE-001 ✓ |
-| CORE-P2 | **진행 중**(2026-10-29) — P2-1 엔진, P2-2 분기 14개(밸런스 `0.4.1-candidate`) 완료. P2-3 렌더러 일부: 10종 그림 규격·임시 그림, 깃발 무기 없음, 즉발 효과(번개 선·화염 불꽃·근접 섬광)와 화상 효과, 즉발 발사음, 관리 패널의 깃발 오라 표시, 7종 설명 문구. P2 타워는 아직 게임에서 고를 수 없다(기본값 `pilot.towers` 3종) — S11 재측정(P2-4)과 ART-003 인수 뒤 연다 | 총괄 | `src/domain/**`, `src/game/**`, `src/ui/game/**` | G2 ✓(실기기 제외) |
+| CORE-P2 | **진행 중**(2026-10-29) — P2-1 엔진, P2-2 분기 14개, P2-3 렌더러 기반, P2-4 S11 타워 효율(`npm run simulate:towers`) 완료. 밸런스 `0.4.2-candidate`(마법탑 95골드·16, 창병 70골드·7). **깃발은 PRD §7.5 ① 미달(0.30) — 사용자 결정 대기**. 남은 것: S11 기준 ②(10종 전략), ART-003 인수, P2 타워 게임에서 열기 | 총괄 | `src/domain/**`, `src/game/**`, `src/ui/game/**`, `tools/sim/**` | G2 ✓(실기기 제외) |
 | [QP-001](work-packages/QP-001/RETURN.md) / [QR-007·008](work-packages/QR-007/REQUEST.md) | **3/4 승인** — 0001~0003 승인, 0004(빠르다)는 비슷한말 보기 ‘날쌔요’가 표제어보다 어렵다는 두 검토자 grade uncertain으로 격리. revision 3을 Argon에 다시 맡긴다(네 문항이 모두 승인돼야 연습 은행이 바뀐다) | Argon 4·Codex·Claude | `content-source/batches/QP-001/**` | — |
 | [ART-003](work-packages/ART-003/REQUEST.md) | **RUNNING**(2026-10-29 Codex, 브리지 네 번 중 1/4) — P2 타워 7종 몸체·무기 13장 | Codex 이미지 | `asset-source/incoming/ART-003/**` | ART-002 ✓ |
 
