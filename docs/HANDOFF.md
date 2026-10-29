@@ -37,7 +37,7 @@ Node 24(`.node-version`). 브라우저 흐름까지 보려면 `npm run test:e2e`
 | A26 철회 목록 | 완료 | `src/content/retractions.json` |
 | 설치 자리 목록·전장 키보드(§12.4) | 완료 | `src/ui/game/SlotList.tsx` |
 | WebGL 문맥 손실 복구(§12.7) | 완료 | `RunController.rendererLost/rendererRestored` |
-| 첫 연습 판(§12.2) | 완료. 연습 전용 4문항은 공동검수 전 | `practiceContext`, `src/content/questions/practice.json` |
+| 첫 연습 판(§12.2) | 완료. 연습 전용 4문항 공동검수 통과, 공개본 `pub-c5d049f5a4f3` | `practiceContext`, `src/content/questions/practice.json` |
 | 소리 | **P1 구현(2026-10-29).** 음원 파일 없이 WebAudio로 합성: 발사(타워별)·처치·누출·정답·오답·모르겠어요·웨이브 완료·고비 예고와 느린 배경 선율. 수치는 `product.defaults.v0.5.json` `audio`(배경 20%·효과 40%·발사 4채널·전체 8채널·같은 발사 80ms). 첫 입력 뒤 켜고, 정지·끝에서 멈추며, 정지 화면 ‘소리’로 끈다(설정 `soundOn`). 제작 음원·루프 이음 검수는 공개 전 별도 | `src/ui/audio/sound.ts`, `tests/unit/sound.test.ts` |
 | 2차 작업 QR-001·QR-002·RIG-001 | **수합 완료(ACCEPTED).** RIG 연결 4건은 총괄이 `BattleScene.ts`·`assets.ts`에 넣었다. 작업 폴더 `../tower-wp/{QR-001,QR-002,RIG-001}`은 수합을 커밋한 뒤 지운다 | [작업 게시판](EXECUTION_BOARD.md), [RIG-001 반환](work-packages/RIG-001/RETURN.md) |
 | 3차 작업 ART-002·Q20-002 | **수합 완료.** ART-002는 ACCEPTED, Q20-002는 검토 대기. 지면은 `art.ts` `composeGroundArt`가 맵 데이터로 조립한다 | [ART-002 반환](work-packages/ART-002/RETURN.md), [Q20-002 반환](work-packages/Q20-002/RETURN.md) |

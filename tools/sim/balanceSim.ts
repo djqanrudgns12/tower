@@ -7,6 +7,7 @@ import { intBelow, shuffle, u32, type Rng } from '../../src/domain/rng';
 import { advanceTick, applyCommand, createRun, type Command } from '../../src/domain/run';
 import { attackIntervalTicks, attacks, bannerAura, buildCost, needsBranch, towerStats, upgradeCost } from '../../src/domain/towers';
 import type { Phase, Tower } from '../../src/domain/types';
+import { measure, STREAMS } from './towerEfficiency';
 
 // S11 엔진 밸런스 시뮬레이터(PRD §17.3, §18.1). 판정은 제품 domain 엔진(createRun·applyCommand·advanceTick)이 하고,
 // 여기서는 가상 플레이어(읽기 시간·정답률·돈 쓰는 습관)만 흉내 낸다. 학생 실측이 아니다.
@@ -21,7 +22,17 @@ interface Strategy {
   pattern: TowerId[];
   /** 타워가 이만큼 생기기 전에는 강화하지 않는다. */
   upgradeAfterTowers: number;
+  /**
+   * 'sequence'는 pattern 차례대로 짓고 그 칸은 slotOrder 순서다. 'round'는 pattern에서 덜 지은 종류들 가운데
+   * 그 종류에 가장 좋은 빈칸에서 가성비가 가장 좋은 것을 짓는다(가치가 낮게 잡힌 차례 하나에 막혀 강화만 하지 않게).
+   */
+  pick?: 'sequence' | 'round';
+  /** 거래 가치를 보는 눈(value 참고). 없으면 'sketch'. */
+  judge?: Judge;
 }
+
+/** 'sketch'는 balance-sketch에서 이어받은 어림, 'engine'은 제품 엔진으로 잰 피해다. */
+export type Judge = 'sketch' | 'engine';
 
 // tools/balance-sketch.mjs의 가상 플레이어를 이어받았다. 마법탑은 P1 범위 밖이라 뺐다.
 export const STRATEGIES: Record<StrategyId, Strategy> = {
@@ -29,7 +40,7 @@ export const STRATEGIES: Record<StrategyId, Strategy> = {
   balanced: { attentionMs: 20000, randomSlots: false, pattern: ['archer', 'archer', 'cannon', 'frost', 'archer', 'cannon', 'archer', 'cannon'], upgradeAfterTowers: 0 },
   focused: { attentionMs: 20000, randomSlots: false, pattern: ['archer'], upgradeAfterTowers: 0 },
   /** P2: 10종을 고르게 쓰는 균형 전략(PRD §7.5 ②의 비교 대상). 지을 수 없는 종류(수호기사 2기째 등)는 건너뛴다. */
-  balanced10: { attentionMs: 20000, randomSlots: false, pattern: ['archer', 'mage', 'cannon', 'spear', 'frost', 'lightning', 'archer', 'flame', 'crossbow', 'guardian', 'banner', 'cannon'], upgradeAfterTowers: 0 },
+  balanced10: { attentionMs: 20000, randomSlots: false, pattern: ['archer', 'mage', 'cannon', 'spear', 'frost', 'lightning', 'archer', 'flame', 'crossbow', 'guardian', 'banner', 'cannon'], upgradeAfterTowers: 0, pick: 'round', judge: 'engine' },
 };
 
 export interface SimOptions {
@@ -48,6 +59,8 @@ export interface SimOptions {
   towers?: TowerId[];
   /** 조정 후보를 잴 때 쓰는 밸런스. 없으면 계약 파일 그대로. */
   balance?: Balance;
+  /** 전략의 judge 대신 쓸 눈(모든 전략을 같은 눈으로 견줄 때). */
+  judge?: Judge;
   /** 거래·답안 명령을 내기 직전에 부른다(가상 플레이어 추적용). */
   onCommand?: (wave: number, gold: number, cmd: Command) => void;
 }
@@ -132,21 +145,36 @@ function coverage(ctx: GameContext, slotId: string, range: number, cache: Map<st
   return n / 10;
 }
 
+const measured = new WeakMap<Balance, Map<string, number>>();
+
 /**
- * 가상 플레이어가 보는 대략의 가치: 초당 피해 × 덮는 경로. 범위·부채꼴 ×2, 감속 +6(balance-sketch와 같은 어림).
- * P2: 연쇄는 대상 수만큼 감쇠 합, 선분 ×1.3, 화상은 초당 화상 피해를 더하고, 정예·대장 배율은 ×1.1로 어림한다.
- * 깃발은 반경 안 공격 타워 가치에 오라 비율을 곱한 합이다(towers를 넘길 때만).
+ * 가상 플레이어가 보는 가치. 깃발은 반경 안 공격 타워 가치에 오라 비율을 곱한 합이다(towers를 넘길 때만).
+ * sketch: 초당 피해 × 덮는 경로. 범위·부채꼴 ×2, 감속 +6(balance-sketch와 같은 어림). P2: 연쇄는 대상 수만큼 감쇠 합, 선분 ×1.3,
+ *   화상은 초당 화상 피해를 더하고, 정예·대장 배율은 ×1.1로 어림한다. 덮는 경로에 비례해서 짧은 사거리 타워(창병·화염·수호기사)를 크게 낮춰 본다.
+ * engine: 그 칸에 그 타워 하나만 두고 기본 줄(STREAMS.line)을 한 번 통과시켰을 때 제품 엔진이 준 피해(HP, 직접+화상).
+ *   감속은 다른 타워의 사거리 안 체류를 늘리므로 감속 비율만큼 더 쳐 준다.
  */
-function value(ctx: GameContext, type: TowerId, level: number, branch: BranchId | null, slotId: string, cache: Map<string, number>, towers: readonly Tower[] = []): number {
+function value(ctx: GameContext, judge: Judge, type: TowerId, level: number, branch: BranchId | null, slotId: string, cache: Map<string, number>, towers: readonly Tower[] = []): number {
   const b = ctx.balance;
+  const slot = ctx.map.slots.find(x => x.id === slotId)!;
   if (!attacks(b, type)) {
-    const slot = ctx.map.slots.find(x => x.id === slotId)!;
     const aura = bannerAura(b, { type, level, branch });
     const r = b.towers[type].rangeMilli;
     return towers.filter(t => attacks(b, t.type) && dist2(t.x, t.y, center(slot.x), center(slot.y)) <= r * r)
-      .reduce((sum, t) => sum + value(ctx, t.type, t.level, t.branch, t.slotId, cache) * (aura.damageBP + aura.speedBP) / 10000, 0);
+      .reduce((sum, t) => sum + value(ctx, judge, t.type, t.level, t.branch, t.slotId, cache) * (aura.damageBP + aura.speedBP) / 10000, 0);
   }
   const st = towerStats(b, type, level, branch);
+  if (judge === 'engine') {
+    let byKey = measured.get(b);
+    if (!byKey) { byKey = new Map(); measured.set(b, byKey); }
+    const key = `${ctx.map.id}/${slotId}/${type}/${level}/${branch}`;
+    let v = byKey.get(key);
+    if (v === undefined) {
+      v = (measure([{ type, slot: [slot.x, slot.y], level, branch }], STREAMS.line, b, ctx.map.id).damage / 1000) * (1 + st.slowBP / 10000);
+      byKey.set(key, v);
+    }
+    return v;
+  }
   const perSec = (st.damage / 1000) * (TICK_HZ / attackIntervalTicks(b, st, 0));
   let mult = st.splashRadius > 0 || st.cone ? 2 : st.lineWidth > 0 ? 1.3 : 1;
   if (st.chainRadius > 0) { mult = 0; for (let k = 0; k < st.maxTargets; k++) mult += (st.chainFalloffBP / 10000) ** k; mult = 1 + (mult - 1) * 0.5; }
@@ -164,6 +192,7 @@ export function simulateRun(opt: SimOptions): SimResult {
   });
   const strat = STRATEGIES[opt.strategy];
   const pattern = strat.pattern.filter(t => towers.includes(t));
+  const judge = opt.judge ?? strat.judge ?? 'sketch';
   // 플레이어의 선택은 엔진 난수와 다른 흐름을 쓴다. 같은 seed면 같은 판이 나온다.
   const rng: Rng = { s: (opt.seed * 2654435761 + 0x5bd1e995) >>> 0 || 1 };
   const cache = new Map<string, number>();
@@ -187,18 +216,27 @@ export function simulateRun(opt: SimOptions): SimResult {
   const spend = () => {
     for (;;) {
       const options: Array<{ cost: number; gain: number; cmd: Command }> = [];
-      const free = slotOrder.find(id => !s.towers.some(t => t.slotId === id));
-      if (free && pattern.length) {
+      const frees = slotOrder.filter(id => !s.towers.some(t => t.slotId === id));
+      const canBuild = (type: TowerId) => { const max = ctx.balance.towers[type].maxOnField; return !max || s.towers.filter(t => t.type === type).length < max; };
+      if (frees.length && strat.pick === 'round') {
+        // pattern에 나온 횟수 대비 지은 수가 가장 적은 종류들만 후보로 두고, 종류마다 가치가 가장 큰 빈칸을 고른다.
+        const share = (type: TowerId) => s.towers.filter(t => t.type === type).length / pattern.filter(x => x === type).length;
+        const kinds = [...new Set(pattern)].filter(canBuild);
+        const least = Math.min(...kinds.map(share));
+        for (const type of kinds.filter(k => share(k) === least)) {
+          const slotId = frees.reduce((best, id) => (value(ctx, judge, type, 1, null, id, cache, s.towers) > value(ctx, judge, type, 1, null, best, cache, s.towers) ? id : best));
+          options.push({ cost: buildCost(ctx.balance, type), gain: value(ctx, judge, type, 1, null, slotId, cache, s.towers), cmd: { type: 'build', slotId, tower: type } });
+        }
+      } else if (frees.length && pattern.length) {
         // 차례의 종류를 지을 수 없으면(동시 1기 제한) 다음 종류로 넘어간다.
-        const canBuild = (type: TowerId) => { const max = ctx.balance.towers[type].maxOnField; return !max || s.towers.filter(t => t.type === type).length < max; };
         const type = Array.from({ length: pattern.length }, (_, k) => pattern[(s.towers.length + k) % pattern.length]!).find(canBuild);
-        if (type) options.push({ cost: buildCost(ctx.balance, type), gain: value(ctx, type, 1, null, free, cache, s.towers), cmd: { type: 'build', slotId: free, tower: type } });
+        if (type) options.push({ cost: buildCost(ctx.balance, type), gain: value(ctx, judge, type, 1, null, frees[0]!, cache, s.towers), cmd: { type: 'build', slotId: frees[0]!, tower: type } });
       }
       if (s.towers.length >= strat.upgradeAfterTowers) for (const t of s.towers) {
         const cost = upgradeCost(ctx.balance, t.type, t.level);
         if (cost === null) continue;
         const branch = needsBranch(ctx.balance, t.level) ? BRANCH : undefined;
-        const gain = value(ctx, t.type, t.level + 1, branch ?? t.branch, t.slotId, cache, s.towers) - value(ctx, t.type, t.level, t.branch, t.slotId, cache, s.towers);
+        const gain = value(ctx, judge, t.type, t.level + 1, branch ?? t.branch, t.slotId, cache, s.towers) - value(ctx, judge, t.type, t.level, t.branch, t.slotId, cache, s.towers);
         options.push({ cost, gain, cmd: branch ? { type: 'upgrade', towerId: t.id, branch } : { type: 'upgrade', towerId: t.id } });
       }
       // 가성비가 가장 좋은 것 하나를 노리고, 돈이 모자라면 모은다.

@@ -9,7 +9,7 @@ import { simContext } from './balanceSim';
 // 제품 domain 엔진으로, 죽지 않는 적 줄을 정한 간격으로 한 번 통과시키며 타워(묶음)가 준 피해(직접+화상)를 골드로 나눈다.
 // 적이 죽지 않으므로 처치 보상·표적 바뀜이 섞이지 않고, 같은 줄을 다른 타워에 똑같이 보낸다.
 
-export interface Placement { type: TowerId; slot: [number, number]; level?: number; branch?: BranchId }
+export interface Placement { type: TowerId; slot: [number, number]; level?: number; branch?: BranchId | null }
 export interface Stream { kind: EnemyKind; elite: EliteId | null; count: number; spacingMs: number }
 
 export const STREAMS = {
@@ -24,8 +24,8 @@ export const STREAMS = {
 } satisfies Record<string, Stream>;
 
 /** 놓인 타워 묶음이 줄 하나에 준 총피해(milli-HP)와 들인 골드. */
-export function measure(placements: Placement[], stream: Stream, balance: Balance = BALANCE): { damage: number; gold: number } {
-  const ctx = simContext('garden_u', 'Normal', balance);
+export function measure(placements: Placement[], stream: Stream, balance: Balance = BALANCE, mapId = 'garden_u'): { damage: number; gold: number } {
+  const ctx = simContext(mapId, 'Normal', balance);
   const s = createRun(ctx, {
     runId: 'eff', playerId: 'sim', nickname: '효율', grade: 3, difficulty: 'Normal', mapId: ctx.map.id, seed: 1,
     bankId: 'sim', bankVersion: 'sim', contentMode: 'development', availableTowers: [...TOWER_IDS], rankingEligibility: 'personal', createdAt: '2026-10-29T00:00:00.000Z',

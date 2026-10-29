@@ -24,13 +24,16 @@ const accs = list('acc', '0.6,0.8,0.95').map(Number);
 const seeds = Number(flag('seeds', 6));
 const readSec = Number(flag('read', 12));
 const maxWaves = Number(flag('max-waves', 60));
+// --judge engine|sketch: 모든 전략이 같은 눈으로 거래한다(기본은 전략마다 정한 눈, balanced10만 engine).
+const judge = flag('judge', null);
+if (judge && !['engine', 'sketch'].includes(judge)) throw new Error(`--judge는 engine 또는 sketch: ${judge}`);
 
 const median = a => { const v = [...a].sort((x, y) => x - y); return v.length % 2 ? v[(v.length - 1) / 2] : (v[v.length / 2 - 1] + v[v.length / 2]) / 2; };
 const r1 = x => Math.round(x * 10) / 10, r2 = x => Math.round(x * 100) / 100;
 const started = performance.now();
 const rows = [];
 for (const mapId of maps) for (const difficulty of diffs) for (const strategy of strats) for (const accuracy of accs) {
-  const rs = Array.from({ length: seeds }, (_, i) => sim.simulateRun({ mapId, difficulty, accuracy, readSec, strategy, seed: i + 1, maxWaves, balance: BALANCE, ...(towers ? { towers } : {}) }));
+  const rs = Array.from({ length: seeds }, (_, i) => sim.simulateRun({ mapId, difficulty, accuracy, readSec, strategy, seed: i + 1, maxWaves, balance: BALANCE, ...(towers ? { towers } : {}), ...(judge ? { judge } : {}) }));
   const bossTotal = rs.reduce((a, r) => a + r.bossKills + r.bossLeaks, 0);
   const waves = rs.map(r => r.completedWave);
   rows.push({
@@ -52,6 +55,7 @@ for (const mapId of maps) for (const difficulty of diffs) for (const strategy of
 
 console.log(`S11 엔진 시뮬레이션 · ${BALANCE.balanceVersion} · 성장 ${BALANCE.waves.hpGrowthPercent}% · 읽기 ${readSec}초 · seed ${seeds} · 상한 ${maxWaves}웨이브 · ${r1((performance.now() - started) / 1000)}초`);
 if (sets.length) console.log(`조정 후보: ${sets.join(' · ')}`);
+if (judge) console.log(`거래 가치: 모든 전략 ${judge}`);
 console.log('제품 엔진으로 판정한 가상 플레이어 결과다. 학생 실측·밸런스 승인이 아니다.');
 console.table(rows.map(row => Object.fromEntries(Object.entries(row).filter(([k]) => !k.startsWith('_')))));
 
@@ -81,6 +85,6 @@ if (checks.length) {
 const out = flag('out', null);
 if (out) {
   fs.mkdirSync(path.dirname(path.resolve(root, out)), { recursive: true });
-  fs.writeFileSync(path.resolve(root, out), `${JSON.stringify({ balanceVersion: BALANCE.balanceVersion, overrides: sets, readSec, seeds, maxWaves, generatedAt: new Date().toISOString(), rows, checks }, null, 2)}\n`);
+  fs.writeFileSync(path.resolve(root, out), `${JSON.stringify({ balanceVersion: BALANCE.balanceVersion, overrides: sets, judge: judge ?? 'strategy', readSec, seeds, maxWaves, generatedAt: new Date().toISOString(), rows, checks }, null, 2)}\n`);
   console.log(`\n저장: ${out}`);
 }
