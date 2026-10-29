@@ -86,6 +86,10 @@ function coneOf(type: TowerId, degrees: number | undefined): boolean {
 /** 직접 공격하는 타워인가(깃발은 공격하지 않는다). */
 export const attacks = (b: Balance, type: TowerId) => b.towers[type].damageType !== 'none';
 
+/** 화면의 범위 원: 공격 타워는 사거리, 깃발은 오라 반경(PRD §12.4). */
+export const reachMilli = (b: Balance, type: TowerId, level: number, branch: BranchId | null) =>
+  attacks(b, type) ? towerStats(b, type, level, branch).range : b.towers[type].rangeMilli;
+
 /**
  * 깃발 오라의 직접 피해 보너스(PRD §7.1·§7.3·§20.2). 버프 범위는 타워 바닥 중심 간 거리로 판정하고,
  * 같은 종류의 깃발 효과는 최고값만, 전체 외부 피해 보너스는 상한까지만 준다. 깃발 자신·다른 깃발은 받지 않는다.

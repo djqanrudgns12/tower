@@ -1,5 +1,5 @@
 import type { AssetEntry, AssetManifest } from '../contracts/assetManifest';
-import type { EnemyKind, TowerId } from '../contracts/balance';
+import { TOWER_IDS, type EnemyKind, type TowerId } from '../contracts/balance';
 
 // 에셋 ID와 표시 규격. Codex 이미지 작업(ART-SAMPLE)은 같은 ID·기준점으로 PNG를 납품하고,
 // 납품 전에는 art.ts가 같은 ID로 임시 그림을 만든다. 렌더러 코드는 출처를 구분하지 않는다(PRD §11.2).
@@ -30,8 +30,9 @@ const ENEMY_ORIGIN: Partial<Record<EnemyKind, { x: number; y: number }>> = {};
 
 export const ASSETS = {
   ground: { key: 'map.ground', width: WORLD_W * TEX, height: WORLD_H * TEX, originX: 0, originY: 0, displayCells: 15 },
-  towers: { archer: tower('archer'), cannon: tower('cannon'), frost: tower('frost') } as Partial<Record<TowerId, AssetSpec>>,
-  weapons: { archer: weapon('archer'), cannon: weapon('cannon'), frost: weapon('frost') } as Partial<Record<TowerId, AssetSpec>>,
+  towers: Object.fromEntries(TOWER_IDS.map(id => [id, tower(id)])) as Record<TowerId, AssetSpec>,
+  /** 깃발초소는 공격하지 않아 무기가 없다. */
+  weapons: Object.fromEntries(TOWER_IDS.filter(id => id !== 'banner').map(id => [id, weapon(id)])) as Partial<Record<TowerId, AssetSpec>>,
   enemy: (kind: EnemyKind, frame: 0 | 1): AssetSpec => ({ key: `enemy.${kind}.${frame}`, width: kind === 'boss' ? 192 : 128, height: kind === 'boss' ? 192 : 128, originX: ENEMY_ORIGIN[kind]?.x ?? 0.5, originY: ENEMY_ORIGIN[kind]?.y ?? 0.78, displayCells: ENEMY_DISPLAY[kind] }),
   projectile: { arrow: 'fx.arrow', ball: 'fx.ball', shard: 'fx.shard', spark: 'fx.spark', puff: 'fx.puff' },
   badge: { armored: 'badge.armored', swift: 'badge.swift' },

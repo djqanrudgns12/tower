@@ -10,10 +10,17 @@ export const DIFFICULTY_COPY: Record<DifficultyId, { label: string; hint: string
   Crazy: { label: '아주 어려움', hint: '성문이 아주 약해요' },
 };
 
-export const TOWER_COPY: Partial<Record<TowerId, { role: string; good: string }>> = {
+export const TOWER_COPY: Record<TowerId, { role: string; good: string }> = {
   archer: { role: '빠르게 쏘는 화살', good: '처음 놓기 좋아요' },
+  crossbow: { role: '멀리서 세게 쏘는 쇠뇌', good: '단단한 적에게 좋아요' },
   cannon: { role: '터져서 여러 마리', good: '적이 몰린 곳에 좋아요' },
+  mage: { role: '마법으로 쏘는 구슬', good: '껍질이 단단한 적에게 좋아요' },
   frost: { role: '맞은 적을 느리게', good: '다른 타워와 함께 쓰면 좋아요' },
+  lightning: { role: '여러 적에게 튀는 번개', good: '적이 줄지어 올 때 좋아요' },
+  flame: { role: '앞쪽 여러 적을 태워요', good: '길 가까이 놓으면 좋아요' },
+  spear: { role: '아주 빠르게 찌르는 창', good: '길 바로 옆에 좋아요' },
+  guardian: { role: '강한 기사 한 명', good: '한 기만 놓을 수 있어요' },
+  banner: { role: '주변 타워를 돕는 깃발', good: '강한 타워 옆에 좋아요' },
 };
 
 export const PAUSE_COPY: Record<PauseReason, string> = {

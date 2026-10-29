@@ -1,10 +1,10 @@
 import Phaser from 'phaser';
 import { assetManifestSchema } from '../contracts/assetManifest';
-import type { TowerId } from '../contracts/balance';
+import { TOWER_IDS, type TowerId } from '../contracts/balance';
 import { DEFAULTS } from '../content';
 import type { DomainEvent } from '../domain/events';
 import { positionAt } from '../domain/geometry';
-import { towerStats } from '../domain/towers';
+import { reachMilli } from '../domain/towers';
 import type { Enemy, RunState } from '../domain/types';
 import { acceptsHit, enemyPose, HIT_MS } from './animation/pose';
 import { composeGroundArt, drawGround, drawSprites, isTreeCell, PALETTE } from './art';
@@ -12,12 +12,14 @@ import { applyManifest, ASSETS, CELL_PX, TEX, WORLD_H, WORLD_W } from './assets'
 import type { FieldBridge } from './bridge';
 
 const toWorld = (milli: number) => (milli * CELL_PX) / 1000;
+/** 돌지 않고 떠 있는 무기(서리 결정·번개 구슬). */
+const FIXED_WEAPON = new Set<TowerId>(['frost', 'lightning']);
 const DEPTH = { ground: 0, mood: 1, overlay: 5, units: 10, projectiles: 2000, fx: 2100, ui: 3000 };
 /** deco.stele.r1 원화에서 비석 면 가운데의 세로 위치(원화 높이 대비, 면은 약 28~130/192px). */
 const STELE_FACE_Y = 0.41;
 
 interface EnemyView { sprite: Phaser.GameObjects.Image; badge: Phaser.GameObjects.Image | null; prev: number; cur: number; phase: number; flashUntil: number; hitAt: number | null; facing: 1 | -1 }
-interface TowerView { body: Phaser.GameObjects.Image; weapon: Phaser.GameObjects.Image; pips: Phaser.GameObjects.Graphics; level: number; branch: string | null; recoilUntil: number; angle: number }
+interface TowerView { body: Phaser.GameObjects.Image; weapon: Phaser.GameObjects.Image | null; pips: Phaser.GameObjects.Graphics; level: number; branch: string | null; recoilUntil: number; angle: number }
 
 /** 전장 렌더러. 도메인 상태를 읽기만 하고 판정·보상을 만들지 않는다(PRD §11.4, §13.2). */
 export class BattleScene extends Phaser.Scene {
@@ -59,7 +61,7 @@ export class BattleScene extends Phaser.Scene {
     if (!this.textures.exists(ASSETS.ground.key) && !composeGroundArt(this, map)) drawGround(this, map, has);
     drawSprites(this);
     const icons: Record<string, string> = {};
-    for (const key of ['tower.archer', 'tower.archer.weapon', 'tower.cannon', 'tower.cannon.weapon', 'tower.frost', 'tower.frost.weapon']) icons[key] = this.textures.getBase64(key);
+    for (const id of TOWER_IDS) for (const key of [`tower.${id}`, `tower.${id}.weapon`]) if (this.textures.exists(key)) icons[key] = this.textures.getBase64(key);
     this.bridge.onIcons?.(icons);
     this.add.image(0, 0, ASSETS.ground.key).setOrigin(0).setScale(1 / TEX).setDepth(DEPTH.ground);
     const decor = new Map<string, Phaser.GameObjects.Image>();
@@ -167,6 +169,11 @@ export class BattleScene extends Phaser.Scene {
         const t = this.towers.get(e.towerId);
         const shot = this.bridge.controller.state.projectiles.find(p => p.id === e.projectileId);
         if (t && shot) { t.angle = Math.atan2(shot.toY - shot.fromY, shot.toX - shot.fromX); t.recoilUntil = this.time.now + 120; }
+      } else if (e.type === 'strike') {
+        this.strikeFx(e);
+      } else if (e.type === 'burn') {
+        const v = this.enemies.get(e.enemyId);
+        if (v) this.fx(ASSETS.projectile.puff, v.sprite.x, v.sprite.y - CELL_PX * 0.3, 0.3, 0xf08a3c);
       } else if (e.type === 'leak') {
         const [gx, gy] = this.bridge.controller.ctx.map.exitCell;
         const flash = this.add.rectangle((gx + 0.5) * CELL_PX, (gy + 0.5) * CELL_PX, CELL_PX * 1.3, CELL_PX * 1.3, 0xa3352b, 0.35).setDepth(DEPTH.fx);
@@ -175,9 +182,36 @@ export class BattleScene extends Phaser.Scene {
     }
   };
 
-  private fx(key: string, x: number, y: number, scale: number) {
+  /**
+   * 즉발 공격 효과(PRD §11.4): 비행 지연 없이 그 틱에 보인다. 무기는 첫 대상 쪽으로 돌고 반동한다.
+   * 번개는 타워→대상 순서로 이어지는 짧은 선, 화염은 맞은 자리의 불꽃, 근접은 맞은 자리의 섬광이다.
+   */
+  private strikeFx(e: Extract<DomainEvent, { type: 'strike' }>) {
+    const t = this.towers.get(e.towerId);
+    const first = e.targets[0];
+    if (!first) return;
+    const fx = toWorld(e.fromX), fy = toWorld(e.fromY) - CELL_PX * 0.32;
+    if (t && !FIXED_WEAPON.has(e.towerType)) { t.angle = Math.atan2(toWorld(first.y) - fy, toWorld(first.x) - fx); t.recoilUntil = this.time.now + 120; }
+    if (e.towerType === 'lightning') {
+      const g = this.add.graphics().setDepth(DEPTH.fx);
+      const pts = [{ x: fx, y: fy - CELL_PX * 0.1 }, ...e.targets.map(p => ({ x: toWorld(p.x), y: toWorld(p.y) - 10 }))];
+      g.lineStyle(5, PALETTE.outline, 0.5);
+      for (let i = 1; i < pts.length; i++) g.lineBetween(pts[i - 1]!.x, pts[i - 1]!.y, pts[i]!.x, pts[i]!.y);
+      g.lineStyle(2.5, 0xfff3a8, 1);
+      for (let i = 1; i < pts.length; i++) g.lineBetween(pts[i - 1]!.x, pts[i - 1]!.y, pts[i]!.x, pts[i]!.y);
+      this.tweens.add({ targets: g, alpha: 0, duration: this.bridge.reducedMotion ? 60 : 160, onComplete: () => g.destroy() });
+      return;
+    }
+    for (const p of e.targets) {
+      if (e.towerType === 'flame') this.fx(ASSETS.projectile.puff, toWorld(p.x), toWorld(p.y) - 12, 0.7, 0xf08a3c);
+      else this.fx(ASSETS.projectile.spark, toWorld(p.x), toWorld(p.y) - 12, 0.5);
+    }
+  }
+
+  private fx(key: string, x: number, y: number, scale: number, tint?: number) {
     if (this.bridge.reducedMotion && key === ASSETS.projectile.puff) return;
     const img = this.add.image(x, y, key).setDepth(DEPTH.fx).setScale(scale * 0.5).setAlpha(0.95);
+    if (tint !== undefined) img.setTint(tint);
     this.tweens.add({ targets: img, scale: scale, alpha: 0, duration: this.bridge.reducedMotion ? 80 : 180, onComplete: () => img.destroy() });
   }
 
@@ -222,20 +256,21 @@ export class BattleScene extends Phaser.Scene {
       if (!v) {
         const spec = ASSETS.towers[t.type]!;
         const body = this.add.image(x, y + CELL_PX * 0.32, spec.key).setOrigin(spec.originX, spec.originY).setDisplaySize(CELL_PX * spec.displayCells, CELL_PX * spec.displayCells * (spec.height / spec.width));
-        const wspec = ASSETS.weapons[t.type]!;
-        const weapon = this.add.image(x, y - CELL_PX * 0.32, wspec.key).setDisplaySize(CELL_PX * wspec.displayCells, CELL_PX * wspec.displayCells);
+        // 깃발초소는 무기가 없다. 서리·번개 무기는 돌지 않고 떠 있다.
+        const wspec = ASSETS.weapons[t.type];
+        const weapon = wspec ? this.add.image(x, y - CELL_PX * 0.32, wspec.key).setDisplaySize(CELL_PX * wspec.displayCells, CELL_PX * wspec.displayCells) : null;
         const pips = this.add.graphics();
-        v = { body, weapon, pips, level: 0, branch: null, recoilUntil: 0, angle: t.type === 'frost' ? 0 : -Math.PI / 2 };
+        v = { body, weapon, pips, level: 0, branch: null, recoilUntil: 0, angle: FIXED_WEAPON.has(t.type) ? 0 : -Math.PI / 2 };
         this.towers.set(t.id, v);
         if (!this.bridge.reducedMotion) { body.setScale(body.scaleX * 0.96, body.scaleY * 0.96); this.tweens.add({ targets: body, scaleX: body.scaleX / 0.96, scaleY: body.scaleY / 0.96, duration: 120 }); }
       }
       const depth = DEPTH.units + y;
       v.body.setDepth(depth);
-      v.weapon.setDepth(depth + 1);
+      v.weapon?.setDepth(depth + 1);
       v.pips.setDepth(depth + 2);
       const recoil = time < v.recoilUntil && !this.bridge.reducedMotion ? 2 : 0;
-      if (t.type === 'frost') v.weapon.setPosition(x, y - CELL_PX * 0.38 + (this.bridge.reducedMotion ? 0 : Math.sin(time / 420 + t.id) * 2));
-      else v.weapon.setPosition(x - Math.cos(v.angle) * recoil, y - CELL_PX * 0.32 - Math.sin(v.angle) * recoil).setRotation(v.angle);
+      if (FIXED_WEAPON.has(t.type)) v.weapon?.setPosition(x, y - CELL_PX * 0.38 + (this.bridge.reducedMotion ? 0 : Math.sin(time / 420 + t.id) * 2));
+      else v.weapon?.setPosition(x - Math.cos(v.angle) * recoil, y - CELL_PX * 0.32 - Math.sin(v.angle) * recoil).setRotation(v.angle);
       if (v.level !== t.level || v.branch !== t.branch) {
         v.level = t.level; v.branch = t.branch;
         v.pips.clear();
@@ -250,7 +285,7 @@ export class BattleScene extends Phaser.Scene {
         }
       }
     }
-    for (const [id, v] of this.towers) if (!seen.has(id)) { v.body.destroy(); v.weapon.destroy(); v.pips.destroy(); this.towers.delete(id); }
+    for (const [id, v] of this.towers) if (!seen.has(id)) { v.body.destroy(); v.weapon?.destroy(); v.pips.destroy(); this.towers.delete(id); }
   }
 
   private syncEnemies(s: RunState, time: number, alpha: number) {
@@ -350,7 +385,7 @@ export class BattleScene extends Phaser.Scene {
     if (cell) {
       let range = 0;
       const type: TowerId | null = tower?.type ?? sel.previewType;
-      if (type) range = toWorld(towerStats(b, type, tower ? (sel.previewBranch && tower.level === 2 ? 3 : tower.level) : 1, tower ? (sel.previewBranch ?? tower.branch) : null).range);
+      if (type) range = toWorld(reachMilli(b, type, tower ? (sel.previewBranch && tower.level === 2 ? 3 : tower.level) : 1, tower ? (sel.previewBranch ?? tower.branch) : null));
       const cx = (cell.x + 0.5) * CELL_PX, cy = (cell.y + 0.5) * CELL_PX;
       if (range > 0) {
         g.fillStyle(0xf5ebd4, 0.16).fillCircle(cx, cy, range).lineStyle(2.5, 0xf5ebd4, 0.95).strokeCircle(cx, cy, range);

@@ -1,7 +1,7 @@
 import type { BranchId, TowerId } from '../../contracts/balance';
 import type { GameView, TowerView } from '../../application/view';
 import type { GameContext } from '../../domain/context';
-import { attackIntervalTicks, buildCost, needsBranch, sellRefund, towerStats, upgradeCost } from '../../domain/towers';
+import { attackIntervalTicks, attacks, bannerAura, buildCost, needsBranch, sellRefund, towerStats, upgradeCost } from '../../domain/towers';
 import type { FieldSelection } from '../../game/bridge';
 import { fmtCells, fmtDamage, fmtSeconds, TOWER_COPY, withRo } from '../copy';
 import kit from '../kit.module.css';
@@ -51,8 +51,7 @@ export function ManagementPanel(p: Props) {
   }
   if (tower) {
     const next = upgradeCost(b, tower.type, tower.level);
-    const stats = towerStats(b, tower.type, tower.level, tower.branch);
-    const after = next !== null && !needsBranch(b, tower.level) ? towerStats(b, tower.type, tower.level + 1, tower.branch) : null;
+    const delta = next !== null && !needsBranch(b, tower.level) ? strengthDelta(b, tower.type, tower.level, tower.branch) : null;
     const reason = !trading ? lock : next !== null ? shortage(next) : null;
     return (
       <div className={css.panel}>
@@ -63,7 +62,7 @@ export function ManagementPanel(p: Props) {
           <button type="button" className={`${kit.button} ${kit.primary} ${kit.block}`} disabled={!trading} onClick={() => p.onMode('branch')}>진화할 길 고르기 · {next}골드</button>
         ) : (
           <button type="button" className={`${kit.button} ${kit.primary} ${kit.block}`} disabled={!trading || p.view.gold < next} onClick={() => p.onUpgrade()}>
-            <span className={css.upgrade}><span>강화 · {next}골드</span>{after && <span className={css.delta}>힘 {fmtDamage(stats.damage)} → {fmtDamage(after.damage)}</span>}</span>
+            <span className={css.upgrade}><span>강화 · {next}골드</span>{delta && <span className={css.delta}>{delta}</span>}</span>
           </button>
         )}
         <p className={kit.reason}>{reason}</p>
@@ -124,14 +123,13 @@ function BranchChoice(p: Props & { tower: TowerView; trading: boolean; lock: str
       <p className={css.title}>{b.towers[p.tower.type].label}의 진화 길</p>
       {(['A', 'B'] as const).map(id => {
         const br = branches[id];
-        const stats = towerStats(b, p.tower.type, 3, id);
         return (
           <button key={id} type="button" className={`${css.branch} ${chosen === id ? css.picked : ''}`} aria-pressed={chosen === id} onClick={() => p.onPreviewBranch(id)}>
             <BranchMark id={id} />
             <span className={css.itemText}>
               <span className={css.name}>{br.label}</span>
               <span className={css.role}>{br.summary}</span>
-              <span className={css.role}>힘 {fmtDamage(stats.damage)} · {fmtSeconds(attackIntervalTicks(b, stats, 0))} · {fmtCells(stats.range)}</span>
+              <span className={css.role}>{statText(b, p.tower.type, 3, id)}</span>
             </span>
           </button>
         );
@@ -167,8 +165,25 @@ function TowerHeader({ tower, icons, ctx }: { tower: TowerView; icons: Record<st
   );
 }
 
+/** 강화 단추의 변화 한 줄: 공격 타워는 힘, 깃발은 주변 효과. */
+function strengthDelta(b: GameContext['balance'], type: TowerId, level: number, branch: BranchId | null): string {
+  if (!attacks(b, type)) return `${auraText(bannerAura(b, { type, level, branch }))} → ${auraText(bannerAura(b, { type, level: level + 1, branch }))}`;
+  return `힘 ${fmtDamage(towerStats(b, type, level, branch).damage)} → ${fmtDamage(towerStats(b, type, level + 1, branch).damage)}`;
+}
+
+/** 깃발 효과(PRD §7.1·§7.3): 피해 보너스 또는 공격 속도 보너스. */
+const auraText = (a: { damageBP: number; speedBP: number }) => (a.speedBP > 0 ? `주변 속도 +${a.speedBP / 100}%` : `주변 힘 +${a.damageBP / 100}%`);
+
+/** 분기 고르기의 한 줄 요약. */
+function statText(b: GameContext['balance'], type: TowerId, level: number, branch: BranchId | null): string {
+  if (!attacks(b, type)) return `${auraText(bannerAura(b, { type, level, branch }))} · ${fmtCells(b.towers[type].rangeMilli)}`;
+  const s = towerStats(b, type, level, branch);
+  return `힘 ${fmtDamage(s.damage)} · ${fmtSeconds(attackIntervalTicks(b, s, 0))} · ${fmtCells(s.range)}`;
+}
+
 function Stats({ ctx, type, level, branch }: { ctx: GameContext; type: TowerId; level: number; branch: BranchId | null }) {
   const b = ctx.balance;
+  if (!attacks(b, type)) return <p className={css.stats}><strong>{auraText(bannerAura(b, { type, level, branch }))}</strong> · <strong>{fmtCells(b.towers[type].rangeMilli)}</strong> 안 공격 타워</p>;
   const s = towerStats(b, type, level, branch);
   return (
     <p className={css.stats}>

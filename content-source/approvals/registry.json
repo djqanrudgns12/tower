@@ -1,8 +1,8 @@
 {
   "schemaVersion": "1",
   "rule": "Argon 자체 반박에서 정답만 맞음 · Codex·Claude 독립 풀이가 정답과 같고 source·uniqueness·grade·language 모두 pass · 총괄 해설 대조 pass · 게시 형식·의미 검사 통과. 하나라도 어긋나면 그 revision은 격리한다.",
-  "approved": 51,
-  "quarantined": 13,
+  "approved": 54,
+  "quarantined": 10,
   "entries": [
     {
       "questionId": "g3-argon-0001",
@@ -511,36 +511,24 @@
       "revision": 2,
       "batchId": "QP-001",
       "contentHash": "6ee69c33875c6e7f3707d1934dc9c26535bea8200161d45eebe42dd92cd6a6f4",
-      "decision": "quarantined",
-      "reasons": [
-        "codex: 이 revision의 독립 검토 없음",
-        "claude: 이 revision의 독립 검토 없음",
-        "총괄 해설 대조 없음"
-      ]
+      "decision": "approved",
+      "reasons": []
     },
     {
       "questionId": "g3-practice-0002",
       "revision": 2,
       "batchId": "QP-001",
       "contentHash": "d912f7239773c28dcd99d7724325f14e4390c7965d585cb154af9e0a38401315",
-      "decision": "quarantined",
-      "reasons": [
-        "codex: 이 revision의 독립 검토 없음",
-        "claude: 이 revision의 독립 검토 없음",
-        "총괄 해설 대조 없음"
-      ]
+      "decision": "approved",
+      "reasons": []
     },
     {
       "questionId": "g3-practice-0003",
       "revision": 2,
       "batchId": "QP-001",
       "contentHash": "114e49c403166e6e864df4bcb140ca7ffa2494501ce284e4679f025eeebde4be",
-      "decision": "quarantined",
-      "reasons": [
-        "codex: 이 revision의 독립 검토 없음",
-        "claude: 이 revision의 독립 검토 없음",
-        "총괄 해설 대조 없음"
-      ]
+      "decision": "approved",
+      "reasons": []
     },
     {
       "questionId": "g3-practice-0004",
@@ -549,9 +537,8 @@
       "contentHash": "6f7f903a7c48117151eeeae49b16802bf34fcb0292d95d677f18322759f68f79",
       "decision": "quarantined",
       "reasons": [
-        "codex: 이 revision의 독립 검토 없음",
-        "claude: 이 revision의 독립 검토 없음",
-        "총괄 해설 대조 없음"
+        "codex: grade uncertain",
+        "claude: grade uncertain"
       ]
     }
   ]

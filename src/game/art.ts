@@ -1,5 +1,5 @@
 import Phaser from 'phaser';
-import type { EnemyKind } from '../contracts/balance';
+import type { EnemyKind, TowerId } from '../contracts/balance';
 import type { MapConfig } from '../contracts/maps';
 import { ASSETS, CELL_PX, TEX } from './assets';
 
@@ -297,6 +297,29 @@ export function drawSprites(scene: Phaser.Scene): void {
     g.fillStyle(PALETTE.ice, 1); g.fillPoints(pts(0.78, -3), true);
     g.fillStyle(PALETTE.iceLight, 1); g.fillPoints(pts(0.34, -7), true);
   });
+
+  // P2 타워 임시 그림(ART-003 원화가 인수되면 같은 키로 대체된다). 돌 받침 위 역할 색 몸체, 무기는 오른쪽을 향한 막대.
+  const p2: Array<[TowerId, number]> = [['crossbow', PALETTE.wood], ['mage', 0x6b4fa0], ['lightning', PALETTE.bronze], ['flame', 0xa3352b], ['spear', PALETTE.woodDark], ['guardian', PALETTE.ironLight], ['banner', 0x245b88]];
+  for (const [id, color] of p2) {
+    gen(`tower.${id}`, 128, 160, () => {
+      g.fillStyle(PALETTE.outline, 1); g.fillEllipse(64, 124, 100, 40);
+      g.fillStyle(PALETTE.stone, 1); g.fillEllipse(64, 120, 92, 32);
+      if (id === 'banner') {
+        g.fillStyle(PALETTE.outline, 1); g.fillRect(58, 30, 12, 92);
+        g.fillStyle(PALETTE.wood, 1); g.fillRect(61, 33, 6, 86);
+        g.fillStyle(PALETTE.outline, 1); g.fillTriangle(67, 30, 118, 50, 67, 74);
+        g.fillStyle(color, 1); g.fillTriangle(70, 36, 110, 50, 70, 68);
+        return;
+      }
+      g.fillStyle(PALETTE.outline, 1); g.fillRoundedRect(34, 66, 60, 56, 12);
+      g.fillStyle(color, 1); g.fillRoundedRect(38, 70, 52, 48, 10);
+    });
+    if (id !== 'banner') gen(`tower.${id}.weapon`, 96, 96, () => {
+      g.fillStyle(PALETTE.outline, 1); g.fillRoundedRect(28, 40, 64, 16, 6);
+      g.fillStyle(color, 1); g.fillRoundedRect(31, 43, 58, 10, 4);
+      blob(g, 34, 48, 12, color);
+    });
+  }
 
   const kinds: EnemyKind[] = ['walker', 'runner', 'brute', 'shell', 'wisp', 'swarm', 'boss'];
   for (const kind of kinds) for (const frame of [0, 1] as const) {

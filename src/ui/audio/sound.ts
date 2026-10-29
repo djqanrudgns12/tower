@@ -42,7 +42,7 @@ export function admit(active: readonly Voice[], sfx: Sfx, nowMs: number, lastFir
 /** 사건 → 효과음. 화면에 보이는 결과를 따라갈 뿐 새 사건을 만들지 않는다. */
 export function sfxFor(e: DomainEvent, bossEveryWaves: number): Sfx | null {
   switch (e.type) {
-    case 'fire': return `fire.${e.towerType}`;
+    case 'fire': case 'strike': return `fire.${e.towerType}`;
     case 'kill': return 'kill';
     case 'leak': return 'leak';
     case 'answered': return e.result === 'correct' ? 'correct' : e.result === 'wrong' ? 'wrong' : 'skipped';
