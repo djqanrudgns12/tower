@@ -6,6 +6,7 @@ import { blindReviewSchema, contentHashInput, draftBatchSchema, draftSidecarSche
 import { bankFileSchema, readingLoad } from '../../src/contracts/questions';
 import defaults from '../../docs/contracts/product.defaults.v0.5.json';
 import { lintQuestion } from '../../src/content/lint';
+import { isPractice, MIN_PUBLISHED, PRACTICE_SIZE } from '../../tools/content/bankBuild';
 
 // npm run validate:content / validate:assets의 본체. 작업자 RETURN은 이 검사를 통과해야 RETURNED다.
 // 배치·보고서·manifest가 아직 없으면 해당 describe에는 시험이 생기지 않는다.
@@ -29,7 +30,9 @@ describe('런타임 문제은행', () => {
       expect(new Set(stems).size).toBe(stems.length);
       const eligible = bank.questions.filter(q => readingLoad(q) <= (caps[String(bank.grade)] ?? 70)).length;
       expect(eligible).toBeGreaterThanOrEqual(Math.min(20, bank.questions.length));
-      if (bank.status === 'published') expect(bank.questions.length).toBeGreaterThanOrEqual(30);
+      // 학년 은행은 30문항 이상(PRD §9.4), 첫 연습 판 은행은 승인된 연습 문항 네 개 그대로다(PRD §12.2).
+      if (bank.status === 'published' && bank.bankId === 'practice') expect(bank.questions.map(q => q.id).filter(isPractice)).toHaveLength(PRACTICE_SIZE);
+      else if (bank.status === 'published') expect(bank.questions.length).toBeGreaterThanOrEqual(MIN_PUBLISHED);
     });
   }
   it('의미 검사는 정답만 긴 보기·빈칸 누락·긴 해설을 잡는다', () => {

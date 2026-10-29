@@ -48,6 +48,8 @@ export interface SimOptions {
   towers?: TowerId[];
   /** 조정 후보를 잴 때 쓰는 밸런스. 없으면 계약 파일 그대로. */
   balance?: Balance;
+  /** 거래·답안 명령을 내기 직전에 부른다(가상 플레이어 추적용). */
+  onCommand?: (wave: number, gold: number, cmd: Command) => void;
 }
 
 export interface SimResult {
@@ -177,6 +179,7 @@ export function simulateRun(opt: SimOptions): SimResult {
   let encId = -1, answerAt = 0, startAt = -1, spendAt = 0;
 
   const run = (cmd: Command) => {
+    opt.onCommand?.(s.wave, s.gold, cmd);
     const r = applyCommand(ctx, s, cmd);
     if (!r.ok) throw new Error(`시뮬레이터 명령 거부: ${cmd.type} → ${r.error} (wave ${s.wave}, tick ${s.tick})`);
   };
