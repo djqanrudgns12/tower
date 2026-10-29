@@ -1,7 +1,7 @@
 import { existsSync, readFileSync } from 'node:fs';
 import path from 'node:path';
 import { describe, expect, it } from 'vitest';
-import { buildBank, buildRegistry, contentHash, decide, loadBatches, MIN_PUBLISHED, type BatchInput, type Registry } from '../../tools/content/bankBuild';
+import { buildBank, buildPracticeBank, buildRegistry, contentHash, decide, isPractice, loadBatches, MIN_PUBLISHED, type BatchInput, type Registry } from '../../tools/content/bankBuild';
 
 const root = path.resolve(import.meta.dirname, '../..');
 const batches = loadBatches(root);
@@ -54,6 +54,15 @@ describe('승인 레지스트리·게시 은행 빌드', () => {
     const path3 = path.join(root, 'src/content/questions/grade3.json');
     if (!bank) { expect(existsSync(path3)).toBe(false); return; }
     expect(JSON.parse(readFileSync(path3, 'utf8'))).toEqual(bank);
+  });
+
+  it('연습 문항은 학년 은행에 들어가지 않고, 연습 은행은 네 문항이 모두 승인되어야 바뀐다(저장된 파일과 같다)', () => {
+    const registry = buildRegistry(batches);
+    expect(buildBank(batches, registry, 3).bank?.questions.some(q => isPractice(q.id)) ?? false).toBe(false);
+    const stored = JSON.parse(readFileSync(path.join(root, 'src/content/questions/practice.json'), 'utf8'));
+    const { bank } = buildPracticeBank(batches, registry);
+    if (bank) expect(stored).toEqual(bank);
+    else expect(stored.status).toBe('dev_fixture');
   });
 
   it('승인 문항이 충분하면 가장 높은 승인 revision만 published 은행으로 묶고, 판 번호는 내용으로 정해진다', () => {

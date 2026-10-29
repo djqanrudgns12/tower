@@ -16,6 +16,9 @@ import { bankFileSchema, bankQuestionSchema, type BankFile, type BankQuestion } 
 export const BLIND_REVIEWERS = ['codex', 'claude'] as const;
 /** 사용자용 은행의 최소 승인 문항 수(PRD §9.4, P1 표). */
 export const MIN_PUBLISHED = 30;
+/** 첫 연습 판 전용 문항(PRD §12.2). 학년 은행에 넣지 않고 연습 은행으로 따로 묶는다. 네 문항이 모두 승인되어야 바꾼다. */
+export const isPractice = (id: string) => /^g[3-6]-practice-/.test(id);
+export const PRACTICE_SIZE = 4;
 export const RULE = 'Argon 자체 반박에서 정답만 맞음 · Codex·Claude 독립 풀이가 정답과 같고 source·uniqueness·grade·language 모두 pass · 총괄 해설 대조 pass · 게시 형식·의미 검사 통과. 하나라도 어긋나면 그 revision은 격리한다.';
 
 type Reviewer = (typeof BLIND_REVIEWERS)[number];
@@ -118,15 +121,36 @@ export function buildRegistry(batches: BatchInput[]): Registry {
  * 승인 문항이 MIN_PUBLISHED보다 적으면 은행을 만들지 않는다. 판 번호는 들어간 문항으로 정해지는 불변 값이다.
  */
 export function buildBank(batches: BatchInput[], registry: Registry, grade: number): { bank: BankFile | null; approved: number; note: string } {
-  const ok = new Set(registry.entries.filter(e => e.decision === 'approved').map(e => `${e.questionId}@${e.revision}:${e.contentHash}`));
-  const latest = new Map<string, QuestionDraft>();
-  for (const q of batches.flatMap(b => b.drafts)) {
-    if (q.grade !== grade || !ok.has(`${q.id}@${q.revision}:${contentHash(q)}`)) continue;
-    if ((latest.get(q.id)?.revision ?? 0) < q.revision) latest.set(q.id, q);
-  }
-  const drafts = [...latest.values()].sort((a, b) => a.id.localeCompare(b.id));
+  const drafts = approvedLatest(batches, registry, q => q.grade === grade && !isPractice(q.id));
   if (drafts.length < MIN_PUBLISHED) return { bank: null, approved: drafts.length, note: `${grade}학년 승인 ${drafts.length}/${MIN_PUBLISHED} — 공개 은행을 만들지 않는다` };
-  const bankVersion = `pub-${sha256(drafts.map(q => `${q.id}@${q.revision}:${contentHash(q)}`).join('\n')).slice(0, 12)}`;
+  const bankVersion = versionOf(drafts);
   const bank = bankFileSchema.parse({ bankId: `g${grade}`, bankVersion, grade, status: 'published', questions: drafts.map(toBankQuestion) });
   return { bank, approved: drafts.length, note: `${grade}학년 승인 ${drafts.length}문항 → ${bankVersion}` };
 }
+
+/** 첫 연습 판 은행. 연습 문항 네 개가 모두 승인되어야 만든다(그 전에는 개발용 연습 은행을 그대로 쓴다). */
+export function buildPracticeBank(batches: BatchInput[], registry: Registry): { bank: BankFile | null; note: string } {
+  const drafts = approvedLatest(batches, registry, q => isPractice(q.id));
+  if (drafts.length < PRACTICE_SIZE) return { bank: null, note: `연습 문항 승인 ${drafts.length}/${PRACTICE_SIZE} — 연습 은행을 바꾸지 않는다` };
+  const bankVersion = versionOf(drafts);
+  const bank = bankFileSchema.parse({
+    bankId: 'practice', bankVersion, grade: drafts[0]!.grade, status: 'published',
+    note: '첫 연습 판 전용(PRD §12.2). 정규 은행·기록·공개 랭킹에 쓰지 않는다. Argon·Codex·Claude 공동검수를 통과한 문항이다.',
+    questions: drafts.map(toBankQuestion),
+  });
+  return { bank, note: `연습 문항 승인 ${drafts.length}문항 → ${bankVersion}` };
+}
+
+/** 승인된 revision 가운데 문항마다 가장 높은 것만, ID 순으로. */
+function approvedLatest(batches: BatchInput[], registry: Registry, keep: (q: QuestionDraft) => boolean): QuestionDraft[] {
+  const ok = new Set(registry.entries.filter(e => e.decision === 'approved').map(e => `${e.questionId}@${e.revision}:${e.contentHash}`));
+  const latest = new Map<string, QuestionDraft>();
+  for (const q of batches.flatMap(b => b.drafts)) {
+    if (!keep(q) || !ok.has(`${q.id}@${q.revision}:${contentHash(q)}`)) continue;
+    if ((latest.get(q.id)?.revision ?? 0) < q.revision) latest.set(q.id, q);
+  }
+  return [...latest.values()].sort((a, b) => a.id.localeCompare(b.id));
+}
+
+/** 판 번호는 들어간 문항으로 정해지는 불변 값이다. */
+const versionOf = (drafts: QuestionDraft[]) => `pub-${sha256(drafts.map(q => `${q.id}@${q.revision}:${contentHash(q)}`).join('\n')).slice(0, 12)}`;

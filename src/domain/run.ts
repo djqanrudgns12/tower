@@ -1,6 +1,6 @@
 import type { BranchId, TowerId } from '../contracts/balance';
 import type { OptionId } from '../contracts/questions';
-import { battleTick, burningBonusBP } from './combat';
+import { battleTick, towerSpeedBonusBP } from './combat';
 import type { GameContext } from './context';
 import type { DomainEvent } from './events';
 import { center } from './geometry';
@@ -204,10 +204,9 @@ function build(ctx: GameContext, s: RunState, slotId: string, type: TowerId, ev:
   if (s.gold < cost) return 'NOT_ENOUGH_GOLD';
   s.gold -= cost;
   const tower = { id: s.seq.tower++, type, slotId, x: center(slot.x), y: center(slot.y), level: 1, branch: null, invested: cost, nextAttackTick: null as number | null };
-  // 전투 중 구매는 구매 시점부터 공격 간격 하나를 기다린다(PRD §7.2).
-  // 깃발처럼 공격하지 않는 타워는 공격 예약이 없다.
-  if (s.phase === 'BATTLE' && attacks(ctx.balance, type)) tower.nextAttackTick = s.tick + attackIntervalTicks(ctx.balance, towerStats(ctx.balance, type, 1, null), burningBonusBP(ctx, s, s.tick));
   s.towers.push(tower);
+  // 전투 중 구매는 구매 시점부터 공격 간격 하나를 기다린다(PRD §7.2). 깃발처럼 공격하지 않는 타워는 공격 예약이 없다.
+  if (s.phase === 'BATTLE' && attacks(ctx.balance, type)) tower.nextAttackTick = s.tick + attackIntervalTicks(ctx.balance, towerStats(ctx.balance, type, 1, null), towerSpeedBonusBP(ctx, s, tower));
   ev.push({ type: 'towerBuilt', towerId: tower.id, slotId, gold: -cost });
   return null;
 }
@@ -251,7 +250,8 @@ function startBattle(ctx: GameContext, s: RunState, ev: DomainEvent[]): CommandE
   const spawnList = composeWave(b, s.wave, rng);
   s.rng.battle = rng.s;
   s.battle = { spawnList, spawnIndex: 0, nextSpawnTick: s.tick + 1, intervalTicks: spawnIntervalTicks(b, s.wave), hpBaseMilli: hpBaseMilli(b, s.wave), startedTick: s.tick };
-  for (const t of s.towers) t.nextAttackTick = attacks(b, t.type) ? s.tick + attackIntervalTicks(b, towerStats(b, t.type, t.level, t.branch), 0) : null;
+  // 시작 때 버닝은 없고(0), 깃발 B의 속도 보너스는 바로 적용한다.
+  for (const t of s.towers) t.nextAttackTick = attacks(b, t.type) ? s.tick + attackIntervalTicks(b, towerStats(b, t.type, t.level, t.branch), towerSpeedBonusBP(ctx, s, t)) : null;
   s.phase = 'BATTLE';
   s.quiz.battleStreak = 0;
   s.quiz.current = createEncounter(ctx, s, 'battle');

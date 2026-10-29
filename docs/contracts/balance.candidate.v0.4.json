@@ -1,6 +1,6 @@
 {
   "schemaVersion": "0.3",
-  "balanceVersion": "0.4-candidate",
+  "balanceVersion": "0.4.1-candidate",
   "status": "candidate-not-balance-approved",
   "basedOn": "0.3-candidate + S11 engine simulation 2026-10-28: answer gold weighted over kill gold, later prep 2 attempts, cheaper cannon/frost, denser spawns from wave 4, boss HP x4.5",
   "userConfirmed": { "date": "2026-10-28", "fields": ["difficulties.*.skipPt", "difficulties.*.label", "waves.hpGrowthPercent"], "rule": "확정 값은 사용자 결정 없이 바꾸지 않는다. 나머지 값은 후보다." },
@@ -82,14 +82,42 @@
       "A": { "label": "속사", "summary": "화살을 더 빨리 쏴요", "intervalBP": 8000 },
       "B": { "label": "정찰", "summary": "더 멀리, 조금 더 세게 쏴요", "rangeAddMilli": 800, "damageBP": 11500 }
     },
+    "crossbow": {
+      "A": { "label": "관통", "summary": "뒤에 선 적까지 꿰뚫어요", "pierceDamageBP": 6000, "pierceWidthMilli": 300 },
+      "B": { "label": "거대 사냥", "summary": "정예와 대장에게 훨씬 세요", "eliteBossDamageBP": 15000 }
+    },
     "cannon": {
       "A": { "label": "확산", "summary": "더 넓게 터져 더 많이 맞혀요", "splashRadiusMilli": 1050, "maxTargets": 6 },
       "B": { "label": "중포", "summary": "좁게 터지지만 훨씬 세요", "splashRadiusMilli": 550, "maxTargets": 3, "damageBP": 16000 }
     },
+    "mage": {
+      "A": { "label": "집중", "summary": "한 적에게 더 세게 쏴요", "damageBP": 14000 },
+      "B": { "label": "파동", "summary": "맞은 곳 주변 적도 함께 맞혀요", "splashRadiusMilli": 650, "maxTargets": 3, "splashDamageBP": 7500 }
+    },
     "frost": {
       "A": { "label": "혹한", "summary": "더 세게, 더 오래 느리게 해요", "slowBP": 4000, "slowMs": 2500 },
       "B": { "label": "얼음 장판", "summary": "맞은 곳 주변 적을 함께 느리게 해요", "splashRadiusMilli": 700, "maxTargets": 4, "slowBP": 2000, "slowMs": 2000 }
+    },
+    "lightning": {
+      "A": { "label": "연쇄", "summary": "번개가 더 많은 적에게 튀어요", "maxTargets": 5, "chainFalloffBP": 6500 },
+      "B": { "label": "충격", "summary": "첫 적을 잠깐 멈추게 해요", "maxTargets": 2, "chainFalloffBP": 8000, "firstTargetStunMs": 300 }
+    },
+    "flame": {
+      "A": { "label": "넓은 불길", "summary": "더 멀리, 더 많이 태워요", "rangeAddMilli": 400, "maxTargets": 5 },
+      "B": { "label": "잔불", "summary": "불이 더 오래 세게 남아요", "burnBP": 20000, "damageBP": 9000 }
+    },
+    "spear": {
+      "A": { "label": "긴 창", "summary": "한 줄로 선 두 적을 찔러요", "rangeAddMilli": 400, "lineWidthMilli": 350, "maxTargets": 2 },
+      "B": { "label": "파쇄", "summary": "단단한 적을 더 세게 찔러요", "damageBP": 12000, "physicalResistIgnoreBP": 5000 }
+    },
+    "guardian": {
+      "A": { "label": "결투", "summary": "정예와 대장에게 훨씬 세요", "eliteBossDamageBP": 16000 },
+      "B": { "label": "수호 일격", "summary": "주변 적 여럿을 함께 베어요", "splashRadiusMilli": 800, "maxTargets": 3, "splashDamageBP": 8000 }
+    },
+    "banner": {
+      "A": { "label": "용기", "summary": "주변 타워가 더 세게 공격해요", "auraDamageBPByLevel": [1800, 2100, 2400] },
+      "B": { "label": "신속", "summary": "주변 타워가 더 빨리 공격해요", "auraSpeedBPByLevel": [800, 1000, 1200] }
     }
   },
-  "branchesNote": "P1 타워(궁수·포탑·서리)의 Lv3 분기는 이 파일이 원본이고 PRD v0.5 §7.3 표와 같다. 나머지 7종은 P2에서 같은 형식으로 추가한다."
+  "branchesNote": "10종의 Lv3 분기는 이 파일이 원본이고 PRD v0.5 §7.3 표와 같다(P2 7종은 0.4.1-candidate에서 추가, 수치는 아직 S11로 다시 재지 않았다)."
 }

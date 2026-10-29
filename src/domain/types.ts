@@ -125,6 +125,10 @@ export interface Projectile {
   slowTicks: number;
   /** 물리 저항 효과를 줄이는 비율(석궁, PRD §7.1·§20.2). */
   physicalResistIgnoreBP: number;
+  /** 발사 순간의 외부(깃발) 피해 보너스. damage는 레벨·분기까지만 반영하고, 맞을 때 상황→외부→저항 순서로 곱한다(PRD §20.2). */
+  bonusBP: number;
+  /** 정예·보스에게만 곱하는 상황 배율(석궁 B·수호기사 A). */
+  eliteBossDamageBP: number;
 }
 
 export interface SpawnEntry { kind: EnemyKind; elite: EliteId | null }

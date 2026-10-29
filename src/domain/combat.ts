@@ -1,8 +1,8 @@
 import type { GameContext } from './context';
 import type { DomainEvent } from './events';
 import { dist2, positionAt } from './geometry';
-import { add, bpFloor, ceilDiv, isqrt, safe, TICK_HZ } from './num';
-import { attackIntervalTicks, auraDamageBonusBP, towerStats, type TowerStats } from './towers';
+import { add, bpFloor, ceilDiv, isqrt, msToTicks, safe, TICK_HZ } from './num';
+import { attackIntervalTicks, auraDamageBonusBP, auraSpeedBonusBP, towerStats, type TowerStats } from './towers';
 import type { Enemy, Projectile, RunState, Tower } from './types';
 import { enemyMaxHp, enemyResists, enemySpeedBP } from './waves';
 
@@ -31,8 +31,7 @@ export function battleTick(ctx: GameContext, s: RunState, ev: DomainEvent[]): vo
 
   for (const e of s.enemies) if (e.alive && e.burnNextTick !== null && t >= e.burnNextTick) burnTick(ctx, s, e, ev);
 
-  const speedBonus = burningBonusBP(ctx, s, t);
-  for (const tower of s.towers) fire(ctx, s, tower, speedBonus, ev);
+  for (const tower of s.towers) fire(ctx, s, tower, ev);
 
   move(ctx, s, ev);
   if (s.enemies.some(e => !e.alive)) s.enemies = s.enemies.filter(e => e.alive);
@@ -69,31 +68,67 @@ function pickTarget(ctx: GameContext, s: RunState, x: number, y: number, range: 
 }
 
 /** 한 번의 타격이 싣는 값. 투사체는 발사 순간의 스냅샷이고 즉발 공격은 그 자리에서 만든다. */
-type Strike = Pick<Projectile, 'towerId' | 'towerType' | 'damage' | 'damageType' | 'slowBP' | 'slowTicks' | 'physicalResistIgnoreBP'>;
+type Strike = Pick<Projectile, 'towerId' | 'towerType' | 'damage' | 'damageType' | 'slowBP' | 'slowTicks' | 'physicalResistIgnoreBP' | 'bonusBP' | 'eliteBossDamageBP'>;
 
-/** 외부 피해 보너스(깃발)는 레벨·분기·상황 배율 뒤, 저항 앞에 한 단계로 곱한다(PRD §20.2). */
-const withBonus = (damage: number, bonusBP: number) => (bonusBP > 0 ? bpFloor(damage, 10000 + bonusBP, 'damage.external') : damage);
+const strikeOf = (tower: Tower, stats: TowerStats, damage: number, bonusBP: number): Strike => ({
+  towerId: tower.id, towerType: tower.type, damage, damageType: stats.damageType, slowBP: stats.slowBP, slowTicks: stats.slowTicks,
+  physicalResistIgnoreBP: stats.physicalResistIgnoreBP, bonusBP, eliteBossDamageBP: stats.eliteBossDamageBP,
+});
 
-function fire(ctx: GameContext, s: RunState, tower: Tower, speedBonus: number, ev: DomainEvent[]) {
+/** 타워의 외부 공격 속도 보너스: 버닝 + 깃발 B(신속). 합계 상한은 attackIntervalTicks가 적용한다(PRD §20.2). */
+export const towerSpeedBonusBP = (ctx: GameContext, s: RunState, tower: Tower) => burningBonusBP(ctx, s, s.tick) + auraSpeedBonusBP(ctx.balance, s.towers, tower);
+
+function fire(ctx: GameContext, s: RunState, tower: Tower, ev: DomainEvent[]) {
   const t = s.tick;
   if (tower.nextAttackTick === null || t < tower.nextAttackTick) return;
   const stats = towerStats(ctx.balance, tower.type, tower.level, tower.branch);
   const target = pickTarget(ctx, s, tower.x, tower.y, stats.range);
   // 표적이 없으면 준비 상태로 기다린다. 기다린 시간만큼 몰아서 쏘지 않는다(PRD §7.2).
   if (!target) return;
+  // 오라는 거래 뒤 다음 공격 계산 때 다시 읽는다(PRD §20.2).
   const bonus = auraDamageBonusBP(ctx.balance, s.towers, tower);
-  tower.nextAttackTick = t + attackIntervalTicks(ctx.balance, stats, speedBonus);
+  tower.nextAttackTick = t + attackIntervalTicks(ctx.balance, stats, towerSpeedBonusBP(ctx, s, tower));
   if (stats.instant) { strike(ctx, s, tower, stats, target, bonus, ev); return; }
   const at = positionAt(ctx.path, target.progress);
+  launch(s, tower, stats, stats.splashRadius > 0 ? null : target, at, strikeOf(tower, stats, stats.damage, bonus), ev);
+  // 석궁 A 관통: 첫 대상 뒤 일직선의 두 번째 적에게 따로 날아가는 화살(발사 때 ID 고정, PRD §20.3).
+  if (stats.pierceDamageBP > 0) {
+    const second = pierceTarget(ctx, s, tower, target, stats);
+    if (second) launch(s, tower, stats, second, positionAt(ctx.path, second.progress), strikeOf(tower, stats, bpFloor(stats.damage, stats.pierceDamageBP, 'damage.pierce'), bonus), ev);
+  }
+}
+
+function launch(s: RunState, tower: Tower, stats: TowerStats, target: Enemy | null, at: { x: number; y: number }, a: Strike, ev: DomainEvent[]) {
   const flight = Math.max(1, flightTicks(dist2(at.x, at.y, tower.x, tower.y), stats.projectileSpeed));
   const projectile: Projectile = {
-    id: s.seq.projectile++, towerId: tower.id, towerType: tower.type, fromX: tower.x, fromY: tower.y,
-    targetId: stats.splashRadius > 0 ? null : target.id, toX: at.x, toY: at.y, firedTick: t, arrivalTick: t + flight,
-    damage: withBonus(stats.damage, bonus), damageType: stats.damageType, splashRadius: stats.splashRadius, maxTargets: stats.maxTargets,
-    slowBP: stats.slowBP, slowTicks: stats.slowTicks, physicalResistIgnoreBP: stats.physicalResistIgnoreBP,
+    ...a, id: s.seq.projectile++, fromX: tower.x, fromY: tower.y, targetId: target?.id ?? null, toX: at.x, toY: at.y,
+    firedTick: s.tick, arrivalTick: s.tick + flight, splashRadius: target ? 0 : stats.splashRadius, maxTargets: stats.maxTargets,
   };
   s.projectiles.push(projectile);
   ev.push({ type: 'fire', projectileId: projectile.id, towerId: tower.id, towerType: tower.type });
+}
+
+/** 정수 선분 판정: 타워→기준점 방향 d로, 전방 거리 0..length·폭 width 안이면 [전방 내적, true]. */
+function inLine(tower: Tower, d: { x: number; y: number }, p: { x: number; y: number }, length: number, width: number): number | null {
+  const vx = p.x - tower.x, vy = p.y - tower.y;
+  const d2 = d.x * d.x + d.y * d.y;
+  const dot = vx * d.x + vy * d.y;
+  const cross = vx * d.y - vy * d.x;
+  if (dot < 0 || safe(dot * dot, 'line') > safe(length * length * d2, 'line')) return null;
+  return safe(4 * cross * cross, 'line') <= safe(width * width * d2, 'line') ? dot : null;
+}
+
+/** 첫 대상의 발사 당시 위치 방향, 사거리 끝까지 폭 0.30칸 선분에서 첫 대상 뒤의 적을 전방 거리↑ → 생성순↑로 하나. */
+function pierceTarget(ctx: GameContext, s: RunState, tower: Tower, first: Enemy, stats: TowerStats): Enemy | null {
+  const f = positionAt(ctx.path, first.progress);
+  const d = { x: f.x - tower.x, y: f.y - tower.y };
+  const firstDot = d.x * d.x + d.y * d.y;
+  const behind = s.enemies
+    .filter(e => e.alive && e !== first)
+    .map(e => ({ e, dot: inLine(tower, d, positionAt(ctx.path, e.progress), stats.range, stats.pierceWidth) }))
+    .filter((c): c is { e: Enemy; dot: number } => c.dot !== null && c.dot > firstDot)
+    .sort((a, b) => a.dot - b.dot || a.e.id - b.e.id);
+  return behind[0]?.e ?? null;
 }
 
 /**
@@ -101,14 +136,45 @@ function fire(ctx: GameContext, s: RunState, tower: Tower, speedBonus: number, e
  * 번개는 직전 대상 중심의 연쇄, 화염은 기본 표적 방향 90도 부채꼴, 그 밖(창병·수호기사)은 기본 표적 하나다.
  */
 function strike(ctx: GameContext, s: RunState, tower: Tower, stats: TowerStats, first: Enemy, bonus: number, ev: DomainEvent[]) {
-  const targets = stats.chainRadius > 0 ? chainTargets(ctx, s, first, stats) : stats.cone ? coneTargets(ctx, s, tower, first, stats) : [first];
-  const hits = targets.map((e, k) => ({ e, at: positionAt(ctx.path, e.progress), damage: withBonus(chainDamage(stats.damage, stats.chainFalloffBP, k), bonus) }));
+  const targets = stats.chainRadius > 0 ? chainTargets(ctx, s, first, stats)
+    : stats.cone ? coneTargets(ctx, s, tower, first, stats)
+    : stats.lineWidth > 0 ? lineTargets(ctx, s, tower, first, stats)
+    : stats.splashRadius > 0 ? aroundTargets(ctx, s, first, stats)
+    : [first];
+  const hits = targets.map((e, k) => ({ e, at: positionAt(ctx.path, e.progress), damage: chainDamage(stats.damage, stats.chainFalloffBP, k) }));
   ev.push({ type: 'strike', towerId: tower.id, towerType: tower.type, fromX: tower.x, fromY: tower.y, targets: hits.map(h => ({ enemyId: h.e.id, x: h.at.x, y: h.at.y })) });
   for (const h of hits) {
-    const a: Strike = { towerId: tower.id, towerType: tower.type, damage: h.damage, damageType: stats.damageType, slowBP: stats.slowBP, slowTicks: stats.slowTicks, physicalResistIgnoreBP: stats.physicalResistIgnoreBP };
-    applyHit(ctx, s, a, h.e, ev);
+    applyHit(ctx, s, strikeOf(tower, stats, h.damage, bonus), h.e, ev);
     if (h.e.alive && stats.burnTotal > 0) applyBurn(s, h.e, tower.id, mitigated(stats.burnTotal, h.e.magicResistBP), stats.burnTicks);
   }
+  // 번개 B 충격: 첫 대상 기절. 한 적의 평생 기절 시간 상한을 넘기지 않는다(PRD §7.3, statusCaps).
+  if (stats.stunTicks > 0 && first.alive) {
+    const left = msToTicks(ctx.balance.statusCaps.stunLifetimeMaxMs) - first.stunTicksUsed;
+    if (left > 0) first.stunUntilTick = Math.max(first.stunUntilTick, s.tick + Math.min(stats.stunTicks, left));
+  }
+}
+
+/** 창병 A 긴 창: 타워→첫 대상 방향, 길이 = 사거리·폭 0.35칸 선분 안에서 첫 대상 포함 진행도↓ → 생성순↑로 최대 수(PRD §20.3). */
+function lineTargets(ctx: GameContext, s: RunState, tower: Tower, first: Enemy, stats: TowerStats): Enemy[] {
+  const f = positionAt(ctx.path, first.progress);
+  const d = { x: f.x - tower.x, y: f.y - tower.y };
+  const others = s.enemies
+    .filter(e => e.alive && e !== first && inLine(tower, d, positionAt(ctx.path, e.progress), stats.range, stats.lineWidth) !== null)
+    .sort((a, b) => b.progress - a.progress || a.id - b.id);
+  return [first, ...others].slice(0, stats.maxTargets);
+}
+
+/** 수호기사 B 수호 일격: 첫 대상 중심 반경 안을 거리↑ → 진행도↓ → 생성순↑로 최대 수(PRD §20.3). */
+function aroundTargets(ctx: GameContext, s: RunState, first: Enemy, stats: TowerStats): Enemy[] {
+  const c = positionAt(ctx.path, first.progress);
+  const r2 = stats.splashRadius * stats.splashRadius;
+  return s.enemies
+    .filter(e => e.alive)
+    .map(e => { const p = positionAt(ctx.path, e.progress); return { e, d: dist2(p.x, p.y, c.x, c.y) }; })
+    .filter(h => h.d <= r2)
+    .sort((a, b) => a.d - b.d || b.e.progress - a.e.progress || a.e.id - b.e.id)
+    .slice(0, stats.maxTargets)
+    .map(h => h.e);
 }
 
 /** 번개 k번째 대상의 피해 = 최초 기준 피해 × 감쇠비^k, 마지막에 한 번 내림한다(PRD §20.3). 중간 곱이 커서 BigInt로 계산한다. */
@@ -226,9 +292,13 @@ export function effectiveResistBP(e: Pick<Enemy, 'physicalResistBP' | 'magicResi
   return ignoreBP > 0 ? bpFloor(e.physicalResistBP, 10000 - ignoreBP, 'resist.ignore') : e.physicalResistBP;
 }
 
+/** 레벨·분기까지 반영된 피해에 상황(정예·보스) → 외부(깃발) → 저항 순서로 한 단계씩 곱한다(PRD §20.2). */
 function applyHit(ctx: GameContext, s: RunState, p: Strike, e: Enemy, ev: DomainEvent[]) {
+  let damage = p.damage;
+  if (p.eliteBossDamageBP !== 10000 && (e.elite !== null || e.kind === 'boss')) damage = bpFloor(damage, p.eliteBossDamageBP, 'damage.situational');
+  if (p.bonusBP > 0) damage = bpFloor(damage, 10000 + p.bonusBP, 'damage.external');
   const resist = effectiveResistBP(e, p.damageType, p.physicalResistIgnoreBP);
-  const dealt = Math.min(e.hp, mitigated(p.damage, resist));
+  const dealt = Math.min(e.hp, mitigated(damage, resist));
   e.hp = safe(e.hp - dealt, 'hp');
   const at = positionAt(ctx.path, e.progress);
   ev.push({ type: 'hit', enemyId: e.id, x: at.x, y: at.y, damage: dealt, towerType: p.towerType });

@@ -70,6 +70,26 @@ const branch = z.object({
   maxTargets: int.min(1).optional(),
   slowBP: bp.optional(),
   slowMs: nonNeg.optional(),
+  /** 정예·보스에게만 곱하는 상황 배율(석궁 B 거대 사냥·수호기사 A 결투). */
+  eliteBossDamageBP: bp.optional(),
+  /** 물리 저항 효과 무시(창병 B 파쇄). */
+  physicalResistIgnoreBP: bp.optional(),
+  /** 번개 연쇄 감쇠(번개 A·B). */
+  chainFalloffBP: bp.optional(),
+  /** 번개 B 충격: 첫 대상 기절. */
+  firstTargetStunMs: nonNeg.optional(),
+  /** 화염 B 잔불: 화상 총피해 배율. */
+  burnBP: bp.optional(),
+  /** 석궁 A 관통: 첫 대상 뒤 일직선 두 번째 적에 주는 피해 비율과 선분 폭. */
+  pierceDamageBP: bp.optional(),
+  pierceWidthMilli: nonNeg.optional(),
+  /** 창병 A 긴 창: 타워→첫 대상 방향 선분의 폭(길이는 사거리). 대상 수는 maxTargets. */
+  lineWidthMilli: nonNeg.optional(),
+  /** 범위 공격의 대상별 피해 비율(마법 B 파동 75%·수호기사 B 수호 일격 80%). */
+  splashDamageBP: bp.optional(),
+  /** 깃발 A·B: Lv3/4/5 직접 피해 보너스, 또는 피해 보너스를 대체하는 공격 속도 보너스. */
+  auraDamageBPByLevel: z.array(bp).optional(),
+  auraSpeedBPByLevel: z.array(bp).optional(),
 });
 
 export const balanceSchema = z.object({

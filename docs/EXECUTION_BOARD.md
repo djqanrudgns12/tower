@@ -20,8 +20,8 @@
 | P1-REST | **완료** — A26 철회 목록·설치 자리 목록·문맥 손실 복구·첫 연습 판에 이어 소리(2026-10-29, WebAudio 합성, `src/ui/audio/sound.ts`) | 총괄 | 제작 음원으로 바꾸는 일은 공개 전 별도 작업 | — |
 | QR-PRACTICE | 계획 | Codex·Claude 검토 | 연습 전용 4문항(`src/content/questions/practice.json`) 공동검수 | 공개 전 |
 | [ART-002](work-packages/ART-002/RETURN.md) | **ACCEPTED** — 11장 HOLD 0, 실제 전투(1440×900)에서 지면 조립으로 확인해 모두 `integrated_pass`. 총괄이 agent-bridge로 Codex에 세 번 나눠 전달(15분 상한) | Codex 이미지 | `asset-source/incoming/ART-002/**` — 정원 지면 질감·설치 받침·작은 장식 11장 | ART-SAMPLE-001 ✓ |
-| CORE-P2 | **진행 중**(2026-10-29) — P2-1 엔진 완료: 즉발 공격(번개 연쇄·화염 부채꼴과 화상·창병·수호기사), 수호기사 동시 1기, 깃발 오라, 석궁 물리 저항 무시(이전에는 능력치에만 있고 피해에 안 쓰이던 결함). 다음: P2-2 나머지 7종 분기, P2-3 렌더러·관리 패널 | 총괄 | `src/domain/**`, `src/game/**`, `src/ui/game/**` | G2 ✓(실기기 제외) |
-| [QP-001](work-packages/QP-001/REQUEST.md) | **RUNNING**(2026-10-29 Argon, 브리지·파일만) — 첫 연습 판 4문항 다시 쓰기, 이어서 QR | Argon 4 | `content-source/batches/QP-001/**` | — |
+| CORE-P2 | **진행 중**(2026-10-29) — P2-1 엔진(즉발·연쇄·화상·오라·저항 무시)과 P2-2 분기 14개 완료(밸런스 `0.4.1-candidate`, 시험 `p2-combat.test.ts` 17개). 다음: P2-3 렌더러·관리 패널, P2-4 S11로 P2 밸런스 재측정 | 총괄 | `src/domain/**`, `src/game/**`, `src/ui/game/**` | G2 ✓(실기기 제외) |
+| [QP-001](work-packages/QP-001/RETURN.md) | **수합(검토 대기)** — 4문항 검사 통과, 어려운 낱말을 1~2학년 기초어로 바꿈, 정답 위치 b·d·a·c. 연습 은행은 네 문항 모두 승인되면 `build:bank`가 바꾼다 | Argon 4 | `content-source/batches/QP-001/**` | — |
 | [ART-003](work-packages/ART-003/REQUEST.md) | **RUNNING**(2026-10-29 Codex, 브리지 네 번 중 1/4) — P2 타워 7종 몸체·무기 13장 | Codex 이미지 | `asset-source/incoming/ART-003/**` | ART-002 ✓ |
 
 Q20-002의 소유 경로(`content-source/batches/Q20-002/**`)는 ART-002와 겹치지 않는다. 반환되면 QR(Codex·Claude)을 다시 돌린다. ART-002의 소유 경로(`asset-source/incoming/ART-002/**`)는 2차 수합 대상(`src/game/animation/**`, `content-source/reviews/**`)이나 총괄이 수합 때 고칠 렌더러(`src/game/**`)와 겹치지 않는다. QR-001·QR-002는 정답 키가 있는 `content-source/batches/**`를 뺀 작업 폴더에서 돌린다(발행용 프롬프트의 sparse checkout). 총괄만 공유 schema/package/lockfile/전역 토큰/라우터/인덱스를 수정한다. ACCEPTED는 총괄이 검사 후 부여한다.

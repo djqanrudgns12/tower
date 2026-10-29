@@ -16,6 +16,9 @@ fs.writeFileSync(registryPath, JSON.stringify(registry, null, 2) + '\n');
 
 console.table(registry.entries.map(e => ({ id: `${e.questionId}@${e.revision}`, batch: e.batchId, decision: e.decision, reasons: e.reasons.join(' · ') })));
 console.log(`승인 ${registry.approved} · 격리 ${registry.quarantined} → ${path.relative(root, registryPath)}`);
+const practice = b.buildPracticeBank(batches, registry);
+if (practice.bank) fs.writeFileSync(path.join(root, 'src/content/questions/practice.json'), JSON.stringify(practice.bank, null, 2) + '\n');
+console.log(practice.note);
 for (const grade of [...new Set(batches.flatMap(x => x.drafts.map(q => q.grade)))].sort()) {
   const r = b.buildBank(batches, registry, grade);
   if (r.bank) {

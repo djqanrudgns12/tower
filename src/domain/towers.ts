@@ -26,6 +26,15 @@ export interface TowerStats {
   /** 화상 총피해(저항 전 milli-HP, 레벨 배율 반영)와 지속 틱. 0이면 화상 없음. */
   burnTotal: number;
   burnTicks: number;
+  /** 정예·보스에게만 곱하는 상황 배율. */
+  eliteBossDamageBP: number;
+  /** 첫 대상 기절 틱(번개 B). */
+  stunTicks: number;
+  /** 석궁 A 관통: 두 번째 대상 피해 비율(0이면 없음)과 선분 폭. */
+  pierceDamageBP: number;
+  pierceWidth: number;
+  /** 창병 A 긴 창: 선분 폭(0이면 없음). 길이는 사거리. */
+  lineWidth: number;
 }
 
 export function branchOf(b: Balance, type: TowerId, branch: BranchId | null): BranchConfig | null {
@@ -37,6 +46,8 @@ export function towerStats(b: Balance, type: TowerId, level: number, branch: Bra
   const br = branchOf(b, type, branch);
   let damage = bpFloor(t.damage * 1000, b.levels.damageMultiplierBP[level - 1]!, 'damage.level');
   if (br?.damageBP) damage = bpFloor(damage, br.damageBP, 'damage.branch');
+  // 범위 공격 분기의 ‘각각 기본 피해의 N%’도 분기 배율로 한 단계 곱한다(PRD §7.3).
+  if (br?.splashDamageBP) damage = bpFloor(damage, br.splashDamageBP, 'damage.splash');
   if (t.damageType === 'none') throw new Error(`${type}은 직접 공격 타워가 아니다`);
   return {
     damage,
@@ -49,13 +60,19 @@ export function towerStats(b: Balance, type: TowerId, level: number, branch: Bra
     slowBP: br?.slowBP ?? t.slowBP ?? 0,
     slowTicks: msToTicks(br?.slowMs ?? t.slowMs ?? 0),
     projectileSpeed: t.projectileSpeedMilliPerSec ?? 10000,
-    physicalResistIgnoreBP: t.physicalResistIgnoreBP ?? 0,
+    physicalResistIgnoreBP: br?.physicalResistIgnoreBP ?? t.physicalResistIgnoreBP ?? 0,
     instant: t.instant ?? false,
-    chainFalloffBP: t.chainFalloffBP ?? 10000,
+    chainFalloffBP: br?.chainFalloffBP ?? t.chainFalloffBP ?? 10000,
     chainRadius: t.chainRadiusMilli ?? 0,
     cone: coneOf(type, t.coneDegrees),
-    burnTotal: t.burnTotal ? bpFloor(t.burnTotal * 1000, b.levels.damageMultiplierBP[level - 1]!, 'burn.level') : 0,
+    // 화상 = Lv1 총피해 × 레벨 배율 × 화상 분기 배율(직접 피해 분기·깃발은 화상에 쓰지 않는다, PRD §20.2).
+    burnTotal: t.burnTotal ? bpFloor(bpFloor(t.burnTotal * 1000, b.levels.damageMultiplierBP[level - 1]!, 'burn.level'), br?.burnBP ?? 10000, 'burn.branch') : 0,
     burnTicks: msToTicks(t.burnMs ?? 0),
+    eliteBossDamageBP: br?.eliteBossDamageBP ?? 10000,
+    stunTicks: msToTicks(br?.firstTargetStunMs ?? 0),
+    pierceDamageBP: br?.pierceDamageBP ?? 0,
+    pierceWidth: br?.pierceWidthMilli ?? 0,
+    lineWidth: br?.lineWidthMilli ?? 0,
   };
 }
 
@@ -74,16 +91,37 @@ export const attacks = (b: Balance, type: TowerId) => b.towers[type].damageType 
  * 같은 종류의 깃발 효과는 최고값만, 전체 외부 피해 보너스는 상한까지만 준다. 깃발 자신·다른 깃발은 받지 않는다.
  */
 export function auraDamageBonusBP(b: Balance, towers: readonly Tower[], target: Tower): number {
+  return Math.min(bestAura(b, towers, target, 'damage'), b.externalCaps.damageBP);
+}
+
+/** 깃발 B(신속)의 공격 속도 보너스. 버닝과 합친 전체 상한은 attackIntervalTicks가 적용한다(PRD §7.3, §20.2). */
+export const auraSpeedBonusBP = (b: Balance, towers: readonly Tower[], target: Tower) => bestAura(b, towers, target, 'speed');
+
+/**
+ * 깃발 한 기가 주는 효과: Lv1·2는 피해 보너스(타워 수치), Lv3부터는 분기 값이다.
+ * A(용기)는 피해 보너스를 대체하고, B(신속)는 피해 보너스를 없애고 속도 보너스를 준다(PRD §7.3).
+ */
+export function bannerAura(b: Balance, banner: Pick<Tower, 'type' | 'level' | 'branch'>): { damageBP: number; speedBP: number } {
+  const byLevel = b.towers[banner.type].auraDamageBPByLevel;
+  if (!byLevel) return { damageBP: 0, speedBP: 0 };
+  const br = branchOf(b, banner.type, banner.branch);
+  const at = (list: number[] | undefined) => list?.[Math.min(banner.level - b.levels.branchAtLevel, list.length - 1)] ?? 0;
+  if (banner.level < b.levels.branchAtLevel || !br) return { damageBP: byLevel[Math.min(banner.level, byLevel.length) - 1]!, speedBP: 0 };
+  return { damageBP: at(br.auraDamageBPByLevel), speedBP: at(br.auraSpeedBPByLevel) };
+}
+
+/** 같은 종류의 깃발 효과는 범위 안 최고값 하나만(PRD §7.3). 깃발 자신·다른 깃발은 받지 않는다. */
+function bestAura(b: Balance, towers: readonly Tower[], target: Tower, kind: 'damage' | 'speed'): number {
   if (!attacks(b, target.type)) return 0;
   let best = 0;
   for (const t of towers) {
-    const byLevel = b.towers[t.type].auraDamageBPByLevel;
-    if (!byLevel || t.id === target.id) continue;
+    if (t.id === target.id || !b.towers[t.type].auraDamageBPByLevel) continue;
     const r = b.towers[t.type].rangeMilli;
     if (dist2(t.x, t.y, target.x, target.y) > r * r) continue;
-    best = Math.max(best, byLevel[Math.min(t.level, byLevel.length) - 1]!);
+    const aura = bannerAura(b, t);
+    best = Math.max(best, kind === 'damage' ? aura.damageBP : aura.speedBP);
   }
-  return Math.min(best, b.externalCaps.damageBP);
+  return best;
 }
 
 /** ceil(기본틱 × 분기비 / (1 + 외부 속도)), 최소 간격 이상(PRD §20.2). */
