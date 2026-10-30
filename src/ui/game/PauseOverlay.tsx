@@ -39,7 +39,7 @@ export function PauseOverlay(p: Props) {
 
   return (
     <div className={css.layer} role="dialog" aria-modal="true" aria-labelledby="pause-title">
-      <div className={`${kit.board} ${css.box}`}>
+      <div className={css.box}>
         <h2 id="pause-title" className={css.title}>{blocked ? '잠깐만요' : '일시정지'}</h2>
         <p>{p.renderLost && !blocked ? RENDER_WAIT : PAUSE_COPY[main]}</p>
         {p.reasons.includes('STORAGE') && p.onRetrySave ? (

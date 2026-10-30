@@ -1,6 +1,6 @@
 import Phaser from 'phaser';
 import { assetManifestSchema } from '../contracts/assetManifest';
-import { TOWER_IDS } from '../contracts/balance';
+import { ENEMY_KINDS, TOWER_IDS } from '../contracts/balance';
 import type { DomainEvent } from '../domain/events';
 import { drawSprites } from './art';
 import { applyManifest, CELL_PX, WORLD_H, WORLD_W } from './assets';
@@ -51,6 +51,8 @@ export class BattleScene extends Phaser.Scene {
     drawSprites(this);
     const icons: Record<string, string> = {};
     for (const id of TOWER_IDS) for (const key of [`tower.${id}`, `tower.${id}.weapon`]) if (this.textures.exists(key)) icons[key] = this.textures.getBase64(key);
+    // 준비판의 다음 웨이브 미리보기·웨이브 띠의 대장 초상화도 전장과 같은 그림을 쓴다.
+    for (const kind of ENEMY_KINDS) { const key = `enemy.${kind}.0`; if (this.textures.exists(key)) icons[key] = this.textures.getBase64(key); }
     this.bridge.onIcons?.(icons);
     this.ground.build();
     this.inputLayer = new InputLayer(c, p => Boolean(this.miniCam?.visible && p.x >= this.miniCam.x && p.y <= this.miniCam.y + this.miniCam.height));

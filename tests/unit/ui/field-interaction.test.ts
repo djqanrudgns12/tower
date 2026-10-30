@@ -110,3 +110,21 @@ describe('첫 판 코치 마크', () => {
     expect(currentCoach(view('BUILD', 2), new Set<CoachMark>(['place', 'start']))).toBeNull();
   });
 });
+
+describe('준비판 다음 웨이브 미리보기', () => {
+  it('종류별 마릿수와 대장 여부가 실제 전투 편성과 같다', async () => {
+    const { wavePreview } = await import('../../../src/ui/game/wavePreview');
+    for (const wave of [1, 3, 5]) {
+      const { ctx, s } = newRun('Normal', 777 + wave);
+      finishPrep(ctx, s);
+      s.wave = wave;
+      ok(ctx, s, { type: 'startBattle' });
+      const real = new Map<string, number>();
+      for (const e of s.battle!.spawnList) real.set(e.kind, (real.get(e.kind) ?? 0) + 1);
+      const preview = wavePreview(ctx.balance, wave);
+      expect(preview.total).toBe(s.battle!.spawnList.length);
+      expect(preview.boss).toBe(real.has('boss'));
+      for (const k of preview.kinds) expect(real.get(k.kind)).toBe(k.count);
+    }
+  });
+});

@@ -83,7 +83,7 @@ test('1440×900: 준비 → 설치 → 전투 → 정지 가림 → 재개', asy
   // 설치된 타워를 누르면 옆에 도구 묶음(강화·판매)이 뜨고, 능력치 막대가 보인다.
   await tapCell(page, slot.x, slot.y);
   await expect(page.getByRole('group', { name: '궁수탑 레벨 1' })).toBeVisible();
-  await expect(page.getByRole('button', { name: /^강화 \d+골드$/ })).toBeVisible();
+  await expect(page.getByRole('button', { name: /^강화 \d+ 골드$/ })).toBeVisible();
   await expect(page.getByText('레벨 1', { exact: true })).toBeVisible();
   await shot(page, 'desktop-built');
 

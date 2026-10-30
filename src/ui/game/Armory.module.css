@@ -41,8 +41,9 @@
 
 .strip .socket {
   flex: none;
-  width: 76px;
-  padding-top: var(--s1);
+  width: 64px;
+  gap: 2px;
+  padding: var(--s1) 2px 2px;
   touch-action: pan-x;
 }
 
@@ -57,7 +58,7 @@
   box-shadow: var(--well-inset);
 }
 
-.strip .well { max-width: 56px; }
+.strip .well { max-width: 48px; }
 
 .price {
   display: inline-flex;

@@ -63,7 +63,7 @@ export function FieldOverlay(p: Props) {
                   type="button"
                   className={css.pick}
                   data-short={short || undefined}
-                  aria-label={`${p.balance.towers[type].label} ${price}골드${short ? `, 골드 ${price - p.gold} 부족` : ''}`}
+                  aria-label={`${p.balance.towers[type].label} ${price} 골드${short ? `, ${price - p.gold} 부족` : ''}`}
                   title={p.balance.towers[type].label}
                   onPointerEnter={() => p.onPreview(type)}
                   onPointerLeave={() => p.onPreview(null)}
@@ -107,15 +107,15 @@ function TowerTools(p: Props & { tower: TowerView }) {
   return (
     <div className={css.tools} role="group" aria-label={`${label} 레벨 ${t.level}`}>
       {next !== null && (choices ? (
-        <button type="button" className={`${css.tool} ${css.evolve}`} data-short={p.gold < next || undefined} aria-label={`진화 ${next}골드`} onClick={p.onEvolve}>
+        <button type="button" className={`${css.tool} ${css.evolve}`} data-short={p.gold < next || undefined} aria-label={`진화 ${next} 골드`} onClick={p.onEvolve}>
           <EvolveIcon size={18} />
-          <span className={css.toolText}>진화</span>
+          <span className={css.toolText}>진화</span>{' '}
           <span className={css.cost}><GoldCoinIcon size={13} />{fmtNumber(next)}</span>
         </button>
       ) : (
-        <button type="button" className={`${css.tool} ${css.upgrade}`} data-short={p.gold < next || undefined} aria-label={`강화 ${next}골드`} onClick={p.onUpgrade}>
+        <button type="button" className={`${css.tool} ${css.upgrade}`} data-short={p.gold < next || undefined} aria-label={`강화 ${next} 골드`} onClick={p.onUpgrade}>
           <UpgradeArrowIcon size={18} />
-          <span className={css.toolText}>강화</span>
+          <span className={css.toolText}>강화</span>{' '}
           <span className={css.cost}><GoldCoinIcon size={13} />{fmtNumber(next)}</span>
         </button>
       ))}
@@ -123,12 +123,12 @@ function TowerTools(p: Props & { tower: TowerView }) {
         type="button"
         className={`${css.tool} ${css.sell}`}
         data-confirm={confirmSell || undefined}
-        aria-label={confirmSell ? `판매 확인, ${refund}골드 받기` : `판매 ${refund}골드`}
+        aria-label={confirmSell ? `판매 확인 +${refund} 골드` : `판매 +${refund} 골드`}
         onClick={() => (confirmSell ? p.onSell() : setConfirmSell(true))}
         onBlur={() => setConfirmSell(false)}
       >
         <SellIcon size={18} />
-        <span className={css.toolText}>{confirmSell ? '확인' : '판매'}</span>
+        <span className={css.toolText}>{confirmSell ? '확인' : '판매'}</span>{' '}
         <span className={css.cost}>+{fmtNumber(refund)}</span>
       </button>
     </div>

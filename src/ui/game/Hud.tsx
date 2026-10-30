@@ -1,6 +1,7 @@
+import type { Balance } from '../../contracts/balance';
 import type { GameView } from '../../application/view';
 import { fmtNumber } from '../copy';
-import { BurningGemIcon, GateShieldIcon, GoldCoinIcon, PauseBarsIcon, ScoreCrestIcon } from '../icons/GameIcons';
+import { BurningGemIcon, GateShieldIcon, GoldCoinIcon, PauseBarsIcon, ScoreCrestIcon, WaveFlagIcon } from '../icons/GameIcons';
 import css from './Hud.module.css';
 
 export interface RecentDelta {
@@ -10,26 +11,30 @@ export interface RecentDelta {
 
 interface Props {
   view: GameView;
+  burning: Balance['burning'];
   mode: 'R' | 'S';
   compactRail?: boolean;
   recentDelta?: RecentDelta | null;
+  /** 골드 칸(정답 금화가 날아갈 곳)을 화면이 알 수 있게 붙이는 ref. */
+  goldRef?: React.Ref<HTMLSpanElement>;
   onPause(): void;
 }
 
 /**
- * 상단 상태판(PRD §12.3 + 시안 1 v3 왕국 원정대 정통 공방).
- * 짙은 호두나무 명패(--wood-dark)와 음각 금고(--wood-vault)는 이 상단 HUD에만 사용하여
- * 전장·하단 문제판·중간 관리함과의 시선 위계를 분리한다.
+ * 상단 상태 바(ui-rules-v2 §1, 41번 원화): 호두나무 판 한 장에 성문 막대, 골드·점수·웨이브, 연속 정답 보석, 일시정지.
+ * 아이콘+숫자만 보인다. 자세한 뜻은 화면 읽기 이름과 길게 누르기(제목)로 읽힌다.
  */
-export function Hud({ view, mode, compactRail = false, recentDelta = null, onPause }: Props) {
+export function Hud({ view, burning: rule, mode, compactRail = false, recentDelta = null, goldRef, onPause }: Props) {
   const ratio = view.gateMaxHp ? view.gateHp / view.gateMaxHp : 0;
   const waveNo = Math.max(1, view.wave);
   const burning = view.burningSecondsLeft > 0;
-  const streak = Math.min(3, view.battleStreak);
+  // 연속 정답 보석: 조건 수(balance.burning.streak)마다 한 바퀴. 버닝 중에는 가득 찬다(PRD §5).
+  const lit = burning ? rule.streak : view.battleStreak % rule.streak;
+  const speed = `공격 속도 +${rule.attackSpeedBP / 100}%`;
 
-  if (mode === 'S') {
-    return (
-      <div className={`${css.hud} ${css.bar}`}>
+  return (
+    <div className={`${css.hud} ${mode === 'S' ? css.bar : css.rail} ${compactRail ? css.compact : ''}`}>
+      <div className={css.top}>
         <div
           className={css.gate}
           role="meter"
@@ -37,180 +42,59 @@ export function Hud({ view, mode, compactRail = false, recentDelta = null, onPau
           aria-valuemin={0}
           aria-valuemax={view.gateMaxHp}
           aria-valuenow={view.gateHp}
+          title="성문"
         >
-          <GateShieldIcon size={15} />
-          <span className={css.label}>성문</span>
+          <GateShieldIcon size={20} light />
           <span className={css.track}>
-            <span className={css.fill} data-low={ratio <= 0.34} style={{ width: `${Math.round(ratio * 100)}%` }} />
+            <span className={css.fill} data-low={ratio <= 0.34 || undefined} style={{ transform: `scaleX(${Math.max(0, Math.min(1, ratio))})` }} />
           </span>
-          <span className={css.value}>{view.gateHp}/{view.gateMaxHp}</span>
+          <span className={css.gateNum}>{view.gateHp}<span className={css.of}>/{view.gateMaxHp}</span></span>
         </div>
-        <div className={css.wave}>
-          <span>웨이브</span>
-          <strong>{waveNo}</strong>
-          {view.milestoneWave && <span className={css.milestone}>고비</span>}
-        </div>
-        <div className={css.goldChip} aria-label={`골드 ${view.gold}`}>
-          <GoldCoinIcon size={16} />
-          <strong className={css.goldText}>{fmtNumber(view.gold)}</strong>
+        <button type="button" className={css.pause} onClick={onPause} aria-label="일시정지">
+          <PauseBarsIcon size={18} />
+        </button>
+      </div>
+      <div className={css.stats}>
+        <span className={css.stat} data-kind="gold" aria-label={`골드 ${view.gold}`} title="골드">
+          <GoldCoinIcon size={18} />
+          <strong ref={goldRef} className={css.num}>{fmtNumber(view.gold)}</strong>
           {recentDelta && recentDelta.gold !== 0 && (
-            <span className={css.deltaBadge} data-neg={recentDelta.gold < 0}>
-              {recentDelta.gold > 0 ? `+${recentDelta.gold}` : recentDelta.gold}
+            <span className={css.delta} data-neg={recentDelta.gold < 0 || undefined} aria-hidden="true">
+              {recentDelta.gold > 0 ? `+${recentDelta.gold}` : `−${Math.abs(recentDelta.gold)}`}
             </span>
           )}
-        </div>
-        <div className={css.ptChip}>
-          <ScoreCrestIcon size={16} />
-          <span className={css.label}>점수</span>
-          <strong>{fmtNumber(view.pt)}</strong>
-          <span className={css.ptBreakdown}>
-            (문제 {fmtNumber(view.stats.ptFromQuestions)} · 처치 {fmtNumber(view.stats.ptFromKills)})
-          </span>
-          {recentDelta && recentDelta.pt !== 0 && (
-            <span className={css.deltaPtBadge} data-neg={recentDelta.pt < 0}>
-              {recentDelta.pt > 0 ? `+${recentDelta.pt}` : recentDelta.pt}
-            </span>
-          )}
-        </div>
-        {burning && <div className={css.burnChip}>버닝 {view.burningSecondsLeft}초</div>}
-        <button type="button" className={css.pause} onClick={onPause} aria-label="일시정지">
-          <PauseBarsIcon size={18} />
-        </button>
-      </div>
-    );
-  }
-
-  if (compactRail) {
-    return (
-      <div className={`${css.hud} ${css.railCompact}`}>
-        <div className={css.railTop}>
-          <div className={css.gateBlock}>
-            <div className={css.gateMeta}>
-              <span className={css.gateTitle}><GateShieldIcon size={14} /> 성문</span>
-              <span className={css.waveInline}>
-                웨이브 <strong>{waveNo}</strong>
-                {view.milestoneWave && <span className={css.milestone}>고비</span>}
-              </span>
-            </div>
-            <div
-              className={css.gate}
-              role="meter"
-              aria-label="성문"
-              aria-valuemin={0}
-              aria-valuemax={view.gateMaxHp}
-              aria-valuenow={view.gateHp}
-            >
-              <span className={css.track}>
-                <span className={css.fill} data-low={ratio <= 0.34} style={{ width: `${Math.round(ratio * 100)}%` }} />
-              </span>
-              <span className={css.value}>{view.gateHp}/{view.gateMaxHp}</span>
-            </div>
-          </div>
-          <button type="button" className={css.pause} onClick={onPause} aria-label="일시정지">
-            <PauseBarsIcon size={18} />
-          </button>
-        </div>
-        <div className={css.vaultGridCompact}>
-          <div className={css.vaultCompact} aria-label={`골드 ${view.gold}`}>
-            <GoldCoinIcon size={15} />
-            <span className={css.vaultCompactLabel}>골드</span>
-            <strong className={css.goldText}>{fmtNumber(view.gold)}</strong>
-          </div>
-          <div className={css.vaultCompact}>
-            <ScoreCrestIcon size={15} />
-            <span className={css.vaultCompactLabel}>점수</span>
-            <strong>{fmtNumber(view.pt)}</strong>
-          </div>
-          <div className={css.vaultCompact} data-burning={burning}>
-            <BurningGemIcon active={burning || streak > 0} size={14} />
-            <strong className={css.streakCompactText}>
-              {burning ? `버닝 ${view.burningSecondsLeft}초` : `${streak}/3`}
-            </strong>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  return (
-    <div className={`${css.hud} ${css.rail}`}>
-      <div className={css.railTop}>
-        <div className={css.gateBlock}>
-          <div className={css.gateMeta}>
-            <span className={css.gateTitle}><GateShieldIcon size={15} /> 성문 내구도</span>
-            <span className={css.waveInline}>
-              웨이브 <strong>{waveNo}</strong>
-              {view.milestoneWave && <span className={css.milestone}>고비</span>}
-            </span>
-          </div>
-          <div
-            className={css.gate}
-            role="meter"
-            aria-label="성문"
-            aria-valuemin={0}
-            aria-valuemax={view.gateMaxHp}
-            aria-valuenow={view.gateHp}
-          >
-            <span className={css.track}>
-              <span className={css.fill} data-low={ratio <= 0.34} style={{ width: `${Math.round(ratio * 100)}%` }} />
-            </span>
-            <span className={css.value}>{view.gateHp}/{view.gateMaxHp}</span>
-          </div>
-        </div>
-        <button type="button" className={css.pause} onClick={onPause} aria-label="일시정지">
-          <PauseBarsIcon size={18} />
-        </button>
-      </div>
-
-      <div className={css.vaultGrid}>
-        <div className={css.vault} aria-label={`골드 ${view.gold}`}>
-          <div className={css.vaultTop}>
-            <span className={css.vaultLabel}>보유 골드</span>
-            {recentDelta && recentDelta.gold !== 0 && (
-              <span className={css.deltaBadge} data-neg={recentDelta.gold < 0}>
-                {recentDelta.gold > 0 ? `+${recentDelta.gold}` : recentDelta.gold}
-              </span>
-            )}
-          </div>
-          <div className={css.vaultMain}>
-            <GoldCoinIcon size={18} />
-            <strong className={css.goldValue}>{fmtNumber(view.gold)}</strong>
-          </div>
-          <span className={css.vaultSub}>설치 · 강화 재화</span>
-        </div>
-
-        <div className={css.vault}>
-          <div className={css.vaultTop}>
-            <span className={css.vaultLabel}>점수</span>
-            {recentDelta && recentDelta.pt !== 0 && (
-              <span className={css.deltaPtBadge} data-neg={recentDelta.pt < 0}>
-                {recentDelta.pt > 0 ? `+${recentDelta.pt}` : recentDelta.pt}
-              </span>
-            )}
-          </div>
-          <div className={css.vaultMain}>
-            <ScoreCrestIcon size={18} />
-            <strong className={css.ptValue}>{fmtNumber(view.pt)}</strong>
-            <span className={css.unit}>점</span>
-          </div>
-          <span className={css.vaultSub}>문제 {fmtNumber(view.stats.ptFromQuestions)} · 처치 {fmtNumber(view.stats.ptFromKills)}</span>
-        </div>
-      </div>
-
-      <div className={css.streakBar} data-burning={burning}>
-        <span className={css.gems}>
-          {[0, 1, 2].map(i => (
-            <BurningGemIcon key={i} active={burning || i < streak} size={14} />
-          ))}
         </span>
-        <span className={css.streakText}>
-          {burning
-            ? `버닝 ${view.burningSecondsLeft}초 · 공격 속도 +25%`
-            : `연속 정답 ${streak}/3 · 버닝 시 속도 +25%`}
+        <span className={css.stat} aria-label={`점수 ${view.pt}점, 문제 ${view.stats.ptFromQuestions} · 처치 ${view.stats.ptFromKills}`} title={`문제 ${fmtNumber(view.stats.ptFromQuestions)} · 처치 ${fmtNumber(view.stats.ptFromKills)}`}>
+          <ScoreCrestIcon size={18} />
+          <strong className={css.num}>{fmtNumber(view.pt)}</strong>
+          {recentDelta && recentDelta.pt !== 0 && (
+            <span className={css.delta} data-neg={recentDelta.pt < 0 || undefined} aria-hidden="true">
+              {recentDelta.pt > 0 ? `+${recentDelta.pt}` : `−${Math.abs(recentDelta.pt)}`}
+            </span>
+          )}
+        </span>
+        <span className={css.stat} aria-label={`웨이브 ${waveNo}${view.milestoneWave ? ', 고비 웨이브' : ''}`} title="웨이브">
+          <WaveFlagIcon size={18} boss={view.milestoneWave} light />
+          <strong className={css.num}>{waveNo}</strong>
+          {view.milestoneWave && <span className={css.milestone}>고비</span>}
+        </span>
+        <span
+          className={css.streak}
+          data-burning={burning || undefined}
+          role="img"
+          aria-label={burning ? `버닝 ${view.burningSecondsLeft}초 남음, ${speed}` : `연속 정답 ${lit}/${rule.streak}, 다 모으면 버닝 ${speed}`}
+          title={burning ? `버닝 · ${speed}` : `연속 정답 · 다 모으면 ${speed}`}
+        >
+          {burning ? (
+            <>
+              <BurningGemIcon active size={16} />
+              <strong className={css.burnNum}>{view.burningSecondsLeft}초</strong>
+            </>
+          ) : (
+            Array.from({ length: rule.streak }, (_, i) => <BurningGemIcon key={i} active={i < lit} size={14} />)
+          )}
         </span>
       </div>
     </div>
   );
 }
-
-export const Coin = GoldCoinIcon;

@@ -6,10 +6,12 @@ import type { BranchId, TowerId } from '../../contracts/balance';
  */
 const baseStyle = { display: 'inline-block', verticalAlign: 'middle', flex: 'none' } as const;
 
-export function GateShieldIcon({ size = 16 }: { size?: number }) {
+/** light: 짙은 호두나무 바탕 위(상태 바)용 밝은 윤곽. */
+export function GateShieldIcon({ size = 16, light = false }: { size?: number; light?: boolean }) {
+  const line = light ? '#fbf3e4' : '#362419';
   return (
     <svg width={size} height={size} viewBox="0 0 20 20" style={baseStyle} aria-hidden="true">
-      <path d="M4 3.5h3v2h2v-2h2v2h2v-2h3v7.2c0 3.8-2.9 6.3-6 7.8-3.1-1.5-6-4-6-7.8V3.5z" fill="#8f5d38" stroke="#362419" strokeWidth="1.6" strokeLinejoin="round" />
+      <path d="M4 3.5h3v2h2v-2h2v2h2v-2h3v7.2c0 3.8-2.9 6.3-6 7.8-3.1-1.5-6-4-6-7.8V3.5z" fill="#8f5d38" stroke={line} strokeWidth="1.6" strokeLinejoin="round" />
       <path d="M8 10.5h4v4.8c-.7.5-1.3.9-2 1.2-.7-.3-1.3-.7-2-1.2v-4.8z" fill="#dfd1b8" stroke="#362419" strokeWidth="1.2" />
     </svg>
   );
@@ -122,6 +124,17 @@ export function ChevronDownIcon({ size = 12 }: { size?: number }) {
   return (
     <svg width={size} height={size} viewBox="0 0 12 12" style={baseStyle} aria-hidden="true">
       <path d="M2.2 4.2L6 8l3.8-3.8" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+/** 웨이브 깃발: 깃대와 갈라진 천. 대장 웨이브는 천을 붉게. */
+export function WaveFlagIcon({ size = 18, boss = false, light = false }: { size?: number; boss?: boolean; light?: boolean }) {
+  const line = light ? '#fbf3e4' : '#362419';
+  return (
+    <svg width={size} height={size} viewBox="0 0 20 20" style={baseStyle} aria-hidden="true">
+      <path d="M5 2.5v15" stroke={line} strokeWidth="1.8" strokeLinecap="round" />
+      <path d="M5.8 3.5h10.4l-2.6 3.6 2.6 3.6H5.8z" fill={boss ? '#a3352b' : '#3a7ab0'} stroke={line} strokeWidth="1.6" strokeLinejoin="round" />
     </svg>
   );
 }

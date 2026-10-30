@@ -14,6 +14,8 @@ export interface Layout {
   portraitHint: boolean;
   wideQuestion: boolean;
   compactRail: boolean;
+  /** 하단 문제판 높이 예산(px). R 모드에서 문제판·준비판이 이 높이를 채운다. */
+  questionH: number;
 }
 
 const L = DEFAULTS.layout;
@@ -61,6 +63,7 @@ export function computeLayout(W: number, H: number, coarse: boolean, font: FontS
     portraitHint: H < L.portraitHintBelowHeightPx && W > H,
     wideQuestion: mode === 'R' || innerW >= L.questionWideInnerMinPx,
     compactRail: mode === 'R' && mapH <= 460,
+    questionH: q,
   };
 }
 

@@ -9,7 +9,7 @@ import type { FontScale } from '../../application/session';
 import { DEFAULTS } from '../../content';
 import { SoundDirector } from '../audio/sound';
 import { commandErrorText } from '../copy';
-import { PlayArrowIcon, TowerShieldPortrait } from '../icons/GameIcons';
+import { PlayArrowIcon, TowerShieldPortrait, WaveFlagIcon } from '../icons/GameIcons';
 import kit from '../kit.module.css';
 import { useLayout } from '../useLayout';
 import { Armory } from './Armory';
@@ -26,6 +26,7 @@ import { practiceCoach } from './practiceCoach';
 import { nextSlot, SlotList, slotDescription, type Arrow } from './SlotList';
 import { TowerDetail } from './TowerDetail';
 import { useTowerDrag } from './useTowerDrag';
+import { ENEMY_NAME, wavePreview } from './wavePreview';
 
 interface Props {
   controller: RunController;
@@ -278,6 +279,11 @@ export function GameScreen({
     controller.start();
     return () => controller.stop();
   }, [controller]);
+  // 전투 화면에서는 바탕을 짙은 호두나무 작업대로 바꾼다(전장이 주인공).
+  useEffect(() => {
+    document.body.dataset.screen = 'battle';
+    return () => { delete document.body.dataset.screen; };
+  }, []);
   useEffect(() => {
     if (view.phase === 'GAME_OVER') {
       const t = setTimeout(() => onExit('over'), 900);
@@ -298,7 +304,7 @@ export function GameScreen({
   const mark = practice ? null : currentCoach(view, coachDone);
   const practiceRest = <p className={kit.muted}>연습이 끝났어요. 아래에서 다음 할 일을 골라요.</p>;
   const skip = practice && !practiceDone ? (
-    <button type="button" className={`${kit.button} ${kit.quietWood} ${kit.block}`} onClick={() => practice.onFinish('home')}>
+    <button type="button" className={css.quietKey} onClick={() => practice.onFinish('home')}>
       연습 건너뛰기
     </button>
   ) : null;
@@ -407,29 +413,43 @@ export function GameScreen({
       selectedSlotId={selection.slotId ?? selectedTower?.slotId ?? null}
     />
   );
-  const railFlash = flash && flash.slotId === null ? <p className={kit.reason} role="status">{flash.text}</p> : null;
+  const railFlash = flash && flash.slotId === null ? <p className={css.railFlash} role="status">{flash.text}</p> : null;
 
   const seamClass = layout.mode === 'R' ? css.seamR : css.buildStack;
 
   const bottom = practiceDone ? (
-    <section className={`${kit.board} ${css.build} ${seamClass}`} aria-label="연습 끝">
+    <section className={`${css.build} ${seamClass}`} aria-label="연습 끝">
       <div className={css.buildMain}>
         <p className={css.buildTitle}>연습을 마쳤어요</p>
         <p className={kit.muted}>성문이 다시 가득 찼어요. 문제를 풀어 골드를 모으고, 타워로 성문을 지키면 돼요.</p>
       </div>
       <div className={css.buildSide}>
-        <button type="button" className={`${kit.button} ${kit.primary} ${kit.big} ${kit.block}`} onClick={() => practice.onFinish('new')}>
+        <button type="button" className={css.start} onClick={() => practice.onFinish('new')}>
           새 게임 시작
         </button>
-        <button type="button" className={`${kit.button} ${kit.quietWood} ${kit.block}`} onClick={() => practice.onFinish('again')}>
+        <button type="button" className={css.quietKey} onClick={() => practice.onFinish('again')}>
           연습 다시 하기
         </button>
       </div>
     </section>
   ) : view.phase === 'BUILD' ? (
-    <section className={`${kit.board} ${css.build} ${seamClass}`} aria-label="전투 준비">
+    <section className={`${css.build} ${seamClass}`} aria-label="전투 준비">
       <div className={css.buildMain}>
-        <p className={css.buildTitle}>{view.wave}웨이브 준비</p>
+        <p className={css.buildTitle}><WaveFlagIcon size={26} boss={view.milestoneWave} />{view.wave}웨이브 준비</p>
+        {(() => {
+          const next = wavePreview(b, view.wave);
+          const kinds = [...next.kinds, ...(next.boss ? [{ kind: 'boss' as const, count: 1 }] : [])];
+          return (
+            <ul className={css.roster} aria-label={`다음 적 ${next.total}마리: ${kinds.map(k => `${ENEMY_NAME[k.kind]} ${k.count}`).join(', ')}`}>
+              {kinds.map(k => (
+                <li key={k.kind} className={css.foe} data-boss={k.kind === 'boss' || undefined} aria-hidden="true">
+                  <span className={css.foeArt}>{icons[`enemy.${k.kind}.0`] && <img src={icons[`enemy.${k.kind}.0`]} alt="" draggable={false} />}</span>
+                  <span className={css.foeCount}>×{k.count}</span>
+                </li>
+              ))}
+            </ul>
+          );
+        })()}
         {coach?.at === 'start' ? coachLine('start') : mark === 'start' ? <p className={css.coach} role="status">{COACH_TEXT.start}</p> : null}
       </div>
       <div className={css.buildSide}>
@@ -437,12 +457,12 @@ export function GameScreen({
           <div className={css.confirmBox}>
             <p className={css.confirmText}>타워 없이 시작할까요?</p>
             <div className={css.row}>
-              <button type="button" className={`${kit.button} ${kit.primary}`} onClick={onStart}>시작</button>
-              <button type="button" className={`${kit.button} ${kit.quietWood}`} onClick={() => setConfirmEmpty(false)}>취소</button>
+              <button type="button" className={css.quietKey} onClick={onStart}>시작</button>
+              <button type="button" className={css.quietKey} onClick={() => setConfirmEmpty(false)}>취소</button>
             </div>
           </div>
         ) : (
-          <button type="button" className={`${kit.button} ${kit.primary} ${kit.big} ${kit.block} ${css.start}`} aria-keyshortcuts={showKeyHints ? 'Enter' : undefined} onClick={onStart}>
+          <button type="button" className={css.start} aria-keyshortcuts={showKeyHints ? 'Enter' : undefined} onClick={onStart}>
             <span>전투 시작</span>
             <PlayArrowIcon size={18} />
           </button>
@@ -451,7 +471,6 @@ export function GameScreen({
     </section>
   ) : view.question && !paused ? (
     <div className={css.questionWrap}>
-      {view.phase === 'WAVE_WRAPUP' && <p className={css.wrapup}>전투가 끝났어요. 이 문제만 풀고 다음으로 가요.</p>}
       {coachLine('question')}
       <QuestionPanel
         question={view.question}
@@ -465,7 +484,7 @@ export function GameScreen({
       />
     </div>
   ) : view.phase === 'GAME_OVER' ? (
-    <section className={`${kit.board} ${css.build} ${css.buildStack}`}>
+    <section className={`${css.build} ${css.buildStack}`}>
       <p className={css.buildTitle}>{view.endReason === 'DEFEAT' ? '성문이 무너졌어요.' : '이번 판을 마쳤어요.'}</p>
     </section>
   ) : null;
@@ -531,6 +550,7 @@ export function GameScreen({
         padding: layout.pad,
         '--map-w': `${layout.mapW}px`,
         '--rail-w': `${layout.railW}px`,
+        '--q-h': `${layout.questionH}px`,
       } as CSSProperties)
     : { padding: layout.pad };
 
@@ -545,8 +565,8 @@ export function GameScreen({
         {layout.mode === 'R' ? (
           <>
             {field}
-            <aside className={`${kit.board} ${css.rail}`} style={{ height: layout.mapH }} aria-label="타워 관리">
-              <Hud view={view} mode="R" compactRail={layout.compactRail} recentDelta={recentDelta} onPause={() => controller.pause('USER')} />
+            <aside className={css.rail} style={{ height: layout.mapH }} aria-label="타워 관리">
+              <Hud view={view} burning={b.burning} mode="R" compactRail={layout.compactRail} recentDelta={recentDelta} onPause={() => controller.pause('USER')} />
               {notice && <p className={css.hint} role="status">{notice}</p>}
               <div className={`${css.railBody} ${layout.compactRail ? css.railBodyCompact : ''}`}>
                 {practiceDone ? (
@@ -567,7 +587,7 @@ export function GameScreen({
           </>
         ) : (
           <>
-            <Hud view={view} mode="S" recentDelta={recentDelta} onPause={() => controller.pause('USER')} />
+            <Hud view={view} burning={b.burning} mode="S" recentDelta={recentDelta} onPause={() => controller.pause('USER')} />
             {layout.portraitHint && <p className={css.hint}>세로로 돌리면 더 편해요.</p>}
             {notice && <p className={css.hint} role="status">{notice}</p>}
             {field}

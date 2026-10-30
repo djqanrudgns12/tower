@@ -39,7 +39,7 @@ export function Armory({ balance, towers, gold, armed, icons, variant, fresh, on
             type="button"
             role="option"
             aria-selected={armed === type}
-            aria-label={`${label} ${price}골드${short ? `, 골드 ${price - gold} 부족` : ''}`}
+            aria-label={`${label} ${price} 골드${short ? `, ${price - gold} 부족` : ''}`}
             title={label}
             className={css.socket}
             data-short={short || undefined}
@@ -48,7 +48,7 @@ export function Armory({ balance, towers, gold, armed, icons, variant, fresh, on
             onClick={() => { if (takeClick()) onArm(type); }}
           >
             <span className={css.well}>
-              <TowerShieldPortrait type={type} icons={icons} size={variant === 'rail' ? 64 : 48} bare />
+              <TowerShieldPortrait type={type} icons={icons} size={variant === 'rail' ? 64 : 44} bare />
             </span>
             <span className={css.price}>
               <GoldCoinIcon size={14} />

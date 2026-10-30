@@ -120,3 +120,6 @@ h1, h2, h3, p { margin: 0; }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { transition-duration: 0ms !important; animation-duration: 0ms !important; }
 }
+
+/* 전투 화면 바탕: 짙은 호두나무 작업대(ui-rules-v2 §1). 홈 화면은 기존 바탕 그대로. */
+body[data-screen='battle'] { background: var(--walnut-3); }
