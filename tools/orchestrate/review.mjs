@@ -33,7 +33,7 @@ function args(argv) {
   return out;
 }
 
-async function load(root) {
+export async function load(root) {
   const { module: b } = await runnerImport(path.join(root, 'tools/content/bankBuild.ts'), { configFile: false, logLevel: 'error', root });
   return b;
 }
@@ -246,6 +246,26 @@ function claudeCli(cwd, body, timeoutSec) {
   });
 }
 
+/** Codex 검수도 브리지 시간당 상한을 다른 세션과 나눠 쓰지 않도록 codex exec를 직접 부른다(읽기 전용 sandbox, 기록 없는 세션). */
+const CODEX_CLI = process.env.CODEX_CLI ?? '/Users/bodyking/Desktop/ChatGPT.app/Contents/Resources/codex-cli/CodexCLI.app/Contents/MacOS/codex';
+function codexCli(cwd, body, timeoutSec) {
+  return new Promise(resolve => {
+    const outFile = path.join(cwd, `last-${process.pid}-${Date.now()}.md`);
+    const child = spawn(CODEX_CLI, ['exec', '--skip-git-repo-check', '--ephemeral', '--color', 'never', '-s', 'read-only', '-C', cwd, '-o', outFile, '-m', REVIEWERS.codex, '-c', 'model_reasoning_effort="xhigh"', '-'], { cwd, stdio: ['pipe', 'pipe', 'pipe'] });
+    let err = '';
+    const timer = setTimeout(() => child.kill('SIGTERM'), timeoutSec * 1000);
+    child.stdout.on('data', () => {});
+    child.stderr.on('data', d => { err += d; });
+    child.on('close', code => {
+      clearTimeout(timer);
+      const out = fs.existsSync(outFile) ? fs.readFileSync(outFile, 'utf8').trim() : '';
+      if (fs.existsSync(outFile)) fs.unlinkSync(outFile);
+      resolve({ code, out, err: err.trim().slice(-2000) });
+    });
+    child.stdin.end(body);
+  });
+}
+
 function bridge(reviewer, cwd, body, waitSec) {
   return new Promise(resolve => {
     const child = spawn(BRIDGE, ['ask', '--from', 'claude', '--to', reviewer, '--cwd', cwd, '--wait', String(waitSec), '-'], { stdio: ['pipe', 'pipe', 'pipe'] });
@@ -260,7 +280,7 @@ function bridge(reviewer, cwd, body, waitSec) {
 
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 
-async function runPhase(b, root, reviewer, batchId, phase, log) {
+export async function runPhase(b, root, reviewer, batchId, phase, log) {
   const { items } = await buildPhase(b, root, reviewer, batchId, phase);
   if (items.length === 0) return 0;
   const sealed = path.join(root, '.orchestrate/review/sealed', `${reviewer}-${batchId}-${phase}`);
@@ -270,7 +290,14 @@ async function runPhase(b, root, reviewer, batchId, phase, log) {
   for (let attempt = 1; attempt <= 4; attempt++) {
     const started = Date.now();
     const body = promptFor(phase, items) + note;
-    const res = reviewer === 'claude' ? await claudeCli(sealed, body, 1500) : await bridge(reviewer, sealed, body, 1200);
+    const res = reviewer === 'claude' ? await claudeCli(sealed, body, 1500) : reviewer === 'codex' ? await codexCli(sealed, body, 1800) : await bridge(reviewer, sealed, body, 1200);
+    // 계정 사용량 한도에 걸리면 시도 횟수를 쓰지 않고 기다렸다 같은 묶음을 다시 보낸다.
+    if (/session limit|usage limit|rate[_ ]limit|\b429\b|hit your limit/i.test(`${res.out}\n${res.err}`) && !/```/.test(res.out)) {
+      log(`${batchId} ${phase}: 사용량 한도 — 20분 대기 후 재시도`);
+      await sleep(1_200_000);
+      attempt--;
+      continue;
+    }
     fs.writeFileSync(path.join(workDir(root, reviewer, batchId), `${phase}.reply${attempt}.md`), res.out || res.err);
     if (/시간당 실행 상한/.test(res.out)) { log(`${batchId} ${phase}: 시간당 상한 — 10분 뒤 다시`); await sleep(600_000); attempt--; continue; }
     if (/자기 자신에게는|CLI를 찾지 못했다|깨우기 깊이 한도/.test(res.out + res.err)) throw new Error(`${batchId} ${phase}: 실행 수단 오류 — ${(res.out || res.err).slice(0, 200)}`);
