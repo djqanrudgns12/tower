@@ -6,12 +6,15 @@
   align-items: stretch;
 }
 
-/* R 모드 수직선 잠금: 바깥 테두리(4px) + 안쪽 여백(12px) = 16px을 빼서 상단 [전장 | 우측 레일] 수직선과 0.0px 일치 */
+/* 높이가 빠듯한 크롬북(1366×650, compactRail)은 보기 함 안쪽 여백을 4px로 줄여 두 줄 보기도 예산 q 안에 넣는다. */
+
+/* R 모드 수직선 잠금: 바깥 테두리(4px) + 안쪽 여백(12px) = 16px을 빼서 상단 [전장 | 우측 레일] 수직선과 0.0px 일치.
+   높이는 지문·보기 칸이 정하고(최소 예산 --q-budget = useLayout의 q), 해설 카드는 높이에 끼어들지 않는다. */
 .seamR {
   padding: var(--s3);
-  grid-template-columns: minmax(0, 1fr) calc(var(--rail-w, 308px) - 16px);
+  grid-template-columns: minmax(0, 1fr) calc(var(--rail-w, var(--rail-min)) - 16px);
   column-gap: var(--s3);
-  min-height: 172px;
+  min-height: var(--q-budget);
 }
 
 /* S 모드 와이드(태블릿): 좌측 지문·보기 + 우측 248px 보조함 */
@@ -19,7 +22,7 @@
   padding: var(--s3);
   grid-template-columns: minmax(0, 1fr) 248px;
   column-gap: var(--s3);
-  min-height: 172px;
+  min-height: var(--q-budget);
 }
 
 /* S 모드 내로우(휴대폰): 세로 적층 */
@@ -81,7 +84,8 @@
   border-radius: var(--r-panel);
 }
 
-.narrow .optionsWell {
+.narrow .optionsWell,
+.panel[data-tight] .optionsWell {
   padding: var(--s1);
 }
 
@@ -156,6 +160,15 @@
   flex: 1;
   min-width: 0;
   overflow-wrap: anywhere;
+  /* 굵게 잰 높이를 미리 잡아 정답 공개로 굵어져도 보기 높이·위치가 그대로다. */
+  display: grid;
+  align-items: center;
+  min-height: var(--option-text-h, 0);
+}
+
+/* 측정 중에만 붙는다: 정답이 될 수 있는 모든 보기를 굵게 그려 줄 수를 잰다. */
+.options[data-measure='bold'] .optionText {
+  font-weight: 700;
 }
 
 .sealSlot {
@@ -196,35 +209,51 @@
   color: var(--ink-soft);
 }
 
-/* 우측 보조·피드백 함 */
+/* 우측 보조·피드백 함. 내용은 절대 위치 몸체에 두어 문제판 높이를 늘리지 않는다(제출 흔들림 0). */
 .feedback {
-  display: grid;
-  gap: var(--s2);
-  align-content: space-between;
-  padding: var(--s3);
+  position: relative;
   background: var(--well);
   border: 2px solid var(--well-border);
   border-radius: var(--r-panel);
   min-height: 44px;
 }
 
+.feedbackBody {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  gap: var(--s2);
+  align-content: space-between;
+  padding: var(--s3);
+  overflow-y: auto;
+}
+
 .feedback[data-tone='correct'] {
   background: var(--green-surface);
   border-color: var(--green);
+}
+
+.feedback[data-tone='correct'] .feedbackBody {
   align-content: center;
 }
 
 .feedback[data-tone='wrong'] {
   background: var(--danger-surface);
   border-color: var(--danger);
-  align-content: start;
 }
 
-.narrow .feedback {
+/* 오답·모르겠어요: 해설만 스크롤하고 ‘다음 문제’ 단추는 카드 아래에 늘 보인다. */
+.feedback[data-tone='wrong'] .feedbackBody {
+  grid-template-rows: minmax(0, 1fr) auto;
+  align-content: stretch;
+  overflow: hidden;
+}
+
+.narrow .feedbackBody {
   padding: var(--s2);
 }
 
-.narrow .feedback[data-tone='idle'] {
+.narrow .feedback[data-tone='idle'] .feedbackBody {
   display: flex;
   flex-wrap: nowrap;
   align-items: center;
@@ -323,9 +352,12 @@
   font-size: 15px;
 }
 
-.wrongBox {
+.wrongText {
+  min-height: 0;
+  overflow-y: auto;
   display: grid;
   gap: var(--s1);
+  align-content: start;
 }
 
 .answer {

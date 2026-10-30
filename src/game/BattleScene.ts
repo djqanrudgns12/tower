@@ -17,6 +17,8 @@ const FIXED_WEAPON = new Set<TowerId>(['frost', 'lightning']);
 const DEPTH = { ground: 0, mood: 1, overlay: 5, units: 10, projectiles: 2000, fx: 2100, ui: 3000 };
 /** deco.stele.r1 원화에서 비석 면 가운데의 세로 위치(원화 높이 대비, 면은 약 28~130/192px). */
 const STELE_FACE_Y = 0.41;
+/** 처치 보상 표찰의 화면 최소 글자 크기(CSS px, v3 §1-2 13px 하한). */
+const CALLOUT_MIN_CSS_PX = 13;
 
 interface EnemyView { sprite: Phaser.GameObjects.Image; badge: Phaser.GameObjects.Image | null; prev: number; cur: number; phase: number; flashUntil: number; hitAt: number | null; facing: 1 | -1 }
 interface TowerView { body: Phaser.GameObjects.Image; weapon: Phaser.GameObjects.Image | null; pips: Phaser.GameObjects.Graphics; level: number; branch: string | null; recoilUntil: number; angle: number }
@@ -218,28 +220,41 @@ export class BattleScene extends Phaser.Scene {
     this.tweens.add({ targets: img, scale: scale, alpha: 0, duration: this.bridge.reducedMotion ? 80 : 180, onComplete: () => img.destroy() });
   }
 
-  /** 적 처치 보상 부유 표찰: 이미 상태에 반영된 보상을 전장 위에서 즉시 읽히게 보여 준다(PRD §10.3·§11.4). */
+  /**
+   * 적 처치 보상 부유 표찰: 이미 상태에 반영된 보상을 전장 위에서 즉시 읽히게 보여 준다(PRD §10.3·§11.4).
+   * 글자는 화면에서 13px 이상이어야 한다(v3 §1-2). 화면 CSS px = 월드 px × 메인 카메라 배율 × 캔버스 표시 배율(1/dpr)이므로,
+   * 생성 시점의 메인 카메라 배율(칸 맞춤·확대 모드 포함)로 월드 글자 크기를 키운다. 기존 13px보다 작아지지는 않는다.
+   * 미니맵 카메라는 callouts 컨테이너를 무시하므로 표찰이 미니맵에 비치지 않는다.
+   */
   private spawnKillCallout(milliX: number, milliY: number, gold: number, pt: number) {
     if (gold <= 0 && pt <= 0) return;
-    const wx = Phaser.Math.Clamp(toWorld(milliX), 48, WORLD_W - 48);
-    const wy = Math.max(24, toWorld(milliY) - 24);
+    const cssPerWorld = this.cameras.main.zoom * this.scale.zoom;
+    const fontPx = Math.max(CALLOUT_MIN_CSS_PX, Math.ceil(CALLOUT_MIN_CSS_PX / Math.max(0.01, cssPerWorld)));
+    const k = fontPx / CALLOUT_MIN_CSS_PX;
+    const rise = this.bridge.reducedMotion ? 0 : Math.round(14 * k);
     const text = pt > 0 ? `+${gold}골드 · +${pt}점` : `+${gold}골드`;
-    const label = this.add.text(wx, wy, text, {
+    const label = this.add.text(0, 0, text, {
       fontFamily: 'Pretendard Variable, Pretendard, sans-serif',
-      fontSize: '13px',
+      fontSize: `${fontPx}px`,
       fontStyle: '700',
       color: '#ffd859',
       backgroundColor: '#2e1b10',
-      padding: { x: 6, y: 3 },
+      padding: { x: Math.round(6 * k), y: Math.round(3 * k) },
       stroke: '#362419',
-      strokeThickness: 2,
+      strokeThickness: Math.max(2, Math.round(2 * k)),
       resolution: 2,
     }).setOrigin(0.5);
+    // 커진 표찰도 전장 밖으로 잘리지 않게 실제 크기로 가장자리를 막는다(떠오르는 거리 포함).
+    const halfW = label.displayWidth / 2, halfH = label.displayHeight / 2;
+    const wx = Phaser.Math.Clamp(toWorld(milliX), halfW, Math.max(halfW, WORLD_W - halfW));
+    const wy = Math.max(halfH + rise, toWorld(milliY) - 24);
+    label.setPosition(wx, wy);
     this.callouts.add(label);
     if (this.bridge.reducedMotion) {
-      this.tweens.add({ targets: label, alpha: 0, delay: 220, duration: 240, onComplete: () => label.destroy() });
+      // 움직임 줄이기: 제자리에서 보였다가 같은 시간(680ms) 뒤 투명도만 낮춰 사라진다. 위로 떠오르지 않는다.
+      this.tweens.add({ targets: label, alpha: 0, delay: 440, duration: 240, onComplete: () => label.destroy() });
     } else {
-      this.tweens.add({ targets: label, y: wy - 14, alpha: 0, delay: 180, duration: 500, onComplete: () => label.destroy() });
+      this.tweens.add({ targets: label, y: wy - rise, alpha: 0, delay: 180, duration: 500, onComplete: () => label.destroy() });
     }
   }
 

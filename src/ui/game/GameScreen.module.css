@@ -1,6 +1,7 @@
 /* 게임 본 화면 격자(시안 1 v3 상·하단 수직선 0.0px 잠금 규격). PRD §12.1·§12.8 준수. */
 .screen {
-  max-width: 1560px;
+  /* 계약 layout.frameMaxPx를 useLayout이 :root 변수로 넣는다. */
+  max-width: var(--frame-max);
   margin: 0 auto;
 }
 
@@ -81,7 +82,7 @@
 
 .seamR {
   padding: var(--s3);
-  grid-template-columns: minmax(0, 1fr) calc(var(--rail-w, 308px) - 16px);
+  grid-template-columns: minmax(0, 1fr) calc(var(--rail-w, var(--rail-min)) - 16px);
   column-gap: var(--s3);
 }
 
