@@ -18,7 +18,7 @@ describe('S11 엔진 시뮬레이터', () => {
     const a = simulateRun({ ...opt, onCommand: (_w, _g, cmd) => {
       if (beforeEvo !== null) return;
       if (cmd.type === 'build') builds++;
-      if (cmd.type === 'upgrade' && cmd.branch) beforeEvo = builds;
+      if (cmd.type === 'upgrade' && cmd.form) beforeEvo = builds;
     } });
     expect(beforeEvo).toBeGreaterThanOrEqual(5);
     // 엔진 가치는 판 사이에 캐시를 함께 쓰므로 같은 seed의 결과가 같아야 한다.

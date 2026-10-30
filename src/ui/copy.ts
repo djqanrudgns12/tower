@@ -42,7 +42,7 @@ export function commandErrorText(error: CommandError, extra?: { need?: number })
     case 'WRONG_PHASE': return '지금은 할 수 없어요';
     case 'SLOT_TAKEN': return '이미 타워가 있어요';
     case 'MAX_LEVEL': return '최고 레벨이에요';
-    case 'BRANCH_REQUIRED': return '진화할 길을 먼저 골라요';
+    case 'FORM_REQUIRED': return '진화할 길을 먼저 골라요';
     case 'NEXT_NOT_READY': return '해설을 조금 더 읽어 주세요';
     case 'PAUSED': return '멈춘 동안에는 할 수 없어요';
     default: return '다시 해 주세요';

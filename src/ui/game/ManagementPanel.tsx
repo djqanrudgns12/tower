@@ -1,8 +1,8 @@
 import { useState } from 'react';
-import type { BranchId, TowerId } from '../../contracts/balance';
+import type { FormId, TowerId } from '../../contracts/balance';
 import type { GameView, TowerView } from '../../application/view';
 import type { GameContext } from '../../domain/context';
-import { attackIntervalTicks, attacks, bannerAura, buildCost, needsBranch, sellRefund, towerStats, upgradeCost } from '../../domain/towers';
+import { attackIntervalTicks, attacks, bannerAura, buildCost, evolutionChoices, formBranch, formInfo, sellRefund, towerStats, upgradeCost } from '../../domain/towers';
 import type { FieldSelection } from '../../game/bridge';
 import { BRANCH_MARK, fmtCells, fmtDamage, fmtSeconds, TOWER_COPY, withRo } from '../copy';
 import { BranchMarkIcon, LockPadIcon, TowerShieldPortrait } from '../icons/GameIcons';
@@ -45,8 +45,9 @@ interface Props {
   compactRail?: boolean;
   onPickType(type: TowerId): void;
   onBuild(): void;
-  onUpgrade(branch?: BranchId): void;
-  onPreviewBranch(branch: BranchId | null): void;
+  onUpgrade(form?: FormId): void;
+  /** 진화 미리보기: 두 선택지 가운데 첫째(A)·둘째(B). */
+  onPreviewBranch(branch: FieldSelection['previewBranch']): void;
   onMode(mode: PanelMode): void;
   onSell(): void;
   onClear(): void;
@@ -103,25 +104,27 @@ export function ManagementPanel(p: Props) {
 
   if (tower) {
     const next = upgradeCost(b, tower.type, tower.level);
-    const linearNextLevel = next !== null && !needsBranch(b, tower.level) ? tower.level + 1 : null;
-    const delta = linearNextLevel !== null ? strengthDelta(b, tower.type, tower.level, tower.branch) : null;
+    const choices = evolutionChoices(b, tower);
+    const branch = formBranch(tower.form);
+    const linearNextLevel = next !== null && !choices ? tower.level + 1 : null;
+    const delta = linearNextLevel !== null ? strengthDelta(b, tower.type, tower.level, tower.form) : null;
     const refund = sellRefund(b, tower);
     const shortMsg = next !== null ? shortage(next) : null;
     return (
       <div className={css.panel}>
         <TowerHeader tower={tower} icons={p.icons} ctx={p.ctx} />
-        <Stats ctx={p.ctx} type={tower.type} level={tower.level} nextLevel={linearNextLevel} branch={tower.branch} />
-        {b.branches[tower.type] && tower.branch && (
+        <Stats ctx={p.ctx} type={tower.type} level={tower.level} nextLevel={linearNextLevel} form={tower.form} />
+        {branch && (
           <div className={css.branchActive}>
-            <BranchMarkIcon id={tower.branch} size={18} />
+            <BranchMarkIcon id={branch} size={18} />
             <span>
-              <strong>{b.branches[tower.type]![tower.branch].label}</strong> · {b.branches[tower.type]![tower.branch].summary}
+              <strong>{formInfo(b, tower.type, tower.form).label}</strong> · {formInfo(b, tower.type, tower.form).summary}
             </span>
           </div>
         )}
         {next === null ? (
           <p className={css.maxBadge}>최고 단계 달성</p>
-        ) : needsBranch(b, tower.level) ? (
+        ) : choices ? (
           <button type="button" className={`${kit.button} ${kit.primary} ${kit.block}`} disabled={!trading} onClick={() => p.onMode('branch')}>
             진화할 길 고르기 · {next}골드
           </button>
@@ -263,7 +266,7 @@ export function ManagementPanel(p: Props) {
 
       {picking && (
         <>
-          {!p.compact && !p.compactRail && <Stats ctx={p.ctx} type={picking} level={1} branch={null} />}
+          {!p.compact && !p.compactRail && <Stats ctx={p.ctx} type={picking} level={1} form="base" />}
           {p.selection.slotId && (
             <div className={css.actionRow}>
               <button
@@ -302,21 +305,22 @@ export function ManagementPanel(p: Props) {
 
 function BranchChoice(p: Props & { tower: TowerView; trading: boolean; lock: string | null; shortage(cost: number): string | null }) {
   const b = p.ctx.balance;
-  const branches = b.branches[p.tower.type];
+  const choices = evolutionChoices(b, p.tower);
   const cost = upgradeCost(b, p.tower.type, p.tower.level)!;
   const chosen = p.selection.previewBranch;
-  if (!branches) return null;
+  if (!choices) return null;
+  const formOf = (id: 'A' | 'B') => choices[id === 'A' ? 0 : 1]!;
   const shortMsg = p.shortage(cost);
   return (
     <div className={css.panel}>
       <div className={css.mgmtHead}>
         <p className={css.title}>{b.towers[p.tower.type].label}의 진화 길</p>
-        <span className={css.scopeBadge}>레벨 2 → 3</span>
+        <span className={css.scopeBadge}>레벨 {p.tower.level} → {p.tower.level + 1}</span>
       </div>
       <div className={css.socketWell}>
         <div className={css.branchList}>
           {(['A', 'B'] as const).map(id => {
-            const br = branches[id];
+            const br = formInfo(b, p.tower.type, formOf(id));
             return (
               <button
                 key={id}
@@ -332,7 +336,7 @@ function BranchChoice(p: Props & { tower: TowerView; trading: boolean; lock: str
                     <span className={css.branchPathTag} data-branch={id}>{BRANCH_MARK[id]}</span>
                   </span>
                   <span className={css.role}>{br.summary}</span>
-                  <span className={css.branchStats}>{statText(b, p.tower.type, 3, id)}</span>
+                  <span className={css.branchStats}>{statText(b, p.tower.type, p.tower.level + 1, formOf(id))}</span>
                 </span>
               </button>
             );
@@ -343,9 +347,9 @@ function BranchChoice(p: Props & { tower: TowerView; trading: boolean; lock: str
         type="button"
         className={`${kit.button} ${kit.primary} ${kit.block}`}
         disabled={!chosen || !p.trading || p.view.gold < cost}
-        onClick={() => chosen && p.onUpgrade(chosen)}
+        onClick={() => chosen && p.onUpgrade(formOf(chosen))}
       >
-        {chosen ? `${withRo(branches[chosen].label)} 진화 · ${cost}골드` : '길을 하나 골라요'}
+        {chosen ? `${withRo(formInfo(b, p.tower.type, formOf(chosen)).label)} 진화 · ${cost}골드` : '길을 하나 골라요'}
       </button>
       {!p.trading && p.lock ? (
         <p className={css.lockBanner}>
@@ -386,18 +390,18 @@ function TowerHeader({ tower, icons, ctx }: { tower: TowerView; icons: Record<st
 }
 
 /** 강화 단추의 변화 한 줄: 공격 타워는 힘, 깃발은 주변 효과. */
-function strengthDelta(b: GameContext['balance'], type: TowerId, level: number, branch: BranchId | null): string {
-  if (!attacks(b, type)) return `${auraText(bannerAura(b, { type, level, branch }))} → ${auraText(bannerAura(b, { type, level: level + 1, branch }))}`;
-  return `힘 ${fmtDamage(towerStats(b, type, level, branch).damage)} → ${fmtDamage(towerStats(b, type, level + 1, branch).damage)}`;
+function strengthDelta(b: GameContext['balance'], type: TowerId, level: number, form: FormId): string {
+  if (!attacks(b, type)) return `${auraText(bannerAura(b, { type, level, form }))} → ${auraText(bannerAura(b, { type, level: level + 1, form }))}`;
+  return `힘 ${fmtDamage(towerStats(b, type, level, form).damage)} → ${fmtDamage(towerStats(b, type, level + 1, form).damage)}`;
 }
 
 /** 깃발 효과(PRD §7.1·§7.3): 피해 보너스 또는 공격 속도 보너스. */
 const auraText = (a: { damageBP: number; speedBP: number }) => (a.speedBP > 0 ? `주변 속도 +${a.speedBP / 100}%` : `주변 힘 +${a.damageBP / 100}%`);
 
 /** 분기 고르기의 한 줄 요약. */
-function statText(b: GameContext['balance'], type: TowerId, level: number, branch: BranchId | null): string {
-  if (!attacks(b, type)) return `${auraText(bannerAura(b, { type, level, branch }))} · ${fmtCells(b.towers[type].rangeMilli)}`;
-  const s = towerStats(b, type, level, branch);
+function statText(b: GameContext['balance'], type: TowerId, level: number, form: FormId): string {
+  if (!attacks(b, type)) return `${auraText(bannerAura(b, { type, level, form }))} · ${fmtCells(b.towers[type].rangeMilli)}`;
+  const s = towerStats(b, type, level, form);
   return `힘 ${fmtDamage(s.damage)} · ${fmtSeconds(attackIntervalTicks(b, s, 0))} · ${fmtCells(s.range)}`;
 }
 
@@ -406,18 +410,18 @@ function Stats({
   type,
   level,
   nextLevel = null,
-  branch,
+  form,
 }: {
   ctx: GameContext;
   type: TowerId;
   level: number;
   nextLevel?: number | null;
-  branch: BranchId | null;
+  form: FormId;
 }) {
   const b = ctx.balance;
   if (!attacks(b, type)) {
-    const curAura = auraText(bannerAura(b, { type, level, branch }));
-    const nextAura = nextLevel !== null ? auraText(bannerAura(b, { type, level: nextLevel, branch })) : null;
+    const curAura = auraText(bannerAura(b, { type, level, form }));
+    const nextAura = nextLevel !== null ? auraText(bannerAura(b, { type, level: nextLevel, form })) : null;
     return (
       <div className={css.statWell}>
         <p className={css.stats}>
@@ -426,8 +430,8 @@ function Stats({
       </div>
     );
   }
-  const s = towerStats(b, type, level, branch);
-  const nextS = nextLevel !== null ? towerStats(b, type, nextLevel, branch) : null;
+  const s = towerStats(b, type, level, form);
+  const nextS = nextLevel !== null ? towerStats(b, type, nextLevel, form) : null;
   return (
     <div className={css.statWell}>
       <p className={css.stats}>

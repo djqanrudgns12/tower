@@ -4,7 +4,7 @@ import { TOWER_IDS, type TowerId } from '../contracts/balance';
 import { DEFAULTS } from '../content';
 import type { DomainEvent } from '../domain/events';
 import { positionAt } from '../domain/geometry';
-import { reachMilli } from '../domain/towers';
+import { evolutionChoices, formBranch, reachMilli } from '../domain/towers';
 import type { Enemy, RunState } from '../domain/types';
 import { acceptsHit, enemyPose, HIT_MS } from './animation/pose';
 import { composeGroundArt, drawGround, drawSprites, isTreeCell, PALETTE } from './art';
@@ -299,16 +299,17 @@ export class BattleScene extends Phaser.Scene {
       const recoil = time < v.recoilUntil && !this.bridge.reducedMotion ? 2 : 0;
       if (FIXED_WEAPON.has(t.type)) v.weapon?.setPosition(x, y - CELL_PX * 0.38 + (this.bridge.reducedMotion ? 0 : Math.sin(time / 420 + t.id) * 2));
       else v.weapon?.setPosition(x - Math.cos(v.angle) * recoil, y - CELL_PX * 0.32 - Math.sin(v.angle) * recoil).setRotation(v.angle);
-      if (v.level !== t.level || v.branch !== t.branch) {
-        v.level = t.level; v.branch = t.branch;
+      if (v.level !== t.level || v.branch !== t.form) {
+        v.level = t.level; v.branch = t.form;
+        const branch = formBranch(t.form);
         v.pips.clear();
         const startX = x - (t.level - 1) * 5;
         for (let i = 0; i < t.level; i++) { v.pips.fillStyle(PALETTE.outline, 1).fillCircle(startX + i * 10, y + CELL_PX * 0.36, 4.2); v.pips.fillStyle(0xf4d35e, 1).fillCircle(startX + i * 10, y + CELL_PX * 0.36, 2.8); }
-        if (t.branch) {
+        if (branch) {
           // 분기 표식: A 원, B 마름모. 색만으로 구분하지 않는다.
           const bx = x + CELL_PX * 0.34, by = y - CELL_PX * 0.36;
           v.pips.fillStyle(PALETTE.outline, 1);
-          if (t.branch === 'A') v.pips.fillCircle(bx, by, 8).fillStyle(0x245b88, 1).fillCircle(bx, by, 5.5);
+          if (branch === 'A') v.pips.fillCircle(bx, by, 8).fillStyle(0x245b88, 1).fillCircle(bx, by, 5.5);
           else v.pips.fillPoints([new Phaser.Math.Vector2(bx, by - 9), new Phaser.Math.Vector2(bx + 9, by), new Phaser.Math.Vector2(bx, by + 9), new Phaser.Math.Vector2(bx - 9, by)], true).fillStyle(0xa3352b, 1).fillPoints([new Phaser.Math.Vector2(bx, by - 6), new Phaser.Math.Vector2(bx + 6, by), new Phaser.Math.Vector2(bx, by + 6), new Phaser.Math.Vector2(bx - 6, by)], true);
         }
       }
@@ -400,7 +401,7 @@ export class BattleScene extends Phaser.Scene {
     const sel = this.bridge.selection;
     const tower = sel.towerId !== null ? s.towers.find(t => t.id === sel.towerId) ?? null : null;
     const highContrast = Boolean((this.bridge as { highContrastMap?: boolean }).highContrastMap);
-    const key = `${sel.slotId}|${sel.towerId}|${sel.previewType}|${sel.previewBranch}|${tower?.level}|${tower?.branch}|${s.phase}|${s.towers.length}|${this.bridge.magnify}|${this.bridge.keyboardSlotId}|${highContrast}`;
+    const key = `${sel.slotId}|${sel.towerId}|${sel.previewType}|${sel.previewBranch}|${tower?.level}|${tower?.form}|${s.phase}|${s.towers.length}|${this.bridge.magnify}|${this.bridge.keyboardSlotId}|${highContrast}`;
     if (key === this.overlayKey) return;
     this.overlayKey = key;
     const g = this.overlay.clear();
@@ -430,7 +431,10 @@ export class BattleScene extends Phaser.Scene {
     if (cell) {
       let range = 0;
       const type: TowerId | null = tower?.type ?? sel.previewType;
-      if (type) range = toWorld(reachMilli(b, type, tower ? (sel.previewBranch && tower.level === 2 ? 3 : tower.level) : 1, tower ? (sel.previewBranch ?? tower.branch) : null));
+      // 진화 미리보기: previewBranch는 두 선택지 가운데 첫째(A)·둘째(B)다.
+      const choices = tower && sel.previewBranch ? evolutionChoices(b, tower) : null;
+      const preview = choices ? choices[sel.previewBranch === 'A' ? 0 : 1]! : null;
+      if (type) range = toWorld(reachMilli(b, type, tower ? (preview ? tower.level + 1 : tower.level) : 1, tower ? (preview ?? tower.form) : 'base'));
       const cx = (cell.x + 0.5) * CELL_PX, cy = (cell.y + 0.5) * CELL_PX;
       if (range > 0) {
         g.fillStyle(0xf5ebd4, 0.16).fillCircle(cx, cy, range).lineStyle(2.5, 0xf5ebd4, 0.95).strokeCircle(cx, cy, range);

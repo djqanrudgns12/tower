@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import type { OptionId } from '../../src/contracts/questions';
 import type { GameContext } from '../../src/domain/context';
 import type { DomainEvent } from '../../src/domain/events';
+import { evolutionChoices } from '../../src/domain/towers';
 import { advanceTick, applyCommand, type Command } from '../../src/domain/run';
 import type { RunState } from '../../src/domain/types';
 import { nearestSlots, newRun, stateHash } from './helpers';
@@ -30,7 +31,7 @@ function decide(ctx: GameContext, s: RunState): Command[] {
   if (s.phase === 'BUILD') {
     const kinds = ['archer', 'cannon', 'frost'] as const;
     for (const slot of nearestSlots(ctx, 6)) if (!s.towers.some(t => t.slotId === slot)) cmds.push({ type: 'build', slotId: slot, tower: kinds[s.towers.length % 3]! });
-    for (const t of s.towers) cmds.push({ type: 'upgrade', towerId: t.id, ...(t.level === 2 ? { branch: 'A' as const } : {}) });
+    for (const t of s.towers) cmds.push({ type: 'upgrade', towerId: t.id, ...(evolutionChoices(ctx.balance, t) ? { form: evolutionChoices(ctx.balance, t)![0]! } : {}) });
     cmds.push({ type: 'startBattle' });
   }
   return cmds;

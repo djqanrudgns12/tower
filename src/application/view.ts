@@ -1,6 +1,7 @@
-import type { BranchId, TowerId } from '../contracts/balance';
+import type { BranchId, FormId, TowerId } from '../contracts/balance';
 import type { OptionId } from '../contracts/questions';
 import type { GameContext } from '../domain/context';
+import { formBranch } from '../domain/towers';
 import type { PauseReason, Phase, RunState, RunStats } from '../domain/types';
 
 // React가 구독하는 요약. 적 위치처럼 매 틱 바뀌는 값은 넣지 않는다(PRD §13.3).
@@ -24,7 +25,7 @@ export interface QuestionView {
   wrapup: boolean;
 }
 
-export interface TowerView { id: number; type: TowerId; slotId: string; level: number; branch: BranchId | null; invested: number }
+export interface TowerView { id: number; type: TowerId; slotId: string; level: number; form: FormId; branch: BranchId | null; invested: number }
 
 export interface QuestionStakesView {
   correctGold: number;
@@ -110,7 +111,7 @@ export function selectView(ctx: GameContext, s: RunState): GameView {
     },
     prep: { done: s.quiz.prepDone, target: s.quiz.prepTarget },
     question,
-    towers: s.towers.map(t => ({ id: t.id, type: t.type, slotId: t.slotId, level: t.level, branch: t.branch, invested: t.invested })),
+    towers: s.towers.map(t => ({ id: t.id, type: t.type, slotId: t.slotId, level: t.level, form: t.form, branch: formBranch(t.form), invested: t.invested })),
     stats: { ...s.stats },
     milestoneWave: s.wave % ctx.balance.waves.bossEveryWaves === 0,
   };
@@ -122,6 +123,6 @@ export function viewKey(s: RunState): string {
   return [
     s.phase, s.wave, s.gateHp, s.gold, s.pt, s.pause.join(','), s.quiz.current?.id ?? 0, s.quiz.current?.answer ? 1 : 0, s.quiz.current?.wrapup ? 1 : 0,
     fb ? `${fb.result}:${secondsLeft(fb.nextEnabledTick, s.tick)}` : '-', secondsLeft(s.burningUntilTick, s.tick),
-    s.towers.map(t => `${t.id}.${t.level}.${t.branch ?? ''}`).join('|'), s.quiz.prepDone, s.quiz.battleStreak, s.stats.ptFromKills,
+    s.towers.map(t => `${t.id}.${t.level}.${t.form}`).join('|'), s.quiz.prepDone, s.quiz.battleStreak, s.stats.ptFromKills,
   ].join('/');
 }

@@ -1,4 +1,4 @@
-import { TOWER_IDS, type Balance, type BranchId, type EliteId, type EnemyKind, type TowerId } from '../../src/contracts/balance';
+import { TOWER_IDS, type Balance, type EliteId, type EnemyKind, type FormId, type TowerId } from '../../src/contracts/balance';
 import { BALANCE } from '../../src/content';
 import { msToTicks } from '../../src/domain/num';
 import { advanceTick, applyCommand, createRun } from '../../src/domain/run';
@@ -9,7 +9,7 @@ import { simContext } from './balanceSim';
 // 제품 domain 엔진으로, 죽지 않는 적 줄을 정한 간격으로 한 번 통과시키며 타워(묶음)가 준 피해(직접+화상)를 골드로 나눈다.
 // 적이 죽지 않으므로 처치 보상·표적 바뀜이 섞이지 않고, 같은 줄을 다른 타워에 똑같이 보낸다.
 
-export interface Placement { type: TowerId; slot: [number, number]; level?: number; branch?: BranchId | null }
+export interface Placement { type: TowerId; slot: [number, number]; level?: number; form?: FormId }
 export interface Stream { kind: EnemyKind; elite: EliteId | null; count: number; spacingMs: number }
 
 export const STREAMS = {
@@ -21,6 +21,8 @@ export const STREAMS = {
   shell: { kind: 'shell', elite: null, count: 24, spacingMs: 950 },
   /** 물리 저항이 더해진 단단한 정예(마법탑·석궁의 의도). */
   armored: { kind: 'walker', elite: 'armored', count: 24, spacingMs: 950 },
+  /** 드문 대장(정예·대장 배율 형태의 의도). */
+  boss: { kind: 'boss', elite: null, count: 6, spacingMs: 2500 },
 } satisfies Record<string, Stream>;
 
 /** 놓인 타워 묶음이 줄 하나에 준 총피해(milli-HP)와 들인 골드. */
@@ -43,7 +45,7 @@ export function measure(placements: Placement[], stream: Stream, balance: Balanc
     gold += buildCost(ctx.balance, p.type);
     for (let lv = 1; lv < (p.level ?? 1); lv++) gold += upgradeCost(ctx.balance, p.type, lv)!;
     t.level = p.level ?? 1;
-    t.branch = p.branch ?? null;
+    t.form = p.form ?? 'base';
   }
   const r = applyCommand(ctx, s, { type: 'startBattle' });
   if (!r.ok) throw new Error(`전투 시작 실패: ${r.error}`);
@@ -80,7 +82,7 @@ export const COMPARISONS: Comparison[] = [
   {
     // 정원 맵에서 2칸 안에 타워 셋을 둘 수 있는 가장 큰 묶음: (0,2) 칸 둘레 (0,0)·(0,4)·(2,2).
     id: 'banner-group', intent: '깃발초소 · 강화 궁수 셋 묶음(더한 골드당)', stream: 'line', required: true,
-    shared: [{ type: 'archer', slot: [0, 0], level: 3, branch: 'A' }, { type: 'archer', slot: [0, 4], level: 3, branch: 'A' }, { type: 'archer', slot: [2, 2], level: 3, branch: 'A' }],
+    shared: [{ type: 'archer', slot: [0, 0], level: 4, form: 'A' }, { type: 'archer', slot: [0, 4], level: 4, form: 'A' }, { type: 'archer', slot: [2, 2], level: 4, form: 'A' }],
     subject: [{ type: 'banner', slot: [0, 2] }],
     baseline: [{ type: 'archer', slot: [0, 2] }],
   },
@@ -104,4 +106,43 @@ export function runComparisons(list: Comparison[] = COMPARISONS, balance: Balanc
     const ratio = (a.damage / a.gold) / (b.damage / b.gold);
     return { id: c.id, intent: c.intent, required: c.required, subjectPer100: Math.round((a.damage / a.gold) * 100 / 1000), baselinePer100: Math.round((b.damage / b.gold) * 100 / 1000), gold: [a.gold, b.gold], ratio: Math.round(ratio * 100) / 100, pass: ratio >= REQUIRED_RATIO };
   });
+}
+
+/** 형태 비교에 쓰는 줄(progression.md §6 ③). */
+export const FORM_STREAMS = ['line', 'dense', 'shell', 'armored', 'boss'] as const satisfies ReadonlyArray<keyof typeof STREAMS>;
+/** 같은 단계 형태가 모든 줄에서 형제 형태보다 이만큼 이상 세면 ‘압도’로 본다. */
+export const DOMINANCE_RATIO = 1.1;
+
+const TIERS = [
+  { tier: 1, level: 4, forms: ['A', 'B'] },
+  { tier: 2, level: 7, forms: ['A1', 'A2', 'B1', 'B2'] },
+] as const satisfies ReadonlyArray<{ tier: number; level: number; forms: readonly FormId[] }>;
+
+/**
+ * 형태 하나가 줄 하나에 더한 피해(milli-HP). 공격 타워는 (8,2) 길목에 혼자 둔다. 깃발은 같은 단계 궁수 셋 묶음 위에,
+ * 서리는 옆 칸 같은 단계 궁수 하나 위에 더해 늘어난 피해(감속이 궁수의 사거리 안 체류를 늘린 몫 포함)를 잰다.
+ */
+function formDamage(type: TowerId, level: number, form: FormId, stream: Stream, balance: Balance): number {
+  const archer = (slot: [number, number]): Placement => ({ type: 'archer', slot, level, form: form.length === 1 ? 'A' : 'A1' });
+  const shared = type === 'banner' ? [archer([0, 0]), archer([0, 4]), archer([2, 2])] : type === 'frost' ? [archer([8, 0])] : [];
+  const subject: Placement = { type, slot: type === 'banner' ? [0, 2] : C, level, form };
+  const base = shared.length ? measure(shared, stream, balance).damage : 0;
+  return measure([...shared, subject], stream, balance).damage - base;
+}
+
+/**
+ * 타워마다 1차형(Lv4 A·B)과 2차형(Lv7 A1~B2)을 같은 줄들에 견준다. 같은 단계는 비용이 같아 피해를 그대로 견준다.
+ * 압도: 모든 줄에서 같은 단계의 다른 형태 모두보다 DOMINANCE_RATIO배 이상인 형태. 열세(참고): 모든 줄에서 어떤 형제보다 그만큼 약한 형태.
+ */
+export function runFormComparisons(balance: Balance = BALANCE, towers: readonly TowerId[] = TOWER_IDS) {
+  return towers.flatMap(type => TIERS.map(({ tier, level, forms }) => {
+    const damage = Object.fromEntries(forms.map(f => [f, FORM_STREAMS.map(st => formDamage(type, level, f, STREAMS[st], balance))])) as Record<string, number[]>;
+    const beats = (a: string, b: string) => FORM_STREAMS.every((_, i) => damage[a]![i]! >= DOMINANCE_RATIO * damage[b]![i]!);
+    const dominant = forms.filter(f => forms.every(o => o === f || beats(f, o)));
+    const weak = forms.filter(f => forms.some(o => o !== f && beats(o, f)));
+    // 줄마다 그 단계 최고 형태 대비 비율의 평균(1이면 모든 줄에서 최고).
+    const best = FORM_STREAMS.map((_, i) => Math.max(...forms.map(f => damage[f]![i]!)));
+    const score = Object.fromEntries(forms.map(f => [f, Math.round((FORM_STREAMS.reduce((a, _, i) => a + (best[i]! > 0 ? damage[f]![i]! / best[i]! : 1), 0) / FORM_STREAMS.length) * 100) / 100]));
+    return { type, tier, level, score, damage, dominant, weak, pass: dominant.length === 0 };
+  }));
 }

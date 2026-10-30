@@ -52,8 +52,8 @@ export function buildGuideChapters(
   const burningStreak = balance.burning.streak;
   const burningSec = Math.round(balance.burning.durationMs / 1000);
   const burningSpeedPct = Math.round(balance.burning.attackSpeedBP / 100);
-  const maxLevel = balance.levels.max;
-  const branchAtLevel = balance.levels.branchAtLevel;
+  const maxLevelText = balance.levels.max === null ? '레벨 제한 없이' : `레벨 ${balance.levels.max}까지`;
+  const branchAtLevel = balance.levels.evolveAt[0];
   const sellPct = Math.round(balance.run.sellRatioBP / 100);
   const towerNames = pilotTowers.slice(0, 3).map(id => balance.towers[id].label).join('·');
 
@@ -131,7 +131,7 @@ export function buildGuideChapters(
         {
           badge: '진화 규칙',
           title: `역할 조합과 레벨 ${branchAtLevel} 진화`,
-          body: `${towerNames} 등 역할을 섞어 레벨 ${maxLevel}까지 키워요. 레벨 ${branchAtLevel}에서 고른 두 갈래 길은 바꿀 수 없어요.`,
+          body: `${towerNames} 등 역할을 섞어 ${maxLevelText} 키워요. 레벨 ${branchAtLevel}에서 고른 두 갈래 길은 바꿀 수 없어요.`,
           icon: 'branch',
         },
         {
@@ -474,7 +474,7 @@ export function buildTowerGuideItems(
 ): readonly TowerGuideStageItem[] {
   return pilotTowers.slice(0, 3).map(id => {
     const tower = balance.towers[id];
-    const branch = balance.branches[id];
+    const branch = balance.forms[id];
     const branchALabel = branch?.A.label ?? '기본 강화';
     const branchASummary = branch?.A.summary ?? '공격 능력이 강해져요';
     const branchBLabel = branch?.B.label ?? '특수 강화';
