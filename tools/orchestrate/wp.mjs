@@ -196,7 +196,8 @@ export function accept(id, { force = false, into = root } = {}) {
   for (const g of GENERATED) if (!matchesAny(g, j.owns)) git(j.worktree, ['checkout', s.baseCommit, '--', g], { allowFail: true });
   const violations = changedFiles(j, s.baseCommit).filter(f => !matchesAny(f, allowedFor(j)));
   if (violations.length) throw new Error(`${id}: 허용 경로 밖 변경이 남아 있다: ${violations.join(', ')}`);
-  git(j.worktree, ['add', '-A', '--', '.', ':!node_modules']);
+  git(j.worktree, ['add', '-A']);
+  git(j.worktree, ['reset', '-q', '--', 'node_modules'], { allowFail: true });
   if (git(j.worktree, ['diff', '--cached', '--name-only'])) {
     git(j.worktree, ['commit', '-m', `wp(${id}): ${j.title}\n\n담당 ${j.agent}, 총괄 수합.\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>`]);
   }
@@ -261,7 +262,6 @@ async function main() {
       for (const id of ids.filter(x => path.resolve(x) !== into)) console.log(JSON.stringify(accept(id, { force: flags.has('--force'), into })));
       break;
     }
-      break;
     case 'board':
       if (flags.has('--write')) writeBoard();
       else console.log(board());
