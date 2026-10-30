@@ -7,7 +7,11 @@ export type VolumeStepSfx = 0 | 0.2 | 0.4 | 0.6 | 0.8;
 export const BGM_STEPS: readonly VolumeStepBgm[] = [0, 0.1, 0.2, 0.35, 0.5];
 export const SFX_STEPS: readonly VolumeStepSfx[] = [0, 0.2, 0.4, 0.6, 0.8];
 
+export const SETTINGS_CHANGED_EVENT = 'vocabulary-td.settingsChanged';
+
 export interface Settings {
+  /** 공개 기록은 명시적으로 켠 기기에서만 통신한다. 구 저장본은 false. */
+  shareRecords?: boolean;
   fontScale: FontScale;
   /** motionMode === 'minimal'의 파생 호환 필드(PRD §17.1). */
   reducedMotion: boolean;
@@ -57,7 +61,8 @@ function normalizeFontScale(value: unknown): FontScale {
 
 const defaults = (): Settings => ({
   fontScale: 'base',
-  reducedMotion: false,
+  shareRecords: false,
+  reducedMotion: typeof matchMedia === 'function' && matchMedia('(prefers-reduced-motion: reduce)').matches,
   lastDifficulty: 'Normal',
   lastNickname: '',
   playerId: crypto.randomUUID(),
@@ -66,7 +71,7 @@ const defaults = (): Settings => ({
   lastGrade: 3,
   bgmVolume: 0.2,
   sfxVolume: 0.4,
-  motionMode: 'full',
+  motionMode: typeof matchMedia === 'function' && matchMedia('(prefers-reduced-motion: reduce)').matches ? 'minimal' : 'full',
   motionCustomized: false,
   highContrastMap: false,
   showKeyHints: true,
@@ -84,6 +89,7 @@ export function normalizeSettings(base: Settings, raw: Partial<Settings>): Setti
   const motionCustomized =
     typeof raw.motionCustomized === 'boolean' ? raw.motionCustomized : Boolean(base.motionCustomized);
   return {
+    shareRecords: typeof raw.shareRecords === 'boolean' ? raw.shareRecords : (base.shareRecords ?? false),
     fontScale: raw.fontScale !== undefined ? normalizeFontScale(raw.fontScale) : base.fontScale,
     reducedMotion,
     lastDifficulty: typeof raw.lastDifficulty === 'string' && raw.lastDifficulty ? raw.lastDifficulty : base.lastDifficulty,
@@ -107,15 +113,7 @@ export function loadSettings(): Settings {
     const raw = localStorage.getItem(KEY);
     if (raw) {
       const parsed = JSON.parse(raw) as Partial<Settings>;
-      // Windows 시각 효과(창 애니메이션 꺼짐)로 인해 사용자 선택 없이 'minimal'로 굳어진 기존 저장본을 기본 연출('full')로 복구한다.
-      const sanitized: Partial<Settings> = parsed.motionCustomized
-        ? parsed
-        : { ...parsed, motionMode: 'full', reducedMotion: false, motionCustomized: false };
-      const loaded = normalizeSettings(base, sanitized);
-      if (!parsed.motionCustomized && (parsed.motionMode !== 'full' || parsed.reducedMotion === true)) {
-        saveSettings(loaded);
-      }
-      return loaded;
+      return normalizeSettings(base, parsed);
     }
   } catch { /* 저장소 차단 시 기본값으로 진행한다 */ }
   saveSettings(base);
@@ -124,4 +122,10 @@ export function loadSettings(): Settings {
 
 export function saveSettings(settings: Settings): void {
   try { localStorage.setItem(KEY, JSON.stringify(settings)); } catch { /* 차단된 저장소 */ }
+  if (typeof window !== 'undefined') queueMicrotask(() => window.dispatchEvent(new Event(SETTINGS_CHANGED_EVENT)));
+}
+
+/** 저장소 접근 실패도 동의 없음으로 취급한다. 인증·RPC·Presence의 공통 입구다. */
+export function isRecordSharingEnabled(): boolean {
+  try { return (JSON.parse(localStorage.getItem(KEY) ?? '{}') as Partial<Settings>).shareRecords === true; } catch { return false; }
 }
