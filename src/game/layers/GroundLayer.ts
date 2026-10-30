@@ -49,8 +49,8 @@ export class GroundLayer {
       if (scene.textures.exists(key)) decor.set(`${dx},${dy}`, this.placeDecor(key, dx, dy));
     }
     if (this.has.gate) this.placeDecor('map.gate', map.exitCell[0], map.exitCell[1]);
-    // 가장자리 숲·덤불(ART-R2)은 키 큰 그림이라 지면에 굽지 않고 깊이 정렬 이미지로 세운다.
-    if (this.layout) for (const p of resolvePlacements(this.layout, map)) if (p.kind === 'edge' && scene.textures.exists(p.asset)) this.placeArt(p);
+    // 가장자리 숲·덤불(ART-R2)과 안쪽 숲 덩이는 키 큰 그림이라 지면에 굽지 않고 깊이 정렬 이미지로 세운다.
+    if (this.layout) for (const p of resolvePlacements(this.layout, map)) if ((p.kind === 'edge' || p.kind === 'grove') && scene.textures.exists(p.asset)) this.placeArt(p);
     for (const d of map.decorations) if (d.kind === 'culture') {
       const [x, y] = d.cells[0]!;
       // 원화 비석은 칸보다 위로 솟아 있으므로 비석 면 가운데에 새기고, 비석 바로 위 깊이에 둔다.

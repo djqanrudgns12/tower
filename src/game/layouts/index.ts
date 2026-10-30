@@ -6,13 +6,16 @@ import gardenU from './garden_u.layout.json';
 // 없는 맵(river_z·courtyard·snow_step)은 기존 composeGroundArt/drawGround로 그린다.
 // 이 파일은 Phaser를 모른다. 단위 시험이 같은 기하(배치 위치·길 중심선·풀 마스크)를 그대로 쓴다.
 
-export const PLACEMENT_KINDS = ['meadow', 'landmark', 'rock', 'prop', 'pathEdge', 'edge'] as const;
+export const PLACEMENT_KINDS = ['meadow', 'landmark', 'rock', 'prop', 'pathEdge', 'edge', 'grove'] as const;
 export type PlacementKind = (typeof PLACEMENT_KINDS)[number];
 
 const num = z.number().finite();
 const placementSchema = z.object({
   key: z.string().min(1),
-  /** meadow: 길 아래 지면 얼룩 · landmark·rock·prop·pathEdge: 길 위 지면에 굽는다 · edge: 맵 가장자리 숲·덤불(깊이 정렬 이미지). */
+  /**
+   * meadow: 길 아래 지면 얼룩 · landmark·rock·prop·pathEdge: 길 위 지면에 굽는다 ·
+   * edge: 맵 가장자리 숲·덤불, grove: 안쪽 작은 숲 덩이(둘 다 깊이 정렬 이미지, grove는 발밑을 그늘 풀로 덮는다).
+   */
   kind: z.enum(PLACEMENT_KINDS),
   asset: z.string().min(1),
   /** 표시 너비(칸). 높이는 그림 비율을 따른다. */
@@ -169,11 +172,15 @@ const smooth = (e0: number, e1: number, v: number) => {
   return t * t * (3 - 2 * t);
 };
 
+/** 그늘 웅덩이: 숲 덩이 발밑을 그늘 풀로 덮는 타원(칸). 가장자리는 부드럽게 0으로 줄어든다. */
+export interface ShadePool { x: number; y: number; rx: number; ry: number }
+
 /**
  * 풀 3톤 섞기 마스크. 표본 한 개가 1/samplesPerCell칸이다. 장의 하위 30%는 그늘, 상위 30%는 밝은 풀,
- * 가운데는 기본 풀이다. 경계는 분위수 ±0.12 구간(약 1칸 폭)에서 부드럽게 바뀐다. 값은 0..1(최대 세기는 그리는 쪽이 정한다).
+ * 가운데는 기본 풀이다. 경계는 분위수 ±0.12 구간(약 1칸 폭)에서 부드럽게 바뀐다. 그늘 웅덩이 안은 그늘로 덮고 볕을 지운다.
+ * 값은 0..1(최대 세기는 그리는 쪽이 정한다).
  */
-export function grassMasks(mapId: string, cols: number, rows: number, samplesPerCell: number) {
+export function grassMasks(mapId: string, cols: number, rows: number, samplesPerCell: number, pools: readonly ShadePool[] = []) {
   const field = lowFrequencyField(mapId);
   const n = cols * rows * samplesPerCell * samplesPerCell;
   const w = cols * samplesPerCell, h = rows * samplesPerCell;
@@ -185,8 +192,67 @@ export function grassMasks(mapId: string, cols: number, rows: number, samplesPer
   const light = new Float32Array(n), shade = new Float32Array(n);
   for (let k = 0; k < n; k++) {
     const v = raw[k]!;
-    shade[k] = 1 - smooth(lo - band, lo + band, v);
-    light[k] = smooth(hi - band, hi + band, v);
+    let pool = 0;
+    if (pools.length) {
+      const x = ((k % w) + 0.5) / samplesPerCell, y = (Math.floor(k / w) + 0.5) / samplesPerCell;
+      for (const p of pools) pool = Math.max(pool, 1 - smooth(0.45, 1, Math.hypot((x - p.x) / p.rx, (y - p.y) / p.ry)));
+    }
+    shade[k] = Math.max(1 - smooth(lo - band, lo + band, v), pool);
+    light[k] = smooth(hi - band, hi + band, v) * (1 - pool);
   }
   return { width: w, height: h, light, shade };
+}
+
+/** 둥근 굽이를 넣은 길 중심선 표본. s는 시작점부터의 길이(칸). 굽이는 반지름 corner칸의 원호(캔버스 arcTo와 같은 모양). */
+export function pathCenterline(map: MapConfig, corner: number, step: number): Array<{ x: number; y: number; s: number }> {
+  const pts = pathPolyline(map);
+  // 직선 구간과 원호를 차례로 모은다.
+  const parts: Array<(t: number) => [number, number]> = [], lens: number[] = [];
+  let cur: [number, number] = pts[0]!;
+  const line = (to: [number, number]) => {
+    const from = cur, len = Math.hypot(to[0] - from[0], to[1] - from[1]);
+    if (len > 1e-9) { parts.push(t => [from[0] + (to[0] - from[0]) * t, from[1] + (to[1] - from[1]) * t]); lens.push(len); }
+    cur = to;
+  };
+  for (let i = 1; i < pts.length - 1; i++) {
+    const a = pts[i - 1]!, p = pts[i]!, b = pts[i + 1]!;
+    const la = Math.hypot(a[0] - p[0], a[1] - p[1]), lb = Math.hypot(b[0] - p[0], b[1] - p[1]);
+    const ua = [(a[0] - p[0]) / la, (a[1] - p[1]) / la], ub = [(b[0] - p[0]) / lb, (b[1] - p[1]) / lb];
+    const cos = ua[0]! * ub[0]! + ua[1]! * ub[1]!;
+    if (cos < -0.999) { line(p); continue; }
+    const half = Math.acos(Math.max(-1, Math.min(1, cos))) / 2;
+    const r = Math.min(corner, (Math.min(la, lb) / 2) * Math.tan(half));
+    const d = r / Math.tan(half);
+    const t1: [number, number] = [p[0] + ua[0]! * d, p[1] + ua[1]! * d], t2: [number, number] = [p[0] + ub[0]! * d, p[1] + ub[1]! * d];
+    const bis = [ua[0]! + ub[0]!, ua[1]! + ub[1]!], bl = Math.hypot(bis[0]!, bis[1]!);
+    const c = [p[0] + (bis[0]! / bl) * (r / Math.sin(half)), p[1] + (bis[1]! / bl) * (r / Math.sin(half))];
+    line(t1);
+    const a1 = Math.atan2(t1[1] - c[1]!, t1[0] - c[0]!);
+    let sweep = Math.atan2(t2[1] - c[1]!, t2[0] - c[0]!) - a1;
+    if (sweep > Math.PI) sweep -= 2 * Math.PI;
+    if (sweep < -Math.PI) sweep += 2 * Math.PI;
+    parts.push(t => [c[0]! + r * Math.cos(a1 + sweep * t), c[1]! + r * Math.sin(a1 + sweep * t)]);
+    lens.push(Math.abs(sweep) * r);
+    cur = t2;
+  }
+  line(pts[pts.length - 1]!);
+  const total = lens.reduce((a, b) => a + b, 0);
+  const out: Array<{ x: number; y: number; s: number }> = [];
+  let k = 0, start = 0;
+  for (let s = 0; s <= total + 1e-9; s += step) {
+    while (k < lens.length - 1 && s > start + lens[k]!) { start += lens[k]!; k++; }
+    const [x, y] = parts[k]!(Math.min(1, (s - start) / lens[k]!));
+    out.push({ x, y, s });
+  }
+  return out;
+}
+
+/** 길이(칸)를 따라 부드럽게 변하는 1차원 잡음(-1..1). 길 폭·가장자리 띠의 결정론적 흔들림에 쓴다. */
+export function lineNoise(mapId: string, salt: number, period: number): (s: number) => number {
+  const seed = (seedOf(mapId) ^ Math.imul(salt + 1, 0x9e3779b1)) >>> 0;
+  return s => {
+    const t = s / period, i = Math.floor(t), f = fade(t - i);
+    const a = lattice(i, 0, seed), b = lattice(i + 1, 0, seed);
+    return (a + (b - a) * f) * 2 - 1;
+  };
 }

@@ -4,7 +4,7 @@ import { describe, expect, it } from 'vitest';
 import { MAPS } from '../../src/content';
 import { assetManifestSchema } from '../../src/contracts/assetManifest';
 import { PAD_CELLS } from '../../src/game/layoutGround';
-import { artRect, claimedDecorations, distanceToPolyline, grassMasks, layoutFor, mapLayoutSchema, pathPolyline, RAW_LAYOUTS, resolvePlacements } from '../../src/game/layouts';
+import { artRect, claimedDecorations, distanceToPolyline, grassMasks, layoutFor, mapLayoutSchema, pathCenterline, pathPolyline, RAW_LAYOUTS, resolvePlacements } from '../../src/game/layouts';
 
 // 맵 배치표(art-bible-v2 §2)의 형식·가림·풀 마스크 검사. 그림 위치는 렌더러와 같은 artRect로 계산한다.
 
@@ -50,9 +50,13 @@ describe('지면 배치표(garden_u)', () => {
     expect(resolvePlacements(layout, garden)).toHaveLength(layout.placements.length);
     expect(layout.placements.map(p => p.asset).filter(id => !fileOf.has(id))).toEqual([]);
     for (const id of ['river_z', 'courtyard', 'snow_step']) expect(layoutFor(id)).toBeNull();
+    // 그리는 길(둥근 굽이 중심선)은 적이 걷는 논리 중심선에서 0.25칸 안에 머문다.
+    const line = pathPolyline(garden);
+    const drift = Math.max(...pathCenterline(garden, 0.6, 0.04).map(p => distanceToPolyline(p.x, p.y, line)));
+    expect(drift).toBeLessThan(0.25);
   });
 
-  it('소품·가장자리 숲이 설치 받침·길 중심·장식 칸·비석을 가리지 않는다(알파 128 이상 픽셀 기준)', () => {
+  it('소품·숲이 설치 받침·길 중심·장식 칸·비석을 가리지 않는다(알파 128 이상 픽셀 기준)', () => {
     const layout = layoutFor('garden_u')!;
     const placed = resolvePlacements(layout, garden);
     const line = pathPolyline(garden);
@@ -60,6 +64,8 @@ describe('지면 배치표(garden_u)', () => {
     // 길 가장자리 풀 술·자갈은 흙 가장자리까지 덮어도 되지만 적이 걷는 중심 ±0.18칸은 비운다.
     // 나머지는 흙과 가장자리 띠(반폭 0.42칸) 밖에 둔다. 길 아래 지면 얼룩(meadow)은 대상이 아니다.
     const minPathGap = (kind: string) => (kind === 'pathEdge' ? 0.18 : 0.45);
+    // 안쪽 숲 덩이(grove)와 들판 소품 무리(field-*)는 설치 자리 칸에서 반 칸 이상 떨어진다(칸 중심에서 ±1칸 밖).
+    const clearOfSlots = (kind: string, group: string) => kind === 'grove' || group.startsWith('field');
     // 장식 칸(±0.4칸)은 그 칸을 맡은 배치와 같은 무리(연못 둘레 꽃·돌 등)만 겹칠 수 있다.
     const owner = new Map(layout.placements.flatMap(p => (p.decorationIds ?? []).map(id => [id, p.group ?? p.key] as const)));
     const decorCells = garden.decorations.flatMap(d => d.cells.map(([x, y]) => ({ id: d.id, x: x + 0.5, y: y + 0.5 })));
@@ -82,7 +88,8 @@ describe('지면 배치표(garden_u)', () => {
       const img = readAlpha(`public/assets/${fileOf.get(p.asset)}`);
       const r = artRect(p, img.width, img.height);
       const near = <T extends { x: number; y: number }>(list: T[]) => list.filter(c => c.x + pad > r.left && c.x - pad < r.left + r.width && c.y + pad > r.top && c.y - pad < r.top + r.height);
-      const slots = near(garden.slots.map(s => ({ id: s.id, x: s.x + 0.5, y: s.y + 0.5 })));
+      const slotGap = clearOfSlots(p.kind, group) ? 1 : pad;
+      const slots = garden.slots.map(s => ({ id: s.id, x: s.x + 0.5, y: s.y + 0.5 })).filter(c => c.x + slotGap > r.left && c.x - slotGap < r.left + r.width && c.y + slotGap > r.top && c.y - slotGap < r.top + r.height);
       const decor = near(decorCells.filter(c => owner.get(c.id) !== group));
       const hits = new Map<string, number>();
       const hit = (what: string) => hits.set(what, (hits.get(what) ?? 0) + 1);
@@ -90,7 +97,7 @@ describe('지면 배치표(garden_u)', () => {
       for (let j = 0; j < img.height; j++) for (let i = 0; i < img.width; i++) {
         if (img.alpha[j * img.width + i]! < 128) continue;
         const x = r.left + ((i + 0.5) / img.width) * r.width, y = r.top + ((j + 0.5) / img.height) * r.height;
-        for (const s of slots) if (Math.abs(x - s.x) < pad && Math.abs(y - s.y) < pad) hit(`설치 받침 ${s.id}`);
+        for (const s of slots) if (Math.abs(x - s.x) < slotGap && Math.abs(y - s.y) < slotGap) hit(`설치 자리 ${s.id}(±${slotGap}칸)`);
         for (const c of decor) if (Math.abs(x - c.x) < pad && Math.abs(y - c.y) < pad) hit(`장식 칸 ${c.id}`);
         for (const b of steleBoxes) if (x > b.left && x < b.right && y > b.top && y < b.bottom) hit(`비석 ${b.id}`);
         pathGap = Math.min(pathGap, distanceToPolyline(x, y, line));
