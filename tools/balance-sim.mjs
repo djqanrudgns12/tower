@@ -86,6 +86,8 @@ for (const diff of diffs) {
   // 성장 구조가 바뀌어도 난이도별 도달 웨이브가 리뉴얼 전 기준에서 ±2 안이어야 한다(progression.md §6 ③).
   const b = find(diff, 'balanced', 0.8, 'best');
   if (b && REFERENCE_WAVES[diff] !== undefined) checks.push([`${diff} 균형형 80% 도달 웨이브 중앙값이 기준 ${REFERENCE_WAVES[diff]}±2`, `${median(b._waves)}`, Math.abs(median(b._waves) - REFERENCE_WAVES[diff]) <= 2]);
+  // ⑤ 진화가 일찍 보여야 한다: 보통 균형형 80% 첫 진화(Lv4) 웨이브 중앙값 8 이하(progression.md §2, 2026-10-31).
+  if (b && diff === 'Normal') checks.push([`${diff} 균형형 80% 첫 진화(Lv4) 웨이브 중앙값 8 이하`, `${b.firstEvo}`, b.firstEvo <= 8]);
   // 진화 길을 하나로 고정해도 판 결과가 크게 갈리지 않아야 한다(한 형태가 압도하지 않음).
   const fixed = ['A1', 'A2', 'B1', 'B2'].map(f => find(diff, 'balanced', 0.8, f)).filter(Boolean);
   if (fixed.length === 4) { const m = fixed.map(r => median(r._waves)); checks.push([`${diff} 균형형 80% 고정 진화 길 A1/A2/B1/B2 도달 웨이브 차이 2 이하`, m.join(' / '), Math.max(...m) - Math.min(...m) <= 2]); }

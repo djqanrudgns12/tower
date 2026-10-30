@@ -43,8 +43,12 @@ function play(interrupt: Interrupt | null) {
   let { s } = run;
   const events: DomainEvent[] = [];
   const seen = { restoredInWrongWait: false, restoredMidFlight: false, restoredWithBoss: false, restoredInWrapup: false, restores: 0 };
+  let prevPhase = s.phase;
   for (let guard = 0; guard < 30 * 60 * 40 && s.phase !== 'GAME_OVER' && s.completedWave < TARGET_WAVE; guard++) {
-    if (interrupt && s.tick > 0 && s.tick % SAVE_EVERY === 0) {
+    // 일정 간격 저장에 더해, 마무리 문항 단계에 들어선 첫 틱에도 저장·복원한다. 밸런스가 바뀌어 판 흐름이 달라져도 이 국면을 늘 지나게 한다.
+    const enteredWrapup = s.phase === 'WAVE_WRAPUP' && prevPhase !== 'WAVE_WRAPUP';
+    prevPhase = s.phase;
+    if (interrupt && s.tick > 0 && (s.tick % SAVE_EVERY === 0 || enteredWrapup)) {
       const fb = s.quiz.feedback;
       if (fb?.nextEnabledTick && fb.nextEnabledTick > s.tick && fb.result === 'wrong') seen.restoredInWrongWait = true;
       if (s.projectiles.length > 0) seen.restoredMidFlight = true;
