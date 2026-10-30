@@ -20,7 +20,7 @@
     ]
   },
   "layout": {
-    "frameMaxPx": 1440,
+    "frameMaxPx": 1560,
     "outerPaddingPx": {
       "default": 16,
       "phoneBelowWidthPx": 600,
@@ -28,7 +28,13 @@
     },
     "modes": {
       "R": {
-        "railWidthPx": 224,
+        "rail": {
+          "minPx": 308,
+          "tabletMinPx": 272,
+          "tabletBelowWidthPx": 1160,
+          "maxPx": 346,
+          "compactMapHeightMaxPx": 460
+        },
         "railGapPx": 12,
         "hudInRail": true,
         "railHudHeightPx": 88,
@@ -44,7 +50,12 @@
       }
     },
     "modeRule": "W<600 -> S; else R if cellR >= cellS and cellR >= 24 else S",
-    "railWidthPx": 224,
+    "prdV05Superseded": {
+      "by": "docs/ui_ux_refinement_p1_v3_prd.md",
+      "frameMaxPx": 1440,
+      "railWidthPx": 224,
+      "twoByTwoMinCellWidthPx": 160
+    },
     "hudHeightPx": 44,
     "questionBaseHeightPx": 208,
     "questionFontExtraPx": {
@@ -68,7 +79,7 @@
       24
     ],
     "optionGrid": {
-      "twoByTwoMinCellWidthPx": 160,
+      "twoByTwoMinCellWidthPx": 200,
       "twoByTwoMaxLines": 2,
       "measure": "rendered"
     },
@@ -225,10 +236,11 @@
     ],
     "prepAndWrapupReadingLoadLimit": null,
     "difficultyGate": {
-      "Easy": { "allowedTiers": ["basic", "core"], "allowDialect": false },
-      "Normal": { "allowedTiers": ["basic", "core", "advanced"], "allowDialect": false },
-      "Hard": { "allowedTiers": ["core", "advanced", "challenge"], "allowDialect": true },
-      "Crazy": { "allowedTiers": ["core", "advanced", "challenge"], "allowDialect": true }
+      "note": "PRD §9.1(2026-10-30 사용자 확정): 쉬움·보통은 도전 단계와 관용구·속담·혼동 어휘·방언을 내지 않는다. 표지 없는 문항은 core·standard로 본다.",
+      "Easy": { "allowedTiers": ["basic", "core"], "allowedVariants": ["standard", "polysemy"] },
+      "Normal": { "allowedTiers": ["basic", "core", "advanced"], "allowedVariants": ["standard", "polysemy"] },
+      "Hard": { "allowedTiers": ["core", "advanced", "challenge"], "allowedVariants": ["standard", "polysemy", "confusable", "idiom_proverb", "dialect"] },
+      "Crazy": { "allowedTiers": ["core", "advanced", "challenge"], "allowedVariants": ["standard", "polysemy", "confusable", "idiom_proverb", "dialect"] }
     },
     "difficultyTierSchedule": {
       "Easy": ["basic", "basic", "core", "basic", "basic", "core", "basic", "basic", "core", "basic"],

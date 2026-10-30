@@ -31,7 +31,7 @@ const readJson = f => JSON.parse(fs.readFileSync(f, 'utf8'));
 const writeJson = (f, v) => { fs.mkdirSync(path.dirname(f), { recursive: true }); fs.writeFileSync(f, `${JSON.stringify(v, null, 2)}\n`); };
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 
-async function load(root) {
+export async function load(root) {
   const imp = p => runnerImport(path.join(root, p), { configFile: false, logLevel: 'error', root }).then(r => r.module);
   return { b: await imp('tools/content/bankBuild.ts'), d: await imp('src/contracts/questionDraft.ts'), lint: await imp('src/content/lint.ts') };
 }
@@ -156,7 +156,7 @@ function author(who, cwd, body) {
   });
 }
 
-async function reviseBatch(m, root, batchId, who, log) {
+export async function reviseBatch(m, root, batchId, who, log) {
   const batch = m.b.loadBatches(root).find(x => x.batchId === batchId);
   const list = flagged(m, batch);
   if (!list.length) return { batchId, revised: 0, dropped: 0, rejected: 0 };

@@ -7,7 +7,7 @@
 //   node tools/orchestrate/wp.mjs new <id>          작업 폴더(../tower-wp/<id>, 브랜치 wp/<id>)를 HEAD에서 만든다
 //   node tools/orchestrate/wp.mjs drive <id...>     만들기 → 발행 → 수합을 반복(라운드 상한까지). 브리지 담당만
 //   node tools/orchestrate/wp.mjs intake <id>       범위·검사만 다시 본다(서브에이전트 작업에도 쓴다)
-//   node tools/orchestrate/wp.mjs accept <id>       작업 폴더 변경을 커밋하고 현재 브랜치에 병합한다
+//   node tools/orchestrate/wp.mjs accept <id> [--into <dir>]  작업 폴더 변경을 커밋하고 현재(또는 지정 폴더의) 브랜치에 병합한다
 //   node tools/orchestrate/wp.mjs board [--write]   상태표(EXECUTION_BOARD.md의 자동 구역)를 만든다
 import fs from 'node:fs';
 import path from 'node:path';
@@ -189,24 +189,29 @@ export async function drive(id) {
   return loadState(id);
 }
 
-export function accept(id, { force = false } = {}) {
+export function accept(id, { force = false, into = root } = {}) {
   const j = job(id);
   const s = loadState(id);
   if (!force && s.status !== 'INTAKE_PASS') throw new Error(`${id}: 수합 통과(INTAKE_PASS)가 아니다(현재 ${s.status}). 확인 뒤 --force`);
-  if (git(root, ['status', '--porcelain', '--untracked-files=no'])) throw new Error('본 저장소에 커밋하지 않은 변경이 있다');
   for (const g of GENERATED) if (!matchesAny(g, j.owns)) git(j.worktree, ['checkout', s.baseCommit, '--', g], { allowFail: true });
   const violations = changedFiles(j, s.baseCommit).filter(f => !matchesAny(f, allowedFor(j)));
   if (violations.length) throw new Error(`${id}: 허용 경로 밖 변경이 남아 있다: ${violations.join(', ')}`);
-  git(j.worktree, ['add', '-A', '--', '.', ':!node_modules']);
+  git(j.worktree, ['add', '-A']);
+  git(j.worktree, ['reset', '-q', '--', 'node_modules'], { allowFail: true });
   if (git(j.worktree, ['diff', '--cached', '--name-only'])) {
     git(j.worktree, ['commit', '-m', `wp(${id}): ${j.title}\n\n담당 ${j.agent}, 총괄 수합.\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>`]);
   }
-  const merged = spawnSync('git', ['merge', '--no-ff', '-m', `merge wp/${id}: ${j.title}\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>`, j.branch], { cwd: root, encoding: 'utf8' });
+  // 병합 대상 폴더의 커밋 안 된 변경이 이 작업의 변경과 겹치면 덮어쓸 수 있으므로 멈춘다(겹치지 않으면 그대로 둔다).
+  const dirty = git(into, ['status', '--porcelain', '--untracked-files=no']).split('\n').filter(Boolean).map(l => l.slice(3));
+  const touched = new Set(git(into, ['diff', '--name-only', `HEAD...${j.branch}`]).split('\n').filter(Boolean));
+  const overlap = dirty.filter(f => touched.has(f));
+  if (overlap.length) throw new Error(`${id}: 병합 대상(${into})의 커밋 안 된 변경과 겹친다: ${overlap.join(', ')}`);
+  const merged = spawnSync('git', ['merge', '--no-ff', '-m', `merge wp/${id}: ${j.title}\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>`, j.branch], { cwd: into, encoding: 'utf8' });
   if (merged.status !== 0) {
-    git(root, ['merge', '--abort'], { allowFail: true });
+    git(into, ['merge', '--abort'], { allowFail: true });
     throw new Error(`${id}: 병합 충돌. 총괄이 직접 푼다.\n${merged.stdout}\n${merged.stderr}`);
   }
-  saveState(id, { ...loadState(id), status: 'ACCEPTED', acceptedAt: now(), mergeCommit: git(root, ['rev-parse', 'HEAD']) });
+  saveState(id, { ...loadState(id), status: 'ACCEPTED', acceptedAt: now(), mergedInto: into, mergeCommit: git(into, ['rev-parse', 'HEAD']) });
   return loadState(id);
 }
 
@@ -251,9 +256,12 @@ async function main() {
       results.forEach((r, i) => console.log(`${ids[i]}: ${r.status === 'fulfilled' ? r.value.status : `오류 ${r.reason.message}`}`));
       break;
     }
-    case 'accept':
-      for (const id of ids) console.log(JSON.stringify(accept(id, { force: flags.has('--force') })));
+    case 'accept': {
+      const at = process.argv.indexOf('--into');
+      const into = at > 0 ? path.resolve(process.argv[at + 1]) : root;
+      for (const id of ids.filter(x => path.resolve(x) !== into)) console.log(JSON.stringify(accept(id, { force: flags.has('--force'), into })));
       break;
+    }
     case 'board':
       if (flags.has('--write')) writeBoard();
       else console.log(board());

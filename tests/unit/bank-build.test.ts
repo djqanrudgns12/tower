@@ -165,8 +165,37 @@ describe('승인 레지스트리·게시 은행 빌드', () => {
     expItem.contentHash = rev2Hash;
     expItem.rationalesHash = rationalesHash(targetDraft);
 
+    // 같은 revision의 외부 검수가 없으면 argon-blind·해설 대조만으로는 후보가 되지 않는다(5b5977a 검수에서 1,393문항이 이 허점으로 들어갔다).
     const d2 = decideCandidate(batch).find(d => d.questionId === approvedId)!;
-    expect(d2.decision).toBe('approved');
-    expect(d2.reasons).toEqual([]);
+    expect(d2.decision).toBe('quarantined');
+    expect(d2.reasons).toEqual(['외부 블라인드 검수(codex·claude): 이 revision의 검수 없음']);
+
+    // rev 2를 Codex가 다시 블라인드 검수해 통과하면 후보가 된다.
+    batch.reviews.codex!.items.push({
+      ...structuredClone(codexItem),
+      revision: 2,
+      contentHash: rev2Hash,
+      blindChoice: targetDraft.correctOptionId,
+      verdicts: { source: 'pass', uniqueness: 'pass', grade: 'pass', language: 'pass', explanation: 'uncertain' },
+      findings: ['rev 2 재검수 통과'],
+    });
+    const d3 = decideCandidate(batch).find(d => d.questionId === approvedId)!;
+    expect(d3.decision).toBe('approved');
+    expect(d3.reasons).toEqual([]);
+
+    // revision을 올리지 않고 본문만 바꾸면 그 검수는 근거가 아니다.
+    targetDraft.stem = '‘준비물을 하나도 빠뜨리지 않을 만큼 꼼꼼하다’에서 ‘꼼꼼하다’의 뜻은?';
+    const d4 = decideCandidate(batch).find(d => d.questionId === approvedId)!;
+    expect(d4.decision).toBe('quarantined');
+    expect(d4.reasons).toContain('codex: 검수 뒤 본문이 바뀜(같은 revision, 다른 contentHash)');
+  });
+
+  it('공개 판정(decide)은 작성 모델이 한 해설 대조를 총괄 대조로 인정하지 않는다', () => {
+    const batch = structuredClone(q20);
+    expect(decide(batch).find(d => d.questionId === approvedId)!.decision).toBe('approved');
+    batch.explanation!.reviewer.model = 'Gemini 4 Argon (High)';
+    const d = decide(batch).find(x => x.questionId === approvedId)!;
+    expect(d.decision).toBe('quarantined');
+    expect(d.reasons).toEqual(['총괄 해설 대조자가 Claude가 아님: Gemini 4 Argon (High)']);
   });
 });
