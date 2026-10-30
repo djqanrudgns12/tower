@@ -1,0 +1,95 @@
+/* 장착 홈(ui-rules-v2 §1): 호두나무 틀에 파인 소켓, 초상화와 놋쇠 가격만. 고른 소켓 하나만 놋쇠 테. */
+.rail {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--s2);
+}
+
+.strip {
+  display: flex;
+  gap: var(--s2);
+  overflow-x: auto;
+  padding: var(--s1) 0;
+  scrollbar-width: none;
+}
+
+.strip::-webkit-scrollbar { display: none; }
+
+.socket {
+  position: relative;
+  display: grid;
+  justify-items: center;
+  gap: var(--s1);
+  min-width: 0;
+  min-height: var(--touch);
+  padding: var(--s2) var(--s1) var(--s1);
+  border: 2px solid var(--walnut-3);
+  border-radius: var(--r-panel);
+  background: var(--walnut-face);
+  box-shadow: var(--ground-shadow);
+  color: var(--cream-ink);
+  transition: transform var(--t-ui) var(--ease-out), border-color var(--t-ui) var(--ease-out);
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+  -webkit-user-drag: none;
+  /* 레일은 세로로 넘기고 가로 끌기는 받는다. 휴대폰 줄은 가로로 넘기고 세로 끌기를 받는다. */
+  touch-action: pan-y;
+}
+
+.socket * { pointer-events: none; }
+
+.strip .socket {
+  flex: none;
+  width: 76px;
+  padding-top: var(--s1);
+  touch-action: pan-x;
+}
+
+.well {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  aspect-ratio: 1;
+  max-width: 76px;
+  border-radius: var(--r-input);
+  background: var(--walnut-3);
+  box-shadow: var(--well-inset);
+}
+
+.strip .well { max-width: 56px; }
+
+.price {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 14px;
+  font-weight: 800;
+  line-height: 1.2;
+  color: var(--brass-1);
+}
+
+.socket:active:not([data-short]) { transform: translateY(1px); box-shadow: none; }
+
+.socket[aria-selected='true'] {
+  border-color: var(--brass-2);
+  outline: 2px solid var(--brass-1);
+  outline-offset: -4px;
+}
+
+.socket[data-short] .well > * { opacity: 0.55; filter: grayscale(0.7); }
+.socket[data-short] .price { color: var(--danger-light); }
+
+/* 막 살 수 있게 된 소켓: 테두리가 한 번 빛난다(ui-rules-v2 §5). */
+.socket[data-fresh] { animation: fresh 600ms var(--ease-out) 1; }
+
+@keyframes fresh {
+  0% { border-color: var(--brass-1); box-shadow: 0 0 0 3px var(--brass-1); }
+  100% { border-color: var(--walnut-3); box-shadow: var(--ground-shadow); }
+}
+
+@media (hover: hover) {
+  .socket:hover:not([aria-selected='true']) { border-color: var(--walnut-1); }
+}
+
+.socket:focus-visible { outline: 3px solid var(--brass-1); outline-offset: 1px; }

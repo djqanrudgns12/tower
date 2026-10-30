@@ -34,11 +34,28 @@ async function finishPrep(page: Page) {
   }
 }
 
-async function tapCell(page: Page, x: number, y: number) {
+async function cellCenter(page: Page, x: number, y: number) {
   const box = (await page.locator('canvas').boundingBox())!;
   const cell = box.width / 15;
-  await page.mouse.click(box.x + (x + 0.5) * cell, box.y + (y + 0.5) * cell);
+  return { x: box.x + (x + 0.5) * cell, y: box.y + (y + 0.5) * cell };
 }
+
+async function tapCell(page: Page, x: number, y: number) {
+  const at = await cellCenter(page, x, y);
+  await page.mouse.click(at.x, at.y);
+}
+
+/** 장착 홈 소켓을 눌러 전장 칸까지 끌어 놓는다(ui-rules-v2 §4). 칸 가장자리 근처에 놓아도 자석으로 붙는다. */
+async function dragTower(page: Page, name: RegExp, x: number, y: number, offset = { dx: 0, dy: 0 }) {
+  const socket = (await page.getByRole('listbox', { name: '타워 장착 홈' }).getByRole('option', { name }).boundingBox())!;
+  const to = await cellCenter(page, x, y);
+  await page.mouse.move(socket.x + socket.width / 2, socket.y + socket.height / 2);
+  await page.mouse.down();
+  await page.mouse.move(to.x + offset.dx, to.y + offset.dy, { steps: 12 });
+  await page.mouse.up();
+}
+
+const towerCount = (page: Page, n: number) => expect(page.getByRole('application', { name: new RegExp(`타워 ${n}개`) })).toBeVisible();
 
 test('1440×900: 준비 → 설치 → 전투 → 정지 가림 → 재개', async ({ page }) => {
   const errors: string[] = [];
@@ -51,12 +68,22 @@ test('1440×900: 준비 → 설치 → 전투 → 정지 가림 → 재개', asy
   await finishPrep(page);
   await expect(page.getByRole('button', { name: '전투 시작' })).toBeVisible();
 
+  // 끌어 놓기: 칸 가운데에서 0.4칸 벗어나 놓아도 가장 가까운 빈 자리에 바로 설치된다(확인 단계 없음).
   const slot = garden.slots.find(s => s.x === 8 && s.y === 2)!;
+  const cellPx = (await page.locator('canvas').boundingBox())!.width / 15;
+  await dragTower(page, /궁수탑/, slot.x, slot.y, { dx: cellPx * 0.4, dy: -cellPx * 0.3 });
+  await towerCount(page, 1);
+  await shot(page, 'desktop-dragged');
+  // 타워를 먼저 고르고 빈 자리를 누르면 바로 설치된다. 골드가 남으면 같은 타워가 계속 골라져 있다.
+  await page.getByRole('listbox', { name: '타워 장착 홈' }).getByRole('option', { name: /궁수탑/ }).click();
+  await expect(page.getByRole('option', { name: /궁수탑/ })).toHaveAttribute('aria-selected', 'true');
+  const second = garden.slots.find(s => s.x === 5 && s.y === 4)!;
+  await tapCell(page, second.x, second.y);
+  await towerCount(page, 2);
+  // 설치된 타워를 누르면 옆에 도구 묶음(강화·판매)이 뜨고, 능력치 막대가 보인다.
   await tapCell(page, slot.x, slot.y);
-  await expect(page.getByText('어떤 타워를 놓을까요?')).toBeVisible();
-  await page.getByRole('option', { name: /궁수탑/ }).click();
-  await shot(page, 'desktop-preview');
-  await page.getByRole('button', { name: '설치 · 60골드' }).click();
+  await expect(page.getByRole('group', { name: '궁수탑 레벨 1' })).toBeVisible();
+  await expect(page.getByRole('button', { name: /^강화 \d+골드$/ })).toBeVisible();
   await expect(page.getByText('레벨 1', { exact: true })).toBeVisible();
   await shot(page, 'desktop-built');
 
@@ -102,10 +129,19 @@ test('390×844 휴대폰: 가로 넘침 없음, 문제 전체가 보이고 확�
   expect(overflow).toBeLessThanOrEqual(0);
   await shot(page, 'phone-prep');
   await finishPrep(page);
+  await shot(page, 'phone-build');
+  // 빈 자리를 먼저 누르면 확대되고 그 자리 옆에 작은 고르기 메뉴가 뜬다. 고르면 바로 설치된다.
   await tapCell(page, 8, 2);
   await expect(page.getByRole('button', { name: '전체 지도' })).toBeVisible();
+  const menu = page.getByRole('group', { name: '이 자리에 놓을 타워' });
+  await expect(menu).toBeVisible();
   await shot(page, 'phone-magnify');
-  await page.getByRole('button', { name: '전체 지도' }).click();
+  await menu.getByRole('button', { name: /궁수탑/ }).click();
+  await towerCount(page, 1);
+  await expect(page.getByRole('button', { name: '전체 지도' })).toHaveCount(0);
+  const after = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
+  expect(after).toBeLessThanOrEqual(0);
+  await shot(page, 'phone-built');
 });
 
 test('키보드: 전장 화살표·Enter로 자리를 고르고, 설치 자리 목록으로도 고른다(PRD §12.4)', async ({ page }) => {
@@ -119,15 +155,21 @@ test('키보드: 전장 화살표·Enter로 자리를 고르고, 설치 자리 �
   await expect(page.getByText('자리 2 · 가로 4, 세로 1 · 비어 있음', { exact: true }).first()).toBeAttached();
   // 전장에 포커스가 있을 때 숫자 키는 문제 답이 아니다. Enter로 자리를 고른다.
   await page.keyboard.press('Enter');
-  await expect(page.getByText('어떤 타워를 놓을까요?')).toBeVisible();
+  const menu = page.getByRole('group', { name: '이 자리에 놓을 타워' });
+  await expect(menu).toBeVisible();
+  // 메뉴의 첫 타워로 포커스가 가고, Esc는 메뉴를 닫고 전장으로 돌아간다.
+  await expect(menu.getByRole('button').first()).toBeFocused();
   await page.keyboard.press('Escape');
-  await expect(page.getByText('어떤 타워를 놓을까요?')).toHaveCount(0);
+  await expect(menu).toHaveCount(0);
+  await expect(field).toBeFocused();
   await page.getByText(/설치 자리 목록/).click();
   await page.getByRole('button', { name: '자리 9 · 가로 9, 세로 3 · 비어 있음' }).click();
-  await expect(page.getByText('어떤 타워를 놓을까요?')).toBeInViewport();
-  // 목록은 접히고 포커스는 관리 패널의 첫 타워로 간다.
-  await expect(page.getByRole('option', { name: /궁수탑/ })).toBeFocused();
+  await expect(menu).toBeInViewport();
+  // 목록은 접히고 포커스는 메뉴의 첫 타워로 간다. 엔터로 바로 설치한다.
+  await expect(menu.getByRole('button', { name: /궁수탑/ })).toBeFocused();
   await shot(page, 'desktop-slot-list');
+  await page.keyboard.press('Enter');
+  await towerCount(page, 1);
 });
 
 test('WebGL 문맥 손실: 멈추고, 화면이 돌아온 뒤 계속하면 같은 문제로 이어진다(PRD §12.7)', async ({ page }) => {

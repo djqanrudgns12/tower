@@ -126,6 +126,68 @@ export function ChevronDownIcon({ size = 12 }: { size?: number }) {
   );
 }
 
+/** 능력치 막대 아이콘: 공격력(검), 공격 속도(과녁), 사거리(조준). 한 선 두께 1.6px, currentColor. */
+export function StatPowerIcon({ size = 16 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 16 16" style={baseStyle} aria-hidden="true">
+      <path d="M3 13l7.2-7.2M10.2 5.8l2.6-2.6 .3 2.9-2.9-.3zM2.5 10.6l2.9 2.9M4.3 12.4l-1.6 1.6" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+export function StatSpeedIcon({ size = 16 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 16 16" style={baseStyle} aria-hidden="true">
+      <circle cx="8" cy="8" r="5.6" fill="none" stroke="currentColor" strokeWidth="1.6" />
+      <path d="M8 4.8V8l2.4 1.6" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+export function StatRangeIcon({ size = 16 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 16 16" style={baseStyle} aria-hidden="true">
+      <circle cx="8" cy="8" r="4.6" fill="none" stroke="currentColor" strokeWidth="1.6" />
+      <path d="M8 1.6v3M8 11.4v3M1.6 8h3M11.4 8h3" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+/** 강화(위 화살표), 판매(동전 내려놓기), 진화(별빛). 도구 묶음용. */
+export function UpgradeArrowIcon({ size = 18 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 18 18" style={baseStyle} aria-hidden="true">
+      <path d="M9 15V4M4.5 8.2L9 3.6l4.5 4.6" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+export function SellIcon({ size = 18 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 18 18" style={baseStyle} aria-hidden="true">
+      <circle cx="9" cy="7" r="4.4" fill="none" stroke="currentColor" strokeWidth="1.6" />
+      <path d="M3 15h12M9 11.4V15" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+export function EvolveIcon({ size = 18 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 18 18" style={baseStyle} aria-hidden="true">
+      <path d="M9 2.2l1.7 4.1 4.1 1.7-4.1 1.7L9 13.8l-1.7-4.1-4.1-1.7 4.1-1.7L9 2.2z" fill="currentColor" />
+      <path d="M14 12.2l.7 1.6 1.6.7-1.6.7-.7 1.6-.7-1.6-1.6-.7 1.6-.7.7-1.6z" fill="currentColor" />
+    </svg>
+  );
+}
+
+export function CloseIcon({ size = 16 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 16 16" style={baseStyle} aria-hidden="true">
+      <path d="M4 4l8 8M12 4l-8 8" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+    </svg>
+  );
+}
+
 const FIXED_UP_WEAPONS = new Set<TowerId>(['frost', 'lightning']);
 
 /** 1:1 정방형 방패 액자 초상화 (기존 1.25배 세로 왜곡 버그 수정). */
@@ -133,10 +195,13 @@ export function TowerShieldPortrait({
   type,
   icons,
   size = 42,
+  bare = false,
 }: {
   type: TowerId;
   icons: Record<string, string>;
   size?: number;
+  /** 액자 없이 그림만(장착 홈 소켓처럼 바깥이 이미 홈일 때). */
+  bare?: boolean;
 }) {
   const body = icons[`tower.${type}`];
   const weapon = icons[`tower.${type}.weapon`];
@@ -148,10 +213,7 @@ export function TowerShieldPortrait({
         height: size,
         flex: 'none',
         position: 'relative',
-        background: 'var(--wood-dark)',
-        border: '2px solid var(--wood-collar)',
-        outline: '2px solid var(--edge)',
-        borderRadius: 'var(--r-input)',
+        ...(bare ? {} : { background: 'var(--wood-dark)', border: '2px solid var(--wood-collar)', outline: '2px solid var(--edge)', borderRadius: 'var(--r-input)' }),
         display: 'grid',
         placeItems: 'center',
         overflow: 'hidden',
@@ -162,6 +224,7 @@ export function TowerShieldPortrait({
         <img
           src={body}
           alt=""
+          draggable={false}
           style={{
             position: 'absolute',
             width: '90%',
@@ -176,6 +239,7 @@ export function TowerShieldPortrait({
         <img
           src={weapon}
           alt=""
+          draggable={false}
           style={{
             position: 'absolute',
             width: '64%',

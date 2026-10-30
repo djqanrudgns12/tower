@@ -27,6 +27,7 @@ export class BattleScene extends Phaser.Scene {
   private miniFrame!: Phaser.GameObjects.Graphics;
   private offEvents: (() => void) | null = null;
   private cssCell = 0;
+  private cameraKey = '';
 
   constructor() { super('battle'); }
 
@@ -131,9 +132,13 @@ export class BattleScene extends Phaser.Scene {
     this.enemyLayer.sync(s, time, alpha);
     this.effects.syncShots(s, alpha, (id, a) => this.enemyLayer.progressOf(id, a));
     this.inputLayer.draw(s);
-    if (this.miniCam?.visible) {
-      const v = this.cameras.main.worldView;
-      this.miniFrame.clear().lineStyle(6, 0xf5ebd4, 1).strokeRect(v.x, v.y, v.width, v.height);
+    const v = this.cameras.main.worldView;
+    if (this.miniCam?.visible) this.miniFrame.clear().lineStyle(6, 0xf5ebd4, 1).strokeRect(v.x, v.y, v.width, v.height);
+    // 보이는 영역이 바뀌면 DOM 겹층(타워 옆 도구 묶음 등)이 칸 위치를 다시 맞춘다.
+    const cameraKey = `${v.x.toFixed(1)},${v.y.toFixed(1)},${v.width.toFixed(1)},${v.height.toFixed(1)}`;
+    if (cameraKey !== this.cameraKey && v.width > 0) {
+      this.cameraKey = cameraKey;
+      this.bridge.onCamera?.({ x: v.x, y: v.y, width: v.width, height: v.height });
     }
   }
 }

@@ -16,9 +16,9 @@ export function practiceCoach(view: GameView, selection: Pick<FieldSelection, 's
   }
   if (view.phase === 'BUILD') {
     if (view.towers.length > 0) return { at: 'start', text: '‘전투 시작’을 누르면 적 3마리가 길을 따라와요.' };
-    if (!selection.slotId) return { at: 'field', text: '길 옆 빈 돌 받침을 눌러 타워 자리를 골라요.' };
-    if (!selection.previewType) return { at: 'panel', text: '타워를 하나 골라요. 처음에는 빠르게 쏘는 궁수탑이 좋아요.' };
-    return { at: 'panel', text: '‘설치’를 누르면 골드를 내고 타워를 놓아요.' };
+    if (!selection.slotId) return { at: 'field', text: '궁수탑을 끌어다 길 옆 빈 돌 받침에 놓아요.' };
+    if (!selection.previewType) return { at: 'panel', text: '받침 옆 작은 메뉴에서 타워를 골라요. 처음에는 궁수탑이 좋아요.' };
+    return { at: 'panel', text: '누르면 골드를 내고 바로 놓아요.' };
   }
   if (view.phase === 'BATTLE') return { at: 'question', text: '타워는 알아서 쏴요. 전투 중에도 문제를 풀면 골드를 더 받아요.' };
   return null;

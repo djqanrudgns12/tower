@@ -343,3 +343,32 @@
   width: max-content;
   pointer-events: none;
 }
+
+/* 휴대폰: 전장 바로 아래 장착 홈 가로 줄(끌기 시작점). */
+.stripRow {
+  display: grid;
+  gap: var(--s1);
+  padding: var(--s1) var(--s2);
+  border-radius: var(--r-panel);
+  background: var(--walnut-2);
+  border: 2px solid var(--walnut-3);
+}
+
+.stripRow > p { color: var(--parch-1); }
+
+.phoneExtras {
+  display: grid;
+  gap: var(--s2);
+}
+
+/* 끌고 있는 타워 그림자: 누른 점을 가운데로, 누르기는 받지 않는다. */
+.ghost {
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 50;
+  pointer-events: none;
+  translate: -50% -50%;
+  filter: drop-shadow(0 6px 6px rgba(44, 26, 14, 0.45));
+  opacity: 0.92;
+}

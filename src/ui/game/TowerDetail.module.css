@@ -1,0 +1,120 @@
+/* 고른 타워 능력치(41번 원화 우측 판): 양피지 면 위 초상화·이름·레벨, 아이콘+막대+숫자 세 줄. */
+.detail {
+  display: grid;
+  gap: var(--s2);
+  padding: var(--s3);
+  border-radius: var(--r-panel);
+  background: var(--parch-face);
+  border: 2px solid var(--walnut-3);
+  box-shadow: var(--ground-shadow);
+  color: var(--ink);
+}
+
+.head {
+  display: flex;
+  align-items: center;
+  gap: var(--s3);
+  min-width: 0;
+}
+
+.title {
+  display: grid;
+  gap: var(--s1);
+  min-width: 0;
+}
+
+.name {
+  font-size: 16px;
+  font-weight: 800;
+  line-height: 1.25;
+}
+
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s1);
+}
+
+.level,
+.form {
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.2;
+  padding: 2px var(--s2);
+  border-radius: 999px;
+}
+
+.level {
+  background: var(--walnut-2);
+  color: var(--cream-ink);
+}
+
+.form {
+  background: var(--parch-3);
+  color: var(--ink);
+}
+
+.bars {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--s2);
+}
+
+.label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink-soft);
+  white-space: nowrap;
+}
+
+.label svg { color: var(--walnut-1); }
+
+.value {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s2);
+  margin: 0;
+}
+
+.track {
+  display: inline-grid;
+  grid-auto-flow: column;
+  gap: 2px;
+}
+
+.seg {
+  width: 14px;
+  height: 10px;
+  border-radius: 2px;
+  background: var(--parch-3);
+  box-shadow: inset 0 1px 0 rgba(44, 26, 14, 0.25);
+}
+
+.seg[data-on] {
+  background: var(--brass-2);
+  box-shadow: inset 0 -2px 0 var(--brass-3);
+}
+
+/* 강화하면 채워질 칸: 놋쇠 테두리만. 색 외에 모양(빈 테)으로도 구별한다. */
+.seg[data-next] {
+  background: var(--parch-1);
+  box-shadow: inset 0 0 0 2px var(--brass-2);
+}
+
+.num {
+  min-width: 52px;
+  text-align: right;
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--ink);
+}
