@@ -7,6 +7,7 @@ import type { PauseReason, Phase, RunState, RunStats } from '../domain/types';
 export interface QuestionView {
   encounterId: number;
   label: string;
+  badge: string | null;
   stem: string;
   options: Array<{ id: OptionId; text: string }>;
   chosen: OptionId | 'skipped' | null;
@@ -25,6 +26,12 @@ export interface QuestionView {
 
 export interface TowerView { id: number; type: TowerId; slotId: string; level: number; branch: BranchId | null; invested: number }
 
+export interface QuestionStakesView {
+  correctGold: number;
+  correctPt: number;
+  wrongPt: number;
+}
+
 export interface GameView {
   phase: Phase;
   wave: number;
@@ -37,6 +44,10 @@ export interface GameView {
   pt: number;
   pause: PauseReason[];
   burningSecondsLeft: number;
+  battleStreak: number;
+  waveKillPtGranted: number;
+  waveKillPtCap: number;
+  stakes: QuestionStakesView;
   prep: { done: number; target: number };
   question: QuestionView | null;
   towers: TowerView[];
@@ -62,9 +73,15 @@ export function selectView(ctx: GameContext, s: RunState): GameView {
     const text = (id: OptionId) => q.options.find(o => o.id === id)!.text;
     const fb = s.quiz.feedback && s.quiz.feedback.encounterId === enc.id ? s.quiz.feedback : null;
     const label = enc.wrapup ? '마무리 문제' : enc.phase === 'prep' ? `준비 ${Math.min(s.quiz.prepDone + (enc.answer ? 0 : 1), s.quiz.prepTarget)}/${s.quiz.prepTarget}` : '전투 문제';
+    const qMeta = q as { variantTag?: string; dialectRegion?: string };
+    const badge = qMeta.variantTag === 'dialect'
+      ? `${qMeta.dialectRegion && qMeta.dialectRegion !== '공통' ? `${qMeta.dialectRegion} ` : ''}방언`
+      : qMeta.variantTag === 'idiom_proverb'
+        ? '관용·속담'
+        : null;
     const chosen = enc.answer?.choice ?? null;
     question = {
-      encounterId: enc.id, label, stem: q.stem, wrapup: enc.wrapup,
+      encounterId: enc.id, label, badge, stem: q.stem, wrapup: enc.wrapup,
       options: enc.optionOrder.map(id => ({ id, text: text(id) })),
       chosen,
       reward: enc.answer ? { pt: enc.answer.pt, gold: enc.answer.gold } : null,
@@ -83,6 +100,14 @@ export function selectView(ctx: GameContext, s: RunState): GameView {
     phase: s.phase, wave: s.wave, completedWave: s.completedWave, endedAtWave: s.endedAtWave, endReason: s.endReason,
     gateHp: Math.max(0, s.gateHp), gateMaxHp: s.gateMaxHp, gold: s.gold, pt: s.pt, pause: [...s.pause],
     burningSecondsLeft: secondsLeft(s.burningUntilTick, s.tick),
+    battleStreak: s.quiz.battleStreak,
+    waveKillPtGranted: s.waveKillPtGranted,
+    waveKillPtCap: ctx.difficulty.waveKillPtCap,
+    stakes: {
+      correctGold: ctx.difficulty.correctGold,
+      correctPt: ctx.difficulty.correctPt,
+      wrongPt: ctx.difficulty.wrongPt,
+    },
     prep: { done: s.quiz.prepDone, target: s.quiz.prepTarget },
     question,
     towers: s.towers.map(t => ({ id: t.id, type: t.type, slotId: t.slotId, level: t.level, branch: t.branch, invested: t.invested })),
@@ -97,6 +122,6 @@ export function viewKey(s: RunState): string {
   return [
     s.phase, s.wave, s.gateHp, s.gold, s.pt, s.pause.join(','), s.quiz.current?.id ?? 0, s.quiz.current?.answer ? 1 : 0, s.quiz.current?.wrapup ? 1 : 0,
     fb ? `${fb.result}:${secondsLeft(fb.nextEnabledTick, s.tick)}` : '-', secondsLeft(s.burningUntilTick, s.tick),
-    s.towers.map(t => `${t.id}.${t.level}.${t.branch ?? ''}`).join('|'), s.quiz.prepDone,
+    s.towers.map(t => `${t.id}.${t.level}.${t.branch ?? ''}`).join('|'), s.quiz.prepDone, s.quiz.battleStreak, s.stats.ptFromKills,
   ].join('/');
 }

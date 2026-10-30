@@ -1,39 +1,379 @@
-.panel { display: grid; gap: var(--s2); align-content: start; }
-.panel > p:empty { display: none; }
+/* 타워 장착함·관리 패널(시안 1 v3 음각 사암 소켓함). PRD §12.3·§12.8 준수. */
+.panel {
+  display: grid;
+  gap: var(--s2);
+  align-content: start;
+}
+
+.panelCompactRail {
+  gap: var(--s1);
+}
+
+.panel > p:empty {
+  display: none;
+}
+
+.mgmtHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s2);
+}
+
+.title {
+  font-weight: 700;
+  font-size: 16px;
+  color: var(--ink);
+  line-height: 1.3;
+}
+
+.scopeBadge {
+  font-size: 13px;
+  font-weight: 700;
+  padding: var(--s1) var(--s2);
+  background: var(--well);
+  color: var(--ink-soft);
+  border: 1px solid var(--well-border);
+  border-radius: var(--r-input);
+  white-space: nowrap;
+}
+
+.scopeTabs {
+  display: inline-flex;
+  gap: var(--s1);
+}
+
+.scopeTab {
+  min-height: 36px;
+  padding: 0 var(--s2);
+  font-size: 13px;
+  font-weight: 700;
+  background: var(--well);
+  color: var(--ink-soft);
+  border: 1px solid var(--well-border);
+  border-radius: var(--r-input);
+  transition: background-color 80ms;
+}
+
+.scopeTab[aria-selected='true'] {
+  background: var(--wood);
+  color: var(--cream-ink);
+  border-color: var(--edge);
+}
+
+.roleBar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s1);
+}
+
+.roleChip {
+  min-height: 36px;
+  padding: 0 var(--s2);
+  font-size: 13px;
+  font-weight: 700;
+  background: var(--well);
+  color: var(--ink-soft);
+  border: 1px solid var(--well-border);
+  border-radius: var(--r-input);
+  transition: background-color 80ms;
+}
+
+.roleChip[aria-pressed='true'] {
+  background: var(--wood);
+  color: var(--cream-ink);
+  border-color: var(--edge);
+}
+
+.guide {
+  font-size: 13px;
+  color: var(--ink-soft);
+  line-height: 1.4;
+}
+
+.socketWell {
+  padding: var(--s2);
+  background: var(--well);
+  border: 2px solid var(--well-border);
+  border-radius: var(--r-panel);
+}
+
+.panelCompactRail .socketWell {
+  padding: var(--s1);
+}
+
+.list,
+.branchList {
+  display: grid;
+  gap: var(--s2);
+}
+
+.panelCompactRail .list {
+  gap: var(--s1);
+}
+
+.listAllGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--s1);
+}
+
 @media (min-width: 600px) and (max-width: 960px) {
-  .panel:has(.branch) { grid-template-columns: 1fr 1fr; }
-  .panel:has(.branch) > .title { grid-column: 1 / -1; }
+  .branchList {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
-.title { font-weight: 700; font-size: 16px; }
-.list { display: grid; gap: var(--s2); }
+
 /* 휴대폰 빈칸 선택: 기본 3종을 장착 홈 한 행으로(PRD §12.4). 한 행은 §12.8의 카드 격자가 아니다. */
-.listCompact { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--s1); }
-.item, .branch {
-  display: flex; align-items: center; gap: var(--s2); text-align: left; min-height: 56px; padding: var(--s1) var(--s2);
-  background: var(--paper); border: 2px solid var(--edge); border-radius: var(--r-input); box-shadow: var(--shadow);
-  transition: transform 80ms, box-shadow 80ms, filter 80ms; touch-action: manipulation; user-select: none;
+.listCompact {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--s1);
 }
-.listCompact .item { flex-direction: column; justify-content: center; text-align: center; min-height: 72px; padding: var(--s1); gap: var(--s1); }
-.item:hover:not(:disabled), .branch:hover:not(:disabled) { filter: brightness(1.04); }
-.item:active:not(:disabled), .branch:active:not(:disabled) { transform: translateY(1px); box-shadow: var(--shadow-pressed); }
-.item:disabled, .branch:disabled { background: var(--stone); color: var(--ink-soft); border-color: var(--ink-soft); box-shadow: none; }
-.picked { outline: 3px solid var(--blue); outline-offset: -1px; }
-.itemText { display: grid; flex: 1; min-width: 0; }
-.name { font-weight: 700; font-size: 15px; }
-.role { font-size: 13px; color: var(--ink-soft); line-height: 1.4; }
-.price { font-weight: 700; font-size: 14px; white-space: nowrap; }
-.price::after { content: ' 골드'; font-weight: 400; }
-.price[data-short='true'] { color: var(--danger); }
-.stats { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s1); font-size: 14px; }
-.effect { font-size: 13px; }
-.upgrade { display: grid; justify-items: center; line-height: 1.25; padding: var(--s1) 0; }
-.delta { font-weight: 400; font-size: 13px; }
-.nameRow { display: flex; justify-content: space-between; align-items: baseline; gap: var(--s2); }
-.row { display: flex; gap: var(--s2); flex-wrap: wrap; }
-.header { display: flex; align-items: center; gap: var(--s3); }
-.level { font-weight: 400; font-size: 13px; }
-.icon { position: relative; flex: none; display: inline-block; overflow: visible; }
-.icon img { position: absolute; left: 0; image-rendering: auto; }
-.branchMark { width: 22px; height: 22px; flex: none; stroke: var(--edge); stroke-width: 3; }
-.branchMark[data-branch='A'] { fill: var(--blue); }
-.branchMark[data-branch='B'] { fill: var(--danger); }
+
+.item,
+.branch {
+  display: flex;
+  align-items: center;
+  gap: var(--s2);
+  text-align: left;
+  min-height: 58px;
+  padding: var(--s2);
+  background: var(--paper);
+  border: 2px solid var(--edge);
+  border-radius: var(--r-input);
+  box-shadow: var(--shadow);
+  transition: transform 80ms, box-shadow 80ms, background-color 80ms;
+  touch-action: manipulation;
+  user-select: none;
+}
+
+.itemCompactRail {
+  min-height: 44px;
+  padding: var(--s1) var(--s2);
+}
+
+.listCompact .item,
+.listAllGrid .item {
+  flex-direction: column;
+  justify-content: center;
+  text-align: center;
+  min-height: 76px;
+  padding: var(--s1);
+  gap: var(--s1);
+}
+
+@media (hover: hover) {
+  .item:hover:not(:disabled),
+  .branch:hover:not(:disabled) {
+    background: var(--paper-hover);
+  }
+  .scopeTab:hover:not([aria-selected='true']),
+  .roleChip:hover:not([aria-pressed='true']) {
+    background: var(--well-hover);
+  }
+}
+
+.item:active:not(:disabled),
+.branch:active:not(:disabled) {
+  transform: translateY(1px);
+  box-shadow: var(--shadow-pressed);
+}
+
+.item:disabled,
+.branch:disabled {
+  background: var(--stone);
+  color: var(--ink-soft);
+  border-color: var(--ink-soft);
+  box-shadow: none;
+}
+
+.picked {
+  outline: 3px solid var(--blue);
+  outline-offset: -1px;
+  background: var(--paper);
+}
+
+.itemText {
+  display: grid;
+  gap: 0;
+  flex: 1;
+  min-width: 0;
+}
+
+.nameRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--s2);
+}
+
+.name {
+  font-weight: 700;
+  font-size: 15px;
+  color: var(--ink);
+  line-height: 1.35;
+}
+
+.role {
+  font-size: 13px;
+  color: var(--ink-soft);
+  line-height: 1.35;
+}
+
+.price {
+  font-weight: 700;
+  font-size: 13px;
+  padding: var(--s1) var(--s2);
+  background: var(--parchment);
+  border: 1px solid var(--well-border);
+  border-radius: var(--r-input);
+  color: var(--ink);
+  white-space: nowrap;
+  line-height: 1.1;
+}
+
+.price[data-short='true'] {
+  color: var(--danger);
+  border-color: var(--danger);
+  background: var(--danger-surface);
+}
+
+.statWell {
+  padding: var(--s2);
+  background: var(--well);
+  border: 1px solid var(--well-border);
+  border-radius: var(--r-input);
+}
+
+.stats {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s1);
+  font-size: 14px;
+  color: var(--ink);
+}
+
+.sellNote {
+  font-size: 14px;
+  line-height: 1.4;
+  color: var(--ink);
+}
+
+.branchActive {
+  display: flex;
+  align-items: center;
+  gap: var(--s2);
+  padding: var(--s1) var(--s2);
+  background: var(--paper);
+  border: 1px solid var(--well-border);
+  border-radius: var(--r-input);
+  font-size: 13px;
+  color: var(--ink);
+}
+
+.branchPathTag {
+  font-size: 13px;
+  font-weight: 700;
+  padding: 0 var(--s1);
+  border-radius: var(--r-input);
+  background: var(--parchment);
+  color: var(--blue);
+  white-space: nowrap;
+}
+
+.branchPathTag[data-branch='B'] {
+  color: var(--danger);
+}
+
+.branchStats {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.maxBadge {
+  font-size: 14px;
+  font-weight: 700;
+  text-align: center;
+  padding: var(--s2);
+  background: var(--green-surface);
+  color: var(--green);
+  border: 1px solid var(--green);
+  border-radius: var(--r-input);
+}
+
+.upgrade {
+  display: grid;
+  justify-items: center;
+  line-height: 1.25;
+  padding: var(--s1) 0;
+}
+
+.delta {
+  font-weight: 400;
+  font-size: 13px;
+}
+
+.actionRow {
+  display: flex;
+  gap: var(--s2);
+  flex-wrap: wrap;
+}
+
+.grow {
+  flex: 1 1 140px;
+}
+
+.secondaryRow {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--s2);
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: var(--s3);
+  padding: var(--s2);
+  background: var(--well);
+  border: 1px solid var(--well-border);
+  border-radius: var(--r-panel);
+}
+
+.headerMeta {
+  display: grid;
+  gap: var(--s1);
+  min-width: 0;
+}
+
+.headerTitleRow {
+  display: flex;
+  align-items: center;
+  gap: var(--s2);
+  flex-wrap: wrap;
+}
+
+.levelTag {
+  font-size: 13px;
+  font-weight: 700;
+  padding: 0 var(--s2);
+  line-height: 22px;
+  background: var(--wood);
+  color: var(--cream-ink);
+  border-radius: var(--r-input);
+}
+
+.lockBanner {
+  display: flex;
+  align-items: center;
+  gap: var(--s2);
+  padding: var(--s1) var(--s2);
+  background: var(--well);
+  border: 1px solid var(--well-border);
+  border-radius: var(--r-input);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--ink-soft);
+}

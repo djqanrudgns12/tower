@@ -9,15 +9,15 @@ interface Props {
   reasons: PauseReason[];
   /** 화면(WebGL)이 아직 돌아오지 않았다. ‘계속’을 막되 포커스는 받도록 aria-disabled를 쓴다. */
   renderLost: boolean;
-  canSave: boolean;
+  canSave?: boolean;
   fontScale: FontScale;
   soundOn: boolean;
-  saveError: boolean;
+  saveError?: boolean;
   onResume(): void;
   onFont(scale: FontScale): void;
   onSound(on: boolean): void;
-  onSaveExit(): Promise<boolean>;
-  onRetrySave(): Promise<void>;
+  onSaveExit?(): Promise<boolean>;
+  onRetrySave?(): Promise<void>;
   onQuit(): void;
   onLeaveUnsaved(): void;
 }
@@ -42,10 +42,10 @@ export function PauseOverlay(p: Props) {
       <div className={`${kit.board} ${css.box}`}>
         <h2 id="pause-title" className={css.title}>{blocked ? '잠깐만요' : '일시정지'}</h2>
         <p>{p.renderLost && !blocked ? RENDER_WAIT : PAUSE_COPY[main]}</p>
-        {p.reasons.includes('STORAGE') ? (
+        {p.reasons.includes('STORAGE') && p.onRetrySave ? (
           <div className={css.stack}>
-            <button ref={first} type="button" className={`${kit.button} ${kit.primary} ${kit.big}`} disabled={busy} aria-busy={busy} onClick={async () => { setBusy(true); await p.onRetrySave(); setBusy(false); }}>다시 저장하기</button>
-            <button type="button" className={kit.button} onClick={p.onLeaveUnsaved}>저장하지 않고 나가기</button>
+            <button ref={first} type="button" className={`${kit.button} ${kit.primary} ${kit.big}`} disabled={busy} aria-busy={busy} onClick={async () => { setBusy(true); await p.onRetrySave?.(); setBusy(false); }}>다시 저장하기</button>
+            <button type="button" className={`${kit.button} ${kit.quietWood}`} onClick={p.onLeaveUnsaved}>저장하지 않고 나가기</button>
             <p className={kit.muted}>저장하지 않고 나가면 마지막으로 저장된 곳까지만 이어할 수 있어요.</p>
           </div>
         ) : blocked ? (
@@ -68,18 +68,18 @@ export function PauseOverlay(p: Props) {
               <input type="checkbox" checked={p.soundOn} onChange={e => p.onSound(e.target.checked)} />
               소리
             </label>
-            {p.canSave && (
-              <button type="button" className={kit.button} disabled={busy} aria-busy={busy} onClick={async () => { setBusy(true); setFailed(false); const ok = await p.onSaveExit(); setBusy(false); if (!ok) setFailed(true); }}>
+            {p.canSave && p.onSaveExit && (
+              <button type="button" className={`${kit.button} ${kit.quietWood}`} disabled={busy} aria-busy={busy} onClick={async () => { setBusy(true); setFailed(false); const ok = await p.onSaveExit!(); setBusy(false); if (!ok) setFailed(true); }}>
                 {busy ? '저장하는 중…' : '저장하고 나가기'}
               </button>
             )}
-            {failed && <p className={kit.reason}>아직 저장되지 않았어요. 다시 눌러 주세요.</p>}
+            {(failed || p.saveError) && <p className={kit.reason}>아직 저장되지 않았어요. 다시 눌러 주세요.</p>}
             {confirmQuit ? (
               <div className={css.confirm}>
                 <p>이번 판을 끝낼까요? 지금까지의 점수가 기록돼요.</p>
                 <div className={css.row}>
                   <button type="button" className={`${kit.button} ${kit.danger}`} onClick={p.onQuit}>끝내기</button>
-                  <button type="button" className={kit.button} onClick={() => setConfirmQuit(false)}>취소</button>
+                  <button type="button" className={`${kit.button} ${kit.quietWood}`} onClick={() => setConfirmQuit(false)}>취소</button>
                 </div>
               </div>
             ) : (

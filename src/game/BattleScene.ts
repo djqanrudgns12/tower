@@ -29,6 +29,7 @@ export class BattleScene extends Phaser.Scene {
   private shots = new Map<number, Phaser.GameObjects.Image>();
   private overlay!: Phaser.GameObjects.Graphics;
   private hpBars!: Phaser.GameObjects.Graphics;
+  private callouts!: Phaser.GameObjects.Container;
   private mood!: Phaser.GameObjects.Rectangle;
   private miniCam: Phaser.Cameras.Scene2D.Camera | null = null;
   private miniFrame!: Phaser.GameObjects.Graphics;
@@ -81,6 +82,7 @@ export class BattleScene extends Phaser.Scene {
     this.mood = this.add.rectangle(0, 0, WORLD_W, WORLD_H, 0xffffff, 0).setOrigin(0).setDepth(DEPTH.mood);
     this.overlay = this.add.graphics().setDepth(DEPTH.overlay);
     this.hpBars = this.add.graphics().setDepth(DEPTH.ui);
+    this.callouts = this.add.container(0, 0).setDepth(DEPTH.fx + 5);
     this.miniFrame = this.add.graphics().setDepth(DEPTH.ui + 1);
     this.cameras.main.setBounds(0, 0, WORLD_W, WORLD_H).setRoundPixels(false);
     this.cameras.main.ignore(this.miniFrame);
@@ -126,7 +128,7 @@ export class BattleScene extends Phaser.Scene {
     if (!this.miniCam) {
       this.miniCam = this.cameras.add(canvasW - mw - pad, pad, mw, mh).setBounds(0, 0, WORLD_W, WORLD_H);
       this.miniCam.setBackgroundColor('rgba(58,41,30,0.85)');
-      this.miniCam.ignore([this.hpBars]);
+      this.miniCam.ignore([this.hpBars, this.callouts]);
     }
     this.miniCam.setViewport(canvasW - mw - pad, pad, mw, mh).setZoom(mw / WORLD_W).centerOn(WORLD_W / 2, WORLD_H / 2);
     this.miniCam.setVisible(true);
@@ -165,6 +167,7 @@ export class BattleScene extends Phaser.Scene {
         this.fx(e.towerType === 'cannon' ? ASSETS.projectile.puff : e.towerType === 'frost' ? ASSETS.projectile.shard : ASSETS.projectile.spark, toWorld(e.x), toWorld(e.y) - 14, e.towerType === 'cannon' ? 0.9 : 0.55);
       } else if (e.type === 'kill') {
         for (let i = 0; i < 3; i++) this.fx(ASSETS.projectile.puff, toWorld(e.x) + (i - 1) * 9, toWorld(e.y) - 10 - (i % 2) * 6, 0.6);
+        this.spawnKillCallout(e.x, e.y, e.gold, e.pt);
       } else if (e.type === 'fire') {
         const t = this.towers.get(e.towerId);
         const shot = this.bridge.controller.state.projectiles.find(p => p.id === e.projectileId);
@@ -213,6 +216,31 @@ export class BattleScene extends Phaser.Scene {
     const img = this.add.image(x, y, key).setDepth(DEPTH.fx).setScale(scale * 0.5).setAlpha(0.95);
     if (tint !== undefined) img.setTint(tint);
     this.tweens.add({ targets: img, scale: scale, alpha: 0, duration: this.bridge.reducedMotion ? 80 : 180, onComplete: () => img.destroy() });
+  }
+
+  /** 적 처치 보상 부유 표찰: 이미 상태에 반영된 보상을 전장 위에서 즉시 읽히게 보여 준다(PRD §10.3·§11.4). */
+  private spawnKillCallout(milliX: number, milliY: number, gold: number, pt: number) {
+    if (gold <= 0 && pt <= 0) return;
+    const wx = Phaser.Math.Clamp(toWorld(milliX), 48, WORLD_W - 48);
+    const wy = Math.max(24, toWorld(milliY) - 24);
+    const text = pt > 0 ? `+${gold}골드 · +${pt}점` : `+${gold}골드`;
+    const label = this.add.text(wx, wy, text, {
+      fontFamily: 'Pretendard Variable, Pretendard, sans-serif',
+      fontSize: '13px',
+      fontStyle: '700',
+      color: '#ffd859',
+      backgroundColor: '#2e1b10',
+      padding: { x: 6, y: 3 },
+      stroke: '#362419',
+      strokeThickness: 2,
+      resolution: 2,
+    }).setOrigin(0.5);
+    this.callouts.add(label);
+    if (this.bridge.reducedMotion) {
+      this.tweens.add({ targets: label, alpha: 0, delay: 220, duration: 240, onComplete: () => label.destroy() });
+    } else {
+      this.tweens.add({ targets: label, y: wy - 14, alpha: 0, delay: 180, duration: 500, onComplete: () => label.destroy() });
+    }
   }
 
   /** 웨이브 무드: 지면 위 약한 색층만 바꾼다(PRD §11.5). */
@@ -371,12 +399,29 @@ export class BattleScene extends Phaser.Scene {
   private drawOverlay(s: RunState) {
     const sel = this.bridge.selection;
     const tower = sel.towerId !== null ? s.towers.find(t => t.id === sel.towerId) ?? null : null;
-    const key = `${sel.slotId}|${sel.towerId}|${sel.previewType}|${sel.previewBranch}|${tower?.level}|${tower?.branch}|${s.phase}|${s.towers.length}|${this.bridge.magnify}|${this.bridge.keyboardSlotId}`;
+    const highContrast = Boolean((this.bridge as { highContrastMap?: boolean }).highContrastMap);
+    const key = `${sel.slotId}|${sel.towerId}|${sel.previewType}|${sel.previewBranch}|${tower?.level}|${tower?.branch}|${s.phase}|${s.towers.length}|${this.bridge.magnify}|${this.bridge.keyboardSlotId}|${highContrast}`;
     if (key === this.overlayKey) return;
     this.overlayKey = key;
     const g = this.overlay.clear();
     const map = this.bridge.controller.ctx.map;
     const b = this.bridge.controller.ctx.balance;
+    if (highContrast) {
+      const pathSet = new Set(map.pathCells.map(([px, py]) => `${px},${py}`));
+      for (const [px, py] of map.pathCells) {
+        const x0 = px * CELL_PX, y0 = py * CELL_PX;
+        if (!pathSet.has(`${px},${py - 1}`)) { g.lineStyle(4, PALETTE.outline, 0.95).lineBetween(x0, y0 + 2, x0 + CELL_PX, y0 + 2); g.lineStyle(2, 0xfff6d8, 0.9).lineBetween(x0, y0 + 5, x0 + CELL_PX, y0 + 5); }
+        if (!pathSet.has(`${px},${py + 1}`)) { g.lineStyle(4, PALETTE.outline, 0.95).lineBetween(x0, y0 + CELL_PX - 2, x0 + CELL_PX, y0 + CELL_PX - 2); g.lineStyle(2, 0xfff6d8, 0.9).lineBetween(x0, y0 + CELL_PX - 5, x0 + CELL_PX, y0 + CELL_PX - 5); }
+        if (!pathSet.has(`${px - 1},${py}`)) { g.lineStyle(4, PALETTE.outline, 0.95).lineBetween(x0 + 2, y0, x0 + 2, y0 + CELL_PX); g.lineStyle(2, 0xfff6d8, 0.9).lineBetween(x0 + 5, y0, x0 + 5, y0 + CELL_PX); }
+        if (!pathSet.has(`${px + 1},${py}`)) { g.lineStyle(4, PALETTE.outline, 0.95).lineBetween(x0 + CELL_PX - 2, y0, x0 + CELL_PX - 2, y0 + CELL_PX); g.lineStyle(2, 0xfff6d8, 0.9).lineBetween(x0 + CELL_PX - 5, y0, x0 + CELL_PX - 5, y0 + CELL_PX); }
+      }
+      for (const slot of map.slots) {
+        if (!s.towers.some(t => t.slotId === slot.id)) {
+          g.lineStyle(3, PALETTE.outline, 0.95).strokeRoundedRect(slot.x * CELL_PX + 6, slot.y * CELL_PX + 6, CELL_PX - 12, CELL_PX - 12, 8);
+          g.lineStyle(1.5, 0xf5d98e, 0.95).strokeRoundedRect(slot.x * CELL_PX + 8, slot.y * CELL_PX + 8, CELL_PX - 16, CELL_PX - 16, 6);
+        }
+      }
+    }
     const trading = s.phase === 'BUILD' || s.phase === 'BATTLE';
     if (trading && sel.previewType && !sel.slotId) {
       for (const slot of map.slots) if (!s.towers.some(t => t.slotId === slot.id)) g.lineStyle(3, 0xf5ebd4, 0.9).strokeRoundedRect(slot.x * CELL_PX + 5, slot.y * CELL_PX + 5, CELL_PX - 10, CELL_PX - 10, 8);

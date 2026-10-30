@@ -3,6 +3,7 @@ import type { MapConfig } from '../../contracts/maps';
 import type { GameView } from '../../application/view';
 import type { GameContext } from '../../domain/context';
 import { buildCost } from '../../domain/towers';
+import { ChevronDownIcon } from '../icons/GameIcons';
 import kit from '../kit.module.css';
 import css from './GameScreen.module.css';
 
@@ -48,18 +49,27 @@ interface Props {
 
 export function SlotList({ ctx, view, towers, selectedSlotId, onPick }: Props) {
   const empty = ctx.map.slots.filter(s => !view.towers.some(t => t.slotId === s.id)).length;
+  const built = view.towers.length;
   const prices = towers.map(t => `${ctx.balance.towers[t].label} ${buildCost(ctx.balance, t)}골드`).join(' · ');
   return (
     <details className={css.slotList}>
-      <summary>설치 자리 목록 · 빈 자리 {empty}곳</summary>
-      <p className={kit.muted}>빈 자리에 놓을 수 있는 타워: {prices}. 전장에서는 화살표로 자리를 옮기고 Enter로 골라요.</p>
+      <summary className={css.slotSummary}>
+        <span>{built > 0 ? `설치 자리 목록 · 설치 ${built} · 빈 자리 ${empty}곳` : `설치 자리 목록 · 빈 자리 ${empty}곳`}</span>
+        <ChevronDownIcon size={12} />
+      </summary>
+      <p className={kit.muted}>빈 자리에 놓을 수 있는 타워: {prices}. 전장에서는 화살표로 자리를 옮기고 엔터로 골라요.</p>
       <ol className={css.slotItems}>
         {ctx.map.slots.map(slot => (
           <li key={slot.id}>
             <button
-              type="button" className={css.slotButton} aria-current={slot.id === selectedSlotId ? 'true' : undefined}
+              type="button"
+              className={css.slotButton}
+              aria-current={slot.id === selectedSlotId ? 'true' : undefined}
               // 고르면 목록을 접고 관리 패널로 넘어간다(화면이 포커스를 옮긴다).
-              onClick={e => { e.currentTarget.closest('details')?.removeAttribute('open'); onPick(slot.id); }}
+              onClick={e => {
+                e.currentTarget.closest('details')?.removeAttribute('open');
+                onPick(slot.id);
+              }}
             >
               {slotDescription(ctx, view, slot.id)}
             </button>

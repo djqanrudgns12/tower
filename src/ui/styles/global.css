@@ -1,29 +1,70 @@
 /* 색·간격·반경 토큰(PRD §12.6, §12.8). 토큰 밖 색·그라데이션·블러를 쓰지 않는다. */
 :root {
-  --ink: #29231e;
-  --ink-soft: #5c5148;
-  --parchment: #f5ebd4;
-  --paper: #fbf5e6;
-  --wood: #754b2d;
+  --ink: #261f1a;
+  --ink-soft: #574a3f;
+  --parchment: #f6edd9;
+  --parchment-hover: #fbf4e4;
+  --paper: #fcf7eb;
+  --paper-hover: #fffdf7;
+  --well: #e7d9bc;
+  --well-hover: #efe2c8;
+  --well-border: #8c6d49;
+  --wood: #6b4225;
   --wood-light: #9a6a42;
-  --edge: #3a291e;
+  --wood-dark: #4a2d18;
+  --wood-vault: #2e1b10;
+  --wood-vault-hover: #3b2416;
+  --wood-collar: #8f5d38;
+  --edge: #362419;
   --stone: #d8d1c4;
-  --blue: #245b88;
-  --green: #315f36;
+  --cream-ink: #fbf3e4;
+  --cream-muted: #dfd1b8;
+  --blue: #235885;
+  --blue-light: #8fd0ff;
+  --green: #2d6336;
+  --green-hover: #34703e;
+  --green-surface: #eaf5ec;
   --danger: #a3352b;
-  --gold: #f4d35e;
-  --page: #e9dcbd;
+  --danger-hover: #b53d32;
+  --danger-light: #ffb8b0;
+  --danger-surface: #fcf3f1;
+  --gold: #ffd859;
+  --amber-burn: #4f240e;
+  --page: #e6d8b8;
   --map-grass: #7cbc4c;
   --map-path: #dcb878;
   --map-stone: #b3ada3;
   --map-leaf: #3f8f3a;
 
+  /* 방향 2-A: 왕국 참나무 작전실 확장 토큰(그라데이션·블러 미사용, PRD §12.8 준수) */
+  --oak-world-fallback: #5d7b41;
+  --oak-plaque-bg: #3b2719;
+  --oak-plaque-cell: #2b1c11;
+  --oak-plaque-border: #8c5c38;
+  --oak-plaque-ink: #fff6e3;
+  --oak-plaque-muted: #dfccb0;
+  --oak-plaque-gold: #f7c96f;
+  --oak-frame-outer: #754b2d;
+  --oak-frame-edge: #38261a;
+  --oak-board-bg: #f6ecd6;
+  --oak-board-molding: #decba8;
+  --oak-inset-bg: #efe0c2;
+  --oak-inset-border: #cbb289;
+  --oak-card-bg: #fbf5e8;
+  --oak-cta-green: #2e6234;
+  --oak-cta-green-hover: #25512a;
+  --oak-amber-accent: #7a4c14;
+  --oak-rank-gold: #d89b28;
+  --oak-rank-silver: #a7b0b8;
+  --oak-rank-bronze: #c98352;
+  --shadow-board: 0 4px 0 rgba(35, 22, 13, 0.28);
+
   --r-input: 4px;
   --r-panel: 8px;
   --s1: 4px; --s2: 8px; --s3: 12px; --s4: 16px; --s5: 24px;
   --touch: 44px;
-  --shadow: 0 2px 0 rgba(58, 41, 30, 0.35);
-  --shadow-pressed: 0 1px 0 rgba(58, 41, 30, 0.35);
+  --shadow: 0 2px 0 var(--edge);
+  --shadow-pressed: none;
   --q-font: 18px;
   --ui-font: 15px;
   --font: 'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Noto Sans KR', 'Malgun Gothic', sans-serif;
@@ -41,6 +82,8 @@ body {
   font-size: var(--ui-font);
   line-height: 1.5;
   font-variant-numeric: tabular-nums;
+  word-break: keep-all;
+  -webkit-font-smoothing: antialiased;
   -webkit-text-size-adjust: 100%;
 }
 button, input { font: inherit; color: inherit; }
