@@ -128,3 +128,14 @@ describe('준비판 다음 웨이브 미리보기', () => {
     }
   });
 });
+
+describe('버닝 표시(PRD §5)', () => {
+  it('연속 정답 보석은 조건 수마다 한 바퀴 돌고 버닝 중엔 가득 찬다', async () => {
+    const { streakGems } = await import('../../../src/ui/game/Hud');
+    const rule = { streak: BALANCE.burning.streak };
+    expect(streakGems({ burningSecondsLeft: 0, battleStreak: 0 }, rule)).toEqual({ burning: false, lit: 0 });
+    expect(streakGems({ burningSecondsLeft: 0, battleStreak: rule.streak - 1 }, rule).lit).toBe(rule.streak - 1);
+    expect(streakGems({ burningSecondsLeft: 0, battleStreak: rule.streak + 1 }, rule).lit).toBe(1);
+    expect(streakGems({ burningSecondsLeft: 5, battleStreak: rule.streak }, rule)).toEqual({ burning: true, lit: rule.streak });
+  });
+});

@@ -19,10 +19,33 @@ export interface Layout {
 }
 
 const L = DEFAULTS.layout;
-const MAX_FRAME_W = 1560;
-const RAIL_MIN_DESKTOP = 308;
-const RAIL_MIN_TABLET = 272;
-const RAIL_MAX = 346;
+
+/**
+ * v3 레이아웃 계약(가변 레일·수직선 잠금). 화면 코드(TS·CSS)는 숨은 숫자 대신 이 표만 읽는다.
+ * 계약 JSON(product.defaults layout 블록)의 옛 값(frameMaxPx 1440, railWidthPx 224, twoByTwoMinCellWidthPx 160)과
+ * 다른 값은 이 표가 우선한다. JSON 블록 갱신은 계약 소유자가 이 표를 옮겨 적는다.
+ */
+export const LAYOUT_V3 = {
+  frameMaxPx: 1560,
+  rail: {
+    minDesktopPx: 308,
+    minTabletPx: 272,
+    maxPx: 346,
+    /** 이 폭에서 데스크톱 최소폭, 아래 폭에서 태블릿 최소폭. 사이는 선형으로 이어 칸 크기가 끊기지 않는다. */
+    desktopFromWidthPx: 1160,
+    tabletUpToWidthPx: 1024,
+  },
+  /** 하단 판의 바깥 테두리 + 안쪽 여백. 하단 오른쪽 열 = 레일 폭 − 이 값(상·하단 수직선 0.0px 잠금). */
+  seamInsetPx: 16,
+  optionGrid: { twoByTwoMinCellWidthPx: 200, twoByTwoMaxLines: 2 },
+} as const;
+
+/** 레일 최소폭: 1024px 이하 272px, 1160px 이상 308px, 사이는 선형(폭이 1px 늘 때 칸이 줄어드는 불연속 없음). */
+export function railMinWidth(W: number): number {
+  const r = LAYOUT_V3.rail;
+  const t = (W - r.tabletUpToWidthPx) / (r.desktopFromWidthPx - r.tabletUpToWidthPx);
+  return r.minTabletPx + (r.minDesktopPx - r.minTabletPx) * Math.max(0, Math.min(1, t));
+}
 
 export type FontScaleKey = keyof typeof L.questionFontExtraPx;
 
@@ -34,13 +57,13 @@ export type FontScaleKey = keyof typeof L.questionFontExtraPx;
 export function computeLayout(W: number, H: number, coarse: boolean, font: FontScaleKey = 'base'): Layout {
   const phone = W < L.outerPaddingPx.phoneBelowWidthPx;
   const pad = phone ? L.outerPaddingPx.phone : L.outerPaddingPx.default;
-  const effW = Math.min(W, MAX_FRAME_W);
+  const effW = Math.min(W, LAYOUT_V3.frameMaxPx);
   const rawInnerW = Math.max(200, W - 2 * pad);
   const innerW = Math.max(200, effW - 2 * pad);
   const innerH = Math.max(200, H - 2 * pad);
   const R = L.modes.R;
   const S = L.modes.S;
-  const minRailW = W < 1160 ? RAIL_MIN_TABLET : RAIL_MIN_DESKTOP;
+  const minRailW = railMinWidth(W);
   const q = phone ? 300 : R.questionBaseHeightPx + L.questionFontExtraPx[font];
   const cRMode = Math.min((rawInnerW - minRailW - R.railGapPx) / 15, (innerH - R.verticalGapPx - q) / 9);
   const cSMode = Math.min(rawInnerW / 15, (innerH - S.hudHeightPx - 3 * S.verticalGapPx - S.toolbarHeightPx - q) / 9);
@@ -50,7 +73,7 @@ export function computeLayout(W: number, H: number, coarse: boolean, font: FontS
   const cell = Math.max(10, Math.floor((mode === 'R' ? cR : phone || cSfit < 24 ? innerW / 15 : cSfit) * 10) / 10);
   const mapW = Math.floor(cell * 15);
   const mapH = Math.floor(cell * 9);
-  const railW = mode === 'R' ? Math.max(minRailW, Math.min(RAIL_MAX, innerW - mapW - R.railGapPx)) : innerW;
+  const railW = mode === 'R' ? Math.floor(Math.max(minRailW, Math.min(LAYOUT_V3.rail.maxPx, innerW - mapW - R.railGapPx))) : innerW;
   return {
     mode,
     cell,

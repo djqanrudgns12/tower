@@ -12,18 +12,20 @@ interface Props {
   icons: Record<string, string>;
   /** 강화하면 바뀌는 막대를 옅게 미리 보인다. */
   next?: { level: number; form: FormId } | null;
+  /** 낮은 화면(압축 레일): 초상화를 줄이고 간격을 좁힌다. 정보는 그대로다. */
+  compact?: boolean;
 }
 
 const ICON: Record<StatKey, typeof StatPowerIcon> = { power: StatPowerIcon, speed: StatSpeedIcon, range: StatRangeIcon };
 
 /** 고른 타워(또는 골라 둔 종류)의 초상화·레벨·능력치 막대. 문장 없이 아이콘·막대·숫자만 보인다. */
-export function TowerDetail({ balance, type, level, form, icons, next = null }: Props) {
+export function TowerDetail({ balance, type, level, form, icons, next = null, compact = false }: Props) {
   const bars = statBars(balance, type, level, form, next);
   const info = formInfo(balance, type, form);
   return (
-    <section className={css.detail} aria-label={`${balance.towers[type].label} 능력치`}>
+    <section className={css.detail} data-compact={compact || undefined} aria-label={`${balance.towers[type].label} 능력치`}>
       <div className={css.head}>
-        <TowerShieldPortrait type={type} icons={icons} size={56} />
+        <TowerShieldPortrait type={type} icons={icons} size={compact ? 40 : 56} />
         <div className={css.title}>
           <span className={css.name}>{balance.towers[type].label}</span>
           <span className={css.tags}>

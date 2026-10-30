@@ -98,7 +98,7 @@
 
 .seamR {
   padding: var(--s3);
-  grid-template-columns: minmax(0, 1fr) calc(var(--rail-w, 308px) - 16px);
+  grid-template-columns: minmax(0, 1fr) calc(var(--rail-w, 308px) - var(--seam-inset, 16px));
   column-gap: var(--s3);
   min-height: var(--q-h, 172px);
 }
@@ -411,4 +411,14 @@
   font-size: 16px;
   font-weight: 800;
   color: var(--ink);
+}
+
+/* 휴대폰: 설치 자리 목록은 키보드·스위치 사용자의 보조 경로라, 포커스가 닿거나 펼쳤을 때만 자리를 차지한다(문제판이 첫 화면에 들어오게). */
+.modeS .slotList:not([open]):not(:focus-within) {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
 }

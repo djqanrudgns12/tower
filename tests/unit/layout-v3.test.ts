@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { selectView, viewKey } from '../../src/application/view';
-import { computeLayout } from '../../src/ui/useLayout';
+import { computeLayout, LAYOUT_V3, railMinWidth } from '../../src/ui/useLayout';
 import { newRun } from './helpers';
 
 describe('시안 1 v3 가변 레일·수직선 잠금 레이아웃 계산(computeLayout)', () => {
@@ -41,7 +41,7 @@ describe('시안 1 v3 가변 레일·수직선 잠금 레이아웃 계산(comput
     expect(l.mapW + 12 + l.railW).toBeLessThanOrEqual(1024 - 2 * l.pad);
   });
 
-  it('모든 R 모드 해상도에서 상·하단 수직선 잠금 수학식 오차가 정확히 0px이다', () => {
+  it('레일 폭은 계약 표(LAYOUT_V3)의 범위 안의 정수이고, 하단 오른쪽 열 폭(레일 − 잠금 여백)이 양수다', () => {
     for (const [w, h] of [
       [1920, 1080],
       [1600, 960],
@@ -53,14 +53,23 @@ describe('시안 1 v3 가변 레일·수직선 잠금 레이아웃 계산(comput
     ] as const) {
       const l = computeLayout(w, h, false, 'base');
       expect(l.mode).toBe('R');
-      const totalGridW = l.mapW + 12 + l.railW;
-      // 하단 보드 바깥 테두리(4px) + 안쪽 여백(12px) = 좌우 각 16px
-      const col2W = l.railW - 16;
-      const col1W = totalGridW - 32 - 12 - col2W;
-      const bottomLeftColRightEdge = 16 + col1W;
-      const bottomRightColLeftEdge = bottomLeftColRightEdge + 12;
-      expect(bottomLeftColRightEdge).toBe(l.mapW);
-      expect(bottomRightColLeftEdge).toBe(l.mapW + 12);
+      expect(Number.isInteger(l.railW)).toBe(true);
+      expect(l.railW).toBeGreaterThanOrEqual(LAYOUT_V3.rail.minTabletPx);
+      expect(l.railW).toBeLessThanOrEqual(LAYOUT_V3.rail.maxPx);
+      expect(l.railW - LAYOUT_V3.seamInsetPx).toBeGreaterThan(200);
+      expect(l.mapW + 12 + l.railW).toBeLessThanOrEqual(Math.min(w, LAYOUT_V3.frameMaxPx) - 2 * l.pad);
+    }
+  });
+
+  it('레일 최소폭은 1024px 이하 272, 1160px 이상 308이고 사이는 이어져서, 폭이 늘 때 칸이 줄지 않는다', () => {
+    expect([railMinWidth(1000), railMinWidth(1024), railMinWidth(1160), railMinWidth(1500)]).toEqual([
+      LAYOUT_V3.rail.minTabletPx, LAYOUT_V3.rail.minTabletPx, LAYOUT_V3.rail.minDesktopPx, LAYOUT_V3.rail.minDesktopPx,
+    ]);
+    let prev = 0;
+    for (let w = 1100; w <= 1220; w++) {
+      const l = computeLayout(w, 800, false, 'base');
+      expect(l.cell).toBeGreaterThanOrEqual(prev);
+      prev = l.cell;
     }
   });
 
@@ -94,7 +103,7 @@ describe('시안 1 v3 가변 레일·수직선 잠금 레이아웃 계산(comput
 });
 
 describe('GameView 파생 지표', () => {
-  it('난이도별 정답·오답 보상 예고(stakes), 연속 정답(battleStreak), 처치 점수 한도를 노출한다', () => {
+  it('난이도별 정답·오답 보상 예고(stakes)와 연속 정답(battleStreak)을 노출한다', () => {
     const { ctx, s } = newRun();
     const v0 = selectView(ctx, s);
     expect(v0.stakes).toEqual({
@@ -103,7 +112,6 @@ describe('GameView 파생 지표', () => {
       wrongPt: ctx.difficulty.wrongPt,
     });
     expect(v0.battleStreak).toBe(0);
-    expect(v0.waveKillPtCap).toBe(ctx.difficulty.waveKillPtCap);
 
     const k0 = viewKey(s);
     s.quiz.battleStreak = 2;

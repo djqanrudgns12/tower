@@ -11,7 +11,7 @@ import { SoundDirector } from '../audio/sound';
 import { commandErrorText } from '../copy';
 import { PlayArrowIcon, TowerShieldPortrait, WaveFlagIcon } from '../icons/GameIcons';
 import kit from '../kit.module.css';
-import { useLayout } from '../useLayout';
+import { LAYOUT_V3, useLayout } from '../useLayout';
 import { Armory } from './Armory';
 import { CoinFlight, coinsFor, type Flight } from './CoinFlight';
 import { EvolveCard } from './EvolveCard';
@@ -421,9 +421,9 @@ export function GameScreen({
     const evolving = evolutionChoices(b, selectedTower) !== null;
     const preview = selection.previewBranch as FormId | null;
     const next = cost === null ? null : evolving ? (preview ? { level: selectedTower.level + 1, form: preview } : null) : { level: selectedTower.level + 1, form };
-    return <TowerDetail balance={b} type={selectedTower.type} level={selectedTower.level} form={form} icons={icons} next={next} />;
+    return <TowerDetail balance={b} type={selectedTower.type} level={selectedTower.level} form={form} icons={icons} next={next} compact={layout.compactRail} />;
   })() : selection.previewType ? (
-    <TowerDetail balance={b} type={selection.previewType} level={1} form="base" icons={icons} />
+    <TowerDetail balance={b} type={selection.previewType} level={1} form="base" icons={icons} compact={layout.compactRail} />
   ) : null;
 
   const armory = (variant: 'rail' | 'strip') => (
@@ -519,6 +519,7 @@ export function GameScreen({
         stakes={view.stakes}
         wide={layout.wideQuestion}
         seamLock={layout.mode === 'R'}
+        twoByTwoMinPx={LAYOUT_V3.optionGrid.twoByTwoMinCellWidthPx}
         showKeyHints={showKeyHints}
         onAnswer={onAnswer}
         onSkip={onSkip}
@@ -598,6 +599,7 @@ export function GameScreen({
         '--map-w': `${layout.mapW}px`,
         '--rail-w': `${layout.railW}px`,
         '--q-h': `${layout.questionH}px`,
+        '--seam-inset': `${LAYOUT_V3.seamInsetPx}px`,
       } as CSSProperties)
     : { padding: layout.pad };
 
@@ -703,6 +705,7 @@ export function GameScreen({
             controller.dispatch({ type: 'quit' });
           }}
           onLeaveUnsaved={() => onExit('abandon')}
+          restoreFocus={() => document.querySelector<HTMLElement>('main button[aria-label="일시정지"]')?.focus()}
         />
       )}
     </>

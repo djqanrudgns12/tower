@@ -48,7 +48,7 @@ export function Armory({ balance, towers, gold, armed, icons, variant, fresh, on
             onClick={() => { if (takeClick()) onArm(type); }}
           >
             <span className={css.well}>
-              <TowerShieldPortrait type={type} icons={icons} size={variant === 'rail' ? 64 : 44} bare />
+              <TowerShieldPortrait type={type} icons={icons} size={variant === 'rail' ? 64 : 40} bare />
             </span>
             <span className={css.price}>
               <GoldCoinIcon size={14} />

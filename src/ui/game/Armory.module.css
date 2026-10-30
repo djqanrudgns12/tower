@@ -9,7 +9,7 @@
   display: flex;
   gap: var(--s2);
   overflow-x: auto;
-  padding: var(--s1) 0;
+  padding: 0;
   scrollbar-width: none;
 }
 
@@ -41,9 +41,10 @@
 
 .strip .socket {
   flex: none;
-  width: 64px;
-  gap: 2px;
-  padding: var(--s1) 2px 2px;
+  grid-auto-flow: column;
+  align-items: center;
+  gap: 6px;
+  padding: 2px var(--s2) 2px 2px;
   touch-action: pan-x;
 }
 
@@ -58,7 +59,7 @@
   box-shadow: var(--well-inset);
 }
 
-.strip .well { max-width: 48px; }
+.strip .well { width: 44px; max-width: 44px; }
 
 .price {
   display: inline-flex;

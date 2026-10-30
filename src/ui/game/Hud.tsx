@@ -23,6 +23,12 @@ interface Props {
   onPause(): void;
 }
 
+/** 연속 정답 보석: 조건 수(balance.burning.streak)마다 한 바퀴 돌고, 버닝 중에는 가득 찬다(PRD §5). */
+export function streakGems(view: Pick<GameView, 'burningSecondsLeft' | 'battleStreak'>, rule: Pick<Balance['burning'], 'streak'>) {
+  const burning = view.burningSecondsLeft > 0;
+  return { burning, lit: burning ? rule.streak : view.battleStreak % rule.streak };
+}
+
 /**
  * 상단 상태 바(ui-rules-v2 §1, 41번 원화): 호두나무 판 한 장에 성문 막대, 골드·점수·웨이브, 연속 정답 보석, 일시정지.
  * 아이콘+숫자만 보인다. 자세한 뜻은 화면 읽기 이름과 길게 누르기(제목)로 읽힌다.
@@ -30,9 +36,7 @@ interface Props {
 export function Hud({ view, burning: rule, mode, compactRail = false, recentDelta = null, goldRef, reducedMotion = false, onPause }: Props) {
   const ratio = view.gateMaxHp ? view.gateHp / view.gateMaxHp : 0;
   const waveNo = Math.max(1, view.wave);
-  const burning = view.burningSecondsLeft > 0;
-  // 연속 정답 보석: 조건 수(balance.burning.streak)마다 한 바퀴. 버닝 중에는 가득 찬다(PRD §5).
-  const lit = burning ? rule.streak : view.battleStreak % rule.streak;
+  const { burning, lit } = streakGems(view, rule);
   const speed = `공격 속도 +${rule.attackSpeedBP / 100}%`;
   // 성문 피해: 막대 테두리가 한 번 붉게 깜빡인다(ui-rules-v2 §5). 이전 값과 비교해 렌더 중에 센다.
   const [gate, setGate] = useState({ hp: view.gateHp, hits: 0 });

@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useLayoutEffect, useRef, useState } from 'react';
 import type { PauseReason } from '../../domain/types';
 import type { FontScale } from '../../application/session';
 import { PAUSE_COPY, RENDER_WAIT } from '../copy';
@@ -20,6 +20,8 @@ interface Props {
   onRetrySave?(): Promise<void>;
   onQuit(): void;
   onLeaveUnsaved(): void;
+  /** 연 단추를 찾지 못했을 때(정지 층이 열리며 화면이 비활성화돼 포커스가 풀린 경우) 돌아갈 곳. */
+  restoreFocus?(): void;
 }
 
 /** 불투명 정지층. 문제·보기·해설은 이 층이 열린 동안 DOM에서 빠진다(PRD §3.6, §12.7). */
@@ -31,14 +33,32 @@ export function PauseOverlay(p: Props) {
   const blocked = p.reasons.includes('STORAGE') || p.reasons.includes('OWNERSHIP') || p.reasons.includes('NUMERIC_LIMIT');
   const main = blocked ? p.reasons.find(r => r === 'STORAGE' || r === 'OWNERSHIP' || r === 'NUMERIC_LIMIT')! : p.reasons[p.reasons.length - 1] ?? 'USER';
 
-  useEffect(() => {
+  // 열 때 한 번만 첫 단추에 포커스를 주고, 닫으면 연 곳으로 돌려준다. 이유·글자 크기가 바뀌어도 다시 돌지 않는다.
+  const box = useRef<HTMLDivElement>(null);
+  const restore = useRef(p.restoreFocus);
+  useLayoutEffect(() => { restore.current = p.restoreFocus; });
+  useLayoutEffect(() => {
     const previous = document.activeElement as HTMLElement | null;
     first.current?.focus();
-    return () => previous?.focus?.();
+    // 닫힐 때 정지 층이 먼저 빠지고 화면의 inert가 그 뒤에 풀리므로, 커밋이 끝난 다음 돌려준다.
+    return () => queueMicrotask(() => {
+      if (previous?.isConnected && previous !== document.body) previous.focus();
+      if (document.activeElement === document.body || !document.activeElement) restore.current?.();
+    });
   }, []);
 
+  /** Tab은 정지 카드 안에서만 돈다. */
+  const trap = (e: React.KeyboardEvent) => {
+    if (e.key !== 'Tab') return;
+    const items = [...(box.current?.querySelectorAll<HTMLElement>('button:not([disabled]), input:not([disabled])') ?? [])];
+    if (items.length === 0) return;
+    const head = items[0]!, tail = items[items.length - 1]!;
+    if (e.shiftKey && document.activeElement === head) { e.preventDefault(); tail.focus(); }
+    else if (!e.shiftKey && document.activeElement === tail) { e.preventDefault(); head.focus(); }
+  };
+
   return (
-    <div className={css.layer} role="dialog" aria-modal="true" aria-labelledby="pause-title">
+    <div ref={box} className={css.layer} role="dialog" aria-modal="true" aria-labelledby="pause-title" onKeyDown={trap}>
       <div className={css.box}>
         <h2 id="pause-title" className={css.title}>{blocked ? '잠깐만요' : '일시정지'}</h2>
         <p>{p.renderLost && !blocked ? RENDER_WAIT : PAUSE_COPY[main]}</p>

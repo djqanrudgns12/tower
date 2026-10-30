@@ -101,7 +101,7 @@ export function QuestionPanel({
   const skipNoteId = `skip-note-${question.encounterId}`;
 
   const feedback = (
-    <div className={css.feedback} data-tone={tone} aria-live="polite">
+    <div className={css.feedback} data-feedback data-tone={tone} aria-live="polite">
       {!fb && !answered && (
         <>
           <div className={css.stakes}>

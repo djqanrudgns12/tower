@@ -15,7 +15,7 @@
 /* R 모드 수직선 잠금: 바깥 테두리(4px) + 안쪽 여백(12px) = 16px을 빼서 [전장 | 우측 레일] 수직선과 0.0px 일치 */
 .seamR {
   padding: var(--s3);
-  grid-template-columns: minmax(0, 1fr) calc(var(--rail-w, 308px) - 16px);
+  grid-template-columns: minmax(0, 1fr) calc(var(--rail-w, 308px) - var(--seam-inset, 16px));
   column-gap: var(--s3);
   min-height: var(--q-h, 172px);
 }
@@ -197,7 +197,7 @@
 }
 
 .narrow .feedback {
-  height: 104px;
+  height: 128px;
   padding: var(--s2);
 }
 

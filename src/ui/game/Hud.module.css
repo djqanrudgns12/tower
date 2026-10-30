@@ -203,3 +203,16 @@
 @media (prefers-reduced-motion: reduce) {
   .hit { animation-duration: 420ms !important; }
 }
+
+/* 휴대폰 상단 바: 일시정지 키가 두 줄(성문 줄·숫자 줄)에 걸쳐 오른쪽에 선다. 높이를 줄여 문제판이 첫 화면에 들어오게 한다. */
+.bar {
+  grid-template-columns: minmax(0, 1fr) auto;
+  column-gap: var(--s3);
+  row-gap: 2px;
+  align-items: center;
+}
+
+.bar .top { display: contents; }
+.bar .gate { grid-column: 1; grid-row: 1; }
+.bar .stats { grid-column: 1; grid-row: 2; min-height: 24px; column-gap: var(--s3); }
+.bar .pause { grid-column: 2; grid-row: 1 / 3; }
