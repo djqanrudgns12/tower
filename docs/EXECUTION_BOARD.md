@@ -1,6 +1,6 @@
 # 현재 작업 게시판
 
-기준일: 2026-10-29 · 현재 구간: **P1 첫 완성 구간 — 3학년 공개 문제은행 51문항(P1 목표 30~50 충족), 원화 27장, 소리, G2 시험 통과(실기기 제외)** · 총괄: Claude Opus 5.5(Claude Code)
+기준일: 2026-10-30 · 현재 구간: **P1 첫 완성 구간 완료(실기기 제외) → CORE-P2 진행 중.** 3학년 공개 은행 51문항, 연습 은행 공개, 원화 40장(27 `integrated_pass` · 13 `visual_pass`), S11 기준 ② 통과, 깃발 기준 ① 사용자 결정 대기 · 총괄: Claude Opus 5.5(Claude Code) · 다른 컴퓨터로 옮길 때는 [인계서](HANDOFF.md) §1·§2·§5
 
 기준: 브랜치 `p1/intake-round1`(origin에 push함, `main`에는 아직 병합 안 함). 1차 수합은 `bc3ee07`, 밸런스 `0.4-candidate`는 `ea7ffe4`. 2차(QR-001·QR-002·RIG-001)는 집 Mac 작업 폴더(`bc3ee07`)에서 돌았고 2026-10-29 수합했다. 3차 ART-002는 `ea7ffe4`를 `baseCommit`으로 요청서를 쓰고 집 Mac에 작업 폴더를 만들었다(요청서는 2차 수합 커밋에 들어갔고, 작업 폴더에는 복사본을 둠). 붙여 넣을 프롬프트는 [발행용 프롬프트](work-packages/DISPATCH.md)에 있다.
 
@@ -21,11 +21,11 @@
 | QR-PRACTICE | **완료**(2026-10-30) | Codex·Claude 검토 | 연습 전용 4문항 공동검수 통과(QP-001 3문항, QP-002 1문항 수정본). `practice.json`은 공개본 `pub-c5d049f5a4f3` | 공개 전 |
 | [ART-002](work-packages/ART-002/RETURN.md) | **ACCEPTED** — 11장 HOLD 0, 실제 전투(1440×900)에서 지면 조립으로 확인해 모두 `integrated_pass`. 총괄이 agent-bridge로 Codex에 세 번 나눠 전달(15분 상한) | Codex 이미지 | `asset-source/incoming/ART-002/**` — 정원 지면 질감·설치 받침·작은 장식 11장 | ART-SAMPLE-001 ✓ |
 | CORE-P2 | **진행 중**(2026-10-29) — P2-1 엔진, P2-2 분기 14개, P2-3 렌더러 기반, P2-4 S11 타워 효율(`npm run simulate:towers`) 완료. 밸런스 `0.4.2-candidate`(마법탑 95골드·16, 창병 70골드·7). **깃발은 PRD §7.5 ① 미달(0.30) — 사용자 결정 대기**. S11 기준 ②(10종 전략) 네 난이도 통과(2026-10-30, 가상 플레이어 수정). ART-003 `visual_pass` 인수. 남은 것: P2 타워 게임에서 열기·전투 확인 뒤 `integrated_pass` | 총괄 | `src/domain/**`, `src/game/**`, `src/ui/game/**`, `tools/sim/**` | G2 ✓(실기기 제외) |
-| [QP-001](work-packages/QP-001/RETURN.md) / [QP-002](work-packages/QP-002/RETURN.md) | **3/4 승인, 0004 마지막 수정 검토 대기** — QP-002에서 0004(빠르다)를 바른 사용 유형으로 고침(정답 ‘강아지는 걸음이 빨라요.’). QR-009·010을 보낸다 | Argon 4·Codex·Claude | `content-source/batches/QP-00{1,2}/**` | — |
+| [QP-001](work-packages/QP-001/RETURN.md) / [QP-002](work-packages/QP-002/RETURN.md) | **ACCEPTED**(2026-10-30) — 4/4 승인. QP-001 0001~0003, QP-002에서 0004(빠르다)를 바른 사용 유형으로 고친 판이 QR-009(Codex)·QR-010(Claude)과 총괄 해설 대조를 통과. 연습 은행 공개본 `pub-c5d049f5a4f3` | Argon 4·Codex·Claude | `content-source/batches/QP-00{1,2}/**` | — |
 | [ART-003](work-packages/ART-003/RETURN.md) | **수합(visual_pass)** — P2 타워 7종 13장, HOLD 0, 10종 비교판에서 실루엣 구별. P2 타워를 게임에서 열 때 전투로 확인해 `integrated_pass`로 올린다(지금은 게임이 싣지 않음) | Codex 이미지 | `asset-source/incoming/ART-003/**` | ART-002 ✓ |
 
 Q20-002의 소유 경로(`content-source/batches/Q20-002/**`)는 ART-002와 겹치지 않는다. 반환되면 QR(Codex·Claude)을 다시 돌린다. ART-002의 소유 경로(`asset-source/incoming/ART-002/**`)는 2차 수합 대상(`src/game/animation/**`, `content-source/reviews/**`)이나 총괄이 수합 때 고칠 렌더러(`src/game/**`)와 겹치지 않는다. QR-001·QR-002는 정답 키가 있는 `content-source/batches/**`를 뺀 작업 폴더에서 돌린다(발행용 프롬프트의 sparse checkout). 총괄만 공유 schema/package/lockfile/전역 토큰/라우터/인덱스를 수정한다. ACCEPTED는 총괄이 검사 후 부여한다.
 
 1차 작업 폴더와 `wp/*` 브랜치는 반환물이 본 저장소와 같음을 확인한 뒤 지웠다. UI-AUDIT-001의 전후 캡처와 원래 CSS 패치는 [UI-AUDIT-001 폴더](work-packages/UI-AUDIT-001/)의 `shots/`·`returned-css.patch`로 보존했다. RIG-001이 도는 동안 총괄은 `src/game/animation/**`를 고치지 않는다.
 
-측정된 성과(2026-10-29, 이 작업 트리): `npm run verify`(타입·ESLint, 단위·속성 시험, PRD 검산 48개, 문항·에셋 manifest 검사, 승인 레지스트리 재계산 대조), Playwright e2e 7개(실제 원화·키보드·문맥 손실·연습 판 포함), 1440×900 실제 전투 연속 캡처(보행·피격·감속). 배포 빌드는 2026-10-28 결과(JS gzip 약 504KB)이고 이번에는 다시 돌리지 않았다. 실기기·장시간 성능·학생 실측·배포는 미실행. 최신 결과는 [인계서](HANDOFF.md)의 검증 절을 따른다.
+측정된 성과(2026-10-30, 집 Mac): `npm run verify`(타입·ESLint, 단위·속성 시험 25파일 142개, PRD 검산, 문항·에셋 manifest 검사, 승인 레지스트리 재계산 대조), Playwright e2e 8개(실제 원화·저장 이어하기·키보드·문맥 손실·연습 판 포함), `npm run build` 성공(JS gzip 약 522KB), S11 기준 ② 네 난이도 통과. 1440×900 실제 전투 연속 캡처(보행·피격·감속)는 2026-10-29. 실기기·장시간 성능·학생 실측·배포는 미실행. 최신 결과는 [인계서](HANDOFF.md) §8을 따른다. 집 Mac의 작업 폴더 `../tower-wp/*` 7곳은 반환물이 본 저장소와 같음을 확인했고, 사용자 확인 뒤 지운다.
