@@ -13,7 +13,7 @@ import {
 } from '../../src/ui/screens/guide/guideModel';
 
 describe('사용 설명서 모델 및 전용 삽화 계약 (G03~G11, G15)', () => {
-  it('G03·G05·G06·G15: 정확히 4장·3행 이하·95자 이내이며 폐기 문구·느낌표·이모지·영문 라벨이 없다', () => {
+  it('G03·G05·G06·G15: 정확히 4장·3행 이하·95자 이내이며 저장·이어하기·연습 안내가 있고 느낌표·이모지·영문 라벨이 없다', () => {
     const chapters = buildGuideChapters();
     expect(chapters).toHaveLength(4);
     expect(chapters.map(c => c.id)).toEqual([...GUIDE_CHAPTER_IDS]);
@@ -49,8 +49,10 @@ describe('사용 설명서 모델 및 전용 삽화 계약 (G03~G11, G15)', () =
     }
 
     const joined = visibleTexts.join('\n');
-    // G03: 폐기된 저장/이어하기 문구 0건
-    expect(joined).not.toMatch(/저장하고 나가기|이어하/);
+    // G03: PRD §14.1·§14.2 저장 후 나가기·이어하기와 §12.2 첫 연습 판 안내가 있다.
+    expect(joined).toContain('저장하고 나가기');
+    expect(joined).toContain('이어하기');
+    expect(joined).toContain('연습 판');
     // G05: 핵심 최신 규칙 포함 확인
     expect(joined).toContain('모르겠어요');
     expect(joined).toContain('버닝');

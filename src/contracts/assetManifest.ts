@@ -14,7 +14,8 @@ export const assetEntrySchema = z.object({
   height: z.number().int().min(8).max(2048),
   originX: z.number().min(0).max(1),
   originY: z.number().min(0).max(1),
-  displayCells: z.number().positive().max(2),
+  /** 전장 표시 너비(칸). 지면 얼룩·랜드마크(연못)는 3칸까지 쓴다. */
+  displayCells: z.number().positive().max(3),
   muzzle: z.object({ x: z.number().int(), y: z.number().int() }).optional(),
   layer: z.enum(['body', 'weapon', 'shadow', 'frame', 'ground', 'decor', 'fx', 'ui']),
   frames: z.number().int().min(1).max(8).default(1),

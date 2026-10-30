@@ -17,6 +17,18 @@ export type VariantTag = (typeof VARIANT_TAGS)[number];
 export const DIALECT_REGIONS = ['강원', '경기', '경상', '전라', '충청', '제주', '공통'] as const;
 export type DialectRegion = (typeof DIALECT_REGIONS)[number];
 
+const difficultyGateRuleSchema = z.object({
+  allowedTiers: z.array(z.enum(DIFFICULTY_TIERS)).min(1),
+  allowedVariants: z.array(z.enum(VARIANT_TAGS)).min(1),
+});
+/** 계약 `questionSelection.difficultyGate`(PRD §9.1). 설명용 note 키는 버린다. */
+export const difficultyGateSchema = z.object({
+  Easy: difficultyGateRuleSchema,
+  Normal: difficultyGateRuleSchema,
+  Hard: difficultyGateRuleSchema,
+  Crazy: difficultyGateRuleSchema,
+});
+
 export const BANK_STATUSES = ['published', 'verified_candidate', 'dev_fixture'] as const;
 export type BankStatus = (typeof BANK_STATUSES)[number];
 

@@ -1,4 +1,12 @@
-import { gradeContent, RETRACTIONS, toRuntime, VERIFIED_GRADE_BANKS } from '../content';
+export { getPublicRecordNotice, subscribePublicRecordNotice } from '../persistence/auth';
+import { isRecordSharingEnabled, SETTINGS_CHANGED_EVENT } from '../persistence/settings';
+export { isRecordSharingEnabled } from '../persistence/settings';
+export function subscribeRecordSharing(listener: () => void): () => void {
+  window.addEventListener(SETTINGS_CHANGED_EVENT, listener);
+  window.addEventListener('storage', listener);
+  return () => { window.removeEventListener(SETTINGS_CHANGED_EVENT, listener); window.removeEventListener('storage', listener); };
+}
+import { gradeContent, RETRACTIONS, toRuntime } from '../content';
 import type { RetractionList } from '../contracts/questions';
 import {
   computeHonorPoints,
@@ -248,7 +256,7 @@ function loadRawStudyPool(): Promise<readonly StudyQuestionLike[]> {
   if (rawStudyPoolPromise) return rawStudyPoolPromise;
   rawStudyPoolPromise = Promise.resolve().then(() => {
     const byId = new Map<string, StudyQuestionLike>();
-    const orderedBanks = [...VERIFIED_GRADE_BANKS].sort((a, b) => {
+    const orderedBanks = [3,4,5,6].flatMap(g => { const bank = gradeContent(g).bank; return bank?.status === 'published' ? [bank] : []; }).sort((a, b) => {
       if (a.status !== b.status) return a.status === 'published' ? 1 : -1;
       return a.grade - b.grade;
     });
@@ -271,7 +279,7 @@ export function getCachedAllStudyCards(): readonly SteleCardItem[] | null {
 }
 
 /**
- * 공개 은행과 블라인드 검증 후보 은행(3~6학년)에 수록된 모든 검증 완료 낱말을 로드하여
+ * 공개 은행(3~6학년)에 수록된 낱말만 로드하여
  * 철회 문항을 배제한 뒤 학년·낱말 뜻 단위로 정제된 학습 카드 풀을 반환한다(미검수 초안 배제).
  */
 export async function loadAllStudyCards(
@@ -319,24 +327,22 @@ export function pickRandomInitialStudyIndex(count: number): number {
 }
 
 /**
- * 오늘의 낱말 공부: 등록된 모든 학년·수준 어휘를 철회 문항 배제 후 추출하고,
- * KST 일자 시드를 기준으로 다양한 학년·수준이 고르게 섞이도록 배치한다.
+ * 오늘의 낱말 공부: 선호 학년의 공개 어휘를 철회 문항 배제 후 추출하고,
+ * KST 일자 시드를 기준으로 수준이 섞이도록 배치한다.
  */
 export function selectDailySteleCards(
   preferredGrade: number = 3,
   now: Date = new Date(),
   retractions: RetractionList = RETRACTIONS,
 ): SteleCardItem[] {
-  const orderedGrades = [preferredGrade, 3, 4, 5, 6].filter(
-    (g, idx, arr) => g >= 3 && g <= 6 && arr.indexOf(g) === idx,
-  );
+  const orderedGrades = [preferredGrade >= 3 && preferredGrade <= 6 ? preferredGrade : 3];
   const dateKey = kstDateKey(now);
   const seenSenses = new Set<string>();
   const buckets = new Map<string, Array<{ card: SteleCardItem; score: number }>>();
 
   for (const g of orderedGrades) {
     const bank = gradeContent(g).bank;
-    if (!bank) continue;
+    if (!bank || bank.status !== 'published') continue;
     const runtime = toRuntime(bank, retractions);
     if (runtime.length === 0) continue;
 
@@ -613,6 +619,7 @@ export function createLobbyTelemetryStore(): LobbyTelemetryStore {
   };
   const listeners = new Set<() => void>();
   let debounceTimer: ReturnType<typeof setTimeout> | null = null;
+  let refreshSequence = 0;
 
   const emit = () => {
     for (const l of listeners) l();
@@ -624,9 +631,13 @@ export function createLobbyTelemetryStore(): LobbyTelemetryStore {
   };
 
   const refreshCounts = async (playerId: string) => {
+    const sequence = ++refreshSequence;
+    const sharing = isRecordSharingEnabled();
     const initial = await fetchInitialTelemetry(playerId);
+    // 이전 연결·이전 동의 상태의 늦은 응답은 최신 RPC 결과를 덮지 않는다.
+    if (sequence !== refreshSequence || sharing !== isRecordSharingEnabled()) return;
     setPatch({
-      status: snapshot.onlineNow !== null ? 'live' : initial.status,
+      status: sharing ? initial.status : 'disabled',
       todayPlays: initial.todayPlays,
       totalVisitors: initial.totalVisitors,
       totalPlays: initial.totalPlays,
@@ -650,11 +661,11 @@ export function createLobbyTelemetryStore(): LobbyTelemetryStore {
         if (!active) return;
         if (debounceTimer) clearTimeout(debounceTimer);
         if (snapshot.onlineNow === null || count === null) {
-          setPatch({ onlineNow: count, status: count !== null ? 'live' : snapshot.totalVisitors !== null ? 'live' : 'offline' });
+          setPatch({ onlineNow: count });
         } else {
           debounceTimer = setTimeout(() => {
             if (!active) return;
-            setPatch({ onlineNow: count, status: 'live' });
+            setPatch({ onlineNow: count });
           }, 1500);
         }
       });
@@ -668,6 +679,7 @@ export function createLobbyTelemetryStore(): LobbyTelemetryStore {
 
       return () => {
         active = false;
+        refreshSequence++;
         if (debounceTimer) clearTimeout(debounceTimer);
         window.removeEventListener('online', onOnline);
         disconnectPresence();

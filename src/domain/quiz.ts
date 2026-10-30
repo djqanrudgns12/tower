@@ -38,16 +38,14 @@ export function selectQuestion(ctx: GameContext, quiz: QuizState, phase: Encount
   const schedule = ctx.tierSchedule ?? DEFAULT_TIER_SCHEDULE[ctx.difficultyId ?? 'Normal'];
   const preferredTier = schedule[Math.max(0, quiz.nextEncounterId - 1) % schedule.length] ?? 'core';
 
-  const stages: Array<(id: string) => boolean> = [];
+  // 목표 심화 단계는 이번 주기에 남은 문항 안에서만 고른다. 없다고 큐를 다시 섞지 않는다(PRD §9.4 풀을 한 바퀴 쓴 뒤 섞기).
+  const stages: Array<{ allowed: (id: string) => boolean; reshuffle: boolean }> = [];
   if (distinctTiers.size > 1 && distinctTiers.has(preferredTier)) {
-    const preferredStage = (id: string) => tierOf(id) === preferredTier && baseStage0(id);
-    if (pool.some(id => ctx.questions.has(id) && (id !== last || pool.length <= 1) && preferredStage(id))) {
-      stages.push(preferredStage);
-    }
+    stages.push({ allowed: id => tierOf(id) === preferredTier && baseStage0(id), reshuffle: false });
   }
-  stages.push(baseStage0);
-  for (let k = 0; k <= quiz.recentSenses.length; k++) stages.push(stage(false, sensesAfter(k), allQuestions));
-  for (let k = 1; k <= quiz.recentQuestions.length; k++) stages.push(stage(false, new Set(), questionsAfter(k)));
+  stages.push({ allowed: baseStage0, reshuffle: true });
+  for (let k = 0; k <= quiz.recentSenses.length; k++) stages.push({ allowed: stage(false, sensesAfter(k), allQuestions), reshuffle: true });
+  for (let k = 1; k <= quiz.recentQuestions.length; k++) stages.push({ allowed: stage(false, new Set(), questionsAfter(k)), reshuffle: true });
 
   const newCycle = () => {
     quiz.queue = shuffle(rng, [...pool]);
@@ -64,9 +62,9 @@ export function selectQuestion(ctx: GameContext, quiz: QuizState, phase: Encount
     }
     return -1;
   };
-  for (const allowed of stages) {
+  for (const { allowed, reshuffle } of stages) {
     let i = scan(allowed);
-    if (i < 0 && quiz.cursor > 0 && pool.some(id => ctx.questions.has(id) && (id !== last || pool.length <= 1) && allowed(id))) {
+    if (i < 0 && reshuffle && quiz.cursor > 0 && pool.some(id => ctx.questions.has(id) && (id !== last || pool.length <= 1) && allowed(id))) {
       newCycle();
       i = scan(allowed);
     }

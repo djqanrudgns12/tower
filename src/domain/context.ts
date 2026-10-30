@@ -1,29 +1,25 @@
 import type { Balance, DifficultyConfig, DifficultyId } from '../contracts/balance';
 import type { MapConfig } from '../contracts/maps';
-import type { BankQuestion, DifficultyTier } from '../contracts/questions';
+import type { BankQuestion, DifficultyTier, VariantTag } from '../contracts/questions';
 import { buildPath, type PathGeometry } from './geometry';
 
 export interface RuntimeQuestion extends BankQuestion { readingLoad: number }
 
+/** 난이도별 출제 허용 범위(계약 `questionSelection.difficultyGate`). */
+export interface DifficultyGateRule { allowedTiers: readonly DifficultyTier[]; allowedVariants: readonly VariantTag[] }
+export type DifficultyGate = Record<DifficultyId, DifficultyGateRule>;
+
 /**
- * 4단계 난이도별 출제 허용 게이트.
- * - 쉬움(Easy): 기초(basic)·핵심(core) 표준어만 허용(심화 함정·도전·방언 원천 차단).
- * - 보통(Normal): 기초(basic)·핵심(core)·심화(advanced) 표준어·다의어·혼동쌍 허용(도전·방언 원천 차단).
- * - 어려움(Hard)·아주 어려움(Crazy): 핵심(core)·심화(advanced)·최상위 도전(challenge, 속담·관용구·지역 방언 포함) 허용(너무 쉬운 basic 제외).
+ * PRD §9.1: 쉬움·보통은 도전 단계와 관용구·속담·혼동 어휘·방언을 내지 않고, 어려움·아주 어려움만 낸다.
+ * 표지가 없는 문항(초기 3학년 공개 은행)은 핵심(core)·표준(standard)으로 본다.
  */
 export function isQuestionEligibleForDifficulty(
   q: Pick<BankQuestion, 'difficultyTier' | 'variantTag'>,
   difficulty: DifficultyId,
+  gate: DifficultyGate,
 ): boolean {
-  const tier = q.difficultyTier ?? 'core';
-  const tag = q.variantTag ?? 'standard';
-  if (difficulty === 'Easy') {
-    return (tier === 'basic' || tier === 'core') && tag !== 'dialect';
-  }
-  if (difficulty === 'Normal') {
-    return tier !== 'challenge' && tag !== 'dialect';
-  }
-  return tier !== 'basic';
+  const rule = gate[difficulty];
+  return rule.allowedTiers.includes(q.difficultyTier ?? 'core') && rule.allowedVariants.includes(q.variantTag ?? 'standard');
 }
 
 /** 한 판 동안 바뀌지 않는 콘텐츠 묶음. 상태(RunState)와 분리해 저장 크기를 줄인다. */

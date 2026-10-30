@@ -46,8 +46,6 @@ export interface GameView {
   pause: PauseReason[];
   burningSecondsLeft: number;
   battleStreak: number;
-  waveKillPtGranted: number;
-  waveKillPtCap: number;
   stakes: QuestionStakesView;
   prep: { done: number; target: number };
   question: QuestionView | null;
@@ -102,8 +100,6 @@ export function selectView(ctx: GameContext, s: RunState): GameView {
     gateHp: Math.max(0, s.gateHp), gateMaxHp: s.gateMaxHp, gold: s.gold, pt: s.pt, pause: [...s.pause],
     burningSecondsLeft: secondsLeft(s.burningUntilTick, s.tick),
     battleStreak: s.quiz.battleStreak,
-    waveKillPtGranted: s.waveKillPtGranted,
-    waveKillPtCap: ctx.difficulty.waveKillPtCap,
     stakes: {
       correctGold: ctx.difficulty.correctGold,
       correctPt: ctx.difficulty.correctPt,

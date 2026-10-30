@@ -2,10 +2,13 @@ import type { DifficultyId, EliteId, EnemyKind, FormId, TowerId } from '../contr
 import type { OptionId } from '../contracts/questions';
 
 // 저장·재개되는 전체 상태. 순수 JSON(숫자·문자열·배열·객체)만 쓴다(PRD §10.1, §14).
-/** 2: 타워 branch → form, 설치 취소 기한(리뉴얼 R2). 이전 버전의 진행 중 판은 이어가지 않는다(run.ts restoreRunState). */
+/** 2: 타워 branch → form, 설치 취소 기한(리뉴얼 R2). 이전 버전의 진행 중 판은 이어가지 않는다(application/session.ts resumeBlocker). */
 export const RUN_STATE_VERSION = 2;
-/** 0.5-candidate: P2 공격 프로필(즉발·연쇄·부채꼴·화상·깃발 오라, 물리 저항 무시)과 적 화상 상태(PRD §7.1, §20.2~20.3). */
-export const RULES_VERSION = '0.5-candidate';
+/**
+ * 0.5-candidate: P2 공격 프로필(즉발·연쇄·부채꼴·화상·깃발 오라, 물리 저항 무시)과 적 화상 상태(PRD §7.1, §20.2~20.3).
+ * 0.5.1-candidate: 난이도별 심화 단계 출제 순서와 한 바퀴 뒤 섞기(PRD §9.1, §9.4). 같은 시드의 출제 순서가 바뀌므로 옛 저장은 이어하지 않는다.
+ */
+export const RULES_VERSION = '0.5.1-candidate';
 
 export type Phase = 'PREP_QUIZ' | 'BUILD' | 'BATTLE' | 'WAVE_WRAPUP' | 'GAME_OVER';
 export type PauseReason = 'USER' | 'HIDDEN' | 'PERFORMANCE' | 'STORAGE' | 'CONTEXT_LOST' | 'OWNERSHIP' | 'RESTORED' | 'NUMERIC_LIMIT';

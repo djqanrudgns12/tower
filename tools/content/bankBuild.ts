@@ -10,8 +10,8 @@ import { bankFileSchema, bankQuestionSchema, type BankFile, type BankQuestion, t
 
 // 게시 은행 빌드(PRD §9.3, §10.2). 초안·Argon 자체 반박·Codex/Claude 독립 검토·총괄 해설 대조를
 // questionId/revision/contentHash로 조인해 승인 레지스트리를 만들고, 승인 문항만 published 은행으로 옮긴다.
-// 또한 새 문맥(freshContext=true) 독립 블라인드 검수(argon-blind.json) + 자체 반박 + 해설 대조 + 의미 검사를
-// 모두 통과한 확장 문항은 candidate-registry.json을 통해 verified_candidate 후보 은행으로 결정론적으로 빌드한다.
+// 공동검수 진행 중인 문항은 같은 revision의 외부 블라인드 검수 1건 이상 + 새 문맥 argon-blind + 자체 반박 + 해설 대조 + 의미 검사를
+// 통과하면 candidate-registry.json을 거쳐 verified_candidate 후보 은행으로 만든다. 후보 은행은 게임에 싣지 않는다.
 // 상태 필드를 손으로 바꾸거나 레지스트리를 고쳐서 은행을 만들 수 없다(tests/unit/bank-build.test.ts가 다시 계산해 대조).
 
 /** 정답 키 없이 푸는 독립 검토자. 파일 이름이 곧 역할이다(QR-001 요청서의 결과 경로). */
@@ -21,8 +21,10 @@ export const MIN_PUBLISHED = 30;
 /** 첫 연습 판 전용 문항(PRD §12.2). 학년 은행에 넣지 않고 연습 은행으로 따로 묶는다. 네 문항이 모두 승인되어야 바꾼다. */
 export const isPractice = (id: string) => /^g[3-6]-practice-/.test(id);
 export const PRACTICE_SIZE = 4;
-export const RULE = 'Argon 자체 반박에서 정답만 맞음 · Codex·Claude 독립 풀이가 정답과 같고 source·uniqueness·grade·language 모두 pass · 총괄 해설 대조 pass · 게시 형식·의미 검사 통과. 하나라도 어긋나면 그 revision은 격리한다.';
-export const CANDIDATE_RULE = '3모델 공동검수 승인 문항 또는 (Argon 자체 반박에서 정답만 맞음 · 존재하는 외부 블라인드 검수(codex/claude) 모두 pass · 새 문맥 argon-blind 독립 풀이가 정답과 같고 source·uniqueness·grade·language 모두 pass · 총괄 해설 대조 pass · 게시 형식·의미·엄격 검사 통과). 하나라도 어긋나면 격리한다.';
+export const RULE = 'Argon 자체 반박에서 정답만 맞음 · Codex·Claude 독립 풀이가 정답과 같고 source·uniqueness·grade·language 모두 pass · Claude 총괄 해설 대조 pass · 게시 형식·의미 검사 통과. 하나라도 어긋나면 그 revision은 격리한다.';
+export const CANDIDATE_RULE = '3모델 공동검수 승인 문항 또는 (Argon 자체 반박에서 정답만 맞음 · 같은 revision·contentHash의 외부 블라인드 검수(codex·claude) 1건 이상이 있고 있는 것은 모두 pass · 새 문맥 argon-blind 독립 풀이가 정답과 같고 source·uniqueness·grade·language 모두 pass · 해설 대조 pass · 게시 형식·의미·엄격 검사 통과). 하나라도 어긋나면 격리한다. 후보 은행은 제작 진척 확인용이며 게임에 싣지 않는다(PRD §9.3).';
+/** 총괄 해설 대조는 작성 모델(Argon)이 아닌 총괄 Claude가 해야 공동검수로 인정한다(공동검수 절차 §역할, PRD §19). */
+export const isCommanderModel = (model: string) => /claude/i.test(model);
 
 type Reviewer = (typeof BLIND_REVIEWERS)[number];
 
@@ -120,6 +122,7 @@ export function decide(batch: BatchInput): Decision[] {
     }
     const exp = batch.explanation?.items.find(i => i.questionId === q.id && i.revision === q.revision);
     if (!exp || exp.contentHash !== hash || exp.rationalesHash !== rationalesHash(q)) reasons.push('총괄 해설 대조 없음');
+    else if (!isCommanderModel(batch.explanation!.reviewer.model)) reasons.push(`총괄 해설 대조자가 Claude가 아님: ${batch.explanation!.reviewer.model}`);
     else if (exp.explanation !== 'pass') reasons.push(`총괄 해설 대조 fail: ${exp.findings.join(' / ')}`);
     const bank = bankQuestionSchema.safeParse(toBankQuestion(q));
     if (!bank.success) reasons.push(`게시 형식: ${bank.error.issues.map(i => i.message).join(', ')}`);
@@ -143,15 +146,22 @@ export function decideCandidate(batch: BatchInput): Decision[] {
     if (!self) reasons.push('Argon 자체 반박 없음');
     else if (fits.length !== 1 || fits[0] !== q.correctOptionId) reasons.push(`Argon 자체 반박: 맞는 보기 ${fits.join(',') || '없음'}`);
 
+    let externals = 0;
     for (const who of BLIND_REVIEWERS) {
-      const ext = batch.reviews[who]?.items.find(i => i.questionId === q.id && i.revision === q.revision && i.contentHash === hash);
+      const sameRevision = batch.reviews[who]?.items.filter(i => i.questionId === q.id && i.revision === q.revision) ?? [];
+      const ext = sameRevision.find(i => i.contentHash === hash);
+      // revision을 올리지 않고 본문만 바꾸면 그 검수는 이 본문의 근거가 아니다. 조용히 넘기지 않는다.
+      if (!ext && sameRevision.length > 0) reasons.push(`${who}: 검수 뒤 본문이 바뀜(같은 revision, 다른 contentHash)`);
       if (!ext) continue;
+      externals++;
       if (ext.blindChoice !== q.correctOptionId) reasons.push(`${who}: 독립 풀이 ${ext.blindChoice} ≠ 정답`);
       for (const k of ['source', 'uniqueness', 'grade', 'language'] as const) {
         if (ext.verdicts[k] !== 'pass') reasons.push(`${who}: ${k} ${ext.verdicts[k]}`);
       }
       if (ext.verdicts.explanation === 'fail') reasons.push(`${who}: explanation fail`);
     }
+
+    if (externals === 0) reasons.push('외부 블라인드 검수(codex·claude): 이 revision의 검수 없음');
 
     const blind = batch.argonBlind?.items.find(i => i.questionId === q.id && i.revision === q.revision && i.contentHash === hash);
     if (!blind) reasons.push('argon-blind: 이 revision의 독립 검토 없음');
@@ -230,7 +240,7 @@ export function buildCandidateBank(
     bankVersion,
     grade,
     status: 'verified_candidate',
-    note: '표준국어대사전·우리말샘 원문 근거 + 4보기 자체 반박 + 외부 Codex 블라인드 교차검수 및 새 문맥 독립 블라인드 검수(argon-blind) 반영 후보 은행. 3모델(Claude 포함) 공동검수 완료 전까지 개인 기록용(development)으로 운용한다.',
+    note: '공동검수 진행 중인 후보 은행. 같은 revision의 외부 블라인드 검수(codex·claude) 1건 이상과 새 문맥 argon-blind를 통과했다. 3모델 공동검수 승인 전에는 게임에 싣지 않는다(PRD §9.3).',
     questions: drafts.map(q => toBankQuestion(q, 'verified_candidate')),
   });
   return { bank, approved: drafts.length, note: `${grade}학년 후보 검증 ${drafts.length}문항 → ${bankVersion}` };

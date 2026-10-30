@@ -32,7 +32,7 @@ interface Props {
   showKeyHints?: boolean;
   onFont(scale: FontScale): void;
   onSound(on: boolean): void;
-  onExit(reason: 'over' | 'abandon'): void;
+  onExit(reason: 'saved' | 'over' | 'abandon'): void;
   /** 첫 연습 판(PRD §12.2). 있으면 안내 문장·건너뛰기·연습 끝 패널을 보인다. */
   practice?: { onFinish(next: 'new' | 'again' | 'home'): void };
 }
@@ -113,6 +113,9 @@ export function GameScreen({
   const [cursor, setCursor] = useState<string | null>(null);
   const [fieldFocused, setFieldFocused] = useState(false);
   const panelRef = useRef<HTMLDivElement>(null);
+  const fieldRef = useRef<HTMLDivElement>(null);
+  const startRef = useRef<HTMLButtonElement>(null);
+  const cancelEmptyRef = useRef<HTMLButtonElement>(null);
   const paused = view.pause.length > 0;
   // 선택한 타워가 팔리거나 사라지면 선택이 없는 것으로 본다(렌더 중 파생, effect로 setState하지 않음).
   const towerGone = rawSelection.towerId !== null && !view.towers.some(t => t.id === rawSelection.towerId);
@@ -124,6 +127,22 @@ export function GameScreen({
   const clear = useCallback(() => {
     setSelection(EMPTY);
     setMode('idle');
+  }, []);
+
+  /**
+   * 설치·판매·선택 해제로 누른 단추가 사라지면 포커스가 body로 떨어진다. 그대로 두면 다음 키 입력이 어디로 갈지
+   * 알 수 없으므로, 그 칸의 타워 정보(관리 패널)나 전투 시작 단추로 옮긴다(PRD §12.4). 포커스가 살아 있으면 건드리지 않는다.
+   */
+  const refocus = useCallback((prefer: 'panel' | 'start') => {
+    requestAnimationFrame(() => {
+      const active = document.activeElement;
+      if (active && active !== document.body && active !== document.documentElement && active.isConnected) return;
+      const panelEl = panelRef.current;
+      const startEl = startRef.current;
+      const fieldEl = fieldRef.current?.querySelector<HTMLElement>('[data-keyscope="field"]') ?? null;
+      const order = prefer === 'panel' ? [panelEl, startEl, fieldEl] : [startEl, panelEl, fieldEl];
+      order.find(el => el?.isConnected)?.focus();
+    });
   }, []);
 
   const onTap = useCallback((tap: FieldTap) => {
@@ -236,9 +255,11 @@ export function GameScreen({
     if (layout.mode === 'S') {
       clear();
       setTrayOpen(false);
+      refocus('start');
     } else if (builtId !== null) {
       setSelection({ ...EMPTY, towerId: builtId });
       setMode('tower');
+      refocus('panel');
     }
   };
   const onUpgrade = (form?: FormId) => {
@@ -246,6 +267,7 @@ export function GameScreen({
     if (result(controller.dispatch(form ? { type: 'upgrade', towerId: selection.towerId, form } : { type: 'upgrade', towerId: selection.towerId }))) {
       setSelection(s => ({ ...s, previewBranch: null }));
       setMode('tower');
+      refocus('panel');
     }
   };
   const onSell = () => {
@@ -253,31 +275,22 @@ export function GameScreen({
     if (result(controller.dispatch({ type: 'sell', towerId: selection.towerId }))) {
       clear();
       if (layout.mode === 'S') setTrayOpen(false);
+      refocus('start');
     }
   };
-  const onStart = useCallback(() => {
+  // 전투는 ‘전투 시작’ 단추로만 시작한다. 전역 Enter로 시작하면 거래 뒤 포커스가 떨어진 상태의 Enter가 전투를 연다.
+  const onStart = () => {
     if (view.towers.length === 0 && !confirmEmpty) {
       setConfirmEmpty(true);
+      // 확인 상자가 뜨면 누른 단추가 사라진다. 안전한 ‘취소’로 포커스를 옮긴다(반복 Enter로 바로 시작하지 않게).
+      requestAnimationFrame(() => cancelEmptyRef.current?.focus());
       return;
     }
     setConfirmEmpty(false);
     const r = controller.dispatch({ type: 'startBattle' });
     if (!r.ok) setFlash(commandErrorText(r.error));
     else setFlash(null);
-  }, [view.towers.length, confirmEmpty, controller]);
-
-  useEffect(() => {
-    if (view.phase !== 'BUILD' || paused || practiceDone || confirmEmpty) return undefined;
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key !== 'Enter' || e.defaultPrevented || e.repeat || e.altKey || e.ctrlKey || e.metaKey) return;
-      const active = document.activeElement;
-      if (active && active !== document.body && active !== document.documentElement) return;
-      e.preventDefault();
-      onStart();
-    };
-    window.addEventListener('keydown', onKey);
-    return () => window.removeEventListener('keydown', onKey);
-  }, [view.phase, paused, practiceDone, confirmEmpty, onStart]);
+  };
 
   const panel = (
     <ManagementPanel
@@ -299,9 +312,13 @@ export function GameScreen({
       onClear={() => {
         clear();
         setTrayOpen(false);
+        refocus('start');
       }}
       onPreviewBranch={branch => setSelection(s => ({ ...s, previewBranch: branch }))}
-      onMode={m => setMode(m)}
+      onMode={m => {
+        setMode(m);
+        refocus('panel');
+      }}
     />
   );
 
@@ -368,17 +385,27 @@ export function GameScreen({
         </div>
       </div>
       <div className={css.buildSide}>
-        <span className={css.sideCaption}>{showKeyHints ? '출격 준비함 · 단축키 엔터' : '출격 준비함'}</span>
+        <span className={css.sideCaption}>출격 준비함</span>
         {confirmEmpty ? (
           <div className={css.confirmBox}>
             <p className={css.confirmText}>타워 없이 시작할까요?</p>
             <div className={css.row}>
               <button type="button" className={`${kit.button} ${kit.primary}`} onClick={onStart}>시작</button>
-              <button type="button" className={`${kit.button} ${kit.quietWood}`} onClick={() => setConfirmEmpty(false)}>취소</button>
+              <button
+                ref={cancelEmptyRef}
+                type="button"
+                className={`${kit.button} ${kit.quietWood}`}
+                onClick={() => {
+                  setConfirmEmpty(false);
+                  requestAnimationFrame(() => startRef.current?.focus());
+                }}
+              >
+                취소
+              </button>
             </div>
           </div>
         ) : (
-          <button type="button" className={`${kit.button} ${kit.primary} ${kit.big} ${kit.block} ${css.start}`} onClick={onStart}>
+          <button ref={startRef} type="button" className={`${kit.button} ${kit.primary} ${kit.big} ${kit.block} ${css.start}`} onClick={onStart}>
             <span>전투 시작</span>
             <PlayArrowIcon size={18} />
           </button>
@@ -408,7 +435,7 @@ export function GameScreen({
   ) : null;
 
   const field = (
-    <div className={css.field} style={{ width: layout.mapW, height: layout.mapH }}>
+    <div ref={fieldRef} className={css.field} style={{ width: layout.mapW, height: layout.mapH }}>
       <PhaserBattlefield
         bridge={bridge}
         width={layout.mapW}
@@ -464,7 +491,7 @@ export function GameScreen({
                   <>
                     {skip}
                     {coachLine('panel')}
-                    <div ref={panelRef}>{panel}</div>
+                    <div ref={panelRef} tabIndex={-1} role="group" aria-label="선택한 칸과 타워 정보">{panel}</div>
                     {flash && <p className={kit.reason} role="status">{flash}</p>}
                     {slotList}
                   </>
@@ -501,7 +528,7 @@ export function GameScreen({
                 ) : (
                   <>
                     {coachLine('panel')}
-                    <div ref={panelRef}>{panel}</div>
+                    <div ref={panelRef} tabIndex={-1} role="group" aria-label="선택한 칸과 타워 정보">{panel}</div>
                     {flash && <p className={kit.reason} role="status">{flash}</p>}
                     {slotList}
                   </>
@@ -516,7 +543,7 @@ export function GameScreen({
         <PauseOverlay
           reasons={view.pause}
           renderLost={view.renderLost}
-          canSave={view.saveStatus !== 'disabled' && 'saveAndExit' in controller}
+          canSave={controller.persist}
           saveError={view.saveStatus === 'error'}
           fontScale={fontScale}
           soundOn={soundOn}
@@ -524,15 +551,11 @@ export function GameScreen({
           onFont={onFont}
           onSound={onSound}
           onSaveExit={async () => {
-            const fn = (controller as RunController & { saveAndExit?: () => Promise<boolean> }).saveAndExit;
-            const ok = fn ? await fn.call(controller) : false;
-            if (ok) (onExit as (reason: 'over' | 'abandon' | 'saved') => void)('saved');
+            const ok = await controller.saveAndExit();
+            if (ok) onExit('saved');
             return ok;
           }}
-          onRetrySave={async () => {
-            const fn = (controller as RunController & { retrySave?: () => Promise<void> }).retrySave;
-            if (fn) await fn.call(controller);
-          }}
+          onRetrySave={() => controller.retrySave()}
           onQuit={() => {
             controller.resume();
             controller.dispatch({ type: 'quit' });

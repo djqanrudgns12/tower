@@ -88,6 +88,7 @@ export class SoundDirector {
   private voices: Voice[] = [];
   private lastFire = new Map<Sfx, number>();
   private enabled = true;
+  private backgroundUnlocked = false;
   private paused = false;
   private bgmVolume: number;
   private sfxVolume: number;
@@ -102,7 +103,8 @@ export class SoundDirector {
 
   /** 첫 사용자 입력에서 부른다. 만들 수 없으면 무음으로 둔다. */
   unlock() {
-    if (this.ctx) { void this.ctx.resume?.().catch(() => undefined); return; }
+    this.backgroundUnlocked = true;
+    if (this.ctx) { this.sync(); return; }
     try {
       this.ctx = this.create();
       this.sfxBus = this.ctx.createGain(); this.sfxBus.gain.value = this.sfxVolume; this.sfxBus.connect(this.ctx.destination);
@@ -195,7 +197,7 @@ export class SoundDirector {
     const ctx = this.ctx;
     if (!ctx) return;
     const audible = this.enabled && !this.paused;
-    if (audible) { void ctx.resume?.().catch(() => undefined); this.startBgm(); }
+    if (audible) { void ctx.resume?.().catch(() => undefined); if (this.backgroundUnlocked) this.startBgm(); }
     else {
       this.stopBgm();
       for (const v of this.voices) v.stop();

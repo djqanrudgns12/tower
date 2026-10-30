@@ -108,16 +108,32 @@ for (const m of data.maps) {
 }
 run('화면 기본값과 PRD의 치수·모드 규칙 일치', () => {
   const l = defaults.layout;
-  assert(prd.includes(`관리${l.railWidthPx}px`));
+  // 시안 1 v3가 대체한 PRD v0.5 값(프레임·레일·2×2 기준)은 계약의 prdV05Superseded에 남겨 PRD 본문과 대조한다.
+  const old = l.prdV05Superseded;
+  assert(prd.includes(`앱 프레임 최대 ${old.frameMaxPx}px`));
+  assert(prd.includes(`관리${old.railWidthPx}px`));
   assert(prd.includes(`HUD${l.hudHeightPx}`));
   assert(prd.includes(`문제${l.questionBaseHeightPx}`));
   assert(prd.includes(`문제/보기${l.questionFontPx[0]}px, 크게${l.questionFontPx[1]}px, 아주크게${l.questionFontPx[2]}px`));
-  assert(prd.includes(`레일${l.modes.R.railWidthPx}(맨 위에 HUD 두 줄 ${l.modes.R.railHudHeightPx})`));
+  assert(prd.includes(`레일${old.railWidthPx}(맨 위에 HUD 두 줄 ${l.modes.R.railHudHeightPx})`));
   assert(prd.includes(`칸<${l.magnifyBelowCellPx.coarse}px`) && prd.includes(`칸<${l.magnifyBelowCellPx.fine}px`));
-  assert(prd.includes(`폭이 ${l.optionGrid.twoByTwoMinCellWidthPx}px 이상`));
+  assert(prd.includes(`폭이 ${old.twoByTwoMinCellWidthPx}px 이상`));
   assert(prd.includes(`=${l.questionWideHeightBudgetPx}px로 ${l.questionBaseHeightPx}px 안에`));
   assert(l.touchMinPx >= 44); assert(l.magnifiedCellMinPx >= l.touchMinPx);
   assert.deepEqual(l.mapAspect, [15, 9]);
+});
+run('시안 1 v3 문서와 레이아웃 계약(프레임·가변 레일·압축 레일·2×2 기준) 일치', () => {
+  const l = defaults.layout, r = l.modes.R.rail, old = l.prdV05Superseded;
+  const v3 = read(old.by);
+  assert(v3.includes(`effW = Math.min(W, ${l.frameMaxPx})`), 'v3 프레임 최대폭');
+  assert(v3.includes(`minRailW = W < ${r.tabletBelowWidthPx} ? ${r.tabletMinPx} : ${r.minPx}`), 'v3 레일 최소폭');
+  assert(v3.includes(`Math.min(${r.maxPx}, innerW - mapW - ${l.modes.R.railGapPx})`), 'v3 레일 최대폭');
+  assert(v3.includes(`(\`${r.minPx}~${r.maxPx}px\``), 'v3 레일 폭 범위 표기');
+  assert(v3.includes(`mapH <= ${r.compactMapHeightMaxPx}`), 'v3 압축 레일 기준');
+  assert(r.tabletMinPx < r.minPx && r.minPx < r.maxPx, '레일 폭 순서');
+  assert(l.frameMaxPx > old.frameMaxPx && r.minPx > old.railWidthPx, 'v3 값이 PRD v0.5 값을 넓힌다');
+  // 2×2 기준 200px은 v3 구현 값이며 문서 표기가 아직 없다(PRD §12.5는 160px). 160 이상인지만 확인한다.
+  assert(l.optionGrid.twoByTwoMinCellWidthPx >= old.twoByTwoMinCellWidthPx, '2×2 기준이 PRD 하한보다 작음');
 });
 run('§12.1 모드 계산표 재계산', () => {
   const rows = section('### 12.1', '### 12.2').split('\n').filter(line => /^\| [^|]*\d+×\d+[^|]* \| [RS] \|/.test(line));
