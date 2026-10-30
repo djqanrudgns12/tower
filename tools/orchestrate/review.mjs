@@ -119,7 +119,7 @@ export function parseReply(text, phase, expected) {
   const fence = text.match(/```(?:json)?\s*([\s\S]*?)```/);
   const raw = fence ? fence[1] : text.slice(text.indexOf('{'), text.lastIndexOf('}') + 1);
   let data;
-  try { data = JSON.parse(raw); } catch (e) { throw new Error(`JSON을 읽지 못했다: ${e.message}`); }
+  try { data = JSON.parse(raw); } catch (e) { throw new Error(`JSON을 읽지 못했다: ${e.message}`, { cause: e }); }
   const items = Array.isArray(data) ? data : data.items;
   if (!Array.isArray(items)) throw new Error('items 배열이 없다');
   const problems = [];
