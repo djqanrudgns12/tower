@@ -2,8 +2,8 @@ import { describe, expect, it, vi } from 'vitest';
 import { loadSettings } from '../../src/persistence/settings';
 import { sampleStageDemo } from '../../src/ui/screens/home/MiniStageCanvas';
 
-describe('왕국 초원 · 성문 수비전 애니메이션 및 모션 기본값 복구 검증', () => {
-  it('OS prefers-reduced-motion이 켜진 환경이나 사용자 선택 없이 minimal로 저장된 기록은 full로 복구하고, 직접 선택한 정지는 유지한다', () => {
+describe('왕국 초원 · 성문 수비전 애니메이션 및 모션 기본값 보존 검증', () => {
+  it('OS prefers-reduced-motion과 저장된 minimal 선택을 유지한다', () => {
     const store = new Map<string, string>();
     vi.stubGlobal('localStorage', {
       getItem: (k: string) => store.get(k) ?? null,
@@ -14,12 +14,12 @@ describe('왕국 초원 · 성문 수비전 애니메이션 및 모션 기본값
     vi.stubGlobal('matchMedia', () => ({ matches: true }));
 
     try {
-      // 1) 신규 진입: OS prefers-reduced-motion: reduce여도 기본 연출은 'full'이어야 한다.
+      // PRD: 신규 진입은 OS 줄인 움직임을 따른다.
       const fresh = loadSettings();
-      expect(fresh.motionMode).toBe('full');
-      expect(fresh.reducedMotion).toBe(false);
+      expect(fresh.motionMode).toBe('minimal');
+      expect(fresh.reducedMotion).toBe(true);
 
-      // 2) 과거 버전에서 사용자 선택 없이 'minimal'로 굳어진 저장본은 별명·학년을 유지한 채 'full'로 자동 복구된다.
+      // 구 저장본의 움직임 선택도 보존한다.
       store.set('vocabulary-td.settings', JSON.stringify({
         lastNickname: '따뜻한학자',
         lastGrade: 5,
@@ -27,8 +27,8 @@ describe('왕국 초원 · 성문 수비전 애니메이션 및 모션 기본값
         motionMode: 'minimal',
       }));
       const healed = loadSettings();
-      expect(healed.motionMode).toBe('full');
-      expect(healed.reducedMotion).toBe(false);
+      expect(healed.motionMode).toBe('minimal');
+      expect(healed.reducedMotion).toBe(true);
       expect(healed.lastNickname).toBe('따뜻한학자');
       expect(healed.lastGrade).toBe(5);
 
