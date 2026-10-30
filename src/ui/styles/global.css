@@ -59,6 +59,11 @@
   --oak-rank-bronze: #c98352;
   --shadow-board: 0 4px 0 rgba(35, 22, 13, 0.28);
 
+  /* 포커스 고리(PRD §12.6: 2px 외곽선 + 2px 간격, 바로 옆 배경과 3:1 이상).
+     밝은 표면은 --focus, 짙은 표면(헤더 판·HUD 금고·키캡 줄)은 --focus-on-dark를 쓴다. */
+  --focus: var(--blue);
+  --focus-on-dark: #8fd0ff;
+
   --r-input: 4px;
   --r-panel: 8px;
   --s1: 4px; --s2: 8px; --s3: 12px; --s4: 16px; --s5: 24px;

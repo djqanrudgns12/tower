@@ -275,7 +275,7 @@ function drawStageFrame(
     ctx.drawImage(stele, sx - sw / 2, sy - sh * 0.85, sw, sh);
     const glyphY = sy - (0.85 - STELE_FACE_Y) * sh;
     ctx.fillStyle = '#463c35';
-    ctx.font = '700 12px "Pretendard Variable", Pretendard, sans-serif';
+    ctx.font = '700 13px "Pretendard Variable", Pretendard, sans-serif';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
     ctx.fillText('한', sx, glyphY);
