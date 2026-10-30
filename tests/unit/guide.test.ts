@@ -72,7 +72,7 @@ describe('사용 설명서 모델 및 전용 삽화 계약 (G03~G11, G15)', () =
     custom.waves.bossEveryWaves = 6;
     custom.burning = { streak: 4, durationMs: 9000, attackSpeedBP: 3500 };
     custom.levels.max = 6;
-    custom.levels.branchAtLevel = 4;
+    custom.levels.evolveAt = [5, 8];
     custom.run.sellRatioBP = 7000;
 
     const chapters = buildGuideChapters(custom, ['archer', 'frost']);
@@ -92,7 +92,7 @@ describe('사용 설명서 모델 및 전용 삽화 계약 (G03~G11, G15)', () =
     expect(ch3Text).toContain('궁수탑·서리탑');
     expect(ch3Text).not.toContain('포탑');
     expect(ch3Text).toContain('레벨 6');
-    expect(ch3Text).toContain('레벨 4');
+    expect(ch3Text).toContain('레벨 5');
     expect(ch3Text).toContain('70%');
   });
 

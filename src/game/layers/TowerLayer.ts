@@ -1,5 +1,6 @@
 import Phaser from 'phaser';
 import type { DomainEvent } from '../../domain/events';
+import { formBranch } from '../../domain/towers';
 import type { RunState } from '../../domain/types';
 import { PALETTE } from '../art';
 import { ASSETS, CELL_PX } from '../assets';
@@ -54,16 +55,17 @@ export class TowerLayer {
       const recoil = time < v.recoilUntil && !bridge.reducedMotion ? 2 : 0;
       if (FIXED_WEAPON.has(t.type)) v.weapon?.setPosition(x, y - CELL_PX * 0.38 + (bridge.reducedMotion ? 0 : Math.sin(time / 420 + t.id) * 2));
       else v.weapon?.setPosition(x - Math.cos(v.angle) * recoil, y - CELL_PX * 0.32 - Math.sin(v.angle) * recoil).setRotation(v.angle);
-      if (v.level !== t.level || v.branch !== t.branch) {
-        v.level = t.level; v.branch = t.branch;
+      if (v.level !== t.level || v.branch !== t.form) {
+        v.level = t.level; v.branch = t.form;
+        const branch = formBranch(t.form);
         v.pips.clear();
         const startX = x - (t.level - 1) * 5;
         for (let i = 0; i < t.level; i++) { v.pips.fillStyle(PALETTE.outline, 1).fillCircle(startX + i * 10, y + CELL_PX * 0.36, 4.2); v.pips.fillStyle(0xf4d35e, 1).fillCircle(startX + i * 10, y + CELL_PX * 0.36, 2.8); }
-        if (t.branch) {
+        if (branch) {
           // 분기 표식: A 원, B 마름모. 색만으로 구분하지 않는다.
           const bx = x + CELL_PX * 0.34, by = y - CELL_PX * 0.36;
           v.pips.fillStyle(PALETTE.outline, 1);
-          if (t.branch === 'A') v.pips.fillCircle(bx, by, 8).fillStyle(0x245b88, 1).fillCircle(bx, by, 5.5);
+          if (branch === 'A') v.pips.fillCircle(bx, by, 8).fillStyle(0x245b88, 1).fillCircle(bx, by, 5.5);
           else v.pips.fillPoints([new Phaser.Math.Vector2(bx, by - 9), new Phaser.Math.Vector2(bx + 9, by), new Phaser.Math.Vector2(bx, by + 9), new Phaser.Math.Vector2(bx - 9, by)], true).fillStyle(0xa3352b, 1).fillPoints([new Phaser.Math.Vector2(bx, by - 6), new Phaser.Math.Vector2(bx + 6, by), new Phaser.Math.Vector2(bx, by + 6), new Phaser.Math.Vector2(bx - 6, by)], true);
         }
       }

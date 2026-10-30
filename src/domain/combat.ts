@@ -2,7 +2,7 @@ import type { GameContext } from './context';
 import type { DomainEvent } from './events';
 import { dist2, positionAt } from './geometry';
 import { add, bpFloor, ceilDiv, isqrt, msToTicks, safe, TICK_HZ } from './num';
-import { attackIntervalTicks, auraDamageBonusBP, auraSpeedBonusBP, towerStats, type TowerStats } from './towers';
+import { attackIntervalTicks, attacks, auraDamageBonusBP, auraReaches, auraSpeedBonusBP, towerStats, type TowerStats } from './towers';
 import type { Enemy, Projectile, RunState, Tower } from './types';
 import { enemyMaxHp, enemyResists, enemySpeedBP } from './waves';
 
@@ -81,17 +81,20 @@ export const towerSpeedBonusBP = (ctx: GameContext, s: RunState, tower: Tower) =
 function fire(ctx: GameContext, s: RunState, tower: Tower, ev: DomainEvent[]) {
   const t = s.tick;
   if (tower.nextAttackTick === null || t < tower.nextAttackTick) return;
-  const stats = towerStats(ctx.balance, tower.type, tower.level, tower.branch);
+  const stats = towerStats(ctx.balance, tower.type, tower.level, tower.form);
   const target = pickTarget(ctx, s, tower.x, tower.y, stats.range);
   // 표적이 없으면 준비 상태로 기다린다. 기다린 시간만큼 몰아서 쏘지 않는다(PRD §7.2).
   if (!target) return;
+  // 공격한 타워와 이 공격에 오라를 준 깃발은 더는 설치 취소(전액 환불)를 받지 않는다(공짜 공격 방지).
+  tower.undoUntilTick = null;
+  for (const t of s.towers) if (t.undoUntilTick !== null && !attacks(ctx.balance, t.type) && auraReaches(ctx.balance, t, tower)) t.undoUntilTick = null;
   // 오라는 거래 뒤 다음 공격 계산 때 다시 읽는다(PRD §20.2).
   const bonus = auraDamageBonusBP(ctx.balance, s.towers, tower);
   tower.nextAttackTick = t + attackIntervalTicks(ctx.balance, stats, towerSpeedBonusBP(ctx, s, tower));
   if (stats.instant) { strike(ctx, s, tower, stats, target, bonus, ev); return; }
   const at = positionAt(ctx.path, target.progress);
   launch(s, tower, stats, stats.splashRadius > 0 ? null : target, at, strikeOf(tower, stats, stats.damage, bonus), ev);
-  // 석궁 A 관통: 첫 대상 뒤 일직선의 두 번째 적에게 따로 날아가는 화살(발사 때 ID 고정, PRD §20.3).
+  // 관통(석궁 A 등): 첫 대상 뒤 일직선의 두 번째 적에게 따로 날아가는 화살(발사 때 ID 고정, PRD §20.3).
   if (stats.pierceDamageBP > 0) {
     const second = pierceTarget(ctx, s, tower, target, stats);
     if (second) launch(s, tower, stats, second, positionAt(ctx.path, second.progress), strikeOf(tower, stats, bpFloor(stats.damage, stats.pierceDamageBP, 'damage.pierce'), bonus), ev);
@@ -147,7 +150,7 @@ function strike(ctx: GameContext, s: RunState, tower: Tower, stats: TowerStats, 
     applyHit(ctx, s, strikeOf(tower, stats, h.damage, bonus), h.e, ev);
     if (h.e.alive && stats.burnTotal > 0) applyBurn(s, h.e, tower.id, mitigated(stats.burnTotal, h.e.magicResistBP), stats.burnTicks);
   }
-  // 번개 B 충격: 첫 대상 기절. 한 적의 평생 기절 시간 상한을 넘기지 않는다(PRD §7.3, statusCaps).
+  // 충격(번개 B 등): 첫 대상 기절. 한 적의 평생 기절 시간 상한을 넘기지 않는다(PRD §7.3, statusCaps).
   if (stats.stunTicks > 0 && first.alive) {
     const left = msToTicks(ctx.balance.statusCaps.stunLifetimeMaxMs) - first.stunTicksUsed;
     if (left > 0) first.stunUntilTick = Math.max(first.stunUntilTick, s.tick + Math.min(stats.stunTicks, left));

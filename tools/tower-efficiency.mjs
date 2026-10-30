@@ -15,4 +15,12 @@ const rows = eff.runComparisons(undefined, sim.withOverrides(sets));
 console.table(rows.map(r => ({ 비교: r.intent, 기준: r.required ? '①' : '참고', '대상 100골드당': r.subjectPer100, '궁수 100골드당': r.baselinePer100, 비: r.ratio, 통과: r.pass ? '예' : '아니오' })));
 const failed = rows.filter(r => r.required && !r.pass);
 console.log(failed.length ? `PRD §7.5 ① 미달: ${failed.map(r => r.intent).join(', ')}` : 'PRD §7.5 ① 통과(필수 비교 모두 1.15 이상)');
-if (out) fs.writeFileSync(path.join(root, out), JSON.stringify({ measuredAt: new Date().toISOString().slice(0, 10), rule: 'PRD §7.5 ①: 의도한 상황에서 같은 골드의 궁수보다 15% 이상', rows }, null, 2) + '\n');
+// 형태 비교(progression.md §6 ③): 같은 단계 형태 가운데 모든 줄에서 압도하는 형태가 없어야 한다.
+const forms = args.includes('--no-forms') ? [] : eff.runFormComparisons(sim.withOverrides(sets));
+if (forms.length) {
+  console.log(`\n형태 비교 · 줄 ${eff.FORM_STREAMS.join('/')} · 점수 = 줄마다 같은 단계 최고 형태 대비 비율의 평균`);
+  console.table(forms.map(r => ({ 타워: r.type, 단계: `${r.tier}차(Lv${r.level})`, 점수: Object.entries(r.score).map(([f, v]) => `${f} ${v}`).join(' · '), 압도: r.dominant.join(',') || '-', '열세(참고)': r.weak.join(',') || '-' })));
+  const dominated = forms.filter(r => !r.pass);
+  console.log(dominated.length ? `형태 압도 미달: ${dominated.map(r => `${r.type} ${r.dominant.join(',')}`).join(' · ')}` : `형태 압도 없음(모든 줄에서 형제보다 ${eff.DOMINANCE_RATIO}배 이상인 형태 0)`);
+}
+if (out) fs.writeFileSync(path.join(root, out), JSON.stringify({ measuredAt: new Date().toISOString().slice(0, 10), balanceVersion: sim.withOverrides(sets).balanceVersion, overrides: sets, rule: 'PRD §7.5 ①: 의도한 상황에서 같은 골드의 궁수보다 15% 이상', rows, formRule: `progression.md §6 ③: 같은 단계 형태 가운데 모든 줄(${eff.FORM_STREAMS.join('/')})에서 다른 형태 모두보다 ${eff.DOMINANCE_RATIO}배 이상인 형태가 없어야 한다`, forms }, null, 2) + '\n');

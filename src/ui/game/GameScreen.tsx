@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useLayoutEffect, useRef, useState, useSyncExternalStore, type CSSProperties } from 'react';
-import type { BranchId, TowerId } from '../../contracts/balance';
+import type { FormId, TowerId } from '../../contracts/balance';
 import type { OptionId } from '../../contracts/questions';
 import type { RunController } from '../../application/RunController';
 import { FieldBridgeHandle, type FieldSelection, type FieldTap } from '../../game/bridge';
@@ -262,9 +262,9 @@ export function GameScreen({
       refocus('panel');
     }
   };
-  const onUpgrade = (branch?: BranchId) => {
+  const onUpgrade = (form?: FormId) => {
     if (selection.towerId === null) return;
-    if (result(controller.dispatch(branch ? { type: 'upgrade', towerId: selection.towerId, branch } : { type: 'upgrade', towerId: selection.towerId }))) {
+    if (result(controller.dispatch(form ? { type: 'upgrade', towerId: selection.towerId, form } : { type: 'upgrade', towerId: selection.towerId }))) {
       setSelection(s => ({ ...s, previewBranch: null }));
       setMode('tower');
       refocus('panel');
