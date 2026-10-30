@@ -1,6 +1,6 @@
 # 현재 작업 게시판
 
-기준일: 2026-10-30 · 현재 구간: **P1 첫 완성 구간 완료(실기기 제외) → CORE-P2 진행 중.** 3학년 공개 은행 51문항, 연습 은행 공개, 원화 40장(27 `integrated_pass` · 13 `visual_pass`), S11 기준 ② 통과, 깃발 기준 ① 사용자 결정 대기 · 총괄: Claude Opus 5.5(Claude Code) · 다른 컴퓨터로 옮길 때는 [인계서](HANDOFF.md) §1·§2·§5
+기준일: 2026-10-30 · 현재 구간: **P1 첫 완성 구간 완료(실기기 제외) → CORE-P2 및 3~6학년 대량 문항 은행 구축 진행 중.** 3학년 공개 은행 51문항 보존 + **3~6학년 블라인드 검증 후보 은행 4,139문항(3학년 1,035 · 4학년 1,017 · 5학년 1,043 · 6학년 1,044)** 탑재, 연습 은행 공개, 원화 40장(27 `integrated_pass` · 13 `visual_pass`), S11 기준 ② 통과, 깃발 기준 ① 사용자 결정 대기 · 총괄: Claude Opus 5.5 / Antigravity(Argon) · 다른 컴퓨터로 옮길 때는 [인계서](HANDOFF.md) §1·§2·§5
 
 기준: 브랜치 `p1/intake-round1`(origin에 push함, `main`에는 아직 병합 안 함). 1차 수합은 `bc3ee07`, 밸런스 `0.4-candidate`는 `ea7ffe4`. 2차(QR-001·QR-002·RIG-001)는 집 Mac 작업 폴더(`bc3ee07`)에서 돌았고 2026-10-29 수합했다. 3차 ART-002는 `ea7ffe4`를 `baseCommit`으로 요청서를 쓰고 집 Mac에 작업 폴더를 만들었다(요청서는 2차 수합 커밋에 들어갔고, 작업 폴더에는 복사본을 둠). 붙여 넣을 프롬프트는 [발행용 프롬프트](work-packages/DISPATCH.md)에 있다.
 
@@ -23,6 +23,8 @@
 | CORE-P2 | **진행 중**(2026-10-29) — P2-1 엔진, P2-2 분기 14개, P2-3 렌더러 기반, P2-4 S11 타워 효율(`npm run simulate:towers`) 완료. 밸런스 `0.4.2-candidate`(마법탑 95골드·16, 창병 70골드·7). **깃발은 PRD §7.5 ① 미달(0.30) — 사용자 결정 대기**. S11 기준 ②(10종 전략) 네 난이도 통과(2026-10-30, 가상 플레이어 수정). ART-003 `visual_pass` 인수. 남은 것: P2 타워 게임에서 열기·전투 확인 뒤 `integrated_pass` | 총괄 | `src/domain/**`, `src/game/**`, `src/ui/game/**`, `tools/sim/**` | G2 ✓(실기기 제외) |
 | [QP-001](work-packages/QP-001/RETURN.md) / [QP-002](work-packages/QP-002/RETURN.md) | **ACCEPTED**(2026-10-30) — 4/4 승인. QP-001 0001~0003, QP-002에서 0004(빠르다)를 바른 사용 유형으로 고친 판이 QR-009(Codex)·QR-010(Claude)과 총괄 해설 대조를 통과. 연습 은행 공개본 `pub-c5d049f5a4f3` | Argon 4·Codex·Claude | `content-source/batches/QP-00{1,2}/**` | — |
 | [ART-003](work-packages/ART-003/RETURN.md) | **수합(visual_pass)** — P2 타워 7종 13장, HOLD 0, 10종 비교판에서 실루엣 구별. P2 타워를 게임에서 열 때 전투로 확인해 `integrated_pass`로 올린다(지금은 게임이 싣지 않음) | Codex 이미지 | `asset-source/incoming/ART-003/**` | ART-002 ✓ |
+| Q50-G3~G6(83배치) | **ACCEPTED(후보 은행 4,139문항)** — 3학년 20배치(`Q50-G3-002`~`021`) + 4·5·6학년 각 21배치(`Q50-G{4,5,6}-001`~`021`) 총 4,150문항 제작. 표준국어대사전 실증 근거 해시·4단계 심화도(`basic`/`core`/`advanced`/`challenge`)·유형 태그(`standard`/`polysemy`/`confusable`/`idiom_proverb`/`dialect`) 반영 | Antigravity(Argon) | `content-source/batches/Q50-*/**` | — |
+| QR-CODEX-Q50 | **반영 완료**(2026-10-30) — 외부 GPT-6(Codex) 83배치·4,150문항 전수 블라인드 검수(`content-source/reviews/Q50-*/codex.json`, 원본 무수정 보존). 양쪽 통과 `rev: 1` 2,695문항 유지 + 지적된 1,455문항 `rev: 2`(및 5·6학년 113문항 `rev: 3`) 전면 보완·새 문맥 블라인드 재검증 완료. `build:bank`가 `src/content/questions/grade{3,4,5,6}.candidate.json` 구축(**3학년 1,035 · 4학년 1,017 · 5학년 1,043 · 6학년 1,044**, 합계 4,139문항; Claude 공동검수 추가 전 `verified_candidate` 등급) | Codex · Antigravity(새 문맥 블라인드) | `content-source/reviews/Q50-*/{codex,argon-blind}.json`, `content-source/approvals/Q50-*.explanation.json`, `src/content/questions/grade{3,4,5,6}.candidate.json` | Q50-G3~G6 ✓ |
 
 Q20-002의 소유 경로(`content-source/batches/Q20-002/**`)는 ART-002와 겹치지 않는다. 반환되면 QR(Codex·Claude)을 다시 돌린다. ART-002의 소유 경로(`asset-source/incoming/ART-002/**`)는 2차 수합 대상(`src/game/animation/**`, `content-source/reviews/**`)이나 총괄이 수합 때 고칠 렌더러(`src/game/**`)와 겹치지 않는다. QR-001·QR-002는 정답 키가 있는 `content-source/batches/**`를 뺀 작업 폴더에서 돌린다(발행용 프롬프트의 sparse checkout). 총괄만 공유 schema/package/lockfile/전역 토큰/라우터/인덱스를 수정한다. ACCEPTED는 총괄이 검사 후 부여한다.
 

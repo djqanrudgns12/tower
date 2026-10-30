@@ -1,7 +1,22 @@
 import { existsSync, readFileSync } from 'node:fs';
 import path from 'node:path';
 import { describe, expect, it } from 'vitest';
-import { buildBank, buildPracticeBank, buildRegistry, contentHash, decide, isPractice, loadBatches, MIN_PUBLISHED, type BatchInput, type Registry } from '../../tools/content/bankBuild';
+import {
+  buildBank,
+  buildCandidateBank,
+  buildCandidateRegistry,
+  buildPracticeBank,
+  buildRegistry,
+  contentHash,
+  decide,
+  decideCandidate,
+  isPractice,
+  loadBatches,
+  MIN_PUBLISHED,
+  rationalesHash,
+  type BatchInput,
+  type Registry,
+} from '../../tools/content/bankBuild';
 
 const root = path.resolve(import.meta.dirname, '../..');
 const batches = loadBatches(root);
@@ -81,5 +96,77 @@ describe('승인 레지스트리·게시 은행 빌드', () => {
     expect(buildBank([batch], registry, 3).bank?.bankVersion).toBe(bank?.bankVersion);
     // rev2 승인을 빼면 같은 문항이 rev1로 돌아가므로 내용이 달라져 판 번호도 달라진다.
     expect(buildBank([batch], { ...registry, entries: entries.slice(0, -1) }, 3).bank?.bankVersion).not.toBe(bank?.bankVersion);
+  });
+
+  it('저장된 후보 레지스트리·학년별 후보 은행(grade3~6.candidate.json)도 초안·검수 보고서에서 다시 계산한 것과 같다', () => {
+    const candRegPath = path.join(root, 'content-source/approvals/candidate-registry.json');
+    if (!existsSync(candRegPath)) return;
+    const pubRegistry = buildRegistry(batches);
+    const candRegistry = buildCandidateRegistry(batches);
+    const storedCandReg = JSON.parse(readFileSync(candRegPath, 'utf8')) as Registry;
+    expect(storedCandReg).toEqual(candRegistry);
+
+    for (const grade of [3, 4, 5, 6]) {
+      const { bank } = buildCandidateBank(batches, pubRegistry, candRegistry, grade);
+      const candBankPath = path.join(root, `src/content/questions/grade${grade}.candidate.json`);
+      if (!bank) {
+        expect(existsSync(candBankPath)).toBe(false);
+      } else {
+        expect(JSON.parse(readFileSync(candBankPath, 'utf8'))).toEqual(bank);
+      }
+    }
+  });
+
+  it('후보 은행 판정(decideCandidate)은 argon-blind가 통과해도 같은 revision의 codex 검수 결함이 있으면 격리하고, rev 2 수정 후 재검수되면 승인한다', () => {
+    const batch = structuredClone(q20);
+    // claude 검수가 아직 없는 확장 배치 상황을 모사한다.
+    delete batch.reviews.claude;
+    const targetDraft = batch.drafts.find(q => q.id === approvedId)!;
+    const rev1Hash = contentHash(targetDraft);
+    batch.argonBlind = {
+      reviewId: 'QR-ARGON-TEST',
+      jobId: batch.batchId,
+      reviewer: { model: 'Gemini 4 Argon (High)', tool: 'blind-validator', freshContext: true, date: '2026-10-30' },
+      items: [{
+        questionId: approvedId,
+        revision: 1,
+        contentHash: rev1Hash,
+        blindChoice: targetDraft.correctOptionId,
+        verdicts: { source: 'pass', uniqueness: 'pass', grade: 'pass', language: 'pass', explanation: 'uncertain' },
+        findings: ['독립 풀이 통과'],
+      }],
+    };
+    // Codex가 rev 1에서 uniqueness fail을 기록하면 argon-blind가 pass여도 반드시 격리된다.
+    const codexItem = batch.reviews.codex!.items.find(i => i.questionId === approvedId)!;
+    codexItem.blindChoice = 'multiple';
+    codexItem.verdicts.uniqueness = 'fail';
+    const d1 = decideCandidate(batch).find(d => d.questionId === approvedId)!;
+    expect(d1.decision).toBe('quarantined');
+    expect(d1.reasons).toEqual([
+      'codex: 독립 풀이 multiple ≠ 정답',
+      'codex: uniqueness fail',
+    ]);
+
+    // rev 2로 문항을 보완하고 sidecar·argon-blind·해설 대조를 rev 2 해시에 맞춰 갱신하면 승인된다.
+    targetDraft.revision = 2;
+    targetDraft.stem = '‘준비물을 빠짐없이 챙길 만큼 꼼꼼하다’에서 ‘꼼꼼하다’의 뜻은?';
+    const rev2Hash = contentHash(targetDraft);
+    batch.sidecar.items.find(i => i.id === approvedId)!.revision = 2;
+    batch.argonBlind.items.push({
+      questionId: approvedId,
+      revision: 2,
+      contentHash: rev2Hash,
+      blindChoice: targetDraft.correctOptionId,
+      verdicts: { source: 'pass', uniqueness: 'pass', grade: 'pass', language: 'pass', explanation: 'uncertain' },
+      findings: ['rev 2 독립 풀이 통과'],
+    });
+    const expItem = batch.explanation!.items.find(i => i.questionId === approvedId)!;
+    expItem.revision = 2;
+    expItem.contentHash = rev2Hash;
+    expItem.rationalesHash = rationalesHash(targetDraft);
+
+    const d2 = decideCandidate(batch).find(d => d.questionId === approvedId)!;
+    expect(d2.decision).toBe('approved');
+    expect(d2.reasons).toEqual([]);
   });
 });

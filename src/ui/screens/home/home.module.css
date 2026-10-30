@@ -1,0 +1,990 @@
+/* 방향 2-A: 왕국 참나무 작전실 (PRD §12.8: 반경 4px/8px/칩 999px, 단일 그림자, 그라데이션·블러 0, 굵기 400/700) */
+
+.lobbyRoot {
+  position: relative;
+  min-height: 100dvh;
+  background: var(--oak-world-fallback);
+  overflow-x: clip;
+  word-break: keep-all;
+}
+
+.backdropCanvas {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: none;
+  display: block;
+}
+
+.foreground {
+  position: relative;
+  z-index: 1;
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: var(--s4);
+  display: grid;
+  gap: var(--s3);
+}
+
+/* 상단 다크 오크 커맨드 현판 */
+.plaqueOuter {
+  background: var(--oak-frame-outer);
+  border: 2px solid var(--oak-frame-edge);
+  border-radius: var(--r-panel);
+  padding: var(--s1);
+  box-shadow: var(--shadow-board);
+}
+
+.plaqueInner {
+  background: var(--oak-plaque-bg);
+  border: 2px solid var(--oak-plaque-border);
+  border-radius: var(--r-input);
+  padding: var(--s2) var(--s3);
+  color: var(--oak-plaque-ink);
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: var(--s3);
+}
+
+.brandGroup {
+  display: flex;
+  align-items: center;
+  gap: var(--s3);
+  min-width: 0;
+}
+
+.crestBox {
+  width: 44px;
+  height: 44px;
+  flex-shrink: 0;
+  background: var(--oak-plaque-cell);
+  border: 2px solid var(--oak-plaque-border);
+  border-radius: var(--r-input);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.crestImg {
+  width: 38px;
+  height: 38px;
+  object-fit: contain;
+}
+
+.brandTitle {
+  font-size: 21px;
+  font-weight: 700;
+  line-height: 1.2;
+  color: var(--oak-plaque-ink);
+}
+
+.brandSub {
+  font-size: 13px;
+  color: var(--oak-plaque-muted);
+  line-height: 1.3;
+}
+
+/* 실시간·누적 4대 지표 스트립 */
+.telemetryStrip {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(96px, 1fr));
+  gap: var(--s2);
+  justify-self: center;
+  width: 100%;
+  max-width: 540px;
+}
+
+.metricCell {
+  background: var(--oak-plaque-cell);
+  border: 1px solid var(--oak-plaque-border);
+  border-radius: var(--r-input);
+  padding: var(--s1) var(--s2);
+  display: grid;
+  gap: 2px;
+}
+
+.metricLabel {
+  font-size: 12px;
+  color: var(--oak-plaque-muted);
+  display: flex;
+  align-items: center;
+  gap: var(--s1);
+  white-space: nowrap;
+}
+
+.statusDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: #5ce068;
+  display: inline-block;
+  flex-shrink: 0;
+}
+
+.statusDot[data-offline='true'] {
+  background: #b5a38e;
+}
+
+.metricValue {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--oak-plaque-gold);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.headerActions {
+  display: flex;
+  align-items: center;
+  gap: var(--s2);
+  flex-wrap: wrap;
+}
+
+.plaqueBtn {
+  min-height: var(--touch);
+  padding: 0 var(--s3);
+  border: 2px solid var(--oak-plaque-border);
+  border-radius: var(--r-input);
+  background: var(--oak-card-bg);
+  color: var(--ink);
+  font-weight: 700;
+  font-size: 14px;
+  box-shadow: var(--shadow);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s1);
+  transition: transform 80ms, box-shadow 80ms;
+}
+
+.plaqueBtn:hover {
+  background: #ffffff;
+}
+
+.plaqueBtn:active {
+  transform: translateY(1px);
+  box-shadow: var(--shadow-pressed);
+}
+
+/* 좌·우 2열 작전실 보드 그리드 */
+.warRoomGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.14fr) minmax(0, 0.86fr);
+  gap: var(--s4);
+  align-items: stretch;
+}
+
+/* 이중 몰딩 참나무 액자 (단일 그림자 + 중첩 실선 테두리) */
+.oakFrame {
+  background: var(--oak-frame-outer);
+  border: 2px solid var(--oak-frame-edge);
+  border-radius: var(--r-panel);
+  padding: var(--s1);
+  box-shadow: var(--shadow-board);
+  display: flex;
+  flex-direction: column;
+}
+
+.parchmentInner {
+  background: var(--oak-board-bg);
+  border: 2px solid var(--oak-board-molding);
+  border-radius: var(--r-input);
+  padding: var(--s4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--s3);
+  flex: 1;
+}
+
+/* 좌측 상단: 실시간 수비전 미니 관측창 */
+.stageViewport {
+  position: relative;
+  width: 100%;
+  height: 180px;
+  border: 2px solid var(--oak-frame-edge);
+  border-radius: var(--r-panel);
+  overflow: hidden;
+  background: var(--oak-world-fallback);
+}
+
+.stageCanvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.stageBadgeLeft {
+  position: absolute;
+  top: var(--s2);
+  left: var(--s2);
+  background: rgba(43, 28, 17, 0.88);
+  color: var(--oak-plaque-ink);
+  border: 1px solid var(--oak-plaque-border);
+  border-radius: var(--r-input);
+  padding: var(--s1) var(--s2);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.stageBadgeRight {
+  position: absolute;
+  top: var(--s2);
+  right: var(--s2);
+  background: var(--oak-card-bg);
+  color: var(--ink);
+  border: 1.5px solid var(--oak-frame-edge);
+  border-radius: var(--r-input);
+  padding: var(--s1) var(--s2);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+/* 공통 단일 칩 클래스 (999px 반경 허용 1종) */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px var(--s2);
+  border-radius: 999px;
+  border: 1px solid var(--oak-inset-border);
+  background: var(--oak-card-bg);
+  color: var(--oak-amber-accent);
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.4;
+  white-space: nowrap;
+}
+
+/* 좌측 중단: 확대형 오늘의 낱말 공부 카드 */
+.stelePanel {
+  background: var(--oak-inset-bg);
+  border: 2px solid var(--oak-inset-border);
+  border-radius: var(--r-panel);
+  padding: var(--s4);
+  display: grid;
+  gap: var(--s3);
+}
+
+.steleHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s2);
+  flex-wrap: wrap;
+}
+
+.steleTitleGroup {
+  display: flex;
+  align-items: center;
+  gap: var(--s2);
+  flex-wrap: wrap;
+}
+
+.sectionTitle {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.steleControls {
+  display: flex;
+  align-items: center;
+  gap: var(--s2);
+  flex-wrap: wrap;
+}
+
+.smallBtn {
+  min-height: 36px;
+  padding: 0 var(--s2);
+  border: 2px solid var(--oak-frame-edge);
+  border-radius: var(--r-input);
+  background: var(--oak-card-bg);
+  color: var(--ink);
+  font-size: 13px;
+  font-weight: 700;
+  box-shadow: var(--shadow);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--s1);
+  transition: transform 80ms, box-shadow 80ms;
+}
+
+.smallBtn:hover:not(:disabled) {
+  background: #ffffff;
+}
+
+.smallBtn:active:not(:disabled) {
+  transform: translateY(1px);
+  box-shadow: var(--shadow-pressed);
+}
+
+.steleBody {
+  display: grid;
+  grid-template-columns: 92px minmax(0, 1fr);
+  gap: var(--s4);
+  align-items: center;
+}
+
+.steleArtBox {
+  position: relative;
+  width: 92px;
+  height: 108px;
+  background: var(--oak-card-bg);
+  border: 2px solid var(--oak-inset-border);
+  border-radius: var(--r-panel);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.steleImg {
+  width: 84px;
+  height: 84px;
+  object-fit: contain;
+}
+
+.steleGlyph {
+  position: absolute;
+  top: 40%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 20px;
+  font-weight: 700;
+  color: #463c35;
+  pointer-events: none;
+}
+
+.steleContent {
+  display: grid;
+  gap: var(--s2);
+  min-width: 0;
+}
+
+.lemmaRow {
+  display: flex;
+  align-items: baseline;
+  gap: var(--s2);
+  flex-wrap: wrap;
+}
+
+.lemmaWord {
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 1.25;
+  color: var(--ink);
+}
+
+.meaningCard {
+  background: var(--oak-card-bg);
+  border: 2px solid var(--oak-inset-border);
+  border-radius: var(--r-input);
+  padding: var(--s3);
+  min-height: 56px;
+  display: flex;
+  align-items: center;
+  gap: var(--s2);
+  text-align: left;
+  width: 100%;
+}
+
+.meaningTag {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--oak-amber-accent);
+  flex-shrink: 0;
+}
+
+.meaningText {
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--ink);
+  line-height: 1.4;
+}
+
+.exampleLine {
+  font-size: 15px;
+  color: var(--ink);
+  line-height: 1.5;
+}
+
+.exampleMark {
+  background: transparent;
+  color: var(--oak-amber-accent);
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* 좌측 하단: 직결 출정 별명 데크 & 단일 '새 게임' CTA */
+.launchDeck {
+  margin-top: auto;
+  background: var(--oak-inset-bg);
+  border: 2px solid var(--oak-inset-border);
+  border-radius: var(--r-panel);
+  padding: var(--s3) var(--s4);
+  display: grid;
+  gap: var(--s3);
+}
+
+.nickHeader {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--s2);
+  flex-wrap: wrap;
+}
+
+.nickLabel {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.nickStatus {
+  font-size: 13px;
+  color: var(--ink-soft);
+}
+
+.nickStatus[data-error='true'] {
+  color: var(--danger);
+  font-weight: 700;
+}
+
+.nickStatus[data-ready='true'] {
+  color: var(--oak-cta-green);
+  font-weight: 700;
+}
+
+.nickRow {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: var(--s2);
+  align-items: center;
+}
+
+.nickInput {
+  width: 100%;
+  min-width: 0;
+  min-height: var(--touch);
+  padding: 0 var(--s3);
+  border: 2px solid var(--oak-frame-edge);
+  border-radius: var(--r-input);
+  background: var(--oak-card-bg);
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.nickInput[aria-invalid='true'] {
+  border-color: var(--danger);
+}
+
+.bannerNotice {
+  padding: var(--s2) var(--s3);
+  background: var(--oak-card-bg);
+  border: 2px dashed var(--oak-frame-outer);
+  border-radius: var(--r-input);
+  font-size: 14px;
+  color: var(--ink);
+}
+
+.ctaStack {
+  display: grid;
+  gap: var(--s2);
+}
+
+.primaryCta {
+  width: 100%;
+  min-height: 56px;
+  padding: 0 var(--s4);
+  border: 2px solid var(--oak-frame-edge);
+  border-radius: var(--r-panel);
+  background: var(--oak-cta-green);
+  color: #ffffff;
+  font-size: 20px;
+  font-weight: 700;
+  box-shadow: var(--shadow-board);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--s2);
+  transition: transform 80ms, box-shadow 80ms, background-color 80ms;
+}
+
+.primaryCta:hover:not(:disabled) {
+  background: var(--oak-cta-green-hover);
+}
+
+.primaryCta:active:not(:disabled) {
+  transform: translateY(1px);
+  box-shadow: var(--shadow-pressed);
+}
+
+.secondaryCta {
+  width: 100%;
+  min-height: 48px;
+  padding: 0 var(--s4);
+  border: 2px solid var(--oak-frame-edge);
+  border-radius: var(--r-panel);
+  background: var(--oak-card-bg);
+  color: var(--ink);
+  font-size: 17px;
+  font-weight: 700;
+  box-shadow: var(--shadow);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--s2);
+}
+
+.secondaryCta:hover:not(:disabled) {
+  background: #ffffff;
+}
+
+.secondaryCta:active:not(:disabled) {
+  transform: translateY(1px);
+  box-shadow: var(--shadow-pressed);
+}
+
+/* 우측 보드: 세분화 통합 수호 랭킹 센터 */
+.rankHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s2);
+  flex-wrap: wrap;
+}
+
+.tabBar {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--s1);
+  background: var(--oak-inset-bg);
+  border: 2px solid var(--oak-inset-border);
+  border-radius: var(--r-panel);
+  padding: var(--s1);
+}
+
+.tabBtn {
+  min-height: 40px;
+  padding: 0 var(--s1);
+  border: 2px solid transparent;
+  border-radius: var(--r-input);
+  background: transparent;
+  color: var(--ink);
+  font-size: 13px;
+  font-weight: 700;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.tabBtn:hover {
+  background: var(--oak-card-bg);
+}
+
+.tabBtn[aria-selected='true'] {
+  background: var(--oak-cta-green);
+  color: #ffffff;
+  border-color: var(--oak-frame-edge);
+  box-shadow: var(--shadow-pressed);
+}
+
+.filterStack {
+  display: grid;
+  gap: var(--s2);
+}
+
+.filterRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s1);
+  align-items: center;
+}
+
+.filterBtn {
+  min-height: 36px;
+  padding: 0 var(--s2);
+  border: 1.5px solid var(--oak-inset-border);
+  border-radius: var(--r-input);
+  background: var(--oak-card-bg);
+  color: var(--ink);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.filterBtn[aria-checked='true'] {
+  background: var(--oak-frame-outer);
+  color: #ffffff;
+  border-color: var(--oak-frame-edge);
+}
+
+.sourceNotice {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s2);
+  font-size: 12px;
+  color: var(--ink-soft);
+}
+
+.rankList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: var(--s1);
+  align-content: start;
+  flex: 1;
+  min-height: 280px;
+}
+
+.rankRow {
+  display: grid;
+  grid-template-columns: 36px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--s2);
+  padding: var(--s2) var(--s3);
+  background: var(--oak-card-bg);
+  border: 1.5px solid var(--oak-inset-border);
+  border-radius: var(--r-input);
+}
+
+.rankRow[data-me='true'] {
+  border-color: var(--oak-cta-green);
+  border-width: 2px;
+  background: #eef5e8;
+}
+
+.rankMedal {
+  width: 28px;
+  height: 28px;
+  border-radius: var(--r-input);
+  border: 1.5px solid var(--oak-frame-edge);
+  background: var(--oak-inset-bg);
+  color: var(--ink);
+  font-size: 13px;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-variant-numeric: tabular-nums;
+}
+
+.rankMedal[data-rank='1'] {
+  background: var(--oak-rank-gold);
+}
+
+.rankMedal[data-rank='2'] {
+  background: var(--oak-rank-silver);
+}
+
+.rankMedal[data-rank='3'] {
+  background: var(--oak-rank-bronze);
+}
+
+.rankInfo {
+  min-width: 0;
+  display: grid;
+  gap: 2px;
+}
+
+.rankNick {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--ink);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.rankSub {
+  font-size: 12px;
+  color: var(--ink-soft);
+}
+
+.rankScore {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.emptyRankBox {
+  background: var(--oak-inset-bg);
+  border: 2px dashed var(--oak-inset-border);
+  border-radius: var(--r-panel);
+  padding: var(--s5) var(--s4);
+  text-align: center;
+  display: grid;
+  gap: var(--s2);
+  align-content: center;
+  min-height: 220px;
+}
+
+.myRankDock {
+  margin-top: auto;
+  background: var(--oak-plaque-bg);
+  color: var(--oak-plaque-ink);
+  border: 2px solid var(--oak-frame-edge);
+  border-radius: var(--r-panel);
+  padding: var(--s2) var(--s3);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s2);
+  flex-wrap: wrap;
+}
+
+.myRankLabel {
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.myRankValue {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--oak-plaque-gold);
+  font-variant-numeric: tabular-nums;
+}
+
+/* 공통 모달 스캐폴딩 (블러 없음, 단색 스크림) */
+.modalScrim {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  background: rgba(24, 16, 10, 0.64);
+  display: grid;
+  place-items: center;
+  padding: var(--s4);
+  overflow-y: auto;
+}
+
+.modalDialog {
+  width: min(640px, 100%);
+  max-height: calc(100dvh - 32px);
+  display: flex;
+  flex-direction: column;
+}
+
+.modalDialogWide {
+  width: min(740px, 100%);
+}
+
+.modalBody {
+  overflow-y: auto;
+  max-height: calc(100dvh - 48px);
+}
+
+.modalHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s2);
+  padding-bottom: var(--s2);
+  border-bottom: 2px solid var(--oak-board-molding);
+}
+
+.modalTitle {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+/* 설정 모달 전용 스타일 */
+.settingsTabs {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--s1);
+  background: var(--oak-inset-bg);
+  border: 2px solid var(--oak-inset-border);
+  border-radius: var(--r-panel);
+  padding: var(--s1);
+}
+
+.settingSection {
+  background: var(--oak-inset-bg);
+  border: 2px solid var(--oak-inset-border);
+  border-radius: var(--r-panel);
+  padding: var(--s3) var(--s4);
+  display: grid;
+  gap: var(--s2);
+}
+
+.settingRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s3);
+  flex-wrap: wrap;
+}
+
+.segmentedRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s2);
+}
+
+.segBtn {
+  min-height: var(--touch);
+  padding: 0 var(--s3);
+  border: 2px solid var(--oak-frame-edge);
+  border-radius: var(--r-input);
+  background: var(--oak-card-bg);
+  color: var(--ink);
+  font-size: 14px;
+  font-weight: 700;
+  box-shadow: var(--shadow);
+}
+
+.segBtn[aria-checked='true'] {
+  background: var(--oak-cta-green);
+  color: #ffffff;
+}
+
+.fontPreviewBox {
+  background: var(--oak-card-bg);
+  border: 2px solid var(--oak-inset-border);
+  border-radius: var(--r-input);
+  padding: var(--s3);
+  font-size: var(--q-font);
+  font-weight: 700;
+  line-height: 1.45;
+}
+
+.inheritedNickBar {
+  background: var(--oak-inset-bg);
+  border: 2px solid var(--oak-inset-border);
+  border-radius: var(--r-panel);
+  padding: var(--s2) var(--s3);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s2);
+  flex-wrap: wrap;
+}
+
+.choiceGrid2 {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--s2);
+}
+
+/* 학교 크롬북 저높이(1366×650 등) 대응: 첫 화면 내 '새 게임' 버튼 100% 수납 보장 */
+@media (max-height: 740px) and (min-width: 960px) {
+  .foreground {
+    padding: var(--s2) var(--s4);
+    gap: var(--s2);
+  }
+  .parchmentInner {
+    padding: var(--s3);
+    gap: var(--s2);
+  }
+  .stageViewport {
+    height: 132px;
+  }
+  .stelePanel {
+    padding: var(--s3);
+    gap: var(--s2);
+  }
+  .steleArtBox {
+    width: 80px;
+    height: 92px;
+  }
+  .meaningCard {
+    padding: var(--s2) var(--s3);
+    min-height: 48px;
+  }
+  .launchDeck {
+    padding: var(--s2) var(--s3);
+    gap: var(--s2);
+  }
+  .primaryCta {
+    min-height: 48px;
+    font-size: 18px;
+  }
+  .rankList {
+    min-height: 210px;
+    max-height: 260px;
+    overflow-y: auto;
+  }
+}
+
+/* 태블릿·휴대폰 단일 열 전환 */
+@media (max-width: 1060px) {
+  .plaqueInner {
+    grid-template-columns: 1fr;
+    justify-items: stretch;
+  }
+  .telemetryStrip {
+    max-width: none;
+  }
+  .headerActions {
+    justify-content: flex-end;
+  }
+}
+
+@media (max-width: 959px) {
+  .warRoomGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 600px) {
+  .foreground {
+    padding: var(--s3);
+  }
+  .parchmentInner {
+    padding: var(--s3);
+  }
+  .telemetryStrip {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .headerActions {
+    justify-content: stretch;
+  }
+  .plaqueBtn {
+    flex: 1 1 auto;
+    justify-content: center;
+    padding: 0 var(--s2);
+  }
+  .stageViewport {
+    height: 148px;
+  }
+  .stageBadgeRight {
+    display: none;
+  }
+  .steleBody {
+    grid-template-columns: 1fr;
+  }
+  .steleArtBox {
+    width: 76px;
+    height: 88px;
+  }
+  .smallBtn,
+  .filterBtn,
+  .tabBtn {
+    min-height: var(--touch);
+  }
+  .tabBar {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .settingsTabs {
+    grid-template-columns: 1fr;
+  }
+  .choiceGrid2 {
+    grid-template-columns: 1fr;
+  }
+  .modalScrim {
+    padding: var(--s2);
+  }
+}
+
+@media (max-width: 360px) {
+  .nickRow {
+    grid-template-columns: 1fr;
+  }
+}

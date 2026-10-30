@@ -3,21 +3,21 @@ import type { DomainEvent } from '../domain/events';
 import { NumericLimitError } from '../domain/num';
 import { advanceTick, applyCommand, replaceUnavailableQuestion, type Command, type CommandResult } from '../domain/run';
 import type { PauseReason, RunState } from '../domain/types';
-import { addRecord, clearSnapshot, writeSnapshot } from '../persistence/db';
+import { addRecord, clearSnapshot, type RunRecord } from '../persistence/db';
+import { queueAndFlushCompletedRun } from '../persistence/lobbyClient';
 import type { Ownership } from '../persistence/ownership';
 import { selectView, viewKey, type ControllerView, type Notice } from './view';
 
 export const TICK_MS = 1000 / 30;
 const MAX_TICKS_PER_FRAME = 5;
 const PERFORMANCE_PAUSE_MS = 250;
-const PERIODIC_SAVE_TICKS = 60;
-/** 학생이 ‘계속’으로 풀 수 있는 정지 이유. 저장 실패·소유권·숫자 한계는 원인이 풀려야 한다(PRD §12.7). */
+/** 학생이 ‘계속’으로 풀 수 있는 정지 이유. 소유권·숫자 한계는 원인이 풀려야 한다(PRD §12.7). */
 export const USER_CLEARABLE: PauseReason[] = ['USER', 'HIDDEN', 'PERFORMANCE', 'RESTORED', 'CONTEXT_LOST'];
 
 export type SaveStatus = ControllerView['saveStatus'];
 
 /**
- * 도메인 상태의 유일한 작성자(PRD §14). 고정 30Hz 틱, 명령 순번, 저장 일정, 화면·렌더러 알림을 맡는다.
+ * 도메인 상태의 유일한 작성자(PRD §14). 고정 30Hz 틱, 명령 순번, 종료 기록, 화면·렌더러 알림을 맡는다.
  * 화면(React)과 렌더러(Phaser)는 이 객체를 읽기만 하고 명령은 dispatch로만 보낸다.
  */
 export class RunController {
@@ -31,10 +31,6 @@ export class RunController {
   private view: ControllerView;
   private listeners = new Set<() => void>();
   private eventListeners = new Set<(events: DomainEvent[]) => void>();
-  private lastSavedTick = 0;
-  private saveSeq: number;
-  private saving: Promise<void> | null = null;
-  private pendingSave: { strict: boolean } | null = null;
   private noticeSeq = 1;
   private hitches: number[] = [];
   /** 다음 논리 틱 시작에 반영할 답안·거래(PRD §3.4(2)). */
@@ -47,14 +43,13 @@ export class RunController {
   notices: Notice[] = [];
   readonly persist: boolean;
 
-  constructor(ctx: GameContext, state: RunState, opts: { saveSeq: number; ownership: Ownership | null }) {
+  constructor(ctx: GameContext, state: RunState, opts: { saveSeq?: number; ownership: Ownership | null; recordOnFinish?: boolean }) {
     this.ctx = ctx;
     this.s = state;
-    this.saveSeq = opts.saveSeq;
     this.ownership = opts.ownership;
-    this.persist = opts.ownership !== null;
-    this.saveStatus = this.persist ? 'saved' : 'disabled';
-    // 이어하기 사이에 철회된 미제출 문항은 시작 전에 바꾼다(PRD §9.5).
+    this.persist = opts.recordOnFinish ?? (opts.ownership !== null);
+    this.saveStatus = 'disabled';
+    // 철회된 미제출 문항은 시작 전에 바꾼다(PRD §9.5).
     replaceUnavailableQuestion(ctx, state);
     this.view = { ...selectView(ctx, state), notices: [], saveStatus: this.saveStatus, renderLost: false };
     this.key = viewKey(state);
@@ -143,19 +138,6 @@ export class RunController {
     this.refresh();
   }
 
-  /** 저장 후 나가기. 밀린 저장까지 모두 끝나야 성공을 알린다(PRD §14.1). */
-  async saveAndExit(): Promise<boolean> {
-    if (!this.persist) return false;
-    this.pause('USER');
-    try {
-      await this.flush(true);
-      while (this.saving) await this.saving;
-      return this.saveStatus === 'saved';
-    } catch {
-      return false;
-    }
-  }
-
   private apply(cmd: Command): CommandResult {
     let result: CommandResult;
     try {
@@ -169,7 +151,6 @@ export class RunController {
     if (!result.ok) return result;
     if (cmd.type === 'pause' || cmd.type === 'resume') this.acc = 0;
     this.publish(result.events);
-    if (cmd.type !== 'resume') this.save(false);
     if (cmd.type === 'quit') void this.finish();
     return result;
   }
@@ -185,16 +166,10 @@ export class RunController {
     for (const cmd of queue) this.apply(cmd);
   }
 
-  /** 원인이 풀려야 하는 정지(저장 실패·수치 한계). 같은 틱의 명령을 취소하고, 이 상태를 저장하지 않는다. */
+  /** 원인이 풀려야 하는 정지(수치 한계 등). 같은 틱의 명령을 취소한다. */
   private halt(reason: PauseReason) {
     this.cancelQueued();
     applyCommand(this.ctx, this.s, { type: 'pause', reason });
-    this.publish([]);
-  }
-
-  async retrySave(): Promise<void> {
-    await this.flush(false);
-    if (this.saveStatus === 'saved') applyCommand(this.ctx, this.s, { type: 'resume', reason: 'STORAGE' });
     this.publish([]);
   }
 
@@ -237,10 +212,8 @@ export class RunController {
       }
       throw error;
     }
-    const important = events.some(e => e.type === 'phase' || e.type === 'waveComplete' || e.type === 'answered');
     this.publish(events);
     if (events.some(e => e.type === 'gameOver')) { void this.finish(); return false; }
-    if (important || (this.s.phase === 'BATTLE' && this.s.tick - this.lastSavedTick >= PERIODIC_SAVE_TICKS)) this.save(false);
     return true;
   }
 
@@ -276,47 +249,19 @@ export class RunController {
     }, tone === 'info' ? 1800 : 1200);
   }
 
-  private save(strict: boolean) {
-    if (!this.persist || this.s.phase === 'GAME_OVER') return;
-    this.lastSavedTick = this.s.tick;
-    void this.flush(strict).catch(() => undefined);
-  }
-
-  /** 쓰기는 하나씩만. 밀린 요청은 최신 상태 하나로 합친다. */
-  private async flush(strict: boolean): Promise<void> {
-    if (!this.persist) return;
-    if (this.saving) {
-      this.pendingSave = { strict: strict || (this.pendingSave?.strict ?? false) };
-      await this.saving;
-      return;
-    }
-    this.saveStatus = 'saving';
-    const snapshot = structuredClone(this.s);
-    this.saving = writeSnapshot(snapshot, ++this.saveSeq, strict)
-      .then(() => { this.saveStatus = 'saved'; if (this.view.saveStatus !== 'saved') this.refresh(); })
-      .catch(() => {
-        this.saveStatus = 'error';
-        // 메모리 최신 상태를 보존한 채 정지하고 같은 상태의 재저장을 제공한다(PRD §14.1).
-        this.halt('STORAGE');
-      })
-      .finally(() => { this.saving = null; });
-    await this.saving;
-    const pending = this.pendingSave;
-    this.pendingSave = null;
-    if (pending) await this.flush(pending.strict);
-  }
-
   private async finish() {
     this.stop();
     if (!this.persist) return;
     const s = this.s;
+    const record: RunRecord = {
+      runId: s.config.runId, nickname: s.config.nickname, grade: s.config.grade, difficulty: s.config.difficulty, mapId: s.config.mapId,
+      pt: s.pt, completedWave: s.completedWave, endedAtWave: s.endedAtWave ?? s.wave, correct: s.stats.correct, wrong: s.stats.wrong, skipped: s.stats.skipped,
+      endedAt: new Date().toISOString(), endReason: s.endReason ?? 'QUIT', contentMode: s.config.contentMode, balanceVersion: s.config.balanceVersion, bankVersion: s.config.bankVersion,
+    };
     try {
-      await addRecord({
-        runId: s.config.runId, nickname: s.config.nickname, grade: s.config.grade, difficulty: s.config.difficulty, mapId: s.config.mapId,
-        pt: s.pt, completedWave: s.completedWave, endedAtWave: s.endedAtWave ?? s.wave, correct: s.stats.correct, wrong: s.stats.wrong, skipped: s.stats.skipped,
-        endedAt: new Date().toISOString(), endReason: s.endReason ?? 'QUIT', contentMode: s.config.contentMode, balanceVersion: s.config.balanceVersion, bankVersion: s.config.bankVersion,
-      });
+      await addRecord(record);
       await clearSnapshot();
+      void queueAndFlushCompletedRun(record, s.config.playerId).catch(() => undefined);
     } catch {
       this.saveStatus = 'error';
     }
@@ -326,7 +271,6 @@ export class RunController {
   private onVisibility = () => {
     if (document.visibilityState === 'hidden' && this.s.phase !== 'GAME_OVER') {
       this.pause('HIDDEN');
-      void this.flush(true).catch(() => undefined);
     } else {
       this.last = performance.now();
       this.acc = 0;

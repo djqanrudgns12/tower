@@ -6,13 +6,29 @@ export const OPTION_IDS = ['a', 'b', 'c', 'd'] as const;
 export type OptionId = (typeof OPTION_IDS)[number];
 
 export const QUESTION_TYPES = ['definition', 'cloze', 'synonym_context', 'antonym_context', 'usage'] as const;
+export type QuestionType = (typeof QUESTION_TYPES)[number];
+
+export const DIFFICULTY_TIERS = ['basic', 'core', 'advanced', 'challenge'] as const;
+export type DifficultyTier = (typeof DIFFICULTY_TIERS)[number];
+
+export const VARIANT_TAGS = ['standard', 'polysemy', 'confusable', 'idiom_proverb', 'dialect'] as const;
+export type VariantTag = (typeof VARIANT_TAGS)[number];
+
+export const DIALECT_REGIONS = ['강원', '경기', '경상', '전라', '충청', '제주', '공통'] as const;
+export type DialectRegion = (typeof DIALECT_REGIONS)[number];
+
+export const BANK_STATUSES = ['published', 'verified_candidate', 'dev_fixture'] as const;
+export type BankStatus = (typeof BANK_STATUSES)[number];
 
 export const bankQuestionSchema = z.object({
   id: z.string().regex(/^g[3-6]-[a-z_-]+-[0-9]{4,}$/),
   revision: z.number().int().min(1),
-  status: z.enum(['published', 'dev_fixture']),
+  status: z.enum(BANK_STATUSES),
   grade: z.number().int().min(3).max(6),
   type: z.enum(QUESTION_TYPES),
+  difficultyTier: z.enum(DIFFICULTY_TIERS).optional(),
+  variantTag: z.enum(VARIANT_TAGS).optional(),
+  dialectRegion: z.enum(DIALECT_REGIONS).optional(),
   target: z.object({ lemma: z.string().min(1), partOfSpeech: z.string().min(1), senseKey: z.string().min(1) }),
   stem: z.string().min(1).max(200),
   options: z.array(z.object({ id: z.enum(OPTION_IDS), text: z.string().min(1).max(120) })).length(4),
@@ -29,13 +45,16 @@ export const bankQuestionSchema = z.object({
   const keys = Object.keys(q.distractorRationales).sort();
   if (JSON.stringify(wrong) !== JSON.stringify(keys)) ctx.addIssue({ code: 'custom', message: `${q.id}: 오답 이유는 오답 3개에 정확히 하나씩` });
   if (!q.id.startsWith(`g${q.grade}-`)) ctx.addIssue({ code: 'custom', message: `${q.id}: 학년과 ID 불일치` });
+  if (q.variantTag === 'dialect' && !q.dialectRegion) ctx.addIssue({ code: 'custom', message: `${q.id}: 방언 문항은 dialectRegion 필수` });
+  if (q.variantTag === 'dialect' && q.difficultyTier !== 'challenge') ctx.addIssue({ code: 'custom', message: `${q.id}: 방언 문항은 difficultyTier=challenge 필수` });
+  if (q.dialectRegion && q.variantTag !== 'dialect') ctx.addIssue({ code: 'custom', message: `${q.id}: dialectRegion은 variantTag=dialect일 때만 허용` });
 });
 
 export const bankFileSchema = z.object({
   bankId: z.string().min(1),
   bankVersion: z.string().min(1),
   grade: z.number().int().min(3).max(6),
-  status: z.enum(['published', 'dev_fixture']),
+  status: z.enum(BANK_STATUSES),
   note: z.string().optional(),
   questions: z.array(bankQuestionSchema).min(1),
 }).strict().superRefine((b, ctx) => {

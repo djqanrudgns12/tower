@@ -1,0 +1,962 @@
+{
+  "reviewId": "Q50-G4-020-codex",
+  "jobId": "QR-Q50-CODEX",
+  "reviewer": {
+    "model": "GPT-6 (Codex)",
+    "tool": "Codex",
+    "freshContext": true,
+    "date": "2026-10-30"
+  },
+  "items": [
+    {
+      "questionId": "g4-argon-0951",
+      "revision": 1,
+      "contentHash": "3978a4320b94eadb806c36a72afa29b09c28676141ac02161be1e67dfc51ac59",
+      "blindChoice": "b",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "uncertain"
+      },
+      "findings": [
+        "사정 헤아림 b; a 요리,c 청소,d 접기는 이해 불가.",
+        "사전 대조: 이해하다 / 동사 / 뜻번호 2 / senseId 557978. 뜻풀이: 「2」 남의 사정을 잘 헤아려 너그러이 받아들이다. = 양해하다 . 문맥·보기와 대조.",
+        "학년 3~4의 일상·학교·자연 맥락 및 basic/standard 적합. 보기의 문법 결합·문장 종결·표면 반복/길이 단서를 점검함.",
+        "해설과 정답키는 블라인드 입력에 없어 explanation=uncertain."
+      ]
+    },
+    {
+      "questionId": "g4-argon-0952",
+      "revision": 1,
+      "contentHash": "930c0ec559b9b144df28866a73ea5933d98479be41614fef26ccba5e02f0fb7e",
+      "blindChoice": "d",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "fail",
+        "explanation": "uncertain"
+      },
+      "findings": [
+        "선수 성원 d; a 방해,c 거절 반대,b 사과 무관.",
+        "사전 대조: 응원 / 명사 / 뜻번호 1 / senseId 332884. 뜻풀이: 「1」 운동 경기 따위에서, 선수들이 힘을 낼 수 있도록 도와주는 일. 노래, 손뼉치기 따위 여러 가지 방식이 있다. 문맥·보기와 대조.",
+        "a 방해을,b 사과을은 조사 불일치. 빈칸을 ‘무엇을 보냈나요?’ 등 독립 선택형으로 재설계.",
+        "해설과 정답키는 블라인드 입력에 없어 explanation=uncertain."
+      ]
+    },
+    {
+      "questionId": "g4-argon-0953",
+      "revision": 1,
+      "contentHash": "286f8ba6044abafdf0a26d086e90e14c908ba251d9512436d744365d2a92ae25",
+      "blindChoice": "d",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "uncertain"
+      },
+      "findings": [
+        "언행 돌이킴 d; a 뽐냄,b 길묻기,c 반환은 반성 아님.",
+        "사전 대조: 반성하다 / 동사 / 뜻번호 1 / senseId 495979. 뜻풀이: 자신의 언행에 대하여 잘못이나 부족함이 없는지 돌이켜 보다. 문맥·보기와 대조.",
+        "학년 3~4의 일상·학교·자연 맥락 및 basic/standard 적합. 보기의 문법 결합·문장 종결·표면 반복/길이 단서를 점검함.",
+        "해설과 정답키는 블라인드 입력에 없어 explanation=uncertain."
+      ]
+    },
+    {
+      "questionId": "g4-argon-0954",
+      "revision": 1,
+      "contentHash": "ce9f5f389865af7ee0acce80890f5fda48b7dafba0cf4c7f067862e4b8e3dc68",
+      "blindChoice": "c",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "fail",
+        "explanation": "uncertain"
+      },
+      "findings": [
+        "당당 자랑 c; a 창피,b 공포,d 지루는 자부 아님.",
+        "사전 대조: 자부심 / 명사 / 뜻번호 1 / senseId 543321. 뜻풀이: 자기 자신 또는 자기와 관련되어 있는 것에 대하여 스스로 그 가치나 능력을 믿고 당당히 여기는 마음. 문맥·보기와 대조.",
+        "‘우리고장’은 ‘우리 고장’으로 띄어 쓸 것.",
+        "해설과 정답키는 블라인드 입력에 없어 explanation=uncertain."
+      ]
+    },
+    {
+      "questionId": "g4-argon-0955",
+      "revision": 1,
+      "contentHash": "8c13f68996b04097acbed8480a82de2f4600ed980643f611ac95892071a98e1d",
+      "blindChoice": "b",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "fail",
+        "explanation": "uncertain"
+      },
+      "findings": [
+        "숨기는 거짓 b; a 정직,c 숨김없음 동의,d 차분은 반대 아님.",
+        "사전 대조: 솔직히 / 부사 / 뜻번호 1 / senseId 199962. 뜻풀이: 거짓이나 숨김이 없이 바르고 곧게. 문맥·보기와 대조.",
+        "‘말씀드렸다에서’는 인용 범위가 맞지 않음. 완결 문장을 인용하고 ‘이 문장에서’로 연결.",
+        "해설과 정답키는 블라인드 입력에 없어 explanation=uncertain."
+      ]
+    },
+    {
+      "questionId": "g4-argon-0956",
+      "revision": 1,
+      "contentHash": "477633da01b96b79ac86eb5fcd15fa00ac1d51320005684aeb384aa2bc3b398b",
+      "blindChoice": "d",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "uncertain"
+      },
+      "findings": [
+        "조심한 선택 d; a 무생각 모순,b 찬물,c 사과는 태도 주체 아님.",
+        "사전 대조: 신중히 / 부사 / 뜻번호 1 / senseId 210880. 뜻풀이: 매우 조심스럽게. ≒ 신후히 . 문맥·보기와 대조.",
+        "학년 3~4의 일상·학교·자연 맥락 및 basic/standard 적합. 보기의 문법 결합·문장 종결·표면 반복/길이 단서를 점검함.",
+        "해설과 정답키는 블라인드 입력에 없어 explanation=uncertain."
+      ]
+    },
+    {
+      "questionId": "g4-argon-0957",
+      "revision": 1,
+      "contentHash": "c94c7546d952375d02dbb9eb2d2980a66e576f83732963b66473afea61c952f9",
+      "blindChoice": "a",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "uncertain"
+      },
+      "findings": [
+        "급한 상황 a; b 느긋,c 조용,d 심심은 다쳐 서두름 아님.",
+        "사전 대조: 급하다 / 형용사 / 뜻번호 1 / senseId 441556. 뜻풀이: 「1」 사정이나 형편이 조금도 지체할 겨를이 없이 빨리 처리하여야 할 상태에 있다. 문맥·보기와 대조.",
+        "학년 3~4의 일상·학교·자연 맥락 및 basic/standard 적합. 보기의 문법 결합·문장 종결·표면 반복/길이 단서를 점검함.",
+        "해설과 정답키는 블라인드 입력에 없어 explanation=uncertain."
+      ]
+    },
+    {
+      "questionId": "g4-argon-0958",
+      "revision": 1,
+      "contentHash": "2eaf66bd0cf606ce950ce2cbb92d6ede7453e8a93758489d4e7389fd6aea8c66",
+      "blindChoice": "d",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "uncertain"
+      },
+      "findings": [
+        "바짝 정신 d; a 잠,b 포만,c 편안은 긴장 아님.",
+        "사전 대조: 긴장하다 / 동사 / 뜻번호 1 / senseId 107482. 뜻풀이: 마음을 조이고 정신을 바짝 차리다. 문맥·보기와 대조.",
+        "학년 3~4의 일상·학교·자연 맥락 및 basic/standard 적합. 보기의 문법 결합·문장 종결·표면 반복/길이 단서를 점검함.",
+        "해설과 정답키는 블라인드 입력에 없어 explanation=uncertain."
+      ]
+    },
+    {
+      "questionId": "g4-argon-0959",
+      "revision": 1,
+      "contentHash": "759685235bf8b34f860feeff83ba982aa45a11f54387c11927f96ff7c7ddfc44",
+      "blindChoice": "a",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "uncertain"
+      },
+      "findings": [
+        "뜻밖 만남 a; b 약속,c 의도,d 계획은 우연 반대.",
+        "사전 대조: 우연히 / 부사 / 뜻번호 1 / senseId 577873. 뜻풀이: 어떤 일이 뜻하지 아니하게 저절로 이루어져 공교롭게. 문맥·보기와 대조.",
+        "학년 3~4의 일상·학교·자연 맥락 및 basic/standard 적합. 보기의 문법 결합·문장 종결·표면 반복/길이 단서를 점검함.",
+        "해설과 정답키는 블라인드 입력에 없어 explanation=uncertain."
+      ]
+    },
+    {
+      "questionId": "g4-argon-0960",
+      "revision": 1,
+      "contentHash": "beedc7186441387368497f2ff85c5c103e6f606ffb3be8125fc9423f5902b173",
+      "blindChoice": "a",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "uncertain"
+      },
+      "findings": [
+        "급변 a; b 서서히,c 차츰,d 단계별은 점점 쪽.",
+        "사전 대조: 점점 / 부사 / 뜻번호 1 / senseId 266541. 뜻풀이: 조금씩 더하거나 덜하여지는 모양. ≒ 초초 . 문맥·보기와 대조.",
+        "학년 3~4의 일상·학교·자연 맥락 및 basic/standard 적합. 보기의 문법 결합·문장 종결·표면 반복/길이 단서를 점검함.",
+        "해설과 정답키는 블라인드 입력에 없어 explanation=uncertain."
+      ]
+    },
+    {
+      "questionId": "g4-argon-0961",
+      "revision": 1,
+      "contentHash": "507cec3af2200c2e6ccc53b67274e1b6dbe8d9760b6c578841437bfbe7a0ae52",
+      "blindChoice": "c",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "uncertain"
+      },
+      "findings": [
+        "노력끝 성취 c; a 연필물,b 의자구름,d 컵옷은 마침내 구문 불가.",
+        "사전 대조: 마침내 / 부사 / 뜻번호 1 / senseId 147485. 뜻풀이: 드디어 마지막에는. ≒ 급기 . 문맥·보기와 대조.",
+        "학년 3~4의 일상·학교·자연 맥락 및 basic/standard 적합. 보기의 문법 결합·문장 종결·표면 반복/길이 단서를 점검함.",
+        "해설과 정답키는 블라인드 입력에 없어 explanation=uncertain."
+      ]
+    },
+    {
+      "questionId": "g4-argon-0962",
+      "revision": 1,
+      "contentHash": "f542d967693921be493747621a5a7d72c3be9288005221f858fe37ee40f53132",
+      "blindChoice": "c",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "uncertain"
+      },
+      "findings": [
+        "전처럼 c; a 새로,b 갑자기,d 우연은 지속 아님.",
+        "사전 대조: 여전히 / 부사 / 뜻번호 1 / senseId 226465. 뜻풀이: 전과 같이. 문맥·보기와 대조.",
+        "학년 3~4의 일상·학교·자연 맥락 및 basic/standard 적합. 보기의 문법 결합·문장 종결·표면 반복/길이 단서를 점검함.",
+        "해설과 정답키는 블라인드 입력에 없어 explanation=uncertain."
+      ]
+    },
+    {
+      "questionId": "g4-argon-0963",
+      "revision": 1,
+      "contentHash": "abe0d812a5b23f2b28805b6ca843673e45905a4df79ef9362a6c7c9e4a0ad4f4",
+      "blindChoice": "a",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "uncertain"
+      },
+      "findings": [
+        "기대반전 a; b 계획대로,c 불변,d 몰래는 도리어 아님.",
+        "사전 대조: 도리어 / 부사 / 뜻번호 1 / senseId 129559. 뜻풀이: 예상이나 기대 또는 일반적인 생각과는 반대되거나 다르게. 문맥·보기와 대조.",
+        "학년 3~4의 일상·학교·자연 맥락 및 basic/standard 적합. 보기의 문법 결합·문장 종결·표면 반복/길이 단서를 점검함.",
+        "해설과 정답키는 블라인드 입력에 없어 explanation=uncertain."
+      ]
+    },
+    {
+      "questionId": "g4-argon-0964",
+      "revision": 1,
+      "contentHash": "802b1cbabf6d82efe3d8e117a1586ad394dc7ce5d55485522ae05c111812b0e1",
+      "blindChoice": "a",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "uncertain"
+      },
+      "findings": [
+        "그다지 a; b 매우,c 꼭,d 갑자기는 별로 아님.",
+        "사전 대조: 별로 / 부사 / 뜻번호 1 / senseId 478974. 뜻풀이: ((부정을 뜻하는 말과 함께 쓰여)) 이렇다 하게 따로. 또는 그다지 다르게. 문맥·보기와 대조.",
+        "학년 3~4의 일상·학교·자연 맥락 및 core/polysemy 적합. 보기의 문법 결합·문장 종결·표면 반복/길이 단서를 점검함.",
+        "해설과 정답키는 블라인드 입력에 없어 explanation=uncertain."
+      ]
+    },
+    {
+      "questionId": "g4-argon-0965",
+      "revision": 1,
+      "contentHash": "aacdf7f963b7490df09d2806a4caf3dba6fd55d5f59f5ff1b6937281c8bd0f1d",
+      "blindChoice": "c",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "uncertain"
+      },
+      "findings": [
+        "어떤경우도 c; a 가끔,b 여유,c 아닌 d 기분 조건은 절대 아님.",
+        "사전 대조: 절대로 / 부사 / 뜻번호 1 / senseId 396727. 뜻풀이: 어떠한 경우에도 반드시. ≒ 절대 . 문맥·보기와 대조.",
+        "학년 3~4의 일상·학교·자연 맥락 및 core/standard 적합. 보기의 문법 결합·문장 종결·표면 반복/길이 단서를 점검함.",
+        "해설과 정답키는 블라인드 입력에 없어 explanation=uncertain."
+      ]
+    },
+    {
+      "questionId": "g4-argon-0966",
+      "revision": 1,
+      "contentHash": "787b35b41439dbd54bc3f9db9aeb86cf5dec19902f665f8d23d170b55043a6fa",
+      "blindChoice": "d",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "uncertain"
+      },
+      "findings": [
+        "희미 d; a 뚜렷,b 선명,c 또렷은 분명 쪽.",
+        "사전 대조: 분명히 / 부사 / 뜻번호 1 / senseId 11462. 뜻풀이: 「1」 모습이나 소리 따위가 흐릿함이 없이 똑똑하고 뚜렷하게. 문맥·보기와 대조.",
+        "학년 3~4의 일상·학교·자연 맥락 및 core/polysemy 적합. 보기의 문법 결합·문장 종결·표면 반복/길이 단서를 점검함.",
+        "해설과 정답키는 블라인드 입력에 없어 explanation=uncertain."
+      ]
+    },
+    {
+      "questionId": "g4-argon-0967",
+      "revision": 1,
+      "contentHash": "9d1398ed022eb9c34772ba3ee320b2da5c6680a19b5f5fa6416107a3dc005a18",
+      "blindChoice": "d",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "uncertain"
+      },
+      "findings": [
+        "짧게 정리 d; a 귤,b 공,c 우유는 간략히 의미 불가.",
+        "사전 대조: 간략히 / 부사 / 뜻번호 1 / senseId 486208. 뜻풀이: 간단하고 짤막하게. ≒ 간약히 . 문맥·보기와 대조.",
+        "학년 3~4의 일상·학교·자연 맥락 및 core/standard 적합. 보기의 문법 결합·문장 종결·표면 반복/길이 단서를 점검함.",
+        "해설과 정답키는 블라인드 입력에 없어 explanation=uncertain."
+      ]
+    },
+    {
+      "questionId": "g4-argon-0968",
+      "revision": 1,
+      "contentHash": "491d40d7fceef0c3deebc6cc447341b7ad5fa66d5631f67715f8dd23ed96436d",
+      "blindChoice": "b",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "uncertain"
+      },
+      "findings": [
+        "경치 전망 b; a 소음,c 걱정,d 실수는 한눈에 보임 아님.",
+        "사전 대조: 전망 / 명사 / 뜻번호 1 / senseId 333000. 뜻풀이: 「1」 넓고 먼 곳을 멀리 바라봄. 또는 멀리 내다보이는 경치. 문맥·보기와 대조.",
+        "학년 3~4의 일상·학교·자연 맥락 및 core/polysemy 적합. 보기의 문법 결합·문장 종결·표면 반복/길이 단서를 점검함.",
+        "해설과 정답키는 블라인드 입력에 없어 explanation=uncertain."
+      ]
+    },
+    {
+      "questionId": "g4-argon-0969",
+      "revision": 1,
+      "contentHash": "d8491f86453a128ca9bf5c135e7c0380adff86c13a3fccd3bf6f99130ba3514e",
+      "blindChoice": "a",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "uncertain"
+      },
+      "findings": [
+        "산아래 a; b 정상,c 해변,d 하구는 산기슭 아님.",
+        "사전 대조: 산기슭 / 명사 / 뜻번호 1 / senseId 535153. 뜻풀이: 산의 비탈이 끝나는 아랫부분. ≒ 멧기슭 , 산각 , 산록 , 산족 , 초지 . 문맥·보기와 대조.",
+        "학년 3~4의 일상·학교·자연 맥락 및 core/standard 적합. 보기의 문법 결합·문장 종결·표면 반복/길이 단서를 점검함.",
+        "해설과 정답키는 블라인드 입력에 없어 explanation=uncertain."
+      ]
+    },
+    {
+      "questionId": "g4-argon-0970",
+      "revision": 1,
+      "contentHash": "355939a65ca03444b00eccff2bfa5755e9c0cfd4cc072440e6887bc83adf709e",
+      "blindChoice": "b",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "fail",
+        "language": "pass",
+        "explanation": "uncertain"
+      },
+      "findings": [
+        "폭포수 b; a 먼지,c 소나기,d 회오리는 절벽 낙수 아님.",
+        "사전 대조: 폭포 / 명사 / 뜻번호 1 / senseId 480742. 뜻풀이: 「1」 절벽에서 곧장 쏟아져 내리는 물줄기. = 폭포수 . 문맥·보기와 대조.",
+        "폭포 기본 뜻의 동의어만 물어 polysemy 태그 부적합.",
+        "해설과 정답키는 블라인드 입력에 없어 explanation=uncertain."
+      ]
+    },
+    {
+      "questionId": "g4-argon-0971",
+      "revision": 1,
+      "contentHash": "3b10d1fc9be9d989ee4b8798c20a9665281fa9f2548a955e0fb42048b8ba7988",
+      "blindChoice": "c",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "uncertain"
+      },
+      "findings": [
+        "산봉우리 c; a,b,d 갯벌 쪽이며 바다접촉 대비.",
+        "사전 대조: 갯벌 / 명사 / 뜻번호 1 / senseId 412777. 뜻풀이: 밀물 때는 물에 잠기고 썰물 때는 물 밖으로 드러나는 모래 점토질의 평탄한 땅. 펄 갯벌, 혼성 갯벌, 모래 갯벌 따위가 있으며 생물상이 다양하게 분포한다. ≒ 간석 , 간석지 , 개펄 , 펄 , 해택 . 문맥·보기와 대조.",
+        "학년 3~4의 일상·학교·자연 맥락 및 core/standard 적합. 보기의 문법 결합·문장 종결·표면 반복/길이 단서를 점검함.",
+        "해설과 정답키는 블라인드 입력에 없어 explanation=uncertain."
+      ]
+    },
+    {
+      "questionId": "g4-argon-0972",
+      "revision": 1,
+      "contentHash": "707e733fc7e91ba023d08458e7426f4e0d71fef796fa8a99e30628f65f069a63",
+      "blindChoice": "d",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "fail",
+        "language": "pass",
+        "explanation": "uncertain"
+      },
+      "findings": [
+        "바다물결 d; a 지우개,b 책상,c 국밥은 파도 불가.",
+        "사전 대조: 파도 / 명사 / 뜻번호 1 / senseId 517520. 뜻풀이: 「1」 바다에 이는 물결. ≒ 도란 , 도파 . 문맥·보기와 대조.",
+        "파도 뜻을 미리 주고 비문만 비교하여 polysemy 태그 부적합.",
+        "해설과 정답키는 블라인드 입력에 없어 explanation=uncertain."
+      ]
+    },
+    {
+      "questionId": "g4-argon-0973",
+      "revision": 1,
+      "contentHash": "0dbe8ffc4cc632a0048fcd347c02f9bc1965c9a836774538175ca9944675233e",
+      "blindChoice": "c",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "fail",
+        "explanation": "uncertain"
+      },
+      "findings": [
+        "항로 빛 등대 c; a 그물,b 모래,d 조개는 발광탑 아님.",
+        "사전 대조: 등대 / 명사 / 뜻번호 1 / senseId 367578. 뜻풀이: 「1」 항로 표지의 하나. 바닷가나 섬 같은 곳에 탑 모양으로 높이 세워 밤에 다니는 배에 목표, 뱃길, 위험한 곳 따위를 알려 주려고 불을 켜 비추는 시설이다. ≒ 광탑 . 문맥·보기와 대조.",
+        "a 그물가는 조사 불일치. 그물이 되도록 공통 문장구조 수정.",
+        "해설과 정답키는 블라인드 입력에 없어 explanation=uncertain."
+      ]
+    },
+    {
+      "questionId": "g4-argon-0974",
+      "revision": 1,
+      "contentHash": "d37d2858f0fdba8c2810b08128300c192912f88694afecc2a40bf237a8ff7f52",
+      "blindChoice": "d",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "uncertain"
+      },
+      "findings": [
+        "비닐재배시설 d; a 방앗간,b 부두,c 박물관은 온실 아님.",
+        "사전 대조: 비닐하우스 / 명사 / 뜻번호 1 / senseId 387132. 뜻풀이: 비닐로 바깥을 가린 온상. 채소류나 화훼류의 촉성 재배나 열대 식물을 재배하기 위하여 널리 쓴다. 문맥·보기와 대조.",
+        "학년 3~4의 일상·학교·자연 맥락 및 core/standard 적합. 보기의 문법 결합·문장 종결·표면 반복/길이 단서를 점검함.",
+        "해설과 정답키는 블라인드 입력에 없어 explanation=uncertain."
+      ]
+    },
+    {
+      "questionId": "g4-argon-0975",
+      "revision": 1,
+      "contentHash": "f297d8b93aed2365ba4e3acd6c275d016b971cae89a4432d9fa909e7f822f846",
+      "blindChoice": "b",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "uncertain"
+      },
+      "findings": [
+        "미술전시 b; a 수리,c 시장,d 정류는 미술관 아님.",
+        "사전 대조: 미술관 / 명사 / 뜻번호 1 / senseId 348008. 뜻풀이: 미술품을 전시하는 시설. 문맥·보기와 대조.",
+        "학년 3~4의 일상·학교·자연 맥락 및 core/standard 적합. 보기의 문법 결합·문장 종결·표면 반복/길이 단서를 점검함.",
+        "해설과 정답키는 블라인드 입력에 없어 explanation=uncertain."
+      ]
+    },
+    {
+      "questionId": "g4-argon-0976",
+      "revision": 1,
+      "contentHash": "112048b7cd2d5da102569432e2cf40bbd90fe720549fb6b281a3ebd9d78ad8ef",
+      "blindChoice": "c",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "uncertain"
+      },
+      "findings": [
+        "비공개 은닉 c; a 공개,b 진열,d 소개는 전시 쪽.",
+        "사전 대조: 전시회 / 명사 / 뜻번호 1 / senseId 264400. 뜻풀이: 특정한 물건을 벌여 차려 놓고 일반에게 참고가 되게 하는 모임. 문맥·보기와 대조.",
+        "학년 3~4의 일상·학교·자연 맥락 및 core/standard 적합. 보기의 문법 결합·문장 종결·표면 반복/길이 단서를 점검함.",
+        "해설과 정답키는 블라인드 입력에 없어 explanation=uncertain."
+      ]
+    },
+    {
+      "questionId": "g4-argon-0977",
+      "revision": 1,
+      "contentHash": "d3a011a7cfc0b4bac502db0f9d1f84238dc9815683e41a8795130093072c0469",
+      "blindChoice": "b",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "uncertain",
+        "language": "pass",
+        "explanation": "uncertain"
+      },
+      "findings": [
+        "영상 보고듣기 b; a 끈,c 국물,d 꽃은 시청 불가.",
+        "사전 대조: 시청 / 명사 / 뜻번호 1 / senseId 211828. 뜻풀이: 눈으로 보고 귀로 들음. ≒ 청시 . 문맥·보기와 대조.",
+        "시청=보고듣기 뜻을 미리 주고 비문만 비교해 polysemy 태그를 뒷받침하지 못함.",
+        "해설과 정답키는 블라인드 입력에 없어 explanation=uncertain."
+      ]
+    },
+    {
+      "questionId": "g4-argon-0978",
+      "revision": 1,
+      "contentHash": "afdd9553a63ee7b72f7bdb169692dc81df7b3b1ce3297605e61b4b88b833d0c4",
+      "blindChoice": "b",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "uncertain"
+      },
+      "findings": [
+        "심하게 b; a 즐거움은 다른 뜻,c 조금 반대,d 몰래 무관.",
+        "사전 대조: 실컷 / 부사 / 뜻번호 2 / senseId 594099. 뜻풀이: 「2」 아주 심하게. 문맥·보기와 대조.",
+        "학년 3~4의 일상·학교·자연 맥락 및 advanced/polysemy 적합. 보기의 문법 결합·문장 종결·표면 반복/길이 단서를 점검함.",
+        "해설과 정답키는 블라인드 입력에 없어 explanation=uncertain."
+      ]
+    },
+    {
+      "questionId": "g4-argon-0979",
+      "revision": 1,
+      "contentHash": "9571b7a88d7e0088242a1e2ffaeedeebe55311b9f28c0250e2eb249e92d81b40",
+      "blindChoice": "a",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "fail",
+        "language": "pass",
+        "explanation": "uncertain"
+      },
+      "findings": [
+        "의병 a; b 부사 다른 말,c 수확,d 이사는 구국 봉기 아님.",
+        "사전 대조: 거의 / 명사 / 뜻번호 1 / senseId null. 뜻풀이: 의병을 일으킴. 문맥·보기와 대조.",
+        "거의2 의병 봉기는 희귀 역사 한자어로 4학년 일상범위에 부적합. 일반 거의 또는 사전자료 제공으로 변경.",
+        "해설과 정답키는 블라인드 입력에 없어 explanation=uncertain."
+      ]
+    },
+    {
+      "questionId": "g4-argon-0980",
+      "revision": 1,
+      "contentHash": "a4db5ce99a2bc16c15ca1272b2feb4246882dd09c2cbcdaa30558ae278ef1a97",
+      "blindChoice": "c",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "fail",
+        "language": "pass",
+        "explanation": "uncertain"
+      },
+      "findings": [
+        "비할없이 c; a 조금,b 우연,d 불변은 무척 아님.",
+        "사전 대조: 무척 / 부사 / 뜻번호 1 / senseId 568694. 뜻풀이: 다른 것과 견줄 수 없이. 문맥·보기와 대조.",
+        "무척 기본 뜻만 출제한 advanced/polysemy 부적합.",
+        "해설과 정답키는 블라인드 입력에 없어 explanation=uncertain."
+      ]
+    },
+    {
+      "questionId": "g4-argon-0981",
+      "revision": 1,
+      "contentHash": "c6906a202411e0984ab942b45958e5c71c493597705ade56bb9d4980201ff65b",
+      "blindChoice": "b",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "uncertain"
+      },
+      "findings": [
+        "가장 b; a 마지막,c 가끔,d 억지는 최고 정도 아님.",
+        "사전 대조: 제일 / 부사 / 뜻번호 2 / senseId 594116. 뜻풀이: 여럿 가운데 가장. 문맥·보기와 대조.",
+        "학년 3~4의 일상·학교·자연 맥락 및 advanced/polysemy 적합. 보기의 문법 결합·문장 종결·표면 반복/길이 단서를 점검함.",
+        "해설과 정답키는 블라인드 입력에 없어 explanation=uncertain."
+      ]
+    },
+    {
+      "questionId": "g4-argon-0982",
+      "revision": 1,
+      "contentHash": "bfc5df2361f66a52d76f30e3edce9f6981bee74af28926ef5d140c6a5c1af5f4",
+      "blindChoice": "b",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "fail",
+        "language": "pass",
+        "explanation": "uncertain"
+      },
+      "findings": [
+        "조금도 도무지 b; a 제법,c 불변,d 점진은 전혀 아님.",
+        "사전 대조: 전혀 / 부사 / 뜻번호 1 / senseId 264929. 뜻풀이: ‘도무지’, ‘완전히’의 뜻을 나타내는 말. ≒ 만만 , 전연 . 문맥·보기와 대조.",
+        "전혀 기본 뜻만 출제한 advanced/polysemy 부적합.",
+        "해설과 정답키는 블라인드 입력에 없어 explanation=uncertain."
+      ]
+    },
+    {
+      "questionId": "g4-argon-0983",
+      "revision": 1,
+      "contentHash": "144fe75ae010aa94349690ebe99ac76be12aee3863e2116d6cecc5909e8783b5",
+      "blindChoice": "d",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "uncertain"
+      },
+      "findings": [
+        "틀림없이 d; a 누르기 다른 뜻,b 가끔,c 급작은 꼭 아님.",
+        "사전 대조: 꼭 / 부사 / 뜻번호 1 / senseId 368304. 뜻풀이: 「1」 어떤 일이 있어도 틀림없이. 문맥·보기와 대조.",
+        "학년 3~4의 일상·학교·자연 맥락 및 advanced/polysemy 적합. 보기의 문법 결합·문장 종결·표면 반복/길이 단서를 점검함.",
+        "해설과 정답키는 블라인드 입력에 없어 explanation=uncertain."
+      ]
+    },
+    {
+      "questionId": "g4-argon-0984",
+      "revision": 1,
+      "contentHash": "9dac6153f372e5b33037082998ac7199404df66d027c6f044ba25ba8cf310d98",
+      "blindChoice": "d",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "fail",
+        "language": "pass",
+        "explanation": "uncertain"
+      },
+      "findings": [
+        "분명자세 d; a 대충,b 작은소리,c 거짓은 소상 아님.",
+        "사전 대조: 소상히 / 부사 / 뜻번호 1 / senseId 573439. 뜻풀이: 분명하고 자세하게. 문맥·보기와 대조.",
+        "소상히 기본 뜻만 출제한 advanced/polysemy 부적합.",
+        "해설과 정답키는 블라인드 입력에 없어 explanation=uncertain."
+      ]
+    },
+    {
+      "questionId": "g4-argon-0985",
+      "revision": 1,
+      "contentHash": "67f33022c03622734dd5bb7f25ea00f0393b047d9d4e5f2624af4f3c735a6b44",
+      "blindChoice": "b",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "uncertain"
+      },
+      "findings": [
+        "눈앞정경 b; a 방울 동음,c 양념,d 청소도구는 장면 아님.",
+        "사전 대조: 풍경 / 명사 / 뜻번호 2 / senseId 58621. 뜻풀이: 「2」 어떤 정경이나 상황. 문맥·보기와 대조.",
+        "학년 3~4의 일상·학교·자연 맥락 및 advanced/polysemy 적합. 보기의 문법 결합·문장 종결·표면 반복/길이 단서를 점검함.",
+        "해설과 정답키는 블라인드 입력에 없어 explanation=uncertain."
+      ]
+    },
+    {
+      "questionId": "g4-argon-0986",
+      "revision": 1,
+      "contentHash": "efb2e7cfa05d71c4f97a73254cb350d9d365b51ac7630b2fda461e383f3ad8f8",
+      "blindChoice": "c",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "fail",
+        "language": "pass",
+        "explanation": "uncertain"
+      },
+      "findings": [
+        "자연모습 c; a 시각,b 농기구,d 계측기는 경치 아님.",
+        "사전 대조: 경치 / 명사 / 뜻번호 1 / senseId 376949. 뜻풀이: 산이나 들, 강, 바다 따위의 자연이나 지역의 모습. ≒ 경 , 경개 , 경광 , 경상 , 경상 , 경색 , 경취 , 물화 , 풍경 , 풍광 , 풍물 , 풍색 . 문맥·보기와 대조.",
+        "경치 기본 뜻만 출제한 advanced/polysemy 부적합.",
+        "해설과 정답키는 블라인드 입력에 없어 explanation=uncertain."
+      ]
+    },
+    {
+      "questionId": "g4-argon-0987",
+      "revision": 1,
+      "contentHash": "1cb528f711343ee25a430e15bd38dc2f91b2f87af93f34d73f6cf18a504ca697",
+      "blindChoice": "a",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "uncertain",
+        "explanation": "uncertain"
+      },
+      "findings": [
+        "중력 직각 a; b 수직,c 곡선,d 꺾임은 수평 아님.",
+        "사전 대조: 수평선 / 명사 / 뜻번호 2 / senseId 46544. 뜻풀이: 「2」 중력의 방향과 직각을 이루는 선. 문맥·보기와 대조.",
+        "물 표면은 면이고 흔들며 기울일 때 항상 수평인 것도 아님. ‘컵을 기울인 뒤 물이 잔잔해지면 옆에서 본 수면은’으로 정확히 설명.",
+        "해설과 정답키는 블라인드 입력에 없어 explanation=uncertain."
+      ]
+    },
+    {
+      "questionId": "g4-argon-0988",
+      "revision": 1,
+      "contentHash": "1e5707e5bba46840cae6e9b8a62534d5f9253aca3272c6ca6051e9571705a9d1",
+      "blindChoice": "b",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "fail",
+        "language": "pass",
+        "explanation": "uncertain"
+      },
+      "findings": [
+        "땅하늘 경계 b; a 절벽,c 산길,d 다리는 지평 아님.",
+        "사전 대조: 지평선 / 명사 / 뜻번호 1 / senseId 517113. 뜻풀이: 「1」 편평한 대지의 끝과 하늘이 맞닿아 경계를 이루는 선. ≒ 스카이라인 , 지평 . 문맥·보기와 대조.",
+        "지평선 기본 뜻만 출제한 advanced/polysemy 부적합.",
+        "해설과 정답키는 블라인드 입력에 없어 explanation=uncertain."
+      ]
+    },
+    {
+      "questionId": "g4-argon-0989",
+      "revision": 1,
+      "contentHash": "d8aacfe726d7291cab79429dd215e78f524190a6074ce5af9f3fceb367a3d72d",
+      "blindChoice": "a",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "fail",
+        "language": "pass",
+        "explanation": "uncertain"
+      },
+      "findings": [
+        "여러가지 a; b 동일,c 적음,d 작고느림은 다양 아님.",
+        "사전 대조: 다양하다 / 형용사 / 뜻번호 1 / senseId 122708. 뜻풀이: 모양, 빛깔, 형태, 양식 따위가 여러 가지로 많다. 문맥·보기와 대조.",
+        "다양하다 기본 뜻만 출제한 advanced/polysemy 부적합.",
+        "해설과 정답키는 블라인드 입력에 없어 explanation=uncertain."
+      ]
+    },
+    {
+      "questionId": "g4-argon-0990",
+      "revision": 1,
+      "contentHash": "3e3933f4b515600bcaf5c913992695fd3a6c808aa4b365be1dd077d161edaf50",
+      "blindChoice": "b",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "uncertain"
+      },
+      "findings": [
+        "기록 맞섬 b; a 포기,c 전도,d 절도는 도전 아님.",
+        "사전 대조: 도전 / 명사 / 뜻번호 2 / senseId 38296. 뜻풀이: 「2」 어려운 사업이나 기록 경신 따위에 맞섬을 비유적으로 이르는 말. 문맥·보기와 대조.",
+        "학년 3~4의 일상·학교·자연 맥락 및 challenge/polysemy 적합. 보기의 문법 결합·문장 종결·표면 반복/길이 단서를 점검함.",
+        "해설과 정답키는 블라인드 입력에 없어 explanation=uncertain."
+      ]
+    },
+    {
+      "questionId": "g4-argon-0991",
+      "revision": 1,
+      "contentHash": "00eab9245c3431ab83d71096cdc53d398ef1d317dddb6f8c34cbf2bd2fccf66b",
+      "blindChoice": "b",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "uncertain"
+      },
+      "findings": [
+        "옳음 강조 b; a 미래,c 거짓,d 오기는 사실이지 담화 아님.",
+        "사전 대조: 사실 / 명사 / 뜻번호 3 / senseId 590901. 뜻풀이: 「3」 ((‘사실이지’ 또는 ‘사실 말이지’ 꼴로 쓰여)) 자신의 말이 옳다고 강조할 때 쓰는 말. 문맥·보기와 대조.",
+        "학년 3~4의 일상·학교·자연 맥락 및 challenge/polysemy 적합. 보기의 문법 결합·문장 종결·표면 반복/길이 단서를 점검함.",
+        "해설과 정답키는 블라인드 입력에 없어 explanation=uncertain."
+      ]
+    },
+    {
+      "questionId": "g4-argon-0992",
+      "revision": 1,
+      "contentHash": "c0c20cf56c292fd2676f4b3354b4061811ed805640c2eb967b43960a7baf00d2",
+      "blindChoice": "a",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "uncertain",
+        "language": "pass",
+        "explanation": "uncertain"
+      },
+      "findings": [
+        "사람 연결 a; b 국,c 비,d 신발은 소개 불가.",
+        "사전 대조: 소개하다 / 동사 / 뜻번호 2 / senseId 45379. 뜻풀이: 「2」 서로 모르는 사람들 사이에서 양편이 알고 지내도록 관계를 맺어 주다. 문맥·보기와 대조.",
+        "소개 뜻2를 미리 주고 비문만 비교해 challenge 의미판별 요구 부족.",
+        "해설과 정답키는 블라인드 입력에 없어 explanation=uncertain."
+      ]
+    },
+    {
+      "questionId": "g4-argon-0993",
+      "revision": 1,
+      "contentHash": "ac422529cfef303ef9c12697812ecc6ac51c89e43fec8849d6bedd0164aedc52",
+      "blindChoice": "d",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "uncertain",
+        "language": "fail",
+        "explanation": "uncertain"
+      },
+      "findings": [
+        "대상 널리 소개 d; a 지우기,b 수박,c 끈묶기는 알리다 불가.",
+        "사전 대조: 알리다 / 동사 / 뜻번호 2 / senseId 410787. 뜻풀이: 「2」 다른 사람에게 어떤 것을 소개하여 알게 하다. 문맥·보기와 대조.",
+        "알리다 뜻2를 미리 주고 비문만 비교해 challenge 의미판별 요구 부족. ‘우리고장’은 ‘우리 고장’으로 수정.",
+        "해설과 정답키는 블라인드 입력에 없어 explanation=uncertain."
+      ]
+    },
+    {
+      "questionId": "g4-argon-0994",
+      "revision": 1,
+      "contentHash": "06a5a473a33d55fe65bffa0f1e54043dd75c2b8dbc0a10a9a257412b0e3545c6",
+      "blindChoice": "c",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "fail",
+        "language": "pass",
+        "explanation": "uncertain"
+      },
+      "findings": [
+        "신문 공개 c; a 음료,b 우산,d 절단은 발표 불가.",
+        "사전 대조: 발표 / 명사 / 뜻번호 1 / senseId 162817. 뜻풀이: 어떤 사실이나 결과, 작품 따위를 세상에 널리 드러내어 알림. ≒ 표발 . 문맥·보기와 대조.",
+        "발표 기본 뜻을 미리 주고 비문만 비교해 challenge/polysemy 부적합.",
+        "해설과 정답키는 블라인드 입력에 없어 explanation=uncertain."
+      ]
+    },
+    {
+      "questionId": "g4-argon-0995",
+      "revision": 1,
+      "contentHash": "22e001d490b580d976edf1f7fb28c31e28f5e552122cc97ef99b66d6853d1fd4",
+      "blindChoice": "a",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "uncertain"
+      },
+      "findings": [
+        "뒤쪽 경치 a; b 역사원인 다른 뜻,c 천,d 불빛은 배경 아님.",
+        "사전 대조: 배경 / 명사 / 뜻번호 1 / senseId 10316. 뜻풀이: 「1」 뒤쪽의 경치. ≒ 뒷배경 . 문맥·보기와 대조.",
+        "학년 3~4의 일상·학교·자연 맥락 및 challenge/polysemy 적합. 보기의 문법 결합·문장 종결·표면 반복/길이 단서를 점검함.",
+        "해설과 정답키는 블라인드 입력에 없어 explanation=uncertain."
+      ]
+    },
+    {
+      "questionId": "g4-argon-0996",
+      "revision": 1,
+      "contentHash": "306a8fb70cdedf3a2bbb6ffbaf9e12bbafaee4ebdd7b522d0f8ceccb9c65b0d3",
+      "blindChoice": "c",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "uncertain"
+      },
+      "findings": [
+        "본디 자체 c; a 변형,b 모방놀이,d 미래는 명사 그대로 아님.",
+        "사전 대조: 그대로 / 명사 / 뜻번호 3 / senseId 1374058. 뜻풀이: 「1」 그 자체. 문맥·보기와 대조.",
+        "학년 3~4의 일상·학교·자연 맥락 및 challenge/polysemy 적합. 보기의 문법 결합·문장 종결·표면 반복/길이 단서를 점검함.",
+        "해설과 정답키는 블라인드 입력에 없어 explanation=uncertain."
+      ]
+    },
+    {
+      "questionId": "g4-argon-0997",
+      "revision": 1,
+      "contentHash": "85c8fc5227b44c8dd83b979c78ff1ac4820f7b210fd9ca9bb2ecbde9b6efa694",
+      "blindChoice": "a",
+      "verdicts": {
+        "source": "uncertain",
+        "uniqueness": "pass",
+        "grade": "uncertain",
+        "language": "pass",
+        "explanation": "uncertain"
+      },
+      "findings": [
+        "우연 만남 a; b 연필,c 음료옷,d 달수는 혹시 구문 불가. 조건절이라 가정 뜻도 가능.",
+        "사전 대조: 혹시 / 부사 / 뜻번호 2 / senseId 410623. 뜻풀이: 「2」 어쩌다가 우연히. ≒ 혹 , 혹야 , 혹여 , 혹자 . 문맥·보기와 대조.",
+        "‘혹시 친구를 마주치면’은 가정 의미 뜻1도 자연스러움. 실제 우연 만남으로 뜻2를 명확히 하고 비문뿐인 오답을 개선.",
+        "해설과 정답키는 블라인드 입력에 없어 explanation=uncertain."
+      ]
+    },
+    {
+      "questionId": "g4-argon-0998",
+      "revision": 1,
+      "contentHash": "a946f528a95637d2a04efdbd230e9d94584de60868d6b773f0a12275a2844470",
+      "blindChoice": "d",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "uncertain",
+        "language": "pass",
+        "explanation": "uncertain"
+      },
+      "findings": [
+        "양보절 d; a 가위,b 토마토책,c 신발은 아무리 호응 없음.",
+        "사전 대조: 아무리 / 부사 / 뜻번호 2 / senseId 31629. 뜻풀이: 「2」 비록 그렇다 하더라도. ≒ 암만 . 문맥·보기와 대조.",
+        "아무리 뜻2를 미리 주고 비문만 비교해 challenge 의미판별 요구 부족.",
+        "해설과 정답키는 블라인드 입력에 없어 explanation=uncertain."
+      ]
+    },
+    {
+      "questionId": "g4-argon-0999",
+      "revision": 1,
+      "contentHash": "c121d9195a78e4f11db03083d41d1c78bb16665147b4a613c0ec983261fd4e59",
+      "blindChoice": "a",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "uncertain",
+        "language": "pass",
+        "explanation": "uncertain"
+      },
+      "findings": [
+        "고작 셋 a; b 의자,c 하늘,d 바람옷은 겨우 구문 불가.",
+        "사전 대조: 겨우 / 부사 / 뜻번호 2 / senseId 33373. 뜻풀이: 「2」 기껏해야 고작. 문맥·보기와 대조.",
+        "겨우 뜻2를 미리 주고 비문만 비교해 challenge 의미판별 요구 부족.",
+        "해설과 정답키는 블라인드 입력에 없어 explanation=uncertain."
+      ]
+    },
+    {
+      "questionId": "g4-argon-1000",
+      "revision": 1,
+      "contentHash": "983420fe6d50d35696b8653f1bd8e89c3ad1bced1684adddd9b25cfdc540aace",
+      "blindChoice": "c",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "uncertain",
+        "language": "pass",
+        "explanation": "uncertain"
+      },
+      "findings": [
+        "괜찮은 전 c; a 지우개음료,b 골대맛,d 우산요리는 꽤 용례 불가.",
+        "사전 대조: 꽤 / 부사 / 뜻번호 2 / senseId 555117. 뜻풀이: 「2」 제법 괜찮을 정도로. 문맥·보기와 대조.",
+        "꽤 뜻2를 미리 주고 비문만 비교해 challenge 의미판별 요구 부족.",
+        "해설과 정답키는 블라인드 입력에 없어 explanation=uncertain."
+      ]
+    }
+  ]
+}

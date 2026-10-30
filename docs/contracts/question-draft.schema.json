@@ -32,6 +32,9 @@
       }
     },
     "type": {"enum": ["definition", "cloze", "synonym_context", "antonym_context", "usage"]},
+    "difficultyTier": {"enum": ["basic", "core", "advanced", "challenge"]},
+    "variantTag": {"enum": ["standard", "polysemy", "confusable", "idiom_proverb", "dialect"]},
+    "dialectRegion": {"enum": ["강원", "경기", "경상", "전라", "충청", "제주", "공통"]},
     "stem": {"type": "string", "minLength": 1, "maxLength": 500},
     "options": {
       "type": "array", "minItems": 4, "maxItems": 4, "uniqueItems": true,
@@ -51,7 +54,7 @@
       "type": "object", "additionalProperties": false,
       "required": ["provider", "entryId", "senseId", "senseOrder", "url", "retrievedAt", "license", "evidenceHash", "evidenceArtifactId"],
       "properties": {
-        "provider": {"enum": ["stdict", "krdict"]},
+        "provider": {"enum": ["stdict", "krdict", "opendict"]},
         "entryId": {"type": "string", "minLength": 1},
         "senseId": {"type": ["string", "null"]},
         "senseOrder": {"type": ["integer", "null"], "minimum": 1},

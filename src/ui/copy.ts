@@ -4,10 +4,10 @@ import type { PauseReason } from '../domain/types';
 
 // 학생에게 보이는 문구는 모두 이 표에서 나온다(PRD §2.3, §12.6). 해요체, 짧게, 느낌표는 화면당 하나.
 export const DIFFICULTY_COPY: Record<DifficultyId, { label: string; hint: string }> = {
-  Easy: { label: '쉬움', hint: '적이 약하고 성문이 튼튼해요' },
+  Easy: { label: '쉬움', hint: '적이 약하고 기본 낱말 위주예요' },
   Normal: { label: '보통', hint: '처음이라면 추천해요' },
-  Hard: { label: '어려움', hint: '적이 더 튼튼해요' },
-  Crazy: { label: '아주 어려움', hint: '성문이 아주 약해요' },
+  Hard: { label: '어려움', hint: '적이 세고 속담·방언도 나와요' },
+  Crazy: { label: '아주 어려움', hint: '성문이 약하고 심화·방언이 많아요' },
 };
 
 export const TOWER_COPY: Record<TowerId, { role: string; good: string }> = {
@@ -34,7 +34,7 @@ export const PAUSE_COPY: Record<PauseReason, string> = {
   NUMERIC_LIMIT: '이 판은 숫자가 너무 커져 더 진행할 수 없어요. 지금까지의 기록은 남아 있어요.',
 };
 
-export const RENDER_WAIT = '화면을 다시 그리는 중이에요. 잠시만 기다려 주세요. 오래 걸리면 저장하고 나간 뒤 다시 열어 주세요.';
+export const RENDER_WAIT = '화면을 다시 그리는 중이에요. 잠시만 기다려 주세요.';
 
 export function commandErrorText(error: CommandError, extra?: { need?: number }): string {
   switch (error) {

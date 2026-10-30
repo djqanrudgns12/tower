@@ -86,7 +86,8 @@ npm run verify
 |---|---|---|
 | P1 엔진·화면·저장 | 구현됨. 독립 검토에서 나온 결함 10건 수정 | [REVIEW-CORE-001 반환](work-packages/REVIEW-CORE-001/RETURN.md), `tests/unit/review-core/` |
 | G2 게이트(§18.2) | 도메인 시험과 브라우저 e2e 8개는 통과(2026-10-30). **실기기(iOS Safari·Android)와 30분 장시간 성능은 미실행** | `tests/unit/g2.test.ts`, PRD §18.4 ‘G2 게이트 시험’ |
-| 3학년 문제은행 | **공개 51문항(`pub-965fc76be294`)**, 게임이 싣는다. 레지스트리는 승인 55(학년 51 + 연습 4), 격리 10. 격리 10건은 모두 뒤 판(revision)에서 고쳐 승인된 옛 판이다 | `content-source/approvals/registry.json`, `src/content/questions/grade3.json` |
+| 3학년 공개 은행 | **공개 51문항(`pub-965fc76be294`)** 보존. `registry.json`은 공개 승인 55(3학년 51 + 연습 4), 격리 4,160(Q50 83배치 4,150문항은 Claude 공동검수 미투입 상태이므로 `published` 레지스트리와 엄격히 분리) | `content-source/approvals/registry.json`, `src/content/questions/grade3.json` |
+| 3~6학년 검증 후보 은행 | **합계 4,139문항(`verified_candidate`)** 런타임 탑재: **3학년 1,035(`cand-abdeeae8cb02`) · 4학년 1,017(`cand-812ddc548384`) · 5학년 1,043(`cand-9ebe0c078f28`) · 6학년 1,044(`cand-534a8be5b97d`)**. 83배치(4,150문항) 외부 Codex 전수 검수(`codex.json` 83개) 반영 후 지적 1,455문항을 `rev: 2`/`rev: 3`로 보완·새 문맥 블라인드 재검증 완료. 4단계 난이도별 어휘 심화도(`basic`/`core`/`advanced`/`challenge`) 및 방언·속담 고난도 분리 적용 | `content-source/approvals/candidate-registry.json`, `src/content/questions/grade3.candidate.json`, `src/content/questions/grade4.candidate.json`, `src/content/questions/grade5.candidate.json`, `src/content/questions/grade6.candidate.json` |
 | 첫 연습 판 은행 | **공개(`pub-c5d049f5a4f3`)**. 연습 전용 4문항 모두 공동검수 통과(QP-001 3문항, QP-002 0004 수정본) | `src/content/questions/practice.json`, `content-source/approvals/QP-00{1,2}.explanation.json` |
 | 원화 | 40장: **27장 `integrated_pass`**(타워 3종·고블린·대장·정원 지면 등), **13장 `visual_pass`**(ART-003 P2 타워 7종 몸체·무기, 게임에서 아직 안 씀). 임시 그림이 남은 것은 일반 적 5종(빠른·튼튼·껍질·도깨비불·떼), 투사체·표식, 정원 외 맵 지면 | `public/assets/manifest.json` |
 | 소리 | P1 구현. WebAudio 합성이고 음원 파일은 없다. 제작 음원은 공개 전 별도 작업 | `src/ui/audio/sound.ts` |
@@ -172,7 +173,7 @@ npm run verify
      - 맵마다 S11 기준 재측정(`--map all`)
    - **일반 적 원화.** runner·brute·shell·wisp·swarm은 임시 그림이다. ART-SAMPLE-001·ART-003과 같은 규격으로 Codex에 작업 패키지를 낸다. 보행 리깅은 RIG-001의 `gait.ts`·`pose.ts`를 재사용한다.
    - **투사체·표식 원화.**
-   - **문항 확대.** 3학년 51 → 100 → 300(공개 기준은 학년별 승인 300, 서로 다른 낱말 150). 4학년 은행은 G3 준비로 함께 계획한다. 절차는 §6.1이다.
+   - **문항 공개 승격(Claude 공동검수).** 3~6학년 검증 후보 은행은 이미 각 학년 1,000문항을 초과(3학년 1,035 · 4학년 1,017 · 5학년 1,043 · 6학년 1,044 = 4,139문항, `verified_candidate`)하며, 외부 Codex 83배치 검수(`codex.json`) 반영과 `rev: 2`/`rev: 3` 새 문맥 블라인드 재검증을 마쳤다. 정식 `published` 은행으로 올릴 때는 새 문맥 Claude 블라인드 검수(`claude.json`, 수정된 `rev: 2`/`rev: 3`에는 `codex.json` 재검수 포함)를 추가하면 `build:bank`가 자동으로 `grade{3,4,5,6}.json`을 갱신한다. 절차는 §6.1이다.
    - **화면별 UI 보정**(Argon 작업 패키지, CSS 모듈 범위).
 4. **밸런스 남은 위험**(학생 실측 전까지 기록만 한다):
    - Easy 한 판 27~29분
@@ -201,7 +202,7 @@ npm run verify
    - 검토자 작업 폴더는 sparse checkout으로 `content-source/batches/**`(정답 원본)을 뺀다. 절차는 [발행용 프롬프트](work-packages/DISPATCH.md)에 있다.
 4. **총괄 해설 대조.** `content-source/approvals/<batch>.explanation.json`에 `contentHash`·`rationalesHash`를 쓴다.
 5. **`npm run build:bank`.**
-   - `registry.json`과 학년 은행(승인 30 이상일 때 `grade<N>.json`)을 만든다.
+   - `registry.json`과 공개 학년 은행(승인 30 이상일 때 `grade<N>.json`, `status: 'published'`)을 만들고, `argon-blind.json` + 해설 대조 + 동일 revision/contentHash의 외부 `codex`/`claude` 검수 통과분을 모아 `candidate-registry.json`과 검증 후보 은행(`grade<N>.candidate.json`, `status: 'verified_candidate'`)을 함께 만든다.
    - 연습 은행 `practice.json`은 승인 4개가 모두 있을 때 만든다.
    - 시험은 은행이 초안·보고서에서 다시 만든 것과 같은지 대조하므로, 문항을 손으로 넣거나 고칠 수 없다.
 

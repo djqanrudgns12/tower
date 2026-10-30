@@ -20,9 +20,20 @@ const hashInput = q => JSON.stringify({
 });
 const items = drafts.map(q => ({
   questionId: q.id, revision: q.revision, contentHash: crypto.createHash('sha256').update(hashInput(q)).digest('hex'),
-  grade: q.grade, type: q.type, lemma: q.target.lemma, partOfSpeech: q.target.partOfSpeech, stem: q.stem,
+  grade: q.grade, type: q.type,
+  ...(q.difficultyTier ? { difficultyTier: q.difficultyTier } : {}),
+  ...(q.variantTag ? { variantTag: q.variantTag } : {}),
+  ...(q.dialectRegion ? { dialectRegion: q.dialectRegion } : {}),
+  lemma: q.target.lemma, partOfSpeech: q.target.partOfSpeech, stem: q.stem,
   options: [...q.options].sort((a, b) => a.id.localeCompare(b.id)),
-  source: { provider: q.source.provider, url: q.source.url, senseOrder: q.source.senseOrder, senseId: q.source.senseId },
+  source: {
+    provider: q.source.provider,
+    url: q.source.url,
+    senseOrder: q.source.senseOrder,
+    senseId: q.source.senseId,
+    evidenceArtifactId: q.source.evidenceArtifactId,
+    evidenceText: fs.readFileSync(path.join(root, 'content-source/batches', jobId, 'evidence', q.source.evidenceArtifactId), 'utf8').trim(),
+  },
   gradeBasis: q.gradeBasis,
 }));
 const out = path.join(root, 'content-source/reviews', jobId, 'blind-input.json');

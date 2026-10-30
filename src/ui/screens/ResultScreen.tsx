@@ -1,4 +1,5 @@
 import { reviewQuestions } from '../../content';
+import { computeHonorPoints } from '../../contracts/lobby';
 import type { RunState } from '../../domain/types';
 import { DIFFICULTY_COPY, fmtNumber } from '../copy';
 import kit from '../kit.module.css';
@@ -16,6 +17,12 @@ export function ResultScreen({ state, onAgain, onHome }: Props) {
   const senses = new Set(answers.map(a => questions.get(a.questionId)?.target.senseKey));
   const review = answers.filter(a => a.answer && !a.answer.correct);
   const unique = [...new Map(review.map(a => [a.questionId, a])).values()];
+  const honorPt = computeHonorPoints({
+    pt: state.pt,
+    difficulty: state.config.difficulty,
+    completedWave: state.completedWave,
+    correct: state.stats.correct,
+  });
   const title = state.endReason === 'DEFEAT'
     ? `성문이 무너졌어요. 이번에는 ${state.completedWave}웨이브까지 지켰어요.`
     : `이번 판을 마쳤어요. ${state.completedWave}웨이브까지 지켰어요.`;
@@ -29,6 +36,7 @@ export function ResultScreen({ state, onAgain, onHome }: Props) {
         </div>
         <div className={css.stats}>
           <Stat label="점수" value={fmtNumber(state.pt)} />
+          <Stat label="획득 명예점" value={honorPt > 0 ? `+${fmtNumber(honorPt)}점` : '0점'} />
           <Stat label="지킨 웨이브" value={String(state.completedWave)} />
           <Stat label="정답" value={`${state.stats.correct}/${total}`} />
           <Stat label="정확도" value={`${accuracy}%`} />

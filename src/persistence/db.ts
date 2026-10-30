@@ -23,23 +23,47 @@ export interface RunRecord {
   bankVersion: string;
 }
 
+export interface PendingRunSync {
+  runId: string;
+  record: RunRecord;
+  playerId: string;
+  attempts: number;
+  queuedAt: string;
+}
+
 interface TowerDb extends DBSchema {
   run: { key: 'A' | 'B'; value: SavedSlot };
   records: { key: string; value: RunRecord; indexes: { endedAt: string } };
+  syncQueue: { key: string; value: PendingRunSync };
 }
 
 const DB_NAME = 'vocabulary-td';
+const DB_VERSION = 2;
 const MAX_RECORDS = 100;
+const MAX_SYNC_QUEUE = 50;
 let dbPromise: Promise<IDBPDatabase<TowerDb>> | null = null;
 
 export function db(): Promise<IDBPDatabase<TowerDb>> {
-  dbPromise ??= openDB<TowerDb>(DB_NAME, 1, {
-    upgrade(database) {
-      database.createObjectStore('run', { keyPath: 'slot' });
-      database.createObjectStore('records', { keyPath: 'runId' }).createIndex('endedAt', 'endedAt');
+  dbPromise ??= openDB<TowerDb>(DB_NAME, DB_VERSION, {
+    upgrade(database, oldVersion) {
+      if (oldVersion < 1) {
+        database.createObjectStore('run', { keyPath: 'slot' });
+        database.createObjectStore('records', { keyPath: 'runId' }).createIndex('endedAt', 'endedAt');
+      }
+      if (oldVersion < 2 && !database.objectStoreNames.contains('syncQueue')) {
+        database.createObjectStore('syncQueue', { keyPath: 'runId' });
+      }
     },
   });
   return dbPromise;
+}
+
+/** 테스트 격리 시 닫고 다시 열 수 있게 한다. */
+export async function resetDbConnection(): Promise<void> {
+  if (!dbPromise) return;
+  const opened = await dbPromise.catch(() => null);
+  opened?.close();
+  dbPromise = null;
 }
 
 export async function sha256(text: string): Promise<string> {
@@ -95,4 +119,47 @@ export async function addRecord(record: RunRecord): Promise<void> {
 export async function listRecords(): Promise<RunRecord[]> {
   const database = await db();
   return (await database.getAllFromIndex('records', 'endedAt')).reverse();
+}
+
+/** 환경설정의 ‘이 기기 로컬 기록 정리’: 진행 중 저장 슬롯·완료 기록·대기 동기화 큐를 모두 비운다. */
+export async function clearLocalHistory(): Promise<void> {
+  const database = await db();
+  const tx = database.transaction(['run', 'records', 'syncQueue'], 'readwrite', { durability: 'strict' });
+  await tx.objectStore('run').clear();
+  await tx.objectStore('records').clear();
+  await tx.objectStore('syncQueue').clear();
+  await tx.done;
+}
+
+export async function enqueueRunSync(record: RunRecord, playerId: string): Promise<void> {
+  const database = await db();
+  const tx = database.transaction('syncQueue', 'readwrite');
+  const existing = await tx.store.get(record.runId);
+  if (!existing) {
+    await tx.store.put({ runId: record.runId, record, playerId, attempts: 0, queuedAt: new Date().toISOString() });
+  }
+  const keys = await tx.store.getAllKeys();
+  for (const key of keys.slice(0, Math.max(0, keys.length - MAX_SYNC_QUEUE))) await tx.store.delete(key);
+  await tx.done;
+}
+
+export async function listPendingRunSyncs(): Promise<PendingRunSync[]> {
+  const database = await db();
+  return database.getAll('syncQueue');
+}
+
+export async function removePendingRunSync(runId: string): Promise<void> {
+  const database = await db();
+  await database.delete('syncQueue', runId);
+}
+
+export async function bumpPendingRunSyncAttempt(runId: string, maxAttempts = 5): Promise<void> {
+  const database = await db();
+  const tx = database.transaction('syncQueue', 'readwrite');
+  const item = await tx.store.get(runId);
+  if (item) {
+    if (item.attempts + 1 >= maxAttempts) await tx.store.delete(runId);
+    else await tx.store.put({ ...item, attempts: item.attempts + 1 });
+  }
+  await tx.done;
 }

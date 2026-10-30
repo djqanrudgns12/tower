@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { OPTION_IDS, QUESTION_TYPES } from './questions';
+import { DIALECT_REGIONS, DIFFICULTY_TIERS, OPTION_IDS, QUESTION_TYPES, VARIANT_TAGS } from './questions';
 
 // docs/contracts/question-draft.schema.json(schemaVersion 0.2)과 같은 구조의 런타임 검사. 두 파일을 함께 바꾼다.
 const sha = z.string().regex(/^[a-f0-9]{64}$/);
@@ -14,13 +14,16 @@ export const questionDraftSchema = z.object({
   gradeBasis: z.object({ reference: z.string().min(1), editionYear: z.number().int().min(2000), unit: z.string().min(1), reviewed: z.boolean() }).strict(),
   target: z.object({ lemma: z.string().min(1), partOfSpeech: z.string().min(1), senseKey: z.string().min(1) }).strict(),
   type: z.enum(QUESTION_TYPES),
+  difficultyTier: z.enum(DIFFICULTY_TIERS).optional(),
+  variantTag: z.enum(VARIANT_TAGS).optional(),
+  dialectRegion: z.enum(DIALECT_REGIONS).optional(),
   stem: z.string().min(1).max(500),
   options: z.array(z.object({ id: z.enum(OPTION_IDS), text: z.string().min(1).max(300) }).strict()).length(4),
   correctOptionId: z.enum(OPTION_IDS),
   explanation: z.string().min(1).max(700),
   distractorRationales: z.partialRecord(z.enum(OPTION_IDS), z.string().min(1)),
   source: z.object({
-    provider: z.enum(['stdict', 'krdict']),
+    provider: z.enum(['stdict', 'krdict', 'opendict']),
     entryId: z.string().min(1),
     senseId: z.string().min(1).nullable(),
     senseOrder: z.number().int().min(1).nullable(),
@@ -33,7 +36,7 @@ export const questionDraftSchema = z.object({
   review: z.object({ reviewerId: z.null(), reviewedAt: z.null() }).strict(),
 }).strict();
 
-export const draftBatchSchema = z.array(questionDraftSchema).min(1).max(20);
+export const draftBatchSchema = z.array(questionDraftSchema).min(1).max(60);
 
 /** 제작 sidecar: 스키마 밖 제작 정보는 여기에 둔다(PRD §10.2). */
 export const draftSidecarSchema = z.object({

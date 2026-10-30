@@ -1,0 +1,617 @@
+/* 사용 설명서 전용 스타일 (개편 PRD v1.0 & 제작 PRD §12.8 준수: 반경 4px/8px/칩 999px, 단일 그림자, 그라데이션·블러 0, 굵기 400/700) */
+
+.guideRoot {
+  display: grid;
+  gap: var(--s3);
+  word-break: keep-all;
+}
+
+/* Zone A-2: 4장 목차 탭 바 */
+.chapterTabs {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--s1);
+  background: var(--oak-inset-bg);
+  border: 2px solid var(--oak-inset-border);
+  border-radius: var(--r-panel);
+  padding: var(--s1);
+}
+
+.chapterTabBtn {
+  min-height: 40px;
+  padding: 0 var(--s2);
+  border: 2px solid transparent;
+  border-radius: var(--r-input);
+  background: transparent;
+  color: var(--ink);
+  font-size: 14px;
+  font-weight: 700;
+  text-align: center;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+  transition: transform 80ms;
+}
+
+.chapterTabBtn:hover:not([aria-selected='true']) {
+  background: var(--oak-card-bg);
+}
+
+.chapterTabBtn[aria-selected='true'] {
+  background: var(--oak-cta-green);
+  color: #ffffff;
+  border-color: var(--oak-frame-edge);
+  box-shadow: var(--shadow-pressed);
+}
+
+/* Zone B: 탭 패널 본문 (단일 시선 동선) */
+.chapterPanel {
+  display: grid;
+  gap: var(--s2);
+  min-width: 0;
+}
+
+/* Zone B-1: 장 핵심 한 줄 제목 바 */
+.headlineBar {
+  display: flex;
+  align-items: center;
+  gap: var(--s2);
+  padding: 6px var(--s3);
+  background: var(--oak-plaque-bg);
+  color: var(--oak-plaque-ink);
+  border: 2px solid var(--oak-frame-edge);
+  border-radius: var(--r-input);
+}
+
+.chapterPill {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px var(--s2);
+  border-radius: 999px;
+  border: 1px solid var(--oak-plaque-border);
+  background: var(--oak-plaque-cell);
+  color: var(--oak-plaque-gold);
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.3;
+  white-space: nowrap;
+  flex-shrink: 0;
+  font-variant-numeric: tabular-nums;
+}
+
+.headlineText {
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.35;
+  color: var(--oak-plaque-ink);
+  min-width: 0;
+}
+
+/* Zone B-2: 이중 시각 무대 (좌: 41번 생성 삽화 / 우: 실자산 캔버스·대화형 애니메이터) */
+.visualStage {
+  display: grid;
+  grid-template-columns: minmax(196px, 0.42fr) minmax(0, 0.58fr);
+  gap: var(--s2);
+  align-items: stretch;
+  background: var(--oak-card-bg);
+  border: 2px solid var(--oak-inset-border);
+  border-radius: var(--r-panel);
+  padding: var(--s2);
+  min-height: 162px;
+}
+
+.artFrame {
+  background: var(--oak-card-bg);
+  border: 1.5px solid var(--oak-board-molding);
+  border-radius: var(--r-input);
+  padding: var(--s1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  min-height: 140px;
+}
+
+.artImg {
+  width: 100%;
+  height: 132px;
+  object-fit: contain;
+  display: block;
+}
+
+.interactivePane {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: var(--s1);
+  min-width: 0;
+}
+
+/* 1장·3장 캔버스 뷰포트 */
+.canvasBox {
+  position: relative;
+  width: 100%;
+  height: 106px;
+  border: 2px solid var(--oak-frame-edge);
+  border-radius: var(--r-input);
+  overflow: hidden;
+  background: var(--oak-world-fallback);
+}
+
+.stageCanvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.canvasBadgeLeft {
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  background: var(--oak-plaque-cell);
+  color: var(--oak-plaque-ink);
+  border: 1px solid var(--oak-plaque-border);
+  border-radius: var(--r-input);
+  padding: 2px 6px;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1.3;
+  pointer-events: none;
+}
+
+.canvasBadgeRight {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  background: var(--oak-card-bg);
+  color: var(--ink);
+  border: 1.5px solid var(--oak-frame-edge);
+  border-radius: var(--r-input);
+  padding: 2px 6px;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1.3;
+  font-variant-numeric: tabular-nums;
+  pointer-events: none;
+}
+
+/* 무대 내부 소형 컨트롤 바 */
+.stageSwitchRow {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--s1);
+}
+
+.stageSwitchRowThree {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--s1);
+}
+
+.stageSwitchBtn {
+  min-height: 30px;
+  padding: 2px var(--s1);
+  border: 1.5px solid var(--oak-inset-border);
+  border-radius: var(--r-input);
+  background: var(--oak-inset-bg);
+  color: var(--ink);
+  font-size: 12px;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--s1);
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+.stageSwitchBtn:hover {
+  background: #ffffff;
+}
+
+.stageSwitchBtn[aria-pressed='true'] {
+  background: var(--oak-frame-outer);
+  color: #ffffff;
+  border-color: var(--oak-frame-edge);
+}
+
+/* 2장: 문제 결과 & 버닝 HUD 시연기 */
+.hudSimulator {
+  background: var(--oak-plaque-bg);
+  color: var(--oak-plaque-ink);
+  border: 2px solid var(--oak-frame-edge);
+  border-radius: var(--r-input);
+  padding: var(--s2) var(--s3);
+  display: grid;
+  gap: 6px;
+  flex: 1;
+  align-content: center;
+}
+
+.hudSimulator[data-burning='true'] {
+  background: var(--amber-burn);
+  border-color: var(--oak-plaque-border);
+}
+
+.hudMetricStrip {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s2);
+  flex-wrap: wrap;
+}
+
+.hudMetricItem {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s1);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--oak-plaque-gold);
+  font-variant-numeric: tabular-nums;
+}
+
+.hudGemsGroup {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--oak-plaque-ink);
+}
+
+.hudOutcomeNote {
+  font-size: 13px;
+  color: var(--oak-plaque-ink);
+  line-height: 1.35;
+}
+
+/* 3장: 타워 사거리 + 분기 배지 줄 */
+.towerStageGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
+  gap: var(--s2);
+  align-items: stretch;
+  flex: 1;
+}
+
+.rangeMiniBox {
+  position: relative;
+  width: 100%;
+  min-height: 98px;
+  border: 2px solid var(--oak-frame-edge);
+  border-radius: var(--r-input);
+  overflow: hidden;
+  background: var(--oak-world-fallback);
+}
+
+.branchPairStack {
+  display: grid;
+  gap: var(--s1);
+  align-content: center;
+}
+
+.branchRow {
+  background: var(--oak-inset-bg);
+  border: 1.5px solid var(--oak-inset-border);
+  border-radius: var(--r-input);
+  padding: 4px var(--s2);
+  display: flex;
+  align-items: center;
+  gap: var(--s2);
+  min-width: 0;
+}
+
+.branchTexts {
+  min-width: 0;
+  display: grid;
+  gap: 1px;
+}
+
+.branchTitle {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--ink);
+  line-height: 1.25;
+}
+
+.branchDesc {
+  font-size: 12px;
+  color: var(--ink-soft);
+  line-height: 1.25;
+}
+
+/* 4장: 출정 매트릭스 & 목제 키캡 시연 */
+.commandStageStack {
+  display: grid;
+  gap: var(--s1);
+  flex: 1;
+  align-content: space-between;
+}
+
+.diffReadoutBar {
+  background: var(--oak-inset-bg);
+  border: 1.5px solid var(--oak-inset-border);
+  border-radius: var(--r-input);
+  padding: 6px var(--s2);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s2);
+  flex-wrap: wrap;
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.diffScopeTag {
+  color: var(--oak-amber-accent);
+  font-weight: 700;
+}
+
+.diffScopeTag[data-advanced='true'] {
+  color: var(--danger);
+}
+
+.keycapBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s2);
+  background: var(--oak-plaque-bg);
+  color: var(--oak-plaque-ink);
+  border: 2px solid var(--oak-frame-edge);
+  border-radius: var(--r-input);
+  padding: 5px var(--s2);
+  flex-wrap: wrap;
+}
+
+.keycapCluster {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s1);
+}
+
+.woodKey {
+  min-width: 26px;
+  height: 26px;
+  padding: 0 6px;
+  border: 1.5px solid var(--oak-plaque-border);
+  border-radius: var(--r-input);
+  background: var(--wood);
+  color: var(--oak-plaque-ink);
+  font-size: 12px;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--shadow);
+  font-variant-numeric: tabular-nums;
+}
+
+.woodKey[data-active='true'] {
+  background: var(--gold);
+  color: var(--ink);
+  border-color: var(--edge);
+  transform: translateY(1px);
+  box-shadow: var(--shadow-pressed);
+}
+
+.keycapHint {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--oak-plaque-gold);
+}
+
+/* Zone B-3: 음각 사암 소켓 3행 요약 (동일 카드 3개 격자 금지, 단일 음각 홈 내부 행 리스트) */
+.summarySocketBox {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  background: var(--oak-inset-bg);
+  border: 2px solid var(--oak-inset-border);
+  border-radius: var(--r-panel);
+  overflow: hidden;
+}
+
+.summaryRow {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: var(--s2);
+  align-items: start;
+  padding: 9px var(--s3);
+}
+
+.summaryRow + .summaryRow {
+  border-top: 1.5px solid var(--oak-inset-border);
+}
+
+.rowIconSlot {
+  width: 28px;
+  height: 28px;
+  border-radius: var(--r-input);
+  border: 1.5px solid var(--oak-inset-border);
+  background: var(--oak-card-bg);
+  color: var(--ink);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.rowTextGroup {
+  min-width: 0;
+  display: grid;
+  gap: 2px;
+}
+
+.rowHeaderLine {
+  display: flex;
+  align-items: center;
+  gap: var(--s2);
+  flex-wrap: wrap;
+}
+
+.rowBadge {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--oak-amber-accent);
+  white-space: nowrap;
+}
+
+.rowTitle {
+  font-size: 14.5px;
+  font-weight: 700;
+  color: var(--ink);
+  line-height: 1.3;
+}
+
+.rowBody {
+  font-size: 14px;
+  color: var(--ink);
+  line-height: 1.42;
+}
+
+/* Zone C: 최소화 하단 '< 1 / 4 >' 네비게이션 바 */
+.pagerFooter {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: var(--s3);
+  padding-top: var(--s2);
+  border-top: 2px solid var(--oak-board-molding);
+}
+
+.pagerBtn {
+  min-height: var(--touch);
+  min-width: 108px;
+  padding: 0 var(--s3);
+  border: 2px solid var(--oak-frame-edge);
+  border-radius: var(--r-input);
+  background: var(--oak-card-bg);
+  color: var(--ink);
+  font-size: 15px;
+  font-weight: 700;
+  box-shadow: var(--shadow);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--s1);
+  transition: transform 80ms, box-shadow 80ms, background-color 80ms;
+}
+
+.pagerBtn:hover:not(:disabled) {
+  background: #ffffff;
+}
+
+.pagerBtn:active:not(:disabled) {
+  transform: translateY(1px);
+  box-shadow: var(--shadow-pressed);
+}
+
+.pagerBtn:disabled {
+  background: var(--stone);
+  border-color: var(--well-border);
+  color: var(--ink-soft);
+  box-shadow: var(--shadow-pressed);
+}
+
+.pageIndicator {
+  text-align: center;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+}
+
+/* 저높이 학교 크롬북(1366×650 등) 무스크롤 압축 예산 */
+@media (max-height: 740px) {
+  .guideRoot {
+    gap: var(--s2);
+  }
+
+  .chapterTabBtn {
+    min-height: 34px;
+    font-size: 13px;
+  }
+
+  .headlineBar {
+    padding: 4px var(--s2);
+  }
+
+  .headlineText {
+    font-size: 14px;
+  }
+
+  .visualStage {
+    min-height: 126px;
+    padding: 6px var(--s2);
+  }
+
+  .artFrame {
+    min-height: 110px;
+  }
+
+  .artImg {
+    height: 104px;
+  }
+
+  .canvasBox {
+    height: 82px;
+  }
+
+  .rangeMiniBox {
+    min-height: 78px;
+  }
+
+  .stageSwitchBtn {
+    min-height: 26px;
+    font-size: 11.5px;
+  }
+
+  .summaryRow {
+    padding: 6px var(--s2);
+  }
+
+  .rowTitle {
+    font-size: 13.5px;
+  }
+
+  .rowBody {
+    font-size: 13px;
+    line-height: 1.34;
+  }
+
+  .pagerFooter {
+    padding-top: 6px;
+  }
+}
+
+/* 태블릿·휴대폰 좁은 화면 반응형 전환 (320px~640px 무넘침 보장) */
+@media (max-width: 640px) {
+  .chapterTabs {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .visualStage {
+    grid-template-columns: 1fr;
+  }
+
+  .artFrame {
+    min-height: 96px;
+  }
+
+  .artImg {
+    height: 92px;
+  }
+
+  .towerStageGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .pagerBtn {
+    min-width: 84px;
+    padding: 0 var(--s2);
+    font-size: 14px;
+  }
+}

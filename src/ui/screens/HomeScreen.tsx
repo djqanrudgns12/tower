@@ -1,65 +1,224 @@
-import type { LoadResult, Settings } from '../../application/session';
-import kit from '../kit.module.css';
-import css from './screens.module.css';
+import { useEffect, useRef, useState } from 'react';
+import { DIFFICULTY_IDS, type DifficultyId } from '../../contracts/balance';
+import type { RankingPeriod, RankingTabId } from '../../contracts/lobby';
+import type { Settings } from '../../application/session';
+import { GuideScreen } from './GuideScreen';
+import { useLobbySprites } from './home/canvasAssets';
+import { BookIcon, GearIcon, RecordIcon } from './home/HomeIcons';
+import { LaunchDeck } from './home/LaunchDeck';
+import { MiniStageCanvas } from './home/MiniStageCanvas';
+import { RankingBoard } from './home/RankingBoard';
+import { RankingModal } from './home/RankingModal';
+import { SteleStudyPanel } from './home/SteleStudyPanel';
+import { TelemetryStrip } from './home/TelemetryStrip';
+import { WorldBackdropCanvas } from './home/WorldBackdropCanvas';
+import css from './home/home.module.css';
+import { NewGameScreen } from './NewGameScreen';
+import { SettingsModal } from './SettingsModal';
+
+type ModalState =
+  | null
+  | 'new'
+  | 'settings'
+  | 'guide'
+  | {
+      kind: 'ranking';
+      tab: RankingTabId;
+      grade: 3 | 4 | 5 | 6 | 'all';
+      difficulty: DifficultyId;
+      period: RankingPeriod;
+    };
 
 interface Props {
-  saved: LoadResult | null;
   message: string | null;
   settings: Settings;
-  onNew(): void;
-  onResume(): void;
-  onPractice(): void;
-  onRecords(): void;
-  onGuide(): void;
+  initialModal?: 'new' | null;
+  focusNicknameOnMount?: boolean;
+  onClearMessage(): void;
+  onStartNew(input: { grade: 3 | 4 | 5 | 6; difficulty: DifficultyId; nickname: string }): void;
   onSettings(patch: Partial<Settings>): void;
 }
 
-/** 첫 화면: 활성 저장이 있으면 이어하기를 먼저 보인다. 손상된 저장은 조용히 지우지 않고 알린다(PRD §12.2). */
-export function HomeScreen({ saved, message, settings, onNew, onResume, onPractice, onRecords, onGuide, onSettings }: Props) {
-  const canResume = saved?.kind === 'ok';
-  // 처음 온 학생에게는 연습을 먼저 권한다. 건너뛰어도 되고, 나중에 ‘연습하기’로 다시 볼 수 있다(PRD §12.2).
-  const suggestPractice = !canResume && !settings.practiceSeen;
+/**
+ * 첫 화면(방향 2-A: 왕국 참나무 작전실).
+ * 주 행동은 ‘새 게임’으로 단일화하고,
+ * 별명 설정·오늘의 낱말 공부·통합 수호 랭킹·환경설정을 한 화면에서 제공한다.
+ */
+export function HomeScreen({
+  message,
+  settings,
+  initialModal = null,
+  focusNicknameOnMount = false,
+  onClearMessage,
+  onStartNew,
+  onSettings,
+}: Props) {
+  const [activeModal, setActiveModal] = useState<ModalState>(initialModal);
+  const [rankingTab, setRankingTab] = useState<RankingTabId>('single_score');
+  const [refreshTick, setRefreshTick] = useState(0);
+  const nickInputRef = useRef<HTMLInputElement>(null);
+  const rankingBoardRef = useRef<HTMLElement>(null);
+  const sprites = useLobbySprites();
+
+  useEffect(() => {
+    if (focusNicknameOnMount) {
+      nickInputRef.current?.focus();
+    }
+  }, [focusNicknameOnMount]);
+
+  const gateSprite = sprites.get('map.gate');
+  const defaultDiff: DifficultyId = (DIFFICULTY_IDS as readonly string[]).includes(settings.lastDifficulty)
+    ? (settings.lastDifficulty as DifficultyId)
+    : 'Normal';
+
+  const handleMyRecordsShortcut = () => {
+    setRankingTab('local_device');
+    if (typeof window !== 'undefined' && window.innerWidth <= 959) {
+      rankingBoardRef.current?.scrollIntoView({ behavior: settings.reducedMotion ? 'auto' : 'smooth', block: 'start' });
+    }
+  };
+
   return (
-    <main className={css.page}>
-      <div className={`${kit.board} ${css.card}`}>
-        <div className={css.stack}>
-          <h1 className={css.title}>어휘력 타워 디펜스</h1>
-          <p className={css.subtitle}>낱말 문제를 풀어 골드를 모으고, 타워로 성문을 지켜요.</p>
-        </div>
-        {message && <p className={css.notice} role="status">{message}</p>}
-        {saved?.kind === 'corrupt' && <p className={css.notice} role="status">저장된 판이 손상되어 이어할 수 없어요. 새 게임을 시작하면 지금 기록은 그대로 남아요.</p>}
-        <div className={css.stack}>
-          {canResume && (
-            <button type="button" className={`${kit.button} ${kit.primary} ${kit.big}`} onClick={onResume}>
-              이어하기 · {saved.state.config.nickname} · {Math.max(1, saved.state.wave)}웨이브
-            </button>
-          )}
-          {suggestPractice && (
-            <button type="button" className={`${kit.button} ${kit.primary} ${kit.big}`} onClick={onPractice}>처음이라면 연습부터</button>
-          )}
-          <button type="button" className={`${kit.button} ${canResume || suggestPractice ? '' : kit.primary} ${kit.big}`} onClick={onNew}>새 게임</button>
-          <div className={css.row}>
-            {!suggestPractice && <button type="button" className={kit.button} onClick={onPractice}>연습하기</button>}
-            <button type="button" className={kit.button} onClick={onGuide}>사용 설명서</button>
-            <button type="button" className={kit.button} onClick={onRecords}>내 기록</button>
-          </div>
-        </div>
-        <fieldset className={css.stack} style={{ border: 0, padding: 0, margin: 0 }}>
-          <legend className={css.h2}>설정</legend>
-          <div className={css.row} role="radiogroup" aria-label="글자 크기">
-            {(['base', 'large', 'xlarge'] as const).map((f, i) => (
-              <button key={f} type="button" role="radio" aria-checked={settings.fontScale === f} className={css.choice} onClick={() => onSettings({ fontScale: f })}>
-                <span className={css.choiceLabel}>{['글자 보통', '글자 크게', '글자 아주 크게'][i]}</span>
+    <div className={css.lobbyRoot}>
+      <WorldBackdropCanvas motionMode={settings.motionMode} className={css.backdropCanvas} />
+
+      <div className={css.foreground} inert={activeModal !== null}>
+        <header className={css.plaqueOuter}>
+          <div className={css.plaqueInner}>
+            <div className={css.brandGroup}>
+              <div className={css.crestBox} aria-hidden="true">
+                {gateSprite && <img src={gateSprite.url} alt="" className={css.crestImg} />}
+              </div>
+              <div>
+                <h1 className={css.brandTitle}>어휘력 타워 디펜스</h1>
+                <p className={css.brandSub}>왕국 학술원 수호 작전실 · 낱말의 힘으로 성문을 지켜요</p>
+              </div>
+            </div>
+
+            <TelemetryStrip playerId={settings.playerId} refreshTick={refreshTick} />
+
+            <div className={css.headerActions}>
+              <button
+                id="guideBtn"
+                type="button"
+                className={css.plaqueBtn}
+                onClick={() => setActiveModal('guide')}
+              >
+                <BookIcon />
+                사용 설명서
               </button>
-            ))}
+              <button
+                id="recordsBtn"
+                type="button"
+                className={css.plaqueBtn}
+                onClick={handleMyRecordsShortcut}
+              >
+                <RecordIcon />
+                내 기록
+              </button>
+              <button
+                id="settingsBtn"
+                type="button"
+                className={css.plaqueBtn}
+                onClick={() => setActiveModal('settings')}
+              >
+                <GearIcon />
+                설정
+              </button>
+            </div>
           </div>
-          <label className={css.row} style={{ alignItems: 'center', minHeight: 44 }}>
-            <input type="checkbox" checked={settings.reducedMotion} onChange={e => onSettings({ reducedMotion: e.target.checked })} style={{ width: 20, height: 20 }} />
-            움직이는 효과 줄이기
-          </label>
-        </fieldset>
-        <p className={kit.muted}>지금 문제들은 개발용이에요. 정식 문제는 검수를 마친 뒤 들어가요.</p>
+        </header>
+
+        <main className={css.warRoomGrid}>
+          <div className={css.oakFrame}>
+            <div className={css.parchmentInner}>
+              <div className={css.stageViewport} role="img" aria-label="왕국 성문 수비 전장 미리보기">
+                <MiniStageCanvas
+                  motionMode={settings.motionMode}
+                  highContrastMap={settings.highContrastMap}
+                  paused={activeModal !== null}
+                  className={css.stageCanvas}
+                />
+                <span className={css.stageBadgeLeft}>왕국 초원 · 성문 수비전</span>
+                <span className={css.stageBadgeRight}>고비 5웨이브 시연</span>
+              </div>
+
+              <SteleStudyPanel preferredGrade={settings.lastGrade} />
+
+              <LaunchDeck
+                savedNickname={settings.lastNickname}
+                message={message}
+                inputRef={nickInputRef}
+                onCommitNickname={nick => onSettings({ lastNickname: nick })}
+                onOpenNewGame={nick => {
+                  onSettings({ lastNickname: nick });
+                  onClearMessage();
+                  setActiveModal('new');
+                }}
+              />
+            </div>
+          </div>
+
+          <RankingBoard
+            tab={rankingTab}
+            onTabChange={setRankingTab}
+            playerId={settings.playerId}
+            currentNickname={settings.lastNickname}
+            defaultGrade={settings.lastGrade}
+            defaultDifficulty={defaultDiff}
+            refreshTick={refreshTick}
+            boardRef={rankingBoardRef}
+            onOpenDetailModal={initial => setActiveModal({ kind: 'ranking', ...initial })}
+          />
+        </main>
       </div>
-    </main>
+
+      {activeModal === 'new' && (
+        <NewGameScreen
+          settings={settings}
+          onBack={() => setActiveModal(null)}
+          onEditNickname={() => {
+            setActiveModal(null);
+            requestAnimationFrame(() => nickInputRef.current?.focus());
+          }}
+          onStart={input => {
+            setActiveModal(null);
+            onStartNew(input);
+          }}
+        />
+      )}
+
+      {activeModal === 'settings' && (
+        <SettingsModal
+          settings={settings}
+          onUpdate={onSettings}
+          onHistoryCleared={() => setRefreshTick(t => t + 1)}
+          onClose={() => setActiveModal(null)}
+        />
+      )}
+
+      {activeModal === 'guide' && (
+        <GuideScreen
+          motionMode={settings.motionMode}
+          highContrastMap={settings.highContrastMap}
+          onBack={() => {
+            setActiveModal(null);
+            requestAnimationFrame(() => document.getElementById('guideBtn')?.focus());
+          }}
+        />
+      )}
+
+      {typeof activeModal === 'object' && activeModal !== null && activeModal.kind === 'ranking' && (
+        <RankingModal
+          initialTab={activeModal.tab}
+          initialGrade={activeModal.grade}
+          initialDifficulty={activeModal.difficulty}
+          initialPeriod={activeModal.period}
+          playerId={settings.playerId}
+          currentNickname={settings.lastNickname}
+          onClose={() => setActiveModal(null)}
+        />
+      )}
+    </div>
   );
 }

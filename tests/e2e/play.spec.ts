@@ -10,8 +10,8 @@ async function newGame(page: Page) {
   await page.goto('/');
   await page.evaluate(() => indexedDB.deleteDatabase('vocabulary-td'));
   await page.reload();
+  await page.getByRole('textbox', { name: '출정 별명' }).fill('하늘바람');
   await page.getByRole('button', { name: '새 게임' }).click();
-  await page.getByRole('textbox').fill('하늘바람');
   await page.getByRole('button', { name: '시작하기' }).click();
   await expect(page.getByText('준비 1/5')).toBeVisible();
 }
@@ -81,38 +81,18 @@ test('1440×900: 준비 → 설치 → 전투 → 정지 가림 → 재개', asy
   await expect(page.getByRole('region', { name: '어휘 문제' })).toBeVisible();
 });
 
-test('저장하고 나가기 → 새로고침 → 이어하기: 정지 상태로 같은 골드·성문·타워에서 이어진다(PRD §14)', async ({ page }) => {
+test('일시정지 및 새로고침: 이어하기·저장하고 나가기 없이 깔끔하게 종료된다', async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
   await newGame(page);
   await finishPrep(page);
-  const slot = garden.slots.find(s => s.x === 8 && s.y === 2)!;
-  await tapCell(page, slot.x, slot.y);
-  await page.getByRole('option', { name: /궁수탑/ }).click();
-  await page.getByRole('button', { name: '설치 · 60골드' }).click();
-  await expect(page.getByText('레벨 1', { exact: true })).toBeVisible();
-  await page.getByRole('button', { name: '전투 시작' }).click();
-  await expect(page.getByText('전투 문제')).toBeVisible();
-  await page.waitForTimeout(4000);
 
   await page.getByRole('button', { name: '일시정지' }).first().click();
-  const gold = await page.getByLabel(/^골드 \d+$/).getAttribute('aria-label');
-  const gate = await page.getByRole('meter', { name: '성문' }).getAttribute('aria-valuenow');
-  await page.getByRole('button', { name: '저장하고 나가기' }).click();
-  const resume = page.getByRole('button', { name: '이어하기 · 하늘바람 · 1웨이브' });
-  await expect(resume).toBeVisible();
+  await expect(page.getByRole('dialog')).toBeVisible();
+  await expect(page.getByRole('button', { name: '저장하고 나가기' })).toHaveCount(0);
 
   await page.reload();
-  await resume.click();
-  // 이어하기는 정지 상태로 시작하고 문제는 가려져 있다(PRD §14.2, §3.6).
-  await expect(page.getByRole('dialog')).toContainText('저장한 곳에서 다시 시작해요');
-  await expect(page.getByRole('region', { name: '어휘 문제' })).toHaveCount(0);
-  await expect(page.getByLabel(/^골드 \d+$/)).toHaveAttribute('aria-label', gold!);
-  await expect(page.getByRole('meter', { name: '성문' })).toHaveAttribute('aria-valuenow', gate!);
-  await shot(page, 'desktop-restored');
-  await page.getByRole('button', { name: '계속하기' }).click();
-  await expect(page.getByRole('region', { name: '어휘 문제' })).toBeVisible();
-  await expect(page.getByText('전투 문제')).toBeVisible();
-  await expect(page.getByText(/빈 자리 19곳/)).toBeVisible();
+  await expect(page.getByRole('button', { name: '새 게임' })).toBeVisible();
+  await expect(page.getByRole('button', { name: /이어하기/ })).toHaveCount(0);
 });
 
 test('390×844 휴대폰: 가로 넘침 없음, 문제 전체가 보이고 확대 선택이 열린다', async ({ page }) => {
@@ -178,34 +158,31 @@ test('WebGL 문맥 손실: 멈추고, 화면이 돌아온 뒤 계속하면 같�
   await shot(page, 'desktop-context-restored');
 });
 
-test('첫 연습 판: 문제 1개 → 궁수 설치 → 적 3마리 → 회복, 안내는 조작 옆 한 문장(PRD §12.2)', async ({ page }) => {
-  test.setTimeout(180_000);
+test('사용 설명서 완독 후 새 게임 출정: 연습 판 버튼 없이 4장 안내에 집중하고 바로 본 게임으로 진입한다', async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.goto('/');
   await page.evaluate(() => { indexedDB.deleteDatabase('vocabulary-td'); localStorage.clear(); });
   await page.reload();
-  await page.getByRole('button', { name: '처음이라면 연습부터' }).click();
-  await expect(page.getByText('문제를 풀면 골드를 받아요. 알맞은 답을 눌러 보세요.')).toBeVisible();
-  await expect(page.getByText('준비 1/1')).toBeVisible();
-  await shot(page, 'practice-question');
-  await finishPrep(page);
-  await expect(page.getByText('길 옆 빈 돌 받침을 눌러 타워 자리를 골라요.')).toBeVisible();
-  await tapCell(page, 8, 2);
-  await expect(page.getByText('타워를 하나 골라요. 처음에는 빠르게 쏘는 궁수탑이 좋아요.')).toBeVisible();
-  await page.getByRole('option', { name: /궁수탑/ }).click();
-  await page.getByRole('button', { name: '설치 · 60골드' }).click();
-  await expect(page.getByText('‘전투 시작’을 누르면 적 3마리가 길을 따라와요.')).toBeVisible();
-  await shot(page, 'practice-start');
-  await page.getByRole('button', { name: '전투 시작' }).click();
-  await expect(page.getByText('연습을 마쳤어요')).toBeVisible({ timeout: 90_000 });
-  await shot(page, 'practice-done');
-  await page.getByRole('button', { name: '새 게임 시작' }).click();
-  await expect(page.getByRole('textbox')).toBeVisible();
-  // 다시 홈에 오면 연습 권유 대신 ‘연습하기’가 보인다. 연습은 기록에 남지 않는다.
-  await page.getByRole('button', { name: '뒤로' }).click();
-  await expect(page.getByRole('button', { name: '연습하기' })).toBeVisible();
-  await page.getByRole('button', { name: '내 기록' }).click();
-  await expect(page.getByText('아직 기록이 없어요')).toBeVisible();
+
+  await page.getByRole('button', { name: '사용 설명서' }).click();
+  const guide = page.getByRole('dialog', { name: '사용 설명서' });
+  await expect(guide).toBeVisible();
+  await expect(guide.getByRole('button', { name: '연습 판 해 보기' })).toHaveCount(0);
+  await expect(guide.getByRole('button', { name: '처음으로' })).toHaveCount(0);
+
+  await guide.getByRole('button', { name: '다음 장' }).click();
+  await expect(guide.locator('footer')).toContainText('2 / 4');
+  await guide.getByRole('button', { name: '다음 장' }).click();
+  await expect(guide.locator('footer')).toContainText('3 / 4');
+  await guide.getByRole('button', { name: '다음 장' }).click();
+  await expect(guide.locator('footer')).toContainText('4 / 4');
+  await guide.getByRole('button', { name: '닫기' }).click();
+  await expect(guide).toHaveCount(0);
+
+  await page.getByRole('textbox', { name: '출정 별명' }).fill('작전교범수호자');
+  await page.getByRole('button', { name: '새 게임' }).click();
+  await page.getByRole('button', { name: '시작하기' }).click();
+  await expect(page.getByText('준비 1/5')).toBeVisible();
 });
 
 test('1366×650 크롬북: R 모드와 칸 크기', async ({ page }) => {
@@ -225,4 +202,37 @@ test('접근성: 홈·준비 화면 axe 위반 없음(캔버스 제외)', async 
   await newGame(page);
   const game = await new AxeBuilder({ page }).exclude('canvas').analyze();
   expect(game.violations.map(v => `${v.id}: ${v.nodes.length}`)).toEqual([]);
+});
+
+test('3~6학년 1,000+ 문항 준비 표시 및 고학년·고난이도 새 게임 진입 검증', async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 860 });
+  await page.goto('/');
+  await page.evaluate(() => indexedDB.deleteDatabase('vocabulary-td'));
+  await page.reload();
+  await page.getByRole('textbox', { name: '출정 별명' }).fill('어휘수호대');
+  await page.getByRole('button', { name: '새 게임' }).click();
+
+  const dialog = page.getByRole('dialog', { name: '새 게임 출정 설정' });
+  await expect(dialog).toBeVisible();
+  const gradeGroup = dialog.getByRole('radiogroup', { name: '학년' });
+  for (const g of [3, 4, 5, 6]) {
+    const btn = gradeGroup.getByRole('radio', { name: new RegExp(`^${g}학년`) });
+    await expect(btn).toBeEnabled();
+    await expect(btn).toContainText(/문제 준비됨 · 1,\d{3}문항/);
+  }
+
+  // 6학년 + 아주 어려움 선택 후 시작하여 실제 고학년 문항 패널 및 접근성·가로 넘침 이상 없음 확인
+  await gradeGroup.getByRole('radio', { name: /^6학년/ }).click();
+  await dialog.getByRole('radiogroup', { name: '난이도' }).getByRole('radio', { name: /^아주 어려움/ }).click();
+
+  const newGameA11y = await new AxeBuilder({ page }).analyze();
+  expect(newGameA11y.violations.map(v => `${v.id}: ${v.nodes.length}`)).toEqual([]);
+
+  await page.getByRole('button', { name: '시작하기' }).click();
+  await expect(page.getByText('준비 1/5')).toBeVisible();
+  await expect(page.getByRole('region', { name: '어휘 문제' })).toBeVisible();
+
+  const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
+  expect(overflow).toBeLessThanOrEqual(0);
+  await shot(page, 'grade6-crazy-prep');
 });

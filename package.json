@@ -20,7 +20,7 @@
     "simulate:balance": "node tools/balance-sim.mjs",
     "simulate:towers": "node tools/tower-efficiency.mjs",
     "build:bank": "node tools/build-bank.mjs",
-    "fetch-evidence": "node tools/fetch-evidence.mjs",
+    "fetch-evidence": "node --use-system-ca --tls-cipher-list=DEFAULT:@SECLEVEL=1 tools/fetch-evidence.mjs",
     "verify": "npm run typecheck && npm run lint && npm run test && npm run validate:plan && npm run validate:content",
     "blind-input": "node tools/make-blind-input.mjs"
   },

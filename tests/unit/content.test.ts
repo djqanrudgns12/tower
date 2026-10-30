@@ -5,7 +5,7 @@ import { assetManifestSchema } from '../../src/contracts/assetManifest';
 import { blindReviewSchema, contentHashInput, draftBatchSchema, draftSidecarSchema } from '../../src/contracts/questionDraft';
 import { bankFileSchema, readingLoad } from '../../src/contracts/questions';
 import defaults from '../../docs/contracts/product.defaults.v0.5.json';
-import { lintQuestion } from '../../src/content/lint';
+import { lintBatchStrict, lintQuestion } from '../../src/content/lint';
 import { isPractice, MIN_PUBLISHED, PRACTICE_SIZE } from '../../tools/content/bankBuild';
 
 // npm run validate:content / validate:assets의 본체. 작업자 RETURN은 이 검사를 통과해야 RETURNED다.
@@ -45,9 +45,13 @@ describe('런타임 문제은행', () => {
 describe.skipIf(Object.keys(drafts).length === 0)('제작 초안 배치(content-source)', () => {
   for (const [path, raw] of Object.entries(drafts)) {
     const dir = path.replace(/\/drafts\.json$/, '');
+    const batchId = dir.split('/').pop() ?? '';
     it(`${dir}: 초안 스키마·의미 검사·sidecar·근거 해시`, () => {
       const batch = draftBatchSchema.parse(raw);
       expect(batch.flatMap(q => lintQuestion(q).map(p => `${q.id}: ${p}`))).toEqual([]);
+      if (batchId.startsWith('Q50-')) {
+        expect(lintBatchStrict(batch)).toEqual([]);
+      }
       const sidecar = draftSidecarSchema.parse(sidecars[`${dir}/sidecar.json`]);
       for (const q of batch) {
         const item = sidecar.items.find(i => i.id === q.id && i.revision === q.revision);

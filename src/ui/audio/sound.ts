@@ -89,19 +89,24 @@ export class SoundDirector {
   private lastFire = new Map<Sfx, number>();
   private enabled = true;
   private paused = false;
+  private bgmVolume: number;
+  private sfxVolume: number;
   private bgmTimer: ReturnType<typeof setInterval> | null = null;
   private bgmNext = 0;
   private bgmStep = 0;
 
-  constructor(private readonly cfg: AudioConfig, private readonly bossEveryWaves: number, private readonly create: () => AudioContext = () => new AudioContext()) {}
+  constructor(private readonly cfg: AudioConfig, private readonly bossEveryWaves: number, private readonly create: () => AudioContext = () => new AudioContext()) {
+    this.bgmVolume = cfg.bgmVolume;
+    this.sfxVolume = cfg.sfxVolume;
+  }
 
   /** 첫 사용자 입력에서 부른다. 만들 수 없으면 무음으로 둔다. */
   unlock() {
     if (this.ctx) { void this.ctx.resume?.().catch(() => undefined); return; }
     try {
       this.ctx = this.create();
-      this.sfxBus = this.ctx.createGain(); this.sfxBus.gain.value = this.cfg.sfxVolume; this.sfxBus.connect(this.ctx.destination);
-      this.bgmBus = this.ctx.createGain(); this.bgmBus.gain.value = this.cfg.bgmVolume; this.bgmBus.connect(this.ctx.destination);
+      this.sfxBus = this.ctx.createGain(); this.sfxBus.gain.value = this.sfxVolume; this.sfxBus.connect(this.ctx.destination);
+      this.bgmBus = this.ctx.createGain(); this.bgmBus.gain.value = this.bgmVolume; this.bgmBus.connect(this.ctx.destination);
     } catch {
       this.ctx = null;
     }
@@ -110,6 +115,31 @@ export class SoundDirector {
 
   setEnabled(on: boolean) { this.enabled = on; this.sync(); }
   setPaused(paused: boolean) { this.paused = paused; this.sync(); }
+
+  /** 배경 음악·효과음 크기를 즉시 갱신한다(설정 모달·전투 중 공통). */
+  setVolumes(bgmVolume: number, sfxVolume: number) {
+    this.bgmVolume = Math.max(0, Math.min(1, bgmVolume));
+    this.sfxVolume = Math.max(0, Math.min(1, sfxVolume));
+    if (this.bgmBus) this.bgmBus.gain.value = this.bgmVolume;
+    if (this.sfxBus) this.sfxBus.gain.value = this.sfxVolume;
+  }
+
+  /** 설정 모달의 소리 미리 듣기. 배경 선율은 켜지 않고 선택한 효과음만 한 번 들려준다. */
+  preview(sfx: Sfx) {
+    if (!this.enabled) return;
+    if (!this.ctx) {
+      try {
+        this.ctx = this.create();
+        this.sfxBus = this.ctx.createGain(); this.sfxBus.gain.value = this.sfxVolume; this.sfxBus.connect(this.ctx.destination);
+        this.bgmBus = this.ctx.createGain(); this.bgmBus.gain.value = this.bgmVolume; this.bgmBus.connect(this.ctx.destination);
+      } catch {
+        this.ctx = null;
+      }
+    }
+    if (!this.ctx || !this.sfxBus) return;
+    void this.ctx.resume?.().catch(() => undefined);
+    this.play(sfx);
+  }
 
   /** 소리를 낼 수 있는 상태(켜짐·정지 아님·준비됨)에서만 효과음을 낸다. */
   handle(events: readonly DomainEvent[]) {
