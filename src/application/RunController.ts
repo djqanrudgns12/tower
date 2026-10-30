@@ -3,9 +3,10 @@ import type { DomainEvent } from '../domain/events';
 import { NumericLimitError } from '../domain/num';
 import { advanceTick, applyCommand, replaceUnavailableQuestion, type Command, type CommandResult } from '../domain/run';
 import type { PauseReason, RunState } from '../domain/types';
-import { addRecord, clearSnapshot, type RunRecord } from '../persistence/db';
+import { addRecord, clearSnapshot } from '../persistence/db';
 import { queueAndFlushCompletedRun } from '../persistence/lobbyClient';
 import type { Ownership } from '../persistence/ownership';
+import { buildRunRecord } from './runRecord';
 import { selectView, viewKey, type ControllerView, type Notice } from './view';
 
 export const TICK_MS = 1000 / 30;
@@ -253,11 +254,7 @@ export class RunController {
     this.stop();
     if (!this.persist) return;
     const s = this.s;
-    const record: RunRecord = {
-      runId: s.config.runId, nickname: s.config.nickname, grade: s.config.grade, difficulty: s.config.difficulty, mapId: s.config.mapId,
-      pt: s.pt, completedWave: s.completedWave, endedAtWave: s.endedAtWave ?? s.wave, correct: s.stats.correct, wrong: s.stats.wrong, skipped: s.stats.skipped,
-      endedAt: new Date().toISOString(), endReason: s.endReason ?? 'QUIT', contentMode: s.config.contentMode, balanceVersion: s.config.balanceVersion, bankVersion: s.config.bankVersion,
-    };
+    const record = buildRunRecord(s);
     try {
       await addRecord(record);
       await clearSnapshot();
