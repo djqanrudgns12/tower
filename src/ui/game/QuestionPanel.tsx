@@ -173,6 +173,7 @@ export function QuestionPanel({
                 type="button"
                 className={css.option}
                 data-state={state}
+                data-option-id={o.id}
                 disabled={answered}
                 aria-pressed={question.chosen === o.id}
                 onPointerDown={() => {

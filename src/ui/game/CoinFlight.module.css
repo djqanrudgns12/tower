@@ -1,0 +1,30 @@
+/* 금화 비행: 가로(바깥)는 일정하게, 세로(안쪽)는 솟았다 떨어지는 두 층으로 호를 그린다. 합계 520ms + 간격. */
+.layer {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 60;
+}
+
+.x {
+  position: absolute;
+  margin: -10px 0 0 -10px;
+  animation: flyX 520ms cubic-bezier(0.45, 0, 0.7, 1) both;
+}
+
+.y {
+  display: block;
+  animation: flyY 520ms linear both;
+}
+
+@keyframes flyX {
+  from { transform: translateX(0); }
+  to { transform: translateX(var(--dx)); }
+}
+
+@keyframes flyY {
+  0% { transform: translateY(0) scale(0.6); opacity: 0; }
+  12% { opacity: 1; transform: translateY(-28px) scale(1); }
+  45% { transform: translateY(calc(var(--dy) * 0.35 - 52px)) scale(1); }
+  100% { transform: translateY(var(--dy)) scale(0.8); opacity: 1; }
+}

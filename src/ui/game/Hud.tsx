@@ -1,8 +1,10 @@
+import { useState } from 'react';
 import type { Balance } from '../../contracts/balance';
 import type { GameView } from '../../application/view';
 import { fmtNumber } from '../copy';
 import { BurningGemIcon, GateShieldIcon, GoldCoinIcon, PauseBarsIcon, ScoreCrestIcon, WaveFlagIcon } from '../icons/GameIcons';
 import css from './Hud.module.css';
+import { RollingNumber } from './RollingNumber';
 
 export interface RecentDelta {
   gold: number;
@@ -16,7 +18,8 @@ interface Props {
   compactRail?: boolean;
   recentDelta?: RecentDelta | null;
   /** 골드 칸(정답 금화가 날아갈 곳)을 화면이 알 수 있게 붙이는 ref. */
-  goldRef?: React.Ref<HTMLSpanElement>;
+  goldRef?: React.Ref<HTMLElement>;
+  reducedMotion?: boolean;
   onPause(): void;
 }
 
@@ -24,13 +27,16 @@ interface Props {
  * 상단 상태 바(ui-rules-v2 §1, 41번 원화): 호두나무 판 한 장에 성문 막대, 골드·점수·웨이브, 연속 정답 보석, 일시정지.
  * 아이콘+숫자만 보인다. 자세한 뜻은 화면 읽기 이름과 길게 누르기(제목)로 읽힌다.
  */
-export function Hud({ view, burning: rule, mode, compactRail = false, recentDelta = null, goldRef, onPause }: Props) {
+export function Hud({ view, burning: rule, mode, compactRail = false, recentDelta = null, goldRef, reducedMotion = false, onPause }: Props) {
   const ratio = view.gateMaxHp ? view.gateHp / view.gateMaxHp : 0;
   const waveNo = Math.max(1, view.wave);
   const burning = view.burningSecondsLeft > 0;
   // 연속 정답 보석: 조건 수(balance.burning.streak)마다 한 바퀴. 버닝 중에는 가득 찬다(PRD §5).
   const lit = burning ? rule.streak : view.battleStreak % rule.streak;
   const speed = `공격 속도 +${rule.attackSpeedBP / 100}%`;
+  // 성문 피해: 막대 테두리가 한 번 붉게 깜빡인다(ui-rules-v2 §5). 이전 값과 비교해 렌더 중에 센다.
+  const [gate, setGate] = useState({ hp: view.gateHp, hits: 0 });
+  if (gate.hp !== view.gateHp) setGate({ hp: view.gateHp, hits: view.gateHp < gate.hp ? gate.hits + 1 : gate.hits });
 
   return (
     <div className={`${css.hud} ${mode === 'S' ? css.bar : css.rail} ${compactRail ? css.compact : ''}`}>
@@ -47,6 +53,7 @@ export function Hud({ view, burning: rule, mode, compactRail = false, recentDelt
           <GateShieldIcon size={20} light />
           <span className={css.track}>
             <span className={css.fill} data-low={ratio <= 0.34 || undefined} style={{ transform: `scaleX(${Math.max(0, Math.min(1, ratio))})` }} />
+            {gate.hits > 0 && <span key={gate.hits} className={css.hit} />}
           </span>
           <span className={css.gateNum}>{view.gateHp}<span className={css.of}>/{view.gateMaxHp}</span></span>
         </div>
@@ -57,7 +64,7 @@ export function Hud({ view, burning: rule, mode, compactRail = false, recentDelt
       <div className={css.stats}>
         <span className={css.stat} data-kind="gold" aria-label={`골드 ${view.gold}`} title="골드">
           <GoldCoinIcon size={18} />
-          <strong ref={goldRef} className={css.num}>{fmtNumber(view.gold)}</strong>
+          <RollingNumber ref={goldRef} value={view.gold} className={css.num} reducedMotion={reducedMotion} />
           {recentDelta && recentDelta.gold !== 0 && (
             <span className={css.delta} data-neg={recentDelta.gold < 0 || undefined} aria-hidden="true">
               {recentDelta.gold > 0 ? `+${recentDelta.gold}` : `−${Math.abs(recentDelta.gold)}`}

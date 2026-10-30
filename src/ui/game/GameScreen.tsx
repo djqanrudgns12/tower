@@ -13,6 +13,7 @@ import { PlayArrowIcon, TowerShieldPortrait, WaveFlagIcon } from '../icons/GameI
 import kit from '../kit.module.css';
 import { useLayout } from '../useLayout';
 import { Armory } from './Armory';
+import { CoinFlight, coinsFor, type Flight } from './CoinFlight';
 import { EvolveCard } from './EvolveCard';
 import { evolutionChoices, towerForm, upgradeCommand, upgradeCost, type FormId } from './evolution';
 import { FieldOverlay, type FieldFlash } from './FieldOverlay';
@@ -27,6 +28,7 @@ import { nextSlot, SlotList, slotDescription, type Arrow } from './SlotList';
 import { TowerDetail } from './TowerDetail';
 import { useTowerDrag } from './useTowerDrag';
 import { ENEMY_NAME, wavePreview } from './wavePreview';
+import { WaveBand } from './WaveBand';
 
 interface Props {
   controller: RunController;
@@ -70,6 +72,15 @@ export function GameScreen({
   const map = controller.ctx.map;
   const [recentDelta, setRecentDelta] = useState<RecentDelta | null>(null);
   const deltaTimerRef = useRef<number | null>(null);
+  // 연출(ui-rules-v2 §5): 정답 금화 비행, 웨이브 띠, 진화 빛기둥. 보상은 이미 상태에 반영된 뒤의 그림이다.
+  const goldRef = useRef<HTMLElement>(null);
+  const answerFrom = useRef<{ x: number; y: number } | null>(null);
+  const motionRef = useRef(reducedMotion);
+  useEffect(() => { motionRef.current = reducedMotion; }, [reducedMotion]);
+  const fxSeq = useRef(0);
+  const [flights, setFlights] = useState<Flight[]>([]);
+  const [band, setBand] = useState<{ id: number; wave: number; boss: boolean } | null>(null);
+  const [pillar, setPillar] = useState<{ id: number; slotId: string } | null>(null);
 
   // 소리 및 상단 HUD 변동 배지는 도메인 사건을 구독해 갱신한다(PRD §11.5).
   const [sound] = useState(() => new SoundDirector(DEFAULTS.audio, controller.ctx.balance.waves.bossEveryWaves));
@@ -82,6 +93,19 @@ export function GameScreen({
       let dGold = 0;
       let dPt = 0;
       for (const e of events) {
+        if (e.type === 'answered' && e.result === 'correct' && e.gold > 0 && !motionRef.current) {
+          const from = answerFrom.current;
+          const to = goldRef.current?.getBoundingClientRect();
+          if (from && to && to.width > 0) {
+            fxSeq.current += 1;
+            const flight = { id: fxSeq.current, from, to: { x: to.left + to.width / 2, y: to.top + to.height / 2 }, coins: coinsFor(e.gold) };
+            setFlights(f => [...f, flight]);
+          }
+        }
+        if (e.type === 'phase' && e.phase === 'BATTLE') {
+          fxSeq.current += 1;
+          setBand({ id: fxSeq.current, wave: e.wave, boss: e.wave % controller.ctx.balance.waves.bossEveryWaves === 0 });
+        }
         if (e.type === 'answered' || e.type === 'kill') {
           dGold += e.gold;
           dPt += e.pt;
@@ -141,6 +165,17 @@ export function GameScreen({
   const trading = view.phase === 'BUILD' || view.phase === 'BATTLE';
   const lock = view.phase === 'PREP_QUIZ' ? '준비 문제를 먼저 풀어 주세요' : view.phase === 'WAVE_WRAPUP' ? '다음 웨이브 준비 중이에요' : null;
   const occupied = useMemo(() => new Set(view.towers.map(t => t.slotId)), [view.towers]);
+  // 골드가 늘어 새로 살 수 있게 된 타워: 장착 홈 테두리가 한 번 빛난다(ui-rules-v2 §5).
+  const [goldSeen, setGoldSeen] = useState<{ gold: number; fresh: ReadonlySet<TowerId>; n: number }>({ gold: view.gold, fresh: new Set(), n: 0 });
+  if (goldSeen.gold !== view.gold) {
+    const fresh = new Set(towers.filter(t => goldSeen.gold < buildCost(b, t) && view.gold >= buildCost(b, t)));
+    setGoldSeen({ gold: view.gold, fresh: fresh.size > 0 ? fresh : goldSeen.fresh, n: fresh.size > 0 ? goldSeen.n + 1 : goldSeen.n });
+  }
+  useEffect(() => {
+    if (goldSeen.n === 0) return undefined;
+    const t = window.setTimeout(() => setGoldSeen(g => ({ ...g, fresh: new Set() })), 700);
+    return () => window.clearTimeout(t);
+  }, [goldSeen.n]);
 
   const showFlash = useCallback((text: string, slotId: string | null = null) => {
     flashSeq.current += 1;
@@ -310,7 +345,11 @@ export function GameScreen({
   ) : null;
 
   const onAnswer = useCallback((choice: OptionId) => {
-    if (view.question) controller.dispatch({ type: 'answer', encounterId: view.question.encounterId, choice });
+    if (!view.question) return;
+    // 금화가 날아오를 자리: 고른 답안 키 가운데. 채점 사건은 다음 틱에 온다.
+    const key = document.querySelector<HTMLElement>(`[data-option-id="${choice}"]`)?.getBoundingClientRect();
+    answerFrom.current = key ? { x: key.left + key.width / 2, y: key.top + key.height / 2 } : null;
+    controller.dispatch({ type: 'answer', encounterId: view.question.encounterId, choice });
   }, [controller, view.question]);
   const onSkip = useCallback(() => {
     if (view.question) controller.dispatch({ type: 'skip', encounterId: view.question.encounterId });
@@ -338,6 +377,8 @@ export function GameScreen({
     if (!selectedTower) return;
     const cost = upgradeCost(b, selectedTower.type, selectedTower.level);
     if (towerResult(controller.dispatch(upgradeCommand(selectedTower.id, form)), cost !== null ? cost - view.gold : undefined)) {
+      fxSeq.current += 1;
+      setPillar({ id: fxSeq.current, slotId: selectedTower.slotId });
       setEvolveOpen(false);
       setSelection(s => ({ ...s, previewBranch: null }));
     }
@@ -393,6 +434,7 @@ export function GameScreen({
       armed={armed}
       icons={icons}
       variant={variant}
+      fresh={goldSeen.fresh}
       onArm={onArm}
       onPress={beginDrag}
       takeClick={takeClick}
@@ -517,6 +559,8 @@ export function GameScreen({
           slotId={trading || selection.slotId === null ? selection.slotId : null}
           tower={selectedTower}
           flash={flash && flash.slotId !== null ? flash : null}
+          pillar={pillar}
+          onPillarDone={id => setPillar(p => (p?.id === id ? null : p))}
           onBuild={(slotId, type) => build(slotId, type, false)}
           onPreview={type => setSelection(s => (s.slotId ? { ...s, previewType: type } : s))}
           onUpgrade={onUpgrade}
@@ -528,6 +572,9 @@ export function GameScreen({
           }}
         />
       </div>
+      {band && (
+        <WaveBand key={band.id} wave={band.wave} boss={band.boss} bossArt={icons['enemy.boss.0']} onDone={() => setBand(x => (x?.id === band.id ? null : x))} />
+      )}
       <div className={css.notices} aria-live="polite">
         {view.notices.map(n => (
           <p key={n.id} className={css.notice} data-tone={n.tone}>{n.text}</p>
@@ -566,7 +613,7 @@ export function GameScreen({
           <>
             {field}
             <aside className={css.rail} style={{ height: layout.mapH }} aria-label="타워 관리">
-              <Hud view={view} burning={b.burning} mode="R" compactRail={layout.compactRail} recentDelta={recentDelta} onPause={() => controller.pause('USER')} />
+              <Hud view={view} burning={b.burning} mode="R" compactRail={layout.compactRail} recentDelta={recentDelta} goldRef={goldRef} reducedMotion={reducedMotion} onPause={() => controller.pause('USER')} />
               {notice && <p className={css.hint} role="status">{notice}</p>}
               <div className={`${css.railBody} ${layout.compactRail ? css.railBodyCompact : ''}`}>
                 {practiceDone ? (
@@ -587,7 +634,7 @@ export function GameScreen({
           </>
         ) : (
           <>
-            <Hud view={view} burning={b.burning} mode="S" recentDelta={recentDelta} onPause={() => controller.pause('USER')} />
+            <Hud view={view} burning={b.burning} mode="S" recentDelta={recentDelta} goldRef={goldRef} reducedMotion={reducedMotion} onPause={() => controller.pause('USER')} />
             {layout.portraitHint && <p className={css.hint}>세로로 돌리면 더 편해요.</p>}
             {notice && <p className={css.hint} role="status">{notice}</p>}
             {field}
@@ -608,6 +655,7 @@ export function GameScreen({
           </>
         )}
       </main>
+      {flights.length > 0 && <CoinFlight flights={flights} onDone={id => setFlights(f => f.filter(x => x.id !== id))} />}
       {ghostType && (
         <div ref={ghostRef} className={css.ghost} aria-hidden="true">
           <TowerShieldPortrait type={ghostType} icons={icons} size={Math.max(44, Math.round(layout.cell * 1.1))} />

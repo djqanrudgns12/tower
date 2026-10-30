@@ -9,6 +9,7 @@ import { EvolveIcon, GoldCoinIcon, SellIcon, TowerShieldPortrait, UpgradeArrowIc
 import { evolutionChoices, upgradeCost } from './evolution';
 import { cellRect, type CellRect } from './fieldGeometry';
 import css from './FieldOverlay.module.css';
+import pillarCss from './EvolvePillar.module.css';
 
 export interface FieldFlash { id: number; text: string; slotId: string | null }
 
@@ -27,6 +28,9 @@ interface Props {
   /** 설치된 타워를 눌렀다(도구 묶음). */
   tower: TowerView | null;
   flash: FieldFlash | null;
+  /** 막 진화한 타워 칸의 빛기둥. */
+  pillar?: { id: number; slotId: string } | null;
+  onPillarDone?(id: number): void;
   onBuild(slotId: string, type: TowerId): void;
   onPreview(type: TowerId | null): void;
   onUpgrade(): void;
@@ -48,9 +52,19 @@ export function FieldOverlay(p: Props) {
   const menuSlot = p.tower ? null : rectOf(p.slotId);
   const toolSlot = p.tower ? rectOf(p.tower.slotId) : null;
   const flashRect = p.flash ? rectOf(p.flash.slotId) : null;
+  const pillarRect = p.pillar ? rectOf(p.pillar.slotId) : null;
 
   return (
     <div className={css.layer}>
+      {p.pillar && pillarRect && (
+        <span
+          key={`pillar-${p.pillar.id}`}
+          className={pillarCss.pillar}
+          aria-hidden="true"
+          style={{ left: pillarRect.left + pillarRect.size * 0.18, top: pillarRect.top - pillarRect.size * 1.6, width: pillarRect.size * 0.64, height: pillarRect.size * 2.5 }}
+          onAnimationEnd={() => p.onPillarDone?.(p.pillar!.id)}
+        />
+      )}
       {menuSlot && p.slotId && (
         <Anchored key={`menu-${p.slotId}`} cell={menuSlot} boxW={p.boxW} boxH={p.boxH} onEscape={p.onClose}>
           <div className={css.menu} role="group" aria-label="이 자리에 놓을 타워">
