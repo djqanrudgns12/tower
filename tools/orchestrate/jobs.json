@@ -28,7 +28,11 @@
         "tests/unit/net/**",
         "tests/e2e/stage-animation.spec.ts"
       ],
-      "checks": ["npm run typecheck", "npm run lint", "npm test"]
+      "checks": [
+        "npm run typecheck",
+        "npm run lint",
+        "npm test"
+      ]
     },
     {
       "id": "WP-SAVE",
@@ -52,7 +56,11 @@
         "tests/e2e/play.spec.ts",
         "tests/e2e/home.spec.ts"
       ],
-      "checks": ["npm run typecheck", "npm run lint", "npm test"]
+      "checks": [
+        "npm run typecheck",
+        "npm run lint",
+        "npm test"
+      ]
     },
     {
       "id": "WP-UI",
@@ -92,7 +100,49 @@
         "tests/unit/ui/**",
         "tests/e2e/layout.spec.ts"
       ],
-      "checks": ["npm run typecheck", "npm run lint", "npm test", "npm run validate:plan"]
+      "checks": [
+        "npm run typecheck",
+        "npm run lint",
+        "npm test",
+        "npm run validate:plan"
+      ]
+    },
+    {
+      "id": "WP-CORE",
+      "title": "출제·은행·공동검수 게이트를 PRD §9에 맞춤(공개 은행만 출제, 난이도 게이트, 후보 판정, 블라인드 입력, 검수 자동화)",
+      "agent": "commander",
+      "owns": [
+        "src/content/**",
+        "src/contracts/questions.ts",
+        "src/contracts/questionDraft.ts",
+        "src/domain/**",
+        "tools/content/**",
+        "tools/build-bank.mjs",
+        "tools/make-blind-input.mjs",
+        "tools/fetch-evidence.mjs",
+        "tools/sim/**",
+        "tools/balance-sim.mjs",
+        "tools/orchestrate/**",
+        "docs/contracts/question-draft.schema.json",
+        "docs/contracts/product.defaults.v0.5.json",
+        "package.json",
+        "tests/unit/bank-build.test.ts",
+        "tests/unit/content.test.ts",
+        "tests/unit/difficulty-quiz.test.ts",
+        "tests/unit/stdict.test.ts",
+        "tests/unit/quiz*.test.ts",
+        "tests/unit/orchestrate/**",
+        "content-source/**",
+        "docs/EXECUTION_BOARD.md",
+        "docs/HANDOFF.md",
+        "vocabulary_td_prd_v0_5.md"
+      ],
+      "checks": [
+        "npm run typecheck",
+        "npm run lint",
+        "npm test",
+        "npm run validate:content"
+      ]
     }
   ]
 }
