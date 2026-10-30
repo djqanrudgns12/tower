@@ -1,9 +1,10 @@
 import { describe, expect, it } from 'vitest';
 import { FORM_IDS, TOWER_IDS, type Balance, type FormId, type TowerId } from '../../src/contracts/balance';
-import { BALANCE } from '../../src/content';
+import { resumeBlocker } from '../../src/application/session';
+import { BALANCE, gradeContent } from '../../src/content';
 import type { GameContext } from '../../src/domain/context';
 import { round5Bp } from '../../src/domain/num';
-import { advanceTick, applyCommand, restoreRunState, type Command, type CommandError } from '../../src/domain/run';
+import { advanceTick, applyCommand, type Command, type CommandError } from '../../src/domain/run';
 import {
   attacks, auraReaches, bannerAura, evolutionChoices, formBranch, formConfig, formInfo, formTier, levelDamageBP, reachMilli, towerStats, upgradeCost,
 } from '../../src/domain/towers';
@@ -397,19 +398,30 @@ describe('설치 취소 undoBuild(run.undoBuildMs = 3000ms = 90틱)', () => {
   });
 });
 
-describe('저장 버전(progression.md §4)', () => {
-  it('v2 상태는 그대로 이어가고, v1(branch) 스냅샷과 잘못된 값은 던지지 않고 RULES_CHANGED', () => {
+describe('저장 버전(progression.md §4) — 실제 이어하기 판정(session.resumeBlocker, WP-SAVE)', () => {
+  /** 저장소에서 읽은 판과 같은 모양. 은행은 그 학년 공개 은행으로 맞춘다(이어하기는 시작 때 은행 버전이 그대로여야 한다). */
+  function saved(state: unknown) {
+    return { kind: 'ok' as const, state: state as RunState, seq: 1, savedAt: '2026-10-31T00:00:00.000Z' };
+  }
+  function current() {
     const { s } = newRun();
+    const { bank } = gradeContent(3);
+    s.config.bankId = bank!.bankId;
+    s.config.bankVersion = bank!.bankVersion;
+    return s;
+  }
+
+  it('지금 저장 버전(v2) 판은 이어하고, v1(branch 타워) 스냅샷은 던지지 않고 ‘이어할 수 없어요’로 막는다', () => {
     expect(RUN_STATE_VERSION).toBe(2);
+    const s = current();
     expect(s.v).toBe(2);
-    const fresh = restoreRunState(s);
-    expect(fresh.ok && fresh.state).toBe(s);
-    const json: unknown = JSON.parse(JSON.stringify(s));
-    expect(restoreRunState(json)).toEqual({ ok: true, state: json });
+    expect(s.config.balanceVersion).toBe(BALANCE.balanceVersion);
+    expect(resumeBlocker(saved(JSON.parse(JSON.stringify(s))))).toBeNull();
     const v1 = { ...structuredClone(s), v: 1, towers: [{ id: 1, type: 'archer', slotId: 's1', x: 8500, y: 2500, level: 4, branch: 'A', invested: 250, nextAttackTick: null }] };
-    expect(() => restoreRunState(v1)).not.toThrow();
-    expect(restoreRunState(v1)).toEqual({ ok: false, reason: 'RULES_CHANGED' });
-    for (const bad of [null, 'x', {}, undefined, 2, [], { v: '2' }, { v: 3 }]) expect(restoreRunState(bad)).toEqual({ ok: false, reason: 'RULES_CHANGED' });
+    expect(() => resumeBlocker(saved(v1))).not.toThrow();
+    expect(resumeBlocker(saved(v1))).toMatch(/이어할 수 없어요/);
+    // 리뉴얼 전 밸런스(0.4.2)로 시작한 판도 같은 안내로 막는다.
+    expect(resumeBlocker(saved({ ...structuredClone(s), config: { ...s.config, balanceVersion: '0.4.2-candidate' } }))).toMatch(/이어할 수 없어요/);
   });
 });
 

@@ -63,17 +63,6 @@ function enterPrep(ctx: GameContext, s: RunState, wave: number, ev: DomainEvent[
   ev.push({ type: 'phase', phase: s.phase, wave }, { type: 'encounter', encounterId: s.quiz.current.id });
 }
 
-export type RestoreResult = { ok: true; state: RunState } | { ok: false; reason: 'RULES_CHANGED' };
-
-/**
- * 저장된 진행 중 판을 이어갈 수 있는지 본다. 저장 버전이 다르면(v1: 타워 branch 구조 등) 오류 없이 RULES_CHANGED로 알리고
- * 화면은 ‘규칙이 바뀌어 이어갈 수 없어요’로 정리한다. 점수·결과 기록은 따로 저장돼 그대로 남는다(progression.md §4).
- */
-export function restoreRunState(saved: unknown): RestoreResult {
-  const v = typeof saved === 'object' && saved !== null ? (saved as { v?: unknown }).v : undefined;
-  return v === RUN_STATE_VERSION ? { ok: true, state: saved as RunState } : { ok: false, reason: 'RULES_CHANGED' };
-}
-
 const tradingPhase = (s: RunState) => s.phase === 'BUILD' || s.phase === 'BATTLE';
 
 export function applyCommand(ctx: GameContext, s: RunState, cmd: Command): CommandResult {
