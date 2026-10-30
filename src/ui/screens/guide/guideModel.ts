@@ -52,7 +52,7 @@ export function buildGuideChapters(
   const burningStreak = balance.burning.streak;
   const burningSec = Math.round(balance.burning.durationMs / 1000);
   const burningSpeedPct = Math.round(balance.burning.attackSpeedBP / 100);
-  const maxLevelText = balance.levels.max === null ? '레벨 제한 없이' : `레벨 ${balance.levels.max}까지`;
+  const maxLevelText = balance.levels.max === null ? '끝없이' : `레벨 ${balance.levels.max}까지`;
   const branchAtLevel = balance.levels.evolveAt[0];
   const sellPct = Math.round(balance.run.sellRatioBP / 100);
   const towerNames = pilotTowers.slice(0, 3).map(id => balance.towers[id].label).join('·');
