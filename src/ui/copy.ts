@@ -1,4 +1,5 @@
 import type { BranchId, DifficultyId, TowerId } from '../contracts/balance';
+import { cleanPublicNickname } from '../contracts/lobby';
 import type { CommandError } from '../domain/run';
 import type { PauseReason } from '../domain/types';
 
@@ -63,13 +64,9 @@ export const fmtCells = (milli: number) => `${(milli / 1000).toFixed(milli % 100
 export const fmtSigned = (n: number) => (n > 0 ? `+${n}` : n < 0 ? `−${Math.abs(n)}` : '0');
 export const fmtNumber = (n: number) => (n < 0 ? `−${Math.abs(n).toLocaleString('ko-KR')}` : n.toLocaleString('ko-KR'));
 
-/** 닉네임: NFC, 앞뒤 공백 정리, 제어문자 제거, 사용자 인식 문자 2~12개(PRD §2.1). */
+/** 홈 별명 입력과 공개 제출은 같은 규칙을 쓴다: NFC·NFKC, 제어문자 제거, 2~12글자, 전화번호·이메일·주소 차단(PRD §2.1). */
 export function cleanNickname(raw: string): { value: string; error: string | null } {
-  const value = raw.normalize('NFC').replace(/\p{Cc}/gu, '').trim();
-  const count = [...new Intl.Segmenter('ko', { granularity: 'grapheme' }).segment(value)].length;
-  if (count < 2) return { value, error: '별명은 두 글자 이상이에요' };
-  if (count > 12) return { value, error: '별명은 열두 글자까지예요' };
-  return { value, error: null };
+  return cleanPublicNickname(raw);
 }
 
 /** 받침에 따라 ‘로/으로’(ㄹ 받침은 ‘로’). */
