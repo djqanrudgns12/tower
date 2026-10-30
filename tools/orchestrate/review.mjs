@@ -95,8 +95,8 @@ export function promptFor(phase, items) {
       '- blindChoice: 문맥에 맞는 보기 하나(a~d). 둘 이상 성립하면 "multiple", 하나도 없으면 "none".',
       '- verdicts: uniqueness·grade·language 세 가지만.',
       '',
-      '출력: 아래 형식의 JSON 하나만 ```json 코드 블록으로 답한다. 입력의 순서·개수·questionId·revision·contentHash를 그대로 쓴다.',
-      '{"items":[{"questionId":"…","revision":1,"contentHash":"…","blindChoice":"a","verdicts":{"uniqueness":"pass","grade":"pass","language":"pass"},"findings":["…"]}]}',
+      '출력: 아래 형식의 JSON 하나만 ```json 코드 블록으로 답한다. 입력의 순서·개수·questionId·revision을 그대로 쓴다. 문자열 안의 큰따옴표는 쓰지 말고 작은따옴표나 ‘ ’를 쓴다.',
+      '{"items":[{"questionId":"…","revision":1,"blindChoice":"a","verdicts":{"uniqueness":"pass","grade":"pass","language":"pass"},"findings":["…"]}]}',
     );
   } else {
     lines.push(
@@ -106,11 +106,12 @@ export function promptFor(phase, items) {
       '- uniqueness·grade·language: 정답 키를 알고 네 보기를 모두 문맥에 대입해 다시 반박한 최종 판정. 1단계 답이 정답과 달랐다면 그 이유를 따져 uniqueness를 정한다.',
       '- explanation: 해설이 정답·근거와 맞고 오답 이유 3개가 각 보기가 틀린 까닭을 바르게 말하면 pass, 틀리거나 모순이면 fail.',
       '',
-      '출력: 아래 형식의 JSON 하나만 ```json 코드 블록으로. 입력의 순서·개수·식별자를 그대로 쓴다.',
-      '{"items":[{"questionId":"…","revision":1,"contentHash":"…","verdicts":{"source":"pass","uniqueness":"pass","grade":"pass","language":"pass","explanation":"pass"},"findings":["…"]}]}',
+      '출력: 아래 형식의 JSON 하나만 ```json 코드 블록으로. 입력의 순서·개수·questionId·revision을 그대로 쓴다. 문자열 안의 큰따옴표는 쓰지 말고 작은따옴표나 ‘ ’를 쓴다.',
+      '{"items":[{"questionId":"…","revision":1,"verdicts":{"source":"pass","uniqueness":"pass","grade":"pass","language":"pass","explanation":"pass"},"findings":["…"]}]}',
     );
   }
-  lines.push('', '----- 입력 -----', JSON.stringify({ items }, null, 1));
+  // 64자리 해시는 모델이 옮겨 적다 틀리므로 보내지 않는다. 도구가 questionId·revision으로 다시 붙인다.
+  lines.push('', '----- 입력 -----', JSON.stringify({ items: items.map(it => Object.fromEntries(Object.entries(it).filter(([k]) => k !== 'contentHash'))) }, null, 1));
   return lines.join('\n');
 }
 
@@ -129,7 +130,6 @@ export function parseReply(text, phase, expected) {
     const key = `${it.questionId}@${it.revision}`;
     const e = want.get(key);
     if (!e) { problems.push(`요청하지 않은 문항 ${key}`); continue; }
-    if (it.contentHash !== e.contentHash) problems.push(`${key}: contentHash 불일치`);
     if (seen.has(key)) problems.push(`${key}: 중복`);
     seen.add(key);
     const keys = phase === 'blind' ? ['uniqueness', 'grade', 'language'] : ['source', 'uniqueness', 'grade', 'language', 'explanation'];
@@ -139,7 +139,7 @@ export function parseReply(text, phase, expected) {
   }
   for (const k of want.keys()) if (!seen.has(k)) problems.push(`빠진 문항 ${k}`);
   if (problems.length) throw new Error(problems.slice(0, 12).join('; ') + (problems.length > 12 ? ` …외 ${problems.length - 12}건` : ''));
-  return items.map(it => ({ questionId: it.questionId, revision: it.revision, contentHash: it.contentHash, ...(phase === 'blind' ? { blindChoice: it.blindChoice } : {}), verdicts: it.verdicts, findings: it.findings }));
+  return items.map(it => ({ questionId: it.questionId, revision: it.revision, contentHash: want.get(`${it.questionId}@${it.revision}`).contentHash, ...(phase === 'blind' ? { blindChoice: it.blindChoice } : {}), verdicts: it.verdicts, findings: it.findings }));
 }
 
 async function findBatch(b, root, batchId) {
