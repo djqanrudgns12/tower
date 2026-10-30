@@ -332,12 +332,19 @@ test('새 게임 학년·난이도 radiogroup: 방향키가 선택과 포커스�
   await expect(grades.locator('[role="radio"][tabindex="0"]')).toHaveCount(1);
   await checked.focus();
   const startIndex = await radios.evaluateAll(els => els.findIndex(el => el.getAttribute('aria-checked') === 'true'));
+  // 공개 은행이 없는 학년은 꺼져 있고 방향키가 건너뛴다(PRD §9.3). 켜진 학년이 하나뿐이면 제자리에 남는다.
+  const enabledCount = await radios.evaluateAll(els => els.filter(el => !(el as HTMLButtonElement).disabled).length);
   await page.keyboard.press('ArrowRight');
   const nextIndex = await radios.evaluateAll(els => els.findIndex(el => el.getAttribute('aria-checked') === 'true'));
-  expect(nextIndex).not.toBe(startIndex);
+  await expect(radios.nth(nextIndex)).toBeEnabled();
   await expect(radios.nth(nextIndex)).toBeFocused();
   await expect(radios.nth(nextIndex)).toHaveAttribute('tabindex', '0');
-  await expect(radios.nth(startIndex)).toHaveAttribute('tabindex', '-1');
+  if (enabledCount > 1) {
+    expect(nextIndex).not.toBe(startIndex);
+    await expect(radios.nth(startIndex)).toHaveAttribute('tabindex', '-1');
+  } else {
+    expect(nextIndex).toBe(startIndex);
+  }
 
   const diffs = dialog.getByRole('radiogroup', { name: '난이도', exact: true });
   await diffs.locator('[role="radio"][aria-checked="true"]').focus();
@@ -368,6 +375,8 @@ async function floors(page: Page, scope: string) {
       if (fs < minFont) { minFont = fs; fontAt = `${el.tagName}.${el.className}:${el.textContent!.trim().slice(0, 12)}`; }
     }
     const hitSpan = (el: Element, axis: 'x' | 'y') => {
+      // 화면 아래로 걸친 단추는 스크롤하면 다 누를 수 있다. 보이는 부분만 재지 않도록 먼저 화면 안으로 옮긴다.
+      el.scrollIntoView({ block: 'center', inline: 'center' });
       const r = el.getBoundingClientRect();
       const cx = r.left + r.width / 2, cy = r.top + r.height / 2;
       let lo = 0, hi = 0;
