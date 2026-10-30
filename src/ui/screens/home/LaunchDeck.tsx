@@ -6,17 +6,30 @@ import css from './home.module.css';
 interface Props {
   savedNickname: string;
   message: string | null;
+  /** 저장 관련 안내(손상·버전 변경·저장 불가). */
+  savedNotice?: string | null;
+  /** 이어할 수 있는 판. 있으면 새 게임보다 앞에 둔다(PRD §12.2). */
+  resume?: { nickname: string; wave: number } | null;
+  /** 처음 온 학생에게는 ‘처음이라면 연습부터’, 해 본 학생에게는 ‘연습하기’. */
+  practiceLabel?: string;
   inputRef: RefObject<HTMLInputElement | null>;
   onCommitNickname(nickname: string): void;
   onOpenNewGame(confirmedNickname: string): void;
+  onResume?(): void;
+  onPractice?(): void;
 }
 
 export function LaunchDeck({
   savedNickname,
   message,
+  savedNotice = null,
+  resume = null,
+  practiceLabel = '연습하기',
   inputRef,
   onCommitNickname,
   onOpenNewGame,
+  onResume,
+  onPractice,
 }: Props) {
   const [draft, setDraft] = useState(savedNickname);
   const [touched, setTouched] = useState(false);
@@ -153,16 +166,43 @@ export function LaunchDeck({
       </div>
 
       {message && <p className={css.bannerNotice} role="status">{message}</p>}
+      {savedNotice && <p className={css.bannerNotice} role="status">{savedNotice}</p>}
 
       <div className={css.ctaStack}>
+        {resume && (
+          <button
+            id="resumeBtn"
+            type="button"
+            className={css.primaryCta}
+            onClick={onResume}
+          >
+            이어하기 · {resume.nickname} · {resume.wave}웨이브
+          </button>
+        )}
         <button
           id="newGameBtn"
           type="button"
-          className={css.primaryCta}
+          className={resume ? css.secondaryCta : css.primaryCta}
+          aria-describedby={resume ? 'newGameReplaceNote' : undefined}
           onClick={handleNewGameClick}
         >
           새 게임
         </button>
+        {resume && (
+          <p id="newGameReplaceNote" className={css.nickStatus}>
+            새 게임을 시작하면 저장된 판은 이어할 수 없어요.
+          </p>
+        )}
+        {onPractice && (
+          <button
+            id="practiceBtn"
+            type="button"
+            className={css.secondaryCta}
+            onClick={onPractice}
+          >
+            {practiceLabel}
+          </button>
+        )}
       </div>
     </section>
   );
