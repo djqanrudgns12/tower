@@ -61,7 +61,8 @@
   gap: var(--s2);
 }
 
-.railBody > p { color: var(--cream-ink); }
+/* 호두나무 위 안내 한 줄(연습 끝). 코치·이유 알약은 자기 색을 쓴다. */
+.restLine { color: var(--cream-ink); font-size: 14px; }
 
 .bottom {
   grid-column: 1 / -1;
@@ -341,7 +342,6 @@
   border: 2px solid var(--walnut-3);
 }
 
-.stripRow > p { color: var(--parch-1); }
 
 .phoneExtras {
   display: grid;

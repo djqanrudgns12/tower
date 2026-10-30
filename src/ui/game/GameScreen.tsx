@@ -232,8 +232,13 @@ export function GameScreen({
       build(tap.slotId, armed, true);
       return;
     }
+    // 준비 문제·마무리 중에는 설치할 수 없다. 메뉴 없이 확대만 되지 않게 그 자리에 이유를 짧게 보인다.
+    if (!trading) {
+      showFlash(lock ?? '지금은 할 수 없어요', tap.slotId);
+      return;
+    }
     setSelection({ ...EMPTY, slotId: tap.slotId });
-  }, [armed, build, clear]);
+  }, [armed, build, clear, trading, lock, showFlash]);
 
   // 브리지는 판 하나 동안 같은 객체. Phaser는 매 프레임 selection·magnify를 읽는다.
   const [bridge] = useState(() => new FieldBridgeHandle(controller));
@@ -348,7 +353,7 @@ export function GameScreen({
     coach?.at === at ? <p className={css.coach} role="status">{coach.text}</p> : null;
   // 연습이 아닌 판의 첫 판 코치 마크. 그 조작을 한 번 하면 다시 보이지 않는다.
   const mark = practice ? null : currentCoach(view, coachDone);
-  const practiceRest = <p className={kit.muted}>연습이 끝났어요. 아래에서 다음 할 일을 골라요.</p>;
+  const practiceRest = <p className={css.restLine}>연습이 끝났어요. 아래에서 다음 할 일을 골라요.</p>;
   const skip = practice && !practiceDone ? (
     <button type="button" className={css.quietKey} onClick={() => practice.onFinish('home')}>
       연습 건너뛰기
