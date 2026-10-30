@@ -1,3 +1,5 @@
+import { existsSync, readFileSync } from 'node:fs';
+import path from 'node:path';
 import AxeBuilder from '@axe-core/playwright';
 import { expect, test, type Page } from '@playwright/test';
 import maps from '../../docs/contracts/maps.candidate.v0.4.json' with { type: 'json' };
@@ -309,7 +311,17 @@ test('접근성: 홈·준비 화면 axe 위반 없음(캔버스 제외)', async 
   expect(game.violations.map(v => `${v.id}: ${v.nodes.length}`)).toEqual([]);
 });
 
-test('3~6학년 1,000+ 문항 준비 표시 및 고학년·고난이도 새 게임 진입 검증', async ({ page }) => {
+test('학년 단추는 공동검수를 통과한 공개 은행만 시작할 수 있고, 가장 높은 공개 학년의 아주 어려움으로 진입한다(PRD §9.3·§12.2)', async ({ page }) => {
+  // 공개 은행(grade<N>.json, status=published)만 게임에 싣는다. 후보 은행은 수량과 상관없이 "문제 준비 중"이다.
+  const published = new Map<number, number>();
+  for (const g of [3, 4, 5, 6]) {
+    const file = path.resolve(import.meta.dirname, `../../src/content/questions/grade${g}.json`);
+    if (!existsSync(file)) continue;
+    const bank = JSON.parse(readFileSync(file, 'utf8')) as { status: string; questions: unknown[] };
+    if (bank.status === 'published') published.set(g, bank.questions.length);
+  }
+  expect(published.size).toBeGreaterThan(0);
+
   await page.setViewportSize({ width: 1280, height: 860 });
   await page.goto('/');
   await page.evaluate(() => indexedDB.deleteDatabase('vocabulary-td'));
@@ -322,12 +334,18 @@ test('3~6학년 1,000+ 문항 준비 표시 및 고학년·고난이도 새 게�
   const gradeGroup = dialog.getByRole('radiogroup', { name: '학년' });
   for (const g of [3, 4, 5, 6]) {
     const btn = gradeGroup.getByRole('radio', { name: new RegExp(`^${g}학년`) });
-    await expect(btn).toBeEnabled();
-    await expect(btn).toContainText(/문제 준비됨 · 1,\d{3}문항/);
+    const count = published.get(g);
+    if (count === undefined) {
+      await expect(btn).toBeDisabled();
+      await expect(btn).toContainText('문제 준비 중');
+    } else {
+      await expect(btn).toBeEnabled();
+      await expect(btn).toContainText(`문제 준비됨 · ${count.toLocaleString('ko-KR')}문항`);
+    }
   }
 
-  // 6학년 + 아주 어려움 선택 후 시작하여 실제 고학년 문항 패널 및 접근성·가로 넘침 이상 없음 확인
-  await gradeGroup.getByRole('radio', { name: /^6학년/ }).click();
+  const top = Math.max(...published.keys());
+  await gradeGroup.getByRole('radio', { name: new RegExp(`^${top}학년`) }).click();
   await dialog.getByRole('radiogroup', { name: '난이도' }).getByRole('radio', { name: /^아주 어려움/ }).click();
 
   const newGameA11y = await new AxeBuilder({ page }).analyze();
@@ -339,5 +357,5 @@ test('3~6학년 1,000+ 문항 준비 표시 및 고학년·고난이도 새 게�
 
   const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
   expect(overflow).toBeLessThanOrEqual(0);
-  await shot(page, 'grade6-crazy-prep');
+  await shot(page, `grade${top}-crazy-prep`);
 });
