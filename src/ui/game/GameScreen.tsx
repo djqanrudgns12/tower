@@ -192,6 +192,16 @@ export function GameScreen({
     setEvolveOpen(false);
   }, []);
 
+  /**
+   * 설치·판매로 누른 단추(전장 옆 메뉴·도구)가 사라지면 포커스가 body로 떨어진다. 그때만 전장으로 돌려
+   * 화살표로 다음 자리를 고를 수 있게 한다(PRD §12.4). 포커스가 살아 있으면 건드리지 않는다.
+   */
+  const refocusField = useCallback(() => requestAnimationFrame(() => {
+    const active = document.activeElement;
+    if (active && active !== document.body && active !== document.documentElement && active.isConnected) return;
+    fieldRef.current?.querySelector<HTMLElement>('[data-keyscope="field"]')?.focus();
+  }), []);
+
   /** 설치. 실패하면 그 자리 옆에 이유를 짧게 보인다. 골라 둔 타워는 골드가 남으면 계속 골라 둔다(연속 설치). */
   const build = useCallback((slotId: string, type: TowerId, keepArmed: boolean) => {
     const r = controller.dispatch({ type: 'build', slotId, tower: type });
@@ -201,11 +211,12 @@ export function GameScreen({
     }
     setFlash(null);
     setCoachDone(d => markCoachDone(d, 'place'));
+    refocusField();
     const cost = buildCost(b, type);
     setSelection(keepArmed && view.gold - cost >= cost ? { ...EMPTY, previewType: type } : EMPTY);
     setEvolveOpen(false);
     return true;
-  }, [controller, b, view.gold, showFlash]);
+  }, [controller, b, view.gold, showFlash, refocusField]);
 
   const onTap = useCallback((tap: FieldTap) => {
     if (tap.kind === 'empty') {
@@ -385,11 +396,16 @@ export function GameScreen({
   };
   const onSell = () => {
     if (!selectedTower) return;
-    if (towerResult(controller.dispatch({ type: 'sell', towerId: selectedTower.id }))) clear();
+    if (towerResult(controller.dispatch({ type: 'sell', towerId: selectedTower.id }))) {
+      clear();
+      refocusField();
+    }
   };
   const onStart = useCallback(() => {
     if (view.towers.length === 0 && !confirmEmpty) {
       setConfirmEmpty(true);
+      // 확인 상자가 뜨면 누른 단추가 사라진다. 안전한 ‘취소’로 포커스를 옮긴다(반복 Enter로 바로 시작하지 않게).
+      requestAnimationFrame(() => document.querySelector<HTMLElement>('[data-cancel-empty]')?.focus());
       return;
     }
     setConfirmEmpty(false);
@@ -401,18 +417,7 @@ export function GameScreen({
     }
   }, [view.towers.length, confirmEmpty, controller, showFlash]);
 
-  useEffect(() => {
-    if (view.phase !== 'BUILD' || paused || practiceDone || confirmEmpty) return undefined;
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key !== 'Enter' || e.defaultPrevented || e.repeat || e.altKey || e.ctrlKey || e.metaKey) return;
-      const active = document.activeElement;
-      if (active && active !== document.body && active !== document.documentElement) return;
-      e.preventDefault();
-      onStart();
-    };
-    window.addEventListener('keydown', onKey);
-    return () => window.removeEventListener('keydown', onKey);
-  }, [view.phase, paused, practiceDone, confirmEmpty, onStart]);
+  // 전투는 ‘전투 시작’ 단추로만 시작한다(전역 Enter 단축키 없음). 설치 뒤 포커스가 풀린 상태의 Enter가 전투를 열지 않게 한다(WP-UI).
 
   // 우측(휴대폰은 전장 아래) 능력치 막대: 고른 타워, 진화 미리보기, 골라 둔 종류, 메뉴에서 짚은 종류 순.
   const detail = selectedTower ? (() => {
@@ -500,11 +505,11 @@ export function GameScreen({
             <p className={css.confirmText}>타워 없이 시작할까요?</p>
             <div className={css.row}>
               <button type="button" className={css.quietKey} onClick={onStart}>시작</button>
-              <button type="button" className={css.quietKey} onClick={() => setConfirmEmpty(false)}>취소</button>
+              <button type="button" className={css.quietKey} data-cancel-empty onClick={() => { setConfirmEmpty(false); requestAnimationFrame(() => document.querySelector<HTMLElement>('[aria-label="전투 준비"] button')?.focus()); }}>취소</button>
             </div>
           </div>
         ) : (
-          <button type="button" className={css.start} aria-keyshortcuts={showKeyHints ? 'Enter' : undefined} onClick={onStart}>
+          <button type="button" className={css.start} onClick={onStart}>
             <span>전투 시작</span>
             <PlayArrowIcon size={18} />
           </button>

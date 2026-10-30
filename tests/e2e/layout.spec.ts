@@ -1,3 +1,4 @@
+import AxeBuilder from '@axe-core/playwright';
 import { expect, test, type Page } from '@playwright/test';
 
 // 전투 화면 배치 실측(WP-UI·ui-rules-v2 §2·§3). 계산식이 아니라 실제 DOM 상자로 확인한다.
@@ -150,6 +151,9 @@ test('1440×900: 설치 뒤 도구 묶음·능력치 막대도 13px·44px 하한
   expect(m.touch, m.smallest).toBeGreaterThanOrEqual(44);
   const o = await overflow(page);
   expect([o.x, o.y].every(v => v <= 0)).toBe(true);
+  // 장착 홈·도구 묶음·능력치 막대가 보이는 상태의 접근성 위반 0(캔버스 제외).
+  const axe = await new AxeBuilder({ page }).exclude('canvas').analyze();
+  expect(axe.violations.map(v => `${v.id}: ${v.nodes.length}`)).toEqual([]);
 });
 
 test('정지 화면: 열면 첫 단추에 한 번 포커스, Tab은 안에서만 돌고, 닫으면 연 단추로 돌아간다', async ({ page }) => {

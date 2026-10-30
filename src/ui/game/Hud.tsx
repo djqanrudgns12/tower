@@ -66,7 +66,7 @@ export function Hud({ view, burning: rule, mode, compactRail = false, recentDelt
         </button>
       </div>
       <div className={css.stats}>
-        <span className={css.stat} data-kind="gold" aria-label={`골드 ${view.gold}`} title="골드">
+        <span className={css.stat} data-kind="gold" role="img" aria-label={`골드 ${view.gold}`} title="골드">
           <GoldCoinIcon size={18} />
           <RollingNumber ref={goldRef} value={view.gold} className={css.num} reducedMotion={reducedMotion} />
           {recentDelta && recentDelta.gold !== 0 && (
@@ -75,7 +75,7 @@ export function Hud({ view, burning: rule, mode, compactRail = false, recentDelt
             </span>
           )}
         </span>
-        <span className={css.stat} aria-label={`점수 ${view.pt}점, 문제 ${view.stats.ptFromQuestions} · 처치 ${view.stats.ptFromKills}`} title={`문제 ${fmtNumber(view.stats.ptFromQuestions)} · 처치 ${fmtNumber(view.stats.ptFromKills)}`}>
+        <span className={css.stat} role="img" aria-label={`점수 ${view.pt}점, 문제 ${view.stats.ptFromQuestions} · 처치 ${view.stats.ptFromKills}`} title={`문제 ${fmtNumber(view.stats.ptFromQuestions)} · 처치 ${fmtNumber(view.stats.ptFromKills)}`}>
           <ScoreCrestIcon size={18} />
           <strong className={css.num}>{fmtNumber(view.pt)}</strong>
           {recentDelta && recentDelta.pt !== 0 && (
@@ -84,7 +84,7 @@ export function Hud({ view, burning: rule, mode, compactRail = false, recentDelt
             </span>
           )}
         </span>
-        <span className={css.stat} aria-label={`웨이브 ${waveNo}${view.milestoneWave ? ', 고비 웨이브' : ''}`} title="웨이브">
+        <span className={css.stat} role="img" aria-label={`웨이브 ${waveNo}${view.milestoneWave ? ', 고비 웨이브' : ''}`} title="웨이브">
           <WaveFlagIcon size={18} boss={view.milestoneWave} light />
           <strong className={css.num}>{waveNo}</strong>
           {view.milestoneWave && <span className={css.milestone}>고비</span>}
