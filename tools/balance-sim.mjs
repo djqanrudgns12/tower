@@ -51,12 +51,13 @@ for (const mapId of maps) for (const difficulty of diffs) for (const strategy of
     wave1Fail: `${rs.filter(r => r.completedWave === 0).length}/${seeds}`,
     firstEvo: median(rs.map(r => r.firstEvoWave ?? 99)),
     maxLv: median(rs.map(r => r.maxLevel)),
+    lv7: median(rs.map(r => r.evolvedTwice)),
     bossKill: bossTotal ? r2(rs.reduce((a, r) => a + r.bossKills, 0) / bossTotal) : null,
     boss5: (b5 => (b5.length ? r2(b5.filter(b => b.killed).length / b5.length) : null))(rs.flatMap(r => r.bosses.filter(b => b.wave === 5))),
     vocabPt: r2(median(rs.map(r => r.vocabPtShare))),
     answerGold: r2(median(rs.map(r => r.answerGoldShare))),
     capped: rs.filter(r => r.endReason === 'WAVE_CAP').length,
-    _waves: waves, _minutes: rs.map(r => r1(r.minutes)), _maxLv: rs.map(r => r.maxLevel),
+    _waves: waves, _minutes: rs.map(r => r1(r.minutes)), _maxLv: rs.map(r => r.maxLevel), _lv7: rs.map(r => r.evolvedTwice),
     _forms: Object.fromEntries(Object.keys(rs[0].formCounts).map(f => [f, rs.reduce((a, r) => a + r.formCounts[f], 0)])),
   });
 }
@@ -89,9 +90,11 @@ for (const diff of diffs) {
   const fixed = ['A1', 'A2', 'B1', 'B2'].map(f => find(diff, 'balanced', 0.8, f)).filter(Boolean);
   if (fixed.length === 4) { const m = fixed.map(r => median(r._waves)); checks.push([`${diff} 균형형 80% 고정 진화 길 A1/A2/B1/B2 도달 웨이브 차이 2 이하`, m.join(' / '), Math.max(...m) - Math.min(...m) <= 2]); }
 }
-// 오래 버틴 판(도달 웨이브 중앙값 18 이상)에서 가장 많이 키운 타워가 Lv12~15(progression.md §2). 판정은 정답률 80% 줄만,
-// 다른 정답률은 골드가 달라 참고로 보인다(정답률 60%는 낮고 95%는 높은 게 의도다).
-for (const r of rows.filter(x => median(x._waves) >= 18)) checks.push([`${r.diff} ${r.strat} ${r.forms} ${Math.round(r.acc * 100)}% 최고 레벨 중앙값 Lv12~15${r.acc === 0.8 ? '' : '(참고)'}`, `Lv${r.maxLv} (${Math.min(...r._maxLv)}-${Math.max(...r._maxLv)})`, r.acc === 0.8 ? r.maxLv >= 12 && r.maxLv <= 15 : null]);
+// progression.md §2 우선순위(2026-10-31): ③ 20웨이브 판(도달 웨이브 중앙값 18 이상)에서 주력 2~3기가 Lv7, ④ 가장 높은 타워 Lv10~13.
+// 판정은 균형형 정답률 80% 줄만, 다른 전략·정답률은 골드와 습관이 달라 참고로 보인다.
+const long = rows.filter(x => median(x._waves) >= 18);
+for (const r of long) { const judged = r.acc === 0.8 && r.strat === 'balanced'; checks.push([`${r.diff} ${r.strat} ${r.forms} ${Math.round(r.acc * 100)}% Lv7 이상 타워 수 중앙값 2~3${judged ? '' : '(참고)'}`, `${r.lv7}기 (${Math.min(...r._lv7)}-${Math.max(...r._lv7)})`, judged ? r.lv7 >= 2 && r.lv7 <= 3 : null]); }
+for (const r of long) { const judged = r.acc === 0.8 && r.strat === 'balanced'; checks.push([`${r.diff} ${r.strat} ${r.forms} ${Math.round(r.acc * 100)}% 최고 레벨 중앙값 Lv10~13${judged ? '' : '(참고)'}`, `Lv${r.maxLv} (${Math.min(...r._maxLv)}-${Math.max(...r._maxLv)})`, judged ? r.maxLv >= 10 && r.maxLv <= 13 : null]); }
 for (const diff of diffs) for (const strat of strats) {
   const lo = find(diff, strat, 0.6), hi = find(diff, strat, 0.95);
   if (lo && hi) checks.push([`${diff} ${strat} 정답률 60→95% 생존 차이(참고)`, `${median(hi._waves) - median(lo._waves)}웨이브`, null]);

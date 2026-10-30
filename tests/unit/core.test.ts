@@ -37,11 +37,11 @@ describe('정수 산술', () => {
     expect(spawnIntervalTicks(BALANCE, 41)).toBe(23);
     expect(spawnIntervalTicks(BALANCE, 81)).toBe(20);
   });
-  it('round5 강화비(리뉴얼 표)와 60% 판매(A14): 궁수 40/60/90/70/90/120/95/115, 숙련 135/160, 기본은 상한 없음', () => {
-    // 60 × [0.65, 1.0, 1.5, 1.2, 1.5, 2.0, 1.6, 1.9] = 39/60/90/72/90/120/96/114 → round5 40/60/90/70/90/120/95/115.
-    expect([1, 2, 3, 4, 5, 6, 7, 8].map(l => upgradeCost(BALANCE, 'archer', l))).toEqual([40, 60, 90, 70, 90, 120, 95, 115]);
-    // 숙련: 19000 × 1.18 = 22420 → 60 × 2.242 = 134.52 → 135. 22420 × 1.18 = 26455.6 → 26455 → 158.73 → 160.
-    expect([9, 10].map(l => upgradeCost(BALANCE, 'archer', l))).toEqual([135, 160]);
+  it('round5 강화비(리뉴얼 표)와 60% 판매(A14): 궁수 30/45/65/50/65/85/120/145, 숙련 160/180, 기본은 상한 없음', () => {
+    // 60 × [0.5, 0.75, 1.1, 0.85, 1.05, 1.4, 2.0, 2.4] = 30/45/66/51/63/84/120/144 → round5 30/45/65/50/65/85/120/145.
+    expect([1, 2, 3, 4, 5, 6, 7, 8].map(l => upgradeCost(BALANCE, 'archer', l))).toEqual([30, 45, 65, 50, 65, 85, 120, 145]);
+    // 숙련: 24000 × 1.12 = 26880 → 60 × 2.688 = 161.28 → 160. 26880 × 1.12 = 30105.6 → 30105 → 180.63 → 180.
+    expect([9, 10].map(l => upgradeCost(BALANCE, 'archer', l))).toEqual([160, 180]);
     expect(BALANCE.levels.max).toBeNull();
     expect(upgradeCost(BALANCE, 'archer', 30)).toBeGreaterThan(0);
     expect(sellRefund(BALANCE, { invested: 435 })).toBe(261);

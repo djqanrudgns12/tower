@@ -102,6 +102,8 @@ export interface SimResult {
   firstEvoWave: number | null;
   /** 판이 끝났을 때 가장 높은 타워 레벨. */
   maxLevel: number;
+  /** 판이 끝났을 때 2차 진화 레벨(Lv7) 이상인 타워 수. */
+  evolvedTwice: number;
   /** 판이 끝났을 때 형태별 타워 수. */
   formCounts: Record<FormId, number>;
   bossKills: number;
@@ -320,6 +322,7 @@ export function simulateRun(opt: SimOptions): SimResult {
     phaseMinutes: { PREP_QUIZ: toMin(phaseTicks.PREP_QUIZ), BUILD: toMin(phaseTicks.BUILD), BATTLE: toMin(phaseTicks.BATTLE), WAVE_WRAPUP: toMin(phaseTicks.WAVE_WRAPUP), GAME_OVER: 0 },
     firstEvoWave,
     maxLevel: Math.max(0, ...s.towers.map(t => t.level)),
+    evolvedTwice: s.towers.filter(t => t.level >= ctx.balance.levels.evolveAt[1]).length,
     formCounts: Object.fromEntries(FORM_IDS.map(f => [f, s.towers.filter(t => t.form === f).length])) as Record<FormId, number>,
     bossKills: st.bossKills,
     bossLeaks: st.bossLeaks,

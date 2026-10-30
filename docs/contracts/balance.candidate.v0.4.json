@@ -62,11 +62,11 @@
   "levels": {
     "max": null,
     "evolveAt": [4, 7],
-    "damageMultiplierBP": [10000, 13000, 16500, 23000, 27500, 32500, 42000, 48000, 55000],
-    "upgradeCostOfBaseBP": [6500, 10000, 15000, 12000, 15000, 20000, 16000, 19000],
-    "beyond": { "damageGrowthBP": 11000, "costGrowthBP": 11800 },
+    "damageMultiplierBP": [10000, 12000, 14000, 18000, 20500, 23000, 29000, 32000, 35000],
+    "upgradeCostOfBaseBP": [5000, 7500, 11000, 8500, 10500, 14000, 20000, 24000],
+    "beyond": { "damageGrowthBP": 10700, "costGrowthBP": 11200 },
     "rounding": "round5(x) = 5 * floor(x / 5 + 0.5)",
-    "tuning": "progression.md §3 후보에서 시작해 R2 시뮬레이션(docs/balance/r2-progression-*.json)으로 Lv4~9 비용과 숙련 비용 성장률을 낮추고, 초보형 한 판 시간(PRD §17.3 15~25분)을 지키려고 Lv7~9 피해 배율을 4.4/5.1/5.9 → 4.2/4.8/5.5로 낮췄다.",
+    "tuning": "progression.md §2 우선순위(2026-10-31 총괄 확정: ①난이도별 도달 웨이브 ±2 ②보통 초보형 한 판 25분 이하 ③20웨이브 판 주력 2~3기 Lv7 ④최고 Lv10~13)로 §3 후보를 조정했다. Lv7 뒤(Lv7→8·8→9) 비용을 가파르게 해 한 타워 몰아 키우기를 멈추고 두 번째 주력을 Lv7로 올리게 했고, 그만큼 늘어난 힘은 Lv1~7 배율·비용과 주력 3종 2차형 임시 값으로 되돌렸다. 결과는 docs/balance/r2-progression-compare.md",
     "beyondRule": "Lv10부터 피해 배율·강화 비용 배율은 표의 마지막 값에 한 레벨마다 성장률을 곱해 내림한다. 비용이 안전 정수를 넘는 레벨은 최고 레벨로 본다."
   },
   "towers": {
@@ -85,10 +85,10 @@
     "archer": {
       "A":  { "label": "속사", "summary": "화살을 더 빨리 쏴요", "intervalBP": 7000 },
       "B":  { "label": "정찰", "summary": "더 멀리, 조금 더 세게 쏴요", "rangeAddMilli": 600, "damageBP": 11500 },
-      "A1": { "parent": "A", "label": "임시 연사", "summary": "아주 빠르게 쏴요", "intervalBP": 5500 },
-      "A2": { "parent": "A", "label": "임시 꿰뚫는 화살", "summary": "뒤에 선 적까지 꿰뚫어요", "pierceDamageBP": 8000, "pierceWidthMilli": 400 },
-      "B1": { "parent": "B", "label": "임시 저격", "summary": "아주 멀리서 세게 쏴요", "rangeAddMilli": 1200, "damageBP": 15000, "intervalBP": 11000 },
-      "B2": { "parent": "B", "label": "임시 약점 사격", "summary": "단단한 적과 대장에게 세요", "eliteBossDamageBP": 14000, "physicalResistIgnoreBP": 5000 }
+      "A1": { "parent": "A", "label": "임시 연사", "summary": "아주 빠르게 쏴요", "intervalBP": 6200 },
+      "A2": { "parent": "A", "label": "임시 꿰뚫는 화살", "summary": "뒤에 선 적까지 꿰뚫어요", "pierceDamageBP": 7000, "pierceWidthMilli": 400 },
+      "B1": { "parent": "B", "label": "임시 저격", "summary": "아주 멀리서 세게 쏴요", "rangeAddMilli": 1100, "damageBP": 13500, "intervalBP": 11000 },
+      "B2": { "parent": "B", "label": "임시 약점 사격", "summary": "단단한 적과 대장에게 세요", "eliteBossDamageBP": 12500, "physicalResistIgnoreBP": 4000 }
     },
     "crossbow": {
       "A":  { "label": "관통", "summary": "뒤에 선 적까지 꿰뚫어요", "pierceDamageBP": 6000, "pierceWidthMilli": 300 },
@@ -101,10 +101,10 @@
     "cannon": {
       "A":  { "label": "확산", "summary": "더 넓게 터져 더 많이 맞혀요", "splashRadiusMilli": 1000, "maxTargets": 5 },
       "B":  { "label": "중포", "summary": "좁게 터지지만 훨씬 세요", "splashRadiusMilli": 600, "maxTargets": 3, "damageBP": 14000, "eliteBossDamageBP": 13000 },
-      "A1": { "parent": "A", "label": "임시 집속탄", "summary": "아주 넓게 터져요", "splashRadiusMilli": 1250, "maxTargets": 7 },
-      "A2": { "parent": "A", "label": "임시 끈끈이탄", "summary": "맞은 적들을 느리게 해요", "slowBP": 2000, "slowMs": 1500, "damageBP": 11500 },
-      "B1": { "parent": "B", "label": "임시 공성포", "summary": "느리지만 아주 세요", "damageBP": 18500, "eliteBossDamageBP": 15000, "splashRadiusMilli": 700, "maxTargets": 4 },
-      "B2": { "parent": "B", "label": "임시 철갑탄", "summary": "단단한 적에게 세요", "physicalResistIgnoreBP": 6000, "damageBP": 17500, "splashRadiusMilli": 700, "maxTargets": 4 }
+      "A1": { "parent": "A", "label": "임시 집속탄", "summary": "아주 넓게 터져요", "splashRadiusMilli": 1150, "maxTargets": 6 },
+      "A2": { "parent": "A", "label": "임시 끈끈이탄", "summary": "맞은 적들을 느리게 해요", "slowBP": 1500, "slowMs": 1500, "damageBP": 10500 },
+      "B1": { "parent": "B", "label": "임시 공성포", "summary": "느리지만 아주 세요", "damageBP": 16500, "eliteBossDamageBP": 14000, "splashRadiusMilli": 650, "maxTargets": 4 },
+      "B2": { "parent": "B", "label": "임시 철갑탄", "summary": "단단한 적에게 세요", "physicalResistIgnoreBP": 5000, "damageBP": 15500, "splashRadiusMilli": 650, "maxTargets": 4 }
     },
     "mage": {
       "A":  { "label": "집중", "summary": "한 적에게 더 세게 쏴요", "damageBP": 14000 },
@@ -117,8 +117,8 @@
     "frost": {
       "A":  { "label": "혹한", "summary": "더 세게, 더 오래 느리게 해요", "slowBP": 4000, "slowMs": 2500 },
       "B":  { "label": "얼음 장판", "summary": "맞은 곳 주변 적을 함께 느리게 해요", "splashRadiusMilli": 700, "maxTargets": 4, "slowBP": 2000, "slowMs": 2000 },
-      "A1": { "parent": "A", "label": "임시 얼음 감옥", "summary": "아주 느리게 오래 묶어요", "slowBP": 5500, "slowMs": 3500, "damageBP": 13000 },
-      "A2": { "parent": "A", "label": "임시 서리 송곳", "summary": "느리게 하면서 더 아프게 해요", "damageBP": 18000 },
+      "A1": { "parent": "A", "label": "임시 얼음 감옥", "summary": "아주 느리게 오래 묶어요", "slowBP": 5000, "slowMs": 3000, "damageBP": 12000 },
+      "A2": { "parent": "A", "label": "임시 서리 송곳", "summary": "느리게 하면서 더 아프게 해요", "damageBP": 16000 },
       "B1": { "parent": "B", "label": "임시 눈보라", "summary": "더 넓게 느리게 해요", "splashRadiusMilli": 1000, "maxTargets": 6, "slowBP": 2500 },
       "B2": { "parent": "B", "label": "임시 빙판 길", "summary": "주변 적을 더 느리게 해요", "slowBP": 3000, "slowMs": 2500 }
     },
