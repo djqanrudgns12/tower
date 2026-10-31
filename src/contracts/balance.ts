@@ -18,7 +18,11 @@ export const BOSS_RANKS = ['boss5', 'boss10', 'boss15', 'boss20'] as const;
 /** 종족 팩의 그림·이름 키: 일반 역할 + 대장 단계. 그림 id는 `<artPrefix>.<키>`(예: acorn.runner, river.boss10). */
 export const ART_ROLES = [...REGULAR_KINDS, ...BOSS_RANKS] as const;
 export const ELITE_IDS = ['armored', 'swift'] as const;
-export const TOWER_IDS = ['archer', 'crossbow', 'cannon', 'mage', 'frost', 'lightning', 'flame', 'spear', 'guardian', 'banner'] as const;
+/** 기존 10종 뒤에 리뉴얼 신규 10종(docs/renewal/catalog/towers.md §1). */
+export const TOWER_IDS = [
+  'archer', 'crossbow', 'cannon', 'mage', 'frost', 'lightning', 'flame', 'spear', 'guardian', 'banner',
+  'sling', 'ballista', 'falcon', 'mortar', 'hwacha', 'roller', 'alchemist', 'wind', 'trap', 'bell',
+] as const;
 /** 1차형(Lv4 진화). 화면의 길 표식(동그라미·마름모)이 이 둘을 쓴다. */
 export const BRANCH_IDS = ['A', 'B'] as const;
 /** 타워 형태: 기본형 → 1차형(A·B) → 2차형(A1·A2·B1·B2). docs/renewal/progression.md §1. */
@@ -62,14 +66,103 @@ const enemy = z.object({
   artRole: z.enum(REGULAR_KINDS).optional(),
 });
 
-/** 대공(towers.md §4-1). 타워·형태에 둘 수 있고 형태 값이 이긴다. canHitFlyer가 없으면 대공 가능이다. */
-const antiAir = {
+const ms = nonNeg;
+const burst = z.object({ count: int.min(2).max(12), gapTicks: int.min(1), followDamageBP: bp.optional() });
+const areaHit = z.object({ radiusMilli: nonNeg, maxTargets: int.min(1), damageBP: bp });
+
+/**
+ * 공격 효과(towers.md §2·§4). 타워 기본값에도, 형태에도 둘 수 있고 형태 값이 이긴다(2차형은 1차형을 물려받는다).
+ * 단위는 ms·milli·BP다. 엔진은 domain/combat.ts가 한 곳에서 해석한다.
+ */
+const effects = {
+  /** 대공(§4-1): canHitFlyer가 없으면 대공 가능. preferFlyer는 사거리 안 비행 적을 먼저, flyerDamageBP는 비행 적 상황 배율. */
   canHitFlyer: z.boolean().optional(),
-  /** 사거리 안 비행 적을 먼저 노린다(매사냥대 등). */
   preferFlyer: z.boolean().optional(),
-  /** 비행 적에게만 곱하는 상황 배율. */
   flyerDamageBP: bp.optional(),
+  instant: z.boolean().optional(),
+  projectileSpeedMilliPerSec: int.min(1).optional(),
+  maxTargets: int.min(1).optional(),
+  splashRadiusMilli: nonNeg.optional(),
+  slowBP: bp.optional(),
+  slowMs: ms.optional(),
+  physicalResistIgnoreBP: bp.optional(),
+  /** 마법 저항 무시(마법 A2·화염 B1). 화상에도 쓴다. */
+  magicResistIgnoreBP: bp.optional(),
+  /** 연쇄·직선 관통의 k번째 대상 감쇠. */
+  chainFalloffBP: bp.optional(),
+  chainRadiusMilli: nonNeg.optional(),
+  /** 화상 총피해(Lv1, HP)와 지속. 투사체 적중에도 붙는다(박격 A2·화차 B1). */
+  burnTotal: nonNeg.optional(),
+  burnMs: ms.optional(),
+  /** 정예·보스 상황 배율. */
+  eliteBossDamageBP: bp.optional(),
+  /** 도넛 사거리(§4-2 박격포): 이보다 가까운 적은 노리지 않는다. */
+  minRangeMilli: nonNeg.optional(),
+  /** 표적 규칙: first = 진행도 최대(기본), strongest = 현재 체력 최대(매 B1). */
+  targetPriority: z.enum(['first', 'strongest']).optional(),
+  /** 한 번에 서로 다른 표적 n명에게 따로 쏜다(궁수 A2·투석 A2·매 A2). */
+  volley: int.min(1).max(8).optional(),
+  /** 즉발 타워 중심 360도 고리(종각·서리 B1). 반경은 사거리. */
+  ring: z.boolean().optional(),
+  /** 즉발 경로 구간(통나무): 첫 표적 진행도에서 입구 쪽으로 이 길이 안의 지상 적. */
+  pathSegmentMilli: nonNeg.optional(),
+  /** 관통(석궁 A): 첫 대상 뒤 일직선 적 수(기본 1). */
+  pierceCount: int.min(1).max(8).optional(),
+  /** 맞은 모든 적 기절, 정예·대장만 기절, 정예·대장만 감속(석궁 B2·수호기사 A1), 대장만 감속(밀치기 면역 대체). */
+  hitStunMs: ms.optional(),
+  eliteStunMs: ms.optional(),
+  eliteSlowBP: bp.optional(),
+  eliteSlowMs: ms.optional(),
+  bossSlowBP: bp.optional(),
+  bossSlowMs: ms.optional(),
+  /** 밀치기(§4-5): 경로 뒤로. 비행 적·대장 값이 따로 있다(대장 0 = 면역). 적 1기 평생 상한은 statusCaps. */
+  knockbackMilli: nonNeg.optional(),
+  knockbackFlyerMilli: nonNeg.optional(),
+  knockbackBossMilli: nonNeg.optional(),
+  /** 비행 적을 끌어내린다(바람 A2): 그동안 지상 전용 타워도 맞힌다. */
+  groundFlyerMs: ms.optional(),
+  /** 취약(받는 피해 +)·저항 차감(§4-6). 출처별로 두고 가장 큰 값 하나, 상한은 statusCaps. */
+  vulnBP: bp.optional(),
+  vulnMs: ms.optional(),
+  shredPhysicalBP: bp.optional(),
+  shredMagicBP: bp.optional(),
+  shredMs: ms.optional(),
+  /** 체력 비율이 이하인 적에게 피해 배율(궁수 B2), 감속 중인 적에게 피해 배율(서리 A2). */
+  lowHpThresholdBP: bp.optional(),
+  lowHpDamageBP: bp.optional(),
+  slowedDamageBP: bp.optional(),
+  /** 같은 적을 이어 치면 한 번마다 +stackBP(최대 max번, 마법 A1). */
+  focusStackBP: bp.optional(),
+  focusStackMax: int.min(1).max(10).optional(),
+  /** 시차 다연발(§4-4): 주 공격 뒤 gapTicks마다 다시 조준해 count-1발 더, 뒤따르는 발의 피해 배율. */
+  burst: burst.optional(),
+  /** 공격 주기(§4-9): every번째 공격마다 기절·다연발·타워 중심 회전 공격을 더한다. */
+  cycle: z.object({ every: int.min(2), stunMs: ms.optional(), burst: burst.optional(), ring: areaHit.optional() }).optional(),
+  /** 공격의 마지막 대상 둘레에 2차 피해(파편·폭발). 비행 적만·취약·감속을 함께 줄 수 있다. */
+  onHitSplash: areaHit.extend({ vulnBP: bp.optional(), vulnMs: ms.optional(), slowBP: bp.optional(), slowMs: ms.optional(), flyersOnly: z.boolean().optional() }).optional(),
+  /** 도탄(§4-3): 맞힌 적 둘레의 아직 안 맞은 적에게 count번 튄다(count 0 = 없음). */
+  ricochet: z.object({ count: int.min(0).max(8), radiusMilli: nonNeg, falloffBP: bp }).optional(),
+  /** 착탄 둘레 일반 적을 중심 적 진행도 쪽으로 당긴다(마법 B2). */
+  pull: z.object({ radiusMilli: nonNeg, maxTargets: int.min(1), milli: nonNeg }).optional(),
+  /** 처치 유발(§4-8): 이 타워의 감속·화상이 걸린 적이 처치되면 둘레에 피해, 감속·화상을 옮긴다. 깊이 1단계. */
+  onKill: areaHit.extend({ mark: z.enum(['slow', 'burn']), carry: z.enum(['none', 'slow', 'burn']) }).optional(),
+  /** 성문이 깎일수록 공격 속도·피해가 오른다(최소값 상시, 수호기사 A2). */
+  gateRage: z.object({ speedBP: bp, damageBP: bp, minBP: bp }).optional(),
+  /** 타워 둘레 지상 적에게 상시 감속(수호기사 B2). */
+  slowAura: z.object({ radiusMilli: nonNeg, slowBP: bp }).optional(),
+  /** 쏠 때마다 둘레 공격 타워 count기의 다음 공격을 ticks만큼 당긴다(바람 B2). */
+  hasteNeighbors: z.object({ radiusMilli: nonNeg, count: int.min(1), ticks: int.min(1) }).optional(),
+  /** 오라를 주는 반경(없으면 사거리)과 둘레 공격 타워에 주는 사거리·공격 속도(종각 B·B1), 정예·대장 배율 가산(깃발 A1). */
+  auraRadiusMilli: nonNeg.optional(),
+  auraRangeMilli: nonNeg.optional(),
+  auraSpeedBP: bp.optional(),
+  auraEliteBossBP: bp.optional(),
+  /** 오라 안 타워가 every번 처치할 때마다 골드(웨이브당 상한, 깃발 A2). */
+  auraKillGold: z.object({ every: int.min(1), gold: int.min(1), waveCap: int.min(1) }).optional(),
+  /** 버닝 중에는 오라 반경과 공격 속도 오라가 커진다(깃발 B1). */
+  auraBurning: z.object({ rangeAddMilli: nonNeg, speedBP: bp }).optional(),
 };
+export const EFFECT_KEYS = Object.keys(effects) as Array<keyof typeof effects>;
 
 const tower = z.object({
   label: z.string().min(1),
@@ -78,21 +171,12 @@ const tower = z.object({
   damageType: z.enum(['physical', 'magic', 'none']),
   intervalMs: nonNeg,
   rangeMilli: nonNeg,
-  projectileSpeedMilliPerSec: int.min(1).optional(),
-  instant: z.boolean().optional(),
-  maxTargets: int.min(1).optional(),
-  splashRadiusMilli: nonNeg.optional(),
-  slowBP: bp.optional(),
-  slowMs: nonNeg.optional(),
-  physicalResistIgnoreBP: bp.optional(),
-  chainFalloffBP: bp.optional(),
-  chainRadiusMilli: nonNeg.optional(),
   coneDegrees: nonNeg.optional(),
-  burnTotal: nonNeg.optional(),
-  burnMs: nonNeg.optional(),
+  /** 직선 관통(노포): 선분 폭. 형태 lineWidthMilli가 이긴다. */
+  lineWidthMilli: nonNeg.optional(),
   maxOnField: int.min(1).optional(),
   auraDamageBPByLevel: z.array(bp).optional(),
-  ...antiAir,
+  ...effects,
 });
 
 /** 형태 하나의 보정. 2차형은 부모(1차형) 값을 물려받고 적은 필드만 덮어쓴다(progression.md §3). */
@@ -102,31 +186,21 @@ const form = z.object({
   intervalBP: bp.optional(),
   damageBP: bp.optional(),
   rangeAddMilli: nonNeg.optional(),
-  splashRadiusMilli: nonNeg.optional(),
-  maxTargets: int.min(1).optional(),
-  slowBP: bp.optional(),
-  slowMs: nonNeg.optional(),
-  /** 정예·보스에게만 곱하는 상황 배율(석궁 B 거대 사냥·수호기사 A 결투). */
-  eliteBossDamageBP: bp.optional(),
-  /** 물리 저항 효과 무시(창병 B 파쇄). */
-  physicalResistIgnoreBP: bp.optional(),
-  /** 번개 연쇄 감쇠(번개 A·B). */
-  chainFalloffBP: bp.optional(),
   /** 번개 B 충격: 첫 대상 기절. */
   firstTargetStunMs: nonNeg.optional(),
   /** 화염 B 잔불: 화상 총피해 배율. */
   burnBP: bp.optional(),
-  /** 석궁 A 관통: 첫 대상 뒤 일직선 두 번째 적에 주는 피해 비율과 선분 폭. */
+  /** 석궁 A 관통: 첫 대상 뒤 일직선 적에 주는 피해 비율과 선분 폭. */
   pierceDamageBP: bp.optional(),
   pierceWidthMilli: nonNeg.optional(),
-  /** 창병 A 긴 창: 타워→첫 대상 방향 선분의 폭(길이는 사거리). 대상 수는 maxTargets. */
+  /** 긴 창·직선 관통: 타워→첫 대상 방향 선분의 폭(길이는 사거리). 부채꼴보다 앞선다(바람 B1). */
   lineWidthMilli: nonNeg.optional(),
-  /** 범위 공격의 대상별 피해 비율(마법 B 파동 75%·수호기사 B 수호 일격 80%). */
+  /** 범위 공격의 대상별 피해 비율(마법 B 파동·수호기사 B 수호 일격). */
   splashDamageBP: bp.optional(),
   /** 깃발 형태: 그 형태 첫 레벨부터 레벨별 직접 피해 보너스, 또는 피해 보너스를 대체하는 공격 속도 보너스. 표를 넘으면 마지막 값. */
   auraDamageBPByLevel: z.array(bp).optional(),
   auraSpeedBPByLevel: z.array(bp).optional(),
-  ...antiAir,
+  ...effects,
 });
 
 const factionId = z.string().regex(/^[a-z][a-z_]*$/);
@@ -179,7 +253,8 @@ export const balanceSchema = z.object({
     physicalResistCapBP: bp,
   }),
   leakDamage: tiers,
-  statusCaps: z.object({ regularSlowMaxBP: bp, bossSlowMaxBP: bp, stunLifetimeMaxMs: nonNeg }),
+  /** 취약·저항 차감 상한, 적 1기 평생 밀치기 상한(towers.md §4-5·§4-6). */
+  statusCaps: z.object({ regularSlowMaxBP: bp, bossSlowMaxBP: bp, stunLifetimeMaxMs: nonNeg, vulnMaxBP: bp, shredMaxBP: bp, knockbackLifetimeMaxMilli: nonNeg }),
   waves: z.object({
     baseHpMilli: int.min(1),
     hpGrowthPercent: int.min(100),

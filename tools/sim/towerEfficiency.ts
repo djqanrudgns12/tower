@@ -23,6 +23,8 @@ export const STREAMS = {
   armored: { kind: 'walker', elite: 'armored', count: 24, spacingMs: 950 },
   /** 드문 대장(정예·대장 배율 형태의 의도). */
   boss: { kind: 'boss', elite: null, count: 6, spacingMs: 2500 },
+  /** 비행 줄(리뉴얼 flyer: 대공·비행 배율 형태의 의도). 지상 전용 타워는 0이다. */
+  air: { kind: 'flyer', elite: null, count: 24, spacingMs: 950 },
 } satisfies Record<string, Stream>;
 
 /** 놓인 타워 묶음이 줄 하나에 준 총피해(milli-HP)와 들인 골드. */
@@ -110,7 +112,7 @@ export function runComparisons(list: Comparison[] = COMPARISONS, balance: Balanc
 }
 
 /** 형태 비교에 쓰는 줄(progression.md §6 ③). */
-export const FORM_STREAMS = ['line', 'dense', 'shell', 'armored', 'boss'] as const satisfies ReadonlyArray<keyof typeof STREAMS>;
+export const FORM_STREAMS = ['line', 'dense', 'shell', 'armored', 'boss', 'air'] as const satisfies ReadonlyArray<keyof typeof STREAMS>;
 /** 같은 단계 형태가 모든 줄에서 형제 형태보다 이만큼 이상 세면 ‘압도’로 본다. */
 export const DOMINANCE_RATIO = 1.1;
 
@@ -120,12 +122,12 @@ const TIERS = [
 ] as const satisfies ReadonlyArray<{ tier: number; level: number; forms: readonly FormId[] }>;
 
 /**
- * 형태 하나가 줄 하나에 더한 피해(milli-HP). 공격 타워는 (8,2) 길목에 혼자 둔다. 깃발은 같은 단계 궁수 셋 묶음 위에,
- * 서리는 옆 칸 같은 단계 궁수 하나 위에 더해 늘어난 피해(감속이 궁수의 사거리 안 체류를 늘린 몫 포함)를 잰다.
+ * 형태 하나가 줄 하나에 더한 피해(milli-HP). 깃발은 같은 단계 궁수 셋 묶음 위에, 그 밖은 (8,2) 길목에 두고 옆 칸 (8,0)의 같은 단계 궁수
+ * 하나 위에 더해 늘어난 피해를 잰다. 감속·밀치기(궁수 사거리 안 체류), 취약·저항 차감, 사거리·속도 오라처럼 남을 돕는 몫까지 들어간다.
  */
 function formDamage(type: TowerId, level: number, form: FormId, stream: Stream, balance: Balance): number {
   const archer = (slot: [number, number]): Placement => ({ type: 'archer', slot, level, form: form.length === 1 ? 'A' : 'A1' });
-  const shared = type === 'banner' ? [archer([0, 0]), archer([0, 4]), archer([2, 2])] : type === 'frost' ? [archer([8, 0])] : [];
+  const shared = type === 'banner' ? [archer([0, 0]), archer([0, 4]), archer([2, 2])] : [archer([8, 0])];
   const subject: Placement = { type, slot: type === 'banner' ? [0, 2] : C, level, form };
   const base = shared.length ? measure(shared, stream, balance).damage : 0;
   return measure([...shared, subject], stream, balance).damage - base;

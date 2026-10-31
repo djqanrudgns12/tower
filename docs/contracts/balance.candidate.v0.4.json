@@ -1,6 +1,6 @@
 {
   "schemaVersion": "0.4",
-  "balanceVersion": "0.6.2-renewal-candidate",
+  "balanceVersion": "0.7.0-renewal-candidate",
   "status": "candidate-not-balance-approved",
   "basedOn": "0.4.2-candidate + 리뉴얼 R2 성장·진화(docs/renewal/progression.md): Lv4·Lv7 진화, 무제한 레벨, 형태 7개, 설치 직후 취소 + R2 2단계 종족×역할 편성(docs/renewal/catalog/monsters.md §0·§3)",
   "userConfirmed": { "date": "2026-10-28", "fields": ["difficulties.*.skipPt", "difficulties.*.label", "waves.hpGrowthPercent"], "rule": "확정 값은 사용자 결정 없이 바꾸지 않는다. 나머지 값은 후보다." },
@@ -44,7 +44,7 @@
     "physicalResistCapBP": 5000
   },
   "leakDamage": { "regular": 1, "elite": 2, "boss": 3 },
-  "statusCaps": { "regularSlowMaxBP": 6000, "bossSlowMaxBP": 3000, "stunLifetimeMaxMs": 3000 },
+  "statusCaps": { "regularSlowMaxBP": 6000, "bossSlowMaxBP": 3000, "stunLifetimeMaxMs": 3000, "vulnMaxBP": 3500, "shredMaxBP": 3500, "knockbackLifetimeMaxMilli": 3000 },
   "waves": {
     "baseHpMilli": 24000,
     "hpGrowthPercent": 115,
@@ -75,10 +75,10 @@
     "max": null,
     "evolveAt": [4, 7],
     "damageMultiplierBP": [10000, 12000, 14000, 18000, 20500, 23000, 29000, 32000, 35000],
-    "upgradeCostOfBaseBP": [4000, 5500, 7500, 11000, 13500, 15000, 20000, 24000],
+    "upgradeCostOfBaseBP": [4000, 5500, 7500, 11000, 12500, 12500, 20000, 24000],
     "beyond": { "damageGrowthBP": 10700, "costGrowthBP": 11200 },
     "rounding": "round5(x) = 5 * floor(x / 5 + 0.5)",
-    "tuning": "progression.md §2 우선순위(2026-10-31 총괄 확정: ①난이도별 도달 웨이브 ±2 ②보통 초보형 한 판 25분 이하 ③20웨이브 판 주력 2~3기 Lv7 ④최고 Lv10~13, ⑤보통 균형형 첫 진화 8웨이브 이하)로 §3 후보를 조정했다. ⑤를 위해 Lv1~4 비용을 낮추고 같은 만큼 Lv4~6 비용을 올렸다(Lv7까지 총비용 동일). Lv7 뒤(Lv7→8·8→9) 비용을 가파르게 해 한 타워 몰아 키우기를 멈추고 두 번째 주력을 Lv7로 올리게 했고, 그만큼 늘어난 힘은 Lv1~7 배율·비용과 주력 3종 2차형 임시 값으로 되돌렸다. 결과는 docs/balance/r2-progression-compare.md",
+    "tuning": "progression.md §2 우선순위(2026-10-31 총괄 확정: ①난이도별 도달 웨이브 ±2 ②보통 초보형 한 판 25분 이하 ③20웨이브 판 주력 2~3기 Lv7 ④최고 Lv10~13, ⑤보통 균형형 첫 진화 8웨이브 이하)로 §3 후보를 조정했다. ⑤를 위해 Lv1~4 비용을 낮추고 같은 만큼 Lv4~6 비용을 올렸다(Lv7까지 총비용 동일). Lv7 뒤(Lv7→8·8→9) 비용을 가파르게 해 한 타워 몰아 키우기를 멈추고 두 번째 주력을 Lv7로 올리게 했고, 그만큼 늘어난 힘은 Lv1~7 배율·비용과 주력 3종 2차형 임시 값으로 되돌렸다. 결과는 docs/balance/r2-progression-compare.md. R2 2단계(d): 신규 10종이 징집에 들어오며 골드가 여러 타워로 나뉘어 ③(Lv7 2~3기)이 1기로 떨어져, Lv4→5·Lv5→6 비용을 13500·15000 → 12500·12500으로 낮췄다(Lv7까지 총비용 −6%, docs/balance/r2-stage2-compare.md)",
     "beyondRule": "Lv10부터 피해 배율·강화 비용 배율은 표의 마지막 값에 한 레벨마다 성장률을 곱해 내림한다. 비용이 안전 정수를 넘는 레벨은 최고 레벨로 본다."
   },
   "towers": {
@@ -91,88 +91,178 @@
     "flame":     { "label": "화염탑",   "cost": 130, "damage": 8,  "damageType": "magic",    "intervalMs": 750,  "rangeMilli": 1700, "instant": true, "maxTargets": 3, "coneDegrees": 90, "burnTotal": 4, "burnMs": 2000, "canHitFlyer": false },
     "spear":     { "label": "창병초소", "cost": 70,  "damage": 7,  "damageType": "physical", "intervalMs": 600,  "rangeMilli": 1300, "instant": true, "maxTargets": 1, "canHitFlyer": false },
     "guardian":  { "label": "수호기사", "cost": 180, "damage": 22, "damageType": "physical", "intervalMs": 1400, "rangeMilli": 1600, "instant": true, "maxTargets": 1, "maxOnField": 1, "canHitFlyer": false },
-    "banner":    { "label": "깃발초소", "cost": 100, "damage": 0,  "damageType": "none",     "intervalMs": 0,    "rangeMilli": 2000, "auraDamageBPByLevel": [1000, 1200] }
+    "banner":    { "label": "깃발초소", "cost": 100, "damage": 0,  "damageType": "none",     "intervalMs": 0,    "rangeMilli": 2000, "auraDamageBPByLevel": [1000, 1200] },
+    "sling":      { "label": "투석초소", "cost": 65, "damage": 7, "damageType": "physical", "intervalMs": 1100, "rangeMilli": 2300, "projectileSpeedMilliPerSec": 11000, "maxTargets": 1, "canHitFlyer": true, "ricochet": { "count": 1, "radiusMilli": 1200, "falloffBP": 7000 } },
+    "ballista":   { "label": "거대노포", "cost": 145, "damage": 28, "damageType": "physical", "intervalMs": 2400, "rangeMilli": 3800, "instant": true, "lineWidthMilli": 350, "maxTargets": 4, "chainFalloffBP": 8500, "canHitFlyer": true },
+    "falcon":     { "label": "매사냥대", "cost": 115, "damage": 14, "damageType": "physical", "intervalMs": 1200, "rangeMilli": 3400, "projectileSpeedMilliPerSec": 18000, "maxTargets": 1, "canHitFlyer": true, "preferFlyer": true, "flyerDamageBP": 13500 },
+    "mortar":     { "label": "박격포대", "cost": 135, "damage": 26, "damageType": "physical", "intervalMs": 2800, "rangeMilli": 4600, "minRangeMilli": 1600, "projectileSpeedMilliPerSec": 7500, "maxTargets": 5, "splashRadiusMilli": 950, "canHitFlyer": false },
+    "hwacha":     { "label": "화차대", "cost": 160, "damage": 6, "damageType": "physical", "intervalMs": 2500, "rangeMilli": 3100, "projectileSpeedMilliPerSec": 14000, "maxTargets": 2, "splashRadiusMilli": 350, "burst": { "count": 4, "gapTicks": 3 }, "canHitFlyer": true },
+    "roller":     { "label": "통나무굴림대", "cost": 115, "damage": 15, "damageType": "physical", "intervalMs": 2200, "rangeMilli": 1800, "instant": true, "pathSegmentMilli": 2600, "maxTargets": 5, "canHitFlyer": false },
+    "alchemist":  { "label": "약병투척소", "cost": 105, "damage": 5, "damageType": "magic", "intervalMs": 2200, "rangeMilli": 2300, "projectileSpeedMilliPerSec": 9500, "maxTargets": 5, "splashRadiusMilli": 750, "burnTotal": 20, "burnMs": 2000, "canHitFlyer": false },
+    "wind":       { "label": "바람개비탑", "cost": 110, "damage": 7, "damageType": "magic", "intervalMs": 1600, "rangeMilli": 2200, "instant": true, "maxTargets": 3, "coneDegrees": 90, "knockbackMilli": 220, "knockbackFlyerMilli": 350, "knockbackBossMilli": 0, "bossSlowBP": 2000, "bossSlowMs": 1000, "canHitFlyer": true },
+    "trap":       { "label": "덫공방초소", "cost": 85, "damage": 16, "damageType": "physical", "intervalMs": 1800, "rangeMilli": 2000, "instant": true, "maxTargets": 1, "slowBP": 3500, "slowMs": 1500, "canHitFlyer": false },
+    "bell":       { "label": "종각초소", "cost": 125, "damage": 9, "damageType": "magic", "intervalMs": 2000, "rangeMilli": 2100, "instant": true, "ring": true, "maxTargets": 5, "vulnBP": 1200, "vulnMs": 2000, "canHitFlyer": true }
   },
   "forms": {
     "archer": {
       "A":  { "label": "속사", "summary": "화살을 더 빨리 쏴요", "intervalBP": 7000 },
       "B":  { "label": "정찰", "summary": "더 멀리, 조금 더 세게 쏴요", "rangeAddMilli": 600, "damageBP": 11500 },
-      "A1": { "parent": "A", "label": "임시 연사", "summary": "아주 빠르게 쏴요", "intervalBP": 6200 },
-      "A2": { "parent": "A", "label": "임시 꿰뚫는 화살", "summary": "뒤에 선 적까지 꿰뚫어요", "pierceDamageBP": 7000, "pierceWidthMilli": 400 },
-      "B1": { "parent": "B", "label": "임시 저격", "summary": "아주 멀리서 세게 쏴요", "rangeAddMilli": 1100, "damageBP": 13500, "intervalBP": 11000 },
-      "B2": { "parent": "B", "label": "임시 약점 사격", "summary": "단단한 적과 대장에게 세요", "eliteBossDamageBP": 12500, "physicalResistIgnoreBP": 4000 }
+      "A1": { "parent": "A", "label": "연속 사격", "summary": "세 번 쏠 때마다 두 발 연속!", "cycle": { "every": 3, "burst": { "count": 2, "gapTicks": 4, "followDamageBP": 8000 } } },
+      "A2": { "parent": "A", "label": "갈래 화살", "summary": "가까운 적 셋에게 나눠 쏴요", "volley": 3, "damageBP": 7500 },
+      "B1": { "parent": "B", "label": "매의 눈", "summary": "하늘 적과 먼 적에게 아주 세요", "rangeAddMilli": 1000, "flyerDamageBP": 16500 },
+      "B2": { "parent": "B", "label": "급소 화살", "summary": "다친 적을 한 방에 마무리해요", "lowHpThresholdBP": 4000, "lowHpDamageBP": 15000 }
     },
     "crossbow": {
       "A":  { "label": "관통", "summary": "뒤에 선 적까지 꿰뚫어요", "pierceDamageBP": 6000, "pierceWidthMilli": 300 },
       "B":  { "label": "거대 사냥", "summary": "정예와 대장에게 훨씬 세요", "eliteBossDamageBP": 15000 },
-      "A1": { "parent": "A", "label": "임시 강한 관통", "summary": "뒤의 적에게도 거의 그대로 맞혀요", "pierceDamageBP": 8500, "intervalBP": 9000 },
-      "A2": { "parent": "A", "label": "임시 넓은 관통", "summary": "더 넓게 꿰뚫어요", "pierceDamageBP": 6500, "pierceWidthMilli": 650, "damageBP": 11000 },
-      "B1": { "parent": "B", "label": "임시 대형 사냥", "summary": "정예와 대장에게 아주 세요", "eliteBossDamageBP": 19000 },
-      "B2": { "parent": "B", "label": "임시 장갑 파괴", "summary": "단단한 적의 갑옷을 거의 무시해요", "eliteBossDamageBP": 15000, "physicalResistIgnoreBP": 9000, "damageBP": 11000 }
+      "A1": { "parent": "A", "label": "강철 꿰뚫기", "summary": "한 줄로 선 적 넷까지 뚫어요", "pierceWidthMilli": 380, "pierceCount": 3, "pierceDamageBP": 7500 },
+      "A2": { "parent": "A", "label": "파편 화살촉", "summary": "맞은 뒤쪽으로 파편이 퍼져요", "onHitSplash": { "radiusMilli": 900, "maxTargets": 3, "damageBP": 5500 } },
+      "B1": { "parent": "B", "label": "중갑 파쇄기", "summary": "어떤 갑옷도 완전히 뚫어요", "physicalResistIgnoreBP": 10000, "eliteBossDamageBP": 18500 },
+      "B2": { "parent": "B", "label": "쐐기 구속탄", "summary": "큰 적의 발을 잠깐 못 박아요", "slowBP": 5000, "slowMs": 1500, "eliteStunMs": 400 }
     },
     "cannon": {
       "A":  { "label": "확산", "summary": "더 넓게 터져 더 많이 맞혀요", "splashRadiusMilli": 1000, "maxTargets": 5 },
       "B":  { "label": "중포", "summary": "좁게 터지지만 훨씬 세요", "splashRadiusMilli": 600, "maxTargets": 3, "damageBP": 14000, "eliteBossDamageBP": 13000 },
-      "A1": { "parent": "A", "label": "임시 집속탄", "summary": "아주 넓게 터져요", "splashRadiusMilli": 1150, "maxTargets": 6 },
-      "A2": { "parent": "A", "label": "임시 끈끈이탄", "summary": "맞은 적들을 느리게 해요", "slowBP": 1500, "slowMs": 1500, "damageBP": 10500 },
-      "B1": { "parent": "B", "label": "임시 공성포", "summary": "느리지만 아주 세요", "damageBP": 16500, "eliteBossDamageBP": 14000, "splashRadiusMilli": 650, "maxTargets": 4 },
-      "B2": { "parent": "B", "label": "임시 철갑탄", "summary": "단단한 적에게 세요", "physicalResistIgnoreBP": 5000, "damageBP": 15500, "splashRadiusMilli": 650, "maxTargets": 4 }
+      "A1": { "parent": "A", "label": "산탄 대포", "summary": "길 전체를 덮을 만큼 넓게 터져요", "splashRadiusMilli": 1300, "maxTargets": 7, "intervalBP": 9000 },
+      "A2": { "parent": "A", "label": "자탄 포탄", "summary": "터진 뒤 작은 폭탄이 한 번 더!", "burst": { "count": 2, "gapTicks": 10, "followDamageBP": 5000 } },
+      "B1": { "parent": "B", "label": "파성 거포", "summary": "단단한 갑각 적도 부숴 버려요", "damageBP": 17000, "physicalResistIgnoreBP": 4500 },
+      "B2": { "parent": "B", "label": "진동 충격탄", "summary": "터지는 힘으로 적들을 멈춰요", "hitStunMs": 400 }
     },
     "mage": {
       "A":  { "label": "집중", "summary": "한 적에게 더 세게 쏴요", "damageBP": 14000 },
       "B":  { "label": "파동", "summary": "맞은 곳 주변 적도 함께 맞혀요", "splashRadiusMilli": 650, "maxTargets": 3, "splashDamageBP": 8500 },
-      "A1": { "parent": "A", "label": "임시 마력 폭발", "summary": "한 적에게 아주 세게 쏴요", "damageBP": 17500 },
-      "A2": { "parent": "A", "label": "임시 얼음 마법", "summary": "맞은 적을 느리게 해요", "slowBP": 2500, "slowMs": 1500 },
-      "B1": { "parent": "B", "label": "임시 큰 파동", "summary": "더 넓게 더 많이 맞혀요", "splashRadiusMilli": 900, "maxTargets": 5 },
-      "B2": { "parent": "B", "label": "임시 빠른 파동", "summary": "파동을 더 자주 쏴요", "intervalBP": 7500 }
+      "A1": { "parent": "A", "label": "비전 집중포", "summary": "같은 적을 계속 치면 더 아파요", "instant": true, "focusStackBP": 1500, "focusStackMax": 3 },
+      "A2": { "parent": "A", "label": "정령 파쇄탄", "summary": "마법 저항도 뚫고 큰 적을 쳐요", "magicResistIgnoreBP": 5000, "eliteBossDamageBP": 14000 },
+      "B1": { "parent": "B", "label": "대마법 파동", "summary": "파동이 훨씬 넓고 강하게 퍼져요", "splashRadiusMilli": 950, "maxTargets": 5, "splashDamageBP": 9500 },
+      "B2": { "parent": "B", "label": "별빛 소용돌이", "summary": "흩어진 적들을 가운데로 모아요", "pull": { "radiusMilli": 900, "maxTargets": 4, "milli": 250 } }
     },
     "frost": {
       "A":  { "label": "혹한", "summary": "더 세게, 더 오래 느리게 해요", "slowBP": 4000, "slowMs": 2500 },
       "B":  { "label": "얼음 장판", "summary": "맞은 곳 주변 적을 함께 느리게 해요", "splashRadiusMilli": 700, "maxTargets": 4, "slowBP": 2000, "slowMs": 2000 },
-      "A1": { "parent": "A", "label": "임시 얼음 감옥", "summary": "아주 느리게 오래 묶어요", "slowBP": 5000, "slowMs": 3000, "damageBP": 12000 },
-      "A2": { "parent": "A", "label": "임시 서리 송곳", "summary": "느리게 하면서 더 아프게 해요", "damageBP": 16000 },
-      "B1": { "parent": "B", "label": "임시 눈보라", "summary": "더 넓게 느리게 해요", "splashRadiusMilli": 1000, "maxTargets": 6, "slowBP": 2500 },
-      "B2": { "parent": "B", "label": "임시 빙판 길", "summary": "주변 적을 더 느리게 해요", "slowBP": 3000, "slowMs": 2500 }
+      "A1": { "parent": "A", "label": "얼음 감옥", "summary": "세 번 쏠 때마다 꽁꽁 얼려 멈춰요", "slowBP": 5500, "cycle": { "every": 3, "stunMs": 600 } },
+      "A2": { "parent": "A", "label": "고드름 송곳", "summary": "이미 느려진 적에게 아주 아파요", "slowedDamageBP": 30000, "rangeAddMilli": 400 },
+      "B1": { "parent": "B", "label": "눈보라 첨탑", "summary": "탑 주변 모든 적을 쉬지 않고 얼려요", "instant": true, "ring": true, "rangeAddMilli": 200, "maxTargets": 6, "slowBP": 3000, "slowMs": 2000 },
+      "B2": { "parent": "B", "label": "깨지는 얼음꽃", "summary": "얼어붙은 적이 쓰러지면 펑 터져요", "onKill": { "mark": "slow", "radiusMilli": 750, "maxTargets": 4, "damageBP": 20000, "carry": "slow" } }
     },
     "lightning": {
       "A":  { "label": "연쇄", "summary": "번개가 더 많은 적에게 튀어요", "maxTargets": 5, "chainFalloffBP": 6500 },
       "B":  { "label": "충격", "summary": "첫 적을 잠깐 멈추게 해요", "maxTargets": 2, "chainFalloffBP": 8000, "firstTargetStunMs": 300 },
-      "A1": { "parent": "A", "label": "임시 폭풍 연쇄", "summary": "번개가 아주 많은 적에게 튀어요", "maxTargets": 7, "chainFalloffBP": 7000 },
-      "A2": { "parent": "A", "label": "임시 빠른 연쇄", "summary": "번개를 더 자주 쳐요", "intervalBP": 8000 },
-      "B1": { "parent": "B", "label": "임시 강한 충격", "summary": "첫 적을 더 오래 멈추게 해요", "firstTargetStunMs": 500, "damageBP": 11500 },
-      "B2": { "parent": "B", "label": "임시 번개 창", "summary": "세 적에게 세게 튀어요", "maxTargets": 3, "chainFalloffBP": 8500, "damageBP": 11000 }
+      "A1": { "parent": "A", "label": "폭풍 전류", "summary": "일곱 적까지 힘 잃지 않고 튀어요", "maxTargets": 7, "chainFalloffBP": 8500, "chainRadiusMilli": 2100 },
+      "A2": { "parent": "A", "label": "번개 구슬", "summary": "마지막에 맞은 곳에서 스파크 폭발!", "onHitSplash": { "radiusMilli": 800, "maxTargets": 4, "damageBP": 6000 } },
+      "B1": { "parent": "B", "label": "우레의 심판", "summary": "굵은 벼락이 큰 적을 강타해요", "damageBP": 14500, "firstTargetStunMs": 600, "eliteBossDamageBP": 13500 },
+      "B2": { "parent": "B", "label": "전류 전도", "summary": "멈춤 효과가 다음 적에게도 옮겨요", "maxTargets": 3, "hitStunMs": 333 }
     },
     "flame": {
       "A":  { "label": "넓은 불길", "summary": "더 멀리, 더 많이 태워요", "rangeAddMilli": 400, "maxTargets": 5 },
       "B":  { "label": "잔불", "summary": "불이 더 오래 세게 남아요", "burnBP": 20000, "damageBP": 9000 },
-      "A1": { "parent": "A", "label": "임시 불바다", "summary": "아주 넓게 태워요", "rangeAddMilli": 800, "maxTargets": 8 },
+      "A1": { "parent": "A", "label": "화염 폭풍", "summary": "쉴 새 없이 일곱 적을 휩쓸어요", "maxTargets": 7, "intervalBP": 8000 },
       "A2": { "parent": "A", "label": "용오름 불기둥", "summary": "치솟는 불길이 하늘 적까지 태워요", "canHitFlyer": true, "rangeAddMilli": 600, "flyerDamageBP": 13000 },
-      "B1": { "parent": "B", "label": "임시 지옥불", "summary": "불이 아주 세게 남아요", "burnBP": 30000 },
-      "B2": { "parent": "B", "label": "임시 뜨거운 불길", "summary": "불길도 잔불도 세요", "burnBP": 22000, "damageBP": 11000, "rangeAddMilli": 300 }
+      "B1": { "parent": "B", "label": "푸른 성화", "summary": "마법 저항도 녹이는 뜨거운 불꽃!", "burnBP": 28000, "magicResistIgnoreBP": 4000 },
+      "B2": { "parent": "B", "label": "불씨 옮기기", "summary": "불붙은 적이 쓰러지면 옆으로 번져요", "onKill": { "mark": "burn", "radiusMilli": 850, "maxTargets": 4, "damageBP": 0, "carry": "burn" } }
     },
     "spear": {
       "A":  { "label": "긴 창", "summary": "한 줄로 선 두 적을 찔러요", "rangeAddMilli": 400, "lineWidthMilli": 350, "maxTargets": 2 },
       "B":  { "label": "파쇄", "summary": "단단한 적을 더 세게 찔러요", "damageBP": 12000, "physicalResistIgnoreBP": 5000 },
-      "A1": { "parent": "A", "label": "임시 장창", "summary": "한 줄로 선 세 적을 찔러요", "rangeAddMilli": 800, "maxTargets": 3, "damageBP": 11000 },
-      "A2": { "parent": "A", "label": "임시 연속 찌르기", "summary": "두 적을 더 빨리 찔러요", "intervalBP": 8000 },
-      "B1": { "parent": "B", "label": "임시 분쇄", "summary": "단단한 적을 아주 세게 찔러요", "damageBP": 14500, "physicalResistIgnoreBP": 8000 },
-      "B2": { "parent": "B", "label": "임시 기절 찌르기", "summary": "찌른 적을 잠깐 멈추게 해요", "firstTargetStunMs": 200 }
+      "A1": { "parent": "A", "label": "장창 방진", "summary": "네 명까지 한꺼번에 꿰뚫어 막아요", "rangeAddMilli": 600, "lineWidthMilli": 420, "maxTargets": 4 },
+      "A2": { "parent": "A", "label": "풍차 창술", "summary": "세 번 찌를 때마다 주변을 휩쓸어요", "cycle": { "every": 3, "ring": { "radiusMilli": 1600, "maxTargets": 5, "damageBP": 14000 } } },
+      "B1": { "parent": "B", "label": "갑옷 틈새", "summary": "찌를수록 적의 갑옷을 벗겨내요", "shredPhysicalBP": 2500, "shredMs": 3000, "damageBP": 14500 },
+      "B2": { "parent": "B", "label": "방패 밀치기", "summary": "찌르며 방패로 쳐서 멈춰 세워요", "cycle": { "every": 4, "stunMs": 400 }, "damageBP": 13500 }
     },
     "guardian": {
       "A":  { "label": "결투", "summary": "정예와 대장에게 훨씬 세요", "eliteBossDamageBP": 16000 },
       "B":  { "label": "수호 일격", "summary": "주변 적 여럿을 함께 베어요", "splashRadiusMilli": 800, "maxTargets": 3, "splashDamageBP": 8000 },
-      "A1": { "parent": "A", "label": "임시 대장 사냥", "summary": "정예와 대장에게 아주 세요", "eliteBossDamageBP": 20000 },
-      "A2": { "parent": "A", "label": "임시 방패 강타", "summary": "벤 적을 잠깐 멈추게 해요", "firstTargetStunMs": 300 },
+      "A1": { "parent": "A", "label": "왕국의 검성", "summary": "대장조차 꼼짝 못 할 일격을 날려요", "eliteBossDamageBP": 21000, "eliteSlowBP": 3000, "eliteSlowMs": 2000, "physicalResistIgnoreBP": 4000 },
+      "A2": { "parent": "A", "label": "불굴의 맹세", "summary": "성문이 위험할수록 기사가 강해져요", "gateRage": { "speedBP": 3000, "damageBP": 2500, "minBP": 1000 } },
       "B1": { "parent": "B", "label": "황금 검풍", "summary": "넓은 검기가 하늘 적까지 베어요", "canHitFlyer": true, "splashRadiusMilli": 1100, "maxTargets": 6, "splashDamageBP": 10000 },
-      "B2": { "parent": "B", "label": "임시 빠른 일격", "summary": "더 자주 베어요", "intervalBP": 7500 }
+      "B2": { "parent": "B", "label": "철벽 수호진", "summary": "기사 주변을 지나는 적은 느려져요", "slowAura": { "radiusMilli": 1800, "slowBP": 2500 } }
     },
     "banner": {
       "A":  { "label": "용기", "summary": "주변 타워가 더 세게 공격해요", "auraDamageBPByLevel": [1600, 1800, 2000] },
       "B":  { "label": "신속", "summary": "주변 타워가 더 빨리 공격해요", "auraSpeedBPByLevel": [1900, 2200, 2500] },
-      "A1": { "parent": "A", "label": "임시 큰 용기", "summary": "주변 타워가 훨씬 세게 공격해요", "auraDamageBPByLevel": [2900, 3200, 3500] },
-      "A2": { "parent": "A", "label": "임시 넓은 용기", "summary": "더 넓은 곳의 타워를 세게 해요", "auraDamageBPByLevel": [2400, 2600, 2800], "rangeAddMilli": 700 },
-      "B1": { "parent": "B", "label": "임시 큰 신속", "summary": "주변 타워가 훨씬 빨리 공격해요", "auraSpeedBPByLevel": [2800, 3100, 3400] },
-      "B2": { "parent": "B", "label": "임시 넓은 신속", "summary": "더 넓은 곳의 타워를 빠르게 해요", "auraSpeedBPByLevel": [2300, 2500, 2700], "rangeAddMilli": 700 }
+      "A1": { "parent": "A", "label": "왕실 대군기", "summary": "주변 타워가 대장에게 더욱 강해요", "auraDamageBPByLevel": [2900, 3200, 3500], "auraEliteBossBP": 1500 },
+      "A2": { "parent": "A", "label": "승리의 나팔", "summary": "주변 타워가 적을 잡으면 보너스!", "auraDamageBPByLevel": [2400, 2600, 2800], "auraKillGold": { "every": 5, "gold": 2, "waveCap": 10 } },
+      "B1": { "parent": "B", "label": "질풍 군기", "summary": "버닝 때는 깃발 힘이 배로 커져요!", "auraSpeedBPByLevel": [2800, 3100, 3400], "auraBurning": { "rangeAddMilli": 600, "speedBP": 4000 } },
+      "B2": { "parent": "B", "label": "한마음 군기", "summary": "속도와 공격력을 함께 올려 줘요", "auraSpeedBPByLevel": [1900, 2200, 2500], "auraDamageBPByLevel": [1400, 1600, 1800] }
+    },
+    "sling": {
+      "A":  { "label": "물수제비", "summary": "돌멩이가 여러 적에게 튀어요", "ricochet": { "count": 2, "radiusMilli": 1500, "falloffBP": 7500 } },
+      "B":  { "label": "묵직한 돌", "summary": "돌이 커져서 더 아프게 맞혀요", "ricochet": { "count": 0, "radiusMilli": 0, "falloffBP": 10000 }, "damageBP": 16500, "physicalResistIgnoreBP": 2500 },
+      "A1": { "parent": "A", "label": "통통 조약돌", "summary": "다섯 적까지 지치지 않고 튀어요", "ricochet": { "count": 4, "radiusMilli": 1500, "falloffBP": 8500 } },
+      "A2": { "parent": "A", "label": "쌍돌팔매", "summary": "돌 두 개를 한꺼번에 던져요", "volley": 2, "damageBP": 7500 },
+      "B1": { "parent": "B", "label": "어질어질 바위", "summary": "맞은 적을 잠깐 어지럽혀요", "hitStunMs": 333, "damageBP": 18500 },
+      "B2": { "parent": "B", "label": "쪼개지는 돌", "summary": "부딪히면 돌조각이 사방에 튀어요", "onHitSplash": { "radiusMilli": 800, "maxTargets": 4, "damageBP": 6500 } }
+    },
+    "ballista": {
+      "A":  { "label": "관통 작살", "summary": "더 굵은 창이 감쇠 없이 뚫어요", "lineWidthMilli": 450, "maxTargets": 6, "chainFalloffBP": 10000 },
+      "B":  { "label": "공성 화살", "summary": "하늘 적과 대장에게 강력해요", "maxTargets": 3, "damageBP": 12000, "eliteBossDamageBP": 13500 },
+      "A1": { "parent": "A", "label": "폭풍 대노포", "summary": "끝없이 긴 길을 단번에 꿰뚫어요", "rangeAddMilli": 700, "maxTargets": 8, "intervalBP": 8500 },
+      "A2": { "parent": "A", "label": "밀치기 작살", "summary": "꿰뚫린 적들을 뒤로 밀어내요", "knockbackMilli": 350, "knockbackBossMilli": 120 },
+      "B1": { "parent": "B", "label": "창공 사냥꾼", "summary": "날아오는 적과 대장을 격추해요", "flyerDamageBP": 18000, "eliteBossDamageBP": 16000 },
+      "B2": { "parent": "B", "label": "불꽃 도화선", "summary": "창이 지나간 길에 폭발이 나요", "burst": { "count": 2, "gapTicks": 18, "followDamageBP": 5500 } }
+    },
+    "falcon": {
+      "A":  { "label": "급강하", "summary": "매가 번개처럼 내려꽂혀요", "intervalBP": 8000, "flyerDamageBP": 16000 },
+      "B":  { "label": "사냥 표식", "summary": "약점을 찍어 다 같이 세게 쳐요", "vulnBP": 2200, "vulnMs": 2500 },
+      "A1": { "parent": "A", "label": "창공의 제왕", "summary": "하늘 적을 단숨에 제압해요", "flyerDamageBP": 21000, "onHitSplash": { "radiusMilli": 900, "maxTargets": 3, "damageBP": 0, "slowBP": 3500, "slowMs": 1500, "flyersOnly": true } },
+      "A2": { "parent": "A", "label": "쌍매 출격", "summary": "매 두 마리가 함께 사냥해요", "volley": 2, "damageBP": 8000, "rangeAddMilli": 400 },
+      "B1": { "parent": "B", "label": "우두머리 추적", "summary": "가장 튼튼한 적을 골라 찍어요", "targetPriority": "strongest", "vulnBP": 2500, "vulnMs": 3000 },
+      "B2": { "parent": "B", "label": "칼바람 날개", "summary": "매가 스친 주변까지 함께 베어요", "onHitSplash": { "radiusMilli": 750, "maxTargets": 3, "damageBP": 7000, "vulnBP": 1500, "vulnMs": 2500 } }
+    },
+    "mortar": {
+      "A":  { "label": "대형 유탄", "summary": "멀리서 엄청나게 넓게 터져요", "splashRadiusMilli": 1250, "maxTargets": 7, "rangeAddMilli": 400 },
+      "B":  { "label": "속사 박격", "summary": "포탄이 더 빠르고 자주 떨어져요", "intervalBP": 7800, "projectileSpeedMilliPerSec": 10500 },
+      "A1": { "parent": "A", "label": "융단 포격", "summary": "전장 반대편까지 묵직하게 덮어요", "splashRadiusMilli": 1450, "maxTargets": 9, "damageBP": 12500 },
+      "A2": { "parent": "A", "label": "불꽃 유탄", "summary": "터진 자리에 뜨거운 화상을 남겨요", "burnTotal": 12, "burnMs": 2000 },
+      "B1": { "parent": "B", "label": "쌍열 박격포", "summary": "포탄 두 발을 잇달아 쏘아 올려요", "burst": { "count": 2, "gapTicks": 12 }, "damageBP": 7000 },
+      "B2": { "parent": "B", "label": "파갑 신호탄", "summary": "맞은 적들의 방어를 약하게 해요", "shredPhysicalBP": 2000, "shredMagicBP": 2000, "shredMs": 2500 }
+    },
+    "hwacha": {
+      "A":  { "label": "백발 신기전", "summary": "불화살이 비처럼 쏟아져 내려요", "burst": { "count": 6, "gapTicks": 3 }, "rangeAddMilli": 300 },
+      "B":  { "label": "대신기전", "summary": "화살 수는 줄고 폭발은 커져요", "burst": { "count": 3, "gapTicks": 3 }, "damageBP": 16500, "splashRadiusMilli": 650, "maxTargets": 3 },
+      "A1": { "parent": "A", "label": "화우 세례", "summary": "여덟 발 화살비가 무리를 쓸어요", "burst": { "count": 8, "gapTicks": 2 }, "splashRadiusMilli": 450 },
+      "A2": { "parent": "A", "label": "창공 유도전", "summary": "하늘을 나는 적을 끝까지 쫓아요", "preferFlyer": true, "flyerDamageBP": 15000, "splashRadiusMilli": 0 },
+      "B1": { "parent": "B", "label": "화약통 신기전", "summary": "꽂힐 때마다 뜨거운 불이 붙어요", "burnTotal": 6, "burnMs": 2000, "splashRadiusMilli": 750 },
+      "B2": { "parent": "B", "label": "파갑 대화살", "summary": "정예와 대장 방패를 연달아 뚫어요", "physicalResistIgnoreBP": 5000, "eliteBossDamageBP": 14500 }
+    },
+    "roller": {
+      "A":  { "label": "가시 통나무", "summary": "더 멀리 굴러가며 발을 늦춰요", "pathSegmentMilli": 3400, "maxTargets": 7, "slowBP": 2500, "slowMs": 1500 },
+      "B":  { "label": "화약 술통", "summary": "정예와 부딪히거나 끝에서 쾅!", "maxTargets": 5, "onHitSplash": { "radiusMilli": 950, "maxTargets": 5, "damageBP": 14500 } },
+      "A1": { "parent": "A", "label": "천하장사 맷돌", "summary": "거대한 돌바위가 열 명을 뭉개요", "pathSegmentMilli": 4200, "maxTargets": 10, "physicalResistIgnoreBP": 4000 },
+      "A2": { "parent": "A", "label": "쌍둥이 통나무", "summary": "뒤따라 하나 더 굴러가 쓸어내요", "burst": { "count": 2, "gapTicks": 15, "followDamageBP": 6500 } },
+      "B1": { "parent": "B", "label": "큰불 화약통", "summary": "엄청난 폭발로 주변을 초토화해요", "onHitSplash": { "radiusMilli": 1250, "maxTargets": 7, "damageBP": 18000 } },
+      "B2": { "parent": "B", "label": "밀치기 큰통", "summary": "굴러가며 적들을 뒤로 밀어붙여요", "knockbackMilli": 300, "knockbackBossMilli": 0 }
+    },
+    "alchemist": {
+      "A":  { "label": "끈적이 수액", "summary": "장판이 넓어지고 발이 쩍 붙어요", "splashRadiusMilli": 950, "slowBP": 3000, "slowMs": 667 },
+      "B":  { "label": "부글부글 물약", "summary": "장판 마법 피해가 훨씬 세져요", "damageBP": 14500, "burnBP": 14500, "maxTargets": 6 },
+      "A1": { "parent": "A", "label": "호박 설탕늪", "summary": "아주 오래 남는 끈적한 큰 늪!", "burnMs": 3000, "slowBP": 4500, "maxTargets": 7 },
+      "A2": { "parent": "A", "label": "톡톡 거품방울", "summary": "장판 위에서 쓰러지면 펑 터져요!", "onKill": { "mark": "burn", "radiusMilli": 800, "maxTargets": 4, "damageBP": 18000, "carry": "none" } },
+      "B1": { "parent": "B", "label": "갑옷 녹이기", "summary": "장판 위 적의 갑옷을 무르게 해요", "shredPhysicalBP": 2500, "shredMagicBP": 2500, "shredMs": 1000 },
+      "B2": { "parent": "B", "label": "삼색 플라스크", "summary": "앞뒤 길에 약병 세 개를 뿌려요", "splashRadiusMilli": 1100, "maxTargets": 8, "damageBP": 10000, "burnBP": 10000 }
+    },
+    "wind": {
+      "A":  { "label": "역풍 돌풍", "summary": "더 많은 적을 더 멀리 밀쳐내요", "maxTargets": 5, "knockbackMilli": 320, "knockbackFlyerMilli": 500, "damageBP": 15000 },
+      "B":  { "label": "칼바람", "summary": "날카로운 바람날로 빠르게 베어요", "knockbackMilli": 120, "knockbackFlyerMilli": 120, "intervalBP": 7500, "damageBP": 12500 },
+      "A1": { "parent": "A", "label": "태풍 풍차", "summary": "거센 태풍이 밀치고 발까지 늦춰요", "rangeAddMilli": 400, "knockbackMilli": 420, "knockbackFlyerMilli": 650, "slowBP": 3000, "slowMs": 1500 },
+      "A2": { "parent": "A", "label": "하강 기류", "summary": "하늘 적을 땅으로 짓눌러요!", "groundFlyerMs": 3000 },
+      "B1": { "parent": "B", "label": "회오리 칼날", "summary": "직선으로 뻗는 회오리가 다 베어요", "lineWidthMilli": 500, "rangeAddMilli": 800, "maxTargets": 6, "damageBP": 17000 },
+      "B2": { "parent": "B", "label": "순풍 응원", "summary": "바람을 불어 이웃 타워도 빠르게!", "hasteNeighbors": { "radiusMilli": 2300, "count": 2, "ticks": 6 } }
+    },
+    "trap": {
+      "A":  { "label": "올가미 그물", "summary": "덫을 더 많이 깔고 꽉 붙잡아요", "hitStunMs": 500, "physicalResistIgnoreBP": 3500 },
+      "B":  { "label": "폭죽 발판", "summary": "밟으면 펑 터져 여럿을 맞혀요", "splashRadiusMilli": 800, "maxTargets": 4, "damageBP": 11500 },
+      "A1": { "parent": "A", "label": "강철 곰덫", "summary": "큰 적도 단단히 물어 큰 피해를!", "damageBP": 17500, "hitStunMs": 800, "eliteBossDamageBP": 15000 },
+      "A2": { "parent": "A", "label": "넓적 그물망", "summary": "밟으면 주변 친구들까지 함께 묶여요", "splashRadiusMilli": 750, "maxTargets": 4, "hitStunMs": 500 },
+      "B1": { "parent": "B", "label": "도토리 연쇄덫", "summary": "한 번 터진 자리에 작은 덫이 또!", "burst": { "count": 2, "gapTicks": 12, "followDamageBP": 8000 } },
+      "B2": { "parent": "B", "label": "용수철 발판", "summary": "밟은 적들을 통! 뒤로 튕겨내요", "splashRadiusMilli": 700, "maxTargets": 3, "knockbackMilli": 450, "knockbackBossMilli": 0 }
+    },
+    "bell": {
+      "A":  { "label": "큰울림 종", "summary": "종소리가 넓게 퍼져 적을 약하게!", "rangeAddMilli": 300, "maxTargets": 7, "vulnBP": 1800, "vulnMs": 2500 },
+      "B":  { "label": "맑은 종소리", "summary": "아군 타워 사거리도 넓혀 주는 종!", "auraRangeMilli": 250, "auraRadiusMilli": 2000, "auraSpeedBP": 1000, "vulnBP": 1800, "vulnMs": 2500 },
+      "A1": { "parent": "A", "label": "천둥 대범종", "summary": "전장을 울려 모든 적을 크게 약화!", "rangeAddMilli": 600, "maxTargets": 10, "vulnBP": 2500, "vulnMs": 3000 },
+      "A2": { "parent": "A", "label": "여운 메아리", "summary": "종소리가 두 번 울려 분열 적도 타격!", "burst": { "count": 2, "gapTicks": 15, "followDamageBP": 6000 } },
+      "B1": { "parent": "B", "label": "파수꾼 종각", "summary": "이웃 타워가 훨씬 멀리, 더 빠르게!", "auraRangeMilli": 500, "auraSpeedBP": 800 },
+      "B2": { "parent": "B", "label": "진혼의 종", "summary": "종소리에 맞은 적의 발걸음이 굳어요", "hitStunMs": 300, "slowBP": 2500, "slowMs": 1500 }
     }
   },
   "draft": { "startTowers": ["archer", "cannon", "frost", "mage"], "afterWaves": [3, 6, 10, 14], "offerCount": 3, "maxOwned": 8 },
@@ -202,5 +292,5 @@
     "courtyard": { "primary": "moon_dokkaebi", "roleOrder": ["walker", "brute", "shell", "runner", "wisp", "swarm"], "invasionOrder": ["kiln_pottery", "brass_mole", "hearth_yeti", "honey_beetle", "breeze_corsair", "acorn_goblin", "river_rafter"] },
     "snow_step": { "primary": "hearth_yeti",   "roleOrder": ["walker", "brute", "runner", "wisp", "shell", "swarm"], "invasionOrder": ["brass_mole", "honey_beetle", "acorn_goblin", "breeze_corsair", "kiln_pottery", "river_rafter", "moon_dokkaebi"] }
   },
-  "formsNote": "1차형(A·B)은 0.4.2-candidate의 Lv3 분기 값을 그대로 옮겼고 이제 Lv4에서 고른다. 2차형(A1~B2)은 고유 능력 카탈로그가 오기 전 기존 효과 필드만 조합한 임시 값이며 이름 앞에 ‘임시’를 붙였다. 2차형은 부모 1차형 값을 물려받고 적은 필드만 덮어쓴다. 대공을 여는 화염 A2·수호기사 B1만 카탈로그(towers.md §2) 값을 먼저 옮겼다(canHitFlyer: true)."
+  "formsNote": "1차형(A·B)은 R2 1단계에서 맞춘 값이다. 2차형(A1~B2)은 docs/renewal/catalog/towers.md §2 값을 옮겼다(R2 2단계 (d)). 1단계에서 1차형 값을 바꾼 곳(궁수 B 사거리, 포탑 A·B, 깃발 A·B 표)은 카탈로그의 1차→2차 비율을 지켜 2차 값을 맞췄다. 2차형은 부모 1차형 값을 물려받고 적은 필드만 덮어쓴다. 장판·덫·굴림(fieldHazards)은 (f) 전까지 근사다: 약병 장판 = 착탄 범위 + 화상, 덫 = 성문 쪽 첫 적 즉발 타격, 통나무 = 첫 표적에서 입구 쪽 경로 구간 즉발 타격."
 }

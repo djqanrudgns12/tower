@@ -24,6 +24,9 @@ export const TOWER_ROLE_GROUP: Record<TowerId, TowerRoleGroup> = {
   frost: 'slow',
   guardian: 'support',
   banner: 'support',
+  // 리뉴얼 신규 10종(R2가 컴파일을 위해 더함. 묶음은 R1이 다듬는다).
+  sling: 'fast', ballista: 'fast', falcon: 'fast', mortar: 'area', hwacha: 'area',
+  roller: 'area', alchemist: 'area', wind: 'slow', trap: 'slow', bell: 'support',
 };
 
 const ROLE_FILTERS: readonly { id: TowerRoleFilter; label: string }[] = [

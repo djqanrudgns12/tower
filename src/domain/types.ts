@@ -3,10 +3,10 @@ import type { OptionId } from '../contracts/questions';
 
 // 저장·재개되는 전체 상태. 순수 JSON(숫자·문자열·배열·객체)만 쓴다(PRD §10.1, §14).
 /**
- * 2: 타워 branch → form, 설치 취소 기한(리뉴얼 R2). 3: 적 종족·대장 단계(R2 2단계).
+ * 2: 타워 branch → form, 설치 취소 기한(리뉴얼 R2). 3: 적 종족·대장 단계(R2 2단계). 4: 신규 타워 효과 상태(취약·저항 차감·밀치기·공격 주기·다연발).
  * 이전 버전의 진행 중 판은 이어가지 않는다(application/session.ts resumeBlocker).
  */
-export const RUN_STATE_VERSION = 3;
+export const RUN_STATE_VERSION = 4;
 /**
  * 0.5-candidate: P2 공격 프로필(즉발·연쇄·부채꼴·화상·깃발 오라, 물리 저항 무시)과 적 화상 상태(PRD §7.1, §20.2~20.3).
  * 0.5.1-candidate: 난이도별 심화 단계 출제 순서와 한 바퀴 뒤 섞기(PRD §9.1, §9.4). 같은 시드의 출제 순서가 바뀌므로 옛 저장은 이어하지 않는다.
@@ -75,6 +75,10 @@ export interface QuizState {
 }
 
 export interface SlowEffect { source: number; bp: number; untilTick: number }
+/** 취약(받는 피해 +bp): 감속처럼 출처(타워 ID)별로 두고 가장 큰 값 하나만 쓴다(towers.md §4-6). */
+export type VulnMark = SlowEffect;
+/** 저항 차감: 출처별 물리·마법 차감. 종류마다 가장 큰 값 하나만 쓴다. */
+export interface ShredMark { source: number; physicalBP: number; magicBP: number; untilTick: number }
 /** 화상 출처(타워 ID)별 총피해 스냅샷(저항 반영 뒤 milli-HP)과 고유 만료 틱(PRD §20.2). */
 export interface BurnSource { source: number; total: number; expiresTick: number }
 
@@ -107,8 +111,15 @@ export interface Enemy {
   burns: BurnSource[];
   burnNextTick: number | null;
   burnRemainder: number;
+  vulns: VulnMark[];
+  shreds: ShredMark[];
+  /** 지금까지 뒤로 밀린 거리(평생 상한 statusCaps.knockbackLifetimeMaxMilli). */
+  knockbackUsed: number;
   alive: boolean;
 }
+
+/** 시차 다연발 예약(towers.md §4-4): 남은 발 수, 다음 발 틱, 간격, 뒤따르는 발의 피해 배율. */
+export interface BurstState { left: number; nextTick: number; gapTicks: number; damageBP: number }
 
 export interface Tower {
   id: number;
@@ -123,6 +134,14 @@ export interface Tower {
   nextAttackTick: number | null;
   /** 이 틱 전까지 설치 취소(전액 환불)를 받는다. 강화하거나 공격·오라를 쓰면 null. */
   undoUntilTick: number | null;
+  /** 지금까지 한 공격 수(공격 주기 every번째 판정, towers.md §4-9). */
+  attacks: number;
+  burst: BurstState | null;
+  /** 같은 적을 이어 친 횟수(마법 A1). */
+  focus: { targetId: number; stacks: number } | null;
+  /** 처치 골드 오라(깃발 A2): 오라 안 처치 수와 이번 웨이브에 준 골드. */
+  auraKills: number;
+  auraGold: number;
 }
 
 export interface Projectile {
@@ -152,7 +171,27 @@ export interface Projectile {
   /** 대공 가능(아니면 떠 있는 비행 적은 빗나가고 범위에서도 빠진다)과 비행 적 상황 배율. */
   canHitFlyer: boolean;
   flyerDamageBP: number;
+  /** 맞을 때의 추가 효과(없으면 없음). */
+  fx?: HitFx;
+  /** 맞힌 뒤 마지막 대상 둘레 2차 피해. */
+  splash?: SplashHit;
+  /** 도탄: 남은 횟수와 이미 맞은 적. */
+  ricochet?: { left: number; radius: number; falloffBP: number; hit: number[] };
+  /** 착탄 둘레 당기기. */
+  pull?: { radius: number; maxTargets: number; milli: number };
 }
+
+/** 한 번의 적중이 싣는 추가 효과(틱·BP, 0이면 없음). 발사 순간의 스냅샷이다. */
+export interface HitFx {
+  burnTotal: number; burnTicks: number; magicResistIgnoreBP: number;
+  stunTicks: number; eliteStunTicks: number; eliteSlowBP: number; eliteSlowTicks: number; bossSlowBP: number; bossSlowTicks: number;
+  knockback: number; knockbackFlyer: number; knockbackBoss: number; groundTicks: number;
+  vulnBP: number; vulnTicks: number; shredPhysicalBP: number; shredMagicBP: number; shredTicks: number;
+  lowHpThresholdBP: number; lowHpDamageBP: number; slowedDamageBP: number;
+}
+
+/** 마지막 대상 둘레 2차 피해(파편·폭발): 반경·대상 수·피해(이미 배율 반영)·추가 효과. */
+export interface SplashHit { radius: number; maxTargets: number; damage: number; vulnBP: number; vulnTicks: number; slowBP: number; slowTicks: number; flyersOnly: boolean }
 
 /** 생성 예약. faction이 없으면 맵의 주력 종족, 대장의 bossTier가 없으면 1단이다(시험·연습용 줄). */
 export interface SpawnEntry { kind: EnemyKind; elite: EliteId | null; faction?: string; bossTier?: BossTier | null }
