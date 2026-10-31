@@ -125,6 +125,10 @@
   gap: 6px;
 }
 
+/* 줄 안의 칸(골드·점수·웨이브·연속 정답)은 높이를 맞춰 윗변이 한 줄에 선다(압축 상태 바 두 줄 실측). */
+.stat,
+.streak { min-height: 24px; }
+
 .num {
   font-size: 18px;
   font-weight: 800;
