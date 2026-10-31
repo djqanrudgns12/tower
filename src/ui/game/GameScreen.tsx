@@ -1,26 +1,40 @@
-import { useCallback, useEffect, useLayoutEffect, useRef, useState, useSyncExternalStore, type CSSProperties } from 'react';
-import type { FormId, TowerId } from '../../contracts/balance';
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, useSyncExternalStore, type CSSProperties } from 'react';
+import type { TowerId } from '../../contracts/balance';
 import type { OptionId } from '../../contracts/questions';
 import type { RunController } from '../../application/RunController';
-import { FieldBridgeHandle, type FieldSelection, type FieldTap } from '../../game/bridge';
+import { buildCost } from '../../domain/towers';
+import { FieldBridgeHandle, type FieldDrag, type FieldSelection, type FieldTap, type FieldView } from '../../game/bridge';
 import { PhaserBattlefield } from '../../game/PhaserBattlefield';
 import type { FontScale } from '../../application/session';
 import { DEFAULTS } from '../../content';
 import { SoundDirector } from '../audio/sound';
-import { commandErrorText, fmtNumber } from '../copy';
-import { PlayArrowIcon } from '../icons/GameIcons';
+import { commandErrorText } from '../copy';
+import { PlayArrowIcon, TowerShieldPortrait, WaveFlagIcon } from '../icons/GameIcons';
 import kit from '../kit.module.css';
 import { useLayout } from '../useLayout';
+import { Armory } from './Armory';
+import { CoinFlight, coinsFor, type Flight } from './CoinFlight';
+import { EvolveCard } from './EvolveCard';
+import { evolutionChoices, previewForm, previewMarker, towerForm, undoBuildCommand, upgradeCommand, upgradeCost, type FormId } from './evolution';
+import { FieldOverlay, type FieldFlash } from './FieldOverlay';
+import { FULL_VIEW } from './fieldGeometry';
+import { COACH_TEXT, currentCoach, markCoachDone, readCoachDone } from './firstRunCoach';
 import css from './GameScreen.module.css';
 import { Hud, type RecentDelta } from './Hud';
-import { ManagementPanel, type PanelMode } from './ManagementPanel';
 import { PauseOverlay } from './PauseOverlay';
 import { QuestionPanel } from './QuestionPanel';
+import { RecruitCard } from './RecruitCard';
+import { recruitCommand, recruitOffer, showRecruit } from './recruit';
 import { practiceCoach } from './practiceCoach';
 import { nextSlot, SlotList, slotDescription, type Arrow } from './SlotList';
+import { TowerDetail } from './TowerDetail';
+import { useTowerDrag } from './useTowerDrag';
+import { ENEMY_NAME, wavePreview } from './wavePreview';
+import { WaveBand } from './WaveBand';
 
 interface Props {
   controller: RunController;
+  /** 판 설정의 타워(호환용). 화면은 엔진 장착함(view.owned)을 쓴다. */
   towers: readonly TowerId[];
   notice: string | null;
   fontScale: FontScale;
@@ -38,10 +52,10 @@ interface Props {
 }
 
 const EMPTY: FieldSelection = { slotId: null, towerId: null, previewType: null, previewBranch: null };
+const FLASH_MS = 2400;
 
 export function GameScreen({
   controller,
-  towers,
   notice,
   fontScale,
   reducedMotion,
@@ -56,8 +70,19 @@ export function GameScreen({
   practice,
 }: Props) {
   const view = useSyncExternalStore(controller.subscribe, controller.getView);
+  const b = controller.ctx.balance;
+  const map = controller.ctx.map;
   const [recentDelta, setRecentDelta] = useState<RecentDelta | null>(null);
   const deltaTimerRef = useRef<number | null>(null);
+  // 연출(ui-rules-v2 §5): 정답 금화 비행, 웨이브 띠, 진화 빛기둥. 보상은 이미 상태에 반영된 뒤의 그림이다.
+  const goldRef = useRef<HTMLElement>(null);
+  const answerFrom = useRef<{ x: number; y: number } | null>(null);
+  const motionRef = useRef(reducedMotion);
+  useEffect(() => { motionRef.current = reducedMotion; }, [reducedMotion]);
+  const fxSeq = useRef(0);
+  const [flights, setFlights] = useState<Flight[]>([]);
+  const [band, setBand] = useState<{ id: number; wave: number; boss: boolean } | null>(null);
+  const [pillar, setPillar] = useState<{ id: number; slotId: string } | null>(null);
 
   // 소리 및 상단 HUD 변동 배지는 도메인 사건을 구독해 갱신한다(PRD §11.5).
   const [sound] = useState(() => new SoundDirector(DEFAULTS.audio, controller.ctx.balance.waves.bossEveryWaves));
@@ -70,6 +95,19 @@ export function GameScreen({
       let dGold = 0;
       let dPt = 0;
       for (const e of events) {
+        if (e.type === 'answered' && e.result === 'correct' && e.gold > 0 && !motionRef.current) {
+          const from = answerFrom.current;
+          const to = goldRef.current?.getBoundingClientRect();
+          if (from && to && to.width > 0) {
+            fxSeq.current += 1;
+            const flight = { id: fxSeq.current, from, to: { x: to.left + to.width / 2, y: to.top + to.height / 2 }, coins: coinsFor(e.gold) };
+            setFlights(f => [...f, flight]);
+          }
+        }
+        if (e.type === 'phase' && e.phase === 'BATTLE') {
+          fxSeq.current += 1;
+          setBand({ id: fxSeq.current, wave: e.wave, boss: e.wave % controller.ctx.balance.waves.bossEveryWaves === 0 });
+        }
         if (e.type === 'answered' || e.type === 'kill') {
           dGold += e.gold;
           dPt += e.pt;
@@ -104,68 +142,120 @@ export function GameScreen({
 
   const layout = useLayout();
   const [rawSelection, setSelection] = useState<FieldSelection>(EMPTY);
-  const [rawMode, setMode] = useState<PanelMode>('idle');
-  const [trayOpen, setTrayOpen] = useState(false);
+  const [evolveOpen, setEvolveOpen] = useState(false);
   const [icons, setIcons] = useState<Record<string, string>>({});
-  const [flash, setFlash] = useState<string | null>(null);
+  const [flash, setFlash] = useState<FieldFlash | null>(null);
+  const flashSeq = useRef(0);
   const [confirmEmpty, setConfirmEmpty] = useState(false);
+  const [camera, setCamera] = useState<FieldView>(FULL_VIEW);
+  const cameraRef = useRef<FieldView>(FULL_VIEW);
+  const [dragging, setDragging] = useState(false);
+  const [coachDone, setCoachDone] = useState(readCoachDone);
   // 전장 키보드 커서(PRD §12.4). 포커스가 전장에 있을 때만 그린다.
   const [cursor, setCursor] = useState<string | null>(null);
   const [fieldFocused, setFieldFocused] = useState(false);
-  const panelRef = useRef<HTMLDivElement>(null);
   const fieldRef = useRef<HTMLDivElement>(null);
-  const startRef = useRef<HTMLButtonElement>(null);
-  const cancelEmptyRef = useRef<HTMLButtonElement>(null);
+  const [lastBuilt, setLastBuilt] = useState<number | null>(null);
   const paused = view.pause.length > 0;
   // 선택한 타워가 팔리거나 사라지면 선택이 없는 것으로 본다(렌더 중 파생, effect로 setState하지 않음).
   const towerGone = rawSelection.towerId !== null && !view.towers.some(t => t.id === rawSelection.towerId);
   const selection = towerGone ? EMPTY : rawSelection;
-  const mode: PanelMode = towerGone ? 'idle' : rawMode;
+  const selectedTower = selection.towerId !== null ? view.towers.find(t => t.id === selection.towerId) ?? null : null;
+  /** 먼저 골라 둔 타워: 빈 자리를 누르면 바로 설치한다. */
+  const armed = selection.slotId === null && selection.towerId === null ? selection.previewType : null;
   const hasSelection = selection.slotId !== null || selection.towerId !== null;
-  const magnify = layout.cell < layout.magnifyBelow && hasSelection;
+  const magnify = layout.cell < layout.magnifyBelow && hasSelection && !dragging;
+  const trading = view.phase === 'BUILD' || view.phase === 'BATTLE';
+  const lock = view.phase === 'PREP_QUIZ' ? '준비 문제를 먼저 풀어 주세요' : view.phase === 'WAVE_WRAPUP' ? '다음 웨이브 준비 중이에요' : null;
+  // 장착함(징집으로 늘어난다). 장착 홈·설치 메뉴·자리 목록은 이 타워만 보인다(엔진은 장착함 밖 설치를 NOT_OWNED로 막는다).
+  const towers = view.owned;
+  const occupied = useMemo(() => new Set(view.towers.map(t => t.slotId)), [view.towers]);
+  // 골드가 늘어 새로 살 수 있게 된 타워: 장착 홈 테두리가 한 번 빛난다(ui-rules-v2 §5).
+  const [goldSeen, setGoldSeen] = useState<{ gold: number; fresh: ReadonlySet<TowerId>; n: number }>({ gold: view.gold, fresh: new Set(), n: 0 });
+  if (goldSeen.gold !== view.gold) {
+    const fresh = new Set(towers.filter(t => goldSeen.gold < buildCost(b, t) && view.gold >= buildCost(b, t)));
+    setGoldSeen({ gold: view.gold, fresh: fresh.size > 0 ? fresh : goldSeen.fresh, n: fresh.size > 0 ? goldSeen.n + 1 : goldSeen.n });
+  }
+  useEffect(() => {
+    if (goldSeen.n === 0) return undefined;
+    const t = window.setTimeout(() => setGoldSeen(g => ({ ...g, fresh: new Set() })), 700);
+    return () => window.clearTimeout(t);
+  }, [goldSeen.n]);
+
+  const showFlash = useCallback((text: string, slotId: string | null = null) => {
+    flashSeq.current += 1;
+    setFlash({ id: flashSeq.current, text, slotId });
+  }, []);
+  useEffect(() => {
+    if (!flash) return undefined;
+    const t = window.setTimeout(() => setFlash(f => (f?.id === flash.id ? null : f)), FLASH_MS);
+    return () => window.clearTimeout(t);
+  }, [flash]);
 
   const clear = useCallback(() => {
     setSelection(EMPTY);
-    setMode('idle');
+    setEvolveOpen(false);
   }, []);
 
   /**
-   * 설치·판매·선택 해제로 누른 단추가 사라지면 포커스가 body로 떨어진다. 그대로 두면 다음 키 입력이 어디로 갈지
-   * 알 수 없으므로, 그 칸의 타워 정보(관리 패널)나 전투 시작 단추로 옮긴다(PRD §12.4). 포커스가 살아 있으면 건드리지 않는다.
+   * 설치·판매로 누른 단추(전장 옆 메뉴·도구)가 사라지면 포커스가 body로 떨어진다. 그때만 전장으로 돌려
+   * 화살표로 다음 자리를 고를 수 있게 한다(PRD §12.4). 포커스가 살아 있으면 건드리지 않는다.
    */
-  const refocus = useCallback((prefer: 'panel' | 'start') => {
-    requestAnimationFrame(() => {
-      const active = document.activeElement;
-      if (active && active !== document.body && active !== document.documentElement && active.isConnected) return;
-      const panelEl = panelRef.current;
-      const startEl = startRef.current;
-      const fieldEl = fieldRef.current?.querySelector<HTMLElement>('[data-keyscope="field"]') ?? null;
-      const order = prefer === 'panel' ? [panelEl, startEl, fieldEl] : [startEl, panelEl, fieldEl];
-      order.find(el => el?.isConnected)?.focus();
-    });
-  }, []);
+  const refocusField = useCallback(() => requestAnimationFrame(() => {
+    const active = document.activeElement;
+    if (active && active !== document.body && active !== document.documentElement && active.isConnected) return;
+    fieldRef.current?.querySelector<HTMLElement>('[data-keyscope="field"]')?.focus();
+  }), []);
+
+  /** 설치. 실패하면 그 자리 옆에 이유를 짧게 보인다. 골라 둔 타워는 골드가 남으면 계속 골라 둔다(연속 설치). */
+  const build = useCallback((slotId: string, type: TowerId, keepArmed: boolean) => {
+    const r = controller.dispatch({ type: 'build', slotId, tower: type });
+    if (!r.ok) {
+      showFlash(commandErrorText(r.error, r.error === 'NOT_ENOUGH_GOLD' ? { need: buildCost(b, type) - view.gold } : undefined), slotId);
+      return false;
+    }
+    // 새 타워 번호는 명령 때 정해진다. 그 타워 위에 3초 동안 되돌리기 칩을 띄운다(ui-rules-v2 §4).
+    for (const e of r.events) if (e.type === 'towerBuilt') setLastBuilt(e.towerId);
+    setFlash(null);
+    setCoachDone(d => markCoachDone(d, 'place'));
+    refocusField();
+    const cost = buildCost(b, type);
+    setSelection(keepArmed && view.gold - cost >= cost ? { ...EMPTY, previewType: type } : EMPTY);
+    setEvolveOpen(false);
+    return true;
+  }, [controller, b, view.gold, showFlash, refocusField]);
 
   const onTap = useCallback((tap: FieldTap) => {
-    setFlash(null);
     if (tap.kind === 'empty') {
       clear();
       return;
     }
-    setTrayOpen(true);
     if (tap.kind === 'tower') {
       setSelection({ ...EMPTY, towerId: tap.towerId });
-      setMode('tower');
+      setEvolveOpen(false);
       return;
     }
-    setSelection(prev => ({ ...EMPTY, slotId: tap.slotId, previewType: prev.previewType }));
-    setMode('slot');
-  }, [clear]);
+    if (armed) {
+      build(tap.slotId, armed, true);
+      return;
+    }
+    // 준비 문제·마무리 중에는 설치할 수 없다. 메뉴 없이 확대만 되지 않게 그 자리에 이유를 짧게 보인다.
+    if (!trading) {
+      showFlash(lock ?? '지금은 할 수 없어요', tap.slotId);
+      return;
+    }
+    setSelection({ ...EMPTY, slotId: tap.slotId });
+  }, [armed, build, clear, trading, lock, showFlash]);
 
   // 브리지는 판 하나 동안 같은 객체. Phaser는 매 프레임 selection·magnify를 읽는다.
   const [bridge] = useState(() => new FieldBridgeHandle(controller));
   const keyboardSlotId = fieldFocused ? cursor : null;
+  const onCamera = useCallback((v: FieldView) => {
+    cameraRef.current = v;
+    setCamera(v);
+  }, []);
   useLayoutEffect(() => {
-    (bridge as FieldBridgeHandle & { update(next: Record<string, unknown>): void }).update({
+    bridge.update({
       selection,
       magnify,
       keyboardSlotId,
@@ -173,8 +263,49 @@ export function GameScreen({
       highContrastMap,
       onTap,
       onIcons: setIcons,
+      onCamera,
     });
-  }, [bridge, selection, magnify, keyboardSlotId, reducedMotion, highContrastMap, onTap]);
+  }, [bridge, selection, magnify, keyboardSlotId, reducedMotion, highContrastMap, onTap, onCamera]);
+
+  const blockReason = useCallback((type: TowerId) => {
+    if (!trading) return lock ?? '지금은 할 수 없어요';
+    const cost = buildCost(b, type);
+    return view.gold < cost ? `골드 ${cost - view.gold} 부족` : null;
+  }, [trading, lock, b, view.gold]);
+
+  const { begin: beginDrag, takeClick, ghostRef, ghostType } = useTowerDrag({
+    fieldRef,
+    viewRef: cameraRef,
+    slots: map.slots,
+    occupied,
+    blockReason,
+    onBlocked: reason => showFlash(reason),
+    onDrag: (d: FieldDrag | null) => {
+      bridge.update({ drag: d });
+      if (d && !dragging) {
+        setDragging(true);
+        setSelection(EMPTY);
+        setEvolveOpen(false);
+      } else if (!d) setDragging(false);
+    },
+    onDrop: (type, slotId) => { build(slotId, type, false); },
+  });
+
+  const onArm = (type: TowerId) => {
+    if (armed === type) {
+      clear();
+      return;
+    }
+    setSelection({ ...EMPTY, previewType: type });
+    setEvolveOpen(false);
+    const reason = blockReason(type);
+    if (reason) showFlash(reason);
+  };
+
+  /** 키보드·목록으로 고른 뒤 전장 옆 메뉴의 첫 단추로 포커스를 옮긴다(PRD §12.4). */
+  const focusOverlay = () => requestAnimationFrame(() => {
+    fieldRef.current?.querySelector<HTMLElement>('[data-overlay] button:not([disabled])')?.focus();
+  });
 
   const pickSlot = useCallback((slotId: string) => {
     const tower = view.towers.find(t => t.slotId === slotId);
@@ -182,13 +313,15 @@ export function GameScreen({
   }, [view.towers, onTap]);
 
   const onFieldKey = (e: React.KeyboardEvent<HTMLDivElement>) => {
-    const slots = controller.ctx.map.slots;
+    if (e.target !== e.currentTarget) return;
     if (e.key === 'ArrowUp' || e.key === 'ArrowDown' || e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
       e.preventDefault();
-      setCursor(c => nextSlot(slots, c, e.key as Arrow));
+      setCursor(c => nextSlot(map.slots, c, e.key as Arrow));
     } else if ((e.key === 'Enter' || e.key === ' ') && cursor) {
       e.preventDefault();
+      const builtHere = view.towers.some(t => t.slotId === cursor);
       pickSlot(cursor);
+      if (builtHere || !armed) focusOverlay();
     } else if (e.key === 'Escape') {
       e.preventDefault();
       clear();
@@ -197,13 +330,18 @@ export function GameScreen({
   const onFieldFocus = () => {
     setFieldFocused(true);
     // 처음 들어오면 선택한 자리, 없으면 첫 자리에서 시작한다.
-    setCursor(c => c ?? selection.slotId ?? view.towers.find(t => t.id === selection.towerId)?.slotId ?? controller.ctx.map.slots[0]?.id ?? null);
+    setCursor(c => c ?? selection.slotId ?? selectedTower?.slotId ?? map.slots[0]?.id ?? null);
   };
 
   useEffect(() => {
     controller.start();
     return () => controller.stop();
   }, [controller]);
+  // 전투 화면에서는 바탕을 짙은 호두나무 작업대로 바꾼다(전장이 주인공).
+  useEffect(() => {
+    document.body.dataset.screen = 'battle';
+    return () => { delete document.body.dataset.screen; };
+  }, []);
   useEffect(() => {
     if (view.phase === 'GAME_OVER') {
       const t = setTimeout(() => onExit('over'), 900);
@@ -220,22 +358,21 @@ export function GameScreen({
   const coach = practice ? practiceCoach(view, selection) : null;
   const coachLine = (at: NonNullable<typeof coach>['at']) =>
     coach?.at === at ? <p className={css.coach} role="status">{coach.text}</p> : null;
-  // 연습이 끝나면 관리 패널(다음 웨이브 잠금 문구 등) 대신 한 줄만 둔다.
-  const practiceRest = <p className={kit.muted}>연습이 끝났어요. 아래에서 다음 할 일을 골라요.</p>;
+  // 연습이 아닌 판의 첫 판 코치 마크. 그 조작을 한 번 하면 다시 보이지 않는다.
+  const mark = practice ? null : currentCoach(view, coachDone);
+  const practiceRest = <p className={css.restLine}>연습이 끝났어요. 아래에서 다음 할 일을 골라요.</p>;
   const skip = practice && !practiceDone ? (
-    <button type="button" className={`${kit.button} ${kit.quietWood} ${kit.block}`} onClick={() => practice.onFinish('home')}>
+    <button type="button" className={css.quietKey} onClick={() => practice.onFinish('home')}>
       연습 건너뛰기
     </button>
   ) : null;
 
-  const result = (r: ReturnType<RunController['dispatch']>, need?: number): r is Extract<typeof r, { ok: true }> => {
-    if (!r.ok) setFlash(commandErrorText(r.error, need !== undefined ? { need } : undefined));
-    else setFlash(null);
-    return r.ok;
-  };
-
   const onAnswer = useCallback((choice: OptionId) => {
-    if (view.question) controller.dispatch({ type: 'answer', encounterId: view.question.encounterId, choice });
+    if (!view.question) return;
+    // 금화가 날아오를 자리: 고른 답안 키 가운데. 채점 사건은 다음 틱에 온다.
+    const key = document.querySelector<HTMLElement>(`[data-option-id="${choice}"]`)?.getBoundingClientRect();
+    answerFrom.current = key ? { x: key.left + key.width / 2, y: key.top + key.height / 2 } : null;
+    controller.dispatch({ type: 'answer', encounterId: view.question.encounterId, choice });
   }, [controller, view.question]);
   const onSkip = useCallback(() => {
     if (view.question) controller.dispatch({ type: 'skip', encounterId: view.question.encounterId });
@@ -244,38 +381,49 @@ export function GameScreen({
     if (view.question) controller.dispatch({ type: 'next', encounterId: view.question.encounterId });
   }, [controller, view.question]);
 
-  const onBuild = () => {
-    if (!selection.slotId || !selection.previewType) return;
-    const r = controller.dispatch({ type: 'build', slotId: selection.slotId, tower: selection.previewType });
-    if (!result(r)) return;
-    // 명령은 다음 틱에 반영되지만 새 타워 번호는 미리 정해진다. 그 번호로 선택을 옮긴다.
-    let builtId: number | null = null;
-    for (const e of r.events) if (e.type === 'towerBuilt') builtId = e.towerId;
-    // 설치하면 구매 모드를 끝내고 선택을 설치된 타워로 바꾼다. 휴대폰은 트레이를 접고 전체 지도로 돌아간다(PRD §6.3, §12.4).
-    if (layout.mode === 'S') {
-      clear();
-      setTrayOpen(false);
-      refocus('start');
-    } else if (builtId !== null) {
-      setSelection({ ...EMPTY, towerId: builtId });
-      setMode('tower');
-      refocus('panel');
+  const towerResult = (r: ReturnType<RunController['dispatch']>, need?: number) => {
+    if (r.ok) setFlash(null);
+    else showFlash(commandErrorText(r.error, need !== undefined ? { need } : undefined), selectedTower?.slotId ?? null);
+    return r.ok;
+  };
+  const onUpgrade = () => {
+    if (!selectedTower) return;
+    const cost = upgradeCost(b, selectedTower.type, selectedTower.level);
+    towerResult(controller.dispatch(upgradeCommand(selectedTower.id)), cost !== null ? cost - view.gold : undefined);
+  };
+  const onEvolve = () => {
+    if (!selectedTower) return;
+    if (!trading && lock) { showFlash(lock, selectedTower.slotId); return; }
+    setEvolveOpen(true);
+  };
+  const onChooseForm = (form: FormId) => {
+    if (!selectedTower) return;
+    const cost = upgradeCost(b, selectedTower.type, selectedTower.level);
+    if (towerResult(controller.dispatch(upgradeCommand(selectedTower.id, form)), cost !== null ? cost - view.gold : undefined)) {
+      fxSeq.current += 1;
+      setPillar({ id: fxSeq.current, slotId: selectedTower.slotId });
+      setEvolveOpen(false);
+      setSelection(s => ({ ...s, previewBranch: null }));
     }
   };
-  const onUpgrade = (form?: FormId) => {
-    if (selection.towerId === null) return;
-    if (result(controller.dispatch(form ? { type: 'upgrade', towerId: selection.towerId, form } : { type: 'upgrade', towerId: selection.towerId }))) {
-      setSelection(s => ({ ...s, previewBranch: null }));
-      setMode('tower');
-      refocus('panel');
+  /** 설치 되돌리기: 전액 환불. 시간이 지났으면 엔진이 거절하고 이유를 짧게 보인다. */
+  const onUndo = (towerId: number) => {
+    const tower = view.towers.find(t => t.id === towerId);
+    const r = controller.dispatch(undoBuildCommand(towerId));
+    if (!r.ok) {
+      showFlash(commandErrorText(r.error), tower?.slotId ?? null);
+      return;
     }
+    setFlash(null);
+    setLastBuilt(null);
+    if (selection.towerId === towerId) clear();
+    refocusField();
   };
   const onSell = () => {
-    if (selection.towerId === null) return;
-    if (result(controller.dispatch({ type: 'sell', towerId: selection.towerId }))) {
+    if (!selectedTower) return;
+    if (towerResult(controller.dispatch({ type: 'sell', towerId: selectedTower.id }))) {
       clear();
-      if (layout.mode === 'S') setTrayOpen(false);
-      refocus('start');
+      refocusField();
     }
   };
   // 전투는 ‘전투 시작’ 단추로만 시작한다. 전역 Enter로 시작하면 거래 뒤 포커스가 떨어진 상태의 Enter가 전투를 연다.
@@ -283,53 +431,52 @@ export function GameScreen({
     if (view.towers.length === 0 && !confirmEmpty) {
       setConfirmEmpty(true);
       // 확인 상자가 뜨면 누른 단추가 사라진다. 안전한 ‘취소’로 포커스를 옮긴다(반복 Enter로 바로 시작하지 않게).
-      requestAnimationFrame(() => cancelEmptyRef.current?.focus());
+      requestAnimationFrame(() => document.querySelector<HTMLElement>('[data-cancel-empty]')?.focus());
       return;
     }
     setConfirmEmpty(false);
     const r = controller.dispatch({ type: 'startBattle' });
-    if (!r.ok) setFlash(commandErrorText(r.error));
-    else setFlash(null);
+    if (!r.ok) showFlash(commandErrorText(r.error));
+    else {
+      setFlash(null);
+      setCoachDone(d => markCoachDone(d, 'start'));
+    }
   };
 
-  const panel = (
-    <ManagementPanel
-      ctx={controller.ctx}
-      view={view}
+  // 전투는 ‘전투 시작’ 단추로만 시작한다(전역 Enter 단축키 없음). 설치 뒤 포커스가 풀린 상태의 Enter가 전투를 열지 않게 한다(WP-UI).
+
+  // 우측(휴대폰은 전장 아래) 능력치 막대: 고른 타워, 진화 미리보기, 골라 둔 종류, 메뉴에서 짚은 종류 순.
+  const detail = selectedTower ? (() => {
+    const form = towerForm(selectedTower);
+    const cost = upgradeCost(b, selectedTower.type, selectedTower.level);
+    const evolving = evolutionChoices(b, selectedTower) !== null;
+    const preview = previewForm(b, selectedTower, selection.previewBranch);
+    const next = cost === null ? null : evolving ? (preview ? { level: selectedTower.level + 1, form: preview } : null) : { level: selectedTower.level + 1, form };
+    return <TowerDetail balance={b} type={selectedTower.type} level={selectedTower.level} form={form} icons={icons} next={next} compact={layout.compactRail} />;
+  })() : selection.previewType ? (
+    <TowerDetail balance={b} type={selection.previewType} level={1} form="base" icons={icons} compact={layout.compactRail} />
+  ) : null;
+
+  const armory = (variant: 'rail' | 'strip') => (
+    <Armory
+      balance={b}
       towers={towers}
-      selection={selection}
-      mode={mode}
+      gold={view.gold}
+      armed={armed}
       icons={icons}
-      compact={layout.mode === 'S'}
-      compactRail={layout.compactRail}
-      onPickType={type => {
-        setSelection(s => ({ ...s, previewType: s.previewType === type && !s.slotId ? null : type, towerId: null }));
-        setMode(selection.slotId ? 'slot' : 'idle');
-      }}
-      onBuild={onBuild}
-      onUpgrade={onUpgrade}
-      onSell={onSell}
-      onClear={() => {
-        clear();
-        setTrayOpen(false);
-        refocus('start');
-      }}
-      onPreviewBranch={branch => setSelection(s => ({ ...s, previewBranch: branch }))}
-      onMode={m => {
-        setMode(m);
-        refocus('panel');
-      }}
+      variant={variant}
+      compact={variant === 'rail' && layout.compactRail}
+      fresh={goldSeen.fresh}
+      onArm={onArm}
+      onPress={beginDrag}
+      takeClick={takeClick}
     />
   );
 
-  // 목록에서 고르면 관리 패널의 첫 타워(또는 첫 조작 단추)로 포커스를 옮긴다(PRD §12.4).
+  // 목록에서 고르면 전장 옆 메뉴의 첫 단추로 포커스를 옮긴다(PRD §12.4).
   const pickFromList = (slotId: string) => {
     pickSlot(slotId);
-    if (layout.mode === 'S') setTrayOpen(true);
-    requestAnimationFrame(() => {
-      const root = panelRef.current;
-      (root?.querySelector<HTMLElement>('[role="option"]:not(:disabled)') ?? root?.querySelector<HTMLElement>('button:not(:disabled)'))?.focus();
-    });
+    focusOverlay();
   };
   const slotList = (
     <SlotList
@@ -337,91 +484,74 @@ export function GameScreen({
       view={view}
       towers={towers}
       onPick={pickFromList}
-      selectedSlotId={selection.slotId ?? view.towers.find(t => t.id === selection.towerId)?.slotId ?? null}
+      selectedSlotId={selection.slotId ?? selectedTower?.slotId ?? null}
     />
   );
+  const railFlash = flash && flash.slotId === null ? <p className={css.railFlash} role="status">{flash.text}</p> : null;
 
-  const emptySlots = controller.ctx.map.slots.filter(s => !view.towers.some(t => t.slotId === s.id)).length;
   const seamClass = layout.mode === 'R' ? css.seamR : css.buildStack;
 
   const bottom = practiceDone ? (
-    <section className={`${kit.board} ${css.build} ${seamClass}`} aria-label="연습 끝">
+    <section className={`${css.build} ${seamClass}`} aria-label="연습 끝">
       <div className={css.buildMain}>
-        <div className={css.buildHead}>
-          <span className={css.phaseBadge}>연습 완료</span>
-          <p className={css.buildTitle}>연습을 마쳤어요</p>
-        </div>
+        <p className={css.buildTitle}>연습을 마쳤어요</p>
         <p className={kit.muted}>성문이 다시 가득 찼어요. 문제를 풀어 골드를 모으고, 타워로 성문을 지키면 돼요.</p>
       </div>
       <div className={css.buildSide}>
-        <button type="button" className={`${kit.button} ${kit.primary} ${kit.big} ${kit.block}`} onClick={() => practice.onFinish('new')}>
+        <button type="button" className={css.start} onClick={() => practice.onFinish('new')}>
           새 게임 시작
         </button>
-        <button type="button" className={`${kit.button} ${kit.quietWood} ${kit.block}`} onClick={() => practice.onFinish('again')}>
+        <button type="button" className={css.quietKey} onClick={() => practice.onFinish('again')}>
           연습 다시 하기
         </button>
       </div>
     </section>
   ) : view.phase === 'BUILD' ? (
-    <section className={`${kit.board} ${css.build} ${seamClass}`} aria-label="전투 준비">
+    <section className={`${css.build} ${seamClass}`} aria-label="전투 준비">
       <div className={css.buildMain}>
-        <div className={css.buildHead}>
-          <span className={css.phaseBadge}>배치 단계</span>
-          <p className={css.buildTitle}>{view.wave}웨이브 준비 완료</p>
-        </div>
-        {coach?.at === 'start' ? (
-          coachLine('start')
-        ) : (
-          <p className={kit.muted}>
-            {view.towers.length === 0
-              ? '빈 돌 받침을 눌러 첫 타워를 놓아 보세요. 장착함에서 비용과 역할을 비교할 수 있어요.'
-              : '타워를 더 놓거나 강화한 뒤 전투 시작을 눌러 적을 맞이하세요.'}
-          </p>
-        )}
-        <div className={css.buildStats}>
-          <span className={css.buildStatPill}>보유 골드 <strong>{fmtNumber(view.gold)}골드</strong></span>
-          <span className={css.buildStatPill}>현재 점수 <strong>{fmtNumber(view.pt)}점</strong></span>
-          <span className={css.buildStatPill}>설치 현황 <strong>{view.towers.length}개 · 빈칸 {emptySlots}곳</strong></span>
-        </div>
+        <p className={css.buildTitle}><WaveFlagIcon size={26} boss={view.milestoneWave} />{view.wave}웨이브 준비</p>
+        {(() => {
+          const next = wavePreview(b, map.id, view.wave);
+          const kinds = [...next.kinds, ...(next.boss ? [{ kind: 'boss' as const, count: 1 }] : [])];
+          return (
+            <ul className={css.roster} aria-label={`다음 적 ${next.total}마리: ${kinds.map(k => `${ENEMY_NAME[k.kind]} ${k.count}`).join(', ')}`}>
+              {kinds.map(k => (
+                <li key={k.kind} className={css.foe} data-boss={k.kind === 'boss' || undefined} aria-hidden="true">
+                  <span className={css.foeArt}>{icons[`enemy.${k.kind}.0`] && <img src={icons[`enemy.${k.kind}.0`]} alt="" draggable={false} />}</span>
+                  <span className={css.foeCount}>×{k.count}</span>
+                </li>
+              ))}
+            </ul>
+          );
+        })()}
+        {coach?.at === 'start' ? coachLine('start') : mark === 'start' ? <p className={css.coach} role="status">{COACH_TEXT.start}</p> : null}
       </div>
       <div className={css.buildSide}>
-        <span className={css.sideCaption}>출격 준비함</span>
         {confirmEmpty ? (
           <div className={css.confirmBox}>
             <p className={css.confirmText}>타워 없이 시작할까요?</p>
             <div className={css.row}>
-              <button type="button" className={`${kit.button} ${kit.primary}`} onClick={onStart}>시작</button>
-              <button
-                ref={cancelEmptyRef}
-                type="button"
-                className={`${kit.button} ${kit.quietWood}`}
-                onClick={() => {
-                  setConfirmEmpty(false);
-                  requestAnimationFrame(() => startRef.current?.focus());
-                }}
-              >
-                취소
-              </button>
+              <button type="button" className={css.quietKey} onClick={onStart}>시작</button>
+              <button type="button" className={css.quietKey} data-cancel-empty onClick={() => { setConfirmEmpty(false); requestAnimationFrame(() => document.querySelector<HTMLElement>('[aria-label="전투 준비"] button')?.focus()); }}>취소</button>
             </div>
           </div>
         ) : (
-          <button ref={startRef} type="button" className={`${kit.button} ${kit.primary} ${kit.big} ${kit.block} ${css.start}`} onClick={onStart}>
+          <button type="button" className={css.start} onClick={onStart}>
             <span>전투 시작</span>
             <PlayArrowIcon size={18} />
           </button>
         )}
-        <span className={css.sideSub}>전투 중에도 문제 풀이와 타워 강화 가능</span>
       </div>
     </section>
   ) : view.question && !paused ? (
     <div className={css.questionWrap}>
-      {view.phase === 'WAVE_WRAPUP' && <p className={css.wrapup}>전투가 끝났어요. 이 문제만 풀고 다음으로 가요.</p>}
       {coachLine('question')}
       <QuestionPanel
         question={view.question}
         stakes={view.stakes}
         wide={layout.wideQuestion}
         seamLock={layout.mode === 'R'}
+        twoByTwoMinPx={DEFAULTS.layout.optionGrid.twoByTwoMinCellWidthPx}
         showKeyHints={showKeyHints}
         onAnswer={onAnswer}
         onSkip={onSkip}
@@ -429,9 +559,19 @@ export function GameScreen({
       />
     </div>
   ) : view.phase === 'GAME_OVER' ? (
-    <section className={`${kit.board} ${css.build} ${css.buildStack}`}>
+    <section className={`${css.build} ${css.buildStack}`}>
       <p className={css.buildTitle}>{view.endReason === 'DEFEAT' ? '성문이 무너졌어요.' : '이번 판을 마쳤어요.'}</p>
     </section>
+  ) : null;
+
+  // 징집(towers.md §0-2): 웨이브 사이에 큰 카드 3장을 띄운다. 모달이 아니라 문제 풀이를 막지 않는다.
+  const recruitChoices = showRecruit(view) ? recruitOffer(view) : null;
+  const onRecruit = (type: TowerId) => {
+    const r = controller.dispatch(recruitCommand(type));
+    if (!r.ok) showFlash(commandErrorText(r.error));
+  };
+  const recruit = recruitChoices ? (
+    <RecruitCard balance={b} choices={recruitChoices} icons={icons} compact={layout.mode === 'S'} onPick={onRecruit} />
   ) : null;
 
   const field = (
@@ -448,6 +588,38 @@ export function GameScreen({
       />
       <p id="field-keys" className="sr-only">화살표로 설치 자리를 옮기고 엔터로 고릅니다. Esc는 선택을 풉니다.</p>
       <p className="sr-only" aria-live="polite">{keyboardSlotId ? slotDescription(controller.ctx, view, keyboardSlotId) : ''}</p>
+      <div data-overlay>
+        <FieldOverlay
+          balance={b}
+          map={map}
+          towers={towers}
+          built={view.towers}
+          gold={view.gold}
+          icons={icons}
+          boxW={layout.mapW}
+          boxH={layout.mapH}
+          camera={camera}
+          slotId={trading || selection.slotId === null ? selection.slotId : null}
+          tower={selectedTower}
+          flash={flash && flash.slotId !== null ? flash : null}
+          pillar={pillar}
+          onPillarDone={id => setPillar(p => (p?.id === id ? null : p))}
+          onBuild={(slotId, type) => build(slotId, type, false)}
+          onPreview={type => setSelection(s => (s.slotId ? { ...s, previewType: type } : s))}
+          onUpgrade={onUpgrade}
+          onEvolve={onEvolve}
+          onSell={onSell}
+          undo={lastBuilt !== null ? view.towers.find(t => t.id === lastBuilt) ?? null : null}
+          onUndo={onUndo}
+          onClose={() => {
+            clear();
+            fieldRef.current?.querySelector<HTMLElement>('[role="application"]')?.focus();
+          }}
+        />
+      </div>
+      {band && (
+        <WaveBand key={band.id} wave={band.wave} boss={band.boss} bossArt={icons['enemy.boss.0']} onDone={() => setBand(x => (x?.id === band.id ? null : x))} />
+      )}
       <div className={css.notices} aria-live="polite">
         {view.notices.map(n => (
           <p key={n.id} className={css.notice} data-tone={n.tone}>{n.text}</p>
@@ -459,6 +631,10 @@ export function GameScreen({
         </button>
       )}
       {coach?.at === 'field' && <div className={css.coachField}>{coachLine('field')}</div>}
+      {!coach && mark === 'place' && !hasSelection && !armed && !dragging && (
+        <div className={css.coachField}><p className={css.coach} role="status">{COACH_TEXT.place}</p></div>
+      )}
+      {layout.mode === 'R' && recruit}
     </div>
   );
 
@@ -467,6 +643,7 @@ export function GameScreen({
         padding: layout.pad,
         '--map-w': `${layout.mapW}px`,
         '--rail-w': `${layout.railW}px`,
+        '--q-h': `${layout.q}px`,
       } as CSSProperties)
     : { padding: layout.pad };
 
@@ -475,14 +652,14 @@ export function GameScreen({
       <main
         className={`${css.screen} ${layout.mode === 'R' ? css.modeR : css.modeS}`}
         style={mainStyle}
-        inert={paused}
+        inert={paused || evolveOpen}
       >
         <h1 className="sr-only">어휘력 타워 디펜스 · {Math.max(1, view.wave)}웨이브</h1>
         {layout.mode === 'R' ? (
           <>
             {field}
-            <aside className={`${kit.board} ${css.rail}`} style={{ height: layout.mapH }} aria-label="타워 관리">
-              <Hud view={view} mode="R" compactRail={layout.compactRail} recentDelta={recentDelta} onPause={() => controller.pause('USER')} />
+            <aside className={css.rail} style={{ height: layout.mapH }} aria-label="타워 관리">
+              <Hud view={view} burning={b.burning} mode="R" compactRail={layout.compactRail} recentDelta={recentDelta} goldRef={goldRef} reducedMotion={reducedMotion} onPause={() => controller.pause('USER')} />
               {notice && <p className={css.hint} role="status">{notice}</p>}
               <div className={`${css.railBody} ${layout.compactRail ? css.railBodyCompact : ''}`}>
                 {practiceDone ? (
@@ -491,8 +668,9 @@ export function GameScreen({
                   <>
                     {skip}
                     {coachLine('panel')}
-                    <div ref={panelRef} tabIndex={-1} role="group" aria-label="선택한 칸과 타워 정보">{panel}</div>
-                    {flash && <p className={kit.reason} role="status">{flash}</p>}
+                    {armory('rail')}
+                    {railFlash}
+                    {detail}
                     {slotList}
                   </>
                 )}
@@ -502,43 +680,51 @@ export function GameScreen({
           </>
         ) : (
           <>
-            <Hud view={view} mode="S" recentDelta={recentDelta} onPause={() => controller.pause('USER')} />
+            <Hud view={view} burning={b.burning} mode="S" recentDelta={recentDelta} goldRef={goldRef} reducedMotion={reducedMotion} onPause={() => controller.pause('USER')} />
             {layout.portraitHint && <p className={css.hint}>세로로 돌리면 더 편해요.</p>}
             {notice && <p className={css.hint} role="status">{notice}</p>}
             {field}
-            <div className={css.toolbar}>
-              <button type="button" className={`${kit.button} ${kit.quietWood}`} aria-expanded={trayOpen} onClick={() => setTrayOpen(o => !o)}>
-                {trayOpen ? '관리 접기' : '타워 관리'}
-              </button>
-              {skip}
-              <span className={kit.muted}>
-                {selection.towerId !== null
-                  ? '선택한 타워'
-                  : selection.slotId
-                    ? '빈 자리 선택됨'
-                    : view.phase === 'BATTLE'
-                      ? '전투 중에도 설치·강화할 수 있어요'
-                      : ''}
-              </span>
-            </div>
-            {trayOpen && (
-              <div className={`${kit.board} ${css.tray}`}>
-                {practiceDone ? (
-                  practiceRest
-                ) : (
-                  <>
-                    {coachLine('panel')}
-                    <div ref={panelRef} tabIndex={-1} role="group" aria-label="선택한 칸과 타워 정보">{panel}</div>
-                    {flash && <p className={kit.reason} role="status">{flash}</p>}
-                    {slotList}
-                  </>
-                )}
+            {practiceDone ? practiceRest : (
+              <div className={css.stripRow}>
+                {armory('strip')}
+                {railFlash}
+                {coachLine('panel')}
               </div>
             )}
             {bottom}
+            {/* 휴대폰: 징집 카드는 문제판 아래에 둔다(문제가 화면 밖으로 밀리지 않게). */}
+            {recruit}
+            {!practiceDone && (
+              <div className={css.phoneExtras}>
+                {skip}
+                {slotList}
+              </div>
+            )}
           </>
         )}
       </main>
+      {flights.length > 0 && <CoinFlight flights={flights} onDone={id => setFlights(f => f.filter(x => x.id !== id))} />}
+      {ghostType && (
+        <div ref={ghostRef} className={css.ghost} aria-hidden="true">
+          <TowerShieldPortrait type={ghostType} icons={icons} size={Math.max(44, Math.round(layout.cell * 1.1))} />
+        </div>
+      )}
+      {evolveOpen && selectedTower && evolutionChoices(b, selectedTower) && (
+        <EvolveCard
+          balance={b}
+          tower={selectedTower}
+          gold={view.gold}
+          icons={icons}
+          lock={trading ? null : lock}
+          onPreview={form => setSelection(s => ({ ...s, previewBranch: previewMarker(b, selectedTower, form) }))}
+          onChoose={onChooseForm}
+          onClose={() => {
+            setEvolveOpen(false);
+            setSelection(s => ({ ...s, previewBranch: null }));
+          }}
+          restoreFocus={focusOverlay}
+        />
+      )}
       {paused && view.phase !== 'GAME_OVER' && (
         <PauseOverlay
           reasons={view.pause}
@@ -561,6 +747,7 @@ export function GameScreen({
             controller.dispatch({ type: 'quit' });
           }}
           onLeaveUnsaved={() => onExit('abandon')}
+          restoreFocus={() => document.querySelector<HTMLElement>('main button[aria-label="일시정지"]')?.focus()}
         />
       )}
     </>

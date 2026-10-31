@@ -44,6 +44,12 @@ export function commandErrorText(error: CommandError, extra?: { need?: number })
     case 'SLOT_TAKEN': return '이미 타워가 있어요';
     case 'MAX_LEVEL': return '최고 레벨이에요';
     case 'FORM_REQUIRED': return '진화할 길을 먼저 골라요';
+    case 'INVALID_FORM': return '이 타워가 갈 수 없는 길이에요';
+    case 'UNDO_EXPIRED': return '되돌릴 시간이 지났어요';
+    case 'TOWER_LIMIT': return '이 타워는 더 놓을 수 없어요';
+    case 'NOT_OWNED': return '아직 장착함에 없는 타워예요';
+    case 'NO_DRAFT':
+    case 'INVALID_DRAFT': return '지금은 고를 수 없어요';
     case 'NEXT_NOT_READY': return '해설을 조금 더 읽어 주세요';
     case 'PAUSED': return '멈춘 동안에는 할 수 없어요';
     default: return '다시 해 주세요';
