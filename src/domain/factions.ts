@@ -14,9 +14,12 @@ export function campaignOf(b: Balance, mapId: string): CampaignConfig {
 /** 대장 단계의 그림·이름 키(1단 → boss5 … 4단 → boss20). */
 export const bossRank = (tier: BossTier) => BOSS_RANKS[tier - 1]!;
 
-/** 적 하나의 그림·이름 키: 일반 역할은 그 역할, 대장은 boss5~boss20. */
-export function artRoleOf(e: Pick<Enemy, 'kind' | 'bossTier'>): ArtRole {
+/** 적 하나의 그림·이름 키: 일반 역할은 그 역할(artRole이 있으면 그 역할), 대장은 boss5~boss20. */
+export function artRoleOf(b: Balance, e: Pick<Enemy, 'kind' | 'bossTier'>): ArtRole {
   if (e.kind === 'boss') return bossRank(e.bossTier ?? 1);
+  const own = b.enemies[e.kind].artRole;
+  if (own) return own;
+  if (e.kind === 'splitling') throw new Error('splitling은 artRole이 있어야 한다');
   return e.kind;
 }
 
@@ -27,13 +30,13 @@ export function artRoleOf(e: Pick<Enemy, 'kind' | 'bossTier'>): ArtRole {
 export function enemyArtId(b: Balance, e: Pick<Enemy, 'kind' | 'faction' | 'bossTier'>): string {
   const f = b.factions[e.faction];
   if (!f) throw new Error(`없는 종족: ${e.faction}`);
-  const role = artRoleOf(e);
+  const role = artRoleOf(b, e);
   return f.artAlias?.[role] ?? `${f.artPrefix}.${role}`;
 }
 
 /** 화면용 이름(도감·대장 등장 알림). 종족 표에 이름이 없으면 null(비행·분열 개체는 그림 생산 때 이름을 더한다). */
 export function enemyName(b: Balance, e: Pick<Enemy, 'kind' | 'faction' | 'bossTier'>): string | null {
-  return b.factions[e.faction]?.names?.[artRoleOf(e)] ?? null;
+  return b.factions[e.faction]?.names?.[artRoleOf(b, e)] ?? null;
 }
 
 export interface FactionShare { faction: string; shareBP: number }
