@@ -6,8 +6,17 @@ const nonNeg = int.min(0);
 const bp = int.min(0).max(100000);
 
 export const DIFFICULTY_IDS = ['Easy', 'Normal', 'Hard', 'Crazy'] as const;
-export const ENEMY_KINDS = ['walker', 'runner', 'brute', 'shell', 'wisp', 'swarm', 'boss'] as const;
-export const REGULAR_KINDS = ['walker', 'runner', 'brute', 'shell', 'wisp', 'swarm'] as const;
+/** 적 역할(role). 같은 역할은 종족(faction)이 달라도 수치·규칙이 같다(docs/renewal/catalog/monsters.md §1). */
+export const ENEMY_KINDS = ['walker', 'runner', 'brute', 'shell', 'wisp', 'swarm', 'flyer', 'splitter', 'boss'] as const;
+/** 웨이브 편성에 쓰는 일반 역할(대장 제외). */
+export const REGULAR_KINDS = ['walker', 'runner', 'brute', 'shell', 'wisp', 'swarm', 'flyer', 'splitter'] as const;
+/** 주력 종족의 기본 6역할. 맵마다 해금 순서(campaigns.roleOrder)가 다르다. */
+export const BASE_ROLES = ['walker', 'runner', 'brute', 'shell', 'wisp', 'swarm'] as const;
+/** 대장 단계: 1~4단 = 5·10·15·20웨이브 대장. 그림·이름 키는 BOSS_RANKS(boss5~boss20)다. */
+export const BOSS_TIERS = [1, 2, 3, 4] as const;
+export const BOSS_RANKS = ['boss5', 'boss10', 'boss15', 'boss20'] as const;
+/** 종족 팩의 그림·이름 키: 일반 역할 + 대장 단계. 그림 id는 `<artPrefix>.<키>`(예: acorn.runner, river.boss10). */
+export const ART_ROLES = [...REGULAR_KINDS, ...BOSS_RANKS] as const;
 export const ELITE_IDS = ['armored', 'swift'] as const;
 export const TOWER_IDS = ['archer', 'crossbow', 'cannon', 'mage', 'frost', 'lightning', 'flame', 'spear', 'guardian', 'banner'] as const;
 /** 1차형(Lv4 진화). 화면의 길 표식(동그라미·마름모)이 이 둘을 쓴다. */
@@ -18,6 +27,10 @@ export const FORM_IDS = ['base', 'A', 'B', 'A1', 'A2', 'B1', 'B2'] as const;
 export type DifficultyId = (typeof DIFFICULTY_IDS)[number];
 export type EnemyKind = (typeof ENEMY_KINDS)[number];
 export type RegularKind = (typeof REGULAR_KINDS)[number];
+export type BaseRole = (typeof BASE_ROLES)[number];
+export type BossTier = (typeof BOSS_TIERS)[number];
+export type BossRank = (typeof BOSS_RANKS)[number];
+export type ArtRole = (typeof ART_ROLES)[number];
 export type EliteId = (typeof ELITE_IDS)[number];
 export type TowerId = (typeof TOWER_IDS)[number];
 export type BranchId = (typeof BRANCH_IDS)[number];
@@ -97,6 +110,26 @@ const form = z.object({
   auraSpeedBPByLevel: z.array(bp).optional(),
 });
 
+const factionId = z.string().regex(/^[a-z][a-z_]*$/);
+
+/**
+ * 종족 팩(monsters.md §2). 규칙은 역할(enemies)이 정하고, 종족은 이름·그림만 바꾼다. 새 종족은 이 표 한 줄과 그림으로 더한다.
+ * 그림 id는 `<artPrefix>.<역할 또는 boss5~boss20>`이고, artAlias가 있으면 그 그림을 대신 쓴다(예: 정원 보병 → 기존 enemy.walker).
+ */
+const faction = z.object({
+  label: z.string().min(1),
+  artPrefix: z.string().regex(/^[a-z]+$/),
+  artAlias: z.partialRecord(z.enum(ART_ROLES), z.string().regex(/^[a-z][a-z0-9_.]*$/)).optional(),
+  names: z.partialRecord(z.enum(ART_ROLES), z.string().min(1)).optional(),
+});
+
+/** 맵 한 곳의 원정 편성(monsters.md §3): 주력 종족, 기본 6역할 해금 순서, 21웨이브부터 침입하는 종족 순환. */
+const campaign = z.object({
+  primary: factionId,
+  roleOrder: z.array(z.enum(BASE_ROLES)).length(BASE_ROLES.length),
+  invasionOrder: z.array(factionId).min(1),
+});
+
 const towerForms = z.object({
   A: form,
   B: form,
@@ -135,7 +168,22 @@ export const balanceSchema = z.object({
     spawnIntervalMs: z.object({ overrides: z.record(z.string().regex(/^[1-9]\d*$/), int.min(1)), base: int.min(1), perWave: int, min: int.min(1) }),
     bossEveryWaves: int.min(1),
     eliteRate: z.object({ fromWave: int.min(1), baseBP: bp, perWaveBP: bp, maxBP: bp }),
-    composition: z.array(z.object({ fromWave: int.min(1), weights: z.partialRecord(z.enum(REGULAR_KINDS), nonNeg) })).min(1),
+    /**
+     * 웨이브별 역할 가중치(monsters.md §3.1). slotWeights[i]는 맵의 roleOrder[i] 역할, roleWeights는 역할을 바로 적는다(비행·분열).
+     * 그 웨이브 이하에서 가장 늦은 fromWave 줄을 쓴다.
+     */
+    composition: z.array(z.object({ fromWave: int.min(1), slotWeights: z.array(nonNeg).min(1).max(BASE_ROLES.length), roleWeights: z.partialRecord(z.enum(REGULAR_KINDS), nonNeg).optional() })).min(1),
+    /**
+     * 21웨이브부터의 원정 침입(monsters.md §3.2). blockWaves 웨이브마다 invasionOrder의 다음 종족이 오고, 블록 안 offset별 침입 비율을 쓴다.
+     * 대장 웨이브의 대장은 침입 종족이며 단계는 bossTiers[block % 길이]다. alliance.fromBlock부터는 주력 + 침입 두 종족 연합이다.
+     */
+    invasion: z.object({
+      fromWave: int.min(1),
+      blockWaves: int.min(1),
+      invaderShareBPByOffset: z.array(int.min(0).max(10000)).min(1),
+      bossTiers: z.array(z.literal([...BOSS_TIERS])).min(1),
+      alliance: z.object({ fromBlock: nonNeg, primaryShareBP: int.min(0).max(10000), secondOffset: int.min(1) }),
+    }),
     baseTravelTicks: int.min(1),
   }),
   burning: z.object({ streak: int.min(1), durationMs: nonNeg, attackSpeedBP: bp }),
@@ -153,15 +201,35 @@ export const balanceSchema = z.object({
   }),
   towers: z.record(z.enum(TOWER_IDS), tower),
   forms: z.record(z.enum(TOWER_IDS), towerForms),
+  factions: z.record(factionId, faction),
+  /** 맵 ID → 원정 편성. 모든 맵이 하나씩 가진다(content 시험). */
+  campaigns: z.record(z.string().regex(/^[a-z_]+$/), campaign),
 }).loose().superRefine((b, ctx) => {
   const lv = b.levels;
   if (lv.upgradeCostOfBaseBP.length !== lv.damageMultiplierBP.length - 1) ctx.addIssue({ code: 'custom', message: '강화 비용 수는 피해 배율 수보다 하나 적어야 한다' });
   if (lv.evolveAt[0] >= lv.evolveAt[1]) ctx.addIssue({ code: 'custom', message: '2차 진화는 1차 진화보다 뒤여야 한다' });
   if (lv.evolveAt[1] > lv.damageMultiplierBP.length) ctx.addIssue({ code: 'custom', message: '진화 레벨은 피해 배율 표 안에 있어야 한다' });
   if (b.waves.composition[0]?.fromWave !== 1) ctx.addIssue({ code: 'custom', message: '1웨이브 편성이 없다' });
+  for (const c of b.waves.composition) {
+    const total = c.slotWeights.reduce((a, x) => a + x, 0) + Object.values(c.roleWeights ?? {}).reduce((a, x) => a + x, 0);
+    if (total <= 0) ctx.addIssue({ code: 'custom', message: `${c.fromWave}웨이브 편성 가중치 합이 0이다` });
+  }
+  const inv = b.waves.invasion;
+  if (inv.invaderShareBPByOffset.length !== inv.blockWaves) ctx.addIssue({ code: 'custom', message: '침입 비율 수는 블록 웨이브 수와 같아야 한다' });
+  for (const [mapId, c] of Object.entries(b.campaigns)) {
+    if (!b.factions[c.primary]) ctx.addIssue({ code: 'custom', message: `${mapId}: 없는 주력 종족 ${c.primary}` });
+    if (new Set(c.roleOrder).size !== c.roleOrder.length) ctx.addIssue({ code: 'custom', message: `${mapId}: 역할 해금 순서가 겹친다` });
+    if (new Set(c.invasionOrder).size !== c.invasionOrder.length) ctx.addIssue({ code: 'custom', message: `${mapId}: 침입 순환이 겹친다` });
+    for (const f of c.invasionOrder) {
+      if (!b.factions[f]) ctx.addIssue({ code: 'custom', message: `${mapId}: 없는 침입 종족 ${f}` });
+      if (f === c.primary) ctx.addIssue({ code: 'custom', message: `${mapId}: 주력 종족이 침입 순환에 있다` });
+    }
+  }
 });
 
 export type Balance = z.infer<typeof balanceSchema>;
 export type DifficultyConfig = Balance['difficulties'][DifficultyId];
 export type TowerConfig = Balance['towers'][TowerId];
 export type FormConfig = z.infer<typeof form>;
+export type FactionConfig = z.infer<typeof faction>;
+export type CampaignConfig = z.infer<typeof campaign>;

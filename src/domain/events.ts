@@ -7,7 +7,8 @@ export type DomainEvent =
   | { type: 'encounter'; encounterId: number }
   | { type: 'answered'; encounterId: number; result: 'correct' | 'wrong' | 'skipped'; pt: number; gold: number }
   | { type: 'burning'; untilTick: number }
-  | { type: 'spawn'; enemyId: number; kind: EnemyKind }
+  /** art는 렌더러가 쓸 그림 id(`<종족 접두어>.<역할|boss5~boss20>`, domain/factions.ts enemyArtId). */
+  | { type: 'spawn'; enemyId: number; kind: EnemyKind; faction: string; art: string }
   | { type: 'fire'; projectileId: number; towerId: number; towerType: TowerId }
   /** 즉발 공격(번개·화염·근접). 비행 지연 없이 같은 틱에 맞힌다(PRD §11.4, §20.3). targets는 맞힌 순서다. */
   | { type: 'strike'; towerId: number; towerType: TowerId; fromX: number; fromY: number; targets: Array<{ enemyId: number; x: number; y: number }> }

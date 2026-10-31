@@ -1,9 +1,12 @@
-import type { DifficultyId, EliteId, EnemyKind, FormId, TowerId } from '../contracts/balance';
+import type { BossTier, DifficultyId, EliteId, EnemyKind, FormId, TowerId } from '../contracts/balance';
 import type { OptionId } from '../contracts/questions';
 
 // 저장·재개되는 전체 상태. 순수 JSON(숫자·문자열·배열·객체)만 쓴다(PRD §10.1, §14).
-/** 2: 타워 branch → form, 설치 취소 기한(리뉴얼 R2). 이전 버전의 진행 중 판은 이어가지 않는다(application/session.ts resumeBlocker). */
-export const RUN_STATE_VERSION = 2;
+/**
+ * 2: 타워 branch → form, 설치 취소 기한(리뉴얼 R2). 3: 적 종족·대장 단계(R2 2단계).
+ * 이전 버전의 진행 중 판은 이어가지 않는다(application/session.ts resumeBlocker).
+ */
+export const RUN_STATE_VERSION = 3;
 /**
  * 0.5-candidate: P2 공격 프로필(즉발·연쇄·부채꼴·화상·깃발 오라, 물리 저항 무시)과 적 화상 상태(PRD §7.1, §20.2~20.3).
  * 0.5.1-candidate: 난이도별 심화 단계 출제 순서와 한 바퀴 뒤 섞기(PRD §9.1, §9.4). 같은 시드의 출제 순서가 바뀌므로 옛 저장은 이어하지 않는다.
@@ -77,7 +80,12 @@ export interface BurnSource { source: number; total: number; expiresTick: number
 
 export interface Enemy {
   id: number;
+  /** 역할. 수치·규칙은 역할이 정한다. */
   kind: EnemyKind;
+  /** 종족(balance.factions 키). 이름·그림만 바꾼다(domain/factions.ts enemyArtId). */
+  faction: string;
+  /** 대장 단계(1~4 = 5·10·15·20웨이브 대장). 대장이 아니면 null. */
+  bossTier: BossTier | null;
   elite: EliteId | null;
   hp: number;
   maxHp: number;
@@ -138,7 +146,8 @@ export interface Projectile {
   eliteBossDamageBP: number;
 }
 
-export interface SpawnEntry { kind: EnemyKind; elite: EliteId | null }
+/** 생성 예약. faction이 없으면 맵의 주력 종족, 대장의 bossTier가 없으면 1단이다(시험·연습용 줄). */
+export interface SpawnEntry { kind: EnemyKind; elite: EliteId | null; faction?: string; bossTier?: BossTier | null }
 
 export interface BattleState {
   spawnList: SpawnEntry[];
