@@ -209,11 +209,33 @@ const factionId = z.string().regex(/^[a-z][a-z_]*$/);
  * 종족 팩(monsters.md §2). 규칙은 역할(enemies)이 정하고, 종족은 이름·그림만 바꾼다. 새 종족은 이 표 한 줄과 그림으로 더한다.
  * 그림 id는 `<artPrefix>.<역할 또는 boss5~boss20>`이고, artAlias가 있으면 그 그림을 대신 쓴다(예: 정원 보병 → 기존 enemy.walker).
  */
+/**
+ * 대장 기믹 프리미티브 6종(monsters.md §2.0). 32 대장은 이 가운데 하나에 수치만 묶는다(대장별 코드 없음).
+ * 모두 statusCaps(대장 감속·평생 기절·대장 저항·합산 속도 상한)를 지킨다.
+ */
+export const BOSS_SKILL_KINDS = ['iron_stance', 'burst_march', 'rally_haste', 'ward_layers', 'snack_mend', 'call_escort'] as const;
+const bossSkill = z.discriminatedUnion('kind', [
+  /** 방어 태세: 체력이 triggerBP 이하로 처음 내려가면 durationMs 동안 저항 +. */
+  z.object({ kind: z.literal('iron_stance'), triggerBP: bp, durationMs: nonNeg, physicalBP: bp.optional(), magicBP: bp.optional() }),
+  /** 박차 행진: periodMs마다 끝의 durationMs 동안 이동 속도를 speedBP로. */
+  z.object({ kind: z.literal('burst_march'), periodMs: int.min(1), durationMs: nonNeg, speedBP: bp }),
+  /** 진군 북소리: 반경 안 일반 적 이동 속도 +speedAddBP(중첩 없음, 합산 상한). */
+  z.object({ kind: z.literal('rally_haste'), radiusMilli: nonNeg, speedAddBP: bp }),
+  /** 겹방패: layers겹. 한 번 맞을 때 피해를 최대 체력의 capBP까지로 막고 한 겹 벗긴다. */
+  z.object({ kind: z.literal('ward_layers'), layers: int.min(1), capBP: bp }),
+  /** 새참 회복: periodMs마다 기절이 아니면 최대 체력의 healBP 회복(최대 maxTimes번). */
+  z.object({ kind: z.literal('snack_mend'), periodMs: int.min(1), healBP: bp, maxTimes: int.min(1) }),
+  /** 호위 호출: 체력이 thresholdsBP 각 값 이하로 처음 내려갈 때마다 같은 종족 escorts를 ±spreadMilli에 부른다(파생체). */
+  z.object({ kind: z.literal('call_escort'), thresholdsBP: z.array(bp).min(1), escorts: z.array(z.enum(REGULAR_KINDS)).min(1), spreadMilli: nonNeg }),
+]);
+
 const faction = z.object({
   label: z.string().min(1),
   artPrefix: z.string().regex(/^[a-z]+$/),
   artAlias: z.partialRecord(z.enum(ART_ROLES), z.string().regex(/^[a-z][a-z0-9_.]*$/)).optional(),
   names: z.partialRecord(z.enum(ART_ROLES), z.string().min(1)).optional(),
+  /** 대장 단계별 기믹과 체력 보정(없으면 10000). */
+  bosses: z.partialRecord(z.enum(BOSS_RANKS), z.object({ skill: bossSkill, hpScaleBP: int.min(1000).max(30000).optional() })).optional(),
 });
 
 /** 맵 한 곳의 원정 편성(monsters.md §3): 주력 종족, 기본 6역할 해금 순서, 21웨이브부터 침입하는 종족 순환. */
@@ -254,7 +276,11 @@ export const balanceSchema = z.object({
   }),
   leakDamage: tiers,
   /** 취약·저항 차감 상한, 적 1기 평생 밀치기 상한(towers.md §4-5·§4-6). */
-  statusCaps: z.object({ regularSlowMaxBP: bp, bossSlowMaxBP: bp, stunLifetimeMaxMs: nonNeg, vulnMaxBP: bp, shredMaxBP: bp, knockbackLifetimeMaxMilli: nonNeg }),
+  statusCaps: z.object({
+    regularSlowMaxBP: bp, bossSlowMaxBP: bp, stunLifetimeMaxMs: nonNeg, vulnMaxBP: bp, shredMaxBP: bp, knockbackLifetimeMaxMilli: nonNeg,
+    /** 대장 방어 태세로 오른 저항 상한, 진군 북소리로 오른 이동 속도 상한(monsters.md §2.0). */
+    bossResistMaxBP: bp, rallySpeedMaxBP: bp,
+  }),
   waves: z.object({
     baseHpMilli: int.min(1),
     hpGrowthPercent: int.min(100),
@@ -339,4 +365,6 @@ export type DifficultyConfig = Balance['difficulties'][DifficultyId];
 export type TowerConfig = Balance['towers'][TowerId];
 export type FormConfig = z.infer<typeof form>;
 export type FactionConfig = z.infer<typeof faction>;
+export type BossSkill = z.infer<typeof bossSkill>;
+export type BossSkillKind = (typeof BOSS_SKILL_KINDS)[number];
 export type CampaignConfig = z.infer<typeof campaign>;

@@ -16,7 +16,7 @@ export function enemy(overrides: Partial<Enemy> = {}): Enemy {
   return {
     id: 1, kind: 'walker', faction: 'acorn_goblin', bossTier: null, derived: false, flying: false, groundedUntilTick: 0, elite: null, hp: 24000, maxHp: 24000,
     progress: 0, moveRem: 0, speedBP: 10000, physicalResistBP: 0, magicResistBP: 0,
-    slows: [], stunUntilTick: 0, stunTicksUsed: 0, burns: [], burnNextTick: null, burnRemainder: 0, vulns: [], shreds: [], knockbackUsed: 0, alive: true, ...overrides,
+    slows: [], stunUntilTick: 0, stunTicksUsed: 0, burns: [], burnNextTick: null, burnRemainder: 0, vulns: [], shreds: [], knockbackUsed: 0, boss: null, alive: true, ...overrides,
   };
 }
 

@@ -3,10 +3,10 @@ import type { OptionId } from '../contracts/questions';
 
 // 저장·재개되는 전체 상태. 순수 JSON(숫자·문자열·배열·객체)만 쓴다(PRD §10.1, §14).
 /**
- * 2: 타워 branch → form, 설치 취소 기한(리뉴얼 R2). 3: 적 종족·대장 단계(R2 2단계). 4: 신규 타워 효과 상태(취약·저항 차감·밀치기·공격 주기·다연발).
+ * 2: 타워 branch → form, 설치 취소 기한(리뉴얼 R2). 3: 적 종족·대장 단계(R2 2단계). 4: 신규 타워 효과 상태(취약·저항 차감·밀치기·공격 주기·다연발). 5: 대장 기믹 상태.
  * 이전 버전의 진행 중 판은 이어가지 않는다(application/session.ts resumeBlocker).
  */
-export const RUN_STATE_VERSION = 4;
+export const RUN_STATE_VERSION = 5;
 /**
  * 0.5-candidate: P2 공격 프로필(즉발·연쇄·부채꼴·화상·깃발 오라, 물리 저항 무시)과 적 화상 상태(PRD §7.1, §20.2~20.3).
  * 0.5.1-candidate: 난이도별 심화 단계 출제 순서와 한 바퀴 뒤 섞기(PRD §9.1, §9.4). 같은 시드의 출제 순서가 바뀌므로 옛 저장은 이어하지 않는다.
@@ -115,7 +115,20 @@ export interface Enemy {
   shreds: ShredMark[];
   /** 지금까지 뒤로 밀린 거리(평생 상한 statusCaps.knockbackLifetimeMaxMilli). */
   knockbackUsed: number;
+  /** 대장 기믹 진행(monsters.md §2.0). 기믹이 없는 적은 null. */
+  boss: BossState | null;
   alive: boolean;
+}
+
+/** 대장 기믹 진행: 등장 틱, 방어 태세(발동 여부·저항·끝 틱), 남은 겹방패, 회복 횟수·다음 회복 틱, 지난 호위 호출 단계. */
+export interface BossState {
+  bornTick: number;
+  stanceUsed: boolean;
+  stance: { physicalBP: number; magicBP: number; untilTick: number } | null;
+  wardLeft: number;
+  mends: number;
+  nextMendTick: number;
+  escortStep: number;
 }
 
 /** 시차 다연발 예약(towers.md §4-4): 남은 발 수, 다음 발 틱, 간격, 뒤따르는 발의 피해 배율. */
