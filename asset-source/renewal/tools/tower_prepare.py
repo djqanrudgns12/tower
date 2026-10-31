@@ -18,15 +18,26 @@ from monster_prepare import ASSETS, matte  # noqa: E402
 SIZE = 192
 
 
+def visible_box(im: Image.Image, alpha_min: int = 64) -> tuple[int, int, int, int]:
+    """눈에 보이는 실루엣의 경계 상자. 거의 투명한 가장자리·그림자 픽셀(알파 64 미만)은 뺀다."""
+    return im.getchannel("A").point(lambda a: 255 if a >= alpha_min else 0).getbbox()
+
+
 def fit_to_base(cut: Image.Image, base: Image.Image) -> Image.Image:
-    bx0, by0, bx1, by1 = base.getbbox()
-    scale = (bx1 - bx0) / cut.width
-    if cut.height * scale > by1:  # 위로 넘치면 높이에 맞춘다(진화형이 더 높을 때 잘리지 않게)
-        scale = by1 / cut.height
-    sw, sh = round(cut.width * scale), round(cut.height * scale)
-    small = cut.resize((sw, sh), Image.LANCZOS)
+    # 기본형과 진화형 모두 "보이는" 실루엣으로 맞춘다. 알파 0 초과 기준으로 재면 기본형의 희미한 가장자리 때문에
+    # 바닥선이 10~23px 아래로 잡혀 진화형이 꺼져 보였다(2026-10-31 게임 내 검수).
+    bx0, _, bx1, by1 = visible_box(base)
+    cx0, cy0, cx1, cy1 = visible_box(cut)
+    scale = (bx1 - bx0) / (cx1 - cx0)
+    if (cy1 - cy0) * scale > by1:  # 위로 넘치면 높이에 맞춘다(진화형이 더 높을 때 잘리지 않게)
+        scale = by1 / (cy1 - cy0)
+    small = cut.resize((round(cut.width * scale), round(cut.height * scale)), Image.LANCZOS)
     canvas = Image.new("RGBA", (SIZE, SIZE), (0, 0, 0, 0))
-    canvas.alpha_composite(small, ((bx0 + bx1) // 2 - sw // 2, by1 - sh))
+    vx0, vx1, vy1 = round(cx0 * scale), round(cx1 * scale), round(cy1 * scale)
+    x, y = (bx0 + bx1) // 2 - (vx0 + vx1) // 2, by1 - vy1
+    # 원본 여백 때문에 좌표가 음수가 될 수 있다. 캔버스 밖 부분을 먼저 잘라 낸다.
+    part = small.crop((max(0, -x), max(0, -y), min(small.width, SIZE - x), min(small.height, SIZE - y)))
+    canvas.alpha_composite(part, (max(0, x), max(0, y)))
     return canvas
 
 
