@@ -166,6 +166,9 @@ export interface BattleState {
   startedTick: number;
 }
 
+/** 징집 후보(towers.md §0-2). 고르기 전까지 남고, 다음 징집 웨이브가 오면 첫 후보로 정해진다. */
+export interface DraftOffer { wave: number; offers: TowerId[] }
+
 export interface RunStats {
   correct: number;
   wrong: number;
@@ -197,9 +200,13 @@ export interface RunState {
   pt: number;
   waveKillPtGranted: number;
   burningUntilTick: number;
-  rng: { battle: number; question: number; option: number };
+  rng: { battle: number; question: number; option: number; draft: number };
   seq: { command: number; enemy: number; tower: number; projectile: number };
   quiz: QuizState;
+  /** 장착함: 이 판에서 지을 수 있는 타워(시작 타워 + 징집으로 고른 순서). */
+  owned: TowerId[];
+  /** 고르기를 기다리는 징집 후보. */
+  draft: DraftOffer | null;
   towers: Tower[];
   enemies: Enemy[];
   projectiles: Projectile[];

@@ -220,6 +220,11 @@ export const balanceSchema = z.object({
   }),
   towers: z.record(z.enum(TOWER_IDS), tower),
   forms: z.record(z.enum(TOWER_IDS), towerForms),
+  /**
+   * 판 안 징집(towers.md §0-2·§5 안 1): startTowers로 시작하고, afterWaves 웨이브를 지킨 뒤 아직 없는 타워 offerCount종 가운데 하나를 고른다.
+   * 장착함은 maxOwned칸까지. 시작 타워·후보는 그 판의 availableTowers 안에서만 고른다.
+   */
+  draft: z.object({ startTowers: z.array(z.enum(TOWER_IDS)).min(1), afterWaves: z.array(int.min(1)), offerCount: int.min(1), maxOwned: int.min(1) }),
   factions: z.record(factionId, faction),
   /** 맵 ID → 원정 편성. 모든 맵이 하나씩 가진다(content 시험). */
   campaigns: z.record(z.string().regex(/^[a-z_]+$/), campaign),
@@ -238,6 +243,9 @@ export const balanceSchema = z.object({
     const child = b.enemies[e.split.kind];
     if (e.split.kind === 'boss' || child.split) ctx.addIssue({ code: 'custom', message: `${kind}: 분열 파생체는 대장이 아니고 다시 분열하지 않아야 한다` });
   }
+  const dr = b.draft;
+  if (new Set(dr.startTowers).size !== dr.startTowers.length || dr.startTowers.length > dr.maxOwned) ctx.addIssue({ code: 'custom', message: '징집 시작 타워가 겹치거나 장착함보다 많다' });
+  if (dr.afterWaves.some((w, i) => i > 0 && w <= dr.afterWaves[i - 1]!)) ctx.addIssue({ code: 'custom', message: '징집 웨이브는 오름차순이어야 한다' });
   const inv = b.waves.invasion;
   if (inv.invaderShareBPByOffset.length !== inv.blockWaves) ctx.addIssue({ code: 'custom', message: '침입 비율 수는 블록 웨이브 수와 같아야 한다' });
   for (const [mapId, c] of Object.entries(b.campaigns)) {

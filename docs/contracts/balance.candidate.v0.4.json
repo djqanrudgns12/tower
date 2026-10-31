@@ -1,6 +1,6 @@
 {
   "schemaVersion": "0.4",
-  "balanceVersion": "0.6.1-renewal-candidate",
+  "balanceVersion": "0.6.2-renewal-candidate",
   "status": "candidate-not-balance-approved",
   "basedOn": "0.4.2-candidate + 리뉴얼 R2 성장·진화(docs/renewal/progression.md): Lv4·Lv7 진화, 무제한 레벨, 형태 7개, 설치 직후 취소 + R2 2단계 종족×역할 편성(docs/renewal/catalog/monsters.md §0·§3)",
   "userConfirmed": { "date": "2026-10-28", "fields": ["difficulties.*.skipPt", "difficulties.*.label", "waves.hpGrowthPercent"], "rule": "확정 값은 사용자 결정 없이 바꾸지 않는다. 나머지 값은 후보다." },
@@ -52,7 +52,8 @@
     "spawnIntervalMs": { "overrides": { "1": 1600, "2": 1400, "3": 1250 }, "base": 950, "perWave": -5, "min": 650 },
     "bossEveryWaves": 5,
     "bossIndex": "floor(0.70 * (N - 1))",
-    "eliteRate": { "fromWave": 6, "baseBP": 500, "perWaveBP": 100, "maxBP": 2500 },
+    "eliteRate": { "fromWave": 6, "baseBP": 500, "perWaveBP": 175, "maxBP": 2500 },
+    "eliteRateNote": "R2 2단계(c): 징집 판 도달 웨이브(①)를 기준 안쪽으로 당기려고 웨이브당 1.00%p → 1.75%p(상한 25%는 18웨이브에 닿는다). docs/balance/r2-stage2-compare.md",
     "composition": [
       { "fromWave": 1,  "slotWeights": [100] },
       { "fromWave": 3,  "slotWeights": [70, 30] },
@@ -174,6 +175,8 @@
       "B2": { "parent": "B", "label": "임시 넓은 신속", "summary": "더 넓은 곳의 타워를 빠르게 해요", "auraSpeedBPByLevel": [2300, 2500, 2700], "rangeAddMilli": 700 }
     }
   },
+  "draft": { "startTowers": ["archer", "cannon", "frost", "mage"], "afterWaves": [3, 6, 10, 14], "offerCount": 3, "maxOwned": 8 },
+  "draftNote": "towers.md §0-2(안 1 징집): 기본 4종으로 시작하고 W3·W6·W10·W14를 지키면 아직 없는 타워 3종 중 1종을 고른다. 장착함 최대 8칸. 시작 타워·후보는 그 판의 availableTowers 안에서만 고른다(시범 3종 판은 징집이 없다). 앞 후보를 고르지 않은 채 다음 징집이 오면 첫 후보로 정한다.",
   "factions": {
     "acorn_goblin": { "label": "들숲 새참 도적단", "artPrefix": "acorn", "artAlias": { "walker": "enemy.walker" },
       "names": { "walker": "도토리 보초병", "runner": "새참 날치기꾼", "brute": "통나무 덩치오우거", "shell": "냄비뚜껑 갑옷병", "wisp": "반딧불 초롱꾼", "swarm": "솔방울 꼬마떼", "boss5": "국자대장 달그락", "boss10": "멧돼지기수 우당탕", "boss15": "새참수레 큰손오우거", "boss20": "들숲총대장 도토리왕" } },

@@ -17,6 +17,8 @@ function arena(towers: Array<[TowerId, number, number]>) {
   const { ctx, s } = newRun('Normal', 7);
   finishPrep(ctx, s);
   s.config.availableTowers = [...TOWER_IDS];
+  // 징집 없이 모든 타워를 장착한 판으로 본다(장착함 규칙은 draft.test.ts).
+  s.owned = [...TOWER_IDS];
   s.gold = 100000;
   for (const [type, x, y] of towers) ok(ctx, s, { type: 'build', slotId: slotAt(ctx, x, y), tower: type });
   ok(ctx, s, { type: 'startBattle' });

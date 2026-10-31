@@ -18,6 +18,7 @@ function arena(towers: Array<[TowerId, number, number]>, ctxOverride?: (ctx: Gam
   const s = run.s;
   finishPrep(ctx, s);
   s.config.availableTowers = [...TOWER_IDS];
+  s.owned = [...TOWER_IDS];
   s.gold = 100000;
   for (const [type, x, y] of towers) ok(ctx, s, { type: 'build', slotId: slotAt(ctx, x, y), tower: type });
   ok(ctx, s, { type: 'startBattle' });
