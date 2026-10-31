@@ -116,7 +116,7 @@ export class BattleScene extends Phaser.Scene {
         this.towerLayer.onFire(e);
       } else if (e.type === 'strike') {
         this.towerLayer.onStrike(e);
-        this.effects.onStrike(e);
+        this.effects.onStrike(e, this.towerLayer.weaponLift(e.towerId));
       } else if (e.type === 'burn') {
         const at = this.enemyLayer.spriteAt(e.enemyId);
         if (at) this.effects.onBurn(at);
@@ -132,7 +132,7 @@ export class BattleScene extends Phaser.Scene {
     this.enemyLayer.advance(s);
     this.towerLayer.sync(s, time);
     this.enemyLayer.sync(s, time, alpha);
-    this.effects.syncShots(s, alpha, (id, a) => this.enemyLayer.progressOf(id, a));
+    this.effects.syncShots(s, alpha, (id, a) => this.enemyLayer.progressOf(id, a), id => this.towerLayer.weaponLift(id));
     this.inputLayer.draw(s);
     const v = this.cameras.main.worldView;
     if (this.miniCam?.visible) this.miniFrame.clear().lineStyle(6, 0xf5ebd4, 1).strokeRect(v.x, v.y, v.width, v.height);

@@ -45,12 +45,13 @@ export class EffectLayer {
   /**
    * 즉발 공격 효과(PRD §11.4): 비행 지연 없이 그 틱에 보인다.
    * 번개는 타워→대상 순서로 이어지는 짧은 선, 화염은 맞은 자리의 불꽃, 근접은 맞은 자리의 섬광이다.
+   * `lift`는 진화형 본체에 맞춰 올라간 무기 높이(TowerLayer.weaponLift)다.
    */
-  onStrike(e: Extract<DomainEvent, { type: 'strike' }>) {
+  onStrike(e: Extract<DomainEvent, { type: 'strike' }>, lift = 0) {
     const { scene, bridge } = this.c;
     const first = e.targets[0];
     if (!first) return;
-    const fx = toWorld(e.fromX), fy = toWorld(e.fromY) - CELL_PX * 0.32;
+    const fx = toWorld(e.fromX), fy = toWorld(e.fromY) - CELL_PX * 0.32 - lift;
     if (e.towerType === 'lightning') {
       const g = scene.add.graphics().setDepth(DEPTH.fx);
       const pts = [{ x: fx, y: fy - CELL_PX * 0.1 }, ...e.targets.map(p => ({ x: toWorld(p.x), y: toWorld(p.y) - 10 }))];
@@ -115,7 +116,7 @@ export class EffectLayer {
   }
 
   /** 단일 대상은 대상의 현재 위치를 향해 그리지만 도착 틱은 바꾸지 않는다(PRD §20.3). */
-  syncShots(s: RunState, alpha: number, progressOf: (enemyId: number, alpha: number) => number | null) {
+  syncShots(s: RunState, alpha: number, progressOf: (enemyId: number, alpha: number) => number | null, liftOf: (towerId: number) => number = () => 0) {
     const { scene, bridge } = this.c;
     const seen = new Set<number>();
     const path = bridge.controller.ctx.path;
@@ -130,7 +131,7 @@ export class EffectLayer {
       const f = Phaser.Math.Clamp((s.tick + alpha - p.firedTick) / Math.max(1, p.arrivalTick - p.firedTick), 0, 1);
       const target = p.targetId !== null ? s.enemies.find(e => e.id === p.targetId) : null;
       const to = target ? positionAt(path, progressOf(target.id, alpha) ?? target.progress) : { x: p.toX, y: p.toY };
-      const fx = toWorld(p.fromX), fy = toWorld(p.fromY) - CELL_PX * 0.32, tx = toWorld(to.x), ty = toWorld(to.y) - CELL_PX * 0.08;
+      const fx = toWorld(p.fromX), fy = toWorld(p.fromY) - CELL_PX * 0.32 - liftOf(p.towerId), tx = toWorld(to.x), ty = toWorld(to.y) - CELL_PX * 0.08;
       const arc = p.towerType === 'cannon' ? Math.sin(f * Math.PI) * CELL_PX * 0.55 : 0;
       img.setPosition(fx + (tx - fx) * f, fy + (ty - fy) * f - arc);
       if (p.towerType === 'archer') img.setRotation(Math.atan2(ty - fy, tx - fx));

@@ -7,9 +7,10 @@ export const ASSET_STATUS = ['draft', 'technical_pass', 'visual_pass', 'integrat
 const sha = z.string().regex(/^[a-f0-9]{64}$/);
 
 export const assetEntrySchema = z.object({
-  id: z.string().regex(/^[a-z]+(\.[a-z0-9_]+)+$/),
+  /** 타워 진화 형태 꼬리(`tower.<타워>.A`·`.B2` 등, FormId 그대로)만 대문자를 쓴다. */
+  id: z.string().regex(/^[a-z]+(\.[a-z0-9_]+)+(\.[AB][12]?)?$/),
   revision: z.number().int().min(1),
-  file: z.string().regex(/^[a-z0-9._-]+\.png$/),
+  file: z.string().regex(/^[a-z0-9_-]+(\.[a-z0-9_-]+|\.[AB][12]?)*\.png$/),
   width: z.number().int().min(8).max(2048),
   height: z.number().int().min(8).max(2048),
   originX: z.number().min(0).max(1),

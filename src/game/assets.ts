@@ -1,5 +1,6 @@
 import type { AssetEntry, AssetManifest } from '../contracts/assetManifest';
-import { ART_ROLES, ENEMY_KINDS, TOWER_IDS, type EnemyKind, type TowerId } from '../contracts/balance';
+import { ART_ROLES, ENEMY_KINDS, FORM_IDS, TOWER_IDS, type EnemyKind, type FormId, type TowerId } from '../contracts/balance';
+import { formBranch } from '../domain/towers';
 
 // 에셋 ID와 표시 규격. Codex 이미지 작업(ART-SAMPLE)은 같은 ID·기준점으로 PNG를 납품하고,
 // 납품 전에는 art.ts가 같은 ID로 임시 그림을 만든다. 렌더러 코드는 출처를 구분하지 않는다(PRD §11.2).
@@ -39,6 +40,25 @@ export const ASSETS = {
 } as const;
 
 type Placement = Pick<AssetSpec, 'originX' | 'originY' | 'displayCells'>;
+
+/** 진화 형태 본체 그림(`tower.<타워>.<형태>`, 형태는 FormId 그대로)의 규격. manifest의 integrated_pass 항목으로 채운다. */
+export const TOWER_FORM_ART = new Map<string, AssetSpec>();
+const isTowerId = (id: string): id is TowerId => (TOWER_IDS as readonly string[]).includes(id);
+const isEvolvedForm = (form: string): form is Exclude<FormId, 'base'> => form !== 'base' && (FORM_IDS as readonly string[]).includes(form);
+
+/**
+ * 타워 본체 그림 고르기: tower.<타워>.<형태> → 부모 형태(A1·A2→A, B1·B2→B) → 기본형(ASSETS.towers — 인수 원화, 없으면 같은 키의 임시 그림).
+ * `has`는 텍스처 존재 여부(Phaser textures.exists)라서 manifest에 있어도 파일을 못 실었으면 다음 후보로 넘어간다.
+ */
+export function towerBodyArt(type: TowerId, form: FormId, has: (key: string) => boolean): AssetSpec {
+  const branch = formBranch(form);
+  const chain = branch === null ? [] : form === branch ? [form] : [form, branch];
+  for (const f of chain) {
+    const spec = TOWER_FORM_ART.get(`tower.${type}.${f}`);
+    if (spec && has(spec.key)) return spec;
+  }
+  return ASSETS.towers[type];
+}
 
 /** 종족 그림(`<접두어>.<역할|boss5~boss20>`, domain/factions.ts enemyArtId)의 기준점·표시 크기. manifest에서 채운다. */
 export const ART_DISPLAY = new Map<string, Placement>();
@@ -86,6 +106,8 @@ export function applyManifest(manifest: AssetManifest): AssetEntry[] {
     const weapon = /^tower\.([a-z]+)\.weapon$/.exec(a.id)?.[1] as TowerId | undefined;
     if (tower) ASSETS.towers[tower] = override;
     if (weapon) ASSETS.weapons[weapon] = override;
+    const form = /^tower\.([a-z]+)\.([A-Z][0-9]?)$/.exec(a.id);
+    if (form && isTowerId(form[1]!) && isEvolvedForm(form[2]!)) TOWER_FORM_ART.set(a.id, override);
     const enemy = /^enemy\.([a-z]+)\.[01]$/.exec(a.id)?.[1] as EnemyKind | undefined;
     if (enemy) { ENEMY_DISPLAY[enemy] = a.displayCells; ENEMY_ORIGIN[enemy] = { x: a.originX, y: a.originY }; }
   }
