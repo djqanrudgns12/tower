@@ -76,9 +76,14 @@ export class TowerLayer {
         v.level = t.level; v.branch = t.form;
         const branch = formBranch(t.form);
         v.pips.clear();
-        const startX = x - (t.level - 1) * 5;
-        for (let i = 0; i < t.level; i++) { v.pips.fillStyle(PALETTE.outline, 1).fillCircle(startX + i * 10, y + CELL_PX * 0.36, 4.2); v.pips.fillStyle(0xf4d35e, 1).fillCircle(startX + i * 10, y + CELL_PX * 0.36, 2.8); }
-        if (branch) {
+        // 형태 그림이 단계를 보여 주므로 점은 지금 단계 안의 레벨(1~3)만 그린다. Lv10부터는 5레벨마다 별 하나(최대 3개, progression.md §1).
+        const stars = t.level >= 10 ? Math.min(3, Math.floor((t.level - 5) / 5)) : 0;
+        const dots = stars > 0 ? 0 : ((t.level - 1) % 3) + 1;
+        const startX = x - (dots - 1) * 5;
+        for (let i = 0; i < dots; i++) { v.pips.fillStyle(PALETTE.outline, 1).fillCircle(startX + i * 10, y + CELL_PX * 0.36, 4.2); v.pips.fillStyle(0xf4d35e, 1).fillCircle(startX + i * 10, y + CELL_PX * 0.36, 2.8); }
+        for (let i = 0; i < stars; i++) this.star(v.pips, x - (stars - 1) * 7 + i * 14, y + CELL_PX * 0.36);
+        // 분기 표식(A 원, B 마름모)은 그 형태의 그림이 없어 기본형으로 대신 그릴 때만 남긴다.
+        if (branch && !this.hasFormArt(t.type, t.form)) {
           // 분기 표식: A 원, B 마름모. 색만으로 구분하지 않는다.
           const bx = x + CELL_PX * 0.34, by = y - CELL_PX * 0.36;
           v.pips.fillStyle(PALETTE.outline, 1);
@@ -148,6 +153,21 @@ export class TowerLayer {
    * 진화: 새 형태가 되면 몸체·무기가 살짝 튀어 올랐다 내려앉는다(ui-rules-v2 §5, 왕복 0.28초). 몸체는 아래 기준점에서 커져 위로 솟는다.
    * 모션을 줄이면 크기·위치는 그대로 두고 투명도만 한 번 바꾼다. 빛기둥은 화면 겹층(EvolvePillar)이 그린다.
    */
+  /** 그 형태(또는 부모 형태)의 진화 그림이 실려 있는가. 없으면 기본형 그림으로 대신 그린다. */
+  private hasFormArt(type: TowerId, form: FormId): boolean {
+    return towerBodyArt(type, form, key => this.c.scene.textures.exists(key)).key !== ASSETS.towers[type].key;
+  }
+
+  /** 숙련 별: 외곽선 있는 작은 금색 별 하나. */
+  private star(g: Phaser.GameObjects.Graphics, cx: number, cy: number) {
+    const pts = (r: number, inner: number) => Array.from({ length: 10 }, (_, i) => {
+      const a = -Math.PI / 2 + (i * Math.PI) / 5, rr = i % 2 === 0 ? r : inner;
+      return new Phaser.Math.Vector2(cx + Math.cos(a) * rr, cy + Math.sin(a) * rr);
+    });
+    g.fillStyle(PALETTE.outline, 1).fillPoints(pts(7.5, 3.6), true);
+    g.fillStyle(0xf4d35e, 1).fillPoints(pts(5.2, 2.4), true);
+  }
+
   private popEvolved(v: TowerView) {
     const { scene, bridge } = this.c;
     const parts = v.weapon ? [v.body, v.weapon] : [v.body];
