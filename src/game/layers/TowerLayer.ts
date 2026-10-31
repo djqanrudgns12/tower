@@ -1,19 +1,32 @@
 import Phaser from 'phaser';
+import type { TowerId } from '../../contracts/balance';
 import type { DomainEvent } from '../../domain/events';
-import { formBranch } from '../../domain/towers';
+import { formBranch, type FormId } from '../../domain/towers';
 import type { RunState } from '../../domain/types';
 import { PALETTE } from '../art';
-import { ASSETS, CELL_PX } from '../assets';
+import { ASSETS, CELL_PX, towerBodyArt, type AssetSpec } from '../assets';
 import { DEPTH, FIXED_WEAPON, toWorld, type LayerContext } from './shared';
 
-interface TowerView { body: Phaser.GameObjects.Image; weapon: Phaser.GameObjects.Image | null; pips: Phaser.GameObjects.Graphics; level: number; branch: string | null; recoilUntil: number; angle: number }
+/** `form`은 본체 그림이 맞춰진 형태, `lift`는 그 형태에서 무기를 기본형보다 올리는 높이(월드 px). */
+interface TowerView { body: Phaser.GameObjects.Image; weapon: Phaser.GameObjects.Image | null; pips: Phaser.GameObjects.Graphics; level: number; branch: string | null; form: FormId | null; lift: number; recoilUntil: number; angle: number }
+
+/** 알파 경계 상자를 잴 때 이보다 옅은 픽셀(가장자리 잔여 알파)은 무시한다. */
+const TOP_ALPHA_MIN = 16;
+const displayHeight = (spec: AssetSpec) => CELL_PX * spec.displayCells * (spec.height / spec.width);
 
 /** 타워 층: 몸체·무기·레벨 표식. 무기는 발사·즉발 공격 쪽으로 돌고 반동한다. */
 export class TowerLayer {
   private readonly c: LayerContext;
   private towers = new Map<number, TowerView>();
+  /** 텍스처 키 → 불투명 윗변(텍스처 px 행). 텍스처마다 한 번만 잰다. */
+  private tops = new Map<string, number>();
+  /** 본체 그림 키 → 기본형 대비 무기 올림(월드 px). 형태별로 한 번 계산해 둔다. */
+  private lifts = new Map<string, number>();
 
   constructor(c: LayerContext) { this.c = c; }
+
+  /** 발사체·즉발 효과의 시작점도 무기와 같이 올린다(EffectLayer가 읽는다). */
+  weaponLift(towerId: number): number { return this.towers.get(towerId)?.lift ?? 0; }
 
   onFire(e: Extract<DomainEvent, { type: 'fire' }>) {
     const t = this.towers.get(e.towerId);
@@ -26,7 +39,7 @@ export class TowerLayer {
     const t = this.towers.get(e.towerId);
     const first = e.targets[0];
     if (!first) return;
-    const fx = toWorld(e.fromX), fy = toWorld(e.fromY) - CELL_PX * 0.32;
+    const fx = toWorld(e.fromX), fy = toWorld(e.fromY) - CELL_PX * 0.32 - (t?.lift ?? 0);
     if (t && !FIXED_WEAPON.has(e.towerType)) { t.angle = Math.atan2(toWorld(first.y) - fy, toWorld(first.x) - fx); t.recoilUntil = this.c.scene.time.now + 120; }
   }
 
@@ -44,18 +57,22 @@ export class TowerLayer {
         const wspec = ASSETS.weapons[t.type];
         const weapon = wspec ? scene.add.image(x, y - CELL_PX * 0.32, wspec.key).setDisplaySize(CELL_PX * wspec.displayCells, CELL_PX * wspec.displayCells) : null;
         const pips = scene.add.graphics();
-        v = { body, weapon, pips, level: 0, branch: null, recoilUntil: 0, angle: FIXED_WEAPON.has(t.type) ? 0 : -Math.PI / 2 };
+        v = { body, weapon, pips, level: 0, branch: null, form: null, lift: 0, recoilUntil: 0, angle: FIXED_WEAPON.has(t.type) ? 0 : -Math.PI / 2 };
         this.towers.set(t.id, v);
+        this.applyForm(v, t.type, t.form);
         if (!bridge.reducedMotion) { body.setScale(body.scaleX * 0.96, body.scaleY * 0.96); scene.tweens.add({ targets: body, scaleX: body.scaleX / 0.96, scaleY: body.scaleY / 0.96, duration: 120 }); }
       }
+      // 형태가 바뀌면 무기 위치·튀어 오름보다 먼저 본체 그림을 바꾼다(튀어 오름은 새 그림의 크기로 돌아온다).
+      if (v.form !== t.form) this.applyForm(v, t.type, t.form);
       const depth = DEPTH.units + y;
       v.body.setDepth(depth);
       v.weapon?.setDepth(depth + 1);
       v.pips.setDepth(depth + 2);
       const recoil = time < v.recoilUntil && !bridge.reducedMotion ? 2 : 0;
-      if (FIXED_WEAPON.has(t.type)) v.weapon?.setPosition(x, y - CELL_PX * 0.38 + (bridge.reducedMotion ? 0 : Math.sin(time / 420 + t.id) * 2));
-      else v.weapon?.setPosition(x - Math.cos(v.angle) * recoil, y - CELL_PX * 0.32 - Math.sin(v.angle) * recoil).setRotation(v.angle);
+      if (FIXED_WEAPON.has(t.type)) v.weapon?.setPosition(x, y - CELL_PX * 0.38 - v.lift + (bridge.reducedMotion ? 0 : Math.sin(time / 420 + t.id) * 2));
+      else v.weapon?.setPosition(x - Math.cos(v.angle) * recoil, y - CELL_PX * 0.32 - v.lift - Math.sin(v.angle) * recoil).setRotation(v.angle);
       if (v.level !== t.level || v.branch !== t.form) {
+        if (v.level > 0 && v.branch !== t.form) this.popEvolved(v);
         v.level = t.level; v.branch = t.form;
         const branch = formBranch(t.form);
         v.pips.clear();
@@ -71,5 +88,77 @@ export class TowerLayer {
       }
     }
     for (const [id, v] of this.towers) if (!seen.has(id)) { v.body.destroy(); v.weapon?.destroy(); v.pips.destroy(); this.towers.delete(id); }
+  }
+
+  /**
+   * 본체를 형태별 그림으로 맞춘다: tower.<타워>.<형태> → 부모 형태 → 기본형 → 임시 그림(assets.towerBodyArt).
+   * 서리탑 진화형 그림은 수정이 본체에 그려져 있어, 진화형 그림을 쓰는 동안 떠 있는 수정(무기 층)을 숨긴다. 다른 타워의 무기는 그대로다.
+   */
+  private applyForm(v: TowerView, type: TowerId, form: FormId) {
+    const { scene } = this.c;
+    const base = ASSETS.towers[type];
+    const art = towerBodyArt(type, form, key => scene.textures.exists(key));
+    if (v.body.texture.key !== art.key) {
+      // 진행 중인 크기 트윈이 옛 그림 배율로 되돌리지 않게 먼저 멈춘다.
+      scene.tweens.killTweensOf(v.body);
+      v.body.setTexture(art.key).setOrigin(art.originX, art.originY).setDisplaySize(CELL_PX * art.displayCells, displayHeight(art));
+    }
+    v.form = form;
+    v.lift = this.liftOf(base, art);
+    if (type === 'frost') v.weapon?.setVisible(art.key === base.key);
+  }
+
+  /**
+   * 기본형 대비 무기 올림(월드 px): 두 본체 그림의 불투명 윗변이 지면 기준점 위로 얼마나 높은지의 차.
+   * 진화형이 기본형보다 낮으면 음수(무기도 내려앉는다).
+   */
+  private liftOf(base: AssetSpec, art: AssetSpec): number {
+    if (art.key === base.key) return 0;
+    let lift = this.lifts.get(art.key);
+    if (lift === undefined) {
+      const above = (spec: AssetSpec) => displayHeight(spec) * (spec.originY - this.topRow(spec.key) / spec.height);
+      lift = above(art) - above(base);
+      this.lifts.set(art.key, lift);
+    }
+    return lift;
+  }
+
+  /** 텍스처의 불투명 윗변(텍스처 px 행). 원본 그림을 한 번 캔버스에 그려 위에서부터 훑는다. 잴 수 없으면 0(맨 위). */
+  private topRow(key: string): number {
+    const cached = this.tops.get(key);
+    if (cached !== undefined) return cached;
+    let top = 0;
+    const src = this.c.scene.textures.get(key).getSourceImage();
+    if (src instanceof HTMLImageElement || src instanceof HTMLCanvasElement) {
+      const w = src.width, h = src.height;
+      const ctx = Object.assign(document.createElement('canvas'), { width: w, height: h }).getContext('2d', { willReadFrequently: true });
+      if (ctx && w > 0 && h > 0) {
+        ctx.drawImage(src, 0, 0);
+        const data = ctx.getImageData(0, 0, w, h).data;
+        let i = 3;
+        while (i < data.length && data[i]! <= TOP_ALPHA_MIN) i += 4;
+        top = Math.floor((i - 3) / 4 / w);
+      }
+    }
+    this.tops.set(key, top);
+    return top;
+  }
+
+  /**
+   * 진화: 새 형태가 되면 몸체·무기가 살짝 튀어 올랐다 내려앉는다(ui-rules-v2 §5, 왕복 0.28초). 몸체는 아래 기준점에서 커져 위로 솟는다.
+   * 모션을 줄이면 크기·위치는 그대로 두고 투명도만 한 번 바꾼다. 빛기둥은 화면 겹층(EvolvePillar)이 그린다.
+   */
+  private popEvolved(v: TowerView) {
+    const { scene, bridge } = this.c;
+    const parts = v.weapon ? [v.body, v.weapon] : [v.body];
+    if (bridge.reducedMotion) {
+      for (const p of parts) scene.tweens.add({ targets: p, alpha: { from: 0.45, to: 1 }, duration: 240, ease: 'Sine.easeOut' });
+      return;
+    }
+    for (const p of parts) {
+      const sx = p.scaleX, sy = p.scaleY;
+      const grow = p === v.body ? { x: 1.08, y: 1.16 } : { x: 1.12, y: 1.12 };
+      scene.tweens.add({ targets: p, scaleX: sx * grow.x, scaleY: sy * grow.y, duration: 140, ease: 'Quad.easeOut', yoyo: true, onComplete: () => p.setScale(sx, sy) });
+    }
   }
 }

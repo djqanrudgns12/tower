@@ -1,5 +1,6 @@
 import type { AssetEntry, AssetManifest } from '../contracts/assetManifest';
-import { ART_ROLES, ENEMY_KINDS, TOWER_IDS, type EnemyKind, type TowerId } from '../contracts/balance';
+import { ART_ROLES, ENEMY_KINDS, FORM_IDS, TOWER_IDS, type EnemyKind, type FormId, type TowerId } from '../contracts/balance';
+import { formBranch } from '../domain/towers';
 
 // 에셋 ID와 표시 규격. Codex 이미지 작업(ART-SAMPLE)은 같은 ID·기준점으로 PNG를 납품하고,
 // 납품 전에는 art.ts가 같은 ID로 임시 그림을 만든다. 렌더러 코드는 출처를 구분하지 않는다(PRD §11.2).
@@ -21,8 +22,8 @@ export interface AssetSpec {
   displayCells: number;
 }
 
-const tower = (id: TowerId): AssetSpec => ({ key: `tower.${id}`, width: 128, height: 160, originX: 0.5, originY: 0.86, displayCells: 1.12 });
-const weapon = (id: TowerId): AssetSpec => ({ key: `tower.${id}.weapon`, width: 96, height: 96, originX: 0.5, originY: 0.5, displayCells: 0.8 });
+const tower = (id: TowerId): AssetSpec => ({ key: `tower.${id}`, width: 128, height: 160, originX: 0.5, originY: 0.86, displayCells: 1.28 });
+const weapon = (id: TowerId): AssetSpec => ({ key: `tower.${id}.weapon`, width: 96, height: 96, originX: 0.5, originY: 0.5, displayCells: 0.9 });
 
 export const ENEMY_DISPLAY: Record<EnemyKind, number> = { walker: 0.72, runner: 0.66, brute: 0.8, shell: 0.76, wisp: 0.7, swarm: 0.6, flyer: 0.7, splitter: 0.76, splitling: 0.5, boss: 1.15 };
 /** 인수된 원화의 적 기준점(발 중심). 없는 종류는 임시 그림 기준점(0.5, 0.78)을 쓴다. */
@@ -39,6 +40,25 @@ export const ASSETS = {
 } as const;
 
 type Placement = Pick<AssetSpec, 'originX' | 'originY' | 'displayCells'>;
+
+/** 진화 형태 본체 그림(`tower.<타워>.<형태>`, 형태는 FormId 그대로)의 규격. manifest의 integrated_pass 항목으로 채운다. */
+export const TOWER_FORM_ART = new Map<string, AssetSpec>();
+const isTowerId = (id: string): id is TowerId => (TOWER_IDS as readonly string[]).includes(id);
+const isEvolvedForm = (form: string): form is Exclude<FormId, 'base'> => form !== 'base' && (FORM_IDS as readonly string[]).includes(form);
+
+/**
+ * 타워 본체 그림 고르기: tower.<타워>.<형태> → 부모 형태(A1·A2→A, B1·B2→B) → 기본형(ASSETS.towers — 인수 원화, 없으면 같은 키의 임시 그림).
+ * `has`는 텍스처 존재 여부(Phaser textures.exists)라서 manifest에 있어도 파일을 못 실었으면 다음 후보로 넘어간다.
+ */
+export function towerBodyArt(type: TowerId, form: FormId, has: (key: string) => boolean): AssetSpec {
+  const branch = formBranch(form);
+  const chain = branch === null ? [] : form === branch ? [form] : [form, branch];
+  for (const f of chain) {
+    const spec = TOWER_FORM_ART.get(`tower.${type}.${f}`);
+    if (spec && has(spec.key)) return spec;
+  }
+  return ASSETS.towers[type];
+}
 
 /** 종족 그림(`<접두어>.<역할|boss5~boss20>`, domain/factions.ts enemyArtId)의 기준점·표시 크기. manifest에서 채운다. */
 export const ART_DISPLAY = new Map<string, Placement>();
@@ -86,6 +106,8 @@ export function applyManifest(manifest: AssetManifest): AssetEntry[] {
     const weapon = /^tower\.([a-z]+)\.weapon$/.exec(a.id)?.[1] as TowerId | undefined;
     if (tower) ASSETS.towers[tower] = override;
     if (weapon) ASSETS.weapons[weapon] = override;
+    const form = /^tower\.([a-z]+)\.([A-Z][0-9]?)$/.exec(a.id);
+    if (form && isTowerId(form[1]!) && isEvolvedForm(form[2]!)) TOWER_FORM_ART.set(a.id, override);
     const enemy = /^enemy\.([a-z]+)\.[01]$/.exec(a.id)?.[1] as EnemyKind | undefined;
     if (enemy) { ENEMY_DISPLAY[enemy] = a.displayCells; ENEMY_ORIGIN[enemy] = { x: a.originX, y: a.originY }; }
   }

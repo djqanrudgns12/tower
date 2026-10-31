@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest';
 import defaults from '../../docs/contracts/product.defaults.v0.5.json';
 import { selectView, viewKey } from '../../src/application/view';
 import { TOWER_IDS } from '../../src/contracts/balance';
-import { TOWER_ROLE_GROUP } from '../../src/ui/game/ManagementPanel';
+import { TOWER_ROLE_GROUP } from '../../src/ui/game/towerRoles';
 import { computeLayout, minRailWidth } from '../../src/ui/useLayout';
 import { newRun } from './helpers';
 
@@ -11,6 +11,8 @@ import { newRun } from './helpers';
 const v3Doc = readFileSync(new URL('../../docs/ui_ux_refinement_p1_v3_prd.md', import.meta.url), 'utf8');
 const L = defaults.layout;
 const RAIL = L.modes.R.rail;
+/** 하단 문제판 바깥 테두리(4px) + 안쪽 여백(12px). 오른쪽 열 = 레일 폭 − 이 값(QuestionPanel·GameScreen CSS의 수직선 잠금). */
+const SEAM_INSET_PX = 16;
 const tableRows = v3Doc
   .split('\n')
   .filter(line => /^\| `\d+×\d+` \|/.test(line))
@@ -44,6 +46,65 @@ describe('시안 1 v3 가변 레일·수직선 잠금 레이아웃 계산(comput
       expect({ at, mode: l.mode, mapW: l.mapW, mapH: l.mapH, cell: l.cell, railW: l.railW }).toEqual({
         at, mode: row.mode, mapW: fix?.mapW ?? row.mapW, mapH: row.mapH, cell: row.cell, railW: row.railW,
       });
+    }
+  });
+
+  it('1440×900 표준 데스크톱: R 모드, 칸 크기 > 70px, 레일 308~346px, 가로 넘침 없음', () => {
+    const l = computeLayout(1440, 900, false, 'base');
+    expect(l.mode).toBe('R');
+    expect(l.cell).toBeGreaterThan(70);
+    expect(l.railW).toBeGreaterThanOrEqual(308);
+    expect(l.railW).toBeLessThanOrEqual(346);
+    expect(l.compactRail).toBe(false);
+    expect(l.mapW + 12 + l.railW).toBeLessThanOrEqual(1440 - 2 * l.pad);
+  });
+
+  it('1366×650 저높이 크롬북: R 모드 유지, 칸 크기 >= 44px, 레일 346px, compactRail 활성화', () => {
+    const l = computeLayout(1366, 650, false, 'base');
+    expect(l.mode).toBe('R');
+    expect(l.cell).toBeGreaterThanOrEqual(44);
+    expect(l.railW).toBe(346);
+    expect(l.compactRail).toBe(true);
+    expect(l.mapW + 12 + l.railW).toBeLessThanOrEqual(1366 - 2 * l.pad);
+  });
+
+  it('1024×690 소형 노트북·태블릿 가로: R 모드, 레일 272~346px 가변 폭', () => {
+    const l = computeLayout(1024, 690, false, 'base');
+    expect(l.mode).toBe('R');
+    expect(l.railW).toBeGreaterThanOrEqual(272);
+    expect(l.railW).toBeLessThanOrEqual(346);
+    expect(l.mapW + 12 + l.railW).toBeLessThanOrEqual(1024 - 2 * l.pad);
+  });
+
+  it('레일 폭은 계약 layout 범위 안의 정수이고, 하단 오른쪽 열 폭(레일 − 잠금 여백)이 200px을 넘는다', () => {
+    for (const [w, h] of [
+      [1920, 1080],
+      [1600, 960],
+      [1440, 900],
+      [1366, 650],
+      [1280, 800],
+      [1024, 768],
+      [1024, 690],
+    ] as const) {
+      const l = computeLayout(w, h, false, 'base');
+      expect(l.mode).toBe('R');
+      expect(Number.isInteger(l.railW)).toBe(true);
+      expect(l.railW).toBeGreaterThanOrEqual(RAIL.tabletMinPx);
+      expect(l.railW).toBeLessThanOrEqual(RAIL.maxPx);
+      expect(l.railW - SEAM_INSET_PX).toBeGreaterThan(200);
+      expect(l.mapW + 12 + l.railW).toBeLessThanOrEqual(Math.min(w, L.frameMaxPx) - 2 * l.pad);
+    }
+  });
+
+  it('레일 최소폭은 1024px 이하 272, 1160px 이상 308이고 사이는 이어져서, 폭이 늘 때 칸이 줄지 않는다', () => {
+    expect([minRailWidth(1000), minRailWidth(1024), minRailWidth(1160), minRailWidth(1500)]).toEqual([
+      RAIL.tabletMinPx, RAIL.tabletMinPx, RAIL.minPx, RAIL.minPx,
+    ]);
+    let prev = 0;
+    for (let w = 1100; w <= 1220; w++) {
+      const l = computeLayout(w, 800, false, 'base');
+      expect(l.cell).toBeGreaterThanOrEqual(prev);
+      prev = l.cell;
     }
   });
 

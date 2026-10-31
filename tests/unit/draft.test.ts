@@ -6,7 +6,7 @@ import { draftOffer, draftPool, nextDraftWave, ownedTowers } from '../../src/dom
 import type { DomainEvent } from '../../src/domain/events';
 import { applyCommand, createRun } from '../../src/domain/run';
 import type { RunState } from '../../src/domain/types';
-import { answerCurrent, finishPrep, newRun, ok, ticks } from './helpers';
+import { answerCurrent, finishPrep, newRun, ok, THREE_TOWERS, ticks } from './helpers';
 
 // 판 안 징집(docs/renewal/catalog/towers.md §0-2·§5 안 1): 기본 4종 시작, W3·W6·W10·W14 뒤 3종 중 1종, 장착함 8칸.
 
@@ -47,11 +47,24 @@ describe('장착함과 징집', () => {
 
   it('시범 3종 판은 시작 타워가 그 판의 타워로 줄고 징집 후보가 없어 징집이 열리지 않는다', () => {
     const { ctx, s } = newRun('Normal', 4);
-    expect(ownedTowers(s)).toEqual(PILOT_TOWERS.filter(t => BALANCE.draft.startTowers.includes(t)));
+    expect(ownedTowers(s)).toEqual(THREE_TOWERS.filter(t => BALANCE.draft.startTowers.includes(t)));
     expect(draftPool(s)).toEqual([]);
     for (let w = 1; w <= 3; w++) expect(clearWave(ctx, s).some(e => e.type === 'draftOffered')).toBe(false);
     expect(s.draft).toBeNull();
     expect(nextDraftWave(BALANCE, s)).toBeNull();
+  });
+
+  it('앱 기본 판(PILOT_TOWERS, 리뉴얼 10종)은 시작 4종을 갖고 나머지 6종이 징집 후보다', () => {
+    expect(PILOT_TOWERS).toHaveLength(10);
+    const { ctx } = newRun('Normal', 31);
+    const s = createRun(ctx, {
+      runId: 'draft-app', playerId: 'p1', nickname: '시험', grade: 3, difficulty: 'Normal', mapId: ctx.map.id, seed: 31,
+      bankId: 'g3-dev', bankVersion: '0.1.0-dev', contentMode: 'development', availableTowers: [...PILOT_TOWERS],
+      rankingEligibility: 'personal', createdAt: '2026-10-31T00:00:00.000Z',
+    });
+    expect(ownedTowers(s)).toEqual(BALANCE.draft.startTowers);
+    expect([...draftPool(s)].sort()).toEqual(PILOT_TOWERS.filter(t => !BALANCE.draft.startTowers.includes(t)).sort());
+    expect(nextDraftWave(BALANCE, s)).toBe(BALANCE.draft.afterWaves[0]);
   });
 
   it('W3을 지키면 아직 없는 타워 3종이 후보로 열리고, 고르면 장착함에 들어와 지을 수 있다', () => {

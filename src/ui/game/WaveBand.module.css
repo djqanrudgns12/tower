@@ -1,0 +1,60 @@
+/* 웨이브 번호 띠: 호두나무 띠가 전장 위에서 1초 내려왔다 올라간다. 대장 웨이브는 붉은 띠. */
+.band {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  z-index: 5;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s2);
+  padding: var(--s2) var(--s5);
+  border-radius: 0 0 var(--r-card) var(--r-card);
+  background: var(--walnut-face);
+  border: 2px solid var(--walnut-3);
+  border-top: 0;
+  color: var(--cream-ink);
+  box-shadow: var(--ambient-shadow);
+  pointer-events: none;
+  transform: translate(-50%, -110%);
+  animation: drop 1000ms var(--ease-out) 1 both;
+}
+
+.band[data-boss] {
+  background: linear-gradient(180deg, #b23d31, var(--danger));
+  border-color: #6e1f18;
+}
+
+.text {
+  font-size: 22px;
+  font-weight: 800;
+  line-height: 1.2;
+}
+
+.tag {
+  font-size: 14px;
+  font-weight: 800;
+  padding: 2px var(--s2);
+  border-radius: 999px;
+  background: var(--parch-1);
+  color: var(--danger);
+}
+
+.boss {
+  width: 36px;
+  height: 36px;
+  object-fit: contain;
+}
+
+@keyframes drop {
+  0% { transform: translate(-50%, -110%); }
+  20%, 80% { transform: translate(-50%, 0); }
+  100% { transform: translate(-50%, -110%); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .band { animation: appear 1000ms linear 1 both !important; }
+  @keyframes appear {
+    0%, 100% { opacity: 0; transform: translate(-50%, 0); }
+    15%, 85% { opacity: 1; transform: translate(-50%, 0); }
+  }
+}

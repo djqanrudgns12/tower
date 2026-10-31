@@ -59,6 +59,27 @@
   --oak-rank-bronze: #c98352;
   --shadow-board: 0 4px 0 rgba(35, 22, 13, 0.28);
 
+  /* 리뉴얼 「원정대 작업대」 재질(ui-rules-v2 §1·§2): 호두나무 틀 · 양피지 면 · 놋쇠 포인트, 각 3단.
+     그라데이션은 같은 재질의 이웃 단끼리(명도 차 12% 이하)만 쓴다. */
+  --walnut-1: #6e4a2e;
+  --walnut-2: #4a2f1b;
+  --walnut-3: #2c1a0e;
+  --parch-1: #fdf6e6;
+  --parch-2: #f3e5c6;
+  --parch-3: #dcc597;
+  --brass-1: #ffe08a;
+  --brass-2: #e0b145;
+  --brass-3: #8c6418;
+  --walnut-face: linear-gradient(180deg, #553621, var(--walnut-2));
+  --parch-face: linear-gradient(180deg, var(--parch-1), #f7ecd2);
+  --brass-face: linear-gradient(180deg, #f0c75c, var(--brass-2));
+  --ground-shadow: 0 2px 0 var(--walnut-3);
+  --ambient-shadow: 0 4px 10px rgba(44, 26, 14, 0.22);
+  --well-inset: inset 0 2px 4px rgba(20, 11, 5, 0.55);
+  --r-card: 12px;
+  --s6: 32px; --s7: 40px;
+  --ease-out: cubic-bezier(0.22, 0.8, 0.3, 1);
+  --t-ui: 180ms;
   /* 포커스 고리(PRD §12.6: 2px 외곽선 + 2px 간격, 바로 옆 배경과 3:1 이상).
      밝은 표면은 --focus, 짙은 표면(헤더 판·HUD 금고·키캡 줄)은 --focus-on-dark를 쓴다. */
   --focus: var(--blue);
@@ -103,3 +124,6 @@ h1, h2, h3, p { margin: 0; }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { transition-duration: 0ms !important; animation-duration: 0ms !important; }
 }
+
+/* 전투 화면 바탕: 짙은 호두나무 작업대(ui-rules-v2 §1). 홈 화면은 기존 바탕 그대로. */
+body[data-screen='battle'] { background: var(--walnut-3); }

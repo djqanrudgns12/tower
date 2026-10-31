@@ -43,12 +43,33 @@ export class InputLayer {
     if (!down || Math.hypot(p.x - down.x, p.y - down.y) > 14 * (window.devicePixelRatio || 1)) return;
     if (this.overMinimap(p)) return;
     const world = scene.cameras.main.getWorldPoint(p.x, p.y);
-    const x = Math.floor(world.x / CELL_PX), y = Math.floor(world.y / CELL_PX);
     const state = bridge.controller.state;
-    const slot = bridge.controller.ctx.map.slots.find(s => s.x === x && s.y === y);
+    const slot = this.slotNear(world.x, world.y);
     if (!slot) { bridge.onTap({ kind: 'empty' }); return; }
     const tower = state.towers.find(t => t.slotId === slot.id);
     bridge.onTap(tower ? { kind: 'tower', towerId: tower.id, slotId: slot.id } : { kind: 'slot', slotId: slot.id });
+  }
+
+  /**
+   * 탭한 칸의 설치 자리. 칸이 작으면(손끝 반지름 22px보다 작으면) 손끝 안의 가장 가까운 자리로 붙는다.
+   * 휴대폰에서 바로 설치할 때 옆 칸을 잘못 누르는 일을 줄인다.
+   */
+  private slotNear(wx: number, wy: number) {
+    const { scene, bridge } = this.c;
+    const slots = bridge.controller.ctx.map.slots;
+    const x = Math.floor(wx / CELL_PX), y = Math.floor(wy / CELL_PX);
+    const exact = slots.find(s => s.x === x && s.y === y);
+    if (exact) return exact;
+    const cssPerCanvas = scene.game.canvas.getBoundingClientRect().width / Math.max(1, scene.scale.width);
+    const cssCell = scene.cameras.main.zoom * CELL_PX * cssPerCanvas;
+    const reach = Math.max(0.5, 22 / Math.max(1, cssCell)) * CELL_PX;
+    let best: (typeof slots)[number] | null = null;
+    let bestD = reach * reach;
+    for (const s of slots) {
+      const d = ((s.x + 0.5) * CELL_PX - wx) ** 2 + ((s.y + 0.5) * CELL_PX - wy) ** 2;
+      if (d <= bestD) { best = s; bestD = d; }
+    }
+    return best;
   }
 
   /** 선택 칸·사거리 원·원 안의 길. 선택이 바뀔 때만 다시 그린다(PRD §12.4). */
@@ -57,7 +78,8 @@ export class InputLayer {
     const sel = bridge.selection;
     const tower = sel.towerId !== null ? s.towers.find(t => t.id === sel.towerId) ?? null : null;
     const highContrast = Boolean((bridge as { highContrastMap?: boolean }).highContrastMap);
-    const key = `${sel.slotId}|${sel.towerId}|${sel.previewType}|${sel.previewBranch}|${tower?.level}|${tower?.form}|${s.phase}|${s.towers.length}|${bridge.magnify}|${bridge.keyboardSlotId}|${highContrast}`;
+    const drag = bridge.drag;
+    const key = `${sel.slotId}|${sel.towerId}|${sel.previewType}|${sel.previewBranch}|${tower?.level}|${tower?.form}|${s.phase}|${s.towers.length}|${bridge.magnify}|${bridge.keyboardSlotId}|${highContrast}|${drag?.type}:${drag?.slotId}`;
     if (key === this.overlayKey) return;
     this.overlayKey = key;
     const g = this.overlay.clear();
@@ -80,17 +102,21 @@ export class InputLayer {
       }
     }
     const trading = s.phase === 'BUILD' || s.phase === 'BATTLE';
-    if (trading && sel.previewType && !sel.slotId) {
+    // 타워를 먼저 골랐거나 끌고 있으면 놓을 수 있는 빈 자리를 모두 밝힌다.
+    if (trading && ((sel.previewType && !sel.slotId) || drag)) {
       for (const slot of map.slots) if (!s.towers.some(t => t.slotId === slot.id)) g.lineStyle(3, 0xf5ebd4, 0.9).strokeRoundedRect(slot.x * CELL_PX + 5, slot.y * CELL_PX + 5, CELL_PX - 10, CELL_PX - 10, 8);
     }
-    const cell = selectedCell(bridge);
+    const dragCell = drag?.slotId ? map.slots.find(slot => slot.id === drag.slotId) ?? null : null;
+    const cell = drag ? dragCell : selectedCell(bridge);
     if (cell) {
       let range = 0;
-      const type: TowerId | null = tower?.type ?? sel.previewType;
+      // 끌고 있으면 끄는 종류의 Lv1 사거리를 그린다.
+      const type: TowerId | null = drag ? drag.type : tower?.type ?? sel.previewType;
+      const built = drag ? null : tower;
       // 진화 미리보기: previewBranch는 두 선택지 가운데 첫째(A)·둘째(B)다.
-      const choices = tower && sel.previewBranch ? evolutionChoices(b, tower) : null;
+      const choices = built && sel.previewBranch ? evolutionChoices(b, built) : null;
       const preview = choices ? choices[sel.previewBranch === 'A' ? 0 : 1]! : null;
-      if (type) range = toWorld(reachMilli(b, type, tower ? (preview ? tower.level + 1 : tower.level) : 1, tower ? (preview ?? tower.form) : 'base'));
+      if (type) range = toWorld(reachMilli(b, type, built ? (preview ? built.level + 1 : built.level) : 1, built ? (preview ?? built.form) : 'base'));
       const cx = (cell.x + 0.5) * CELL_PX, cy = (cell.y + 0.5) * CELL_PX;
       if (range > 0) {
         g.fillStyle(0xf5ebd4, 0.16).fillCircle(cx, cy, range).lineStyle(2.5, 0xf5ebd4, 0.95).strokeCircle(cx, cy, range);

@@ -18,8 +18,8 @@ const BALANCE = sim.withOverrides(sets);
 const maps = flag('map', 'garden_u') === 'all' ? MAPS.map(m => m.id) : list('map', 'garden_u');
 const diffs = list('diffs', Object.keys(BALANCE.difficulties).join(','));
 const strats = list('strats', 'novice,balanced,focused');
-// --towers all: 모든 타워를 그 판이 쓸 수 있게 한다(기본은 시범 3종이라 징집이 없다). 그러면 리뉴얼 징집 판이 된다:
-// 기본 4종(궁수·포탑·서리·마법)으로 시작해 W3·W6·W10·W14 뒤 후보 3종 중 1종을 고른다(towers.md §0-2). balanced10은 이 판에서 돈다.
+// 기본은 앱 기본 판(product.defaults pilot.towers)이다. --towers all이면 타워 20종 모두를 그 판이 쓸 수 있다.
+// 어느 쪽이든 시작 4종(궁수·포탑·서리·마법)에 W3·W6·W10·W14 뒤 후보 3종 중 1종을 고른다(towers.md §0-2). 후보가 없으면 징집이 없다.
 const towers = flag('towers', '') === 'all' ? sim.TOWER_IDS : undefined;
 // --draft best|random: 모든 전략의 징집 습관(기본은 전략마다: 초보형 random, 나머지 best).
 const draftPolicy = flag('draft', null);
@@ -71,7 +71,8 @@ for (const mapId of maps) for (const difficulty of diffs) for (const strategy of
 console.log(`S11 엔진 시뮬레이션 · ${BALANCE.balanceVersion} · 성장 ${BALANCE.waves.hpGrowthPercent}% · 읽기 ${readSec}초 · seed ${seeds} · 상한 ${maxWaves}웨이브 · ${r1((performance.now() - started) / 1000)}초`);
 if (sets.length) console.log(`조정 후보: ${sets.join(' · ')}`);
 if (judge) console.log(`거래 가치: 모든 전략 ${judge}`);
-console.log(towers ? `징집 판: 시작 ${BALANCE.draft.startTowers.join('·')}, W${BALANCE.draft.afterWaves.join('·W')} 뒤 ${BALANCE.draft.offerCount}종 중 1종, 장착함 ${BALANCE.draft.maxOwned}칸${draftPolicy ? ` · 징집 습관 ${draftPolicy}` : ''}` : '시범 판: 궁수·포탑·서리 3종(징집 없음)');
+const pool = towers ?? sim.PILOT_TOWERS;
+console.log(`${towers ? '타워 20종' : `앱 기본 판 ${pool.length}종`} · 징집: 시작 ${BALANCE.draft.startTowers.join('·')}, W${BALANCE.draft.afterWaves.join('·W')} 뒤 ${BALANCE.draft.offerCount}종 중 1종, 장착함 ${BALANCE.draft.maxOwned}칸${draftPolicy ? ` · 징집 습관 ${draftPolicy}` : ''}${pool.length <= BALANCE.draft.startTowers.length ? ' (후보 없음, 징집 없음)' : ''}`);
 console.log('제품 엔진으로 판정한 가상 플레이어 결과다. 학생 실측·밸런스 승인이 아니다.');
 console.table(rows.map(row => Object.fromEntries(Object.entries(row).filter(([k]) => !k.startsWith('_')))));
 
@@ -116,6 +117,6 @@ if (checks.length) {
 const out = flag('out', null);
 if (out) {
   fs.mkdirSync(path.dirname(path.resolve(root, out)), { recursive: true });
-  fs.writeFileSync(path.resolve(root, out), `${JSON.stringify({ balanceVersion: BALANCE.balanceVersion, overrides: sets, judge: judge ?? 'strategy', towers: towers ? 'all(징집)' : 'pilot', draft: draftPolicy ?? 'strategy', readSec, seeds, maxWaves, generatedAt: new Date().toISOString(), rows, checks }, null, 2)}\n`);
+  fs.writeFileSync(path.resolve(root, out), `${JSON.stringify({ balanceVersion: BALANCE.balanceVersion, overrides: sets, judge: judge ?? 'strategy', towers: towers ? 'all20' : `pilot${sim.PILOT_TOWERS.length}`, draft: draftPolicy ?? 'strategy', readSec, seeds, maxWaves, generatedAt: new Date().toISOString(), rows, checks }, null, 2)}\n`);
   console.log(`\n저장: ${out}`);
 }

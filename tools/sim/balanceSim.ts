@@ -134,7 +134,7 @@ export interface SimResult {
   goldEarned: number;
 }
 
-export { BALANCE, MAPS, TOWER_IDS };
+export { BALANCE, MAPS, PILOT_TOWERS, TOWER_IDS };
 
 const WRONG_FEEDBACK_READ_MS = 1000;
 

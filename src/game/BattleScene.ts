@@ -1,6 +1,6 @@
 import Phaser from 'phaser';
 import { assetManifestSchema } from '../contracts/assetManifest';
-import { TOWER_IDS } from '../contracts/balance';
+import { ENEMY_KINDS, TOWER_IDS } from '../contracts/balance';
 import type { DomainEvent } from '../domain/events';
 import { drawSprites } from './art';
 import { applyManifest, CELL_PX, WORLD_H, WORLD_W } from './assets';
@@ -27,6 +27,7 @@ export class BattleScene extends Phaser.Scene {
   private miniFrame!: Phaser.GameObjects.Graphics;
   private offEvents: (() => void) | null = null;
   private cssCell = 0;
+  private cameraKey = '';
 
   constructor() { super('battle'); }
 
@@ -50,6 +51,8 @@ export class BattleScene extends Phaser.Scene {
     drawSprites(this);
     const icons: Record<string, string> = {};
     for (const id of TOWER_IDS) for (const key of [`tower.${id}`, `tower.${id}.weapon`]) if (this.textures.exists(key)) icons[key] = this.textures.getBase64(key);
+    // 준비판의 다음 웨이브 미리보기·웨이브 띠의 대장 초상화도 전장과 같은 그림을 쓴다.
+    for (const kind of ENEMY_KINDS) { const key = `enemy.${kind}.0`; if (this.textures.exists(key)) icons[key] = this.textures.getBase64(key); }
     this.bridge.onIcons?.(icons);
     this.ground.build();
     this.inputLayer = new InputLayer(c, p => Boolean(this.miniCam?.visible && p.x >= this.miniCam.x && p.y <= this.miniCam.y + this.miniCam.height));
@@ -113,7 +116,7 @@ export class BattleScene extends Phaser.Scene {
         this.towerLayer.onFire(e);
       } else if (e.type === 'strike') {
         this.towerLayer.onStrike(e);
-        this.effects.onStrike(e);
+        this.effects.onStrike(e, this.towerLayer.weaponLift(e.towerId));
       } else if (e.type === 'burn') {
         const at = this.enemyLayer.spriteAt(e.enemyId);
         if (at) this.effects.onBurn(at);
@@ -129,11 +132,15 @@ export class BattleScene extends Phaser.Scene {
     this.enemyLayer.advance(s);
     this.towerLayer.sync(s, time);
     this.enemyLayer.sync(s, time, alpha);
-    this.effects.syncShots(s, alpha, (id, a) => this.enemyLayer.progressOf(id, a));
+    this.effects.syncShots(s, alpha, (id, a) => this.enemyLayer.progressOf(id, a), id => this.towerLayer.weaponLift(id));
     this.inputLayer.draw(s);
-    if (this.miniCam?.visible) {
-      const v = this.cameras.main.worldView;
-      this.miniFrame.clear().lineStyle(6, 0xf5ebd4, 1).strokeRect(v.x, v.y, v.width, v.height);
+    const v = this.cameras.main.worldView;
+    if (this.miniCam?.visible) this.miniFrame.clear().lineStyle(6, 0xf5ebd4, 1).strokeRect(v.x, v.y, v.width, v.height);
+    // 보이는 영역이 바뀌면 DOM 겹층(타워 옆 도구 묶음 등)이 칸 위치를 다시 맞춘다.
+    const cameraKey = `${v.x.toFixed(1)},${v.y.toFixed(1)},${v.width.toFixed(1)},${v.height.toFixed(1)}`;
+    if (cameraKey !== this.cameraKey && v.width > 0) {
+      this.cameraKey = cameraKey;
+      this.bridge.onCamera?.({ x: v.x, y: v.y, width: v.width, height: v.height });
     }
   }
 }
