@@ -54,6 +54,10 @@ export interface GameView {
   prep: { done: number; target: number };
   question: QuestionView | null;
   towers: TowerView[];
+  /** 장착함(징집으로 늘어난다, towers.md §0-2). 장착 홈·설치 메뉴는 이 타워만 보인다. */
+  owned: TowerId[];
+  /** 고르기를 기다리는 징집 후보. 없으면 null. */
+  draft: { wave: number; offers: TowerId[] } | null;
   stats: RunStats;
   milestoneWave: boolean;
 }
@@ -113,6 +117,8 @@ export function selectView(ctx: GameContext, s: RunState): GameView {
     prep: { done: s.quiz.prepDone, target: s.quiz.prepTarget },
     question,
     towers: s.towers.map(t => ({ id: t.id, type: t.type, slotId: t.slotId, level: t.level, form: t.form, branch: formBranch(t.form), invested: t.invested, undoable: undoable(t, s.tick) })),
+    owned: [...s.owned],
+    draft: s.draft ? { wave: s.draft.wave, offers: [...s.draft.offers] } : null,
     stats: { ...s.stats },
     milestoneWave: s.wave % ctx.balance.waves.bossEveryWaves === 0,
   };
@@ -125,5 +131,6 @@ export function viewKey(s: RunState): string {
     s.phase, s.wave, s.gateHp, s.gold, s.pt, s.pause.join(','), s.quiz.current?.id ?? 0, s.quiz.current?.answer ? 1 : 0, s.quiz.current?.wrapup ? 1 : 0,
     fb ? `${fb.result}:${secondsLeft(fb.nextEnabledTick, s.tick)}` : '-', secondsLeft(s.burningUntilTick, s.tick),
     s.towers.map(t => `${t.id}.${t.level}.${t.form}.${undoable(t, s.tick) ? 1 : 0}`).join('|'), s.quiz.prepDone, s.quiz.battleStreak, s.stats.ptFromKills,
+    s.owned.join(','), s.draft ? `${s.draft.wave}:${s.draft.offers.join(',')}` : '-',
   ].join('/');
 }

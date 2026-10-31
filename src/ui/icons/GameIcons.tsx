@@ -193,6 +193,15 @@ export function EvolveIcon({ size = 18 }: { size?: number }) {
   );
 }
 
+/** 하늘(나는 새 한 마리: 두 날개 곡선). 징집 카드의 ‘하늘 적 공격’ 표시용. */
+export function SkyWingIcon({ size = 16 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 16 16" style={baseStyle} aria-hidden="true">
+      <path d="M1.5 9.5C3 6.6 5.6 6.4 8 9.2c2.4-2.8 5-2.6 6.5.3" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
 /** 되돌리기(왼쪽으로 굽은 화살표). 설치 직후 되돌리기 칩용. */
 export function UndoArrowIcon({ size = 18 }: { size?: number }) {
   return (

@@ -449,3 +449,85 @@ test('학년 단추는 공동검수를 통과한 공개 은행만 시작할 수 
   expect(overflow).toBeLessThanOrEqual(0);
   await shot(page, `grade${top}-crazy-prep`);
 });
+
+/**
+ * 징집이 열린 상태 fixture: 앱은 아직 시범 3종이라 징집이 열리지 않으므로, 멈춘 판의 저장본을 고쳐(모든 타워 사용 가능,
+ * 시작 4종 장착, 후보 3종) 이어한다. 저장본은 무결성 해시를 다시 계산해 넣는다(PRD §14 형식 그대로).
+ */
+async function openDraftFixture(page: Page, offers: string[]) {
+  await page.getByRole('button', { name: '일시정지' }).first().click();
+  await expect(page.getByRole('dialog')).toBeVisible();
+  await page.waitForTimeout(300);
+  await page.evaluate(async ({ offers }) => {
+    const db = await new Promise<IDBDatabase>((resolve, reject) => {
+      const req = indexedDB.open('vocabulary-td');
+      req.onsuccess = () => resolve(req.result);
+      req.onerror = () => reject(req.error);
+    });
+    const slots = await new Promise<Array<{ slot: string; seq: number; savedAt: string; hash: string; json: string }>>((resolve, reject) => {
+      const req = db.transaction('run', 'readonly').objectStore('run').getAll();
+      req.onsuccess = () => resolve(req.result);
+      req.onerror = () => reject(req.error);
+    });
+    const last = slots.sort((a, b) => b.seq - a.seq)[0]!;
+    const state = JSON.parse(last.json);
+    state.config.availableTowers = ['archer', 'crossbow', 'cannon', 'mage', 'frost', 'lightning', 'flame', 'spear', 'guardian', 'banner'];
+    state.owned = ['archer', 'cannon', 'frost', 'mage'];
+    state.draft = { wave: 3, offers };
+    const json = JSON.stringify(state);
+    const digest = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(json));
+    const hash = [...new Uint8Array(digest)].map(b => b.toString(16).padStart(2, '0')).join('');
+    const seq = last.seq + 1;
+    await new Promise<void>((resolve, reject) => {
+      const tx = db.transaction('run', 'readwrite');
+      tx.objectStore('run').put({ slot: seq % 2 === 1 ? 'A' : 'B', seq, savedAt: new Date().toISOString(), hash, json });
+      tx.oncomplete = () => resolve();
+      tx.onerror = () => reject(tx.error);
+    });
+    db.close();
+  }, { offers });
+  await page.reload();
+  await page.getByRole('button', { name: /^이어하기 · 하늘바람/ }).click();
+  await page.getByRole('button', { name: '계속하기' }).click();
+}
+
+for (const [w, h, name] of [[1440, 900, 'desktop'], [390, 844, 'phone']] as const) {
+  test(`${w}×${h} 징집: 큰 카드 3장과 고르기만, 문제 풀이를 막지 않고, 고르면 장착 홈에 들어온다(towers.md §0-2)`, async ({ page }) => {
+    await page.setViewportSize({ width: w, height: h });
+    await newGame(page);
+    await openDraftFixture(page, ['crossbow', 'flame', 'banner']);
+    const recruit = page.getByRole('dialog', { name: '새 타워 징집' });
+    await expect(recruit).toBeVisible();
+    const cards = recruit.getByRole('radio');
+    await expect(cards).toHaveCount(3);
+    await expect(recruit.getByText('하늘 적 공격')).toHaveCount(1);
+    await expect(recruit.getByText('땅 적만')).toHaveCount(1);
+    const pick = recruit.getByRole('button', { name: '고르기' });
+    await expect(pick).toBeDisabled();
+    // 모달이 아니다: 포커스를 빼앗지 않고, 문제판은 그대로 보이고 답할 수 있다.
+    expect(await page.evaluate(() => !!document.activeElement?.closest('[role="dialog"]'))).toBe(false);
+    const options = page.getByRole('region', { name: '어휘 문제' }).getByRole('group', { name: '보기' }).getByRole('button');
+    await expect(options.first()).toBeEnabled();
+    const overflowX = await page.evaluate(() => document.documentElement.scrollWidth - innerWidth);
+    expect(overflowX).toBeLessThanOrEqual(0);
+    // 카드는 문제판과 겹치지 않는다. 휴대폰은 문제판이 먼저(위에) 와서 카드가 문제를 화면 밖으로 밀지 않는다.
+    const q = (await page.getByRole('region', { name: '어휘 문제' }).boundingBox())!;
+    const r = (await recruit.boundingBox())!;
+    const overlap = Math.max(0, Math.min(q.y + q.height, r.y + r.height) - Math.max(q.y, r.y)) * Math.max(0, Math.min(q.x + q.width, r.x + r.width) - Math.max(q.x, r.x));
+    expect(overlap).toBe(0);
+    if (name === 'phone') expect(q.y).toBeLessThan(r.y);
+    await shot(page, `recruit-${name}`);
+    await recruit.scrollIntoViewIfNeeded();
+    await shot(page, `recruit-${name}-cards`);
+    await options.first().click();
+    await expect(options.first()).toBeDisabled();
+    // 고르기: 카드를 누르면 고른 표시만, ‘고르기’로 확정하면 장착 홈에 석궁탑이 들어오고 카드가 닫힌다.
+    await cards.first().click();
+    await expect(cards.first()).toHaveAttribute('aria-checked', 'true');
+    await pick.click();
+    await expect(recruit).toHaveCount(0);
+    const armory = page.getByRole('listbox', { name: '타워 장착 홈' });
+    await expect(armory.getByRole('option')).toHaveCount(5);
+    await expect(armory.getByRole('option', { name: /석궁탑/ })).toBeVisible();
+  });
+}

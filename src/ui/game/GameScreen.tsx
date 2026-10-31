@@ -23,6 +23,8 @@ import css from './GameScreen.module.css';
 import { Hud, type RecentDelta } from './Hud';
 import { PauseOverlay } from './PauseOverlay';
 import { QuestionPanel } from './QuestionPanel';
+import { RecruitCard } from './RecruitCard';
+import { recruitCommand, recruitOffer, showRecruit } from './recruit';
 import { practiceCoach } from './practiceCoach';
 import { nextSlot, SlotList, slotDescription, type Arrow } from './SlotList';
 import { TowerDetail } from './TowerDetail';
@@ -32,6 +34,7 @@ import { WaveBand } from './WaveBand';
 
 interface Props {
   controller: RunController;
+  /** 판 설정의 타워(호환용). 화면은 엔진 장착함(view.owned)을 쓴다. */
   towers: readonly TowerId[];
   notice: string | null;
   fontScale: FontScale;
@@ -53,7 +56,6 @@ const FLASH_MS = 2400;
 
 export function GameScreen({
   controller,
-  towers,
   notice,
   fontScale,
   reducedMotion,
@@ -165,6 +167,8 @@ export function GameScreen({
   const magnify = layout.cell < layout.magnifyBelow && hasSelection && !dragging;
   const trading = view.phase === 'BUILD' || view.phase === 'BATTLE';
   const lock = view.phase === 'PREP_QUIZ' ? '준비 문제를 먼저 풀어 주세요' : view.phase === 'WAVE_WRAPUP' ? '다음 웨이브 준비 중이에요' : null;
+  // 장착함(징집으로 늘어난다). 장착 홈·설치 메뉴·자리 목록은 이 타워만 보인다(엔진은 장착함 밖 설치를 NOT_OWNED로 막는다).
+  const towers = view.owned;
   const occupied = useMemo(() => new Set(view.towers.map(t => t.slotId)), [view.towers]);
   // 골드가 늘어 새로 살 수 있게 된 타워: 장착 홈 테두리가 한 번 빛난다(ui-rules-v2 §5).
   const [goldSeen, setGoldSeen] = useState<{ gold: number; fresh: ReadonlySet<TowerId>; n: number }>({ gold: view.gold, fresh: new Set(), n: 0 });
@@ -560,6 +564,16 @@ export function GameScreen({
     </section>
   ) : null;
 
+  // 징집(towers.md §0-2): 웨이브 사이에 큰 카드 3장을 띄운다. 모달이 아니라 문제 풀이를 막지 않는다.
+  const recruitChoices = showRecruit(view) ? recruitOffer(view) : null;
+  const onRecruit = (type: TowerId) => {
+    const r = controller.dispatch(recruitCommand(type));
+    if (!r.ok) showFlash(commandErrorText(r.error));
+  };
+  const recruit = recruitChoices ? (
+    <RecruitCard balance={b} choices={recruitChoices} icons={icons} compact={layout.mode === 'S'} onPick={onRecruit} />
+  ) : null;
+
   const field = (
     <div ref={fieldRef} className={css.field} style={{ width: layout.mapW, height: layout.mapH }}>
       <PhaserBattlefield
@@ -620,6 +634,7 @@ export function GameScreen({
       {!coach && mark === 'place' && !hasSelection && !armed && !dragging && (
         <div className={css.coachField}><p className={css.coach} role="status">{COACH_TEXT.place}</p></div>
       )}
+      {layout.mode === 'R' && recruit}
     </div>
   );
 
@@ -677,6 +692,8 @@ export function GameScreen({
               </div>
             )}
             {bottom}
+            {/* 휴대폰: 징집 카드는 문제판 아래에 둔다(문제가 화면 밖으로 밀리지 않게). */}
+            {recruit}
             {!practiceDone && (
               <div className={css.phoneExtras}>
                 {skip}
