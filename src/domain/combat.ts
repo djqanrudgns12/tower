@@ -4,8 +4,8 @@ import { campaignOf, enemyArtId } from './factions';
 import { dist2, positionAt } from './geometry';
 import { add, bpFloor, ceilDiv, isqrt, msToTicks, safe, TICK_HZ } from './num';
 import { attackIntervalTicks, attacks, auraDamageBonusBP, auraReaches, auraSpeedBonusBP, towerStats, type TowerStats } from './towers';
-import type { Enemy, Projectile, RunState, Tower } from './types';
-import { enemyMaxHp, enemyResists, enemySpeedBP } from './waves';
+import type { Enemy, Projectile, RunState, SpawnEntry, Tower } from './types';
+import { enemyMaxHp, enemyResists, enemySpeedBP, hpBaseMilli } from './waves';
 
 // 같은 틱 순서(PRD §3.4, §20.3): 만료 → 생성 → 도착 공격 → 화상 → 타워 발사(즉발 포함) → 이동/누출. 패배·완료 판정은 run.ts가 이어서 한다.
 export function battleTick(ctx: GameContext, s: RunState, ev: DomainEvent[]): void {
@@ -42,39 +42,56 @@ export function battleTick(ctx: GameContext, s: RunState, ev: DomainEvent[]): vo
 export const burningBonusBP = (ctx: GameContext, s: RunState, tick: number) => (tick < s.burningUntilTick ? ctx.balance.burning.attackSpeedBP : 0);
 
 function spawn(ctx: GameContext, s: RunState, ev: DomainEvent[]) {
-  const b = ctx.balance;
   const entry = s.battle!.spawnList[s.battle!.spawnIndex++]!;
-  const hp = enemyMaxHp(b, ctx.difficulty, s.battle!.hpBaseMilli, entry.kind, entry.elite);
+  addEnemy(ctx, s, entry, s.battle!.hpBaseMilli, 0, false, ev);
+}
+
+/** 적 하나를 경로 progress 지점에 만든다. 생성 예약에 종족이 없으면 맵 주력 종족, 대장 단계가 없으면 1단이다. */
+function addEnemy(ctx: GameContext, s: RunState, entry: SpawnEntry, hpBase: number, progress: number, derived: boolean, ev: DomainEvent[]): Enemy {
+  const b = ctx.balance;
+  const hp = enemyMaxHp(b, ctx.difficulty, hpBase, entry.kind, entry.elite);
   const res = enemyResists(b, entry.kind, entry.elite);
   const enemy: Enemy = {
     id: s.seq.enemy++, kind: entry.kind, faction: entry.faction ?? campaignOf(b, ctx.map.id).primary,
-    bossTier: entry.kind === 'boss' ? (entry.bossTier ?? 1) : null, elite: entry.elite, hp, maxHp: hp, progress: 0, moveRem: 0,
+    bossTier: entry.kind === 'boss' ? (entry.bossTier ?? 1) : null, derived, flying: b.enemies[entry.kind].flying ?? false, groundedUntilTick: 0,
+    elite: entry.elite, hp, maxHp: hp, progress, moveRem: 0,
     speedBP: enemySpeedBP(b, entry.kind, entry.elite), physicalResistBP: res.physical, magicResistBP: res.magic,
     slows: [], stunUntilTick: 0, stunTicksUsed: 0, burns: [], burnNextTick: null, burnRemainder: 0, alive: true,
   };
   s.enemies.push(enemy);
   ev.push({ type: 'spawn', enemyId: enemy.id, kind: enemy.kind, faction: enemy.faction, art: enemyArtId(b, enemy) });
+  return enemy;
 }
 
-/** 진행도 최대 → 생성 순번 최소(PRD §7.1). */
-function pickTarget(ctx: GameContext, s: RunState, x: number, y: number, range: number): Enemy | null {
-  const r2 = range * range;
+/** 떠 있는 비행 적인가(끌어내린 동안은 아니다, towers.md §4-1). */
+export const airborne = (e: Pick<Enemy, 'flying' | 'groundedUntilTick'>, tick: number) => e.flying && tick >= e.groundedUntilTick;
+
+/** 이 공격이 이 적을 노리고 맞힐 수 있는가. 대공이 안 되는 공격은 떠 있는 비행 적을 지나친다. */
+const reachable = (canHitFlyer: boolean, e: Enemy, tick: number) => e.alive && (canHitFlyer || !airborne(e, tick));
+
+/** 진행도 최대 → 생성 순번 최소(PRD §7.1). preferFlyer면 사거리 안 떠 있는 비행 적을 먼저 같은 순서로 고른다. */
+function pickTarget(ctx: GameContext, s: RunState, x: number, y: number, stats: Pick<TowerStats, 'range' | 'canHitFlyer' | 'preferFlyer'>): Enemy | null {
+  const r2 = stats.range * stats.range;
   let best: Enemy | null = null;
+  let bestAir = false;
   for (const e of s.enemies) {
-    if (!e.alive) continue;
+    if (!reachable(stats.canHitFlyer, e, s.tick)) continue;
     const p = positionAt(ctx.path, e.progress);
     if (dist2(p.x, p.y, x, y) > r2) continue;
-    if (!best || e.progress > best.progress || (e.progress === best.progress && e.id < best.id)) best = e;
+    const air = stats.preferFlyer && airborne(e, s.tick);
+    if (best && air !== bestAir) { if (air) { best = e; bestAir = true; } continue; }
+    if (!best || e.progress > best.progress || (e.progress === best.progress && e.id < best.id)) { best = e; bestAir = air; }
   }
   return best;
 }
 
 /** 한 번의 타격이 싣는 값. 투사체는 발사 순간의 스냅샷이고 즉발 공격은 그 자리에서 만든다. */
-type Strike = Pick<Projectile, 'towerId' | 'towerType' | 'damage' | 'damageType' | 'slowBP' | 'slowTicks' | 'physicalResistIgnoreBP' | 'bonusBP' | 'eliteBossDamageBP'>;
+type Strike = Pick<Projectile, 'towerId' | 'towerType' | 'damage' | 'damageType' | 'slowBP' | 'slowTicks' | 'physicalResistIgnoreBP' | 'bonusBP' | 'eliteBossDamageBP' | 'canHitFlyer' | 'flyerDamageBP'>;
 
 const strikeOf = (tower: Tower, stats: TowerStats, damage: number, bonusBP: number): Strike => ({
   towerId: tower.id, towerType: tower.type, damage, damageType: stats.damageType, slowBP: stats.slowBP, slowTicks: stats.slowTicks,
   physicalResistIgnoreBP: stats.physicalResistIgnoreBP, bonusBP, eliteBossDamageBP: stats.eliteBossDamageBP,
+  canHitFlyer: stats.canHitFlyer, flyerDamageBP: stats.flyerDamageBP,
 });
 
 /** 타워의 외부 공격 속도 보너스: 버닝 + 깃발 B(신속). 합계 상한은 attackIntervalTicks가 적용한다(PRD §20.2). */
@@ -84,7 +101,7 @@ function fire(ctx: GameContext, s: RunState, tower: Tower, ev: DomainEvent[]) {
   const t = s.tick;
   if (tower.nextAttackTick === null || t < tower.nextAttackTick) return;
   const stats = towerStats(ctx.balance, tower.type, tower.level, tower.form);
-  const target = pickTarget(ctx, s, tower.x, tower.y, stats.range);
+  const target = pickTarget(ctx, s, tower.x, tower.y, stats);
   // 표적이 없으면 준비 상태로 기다린다. 기다린 시간만큼 몰아서 쏘지 않는다(PRD §7.2).
   if (!target) return;
   // 공격한 타워와 이 공격에 오라를 준 깃발은 더는 설치 취소(전액 환불)를 받지 않는다(공짜 공격 방지).
@@ -129,7 +146,7 @@ function pierceTarget(ctx: GameContext, s: RunState, tower: Tower, first: Enemy,
   const d = { x: f.x - tower.x, y: f.y - tower.y };
   const firstDot = d.x * d.x + d.y * d.y;
   const behind = s.enemies
-    .filter(e => e.alive && e !== first)
+    .filter(e => reachable(stats.canHitFlyer, e, s.tick) && e !== first)
     .map(e => ({ e, dot: inLine(tower, d, positionAt(ctx.path, e.progress), stats.range, stats.pierceWidth) }))
     .filter((c): c is { e: Enemy; dot: number } => c.dot !== null && c.dot > firstDot)
     .sort((a, b) => a.dot - b.dot || a.e.id - b.e.id);
@@ -164,7 +181,7 @@ function lineTargets(ctx: GameContext, s: RunState, tower: Tower, first: Enemy, 
   const f = positionAt(ctx.path, first.progress);
   const d = { x: f.x - tower.x, y: f.y - tower.y };
   const others = s.enemies
-    .filter(e => e.alive && e !== first && inLine(tower, d, positionAt(ctx.path, e.progress), stats.range, stats.lineWidth) !== null)
+    .filter(e => reachable(stats.canHitFlyer, e, s.tick) && e !== first && inLine(tower, d, positionAt(ctx.path, e.progress), stats.range, stats.lineWidth) !== null)
     .sort((a, b) => b.progress - a.progress || a.id - b.id);
   return [first, ...others].slice(0, stats.maxTargets);
 }
@@ -174,7 +191,7 @@ function aroundTargets(ctx: GameContext, s: RunState, first: Enemy, stats: Tower
   const c = positionAt(ctx.path, first.progress);
   const r2 = stats.splashRadius * stats.splashRadius;
   return s.enemies
-    .filter(e => e.alive)
+    .filter(e => reachable(stats.canHitFlyer, e, s.tick))
     .map(e => { const p = positionAt(ctx.path, e.progress); return { e, d: dist2(p.x, p.y, c.x, c.y) }; })
     .filter(h => h.d <= r2)
     .sort((a, b) => a.d - b.d || b.e.progress - a.e.progress || a.e.id - b.e.id)
@@ -195,7 +212,7 @@ function chainTargets(ctx: GameContext, s: RunState, first: Enemy, stats: TowerS
   while (chosen.length < stats.maxTargets) {
     const last = positionAt(ctx.path, chosen[chosen.length - 1]!.progress);
     const next = s.enemies
-      .filter(e => e.alive && !chosen.includes(e))
+      .filter(e => reachable(stats.canHitFlyer, e, s.tick) && !chosen.includes(e))
       .map(e => { const p = positionAt(ctx.path, e.progress); return { e, d: dist2(p.x, p.y, last.x, last.y) }; })
       .filter(c => c.d <= r2)
       .sort((a, b) => a.d - b.d || b.e.progress - a.e.progress || a.e.id - b.e.id)[0];
@@ -216,7 +233,7 @@ function coneTargets(ctx: GameContext, s: RunState, tower: Tower, first: Enemy, 
   const r2 = stats.range * stats.range;
   return s.enemies
     .filter(e => {
-      if (!e.alive) return false;
+      if (!reachable(stats.canHitFlyer, e, s.tick)) return false;
       const p = positionAt(ctx.path, e.progress);
       const dx = p.x - tower.x, dy = p.y - tower.y;
       const d2 = dx * dx + dy * dy;
@@ -271,13 +288,14 @@ function flightTicks(d2: number, speed: number): number {
 function resolve(ctx: GameContext, s: RunState, p: Projectile, ev: DomainEvent[]) {
   if (p.targetId !== null) {
     // 단일 대상: 도착 전에 처치·누출되면 빗나감, 다른 적으로 바꾸지 않는다(PRD §20.3).
-    const target = s.enemies.find(e => e.id === p.targetId && e.alive);
+    // 대공이 안 되는 공격은 그 사이 다시 떠오른 비행 적도 빗나간다.
+    const target = s.enemies.find(e => e.id === p.targetId && reachable(p.canHitFlyer, e, s.tick));
     if (target) applyHit(ctx, s, p, target, ev);
     return;
   }
   const r2 = p.splashRadius * p.splashRadius;
   const hits = s.enemies
-    .filter(e => e.alive)
+    .filter(e => reachable(p.canHitFlyer, e, s.tick))
     .map(e => { const at = positionAt(ctx.path, e.progress); return { e, d: dist2(at.x, at.y, p.toX, p.toY) }; })
     .filter(h => h.d <= r2)
     .sort((a, b) => a.d - b.d || b.e.progress - a.e.progress || a.e.id - b.e.id)
@@ -301,6 +319,7 @@ export function effectiveResistBP(e: Pick<Enemy, 'physicalResistBP' | 'magicResi
 function applyHit(ctx: GameContext, s: RunState, p: Strike, e: Enemy, ev: DomainEvent[]) {
   let damage = p.damage;
   if (p.eliteBossDamageBP !== 10000 && (e.elite !== null || e.kind === 'boss')) damage = bpFloor(damage, p.eliteBossDamageBP, 'damage.situational');
+  if (p.flyerDamageBP !== 10000 && e.flying) damage = bpFloor(damage, p.flyerDamageBP, 'damage.flyer');
   if (p.bonusBP > 0) damage = bpFloor(damage, 10000 + p.bonusBP, 'damage.external');
   const resist = effectiveResistBP(e, p.damageType, p.physicalResistIgnoreBP);
   const dealt = Math.min(e.hp, mitigated(damage, resist));
@@ -324,8 +343,9 @@ function kill(ctx: GameContext, s: RunState, e: Enemy, at: { x: number; y: numbe
   e.alive = false;
   const d = ctx.difficulty;
   const tier = e.kind === 'boss' ? 'boss' : e.elite ? 'elite' : 'regular';
-  const gold = d.killGold[tier];
-  let pt = d.killPt[tier];
+  // 파생체(분열·호위)는 처치 골드·PT가 없다(monsters.md §1.2, 농사 방지).
+  const gold = e.derived ? 0 : d.killGold[tier];
+  let pt = e.derived ? 0 : d.killPt[tier];
   if (tier !== 'boss') {
     pt = Math.max(0, Math.min(pt, d.waveKillPtCap - s.waveKillPtGranted));
     s.waveKillPtGranted = add(s.waveKillPtGranted, pt);
@@ -336,6 +356,22 @@ function kill(ctx: GameContext, s: RunState, e: Enemy, at: { x: number; y: numbe
   s.stats.goldEarned = add(s.stats.goldEarned, gold);
   s.stats.ptFromKills = add(s.stats.ptFromKills, pt);
   ev.push({ type: 'kill', enemyId: e.id, kind: e.kind, elite: e.elite !== null, x: at.x, y: at.y, gold, pt });
+  split(ctx, s, e, ev);
+}
+
+/**
+ * 분열(monsters.md §1.2 splitter): 처치 지점 progress에서 -spread…+spread로 고르게 파생체를 놓는다(경로 안으로 자른다).
+ * 같은 틱 뒤 타워의 표적이 될 수 있고, 처치 유발 효과(towers.md §4-8)는 이 뒤에 온다.
+ */
+function split(ctx: GameContext, s: RunState, e: Enemy, ev: DomainEvent[]) {
+  const rule = ctx.balance.enemies[e.kind].split;
+  if (!rule) return;
+  const hpBase = s.battle?.hpBaseMilli ?? hpBaseMilli(ctx.balance, s.wave);
+  for (let i = 0; i < rule.count; i++) {
+    const offset = rule.count === 1 ? 0 : -rule.spreadMilli + Math.floor((2 * rule.spreadMilli * i) / (rule.count - 1));
+    const progress = Math.min(ctx.path.length - 1, Math.max(0, e.progress + offset));
+    addEnemy(ctx, s, { kind: rule.kind, elite: null, faction: e.faction }, hpBase, progress, true, ev);
+  }
 }
 
 export function effectiveSlowBP(ctx: GameContext, e: Enemy, tick: number): number {

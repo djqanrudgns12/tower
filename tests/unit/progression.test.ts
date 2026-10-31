@@ -75,7 +75,7 @@ describe('진화 선택지·형태 단계(progression.md §1·§5)', () => {
     expect(evolutionChoices(fixed(3), { type: 'archer', level: 3, form: 'base' })).toBeNull();
   });
 
-  it('formTier·formBranch, formInfo: 기본형은 타워 이름, 1차형 단계 1, 2차형 이름은 10종 모두 ‘임시’로 시작', () => {
+  it('formTier·formBranch, formInfo: 기본형은 타워 이름, 1차형 단계 1, 2차형 이름은 카탈로그를 옮긴 대공 형태(화염 A2·수호기사 B1) 말고는 ‘임시’로 시작', () => {
     expect(FORM_IDS.map(f => formTier(f))).toEqual([0, 1, 1, 2, 2, 2, 2]);
     expect(FORM_IDS.map(f => formBranch(f))).toEqual([null, 'A', 'B', 'A', 'A', 'B', 'B']);
     for (const type of TOWER_IDS) {
@@ -84,7 +84,8 @@ describe('진화 선택지·형태 단계(progression.md §1·§5)', () => {
       for (const form of ['A1', 'A2', 'B1', 'B2'] as const) {
         const info = formInfo(BALANCE, type, form);
         expect(info.tier).toBe(2);
-        expect(info.label, `${type} ${form}`).toMatch(/^임시/);
+        const catalog = (type === 'flame' && form === 'A2') || (type === 'guardian' && form === 'B1');
+        expect(info.label, `${type} ${form}`).toMatch(catalog ? /^[^임]/ : /^임시/);
       }
     }
   });
