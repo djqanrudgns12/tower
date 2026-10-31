@@ -1,0 +1,1073 @@
+{
+  "schemaVersion": "1",
+  "mapId": "garden_u",
+  "coordinateConvention": "x/y는 cell index 기준 실수. 화면 기준점=(x+0.5,y+0.5)*128. origin은 그림 안의 기준점. 좌우반전은 광원 보존을 위해 전부 false.",
+  "placementMethod": "ART-R1 배치를 계승하고, 새 숲·덤불은 수동 좌표로 네 변에 배치. 길 입출구와 모든 설치 자리 보호. 난수·반전·회전·보호영역 마스킹 없음.",
+  "groundBlends": [
+    {
+      "id": "ground.grass.light",
+      "opacity": 175,
+      "blurPx": 110,
+      "ellipses": [
+        [
+          1.4,
+          1.7,
+          8.8,
+          5.4
+        ],
+        [
+          6.4,
+          4.2,
+          12.5,
+          8.8
+        ],
+        [
+          10.2,
+          0.7,
+          16.2,
+          4.2
+        ]
+      ]
+    },
+    {
+      "id": "ground.grass.shade",
+      "opacity": 195,
+      "blurPx": 105,
+      "ellipses": [
+        [
+          -2,
+          -2,
+          5.1,
+          1.1
+        ],
+        [
+          -2,
+          2.3,
+          1.7,
+          8.8
+        ],
+        [
+          0.7,
+          6.8,
+          7.5,
+          11.2
+        ],
+        [
+          12.9,
+          -1,
+          17.4,
+          8.5
+        ],
+        [
+          7.7,
+          -2,
+          13.4,
+          0.7
+        ]
+      ]
+    }
+  ],
+  "pathBulges": [
+    [
+      1.0,
+      1.0,
+      50
+    ],
+    [
+      7.4,
+      1.0,
+      52
+    ],
+    [
+      11.7,
+      1.0,
+      50
+    ],
+    [
+      10.2,
+      3.0,
+      51
+    ],
+    [
+      5.8,
+      3.0,
+      50
+    ],
+    [
+      2.0,
+      4.4,
+      50
+    ],
+    [
+      5.0,
+      5.0,
+      52
+    ],
+    [
+      9.0,
+      5.0,
+      50
+    ],
+    [
+      12.0,
+      6.3,
+      51
+    ],
+    [
+      13.8,
+      7.0,
+      50
+    ]
+  ],
+  "towers": [
+    {
+      "id": "tower.archer",
+      "slotId": "garden_u-s08"
+    },
+    {
+      "id": "tower.cannon",
+      "slotId": "garden_u-s12"
+    },
+    {
+      "id": "tower.frost",
+      "slotId": "garden_u-s16"
+    }
+  ],
+  "placements": [
+    {
+      "key": "sun-meadow-a",
+      "id": "ground.meadow.0",
+      "x": 5.1,
+      "y": 2.0,
+      "scale": 0.9,
+      "flipX": false,
+      "group": "pond",
+      "file": "asset-source/renewal/ART-R1/ground.meadow.0.r1.png"
+    },
+    {
+      "key": "sun-meadow-b",
+      "id": "ground.meadow.1",
+      "x": 6.4,
+      "y": 4.0,
+      "scale": 0.7,
+      "flipX": false,
+      "group": "center",
+      "file": "asset-source/renewal/ART-R1/ground.meadow.1.r1.png"
+    },
+    {
+      "key": "sun-meadow-c",
+      "id": "ground.meadow.2",
+      "x": 7.6,
+      "y": 6.1,
+      "scale": 0.8,
+      "flipX": false,
+      "group": "south",
+      "file": "asset-source/renewal/ART-R1/ground.meadow.2.r1.png"
+    },
+    {
+      "key": "shade-meadow-a",
+      "id": "ground.meadow.0",
+      "x": 0.3,
+      "y": 6.0,
+      "scale": 0.65,
+      "flipX": false,
+      "group": "west",
+      "file": "asset-source/renewal/ART-R1/ground.meadow.0.r1.png"
+    },
+    {
+      "key": "shade-meadow-b",
+      "id": "ground.meadow.1",
+      "x": 13.5,
+      "y": 3.9,
+      "scale": 0.7,
+      "flipX": false,
+      "group": "east",
+      "file": "asset-source/renewal/ART-R1/ground.meadow.1.r1.png"
+    },
+    {
+      "key": "culture-meadow",
+      "id": "ground.meadow.2",
+      "x": 0.6,
+      "y": 7.7,
+      "scale": 0.65,
+      "flipX": false,
+      "group": "stele",
+      "file": "asset-source/renewal/ART-R1/ground.meadow.2.r1.png"
+    },
+    {
+      "key": "pond-main",
+      "id": "landmark.pond",
+      "x": 5.0,
+      "y": 2.0,
+      "scale": 0.94,
+      "flipX": false,
+      "group": "pond",
+      "decorationIds": [
+        "garden_u-d03",
+        "garden_u-d04",
+        "garden_u-d05"
+      ],
+      "decorationOffsetCells": [
+        0,
+        0
+      ],
+      "file": "asset-source/renewal/ART-R1/landmark.pond.r1.png"
+    },
+    {
+      "key": "pond-flowers",
+      "id": "prop.flowerbed",
+      "x": 6.65,
+      "y": 2.22,
+      "scale": 0.58,
+      "flipX": false,
+      "group": "pond",
+      "file": "asset-source/renewal/ART-R1/prop.flowerbed.r1.png"
+    },
+    {
+      "key": "pond-reed-tuft",
+      "id": "path.tuft.2",
+      "x": 3.45,
+      "y": 2.12,
+      "scale": 0.8,
+      "flipX": false,
+      "group": "pond",
+      "file": "asset-source/renewal/ART-R1/path.tuft.2.r1.png"
+    },
+    {
+      "key": "pond-stone",
+      "id": "path.pebbles.1",
+      "x": 6.35,
+      "y": 2.35,
+      "scale": 0.7,
+      "flipX": false,
+      "group": "pond",
+      "file": "asset-source/renewal/ART-R1/path.pebbles.1.r1.png"
+    },
+    {
+      "key": "stele-main",
+      "id": "reference.stele",
+      "file": "public/assets/deco.stele.r1.png",
+      "x": 0.0,
+      "y": 8.0,
+      "scale": 0.92,
+      "origin": [
+        0.5,
+        0.85
+      ],
+      "flipX": false,
+      "group": "stele",
+      "decorationIds": [
+        "garden_u-d01"
+      ],
+      "decorationOffsetCells": [
+        0,
+        0
+      ]
+    },
+    {
+      "key": "stele-flowers-a",
+      "id": "prop.flowerbed",
+      "x": 0.7,
+      "y": 8.0,
+      "scale": 0.66,
+      "flipX": false,
+      "group": "stele",
+      "file": "asset-source/renewal/ART-R1/prop.flowerbed.r1.png"
+    },
+    {
+      "key": "stele-stump",
+      "id": "prop.stump",
+      "x": 1.24,
+      "y": 8.28,
+      "scale": 0.85,
+      "flipX": false,
+      "group": "stele",
+      "file": "asset-source/renewal/ART-R1/prop.stump.r1.png"
+    },
+    {
+      "key": "stele-mushrooms",
+      "id": "prop.mushrooms",
+      "x": 0.78,
+      "y": 8.44,
+      "scale": 0.8,
+      "flipX": false,
+      "group": "stele",
+      "file": "asset-source/renewal/ART-R1/prop.mushrooms.r1.png"
+    },
+    {
+      "key": "stele-fence",
+      "id": "prop.fence.h",
+      "x": 1.25,
+      "y": 8.65,
+      "scale": 0.63,
+      "flipX": false,
+      "group": "stele",
+      "file": "asset-source/renewal/ART-R1/prop.fence.h.r1.png"
+    },
+    {
+      "key": "south-rock-garden",
+      "id": "edge.rocks.0",
+      "x": 5,
+      "y": 8.25,
+      "scale": 0.62,
+      "flipX": false,
+      "group": "south-rock",
+      "decorationIds": [
+        "garden_u-d02"
+      ],
+      "decorationOffsetCells": [
+        0,
+        0.25
+      ],
+      "file": "asset-source/renewal/ART-R1/edge.rocks.0.r1.png"
+    },
+    {
+      "key": "south-log",
+      "id": "prop.log",
+      "x": 6.05,
+      "y": 8.38,
+      "scale": 0.85,
+      "flipX": false,
+      "group": "south-rock",
+      "file": "asset-source/renewal/ART-R1/prop.log.r1.png"
+    },
+    {
+      "key": "south-flowers",
+      "id": "prop.flowerbed",
+      "x": 4.12,
+      "y": 8.55,
+      "scale": 0.7,
+      "flipX": false,
+      "group": "south-rock",
+      "file": "asset-source/renewal/ART-R1/prop.flowerbed.r1.png"
+    },
+    {
+      "key": "south-mushrooms",
+      "id": "prop.mushrooms",
+      "x": 5.82,
+      "y": 8.02,
+      "scale": 0.9,
+      "flipX": false,
+      "group": "south-rock",
+      "file": "asset-source/renewal/ART-R1/prop.mushrooms.r1.png"
+    },
+    {
+      "key": "west-log",
+      "id": "prop.log",
+      "x": 0.25,
+      "y": 5.6,
+      "scale": 0.7,
+      "flipX": false,
+      "group": "west",
+      "file": "asset-source/renewal/ART-R1/prop.log.r1.png"
+    },
+    {
+      "key": "west-mushrooms",
+      "id": "prop.mushrooms",
+      "x": 0.68,
+      "y": 6.0,
+      "scale": 0.8,
+      "flipX": false,
+      "group": "west",
+      "file": "asset-source/renewal/ART-R1/prop.mushrooms.r1.png"
+    },
+    {
+      "key": "west-flowers",
+      "id": "prop.flowerbed",
+      "x": 0.05,
+      "y": 6.35,
+      "scale": 0.6,
+      "flipX": false,
+      "group": "west",
+      "file": "asset-source/renewal/ART-R1/prop.flowerbed.r1.png"
+    },
+    {
+      "key": "west-fence",
+      "id": "prop.fence.v",
+      "x": 1.0,
+      "y": 5.9,
+      "scale": 0.7,
+      "widthCells": 1,
+      "flipX": false,
+      "group": "west",
+      "file": "asset-source/renewal/ART-R1/prop.fence.v.r1.png"
+    },
+    {
+      "key": "east-rock",
+      "id": "edge.rocks.1",
+      "x": 13.8,
+      "y": 4.05,
+      "scale": 0.58,
+      "flipX": false,
+      "group": "east",
+      "file": "asset-source/renewal/ART-R1/edge.rocks.1.r1.png"
+    },
+    {
+      "key": "east-stump",
+      "id": "prop.stump",
+      "x": 14.55,
+      "y": 4.55,
+      "scale": 0.8,
+      "flipX": false,
+      "group": "east",
+      "file": "asset-source/renewal/ART-R1/prop.stump.r1.png"
+    },
+    {
+      "key": "east-mushrooms",
+      "id": "prop.mushrooms",
+      "x": 14.1,
+      "y": 4.7,
+      "scale": 0.9,
+      "flipX": false,
+      "group": "east",
+      "file": "asset-source/renewal/ART-R1/prop.mushrooms.r1.png"
+    },
+    {
+      "key": "east-flowers",
+      "id": "prop.flowerbed",
+      "x": 13.35,
+      "y": 4.25,
+      "scale": 0.6,
+      "flipX": false,
+      "group": "east",
+      "file": "asset-source/renewal/ART-R1/prop.flowerbed.r1.png"
+    },
+    {
+      "key": "top-path-tuft-a",
+      "id": "path.tuft.0",
+      "x": 1.68,
+      "y": 0.68,
+      "scale": 1,
+      "flipX": false,
+      "group": "path-north",
+      "file": "asset-source/renewal/ART-R1/path.tuft.0.r1.png"
+    },
+    {
+      "key": "top-path-tuft-b",
+      "id": "path.tuft.1",
+      "x": 1.98,
+      "y": 0.64,
+      "scale": 0.85,
+      "flipX": false,
+      "group": "path-north",
+      "file": "asset-source/renewal/ART-R1/path.tuft.1.r1.png"
+    },
+    {
+      "key": "top-path-pebble",
+      "id": "path.pebbles.0",
+      "x": 2.3,
+      "y": 1.23,
+      "scale": 0.9,
+      "flipX": false,
+      "group": "path-north",
+      "file": "asset-source/renewal/ART-R1/path.pebbles.0.r1.png"
+    },
+    {
+      "key": "top-path-tuft-c",
+      "id": "path.tuft.2",
+      "x": 2.62,
+      "y": 1.34,
+      "scale": 0.85,
+      "flipX": false,
+      "group": "path-north",
+      "file": "asset-source/renewal/ART-R1/path.tuft.2.r1.png"
+    },
+    {
+      "key": "top-right-tuft-a",
+      "id": "path.tuft.0",
+      "x": 10.1,
+      "y": 0.65,
+      "scale": 1,
+      "flipX": false,
+      "group": "path-ne",
+      "file": "asset-source/renewal/ART-R1/path.tuft.0.r1.png"
+    },
+    {
+      "key": "top-right-tuft-b",
+      "id": "path.tuft.2",
+      "x": 10.44,
+      "y": 0.64,
+      "scale": 0.8,
+      "flipX": false,
+      "group": "path-ne",
+      "file": "asset-source/renewal/ART-R1/path.tuft.2.r1.png"
+    },
+    {
+      "key": "top-right-pebbles",
+      "id": "path.pebbles.2",
+      "x": 10.8,
+      "y": 1.22,
+      "scale": 1,
+      "flipX": false,
+      "group": "path-ne",
+      "file": "asset-source/renewal/ART-R1/path.pebbles.2.r1.png"
+    },
+    {
+      "key": "mid-path-tuft-a",
+      "id": "path.tuft.1",
+      "x": 5.8,
+      "y": 3.34,
+      "scale": 1,
+      "flipX": false,
+      "group": "path-mid",
+      "file": "asset-source/renewal/ART-R1/path.tuft.1.r1.png"
+    },
+    {
+      "key": "mid-path-tuft-b",
+      "id": "path.tuft.2",
+      "x": 6.12,
+      "y": 3.36,
+      "scale": 0.8,
+      "flipX": false,
+      "group": "path-mid",
+      "file": "asset-source/renewal/ART-R1/path.tuft.2.r1.png"
+    },
+    {
+      "key": "mid-path-pebbles",
+      "id": "path.pebbles.1",
+      "x": 6.4,
+      "y": 2.82,
+      "scale": 0.9,
+      "flipX": false,
+      "group": "path-mid",
+      "file": "asset-source/renewal/ART-R1/path.pebbles.1.r1.png"
+    },
+    {
+      "key": "mid-path-tuft-c",
+      "id": "path.tuft.0",
+      "x": 6.7,
+      "y": 2.65,
+      "scale": 0.85,
+      "flipX": false,
+      "group": "path-mid",
+      "file": "asset-source/renewal/ART-R1/path.tuft.0.r1.png"
+    },
+    {
+      "key": "bottom-path-pebbles",
+      "id": "path.pebbles.0",
+      "x": 7.15,
+      "y": 5.22,
+      "scale": 1,
+      "flipX": false,
+      "group": "path-south",
+      "file": "asset-source/renewal/ART-R1/path.pebbles.0.r1.png"
+    },
+    {
+      "key": "bottom-path-tuft-a",
+      "id": "path.tuft.0",
+      "x": 7.5,
+      "y": 5.34,
+      "scale": 1,
+      "flipX": false,
+      "group": "path-south",
+      "file": "asset-source/renewal/ART-R1/path.tuft.0.r1.png"
+    },
+    {
+      "key": "bottom-path-tuft-b",
+      "id": "path.tuft.1",
+      "x": 7.82,
+      "y": 5.35,
+      "scale": 0.85,
+      "flipX": false,
+      "group": "path-south",
+      "file": "asset-source/renewal/ART-R1/path.tuft.1.r1.png"
+    },
+    {
+      "key": "bottom-path-tuft-c",
+      "id": "path.tuft.2",
+      "x": 8.1,
+      "y": 4.65,
+      "scale": 0.9,
+      "flipX": false,
+      "group": "path-south",
+      "file": "asset-source/renewal/ART-R1/path.tuft.2.r1.png"
+    },
+    {
+      "key": "north-bulge-a",
+      "id": "edge.forest.0",
+      "x": 1.5,
+      "y": -0.65,
+      "scale": 0.69,
+      "flipX": false,
+      "origin": [
+        0.5,
+        0.5
+      ],
+      "group": "north-forest"
+    },
+    {
+      "key": "north-bulge-b",
+      "id": "edge.forest.1",
+      "x": 4.5,
+      "y": -0.68,
+      "scale": 0.69,
+      "flipX": false,
+      "origin": [
+        0.5,
+        0.5
+      ],
+      "group": "north-forest"
+    },
+    {
+      "key": "north-bulge-c",
+      "id": "edge.forest.2",
+      "x": 6.5,
+      "y": -0.84,
+      "scale": 0.38,
+      "flipX": false,
+      "origin": [
+        0.5,
+        0.5
+      ],
+      "group": "north-forest"
+    },
+    {
+      "key": "north-bulge-d",
+      "id": "edge.forest.1",
+      "x": 9.5,
+      "y": -0.67,
+      "scale": 0.69,
+      "flipX": false,
+      "origin": [
+        0.5,
+        0.5
+      ],
+      "group": "north-forest"
+    },
+    {
+      "key": "north-bulge-e",
+      "id": "edge.forest.2",
+      "x": 12.9,
+      "y": -0.85,
+      "scale": 0.8,
+      "flipX": false,
+      "origin": [
+        0.5,
+        0.5
+      ],
+      "group": "north-forest"
+    },
+    {
+      "key": "north-hedge-0",
+      "id": "edge.hedge.0",
+      "x": 0.2,
+      "y": -0.68,
+      "scale": 1,
+      "flipX": false,
+      "origin": [
+        0.5,
+        0.5
+      ],
+      "group": "north-forest"
+    },
+    {
+      "key": "north-hedge-1",
+      "id": "edge.hedge.1",
+      "x": 2.8,
+      "y": -0.68,
+      "scale": 1,
+      "flipX": false,
+      "origin": [
+        0.5,
+        0.5
+      ],
+      "group": "north-forest"
+    },
+    {
+      "key": "north-hedge-2",
+      "id": "edge.hedge.0",
+      "x": 5.4,
+      "y": -0.68,
+      "scale": 1,
+      "flipX": false,
+      "origin": [
+        0.5,
+        0.5
+      ],
+      "group": "north-forest"
+    },
+    {
+      "key": "north-hedge-3",
+      "id": "edge.hedge.1",
+      "x": 8,
+      "y": -0.68,
+      "scale": 1,
+      "flipX": false,
+      "origin": [
+        0.5,
+        0.5
+      ],
+      "group": "north-forest"
+    },
+    {
+      "key": "north-hedge-4",
+      "id": "edge.hedge.0",
+      "x": 10.6,
+      "y": -0.68,
+      "scale": 1,
+      "flipX": false,
+      "origin": [
+        0.5,
+        0.5
+      ],
+      "group": "north-forest"
+    },
+    {
+      "key": "north-hedge-5",
+      "id": "edge.hedge.1",
+      "x": 13.2,
+      "y": -0.68,
+      "scale": 1,
+      "flipX": false,
+      "origin": [
+        0.5,
+        0.5
+      ],
+      "group": "north-forest"
+    },
+    {
+      "key": "west-forest-a",
+      "id": "edge.forest.0",
+      "x": -1.23,
+      "y": 2.85,
+      "scale": 0.8,
+      "flipX": false,
+      "origin": [
+        0.5,
+        0.5
+      ],
+      "group": "west-forest"
+    },
+    {
+      "key": "west-forest-b",
+      "id": "edge.forest.2",
+      "x": -1.15,
+      "y": 5.25,
+      "scale": 0.95,
+      "flipX": false,
+      "origin": [
+        0.5,
+        0.5
+      ],
+      "group": "west-forest"
+    },
+    {
+      "key": "west-forest-c",
+      "id": "edge.forest.1",
+      "x": -1.05,
+      "y": 7.25,
+      "scale": 1,
+      "flipX": false,
+      "origin": [
+        0.5,
+        0.5
+      ],
+      "group": "west-forest"
+    },
+    {
+      "key": "southwest-corner",
+      "id": "edge.forest.0",
+      "x": -0.7,
+      "y": 8.8,
+      "scale": 1,
+      "flipX": false,
+      "origin": [
+        0.5,
+        0.5
+      ],
+      "group": "west-forest"
+    },
+    {
+      "key": "south-forest-0",
+      "id": "edge.forest.0",
+      "x": 1.8,
+      "y": 9.05,
+      "scale": 1,
+      "flipX": false,
+      "origin": [
+        0.5,
+        0.5
+      ],
+      "group": "south-forest"
+    },
+    {
+      "key": "south-forest-1",
+      "id": "edge.forest.1",
+      "x": 4.3,
+      "y": 9.05,
+      "scale": 1,
+      "flipX": false,
+      "origin": [
+        0.5,
+        0.5
+      ],
+      "group": "south-forest"
+    },
+    {
+      "key": "south-forest-2",
+      "id": "edge.forest.2",
+      "x": 6.8,
+      "y": 9.07,
+      "scale": 1,
+      "flipX": false,
+      "origin": [
+        0.5,
+        0.5
+      ],
+      "group": "south-forest"
+    },
+    {
+      "key": "south-forest-3",
+      "id": "edge.forest.0",
+      "x": 9.3,
+      "y": 9.05,
+      "scale": 1,
+      "flipX": false,
+      "origin": [
+        0.5,
+        0.5
+      ],
+      "group": "south-forest"
+    },
+    {
+      "key": "south-forest-4",
+      "id": "edge.forest.1",
+      "x": 11.8,
+      "y": 9.05,
+      "scale": 1,
+      "flipX": false,
+      "origin": [
+        0.5,
+        0.5
+      ],
+      "group": "south-forest"
+    },
+    {
+      "key": "south-forest-5",
+      "id": "edge.forest.2",
+      "x": 13.7,
+      "y": 9.5,
+      "scale": 0.9,
+      "flipX": false,
+      "origin": [
+        0.5,
+        0.5
+      ],
+      "group": "south-forest"
+    },
+    {
+      "key": "south-hedge-0",
+      "id": "edge.hedge.0",
+      "x": 1,
+      "y": 8.6,
+      "scale": 1,
+      "flipX": false,
+      "origin": [
+        0.5,
+        0.5
+      ],
+      "group": "south-forest"
+    },
+    {
+      "key": "south-hedge-1",
+      "id": "edge.hedge.1",
+      "x": 3.7,
+      "y": 8.6,
+      "scale": 1,
+      "flipX": false,
+      "origin": [
+        0.5,
+        0.5
+      ],
+      "group": "south-forest"
+    },
+    {
+      "key": "south-hedge-2",
+      "id": "edge.hedge.0",
+      "x": 6.4,
+      "y": 8.6,
+      "scale": 1,
+      "flipX": false,
+      "origin": [
+        0.5,
+        0.5
+      ],
+      "group": "south-forest"
+    },
+    {
+      "key": "south-hedge-3",
+      "id": "edge.hedge.1",
+      "x": 9.1,
+      "y": 8.6,
+      "scale": 1,
+      "flipX": false,
+      "origin": [
+        0.5,
+        0.5
+      ],
+      "group": "south-forest"
+    },
+    {
+      "key": "south-hedge-4",
+      "id": "edge.hedge.0",
+      "x": 11.8,
+      "y": 8.6,
+      "scale": 1,
+      "flipX": false,
+      "origin": [
+        0.5,
+        0.5
+      ],
+      "group": "south-forest"
+    },
+    {
+      "key": "east-forest-0",
+      "id": "edge.forest.1",
+      "x": 15.15,
+      "y": 0.05,
+      "scale": 1,
+      "flipX": false,
+      "origin": [
+        0.5,
+        0.5
+      ],
+      "group": "east-forest"
+    },
+    {
+      "key": "east-forest-1",
+      "id": "edge.forest.2",
+      "x": 15.25,
+      "y": 2,
+      "scale": 0.8,
+      "flipX": false,
+      "origin": [
+        0.5,
+        0.5
+      ],
+      "group": "east-forest"
+    },
+    {
+      "key": "east-forest-2",
+      "id": "edge.forest.0",
+      "x": 15.4,
+      "y": 4.0,
+      "scale": 1,
+      "flipX": false,
+      "origin": [
+        0.5,
+        0.5
+      ],
+      "group": "east-forest"
+    },
+    {
+      "key": "east-forest-3",
+      "id": "edge.forest.1",
+      "x": 15.15,
+      "y": 5.7,
+      "scale": 0.8,
+      "flipX": false,
+      "origin": [
+        0.5,
+        0.5
+      ],
+      "group": "east-forest"
+    },
+    {
+      "key": "east-forest-4",
+      "id": "edge.forest.2",
+      "x": 15.25,
+      "y": 8.8,
+      "scale": 0.8,
+      "flipX": false,
+      "origin": [
+        0.5,
+        0.5
+      ],
+      "group": "east-forest"
+    }
+  ],
+  "wheelRuts": [
+    [
+      [
+        11.7,
+        1.45,
+        12.6,
+        2.35
+      ],
+      275,
+      350
+    ],
+    [
+      [
+        11.7,
+        2.65,
+        12.6,
+        3.55
+      ],
+      10,
+      85
+    ],
+    [
+      [
+        2.3,
+        3.0,
+        3.2,
+        3.9
+      ],
+      185,
+      265
+    ],
+    [
+      [
+        2.3,
+        4.8,
+        3.2,
+        5.7
+      ],
+      95,
+      175
+    ],
+    [
+      [
+        11.7,
+        5.5,
+        12.6,
+        6.4
+      ],
+      275,
+      350
+    ]
+  ],
+  "evolvedTowers": [
+    {
+      "id": "tower.archer.A",
+      "slotId": "garden_u-s17",
+      "displayCells": 1.05
+    },
+    {
+      "id": "tower.archer.B",
+      "slotId": "garden_u-s09",
+      "displayCells": 1.05
+    },
+    {
+      "id": "tower.archer.A1",
+      "slotId": "garden_u-s11",
+      "displayCells": 1.05
+    },
+    {
+      "id": "tower.archer.A2",
+      "slotId": "garden_u-s13",
+      "displayCells": 1.05
+    },
+    {
+      "id": "tower.archer.B1",
+      "slotId": "garden_u-s15",
+      "displayCells": 1.05
+    },
+    {
+      "id": "tower.archer.B2",
+      "slotId": "garden_u-s18",
+      "displayCells": 1.05
+    }
+  ]
+}

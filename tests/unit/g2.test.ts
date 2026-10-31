@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import type { OptionId } from '../../src/contracts/questions';
 import type { GameContext } from '../../src/domain/context';
 import type { DomainEvent } from '../../src/domain/events';
+import { evolutionChoices } from '../../src/domain/towers';
 import { advanceTick, applyCommand, type Command } from '../../src/domain/run';
 import type { RunState } from '../../src/domain/types';
 import { nearestSlots, newRun, stateHash } from './helpers';
@@ -30,7 +31,7 @@ function decide(ctx: GameContext, s: RunState): Command[] {
   if (s.phase === 'BUILD') {
     const kinds = ['archer', 'cannon', 'frost'] as const;
     for (const slot of nearestSlots(ctx, 6)) if (!s.towers.some(t => t.slotId === slot)) cmds.push({ type: 'build', slotId: slot, tower: kinds[s.towers.length % 3]! });
-    for (const t of s.towers) cmds.push({ type: 'upgrade', towerId: t.id, ...(t.level === 2 ? { branch: 'A' as const } : {}) });
+    for (const t of s.towers) cmds.push({ type: 'upgrade', towerId: t.id, ...(evolutionChoices(ctx.balance, t) ? { form: evolutionChoices(ctx.balance, t)![0]! } : {}) });
     cmds.push({ type: 'startBattle' });
   }
   return cmds;
@@ -42,8 +43,12 @@ function play(interrupt: Interrupt | null) {
   let { s } = run;
   const events: DomainEvent[] = [];
   const seen = { restoredInWrongWait: false, restoredMidFlight: false, restoredWithBoss: false, restoredInWrapup: false, restores: 0 };
+  let prevPhase = s.phase;
   for (let guard = 0; guard < 30 * 60 * 40 && s.phase !== 'GAME_OVER' && s.completedWave < TARGET_WAVE; guard++) {
-    if (interrupt && s.tick > 0 && s.tick % SAVE_EVERY === 0) {
+    // 일정 간격 저장에 더해, 마무리 문항 단계에 들어선 첫 틱에도 저장·복원한다. 밸런스가 바뀌어 판 흐름이 달라져도 이 국면을 늘 지나게 한다.
+    const enteredWrapup = s.phase === 'WAVE_WRAPUP' && prevPhase !== 'WAVE_WRAPUP';
+    prevPhase = s.phase;
+    if (interrupt && s.tick > 0 && (s.tick % SAVE_EVERY === 0 || enteredWrapup)) {
       const fb = s.quiz.feedback;
       if (fb?.nextEnabledTick && fb.nextEnabledTick > s.tick && fb.result === 'wrong') seen.restoredInWrongWait = true;
       if (s.projectiles.length > 0) seen.restoredMidFlight = true;

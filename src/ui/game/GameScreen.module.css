@@ -1,7 +1,8 @@
 /* 전투 화면 「원정대 작업대」(ui-rules-v2 §1): 짙은 호두나무 작업대 위에 전장(주인공)·우측 장착 레일·하단 양피지 판.
    격자는 v3 상·하단 수직선 0.0px 잠금 규격을 따른다(PRD §12.1). */
 .screen {
-  max-width: 1560px;
+  /* 계약 layout.frameMaxPx를 useLayout이 :root 변수로 넣는다. */
+  max-width: var(--frame-max);
   margin: 0 auto;
 }
 
@@ -99,7 +100,7 @@
 
 .seamR {
   padding: var(--s3);
-  grid-template-columns: minmax(0, 1fr) calc(var(--rail-w, 308px) - var(--seam-inset, 16px));
+  grid-template-columns: minmax(0, 1fr) calc(var(--rail-w, var(--rail-min)) - 16px);
   column-gap: var(--s3);
   min-height: var(--q-h, 172px);
 }

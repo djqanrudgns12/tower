@@ -21,6 +21,17 @@ export interface RunRecord {
   contentMode: string;
   balanceVersion: string;
   bankVersion: string;
+  answers?: RunAnswer[];
+  activeTicks?: number;
+}
+
+export interface RunAnswer {
+  encounterId: number;
+  questionId: string;
+  revision: number;
+  choice: 'a' | 'b' | 'c' | 'd' | 'skipped';
+  phase: 'prep' | 'battle';
+  wave: number;
 }
 
 export interface PendingRunSync {
@@ -29,6 +40,8 @@ export interface PendingRunSync {
   playerId: string;
   attempts: number;
   queuedAt: string;
+  retryAt?: number;
+  retryDelayMs?: number;
 }
 
 interface TowerDb extends DBSchema {
@@ -40,11 +53,17 @@ interface TowerDb extends DBSchema {
 const DB_NAME = 'vocabulary-td';
 const DB_VERSION = 2;
 const MAX_RECORDS = 100;
-const MAX_SYNC_QUEUE = 50;
 let dbPromise: Promise<IDBPDatabase<TowerDb>> | null = null;
 
 export function db(): Promise<IDBPDatabase<TowerDb>> {
   dbPromise ??= openDB<TowerDb>(DB_NAME, DB_VERSION, {
+    blocked() {
+      if (typeof window !== 'undefined') window.dispatchEvent(new CustomEvent('vocabulary-td.storageBlocked', { detail: '다른 탭을 닫고 다시 시도해 주세요.' }));
+    },
+    blocking() {
+      void resetDbConnection();
+    },
+    terminated() { dbPromise = null; },
     upgrade(database, oldVersion) {
       if (oldVersion < 1) {
         database.createObjectStore('run', { keyPath: 'slot' });
@@ -54,6 +73,10 @@ export function db(): Promise<IDBPDatabase<TowerDb>> {
         database.createObjectStore('syncQueue', { keyPath: 'runId' });
       }
     },
+  }).catch(error => {
+    // 실패한 open promise를 고정하면 사용자의 저장 재시도도 영원히 실패한다.
+    dbPromise = null;
+    throw error;
   });
   return dbPromise;
 }
@@ -138,14 +161,17 @@ export async function enqueueRunSync(record: RunRecord, playerId: string): Promi
   if (!existing) {
     await tx.store.put({ runId: record.runId, record, playerId, attempts: 0, queuedAt: new Date().toISOString() });
   }
-  const keys = await tx.store.getAllKeys();
-  for (const key of keys.slice(0, Math.max(0, keys.length - MAX_SYNC_QUEUE))) await tx.store.delete(key);
   await tx.done;
 }
 
 export async function listPendingRunSyncs(): Promise<PendingRunSync[]> {
   const database = await db();
-  return database.getAll('syncQueue');
+  return (await database.getAll('syncQueue')).sort((a, b) => a.queuedAt.localeCompare(b.queuedAt) || a.runId.localeCompare(b.runId));
+}
+
+export async function getPendingRunSync(runId: string): Promise<PendingRunSync | undefined> {
+  const database = await db();
+  return database.get('syncQueue', runId);
 }
 
 export async function removePendingRunSync(runId: string): Promise<void> {
@@ -160,6 +186,18 @@ export async function bumpPendingRunSyncAttempt(runId: string, maxAttempts = 5):
   if (item) {
     if (item.attempts + 1 >= maxAttempts) await tx.store.delete(runId);
     else await tx.store.put({ ...item, attempts: item.attempts + 1 });
+  }
+  await tx.done;
+}
+
+/** 일시 장애는 포기 횟수를 늘리지 않고 다음 접속 시 재시도한다. */
+export async function deferPendingRunSync(runId: string, delayMs = 30_000): Promise<void> {
+  const database = await db();
+  const tx = database.transaction('syncQueue', 'readwrite');
+  const item = await tx.store.get(runId);
+  if (item) {
+    const retryDelayMs = Math.max(delayMs, Math.min(3_600_000, (item.retryDelayMs ?? 0) * 2));
+    await tx.store.put({ ...item, retryDelayMs, retryAt: Date.now() + retryDelayMs });
   }
   await tx.done;
 }

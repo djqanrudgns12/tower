@@ -1,4 +1,5 @@
 import type { BranchId, DifficultyId, TowerId } from '../contracts/balance';
+import { cleanPublicNickname } from '../contracts/lobby';
 import type { CommandError } from '../domain/run';
 import type { PauseReason } from '../domain/types';
 
@@ -42,7 +43,10 @@ export function commandErrorText(error: CommandError, extra?: { need?: number })
     case 'WRONG_PHASE': return '지금은 할 수 없어요';
     case 'SLOT_TAKEN': return '이미 타워가 있어요';
     case 'MAX_LEVEL': return '최고 레벨이에요';
-    case 'BRANCH_REQUIRED': return '진화할 길을 먼저 골라요';
+    case 'FORM_REQUIRED': return '진화할 길을 먼저 골라요';
+    case 'INVALID_FORM': return '이 타워가 갈 수 없는 길이에요';
+    case 'UNDO_EXPIRED': return '되돌릴 시간이 지났어요';
+    case 'TOWER_LIMIT': return '이 타워는 더 놓을 수 없어요';
     case 'NEXT_NOT_READY': return '해설을 조금 더 읽어 주세요';
     case 'PAUSED': return '멈춘 동안에는 할 수 없어요';
     default: return '다시 해 주세요';
@@ -63,13 +67,9 @@ export const fmtCells = (milli: number) => `${(milli / 1000).toFixed(milli % 100
 export const fmtSigned = (n: number) => (n > 0 ? `+${n}` : n < 0 ? `−${Math.abs(n)}` : '0');
 export const fmtNumber = (n: number) => (n < 0 ? `−${Math.abs(n).toLocaleString('ko-KR')}` : n.toLocaleString('ko-KR'));
 
-/** 닉네임: NFC, 앞뒤 공백 정리, 제어문자 제거, 사용자 인식 문자 2~12개(PRD §2.1). */
+/** 홈 별명 입력과 공개 제출은 같은 규칙을 쓴다: NFC·NFKC, 제어문자 제거, 2~12글자, 전화번호·이메일·주소 차단(PRD §2.1). */
 export function cleanNickname(raw: string): { value: string; error: string | null } {
-  const value = raw.normalize('NFC').replace(/\p{Cc}/gu, '').trim();
-  const count = [...new Intl.Segmenter('ko', { granularity: 'grapheme' }).segment(value)].length;
-  if (count < 2) return { value, error: '별명은 두 글자 이상이에요' };
-  if (count > 12) return { value, error: '별명은 열두 글자까지예요' };
-  return { value, error: null };
+  return cleanPublicNickname(raw);
 }
 
 /** 받침에 따라 ‘로/으로’(ㄹ 받침은 ‘로’). */

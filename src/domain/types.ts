@@ -1,10 +1,14 @@
-import type { BranchId, DifficultyId, EliteId, EnemyKind, TowerId } from '../contracts/balance';
+import type { DifficultyId, EliteId, EnemyKind, FormId, TowerId } from '../contracts/balance';
 import type { OptionId } from '../contracts/questions';
 
 // 저장·재개되는 전체 상태. 순수 JSON(숫자·문자열·배열·객체)만 쓴다(PRD §10.1, §14).
-export const RUN_STATE_VERSION = 1;
-/** 0.5-candidate: P2 공격 프로필(즉발·연쇄·부채꼴·화상·깃발 오라, 물리 저항 무시)과 적 화상 상태(PRD §7.1, §20.2~20.3). */
-export const RULES_VERSION = '0.5-candidate';
+/** 2: 타워 branch → form, 설치 취소 기한(리뉴얼 R2). 이전 버전의 진행 중 판은 이어가지 않는다(application/session.ts resumeBlocker). */
+export const RUN_STATE_VERSION = 2;
+/**
+ * 0.5-candidate: P2 공격 프로필(즉발·연쇄·부채꼴·화상·깃발 오라, 물리 저항 무시)과 적 화상 상태(PRD §7.1, §20.2~20.3).
+ * 0.5.1-candidate: 난이도별 심화 단계 출제 순서와 한 바퀴 뒤 섞기(PRD §9.1, §9.4). 같은 시드의 출제 순서가 바뀌므로 옛 저장은 이어하지 않는다.
+ */
+export const RULES_VERSION = '0.5.1-candidate';
 
 export type Phase = 'PREP_QUIZ' | 'BUILD' | 'BATTLE' | 'WAVE_WRAPUP' | 'GAME_OVER';
 export type PauseReason = 'USER' | 'HIDDEN' | 'PERFORMANCE' | 'STORAGE' | 'CONTEXT_LOST' | 'OWNERSHIP' | 'RESTORED' | 'NUMERIC_LIMIT';
@@ -100,9 +104,12 @@ export interface Tower {
   x: number;
   y: number;
   level: number;
-  branch: BranchId | null;
+  /** 기본형 → 1차형(A·B, Lv4) → 2차형(A1~B2, Lv7). docs/renewal/progression.md §1. */
+  form: FormId;
   invested: number;
   nextAttackTick: number | null;
+  /** 이 틱 전까지 설치 취소(전액 환불)를 받는다. 강화하거나 공격·오라를 쓰면 null. */
+  undoUntilTick: number | null;
 }
 
 export interface Projectile {
@@ -125,7 +132,7 @@ export interface Projectile {
   slowTicks: number;
   /** 물리 저항 효과를 줄이는 비율(석궁, PRD §7.1·§20.2). */
   physicalResistIgnoreBP: number;
-  /** 발사 순간의 외부(깃발) 피해 보너스. damage는 레벨·분기까지만 반영하고, 맞을 때 상황→외부→저항 순서로 곱한다(PRD §20.2). */
+  /** 발사 순간의 외부(깃발) 피해 보너스. damage는 레벨·형태까지만 반영하고, 맞을 때 상황→외부→저항 순서로 곱한다(PRD §20.2). */
   bonusBP: number;
   /** 정예·보스에게만 곱하는 상황 배율(석궁 B·수호기사 A). */
   eliteBossDamageBP: number;

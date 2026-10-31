@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState, type KeyboardEvent } from 'react';
 import type { MotionMode } from '../../application/session';
 import css from './GuideScreen.module.css';
 import {
@@ -10,6 +10,27 @@ import {
 import { GuideRowIcon, GuideVisualStage } from './guide/GuideVisualStages';
 import { ChevronLeftIcon, ChevronRightIcon } from './home/HomeIcons';
 import { ModalShell } from './home/ModalShell';
+
+/** 방향키·Home·End를 스스로 쓰는 입력 칸·위젯. 이 안에서 누른 키는 장 이동으로 가로채지 않는다. */
+const ARROW_KEY_WIDGETS = [
+  'input',
+  'textarea',
+  'select',
+  '[contenteditable=""]',
+  '[contenteditable="true"]',
+  '[role="slider"]',
+  '[role="spinbutton"]',
+  '[role="radiogroup"]',
+  '[role="listbox"]',
+  '[role="combobox"]',
+  '[role="menu"]',
+  '[role="menubar"]',
+  '[role="grid"]',
+  '[role="tree"]',
+  '[role="treegrid"]',
+  '[role="tablist"]',
+  '[role="application"]',
+].join(', ');
 
 interface Props {
   motionMode?: MotionMode | undefined;
@@ -25,38 +46,60 @@ export function GuideScreen({ motionMode = 'full', highContrastMap = false, onBa
   const chapters = useMemo(() => buildGuideChapters(), []);
   const [chapterId, setChapterId] = useState<GuideChapterId>(1);
 
+  const rootRef = useRef<HTMLDivElement>(null);
+  const tablistRef = useRef<HTMLDivElement>(null);
+  const tabRefs = useRef<(HTMLButtonElement | null)[]>([]);
+  const shownChapter = useRef<GuideChapterId>(chapterId);
+
+  // 장이 바뀌면서 포커스가 사라졌으면(눌렀던 무대 버튼이 사라짐·경계에서 '이전 장/다음 장'이 비활성) 현재 장 탭으로 옮겨
+  // 대화상자 안의 키 처리가 계속 이어지게 한다. 포커스가 대화상자 안에 살아 있으면 건드리지 않는다.
   useEffect(() => {
-    const onKeyDown = (e: KeyboardEvent) => {
-      if (e.altKey || e.ctrlKey || e.metaKey) return;
-      if (e.key === 'ArrowLeft') {
-        e.preventDefault();
-        setChapterId(prev => nextGuideChapter(prev, -1));
-      } else if (e.key === 'ArrowRight') {
-        e.preventDefault();
-        setChapterId(prev => nextGuideChapter(prev, 1));
-      } else if (e.key === 'Home') {
-        e.preventDefault();
-        setChapterId(1);
-      } else if (e.key === 'End') {
-        e.preventDefault();
-        setChapterId(4);
-      }
-    };
-    window.addEventListener('keydown', onKeyDown);
-    return () => window.removeEventListener('keydown', onKeyDown);
-  }, []);
+    if (shownChapter.current === chapterId) return;
+    shownChapter.current = chapterId;
+    const dialog = rootRef.current?.closest<HTMLElement>('[role="dialog"]') ?? null;
+    const active = document.activeElement as HTMLElement | null;
+    const lost =
+      !active ||
+      active === document.body ||
+      !dialog?.contains(active) ||
+      (active instanceof HTMLButtonElement && active.disabled);
+    if (lost) tabRefs.current[chapterId - 1]?.focus({ preventScroll: true });
+  }, [chapterId]);
+
+  // ←/→/Home/End 장 이동은 설명서 대화상자에서만 받는다(window 전역 가로채기 금지).
+  const onDialogKeyDown = (e: KeyboardEvent<HTMLDivElement>) => {
+    if (e.defaultPrevented || e.altKey || e.ctrlKey || e.metaKey) return;
+    if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight' && e.key !== 'Home' && e.key !== 'End') return;
+    const target = e.target as HTMLElement;
+    // 입력 칸이나 방향키를 스스로 쓰는 위젯 안에서는 그 위젯에 맡긴다(설명서 목차 탭 목록은 제외).
+    const widget = target.closest<HTMLElement>(ARROW_KEY_WIDGETS);
+    if (widget && widget !== tablistRef.current && e.currentTarget.contains(widget)) return;
+    const next: GuideChapterId =
+      e.key === 'ArrowLeft'
+        ? nextGuideChapter(chapterId, -1)
+        : e.key === 'ArrowRight'
+          ? nextGuideChapter(chapterId, 1)
+          : e.key === 'Home'
+            ? GUIDE_CHAPTER_IDS[0]
+            : GUIDE_CHAPTER_IDS[GUIDE_CHAPTER_IDS.length - 1]!;
+    e.preventDefault();
+    setChapterId(next);
+    // 목차 탭에서 누른 경우 탭 목록 규칙대로 새 장의 탭으로 포커스를 옮긴다.
+    if (tablistRef.current?.contains(target)) tabRefs.current[next - 1]?.focus();
+  };
 
   const chapter = chapters[chapterId - 1] ?? chapters[0];
 
   return (
-    <ModalShell titleId="guideModalTitle" title="사용 설명서" wide onClose={onBack}>
-      <div className={css.guideRoot}>
-        <div role="tablist" aria-label="사용 설명서 목차" className={css.chapterTabs}>
-          {chapters.map(ch => {
+    <ModalShell titleId="guideModalTitle" title="사용 설명서" wide onClose={onBack} onDialogKeyDown={onDialogKeyDown}>
+      <div ref={rootRef} className={css.guideRoot}>
+        <div ref={tablistRef} role="tablist" aria-label="사용 설명서 목차" className={css.chapterTabs}>
+          {chapters.map((ch, i) => {
             const active = ch.id === chapter.id;
             return (
               <button
                 key={ch.id}
+                ref={el => { tabRefs.current[i] = el; }}
                 id={`guideTab-${ch.id}`}
                 type="button"
                 role="tab"

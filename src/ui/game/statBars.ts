@@ -23,7 +23,7 @@ function refs(b: Balance): Refs {
     if (!b.towers[id]) continue;
     r.range = Math.max(r.range, b.towers[id].rangeMilli);
     if (!attacks(b, id)) continue;
-    const s = towerStats(b, id, Math.min(REFERENCE_LEVEL, b.levels.max), 'base');
+    const s = towerStats(b, id, Math.min(REFERENCE_LEVEL, b.levels.max ?? REFERENCE_LEVEL), 'base');
     r.power = Math.max(r.power, s.damage);
     r.speed = Math.max(r.speed, 30 / attackIntervalTicks(b, s, 0));
   }
@@ -38,7 +38,7 @@ const seconds = (ticks: number) => `${Number((ticks / 30).toFixed(2))}초`;
 export function statBars(b: Balance, type: TowerId, level: number, form: FormId, next?: { level: number; form: FormId } | null): StatBar[] {
   const r = refs(b);
   if (!attacks(b, type)) {
-    const aura = (lv: number, f: FormId) => bannerAura(b, { type, level: lv, branch: f === 'A' || f === 'B' ? f : null });
+    const aura = (lv: number, f: FormId) => bannerAura(b, { type, level: lv, form: f });
     const cur = aura(level, form);
     const nx = next ? aura(next.level, next.form) : null;
     const bp = (a: { damageBP: number; speedBP: number }) => Math.max(a.damageBP, a.speedBP);

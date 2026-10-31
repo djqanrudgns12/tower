@@ -1,11 +1,8 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useMemo, useState } from 'react';
 import {
-  getCachedAllStudyCards,
-  loadAllStudyCards,
-  pickRandomInitialStudyIndex,
+  kstDateKey,
   pickRandomStudyIndex,
   selectDailySteleCards,
-  type SteleCardItem,
 } from '../../../application/lobby';
 import { useLobbySprites } from './canvasAssets';
 import { ShuffleIcon } from './HomeIcons';
@@ -16,40 +13,12 @@ interface Props {
 }
 
 export function SteleStudyPanel({ preferredGrade }: Props) {
-  const fallbackCards = useMemo(() => selectDailySteleCards(preferredGrade), [preferredGrade]);
-  const [allCards, setAllCards] = useState<readonly SteleCardItem[] | null>(() => getCachedAllStudyCards());
-  const cards = allCards && allCards.length > 0 ? allCards : fallbackCards;
-
-  const [index, setIndex] = useState(() => pickRandomInitialStudyIndex(cards.length));
-  const visitedRef = useRef<Set<number>>(new Set([index]));
-  const hasInteractedRef = useRef(false);
+  const date = kstDateKey();
+  const cards = useMemo(() => selectDailySteleCards(preferredGrade, new Date(`${date}T00:00:00+09:00`)), [preferredGrade, date]);
+  const key = `${date}:${preferredGrade}`;
+  const [selection, setSelection] = useState({ key, index: 0, visited: [0] });
+  const index = selection.key === key ? selection.index : 0;
   const sprites = useLobbySprites();
-
-  useEffect(() => {
-    if (allCards && allCards.length > 0) return;
-    let cancelled = false;
-    void loadAllStudyCards().then(loaded => {
-      if (cancelled || loaded.length === 0) return;
-      setAllCards(loaded);
-      setIndex(prevIdx => {
-        if (hasInteractedRef.current && fallbackCards.length > 0) {
-          const currentQuestionId = fallbackCards[prevIdx % fallbackCards.length]?.questionId;
-          const mapped = currentQuestionId
-            ? loaded.findIndex(c => c.questionId === currentQuestionId)
-            : -1;
-          const resolved = mapped >= 0 ? mapped : pickRandomInitialStudyIndex(loaded.length);
-          visitedRef.current = new Set([resolved]);
-          return resolved;
-        }
-        const initialIdx = pickRandomInitialStudyIndex(loaded.length);
-        visitedRef.current = new Set([initialIdx]);
-        return initialIdx;
-      });
-    });
-    return () => {
-      cancelled = true;
-    };
-  }, [allCards, fallbackCards]);
 
   const steleSprite = sprites.get('deco.stele');
 
@@ -68,13 +37,11 @@ export function SteleStudyPanel({ preferredGrade }: Props) {
   const card = cards[safeIndex]!;
 
   const handleRandom = () => {
-    hasInteractedRef.current = true;
-    if (visitedRef.current.size >= cards.length) {
-      visitedRef.current = new Set([safeIndex]);
-    }
-    const next = pickRandomStudyIndex(cards, safeIndex, visitedRef.current);
-    visitedRef.current.add(next);
-    setIndex(next);
+    const visited = new Set(selection.key === key ? selection.visited : [safeIndex]);
+    if (visited.size >= cards.length) { visited.clear(); visited.add(safeIndex); }
+    const next = pickRandomStudyIndex(cards, safeIndex, visited);
+    visited.add(next);
+    setSelection({ key, index: next, visited: [...visited] });
   };
 
   return (

@@ -1,9 +1,13 @@
 import { useEffect, useLayoutEffect, useRef, useState, type Ref } from 'react';
 import type { OptionId } from '../../contracts/questions';
 import type { QuestionStakesView, QuestionView } from '../../application/view';
+import { DEFAULTS } from '../../content';
 import { fmtSigned } from '../copy';
 import { CheckSealIcon, CrossSealIcon, GoldCoinIcon, ScoreCrestIcon } from '../icons/GameIcons';
+import { useLayout } from '../useLayout';
 import css from './QuestionPanel.module.css';
+
+const GRID = DEFAULTS.layout.optionGrid;
 
 interface Props {
   question: QuestionView;
@@ -32,31 +36,38 @@ export function QuestionPanel({
   wide,
   seamLock = false,
   showKeyHints = true,
-  twoByTwoMinPx = 200,
+  twoByTwoMinPx = GRID.twoByTwoMinCellWidthPx,
   rewardRef,
   onAnswer,
   onSkip,
   onNext,
 }: Props) {
+  const layout = useLayout();
   const optionsRef = useRef<HTMLDivElement>(null);
   const [columns, setColumns] = useState<{ key: string; cols: 1 | 2 }>({ key: '', cols: 2 });
   const armed = useRef<string | null>(null);
   const keyReady = useRef(false);
   const answered = question.chosen !== null;
   const fb = question.feedback;
-  const measureKey = `${question.encounterId}:${wide ? 1 : 0}:${seamLock ? 1 : 0}:${showKeyHints ? 1 : 0}`;
+  // 화면 회전·창 크기·글자 크기가 바뀌면 제출 뒤라도 다시 잰다. 채점 뒤에도 글자 굵기·테두리가 그대로라 제출 전후 결과가 같다.
+  const measureKey = [
+    question.encounterId, wide ? 1 : 0, seamLock ? 1 : 0, showKeyHints ? 1 : 0,
+    layout.mode, layout.mapW, layout.railW, layout.font,
+  ].join(':');
   const cols = columns.key === measureKey ? columns.cols : 2;
 
   useLayoutEffect(() => {
-    if (answered || columns.key === measureKey) return;
+    if (columns.key === measureKey) return;
     const box = optionsRef.current;
     if (!box) return;
-    const buttons = [...box.querySelectorAll<HTMLElement>('[data-option-text]')];
-    const lineHeight = Number.parseFloat(getComputedStyle(buttons[0] ?? box).lineHeight) || 27;
-    const cellWidth = (box.clientWidth - 8) / 2;
-    const fits = cellWidth >= twoByTwoMinPx && buttons.every(b => b.scrollHeight <= lineHeight * 2 + 2);
+    // 2열로 그린 상태에서 칸 너비(계약 optionGrid)와 줄 수를 재어 열 수를 정한다.
+    const texts = [...box.querySelectorAll<HTMLElement>('[data-option-text]')];
+    const lineHeight = Number.parseFloat(getComputedStyle(texts[0] ?? box).lineHeight) || 27;
+    const gap = Number.parseFloat(getComputedStyle(box).columnGap) || 0;
+    const cellWidth = (box.clientWidth - gap) / 2;
+    const fits = cellWidth >= twoByTwoMinPx && texts.every(t => t.scrollHeight <= lineHeight * GRID.twoByTwoMaxLines + 2);
     setColumns({ key: measureKey, cols: fits ? 2 : 1 });
-  }, [measureKey, answered, columns.key, twoByTwoMinPx]);
+  }, [measureKey, columns.key, twoByTwoMinPx]);
 
   useEffect(() => {
     keyReady.current = false;

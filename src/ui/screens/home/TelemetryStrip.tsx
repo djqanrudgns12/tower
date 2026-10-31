@@ -1,5 +1,5 @@
 import { useEffect, useSyncExternalStore } from 'react';
-import { lobbyTelemetryStore } from '../../../application/lobby';
+import { getPublicRecordNotice, isRecordSharingEnabled, lobbyTelemetryStore, subscribePublicRecordNotice, subscribeRecordSharing } from '../../../application/lobby';
 import { fmtNumber } from '../../copy';
 import css from './home.module.css';
 
@@ -9,17 +9,19 @@ interface Props {
 }
 
 export function TelemetryStrip({ playerId, refreshTick }: Props) {
+  const notice = useSyncExternalStore(subscribePublicRecordNotice, getPublicRecordNotice);
+  const sharing = useSyncExternalStore(subscribeRecordSharing, isRecordSharingEnabled);
   const snap = useSyncExternalStore(lobbyTelemetryStore.subscribe, lobbyTelemetryStore.getSnapshot);
 
-  useEffect(() => lobbyTelemetryStore.start(playerId), [playerId]);
+  useEffect(() => lobbyTelemetryStore.start(playerId), [playerId, sharing]);
   useEffect(() => {
     if (refreshTick > 0) void lobbyTelemetryStore.refreshCounts(playerId);
   }, [playerId, refreshTick]);
 
-  const offline = snap.status === 'offline';
+  const offline = snap.status === 'offline' || snap.status === 'disabled';
   const loading = snap.status === 'loading';
 
-  const onlineText = loading
+  const onlineText = !sharing ? '공개 기록 꺼짐' : loading
     ? '—'
     : snap.onlineNow !== null
       ? `${fmtNumber(snap.onlineNow)}명`
@@ -45,6 +47,7 @@ export function TelemetryStrip({ playerId, refreshTick }: Props) {
 
   return (
     <div className={css.telemetryStrip} role="region" aria-label="왕국 수호 현황">
+      {sharing && notice && <p role="status" style={{ gridColumn: '1 / -1' }}>{notice.message}</p>}
       <div className={css.metricCell}>
         <span className={css.metricLabel}>
           <span className={css.statusDot} data-offline={offline || snap.onlineNow === null} aria-hidden="true" />

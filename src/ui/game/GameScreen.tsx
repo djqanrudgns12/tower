@@ -11,11 +11,11 @@ import { SoundDirector } from '../audio/sound';
 import { commandErrorText } from '../copy';
 import { PlayArrowIcon, TowerShieldPortrait, WaveFlagIcon } from '../icons/GameIcons';
 import kit from '../kit.module.css';
-import { LAYOUT_V3, useLayout } from '../useLayout';
+import { useLayout } from '../useLayout';
 import { Armory } from './Armory';
 import { CoinFlight, coinsFor, type Flight } from './CoinFlight';
 import { EvolveCard } from './EvolveCard';
-import { evolutionChoices, towerForm, upgradeCommand, upgradeCost, type FormId } from './evolution';
+import { evolutionChoices, previewForm, previewMarker, towerForm, undoBuildCommand, upgradeCommand, upgradeCost, type FormId } from './evolution';
 import { FieldOverlay, type FieldFlash } from './FieldOverlay';
 import { FULL_VIEW } from './fieldGeometry';
 import { COACH_TEXT, currentCoach, markCoachDone, readCoachDone } from './firstRunCoach';
@@ -43,7 +43,7 @@ interface Props {
   showKeyHints?: boolean;
   onFont(scale: FontScale): void;
   onSound(on: boolean): void;
-  onExit(reason: 'over' | 'abandon'): void;
+  onExit(reason: 'saved' | 'over' | 'abandon'): void;
   /** 첫 연습 판(PRD §12.2). 있으면 안내 문장·건너뛰기·연습 끝 패널을 보인다. */
   practice?: { onFinish(next: 'new' | 'again' | 'home'): void };
 }
@@ -153,6 +153,7 @@ export function GameScreen({
   const [cursor, setCursor] = useState<string | null>(null);
   const [fieldFocused, setFieldFocused] = useState(false);
   const fieldRef = useRef<HTMLDivElement>(null);
+  const [lastBuilt, setLastBuilt] = useState<number | null>(null);
   const paused = view.pause.length > 0;
   // 선택한 타워가 팔리거나 사라지면 선택이 없는 것으로 본다(렌더 중 파생, effect로 setState하지 않음).
   const towerGone = rawSelection.towerId !== null && !view.towers.some(t => t.id === rawSelection.towerId);
@@ -209,6 +210,8 @@ export function GameScreen({
       showFlash(commandErrorText(r.error, r.error === 'NOT_ENOUGH_GOLD' ? { need: buildCost(b, type) - view.gold } : undefined), slotId);
       return false;
     }
+    // 새 타워 번호는 명령 때 정해진다. 그 타워 위에 3초 동안 되돌리기 칩을 띄운다(ui-rules-v2 §4).
+    for (const e of r.events) if (e.type === 'towerBuilt') setLastBuilt(e.towerId);
     setFlash(null);
     setCoachDone(d => markCoachDone(d, 'place'));
     refocusField();
@@ -399,6 +402,19 @@ export function GameScreen({
       setSelection(s => ({ ...s, previewBranch: null }));
     }
   };
+  /** 설치 되돌리기: 전액 환불. 시간이 지났으면 엔진이 거절하고 이유를 짧게 보인다. */
+  const onUndo = (towerId: number) => {
+    const tower = view.towers.find(t => t.id === towerId);
+    const r = controller.dispatch(undoBuildCommand(towerId));
+    if (!r.ok) {
+      showFlash(commandErrorText(r.error), tower?.slotId ?? null);
+      return;
+    }
+    setFlash(null);
+    setLastBuilt(null);
+    if (selection.towerId === towerId) clear();
+    refocusField();
+  };
   const onSell = () => {
     if (!selectedTower) return;
     if (towerResult(controller.dispatch({ type: 'sell', towerId: selectedTower.id }))) {
@@ -406,7 +422,8 @@ export function GameScreen({
       refocusField();
     }
   };
-  const onStart = useCallback(() => {
+  // 전투는 ‘전투 시작’ 단추로만 시작한다. 전역 Enter로 시작하면 거래 뒤 포커스가 떨어진 상태의 Enter가 전투를 연다.
+  const onStart = () => {
     if (view.towers.length === 0 && !confirmEmpty) {
       setConfirmEmpty(true);
       // 확인 상자가 뜨면 누른 단추가 사라진다. 안전한 ‘취소’로 포커스를 옮긴다(반복 Enter로 바로 시작하지 않게).
@@ -420,7 +437,7 @@ export function GameScreen({
       setFlash(null);
       setCoachDone(d => markCoachDone(d, 'start'));
     }
-  }, [view.towers.length, confirmEmpty, controller, showFlash]);
+  };
 
   // 전투는 ‘전투 시작’ 단추로만 시작한다(전역 Enter 단축키 없음). 설치 뒤 포커스가 풀린 상태의 Enter가 전투를 열지 않게 한다(WP-UI).
 
@@ -429,7 +446,7 @@ export function GameScreen({
     const form = towerForm(selectedTower);
     const cost = upgradeCost(b, selectedTower.type, selectedTower.level);
     const evolving = evolutionChoices(b, selectedTower) !== null;
-    const preview = selection.previewBranch as FormId | null;
+    const preview = previewForm(b, selectedTower, selection.previewBranch);
     const next = cost === null ? null : evolving ? (preview ? { level: selectedTower.level + 1, form: preview } : null) : { level: selectedTower.level + 1, form };
     return <TowerDetail balance={b} type={selectedTower.type} level={selectedTower.level} form={form} icons={icons} next={next} compact={layout.compactRail} />;
   })() : selection.previewType ? (
@@ -529,7 +546,7 @@ export function GameScreen({
         stakes={view.stakes}
         wide={layout.wideQuestion}
         seamLock={layout.mode === 'R'}
-        twoByTwoMinPx={LAYOUT_V3.optionGrid.twoByTwoMinCellWidthPx}
+        twoByTwoMinPx={DEFAULTS.layout.optionGrid.twoByTwoMinCellWidthPx}
         showKeyHints={showKeyHints}
         onAnswer={onAnswer}
         onSkip={onSkip}
@@ -577,6 +594,8 @@ export function GameScreen({
           onUpgrade={onUpgrade}
           onEvolve={onEvolve}
           onSell={onSell}
+          undo={lastBuilt !== null ? view.towers.find(t => t.id === lastBuilt) ?? null : null}
+          onUndo={onUndo}
           onClose={() => {
             clear();
             fieldRef.current?.querySelector<HTMLElement>('[role="application"]')?.focus();
@@ -608,8 +627,7 @@ export function GameScreen({
         padding: layout.pad,
         '--map-w': `${layout.mapW}px`,
         '--rail-w': `${layout.railW}px`,
-        '--q-h': `${layout.questionH}px`,
-        '--seam-inset': `${LAYOUT_V3.seamInsetPx}px`,
+        '--q-h': `${layout.q}px`,
       } as CSSProperties)
     : { padding: layout.pad };
 
@@ -680,7 +698,7 @@ export function GameScreen({
           gold={view.gold}
           icons={icons}
           lock={trading ? null : lock}
-          onPreview={form => setSelection(s => ({ ...s, previewBranch: form === 'A' || form === 'B' ? form : null }))}
+          onPreview={form => setSelection(s => ({ ...s, previewBranch: previewMarker(b, selectedTower, form) }))}
           onChoose={onChooseForm}
           onClose={() => {
             setEvolveOpen(false);
@@ -693,7 +711,7 @@ export function GameScreen({
         <PauseOverlay
           reasons={view.pause}
           renderLost={view.renderLost}
-          canSave={view.saveStatus !== 'disabled' && 'saveAndExit' in controller}
+          canSave={controller.persist}
           saveError={view.saveStatus === 'error'}
           fontScale={fontScale}
           soundOn={soundOn}
@@ -701,15 +719,11 @@ export function GameScreen({
           onFont={onFont}
           onSound={onSound}
           onSaveExit={async () => {
-            const fn = (controller as RunController & { saveAndExit?: () => Promise<boolean> }).saveAndExit;
-            const ok = fn ? await fn.call(controller) : false;
-            if (ok) (onExit as (reason: 'over' | 'abandon' | 'saved') => void)('saved');
+            const ok = await controller.saveAndExit();
+            if (ok) onExit('saved');
             return ok;
           }}
-          onRetrySave={async () => {
-            const fn = (controller as RunController & { retrySave?: () => Promise<void> }).retrySave;
-            if (fn) await fn.call(controller);
-          }}
+          onRetrySave={() => controller.retrySave()}
           onQuit={() => {
             controller.resume();
             controller.dispatch({ type: 'quit' });

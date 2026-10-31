@@ -5,7 +5,7 @@ import type { TowerView } from '../../application/view';
 import { buildCost, sellRefund } from '../../domain/towers';
 import type { FieldView } from '../../game/bridge';
 import { fmtNumber } from '../copy';
-import { EvolveIcon, GoldCoinIcon, SellIcon, TowerShieldPortrait, UpgradeArrowIcon } from '../icons/GameIcons';
+import { EvolveIcon, GoldCoinIcon, SellIcon, TowerShieldPortrait, UndoArrowIcon, UpgradeArrowIcon } from '../icons/GameIcons';
 import { evolutionChoices, upgradeCost } from './evolution';
 import { cellRect, type CellRect } from './fieldGeometry';
 import css from './FieldOverlay.module.css';
@@ -36,6 +36,9 @@ interface Props {
   onUpgrade(): void;
   onEvolve(): void;
   onSell(): void;
+  /** 설치 직후 되돌릴 수 있는 타워(가장 최근 것 하나). 그 칸 위에 되돌리기 칩을 띄운다. */
+  undo?: TowerView | null;
+  onUndo?(towerId: number): void;
   onClose(): void;
 }
 
@@ -53,6 +56,9 @@ export function FieldOverlay(p: Props) {
   const toolSlot = p.tower ? rectOf(p.tower.slotId) : null;
   const flashRect = p.flash ? rectOf(p.flash.slotId) : null;
   const pillarRect = p.pillar ? rectOf(p.pillar.slotId) : null;
+  // 도구 묶음이 열린 타워는 판매 자리가 되돌리기로 바뀌므로 칩을 따로 띄우지 않는다.
+  const undoTower = p.undo && p.undo.undoable && p.undo.id !== p.tower?.id ? p.undo : null;
+  const undoRect = undoTower ? rectOf(undoTower.slotId) : null;
 
   return (
     <div className={css.layer}>
@@ -98,9 +104,23 @@ export function FieldOverlay(p: Props) {
           <TowerTools {...p} tower={p.tower} />
         </Anchored>
       )}
+      {undoTower && undoRect && (
+        <Anchored key={`undo-${undoTower.id}`} cell={undoRect} boxW={p.boxW} boxH={p.boxH} place="above">
+          <button
+            type="button"
+            className={`${css.tool} ${css.undo}`}
+            aria-label={`설치 되돌리기 +${undoTower.invested} 골드`}
+            onClick={() => p.onUndo?.(undoTower.id)}
+          >
+            <UndoArrowIcon size={18} />
+            <span className={css.toolText}>되돌리기</span>{' '}
+            <span className={css.cost}>+{fmtNumber(undoTower.invested)}</span>
+          </button>
+        </Anchored>
+      )}
       {p.flash && (
         flashRect ? (
-          <Anchored key={`flash-${p.flash.id}`} cell={flashRect} boxW={p.boxW} boxH={p.boxH} below>
+          <Anchored key={`flash-${p.flash.id}`} cell={flashRect} boxW={p.boxW} boxH={p.boxH} place="below">
             <p className={css.flash} role="status">{p.flash.text}</p>
           </Anchored>
         ) : (
@@ -118,6 +138,14 @@ function TowerTools(p: Props & { tower: TowerView }) {
   const choices = evolutionChoices(p.balance, t);
   const next = upgradeCost(p.balance, t.type, t.level);
   const refund = sellRefund(p.balance, t);
+  // 설치 직후에는 판매 자리가 되돌리기(전액, 확인 없이)다.
+  const undo = t.undoable && p.onUndo ? (
+    <button type="button" className={`${css.tool} ${css.undo}`} aria-label={`설치 되돌리기 +${t.invested} 골드`} onClick={() => p.onUndo!(t.id)}>
+      <UndoArrowIcon size={18} />
+      <span className={css.toolText}>되돌리기</span>{' '}
+      <span className={css.cost}>+{fmtNumber(t.invested)}</span>
+    </button>
+  ) : null;
   return (
     <div className={css.tools} role="group" aria-label={`${label} 레벨 ${t.level}`}>
       {next !== null && (choices ? (
@@ -133,7 +161,7 @@ function TowerTools(p: Props & { tower: TowerView }) {
           <span className={css.cost}><GoldCoinIcon size={13} />{fmtNumber(next)}</span>
         </button>
       ))}
-      <button
+      {undo ?? <button
         type="button"
         className={`${css.tool} ${css.sell}`}
         data-confirm={confirmSell || undefined}
@@ -144,16 +172,16 @@ function TowerTools(p: Props & { tower: TowerView }) {
         <SellIcon size={18} />
         <span className={css.toolText}>{confirmSell ? '확인' : '판매'}</span>{' '}
         <span className={css.cost}>+{fmtNumber(refund)}</span>
-      </button>
+      </button>}
     </div>
   );
 }
 
 /**
  * 칸 옆에 붙는 상자. 칸이 전장 오른쪽 절반이면 왼쪽에, 아니면 오른쪽에 둔다. 전장 밖으로 나가지 않게 한 번 재서 당긴다.
- * below면 칸 바로 아래 가운데에 둔다.
+ * place가 below면 칸 바로 아래 가운데, above면 칸 바로 위 가운데에 둔다.
  */
-function Anchored({ cell, boxW, boxH, below = false, onEscape, children }: { cell: CellRect; boxW: number; boxH: number; below?: boolean; onEscape?(): void; children: ReactNode }) {
+function Anchored({ cell, boxW, boxH, place = 'side', onEscape, children }: { cell: CellRect; boxW: number; boxH: number; place?: 'side' | 'below' | 'above'; onEscape?(): void; children: ReactNode }) {
   const ref = useRef<HTMLDivElement>(null);
   const [pos, setPos] = useState<{ left: number; top: number } | null>(null);
   const gap = 6;
@@ -169,13 +197,13 @@ function Anchored({ cell, boxW, boxH, below = false, onEscape, children }: { cel
       above: { left: midX, top: cell.top - h - gap },
     };
     // 칸을 가리지 않는 쪽 중 전장 안에 들어가는 첫 자리. 오른쪽 절반의 칸은 왼쪽부터 본다.
-    const order = below ? (['below', 'above'] as const) : cell.left + cell.size / 2 < boxW / 2 ? (['right', 'left', 'below', 'above'] as const) : (['left', 'right', 'below', 'above'] as const);
+    const order = place === 'below' ? (['below', 'above'] as const) : place === 'above' ? (['above', 'below'] as const) : cell.left + cell.size / 2 < boxW / 2 ? (['right', 'left', 'below', 'above'] as const) : (['left', 'right', 'below', 'above'] as const);
     const fits = (p: { left: number; top: number }) => p.left >= 4 && p.left + w <= boxW - 4 && p.top >= 4 && p.top + h <= boxH - 4;
     const pick = order.map(k => sides[k]).find(fits) ?? sides[order[0]];
     const left = Math.max(4, Math.min(boxW - w - 4, pick.left));
     const top = Math.max(4, Math.min(boxH - h - 4, pick.top));
     setPos(prev => (prev && prev.left === left && prev.top === top ? prev : { left, top }));
-  }, [cell.left, cell.top, cell.size, boxW, boxH, below]);
+  }, [cell.left, cell.top, cell.size, boxW, boxH, place]);
   return (
     <div
       ref={ref}

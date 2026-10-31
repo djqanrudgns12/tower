@@ -37,9 +37,13 @@ describe('정수 산술', () => {
     expect(spawnIntervalTicks(BALANCE, 41)).toBe(23);
     expect(spawnIntervalTicks(BALANCE, 81)).toBe(20);
   });
-  it('round5 강화비와 60% 판매(A14): 궁수 40/70/110/155, Lv5 판매 261', () => {
-    expect([1, 2, 3, 4].map(l => upgradeCost(BALANCE, 'archer', l))).toEqual([40, 70, 110, 155]);
-    expect(upgradeCost(BALANCE, 'archer', 5)).toBeNull();
+  it('round5 강화비(리뉴얼 표)와 60% 판매(A14): 궁수 25/35/45/65/80/90/120/145, 숙련 160/180, 기본은 상한 없음', () => {
+    // 60 × [0.4, 0.55, 0.75, 1.1, 1.35, 1.5, 2.0, 2.4] = 24/33/45/66/81/90/120/144 → round5 25/35/45/65/80/90/120/145.
+    expect([1, 2, 3, 4, 5, 6, 7, 8].map(l => upgradeCost(BALANCE, 'archer', l))).toEqual([25, 35, 45, 65, 80, 90, 120, 145]);
+    // 숙련: 24000 × 1.12 = 26880 → 60 × 2.688 = 161.28 → 160. 26880 × 1.12 = 30105.6 → 30105 → 180.63 → 180.
+    expect([9, 10].map(l => upgradeCost(BALANCE, 'archer', l))).toEqual([160, 180]);
+    expect(BALANCE.levels.max).toBeNull();
+    expect(upgradeCost(BALANCE, 'archer', 30)).toBeGreaterThan(0);
     expect(sellRefund(BALANCE, { invested: 435 })).toBe(261);
     expect(round5Bp(120, 6500)).toBe(80);
   });

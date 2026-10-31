@@ -1,6 +1,6 @@
 import type Phaser from 'phaser';
 import type { TowerId } from '../../contracts/balance';
-import { reachMilli } from '../../domain/towers';
+import { evolutionChoices, reachMilli } from '../../domain/towers';
 import type { RunState } from '../../domain/types';
 import { PALETTE } from '../art';
 import { CELL_PX } from '../assets';
@@ -79,7 +79,7 @@ export class InputLayer {
     const tower = sel.towerId !== null ? s.towers.find(t => t.id === sel.towerId) ?? null : null;
     const highContrast = Boolean((bridge as { highContrastMap?: boolean }).highContrastMap);
     const drag = bridge.drag;
-    const key = `${sel.slotId}|${sel.towerId}|${sel.previewType}|${sel.previewBranch}|${tower?.level}|${tower?.branch}|${s.phase}|${s.towers.length}|${bridge.magnify}|${bridge.keyboardSlotId}|${highContrast}|${drag?.type}:${drag?.slotId}`;
+    const key = `${sel.slotId}|${sel.towerId}|${sel.previewType}|${sel.previewBranch}|${tower?.level}|${tower?.form}|${s.phase}|${s.towers.length}|${bridge.magnify}|${bridge.keyboardSlotId}|${highContrast}|${drag?.type}:${drag?.slotId}`;
     if (key === this.overlayKey) return;
     this.overlayKey = key;
     const g = this.overlay.clear();
@@ -110,8 +110,13 @@ export class InputLayer {
     const cell = drag ? dragCell : selectedCell(bridge);
     if (cell) {
       let range = 0;
+      // 끌고 있으면 끄는 종류의 Lv1 사거리를 그린다.
       const type: TowerId | null = drag ? drag.type : tower?.type ?? sel.previewType;
-      if (type) range = toWorld(drag || !tower ? reachMilli(b, type, 1, null) : reachMilli(b, type, sel.previewBranch && tower.level === 2 ? 3 : tower.level, sel.previewBranch ?? tower.branch));
+      const built = drag ? null : tower;
+      // 진화 미리보기: previewBranch는 두 선택지 가운데 첫째(A)·둘째(B)다.
+      const choices = built && sel.previewBranch ? evolutionChoices(b, built) : null;
+      const preview = choices ? choices[sel.previewBranch === 'A' ? 0 : 1]! : null;
+      if (type) range = toWorld(reachMilli(b, type, built ? (preview ? built.level + 1 : built.level) : 1, built ? (preview ?? built.form) : 'base'));
       const cx = (cell.x + 0.5) * CELL_PX, cy = (cell.y + 0.5) * CELL_PX;
       if (range > 0) {
         g.fillStyle(0xf5ebd4, 0.16).fillCircle(cx, cy, range).lineStyle(2.5, 0xf5ebd4, 0.95).strokeCircle(cx, cy, range);

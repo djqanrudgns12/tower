@@ -2,7 +2,7 @@ import fc from 'fast-check';
 import { describe, expect, it } from 'vitest';
 import type { OptionId } from '../../src/contracts/questions';
 import { advanceTick, applyCommand, type Command } from '../../src/domain/run';
-import { attackIntervalTicks, towerStats } from '../../src/domain/towers';
+import { attackIntervalTicks, evolutionChoices, towerStats } from '../../src/domain/towers';
 import { answerCurrent, correctChoice, finishPrep, nearestSlots, newRun, ok, runUntil, stateHash, ticks, wrongChoice } from './helpers';
 
 describe('준비·배치·전투 흐름', () => {
@@ -279,22 +279,37 @@ describe('거래(PRD §6.3, §7)', () => {
     expect(applyCommand(ctx, s, { type: 'build', slotId: nearestSlots(ctx, 2)[1]!, tower: 'mage' })).toEqual({ ok: false, error: 'NOT_AVAILABLE' });
   });
 
-  it('A14: 궁수 Lv5까지 강화(Lv3 분기 필수) 뒤 판매하면 435의 60%인 261', () => {
-    const { ctx, s } = newRun();
+  it('A14(리뉴얼): Lv4·Lv7 진화는 형태가 필수이고 길을 벗어난 형태는 거절, 상한 Lv8에서 멈춘 뒤 판매하면 투자액의 60%', () => {
+    const run = newRun();
+    // 설정 상한(levels.max)이 있을 때의 최고 레벨을 함께 본다(기본은 null = 무제한).
+    const ctx = { ...run.ctx, balance: { ...run.ctx.balance, levels: { ...run.ctx.balance.levels, max: 8 } } };
+    const { s } = run;
     finishPrep(ctx, s);
-    s.gold = 1000;
+    s.gold = 5000;
     ok(ctx, s, { type: 'build', slotId: nearestSlots(ctx, 1)[0]!, tower: 'archer' });
     const id = s.towers[0]!.id;
     ok(ctx, s, { type: 'upgrade', towerId: id });
-    expect(applyCommand(ctx, s, { type: 'upgrade', towerId: id })).toEqual({ ok: false, error: 'BRANCH_REQUIRED' });
-    ok(ctx, s, { type: 'upgrade', towerId: id, branch: 'A' });
+    expect(applyCommand(ctx, s, { type: 'upgrade', towerId: id, form: 'A' })).toEqual({ ok: false, error: 'INVALID_FORM' });
     ok(ctx, s, { type: 'upgrade', towerId: id });
+    expect(applyCommand(ctx, s, { type: 'upgrade', towerId: id })).toEqual({ ok: false, error: 'FORM_REQUIRED' });
+    expect(applyCommand(ctx, s, { type: 'upgrade', towerId: id, form: 'A1' })).toEqual({ ok: false, error: 'INVALID_FORM' });
+    ok(ctx, s, { type: 'upgrade', towerId: id, form: 'A' });
+    expect(s.towers[0]).toMatchObject({ level: 4, form: 'A' });
+    ok(ctx, s, { type: 'upgrade', towerId: id });
+    ok(ctx, s, { type: 'upgrade', towerId: id });
+    expect(applyCommand(ctx, s, { type: 'upgrade', towerId: id })).toEqual({ ok: false, error: 'FORM_REQUIRED' });
+    expect(applyCommand(ctx, s, { type: 'upgrade', towerId: id, form: 'B1' })).toEqual({ ok: false, error: 'INVALID_FORM' });
+    ok(ctx, s, { type: 'upgrade', towerId: id, form: 'A2' });
+    expect(s.towers[0]).toMatchObject({ level: 7, form: 'A2' });
     ok(ctx, s, { type: 'upgrade', towerId: id });
     expect(applyCommand(ctx, s, { type: 'upgrade', towerId: id })).toEqual({ ok: false, error: 'MAX_LEVEL' });
-    expect(s.towers[0]!.invested).toBe(435);
+    expect(s.towers[0]).toMatchObject({ level: 8, form: 'A2' });
+    // 들인 골드는 모두 이 타워에 쌓였다. 판매는 그 60%(내림)다.
+    const invested = s.towers[0]!.invested;
+    expect(invested).toBe(5000 - s.gold);
     const gold = s.gold;
     ok(ctx, s, { type: 'sell', towerId: id });
-    expect(s.gold - gold).toBe(261);
+    expect(s.gold - gold).toBe(Math.floor((invested * 6) / 10));
     expect(applyCommand(ctx, s, { type: 'sell', towerId: id })).toEqual({ ok: false, error: 'UNKNOWN_TOWER' });
   });
 
@@ -312,7 +327,7 @@ describe('거래(PRD §6.3, §7)', () => {
     ok(ctx, s, { type: 'build', slotId: b!, tower: 'cannon' });
     const cannon = s.towers[1]!;
     // 새 타워의 첫 간격은 구매 순간의 버닝 보너스를 쓴다(PRD §5, §7.2; REVIEW-CORE-001 R04).
-    expect(cannon.nextAttackTick).toBe(s.tick + attackIntervalTicks(ctx.balance, towerStats(ctx.balance, 'cannon', 1, null), ctx.balance.burning.attackSpeedBP));
+    expect(cannon.nextAttackTick).toBe(s.tick + attackIntervalTicks(ctx.balance, towerStats(ctx.balance, 'cannon', 1, 'base'), ctx.balance.burning.attackSpeedBP));
   });
 
   it('서리 감속은 출처별로 두고 가장 강한 값만, 일반 60%·보스 30% 상한', async () => {
@@ -390,8 +405,9 @@ describe('불변식(fast-check)', () => {
           enc ? { type: 'skip', encounterId: enc.id } : { type: 'startBattle' },
           { type: 'next', encounterId: s.quiz.feedback?.encounterId ?? 0 },
           { type: 'build', slotId: slots[(a * 7 + s.tick) % slots.length]!, tower: (['archer', 'cannon', 'frost'] as const)[a % 3]! },
-          t ? { type: 'upgrade', towerId: t.id, branch: a % 2 ? 'A' : 'B' } : { type: 'startBattle' },
+          t ? { type: 'upgrade', towerId: t.id, ...((c => (c ? { form: c[a % 2]! } : {}))(evolutionChoices(ctx.balance, t))) } : { type: 'startBattle' },
           t ? { type: 'sell', towerId: t.id } : { type: 'startBattle' },
+          t ? { type: 'undoBuild', towerId: t.id } : { type: 'startBattle' },
           { type: 'startBattle' },
         ];
         applyCommand(ctx, s, cmds[a % cmds.length]!);

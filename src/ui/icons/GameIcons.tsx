@@ -193,6 +193,15 @@ export function EvolveIcon({ size = 18 }: { size?: number }) {
   );
 }
 
+/** 되돌리기(왼쪽으로 굽은 화살표). 설치 직후 되돌리기 칩용. */
+export function UndoArrowIcon({ size = 18 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 18 18" style={baseStyle} aria-hidden="true">
+      <path d="M6.5 4.2L3 7.6l3.5 3.4M3.4 7.6h7.1a4.4 4.4 0 010 8.8H8" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
 export function CloseIcon({ size = 16 }: { size?: number }) {
   return (
     <svg width={size} height={size} viewBox="0 0 16 16" style={baseStyle} aria-hidden="true">
