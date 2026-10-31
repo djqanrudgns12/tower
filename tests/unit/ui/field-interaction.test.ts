@@ -170,3 +170,23 @@ describe('버닝 표시(PRD §5)', () => {
     expect(streakGems({ burningSecondsLeft: 5, battleStreak: rule.streak }, rule)).toEqual({ burning: true, lit: rule.streak });
   });
 });
+
+describe('압축 레일 능력치·역할 요약(크롬북 1366×650)', () => {
+  it('압축이면 막대 대신 역할 낱말과 아이콘+숫자 칩 세 개, 아니면 막대 세 줄이고 역할은 없다', async () => {
+    const { createElement } = await import('react');
+    const { renderToStaticMarkup } = await import('react-dom/server');
+    const { TowerDetail } = await import('../../../src/ui/game/TowerDetail');
+    const { ROLE_LABEL, TOWER_ROLE_GROUP } = await import('../../../src/ui/game/towerRoles');
+    const props = { balance: BALANCE, type: 'frost' as const, level: 1, form: 'base' as const, icons: {}, next: { level: 2, form: 'base' as const } };
+    const role = ROLE_LABEL[TOWER_ROLE_GROUP.frost];
+    const compact = renderToStaticMarkup(createElement(TowerDetail, { ...props, compact: true }));
+    const full = renderToStaticMarkup(createElement(TowerDetail, props));
+    const bars = statBars(BALANCE, 'frost', 1, 'base', { level: 2, form: 'base' });
+    expect(compact).toContain(role);
+    expect(compact.match(/<li /g)).toHaveLength(bars.length);
+    for (const bar of bars) expect(compact).toContain(`${bar.label} ${bar.value}`);
+    expect(compact).not.toContain('<dl');
+    expect(full).not.toContain(role);
+    expect(full.match(/<dt /g)).toHaveLength(bars.length);
+  });
+});

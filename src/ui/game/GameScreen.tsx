@@ -461,6 +461,7 @@ export function GameScreen({
       armed={armed}
       icons={icons}
       variant={variant}
+      compact={variant === 'rail' && layout.compactRail}
       fresh={goldSeen.fresh}
       onArm={onArm}
       onPress={beginDrag}

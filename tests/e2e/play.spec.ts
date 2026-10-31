@@ -374,6 +374,21 @@ test('1366×650 크롬북: R 모드와 칸 크기', async ({ page }) => {
   const box = await page.locator('canvas').boundingBox();
   expect(box!.width / 15).toBeGreaterThanOrEqual(44);
   await shot(page, 'chromebook-prep');
+  // 압축 레일: 장착 홈 8칸(4×2)과 고른 타워 요약(역할 낱말 + 아이콘·숫자 칩), 자리 목록이 레일 안에 스크롤 없이 들어간다.
+  await finishPrep(page);
+  const rail = page.getByRole('complementary', { name: '타워 관리' });
+  await rail.getByRole('listbox', { name: '타워 장착 홈' }).getByRole('option', { name: /서리탑/ }).click();
+  const detail = rail.getByRole('region', { name: '서리탑 능력치' });
+  await expect(detail).toBeVisible();
+  await expect(detail.getByText('느리게', { exact: true })).toBeVisible();
+  await expect(detail.getByRole('listitem')).toHaveCount(3);
+  const fit = await rail.evaluate(aside => {
+    const body = aside.lastElementChild as HTMLElement;
+    const sockets = [...aside.querySelectorAll('[role="listbox"] > *')].map(el => el.getBoundingClientRect());
+    return { over: body.scrollHeight - body.clientHeight, cells: sockets.length, rows: new Set(sockets.map(r => Math.round(r.top))).size, sameH: sockets.every(r => Math.abs(r.height - sockets[0]!.height) <= 0.5) };
+  });
+  await shot(page, 'chromebook-detail');
+  expect(fit).toEqual({ over: 0, cells: 8, rows: 2, sameH: true });
 });
 
 test('접근성: 홈·준비 화면 axe 위반 없음(캔버스 제외)', async ({ page }) => {

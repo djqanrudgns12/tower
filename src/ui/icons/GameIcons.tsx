@@ -221,7 +221,8 @@ export function TowerShieldPortrait({
 }: {
   type: TowerId;
   icons: Record<string, string>;
-  size?: number;
+  /** 정사각 한 변(px). 'fill'이면 담는 칸을 가득 채운다(칸 쪽이 정사각을 정한다). */
+  size?: number | 'fill';
   /** 액자 없이 그림만(장착 홈 소켓처럼 바깥이 이미 홈일 때). */
   bare?: boolean;
 }) {
@@ -231,8 +232,8 @@ export function TowerShieldPortrait({
   return (
     <span
       style={{
-        width: size,
-        height: size,
+        width: size === 'fill' ? '100%' : size,
+        height: size === 'fill' ? '100%' : size,
         flex: 'none',
         position: 'relative',
         ...(bare ? {} : { background: 'var(--wood-dark)', border: '2px solid var(--wood-collar)', outline: '2px solid var(--edge)', borderRadius: 'var(--r-input)' }),

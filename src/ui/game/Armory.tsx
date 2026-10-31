@@ -5,6 +5,9 @@ import { fmtNumber } from '../copy';
 import { GoldCoinIcon, TowerShieldPortrait } from '../icons/GameIcons';
 import css from './Armory.module.css';
 
+/** 장착함 칸 수(towers.md §0-2: 시작 4종 + 징집, 최대 8칸). 우측 장착 홈은 이 칸 수를 전제로 배치한다. */
+export const ARMORY_SLOTS = 8;
+
 interface Props {
   balance: Balance;
   towers: readonly TowerId[];
@@ -14,6 +17,8 @@ interface Props {
   icons: Record<string, string>;
   /** rail: 우측 레일 격자, strip: 휴대폰 전장 아래 가로 줄. */
   variant: 'rail' | 'strip';
+  /** 낮은 화면(압축 레일): 소켓 여백·가격 글자를 줄인다. 정보는 그대로다. */
+  compact?: boolean;
   /** 막 살 수 있게 된 타워(테두리가 한 번 빛난다). */
   fresh?: ReadonlySet<TowerId>;
   onArm(type: TowerId): void;
@@ -25,10 +30,12 @@ interface Props {
 /**
  * 장착 홈(ui-rules-v2 §1·§4): 초상화와 가격만 보이는 소켓. 누르면 그 타워를 골라 두고(연속 설치),
  * 끌면 전장에 바로 놓는다. 이름은 화면 읽기와 길게 누르기(제목)로만 읽힌다.
+ * 우측 레일은 장착함 8칸(4×2, towers.md §0-2)을 전제로 자리를 잡고, 아직 빈 칸은 파인 홈만 보인다(징집으로 채워져도 배치가 움직이지 않는다).
  */
-export function Armory({ balance, towers, gold, armed, icons, variant, fresh, onArm, onPress, takeClick }: Props) {
+export function Armory({ balance, towers, gold, armed, icons, variant, compact = false, fresh, onArm, onPress, takeClick }: Props) {
+  const empty = variant === 'rail' ? Math.max(0, ARMORY_SLOTS - towers.length) : 0;
   return (
-    <div className={variant === 'rail' ? css.rail : css.strip} role="listbox" aria-label="타워 장착 홈" aria-orientation={variant === 'rail' ? 'vertical' : 'horizontal'}>
+    <div className={variant === 'rail' ? css.rail : css.strip} data-compact={compact || undefined} role="listbox" aria-label="타워 장착 홈" aria-orientation={variant === 'rail' ? 'vertical' : 'horizontal'}>
       {towers.map(type => {
         const price = buildCost(balance, type);
         const short = gold < price;
@@ -48,7 +55,7 @@ export function Armory({ balance, towers, gold, armed, icons, variant, fresh, on
             onClick={() => { if (takeClick()) onArm(type); }}
           >
             <span className={css.well}>
-              <TowerShieldPortrait type={type} icons={icons} size={variant === 'rail' ? 64 : 40} bare />
+              <TowerShieldPortrait type={type} icons={icons} size={variant === 'rail' ? 'fill' : 40} bare />
             </span>
             <span className={css.price}>
               <GoldCoinIcon size={14} />
@@ -57,6 +64,7 @@ export function Armory({ balance, towers, gold, armed, icons, variant, fresh, on
           </button>
         );
       })}
+      {Array.from({ length: empty }, (_, i) => <span key={`empty-${i}`} className={css.empty} aria-hidden="true" />)}
     </div>
   );
 }
