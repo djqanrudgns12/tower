@@ -172,9 +172,18 @@ run('밸런스 계약과 PRD 타워표(§7.1)·적표(§8.1) 일치', () => {
     assert.equal(Math.round(Number(m[3]) * 1000), t.intervalMs); assert.equal(Math.round(Number(m[4]) * 1000), t.rangeMilli);
   }
   const enemies = section('### 8.1', '### 8.2');
+  // 리뉴얼 역할(비행·분열·분열 파생체)은 PRD 본문 반영 전이라(docs/renewal/README.md: 리뉴얼 폴더가 PRD보다 우선, 본문 반영은 사용자 확인 뒤)
+  // 몬스터 카탈로그 §1.2 역할 표와 맞춘다. 파생체는 부모 역할 행에 적힌 hpBP·speedBP와 맞춘다.
+  const catalog = read('docs/renewal/catalog/monsters.md');
+  const rowOf = (text, id) => text.split('\n').find(line => line.startsWith(`| \`${id}\` `))?.split('|').map(s => s.trim());
   for (const [id, e] of Object.entries(balance.enemies)) {
-    const row = enemies.split('\n').find(line => line.startsWith(`| \`${id}\` `))?.split('|').map(s => s.trim()); assert(row, `적 행 없음: ${id}`);
-    assert.equal(Math.round(Number(row[2]) * 10000), e.hpBP, `${id} HP`); assert.equal(Math.round(Number(row[3]) * 10000), e.speedBP, `${id} 속도`);
+    const row = rowOf(enemies, id);
+    if (row) { assert.equal(Math.round(Number(row[2]) * 10000), e.hpBP, `${id} HP`); assert.equal(Math.round(Number(row[3]) * 10000), e.speedBP, `${id} 속도`); continue; }
+    const parent = Object.entries(balance.enemies).find(([, p]) => p.split?.kind === id)?.[0];
+    const renewal = rowOf(catalog, parent ?? id); assert(renewal, `적 행 없음: ${id}`);
+    if (parent) { const text = renewal.join('|'); assert(text.includes(`hpBP: ${e.hpBP}\``) && text.includes(`speedBP: ${e.speedBP}\``), `${id} 파생체 수치`); continue; }
+    const m = renewal[3].match(/`(\d+)` \/ `(\d+)`/); assert(m, `${id} 카탈로그 수치 형식`);
+    assert.equal(Number(m[1]), e.hpBP, `${id} HP`); assert.equal(Number(m[2]), e.speedBP, `${id} 속도`);
   }
 });
 run('밸런스 계약과 PRD 생성식(§8.2) 일치', () => {

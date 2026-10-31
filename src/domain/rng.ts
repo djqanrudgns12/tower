@@ -1,7 +1,7 @@
 // xorshift32-v1(PRD §20.1). 상태는 uint32 하나라 저장·복원이 그대로 된다. 암호 용도가 아니다.
 export const RNG_ALGORITHM = 'xorshift32-v1';
 const ZERO_REMAP = 0x6d2b79f5;
-export const STREAM_SALT = { battle: 0x9e3779b9, question: 0x243f6a88, option: 0xb7e15162, visual: 0xdeadbeef } as const;
+export const STREAM_SALT = { battle: 0x9e3779b9, question: 0x243f6a88, option: 0xb7e15162, visual: 0xdeadbeef, draft: 0x3c6ef372 } as const;
 export type RngStream = keyof typeof STREAM_SALT;
 
 const nonZero = (x: number) => (x >>> 0 === 0 ? ZERO_REMAP : x >>> 0);

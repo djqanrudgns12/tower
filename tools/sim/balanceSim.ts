@@ -31,7 +31,18 @@ interface Strategy {
   judge?: Judge;
   /** 지금 가장 높은 타워의 강화 가치를 이만큼 곱해 본다(한 타워를 몰아 키우는 습관). 없으면 1. */
   favorTopBP?: number;
+  /** 징집 카드 고르는 습관(징집이 있는 판만). 없으면 'best'. */
+  draft?: DraftPolicy;
+  /** false면 pattern에 없는 장착함 타워(시작 마법탑·징집 타워)를 짓지 않는다(궁수 집중형). 없으면 true. */
+  useOwned?: boolean;
 }
+
+/**
+ * 징집 카드 고르는 습관(towers.md §0-2). 'best'는 후보마다 가장 좋은 빈칸의 1레벨 가치/설치비가 가장 큰 것,
+ * 'random'은 가상 플레이어 난수로 하나다. 고른 타워는 장착함에 들어오고 pattern 뒤에 한 번 붙어 차례대로 지어진다.
+ */
+export type DraftPolicy = 'best' | 'random';
+export const DRAFT_POLICIES: readonly DraftPolicy[] = ['best', 'random'];
 
 /** 'sketch'는 balance-sketch에서 이어받은 어림, 'engine'은 제품 엔진으로 잰 피해다. */
 export type Judge = 'sketch' | 'engine';
@@ -60,9 +71,9 @@ export function parseFormPolicies(text: string): FormPolicies {
 
 // tools/balance-sketch.mjs의 가상 플레이어를 이어받았다. 마법탑은 P1 범위 밖이라 뺐다.
 export const STRATEGIES: Record<StrategyId, Strategy> = {
-  novice: { attentionMs: 30000, randomSlots: true, pattern: ['archer', 'archer', 'cannon', 'frost', 'archer', 'cannon', 'archer', 'cannon'], upgradeAfterTowers: 6 },
+  novice: { attentionMs: 30000, randomSlots: true, pattern: ['archer', 'archer', 'cannon', 'frost', 'archer', 'cannon', 'archer', 'cannon'], upgradeAfterTowers: 6, draft: 'random' },
   balanced: { attentionMs: 20000, randomSlots: false, pattern: ['archer', 'archer', 'cannon', 'frost', 'archer', 'cannon', 'archer', 'cannon'], upgradeAfterTowers: 0 },
-  focused: { attentionMs: 20000, randomSlots: false, pattern: ['archer'], upgradeAfterTowers: 0 },
+  focused: { attentionMs: 20000, randomSlots: false, pattern: ['archer'], upgradeAfterTowers: 0, useOwned: false },
   /** P2: 10종을 고르게 쓰는 균형 전략(PRD §7.5 ②의 비교 대상). 지을 수 없는 종류(수호기사 2기째 등)는 건너뛴다. */
   balanced10: { attentionMs: 20000, randomSlots: false, pattern: ['archer', 'mage', 'cannon', 'spear', 'frost', 'lightning', 'archer', 'flame', 'crossbow', 'guardian', 'banner', 'cannon'], upgradeAfterTowers: 0, pick: 'round', judge: 'engine' },
   /** 리뉴얼: 균형형처럼 짓되 가장 높은 타워를 먼저 키운다(무제한 레벨에서 한 타워가 판을 지배하지 않는지 본다). */
@@ -89,6 +100,8 @@ export interface SimOptions {
   judge?: Judge;
   /** 진화 선택 규칙. 없으면 'best'. */
   forms?: FormPolicies;
+  /** 전략의 징집 습관 대신 쓸 습관. */
+  draft?: DraftPolicy;
   /** 거래·답안 명령을 내기 직전에 부른다(가상 플레이어 추적용). */
   onCommand?: (wave: number, gold: number, cmd: Command) => void;
 }
@@ -106,6 +119,8 @@ export interface SimResult {
   evolvedTwice: number;
   /** 판이 끝났을 때 형태별 타워 수. */
   formCounts: Record<FormId, number>;
+  /** 판이 끝났을 때 장착함(시작 + 징집 순서). */
+  owned: TowerId[];
   bossKills: number;
   bossLeaks: number;
   /** 보스가 나온 웨이브별 처치 여부. */
@@ -224,8 +239,10 @@ export function simulateRun(opt: SimOptions): SimResult {
     bankId: 'g3-dev', bankVersion: 'sim', contentMode: 'development', availableTowers: [...towers], rankingEligibility: 'personal', createdAt: '2026-10-28T00:00:00.000Z',
   });
   const strat = STRATEGIES[opt.strategy];
-  const pattern = strat.pattern.filter(t => towers.includes(t));
+  // 장착함에 있는 것만 짓는다. 시작 마법탑·징집 타워처럼 pattern에 없는 장착함 타워는 뒤에 한 번씩 붙인다(useOwned).
+  const patternOf = () => [...strat.pattern.filter(t => s.owned.includes(t)), ...(strat.useOwned === false ? [] : s.owned.filter(t => !strat.pattern.includes(t)))];
   const judge = opt.judge ?? strat.judge ?? 'sketch';
+  const draftPolicy = opt.draft ?? strat.draft ?? 'best';
   const policyOf = (type: TowerId): FormPolicy => (typeof opt.forms === 'object' ? opt.forms[type] : opt.forms) ?? 'best';
   // 플레이어의 선택은 엔진 난수와 다른 흐름을 쓴다. 같은 seed면 같은 판이 나온다.
   const rng: Rng = { s: (opt.seed * 2654435761 + 0x5bd1e995) >>> 0 || 1 };
@@ -255,7 +272,19 @@ export function simulateRun(opt: SimOptions): SimResult {
     return formTier(choices[0]!) === 1 ? (policy[0] as FormId) : choices.find(f => f === policy) ?? choices[Number(policy[1]) - 1]!;
   };
 
+  /** 징집 카드가 열리면 바로 고른다(화면의 큰 카드 3장). */
+  const draft = () => {
+    const offer = s.draft;
+    if (!offer) return;
+    const free = slotOrder.filter(id => !s.towers.some(t => t.slotId === id));
+    const slots = free.length ? free : slotOrder;
+    const worth = (type: TowerId) => Math.max(...slots.map(id => value(ctx, judge, type, 1, 'base', id, cache, s.towers))) / buildCost(ctx.balance, type);
+    const tower = draftPolicy === 'random' ? offer.offers[intBelow(rng, offer.offers.length)]! : offer.offers.reduce((best, t) => (worth(t) > worth(best) ? t : best));
+    run({ type: 'draftPick', tower });
+  };
+
   const spend = () => {
+    const pattern = patternOf();
     for (;;) {
       const options: Array<{ cost: number; gain: number; cmd: Command }> = [];
       const frees = slotOrder.filter(id => !s.towers.some(t => t.slotId === id));
@@ -309,6 +338,7 @@ export function simulateRun(opt: SimOptions): SimResult {
       if (startAt < 0) { spend(); startAt = s.tick + msToTicks((opt.buildSec ?? 8) * 1000); }
       if (s.tick >= startAt) { run({ type: 'startBattle' }); startAt = -1; spendAt = s.tick + attention; }
     } else if (s.phase === 'BATTLE' && s.tick >= spendAt) { spend(); spendAt = s.tick + attention; }
+    if (s.draft) draft();
     phaseTicks[s.phase]++;
     for (const e of advanceTick(ctx, s)) if ((e.type === 'kill' || e.type === 'leak') && e.kind === 'boss') bosses.push({ wave: s.wave, killed: e.type === 'kill' });
   }
@@ -324,6 +354,7 @@ export function simulateRun(opt: SimOptions): SimResult {
     maxLevel: Math.max(0, ...s.towers.map(t => t.level)),
     evolvedTwice: s.towers.filter(t => t.level >= ctx.balance.levels.evolveAt[1]).length,
     formCounts: Object.fromEntries(FORM_IDS.map(f => [f, s.towers.filter(t => t.form === f).length])) as Record<FormId, number>,
+    owned: [...s.owned],
     bossKills: st.bossKills,
     bossLeaks: st.bossLeaks,
     bosses,

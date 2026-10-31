@@ -64,7 +64,8 @@ describe('웨이브 생성(PRD §8.2~8.3)', () => {
     expect(w5.findIndex(e => e.kind === 'boss')).toBe(Math.floor((70 * 25) / 100));
     expect(w5.filter(e => e.elite).length).toBe(0);
     const w10 = composeWave(BALANCE, 'garden_u', 10, { s: 7 });
-    expect(w10.filter(e => e.elite).length).toBe(Math.floor(29 * 0.09));
+    // 정예 비율 = 5% + 1.75%p × (10 − 6) = 12%.
+    expect(w10.filter(e => e.elite).length).toBe(Math.floor((29 * 1200) / 10000));
     // 정원은 W1 보병 → W3 질주(monsters.md §3.1).
     expect(new Set(composeWave(BALANCE, 'garden_u', 3, { s: 1 }).map(e => e.kind))).toEqual(new Set(['walker', 'runner']));
   });

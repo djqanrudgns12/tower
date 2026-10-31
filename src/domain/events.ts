@@ -19,4 +19,8 @@ export type DomainEvent =
   | { type: 'leak'; enemyId: number; kind: EnemyKind; damage: number; gateHp: number }
   | { type: 'waveComplete'; wave: number; milestoneGold: number }
   | { type: 'gameOver'; completedWave: number; endedAtWave: number; reason: 'DEFEAT' | 'QUIT' }
-  | { type: 'towerBuilt' | 'towerUpgraded' | 'towerSold'; towerId: number; slotId: string; gold: number };
+  | { type: 'towerBuilt' | 'towerUpgraded' | 'towerSold'; towerId: number; slotId: string; gold: number }
+  /** 징집 후보가 나왔다(웨이브 완료 직후). */
+  | { type: 'draftOffered'; wave: number; offers: TowerId[] }
+  /** 징집으로 장착함에 타워가 들어왔다. auto는 고르지 않은 채 다음 징집이 와서 첫 후보로 정해진 경우다. */
+  | { type: 'draftPicked'; tower: TowerId; auto: boolean };

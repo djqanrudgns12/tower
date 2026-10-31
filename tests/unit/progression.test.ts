@@ -35,6 +35,7 @@ function buildPhase(b = fixed()) {
   const ctx: GameContext = { ...run.ctx, balance: b };
   finishPrep(ctx, run.s);
   run.s.config.availableTowers = [...TOWER_IDS];
+  run.s.owned = [...TOWER_IDS];
   run.s.gold = 100000;
   return { ctx, s: run.s };
 }
