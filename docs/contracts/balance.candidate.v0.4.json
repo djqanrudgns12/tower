@@ -1,8 +1,8 @@
 {
   "schemaVersion": "0.4",
-  "balanceVersion": "0.5.0-renewal-candidate",
+  "balanceVersion": "0.6.0-renewal-candidate",
   "status": "candidate-not-balance-approved",
-  "basedOn": "0.4.2-candidate + 리뉴얼 R2 성장·진화(docs/renewal/progression.md): Lv4·Lv7 진화, 무제한 레벨, 형태 7개, 설치 직후 취소",
+  "basedOn": "0.4.2-candidate + 리뉴얼 R2 성장·진화(docs/renewal/progression.md): Lv4·Lv7 진화, 무제한 레벨, 형태 7개, 설치 직후 취소 + R2 2단계 종족×역할 편성(docs/renewal/catalog/monsters.md §0·§3)",
   "userConfirmed": { "date": "2026-10-28", "fields": ["difficulties.*.skipPt", "difficulties.*.label", "waves.hpGrowthPercent"], "rule": "확정 값은 사용자 결정 없이 바꾸지 않는다. 나머지 값은 후보다." },
   "units": {
     "tickHz": 30,
@@ -32,6 +32,8 @@
     "shell":  { "hpBP": 11500, "speedBP": 9000,  "physicalResistBP": 3500, "magicResistBP": 0 },
     "wisp":   { "hpBP": 10000, "speedBP": 11000, "physicalResistBP": 0,    "magicResistBP": 3500 },
     "swarm":  { "hpBP": 5500,  "speedBP": 11000, "physicalResistBP": 0,    "magicResistBP": 0 },
+    "flyer":  { "hpBP": 8500,  "speedBP": 11500, "physicalResistBP": 0,    "magicResistBP": 0 },
+    "splitter": { "hpBP": 11000, "speedBP": 9500, "physicalResistBP": 0,   "magicResistBP": 0 },
     "boss":   { "hpBP": 45000, "speedBP": 7500,  "physicalResistBP": 0,    "magicResistBP": 0 }
   },
   "elites": {
@@ -50,11 +52,18 @@
     "bossIndex": "floor(0.70 * (N - 1))",
     "eliteRate": { "fromWave": 6, "baseBP": 500, "perWaveBP": 100, "maxBP": 2500 },
     "composition": [
-      { "fromWave": 1,  "weights": { "walker": 100 } },
-      { "fromWave": 3,  "weights": { "walker": 60, "runner": 25, "brute": 15 } },
-      { "fromWave": 5,  "weights": { "walker": 40, "runner": 25, "brute": 20, "shell": 15 } },
-      { "fromWave": 10, "weights": { "walker": 25, "runner": 20, "brute": 15, "shell": 15, "wisp": 10, "swarm": 15 } }
+      { "fromWave": 1,  "slotWeights": [100] },
+      { "fromWave": 3,  "slotWeights": [70, 30] },
+      { "fromWave": 5,  "slotWeights": [50, 30, 20] },
+      { "fromWave": 7,  "slotWeights": [35, 25, 20, 20] },
+      { "fromWave": 9,  "slotWeights": [28, 22, 18, 16, 16] },
+      { "fromWave": 12, "slotWeights": [24, 20, 16, 15, 12, 13] },
+      { "fromWave": 14, "slotWeights": [96, 80, 64, 60, 48, 52], "roleWeights": { "flyer": 100 } },
+      { "fromWave": 17, "slotWeights": [168, 140, 112, 105, 84, 91], "roleWeights": { "flyer": 150, "splitter": 150 } }
     ],
+    "compositionNote": "monsters.md §3.1·§0-3: slotWeights[i]는 맵 campaigns.roleOrder[i] 역할이다(해금 ①②③⑤⑥⑧). W14는 기본 6역할 80% + 비행 20%, W17부터 70% + 비행 15% + 분열 15%. 1~20웨이브에 2~3웨이브마다 새 얼굴(역할·대장)이 나온다.",
+    "invasion": { "fromWave": 21, "blockWaves": 5, "invaderShareBPByOffset": [5000, 5000, 7000, 7000, 7000], "bossTiers": [2, 3, 4], "alliance": { "fromBlock": 7, "primaryShareBP": 2000, "secondOffset": 3 } },
+    "invasionNote": "monsters.md §3.2: block = floor((wave-21)/5), offset = (wave-21)%5. 침입 종족은 invasionOrder[block%7]이고, 대장 웨이브(W25·W30…)의 대장은 그 종족의 bossTiers[block%3]단(W25 2단·W30 3단·W35 4단). 56웨이브(block 7)부터 주력 20% + invasionOrder[block%7] 40% + invasionOrder[(block+3)%7] 40% 연합이다.",
     "baseTravelTicks": 720
   },
   "burning": { "streak": 3, "durationMs": 8000, "attackSpeedBP": 2500 },
@@ -162,6 +171,31 @@
       "B1": { "parent": "B", "label": "임시 큰 신속", "summary": "주변 타워가 훨씬 빨리 공격해요", "auraSpeedBPByLevel": [2800, 3100, 3400] },
       "B2": { "parent": "B", "label": "임시 넓은 신속", "summary": "더 넓은 곳의 타워를 빠르게 해요", "auraSpeedBPByLevel": [2300, 2500, 2700], "rangeAddMilli": 700 }
     }
+  },
+  "factions": {
+    "acorn_goblin": { "label": "들숲 새참 도적단", "artPrefix": "acorn", "artAlias": { "walker": "enemy.walker" },
+      "names": { "walker": "도토리 보초병", "runner": "새참 날치기꾼", "brute": "통나무 덩치오우거", "shell": "냄비뚜껑 갑옷병", "wisp": "반딧불 초롱꾼", "swarm": "솔방울 꼬마떼", "boss5": "국자대장 달그락", "boss10": "멧돼지기수 우당탕", "boss15": "새참수레 큰손오우거", "boss20": "들숲총대장 도토리왕" } },
+    "river_rafter": { "label": "여울목 통발 패거리", "artPrefix": "river",
+      "names": { "walker": "노젓기 수달병", "runner": "물보라 미끄럼꾼", "brute": "통나무집게 거구", "shell": "소라투구 방패병", "wisp": "물안개 호리병사", "swarm": "조약돌 올챙이단", "boss5": "나루터장 첨벙수달", "boss10": "큰소라 바위집게장", "boss15": "물레방아 뗏목선장", "boss20": "여울총대장 큰물결수달" } },
+    "moon_dokkaebi": { "label": "달빛 장터 도깨비단", "artPrefix": "dokkaebi",
+      "names": { "walker": "패랭이 소도깨비", "runner": "수수빗자루 재주꾼", "brute": "맷돌어깨 씨름꾼", "shell": "가마솥뚜껑 방패꾼", "wisp": "청사초롱 파란불꾼", "swarm": "메밀묵 꼬마도깨비", "boss5": "씨름판장 뚝배기", "boss10": "풍물패장 징소리", "boss15": "초롱행렬 밤장수", "boss20": "달빛총대장 금방망이" } },
+    "hearth_yeti": { "label": "화톳불 털복숭이 유목단", "artPrefix": "yeti",
+      "names": { "walker": "털모자 눈길보병", "runner": "자작썰매 활강꾼", "brute": "빙하어깨 큰설인", "shell": "얼음통나무 중갑병", "wisp": "화로불씨 주전자꾼", "swarm": "털뭉치 아기산양떼", "boss5": "군고구마 화로지기", "boss10": "눈사태 썰매대장", "boss15": "북방산양 뿔지기", "boss20": "설원총대장 만년설인" } },
+    "brass_mole": { "label": "태엽 등불 두더지단", "artPrefix": "mole",
+      "names": { "walker": "안전모 곡괭이병", "runner": "외바퀴 광차질주꾼", "brute": "증기해머 큰두더지", "shell": "황동철판 두더지병", "wisp": "수정등불 측량사", "swarm": "태엽나사 꼬마단", "boss5": "굴착반장 코코아", "boss10": "광석수레 기관장", "boss15": "수정동굴 등불장인", "boss20": "광산총대장 황동드릴왕" } },
+    "honey_beetle": { "label": "호박꿀 딱정벌레 기사단", "artPrefix": "beetle",
+      "names": { "walker": "도토리창 풍뎅이병", "runner": "꽃잎스케이트 정찰병", "brute": "호박통나무 사슴벌레장", "shell": "황금수지 중갑충", "wisp": "민들레홀씨 악사", "swarm": "꿀방울 아기풍뎅이", "boss5": "꿀단지 파수대장", "boss10": "황금뿔 돌격기사", "boss15": "꽃가루 나팔수장", "boss20": "들판총대장 호박갑충왕" } },
+    "kiln_pottery": { "label": "가마터 토기 정령단", "artPrefix": "kiln",
+      "names": { "walker": "옹기단지 걸음병", "runner": "찻잔바퀴 구름꾼", "brute": "장독대 큰항아리", "shell": "청자유약 기와병", "wisp": "가마불씨 호롱병", "swarm": "종지그릇 꼬마떼", "boss5": "뚝배기 불씨대장", "boss10": "청자주전자 다관장", "boss15": "가마터 불무지장인", "boss20": "도기총대장 대장독왕" } },
+    "breeze_corsair": { "label": "솔바람 하늘유랑단", "artPrefix": "corsair",
+      "names": { "walker": "솔방울창 다람쥐병", "runner": "바람개비 활공꾼", "brute": "돛대어깨 큰오소리", "shell": "참나무통 갑판병", "wisp": "구름나침반 항해사", "swarm": "단풍잎 꼬마다람쥐", "boss5": "망원경 갑판장 솔솔", "boss10": "바람돛 조타수장", "boss15": "구름닻 보급선장", "boss20": "능선총대장 큰바람선장" } }
+  },
+  "factionsNote": "종족 팩(monsters.md §2). 규칙(수치·능력)은 enemies의 역할이 정하고 종족은 이름·그림만 바꾼다. 그림 id는 `<artPrefix>.<역할|boss5~boss20>`, artAlias가 있으면 그 그림을 쓴다. 비행·분열 개체 이름은 그림 생산 직전에 names에 더한다(§0-7). 확장 4종족(mole·beetle·kiln·corsair)은 21웨이브 침입부터 나오며 아직 그림이 없다.",
+  "campaigns": {
+    "garden_u":  { "primary": "acorn_goblin",  "roleOrder": ["walker", "runner", "brute", "shell", "swarm", "wisp"], "invasionOrder": ["honey_beetle", "breeze_corsair", "river_rafter", "kiln_pottery", "brass_mole", "moon_dokkaebi", "hearth_yeti"] },
+    "river_z":   { "primary": "river_rafter",  "roleOrder": ["walker", "runner", "swarm", "shell", "brute", "wisp"], "invasionOrder": ["breeze_corsair", "kiln_pottery", "moon_dokkaebi", "brass_mole", "honey_beetle", "hearth_yeti", "acorn_goblin"] },
+    "courtyard": { "primary": "moon_dokkaebi", "roleOrder": ["walker", "brute", "shell", "runner", "wisp", "swarm"], "invasionOrder": ["kiln_pottery", "brass_mole", "hearth_yeti", "honey_beetle", "breeze_corsair", "acorn_goblin", "river_rafter"] },
+    "snow_step": { "primary": "hearth_yeti",   "roleOrder": ["walker", "brute", "runner", "wisp", "shell", "swarm"], "invasionOrder": ["brass_mole", "honey_beetle", "acorn_goblin", "breeze_corsair", "kiln_pottery", "river_rafter", "moon_dokkaebi"] }
   },
   "formsNote": "1차형(A·B)은 0.4.2-candidate의 Lv3 분기 값을 그대로 옮겼고 이제 Lv4에서 고른다. 2차형(A1~B2)은 고유 능력 카탈로그가 오기 전 기존 효과 필드만 조합한 임시 값이며 이름 앞에 ‘임시’를 붙였다. 2차형은 부모 1차형 값을 물려받고 적은 필드만 덮어쓴다."
 }
