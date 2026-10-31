@@ -3,6 +3,7 @@ import type { OptionId } from '../contracts/questions';
 import { battleTick, towerSpeedBonusBP } from './combat';
 import type { GameContext } from './context';
 import type { DomainEvent } from './events';
+import { openDraft, pickDraft, startingOwned } from './draft';
 import { center } from './geometry';
 import { add, msToTicks } from './num';
 import { createEncounter } from './quiz';
@@ -21,6 +22,8 @@ export type Command =
   | { type: 'sell'; towerId: number }
   /** 설치 직후 전액 환불: 설치 뒤 run.undoBuildMs 안, 그 타워를 강화하거나 공격·오라에 쓰기 전에만. */
   | { type: 'undoBuild'; towerId: number }
+  /** 징집 후보 가운데 하나를 장착함에 넣는다(towers.md §0-2). 판이 끝나기 전 어느 단계에서나. */
+  | { type: 'draftPick'; tower: TowerId }
   | { type: 'startBattle' }
   | { type: 'pause'; reason: PauseReason }
   | { type: 'resume'; reason: PauseReason }
@@ -29,7 +32,7 @@ export type Command =
 export type CommandError =
   | 'PAUSED' | 'WRONG_PHASE' | 'STALE_ENCOUNTER' | 'ALREADY_ANSWERED' | 'NEXT_NOT_READY' | 'NOT_ENOUGH_GOLD'
   | 'SLOT_TAKEN' | 'UNKNOWN_SLOT' | 'UNKNOWN_TOWER' | 'MAX_LEVEL' | 'FORM_REQUIRED' | 'INVALID_FORM' | 'UNDO_EXPIRED' | 'TOWER_LIMIT'
-  | 'GAME_OVER' | 'NOT_AVAILABLE' | 'NUMERIC_LIMIT';
+  | 'GAME_OVER' | 'NOT_AVAILABLE' | 'NOT_OWNED' | 'NO_DRAFT' | 'INVALID_DRAFT' | 'NUMERIC_LIMIT';
 
 export type CommandResult = { ok: true; events: DomainEvent[] } | { ok: false; error: CommandError };
 
@@ -41,9 +44,10 @@ export function createRun(ctx: GameContext, input: NewRunInput): RunState {
   const s: RunState = {
     v: RUN_STATE_VERSION, config, phase: 'PREP_QUIZ', pause: [], tick: 0, wave: 0, completedWave: 0, endedAtWave: null, endReason: null,
     gateHp: ctx.difficulty.gateHp, gateMaxHp: ctx.difficulty.gateHp, gold: ctx.balance.run.startGold, pt: 0, waveKillPtGranted: 0, burningUntilTick: -1,
-    rng: { battle: streamSeed(seed, 'battle'), question: streamSeed(seed, 'question'), option: streamSeed(seed, 'option') },
+    rng: { battle: streamSeed(seed, 'battle'), question: streamSeed(seed, 'question'), option: streamSeed(seed, 'option'), draft: streamSeed(seed, 'draft') },
     seq: { command: 0, enemy: 1, tower: 1, projectile: 1 },
     quiz: { queue: [], cursor: 0, cycle: 0, recentQuestions: [], recentSenses: [], current: null, feedback: null, prepTarget: 0, prepDone: 0, battleStreak: 0, nextEncounterId: 1, history: [] },
+    owned: startingOwned(ctx.balance, config), draft: null,
     towers: [], enemies: [], projectiles: [], battle: null,
     stats: { correct: 0, wrong: 0, skipped: 0, kills: 0, bossKills: 0, bossLeaks: 0, leaks: 0, goldEarned: 0, ptFromQuestions: 0, ptFromKills: 0, activeTicks: 0, battleTicks: 0 },
     milestoneRewardedWaves: [],
@@ -87,6 +91,7 @@ export function applyCommand(ctx: GameContext, s: RunState, cmd: Command): Comma
       case 'upgrade': return upgrade(ctx, s, cmd.towerId, cmd.form, ev);
       case 'sell': return sell(ctx, s, cmd.towerId, ev);
       case 'undoBuild': return undoBuild(s, cmd.towerId, ev);
+      case 'draftPick': return draftPick(s, cmd.tower, ev);
       case 'startBattle': return startBattle(ctx, s, ev);
       case 'quit': return quit(s, ev);
     }
@@ -203,6 +208,7 @@ function build(ctx: GameContext, s: RunState, slotId: string, type: TowerId, ev:
   if (s.towers.some(t => t.slotId === slotId)) return 'SLOT_TAKEN';
   const cfg = ctx.balance.towers[type];
   if (!s.config.availableTowers.includes(type)) return 'NOT_AVAILABLE';
+  if (!s.owned.includes(type)) return 'NOT_OWNED';
   if (cfg.maxOnField && s.towers.filter(t => t.type === type).length >= cfg.maxOnField) return 'TOWER_LIMIT';
   const cost = buildCost(ctx.balance, type);
   if (s.gold < cost) return 'NOT_ENOUGH_GOLD';
@@ -267,6 +273,13 @@ function undoBuild(s: RunState, towerId: number, ev: DomainEvent[]): CommandErro
   return null;
 }
 
+function draftPick(s: RunState, tower: TowerId, ev: DomainEvent[]): CommandError | null {
+  if (!s.draft) return 'NO_DRAFT';
+  if (!s.draft.offers.includes(tower)) return 'INVALID_DRAFT';
+  pickDraft(s, tower, false, ev);
+  return null;
+}
+
 function startBattle(ctx: GameContext, s: RunState, ev: DomainEvent[]): CommandError | null {
   if (s.phase !== 'BUILD') return 'WRONG_PHASE';
   const b = ctx.balance;
@@ -320,6 +333,7 @@ function completeWave(ctx: GameContext, s: RunState, ev: DomainEvent[]) {
     s.milestoneRewardedWaves.push(s.wave);
   }
   ev.push({ type: 'waveComplete', wave: s.wave, milestoneGold });
+  openDraft(b, s, ev);
   const current = s.quiz.current;
   if (current) {
     if (!current.answer) current.wrapup = true;

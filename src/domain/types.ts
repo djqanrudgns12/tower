@@ -86,6 +86,11 @@ export interface Enemy {
   faction: string;
   /** 대장 단계(1~4 = 5·10·15·20웨이브 대장). 대장이 아니면 null. */
   bossTier: BossTier | null;
+  /** 분열·호위로 생긴 파생체: 처치 골드·PT 0(농사 방지). */
+  derived: boolean;
+  /** 비행 역할. 이 틱 전까지는 땅으로 끌어내려져(grounded) 대공이 안 되는 타워도 맞힌다. */
+  flying: boolean;
+  groundedUntilTick: number;
   elite: EliteId | null;
   hp: number;
   maxHp: number;
@@ -144,6 +149,9 @@ export interface Projectile {
   bonusBP: number;
   /** 정예·보스에게만 곱하는 상황 배율(석궁 B·수호기사 A). */
   eliteBossDamageBP: number;
+  /** 대공 가능(아니면 떠 있는 비행 적은 빗나가고 범위에서도 빠진다)과 비행 적 상황 배율. */
+  canHitFlyer: boolean;
+  flyerDamageBP: number;
 }
 
 /** 생성 예약. faction이 없으면 맵의 주력 종족, 대장의 bossTier가 없으면 1단이다(시험·연습용 줄). */
@@ -157,6 +165,9 @@ export interface BattleState {
   hpBaseMilli: number;
   startedTick: number;
 }
+
+/** 징집 후보(towers.md §0-2). 고르기 전까지 남고, 다음 징집 웨이브가 오면 첫 후보로 정해진다. */
+export interface DraftOffer { wave: number; offers: TowerId[] }
 
 export interface RunStats {
   correct: number;
@@ -189,9 +200,13 @@ export interface RunState {
   pt: number;
   waveKillPtGranted: number;
   burningUntilTick: number;
-  rng: { battle: number; question: number; option: number };
+  rng: { battle: number; question: number; option: number; draft: number };
   seq: { command: number; enemy: number; tower: number; projectile: number };
   quiz: QuizState;
+  /** 장착함: 이 판에서 지을 수 있는 타워(시작 타워 + 징집으로 고른 순서). */
+  owned: TowerId[];
+  /** 고르기를 기다리는 징집 후보. */
+  draft: DraftOffer | null;
   towers: Tower[];
   enemies: Enemy[];
   projectiles: Projectile[];

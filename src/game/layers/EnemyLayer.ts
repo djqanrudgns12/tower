@@ -1,18 +1,20 @@
 import Phaser from 'phaser';
 import { positionAt } from '../../domain/geometry';
+import { enemyArtId } from '../../domain/factions';
 import type { Enemy, RunState } from '../../domain/types';
 import { acceptsHit, enemyPose, HIT_MS } from '../animation/pose';
 import { PALETTE } from '../art';
-import { ASSETS, CELL_PX } from '../assets';
+import { ASSETS, CELL_PX, enemyArt, type EnemyArt } from '../assets';
 import { DEPTH, toWorld, type LayerContext } from './shared';
 
-interface EnemyView { sprite: Phaser.GameObjects.Image; badge: Phaser.GameObjects.Image | null; prev: number; cur: number; phase: number; flashUntil: number; hitAt: number | null; facing: 1 | -1 }
+interface EnemyView { sprite: Phaser.GameObjects.Image; badge: Phaser.GameObjects.Image | null; art: EnemyArt; prev: number; cur: number; phase: number; flashUntil: number; hitAt: number | null; facing: 1 | -1 }
 
-/** 적 층: 길 위 보간 위치, 걸음 자세, 피격 점멸·둔화 색, 정예 배지, 체력 막대. */
+/** 적 층: 종족×역할 그림, 길 위 보간 위치, 걸음 자세, 피격 점멸·둔화 색, 정예 배지, 체력 막대. */
 export class EnemyLayer {
   private readonly c: LayerContext;
   private enemies = new Map<number, EnemyView>();
-  private frames = new Map<string, number>();
+  /** 그림 id·종류별로 고른 그림. 텍스처는 장면을 만든 뒤 바뀌지 않는다. */
+  private arts = new Map<string, EnemyArt>();
   private lastTick = -1;
   /** 체력 막대. 미니맵 카메라에서는 감춘다. */
   readonly hpBars: Phaser.GameObjects.Graphics;
@@ -61,11 +63,11 @@ export class EnemyLayer {
       seen.add(e.id);
       let v = this.enemies.get(e.id);
       if (!v) {
-        const spec = ASSETS.enemy(e.kind, 0);
-        const sprite = scene.add.image(0, 0, spec.key).setOrigin(spec.originX, spec.originY).setDisplaySize(CELL_PX * spec.displayCells, CELL_PX * spec.displayCells);
+        const art = this.artOf(e);
+        const sprite = scene.add.image(0, 0, art.framed ? `${art.base}.0` : art.base).setOrigin(art.originX, art.originY).setDisplaySize(CELL_PX * art.displayCells, CELL_PX * art.displayCells);
         const badge = e.elite ? scene.add.image(0, 0, ASSETS.badge[e.elite]).setDisplaySize(14, 16) : null;
         // 개체마다 보행 위상을 다르게 둔다(PRD §11.3).
-        v = { sprite, badge, prev: e.progress, cur: e.progress, phase: (e.id * 0.618034) % 1, flashUntil: 0, hitAt: null, facing: 1 };
+        v = { sprite, badge, art, prev: e.progress, cur: e.progress, phase: (e.id * 0.618034) % 1, flashUntil: 0, hitAt: null, facing: 1 };
         this.enemies.set(e.id, v);
       }
       const progress = v.prev + (v.cur - v.prev) * alpha;
@@ -75,13 +77,14 @@ export class EnemyLayer {
       const x = toWorld(p.x), y = toWorld(p.y);
       const moving = v.cur !== v.prev && s.pause.length === 0;
       // 걸음은 보간된 진행 거리로 맞춰 감속·맵 길이와 상관없이 발이 미끄러지지 않게 한다(RIG-001).
-      const pose = enemyPose({ kind: e.kind, phase: v.phase, time: time / 1000, speedBP: e.speedBP, moving, frames: this.frameCount(e.kind), reducedMotion: bridge.reducedMotion,
+      // 한 장짜리 종족 그림은 frames 1이라 pose가 디딤 눌림·떠오름으로 걸음을 보여 준다.
+      const { art } = v;
+      const pose = enemyPose({ kind: e.kind, phase: v.phase, time: time / 1000, speedBP: e.speedBP, moving, frames: art.frames, reducedMotion: bridge.reducedMotion,
         distance: toWorld(progress), ...(v.hitAt === null ? {} : { hitAge: (time - v.hitAt) / 1000 }) });
-      const spec = ASSETS.enemy(e.kind, 0);
-      const hitKey = `enemy.${e.kind}.hit`;
+      const hitKey = `${art.base}.hit`;
       const hitArt = pose.hit && scene.textures.exists(hitKey);
-      v.sprite.setTexture(hitArt ? hitKey : `enemy.${e.kind}.${pose.frame}`).setPosition(x, y + CELL_PX * 0.14 - pose.bob).setFlipX(v.facing < 0).setDepth(DEPTH.units + y + 0.5)
-        .setDisplaySize(CELL_PX * spec.displayCells, CELL_PX * spec.displayCells * pose.squashY);
+      v.sprite.setTexture(hitArt ? hitKey : art.framed ? `${art.base}.${pose.frame}` : art.base).setPosition(x, y + CELL_PX * 0.14 - pose.bob).setFlipX(v.facing < 0).setDepth(DEPTH.units + y + 0.5)
+        .setDisplaySize(CELL_PX * art.displayCells, CELL_PX * art.displayCells * pose.squashY);
       this.tint(v, e, time, hitArt);
       if (v.badge) v.badge.setPosition(x, y - CELL_PX * (e.kind === 'boss' ? 0.86 : 0.5)).setDepth(DEPTH.units + y + 0.6);
       if (e.hp < e.maxHp) {
@@ -92,11 +95,15 @@ export class EnemyLayer {
     for (const [id, v] of this.enemies) if (!seen.has(id)) { v.sprite.destroy(); v.badge?.destroy(); this.enemies.delete(id); }
   }
 
-  /** 인수된 원화가 프레임을 더 납품하면(enemy.walker.2, .3 …) 그만큼 쓴다. */
-  private frameCount(kind: string): number {
-    let n = this.frames.get(kind);
-    if (n === undefined) { n = 1; while (n < 8 && this.c.scene.textures.exists(`enemy.${kind}.${n}`)) n++; this.frames.set(kind, n); }
-    return n;
+  /** 종족 그림 id → 기존 enemy.<kind>.<n>(프레임을 더 납품하면 그만큼) → 임시 대역 순으로 고른다(assets.ts enemyArt). */
+  private artOf(e: Enemy): EnemyArt {
+    // 종족 표에 없는 적(종족 이전 저장 등)은 그 종류의 기존 그림으로 둔다.
+    const b = this.c.bridge.controller.ctx.balance;
+    const id = b.factions[e.faction] ? enemyArtId(b, e) : `enemy.${e.kind}`;
+    const key = `${id}|${e.kind}`;
+    let art = this.arts.get(key);
+    if (!art) { art = enemyArt(id, e.kind, k => this.c.scene.textures.exists(k)); this.arts.set(key, art); }
+    return art;
   }
 
   /** 피격 원화가 있으면 그 그림이 피격을 보여 주므로 흰색 점멸을 덮지 않는다. */

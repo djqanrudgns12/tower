@@ -34,6 +34,7 @@ export function measure(placements: Placement[], stream: Stream, balance: Balanc
   });
   // 문항 흐름은 효율과 무관하므로 건너뛰고 거래 단계에서 시작한다. 성문이 무너지지 않게 한다.
   s.phase = 'BUILD'; s.quiz.current = null; s.quiz.feedback = null;
+  s.owned = [...TOWER_IDS];
   s.gold = 1_000_000_000; s.gateHp = s.gateMaxHp = 1_000_000_000;
   let gold = 0;
   for (const p of placements) {

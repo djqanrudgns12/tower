@@ -37,6 +37,10 @@ export interface TowerStats {
   pierceWidth: number;
   /** 긴 창: 선분 폭(0이면 없음). 길이는 사거리. */
   lineWidth: number;
+  /** 대공(towers.md §4-1): 떠 있는 비행 적을 노리고 맞히는가, 비행 적을 먼저 노리는가, 비행 적 상황 배율. */
+  canHitFlyer: boolean;
+  preferFlyer: boolean;
+  flyerDamageBP: number;
 }
 
 /** 형태 단계: 기본형 0, 1차형(A·B) 1, 2차형(A1~B2) 2. */
@@ -119,6 +123,9 @@ export function towerStats(b: Balance, type: TowerId, level: number, form: FormI
     pierceDamageBP: f?.pierceDamageBP ?? 0,
     pierceWidth: f?.pierceWidthMilli ?? 0,
     lineWidth: f?.lineWidthMilli ?? 0,
+    canHitFlyer: f?.canHitFlyer ?? t.canHitFlyer ?? true,
+    preferFlyer: f?.preferFlyer ?? t.preferFlyer ?? false,
+    flyerDamageBP: f?.flyerDamageBP ?? t.flyerDamageBP ?? 10000,
   };
 }
 

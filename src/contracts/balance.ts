@@ -7,7 +7,7 @@ const bp = int.min(0).max(100000);
 
 export const DIFFICULTY_IDS = ['Easy', 'Normal', 'Hard', 'Crazy'] as const;
 /** 적 역할(role). 같은 역할은 종족(faction)이 달라도 수치·규칙이 같다(docs/renewal/catalog/monsters.md §1). */
-export const ENEMY_KINDS = ['walker', 'runner', 'brute', 'shell', 'wisp', 'swarm', 'flyer', 'splitter', 'boss'] as const;
+export const ENEMY_KINDS = ['walker', 'runner', 'brute', 'shell', 'wisp', 'swarm', 'flyer', 'splitter', 'splitling', 'boss'] as const;
 /** 웨이브 편성에 쓰는 일반 역할(대장 제외). */
 export const REGULAR_KINDS = ['walker', 'runner', 'brute', 'shell', 'wisp', 'swarm', 'flyer', 'splitter'] as const;
 /** 주력 종족의 기본 6역할. 맵마다 해금 순서(campaigns.roleOrder)가 다르다. */
@@ -52,7 +52,24 @@ const difficulty = z.object({
   milestoneSurvivalGold: nonNeg,
 });
 
-const enemy = z.object({ hpBP: bp, speedBP: bp, physicalResistBP: bp, magicResistBP: bp });
+const enemy = z.object({
+  hpBP: bp, speedBP: bp, physicalResistBP: bp, magicResistBP: bp,
+  /** 비행(monsters.md §1.2 flyer): 대공이 안 되는 타워의 표적·착탄 범위에서 빠진다(towers.md §4-1). */
+  flying: z.boolean().optional(),
+  /** 분열(splitter): 처치되면 사망 지점 ±spreadMilli에 파생체 count기. 파생체는 처치 골드·PT가 0이다. */
+  split: z.object({ kind: z.enum(ENEMY_KINDS), count: int.min(1).max(8), spreadMilli: nonNeg }).optional(),
+  /** 이 역할을 다른 역할 그림으로 그린다(파생체처럼 종족 팩에 그림이 따로 없는 역할). */
+  artRole: z.enum(REGULAR_KINDS).optional(),
+});
+
+/** 대공(towers.md §4-1). 타워·형태에 둘 수 있고 형태 값이 이긴다. canHitFlyer가 없으면 대공 가능이다. */
+const antiAir = {
+  canHitFlyer: z.boolean().optional(),
+  /** 사거리 안 비행 적을 먼저 노린다(매사냥대 등). */
+  preferFlyer: z.boolean().optional(),
+  /** 비행 적에게만 곱하는 상황 배율. */
+  flyerDamageBP: bp.optional(),
+};
 
 const tower = z.object({
   label: z.string().min(1),
@@ -75,6 +92,7 @@ const tower = z.object({
   burnMs: nonNeg.optional(),
   maxOnField: int.min(1).optional(),
   auraDamageBPByLevel: z.array(bp).optional(),
+  ...antiAir,
 });
 
 /** 형태 하나의 보정. 2차형은 부모(1차형) 값을 물려받고 적은 필드만 덮어쓴다(progression.md §3). */
@@ -108,6 +126,7 @@ const form = z.object({
   /** 깃발 형태: 그 형태 첫 레벨부터 레벨별 직접 피해 보너스, 또는 피해 보너스를 대체하는 공격 속도 보너스. 표를 넘으면 마지막 값. */
   auraDamageBPByLevel: z.array(bp).optional(),
   auraSpeedBPByLevel: z.array(bp).optional(),
+  ...antiAir,
 });
 
 const factionId = z.string().regex(/^[a-z][a-z_]*$/);
@@ -201,6 +220,11 @@ export const balanceSchema = z.object({
   }),
   towers: z.record(z.enum(TOWER_IDS), tower),
   forms: z.record(z.enum(TOWER_IDS), towerForms),
+  /**
+   * 판 안 징집(towers.md §0-2·§5 안 1): startTowers로 시작하고, afterWaves 웨이브를 지킨 뒤 아직 없는 타워 offerCount종 가운데 하나를 고른다.
+   * 장착함은 maxOwned칸까지. 시작 타워·후보는 그 판의 availableTowers 안에서만 고른다.
+   */
+  draft: z.object({ startTowers: z.array(z.enum(TOWER_IDS)).min(1), afterWaves: z.array(int.min(1)), offerCount: int.min(1), maxOwned: int.min(1) }),
   factions: z.record(factionId, faction),
   /** 맵 ID → 원정 편성. 모든 맵이 하나씩 가진다(content 시험). */
   campaigns: z.record(z.string().regex(/^[a-z_]+$/), campaign),
@@ -214,6 +238,14 @@ export const balanceSchema = z.object({
     const total = c.slotWeights.reduce((a, x) => a + x, 0) + Object.values(c.roleWeights ?? {}).reduce((a, x) => a + x, 0);
     if (total <= 0) ctx.addIssue({ code: 'custom', message: `${c.fromWave}웨이브 편성 가중치 합이 0이다` });
   }
+  for (const [kind, e] of Object.entries(b.enemies)) {
+    if (!e.split) continue;
+    const child = b.enemies[e.split.kind];
+    if (e.split.kind === 'boss' || child.split) ctx.addIssue({ code: 'custom', message: `${kind}: 분열 파생체는 대장이 아니고 다시 분열하지 않아야 한다` });
+  }
+  const dr = b.draft;
+  if (new Set(dr.startTowers).size !== dr.startTowers.length || dr.startTowers.length > dr.maxOwned) ctx.addIssue({ code: 'custom', message: '징집 시작 타워가 겹치거나 장착함보다 많다' });
+  if (dr.afterWaves.some((w, i) => i > 0 && w <= dr.afterWaves[i - 1]!)) ctx.addIssue({ code: 'custom', message: '징집 웨이브는 오름차순이어야 한다' });
   const inv = b.waves.invasion;
   if (inv.invaderShareBPByOffset.length !== inv.blockWaves) ctx.addIssue({ code: 'custom', message: '침입 비율 수는 블록 웨이브 수와 같아야 한다' });
   for (const [mapId, c] of Object.entries(b.campaigns)) {

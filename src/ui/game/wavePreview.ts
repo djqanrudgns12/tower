@@ -4,7 +4,7 @@ import { composeWave } from '../../domain/waves';
 /** 화면 읽기용 적 이름(종족 카탈로그가 들어오면 그 이름으로 바꾼다). */
 export const ENEMY_NAME: Record<EnemyKind, string> = {
   walker: '걷는 적', runner: '빠른 적', brute: '힘센 적', shell: '단단한 적', wisp: '떠다니는 적', swarm: '떼로 오는 적',
-  flyer: '나는 적', splitter: '갈라지는 적', boss: '대장',
+  flyer: '나는 적', splitter: '갈라지는 적', splitling: '갈라져 나온 적', boss: '대장',
 };
 
 export interface WavePreview { total: number; kinds: Array<{ kind: EnemyKind; count: number }>; boss: boolean }
