@@ -56,6 +56,7 @@ export class TowerLayer {
       if (FIXED_WEAPON.has(t.type)) v.weapon?.setPosition(x, y - CELL_PX * 0.38 + (bridge.reducedMotion ? 0 : Math.sin(time / 420 + t.id) * 2));
       else v.weapon?.setPosition(x - Math.cos(v.angle) * recoil, y - CELL_PX * 0.32 - Math.sin(v.angle) * recoil).setRotation(v.angle);
       if (v.level !== t.level || v.branch !== t.form) {
+        if (v.level > 0 && v.branch !== t.form) this.popEvolved(v);
         v.level = t.level; v.branch = t.form;
         const branch = formBranch(t.form);
         v.pips.clear();
@@ -71,5 +72,23 @@ export class TowerLayer {
       }
     }
     for (const [id, v] of this.towers) if (!seen.has(id)) { v.body.destroy(); v.weapon?.destroy(); v.pips.destroy(); this.towers.delete(id); }
+  }
+
+  /**
+   * 진화: 새 형태가 되면 몸체·무기가 살짝 튀어 올랐다 내려앉는다(ui-rules-v2 §5, 왕복 0.28초). 몸체는 아래 기준점에서 커져 위로 솟는다.
+   * 모션을 줄이면 크기·위치는 그대로 두고 투명도만 한 번 바꾼다. 빛기둥은 화면 겹층(EvolvePillar)이 그린다.
+   */
+  private popEvolved(v: TowerView) {
+    const { scene, bridge } = this.c;
+    const parts = v.weapon ? [v.body, v.weapon] : [v.body];
+    if (bridge.reducedMotion) {
+      for (const p of parts) scene.tweens.add({ targets: p, alpha: { from: 0.45, to: 1 }, duration: 240, ease: 'Sine.easeOut' });
+      return;
+    }
+    for (const p of parts) {
+      const sx = p.scaleX, sy = p.scaleY;
+      const grow = p === v.body ? { x: 1.08, y: 1.16 } : { x: 1.12, y: 1.12 };
+      scene.tweens.add({ targets: p, scaleX: sx * grow.x, scaleY: sy * grow.y, duration: 140, ease: 'Quad.easeOut', yoyo: true, onComplete: () => p.setScale(sx, sy) });
+    }
   }
 }
