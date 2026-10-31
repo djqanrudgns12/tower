@@ -22,6 +22,17 @@ export const TOWER_COPY: Record<TowerId, { role: string; good: string }> = {
   spear: { role: '아주 빠르게 찌르는 창', good: '길 바로 옆에 좋아요' },
   guardian: { role: '강한 기사 한 명', good: '한 기만 놓을 수 있어요' },
   banner: { role: '주변 타워를 돕는 깃발', good: '강한 타워 옆에 좋아요' },
+  // 리뉴얼 신규 10종(docs/renewal/catalog/towers.md §1 역할 한 줄). 화면 문구는 R1이 다듬는다.
+  sling: { role: '적 사이를 통통 튀는 돌팔매', good: '초반에 싸게 놓기 좋아요' },
+  ballista: { role: '긴 직선을 꿰뚫는 창', good: '곧은 길 끝에 좋아요' },
+  falcon: { role: '하늘 적을 낚아채는 매', good: '날아오는 적에게 좋아요' },
+  mortar: { role: '먼 길 너머로 쏘는 곡사포', good: '길에서 조금 먼 칸에 좋아요' },
+  hwacha: { role: '불화살을 쏟아붓는 화차', good: '적이 몰려올 때 좋아요' },
+  roller: { role: '길을 거슬러 구르는 통나무', good: '곧은 길 출구 쪽에 좋아요' },
+  alchemist: { role: '길 위에 남는 물약', good: '길목에 놓으면 좋아요' },
+  wind: { role: '돌풍으로 뒤로 밀쳐요', good: '다른 타워 앞에 좋아요' },
+  trap: { role: '길 위에 덫을 깔아요', good: '성문 가까이 좋아요' },
+  bell: { role: '울림으로 적을 약하게', good: '교차로 가운데 좋아요' },
 };
 
 export const PAUSE_COPY: Record<PauseReason, string> = {

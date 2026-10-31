@@ -14,6 +14,17 @@ export const TOWER_ROLE_GROUP: Record<TowerId, TowerRoleGroup> = {
   frost: 'slow',
   guardian: 'support',
   banner: 'support',
+  // 리뉴얼 신규 10종(towers.md §1 분류·역할). R2가 엔진과 함께 더했다.
+  sling: 'fast',
+  ballista: 'fast',
+  falcon: 'fast',
+  mortar: 'area',
+  hwacha: 'area',
+  roller: 'area',
+  alchemist: 'area',
+  wind: 'slow',
+  trap: 'slow',
+  bell: 'support',
 };
 
 /** 역할 이름(라벨). 문장이 아니라 두세 글자 낱말로 둔다(ui-rules-v2 §1). */

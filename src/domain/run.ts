@@ -215,7 +215,7 @@ function build(ctx: GameContext, s: RunState, slotId: string, type: TowerId, ev:
   s.gold -= cost;
   const tower: Tower = {
     id: s.seq.tower++, type, slotId, x: center(slot.x), y: center(slot.y), level: 1, form: 'base', invested: cost, nextAttackTick: null,
-    undoUntilTick: s.tick + msToTicks(ctx.balance.run.undoBuildMs),
+    undoUntilTick: s.tick + msToTicks(ctx.balance.run.undoBuildMs), attacks: 0, burst: null, focus: null, auraKills: 0, auraGold: 0,
   };
   s.towers.push(tower);
   // 전투 중 구매는 구매 시점부터 공격 간격 하나를 기다린다(PRD §7.2). 깃발처럼 공격하지 않는 타워는 공격 예약이 없다.
@@ -288,7 +288,11 @@ function startBattle(ctx: GameContext, s: RunState, ev: DomainEvent[]): CommandE
   s.rng.battle = rng.s;
   s.battle = { spawnList, spawnIndex: 0, nextSpawnTick: s.tick + 1, intervalTicks: spawnIntervalTicks(b, s.wave), hpBaseMilli: hpBaseMilli(b, s.wave), startedTick: s.tick };
   // 시작 때 버닝은 없고(0), 깃발 B의 속도 보너스는 바로 적용한다.
-  for (const t of s.towers) t.nextAttackTick = attacks(b, t.type) ? s.tick + attackIntervalTicks(b, towerStats(b, t.type, t.level, t.form), towerSpeedBonusBP(ctx, s, t)) : null;
+  for (const t of s.towers) {
+    t.nextAttackTick = attacks(b, t.type) ? s.tick + attackIntervalTicks(b, towerStats(b, t.type, t.level, t.form), towerSpeedBonusBP(ctx, s, t)) : null;
+    // 웨이브마다 다연발 예약·연속 표적·처치 골드 상한을 새로 센다(공격 주기 수는 이어 간다).
+    t.burst = null; t.focus = null; t.auraGold = 0;
+  }
   s.phase = 'BATTLE';
   s.quiz.battleStreak = 0;
   s.quiz.current = createEncounter(ctx, s, 'battle');
@@ -324,7 +328,7 @@ function completeWave(ctx: GameContext, s: RunState, ev: DomainEvent[]) {
   s.projectiles = [];
   s.enemies = [];
   s.battle = null;
-  for (const t of s.towers) t.nextAttackTick = null;
+  for (const t of s.towers) { t.nextAttackTick = null; t.burst = null; }
   let milestoneGold = 0;
   if (isMilestone(b, s.wave) && !s.milestoneRewardedWaves.includes(s.wave)) {
     milestoneGold = ctx.difficulty.milestoneSurvivalGold;

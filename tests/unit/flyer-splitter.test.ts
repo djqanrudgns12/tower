@@ -36,9 +36,10 @@ const hits = (ev: DomainEvent[]) => ev.flatMap(e => (e.type === 'hit' ? [[e.enem
 const run = (ctx: GameContext, s: RunState, n: number) => ticks(ctx, s, n);
 
 describe('대공(towers.md §4-1)', () => {
-  it('타워마다 대공 여부가 있다: 포탑·화염·창병·수호기사는 지상 전용', () => {
+  it('타워마다 대공 여부가 있다(towers.md §1: 대공 11종, 지상 전용 8종, 깃발은 공격 없음)', () => {
     const air = TOWER_IDS.filter(t => t !== 'banner' && towerStats(BALANCE, t, 1, 'base').canHitFlyer);
-    expect(air.sort()).toEqual(['archer', 'crossbow', 'frost', 'lightning', 'mage']);
+    expect(air.sort()).toEqual(['archer', 'ballista', 'bell', 'crossbow', 'falcon', 'frost', 'hwacha', 'lightning', 'mage', 'sling', 'wind']);
+    expect(TOWER_IDS.filter(t => t !== 'banner' && !air.includes(t)).sort()).toEqual(['alchemist', 'cannon', 'flame', 'guardian', 'mortar', 'roller', 'spear', 'trap']);
     // 2차 진화에서 대공을 연다: 화염 A2 용오름 불기둥·수호기사 B1 황금 검풍.
     expect(towerStats(BALANCE, 'flame', 7, 'A2').canHitFlyer).toBe(true);
     expect(towerStats(BALANCE, 'guardian', 7, 'B1').canHitFlyer).toBe(true);

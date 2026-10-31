@@ -9,7 +9,9 @@ const manifest = assetManifestSchema.parse(JSON.parse(readFileSync(new URL('../.
 describe('타워 그림(manifest·형태별 본체)', () => {
   it('기존 10종 기본형(본체·무기)은 integrated_pass이고, tower.<타워>.<형태>는 TOWER_IDS×FormId 조합에 기본형과 같은 규격이다', () => {
     const byId = new Map(manifest.assets.map(a => [a.id, a]));
-    const baseIds = TOWER_IDS.flatMap(t => (t === 'banner' ? [`tower.${t}`] : [`tower.${t}`, `tower.${t}.weapon`]));
+    // 기존 10종(TOWER_IDS 앞 10개)만 그림이 인수됐다. 신규 10종은 그림 색 표식 작업 뒤에 연다(R2 (d)가 ID만 더함).
+    const legacy = TOWER_IDS.slice(0, 10);
+    const baseIds = legacy.flatMap(t => (t === 'banner' ? [`tower.${t}`] : [`tower.${t}`, `tower.${t}.weapon`]));
     expect(baseIds.filter(id => byId.get(id)?.status !== 'integrated_pass')).toEqual([]);
 
     const forms = manifest.assets.filter(a => /^tower\.[^.]+\.[^.]+$/.test(a.id) && !a.id.endsWith('.weapon'));
@@ -19,7 +21,7 @@ describe('타워 그림(manifest·형태별 본체)', () => {
     });
     expect(invalid.map(a => a.id)).toEqual([]);
     // 1차형(A·B)은 10종 모두 있다. 2차형은 창병·수호기사·깃발이 아직 없다.
-    expect(TOWER_IDS.flatMap(t => ['A', 'B'].map(f => `tower.${t}.${f}`)).filter(id => !byId.has(id))).toEqual([]);
+    expect(legacy.flatMap(t => ['A', 'B'].map(f => `tower.${t}.${f}`)).filter(id => !byId.has(id))).toEqual([]);
     for (const a of forms) {
       const base = byId.get(a.id.split('.').slice(0, 2).join('.'))!;
       expect([a.status, a.layer, a.width, a.height, a.originX, a.originY, a.displayCells], a.id)

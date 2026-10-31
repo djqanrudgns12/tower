@@ -177,8 +177,8 @@ describe('시안 1 v3 가변 레일·수직선 잠금 레이아웃 계산(comput
 });
 
 describe('시안 1 v3 10종 타워 역할 분류 및 GameView 파생 지표', () => {
-  it('계약의 10종 타워 ID가 모두 역할 필터 그룹에 빠짐없이 매핑된다', () => {
-    expect(TOWER_IDS).toHaveLength(10);
+  it('계약의 타워 ID(리뉴얼 20종)가 모두 역할 필터 그룹에 빠짐없이 매핑된다', () => {
+    expect(TOWER_IDS).toHaveLength(20);
     for (const id of TOWER_IDS) {
       expect(['fast', 'area', 'slow', 'support']).toContain(TOWER_ROLE_GROUP[id]);
     }

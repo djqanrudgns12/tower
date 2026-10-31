@@ -134,7 +134,7 @@ export interface SimResult {
   goldEarned: number;
 }
 
-export { BALANCE, MAPS, TOWER_IDS };
+export { BALANCE, MAPS, PILOT_TOWERS, TOWER_IDS };
 
 const WRONG_FEEDBACK_READ_MS = 1000;
 
@@ -223,9 +223,16 @@ function value(ctx: GameContext, judge: Judge, type: TowerId, level: number, for
     }
     return v;
   }
-  const perSec = (st.damage / 1000) * (TICK_HZ / attackIntervalTicks(b, st, 0));
-  let mult = st.splashRadius > 0 || st.cone ? 2 : st.lineWidth > 0 ? 1.3 : 1;
+  // 리뉴얼 효과 어림: 다연발·공격 주기 덧발·여러 표적은 발 수만큼, 도탄·2차 피해는 절반, 취약은 받는 피해만큼, 밀치기는 감속처럼 더한다.
+  const fx = st.fx;
+  const follow = (x: { count: number; followDamageBP?: number | undefined }) => ((x.count - 1) * (x.followDamageBP ?? 10000)) / 10000;
+  const shots = (1 + (fx.burst ? follow(fx.burst) : 0) + (fx.cycle?.burst ? follow(fx.cycle.burst) / fx.cycle.every : 0)) * st.volley;
+  const perSec = (st.damage / 1000) * (TICK_HZ / attackIntervalTicks(b, st, 0)) * shots;
+  let mult = st.splashRadius > 0 || st.cone || fx.ring || fx.pathSegmentMilli ? 2 : st.lineWidth > 0 ? 1.3 : 1;
   if (st.chainRadius > 0) { mult = 0; for (let k = 0; k < st.maxTargets; k++) mult += (st.chainFalloffBP / 10000) ** k; mult = 1 + (mult - 1) * 0.5; }
+  if (fx.ricochet) { let r = 0; for (let k = 1; k <= fx.ricochet.count; k++) r += (fx.ricochet.falloffBP / 10000) ** k; mult += r * 0.5; }
+  if (fx.onHitSplash) mult += (fx.onHitSplash.damageBP / 10000) * 0.5;
+  mult *= 1 + (fx.vulnBP ?? 0) / 10000 + ((fx.knockbackMilli ?? 0) / 1000) * 0.5;
   const burnPerSec = st.burnTicks > 0 ? (st.burnTotal / 1000) * (TICK_HZ / st.burnTicks) : 0;
   const base = (perSec * mult + burnPerSec) * (st.eliteBossDamageBP > 10000 ? 1.1 : 1) + (st.slowBP > 0 ? 6 : 0);
   return (base * coverage(ctx, slotId, st.range, cache)) / 4;

@@ -163,7 +163,21 @@ run('밸런스 계약과 PRD 난이도표(§4.1) 일치', () => {
 });
 run('밸런스 계약과 PRD 타워표(§7.1)·적표(§8.1) 일치', () => {
   const towers = section('### 7.1', '### 7.2');
+  // 리뉴얼 신규 타워는 PRD 본문 반영 전이라 타워 카탈로그(§1 개요표·§2 기본형 줄)와 맞춘다: 이름·가격·피해 종류·피해·간격·(최대)사거리.
+  const towerCatalog = read('docs/renewal/catalog/towers.md');
   for (const [id, t] of Object.entries(balance.towers)) {
+    if (!towers.split('\n').some(line => line.startsWith(`| \`${id}\` `))) {
+      const row = towerCatalog.split('\n').find(line => /^\| \d+ \| `/.test(line) && line.includes(`| \`${id}\` |`))?.split('|').map(s => s.trim()); assert(row, `타워 행 없음: ${id}`);
+      assert.equal(row[3], t.label, `${id} 이름`); assert(row[8].includes(`\`${t.cost}G\``), `${id} 가격`);
+      const head = towerCatalog.indexOf(`#### [${row[1]}] \`${id}\``); assert(head >= 0, `${id} 카탈로그 절 없음`);
+      const body = towerCatalog.slice(head, towerCatalog.indexOf('\n\n|', head));
+      assert(body.includes(t.damageType === 'magic' ? '· 마법 ·' : '· 물리 ·'), `${id} 피해 종류`);
+      const base = body.slice(body.indexOf('기본형'));
+      assert.equal(Number(/피해 `(\d+)`/.exec(base)?.[1]), t.damage, `${id} 피해`);
+      assert.equal(Number(/간격 `\d+틱\((\d+)ms\)`/.exec(base)?.[1]), t.intervalMs, `${id} 간격`);
+      assert.equal(Number((/최대 사거리 `(\d+) milli`/.exec(base) ?? /사거리 `(\d+) milli`/.exec(base) ?? /반경 `(\d+) milli`/.exec(base))?.[1]), t.rangeMilli, `${id} 사거리`);
+      continue;
+    }
     const row = towers.split('\n').find(line => line.startsWith(`| \`${id}\` `))?.split('|').map(s => s.trim()); assert(row, `타워 행 없음: ${id}`);
     assert(row[1].endsWith(t.label), `${id} 이름`); assert.equal(Number(row[2]), t.cost, `${id} 가격`);
     if (id === 'banner') { assert(row[3].includes(`반경 ${(t.rangeMilli / 1000).toFixed(1)}`)); continue; }
