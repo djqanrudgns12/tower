@@ -24,11 +24,12 @@ export function hpBaseMilli(b: Balance, wave: number): number {
   return hp;
 }
 
-/** 난이도→종류→정예 순서로 한 단계씩 올림(PRD §8.2). */
-export function enemyMaxHp(b: Balance, d: DifficultyConfig, baseMilli: number, kind: EnemyKind, elite: EliteId | null): number {
+/** 난이도→종류→정예→대장 기믹 보정 순서로 한 단계씩 올림(PRD §8.2, monsters.md §0-4). */
+export function enemyMaxHp(b: Balance, d: DifficultyConfig, baseMilli: number, kind: EnemyKind, elite: EliteId | null, bossScaleBP = 10000): number {
   let hp = bpCeil(baseMilli, d.enemyHpBP, 'hp.difficulty');
   hp = bpCeil(hp, b.enemies[kind].hpBP, 'hp.kind');
   if (elite) hp = bpCeil(hp, b.elites[elite].hpBP, 'hp.elite');
+  if (bossScaleBP !== 10000) hp = bpCeil(hp, bossScaleBP, 'hp.bossScale');
   return hp;
 }
 

@@ -1,4 +1,4 @@
-import { BOSS_RANKS, REGULAR_KINDS, type ArtRole, type Balance, type BossTier, type CampaignConfig, type EnemyKind, type RegularKind } from '../contracts/balance';
+import { BOSS_RANKS, REGULAR_KINDS, type ArtRole, type Balance, type BossSkill, type BossTier, type CampaignConfig, type EnemyKind, type RegularKind } from '../contracts/balance';
 import type { Enemy } from './types';
 
 // 종족(faction) × 역할(role) 편성(docs/renewal/catalog/monsters.md §0·§2·§3). 규칙은 역할이 정하고 종족은 이름·그림만 바꾼다.
@@ -32,6 +32,13 @@ export function enemyArtId(b: Balance, e: Pick<Enemy, 'kind' | 'faction' | 'boss
   if (!f) throw new Error(`없는 종족: ${e.faction}`);
   const role = artRoleOf(b, e);
   return f.artAlias?.[role] ?? `${f.artPrefix}.${role}`;
+}
+
+/** 대장의 기믹과 체력 보정(종족 팩 bosses). 대장이 아니거나 정의가 없으면 null. */
+export function bossDef(b: Balance, e: Pick<Enemy, 'kind' | 'faction' | 'bossTier'>): { skill: BossSkill; hpScaleBP: number } | null {
+  if (e.kind !== 'boss') return null;
+  const def = b.factions[e.faction]?.bosses?.[bossRank(e.bossTier ?? 1)];
+  return def ? { skill: def.skill, hpScaleBP: def.hpScaleBP ?? 10000 } : null;
 }
 
 /** 화면용 이름(도감·대장 등장 알림). 종족 표에 이름이 없으면 null(비행·분열 개체는 그림 생산 때 이름을 더한다). */

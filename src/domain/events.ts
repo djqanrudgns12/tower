@@ -1,4 +1,4 @@
-import type { EnemyKind, TowerId } from '../contracts/balance';
+import type { BossSkillKind, EnemyKind, TowerId } from '../contracts/balance';
 import type { Phase } from './types';
 
 // 화면·렌더러로 보내는 사건. 보상은 이미 상태에 반영된 뒤 알린다(애니메이션이 보상을 만들지 않는다, PRD §10.3).
@@ -20,6 +20,8 @@ export type DomainEvent =
   | { type: 'waveComplete'; wave: number; milestoneGold: number }
   | { type: 'gameOver'; completedWave: number; endedAtWave: number; reason: 'DEFEAT' | 'QUIT' }
   | { type: 'towerBuilt' | 'towerUpgraded' | 'towerSold'; towerId: number; slotId: string; gold: number }
+  /** 대장 기믹이 발동했다(방어 태세·겹방패 한 겹·회복·호위 호출). 돌진·북소리는 상시라 알리지 않는다. */
+  | { type: 'bossSkill'; enemyId: number; skill: BossSkillKind }
   /** 처치 골드 오라(깃발 A2)가 골드를 줬다. */
   | { type: 'auraGold'; towerId: number; gold: number }
   /** 징집 후보가 나왔다(웨이브 완료 직후). */

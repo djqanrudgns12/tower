@@ -1,6 +1,6 @@
 import type { GameContext } from './context';
 import type { DomainEvent } from './events';
-import { campaignOf, enemyArtId } from './factions';
+import { bossDef, campaignOf, enemyArtId } from './factions';
 import { dist2, positionAt } from './geometry';
 import { add, bpFloor, ceilDiv, isqrt, msToTicks, safe, TICK_HZ } from './num';
 import {
@@ -37,6 +37,7 @@ export function battleTick(ctx: GameContext, s: RunState, ev: DomainEvent[]): vo
   }
 
   for (const e of s.enemies) if (e.alive && e.burnNextTick !== null && t >= e.burnNextTick) burnTick(ctx, s, e, ev);
+  for (const e of s.enemies) if (e.alive && e.boss) bossMend(ctx, s, e, ev);
 
   for (const tower of s.towers) slowAura(ctx, s, tower);
   for (const tower of s.towers) fire(ctx, s, tower, ev);
@@ -57,14 +58,23 @@ function spawn(ctx: GameContext, s: RunState, ev: DomainEvent[]) {
 /** 적 하나를 경로 progress 지점에 만든다. 생성 예약에 종족이 없으면 맵 주력 종족, 대장 단계가 없으면 1단이다. */
 function addEnemy(ctx: GameContext, s: RunState, entry: SpawnEntry, hpBase: number, progress: number, derived: boolean, ev: DomainEvent[]): Enemy {
   const b = ctx.balance;
-  const hp = enemyMaxHp(b, ctx.difficulty, hpBase, entry.kind, entry.elite);
+  const faction = entry.faction ?? campaignOf(b, ctx.map.id).primary;
+  const bossTier = entry.kind === 'boss' ? (entry.bossTier ?? 1) : null;
+  // 대장 기믹과 체력 보정(monsters.md §0-4·§2.0): 생존형(겹방패·회복)은 체력을 낮춰 시작한다.
+  const def = bossDef(b, { kind: entry.kind, faction, bossTier });
+  const hp = enemyMaxHp(b, ctx.difficulty, hpBase, entry.kind, entry.elite, def?.hpScaleBP ?? 10000);
   const res = enemyResists(b, entry.kind, entry.elite);
+  const skill = def?.skill;
   const enemy: Enemy = {
-    id: s.seq.enemy++, kind: entry.kind, faction: entry.faction ?? campaignOf(b, ctx.map.id).primary,
-    bossTier: entry.kind === 'boss' ? (entry.bossTier ?? 1) : null, derived, flying: b.enemies[entry.kind].flying ?? false, groundedUntilTick: 0,
+    id: s.seq.enemy++, kind: entry.kind, faction, bossTier, derived, flying: b.enemies[entry.kind].flying ?? false, groundedUntilTick: 0,
     elite: entry.elite, hp, maxHp: hp, progress, moveRem: 0,
     speedBP: enemySpeedBP(b, entry.kind, entry.elite), physicalResistBP: res.physical, magicResistBP: res.magic,
-    slows: [], stunUntilTick: 0, stunTicksUsed: 0, burns: [], burnNextTick: null, burnRemainder: 0, vulns: [], shreds: [], knockbackUsed: 0, alive: true,
+    slows: [], stunUntilTick: 0, stunTicksUsed: 0, burns: [], burnNextTick: null, burnRemainder: 0, vulns: [], shreds: [], knockbackUsed: 0,
+    boss: skill ? {
+      bornTick: s.tick, stanceUsed: false, stance: null, wardLeft: skill.kind === 'ward_layers' ? skill.layers : 0,
+      mends: 0, nextMendTick: skill.kind === 'snack_mend' ? s.tick + msToTicks(skill.periodMs) : 0, escortStep: 0,
+    } : null,
+    alive: true,
   };
   s.enemies.push(enemy);
   ev.push({ type: 'spawn', enemyId: enemy.id, kind: enemy.kind, faction: enemy.faction, art: enemyArtId(b, enemy) });
@@ -430,6 +440,7 @@ function burnTick(ctx: GameContext, s: RunState, e: Enemy, ev: DomainEvent[]) {
       e.hp = safe(e.hp - pay, 'hp');
       ev.push({ type: 'burn', enemyId: e.id, damage: pay });
       if (e.hp === 0) { kill(ctx, s, e, at(ctx, e), ev, top.source, 0); return; }
+      if (e.boss) bossThresholds(ctx, s, e, ev);
     }
   }
   e.burnNextTick = add(e.burnNextTick!, BURN_INTERVAL_TICKS);
@@ -505,14 +516,67 @@ const strongest = (list: Array<{ bp: number; untilTick: number }>, tick: number)
  * 최종 저항(PRD §20.2, towers.md §4-6): 저항 차감(가장 큰 출처 하나, 상한)을 먼저 빼고, 무시 비율로 남은 저항을 줄인다.
  * 물리 저항 무시는 물리에만, 마법 저항 무시는 마법(화상 포함)에만 쓴다.
  */
-export function effectiveResistBP(e: Pick<Enemy, 'physicalResistBP' | 'magicResistBP'> & Partial<Pick<Enemy, 'shreds'>>, damageType: 'physical' | 'magic', ignoreBP: number, magicIgnoreBP = 0, tick = 0, shredCapBP = 10000): number {
+export function effectiveResistBP(e: Pick<Enemy, 'physicalResistBP' | 'magicResistBP'> & Partial<Pick<Enemy, 'shreds' | 'boss'>>, damageType: 'physical' | 'magic', ignoreBP: number, magicIgnoreBP = 0, tick = 0, shredCapBP = 10000, stanceCapBP = 10000): number {
   const shred = Math.min(shredCapBP, (e.shreds ?? []).reduce((m, x) => (x.untilTick > tick ? Math.max(m, damageType === 'magic' ? x.magicBP : x.physicalBP) : m), 0));
-  if (damageType === 'magic') {
-    const base = Math.max(0, e.magicResistBP - shred);
-    return magicIgnoreBP > 0 ? bpFloor(base, 10000 - magicIgnoreBP, 'resist.ignore') : base;
-  }
-  const base = Math.max(0, e.physicalResistBP - shred);
+  // 대장 방어 태세(monsters.md §2.0 iron_stance): 기본 저항에 더하고 상한까지.
+  const stance = e.boss?.stance && tick < e.boss.stance.untilTick ? e.boss.stance : null;
+  const own = damageType === 'magic' ? e.magicResistBP : e.physicalResistBP;
+  const raised = stance ? Math.max(own, Math.min(stanceCapBP, own + (damageType === 'magic' ? stance.magicBP : stance.physicalBP))) : own;
+  const base = Math.max(0, raised - shred);
+  if (damageType === 'magic') return magicIgnoreBP > 0 ? bpFloor(base, 10000 - magicIgnoreBP, 'resist.ignore') : base;
   return ignoreBP > 0 ? bpFloor(base, 10000 - ignoreBP, 'resist.ignore') : base;
+}
+
+/** 대장 체력 임계(방어 태세 첫 발동·호위 호출 단계). 피해·화상 뒤 살아 있을 때 부른다. */
+function bossThresholds(ctx: GameContext, s: RunState, e: Enemy, ev: DomainEvent[]) {
+  const skill = bossDef(ctx.balance, e)?.skill;
+  const st = e.boss!;
+  const below = (bp: number) => safe(e.hp * 10000, 'boss') <= safe(e.maxHp * bp, 'boss');
+  if (skill?.kind === 'iron_stance' && !st.stanceUsed && below(skill.triggerBP)) {
+    st.stanceUsed = true;
+    st.stance = { physicalBP: skill.physicalBP ?? 0, magicBP: skill.magicBP ?? 0, untilTick: s.tick + msToTicks(skill.durationMs) };
+    ev.push({ type: 'bossSkill', enemyId: e.id, skill: 'iron_stance' });
+  }
+  if (skill?.kind === 'call_escort') {
+    while (st.escortStep < skill.thresholdsBP.length && below(skill.thresholdsBP[st.escortStep]!)) {
+      st.escortStep++;
+      ev.push({ type: 'bossSkill', enemyId: e.id, skill: 'call_escort' });
+      const hpBase = s.battle?.hpBaseMilli ?? hpBaseMilli(ctx.balance, s.wave);
+      const n = skill.escorts.length;
+      skill.escorts.forEach((kind, i) => {
+        const offset = n === 1 ? skill.spreadMilli : -skill.spreadMilli + Math.floor((2 * skill.spreadMilli * i) / (n - 1));
+        addEnemy(ctx, s, { kind, elite: null, faction: e.faction }, hpBase, Math.min(ctx.path.length - 1, Math.max(0, e.progress + offset)), true, ev);
+      });
+    }
+  }
+}
+
+/** 새참 회복(monsters.md §2.0 snack_mend): 주기마다 기절이 아니면 회복, 최대 횟수까지. 기절 중이면 그 주기는 건너뛴다. */
+function bossMend(ctx: GameContext, s: RunState, e: Enemy, ev: DomainEvent[]) {
+  const skill = bossDef(ctx.balance, e)?.skill;
+  const st = e.boss!;
+  if (skill?.kind !== 'snack_mend' || st.mends >= skill.maxTimes || s.tick < st.nextMendTick) return;
+  st.nextMendTick = s.tick + msToTicks(skill.periodMs);
+  if (e.stunUntilTick > s.tick) return;
+  st.mends++;
+  e.hp = Math.min(e.maxHp, add(e.hp, Math.floor((e.maxHp * skill.healBP) / 10000), 'hp'));
+  ev.push({ type: 'bossSkill', enemyId: e.id, skill: 'snack_mend' });
+}
+
+/** 이동 속도: 대장 돌진(burst_march) 중이면 그 속도, 일반 적은 진군 북소리 반경 안이면 더한 속도(상한까지, 원래보다 낮추지 않는다). */
+function moveSpeedBP(ctx: GameContext, s: RunState, e: Enemy, rallies: Array<{ x: number; y: number; r2: number; add: number }>): number {
+  if (e.kind === 'boss') {
+    const skill = e.boss ? bossDef(ctx.balance, e)?.skill : undefined;
+    if (skill?.kind === 'burst_march') {
+      const period = msToTicks(skill.periodMs);
+      if ((s.tick - e.boss!.bornTick) % period >= period - msToTicks(skill.durationMs)) return skill.speedBP;
+    }
+    return e.speedBP;
+  }
+  if (rallies.length === 0) return e.speedBP;
+  const p = at(ctx, e);
+  const add = rallies.reduce((m, r) => (dist2(p.x, p.y, r.x, r.y) <= r.r2 ? Math.max(m, r.add) : m), 0);
+  return add > 0 ? Math.max(e.speedBP, Math.min(ctx.balance.statusCaps.rallySpeedMaxBP, e.speedBP + add)) : e.speedBP;
 }
 
 function addSlow(e: Enemy, source: number, bp: number, untilTick: number) {
@@ -553,8 +617,17 @@ function applyHit(ctx: GameContext, s: RunState, p: Strike, e: Enemy, ev: Domain
     if (p.bonusBP > 0) damage = bpFloor(damage, 10000 + p.bonusBP, 'damage.external');
     const vuln = Math.min(b.statusCaps.vulnMaxBP, strongest(e.vulns, s.tick));
     if (vuln > 0) damage = bpFloor(damage, 10000 + vuln, 'damage.vuln');
-    const resist = effectiveResistBP(e, p.damageType, p.physicalResistIgnoreBP, fx.magicResistIgnoreBP, s.tick, b.statusCaps.shredMaxBP);
-    const dealt = Math.min(e.hp, mitigated(damage, resist));
+    const resist = effectiveResistBP(e, p.damageType, p.physicalResistIgnoreBP, fx.magicResistIgnoreBP, s.tick, b.statusCaps.shredMaxBP, b.statusCaps.bossResistMaxBP);
+    let dealt = Math.min(e.hp, mitigated(damage, resist));
+    // 겹방패(monsters.md §2.0): 한 번 맞을 때마다 최대 체력의 capBP까지만 받고 한 겹 벗긴다.
+    if (e.boss && e.boss.wardLeft > 0) {
+      const skill = bossDef(b, e)?.skill;
+      if (skill?.kind === 'ward_layers') {
+        dealt = Math.min(dealt, Math.max(1, Math.floor((e.maxHp * skill.capBP) / 10000)));
+        e.boss.wardLeft--;
+        ev.push({ type: 'bossSkill', enemyId: e.id, skill: 'ward_layers' });
+      }
+    }
     e.hp = safe(e.hp - dealt, 'hp');
     const point = at(ctx, e);
     ev.push({ type: 'hit', enemyId: e.id, x: point.x, y: point.y, damage: dealt, towerType: p.towerType });
@@ -562,6 +635,7 @@ function applyHit(ctx: GameContext, s: RunState, p: Strike, e: Enemy, ev: Domain
       kill(ctx, s, e, point, ev, p.towerId, depth);
       return;
     }
+    if (e.boss) bossThresholds(ctx, s, e, ev);
   }
   if (p.slowBP > 0) addSlow(e, p.towerId, p.slowBP, s.tick + p.slowTicks);
   if (fx.eliteSlowBP > 0 && elite) addSlow(e, p.towerId, fx.eliteSlowBP, s.tick + fx.eliteSlowTicks);
@@ -680,11 +754,16 @@ export function effectiveSlowBP(ctx: GameContext, e: Enemy, tick: number): numbe
 /** 고정 분모 이동: 감속이 바뀌어도 나머지 단위가 같다(PRD §20.1). */
 function move(ctx: GameContext, s: RunState, ev: DomainEvent[]) {
   const denominator = ctx.balance.waves.baseTravelTicks * 10000 * 10000;
+  // 진군 북소리(rally_haste) 대장의 이번 틱 위치. 이동 전 위치로 한 번만 잰다.
+  const rallies = s.enemies.flatMap(e => {
+    const skill = e.alive && e.boss ? bossDef(ctx.balance, e)?.skill : undefined;
+    return skill?.kind === 'rally_haste' ? [{ ...at(ctx, e), r2: skill.radiusMilli * skill.radiusMilli, add: skill.speedAddBP }] : [];
+  });
   for (const e of s.enemies) {
     if (!e.alive) continue;
     if (e.stunUntilTick > s.tick) { e.stunTicksUsed++; continue; }
     const slow = effectiveSlowBP(ctx, e, s.tick);
-    const numerator = safe(ctx.path.cells * 1000 * e.speedBP * (10000 - slow) + e.moveRem, 'move');
+    const numerator = safe(ctx.path.cells * 1000 * moveSpeedBP(ctx, s, e, rallies) * (10000 - slow) + e.moveRem, 'move');
     const delta = Math.floor(numerator / denominator);
     e.moveRem = numerator - delta * denominator;
     e.progress += delta;

@@ -413,10 +413,10 @@ describe('저장 버전(progression.md §4) — 실제 이어하기 판정(sessi
     return s;
   }
 
-  it('지금 저장 버전(v4) 판은 이어하고, v1(branch 타워)·v2(종족 없는 적)·v3(신규 타워 상태 없는 타워) 스냅샷은 던지지 않고 ‘이어할 수 없어요’로 막는다', () => {
-    expect(RUN_STATE_VERSION).toBe(4);
+  it('지금 저장 버전(v5) 판은 이어하고, v1(branch 타워)·v2(종족 없는 적)·v3(신규 타워 상태 없는 타워)·v4(대장 기믹 없는 적) 스냅샷은 던지지 않고 ‘이어할 수 없어요’로 막는다', () => {
+    expect(RUN_STATE_VERSION).toBe(5);
     const s = current();
-    expect(s.v).toBe(4);
+    expect(s.v).toBe(5);
     expect(s.config.balanceVersion).toBe(BALANCE.balanceVersion);
     expect(resumeBlocker(saved(JSON.parse(JSON.stringify(s))))).toBeNull();
     const v1 = { ...structuredClone(s), v: 1, towers: [{ id: 1, type: 'archer', slotId: 's1', x: 8500, y: 2500, level: 4, branch: 'A', invested: 250, nextAttackTick: null }] };
@@ -425,8 +425,7 @@ describe('저장 버전(progression.md §4) — 실제 이어하기 판정(sessi
     const v2 = { ...structuredClone(s), v: 2, enemies: [{ id: 1, kind: 'walker', elite: null, hp: 1, maxHp: 1, progress: 0 }] };
     expect(() => resumeBlocker(saved(v2 as never))).not.toThrow();
     expect(resumeBlocker(saved(v2 as never))).toMatch(/이어할 수 없어요/);
-    const v3 = { ...structuredClone(s), v: 3 };
-    expect(resumeBlocker(saved(v3))).toMatch(/이어할 수 없어요/);
+    for (const v of [3, 4]) expect(resumeBlocker(saved({ ...structuredClone(s), v }))).toMatch(/이어할 수 없어요/);
     // 리뉴얼 전 밸런스(0.4.2)로 시작한 판도 같은 안내로 막는다.
     expect(resumeBlocker(saved({ ...structuredClone(s), config: { ...s.config, balanceVersion: '0.4.2-candidate' } }))).toMatch(/이어할 수 없어요/);
   });
