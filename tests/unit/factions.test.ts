@@ -1,9 +1,12 @@
+import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
-import { balanceSchema } from '../../src/contracts/balance';
+import { assetManifestSchema } from '../../src/contracts/assetManifest';
+import { ART_ROLES, balanceSchema, BOSS_RANKS, type BossTier, type EnemyKind } from '../../src/contracts/balance';
 import { BALANCE, MAPS } from '../../src/content';
 import { enemyArtId, enemyName, waveFactions, waveRoleWeights } from '../../src/domain/factions';
 import type { SpawnEntry } from '../../src/domain/types';
 import { composeWave } from '../../src/domain/waves';
+import { applyManifest, enemyArt } from '../../src/game/assets';
 import { finishPrep, newRun, ok, ticks } from './helpers';
 
 // 종족×역할 편성(docs/renewal/catalog/monsters.md §0·§2·§3). 규칙은 역할, 이름·그림은 종족.
@@ -133,5 +136,25 @@ describe('생성 사건', () => {
       { type: 'spawn', enemyId: expect.any(Number), kind: 'boss', faction: 'river_rafter', art: 'river.boss15' },
     ]);
     expect(s.enemies.map(e => [e.faction, e.bossTier])).toEqual([['acorn_goblin', null], ['river_rafter', 3]]);
+  });
+});
+
+describe('종족 그림 연결(ART-M1~M4)', () => {
+  it('주력 4종족의 모든 그림 id가 manifest에 있고, 렌더러는 대체 없이 그 그림을 manifest 기준점·크기로 고른다', () => {
+    const manifest = assetManifestSchema.parse(JSON.parse(readFileSync(new URL('../../public/assets/manifest.json', import.meta.url), 'utf8')));
+    const byId = new Map(applyManifest(manifest).map(a => [a.id, a]));
+    const primaries = [...new Set(Object.values(BALANCE.campaigns).map(c => c.primary))];
+    expect(primaries).toHaveLength(4);
+    const missing: string[] = [];
+    for (const faction of primaries) for (const role of ART_ROLES) {
+      const tier = (BOSS_RANKS as readonly string[]).indexOf(role) + 1;
+      const kind = (tier > 0 ? 'boss' : role) as EnemyKind;
+      const id = enemyArtId(BALANCE, { kind, faction, bossTier: tier > 0 ? (tier as BossTier) : null });
+      const picked = enemyArt(id, kind, key => byId.has(key));
+      if (picked.base !== id) { missing.push(id); continue; }
+      const entry = byId.get(picked.framed ? `${id}.0` : id)!;
+      expect([picked.originX, picked.originY, picked.displayCells], id).toEqual([entry.originX, entry.originY, entry.displayCells]);
+    }
+    expect(missing).toEqual([]);
   });
 });
