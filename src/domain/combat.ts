@@ -1,5 +1,6 @@
 import type { GameContext } from './context';
 import type { DomainEvent } from './events';
+import { campaignOf, enemyArtId } from './factions';
 import { dist2, positionAt } from './geometry';
 import { add, bpFloor, ceilDiv, isqrt, msToTicks, safe, TICK_HZ } from './num';
 import { attackIntervalTicks, attacks, auraDamageBonusBP, auraReaches, auraSpeedBonusBP, towerStats, type TowerStats } from './towers';
@@ -46,12 +47,13 @@ function spawn(ctx: GameContext, s: RunState, ev: DomainEvent[]) {
   const hp = enemyMaxHp(b, ctx.difficulty, s.battle!.hpBaseMilli, entry.kind, entry.elite);
   const res = enemyResists(b, entry.kind, entry.elite);
   const enemy: Enemy = {
-    id: s.seq.enemy++, kind: entry.kind, elite: entry.elite, hp, maxHp: hp, progress: 0, moveRem: 0,
+    id: s.seq.enemy++, kind: entry.kind, faction: entry.faction ?? campaignOf(b, ctx.map.id).primary,
+    bossTier: entry.kind === 'boss' ? (entry.bossTier ?? 1) : null, elite: entry.elite, hp, maxHp: hp, progress: 0, moveRem: 0,
     speedBP: enemySpeedBP(b, entry.kind, entry.elite), physicalResistBP: res.physical, magicResistBP: res.magic,
     slows: [], stunUntilTick: 0, stunTicksUsed: 0, burns: [], burnNextTick: null, burnRemainder: 0, alive: true,
   };
   s.enemies.push(enemy);
-  ev.push({ type: 'spawn', enemyId: enemy.id, kind: enemy.kind });
+  ev.push({ type: 'spawn', enemyId: enemy.id, kind: enemy.kind, faction: enemy.faction, art: enemyArtId(b, enemy) });
 }
 
 /** 진행도 최대 → 생성 순번 최소(PRD §7.1). */

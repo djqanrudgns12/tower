@@ -59,24 +59,25 @@ describe('웨이브 생성(PRD §8.2~8.3)', () => {
     expect([1, 2, 3].map(w => hpBaseMilli(BALANCE, w))).toEqual([24000, 27600, 31740]);
   });
   it('보스는 총 수 안에서 70% 지점, 정예는 6웨이브부터', () => {
-    const w5 = composeWave(BALANCE, 5, { s: 7 });
+    const w5 = composeWave(BALANCE, 'garden_u', 5, { s: 7 });
     expect(w5).toHaveLength(26);
     expect(w5.findIndex(e => e.kind === 'boss')).toBe(Math.floor((70 * 25) / 100));
     expect(w5.filter(e => e.elite).length).toBe(0);
-    const w10 = composeWave(BALANCE, 10, { s: 7 });
+    const w10 = composeWave(BALANCE, 'garden_u', 10, { s: 7 });
     expect(w10.filter(e => e.elite).length).toBe(Math.floor(29 * 0.09));
-    expect(new Set(composeWave(BALANCE, 3, { s: 1 }).map(e => e.kind))).toEqual(new Set(['walker', 'runner', 'brute']));
+    // 정원은 W1 보병 → W3 질주(monsters.md §3.1).
+    expect(new Set(composeWave(BALANCE, 'garden_u', 3, { s: 1 }).map(e => e.kind))).toEqual(new Set(['walker', 'runner']));
   });
   it('최대 나머지 배정이 가중치 기대 수를 지킨다', () => {
-    // 24×60%=14.4, 24×25%=6, 24×15%=3.6 → 내림 14/6/3, 남은 1자리는 나머지가 큰 튼튼형(0.6)에.
-    const w3 = composeWave(BALANCE, 3, { s: 3 });
+    // 정원 W3: 24×70%=16.8, 24×30%=7.2 → 내림 16/7, 남은 1자리는 나머지가 큰 보병(0.8)에.
+    const w3 = composeWave(BALANCE, 'garden_u', 3, { s: 3 });
     const count = (k: string) => w3.filter(e => e.kind === k).length;
-    expect([count('walker'), count('runner'), count('brute')]).toEqual([14, 6, 4]);
+    expect([count('walker'), count('runner')]).toEqual([17, 7]);
   });
   it('모든 난이도에서 무방비 누출 피해 합 ≥ 성문 HP(A16)', () => {
     for (const d of Object.values(BALANCE.difficulties)) {
-      for (let w = 1; w <= 60; w++) {
-        const list = composeWave(BALANCE, w, { s: w * 31 });
+      for (const m of MAPS) for (let w = 1; w <= 60; w++) {
+        const list = composeWave(BALANCE, m.id, w, { s: w * 31 });
         const leak = list.reduce((a, e) => a + (e.kind === 'boss' ? BALANCE.leakDamage.boss : e.elite ? BALANCE.leakDamage.elite : BALANCE.leakDamage.regular), 0);
         expect(leak).toBeGreaterThanOrEqual(d.gateHp);
       }

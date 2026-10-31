@@ -271,7 +271,7 @@ function startBattle(ctx: GameContext, s: RunState, ev: DomainEvent[]): CommandE
   if (s.phase !== 'BUILD') return 'WRONG_PHASE';
   const b = ctx.balance;
   const rng = { s: s.rng.battle };
-  const spawnList = composeWave(b, s.wave, rng);
+  const spawnList = composeWave(b, ctx.map.id, s.wave, rng);
   s.rng.battle = rng.s;
   s.battle = { spawnList, spawnIndex: 0, nextSpawnTick: s.tick + 1, intervalTicks: spawnIntervalTicks(b, s.wave), hpBaseMilli: hpBaseMilli(b, s.wave), startedTick: s.tick };
   // 시작 때 버닝은 없고(0), 깃발 B의 속도 보너스는 바로 적용한다.

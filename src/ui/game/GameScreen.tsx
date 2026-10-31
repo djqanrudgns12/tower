@@ -506,7 +506,7 @@ export function GameScreen({
       <div className={css.buildMain}>
         <p className={css.buildTitle}><WaveFlagIcon size={26} boss={view.milestoneWave} />{view.wave}웨이브 준비</p>
         {(() => {
-          const next = wavePreview(b, view.wave);
+          const next = wavePreview(b, map.id, view.wave);
           const kinds = [...next.kinds, ...(next.boss ? [{ kind: 'boss' as const, count: 1 }] : [])];
           return (
             <ul className={css.roster} aria-label={`다음 적 ${next.total}마리: ${kinds.map(k => `${ENEMY_NAME[k.kind]} ${k.count}`).join(', ')}`}>

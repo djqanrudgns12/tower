@@ -152,7 +152,7 @@ describe('준비판 다음 웨이브 미리보기', () => {
       ok(ctx, s, { type: 'startBattle' });
       const real = new Map<string, number>();
       for (const e of s.battle!.spawnList) real.set(e.kind, (real.get(e.kind) ?? 0) + 1);
-      const preview = wavePreview(ctx.balance, wave);
+      const preview = wavePreview(ctx.balance, ctx.map.id, wave);
       expect(preview.total).toBe(s.battle!.spawnList.length);
       expect(preview.boss).toBe(real.has('boss'));
       for (const k of preview.kinds) expect(real.get(k.kind)).toBe(k.count);
