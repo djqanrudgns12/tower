@@ -54,8 +54,9 @@ describe('장착함과 징집', () => {
     expect(nextDraftWave(BALANCE, s)).toBeNull();
   });
 
-  it('앱 기본 판(PILOT_TOWERS, 리뉴얼 10종)은 시작 4종을 갖고 나머지 6종이 징집 후보다', () => {
-    expect(PILOT_TOWERS).toHaveLength(10);
+  it('앱 기본 판(PILOT_TOWERS, 타워 20종)은 시작 4종을 갖고 나머지 16종이 징집 후보다', () => {
+    expect(PILOT_TOWERS).toHaveLength(20);
+    expect(PILOT_TOWERS.filter(t => !BALANCE.draft.startTowers.includes(t))).toHaveLength(16);
     const { ctx } = newRun('Normal', 31);
     const s = createRun(ctx, {
       runId: 'draft-app', playerId: 'p1', nickname: '시험', grade: 3, difficulty: 'Normal', mapId: ctx.map.id, seed: 31,

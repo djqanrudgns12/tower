@@ -6,8 +6,8 @@ import { advanceTick, applyCommand, createRun, type Command } from '../../src/do
 import type { Phase, RunState } from '../../src/domain/types';
 
 /**
- * 규칙 시험의 기본 판은 처음 시범판과 같은 3종(궁수·포탑·서리)만 쓴다. 앱 기본값(PILOT_TOWERS)은 리뉴얼로 10종이 됐지만,
- * 기존 규칙 시험은 3종 판을 전제로 쓰여 있으므로 그 전제를 여기서 명시한다. 10종·징집 판은 draft.test.ts가 따로 본다.
+ * 규칙 시험의 기본 판은 처음 시범판과 같은 3종(궁수·포탑·서리)만 쓴다. 앱 기본값(PILOT_TOWERS)은 리뉴얼로 20종이 됐지만,
+ * 기존 규칙 시험은 3종 판을 전제로 쓰여 있으므로 그 전제를 여기서 명시한다. 20종·징집 판은 draft.test.ts가 따로 본다.
  */
 export const THREE_TOWERS: TowerId[] = ['archer', 'cannon', 'frost'];
 

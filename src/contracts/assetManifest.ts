@@ -18,6 +18,8 @@ export const assetEntrySchema = z.object({
   /** 전장 표시 너비(칸). 지면 얼룩·랜드마크(연못)는 3칸까지 쓴다. */
   displayCells: z.number().positive().max(3),
   muzzle: z.object({ x: z.number().int(), y: z.number().int() }).optional(),
+  /** 본체 그림에서 무기 그림의 중심(회전 기준점)을 놓을 점(본체 그림 px, width×height 기준). 없으면 기본 높이(무기는 본체 기준점보다 0.64칸 위)를 쓴다. 본체(layer=body)에만 쓴다. */
+  weaponMount: z.object({ x: z.number(), y: z.number() }).optional(),
   layer: z.enum(['body', 'weapon', 'shadow', 'frame', 'ground', 'decor', 'fx', 'ui']),
   frames: z.number().int().min(1).max(8).default(1),
   status: z.enum(ASSET_STATUS),

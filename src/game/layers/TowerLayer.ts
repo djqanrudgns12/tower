@@ -4,11 +4,11 @@ import type { DomainEvent } from '../../domain/events';
 import { formBranch, type FormId } from '../../domain/towers';
 import type { RunState } from '../../domain/types';
 import { PALETTE } from '../art';
-import { ASSETS, CELL_PX, towerBodyArt, type AssetSpec } from '../assets';
+import { ASSETS, CELL_PX, towerBodyArt, weaponMountOffset, type AssetSpec } from '../assets';
 import { DEPTH, FIXED_WEAPON, toWorld, type LayerContext } from './shared';
 
-/** `form`은 본체 그림이 맞춰진 형태, `lift`는 그 형태에서 무기를 기본형보다 올리는 높이(월드 px). */
-interface TowerView { body: Phaser.GameObjects.Image; weapon: Phaser.GameObjects.Image | null; pips: Phaser.GameObjects.Graphics; level: number; branch: string | null; form: FormId | null; lift: number; recoilUntil: number; angle: number }
+/** `form`은 본체 그림이 맞춰진 형태, `lift`는 무기를 기본 높이보다 올리는 높이(월드 px, 형태에 따른 올림 + 장착점이 정한 올림), `mountX`는 장착점이 정한 가로 이동(월드 px). */
+interface TowerView { body: Phaser.GameObjects.Image; weapon: Phaser.GameObjects.Image | null; pips: Phaser.GameObjects.Graphics; level: number; branch: string | null; form: FormId | null; lift: number; mountX: number; recoilUntil: number; angle: number }
 
 /** 알파 경계 상자를 잴 때 이보다 옅은 픽셀(가장자리 잔여 알파)은 무시한다. */
 const TOP_ALPHA_MIN = 16;
@@ -57,7 +57,7 @@ export class TowerLayer {
         const wspec = ASSETS.weapons[t.type];
         const weapon = wspec ? scene.add.image(x, y - CELL_PX * 0.32, wspec.key).setDisplaySize(CELL_PX * wspec.displayCells, CELL_PX * wspec.displayCells) : null;
         const pips = scene.add.graphics();
-        v = { body, weapon, pips, level: 0, branch: null, form: null, lift: 0, recoilUntil: 0, angle: FIXED_WEAPON.has(t.type) ? 0 : -Math.PI / 2 };
+        v = { body, weapon, pips, level: 0, branch: null, form: null, lift: 0, mountX: 0, recoilUntil: 0, angle: FIXED_WEAPON.has(t.type) ? 0 : -Math.PI / 2 };
         this.towers.set(t.id, v);
         this.applyForm(v, t.type, t.form);
         if (!bridge.reducedMotion) { body.setScale(body.scaleX * 0.96, body.scaleY * 0.96); scene.tweens.add({ targets: body, scaleX: body.scaleX / 0.96, scaleY: body.scaleY / 0.96, duration: 120 }); }
@@ -69,8 +69,8 @@ export class TowerLayer {
       v.weapon?.setDepth(depth + 1);
       v.pips.setDepth(depth + 2);
       const recoil = time < v.recoilUntil && !bridge.reducedMotion ? 2 : 0;
-      if (FIXED_WEAPON.has(t.type)) v.weapon?.setPosition(x, y - CELL_PX * 0.38 - v.lift + (bridge.reducedMotion ? 0 : Math.sin(time / 420 + t.id) * 2));
-      else v.weapon?.setPosition(x - Math.cos(v.angle) * recoil, y - CELL_PX * 0.32 - v.lift - Math.sin(v.angle) * recoil).setRotation(v.angle);
+      if (FIXED_WEAPON.has(t.type)) v.weapon?.setPosition(x + v.mountX, y - CELL_PX * 0.38 - v.lift + (bridge.reducedMotion ? 0 : Math.sin(time / 420 + t.id) * 2));
+      else v.weapon?.setPosition(x + v.mountX - Math.cos(v.angle) * recoil, y - CELL_PX * 0.32 - v.lift - Math.sin(v.angle) * recoil).setRotation(v.angle);
       if (v.level !== t.level || v.branch !== t.form) {
         if (v.level > 0 && v.branch !== t.form) this.popEvolved(v);
         v.level = t.level; v.branch = t.form;
@@ -109,7 +109,9 @@ export class TowerLayer {
       v.body.setTexture(art.key).setOrigin(art.originX, art.originY).setDisplaySize(CELL_PX * art.displayCells, displayHeight(art));
     }
     v.form = form;
-    v.lift = this.liftOf(base, art);
+    const mount = weaponMountOffset(base, FIXED_WEAPON.has(type));
+    v.lift = this.liftOf(base, art) + mount.lift;
+    v.mountX = mount.dx;
     if (type === 'frost') v.weapon?.setVisible(art.key === base.key);
   }
 

@@ -20,6 +20,8 @@ export interface AssetSpec {
   originY: number;
   /** 전장 표시 너비(셀). */
   displayCells: number;
+  /** 본체 그림에서 무기 중심을 놓을 점(본체 그림 px). 없으면 TowerLayer의 기본 높이를 쓴다. */
+  weaponMount?: { x: number; y: number };
 }
 
 const tower = (id: TowerId): AssetSpec => ({ key: `tower.${id}`, width: 128, height: 160, originX: 0.5, originY: 0.86, displayCells: 1.28 });
@@ -29,11 +31,13 @@ export const ENEMY_DISPLAY: Record<EnemyKind, number> = { walker: 0.72, runner: 
 /** 인수된 원화의 적 기준점(발 중심). 없는 종류는 임시 그림 기준점(0.5, 0.78)을 쓴다. */
 const ENEMY_ORIGIN: Partial<Record<EnemyKind, { x: number; y: number }>> = {};
 
+/** 무기 층이 없는 타워. 임시 무기가 뜨지 않게 ASSETS.weapons에서 뺀다(깃발초소는 공격하지 않고, 나머지 5종은 장판·덫·굴림·부름·조련이라 날아가는 무기 그림이 없다). */
+export const WEAPONLESS_TOWERS: readonly TowerId[] = ['banner', 'falcon', 'roller', 'alchemist', 'trap', 'bell'];
+
 export const ASSETS = {
   ground: { key: 'map.ground', width: WORLD_W * TEX, height: WORLD_H * TEX, originX: 0, originY: 0, displayCells: 15 },
   towers: Object.fromEntries(TOWER_IDS.map(id => [id, tower(id)])) as Record<TowerId, AssetSpec>,
-  /** 깃발초소는 공격하지 않아 무기가 없다. */
-  weapons: Object.fromEntries(TOWER_IDS.filter(id => id !== 'banner').map(id => [id, weapon(id)])) as Partial<Record<TowerId, AssetSpec>>,
+  weapons: Object.fromEntries(TOWER_IDS.filter(id => !WEAPONLESS_TOWERS.includes(id)).map(id => [id, weapon(id)])) as Partial<Record<TowerId, AssetSpec>>,
   enemy: (kind: EnemyKind, frame: 0 | 1): AssetSpec => ({ key: `enemy.${kind}.${frame}`, width: kind === 'boss' ? 192 : 128, height: kind === 'boss' ? 192 : 128, originX: ENEMY_ORIGIN[kind]?.x ?? 0.5, originY: ENEMY_ORIGIN[kind]?.y ?? 0.78, displayCells: ENEMY_DISPLAY[kind] }),
   projectile: { arrow: 'fx.arrow', ball: 'fx.ball', shard: 'fx.shard', spark: 'fx.spark', puff: 'fx.puff' },
   badge: { armored: 'badge.armored', swift: 'badge.swift' },
@@ -95,6 +99,20 @@ export function enemyArt(artId: string, kind: EnemyKind, has: (key: string) => b
   return framed('enemy.walker', { ...placement(ASSETS.enemy('walker', 0)), displayCells: own.displayCells });
 }
 
+/** 무기 그림 중심이 본체 기준점 위로 놓이는 기본 높이(월드 px): 돌리는 무기는 0.32+0.32칸, 떠 있는 무기는 0.38+0.32칸. */
+const defaultWeaponAbove = (fixed: boolean) => CELL_PX * (fixed ? 0.70 : 0.64);
+
+/**
+ * 본체 그림의 장착점(본체 그림 px)이 정하는 무기 위치: 기본 높이보다 올라가는 높이(lift)와 가로 이동(dx), 월드 px.
+ * 장착점이 없으면(기존 10종) 0·0이라 위치가 그대로다.
+ */
+export function weaponMountOffset(spec: AssetSpec, fixed: boolean): { lift: number; dx: number } {
+  const m = spec.weaponMount;
+  if (!m) return { lift: 0, dx: 0 };
+  const perPx = (CELL_PX * spec.displayCells) / spec.width;
+  return { lift: (spec.originY * spec.height - m.y) * perPx - defaultWeaponAbove(fixed), dx: (m.x - spec.originX * spec.width) * perPx };
+}
+
 /** 인수된 원화의 기준점·표시 크기로 임시 규격을 덮어쓴다. 반환값은 실을 파일 목록. */
 export function applyManifest(manifest: AssetManifest): AssetEntry[] {
   const accepted = manifest.assets.filter(a => a.status === 'integrated_pass');
@@ -104,7 +122,7 @@ export function applyManifest(manifest: AssetManifest): AssetEntry[] {
     if (art && isArtRole(art)) ART_DISPLAY.set(a.id, placement(override));
     const tower = /^tower\.([a-z]+)$/.exec(a.id)?.[1] as TowerId | undefined;
     const weapon = /^tower\.([a-z]+)\.weapon$/.exec(a.id)?.[1] as TowerId | undefined;
-    if (tower) ASSETS.towers[tower] = override;
+    if (tower) ASSETS.towers[tower] = a.weaponMount ? { ...override, weaponMount: { ...a.weaponMount } } : override;
     if (weapon) ASSETS.weapons[weapon] = override;
     const form = /^tower\.([a-z]+)\.([A-Z][0-9]?)$/.exec(a.id);
     if (form && isTowerId(form[1]!) && isEvolvedForm(form[2]!)) TOWER_FORM_ART.set(a.id, override);
