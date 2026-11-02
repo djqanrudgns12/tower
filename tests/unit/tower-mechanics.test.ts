@@ -180,12 +180,6 @@ describe('형태별 고유 능력', () => {
     expect(s.projectiles[0]!.damage).toBe(towerStats(BALANCE, 'archer', 7, 'A2').damage);
   });
 
-  it('통나무: 첫 표적에서 입구 쪽 2.6칸 안의 지상 적만, 진행도↓로 최대 5', () => {
-    const { ctx, s } = arena([['roller', 8, 2]]);
-    place(s, [{ progress: 9000 }, { progress: 7500 }, { progress: 6000 }, { progress: 8500, kind: 'flyer', flying: true }]);
-    expect(hits(ticks(ctx, s, 1)).map(h => h[0])).toEqual([100, 101]);
-  });
-
   it('번개 A2: 마지막 연쇄 대상 둘레 0.8칸에 60% 스파크(그 대상은 빼고)', () => {
     const { ctx, s } = arena([['lightning', 8, 2, 7, 'A2']]);
     // 연쇄 5명 한도 밖에 둔 적(진행도 4500)이 마지막 대상(5000) 둘레에서 스파크를 맞는다.

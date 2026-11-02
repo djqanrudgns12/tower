@@ -94,7 +94,7 @@ export function spawnIntros(b: Balance, events: readonly DomainEvent[]): SpawnIn
     if (e.type === 'spawn' && open && (open.kind === null || open.kind === e.kind)) { open.ids.push(e.enemyId); continue; }
     open = null;
     if (e.type === 'kill') {
-      const rule = b.enemies[e.kind].split;
+      const rule: Balance['enemies'][EnemyKind]['split'] = b.enemies[e.kind].split;
       if (rule) open = { style: 'split', from: { x: e.x, y: e.y }, kind: rule.kind, ids: [] };
     } else if (e.type === 'bossSkill' && e.skill === 'call_escort') open = { style: 'escort', from: null, kind: null, ids: [] };
     if (open) groups.push(open);

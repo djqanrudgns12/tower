@@ -1,16 +1,20 @@
 import type { GameContext } from './context';
-import type { DomainEvent } from './events';
+import type { DomainEvent, HazardEndReason } from './events';
 import { bossDef, burstMarching, campaignOf, enemyArtId } from './factions';
 import { dist2, positionAt } from './geometry';
+import { hazardExpiredEvent, trapSpot } from './hazards';
 import { add, bpFloor, ceilDiv, isqrt, msToTicks, safe, TICK_HZ } from './num';
 import {
   attackIntervalTicks, attacks, auraDamageBonusBP, auraEliteBossBonusBP, auraRangeBonusMilli, auraReaches, auraSpeedBonusBP, effectsFor,
   isAuraGiver, towerStats, type TowerStats,
 } from './towers';
-import type { Enemy, HitFx, Projectile, RunState, SpawnEntry, SplashHit, Tower } from './types';
+import type {
+  Enemy, FieldHazard, HazardStrike, HitFx, Projectile, RollerHazard, RunState, SpawnEntry, SplashHit, Tower, TrapHazard, ZoneHazard, ZoneSpec,
+} from './types';
 import { airborne, enemyMaxHp, enemyResists, enemySpeedBP, hpBaseMilli } from './waves';
 
-// 같은 틱 순서(PRD §3.4, §20.3): 만료 → 생성 → 도착 공격 → 화상 → 상시 오라 → 타워 발사(즉발·다연발 포함) → 이동/누출.
+// 같은 틱 순서(PRD §3.4, §20.3): 만료 → 생성 → 도착 공격(장판 착탄 포함) → 화상 → 장판·덫·굴림체(towers.md §4-7) → 대장 회복
+// → 상시 오라 → 타워 발사(즉발·다연발·덫 놓기·굴림체 투입 포함) → 이동/누출.
 // 패배·완료 판정은 run.ts가 이어서 한다. 신규 타워 효과는 docs/renewal/catalog/towers.md §2·§4.
 export function battleTick(ctx: GameContext, s: RunState, ev: DomainEvent[]): void {
   const t = s.tick;
@@ -37,6 +41,7 @@ export function battleTick(ctx: GameContext, s: RunState, ev: DomainEvent[]): vo
   }
 
   for (const e of s.enemies) if (e.alive && e.burnNextTick !== null && t >= e.burnNextTick) burnTick(ctx, s, e, ev);
+  updateHazards(ctx, s, ev);
   for (const e of s.enemies) if (e.alive && e.boss) bossMend(ctx, s, e, ev);
 
   for (const tower of s.towers) slowAura(ctx, s, tower);
@@ -186,15 +191,12 @@ function fire(ctx: GameContext, s: RunState, tower: Tower, ev: DomainEvent[]) {
   if (tower.nextAttackTick === null || t < tower.nextAttackTick) return;
   const stats = towerStats(b, tower.type, tower.level, tower.form);
   const range = stats.range + auraRangeBonusMilli(b, s.towers, tower, burningNow(s));
+  // 덫공방(§4-7 trap)은 적이 없어도 미리 덫을 놓는다. 덫이 가득이거나 빈자리가 없으면 준비 상태로 기다린다.
+  if (stats.fx.trap) { placeTrap(ctx, s, tower, stats, range, ev); return; }
   const targets = candidates(ctx, s, tower.x, tower.y, stats, range);
   // 표적이 없으면 준비 상태로 기다린다. 기다린 시간만큼 몰아서 쏘지 않는다(PRD §7.2).
   if (targets.length === 0) return;
-  // 공격한 타워와 이 공격에 오라를 준 타워는 더는 설치 취소(전액 환불)를 받지 않는다(공짜 공격 방지).
-  tower.undoUntilTick = null;
-  for (const o of s.towers) if (o.undoUntilTick !== null && o !== tower && isAuraGiver(b, o) && auraReaches(b, o, tower, burningNow(s))) o.undoUntilTick = null;
-  // 오라는 거래 뒤 다음 공격 계산 때 다시 읽는다(PRD §20.2).
-  tower.nextAttackTick = t + attackIntervalTicks(b, stats, towerSpeedBonusBP(ctx, s, tower));
-  tower.attacks++;
+  commitAttack(ctx, s, tower, stats);
   const cycle = stats.fx.cycle && tower.attacks % stats.fx.cycle.every === 0 ? stats.fx.cycle : null;
   shoot(ctx, s, tower, stats, 10000, cycle?.stunMs ? msToTicks(cycle.stunMs) : 0, ev, targets);
   const burst = cycle?.burst ?? stats.fx.burst;
@@ -221,6 +223,16 @@ function fire(ctx: GameContext, s: RunState, tower: Tower, ev: DomainEvent[]) {
   }
 }
 
+/** 공격 확정: 공격한 타워와 이 공격에 오라를 준 타워는 더는 설치 취소(전액 환불)를 받지 않는다(공짜 공격 방지). 다음 공격을 예약한다. */
+function commitAttack(ctx: GameContext, s: RunState, tower: Tower, stats: TowerStats) {
+  const b = ctx.balance;
+  tower.undoUntilTick = null;
+  for (const o of s.towers) if (o.undoUntilTick !== null && o !== tower && isAuraGiver(b, o) && auraReaches(b, o, tower, burningNow(s))) o.undoUntilTick = null;
+  // 오라는 거래 뒤 다음 공격 계산 때 다시 읽는다(PRD §20.2).
+  tower.nextAttackTick = s.tick + attackIntervalTicks(b, stats, towerSpeedBonusBP(ctx, s, tower));
+  tower.attacks++;
+}
+
 /**
  * 공격 한 번(주 공격·다연발 한 발): 서로 다른 표적 volley명에게 즉발 또는 투사체로 친다. 표적이 없으면 false.
  * 피해 = 레벨·형태 피해 × damageBP(뒤따르는 발) × 같은 적 연속(마법 A1) × 성문 분노(수호기사 A2).
@@ -243,14 +255,25 @@ function shoot(ctx: GameContext, s: RunState, tower: Tower, stats: TowerStats, d
   const elite = stats.eliteBossDamageBP + auraEliteBossBonusBP(b, s.towers, tower, burningNow(s));
   const fx = hitFxOf(stats, extraStunTicks);
   for (const target of targets) {
-    if (stats.instant) { strike(ctx, s, tower, stats, target, damage, bonus, elite, fx, ev); continue; }
+    // 굴림체(§4-7 roller): 즉발 대신 표적 자리에 놓여 다음 틱부터 입구 쪽으로 굴러간다.
+    if (stats.fx.roller) { launchRoller(ctx, s, tower, stats, target, strikeOf(tower, stats, damage, bonus, elite, fx), ev); continue; }
+    if (stats.instant) {
+      const aim = at(ctx, target);
+      strike(ctx, s, tower, stats, target, damage, bonus, elite, fx, ev);
+      // 도화선(노포 B2): 직선 궤적에 delayMs 뒤 2차 폭발.
+      const fuse = stats.fx.delayedBlast;
+      if (fuse && stats.lineWidth > 0) lightFuse(s, tower, stats, aim, fuse, strikeOf(tower, stats, damage, bonus, elite, fx), ev);
+      continue;
+    }
     const a = strikeOf(tower, stats, damage, bonus, elite, fx);
     const splash = splashOf(stats, damage);
     const ric = stats.fx.ricochet;
-    const extra: Pick<Projectile, 'splash' | 'ricochet' | 'pull'> = {
+    const zone = stats.fx.zone;
+    const extra: Pick<Projectile, 'splash' | 'ricochet' | 'pull' | 'zone'> = {
       ...(splash && stats.splashRadius === 0 ? { splash } : {}),
       ...(ric && ric.count > 0 && stats.splashRadius === 0 ? { ricochet: { left: ric.count, radius: ric.radiusMilli, falloffBP: ric.falloffBP, hit: [target.id] } } : {}),
       ...(stats.fx.pull && stats.splashRadius > 0 ? { pull: { radius: stats.fx.pull.radiusMilli, maxTargets: stats.fx.pull.maxTargets, milli: stats.fx.pull.milli } } : {}),
+      ...(zone && stats.splashRadius > 0 ? { zone: zoneSpec(stats, zone, target.progress) } : {}),
     };
     launch(s, tower, tower, stats, stats.splashRadius > 0 ? null : target, at(ctx, target), { ...a, ...extra }, ev);
     // 관통(석궁 A 등): 첫 대상 뒤 일직선 적에게 따로 날아가는 화살(발사 때 ID 고정, PRD §20.3).
@@ -262,7 +285,7 @@ function shoot(ctx: GameContext, s: RunState, tower: Tower, stats: TowerStats, d
   return true;
 }
 
-function launch(s: RunState, tower: Tower, from: { x: number; y: number }, stats: Pick<TowerStats, 'projectileSpeed' | 'splashRadius' | 'maxTargets'>, target: Enemy | null, to: { x: number; y: number }, a: Strike & Partial<Pick<Projectile, 'splash' | 'ricochet' | 'pull'>>, ev: DomainEvent[]) {
+function launch(s: RunState, tower: Tower, from: { x: number; y: number }, stats: Pick<TowerStats, 'projectileSpeed' | 'splashRadius' | 'maxTargets'>, target: Enemy | null, to: { x: number; y: number }, a: Strike & Partial<Pick<Projectile, 'splash' | 'ricochet' | 'pull' | 'zone'>>, ev: DomainEvent[]) {
   const flight = Math.max(1, flightTicks(dist2(to.x, to.y, from.x, from.y), stats.projectileSpeed));
   const projectile: Projectile = {
     ...a, id: s.seq.projectile++, fromX: from.x, fromY: from.y, targetId: target?.id ?? null, toX: to.x, toY: to.y,
@@ -273,7 +296,7 @@ function launch(s: RunState, tower: Tower, from: { x: number; y: number }, stats
 }
 
 /** 정수 선분 판정: 타워→기준점 방향 d로, 전방 거리 0..length·폭 width 안이면 전방 내적, 아니면 null. */
-function inLine(tower: Tower, d: { x: number; y: number }, p: { x: number; y: number }, length: number, width: number): number | null {
+function inLine(tower: { x: number; y: number }, d: { x: number; y: number }, p: { x: number; y: number }, length: number, width: number): number | null {
   const vx = p.x - tower.x, vy = p.y - tower.y;
   const d2 = d.x * d.x + d.y * d.y;
   const dot = vx * d.x + vy * d.y;
@@ -298,14 +321,13 @@ function pierceTargets(ctx: GameContext, s: RunState, tower: Tower, first: Enemy
 
 /**
  * 즉발 공격(PRD §20.3): 비행 지연 없이 같은 틱에 맞힌다. 여기서 처치된 적은 다음 타워의 후보에서 빠진다.
- * 모양 우선순위: 연쇄(번개) → 직선(창병 A·노포·바람 B1) → 부채꼴(화염·바람) → 고리(종각·서리 B1) → 경로 구간(통나무) → 첫 대상 둘레(수호기사 B·덫) → 하나.
+ * 모양 우선순위: 연쇄(번개) → 직선(창병 A·노포·바람 B1) → 부채꼴(화염·바람) → 고리(종각·서리 B1) → 첫 대상 둘레(수호기사 B) → 하나.
  */
 function strike(ctx: GameContext, s: RunState, tower: Tower, stats: TowerStats, first: Enemy, damage: number, bonus: number, elite: number, fx: HitFx, ev: DomainEvent[]) {
   const targets = stats.chainRadius > 0 ? chainTargets(ctx, s, first, stats)
     : stats.lineWidth > 0 ? lineTargets(ctx, s, tower, first, stats)
     : stats.cone ? coneTargets(ctx, s, tower, first, stats)
     : stats.fx.ring ? ringTargets(ctx, s, tower, stats)
-    : stats.fx.pathSegmentMilli ? segmentTargets(s, first, stats)
     : stats.splashRadius > 0 ? aroundTargets(ctx, s, first, stats)
     : [first];
   hitAll(ctx, s, tower, stats, targets, damage, bonus, elite, ev, fx);
@@ -357,15 +379,6 @@ function ringTargets(ctx: GameContext, s: RunState, tower: Tower, stats: TowerSt
   const r2 = stats.range * stats.range;
   return s.enemies
     .filter(e => reachable(stats.canHitFlyer, e, s.tick) && (p => dist2(p.x, p.y, tower.x, tower.y) <= r2)(at(ctx, e)))
-    .sort((a, b) => b.progress - a.progress || a.id - b.id)
-    .slice(0, stats.maxTargets);
-}
-
-/** 경로 구간(통나무): 첫 표적 진행도에서 입구 쪽으로 pathSegmentMilli 안의 적을 진행도↓로 최대 수. */
-function segmentTargets(s: RunState, first: Enemy, stats: TowerStats): Enemy[] {
-  const from = first.progress - (stats.fx.pathSegmentMilli ?? 0);
-  return s.enemies
-    .filter(e => reachable(stats.canHitFlyer, e, s.tick) && e.progress <= first.progress && e.progress >= from)
     .sort((a, b) => b.progress - a.progress || a.id - b.id)
     .slice(0, stats.maxTargets);
 }
@@ -453,6 +466,8 @@ function flightTicks(d2: number, speed: number): number {
 }
 
 function resolve(ctx: GameContext, s: RunState, p: Projectile, ev: DomainEvent[]) {
+  // 약병(§4-7 zone): 착탄 피해 없이 장판만 남긴다. 첫 타격은 이 틱의 장판 단계에서 한다.
+  if (p.zone) { placeZones(ctx, s, p, p.zone, ev); return; }
   if (p.targetId !== null) {
     // 단일 대상: 도착 전에 처치·누출되면 빗나감, 다른 적으로 바꾸지 않는다(PRD §20.3). 대공이 안 되면 다시 떠오른 비행 적도 빗나간다.
     const target = s.enemies.find(e => e.id === p.targetId && reachable(p.canHitFlyer, e, s.tick));
@@ -599,6 +614,8 @@ function knockback(ctx: GameContext, e: Enemy, milli: number) {
  * 피해가 0인 타격(전염·감속만)은 피해 없이 효과만 준다. depth는 처치 유발 효과의 연쇄 깊이다.
  */
 function applyHit(ctx: GameContext, s: RunState, p: Strike, e: Enemy, ev: DomainEvent[], depth = 0) {
+  // 같은 목록 앞의 타격(처치 유발 등)으로 이미 쓰러진 적은 건너뛴다. 다시 처치되면 보상이 두 번 나간다.
+  if (!e.alive) return;
   const b = ctx.balance;
   const fx = p.fx ?? NO_FX;
   const elite = e.elite !== null || e.kind === 'boss';
@@ -681,18 +698,26 @@ function kill(ctx: GameContext, s: RunState, e: Enemy, point: { x: number; y: nu
 }
 
 /**
- * 처치 유발(§4-8): 이 적에게 감속(mark: slow)·화상(mark: burn)을 건 타워 가운데 onKill이 있는 타워마다(생성순) 둘레에 피해를 주고
- * 감속·화상을 옮긴다. 옮겨진 타격으로 처치돼도 다시 유발하지 않는다(깊이 1).
+ * 처치 유발(§4-8): 이 적에게 감속(mark: slow)·화상(mark: burn)을 건 타워, 또는 처치 지점을 덮은 장판의 타워(mark: zone) 가운데
+ * onKill이 있는 타워마다(생성순) 둘레에 피해를 주고 감속·화상을 옮긴다. 옮겨진 타격으로 처치돼도 다시 유발하지 않는다(깊이 1).
+ * kill()이 분열 파생체를 먼저 만든 뒤 부르므로, 방금 태어난 파생체도 맞는다.
+ * 떠 있는 비행 적은 바닥 장판 위에 있지 않다(장판이 대공이 안 되면 그 위에서 쓰러져도 장판 처치로 치지 않는다).
  */
 function onKill(ctx: GameContext, s: RunState, e: Enemy, point: { x: number; y: number }, ev: DomainEvent[]) {
   const b = ctx.balance;
-  const sources = new Set<number>([...e.slows.filter(x => x.untilTick > s.tick).map(x => x.source), ...e.burns.map(x => x.source)]);
+  const grounded = !airborne(e, s.tick);
+  const zoned = new Set<number>(s.hazards.flatMap(h => (
+    h.kind === 'zone' && !h.blast && h.line === null && (grounded || h.strike.canHitFlyer)
+      && (h.expiresTick === null || s.tick < h.expiresTick) && dist2(point.x, point.y, h.x, h.y) <= h.radius * h.radius ? [h.towerId] : [])));
+  const sources = new Set<number>([...e.slows.filter(x => x.untilTick > s.tick).map(x => x.source), ...e.burns.map(x => x.source), ...zoned]);
   for (const tower of s.towers.filter(t => sources.has(t.id)).sort((a, c) => a.id - c.id)) {
     if (!attacks(b, tower.type)) continue;
     const stats = towerStats(b, tower.type, tower.level, tower.form);
     const rule = stats.fx.onKill;
     if (!rule) continue;
-    const marked = rule.mark === 'slow' ? e.slows.some(x => x.source === tower.id && x.untilTick > s.tick) : e.burns.some(x => x.source === tower.id);
+    const marked = rule.mark === 'slow' ? e.slows.some(x => x.source === tower.id && x.untilTick > s.tick)
+      : rule.mark === 'burn' ? e.burns.some(x => x.source === tower.id)
+      : zoned.has(tower.id);
     if (!marked) continue;
     const targets = nearby(ctx, s, point, rule.radiusMilli, rule.maxTargets, o => reachable(stats.canHitFlyer, o, s.tick));
     if (targets.length === 0) continue;
@@ -773,4 +798,191 @@ function leak(ctx: GameContext, s: RunState, e: Enemy, ev: DomainEvent[]) {
   s.stats.leaks++;
   if (e.kind === 'boss') s.stats.bossLeaks++;
   ev.push({ type: 'leak', enemyId: e.id, kind: e.kind, damage, gateHp: s.gateHp });
+}
+
+// ── 장판·덫·굴림체(towers.md §4-7 fieldHazards) ──────────────────────────────────────────────
+// 놓는 순간의 타격 스냅샷(레벨·형태·오라)을 싣고, battleTick의 화상 직후 단계에서 생성순으로 일괄 갱신한다.
+// 이번 갱신 중에 새로 생긴 것(덫 B1 2차 폭죽)은 다음 틱부터 본다. 장판은 착탄 틱에, 굴림체는 투입 다음 틱에 처음 움직인다.
+
+/** 피해만 싣는 2차 폭발 타격(감속·추가 효과 없음). */
+const damageOnly = (a: Strike, damage: number): HazardStrike => ({ ...a, damage, slowBP: 0, slowTicks: 0, fx: NO_FX });
+
+function addHazard(s: RunState, h: FieldHazard, ev: DomainEvent[]) {
+  s.hazards.push(h);
+  ev.push({
+    type: 'hazardPlaced', hazardId: h.id, kind: h.kind, towerId: h.towerId, towerType: h.towerType, x: h.x, y: h.y,
+    radius: h.kind === 'roller' ? h.halfWidth : h.radius, progress: h.kind === 'zone' ? null : h.progress, expiresTick: h.expiresTick,
+    line: h.kind === 'zone' ? h.line : null, blast: h.kind === 'zone' && h.blast,
+  });
+}
+
+function triggered(ctx: GameContext, h: FieldHazard, point: { x: number; y: number }, blast: boolean, targets: Enemy[]): DomainEvent {
+  return { type: 'hazardTriggered', hazardId: h.id, kind: h.kind, towerId: h.towerId, towerType: h.towerType, x: point.x, y: point.y, blast, targets: targets.map(e => ({ enemyId: e.id, ...at(ctx, e) })) };
+}
+
+/** 약병 장판 설정 스냅샷: 타격 횟수 = ceil(지속 틱 / 간격 틱)(기본 60/15 = 4회). */
+function zoneSpec(stats: TowerStats, zone: NonNullable<TowerStats['fx']['zone']>, progress: number): ZoneSpec {
+  const periodTicks = msToTicks(zone.periodMs), durationTicks = msToTicks(zone.durationMs);
+  return { radius: stats.splashRadius, periodTicks, durationTicks, pulses: ceilDiv(durationTicks, periodTicks), count: zone.count ?? 1, spacing: zone.spacingMilli ?? 0, progress };
+}
+
+/** 착탄: 착탄 지점(개수가 여럿이면 표적 진행도와 그 앞뒤 spacing 자리)에 장판을 놓는다. 첫 타격은 이 틱. */
+function placeZones(ctx: GameContext, s: RunState, p: Projectile, z: ZoneSpec, ev: DomainEvent[]) {
+  const strike: HazardStrike = {
+    towerId: p.towerId, towerType: p.towerType, damage: p.damage, damageType: p.damageType, slowBP: p.slowBP, slowTicks: p.slowTicks,
+    physicalResistIgnoreBP: p.physicalResistIgnoreBP, bonusBP: p.bonusBP, eliteBossDamageBP: p.eliteBossDamageBP, canHitFlyer: p.canHitFlyer, flyerDamageBP: p.flyerDamageBP,
+    ...(p.fx ? { fx: p.fx } : {}),
+  };
+  for (let i = 0; i < z.count; i++) {
+    const offset = Math.floor(((2 * i - (z.count - 1)) * z.spacing) / 2);
+    const point = z.count === 1 ? { x: p.toX, y: p.toY } : positionAt(ctx.path, Math.min(ctx.path.length, Math.max(0, z.progress + offset)));
+    addHazard(s, {
+      kind: 'zone', id: s.seq.hazard++, towerId: p.towerId, towerType: p.towerType, x: point.x, y: point.y, createdTick: s.tick,
+      expiresTick: s.tick + z.durationTicks, charges: z.pulses, maxTargets: p.maxTargets, strike, radius: z.radius,
+      nextTick: s.tick, periodTicks: z.periodTicks, line: null, blast: false,
+    }, ev);
+  }
+}
+
+/** 도화선(노포 B2): 타워에서 발사 방향 직선(길이 사거리·폭 선분 폭)에 delayMs 뒤 피해만 주는 폭발 한 번. */
+function lightFuse(s: RunState, tower: Tower, stats: TowerStats, aim: { x: number; y: number }, fuse: NonNullable<TowerStats['fx']['delayedBlast']>, a: Strike, ev: DomainEvent[]) {
+  const dx = aim.x - tower.x, dy = aim.y - tower.y;
+  if (dx === 0 && dy === 0) return;
+  const delay = msToTicks(fuse.delayMs);
+  addHazard(s, {
+    kind: 'zone', id: s.seq.hazard++, towerId: tower.id, towerType: tower.type, x: tower.x, y: tower.y, createdTick: s.tick,
+    expiresTick: s.tick + delay, charges: 1, maxTargets: fuse.maxTargets ?? stats.maxTargets, strike: damageOnly(a, bpFloor(a.damage, fuse.damageBP, 'damage.fuse')),
+    radius: 0, nextTick: s.tick + delay, periodTicks: delay, line: { dx, dy, length: stats.range, width: stats.lineWidth }, blast: true,
+  }, ev);
+}
+
+/** 굴림체 투입: 첫 표적 진행도에서 입구 쪽으로 distance만큼(0에서 멈춤), 틱당 speed/30씩. 대상 수는 타워 maxTargets. */
+function launchRoller(ctx: GameContext, s: RunState, tower: Tower, stats: TowerStats, target: Enemy, a: Strike, ev: DomainEvent[]) {
+  const rule = stats.fx.roller!;
+  const step = Math.max(1, Math.floor(rule.speedMilliPerSec / TICK_HZ));
+  const end = Math.max(0, target.progress - rule.distanceMilli);
+  const blast = stats.fx.rollBlast;
+  const p = at(ctx, target);
+  addHazard(s, {
+    kind: 'roller', id: s.seq.hazard++, towerId: tower.id, towerType: tower.type, x: p.x, y: p.y, createdTick: s.tick,
+    expiresTick: s.tick + Math.max(1, ceilDiv(target.progress - end, step)), charges: stats.maxTargets, maxTargets: stats.maxTargets, strike: a,
+    progress: target.progress, endProgress: end, stepMilli: step, halfWidth: Math.floor(rule.widthMilli / 2), hit: [],
+    blast: blast ? { afterHits: blast.afterHits, eliteTrigger: blast.eliteTrigger, radius: blast.radiusMilli, maxTargets: blast.maxTargets, damage: bpFloor(a.damage, blast.damageBP, 'damage.rollBlast') } : null,
+  }, ev);
+}
+
+/**
+ * 덫 놓기(§4-7 trap): 타워당 maxActive개까지, 사거리(오라 포함) 안 경로에서 다른 덫과 감지 지름 이상 떨어진 가장 성문 쪽 자리.
+ * 놓으면 공격으로 친다(설치 취소 끝, 다음 공격 예약). 자리가 없으면 쏘지 않은 것처럼 준비 상태로 기다린다.
+ */
+function placeTrap(ctx: GameContext, s: RunState, tower: Tower, stats: TowerStats, range: number, ev: DomainEvent[]) {
+  const rule = stats.fx.trap!;
+  if (s.hazards.filter(h => h.kind === 'trap' && h.towerId === tower.id).length >= rule.maxActive) return;
+  const taken = s.hazards.flatMap(h => (h.kind === 'trap' ? [h.progress] : []));
+  const progress = trapSpot(ctx.path, tower.x, tower.y, range, taken, 2 * rule.detectMilli);
+  if (progress === null) return;
+  commitAttack(ctx, s, tower, stats);
+  const b = ctx.balance;
+  const a = strikeOf(tower, stats, stats.damage, auraDamageBonusBP(b, s.towers, tower), stats.eliteBossDamageBP + auraEliteBossBonusBP(b, s.towers, tower, burningNow(s)), hitFxOf(stats, 0));
+  const after = stats.fx.delayedBlast;
+  const p = positionAt(ctx.path, progress);
+  addHazard(s, {
+    kind: 'trap', id: s.seq.hazard++, towerId: tower.id, towerType: tower.type, x: p.x, y: p.y, createdTick: s.tick, expiresTick: null, charges: 1,
+    maxTargets: stats.maxTargets, strike: a, progress, radius: rule.detectMilli, blastRadius: stats.splashRadius,
+    aftershock: after ? { delayTicks: msToTicks(after.delayMs), damage: bpFloor(stats.damage, after.damageBP, 'damage.aftershock') } : null,
+  }, ev);
+}
+
+/** 화상 직후 단계: 생성순으로 장판 타격·덫 감지·굴림체 이동을 하고, 끝난 것을 지운다. */
+function updateHazards(ctx: GameContext, s: RunState, ev: DomainEvent[]) {
+  if (s.hazards.length === 0) return;
+  const gone = new Set<number>();
+  for (const h of [...s.hazards]) {
+    const end = h.kind === 'zone' ? tickZone(ctx, s, h, ev) : h.kind === 'trap' ? tickTrap(ctx, s, h, ev) : tickRoller(ctx, s, h, ev);
+    if (end) { gone.add(h.id); ev.push(hazardExpiredEvent(h, end)); }
+  }
+  if (gone.size) s.hazards = s.hazards.filter(h => !gone.has(h.id));
+}
+
+/** 장판: 타격 틱이면 반경(또는 직선) 안 지상 적 최대 maxTargets명을 친다(거리↑ → 진행도↓ → 생성순↑). 지속이 끝나면 사라진다. */
+function tickZone(ctx: GameContext, s: RunState, z: ZoneHazard, ev: DomainEvent[]): HazardEndReason | null {
+  if (z.charges > 0 && s.tick >= z.nextTick) {
+    z.charges--;
+    z.nextTick = add(z.nextTick, z.periodTicks, 'hazard.tick');
+    const ok = (e: Enemy) => reachable(z.strike.canHitFlyer, e, s.tick);
+    const line = z.line;
+    const targets = line
+      ? s.enemies
+        .filter(e => ok(e) && inLine(z, { x: line.dx, y: line.dy }, at(ctx, e), line.length, line.width) !== null)
+        .sort((a, c) => c.progress - a.progress || a.id - c.id)
+        .slice(0, z.maxTargets)
+      : nearby(ctx, s, z, z.radius, z.maxTargets, ok);
+    if (targets.length > 0 || z.blast) ev.push(triggered(ctx, z, z, z.blast, targets));
+    for (const e of targets) applyHit(ctx, s, z.strike, e, ev);
+  }
+  if (z.expiresTick !== null && s.tick >= z.expiresTick) return z.blast ? 'spent' : 'time';
+  return null;
+}
+
+/**
+ * 덫: 진행도 ±감지 반경 안의 지상 적 가운데 가장 앞선 적(진행도↓ → 생성순↑)이 밟으면 발동한다.
+ * 발동 범위가 있으면 밟은 적과 덫 둘레 최대 maxTargets명, 없으면 밟은 적 하나. 2차 폭죽은 delayTicks 뒤 같은 자리.
+ */
+function tickTrap(ctx: GameContext, s: RunState, trap: TrapHazard, ev: DomainEvent[]): HazardEndReason | null {
+  const ok = (e: Enemy) => reachable(trap.strike.canHitFlyer, e, s.tick);
+  const stepping = s.enemies
+    .filter(e => ok(e) && Math.abs(e.progress - trap.progress) <= trap.radius)
+    .sort((a, c) => c.progress - a.progress || a.id - c.id)[0];
+  if (!stepping) return null;
+  const targets = trap.blastRadius > 0
+    ? [stepping, ...nearby(ctx, s, trap, trap.blastRadius, trap.maxTargets, e => e !== stepping && ok(e))].slice(0, trap.maxTargets)
+    : [stepping];
+  trap.charges--;
+  ev.push(triggered(ctx, trap, trap, trap.blastRadius > 0, targets));
+  for (const e of targets) applyHit(ctx, s, trap.strike, e, ev);
+  if (trap.aftershock) {
+    const at2 = s.tick + trap.aftershock.delayTicks;
+    addHazard(s, {
+      kind: 'zone', id: s.seq.hazard++, towerId: trap.towerId, towerType: trap.towerType, x: trap.x, y: trap.y, createdTick: s.tick, expiresTick: at2, charges: 1,
+      maxTargets: trap.maxTargets, strike: damageOnly(trap.strike, trap.aftershock.damage), radius: trap.blastRadius > 0 ? trap.blastRadius : trap.radius,
+      nextTick: at2, periodTicks: trap.aftershock.delayTicks, line: null, blast: true,
+    }, ev);
+  }
+  return trap.charges <= 0 ? 'spent' : null;
+}
+
+/**
+ * 굴림체: progress를 stepMilli 줄이고(끝에서 멈춤), 지난 구간[새 위치 − 반쪽 폭, 옛 위치 + 반쪽 폭]의 아직 안 맞은 지상 적을
+ * 진행도↓ → 생성순↑로 남은 횟수만큼 친다. 화약 술통은 afterHits번째·정예/대장 충돌·굴림 끝 가운데 먼저 오는 때 굴림체 자리에서 폭발한다.
+ */
+function tickRoller(ctx: GameContext, s: RunState, r: RollerHazard, ev: DomainEvent[]): HazardEndReason | null {
+  const from = r.progress;
+  const to = Math.max(r.endProgress, from - r.stepMilli);
+  const pos = positionAt(ctx.path, to);
+  r.progress = to; r.x = pos.x; r.y = pos.y;
+  const ok = (e: Enemy) => reachable(r.strike.canHitFlyer, e, s.tick);
+  const met = s.enemies
+    .filter(e => ok(e) && !r.hit.includes(e.id) && e.progress >= to - r.halfWidth && e.progress <= from + r.halfWidth)
+    .sort((a, c) => c.progress - a.progress || a.id - c.id);
+  const struck: Enemy[] = [];
+  let boom = false;
+  for (const e of met) {
+    if (r.charges <= 0 || boom) break;
+    r.hit.push(e.id);
+    r.charges--;
+    struck.push(e);
+    if (r.blast && ((r.blast.eliteTrigger && (e.elite !== null || e.kind === 'boss')) || r.hit.length >= r.blast.afterHits)) boom = true;
+  }
+  if (struck.length > 0) {
+    ev.push(triggered(ctx, r, pos, false, struck));
+    for (const e of struck) applyHit(ctx, s, r.strike, e, ev);
+  }
+  if (!boom && r.charges > 0 && to > r.endProgress) return null;
+  if (r.blast) {
+    const targets = nearby(ctx, s, pos, r.blast.radius, r.blast.maxTargets, ok);
+    ev.push(triggered(ctx, r, pos, true, targets));
+    const a = damageOnly(r.strike, r.blast.damage);
+    for (const e of targets) applyHit(ctx, s, a, e, ev);
+  }
+  return boom || r.charges <= 0 ? 'spent' : 'end';
 }
