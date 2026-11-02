@@ -1,6 +1,6 @@
 import type { GameContext } from './context';
 import type { DomainEvent } from './events';
-import { bossDef, campaignOf, enemyArtId } from './factions';
+import { bossDef, burstMarching, campaignOf, enemyArtId } from './factions';
 import { dist2, positionAt } from './geometry';
 import { add, bpFloor, ceilDiv, isqrt, msToTicks, safe, TICK_HZ } from './num';
 import {
@@ -8,7 +8,7 @@ import {
   isAuraGiver, towerStats, type TowerStats,
 } from './towers';
 import type { Enemy, HitFx, Projectile, RunState, SpawnEntry, SplashHit, Tower } from './types';
-import { enemyMaxHp, enemyResists, enemySpeedBP, hpBaseMilli } from './waves';
+import { airborne, enemyMaxHp, enemyResists, enemySpeedBP, hpBaseMilli } from './waves';
 
 // 같은 틱 순서(PRD §3.4, §20.3): 만료 → 생성 → 도착 공격 → 화상 → 상시 오라 → 타워 발사(즉발·다연발 포함) → 이동/누출.
 // 패배·완료 판정은 run.ts가 이어서 한다. 신규 타워 효과는 docs/renewal/catalog/towers.md §2·§4.
@@ -80,9 +80,6 @@ function addEnemy(ctx: GameContext, s: RunState, entry: SpawnEntry, hpBase: numb
   ev.push({ type: 'spawn', enemyId: enemy.id, kind: enemy.kind, faction: enemy.faction, art: enemyArtId(b, enemy) });
   return enemy;
 }
-
-/** 떠 있는 비행 적인가(끌어내린 동안은 아니다, towers.md §4-1). */
-export const airborne = (e: Pick<Enemy, 'flying' | 'groundedUntilTick'>, tick: number) => e.flying && tick >= e.groundedUntilTick;
 
 /** 이 공격이 이 적을 노리고 맞힐 수 있는가. 대공이 안 되는 공격은 떠 있는 비행 적을 지나친다. */
 const reachable = (canHitFlyer: boolean, e: Enemy, tick: number) => e.alive && (canHitFlyer || !airborne(e, tick));
@@ -567,10 +564,7 @@ function bossMend(ctx: GameContext, s: RunState, e: Enemy, ev: DomainEvent[]) {
 function moveSpeedBP(ctx: GameContext, s: RunState, e: Enemy, rallies: Array<{ x: number; y: number; r2: number; add: number }>): number {
   if (e.kind === 'boss') {
     const skill = e.boss ? bossDef(ctx.balance, e)?.skill : undefined;
-    if (skill?.kind === 'burst_march') {
-      const period = msToTicks(skill.periodMs);
-      if ((s.tick - e.boss!.bornTick) % period >= period - msToTicks(skill.durationMs)) return skill.speedBP;
-    }
+    if (skill?.kind === 'burst_march' && burstMarching(skill, e.boss!.bornTick, s.tick)) return skill.speedBP;
     return e.speedBP;
   }
   if (rallies.length === 0) return e.speedBP;

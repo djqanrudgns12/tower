@@ -1,4 +1,5 @@
 import { BOSS_RANKS, REGULAR_KINDS, type ArtRole, type Balance, type BossSkill, type BossTier, type CampaignConfig, type EnemyKind, type RegularKind } from '../contracts/balance';
+import { msToTicks } from './num';
 import type { Enemy } from './types';
 
 // 종족(faction) × 역할(role) 편성(docs/renewal/catalog/monsters.md §0·§2·§3). 규칙은 역할이 정하고 종족은 이름·그림만 바꾼다.
@@ -39,6 +40,12 @@ export function bossDef(b: Balance, e: Pick<Enemy, 'kind' | 'faction' | 'bossTie
   if (e.kind !== 'boss') return null;
   const def = b.factions[e.faction]?.bosses?.[bossRank(e.bossTier ?? 1)];
   return def ? { skill: def.skill, hpScaleBP: def.hpScaleBP ?? 10000 } : null;
+}
+
+/** 박차 행진(burst_march) 돌진 구간인가: 등장 뒤 periodMs마다 끝의 durationMs. 이동(combat)과 렌더러(먼지 줄)가 같은 식을 쓴다. */
+export function burstMarching(skill: { periodMs: number; durationMs: number }, bornTick: number, tick: number): boolean {
+  const period = msToTicks(skill.periodMs);
+  return (tick - bornTick) % period >= period - msToTicks(skill.durationMs);
 }
 
 /** 화면용 이름(도감·대장 등장 알림). 종족 표에 이름이 없으면 null(비행·분열 개체는 그림 생산 때 이름을 더한다). */

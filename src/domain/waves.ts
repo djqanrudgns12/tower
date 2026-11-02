@@ -2,7 +2,7 @@ import type { Balance, DifficultyConfig, EliteId, EnemyKind } from '../contracts
 import { apportion, waveFactions, waveRoleWeights } from './factions';
 import { bpCeil, mulDivCeil, mulDivFloor, msToTicks } from './num';
 import { intBelow, shuffle, type Rng } from './rng';
-import type { SpawnEntry } from './types';
+import type { Enemy, SpawnEntry } from './types';
 
 // PRD §8.2~8.3, §20.4. 같은 seed·wave면 같은 편성이 나온다.
 export function waveCount(b: Balance, wave: number): number {
@@ -42,6 +42,9 @@ export function enemyResists(b: Balance, kind: EnemyKind, elite: EliteId | null)
   const add = elite ? b.elites[elite].addPhysicalResistBP : 0;
   return { physical: Math.min(b.elites.physicalResistCapBP, k.physicalResistBP + add), magic: k.magicResistBP };
 }
+
+/** 떠 있는 비행 적인가(끌어내린 동안은 아니다, towers.md §4-1). 판정(combat)과 렌더러(그림자·띄운 몸)가 같은 식을 쓴다. */
+export const airborne = (e: Pick<Enemy, 'flying' | 'groundedUntilTick'>, tick: number) => e.flying && tick >= e.groundedUntilTick;
 
 export function isMilestone(b: Balance, wave: number) {
   return wave % b.waves.bossEveryWaves === 0;

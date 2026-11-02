@@ -2,6 +2,7 @@ import Phaser from 'phaser';
 import { assetManifestSchema } from '../contracts/assetManifest';
 import { ENEMY_KINDS, TOWER_IDS } from '../contracts/balance';
 import type { DomainEvent } from '../domain/events';
+import { positionAt } from '../domain/geometry';
 import { drawSprites } from './art';
 import { applyManifest, CELL_PX, WORLD_H, WORLD_W } from './assets';
 import type { FieldBridge } from './bridge';
@@ -9,7 +10,8 @@ import { EffectLayer } from './layers/EffectLayer';
 import { EnemyLayer } from './layers/EnemyLayer';
 import { GroundLayer } from './layers/GroundLayer';
 import { InputLayer, selectedCell } from './layers/InputLayer';
-import { DEPTH } from './layers/shared';
+import { bossCue, spawnIntros, SPLIT_LABEL_RAISE_CELLS } from './layers/cues';
+import { DEPTH, toWorld } from './layers/shared';
 import { TowerLayer } from './layers/TowerLayer';
 
 /**
@@ -106,17 +108,37 @@ export class BattleScene extends Phaser.Scene {
 
   private onEvents = (events: DomainEvent[]) => {
     if (!this.sys.isActive()) return;
+    const { balance, path } = this.bridge.controller.ctx;
+    const state = this.bridge.controller.state;
+    // 분열 파생체·호위병은 처음 그릴 때 등장 연출을 한다(cues.spawnIntros).
+    const intros = spawnIntros(balance, events);
+    if (intros.length) this.enemyLayer.expectIntros(intros);
+    const enemyLift = (id: number) => this.enemyLayer.liftOf(id);
     for (const e of events) {
       if (e.type === 'hit') {
         this.enemyLayer.onHit(e.enemyId);
-        this.effects.onHit(e);
+        this.effects.onHit(e, enemyLift(e.enemyId));
       } else if (e.type === 'kill') {
-        this.effects.onKill(e);
+        const splits = Boolean(balance.enemies[e.kind].split);
+        this.effects.onKill(e, splits ? CELL_PX * SPLIT_LABEL_RAISE_CELLS : 0);
+        if (splits) this.effects.onSplit(e.x, e.y);
+      } else if (e.type === 'bossSkill') {
+        const boss = state.enemies.find(x => x.id === e.enemyId);
+        const cue = bossCue(balance, boss, e.skill);
+        if (cue && boss) {
+          const world = (progress: number) => { const p = positionAt(path, progress); return { x: toWorld(p.x), y: toWorld(p.y) }; };
+          // 호위병이 나타날 자리(같은 묶음에서 생긴 파생체). 대장 옆 먼지 구름을 그 자리에 피운다.
+          const spots = cue.kind === 'dust' ? intros.flatMap(i => {
+            const escort = i.style === 'escort' ? state.enemies.find(x => x.id === i.enemyId) : undefined;
+            return escort ? [world(escort.progress)] : [];
+          }) : [];
+          this.effects.onBossSkill(cue, this.enemyLayer.placeOf(boss.id) ?? world(boss.progress), spots);
+        }
       } else if (e.type === 'fire') {
         this.towerLayer.onFire(e);
       } else if (e.type === 'strike') {
         this.towerLayer.onStrike(e);
-        this.effects.onStrike(e, this.towerLayer.weaponLift(e.towerId));
+        this.effects.onStrike(e, this.towerLayer.weaponLift(e.towerId), enemyLift);
       } else if (e.type === 'burn') {
         const at = this.enemyLayer.spriteAt(e.enemyId);
         if (at) this.effects.onBurn(at);
@@ -132,7 +154,7 @@ export class BattleScene extends Phaser.Scene {
     this.enemyLayer.advance(s);
     this.towerLayer.sync(s, time);
     this.enemyLayer.sync(s, time, alpha);
-    this.effects.syncShots(s, alpha, (id, a) => this.enemyLayer.progressOf(id, a), id => this.towerLayer.weaponLift(id));
+    this.effects.syncShots(s, alpha, (id, a) => this.enemyLayer.progressOf(id, a), id => this.towerLayer.weaponLift(id), id => this.enemyLayer.liftOf(id));
     this.inputLayer.draw(s);
     const v = this.cameras.main.worldView;
     if (this.miniCam?.visible) this.miniFrame.clear().lineStyle(6, 0xf5ebd4, 1).strokeRect(v.x, v.y, v.width, v.height);
