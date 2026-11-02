@@ -1,10 +1,10 @@
 import Phaser from 'phaser';
 import type { DomainEvent } from '../../domain/events';
 import { positionAt } from '../../domain/geometry';
-import type { RunState } from '../../domain/types';
+import type { HazardKind, RunState } from '../../domain/types';
 import { PALETTE } from '../art';
 import { ASSETS, CELL_PX, WORLD_W } from '../assets';
-import { wardDotOffsets, type BossCue } from './cues';
+import { hazardEndCue, hazardLook, ROLLER_LENGTH_CELLS, ROLLER_THICK_CELLS, rollerHeading, trapCloseCue, wardDotOffsets, ZONE_ALPHA, type BossCue, type HazardLook } from './cues';
 import { DEPTH, toWorld, type LayerContext } from './shared';
 
 /** 처치 보상 표찰의 화면 최소 글자 크기(CSS px, v3 §1-2 13px 하한). */
@@ -13,10 +13,14 @@ const CALLOUT_MIN_CSS_PX = 13;
 /** 발밑 기준점: 길 위치보다 0.14칸 아래(적 그림의 발, EnemyLayer와 같다). */
 const FOOT = CELL_PX * 0.14;
 
+/** 장판·덫·굴림체 그림 하나. 한 번만 그리고 위치·투명도·배율만 바꾼다. */
+interface HazardView { g: Phaser.GameObjects.Graphics; kind: HazardKind }
+
 /** 효과 층: 날아가는 투사체, 피격·처치·화상 효과, 즉발 공격 효과, 성문 피해 섬광, 처치 보상 표찰, 대장 기믹·분열 순간 연출. */
 export class EffectLayer {
   private readonly c: LayerContext;
   private shots = new Map<number, Phaser.GameObjects.Image>();
+  private hazards = new Map<number, HazardView>();
   /** 처치 보상 표찰. 미니맵 카메라에서는 감춘다. */
   readonly callouts: Phaser.GameObjects.Container;
 
@@ -207,5 +211,78 @@ export class EffectLayer {
       if (p.towerType === 'archer') img.setRotation(Math.atan2(ty - fy, tx - fx));
     }
     for (const [id, img] of this.shots) if (!seen.has(id)) { img.destroy(); this.shots.delete(id); }
+  }
+
+  /** 덫이 발동했다: 150ms 닫혔다 열린다(움직임 줄이기면 투명도만). 소진되면 syncHazards가 곧 거둔다. */
+  onHazardTriggered(e: Extract<DomainEvent, { type: 'hazardTriggered' }>) {
+    if (e.kind !== 'trap') return;
+    const v = this.hazards.get(e.hazardId);
+    if (!v) return;
+    const { scene, bridge } = this.c;
+    const cue = trapCloseCue(bridge.reducedMotion);
+    scene.tweens.killTweensOf(v.g);
+    v.g.setScale(1).setAlpha(1);
+    scene.tweens.add({ targets: v.g, scale: cue.scale, alpha: cue.alpha, duration: cue.ms, yoyo: true, ease: 'Quad.easeOut' });
+  }
+
+  /**
+   * 바닥에 남는 장판(약병)·덫·굴림체를 상태에서 읽어 그린다. 상태에 없으면 아무것도 그리지 않고, 사라진 것은 짧게 거둔다.
+   * 장판·덫은 놓인 자리에 한 번 그리고, 굴림체는 상태의 진행도로 매 프레임 길 위를 옮긴다. 땅 위의 것이라 발밑 기준(FOOT)에 맞춘다.
+   */
+  syncHazards(s: RunState, alpha: number) {
+    const path = this.c.bridge.controller.ctx.path;
+    const seen = new Set<number>();
+    for (const h of s.hazards) {
+      const look = hazardLook(h, alpha);
+      if (!look) continue;
+      seen.add(h.id);
+      let v = this.hazards.get(h.id);
+      if (!v) {
+        v = { g: this.c.scene.add.graphics(), kind: h.kind };
+        this.drawHazard(v.g, look);
+        this.hazards.set(h.id, v);
+        if (look.kind !== 'roller') v.g.setPosition(toWorld(h.x), toWorld(h.y) + FOOT).setDepth(DEPTH.overlay + 0.5);
+      }
+      if (look.kind === 'roller') {
+        const p = positionAt(path, look.progress), wy = toWorld(p.y) + FOOT;
+        v.g.setPosition(toWorld(p.x), wy).setRotation(rollerHeading(path, look.progress) + Math.PI / 2).setDepth(DEPTH.units + wy + 0.55);
+      }
+    }
+    for (const [id, v] of this.hazards) if (!seen.has(id)) { this.retireHazard(v); this.hazards.delete(id); }
+  }
+
+  /** 사라진 장판·덫·굴림체: 장판 200ms 페이드, 덫은 150ms 닫히며(움직임 줄이기면 투명도만), 굴림체 150ms 페이드. */
+  private retireHazard(v: HazardView) {
+    const { scene, bridge } = this.c;
+    const cue = hazardEndCue(v.kind, bridge.reducedMotion);
+    scene.tweens.killTweensOf(v.g);
+    scene.tweens.add({ targets: v.g, alpha: 0, ...(cue.scale === 1 ? {} : { scale: v.g.scaleX * cue.scale }), duration: cue.ms, ease: 'Quad.easeOut', onComplete: () => v.g.destroy() });
+  }
+
+  /** 그림은 (0, 0) 중심으로 그린다. 외곽선은 가는 선(장판 1px)이고 광택·번쩍임은 없다. */
+  private drawHazard(g: Phaser.GameObjects.Graphics, look: HazardLook) {
+    if (look.kind === 'zone') {
+      const rx = look.rx * CELL_PX, ry = look.ry * CELL_PX;
+      g.fillStyle(PALETTE.leafLight, ZONE_ALPHA).fillEllipse(0, 0, rx * 2, ry * 2);
+      g.lineStyle(1, PALETTE.leafDark, 1).strokeEllipse(0, 0, rx * 2, ry * 2);
+    } else if (look.kind === 'trap') {
+      const r = (look.diameter * CELL_PX) / 2, teeth = 8;
+      g.fillStyle(PALETTE.outline, 1);
+      for (let i = 0; i < teeth; i++) {
+        const a = (i * 2 * Math.PI) / teeth, ca = Math.cos(a), sa = Math.sin(a), px = -sa * 2.4, py = ca * 2.4;
+        g.fillTriangle(ca * (r - 1) + px, sa * (r - 1) + py, ca * (r - 1) - px, sa * (r - 1) - py, ca * (r + 3.2), sa * (r + 3.2));
+      }
+      g.fillCircle(0, 0, r + 1.2);
+      g.fillStyle(PALETTE.wood, 1).fillCircle(0, 0, r - 0.8);
+      g.fillStyle(PALETTE.woodDark, 1).fillCircle(0, 0, r * 0.38);
+    } else {
+      // 눕혀 놓은 통나무: 긴 쪽이 굴러가는 방향과 직각(drawHazard는 가로로 그리고 층이 돌린다). 한쪽 끝면에 나이테 원 하나.
+      const len = ROLLER_LENGTH_CELLS * CELL_PX, th = ROLLER_THICK_CELLS * CELL_PX;
+      g.fillStyle(PALETTE.outline, 1).fillRoundedRect(-len / 2 - 1.5, -th / 2 - 1.5, len + 3, th + 3, th / 2 + 1.5);
+      g.fillStyle(PALETTE.wood, 1).fillRoundedRect(-len / 2, -th / 2, len, th, th / 2);
+      const cx = len / 2 - th / 2, cr = th / 2 - 2;
+      g.fillStyle(PALETTE.woodLight, 1).fillCircle(cx, 0, cr);
+      g.lineStyle(1.5, PALETTE.woodDark, 1).strokeCircle(cx, 0, cr * 0.55);
+    }
   }
 }

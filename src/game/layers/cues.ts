@@ -1,7 +1,8 @@
 import type { Balance, BossSkillKind, EnemyKind } from '../../contracts/balance';
 import type { DomainEvent } from '../../domain/events';
 import { bossDef, burstMarching } from '../../domain/factions';
-import type { Enemy } from '../../domain/types';
+import { positionAt, type PathGeometry } from '../../domain/geometry';
+import type { Enemy, FieldHazard, HazardKind } from '../../domain/types';
 import { airborne } from '../../domain/waves';
 
 // 전장 연출 고르기(대장 기믹·비행·분열). Phaser 없이 상태·사건만 읽어 무엇을 그릴지 정한다.
@@ -119,3 +120,56 @@ export function introFrame(intro: Pick<SpawnIntro, 'style' | 'side'>, ageMs: num
 
 /** 비행 적의 몸 높이(칸): 떠 있으면 FLYER_LIFT_CELLS, 끌어내려진 동안·지상 적은 0. */
 export const flyerLift = (e: Pick<Enemy, 'flying' | 'groundedUntilTick'>, tick: number) => (airborne(e, tick) ? FLYER_LIFT_CELLS : 0);
+
+// ── 장판·덫·굴림체(RunState.hazards, towers.md §4-7) 표시 ─────────────────────────────────────────
+// 상태가 있을 때만 그린다. 길이는 칸, 시간은 ms다. 움직임 줄이기면 크기·위치 변화 없이 투명도만 바뀐다(ui-rules-v2 §2).
+
+/** 장판 웅덩이: 반경은 규칙 값(milli-cell), 세로는 비스듬한 땅 위에 놓인 모양으로 살짝 눌러 그린다. 알파 0.35, 사라질 때 200ms 페이드. */
+export const ZONE_ALPHA = 0.35;
+export const ZONE_FLATTEN = 0.8;
+export const ZONE_FADE_MS = 200;
+/** 덫 원판 지름(칸). 발동하면 150ms 동안 이 배율까지 작아졌다 돌아온다. */
+export const TRAP_DIAMETER_CELLS = 0.3;
+export const TRAP_CLOSE_MS = 150;
+export const TRAP_CLOSE_SCALE = 0.78;
+/** 굴림체 통나무: 굴러가는 방향과 직각으로 눕는 길이·굵기(칸). 끝나면 150ms 페이드. */
+export const ROLLER_LENGTH_CELLS = 0.62;
+export const ROLLER_THICK_CELLS = 0.3;
+export const ROLLER_FADE_MS = 150;
+
+export type HazardLook =
+  | { kind: 'zone'; rx: number; ry: number }
+  | { kind: 'trap'; diameter: number }
+  /** progress: 화면 시각의 진행도(milli). 상태의 진행도에서 틱 사이 alpha만큼 더 굴러간 값이다. */
+  | { kind: 'roller'; progress: number };
+
+/**
+ * 상태의 장판·덫·굴림체 하나를 어떻게 그릴지 고른다. 한 번 터지고 사라지는 지연 폭발(blast)은 땅에 남는 것이 아니라서 null(그리지 않는다).
+ * 굴림체는 틱마다 stepMilli씩 입구 쪽(진행도 감소)으로 가므로 틱 사이에는 alpha(0..1)만큼 더 간 자리에 그리고, 끝점을 넘지 않는다.
+ */
+export function hazardLook(h: FieldHazard, alpha = 0): HazardLook | null {
+  switch (h.kind) {
+    case 'zone': return h.blast ? null : { kind: 'zone', rx: h.radius / 1000, ry: (h.radius / 1000) * ZONE_FLATTEN };
+    case 'trap': return { kind: 'trap', diameter: TRAP_DIAMETER_CELLS };
+    case 'roller': return { kind: 'roller', progress: Math.max(h.endProgress, h.progress - h.stepMilli * Math.min(1, Math.max(0, alpha))) };
+  }
+}
+
+/** 굴림체가 가는 방향(라디안, 화면 좌표). 입구 쪽(진행도가 줄어드는 쪽)이며, 길이 0이면 0이다. */
+export function rollerHeading(path: PathGeometry, progress: number, span = 50): number {
+  const from = positionAt(path, progress + span), to = positionAt(path, Math.max(0, progress - span));
+  return from.x === to.x && from.y === to.y ? 0 : Math.atan2(to.y - from.y, to.x - from.x);
+}
+
+/** 사라지는 연출. scale이 1이 아니면 그만큼 작아지며 사라진다(움직임 줄이기면 항상 1). */
+export function hazardEndCue(kind: HazardKind, reducedMotion: boolean): { ms: number; scale: number } {
+  if (kind === 'zone') return { ms: ZONE_FADE_MS, scale: 1 };
+  if (kind === 'trap') return { ms: TRAP_CLOSE_MS, scale: reducedMotion ? 1 : TRAP_CLOSE_SCALE };
+  return { ms: ROLLER_FADE_MS, scale: 1 };
+}
+
+/** 덫 발동의 닫힘: ms 동안 scale·alpha까지 갔다가 같은 시간에 돌아온다(yoyo). 움직임 줄이기면 크기 대신 투명도만. */
+export function trapCloseCue(reducedMotion: boolean): { ms: number; scale: number; alpha: number } {
+  return reducedMotion ? { ms: TRAP_CLOSE_MS, scale: 1, alpha: 0.5 } : { ms: TRAP_CLOSE_MS, scale: TRAP_CLOSE_SCALE, alpha: 1 };
+}
+
