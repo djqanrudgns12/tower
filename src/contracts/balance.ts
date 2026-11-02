@@ -104,8 +104,23 @@ const effects = {
   volley: int.min(1).max(8).optional(),
   /** 즉발 타워 중심 360도 고리(종각·서리 B1). 반경은 사거리. */
   ring: z.boolean().optional(),
-  /** 즉발 경로 구간(통나무): 첫 표적 진행도에서 입구 쪽으로 이 길이 안의 지상 적. */
-  pathSegmentMilli: nonNeg.optional(),
+  /**
+   * 장판(§4-7 zone, 약병): 착탄 지점에 반경 splashRadiusMilli 장판을 durationMs 동안 남겨 periodMs마다(착탄 틱 포함) maxTargets명을 친다.
+   * count가 3이면 표적 진행도와 그 앞뒤 spacingMilli 세 곳에 놓는다(약병 B2). 투사체는 착탄 피해 없이 장판만 남긴다.
+   */
+  zone: z.object({ durationMs: int.min(1), periodMs: int.min(1), count: int.min(1).max(5).optional(), spacingMilli: nonNeg.optional() }).optional(),
+  /**
+   * 바닥 덫(§4-7 trap): 공격 간격마다 사거리 안 경로에서 성문에 가장 가까운 빈자리에 덫 하나를 놓는다(타워당 maxActive개까지).
+   * 진행도 ±detectMilli 안 지상 적이 밟으면 발동하고, 웨이브가 끝나면 carryOver개까지 다음 웨이브로 넘긴다.
+   * 발동 범위는 splashRadiusMilli(0이면 밟은 적 하나), 대상 수는 maxTargets. 이월은 규칙상 최대 2개다(towers.md §2 [19]·§4-7).
+   */
+  trap: z.object({ maxActive: int.min(1).max(8), detectMilli: int.min(1), carryOver: nonNeg.max(2) }).optional(),
+  /** 굴림체(§4-7 roller, 통나무): 첫 표적 진행도에 놓여 입구 쪽으로 speed로 distance만큼 굴러가며 폭(진행도) 안 지상 적을 maxTargets명까지 친다. */
+  roller: z.object({ distanceMilli: int.min(1), speedMilliPerSec: int.min(30), widthMilli: nonNeg }).optional(),
+  /** 화약 술통(통나무 B): afterHits번 충돌·정예/대장 충돌(eliteTrigger)·굴림 끝 가운데 먼저 오는 때 굴림체 자리에서 한 번 폭발. */
+  rollBlast: z.object({ afterHits: int.min(1), eliteTrigger: z.boolean(), radiusMilli: nonNeg, maxTargets: int.min(1), damageBP: bp }).optional(),
+  /** 지연 폭발(덫 B1 2차 폭죽·노포 B2 도화선): 공격 자리(덫 둘레·직선 궤적)에 delayMs 뒤 피해 × damageBP, 최대 maxTargets명(없으면 타워 대상 수). */
+  delayedBlast: z.object({ delayMs: int.min(1), damageBP: bp, maxTargets: int.min(1).optional() }).optional(),
   /** 관통(석궁 A): 첫 대상 뒤 일직선 적 수(기본 1). */
   pierceCount: int.min(1).max(8).optional(),
   /** 맞은 모든 적 기절, 정예·대장만 기절, 정예·대장만 감속(석궁 B2·수호기사 A1), 대장만 감속(밀치기 면역 대체). */
@@ -144,8 +159,11 @@ const effects = {
   ricochet: z.object({ count: int.min(0).max(8), radiusMilli: nonNeg, falloffBP: bp }).optional(),
   /** 착탄 둘레 일반 적을 중심 적 진행도 쪽으로 당긴다(마법 B2). */
   pull: z.object({ radiusMilli: nonNeg, maxTargets: int.min(1), milli: nonNeg }).optional(),
-  /** 처치 유발(§4-8): 이 타워의 감속·화상이 걸린 적이 처치되면 둘레에 피해, 감속·화상을 옮긴다. 깊이 1단계. */
-  onKill: areaHit.extend({ mark: z.enum(['slow', 'burn']), carry: z.enum(['none', 'slow', 'burn']) }).optional(),
+  /**
+   * 처치 유발(§4-8): 이 타워의 감속·화상이 걸린 적, 또는 이 타워의 장판 위 적(zone)이 처치되면 둘레에 피해, 감속·화상을 옮긴다.
+   * 분열 파생체가 생긴 뒤 같은 틱에 발동하고, 연쇄 깊이는 1단계다.
+   */
+  onKill: areaHit.extend({ mark: z.enum(['slow', 'burn', 'zone']), carry: z.enum(['none', 'slow', 'burn']) }).optional(),
   /** 성문이 깎일수록 공격 속도·피해가 오른다(최소값 상시, 수호기사 A2). */
   gateRage: z.object({ speedBP: bp, damageBP: bp, minBP: bp }).optional(),
   /** 타워 둘레 지상 적에게 상시 감속(수호기사 B2). */

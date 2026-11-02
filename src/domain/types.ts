@@ -4,9 +4,10 @@ import type { OptionId } from '../contracts/questions';
 // 저장·재개되는 전체 상태. 순수 JSON(숫자·문자열·배열·객체)만 쓴다(PRD §10.1, §14).
 /**
  * 2: 타워 branch → form, 설치 취소 기한(리뉴얼 R2). 3: 적 종족·대장 단계(R2 2단계). 4: 신규 타워 효과 상태(취약·저항 차감·밀치기·공격 주기·다연발). 5: 대장 기믹 상태.
+ * 6: 장판·덫·굴림체(RunState.hazards, 투사체 zone, seq.hazard).
  * 이전 버전의 진행 중 판은 이어가지 않는다(application/session.ts resumeBlocker).
  */
-export const RUN_STATE_VERSION = 5;
+export const RUN_STATE_VERSION = 6;
 /**
  * 0.5-candidate: P2 공격 프로필(즉발·연쇄·부채꼴·화상·깃발 오라, 물리 저항 무시)과 적 화상 상태(PRD §7.1, §20.2~20.3).
  * 0.5.1-candidate: 난이도별 심화 단계 출제 순서와 한 바퀴 뒤 섞기(PRD §9.1, §9.4). 같은 시드의 출제 순서가 바뀌므로 옛 저장은 이어하지 않는다.
@@ -192,7 +193,74 @@ export interface Projectile {
   ricochet?: { left: number; radius: number; falloffBP: number; hit: number[] };
   /** 착탄 둘레 당기기. */
   pull?: { radius: number; maxTargets: number; milli: number };
+  /** 착탄하면 장판을 남긴다(약병, towers.md §4-7). progress는 발사 때 표적의 경로 진행도(앞뒤 장판 자리). */
+  zone?: ZoneSpec;
 }
+
+/** 장판 설정 스냅샷: 반경·타격 간격·타격 횟수·개수(1 또는 3)·경로 앞뒤 간격, 표적 진행도. */
+export interface ZoneSpec { radius: number; periodTicks: number; pulses: number; durationTicks: number; count: number; spacing: number; progress: number }
+
+/** 장판·덫·굴림체·지연 폭발이 맞힐 때 쓰는 타격 스냅샷(놓은 순간의 레벨·형태·오라). 투사체와 같은 모양이다. */
+export type HazardStrike = Pick<Projectile, 'towerId' | 'towerType' | 'damage' | 'damageType' | 'slowBP' | 'slowTicks' | 'physicalResistIgnoreBP' | 'bonusBP' | 'eliteBossDamageBP' | 'canHitFlyer' | 'flyerDamageBP' | 'fx'>;
+
+export type HazardKind = 'zone' | 'trap' | 'roller';
+
+/**
+ * 바닥에 남는 공격(towers.md §4-7 fieldHazards). battleTick의 화상 직후 단계에서 생성순으로 일괄 갱신한다.
+ * charges는 남은 횟수다: zone 타격, trap 발동, roller 충돌. expiresTick이 null이면 시간으로는 사라지지 않는다(덫).
+ */
+interface HazardBase {
+  id: number;
+  towerId: number;
+  towerType: TowerId;
+  /** 중심(zone·trap) 또는 지금 위치(roller). 직선 zone은 선분 시작점(타워 자리). */
+  x: number;
+  y: number;
+  createdTick: number;
+  expiresTick: number | null;
+  charges: number;
+  maxTargets: number;
+  strike: HazardStrike;
+}
+
+/** 직선 모양(노포 B2 도화선): 시작점에서 (dx, dy) 방향, 길이 length·폭 width. */
+export interface HazardLine { dx: number; dy: number; length: number; width: number }
+
+/** 장판(약병)·지연 폭발(덫 B1 2차 폭죽·노포 B2 도화선): nextTick부터 periodTicks마다 반경(또는 직선) 안 최대 maxTargets명. */
+export interface ZoneHazard extends HazardBase {
+  kind: 'zone';
+  radius: number;
+  nextTick: number;
+  periodTicks: number;
+  line: HazardLine | null;
+  /** 한 번 터지고 사라지는 지연 폭발이면 true(장판 위 처치 유발·화면 그림이 장판과 구분한다). */
+  blast: boolean;
+}
+
+/** 바닥 덫: 진행도 progress ± radius 안 지상 적이 밟으면 발동. blastRadius가 0이면 밟은 적 하나, 아니면 그 둘레 최대 maxTargets명. */
+export interface TrapHazard extends HazardBase {
+  kind: 'trap';
+  progress: number;
+  radius: number;
+  blastRadius: number;
+  /** 터진 자리 delayTicks 뒤 2차 폭죽(피해만, 덫 B1). */
+  aftershock: { delayTicks: number; damage: number } | null;
+}
+
+/** 굴림체: 매 틱 stepMilli씩 progress를 줄이며(입구 쪽) 스친 구간의 아직 안 맞은 지상 적을 친다. */
+export interface RollerHazard extends HazardBase {
+  kind: 'roller';
+  progress: number;
+  endProgress: number;
+  stepMilli: number;
+  /** 진행도 기준 충돌 반쪽 폭. */
+  halfWidth: number;
+  hit: number[];
+  /** 화약 술통(통나무 B): afterHits번 충돌·정예/대장 충돌·굴림 끝 가운데 먼저 오는 때 한 번 폭발. */
+  blast: { afterHits: number; eliteTrigger: boolean; radius: number; maxTargets: number; damage: number } | null;
+}
+
+export type FieldHazard = ZoneHazard | TrapHazard | RollerHazard;
 
 /** 한 번의 적중이 싣는 추가 효과(틱·BP, 0이면 없음). 발사 순간의 스냅샷이다. */
 export interface HitFx {
@@ -253,7 +321,7 @@ export interface RunState {
   waveKillPtGranted: number;
   burningUntilTick: number;
   rng: { battle: number; question: number; option: number; draft: number };
-  seq: { command: number; enemy: number; tower: number; projectile: number };
+  seq: { command: number; enemy: number; tower: number; projectile: number; hazard: number };
   quiz: QuizState;
   /** 장착함: 이 판에서 지을 수 있는 타워(시작 타워 + 징집으로 고른 순서). */
   owned: TowerId[];
@@ -262,6 +330,8 @@ export interface RunState {
   towers: Tower[];
   enemies: Enemy[];
   projectiles: Projectile[];
+  /** 장판·덫·굴림체(towers.md §4-7). 웨이브가 끝나면 덫만 타워마다 최대 2개 남긴다. */
+  hazards: FieldHazard[];
   battle: BattleState | null;
   stats: RunStats;
   milestoneRewardedWaves: number[];

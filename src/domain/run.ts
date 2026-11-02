@@ -5,6 +5,7 @@ import type { GameContext } from './context';
 import type { DomainEvent } from './events';
 import { openDraft, pickDraft, startingOwned } from './draft';
 import { center } from './geometry';
+import { removeTowerHazards, settleHazardsAtWaveEnd } from './hazards';
 import { add, msToTicks } from './num';
 import { createEncounter } from './quiz';
 import { RNG_ALGORITHM, streamSeed } from './rng';
@@ -45,10 +46,10 @@ export function createRun(ctx: GameContext, input: NewRunInput): RunState {
     v: RUN_STATE_VERSION, config, phase: 'PREP_QUIZ', pause: [], tick: 0, wave: 0, completedWave: 0, endedAtWave: null, endReason: null,
     gateHp: ctx.difficulty.gateHp, gateMaxHp: ctx.difficulty.gateHp, gold: ctx.balance.run.startGold, pt: 0, waveKillPtGranted: 0, burningUntilTick: -1,
     rng: { battle: streamSeed(seed, 'battle'), question: streamSeed(seed, 'question'), option: streamSeed(seed, 'option'), draft: streamSeed(seed, 'draft') },
-    seq: { command: 0, enemy: 1, tower: 1, projectile: 1 },
+    seq: { command: 0, enemy: 1, tower: 1, projectile: 1, hazard: 1 },
     quiz: { queue: [], cursor: 0, cycle: 0, recentQuestions: [], recentSenses: [], current: null, feedback: null, prepTarget: 0, prepDone: 0, battleStreak: 0, nextEncounterId: 1, history: [] },
     owned: startingOwned(ctx.balance, config), draft: null,
-    towers: [], enemies: [], projectiles: [], battle: null,
+    towers: [], enemies: [], projectiles: [], hazards: [], battle: null,
     stats: { correct: 0, wrong: 0, skipped: 0, kills: 0, bossKills: 0, bossLeaks: 0, leaks: 0, goldEarned: 0, ptFromQuestions: 0, ptFromKills: 0, activeTicks: 0, battleTicks: 0 },
     milestoneRewardedWaves: [],
   };
@@ -255,6 +256,7 @@ function sell(ctx: GameContext, s: RunState, towerId: number, ev: DomainEvent[])
   const gold = add(s.gold, refund, 'gold');
   s.towers.splice(index, 1);
   s.gold = gold;
+  removeTowerHazards(s, towerId, ev);
   ev.push({ type: 'towerSold', towerId, slotId: tower.slotId, gold: refund });
   return null;
 }
@@ -269,6 +271,8 @@ function undoBuild(s: RunState, towerId: number, ev: DomainEvent[]): CommandErro
   const gold = add(s.gold, tower.invested, 'gold');
   s.towers.splice(index, 1);
   s.gold = gold;
+  // 장판·덫을 놓으면 공격으로 쳐서 취소 기한이 끝나므로 보통은 없지만, 타워 ID는 다시 쓰지 않으니 남은 것이 있으면 함께 지운다.
+  removeTowerHazards(s, towerId, ev);
   ev.push({ type: 'towerSold', towerId, slotId: tower.slotId, gold: tower.invested });
   return null;
 }
@@ -313,6 +317,7 @@ function endRun(s: RunState, reason: 'DEFEAT' | 'QUIT', ev: DomainEvent[]) {
   if (s.quiz.current && !s.quiz.current.answer) s.quiz.current = null;
   s.quiz.feedback = null;
   s.projectiles = [];
+  s.hazards = [];
   // 패배·종료 때도 버닝과 전투 연속 카운트를 초기화한다(PRD §5).
   s.burningUntilTick = -1;
   s.quiz.battleStreak = 0;
@@ -329,6 +334,8 @@ function completeWave(ctx: GameContext, s: RunState, ev: DomainEvent[]) {
   s.enemies = [];
   s.battle = null;
   for (const t of s.towers) { t.nextAttackTick = null; t.burst = null; }
+  // 장판·굴림체는 사라지고 덫은 타워마다 최대 2개 넘어간다(towers.md §2 [19]).
+  settleHazardsAtWaveEnd(ctx, s, ev);
   let milestoneGold = 0;
   if (isMilestone(b, s.wave) && !s.milestoneRewardedWaves.includes(s.wave)) {
     milestoneGold = ctx.difficulty.milestoneSurvivalGold;

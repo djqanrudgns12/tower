@@ -1,6 +1,6 @@
 {
   "schemaVersion": "0.4",
-  "balanceVersion": "0.7.1-renewal-candidate",
+  "balanceVersion": "0.7.2-renewal-candidate",
   "status": "candidate-not-balance-approved",
   "basedOn": "0.4.2-candidate + 리뉴얼 R2 성장·진화(docs/renewal/progression.md): Lv4·Lv7 진화, 무제한 레벨, 형태 7개, 설치 직후 취소 + R2 2단계 종족×역할 편성(docs/renewal/catalog/monsters.md §0·§3)",
   "userConfirmed": { "date": "2026-10-28", "fields": ["difficulties.*.skipPt", "difficulties.*.label", "waves.hpGrowthPercent"], "rule": "확정 값은 사용자 결정 없이 바꾸지 않는다. 나머지 값은 후보다." },
@@ -97,10 +97,10 @@
     "falcon":     { "label": "매사냥대", "cost": 115, "damage": 14, "damageType": "physical", "intervalMs": 1200, "rangeMilli": 3400, "projectileSpeedMilliPerSec": 18000, "maxTargets": 1, "canHitFlyer": true, "preferFlyer": true, "flyerDamageBP": 13500 },
     "mortar":     { "label": "박격포대", "cost": 135, "damage": 26, "damageType": "physical", "intervalMs": 2800, "rangeMilli": 4600, "minRangeMilli": 1600, "projectileSpeedMilliPerSec": 7500, "maxTargets": 5, "splashRadiusMilli": 950, "canHitFlyer": false },
     "hwacha":     { "label": "화차대", "cost": 160, "damage": 6, "damageType": "physical", "intervalMs": 2500, "rangeMilli": 3100, "projectileSpeedMilliPerSec": 14000, "maxTargets": 2, "splashRadiusMilli": 350, "burst": { "count": 4, "gapTicks": 3 }, "canHitFlyer": true },
-    "roller":     { "label": "통나무굴림대", "cost": 115, "damage": 15, "damageType": "physical", "intervalMs": 2200, "rangeMilli": 1800, "instant": true, "pathSegmentMilli": 2600, "maxTargets": 5, "canHitFlyer": false },
-    "alchemist":  { "label": "약병투척소", "cost": 105, "damage": 5, "damageType": "magic", "intervalMs": 2200, "rangeMilli": 2300, "projectileSpeedMilliPerSec": 9500, "maxTargets": 5, "splashRadiusMilli": 750, "burnTotal": 20, "burnMs": 2000, "canHitFlyer": false },
+    "roller":     { "label": "통나무굴림대", "cost": 115, "damage": 15, "damageType": "physical", "intervalMs": 2200, "rangeMilli": 1800, "instant": true, "roller": { "distanceMilli": 2600, "speedMilliPerSec": 9000, "widthMilli": 600 }, "maxTargets": 5, "canHitFlyer": false },
+    "alchemist":  { "label": "약병투척소", "cost": 105, "damage": 5, "damageType": "magic", "intervalMs": 2200, "rangeMilli": 2300, "projectileSpeedMilliPerSec": 9500, "maxTargets": 5, "splashRadiusMilli": 750, "zone": { "durationMs": 2000, "periodMs": 500 }, "canHitFlyer": false },
     "wind":       { "label": "바람개비탑", "cost": 110, "damage": 7, "damageType": "magic", "intervalMs": 1600, "rangeMilli": 2200, "instant": true, "maxTargets": 3, "coneDegrees": 90, "knockbackMilli": 220, "knockbackFlyerMilli": 350, "knockbackBossMilli": 0, "bossSlowBP": 2000, "bossSlowMs": 1000, "canHitFlyer": true },
-    "trap":       { "label": "덫공방초소", "cost": 85, "damage": 16, "damageType": "physical", "intervalMs": 1800, "rangeMilli": 2000, "instant": true, "maxTargets": 1, "slowBP": 3500, "slowMs": 1500, "canHitFlyer": false },
+    "trap":       { "label": "덫공방초소", "cost": 85, "damage": 16, "damageType": "physical", "intervalMs": 1800, "rangeMilli": 2000, "trap": { "maxActive": 3, "detectMilli": 350, "carryOver": 2 }, "maxTargets": 1, "slowBP": 3500, "slowMs": 1500, "canHitFlyer": false },
     "bell":       { "label": "종각초소", "cost": 125, "damage": 9, "damageType": "magic", "intervalMs": 2000, "rangeMilli": 2100, "instant": true, "ring": true, "maxTargets": 5, "vulnBP": 1200, "vulnMs": 2000, "canHitFlyer": true }
   },
   "forms": {
@@ -198,7 +198,7 @@
       "A1": { "parent": "A", "label": "폭풍 대노포", "summary": "끝없이 긴 길을 단번에 꿰뚫어요", "rangeAddMilli": 700, "maxTargets": 8, "intervalBP": 8500 },
       "A2": { "parent": "A", "label": "밀치기 작살", "summary": "꿰뚫린 적들을 뒤로 밀어내요", "knockbackMilli": 350, "knockbackBossMilli": 120 },
       "B1": { "parent": "B", "label": "창공 사냥꾼", "summary": "날아오는 적과 대장을 격추해요", "flyerDamageBP": 18000, "eliteBossDamageBP": 16000 },
-      "B2": { "parent": "B", "label": "불꽃 도화선", "summary": "창이 지나간 길에 폭발이 나요", "burst": { "count": 2, "gapTicks": 18, "followDamageBP": 5500 } }
+      "B2": { "parent": "B", "label": "불꽃 도화선", "summary": "창이 지나간 길에 폭발이 나요", "delayedBlast": { "delayMs": 600, "damageBP": 5500, "maxTargets": 5 } }
     },
     "falcon": {
       "A":  { "label": "급강하", "summary": "매가 번개처럼 내려꽂혀요", "intervalBP": 8000, "flyerDamageBP": 16000 },
@@ -225,20 +225,20 @@
       "B2": { "parent": "B", "label": "파갑 대화살", "summary": "정예와 대장 방패를 연달아 뚫어요", "physicalResistIgnoreBP": 5000, "eliteBossDamageBP": 14500 }
     },
     "roller": {
-      "A":  { "label": "가시 통나무", "summary": "더 멀리 굴러가며 발을 늦춰요", "pathSegmentMilli": 3400, "maxTargets": 7, "slowBP": 2500, "slowMs": 1500 },
-      "B":  { "label": "화약 술통", "summary": "정예와 부딪히거나 끝에서 쾅!", "maxTargets": 5, "onHitSplash": { "radiusMilli": 950, "maxTargets": 5, "damageBP": 14500 } },
-      "A1": { "parent": "A", "label": "천하장사 맷돌", "summary": "거대한 돌바위가 열 명을 뭉개요", "pathSegmentMilli": 4200, "maxTargets": 10, "physicalResistIgnoreBP": 4000 },
+      "A":  { "label": "가시 통나무", "summary": "더 멀리 굴러가며 발을 늦춰요", "roller": { "distanceMilli": 3400, "speedMilliPerSec": 9000, "widthMilli": 600 }, "maxTargets": 7, "slowBP": 2500, "slowMs": 1500 },
+      "B":  { "label": "화약 술통", "summary": "정예와 부딪히거나 끝에서 쾅!", "maxTargets": 3, "rollBlast": { "afterHits": 3, "eliteTrigger": true, "radiusMilli": 950, "maxTargets": 5, "damageBP": 14500 } },
+      "A1": { "parent": "A", "label": "천하장사 맷돌", "summary": "거대한 돌바위가 열 명을 뭉개요", "roller": { "distanceMilli": 4200, "speedMilliPerSec": 9000, "widthMilli": 600 }, "maxTargets": 10, "physicalResistIgnoreBP": 4000 },
       "A2": { "parent": "A", "label": "쌍둥이 통나무", "summary": "뒤따라 하나 더 굴러가 쓸어내요", "burst": { "count": 2, "gapTicks": 15, "followDamageBP": 6500 } },
-      "B1": { "parent": "B", "label": "큰불 화약통", "summary": "엄청난 폭발로 주변을 초토화해요", "onHitSplash": { "radiusMilli": 1250, "maxTargets": 7, "damageBP": 18000 } },
+      "B1": { "parent": "B", "label": "큰불 화약통", "summary": "엄청난 폭발로 주변을 초토화해요", "rollBlast": { "afterHits": 3, "eliteTrigger": true, "radiusMilli": 1250, "maxTargets": 7, "damageBP": 18000 } },
       "B2": { "parent": "B", "label": "밀치기 큰통", "summary": "굴러가며 적들을 뒤로 밀어붙여요", "knockbackMilli": 300, "knockbackBossMilli": 0 }
     },
     "alchemist": {
       "A":  { "label": "끈적이 수액", "summary": "장판이 넓어지고 발이 쩍 붙어요", "splashRadiusMilli": 950, "slowBP": 3000, "slowMs": 667 },
-      "B":  { "label": "부글부글 물약", "summary": "장판 마법 피해가 훨씬 세져요", "damageBP": 14500, "burnBP": 14500, "maxTargets": 6 },
-      "A1": { "parent": "A", "label": "호박 설탕늪", "summary": "아주 오래 남는 끈적한 큰 늪!", "burnMs": 3000, "slowBP": 4500, "maxTargets": 7 },
-      "A2": { "parent": "A", "label": "톡톡 거품방울", "summary": "장판 위에서 쓰러지면 펑 터져요!", "onKill": { "mark": "burn", "radiusMilli": 800, "maxTargets": 4, "damageBP": 18000, "carry": "none" } },
+      "B":  { "label": "부글부글 물약", "summary": "장판 마법 피해가 훨씬 세져요", "damageBP": 14500, "maxTargets": 6 },
+      "A1": { "parent": "A", "label": "호박 설탕늪", "summary": "아주 오래 남는 끈적한 큰 늪!", "damageBP": 7000, "zone": { "durationMs": 3000, "periodMs": 500 }, "slowBP": 4500, "maxTargets": 7 },
+      "A2": { "parent": "A", "label": "톡톡 거품방울", "summary": "장판 위에서 쓰러지면 펑 터져요!", "onKill": { "mark": "zone", "radiusMilli": 800, "maxTargets": 4, "damageBP": 18000, "carry": "none" } },
       "B1": { "parent": "B", "label": "갑옷 녹이기", "summary": "장판 위 적의 갑옷을 무르게 해요", "shredPhysicalBP": 2500, "shredMagicBP": 2500, "shredMs": 1000 },
-      "B2": { "parent": "B", "label": "삼색 플라스크", "summary": "앞뒤 길에 약병 세 개를 뿌려요", "splashRadiusMilli": 1100, "maxTargets": 8, "damageBP": 10000, "burnBP": 10000 }
+      "B2": { "parent": "B", "label": "삼색 플라스크", "summary": "앞뒤 길에 약병 세 개를 뿌려요", "zone": { "durationMs": 2000, "periodMs": 500, "count": 3, "spacingMilli": 500 }, "splashRadiusMilli": 600, "damageBP": 10000 }
     },
     "wind": {
       "A":  { "label": "역풍 돌풍", "summary": "더 많은 적을 더 멀리 밀쳐내요", "maxTargets": 5, "knockbackMilli": 320, "knockbackFlyerMilli": 500, "damageBP": 15000 },
@@ -249,11 +249,11 @@
       "B2": { "parent": "B", "label": "순풍 응원", "summary": "바람을 불어 이웃 타워도 빠르게!", "hasteNeighbors": { "radiusMilli": 2300, "count": 2, "ticks": 6 } }
     },
     "trap": {
-      "A":  { "label": "올가미 그물", "summary": "덫을 더 많이 깔고 꽉 붙잡아요", "hitStunMs": 500, "physicalResistIgnoreBP": 3500 },
-      "B":  { "label": "폭죽 발판", "summary": "밟으면 펑 터져 여럿을 맞혀요", "splashRadiusMilli": 800, "maxTargets": 4, "damageBP": 11500 },
+      "A":  { "label": "올가미 그물", "summary": "덫을 더 많이 깔고 꽉 붙잡아요", "trap": { "maxActive": 4, "detectMilli": 350, "carryOver": 2 }, "hitStunMs": 500, "physicalResistIgnoreBP": 3500 },
+      "B":  { "label": "폭죽 발판", "summary": "밟으면 펑 터져 여럿을 맞혀요", "trap": { "maxActive": 4, "detectMilli": 350, "carryOver": 2 }, "splashRadiusMilli": 800, "maxTargets": 4, "damageBP": 11500 },
       "A1": { "parent": "A", "label": "강철 곰덫", "summary": "큰 적도 단단히 물어 큰 피해를!", "damageBP": 17500, "hitStunMs": 800, "eliteBossDamageBP": 15000 },
       "A2": { "parent": "A", "label": "넓적 그물망", "summary": "밟으면 주변 친구들까지 함께 묶여요", "splashRadiusMilli": 750, "maxTargets": 4, "hitStunMs": 500 },
-      "B1": { "parent": "B", "label": "도토리 연쇄덫", "summary": "한 번 터진 자리에 작은 덫이 또!", "burst": { "count": 2, "gapTicks": 12, "followDamageBP": 8000 } },
+      "B1": { "parent": "B", "label": "도토리 연쇄덫", "summary": "한 번 터진 자리에 작은 덫이 또!", "delayedBlast": { "delayMs": 400, "damageBP": 8000 } },
       "B2": { "parent": "B", "label": "용수철 발판", "summary": "밟은 적들을 통! 뒤로 튕겨내요", "splashRadiusMilli": 700, "maxTargets": 3, "knockbackMilli": 450, "knockbackBossMilli": 0 }
     },
     "bell": {
@@ -340,5 +340,5 @@
     "courtyard": { "primary": "moon_dokkaebi", "roleOrder": ["walker", "brute", "shell", "runner", "wisp", "swarm"], "invasionOrder": ["kiln_pottery", "brass_mole", "hearth_yeti", "honey_beetle", "breeze_corsair", "acorn_goblin", "river_rafter"] },
     "snow_step": { "primary": "hearth_yeti",   "roleOrder": ["walker", "brute", "runner", "wisp", "shell", "swarm"], "invasionOrder": ["brass_mole", "honey_beetle", "acorn_goblin", "breeze_corsair", "kiln_pottery", "river_rafter", "moon_dokkaebi"] }
   },
-  "formsNote": "1차형(A·B)은 R2 1단계에서 맞춘 값이다. 2차형(A1~B2)은 docs/renewal/catalog/towers.md §2 값을 옮겼다(R2 2단계 (d)). 1단계에서 1차형 값을 바꾼 곳(궁수 B 사거리, 포탑 A·B, 깃발 A·B 표)은 카탈로그의 1차→2차 비율을 지켜 2차 값을 맞췄다. 2차형은 부모 1차형 값을 물려받고 적은 필드만 덮어쓴다. 장판·덫·굴림(fieldHazards)은 (f) 전까지 근사다: 약병 장판 = 착탄 범위 + 화상, 덫 = 성문 쪽 첫 적 즉발 타격, 통나무 = 첫 표적에서 입구 쪽 경로 구간 즉발 타격."
+  "formsNote": "1차형(A·B)은 R2 1단계에서 맞춘 값이다. 2차형(A1~B2)은 docs/renewal/catalog/towers.md §2 값을 옮겼다(R2 2단계 (d)). 1단계에서 1차형 값을 바꾼 곳(궁수 B 사거리, 포탑 A·B, 깃발 A·B 표)은 카탈로그의 1차→2차 비율을 지켜 2차 값을 맞췄다. 2차형은 부모 1차형 값을 물려받고 적은 필드만 덮어쓴다. 장판·덫·굴림(fieldHazards, towers.md §4-7)은 (f)에서 정식 구현했다: 약병 = 착탄 지점 장판(zone, 착탄 틱부터 15틱마다), 덫 = 사거리 안 성문 쪽 빈자리에 바닥 덫(trap, 웨이브 끝에 2개 이월), 통나무 = 첫 표적 진행도에서 입구 쪽으로 굴러가는 굴림체(roller), 덫 B1·노포 B2 = 지연 폭발(delayedBlast)."
 }

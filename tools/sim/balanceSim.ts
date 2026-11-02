@@ -197,7 +197,8 @@ const measured = new WeakMap<Balance, Map<string, number>>();
 
 /**
  * 가상 플레이어가 보는 가치. 깃발은 반경 안 공격 타워 가치에 오라 비율을 곱한 합이다(towers를 넘길 때만).
- * sketch: 초당 피해 × 덮는 경로. 범위·부채꼴 ×2, 감속 +6(balance-sketch와 같은 어림). P2: 연쇄는 대상 수만큼 감쇠 합, 선분 ×1.3,
+ * sketch: 초당 피해 × 덮는 경로. 범위·부채꼴·굴림체 ×2, 감속 +6(balance-sketch와 같은 어림). P2: 연쇄는 대상 수만큼 감쇠 합, 선분 ×1.3,
+ *   장판은 타격 횟수 × 장판 수의 3/4(걸어 나감), 지연 폭발은 뒤따르는 한 발, 화약 술통 폭발은 2차 피해처럼 절반으로 본다.
  *   화상은 초당 화상 피해를 더하고, 정예·대장 배율은 ×1.1로 어림한다. 덮는 경로에 비례해서 짧은 사거리 타워(창병·화염·수호기사)를 크게 낮춰 본다.
  * engine: 그 칸에 그 타워 하나만 두고 기본 줄(STREAMS.line)을 한 번 통과시켰을 때 제품 엔진이 준 피해(HP, 직접+화상).
  *   감속은 다른 타워의 사거리 안 체류를 늘리므로 감속 비율만큼 더 쳐 준다.
@@ -226,12 +227,14 @@ function value(ctx: GameContext, judge: Judge, type: TowerId, level: number, for
   // 리뉴얼 효과 어림: 다연발·공격 주기 덧발·여러 표적은 발 수만큼, 도탄·2차 피해는 절반, 취약은 받는 피해만큼, 밀치기는 감속처럼 더한다.
   const fx = st.fx;
   const follow = (x: { count: number; followDamageBP?: number | undefined }) => ((x.count - 1) * (x.followDamageBP ?? 10000)) / 10000;
-  const shots = (1 + (fx.burst ? follow(fx.burst) : 0) + (fx.cycle?.burst ? follow(fx.cycle.burst) / fx.cycle.every : 0)) * st.volley;
+  const zone = fx.zone ? Math.ceil(msToTicks(fx.zone.durationMs) / msToTicks(fx.zone.periodMs)) * (fx.zone.count ?? 1) * 0.75 : 1;
+  const shots = (1 + (fx.burst ? follow(fx.burst) : 0) + (fx.cycle?.burst ? follow(fx.cycle.burst) / fx.cycle.every : 0) + (fx.delayedBlast ? fx.delayedBlast.damageBP / 10000 : 0)) * st.volley * zone;
   const perSec = (st.damage / 1000) * (TICK_HZ / attackIntervalTicks(b, st, 0)) * shots;
-  let mult = st.splashRadius > 0 || st.cone || fx.ring || fx.pathSegmentMilli ? 2 : st.lineWidth > 0 ? 1.3 : 1;
+  let mult = st.splashRadius > 0 || st.cone || fx.ring || fx.roller ? 2 : st.lineWidth > 0 ? 1.3 : 1;
   if (st.chainRadius > 0) { mult = 0; for (let k = 0; k < st.maxTargets; k++) mult += (st.chainFalloffBP / 10000) ** k; mult = 1 + (mult - 1) * 0.5; }
   if (fx.ricochet) { let r = 0; for (let k = 1; k <= fx.ricochet.count; k++) r += (fx.ricochet.falloffBP / 10000) ** k; mult += r * 0.5; }
   if (fx.onHitSplash) mult += (fx.onHitSplash.damageBP / 10000) * 0.5;
+  if (fx.rollBlast) mult += (fx.rollBlast.damageBP / 10000) * 0.5;
   mult *= 1 + (fx.vulnBP ?? 0) / 10000 + ((fx.knockbackMilli ?? 0) / 1000) * 0.5;
   const burnPerSec = st.burnTicks > 0 ? (st.burnTotal / 1000) * (TICK_HZ / st.burnTicks) : 0;
   const base = (perSec * mult + burnPerSec) * (st.eliteBossDamageBP > 10000 ? 1.1 : 1) + (st.slowBP > 0 ? 6 : 0);
