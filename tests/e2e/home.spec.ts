@@ -28,11 +28,11 @@ test.describe('랜딩 페이지(방향 2-A: 왕국 참나무 작전실) 통합 �
     await expect(telemetry).toContainText('누적 플레이');
 
     // L06: 별명 미입력 상태에서 '새 게임' 클릭 시 모달이 열리지 않고 입력칸에 포커스가 간다.
-    const nickInput = page.getByRole('textbox', { name: '출정 별명' });
+    const nickInput = page.getByRole('textbox', { name: /닉네임|출정 별명/ });
     await page.getByRole('button', { name: '새 게임' }).click();
     await expect(page.getByRole('dialog')).toHaveCount(0);
     await expect(nickInput).toBeFocused();
-    await expect(page.locator('#landingNickStatus')).toContainText('출정하기 전에 별명');
+    await expect(page.locator('#landingNickStatus')).toContainText(/닉네임|별명/);
 
     // L05: '랜덤 추천' 클릭 시 재치 있는 별명이 들어가고 연속 클릭 시 다른 별명으로 바뀌며 내 순위 도크와 즉시 연동된다.
     const recommendBtn = page.getByRole('button', { name: '랜덤 추천' });
@@ -123,7 +123,7 @@ test.describe('랜딩 페이지(방향 2-A: 왕국 참나무 작전실) 통합 �
     await settingsDialog.getByRole('button', { name: '닫기' }).click();
 
     // 게임 진입 후 QuestionPanel 보기 옆 번호 배지(1~4)가 실제로 숨겨졌는지 확인
-    await page.getByRole('textbox', { name: '출정 별명' }).fill('단축키검증');
+    await page.getByRole('textbox', { name: /닉네임|출정 별명/ }).fill('단축키검증');
     await page.getByRole('button', { name: '새 게임' }).click();
     await page.getByRole('button', { name: '시작하기' }).click();
     const firstOption = page.getByRole('region', { name: '어휘 문제' }).getByRole('group', { name: '보기' }).getByRole('button').first();
@@ -175,7 +175,7 @@ test.describe('랜딩 페이지(방향 2-A: 왕국 참나무 작전실) 통합 �
         req.onerror = () => reject(req.error);
       });
     });
-    await page.getByRole('textbox', { name: '출정 별명' }).fill('참나무수호대');
+    await page.getByRole('textbox', { name: /닉네임|출정 별명/ }).fill('참나무수호대');
     await expect(page.getByRole('complementary', { name: '통합 수호 랭킹' })).toContainText('별빛파수꾼');
     await expect(page.getByLabel('내 순위 요약')).toContainText('4위 · 10,420점');
 
@@ -191,7 +191,7 @@ test.describe('랜딩 페이지(방향 2-A: 왕국 참나무 작전실) 통합 �
     await page.keyboard.press('Escape');
 
     // 새 게임 모달 캡처 및 axe 검사
-    await page.getByRole('textbox', { name: '출정 별명' }).fill('참나무수호대');
+    await page.getByRole('textbox', { name: /닉네임|출정 별명/ }).fill('참나무수호대');
     await page.getByRole('button', { name: '새 게임' }).click();
     const newGameAxe = await new AxeBuilder({ page }).analyze();
     expect(newGameAxe.violations.map(v => `${v.id}: ${v.nodes.length}`)).toEqual([]);

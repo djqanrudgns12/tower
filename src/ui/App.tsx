@@ -78,7 +78,7 @@ export function App() {
       if (cleanNickname(settings.lastNickname).error === null) {
         setScreen({ name: 'home', initialModal: 'new' });
       } else {
-        setMessage('연습을 잘 마쳤어요. 출정 별명을 적고 새 게임을 눌러 보세요.');
+        setMessage('연습을 잘 마쳤어요. 닉네임을 적고 새 게임을 눌러 보세요.');
         setScreen({ name: 'home', focusNickname: true });
       }
       return;

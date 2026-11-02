@@ -64,6 +64,8 @@ describe('랜딩 로비 · 설정 v2 · 비석 학습 · 세분화 랭킹 단위
       motionMode: 'full',
       highContrastMap: false,
       showKeyHints: true,
+      lastSchoolName: '',
+      lastSchoolCode: '',
     };
 
     const migrated = normalizeSettings(base, { reducedMotion: true, lastNickname: '솔방울' });

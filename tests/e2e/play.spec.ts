@@ -10,7 +10,7 @@ async function newGame(page: Page) {
   await page.goto('/');
   await page.evaluate(() => indexedDB.deleteDatabase('vocabulary-td'));
   await page.reload();
-  await page.getByRole('textbox', { name: '출정 별명' }).fill('하늘바람');
+  await page.getByRole('textbox', { name: /닉네임|출정 별명/ }).fill('하늘바람');
   await page.getByRole('button', { name: '새 게임' }).click();
   await page.getByRole('button', { name: '시작하기' }).click();
   await expect(page.getByText('준비 1/5')).toBeVisible();
@@ -179,7 +179,7 @@ test('사용 설명서 완독 후 새 게임 출정: 연습 판 버튼 없이 4�
   await guide.getByRole('button', { name: '닫기' }).click();
   await expect(guide).toHaveCount(0);
 
-  await page.getByRole('textbox', { name: '출정 별명' }).fill('작전교범수호자');
+  await page.getByRole('textbox', { name: /닉네임|출정 별명/ }).fill('작전교범수호자');
   await page.getByRole('button', { name: '새 게임' }).click();
   await page.getByRole('button', { name: '시작하기' }).click();
   await expect(page.getByText('준비 1/5')).toBeVisible();
@@ -209,7 +209,7 @@ test('3~6학년 1,000+ 문항 준비 표시 및 고학년·고난이도 새 게�
   await page.goto('/');
   await page.evaluate(() => indexedDB.deleteDatabase('vocabulary-td'));
   await page.reload();
-  await page.getByRole('textbox', { name: '출정 별명' }).fill('어휘수호대');
+  await page.getByRole('textbox', { name: /닉네임|출정 별명/ }).fill('어휘수호대');
   await page.getByRole('button', { name: '새 게임' }).click();
 
   const dialog = page.getByRole('dialog', { name: '새 게임 출정 설정' });

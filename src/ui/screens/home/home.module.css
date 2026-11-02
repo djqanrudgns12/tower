@@ -482,6 +482,94 @@
   border-color: var(--danger);
 }
 
+.schoolBlock {
+  position: relative;
+  display: grid;
+  gap: 8px;
+}
+
+.schoolDropdown {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  z-index: 40;
+  background: var(--oak-card-bg);
+  border: 2px solid var(--oak-frame-edge);
+  border-radius: var(--r-input);
+  box-shadow: var(--shadow-board);
+  max-height: 220px;
+  overflow-y: auto;
+  padding: 4px;
+}
+
+.schoolList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 4px;
+}
+
+.schoolItem {
+  width: 100%;
+  text-align: left;
+  padding: 8px 10px;
+  background: #ffffff;
+  border: 1px solid var(--oak-inset-border);
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  transition: background-color 100ms, border-color 100ms;
+}
+
+.schoolItem:hover,
+.schoolItem:focus-visible {
+  background: #fff8ee;
+  border-color: var(--oak-amber-accent);
+  outline: none;
+}
+
+.schoolItemTop {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.schoolItemName {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.schoolItemBadge {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 1px 6px;
+  border-radius: 4px;
+  background: #eee4d5;
+  color: #4a3828;
+  white-space: nowrap;
+}
+
+.schoolItemAddress {
+  font-size: 12px;
+  color: var(--ink-soft);
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.schoolEmpty {
+  padding: 12px 8px;
+  font-size: 13px;
+  color: var(--ink-soft);
+  text-align: center;
+}
+
 .bannerNotice {
   padding: var(--s2) var(--s3);
   background: var(--oak-card-bg);
@@ -876,39 +964,52 @@
 /* 학교 크롬북 저높이(1366×650 등) 대응: 첫 화면 내 '새 게임' 버튼 100% 수납 보장 */
 @media (max-height: 740px) and (min-width: 960px) {
   .foreground {
-    padding: var(--s2) var(--s4);
-    gap: var(--s2);
+    padding: var(--s1) var(--s4);
+    gap: var(--s1);
   }
   .parchmentInner {
-    padding: var(--s3);
-    gap: var(--s2);
+    padding: var(--s2) var(--s3);
+    gap: var(--s1);
   }
   .stageViewport {
-    height: 132px;
+    height: 96px;
   }
   .stelePanel {
-    padding: var(--s3);
-    gap: var(--s2);
+    padding: var(--s2) var(--s3);
+    gap: var(--s1);
   }
   .steleArtBox {
-    width: 80px;
-    height: 92px;
+    width: 68px;
+    height: 76px;
   }
   .meaningCard {
-    padding: var(--s2) var(--s3);
-    min-height: 48px;
+    padding: var(--s1) var(--s2);
+    min-height: 40px;
   }
   .launchDeck {
     padding: var(--s2) var(--s3);
-    gap: var(--s2);
+    gap: var(--s1);
+  }
+  .nickRow {
+    gap: var(--s1);
+  }
+  .nickInput {
+    min-height: 38px;
+    font-size: 14px;
+  }
+  .smallBtn {
+    min-height: 38px !important;
+  }
+  .schoolBlock {
+    gap: 4px;
   }
   .primaryCta {
-    min-height: 48px;
-    font-size: 18px;
+    min-height: 42px;
+    font-size: 17px;
   }
   .rankList {
-    min-height: 210px;
-    max-height: 260px;
+    min-height: 180px;
+    max-height: 220px;
     overflow-y: auto;
   }
 }

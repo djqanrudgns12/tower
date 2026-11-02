@@ -288,7 +288,7 @@ export function SettingsModal({ settings, onUpdate, onHistoryCleared, onClose }:
             <section className={css.settingSection}>
               <strong className={css.nickLabel}>이 기기의 로컬 기록 정리</strong>
               <p className={css.rankSub}>
-                이 브라우저에 저장된 최근 판 기록을 모두 비워요. 출정 별명은 그대로 유지돼요.
+                이 브라우저에 저장된 최근 판 기록을 모두 비워요. 닉네임은 그대로 유지돼요.
               </p>
               {clearedNotice && (
                 <p className={css.bannerNotice} role="status">이 기기의 로컬 기록을 모두 정리했어요.</p>

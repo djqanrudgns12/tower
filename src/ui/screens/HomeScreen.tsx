@@ -147,9 +147,12 @@ export function HomeScreen({
 
               <LaunchDeck
                 savedNickname={settings.lastNickname}
+                savedSchoolName={settings.lastSchoolName}
+                savedSchoolCode={settings.lastSchoolCode}
                 message={message}
                 inputRef={nickInputRef}
                 onCommitNickname={nick => onSettings({ lastNickname: nick })}
+                onCommitSchool={(name, code) => onSettings({ lastSchoolName: name, lastSchoolCode: code })}
                 onOpenNewGame={nick => {
                   onSettings({ lastNickname: nick });
                   onClearMessage();

@@ -32,6 +32,10 @@ export interface Settings {
   highContrastMap: boolean;
   /** 문제 보기(1~4) 단축키 번호 배지 표시. */
   showKeyHints: boolean;
+  /** 학교 이름 (선택/NEIS 연동용). */
+  lastSchoolName: string;
+  /** NEIS 표준학교코드 (선택). */
+  lastSchoolCode: string;
 }
 
 const KEY = 'vocabulary-td.settings';
@@ -70,6 +74,8 @@ const defaults = (): Settings => ({
   motionCustomized: false,
   highContrastMap: false,
   showKeyHints: true,
+  lastSchoolName: '',
+  lastSchoolCode: '',
 });
 
 /** v1 저장본과 부분 패치를 정규화하고 motionMode ↔ reducedMotion을 일치시킨다. */
@@ -98,6 +104,8 @@ export function normalizeSettings(base: Settings, raw: Partial<Settings>): Setti
     motionCustomized,
     highContrastMap: typeof raw.highContrastMap === 'boolean' ? raw.highContrastMap : base.highContrastMap,
     showKeyHints: typeof raw.showKeyHints === 'boolean' ? raw.showKeyHints : base.showKeyHints,
+    lastSchoolName: typeof raw.lastSchoolName === 'string' ? raw.lastSchoolName : (base.lastSchoolName ?? ''),
+    lastSchoolCode: typeof raw.lastSchoolCode === 'string' ? raw.lastSchoolCode : (base.lastSchoolCode ?? ''),
   };
 }
 
