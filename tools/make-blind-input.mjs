@@ -2,7 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import crypto from 'node:crypto';
 
-// 독립 검토용 입력을 만든다: 정답 키·해설·오답 이유를 지운다(model_work_orders_v0_5 §10).
+// 독립 검토용 입력을 만든다: 정답 키·해설·오답 이유·사전 뜻풀이를 지운다(model_work_orders_v0_5 §10, 공동검수 절차 3단계).
 // 사용: node tools/make-blind-input.mjs Q20-001  → content-source/reviews/Q20-001/blind-input.json
 // contentHash 정규화는 src/contracts/questionDraft.ts contentHashInput과 같아야 하며 content.test.ts가 대조한다.
 const root = path.resolve(import.meta.dirname, '..');
@@ -26,14 +26,9 @@ const items = drafts.map(q => ({
   ...(q.dialectRegion ? { dialectRegion: q.dialectRegion } : {}),
   lemma: q.target.lemma, partOfSpeech: q.target.partOfSpeech, stem: q.stem,
   options: [...q.options].sort((a, b) => a.id.localeCompare(b.id)),
-  source: {
-    provider: q.source.provider,
-    url: q.source.url,
-    senseOrder: q.source.senseOrder,
-    senseId: q.source.senseId,
-    evidenceArtifactId: q.source.evidenceArtifactId,
-    evidenceText: fs.readFileSync(path.join(root, 'content-source/batches', jobId, 'evidence', q.source.evidenceArtifactId), 'utf8').trim(),
-  },
+  // 첫 풀이에는 사전 뜻풀이를 숨긴다(공동검수 절차 3단계). 뜻풀이를 보이면 글자 겹침만으로 뜻 문제의 98.5%를 맞힐 수 있었다.
+  // 근거 대조는 정답 공개 단계(tools/orchestrate/review.mjs reveal)에서 한다.
+  source: { provider: q.source.provider, url: q.source.url, senseOrder: q.source.senseOrder, senseId: q.source.senseId },
   gradeBasis: q.gradeBasis,
 }));
 const out = path.join(root, 'content-source/reviews', jobId, 'blind-input.json');

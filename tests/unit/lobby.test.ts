@@ -1,6 +1,9 @@
 import 'fake-indexeddb/auto';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { DEFAULTS, gradeContent } from '../../src/content';
+import * as content from '../../src/content';
+import publishedGrade3 from '../../src/content/questions/grade3.json';
+import { bankFileSchema } from '../../src/contracts/questions';
 import { computeHonorPoints, kstDateKey, kstIsoWeekKey } from '../../src/contracts/lobby';
 import {
   loadAllStudyCards,
@@ -43,7 +46,14 @@ const sampleRecord = (overrides: Partial<RunRecord>): RunRecord => ({
   ...overrides,
 });
 
+const publicBank = bankFileSchema.parse(publishedGrade3);
+function usePublicBanks() {
+  const original = content.gradeContent;
+  vi.spyOn(content, 'gradeContent').mockImplementation(g => ({ ...original(g), bank: g === 3 ? publicBank : null }));
+}
+
 describe('랜딩 로비 · 설정 v2 · 비석 학습 · 세분화 랭킹 단위 검증', () => {
+  afterEach(() => vi.restoreAllMocks());
   beforeEach(async () => {
     await resetDbConnection();
     await clearLocalHistory();
@@ -116,11 +126,14 @@ describe('랜딩 로비 · 설정 v2 · 비석 학습 · 세분화 랭킹 단위
     const sd = new SoundDirector(DEFAULTS.audio, 5, () => fakeCtx as unknown as AudioContext);
     sd.setVolumes(0.35, 0.6);
     sd.preview('correct');
+    sd.setEnabled(true);
+    sd.setPaused(false);
+    sd.setVolumes(0.2, 0.4);
     expect(sd.bgmRunning).toBe(false);
     expect(oscillators).toBeGreaterThan(0);
     // 첫 createGain은 sfxBus(0.6), 두 번째는 bgmBus(0.35)
-    expect(gains[0]?.value).toBe(0.6);
-    expect(gains[1]?.value).toBe(0.35);
+    expect(gains[0]?.value).toBe(0.4);
+    expect(gains[1]?.value).toBe(0.2);
     sd.dispose();
   });
 
@@ -138,6 +151,7 @@ describe('랜딩 로비 · 설정 v2 · 비석 학습 · 세분화 랭킹 단위
   });
 
   it('오늘의 낱말 공부(selectDailySteleCards · pickRandomStudyIndex)는 5개 제한 없이 다양한 수준의 등록 낱말을 추출·순환하고 철회 문항을 배제한다', () => {
+    usePublicBanks();
     const d1 = new Date('2026-10-29T15:05:00.000Z'); // KST 2026-10-30 00:05
     const d2 = new Date('2026-10-30T14:55:00.000Z'); // KST 2026-10-30 23:55 (같은 KST 일자)
     expect(kstDateKey(d1)).toBe('2026-10-30');
@@ -151,6 +165,8 @@ describe('랜딩 로비 · 설정 v2 · 비석 학습 · 세분화 랭킹 단위
     // 다양한 수준(levelLabel)이 고르게 포함되고 랜덤 선택기가 서로 다른 수준·미방문 낱말을 우선 순환하는지 확인
     const distinctLevels = new Set(cardsA.map(c => c.levelLabel));
     expect(distinctLevels.size).toBeGreaterThanOrEqual(4);
+    expect(new Set(cardsA.map(c => c.gradeLabel))).toEqual(new Set(['3학년']));
+    expect(selectDailySteleCards(4, d1)).toEqual([]);
 
     const visited = new Set<number>([0]);
     let current = 0;
@@ -185,12 +201,15 @@ describe('랜딩 로비 · 설정 v2 · 비석 학습 · 세분화 랭킹 단위
     expect(filtered.some(c => c.lemma === retractedTarget.target.lemma && c.partOfSpeech === retractedTarget.target.partOfSpeech && c.questionId === retractedTarget.id)).toBe(false);
   });
 
-  it('전체 낱말 로더(loadAllStudyCards)는 서버에 구현된 3~6학년 전체 낱말을 정제·로드하고 랜덤 순환 시 중복 없이 다양한 학년을 노출한다', async () => {
+  it('전체 낱말 로더(loadAllStudyCards)는 공개 은행만 정제하고 후보 학년을 노출하지 않는다', async () => {
+    usePublicBanks();
     const allCards = await loadAllStudyCards();
-    expect(allCards.length).toBeGreaterThan(2000);
+    const publicIds = new Set(publicBank.questions.map(q => q.id));
+    expect(allCards.length).toBeGreaterThan(20);
+    expect(allCards.every(c => publicIds.has(c.questionId))).toBe(true);
 
     const grades = new Set(allCards.map(c => c.gradeLabel));
-    expect(grades).toEqual(new Set(['3학년', '4학년', '5학년', '6학년']));
+    expect(grades).toEqual(new Set(['3학년']));
 
     for (const card of allCards) {
       expect(card.lemma.length).toBeGreaterThan(0);
@@ -216,7 +235,7 @@ describe('랜딩 로비 · 설정 v2 · 비석 학습 · 세분화 랭킹 단위
       sampledGrades.add(allCards[next]!.gradeLabel);
       cur = next;
     }
-    expect(sampledGrades.size).toBeGreaterThanOrEqual(3);
+    expect(sampledGrades).toEqual(new Set(['3학년']));
 
     const target = allCards[0]!;
     const afterRetract = await loadAllStudyCards({

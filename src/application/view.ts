@@ -1,7 +1,8 @@
-import type { BranchId, TowerId } from '../contracts/balance';
+import type { BranchId, FormId, TowerId } from '../contracts/balance';
 import type { OptionId } from '../contracts/questions';
 import type { GameContext } from '../domain/context';
-import type { PauseReason, Phase, RunState, RunStats } from '../domain/types';
+import { formBranch } from '../domain/towers';
+import type { PauseReason, Phase, RunState, RunStats, Tower } from '../domain/types';
 
 // React가 구독하는 요약. 적 위치처럼 매 틱 바뀌는 값은 넣지 않는다(PRD §13.3).
 export interface QuestionView {
@@ -24,7 +25,11 @@ export interface QuestionView {
   wrapup: boolean;
 }
 
-export interface TowerView { id: number; type: TowerId; slotId: string; level: number; branch: BranchId | null; invested: number }
+export interface TowerView {
+  id: number; type: TowerId; slotId: string; level: number; form: FormId; branch: BranchId | null; invested: number;
+  /** 설치 직후 되돌리기(undoBuild)를 받을 수 있는 동안 true. 강화하거나 시간이 지나면 false. */
+  undoable: boolean;
+}
 
 export interface QuestionStakesView {
   correctGold: number;
@@ -45,12 +50,14 @@ export interface GameView {
   pause: PauseReason[];
   burningSecondsLeft: number;
   battleStreak: number;
-  waveKillPtGranted: number;
-  waveKillPtCap: number;
   stakes: QuestionStakesView;
   prep: { done: number; target: number };
   question: QuestionView | null;
   towers: TowerView[];
+  /** 장착함(징집으로 늘어난다, towers.md §0-2). 장착 홈·설치 메뉴는 이 타워만 보인다. */
+  owned: TowerId[];
+  /** 고르기를 기다리는 징집 후보. 없으면 null. */
+  draft: { wave: number; offers: TowerId[] } | null;
   stats: RunStats;
   milestoneWave: boolean;
 }
@@ -64,6 +71,7 @@ export interface ControllerView extends GameView {
 }
 
 const secondsLeft = (until: number | null, tick: number) => (until === null ? 0 : Math.max(0, Math.ceil((until - tick) / 30)));
+const undoable = (t: Pick<Tower, 'undoUntilTick'>, tick: number) => t.undoUntilTick !== null && tick < t.undoUntilTick;
 
 export function selectView(ctx: GameContext, s: RunState): GameView {
   const enc = s.quiz.current;
@@ -101,8 +109,6 @@ export function selectView(ctx: GameContext, s: RunState): GameView {
     gateHp: Math.max(0, s.gateHp), gateMaxHp: s.gateMaxHp, gold: s.gold, pt: s.pt, pause: [...s.pause],
     burningSecondsLeft: secondsLeft(s.burningUntilTick, s.tick),
     battleStreak: s.quiz.battleStreak,
-    waveKillPtGranted: s.waveKillPtGranted,
-    waveKillPtCap: ctx.difficulty.waveKillPtCap,
     stakes: {
       correctGold: ctx.difficulty.correctGold,
       correctPt: ctx.difficulty.correctPt,
@@ -110,7 +116,9 @@ export function selectView(ctx: GameContext, s: RunState): GameView {
     },
     prep: { done: s.quiz.prepDone, target: s.quiz.prepTarget },
     question,
-    towers: s.towers.map(t => ({ id: t.id, type: t.type, slotId: t.slotId, level: t.level, branch: t.branch, invested: t.invested })),
+    towers: s.towers.map(t => ({ id: t.id, type: t.type, slotId: t.slotId, level: t.level, form: t.form, branch: formBranch(t.form), invested: t.invested, undoable: undoable(t, s.tick) })),
+    owned: [...s.owned],
+    draft: s.draft ? { wave: s.draft.wave, offers: [...s.draft.offers] } : null,
     stats: { ...s.stats },
     milestoneWave: s.wave % ctx.balance.waves.bossEveryWaves === 0,
   };
@@ -122,6 +130,7 @@ export function viewKey(s: RunState): string {
   return [
     s.phase, s.wave, s.gateHp, s.gold, s.pt, s.pause.join(','), s.quiz.current?.id ?? 0, s.quiz.current?.answer ? 1 : 0, s.quiz.current?.wrapup ? 1 : 0,
     fb ? `${fb.result}:${secondsLeft(fb.nextEnabledTick, s.tick)}` : '-', secondsLeft(s.burningUntilTick, s.tick),
-    s.towers.map(t => `${t.id}.${t.level}.${t.branch ?? ''}`).join('|'), s.quiz.prepDone, s.quiz.battleStreak, s.stats.ptFromKills,
+    s.towers.map(t => `${t.id}.${t.level}.${t.form}.${undoable(t, s.tick) ? 1 : 0}`).join('|'), s.quiz.prepDone, s.quiz.battleStreak, s.stats.ptFromKills,
+    s.owned.join(','), s.draft ? `${s.draft.wave}:${s.draft.offers.join(',')}` : '-',
   ].join('/');
 }

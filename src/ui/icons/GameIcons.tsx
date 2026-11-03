@@ -6,10 +6,12 @@ import type { BranchId, TowerId } from '../../contracts/balance';
  */
 const baseStyle = { display: 'inline-block', verticalAlign: 'middle', flex: 'none' } as const;
 
-export function GateShieldIcon({ size = 16 }: { size?: number }) {
+/** light: 짙은 호두나무 바탕 위(상태 바)용 밝은 윤곽. */
+export function GateShieldIcon({ size = 16, light = false }: { size?: number; light?: boolean }) {
+  const line = light ? '#fbf3e4' : '#362419';
   return (
     <svg width={size} height={size} viewBox="0 0 20 20" style={baseStyle} aria-hidden="true">
-      <path d="M4 3.5h3v2h2v-2h2v2h2v-2h3v7.2c0 3.8-2.9 6.3-6 7.8-3.1-1.5-6-4-6-7.8V3.5z" fill="#8f5d38" stroke="#362419" strokeWidth="1.6" strokeLinejoin="round" />
+      <path d="M4 3.5h3v2h2v-2h2v2h2v-2h3v7.2c0 3.8-2.9 6.3-6 7.8-3.1-1.5-6-4-6-7.8V3.5z" fill="#8f5d38" stroke={line} strokeWidth="1.6" strokeLinejoin="round" />
       <path d="M8 10.5h4v4.8c-.7.5-1.3.9-2 1.2-.7-.3-1.3-.7-2-1.2v-4.8z" fill="#dfd1b8" stroke="#362419" strokeWidth="1.2" />
     </svg>
   );
@@ -126,6 +128,97 @@ export function ChevronDownIcon({ size = 12 }: { size?: number }) {
   );
 }
 
+/** 웨이브 깃발: 깃대와 갈라진 천. 대장 웨이브는 천을 붉게. */
+export function WaveFlagIcon({ size = 18, boss = false, light = false }: { size?: number; boss?: boolean; light?: boolean }) {
+  const line = light ? '#fbf3e4' : '#362419';
+  return (
+    <svg width={size} height={size} viewBox="0 0 20 20" style={baseStyle} aria-hidden="true">
+      <path d="M5 2.5v15" stroke={line} strokeWidth="1.8" strokeLinecap="round" />
+      <path d="M5.8 3.5h10.4l-2.6 3.6 2.6 3.6H5.8z" fill={boss ? '#a3352b' : '#3a7ab0'} stroke={line} strokeWidth="1.6" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+/** 능력치 막대 아이콘: 공격력(검), 공격 속도(과녁), 사거리(조준). 한 선 두께 1.6px, currentColor. */
+export function StatPowerIcon({ size = 16 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 16 16" style={baseStyle} aria-hidden="true">
+      <path d="M3 13l7.2-7.2M10.2 5.8l2.6-2.6 .3 2.9-2.9-.3zM2.5 10.6l2.9 2.9M4.3 12.4l-1.6 1.6" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+export function StatSpeedIcon({ size = 16 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 16 16" style={baseStyle} aria-hidden="true">
+      <circle cx="8" cy="8" r="5.6" fill="none" stroke="currentColor" strokeWidth="1.6" />
+      <path d="M8 4.8V8l2.4 1.6" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+export function StatRangeIcon({ size = 16 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 16 16" style={baseStyle} aria-hidden="true">
+      <circle cx="8" cy="8" r="4.6" fill="none" stroke="currentColor" strokeWidth="1.6" />
+      <path d="M8 1.6v3M8 11.4v3M1.6 8h3M11.4 8h3" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+/** 강화(위 화살표), 판매(동전 내려놓기), 진화(별빛). 도구 묶음용. */
+export function UpgradeArrowIcon({ size = 18 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 18 18" style={baseStyle} aria-hidden="true">
+      <path d="M9 15V4M4.5 8.2L9 3.6l4.5 4.6" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+export function SellIcon({ size = 18 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 18 18" style={baseStyle} aria-hidden="true">
+      <circle cx="9" cy="7" r="4.4" fill="none" stroke="currentColor" strokeWidth="1.6" />
+      <path d="M3 15h12M9 11.4V15" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+export function EvolveIcon({ size = 18 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 18 18" style={baseStyle} aria-hidden="true">
+      <path d="M9 2.2l1.7 4.1 4.1 1.7-4.1 1.7L9 13.8l-1.7-4.1-4.1-1.7 4.1-1.7L9 2.2z" fill="currentColor" />
+      <path d="M14 12.2l.7 1.6 1.6.7-1.6.7-.7 1.6-.7-1.6-1.6-.7 1.6-.7.7-1.6z" fill="currentColor" />
+    </svg>
+  );
+}
+
+/** 하늘(나는 새 한 마리: 두 날개 곡선). 징집 카드의 ‘하늘 적 공격’ 표시용. */
+export function SkyWingIcon({ size = 16 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 16 16" style={baseStyle} aria-hidden="true">
+      <path d="M1.5 9.5C3 6.6 5.6 6.4 8 9.2c2.4-2.8 5-2.6 6.5.3" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+/** 되돌리기(왼쪽으로 굽은 화살표). 설치 직후 되돌리기 칩용. */
+export function UndoArrowIcon({ size = 18 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 18 18" style={baseStyle} aria-hidden="true">
+      <path d="M6.5 4.2L3 7.6l3.5 3.4M3.4 7.6h7.1a4.4 4.4 0 010 8.8H8" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+export function CloseIcon({ size = 16 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 16 16" style={baseStyle} aria-hidden="true">
+      <path d="M4 4l8 8M12 4l-8 8" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+    </svg>
+  );
+}
+
 const FIXED_UP_WEAPONS = new Set<TowerId>(['frost', 'lightning']);
 
 /** 1:1 정방형 방패 액자 초상화 (기존 1.25배 세로 왜곡 버그 수정). */
@@ -133,10 +226,14 @@ export function TowerShieldPortrait({
   type,
   icons,
   size = 42,
+  bare = false,
 }: {
   type: TowerId;
   icons: Record<string, string>;
-  size?: number;
+  /** 정사각 한 변(px). 'fill'이면 담는 칸을 가득 채운다(칸 쪽이 정사각을 정한다). */
+  size?: number | 'fill';
+  /** 액자 없이 그림만(장착 홈 소켓처럼 바깥이 이미 홈일 때). */
+  bare?: boolean;
 }) {
   const body = icons[`tower.${type}`];
   const weapon = icons[`tower.${type}.weapon`];
@@ -144,14 +241,11 @@ export function TowerShieldPortrait({
   return (
     <span
       style={{
-        width: size,
-        height: size,
+        width: size === 'fill' ? '100%' : size,
+        height: size === 'fill' ? '100%' : size,
         flex: 'none',
         position: 'relative',
-        background: 'var(--wood-dark)',
-        border: '2px solid var(--wood-collar)',
-        outline: '2px solid var(--edge)',
-        borderRadius: 'var(--r-input)',
+        ...(bare ? {} : { background: 'var(--wood-dark)', border: '2px solid var(--wood-collar)', outline: '2px solid var(--edge)', borderRadius: 'var(--r-input)' }),
         display: 'grid',
         placeItems: 'center',
         overflow: 'hidden',
@@ -162,6 +256,7 @@ export function TowerShieldPortrait({
         <img
           src={body}
           alt=""
+          draggable={false}
           style={{
             position: 'absolute',
             width: '90%',
@@ -176,6 +271,7 @@ export function TowerShieldPortrait({
         <img
           src={weapon}
           alt=""
+          draggable={false}
           style={{
             position: 'absolute',
             width: '64%',

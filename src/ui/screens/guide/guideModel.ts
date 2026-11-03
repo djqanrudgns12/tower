@@ -52,8 +52,8 @@ export function buildGuideChapters(
   const burningStreak = balance.burning.streak;
   const burningSec = Math.round(balance.burning.durationMs / 1000);
   const burningSpeedPct = Math.round(balance.burning.attackSpeedBP / 100);
-  const maxLevel = balance.levels.max;
-  const branchAtLevel = balance.levels.branchAtLevel;
+  const maxLevelText = balance.levels.max === null ? '끝없이' : `레벨 ${balance.levels.max}까지`;
+  const branchAtLevel = balance.levels.evolveAt[0];
   const sellPct = Math.round(balance.run.sellRatioBP / 100);
   const towerNames = pilotTowers.slice(0, 3).map(id => balance.towers[id].label).join('·');
 
@@ -131,7 +131,7 @@ export function buildGuideChapters(
         {
           badge: '진화 규칙',
           title: `역할 조합과 레벨 ${branchAtLevel} 진화`,
-          body: `${towerNames} 등 역할을 섞어 레벨 ${maxLevel}까지 키워요. 레벨 ${branchAtLevel}에서 고른 두 갈래 길은 바꿀 수 없어요.`,
+          body: `${towerNames} 등 역할을 섞어 ${maxLevelText} 키워요. 레벨 ${branchAtLevel}에서 고른 두 갈래 길은 바꿀 수 없어요.`,
           icon: 'branch',
         },
         {
@@ -157,15 +157,17 @@ export function buildGuideChapters(
           icon: 'gate',
         },
         {
-          badge: '빠른 조작',
-          title: '단축키와 화면 확대',
-          body: '문제 보기는 숫자키 1~4, 전장 자리는 화살표·엔터 키로도 골라요. 작은 화면에서는 칸을 누르면 자동으로 확대돼요.',
+          badge: '연습·조작',
+          title: '연습 판과 단축키',
+          // 첫 연습 판(PRD §12.2): 기록·점수에 남지 않고 건너뛸 수 있다.
+          body: '처음이라면 홈의 짧은 연습 판으로 먼저 익혀요. 문제 보기는 숫자키 1~4, 전장 자리는 화살표·엔터 키로도 골라요.',
           icon: 'key',
         },
         {
-          badge: '정지·마감',
-          title: '일시정지와 기록 마감',
-          body: '오른쪽 위 정지를 누르면 전투가 멈추고 문제가 가려져요. 글자 크기·소리를 바꾸거나 ‘이번 판 끝내기’로 지금까지 점수를 기록해요.',
+          badge: '정지·저장',
+          title: '저장하고 이어하기',
+          // 저장·이어하기(PRD §14.1·§14.2): 저장 후 나가면 홈의 이어하기로 같은 자리에서, 정지 상태로 다시 시작한다.
+          body: '정지하면 전투가 멈추고 문제가 가려져요. ‘저장하고 나가기’ 뒤 홈의 ‘이어하기’로 그 자리부터 하고, ‘이번 판 끝내기’로 점수를 기록해요.',
           icon: 'pause',
         },
       ],
@@ -474,7 +476,7 @@ export function buildTowerGuideItems(
 ): readonly TowerGuideStageItem[] {
   return pilotTowers.slice(0, 3).map(id => {
     const tower = balance.towers[id];
-    const branch = balance.branches[id];
+    const branch = balance.forms[id];
     const branchALabel = branch?.A.label ?? '기본 강화';
     const branchASummary = branch?.A.summary ?? '공격 능력이 강해져요';
     const branchBLabel = branch?.B.label ?? '특수 강화';

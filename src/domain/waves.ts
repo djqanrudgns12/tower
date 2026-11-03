@@ -1,7 +1,8 @@
-import { REGULAR_KINDS, type Balance, type DifficultyConfig, type EliteId, type EnemyKind } from '../contracts/balance';
+import type { Balance, DifficultyConfig, EliteId, EnemyKind } from '../contracts/balance';
+import { apportion, waveFactions, waveRoleWeights } from './factions';
 import { bpCeil, mulDivCeil, mulDivFloor, msToTicks } from './num';
 import { intBelow, shuffle, type Rng } from './rng';
-import type { SpawnEntry } from './types';
+import type { Enemy, SpawnEntry } from './types';
 
 // PRD §8.2~8.3, §20.4. 같은 seed·wave면 같은 편성이 나온다.
 export function waveCount(b: Balance, wave: number): number {
@@ -23,11 +24,12 @@ export function hpBaseMilli(b: Balance, wave: number): number {
   return hp;
 }
 
-/** 난이도→종류→정예 순서로 한 단계씩 올림(PRD §8.2). */
-export function enemyMaxHp(b: Balance, d: DifficultyConfig, baseMilli: number, kind: EnemyKind, elite: EliteId | null): number {
+/** 난이도→종류→정예→대장 기믹 보정 순서로 한 단계씩 올림(PRD §8.2, monsters.md §0-4). */
+export function enemyMaxHp(b: Balance, d: DifficultyConfig, baseMilli: number, kind: EnemyKind, elite: EliteId | null, bossScaleBP = 10000): number {
   let hp = bpCeil(baseMilli, d.enemyHpBP, 'hp.difficulty');
   hp = bpCeil(hp, b.enemies[kind].hpBP, 'hp.kind');
   if (elite) hp = bpCeil(hp, b.elites[elite].hpBP, 'hp.elite');
+  if (bossScaleBP !== 10000) hp = bpCeil(hp, bossScaleBP, 'hp.bossScale');
   return hp;
 }
 
@@ -41,6 +43,9 @@ export function enemyResists(b: Balance, kind: EnemyKind, elite: EliteId | null)
   return { physical: Math.min(b.elites.physicalResistCapBP, k.physicalResistBP + add), magic: k.magicResistBP };
 }
 
+/** 떠 있는 비행 적인가(끌어내린 동안은 아니다, towers.md §4-1). 판정(combat)과 렌더러(그림자·띄운 몸)가 같은 식을 쓴다. */
+export const airborne = (e: Pick<Enemy, 'flying' | 'groundedUntilTick'>, tick: number) => e.flying && tick >= e.groundedUntilTick;
+
 export function isMilestone(b: Balance, wave: number) {
   return wave % b.waves.bossEveryWaves === 0;
 }
@@ -50,27 +55,25 @@ export function eliteRateBP(b: Balance, wave: number): number {
   return wave < e.fromWave ? 0 : Math.min(e.maxBP, e.baseBP + e.perWaveBP * (wave - e.fromWave));
 }
 
-/** 정수 배정(최대 나머지) → 섞기 → 정예 지정 → 보스 삽입. */
-export function composeWave(b: Balance, wave: number, rng: Rng): SpawnEntry[] {
+/**
+ * 정수 배정(최대 나머지) → 섞기 → 정예 지정 → 대장 삽입. 일반 적 수를 종족 비율로 먼저 나누고, 종족마다 같은 역할 가중치로 나눈다
+ * (monsters.md §3). 난수 호출 수는 적 수로만 정해진다(종족·역할 구성이 바뀌어도 같은 seed의 호출 수는 같다).
+ */
+export function composeWave(b: Balance, mapId: string, wave: number, rng: Rng): SpawnEntry[] {
   const n = waveCount(b, wave);
-  const boss = isMilestone(b, wave) ? 1 : 0;
-  const regular = n - boss;
-  const weights = [...b.waves.composition].filter(c => c.fromWave <= wave).sort((a, c) => a.fromWave - c.fromWave).at(-1)!.weights;
-  const w = REGULAR_KINDS.map(k => weights[k] ?? 0);
-  const total = w.reduce((a, x) => a + x, 0);
-  const counts = w.map(x => Math.floor((regular * x) / total));
-  const remainders = w.map((x, i) => ({ i, rem: (regular * x) % total })).sort((a, c) => c.rem - a.rem || a.i - c.i);
-  let left = regular - counts.reduce((a, x) => a + x, 0);
-  for (const r of remainders) {
-    if (left <= 0) break;
-    if (w[r.i]! > 0) { counts[r.i]!++; left--; }
-  }
+  const plan = waveFactions(b, mapId, wave);
+  const regular = n - (plan.boss ? 1 : 0);
+  const roles = waveRoleWeights(b, mapId, wave);
+  const byFaction = apportion(regular, plan.shares.map(x => x.shareBP));
   const list: SpawnEntry[] = [];
-  REGULAR_KINDS.forEach((kind, i) => { for (let k = 0; k < counts[i]!; k++) list.push({ kind, elite: null }); });
+  plan.shares.forEach((share, i) => {
+    const counts = apportion(byFaction[i]!, roles.map(r => r.weight));
+    roles.forEach((r, j) => { for (let k = 0; k < counts[j]!; k++) list.push({ kind: r.kind, elite: null, faction: share.faction, bossTier: null }); });
+  });
   shuffle(rng, list);
   const eliteCount = Math.floor((regular * eliteRateBP(b, wave)) / 10000);
   const order = shuffle(rng, list.map((_, i) => i)).slice(0, eliteCount);
   for (const idx of order) list[idx]!.elite = intBelow(rng, 2) === 0 ? 'armored' : 'swift';
-  if (boss) list.splice(Math.floor((70 * (n - 1)) / 100), 0, { kind: 'boss', elite: null });
+  if (plan.boss) list.splice(Math.floor((70 * (n - 1)) / 100), 0, { kind: 'boss', elite: null, faction: plan.boss.faction, bossTier: plan.boss.tier });
   return list;
 }

@@ -1,20 +1,17 @@
-import { existsSync } from 'node:fs';
-import path from 'node:path';
 import { describe, expect, it } from 'vitest';
 import type { DifficultyId } from '../../src/contracts/balance';
 import type { DifficultyTier, VariantTag } from '../../src/contracts/questions';
-import { BALANCE, contextFor, gradeContent, MAPS, PILOT_TOWERS } from '../../src/content';
+import { BALANCE, contextFor, DIFFICULTY_GATE, gradeContent, MAPS, PILOT_TOWERS } from '../../src/content';
 import { createContext, isQuestionEligibleForDifficulty, type RuntimeQuestion } from '../../src/domain/context';
 import { createEncounter, DEFAULT_TIER_SCHEDULE } from '../../src/domain/quiz';
 import { createRun } from '../../src/domain/run';
-
-const root = path.resolve(import.meta.dirname, '../..');
 
 function makeSyntheticPool(grade = 4): RuntimeQuestion[] {
   const specs: Array<{ tier: DifficultyTier; tag: VariantTag; count: number }> = [
     { tier: 'basic', tag: 'standard', count: 25 },
     { tier: 'core', tag: 'standard', count: 25 },
     { tier: 'core', tag: 'polysemy', count: 10 },
+    { tier: 'advanced', tag: 'standard', count: 15 },
     { tier: 'advanced', tag: 'confusable', count: 25 },
     { tier: 'challenge', tag: 'idiom_proverb', count: 15 },
     { tier: 'challenge', tag: 'dialect', count: 15 },
@@ -58,138 +55,79 @@ function makeSyntheticPool(grade = 4): RuntimeQuestion[] {
   return out;
 }
 
-describe('4단계 난이도 × 4단계 어휘 심화도(basic/core/advanced/challenge) 출제 엔진', () => {
-  it('난이도별 허용 게이트(isQuestionEligibleForDifficulty)가 방언과 도전 문항을 엄격히 분리한다', () => {
-    expect(isQuestionEligibleForDifficulty({ difficultyTier: 'basic', variantTag: 'standard' }, 'Easy')).toBe(true);
-    expect(isQuestionEligibleForDifficulty({ difficultyTier: 'core', variantTag: 'standard' }, 'Easy')).toBe(true);
-    expect(isQuestionEligibleForDifficulty({ difficultyTier: 'advanced', variantTag: 'confusable' }, 'Easy')).toBe(false);
-    expect(isQuestionEligibleForDifficulty({ difficultyTier: 'challenge', variantTag: 'dialect' }, 'Easy')).toBe(false);
+const ALL_DIFFICULTIES: DifficultyId[] = ['Easy', 'Normal', 'Hard', 'Crazy'];
+const eligible = (tier: DifficultyTier, tag: VariantTag, d: DifficultyId) =>
+  isQuestionEligibleForDifficulty({ difficultyTier: tier, variantTag: tag }, d, DIFFICULTY_GATE);
+/** PRD §9.1: 어려움·아주 어려움에서만 내는 유형. */
+const HARD_ONLY_TAGS: VariantTag[] = ['confusable', 'idiom_proverb', 'dialect'];
 
-    expect(isQuestionEligibleForDifficulty({ difficultyTier: 'basic', variantTag: 'standard' }, 'Normal')).toBe(true);
-    expect(isQuestionEligibleForDifficulty({ difficultyTier: 'advanced', variantTag: 'confusable' }, 'Normal')).toBe(true);
-    expect(isQuestionEligibleForDifficulty({ difficultyTier: 'challenge', variantTag: 'idiom_proverb' }, 'Normal')).toBe(false);
-    expect(isQuestionEligibleForDifficulty({ difficultyTier: 'challenge', variantTag: 'dialect' }, 'Normal')).toBe(false);
+function runFor(pool: RuntimeQuestion[], difficulty: DifficultyId, draws: number, seed = 20261030) {
+  const map = MAPS.find(m => m.grade === pool[0]!.grade)!;
+  const ctx = createContext({ balance: BALANCE, difficulty, map, questions: pool, battleReadingLoadMax: 80, tierSchedule: DEFAULT_TIER_SCHEDULE[difficulty] });
+  const s = createRun(ctx, {
+    runId: `sim-${difficulty}`, playerId: 'p1', nickname: '검증러', grade: pool[0]!.grade, difficulty, mapId: map.id, seed,
+    bankId: 'syn', bankVersion: '1', contentMode: 'development', availableTowers: [...PILOT_TOWERS], rankingEligibility: 'personal',
+    createdAt: '2026-10-30T00:00:00.000Z',
+  });
+  // createRun이 이미 첫 준비 문항 1개를 뽑았다.
+  const picked = [ctx.questions.get(s.quiz.current!.questionId)!];
+  for (let i = 1; i < draws; i++) picked.push(ctx.questions.get(createEncounter(ctx, s, 'prep').questionId)!);
+  return { ctx, s, picked };
+}
 
-    for (const diff of ['Hard', 'Crazy'] as DifficultyId[]) {
-      expect(isQuestionEligibleForDifficulty({ difficultyTier: 'basic', variantTag: 'standard' }, diff)).toBe(false);
-      expect(isQuestionEligibleForDifficulty({ difficultyTier: 'core', variantTag: 'standard' }, diff)).toBe(true);
-      expect(isQuestionEligibleForDifficulty({ difficultyTier: 'advanced', variantTag: 'confusable' }, diff)).toBe(true);
-      expect(isQuestionEligibleForDifficulty({ difficultyTier: 'challenge', variantTag: 'idiom_proverb' }, diff)).toBe(true);
-      expect(isQuestionEligibleForDifficulty({ difficultyTier: 'challenge', variantTag: 'dialect' }, diff)).toBe(true);
+describe('난이도 × 심화 단계 출제(PRD §9.1, §9.4)', () => {
+  it('쉬움·보통은 도전 단계와 관용구·속담·혼동 어휘·방언을 내지 않고, 어려움·아주 어려움은 기초를 빼고 모두 낸다', () => {
+    for (const d of ['Easy', 'Normal'] as DifficultyId[]) {
+      expect(eligible('basic', 'standard', d)).toBe(true);
+      expect(eligible('core', 'polysemy', d)).toBe(true);
+      expect(eligible('challenge', 'standard', d)).toBe(false);
+      for (const tag of HARD_ONLY_TAGS) expect(eligible('advanced', tag, d), `${d} ${tag}`).toBe(false);
+    }
+    expect(eligible('advanced', 'standard', 'Easy')).toBe(false);
+    expect(eligible('advanced', 'standard', 'Normal')).toBe(true);
+    for (const d of ['Hard', 'Crazy'] as DifficultyId[]) {
+      expect(eligible('basic', 'standard', d)).toBe(false);
+      for (const tier of ['core', 'advanced', 'challenge'] as DifficultyTier[]) {
+        for (const tag of ['standard', 'polysemy', ...HARD_ONLY_TAGS] as VariantTag[]) expect(eligible(tier, tag, d), `${d} ${tier} ${tag}`).toBe(true);
+      }
+    }
+    // 표지 없는 문항(초기 공개 은행)은 core·standard로 보아 네 난이도 모두에서 나온다.
+    for (const d of ALL_DIFFICULTIES) expect(isQuestionEligibleForDifficulty({}, d, DIFFICULTY_GATE)).toBe(true);
+  });
+
+  it('합성 은행 200회: 쉬움·보통에는 어려움 전용 유형·도전 단계가 0건, 아주 어려움의 도전 비중이 어려움보다 높다', () => {
+    const all = makeSyntheticPool(4);
+    const picked = Object.fromEntries(ALL_DIFFICULTIES.map(d => [d, runFor(all.filter(q => isQuestionEligibleForDifficulty(q, d, DIFFICULTY_GATE)), d, 200).picked]));
+    for (const d of ['Easy', 'Normal']) {
+      expect(picked[d]!.filter(q => q.difficultyTier === 'challenge' || HARD_ONLY_TAGS.includes(q.variantTag ?? 'standard'))).toEqual([]);
+    }
+    expect(picked.Normal!.some(q => q.difficultyTier === 'advanced')).toBe(true);
+    const challenges = (d: string) => picked[d]!.filter(q => q.difficultyTier === 'challenge').length;
+    expect(challenges('Hard')).toBeGreaterThan(30);
+    expect(challenges('Crazy')).toBeGreaterThan(challenges('Hard'));
+    for (const d of ['Hard', 'Crazy']) expect(picked[d]!.some(q => q.variantTag === 'dialect')).toBe(true);
+  });
+
+  it('심화 단계를 골라 내도 풀을 한 바퀴 다 쓰기 전에는 같은 문항을 다시 내지 않는다(PRD §9.4)', () => {
+    const all = makeSyntheticPool(4);
+    for (const d of ALL_DIFFICULTIES) {
+      const pool = all.filter(q => isQuestionEligibleForDifficulty(q, d, DIFFICULTY_GATE));
+      const { s, picked } = runFor(pool, d, pool.length);
+      expect(new Set(picked.map(q => q.id)).size, `${d}: 한 바퀴 ${pool.length}회`).toBe(pool.length);
+      expect(s.quiz.cycle, d).toBe(1);
     }
   });
 
-  it('합성 은행 200회 순환 시 Easy/Normal에는 방언·도전 문항이 0건이고, Crazy의 challenge 비중이 Hard보다 높다', () => {
-    const allQuestions = makeSyntheticPool(4);
-    const map = MAPS.find(m => m.grade === 4)!;
-
-    const runSample = (difficulty: DifficultyId) => {
-      const eligible = allQuestions.filter(q => isQuestionEligibleForDifficulty(q, difficulty));
-      const ctx = createContext({
-        balance: BALANCE,
-        difficulty,
-        map,
-        questions: eligible,
-        battleReadingLoadMax: 80,
-        tierSchedule: DEFAULT_TIER_SCHEDULE[difficulty],
-      });
-      const s = createRun(ctx, {
-        runId: `sim-${difficulty}`,
-        playerId: 'p1',
-        nickname: '검증러',
-        grade: 4,
-        difficulty,
-        mapId: map.id,
-        seed: 20261030,
-        bankId: 'syn',
-        bankVersion: '1',
-        contentMode: 'development',
-        availableTowers: [...PILOT_TOWERS],
-        rankingEligibility: 'personal',
-        createdAt: '2026-10-30T00:00:00.000Z',
-      });
-      // createRun이 이미 첫 준비 문항 1개를 뽑았으므로 이어서 199개를 더 뽑는다.
-      const picked = [ctx.questions.get(s.quiz.current!.questionId)!];
-      for (let i = 1; i < 200; i++) {
-        const enc = createEncounter(ctx, s, i % 2 === 0 ? 'battle' : 'prep');
-        picked.push(ctx.questions.get(enc.questionId)!);
-      }
-      return picked;
-    };
-
-    const easyPicked = runSample('Easy');
-    const normalPicked = runSample('Normal');
-    const hardPicked = runSample('Hard');
-    const crazyPicked = runSample('Crazy');
-
-    expect(easyPicked.every(q => (q.difficultyTier === 'basic' || q.difficultyTier === 'core') && q.variantTag !== 'dialect')).toBe(true);
-    expect(normalPicked.every(q => q.difficultyTier !== 'challenge' && q.variantTag !== 'dialect')).toBe(true);
-    expect(normalPicked.some(q => q.difficultyTier === 'advanced')).toBe(true);
-
-    const hardChallenges = hardPicked.filter(q => q.difficultyTier === 'challenge').length;
-    const crazyChallenges = crazyPicked.filter(q => q.difficultyTier === 'challenge').length;
-    expect(hardChallenges).toBeGreaterThan(30);
-    expect(crazyChallenges).toBeGreaterThan(hardChallenges);
-    expect(hardPicked.some(q => q.variantTag === 'dialect')).toBe(true);
-    expect(crazyPicked.some(q => q.variantTag === 'dialect')).toBe(true);
-  });
-
-  const allFourCandidatesExist = [3, 4, 5, 6].every(g =>
-    existsSync(path.join(root, `src/content/questions/grade${g}.candidate.json`))
-  );
-
-  it.skipIf(!allFourCandidatesExist)('3~6학년 실제 런타임 은행이 각 학년 1,000문항을 초과하고 4단계 난이도 회전을 정상 수행한다', () => {
+  it('런타임 은행은 공개(published) 은행이거나 3학년 개발용 묶음뿐이다(PRD §9.3·§9.4)', () => {
     for (const grade of [3, 4, 5, 6]) {
       const { bank } = gradeContent(grade);
-      expect(bank, `${grade}학년 은행 없음`).not.toBeNull();
-      expect(bank!.questions.length).toBeGreaterThan(1000);
-
-      const distinctLemmas = new Set(bank!.questions.map(q => q.target.lemma.normalize('NFC')));
-      expect(distinctLemmas.size).toBeGreaterThanOrEqual(340);
-
-      for (const difficulty of ['Easy', 'Normal', 'Hard', 'Crazy'] as DifficultyId[]) {
+      if (!bank) continue;
+      expect(['published', 'dev_fixture'], `${grade}학년 ${bank.bankId}`).toContain(bank.status);
+      if (bank.status === 'dev_fixture') expect(grade).toBe(3);
+      expect(bank.questions.every(q => q.status === bank.status)).toBe(true);
+      for (const difficulty of ALL_DIFFICULTIES) {
         const ctx = contextFor(grade, difficulty);
-        expect(ctx.questionIds.length).toBeGreaterThan(400);
-        const s = createRun(ctx, {
-          runId: `real-${grade}-${difficulty}`,
-          playerId: 'p1',
-          nickname: '학년검증',
-          grade,
-          difficulty,
-          mapId: ctx.map.id,
-          seed: 77700 + grade,
-          bankId: bank!.bankId,
-          bankVersion: bank!.bankVersion,
-          contentMode: 'development',
-          availableTowers: [...PILOT_TOWERS],
-          rankingEligibility: 'personal',
-          createdAt: '2026-10-30T00:00:00.000Z',
-        });
-
-        let prevId = s.quiz.current!.questionId;
-        const seenIds = new Set([prevId]);
-        for (let i = 1; i < 300; i++) {
-          const phase = i % 2 === 0 ? 'battle' : 'prep';
-          const enc = createEncounter(ctx, s, phase);
-          expect(enc.questionId).not.toBe(prevId);
-          prevId = enc.questionId;
-          seenIds.add(enc.questionId);
-          const q = ctx.questions.get(enc.questionId)!;
-          if (phase === 'battle') {
-            expect(q.readingLoad).toBeLessThanOrEqual(ctx.battleReadingLoadMax);
-          }
-          if (difficulty === 'Easy') {
-            expect(['basic', 'core']).toContain(q.difficultyTier ?? 'core');
-            expect(q.variantTag).not.toBe('dialect');
-          } else if (difficulty === 'Normal') {
-            expect(q.difficultyTier).not.toBe('challenge');
-            expect(q.variantTag).not.toBe('dialect');
-          } else {
-            expect(q.difficultyTier).not.toBe('basic');
-          }
-        }
-        // 300회 회전 시 동일 문항 풀 편중 없이 최소 250개 이상의 서로 다른 문항이 고르게 출제되어야 한다.
-        expect(seenIds.size).toBeGreaterThanOrEqual(250);
+        for (const q of ctx.questions.values()) expect(isQuestionEligibleForDifficulty(q, difficulty, DIFFICULTY_GATE)).toBe(true);
       }
     }
   });

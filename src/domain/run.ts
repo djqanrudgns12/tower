@@ -1,14 +1,16 @@
-import type { BranchId, TowerId } from '../contracts/balance';
+import type { FormId, TowerId } from '../contracts/balance';
 import type { OptionId } from '../contracts/questions';
 import { battleTick, towerSpeedBonusBP } from './combat';
 import type { GameContext } from './context';
 import type { DomainEvent } from './events';
+import { openDraft, pickDraft, startingOwned } from './draft';
 import { center } from './geometry';
+import { removeTowerHazards, settleHazardsAtWaveEnd } from './hazards';
 import { add, msToTicks } from './num';
 import { createEncounter } from './quiz';
 import { RNG_ALGORITHM, streamSeed } from './rng';
-import { attackIntervalTicks, attacks, buildCost, needsBranch, sellRefund, towerStats, upgradeCost } from './towers';
-import { RULES_VERSION, RUN_STATE_VERSION, type PauseReason, type RunConfig, type RunState } from './types';
+import { attackIntervalTicks, attacks, buildCost, evolutionChoices, sellRefund, towerStats, upgradeCost } from './towers';
+import { RULES_VERSION, RUN_STATE_VERSION, type PauseReason, type RunConfig, type RunState, type Tower } from './types';
 import { composeWave, hpBaseMilli, isMilestone, spawnIntervalTicks } from './waves';
 
 export type Command =
@@ -16,8 +18,13 @@ export type Command =
   | { type: 'skip'; encounterId: number }
   | { type: 'next'; encounterId: number }
   | { type: 'build'; slotId: string; tower: TowerId }
-  | { type: 'upgrade'; towerId: number; branch?: BranchId }
+  /** 진화 레벨(Lv3→4, Lv6→7)이면 form 필수, 아니면 보내지 않는다(progression.md §5). */
+  | { type: 'upgrade'; towerId: number; form?: FormId }
   | { type: 'sell'; towerId: number }
+  /** 설치 직후 전액 환불: 설치 뒤 run.undoBuildMs 안, 그 타워를 강화하거나 공격·오라에 쓰기 전에만. */
+  | { type: 'undoBuild'; towerId: number }
+  /** 징집 후보 가운데 하나를 장착함에 넣는다(towers.md §0-2). 판이 끝나기 전 어느 단계에서나. */
+  | { type: 'draftPick'; tower: TowerId }
   | { type: 'startBattle' }
   | { type: 'pause'; reason: PauseReason }
   | { type: 'resume'; reason: PauseReason }
@@ -25,8 +32,8 @@ export type Command =
 
 export type CommandError =
   | 'PAUSED' | 'WRONG_PHASE' | 'STALE_ENCOUNTER' | 'ALREADY_ANSWERED' | 'NEXT_NOT_READY' | 'NOT_ENOUGH_GOLD'
-  | 'SLOT_TAKEN' | 'UNKNOWN_SLOT' | 'UNKNOWN_TOWER' | 'MAX_LEVEL' | 'BRANCH_REQUIRED' | 'TOWER_LIMIT' | 'GAME_OVER' | 'NOT_AVAILABLE'
-  | 'NUMERIC_LIMIT';
+  | 'SLOT_TAKEN' | 'UNKNOWN_SLOT' | 'UNKNOWN_TOWER' | 'MAX_LEVEL' | 'FORM_REQUIRED' | 'INVALID_FORM' | 'UNDO_EXPIRED' | 'TOWER_LIMIT'
+  | 'GAME_OVER' | 'NOT_AVAILABLE' | 'NOT_OWNED' | 'NO_DRAFT' | 'INVALID_DRAFT' | 'NUMERIC_LIMIT';
 
 export type CommandResult = { ok: true; events: DomainEvent[] } | { ok: false; error: CommandError };
 
@@ -38,10 +45,11 @@ export function createRun(ctx: GameContext, input: NewRunInput): RunState {
   const s: RunState = {
     v: RUN_STATE_VERSION, config, phase: 'PREP_QUIZ', pause: [], tick: 0, wave: 0, completedWave: 0, endedAtWave: null, endReason: null,
     gateHp: ctx.difficulty.gateHp, gateMaxHp: ctx.difficulty.gateHp, gold: ctx.balance.run.startGold, pt: 0, waveKillPtGranted: 0, burningUntilTick: -1,
-    rng: { battle: streamSeed(seed, 'battle'), question: streamSeed(seed, 'question'), option: streamSeed(seed, 'option') },
-    seq: { command: 0, enemy: 1, tower: 1, projectile: 1 },
+    rng: { battle: streamSeed(seed, 'battle'), question: streamSeed(seed, 'question'), option: streamSeed(seed, 'option'), draft: streamSeed(seed, 'draft') },
+    seq: { command: 0, enemy: 1, tower: 1, projectile: 1, hazard: 1 },
     quiz: { queue: [], cursor: 0, cycle: 0, recentQuestions: [], recentSenses: [], current: null, feedback: null, prepTarget: 0, prepDone: 0, battleStreak: 0, nextEncounterId: 1, history: [] },
-    towers: [], enemies: [], projectiles: [], battle: null,
+    owned: startingOwned(ctx.balance, config), draft: null,
+    towers: [], enemies: [], projectiles: [], hazards: [], battle: null,
     stats: { correct: 0, wrong: 0, skipped: 0, kills: 0, bossKills: 0, bossLeaks: 0, leaks: 0, goldEarned: 0, ptFromQuestions: 0, ptFromKills: 0, activeTicks: 0, battleTicks: 0 },
     milestoneRewardedWaves: [],
   };
@@ -81,8 +89,10 @@ export function applyCommand(ctx: GameContext, s: RunState, cmd: Command): Comma
       case 'skip': return answer(ctx, s, cmd.encounterId, 'skipped', ev);
       case 'next': return next(s, cmd.encounterId);
       case 'build': return build(ctx, s, cmd.slotId, cmd.tower, ev);
-      case 'upgrade': return upgrade(ctx, s, cmd.towerId, cmd.branch, ev);
+      case 'upgrade': return upgrade(ctx, s, cmd.towerId, cmd.form, ev);
       case 'sell': return sell(ctx, s, cmd.towerId, ev);
+      case 'undoBuild': return undoBuild(s, cmd.towerId, ev);
+      case 'draftPick': return draftPick(s, cmd.tower, ev);
       case 'startBattle': return startBattle(ctx, s, ev);
       case 'quit': return quit(s, ev);
     }
@@ -199,32 +209,39 @@ function build(ctx: GameContext, s: RunState, slotId: string, type: TowerId, ev:
   if (s.towers.some(t => t.slotId === slotId)) return 'SLOT_TAKEN';
   const cfg = ctx.balance.towers[type];
   if (!s.config.availableTowers.includes(type)) return 'NOT_AVAILABLE';
+  if (!s.owned.includes(type)) return 'NOT_OWNED';
   if (cfg.maxOnField && s.towers.filter(t => t.type === type).length >= cfg.maxOnField) return 'TOWER_LIMIT';
   const cost = buildCost(ctx.balance, type);
   if (s.gold < cost) return 'NOT_ENOUGH_GOLD';
   s.gold -= cost;
-  const tower = { id: s.seq.tower++, type, slotId, x: center(slot.x), y: center(slot.y), level: 1, branch: null, invested: cost, nextAttackTick: null as number | null };
+  const tower: Tower = {
+    id: s.seq.tower++, type, slotId, x: center(slot.x), y: center(slot.y), level: 1, form: 'base', invested: cost, nextAttackTick: null,
+    undoUntilTick: s.tick + msToTicks(ctx.balance.run.undoBuildMs), attacks: 0, burst: null, focus: null, auraKills: 0, auraGold: 0,
+  };
   s.towers.push(tower);
   // 전투 중 구매는 구매 시점부터 공격 간격 하나를 기다린다(PRD §7.2). 깃발처럼 공격하지 않는 타워는 공격 예약이 없다.
-  if (s.phase === 'BATTLE' && attacks(ctx.balance, type)) tower.nextAttackTick = s.tick + attackIntervalTicks(ctx.balance, towerStats(ctx.balance, type, 1, null), towerSpeedBonusBP(ctx, s, tower));
+  if (s.phase === 'BATTLE' && attacks(ctx.balance, type)) tower.nextAttackTick = s.tick + attackIntervalTicks(ctx.balance, towerStats(ctx.balance, type, 1, 'base'), towerSpeedBonusBP(ctx, s, tower));
   ev.push({ type: 'towerBuilt', towerId: tower.id, slotId, gold: -cost });
   return null;
 }
 
-function upgrade(ctx: GameContext, s: RunState, towerId: number, branch: BranchId | undefined, ev: DomainEvent[]): CommandError | null {
+function upgrade(ctx: GameContext, s: RunState, towerId: number, form: FormId | undefined, ev: DomainEvent[]): CommandError | null {
   if (!tradingPhase(s)) return 'WRONG_PHASE';
   const tower = s.towers.find(t => t.id === towerId);
   if (!tower) return 'UNKNOWN_TOWER';
   const cost = upgradeCost(ctx.balance, tower.type, tower.level);
   if (cost === null) return 'MAX_LEVEL';
-  const choosing = needsBranch(ctx.balance, tower.level);
-  if (choosing && (!branch || !ctx.balance.branches[tower.type]?.[branch])) return 'BRANCH_REQUIRED';
+  // 진화 레벨이면 지금 길에서 고를 수 있는 두 형태 가운데 하나여야 하고, 진화가 아니면 형태를 보내지 않는다.
+  const choices = evolutionChoices(ctx.balance, tower);
+  if (choices && form === undefined) return 'FORM_REQUIRED';
+  if (form !== undefined && !choices?.includes(form)) return 'INVALID_FORM';
   if (s.gold < cost) return 'NOT_ENOUGH_GOLD';
   const invested = add(tower.invested, cost, 'invested');
   s.gold -= cost;
   tower.invested = invested;
   tower.level++;
-  if (choosing && branch) tower.branch = branch;
+  if (form !== undefined) tower.form = form;
+  tower.undoUntilTick = null;
   // 이미 예약된 다음 공격 시각은 바꾸지 않는다(PRD §7.2).
   ev.push({ type: 'towerUpgraded', towerId, slotId: tower.slotId, gold: -cost });
   return null;
@@ -239,7 +256,31 @@ function sell(ctx: GameContext, s: RunState, towerId: number, ev: DomainEvent[])
   const gold = add(s.gold, refund, 'gold');
   s.towers.splice(index, 1);
   s.gold = gold;
+  removeTowerHazards(s, towerId, ev);
   ev.push({ type: 'towerSold', towerId, slotId: tower.slotId, gold: refund });
+  return null;
+}
+
+/** 설치 취소: 들인 골드(설치비)를 모두 돌려준다. 화면에는 판매와 같은 사건으로 알린다. */
+function undoBuild(s: RunState, towerId: number, ev: DomainEvent[]): CommandError | null {
+  if (!tradingPhase(s)) return 'WRONG_PHASE';
+  const index = s.towers.findIndex(t => t.id === towerId);
+  if (index < 0) return 'UNKNOWN_TOWER';
+  const tower = s.towers[index]!;
+  if (tower.undoUntilTick === null || s.tick >= tower.undoUntilTick) return 'UNDO_EXPIRED';
+  const gold = add(s.gold, tower.invested, 'gold');
+  s.towers.splice(index, 1);
+  s.gold = gold;
+  // 장판·덫을 놓으면 공격으로 쳐서 취소 기한이 끝나므로 보통은 없지만, 타워 ID는 다시 쓰지 않으니 남은 것이 있으면 함께 지운다.
+  removeTowerHazards(s, towerId, ev);
+  ev.push({ type: 'towerSold', towerId, slotId: tower.slotId, gold: tower.invested });
+  return null;
+}
+
+function draftPick(s: RunState, tower: TowerId, ev: DomainEvent[]): CommandError | null {
+  if (!s.draft) return 'NO_DRAFT';
+  if (!s.draft.offers.includes(tower)) return 'INVALID_DRAFT';
+  pickDraft(s, tower, false, ev);
   return null;
 }
 
@@ -247,11 +288,15 @@ function startBattle(ctx: GameContext, s: RunState, ev: DomainEvent[]): CommandE
   if (s.phase !== 'BUILD') return 'WRONG_PHASE';
   const b = ctx.balance;
   const rng = { s: s.rng.battle };
-  const spawnList = composeWave(b, s.wave, rng);
+  const spawnList = composeWave(b, ctx.map.id, s.wave, rng);
   s.rng.battle = rng.s;
   s.battle = { spawnList, spawnIndex: 0, nextSpawnTick: s.tick + 1, intervalTicks: spawnIntervalTicks(b, s.wave), hpBaseMilli: hpBaseMilli(b, s.wave), startedTick: s.tick };
   // 시작 때 버닝은 없고(0), 깃발 B의 속도 보너스는 바로 적용한다.
-  for (const t of s.towers) t.nextAttackTick = attacks(b, t.type) ? s.tick + attackIntervalTicks(b, towerStats(b, t.type, t.level, t.branch), towerSpeedBonusBP(ctx, s, t)) : null;
+  for (const t of s.towers) {
+    t.nextAttackTick = attacks(b, t.type) ? s.tick + attackIntervalTicks(b, towerStats(b, t.type, t.level, t.form), towerSpeedBonusBP(ctx, s, t)) : null;
+    // 웨이브마다 다연발 예약·연속 표적·처치 골드 상한을 새로 센다(공격 주기 수는 이어 간다).
+    t.burst = null; t.focus = null; t.auraGold = 0;
+  }
   s.phase = 'BATTLE';
   s.quiz.battleStreak = 0;
   s.quiz.current = createEncounter(ctx, s, 'battle');
@@ -272,6 +317,7 @@ function endRun(s: RunState, reason: 'DEFEAT' | 'QUIT', ev: DomainEvent[]) {
   if (s.quiz.current && !s.quiz.current.answer) s.quiz.current = null;
   s.quiz.feedback = null;
   s.projectiles = [];
+  s.hazards = [];
   // 패배·종료 때도 버닝과 전투 연속 카운트를 초기화한다(PRD §5).
   s.burningUntilTick = -1;
   s.quiz.battleStreak = 0;
@@ -287,7 +333,9 @@ function completeWave(ctx: GameContext, s: RunState, ev: DomainEvent[]) {
   s.projectiles = [];
   s.enemies = [];
   s.battle = null;
-  for (const t of s.towers) t.nextAttackTick = null;
+  for (const t of s.towers) { t.nextAttackTick = null; t.burst = null; }
+  // 장판·굴림체는 사라지고 덫은 타워마다 최대 2개 넘어간다(towers.md §2 [19]).
+  settleHazardsAtWaveEnd(ctx, s, ev);
   let milestoneGold = 0;
   if (isMilestone(b, s.wave) && !s.milestoneRewardedWaves.includes(s.wave)) {
     milestoneGold = ctx.difficulty.milestoneSurvivalGold;
@@ -296,6 +344,7 @@ function completeWave(ctx: GameContext, s: RunState, ev: DomainEvent[]) {
     s.milestoneRewardedWaves.push(s.wave);
   }
   ev.push({ type: 'waveComplete', wave: s.wave, milestoneGold });
+  openDraft(b, s, ev);
   const current = s.quiz.current;
   if (current) {
     if (!current.answer) current.wrapup = true;

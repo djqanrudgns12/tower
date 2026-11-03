@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useState, type KeyboardEvent } from 'react';
 import { DIFFICULTY_IDS, type DifficultyId } from '../../contracts/balance';
 import { gradeContent, MAPS } from '../../content';
 import type { Settings } from '../../application/session';
@@ -7,6 +7,35 @@ import kit from '../kit.module.css';
 import { ModalShell } from './home/ModalShell';
 import homeCss from './home/home.module.css';
 import css from './screens.module.css';
+
+const GRADES = [3, 4, 5, 6] as const;
+
+/**
+ * radiogroup 방향키 이동(WAI-ARIA 라디오 그룹): ←/↑ 이전, →/↓ 다음(끝에서 순환), Home 처음, End 마지막.
+ * 비활성 항목은 건너뛰고, 고른 항목을 선택하면서 그 라디오로 포커스를 옮긴다.
+ */
+function onRadioGroupKeyDown<T>(
+  e: KeyboardEvent<HTMLDivElement>,
+  values: readonly T[],
+  current: T,
+  isEnabled: (value: T) => boolean,
+  select: (value: T) => void,
+) {
+  if (e.altKey || e.ctrlKey || e.metaKey) return;
+  const enabled = values.map((_, i) => i).filter(i => isEnabled(values[i]!));
+  if (enabled.length === 0) return;
+  const at = enabled.indexOf(values.indexOf(current));
+  let pick: number;
+  if (e.key === 'ArrowRight' || e.key === 'ArrowDown') pick = at < 0 ? 0 : (at + 1) % enabled.length;
+  else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') pick = at < 0 ? enabled.length - 1 : (at - 1 + enabled.length) % enabled.length;
+  else if (e.key === 'Home') pick = 0;
+  else if (e.key === 'End') pick = enabled.length - 1;
+  else return;
+  e.preventDefault();
+  const idx = enabled[pick]!;
+  select(values[idx]!);
+  e.currentTarget.querySelectorAll<HTMLElement>('[role="radio"]')[idx]?.focus();
+}
 
 interface Props {
   settings: Settings;
@@ -30,6 +59,9 @@ export function NewGameScreen({ settings, onBack, onEditNickname, onStart }: Pro
   );
   const map = useMemo(() => MAPS.find(m => m.grade === grade)!, [grade]);
   const confirmedNickname = settings.lastNickname.trim();
+  const gradeReady = (g: 3 | 4 | 5 | 6) => gradeContent(g).bank !== null;
+  // roving tabindex: 선택된 라디오만 Tab 순서에 둔다. 선택 학년이 비활성이면 첫 준비된 학년이 대신 받는다.
+  const gradeTabStop: 3 | 4 | 5 | 6 | undefined = gradeReady(grade) ? grade : GRADES.find(gradeReady);
 
   return (
     <ModalShell titleId="newGameModalTitle" title="새 게임 출정 설정" onClose={onBack}>
@@ -60,8 +92,13 @@ export function NewGameScreen({ settings, onBack, onEditNickname, onStart }: Pro
         <section className={css.stack}>
           <h3 className={css.h2}>학년</h3>
           <p className={kit.muted}>학년은 초등 교과 수준에 맞는 낱말 범위와 지도를 정해요.</p>
-          <div className={homeCss.choiceGrid2} role="radiogroup" aria-label="학년">
-            {([3, 4, 5, 6] as const).map(g => {
+          <div
+            className={homeCss.choiceGrid2}
+            role="radiogroup"
+            aria-label="학년"
+            onKeyDown={e => onRadioGroupKeyDown(e, GRADES, grade, gradeReady, setGrade)}
+          >
+            {GRADES.map(g => {
               const bank = gradeContent(g).bank;
               const ready = bank !== null;
               return (
@@ -70,6 +107,7 @@ export function NewGameScreen({ settings, onBack, onEditNickname, onStart }: Pro
                   type="button"
                   role="radio"
                   aria-checked={grade === g}
+                  tabIndex={g === gradeTabStop ? 0 : -1}
                   disabled={!ready}
                   className={css.choice}
                   onClick={() => setGrade(g)}
@@ -87,13 +125,19 @@ export function NewGameScreen({ settings, onBack, onEditNickname, onStart }: Pro
         <section className={css.stack}>
           <h3 className={css.h2}>난이도</h3>
           <p className={kit.muted}>난이도가 높을수록 적도 강해지고 심화 어휘·지역 방언도 나와요.</p>
-          <div className={homeCss.choiceGrid2} role="radiogroup" aria-label="난이도">
+          <div
+            className={homeCss.choiceGrid2}
+            role="radiogroup"
+            aria-label="난이도"
+            onKeyDown={e => onRadioGroupKeyDown(e, DIFFICULTY_IDS, difficulty, () => true, setDifficulty)}
+          >
             {DIFFICULTY_IDS.map(id => (
               <button
                 key={id}
                 type="button"
                 role="radio"
                 aria-checked={difficulty === id}
+                tabIndex={difficulty === id ? 0 : -1}
                 className={css.choice}
                 onClick={() => setDifficulty(id)}
               >

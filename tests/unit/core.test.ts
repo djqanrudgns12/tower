@@ -37,9 +37,13 @@ describe('정수 산술', () => {
     expect(spawnIntervalTicks(BALANCE, 41)).toBe(23);
     expect(spawnIntervalTicks(BALANCE, 81)).toBe(20);
   });
-  it('round5 강화비와 60% 판매(A14): 궁수 40/70/110/155, Lv5 판매 261', () => {
-    expect([1, 2, 3, 4].map(l => upgradeCost(BALANCE, 'archer', l))).toEqual([40, 70, 110, 155]);
-    expect(upgradeCost(BALANCE, 'archer', 5)).toBeNull();
+  it('round5 강화비(리뉴얼 표)와 60% 판매(A14): 궁수 25/35/45/65/75/75/120/145, 숙련 160/180, 기본은 상한 없음', () => {
+    // 60 × [0.4, 0.55, 0.75, 1.1, 1.25, 1.25, 2.0, 2.4] = 24/33/45/66/75/75/120/144 → round5 25/35/45/65/75/75/120/145.
+    expect([1, 2, 3, 4, 5, 6, 7, 8].map(l => upgradeCost(BALANCE, 'archer', l))).toEqual([25, 35, 45, 65, 75, 75, 120, 145]);
+    // 숙련: 24000 × 1.12 = 26880 → 60 × 2.688 = 161.28 → 160. 26880 × 1.12 = 30105.6 → 30105 → 180.63 → 180.
+    expect([9, 10].map(l => upgradeCost(BALANCE, 'archer', l))).toEqual([160, 180]);
+    expect(BALANCE.levels.max).toBeNull();
+    expect(upgradeCost(BALANCE, 'archer', 30)).toBeGreaterThan(0);
     expect(sellRefund(BALANCE, { invested: 435 })).toBe(261);
     expect(round5Bp(120, 6500)).toBe(80);
   });
@@ -55,24 +59,26 @@ describe('웨이브 생성(PRD §8.2~8.3)', () => {
     expect([1, 2, 3].map(w => hpBaseMilli(BALANCE, w))).toEqual([24000, 27600, 31740]);
   });
   it('보스는 총 수 안에서 70% 지점, 정예는 6웨이브부터', () => {
-    const w5 = composeWave(BALANCE, 5, { s: 7 });
+    const w5 = composeWave(BALANCE, 'garden_u', 5, { s: 7 });
     expect(w5).toHaveLength(26);
     expect(w5.findIndex(e => e.kind === 'boss')).toBe(Math.floor((70 * 25) / 100));
     expect(w5.filter(e => e.elite).length).toBe(0);
-    const w10 = composeWave(BALANCE, 10, { s: 7 });
-    expect(w10.filter(e => e.elite).length).toBe(Math.floor(29 * 0.09));
-    expect(new Set(composeWave(BALANCE, 3, { s: 1 }).map(e => e.kind))).toEqual(new Set(['walker', 'runner', 'brute']));
+    const w10 = composeWave(BALANCE, 'garden_u', 10, { s: 7 });
+    // 정예 비율 = 5% + 1.75%p × (10 − 6) = 12%.
+    expect(w10.filter(e => e.elite).length).toBe(Math.floor((29 * 1200) / 10000));
+    // 정원은 W1 보병 → W3 질주(monsters.md §3.1).
+    expect(new Set(composeWave(BALANCE, 'garden_u', 3, { s: 1 }).map(e => e.kind))).toEqual(new Set(['walker', 'runner']));
   });
   it('최대 나머지 배정이 가중치 기대 수를 지킨다', () => {
-    // 24×60%=14.4, 24×25%=6, 24×15%=3.6 → 내림 14/6/3, 남은 1자리는 나머지가 큰 튼튼형(0.6)에.
-    const w3 = composeWave(BALANCE, 3, { s: 3 });
+    // 정원 W3: 24×70%=16.8, 24×30%=7.2 → 내림 16/7, 남은 1자리는 나머지가 큰 보병(0.8)에.
+    const w3 = composeWave(BALANCE, 'garden_u', 3, { s: 3 });
     const count = (k: string) => w3.filter(e => e.kind === k).length;
-    expect([count('walker'), count('runner'), count('brute')]).toEqual([14, 6, 4]);
+    expect([count('walker'), count('runner')]).toEqual([17, 7]);
   });
   it('모든 난이도에서 무방비 누출 피해 합 ≥ 성문 HP(A16)', () => {
     for (const d of Object.values(BALANCE.difficulties)) {
-      for (let w = 1; w <= 60; w++) {
-        const list = composeWave(BALANCE, w, { s: w * 31 });
+      for (const m of MAPS) for (let w = 1; w <= 60; w++) {
+        const list = composeWave(BALANCE, m.id, w, { s: w * 31 });
         const leak = list.reduce((a, e) => a + (e.kind === 'boss' ? BALANCE.leakDamage.boss : e.elite ? BALANCE.leakDamage.elite : BALANCE.leakDamage.regular), 0);
         expect(leak).toBeGreaterThanOrEqual(d.gateHp);
       }

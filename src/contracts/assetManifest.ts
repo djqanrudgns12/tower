@@ -7,15 +7,19 @@ export const ASSET_STATUS = ['draft', 'technical_pass', 'visual_pass', 'integrat
 const sha = z.string().regex(/^[a-f0-9]{64}$/);
 
 export const assetEntrySchema = z.object({
-  id: z.string().regex(/^[a-z]+(\.[a-z0-9_]+)+$/),
+  /** 타워 진화 형태 꼬리(`tower.<타워>.A`·`.B2` 등, FormId 그대로)만 대문자를 쓴다. */
+  id: z.string().regex(/^[a-z]+(\.[a-z0-9_]+)+(\.[AB][12]?)?$/),
   revision: z.number().int().min(1),
-  file: z.string().regex(/^[a-z0-9._-]+\.png$/),
+  file: z.string().regex(/^[a-z0-9_-]+(\.[a-z0-9_-]+|\.[AB][12]?)*\.png$/),
   width: z.number().int().min(8).max(2048),
   height: z.number().int().min(8).max(2048),
   originX: z.number().min(0).max(1),
   originY: z.number().min(0).max(1),
-  displayCells: z.number().positive().max(2),
+  /** 전장 표시 너비(칸). 지면 얼룩·랜드마크(연못)는 3칸까지 쓴다. */
+  displayCells: z.number().positive().max(3),
   muzzle: z.object({ x: z.number().int(), y: z.number().int() }).optional(),
+  /** 본체 그림에서 무기 그림의 중심(회전 기준점)을 놓을 점(본체 그림 px, width×height 기준). 없으면 기본 높이(무기는 본체 기준점보다 0.64칸 위)를 쓴다. 본체(layer=body)에만 쓴다. */
+  weaponMount: z.object({ x: z.number(), y: z.number() }).optional(),
   layer: z.enum(['body', 'weapon', 'shadow', 'frame', 'ground', 'decor', 'fx', 'ui']),
   frames: z.number().int().min(1).max(8).default(1),
   status: z.enum(ASSET_STATUS),

@@ -1,6 +1,8 @@
-/* 게임 본 화면 격자(시안 1 v3 상·하단 수직선 0.0px 잠금 규격). PRD §12.1·§12.8 준수. */
+/* 전투 화면 「원정대 작업대」(ui-rules-v2 §1): 짙은 호두나무 작업대 위에 전장(주인공)·우측 장착 레일·하단 양피지 판.
+   격자는 v3 상·하단 수직선 0.0px 잠금 규격을 따른다(PRD §12.1). */
 .screen {
-  max-width: 1560px;
+  /* 계약 layout.frameMaxPx를 useLayout이 :root 변수로 넣는다. */
+  max-width: var(--frame-max);
   margin: 0 auto;
 }
 
@@ -24,20 +26,25 @@
   scroll-margin-top: 80px;
 }
 
+/* 전장 액자: 호두나무 테 한 겹(바깥선)과 접지 그림자. 칸 크기에는 영향을 주지 않는다. */
 .field {
   position: relative;
   border-radius: var(--r-panel);
   overflow: hidden;
-  outline: 3px solid var(--edge);
-  box-shadow: var(--shadow);
+  outline: 4px solid var(--walnut-2);
+  box-shadow: 0 0 0 6px var(--walnut-3), var(--ambient-shadow);
   justify-self: center;
 }
 
 .rail {
-  padding: 0;
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  border-radius: var(--r-panel);
+  background: var(--walnut-2);
+  border: 4px solid var(--walnut-3);
+  box-shadow: inset 0 0 0 1px var(--walnut-1), var(--ambient-shadow);
+  color: var(--cream-ink);
 }
 
 .railBody {
@@ -46,43 +53,56 @@
   overflow-y: auto;
   padding: var(--s3);
   display: grid;
-  gap: var(--s2);
+  gap: var(--s3);
   align-content: start;
 }
 
 .railBodyCompact {
   padding: var(--s2);
-  gap: var(--s1);
+  gap: var(--s2);
 }
+
+/* 호두나무 위 안내 한 줄(연습 끝). 코치·이유 알약은 자기 색을 쓴다. */
+.restLine { color: var(--cream-ink); font-size: 14px; }
 
 .bottom {
   grid-column: 1 / -1;
 }
 
 .questionWrap {
-  display: grid;
-  gap: var(--s1);
+  position: relative;
 }
 
-.wrapup {
-  font-weight: 700;
-  font-size: 14px;
-  line-height: 20px;
-  color: var(--wood);
-  text-align: center;
+/* 연습 판 문제 안내는 문제판을 밀지 않도록 판 위에 띄운다. */
+.questionWrap > .coach {
+  position: absolute;
+  left: 50%;
+  bottom: calc(100% + var(--s3));
+  transform: translateX(-50%);
+  z-index: 4;
+  width: max-content;
+  max-width: 90%;
 }
 
-/* 전투 준비·연습 끝 패널: R 모드에서는 QuestionPanel과 동일한 수직선 잠금 격자를 공유 */
+/* 출격 준비판·연습 끝판: 문제판과 같은 양피지 판, 같은 수직선 격자. */
 .build {
   display: grid;
   gap: var(--s3);
   align-items: stretch;
+  background: var(--parch-face);
+  border: 4px solid var(--walnut-2);
+  border-radius: var(--r-panel);
+  outline: 2px solid var(--walnut-3);
+  outline-offset: -2px;
+  box-shadow: var(--ground-shadow), var(--ambient-shadow);
+  color: var(--ink);
 }
 
 .seamR {
   padding: var(--s3);
-  grid-template-columns: minmax(0, 1fr) calc(var(--rail-w, 308px) - 16px);
+  grid-template-columns: minmax(0, 1fr) calc(var(--rail-w, var(--rail-min)) - 16px);
   column-gap: var(--s3);
+  min-height: var(--q-h, 172px);
 }
 
 .buildStack {
@@ -94,45 +114,17 @@
   display: grid;
   gap: var(--s2);
   align-content: center;
+  justify-items: start;
   min-width: 0;
 }
 
-.buildHead {
-  display: flex;
-  flex-wrap: wrap;
+.buildTitle {
+  display: inline-flex;
   align-items: center;
   gap: var(--s2);
-}
-
-.phaseBadge {
-  font-size: 13px;
-  font-weight: 700;
-  padding: var(--s1) var(--s2);
-  background: var(--wood);
-  color: var(--cream-ink);
-  border-radius: var(--r-input);
-  line-height: 1.1;
-}
-
-.buildTitle {
-  font-size: 20px;
-  font-weight: 700;
-  color: var(--ink);
-  line-height: 1.3;
-}
-
-.buildStats {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--s2);
-}
-
-.buildStatPill {
-  font-size: 14px;
-  padding: var(--s1) var(--s3);
-  background: var(--well);
-  border: 1px solid var(--well-border);
-  border-radius: var(--r-input);
+  font-size: 24px;
+  font-weight: 800;
+  line-height: 1.25;
   color: var(--ink);
 }
 
@@ -140,22 +132,6 @@
   display: grid;
   gap: var(--s2);
   align-content: center;
-  padding: var(--s3);
-  background: var(--well);
-  border: 2px solid var(--well-border);
-  border-radius: var(--r-panel);
-}
-
-.sideCaption {
-  font-size: 13px;
-  font-weight: 700;
-  color: var(--ink-soft);
-}
-
-.sideSub {
-  font-size: 13px;
-  color: var(--ink-soft);
-  line-height: 1.35;
 }
 
 .confirmBox {
@@ -164,13 +140,9 @@
 }
 
 .confirmText {
-  font-size: 15px;
-  font-weight: 700;
+  font-size: 16px;
+  font-weight: 800;
   color: var(--ink);
-}
-
-.start {
-  min-width: 180px;
 }
 
 .row {
@@ -180,28 +152,57 @@
   gap: var(--s2);
 }
 
-.toolbar {
-  display: flex;
+/* 놋쇠 포인트: 지금 누를 가장 중요한 것 하나(전투 시작). 은은한 대기 표시가 이 화면의 무한 반복 하나다. */
+.start {
+  min-height: 56px;
+  width: 100%;
+  display: inline-flex;
   align-items: center;
-  flex-wrap: wrap;
+  justify-content: center;
   gap: var(--s2);
-  min-height: 44px;
+  padding: 0 var(--s4);
+  border: 3px solid var(--brass-3);
+  border-radius: var(--r-panel);
+  background: var(--brass-face);
+  color: var(--walnut-3);
+  font-size: 20px;
+  font-weight: 800;
+  box-shadow: 0 4px 0 var(--walnut-3), var(--ambient-shadow);
+  animation: idle 2.4s ease-in-out infinite;
+  transition: transform 80ms var(--ease-out), box-shadow 80ms var(--ease-out);
 }
 
-.tray {
-  padding: var(--s3);
-  display: grid;
-  gap: var(--s2);
+@keyframes idle {
+  0%, 100% { border-color: var(--brass-3); }
+  50% { border-color: #b88a2c; }
 }
 
-.tray > p:empty {
-  display: none;
+.start:active { transform: translateY(2px); box-shadow: 0 2px 0 var(--walnut-3); }
+.start:focus-visible { outline: 3px solid var(--blue); outline-offset: 3px; }
+
+@media (hover: hover) {
+  .start:hover { background: var(--brass-2); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .start { animation: none; }
+}
+
+.quietKey {
+  min-height: var(--touch);
+  padding: 0 var(--s3);
+  border: 2px solid var(--walnut-1);
+  border-radius: var(--r-panel);
+  background: var(--parch-1);
+  color: var(--ink);
+  font-weight: 600;
+  box-shadow: 0 2px 0 var(--walnut-3);
 }
 
 .hint {
   text-align: center;
   font-size: 14px;
-  color: var(--ink-soft);
+  color: var(--cream-muted);
   padding: var(--s1) var(--s2);
 }
 
@@ -215,33 +216,28 @@
   pointer-events: none;
   width: max-content;
   max-width: 90%;
+  z-index: 2;
 }
 
 .notice {
-  background: var(--wood-dark);
+  background: var(--walnut-3);
   color: var(--cream-ink);
-  border: 2px solid var(--edge);
-  font-weight: 700;
+  font-weight: 800;
   font-size: 14px;
   padding: var(--s1) var(--s3);
-  border-radius: var(--r-input);
-  box-shadow: var(--shadow);
+  border-radius: 999px;
+  box-shadow: var(--ambient-shadow);
   text-align: center;
 }
 
-.notice[data-tone='reward'] {
-  color: var(--gold);
-}
-
-.notice[data-tone='warn'] {
-  outline: 2px solid var(--gold);
-  outline-offset: -2px;
-}
+.notice[data-tone='reward'] { color: var(--gold); }
+.notice[data-tone='warn'] { box-shadow: inset 0 0 0 2px var(--gold), var(--ambient-shadow); }
 
 .fullMap {
   position: absolute;
   left: var(--s2);
   top: var(--s2);
+  z-index: 4;
 }
 
 /* 전장 키보드 포커스: 캔버스 안쪽에 그려 바깥 테두리에 잘리지 않게 한다(PRD §12.6 focus 2px+간격). */
@@ -250,38 +246,34 @@
   outline-offset: -5px;
 }
 
-/* 설치 자리 목록(PRD §12.4): 보조 접근 경로라 기본은 접어 둔다. */
+/* 설치 자리 목록(PRD §12.4): 키보드·스위치 사용자용 보조 경로. 기본은 접어 둔다. */
 .slotList {
-  margin-top: var(--s1);
   font-size: 14px;
-  border-top: 1px solid var(--well-border);
-  padding-top: var(--s1);
 }
 
 .slotSummary {
   min-height: var(--touch);
-  padding: 0 var(--s2);
+  padding: 0 var(--s3);
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: var(--s2);
   cursor: pointer;
   font-size: 13px;
-  font-weight: 700;
-  color: var(--ink-soft);
-  background: var(--well);
-  border: 1px solid var(--well-border);
-  border-radius: var(--r-input);
+  font-weight: 600;
+  color: var(--cream-muted);
+  background: var(--walnut-3);
+  border-radius: var(--r-panel);
   list-style: none;
 }
 
-.slotSummary::-webkit-details-marker {
-  display: none;
-}
+.slotSummary::-webkit-details-marker { display: none; }
+.slotList[open] .slotSummary svg { transform: rotate(180deg); }
+.slotSummary:focus-visible { outline: 3px solid var(--brass-1); outline-offset: 2px; }
 
-.slotList[open] .slotSummary svg {
-  transform: rotate(180deg);
-}
+.modeS .slotSummary { background: var(--walnut-2); }
+
+.slotList > p { margin: var(--s2) 0 0; color: var(--cream-muted); font-size: 13px; }
 
 .slotItems {
   margin: var(--s2) 0 0;
@@ -298,48 +290,136 @@
   text-align: left;
   font-size: 14px;
   word-break: keep-all;
-  background: var(--paper);
-  border: 1px solid var(--well-border);
+  color: var(--ink);
+  background: var(--parch-1);
+  border: 1px solid var(--parch-3);
   border-radius: var(--r-input);
-  transition: transform 80ms, background-color 80ms;
+  transition: transform 80ms;
 }
 
 @media (hover: hover) {
-  .slotSummary:hover {
-    background: var(--well-hover);
-  }
-  .slotButton:hover {
-    background: var(--paper-hover);
-  }
+  .slotSummary:hover { color: var(--cream-ink); }
+  .slotButton:hover { background: #fffaf0; }
 }
 
-.slotButton:active {
-  transform: translateY(1px);
-}
+.slotButton:active { transform: translateY(1px); }
 
 .slotButton[aria-current='true'] {
   outline: 3px solid var(--blue);
   outline-offset: -1px;
 }
 
-/* 첫 연습 판 안내(PRD §12.2): 해당 조작 옆 한 문장. 알림(어두운 띠)과 구별되는 밝은 판에 파란 테두리. */
+/* 코치 마크(첫 판·연습 판): 지금 할 조작 옆 한 문장. 알림(어두운 띠)과 구별되는 밝은 알약에 놋쇠 테. */
 .coach {
   margin: 0;
-  padding: var(--s1) var(--s3);
-  background: var(--paper);
+  padding: 6px var(--s3);
+  background: var(--parch-1);
   color: var(--ink);
-  border: 2px solid var(--blue);
-  border-radius: var(--r-input);
+  border: 2px solid var(--brass-2);
+  border-radius: 999px;
   font-size: 15px;
-  font-weight: 700;
+  font-weight: 600;
+  box-shadow: var(--ambient-shadow);
 }
 
 .coachField {
   position: absolute;
   left: 50%;
-  bottom: var(--s2);
+  bottom: var(--s3);
   transform: translateX(-50%);
   max-width: 90%;
   width: max-content;
   pointer-events: none;
+  z-index: 2;
+}
+
+/* 휴대폰: 전장 바로 아래 장착 홈 가로 줄(끌기 시작점). */
+.stripRow {
+  display: grid;
+  gap: var(--s1);
+  padding: var(--s1) var(--s2);
+  border-radius: var(--r-panel);
+  background: var(--walnut-2);
+  border: 2px solid var(--walnut-3);
+}
+
+
+.phoneExtras {
+  display: grid;
+  gap: var(--s2);
+}
+
+/* 끌고 있는 타워 그림자: 누른 점을 가운데로, 누르기는 받지 않는다. */
+.ghost {
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 50;
+  pointer-events: none;
+  translate: -50% -50%;
+  filter: drop-shadow(0 6px 6px rgba(44, 26, 14, 0.45));
+  opacity: 0.92;
+}
+
+/* 레일·줄의 짧은 이유(골드 부족·단계 잠금): 호두나무 위에서도 읽히게 양피지 알약. */
+.railFlash {
+  justify-self: start;
+  margin: 0;
+  padding: var(--s1) var(--s3);
+  border-radius: 999px;
+  background: var(--parch-1);
+  color: var(--danger);
+  font-size: 14px;
+  font-weight: 800;
+}
+
+/* 준비판 다음 웨이브 미리보기: 적 얼굴 + 마릿수. 대장은 붉은 테. */
+.roster {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.foe {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: var(--s1) var(--s3) var(--s1) var(--s1);
+  border-radius: 999px;
+  background: var(--parch-2);
+  border: 2px solid var(--parch-3);
+}
+
+.foe[data-boss] { border-color: var(--danger); }
+
+.foeArt {
+  width: 40px;
+  height: 40px;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  background: var(--walnut-3);
+  box-shadow: var(--well-inset);
+  overflow: hidden;
+}
+
+.foeArt img { width: 36px; height: 36px; object-fit: contain; }
+
+.foeCount {
+  font-size: 16px;
+  font-weight: 800;
+  color: var(--ink);
+}
+
+/* 휴대폰: 설치 자리 목록은 키보드·스위치 사용자의 보조 경로라, 포커스가 닿거나 펼쳤을 때만 자리를 차지한다(문제판이 첫 화면에 들어오게). */
+.modeS .slotList:not([open]):not(:focus-within) {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
 }

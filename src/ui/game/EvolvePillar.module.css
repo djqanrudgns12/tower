@@ -1,0 +1,21 @@
+/* 진화 빛기둥(ui-rules-v2 §5): 타워 칸에서 놋쇠빛 기둥이 0.5초 솟았다 사라진다. 같은 색의 짙고 옅은 두 단만 쓴다. */
+.pillar {
+  position: absolute;
+  pointer-events: none;
+  z-index: 2;
+  border-radius: 999px 999px 8px 8px;
+  background: linear-gradient(0deg, rgba(255, 224, 138, 0.95), rgba(255, 224, 138, 0));
+  transform-origin: bottom center;
+  animation: beam 500ms var(--ease-out) 1 both;
+}
+
+@keyframes beam {
+  0% { transform: scaleY(0); opacity: 0.2; }
+  40% { transform: scaleY(1); opacity: 1; }
+  100% { transform: scaleY(1); opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pillar { animation: glow 500ms linear 1 both !important; }
+  @keyframes glow { 0%, 100% { opacity: 0; } 40% { opacity: 1; } }
+}

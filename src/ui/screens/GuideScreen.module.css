@@ -70,9 +70,9 @@
   border: 1px solid var(--oak-plaque-border);
   background: var(--oak-plaque-cell);
   color: var(--oak-plaque-gold);
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 700;
-  line-height: 1.3;
+  line-height: 1.2;
   white-space: nowrap;
   flex-shrink: 0;
   font-variant-numeric: tabular-nums;
@@ -129,6 +129,7 @@
 /* 1장·3장 캔버스 뷰포트 */
 .canvasBox {
   position: relative;
+  container-type: inline-size;
   width: 100%;
   height: 106px;
   border: 2px solid var(--oak-frame-edge);
@@ -151,8 +152,8 @@
   color: var(--oak-plaque-ink);
   border: 1px solid var(--oak-plaque-border);
   border-radius: var(--r-input);
-  padding: 2px 6px;
-  font-size: 11px;
+  padding: 2px var(--s1);
+  font-size: 13px;
   font-weight: 700;
   line-height: 1.3;
   pointer-events: none;
@@ -166,12 +167,21 @@
   color: var(--ink);
   border: 1.5px solid var(--oak-frame-edge);
   border-radius: var(--r-input);
-  padding: 2px 6px;
-  font-size: 11px;
+  padding: 2px var(--s1);
+  font-size: 13px;
   font-weight: 700;
   line-height: 1.3;
   font-variant-numeric: tabular-nums;
   pointer-events: none;
+}
+
+/* 13px 배지 두 개가 좁은 무대(3장 사거리 상자 약 180px, 320px 휴대폰의 1장 무대)에서 서로 겹치므로
+   무대 안쪽 폭이 280px 이하일 때만 오른쪽 배지를 아래 모서리로 내린다. */
+@container (max-width: 280px) {
+  .canvasBadgeRight {
+    top: auto;
+    bottom: var(--s1);
+  }
 }
 
 /* 무대 내부 소형 컨트롤 바 */
@@ -194,8 +204,9 @@
   border-radius: var(--r-input);
   background: var(--oak-inset-bg);
   color: var(--ink);
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 700;
+  line-height: 1.3;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -254,7 +265,7 @@
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 700;
   color: var(--oak-plaque-ink);
 }
@@ -276,6 +287,7 @@
 
 .rangeMiniBox {
   position: relative;
+  container-type: inline-size;
   width: 100%;
   min-height: 98px;
   border: 2px solid var(--oak-frame-edge);
@@ -308,14 +320,14 @@
 }
 
 .branchTitle {
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 700;
   color: var(--ink);
   line-height: 1.25;
 }
 
 .branchDesc {
-  font-size: 12px;
+  font-size: 13px;
   color: var(--ink-soft);
   line-height: 1.25;
 }
@@ -338,7 +350,7 @@
   justify-content: space-between;
   gap: var(--s2);
   flex-wrap: wrap;
-  font-size: 12.5px;
+  font-size: 13px;
   font-weight: 700;
   color: var(--ink);
 }
@@ -368,18 +380,19 @@
 .keycapCluster {
   display: inline-flex;
   align-items: center;
-  gap: var(--s1);
+  /* 키 사이 12px: 키(32px)의 투명 누름 영역을 좌우 6px씩 넓혀 44px을 채우되 옆 키 면을 덮지 않는다. */
+  gap: var(--s3);
 }
 
 .woodKey {
-  min-width: 26px;
+  min-width: 32px;
   height: 26px;
   padding: 0 6px;
   border: 1.5px solid var(--oak-plaque-border);
   border-radius: var(--r-input);
   background: var(--wood);
   color: var(--oak-plaque-ink);
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 700;
   display: inline-flex;
   align-items: center;
@@ -396,8 +409,47 @@
   box-shadow: var(--shadow-pressed);
 }
 
+/* 짙은 키캡 줄(--oak-plaque-bg) 위 포커스 고리는 밝은 토큰으로 바꿔 배경 대비 3:1을 지킨다(PRD §12.6) */
+.keycapBar :focus-visible {
+  outline: 2px solid var(--focus-on-dark);
+  outline-offset: 2px;
+}
+
+/* 누르는 영역 44px 하한(계약 layout.touchMinPx): 보이는 크기·배치는 그대로 두고 투명한 히트 영역만 넓힌다.
+   목차 탭은 목차 판 안쪽 여백(4px)+테두리(2px) 안에서, 단계 버튼은 한 줄 격자라 위아래 이웃이 누르는 요소가 아니다. */
+.chapterTabBtn,
+.stageSwitchBtn,
+.woodKey {
+  position: relative;
+}
+
+.chapterTabBtn::after,
+.stageSwitchBtn::after {
+  content: '';
+  position: absolute;
+  z-index: 1;
+  top: 50%;
+  left: 50%;
+  width: max(100%, var(--touch));
+  height: max(100%, var(--touch));
+  transform: translate(-50%, -50%);
+}
+
+/* 키캡 누름 영역: 세로 44px, 가로는 키 사이 간격(12px)의 절반까지 넓혀 32+6+6=44px.
+   ::after는 테두리 안쪽 기준으로 놓이므로 테두리(1.5px)만큼 더 뺀다. */
+.woodKey::after {
+  content: '';
+  position: absolute;
+  z-index: 1;
+  top: 50%;
+  left: calc(var(--s3) / -2 - 1.5px);
+  right: calc(var(--s3) / -2 - 1.5px);
+  height: var(--touch);
+  transform: translateY(-50%);
+}
+
 .keycapHint {
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 700;
   color: var(--oak-plaque-gold);
 }
@@ -453,8 +505,9 @@
 }
 
 .rowBadge {
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 700;
+  line-height: 1.3;
   color: var(--oak-amber-accent);
   white-space: nowrap;
 }
@@ -566,7 +619,6 @@
 
   .stageSwitchBtn {
     min-height: 26px;
-    font-size: 11.5px;
   }
 
   .summaryRow {
@@ -591,6 +643,19 @@
 @media (max-width: 640px) {
   .chapterTabs {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  /* 휴대폰은 홈(≤600px)과 같이 실제 높이를 44px로 둔다: 2줄 목차는 줄 간격이 4px라 투명 영역만 넓히면 위아래 탭 면을 덮는다.
+     좁은 4칸 단계 버튼은 13px 이름이 버튼 밖으로 넘치지 않게 줄바꿈을 허용한다(두 줄도 44px 안에 든다). */
+  .chapterTabBtn,
+  .stageSwitchBtn {
+    min-height: var(--touch);
+  }
+
+  .stageSwitchBtn {
+    white-space: normal;
+    overflow-wrap: anywhere;
+    text-align: center;
   }
 
   .visualStage {

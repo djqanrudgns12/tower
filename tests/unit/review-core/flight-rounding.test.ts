@@ -12,7 +12,7 @@ test('비행 거리가 4틱 거리보다 조금 길면 5틱 뒤에 도착한다'
   ] } };
   s.enemies = [enemy({ progress: 1249 })];
   s.towers = [{ id: 1, type: 'archer', slotId: 'fixture', x: 500, y: 1500,
-    level: 1, branch: null, invested: 60, nextAttackTick: s.tick + 1 }];
+    level: 1, form: 'base', invested: 60, nextAttackTick: s.tick + 1, undoUntilTick: null, attacks: 0, burst: null, focus: null, auraKills: 0, auraGold: 0 }];
   advanceTick(straight, s);
   // 거리²=1249²+1000²=2,560,001 > (4×400)²=2,560,000;
   // 1틱에 400 milli-cell이므로 실제 비행시간은 4틱 초과, 5틱 이하다.

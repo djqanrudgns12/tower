@@ -108,16 +108,32 @@ for (const m of data.maps) {
 }
 run('화면 기본값과 PRD의 치수·모드 규칙 일치', () => {
   const l = defaults.layout;
-  assert(prd.includes(`관리${l.railWidthPx}px`));
+  // 시안 1 v3가 대체한 PRD v0.5 값(프레임·레일·2×2 기준)은 계약의 prdV05Superseded에 남겨 PRD 본문과 대조한다.
+  const old = l.prdV05Superseded;
+  assert(prd.includes(`앱 프레임 최대 ${old.frameMaxPx}px`));
+  assert(prd.includes(`관리${old.railWidthPx}px`));
   assert(prd.includes(`HUD${l.hudHeightPx}`));
   assert(prd.includes(`문제${l.questionBaseHeightPx}`));
   assert(prd.includes(`문제/보기${l.questionFontPx[0]}px, 크게${l.questionFontPx[1]}px, 아주크게${l.questionFontPx[2]}px`));
-  assert(prd.includes(`레일${l.modes.R.railWidthPx}(맨 위에 HUD 두 줄 ${l.modes.R.railHudHeightPx})`));
+  assert(prd.includes(`레일${old.railWidthPx}(맨 위에 HUD 두 줄 ${l.modes.R.railHudHeightPx})`));
   assert(prd.includes(`칸<${l.magnifyBelowCellPx.coarse}px`) && prd.includes(`칸<${l.magnifyBelowCellPx.fine}px`));
-  assert(prd.includes(`폭이 ${l.optionGrid.twoByTwoMinCellWidthPx}px 이상`));
+  assert(prd.includes(`폭이 ${old.twoByTwoMinCellWidthPx}px 이상`));
   assert(prd.includes(`=${l.questionWideHeightBudgetPx}px로 ${l.questionBaseHeightPx}px 안에`));
   assert(l.touchMinPx >= 44); assert(l.magnifiedCellMinPx >= l.touchMinPx);
   assert.deepEqual(l.mapAspect, [15, 9]);
+});
+run('시안 1 v3 문서와 레이아웃 계약(프레임·가변 레일·압축 레일·2×2 기준) 일치', () => {
+  const l = defaults.layout, r = l.modes.R.rail, old = l.prdV05Superseded;
+  const v3 = read(old.by);
+  assert(v3.includes(`effW = Math.min(W, ${l.frameMaxPx})`), 'v3 프레임 최대폭');
+  assert(v3.includes(`minRailW = W < ${r.tabletBelowWidthPx} ? ${r.tabletMinPx} : ${r.minPx}`), 'v3 레일 최소폭');
+  assert(v3.includes(`Math.min(${r.maxPx}, innerW - mapW - ${l.modes.R.railGapPx})`), 'v3 레일 최대폭');
+  assert(v3.includes(`(\`${r.minPx}~${r.maxPx}px\``), 'v3 레일 폭 범위 표기');
+  assert(v3.includes(`mapH <= ${r.compactMapHeightMaxPx}`), 'v3 압축 레일 기준');
+  assert(r.tabletMinPx < r.minPx && r.minPx < r.maxPx, '레일 폭 순서');
+  assert(l.frameMaxPx > old.frameMaxPx && r.minPx > old.railWidthPx, 'v3 값이 PRD v0.5 값을 넓힌다');
+  // 2×2 기준 200px은 v3 구현 값이며 문서 표기가 아직 없다(PRD §12.5는 160px). 160 이상인지만 확인한다.
+  assert(l.optionGrid.twoByTwoMinCellWidthPx >= old.twoByTwoMinCellWidthPx, '2×2 기준이 PRD 하한보다 작음');
 });
 run('§12.1 모드 계산표 재계산', () => {
   const rows = section('### 12.1', '### 12.2').split('\n').filter(line => /^\| [^|]*\d+×\d+[^|]* \| [RS] \|/.test(line));
@@ -147,7 +163,21 @@ run('밸런스 계약과 PRD 난이도표(§4.1) 일치', () => {
 });
 run('밸런스 계약과 PRD 타워표(§7.1)·적표(§8.1) 일치', () => {
   const towers = section('### 7.1', '### 7.2');
+  // 리뉴얼 신규 타워는 PRD 본문 반영 전이라 타워 카탈로그(§1 개요표·§2 기본형 줄)와 맞춘다: 이름·가격·피해 종류·피해·간격·(최대)사거리.
+  const towerCatalog = read('docs/renewal/catalog/towers.md');
   for (const [id, t] of Object.entries(balance.towers)) {
+    if (!towers.split('\n').some(line => line.startsWith(`| \`${id}\` `))) {
+      const row = towerCatalog.split('\n').find(line => /^\| \d+ \| `/.test(line) && line.includes(`| \`${id}\` |`))?.split('|').map(s => s.trim()); assert(row, `타워 행 없음: ${id}`);
+      assert.equal(row[3], t.label, `${id} 이름`); assert(row[8].includes(`\`${t.cost}G\``), `${id} 가격`);
+      const head = towerCatalog.indexOf(`#### [${row[1]}] \`${id}\``); assert(head >= 0, `${id} 카탈로그 절 없음`);
+      const body = towerCatalog.slice(head, towerCatalog.indexOf('\n\n|', head));
+      assert(body.includes(t.damageType === 'magic' ? '· 마법 ·' : '· 물리 ·'), `${id} 피해 종류`);
+      const base = body.slice(body.indexOf('기본형'));
+      assert.equal(Number(/피해 `(\d+)`/.exec(base)?.[1]), t.damage, `${id} 피해`);
+      assert.equal(Number(/간격 `\d+틱\((\d+)ms\)`/.exec(base)?.[1]), t.intervalMs, `${id} 간격`);
+      assert.equal(Number((/최대 사거리 `(\d+) milli`/.exec(base) ?? /사거리 `(\d+) milli`/.exec(base) ?? /반경 `(\d+) milli`/.exec(base))?.[1]), t.rangeMilli, `${id} 사거리`);
+      continue;
+    }
     const row = towers.split('\n').find(line => line.startsWith(`| \`${id}\` `))?.split('|').map(s => s.trim()); assert(row, `타워 행 없음: ${id}`);
     assert(row[1].endsWith(t.label), `${id} 이름`); assert.equal(Number(row[2]), t.cost, `${id} 가격`);
     if (id === 'banner') { assert(row[3].includes(`반경 ${(t.rangeMilli / 1000).toFixed(1)}`)); continue; }
@@ -156,9 +186,18 @@ run('밸런스 계약과 PRD 타워표(§7.1)·적표(§8.1) 일치', () => {
     assert.equal(Math.round(Number(m[3]) * 1000), t.intervalMs); assert.equal(Math.round(Number(m[4]) * 1000), t.rangeMilli);
   }
   const enemies = section('### 8.1', '### 8.2');
+  // 리뉴얼 역할(비행·분열·분열 파생체)은 PRD 본문 반영 전이라(docs/renewal/README.md: 리뉴얼 폴더가 PRD보다 우선, 본문 반영은 사용자 확인 뒤)
+  // 몬스터 카탈로그 §1.2 역할 표와 맞춘다. 파생체는 부모 역할 행에 적힌 hpBP·speedBP와 맞춘다.
+  const catalog = read('docs/renewal/catalog/monsters.md');
+  const rowOf = (text, id) => text.split('\n').find(line => line.startsWith(`| \`${id}\` `))?.split('|').map(s => s.trim());
   for (const [id, e] of Object.entries(balance.enemies)) {
-    const row = enemies.split('\n').find(line => line.startsWith(`| \`${id}\` `))?.split('|').map(s => s.trim()); assert(row, `적 행 없음: ${id}`);
-    assert.equal(Math.round(Number(row[2]) * 10000), e.hpBP, `${id} HP`); assert.equal(Math.round(Number(row[3]) * 10000), e.speedBP, `${id} 속도`);
+    const row = rowOf(enemies, id);
+    if (row) { assert.equal(Math.round(Number(row[2]) * 10000), e.hpBP, `${id} HP`); assert.equal(Math.round(Number(row[3]) * 10000), e.speedBP, `${id} 속도`); continue; }
+    const parent = Object.entries(balance.enemies).find(([, p]) => p.split?.kind === id)?.[0];
+    const renewal = rowOf(catalog, parent ?? id); assert(renewal, `적 행 없음: ${id}`);
+    if (parent) { const text = renewal.join('|'); assert(text.includes(`hpBP: ${e.hpBP}\``) && text.includes(`speedBP: ${e.speedBP}\``), `${id} 파생체 수치`); continue; }
+    const m = renewal[3].match(/`(\d+)` \/ `(\d+)`/); assert(m, `${id} 카탈로그 수치 형식`);
+    assert.equal(Number(m[1]), e.hpBP, `${id} HP`); assert.equal(Number(m[2]), e.speedBP, `${id} 속도`);
   }
 });
 run('밸런스 계약과 PRD 생성식(§8.2) 일치', () => {

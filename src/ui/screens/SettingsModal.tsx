@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import {
   BGM_STEPS,
   clearLocalHistory,
@@ -34,7 +34,11 @@ interface Props {
  * 별명 설정 및 대원 전환 기능은 랜딩 출정 데크에서 직접 다루므로 이 모달에 두지 않는다.
  */
 export function SettingsModal({ settings, onUpdate, onHistoryCleared, onClose }: Props) {
+  const closeRef = useRef(onClose);
+  useEffect(() => { closeRef.current = onClose; }, [onClose]);
+  const closeModal = useCallback(() => closeRef.current(), []);
   const [tab, setTab] = useState<SettingsTab>('audio');
+  const [historyError, setHistoryError] = useState('');
   const [confirmClear, setConfirmClear] = useState(false);
   const [clearedNotice, setClearedNotice] = useState(false);
   const tabRefs = useRef<(HTMLButtonElement | null)[]>([]);
@@ -46,6 +50,24 @@ export function SettingsModal({ settings, onUpdate, onHistoryCleared, onClose }:
   }, [previewSound, settings.soundOn, settings.bgmVolume, settings.sfxVolume]);
 
   useEffect(() => () => previewSound.dispose(), [previewSound]);
+
+  useEffect(() => {
+    const notify = () => setHistoryError('다른 탭을 닫고 다시 시도해 주세요.');
+    window.addEventListener('vocabulary-td.storageBlocked', notify);
+    return () => window.removeEventListener('vocabulary-td.storageBlocked', notify);
+  }, []);
+
+  const onRadioKeyDown = (e: React.KeyboardEvent) => {
+    if (!['ArrowRight','ArrowLeft','ArrowDown','ArrowUp','Home','End'].includes(e.key)) return;
+    const target = e.target as HTMLElement;
+    const group = target.closest('[role="radiogroup"]');
+    if (!group) return;
+    const radios = Array.from(group.querySelectorAll<HTMLButtonElement>('[role="radio"]'));
+    const current = radios.indexOf(target as HTMLButtonElement);
+    const next = e.key==='Home' ? 0 : e.key==='End' ? radios.length-1 : (current + (['ArrowRight','ArrowDown'].includes(e.key)?1:-1)+radios.length)%radios.length;
+    e.preventDefault(); radios[next]?.focus(); radios[next]?.click();
+  };
+
 
   const onTabKeyDown = (e: React.KeyboardEvent, idx: number) => {
     let nextIdx = -1;
@@ -59,7 +81,7 @@ export function SettingsModal({ settings, onUpdate, onHistoryCleared, onClose }:
   };
 
   return (
-    <ModalShell titleId="settingsModalTitle" title="환경설정" onClose={onClose}>
+    <ModalShell titleId="settingsModalTitle" title="환경설정" onClose={closeModal}>
       <div className={css.settingsTabs} role="tablist" aria-label="환경설정 분류">
         {SETTINGS_TABS.map((item, i) => (
           <button
@@ -80,7 +102,7 @@ export function SettingsModal({ settings, onUpdate, onHistoryCleared, onClose }:
         ))}
       </div>
 
-      <div id="settings-tabpanel" role="tabpanel" aria-labelledby={`settings-tab-${tab}`} style={{ display: 'grid', gap: 12 }}>
+      <div id="settings-tabpanel" role="tabpanel" aria-labelledby={`settings-tab-${tab}`} style={{ display: 'grid', gap: 12 }} onKeyDown={onRadioKeyDown}>
         {tab === 'audio' && (
           <>
             <section className={css.settingSection}>
@@ -94,6 +116,7 @@ export function SettingsModal({ settings, onUpdate, onHistoryCleared, onClose }:
                     type="button"
                     role="radio"
                     aria-checked={settings.soundOn}
+                    tabIndex={settings.soundOn ? 0 : -1}
                     className={css.segBtn}
                     onClick={() => onUpdate({ soundOn: true })}
                   >
@@ -103,6 +126,7 @@ export function SettingsModal({ settings, onUpdate, onHistoryCleared, onClose }:
                     type="button"
                     role="radio"
                     aria-checked={!settings.soundOn}
+                    tabIndex={!settings.soundOn ? 0 : -1}
                     className={css.segBtn}
                     onClick={() => onUpdate({ soundOn: false })}
                   >
@@ -121,6 +145,7 @@ export function SettingsModal({ settings, onUpdate, onHistoryCleared, onClose }:
                     type="button"
                     role="radio"
                     aria-checked={settings.bgmVolume === step}
+                    tabIndex={settings.bgmVolume === step ? 0 : -1}
                     className={css.segBtn}
                     onClick={() => onUpdate({ bgmVolume: step as VolumeStepBgm })}
                   >
@@ -139,6 +164,7 @@ export function SettingsModal({ settings, onUpdate, onHistoryCleared, onClose }:
                     type="button"
                     role="radio"
                     aria-checked={settings.sfxVolume === step}
+                    tabIndex={settings.sfxVolume === step ? 0 : -1}
                     className={css.segBtn}
                     onClick={() => onUpdate({ sfxVolume: step as VolumeStepSfx })}
                   >
@@ -186,6 +212,7 @@ export function SettingsModal({ settings, onUpdate, onHistoryCleared, onClose }:
                     type="button"
                     role="radio"
                     aria-checked={settings.fontScale === scale}
+                    tabIndex={settings.fontScale === scale ? 0 : -1}
                     className={css.segBtn}
                     onClick={() => onUpdate({ fontScale: scale })}
                   >
@@ -214,6 +241,7 @@ export function SettingsModal({ settings, onUpdate, onHistoryCleared, onClose }:
                     type="button"
                     role="radio"
                     aria-checked={settings.motionMode === mode}
+                    tabIndex={settings.motionMode === mode ? 0 : -1}
                     className={css.segBtn}
                     onClick={() => onUpdate({ motionMode: mode, motionCustomized: true })}
                   >
@@ -234,6 +262,7 @@ export function SettingsModal({ settings, onUpdate, onHistoryCleared, onClose }:
                     type="button"
                     role="radio"
                     aria-checked={settings.highContrastMap}
+                    tabIndex={settings.highContrastMap ? 0 : -1}
                     className={css.segBtn}
                     onClick={() => onUpdate({ highContrastMap: true })}
                   >
@@ -243,6 +272,7 @@ export function SettingsModal({ settings, onUpdate, onHistoryCleared, onClose }:
                     type="button"
                     role="radio"
                     aria-checked={!settings.highContrastMap}
+                    tabIndex={!settings.highContrastMap ? 0 : -1}
                     className={css.segBtn}
                     onClick={() => onUpdate({ highContrastMap: false })}
                   >
@@ -257,6 +287,14 @@ export function SettingsModal({ settings, onUpdate, onHistoryCleared, onClose }:
         {tab === 'assist' && (
           <>
             <section className={css.settingSection}>
+              <strong className={css.nickLabel}>공개 기록 나누기</strong>
+              <p className={css.rankSub}>켜면 별명·학년·난이도·점수·웨이브가 다른 사람에게 보여요. 실명 대신 별명을 써요.</p>
+              <div className={css.segmentedRow} role="radiogroup" aria-label="공개 기록 나누기">
+                <button type="button" role="radio" aria-checked={settings.shareRecords === true} tabIndex={settings.shareRecords === true ? 0 : -1} className={css.segBtn} onClick={() => onUpdate({ shareRecords: true })}>켜짐</button>
+                <button type="button" role="radio" aria-checked={settings.shareRecords !== true} tabIndex={settings.shareRecords !== true ? 0 : -1} className={css.segBtn} onClick={() => onUpdate({ shareRecords: false })}>꺼짐</button>
+              </div>
+            </section>
+            <section className={css.settingSection}>
               <div className={css.settingRow}>
                 <div>
                   <strong className={css.nickLabel}>단축키 번호 배지 표시</strong>
@@ -267,6 +305,7 @@ export function SettingsModal({ settings, onUpdate, onHistoryCleared, onClose }:
                     type="button"
                     role="radio"
                     aria-checked={settings.showKeyHints}
+                    tabIndex={settings.showKeyHints ? 0 : -1}
                     className={css.segBtn}
                     onClick={() => onUpdate({ showKeyHints: true })}
                   >
@@ -276,6 +315,7 @@ export function SettingsModal({ settings, onUpdate, onHistoryCleared, onClose }:
                     type="button"
                     role="radio"
                     aria-checked={!settings.showKeyHints}
+                    tabIndex={!settings.showKeyHints ? 0 : -1}
                     className={css.segBtn}
                     onClick={() => onUpdate({ showKeyHints: false })}
                   >
@@ -290,6 +330,7 @@ export function SettingsModal({ settings, onUpdate, onHistoryCleared, onClose }:
               <p className={css.rankSub}>
                 이 브라우저에 저장된 최근 판 기록을 모두 비워요. 닉네임은 그대로 유지돼요.
               </p>
+              {historyError && <p role="alert">{historyError}</p>}
               {clearedNotice && (
                 <p className={css.bannerNotice} role="status">이 기기의 로컬 기록을 모두 정리했어요.</p>
               )}
@@ -300,10 +341,13 @@ export function SettingsModal({ settings, onUpdate, onHistoryCleared, onClose }:
                     className={css.segBtn}
                     style={{ background: 'var(--danger)', color: '#ffffff' }}
                     onClick={async () => {
-                      await clearLocalHistory().catch(() => undefined);
-                      setConfirmClear(false);
-                      setClearedNotice(true);
-                      onHistoryCleared();
+                      setClearedNotice(false); setHistoryError('');
+                      try {
+                        await clearLocalHistory();
+                        setConfirmClear(false);
+                        setClearedNotice(true);
+                        onHistoryCleared();
+                      } catch { setHistoryError('기록을 지우지 못했어요. 다른 탭을 닫고 다시 시도해 주세요.'); }
                     }}
                   >
                     정말 정리하기

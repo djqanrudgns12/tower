@@ -29,28 +29,44 @@ type ModalState =
       period: RankingPeriod;
     };
 
+/** 이어할 수 있는 저장된 판. 홈은 이것을 새 게임보다 앞에 둔다(PRD §12.2). */
+export interface ResumeOffer {
+  nickname: string;
+  wave: number;
+}
+
 interface Props {
   message: string | null;
   settings: Settings;
+  /** 이어할 수 있는 판. 없으면 null. */
+  resume?: ResumeOffer | null;
+  /** 저장 관련 안내(손상·버전 변경·이 브라우저 저장 불가). 조용히 초기화하지 않고 알린다. */
+  savedNotice?: string | null;
   initialModal?: 'new' | null;
   focusNicknameOnMount?: boolean;
   onClearMessage(): void;
   onStartNew(input: { grade: 3 | 4 | 5 | 6; difficulty: DifficultyId; nickname: string }): void;
+  onResume?(): void;
+  onPractice?(): void;
   onSettings(patch: Partial<Settings>): void;
 }
 
 /**
  * 첫 화면(방향 2-A: 왕국 참나무 작전실).
- * 주 행동은 ‘새 게임’으로 단일화하고,
+ * 활성 저장이 있으면 ‘이어하기’를 새 게임보다 앞에 두고, 처음 온 학생에게는 연습을 권한다(PRD §12.2).
  * 별명 설정·오늘의 낱말 공부·통합 수호 랭킹·환경설정을 한 화면에서 제공한다.
  */
 export function HomeScreen({
   message,
   settings,
+  resume = null,
+  savedNotice = null,
   initialModal = null,
   focusNicknameOnMount = false,
   onClearMessage,
   onStartNew,
+  onResume,
+  onPractice,
   onSettings,
 }: Props) {
   const [activeModal, setActiveModal] = useState<ModalState>(initialModal);
@@ -150,6 +166,17 @@ export function HomeScreen({
                 savedSchoolName={settings.lastSchoolName}
                 savedSchoolCode={settings.lastSchoolCode}
                 message={message}
+                savedNotice={savedNotice}
+                resume={resume}
+                practiceLabel={resume || settings.practiceSeen ? '연습하기' : '처음이라면 연습부터'}
+                onResume={() => {
+                  onClearMessage();
+                  onResume?.();
+                }}
+                onPractice={() => {
+                  onClearMessage();
+                  onPractice?.();
+                }}
                 inputRef={nickInputRef}
                 onCommitNickname={nick => onSettings({ lastNickname: nick })}
                 onCommitSchool={(name, code) => onSettings({ lastSchoolName: name, lastSchoolCode: code })}

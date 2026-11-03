@@ -3,8 +3,8 @@ import mapsJson from '../../docs/contracts/maps.candidate.v0.4.json';
 import defaultsJson from '../../docs/contracts/product.defaults.v0.5.json';
 import { balanceSchema, type DifficultyId, type TowerId } from '../contracts/balance';
 import { mapsFileSchema, type MapConfig } from '../contracts/maps';
-import { bankFileSchema, readingLoad, retractionListSchema, type BankFile, type DifficultyTier, type RetractionList } from '../contracts/questions';
-import { createContext, isQuestionEligibleForDifficulty, type GameContext, type RuntimeQuestion } from '../domain/context';
+import { bankFileSchema, difficultyGateSchema, readingLoad, retractionListSchema, type BankFile, type DifficultyTier, type RetractionList } from '../contracts/questions';
+import { createContext, isQuestionEligibleForDifficulty, type DifficultyGate, type GameContext, type RuntimeQuestion } from '../domain/context';
 import grade3Dev from './questions/grade3.dev.json';
 import practiceJson from './questions/practice.json';
 import retractionsJson from './retractions.json';
@@ -17,29 +17,19 @@ export const DEFAULTS = defaultsJson;
 export const PILOT_TOWERS = defaultsJson.pilot.towers as TowerId[];
 export const RETRACTIONS: RetractionList = retractionListSchema.parse(retractionsJson);
 
-// 공개 은행(grade<N>.json, status=published)과 블라인드 검증 후보 은행(grade<N>.candidate.json, status=verified_candidate)을 읽는다.
-// 같은 학년에 두 은행이 모두 있으면 공동검수(published)가 후보 이상 수량일 때 published를 우선하고,
-// 대규모 확장 후보 은행이 더 큰 동안에는 검증된 후보 은행을 싣는다.
-const rawBanks = import.meta.glob<unknown>('./questions/*.json', { eager: true, import: 'default' });
-const parsedGradeBanks = Object.values(rawBanks)
-  .map(raw => bankFileSchema.parse(raw))
-  .filter(bank => bank.bankId !== 'practice');
+// 사용자에게는 공동검수를 통과한 공개 은행(grade<N>.json, status=published)만 싣는다(PRD §9.3 "승인 문항만 배포",
+// §9.4 "미승인 문항을 가져오지 않는다"). 공동검수 전 후보 은행(grade<N>.candidate.json)은 제작 도구만 읽고 번들에 넣지 않는다.
+const publishedRaw = import.meta.glob<unknown>('./questions/grade[3-6].json', { eager: true, import: 'default' });
+const publishedBanks = Object.values(publishedRaw).map(raw => bankFileSchema.parse(raw)).filter(bank => bank.status === 'published');
 
-/** 블라인드·공동검수를 통과한 학년별 공개·후보 은행 목록(미검수 초안·연습·개발용 fixture 제외). */
-export const VERIFIED_GRADE_BANKS: readonly BankFile[] = parsedGradeBanks.filter(
-  bank => bank.status === 'published' || bank.status === 'verified_candidate',
-);
+/** 학년별 공개 은행 목록(오늘의 낱말 카드 등 화면 보조 기능이 쓴다). */
+export const VERIFIED_GRADE_BANKS: readonly BankFile[] = publishedBanks;
 
+// 공개 은행이 없는 학년은 비워 둔다. 3학년만 개발용 문항으로 화면을 확인할 수 있다(contentMode=development, 공개 기록 제외).
 const banks: Record<number, BankFile> = { 3: bankFileSchema.parse(grade3Dev) };
-for (const bank of parsedGradeBanks.filter(b => b.status === 'verified_candidate')) {
-  banks[bank.grade] = bank;
-}
-for (const bank of parsedGradeBanks.filter(b => b.status === 'published')) {
-  const existing = banks[bank.grade];
-  if (!existing || existing.status === 'dev_fixture' || bank.questions.length >= existing.questions.length) {
-    banks[bank.grade] = bank;
-  }
-}
+for (const bank of publishedBanks) banks[bank.grade] = bank;
+
+export const DIFFICULTY_GATE: DifficultyGate = difficultyGateSchema.parse(defaultsJson.questionSelection.difficultyGate);
 
 export interface GradeContent {
   grade: number;
@@ -94,10 +84,7 @@ export function contextFor(grade: number, difficulty: DifficultyId, retractions:
   const active = toRuntime(bank, retractions);
   // 전부 철회되면 판을 시작·이어하지 않는다. 학생 패배가 아니라 복구 안내다(PRD §16.2).
   if (active.length === 0) throw new ContentUnavailableError(`${grade}학년 문항이 모두 철회되었다`);
-  const filtered = active.filter(q => isQuestionEligibleForDifficulty(q, difficulty));
-  const questions = filtered.length > 0
-    ? filtered
-    : active.filter(q => difficulty === 'Hard' || difficulty === 'Crazy' ? true : (q.difficultyTier ?? 'core') !== 'challenge' && q.variantTag !== 'dialect');
+  const questions = active.filter(q => isQuestionEligibleForDifficulty(q, difficulty, DIFFICULTY_GATE));
   if (questions.length === 0) throw new ContentUnavailableError(`${grade}학년 ${difficulty} 난이도에 쓸 수 있는 문항이 없다`);
   const caps = defaultsJson.questionSelection.battleReadingLoadMaxSyllables as Record<string, number>;
   const schedules = defaultsJson.questionSelection.difficultyTierSchedule as Record<DifficultyId, DifficultyTier[]>;

@@ -1,17 +1,23 @@
-/* 하단 어휘 문제판(PRD §12.5 + 시안 1 v3 상·하단 수직선 잠금 규격).
-   999px 반경은 .chip에만 사용하고 나머지 보조 태그는 4px(--r-input)을 지킨다(PRD §12.8). */
+/* 하단 양피지 문제판과 나무 답안 키(ui-rules-v2 §1, PRD §12.5, v3 상·하단 수직선 잠금).
+   제출 흔들림 0: 키의 크기·테두리 두께·글자 굵기는 채점 전후 같다. 상태는 색·그림자·바깥선으로만 바꾼다. */
 .panel {
   display: grid;
   gap: var(--s3);
   align-items: stretch;
+  background: var(--parch-face);
+  border: 4px solid var(--walnut-2);
+  border-radius: var(--r-panel);
+  outline: 2px solid var(--walnut-3);
+  outline-offset: -2px;
+  box-shadow: var(--ground-shadow), var(--ambient-shadow);
 }
 
-/* R 모드 수직선 잠금: 바깥 테두리(4px) + 안쪽 여백(12px) = 16px을 빼서 상단 [전장 | 우측 레일] 수직선과 0.0px 일치 */
+/* R 모드 수직선 잠금: 바깥 테두리(4px) + 안쪽 여백(12px) = 16px을 빼서 [전장 | 우측 레일] 수직선과 0.0px 일치 */
 .seamR {
   padding: var(--s3);
-  grid-template-columns: minmax(0, 1fr) calc(var(--rail-w, 308px) - 16px);
+  grid-template-columns: minmax(0, 1fr) calc(var(--rail-w, var(--rail-min)) - 16px);
   column-gap: var(--s3);
-  min-height: 172px;
+  min-height: var(--q-h, 172px);
 }
 
 /* S 모드 와이드(태블릿): 좌측 지문·보기 + 우측 248px 보조함 */
@@ -25,64 +31,45 @@
 /* S 모드 내로우(휴대폰): 세로 적층 */
 .narrow {
   grid-template-columns: 1fr;
-  padding: var(--s2) var(--s3);
+  padding: var(--s2);
   gap: var(--s2);
 }
 
 .main {
   display: grid;
+  grid-template-rows: auto 1fr;
   gap: var(--s2);
-  align-content: space-between;
   min-width: 0;
-}
-
-.narrow .main {
-  gap: var(--s2);
 }
 
 .stem {
   font-size: var(--q-font);
   line-height: 1.42;
-  font-weight: 700;
+  font-weight: 800;
   color: var(--ink);
 }
 
-.chip {
+.label,
+.badge {
   display: inline-block;
   font-size: 13px;
-  font-weight: 700;
+  font-weight: 800;
   line-height: 1.2;
   padding: var(--s1) var(--s3);
   margin-right: var(--s2);
   border-radius: 999px;
-  background: var(--wood);
+  vertical-align: 0.15em;
+}
+
+.label {
+  background: var(--walnut-2);
   color: var(--cream-ink);
-  vertical-align: middle;
 }
 
-.subchip {
-  display: inline-block;
-  font-size: 13px;
-  font-weight: 700;
-  line-height: 1.2;
+.badge {
   padding: var(--s1) var(--s2);
-  margin-right: var(--s2);
-  border-radius: var(--r-input);
-  background: var(--well);
+  background: var(--parch-3);
   color: var(--ink);
-  border: 1px solid var(--well-border);
-  vertical-align: middle;
-}
-
-.optionsWell {
-  padding: var(--s2);
-  background: var(--well);
-  border: 2px solid var(--well-border);
-  border-radius: var(--r-panel);
-}
-
-.narrow .optionsWell {
-  padding: var(--s1);
 }
 
 .options {
@@ -91,65 +78,58 @@
   grid-auto-rows: 1fr;
 }
 
-.narrow .options {
-  gap: var(--s1);
-}
+.options[data-cols='2'] { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.options[data-cols='1'] { grid-template-columns: 1fr; }
 
-.options[data-cols='2'] {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-}
-
-.options[data-cols='1'] {
-  grid-template-columns: 1fr;
-}
-
+/* 나무 답안 키: 양피지 면 + 호두나무 테 + 접지 그림자. */
 .option {
   position: relative;
-  min-height: var(--touch);
-  padding: var(--s1) 36px var(--s1) var(--s3);
-  text-align: left;
+  min-height: 48px;
+  padding: 6px 40px 6px 10px;
   display: flex;
   align-items: center;
   gap: var(--s2);
+  text-align: left;
   font-size: var(--q-font);
+  font-weight: 600;
   line-height: 1.35;
-  background: var(--paper);
-  border: 2px solid var(--edge);
-  border-radius: var(--r-input);
-  box-shadow: var(--shadow);
-  transition: transform 80ms, box-shadow 80ms, background-color 80ms;
+  color: var(--ink);
+  background: linear-gradient(180deg, var(--parch-1), #f6ebd2);
+  border: 3px solid var(--walnut-1);
+  border-radius: var(--r-panel);
+  box-shadow: 0 3px 0 var(--walnut-3), 0 4px 8px rgba(44, 26, 14, 0.16);
+  transition: transform 80ms var(--ease-out), box-shadow var(--t-ui) var(--ease-out), background-color var(--t-ui) var(--ease-out), border-color var(--t-ui) var(--ease-out);
   touch-action: manipulation;
   user-select: none;
 }
 
+.narrow .option { min-height: var(--touch); padding-top: var(--s1); padding-bottom: var(--s1); }
+.narrow .options { gap: 6px; }
+.narrow .stem { line-height: 1.38; }
+
 @media (hover: hover) {
-  .option:hover:not(:disabled) {
-    background: var(--paper-hover);
-  }
+  .option:hover:not(:disabled) { border-color: var(--walnut-2); background: var(--parch-1); }
 }
 
 .option:not(:disabled):active {
-  transform: translateY(1px);
-  box-shadow: var(--shadow-pressed);
+  transform: translateY(2px);
+  box-shadow: 0 1px 0 var(--walnut-3);
 }
 
-.option:disabled {
-  cursor: default;
-  color: var(--ink);
-}
+.option:focus-visible { outline: 3px solid var(--blue); outline-offset: 2px; }
+.option:disabled { cursor: default; }
 
 .num {
   flex: none;
-  width: 28px;
-  height: 28px;
-  border-radius: var(--r-input);
+  width: 26px;
+  height: 26px;
+  border-radius: 999px;
   display: grid;
   place-items: center;
   font-size: 14px;
-  font-weight: 700;
-  background: var(--well);
-  color: var(--ink);
-  border: 1px solid var(--well-border);
+  font-weight: 800;
+  background: var(--walnut-2);
+  color: var(--parch-1);
 }
 
 .optionText {
@@ -162,189 +142,206 @@
   position: absolute;
   right: var(--s2);
   top: 50%;
-  transform: translateY(-50%);
+  width: 22px;
+  height: 22px;
+  margin-top: -11px;
   display: grid;
   place-items: center;
 }
 
-.correct {
-  background: var(--green-surface) !important;
-  border-color: var(--green) !important;
-  outline: 2px solid var(--green);
-  outline-offset: -1px;
-  color: var(--ink) !important;
-  font-weight: 700;
+/* 채점 대기: 고른 키만 눌린 채. */
+.option[data-state='chosen'] {
+  background: var(--parch-2);
+  box-shadow: inset 0 2px 4px rgba(44, 26, 14, 0.35);
 }
 
-.chosenWrong {
-  background: var(--danger-surface) !important;
-  border-color: var(--danger) !important;
-  outline: 2px dashed var(--danger);
-  outline-offset: -1px;
-  color: var(--ink) !important;
+/* 정답 키는 떠오른다(초록 면 + 바깥 고리 + 깊은 그림자). 위치는 그대로다. */
+.option[data-state='correct'] {
+  background: var(--green-surface);
+  border-color: var(--green);
+  outline: 3px solid var(--green);
+  outline-offset: 1px;
+  box-shadow: 0 4px 0 var(--green), 0 8px 14px rgba(45, 99, 54, 0.28);
 }
 
-.dim,
-.option.dim:disabled {
+/* 고른 오답 키는 눌린 채 붉게 바랜다. */
+.option[data-state='wrong'] {
+  background: var(--danger-surface);
+  border-color: var(--danger);
   color: var(--ink-soft);
-  background: var(--parchment);
-  border-color: var(--well-border);
+  box-shadow: inset 0 2px 5px rgba(163, 53, 43, 0.35);
+}
+
+.option[data-state='dim'] {
+  background: var(--parch-2);
+  border-color: var(--parch-3);
+  color: var(--ink-soft);
   box-shadow: none;
 }
 
-.dim .num {
-  color: var(--ink-soft);
-}
+.option[data-state='dim'] .num,
+.option[data-state='wrong'] .num { background: var(--parch-3); color: var(--ink-soft); }
 
-/* 우측 보조·피드백 함 */
+/* 오른쪽(휴대폰은 아래) 보상·해설 칸. 높이는 문제 쪽이 정하고(contain: size), 넘치는 해설은 칸 안에서만 넘긴다. */
 .feedback {
+  contain: size;
+  min-height: 0;
   display: grid;
   gap: var(--s2);
-  align-content: space-between;
+  align-content: center;
   padding: var(--s3);
-  background: var(--well);
-  border: 2px solid var(--well-border);
+  background: var(--parch-2);
+  border: 2px solid var(--parch-3);
   border-radius: var(--r-panel);
-  min-height: 44px;
+  overflow: hidden;
+}
+
+.narrow .feedback {
+  height: 128px;
+  padding: var(--s2);
 }
 
 .feedback[data-tone='correct'] {
   background: var(--green-surface);
   border-color: var(--green);
-  align-content: center;
 }
 
 .feedback[data-tone='wrong'] {
   background: var(--danger-surface);
   border-color: var(--danger);
-  align-content: start;
-}
-
-.narrow .feedback {
-  padding: var(--s2);
+  align-content: stretch;
 }
 
 .narrow .feedback[data-tone='idle'] {
-  display: flex;
-  flex-wrap: nowrap;
+  grid-template-columns: minmax(0, 1fr) auto;
   align-items: center;
-  justify-content: space-between;
-  gap: var(--s2);
 }
 
-.stakeGroup {
+.stakes {
   display: grid;
-  gap: var(--s1);
-  font-size: 13px;
+  gap: 6px;
 }
 
-.narrow .stakeGroup {
-  gap: var(--s1);
-  min-width: 0;
-}
-
-.stakeRow {
+.stake {
   display: flex;
   align-items: center;
-  gap: var(--s1);
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px var(--s2);
+  border-radius: 999px;
+  background: var(--parch-1);
+  border: 1px solid var(--parch-3);
+  font-size: 14px;
+  font-weight: 800;
+  line-height: 1.2;
   color: var(--ink);
 }
 
-.stakeBadgeOk,
-.stakeBadgeSub {
-  font-size: 13px;
-  font-weight: 700;
-  padding: 0 var(--s1);
-  border-radius: var(--r-input);
-  background: var(--green-surface);
-  color: var(--green);
-  border: 1px solid var(--green);
-  white-space: nowrap;
-}
+.chip[data-tone='gain'] { background: var(--parch-1); border-color: var(--green); color: var(--green); }
+.chip[data-tone='loss'] { color: var(--danger); }
 
-.stakeBadgeSub {
-  background: var(--paper);
-  color: var(--ink-soft);
-  border-color: var(--well-border);
-}
-
-.stakeMuted {
-  color: var(--ink-soft);
-}
-
-.skipGroup {
-  display: grid;
-  gap: var(--s1);
-}
-
-.narrow .skipGroup {
-  display: flex;
-  align-items: center;
-  gap: var(--s2);
-}
-
-.skipBtn {
-  width: 100%;
-  font-size: 14px;
-}
-
-.narrow .skipBtn {
-  width: auto;
+.skip {
+  min-height: var(--touch);
   padding: 0 var(--s3);
+  border: 2px solid var(--walnut-1);
+  border-radius: var(--r-panel);
+  background: var(--parch-1);
+  color: var(--ink);
+  font-size: 15px;
+  font-weight: 600;
+  box-shadow: 0 2px 0 var(--walnut-3);
 }
 
-.skipNote {
-  font-size: 13px;
-  color: var(--ink-soft);
-  line-height: 1.35;
+.skip:active { transform: translateY(1px); box-shadow: none; }
+.skip:focus-visible { outline: 3px solid var(--blue); outline-offset: 2px; }
+
+@media (hover: hover) {
+  .skip:hover { background: #fffaf0; }
 }
 
-.narrow .skipNote {
-  display: none;
-}
+.grading { display: block; }
 
 .goodBox {
   display: grid;
-  gap: var(--s1);
+  gap: var(--s2);
+  justify-items: start;
 }
 
 .good {
-  font-size: var(--q-font);
-  font-weight: 700;
-  color: var(--green);
   display: flex;
   align-items: center;
   gap: var(--s2);
+  font-size: var(--q-font);
+  font-weight: 800;
+  color: var(--green);
 }
 
-.reward {
-  font-weight: 700;
-  color: var(--ink);
-  font-size: 15px;
+.rewards {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
 }
 
 .wrongBox {
   display: grid;
+  grid-template-rows: minmax(0, 1fr) auto;
+  gap: var(--s2);
+  min-height: 0;
+}
+
+.explain {
+  display: grid;
+  align-content: start;
   gap: var(--s1);
+  min-height: 0;
+  overflow-y: auto;
+  padding-right: var(--s1);
 }
 
 .answer {
   font-size: 15px;
   line-height: 1.35;
-  font-weight: 700;
+  font-weight: 800;
   color: var(--ink);
 }
 
 .why {
-  font-size: 13px;
-  line-height: 1.4;
+  font-size: 14px;
+  line-height: 1.45;
   color: var(--ink);
 }
 
-.penalty {
-  font-size: 13px;
-  font-weight: 700;
-  color: var(--danger);
+.nextRow {
+  display: flex;
+  align-items: center;
+  gap: var(--s2);
+}
+
+.next {
+  flex: 1;
+  min-height: var(--touch);
+  padding: 0 var(--s3);
+  border: 2px solid var(--walnut-3);
+  border-radius: var(--r-panel);
+  background: var(--green);
+  color: var(--parch-1);
+  font-size: 15px;
+  font-weight: 800;
+  box-shadow: 0 2px 0 var(--walnut-3);
+}
+
+.next:disabled { background: var(--stone); color: var(--ink-soft); border-color: var(--ink-soft); box-shadow: none; cursor: not-allowed; }
+.next:not(:disabled):active { transform: translateY(1px); box-shadow: none; }
+.next:focus-visible { outline: 3px solid var(--blue); outline-offset: 2px; }
+
+@media (hover: hover) {
+  .next:not(:disabled):hover { background: var(--green-hover); }
 }
 
 .blank {

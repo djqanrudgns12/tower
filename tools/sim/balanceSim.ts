@@ -1,18 +1,18 @@
-import { balanceSchema, TOWER_IDS, type Balance, type BranchId, type DifficultyId, type TowerId } from '../../src/contracts/balance';
+import { balanceSchema, FORM_IDS, TOWER_IDS, type Balance, type DifficultyId, type FormId, type TowerId } from '../../src/contracts/balance';
 import { BALANCE, gradeContent, MAPS, PILOT_TOWERS, toRuntime } from '../../src/content';
 import { createContext, type GameContext } from '../../src/domain/context';
 import { center, dist2, positionAt } from '../../src/domain/geometry';
 import { msToTicks, TICK_HZ } from '../../src/domain/num';
 import { intBelow, shuffle, u32, type Rng } from '../../src/domain/rng';
 import { advanceTick, applyCommand, createRun, type Command } from '../../src/domain/run';
-import { attackIntervalTicks, attacks, bannerAura, buildCost, needsBranch, towerStats, upgradeCost } from '../../src/domain/towers';
+import { attackIntervalTicks, attacks, bannerAura, buildCost, evolutionChoices, formTier, towerStats, upgradeCost } from '../../src/domain/towers';
 import type { Phase, Tower } from '../../src/domain/types';
 import { measure, STREAMS } from './towerEfficiency';
 
 // S11 엔진 밸런스 시뮬레이터(PRD §17.3, §18.1). 판정은 제품 domain 엔진(createRun·applyCommand·advanceTick)이 하고,
 // 여기서는 가상 플레이어(읽기 시간·정답률·돈 쓰는 습관)만 흉내 낸다. 학생 실측이 아니다.
 
-export type StrategyId = 'novice' | 'balanced' | 'focused' | 'balanced10';
+export type StrategyId = 'novice' | 'balanced' | 'focused' | 'balanced10' | 'tall';
 
 interface Strategy {
   /** 전투 중 돈을 쓰러 오는 간격. */
@@ -29,18 +29,55 @@ interface Strategy {
   pick?: 'sequence' | 'round';
   /** 거래 가치를 보는 눈(value 참고). 없으면 'sketch'. */
   judge?: Judge;
+  /** 지금 가장 높은 타워의 강화 가치를 이만큼 곱해 본다(한 타워를 몰아 키우는 습관). 없으면 1. */
+  favorTopBP?: number;
+  /** 징집 카드 고르는 습관(징집이 있는 판만). 없으면 'best'. */
+  draft?: DraftPolicy;
+  /** false면 pattern에 없는 장착함 타워(시작 마법탑·징집 타워)를 짓지 않는다(궁수 집중형). 없으면 true. */
+  useOwned?: boolean;
 }
+
+/**
+ * 징집 카드 고르는 습관(towers.md §0-2). 'best'는 후보마다 가장 좋은 빈칸의 1레벨 가치/설치비가 가장 큰 것,
+ * 'random'은 가상 플레이어 난수로 하나다. 고른 타워는 장착함에 들어오고 pattern 뒤에 한 번 붙어 차례대로 지어진다.
+ */
+export type DraftPolicy = 'best' | 'random';
+export const DRAFT_POLICIES: readonly DraftPolicy[] = ['best', 'random'];
 
 /** 'sketch'는 balance-sketch에서 이어받은 어림, 'engine'은 제품 엔진으로 잰 피해다. */
 export type Judge = 'sketch' | 'engine';
 
+/**
+ * 진화 선택 규칙(progression.md §1). 'best'는 그 타워의 거래 가치(judge)가 더 큰 형태, 'A1'~'B2'는 늘 그 길(1차는 앞 글자),
+ * 'random'은 seed·타워·레벨로 정한 동전 던지기다(판정 난수와 따로라 다른 선택이 문항 흐름을 바꾸지 않는다).
+ */
+export type FormPolicy = 'best' | 'random' | 'A1' | 'A2' | 'B1' | 'B2';
+export const FORM_POLICIES: readonly FormPolicy[] = ['best', 'random', 'A1', 'A2', 'B1', 'B2'];
+/** 타워마다 다른 규칙(적지 않은 타워는 'best'). 예: 'archer:B1/cannon:A1'. */
+export type FormPolicies = FormPolicy | Partial<Record<TowerId, FormPolicy>>;
+
+/** 'best' 또는 'archer:B1/cannon:A1' 꼴을 읽는다. */
+export function parseFormPolicies(text: string): FormPolicies {
+  if (!text.includes(':')) {
+    if (!FORM_POLICIES.includes(text as FormPolicy)) throw new Error(`진화 규칙은 ${FORM_POLICIES.join('|')}: ${text}`);
+    return text as FormPolicy;
+  }
+  return Object.fromEntries(text.split('/').map(part => {
+    const [type, policy] = part.split(':') as [TowerId, FormPolicy];
+    if (!TOWER_IDS.includes(type) || !FORM_POLICIES.includes(policy)) throw new Error(`타워별 진화 규칙은 타워:규칙: ${part}`);
+    return [type, policy];
+  }));
+}
+
 // tools/balance-sketch.mjs의 가상 플레이어를 이어받았다. 마법탑은 P1 범위 밖이라 뺐다.
 export const STRATEGIES: Record<StrategyId, Strategy> = {
-  novice: { attentionMs: 30000, randomSlots: true, pattern: ['archer', 'archer', 'cannon', 'frost', 'archer', 'cannon', 'archer', 'cannon'], upgradeAfterTowers: 6 },
+  novice: { attentionMs: 30000, randomSlots: true, pattern: ['archer', 'archer', 'cannon', 'frost', 'archer', 'cannon', 'archer', 'cannon'], upgradeAfterTowers: 6, draft: 'random' },
   balanced: { attentionMs: 20000, randomSlots: false, pattern: ['archer', 'archer', 'cannon', 'frost', 'archer', 'cannon', 'archer', 'cannon'], upgradeAfterTowers: 0 },
-  focused: { attentionMs: 20000, randomSlots: false, pattern: ['archer'], upgradeAfterTowers: 0 },
+  focused: { attentionMs: 20000, randomSlots: false, pattern: ['archer'], upgradeAfterTowers: 0, useOwned: false },
   /** P2: 10종을 고르게 쓰는 균형 전략(PRD §7.5 ②의 비교 대상). 지을 수 없는 종류(수호기사 2기째 등)는 건너뛴다. */
   balanced10: { attentionMs: 20000, randomSlots: false, pattern: ['archer', 'mage', 'cannon', 'spear', 'frost', 'lightning', 'archer', 'flame', 'crossbow', 'guardian', 'banner', 'cannon'], upgradeAfterTowers: 0, pick: 'round', judge: 'engine' },
+  /** 리뉴얼: 균형형처럼 짓되 가장 높은 타워를 먼저 키운다(무제한 레벨에서 한 타워가 판을 지배하지 않는지 본다). */
+  tall: { attentionMs: 20000, randomSlots: false, pattern: ['archer', 'archer', 'cannon', 'frost', 'archer', 'cannon', 'archer', 'cannon'], upgradeAfterTowers: 0, favorTopBP: 40000 },
 };
 
 export interface SimOptions {
@@ -61,6 +98,10 @@ export interface SimOptions {
   balance?: Balance;
   /** 전략의 judge 대신 쓸 눈(모든 전략을 같은 눈으로 견줄 때). */
   judge?: Judge;
+  /** 진화 선택 규칙. 없으면 'best'. */
+  forms?: FormPolicies;
+  /** 전략의 징집 습관 대신 쓸 습관. */
+  draft?: DraftPolicy;
   /** 거래·답안 명령을 내기 직전에 부른다(가상 플레이어 추적용). */
   onCommand?: (wave: number, gold: number, cmd: Command) => void;
 }
@@ -72,6 +113,14 @@ export interface SimResult {
   /** 단계별 능동 시간(분). */
   phaseMinutes: Record<Phase, number>;
   firstEvoWave: number | null;
+  /** 판이 끝났을 때 가장 높은 타워 레벨. */
+  maxLevel: number;
+  /** 판이 끝났을 때 2차 진화 레벨(Lv7) 이상인 타워 수. */
+  evolvedTwice: number;
+  /** 판이 끝났을 때 형태별 타워 수. */
+  formCounts: Record<FormId, number>;
+  /** 판이 끝났을 때 장착함(시작 + 징집 순서). */
+  owned: TowerId[];
   bossKills: number;
   bossLeaks: number;
   /** 보스가 나온 웨이브별 처치 여부. */
@@ -85,9 +134,8 @@ export interface SimResult {
   goldEarned: number;
 }
 
-export { BALANCE, MAPS, TOWER_IDS };
+export { BALANCE, MAPS, PILOT_TOWERS, TOWER_IDS };
 
-const BRANCH: BranchId = 'A';
 const WRONG_FEEDBACK_READ_MS = 1000;
 
 const contexts = new WeakMap<Balance, Map<string, GameContext>>();
@@ -149,35 +197,45 @@ const measured = new WeakMap<Balance, Map<string, number>>();
 
 /**
  * 가상 플레이어가 보는 가치. 깃발은 반경 안 공격 타워 가치에 오라 비율을 곱한 합이다(towers를 넘길 때만).
- * sketch: 초당 피해 × 덮는 경로. 범위·부채꼴 ×2, 감속 +6(balance-sketch와 같은 어림). P2: 연쇄는 대상 수만큼 감쇠 합, 선분 ×1.3,
+ * sketch: 초당 피해 × 덮는 경로. 범위·부채꼴·굴림체 ×2, 감속 +6(balance-sketch와 같은 어림). P2: 연쇄는 대상 수만큼 감쇠 합, 선분 ×1.3,
+ *   장판은 타격 횟수 × 장판 수의 3/4(걸어 나감), 지연 폭발은 뒤따르는 한 발, 화약 술통 폭발은 2차 피해처럼 절반으로 본다.
  *   화상은 초당 화상 피해를 더하고, 정예·대장 배율은 ×1.1로 어림한다. 덮는 경로에 비례해서 짧은 사거리 타워(창병·화염·수호기사)를 크게 낮춰 본다.
  * engine: 그 칸에 그 타워 하나만 두고 기본 줄(STREAMS.line)을 한 번 통과시켰을 때 제품 엔진이 준 피해(HP, 직접+화상).
  *   감속은 다른 타워의 사거리 안 체류를 늘리므로 감속 비율만큼 더 쳐 준다.
  */
-function value(ctx: GameContext, judge: Judge, type: TowerId, level: number, branch: BranchId | null, slotId: string, cache: Map<string, number>, towers: readonly Tower[] = []): number {
+function value(ctx: GameContext, judge: Judge, type: TowerId, level: number, form: FormId, slotId: string, cache: Map<string, number>, towers: readonly Tower[] = []): number {
   const b = ctx.balance;
   const slot = ctx.map.slots.find(x => x.id === slotId)!;
   if (!attacks(b, type)) {
-    const aura = bannerAura(b, { type, level, branch });
+    const aura = bannerAura(b, { type, level, form });
     const r = b.towers[type].rangeMilli;
     return towers.filter(t => attacks(b, t.type) && dist2(t.x, t.y, center(slot.x), center(slot.y)) <= r * r)
-      .reduce((sum, t) => sum + value(ctx, judge, t.type, t.level, t.branch, t.slotId, cache) * (aura.damageBP + aura.speedBP) / 10000, 0);
+      .reduce((sum, t) => sum + value(ctx, judge, t.type, t.level, t.form, t.slotId, cache) * (aura.damageBP + aura.speedBP) / 10000, 0);
   }
-  const st = towerStats(b, type, level, branch);
+  const st = towerStats(b, type, level, form);
   if (judge === 'engine') {
     let byKey = measured.get(b);
     if (!byKey) { byKey = new Map(); measured.set(b, byKey); }
-    const key = `${ctx.map.id}/${slotId}/${type}/${level}/${branch}`;
+    const key = `${ctx.map.id}/${slotId}/${type}/${level}/${form}`;
     let v = byKey.get(key);
     if (v === undefined) {
-      v = (measure([{ type, slot: [slot.x, slot.y], level, branch }], STREAMS.line, b, ctx.map.id).damage / 1000) * (1 + st.slowBP / 10000);
+      v = (measure([{ type, slot: [slot.x, slot.y], level, form }], STREAMS.line, b, ctx.map.id).damage / 1000) * (1 + st.slowBP / 10000);
       byKey.set(key, v);
     }
     return v;
   }
-  const perSec = (st.damage / 1000) * (TICK_HZ / attackIntervalTicks(b, st, 0));
-  let mult = st.splashRadius > 0 || st.cone ? 2 : st.lineWidth > 0 ? 1.3 : 1;
+  // 리뉴얼 효과 어림: 다연발·공격 주기 덧발·여러 표적은 발 수만큼, 도탄·2차 피해는 절반, 취약은 받는 피해만큼, 밀치기는 감속처럼 더한다.
+  const fx = st.fx;
+  const follow = (x: { count: number; followDamageBP?: number | undefined }) => ((x.count - 1) * (x.followDamageBP ?? 10000)) / 10000;
+  const zone = fx.zone ? Math.ceil(msToTicks(fx.zone.durationMs) / msToTicks(fx.zone.periodMs)) * (fx.zone.count ?? 1) * 0.75 : 1;
+  const shots = (1 + (fx.burst ? follow(fx.burst) : 0) + (fx.cycle?.burst ? follow(fx.cycle.burst) / fx.cycle.every : 0) + (fx.delayedBlast ? fx.delayedBlast.damageBP / 10000 : 0)) * st.volley * zone;
+  const perSec = (st.damage / 1000) * (TICK_HZ / attackIntervalTicks(b, st, 0)) * shots;
+  let mult = st.splashRadius > 0 || st.cone || fx.ring || fx.roller ? 2 : st.lineWidth > 0 ? 1.3 : 1;
   if (st.chainRadius > 0) { mult = 0; for (let k = 0; k < st.maxTargets; k++) mult += (st.chainFalloffBP / 10000) ** k; mult = 1 + (mult - 1) * 0.5; }
+  if (fx.ricochet) { let r = 0; for (let k = 1; k <= fx.ricochet.count; k++) r += (fx.ricochet.falloffBP / 10000) ** k; mult += r * 0.5; }
+  if (fx.onHitSplash) mult += (fx.onHitSplash.damageBP / 10000) * 0.5;
+  if (fx.rollBlast) mult += (fx.rollBlast.damageBP / 10000) * 0.5;
+  mult *= 1 + (fx.vulnBP ?? 0) / 10000 + ((fx.knockbackMilli ?? 0) / 1000) * 0.5;
   const burnPerSec = st.burnTicks > 0 ? (st.burnTotal / 1000) * (TICK_HZ / st.burnTicks) : 0;
   const base = (perSec * mult + burnPerSec) * (st.eliteBossDamageBP > 10000 ? 1.1 : 1) + (st.slowBP > 0 ? 6 : 0);
   return (base * coverage(ctx, slotId, st.range, cache)) / 4;
@@ -191,8 +249,11 @@ export function simulateRun(opt: SimOptions): SimResult {
     bankId: 'g3-dev', bankVersion: 'sim', contentMode: 'development', availableTowers: [...towers], rankingEligibility: 'personal', createdAt: '2026-10-28T00:00:00.000Z',
   });
   const strat = STRATEGIES[opt.strategy];
-  const pattern = strat.pattern.filter(t => towers.includes(t));
+  // 장착함에 있는 것만 짓는다. 시작 마법탑·징집 타워처럼 pattern에 없는 장착함 타워는 뒤에 한 번씩 붙인다(useOwned).
+  const patternOf = () => [...strat.pattern.filter(t => s.owned.includes(t)), ...(strat.useOwned === false ? [] : s.owned.filter(t => !strat.pattern.includes(t)))];
   const judge = opt.judge ?? strat.judge ?? 'sketch';
+  const draftPolicy = opt.draft ?? strat.draft ?? 'best';
+  const policyOf = (type: TowerId): FormPolicy => (typeof opt.forms === 'object' ? opt.forms[type] : opt.forms) ?? 'best';
   // 플레이어의 선택은 엔진 난수와 다른 흐름을 쓴다. 같은 seed면 같은 판이 나온다.
   const rng: Rng = { s: (opt.seed * 2654435761 + 0x5bd1e995) >>> 0 || 1 };
   const cache = new Map<string, number>();
@@ -213,7 +274,27 @@ export function simulateRun(opt: SimOptions): SimResult {
     if (!r.ok) throw new Error(`시뮬레이터 명령 거부: ${cmd.type} → ${r.error} (wave ${s.wave}, tick ${s.tick})`);
   };
 
+  const chooseForm = (t: Tower, choices: FormId[]): FormId => {
+    const policy = policyOf(t.type);
+    if (policy === 'best') return choices.reduce((best, f) => (value(ctx, judge, t.type, t.level + 1, f, t.slotId, cache, s.towers) > value(ctx, judge, t.type, t.level + 1, best, t.slotId, cache, s.towers) ? f : best));
+    if (policy === 'random') return choices[(Math.imul(opt.seed, 0x9e3779b1) ^ Math.imul(t.id, 0x85ebca6b) ^ t.level) & 1]!;
+    // 고정 길: 1차는 앞 글자(A·B), 2차는 그 형태. 이미 다른 길이면 그 길의 같은 번호를 고른다.
+    return formTier(choices[0]!) === 1 ? (policy[0] as FormId) : choices.find(f => f === policy) ?? choices[Number(policy[1]) - 1]!;
+  };
+
+  /** 징집 카드가 열리면 바로 고른다(화면의 큰 카드 3장). */
+  const draft = () => {
+    const offer = s.draft;
+    if (!offer) return;
+    const free = slotOrder.filter(id => !s.towers.some(t => t.slotId === id));
+    const slots = free.length ? free : slotOrder;
+    const worth = (type: TowerId) => Math.max(...slots.map(id => value(ctx, judge, type, 1, 'base', id, cache, s.towers))) / buildCost(ctx.balance, type);
+    const tower = draftPolicy === 'random' ? offer.offers[intBelow(rng, offer.offers.length)]! : offer.offers.reduce((best, t) => (worth(t) > worth(best) ? t : best));
+    run({ type: 'draftPick', tower });
+  };
+
   const spend = () => {
+    const pattern = patternOf();
     for (;;) {
       const options: Array<{ cost: number; gain: number; cmd: Command }> = [];
       const frees = slotOrder.filter(id => !s.towers.some(t => t.slotId === id));
@@ -224,26 +305,29 @@ export function simulateRun(opt: SimOptions): SimResult {
         const kinds = [...new Set(pattern)].filter(canBuild);
         const least = Math.min(...kinds.map(share));
         for (const type of kinds.filter(k => share(k) === least)) {
-          const slotId = frees.reduce((best, id) => (value(ctx, judge, type, 1, null, id, cache, s.towers) > value(ctx, judge, type, 1, null, best, cache, s.towers) ? id : best));
-          options.push({ cost: buildCost(ctx.balance, type), gain: value(ctx, judge, type, 1, null, slotId, cache, s.towers), cmd: { type: 'build', slotId, tower: type } });
+          const slotId = frees.reduce((best, id) => (value(ctx, judge, type, 1, 'base', id, cache, s.towers) > value(ctx, judge, type, 1, 'base', best, cache, s.towers) ? id : best));
+          options.push({ cost: buildCost(ctx.balance, type), gain: value(ctx, judge, type, 1, 'base', slotId, cache, s.towers), cmd: { type: 'build', slotId, tower: type } });
         }
       } else if (frees.length && pattern.length) {
         // 차례의 종류를 지을 수 없으면(동시 1기 제한) 다음 종류로 넘어간다.
         const type = Array.from({ length: pattern.length }, (_, k) => pattern[(s.towers.length + k) % pattern.length]!).find(canBuild);
-        if (type) options.push({ cost: buildCost(ctx.balance, type), gain: value(ctx, judge, type, 1, null, frees[0]!, cache, s.towers), cmd: { type: 'build', slotId: frees[0]!, tower: type } });
+        if (type) options.push({ cost: buildCost(ctx.balance, type), gain: value(ctx, judge, type, 1, 'base', frees[0]!, cache, s.towers), cmd: { type: 'build', slotId: frees[0]!, tower: type } });
       }
+      const top = s.towers.reduce<Tower | null>((best, t) => (!best || t.level > best.level ? t : best), null);
       if (s.towers.length >= strat.upgradeAfterTowers) for (const t of s.towers) {
         const cost = upgradeCost(ctx.balance, t.type, t.level);
         if (cost === null) continue;
-        const branch = needsBranch(ctx.balance, t.level) ? BRANCH : undefined;
-        const gain = value(ctx, judge, t.type, t.level + 1, branch ?? t.branch, t.slotId, cache, s.towers) - value(ctx, judge, t.type, t.level, t.branch, t.slotId, cache, s.towers);
-        options.push({ cost, gain, cmd: branch ? { type: 'upgrade', towerId: t.id, branch } : { type: 'upgrade', towerId: t.id } });
+        const choices = evolutionChoices(ctx.balance, t);
+        const form = choices ? chooseForm(t, choices) : undefined;
+        const favor = t === top ? (strat.favorTopBP ?? 10000) / 10000 : 1;
+        const gain = favor * (value(ctx, judge, t.type, t.level + 1, form ?? t.form, t.slotId, cache, s.towers) - value(ctx, judge, t.type, t.level, t.form, t.slotId, cache, s.towers));
+        options.push({ cost, gain, cmd: form ? { type: 'upgrade', towerId: t.id, form } : { type: 'upgrade', towerId: t.id } });
       }
       // 가성비가 가장 좋은 것 하나를 노리고, 돈이 모자라면 모은다.
       const best = options.sort((a, b) => b.gain / b.cost - a.gain / a.cost)[0];
       if (!best || best.cost > s.gold) return;
       run(best.cmd);
-      if (best.cmd.type === 'upgrade' && firstEvoWave === null && s.towers.some(t => t.branch !== null)) firstEvoWave = s.wave;
+      if (best.cmd.type === 'upgrade' && firstEvoWave === null && s.towers.some(t => t.form !== 'base')) firstEvoWave = s.wave;
     }
   };
 
@@ -264,6 +348,7 @@ export function simulateRun(opt: SimOptions): SimResult {
       if (startAt < 0) { spend(); startAt = s.tick + msToTicks((opt.buildSec ?? 8) * 1000); }
       if (s.tick >= startAt) { run({ type: 'startBattle' }); startAt = -1; spendAt = s.tick + attention; }
     } else if (s.phase === 'BATTLE' && s.tick >= spendAt) { spend(); spendAt = s.tick + attention; }
+    if (s.draft) draft();
     phaseTicks[s.phase]++;
     for (const e of advanceTick(ctx, s)) if ((e.type === 'kill' || e.type === 'leak') && e.kind === 'boss') bosses.push({ wave: s.wave, killed: e.type === 'kill' });
   }
@@ -276,6 +361,10 @@ export function simulateRun(opt: SimOptions): SimResult {
     minutes: toMin(st.activeTicks),
     phaseMinutes: { PREP_QUIZ: toMin(phaseTicks.PREP_QUIZ), BUILD: toMin(phaseTicks.BUILD), BATTLE: toMin(phaseTicks.BATTLE), WAVE_WRAPUP: toMin(phaseTicks.WAVE_WRAPUP), GAME_OVER: 0 },
     firstEvoWave,
+    maxLevel: Math.max(0, ...s.towers.map(t => t.level)),
+    evolvedTwice: s.towers.filter(t => t.level >= ctx.balance.levels.evolveAt[1]).length,
+    formCounts: Object.fromEntries(FORM_IDS.map(f => [f, s.towers.filter(t => t.form === f).length])) as Record<FormId, number>,
+    owned: [...s.owned],
     bossKills: st.bossKills,
     bossLeaks: st.bossLeaks,
     bosses,
