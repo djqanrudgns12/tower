@@ -205,7 +205,7 @@ export function LaunchDeck({
           </span>
         </div>
 
-        <div className={css.nickRow} style={{ marginTop: 8 }}>
+        <div className={css.nickRow}>
           <input
             ref={inputRef}
             id="landingNickInput"
@@ -266,7 +266,7 @@ export function LaunchDeck({
           </span>
         </div>
 
-        <div className={css.nickRow} style={{ marginTop: 8 }}>
+        <div className={css.nickRow}>
           <input
             id="landingSchoolInput"
             aria-label="학교 이름"

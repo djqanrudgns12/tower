@@ -14,6 +14,8 @@ const LOOP_MS = 11000;
 const ACTIVE_SPAN = 0.84;
 const STATIC_CYCLE = 0.18;
 const STELE_FACE_Y = 0.41;
+/** 그림(타워 54px·적 36~50px)이 잘리지 않는 최소 설계 높이(css px). 무대가 이보다 낮으면 그림을 비율로 줄인다. */
+const MIN_DESIGN_H = 140;
 
 const WAYPOINTS: readonly [number, number][] = [
   [-0.06, 0.56],
@@ -408,11 +410,15 @@ export function MiniStageCanvas({ motionMode, highContrastMap, paused, className
     const syncSize = () => {
       const rect = canvas.getBoundingClientRect();
       const dpr = Math.min(2, window.devicePixelRatio || 1);
-      width = Math.max(180, Math.round(rect.width || 480));
-      height = Math.max(110, Math.round(rect.height || 176));
-      canvas.width = Math.round(width * dpr);
-      canvas.height = Math.round(height * dpr);
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      const cssW = Math.max(180, Math.round(rect.width || 480));
+      const cssH = Math.max(60, Math.round(rect.height || 176));
+      // 낮은 무대(저높이 크롬북 홈)에서는 그림 크기를 같은 비율로 줄여 그린다. 그대로 두면 타워·적·체력 막대가 윗변에서 잘린다.
+      const k = Math.min(1, cssH / MIN_DESIGN_H);
+      width = cssW / k;
+      height = cssH / k;
+      canvas.width = Math.round(cssW * dpr);
+      canvas.height = Math.round(cssH * dpr);
+      ctx.setTransform(dpr * k, 0, 0, dpr * k, 0, 0);
       drawStageFrame(ctx, width, height, sprites, performance.now(), animateCombat, highContrastMap);
     };
 

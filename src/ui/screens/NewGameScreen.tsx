@@ -154,7 +154,7 @@ export function NewGameScreen({ settings, onBack, onEditNickname, onStart }: Pro
           <MapPreview map={map} />
         </section>
 
-        <div className={css.row}>
+        <div className={`${css.row} ${homeCss.modalActions}`}>
           <button type="submit" className={`${kit.button} ${kit.primary} ${kit.big}`}>
             시작하기
           </button>

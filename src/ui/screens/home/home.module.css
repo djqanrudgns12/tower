@@ -196,10 +196,11 @@
 }
 
 .parchmentInner {
+  --pad-y: var(--s4);
   background: var(--oak-board-bg);
   border: 2px solid var(--oak-board-molding);
   border-radius: var(--r-input);
-  padding: var(--s4);
+  padding: var(--pad-y) var(--s4);
   display: flex;
   flex-direction: column;
   gap: var(--s3);
@@ -303,7 +304,8 @@
 }
 
 .smallBtn {
-  min-height: 36px;
+  min-width: var(--touch);
+  min-height: var(--touch);
   padding: 0 var(--s2);
   border: 2px solid var(--oak-frame-edge);
   border-radius: var(--r-input);
@@ -328,8 +330,8 @@
   box-shadow: var(--shadow-pressed);
 }
 
-/* 누르는 영역 44px 하한(계약 layout.touchMinPx): 보이는 크기·배치는 그대로 두고 투명한 히트 영역만 가운데 기준으로 넓힌다.
-   세로로 이웃한 버튼과는 4px 이상 떨어져 있어(줄바꿈 간격·판 안쪽 여백) 넓힌 영역이 옆 버튼 면을 덮지 않는다. */
+/* 누르는 영역 44px 하한(계약 layout.touchMinPx): 버튼 자체가 44px 이상이다(min-width·min-height). 아래 투명 히트 영역은 글자가 길어
+   더 커진 버튼에서도 가운데 기준으로 44px 이상을 보장하는 안전망이다. */
 .smallBtn,
 .tabBtn,
 .filterBtn {
@@ -491,6 +493,7 @@
   grid-template-columns: minmax(0, 1fr) auto;
   gap: var(--s2);
   align-items: center;
+  margin-top: var(--s2);
 }
 
 .nickInput {
@@ -685,7 +688,7 @@
 }
 
 .tabBtn {
-  min-height: 40px;
+  min-height: var(--touch);
   padding: 0 var(--s1);
   border: 2px solid transparent;
   border-radius: var(--r-input);
@@ -721,7 +724,8 @@
 }
 
 .filterBtn {
-  min-height: 36px;
+  min-width: var(--touch);
+  min-height: var(--touch);
   padding: 0 var(--s2);
   border: 1.5px solid var(--oak-inset-border);
   border-radius: var(--r-input);
@@ -906,6 +910,18 @@
   border-bottom: 2px solid var(--oak-board-molding);
 }
 
+/* 긴 창(저높이 크롬북·휴대폰)에서도 '시작하기'가 늘 보이도록 창 아래에 붙는 단추 줄. 불투명 바탕이라 지나가는 내용이 비치지 않는다. */
+.modalActions {
+  position: sticky;
+  /* 고정 위치는 창의 안쪽 여백 안쪽 끝이라, 그 여백만큼 내려 바탕이 아래 여백까지 덮게 한다. */
+  bottom: calc(-1 * var(--pad-y));
+  margin-bottom: calc(-1 * var(--pad-y));
+  z-index: 2;
+  padding: var(--s2) 0 calc(var(--s2) + var(--pad-y));
+  background: var(--oak-board-bg);
+  border-top: 2px solid var(--oak-board-molding);
+}
+
 .modalTitle {
   font-size: 22px;
   font-weight: 700;
@@ -991,18 +1007,23 @@
   gap: var(--s2);
 }
 
-/* 학교 크롬북 저높이(1366×650 등) 대응: 첫 화면 내 '새 게임' 버튼 100% 수납 보장 */
+/* 학교 크롬북 저높이(1366×650 등) 대응: 첫 화면(스크롤 없이)에 새 게임·연습 단추까지 다 들어오게 한다.
+   조작 요소는 44px 아래로 줄이지 않고, 두 단추를 한 줄에 놓고 여백·미니 무대를 줄여 높이를 만든다. */
 @media (max-height: 740px) and (min-width: 960px) {
   .foreground {
     padding: var(--s1) var(--s4);
     gap: var(--s1);
   }
+  .plaqueInner {
+    padding: var(--s1) var(--s3);
+  }
   .parchmentInner {
-    padding: var(--s2) var(--s3);
+    --pad-y: var(--s2);
+    padding: var(--pad-y) var(--s3);
     gap: var(--s1);
   }
   .stageViewport {
-    height: 96px;
+    height: 88px;
   }
   .stelePanel {
     padding: var(--s2) var(--s3);
@@ -1022,24 +1043,40 @@
   }
   .nickRow {
     gap: var(--s1);
+    margin-top: var(--s1);
   }
   .nickInput {
     min-height: var(--touch);
     font-size: 14px;
   }
-  .smallBtn {
-    min-height: var(--touch) !important;
-  }
   .schoolBlock {
     gap: 4px;
+  }
+  /* 새 게임과 연습(또는 이어하기·새 게임·연습)을 두 칸 격자로 놓아 세로를 한 단추 높이로 줄인다. */
+  .ctaStack {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-auto-flow: dense;
+    gap: var(--s1) var(--s2);
+  }
+  .ctaStack > [id='resumeBtn'],
+  .ctaStack > [id='newGameReplaceNote'],
+  .ctaStack > :only-child {
+    grid-column: 1 / -1;
+  }
+  .ctaStack > [id='practiceBtn'] {
+    grid-column: 2;
   }
   .primaryCta {
     min-height: var(--touch);
     font-size: 17px;
   }
+  .secondaryCta {
+    min-height: var(--touch);
+    font-size: 15px;
+  }
   .rankList {
-    min-height: 180px;
-    max-height: 220px;
+    min-height: 140px;
+    max-height: 200px;
     overflow-y: auto;
   }
 }
@@ -1069,6 +1106,7 @@
     padding: var(--s3);
   }
   .parchmentInner {
+    --pad-y: var(--s3);
     padding: var(--s3);
   }
   .telemetryStrip {
