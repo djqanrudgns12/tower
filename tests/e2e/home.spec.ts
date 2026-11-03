@@ -390,7 +390,7 @@ test.describe('랜딩 페이지(방향 2-A: 왕국 참나무 작전실) 통합 �
     await page.reload();
 
     // 한 문제를 풀고 저장하고 나간다.
-    await page.getByRole('textbox', { name: '출정 별명' }).fill('이어하기검증');
+    await page.getByRole('textbox', { name: /닉네임|출정 별명/ }).fill('이어하기검증');
     await page.getByRole('button', { name: '새 게임' }).click();
     await page.getByRole('button', { name: '시작하기' }).click();
     const first = page.getByRole('region', { name: '어휘 문제' }).getByRole('group', { name: '보기' }).getByRole('button').first();

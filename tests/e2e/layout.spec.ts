@@ -39,7 +39,7 @@ async function startGame(page: Page, width: number, height: number) {
     localStorage.clear();
   });
   await page.reload();
-  await page.getByRole('textbox', { name: '출정 별명' }).fill('수직선검사');
+  await page.getByRole('textbox', { name: /닉네임|출정 별명/ }).fill('수직선검사');
   await page.getByRole('button', { name: '새 게임' }).click();
   await page.getByRole('button', { name: '시작하기' }).click();
   await expect(page.getByText('준비 1/5')).toBeVisible();
@@ -322,7 +322,7 @@ test('상세 순위표 탭: 방향키·Home·End가 선택과 포커스를 함�
 test('새 게임 학년·난이도 radiogroup: 방향키가 선택과 포커스를 함께 옮긴다', async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.goto('/');
-  await page.getByRole('textbox', { name: '출정 별명' }).fill('방향키검증');
+  await page.getByRole('textbox', { name: /닉네임|출정 별명/ }).fill('방향키검증');
   await page.getByRole('button', { name: '새 게임' }).click();
   const dialog = page.getByRole('dialog', { name: '새 게임 출정 설정' });
   await expect(dialog).toBeVisible();
@@ -415,7 +415,7 @@ test('13px·44px 하한: 홈·새 게임·상세 순위표·사용 설명서(136
   const results: Record<string, Awaited<ReturnType<typeof floors>>> = {};
   results.home = await floors(page, 'body');
 
-  await page.getByRole('textbox', { name: '출정 별명' }).fill('하한검사');
+  await page.getByRole('textbox', { name: /닉네임|출정 별명/ }).fill('하한검사');
   await page.getByRole('button', { name: '새 게임' }).click();
   results.newGame = await floors(page, '[role="dialog"]');
   await page.keyboard.press('Escape');
@@ -444,7 +444,7 @@ async function newGame(page: Page) {
   await page.goto('/');
   await page.evaluate(() => { indexedDB.deleteDatabase('vocabulary-td'); localStorage.removeItem('vocabulary-td.coach'); });
   await page.reload();
-  await page.getByRole('textbox', { name: '출정 별명' }).fill('하늘바람');
+  await page.getByRole('textbox', { name: /닉네임|출정 별명/ }).fill('하늘바람');
   await page.getByRole('button', { name: '새 게임' }).click();
   await page.getByRole('button', { name: '시작하기' }).click();
   await expect(page.getByText('준비 1/5')).toBeVisible();

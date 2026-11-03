@@ -289,7 +289,7 @@ test('첫 연습 판: 문제 1개 → 궁수 설치 → 적 3마리 → 회복, 
   await shot(page, 'practice-done');
   await page.getByRole('button', { name: '새 게임 시작' }).click();
   // 별명이 없으면 홈의 출정 별명 칸으로 안내한다.
-  await expect(page.getByRole('textbox', { name: '출정 별명' })).toBeFocused();
+  await expect(page.getByRole('textbox', { name: /닉네임|출정 별명/ })).toBeFocused();
   // 다시 홈에 오면 연습 권유 대신 ‘연습하기’가 보인다. 연습은 기록·저장에 남지 않는다.
   await expect(page.getByRole('button', { name: '연습하기' })).toBeVisible();
   await expect(page.getByRole('button', { name: '처음이라면 연습부터' })).toHaveCount(0);
