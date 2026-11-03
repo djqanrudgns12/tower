@@ -17,6 +17,33 @@ const manifest = assetManifestSchema.parse(JSON.parse(readFileSync('public/asset
 const sizeOfAsset = (asset: string) => { const a = manifest.assets.find(x => x.id === asset); return a ? { width: a.width, height: a.height } : null; };
 const channels = (c: number): [number, number, number] => [(c >> 16) & 255, (c >> 8) & 255, c & 255];
 
+/** Phaser 없이 층을 만들어 보는 가짜 장면: 어떤 텍스처 키가 쓰였고 어떤 임시 그림(캔버스)이 만들어졌는지, 그림들이 보이는지만 기록한다. */
+function buildScene(mapId: string, preloaded: string[], reducedMotion = false) {
+  const keys = new Set(preloaded), canvases: string[] = [], images: Array<{ key: () => string; visible: () => boolean }> = [];
+  const proxy = <T extends object>(target: T): T => new Proxy(target, { get: (t, p) => (p in t ? (t as Record<string | symbol, unknown>)[p] : () => proxy(t)) });
+  const ctx2d = new Proxy({}, { get: () => () => ({ addColorStop: () => undefined }) });
+  const image = (_x: number, _y: number, key: string) => {
+    const o: Record<string, unknown> = { width: 64, height: 64, texture: { key }, visible: true };
+    o.setTexture = (k: string) => { (o.texture as { key: string }).key = k; return o; };
+    o.setVisible = (v: boolean) => { o.visible = v; return o; };
+    images.push({ key: () => (o.texture as { key: string }).key, visible: () => o.visible as boolean });
+    return proxy(o);
+  };
+  const scene = {
+    textures: {
+      exists: (k: string) => keys.has(k),
+      createCanvas: (k: string) => { keys.add(k); canvases.push(k); return { getContext: () => ctx2d, refresh: () => undefined }; },
+      get: () => ({ getSourceImage: () => ({ width: 384, height: 192 }) }),
+    },
+    add: { image, graphics: () => proxy({}), rectangle: () => proxy({}) },
+  };
+  const map = MAPS.find(m => m.id === mapId)!;
+  const bridge = { controller: { ctx: { map }, state: { wave: 1, pause: [] } }, reducedMotion };
+  const layer = new AmbientLayer({ scene, bridge } as never);
+  layer.update(16);
+  return { used: images.map(i => i.key()), canvases, images };
+}
+
 describe('시간 흐름(아침 → 노을 → 밤)', () => {
   it('웨이브 1은 아침, 9는 노을(주황), 17은 밤(남색)이고, 알파는 늘 약하다', () => {
     const [m, d, n] = [timeOfDay(1), timeOfDay(9), timeOfDay(17)];
@@ -164,6 +191,7 @@ describe('잔물결', () => {
 
 describe('원화 고르기와 코드 그림으로 되돌리기', () => {
   const all = () => true, none = () => false;
+  const build = (mapId: string, preloaded: string[]) => buildScene(mapId, preloaded);
 
   it('구름 그림자 원화 세 장이 모두 실렸을 때만 원화를 쓰고, 하나라도 없으면 코드 그림(null)이다', () => {
     expect(cloudArt(all)).toEqual(CLOUD_ART_KEYS);
@@ -184,31 +212,6 @@ describe('원화 고르기와 코드 그림으로 되돌리기', () => {
     expect(butterflyArt('yellow', onlyWhite)).toBeNull();
   });
 
-  /** Phaser 없이 층을 만들어 보는 가짜 장면: 어떤 텍스처 키가 쓰였고 어떤 임시 그림(캔버스)이 만들어졌는지만 기록한다. */
-  function build(mapId: string, preloaded: string[]) {
-    const keys = new Set(preloaded), canvases: string[] = [], used: string[] = [];
-    const proxy = <T extends object>(target: T): T => new Proxy(target, { get: (t, p) => (p in t ? (t as Record<string | symbol, unknown>)[p] : () => proxy(t)) });
-    const ctx2d = new Proxy({}, { get: () => () => ({ addColorStop: () => undefined }) });
-    const image = (_x: number, _y: number, key: string) => {
-      used.push(key);
-      const o: Record<string, unknown> = { width: 64, height: 64, texture: { key } };
-      o.setTexture = (k: string) => { (o.texture as { key: string }).key = k; return o; };
-      return proxy(o);
-    };
-    const scene = {
-      textures: {
-        exists: (k: string) => keys.has(k),
-        createCanvas: (k: string) => { keys.add(k); canvases.push(k); return { getContext: () => ctx2d, refresh: () => undefined }; },
-        get: () => ({ getSourceImage: () => ({ width: 384, height: 192 }) }),
-      },
-      add: { image, graphics: () => proxy({}), rectangle: () => proxy({}) },
-    };
-    const map = MAPS.find(m => m.id === mapId)!;
-    const bridge = { controller: { ctx: { map }, state: { wave: 1, pause: [] } }, reducedMotion: false };
-    const layer = new AmbientLayer({ scene, bridge } as never);
-    layer.update(16);
-    return { used, canvases };
-  }
 
   const ART = [...CLOUD_ART_KEYS, 'fx.butterfly.yellow.0', 'fx.butterfly.yellow.1', 'fx.butterfly.white.0', 'fx.butterfly.white.1'];
 
@@ -232,6 +235,35 @@ describe('원화 고르기와 코드 그림으로 되돌리기', () => {
     expect(canvases).toEqual(['ambient.cloud']);
     expect(used.filter(k => k === 'ambient.cloud')).toHaveLength(3);
     expect(used.filter(k => k.startsWith('fx.butterfly.'))).toHaveLength(BUTTERFLY_COUNT);
+  });
+});
+
+describe('맵별 분위기 층(가짜 장면)', () => {
+  const ART = [...CLOUD_ART_KEYS, 'fx.butterfly.yellow.0', 'fx.butterfly.yellow.1', 'fx.butterfly.white.0', 'fx.butterfly.white.1'];
+  const keysOf = (r: { images: Array<{ key: () => string }> }) => r.images.map(i => i.key());
+  const build = (mapId: string, reduced = false) => buildScene(mapId, ART, reduced);
+
+  it('궁궐 뜰은 꽃잎 12개, 설원은 눈송이 24개이고 나비는 없다. 강가·정원은 나비가 있고 입자는 없다', () => {
+    const court = keysOf(build('courtyard')), snow = keysOf(build('snow_step')), river = keysOf(build('river_z')), garden = keysOf(build('garden_u'));
+    expect(court.filter(k => k === 'ambient.petal')).toHaveLength(12);
+    expect(court.filter(k => k.startsWith('fx.butterfly.'))).toHaveLength(0);
+    expect(snow.filter(k => k === 'ambient.snow')).toHaveLength(24);
+    expect(snow.filter(k => k.startsWith('fx.butterfly.'))).toHaveLength(0);
+    for (const list of [river, garden]) {
+      expect(list.filter(k => k.startsWith('fx.butterfly.'))).toHaveLength(3);
+      expect(list.filter(k => k === 'ambient.petal' || k === 'ambient.snow')).toHaveLength(0);
+    }
+    // 네 맵 모두 구름 그림자 셋.
+    for (const list of [court, snow, river, garden]) expect(list.filter(k => k.startsWith('fx.cloudshadow.'))).toHaveLength(3);
+  });
+
+  it('움직임 줄이기면 구름·나비·꽃잎·눈송이를 모두 감춘다(아니면 모두 보인다)', () => {
+    for (const id of ['garden_u', 'river_z', 'courtyard', 'snow_step']) {
+      const shown = build(id, false), hidden = build(id, true);
+      expect(shown.images.every(i => i.visible()), `${id} 보임`).toBe(true);
+      expect(hidden.images.length).toBe(shown.images.length);
+      expect(hidden.images.some(i => i.visible()), `${id} 감춤`).toBe(false);
+    }
   });
 });
 
