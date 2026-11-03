@@ -5,7 +5,7 @@ import type { DomainEvent } from '../../src/domain/events';
 import { msToTicks } from '../../src/domain/num';
 import type { Enemy, Projectile, RunState, SpawnEntry } from '../../src/domain/types';
 import {
-  bossCue, bossStatus, FLYER_LIFT_CELLS, flyerLift, INTRO_MS, introFrame, isPlacing, PAD_ALPHA_REST, padAlpha, spawnIntros, SPLIT_LABEL_RAISE_CELLS, TOP_FIT, topFit,
+  bossCue, bossStatus, FLYER_LIFT_CELLS, flyerLift, INTRO_MS, introFrame, isPlacing, PAD_ALPHA_REST, padAlpha, spawnIntros, SPLIT_LABEL_RAISE_CELLS, TOP_FIT, topFit, WIND_SPIN, windSpinStep,
 } from '../../src/game/layers/cues';
 import { finishPrep, newRun, ok, ticks } from './helpers';
 
@@ -191,5 +191,28 @@ describe('맨 윗줄 타워의 세계 위쪽 경계 맞춤', () => {
 
   it('아무리 높아도 배율은 minScale 아래로 내려가지 않는다', () => {
     expect(topFit(foot, 400, CELL).scale).toBe(TOP_FIT.minScale);
+  });
+});
+
+describe('바람개비탑 날개 회전', () => {
+  it('평소에는 느리게(한 바퀴 20초 이상), 움직임 줄이기면 돌지 않는다', () => {
+    const idle = windSpinStep(0, 1000, false);
+    expect(idle).toEqual({ turn: WIND_SPIN.idle, boost: 0 });
+    expect((2 * Math.PI) / idle.turn).toBeGreaterThan(20);
+    expect(windSpinStep(WIND_SPIN.boost, 1000, true)).toEqual({ turn: 0, boost: 0 });
+  });
+
+  it('공격 순간 빨라졌다가 0.6초 안에 평소 속도로 돌아오고, 프레임 길이와 상관없이 같은 모양이다', () => {
+    // 같은 1초를 한 번에 가든 16ms씩 가든 회전량과 남은 가속이 같다.
+    const once = windSpinStep(WIND_SPIN.boost, 1000, false);
+    let turn = 0, boost: number = WIND_SPIN.boost;
+    for (let i = 0; i < 1000 / 8; i++) { const s = windSpinStep(boost, 8, false); turn += s.turn; boost = s.boost; }
+    expect(turn).toBeCloseTo(once.turn, 9);
+    expect(boost).toBeCloseTo(once.boost, 9);
+    // 첫 0.1초 회전 속도는 평소의 수십 배, 0.6초 뒤에는 가속이 5% 이하로 줄어 평소 속도에 가깝다.
+    expect(windSpinStep(WIND_SPIN.boost, 100, false).turn / 0.1).toBeGreaterThan(WIND_SPIN.idle * 20);
+    expect(windSpinStep(WIND_SPIN.boost, 600, false).boost).toBeLessThan(WIND_SPIN.boost * 0.06);
+    // 60fps 한 프레임(16ms)에 도는 각도는 45도 미만이라 헛바퀴(역회전처럼 보임)가 없다.
+    expect(windSpinStep(WIND_SPIN.boost, 16, false).turn).toBeLessThan(Math.PI / 4);
   });
 });

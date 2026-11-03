@@ -209,3 +209,19 @@ export function topFit(footY: number, above: number, cellPx: number): { drop: nu
   const drop = Math.min(above - room, TOP_FIT.dropCells * cellPx);
   return { drop, scale: Math.max(TOP_FIT.minScale, Math.min(1, (room + drop) / above)) };
 }
+
+// ── 바람개비탑 날개 회전 ──────────────────────────────────────────────────────────────────────────
+// 날개는 평소 천천히 돌고, 돌풍(즉발 공격)을 날릴 때 순간 빨라졌다가 곧 평소 속도로 돌아온다. 움직임 줄이기면 돌지 않는다(ui-rules-v2 §2).
+
+/** idle: 평소 회전(rad/s, 한 바퀴 약 21초). boost: 공격 순간 더해지는 속도(rad/s)이고 decayMs 시간상수로 줄어든다(총 약 160도, 0.6초 안에 5% 이하). */
+export const WIND_SPIN = { idle: 0.3, boost: 14, decayMs: 200 } as const;
+
+/**
+ * dtMs 동안의 회전량(rad)과 남은 가속(rad/s). 지수로 줄어드는 가속을 적분한 식이라 프레임 길이와 상관없이 같은 모양이다.
+ * 움직임 줄이기면 돌지 않고 가속도 쌓이지 않는다.
+ */
+export function windSpinStep(boost: number, dtMs: number, reducedMotion: boolean): { turn: number; boost: number } {
+  if (reducedMotion) return { turn: 0, boost: 0 };
+  const dt = Math.max(0, dtMs), decay = Math.exp(-dt / WIND_SPIN.decayMs);
+  return { turn: (WIND_SPIN.idle * dt) / 1000 + (boost * WIND_SPIN.decayMs * (1 - decay)) / 1000, boost: boost * decay };
+}

@@ -5,14 +5,15 @@ import { formBranch, type FormId } from '../../domain/towers';
 import type { RunState } from '../../domain/types';
 import { PALETTE } from '../art';
 import { ASSETS, CELL_PX, towerBodyArt, weaponMountOffset, type AssetSpec } from '../assets';
-import { topFit } from './cues';
+import { topFit, WIND_SPIN, windSpinStep } from './cues';
 import { DEPTH, FIXED_WEAPON, toWorld, type LayerContext } from './shared';
 
 /**
  * `form`은 본체 그림이 맞춰진 형태, `lift`는 무기를 기본 높이보다 올리는 높이(월드 px, 형태에 따른 올림 + 장착점이 정한 올림), `mountX`는 장착점이 정한 가로 이동(월드 px).
  * `x`·`y`는 칸 가운데(월드 px), `footY`·`scale`은 세계 위쪽 경계에 맞춘 발판 높이와 몸체·무기 배율(맨 윗줄만 1이 아니다, cues.topFit), `shotLift`는 그에 맞춘 발사 시작점 올림이다.
+ * `spin`·`spinBoost`·`spinAt`은 바람개비탑 날개의 각도(rad)·공격 순간 가속(rad/s)·마지막 갱신 시각(ms)이다.
  */
-interface TowerView { body: Phaser.GameObjects.Image; weapon: Phaser.GameObjects.Image | null; pips: Phaser.GameObjects.Graphics; level: number; branch: string | null; form: FormId | null; lift: number; mountX: number; recoilUntil: number; angle: number; x: number; y: number; footY: number; scale: number; shotLift: number }
+interface TowerView { body: Phaser.GameObjects.Image; weapon: Phaser.GameObjects.Image | null; pips: Phaser.GameObjects.Graphics; level: number; branch: string | null; form: FormId | null; lift: number; mountX: number; recoilUntil: number; angle: number; x: number; y: number; footY: number; scale: number; shotLift: number; spin: number; spinBoost: number; spinAt: number }
 
 /** 알파 경계 상자를 잴 때 이보다 옅은 픽셀(가장자리 잔여 알파)은 무시한다. */
 const TOP_ALPHA_MIN = 16;
@@ -44,7 +45,16 @@ export class TowerLayer {
     const first = e.targets[0];
     if (!first) return;
     const fx = toWorld(e.fromX), fy = toWorld(e.fromY) - CELL_PX * 0.32 - (t?.shotLift ?? 0);
+    if (t && e.towerType === 'wind') this.kickSpin(t);
     if (t && !FIXED_WEAPON.has(e.towerType)) { t.angle = Math.atan2(toWorld(first.y) - fy, toWorld(first.x) - fx); t.recoilUntil = this.c.scene.time.now + 120; }
+  }
+
+  /** 바람개비탑이 돌풍을 날렸다: 날개가 순간 빨라진다. 움직임 줄이기면 돌지 않고 날개 투명도만 한 번 깜빡인다. */
+  private kickSpin(v: TowerView) {
+    const { scene, bridge } = this.c;
+    if (!v.weapon) return;
+    if (bridge.reducedMotion) { scene.tweens.add({ targets: v.weapon, alpha: { from: 0.55, to: 1 }, duration: 240, ease: 'Sine.easeOut' }); return; }
+    v.spinBoost = WIND_SPIN.boost;
   }
 
   sync(s: RunState, time: number) {
@@ -61,7 +71,7 @@ export class TowerLayer {
         const wspec = ASSETS.weapons[t.type];
         const weapon = wspec ? scene.add.image(x, y - CELL_PX * 0.32, wspec.key).setDisplaySize(CELL_PX * wspec.displayCells, CELL_PX * wspec.displayCells) : null;
         const pips = scene.add.graphics();
-        v = { body, weapon, pips, level: 0, branch: null, form: null, lift: 0, mountX: 0, recoilUntil: 0, angle: FIXED_WEAPON.has(t.type) ? 0 : -Math.PI / 2, x, y, footY: y + CELL_PX * 0.32, scale: 1, shotLift: 0 };
+        v = { body, weapon, pips, level: 0, branch: null, form: null, lift: 0, mountX: 0, recoilUntil: 0, angle: FIXED_WEAPON.has(t.type) ? 0 : -Math.PI / 2, x, y, footY: y + CELL_PX * 0.32, scale: 1, shotLift: 0, spin: t.id * 0.9, spinBoost: 0, spinAt: time };
         this.towers.set(t.id, v);
         this.applyForm(v, t.type, t.form);
         if (!bridge.reducedMotion) { body.setScale(body.scaleX * 0.96, body.scaleY * 0.96); scene.tweens.add({ targets: body, scaleX: body.scaleX / 0.96, scaleY: body.scaleY / 0.96, duration: 120 }); }
@@ -73,6 +83,12 @@ export class TowerLayer {
       v.weapon?.setDepth(depth + 1);
       v.pips.setDepth(depth + 2);
       const recoil = time < v.recoilUntil && !bridge.reducedMotion ? 2 : 0;
+      if (t.type === 'wind' && v.weapon) {
+        const step = windSpinStep(v.spinBoost, Math.min(100, time - v.spinAt), bridge.reducedMotion);
+        v.spin += step.turn; v.spinBoost = step.boost;
+        v.weapon.setRotation(v.spin);
+      }
+      v.spinAt = time;
       // 무기 자리는 발판 위 높이(0.64·0.7칸 + 올림)를 맨 윗줄 배율만큼 줄여 발판에서 잰다(배율 1이면 y − 0.32·0.38칸 − 올림과 같다).
       const k = v.scale;
       if (FIXED_WEAPON.has(t.type)) v.weapon?.setPosition(x + v.mountX * k, v.footY - (CELL_PX * 0.7 + v.lift) * k + (bridge.reducedMotion ? 0 : Math.sin(time / 420 + t.id) * 2));
