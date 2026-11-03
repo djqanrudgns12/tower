@@ -2,7 +2,7 @@ import type { Balance, BossSkillKind, EnemyKind } from '../../contracts/balance'
 import type { DomainEvent } from '../../domain/events';
 import { bossDef, burstMarching } from '../../domain/factions';
 import { positionAt, type PathGeometry } from '../../domain/geometry';
-import type { Enemy, FieldHazard, HazardKind, Phase } from '../../domain/types';
+import type { Enemy, FieldHazard, HazardKind, HazardLine, Phase } from '../../domain/types';
 import { airborne } from '../../domain/waves';
 
 // 전장 연출 고르기(대장 기믹·비행·분열). Phaser 없이 상태·사건만 읽어 무엇을 그릴지 정한다.
@@ -225,3 +225,28 @@ export function windSpinStep(boost: number, dtMs: number, reducedMotion: boolean
   const dt = Math.max(0, dtMs), decay = Math.exp(-dt / WIND_SPIN.decayMs);
   return { turn: (WIND_SPIN.idle * dt) / 1000 + (boost * WIND_SPIN.decayMs * (1 - decay)) / 1000, boost: boost * decay };
 }
+
+// ── 지연 폭발(덫 B1 2차 폭죽·노포 B2 도화선) 표시 ─────────────────────────────────────────────────
+// 엔진은 한 번 터지고 사라지는 장판(ZoneHazard.blast)으로 만든다. 터지기 전에는 "어디서 언제 터질지"를 보이고(대기 표시),
+// 터지는 틱의 hazardTriggered(blast)에서 폭발을 보인다. 움직임 줄이기면 부채꼴·불꽃이 움직이지 않고 투명도만 바뀐다(ui-rules-v2 §2).
+
+/** 대기 표시 모양. ring: 덫 둘레 2차 폭죽(반경 칸). fuse: 타워에서 뻗은 도화선 선분(길이·폭 칸, heading은 화면 좌표 라디안). */
+export type BlastLook = { kind: 'ring'; radius: number } | { kind: 'fuse'; length: number; width: number; heading: number };
+
+/** 지연 폭발 장판(또는 hazardPlaced 사건)에서 대기 표시 모양을 고른다. 직선이면 도화선, 아니면 둘레 고리. */
+export function blastLook(h: { radius: number; line: HazardLine | null }): BlastLook {
+  if (h.line) return { kind: 'fuse', length: h.line.length / 1000, width: h.line.width / 1000, heading: Math.atan2(h.line.dy, h.line.dx) };
+  return { kind: 'ring', radius: h.radius / 1000 };
+}
+
+/** 터지기까지 찬 정도(0..1). 놓인 틱에서 터지는 틱까지, 틱 사이 alpha(0..1)만큼 더 간 시각으로 읽는다. */
+export function blastCharge(h: { createdTick: number; expiresTick: number | null }, tick: number, alpha = 0): number {
+  if (h.expiresTick === null || h.expiresTick <= h.createdTick) return 1;
+  return Math.max(0, Math.min(1, (tick + Math.max(0, Math.min(1, alpha)) - h.createdTick) / (h.expiresTick - h.createdTick)));
+}
+
+/** 폭발 연출 길이(ms, 600 이하). 움직임 줄이기면 같은 크기로 투명도만 낮춘다. */
+export const BLAST_BURST_MS = 260;
+/** 도화선 폭발: 선분 위 연기 덩이 하나가 차지하는 길이(칸). 선분 길이를 이 값으로 나눠 덩이 수를 정한다(3개 이상). */
+export const FUSE_PUFF_SPACING_CELLS = 0.7;
+export const fusePuffCount = (lengthCells: number) => Math.max(3, Math.round(lengthCells / FUSE_PUFF_SPACING_CELLS));

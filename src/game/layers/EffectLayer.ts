@@ -1,10 +1,10 @@
 import Phaser from 'phaser';
 import type { DomainEvent } from '../../domain/events';
 import { positionAt } from '../../domain/geometry';
-import type { HazardKind, RunState } from '../../domain/types';
+import type { FieldHazard, HazardKind, RunState } from '../../domain/types';
 import { PALETTE } from '../art';
 import { ASSETS, CELL_PX, WORLD_W } from '../assets';
-import { hazardEndCue, hazardLook, ROLLER_LENGTH_CELLS, ROLLER_THICK_CELLS, rollerHeading, trapCloseCue, wardDotOffsets, ZONE_ALPHA, type BossCue, type HazardLook } from './cues';
+import { BLAST_BURST_MS, blastCharge, blastLook, fusePuffCount, hazardEndCue, hazardLook, ROLLER_LENGTH_CELLS, ROLLER_THICK_CELLS, rollerHeading, trapCloseCue, wardDotOffsets, ZONE_ALPHA, ZONE_FLATTEN, type BlastLook, type BossCue, type HazardLook } from './cues';
 import { DEPTH, toWorld, type LayerContext } from './shared';
 
 /** 처치 보상 표찰의 화면 최소 글자 크기(CSS px, v3 §1-2 13px 하한). */
@@ -13,14 +13,18 @@ const CALLOUT_MIN_CSS_PX = 13;
 /** 발밑 기준점: 길 위치보다 0.14칸 아래(적 그림의 발, EnemyLayer와 같다). */
 const FOOT = CELL_PX * 0.14;
 
-/** 장판·덫·굴림체 그림 하나. 한 번만 그리고 위치·투명도·배율만 바꾼다. */
-interface HazardView { g: Phaser.GameObjects.Graphics; kind: HazardKind }
+/** 장판·덫·굴림체 그림 하나. 한 번만 그리고 위치·투명도·배율만 바꾼다. 지연 폭발 대기 표시(blast)만 찬 정도가 바뀌어 매 프레임 다시 그린다. */
+interface HazardView { g: Phaser.GameObjects.Graphics; kind: HazardKind; blast?: BlastLook }
+
+/** 지연 폭발이 놓일 때 사건에서 읽어 둔 모양과 자리(월드 px). 터질 때 폭발을 그리는 데 쓴다(터진 장판은 같은 틱에 상태에서 사라진다). */
+interface BlastSpot { look: BlastLook; x: number; y: number }
 
 /** 효과 층: 날아가는 투사체, 피격·처치·화상 효과, 즉발 공격 효과, 성문 피해 섬광, 처치 보상 표찰, 대장 기믹·분열 순간 연출. */
 export class EffectLayer {
   private readonly c: LayerContext;
   private shots = new Map<number, Phaser.GameObjects.Image>();
   private hazards = new Map<number, HazardView>();
+  private blasts = new Map<number, BlastSpot>();
   /** 처치 보상 표찰. 미니맵 카메라에서는 감춘다. */
   readonly callouts: Phaser.GameObjects.Container;
 
@@ -213,8 +217,14 @@ export class EffectLayer {
     for (const [id, img] of this.shots) if (!seen.has(id)) { img.destroy(); this.shots.delete(id); }
   }
 
-  /** 덫이 발동했다: 150ms 닫혔다 열린다(움직임 줄이기면 투명도만). 소진되면 syncHazards가 곧 거둔다. */
+  /** 지연 폭발이 놓였다(덫 B1 2차 폭죽·노포 B2 도화선): 터질 때 그릴 모양과 자리를 읽어 둔다. 대기 표시는 syncHazards가 상태로 그린다. */
+  onHazardPlaced(e: Extract<DomainEvent, { type: 'hazardPlaced' }>) {
+    if (e.kind === 'zone' && e.blast) this.blasts.set(e.hazardId, { look: blastLook(e), x: toWorld(e.x), y: toWorld(e.y) + FOOT });
+  }
+
+  /** 덫이 발동했다: 150ms 닫혔다 열린다(움직임 줄이기면 투명도만). 소진되면 syncHazards가 곧 거둔다. 지연 폭발이 터지면 폭발 연출이 대기 표시를 대신한다. */
   onHazardTriggered(e: Extract<DomainEvent, { type: 'hazardTriggered' }>) {
+    if (e.kind === 'zone' && e.blast) { this.detonate(e); return; }
     if (e.kind !== 'trap') return;
     const v = this.hazards.get(e.hazardId);
     if (!v) return;
@@ -234,7 +244,10 @@ export class EffectLayer {
     const seen = new Set<number>();
     for (const h of s.hazards) {
       const look = hazardLook(h, alpha);
-      if (!look) continue;
+      if (!look) {
+        if (h.kind === 'zone' && h.blast) { seen.add(h.id); this.syncBlast(h, s.tick, alpha); }
+        continue;
+      }
       seen.add(h.id);
       let v = this.hazards.get(h.id);
       if (!v) {
@@ -249,6 +262,101 @@ export class EffectLayer {
       }
     }
     for (const [id, v] of this.hazards) if (!seen.has(id)) { this.retireHazard(v); this.hazards.delete(id); }
+    for (const id of this.blasts.keys()) if (!seen.has(id)) this.blasts.delete(id);
+  }
+
+  /**
+   * 지연 폭발 대기 표시: 터질 자리와 시간을 보인다. 덫 2차 폭죽은 폭발 반경의 점선 고리와 가운데 폭죽 표지, 고리 안이 시계 방향으로 차오른다.
+   * 노포 도화선은 타워에서 뻗은 폭발 띠(실제 폭)와 점선 도화선이고, 불꽃이 선 위를 타 들어간다. 움직임 줄이기면 모양은 그대로 두고 투명도만 서서히 짙어진다.
+   */
+  private syncBlast(h: Extract<FieldHazard, { kind: 'zone' }>, tick: number, alpha: number) {
+    const { scene, bridge } = this.c;
+    const reduced = bridge.reducedMotion;
+    const look = blastLook(h);
+    let v = this.hazards.get(h.id);
+    if (!v) {
+      v = { g: scene.add.graphics().setDepth(DEPTH.overlay + 0.4), kind: 'zone', blast: look };
+      const x = toWorld(h.x), y = toWorld(h.y) + FOOT;
+      v.g.setPosition(x, y);
+      if (look.kind === 'fuse') v.g.setRotation(look.heading);
+      this.hazards.set(h.id, v);
+      if (!this.blasts.has(h.id)) this.blasts.set(h.id, { look, x, y });
+    }
+    const charge = blastCharge(h, tick, alpha);
+    v.g.setAlpha(reduced ? 0.35 + 0.55 * charge : 0.92);
+    v.g.clear();
+    if (look.kind === 'ring') this.drawBlastRing(v.g, look.radius * CELL_PX, reduced ? 0 : charge);
+    else this.drawBlastFuse(v.g, look.length * CELL_PX, look.width * CELL_PX, reduced ? 0 : charge);
+  }
+
+  /** 점선 고리(반경 radius px, 세로는 장판처럼 ZONE_FLATTEN으로 눌림)와 가운데 폭죽 표지. progress는 시계 방향 부채꼴 0..1(0이면 그리지 않는다). */
+  private drawBlastRing(g: Phaser.GameObjects.Graphics, rx: number, progress: number) {
+    const ry = rx * ZONE_FLATTEN;
+    const at = (a: number) => new Phaser.Math.Vector2(Math.cos(a) * rx, Math.sin(a) * ry);
+    if (progress > 0) {
+      const start = -Math.PI / 2, steps = Math.max(2, Math.ceil(progress * 28));
+      g.fillStyle(0xf08a3c, 0.3).fillPoints([new Phaser.Math.Vector2(0, 0), ...Array.from({ length: steps + 1 }, (_, i) => at(start + (progress * 2 * Math.PI * i) / steps))], true);
+    }
+    const dashes = Math.max(10, Math.round(rx / 3.2));
+    for (let i = 0; i < dashes; i++) {
+      const a0 = (i * 2 * Math.PI) / dashes, a1 = a0 + (Math.PI * 1.1) / dashes, p0 = at(a0), p1 = at(a1);
+      g.lineStyle(3, PALETTE.outline, 0.85).lineBetween(p0.x, p0.y, p1.x, p1.y);
+      g.lineStyle(1.4, PALETTE.cream, 1).lineBetween(p0.x, p0.y, p1.x, p1.y);
+    }
+    // 작은 폭죽: 둥근 통 + 짧은 도화선 + 불씨(깜빡이지 않고 고정).
+    g.fillStyle(PALETTE.outline, 1).fillCircle(0, -2, 5.2);
+    g.fillStyle(0xd9552b, 1).fillCircle(0, -2, 3.7);
+    g.lineStyle(2, PALETTE.outline, 1).lineBetween(0, -6, 3, -10);
+    g.fillStyle(PALETTE.outline, 1).fillCircle(3, -10.5, 3);
+    g.fillStyle(PALETTE.flowerA, 1).fillCircle(3, -10.5, 1.8);
+  }
+
+  /** 도화선: 원점(타워 발밑)에서 +x 방향으로 length px, 폭 width px의 폭발 띠. progress만큼 앞쪽이 타서 어두워지고 그 끝에 불씨가 있다. */
+  private drawBlastFuse(g: Phaser.GameObjects.Graphics, length: number, width: number, progress: number) {
+    g.fillStyle(0xf08a3c, 0.16).fillRect(0, -width / 2, length, width);
+    const dash = 7, gap = 5, burnt = length * progress;
+    for (let x = 0; x < length; x += dash + gap) {
+      const x1 = Math.min(length, x + dash);
+      g.lineStyle(3, PALETTE.outline, 0.85).lineBetween(x, 0, x1, 0);
+      g.lineStyle(1.4, x1 <= burnt ? PALETTE.woodDark : PALETTE.cream, 1).lineBetween(x, 0, x1, 0);
+    }
+    if (progress > 0) {
+      g.fillStyle(PALETTE.outline, 1).fillCircle(burnt, 0, 4.4);
+      g.fillStyle(PALETTE.flowerA, 1).fillCircle(burnt, 0, 2.8);
+    }
+  }
+
+  /**
+   * 지연 폭발이 터졌다: 대기 표시를 거두고 폭발을 그린다. 덫 2차 폭죽은 반경만큼 퍼지는 고리와 가운데 연기, 노포 도화선은 폭발 띠 전체가 번쩍이지 않고 한 번 옅게 떴다 사라지며 선을 따라 연기 덩이가 핀다.
+   * 대기 표시가 없으면(이어하기·늦은 프레임) 사건의 자리에 반경 0.5칸 고리를 그린다.
+   */
+  private detonate(e: Extract<DomainEvent, { type: 'hazardTriggered' }>) {
+    const { scene, bridge } = this.c;
+    const reduced = bridge.reducedMotion;
+    const wait = this.hazards.get(e.hazardId);
+    if (wait) { scene.tweens.killTweensOf(wait.g); wait.g.destroy(); this.hazards.delete(e.hazardId); }
+    const spot = this.blasts.get(e.hazardId) ?? { look: { kind: 'ring', radius: 0.5 } as BlastLook, x: toWorld(e.x), y: toWorld(e.y) + FOOT };
+    this.blasts.delete(e.hazardId);
+    const g = scene.add.graphics().setDepth(DEPTH.fx).setPosition(spot.x, spot.y);
+    if (spot.look.kind === 'ring') {
+      const rx = spot.look.radius * CELL_PX, ry = rx * ZONE_FLATTEN;
+      g.fillStyle(0xf08a3c, 0.35).fillEllipse(0, 0, rx * 2, ry * 2);
+      g.lineStyle(3, PALETTE.outline, 0.8).strokeEllipse(0, 0, rx * 2, ry * 2);
+      g.lineStyle(1.5, PALETTE.cream, 1).strokeEllipse(0, 0, rx * 2, ry * 2);
+      g.setScale(reduced ? 1 : 0.55);
+      scene.tweens.add({ targets: g, ...(reduced ? {} : { scale: 1 }), alpha: 0, duration: BLAST_BURST_MS, ease: 'Quad.easeOut', onComplete: () => g.destroy() });
+      this.cloud(spot.x, spot.y - 4, CELL_PX * 0.26, 0xf08a3c, BLAST_BURST_MS + 80);
+    } else {
+      const { length, width, heading } = spot.look, L = length * CELL_PX, W = width * CELL_PX;
+      g.setRotation(heading);
+      g.fillStyle(0xf08a3c, 0.4).fillRect(0, -W / 2, L, W);
+      scene.tweens.add({ targets: g, alpha: 0, duration: BLAST_BURST_MS, ease: 'Quad.easeOut', onComplete: () => g.destroy() });
+      const n = fusePuffCount(length);
+      for (let i = 0; i < n; i++) {
+        const d = ((i + 0.5) / n) * L;
+        this.cloud(spot.x + Math.cos(heading) * d, spot.y + Math.sin(heading) * d - 4, Math.max(CELL_PX * 0.14, W * 0.55), 0xf08a3c, BLAST_BURST_MS + 80);
+      }
+    }
   }
 
   /** 사라진 장판·덫·굴림체: 장판 200ms 페이드, 덫은 150ms 닫히며(움직임 줄이기면 투명도만), 굴림체 150ms 페이드. */

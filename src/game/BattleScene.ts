@@ -139,6 +139,8 @@ export class BattleScene extends Phaser.Scene {
       } else if (e.type === 'strike') {
         this.towerLayer.onStrike(e);
         this.effects.onStrike(e, this.towerLayer.weaponLift(e.towerId), enemyLift);
+      } else if (e.type === 'hazardPlaced') {
+        this.effects.onHazardPlaced(e);
       } else if (e.type === 'hazardTriggered') {
         this.effects.onHazardTriggered(e);
       } else if (e.type === 'burn') {
