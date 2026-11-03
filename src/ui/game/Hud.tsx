@@ -42,6 +42,29 @@ export function Hud({ view, burning: rule, mode, compactRail = false, recentDelt
   const [gate, setGate] = useState({ hp: view.gateHp, hits: 0 });
   if (gate.hp !== view.gateHp) setGate({ hp: view.gateHp, hits: view.gateHp < gate.hp ? gate.hits + 1 : gate.hits });
 
+  // 데스크톱 레일(칸이 넉넉한 R 모드)은 연속 정답 보석을 성문 줄로 올린다. 고비 표식까지 붙은 숫자 줄(골드·점수·웨이브)에
+  // 보석이 함께 있으면 1440×900에서 줄이 레일보다 길어져 일시정지 단추가 잘린다. 성문 막대는 남는 폭에 맞춰 줄어드니 어느 줄도 넘치지 않는다.
+  // 압축 레일(크롬북)·휴대폰 상태 바는 이전 배치를 그대로 쓴다.
+  const gemsOnTop = mode === 'R' && !compactRail;
+  const gems = (
+    <span
+      className={css.streak}
+      data-burning={burning || undefined}
+      role="img"
+      aria-label={burning ? `버닝 ${view.burningSecondsLeft}초 남음, ${speed}` : `연속 정답 ${lit}/${rule.streak}, 다 모으면 버닝 ${speed}`}
+      title={burning ? `버닝 · ${speed}` : `연속 정답 · 다 모으면 ${speed}`}
+    >
+      {burning ? (
+        <>
+          <BurningGemIcon active size={16} />
+          <strong className={css.burnNum}>{view.burningSecondsLeft}초</strong>
+        </>
+      ) : (
+        Array.from({ length: rule.streak }, (_, i) => <BurningGemIcon key={i} active={i < lit} size={14} />)
+      )}
+    </span>
+  );
+
   return (
     <div className={`${css.hud} ${mode === 'S' ? css.bar : css.rail} ${compactRail ? css.compact : ''}`}>
       <div className={css.top}>
@@ -61,6 +84,7 @@ export function Hud({ view, burning: rule, mode, compactRail = false, recentDelt
           </span>
           <span className={css.gateNum}>{view.gateHp}<span className={css.of}>/{view.gateMaxHp}</span></span>
         </div>
+        {gemsOnTop && gems}
         <button type="button" className={css.pause} onClick={onPause} aria-label="일시정지">
           <PauseBarsIcon size={18} />
         </button>
@@ -89,22 +113,7 @@ export function Hud({ view, burning: rule, mode, compactRail = false, recentDelt
           <strong className={css.num}>{waveNo}</strong>
           {view.milestoneWave && <span className={css.milestone}>고비</span>}
         </span>
-        <span
-          className={css.streak}
-          data-burning={burning || undefined}
-          role="img"
-          aria-label={burning ? `버닝 ${view.burningSecondsLeft}초 남음, ${speed}` : `연속 정답 ${lit}/${rule.streak}, 다 모으면 버닝 ${speed}`}
-          title={burning ? `버닝 · ${speed}` : `연속 정답 · 다 모으면 ${speed}`}
-        >
-          {burning ? (
-            <>
-              <BurningGemIcon active size={16} />
-              <strong className={css.burnNum}>{view.burningSecondsLeft}초</strong>
-            </>
-          ) : (
-            Array.from({ length: rule.streak }, (_, i) => <BurningGemIcon key={i} active={i < lit} size={14} />)
-          )}
-        </span>
+        {!gemsOnTop && gems}
       </div>
     </div>
   );

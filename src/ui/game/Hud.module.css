@@ -8,6 +8,8 @@
 }
 
 .rail {
+  /* 칸이 내용 길이에 끌려 레일보다 넓어지지 않게 한다(넘치면 일시정지 단추가 잘린다). */
+  grid-template-columns: minmax(0, 1fr);
   border-bottom: 2px solid var(--walnut-3);
 }
 
@@ -188,6 +190,12 @@
   padding: 3px 8px;
   border-radius: 999px;
   background: var(--walnut-3);
+}
+
+/* 데스크톱 레일은 보석이 성문 줄(성문 막대 오른쪽, 일시정지 단추 왼쪽)에 선다. */
+.top .streak {
+  flex: none;
+  margin-left: 0;
 }
 
 .streak[data-burning] {
