@@ -4,7 +4,7 @@ import { DEFAULTS } from '../../content';
 import { composeGroundArt, drawGround, isTreeCell, slotBaseSprites } from '../art';
 import { ASSETS, CELL_PX, TEX, WORLD_H, WORLD_W } from '../assets';
 import { composeLayoutGround, padSprites, type PadSprite } from '../layoutGround';
-import { claimedDecorations, layoutFor, resolvePlacements, type MapLayout, type PlacedArt } from '../layouts';
+import { claimedDecorations, layoutFor, resolvePlacements, steleOriginY, type MapLayout, type PlacedArt } from '../layouts';
 import { PAD_FADE_MS, isPlacing, padAlpha } from './cues';
 import { selectedCell } from './InputLayer';
 import { DEPTH, type LayerContext } from './shared';
@@ -74,7 +74,7 @@ export class GroundLayer {
     const img = this.c.scene.add.image((x + 0.5) * CELL_PX, (y + 0.5) * CELL_PX, key);
     const src = img.texture.getSourceImage() as { width: number; height: number };
     const cells = key === 'map.gate' ? 1.8 : 1.05;
-    return img.setOrigin(0.5, key === 'map.gate' ? 0.75 : 0.85).setDisplaySize(CELL_PX * cells, (CELL_PX * cells * src.height) / src.width).setDepth(DEPTH.units + (y + 0.5) * CELL_PX);
+    return img.setOrigin(0.5, key === 'map.gate' ? 0.75 : key === 'deco.stele' ? steleOriginY(y) : 0.85).setDisplaySize(CELL_PX * cells, (CELL_PX * cells * src.height) / src.width).setDepth(DEPTH.units + (y + 0.5) * CELL_PX);
   }
 
   private placeArt(p: PlacedArt) {

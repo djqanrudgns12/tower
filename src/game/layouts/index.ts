@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import type { MapConfig } from '../../contracts/maps';
 import gardenU from './garden_u.layout.json';
+import courtyard from './courtyard.layout.json';
 import riverZ from './river_z.layout.json';
 
 export { GROUND_KITS, groundKitFor, type GroundKit } from './kits';
@@ -47,7 +48,7 @@ export type MapLayout = z.infer<typeof mapLayoutSchema>;
 export type LayoutPlacement = MapLayout['placements'][number];
 
 /** 배치표 원본(시험이 형식 오류를 잡도록 그대로 내보낸다). */
-export const RAW_LAYOUTS: Record<string, unknown> = { garden_u: gardenU, river_z: riverZ };
+export const RAW_LAYOUTS: Record<string, unknown> = { garden_u: gardenU, river_z: riverZ, courtyard };
 
 const LAYOUTS = new Map<string, MapLayout>();
 for (const [id, raw] of Object.entries(RAW_LAYOUTS)) {
@@ -57,6 +58,9 @@ for (const [id, raw] of Object.entries(RAW_LAYOUTS)) {
 }
 
 export const layoutFor = (mapId: string): MapLayout | null => LAYOUTS.get(mapId) ?? null;
+
+/** 비석(deco.stele)의 기준점 세로 비율(그림 높이 대비). 칸 위로 솟게 두되, 맨 윗줄 칸이면 위·새김 글자가 잘리지 않게 낮춘다. 그리는 쪽(GroundLayer)과 가림 시험이 같은 값을 쓴다. */
+export const steleOriginY = (cellY: number) => (cellY === 0 ? 0.55 : 0.85);
 
 /** 배치표가 맡은 장식 id. 이 장식 칸에는 기본 나무·바위를 세우지 않는다. */
 export const claimedDecorations = (layout: MapLayout) => new Set(layout.placements.flatMap(p => p.decorationIds ?? []));

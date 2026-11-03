@@ -4,7 +4,7 @@ import { describe, expect, it } from 'vitest';
 import { MAPS } from '../../src/content';
 import { assetManifestSchema } from '../../src/contracts/assetManifest';
 import { PAD_CELLS } from '../../src/game/layoutGround';
-import { artRect, claimedDecorations, distanceToPolyline, GROUND_KITS, grassMasks, groundKitFor, layoutFor, mapLayoutSchema, pathCenterline, pathPolyline, RAW_LAYOUTS, resolvePlacements } from '../../src/game/layouts';
+import { artRect, claimedDecorations, distanceToPolyline, GROUND_KITS, grassMasks, groundKitFor, layoutFor, mapLayoutSchema, pathCenterline, pathPolyline, RAW_LAYOUTS, resolvePlacements, steleOriginY } from '../../src/game/layouts';
 
 // 맵 배치표(art-bible-v2 §2)의 형식·가림·풀 마스크 검사. 그림 위치는 렌더러와 같은 artRect로 계산한다.
 
@@ -102,11 +102,11 @@ describe.each(LAYOUT_MAPS)('지면 배치표 형식·연결(%s)', mapId => {
     // 장식 칸(±0.4칸)은 그 칸을 맡은 배치와 같은 무리(연못 둘레 꽃·돌 등)만 겹칠 수 있다.
     const owner = new Map(layout.placements.flatMap(p => (p.decorationIds ?? []).map(id => [id, p.group ?? p.key] as const)));
     const decorCells = map.decorations.flatMap(d => d.cells.map(([x, y]) => ({ id: d.id, x: x + 0.5, y: y + 0.5 })));
-    // 배치표가 맡지 않은 비석은 GroundLayer.placeDecor 그대로(1.05칸, 기준점 0.5·0.85) 칸 위로 솟는다. 그 불투명 영역도 지킨다.
+    // 배치표가 맡지 않은 비석은 GroundLayer.placeDecor 그대로(1.05칸, 기준점 0.5·steleOriginY) 칸 위로 솟는다. 그 불투명 영역도 지킨다.
     const stele = readAlpha(`public/assets/${fileOf.get('deco.stele')}`);
     const steleBoxes = map.decorations.filter(d => d.kind === 'culture' && !owner.has(d.id)).map(d => {
       const [x, y] = d.cells[0]!;
-      const r = artRect({ key: d.id, kind: 'prop', asset: 'deco.stele', cx: x + 0.5, cy: y + 0.5, w: 1.05, ox: 0.5, oy: 0.85 }, stele.width, stele.height);
+      const r = artRect({ key: d.id, kind: 'prop', asset: 'deco.stele', cx: x + 0.5, cy: y + 0.5, w: 1.05, ox: 0.5, oy: steleOriginY(y) }, stele.width, stele.height);
       let x0 = Infinity, y0 = Infinity, x1 = -Infinity, y1 = -Infinity;
       for (let j = 0; j < stele.height; j++) for (let i = 0; i < stele.width; i++) if (stele.alpha[j * stele.width + i]! >= 128) {
         x0 = Math.min(x0, i); x1 = Math.max(x1, i + 1); y0 = Math.min(y0, j); y1 = Math.max(y1, j + 1);
