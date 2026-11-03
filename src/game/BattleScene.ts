@@ -6,6 +6,7 @@ import { positionAt } from '../domain/geometry';
 import { drawSprites } from './art';
 import { applyManifest, CELL_PX, WORLD_H, WORLD_W } from './assets';
 import type { FieldBridge } from './bridge';
+import { AmbientLayer } from './layers/AmbientLayer';
 import { EffectLayer } from './layers/EffectLayer';
 import { EnemyLayer } from './layers/EnemyLayer';
 import { GroundLayer } from './layers/GroundLayer';
@@ -22,6 +23,7 @@ export class BattleScene extends Phaser.Scene {
   private bridge!: FieldBridge;
   private ground!: GroundLayer;
   private towerLayer!: TowerLayer;
+  private ambient!: AmbientLayer;
   private enemyLayer!: EnemyLayer;
   private effects!: EffectLayer;
   private inputLayer!: InputLayer;
@@ -61,6 +63,7 @@ export class BattleScene extends Phaser.Scene {
     this.enemyLayer = new EnemyLayer(c);
     this.effects = new EffectLayer(c);
     this.towerLayer = new TowerLayer(c);
+    this.ambient = new AmbientLayer(c);
     this.miniFrame = this.add.graphics().setDepth(DEPTH.ui + 1);
     this.cameras.main.setBounds(0, 0, WORLD_W, WORLD_H).setRoundPixels(false);
     this.cameras.main.ignore(this.miniFrame);
@@ -158,6 +161,7 @@ export class BattleScene extends Phaser.Scene {
     this.enemyLayer.advance(s);
     this.towerLayer.sync(s, time);
     this.ground.syncPads(s, delta);
+    this.ambient.update(delta);
     this.enemyLayer.sync(s, time, alpha);
     this.effects.syncHazards(s, alpha);
     this.effects.syncShots(s, alpha, (id, a) => this.enemyLayer.progressOf(id, a), id => this.towerLayer.weaponLift(id), id => this.enemyLayer.liftOf(id));
