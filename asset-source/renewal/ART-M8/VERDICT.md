@@ -9,3 +9,5 @@
 - 한 차례 규격 검사 PASS: 정확한 12역할 집합, 원본 1024px RGB와 순백 외곽, 결과 RGBA 치수·투명 외곽·pivot, 두 접촉판 규격.
 - 총 41파일: raw 12 + sources 12 + r1 12 + 접촉판 2 + manifest.json / PROMPTS.json / VERDICT.md 3.
 - 제작자 자체검수 draft. 독립 아트 승인·게임 내 확인·저장소 시험·빌드는 미실행. 커밋하지 않았다.
+
+- 재생성(2026-11-03, Codex / OpenAI built-in image_gen): 54px에서 walker와 구별되지 않던 runner·flyer·splitter 3장을 각각 낮은 공중 질주+긴 스카프 / 대형 돛천 행글라이더 / 양쪽 어깨의 큰 둥근 보따리 두 개로 교체했다. PROMPTS.json에 최종 프롬프트·생성 경로·재생성 사유를 기록했고, 지정 처리 명령 `ART-M8 ok 12` 및 잔디·어두운 접촉판과 별도 54px 비교에서 세 역할의 실루엣 구별을 확인했다. 게임 내 확인·빌드는 미실행, 커밋하지 않았다.
