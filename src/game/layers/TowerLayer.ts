@@ -5,10 +5,14 @@ import { formBranch, type FormId } from '../../domain/towers';
 import type { RunState } from '../../domain/types';
 import { PALETTE } from '../art';
 import { ASSETS, CELL_PX, towerBodyArt, weaponMountOffset, type AssetSpec } from '../assets';
+import { topFit } from './cues';
 import { DEPTH, FIXED_WEAPON, toWorld, type LayerContext } from './shared';
 
-/** `form`은 본체 그림이 맞춰진 형태, `lift`는 무기를 기본 높이보다 올리는 높이(월드 px, 형태에 따른 올림 + 장착점이 정한 올림), `mountX`는 장착점이 정한 가로 이동(월드 px). */
-interface TowerView { body: Phaser.GameObjects.Image; weapon: Phaser.GameObjects.Image | null; pips: Phaser.GameObjects.Graphics; level: number; branch: string | null; form: FormId | null; lift: number; mountX: number; recoilUntil: number; angle: number }
+/**
+ * `form`은 본체 그림이 맞춰진 형태, `lift`는 무기를 기본 높이보다 올리는 높이(월드 px, 형태에 따른 올림 + 장착점이 정한 올림), `mountX`는 장착점이 정한 가로 이동(월드 px).
+ * `x`·`y`는 칸 가운데(월드 px), `footY`·`scale`은 세계 위쪽 경계에 맞춘 발판 높이와 몸체·무기 배율(맨 윗줄만 1이 아니다, cues.topFit), `shotLift`는 그에 맞춘 발사 시작점 올림이다.
+ */
+interface TowerView { body: Phaser.GameObjects.Image; weapon: Phaser.GameObjects.Image | null; pips: Phaser.GameObjects.Graphics; level: number; branch: string | null; form: FormId | null; lift: number; mountX: number; recoilUntil: number; angle: number; x: number; y: number; footY: number; scale: number; shotLift: number }
 
 /** 알파 경계 상자를 잴 때 이보다 옅은 픽셀(가장자리 잔여 알파)은 무시한다. */
 const TOP_ALPHA_MIN = 16;
@@ -26,7 +30,7 @@ export class TowerLayer {
   constructor(c: LayerContext) { this.c = c; }
 
   /** 발사체·즉발 효과의 시작점도 무기와 같이 올린다(EffectLayer가 읽는다). */
-  weaponLift(towerId: number): number { return this.towers.get(towerId)?.lift ?? 0; }
+  weaponLift(towerId: number): number { return this.towers.get(towerId)?.shotLift ?? 0; }
 
   onFire(e: Extract<DomainEvent, { type: 'fire' }>) {
     const t = this.towers.get(e.towerId);
@@ -39,7 +43,7 @@ export class TowerLayer {
     const t = this.towers.get(e.towerId);
     const first = e.targets[0];
     if (!first) return;
-    const fx = toWorld(e.fromX), fy = toWorld(e.fromY) - CELL_PX * 0.32 - (t?.lift ?? 0);
+    const fx = toWorld(e.fromX), fy = toWorld(e.fromY) - CELL_PX * 0.32 - (t?.shotLift ?? 0);
     if (t && !FIXED_WEAPON.has(e.towerType)) { t.angle = Math.atan2(toWorld(first.y) - fy, toWorld(first.x) - fx); t.recoilUntil = this.c.scene.time.now + 120; }
   }
 
@@ -57,7 +61,7 @@ export class TowerLayer {
         const wspec = ASSETS.weapons[t.type];
         const weapon = wspec ? scene.add.image(x, y - CELL_PX * 0.32, wspec.key).setDisplaySize(CELL_PX * wspec.displayCells, CELL_PX * wspec.displayCells) : null;
         const pips = scene.add.graphics();
-        v = { body, weapon, pips, level: 0, branch: null, form: null, lift: 0, mountX: 0, recoilUntil: 0, angle: FIXED_WEAPON.has(t.type) ? 0 : -Math.PI / 2 };
+        v = { body, weapon, pips, level: 0, branch: null, form: null, lift: 0, mountX: 0, recoilUntil: 0, angle: FIXED_WEAPON.has(t.type) ? 0 : -Math.PI / 2, x, y, footY: y + CELL_PX * 0.32, scale: 1, shotLift: 0 };
         this.towers.set(t.id, v);
         this.applyForm(v, t.type, t.form);
         if (!bridge.reducedMotion) { body.setScale(body.scaleX * 0.96, body.scaleY * 0.96); scene.tweens.add({ targets: body, scaleX: body.scaleX / 0.96, scaleY: body.scaleY / 0.96, duration: 120 }); }
@@ -69,8 +73,10 @@ export class TowerLayer {
       v.weapon?.setDepth(depth + 1);
       v.pips.setDepth(depth + 2);
       const recoil = time < v.recoilUntil && !bridge.reducedMotion ? 2 : 0;
-      if (FIXED_WEAPON.has(t.type)) v.weapon?.setPosition(x + v.mountX, y - CELL_PX * 0.38 - v.lift + (bridge.reducedMotion ? 0 : Math.sin(time / 420 + t.id) * 2));
-      else v.weapon?.setPosition(x + v.mountX - Math.cos(v.angle) * recoil, y - CELL_PX * 0.32 - v.lift - Math.sin(v.angle) * recoil).setRotation(v.angle);
+      // 무기 자리는 발판 위 높이(0.64·0.7칸 + 올림)를 맨 윗줄 배율만큼 줄여 발판에서 잰다(배율 1이면 y − 0.32·0.38칸 − 올림과 같다).
+      const k = v.scale;
+      if (FIXED_WEAPON.has(t.type)) v.weapon?.setPosition(x + v.mountX * k, v.footY - (CELL_PX * 0.7 + v.lift) * k + (bridge.reducedMotion ? 0 : Math.sin(time / 420 + t.id) * 2));
+      else v.weapon?.setPosition(x + v.mountX * k - Math.cos(v.angle) * recoil, v.footY - (CELL_PX * 0.64 + v.lift) * k - Math.sin(v.angle) * recoil).setRotation(v.angle);
       if (v.level !== t.level || v.branch !== t.form) {
         if (v.level > 0 && v.branch !== t.form) this.popEvolved(v);
         v.level = t.level; v.branch = t.form;
@@ -113,6 +119,28 @@ export class TowerLayer {
     v.lift = this.liftOf(base, art) + mount.lift;
     v.mountX = mount.dx;
     if (type === 'frost') v.weapon?.setVisible(art.key === base.key);
+    this.fitTop(v, type, art);
+  }
+
+  /**
+   * 맨 윗줄 타워가 세계 위쪽 경계에서 잘리지 않게 발판을 조금 내리고 필요하면 몸체·무기를 줄인다(cues.topFit).
+   * 몸체와 떠 있는 무기(서리·번개·바람개비) 가운데 더 높이 솟은 불투명 윗변을 기준으로 하며, 경계에 닿지 않는 타워는 배율 1·내림 0이라 그대로다.
+   */
+  private fitTop(v: TowerView, type: TowerId, art: AssetSpec) {
+    const foot = v.y + CELL_PX * 0.32;
+    let above = displayHeight(art) * (art.originY - this.topRow(art.key) / art.height);
+    const wspec = ASSETS.weapons[type];
+    if (v.weapon && wspec && FIXED_WEAPON.has(type)) {
+      const wh = CELL_PX * wspec.displayCells;
+      // 떠 있는 무기: 발판에서 무기 가운데까지(0.7칸 + 올림) + 가운데에서 불투명 윗변까지 + 위아래 흔들림 2px.
+      above = Math.max(above, CELL_PX * 0.7 + v.lift + wh * (0.5 - this.topRow(wspec.key) / wspec.height) + 2);
+    }
+    const { drop, scale } = topFit(foot, above, CELL_PX);
+    v.scale = scale;
+    v.footY = foot + drop;
+    v.shotLift = v.lift * scale - drop - CELL_PX * 0.64 * (1 - scale);
+    v.body.setPosition(v.x, v.footY).setDisplaySize(CELL_PX * art.displayCells * scale, displayHeight(art) * scale);
+    if (v.weapon && wspec) v.weapon.setDisplaySize(CELL_PX * wspec.displayCells * scale, CELL_PX * wspec.displayCells * scale);
   }
 
   /**

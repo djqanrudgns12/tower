@@ -191,3 +191,21 @@ export function isPlacing(phase: Phase, sel: { previewType: string | null; slotI
 export function padAlpha(o: { occupied: boolean; placing: boolean; focused: boolean; highContrast: boolean }): number {
   return o.occupied || o.placing || o.focused || o.highContrast ? 1 : PAD_ALPHA_REST;
 }
+
+// ── 맨 윗줄 타워의 세계 위쪽 경계 맞춤 ──────────────────────────────────────────────────────────────
+// 캔버스가 세계(15×9칸)와 정확히 같아 위쪽 경계 밖은 그릴 수 없다(레이아웃 계약: 칸 = 캔버스 너비/15). 맨 윗줄 칸의 타워가 칸 위로 솟은 만큼 잘리지 않게
+// 발판을 조금 내리고 필요하면 조금 줄인다. 위쪽 줄(경계에 닿지 않는 타워)은 그대로다.
+
+/** 발판을 내리는 최대 거리(칸)·줄이는 최소 배율·위쪽 경계에서 남기는 여유(월드 px). 발판을 너무 내리면 받침에서 떠 길을 가린다. */
+export const TOP_FIT = { dropCells: 0.08, minScale: 0.8, marginPx: 1 } as const;
+
+/**
+ * footY는 타워 발판(월드 px), above는 그 위로 솟은 가장 높은 불투명 부분(월드 px)이다. 경계 안에 들면 그대로(drop 0, scale 1),
+ * 아니면 먼저 발판을 내리고 모자란 만큼 발판을 기준으로 줄인다.
+ */
+export function topFit(footY: number, above: number, cellPx: number): { drop: number; scale: number } {
+  const room = footY - TOP_FIT.marginPx;
+  if (above <= room) return { drop: 0, scale: 1 };
+  const drop = Math.min(above - room, TOP_FIT.dropCells * cellPx);
+  return { drop, scale: Math.max(TOP_FIT.minScale, Math.min(1, (room + drop) / above)) };
+}

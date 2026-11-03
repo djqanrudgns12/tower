@@ -5,7 +5,7 @@ import type { DomainEvent } from '../../src/domain/events';
 import { msToTicks } from '../../src/domain/num';
 import type { Enemy, Projectile, RunState, SpawnEntry } from '../../src/domain/types';
 import {
-  bossCue, bossStatus, FLYER_LIFT_CELLS, flyerLift, INTRO_MS, introFrame, isPlacing, PAD_ALPHA_REST, padAlpha, spawnIntros, SPLIT_LABEL_RAISE_CELLS,
+  bossCue, bossStatus, FLYER_LIFT_CELLS, flyerLift, INTRO_MS, introFrame, isPlacing, PAD_ALPHA_REST, padAlpha, spawnIntros, SPLIT_LABEL_RAISE_CELLS, TOP_FIT, topFit,
 } from '../../src/game/layers/cues';
 import { finishPrep, newRun, ok, ticks } from './helpers';
 
@@ -168,5 +168,28 @@ describe('설치 받침 밝기', () => {
     expect(PAD_ALPHA_REST).toBe(0.4);
     expect(padAlpha(rest)).toBe(PAD_ALPHA_REST);
     for (const k of ['occupied', 'placing', 'focused', 'highContrast'] as const) expect(padAlpha({ ...rest, [k]: true })).toBe(1);
+  });
+});
+
+describe('맨 윗줄 타워의 세계 위쪽 경계 맞춤', () => {
+  const CELL = 64, foot = 0.82 * CELL;
+
+  it('경계 안에 드는 타워(위쪽 줄)는 그대로다', () => {
+    expect(topFit(foot + CELL, 65, CELL)).toEqual({ drop: 0, scale: 1 });
+    expect(topFit(foot, foot - TOP_FIT.marginPx, CELL)).toEqual({ drop: 0, scale: 1 });
+  });
+
+  it('맨 윗줄에서 모자라면 발판을 최대 0.08칸 내리고, 남은 만큼 줄여 윗변이 경계 안에 든다', () => {
+    const fit = topFit(foot, 65, CELL);
+    expect(fit.drop).toBeCloseTo(TOP_FIT.dropCells * CELL, 6);
+    expect(fit.scale).toBeLessThan(1);
+    // 줄인 키가 (발판 − 여유)에 정확히 맞는다.
+    expect(65 * fit.scale).toBeCloseTo(foot + fit.drop - TOP_FIT.marginPx, 6);
+    // 조금 모자란 정도는 내리기만 하고 줄이지 않는다.
+    expect(topFit(foot, foot + 3, CELL)).toEqual({ drop: 4, scale: 1 });
+  });
+
+  it('아무리 높아도 배율은 minScale 아래로 내려가지 않는다', () => {
+    expect(topFit(foot, 400, CELL).scale).toBe(TOP_FIT.minScale);
   });
 });
