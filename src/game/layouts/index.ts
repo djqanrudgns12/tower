@@ -3,6 +3,7 @@ import type { MapConfig } from '../../contracts/maps';
 import gardenU from './garden_u.layout.json';
 import courtyard from './courtyard.layout.json';
 import riverZ from './river_z.layout.json';
+import snowStep from './snow_step.layout.json';
 
 export { GROUND_KITS, groundKitFor, type GroundKit } from './kits';
 
@@ -48,7 +49,7 @@ export type MapLayout = z.infer<typeof mapLayoutSchema>;
 export type LayoutPlacement = MapLayout['placements'][number];
 
 /** 배치표 원본(시험이 형식 오류를 잡도록 그대로 내보낸다). */
-export const RAW_LAYOUTS: Record<string, unknown> = { garden_u: gardenU, river_z: riverZ, courtyard };
+export const RAW_LAYOUTS: Record<string, unknown> = { garden_u: gardenU, river_z: riverZ, courtyard, snow_step: snowStep };
 
 const LAYOUTS = new Map<string, MapLayout>();
 for (const [id, raw] of Object.entries(RAW_LAYOUTS)) {
