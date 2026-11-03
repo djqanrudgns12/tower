@@ -2,6 +2,8 @@ import { z } from 'zod';
 import type { MapConfig } from '../../contracts/maps';
 import gardenU from './garden_u.layout.json';
 
+export { GROUND_KITS, groundKitFor, type GroundKit } from './kits';
+
 // 맵별 손 배치표(art-bible-v2 §2). 배치표가 있는 맵만 새 지면 조립(layoutGround.ts)을 쓰고,
 // 없는 맵(river_z·courtyard·snow_step)은 기존 composeGroundArt/drawGround로 그린다.
 // 이 파일은 Phaser를 모른다. 단위 시험이 같은 기하(배치 위치·길 중심선·풀 마스크)를 그대로 쓴다.

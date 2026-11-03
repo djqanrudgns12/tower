@@ -1,31 +1,25 @@
 import type Phaser from 'phaser';
 import type { MapConfig } from '../contracts/maps';
 import { ASSETS, CELL_PX, TEX } from './assets';
-import { artRect, grassMasks, lineNoise, pathCenterline, resolvePlacements, type MapLayout, type PlacedArt, type ShadePool } from './layouts';
+import { artRect, grassMasks, groundKitFor, lineNoise, pathCenterline, resolvePlacements, type GroundKit, type MapLayout, type PlacedArt, type ShadePool } from './layouts';
 
-// 배치표가 있는 맵의 지면 조립(art-bible-v2 §2, ART-R1 재료).
-// 풀 3톤은 맵 id로 정해지는 저주파 마스크로 섞고, 길은 둥근 중심선을 따라 폭이 조금씩 흔들리는 부드러운 띠로 그린다.
+// 배치표가 있는 맵의 지면 조립(art-bible-v2 §2, ART-R1 재료). 재료 id와 색은 맵별 묶음(layouts/kits.ts GroundKit)이 정한다.
+// 바닥 3톤은 맵 id로 정해지는 저주파 마스크로 섞고, 길은 둥근 중심선을 따라 폭이 조금씩 흔들리는 부드러운 띠로 그린다.
 // 소품은 손 배치표대로만 둔다. 격자 난수 흩뿌리기는 쓰지 않는다.
 
 const C = CELL_PX * TEX;
-
-/** 배치표 맵의 지면 재료 ID. 풀 기본·흙이 없으면 조립하지 않고 기존 지면으로 되돌아간다. */
-export const LAYOUT_GROUND = {
-  base: 'ground.grass.base', light: 'ground.grass.light', shade: 'ground.grass.shade', dirt: 'path.dirt',
-  pads: ['slot.pad.0', 'slot.pad.1'], fallbackPad: 'slot.base', entry: 'map.entry',
-} as const;
 
 /**
  * 길 모양(칸). 흙 반폭은 0.375칸을 중심으로 ±0.04칸 흔들리고(두 주기의 결정론적 잡음), 바깥 흙빛 띠는 0.03~0.07칸으로 흐리게 번진다.
  * 굽이는 중심선 반지름 0.6칸. 논리 중심선은 칸 중심이다(PRD §6.1).
  */
-const PATH = { half: 0.375, wobble: [0.028, 0.012], fringe: [0.03, 0.04], corner: 0.6, step: 0.04, fringeColor: '#b48d58', haloColor: '#2f4a16' } as const;
+const PATH = { half: 0.375, wobble: [0.028, 0.012], fringe: [0.03, 0.04], corner: 0.6, step: 0.04 } as const;
 /** 설치 받침의 보이는 크기(칸): 그림의 알파 경계 상자 너비를 이 값에 맞춘다. 두 종이 같은 크기로 보인다. */
 export const PAD_CELLS = 0.8;
 /** 풀 마스크 표본 밀도(칸당). 8px마다 한 표본을 계산해 부드럽게 늘린다. */
 const MASK_SAMPLES = 16;
-/** 풀 3톤 대비: 질감 섞기 세기와 그 위에 얹는 색조(곱하기 그늘·밝게 볕). 타워·적보다 눈에 띄지 않게 낮게 둔다. */
-const TONE = { shade: 1, light: 1, shadeTint: ['#557a2c', 0.28], lightTint: ['#fff0b8', 0.14] } as const;
+/** 바닥 3톤 대비: 그늘·볕 질감을 섞는 세기. 그 위에 얹는 색조(곱하기 그늘·밝게 볕)는 맵별 묶음이 정한다. 타워·적보다 눈에 띄지 않게 낮게 둔다. */
+const TONE = { shade: 1, light: 1 } as const;
 
 type Ctx = CanvasRenderingContext2D;
 
@@ -48,15 +42,17 @@ function alphaBox(im: HTMLImageElement | HTMLCanvasElement) {
 export interface PadSprite { slotId: string; key: string; x: number; y: number; scale: number; originX: number; originY: number }
 
 /**
- * 설치 받침 배치: 낮은 돌 기단 두 종을 자리 순서대로 번갈아 쓴다. 알파 경계 상자 너비를 PAD_CELLS칸에 맞추고 상자 가운데를 칸 가운데에 둔다.
+ * 설치 받침 배치: 낮은 돌 기단 두 종(맵별 묶음)을 자리 순서대로 번갈아 쓴다. 알파 경계 상자 너비를 PAD_CELLS칸에 맞추고 상자 가운데를 칸 가운데에 둔다.
  * 받침 재료가 하나도 없으면 빈 배열(지면 쪽에 구운 받침을 쓰는 경로)이다.
  */
 export function padSprites(scene: Phaser.Scene, map: MapConfig): PadSprite[] {
+  const kit = groundKitFor(map.id);
+  if (!kit) return [];
   const t = scene.textures;
   const boxes = new Map<string, ReturnType<typeof alphaBox>>();
   const out: PadSprite[] = [];
   map.slots.forEach((s, i) => {
-    const key = [LAYOUT_GROUND.pads[i % 2]!, LAYOUT_GROUND.fallbackPad].find(k => t.exists(k));
+    const key = [kit.pads[i % 2]!, kit.fallbackPad].find(k => t.exists(k));
     if (!key) return;
     const im = t.get(key).getSourceImage() as HTMLImageElement | HTMLCanvasElement;
     if (!boxes.has(key)) boxes.set(key, alphaBox(im));
@@ -66,10 +62,11 @@ export function padSprites(scene: Phaser.Scene, map: MapConfig): PadSprite[] {
   return out;
 }
 
-/** 배치표대로 지면을 조립한다. 재료가 없으면 false(호출하는 쪽이 기존 composeGroundArt/drawGround를 쓴다). */
+/** 배치표대로 지면을 조립한다. 맵별 재료 묶음이 없거나 바닥·길 재료가 없으면 false(호출하는 쪽이 기존 composeGroundArt/drawGround를 쓴다). */
 export function composeLayoutGround(scene: Phaser.Scene, map: MapConfig, layout: MapLayout): boolean {
   const t = scene.textures;
-  if (!t.exists(LAYOUT_GROUND.base) || !t.exists(LAYOUT_GROUND.dirt)) return false;
+  const kit: GroundKit | null = groundKitFor(map.id);
+  if (!kit || !t.exists(kit.base) || !t.exists(kit.dirt)) return false;
   const W = map.gridWidth * C, H = map.gridHeight * C;
   const tex = t.createCanvas(ASSETS.ground.key, W, H);
   if (!tex) return false;
@@ -104,7 +101,7 @@ export function composeLayoutGround(scene: Phaser.Scene, map: MapConfig, layout:
   const placed = resolvePlacements(layout, map);
 
   // 1. 풀: 기본 질감 위에 그늘·볕 질감을 큰 저주파 마스크로 섞고 색조를 조금 얹는다. 숲 덩이 발밑은 그늘 웅덩이로 덮는다.
-  fillPattern(ctx, LAYOUT_GROUND.base);
+  fillPattern(ctx, kit.base);
   const pools: ShadePool[] = placed.filter(p => p.kind === 'grove').map(p => {
     const im = t.exists(p.asset) ? img(p.asset) : null;
     const r = im ? artRect(p, im.width, im.height) : { left: p.cx - p.w / 2, top: p.cy - p.w, width: p.w, height: p.w };
@@ -119,10 +116,10 @@ export function composeLayoutGround(scene: Phaser.Scene, map: MapConfig, layout:
     return m;
   };
   const shadeMask = maskCanvas(masks.shade), lightMask = maskCanvas(masks.light);
-  if (t.exists(LAYOUT_GROUND.shade)) masked(shadeMask, g => fillPattern(g, LAYOUT_GROUND.shade, 83, 151), TONE.shade);
-  if (t.exists(LAYOUT_GROUND.light)) masked(lightMask, g => fillPattern(g, LAYOUT_GROUND.light, 173, 59), TONE.light);
-  masked(shadeMask, g => { g.fillStyle = TONE.shadeTint[0]; g.fillRect(0, 0, W, H); }, TONE.shadeTint[1], 'multiply');
-  masked(lightMask, g => { g.fillStyle = TONE.lightTint[0]; g.fillRect(0, 0, W, H); }, TONE.lightTint[1], 'soft-light');
+  if (t.exists(kit.shade)) masked(shadeMask, g => fillPattern(g, kit.shade, 83, 151), TONE.shade);
+  if (t.exists(kit.light)) masked(lightMask, g => fillPattern(g, kit.light, 173, 59), TONE.light);
+  masked(shadeMask, g => { g.fillStyle = kit.tone.shade[0]; g.fillRect(0, 0, W, H); }, kit.tone.shade[1], 'multiply');
+  masked(lightMask, g => { g.fillStyle = kit.tone.light[0]; g.fillRect(0, 0, W, H); }, kit.tone.light[1], 'soft-light');
   free(shadeMask, lightMask);
   for (const p of placed) if (p.kind === 'meadow') stamp(ctx, p);
 
@@ -147,11 +144,11 @@ export function composeLayoutGround(scene: Phaser.Scene, map: MapConfig, layout:
     return c;
   };
   const halo = band(i => half[i]! + fringe[i]! + 0.07, 18);
-  masked(halo, g => { g.fillStyle = PATH.haloColor; g.fillRect(0, 0, W, H); }, 0.22);
+  masked(halo, g => { g.fillStyle = kit.path.halo; g.fillRect(0, 0, W, H); }, 0.22);
   const edge = band(i => half[i]! + fringe[i]!, 7);
-  masked(edge, g => { g.fillStyle = PATH.fringeColor; g.fillRect(0, 0, W, H); }, 0.9);
+  masked(edge, g => { g.fillStyle = kit.path.fringe; g.fillRect(0, 0, W, H); }, 0.9);
   const dirtMask = band(i => half[i]!, 2);
-  masked(dirtMask, g => fillPattern(g, LAYOUT_GROUND.dirt));
+  masked(dirtMask, g => fillPattern(g, kit.dirt));
   free(halo, edge);
   // 길 안쪽 그늘: 길 밖을 채운 판의 그림자를 길 안에만 남긴다(좌상단 광원이라 위·왼쪽 가장자리가 조금 더 어둡다).
   const [outside, og] = layer();
@@ -160,7 +157,7 @@ export function composeLayoutGround(scene: Phaser.Scene, map: MapConfig, layout:
   og.drawImage(dirtMask, 0, 0);
   const [rim, rg] = layer();
   rg.save();
-  rg.shadowColor = 'rgba(96, 64, 30, 0.42)'; rg.shadowBlur = 14; rg.shadowOffsetX = 3; rg.shadowOffsetY = 4;
+  rg.shadowColor = kit.path.rim; rg.shadowBlur = 14; rg.shadowOffsetX = 3; rg.shadowOffsetY = 4;
   rg.drawImage(outside, 0, 0);
   rg.restore();
   // 굽이 바퀴 자국(배치표). 안쪽 그늘과 같은 판에 그려 길 밖으로 새지 않게 한다.
@@ -169,7 +166,7 @@ export function composeLayoutGround(scene: Phaser.Scene, map: MapConfig, layout:
     const arc = (inset: number, d: number, width: number, alpha: number) => {
       rg.beginPath();
       rg.ellipse(((x0 + x1) / 2) * C, ((y0 + y1) / 2) * C, ((x1 - x0) / 2) * C - inset, ((y1 - y0) / 2) * C - inset, 0, ((from + d) * Math.PI) / 180, ((to - d) * Math.PI) / 180);
-      rg.lineWidth = width; rg.strokeStyle = `rgba(150, 112, 66, ${alpha})`; rg.stroke();
+      rg.lineWidth = width; rg.strokeStyle = `rgba(${kit.path.rut}, ${alpha})`; rg.stroke();
     };
     arc(0, 0, 3, 0.28);
     arc(9, 8, 2, 0.2);
@@ -192,7 +189,7 @@ export function composeLayoutGround(scene: Phaser.Scene, map: MapConfig, layout:
 
   // 5. 입구 표시: 입구 칸 위 가장자리에 작게 세운다(composeGroundArt와 같은 자리).
   const [ex, ey] = map.entryCell;
-  if (t.exists(LAYOUT_GROUND.entry)) stamp(ctx, { key: 'entry', kind: 'prop', asset: LAYOUT_GROUND.entry, cx: ex + 0.18, cy: ey + 0.14, w: 0.6, ox: 0.5, oy: 0.85 });
+  if (t.exists(kit.entry)) stamp(ctx, { key: 'entry', kind: 'prop', asset: kit.entry, cx: ex + 0.18, cy: ey + 0.14, w: 0.6, ox: 0.5, oy: 0.85 });
 
   tex.refresh();
   return true;

@@ -4,13 +4,15 @@ import { describe, expect, it } from 'vitest';
 import { MAPS } from '../../src/content';
 import { assetManifestSchema } from '../../src/contracts/assetManifest';
 import { PAD_CELLS } from '../../src/game/layoutGround';
-import { artRect, claimedDecorations, distanceToPolyline, grassMasks, layoutFor, mapLayoutSchema, pathCenterline, pathPolyline, RAW_LAYOUTS, resolvePlacements } from '../../src/game/layouts';
+import { artRect, claimedDecorations, distanceToPolyline, GROUND_KITS, grassMasks, groundKitFor, layoutFor, mapLayoutSchema, pathCenterline, pathPolyline, RAW_LAYOUTS, resolvePlacements } from '../../src/game/layouts';
 
 // 맵 배치표(art-bible-v2 §2)의 형식·가림·풀 마스크 검사. 그림 위치는 렌더러와 같은 artRect로 계산한다.
 
 const manifest = assetManifestSchema.parse(JSON.parse(readFileSync('public/assets/manifest.json', 'utf8')));
 const fileOf = new Map(manifest.assets.filter(a => a.status === 'integrated_pass').map(a => [a.id, a.file]));
 const garden = MAPS.find(m => m.id === 'garden_u')!;
+/** 배치표가 있는 맵. 맵마다 같은 형식·가림 검사를 한다. */
+const LAYOUT_MAPS = Object.keys(RAW_LAYOUTS);
 
 /** 8비트 RGBA·비월 없음 PNG의 알파 채널만 읽는다(이 저장소의 원화 형식). */
 function readAlpha(file: string) {
@@ -40,26 +42,57 @@ function readAlpha(file: string) {
 }
 
 describe('지면 배치표(garden_u)', () => {
-  it('형식·장식 칸 연결·에셋이 맞고, 배치표 없는 맵은 기존 지면을 쓴다', () => {
-    expect(mapLayoutSchema.safeParse(RAW_LAYOUTS.garden_u).success).toBe(true);
+  it('연못(d03~d05)·바위 정원(d02)을 배치표가 맡고 비석(d01)은 기존 그림을 쓴다', () => {
     const layout = layoutFor('garden_u')!;
-    // 연못(d03~d05)·바위 정원(d02)만 배치표가 맡고, 비석(d01)은 기존 그림과 글자를 쓴다.
     expect([...claimedDecorations(layout)].sort()).toEqual(['garden_u-d02', 'garden_u-d03', 'garden_u-d04', 'garden_u-d05']);
     const pond = resolvePlacements(layout, garden).find(p => p.asset === 'landmark.pond')!;
     expect([pond.cx, pond.cy]).toEqual([5.5, 2.5]);
-    expect(resolvePlacements(layout, garden)).toHaveLength(layout.placements.length);
+  });
+});
+
+describe('맵별 지면 재료 묶음', () => {
+  it('배치표가 있는 맵은 모두 묶음이 있고, 묶음의 재료·얼룩·받침은 인수된 원화(integrated_pass)다', () => {
+    expect(Object.keys(GROUND_KITS).sort()).toEqual(['courtyard', 'garden_u', 'river_z', 'snow_step']);
+    for (const id of LAYOUT_MAPS) expect(groundKitFor(id), `${id}: 재료 묶음`).not.toBeNull();
+    for (const [id, kit] of Object.entries(GROUND_KITS)) {
+      const ids = [kit.base, kit.light, kit.shade, kit.dirt, kit.entry, kit.fallbackPad, ...kit.pads, ...kit.meadows];
+      expect(ids.filter(a => !fileOf.has(a)), `${id}: 없는 재료`).toEqual([]);
+      expect(kit.meadows).toHaveLength(3);
+      // 정원 말고는 맵 id가 붙은 자기 재료만 쓴다(다른 맵 재료를 섞지 않는다).
+      if (id !== 'garden_u') for (const a of [kit.base, kit.light, kit.shade, kit.dirt, ...kit.pads, ...kit.meadows]) expect(a.startsWith(`map.${id}.`), `${id}: ${a}`).toBe(true);
+    }
+  });
+
+  it('배치표가 없는 맵은 묶음이 있어도 기존 지면을 쓴다(layoutFor가 null)', () => {
+    for (const m of MAPS) if (!LAYOUT_MAPS.includes(m.id)) expect(layoutFor(m.id), m.id).toBeNull();
+    expect(layoutFor('nowhere')).toBeNull();
+  });
+});
+
+describe.each(LAYOUT_MAPS)('지면 배치표 형식·연결(%s)', mapId => {
+  const map = MAPS.find(m => m.id === mapId)!;
+
+  it('형식이 맞고, 장식 칸 연결·에셋·길 이탈이 정상이다', () => {
+    expect(mapLayoutSchema.safeParse(RAW_LAYOUTS[mapId]).success).toBe(true);
+    const layout = layoutFor(mapId)!;
+    expect(layout.mapId).toBe(mapId);
+    expect(resolvePlacements(layout, map)).toHaveLength(layout.placements.length);
     expect(layout.placements.map(p => p.asset).filter(id => !fileOf.has(id))).toEqual([]);
-    for (const id of ['river_z', 'courtyard', 'snow_step']) expect(layoutFor(id)).toBeNull();
+    // 랜드마크는 장식 칸에만 둔다(art-bible-v2 §2): 랜드마크 그림은 장식 칸을 맡은 배치여야 한다.
+    expect(layout.placements.filter(p => /(^|\.)landmark\./.test(p.asset) && !p.decorationIds).map(p => p.key)).toEqual([]);
+    // 맡은 장식 칸은 이 맵에 실제로 있는 칸이다.
+    const known = new Set(map.decorations.map(d => d.id));
+    for (const id of claimedDecorations(layout)) expect(known.has(id), id).toBe(true);
     // 그리는 길(둥근 굽이 중심선)은 적이 걷는 논리 중심선에서 0.25칸 안에 머문다.
-    const line = pathPolyline(garden);
-    const drift = Math.max(...pathCenterline(garden, 0.6, 0.04).map(p => distanceToPolyline(p.x, p.y, line)));
+    const line = pathPolyline(map);
+    const drift = Math.max(...pathCenterline(map, 0.6, 0.04).map(p => distanceToPolyline(p.x, p.y, line)));
     expect(drift).toBeLessThan(0.25);
   });
 
   it('소품·숲이 설치 받침·길 중심·장식 칸·비석을 가리지 않는다(알파 128 이상 픽셀 기준)', () => {
-    const layout = layoutFor('garden_u')!;
-    const placed = resolvePlacements(layout, garden);
-    const line = pathPolyline(garden);
+    const layout = layoutFor(mapId)!;
+    const placed = resolvePlacements(layout, map);
+    const line = pathPolyline(map);
     const pad = PAD_CELLS / 2;
     // 길 가장자리 풀 술·자갈은 흙 가장자리까지 덮어도 되지만 적이 걷는 중심 ±0.18칸은 비운다.
     // 나머지는 흙과 가장자리 띠(반폭 0.42칸) 밖에 둔다. 길 아래 지면 얼룩(meadow)은 대상이 아니다.
@@ -68,10 +101,10 @@ describe('지면 배치표(garden_u)', () => {
     const clearOfSlots = (kind: string, group: string) => kind === 'grove' || group.startsWith('field');
     // 장식 칸(±0.4칸)은 그 칸을 맡은 배치와 같은 무리(연못 둘레 꽃·돌 등)만 겹칠 수 있다.
     const owner = new Map(layout.placements.flatMap(p => (p.decorationIds ?? []).map(id => [id, p.group ?? p.key] as const)));
-    const decorCells = garden.decorations.flatMap(d => d.cells.map(([x, y]) => ({ id: d.id, x: x + 0.5, y: y + 0.5 })));
+    const decorCells = map.decorations.flatMap(d => d.cells.map(([x, y]) => ({ id: d.id, x: x + 0.5, y: y + 0.5 })));
     // 배치표가 맡지 않은 비석은 GroundLayer.placeDecor 그대로(1.05칸, 기준점 0.5·0.85) 칸 위로 솟는다. 그 불투명 영역도 지킨다.
     const stele = readAlpha(`public/assets/${fileOf.get('deco.stele')}`);
-    const steleBoxes = garden.decorations.filter(d => d.kind === 'culture' && !owner.has(d.id)).map(d => {
+    const steleBoxes = map.decorations.filter(d => d.kind === 'culture' && !owner.has(d.id)).map(d => {
       const [x, y] = d.cells[0]!;
       const r = artRect({ key: d.id, kind: 'prop', asset: 'deco.stele', cx: x + 0.5, cy: y + 0.5, w: 1.05, ox: 0.5, oy: 0.85 }, stele.width, stele.height);
       let x0 = Infinity, y0 = Infinity, x1 = -Infinity, y1 = -Infinity;
@@ -80,7 +113,7 @@ describe('지면 배치표(garden_u)', () => {
       }
       return { id: d.id, left: r.left + (x0 / stele.width) * r.width, right: r.left + (x1 / stele.width) * r.width, top: r.top + (y0 / stele.height) * r.height, bottom: r.top + (y1 / stele.height) * r.height };
     });
-    expect(steleBoxes).toHaveLength(1);
+    expect(steleBoxes.map(b => b.id).sort()).toEqual(map.decorations.filter(d => d.kind === 'culture' && !owner.has(d.id)).map(d => d.id).sort());
     const problems: string[] = [];
     for (const p of placed) {
       if (p.kind === 'meadow') continue;
@@ -89,7 +122,7 @@ describe('지면 배치표(garden_u)', () => {
       const r = artRect(p, img.width, img.height);
       const near = <T extends { x: number; y: number }>(list: T[]) => list.filter(c => c.x + pad > r.left && c.x - pad < r.left + r.width && c.y + pad > r.top && c.y - pad < r.top + r.height);
       const slotGap = clearOfSlots(p.kind, group) ? 1 : pad;
-      const slots = garden.slots.map(s => ({ id: s.id, x: s.x + 0.5, y: s.y + 0.5 })).filter(c => c.x + slotGap > r.left && c.x - slotGap < r.left + r.width && c.y + slotGap > r.top && c.y - slotGap < r.top + r.height);
+      const slots = map.slots.map(s => ({ id: s.id, x: s.x + 0.5, y: s.y + 0.5 })).filter(c => c.x + slotGap > r.left && c.x - slotGap < r.left + r.width && c.y + slotGap > r.top && c.y - slotGap < r.top + r.height);
       const decor = near(decorCells.filter(c => owner.get(c.id) !== group));
       const hits = new Map<string, number>();
       const hit = (what: string) => hits.set(what, (hits.get(what) ?? 0) + 1);
