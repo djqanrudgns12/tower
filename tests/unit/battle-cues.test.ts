@@ -5,7 +5,7 @@ import type { DomainEvent } from '../../src/domain/events';
 import { msToTicks } from '../../src/domain/num';
 import type { Enemy, Projectile, RunState, SpawnEntry } from '../../src/domain/types';
 import {
-  bossCue, bossStatus, FLYER_LIFT_CELLS, flyerLift, INTRO_MS, introFrame, spawnIntros, SPLIT_LABEL_RAISE_CELLS,
+  bossCue, bossStatus, FLYER_LIFT_CELLS, flyerLift, INTRO_MS, introFrame, isPlacing, PAD_ALPHA_REST, padAlpha, spawnIntros, SPLIT_LABEL_RAISE_CELLS,
 } from '../../src/game/layers/cues';
 import { finishPrep, newRun, ok, ticks } from './helpers';
 
@@ -148,5 +148,25 @@ describe('비행 적', () => {
     expect(flyerLift({ flying: true, groundedUntilTick: 0 }, 10)).toBe(FLYER_LIFT_CELLS);
     expect(flyerLift({ flying: true, groundedUntilTick: 20 }, 10)).toBe(0);
     expect(flyerLift({ flying: false, groundedUntilTick: 0 }, 10)).toBe(0);
+  });
+});
+
+describe('설치 받침 밝기', () => {
+  const idle = { previewType: null, slotId: null };
+  it('타워를 먼저 골랐거나(자리는 아직) 끌고 있을 때만, 설치·전투 단계에서 놓을 자리를 밝힌다', () => {
+    expect(isPlacing('BUILD', idle, false)).toBe(false);
+    expect(isPlacing('BUILD', { previewType: 'archer', slotId: null }, false)).toBe(true);
+    expect(isPlacing('BATTLE', idle, true)).toBe(true);
+    // 자리를 이미 골랐으면(그 자리 옆 메뉴) 다른 자리를 모두 밝히지 않는다.
+    expect(isPlacing('BUILD', { previewType: 'archer', slotId: 'garden_u-s01' }, false)).toBe(false);
+    // 준비 문제 중에는 설치하지 않으므로 밝히지 않는다.
+    expect(isPlacing('PREP_QUIZ', { previewType: 'archer', slotId: null }, true)).toBe(false);
+  });
+
+  it('빈 받침은 평소 흐리게(0.4), 놓는 중·선택·키보드 커서·고대비·타워가 선 자리는 밝게(1)', () => {
+    const rest = { occupied: false, placing: false, focused: false, highContrast: false };
+    expect(PAD_ALPHA_REST).toBe(0.4);
+    expect(padAlpha(rest)).toBe(PAD_ALPHA_REST);
+    for (const k of ['occupied', 'placing', 'focused', 'highContrast'] as const) expect(padAlpha({ ...rest, [k]: true })).toBe(1);
   });
 });

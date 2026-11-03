@@ -44,6 +44,28 @@ function alphaBox(im: HTMLImageElement | HTMLCanvasElement) {
   return x1 > x0 ? { x0, y0, x1, y1 } : { x0: 0, y0: 0, x1: im.width, y1: im.height };
 }
 
+/** 설치 받침 이미지 한 장의 배치(월드 px). 기준점은 알파 상자 가운데, scale은 월드 px당 텍스처 px 배율이다. */
+export interface PadSprite { slotId: string; key: string; x: number; y: number; scale: number; originX: number; originY: number }
+
+/**
+ * 설치 받침 배치: 낮은 돌 기단 두 종을 자리 순서대로 번갈아 쓴다. 알파 경계 상자 너비를 PAD_CELLS칸에 맞추고 상자 가운데를 칸 가운데에 둔다.
+ * 받침 재료가 하나도 없으면 빈 배열(지면 쪽에 구운 받침을 쓰는 경로)이다.
+ */
+export function padSprites(scene: Phaser.Scene, map: MapConfig): PadSprite[] {
+  const t = scene.textures;
+  const boxes = new Map<string, ReturnType<typeof alphaBox>>();
+  const out: PadSprite[] = [];
+  map.slots.forEach((s, i) => {
+    const key = [LAYOUT_GROUND.pads[i % 2]!, LAYOUT_GROUND.fallbackPad].find(k => t.exists(k));
+    if (!key) return;
+    const im = t.get(key).getSourceImage() as HTMLImageElement | HTMLCanvasElement;
+    if (!boxes.has(key)) boxes.set(key, alphaBox(im));
+    const b = boxes.get(key)!;
+    out.push({ slotId: s.id, key, x: (s.x + 0.5) * CELL_PX, y: (s.y + 0.5) * CELL_PX, scale: (PAD_CELLS * CELL_PX) / (b.x1 - b.x0), originX: (b.x0 + b.x1) / 2 / im.width, originY: (b.y0 + b.y1) / 2 / im.height });
+  });
+  return out;
+}
+
 /** 배치표대로 지면을 조립한다. 재료가 없으면 false(호출하는 쪽이 기존 composeGroundArt/drawGround를 쓴다). */
 export function composeLayoutGround(scene: Phaser.Scene, map: MapConfig, layout: MapLayout): boolean {
   const t = scene.textures;
@@ -157,17 +179,7 @@ export function composeLayoutGround(scene: Phaser.Scene, map: MapConfig, layout:
   ctx.drawImage(rim, 0, 0);
   free(outside, rim, dirtMask);
 
-  // 3. 설치 받침: 낮은 돌 기단 두 종을 자리 순서대로 번갈아 쓴다. 알파 경계 상자 너비를 0.8칸에 맞추고 상자 가운데를 칸 가운데에 둔다.
-  const boxes = new Map<string, ReturnType<typeof alphaBox>>();
-  map.slots.forEach((s, i) => {
-    const key = [LAYOUT_GROUND.pads[i % 2]!, LAYOUT_GROUND.fallbackPad].find(k => t.exists(k));
-    if (!key) return;
-    const im = img(key);
-    if (!boxes.has(key)) boxes.set(key, alphaBox(im));
-    const b = boxes.get(key)!, scale = (PAD_CELLS * C) / (b.x1 - b.x0);
-    const cx = (s.x + 0.5) * C, cy = (s.y + 0.5) * C;
-    ctx.drawImage(im, cx - ((b.x0 + b.x1) / 2) * scale, cy - ((b.y0 + b.y1) / 2) * scale, im.width * scale, im.height * scale);
-  });
+  // 3. 설치 받침은 지면에 굽지 않는다. GroundLayer가 padSprites 배치로 따로 세워 투명도를 바꾼다(평소 흐리게, 설치 중 밝게).
 
   // 4. 랜드마크 → 길 가장자리 풀 술·자갈 → 소품·바위. 아래쪽(발 위치가 큰) 것이 위에 겹친다.
   for (const p of placed) if (p.kind === 'landmark') stamp(ctx, p);

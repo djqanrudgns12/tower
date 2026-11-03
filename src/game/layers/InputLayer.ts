@@ -5,6 +5,7 @@ import type { RunState } from '../../domain/types';
 import { PALETTE } from '../art';
 import { CELL_PX } from '../assets';
 import type { FieldBridge } from '../bridge';
+import { isPlacing } from './cues';
 import { DEPTH, toWorld, type LayerContext } from './shared';
 
 /** 지금 고른 설치 자리(빈 자리 또는 고른 타워의 자리). */
@@ -101,9 +102,8 @@ export class InputLayer {
         }
       }
     }
-    const trading = s.phase === 'BUILD' || s.phase === 'BATTLE';
     // 타워를 먼저 골랐거나 끌고 있으면 놓을 수 있는 빈 자리를 모두 밝힌다.
-    if (trading && ((sel.previewType && !sel.slotId) || drag)) {
+    if (isPlacing(s.phase, sel, Boolean(drag))) {
       for (const slot of map.slots) if (!s.towers.some(t => t.slotId === slot.id)) g.lineStyle(3, 0xf5ebd4, 0.9).strokeRoundedRect(slot.x * CELL_PX + 5, slot.y * CELL_PX + 5, CELL_PX - 10, CELL_PX - 10, 8);
     }
     const dragCell = drag?.slotId ? map.slots.find(slot => slot.id === drag.slotId) ?? null : null;

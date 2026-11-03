@@ -2,6 +2,7 @@ import Phaser from 'phaser';
 import type { EnemyKind, TowerId } from '../contracts/balance';
 import type { MapConfig } from '../contracts/maps';
 import { ASSETS, CELL_PX, TEX } from './assets';
+import type { PadSprite } from './layoutGround';
 
 // 41번 화풍(밝은 풀색·황토 길·둥근 실루엣·좌상단 광원·3단 이하 명암)의 임시 그림.
 // Codex 원화가 인수되면 같은 키의 PNG가 이 그림을 대신한다(art 대체는 BattleScene.preload에서 판단).
@@ -82,6 +83,13 @@ export const GROUND_ART = {
 /** 길 시각 폭(칸): 흙과 가장자리 띠. 논리 중심선은 셀 중심이다(PRD §6.1 0.70~0.86). */
 const PATH_WIDTH = 0.76, PATH_EDGE = 0.86;
 
+/** 배치표 없는 맵의 설치 받침(slot.base, 원본이 한 칸 너비)을 칸 가운데에 세우는 배치. 받침 그림이 없으면 빈 배열(구운 사각 받침을 쓴다). */
+export function slotBaseSprites(scene: Phaser.Scene, map: MapConfig): PadSprite[] {
+  if (!scene.textures.exists(GROUND_ART.slot)) return [];
+  const im = scene.textures.get(GROUND_ART.slot).getSourceImage() as { width: number };
+  return map.slots.map(s => ({ slotId: s.id, key: GROUND_ART.slot, x: (s.x + 0.5) * CELL_PX, y: (s.y + 0.5) * CELL_PX, scale: CELL_PX / im.width, originX: 0.5, originY: 0.5 }));
+}
+
 /**
  * 인수된 바닥 재료로 지면 기본판을 조립한다(ART-002 요청서 ‘이번 방식’). 풀·흙 질감이 없으면 false를 돌려
  * 임시 그림(drawGround)을 쓰게 한다. 나무·비석·바위·성문은 BattleScene이 이미지로 세우므로 여기서 그리지 않는다.
@@ -125,10 +133,10 @@ export function composeGroundArt(scene: Phaser.Scene, map: MapConfig): boolean {
   stroke(PATH_EDGE, `#${PALETTE.dirtEdge.toString(16).padStart(6, '0')}`);
   stroke(PATH_WIDTH, ctx.createPattern(src(GROUND_ART.dirt), 'repeat')!);
 
-  // 설치 받침: 원본 192px가 한 칸, 기준점은 칸 중심이다.
+  // 설치 받침: 받침 그림(slot.base)이 있으면 GroundLayer가 slotBaseSprites로 따로 세운다(투명도를 바꾸려고 지면에 굽지 않는다). 없을 때만 구운 사각 받침.
   for (const s of map.slots) {
     const cx = (s.x + 0.5) * C, cy = (s.y + 0.5) * C;
-    if (has(GROUND_ART.slot)) { stamp(GROUND_ART.slot, cx, cy, 1); continue; }
+    if (has(GROUND_ART.slot)) continue;
     ctx.fillStyle = `#${PALETTE.stoneDark.toString(16)}`;
     ctx.beginPath(); ctx.roundRect(cx - 0.4 * C, cy - 0.38 * C, 0.8 * C, 0.8 * C, 0.12 * C); ctx.fill();
   }

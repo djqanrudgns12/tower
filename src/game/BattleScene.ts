@@ -150,11 +150,12 @@ export class BattleScene extends Phaser.Scene {
     }
   };
 
-  override update(time: number) {
+  override update(time: number, delta: number) {
     const s = this.bridge.controller.state;
     const alpha = this.bridge.controller.alpha;
     this.enemyLayer.advance(s);
     this.towerLayer.sync(s, time);
+    this.ground.syncPads(s, delta);
     this.enemyLayer.sync(s, time, alpha);
     this.effects.syncHazards(s, alpha);
     this.effects.syncShots(s, alpha, (id, a) => this.enemyLayer.progressOf(id, a), id => this.towerLayer.weaponLift(id), id => this.enemyLayer.liftOf(id));

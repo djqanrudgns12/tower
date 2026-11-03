@@ -2,7 +2,7 @@ import type { Balance, BossSkillKind, EnemyKind } from '../../contracts/balance'
 import type { DomainEvent } from '../../domain/events';
 import { bossDef, burstMarching } from '../../domain/factions';
 import { positionAt, type PathGeometry } from '../../domain/geometry';
-import type { Enemy, FieldHazard, HazardKind } from '../../domain/types';
+import type { Enemy, FieldHazard, HazardKind, Phase } from '../../domain/types';
 import { airborne } from '../../domain/waves';
 
 // 전장 연출 고르기(대장 기믹·비행·분열). Phaser 없이 상태·사건만 읽어 무엇을 그릴지 정한다.
@@ -173,3 +173,21 @@ export function trapCloseCue(reducedMotion: boolean): { ms: number; scale: numbe
   return reducedMotion ? { ms: TRAP_CLOSE_MS, scale: 1, alpha: 0.5 } : { ms: TRAP_CLOSE_MS, scale: TRAP_CLOSE_SCALE, alpha: 1 };
 }
 
+
+// ── 설치 받침 밝기 ─────────────────────────────────────────────────────────────────────────────────
+// 받침은 평소 흐리게 두고, 타워를 고르거나 끌어 놓는 동안에만 밝힌다. 이미 타워가 선 받침은 그 타워의 발판이라 늘 밝다.
+
+/** 빈 받침의 평소 투명도(타워·길보다 눈에 띄지 않게). 밝을 때는 1이다. */
+export const PAD_ALPHA_REST = 0.4;
+/** 받침 투명도가 목표로 가는 시간(ms). 움직임 줄이기면 바로 바뀐다(투명도만 바뀌므로 허용, ui-rules-v2 §2). */
+export const PAD_FADE_MS = 140;
+
+/** 놓을 자리를 밝혀야 하는 때: 설치·전투 단계에서 타워를 먼저 골랐거나(자리는 아직 안 골랐다) 장착 홈에서 끌고 있다. InputLayer의 빈 자리 테두리와 같은 조건이다. */
+export function isPlacing(phase: Phase, sel: { previewType: string | null; slotId: string | null }, dragging: boolean): boolean {
+  return (phase === 'BUILD' || phase === 'BATTLE') && ((sel.previewType !== null && sel.slotId === null) || dragging);
+}
+
+/** 받침 하나의 목표 투명도. 타워가 서 있거나 고르는 중인 자리·키보드 커서·고대비 설정이면 늘 밝다. */
+export function padAlpha(o: { occupied: boolean; placing: boolean; focused: boolean; highContrast: boolean }): number {
+  return o.occupied || o.placing || o.focused || o.highContrast ? 1 : PAD_ALPHA_REST;
+}
