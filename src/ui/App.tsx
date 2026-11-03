@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
+import { mapPreviewFromLocation } from '../application/mapPreview';
 import type { RunController } from '../application/RunController';
 import {
   CORRUPT_SAVE_NOTICE,
@@ -42,7 +43,11 @@ function resumeOffer(saved: LoadResult | null): { offer: ResumeOffer | null; not
 
 export function App() {
   const [settings, setSettings] = useState<Settings>(loadSettings);
-  const [screen, setScreen] = useState<Screen>({ name: 'home' });
+  // 개발 빌드에서만 `?previewMap=<맵 id>`로 그 맵의 전투 화면을 바로 연다(R3 P3). 운영 빌드에서는 이 분기가 통째로 빠진다.
+  const [screen, setScreen] = useState<Screen>(() => {
+    const preview = import.meta.env.DEV ? mapPreviewFromLocation(settings.playerId) : null;
+    return preview ? { name: 'game', controller: preview } : { name: 'home' };
+  });
   const [saved, setSaved] = useState<LoadResult | null>(null);
   const [message, setMessage] = useState<string | null>(null);
 

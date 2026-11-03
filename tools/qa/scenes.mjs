@@ -68,6 +68,12 @@ export const SCENES = [
   { id: '09c', slug: 'invasion-w61', title: 'W61 침입 종족(하늘유랑단 + 두더지단)', save: { builder: 'invasion', args: { wave: 61 } }, steps: [{ op: 'resume' }, { op: 'shot', name: 'corsair-mole' }] },
   { id: '10a', slug: 'pause', title: '일시정지 (1366×650)', sizes: ['cb'], save: { builder: 'pause-w9' }, steps: [{ op: 'resume' }, { op: 'click', role: 'button', name: '일시정지' }, { op: 'wait', ms: 300 }, { op: 'shot', name: 'pause' }] },
   { id: '10b', slug: 'result', title: '결과 화면 (1366×650)', sizes: ['cb'], save: { builder: 'defeat-w9' }, steps: [{ op: 'resume' }, { op: 'runUntil', text: '지킨 웨이브', stepMs: 500, maxMs: 9000 }, { op: 'wait', ms: 500 }, { op: 'shot', name: 'result' }, { op: 'shot', name: 'result-full', fullPage: true }] },
+  // R3 P3 맵 미리보기(개발 서버 전용 `?previewMap=<맵 id>`, src/application/mapPreview.ts). 빈 맵 = 첫 준비 화면, 타워 = 타워 8기 + 전투 150틱(적이 길 위에 있다).
+  ...['river_z', 'courtyard', 'snow_step'].flatMap((map, i) => [
+    { id: `2${i + 1}a`, slug: `${map}-empty`, title: `${map} 빈 맵`, sizes: map === 'river_z' ? ['desk', 'phone'] : ['desk'], url: `/?previewMap=${map}`, steps: [{ op: 'open' }, { op: 'wait', ms: 2500 }, { op: 'shot', name: 'empty' }] },
+    { id: `2${i + 1}b`, slug: `${map}-towers`, title: `${map} 타워·적`, sizes: map === 'river_z' ? ['desk', 'phone'] : ['desk'], url: `/?previewMap=${map}&towers=8&ticks=150`, steps: [{ op: 'open' }, { op: 'wait', ms: 2500 }, { op: 'shot', name: 'towers' }] },
+    { id: `2${i + 1}c`, slug: `${map}-night`, title: `${map} 밤(W17)`, url: `/?previewMap=${map}&towers=8&wave=17&ticks=150`, steps: [{ op: 'open' }, { op: 'wait', ms: 2500 }, { op: 'shot', name: 'night' }] },
+  ]),
 ];
 
 const cellCenter = async (page, x, y) => {
