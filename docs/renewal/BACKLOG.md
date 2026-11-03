@@ -2,6 +2,8 @@
 
 갱신: 2026-11-03 저녁 · 작업 브랜치 원래 폴더 `p1/intake-round1`(renewal/hub를 d939e88로 병합, 이후 원래 폴더에서 직접 작업) · 작업 폴더 `/Users/bodyking/Desktop/Architecture/towerdeffense`
 
+**다음 작업(2026-11-04):** [R4 PRD](prd-r4-ui-learning.md) — UI/UX 전면 고도화(「그림책 원정대」), 밸런스 재설계, 오답 노트, 난이도 자동 조절. 단계 U0·L·B0 → U1·U2·B1 → U3·B2 → B3 → M.
+
 ## 완료
 
 | 항목 | 결과 | 커밋 |
