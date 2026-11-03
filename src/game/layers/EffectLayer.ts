@@ -4,7 +4,7 @@ import { positionAt } from '../../domain/geometry';
 import type { FieldHazard, HazardKind, RunState } from '../../domain/types';
 import { PALETTE } from '../art';
 import { ASSETS, CELL_PX, WORLD_W } from '../assets';
-import { BLAST_BURST_MS, blastCharge, blastLook, fusePuffCount, hazardEndCue, hazardLook, ROLLER_LENGTH_CELLS, ROLLER_THICK_CELLS, rollerHeading, trapCloseCue, wardDotOffsets, ZONE_ALPHA, ZONE_FLATTEN, type BlastLook, type BossCue, type HazardLook } from './cues';
+import { BLAST_BURST_MS, blastCharge, blastLook, formBlastRadius, fusePuffCount, hazardBlastRadius, hazardEndCue, hazardLook, ROLLER_LENGTH_CELLS, ROLLER_THICK_CELLS, rollerHeading, trapCloseCue, wardDotOffsets, ZONE_ALPHA, ZONE_FLATTEN, type BlastLook, type BossCue, type HazardLook } from './cues';
 import { DEPTH, toWorld, type LayerContext } from './shared';
 
 /** 처치 보상 표찰의 화면 최소 글자 크기(CSS px, v3 §1-2 13px 하한). */
@@ -25,6 +25,8 @@ export class EffectLayer {
   private shots = new Map<number, Phaser.GameObjects.Image>();
   private hazards = new Map<number, HazardView>();
   private blasts = new Map<number, BlastSpot>();
+  /** 둘레 폭발(화약 술통·범위 덫)의 반경(칸). 터지면 같은 틱에 상태에서 사라지므로 살아 있는 동안 읽어 둔다. */
+  private blastRadii = new Map<number, number>();
   /** 처치 보상 표찰. 미니맵 카메라에서는 감춘다. */
   readonly callouts: Phaser.GameObjects.Container;
 
@@ -222,9 +224,13 @@ export class EffectLayer {
     if (e.kind === 'zone' && e.blast) this.blasts.set(e.hazardId, { look: blastLook(e), x: toWorld(e.x), y: toWorld(e.y) + FOOT });
   }
 
-  /** 덫이 발동했다: 150ms 닫혔다 열린다(움직임 줄이기면 투명도만). 소진되면 syncHazards가 곧 거둔다. 지연 폭발이 터지면 폭발 연출이 대기 표시를 대신한다. */
+  /**
+   * 덫이 발동했다: 150ms 닫혔다 열린다(움직임 줄이기면 투명도만). 소진되면 syncHazards가 곧 거둔다. 지연 폭발이 터지면 폭발 연출이 대기 표시를 대신한다.
+   * 범위 덫(폭죽 발판 계열)과 화약 술통이 터지면 둘레 폭발 고리를 더한다(burst).
+   */
   onHazardTriggered(e: Extract<DomainEvent, { type: 'hazardTriggered' }>) {
-    if (e.kind === 'zone' && e.blast) { this.detonate(e); return; }
+    if (e.kind === 'zone') { if (e.blast) this.detonate(e); return; }
+    if (e.blast) this.burst(e.kind, e);
     if (e.kind !== 'trap') return;
     const v = this.hazards.get(e.hazardId);
     if (!v) return;
@@ -243,6 +249,8 @@ export class EffectLayer {
     const path = this.c.bridge.controller.ctx.path;
     const seen = new Set<number>();
     for (const h of s.hazards) {
+      const blastRadius = hazardBlastRadius(h);
+      if (blastRadius !== null) this.blastRadii.set(h.id, blastRadius);
       const look = hazardLook(h, alpha);
       if (!look) {
         if (h.kind === 'zone' && h.blast) { seen.add(h.id); this.syncBlast(h, s.tick, alpha); }
@@ -263,6 +271,7 @@ export class EffectLayer {
     }
     for (const [id, v] of this.hazards) if (!seen.has(id)) { this.retireHazard(v); this.hazards.delete(id); }
     for (const id of this.blasts.keys()) if (!seen.has(id)) this.blasts.delete(id);
+    for (const id of this.blastRadii.keys()) if (!seen.has(id)) this.blastRadii.delete(id);
   }
 
   /**
@@ -331,24 +340,16 @@ export class EffectLayer {
    * 대기 표시가 없으면(이어하기·늦은 프레임) 사건의 자리에 반경 0.5칸 고리를 그린다.
    */
   private detonate(e: Extract<DomainEvent, { type: 'hazardTriggered' }>) {
-    const { scene, bridge } = this.c;
-    const reduced = bridge.reducedMotion;
+    const { scene } = this.c;
     const wait = this.hazards.get(e.hazardId);
     if (wait) { scene.tweens.killTweensOf(wait.g); wait.g.destroy(); this.hazards.delete(e.hazardId); }
     const spot = this.blasts.get(e.hazardId) ?? { look: { kind: 'ring', radius: 0.5 } as BlastLook, x: toWorld(e.x), y: toWorld(e.y) + FOOT };
     this.blasts.delete(e.hazardId);
-    const g = scene.add.graphics().setDepth(DEPTH.fx).setPosition(spot.x, spot.y);
     if (spot.look.kind === 'ring') {
-      const rx = spot.look.radius * CELL_PX, ry = rx * ZONE_FLATTEN;
-      g.fillStyle(0xf08a3c, 0.35).fillEllipse(0, 0, rx * 2, ry * 2);
-      g.lineStyle(3, PALETTE.outline, 0.8).strokeEllipse(0, 0, rx * 2, ry * 2);
-      g.lineStyle(1.5, PALETTE.cream, 1).strokeEllipse(0, 0, rx * 2, ry * 2);
-      g.setScale(reduced ? 1 : 0.55);
-      scene.tweens.add({ targets: g, ...(reduced ? {} : { scale: 1 }), alpha: 0, duration: BLAST_BURST_MS, ease: 'Quad.easeOut', onComplete: () => g.destroy() });
-      this.cloud(spot.x, spot.y - 4, CELL_PX * 0.26, 0xf08a3c, BLAST_BURST_MS + 80);
+      this.burstRing(spot.x, spot.y, spot.look.radius);
     } else {
       const { length, width, heading } = spot.look, L = length * CELL_PX, W = width * CELL_PX;
-      g.setRotation(heading);
+      const g = scene.add.graphics().setDepth(DEPTH.fx).setPosition(spot.x, spot.y).setRotation(heading);
       g.fillStyle(0xf08a3c, 0.4).fillRect(0, -W / 2, L, W);
       scene.tweens.add({ targets: g, alpha: 0, duration: BLAST_BURST_MS, ease: 'Quad.easeOut', onComplete: () => g.destroy() });
       const n = fusePuffCount(length);
@@ -357,6 +358,36 @@ export class EffectLayer {
         this.cloud(spot.x + Math.cos(heading) * d, spot.y + Math.sin(heading) * d - 4, Math.max(CELL_PX * 0.14, W * 0.55), 0xf08a3c, BLAST_BURST_MS + 80);
       }
     }
+  }
+
+  /**
+   * 둘레 폭발(화약 술통·범위 덫)이 터졌다: 실제 폭발 반경만큼 퍼지는 고리와 가운데 연기를 지연 폭발과 같은 크기·색·길이(260ms)로 그린다.
+   * 반경은 살아 있는 동안 읽어 둔 값, 없으면 타워 형태 규칙, 그것도 없으면 0.5칸이다. 굴러가던 술통은 터지는 순간 거둔다.
+   */
+  private burst(kind: 'trap' | 'roller', e: Extract<DomainEvent, { type: 'hazardTriggered' }>) {
+    const { controller } = this.c.bridge;
+    const tower = controller.state.towers.find(t => t.id === e.towerId);
+    const radius = this.blastRadii.get(e.hazardId) ?? (tower ? formBlastRadius(controller.ctx.balance, tower, kind) : null) ?? 0.5;
+    this.blastRadii.delete(e.hazardId);
+    if (kind === 'roller') {
+      const v = this.hazards.get(e.hazardId);
+      if (v) { this.c.scene.tweens.killTweensOf(v.g); v.g.destroy(); this.hazards.delete(e.hazardId); }
+    }
+    this.burstRing(toWorld(e.x), toWorld(e.y) + FOOT, radius);
+  }
+
+  /** 폭발 고리: 반경 radiusCells칸의 눌린 타원(ZONE_FLATTEN)이 퍼지며 사라지고 가운데 연기가 핀다. 움직임 줄이기면 같은 크기로 투명도만 낮춘다. */
+  private burstRing(x: number, y: number, radiusCells: number) {
+    const { scene, bridge } = this.c;
+    const reduced = bridge.reducedMotion;
+    const rx = radiusCells * CELL_PX, ry = rx * ZONE_FLATTEN;
+    const g = scene.add.graphics().setDepth(DEPTH.fx).setPosition(x, y);
+    g.fillStyle(0xf08a3c, 0.35).fillEllipse(0, 0, rx * 2, ry * 2);
+    g.lineStyle(3, PALETTE.outline, 0.8).strokeEllipse(0, 0, rx * 2, ry * 2);
+    g.lineStyle(1.5, PALETTE.cream, 1).strokeEllipse(0, 0, rx * 2, ry * 2);
+    g.setScale(reduced ? 1 : 0.55);
+    scene.tweens.add({ targets: g, ...(reduced ? {} : { scale: 1 }), alpha: 0, duration: BLAST_BURST_MS, ease: 'Quad.easeOut', onComplete: () => g.destroy() });
+    this.cloud(x, y - 4, CELL_PX * 0.26, 0xf08a3c, BLAST_BURST_MS + 80);
   }
 
   /** 사라진 장판·덫·굴림체: 장판 200ms 페이드, 덫은 150ms 닫히며(움직임 줄이기면 투명도만), 굴림체 150ms 페이드. */

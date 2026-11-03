@@ -7,7 +7,7 @@ import type { GameContext } from '../../src/domain/context';
 import { positionAt } from '../../src/domain/geometry';
 import type { FieldHazard, RunState } from '../../src/domain/types';
 import {
-  BLAST_BURST_MS, blastCharge, blastLook, fusePuffCount, hazardEndCue, hazardLook, ROLLER_FADE_MS, rollerHeading, TRAP_CLOSE_MS, TRAP_CLOSE_SCALE, TRAP_DIAMETER_CELLS, trapCloseCue, ZONE_FADE_MS, ZONE_FLATTEN,
+  BLAST_BURST_MS, blastCharge, blastLook, formBlastRadius, fusePuffCount, hazardBlastRadius, hazardEndCue, hazardLook, ROLLER_FADE_MS, rollerHeading, TRAP_CLOSE_MS, TRAP_CLOSE_SCALE, TRAP_DIAMETER_CELLS, trapCloseCue, ZONE_FADE_MS, ZONE_FLATTEN,
 } from '../../src/game/layers/cues';
 import { finishPrep, newRun, ok, ticks } from './helpers';
 import { enemy } from './review-core/fixtures';
@@ -142,5 +142,65 @@ describe('지연 폭발 표시 고르기', () => {
     const burst = eventsOf(ticks(ctx, s, 12), 'hazardTriggered').find(e => e.kind === 'zone');
     expect(burst).toMatchObject({ blast: true, hazardId: h.id });
     expect(BLAST_BURST_MS).toBeLessThanOrEqual(600);
+  });
+});
+
+describe('둘레 폭발 표시 고르기(통나무 B 화약 술통·덫 범위 폭발)', () => {
+  it('화약 술통: 살아 있는 굴림체에서 폭발 반경(B 0.95칸·B1 1.25칸)을 읽고, 터지는 틱의 hazardTriggered(roller, blast)가 연출 신호다', () => {
+    for (const [form, radius] of [['B', 0.95], ['B1', 1.25]] as const) {
+      const { ctx, s } = blastArena('roller', form, 8, 2);
+      s.enemies = [enemy({ id: 100, hp: 2_000_000, maxHp: 2_000_000, stunUntilTick: 10_000_000, progress: 9000 })];
+      let read: number | null = null;
+      let boom: Extract<DomainEvent, { type: 'hazardTriggered' }> | undefined;
+      for (let i = 0; i < 80 && !boom; i++) {
+        const ev = ticks(ctx, s, 1);
+        const roller = s.hazards.find(h => h.kind === 'roller');
+        if (roller) read = hazardBlastRadius(roller);
+        boom = eventsOf(ev, 'hazardTriggered').find(e => e.kind === 'roller' && e.blast);
+      }
+      expect(boom, `${form} 화약 술통이 터져야 한다`).toBeDefined();
+      expect(read).toBe(radius);
+      // 터진 굴림체는 같은 틱에 상태에서 사라진다(그래서 반경을 살아 있을 때 읽어 둔다).
+      expect(s.hazards.some(h => h.id === boom!.hazardId)).toBe(false);
+      expect(formBlastRadius(BALANCE, { type: 'roller', form }, 'roller')).toBe(radius);
+    }
+  });
+
+  it('화약 술통이 아닌 통나무(A 계열)는 폭발 반경이 없고, blast 사건도 없다', () => {
+    const { ctx, s } = blastArena('roller', 'A', 8, 2);
+    s.enemies = [enemy({ id: 100, hp: 2_000_000, maxHp: 2_000_000, stunUntilTick: 10_000_000, progress: 9000 })];
+    const all: DomainEvent[] = [];
+    for (let i = 0; i < 80; i++) {
+      all.push(...ticks(ctx, s, 1));
+      const roller = s.hazards.find(h => h.kind === 'roller');
+      if (roller) expect(hazardBlastRadius(roller)).toBeNull();
+    }
+    expect(eventsOf(all, 'hazardTriggered').some(e => e.blast)).toBe(false);
+    expect(formBlastRadius(BALANCE, { type: 'roller', form: 'A' }, 'roller')).toBeNull();
+  });
+
+  it('범위 덫: 폭죽 발판 B는 0.8칸 폭발이고, 밟히면 hazardTriggered(trap, blast)가 연출 신호이며 덫은 같은 틱에 사라진다', () => {
+    const { ctx, s } = blastArena('trap', 'B', 8, 2);
+    s.enemies = [enemy({ id: 100, hp: 2_000_000, maxHp: 2_000_000, stunUntilTick: 10_000_000, progress: 100 })];
+    ticks(ctx, s, 1);
+    const trap = firstHazard(s, 'trap');
+    expect(hazardBlastRadius(trap)).toBe(towerStats(BALANCE, 'trap', 7, 'B').splashRadius / 1000);
+    expect(hazardBlastRadius(trap)).toBe(0.8);
+    s.enemies = [enemy({ id: 101, hp: 2_000_000, maxHp: 2_000_000, stunUntilTick: 10_000_000, progress: (trap as Extract<FieldHazard, { kind: 'trap' }>).progress })];
+    const boom = eventsOf(ticks(ctx, s, 1), 'hazardTriggered').find(e => e.kind === 'trap');
+    expect(boom).toMatchObject({ blast: true, hazardId: trap.id, x: trap.x, y: trap.y });
+    expect(s.hazards.some(h => h.id === trap.id)).toBe(false);
+  });
+
+  it('단일 대상 덫(A)은 폭발이 없고, 형태 규칙의 폭발 반경은 B 0.8·A2 0.75·B2 0.7칸', () => {
+    const { ctx, s } = blastArena('trap', 'A', 8, 2);
+    s.enemies = [enemy({ id: 100, hp: 2_000_000, maxHp: 2_000_000, stunUntilTick: 10_000_000, progress: 100 })];
+    ticks(ctx, s, 1);
+    const trap = firstHazard(s, 'trap') as Extract<FieldHazard, { kind: 'trap' }>;
+    expect(hazardBlastRadius(trap)).toBeNull();
+    s.enemies = [enemy({ id: 101, hp: 2_000_000, maxHp: 2_000_000, stunUntilTick: 10_000_000, progress: trap.progress })];
+    const boom = eventsOf(ticks(ctx, s, 1), 'hazardTriggered').find(e => e.kind === 'trap');
+    expect(boom).toMatchObject({ blast: false });
+    expect((['A', 'B', 'A2', 'B2'] as FormId[]).map(form => formBlastRadius(BALANCE, { type: 'trap', form }, 'trap'))).toEqual([null, 0.8, 0.75, 0.7]);
   });
 });

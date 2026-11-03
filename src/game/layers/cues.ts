@@ -2,7 +2,8 @@ import type { Balance, BossSkillKind, EnemyKind } from '../../contracts/balance'
 import type { DomainEvent } from '../../domain/events';
 import { bossDef, burstMarching } from '../../domain/factions';
 import { positionAt, type PathGeometry } from '../../domain/geometry';
-import type { Enemy, FieldHazard, HazardKind, HazardLine, Phase } from '../../domain/types';
+import { effectsFor } from '../../domain/towers';
+import type { Enemy, FieldHazard, HazardKind, HazardLine, Phase, Tower } from '../../domain/types';
 import { airborne } from '../../domain/waves';
 
 // 전장 연출 고르기(대장 기믹·비행·분열). Phaser 없이 상태·사건만 읽어 무엇을 그릴지 정한다.
@@ -250,3 +251,21 @@ export const BLAST_BURST_MS = 260;
 /** 도화선 폭발: 선분 위 연기 덩이 하나가 차지하는 길이(칸). 선분 길이를 이 값으로 나눠 덩이 수를 정한다(3개 이상). */
 export const FUSE_PUFF_SPACING_CELLS = 0.7;
 export const fusePuffCount = (lengthCells: number) => Math.max(3, Math.round(lengthCells / FUSE_PUFF_SPACING_CELLS));
+
+// ── 둘레 폭발(통나무 B 화약 술통·덫 범위 폭발) ───────────────────────────────────────────────────────
+// 엔진은 터지는 틱에 hazardTriggered(blast)를 알린다. 폭발한 굴림체·덫은 같은 틱에 상태에서 사라지고 사건에는 반경이 없어서,
+// 반경은 살아 있는 동안 상태에서 읽어 두고(hazardBlastRadius) 놓치면 타워 형태 규칙에서 읽는다(formBlastRadius). 연출 모양·길이는 지연 폭발(BLAST_BURST_MS)과 같다.
+
+/** 둘레 폭발의 반경(칸). 화약 술통(굴림체 blast)·범위 덫(blastRadius > 0)만 있고, 그 밖의 굴림체·단일 대상 덫·장판은 null이다. */
+export function hazardBlastRadius(h: FieldHazard): number | null {
+  if (h.kind === 'roller') return h.blast ? h.blast.radius / 1000 : null;
+  if (h.kind === 'trap') return h.blastRadius > 0 ? h.blastRadius / 1000 : null;
+  return null;
+}
+
+/** 상태에서 읽지 못한 굴림체·덫(놓자마자 터짐, 빠른 배속)의 둘레 폭발 반경(칸). 타워의 지금 형태 규칙에서 읽고, 폭발이 없는 형태면 null이다. */
+export function formBlastRadius(balance: Balance, tower: Pick<Tower, 'type' | 'form'>, kind: 'trap' | 'roller'): number | null {
+  const fx = effectsFor(balance, tower.type, tower.form);
+  const milli = kind === 'roller' ? fx.rollBlast?.radiusMilli : fx.splashRadiusMilli;
+  return milli ? milli / 1000 : null;
+}
