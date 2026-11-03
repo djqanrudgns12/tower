@@ -10,7 +10,7 @@ import { layoutFor } from '../../src/game/layouts';
 // 살아 있는 분위기(src/game/ambient.ts): 가독성이 먼저라서 알파·개체 수·움직임 범위를 식으로 묶어 둔다.
 
 const garden = MAPS.find(m => m.id === 'garden_u')!;
-const channels = (c: number) => [(c >> 16) & 255, (c >> 8) & 255, c & 255];
+const channels = (c: number): [number, number, number] => [(c >> 16) & 255, (c >> 8) & 255, c & 255];
 
 describe('시간 흐름(아침 → 노을 → 밤)', () => {
   it('웨이브 1은 아침, 9는 노을(주황), 17은 밤(남색)이고, 알파는 늘 약하다', () => {
