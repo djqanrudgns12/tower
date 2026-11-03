@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { BALANCE } from '../../../src/content';
 import { applyCommand } from '../../../src/domain/run';
-import { evolutionChoices, formInfo, formTier, previewForm, previewMarker, towerForm, undoBuildCommand, upgradeCommand } from '../../../src/ui/game/evolution';
+import { evolutionChoices, formBodyUrl, formInfo, formTier, previewForm, previewMarker, towerForm, undoBuildCommand, upgradeCommand } from '../../../src/ui/game/evolution';
 import { cellRect, FULL_VIEW, snapSlot, toWorldPoint, WORLD_CELL } from '../../../src/ui/game/fieldGeometry';
 import { currentCoach, type CoachMark } from '../../../src/ui/game/firstRunCoach';
 import { formDeltas, SEGMENTS, statBars } from '../../../src/ui/game/statBars';
@@ -139,6 +139,19 @@ describe('첫 판 코치 마크', () => {
     expect(currentCoach(view('BATTLE', 1), none)).toBeNull();
     expect(currentCoach(view('BUILD', 0), new Set<CoachMark>(['place']))).toBeNull();
     expect(currentCoach(view('BUILD', 2), new Set<CoachMark>(['place', 'start']))).toBeNull();
+  });
+});
+
+describe('진화 카드 형태 그림', () => {
+  const only = (ids: string[]) => (id: string) => (ids.includes(id) ? `/${id}.png` : undefined);
+
+  it('형태 본체 → 부모 형태 순으로 고르고, 없거나 기본형이면 undefined(기본형 초상화)', () => {
+    expect(formBodyUrl('archer', 'A', only(['tower.archer.A', 'tower.archer.B']))).toBe('/tower.archer.A.png');
+    expect(formBodyUrl('archer', 'B', only(['tower.archer.A', 'tower.archer.B']))).toBe('/tower.archer.B.png');
+    expect(formBodyUrl('archer', 'B2', only(['tower.archer.B2', 'tower.archer.B']))).toBe('/tower.archer.B2.png');
+    expect(formBodyUrl('archer', 'B2', only(['tower.archer.B']))).toBe('/tower.archer.B.png');
+    expect(formBodyUrl('archer', 'A', only([]))).toBeUndefined();
+    expect(formBodyUrl('archer', 'base', only(['tower.archer']))).toBeUndefined();
   });
 });
 

@@ -1,7 +1,7 @@
-import type { Balance, FormId } from '../../contracts/balance';
+import type { Balance, FormId, TowerId } from '../../contracts/balance';
 import type { TowerView } from '../../application/view';
 import type { Command } from '../../domain/run';
-import { evolutionChoices } from '../../domain/towers';
+import { evolutionChoices, formBranch } from '../../domain/towers';
 
 /**
  * R1↔R2 진화 API 어댑터(docs/renewal/progression.md §5).
@@ -42,4 +42,18 @@ export function previewForm(b: Balance, tower: Pick<TowerView, 'type' | 'level' 
   if (!marker) return null;
   const choices = evolutionChoices(b, tower);
   return choices ? choices[marker === 'A' ? 0 : 1] ?? null : null;
+}
+
+/**
+ * 진화 카드에 보일 형태의 본체 그림 주소: `tower.<타워>.<형태>` → 부모 형태(A1·A2는 A, B1·B2는 B).
+ * 둘 다 없으면 undefined(카드가 기본형 초상화로 돌아간다). 전장 TowerLayer가 본체를 고르는 순서와 같다.
+ */
+export function formBodyUrl(type: TowerId, form: FormId, urlOf: (artId: string) => string | undefined): string | undefined {
+  const branch = formBranch(form);
+  if (branch === null) return undefined;
+  for (const f of form === branch ? [form] : [form, branch]) {
+    const url = urlOf(`tower.${type}.${f}`);
+    if (url) return url;
+  }
+  return undefined;
 }

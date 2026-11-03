@@ -2,8 +2,9 @@ import { useEffect, useRef } from 'react';
 import type { Balance } from '../../contracts/balance';
 import type { TowerView } from '../../application/view';
 import { fmtNumber } from '../copy';
+import { useLobbySprites } from '../screens/home/canvasAssets';
 import { BranchMarkIcon, CloseIcon, GoldCoinIcon, TowerShieldPortrait } from '../icons/GameIcons';
-import { evolutionChoices, formInfo, towerForm, upgradeCost, type FormId } from './evolution';
+import { evolutionChoices, formBodyUrl, formInfo, towerForm, upgradeCost, type FormId } from './evolution';
 import { formDeltas } from './statBars';
 import css from './EvolveCard.module.css';
 
@@ -27,6 +28,8 @@ interface Props {
  */
 export function EvolveCard({ balance, tower, gold, icons, lock, onPreview, onChoose, onClose, restoreFocus }: Props) {
   const box = useRef<HTMLDivElement>(null);
+  // 인수된 원화(manifest의 integrated_pass): 각 카드에 그 형태의 본체 그림을 보인다. 없으면 기본형 초상화.
+  const sprites = useLobbySprites();
   const close = useRef(onClose);
   const restore = useRef(restoreFocus);
   useEffect(() => { close.current = onClose; restore.current = restoreFocus; });
@@ -80,7 +83,10 @@ export function EvolveCard({ balance, tower, gold, icons, lock, onPreview, onCho
                 onClick={() => { if (!short && lock === null) onChoose(form); }}
               >
                 <span className={css.art}>
-                  <TowerShieldPortrait type={tower.type} icons={icons} size={128} bare />
+                  {(src => src
+                    ? <img className={css.formImg} src={src} alt="" draggable={false} />
+                    : <TowerShieldPortrait type={tower.type} icons={icons} size={128} bare />
+                  )(formBodyUrl(tower.type, form, id => sprites.get(id)?.url))}
                   {(form === 'A' || form === 'B') && <span className={css.mark}><BranchMarkIcon id={form} size={28} /></span>}
                 </span>
                 <span className={css.formName}>{info.label}</span>
