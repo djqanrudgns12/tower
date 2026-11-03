@@ -11,6 +11,7 @@ import { SoundDirector } from '../audio/sound';
 import { commandErrorText } from '../copy';
 import { PlayArrowIcon, TowerShieldPortrait, WaveFlagIcon } from '../icons/GameIcons';
 import kit from '../kit.module.css';
+import { useLobbySprites } from '../screens/home/canvasAssets';
 import { useLayout } from '../useLayout';
 import { Armory } from './Armory';
 import { CoinFlight, coinsFor, type Flight } from './CoinFlight';
@@ -29,7 +30,7 @@ import { practiceCoach } from './practiceCoach';
 import { nextSlot, SlotList, slotDescription, type Arrow } from './SlotList';
 import { TowerDetail } from './TowerDetail';
 import { useTowerDrag } from './useTowerDrag';
-import { ENEMY_NAME, wavePreview } from './wavePreview';
+import { ENEMY_NAME, foeIconUrl, wavePreview } from './wavePreview';
 import { WaveBand } from './WaveBand';
 
 interface Props {
@@ -144,6 +145,8 @@ export function GameScreen({
   const [rawSelection, setSelection] = useState<FieldSelection>(EMPTY);
   const [evolveOpen, setEvolveOpen] = useState(false);
   const [icons, setIcons] = useState<Record<string, string>>({});
+  // 인수된 원화(manifest의 integrated_pass) 주소. 준비판 적 미리보기가 실제 종족 그림을 보이는 데 쓴다.
+  const sprites = useLobbySprites();
   const [flash, setFlash] = useState<FieldFlash | null>(null);
   const flashSeq = useRef(0);
   const [confirmEmpty, setConfirmEmpty] = useState(false);
@@ -512,12 +515,12 @@ export function GameScreen({
         <p className={css.buildTitle}><WaveFlagIcon size={26} boss={view.milestoneWave} />{view.wave}웨이브 준비</p>
         {(() => {
           const next = wavePreview(b, map.id, view.wave);
-          const kinds = [...next.kinds, ...(next.boss ? [{ kind: 'boss' as const, count: 1 }] : [])];
+          const kinds = [...next.kinds, ...(next.bossFoe ? [next.bossFoe] : [])];
           return (
             <ul className={css.roster} aria-label={`다음 적 ${next.total}마리: ${kinds.map(k => `${ENEMY_NAME[k.kind]} ${k.count}`).join(', ')}`}>
               {kinds.map(k => (
                 <li key={k.kind} className={css.foe} data-boss={k.kind === 'boss' || undefined} aria-hidden="true">
-                  <span className={css.foeArt}>{icons[`enemy.${k.kind}.0`] && <img src={icons[`enemy.${k.kind}.0`]} alt="" draggable={false} />}</span>
+                  <span className={css.foeArt}>{(src => src && <img src={src} alt="" draggable={false} />)(foeIconUrl(b, k, id => sprites.get(id)?.url, icons[`enemy.${k.kind}.0`]))}</span>
                   <span className={css.foeCount}>×{k.count}</span>
                 </li>
               ))}

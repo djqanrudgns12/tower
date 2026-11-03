@@ -158,6 +158,40 @@ describe('준비판 다음 웨이브 미리보기', () => {
       for (const k of preview.kinds) expect(real.get(k.kind)).toBe(k.count);
     }
   });
+
+  it('그림 종족은 실제 편성에서 그 역할이 가장 많은 종족이고, 대장은 실제 대장의 종족·단계다', async () => {
+    const { wavePreview } = await import('../../../src/ui/game/wavePreview');
+    // 20웨이브 안은 주력 종족뿐이고, 61웨이브는 침입 종족이 섞인다(대장 웨이브 5의 배수: 5, 10, 20).
+    for (const wave of [1, 5, 10, 20, 23, 61]) {
+      const { ctx, s } = newRun('Normal', 4000 + wave);
+      finishPrep(ctx, s);
+      s.wave = wave;
+      ok(ctx, s, { type: 'startBattle' });
+      const preview = wavePreview(ctx.balance, ctx.map.id, wave);
+      for (const k of preview.kinds) {
+        const byFaction = new Map<string, number>();
+        for (const e of s.battle!.spawnList) if (e.kind === k.kind) byFaction.set(e.faction!, (byFaction.get(e.faction!) ?? 0) + 1);
+        expect(byFaction.get(k.faction)).toBe(Math.max(...byFaction.values()));
+        expect(k.bossTier).toBeNull();
+      }
+      const boss = s.battle!.spawnList.find(e => e.kind === 'boss');
+      expect(preview.bossFoe).toEqual(boss ? { kind: 'boss', count: 1, faction: boss.faction, bossTier: boss.bossTier } : null);
+    }
+  });
+
+  it('미리보기 그림은 종족 그림(프레임 묶음 → 한 장) → 옛 그림 순으로 고른다', async () => {
+    const { foeIconUrl } = await import('../../../src/ui/game/wavePreview');
+    const foe = { kind: 'runner', count: 2, faction: 'acorn_goblin', bossTier: null } as const;
+    const boss = { kind: 'boss', count: 1, faction: 'acorn_goblin', bossTier: 2 } as const;
+    const only = (ids: string[]) => (id: string) => (ids.includes(id) ? `/${id}.png` : undefined);
+    expect(foeIconUrl(BALANCE, foe, only(['acorn.runner', 'acorn.runner.0']), '/old.png')).toBe('/acorn.runner.0.png');
+    expect(foeIconUrl(BALANCE, foe, only(['acorn.runner']), '/old.png')).toBe('/acorn.runner.png');
+    expect(foeIconUrl(BALANCE, boss, only(['acorn.boss10']), '/old.png')).toBe('/acorn.boss10.png');
+    expect(foeIconUrl(BALANCE, foe, only([]), '/old.png')).toBe('/old.png');
+    expect(foeIconUrl(BALANCE, { ...foe, faction: 'no_such_faction' }, only(['acorn.runner']), '/old.png')).toBe('/old.png');
+    // 정원 보병은 별칭(artAlias)이 가리키는 기존 그림을 쓴다.
+    expect(foeIconUrl(BALANCE, { ...foe, kind: 'walker' }, only(['enemy.walker.0']), '/old.png')).toBe('/enemy.walker.0.png');
+  });
 });
 
 describe('버닝 표시(PRD §5)', () => {
