@@ -1,6 +1,7 @@
 # 리뉴얼 R3 PRD — 남은 작업 단계별 계획
 
 작성: 2026-11-03 · 총괄 Claude · 기준 브랜치 `p1/intake-round1`(`903ac26`, GitHub push 완료)
+상태: **P1~P4 완료(2026-11-03)**. 결과와 남은 일은 [진행판](BACKLOG.md), 점검 기록은 [qa/r3-p1.md](qa/r3-p1.md).
 상위 문서: [PRD v0.5](../../vocabulary_td_prd_v0_5.md) · [리뉴얼 헌장](README.md) · [UI 규정 v2](ui-rules-v2.md) · [아트 기준 v2](art-bible-v2.md) · [진행판](BACKLOG.md)
 
 ## 0. 목적과 원칙
