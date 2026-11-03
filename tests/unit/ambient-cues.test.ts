@@ -1,4 +1,6 @@
+import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
+import { assetManifestSchema } from '../../src/contracts/assetManifest';
 import { MAPS } from '../../src/content';
 import {
   AMBIENT_SETTINGS, ambientSeed, ambientSettings, BUTTERFLY_COUNT, butterflyArt, butterflyBounds, butterflySpecs, butterflyStep, CLOUD_ALPHA, CLOUD_ART_ALPHA, CLOUD_ART_KEYS, cloudArt, cloudSpecs, cloudStep,
@@ -11,6 +13,8 @@ import { layoutFor } from '../../src/game/layouts';
 // 살아 있는 분위기(src/game/ambient.ts): 가독성이 먼저라서 알파·개체 수·움직임 범위를 식으로 묶어 둔다.
 
 const garden = MAPS.find(m => m.id === 'garden_u')!;
+const manifest = assetManifestSchema.parse(JSON.parse(readFileSync('public/assets/manifest.json', 'utf8')));
+const sizeOfAsset = (asset: string) => { const a = manifest.assets.find(x => x.id === asset); return a ? { width: a.width, height: a.height } : null; };
 const channels = (c: number): [number, number, number] => [(c >> 16) & 255, (c >> 8) & 255, c & 255];
 
 describe('시간 흐름(아침 → 노을 → 밤)', () => {
@@ -120,6 +124,22 @@ describe('잔물결', () => {
     expect(s.rx).toBeGreaterThan(s.ry * 2);
     expect(waterSpots(null, garden, CELL_PX, sizeOf)).toEqual([]);
     expect(waterSpots(layoutFor('garden_u'), garden, CELL_PX, () => null)).toEqual([]);
+  });
+
+  it('강가는 나루 3곳·물레방아 2곳이 물 면이고, 모두 그 그림 위에 있다. 설원 언 연못에는 물결이 없다', () => {
+    const river = MAPS.find(m => m.id === 'river_z')!, layout = layoutFor('river_z')!;
+    const water = ambientSettings('river_z').water;
+    const spots = waterSpots(layout, river, CELL_PX, sizeOfAsset, water);
+    expect(spots).toHaveLength(5);
+    const placed = Object.fromEntries(['map.river_z.landmark.ferry', 'map.river_z.landmark.watermill'].map(id => [id, layout.placements.find(p => p.asset === id)]));
+    for (const p of Object.values(placed)) expect(p, '강가 배치표에 물 그림이 있어야 한다').toBeDefined();
+    for (const s of spots) {
+      expect(s.x - s.rx).toBeGreaterThan(0); expect(s.x + s.rx).toBeLessThan(WORLD_W);
+      expect(s.y - s.ry).toBeGreaterThan(0); expect(s.y + s.ry).toBeLessThan(WORLD_H);
+      expect(s.rx).toBeGreaterThanOrEqual(s.ry); // 가로로 납작한 물 면
+    }
+    const snow = MAPS.find(m => m.id === 'snow_step')!;
+    expect(waterSpots(layoutFor('snow_step'), snow, CELL_PX, sizeOfAsset, ambientSettings('snow_step').water)).toEqual([]);
   });
 
   it('고리는 늘 물 면 타원 안에 머물고, 퍼지며 옅어지며, 동시에 RIPPLE_COUNT개다', () => {

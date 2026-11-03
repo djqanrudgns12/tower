@@ -1,11 +1,12 @@
 import { z } from 'zod';
 import type { MapConfig } from '../../contracts/maps';
 import gardenU from './garden_u.layout.json';
+import riverZ from './river_z.layout.json';
 
 export { GROUND_KITS, groundKitFor, type GroundKit } from './kits';
 
-// 맵별 손 배치표(art-bible-v2 §2). 배치표가 있는 맵만 새 지면 조립(layoutGround.ts)을 쓰고,
-// 없는 맵(river_z·courtyard·snow_step)은 기존 composeGroundArt/drawGround로 그린다.
+// 맵별 손 배치표(art-bible-v2 §2). 배치표가 있는 맵만 새 지면 조립(layoutGround.ts)을 쓰고(재료는 kits.ts의 맵별 묶음),
+// 없는 맵은 기존 composeGroundArt/drawGround로 그린다. 정원은 ART-R1·R2, 강가·궁궐 뜰·설원은 R3 P3 재료다.
 // 이 파일은 Phaser를 모른다. 단위 시험이 같은 기하(배치 위치·길 중심선·풀 마스크)를 그대로 쓴다.
 
 export const PLACEMENT_KINDS = ['meadow', 'landmark', 'rock', 'prop', 'pathEdge', 'edge', 'grove'] as const;
@@ -46,7 +47,7 @@ export type MapLayout = z.infer<typeof mapLayoutSchema>;
 export type LayoutPlacement = MapLayout['placements'][number];
 
 /** 배치표 원본(시험이 형식 오류를 잡도록 그대로 내보낸다). */
-export const RAW_LAYOUTS: Record<string, unknown> = { garden_u: gardenU };
+export const RAW_LAYOUTS: Record<string, unknown> = { garden_u: gardenU, river_z: riverZ };
 
 const LAYOUTS = new Map<string, MapLayout>();
 for (const [id, raw] of Object.entries(RAW_LAYOUTS)) {
