@@ -24,9 +24,9 @@ export function SteleStudyPanel({ preferredGrade }: Props) {
 
   if (cards.length === 0) {
     return (
-      <section className={css.stelePanel} aria-label="오늘의 낱말 공부">
+      <section className={css.stelePanel} aria-label="오늘의 낱말">
         <div className={css.steleHeader}>
-          <h2 className={css.sectionTitle}>오늘의 낱말 공부</h2>
+          <h2 className={css.sectionTitle}>오늘의 낱말</h2>
         </div>
         <p className={css.exampleLine}>검수된 오늘의 낱말을 준비하는 중이에요.</p>
       </section>
@@ -45,10 +45,10 @@ export function SteleStudyPanel({ preferredGrade }: Props) {
   };
 
   return (
-    <section className={css.stelePanel} aria-label="오늘의 낱말 공부">
+    <section className={css.stelePanel} aria-label="오늘의 낱말">
       <div className={css.steleHeader}>
         <div className={css.steleTitleGroup}>
-          <h2 className={css.sectionTitle}>오늘의 낱말 공부</h2>
+          <h2 className={css.sectionTitle}>오늘의 낱말</h2>
           <span className={css.chip}>{card.gradeLabel} · {card.levelLabel}</span>
         </div>
         <div className={css.steleControls}>

@@ -102,7 +102,7 @@ export function HomeScreen({
               </div>
               <div>
                 <h1 className={css.brandTitle}>어휘력 타워 디펜스</h1>
-                <p className={css.brandSub}>왕국 학술원 수호 작전실 · 낱말의 힘으로 성문을 지켜요</p>
+                <p className={css.brandSub}>낱말 문제를 풀고 타워로 성문을 지켜요</p>
               </div>
             </div>
 
@@ -156,15 +156,15 @@ export function HomeScreen({
         <main className={css.warRoomGrid}>
           <div className={css.oakFrame}>
             <div className={css.parchmentInner}>
-              <div className={css.stageViewport} role="img" aria-label="왕국 성문 수비 전장 미리보기">
+              <div className={css.stageViewport} role="img" aria-label="전장 미리보기">
                 <MiniStageCanvas
                   motionMode={settings.motionMode}
                   highContrastMap={settings.highContrastMap}
                   paused={activeModal !== null}
                   className={css.stageCanvas}
                 />
-                <span className={css.stageBadgeLeft}>왕국 초원 · 성문 수비전</span>
-                <span className={css.stageBadgeRight}>고비 5웨이브 시연</span>
+                <span className={css.stageBadgeLeft}>정원 미리보기</span>
+                <span className={css.stageBadgeRight}>5웨이브 보스</span>
               </div>
 
               <SteleStudyPanel preferredGrade={settings.lastGrade} />

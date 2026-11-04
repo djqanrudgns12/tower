@@ -19,7 +19,7 @@ export const MAP_NAMES: Readonly<Record<string, string>> = {
   snow_step: '설원',
 };
 
-/** 홈·새 게임 문구(ui-rules-v3 §4 용어: 시작·새 게임·닉네임·랭킹 점수). */
+/** 홈·새 게임 문구(ui-rules-v4 용어: 시작·새 게임·닉네임·랭킹 점수). */
 export const HOME_COPY = {
   start: '시작',
   gradeSoon: '문제 준비 중이에요',
@@ -54,7 +54,7 @@ export const PAUSE_COPY: Record<PauseReason, string> = {
   HIDDEN: '화면을 떠나서 멈췄어요.',
   PERFORMANCE: '기기가 잠시 느려져서 멈췄어요.',
   CONTEXT_LOST: '화면이 잠시 꺼졌다가 돌아왔어요. 준비되면 계속을 눌러 주세요.',
-  NUMERIC_LIMIT: '이 판은 숫자가 너무 커져 더 진행할 수 없어요. 처음 화면에서 새 판을 시작해 주세요.',
+  NUMERIC_LIMIT: '이 판은 숫자가 너무 커져 더 진행할 수 없어요. 홈에서 새 게임을 시작해 주세요.',
 };
 
 export const RENDER_WAIT = '화면을 다시 그리는 중이에요. 잠시만 기다려 주세요.';
@@ -94,8 +94,8 @@ export const FORECAST_WARNING: Record<'air' | 'shell' | 'clay' | 'burrow' | 'fly
   flyers: '하늘 떼 — 하늘을 잘 쏘는 타워가 없어요',
 };
 
-/** 원정 보물 창(prd-r4 §7.2-F) 제목. */
-export const RELIC_TITLE = '원정 보물';
+/** 보물 창(prd-r4 §7.2-F) 제목. */
+export const RELIC_TITLE = '보물';
 
 export const fmtDamage = (milli: number) => {
   const v = milli / 1000;
@@ -124,7 +124,7 @@ export function withRo(word: string): string {
   return `${word}${jong === 0 || jong === 8 ? '로' : '으로'}`;
 }
 
-/** 결과 화면 문구(R4 U3, ui-rules-v3 §4: 랭킹 점수·불꽃). 상시 문장은 2개 이하라 한 줄씩만 둔다. */
+/** 결과 화면 문구(R4 U3, ui-rules-v4 용어: 랭킹 점수·연속 정답 보너스). 상시 문장은 2개 이하라 한 줄씩만 둔다. */
 export const RESULT_COPY = {
   defeat: '성문이 무너졌어요',
   ended: '이번 판을 마쳤어요',
@@ -139,7 +139,7 @@ export const RESULT_COPY = {
   noteAdded: '새로 담은 낱말',
   noteGraduated: '외운 낱말',
   openNote: '노트 보기',
-  reviewTitle: '이번 판 다시 보기',
+  reviewTitle: '이번 판 기록',
   answer: '정답',
   dev: '개발용 문제라 공개 기록에는 올라가지 않아요',
   again: '다시 하기',

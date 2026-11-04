@@ -26,7 +26,7 @@ async function endRun(page: Page) {
   await page.getByRole('button', { name: '일시정지' }).first().click();
   await page.getByRole('dialog').getByRole('button', { name: '이번 판 끝내기' }).click();
   await page.getByRole('dialog').getByRole('button', { name: '끝내기', exact: true }).click();
-  // 결과 화면의 첫 줄(틀린 낱말이 없으면 '이번 판 다시 보기' 카드는 아예 없으므로 결과 카드 아래 '다시 하기'로 기다린다).
+  // 결과 화면의 첫 줄(틀린 낱말이 없으면 '이번 판 기록' 카드는 아예 없으므로 결과 카드 아래 '다시 하기'로 기다린다).
   await expect(page.getByRole('button', { name: '다시 하기' })).toBeVisible({ timeout: 15_000 });
 }
 
@@ -86,7 +86,7 @@ test('한 판 끝내기 → 결과의 노트 줄과 노트 보기 → 오답 노
   await skipFirstQuestion(page);
   await endRun(page);
 
-  // 결과: 넘긴 낱말 하나가 '이번 판 다시 보기'에 있고, 노트 줄이 '새로 담은 낱말 1'과 '노트 보기'를 보인다.
+  // 결과: 넘긴 낱말 하나가 '이번 판 기록'에 있고, 노트 줄이 '새로 담은 낱말 1'과 '노트 보기'를 보인다.
   const words = page.locator('ul[data-content] > li');
   await expect(words).toHaveCount(1);
   const lemma = ((await words.first().getByRole('button').innerText()).split('\n')[0] ?? '').trim();
@@ -134,7 +134,7 @@ test('한 판 끝내기 → 결과의 노트 줄과 노트 보기 → 오답 노
 
   // 뒤로 → 결과 화면으로 돌아온다(노트 줄도 그대로).
   await page.getByRole('button', { name: '뒤로' }).click();
-  await expect(page.getByRole('heading', { level: 2, name: '이번 판 다시 보기' })).toBeVisible();
+  await expect(page.getByRole('heading', { level: 2, name: '이번 판 기록' })).toBeVisible();
   await expect(openNote).toBeVisible();
   for (const [w, h] of [[390, 844], [320, 568]] as const) {
     await page.setViewportSize({ width: w, height: h });
@@ -166,7 +166,7 @@ test('틀린 낱말이 없으면 결과에 노트 줄이 없고, 홈의 오답 �
   await endRun(page);
 
   // 복습 카드는 틀린 낱말이 있을 때만 있다: 없으면 카드도 빈 안내 문장도 그리지 않는다.
-  await expect(page.getByRole('heading', { level: 2, name: '이번 판 다시 보기' })).toHaveCount(0);
+  await expect(page.getByRole('heading', { level: 2, name: '이번 판 기록' })).toHaveCount(0);
   await expect(page.getByText('틀리거나 넘긴 낱말이 없어요')).toHaveCount(0);
   await expect(page.getByText(/새로 담은 낱말|외운 낱말/)).toHaveCount(0);
   await expect(page.getByRole('button', { name: '노트 보기' })).toHaveCount(0);

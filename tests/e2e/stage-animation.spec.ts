@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test';
 
-test.describe('홈 수비 전장 미리보기(미니 무대) 애니메이션 검증', () => {
+test.describe('홈 전장 미리보기(미니 무대) 애니메이션 검증', () => {
   test('OS reduced-motion 및 기존 minimal 저장본은 정지하고 직접 전체 선택 시 재생한다', async ({ page }) => {
     await page.emulateMedia({ reducedMotion: 'reduce' });
     await page.setViewportSize({ width: 1440, height: 900 });
@@ -18,7 +18,7 @@ test.describe('홈 수비 전장 미리보기(미니 무대) 애니메이션 검
     await page.reload();
 
     const captureStageCanvas = () =>
-      page.getByRole('img', { name: '수비 전장 미리보기' }).locator('canvas').evaluate(
+      page.getByRole('img', { name: '전장 미리보기' }).locator('canvas').evaluate(
         async (el: HTMLCanvasElement) => [...new Uint8Array(await crypto.subtle.digest('SHA-256', new TextEncoder().encode(el.toDataURL())))].map(b => b.toString(16).padStart(2, '0')).join(''),
       );
 

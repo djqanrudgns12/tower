@@ -63,7 +63,7 @@ export function buildGuideChapters(
       id: 1,
       tabLabel: '1. 한 판 흐름',
       title: '한 판 흐름',
-      headline: '문제로 군자금을 모아 타워를 세우고, 성문을 끝까지 지켜요',
+      headline: '문제로 골드를 모아 타워를 세우고, 성문을 끝까지 지켜요',
       illustrationUrl: 'assets/guide/guide.ch1.wave_cycle.png',
       illustrationAlt: '금화 준비부터 궁수·서리 타워 요격과 성문 회복으로 이어지는 수비 흐름 그림',
       rows: [
@@ -81,8 +81,8 @@ export function buildGuideChapters(
         },
         {
           badge: '4단계',
-          title: '성문 회복과 대장',
-          body: `웨이브를 막으면 성문이 최대치로 회복돼요(0이 되면 종료). ${bossEveryWaves}의 배수 웨이브에는 대장이 오고, 버티면 보너스 골드를 받아요.`,
+          title: '성문 회복과 보스',
+          body: `웨이브를 막으면 성문이 최대치로 회복돼요(0이 되면 종료). ${bossEveryWaves}의 배수 웨이브에는 보스가 오고, 버티면 보너스 골드를 받아요.`,
           icon: 'gate',
         },
       ],
@@ -91,9 +91,9 @@ export function buildGuideChapters(
       id: 2,
       tabLabel: '2. 문제와 골드',
       title: '문제와 골드',
-      headline: `모르면 감점 없이 뜻을 배우고, ${burningStreak}연속 정답으로 불꽃을 켜요`,
+      headline: `모르면 감점 없이 뜻을 배우고, ${burningStreak}연속 정답이면 보너스가 켜져요`,
       illustrationUrl: 'assets/guide/guide.ch2.quiz_burning.png',
-      illustrationAlt: '골드 주화와 수호 문장 방패, 세 개의 불꽃 보석과 가속 화살 그림',
+      illustrationAlt: '골드 주화와 문장 방패, 세 개의 붉은 보석과 가속 화살 그림',
       rows: [
         {
           badge: '보상 구분',
@@ -109,8 +109,8 @@ export function buildGuideChapters(
         },
         {
           badge: '연속 보너스',
-          title: '불꽃 발동',
-          body: `전투 중 ${burningStreak}문제를 연달아 맞히면 ${burningSec}초 동안 불꽃이 켜져 모든 타워 공격 속도가 +${burningSpeedPct}% 빨라져요.`,
+          title: '연속 정답 보너스',
+          body: `전투 중 ${burningStreak}문제를 연달아 맞히면 ${burningSec}초 동안 보너스가 켜져 모든 타워 공격 속도가 +${burningSpeedPct}% 빨라져요.`,
           icon: 'burning',
         },
       ],
@@ -149,7 +149,7 @@ export function buildGuideChapters(
       title: '시작과 끝내기',
       headline: '학년은 교과 낱말 범위를, 난이도는 전투 압박과 심화 문제를 정해요',
       illustrationUrl: 'assets/guide/guide.ch4.expedition_command.png',
-      illustrationAlt: '수호 비석과 4단계 난이도 방패, 목제 방향·숫자 키캡과 정지 등불 그림',
+      illustrationAlt: '돌 표지석과 4단계 난이도 방패, 목제 방향·숫자 키캡과 정지 등불 그림',
       rows: [
         {
           badge: '시작 기준',
@@ -183,10 +183,10 @@ export const GUIDE_WAVE_BEATS: readonly {
   shortLabel: string;
   caption: string;
 }[] = [
-  { id: 0, shortLabel: '1. 준비', caption: '문제를 풀어 군자금 확보' },
+  { id: 0, shortLabel: '1. 준비', caption: '문제를 풀어 골드 모으기' },
   { id: 1, shortLabel: '2. 설치', caption: '받침 선택 · 밝은 길 조준' },
   { id: 2, shortLabel: '3. 전투', caption: '실시간 요격 · 문제 병행' },
-  { id: 3, shortLabel: '4. 회복', caption: '성문 완전 회복 · 대장 보상' },
+  { id: 3, shortLabel: '4. 회복', caption: '성문 완전 회복 · 보스 보상' },
 ];
 
 export interface GuideLoopEnemy {
@@ -338,7 +338,7 @@ export function sampleGuideWaveLoop(
       showRangeOverlay: false,
       gateSparkle01: animate ? 0.5 + 0.5 * Math.sin(beatProgress01 * Math.PI * 2) : 0.85,
       statusTag: `성문 ${normal.gateHp}/${normal.gateHp} 회복`,
-      goldTag: `대장 보상 +${normal.milestoneSurvivalGold}골드`,
+      goldTag: `보스 보상 +${normal.milestoneSurvivalGold}골드`,
       enemies: [],
       projectiles: [],
       archerAngle: -0.5,
@@ -427,7 +427,7 @@ export function buildQuizOutcomeSpecs(balance: Balance = BALANCE): readonly Quiz
       scoreDeltaText: `+${normal.correctPt}점`,
       gateNote: '성문 유지',
       burningLitCount: 1,
-      summary: '군자금과 점수가 함께 오르고 불꽃이 1칸 차올라요.',
+      summary: '골드와 점수가 함께 오르고 연속 정답 칸이 1칸 차올라요.',
     },
     {
       id: 'wrong',
@@ -449,7 +449,7 @@ export function buildQuizOutcomeSpecs(balance: Balance = BALANCE): readonly Quiz
     },
     {
       id: 'burning',
-      tabLabel: `${balance.burning.streak}연속 불꽃`,
+      tabLabel: `${balance.burning.streak}연속 정답`,
       goldDeltaText: `+${normal.correctGold}골드`,
       scoreDeltaText: `공격 속도 +${speedPct}%`,
       gateNote: `${sec}초 동안 가속`,

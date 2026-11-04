@@ -71,7 +71,7 @@ export function Hud({ view, burning: rule, mode, compactRail = false, goldRef, r
   const best = bestLine(bestWave, waveNo, view.completedWave, phone || !big);
   const wave = (
     <span className={css.waveCell}>
-      <span className={css.stat} data-boss={view.milestoneWave || undefined} role="img" aria-label={`웨이브 ${waveNo}${view.milestoneWave ? ', 대장 웨이브' : ''}`} title="웨이브">
+      <span className={css.stat} data-boss={view.milestoneWave || undefined} role="img" aria-label={`웨이브 ${waveNo}${view.milestoneWave ? ', 보스 웨이브' : ''}`} title="웨이브">
         <ArtIcon name="wave" size={phone ? 18 : 22} />
         <strong>{waveNo}</strong>
       </span>
@@ -94,8 +94,8 @@ export function Hud({ view, burning: rule, mode, compactRail = false, goldRef, r
       className={css.flames}
       data-burning={burning || undefined}
       role="img"
-      aria-label={burning ? `불꽃 ${view.burningSecondsLeft}초 남음, ${speed}` : `연속 정답 ${lit}/${rule.streak}, 다 모으면 불꽃 ${speed}`}
-      title={burning ? `불꽃 · ${speed}` : `연속 정답 · 다 모으면 불꽃(${speed})`}
+      aria-label={burning ? `연속 정답 보너스 ${view.burningSecondsLeft}초 남음, ${speed}` : `연속 정답 ${lit}/${rule.streak}, 다 모으면 보너스 ${speed}`}
+      title={burning ? `연속 정답 보너스 · ${speed}` : `연속 정답 · 다 모으면 보너스(${speed})`}
     >
       {Array.from({ length: rule.streak }, (_, i) => (
         <ArtIcon key={i} name="flame" size={phone ? 16 : 20} className={(i < lit ? css.lit : css.unlit) ?? ''} />

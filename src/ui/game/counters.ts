@@ -8,7 +8,7 @@ import { ENEMY_NAME } from './wavePreview';
 /** 상성 표지 → 화면 이름(화면 읽기·호버 안내). */
 export const FOE_LABEL: Record<FoeTag, string> = {
   walker: ENEMY_NAME.walker, runner: ENEMY_NAME.runner, brute: ENEMY_NAME.brute, shell: ENEMY_NAME.shell, wisp: ENEMY_NAME.wisp,
-  swarm: ENEMY_NAME.swarm, flyer: ENEMY_NAME.flyer, splitter: ENEMY_NAME.splitter, boss: '대장', elite: '정예', clay: '흙 보호막', burrow: '땅굴',
+  swarm: ENEMY_NAME.swarm, flyer: ENEMY_NAME.flyer, splitter: ENEMY_NAME.splitter, boss: '보스', elite: '정예', clay: '흙 보호막', burrow: '땅굴',
 };
 
 /** 상성 표지 → 원화 특성 아이콘. 없는 표지(걷는 적·힘센 적·대장·정예)는 적 초상화나 글자로 보인다. */

@@ -8,10 +8,10 @@ import { TrophyIcon } from './HomeIcons';
 import css from './home.module.css';
 
 export const TAB_LABELS: Record<RankingTabId, string> = {
-  single_score: '한 판 최고점',
-  honor_points: '누적 명예점',
-  best_wave: '최장 웨이브',
-  local_device: '내 기기 기록',
+  single_score: '최고 점수',
+  honor_points: '랭킹 점수',
+  best_wave: '최고 웨이브',
+  local_device: '내 기록',
 };
 
 export const PERIOD_LABELS: Record<RankingPeriod, string> = {
@@ -22,7 +22,7 @@ export const PERIOD_LABELS: Record<RankingPeriod, string> = {
 
 export function formatPrimaryMetric(tab: RankingTabId, value: number): string {
   if (tab === 'best_wave') return `${fmtNumber(value)}웨이브`;
-  if (tab === 'honor_points') return `${fmtNumber(value)} 명예점`;
+  if (tab === 'honor_points') return `${fmtNumber(value)}점`;
   return `${fmtNumber(value)}점`;
 }
 
@@ -96,12 +96,12 @@ export function RankingBoard({
   const myEntry = data?.myEntry ?? null;
 
   return (
-    <aside ref={boardRef} className={css.oakFrame} aria-label="통합 수호 랭킹">
+    <aside ref={boardRef} className={css.oakFrame} aria-label="랭킹">
       <div className={css.parchmentInner}>
         <div className={css.rankHeader}>
           <div className={css.steleTitleGroup}>
             <TrophyIcon />
-            <h2 className={css.sectionTitle}>통합 수호 랭킹</h2>
+            <h2 className={css.sectionTitle}>랭킹</h2>
           </div>
           <button
             id="openRankingModalBtn"
@@ -109,7 +109,7 @@ export function RankingBoard({
             className={css.smallBtn}
             onClick={() => onOpenDetailModal({ tab, grade: effectiveGrade, difficulty, period })}
           >
-            상세 순위표 열기
+            전체 보기
           </button>
         </div>
 
@@ -197,7 +197,7 @@ export function RankingBoard({
 
         {tab !== 'local_device' && data?.source === 'local_fallback' && (
           <div className={css.sourceNotice}>
-            <span>오프라인 상태예요 · 내 기기 기록 기준으로 보여 드려요</span>
+            <span>오프라인 상태예요 · 내 기록으로 보여 드려요</span>
           </div>
         )}
 
@@ -209,8 +209,8 @@ export function RankingBoard({
             </div>
           ) : !data || data.entries.length === 0 ? (
             <div className={css.emptyRankBox}>
-              <strong>{tab === 'local_device' ? '아직 기록이 없어요.' : '아직 이 부문 출정 기록이 없어요.'}</strong>
-              <span className={css.rankSub}>새 게임을 시작해 성문을 지키면 첫 수호자로 기록돼요.</span>
+              <strong>{tab === 'local_device' ? '아직 기록이 없어요.' : '아직 이 부문 기록이 없어요.'}</strong>
+              <span className={css.rankSub}>새 게임을 시작해 성문을 지키면 첫 기록이 남아요.</span>
             </div>
           ) : (
             <ol className={css.rankList}>

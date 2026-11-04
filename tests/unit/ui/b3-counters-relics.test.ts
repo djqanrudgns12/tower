@@ -14,7 +14,7 @@ import { forecastWarning, wavePreview } from '../../../src/ui/game/wavePreview';
 import { FORECAST_WARNING } from '../../../src/ui/copy';
 import { finishPrep, newRun } from '../helpers';
 
-// R4 B3 화면: 잘 잡는 적·약한 적 아이콘, 다음 웨이브 종족 특성 경고, 원정 보물 창. 모두 계약(strongVs·weakVs·trait·relics)에서 만든다.
+// R4 B3 화면: 잘 잡는 적·약한 적 아이콘, 다음 웨이브 종족 특성 경고, 보물 창. 모두 계약(strongVs·weakVs·trait·relics)에서 만든다.
 
 const air = (t: TowerId) => recruitCardInfo(BALANCE, t).air === true;
 
@@ -86,7 +86,7 @@ describe('원정 보물 아이콘(계약 icon = relic.<id>, 전용 원화)', () 
   });
 });
 
-describe('원정 보물 창', () => {
+describe('보물 창', () => {
   const between = { draft: null, pause: [], phase: 'BUILD' as const };
   it('후보가 있고 웨이브 사이에 멈추지 않았을 때만, 새 타워 창이 먼저다', () => {
     const offer = { wave: 10, offers: ['wise_book', 'sky_net', 'frost_bead'] };
@@ -103,7 +103,7 @@ describe('원정 보물 창', () => {
     const offers = relicOfferFor(BALANCE, 1234, 10, []);
     expect(offers).toHaveLength(3);
     const html = renderToStaticMarkup(createElement(RelicCard, { balance: BALANCE, choices: offers, icons: {}, onPick: () => {} }));
-    expect(html).toContain('원정 보물');
+    expect(html).toContain('보물');
     for (const id of offers) {
       const r = BALANCE.relics!.items[id]!;
       expect(html).toContain(r.label);

@@ -30,7 +30,7 @@ export function TelemetryStrip({ playerId, refreshTick }: Props) {
   const todayText = loading
     ? '—'
     : offline
-      ? `내 기기 ${fmtNumber(snap.todayPlays)}판`
+      ? `내 기록 ${fmtNumber(snap.todayPlays)}판`
       : `${fmtNumber(snap.todayPlays)}판`;
 
   const totalVisitorsText = loading
@@ -42,11 +42,11 @@ export function TelemetryStrip({ playerId, refreshTick }: Props) {
   const totalPlaysText = loading
     ? '—'
     : offline
-      ? `내 기기 ${fmtNumber(snap.totalPlays)}판`
+      ? `내 기록 ${fmtNumber(snap.totalPlays)}판`
       : `${fmtNumber(snap.totalPlays)}판`;
 
   return (
-    <div className={css.telemetryStrip} role="region" aria-label="왕국 수호 현황">
+    <div className={css.telemetryStrip} role="region" aria-label="접속 현황">
       {sharing && notice && <p role="status" style={{ gridColumn: '1 / -1' }}>{notice.message}</p>}
       <div className={css.metricCell}>
         <span className={css.metricLabel}>

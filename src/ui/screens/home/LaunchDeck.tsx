@@ -94,7 +94,7 @@ export function LaunchDeck({
   const showError = touched && check.error !== null;
 
   const statusText = showError
-    ? (isEmpty ? '출정하기 전에 닉네임(2~12자)을 먼저 적어 주세요.' : check.error!)
+    ? (isEmpty ? '새 게임 전에 닉네임(2~12자)을 먼저 적어 주세요.' : check.error!)
     : check.error === null
       ? '준비 완료 · 내 순위와 연동됨'
       : '닉네임 두 글자에서 열두 글자까지 적거나 랜덤 추천을 눌러요';
@@ -180,7 +180,7 @@ export function LaunchDeck({
   };
 
   return (
-    <section className={css.launchDeck} aria-label="출정 준비">
+    <section className={css.launchDeck} aria-label="새 게임 준비">
       {/* 닉네임 입력 영역 */}
       <div>
         <div className={css.nickHeader}>

@@ -56,12 +56,12 @@ describe('사용 설명서 모델 및 전용 삽화 계약 (G03~G11, G15)', () =
     expect(joined).toContain('연습 판');
     // G05: 핵심 최신 규칙 포함 확인
     expect(joined).toContain('모르겠어요');
-    expect(joined).toContain('불꽃');
+    expect(joined).toContain('연속 정답 보너스');
     expect(joined).toContain('밝은 흙길');
     expect(joined).toContain('속담·관용구·방언');
     expect(joined).toContain('이번 판 끝내기');
     // 용어 규정(ui-rules-v3 §4): 옛 말이 화면 글에 남지 않는다.
-    expect(joined).not.toMatch(/버닝|고비|징집|명예점|출정/);
+    expect(joined).not.toMatch(/버닝|불꽃|고비|대장|징집|명예점|출정|군자금/);
     // G15: 느낌표 0건, 이모지 0건, 영문 단독 단어 0건
     expect(joined).not.toContain('!');
     expect(joined).not.toMatch(/\p{Extended_Pictographic}/u);
@@ -125,7 +125,7 @@ describe('사용 설명서 모델 및 전용 삽화 계약 (G03~G11, G15)', () =
     const text = [...cards.flatMap(c => [c.title, c.sentence]), counters.title, counters.sentence, ...counters.pairs.flatMap(p => [p.enemy, p.towerLabel, p.note])].join('\n');
     expect(text).not.toContain('!');
     expect(text).not.toMatch(/\p{Extended_Pictographic}/u);
-    expect(text).not.toMatch(/버닝|고비|징집|명예점|출정/);
+    expect(text).not.toMatch(/버닝|불꽃|고비|대장|징집|명예점|출정|군자금/);
   });
 
   it('G07: nextGuideChapter는 1~4장 경계 밖으로 넘어가지 않고 순차 이동한다', () => {

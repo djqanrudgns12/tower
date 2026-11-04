@@ -24,7 +24,7 @@ interface Props {
 export function RelicStrip({ balance, relics, icons, variant, size = 20, max = 4, labeled = false }: Props) {
   if (relics.length === 0) return null;
   const lines = relics.map(id => relicLine(balance, id));
-  const said = `원정 보물 ${relics.length}개: ${lines.join(', ')}`;
+  const said = `보물 ${relics.length}개: ${lines.join(', ')}`;
   if (variant === 'count') {
     return (
       <span className={css.relics} role="img" aria-label={said} title={lines.join('\n')}>
@@ -35,7 +35,7 @@ export function RelicStrip({ balance, relics, icons, variant, size = 20, max = 4
   }
   return (
     <span className={css.relics} role="img" aria-label={said}>
-      {labeled && <span className={css.relicLabel} aria-hidden="true">원정 보물</span>}
+      {labeled && <span className={css.relicLabel} aria-hidden="true">보물</span>}
       {relics.slice(0, max).map((id, i) => (
         <span key={id} className={css.relic} style={{ width: size, height: size }} title={lines[i]}>
           <RelicArt icon={balance.relics?.items[id]?.icon ?? 'chest'} icons={icons} size={size} />

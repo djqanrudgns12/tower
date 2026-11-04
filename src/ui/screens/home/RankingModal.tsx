@@ -63,8 +63,8 @@ export function RankingModal({
   };
 
   return (
-    <ModalShell titleId="rankingModalTitle" title="상세 수호 순위표 (상위 50위)" wide onClose={onClose}>
-      <div className={css.tabBar} role="tablist" aria-label="상세 순위 분류">
+    <ModalShell titleId="rankingModalTitle" title="전체 랭킹 (상위 50위)" wide onClose={onClose}>
+      <div className={css.tabBar} role="tablist" aria-label="랭킹 분류">
         {RANKING_TAB_IDS.map((id, i) => (
           <button
             key={id}
@@ -148,7 +148,7 @@ export function RankingModal({
 
       {tab === 'honor_points' && (
         <p className={css.sourceNotice}>
-          <span>원정 명예점은 1웨이브 이상 지킨 정규 판마다 점수와 달성 웨이브·정답 수에 따라 적립돼요.</span>
+          <span>랭킹 점수는 1웨이브 이상 지킨 정규 판마다 점수·웨이브·정답 수에 따라 쌓여요.</span>
         </p>
       )}
 

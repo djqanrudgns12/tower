@@ -18,7 +18,7 @@ export function WaveBand({ wave, boss, bossArt, onDone }: Props) {
     <div className={css.band} data-boss={boss || undefined} aria-hidden="true" onAnimationEnd={onDone}>
       {boss && bossArt ? <img className={css.boss} src={bossArt} alt="" draggable={false} /> : <ArtIcon name="wave" size={32} />}
       <span className={css.text}>{wave}웨이브</span>
-      {boss && <span className={css.tag}>대장</span>}
+      {boss && <span className={css.tag}>보스</span>}
     </div>
   );
 }

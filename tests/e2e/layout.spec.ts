@@ -284,10 +284,10 @@ test('모달 포커스: 열면 내용의 첫 요소, 키보드로 설정을 바�
   await expect(settingsBtn).toBeFocused();
 
   const openRanking = page
-    .getByRole('complementary', { name: '통합 수호 랭킹' })
-    .getByRole('button', { name: '상세 순위표 열기' });
+    .getByRole('complementary', { name: '랭킹', exact: true })
+    .getByRole('button', { name: '전체 보기' });
   await openRanking.click();
-  const rankingDialog = page.getByRole('dialog', { name: /상세 수호 순위표/ });
+  const rankingDialog = page.getByRole('dialog', { name: /전체 랭킹/ });
   await expect(rankingDialog).toBeVisible();
   await expect(rankingDialog.getByRole('button', { name: '닫기' })).toBeFocused();
   await rankingDialog.getByRole('button', { name: '닫기' }).click();
@@ -295,15 +295,15 @@ test('모달 포커스: 열면 내용의 첫 요소, 키보드로 설정을 바�
   await expect(openRanking).toBeFocused();
 });
 
-test('상세 순위표 탭: 방향키·Home·End가 선택과 포커스를 함께 옮긴다(roving tabindex)', async ({ page }) => {
+test('전체 랭킹 탭: 방향키·Home·End가 선택과 포커스를 함께 옮긴다(roving tabindex)', async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.goto('/');
   await page
-    .getByRole('complementary', { name: '통합 수호 랭킹' })
-    .getByRole('button', { name: '상세 순위표 열기' })
+    .getByRole('complementary', { name: '랭킹', exact: true })
+    .getByRole('button', { name: '전체 보기' })
     .click();
-  const dialog = page.getByRole('dialog', { name: /상세 수호 순위표/ });
-  const tablist = dialog.getByRole('tablist', { name: '상세 순위 분류' });
+  const dialog = page.getByRole('dialog', { name: /전체 랭킹/ });
+  const tablist = dialog.getByRole('tablist', { name: '랭킹 분류' });
   const tabs = tablist.getByRole('tab');
   const count = await tabs.count();
   expect(count).toBeGreaterThanOrEqual(3);
@@ -421,7 +421,7 @@ async function floors(page: Page, scope: string) {
   }, scope);
 }
 
-test('13px·44px 하한: 홈·새 게임·상세 순위표·설정·사용 설명서(접힘·펼침)·오답 노트(1366×650)', async ({ page }) => {
+test('13px·44px 하한: 홈·새 게임·전체 랭킹·설정·사용 설명서(접힘·펼침)·오답 노트(1366×650)', async ({ page }) => {
   await page.setViewportSize({ width: 1366, height: 650 });
   await page.goto('/');
   const results: Record<string, Awaited<ReturnType<typeof floors>>> = {};
@@ -432,7 +432,7 @@ test('13px·44px 하한: 홈·새 게임·상세 순위표·설정·사용 설�
   results.newGame = await floors(page, '[role="dialog"]');
   await page.keyboard.press('Escape');
 
-  await page.getByRole('complementary', { name: '통합 수호 랭킹' }).getByRole('button', { name: '상세 순위표 열기' }).click();
+  await page.getByRole('complementary', { name: '랭킹', exact: true }).getByRole('button', { name: '전체 보기' }).click();
   results.ranking = await floors(page, '[role="dialog"]');
   await page.keyboard.press('Escape');
 

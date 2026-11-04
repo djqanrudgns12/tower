@@ -66,10 +66,10 @@ const HINT_WAVES = 3;
 const READY_HINT = '준비되면 전투 시작을 눌러요.';
 
 /**
- * 엔진 알림은 웨이브 번호·골드 획득·불꽃을 다시 말한다. 화면에는 시작 띠·상태 카드·날아오는 금화가 이미 보이므로
- * 글 토스트를 띄우지 않고(R4 PRD §3 #11·#12) 화면 읽기에만 알린다. 화면 용어(ui-rules-v3 §4)로 바꿔 읽힌다.
+ * 엔진 알림은 웨이브 번호·골드 획득·연속 정답 보너스를 다시 말한다. 화면에는 시작 띠·상태 카드·날아오는 금화가 이미 보이므로
+ * 글 토스트를 띄우지 않고(R4 PRD §3 #11·#12) 화면 읽기에만 알린다. 화면 용어(ui-rules-v4, tests/unit/terms.test.ts)로 바꿔 읽힌다.
  */
-const spoken = (n: Notice) => n.text.replace(/버닝/g, '불꽃').replace(/고비/g, '대장');
+const spoken = (n: Notice) => n.text.replace(/버닝|불꽃/g, '연속 정답 보너스').replace(/고비|대장/g, '보스');
 
 export function GameScreen({
   controller,
@@ -523,7 +523,7 @@ export function GameScreen({
   const phase: PhaseTag = view.question?.wrapup || view.phase === 'WAVE_WRAPUP'
     ? { text: '마무리', tone: 'prep' }
     : view.phase === 'PREP_QUIZ' ? { text: '준비', tone: 'prep' }
-      : view.milestoneWave ? { text: '대장', tone: 'boss' } : { text: '전투', tone: 'battle' };
+      : view.milestoneWave ? { text: '보스', tone: 'boss' } : { text: '전투', tone: 'battle' };
   // 준비 바 안내 한 줄: 연습 안내 → 첫 판 코치 → 첫 3웨이브 안내 순. 화면 상시 문장은 이것 하나다.
   const buildHint = practice
     ? (coach?.at === 'start' ? coach.text : null)
@@ -546,7 +546,7 @@ export function GameScreen({
         <h2 className={css.buildTitle}>
           <ArtIcon name="wave" size={32} />
           {view.wave}웨이브
-          {view.milestoneWave && <span className={css.bossTag}>대장</span>}
+          {view.milestoneWave && <span className={css.bossTag}>보스</span>}
         </h2>
         {buildHint && <p className={css.buildHint} role="status">{buildHint}</p>}
       </div>
