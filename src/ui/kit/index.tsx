@@ -20,14 +20,16 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   block?: boolean;
   /** 짙은 바탕(--bg) 위의 ghost 버튼. */
   onDark?: boolean;
+  /** 글자를 왼쪽에 붙인다(답안 키캡처럼 긴 글). */
+  align?: 'center' | 'start';
   ref?: Ref<HTMLButtonElement>;
 }
 
-export function Button({ variant = 'secondary', size = 'md', block = false, onDark = false, className, type = 'button', ...rest }: ButtonProps) {
+export function Button({ variant = 'secondary', size = 'md', block = false, onDark = false, align = 'center', className, type = 'button', ...rest }: ButtonProps) {
   return (
     <button
       type={type}
-      className={cx(css.btn, css[variant], size === 'lg' && css.lg, block && css.block, onDark && css.onDark, className)}
+      className={cx(css.btn, css[variant], size === 'lg' && css.lg, block && css.block, onDark && css.onDark, align === 'start' && css.alignStart, className)}
       {...rest}
     />
   );
@@ -56,10 +58,12 @@ interface CardProps extends HTMLAttributes<HTMLElement> {
   float?: boolean;
   /** 카드 안의 한 단 낮은 면(--paper-2). 카드 안에 테두리 상자를 다시 넣지 않을 때 쓴다. */
   sunk?: boolean;
+  /** 안쪽 여백: md 16px(기본), sm 12px, none 0. */
+  pad?: 'none' | 'sm' | 'md';
 }
 
-export function Card({ as: Tag = 'div', float = false, sunk = false, className, ...rest }: CardProps) {
-  return <Tag className={cx(css.card, float && css.cardFloat, sunk && css.cardSunk, className)} {...rest} />;
+export function Card({ as: Tag = 'div', float = false, sunk = false, pad = 'md', className, ...rest }: CardProps) {
+  return <Tag className={cx(css.card, float && css.cardFloat, sunk && css.cardSunk, pad === 'sm' && css.padSm, pad === 'none' && css.padNone, className)} {...rest} />;
 }
 
 
@@ -192,7 +196,8 @@ export function Modal({ titleId, title, onClose, size = 'md', footer, dismissabl
 
   useEffect(() => {
     const box = boxRef.current;
-    if (box) tabbables(box)[0]?.focus();
+    // 첫 포커스는 내용(고를 카드·입력칸)이다. 내용에 조작 요소가 없을 때만 머리줄의 닫기로 간다.
+    if (box) (tabbables(box).find(el => !el.closest('[data-dialog-head]')) ?? tabbables(box)[0])?.focus();
     const onKeyDown = (e: globalThis.KeyboardEvent) => {
       if (e.key === 'Escape') { e.preventDefault(); close(); return; }
       if (e.key !== 'Tab' || !boxRef.current) return;
@@ -219,7 +224,7 @@ export function Modal({ titleId, title, onClose, size = 'md', footer, dismissabl
         className={cx(css.card, css.cardFloat, css.dialog, size === 'sm' ? css.dialogSm : size === 'lg' ? css.dialogLg : css.dialogMd)}
         onKeyDown={onDialogKeyDown}
       >
-        <div className={css.dialogHead}>
+        <div className={css.dialogHead} data-dialog-head>
           <h2 id={titleId} className={css.dialogTitle}>{title}</h2>
           {dismissable && <IconButton label="닫기" icon={<CloseIcon />} variant="ghost" onClick={onClose} />}
         </div>

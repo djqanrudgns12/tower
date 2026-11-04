@@ -194,9 +194,13 @@
 }
 
 .panel .skip {
-  align-self: flex-end;
+  align-self: stretch;
   color: var(--ink-2);
 }
+
+/* 넓은 화면: 오른쪽 열은 '도움' 칸이다. 모르겠어요 키캡을 아래 답안 줄에 맞춰 바닥에 둔다(해설이 뜨면 그 위로 쌓인다). */
+.seam .side,
+.wide .side { justify-content: flex-end; }
 
 .narrow .skip { align-self: stretch; padding: 0 var(--s2); }
 

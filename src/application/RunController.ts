@@ -335,8 +335,8 @@ export class RunController {
   private publish(events: DomainEvent[]) {
     for (const e of events) {
       if (e.type === 'waveComplete') this.notify(e.milestoneGold > 0 ? `${e.wave}웨이브 생존 +${e.milestoneGold}골드` : `${e.wave}웨이브를 지켰어요. 성문이 다시 튼튼해졌어요.`, e.milestoneGold > 0 ? 'reward' : 'info');
-      if (e.type === 'burning') this.notify(`버닝: 타워가 더 빨리 공격해요 · ${this.ctx.balance.burning.durationMs / 1000}초`, 'reward');
-      if (e.type === 'phase' && e.phase === 'BATTLE' && this.s.wave % this.ctx.balance.waves.bossEveryWaves === 0) this.notify(`${this.s.wave}웨이브 고비: 강한 적이 와요`, 'warn');
+      if (e.type === 'burning') this.notify(`불꽃: 타워가 더 빨리 공격해요 · ${this.ctx.balance.burning.durationMs / 1000}초`, 'reward');
+      if (e.type === 'phase' && e.phase === 'BATTLE' && this.s.wave % this.ctx.balance.waves.bossEveryWaves === 0) this.notify(`${this.s.wave}웨이브 대장: 강한 적이 와요`, 'warn');
     }
     if (events.length) for (const l of this.eventListeners) l(events);
     const key = viewKey(this.s);

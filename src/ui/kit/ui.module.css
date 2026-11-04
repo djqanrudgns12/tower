@@ -45,6 +45,7 @@
 .btn:disabled, .btn[aria-disabled='true'] { --face: var(--paper-2); --text: var(--ink-2); box-shadow: none; opacity: 0.6; cursor: not-allowed; }
 .lg { min-height: 56px; padding: 0 var(--s5); font-size: var(--fs-3); font-weight: 800; }
 .block { width: 100%; }
+.alignStart { justify-content: flex-start; text-align: left; }
 
 /* ── 아이콘 버튼 ── */
 .iconBtn { position: relative; width: var(--touch); padding: 0; }
@@ -71,6 +72,8 @@
 .card { background: var(--paper); color: var(--ink); border-radius: var(--r-md); padding: var(--s4); }
 .cardFloat { box-shadow: var(--float); }
 .cardSunk { background: var(--paper-2); }
+.padSm { padding: var(--s3); }
+.padNone { padding: 0; }
 
 /* ── 고르기 줄(라디오 묶음) ── */
 .segmented {

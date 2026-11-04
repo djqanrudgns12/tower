@@ -41,7 +41,7 @@ export const SCENES = [
     id: '03', slug: 'draft-w3', title: 'W3 뒤 징집 화면', save: { builder: 'draft-w3' },
     steps: [
       { op: 'resume' }, { op: 'shot', name: 'cards' },
-      { op: 'click', role: 'radio', nth: 1 }, { op: 'click', role: 'button', name: '고르기' }, { op: 'run', ms: 200 }, { op: 'wait', ms: 200 }, { op: 'shot', name: 'picked' },
+      { op: 'click', role: 'button', name: /고르기/, nth: 1 }, { op: 'run', ms: 200 }, { op: 'wait', ms: 200 }, { op: 'shot', name: 'picked' },
     ],
   },
   {
