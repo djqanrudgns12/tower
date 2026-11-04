@@ -1,18 +1,33 @@
-/* 전투 화면(R4 PRD §9, ui-rules-v3): 짙은 숲색 바탕 위에 전장(주인공)과 밝은 종이 카드.
-   R 모드는 [전장 | 오른쪽 카드 3장] 위, 아래 문제 카드. 문제 카드 오른쪽 열은 레일과 수직선을 맞춘다(PRD §12.1). */
+/* 전투 화면(R4 PRD §9, ui-rules-v4): 짙은 호두나무 바탕 위에 전장(주인공)·옆판·문제판.
+   R 모드는 [전장 | 옆판] 위, 아래 문제판. 셋을 호두나무 틀 하나로 묶는다(B1, 옛 한 판 구성). 문제판 오른쪽 열은 옆판과 수직선을 맞춘다(PRD §12.1). */
 .screen {
   /* 계약 layout.frameMaxPx를 useLayout이 :root 변수로 넣는다. */
   max-width: var(--frame-max);
   margin: 0 auto;
 }
 
+/* 너비는 내용(전장 + 틈 + 옆판 + 바깥 여백)만큼이라 틀이 내용을 감싼다. 1440·1366에서는 지금 배치와 좌표가 같다. */
 .modeR {
+  position: relative;
+  width: fit-content;
   display: grid;
   grid-template-columns: var(--map-w) var(--rail-w);
   column-gap: var(--s3);
   row-gap: var(--s2);
   justify-content: center;
   align-items: start;
+}
+
+/* 화면 바깥 호두나무 틀(B1): 바깥 여백(계약 outerPaddingPx 16px) 안에 그린다 — 배치·계약은 그대로다.
+   표시 두께 12px < 24px이라 frame.lg 대신 frame.sm 원화(v4 결정 11). 가상 요소라 겹으로 세지 않는다(v4 §7.2). */
+.modeR::before {
+  content: '';
+  position: absolute;
+  inset: 2px;
+  border: 12px solid var(--walnut-2);
+  border-image: var(--art-frame-sm) 33 / 12px stretch;
+  border-radius: var(--r-md);
+  pointer-events: none;
 }
 
 .modeS {
@@ -26,8 +41,10 @@
   scroll-margin-top: 80px;
 }
 
-/* 전장: 둥근 모서리와 뜬 그림자만(갈색 테 없음). 휴대폰은 화면 폭 끝까지 붙인다. */
+/* 전장: 둥근 모서리 + 안쪽 호두나무 테(B1, frame.sm 원화 6px). 테는 캔버스 위에 겹쳐 그려 전장 크기·좌표가 그대로다.
+   휴대폰은 화면 폭 끝까지 붙인다(R4 풀블리드, 테 없음). */
 .field {
+  --field-frame: 6px;
   position: relative;
   border-radius: var(--r-md);
   overflow: hidden;
@@ -35,34 +52,48 @@
   justify-self: center;
 }
 
+.modeR .field::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  border: var(--field-frame) solid var(--walnut-2);
+  border-image: var(--art-frame-sm) 33 / var(--field-frame) stretch;
+  border-radius: inherit;
+  pointer-events: none;
+}
+
 .field.bleed {
   border-radius: 0;
   box-shadow: none;
 }
 
-/* 전장 키보드 포커스: 캔버스 안쪽에 그려 둥근 모서리에 잘리지 않게 한다. */
+/* 전장 키보드 포커스: 캔버스 안쪽, 호두나무 테 안에 그려 둥근 모서리·테에 가리지 않게 한다. */
 .field [data-keyscope='field']:focus-visible {
   outline: 3px solid var(--blue);
   outline-offset: -5px;
 }
 
-/* 오른쪽 열: 상태 카드 · 타워 칸 카드 · 상황 카드. 높이는 전장과 같고 상황 카드가 남는 높이를 가진다. */
-.rail {
+.modeR .field [data-keyscope='field']:focus-visible { outline-offset: calc(-3px - var(--field-frame) - 2px); }
+
+/* 옆판(B1): 참나무 판(kit Card material="board") 하나 위에 머리판(HUD) · 타워 칸 키 · 상황 카드. 높이는 전장과 같고 상황 카드가 남는 높이를 가진다.
+   남는 아래쪽은 판이 채운다(빈 짙은 바탕이 남지 않는다). */
+.modeR .rail {
   position: relative;
   display: flex;
   flex-direction: column;
   gap: var(--s2);
   min-width: 0;
+  padding: var(--s2);
 }
 
 .rail > * { flex: none; }
 
+/* 타워 칸 키는 판 위에 바로 놓는다(양피지 카드로 다시 감싸지 않는다: 판 > 키 > 글 3겹, v4 §7.1). */
 .sockets {
   display: grid;
   gap: var(--s2);
 }
-
-.rail .sockets { padding: var(--s3); }
 
 /* 상황 카드는 내용 높이만 쓴다(빈 종이 벽을 만들지 않는다). 넘치면 카드 안에서만 스크롤한다. */
 .rail .context {
@@ -75,12 +106,12 @@
   padding: var(--s3) var(--s4);
 }
 
-/* 설치 자리 목록 자리: 레일 맨 아래에 붙어, 키보드 포커스가 닿을 때만 위로 펼쳐진다. */
+/* 설치 자리 목록 자리: 옆판 맨 아래(판 여백 안)에 붙어, 키보드 포커스가 닿을 때만 위로 펼쳐진다. */
 .slotDock {
   position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  left: var(--s2);
+  right: var(--s2);
+  bottom: var(--s2);
   z-index: 4;
 }
 
@@ -110,12 +141,79 @@
   align-items: center;
 }
 
-/* 준비 바는 내용 높이만 쓴다(문제 카드 예산만큼 빈 종이를 늘리지 않는다). 오른쪽 열은 문제 카드와 같은 수직선. */
+/* 준비 바(B5)는 문제판과 같은 아래 칸(예산 --q-h)을 채운다: 웨이브 · 다음 적 칩 · 안내 한 줄 | 놋쇠 전투 시작.
+   준비 화면 하단이 비지 않고, 준비 ↔ 문제로 바뀌어도 틀 안 덩어리가 그대로다. 오른쪽 열은 문제판과 같은 수직선. */
 .build.seamR {
   grid-template-columns: minmax(0, 1fr) calc(var(--rail-w, var(--rail-min)) - 16px);
   column-gap: var(--s3);
+  min-height: var(--q-h, 208px);
   padding: var(--s4);
 }
+
+/* 다음 적 칩: 초상화 × 수(옛 준비 바). 양피지 볼록 칩, 사각 반경이라 알약으로 세지 않는다. */
+.foeRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s2);
+}
+
+.foeLabel {
+  font-size: var(--fs-1);
+  font-weight: 700;
+  color: var(--ink-2);
+}
+
+.foeChip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s1);
+  min-height: 40px;
+  padding: 2px var(--s3) 2px 2px;
+  border-radius: var(--r-md);
+  background: var(--parch-1);
+  box-shadow: inset 0 0 0 2px var(--line);
+  color: var(--ink);
+  font-size: var(--fs-2);
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+}
+
+.foeChip[data-boss] { box-shadow: inset 0 0 0 2px var(--red); color: var(--red); }
+
+.foeArt {
+  width: 36px;
+  height: 36px;
+  display: grid;
+  place-items: center;
+  border-radius: var(--r-sm);
+  background: var(--walnut-4);
+}
+
+.foeArt img { width: 32px; height: 32px; object-fit: contain; }
+
+/* 놋쇠 전투 시작의 은은한 대기 움직임(B5): 키 둘레 밝은 놋쇠 테가 천천히 나타났다 사라진다(위치 이동 없음). 화면당 무한 반복 1개.
+   움직임 줄이기(OS·설정 '움직임 최소')에서는 멈춘다(v4 §7.3). */
+.startCue::after {
+  content: '';
+  position: absolute;
+  inset: -5px;
+  border: 2px solid var(--brass-1);
+  border-radius: 999px;
+  opacity: 0;
+  pointer-events: none;
+  animation: cue 2400ms ease-in-out infinite;
+}
+
+@keyframes cue {
+  0%, 100% { opacity: 0; }
+  50% { opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .startCue::after { animation: none; }
+}
+:global(:root[data-motion='minimal']) .startCue::after { animation: none; }
 
 .build.stack {
   grid-template-columns: 1fr;
@@ -212,6 +310,17 @@
   bottom: var(--s3);
   transform: translateX(-50%);
   max-width: 90%;
+  width: max-content;
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* 첫 판 '놓기' 쪽지(B11, 넓은 화면): 전장 오른쪽 위, 옆판의 타워 칸 바로 옆. 전장 오른쪽 경계에서 움직이지 않는다(v4 §7.4). */
+.noteNearRail {
+  position: absolute;
+  right: calc(var(--field-frame) + var(--s2));
+  top: calc(var(--field-frame) + var(--s2));
+  max-width: 60%;
   width: max-content;
   pointer-events: none;
   z-index: 2;

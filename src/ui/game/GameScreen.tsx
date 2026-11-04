@@ -22,8 +22,9 @@ import { Remaining, WaveForecast } from './ContextCard';
 import { EvolveCard } from './EvolveCard';
 import { evolutionChoices, previewForm, previewMarker, towerForm, undoBuildCommand, upgradeCommand, upgradeCost, type FormId } from './evolution';
 import { FieldOverlay, type FieldFlash } from './FieldOverlay';
-import { FULL_VIEW } from './fieldGeometry';
+import { FULL_VIEW, WORLD_CELL } from './fieldGeometry';
 import { COACH_TEXT, currentCoach, markCoachDone, readCoachDone } from './firstRunCoach';
+import { NEXT_FOES } from './gameCopy';
 import css from './GameScreen.module.css';
 import { Hud } from './Hud';
 import { PauseOverlay } from './PauseOverlay';
@@ -36,7 +37,7 @@ import { practiceCoach } from './practiceCoach';
 import { nextSlot, SlotList, slotDescription, type Arrow } from './SlotList';
 import { TowerDetail } from './TowerDetail';
 import { useTowerDrag } from './useTowerDrag';
-import { foeIconUrl, forecastWarning, wavePreview } from './wavePreview';
+import { ENEMY_NAME, foeIconUrl, forecastWarning, wavePreview, type PreviewFoe } from './wavePreview';
 import { WaveBand } from './WaveBand';
 
 interface Props {
@@ -91,7 +92,7 @@ export function GameScreen({
   const relicKey = view.relics.join('|');
   const b = useMemo(() => relicBalance(controller.ctx.balance, relicKey ? relicKey.split('|') : []), [controller.ctx.balance, relicKey]);
   const map = controller.ctx.map;
-  // 연출(ui-rules-v3 §2 움직임): 정답 금화 비행, 웨이브 띠, 진화 빛기둥. 보상은 이미 상태에 반영된 뒤의 그림이다.
+  // 연출(ui-rules-v3 §2 움직임): 보상 금화 비행, 웨이브 띠, 진화 빛기둥. 보상은 이미 상태에 반영된 뒤의 그림이다.
   const goldRef = useRef<HTMLElement>(null);
   const answerFrom = useRef<{ x: number; y: number } | null>(null);
   const motionRef = useRef(reducedMotion);
@@ -100,6 +101,8 @@ export function GameScreen({
   const [flights, setFlights] = useState<Flight[]>([]);
   const [band, setBand] = useState<{ id: number; wave: number; boss: boolean } | null>(null);
   const [pillar, setPillar] = useState<{ id: number; slotId: string } | null>(null);
+  const fieldRef = useRef<HTMLDivElement>(null);
+  const cameraRef = useRef<FieldView>(FULL_VIEW);
 
   // 소리와 연출은 도메인 사건을 구독해 갱신한다(PRD §11.5).
   const [sound] = useState(() => new SoundDirector(DEFAULTS.audio, controller.ctx.balance.waves.bossEveryWaves));
@@ -107,18 +110,34 @@ export function GameScreen({
     const unlock = () => sound.unlock();
     window.addEventListener('pointerdown', unlock, { once: true });
     window.addEventListener('keydown', unlock, { once: true });
+    /** 금화가 from(화면 좌표)에서 상태 카드의 골드 칸으로 날아간다. 움직임 줄이기면 숫자 굴림만 남는다. */
+    const fly = (from: { x: number; y: number } | null, gold: number) => {
+      const to = goldRef.current?.getBoundingClientRect();
+      if (motionRef.current || !from || !to || to.width === 0) return;
+      fxSeq.current += 1;
+      const flight = { id: fxSeq.current, from, to: { x: to.left + to.width / 2, y: to.top + to.height / 2 }, coins: coinsFor(gold) };
+      setFlights(f => [...f, flight]);
+    };
+    /** 전장 세계 좌표(px) → 화면 좌표. 카메라가 확대해 보이지 않는 곳이면 전장 가장자리로 붙인다. */
+    const fieldPoint = (wx: number, wy: number) => {
+      const box = fieldRef.current?.getBoundingClientRect();
+      if (!box || box.width === 0) return null;
+      const v = cameraRef.current;
+      const clamp = (n: number, lo: number, hi: number) => Math.min(hi, Math.max(lo, n));
+      return {
+        x: clamp(box.left + ((wx - v.x) / v.width) * box.width, box.left, box.right),
+        y: clamp(box.top + ((wy - v.y) / v.height) * box.height, box.top, box.bottom),
+      };
+    };
+    const gateCell = controller.ctx.map.pathCells[controller.ctx.map.pathCells.length - 1]!;
     const off = controller.onEvents(events => {
       sound.handle(events);
       for (const e of events) {
-        if (e.type === 'answered' && e.result === 'correct' && e.gold > 0 && !motionRef.current) {
-          const from = answerFrom.current;
-          const to = goldRef.current?.getBoundingClientRect();
-          if (from && to && to.width > 0) {
-            fxSeq.current += 1;
-            const flight = { id: fxSeq.current, from, to: { x: to.left + to.width / 2, y: to.top + to.height / 2 }, coins: coinsFor(e.gold) };
-            setFlights(f => [...f, flight]);
-          }
-        }
+        if (e.type === 'answered' && e.result === 'correct' && e.gold > 0) fly(answerFrom.current, e.gold);
+        // 웨이브 생존·보스 처치 보상(B8): 옛 보상 알림 글 대신 같은 금화 비행을 다시 쓴다(토스트는 되살리지 않는다).
+        // 처치 좌표는 길 위 1/1000칸 단위(game/layers/shared toWorld와 같은 셈)다.
+        if (e.type === 'kill' && e.kind === 'boss' && e.gold > 0) fly(fieldPoint((e.x * WORLD_CELL) / 1000, (e.y * WORLD_CELL) / 1000), e.gold);
+        if (e.type === 'waveComplete' && e.milestoneGold > 0) fly(fieldPoint((gateCell[0] + 0.5) * WORLD_CELL, (gateCell[1] + 0.5) * WORLD_CELL), e.milestoneGold);
         if (e.type === 'phase' && e.phase === 'BATTLE') {
           fxSeq.current += 1;
           setBand({ id: fxSeq.current, wave: e.wave, boss: e.wave % controller.ctx.balance.waves.bossEveryWaves === 0 });
@@ -152,13 +171,11 @@ export function GameScreen({
   const flashSeq = useRef(0);
   const [confirmEmpty, setConfirmEmpty] = useState(false);
   const [camera, setCamera] = useState<FieldView>(FULL_VIEW);
-  const cameraRef = useRef<FieldView>(FULL_VIEW);
   const [dragging, setDragging] = useState(false);
   const [coachDone, setCoachDone] = useState(readCoachDone);
   // 전장 키보드 커서(PRD §12.4). 포커스가 전장에 있을 때만 그린다.
   const [cursor, setCursor] = useState<string | null>(null);
   const [fieldFocused, setFieldFocused] = useState(false);
-  const fieldRef = useRef<HTMLDivElement>(null);
   const [lastBuilt, setLastBuilt] = useState<number | null>(null);
   const paused = view.pause.length > 0;
   // 새 타워 고르기 창(징집): 웨이브 사이에 막으로 전장과 문제 카드까지 덮는다. 열리면 떠 있던 메뉴·도구 묶음·진화 창을 먼저 닫는다.
@@ -498,6 +515,7 @@ export function GameScreen({
       compact={variant === 'rail' && compact}
       fresh={goldSeen.fresh}
       locked={locked}
+      lockedWave={locked ? nextDraft ?? null : null}
       onArm={onArm}
       onPress={beginDrag}
       takeClick={takeClick}
@@ -524,10 +542,14 @@ export function GameScreen({
     ? { text: '마무리', tone: 'prep' }
     : view.phase === 'PREP_QUIZ' ? { text: '준비', tone: 'prep' }
       : view.milestoneWave ? { text: '보스', tone: 'boss' } : { text: '전투', tone: 'battle' };
-  // 준비 바 안내 한 줄: 연습 안내 → 첫 판 코치 → 첫 3웨이브 안내 순. 화면 상시 문장은 이것 하나다.
+  // 첫 판 '놓기' 안내(B11)는 준비 바가 아니라 전장 쪽지로, 조작(타워 칸) 옆에 한 문장. 타워를 고르거나 끌면 숨긴다(옛 GameScreen 전장 쪽지).
+  const placeNote = mark === 'place' && !hasSelection && !armed && !dragging;
+  // 준비 바 안내 한 줄: 연습 안내 → 첫 판 코치('놓기'는 전장 쪽지가 맡는다) → 첫 3웨이브 안내 순. 화면 상시 문장은 이것 하나다(v4 §7.1).
   const buildHint = practice
     ? (coach?.at === 'start' ? coach.text : null)
-    : mark ? COACH_TEXT[mark] : view.wave <= HINT_WAVES ? (view.towers.length === 0 ? COACH_TEXT.place : READY_HINT) : null;
+    : mark === 'place' ? null : mark ? COACH_TEXT[mark] : view.wave <= HINT_WAVES ? (view.towers.length === 0 ? COACH_TEXT.place : READY_HINT) : null;
+  // 준비 바의 다음 적 칩(B5): 초상화 × 수, 보스는 맨 앞(상황 카드와 같은 미리보기).
+  const nextFoes: PreviewFoe[] = [...(forecast.bossFoe ? [forecast.bossFoe] : []), ...forecast.kinds];
 
   const bottom = practiceDone ? (
     <Card as="section" float className={`${css.build} ${seam}`} aria-label="연습 끝">
@@ -548,6 +570,20 @@ export function GameScreen({
           {view.wave}웨이브
           {view.milestoneWave && <span className={css.bossTag}>보스</span>}
         </h2>
+        {nextFoes.length > 0 && (
+          <div className={css.foeRow} role="img" aria-label={`${NEXT_FOES} ${forecast.total}마리: ${nextFoes.map(f => `${ENEMY_NAME[f.kind]} ${f.count}`).join(', ')}`}>
+            <span className={css.foeLabel} aria-hidden="true">{NEXT_FOES}</span>
+            {nextFoes.map(f => {
+              const src = foeIconUrl(b, f, urlOf, icons[`enemy.${f.kind}.0`]);
+              return (
+                <span key={f.kind} className={css.foeChip} data-boss={f.kind === 'boss' || undefined} aria-hidden="true">
+                  <span className={css.foeArt}>{src && <img src={src} alt="" draggable={false} />}</span>
+                  ×{f.count}
+                </span>
+              );
+            })}
+          </div>
+        )}
         {buildHint && <p className={css.buildHint} role="status">{buildHint}</p>}
       </div>
       <div className={css.buildSide}>
@@ -566,7 +602,8 @@ export function GameScreen({
             </div>
           </div>
         ) : (
-          <Button variant="primary" size="lg" block onClick={onStart}>
+          // 타워를 하나 이상 놓았으면 은은한 대기 움직임(B5): 이 화면의 무한 반복 하나. 움직임 줄이기면 CSS가 멈춘다.
+          <Button variant="primary" size="lg" block className={view.towers.length > 0 && !reducedMotion ? css.startCue : undefined} onClick={onStart}>
             <PlayIcon size={20} />
             전투 시작
           </Button>
@@ -580,6 +617,7 @@ export function GameScreen({
         question={view.question}
         phase={phase}
         prep={view.question.label.startsWith('준비') ? view.prep : null}
+        correctGold={view.stakes.correctGold}
         variant={layout.mode === 'R' ? 'seam' : layout.wideQuestion ? 'wide' : 'narrow'}
         twoByTwoMinPx={DEFAULTS.layout.optionGrid.twoByTwoMinCellWidthPx}
         showKeyHints={showKeyHints}
@@ -668,6 +706,11 @@ export function GameScreen({
         </Button>
       )}
       {coach?.at === 'field' && <div className={css.coachField}>{coachLine('field')}</div>}
+      {placeNote && (
+        <div className={layout.mode === 'R' ? css.noteNearRail : css.coachField}>
+          <p className={css.coach} role="status">{COACH_TEXT.place}</p>
+        </div>
+      )}
     </div>
   );
 
@@ -691,20 +734,21 @@ export function GameScreen({
         {layout.mode === 'R' ? (
           <>
             {field}
-            <aside className={css.rail} style={{ height: layout.mapH }} aria-label="타워 관리">
+            {/* 옆판(B1, v4 §3.1): 참나무 판 하나 위에 머리판(HUD)·타워 칸 키·상황 카드. 타워 칸은 판 위에 바로 놓아 겹을 3으로 둔다(v4 §7.1). */}
+            <Card as="aside" material="board" pad="none" className={css.rail} style={{ height: layout.mapH }} aria-label="타워 관리">
               <Hud view={view} burning={b.burning} relicInfo={b} icons={icons} mode="R" compactRail={compact} goldRef={goldRef} reducedMotion={reducedMotion} bestWave={bestWave} onPause={() => controller.pause('USER')} />
               {!practiceDone && (
-                <Card className={css.sockets}>
+                <div className={css.sockets}>
                   {armory('rail')}
                   {coachLine('panel')}
-                </Card>
+                </div>
               )}
               {!practiceDone && <div className={css.slotDock}>{slotList}</div>}
               <Card className={css.context} data-context>
                 {skip}
                 {practiceDone ? null : contextBody}
               </Card>
-            </aside>
+            </Card>
             <div className={css.bottom}>{bottom}</div>
           </>
         ) : (

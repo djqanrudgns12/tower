@@ -1,10 +1,12 @@
-/* 문제 카드(R4 PRD §9.1, ui-rules-v3): 종이 카드 + 키캡 답안. 제출 흔들림 0 — 채점 뒤에는 면 색·투명도만 바뀐다. */
+/* 문제 카드(R4 PRD §9.1, ui-rules-v4): 양피지 카드 + 키캡 답안. 제출 흔들림 0 — 채점 뒤에는 면 색·바닥 두께·투명도만 바뀐다. */
 .panel {
   position: relative;
   display: grid;
   min-width: 0;
   /* 보기 글자 크기: 넓은 화면 20px, 휴대폰 16px. 글자 크기 단계(크게·아주 크게)는 한 단계 키운다. */
   --opt-font: var(--fs-3);
+  /* 문제판 안은 transform 금지(v4 §7.4): kit 키의 누름 이동을 끄고 바닥만 0으로 내린다. */
+  --btn-press-y: 0px;
 }
 
 :global(:root[data-font='large']) .panel,
@@ -17,6 +19,11 @@
   min-height: var(--q-h, 208px);
   padding: var(--s3) var(--s4);
 }
+
+/* 크게·아주 크게: 문제 2줄 + 보기 2줄이면 예산(--q-h)을 4~5px 넘는다(R5 P2 인계, 1366×650 아주 크게). 위아래 여백만 12 → 8px로 줄여 흡수한다.
+   좌우 여백(오른쪽 16px = SEAM_INSET_PX)은 수직선 잠금에 묶여 그대로다. */
+:global(:root[data-font='large']) .panel.seam,
+:global(:root[data-font='xlarge']) .panel.seam { padding-block: var(--s2); }
 
 /* 태블릿 두 칸: 왼쪽 문제·보기, 오른쪽 모르겠어요·해설. */
 .panel.wide {
@@ -79,6 +86,23 @@
 .tag[data-tone='boss'] { background: var(--red); color: var(--on-dark); }
 
 .badge { background: var(--paper-2); color: var(--ink-2); }
+
+/* 복습 문제 배지(B4): 놋쇠 배지(v4 §4.6) + 공책 아이콘. 사각 반경이라 알약으로 세지 않는다. */
+.review {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s1);
+  margin-right: var(--s2);
+  padding: 0 var(--s2) 0 var(--s1);
+  border: 1px solid var(--brass-3);
+  border-radius: var(--r-sm);
+  background: var(--brass-1);
+  color: var(--ink);
+  font-size: var(--fs-1);
+  font-weight: 800;
+  line-height: 20px;
+  vertical-align: 0.1em;
+}
 
 /* 준비 진행 점: 끝낸 문제는 초록, 지금 문제는 초록 테. */
 .dots {
@@ -157,7 +181,7 @@
 
 .narrow .seal { position: absolute; right: 2px; top: 50%; translate: 0 -50%; width: 20px; }
 
-/* 채점 뒤: 위치·크기는 그대로, 면 색과 투명도만. kit의 비활성 회색을 덮는다. */
+/* 채점 뒤: 위치·크기는 그대로, 면 색·바닥 두께·투명도만(B10, v4 §3.4 바닥 0·4·6px). kit의 비활성 회색을 덮는다. */
 .panel .option:disabled {
   --face: var(--paper-2);
   --text: var(--ink);
@@ -166,32 +190,82 @@
   cursor: default;
 }
 
-.panel .option[data-state='chosen']:disabled { --face: var(--paper); outline: 3px solid var(--blue); outline-offset: 2px; }
+/* 고른 키는 채점이 올 때까지 눌린 채(바닥 0)로 둔다. */
+.panel .option[data-state='chosen']:disabled { --face: var(--paper); outline: 3px solid var(--blue); outline-offset: 2px; box-shadow: inset 0 0 0 2px var(--walnut-3); }
 .panel .option[data-state='dim']:disabled { opacity: 0.45; }
 
+/* 정답 키는 떠오른다: 바닥 6px(뜬 상태). 자리는 그대로라 수직선 잠금이 유지된다. */
 .panel .option[data-state='correct']:disabled {
   --face: var(--green);
   --text: var(--on-dark);
-  box-shadow: inset 0 0 0 2px var(--walnut-3), 0 4px 0 var(--green-base);
+  box-shadow: inset 0 0 0 2px var(--walnut-3), 0 6px 0 var(--green-base);
 }
 
+/* 오답 키는 눌린 채: 바닥 0. */
 .panel .option[data-state='wrong']:disabled {
   --face: var(--red);
   --text: var(--on-dark);
-  box-shadow: inset 0 0 0 2px var(--walnut-3), 0 4px 0 var(--red-base);
+  box-shadow: inset 0 0 0 2px var(--walnut-3);
   opacity: 0.55;
 }
 
 .option[data-state='correct'] .num,
 .option[data-state='wrong'] .num { color: var(--on-dark); }
 
-/* 오른쪽 열(휴대폰은 오른쪽 위 칸): 모르겠어요 → 정답! 또는 해설 + 다음 문제. */
+/* 오른쪽 열(휴대폰은 오른쪽 위 칸): 위 보상 미리보기 · 가운데 결과(정답!·받은 골드 또는 오답 이유·해설·다음 문제) · 아래 모르겠어요. */
 .side {
   display: flex;
   flex-direction: column;
   align-items: stretch;
+  min-width: 0;
+}
+
+.result {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
   gap: var(--s2);
   min-width: 0;
+}
+
+/* 넓은 화면: 오른쪽 열은 음각 홈 한 칸(옛 보상 상자 자리, B14)이라 문제판 오른쪽이 비지 않는다.
+   열 내용은 문제판 높이를 늘리지 않는다(contain: size — 높이는 왼쪽 문제·보기와 예산 --q-h가 정한다). 긴 해설은 열 안에서만 스크롤한다. */
+.seam .side,
+.wide .side {
+  contain: size;
+  padding: var(--s3);
+  border-radius: var(--r-md);
+  background: var(--paper-2);
+  box-shadow: inset 0 0 0 2px var(--line);
+}
+
+.seam .result,
+.wide .result { flex: 1; min-height: 0; }
+
+/* 보상 미리보기(B2): 작은 이름 + 금화 + "+N 골드". 밝은 면 위 강조 글은 --brass-3(v4 §2.6 규칙 3). */
+.stake {
+  display: grid;
+  gap: 2px;
+  margin: 0;
+}
+
+.stakeLabel {
+  font-size: var(--fs-1);
+  font-weight: 700;
+  line-height: 1.2;
+  color: var(--ink-2);
+}
+
+.stakeValue {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s1);
+  margin: 0;
+  font-size: var(--fs-3);
+  font-weight: 800;
+  line-height: 1.25;
+  color: var(--brass-3);
+  font-variant-numeric: tabular-nums;
 }
 
 .panel .skip {
@@ -199,9 +273,30 @@
   color: var(--ink-2);
 }
 
-/* 넓은 화면: 오른쪽 열은 '도움' 칸이다. 모르겠어요(글자만 있는 ghost 버튼)를 아래 답안 줄에 맞춰 바닥에 둔다(해설이 뜨면 그 위로 쌓인다). 키캡 바닥·면이 없어 답안 키로 읽히지 않는다. */
-.seam .side,
-.wide .side { justify-content: flex-end; }
+/* 음각 홈 위 ghost: 호버 면이 홈과 같은 색이라 한 단 밝게 띄운다. */
+@media (hover: hover) {
+  .seam .skip:hover:not(:disabled),
+  .wide .skip:hover:not(:disabled) { background: var(--parch-1); }
+}
+
+/* 휴대폰 보상 칩: 문제 줄 머리의 태그와 같은 크기(13px), 놋쇠 배지 면(v4 §4.6). 사각 반경이라 알약으로 세지 않는다. */
+.stakeTag {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  margin-right: var(--s2);
+  padding: 0 var(--s1);
+  border: 1px solid var(--brass-3);
+  border-radius: var(--r-sm);
+  background: var(--brass-1);
+  color: var(--ink);
+  font-size: var(--fs-1);
+  font-weight: 800;
+  line-height: 20px;
+  vertical-align: 0.1em;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
 
 .narrow .skip { align-self: stretch; padding: 0 var(--s2); }
 
@@ -209,6 +304,7 @@
   display: inline-flex;
   align-items: center;
   gap: var(--s2);
+  margin: 0;
   font-size: var(--fs-4);
   font-weight: 800;
   color: var(--green);
@@ -218,14 +314,38 @@
 
 .explainBox {
   display: grid;
-  gap: var(--s3);
-  align-content: space-between;
+  grid-template-rows: minmax(0, 1fr) auto;
+  gap: var(--s2);
   flex: 1;
+  min-height: 0;
 }
 
-.explain {
-  font-size: var(--fs-2);
+.explainText {
+  display: grid;
+  align-content: start;
+  gap: var(--s1);
+  min-height: 0;
+  overflow: auto;
+}
+
+/* 오답 이유(B3) 한 줄: 해설 칸 맨 위, X 표식 + 붉은 글(parch-3 위 5.19). 읽는 글이라 글자 크기 설정을 따른다(v4 §5.3). */
+.why {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--s1);
+  margin: 0;
+  font-size: var(--read-font);
   font-weight: 700;
+  line-height: 1.4;
+  color: var(--red);
+}
+
+.why > svg { flex: none; margin-top: 0.2em; }
+
+.explain {
+  margin: 0;
+  font-size: var(--read-font);
+  font-weight: 400;
   line-height: 1.45;
   color: var(--ink);
 }
@@ -249,7 +369,13 @@
   to { opacity: 1; transform: translateY(0); }
 }
 
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* 움직임 줄이기: OS 설정과 게임 설정 '움직임 최소'(<html data-motion="minimal">) 둘 다에서 위치 이동 없이 투명도만(v4 §7.3). */
 @media (prefers-reduced-motion: reduce) {
   .narrow .explainBox { animation-name: fadeIn; }
-  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 }
+:global(:root[data-motion='minimal']) .narrow .explainBox { animation-name: fadeIn; }

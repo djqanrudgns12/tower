@@ -3,8 +3,9 @@ import type { OptionId } from '../../contracts/questions';
 import type { QuestionView } from '../../application/view';
 import { DEFAULTS } from '../../content';
 import { CheckIcon, CrossIcon } from '../icons/ControlIcons';
-import { Button, Card } from '../kit';
+import { ArtIcon, Button, Card } from '../kit';
 import { useLayout } from '../useLayout';
+import { answerLine, EARNED_LABEL, readLock, REVIEW_BADGE, REVIEW_BADGE_LABEL, STAKES_LABEL, stakesGold } from './gameCopy';
 import css from './QuestionPanel.module.css';
 
 const GRID = DEFAULTS.layout.optionGrid;
@@ -17,6 +18,8 @@ interface Props {
   phase: PhaseTag;
   /** 준비 문제 진행 점(준비 단계에서만). */
   prep: { done: number; target: number } | null;
+  /** 이 문제를 맞히면 받을 골드(view.stakes.correctGold: 웨이브·연속 정답 보너스·보물 합산, 엔진 채점과 같은 식). */
+  correctGold: number;
   /** seam: R 모드(오른쪽 열이 레일과 수직선을 맞춘다), wide: 태블릿 두 칸, narrow: 휴대폰. */
   variant: 'seam' | 'wide' | 'narrow';
   showKeyHints?: boolean;
@@ -28,15 +31,19 @@ interface Props {
 }
 
 /**
- * 문제 카드(R4 PRD §9.1): 국면 태그 + 준비 점 + 문제, 2×2 답안 키캡(56px), 오른쪽 열 바닥의 ‘모르겠어요’(글자만 있는 ghost 버튼이라 다섯째 답안 키로 보이지 않는다. 휴대폰은 오른쪽 위 작은 보조 버튼).
+ * 문제 카드(R4 PRD §9.1 + R5 B2·B3·B4·B10·B14): 국면 태그 + 준비 점 + 복습 배지 + 문제, 2×2 답안 키캡(56px), 오른쪽 열은 음각 홈 한 칸
+ * (옛 보상 상자 자리: 위 "정답이면 +N 골드", 아래 ‘모르겠어요’. 글자만 있는 ghost 버튼이라 다섯째 답안 키로 보이지 않는다. 휴대폰은 오른쪽 위 작은 칸).
  * - 보기 4개는 같은 크기이며, 실제 렌더 측정으로 2×2 / 1열을 정한 뒤 제출 전에 고정한다.
- * - 제출 흔들림 0: 채점 뒤에는 면 색과 투명도만 바뀐다. 해설은 오른쪽 열(넓은 화면) 또는 카드 위 말풍선(휴대폰)에 나와 보기를 밀지 않는다.
- * - 정답: 고른 키가 초록이 되고 금화가 상태 카드의 골드로 날아간다(화면이 그린다). 오답: 고른 키가 붉게 바래고 정답 키가 초록이 되며 해설 한 칸.
+ * - 제출 흔들림 0: 채점 뒤에는 면 색·바닥 두께·투명도만 바뀐다(정답 키는 바닥 6px로 떠오르고, 오답 키는 바닥 0으로 눌린 채, v4 §7.4 transform 금지).
+ *   해설은 오른쪽 열(넓은 화면, 열 안에서만 스크롤) 또는 카드 위 말풍선(휴대폰)에 나와 보기를 밀지 않는다.
+ * - 정답: 고른 키가 초록이 되고 받은 골드 칩, 금화가 상태 카드의 골드로 날아간다(화면이 그린다). 오답: 고른 키가 붉게 눌리고 정답 키가 초록으로 떠오르며,
+ *   해설 칸 맨 위에 "왜 그 보기가 아닌지" 한 줄(chosenRationale), 잠금 동안 다음 문제 키는 "해설을 읽어 주세요 · N초".
  */
 export function QuestionPanel({
   question,
   phase,
   prep,
+  correctGold,
   variant,
   showKeyHints = true,
   twoByTwoMinPx = GRID.twoByTwoMinCellWidthPx,
@@ -110,15 +117,36 @@ export function QuestionPanel({
   };
 
   const skipNoteId = `skip-note-${question.encounterId}`;
+  const narrow = variant === 'narrow';
   const missed = fb !== null && fb.result !== 'correct';
+  // 오답 이유는 해설 칸 맨 위 한 줄(옛 문제판 B3). 해설·이유는 읽는 글이라 글자 크기 설정을 따른다(--read-font).
   const explain = missed ? (
     <div className={css.explainBox}>
-      <p className="sr-only">정답은 ‘{fb.correctText}’예요.</p>
-      <p className={css.explain} data-explain data-content>{fb.explanation}</p>
+      <div className={css.explainText} data-content>
+        <p className="sr-only">{answerLine(fb.correctText)}</p>
+        {fb.chosenRationale && (
+          <p className={css.why} data-why>
+            <CrossIcon size={16} />
+            <span>{fb.chosenRationale}</span>
+          </p>
+        )}
+        <p className={css.explain} data-explain>{fb.explanation}</p>
+      </div>
       <Button variant="primary" block disabled={!fb.canNext} onClick={onNext}>
-        {fb.canNext ? '다음 문제' : `다음 문제 · ${fb.secondsLeft}초`}
+        {fb.canNext ? '다음 문제' : readLock(fb.secondsLeft)}
       </Button>
     </div>
+  ) : null;
+  // 보상 미리보기(B2). 오답 −점수 칩은 되살리지 않는다(계획서 §5.2). 넓은 화면은 오른쪽 칸 위에 채점 전까지,
+  // 휴대폰은 오른쪽 위 칸에 자리가 없어 문제 줄 머리(태그 옆)에 둔다. 휴대폰 칩은 채점 뒤에도 그대로 둬 문제 줄이 다시 흐르지 않는다(제출 흔들림 0).
+  const stake = !fb && !narrow ? (
+    <p className={css.stake}>
+      <span className={css.stakeLabel}>{STAKES_LABEL}</span>
+      <span className={css.stakeValue}>
+        <ArtIcon name="coin" size={22} />
+        {stakesGold(correctGold)}
+      </span>
+    </p>
   ) : null;
 
   const panelClass = variant === 'seam' ? css.seam : variant === 'wide' ? css.wide : css.narrow;
@@ -135,7 +163,20 @@ export function QuestionPanel({
               ))}
             </span>
           )}
+          {question.isReview && (
+            <span className={css.review} title={REVIEW_BADGE_LABEL}>
+              <ArtIcon name="note" size={16} />
+              {REVIEW_BADGE}
+            </span>
+          )}
           {question.badge && <span className={css.badge}>{question.badge}</span>}
+          {narrow && (
+            <span className={css.stakeTag}>
+              <span className="sr-only">{STAKES_LABEL} </span>
+              <ArtIcon name="coin" size={14} />
+              {stakesGold(correctGold)}
+            </span>
+          )}
           <Stem text={question.stem} />
         </p>
         <div ref={optionsRef} className={css.options} data-cols={cols} role="group" aria-label="보기">
@@ -173,20 +214,32 @@ export function QuestionPanel({
           })}
         </div>
       </div>
-      <div className={css.side} data-feedback data-tone={!fb ? 'idle' : fb.result === 'correct' ? 'correct' : 'wrong'} aria-live="polite">
+      <div className={css.side} data-feedback data-tone={!fb ? 'idle' : fb.result === 'correct' ? 'correct' : 'wrong'}>
+        {stake}
+        <div className={css.result} aria-live="polite">
+          {fb?.result === 'correct' && (
+            <>
+              <p className={css.good}>
+                <CheckIcon size={narrow ? 22 : 28} />
+                <span>정답!</span>
+              </p>
+              {!narrow && question.reward && question.reward.gold > 0 && (
+                <p className={css.stakeValue} data-earned>
+                  <span className="sr-only">{EARNED_LABEL}</span>
+                  <ArtIcon name="coin" size={22} />
+                  {stakesGold(question.reward.gold)}
+                </p>
+              )}
+            </>
+          )}
+          {explain}
+        </div>
         {!answered && (
           <>
-            <Button variant={variant === 'narrow' ? 'secondary' : 'ghost'} size={variant === 'narrow' ? 'md' : 'lg'} art={false} className={css.skip} aria-describedby={skipNoteId} onClick={onSkip}>모르겠어요</Button>
+            <Button variant={narrow ? 'secondary' : 'ghost'} size={narrow ? 'md' : 'lg'} art={false} className={css.skip} aria-describedby={skipNoteId} onClick={onSkip}>모르겠어요</Button>
             <span id={skipNoteId} className="sr-only">누르면 점수가 줄지 않아요. 골드는 받지 않아요.</span>
           </>
         )}
-        {fb?.result === 'correct' && (
-          <p className={css.good}>
-            <CheckIcon size={variant === 'narrow' ? 22 : 28} />
-            <span>정답!</span>
-          </p>
-        )}
-        {explain}
       </div>
     </Card>
   );

@@ -1,5 +1,5 @@
 import type { CSSProperties } from 'react';
-import { GoldCoinIcon } from '../icons/GameIcons';
+import { ArtIcon } from '../kit';
 import css from './CoinFlight.module.css';
 
 export interface Flight { id: number; from: { x: number; y: number }; to: { x: number; y: number }; coins: number }
@@ -8,7 +8,8 @@ export interface Flight { id: number; from: { x: number; y: number }; to: { x: n
 export const coinsFor = (gold: number) => Math.max(2, Math.min(5, Math.round(gold / 8)));
 
 /**
- * 정답 → 금화가 문제판에서 골드 칸으로 날아간다(ui-rules-v2 §5). 보상은 이미 상태에 반영된 뒤의 연출이다(PRD §10.3).
+ * 보상 → 금화가 받은 자리(정답 답안 키·보스 처치 자리·성문)에서 골드 칸으로 날아간다(ui-rules-v2 §5, R5 B8). 보상은 이미 상태에 반영된 뒤의 연출이다(PRD §10.3).
+ * 동전 그림은 상태 카드·타워 칸과 같은 원화 coin이다(R5 C6).
  * 바깥 층은 가로로 곧게, 안쪽 층은 위로 솟았다 내려오며 날아 호를 그린다. 600ms 안에 끝나고 스스로 지워진다.
  */
 export function CoinFlight({ flights, onDone }: { flights: readonly Flight[]; onDone(id: number): void }) {
@@ -32,7 +33,7 @@ export function CoinFlight({ flights, onDone }: { flights: readonly Flight[]; on
               onAnimationEnd={i === f.coins - 1 ? () => onDone(f.id) : undefined}
             >
               <span className={css.y} style={{ animationDelay: `${i * 40}ms` }}>
-                <GoldCoinIcon size={20} />
+                <ArtIcon name="coin" size={20} />
               </span>
             </span>
           );

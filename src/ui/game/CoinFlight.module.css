@@ -28,3 +28,14 @@
   45% { transform: translateY(calc(var(--dy) * 0.35 - 52px)) scale(1); }
   100% { transform: translateY(var(--dy)) scale(0.8); opacity: 1; }
 }
+
+/* 움직임 줄이기(OS·설정 '움직임 최소'): 위치 이동 없이 보이지 않게 끝낸다(골드 숫자 굴림만 남는다, v4 §7.3). 끝 사건은 그대로 와서 비행이 지워진다. */
+@keyframes vanish {
+  from, to { opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .x, .y { animation-name: vanish; }
+}
+:global(:root[data-motion='minimal']) .x,
+:global(:root[data-motion='minimal']) .y { animation-name: vanish; }
