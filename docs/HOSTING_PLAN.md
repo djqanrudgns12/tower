@@ -1,302 +1,282 @@
-# 호스팅·운영 계획서 · 1.0.0
+# 호스팅·운영 계획서 · 1.0.0 (2판)
 
-작성: 2026-11-04 · 총괄 Claude. 가격과 한도는 2026-11-04에 공식 문서로 다시 확인했다(출처는 §9). 서비스 가격은 바뀔 수 있으니 결제하기 전에 가격표를 한 번 더 본다.
+작성: 2026-11-04 · 총괄 Claude. 조사는 Claude 서브에이전트 셋(가격·한도 1차, 정적 호스팅, 서버·DB)과 Antigravity(독립 의견)가 나눠 맡았다. 결론을 가르는 값은 Claude가 이 맥(KT 회선)에서 다시 쟀다. 운영자의 기존 실측(롤린썬더 `wiki/decisions/입구-구조-CloudFront-터널.md`, 2026-09-30)도 근거로 썼다.
 
-배포 점검 결과와 짧은 명령 모음은 [DEPLOY.md](DEPLOY.md)에 있다. 이 문서는 **어디에 올리고, 언제 무엇을 키우며, 사람이 무엇을 해야 하는지**를 처음 하는 사람 기준으로 적는다.
+[DEPLOY.md](DEPLOY.md)는 출시 점검 결과를 담는다. 이 문서는 **어디에 올리고, 왜 그렇게 나누며, 사람이 무엇을 해야 하는지**를 처음 하는 사람 기준으로 적는다.
 
 ---
 
-## 0. 한눈에 보기
+## 0. 결론
 
-| 무엇 | 결정 | 비용 |
+| 무엇 | 어디에 | 비용 | 한국 속도(실측) |
+|---|---|---|---|
+| **게임 파일**(화면·그림 22MB) | **GitHub Pages** + 자체 도메인 하위 주소 | 0원 | 통신사 3곳 모두 서울 거점, 연결 3~26ms |
+| **기록·랭킹 서버** | **Cloudflare Workers + D1**(TypeScript로 새로 작성) | 0원 | KT는 미국 경유 0.3~0.9초, SKB·LG U+는 홍콩 40~60ms. 판당 3~5번만 부르니 게임에는 영향 없음 |
+| **학생이 쓰는 주소** | 이미 가진 도메인의 하위 주소(예: `voca.ssamuniverse.com`) | 0원 | — |
+| **맥미니** | 쓰지 않는다. 비상 대체로만 남긴다 | — | — |
+
+**왜 이렇게 나누나**: 무거운 그림은 한국에서 가장 빠르고 요청 수 제한이 없는 곳(GitHub Pages)에 둔다. 가벼운 서버 요청은 잠들지 않고 영구 무료인 곳(Cloudflare)에 둔다. 두 주소 모두 자체 도메인에 붙여서, 나중에 어느 쪽을 바꿔도 학생 주소와 앱 설정은 그대로 둔다.
+
+---
+
+## 1. 1판에서 틀렸던 것 (바로잡음)
+
+| 1판 내용 | 실제 | 근거 |
 |---|---|---|
-| 게임 파일(화면·그림) | **Cloudflare Workers**에 정적 파일로 올린다 | 0원(무제한) |
-| 기록·랭킹 | **Supabase 새 프로젝트**(서울 리전). 무료로 시작한다 | 0원 → 정식 운영 때 월 $25 |
-| 쓰지 않는 것 | Vercel, Cloudflare R2, 맥미니(쌤유니버스)에 붙이기, 롤린썬더 DB에 합치기 | — |
-| 앱 가볍게 | 첫 전투 전에 받는 그림을 약 13MB에서 4~5MB로 줄인다(어림값, 작업 뒤 실측) | 0원 |
-
-이용자가 크게 늘어도 비용이 거의 늘지 않는 구조다. 게임은 학생 브라우저 안에서 돌고, 서버는 판이 끝날 때 결과만 받기 때문이다.
+| "Cloudflare는 서울 거점에서 나간다" | **틀림.** 무료 플랜은 KT 사용자를 미국·유럽 거점으로 보낸다(166~306ms). `workers.dev`도 KT는 LAX(LA)다 | 운영자 실측 9/30, Claude 재측정 11/4(`workers.dev` 연결 152ms·첫 응답 0.89초, LAX) |
+| "Supabase 무료로 바로 출시" | **그대로는 실패한다.** 아래 네 가지가 걸린다 | 아래 항목 |
+| ↳ 첫 마이그레이션 | 호스팅 Supabase는 `pgcrypto`를 `extensions` 공간에 두는데, 첫 파일의 `private_player_hash`는 `public`만 본다. 생성 단계에서 실패한다. 로컬 시험은 `public`에 있어서 통과했다 | Antigravity 지적, Claude가 파일로 확인 |
+| ↳ 비밀 소금값 | `alter database ... set app.player_salt`는 호스팅에서 권한 때문에 막힐 수 있다 | Postgres 문서(DB 소유자만), Supabase 커뮤니티 |
+| ↳ 익명 로그인 | 같은 IP에서 시간당 30건이 기본이다. 한 반 30명이 같은 학교 IP로 들어오면 한도에 닿는다 | Supabase 문서 |
+| ↳ 일시정지 | 7일 동안 활동이 적으면 멈추고, 손으로 다시 켜야 한다. 자동 요청으로 막는 것은 "보장 아님" | Supabase 문서·KB(2026-10-27) |
 
 ---
 
-## 1. 먼저 알아 둘 말
+## 2. 먼저 알아 둘 말
 
 | 말 | 뜻 |
 |---|---|
-| 정적 파일 | 누가 열어도 똑같은 파일(HTML·JS·그림). 이 게임은 빌드하면 `dist/` 폴더에 정적 파일만 나온다 |
-| 호스팅 | 그 파일을 인터넷 주소로 열 수 있게 맡겨 두는 곳 |
-| CDN | 세계 곳곳(서울 포함)에 파일 사본을 두고 가까운 곳에서 보내 주는 전송망. 빠르고 서버가 지치지 않는다 |
-| Cloudflare Workers / Pages | Cloudflare의 호스팅 두 가지. 둘 다 정적 파일을 CDN으로 무료·무제한 보낸다. Cloudflare는 새 프로젝트에 Workers를 권한다 |
-| Cloudflare R2 | 파일 보관 창고. 보관 장소만 바꿀 뿐, 학생이 받는 용량을 줄이지 않는다 |
-| Supabase | Postgres DB에 로그인·실시간 기능을 묶어 빌려주는 서비스. 이 게임은 랭킹·서버 채점에 쓴다 |
-| 마이그레이션 | DB에 표와 함수를 만드는 SQL 파일. `supabase/migrations/`에 순서대로 있다 |
-| RPC 함수 | 앱이 부르는 DB 안의 함수. 판 제출(`submit_completed_run`), 랭킹 조회(`get_leaderboard_slice`) 등 |
-| 익명 로그인 | 이메일 없이 기기마다 보이지 않는 계정을 하나 만들어 주는 방식. 학생은 아무것도 입력하지 않는다 |
-| publishable 키 | Supabase가 앱에 넣으라고 주는 공개 키(`sb_publishable_...`). 공개돼도 된다. **secret 키는 절대 앱에 넣지 않는다** |
-| 비밀 소금값(salt) | 학생 기기 계정 번호를 랭킹에서 알아볼 수 없게 섞는 비밀 문자열. 없으면 기록 제출이 모두 실패한다 |
-| 빌드 변수 | 빌드할 때 화면 코드에 박히는 설정값. 이 게임의 Supabase 주소·키가 여기에 들어간다 |
-| MAU | 한 달 동안 한 번이라도 접속한 계정 수. 학생 기기 1대가 1로 세어진다 |
-| 동시 연결 | 같은 순간 서버와 실시간 연결을 유지한 사람 수. 이 게임은 홈 화면에서만 연결한다 |
-| 브랜치 | 코드의 갈래. 지금 작업은 `p1/intake-round1`, 학생에게 낼 판은 보통 `main` |
+| 정적 파일 | 누가 열어도 같은 파일(HTML·JS·그림). 이 게임은 빌드하면 `dist/`에 이것만 나온다 |
+| CDN·거점 | 세계 곳곳에 파일 사본을 두고 가까운 곳에서 보내는 전송망. "서울 거점"이면 빠르다 |
+| GitHub Pages | GitHub가 저장소의 정적 파일을 무료로 공개해 주는 기능. 뒤에서 Fastly라는 CDN이 보낸다 |
+| Cloudflare Workers | Cloudflare 서버에서 우리 TypeScript 코드를 실행해 주는 서비스. 잠들지 않는다 |
+| D1 | Workers 옆에 붙는 작은 SQL 데이터베이스(SQLite 방식) |
+| 자체 도메인·하위 주소 | `ssamuniverse.com` 같은 내 도메인과, 그 앞에 이름을 붙인 `voca.ssamuniverse.com` 같은 주소 |
+| DNS·CNAME | 주소를 실제 서버로 연결하는 전화번호부, 그리고 "이 이름은 저 이름으로 가라"는 줄 |
+| DNS only(회색 구름) | Cloudflare DNS에서 연결만 하고 Cloudflare 전송망을 거치지 않게 하는 설정. **이 계획에서 아주 중요하다**(§6 E) |
+| 비밀 소금값 | 학생 기기 번호를 랭킹에서 알아볼 수 없게 섞는 비밀 문자열 |
+| 익명 기기 신원 | 학생이 아무것도 입력하지 않아도 기기마다 하나 생기는 보이지 않는 번호 |
+| 무료 한도 | 서비스가 공짜로 허용하는 양. 넘었을 때 멈추는지, 돈을 받는지, 느려지는지가 서비스마다 다르다 |
 
 ---
 
-## 2. 이 게임은 서버를 얼마나 쓰나 (코드에서 확인)
+## 3. 이 게임이 실제로 쓰는 양 (실측·코드 확인)
 
-- **올릴 파일**: `dist/` 22MB, 파일 약 510개(그림 410장). 가장 큰 파일은 0.3MB다.
-- **전투 시작 때 받는 그림**: 378장, 약 13MB를 한꺼번에 받는다(`src/game/BattleScene.ts:41`). 이 중 아직 학생이 갈 수 없는 맵 3개(약 3.7MB)와 그 판에서 안 쓰는 진화형 그림이 섞여 있다.
-- **서버 요청**: 아래가 전부다. 한 판이 15~25분이니 판마다 요청이 몇 개뿐이다.
-
-| 언제 | 무엇 | 횟수 |
-|---|---|---|
-| 처음 기록 공유를 켤 때 | 익명 로그인(`/auth/v1/signup`) | 기기당 1번 |
-| 홈에 들어올 때 | 방문 기록, 랭킹·통계 조회 | 1~2번 |
-| 홈에 있는 동안 | 접속자 수 실시간 연결 1개(25초마다 신호) | 게임에 들어가면 끊김 |
-| 판 시작 | `record_run_start` | 1번 |
-| 판 끝 | `submit_completed_run`(서버가 답을 다시 채점) | 1번 |
-
-- **어림셈**: 학생 1만 명이 동시에 해도 판 제출은 초당 10건 안팎이다. DB 한 대로 넉넉하다.
-- **돈이 드는 곳은 두 군데**: 그림 전송량(Cloudflare가 무료로 처리)과 홈 화면 실시간 연결 수(Supabase 한도)다.
+- **첫 전투 전 다운로드**: 그림 378장 13.5MB + JS 0.6MB(압축) = 기기 하나당 약 14MB, 요청 약 390개
+- **서버 요청**: 공개 기록을 켠 학생만 보낸다(`shareRecords` 기본값 꺼짐). 홈 방문 1~2번, 판 시작 1번, 판 끝 제출 1번이 전부다. 전투 중에는 0번이다.
+- **서버가 꺼져도** 게임은 "이 기기 기록" 모드로 계속 돈다. 랭킹만 잠시 사라진다.
+- **맥미니 실측(11/4)**: RAM 32GB. 롤린썬더 서버 VM 약 0.7GB, 쌤유니버스 서버 VM 약 0.44GB. 스왑 5.2GB는 개발 도구(에이전트·브라우저 시험 도구 등) 몫이다. **메모리는 문제가 아니다.** 맥미니를 쓰지 않는 이유는 §5.3에 있다.
 
 ---
 
-## 3. 결정과 이유
+## 4. 후보 비교
 
-### 3.1 게임 파일 → Cloudflare Workers
-- 정적 파일 요청은 **무료·무제한**이고 서울 거점에서 나간다.
-- Cloudflare 공식 문서(2026-08-25)가 "새 프로젝트는 Workers로 시작하라"고 권한다. Pages도 종료 공지 없이 계속 동작하므로, Workers가 막히면 Pages로 같은 설정을 해도 된다.
-- 한도는 배포당 파일 2만 개, 파일 하나 25MiB다. 이 게임(510개, 최대 0.3MB)과는 거리가 멀다.
-- 스크립트 없이 파일만 올리므로 Workers의 "하루 10만 요청" 한도와 상관없다(그 한도는 스크립트를 실행하는 요청에만 붙는다).
-- 설정 파일(`wrangler.jsonc`)은 Claude가 저장소에 넣는다(§7).
+### 4.1 게임 파일(정적 호스팅)
 
-### 3.2 기록·랭킹 → Supabase 새 프로젝트
-- 서버 채점 함수, 익명 로그인, 실시간 접속자 수가 이미 Supabase 기준으로 만들어져 있고 시험도 끝났다.
-- 무료로 시작한다. 이 게임에 걸리는 무료 한도는 두 가지다.
-  - **7일 동안 DB 활동이 적으면 일시정지**된다. 방학에 일어날 수 있다. 멈춰도 게임은 "이 기기 기록" 모드로 계속 돌고, 대시보드에서 다시 켜면 된다(정지 뒤 1년 안).
-  - **실시간 동시 연결 200개**. 넘으면 홈의 접속자 수 표시만 4초 뒤 조용히 사라지고 게임은 멈추지 않는다.
-- Supabase 사용을 끄고 싶으면 빌드 변수만 비우면 된다. 그러면 앱 전체가 이 기기 기록 모드로 안전하게 돈다.
+"첫 방문 기기"는 위 14MB·390요청 기준으로 한 달에 감당하는 대수다.
 
-### 3.3 Cloudflare R2를 쓰지 않는 이유
-- R2는 파일 **보관 장소**만 바꾼다. 학생이 받는 용량은 그대로라 앱이 가벼워지지 않는다.
-- Workers로 올려도 그림은 같은 Cloudflare 서울 거점에서 나간다.
-- R2로 옮기면 손이 늘고 깨질 곳이 생긴다. 그림을 다른 주소에서 받으면 교차 출처 설정(CORS)이 필요하다. 이 게임은 전장 그림을 다시 아이콘으로 뽑아 쓰므로(`textures.getBase64`), 설정이 하나만 빠져도 타워·몬스터 아이콘이 깨진다.
-- **R2가 필요해지는 때**
-  - 그림을 코드 배포와 따로 자주 바꿔야 할 때
-  - 학생·교사가 파일을 올리는 기능이 생길 때
-  - 롤린썬더·쌤유니버스와 그림을 같이 쓸 때
-  - 그때 비용: 무료로 월 10GB 보관, 전송료 없음.
-
-### 3.4 Vercel을 쓰지 않는 이유
-- 무료(Hobby)는 **비상업·개인 용도만** 허용한다. 유급 인력이 만들었거나 광고·결제가 있으면 상업으로 본다.
-- 전송량이 월 100GB다. 처음 오는 기기 4~5천 대면 찬다. 넘으면 30일 동안 멈추고 추가 구매도 안 된다.
-- Pro는 월 $20(전송 1TB 포함)다. 정적 게임에는 돈을 낼 이유가 없다.
-- Vercel은 롤린썬더처럼 Next 서버 기능이 있는 서비스에 맞다.
-
-### 3.5 맥미니(쌤유니버스)에 붙이지 않는 이유
-- **메모리는 문제가 아니다.** 쌤유니버스 전체가 평소 약 0.8GB(`classlearning/infra/compose.yaml` 기록)이고, 이 게임을 붙여도 수십 MB 늘 뿐이다.
-- **옮기는 일이 크다.** 서버 쪽이 Supabase 전용 기능(익명 로그인, `/rest/v1/rpc/` 호출 경로, 실시간 연결)에 기대고 있어서 맥미니 Postgres에서는 이걸 직접 꾸려야 한다. Supabase 전체를 맥미니에 설치하면 컨테이너가 여러 개 떠서 **그때 실제로 메모리를 크게 먹는다.**
-- **고장이 함께 온다.** 정전·macOS 업데이트·재부팅 한 번에 수업 중 게임 랭킹과 교사용 쌤유니버스가 같이 멈춘다.
-- **책임이 커진다.** 학생 기록을 집 컴퓨터 한 대에 두면 보안·백업을 직접 챙겨야 한다.
-
-### 3.6 롤린썬더 DB에 합치지 않는 이유
-- 두 서비스의 함수가 같은 `public` 공간에 섞인다.
-- 롤린썬더의 DB 초기화 스크립트(`supabase/reset_db.sql`)를 한 번 돌리면 게임 기록까지 지워질 수 있다.
-- 동시 연결 수와 MAU 한도를 나눠 쓴다.
-- **예외**: 롤린썬더 Supabase가 이미 유료(Pro) 조직이라면 **같은 조직에 프로젝트만 하나 더** 만드는 건 좋다. DB는 따로 쓰고, 추가 비용은 월 약 $10이다.
-
-### 3.7 서비스 한도 표 (2026-11-04 확인)
-
-| 서비스 | 무료 | 유료 |
-|---|---|---|
-| Cloudflare Workers(정적) | 요청·전송 무제한, 파일 2만 개, 파일당 25MiB, 자동 빌드 월 3,000분 | 같은 정적 무제한, 파일 10만 개 |
-| Supabase | DB 500MB, 전송 5GB, MAU 5만, 실시간 동시 200, 무료 프로젝트 2개(계정 전체), 7일 저활동 시 정지, 다운로드 가능한 백업 없음 | Pro 월 $25: DB 8GB, 전송 250GB, MAU 10만, 실시간 동시 500(지출 상한을 풀면 1만까지, 1,000개당 $10), 매일 백업 7일 보관, 정지 없음. 같은 조직의 추가 프로젝트 월 약 $10 |
-| Vercel | 비상업만, 전송 100GB | Pro 월 $20, 전송 1TB |
-| Cloudflare R2 | 보관 10GB, 쓰기 100만·읽기 1,000만 건, 전송료 없음 | 보관 GB당 월 $0.015 |
-
----
-
-## 4. 출시 전에 꼭 고칠 것 (이번 조사에서 새로 나온 3가지)
-
-| # | 문제 | 왜 중요한가 | 누가·어떻게 |
+| 후보 | 한국 거점(실측 11/4) | 무료 한도 → 첫 방문 기기/월 | 판단 |
 |---|---|---|---|
-| 1 | **익명 로그인 한도: 같은 IP에서 시간당 30건** | 한 반 30명은 같은 학교 공인 IP로 나간다. 31번째 기기부터, 또는 옆 반이 이어서 들어오면 랭킹 연결이 실패한다. 게임 자체는 된다 | **사용자**: 대시보드에서 한도를 올린다(§6 B-4). 무료 플랜에서 바꿀 수 있는지는 공식 문서에 없어 직접 확인해야 한다. 안 되면 Claude에게 알려 준다 |
-| 2 | **비밀 소금값을 넣는 방법** | DEPLOY.md의 `alter database postgres set app.player_salt` 방식은 호스팅 Supabase에서 막힐 수 있다(DB 소유자가 따로 있음). 소금값이 없으면 기록 제출이 모두 `PLAYER_SALT_REQUIRED`로 실패한다 | **Claude**: Supabase 금고(Vault)에서 소금값을 읽는 마이그레이션을 더한다. **사용자**: SQL 한 줄로 금고에 넣는다(§6 B-6) |
-| 3 | **Supabase 새 API 키** | 2025-11부터 새 프로젝트는 예전 `anon` 키 대신 publishable 키를 준다. 예전 키는 2026년 말 폐지 예정이다 | 앱 코드를 확인한 결과 새 키와 맞는 방식이다(가입은 `apikey` 헤더만, 기록 호출은 학생 토큰 사용, 실시간 연결도 publishable 키 허용). **Claude**: 설정 이름을 `VITE_SUPABASE_PUBLISHABLE_KEY`로 바꾸고 옛 이름도 받게 한다. 프로젝트가 생기면 실제 연결을 시험한다 |
+| **GitHub Pages** | **3사 모두 서울(ICN), 3~26ms** | 전송 100GB(강제 아님), 요청 무제한 → 약 7,000대 | **채택.** 빠르고 요청 제한이 없고 잠들지 않는다. 저장소가 이미 공개라 바로 쓴다 |
+| CloudFront 무료 요금제 | 서울 2~8ms(운영자 실측) | 요청 100만·전송 100GB → **요청이 병목이라 약 2,560대** | 예비. 계정당 무료 3칸 중 2칸을 이미 쓰고 있어 **마지막 1칸**이다 |
+| Cloudflare Pages(`*.pages.dev`) | 지금은 3사 서울 | 무제한 | 예비. 서울은 관찰된 상태일 뿐 보장이 없고, 자체 도메인을 붙이면 KT가 미국 경유가 된다 |
+| Cloudflare Workers | **KT는 LAX(미국)** | 무제한 | 게임 파일용으로 탈락. KT 학교에서 14MB가 미국을 돌아온다 |
+| Vercel Hobby | 서울 | 요청 100만 → 약 2,560대. 넘으면 30일 정지 | 탈락. 비상업 전용이고, **`*.vercel.app`이 한국 통신사에서 막힌 사례가 2024-05·2024-10에 있었다** |
+| Netlify | 싱가포르 | 크레딧 300 → 약 800대. 소진 시 전체 정지 | 탈락 |
+| Firebase Hosting | 서울 | 전송 10GB/월(가격표는 하루 360MB) → 한 반이 하루 한도를 넘김 | 탈락. 학교망에서 `firebaseapp.com`이 막힌 사례(2026-10)도 있다 |
+| Render·Deno·Azure·Amplify | — | 5~20GB이거나 기간 한정 | 탈락 |
+
+### 4.2 기록·랭킹 서버
+
+| 후보 | 잠들기·정지 | 한국 속도 | 옮기는 품 | 판단 |
+|---|---|---|---|---|
+| **Cloudflare Workers + D1** | **없음** | KT 0.3~0.9초(미국 경유), SKB·LG U+ 40~60ms | TS로 새로 작성. 재채점·닉네임·점수·한국 시간 계산이 이미 `src/contracts/lobby.ts`에 TS로 있어 그대로 쓴다 | **채택.** 영구 무료이고 관리가 필요 없다. 한도는 하루 요청 10만, D1 쓰기 하루 10만 행으로 이 게임의 수십 배다 |
+| Supabase 무료(서울) | **7일 저활동이면 정지**, 수동 재개 | 서울 15~30ms | 고칠 곳 4가지(§1) | 예비. 가장 빠르지만 방학마다 정지 위험이 있고, 무료 프로젝트 2칸(롤린썬더 옛 프로젝트와 공유)과 익명 로그인 한도를 관리해야 한다 |
+| AWS 서울 Lambda + DynamoDB | 없음 | 서울 | 큼(DynamoDB 설계를 새로) | 예비. 빠르고 영구 무료지만 **한도를 넘으면 실제 과금된다(멈추는 상한이 없음)** |
+| 맥미니(작은 TS 서버 + SQLite) | 없음. 단 정전·재부팅 때 멈춤 | CloudFront 마지막 칸을 써야 서울 속도 | 작음(이 계획의 서버 코드를 그대로 실행) | **비상 대체.** 메모리는 수십 MB면 되지만 집 한 대에 세 서비스가 묶인다 |
+| Neon(Postgres) | 5분 뒤 잠들고 다음 요청 때 깸 | 싱가포르(서울·도쿄 없음) | 중간 | 탈락 |
+| Firebase Spark | 없음 | 서울 | 큼 | 탈락. 무료에서는 서버 코드(재채점)를 못 돌린다 |
+| Turso·Appwrite·Nhost·Upstash·Convex·Deno KV | 10~30일 비활동이면 보관·정지, 또는 리전이 멂 | — | 큼 | 탈락 |
 
 ---
 
-## 5. 단계별 계획
+## 5. 왜 이 조합인가
 
-### P0 · 출시 (지금, 0원)
-- **Claude**: §4의 2·3 코드 작업, Cloudflare 설정 파일, DEPLOY.md 갱신, 배포 브랜치 병합(요청 시)
-- **사용자**: §6의 A~E
-- **끝 기준**: 학교 기기에서 한 판을 끝내고 홈 랭킹에 닉네임이 뜬다.
+### 5.1 게임 파일 → GitHub Pages
+- 이 맥(KT)과 한국 측정점 6곳(통신사 3곳 × 2) 모두에서 Fastly 서울 거점(ICN)으로 왔다. 연결은 3~26ms였다.
+- 요청 수 제한이 없다. 그림이 많은 이 게임에서는 요청 수가 가장 먼저 막히는데(CloudFront·Vercel 모두 월 100만), 그 걱정이 없다.
+- 저장소 `djqanrudgns12/tower`가 이미 공개라 추가 비용 없이 쓴다. GitHub Actions가 Node 24로 빌드해서 올린다.
+- 약점은 두 가지다.
+  - 캐시 시간이 10분으로 고정돼 재방문 때 확인 요청이 오간다. 요청 제한이 없어 문제는 작다.
+  - 전송 100GB는 "강제 아님"이다. 넘을 기미가 보이면 §7 P1(가볍게)로 줄인다.
 
-### P1 · 앱 가볍게 (출시 직후, 0원, 전부 Claude)
+### 5.2 기록·랭킹 서버 → Cloudflare Workers + D1
+- **잠들지 않는다.** 방학 내내 아무도 안 와도 개학 날 그대로 돈다. 대시보드를 들여다볼 일이 없다.
+- **교실 30명 문제가 없다.** 익명 기기 신원을 우리 서버가 직접 서명해 만든다. 외부 로그인 서비스의 IP당 한도가 없다.
+- **옮기기 쉽다.** 표준 TypeScript와 SQLite 방식 SQL이라 같은 코드를 맥미니(Node)에서도 돌릴 수 있다. API 주소를 자체 도메인에 붙이므로 서버를 바꿔도 앱 설정 한 줄만 바뀐다.
+- **KT 지연**: KT 학교에서는 요청 한 번에 0.3~0.9초가 걸린다. 홈 랭킹이 조금 늦게 뜨고, 판이 끝난 뒤 순위가 조금 늦게 나오는 정도다. 전투에는 서버 요청이 없다.
+  - 거슬리면 같은 코드를 `*.pages.dev` 주소(지금 서울 관측)나 CloudFront 마지막 칸 뒤로 옮겨 시험한다(§9).
+- 홈의 "지금 접속자 수"는 실시간 연결 대신 **"최근 5분 안에 홈을 연 기기 수"**로 바꾼다. 실시간 연결은 무료 한도를 빨리 먹고, 학교 방화벽이 웹소켓만 끊는 경우도 있다. 화면 모양은 그대로다.
 
-| 순서 | 일 | 줄어드는 양 |
-|---|---|---|
-| ① | 지금 맵의 그림만 받기 | 약 3.7MB(28%) |
-| ② | 타워 진화형 그림은 그 타워가 진화에 가까워질 때 받기 | 수 MB |
-| ③ | 그림을 WebP로 바꾸기 | 남은 양의 절반 안팎 |
-| ④ | 21웨이브부터 나오는 확장 종족 몬스터는 나중에 받기 | 약 0.8MB |
+### 5.3 맥미니·롤린썬더·쌤유니버스에 붙이지 않는 이유
+- 메모리는 넉넉하다(§3). 이유는 메모리가 아니다.
+- **고장이 같이 온다**: 정전·macOS 업데이트·재부팅 한 번에 세 서비스가 같이 멈춘다.
+- **서울 속도를 내려면** CloudFront 무료 마지막 칸을 써야 한다. Cloudflare 터널만 쓰면 KT가 미국 경유다(운영자 실측 0.2~1.3초).
+- **롤린썬더 Supabase에 합치면** 로그인 시스템이 섞인다. 익명 로그인을 켜면 롤린썬더에도 켜지고, 초기화 스크립트 한 번에 게임 기록이 지워질 수 있다.
+- 그래서 맥미니는 **비상 대체**로만 둔다. Cloudflare 무료 정책이 나빠지면 같은 서버 코드를 맥미니로 옮긴다.
 
-- **목표**: 첫 전투 전 다운로드를 13MB에서 4~5MB로 줄인다(어림값). 끝나면 실측해서 보고한다.
-- **사용자**: 결과를 한 판 해 보고 확인만 한다.
-
-### P2 · 정식 운영 (월 $25)
-- **언제**: 아래 중 하나라도 해당되면 올린다.
-  - 여러 학교가 쓰고 랭킹이 중요해졌다.
-  - 방학 중 정지가 싫다.
-  - 대시보드 사용량이 무료 한도의 80%를 넘었다.
-  - 기록 백업이 필요하다.
-- **무엇**: Supabase Pro로 올린다. 정지가 없어지고, 매일 백업이 7일 보관되며, 실시간 동시 연결 500개·MAU 10만이 된다.
-- **사용자**: 결제는 직접 한다(Claude는 결제를 하지 않는다).
-- **Claude**: 익명 로그인에 Cloudflare Turnstile(보이지 않는 로봇 확인)을 붙일지 검토한다. 오래된 익명 계정 정리는 랭킹 신원과 엮여 있어 따로 설계한다.
-
-### P3 · 폭발 대비 (필요할 때만)
-- **막히는 곳**: 홈 화면의 실시간 연결 하나뿐이다.
-- **Claude**
-  - 접속자 수를 실시간 연결 대신 1분마다 숫자 하나 받아오는 방식으로 바꾼다. 연결 비용이 0이 된다.
-  - 랭킹 조회를 30초씩 캐시한다.
-  - 그래도 넘치면 DB 사양을 한 단계 올린다.
-- **언제**: 홈 동시 접속이 Pro 한도(500)의 70%를 넘을 때.
+### 5.4 학생 주소 → 이미 가진 도메인의 하위 주소
+- `ssamuniverse.com`과 `rollinthunder.net` 모두 DNS가 Cloudflare에 있다(11/4 확인). 하위 주소는 무료로, 몇 분이면 만든다.
+- 새 도메인 대신 하위 주소를 쓰면 좋은 점이 있다.
+  - 비용이 없다.
+  - 학교 필터의 "새로 등록된 도메인" 차단을 피한다(근거 약함, 비용 없는 예방).
+  - 이미 학교에서 쓰는 교육 도메인이면 분류가 쉬울 수 있다.
+- 쌤유니버스의 Cloudflare 보안 규칙은 `origin.ssamuniverse.com` 한 주소에만 걸려 있어 새 하위 주소에는 영향이 없다(`classlearning/docs/operations/SELFHOST_GO_LIVE.md:262`).
+- 주소 이름에 `game`·`play`는 넣지 않는다. 경기도교육청은 학교 무선망에서 게임 사이트를 막는다(2024-12 보도). 이름 키워드로 막는지는 확인하지 못했지만 피해서 손해 볼 것이 없다.
 
 ---
 
 ## 6. 사용자가 할 일 (순서대로)
 
-메뉴 이름은 서비스가 화면을 바꾸면 조금 달라질 수 있다. 비슷한 이름을 찾으면 된다. 막히면 화면에 보이는 글을 Claude에게 그대로 알려 준다.
+메뉴 이름은 서비스가 화면을 바꾸면 조금 달라질 수 있다. 막히면 화면에 보이는 글을 Claude에게 그대로 알려 준다. **비밀값(소금값·비밀번호·토큰)은 채팅에 붙이지 않는다.**
 
-### A. 배포할 브랜치 정하기 (5분)
-- **지금 상태**: 모든 작업은 `p1/intake-round1`에 있고, `main`보다 커밋 193개 앞서 있다.
-- **추천**: `main`에 합친 뒤 `main`을 배포한다. "학생이 보는 판 = `main`"으로 정해 두면 헷갈리지 않는다.
-- **할 일**: Claude에게 "main에 병합해"라고 말한다. 병합·push는 Claude가 한다.
+### A. 결정 두 가지 (5분)
+1. **학생 주소 이름을 정한다.**
+   - 추천: `ssamuniverse.com`의 하위 주소, 예: `voca.ssamuniverse.com`
+   - 서버 주소는 Claude가 같은 도메인에 `voca-api.ssamuniverse.com`처럼 붙인다.
+   - 쌤유니버스와 묶이는 게 싫으면 `rollinthunder.net` 하위 주소나 새 도메인을 쓴다. 새 .com은 연 약 $11이고, 수업 2~4주 전에 등록해 두는 편이 안전하다.
+2. **배포 브랜치를 정한다.** 추천은 `main`이다. 지금 작업은 `p1/intake-round1`에 있고 `main`보다 커밋 193개 앞서 있다. Claude에게 "main에 병합해"라고 하면 된다.
 
-### B. Supabase 프로젝트 만들기 (20~30분)
-1. [supabase.com](https://supabase.com)에 로그인한다. 롤린썬더 계정을 그대로 써도 된다.
-   - 무료 프로젝트는 **계정 전체에서 2개까지**다(정지된 프로젝트는 세지 않는다). 롤린썬더가 무료 프로젝트를 쓰고 있으면 남은 자리가 있는지 본다.
-2. **New project**를 누르고 아래처럼 정한다.
-   - 이름: `vocabulary-td`
-   - Region: **Northeast Asia (Seoul)**
-   - Database password: 길게 만들어 **비밀번호 관리자에 저장**한다. 채팅·저장소·메모장에 붙이지 않는다.
-3. **Authentication → Sign In / Providers**에서 **Allow anonymous sign-ins**(익명 로그인)를 켜고 저장한다.
-4. **Authentication → Rate Limits**에서 익명 로그인 한도(anonymous users)를 **시간당 1,000**으로 올린다.
-   - 이 칸이 없거나 무료 플랜이라 막히면 Claude에게 알려 준다. 그러면 P2(Pro)를 앞당기거나 다른 방법을 찾는다.
-5. **SQL Editor**에서 마이그레이션을 이름 순서대로 하나씩 붙여 넣고 **Run**을 누른다.
-   - `supabase/migrations/20261030000001_lobby_telemetry_and_rankings.sql`
-   - `supabase/migrations/20261030000002_authenticated_regraded_runs.sql`
-   - `supabase/migrations/20261030131722_nickname_graphemes_and_receipts.sql`
-   - `supabase/migrations/20261030132649_rpc_http_failures.sql`
-   - Claude가 §7-1에서 더할 금고(Vault) 파일
-6. **비밀 소금값 넣기** (§7-1 작업이 끝난 뒤)
-   - 무작위 문자열은 맥 터미널에서 아래 명령으로 만든다. 나온 값을 비밀번호 관리자에 저장한다.
-     ```bash
-     openssl rand -base64 48
-     ```
-   - SQL Editor에서 `<무작위 문자열>` 자리에 그 값을 넣어 실행한다.
-     ```sql
-     select vault.create_secret('<무작위 문자열>', 'player_salt');
-     ```
-   - 이 값은 채팅·저장소에 남기지 않는다. 한 번 정하면 바꾸지 않는다. 바꾸면 기존 랭킹의 학생 구분이 끊긴다.
-7. **정답 키 넣기**: `supabase/question_keys.seed.sql` 내용을 SQL Editor에 붙여 넣고 Run을 누른다.
-8. **키 두 개 복사하기**
-   - **Project URL**: 상단 **Connect** 버튼이나 **Project Settings → Data API**에 있다. `https://xxxx.supabase.co` 꼴이다.
-   - **Publishable key**: **Project Settings → API Keys**에 있다. `sb_publishable_...` 꼴이다.
-   - 이 두 값은 공개돼도 된다. **secret key는 복사하지도, 앱에 넣지도 않는다.**
+### B. Cloudflare 접속 허락 (5분, Claude 작업 뒤)
+1. Claude가 터미널에서 `npx wrangler login`을 실행하면 브라우저 창이 열린다.
+2. 롤린썬더·쌤유니버스에 쓰는 Cloudflare 계정으로 로그인하고 **Allow**를 누른다. 이 허락은 직접 해야 한다.
+3. 그 뒤 Claude가 D1 데이터베이스를 만들고 서버를 올린다. 서버 주소 DNS도 이때 자동으로 생긴다.
 
-### C. Cloudflare에 올리기 (20분)
-1. [cloudflare.com](https://dash.cloudflare.com)에 무료로 가입한다.
-2. **Workers & Pages → Create → Import a repository**를 고르고, GitHub를 연결해 저장소 `djqanrudgns12/tower`를 선택한다.
-3. 설정 칸을 이렇게 채운다.
-   - 프로젝트(Worker) 이름: `vocabulary-td` (Claude가 넣을 설정 파일의 이름과 같아야 한다)
-   - Production branch: A에서 정한 브랜치(추천 `main`)
-   - Build command: `npm run build`
-   - Deploy command: `npx wrangler deploy`
-4. **Advanced settings → Build variables**에 두 개를 넣는다. 런타임 변수가 아니라 **빌드 변수**여야 한다. 이 값은 빌드할 때 화면 코드에 박히기 때문이다.
-   - `VITE_SUPABASE_URL` = B-8의 Project URL
-   - `VITE_SUPABASE_PUBLISHABLE_KEY` = B-8의 Publishable key
-5. **Node 버전**: 저장소의 `.nvmrc`(24.21.0)를 보통 자동으로 읽는다.
-   - 빌드 기록에 Node가 v24가 아니라고 나오면 빌드 변수에 `NODE_VERSION` = `24.21.0`을 더한다.
-6. **Deploy**를 누른다. 끝나면 `https://vocabulary-td.<계정 이름>.workers.dev` 꼴의 주소가 나온다.
-   - 이후 브랜치에 push할 때마다 자동으로 다시 배포된다.
-7. (선택) 도메인이 있으면 **Settings → Domains & Routes**에서 연결한다.
+### C. 비밀 소금값 넣기 (3분)
+1. 터미널에서 무작위 값을 만들고 비밀번호 관리자에 저장한다.
+   ```bash
+   openssl rand -base64 48
+   ```
+2. 저장소 폴더에서 아래를 실행하고, 물어보면 1의 값을 붙여 넣는다.
+   ```bash
+   npx wrangler secret put PLAYER_SALT
+   ```
+3. 한 번 정하면 바꾸지 않는다. 바꾸면 기존 랭킹에서 학생 구분이 끊긴다.
 
-### D. 첫 확인 (15분)
-1. C-6의 주소를 열고 한 판을 시작했다가 "이번 판 끝내기"로 끝낸다.
+### D. GitHub Pages 켜기 (5분)
+1. GitHub에서 저장소 `djqanrudgns12/tower`를 연다.
+2. **Settings → Pages**로 간다.
+3. **Build and deployment → Source**를 **GitHub Actions**로 고른다. 빌드 파일은 Claude가 넣는다.
+4. **Custom domain**에 A-1의 주소(예: `voca.ssamuniverse.com`)를 넣고 **Save**를 누른다.
+5. E가 끝나고 몇 분 뒤 **Enforce HTTPS**에 체크한다.
+6. (권장) 다른 사람이 이 주소를 가로채지 못하게, 계정 **Settings → Pages → Add a domain**에서 `ssamuniverse.com`을 인증한다. 안내대로 Cloudflare DNS에 TXT 기록을 하나 넣으면 된다.
+
+### E. Cloudflare DNS에 학생 주소 연결 (5분)
+1. Cloudflare 대시보드에서 `ssamuniverse.com` → **DNS → Records → Add record**를 연다.
+2. 아래처럼 넣는다.
+   - Type: `CNAME`
+   - Name: `voca` (A-1에서 정한 앞 이름)
+   - Target: `djqanrudgns12.github.io`
+   - **Proxy status: DNS only (회색 구름)**
+3. **주황 구름(Proxied)으로 두면 안 된다.** 그러면 KT 학교에서 그림 14MB가 미국을 돌아온다. 이 계획의 핵심 설정이다.
+
+### F. 첫 확인 (15분)
+1. 학생 주소를 열고 한 판을 끝낸다.
 2. **설정 → 공개 기록**을 켜고 한 판을 더 끝낸 뒤, 홈 랭킹에 닉네임이 뜨는지 본다.
-3. 안 뜨면 화면에 보이는 문구를 Claude에게 알려 준다. Claude가 연결을 시험해 원인을 찾는다(§7-5).
+3. 안 뜨면 화면 문구를 Claude에게 알려 준다.
 
-### E. 실기기 확인 (수업 한 번)
-- 크롬북과 iPad로 한 판씩 한다. 아래 셋을 본다.
+### G. 실기기·학교 망 확인 (수업 한 번)
+- 크롬북·iPad로 한 판씩 하며 세 가지를 본다.
   - 처음 열 때 걸리는 시간
   - 전투 중 버벅임
   - 글자 크기
-- 이상하면 기종과 증상을 적어 Claude에게 준다.
-- **한 반이 동시에 처음 접속했을 때** 모두 랭킹에 연결되는지 본다(§4-1 익명 로그인 한도 확인).
+- **학교 망에서 두 주소가 열리는지** 본다(학생 주소와 서버 주소).
+  - 막히면 학교 정보 담당 선생님이나 교육청에 두 주소의 허용을 요청한다. 부산교육청은 오탐 해지를 공문으로 받는다(2026-01 공지).
+  - 서버 주소만 막혀도 게임은 돌고 랭킹만 빠진다.
 
-### F. 운영 습관 (한 달에 한 번, 5분)
-- **Supabase 대시보드 → Usage**에서 DB 용량, MAU, 실시간 연결 최고치를 본다. 무료 한도의 80%를 넘으면 P2로 간다.
-- **방학 전**: 무료 프로젝트는 7일 동안 활동이 적으면 멈춘다. 멈춰도 게임은 돌고, 개학 때 대시보드에서 **Resume project**를 누르면 된다. 정지 약 1주 전에 경고 메일이 온다.
-- **백업**: 무료 단계는 내려받을 수 있는 자동 백업이 없다. 잃는 것은 랭킹 기록뿐이고 게임과 학생 기기 기록은 그대로라, 무료 단계에서는 백업 없이 간다. P2부터 매일 자동 백업된다.
-- **비밀값**: DB 비밀번호, 소금값, secret key는 비밀번호 관리자에만 둔다. 누가 물어봐도 채팅에 붙이지 않는다.
+### H. 운영 습관 (한 달에 한 번, 5분)
+- Cloudflare 대시보드 → **Workers & Pages**와 **D1**에서 사용량을 본다. 무료 한도의 50%를 넘으면 Claude에게 알려 준다.
+- GitHub Pages에는 사용량 화면이 없다. 한도를 크게 넘으면 GitHub가 메일로 알린다.
+- 비밀값은 비밀번호 관리자에만 둔다.
 
-### G. 콘텐츠 (기존 일)
-- 4~6학년 문제은행 공동 검수를 끝내고 공개한다. 공개되면 강가·궁궐 뜰·설원 맵이 학생에게 열린다.
-
-### H. 돈이 드는 결정 (P2부터)
-- Supabase Pro 결제와 도메인 구매는 직접 한다.
+### I. 콘텐츠 (기존 일)
+- 4~6학년 문제은행 공동 검수를 마치고 공개한다. 그러면 강가·궁궐 뜰·설원 맵이 열린다.
 
 ---
 
-## 7. Claude가 할 일 (승인하면 바로 시작)
+## 7. Claude가 할 일 (승인하면 시작)
 
-| 순서 | 일 | 단계 | 끝 기준 |
-|---|---|---|---|
-| 1 | 금고(Vault)에서 소금값을 읽는 마이그레이션 추가. 금고가 없으면 기존 설정값으로 대체 | P0 | 로컬 SQL 회귀 시험 3종 통과 |
-| 2 | 설정 이름 `VITE_SUPABASE_PUBLISHABLE_KEY`로 정리(옛 `VITE_SUPABASE_ANON_KEY`도 받음), `.env.example` 갱신 | P0 | verify 통과 |
-| 3 | Cloudflare 설정 파일 `wrangler.jsonc` 추가(`dist/` 정적 파일만, 이름 `vocabulary-td`), DEPLOY.md 갱신 | P0 | 로컬에서 `npx wrangler deploy --dry-run` 통과 |
-| 4 | `main` 병합·push | P0 | 사용자가 A에서 요청할 때 |
-| 5 | 사용자 프로젝트로 실제 연결 시험(익명 가입·판 제출·랭킹·실시간 접속자 수) | P0 | B·C 뒤 |
-| 6 | 앱 가볍게 ①~④, 전후 다운로드 용량 실측 | P1 | 출시 뒤 |
-| 7 | 접속자 수 1분 조회, 랭킹 캐시 | P3 | 필요할 때만 |
-
----
-
-## 8. 비용 요약
-
-| 단계 | 게임 파일 | 기록·랭킹 | 월 비용 |
-|---|---|---|---|
-| P0·P1 출시·가볍게 | Cloudflare 무료 | Supabase 무료 | **0원** |
-| P2 정식 운영 | Cloudflare 무료 | Supabase Pro | **$25** (롤린썬더 Pro 조직에 추가하면 약 $10) |
-| P3 폭발 | Cloudflare 무료 | Pro + 실시간 연결 추가분 | $25 + 연결 1,000개당 $10. P3 작업을 하면 대부분 필요 없다 |
+| 순서 | 일 | 끝 기준 |
+|---|---|---|
+| P0-1 | **서버 작성**: Cloudflare Worker + D1 표 정의, 익명 기기 신원 서명, 판 시작·제출(재채점)·랭킹·홈 통계·속도 제한. `src/contracts/lobby.ts`를 그대로 쓴다. 기존 SQL 회귀 시험 3종의 경우를 TS 시험으로 옮긴다 | 서버 시험·verify 통과 |
+| P0-2 | **앱 전환**: `auth.ts`·`lobbyClient.ts`를 새 서버로 바꾸고, 접속자 수를 "최근 5분 홈 방문 기기 수"로 바꾼다. 설정 이름은 `VITE_API_BASE` 하나로 한다 | verify·e2e 통과 |
+| P0-3 | **배포 장치**: GitHub Actions의 Pages 빌드·배포 파일, Worker 설정 파일, DEPLOY.md 갱신 | 로컬 빌드와 Worker 시험 실행 통과 |
+| P0-4 | **Supabase 정리**: `supabase/` 폴더를 `docs/archive/`로 옮긴다(지우지 않음) | 승인 시 |
+| P0-5 | **올리기·연결 시험**: B·C 뒤 D1 생성, Worker 배포, 실제 주소로 가입·제출·랭킹 확인 | F와 같은 결과 |
+| P1 | **가볍게**: 지금 맵 그림만 받기(−3.7MB), 진화형은 나중에 받기, WebP 변환. 전후 실측 | 첫 전투 전 다운로드를 수치로 보고 |
+| 비상 | 같은 서버 코드를 맥미니 Node + SQLite로 돌리는 실행기 | 필요할 때만 |
 
 ---
 
-## 9. 확인한 출처 (2026-11-04 조회, 괄호는 페이지 갱신일)
+## 8. 비용
 
-- Cloudflare Pages 첫머리 "새 프로젝트는 Workers로": https://developers.cloudflare.com/pages/ (2026-08-25)
-- Workers 정적 파일 무료·무제한: https://developers.cloudflare.com/workers/static-assets/billing-and-limitations/ (2026-11-03)
-- Workers 한도(파일 2만·25MiB): https://developers.cloudflare.com/workers/platform/limits/ (2026-10-29)
-- Workers Builds 한도: https://developers.cloudflare.com/workers/ci-cd/builds/limits-and-pricing/ (2026-10-28)
-- Pages 한도: https://developers.cloudflare.com/pages/platform/limits/ (2026-09-05)
-- R2 가격: https://developers.cloudflare.com/r2/pricing/ (2026-10-30)
-- Supabase 가격·한도: https://supabase.com/pricing , https://supabase.com/docs/guides/platform/billing-on-supabase
-- Supabase 무료 프로젝트 정지: https://supabase.com/docs/guides/platform/free-project-pausing
-- Supabase 실시간 한도: https://supabase.com/docs/guides/realtime/limits
-- Supabase 추가 프로젝트 비용: https://supabase.com/docs/guides/platform/billing-faq
-- Supabase 백업: https://supabase.com/docs/guides/platform/backups
-- Supabase API 키: https://supabase.com/docs/guides/api/api-keys , 공지 https://github.com/orgs/supabase/discussions/29260 (2025-06-17 갱신)
-- Supabase 익명 로그인 한도: https://supabase.com/docs/guides/auth/rate-limits , https://supabase.com/docs/guides/auth/auth-anonymous
-- Supabase 금고(Vault): https://supabase.com/docs/guides/database/vault
-- Supabase 서울 리전: https://supabase.com/docs/guides/platform/regions
-- Vercel Hobby: https://vercel.com/docs/plans/hobby , https://vercel.com/docs/limits/fair-use-guidelines (2026-09-14)
-
-## 10. 아직 확인 못 한 것
-
-| 항목 | 어떻게 정리하나 |
+| 항목 | 비용 |
 |---|---|
-| 무료 플랜에서 익명 로그인 한도를 바꿀 수 있는지 | B-4에서 직접 확인한다 |
-| `alter database ... set app.player_salt`가 호스팅에서 되는지 | 금고 방식으로 돌아가므로 몰라도 된다 |
-| 익명 계정이 MAU에 세어지는지 | 공식 문서에 없다. 센다고 가정한다(무료 5만이라 여유 있음) |
-| publishable 키로 RPC 호출이 되는지(공식 문서의 직접 보증) | 앱 방식은 문서 규칙과 맞는다. D와 §7-5에서 실제로 시험한다 |
+| GitHub Pages | 0원 |
+| Cloudflare Workers + D1 | 0원 |
+| 학생 주소(기존 도메인 하위 주소) | 0원 |
+| (선택) 새 .com 도메인 | 연 약 $11 |
+| **합계** | **0원** |
+
+이용자가 크게 늘어도 대부분 그대로다. 한도에 다가가면 먼저 §7 P1(가볍게)로 줄인다. 그다음은 Cloudflare 유료(월 $5)나 §9의 대체 경로다.
+
+---
+
+## 9. 이런 일이 생기면 이렇게 바꾼다
+
+학생 주소와 서버 주소가 모두 자체 도메인이라, 아래 전환은 **앱 설정 한 줄이나 DNS 한 줄**로 끝난다.
+
+| 일 | 대응 |
+|---|---|
+| GitHub Pages 전송량 경고 | P1로 가볍게 한다. 그래도 넘으면 CloudFront 무료 마지막 칸(S3)으로 옮긴다(DNS 한 줄) |
+| GitHub Pages 정책 변경·장애 | CloudFront 무료(S3)나 `*.pages.dev`로 옮긴다 |
+| KT 학교에서 랭킹이 느리다는 말이 나옴 | 같은 서버 코드를 Pages Functions(`*.pages.dev`, 지금 서울 관측)로 옮겨 시험한다. 또는 CloudFront 마지막 칸 뒤에 둔다 |
+| Cloudflare 무료 축소 | 같은 서버 코드를 맥미니(Node + SQLite)로 옮긴다. 데이터는 D1에서 내보내 그대로 넣는다 |
+| 학교 망에서 주소 차단 | 허용 요청(§6 G). 그동안 게임은 이 기기 기록 모드로 돈다 |
+
+---
+
+## 10. 근거와 출처
+
+### 실측
+| 대상 | 결과 | 출처 |
+|---|---|---|
+| GitHub Pages(`octocat.github.io`, `pages.github.com`) | Fastly ICN, 연결 10~12ms | Claude 재측정 11/4, 이 맥 KT |
+| Cloudflare `workers.dev` | LAX, 연결 152ms, 첫 응답 0.89초 | Claude 재측정 11/4, 이 맥 KT |
+| GitHub Pages | Globalping 한국 프로브 KT·SKB·LG U+ 각 2건 모두 ICN 3~13ms | 서브에이전트 11/4 |
+| `*.workers.dev` | KT LAX 135~169ms, SKB·LG U+ HKG 39~60ms | 서브에이전트 11/4 |
+| `*.pages.dev` | 3사 ICN | 서브에이전트 11/4 |
+| Cloudflare 무료 | KT 166~306ms(해외), SKB·LG U+ 33~88ms | 운영자 실측 9/30 |
+| CloudFront·Fastly | ICN 2~8ms | 운영자 실측 9/30 |
+
+### 문서
+- GitHub Pages 한도: https://docs.github.com/en/pages/getting-started-with-github-pages/github-pages-limits
+- Cloudflare 한도·가격
+  - https://developers.cloudflare.com/workers/platform/limits/ (2026-10-29)
+  - https://developers.cloudflare.com/d1/platform/limits/ (2026-10-30)
+  - https://developers.cloudflare.com/workers/static-assets/billing-and-limitations/ (2026-11-03)
+- Workers는 요청이 닿은 거점에서 실행된다: https://developers.cloudflare.com/workers/reference/how-workers-works/ (2026-09-18)
+- 한국 경유 보고(커뮤니티)
+  - https://community.cloudflare.com/t/korean-traffic-to-heartopia-life-me-routed-to-lax-instead-of-icn/943456 (2026-07~11, 직원 답 없음)
+  - https://community.cloudflare.com/t/custom-domain-routes-to-lax-while-pages-dev-correctly-routes-to-icn-for-korean-us/927603 (2026-05)
+- CloudFront 무료 요금제(계정당 3개, 요청 100만·전송 100GB): https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/flat-rate-pricing-plan.html
+- Supabase
+  - 정지: https://supabase.com/docs/guides/platform/free-project-pausing , https://supabase.com/kb/faqs/platform/free-project-pausing (2026-10-27)
+  - 익명 로그인 한도: https://supabase.com/docs/guides/auth/rate-limits
+- Vercel 한국 차단 사례
+  - https://namu.wiki/w/Vercel (2024-05, 2차 출처)
+  - https://velog.io/@spoyocode/8.-어느날-통신사가-내-사이트-접속을-막아버렸다 (2024-10)
+- Firebase 학교망 차단 사례: https://github.com/progh2/aipy2/issues/144 (2026-10-12)
+- 교육청 게임 차단: 경인일보 2024-12-25 https://www.kyeongin.com/article/1723972
+- 부산교육청 오탐 해지 공지: https://home.pen.go.kr/busanedu/na/ntt/selectNttList.do?mi=11150&bbsId=3155 (2026-01-21)
+- AWS Free Tier 개편(2025-07-15): https://aws.amazon.com/blogs/aws/aws-free-tier-update-new-customers-can-get-started-and-explore-aws-with-up-to-200-in-credits
+
+## 11. 아직 확인 못 한 것
+
+| 항목 | 정리 방법 |
+|---|---|
+| 우리 학교 망에서 두 주소가 열리는지 | §6 G에서 직접 확인한다 |
+| `*.pages.dev`가 계속 서울로 갈지 | 보장이 없다. 예비 경로로만 둔다 |
+| 측정점이 학교 망이 아님 | 측정은 가정·데이터센터 회선이다. 학교 망은 G에서 본다 |
+| 도메인 이름 키워드·신생 도메인 차단 | 사례를 찾지 못했다. 비용 없는 예방만 한다 |
+| GitHub Pages 100GB를 넘었을 때의 실제 조치 | "강제 아님"이라고만 적혀 있다. P1로 미리 줄인다 |
