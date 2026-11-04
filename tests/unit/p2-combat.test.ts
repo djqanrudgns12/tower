@@ -4,7 +4,8 @@ import type { GameContext } from '../../src/domain/context';
 import { chainDamage, effectiveResistBP, mitigated } from '../../src/domain/combat';
 import type { DomainEvent } from '../../src/domain/events';
 import { applyCommand } from '../../src/domain/run';
-import { auraDamageBonusBP } from '../../src/domain/towers';
+import { auraDamageBonusBP, towerStats } from '../../src/domain/towers';
+import { BALANCE } from '../../src/content';
 import type { Enemy, RunState } from '../../src/domain/types';
 import { finishPrep, newRun, ok, ticks } from './helpers';
 import { enemy } from './review-core/fixtures';
@@ -45,7 +46,8 @@ describe('번개 연쇄(PRD §20.3)', () => {
     const ev = ticks(ctx, s, 1);
     const strike = ev.find(e => e.type === 'strike');
     expect(strike?.type === 'strike' && strike.targets.map(t => t.enemyId)).toEqual([102, 101, 100]);
-    expect(hits(ev)).toEqual([[102, 12000], [101, 8400], [100, 5880]]);
+    // R4 B2: 번개 피해 12 → 14.
+    expect(hits(ev)).toEqual([[102, 14000], [101, 9800], [100, 6860]]);
   });
 
   it('반경 안에 아직 맞지 않은 적이 없으면 거기서 끝나고, 같은 적을 두 번 맞히지 않는다', () => {
@@ -85,7 +87,7 @@ describe('화염 부채꼴과 화상(PRD §20.2~20.3)', () => {
 
   it('재적중은 다음 피해 시각을 미루지 않고, 여러 출처 가운데 가장 강한 화상 하나만 준다', () => {
     const { ctx, s } = arena([['flame', 8, 2], ['flame', 8, 0]]);
-    s.towers[1]!.level = 3; // 레벨 배율 1.4(balance 후보 levels) → 화상 총피해 5600
+    s.towers[1]!.level = 3; // 레벨 배율 1.64(balance levels, R4 B2) → 화상 총피해 6560
     place(s, [{ progress: 8000 }]);
     s.towers[1]!.nextAttackTick = 10_000_000;
     const applied = s.tick + 1;
@@ -94,7 +96,8 @@ describe('화염 부채꼴과 화상(PRD §20.2~20.3)', () => {
     s.towers[1]!.nextAttackTick = s.tick + 5; // 5틱 뒤 강한 출처가 맞힌다
     const burns: Array<[number, number]> = [];
     for (let i = 0; i < 20; i++) for (const e of ticks(ctx, s, 1)) if (e.type === 'burn') burns.push([s.tick - applied, e.damage]);
-    expect(burns[0]).toEqual([15, 1400]);
+    expect(burns[0]).toEqual([15, towerStats(BALANCE, 'flame', 3, 'base').burnTotal / 4]);
+    expect(burns[0]![1]).toBe(1640);
   });
 });
 
@@ -123,17 +126,17 @@ describe('물리 저항 무시·근접·수호기사·깃발(PRD §7.1, §20.2)'
     const near = arena([['archer', 8, 2], ['banner', 8, 0]]);
     expect(near.s.towers.find(t => t.type === 'banner')!.nextAttackTick).toBeNull();
     place(near.s, [{ progress: 8000 }]);
-    expect(firstHit(near.ctx, near.s)).toBe(8800);
+    expect(firstHit(near.ctx, near.s)).toBe(9440); // 깃발 Lv1 +18%(R4 B2)
 
     const far = arena([['archer', 8, 2], ['banner', 10, 4]]);
     place(far.s, [{ progress: 8000 }]);
     expect(firstHit(far.ctx, far.s)).toBe(8000);
 
-    // (0,2) 칸은 (0,0)·(0,4) 두 깃발 자리와 정확히 2칸 떨어져 있다. Lv1 10%와 Lv2 12% 가운데 12%만 준다.
+    // (0,2) 칸은 (0,0)·(0,4) 두 깃발 자리와 정확히 2칸 떨어져 있다. Lv1 18%와 Lv2 20% 가운데 20%만 준다.
     const two = arena([['archer', 0, 2], ['banner', 0, 0], ['banner', 0, 4]]);
     two.s.towers.find(t => t.slotId === slotAt(two.ctx, 0, 4))!.level = 2;
     place(two.s, [{ progress: 1000 }]);
-    expect(firstHit(two.ctx, two.s)).toBe(8960);
+    expect(firstHit(two.ctx, two.s)).toBe(9600);
     const banner = two.s.towers.find(t => t.type === 'banner')!;
     expect(auraDamageBonusBP(two.ctx.balance, two.s.towers, banner)).toBe(0);
   });
@@ -148,44 +151,52 @@ function branchTo(s: RunState, type: TowerId, form: 'A' | 'B') {
 /** 도착하는 피해를 모두 모은다. */
 const allHits = (ctx: GameContext, s: RunState, n = 60) => { const out: number[][] = []; for (let i = 0; i < n; i++) out.push(...hits(ticks(ctx, s, 1))); return out; };
 
-describe('P2 1차형(PRD §7.3, §20.3, progression.md §1) — Lv4 레벨 배율 1.8 위에 형태 한 번', () => {
-  it('석궁 A 관통: 첫 대상 뒤 일직선 적에게 60%로 따로 날아간다 / B 거대 사냥: 정예·대장 ×1.5', () => {
+/** Lv4 형태의 직접 피해(레벨·형태 배율 반영, 계약에서 읽는다)와 BP 곱(내림). */
+const d4 = (type: TowerId, form: 'A' | 'B') => towerStats(BALANCE, type, 4, form).damage;
+const pct = (x: number, bp: number) => Math.floor((x * bp) / 10000);
+
+describe('P2 1차형(PRD §7.3, §20.3, progression.md §1) — Lv4 레벨 배율(계약, R4 B2 2.35) 위에 형태 한 번', () => {
+  it('석궁 A 관통: 첫 대상 뒤 일직선 적에게 75%로 따로 날아간다 / B 거대 사냥: 정예·대장 ×1.5', () => {
     const a = arena([['crossbow', 10, 4]]);
     branchTo(a.s, 'crossbow', 'A');
     // 타워 (10.5, 4.5)칸 → 3행 (10.5, 3.5)칸이 첫 대상, 그 뒤 1행 (10.5, 1.5)칸.
     place(a.s, [{ progress: 16000 }, { progress: 10000 }]);
-    expect(allHits(a.ctx, a.s).sort()).toEqual([[100, 43200], [101, 25920]]); // 24000 × 1.8, 그 60%
+    expect(d4('crossbow', 'A')).toBe(61687); // 25000 × 2.35 × 1.05(A, R4 B2)
+    expect(allHits(a.ctx, a.s).sort()).toEqual([[100, d4('crossbow', 'A')], [101, pct(d4('crossbow', 'A'), 7500)]]); // 그 75%
 
     const b = arena([['crossbow', 8, 2]]);
     branchTo(b.s, 'crossbow', 'B');
     place(b.s, [{ progress: 8000, kind: 'boss' }]);
-    expect(firstHit(b.ctx, b.s)).toBe(64800); // 43200 × 1.5
+    expect(firstHit(b.ctx, b.s)).toBe(pct(pct(d4('crossbow', 'B'), 15000), 13000)); // × 1.5(정예·대장) × 1.3(상성: 대장에 강함)
   });
 
   it('마법 A 집중 ×1.4 / B 파동: 고정 표적 좌표 반경 0.65칸, 최대 3대상에 각각 85%', () => {
     const a = arena([['mage', 8, 2]]);
     branchTo(a.s, 'mage', 'A');
     place(a.s, [{ progress: 8000 }]);
-    // 마법 피해 16 → Lv4 28800 × 집중 1.4 = 40320.
-    expect(firstHit(a.ctx, a.s)).toBe(40320);
+    // 마법 피해 16 → Lv4 37600 × 집중 1.4 = 52640.
+    expect(firstHit(a.ctx, a.s)).toBe(52640);
+    expect(d4('mage', 'A')).toBe(52640);
 
     const b = arena([['mage', 8, 2]]);
     branchTo(b.s, 'mage', 'B');
     place(b.s, [{ progress: 9500 }, { progress: 9100 }, { progress: 8900 }, { progress: 8700 }]);
-    expect(allHits(b.ctx, b.s, 40)).toEqual([[100, 24480], [101, 24480], [102, 24480]]); // 28800 × 0.85
+    expect(allHits(b.ctx, b.s, 40)).toEqual([100, 101, 102].map(id => [id, d4('mage', 'B')])); // 37600 × 0.85
+    expect(d4('mage', 'B')).toBe(31960);
   });
 
   it('번개 A 연쇄: 최대 5대상·65%씩 / B 충격: 2대상·80%, 첫 대상 0.3초(9틱) 기절', () => {
     const a = arena([['lightning', 8, 2]]);
     branchTo(a.s, 'lightning', 'A');
     place(a.s, [{ progress: 9500 }, { progress: 8500 }, { progress: 7500 }, { progress: 6500 }, { progress: 5500 }]);
-    expect(hits(ticks(a.ctx, a.s, 1))).toEqual([[100, 21600], [101, 14040], [102, 9126], [103, 5931], [104, 3855]]); // 12000 × 1.8 × 0.65^k 내림
+    expect(hits(ticks(a.ctx, a.s, 1))).toEqual([0, 1, 2, 3, 4].map(k => [100 + k, chainDamage(d4('lightning', 'A'), 6500, k)])); // 14000 × 2.35 × 0.65^k 내림
+    expect(d4('lightning', 'A')).toBe(32900);
 
     const b = arena([['lightning', 8, 2]]);
     branchTo(b.s, 'lightning', 'B');
     place(b.s, [{ progress: 9500, stunUntilTick: 0 }, { progress: 8500 }]);
     const at = b.s.tick + 1;
-    expect(hits(ticks(b.ctx, b.s, 1))).toEqual([[100, 21600], [101, 17280]]);
+    expect(hits(ticks(b.ctx, b.s, 1))).toEqual([[100, d4('lightning', 'B')], [101, pct(d4('lightning', 'B'), 8000)]]);
     expect(b.s.enemies[0]!.stunUntilTick).toBe(at + 9);
   });
 
@@ -195,15 +206,15 @@ describe('P2 1차형(PRD §7.3, §20.3, progression.md §1) — Lv4 레벨 배�
     expect(hits(ticks(a.ctx, a.s, 3))).toEqual([]);
     branchTo(a.s, 'flame', 'A');
     a.s.towers[0]!.nextAttackTick = a.s.tick + 1;
-    expect(hits(ticks(a.ctx, a.s, 1))).toEqual([[100, 14400]]); // 8000 × 1.8
+    expect(hits(ticks(a.ctx, a.s, 1))).toEqual([[100, 18800]]); // 8000 × 2.35
 
     const b = arena([['flame', 8, 2]]);
     branchTo(b.s, 'flame', 'B');
     place(b.s, [{ progress: 8000 }]);
-    expect(hits(ticks(b.ctx, b.s, 1))).toEqual([[100, 12960]]); // 14400 × 0.9
+    expect(hits(ticks(b.ctx, b.s, 1))).toEqual([[100, 16920]]); // 18800 × 0.9
     b.s.towers[0]!.nextAttackTick = 10_000_000;
     const burns = ticks(b.ctx, b.s, 70).flatMap(e => (e.type === 'burn' ? [e.damage] : []));
-    expect(burns).toEqual([3600, 3600, 3600, 3600]); // 4000 × 1.8 × 2 = 14400을 넷으로
+    expect(burns).toEqual([4700, 4700, 4700, 4700]); // 4000 × 2.35 × 2 = 18800을 넷으로
   });
 
   it('창병 A 긴 창: 첫 대상 방향 폭 0.35칸 선분에서 2대상 / B 파쇄: ×1.2, 물리 저항 50% 무시', () => {
@@ -211,31 +222,31 @@ describe('P2 1차형(PRD §7.3, §20.3, progression.md §1) — Lv4 레벨 배�
     branchTo(a.s, 'spear', 'A');
     // 첫 대상 (8.6, 1.5)칸, 같은 선분 안 (8.5, 1.5)칸, 선분 밖 (8.0, 1.5)칸.
     place(a.s, [{ progress: 8100 }, { progress: 8000 }, { progress: 7500 }]);
-    expect(hits(ticks(a.ctx, a.s, 1))).toEqual([[100, 12600], [101, 12600]]); // 창병 피해 7 → Lv4 12600
+    expect(hits(ticks(a.ctx, a.s, 1))).toEqual([[100, 16450], [101, 16450]]); // 창병 피해 7 → Lv4 16450
 
     const b = arena([['spear', 8, 2]]);
     branchTo(b.s, 'spear', 'B');
     place(b.s, [{ progress: 8000, physicalResistBP: 3500 }]);
-    expect(hits(ticks(b.ctx, b.s, 1))).toEqual([[100, 12474]]); // 12600 × 1.2 = 15120, 저항 3500의 절반 → × 0.825
+    expect(hits(ticks(b.ctx, b.s, 1))).toEqual([[100, 16285]]); // 16450 × 1.2 = 19740, 저항 3500의 절반 → × 0.825(보병이라 상성 배율 없음)
   });
 
-  it('수호기사 A 결투: 정예·대장 ×1.6 / B 수호 일격: 첫 대상 중심 0.8칸, 거리순 최대 3대상에 각각 80%', () => {
+  it('수호기사 A 결투: 정예·대장 ×2.0 / B 수호 일격: 첫 대상 중심 0.8칸, 거리순 최대 3대상에 각각 80%', () => {
     const a = arena([['guardian', 8, 2]]);
     branchTo(a.s, 'guardian', 'A');
     place(a.s, [{ progress: 8000, elite: 'swift' }]);
-    expect(hits(ticks(a.ctx, a.s, 1))).toEqual([[100, 63360]]); // 22000 × 1.8 × 1.6
+    expect(hits(ticks(a.ctx, a.s, 1))).toEqual([[100, 183300]]); // 30000 × 2.35 × 2.0(결투, R4 B2) × 1.3(상성: 정예에 강함)
 
     const b = arena([['guardian', 8, 2]]);
     branchTo(b.s, 'guardian', 'B');
     place(b.s, [{ progress: 8900 }, { progress: 8500 }, { progress: 8200 }, { progress: 8000 }]);
-    expect(hits(ticks(b.ctx, b.s, 1))).toEqual([[100, 31680], [101, 31680], [102, 31680]]); // 39600 × 0.8
+    expect(hits(ticks(b.ctx, b.s, 1))).toEqual([[100, 56400], [101, 56400], [102, 56400]]); // 70500 × 0.8
   });
 
-  it('깃발 A 용기: Lv4 피해 +16% / B 신속: 피해 보너스 없이 공격 속도 +19%(궁수 30틱 → 26틱)', () => {
+  it('깃발 A 용기: Lv4 피해 +22% / B 신속: 피해 보너스 없이 공격 속도 +19%(궁수 30틱 → 26틱)', () => {
     const a = arena([['archer', 8, 2], ['banner', 8, 0]]);
     branchTo(a.s, 'banner', 'A');
     place(a.s, [{ progress: 8000 }]);
-    expect(firstHit(a.ctx, a.s)).toBe(9280); // 8000 × 1.16
+    expect(firstHit(a.ctx, a.s)).toBe(9760); // 8000 × 1.22(R4 B2)
 
     const b = arena([['archer', 8, 2], ['banner', 8, 0]]);
     branchTo(b.s, 'banner', 'B');

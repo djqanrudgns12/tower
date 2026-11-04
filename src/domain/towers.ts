@@ -1,7 +1,7 @@
-import { EFFECT_KEYS, type Balance, type BranchId, type FormConfig, type FormId, type TowerConfig, type TowerId } from '../contracts/balance';
+import { EFFECT_KEYS, TOWER_IDS, type Balance, type BranchId, type FoeTag, type FormConfig, type FormId, type TowerConfig, type TowerId } from '../contracts/balance';
 import { dist2 } from './geometry';
 import { bpFloor, ceilDiv, msToTicks, mulDivFloor, round5Bp } from './num';
-import type { Tower } from './types';
+import type { Enemy, Tower } from './types';
 
 export type { FormId } from '../contracts/balance';
 
@@ -176,6 +176,38 @@ function coneOf(type: TowerId, degrees: number | undefined): boolean {
   if (degrees !== 90) throw new Error(`${type}: 부채꼴은 90도만 지원한다(${degrees})`);
   return true;
 }
+
+/** 타워·형태의 상성(prd-r4 §7.2 D): 잘 잡는 적·약한 적 표지. 화면 아이콘과 피해 배율이 같은 목록을 쓴다. */
+export function matchupOf(b: Balance, type: TowerId, form: FormId): { strongVs: readonly FoeTag[]; weakVs: readonly FoeTag[] } {
+  const fx = effectsFor(b, type, form);
+  return { strongVs: fx.strongVs ?? [], weakVs: fx.weakVs ?? [] };
+}
+
+/** 적 하나의 상성 표지: 역할(분열 조각은 분열), 정예면 elite. 종족 특성(clay·burrow)은 B3에서 더한다. */
+export function foeTags(e: Pick<Enemy, 'kind' | 'elite'>): FoeTag[] {
+  const role: FoeTag = e.kind === 'splitling' ? 'splitter' : e.kind;
+  return e.elite ? [role, 'elite'] : [role];
+}
+
+/**
+ * 직접 타격의 상성 배율(BP): 적의 표지가 strongVs에 있으면 matchup.strongBP, weakVs에 있으면 matchup.weakBP를 표지마다 한 번씩 곱한다(내림).
+ * matchup이 없거나 맞는 표지가 없으면 10000.
+ */
+export function matchupBP(b: Balance, type: TowerId, form: FormId, e: Pick<Enemy, 'kind' | 'elite'>): number {
+  const rule = b.matchup;
+  if (!rule) return 10000;
+  const { strongVs, weakVs } = matchupOf(b, type, form);
+  if (strongVs.length === 0 && weakVs.length === 0) return 10000;
+  let v = 10000;
+  for (const tag of foeTags(e)) {
+    if (strongVs.includes(tag)) v = mulDivFloor(v, rule.strongBP, 10000, 'matchup');
+    if (weakVs.includes(tag)) v = mulDivFloor(v, rule.weakBP, 10000, 'matchup');
+  }
+  return v;
+}
+
+/** 기본형 strongVs에 이 표지를 적은 타워(TOWER_IDS 순서). 징집 대응 보장이 쓴다. */
+export const countersOf = (b: Balance, tag: FoeTag): TowerId[] => TOWER_IDS.filter(t => matchupOf(b, t, 'base').strongVs.includes(tag));
 
 /** 직접 공격하는 타워인가(깃발은 공격하지 않는다). */
 export const attacks = (b: Balance, type: TowerId) => b.towers[type].damageType !== 'none';

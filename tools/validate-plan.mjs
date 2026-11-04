@@ -202,7 +202,8 @@ run('밸런스 계약과 PRD 타워표(§7.1)·적표(§8.1) 일치', () => {
 });
 run('밸런스 계약과 PRD 생성식(§8.2) 일치', () => {
   const text = section('### 8.2', '### 8.3'); const w = balance.waves, s = w.spawnIntervalMs;
-  assert(text.includes(`24 * ${(w.hpGrowthPercent / 100).toFixed(2)}^(w - 1)`)); assert(text.includes(`ceil(이전 값 ×${w.hpGrowthPercent}/100)`));
+  assert(text.includes(`${w.baseHpMilli / 1000} * ${(w.hpGrowthPercent / 100).toFixed(2)}^(w - 1)`)); assert(text.includes(`ceil(이전 값 ×${w.hpGrowthPercent}/100)`));
+  assert(text.includes(`1웨이브 기준 ${w.baseHpMilli.toLocaleString('en-US')}`), '§8.2 1웨이브 기준 HP');
   assert(text.includes(`w=1: ${s.overrides[1]}, w=2: ${s.overrides[2]}, w=3: ${s.overrides[3]}, w>=4: max(${s.min}, ${s.base} - ${-s.perWave} * (w - 1))`));
   assert(text.includes(`min(${w.count.max}, ${w.count.base} + ${w.count.step} * floor((w - 1) / ${w.count.stepEveryWaves}))`));
   for (const row of section('### 17.2', '### 17.3').split('\n').filter(line => line.startsWith('| A33 |'))) {

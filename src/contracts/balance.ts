@@ -23,6 +23,11 @@ export const TOWER_IDS = [
   'archer', 'crossbow', 'cannon', 'mage', 'frost', 'lightning', 'flame', 'spear', 'guardian', 'banner',
   'sling', 'ballista', 'falcon', 'mortar', 'hwacha', 'roller', 'alchemist', 'wind', 'trap', 'bell',
 ] as const;
+/**
+ * 상성 표지(prd-r4 §7.2 D): 타워의 strongVs·weakVs에 적는 적의 역할·특성. 역할 8종(분열 조각은 분열로 본다)·대장·정예와
+ * 종족 특성(B3: clay 흙 보호막, burrow 땅굴). 화면은 이 표지로 "잘 잡는 적·약한 적" 아이콘을 만든다(docs/balance/r4-b2.md).
+ */
+export const FOE_TAGS = ['walker', 'runner', 'brute', 'shell', 'wisp', 'swarm', 'flyer', 'splitter', 'boss', 'elite', 'clay', 'burrow'] as const;
 /** 1차형(Lv4 진화). 화면의 길 표식(동그라미·마름모)이 이 둘을 쓴다. */
 export const BRANCH_IDS = ['A', 'B'] as const;
 /** 타워 형태: 기본형 → 1차형(A·B) → 2차형(A1·A2·B1·B2). docs/renewal/progression.md §1. */
@@ -39,6 +44,7 @@ export type EliteId = (typeof ELITE_IDS)[number];
 export type TowerId = (typeof TOWER_IDS)[number];
 export type BranchId = (typeof BRANCH_IDS)[number];
 export type FormId = (typeof FORM_IDS)[number];
+export type FoeTag = (typeof FOE_TAGS)[number];
 
 const tiers = z.object({ regular: nonNeg, elite: nonNeg, boss: nonNeg });
 
@@ -81,7 +87,15 @@ const areaHit = z.object({ radiusMilli: nonNeg, maxTargets: int.min(1), damageBP
  * 공격 효과(towers.md §2·§4). 타워 기본값에도, 형태에도 둘 수 있고 형태 값이 이긴다(2차형은 1차형을 물려받는다).
  * 단위는 ms·milli·BP다. 엔진은 domain/combat.ts가 한 곳에서 해석한다.
  */
+const foeTags = z.array(z.enum(FOE_TAGS));
+
 const effects = {
+  /**
+   * 상성(prd-r4 §7.2 D): 잘 잡는 적·약한 적. 직접 타격 피해에 matchup.strongBP·weakBP를 곱한다(표지마다 한 번). 형태에 적으면 그 형태부터 바뀐다
+   * (2차형은 1차형 값을 물려받는다). 대공 불가처럼 구조로 정해지는 약점도 화면에 보이도록 적는다(곱셈은 맞힐 수 있을 때만 의미가 있다).
+   */
+  strongVs: foeTags.optional(),
+  weakVs: foeTags.optional(),
   /** 대공(§4-1): canHitFlyer가 없으면 대공 가능. preferFlyer는 사거리 안 비행 적을 먼저, flyerDamageBP는 비행 적 상황 배율. */
   canHitFlyer: z.boolean().optional(),
   preferFlyer: z.boolean().optional(),
@@ -347,6 +361,8 @@ export const balanceSchema = z.object({
    * streakAcrossWaves가 true면 전투 연속 정답 수가 웨이브를 넘어 이어진다(버닝 자체는 웨이브가 끝나면 꺼진다). 전투 문항(마무리 포함)의
    * 오답·'모르겠어요'만 끊고, 준비 문항은 세지도 끊지도 않는다. 웨이브당 전투 문항이 2~3개라 웨이브마다 끊으면 6연속(2단)이 나올 수 없다.
    */
+  /** 상성 배율(prd-r4 §7.2 D): strongVs 표지 적에게 strongBP, weakVs 표지 적에게 weakBP를 직접 타격 피해에 곱한다. 없으면 상성 배율 없음. */
+  matchup: z.object({ strongBP: bp, weakBP: bp }).optional(),
   burning: z.object({
     streak: int.min(1), durationMs: nonNeg, attackSpeedBP: bp,
     tier2: z.object({ streak: int.min(1), attackSpeedBP: bp }).optional(),
@@ -373,10 +389,9 @@ export const balanceSchema = z.object({
   draft: z.object({
     startTowers: z.array(z.enum(TOWER_IDS)).min(1), afterWaves: z.array(int.min(1)), offerCount: int.min(1), maxOwned: int.min(1),
     /**
-     * 대응 보장(prd-r4 §7.2 C): 지킨 웨이브 뒤 counterLookahead웨이브 안에 처음 나오는 역할의 강점 타워(counters[역할])가 장착함에 없으면
-     * 후보 하나를 그 강점 타워로 낸다. B2의 타워별 strongVs가 들어오기 전까지 쓰는 최소 대응표다.
+     * 대응 보장(prd-r4 §7.2 C): 지킨 웨이브 뒤 counterLookahead웨이브 안에 처음 나오는 역할을 기본형 strongVs에 적은 타워가 장착함에 없으면
+     * 후보 하나를 그 강점 타워로 낸다.
      */
-    counters: z.partialRecord(z.enum(REGULAR_KINDS), z.array(z.enum(TOWER_IDS)).min(1)).optional(),
     counterLookahead: nonNeg.optional(),
   }),
   factions: z.record(factionId, faction),

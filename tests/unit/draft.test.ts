@@ -3,6 +3,7 @@ import { balanceSchema, TOWER_IDS, type TowerId } from '../../src/contracts/bala
 import { BALANCE, PILOT_TOWERS } from '../../src/content';
 import type { GameContext } from '../../src/domain/context';
 import { draftOffer, draftPool, nextDraftWave, ownedTowers, uncoveredNewRole } from '../../src/domain/draft';
+import { countersOf } from '../../src/domain/towers';
 import type { DomainEvent } from '../../src/domain/events';
 import { applyCommand, createRun } from '../../src/domain/run';
 import type { RunState } from '../../src/domain/types';
@@ -119,17 +120,21 @@ describe('장착함과 징집', () => {
     expect(a.s.battle!.spawnList).toEqual(pilot.s.battle!.spawnList);
   });
 
-  it('대응 보장 대상: 3웨이브 안에 처음 나오는 역할 가운데 장착함에 강점 타워가 없는 첫 역할(prd-r4 §7.2 C)', () => {
+  it('대응 보장 대상: 3웨이브 안에 처음 나오는 역할 가운데 장착함에 강점 타워(기본형 strongVs)가 없는 첫 역할(prd-r4 §7.2 C·D)', () => {
     const start = BALANCE.draft.startTowers;
-    // 정원: W4 거구(창병·투석·약병·덫)는 시작 4종으로 못 막는다. W6 껍질은 마법탑이 막는다.
-    expect(uncoveredNewRole(BALANCE, 'garden_u', 3, start)).toEqual({ role: 'brute', wave: 4, towers: BALANCE.draft.counters!.brute });
+    // 강점 타워 목록은 타워 계약의 strongVs에서 온다(B1의 임시 draft.counters를 대체).
+    expect(countersOf(BALANCE, 'brute')).toEqual(['spear', 'sling', 'alchemist', 'trap']);
+    expect(countersOf(BALANCE, 'flyer')).toEqual(['ballista', 'falcon', 'wind']);
+    // 정원: W3 뒤 W4 거구는 시작 4종(궁수·포탑·서리·마법)으로 못 막는다. W6 껍질은 마법탑이 막는다.
+    expect(uncoveredNewRole(BALANCE, 'garden_u', 3, start)).toEqual({ role: 'brute', wave: 4, towers: countersOf(BALANCE, 'brute') });
     expect(uncoveredNewRole(BALANCE, 'garden_u', 3, [...start, 'sling'])).toBeNull();
-    // 정원 W6 뒤: W7 떼(포탑)·W8 비행(궁수)은 시작 4종이 막는다.
-    expect(uncoveredNewRole(BALANCE, 'garden_u', 6, start)).toBeNull();
-    // 궁궐 뜰: W4 껍질은 마법탑이 막고, W6 질주(창병·매사냥·덫)가 대상이다.
-    expect(uncoveredNewRole(BALANCE, 'courtyard', 3, start)).toMatchObject({ role: 'runner', wave: 6 });
-    // 이미 나온 역할은 대상이 아니다(정원 W3 질주는 W3에 나왔다).
-    expect(uncoveredNewRole(BALANCE, 'garden_u', 2, start)).toMatchObject({ role: 'runner', wave: 3 });
+    // 정원 W6 뒤: W7 떼는 포탑이 막고, W8 비행은 시작 4종에 강점 타워가 없다(궁수는 기준이라 강점이 없다).
+    expect(uncoveredNewRole(BALANCE, 'garden_u', 6, start)).toMatchObject({ role: 'flyer', wave: 8 });
+    expect(uncoveredNewRole(BALANCE, 'garden_u', 6, [...start, 'falcon'])).toBeNull();
+    // 궁궐 뜰: W4 껍질은 마법탑, W6 질주는 서리탑(감속)이 막는다.
+    expect(uncoveredNewRole(BALANCE, 'courtyard', 3, start)).toBeNull();
+    // 이미 나온 역할은 대상이 아니다. 정원 W3 질주는 서리탑이 막으므로 W2 뒤의 대상은 W4 거구다.
+    expect(uncoveredNewRole(BALANCE, 'garden_u', 2, start)).toMatchObject({ role: 'brute', wave: 4 });
     expect(uncoveredNewRole(BALANCE, 'garden_u', 12, start)).toBeNull();
   });
 
@@ -140,7 +145,7 @@ describe('장착함과 징집', () => {
       const on = allTowersRun(seed), plain = allTowersRun(seed, off);
       for (let w = 1; w <= 3; w++) { clearWave(on.ctx, on.s); clearWave(plain.ctx, plain.s); }
       const offers = on.s.draft!.offers, before = plain.s.draft!.offers;
-      expect(offers.some(t => BALANCE.draft.counters!.brute!.includes(t)), `seed ${seed}`).toBe(true);
+      expect(offers.some(t => countersOf(BALANCE, 'brute').includes(t)), `seed ${seed}`).toBe(true);
       expect(new Set(offers).size).toBe(3);
       expect(on.s.rng.draft).toBe(plain.s.rng.draft);
       // 이미 강점 타워가 있으면 그대로, 없으면 마지막 한 장만 바뀐다.

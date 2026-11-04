@@ -3,7 +3,7 @@ import { FORM_IDS, TOWER_IDS, type FormId, type TowerId } from '../../src/contra
 import { BALANCE } from '../../src/content';
 import type { GameContext } from '../../src/domain/context';
 import type { DomainEvent } from '../../src/domain/events';
-import { towerStats } from '../../src/domain/towers';
+import { matchupBP, towerStats } from '../../src/domain/towers';
 import type { Enemy, RunState, Tower } from '../../src/domain/types';
 import { finishPrep, newRun, ok, ticks } from './helpers';
 import { enemy } from './review-core/fixtures';
@@ -135,31 +135,36 @@ describe('밀치기(§4-5 바람)', () => {
 });
 
 describe('취약·저항 차감(§4-6)', () => {
-  it('종각 고리: 사거리 안 전방위 최대 5명(비행 포함)에 취약 12%, 다음 타격이 1.12배', () => {
+  it('종각 고리: 사거리 안 전방위 최대 5명(비행 포함)에 취약 20%(R4 B2), 다음 타격이 1.2배', () => {
     const { ctx, s } = arena([['bell', 8, 2], ['archer', 8, 0]]);
     stopOthers(s, only(s, 'bell'));
     place(s, [{ progress: 7000 }, { progress: 8000, kind: 'flyer', flying: true }, { progress: 9000 }]);
     const first = hits(ticks(ctx, s, 1));
     expect(first.map(h => h[0]).sort()).toEqual([100, 101, 102]);
-    expect(s.enemies.every(e => e.vulns[0]?.bp === 1200)).toBe(true);
+    expect(BALANCE.towers.bell.vulnBP).toBe(2000);
+    expect(s.enemies.every(e => e.vulns[0]?.bp === 2000)).toBe(true);
     only(s, 'bell').nextAttackTick = null;
     only(s, 'archer').nextAttackTick = s.tick + 1;
     let got: Array<[number, number]> = [];
     for (let i = 0; i < 30 && got.length === 0; i++) got = hits(ticks(ctx, s, 1));
-    expect(got[0]![1]).toBe(Math.floor((dmg('archer') * 11200) / 10000));
+    expect(got[0]![1]).toBe(Math.floor((dmg('archer') * 12000) / 10000));
   });
 
   it('창병 B1 갑옷 틈새: 물리 저항 35%를 25%p 깎아 다음 찌르기가 저항 10%로 들어간다', () => {
     const { ctx, s } = arena([['spear', 8, 2, 7, 'B1']]);
     place(s, [{ progress: 8000, kind: 'shell', physicalResistBP: 3500 }]);
     const st = towerStats(BALANCE, 'spear', 7, 'B1');
+    // 창병 B 계열은 껍질에 강하다(상성 ×1.3, R4 B2): 저항 계산 전에 곱한다.
+    const vs = matchupBP(BALANCE, 'spear', 'B1', { kind: 'shell', elite: null });
+    expect(vs).toBe(13000);
+    const hit = Math.floor((st.damage * vs) / 10000);
     const first = hits(ticks(ctx, s, 1))[0]![1];
     // 첫 찌르기: 저항 3500에 무시 50% → 1750.
-    expect(first).toBe(Math.floor((st.damage * (10000 - 1750)) / 10000));
+    expect(first).toBe(Math.floor((hit * (10000 - 1750)) / 10000));
     s.towers[0]!.nextAttackTick = s.tick + 1;
     const second = hits(ticks(ctx, s, 1))[0]![1];
     // 차감 뒤 1000에 무시 50% → 500.
-    expect(second).toBe(Math.floor((st.damage * (10000 - 500)) / 10000));
+    expect(second).toBe(Math.floor((hit * (10000 - 500)) / 10000));
   });
 
   it('취약 상한 35%: 여러 출처라도 가장 큰 값 하나, 상한까지', () => {
@@ -265,12 +270,13 @@ describe('형태별 고유 능력', () => {
     expect(s.gold - gold0).toBe(56 * ctx.difficulty.killGold.regular + 10);
   });
 
-  it('궁수 B2 급소 화살: 체력 40% 이하 적에게 1.5배, 서리 A2 고드름: 감속 중인 적에게 3배', () => {
+  it('궁수 B2 급소 화살: 체력 40% 이하 적에게 1.8배(R4 B2), 서리 A2 고드름: 감속 중인 적에게 3배', () => {
     const a = arena([['archer', 8, 2, 7, 'B2']]);
     place(a.s, [{ progress: 8000, hp: 800_000 }]);
     let got: Array<[number, number]> = [];
     for (let i = 0; i < 30 && got.length === 0; i++) got = hits(ticks(a.ctx, a.s, 1));
-    expect(got[0]![1]).toBe(Math.floor((towerStats(BALANCE, 'archer', 7, 'B2').damage * 15000) / 10000));
+    expect(BALANCE.forms.archer.B2.lowHpDamageBP).toBe(18000);
+    expect(got[0]![1]).toBe(Math.floor((towerStats(BALANCE, 'archer', 7, 'B2').damage * 18000) / 10000));
     const f = arena([['frost', 8, 2, 7, 'A2']]);
     place(f.s, [{ progress: 8000, slows: [{ source: 99, bp: 1000, untilTick: 10_000_000 }] }]);
     got = [];

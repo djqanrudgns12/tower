@@ -183,6 +183,8 @@ export interface Projectile {
   id: number;
   towerId: number;
   towerType: TowerId;
+  /** 쏜 순간의 형태(상성 strongVs·weakVs를 고른다, prd-r4 §7.2 D). 없으면(옛 상태) 기본형. */
+  towerForm?: FormId;
   fromX: number;
   fromY: number;
   /** 단일 대상이면 대상 ID, 범위 공격이면 null. */
@@ -222,7 +224,7 @@ export interface Projectile {
 export interface ZoneSpec { radius: number; periodTicks: number; pulses: number; durationTicks: number; count: number; spacing: number; progress: number }
 
 /** 장판·덫·굴림체·지연 폭발이 맞힐 때 쓰는 타격 스냅샷(놓은 순간의 레벨·형태·오라). 투사체와 같은 모양이다. */
-export type HazardStrike = Pick<Projectile, 'towerId' | 'towerType' | 'damage' | 'damageType' | 'slowBP' | 'slowTicks' | 'physicalResistIgnoreBP' | 'bonusBP' | 'eliteBossDamageBP' | 'canHitFlyer' | 'flyerDamageBP' | 'fx'>;
+export type HazardStrike = Pick<Projectile, 'towerId' | 'towerType' | 'towerForm' | 'damage' | 'damageType' | 'slowBP' | 'slowTicks' | 'physicalResistIgnoreBP' | 'bonusBP' | 'eliteBossDamageBP' | 'canHitFlyer' | 'flyerDamageBP' | 'fx'>;
 
 export type HazardKind = 'zone' | 'trap' | 'roller';
 

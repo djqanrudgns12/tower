@@ -4,6 +4,7 @@ import { BALANCE } from '../../src/content';
 import type { GameContext } from '../../src/domain/context';
 import type { DomainEvent } from '../../src/domain/events';
 import { trapSpot } from '../../src/domain/hazards';
+import { msToTicks } from '../../src/domain/num';
 import { towerStats } from '../../src/domain/towers';
 import type { Enemy, RunState } from '../../src/domain/types';
 import { finishPrep, newRun, ok, ticks } from './helpers';
@@ -12,6 +13,8 @@ import { enemy } from './review-core/fixtures';
 // 장판·덫·굴림체(towers.md §4-7 fieldHazards)와 처치 유발 판정 순서(§4-8).
 // 정원 맵: 1행 길은 진행도 p 적이 (p+500, 1500), 3행 길은 진행도 p(14000~24000)가 (12500-(p-14000), 3500). (8,2) 칸 중심은 (8500, 2500).
 const slotAt = (ctx: GameContext, x: number, y: number) => ctx.map.slots.find(s => s.x === x && s.y === y)!.id;
+/** 덫 재장전 틱(덫공방초소 공격 간격). */
+const TRAP_TICKS = msToTicks(BALANCE.towers.trap.intervalMs);
 
 function arena(towers: Array<[TowerId, number, number, number?, FormId?]>) {
   const { ctx, s } = newRun('Normal', 7);
@@ -111,16 +114,17 @@ function log1(ctx: GameContext, s: RunState): number {
 }
 
 describe('바닥 덫(§4-7 trap, 덫공방초소)', () => {
-  it('적이 없어도 54틱마다 사거리 안 성문 쪽 빈자리에 덫을 놓고(서로 0.7칸 이상), 3개면 기다린다', () => {
+  it('적이 없어도 재장전(2.2초 = 66틱, R4 B2)마다 사거리 안 성문 쪽 빈자리에 덫을 놓고(서로 0.7칸 이상), 3개면 기다린다', () => {
     const { ctx, s } = arena([['trap', 8, 2]]);
     place(s, [{ progress: 100 }]); // 사거리 밖에서 웨이브만 붙잡는다.
-    const log = record(ctx, s, 54 * 4 + 5);
+    const log = record(ctx, s, TRAP_TICKS * 4 + 5);
     const placed = of(flat(log), 'hazardPlaced');
     // (8,2) 둘레 2칸: 1행 진행도 6268~9732, 3행 진행도 16268~19732. 성문 쪽(3행 끝)부터 0.7칸 간격.
     expect(placed.map(p => p.progress)).toEqual([19732, 19032, 18332]);
     expect(placed.map(p => p.expiresTick)).toEqual([null, null, null]);
     const at = log.filter(([, ev]) => ev.some(e => e.type === 'hazardPlaced')).map(([t]) => t);
-    expect(at.slice(1).map((t, i) => t - at[i]!)).toEqual([54, 54]);
+    expect(TRAP_TICKS).toBe(66);
+    expect(at.slice(1).map((t, i) => t - at[i]!)).toEqual([TRAP_TICKS, TRAP_TICKS]);
     expect(s.towers[0]!.undoUntilTick).toBeNull();
   });
 
@@ -161,7 +165,7 @@ describe('바닥 덫(§4-7 trap, 덫공방초소)', () => {
   it('웨이브가 끝나면 덫은 타워마다 성문 쪽 2개만 넘어가고 나머지와 장판은 사라진다. 다음 웨이브에서 그대로 발동한다', () => {
     const { ctx, s } = arena([['trap', 8, 2]]);
     place(s, [{ progress: 100 }]);
-    ticks(ctx, s, 54 * 2 + 2);
+    ticks(ctx, s, TRAP_TICKS * 2 + 2);
     expect(s.hazards.map(h => h.kind === 'trap' && h.progress)).toEqual([19732, 19032, 18332]);
     s.enemies = [];
     const ev = ticks(ctx, s, 1);

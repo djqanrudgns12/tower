@@ -58,18 +58,19 @@ describe('정수 산술', () => {
 
 describe('웨이브 생성(PRD §8.2~8.3)', () => {
   it('적 수와 HP 점화식', () => {
-    // R4 B1: 적 수는 3웨이브마다 +1(옛 +2). HP 점화식(115%, 사용자 확정)은 그대로다.
+    // R4 B1: 적 수는 3웨이브마다 +1(옛 +2). HP 점화식(115%, 사용자 확정)은 그대로이고, R4 B2에서 1웨이브 기준을 24000 → 44000으로 올렸다.
     expect([1, 3, 4, 7, 10, 61, 200].map(w => waveCount(BALANCE, w))).toEqual([24, 24, 25, 26, 27, 44, 64]);
-    expect([1, 2, 3].map(w => hpBaseMilli(BALANCE, w))).toEqual([24000, 27600, 31740]);
+    expect([1, 2, 3].map(w => hpBaseMilli(BALANCE, w))).toEqual([44000, 50600, 58190]);
   });
-  it('줄인 적 수만큼 개체 HP로 옮기고(총 HP 유지) 1~5웨이브는 초반 완충을 곱한다(prd-r4 §7.2 A)', () => {
+  it('줄인 적 수만큼 개체 HP로 옮기고(총 HP 유지) 1~13웨이브는 초반 완충을 곱한다(prd-r4 §7.2 A, R4 B2)', () => {
     // 총 HP 기준 수는 옛 증가 폭(3웨이브마다 +2): 4웨이브 26, 61웨이브 64, 1웨이브는 언제나 편성 수와 같다.
     expect([1, 4, 7, 61, 200].map(w => hpReferenceCount(BALANCE, w))).toEqual([24, 26, 28, 64, 64]);
-    expect([1, 2, 3, 4, 5, 6, 7].map(w => earlyHpBP(BALANCE, w))).toEqual([8000, 8400, 8800, 9200, 9600, 10000, 10000]);
-    // 1웨이브: 24000 × 0.80. 4웨이브: ceil(36501 × 26 / 25) = 37962 → ceil(37962 × 0.92) = 34926. 6웨이브: ceil(48274 × 26 / 25) = 50205(완충 없음).
-    expect([1, 4, 6].map(w => waveHpBaseMilli(BALANCE, w))).toEqual([19200, 34926, 50205]);
+    // 완충은 1~6웨이브의 실제 HP를 B1(기준 24000 × 0.80~0.96)과 같게 두고, 7~13웨이브에 걸쳐 1.00까지 오른다.
+    expect([1, 2, 6, 7, 13, 14].map(w => earlyHpBP(BALANCE, w))).toEqual([4364, 4582, 5455, 5884, 9269, 10000]);
+    // 1웨이브: ceil(44000 × 0.4364) = 19202(B1 19200). 4웨이브: ceil(66919 × 26 / 25) = 69596 → ceil(× 0.5018) = 34924(B1 34926).
+    expect([1, 4, 6, 14].map(w => waveHpBaseMilli(BALANCE, w))).toEqual([19202, 34924, 50209, 309410]);
     // 총 HP(기준 HP × 적 수)는 완충이 끝난 뒤 옛 편성(기준 수 × 점화식) 이상이고, 올림 한 번(적 수 미만 milli) 차이 안이다.
-    for (const w of [6, 10, 16, 31, 60]) {
+    for (const w of [14, 16, 31, 60]) {
       const total = waveHpBaseMilli(BALANCE, w) * waveCount(BALANCE, w), old = hpBaseMilli(BALANCE, w) * hpReferenceCount(BALANCE, w);
       expect(total).toBeGreaterThanOrEqual(old);
       expect(total - old).toBeLessThan(waveCount(BALANCE, w));
@@ -79,8 +80,8 @@ describe('웨이브 생성(PRD §8.2~8.3)', () => {
     const { Easy, Normal, Hard, Crazy } = BALANCE.difficulties;
     expect([1, 2, 6, 30].map(w => difficultyHpBP(Normal, w))).toEqual([10000, 10000, 10000, 10000]);
     expect([1, 6].map(w => difficultyHpBP(Easy, w))).toEqual([Easy.enemyHpBP, Easy.enemyHpBP]);
-    expect([1, 2, 3, 4, 5, 6, 7].map(w => difficultyHpBP(Hard, w))).toEqual([10000, 11300, 12600, 13900, 15200, 16500, 16500]);
-    expect([1, 2, 6].map(w => difficultyHpBP(Crazy, w))).toEqual([10000, 13000, 25000]);
+    expect([1, 2, 3, 4, 5, 6, 7].map(w => difficultyHpBP(Hard, w))).toEqual([10000, 11800, 13600, 15400, 17200, 19000, 19000]);
+    expect([1, 2, 6].map(w => difficultyHpBP(Crazy, w))).toEqual([10000, 15200, 36000]);
   });
   it('보스는 총 수 안에서 70% 지점, 정예는 6웨이브부터', () => {
     const w5 = composeWave(BALANCE, 'garden_u', 5, { s: 7 });

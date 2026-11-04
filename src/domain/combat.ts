@@ -6,7 +6,7 @@ import { hazardExpiredEvent, trapSpot } from './hazards';
 import { add, bpFloor, ceilDiv, isqrt, msToTicks, safe, TICK_HZ } from './num';
 import {
   attackIntervalTicks, attacks, auraDamageBonusBP, auraEliteBossBonusBP, auraRangeBonusMilli, auraReaches, auraSpeedBonusBP, effectsFor,
-  isAuraGiver, towerStats, type TowerStats,
+  isAuraGiver, matchupBP, towerStats, type TowerStats,
 } from './towers';
 import type {
   Enemy, FieldHazard, HazardStrike, HitFx, Projectile, RollerHazard, RunState, SpawnEntry, SplashHit, Tower, TrapHazard, ZoneHazard, ZoneSpec,
@@ -115,7 +115,7 @@ function candidates(ctx: GameContext, s: RunState, x: number, y: number, stats: 
 }
 
 /** 한 번의 타격이 싣는 값. 투사체는 발사 순간의 스냅샷이고 즉발 공격은 그 자리에서 만든다. */
-type Strike = Pick<Projectile, 'towerId' | 'towerType' | 'damage' | 'damageType' | 'slowBP' | 'slowTicks' | 'physicalResistIgnoreBP' | 'bonusBP' | 'eliteBossDamageBP' | 'canHitFlyer' | 'flyerDamageBP' | 'fx'>;
+type Strike = Pick<Projectile, 'towerId' | 'towerType' | 'towerForm' | 'damage' | 'damageType' | 'slowBP' | 'slowTicks' | 'physicalResistIgnoreBP' | 'bonusBP' | 'eliteBossDamageBP' | 'canHitFlyer' | 'flyerDamageBP' | 'fx'>;
 
 const NO_FX: HitFx = {
   burnTotal: 0, burnTicks: 0, magicResistIgnoreBP: 0, stunTicks: 0, eliteStunTicks: 0, eliteSlowBP: 0, eliteSlowTicks: 0, bossSlowBP: 0, bossSlowTicks: 0,
@@ -138,7 +138,7 @@ function hitFxOf(stats: TowerStats, extraStunTicks: number): HitFx {
 }
 
 const strikeOf = (tower: Tower, stats: TowerStats, damage: number, bonusBP: number, eliteBossDamageBP: number, fx: HitFx): Strike => ({
-  towerId: tower.id, towerType: tower.type, damage, damageType: stats.damageType, slowBP: stats.slowBP, slowTicks: stats.slowTicks,
+  towerId: tower.id, towerType: tower.type, towerForm: tower.form, damage, damageType: stats.damageType, slowBP: stats.slowBP, slowTicks: stats.slowTicks,
   physicalResistIgnoreBP: stats.physicalResistIgnoreBP, bonusBP, eliteBossDamageBP, canHitFlyer: stats.canHitFlyer, flyerDamageBP: stats.flyerDamageBP, fx,
 });
 
@@ -498,7 +498,7 @@ function ricochet(ctx: GameContext, s: RunState, p: Projectile, from: { x: numbe
   if (!tower) return;
   const stats = towerStats(ctx.balance, tower.type, tower.level, tower.form);
   const bounce: Strike & Pick<Projectile, 'ricochet'> = {
-    towerId: p.towerId, towerType: p.towerType, damage: bpFloor(p.damage, r.falloffBP, 'damage.ricochet'), damageType: p.damageType, slowBP: p.slowBP, slowTicks: p.slowTicks,
+    towerId: p.towerId, towerType: p.towerType, ...(p.towerForm ? { towerForm: p.towerForm } : {}), damage: bpFloor(p.damage, r.falloffBP, 'damage.ricochet'), damageType: p.damageType, slowBP: p.slowBP, slowTicks: p.slowTicks,
     physicalResistIgnoreBP: p.physicalResistIgnoreBP, bonusBP: p.bonusBP, eliteBossDamageBP: p.eliteBossDamageBP, canHitFlyer: p.canHitFlyer, flyerDamageBP: p.flyerDamageBP,
     ...(p.fx ? { fx: p.fx } : {}), ricochet: { ...r, left: r.left - 1, hit: [...r.hit, next.id] },
   };
@@ -616,7 +616,7 @@ function knockback(ctx: GameContext, e: Enemy, milli: number) {
 }
 
 /**
- * 레벨·형태까지 반영된 피해에 상황(정예·보스 → 비행 → 빈사 → 감속 중) → 외부(깃발) → 취약 → 저항 순서로 한 단계씩 곱한다(PRD §20.2).
+ * 레벨·형태까지 반영된 피해에 상황(정예·보스 → 비행 → 상성 → 빈사 → 감속 중) → 외부(깃발) → 취약 → 저항 순서로 한 단계씩 곱한다(PRD §20.2).
  * 피해가 0인 타격(전염·감속만)은 피해 없이 효과만 준다. depth는 처치 유발 효과의 연쇄 깊이다.
  */
 function applyHit(ctx: GameContext, s: RunState, p: Strike, e: Enemy, ev: DomainEvent[], depth = 0) {
@@ -629,6 +629,9 @@ function applyHit(ctx: GameContext, s: RunState, p: Strike, e: Enemy, ev: Domain
     let damage = p.damage;
     if (p.eliteBossDamageBP !== 10000 && elite) damage = bpFloor(damage, p.eliteBossDamageBP, 'damage.situational');
     if (p.flyerDamageBP !== 10000 && e.flying) damage = bpFloor(damage, p.flyerDamageBP, 'damage.flyer');
+    // 상성(prd-r4 §7.2 D): 쏜 순간 형태의 strongVs·weakVs.
+    const vs = matchupBP(b, p.towerType, p.towerForm ?? 'base', e);
+    if (vs !== 10000) damage = bpFloor(damage, vs, 'damage.matchup');
     if (fx.lowHpThresholdBP > 0 && safe(e.hp * 10000, 'lowHp') <= safe(e.maxHp * fx.lowHpThresholdBP, 'lowHp')) damage = bpFloor(damage, fx.lowHpDamageBP, 'damage.lowHp');
     if (fx.slowedDamageBP !== 10000 && e.slows.some(x => x.untilTick > s.tick)) damage = bpFloor(damage, fx.slowedDamageBP, 'damage.slowed');
     if (p.bonusBP > 0) damage = bpFloor(damage, 10000 + p.bonusBP, 'damage.external');
@@ -835,7 +838,7 @@ function zoneSpec(stats: TowerStats, zone: NonNullable<TowerStats['fx']['zone']>
 /** 착탄: 착탄 지점(개수가 여럿이면 표적 진행도와 그 앞뒤 spacing 자리)에 장판을 놓는다. 첫 타격은 이 틱. */
 function placeZones(ctx: GameContext, s: RunState, p: Projectile, z: ZoneSpec, ev: DomainEvent[]) {
   const strike: HazardStrike = {
-    towerId: p.towerId, towerType: p.towerType, damage: p.damage, damageType: p.damageType, slowBP: p.slowBP, slowTicks: p.slowTicks,
+    towerId: p.towerId, towerType: p.towerType, ...(p.towerForm ? { towerForm: p.towerForm } : {}), damage: p.damage, damageType: p.damageType, slowBP: p.slowBP, slowTicks: p.slowTicks,
     physicalResistIgnoreBP: p.physicalResistIgnoreBP, bonusBP: p.bonusBP, eliteBossDamageBP: p.eliteBossDamageBP, canHitFlyer: p.canHitFlyer, flyerDamageBP: p.flyerDamageBP,
     ...(p.fx ? { fx: p.fx } : {}),
   };

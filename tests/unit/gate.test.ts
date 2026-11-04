@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { TOWER_IDS, type TowerId } from '../../src/contracts/balance';
-import { clonePlayer, createPlayer, GREEDY, simulateRun, stepPlayer } from '../../tools/sim/balanceSim';
+import { clonePlayer, createPlayer, GREEDY, simulateRun, stepPlayer, withOverrides } from '../../tools/sim/balanceSim';
 import { botPolicy, optimizerBrain, rollout, runBot, toSimOptions, type BotName, type RunSpec, type RunSummary } from '../../tools/sim/bots';
 import {
   bossDeathShare, bossKill, cellKey, cellStat, computeMetrics, evaluateGate, gateEarly, gradualDeath, income, lossBy, mapAvg, median, quantile, summarize,
@@ -48,7 +48,8 @@ describe('B0 가상 플레이어: 같은 seed면 같은 판', () => {
   it('단일 타워는 그 종류만 짓고, 조합 시험은 유틸 타워를 하나만 짓는다', () => {
     const mono = runBot(spec('mono-spear', { maxWaves: 6 }));
     expect(Object.keys(mono.builds)).toEqual(['spear']);
-    const combo = runBot(spec('core4+frost', { maxWaves: 8 }));
+    // R4 B2부터 강화 효율이 새 설치와 비슷해 균형형 습관은 몇 기만 짓고 키운다. 상한(유틸 1기)을 보려고 강화를 막은 밸런스로 넓게 짓게 한다.
+    const combo = runBot(spec('core4+frost', { maxWaves: 8, balance: withOverrides(['levels.max=1']) }));
     expect(combo.builds.frost).toBe(1);
     expect(Object.keys(combo.builds).every(t => ['archer', 'crossbow', 'cannon', 'mage', 'frost'].includes(t))).toBe(true);
     expect(botPolicy('core4+bell').cap).toEqual({ bell: 1 });

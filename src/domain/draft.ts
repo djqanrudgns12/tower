@@ -2,6 +2,7 @@ import { TOWER_IDS, type Balance, type RegularKind, type TowerId } from '../cont
 import type { DomainEvent } from './events';
 import { waveRoleWeights } from './factions';
 import { shuffle } from './rng';
+import { countersOf } from './towers';
 import type { DraftOffer, RunConfig, RunState } from './types';
 
 // 판 안 징집(docs/renewal/catalog/towers.md §0-2·§5 안 1). 기본 4종으로 시작하고 정한 웨이브를 지킬 때마다 새 타워 하나를 고른다.
@@ -36,20 +37,20 @@ export function pickDraft(s: RunState, tower: TowerId, auto: boolean, ev: Domain
 
 /**
  * 대응 보장 대상(prd-r4 §7.2 C): 웨이브 wave를 지킨 뒤 draft.counterLookahead웨이브 안에 처음 나오는 역할 가운데, 장착함에
- * 그 역할의 강점 타워(draft.counters)가 하나도 없는 첫 역할(웨이브 순, 같으면 REGULAR_KINDS 순)과 그 강점 타워 목록. 없으면 null.
- * 순수 함수다(편성 표만 본다).
+ * 그 역할의 강점 타워(기본형 strongVs에 그 역할을 적은 타워, prd-r4 §7.2 D)가 하나도 없는 첫 역할(웨이브 순, 같으면 REGULAR_KINDS 순)과
+ * 그 강점 타워 목록. 강점 타워가 하나도 정해지지 않은 역할은 건너뛴다. 없으면 null. 순수 함수다(편성 표와 타워 표만 본다).
  */
 export function uncoveredNewRole(b: Balance, mapId: string, wave: number, owned: readonly TowerId[]): { role: RegularKind; wave: number; towers: TowerId[] } | null {
-  const counters = b.draft.counters, lookahead = b.draft.counterLookahead ?? 0;
-  if (!counters || lookahead <= 0 || !b.campaigns[mapId]) return null;
+  const lookahead = b.draft.counterLookahead ?? 0;
+  if (lookahead <= 0 || !b.campaigns[mapId]) return null;
   const seen = new Set<RegularKind>();
   for (let w = 1; w <= wave; w++) for (const r of waveRoleWeights(b, mapId, w)) seen.add(r.kind);
   for (let w = wave + 1; w <= wave + lookahead; w++) {
     for (const r of waveRoleWeights(b, mapId, w)) {
       if (seen.has(r.kind)) continue;
       seen.add(r.kind);
-      const towers = counters[r.kind];
-      if (towers && !towers.some(t => owned.includes(t))) return { role: r.kind, wave: w, towers: [...towers] };
+      const towers = countersOf(b, r.kind);
+      if (towers.length > 0 && !towers.some(t => owned.includes(t))) return { role: r.kind, wave: w, towers };
     }
   }
   return null;
