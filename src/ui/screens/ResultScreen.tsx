@@ -85,12 +85,13 @@ export function ResultScreen({ state, reviewDelta = null, previousBest = null, o
                 </div>
               )}
               {state.config.contentMode === 'development' && <p className={css.dev}>{T.dev}</p>}
+              {/* 주 버튼은 짙은 바탕이 아니라 결과 카드 안에 둔다(ui-rules-v3 §2 버튼 바탕). */}
+              <div className={css.actions}>
+                <Button variant="primary" size="lg" className={css.again} onClick={onAgain}><RetryIcon size={24} />{T.again}</Button>
+                <Button size="lg" className={css.home} onClick={onHome}>{T.home}</Button>
+              </div>
             </Card>
 
-            <div className={css.actions}>
-              <Button variant="primary" size="lg" className={css.again} onClick={onAgain}><RetryIcon size={24} />{T.again}</Button>
-              <Button size="lg" className={css.home} onClick={onHome}>{T.home}</Button>
-            </div>
           </div>
 
           {hasReview && (

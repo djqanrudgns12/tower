@@ -137,8 +137,10 @@ export function HomeScreen({
             {message && <p className={css.notice} role="status">{message}</p>}
             {savedNotice && <p className={css.notice} role="status">{savedNotice}</p>}
 
+            {/* 주 버튼은 짙은 바탕(--bg)이 아니라 종이 카드 위에 둔다(ui-rules-v3 §2 버튼 바탕). 입력칸·시작 줄·닉네임 칩이 한 카드다. */}
+            <Card className={css.launchCard} aria-label="시작">
             {inlineSetup && (
-              <Card className={css.setupCard} aria-label="닉네임과 학교">
+              <div className={css.setupCard} aria-label="닉네임과 학교">
                 <ProfileFields
                   variant="inline"
                   inputRef={nickInputRef}
@@ -148,7 +150,7 @@ export function HomeScreen({
                   savedSchoolCode={settings.lastSchoolCode}
                   {...commitProfile}
                 />
-              </Card>
+              </div>
             )}
 
             <div className={css.actions}>
@@ -184,6 +186,7 @@ export function HomeScreen({
             </div>
 
             {!resume && chip && <div className={css.metaRow}>{chip}</div>}
+            </Card>
           </section>
 
           <div className={css.tools}>

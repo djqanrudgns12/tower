@@ -73,7 +73,7 @@
 .stem { color: var(--ink-2); }
 
 /* ── 결과 카드 바로 아래 단추 줄: 결과 칸과 한 덩어리라 1366×650에서도 스크롤 없이 보인다 ── */
-.actions { display: flex; gap: var(--s3); }
+.actions { display: flex; gap: var(--s3); width: 100%; align-self: stretch; white-space: nowrap; }
 .actions .again { flex: 2 1 0; }
 .actions .home { flex: 1 1 0; }
 
