@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>ART-OAK1 실제 크기 검수판 (1366×650)</title>
+<!--
+  정적 목업(외부 의존 없음). 이미지는 ../../../public/assets/ui/oak/*.webp 를 상대 경로로 쓴다.
+  slice·표시 폭은 manifest.json 값(frame.lg 98/18px, frame.sm 33/10px, groove 47/10px, parch 13/8px, key 0 38/0 19px,
+  badge 0 23/0 12px, ribbon 0 120/0 60px, rule 0 20/0 10px). 키는 높이 48px에서만 원화 밀도(2x)가 맞는다.
+-->
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  i { font-style: normal; }
+  html, body { width: 1366px; height: 650px; overflow: hidden; }
+  body { position: relative; background: #5f9b45; color: #3a291e;
+         font: 15px/1.35 "Apple SD Gothic Neo", "Pretendard", "Noto Sans KR", system-ui, sans-serif; }
+  .abs { position: absolute; }
+
+  /* 재질 */
+  .board { background: url(../../../public/assets/ui/oak/board.webp) 0 0 / 256px 256px repeat; }
+  .frame-lg { border: 18px solid transparent; border-image: url(../../../public/assets/ui/oak/frame.lg.webp) 98 / 18px stretch; background-clip: padding-box; }
+  .frame-sm { border: 10px solid transparent; border-image: url(../../../public/assets/ui/oak/frame.sm.webp) 33 / 10px stretch; background-clip: padding-box; }
+  .groove { border: 10px solid transparent; border-image: url(../../../public/assets/ui/oak/groove.webp) 47 fill / 10px stretch; background-clip: padding-box; }
+  .parch { border: 8px solid transparent; border-image: url(../../../public/assets/ui/oak/parch.webp) 13 fill / 8px stretch; background-clip: padding-box; }
+
+  .key { display: inline-block; height: 48px; line-height: 42px; text-align: center; font-weight: 800; font-size: 17px; letter-spacing: .02em;
+         border: 0 solid transparent; border-width: 0 19px; white-space: nowrap; }
+  .key.brass { border-image: url(../../../public/assets/ui/oak/key.brass.webp) 0 38 fill / 0 19px stretch; color: #3a2410; }
+  .key.green { border-image: url(../../../public/assets/ui/oak/key.green.webp) 0 38 fill / 0 19px stretch; color: #fbf5e8; text-shadow: 0 1px 0 #1d3a21; }
+  .key.parch { border-image: url(../../../public/assets/ui/oak/key.parch.webp) 0 38 fill / 0 19px stretch; color: #3a291e; }
+  .key.red   { border-image: url(../../../public/assets/ui/oak/key.red.webp) 0 38 fill / 0 19px stretch; color: #fbf0e0; text-shadow: 0 1px 0 #4d1510; }
+  .w140 { width: 140px; } .w220 { width: 220px; }
+
+  .badge { display: inline-block; height: 24px; line-height: 21px; min-width: 48px; text-align: center; font-weight: 800; font-size: 14px; color: #4a2b08;
+           border: 0 solid transparent; border-width: 0 12px; border-image: url(../../../public/assets/ui/oak/badge.brass.webp) 0 23 fill / 0 12px stretch; vertical-align: middle; }
+  .ribbon { display: block; height: 48px; line-height: 36px; text-align: center; font-weight: 800; font-size: 17px; color: #fff3df; text-shadow: 0 1px 0 #4a1b14;
+            border: 0 solid transparent; border-width: 0 60px; border-image: url(../../../public/assets/ui/oak/ribbon.webp) 0 120 fill / 0 60px stretch; }
+  .rule { display: block; height: 12px; border: 0 solid transparent; border-width: 0 10px; border-image: url(../../../public/assets/ui/oak/rule.webp) 0 20 fill / 0 10px stretch; }
+
+  /* 전장 틀 */
+  .field { left: 12px; top: 12px; width: 928px; height: 420px; background-color: #4d8c3a; overflow: hidden;
+           background-image: repeating-linear-gradient(90deg, rgba(255,255,255,.07) 0 1px, transparent 1px 52px), repeating-linear-gradient(0deg, rgba(255,255,255,.07) 0 1px, transparent 1px 52px); }
+  .field svg { position: absolute; left: 0; top: 0; }
+  .win { left: 230px; top: 40px; width: 470px; }
+  .win .parch { padding: 6px 16px 14px; }
+  .win h2 { font-size: 20px; text-align: center; padding: 2px 0 6px; }
+  .win p { margin: 10px 0 14px; font-size: 15px; }
+  .win .keys { display: flex; gap: 12px; justify-content: center; }
+
+  /* 문제판 */
+  .qpanel { left: 12px; top: 442px; width: 928px; height: 196px; padding: 10px 14px; box-shadow: inset 0 0 0 2px #3a291e; }
+  .qpanel .q { font-weight: 800; font-size: 16px; height: 26px; }
+  .qpanel .groove { height: 128px; display: flex; gap: 10px; padding: 4px 6px; }
+  .qpanel .choice { flex: 1; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 16px; text-align: center; padding: 0 6px; }
+
+  /* 옆판 */
+  .side { left: 952px; top: 12px; width: 402px; height: 626px; padding: 6px 8px 10px; }
+  .side .ribbon { margin: 2px auto 8px; width: 330px; }
+  .side .card { padding: 4px 10px; margin-bottom: 8px; min-height: 100px; }
+  .side .card b { font-size: 16px; } .side .card .row { display: flex; justify-content: space-between; align-items: center; }
+  .side .card small { display: block; margin-top: 4px; font-size: 13px; color: #6a5238; }
+  .side .field-input { height: 46px; margin: 4px 0 12px; display: flex; align-items: center; padding: 0 4px; font-size: 15px; }
+  .side .keys { display: flex; gap: 10px; margin-bottom: 10px; }
+</style>
+</head>
+<body>
+
+<section class="abs field frame-lg">
+  <svg width="892" height="384" viewBox="0 0 892 384" aria-hidden="true">
+    <polyline points="0,300 180,300 260,200 420,200 520,110 700,110 700,330 892,330" fill="none" stroke="#d3b27a" stroke-width="46" stroke-linejoin="round" stroke-linecap="butt"/>
+    <polyline points="0,300 180,300 260,200 420,200 520,110 700,110 700,330 892,330" fill="none" stroke="#e6cc98" stroke-width="34" stroke-linejoin="round" stroke-linecap="butt"/>
+  </svg>
+  <div class="abs win frame-sm">
+    <div class="parch">
+      <h2>정답이에요!</h2>
+      <i class="rule"></i>
+      <p>‘짐작하다’는 모르는 일을 대강 생각해 안다는 뜻이에요. 다음 문제에서 별 <span class="badge">+3</span> 을 받아요.</p>
+      <div class="keys"><span class="key brass w220">다음 문제</span><span class="key brass w140">닫기</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="abs qpanel board">
+  <div class="q">7번 · ‘짐작하다’의 뜻으로 알맞은 것은?</div>
+  <div class="groove">
+    <div class="choice parch">모르는 일을 대강 생각해 알다</div>
+    <div class="choice parch">물건을 높은 곳에 걸다</div>
+    <div class="choice parch">앞으로 나아가 길을 열다</div>
+    <div class="choice parch">잘못을 깨끗이 인정하다</div>
+  </div>
+</section>
+
+<aside class="abs side board frame-sm">
+  <i class="ribbon">제3장 · 타일 놓기</i>
+  <div class="card parch">
+    <div class="row"><b>화살 포탑</b><span class="badge">×3</span></div>
+    <small>가까운 적을 먼저 맞혀요. 사거리 4칸, 공격 속도 보통.</small>
+  </div>
+  <div class="card parch">
+    <div class="row"><b>서리 탑</b><span class="badge">×1</span></div>
+    <small>맞은 적이 잠깐 느려져요. 사거리 3칸.</small>
+  </div>
+  <i class="rule" style="margin:6px 0 4px"></i>
+  <div class="field-input groove">하늘바람</div>
+  <div class="keys"><span class="key green w220">새 게임</span><span class="key parch w140">연습하기</span></div>
+  <div class="keys"><span class="key red w140">기록 지우기</span><span class="key brass w140">설정</span></div>
+</aside>
+
+</body>
+</html>

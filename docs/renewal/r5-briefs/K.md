@@ -18,8 +18,13 @@
 - **C6(일부)** `src/ui/icons/GameIcons.tsx`의 쓰이지 않는 아이콘을 지우고(`grep`으로 사용처 0 확인), 도구 키 아이콘을 2px 선 세트로 맞춘다. 날아가는 금화(`src/ui/game/CoinFlight.tsx`)는 세션 A가 B8과 함께 한다.
 
 ## 재질 원화
-- 메인이 Antigravity로 ART-OAK1 12장을 만들고 처리해 `public/assets/ui/oak/*.webp`와 `asset-source/renewal/ART-OAK1/manifest.json`(9-slice 값)을 커밋한다. 요청서: [`asset-source/renewal/ART-OAK1/REQUEST.md`](../../../asset-source/renewal/ART-OAK1/REQUEST.md).
-- **원화가 오기 전에는 v4 토큰의 단색 대체값으로 자리를 잡는다.** 원화가 커밋되면 메인이 알린다. 그때 `border-image`·타일로 바꾼다. 원화 파일을 직접 만들거나 고치지 않는다.
+- **원화는 이미 들어와 있다(P1 관문 통과, 2026-11-04).** `public/assets/ui/oak/*.webp` 12장(합계 141KB)과 9-slice 값·권장 CSS가 [`asset-source/renewal/ART-OAK1/manifest.json`](../../../asset-source/renewal/ART-OAK1/manifest.json)에 있다. 실제 크기 검수판: `asset-source/renewal/ART-OAK1/contact-sheet-1366.png`·`preview.html`(쓰는 법 예시). 요청서: [`REQUEST.md`](../../../asset-source/renewal/ART-OAK1/REQUEST.md).
+- 쓰는 법(manifest 요약): 틀·홈·양피지·키는 `border: <폭> solid transparent` + `border-image`(틀 2장은 안쪽 투명이라 `fill` 없이 `background-clip: padding-box`). 키·배지·띠·선은 표시 높이를 원화의 절반(키 48·배지 24·띠 48·선 12px)으로 둔다. 다른 높이면 `border-image-width`를 비례로 바꾼다.
+- 총괄 판정 메모:
+  - `frame.lg`는 조건부 합격이다. 표시 폭 18px에서는 결이 거의 안 보여 CSS 갈색 테처럼 읽힌다. 전장 틀·화면 바깥 틀은 표시 폭 24px 이상으로 쓰고, 그보다 얇은 테는 `frame.sm`을 쓴다.
+  - `board`는 토큰 `#decba8`보다 짙고 주황 쪽이다(평균 199,156,104). 판 위 글 대비는 v4 §2.6 기준으로 다시 잰다. 너무 짙으면 메인에 밝기 보정 재처리를 요청한다(`prepare.py` 한 줄).
+  - `ribbon`은 표시 폭 120px 이상에서만 쓴다.
+- 원화를 쓸 수 없는 곳(인쇄·고대비 등)의 대체는 v4 토큰 단색이다. 원화 파일은 직접 만들거나 고치지 않는다.
 
 ## 소유(이 경로만 고친다)
 - `src/ui/kit/**`, `src/ui/styles/global.css`, `src/ui/icons/**`
