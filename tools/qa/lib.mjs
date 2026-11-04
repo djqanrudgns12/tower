@@ -199,9 +199,10 @@ export async function domAudit(page) {
       return solid(st.backgroundColor) || ['Top', 'Right', 'Bottom', 'Left'].some(s => parseFloat(st[`border${s}Width`]) >= 1 && opaque(st[`border${s}Color`]) && st[`border${s}Style`] !== 'none');
     };
     const root = getComputedStyle(document.documentElement);
-    const tokens = new Set(['--bg', '--paper', '--paper-2', '--line', '--ink', '--ink-2', '--on-dark', '--green', '--green-base', '--amber', '--amber-base', '--red', '--red-base', '--blue']
-      .map(n => root.getPropertyValue(n).trim().toLowerCase()).filter(Boolean)
-      .map(hex => { const n = parseInt(hex.slice(1), 16); return `${(n >> 16) & 255},${(n >> 8) & 255},${n & 255}`; }));
+    // 색 토큰은 :root에 선언된 hex 값 전부다(ui-rules-v4 §2: 모든 색은 global.css :root에서 나온다).
+    const hexes = [...root].filter(n => n.startsWith('--')).map(n => root.getPropertyValue(n).trim().toLowerCase())
+      .filter(v => /^#([0-9a-f]{3}|[0-9a-f]{6})$/.test(v)).map(v => (v.length === 4 ? `#${v[1]}${v[1]}${v[2]}${v[2]}${v[3]}${v[3]}` : v));
+    const tokens = new Set(hexes.map(hex => { const n = parseInt(hex.slice(1), 16); return `${(n >> 16) & 255},${(n >> 8) & 255},${n & 255}`; }));
     const offToken = v => solid(v) && !tokens.has(rgba(v).slice(0, 3).join(','));
     const slop = { buttons: 0, sentences: [], fontSizes: new Set(), pills: 0, depth: 0, offToken: 0 };
     for (const el of document.querySelectorAll('button, a[href], input, select, [role="button"], [role="radio"], [role="switch"], [role="checkbox"], [role="tab"]')) if (shown(el)) slop.buttons++;

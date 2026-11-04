@@ -83,9 +83,9 @@ test.describe('사용 설명서', () => {
     expect(axeOpen.violations.map(v => `${v.id}: ${v.nodes.length}`)).toEqual([]);
     await page.screenshot({ path: 'test-results/shots/guide-cards-open-desktop.png' });
 
-    // G14: PRD §12.8 스타일 전수 검사 (그라데이션 0, 블러 0, 허용 반경 0/8/14/999px만 사용: ui-rules-v3 §2 --r-sm·--r-md·배지)
+    // G14: PRD §12.8 스타일 전수 검사 (그라데이션 0, 블러 0, 허용 반경만 사용). R5 전환 중: v4 반경 4·8px(ui-rules-v4 총괄 결정 2)과 v3 14px를 함께 허용하고, P3에서 0/4/8/999px로 좁힌다.
     const guideStyleIssues = await dialog.evaluate(root => {
-      const allowedRadii = new Set(['0px', '8px', '14px', '999px']);
+      const allowedRadii = new Set(['0px', '4px', '8px', '14px', '999px']);
       const issues: string[] = [];
       for (const el of [root, ...root.querySelectorAll('*')]) {
         const cs = getComputedStyle(el);

@@ -1,7 +1,7 @@
 # 리뉴얼 R5 계획서 — 「참나무 작전실 v2」: 이전 디자인 의도 복원 + R4 구조·기능 통합 고도화
 
 작성: 2026-11-04 · 총괄 Claude(메인 세션) · 기준 브랜치 `p1/intake-round1`(`626de0c`)
-상태: **계획(승인 대기)** · 진행 기록은 [진행판](BACKLOG.md) R5 줄
+상태: **승인(2026-11-04) · P0 진행 중** · 진행 기록은 [진행판](BACKLOG.md) R5 줄
 
 **근거**
 - 전후 비교: R4 이전 캡처 20장([`qa/pre-r4/`](qa/pre-r4/)), 옛 랜딩 기준([`qa/landing-baseline/`](qa/landing-baseline/)), 지금 화면.
@@ -235,12 +235,13 @@ P0 기준선·규정(메인) ──┬─► P1 재질 원화(Antigravity 생성
 | 소유자 | 경로 |
 |---|---|
 | 메인 | `docs/**`, `src/ui/copy.ts`, `tests/e2e/layout.spec.ts`, `tests/unit/terms.test.ts`, `tools/qa/**`, `AGENTS.md` |
-| 세션 K(P2) | `src/ui/kit/**`, `src/ui/styles/global.css`, `src/ui/icons/**`, `src/ui/screens/home/ModalShell.tsx`·`RankingModal.tsx`, `public/assets/ui/oak/**` |
+| 세션 K(P2) | `src/ui/kit/**`, `src/ui/styles/global.css`, `src/ui/icons/**`, `src/ui/screens/home/ModalShell.tsx`·`RankingModal.tsx`, `public/assets/ui/oak/**`. P2 동안만 `src/ui/screens/home/home.module.css`(토큰 블록·글자 크기 규칙, C1·C5), `src/ui/game/ChoiceCard.tsx`·`ChoiceCard.module.css`(C2), `src/ui/App.tsx`의 `<html data-motion>`(움직임 줄이기). 브리프 [`r5-briefs/K.md`](r5-briefs/K.md) |
 | 서브에이전트(P1 처리) | `asset-source/renewal/ART-OAK*/**`(처리 산출물만 `public/assets/ui/oak/**`로 넘김, 커밋은 메인) |
-| 세션 A(P3) | `src/ui/game/**`(PauseOverlay 포함), `src/application/view.ts`, `tests/e2e/play.spec.ts`, `tests/e2e/stage-animation.spec.ts`, 전투 단위 시험 |
+| 세션 A(P3) | `src/ui/game/**`(PauseOverlay 포함), `src/application/view.ts`·`RunController.ts`(B8), C6 중 금화 비행(`CoinFlight.tsx`), `tests/e2e/play.spec.ts`, `tests/e2e/stage-animation.spec.ts`, 전투 단위 시험 |
 | 세션 B(P3) | `src/ui/screens/GuideScreen*`, `src/ui/screens/guide/**`, `public/assets/guide/**`, `tests/unit/guide.test.ts`, `tests/e2e/guide.spec.ts` |
 | 세션 C(P3) | `NewGameScreen.tsx`, `ResultScreen*`, `SettingsModal*`, `NoteScreen*`, `src/ui/screens/home/**`(K 소유 2개 제외), `HomeScreen.tsx`, `tests/e2e/home.spec.ts`·`note.spec.ts` |
 
+- P0(2026-11-04)에 확정: 설명서 e2e는 `tests/e2e/guide.spec.ts`로 떼어 냈다(B 소유). 용어 일괄 적용(C4)은 P0에 메인이 모든 화면 파일에 한 번 했다. 이후 새 글도 `tests/unit/terms.test.ts`를 통과해야 한다.
 - **글 추가**: `copy.ts`는 메인 소유다. 트랙은 새 문구를 자기 폴더의 `*Copy.ts`(예: `src/ui/game/gameCopy.ts`)에 두고, P4에서 메인이 합칠지 정한다. 용어표는 모두 지킨다.
 - **소유 밖 변경이 필요하면** 직접 고치지 않는다. 메인에 요청한다(SendMessage). 메인이 순서를 정해 반영한다.
 

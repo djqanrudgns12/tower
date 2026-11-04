@@ -5,7 +5,7 @@ import { domAudit, ensureServer, enterGame, flag, launch, loadStates, baseSettin
 
 // 화면 점검 장비(R3 P1, docs/renewal/prd-r3-phases.md §3.1). 제품 엔진으로 장면 상태를 만들어 개발 전용 QA 장면 로더(`?qaRun=1`)로 열고
 // 장면마다 캡처·객관 검사(가로 넘침, 44px 미만 조작 요소, 13px 미만 글자, 깨진 이미지, 오류 로그)를 남긴다. 개발 서버에서만 돈다. 쓰는 법:
-//   node tools/qa/scenes.mjs --out <폴더> [--scenes 02,05a] [--sizes desk,cb,phone] [--port 5341] [--no-montage] [--list]
+//   node tools/qa/scenes.mjs --out <폴더> [--scenes 02,05a] [--sizes desk,cb,phone] [--font base|large|xlarge] [--port 5341] [--no-montage] [--list]
 // 장면은 아래 SCENES 배열(데이터)이다. 맵 미리보기 장면은 state를 빼고 url을 주거나(`?previewMap=`), state.args.grade로 맵을 고른다.
 
 /**
@@ -172,7 +172,7 @@ async function runScene(browser, states, ctx, scene, size) {
   const clock = Boolean(scene.state);
   const built = scene.state ? states.buildScene(scene.state.builder, scene.state.args ?? {}) : null;
   const { context, page, issues } = await openPage(browser, { base: ctx.base, size, clock });
-  const settings = baseSettings(scene.settings);
+  const settings = baseSettings({ ...(ctx.font ? { fontScale: ctx.font } : {}), ...scene.settings });
   const state = { page, scene, size, out: ctx.out, clock, built, shots: [] };
   try {
     const local = scene.reviewNote ? { [states.REVIEW_NOTE_KEY]: JSON.stringify(states.buildReviewNote(scene.reviewNote)) } : {};
@@ -232,6 +232,9 @@ async function main() {
   await mkdir(out, { recursive: true });
   const only = flag(args, 'scenes', '')?.split(',').filter(Boolean) ?? [];
   const sizeFilter = flag(args, 'sizes', '')?.split(',').filter(Boolean) ?? [];
+  // 글자 크기 설정 단계(ui-rules-v4 §5.3 관문: 3단계 모두). 다른 단계는 --out을 나눠 찍는다.
+  const font = flag(args, 'font', null);
+  if (font && !['base', 'large', 'xlarge'].includes(font)) throw new Error('--font는 base·large·xlarge 중 하나다');
   const server = await ensureServer(Number(flag(args, 'port', process.env.E2E_PORT ?? 5341)));
   const browser = await launch();
   try {
@@ -243,7 +246,7 @@ async function main() {
         for (const key of args.includes('--all-sizes') && sizeFilter.length ? sizeFilter : (scene.sizes ?? ['desk'])) {
           if (sizeFilter.length && !sizeFilter.includes(key)) continue;
           console.log(`${scene.id} ${scene.title} [${key}]`);
-          report.push(await runScene(browser, states, { base: server.base, out }, scene, SIZES[key]));
+          report.push(await runScene(browser, states, { base: server.base, out, font }, scene, SIZES[key]));
         }
       }
       const reportFile = path.join(out, 'report.json');
