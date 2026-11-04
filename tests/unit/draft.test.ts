@@ -123,7 +123,7 @@ describe('장착함과 징집', () => {
   it('대응 보장 대상: 3웨이브 안에 처음 나오는 역할 가운데 장착함에 강점 타워(기본형 strongVs)가 없는 첫 역할(prd-r4 §7.2 C·D)', () => {
     const start = BALANCE.draft.startTowers;
     // 강점 타워 목록은 타워 계약의 strongVs에서 온다(B1의 임시 draft.counters를 대체).
-    expect(countersOf(BALANCE, 'brute')).toEqual(['spear', 'sling', 'alchemist', 'trap']);
+    expect(countersOf(BALANCE, 'brute')).toEqual(['spear', 'guardian', 'sling', 'alchemist', 'trap']); // 수호기사 brute(R4 마지막 조정)
     expect(countersOf(BALANCE, 'flyer')).toEqual(['ballista', 'falcon', 'wind']);
     // 정원: W3 뒤 W4 거구는 시작 4종(궁수·포탑·서리·마법)으로 못 막는다. W6 껍질은 마법탑이 막는다.
     expect(uncoveredNewRole(BALANCE, 'garden_u', 3, start)).toEqual({ role: 'brute', wave: 4, towers: countersOf(BALANCE, 'brute') });

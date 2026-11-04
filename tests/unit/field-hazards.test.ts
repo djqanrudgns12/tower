@@ -50,15 +50,15 @@ function record(ctx: GameContext, s: RunState, n: number): Array<[number, Domain
 const flat = (log: Array<[number, DomainEvent[]]>) => log.flatMap(([, ev]) => ev);
 
 describe('장판(§4-7 zone, 약병투척소)', () => {
-  it('착탄 틱부터 15틱마다 4번, 반경 0.75칸 안 지상 적을 가까운 순으로 친다. 착탄 피해는 없고 60틱 뒤 사라진다', () => {
+  it('착탄 틱부터 15틱마다 4번, 반경 0.85칸(R4 마지막 조정) 안 지상 적을 가까운 순으로 친다. 착탄 피해는 없고 60틱 뒤 사라진다', () => {
     const { ctx, s } = arena([['alchemist', 8, 2]]);
-    // 표적(진행도 최대 지상 적) 8800 → 장판 중심 (9300, 1500). 8300·8100은 0.5·0.7칸, 7900은 0.9칸(밖), 비행 적은 대공이 안 돼 빠진다.
+    // 표적(진행도 최대 지상 적) 8800 → 장판 중심 (9300, 1500). 8300·8100은 0.5·0.7칸, 7900은 0.9칸(0.85칸 밖), 비행 적은 대공이 안 돼 빠진다.
     place(s, [{ progress: 8800 }, { progress: 8300 }, { progress: 8100 }, { progress: 7900 }, { progress: 8700, kind: 'flyer', flying: true }]);
     const log = record(ctx, s, 1);
     s.towers[0]!.nextAttackTick = null; // 한 번만 던진다.
     log.push(...record(ctx, s, 80));
     const placed = of(flat(log), 'hazardPlaced');
-    expect(placed).toEqual([expect.objectContaining({ kind: 'zone', x: 9300, y: 1500, radius: 750, progress: null, blast: false })]);
+    expect(placed).toEqual([expect.objectContaining({ kind: 'zone', x: 9300, y: 1500, radius: 850, progress: null, blast: false })]);
     const landed = log.find(([, ev]) => ev.some(e => e.type === 'hazardPlaced'))![0];
     expect(placed[0]!.expiresTick).toBe(landed + 60);
     const pulses = log.filter(([, ev]) => hits(ev).length > 0);
@@ -172,7 +172,7 @@ describe('바닥 덫(§4-7 trap, 덫공방초소)', () => {
     expect(s.phase).not.toBe('BATTLE');
     expect(of(ev, 'hazardExpired')).toEqual([expect.objectContaining({ kind: 'trap', reason: 'wave' })]);
     expect(s.hazards.map(h => h.kind === 'trap' && h.progress)).toEqual([19732, 19032]);
-    // 저장 스냅샷(JSON)으로 넘어가도 같은 상태다.
+    // JSON 왕복으로 넘어가도 같은 상태다.
     expect(JSON.parse(JSON.stringify(s.hazards))).toEqual(s.hazards);
   });
 
@@ -250,14 +250,14 @@ describe('굴림체(§4-7 roller, 통나무굴림대)', () => {
     expect(of(ev2, 'hazardExpired')).toEqual([expect.objectContaining({ reason: 'end' })]);
   });
 
-  it('A2 쌍둥이 통나무: 15틱 뒤 65% 두 번째 통나무가 다시 굴러간다', () => {
+  it('A2 쌍둥이 통나무: 15틱 뒤 55%(R4 마지막 조정) 두 번째 통나무가 다시 굴러간다', () => {
     const { ctx, s } = arena([['roller', 8, 2, 7, 'A2']]);
     place(s, [{ progress: 9000 }]);
     const log = record(ctx, s, 20);
     const at = log.filter(([, ev]) => ev.some(e => e.type === 'hazardPlaced')).map(([t]) => t);
     expect(at[1]! - at[0]!).toBe(15);
     const second = s.hazards.find(h => h.kind === 'roller')!;
-    expect(second.strike.damage).toBe(Math.floor((dmg('roller', 7, 'A2') * 6500) / 10000));
+    expect(second.strike.damage).toBe(Math.floor((dmg('roller', 7, 'A2') * 5500) / 10000));
   });
 });
 
@@ -352,8 +352,8 @@ describe('처치 유발 판정 순서(§4-8): 분열 파생체 생성 → 같은
   });
 });
 
-describe('결정론·저장', () => {
-  it('장판·덫·굴림체가 도는 중 JSON으로 저장했다 되살려도 같은 사건이 이어진다', () => {
+describe('결정론·JSON 왕복', () => {
+  it('장판·덫·굴림체가 도는 중 JSON으로 왕복해도 같은 사건이 이어진다', () => {
     const towers: Array<[TowerId, number, number, number, FormId]> = [['alchemist', 8, 2, 7, 'A2'], ['trap', 8, 0, 7, 'B1'], ['roller', 10, 4, 4, 'B'], ['ballista', 2, 2, 7, 'B2']];
     const make = () => {
       const { ctx, s } = arena(towers);

@@ -109,16 +109,16 @@ describe('시차 다연발(§4-4 화차)', () => {
 });
 
 describe('밀치기(§4-5 바람)', () => {
-  it('지상 0.22칸·비행 0.35칸 뒤로, 대장은 밀리지 않고 느려진다, 평생 3칸까지', () => {
+  it('지상 0.5칸·비행 0.6칸 뒤로(R4 마지막 조정), 대장은 밀리지 않고 느려진다, 평생 3칸까지', () => {
     const { ctx, s } = arena([['wind', 8, 2]]);
     place(s, [{ progress: 9000 }, { progress: 8800, kind: 'flyer', flying: true }, { progress: 8600, kind: 'boss' }]);
     ticks(ctx, s, 1);
-    expect(s.enemies.map(e => e.progress)).toEqual([9000 - 220, 8800 - 350, 8600]);
+    expect(s.enemies.map(e => e.progress)).toEqual([9000 - 500, 8800 - 600, 8600]);
     expect(s.enemies[2]!.slows[0]?.bp).toBe(2000);
     s.enemies[0]!.knockbackUsed = 2900;
     s.towers[0]!.nextAttackTick = s.tick + 1;
     ticks(ctx, s, 1);
-    expect(s.enemies[0]!.progress).toBe(9000 - 220 - 100);
+    expect(s.enemies[0]!.progress).toBe(9000 - 500 - 100);
   });
 
   it('하강 기류(바람 A2): 맞은 비행 적은 3초 동안 지상 전용 포탑도 맞힌다', () => {
@@ -135,19 +135,19 @@ describe('밀치기(§4-5 바람)', () => {
 });
 
 describe('취약·저항 차감(§4-6)', () => {
-  it('종각 고리: 사거리 안 전방위 최대 5명(비행 포함)에 취약 20%(R4 B2), 다음 타격이 1.2배', () => {
+  it('종각 고리: 사거리 안 전방위 최대 5명(비행 포함)에 취약 25%(R4 마지막 조정), 다음 타격이 1.25배', () => {
     const { ctx, s } = arena([['bell', 8, 2], ['archer', 8, 0]]);
     stopOthers(s, only(s, 'bell'));
     place(s, [{ progress: 7000 }, { progress: 8000, kind: 'flyer', flying: true }, { progress: 9000 }]);
     const first = hits(ticks(ctx, s, 1));
     expect(first.map(h => h[0]).sort()).toEqual([100, 101, 102]);
-    expect(BALANCE.towers.bell.vulnBP).toBe(2000);
-    expect(s.enemies.every(e => e.vulns[0]?.bp === 2000)).toBe(true);
+    expect(BALANCE.towers.bell.vulnBP).toBe(2500);
+    expect(s.enemies.every(e => e.vulns[0]?.bp === 2500)).toBe(true);
     only(s, 'bell').nextAttackTick = null;
     only(s, 'archer').nextAttackTick = s.tick + 1;
     let got: Array<[number, number]> = [];
     for (let i = 0; i < 30 && got.length === 0; i++) got = hits(ticks(ctx, s, 1));
-    expect(got[0]![1]).toBe(Math.floor((dmg('archer') * 12000) / 10000));
+    expect(got[0]![1]).toBe(Math.floor((dmg('archer') * 12500) / 10000));
   });
 
   it('창병 B1 갑옷 틈새: 물리 저항 35%를 25%p 깎아 다음 찌르기가 저항 10%로 들어간다', () => {

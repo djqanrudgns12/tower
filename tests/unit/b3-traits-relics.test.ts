@@ -293,9 +293,9 @@ describe('연속 정답 보너스(R4 B3 실험 채택, run.answerStreakBonus)', 
     return { ...ctx, balance, difficulty: balance.difficulties[ctx.difficultyId] };
   };
 
-  it('계약 값: 연속마다 +3, 상한 30(11번째 정답부터)', () => {
-    expect(BALANCE.run.answerStreakBonus).toEqual({ goldPerStreak: 3, maxGold: 30 });
-    expect([1, 2, 3, 10, 11, 40].map(n => streakBonusGold(BALANCE, n))).toEqual([0, 3, 6, 27, 30, 30]);
+  it('계약 값: 연속마다 +3, 상한 24(9번째 정답부터, R4 마지막 조정)', () => {
+    expect(BALANCE.run.answerStreakBonus).toEqual({ goldPerStreak: 3, maxGold: 24 });
+    expect([1, 2, 3, 8, 9, 40].map(n => streakBonusGold(BALANCE, n))).toEqual([0, 3, 6, 21, 24, 24]);
   });
 
   it('규칙이 없으면 꺼져 있고 상태에 연속 수를 남기지 않는다', () => {

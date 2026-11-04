@@ -122,21 +122,22 @@ describe('물리 저항 무시·근접·수호기사·깃발(PRD §7.1, §20.2)'
     expect(ev.filter(e => e.type === 'kill').map(e => e.type === 'kill' && e.enemyId).sort()).toEqual([100, 101]);
   });
 
-  it('깃발은 2.0칸 안(경계 포함) 공격 타워의 직접 피해를 올리고, 여러 깃발은 최고값만, 깃발끼리는 받지 않는다', () => {
+  it('깃발은 3.0칸 안(경계 포함) 공격 타워의 직접 피해를 올리고, 여러 깃발은 최고값만, 깃발끼리는 받지 않는다', () => {
     const near = arena([['archer', 8, 2], ['banner', 8, 0]]);
     expect(near.s.towers.find(t => t.type === 'banner')!.nextAttackTick).toBeNull();
     place(near.s, [{ progress: 8000 }]);
-    expect(firstHit(near.ctx, near.s)).toBe(9440); // 깃발 Lv1 +18%(R4 B2)
+    expect(firstHit(near.ctx, near.s)).toBe(10000); // 깃발 Lv1 +25%(R4 마지막 조정)
 
-    const far = arena([['archer', 8, 2], ['banner', 10, 4]]);
+    // (11,0)은 (8,2)에서 약 3.6칸이라 반경 3.0 밖이다.
+    const far = arena([['archer', 8, 2], ['banner', 11, 0]]);
     place(far.s, [{ progress: 8000 }]);
     expect(firstHit(far.ctx, far.s)).toBe(8000);
 
-    // (0,2) 칸은 (0,0)·(0,4) 두 깃발 자리와 정확히 2칸 떨어져 있다. Lv1 18%와 Lv2 20% 가운데 20%만 준다.
-    const two = arena([['archer', 0, 2], ['banner', 0, 0], ['banner', 0, 4]]);
-    two.s.towers.find(t => t.slotId === slotAt(two.ctx, 0, 4))!.level = 2;
-    place(two.s, [{ progress: 1000 }]);
-    expect(firstHit(two.ctx, two.s)).toBe(9600);
+    // (3,0) 칸은 (0,0)·(6,0) 두 깃발 자리와 정확히 3칸 떨어져 있다. Lv1 25%와 Lv2 27% 가운데 27%만 준다.
+    const two = arena([['archer', 3, 0], ['banner', 0, 0], ['banner', 6, 0]]);
+    two.s.towers.find(t => t.slotId === slotAt(two.ctx, 6, 0))!.level = 2;
+    place(two.s, [{ progress: 3000 }]);
+    expect(firstHit(two.ctx, two.s)).toBe(10160);
     const banner = two.s.towers.find(t => t.type === 'banner')!;
     expect(auraDamageBonusBP(two.ctx.balance, two.s.towers, banner)).toBe(0);
   });
@@ -170,7 +171,7 @@ describe('P2 1차형(PRD §7.3, §20.3, progression.md §1) — Lv4 레벨 배�
     expect(firstHit(b.ctx, b.s)).toBe(pct(pct(d4('crossbow', 'B'), 15000), 13000)); // × 1.5(정예·대장) × 1.3(상성: 대장에 강함)
   });
 
-  it('마법 A 집중 ×1.4 / B 파동: 고정 표적 좌표 반경 0.65칸, 최대 3대상에 각각 85%', () => {
+  it('마법 A 집중 ×1.4 / B 파동: 고정 표적 좌표 반경 0.75칸, 최대 3대상에 각각 95%(R4 마지막 조정)', () => {
     const a = arena([['mage', 8, 2]]);
     branchTo(a.s, 'mage', 'A');
     place(a.s, [{ progress: 8000 }]);
@@ -181,8 +182,8 @@ describe('P2 1차형(PRD §7.3, §20.3, progression.md §1) — Lv4 레벨 배�
     const b = arena([['mage', 8, 2]]);
     branchTo(b.s, 'mage', 'B');
     place(b.s, [{ progress: 9500 }, { progress: 9100 }, { progress: 8900 }, { progress: 8700 }]);
-    expect(allHits(b.ctx, b.s, 40)).toEqual([100, 101, 102].map(id => [id, d4('mage', 'B')])); // 37600 × 0.85
-    expect(d4('mage', 'B')).toBe(31960);
+    expect(allHits(b.ctx, b.s, 40)).toEqual([100, 101, 102].map(id => [id, d4('mage', 'B')])); // 37600 × 0.95, 8700(0.8칸)은 반경 밖
+    expect(d4('mage', 'B')).toBe(35720);
   });
 
   it('번개 A 연쇄: 최대 5대상·65%씩 / B 충격: 2대상·80%, 첫 대상 0.3초(9틱) 기절', () => {
@@ -217,12 +218,12 @@ describe('P2 1차형(PRD §7.3, §20.3, progression.md §1) — Lv4 레벨 배�
     expect(burns).toEqual([4700, 4700, 4700, 4700]); // 4000 × 2.35 × 2 = 18800을 넷으로
   });
 
-  it('창병 A 긴 창: 첫 대상 방향 폭 0.35칸 선분에서 2대상 / B 파쇄: ×1.2, 물리 저항 50% 무시', () => {
+  it('창병 A 긴 창: 첫 대상 방향 폭 0.35칸 선분에서 3대상, 피해 ×1.1(R4 마지막 조정) / B 파쇄: ×1.2, 물리 저항 50% 무시', () => {
     const a = arena([['spear', 8, 2]]);
     branchTo(a.s, 'spear', 'A');
-    // 첫 대상 (8.6, 1.5)칸, 같은 선분 안 (8.5, 1.5)칸, 선분 밖 (8.0, 1.5)칸.
-    place(a.s, [{ progress: 8100 }, { progress: 8000 }, { progress: 7500 }]);
-    expect(hits(ticks(a.ctx, a.s, 1))).toEqual([[100, 16450], [101, 16450]]); // 창병 피해 7 → Lv4 16450
+    // 첫 대상 (8.6, 1.5)칸, 같은 선분 안 (8.55, 1.5)·(8.5, 1.5)칸, 선분 밖 (8.0, 1.5)칸.
+    place(a.s, [{ progress: 8100 }, { progress: 8050 }, { progress: 8000 }, { progress: 7500 }]);
+    expect(hits(ticks(a.ctx, a.s, 1))).toEqual([[100, 18095], [101, 18095], [102, 18095]]); // 창병 피해 7 → Lv4 16450 × 1.1(긴 창)
 
     const b = arena([['spear', 8, 2]]);
     branchTo(b.s, 'spear', 'B');
@@ -230,11 +231,12 @@ describe('P2 1차형(PRD §7.3, §20.3, progression.md §1) — Lv4 레벨 배�
     expect(hits(ticks(b.ctx, b.s, 1))).toEqual([[100, 16285]]); // 16450 × 1.2 = 19740, 저항 3500의 절반 → × 0.825(보병이라 상성 배율 없음)
   });
 
-  it('수호기사 A 결투: 정예·대장 ×2.0 / B 수호 일격: 첫 대상 중심 0.8칸, 거리순 최대 3대상에 각각 80%', () => {
+  it('수호기사 A 결투: 정예·대장 ×3.0(R4 마지막 조정) / B 수호 일격: 첫 대상 중심 0.8칸, 거리순 최대 3대상에 각각 80%', () => {
     const a = arena([['guardian', 8, 2]]);
     branchTo(a.s, 'guardian', 'A');
-    place(a.s, [{ progress: 8000, elite: 'swift' }]);
-    expect(hits(ticks(a.ctx, a.s, 1))).toEqual([[100, 183300]]); // 30000 × 2.35 × 2.0(결투, R4 B2) × 1.3(상성: 정예에 강함)
+    // 한 방(274950)이 기본 체력 200000을 넘으므로 체력을 늘려 실제 피해를 본다.
+    place(a.s, [{ progress: 8000, elite: 'swift', hp: 400000, maxHp: 400000 }]);
+    expect(hits(ticks(a.ctx, a.s, 1))).toEqual([[100, 274950]]); // 30000 × 2.35 × 3.0(결투, R4 마지막 조정) × 1.3(상성: 정예에 강함)
 
     const b = arena([['guardian', 8, 2]]);
     branchTo(b.s, 'guardian', 'B');
@@ -242,11 +244,11 @@ describe('P2 1차형(PRD §7.3, §20.3, progression.md §1) — Lv4 레벨 배�
     expect(hits(ticks(b.ctx, b.s, 1))).toEqual([[100, 56400], [101, 56400], [102, 56400]]); // 70500 × 0.8
   });
 
-  it('깃발 A 용기: Lv4 피해 +22% / B 신속: 피해 보너스 없이 공격 속도 +19%(궁수 30틱 → 26틱)', () => {
+  it('깃발 A 용기: Lv4 피해 +28% / B 신속: 피해 보너스 없이 공격 속도 +25%(궁수 30틱 → 24틱, R4 마지막 조정)', () => {
     const a = arena([['archer', 8, 2], ['banner', 8, 0]]);
     branchTo(a.s, 'banner', 'A');
     place(a.s, [{ progress: 8000 }]);
-    expect(firstHit(a.ctx, a.s)).toBe(9760); // 8000 × 1.22(R4 B2)
+    expect(firstHit(a.ctx, a.s)).toBe(10240); // 8000 × 1.28(R4 마지막 조정)
 
     const b = arena([['archer', 8, 2], ['banner', 8, 0]]);
     branchTo(b.s, 'banner', 'B');
@@ -254,7 +256,7 @@ describe('P2 1차형(PRD §7.3, §20.3, progression.md §1) — Lv4 레벨 배�
     const archer = b.s.towers.find(t => t.type === 'archer')!;
     const fired = archer.nextAttackTick!;
     ticks(b.ctx, b.s, 1);
-    expect(archer.nextAttackTick! - fired).toBe(26); // ceil(30 × 10000 / 11900) = ceil(25.2)
+    expect(archer.nextAttackTick! - fired).toBe(24); // ceil(30 × 10000 / 12500) = 24
     expect(firstHit(b.ctx, b.s)).toBe(8000);
   });
 });
