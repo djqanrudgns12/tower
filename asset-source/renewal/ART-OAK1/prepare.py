@@ -47,6 +47,9 @@ FRAME_SIZE = {'frame.lg': 512}          # 나머지 frame은 256
 STRIP_HEIGHT = {'key': 96, 'badge': 48, 'ribbon': 96, 'rule': 24}
 DISPLAY_SCALE = 2                       # 원화는 표시 크기의 2배 밀도
 TILE_SIZE = 256
+# 판 위 글 대비(ui-rules-v4 §2.6): 평균을 --oak-1(#decba8)로 옮기고 결·이음 대비를 이 배율로 줄인다.
+# 0.55에서 128px 표시 --ink 대비 최소 ≥4.5(원본은 평균 6.4·판자 틈 1.4, 세션 K 측정 2026-11-05).
+TILE_TONE = {'oak.board': ((0xde, 0xcb, 0xa8), 0.55)}
 
 
 # ---------------------------------------------------------------- 공통
@@ -294,6 +297,12 @@ def process_tile(id_: str, src: Path) -> tuple[Image.Image, dict]:
     arr = np.dstack([np.clip(blended, 0, 255), np.full((h, w), 255)]).round().astype('uint8')
     img = Image.fromarray(arr, 'RGBA').convert('RGB').resize((TILE_SIZE, TILE_SIZE), Image.Resampling.LANCZOS)
     small = np.asarray(img)
+    if id_ in TILE_TONE:
+        token, k = TILE_TONE[id_]
+        f = small.astype(np.float32)
+        f = np.array(token, np.float32) + k * (f - f.reshape(-1, 3).mean(axis=0))
+        small = np.clip(f, 0, 255).round().astype('uint8')
+        img = Image.fromarray(small, 'RGB')
     sx, sy = seam_ratio(small, 1), seam_ratio(small, 0)
     # 2x2 확인판
     check = Image.new('RGB', (TILE_SIZE * 2, TILE_SIZE * 2))
