@@ -31,10 +31,13 @@ describe('종족 팩과 그림 id', () => {
     draft.factions.tide_crab = { label: '시험 게 종족', artPrefix: 'crab' };
     draft.campaigns.garden_u!.invasionOrder = ['tide_crab', ...draft.campaigns.garden_u!.invasionOrder];
     const b = balanceSchema.parse(draft);
-    const w25 = composeWave(b, 'garden_u', 25, { s: 5 });
-    expect(w25.some(e => e.faction === 'tide_crab')).toBe(true);
-    const boss = w25.find(e => e.kind === 'boss')!;
-    expect(enemyArtId(b, { kind: boss.kind, faction: boss.faction!, bossTier: boss.bossTier ?? null })).toBe('crab.boss10');
+    // 침입 첫 묶음(W16~20)의 종족이 된다. 그 묶음의 대장(W20)은 주력 총대장이라 침입 대장은 다음 순환(W51~55 연합 뒤 첫 단독 묶음)에 나온다.
+    const w17 = composeWave(b, 'garden_u', 17, { s: 5 });
+    const crabs = w17.filter(e => e.faction === 'tide_crab');
+    expect(crabs.length).toBeGreaterThan(0);
+    for (const e of crabs) expect(enemyArtId(b, { kind: e.kind, faction: e.faction!, bossTier: null })).toMatch(/^crab\./);
+    expect(waveFactions(b, 'garden_u', 20).boss).toEqual({ faction: 'acorn_goblin', tier: 4 });
+    expect(enemyArtId(b, { kind: 'boss', faction: 'tide_crab', bossTier: 2 })).toBe('crab.boss10');
   });
   it('없는 종족을 가리키는 편성은 스키마가 거절한다', () => {
     const draft = structuredClone(BALANCE);
@@ -44,29 +47,44 @@ describe('종족 팩과 그림 id', () => {
 });
 
 describe('1~20웨이브 편성(monsters.md §3.1)', () => {
-  it('맵마다 2~3웨이브 간격으로 새 얼굴이 나오고, W14에 비행·W17에 분열이 처음 나온다', () => {
+  it('맵마다 3웨이브 안 간격으로 주력 종족의 새 얼굴이 나오고, W8에 비행·W12에 분열이 처음 나온다(prd-r4 §7.2 C)', () => {
     for (const m of MAPS) {
-      const seen = new Set<string>();
+      const primary = PRIMARY[m.id as keyof typeof PRIMARY];
+      const seen = new Set<string>(), own = new Set<string>();
       const fresh: number[] = [];
       const first: Record<string, number> = {};
       for (let w = 1; w <= 20; w++) {
         const list = composeWave(BALANCE, m.id, w, { s: 100 + w });
         let isNew = false;
         for (const e of list) {
-          if (e.faction !== PRIMARY[m.id as keyof typeof PRIMARY]) throw new Error(`${m.id} W${w}: 주력이 아닌 종족 ${e.faction}`);
+          // 15웨이브까지는 주력 종족만, 16웨이브부터 침입 종족이 섞인다(대장은 20웨이브까지 주력).
+          if (w < BALANCE.waves.invasion.fromWave && e.faction !== primary) throw new Error(`${m.id} W${w}: 주력이 아닌 종족 ${e.faction}`);
           if (!seen.has(art(e))) { seen.add(art(e)); isNew = true; }
+          if (e.faction !== primary) continue;
+          own.add(art(e));
           first[e.kind] ??= w;
         }
         if (isNew) fresh.push(w);
       }
+      // 새 얼굴(주력의 역할·대장, 16웨이브에 침입 종족 전부)이 16웨이브까지 3웨이브 안 간격으로 나오고, 마지막은 20웨이브 총대장이다.
+      // 침입 종족은 16웨이브에 역할 얼굴이 한꺼번에 나오므로 16→20만 4웨이브 간격이다(B3 종족 특성이 이 구간의 변화를 맡는다).
       expect(fresh[0]).toBe(1);
-      for (let i = 1; i < fresh.length; i++) expect(fresh[i]! - fresh[i - 1]!, `${m.id} ${fresh.join(',')}`).toBeLessThanOrEqual(3);
-      expect(fresh.at(-1)).toBe(20);
-      expect(first.flyer).toBe(14);
-      expect(first.splitter).toBe(17);
-      // 일반 8종 + 대장 4종 = 12 얼굴.
-      expect(seen.size).toBe(12);
+      expect(fresh.slice(-2)).toEqual([BALANCE.waves.invasion.fromWave, 20]);
+      for (let i = 1; i < fresh.length - 1; i++) expect(fresh[i]! - fresh[i - 1]!, `${m.id} ${fresh.join(',')}`).toBeLessThanOrEqual(3);
+      expect(first.flyer).toBe(8);
+      expect(first.splitter).toBe(12);
+      // 주력 종족: 일반 8종 + 대장 4종 = 12 얼굴.
+      expect(own.size).toBe(12);
     }
+  });
+  it('정원 역할 첫 등장: 질주 W3·거구 W4·껍질 W6·떼 W7·비행 W8·정령 W10·분열 W12(prd-r4 §7.2 C 표)', () => {
+    const first: Record<string, number> = {};
+    for (let w = 1; w <= 15; w++) for (const r of waveRoleWeights(BALANCE, 'garden_u', w)) first[r.kind] ??= w;
+    expect(first).toEqual({ walker: 1, runner: 3, brute: 4, shell: 6, swarm: 7, flyer: 8, wisp: 10, splitter: 12 });
+    // 다른 맵은 같은 웨이브에 자기 roleOrder의 다음 역할이 나온다(궁궐 뜰: 거구 W3·껍질 W4·질주 W6·정령 W7·떼 W10).
+    const court: Record<string, number> = {};
+    for (let w = 1; w <= 15; w++) for (const r of waveRoleWeights(BALANCE, 'courtyard', w)) court[r.kind] ??= w;
+    expect(court).toEqual({ walker: 1, brute: 3, shell: 4, runner: 6, wisp: 7, flyer: 8, swarm: 10, splitter: 12 });
   });
   it('대장은 5·10·15·20웨이브마다 다른 단계다', () => {
     for (const m of MAPS) {
@@ -81,38 +99,45 @@ describe('1~20웨이브 편성(monsters.md §3.1)', () => {
     expect(waveRoleWeights(BALANCE, 'snow_step', 5).map(x => x.kind).sort()).toEqual(['brute', 'runner', 'walker']);
     expect(waveRoleWeights(BALANCE, 'river_z', 5).map(x => x.kind).sort()).toEqual(['runner', 'swarm', 'walker']);
   });
-  it('W14는 비행 20%, W17부터 비행 15%·분열 15%', () => {
+  it('비행은 W8~9 10%, W10부터 15%, 분열은 W12부터 15%', () => {
     const share = (w: number, kind: string) => {
       const r = waveRoleWeights(BALANCE, 'garden_u', w);
       return (r.find(x => x.kind === kind)?.weight ?? 0) / r.reduce((a, x) => a + x.weight, 0);
     };
-    expect(share(14, 'flyer')).toBeCloseTo(0.2);
-    expect(share(17, 'flyer')).toBeCloseTo(0.15);
-    expect(share(17, 'splitter')).toBeCloseTo(0.15);
-    expect(share(16, 'splitter')).toBe(0);
+    expect(share(7, 'flyer')).toBe(0);
+    expect(share(8, 'flyer')).toBeCloseTo(0.1);
+    expect(share(9, 'flyer')).toBeCloseTo(0.1);
+    expect(share(10, 'flyer')).toBeCloseTo(0.15);
+    expect(share(12, 'flyer')).toBeCloseTo(0.15);
+    expect(share(12, 'splitter')).toBeCloseTo(0.15);
+    expect(share(11, 'splitter')).toBe(0);
   });
 });
 
-describe('21웨이브부터 침입 순환(monsters.md §3.2)', () => {
+describe('16웨이브부터 침입 순환(monsters.md §3.2, prd-r4 §7.2 C)', () => {
   const factionShare = (list: SpawnEntry[], f: string) => list.filter(e => e.kind !== 'boss' && e.faction === f).length / list.filter(e => e.kind !== 'boss').length;
-  it('정원: W21~22 꿀벌레 50%, W23~25 70%, W25 대장은 꿀벌레 2단(W10급)', () => {
-    expect(factionShare(composeWave(BALANCE, 'garden_u', 21, { s: 1 }), 'honey_beetle')).toBeCloseTo(0.5, 1);
-    expect(factionShare(composeWave(BALANCE, 'garden_u', 23, { s: 1 }), 'honey_beetle')).toBeCloseTo(0.7, 1);
-    const w25 = composeWave(BALANCE, 'garden_u', 25, { s: 1 });
-    const boss = w25.find(e => e.kind === 'boss')!;
-    expect([boss.faction, boss.bossTier, art(boss)]).toEqual(['honey_beetle', 2, 'beetle.boss10']);
+  it('정원: W15까지 주력만, W16~17 꿀벌레 50%, W18~20 70%, W20 대장은 주력 총대장(4단)', () => {
+    expect(factionShare(composeWave(BALANCE, 'garden_u', 15, { s: 1 }), 'acorn_goblin')).toBe(1);
+    expect(factionShare(composeWave(BALANCE, 'garden_u', 16, { s: 1 }), 'honey_beetle')).toBeCloseTo(0.5, 1);
+    expect(factionShare(composeWave(BALANCE, 'garden_u', 18, { s: 1 }), 'honey_beetle')).toBeCloseTo(0.7, 1);
+    const w20 = composeWave(BALANCE, 'garden_u', 20, { s: 1 });
+    const boss = w20.find(e => e.kind === 'boss')!;
+    expect([boss.faction, boss.bossTier, art(boss)]).toEqual(['acorn_goblin', 4, 'acorn.boss20']);
+    expect(factionShare(w20, 'honey_beetle')).toBeCloseTo(0.7, 1);
   });
-  it('다음 블록은 순환의 다음 종족이고 대장 단계는 2→3→4→2단으로 돈다', () => {
-    expect(waveFactions(BALANCE, 'garden_u', 26).shares.map(x => x.faction)).toEqual(['acorn_goblin', 'breeze_corsair']);
-    expect(waveFactions(BALANCE, 'garden_u', 30).boss).toEqual({ faction: 'breeze_corsair', tier: 3 });
-    expect(waveFactions(BALANCE, 'garden_u', 35).boss).toEqual({ faction: 'river_rafter', tier: 4 });
-    expect(waveFactions(BALANCE, 'garden_u', 40).boss).toEqual({ faction: 'kiln_pottery', tier: 2 });
+  it('다음 블록은 순환의 다음 종족이고, W25부터 침입 대장 단계는 2→3→4→2단으로 돈다', () => {
+    expect(waveFactions(BALANCE, 'garden_u', 21).shares.map(x => x.faction)).toEqual(['acorn_goblin', 'breeze_corsair']);
+    expect(waveFactions(BALANCE, 'garden_u', 25).boss).toEqual({ faction: 'breeze_corsair', tier: 2 });
+    expect(waveFactions(BALANCE, 'garden_u', 30).boss).toEqual({ faction: 'river_rafter', tier: 3 });
+    expect(waveFactions(BALANCE, 'garden_u', 35).boss).toEqual({ faction: 'kiln_pottery', tier: 4 });
+    expect(waveFactions(BALANCE, 'garden_u', 40).boss).toEqual({ faction: 'brass_mole', tier: 2 });
     expect(waveFactions(BALANCE, 'garden_u', 24).boss).toBeNull();
   });
-  it('56웨이브(블록 7)부터 주력 20% + 두 침입 종족 40%씩 연합', () => {
-    const f = waveFactions(BALANCE, 'garden_u', 56);
+  it('51웨이브(블록 7, 순환 한 바퀴 뒤)부터 주력 20% + 두 침입 종족 40%씩 연합', () => {
+    expect(waveFactions(BALANCE, 'garden_u', 50).shares).toHaveLength(2);
+    const f = waveFactions(BALANCE, 'garden_u', 51);
     expect(f.shares).toEqual([{ faction: 'acorn_goblin', shareBP: 2000 }, { faction: 'honey_beetle', shareBP: 4000 }, { faction: 'kiln_pottery', shareBP: 4000 }]);
-    const list = composeWave(BALANCE, 'garden_u', 56, { s: 9 });
+    const list = composeWave(BALANCE, 'garden_u', 51, { s: 9 });
     expect(factionShare(list, 'acorn_goblin')).toBeCloseTo(0.2, 1);
   });
   it('같은 seed면 같은 편성, 난수 호출 수는 맵·종족과 무관하다', () => {

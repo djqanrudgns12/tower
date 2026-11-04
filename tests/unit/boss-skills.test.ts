@@ -64,6 +64,8 @@ describe('기믹 6종', () => {
   it('방어 태세(정원 W5): 체력 50% 이하가 처음 되면 3초 동안 물리 저항 +35%, 한 번만', () => {
     const { ctx, s } = battle([boss('acorn_goblin', 1)]);
     const e = s.enemies[0]!; freeze(e);
+    // 대장 체력 배율과 무관하게 네 발을 다 받아 내도록 체력을 넉넉히 둔다(맞은 양은 남은 체력을 넘지 않는다).
+    e.maxHp = 1_000_000;
     e.hp = Math.floor(e.maxHp / 2) + 1000;
     shot(s, e, 2000);
     expect(skills(ticks(ctx, s, 1))).toEqual(['iron_stance']);
@@ -89,7 +91,7 @@ describe('기믹 6종', () => {
     const fast = steps.map((d, i) => ({ d, phase: (born + 1 + i - born) % 120 }));
     const slowAvg = fast.filter(x => x.phase < 84).reduce((a, x) => a + x.d, 0) / fast.filter(x => x.phase < 84).length;
     const dashAvg = fast.filter(x => x.phase >= 84).reduce((a, x) => a + x.d, 0) / fast.filter(x => x.phase >= 84).length;
-    expect(dashAvg / slowAvg).toBeCloseTo(11500 / 7500, 1);
+    expect(dashAvg / slowAvg).toBeCloseTo(11500 / BALANCE.enemies.boss.speedBP, 1);
   });
 
   it('진군 북소리(정원 W20): 1.8칸 안 일반 적 속도 +18%, 밖은 그대로, 대장 자신은 아니다', () => {

@@ -1,6 +1,7 @@
 import type { BranchId, FormId, TowerId } from '../contracts/balance';
 import type { OptionId } from '../contracts/questions';
 import type { GameContext } from '../domain/context';
+import { correctGoldAt } from '../domain/run';
 import { formBranch } from '../domain/towers';
 import type { PauseReason, Phase, RunState, RunStats, Tower } from '../domain/types';
 import type { ReviewDelta } from '../persistence/reviewNote';
@@ -118,7 +119,8 @@ export function selectView(ctx: GameContext, s: RunState): GameView {
     burningSecondsLeft: secondsLeft(s.burningUntilTick, s.tick),
     battleStreak: s.quiz.battleStreak,
     stakes: {
-      correctGold: ctx.difficulty.correctGold,
+      // 정답 골드는 웨이브마다 오른다(R4 B1). 화면에 보이는 값도 이번 웨이브 값이다.
+      correctGold: correctGoldAt(ctx.difficulty, Math.max(1, s.wave)),
       correctPt: ctx.difficulty.correctPt,
       wrongPt: ctx.difficulty.wrongPt,
     },

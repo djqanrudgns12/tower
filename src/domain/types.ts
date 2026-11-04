@@ -341,6 +341,11 @@ export interface RunState {
   pt: number;
   waveKillPtGranted: number;
   burningUntilTick: number;
+  /**
+   * 버닝 단계(prd-r4 §7.2 B): 1 = 3연속(+25%), 2 = 6연속 이상(tier2). 켜질 때 정하고 웨이브 완료·패배 때 0. 없으면(옛 상태) 1단으로 본다.
+   * 화면 표시용으로 읽기만 한다. 켜져 있는지는 burningUntilTick이 정한다.
+   */
+  burningTier?: number;
   rng: { battle: number; question: number; option: number; draft: number };
   seq: { command: number; enemy: number; tower: number; projectile: number; hazard: number };
   quiz: QuizState;

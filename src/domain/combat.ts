@@ -11,7 +11,7 @@ import {
 import type {
   Enemy, FieldHazard, HazardStrike, HitFx, Projectile, RollerHazard, RunState, SpawnEntry, SplashHit, Tower, TrapHazard, ZoneHazard, ZoneSpec,
 } from './types';
-import { airborne, enemyMaxHp, enemyResists, enemySpeedBP, hpBaseMilli } from './waves';
+import { airborne, difficultyHpBP, enemyMaxHp, enemyResists, enemySpeedBP, waveHpBaseMilli } from './waves';
 
 // 같은 틱 순서(PRD §3.4, §20.3): 만료 → 생성 → 도착 공격(장판 착탄 포함) → 화상 → 장판·덫·굴림체(towers.md §4-7) → 대장 회복
 // → 상시 오라 → 타워 발사(즉발·다연발·덫 놓기·굴림체 투입 포함) → 이동/누출.
@@ -51,8 +51,10 @@ export function battleTick(ctx: GameContext, s: RunState, ev: DomainEvent[]): vo
   if (s.enemies.some(e => !e.alive)) s.enemies = s.enemies.filter(e => e.alive);
 }
 
-/** 버닝 중 공격 속도 보너스(PRD §5). 발사와 전투 중 구매가 같은 값을 쓴다. */
-export const burningBonusBP = (ctx: GameContext, s: RunState, tick: number) => (tick < s.burningUntilTick ? ctx.balance.burning.attackSpeedBP : 0);
+/** 버닝 단계의 공격 속도 보너스: 2단(tier2가 있을 때)은 tier2.attackSpeedBP, 그 밖은 1단(prd-r4 §7.2 B). */
+export const burningSpeedBP = (b: GameContext['balance'], tier: number) => (tier >= 2 && b.burning.tier2 ? b.burning.tier2.attackSpeedBP : b.burning.attackSpeedBP);
+/** 버닝 중 공격 속도 보너스(PRD §5). 발사와 전투 중 구매가 같은 값을 쓴다. 단계가 없는 옛 상태는 1단이다. */
+export const burningBonusBP = (ctx: GameContext, s: RunState, tick: number) => (tick < s.burningUntilTick ? burningSpeedBP(ctx.balance, s.burningTier ?? 1) : 0);
 const burningNow = (s: RunState) => s.tick < s.burningUntilTick;
 
 function spawn(ctx: GameContext, s: RunState, ev: DomainEvent[]) {
@@ -67,7 +69,7 @@ function addEnemy(ctx: GameContext, s: RunState, entry: SpawnEntry, hpBase: numb
   const bossTier = entry.kind === 'boss' ? (entry.bossTier ?? 1) : null;
   // 대장 기믹과 체력 보정(monsters.md §0-4·§2.0): 생존형(겹방패·회복)은 체력을 낮춰 시작한다.
   const def = bossDef(b, { kind: entry.kind, faction, bossTier });
-  const hp = enemyMaxHp(b, ctx.difficulty, hpBase, entry.kind, entry.elite, def?.hpScaleBP ?? 10000);
+  const hp = enemyMaxHp(b, ctx.difficulty, hpBase, entry.kind, entry.elite, def?.hpScaleBP ?? 10000, difficultyHpBP(ctx.difficulty, s.wave));
   const res = enemyResists(b, entry.kind, entry.elite);
   const skill = def?.skill;
   const enemy: Enemy = {
@@ -557,7 +559,7 @@ function bossThresholds(ctx: GameContext, s: RunState, e: Enemy, ev: DomainEvent
     while (st.escortStep < skill.thresholdsBP.length && below(skill.thresholdsBP[st.escortStep]!)) {
       st.escortStep++;
       ev.push({ type: 'bossSkill', enemyId: e.id, skill: 'call_escort' });
-      const hpBase = s.battle?.hpBaseMilli ?? hpBaseMilli(ctx.balance, s.wave);
+      const hpBase = s.battle?.hpBaseMilli ?? waveHpBaseMilli(ctx.balance, s.wave);
       const n = skill.escorts.length;
       skill.escorts.forEach((kind, i) => {
         const offset = n === 1 ? skill.spreadMilli : -skill.spreadMilli + Math.floor((2 * skill.spreadMilli * i) / (n - 1));
@@ -759,7 +761,7 @@ function killGoldAura(ctx: GameContext, s: RunState, killer: number, ev: DomainE
 function split(ctx: GameContext, s: RunState, e: Enemy, ev: DomainEvent[]) {
   const rule = ctx.balance.enemies[e.kind].split;
   if (!rule) return;
-  const hpBase = s.battle?.hpBaseMilli ?? hpBaseMilli(ctx.balance, s.wave);
+  const hpBase = s.battle?.hpBaseMilli ?? waveHpBaseMilli(ctx.balance, s.wave);
   for (let i = 0; i < rule.count; i++) {
     const offset = rule.count === 1 ? 0 : -rule.spreadMilli + Math.floor((2 * rule.spreadMilli * i) / (rule.count - 1));
     const progress = Math.min(ctx.path.length - 1, Math.max(0, e.progress + offset));

@@ -6,12 +6,12 @@ import type { DomainEvent } from './events';
 import { openDraft, pickDraft, startingOwned } from './draft';
 import { center } from './geometry';
 import { removeTowerHazards, settleHazardsAtWaveEnd } from './hazards';
-import { add, msToTicks } from './num';
+import { add, msToTicks, mulDivFloor } from './num';
 import { createEncounter, MAX_REVIEW_SENSES } from './quiz';
 import { RNG_ALGORITHM, streamSeed } from './rng';
 import { attackIntervalTicks, attacks, buildCost, evolutionChoices, sellRefund, towerStats, upgradeCost } from './towers';
 import { RULES_VERSION, RUN_STATE_VERSION, type PauseReason, type ReviewSense, type RunConfig, type RunState, type Tower } from './types';
-import { composeWave, hpBaseMilli, isMilestone, spawnIntervalTicks } from './waves';
+import { composeWave, isMilestone, spawnIntervalTicks, waveHpBaseMilli } from './waves';
 
 export type Command =
   | { type: 'answer'; encounterId: number; choice: OptionId }
@@ -55,6 +55,15 @@ function copyReviewSenses(input: readonly ReviewSense[] | undefined): ReviewSens
     out.push({ senseKey: sense.senseKey, lemma: sense.lemma, questionIds: [...sense.questionIds], misses: sense.misses, lastSeenAt: sense.lastSeenAt });
   }
   return out;
+}
+
+/**
+ * 정답 1회 골드(prd-r4 §7.2 B): correctGold + floor(correctGoldPerWaveBP × (웨이브 − 1) / 10000). 웨이브는 문항이 나온 웨이브
+ * (준비 문항은 그 웨이브, 마무리 문항은 막 지킨 웨이브)다. 오답·'모르겠어요'는 0골드 그대로다(확정).
+ */
+export function correctGoldAt(d: GameContext['difficulty'], wave: number): number {
+  const perWave = d.correctGoldPerWaveBP ?? 0;
+  return perWave === 0 ? d.correctGold : add(d.correctGold, mulDivFloor(perWave, Math.max(0, wave - 1), 10000, 'correctGold'), 'correctGold');
 }
 
 export function createRun(ctx: GameContext, input: NewRunInput): RunState {
@@ -135,7 +144,7 @@ function answer(ctx: GameContext, s: RunState, encounterId: number, choice: Opti
   const d = ctx.difficulty;
   const result = choice === 'skipped' ? 'skipped' : choice === q.correctOptionId ? 'correct' : 'wrong';
   const pt = result === 'correct' ? d.correctPt : result === 'wrong' ? d.wrongPt : d.skipPt;
-  const gold = result === 'correct' ? d.correctGold : 0;
+  const gold = result === 'correct' ? correctGoldAt(d, enc.wave) : 0;
   // 합계를 모두 계산한 뒤 반영한다. 하나라도 안전 범위를 넘으면 아무것도 바꾸지 않고 던진다(PRD §3.4(2), §8.6).
   const totals = { pt: add(s.pt, pt, 'pt'), gold: add(s.gold, gold, 'gold'), ptFromQuestions: add(s.stats.ptFromQuestions, pt), goldEarned: add(s.stats.goldEarned, gold) };
   enc.answer = { choice, tick: s.tick, correct: result === 'correct', pt, gold };
@@ -149,11 +158,16 @@ function answer(ctx: GameContext, s: RunState, encounterId: number, choice: Opti
   s.quiz.history.push(structuredClone(enc));
   if (s.phase === 'PREP_QUIZ') s.quiz.prepDone++;
   // 버닝은 전투 문항만 충전한다. 준비·마무리 문항은 충전하지 않는다(PRD §5).
+  // 연속 수가 웨이브를 넘어 이어지는 규칙(streakAcrossWaves)에서는 마무리 문항(전투 문항)의 오답·'모르겠어요'도 연속을 끊는다.
+  if (s.phase === 'WAVE_WRAPUP' && enc.phase === 'battle' && result !== 'correct' && ctx.balance.burning.streakAcrossWaves) s.quiz.battleStreak = 0;
   if (s.phase === 'BATTLE' && !enc.wrapup) {
     if (result === 'correct') {
       s.quiz.battleStreak++;
-      if (s.quiz.battleStreak % ctx.balance.burning.streak === 0) {
-        s.burningUntilTick = s.tick + msToTicks(ctx.balance.burning.durationMs);
+      const burning = ctx.balance.burning;
+      if (s.quiz.battleStreak % burning.streak === 0) {
+        // 6연속 이상이면 2단(tier2), 아니면 1단. 다시 켜지면 그 단계로 지금부터 durationMs를 새로 센다(prd-r4 §7.2 B).
+        s.burningTier = burning.tier2 && s.quiz.battleStreak >= burning.tier2.streak ? 2 : 1;
+        s.burningUntilTick = s.tick + msToTicks(burning.durationMs);
         ev.push({ type: 'burning', untilTick: s.burningUntilTick });
       }
     } else s.quiz.battleStreak = 0;
@@ -309,7 +323,7 @@ function startBattle(ctx: GameContext, s: RunState, ev: DomainEvent[]): CommandE
   const rng = { s: s.rng.battle };
   const spawnList = composeWave(b, ctx.map.id, s.wave, rng);
   s.rng.battle = rng.s;
-  s.battle = { spawnList, spawnIndex: 0, nextSpawnTick: s.tick + 1, intervalTicks: spawnIntervalTicks(b, s.wave), hpBaseMilli: hpBaseMilli(b, s.wave), startedTick: s.tick };
+  s.battle = { spawnList, spawnIndex: 0, nextSpawnTick: s.tick + 1, intervalTicks: spawnIntervalTicks(b, s.wave), hpBaseMilli: waveHpBaseMilli(b, s.wave), startedTick: s.tick };
   // 시작 때 버닝은 없고(0), 깃발 B의 속도 보너스는 바로 적용한다.
   for (const t of s.towers) {
     t.nextAttackTick = attacks(b, t.type) ? s.tick + attackIntervalTicks(b, towerStats(b, t.type, t.level, t.form), towerSpeedBonusBP(ctx, s, t)) : null;
@@ -317,7 +331,7 @@ function startBattle(ctx: GameContext, s: RunState, ev: DomainEvent[]): CommandE
     t.burst = null; t.focus = null; t.auraGold = 0;
   }
   s.phase = 'BATTLE';
-  s.quiz.battleStreak = 0;
+  if (!b.burning.streakAcrossWaves) s.quiz.battleStreak = 0;
   s.quiz.current = createEncounter(ctx, s, 'battle');
   ev.push({ type: 'phase', phase: 'BATTLE', wave: s.wave }, { type: 'encounter', encounterId: s.quiz.current.id });
   return null;
@@ -339,6 +353,7 @@ function endRun(s: RunState, reason: 'DEFEAT' | 'QUIT', ev: DomainEvent[]) {
   s.hazards = [];
   // 패배·종료 때도 버닝과 전투 연속 카운트를 초기화한다(PRD §5).
   s.burningUntilTick = -1;
+  if (s.burningTier !== undefined) s.burningTier = 0;
   s.quiz.battleStreak = 0;
   ev.push({ type: 'gameOver', completedWave: s.completedWave, endedAtWave: s.wave, reason }, { type: 'phase', phase: 'GAME_OVER', wave: s.wave });
 }
@@ -348,7 +363,9 @@ function completeWave(ctx: GameContext, s: RunState, ev: DomainEvent[]) {
   s.completedWave = s.wave;
   s.gateHp = s.gateMaxHp;
   s.burningUntilTick = -1;
-  s.quiz.battleStreak = 0;
+  if (s.burningTier !== undefined) s.burningTier = 0;
+  // 버닝은 끄고, 연속 수는 streakAcrossWaves일 때만 다음 웨이브로 넘긴다(prd-r4 §7.2 B).
+  if (!b.burning.streakAcrossWaves) s.quiz.battleStreak = 0;
   s.projectiles = [];
   s.enemies = [];
   s.battle = null;

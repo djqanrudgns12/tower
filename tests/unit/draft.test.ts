@@ -1,17 +1,18 @@
 import { describe, expect, it } from 'vitest';
-import { TOWER_IDS, type TowerId } from '../../src/contracts/balance';
+import { balanceSchema, TOWER_IDS, type TowerId } from '../../src/contracts/balance';
 import { BALANCE, PILOT_TOWERS } from '../../src/content';
 import type { GameContext } from '../../src/domain/context';
-import { draftOffer, draftPool, nextDraftWave, ownedTowers } from '../../src/domain/draft';
+import { draftOffer, draftPool, nextDraftWave, ownedTowers, uncoveredNewRole } from '../../src/domain/draft';
 import type { DomainEvent } from '../../src/domain/events';
 import { applyCommand, createRun } from '../../src/domain/run';
 import type { RunState } from '../../src/domain/types';
 import { answerCurrent, finishPrep, newRun, ok, THREE_TOWERS, ticks } from './helpers';
 
-// 판 안 징집(docs/renewal/catalog/towers.md §0-2·§5 안 1): 기본 4종 시작, W3·W6·W10·W14 뒤 3종 중 1종, 장착함 8칸.
+// 판 안 징집(docs/renewal/catalog/towers.md §0-2·§5 안 1): 기본 4종 시작, W3·W6·W9·W12 뒤 3종 중 1종, 장착함 8칸(prd-r4 §7.2 C).
 
-function allTowersRun(seed = 21) {
-  const { ctx } = newRun('Normal', seed);
+function allTowersRun(seed = 21, balance?: GameContext['balance']) {
+  const { ctx: base } = newRun('Normal', seed);
+  const ctx = balance ? { ...base, balance } : base;
   const s = createRun(ctx, {
     runId: `draft-${seed}`, playerId: 'p1', nickname: '시험', grade: 3, difficulty: 'Normal', mapId: ctx.map.id, seed,
     bankId: 'g3-dev', bankVersion: '0.1.0-dev', contentMode: 'development', availableTowers: [...TOWER_IDS],
@@ -95,11 +96,12 @@ describe('장착함과 징집', () => {
   it('고르지 않은 채 다음 징집 웨이브를 지키면 앞 후보의 첫 카드로 정하고 새 후보를 연다. 장착함은 8칸에서 멈춘다', () => {
     const { ctx, s } = allTowersRun(33);
     const picked: Array<{ tower: TowerId; auto: boolean }> = [];
-    for (let w = 1; w <= 14; w++) {
+    expect(BALANCE.draft.afterWaves).toEqual([3, 6, 9, 12]);
+    for (let w = 1; w <= 12; w++) {
       for (const e of clearWave(ctx, s)) if (e.type === 'draftPicked') picked.push({ tower: e.tower, auto: e.auto });
     }
     expect(picked.map(p => p.auto)).toEqual([true, true, true]);
-    expect(s.draft?.wave).toBe(14);
+    expect(s.draft?.wave).toBe(12);
     expect(s.owned).toHaveLength(7);
     ok(ctx, s, { type: 'draftPick', tower: s.draft!.offers[2]! });
     expect(s.owned).toHaveLength(BALANCE.draft.maxOwned);
@@ -115,6 +117,37 @@ describe('장착함과 징집', () => {
     finishPrep(a.ctx, a.s); finishPrep(pilot.ctx, pilot.s);
     ok(a.ctx, a.s, { type: 'startBattle' }); ok(pilot.ctx, pilot.s, { type: 'startBattle' });
     expect(a.s.battle!.spawnList).toEqual(pilot.s.battle!.spawnList);
+  });
+
+  it('대응 보장 대상: 3웨이브 안에 처음 나오는 역할 가운데 장착함에 강점 타워가 없는 첫 역할(prd-r4 §7.2 C)', () => {
+    const start = BALANCE.draft.startTowers;
+    // 정원: W4 거구(창병·투석·약병·덫)는 시작 4종으로 못 막는다. W6 껍질은 마법탑이 막는다.
+    expect(uncoveredNewRole(BALANCE, 'garden_u', 3, start)).toEqual({ role: 'brute', wave: 4, towers: BALANCE.draft.counters!.brute });
+    expect(uncoveredNewRole(BALANCE, 'garden_u', 3, [...start, 'sling'])).toBeNull();
+    // 정원 W6 뒤: W7 떼(포탑)·W8 비행(궁수)은 시작 4종이 막는다.
+    expect(uncoveredNewRole(BALANCE, 'garden_u', 6, start)).toBeNull();
+    // 궁궐 뜰: W4 껍질은 마법탑이 막고, W6 질주(창병·매사냥·덫)가 대상이다.
+    expect(uncoveredNewRole(BALANCE, 'courtyard', 3, start)).toMatchObject({ role: 'runner', wave: 6 });
+    // 이미 나온 역할은 대상이 아니다(정원 W3 질주는 W3에 나왔다).
+    expect(uncoveredNewRole(BALANCE, 'garden_u', 2, start)).toMatchObject({ role: 'runner', wave: 3 });
+    expect(uncoveredNewRole(BALANCE, 'garden_u', 12, start)).toBeNull();
+  });
+
+  it('대응 보장: 후보 3장 중 하나는 곧 나오는 역할의 강점 타워이고, 징집 난수 소비는 보장이 없을 때와 같다', () => {
+    const off = balanceSchema.parse({ ...structuredClone(BALANCE), draft: { ...structuredClone(BALANCE.draft), counterLookahead: 0 } });
+    let replaced = 0;
+    for (let seed = 1; seed <= 24; seed++) {
+      const on = allTowersRun(seed), plain = allTowersRun(seed, off);
+      for (let w = 1; w <= 3; w++) { clearWave(on.ctx, on.s); clearWave(plain.ctx, plain.s); }
+      const offers = on.s.draft!.offers, before = plain.s.draft!.offers;
+      expect(offers.some(t => BALANCE.draft.counters!.brute!.includes(t)), `seed ${seed}`).toBe(true);
+      expect(new Set(offers).size).toBe(3);
+      expect(on.s.rng.draft).toBe(plain.s.rng.draft);
+      // 이미 강점 타워가 있으면 그대로, 없으면 마지막 한 장만 바뀐다.
+      expect(offers.slice(0, 2)).toEqual(before.slice(0, 2));
+      if (offers[2] !== before[2]) replaced++;
+    }
+    expect(replaced).toBeGreaterThan(0);
   });
 
   it('정지 중에는 고를 수 없다', () => {

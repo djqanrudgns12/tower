@@ -46,10 +46,17 @@ const difficulty = z.object({
   label: z.string().min(1),
   gateHp: int.min(1),
   enemyHpBP: bp,
+  /**
+   * 난이도 HP 배율의 초반 진입(prd-r4 §7.1: 어려움·아주 어려움 1웨이브 패배 상한). 1웨이브는 fromBP이고 waves웨이브에 걸쳐
+   * enemyHpBP까지 선형으로 오른다((1+waves)웨이브부터 enemyHpBP). 없으면 처음부터 enemyHpBP.
+   */
+  enemyHpRamp: z.object({ fromBP: bp, waves: int.min(1) }).optional(),
   correctPt: int,
   wrongPt: int.max(0),
   skipPt: int.max(0),
   correctGold: nonNeg,
+  /** 정답 골드의 웨이브 성장(prd-r4 §7.2 B): 정답 골드 = correctGold + floor(이 값 × (웨이브 − 1) / 10000). 없으면 0(고정). */
+  correctGoldPerWaveBP: nonNeg.optional(),
   killGold: tiers,
   killPt: tiers,
   waveKillPtCap: nonNeg,
@@ -302,7 +309,16 @@ export const balanceSchema = z.object({
   waves: z.object({
     baseHpMilli: int.min(1),
     hpGrowthPercent: int.min(100),
-    count: z.object({ base: int.min(1), step: nonNeg, stepEveryWaves: int.min(1), max: int.min(1) }),
+    /**
+     * 적 수 = min(max, base + step × floor((w − 1) / stepEveryWaves)). hpReference가 있으면 그 증가 폭(같은 base·max)으로 센 수를
+     * 웨이브 총 HP의 기준으로 삼아, 줄어든 적 수만큼 개체 HP로 옮긴다(prd-r4 §7.2 A: 적 수를 줄여도 총 HP는 그대로).
+     */
+    count: z.object({
+      base: int.min(1), step: nonNeg, stepEveryWaves: int.min(1), max: int.min(1),
+      hpReference: z.object({ step: nonNeg, stepEveryWaves: int.min(1) }).optional(),
+    }),
+    /** 초반 완충(prd-r4 §7.2 A): [i]는 (i+1)웨이브의 기준 HP 배율. 표 밖 웨이브는 10000. */
+    earlyHpBP: z.array(bp).optional(),
     spawnIntervalMs: z.object({ overrides: z.record(z.string().regex(/^[1-9]\d*$/), int.min(1)), base: int.min(1), perWave: int, min: int.min(1) }),
     bossEveryWaves: int.min(1),
     eliteRate: z.object({ fromWave: int.min(1), baseBP: bp, perWaveBP: bp, maxBP: bp }),
@@ -321,10 +337,21 @@ export const balanceSchema = z.object({
       invaderShareBPByOffset: z.array(int.min(0).max(10000)).min(1),
       bossTiers: z.array(z.literal([...BOSS_TIERS])).min(1),
       alliance: z.object({ fromBlock: nonNeg, primaryShareBP: int.min(0).max(10000), secondOffset: int.min(1) }),
+      /** 이 웨이브까지의 대장 웨이브는 침입 중이어도 주력 종족의 대장(1~4단)이 나온다(prd-r4 §7.2 C: 침입을 당겨도 W20 총대장은 남긴다). */
+      primaryBossUntilWave: nonNeg.optional(),
     }),
     baseTravelTicks: int.min(1),
   }),
-  burning: z.object({ streak: int.min(1), durationMs: nonNeg, attackSpeedBP: bp }),
+  /**
+   * 버닝(PRD §5): 전투 연속 정답 streak마다. tier2가 있으면 연속 정답이 tier2.streak 이상일 때 2단(더 큰 공격 속도)으로 켠다(prd-r4 §7.2 B).
+   * streakAcrossWaves가 true면 전투 연속 정답 수가 웨이브를 넘어 이어진다(버닝 자체는 웨이브가 끝나면 꺼진다). 전투 문항(마무리 포함)의
+   * 오답·'모르겠어요'만 끊고, 준비 문항은 세지도 끊지도 않는다. 웨이브당 전투 문항이 2~3개라 웨이브마다 끊으면 6연속(2단)이 나올 수 없다.
+   */
+  burning: z.object({
+    streak: int.min(1), durationMs: nonNeg, attackSpeedBP: bp,
+    tier2: z.object({ streak: int.min(1), attackSpeedBP: bp }).optional(),
+    streakAcrossWaves: z.boolean().optional(),
+  }),
   externalCaps: z.object({ damageBP: bp, attackSpeedBP: bp, minAttackIntervalMs: nonNeg }),
   levels: z.object({
     /** 정수면 그 레벨이 상한, null이면 무제한. */
@@ -343,7 +370,15 @@ export const balanceSchema = z.object({
    * 판 안 징집(towers.md §0-2·§5 안 1): startTowers로 시작하고, afterWaves 웨이브를 지킨 뒤 아직 없는 타워 offerCount종 가운데 하나를 고른다.
    * 장착함은 maxOwned칸까지. 시작 타워·후보는 그 판의 availableTowers 안에서만 고른다.
    */
-  draft: z.object({ startTowers: z.array(z.enum(TOWER_IDS)).min(1), afterWaves: z.array(int.min(1)), offerCount: int.min(1), maxOwned: int.min(1) }),
+  draft: z.object({
+    startTowers: z.array(z.enum(TOWER_IDS)).min(1), afterWaves: z.array(int.min(1)), offerCount: int.min(1), maxOwned: int.min(1),
+    /**
+     * 대응 보장(prd-r4 §7.2 C): 지킨 웨이브 뒤 counterLookahead웨이브 안에 처음 나오는 역할의 강점 타워(counters[역할])가 장착함에 없으면
+     * 후보 하나를 그 강점 타워로 낸다. B2의 타워별 strongVs가 들어오기 전까지 쓰는 최소 대응표다.
+     */
+    counters: z.partialRecord(z.enum(REGULAR_KINDS), z.array(z.enum(TOWER_IDS)).min(1)).optional(),
+    counterLookahead: nonNeg.optional(),
+  }),
   factions: z.record(factionId, faction),
   /** 맵 ID → 원정 편성. 모든 맵이 하나씩 가진다(content 시험). */
   campaigns: z.record(z.string().regex(/^[a-z_]+$/), campaign),
@@ -362,6 +397,8 @@ export const balanceSchema = z.object({
     const child = b.enemies[e.split.kind];
     if (e.split.kind === 'boss' || child.split) ctx.addIssue({ code: 'custom', message: `${kind}: 분열 파생체는 대장이 아니고 다시 분열하지 않아야 한다` });
   }
+  const tier2 = b.burning.tier2;
+  if (tier2 && (tier2.streak <= b.burning.streak || tier2.streak % b.burning.streak !== 0)) ctx.addIssue({ code: 'custom', message: '버닝 2단 연속 수는 1단 연속 수의 배수(2배 이상)여야 한다' });
   const dr = b.draft;
   if (new Set(dr.startTowers).size !== dr.startTowers.length || dr.startTowers.length > dr.maxOwned) ctx.addIssue({ code: 'custom', message: '징집 시작 타워가 겹치거나 장착함보다 많다' });
   if (dr.afterWaves.some((w, i) => i > 0 && w <= dr.afterWaves[i - 1]!)) ctx.addIssue({ code: 'custom', message: '징집 웨이브는 오름차순이어야 한다' });

@@ -24,9 +24,49 @@ export function hpBaseMilli(b: Balance, wave: number): number {
   return hp;
 }
 
-/** 난이도→종류→정예→대장 기믹 보정 순서로 한 단계씩 올림(PRD §8.2, monsters.md §0-4). */
-export function enemyMaxHp(b: Balance, d: DifficultyConfig, baseMilli: number, kind: EnemyKind, elite: EliteId | null, bossScaleBP = 10000): number {
-  let hp = bpCeil(baseMilli, d.enemyHpBP, 'hp.difficulty');
+/**
+ * 웨이브 총 HP의 기준이 되는 적 수(prd-r4 §7.2 A). count.hpReference가 있으면 그 증가 폭(base·max는 같다)으로 센 수, 없으면 편성 수.
+ * 1웨이브는 언제나 base라 편성 수와 같다.
+ */
+export function hpReferenceCount(b: Balance, wave: number): number {
+  const c = b.waves.count;
+  if (!c.hpReference) return waveCount(b, wave);
+  return Math.min(c.max, c.base + c.hpReference.step * Math.floor((wave - 1) / c.hpReference.stepEveryWaves));
+}
+
+/** 초반 완충 배율(BP, prd-r4 §7.2 A). 표 밖 웨이브는 10000. */
+export const earlyHpBP = (b: Balance, wave: number): number => b.waves.earlyHpBP?.[wave - 1] ?? 10000;
+
+/**
+ * 전투에서 쓰는 웨이브 기준 HP(milli): 115% 점화식(hpBaseMilli, 사용자 확정) → 줄인 적 수만큼 개체 HP로 옮김(기준 수/편성 수, 올림)
+ * → 초반 완충(올림). 웨이브 총 HP는 기준 수로 센 옛 편성과 같고, 초반 완충 웨이브만 그만큼 낮다.
+ */
+export function waveHpBaseMilli(b: Balance, wave: number): number {
+  let hp = hpBaseMilli(b, wave);
+  const n = waveCount(b, wave), ref = hpReferenceCount(b, wave);
+  if (ref !== n) hp = mulDivCeil(hp, ref, n, 'hpBase.carry');
+  const early = earlyHpBP(b, wave);
+  if (early !== 10000) hp = bpCeil(hp, early, 'hpBase.early');
+  return hp;
+}
+
+/**
+ * 웨이브 wave의 난이도 HP 배율(BP). enemyHpRamp가 있으면 1웨이브 fromBP에서 waves웨이브에 걸쳐 enemyHpBP까지 선형(0 쪽 버림)으로 오르고,
+ * 없으면 enemyHpBP 그대로다(prd-r4 §7.1 어려움·아주 어려움 1웨이브).
+ */
+export function difficultyHpBP(d: DifficultyConfig, wave: number): number {
+  const r = d.enemyHpRamp;
+  if (!r) return d.enemyHpBP;
+  const step = Math.min(Math.max(0, wave - 1), r.waves);
+  return r.fromBP + Math.trunc(((d.enemyHpBP - r.fromBP) * step) / r.waves);
+}
+
+/**
+ * 난이도→종류→정예→대장 기믹 보정 순서로 한 단계씩 올림(PRD §8.2, monsters.md §0-4). difficultyBP는 그 웨이브의 난이도 배율
+ * (difficultyHpBP)이고, 생략하면 d.enemyHpBP다.
+ */
+export function enemyMaxHp(b: Balance, d: DifficultyConfig, baseMilli: number, kind: EnemyKind, elite: EliteId | null, bossScaleBP = 10000, difficultyBP = d.enemyHpBP): number {
+  let hp = bpCeil(baseMilli, difficultyBP, 'hp.difficulty');
   hp = bpCeil(hp, b.enemies[kind].hpBP, 'hp.kind');
   if (elite) hp = bpCeil(hp, b.elites[elite].hpBP, 'hp.elite');
   if (bossScaleBP !== 10000) hp = bpCeil(hp, bossScaleBP, 'hp.bossScale');

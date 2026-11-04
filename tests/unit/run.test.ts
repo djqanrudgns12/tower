@@ -1,6 +1,8 @@
 import fc from 'fast-check';
 import { describe, expect, it } from 'vitest';
 import type { OptionId } from '../../src/contracts/questions';
+import { BALANCE } from '../../src/content';
+import { msToTicks } from '../../src/domain/num';
 import { createEncounter } from '../../src/domain/quiz';
 import { advanceTick, applyCommand, type Command } from '../../src/domain/run';
 import { attackIntervalTicks, evolutionChoices, towerStats } from '../../src/domain/towers';
@@ -224,18 +226,21 @@ describe('문항·점수(PRD §4.3~4.4, §5)', () => {
     expect(s.phase).toBe('PREP_QUIZ');
   });
 
-  it('A12: 3연속 정답마다 버닝 8초 갱신, 오답은 연속 0, 웨이브 종료 때 버닝 0', () => {
+  it('A12: 3연속 정답마다 버닝(durationMs) 갱신, 오답은 연속 0, 웨이브 종료 때 버닝 0', () => {
     const { ctx, s } = newRun();
     finishPrep(ctx, s);
     ok(ctx, s, { type: 'startBattle' });
     s.battle!.spawnList = Array.from({ length: 24 }, () => ({ kind: 'brute' as const, elite: null }));
+    // R4 B1: 버닝 지속 12초(360틱).
+    const duration = msToTicks(BALANCE.burning.durationMs);
+    expect(duration).toBe(360);
     for (let i = 0; i < 3; i++) answerCurrent(ctx, s, 'correct');
-    expect(s.burningUntilTick).toBe(s.quiz.history.at(-1)!.answer!.tick + 240);
+    expect(s.burningUntilTick).toBe(s.quiz.history.at(-1)!.answer!.tick + duration);
     answerCurrent(ctx, s, 'wrong');
     expect(s.quiz.battleStreak).toBe(0);
     for (let i = 0; i < 3; i++) answerCurrent(ctx, s, 'correct');
     const refreshed = s.burningUntilTick;
-    expect(refreshed).toBe(s.quiz.history.at(-1)!.answer!.tick + 240);
+    expect(refreshed).toBe(s.quiz.history.at(-1)!.answer!.tick + duration);
     runUntil(ctx, s, ['WAVE_WRAPUP', 'PREP_QUIZ', 'GAME_OVER']);
     expect(s.burningUntilTick).toBe(-1);
   });

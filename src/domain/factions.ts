@@ -63,7 +63,8 @@ export interface WaveFactions {
 
 /**
  * 웨이브의 종족 비율과 대장(monsters.md §3). 20웨이브까지는 주력 종족만, 5웨이브마다 그 종족의 1~4단 대장이 나온다.
- * invasion.fromWave부터는 blockWaves 묶음마다 invasionOrder의 다음 종족이 침입하고, 대장 웨이브의 대장은 침입 종족이다.
+ * invasion.fromWave부터는 blockWaves 묶음마다 invasionOrder의 다음 종족이 침입하고, 대장 웨이브의 대장은 침입 종족이다
+ * (invasion.primaryBossUntilWave까지의 대장 웨이브는 주력 종족 대장).
  */
 export function waveFactions(b: Balance, mapId: string, wave: number): WaveFactions {
   const c = campaignOf(b, mapId);
@@ -77,7 +78,11 @@ export function waveFactions(b: Balance, mapId: string, wave: number): WaveFacti
   const block = Math.floor(k / inv.blockWaves);
   const order = c.invasionOrder;
   const first = order[block % order.length]!;
-  const boss = milestone ? { faction: first, tier: inv.bossTiers[block % inv.bossTiers.length]! } : null;
+  // 침입이 일찍 시작해도 primaryBossUntilWave까지의 대장은 주력 종족의 1~4단 대장이다(prd-r4 §7.2 C, W20 총대장 유지).
+  const primaryBoss = milestone && wave <= (inv.primaryBossUntilWave ?? 0);
+  const boss = !milestone ? null
+    : primaryBoss ? { faction: c.primary, tier: Math.min(4, Math.max(1, Math.floor(wave / b.waves.bossEveryWaves))) as BossTier }
+    : { faction: first, tier: inv.bossTiers[block % inv.bossTiers.length]! };
   if (block >= inv.alliance.fromBlock) {
     const second = order[(block + inv.alliance.secondOffset) % order.length]!;
     const rest = 10000 - inv.alliance.primaryShareBP;
