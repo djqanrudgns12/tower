@@ -2,6 +2,8 @@
 
 작성: 2026-11-04 · 총괄 Claude. 앱·규칙·밸런스 버전은 모두 `1.0.0`이다(`package.json`, `RULES_VERSION`, `balanceVersion`).
 
+> 어디에 올리고 사람이 무엇을 하는지는 초보자용 [호스팅·운영 계획서](HOSTING_PLAN.md)가 기준이다(Cloudflare Workers + Supabase). 아래 §3.2의 소금값 방식은 계획서 §4-2에 따라 금고(Vault) 방식으로 바뀔 예정이다.
+
 ## 1. 무엇을 배포하나
 
 - **정적 웹앱** 하나(`dist/`). 서버 코드는 없다. 어느 정적 호스팅(Vercel·Netlify·Cloudflare Pages·GitHub Pages 등)에도 올릴 수 있다.
@@ -33,7 +35,7 @@ npm run build
 ### 3.2 Supabase(쓸 때만)
 1. 프로젝트를 만들고 **익명 로그인**(Authentication → Anonymous sign-ins)을 켠다.
 2. `supabase/migrations/*.sql`을 이름 순서대로 적용한다(`supabase db push` 또는 SQL 편집기).
-3. 비밀 소금값을 넣는다(무작위 긴 문자열, 저장소에 남기지 않는다):
+3. 비밀 소금값을 넣는다(무작위 긴 문자열, 저장소에 남기지 않는다). 호스팅 Supabase에서는 아래 명령이 권한 때문에 막힐 수 있어, 금고(Vault) 방식으로 바꾼다([계획서 §4-2](HOSTING_PLAN.md)):
    ```sql
    alter database postgres set app.player_salt = '<무작위 긴 문자열>';
    ```
