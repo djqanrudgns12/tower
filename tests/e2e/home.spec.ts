@@ -169,6 +169,9 @@ test.describe('랜딩 페이지(방향 2-A: 왕국 참나무 작전실) 통합 �
     await expect(rankBoard.getByRole('radiogroup', { name: '집계 기간' })).toBeVisible();
     await rankBoard.getByRole('tab', { name: '최고 웨이브' }).click();
     await expect(rankBoard.getByRole('radiogroup', { name: '난이도 범위' })).toBeVisible();
+    // H1: 머리판 「내 기록」은 랭킹의 '내 기록' 탭 바로가기다.
+    await page.locator('#recordsBtn').click();
+    await expect(rankBoard.getByRole('tab', { name: '내 기록' })).toHaveAttribute('aria-selected', 'true');
     await rankBoard.getByRole('button', { name: '전체 보기' }).click();
     await expect(page.getByRole('dialog', { name: /전체 랭킹/ })).toBeVisible();
     await page.keyboard.press('Escape');
