@@ -1,12 +1,12 @@
 import type { DifficultyId } from '../contracts/balance';
-import { ContentUnavailableError, contextFor, gradeContent, PILOT_TOWERS, PRACTICE, PRACTICE_BANK, practiceContext } from '../content';
+import { ContentUnavailableError, contextFor, gradeContent, PILOT_TOWERS, PRACTICE, PRACTICE_BANK, practiceContext, reviewQuestions } from '../content';
 import type { GameContext } from '../domain/context';
 import { createRun } from '../domain/run';
 import { RULES_VERSION, RUN_STATE_VERSION, type PauseReason, type RunState } from '../domain/types';
 import { clearLocalHistory, clearSnapshot, listRecords, loadSnapshot, type LoadResult, type RunRecord } from '../persistence/db';
 import { reportRunStarted } from '../persistence/lobbyClient';
 import { acquireRunLock, locksSupported } from '../persistence/ownership';
-import { loadReviewNote, reviewSensesForRun } from '../persistence/reviewNote';
+import { listReviewNoteItems, loadReviewNote, reviewSensesForRun, type ReviewDelta, type ReviewNoteItem } from '../persistence/reviewNote';
 import {
   BGM_STEPS,
   loadSettings,
@@ -22,7 +22,7 @@ import {
 import { RunController } from './RunController';
 
 // 화면은 저장소를 직접 부르지 않고 이 세션 서비스를 쓴다(PRD §13.2).
-export type { FontScale, LoadResult, MotionMode, RunRecord, Settings, VolumeStepBgm, VolumeStepSfx };
+export type { FontScale, LoadResult, MotionMode, ReviewDelta, ReviewNoteItem, RunRecord, Settings, VolumeStepBgm, VolumeStepSfx };
 export { BGM_STEPS, clearLocalHistory, listRecords, loadSettings, normalizeSettings, saveSettings, SFX_STEPS };
 
 export type StartResult = { ok: true; controller: RunController; warning: string | null } | { ok: false; message: string };
@@ -102,6 +102,12 @@ export async function startNewRun(input: { grade: number; difficulty: Difficulty
   const res = await own(state, { seq: 0, clearSaved: true });
   if (res.ok) void reportRunStarted(state.config.runId, input.playerId).catch(() => undefined);
   return res;
+}
+
+/** 이 학년 은행의 오답 노트 항목(R4 §6.1). 철회·다른 은행 항목은 걸러진다. 화면은 저장소를 직접 부르지 않는다(PRD §13.2). */
+export function reviewNoteItems(grade: number): ReviewNoteItem[] {
+  const { bank } = gradeContent(grade);
+  return bank ? listReviewNoteItems(loadReviewNote(), bank.bankId, reviewQuestions(grade)) : [];
 }
 
 /**

@@ -1,0 +1,20 @@
+/* 오답 노트(R4 U3, ui-rules-v3). 짙은 바탕 위에 낱말 카드. 퍼센트·점수 없이 ●○만 쓴다. */
+.page { min-height: 100dvh; background: var(--bg); color: var(--on-dark); }
+.inner { width: min(960px, 100%); margin-inline: auto; padding: var(--s4) var(--s4) var(--s6); display: grid; align-content: start; gap: var(--s4); }
+.header { display: flex; align-items: center; gap: var(--s3); }
+.heading { display: grid; gap: 2px; min-width: 0; }
+.title { font-size: var(--fs-5); font-weight: 800; line-height: 1.2; }
+.title:focus { outline: none; }
+.count { font-size: var(--fs-2); font-weight: 700; color: var(--line); }
+.hint { font-size: var(--fs-2); color: var(--line); }
+
+.list { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr)); gap: var(--s3); }
+.word { height: 100%; display: grid; align-content: start; gap: var(--s1); padding: var(--s4); }
+.top { display: flex; align-items: center; justify-content: space-between; gap: var(--s3); }
+.lemma { font-size: var(--fs-3); font-weight: 800; overflow-wrap: anywhere; }
+.dots { flex: none; display: inline-flex; gap: var(--s1); color: var(--green); }
+.meaning { font-size: var(--fs-2); font-weight: 700; }
+.example { font-size: var(--fs-2); color: var(--ink-2); }
+
+.empty { display: grid; justify-items: center; gap: var(--s3); padding: var(--s8) var(--s4); text-align: center; }
+.emptyText { font-size: var(--fs-3); font-weight: 800; }

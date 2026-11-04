@@ -9,27 +9,31 @@ import {
   NO_SAVE_NOTICE,
   resumeBlocker,
   resumeRun,
+  reviewNoteItems,
   saveSettings,
   saveSupported,
   startNewRun,
   startPractice,
   type FontScale,
   type LoadResult,
+  type ReviewDelta,
   type Settings,
   type StartResult,
 } from '../application/session';
 import type { DifficultyId } from '../contracts/balance';
-import { PILOT_TOWERS } from '../content';
+import { PILOT_TOWERS, reviewQuestions } from '../content';
 import type { RunState } from '../domain/types';
 import { cleanNickname } from './copy';
 import { GameScreen } from './game/GameScreen';
 import { HomeScreen, type ResumeOffer } from './screens/HomeScreen';
+import { buildNoteEntries, NoteScreen } from './screens/NoteScreen';
 import { ResultScreen } from './screens/ResultScreen';
 
 type Screen =
   | { name: 'home'; initialModal?: 'new' | null; focusNickname?: boolean }
   | { name: 'game'; controller: RunController; practice?: boolean }
-  | { name: 'result'; state: RunState };
+  | { name: 'result'; state: RunState; reviewDelta: ReviewDelta | null }
+  | { name: 'note'; back: Exclude<Screen, { name: 'note' | 'game' }> };
 
 /** 홈에 보일 저장 상태. 이어할 수 있으면 이어하기 단추, 아니면 이유 한 줄(손상·버전 변경·저장 불가). */
 function resumeOffer(saved: LoadResult | null): { offer: ResumeOffer | null; notice: string | null } {
@@ -123,9 +127,14 @@ export function App() {
 
   const exitGame = (controller: RunController, reason: 'saved' | 'over' | 'abandon') => {
     const final = structuredClone(controller.state) as RunState;
+    // 판이 끝날 때 오답 노트에 담은 수(prd-r4 §6.1). 기록 쓰기가 아직 안 끝났으면 null이라 결과의 노트 줄을 숨긴다.
+    const reviewDelta = controller.getView().reviewDelta;
     controller.dispose();
-    setScreen(reason === 'over' ? { name: 'result', state: final } : { name: 'home' });
+    setScreen(reason === 'over' ? { name: 'result', state: final, reviewDelta } : { name: 'home' });
   };
+
+  const noteGrade = screen.name === 'result' ? screen.state.config.grade : settings.lastGrade;
+  const noteItems = screen.name === 'home' || screen.name === 'note' ? reviewNoteItems(noteGrade) : [];
 
   switch (screen.name) {
     case 'home':
@@ -137,6 +146,8 @@ export function App() {
           savedNotice={savedNotice}
           initialModal={screen.initialModal ?? null}
           focusNicknameOnMount={screen.focusNickname ?? false}
+          onOpenNote={() => setScreen({ name: 'note', back: { name: 'home' } })}
+          noteCount={noteItems.length}
           onClearMessage={() => setMessage(null)}
           onStartNew={startNew}
           onResume={resume}
@@ -168,9 +179,13 @@ export function App() {
       return (
         <ResultScreen
           state={screen.state}
+          reviewDelta={screen.reviewDelta}
+          onOpenNote={() => setScreen({ name: 'note', back: screen })}
           onAgain={() => setScreen({ name: 'home', initialModal: 'new' })}
           onHome={() => setScreen({ name: 'home' })}
         />
       );
+    case 'note':
+      return <NoteScreen entries={buildNoteEntries(noteItems, reviewQuestions(noteGrade))} onBack={() => setScreen(screen.back)} />;
   }
 }

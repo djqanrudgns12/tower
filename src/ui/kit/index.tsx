@@ -69,7 +69,7 @@ interface SegmentedProps<T extends string> {
   value: T;
   onChange(value: T): void;
   onBlocked?(value: T): void;
-  className?: string;
+  className?: string | undefined;
 }
 
 export function Segmented<T extends string>({ label, options, value, onChange, onBlocked, className }: SegmentedProps<T>) {
@@ -108,7 +108,7 @@ interface ToggleProps {
   label: string;
   checked: boolean;
   onChange(checked: boolean): void;
-  className?: string;
+  className?: string | undefined;
 }
 
 export function Toggle({ label, checked, onChange, className }: ToggleProps) {
@@ -127,7 +127,7 @@ interface StatProps {
   label?: string;
   srLabel?: string;
   size?: 'md' | 'lg';
-  className?: string;
+  className?: string | undefined;
 }
 
 export function Stat({ icon, value, label, srLabel, size = 'md', className }: StatProps) {
@@ -146,7 +146,7 @@ export type ArtIconName =
   | 'trait.armor' | 'trait.ward' | 'trait.flying' | 'trait.swarm' | 'trait.fast' | 'trait.split' | 'trait.clay' | 'trait.burrow';
 
 /** 원화 아이콘(public/assets/ui). 상태 아이콘은 icon.<이름>, 적 특성은 trait.<이름>. 꾸밈이면 label 없이 숨긴다. */
-export function ArtIcon({ name, size = 24, label, className }: { name: ArtIconName; size?: number; label?: string; className?: string }) {
+export function ArtIcon({ name, size = 24, label, className }: { name: ArtIconName; size?: number; label?: string | undefined; className?: string | undefined }) {
   const file = name.startsWith('trait.') ? name : `icon.${name}`;
   return (
     <img

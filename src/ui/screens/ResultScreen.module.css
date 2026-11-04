@@ -1,0 +1,91 @@
+/* 결과 화면(R4 U3, ui-rules-v3). v3 토큰만 쓴다. 바탕 위에 카드 2장, 아래에 고정 단추 줄. */
+.page {
+  height: 100dvh;
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) auto;
+  background: var(--bg);
+  color: var(--on-dark);
+}
+.scroll { min-height: 0; overflow-y: auto; }
+.body {
+  width: min(1040px, 100%);
+  min-height: 100%;
+  margin-inline: auto;
+  padding: var(--s5) var(--s4) var(--s4);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  align-content: start;
+  gap: var(--s4);
+}
+
+/* ── 위 카드: 성문 + 웨이브 + 한 줄 + 지표 3개 ── */
+.summary { display: grid; justify-items: center; align-content: start; gap: var(--s2); padding: var(--s5) var(--s4); text-align: center; }
+.meta { font-size: var(--fs-1); color: var(--ink-2); }
+.wave { font-size: var(--fs-6); font-weight: 800; line-height: 1.1; }
+.line { font-size: var(--fs-3); font-weight: 700; }
+.stats { width: 100%; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--s2); margin-top: var(--s3); }
+.stats .tile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--s1);
+  padding: var(--s3) var(--s2);
+  border-radius: var(--r-sm);
+  background: var(--paper-2);
+  font-size: var(--fs-5);
+  line-height: 1.1;
+}
+.stats .tile > span { max-width: 100%; overflow-wrap: anywhere; }
+.stats .tile > span:last-child { font-size: var(--fs-1); }
+.ranking { margin-top: var(--s2); font-size: var(--fs-2); color: var(--ink-2); }
+.ranking strong { color: var(--ink); font-weight: 800; }
+.note { width: 100%; display: flex; align-items: center; justify-content: space-between; gap: var(--s3); margin-top: var(--s1); text-align: left; }
+.noteText { font-size: var(--fs-2); font-weight: 700; }
+.dev { font-size: var(--fs-1); color: var(--ink-2); }
+
+/* ── 아래 카드: 이번 판 다시 보기 ── */
+.review { display: flex; flex-direction: column; gap: var(--s3); min-height: 0; padding: var(--s4); }
+.reviewTitle { font-size: var(--fs-3); font-weight: 800; }
+.empty { font-size: var(--fs-2); color: var(--ink-2); }
+.list { list-style: none; margin: 0; padding: var(--s2); display: grid; gap: var(--s2); min-height: 0; overflow-y: auto; }
+.word { padding: 0; }
+.word .wordBtn {
+  width: 100%;
+  min-height: 64px;
+  padding: var(--s2) var(--s4);
+  justify-content: space-between;
+  gap: var(--s3);
+  text-align: left;
+}
+@media (hover: hover) {
+  .word .wordBtn:hover:not(:disabled) { background: var(--line); }
+}
+.wordText { display: grid; gap: 2px; min-width: 0; }
+.lemma { font-size: var(--fs-3); font-weight: 800; }
+.answer { font-size: var(--fs-2); font-weight: 400; color: var(--ink-2); overflow-wrap: anywhere; }
+.chevron { flex: none; display: inline-flex; color: var(--ink-2); transform: rotate(-90deg); transition: transform var(--t-ui) var(--ease-out); }
+.chevron[data-open='true'] { transform: rotate(90deg); }
+.detail { display: grid; gap: var(--s2); padding: var(--s2) var(--s4) var(--s4); font-size: var(--fs-2); }
+.stem { color: var(--ink-2); }
+
+/* ── 아래 고정 단추 줄: 1366×650에서도 스크롤 없이 보인다 ── */
+.actions {
+  display: flex;
+  justify-content: center;
+  gap: var(--s3);
+  padding: var(--s3) var(--s4) var(--s4);
+  background: var(--bg);
+}
+.actions .again { flex: 2 1 0; max-width: 360px; }
+.actions .home { flex: 1 1 0; max-width: 180px; }
+
+@media (min-width: 880px) {
+  .body { grid-template-columns: minmax(320px, 400px) minmax(0, 1fr); align-content: center; align-items: start; }
+  /* 낱말이 많으면 카드 안에서만 스크롤한다. 140px = 위아래 여백 + 아래 고정 단추 줄. */
+  .review { max-height: calc(100dvh - 140px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .chevron { transition: none; }
+}

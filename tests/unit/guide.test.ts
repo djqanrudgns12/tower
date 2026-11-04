@@ -3,6 +3,7 @@ import { describe, expect, it } from 'vitest';
 import { BALANCE, practiceContext } from '../../src/content';
 import {
   buildDifficultyGuideItems,
+  buildGuideCards,
   buildGuideChapters,
   buildQuizOutcomeSpecs,
   buildTowerGuideItems,
@@ -55,10 +56,12 @@ describe('사용 설명서 모델 및 전용 삽화 계약 (G03~G11, G15)', () =
     expect(joined).toContain('연습 판');
     // G05: 핵심 최신 규칙 포함 확인
     expect(joined).toContain('모르겠어요');
-    expect(joined).toContain('버닝');
+    expect(joined).toContain('불꽃');
     expect(joined).toContain('밝은 흙길');
     expect(joined).toContain('속담·관용구·방언');
     expect(joined).toContain('이번 판 끝내기');
+    // 용어 규정(ui-rules-v3 §4): 옛 말이 화면 글에 남지 않는다.
+    expect(joined).not.toMatch(/버닝|고비|징집|명예점|출정/);
     // G15: 느낌표 0건, 이모지 0건, 영문 단독 단어 0건
     expect(joined).not.toContain('!');
     expect(joined).not.toMatch(/\p{Extended_Pictographic}/u);
@@ -94,6 +97,35 @@ describe('사용 설명서 모델 및 전용 삽화 계약 (G03~G11, G15)', () =
     expect(ch3Text).toContain('레벨 6');
     expect(ch3Text).toContain('레벨 5');
     expect(ch3Text).toContain('70%');
+  });
+
+  it('U3: 그림 카드 4장 + 상성 카드 1장 — 카드마다 한 문장(30자 이하)이고 기존 설명은 자세히 안에 그대로 있다', () => {
+    const { cards, counters } = buildGuideCards();
+    const chapters = buildGuideChapters();
+    expect(cards.map(c => c.id)).toEqual(['flow', 'quiz', 'tower', 'start']);
+    expect(cards.map(c => c.title)).toEqual(['한 판 흐름', '문제와 골드', '타워 놓기와 진화', '시작과 저장']);
+
+    cards.forEach((card, i) => {
+      expect(card.sentence.length, `${card.id} 문장 길이`).toBeLessThanOrEqual(30);
+      expect(card.sentence).toMatch(/요$/);
+      expect(card.illustrationUrl).toBe(chapters[i]!.illustrationUrl);
+      expect(card.details.map(d => d.body)).toEqual(chapters[i]!.rows.map(r => r.body));
+      expect(existsSync(`./public/${card.illustrationUrl}`), `${card.id} 그림 누락`).toBe(true);
+    });
+
+    expect(counters.sentence).toBe('하늘 적은 하늘을 쏘는 타워로');
+    expect(counters.sentence.length).toBeLessThanOrEqual(30);
+    expect(counters.pairs.map(p => p.trait)).toEqual(['trait.flying', 'trait.armor', 'trait.swarm']);
+    for (const p of counters.pairs) {
+      expect(p.towerLabel).toBe(BALANCE.towers[p.towerId].label);
+      expect(p.note.length).toBeGreaterThan(0);
+      expect(existsSync(`./public/assets/ui/${p.trait}.png`), `${p.trait} 아이콘 누락`).toBe(true);
+    }
+
+    const text = [...cards.flatMap(c => [c.title, c.sentence]), counters.title, counters.sentence, ...counters.pairs.flatMap(p => [p.enemy, p.towerLabel, p.note])].join('\n');
+    expect(text).not.toContain('!');
+    expect(text).not.toMatch(/\p{Extended_Pictographic}/u);
+    expect(text).not.toMatch(/버닝|고비|징집|명예점|출정/);
   });
 
   it('G07: nextGuideChapter는 1~4장 경계 밖으로 넘어가지 않고 순차 이동한다', () => {

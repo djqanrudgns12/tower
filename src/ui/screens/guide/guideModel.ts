@@ -1,6 +1,7 @@
 import { BALANCE, PILOT_TOWERS } from '../../../content';
 import type { Balance, DifficultyId, TowerId } from '../../../contracts/balance';
-import { BRANCH_MARK, DIFFICULTY_COPY, fmtCells, fmtSigned } from '../../copy';
+import { BRANCH_MARK, DIFFICULTY_COPY, fmtCells, fmtSigned, TOWER_COPY } from '../../copy';
+import type { ArtIconName } from '../../kit';
 
 export const GUIDE_CHAPTER_IDS = [1, 2, 3, 4] as const;
 export type GuideChapterId = (typeof GUIDE_CHAPTER_IDS)[number];
@@ -61,7 +62,7 @@ export function buildGuideChapters(
     {
       id: 1,
       tabLabel: '1. 한 판 흐름',
-      title: '한 판의 흐름',
+      title: '한 판 흐름',
       headline: '문제로 군자금을 모아 타워를 세우고, 성문을 끝까지 지켜요',
       illustrationUrl: 'assets/guide/guide.ch1.wave_cycle.png',
       illustrationAlt: '금화 준비부터 궁수·서리 타워 요격과 성문 회복으로 이어지는 수비 흐름 그림',
@@ -80,24 +81,24 @@ export function buildGuideChapters(
         },
         {
           badge: '4단계',
-          title: '성문 회복과 고비',
-          body: `웨이브를 막으면 성문이 최대치로 회복돼요(0이 되면 종료). ${bossEveryWaves}의 배수 ‘고비’ 웨이브에는 대장이 오고, 버티면 보너스 골드를 받아요.`,
+          title: '성문 회복과 대장',
+          body: `웨이브를 막으면 성문이 최대치로 회복돼요(0이 되면 종료). ${bossEveryWaves}의 배수 웨이브에는 대장이 오고, 버티면 보너스 골드를 받아요.`,
           icon: 'gate',
         },
       ],
     },
     {
       id: 2,
-      tabLabel: '2. 문제·버닝',
-      title: '문제 풀이와 버닝',
-      headline: `모르면 감점 없이 뜻을 배우고, ${burningStreak}연속 정답으로 버닝을 켜요`,
+      tabLabel: '2. 문제와 골드',
+      title: '문제와 골드',
+      headline: `모르면 감점 없이 뜻을 배우고, ${burningStreak}연속 정답으로 불꽃을 켜요`,
       illustrationUrl: 'assets/guide/guide.ch2.quiz_burning.png',
-      illustrationAlt: '골드 주화와 수호 문장 방패, 세 개의 버닝 보석과 가속 화살 그림',
+      illustrationAlt: '골드 주화와 수호 문장 방패, 세 개의 불꽃 보석과 가속 화살 그림',
       rows: [
         {
           badge: '보상 구분',
           title: '골드와 점수 구분',
-          body: '골드는 타워 설치·강화에 쓰고, 점수는 순위표와 명예점에 남는 실력 기록이에요.',
+          body: '골드는 타워 설치·강화에 쓰고, 점수는 랭킹 점수에 반영되는 실력 기록이에요.',
           icon: 'score',
         },
         {
@@ -108,16 +109,16 @@ export function buildGuideChapters(
         },
         {
           badge: '연속 보너스',
-          title: '전투 버닝 발동',
-          body: `전투 중 ${burningStreak}문제를 연달아 맞히면 ${burningSec}초 동안 버닝이 켜져 모든 타워 공격 속도가 +${burningSpeedPct}% 빨라져요.`,
+          title: '불꽃 발동',
+          body: `전투 중 ${burningStreak}문제를 연달아 맞히면 ${burningSec}초 동안 불꽃이 켜져 모든 타워 공격 속도가 +${burningSpeedPct}% 빨라져요.`,
           icon: 'burning',
         },
       ],
     },
     {
       id: 3,
-      tabLabel: '3. 타워·진화',
-      title: '타워 배치와 진화',
+      tabLabel: '3. 타워 놓기와 진화',
+      title: '타워 놓기와 진화',
       headline: `밝은 길이 많이 닿는 길목에 놓고, 레벨 ${branchAtLevel}에서 진화 길을 골라요`,
       illustrationUrl: 'assets/guide/guide.ch3.tower_evolution.png',
       illustrationAlt: '굽은 흙길 위 밝은 사거리 원과 두 갈래 진화 문장, 판매 환급 상자 그림',
@@ -144,14 +145,14 @@ export function buildGuideChapters(
     },
     {
       id: 4,
-      tabLabel: '4. 출정·조작',
-      title: '출정 조건과 조작',
+      tabLabel: '4. 시작과 저장',
+      title: '시작과 저장',
       headline: '학년은 교과 낱말 범위를, 난이도는 전투 압박과 심화 문제를 정해요',
       illustrationUrl: 'assets/guide/guide.ch4.expedition_command.png',
       illustrationAlt: '수호 비석과 4단계 난이도 방패, 목제 방향·숫자 키캡과 정지 등불 그림',
       rows: [
         {
-          badge: '출정 기준',
+          badge: '시작 기준',
           title: '학년과 난이도 차이',
           body: '학년(3~6학년)은 교과 수준 낱말과 지도를 정해요. 쉬움·보통은 표준어 중심이고, 어려움·아주 어려움에서는 속담·관용구·방언도 나와요.',
           icon: 'gate',
@@ -185,7 +186,7 @@ export const GUIDE_WAVE_BEATS: readonly {
   { id: 0, shortLabel: '1. 준비', caption: '문제를 풀어 군자금 확보' },
   { id: 1, shortLabel: '2. 설치', caption: '받침 선택 · 밝은 길 조준' },
   { id: 2, shortLabel: '3. 전투', caption: '실시간 요격 · 문제 병행' },
-  { id: 3, shortLabel: '4. 회복', caption: '성문 완전 회복 · 고비 보상' },
+  { id: 3, shortLabel: '4. 회복', caption: '성문 완전 회복 · 대장 보상' },
 ];
 
 export interface GuideLoopEnemy {
@@ -337,7 +338,7 @@ export function sampleGuideWaveLoop(
       showRangeOverlay: false,
       gateSparkle01: animate ? 0.5 + 0.5 * Math.sin(beatProgress01 * Math.PI * 2) : 0.85,
       statusTag: `성문 ${normal.gateHp}/${normal.gateHp} 회복`,
-      goldTag: `고비 보상 +${normal.milestoneSurvivalGold}골드`,
+      goldTag: `대장 보상 +${normal.milestoneSurvivalGold}골드`,
       enemies: [],
       projectiles: [],
       archerAngle: -0.5,
@@ -345,7 +346,7 @@ export function sampleGuideWaveLoop(
     };
   }
 
-  // Beat 2: 실시간 전투 (고블린 2기 + 고비 대장 1기 행군 및 궁수·서리 요격)
+  // Beat 2: 실시간 전투 (고블린 2기 + 대장 1기 행군 및 궁수·서리 요격)
   const slots: readonly { kind: 'walker' | 'boss'; offset: number; span: number }[] = [
     { kind: 'walker', offset: 0.08, span: 0.66 },
     { kind: 'walker', offset: 0.22, span: 0.58 },
@@ -426,7 +427,7 @@ export function buildQuizOutcomeSpecs(balance: Balance = BALANCE): readonly Quiz
       scoreDeltaText: `+${normal.correctPt}점`,
       gateNote: '성문 유지',
       burningLitCount: 1,
-      summary: '군자금과 점수가 함께 오르고 버닝 보석이 1칸 차올라요.',
+      summary: '군자금과 점수가 함께 오르고 불꽃이 1칸 차올라요.',
     },
     {
       id: 'wrong',
@@ -448,7 +449,7 @@ export function buildQuizOutcomeSpecs(balance: Balance = BALANCE): readonly Quiz
     },
     {
       id: 'burning',
-      tabLabel: `${balance.burning.streak}연속 버닝`,
+      tabLabel: `${balance.burning.streak}연속 불꽃`,
       goldDeltaText: `+${normal.correctGold}골드`,
       scoreDeltaText: `공격 속도 +${speedPct}%`,
       gateNote: `${sec}초 동안 가속`,
@@ -518,4 +519,75 @@ export function buildDifficultyGuideItems(balance: Balance = BALANCE): readonly 
       includesProverbDialect,
     };
   });
+}
+
+// ── 그림 카드(R4 U3, PRD §10.3): 카드마다 한 문장(30자 이하) + 그림, 기존 상세 글은 '자세히' 안으로 ──
+
+export type GuideCardId = 'flow' | 'quiz' | 'tower' | 'start';
+
+export interface GuideCardDetail { title: string; body: string }
+
+export interface GuideCardSpec {
+  id: GuideCardId;
+  title: string;
+  /** 카드에 늘 보이는 한 문장(30자 이하). */
+  sentence: string;
+  illustrationUrl: string;
+  illustrationAlt: string;
+  /** '자세히'를 펼치면 나오는 기존 설명(장의 요약 행). */
+  details: readonly GuideCardDetail[];
+}
+
+export interface GuideCounterPair {
+  trait: ArtIconName;
+  enemy: string;
+  towerId: TowerId;
+  towerLabel: string;
+  /** 타워 역할 한 줄(TOWER_COPY). '자세히'에 쓴다. */
+  note: string;
+}
+
+export interface GuideCounterSpec {
+  title: string;
+  sentence: string;
+  pairs: readonly GuideCounterPair[];
+}
+
+const CARD_SENTENCES: Record<GuideCardId, string> = {
+  flow: '문제를 풀고 타워로 성문을 지켜요',
+  quiz: '맞히면 골드, 모르면 뜻을 배워요',
+  tower: '타워를 놓고 키워서 진화시켜요',
+  start: '저장하고 나가도 이어서 할 수 있어요',
+};
+
+/** 적 특성 → 상대하기 좋은 타워(docs/renewal/catalog/monsters.md·towers.md). 라벨은 계약에서 읽는다. */
+const COUNTERS: readonly { trait: ArtIconName; enemy: string; towerId: TowerId }[] = [
+  { trait: 'trait.flying', enemy: '하늘 적', towerId: 'falcon' },
+  { trait: 'trait.armor', enemy: '단단한 적', towerId: 'mage' },
+  { trait: 'trait.swarm', enemy: '떼로 오는 적', towerId: 'cannon' },
+];
+
+/** 설명서 카드 4장 + 타워 상성 카드 1장. 장(buildGuideChapters)의 그림·요약 행을 그대로 이어 쓴다. */
+export function buildGuideCards(
+  balance: Balance = BALANCE,
+  pilotTowers: readonly TowerId[] = PILOT_TOWERS,
+): { cards: readonly GuideCardSpec[]; counters: GuideCounterSpec } {
+  const ids: readonly GuideCardId[] = ['flow', 'quiz', 'tower', 'start'];
+  const cards = buildGuideChapters(balance, pilotTowers).map((ch, i): GuideCardSpec => {
+    const id = ids[i]!;
+    return {
+      id,
+      title: ch.title,
+      sentence: CARD_SENTENCES[id],
+      illustrationUrl: ch.illustrationUrl,
+      illustrationAlt: ch.illustrationAlt,
+      details: ch.rows.map(r => ({ title: r.title, body: r.body })),
+    };
+  });
+  const counters: GuideCounterSpec = {
+    title: '타워 상성',
+    sentence: '하늘 적은 하늘을 쏘는 타워로',
+    pairs: COUNTERS.map(c => ({ ...c, towerLabel: balance.towers[c.towerId].label, note: TOWER_COPY[c.towerId].good })),
+  };
+  return { cards, counters };
 }

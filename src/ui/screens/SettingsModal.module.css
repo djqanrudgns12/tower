@@ -1,0 +1,23 @@
+/* 환경설정(R4 U3, ui-rules-v3). 한 목록, 줄마다 이름 + 조작 하나. 줄 사이는 1px --line으로만 나눈다. */
+.list { display: grid; }
+.row { display: grid; gap: var(--s1); padding: var(--s1) 0; border-bottom: 1px solid var(--line); }
+.head { display: flex; align-items: center; justify-content: space-between; gap: var(--s4); flex-wrap: wrap; min-height: var(--touch); }
+.name { font-size: var(--fs-2); font-weight: 700; }
+.head > :last-child { min-width: 0; }
+.head [role='radiogroup'] { flex: 1 1 280px; max-width: 320px; }
+
+/* 켜기·끄기 줄: 줄 전체가 스위치다(이름 왼쪽, 스위치 오른쪽). 설명이 붙는 줄은 .row 안에 들어간다. */
+.list > .switchRow, .row > .switchRow {
+  width: 100%;
+  min-height: 52px;
+  flex-direction: row-reverse;
+  justify-content: space-between;
+  text-align: left;
+}
+.list > .switchRow { padding: var(--s1) 0; border-bottom: 1px solid var(--line); }
+
+.hint { font-size: var(--fs-1); color: var(--ink-2); }
+.preview { margin: var(--s2) 0 var(--s3); font-size: var(--q-font); font-weight: 700; line-height: 1.45; }
+.actions { display: inline-flex; gap: var(--s2); flex-wrap: wrap; }
+.alert { padding-top: var(--s2); font-size: var(--fs-2); font-weight: 700; color: var(--red); }
+.status { padding-top: var(--s2); font-size: var(--fs-2); font-weight: 700; color: var(--green); }

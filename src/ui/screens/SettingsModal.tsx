@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useEffect, useState, type ReactNode } from 'react';
 import {
   BGM_STEPS,
   clearLocalHistory,
@@ -11,16 +11,9 @@ import {
 } from '../../application/session';
 import { DEFAULTS } from '../../content';
 import { SoundDirector } from '../audio/sound';
-import { ModalShell } from './home/ModalShell';
-import css from './home/home.module.css';
-
-type SettingsTab = 'audio' | 'display' | 'assist';
-
-const SETTINGS_TABS: readonly { id: SettingsTab; label: string }[] = [
-  { id: 'audio', label: '소리 조절' },
-  { id: 'display', label: '화면 · 글자 크기' },
-  { id: 'assist', label: '전투 보조 · 기록' },
-];
+import { SETTINGS_COPY as T } from '../copy';
+import { Button, Card, Modal, Segmented, Toggle, type SegmentOption } from '../kit';
+import css from './SettingsModal.module.css';
 
 interface Props {
   settings: Settings;
@@ -29,19 +22,49 @@ interface Props {
   onClose(): void;
 }
 
+const FONT_OPTIONS: readonly SegmentOption<FontScale>[] = [
+  { value: 'base', label: '보통', ariaLabel: '글자 보통' },
+  { value: 'large', label: '크게', ariaLabel: '글자 크게' },
+  { value: 'xlarge', label: '아주 크게', ariaLabel: '글자 아주 크게' },
+];
+
+const MOTION_OPTIONS: readonly SegmentOption<MotionMode>[] = [
+  { value: 'full', label: '전체', ariaLabel: '전체 연출' },
+  { value: 'simple', label: '바람·낙엽', ariaLabel: '바람·낙엽만' },
+  { value: 'minimal', label: '정지' },
+];
+
+/** 소리 크기 단계(0.2 같은 값)를 고르기 칸으로. 값이 숫자라 문자열로 바꿔 Segmented에 넘긴다. */
+const volumeOptions = (steps: readonly number[], base: number): SegmentOption<string>[] =>
+  steps.map(step => ({
+    value: String(step),
+    label: `${Math.round(step * 100)}%`,
+    ariaLabel: `${Math.round(step * 100)}퍼센트${step === base ? ' (기본)' : ''}`,
+  }));
+const BGM_OPTIONS = volumeOptions(BGM_STEPS, 0.2);
+const SFX_OPTIONS = volumeOptions(SFX_STEPS, 0.4);
+
+/** 이름 + 조작 하나. 설명은 기록 지우기·공개 기록 줄에만 단다. */
+function Row({ name, hint, children }: { name: string; hint?: string; children: ReactNode }) {
+  return (
+    <div className={css.row}>
+      <div className={css.head}>
+        <span className={css.name}>{name}</span>
+        {children}
+      </div>
+      {hint && <p className={css.hint}>{hint}</p>}
+    </div>
+  );
+}
+
 /**
- * 게임 환경설정 모달(랜딩 PRD §2.7).
- * 별명 설정 및 대원 전환 기능은 랜딩 출정 데크에서 직접 다루므로 이 모달에 두지 않는다.
+ * 환경설정(R4 U3, 랜딩 PRD §2.7). 탭 없이 한 목록이고, 줄마다 이름과 조작 하나다.
+ * 닉네임 설정·대원 전환은 홈에서 직접 다루므로 이 창에 두지 않는다.
  */
 export function SettingsModal({ settings, onUpdate, onHistoryCleared, onClose }: Props) {
-  const closeRef = useRef(onClose);
-  useEffect(() => { closeRef.current = onClose; }, [onClose]);
-  const closeModal = useCallback(() => closeRef.current(), []);
-  const [tab, setTab] = useState<SettingsTab>('audio');
   const [historyError, setHistoryError] = useState('');
   const [confirmClear, setConfirmClear] = useState(false);
   const [clearedNotice, setClearedNotice] = useState(false);
-  const tabRefs = useRef<(HTMLButtonElement | null)[]>([]);
   const [previewSound] = useState(() => new SoundDirector(DEFAULTS.audio, 5));
 
   useEffect(() => {
@@ -52,321 +75,90 @@ export function SettingsModal({ settings, onUpdate, onHistoryCleared, onClose }:
   useEffect(() => () => previewSound.dispose(), [previewSound]);
 
   useEffect(() => {
-    const notify = () => setHistoryError('다른 탭을 닫고 다시 시도해 주세요.');
+    const notify = () => setHistoryError(T.blocked);
     window.addEventListener('vocabulary-td.storageBlocked', notify);
     return () => window.removeEventListener('vocabulary-td.storageBlocked', notify);
   }, []);
 
-  const onRadioKeyDown = (e: React.KeyboardEvent) => {
-    if (!['ArrowRight','ArrowLeft','ArrowDown','ArrowUp','Home','End'].includes(e.key)) return;
-    const target = e.target as HTMLElement;
-    const group = target.closest('[role="radiogroup"]');
-    if (!group) return;
-    const radios = Array.from(group.querySelectorAll<HTMLButtonElement>('[role="radio"]'));
-    const current = radios.indexOf(target as HTMLButtonElement);
-    const next = e.key==='Home' ? 0 : e.key==='End' ? radios.length-1 : (current + (['ArrowRight','ArrowDown'].includes(e.key)?1:-1)+radios.length)%radios.length;
-    e.preventDefault(); radios[next]?.focus(); radios[next]?.click();
-  };
-
-
-  const onTabKeyDown = (e: React.KeyboardEvent, idx: number) => {
-    let nextIdx = -1;
-    if (e.key === 'ArrowRight') nextIdx = (idx + 1) % SETTINGS_TABS.length;
-    else if (e.key === 'ArrowLeft') nextIdx = (idx - 1 + SETTINGS_TABS.length) % SETTINGS_TABS.length;
-    if (nextIdx >= 0) {
-      e.preventDefault();
-      setTab(SETTINGS_TABS[nextIdx]!.id);
-      tabRefs.current[nextIdx]?.focus();
+  const clearHistory = async () => {
+    setClearedNotice(false);
+    setHistoryError('');
+    try {
+      await clearLocalHistory();
+      setConfirmClear(false);
+      setClearedNotice(true);
+      onHistoryCleared();
+    } catch {
+      setHistoryError(T.clearFailed);
     }
   };
 
   return (
-    <ModalShell titleId="settingsModalTitle" title="환경설정" onClose={closeModal}>
-      <div className={css.settingsTabs} role="tablist" aria-label="환경설정 분류">
-        {SETTINGS_TABS.map((item, i) => (
-          <button
-            key={item.id}
-            ref={el => { tabRefs.current[i] = el; }}
-            id={`settings-tab-${item.id}`}
-            type="button"
-            role="tab"
-            aria-selected={tab === item.id}
-            aria-controls="settings-tabpanel"
-            tabIndex={tab === item.id ? 0 : -1}
-            className={css.tabBtn}
-            onClick={() => setTab(item.id)}
-            onKeyDown={e => onTabKeyDown(e, i)}
-          >
-            {item.label}
-          </button>
-        ))}
+    <Modal titleId="settingsModalTitle" title={T.title} onClose={onClose}>
+      <div className={css.list}>
+        <Toggle className={css.switchRow ?? ''} label={T.sound} checked={settings.soundOn} onChange={on => onUpdate({ soundOn: on })} />
+
+        <Row name={T.bgm}>
+          <Segmented
+            label={T.bgm}
+            options={BGM_OPTIONS}
+            value={String(settings.bgmVolume)}
+            onChange={v => onUpdate({ bgmVolume: Number(v) as VolumeStepBgm })}
+          />
+        </Row>
+
+        <Row name={T.sfx}>
+          <Segmented
+            label={T.sfx}
+            options={SFX_OPTIONS}
+            value={String(settings.sfxVolume)}
+            onChange={v => onUpdate({ sfxVolume: Number(v) as VolumeStepSfx })}
+          />
+        </Row>
+
+        <Row name={T.correctSound}>
+          <Button aria-label={`${T.correctSound} ${T.listen}`} disabled={!settings.soundOn} onClick={() => previewSound.preview('correct')}>{T.listen}</Button>
+        </Row>
+
+        <Row name={T.fireSound}>
+          <Button aria-label={`${T.fireSound} ${T.listen}`} disabled={!settings.soundOn} onClick={() => previewSound.preview('fire.archer')}>{T.listen}</Button>
+        </Row>
+
+        <Row name={T.font}>
+          <Segmented label={T.font} options={FONT_OPTIONS} value={settings.fontScale} onChange={fontScale => onUpdate({ fontScale })} />
+        </Row>
+        <Card sunk className={css.preview} aria-label="글자 크기 미리보기" data-content>{T.fontPreview}</Card>
+
+        <Row name={T.motion}>
+          <Segmented
+            label={T.motion}
+            options={MOTION_OPTIONS}
+            value={settings.motionMode}
+            onChange={motionMode => onUpdate({ motionMode, motionCustomized: true })}
+          />
+        </Row>
+
+        <Toggle className={css.switchRow ?? ''} label={T.contrast} checked={settings.highContrastMap} onChange={highContrastMap => onUpdate({ highContrastMap })} />
+        <Toggle className={css.switchRow ?? ''} label={T.keyHints} checked={settings.showKeyHints} onChange={showKeyHints => onUpdate({ showKeyHints })} />
+
+        <div className={css.row}>
+          <Toggle className={css.switchRow ?? ''} label={T.share} checked={settings.shareRecords === true} onChange={shareRecords => onUpdate({ shareRecords })} />
+          <p className={css.hint}>{T.shareHint}</p>
+        </div>
+
+        <Row name={T.clear} hint={T.clearHint}>
+          {confirmClear ? (
+            <span className={css.actions}>
+              <Button variant="danger" onClick={() => void clearHistory()}>{T.clearConfirm}</Button>
+              <Button onClick={() => setConfirmClear(false)}>{T.cancel}</Button>
+            </span>
+          ) : (
+            <Button variant="danger" onClick={() => setConfirmClear(true)}>{T.clearAction}</Button>
+          )}
+        </Row>
+        {historyError && <p className={css.alert} role="alert">{historyError}</p>}
+        {clearedNotice && <p className={css.status} role="status">{T.cleared}</p>}
       </div>
-
-      <div id="settings-tabpanel" role="tabpanel" aria-labelledby={`settings-tab-${tab}`} style={{ display: 'grid', gap: 12 }} onKeyDown={onRadioKeyDown}>
-        {tab === 'audio' && (
-          <>
-            <section className={css.settingSection}>
-              <div className={css.settingRow}>
-                <div>
-                  <strong className={css.nickLabel}>전체 소리</strong>
-                  <p className={css.rankSub}>전투 효과음과 배경 선율을 한 번에 켜거나 꺼요.</p>
-                </div>
-                <div className={css.segmentedRow} role="radiogroup" aria-label="전체 소리">
-                  <button
-                    type="button"
-                    role="radio"
-                    aria-checked={settings.soundOn}
-                    tabIndex={settings.soundOn ? 0 : -1}
-                    className={css.segBtn}
-                    onClick={() => onUpdate({ soundOn: true })}
-                  >
-                    켜짐
-                  </button>
-                  <button
-                    type="button"
-                    role="radio"
-                    aria-checked={!settings.soundOn}
-                    tabIndex={!settings.soundOn ? 0 : -1}
-                    className={css.segBtn}
-                    onClick={() => onUpdate({ soundOn: false })}
-                  >
-                    꺼짐
-                  </button>
-                </div>
-              </div>
-            </section>
-
-            <section className={css.settingSection}>
-              <strong className={css.nickLabel}>배경 음악 크기</strong>
-              <div className={css.segmentedRow} role="radiogroup" aria-label="배경 음악 크기">
-                {BGM_STEPS.map(step => (
-                  <button
-                    key={step}
-                    type="button"
-                    role="radio"
-                    aria-checked={settings.bgmVolume === step}
-                    tabIndex={settings.bgmVolume === step ? 0 : -1}
-                    className={css.segBtn}
-                    onClick={() => onUpdate({ bgmVolume: step as VolumeStepBgm })}
-                  >
-                    {Math.round(step * 100)}%{step === 0.2 ? ' (기본)' : ''}
-                  </button>
-                ))}
-              </div>
-            </section>
-
-            <section className={css.settingSection}>
-              <strong className={css.nickLabel}>효과음 크기</strong>
-              <div className={css.segmentedRow} role="radiogroup" aria-label="효과음 크기">
-                {SFX_STEPS.map(step => (
-                  <button
-                    key={step}
-                    type="button"
-                    role="radio"
-                    aria-checked={settings.sfxVolume === step}
-                    tabIndex={settings.sfxVolume === step ? 0 : -1}
-                    className={css.segBtn}
-                    onClick={() => onUpdate({ sfxVolume: step as VolumeStepSfx })}
-                  >
-                    {Math.round(step * 100)}%{step === 0.4 ? ' (기본)' : ''}
-                  </button>
-                ))}
-              </div>
-              <div className={css.segmentedRow}>
-                <button
-                  type="button"
-                  className={css.smallBtn}
-                  disabled={!settings.soundOn}
-                  onClick={() => previewSound.preview('correct')}
-                >
-                  정답음 들어보기
-                </button>
-                <button
-                  type="button"
-                  className={css.smallBtn}
-                  disabled={!settings.soundOn}
-                  onClick={() => previewSound.preview('fire.archer')}
-                >
-                  발사음 들어보기
-                </button>
-              </div>
-            </section>
-          </>
-        )}
-
-        {tab === 'display' && (
-          <>
-            <section className={css.settingSection}>
-              <strong className={css.nickLabel}>글자 크기</strong>
-              <p className={css.rankSub}>어휘 문제 문장과 화면 안내 글자 크기를 조절해요.</p>
-              <div className={css.segmentedRow} role="radiogroup" aria-label="글자 크기">
-                {(
-                  [
-                    ['base', '글자 보통'],
-                    ['large', '글자 크게'],
-                    ['xlarge', '글자 아주 크게'],
-                  ] as readonly [FontScale, string][]
-                ).map(([scale, label]) => (
-                  <button
-                    key={scale}
-                    type="button"
-                    role="radio"
-                    aria-checked={settings.fontScale === scale}
-                    tabIndex={settings.fontScale === scale ? 0 : -1}
-                    className={css.segBtn}
-                    onClick={() => onUpdate({ fontScale: scale })}
-                  >
-                    {label}
-                  </button>
-                ))}
-              </div>
-              <div className={css.fontPreviewBox} aria-label="글자 크기 미리보기">
-                ‘준비물을 잘 챙길 만큼 꼼꼼하다’에서 ‘꼼꼼하다’의 뜻은?
-              </div>
-            </section>
-
-            <section className={css.settingSection}>
-              <strong className={css.nickLabel}>배경 움직임 단계</strong>
-              <p className={css.rankSub}>집중이 필요하거나 기기가 느릴 때 움직이는 연출을 줄여요.</p>
-              <div className={css.segmentedRow} role="radiogroup" aria-label="배경 움직임 단계">
-                {(
-                  [
-                    ['full', '전체 연출'],
-                    ['simple', '바람·낙엽만'],
-                    ['minimal', '정지'],
-                  ] as readonly [MotionMode, string][]
-                ).map(([mode, label]) => (
-                  <button
-                    key={mode}
-                    type="button"
-                    role="radio"
-                    aria-checked={settings.motionMode === mode}
-                    tabIndex={settings.motionMode === mode ? 0 : -1}
-                    className={css.segBtn}
-                    onClick={() => onUpdate({ motionMode: mode, motionCustomized: true })}
-                  >
-                    {label}
-                  </button>
-                ))}
-              </div>
-            </section>
-
-            <section className={css.settingSection}>
-              <div className={css.settingRow}>
-                <div>
-                  <strong className={css.nickLabel}>전장 길·받침 고대비 윤곽선</strong>
-                  <p className={css.rankSub}>흙길 테두리와 빈 타워 받침 자리를 더 선명하게 표시해요.</p>
-                </div>
-                <div className={css.segmentedRow} role="radiogroup" aria-label="전장 길·받침 고대비 윤곽선">
-                  <button
-                    type="button"
-                    role="radio"
-                    aria-checked={settings.highContrastMap}
-                    tabIndex={settings.highContrastMap ? 0 : -1}
-                    className={css.segBtn}
-                    onClick={() => onUpdate({ highContrastMap: true })}
-                  >
-                    켜짐
-                  </button>
-                  <button
-                    type="button"
-                    role="radio"
-                    aria-checked={!settings.highContrastMap}
-                    tabIndex={!settings.highContrastMap ? 0 : -1}
-                    className={css.segBtn}
-                    onClick={() => onUpdate({ highContrastMap: false })}
-                  >
-                    꺼짐
-                  </button>
-                </div>
-              </div>
-            </section>
-          </>
-        )}
-
-        {tab === 'assist' && (
-          <>
-            <section className={css.settingSection}>
-              <strong className={css.nickLabel}>공개 기록 나누기</strong>
-              <p className={css.rankSub}>켜면 별명·학년·난이도·점수·웨이브가 다른 사람에게 보여요. 실명 대신 별명을 써요.</p>
-              <div className={css.segmentedRow} role="radiogroup" aria-label="공개 기록 나누기">
-                <button type="button" role="radio" aria-checked={settings.shareRecords === true} tabIndex={settings.shareRecords === true ? 0 : -1} className={css.segBtn} onClick={() => onUpdate({ shareRecords: true })}>켜짐</button>
-                <button type="button" role="radio" aria-checked={settings.shareRecords !== true} tabIndex={settings.shareRecords !== true ? 0 : -1} className={css.segBtn} onClick={() => onUpdate({ shareRecords: false })}>꺼짐</button>
-              </div>
-            </section>
-            <section className={css.settingSection}>
-              <div className={css.settingRow}>
-                <div>
-                  <strong className={css.nickLabel}>단축키 번호 배지 표시</strong>
-                  <p className={css.rankSub}>어휘 문제 보기 옆에 키보드 숫자(1~4) 안내 배지를 보여 줘요.</p>
-                </div>
-                <div className={css.segmentedRow} role="radiogroup" aria-label="단축키 번호 배지 표시">
-                  <button
-                    type="button"
-                    role="radio"
-                    aria-checked={settings.showKeyHints}
-                    tabIndex={settings.showKeyHints ? 0 : -1}
-                    className={css.segBtn}
-                    onClick={() => onUpdate({ showKeyHints: true })}
-                  >
-                    켜짐
-                  </button>
-                  <button
-                    type="button"
-                    role="radio"
-                    aria-checked={!settings.showKeyHints}
-                    tabIndex={!settings.showKeyHints ? 0 : -1}
-                    className={css.segBtn}
-                    onClick={() => onUpdate({ showKeyHints: false })}
-                  >
-                    꺼짐
-                  </button>
-                </div>
-              </div>
-            </section>
-
-            <section className={css.settingSection}>
-              <strong className={css.nickLabel}>이 기기의 로컬 기록 정리</strong>
-              <p className={css.rankSub}>
-                이 브라우저에 저장된 최근 판 기록을 모두 비워요. 닉네임은 그대로 유지돼요.
-              </p>
-              {historyError && <p role="alert">{historyError}</p>}
-              {clearedNotice && (
-                <p className={css.bannerNotice} role="status">이 기기의 로컬 기록을 모두 정리했어요.</p>
-              )}
-              {confirmClear ? (
-                <div className={css.segmentedRow}>
-                  <button
-                    type="button"
-                    className={css.segBtn}
-                    style={{ background: 'var(--danger)', color: '#ffffff' }}
-                    onClick={async () => {
-                      setClearedNotice(false); setHistoryError('');
-                      try {
-                        await clearLocalHistory();
-                        setConfirmClear(false);
-                        setClearedNotice(true);
-                        onHistoryCleared();
-                      } catch { setHistoryError('기록을 지우지 못했어요. 다른 탭을 닫고 다시 시도해 주세요.'); }
-                    }}
-                  >
-                    정말 정리하기
-                  </button>
-                  <button type="button" className={css.segBtn} onClick={() => setConfirmClear(false)}>
-                    취소
-                  </button>
-                </div>
-              ) : (
-                <div>
-                  <button type="button" className={css.smallBtn} onClick={() => setConfirmClear(true)}>
-                    로컬 기록 정리하기
-                  </button>
-                </div>
-              )}
-            </section>
-          </>
-        )}
-      </div>
-    </ModalShell>
+    </Modal>
   );
 }
