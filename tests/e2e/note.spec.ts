@@ -43,7 +43,7 @@ const noteStored = (page: Page) => page.evaluate(() => {
   return raw === null ? null : (JSON.parse(raw) as { items: Record<string, { lemma: string }> });
 });
 
-test('오답 노트가 비어 있으면: 홈 단추에 개수가 없고, 화면은 책 그림과 안내 한 줄이며, 뒤로·Esc로 홈에 돌아온다', async ({ page }) => {
+test('오답 노트가 비어 있으면: 홈 단추에 개수가 없고, 화면은 책 그림과 안내 두 줄이며, 뒤로·Esc로 홈에 돌아온다', async ({ page }) => {
   const errors: string[] = [];
   page.on('pageerror', e => errors.push(String(e)));
   await freshHome(page);
