@@ -20,8 +20,10 @@ interface Props {
   compact?: boolean;
   /** 막 살 수 있게 된 타워(호박색 링이 한 번 켜진다). */
   fresh?: ReadonlySet<TowerId>;
-  /** 다음 새 타워를 받는 때(잠긴 칸 하나의 안내). 더 받을 타워가 없으면 null이고 잠긴 칸도 없다. */
+  /** 다음 새 타워를 받는 때(잠긴 칸 하나의 안내, 화면 읽기·호버). 더 받을 타워가 없으면 null이고 잠긴 칸도 없다. */
   locked?: string | null;
+  /** 다음 새 타워를 받는 웨이브 번호. 잠긴 칸에 숫자 배지로 보인다(터치 기기에서도 이유가 보이게, R5 B12). */
+  lockedWave?: number | null;
   onArm(type: TowerId): void;
   onPress(type: TowerId, e: ReactPointerEvent<HTMLElement>): void;
   /** 끌기 뒤 따라오는 click을 거른다. true면 누르기로 친다. */
@@ -33,7 +35,7 @@ interface Props {
  * 살 수 있는 칸은 밝은 키캡, 못 사는 칸은 그림을 50%로 흐리고 가격을 빨갛게, 막 살 수 있게 된 칸은 호박색 링이 한 번 켜진다.
  * 이름은 화면 읽기와 호버 안내(title)로만 읽힌다.
  */
-export function Armory({ balance, towers, gold, armed, icons, variant, compact = false, fresh, locked = null, onArm, onPress, takeClick }: Props) {
+export function Armory({ balance, towers, gold, armed, icons, variant, compact = false, fresh, locked = null, lockedWave = null, onArm, onPress, takeClick }: Props) {
   const lockId = `armory-lock-${variant}`;
   return (
     <>
@@ -75,9 +77,16 @@ export function Armory({ balance, towers, gold, armed, icons, variant, compact =
             </button>
           );
         })}
+        {/* 잠긴 칸: 자물쇠 + 풀리는 웨이브 숫자 배지(웨이브 아이콘 + 숫자, 타워 칸의 가격 줄 자리). 뜻은 아래 화면 읽기 문장과 호버 안내로 읽힌다. */}
         {locked && (
           <span className={css.locked} title={locked} aria-hidden="true">
-            <ArtIcon name="lock" size={variant === 'strip' ? 20 : 24} />
+            <ArtIcon name="lock" size={variant === 'strip' ? 18 : 24} className={css.lockArt} />
+            {lockedWave !== null && (
+              <span className={css.lockWave}>
+                <ArtIcon name="wave" size={variant === 'strip' ? 12 : 14} />
+                {lockedWave}
+              </span>
+            )}
           </span>
         )}
       </div>

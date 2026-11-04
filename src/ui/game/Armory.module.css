@@ -1,5 +1,8 @@
-/* 타워 칸(R4 PRD §9.1): 종이 키캡 소켓. 고른 칸은 파란 링, 막 살 수 있게 된 칸은 호박색 링이 한 번 켜진다. */
+/* 타워 칸(R4 PRD §9.1): 양피지 키(v4 §4.1 secondary 옷: 면 --parch-1 + 안쪽 2px --walnut-3 테 + 바닥 4px --walnut-3).
+   넓은 화면은 레일의 참나무 판 위에, 휴대폰은 짙은 바탕 위에 바로 놓인다(§4.9). 고른 칸은 링, 막 살 수 있게 된 칸은 호박색 링이 한 번 켜진다.
+   링 색은 바탕에 맞춘다: 판 위 --blue, 짙은 바탕 위 --focus-on-dark(§2.6 규칙 5). */
 .rail {
+  --ring: var(--blue);
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   grid-auto-rows: 1fr;
@@ -8,6 +11,7 @@
 
 /* 휴대폰: 8칸이 한 줄(44px 이상)에 들어간다. 칸이 적으면 왼쪽부터 채운다. */
 .strip {
+  --ring: var(--focus-on-dark);
   display: grid;
   grid-template-columns: repeat(8, minmax(44px, 64px));
   column-gap: 3px;
@@ -18,7 +22,6 @@
   min-width: var(--touch);
   min-height: var(--touch);
   border-radius: var(--r-sm);
-  background: var(--paper-2);
 }
 
 .socket {
@@ -30,19 +33,23 @@
   gap: 2px;
   padding: var(--s1) 2px;
   border: 0;
+  background: var(--parch-1);
   color: var(--ink);
-  box-shadow: 0 4px 0 var(--line);
+  box-shadow: inset 0 0 0 2px var(--walnut-3), 0 4px 0 var(--walnut-3);
   touch-action: none;
   user-select: none;
   transition: transform 80ms var(--ease-out), box-shadow 80ms var(--ease-out);
 }
 
-.socket:active { transform: translateY(4px); box-shadow: 0 0 0 var(--line); }
-.socket:focus-visible { outline: 3px solid var(--blue); outline-offset: 2px; }
-.socket[aria-selected='true'] { outline: 3px solid var(--blue); outline-offset: 2px; background: var(--paper); }
+.socket:active { transform: translateY(4px); box-shadow: inset 0 0 0 2px var(--walnut-3), 0 0 0 var(--walnut-3); }
+/* 넓은 화면 레일 안은 누름도 자리를 옮기지 않는다(바닥만 0, v4 §7.4). 휴대폰 줄은 레일 밖이라 R4 그대로. */
+.rail .socket:active { transform: none; }
+.socket:focus-visible { outline: 3px solid var(--ring); outline-offset: 2px; }
+.socket[aria-selected='true'] { outline: 3px solid var(--ring); outline-offset: 2px; background: var(--paper); }
 
+/* 호버: 키 공통 밝기(v4 §4.0). */
 @media (hover: hover) {
-  .socket:hover:not([data-short]) { background: var(--paper); }
+  .socket:hover:not([data-short]) { filter: brightness(1.06); }
 }
 
 .art {
@@ -76,10 +83,36 @@
   100% { outline: 3px solid transparent; outline-offset: 2px; }
 }
 
-/* 잠긴 칸 하나: 낮은 면에 자물쇠만. 안내는 호버(title)와 화면 읽기로 읽힌다. */
+/* 잠긴 칸 하나(R5 B12): 음각 홈(--parch-3 + 안쪽 2px --oak-2, 바닥 0)에 흐린 자물쇠 + 풀리는 웨이브 숫자 배지.
+   타워 칸과 같은 두 단(그림·가격 줄 자리)이다. 배지는 흐리지 않는다(칸 전체 대신 자물쇠만 흐린다). 안내 문장은 호버(title)와 화면 읽기로 읽힌다. */
 .locked {
+  background: var(--parch-3);
+  box-shadow: inset 0 0 0 2px var(--oak-2);
   display: grid;
-  place-items: center;
-  opacity: 0.7;
+  grid-template-rows: 1fr auto;
+  justify-items: center;
+  align-items: center;
+  gap: 2px;
+  padding: var(--s1) 2px;
   cursor: help;
+}
+
+.lockArt { opacity: 0.6; }
+
+/* 숫자 배지: 양피지 볼록 면 + 호두나무 1px 테 + --ink 13px(14.49). 반경 4px < 높이 절반이라 알약으로 세지 않는다(v4 §7.2).
+   판 > 잠긴 칸 > 배지로 3겹째라 안에 면 있는 요소를 더 겹치지 않는다(웨이브 아이콘은 면 없는 그림). */
+.lockWave {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  min-height: 18px;
+  padding: 0 var(--s1);
+  border-radius: var(--r-sm);
+  background: var(--parch-1);
+  box-shadow: inset 0 0 0 1px var(--walnut-3);
+  color: var(--ink);
+  font-size: var(--fs-1);
+  font-weight: 800;
+  line-height: 1.1;
+  font-variant-numeric: tabular-nums;
 }

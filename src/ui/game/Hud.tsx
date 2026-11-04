@@ -35,6 +35,7 @@ export function streakGems(view: Pick<GameView, 'burningSecondsLeft' | 'battleSt
 /**
  * 상태 카드(R4 PRD §9.1): 성문 막대, 골드(가장 큰 숫자), 웨이브, 점수, 불꽃 3칸, 일시정지.
  * 아이콘+숫자만 보인다. 뜻은 화면 읽기 이름과 호버 안내(title)로 읽힌다. 골드 변화는 날아오는 금화와 숫자 굴림으로만 보인다.
+ * 머리판 재질(짙은 호두나무, ui-rules-v4 §3.1·§4.3)이라 글은 --on-dark, 보조 글은 --on-dark-2, 골드·강조 숫자는 --brass-1이다(§2.6).
  * - R(넓은 레일): 세 줄 — 성문·일시정지 / 골드·불꽃 / 웨이브·점수.
  * - R 압축(낮은 화면): 두 줄 — 성문·일시정지 / 골드·웨이브·점수·불꽃.
  * - S(휴대폰): 한 줄 — 성문·골드·웨이브·불꽃·일시정지(점수는 결과에서 본다).
@@ -60,7 +61,8 @@ export function Hud({ view, burning: rule, mode, compactRail = false, goldRef, r
       <span className={css.gateNum}>{view.gateHp}<span className={css.of}>/{view.gateMaxHp}</span></span>
     </div>
   );
-  const pause = <IconButton label="일시정지" icon={<PauseIcon />} variant="secondary" className={css.pause} onClick={onPause} />;
+  // 넓은 화면의 상태 카드는 레일 안이라 누름도 자리를 옮기지 않는다(바닥만 0, v4 §7.4).
+  const pause = <IconButton label="일시정지" icon={<PauseIcon />} variant="secondary" still={!phone} className={css.pause} onClick={onPause} />;
   const gold = (
     <span className={css.gold} role="img" aria-label={`골드 ${view.gold}`} title="골드">
       <ArtIcon name="coin" size={big ? 28 : 22} />
@@ -89,18 +91,27 @@ export function Hud({ view, burning: rule, mode, compactRail = false, goldRef, r
       <span>{fmtNumber(view.pt)}</span>
     </span>
   );
+  // 연속 정답 칸 묶음(R5 B6): 모으는 동안은 불꽃 칸, 보너스가 켜지면 호박 면 + 불꽃 하나 + 남은 초.
+  // 두 겹을 같은 칸에 겹쳐 두고 보이는 겹만 바꾸므로 켜짐·꺼짐에 상자 크기가 그대로다(줄이 흔들리지 않는다, v4 §3.5).
+  const flameSize = phone ? 16 : 20;
   const flames = (
     <span
       className={css.flames}
       data-burning={burning || undefined}
+      data-calm={reducedMotion || undefined}
       role="img"
       aria-label={burning ? `연속 정답 보너스 ${view.burningSecondsLeft}초 남음, ${speed}` : `연속 정답 ${lit}/${rule.streak}, 다 모으면 보너스 ${speed}`}
       title={burning ? `연속 정답 보너스 · ${speed}` : `연속 정답 · 다 모으면 보너스(${speed})`}
     >
-      {Array.from({ length: rule.streak }, (_, i) => (
-        <ArtIcon key={i} name="flame" size={phone ? 16 : 20} className={(i < lit ? css.lit : css.unlit) ?? ''} />
-      ))}
-      {burning && <span className={css.burnNum}>{view.burningSecondsLeft}초</span>}
+      <span className={css.gems}>
+        {Array.from({ length: rule.streak }, (_, i) => (
+          <ArtIcon key={i} name="flame" size={flameSize} className={(i < lit ? css.lit : css.unlit) ?? ''} />
+        ))}
+      </span>
+      <span className={css.burn}>
+        <ArtIcon name="flame" size={flameSize} />
+        <span className={css.burnNum}>{view.burningSecondsLeft}초</span>
+      </span>
     </span>
   );
 
@@ -109,7 +120,7 @@ export function Hud({ view, burning: rule, mode, compactRail = false, goldRef, r
 
   if (phone) {
     return (
-      <Card className={`${css.hud} ${css.bar}`}>
+      <Card material="plaque" className={`${css.hud} ${css.bar}`}>
         {gateMeter}
         {gold}
         {wave}
@@ -119,7 +130,7 @@ export function Hud({ view, burning: rule, mode, compactRail = false, goldRef, r
     );
   }
   return (
-    <Card className={`${css.hud} ${big ? css.rail : css.compact}`}>
+    <Card material="plaque" className={`${css.hud} ${big ? css.rail : css.compact}`}>
       <div className={css.row}>
         {gateMeter}
         {pause}

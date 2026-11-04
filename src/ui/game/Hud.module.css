@@ -1,4 +1,5 @@
-/* 상태 카드(R4 PRD §9.1, ui-rules-v3): 종이 카드 위 원화 아이콘 + 숫자. 골드가 가장 큰 숫자다. */
+/* 상태 카드(R4 PRD §9.1): 머리판 재질(Card material="plaque", 짙은 호두나무 + 몰딩, ui-rules-v4 §3.1·§4.3) 위 원화 아이콘 + 숫자.
+   골드가 가장 큰 숫자다. 짙은 면이라 글은 --on-dark·--on-dark-2, 강조 숫자는 --brass-1, 붉은 글은 직접 두지 않는다(§2.6). */
 .hud {
   display: grid;
   gap: var(--s2);
@@ -41,7 +42,8 @@
   min-width: 32px;
   height: 12px;
   border-radius: var(--r-sm);
-  background: var(--paper-2);
+  /* 빈 칸: 참나무 결(--line). 짙은 판 위에서 또렷하고(약 6.9), 숲색·붉은 칠 막대와도 3:1 넘게 갈린다(§2.6). */
+  background: var(--line);
   overflow: hidden;
 }
 
@@ -79,7 +81,7 @@
 .of {
   font-size: var(--fs-1);
   font-weight: 700;
-  color: var(--ink-2);
+  color: var(--on-dark-2);
 }
 
 .pause { flex: none; }
@@ -96,6 +98,7 @@
   font-weight: 800;
   line-height: 1;
   font-variant-numeric: tabular-nums;
+  color: var(--brass-1);
 }
 
 .goldBig { font-size: var(--fs-4); }
@@ -111,7 +114,13 @@
   line-height: 1;
 }
 
-.stat[data-boss] strong { color: var(--red); }
+/* 보스 웨이브 번호: 밀랍(붉은 칠) 면 + 밝은 글(6.30). 면은 배경 + 같은 색 펼침이라 상자 크기가 평시와 같다(v4 §3.5). */
+.stat[data-boss] strong {
+  border-radius: 2px;
+  background: var(--red);
+  box-shadow: 0 0 0 3px var(--red);
+  color: var(--on-dark);
+}
 
 /* 웨이브 칸: 웨이브 번호 + 오른쪽에 작은 최고 기록 한 줄(prd-r4 §7.2-F). 좁으면 기록 줄이 먼저 줄어든다. */
 .waveCell {
@@ -130,7 +139,7 @@
   font-size: var(--fs-1);
   font-weight: 700;
   line-height: 1.2;
-  color: var(--ink-2);
+  color: var(--on-dark-2);
 }
 
 /* 휴대폰: 웨이브 번호 아래에 쌓는다. 한 줄 높이(일시정지 44px) 안이고, 폭은 짧은 말만 쓴다.
@@ -146,23 +155,27 @@
 
 .bar .best { line-height: 1.1; }
 
-/* 압축 레일: 줄 높이(22px = 아이콘)를 늘리지 않는다. 숫자가 커져 자리가 모자라면 기록 줄은 줄바꿈되어 가려지고 숫자는 그대로 남는다. */
+/* 압축 레일: 줄 높이(22px = 아이콘)를 늘리지 않는다. 숫자가 커져 자리가 모자라면 기록 줄은 줄바꿈되어 가려지고 숫자는 그대로 남는다.
+   오른쪽 3px는 보스 웨이브 번호의 밀랍 면(펼침 3px)이 잘리지 않게 늘 비워 둔다(평시·보스 크기가 같다). */
 .compact .waveCell {
   flex-wrap: wrap;
   gap: 0 var(--s1);
   height: 22px;
+  padding-right: 3px;
   overflow: hidden;
 }
 
-/* 최고 기록 가까이(최고 기록까지 N)와 새 기록은 호박색 굵은 글씨로 눈에 띄게 한다. */
+/* 최고 기록 가까이(최고 기록까지 N)와 새 기록은 놋쇠 굵은 글씨로 눈에 띄게 한다(짙은 판 위 강조 글, §2.6 규칙 3). */
 .best[data-kind='chase'],
 .best[data-kind='new'] {
   font-weight: 800;
-  color: var(--amber-base);
+  color: var(--brass-1);
 }
 
-/* 새 기록: 켜질 때 한 번만 톡 튄다(반복 없음). 움직임을 줄인 설정이면 투명도만. */
+/* 새 기록: 켜질 때 한 번만 톡 튄다(반복 없음). 레일 안(넓은·압축)은 transform을 쓰지 않아(v4 §7.4) 투명도만, 움직임을 줄인 설정도 투명도만. */
 .best[data-kind='new'] { animation: bestPop 480ms var(--ease-out) 1; }
+.rail .best[data-kind='new'],
+.compact .best[data-kind='new'],
 .best[data-kind='new'][data-calm] { animation-name: bestFade; }
 
 @keyframes bestPop {
@@ -182,25 +195,65 @@
 
 .score {
   font-weight: 700;
-  color: var(--ink-2);
+  color: var(--on-dark-2);
 }
 
+/* 연속 정답 칸 묶음(R5 B6). 불꽃 칸 겹(.gems)과 보너스 겹(.burn)을 한 칸에 겹쳐 두고 보이는 겹만 바꾼다:
+   상자는 두 겹 중 큰 쪽(불꽃 칸)이라 켜짐·꺼짐에 크기가 같다. 좌우 여백도 늘 같고, 켜졌을 때 위아래로 넓힌 호박 면은 펼침 그림자라 줄 높이를 바꾸지 않는다. */
 .flames {
+  display: inline-grid;
+  flex: none;
+  align-items: center;
+  justify-items: center;
+  padding: 0 var(--s1);
+  border-radius: var(--r-sm);
+}
+
+.gems,
+.burn {
+  grid-area: 1 / 1;
   display: inline-flex;
   align-items: center;
   gap: 2px;
-  flex: none;
 }
 
-.unlit { opacity: 0.25; }
+.burn { visibility: hidden; }
+
+/* 짙은 판 위에서 꺼진 칸이 보이도록 R4(0.25)보다 조금 진하게 둔다. 켜진 칸과는 그대로 한눈에 갈린다. */
+.unlit { opacity: 0.35; }
 .lit { opacity: 1; transition: opacity var(--t-ui); }
 
 .burnNum {
-  margin-left: var(--s1);
   font-size: var(--fs-1);
   font-weight: 800;
-  color: var(--amber-base);
+  line-height: 1;
 }
+
+/* 켜짐: 호박 면(--brass-2) + --ink 글(6.48). 짙은 판과의 경계 5.80. */
+.flames[data-burning] {
+  background: var(--brass-2);
+  box-shadow: 0 0 0 2px var(--brass-2);
+  color: var(--ink);
+  animation: ignite 520ms var(--ease-out) 1;
+}
+
+.flames[data-burning] .gems { visibility: hidden; }
+.flames[data-burning] .burn { visibility: visible; }
+
+/* 켜지는 순간 한 번: 놋쇠 링이 바깥으로 퍼지며 사라진다. 레일 안이라 transform 없이 outline만 쓴다(v4 §7.4). 움직임 줄이기 셋(상태 카드 설정·OS·<html data-motion>)에서는 없다. */
+@keyframes ignite {
+  0% { outline: 3px solid var(--brass-1); outline-offset: 2px; }
+  45% { outline: 3px solid var(--brass-1); outline-offset: 6px; }
+  100% { outline: 3px solid transparent; outline-offset: 9px; }
+}
+
+.flames[data-calm] { animation: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  .flames[data-burning] { animation: none; }
+}
+
+:global(:root[data-motion='minimal']) .flames[data-burning] { animation: none; }
 
 /* 원정 보물(prd-r4 §7.2-F): 아이콘 줄(넓은 레일) 또는 보물 상자 + 개수(압축 레일·휴대폰). 줄 높이를 늘리지 않는다(아이콘 18~20px). */
 .relics {
@@ -226,6 +279,9 @@
   color: var(--ink-2);
   font-variant-numeric: tabular-nums;
 }
+
+/* 상태 카드(짙은 판) 안의 보물 개수. 휴대폰 상황 카드(양피지)에 놓인 보물 줄은 위 --ink-2 그대로다. */
+.hud .relicMore { color: var(--on-dark-2); }
 
 .relicLabel {
   margin-right: var(--s1);

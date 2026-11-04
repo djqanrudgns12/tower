@@ -1,7 +1,6 @@
-/* 정지층(ui-rules-v3): 불투명한 숲색 바탕 위 종이 카드 한 장. 문제·보기·해설은 이 층이 열린 동안 DOM에서 빠진다(PRD §3.6 [확정] 불투명 가림). */
-.layer { position: fixed; inset: 0; z-index: 100; background: var(--bg); display: grid; place-items: center; padding: var(--s4); overflow: auto; }
-.box { width: min(420px, 100%); display: grid; gap: var(--s4); padding: var(--s5); }
-.title { font-size: var(--fs-5); font-weight: 800; line-height: 1.2; }
+/* 정지 창(R5 B15): kit Modal(호두나무 테 + 양피지 면, ui-rules-v4 §4.7)이 그린다. 창 뒤 막(--scrim)은 반투명이라 그 아래에
+   불투명 --bg 층을 깐다: 정지 동안 전장·문제가 보이지 않는다(PRD §3.6 [확정] 불투명 가림). 층이 쌓임 맥락을 만들어 창도 그 안에서 맨 위(100)에 뜬다. */
+.cover { position: fixed; inset: 0; z-index: 100; background: var(--bg); }
 .line { font-size: var(--fs-2); color: var(--ink-2); }
 .stack { display: grid; gap: var(--s3); }
 .setting { display: grid; gap: var(--s1); }
@@ -10,7 +9,3 @@
 .quit { color: var(--red); }
 .confirm { display: grid; gap: var(--s2); font-size: var(--fs-2); }
 .row { display: flex; flex-wrap: wrap; gap: var(--s2); }
-@media (max-width: 480px) {
-  .layer { padding: var(--s2); }
-  .box { padding: var(--s4); }
-}

@@ -1,4 +1,5 @@
-/* 웨이브 시작 띠(R4 PRD §9.2): 종이 카드가 전장 위 가운데로 1초 내려왔다 올라간다. 대장 웨이브는 대장 초상화와 빨간 태그. */
+/* 웨이브 시작 띠(R4 PRD §9.2): 종이 카드가 전장 위 가운데로 1초 내려왔다 올라간다.
+   보스 웨이브(R5 B7)는 띠 면이 붉은 칠(--red) + 밝은 글(--on-dark, 6.30)이라 평시(양피지)와 색으로 갈린다. 대장 초상화는 R4 그대로. */
 .band {
   position: absolute;
   top: var(--s3);
@@ -23,11 +24,18 @@
   line-height: 1.2;
 }
 
+.band[data-boss] {
+  background: var(--red);
+  color: var(--on-dark);
+  box-shadow: inset 0 0 0 2px var(--red-base), var(--float);
+}
+
+/* '보스' 태그: 붉은 띠 위에서는 양피지 면 + --red 글(6.23)로 뒤집어 띠와 갈린다. */
 .tag {
   padding: 1px var(--s2);
   border-radius: var(--r-sm);
-  background: var(--red);
-  color: var(--on-dark);
+  background: var(--parch-1);
+  color: var(--red);
   font-size: var(--fs-1);
   font-weight: 800;
   line-height: 1.5;
@@ -45,10 +53,15 @@
   100% { transform: translate(-50%, -140%); }
 }
 
+/* 움직임 줄이기: 내려오지 않고 제자리에서 나타났다 사라진다(투명도만). OS 설정과 게임 설정 '움직임 최소'(<html data-motion="minimal">) 둘 다(v4 §7.3).
+   전역 규칙이 길이를 0으로 만드므로 여기서 1초를 되살린다(끝나야 onDone이 불린다). 키프레임은 두 조건이 함께 쓰도록 미디어 규칙 밖에 둔다. */
+@keyframes appear {
+  0%, 100% { opacity: 0; transform: translate(-50%, 0); }
+  15%, 85% { opacity: 1; transform: translate(-50%, 0); }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .band { animation: appear 1000ms linear 1 both !important; }
-  @keyframes appear {
-    0%, 100% { opacity: 0; transform: translate(-50%, 0); }
-    15%, 85% { opacity: 1; transform: translate(-50%, 0); }
-  }
 }
+
+:global(:root[data-motion='minimal']) .band { animation: appear 1000ms linear 1 both !important; }

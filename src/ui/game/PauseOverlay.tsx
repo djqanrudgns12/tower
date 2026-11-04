@@ -2,7 +2,7 @@ import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import type { PauseReason } from '../../domain/types';
 import type { FontScale } from '../../application/session';
 import { PAUSE_COPY, RENDER_WAIT } from '../copy';
-import { Button, Card, Segmented, Toggle } from '../kit';
+import { Button, Card, Modal, Segmented, Toggle } from '../kit';
 import css from './PauseOverlay.module.css';
 
 interface Props {
@@ -22,49 +22,39 @@ interface Props {
   restoreFocus?(): void;
 }
 
-/** 불투명 정지층. 문제·보기·해설은 이 층이 열린 동안 DOM에서 빠진다(PRD §3.6, §12.7). 수치 한계는 ‘계속’으로 풀 수 없어 나가기만 둔다. */
+/** 정지 창은 닫기 단추·Esc·막 누르기로 닫히지 않는다(계속하기로만 돌아간다). Modal은 dismissable={false}라 이것을 부르지 않는다. */
+const stay = () => undefined;
+
+/**
+ * 정지 창(R5 B15): kit `Modal`(나무 창 한 벌, ui-rules-v4 §4.7)을 불투명 정지층 위에 띄운다. 문제·보기·해설은 이 층이 열린 동안
+ * DOM에서 빠진다(PRD §3.6, §12.7). 수치 한계는 ‘계속’으로 풀 수 없어 나가기만 둔다.
+ * 포커스: 첫 포커스 = 계속하기(막힘이면 처음 화면으로), Tab은 창 안에서만 돌고, 닫히면 연 단추로 돌아간다(Modal). Esc로는 닫히지 않는다.
+ */
 export function PauseOverlay(p: Props) {
   const first = useRef<HTMLButtonElement>(null);
   const [confirmQuit, setConfirmQuit] = useState(false);
   const blocked = p.reasons.includes('NUMERIC_LIMIT');
   const main = blocked ? 'NUMERIC_LIMIT' : p.reasons[p.reasons.length - 1] ?? 'USER';
 
-  // 열 때 한 번만 첫 단추에 포커스를 주고, 닫으면 연 곳으로 돌려준다. 이유·글자 크기가 바뀌어도 다시 돌지 않는다.
-  const box = useRef<HTMLDivElement>(null);
+  // 연 단추로 돌려주기는 Modal이 한다. 연 단추가 사라졌으면(자동 정지 때 포커스가 있던 보기처럼 정지 동안 DOM에서 빠진 것)
+  // Modal 정리와 화면 inert 해제가 끝난 다음 화면이 알려 준 곳으로 돌려준다.
   const restore = useRef(p.restoreFocus);
   useLayoutEffect(() => { restore.current = p.restoreFocus; });
-  useLayoutEffect(() => {
-    const previous = document.activeElement as HTMLElement | null;
-    first.current?.focus();
-    // 닫힐 때 정지 층이 먼저 빠지고 화면의 inert가 그 뒤에 풀리므로, 커밋이 끝난 다음 돌려준다.
-    return () => queueMicrotask(() => {
-      if (previous?.isConnected && previous !== document.body) previous.focus();
-      if (document.activeElement === document.body || !document.activeElement) restore.current?.();
-    });
-  }, []);
+  useEffect(() => () => queueMicrotask(() => {
+    if (document.activeElement === document.body || !document.activeElement) restore.current?.();
+  }), []);
   // 열린 채 막힘으로 바뀌면(끝내기 중 수치 한계) 누른 단추가 사라지므로 새 첫 단추로 옮긴다.
   useEffect(() => {
     first.current?.focus();
   }, [blocked]);
 
-  /** Tab은 정지 카드 안에서만 돈다. */
-  const trap = (e: React.KeyboardEvent) => {
-    if (e.key !== 'Tab') return;
-    const items = [...(box.current?.querySelectorAll<HTMLElement>('button:not([disabled]), input:not([disabled])') ?? [])];
-    if (items.length === 0) return;
-    const head = items[0]!, tail = items[items.length - 1]!;
-    if (e.shiftKey && document.activeElement === head) { e.preventDefault(); tail.focus(); }
-    else if (!e.shiftKey && document.activeElement === tail) { e.preventDefault(); head.focus(); }
-  };
-
-  // 학생이 직접 멈춘 경우 제목이 곧 설명이라 한 줄을 더 쓰지 않는다(ui-rules-v3 문장 규칙).
-  const line = p.renderLost && !blocked ? RENDER_WAIT : main === 'USER' ? null : PAUSE_COPY[main];
+  // 이유 한 줄: 학생이 직접 멈추면 "잠시 멈췄어요."(옛 정지 창, pre-r4 10a), 그 밖에는 멈춘 까닭.
+  const line = p.renderLost && !blocked ? RENDER_WAIT : PAUSE_COPY[main];
 
   return (
-    <div ref={box} className={css.layer} role="dialog" aria-modal="true" aria-labelledby="pause-title" onKeyDown={trap}>
-      <Card float className={css.box}>
-        <h2 id="pause-title" className={css.title}>{blocked ? '잠깐만요' : '일시정지'}</h2>
-        {line && <p className={css.line}>{line}</p>}
+    <div className={css.cover}>
+      <Modal titleId="pause-title" title={blocked ? '잠깐만요' : '일시정지'} size="sm" dismissable={false} onClose={stay}>
+        <p className={css.line}>{line}</p>
         {blocked ? (
           <div className={css.stack}>
             <Button ref={first} variant="primary" size="lg" block onClick={p.onLeave}>처음 화면으로</Button>
@@ -95,7 +85,7 @@ export function PauseOverlay(p: Props) {
             )}
           </div>
         )}
-      </Card>
+      </Modal>
     </div>
   );
 }
