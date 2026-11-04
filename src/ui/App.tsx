@@ -54,6 +54,8 @@ export function App() {
   });
   const [saved, setSaved] = useState<LoadResult | null>(null);
   const [message, setMessage] = useState<string | null>(null);
+  // 기록 지우기 뒤 오답 노트 개수를 다시 읽게 App을 다시 그린다(noteItems는 렌더 때 저장소에서 읽는다).
+  const [, setNoteTick] = useState(0);
 
   useEffect(() => { document.documentElement.dataset.font = settings.fontScale; }, [settings.fontScale]);
   // 홈에 올 때마다 저장을 다시 읽는다. 저장소를 열 수 없으면 이어하기를 보이지 않는다.
@@ -148,6 +150,7 @@ export function App() {
           focusNicknameOnMount={screen.focusNickname ?? false}
           onOpenNote={() => setScreen({ name: 'note', back: { name: 'home' } })}
           noteCount={noteItems.length}
+          onHistoryCleared={() => setNoteTick(t => t + 1)}
           onClearMessage={() => setMessage(null)}
           onStartNew={startNew}
           onResume={resume}

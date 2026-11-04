@@ -35,6 +35,8 @@ interface Props {
   onOpenNote?(): void;
   /** 오답 노트 버튼에 붙는 낱말 개수. */
   noteCount?: number;
+  /** 설정에서 이 기기 기록을 지웠을 때(오답 노트 개수처럼 홈 밖에서 계산한 값을 다시 읽게 한다). */
+  onHistoryCleared?(): void;
   onClearMessage(): void;
   onStartNew(input: { grade: 3 | 4 | 5 | 6; difficulty: DifficultyId; nickname: string }): void;
   onResume?(): void;
@@ -55,6 +57,7 @@ export function HomeScreen({
   focusNicknameOnMount = false,
   onOpenNote,
   noteCount = 0,
+  onHistoryCleared,
   onClearMessage,
   onStartNew,
   onResume,
@@ -248,7 +251,7 @@ export function HomeScreen({
         <SettingsModal
           settings={settings}
           onUpdate={onSettings}
-          onHistoryCleared={() => setRefreshTick(t => t + 1)}
+          onHistoryCleared={() => { setRefreshTick(t => t + 1); onHistoryCleared?.(); }}
           onClose={closeModal}
         />
       )}

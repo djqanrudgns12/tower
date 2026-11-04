@@ -39,10 +39,10 @@ async function startGame(page: Page, width: number, height: number) {
     localStorage.clear();
   });
   await page.reload();
-  await page.getByRole('textbox', { name: /닉네임|출정 별명/ }).fill('수직선검사');
-  // 홈 시작 → 새 게임 창의 시작(U1 홈 개편 전후 이름을 모두 받는다: 새 게임/시작, 시작하기/시작).
-  await page.getByRole('button', { name: /^(새 게임|시작)$/ }).first().click();
-  await page.getByRole('dialog', { name: /새 게임/ }).getByRole('button', { name: /^(시작하기|시작)$/ }).click();
+  await page.getByRole('textbox', { name: '닉네임' }).fill('수직선검사');
+  // 홈 '시작' → 새 게임 창의 '시작'(R4 U1).
+  await page.getByRole('button', { name: '시작', exact: true }).click();
+  await page.getByRole('dialog', { name: '새 게임' }).getByRole('button', { name: '시작', exact: true }).click();
   await expect(page.getByRole('img', { name: '준비 1/5' })).toBeVisible();
 }
 
@@ -251,7 +251,7 @@ test('제출 뒤 화면 회전(R 1024×690 ↔ S 820×1060)에서 보기 배치�
   expect(Math.abs(r2.panel.h - r1.panel.h)).toBeLessThanOrEqual(TOLERANCE);
 });
 
-test('모달 포커스: 열면 첫 요소, 키보드로 설정을 바꿔도 제자리, 닫으면 연 버튼으로 복귀', async ({ page }) => {
+test('모달 포커스: 열면 내용의 첫 요소, 키보드로 설정을 바꿔도 제자리, 닫으면 연 버튼으로 복귀', async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.goto('/');
 
@@ -259,10 +259,10 @@ test('모달 포커스: 열면 첫 요소, 키보드로 설정을 바꿔도 제�
   await settingsBtn.click();
   const settingsDialog = page.getByRole('dialog', { name: '환경설정' });
   await expect(settingsDialog).toBeVisible();
-  await expect(settingsDialog.getByRole('button', { name: '닫기' })).toBeFocused();
+  // R4 kit Modal: 첫 포커스는 머리줄의 닫기가 아니라 내용의 첫 조작 요소다(설정은 첫 줄 '전체 소리' switch).
+  await expect(settingsDialog.getByRole('switch', { name: '전체 소리' })).toBeFocused();
 
-  // 키보드로 항목을 바꿔 부모가 다시 렌더돼도(onClose가 새 함수) 포커스가 그 라디오에 남는다.
-  await settingsDialog.getByRole('tab', { name: '화면 · 글자 크기' }).click();
+  // 키보드로 항목을 바꿔 부모가 다시 렌더돼도(onClose가 새 함수) 포커스가 그 라디오에 남는다. 탭이 없으므로 같은 목록에서 바로 찾는다.
   const large = settingsDialog
     .getByRole('radiogroup', { name: '글자 크기', exact: true })
     .getByRole('radio', { name: '글자 크게', exact: true });
@@ -271,38 +271,46 @@ test('모달 포커스: 열면 첫 요소, 키보드로 설정을 바꿔도 제�
   await expect(large).toHaveAttribute('aria-checked', 'true');
   await expect(page.locator('html')).toHaveAttribute('data-font', 'large');
   await expect(large).toBeFocused();
+  // switch도 키보드(Space)로 바꾸고 포커스가 남는다.
+  const contrast = settingsDialog.getByRole('switch', { name: '전장 길·받침 고대비 윤곽선' });
+  await contrast.focus();
+  const before = await contrast.getAttribute('aria-checked');
+  await page.keyboard.press('Space');
+  await expect(contrast).not.toHaveAttribute('aria-checked', before!);
+  await expect(contrast).toBeFocused();
 
   await page.keyboard.press('Escape');
   await expect(settingsDialog).toHaveCount(0);
   await expect(settingsBtn).toBeFocused();
 
   const openRanking = page
-    .getByRole('complementary', { name: '통합 수호 랭킹' })
-    .getByRole('button', { name: '상세 순위표 열기' });
+    .getByRole('complementary', { name: '랭킹' })
+    .getByRole('button', { name: '전체 보기' });
   await openRanking.click();
-  const rankingDialog = page.getByRole('dialog', { name: /상세 수호 순위표/ });
+  const rankingDialog = page.getByRole('dialog', { name: '랭킹' });
   await expect(rankingDialog).toBeVisible();
-  await expect(rankingDialog.getByRole('button', { name: '닫기' })).toBeFocused();
+  // 랭킹 전체 보기는 내용의 첫 조작 요소 = 선택된 첫 탭이다.
+  await expect(rankingDialog.getByRole('tab').first()).toBeFocused();
   await rankingDialog.getByRole('button', { name: '닫기' }).click();
   await expect(rankingDialog).toHaveCount(0);
   await expect(openRanking).toBeFocused();
 });
 
-test('상세 순위표 탭: 방향키·Home·End가 선택과 포커스를 함께 옮긴다(roving tabindex)', async ({ page }) => {
+test('랭킹 전체 보기 탭: 방향키·Home·End가 선택과 포커스를 함께 옮긴다(roving tabindex)', async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.goto('/');
   await page
-    .getByRole('complementary', { name: '통합 수호 랭킹' })
-    .getByRole('button', { name: '상세 순위표 열기' })
+    .getByRole('complementary', { name: '랭킹' })
+    .getByRole('button', { name: '전체 보기' })
     .click();
-  const dialog = page.getByRole('dialog', { name: /상세 수호 순위표/ });
-  const tablist = dialog.getByRole('tablist', { name: '상세 순위 분류' });
+  const dialog = page.getByRole('dialog', { name: '랭킹' });
+  const tablist = dialog.getByRole('tablist', { name: '랭킹 종류' });
   const tabs = tablist.getByRole('tab');
   const count = await tabs.count();
-  expect(count).toBeGreaterThanOrEqual(3);
+  expect(count).toBe(3);
 
+  // 열면 포커스가 선택된 첫 탭에 있다(Tab 한 번 없이). 탭 줄의 Tab 진입점은 하나뿐이다.
   await expect(tablist.locator('[role="tab"][tabindex="0"]')).toHaveCount(1);
-  await page.keyboard.press('Tab');
   await expect(tabs.first()).toBeFocused();
   await expect(tabs.first()).toHaveAttribute('aria-selected', 'true');
 
@@ -322,14 +330,18 @@ test('상세 순위표 탭: 방향키·Home·End가 선택과 포커스를 함�
   await page.keyboard.press('Home');
   await expect(tabs.first()).toHaveAttribute('aria-selected', 'true');
   await expect(tabs.first()).toBeFocused();
+
+  // Tab은 탭 줄을 벗어나 고르기 줄(학년)의 선택된 칸 하나로 간다.
+  await page.keyboard.press('Tab');
+  await expect(dialog.getByRole('radiogroup', { name: '학년' }).locator('[role="radio"][aria-checked="true"]')).toBeFocused();
 });
 
 test('새 게임 학년·난이도 radiogroup: 방향키가 선택과 포커스를 함께 옮긴다', async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.goto('/');
-  await page.getByRole('textbox', { name: /닉네임|출정 별명/ }).fill('방향키검증');
-  await page.getByRole('button', { name: '새 게임' }).click();
-  const dialog = page.getByRole('dialog', { name: '새 게임 출정 설정' });
+  await page.getByRole('textbox', { name: '닉네임' }).fill('방향키검증');
+  await page.getByRole('button', { name: '시작', exact: true }).click();
+  const dialog = page.getByRole('dialog', { name: '새 게임' });
   await expect(dialog).toBeVisible();
 
   const grades = dialog.getByRole('radiogroup', { name: '학년', exact: true });
@@ -339,7 +351,7 @@ test('새 게임 학년·난이도 radiogroup: 방향키가 선택과 포커스�
   await checked.focus();
   const startIndex = await radios.evaluateAll(els => els.findIndex(el => el.getAttribute('aria-checked') === 'true'));
   // 공개 은행이 없는 학년은 꺼져 있고 방향키가 건너뛴다(PRD §9.3). 켜진 학년이 하나뿐이면 제자리에 남는다.
-  const enabledCount = await radios.evaluateAll(els => els.filter(el => !(el as HTMLButtonElement).disabled).length);
+  const enabledCount = await radios.evaluateAll(els => els.filter(el => el.getAttribute('aria-disabled') !== 'true').length);
   await page.keyboard.press('ArrowRight');
   const nextIndex = await radios.evaluateAll(els => els.findIndex(el => el.getAttribute('aria-checked') === 'true'));
   await expect(radios.nth(nextIndex)).toBeEnabled();
@@ -414,27 +426,39 @@ async function floors(page: Page, scope: string) {
   }, scope);
 }
 
-test('13px·44px 하한: 홈·새 게임·상세 순위표·사용 설명서(1366×650)', async ({ page }) => {
+test('13px·44px 하한: 홈·새 게임·랭킹 전체 보기·설정·사용 설명서(접힘·펼침)·오답 노트(1366×650)', async ({ page }) => {
   await page.setViewportSize({ width: 1366, height: 650 });
   await page.goto('/');
   const results: Record<string, Awaited<ReturnType<typeof floors>>> = {};
   results.home = await floors(page, 'body');
 
-  await page.getByRole('textbox', { name: /닉네임|출정 별명/ }).fill('하한검사');
-  await page.getByRole('button', { name: '새 게임' }).click();
+  await page.getByRole('textbox', { name: '닉네임' }).fill('하한검사');
+  await page.getByRole('button', { name: '시작', exact: true }).click();
   results.newGame = await floors(page, '[role="dialog"]');
   await page.keyboard.press('Escape');
 
-  await page.getByRole('complementary', { name: '통합 수호 랭킹' }).getByRole('button', { name: '상세 순위표 열기' }).click();
+  await page.getByRole('complementary', { name: '랭킹' }).getByRole('button', { name: '전체 보기' }).click();
   results.ranking = await floors(page, '[role="dialog"]');
+  await page.keyboard.press('Escape');
+
+  await page.locator('#settingsBtn').click();
+  results.settings = await floors(page, '[role="dialog"]');
   await page.keyboard.press('Escape');
 
   await page.locator('#guideBtn').click();
   const guide = page.getByRole('dialog', { name: '사용 설명서' });
-  for (let i = 1; i <= 4; i++) {
-    await guide.getByRole('tab').nth(i - 1).click();
-    results[`guide${i}`] = await floors(page, '[role="dialog"]');
-  }
+  results.guide = await floors(page, '[role="dialog"]');
+  // 탭 대신 카드의 '자세히'를 모두 펼친 상태에서도 글자·누름 하한을 지킨다.
+  const more = guide.getByRole('button', { name: '자세히' });
+  for (let i = 0; i < (await more.count()); i++) await more.nth(i).click();
+  results.guideOpen = await floors(page, '[role="dialog"]');
+  await page.keyboard.press('Escape');
+
+  // 오답 노트(빈 상태): 홈의 '오답 노트' 단추로 들어간다.
+  await page.getByRole('button', { name: '오답 노트' }).click();
+  await expect(page.getByRole('heading', { level: 1, name: '오답 노트' })).toBeVisible();
+  results.note = await floors(page, 'body');
+
   console.log(`[floors] ${JSON.stringify(results, null, 1)}`);
   for (const [name, r] of Object.entries(results)) {
     expect(r.minFont, `${name} 최소 글자 ${r.fontAt}`).toBeGreaterThanOrEqual(13);
@@ -449,10 +473,10 @@ async function newGame(page: Page) {
   await page.goto('/');
   await page.evaluate(() => { indexedDB.deleteDatabase('vocabulary-td'); localStorage.removeItem('vocabulary-td.coach'); });
   await page.reload();
-  await page.getByRole('textbox', { name: /닉네임|출정 별명/ }).fill('하늘바람');
-  // 홈 시작 → 새 게임 창의 시작(U1 홈 개편 전후 이름을 모두 받는다: 새 게임/시작, 시작하기/시작).
-  await page.getByRole('button', { name: /^(새 게임|시작)$/ }).first().click();
-  await page.getByRole('dialog', { name: /새 게임/ }).getByRole('button', { name: /^(시작하기|시작)$/ }).click();
+  await page.getByRole('textbox', { name: '닉네임' }).fill('하늘바람');
+  // 홈 '시작' → 새 게임 창의 '시작'(R4 U1).
+  await page.getByRole('button', { name: '시작', exact: true }).click();
+  await page.getByRole('dialog', { name: '새 게임' }).getByRole('button', { name: '시작', exact: true }).click();
   await expect(page.getByRole('img', { name: '준비 1/5' })).toBeVisible();
 }
 

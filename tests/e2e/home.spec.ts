@@ -69,7 +69,7 @@ test.describe('홈(R4 U1: 타이틀 화면) 통합 검증', () => {
     expect(errors).toEqual([]);
   });
 
-  test('L09·L10·L12·L14·L17: 오늘의 낱말 카드(예문은 눌러야), 설정 3탭(닉네임 배제·인게임 배지 연동), 랭킹 요약과 전체 보기', async ({ page }) => {
+  test('L09·L10·L12·L14·L17: 오늘의 낱말 카드(예문은 눌러야), 설정 한 목록(switch 줄·닉네임 배제·인게임 배지 연동), 랭킹 요약과 전체 보기', async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 900 });
     await page.goto('/');
     await page.evaluate(() => localStorage.clear());
@@ -105,21 +105,29 @@ test.describe('홈(R4 U1: 타이틀 화면) 통합 검증', () => {
     await page.keyboard.press('Escape');
     await expect(page.getByRole('dialog')).toHaveCount(0);
 
-    // L12·L13·L14: 환경설정 모달(별명 입력칸·대원 전환 0개) 및 단축키 번호 배지 인게임 실제 연동
+    // L12·L13·L14: 환경설정 모달(R4 U3: 탭 없이 한 목록, 켜기/끄기 줄은 switch, 닉네임 입력칸·대원 전환 0개) 및 단축키 번호 배지 인게임 실제 연동
     await page.getByRole('button', { name: '설정' }).click();
     const settingsDialog = page.getByRole('dialog', { name: '환경설정' });
     await expect(settingsDialog).toBeVisible();
+    await expect(settingsDialog.getByRole('tab')).toHaveCount(0);
     await expect(settingsDialog.getByRole('textbox')).toHaveCount(0);
     await expect(settingsDialog.getByText(/대원 전환|별명 변경/)).toHaveCount(0);
+    // 켜기/끄기 줄은 모두 switch이고 한 목록 안에 한꺼번에 보인다(탭을 눌러 찾아가지 않는다).
+    for (const name of ['전체 소리', '전장 길·받침 고대비 윤곽선', '단축키 번호 배지 표시', '공개 기록 나누기']) {
+      await expect(settingsDialog.getByRole('switch', { name })).toBeVisible();
+    }
+    await expect(settingsDialog.getByRole('radiogroup', { name: '글자 크기' })).toBeVisible();
+    await expect(settingsDialog.getByRole('radiogroup', { name: '배경 움직임 단계' })).toBeVisible();
 
     await settingsDialog.getByRole('button', { name: '정답음 들어보기' }).click();
-    await settingsDialog.getByRole('tab', { name: '화면 · 글자 크기' }).click();
     await settingsDialog.getByRole('radio', { name: '글자 크게' }).click();
     expect(await page.evaluate(() => document.documentElement.dataset.font)).toBe('large');
     await settingsDialog.getByRole('radio', { name: '글자 보통' }).click();
 
-    await settingsDialog.getByRole('tab', { name: '전투 보조 · 기록' }).click();
-    await settingsDialog.getByRole('radiogroup', { name: '단축키 번호 배지 표시' }).getByRole('radio', { name: '꺼짐' }).click();
+    const keyHints = settingsDialog.getByRole('switch', { name: '단축키 번호 배지 표시' });
+    await expect(keyHints).toHaveAttribute('aria-checked', 'true');
+    await keyHints.click();
+    await expect(keyHints).toHaveAttribute('aria-checked', 'false');
     await settingsDialog.getByRole('button', { name: '닫기' }).click();
 
     // 게임 진입 후 QuestionPanel 보기 옆 번호 배지(1~4)가 실제로 숨겨졌는지 확인
@@ -245,7 +253,7 @@ test.describe('홈(R4 U1: 타이틀 화면) 통합 검증', () => {
     }
   });
 
-  test('G01~G16: 사용 설명서 4장 페이지네이션·버튼 최소화·실자산 무대·크롬북 무스크롤·§12.8·axe 전수 검증', async ({ page }) => {
+  test('G01~G16: 사용 설명서 그림 카드 4장+상성 카드·자세히 펼침(키보드 포함)·실자산 그림·크롬북 창 안착·§12.8·axe 전수 검증', async ({ page }) => {
     const errors: string[] = [];
     page.on('pageerror', e => errors.push(String(e)));
 
@@ -258,67 +266,77 @@ test.describe('홈(R4 U1: 타이틀 화면) 통합 검증', () => {
     const dialog = page.getByRole('dialog', { name: '사용 설명서' });
     await expect(dialog).toBeVisible();
 
-    // G01 & G02: '연습 판 해 보기'·'처음으로' 0개, 하단 footer 버튼은 오직 '이전 장'·'다음 장' 2개뿐이다.
+    // G01 & G02: 옛 쪽 넘김(이전 장·다음 장·목차 탭)과 '연습 판 해 보기'·'처음으로'는 없다. 그림 카드 4장 + 타워 상성 카드 1장이 한 화면에 모두 있다.
     await expect(dialog.getByRole('button', { name: '연습 판 해 보기' })).toHaveCount(0);
     await expect(dialog.getByRole('button', { name: '처음으로' })).toHaveCount(0);
-    const footer = dialog.locator('footer');
-    await expect(footer.getByRole('button')).toHaveCount(2);
-    const prevBtn = footer.getByRole('button', { name: '이전 장' });
-    const nextBtn = footer.getByRole('button', { name: '다음 장' });
-    await expect(prevBtn).toBeDisabled();
-    await expect(nextBtn).toBeEnabled();
-    await expect(footer).toContainText('1 / 4');
+    await expect(dialog.getByRole('tab')).toHaveCount(0);
+    await expect(dialog.getByRole('button', { name: /이전 장|다음 장/ })).toHaveCount(0);
+    const cards = dialog.locator('article');
+    await expect(cards).toHaveCount(5);
+    const titles = ['한 판 흐름', '문제와 골드', '타워 놓기와 진화', '시작과 저장', '타워 상성'];
+    for (const [i, title] of titles.entries()) {
+      await expect(cards.nth(i).getByRole('heading', { level: 3, name: title })).toBeVisible();
+    }
+    // 카드마다 한 문장. 자세한 글은 '자세히'를 누르기 전까지 접혀 있다.
+    await expect(cards.nth(0)).toContainText('문제를 풀고 타워로 성문을 지켜요');
+    await expect(cards.nth(1)).toContainText('맞히면 골드, 모르면 뜻을 배워요');
+    await expect(cards.nth(2)).toContainText('타워를 놓고 키워서 진화시켜요');
+    await expect(cards.nth(3)).toContainText('저장하고 나가도 이어서 할 수 있어요');
+    await expect(cards.nth(4)).toContainText('하늘 적은 하늘을 쏘는 타워로');
+    const more = dialog.getByRole('button', { name: '자세히' });
+    await expect(more).toHaveCount(5);
+    for (let i = 0; i < 5; i++) await expect(more.nth(i)).toHaveAttribute('aria-expanded', 'false');
 
-    // 1장 검증 + 삽화 로드 + axe 검사
-    await expect(dialog).toContainText('문제로 군자금을 모아 타워를 세우고');
-    await expect.poll(async () => dialog.locator('img').first().evaluate((el: HTMLImageElement) => el.naturalWidth)).toBeGreaterThan(300);
-    const axe1 = await new AxeBuilder({ page }).analyze();
-    expect(axe1.violations.map(v => `${v.id}: ${v.nodes.length}`)).toEqual([]);
-    await page.screenshot({ path: 'test-results/shots/guide-ch1-desktop.png' });
+    // 그림 4장은 실제 삽화가 로드되고, 상성 카드에는 적 특성 아이콘 3줄이 있다.
+    const pictures = dialog.locator('article img[alt]:not([alt=""])');
+    await expect(pictures).toHaveCount(4);
+    for (let i = 0; i < 4; i++) {
+      await expect.poll(() => pictures.nth(i).evaluate((el: HTMLImageElement) => el.naturalWidth)).toBeGreaterThan(300);
+    }
+    await expect(cards.nth(4).getByRole('listitem')).toHaveCount(3);
+    for (const enemy of ['하늘 적', '단단한 적', '떼로 오는 적']) await expect(cards.nth(4)).toContainText(enemy);
+    const axeClosed = await new AxeBuilder({ page }).analyze();
+    expect(axeClosed.violations.map(v => `${v.id}: ${v.nodes.length}`)).toEqual([]);
+    await page.screenshot({ path: 'test-results/shots/guide-cards-desktop.png' });
 
-    // G07: '다음 장' 클릭 → 2장 전환
-    await nextBtn.click();
-    await expect(footer).toContainText('2 / 4');
-    await expect(prevBtn).toBeEnabled();
-    await expect(dialog).toContainText('모르겠어요');
-    await dialog.getByRole('button', { name: /연속 버닝/ }).click();
-    await expect.poll(async () => dialog.locator('img').first().evaluate((el: HTMLImageElement) => el.naturalWidth)).toBeGreaterThan(300);
-    const axe2 = await new AxeBuilder({ page }).analyze();
-    expect(axe2.violations.map(v => `${v.id}: ${v.nodes.length}`)).toEqual([]);
-    await page.screenshot({ path: 'test-results/shots/guide-ch2-desktop.png' });
+    // G07·G08: 키보드로 펼친다. Enter로 펼치고 Space로 접으며, 펼침 영역은 단추의 aria-controls가 가리키는 칸이다. 카드마다 따로 펼쳐진다.
+    await more.nth(1).focus();
+    await page.keyboard.press('Enter');
+    await expect(more.nth(1)).toHaveAttribute('aria-expanded', 'true');
+    const panelId = await more.nth(1).getAttribute('aria-controls');
+    const quizDetail = dialog.locator(`[id="${panelId}"]`);
+    await expect(quizDetail).toBeVisible();
+    await expect(quizDetail).toContainText('모르겠어요');
+    await expect(quizDetail).toContainText('불꽃');
+    await expect(more.nth(0)).toHaveAttribute('aria-expanded', 'false');
+    await expect(more.nth(1)).toBeFocused();
+    await page.keyboard.press('Space');
+    await expect(more.nth(1)).toHaveAttribute('aria-expanded', 'false');
+    await expect(quizDetail).toBeHidden();
 
-    // G08: 키보드 ArrowRight → 3장 전환 + 타워 전환 인터랙션
-    await page.keyboard.press('ArrowRight');
-    await expect(footer).toContainText('3 / 4');
-    await expect(dialog).toContainText('밝은 흙길');
-    await expect(dialog).toContainText('60%');
-    await dialog.getByRole('button', { name: '포탑' }).click();
-    await expect(dialog).toContainText('확산');
-    await expect.poll(async () => dialog.locator('img').first().evaluate((el: HTMLImageElement) => el.naturalWidth)).toBeGreaterThan(300);
-    const axe3 = await new AxeBuilder({ page }).analyze();
-    expect(axe3.violations.map(v => `${v.id}: ${v.nodes.length}`)).toEqual([]);
-    await page.screenshot({ path: 'test-results/shots/guide-ch3-desktop.png' });
-
-    // 상단 목차 탭 클릭 → 4장 전환 + 경계 비활성 확인
-    await dialog.getByRole('tab', { name: '4. 출정·조작' }).click();
-    await expect(footer).toContainText('4 / 4');
-    await expect(nextBtn).toBeDisabled();
-    await expect(dialog).toContainText('속담·관용구·방언');
-    await expect(dialog).toContainText('이번 판 끝내기');
+    // 나머지 카드의 자세한 글(옛 1~4장 본문)을 모두 펼쳐 읽을 수 있다.
+    for (let i = 0; i < 5; i++) await more.nth(i).click();
+    for (let i = 0; i < 5; i++) await expect(more.nth(i)).toHaveAttribute('aria-expanded', 'true');
+    await expect(cards.nth(0)).toContainText('준비 문제');
+    await expect(cards.nth(0)).toContainText('성문 회복과 대장');
+    await expect(cards.nth(2)).toContainText('사거리 원과 밝은 흙길');
+    await expect(cards.nth(2)).toContainText(/\d+% 환급 판매/);
+    await expect(cards.nth(3)).toContainText('속담·관용구·방언');
+    await expect(cards.nth(3)).toContainText('이번 판 끝내기');
     // G03: 저장·이어하기(PRD §14)와 첫 연습 판(§12.2) 안내가 있다.
-    await expect(dialog).toContainText('저장하고 나가기');
-    await expect(dialog).toContainText('이어하기');
-    await expect(dialog).toContainText('연습 판');
-    await page.keyboard.press('3');
-    await expect(dialog).toContainText('보기 3번 즉시 선택');
-    await expect.poll(async () => dialog.locator('img').first().evaluate((el: HTMLImageElement) => el.naturalWidth)).toBeGreaterThan(300);
-    const axe4 = await new AxeBuilder({ page }).analyze();
-    expect(axe4.violations.map(v => `${v.id}: ${v.nodes.length}`)).toEqual([]);
-    await page.screenshot({ path: 'test-results/shots/guide-ch4-desktop.png' });
+    await expect(cards.nth(3)).toContainText('저장하고 나가기');
+    await expect(cards.nth(3)).toContainText('이어하기');
+    await expect(cards.nth(3)).toContainText('연습 판');
+    await expect(cards.nth(3)).toContainText('숫자키 1~4');
+    // 상성 카드는 적 특성마다 상대하기 좋은 타워를 보인다.
+    await expect(cards.nth(4).locator('li strong')).toHaveCount(3);
+    const axeOpen = await new AxeBuilder({ page }).analyze();
+    expect(axeOpen.violations.map(v => `${v.id}: ${v.nodes.length}`)).toEqual([]);
+    await page.screenshot({ path: 'test-results/shots/guide-cards-open-desktop.png' });
 
-    // G14: PRD §12.8 스타일 전수 검사 (그라데이션 0, 블러 0, 허용 반경 0/4/8/999px만 사용)
+    // G14: PRD §12.8 스타일 전수 검사 (그라데이션 0, 블러 0, 허용 반경 0/8/14/999px만 사용: ui-rules-v3 §2 --r-sm·--r-md·배지)
     const guideStyleIssues = await dialog.evaluate(root => {
-      const allowedRadii = new Set(['0px', '4px', '8px', '999px']);
+      const allowedRadii = new Set(['0px', '8px', '14px', '999px']);
       const issues: string[] = [];
       for (const el of [root, ...root.querySelectorAll('*')]) {
         const cs = getComputedStyle(el);
@@ -337,19 +355,19 @@ test.describe('홈(R4 U1: 타이틀 화면) 통합 검증', () => {
     });
     expect(guideStyleIssues).toEqual([]);
 
-    // G12: 학교 크롬북(1366×650) 저높이 뷰포트에서 1~4장 모두 모달 내부 세로 스크롤 없이 수납된다.
+    // G12: 학교 크롬북(1366×650) 저높이 뷰포트에서도 창이 화면 안에 들어오고, 카드 안은 가로로 넘치지 않으며 마지막 카드까지 스크롤로 닿는다.
     await page.setViewportSize({ width: 1366, height: 650 });
-    for (const tabName of ['1. 한 판 흐름', '2. 문제·버닝', '3. 타워·진화', '4. 출정·조작'] as const) {
-      await dialog.getByRole('tab', { name: tabName }).click();
-      const scrollDelta = await dialog.evaluate(root => {
-        const body = root.firstElementChild as HTMLElement;
-        return body.scrollHeight - body.clientHeight;
-      });
-      expect(scrollDelta, `1366x650 ${tabName} 세로 스크롤 발생`).toBeLessThanOrEqual(1);
-      if (tabName === '1. 한 판 흐름') {
-        await page.screenshot({ path: 'test-results/shots/guide-ch1-chromebook.png' });
-      }
-    }
+    const fit = await dialog.evaluate(root => {
+      const r = root.getBoundingClientRect();
+      const wide = [root, ...root.querySelectorAll<HTMLElement>('*')].filter(el => el.scrollWidth > el.clientWidth + 1 && getComputedStyle(el).overflowX !== 'visible');
+      return { top: r.top, bottom: r.bottom, left: r.left, right: r.right, hOverflow: wide.length };
+    });
+    expect(fit.top, '1366x650 창 위쪽이 화면 안').toBeGreaterThanOrEqual(0);
+    expect(fit.bottom, '1366x650 창 아래쪽이 화면 안').toBeLessThanOrEqual(650);
+    expect(fit.hOverflow, '1366x650 창 안 가로 넘침').toBe(0);
+    await cards.nth(4).scrollIntoViewIfNeeded();
+    await expect(cards.nth(4)).toBeInViewport();
+    await page.screenshot({ path: 'test-results/shots/guide-cards-chromebook.png' });
 
     // G13: 모바일(390×844)·초소형(320×568) 및 글자 아주 크게(xlarge) 가로 넘침 0px 검증
     await page.evaluate(() => { document.documentElement.dataset.font = 'xlarge'; });
@@ -357,37 +375,31 @@ test.describe('홈(R4 U1: 타이틀 화면) 통합 검증', () => {
       await page.setViewportSize({ width: w, height: h });
       const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
       expect(overflow, `${w}x${h} xlarge overflow`).toBeLessThanOrEqual(0);
+      const boxRight = await dialog.evaluate(root => root.getBoundingClientRect().right);
+      expect(boxRight, `${w}x${h} xlarge 창 오른쪽이 화면 안`).toBeLessThanOrEqual(w);
       if (w === 390) {
-        await page.screenshot({ path: 'test-results/shots/guide-ch1-mobile.png' });
+        await page.screenshot({ path: 'test-results/shots/guide-cards-mobile.png' });
       }
     }
     await page.evaluate(() => { document.documentElement.dataset.font = 'base'; });
 
-    // G08: Escape 입력 시 모달이 닫히고 홈 상단 '사용 설명서' 버튼으로 포커스가 복귀한다.
+    // G08: Escape 입력 시 모달이 닫히고 홈 상단 '설명서' 버튼으로 포커스가 복귀한다.
     await page.setViewportSize({ width: 1440, height: 900 });
     await page.keyboard.press('Escape');
     await expect(dialog).toHaveCount(0);
     await expect(guideTrigger).toBeFocused();
 
-    // G11: 환경설정에서 배경 움직임 '정지(minimal)' + 고대비 지도를 켜면 설명서 캔버스가 정지 대표 장면을 유지한다.
+    // G11: 설명서에서 무대 캔버스를 걷어 냈다(U3). 배경 움직임 '정지'·고대비 윤곽선을 켜도 설명서는 캔버스 없이 같은 카드만 보인다.
     await page.getByRole('button', { name: '설정' }).click();
     const settingsDialog = page.getByRole('dialog', { name: '환경설정' });
-    await settingsDialog.getByRole('tab', { name: '화면 · 글자 크기' }).click();
     await settingsDialog.getByRole('radiogroup', { name: '배경 움직임 단계' }).getByRole('radio', { name: '정지' }).click();
-    await settingsDialog.getByRole('radiogroup', { name: '전장 길·받침 고대비 윤곽선' }).getByRole('radio', { name: '켜짐' }).click();
+    await settingsDialog.getByRole('switch', { name: '전장 길·받침 고대비 윤곽선' }).click();
     await settingsDialog.getByRole('button', { name: '닫기' }).click();
 
     await guideTrigger.click();
     await expect(dialog).toBeVisible();
-    const snapCanvas = () =>
-      dialog.getByRole('img', { name: '4단계 수비 순환 실시간 시연' }).locator('canvas').evaluate(
-        (el: HTMLCanvasElement) => el.toDataURL(),
-      );
-    await page.waitForTimeout(200);
-    const f1 = await snapCanvas();
-    await page.waitForTimeout(250);
-    const f2 = await snapCanvas();
-    expect(f2).toBe(f1);
+    await expect(dialog.locator('canvas')).toHaveCount(0);
+    await expect(dialog.locator('article')).toHaveCount(5);
     await page.keyboard.press('Escape');
     await expect(dialog).toHaveCount(0);
     expect(errors).toEqual([]);
@@ -440,7 +452,7 @@ test.describe('홈(R4 U1: 타이틀 화면) 통합 검증', () => {
     }));
     await page.reload();
     await expect(page.getByText('저장된 판이 손상되어 이어할 수 없어요')).toBeVisible();
-    await expect(page.getByRole('button', { name: /이어하기/ })).toHaveCount(0);
+    await expect(page.getByRole('button', { name: /^이어하기 ·/ })).toHaveCount(0);
     const slots = await page.evaluate(() => new Promise<number>((resolve, reject) => {
       const req = indexedDB.open('vocabulary-td');
       req.onsuccess = () => {

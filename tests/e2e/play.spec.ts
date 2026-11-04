@@ -12,10 +12,10 @@ async function newGame(page: Page) {
   await page.goto('/');
   await page.evaluate(() => indexedDB.deleteDatabase('vocabulary-td'));
   await page.reload();
-  await page.getByRole('textbox', { name: /닉네임|출정 별명/ }).fill('하늘바람');
-  // 홈 시작 → 새 게임 창의 시작(U1 홈 개편 전후 이름을 모두 받는다: 새 게임/시작, 시작하기/시작).
-  await page.getByRole('button', { name: /^(새 게임|시작)$/ }).first().click();
-  await page.getByRole('dialog', { name: /새 게임/ }).getByRole('button', { name: /^(시작하기|시작)$/ }).click();
+  await page.getByRole('textbox', { name: '닉네임' }).fill('하늘바람');
+  // 홈 '시작' → 새 게임 창의 '시작'(R4 U1).
+  await page.getByRole('button', { name: '시작', exact: true }).click();
+  await page.getByRole('dialog', { name: '새 게임' }).getByRole('button', { name: '시작', exact: true }).click();
   await expect(page.getByRole('img', { name: '준비 1/5' })).toBeVisible();
 }
 
@@ -250,31 +250,33 @@ test('WebGL 문맥 손실: 멈추고, 화면이 돌아온 뒤 계속하면 같�
   await shot(page, 'desktop-context-restored');
 });
 
-test('사용 설명서 완독 후 새 게임 출정: 설명서는 4장 안내만 두고 바로 본 게임으로 진입한다', async ({ page }) => {
+test('사용 설명서 완독 후 새 게임 시작: 설명서는 그림 카드와 자세히 안내만 두고 바로 본 게임으로 진입한다', async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.goto('/');
   await page.evaluate(() => { indexedDB.deleteDatabase('vocabulary-td'); localStorage.clear(); });
   await page.reload();
 
-  await page.getByRole('button', { name: '사용 설명서' }).click();
+  await page.getByRole('button', { name: '설명서', exact: true }).click();
   const guide = page.getByRole('dialog', { name: '사용 설명서' });
   await expect(guide).toBeVisible();
   await expect(guide.getByRole('button', { name: '연습 판 해 보기' })).toHaveCount(0);
   await expect(guide.getByRole('button', { name: '처음으로' })).toHaveCount(0);
 
-  await guide.getByRole('button', { name: '다음 장' }).click();
-  await expect(guide.locator('footer')).toContainText('2 / 4');
-  await guide.getByRole('button', { name: '다음 장' }).click();
-  await expect(guide.locator('footer')).toContainText('3 / 4');
-  await guide.getByRole('button', { name: '다음 장' }).click();
-  await expect(guide.locator('footer')).toContainText('4 / 4');
+  // 옛 '다음 장' 쪽 넘김 대신, 카드 5장을 위에서 아래로 읽으며 '자세히'를 모두 펼쳐 본다.
+  await expect(guide.locator('article')).toHaveCount(5);
+  const more = guide.getByRole('button', { name: '자세히' });
+  await expect(more).toHaveCount(5);
+  for (let i = 0; i < 5; i++) {
+    await more.nth(i).click();
+    await expect(more.nth(i)).toHaveAttribute('aria-expanded', 'true');
+  }
   await guide.getByRole('button', { name: '닫기' }).click();
   await expect(guide).toHaveCount(0);
 
-  await page.getByRole('textbox', { name: /닉네임|출정 별명/ }).fill('작전교범수호자');
-  // 홈 시작 → 새 게임 창의 시작(U1 홈 개편 전후 이름을 모두 받는다: 새 게임/시작, 시작하기/시작).
-  await page.getByRole('button', { name: /^(새 게임|시작)$/ }).first().click();
-  await page.getByRole('dialog', { name: /새 게임/ }).getByRole('button', { name: /^(시작하기|시작)$/ }).click();
+  await page.getByRole('textbox', { name: '닉네임' }).fill('작전교범수호자');
+  // 홈 '시작' → 새 게임 창의 '시작'(R4 U1).
+  await page.getByRole('button', { name: '시작', exact: true }).click();
+  await page.getByRole('dialog', { name: '새 게임' }).getByRole('button', { name: '시작', exact: true }).click();
   await expect(page.getByRole('img', { name: '준비 1/5' })).toBeVisible();
 });
 
@@ -284,7 +286,7 @@ test('첫 연습 판: 문제 1개 → 궁수 설치 → 적 3마리 → 회복, 
   await page.goto('/');
   await page.evaluate(() => { indexedDB.deleteDatabase('vocabulary-td'); localStorage.clear(); });
   await page.reload();
-  await page.getByRole('button', { name: '처음이라면 연습부터' }).click();
+  await page.getByRole('button', { name: '연습 먼저' }).click();
   await expect(page.getByText('문제를 풀면 골드를 받아요. 알맞은 답을 눌러 보세요.')).toBeVisible();
   await expect(page.getByRole('img', { name: '준비 1/1' })).toBeVisible();
   await shot(page, 'practice-question');
@@ -301,11 +303,11 @@ test('첫 연습 판: 문제 1개 → 궁수 설치 → 적 3마리 → 회복, 
   await expect(page.getByText('연습을 마쳤어요')).toBeVisible({ timeout: 90_000 });
   await shot(page, 'practice-done');
   await page.getByRole('button', { name: '새 게임 시작' }).click();
-  // 별명이 없으면 홈의 출정 별명 칸으로 안내한다.
-  await expect(page.getByRole('textbox', { name: /닉네임|출정 별명/ })).toBeFocused();
+  // 닉네임이 없으면 홈의 닉네임 칸으로 안내한다.
+  await expect(page.getByRole('textbox', { name: '닉네임' })).toBeFocused();
   // 다시 홈에 오면 연습 권유 대신 ‘연습하기’가 보인다. 연습은 기록·저장에 남지 않는다.
   await expect(page.getByRole('button', { name: '연습하기' })).toBeVisible();
-  await expect(page.getByRole('button', { name: '처음이라면 연습부터' })).toHaveCount(0);
+  await expect(page.getByRole('button', { name: '연습 먼저' })).toHaveCount(0);
   await expect(page.getByRole('button', { name: /이어하기/ })).toHaveCount(0);
   const stored = await page.evaluate(() => new Promise<{ records: number; run: number }>((resolve, reject) => {
     const req = indexedDB.open('vocabulary-td');
@@ -323,7 +325,7 @@ test('첫 연습 판: 문제 1개 → 궁수 설치 → 적 3마리 → 회복, 
   // 연습은 언제든 건너뛸 수 있다.
   await page.getByRole('button', { name: '연습하기' }).click();
   await page.getByRole('button', { name: '연습 건너뛰기' }).click();
-  await expect(page.getByRole('button', { name: '새 게임' })).toBeVisible();
+  await expect(page.getByRole('button', { name: '시작', exact: true })).toBeVisible();
 });
 
 test('키보드: 설치·판매로 단추가 사라져도 포커스가 body로 떨어지지 않고, Enter가 전투를 몰래 시작하지 않는다(PRD §12.4)', async ({ page }) => {
@@ -429,32 +431,34 @@ test('학년 단추는 공동검수를 통과한 공개 은행만 시작할 수 
   await page.goto('/');
   await page.evaluate(() => indexedDB.deleteDatabase('vocabulary-td'));
   await page.reload();
-  await page.getByRole('textbox', { name: /닉네임|출정 별명/ }).fill('어휘수호대');
-  await page.getByRole('button', { name: '새 게임' }).click();
+  await page.getByRole('textbox', { name: '닉네임' }).fill('어휘수호대');
+  await page.getByRole('button', { name: '시작', exact: true }).click();
 
-  const dialog = page.getByRole('dialog', { name: '새 게임 출정 설정' });
+  const dialog = page.getByRole('dialog', { name: '새 게임' });
   await expect(dialog).toBeVisible();
   const gradeGroup = dialog.getByRole('radiogroup', { name: '학년' });
   for (const g of [3, 4, 5, 6]) {
-    const btn = gradeGroup.getByRole('radio', { name: new RegExp(`^${g}학년`) });
-    const count = published.get(g);
-    if (count === undefined) {
+    if (!published.has(g)) {
+      // 공개 은행이 없는 학년은 잠금 아이콘과 '문제 준비 중' 이름으로 읽히고, 눌러도 고를 수 없으며 이유를 한 줄로 알린다.
+      const btn = gradeGroup.getByRole('radio', { name: `${g}학년, 문제 준비 중`, exact: true });
       await expect(btn).toBeDisabled();
-      await expect(btn).toContainText('문제 준비 중');
+      await btn.click({ force: true });
+      await expect(dialog.getByRole('status').filter({ hasText: '문제 준비 중이에요' })).toBeVisible();
+      await expect(btn).toHaveAttribute('aria-checked', 'false');
     } else {
+      const btn = gradeGroup.getByRole('radio', { name: `${g}학년`, exact: true });
       await expect(btn).toBeEnabled();
-      await expect(btn).toContainText(`문제 준비됨 · ${count.toLocaleString('ko-KR')}문항`);
     }
   }
 
   const top = Math.max(...published.keys());
-  await gradeGroup.getByRole('radio', { name: new RegExp(`^${top}학년`) }).click();
-  await dialog.getByRole('radiogroup', { name: '난이도' }).getByRole('radio', { name: /^아주 어려움/ }).click();
+  await gradeGroup.getByRole('radio', { name: `${top}학년`, exact: true }).click();
+  await dialog.getByRole('radiogroup', { name: '난이도' }).getByRole('radio', { name: '아주 어려움', exact: true }).click();
 
   const newGameA11y = await new AxeBuilder({ page }).analyze();
   expect(newGameA11y.violations.map(v => `${v.id}: ${v.nodes.length}`)).toEqual([]);
 
-  await page.getByRole('button', { name: '시작하기' }).click();
+  await dialog.getByRole('button', { name: '시작', exact: true }).click();
   await expect(page.getByRole('img', { name: '준비 1/5' })).toBeVisible();
   await expect(page.getByRole('region', { name: '어휘 문제' })).toBeVisible();
 
@@ -464,7 +468,7 @@ test('학년 단추는 공동검수를 통과한 공개 은행만 시작할 수 
 });
 
 /**
- * 징집이 열린 상태 fixture: 앱은 아직 시범 3종이라 징집이 열리지 않으므로, 멈춘 판의 저장본을 고쳐(모든 타워 사용 가능,
+ * 새 타워 고르기가 열린 상태 fixture: 앱은 아직 시범 3종이라 새 타워 고르기가 열리지 않으므로, 멈춘 판의 저장본을 고쳐(모든 타워 사용 가능,
  * 시작 4종 장착, 후보 3종) 이어한다. 저장본은 무결성 해시를 다시 계산해 넣는다(PRD §14 형식 그대로).
  */
 async function openDraftFixture(page: Page, offers: string[]) {
