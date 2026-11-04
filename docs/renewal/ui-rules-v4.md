@@ -11,6 +11,15 @@
   3. `ChoiceCard` 옷 입히기는 P2 동안 K가 맡는다(계획서 §7.1 소유표에 적음).
   4. `tools/qa/lib.mjs` 토큰 밖 색 검사는 `:root`의 hex 토큰 전부를 읽고, `tools/qa/scenes.mjs`는 `--font base|large|xlarge`를 받는다(메인, P0 반영). `<html data-motion>`은 P2에 K가 `src/ui/App.tsx`에 단다.
   5. 전투 바탕 `--bg`가 짙은 호두나무가 되면서 결과·오답 노트·일시정지 바탕도 같이 바뀌는 것은 의도("나무 창으로 통일")에 맞다. P4 눈 관문에서 본다.
+- **총괄 결정(2026-11-05, P2 세션 K 보고 답):** 아래는 K가 규정과 다르게 한 곳을 그대로 받아들인 것이다. P3 트랙은 이 결정을 따른다.
+  6. **카드 테 = 안쪽 2px 그림자**(`inset 0 0 0 2px`). 화면이 카드 여백을 덮어써서 실제 테두리를 넣으면 수직선 잠금이 깨진다. 카드 여백은 R4 16/12px 그대로 두고 §4.3의 14/10px는 쓰지 않는다.
+  7. **키 원화는 버튼 뒤 `::before`**에 그리고, 면 색은 `background-clip: content-box`로 내용 상자에만 깐다. 버튼 상자·여백은 R4와 같다(실제 테두리를 줬을 때 휴대폰 답안 키가 3줄로 꺾여 세로 8px 넘침).
+  8. **키 원화는 알약 모양**이라 §3.3 "원화 둥글기와 `--r-*`를 맞춘다"의 예외다. 계산 반경은 4px로 두고, 포커스 링이 알약 둘레에 둥근 사각으로 그려지는 것은 P4 눈 관문에서 다시 본다.
+  9. **창 첫 포커스**: 고를 것·입력이 있는 창은 내용 첫 요소(R4 그대로), 읽기만 하는 창(랭킹 전체 보기)은 닫기. kit `Modal`의 `initialFocus: 'content' | 'close'`(기본 `content`)로 고른다.
+  10. 창 머리줄은 구분선(`rule` 원화 12px) 칸 때문에 R4보다 4px 높다(64px). 허용한다.
+  11. `--frame-lg` 12px은 단색 대체 틀 두께다. `frame.lg` 원화는 표시 폭 24px 이상에서만 쓰고, 그보다 얇은 테는 `frame.sm` 원화를 쓴다(P1 판정).
+  12. §7.1 "글자 크기 종류"는 **보통 단계에서 센다**. 크게·아주 크게에서 `--read-step`이 더한 크기는 새 종류로 세지 않는다. 홈 오늘의 낱말 뜻은 기준 캡처대로 `calc(17px + var(--read-step))`, 예문은 `calc(15px + var(--read-step))`.
+  13. `board` 원화는 메인이 밝기·대비를 보정했다(`a1e0adb`: 평균을 `--oak-1`로, 결·이음 대비 0.55배, 128px 표시 `--ink` 대비 최소 4.54). 판 위 글은 그래도 `--ink`만 쓴다.
 - 표시: **새로 만듦** = 지금 코드에 없는 이름. 이름을 바꾸려면 메인에 알리고 이 문서를 함께 고친다.
 
 ## 1. 방향
@@ -430,7 +439,18 @@ Pretendard 하나, 굵기 400/700/800(계약 `layout.fontWeights`, v3 유지). �
 | 설명서 스타일 검사의 허용 반경이 0/8/14/999px | `tests/e2e/guide.spec.ts` G14 | 메인: 전환용 0/4/8/14/999px(P0). B: P3에서 0/4/8/999px로 |
 | 학교 목록 글자 11px·12px(13px 하한 미달, 목록이 열릴 때만 보임) | `home.module.css` `.schoolItemBadge`·`.schoolItemAddress` | C |
 | 홈 CSS에 직접 쓴 색 17곳(`#ffffff` 호버, `#5ce068` 접속 점 등) | `home.module.css` | C: 토큰으로 바꾸거나 메인에 토큰 요청 |
-| kit 누름 `translateY`가 답안 키에도 걸린다 | `src/ui/kit/ui.module.css` `.btn:active` | A(문제판 CSS) / K(부품 선택) |
-| 설정 `minimal`이 CSS 반복 움직임에 닿는 공통 길이 없다 | `src/ui/App.tsx` | K(P2): `<html data-motion>` |
+| kit 누름 `translateY`가 답안 키에도 걸린다 | `src/ui/kit/ui.module.css` `.btn:active` | K(P2 완료): `Button still`·조상 `--btn-press-y: 0px` 제공. A: 문제판에 적용 |
+| 설정 `minimal`이 CSS 반복 움직임에 닿는 공통 길이 없다 | `src/ui/App.tsx` | K(P2 완료): `<html data-motion>`. A·B·C: 화면 CSS의 반복 움직임도 `[data-motion='minimal']`을 따르게 |
+
+### P2 뒤 넘겨받을 것(2026-11-05, 세션 K 보고)
+
+| 무엇 | 어디 | 누가 |
+|---|---|---|
+| 1366×650 **아주 크게** 첫 준비(`01-first-prep-cb`) 세로 넘침 4px. 그 판 문제·보기가 각각 2줄 | 전투 문제판 | A: 아주 크게로 다시 재고, 모자라면 메인에 계약 변경 요청 |
+| 답안 키가 키 원화(알약)로 그려져 2~3줄에서 끝이 길쭉하고, 휴대폰에서 번호 '1'이 왼쪽 리벳에 붙는다 | `src/ui/game/` 문제판 | A: 답안 키는 원화를 끄고(`--key: none; --art-clip: initial; --art-shadow: initial`) B10(바닥 0·4·6px)으로 그리거나 `groove` 안 양피지 카드로. 누름 이동은 `still`이나 `--btn-press-y: 0px` |
+| 일시정지(B15)가 아직 `Card`라 창 재질이 두 벌로 보인다 | 일시정지 | A: kit `Modal`로 |
+| `home.module.css` 안 쓰는 클래스 15개(`modalScrim`·`modalDialog`·`settingsTabs` …), 직접 색 `#ffffff` 8곳 등 6곳 | `home.module.css` | C |
+| 오늘의 낱말 뜻·예문에 읽는 글 표시 `data-content`가 없어 홈 상시 문장이 3→5로 세어진다 | `SteleStudyPanel.tsx` | C |
+| Safari에서 원화(키·창·고르기 줄)가 그려지는지 눈 확인 안 함(Playwright WebKit 미설치) | — | 메인: P4 실기기 확인 |
 | `scenes.mjs`에 글자 단계 선택이 없다 | `tools/qa/scenes.mjs` | 메인: `--font` 추가(P0) |
 | `ChoiceCard`는 A 소유 폴더(`src/ui/game/`)인데 옷 입히기(C2)는 P2 K 몫 | 계획서 §7.1 | 메인: P2 동안 K 소유로 적었다(P0) |
