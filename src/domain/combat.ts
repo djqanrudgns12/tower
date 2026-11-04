@@ -302,7 +302,11 @@ function inLine(tower: { x: number; y: number }, d: { x: number; y: number }, p:
   const dot = vx * d.x + vy * d.y;
   const cross = vx * d.y - vy * d.x;
   if (dot < 0 || safe(dot * dot, 'line') > safe(length * length * d2, 'line')) return null;
-  return safe(4 * cross * cross, 'line') <= safe(width * width * d2, 'line') ? dot : null;
+  // 옆으로 아주 먼 적(긴 맵의 반대편 길)은 4·cross²가 안전 정수를 넘는다. 오른쪽(폭² × d²)은 늘 안전 범위라
+  // 넘친 쪽은 그보다 크다는 뜻이므로 계산하지 않고 선 밖으로 친다(결과 같음, NUMERIC_LIMIT 정지 방지).
+  const lateral = 4 * cross * cross;
+  if (!Number.isSafeInteger(lateral)) return null;
+  return lateral <= safe(width * width * d2, 'line') ? dot : null;
 }
 
 /** 첫 대상의 발사 당시 위치 방향, 사거리 끝까지 선분에서 첫 대상 뒤의 적을 전방 거리↑ → 생성순↑로 pierceCount명. */

@@ -3,14 +3,18 @@ import { BALANCE } from '../../src/content';
 import { msToTicks } from '../../src/domain/num';
 import { advanceTick, applyCommand, createRun } from '../../src/domain/run';
 import { buildCost, upgradeCost } from '../../src/domain/towers';
-import { simContext } from './balanceSim';
+import { coverage, simContext } from './balanceSim';
 
 // S11 타워 효율(PRD §7.5 수용 기준 ①): 각 타워가 ‘의도한 상황’에서 같은 골드의 궁수보다 15% 이상 효율이 높은가.
 // 제품 domain 엔진으로, 죽지 않는 적 줄을 정한 간격으로 한 번 통과시키며 타워(묶음)가 준 피해(직접+화상)를 골드로 나눈다.
 // 적이 죽지 않으므로 처치 보상·표적 바뀜이 섞이지 않고, 같은 줄을 다른 타워에 똑같이 보낸다.
 
 export interface Placement { type: TowerId; slot: [number, number]; level?: number; form?: FormId }
-export interface Stream { kind: EnemyKind; elite: EliteId | null; count: number; spacingMs: number }
+export interface Stream {
+  kind: EnemyKind; elite: EliteId | null; count: number; spacingMs: number;
+  /** 있으면 이 순서를 되풀이해 줄을 만든다(분열 몸통 + 새끼처럼 섞인 줄). kind·elite는 대표값이다. */
+  pattern?: ReadonlyArray<{ kind: EnemyKind; elite: EliteId | null }>;
+}
 
 export const STREAMS = {
   /** 보통 간격의 기본형 줄. */
@@ -25,7 +29,26 @@ export const STREAMS = {
   boss: { kind: 'boss', elite: null, count: 6, spacingMs: 2500 },
   /** 비행 줄(리뉴얼 flyer: 대공·비행 배율 형태의 의도). 지상 전용 타워는 0이다. */
   air: { kind: 'flyer', elite: null, count: 24, spacingMs: 950 },
+  /** B0 상성표용 역할 줄: 빠름·튼튼·마법저항·떼·분열. 기본 간격 950ms(떼는 촘촘한 300ms, 40기). */
+  runner: { kind: 'runner', elite: null, count: 24, spacingMs: 950 },
+  brute: { kind: 'brute', elite: null, count: 24, spacingMs: 950 },
+  wisp: { kind: 'wisp', elite: null, count: 24, spacingMs: 950 },
+  swarm: { kind: 'swarm', elite: null, count: 40, spacingMs: 300 },
+  /** 분열: 몸통 하나 뒤에 새끼 둘이 따라온다(죽지 않는 줄이라 실제 분열은 일어나지 않아, 분열 뒤의 떼를 이렇게 흉내 낸다). */
+  splitter: { kind: 'splitter', elite: null, count: 36, spacingMs: 400, pattern: [{ kind: 'splitter', elite: null }, { kind: 'splitling', elite: null }, { kind: 'splitling', elite: null }] },
+  /** 빠른 정예(swift). */
+  swift: { kind: 'walker', elite: 'swift', count: 24, spacingMs: 950 },
 } satisfies Record<string, Stream>;
+
+export type StreamName = keyof typeof STREAMS;
+
+/** 적 역할 9종(PRD §7.1 상성표 열)과 그 역할을 재는 줄. 종족 특성 열은 B3에서 더한다. */
+export const ROLE_STREAMS = {
+  walker: 'line', runner: 'runner', brute: 'brute', shell: 'shell', swarm: 'swarm', wisp: 'wisp', flyer: 'air', splitter: 'splitter', boss: 'boss',
+} as const satisfies Record<string, StreamName>;
+export const ROLES = Object.keys(ROLE_STREAMS) as Array<keyof typeof ROLE_STREAMS>;
+/** 유틸 타워 6종(PRD §7.1): 직접 피해보다 남을 돕는 몫으로 판정한다. */
+export const UTILITY_TOWERS: readonly TowerId[] = ['frost', 'wind', 'bell', 'banner', 'alchemist', 'guardian'];
 
 /** 놓인 타워 묶음이 줄 하나에 준 총피해(milli-HP)와 들인 골드. */
 export function measure(placements: Placement[], stream: Stream, balance: Balance = BALANCE, mapId = 'garden_u'): { damage: number; gold: number } {
@@ -53,7 +76,7 @@ export function measure(placements: Placement[], stream: Stream, balance: Balanc
   const r = applyCommand(ctx, s, { type: 'startBattle' });
   if (!r.ok) throw new Error(`전투 시작 실패: ${r.error}`);
   const battle = s.battle!;
-  battle.spawnList = Array.from({ length: stream.count }, () => ({ kind: stream.kind, elite: stream.elite }));
+  battle.spawnList = Array.from({ length: stream.count }, (_, i) => (stream.pattern ? { ...stream.pattern[i % stream.pattern.length]! } : { kind: stream.kind, elite: stream.elite }));
   battle.intervalTicks = msToTicks(stream.spacingMs);
   battle.hpBaseMilli = 1_000_000_000;
   let damage = 0;
@@ -65,51 +88,64 @@ export function measure(placements: Placement[], stream: Stream, balance: Balanc
   return { damage, gold };
 }
 
-/** shared가 있으면 그 묶음 위에 subject·baseline을 더했을 때 늘어난 피해를 더한 골드로 나눠 비교한다(깃발처럼 혼자서는 피해가 없는 타워). */
-export interface Comparison { id: string; intent: string; stream: keyof typeof STREAMS; subject: Placement[]; baseline: Placement[]; shared?: Placement[]; required: boolean }
-
-const at = (slot: [number, number]) => slot;
-/** (8,2) 칸은 1행·3행 길을 모두 1칸 거리에서 덮는 길목이다. 같은 칸에서 같은 줄로 비교한다. */
-const C: [number, number] = at([8, 2]);
-
-/**
- * 비교 목록. required는 PRD §7.5 ①이 이름을 든 의도(마법=껍질·단단한 정예, 포탑·화염=밀집, 창병=길목, 깃발=강화 묶음)이고,
- * 나머지는 참고값이다. 깃발은 같은 골드로 궁수를 하나 더(Lv2) 놓은 묶음과 비교한다.
- */
-export const COMPARISONS: Comparison[] = [
-  { id: 'mage-shell', intent: '마법탑 · 껍질형', stream: 'shell', subject: [{ type: 'mage', slot: C }], baseline: [{ type: 'archer', slot: C }], required: true },
-  { id: 'mage-armored', intent: '마법탑 · 단단한 정예', stream: 'armored', subject: [{ type: 'mage', slot: C }], baseline: [{ type: 'archer', slot: C }], required: true },
-  { id: 'cannon-dense', intent: '포탑 · 밀집', stream: 'dense', subject: [{ type: 'cannon', slot: C }], baseline: [{ type: 'archer', slot: C }], required: true },
-  { id: 'flame-dense', intent: '화염탑 · 밀집', stream: 'dense', subject: [{ type: 'flame', slot: C }], baseline: [{ type: 'archer', slot: C }], required: true },
-  { id: 'spear-choke', intent: '창병초소 · 길목', stream: 'line', subject: [{ type: 'spear', slot: C }], baseline: [{ type: 'archer', slot: C }], required: true },
-  {
-    // 정원 맵에서 2칸 안에 타워 셋을 둘 수 있는 가장 큰 묶음: (0,2) 칸 둘레 (0,0)·(0,4)·(2,2).
-    id: 'banner-group', intent: '깃발초소 · 강화 궁수 셋 묶음(더한 골드당)', stream: 'line', required: true,
-    shared: [{ type: 'archer', slot: [0, 0], level: 4, form: 'A' }, { type: 'archer', slot: [0, 4], level: 4, form: 'A' }, { type: 'archer', slot: [2, 2], level: 4, form: 'A' }],
-    subject: [{ type: 'banner', slot: [0, 2] }],
-    baseline: [{ type: 'archer', slot: [0, 2] }],
-  },
-  { id: 'crossbow-armored', intent: '석궁탑 · 단단한 정예', stream: 'armored', subject: [{ type: 'crossbow', slot: C }], baseline: [{ type: 'archer', slot: C }], required: false },
-  { id: 'lightning-dense', intent: '번개탑 · 밀집', stream: 'dense', subject: [{ type: 'lightning', slot: C }], baseline: [{ type: 'archer', slot: C }], required: false },
-  { id: 'guardian-line', intent: '수호기사 · 기본 줄', stream: 'line', subject: [{ type: 'guardian', slot: C }], baseline: [{ type: 'archer', slot: C }], required: false },
-  { id: 'frost-line', intent: '서리탑 · 기본 줄(보조, 직접 피해만)', stream: 'line', subject: [{ type: 'frost', slot: C }], baseline: [{ type: 'archer', slot: C }], required: false },
-];
-
-/** 15% 기준(PRD §7.5 ①). */
+/** 15% 기준(PRD §7.5 ①). 유틸이 아닌 공격 타워는 적어도 한 역할에서 같은 골드의 궁수보다 이만큼 이상 세야 한다. */
 export const REQUIRED_RATIO = 1.15;
 
-export function runComparisons(list: Comparison[] = COMPARISONS, balance: Balance = BALANCE) {
-  return list.map(c => {
-    const stream = STREAMS[c.stream];
-    const base = c.shared ? measure(c.shared, stream, balance) : { damage: 0, gold: 0 };
-    const total = (p: Placement[]) => { const m = measure([...(c.shared ?? []), ...p], stream, balance); return { damage: m.damage - base.damage, gold: m.gold - base.gold }; };
-    const a = total(c.subject);
-    const b = total(c.baseline);
-    // 더한 골드 100당 늘어난 피해를 같은 상황의 궁수와 비교한다.
-    const ratio = (a.damage / a.gold) / (b.damage / b.gold);
-    return { id: c.id, intent: c.intent, required: c.required, subjectPer100: Math.round((a.damage / a.gold) * 100 / 1000), baselinePer100: Math.round((b.damage / b.gold) * 100 / 1000), gold: [a.gold, b.gold], ratio: Math.round(ratio * 100) / 100, pass: ratio >= REQUIRED_RATIO };
+/**
+ * 맵의 기준 칸: 정원 맵의 (8,2) 길목(두 길을 1칸 거리에서 덮는 칸, 사거리 1.3·1.8·2.5칸 안 경로 길이 3.4·5.8·9.0칸)과 가장 닮은 칸.
+ * 정원 맵은 예전 표와 견주려고 (8,2)로 못 박는다. 같은 칸에서 같은 줄로 견준다.
+ */
+export function referenceSlot(mapId: string, balance: Balance = BALANCE): [number, number] {
+  if (mapId === 'garden_u') return [8, 2];
+  const ctx = simContext(mapId, 'Normal', balance);
+  const cache = new Map<string, number>();
+  const distance = (id: string) => Math.abs(coverage(ctx, id, 1300, cache) - 3.4) + Math.abs(coverage(ctx, id, 1800, cache) - 5.8) + Math.abs(coverage(ctx, id, 2500, cache) - 9);
+  const best = [...ctx.map.slots].sort((a, b) => distance(a.id) - distance(b.id) || a.id.localeCompare(b.id))[0]!;
+  return [best.x, best.y];
+}
+
+export interface MatrixRow {
+  tower: TowerId;
+  /** 100골드당 준 피해(HP). 직접 공격이 없는 타워(깃발)는 0이다. */
+  per100: Record<Role, number>;
+  /** 같은 줄·같은 칸의 궁수 대비. */
+  ratio: Record<Role, number>;
+  best: { role: Role; ratio: number };
+  worst: { role: Role; ratio: number };
+  attacks: boolean;
+  utility: boolean;
+  /** 판정 대상(유틸이 아닌 궁수 외 공격 타워)이면 best ≥ REQUIRED_RATIO, 아니면 null. */
+  pass: boolean | null;
+}
+export type Role = (typeof ROLES)[number];
+
+/**
+ * 상성표(PRD §7.3 B0): 타워 20종 하나씩을 Lv1 기본형으로 맵의 기준 칸에 놓고 적 역할 9종 줄을 한 번씩 통과시켜,
+ * 100골드당 준 피해를 같은 칸 궁수와 견준다. 예전의 손으로 고른 10종 비교(필수 5·참고 5)를 대신한다.
+ * level·form을 주면 그 단계 타워로 잰다(형태 비교용).
+ */
+export function runMatrix(balance: Balance = BALANCE, o: { mapId?: string; towers?: readonly TowerId[]; level?: number; form?: FormId } = {}): MatrixRow[] {
+  const mapId = o.mapId ?? 'garden_u';
+  const slot = referenceSlot(mapId, balance);
+  const per100Of = (type: TowerId, stream: Stream) => {
+    const m = measure([{ type, slot, ...(o.level ? { level: o.level } : {}), ...(o.form ? { form: o.form } : {}) }], stream, balance, mapId);
+    return (m.damage / m.gold) * 100 / 1000;
+  };
+  const archer = Object.fromEntries(ROLES.map(r => [r, per100Of('archer', STREAMS[ROLE_STREAMS[r]])])) as Record<Role, number>;
+  return (o.towers ?? TOWER_IDS).map(tower => {
+    const attacks = balance.towers[tower].damageType !== 'none';
+    const per100 = Object.fromEntries(ROLES.map(r => [r, attacks ? per100Of(tower, STREAMS[ROLE_STREAMS[r]]) : 0])) as Record<Role, number>;
+    const ratio = Object.fromEntries(ROLES.map(r => [r, archer[r] > 0 ? per100[r] / archer[r] : 0])) as Record<Role, number>;
+    const ranked = [...ROLES].sort((x, y) => ratio[y] - ratio[x]);
+    const best = { role: ranked[0]!, ratio: ratio[ranked[0]!] };
+    const worst = { role: ranked.at(-1)!, ratio: ratio[ranked.at(-1)!] };
+    const utility = UTILITY_TOWERS.includes(tower);
+    return { tower, per100, ratio, best, worst, attacks, utility, pass: tower === 'archer' || utility || !attacks ? null : best.ratio >= REQUIRED_RATIO };
   });
 }
+
+/** 형태 비교의 기준 칸: 정원 맵 (8,2) 길목(1행·3행 길을 모두 1칸 거리에서 덮는다). 옆 칸 (8,0)에 같은 단계 궁수를 둔다. */
+const C: [number, number] = [8, 2];
 
 /** 형태 비교에 쓰는 줄(progression.md §6 ③). */
 export const FORM_STREAMS = ['line', 'dense', 'shell', 'armored', 'boss', 'air'] as const satisfies ReadonlyArray<keyof typeof STREAMS>;
