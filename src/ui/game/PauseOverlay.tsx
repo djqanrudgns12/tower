@@ -2,7 +2,7 @@ import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import type { PauseReason } from '../../domain/types';
 import type { FontScale } from '../../application/session';
 import { PAUSE_COPY, RENDER_WAIT } from '../copy';
-import kit from '../kit.module.css';
+import { Button, Card, Segmented, Toggle } from '../kit';
 import css from './PauseOverlay.module.css';
 
 interface Props {
@@ -83,60 +83,60 @@ export function PauseOverlay(p: Props) {
     else if (!e.shiftKey && document.activeElement === tail) { e.preventDefault(); head.focus(); }
   };
 
+  // 학생이 직접 멈춘 경우 제목이 곧 설명이라 한 줄을 더 쓰지 않는다(ui-rules-v3 문장 규칙).
+  const line = p.renderLost && !blocked ? RENDER_WAIT : main === 'USER' ? null : PAUSE_COPY[main];
+
   return (
     <div ref={box} className={css.layer} role="dialog" aria-modal="true" aria-labelledby="pause-title" onKeyDown={trap}>
-      <div className={css.box}>
+      <Card float className={css.box}>
         <h2 id="pause-title" className={css.title}>{blocked ? '잠깐만요' : '일시정지'}</h2>
-        <p>{p.renderLost && !blocked ? RENDER_WAIT : PAUSE_COPY[main]}</p>
+        {line && <p className={css.line}>{line}</p>}
         {mode === 'storage' ? (
           <div className={css.stack}>
-            <button ref={first} type="button" className={`${kit.button} ${kit.primary} ${kit.big}`} disabled={busy} aria-busy={busy} onClick={retry}>
+            <Button ref={first} variant="primary" size="lg" block disabled={busy} aria-busy={busy} onClick={retry}>
               {busy ? '저장하는 중…' : '다시 저장하기'}
-            </button>
-            {failed && <p className={kit.reason} role="status">아직 저장되지 않았어요. 잠시 뒤 다시 눌러 주세요.</p>}
-            <button type="button" className={`${kit.button} ${kit.quietWood}`} disabled={busy} onClick={p.onLeaveUnsaved}>저장하지 않고 나가기</button>
-            <p className={kit.muted}>저장하지 않고 나가면 마지막으로 저장된 곳까지만 이어할 수 있어요.</p>
+            </Button>
+            {failed && <p className={css.reason} role="status">아직 저장되지 않았어요. 잠시 뒤 다시 눌러 주세요.</p>}
+            <Button variant="secondary" block disabled={busy} onClick={p.onLeaveUnsaved}>저장하지 않고 나가기</Button>
+            <p className={css.muted}>마지막으로 저장된 곳까지만 이어할 수 있어요.</p>
           </div>
         ) : mode === 'blocked' ? (
           <div className={css.stack}>
-            <button ref={first} type="button" className={`${kit.button} ${kit.primary}`} onClick={p.onLeaveUnsaved}>처음 화면으로</button>
+            <Button ref={first} variant="primary" size="lg" block onClick={p.onLeaveUnsaved}>처음 화면으로</Button>
           </div>
         ) : (
           <div className={css.stack}>
-            <button ref={first} type="button" className={`${kit.button} ${kit.primary} ${kit.big}`} aria-disabled={p.renderLost || undefined} onClick={() => { if (!p.renderLost) p.onResume(); }}>계속하기</button>
-            <fieldset className={css.fonts}>
-              <legend>글자 크기</legend>
-              {(['base', 'large', 'xlarge'] as const).map((f, i) => (
-                <label key={f} className={css.font}>
-                  <input type="radio" name="font" checked={p.fontScale === f} onChange={() => p.onFont(f)} />
-                  {['보통', '크게', '아주 크게'][i]}
-                </label>
-              ))}
-            </fieldset>
-            <label className={css.font}>
-              <input type="checkbox" checked={p.soundOn} onChange={e => p.onSound(e.target.checked)} />
-              소리
-            </label>
+            <Button ref={first} variant="primary" size="lg" block aria-disabled={p.renderLost || undefined} onClick={() => { if (!p.renderLost) p.onResume(); }}>계속하기</Button>
+            <div className={css.setting}>
+              <span className={css.label} id="pause-font">글자 크기</span>
+              <Segmented
+                label="글자 크기"
+                value={p.fontScale}
+                onChange={p.onFont}
+                options={[{ value: 'base', label: '보통' }, { value: 'large', label: '크게' }, { value: 'xlarge', label: '아주 크게' }]}
+              />
+            </div>
+            <Toggle label="소리" checked={p.soundOn} onChange={p.onSound} className={css.toggle} />
             {p.canSave && (
-              <button type="button" className={`${kit.button} ${kit.quietWood}`} disabled={busy} aria-busy={busy} onClick={saveExit}>
+              <Button variant="secondary" block disabled={busy} aria-busy={busy} onClick={saveExit}>
                 {busy ? '저장하는 중…' : '저장하고 나가기'}
-              </button>
+              </Button>
             )}
-            {(failed || p.saveError) && <p className={kit.reason} role="status">아직 저장되지 않았어요. 다시 눌러 주세요.</p>}
+            {(failed || p.saveError) && <p className={css.reason} role="status">아직 저장되지 않았어요. 다시 눌러 주세요.</p>}
             {confirmQuit ? (
-              <div className={css.confirm}>
+              <Card sunk pad="sm" className={css.confirm}>
                 <p>이번 판을 끝낼까요? 지금까지의 점수가 기록돼요.</p>
                 <div className={css.row}>
-                  <button type="button" className={`${kit.button} ${kit.danger}`} onClick={p.onQuit}>끝내기</button>
-                  <button type="button" className={`${kit.button} ${kit.quietWood}`} onClick={() => setConfirmQuit(false)}>취소</button>
+                  <Button variant="danger" onClick={p.onQuit}>끝내기</Button>
+                  <Button variant="secondary" onClick={() => setConfirmQuit(false)}>취소</Button>
                 </div>
-              </div>
+              </Card>
             ) : (
-              <button type="button" className={`${kit.button} ${kit.quiet}`} onClick={() => setConfirmQuit(true)}>이번 판 끝내기</button>
+              <Button variant="ghost" block className={css.quit} onClick={() => setConfirmQuit(true)}>이번 판 끝내기</Button>
             )}
           </div>
         )}
-      </div>
+      </Card>
     </div>
   );
 }

@@ -245,7 +245,7 @@ export function TowerShieldPortrait({
         height: size === 'fill' ? '100%' : size,
         flex: 'none',
         position: 'relative',
-        ...(bare ? {} : { background: 'var(--wood-dark)', border: '2px solid var(--wood-collar)', outline: '2px solid var(--edge)', borderRadius: 'var(--r-input)' }),
+        ...(bare ? {} : { background: 'var(--paper-2)', borderRadius: 'var(--r-sm)' }),
         display: 'grid',
         placeItems: 'center',
         overflow: 'hidden',

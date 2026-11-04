@@ -103,7 +103,7 @@ test('1440×900: 준비 → 설치 → 전투 → 정지 가림 → 재개', asy
   await expect(page.getByRole('region', { name: '어휘 문제' })).toHaveCount(0);
   await shot(page, 'desktop-paused');
   // 소리(PRD §11.5): 정지 화면에서 끄고 켤 수 있고, 기기 설정에 남는다. 합성 소리는 오류 없이 켜져 있어야 한다.
-  const soundToggle = page.getByRole('checkbox', { name: '소리' });
+  const soundToggle = page.getByRole('switch', { name: '소리' });
   await expect(soundToggle).toBeChecked();
   await soundToggle.uncheck();
   expect(await page.evaluate(() => JSON.parse(localStorage.getItem('vocabulary-td.settings') ?? '{}').soundOn)).toBe(false);

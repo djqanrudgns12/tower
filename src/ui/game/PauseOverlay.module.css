@@ -1,25 +1,16 @@
-/* 불투명 정지층: 짙은 호두나무 작업대 위 양피지 카드 한 장(ui-rules-v2 §1). 블러·반투명 유리는 쓰지 않는다. */
-.layer { position: fixed; inset: 0; z-index: 100; background: var(--walnut-3); display: grid; place-items: center; padding: var(--s4); overflow: auto; }
-.box {
-  width: min(420px, 100%);
-  padding: var(--s5);
-  display: grid;
-  gap: var(--s3);
-  background: var(--parch-face);
-  border: 4px solid var(--walnut-2);
-  outline: 2px solid var(--walnut-1);
-  outline-offset: -6px;
-  border-radius: var(--r-card);
-  box-shadow: var(--ground-shadow), var(--ambient-shadow);
-  color: var(--ink);
-}
-.title { font-size: 24px; font-weight: 800; color: var(--ink); }
-.stack { display: grid; gap: var(--s2); }
-.fonts { background: var(--parch-2); border: 1px solid var(--parch-3); border-radius: var(--r-input); padding: var(--s2) var(--s3); display: flex; flex-wrap: wrap; gap: var(--s3); margin: 0; }
-.fonts legend { font-size: 14px; font-weight: 800; color: var(--ink); padding: 0 var(--s1); }
-.font { display: flex; align-items: center; gap: var(--s1); min-height: var(--touch); font-size: 15px; cursor: pointer; }
-.font input { width: 20px; height: 20px; accent-color: var(--blue); cursor: pointer; }
-.confirm { display: grid; gap: var(--s2); padding: var(--s3); background: var(--danger-surface); border: 2px solid var(--danger); border-radius: var(--r-input); }
+/* 정지층(ui-rules-v3): 불투명한 숲색 바탕 위 종이 카드 한 장. 문제·보기·해설은 이 층이 열린 동안 DOM에서 빠진다(PRD §3.6 [확정] 불투명 가림). */
+.layer { position: fixed; inset: 0; z-index: 100; background: var(--bg); display: grid; place-items: center; padding: var(--s4); overflow: auto; }
+.box { width: min(420px, 100%); display: grid; gap: var(--s4); padding: var(--s5); }
+.title { font-size: var(--fs-5); font-weight: 800; line-height: 1.2; }
+.line { font-size: var(--fs-2); color: var(--ink-2); }
+.stack { display: grid; gap: var(--s3); }
+.setting { display: grid; gap: var(--s1); }
+.label { font-size: var(--fs-1); font-weight: 700; color: var(--ink-2); }
+.toggle { justify-self: start; }
+.reason { font-size: var(--fs-1); font-weight: 700; color: var(--red); }
+.muted { font-size: var(--fs-1); color: var(--ink-2); }
+.quit { color: var(--red); }
+.confirm { display: grid; gap: var(--s2); font-size: var(--fs-2); }
 .row { display: flex; flex-wrap: wrap; gap: var(--s2); }
 @media (max-width: 480px) {
   .layer { padding: var(--s2); }

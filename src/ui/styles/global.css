@@ -1,5 +1,4 @@
-/* 색·간격·반경 토큰. R4 「그림책 원정대」 v3 한 벌(docs/renewal/ui-rules-v3.md)이 기준이다.
-   아래 옛 토큰(나무·oak·walnut)은 화면을 v3로 옮기는 동안만 남기고, 옮긴 화면에서는 쓰지 않는다(R4 마감에서 0). */
+/* 색·간격·반경 토큰: R4 「그림책 원정대」 v3 한 벌(docs/renewal/ui-rules-v3.md). 이 밖의 색·그라데이션·블러를 쓰지 않는다. */
 :root {
   /* ── v3 한 벌 ── */
   --bg: #1e3020;
@@ -21,111 +20,25 @@
   --r-sm: 8px;
   --r-md: 14px;
   --fs-1: 13px; --fs-2: 16px; --fs-3: 20px; --fs-4: 24px; --fs-5: 32px; --fs-6: 44px;
-  --s8: 48px;
-
-  /* ── 옛 토큰(이전 중) ── */
-  --ink-soft: #574a3f;
-  --parchment: #f6edd9;
-  --parchment-hover: #fbf4e4;
-  --paper-hover: #fffdf7;
-  --well: #e7d9bc;
-  --well-hover: #efe2c8;
-  --well-border: #8c6d49;
-  --wood: #6b4225;
-  --wood-light: #9a6a42;
-  --wood-dark: #4a2d18;
-  --wood-vault: #2e1b10;
-  --wood-vault-hover: #3b2416;
-  --wood-collar: #8f5d38;
-  --edge: #362419;
-  --stone: #d8d1c4;
-  --cream-ink: #fbf3e4;
-  --cream-muted: #dfd1b8;
-  --blue-light: #8fd0ff;
-  --green-hover: #34703e;
-  --green-surface: #eaf5ec;
-  --danger: #a3352b;
-  --danger-hover: #b53d32;
-  --danger-light: #ffb8b0;
-  --danger-surface: #fcf3f1;
-  --gold: #ffd859;
-  --amber-burn: #4f240e;
-  --page: #e6d8b8;
-  --map-grass: #7cbc4c;
-  --map-path: #dcb878;
-  --map-stone: #b3ada3;
-  --map-leaf: #3f8f3a;
-
-  /* 방향 2-A: 왕국 참나무 작전실 확장 토큰(그라데이션·블러 미사용, PRD §12.8 준수) */
-  --oak-world-fallback: #5d7b41;
-  --oak-plaque-bg: #3b2719;
-  --oak-plaque-cell: #2b1c11;
-  --oak-plaque-border: #8c5c38;
-  --oak-plaque-ink: #fff6e3;
-  --oak-plaque-muted: #dfccb0;
-  --oak-plaque-gold: #f7c96f;
-  --oak-frame-outer: #754b2d;
-  --oak-frame-edge: #38261a;
-  --oak-board-bg: #f6ecd6;
-  --oak-board-molding: #decba8;
-  --oak-inset-bg: #efe0c2;
-  --oak-inset-border: #cbb289;
-  --oak-card-bg: #fbf5e8;
-  --oak-cta-green: #2e6234;
-  --oak-cta-green-hover: #25512a;
-  --oak-amber-accent: #7a4c14;
-  --oak-rank-gold: #d89b28;
-  --oak-rank-silver: #a7b0b8;
-  --oak-rank-bronze: #c98352;
-  --shadow-board: 0 4px 0 rgba(35, 22, 13, 0.28);
-
-  /* 리뉴얼 「원정대 작업대」 재질(ui-rules-v2 §1·§2): 호두나무 틀 · 양피지 면 · 놋쇠 포인트, 각 3단.
-     그라데이션은 같은 재질의 이웃 단끼리(명도 차 12% 이하)만 쓴다. */
-  --walnut-1: #6e4a2e;
-  --walnut-2: #4a2f1b;
-  --walnut-3: #2c1a0e;
-  --parch-1: #fdf6e6;
-  --parch-2: #f3e5c6;
-  --parch-3: #dcc597;
-  --brass-1: #ffe08a;
-  --brass-2: #e0b145;
-  --brass-3: #8c6418;
-  --walnut-face: linear-gradient(180deg, #553621, var(--walnut-2));
-  --parch-face: linear-gradient(180deg, var(--parch-1), #f7ecd2);
-  --brass-face: linear-gradient(180deg, #f0c75c, var(--brass-2));
-  --ground-shadow: 0 2px 0 var(--walnut-3);
-  --ambient-shadow: 0 4px 10px rgba(44, 26, 14, 0.22);
-  --well-inset: inset 0 2px 4px rgba(20, 11, 5, 0.55);
-  --r-card: 12px;
-  --s6: 32px; --s7: 40px;
+  --s1: 4px; --s2: 8px; --s3: 12px; --s4: 16px; --s5: 24px; --s6: 32px; --s7: 40px; --s8: 48px;
+  --touch: 44px;
   --ease-out: cubic-bezier(0.22, 0.8, 0.3, 1);
   --t-ui: 180ms;
-  /* 포커스 고리(PRD §12.6: 2px 외곽선 + 2px 간격, 바로 옆 배경과 3:1 이상).
-     밝은 표면은 --focus, 짙은 표면(헤더 판·HUD 금고·키캡 줄)은 --focus-on-dark를 쓴다. */
-  --focus: var(--blue);
-  --focus-on-dark: #8fd0ff;
-
-  --r-input: 4px;
-  --r-panel: 8px;
-  --s1: 4px; --s2: 8px; --s3: 12px; --s4: 16px; --s5: 24px;
-  --touch: 44px;
-  --shadow: 0 2px 0 var(--edge);
-  --shadow-pressed: none;
+  /* 문제 글자 크기 단계(보통·크게·아주 크게)만 이 값으로 키운다. */
   --q-font: 18px;
-  --ui-font: 15px;
   --font: 'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Noto Sans KR', 'Malgun Gothic', sans-serif;
 }
 
-:root[data-font='large'] { --q-font: 21px; --ui-font: 16px; }
-:root[data-font='xlarge'] { --q-font: 24px; --ui-font: 17px; }
+:root[data-font='large'] { --q-font: 21px; }
+:root[data-font='xlarge'] { --q-font: 24px; }
 
 *, *::before, *::after { box-sizing: border-box; }
 html, body { margin: 0; }
 body {
-  background: var(--page);
+  background: var(--bg);
   color: var(--ink);
   font-family: var(--font);
-  font-size: var(--ui-font);
+  font-size: var(--fs-2);
   line-height: 1.5;
   font-variant-numeric: tabular-nums;
   word-break: keep-all;

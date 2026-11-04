@@ -9,7 +9,7 @@ const forbid = (...patterns) => ['error', { patterns: patterns.map(group => ({ g
 
 export default defineConfig(
   // asset-source·content-source는 작업자가 납품한 원본과 그 재현 도구다. 제품 코드가 아니어서 검사 대상에서 뺀다.
-  { ignores: ['dist', 'node_modules', 'docs/archive', 'playwright-report', 'test-results', '.vitest', 'asset-source', 'content-source'] },
+  { ignores: ['dist', 'node_modules', 'docs/archive', 'playwright-report', 'test-results', '.vitest', 'asset-source', 'content-source', '.orchestrate'] },
   js.configs.recommended,
   ...tseslint.configs.recommended,
   {
