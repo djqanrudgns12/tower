@@ -196,6 +196,56 @@ test.describe('랜딩 페이지(방향 2-A: 왕국 참나무 작전실) 통합 �
     await expect(firstOption.locator('[aria-hidden="true"]')).toHaveCount(0);
   });
 
+  test('S1·S2: 설정 — 소제목 3개, 900px 이상 2열, 1366×650에서 창 안 스크롤 0(글자 3단계), 기본 표식·한 줄 설명·켜짐/꺼짐 글자', async ({ page }) => {
+    await page.setViewportSize({ width: 1366, height: 650 });
+    await page.goto('/');
+    await page.evaluate(() => localStorage.clear());
+    await page.reload();
+    await page.getByRole('button', { name: '설정' }).click();
+    const dialog = page.getByRole('dialog', { name: '환경설정' });
+    await expect(dialog).toBeVisible();
+
+    // S1: 소제목 3개(소리 / 화면·글자 / 기록), 목록은 한 벌(탭 없음).
+    const sections = dialog.locator('section[aria-labelledby]');
+    await expect(sections).toHaveCount(3);
+    await expect(dialog.getByRole('heading', { level: 3 })).toHaveText(['소리', '화면·글자', '기록']);
+    await expect(dialog.getByRole('tab')).toHaveCount(0);
+
+    // S1: 900px 이상에서는 소리 | 화면·글자가 나란히(2열), 기록은 그 아래 가로 가득. 900px 미만은 한 줄로 쌓인다.
+    const rect = async (i: number) => (await sections.nth(i).boundingBox())!;
+    const [sound, display, records] = [await rect(0), await rect(1), await rect(2)];
+    expect(display.x, '화면·글자는 소리 오른쪽').toBeGreaterThan(sound.x + sound.width - 1);
+    expect(Math.abs(display.y - sound.y), '두 열 위쪽이 같다').toBeLessThanOrEqual(1);
+    expect(records.y, '기록은 아래').toBeGreaterThan(Math.max(sound.y + sound.height, display.y + display.height) - 1);
+    expect(records.width, '기록은 가로 가득').toBeGreaterThan(sound.width + display.width);
+
+    // S1: 1366×650에서 창 안 스크롤 0 — 글자 크기 3단계(보통 · 크게 · 아주 크게) 모두.
+    const scrollGap = () => dialog.evaluate(el => el.scrollHeight - el.clientHeight);
+    for (const [name, font] of [['글자 보통', 'base'], ['글자 크게', 'large'], ['글자 아주 크게', 'xlarge']] as const) {
+      await dialog.getByRole('radio', { name }).click();
+      expect(await page.evaluate(() => document.documentElement.dataset.font)).toBe(font);
+      expect(await scrollGap(), `${name} 창 안 스크롤`).toBeLessThanOrEqual(1);
+    }
+    await dialog.getByRole('radio', { name: '글자 보통' }).click();
+
+    // S2: 기본값 칸마다 '(기본)'(배경 음악 · 효과음 · 글자 · 움직임 4곳), 움직임·고대비 한 줄 설명, 스위치에 켜짐/꺼짐 글자.
+    await expect(dialog.getByText('(기본)', { exact: true })).toHaveCount(4);
+    await expect(dialog.getByRole('radio', { name: '20퍼센트 (기본)' })).toBeVisible();
+    await expect(dialog.getByText('정지는 모든 움직임을 멈춰요')).toBeVisible();
+    await expect(dialog.getByText('길과 받침에 진한 선을 그려요')).toBeVisible();
+    const keyHints = dialog.getByRole('switch', { name: '단축키 번호 배지 표시' });
+    await expect(keyHints).toContainText('켜짐');
+    await keyHints.click();
+    await expect(keyHints).toContainText('꺼짐');
+
+    // 900px 미만에서는 한 줄로 쌓이고 가로 넘침이 없다.
+    await page.setViewportSize({ width: 700, height: 900 });
+    const [s0, s1] = [await rect(0), await rect(1)];
+    expect(Math.abs(s1.x - s0.x), '700px에서는 쌓임').toBeLessThanOrEqual(1);
+    expect(s1.y).toBeGreaterThan(s0.y + s0.height - 1);
+    expect(await page.evaluate(() => document.documentElement.scrollWidth - innerWidth)).toBeLessThanOrEqual(0);
+  });
+
   test('L20·L21·L22: 전 뷰포트 가로 넘침 0px, 크롬북 첫 화면 CTA 노출, axe 위반 0건, §12.8 그라디언트·블러 0건', async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 900 });
     await page.goto('/');

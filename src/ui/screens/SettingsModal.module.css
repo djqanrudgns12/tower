@@ -1,23 +1,46 @@
-/* 환경설정(R4 U3, ui-rules-v3). 한 목록, 줄마다 이름 + 조작 하나. 줄 사이는 1px --line으로만 나눈다. */
-.list { display: grid; }
-.row { display: grid; gap: var(--s1); padding: var(--s1) 0; border-bottom: 1px solid var(--line); }
+/* 환경설정(R4 U3 → R5 S1·S2, ui-rules-v4). 한 목록에 소제목 3개(소리 / 화면·글자 / 기록). 900px 이상에서는 2열
+   (소리 | 화면·글자, 아래에 기록이 가로 가득). 줄마다 이름 + 조작 하나, 줄 사이는 1px --line으로만 나눈다. */
+.body { display: grid; gap: var(--s3); }
+.section { display: grid; gap: var(--s1); align-content: start; min-width: 0; }
+.sectionTitle {
+  padding-bottom: var(--s1);
+  border-bottom: 2px solid var(--oak-1);
+  font-size: var(--fs-2);
+  font-weight: 800;
+  color: var(--ink);
+}
+.rows { display: grid; }
+.rows > :last-child { border-bottom: 0; }
+
+.row { display: grid; gap: 2px; padding: 0; border-bottom: 1px solid var(--line); }
 .head { display: flex; align-items: center; justify-content: space-between; gap: var(--s4); flex-wrap: wrap; min-height: var(--touch); }
 .name { font-size: var(--fs-2); font-weight: 700; }
 .head > :last-child { min-width: 0; }
 .head [role='radiogroup'] { flex: 1 1 280px; max-width: 320px; }
 
-/* 켜기·끄기 줄: 줄 전체가 스위치다(이름 왼쪽, 스위치 오른쪽). 설명이 붙는 줄은 .row 안에 들어간다. */
-.list > .switchRow, .row > .switchRow {
+/* 켜기·끄기 줄: 줄 전체가 스위치다(이름 왼쪽, 스위치 오른쪽). 설명이 붙으면 같은 .row 안에서 스위치 아래에 선다. */
+.row > .switchRow {
   width: 100%;
-  min-height: 52px;
   flex-direction: row-reverse;
   justify-content: space-between;
   text-align: left;
 }
-.list > .switchRow { padding: var(--s1) 0; border-bottom: 1px solid var(--line); }
 
+/* 한 줄 설명(움직임·고대비·공개 기록·기록 지우기)은 13px 보조 글. */
 .hint { font-size: var(--fs-1); color: var(--ink-2); }
-.preview { margin: var(--s2) 0 var(--s3); font-size: var(--q-font); font-weight: 700; line-height: 1.45; }
+.preview { margin: var(--s1) 0; font-size: var(--q-font); font-weight: 700; line-height: 1.45; }
 .actions { display: inline-flex; gap: var(--s2); flex-wrap: wrap; }
 .alert { padding-top: var(--s2); font-size: var(--fs-2); font-weight: 700; color: var(--red); }
 .status { padding-top: var(--s2); font-size: var(--fs-2); font-weight: 700; color: var(--green); }
+
+/* 기본값인 고르기 칸: 숫자·이름 아래 '(기본)'을 13px로 작게 붙인다. 두 줄이어도 칸은 44px 안에 든다. */
+.optTwo { display: grid; justify-items: center; line-height: 1.15; }
+.optMark { font-size: var(--fs-1); font-weight: 700; color: var(--ink-2); }
+
+@media (min-width: 900px) {
+  .body { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: var(--s5); align-items: start; }
+  /* 기록은 가로 가득 놓고 안의 두 줄(공개 기록 · 기록 지우기)을 2열로. */
+  .wide { grid-column: 1 / -1; }
+  .wide .rows { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: var(--s5); align-items: start; }
+  .wide .rows > * { border-bottom: 0; }
+}

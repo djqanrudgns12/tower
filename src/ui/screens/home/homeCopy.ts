@@ -17,15 +17,16 @@ export function nickProblemOf(raw: string): { nickname: string; problem: string 
   return { nickname: value, problem: error === null ? null : value === '' ? NEWGAME_COPY.needNickname : error };
 }
 
-/** 설정 창(S1·S2): 소제목 3개와 한 줄 설명. 이름·조작 문구는 copy.ts의 SETTINGS_COPY를 그대로 쓴다. */
+/** 설정 창(S1·S2): 소제목 3개와 한 줄 설명. 이름·조작 문구는 copy.ts의 SETTINGS_COPY를 그대로 쓴다. 설명은 공백 포함 20자 미만으로 짧게(상시 문장 셈에 들지 않게). */
 export const SETTINGS_SECTIONS = {
   sound: '소리',
   display: '화면·글자',
   records: '기록',
-  /** 보통 단계 표식(고르기 칸 글자 뒤). */
+  /** 기본값인 고르기 칸 글자 아래 작게 붙는 표식. */
   base: '(기본)',
-  motionHint: '움직임을 줄이면 흔들림과 반짝임이 멈춰요.',
-  contrastHint: '길과 타워 받침 둘레에 선을 그어 더 또렷하게 보여요.',
+  baseSr: '기본',
+  motionHint: '정지는 모든 움직임을 멈춰요',
+  contrastHint: '길과 받침에 진한 선을 그려요',
 } as const;
 
 /** 결과 화면(R1·R2). 퍼센트·숙련도는 쓰지 않는다(PRD §20.5). */
