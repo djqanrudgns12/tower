@@ -46,6 +46,6 @@ export const RESULT_EXTRA = {
 
 /** 오답 노트(O1). */
 export const NOTE_EXTRA = {
-  /** 빈 상태 그림 자리의 읽기 이름은 비워 두고 안내 글만 읽힌다. */
-  emptyHint: '문제를 풀다 틀리거나 모르겠어요를 누르면 여기에 담겨요',
+  /** 빈 상태에서 '틀린 낱말이 여기 모여요' 아래에 한 줄 더하는 안내. */
+  emptyHint: '문제를 틀리거나 모르겠어요를 누르면 여기에 담겨요',
 } as const;

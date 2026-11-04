@@ -1,5 +1,5 @@
 /* 결과 화면(R4 U3 → R5 R1·R2, ui-rules-v4). 짙은 호두나무 바탕 위에 결과 창(+ 바로 아래 단추 두 개)과, 틀린 낱말이 있을 때만 낱말 창.
-   창은 kit Modal과 같은 한 벌이다: 호두나무 테(frame.sm 원화) + 안쪽 몰딩 + 양피지 면, 머리줄 아래 구분선(rule 원화). 화면 CSS에는 토큰만 쓴다. */
+   창은 kit Modal과 같은 한 벌이다(home/windowFrame.module.css: 호두나무 테 + 안쪽 몰딩 + 양피지 면, 머리줄 아래 구분선). 화면 CSS에는 토큰만 쓴다. */
 .page {
   height: 100dvh;
   background: var(--bg);
@@ -19,26 +19,6 @@
   gap: var(--s4);
 }
 .resultCol { display: grid; gap: var(--s4); min-width: 0; }
-
-/* ── 창 재질(kit Modal .dialog와 같은 값. 테 8px + 여백 16px) ── */
-.window {
-  padding: var(--s4);
-  border: var(--frame-sm) solid var(--walnut-2);
-  border-image: var(--art-frame-sm) 33 / var(--frame-sm) stretch;
-  border-radius: var(--r-md);
-  background: var(--paper) padding-box;
-  color: var(--ink);
-  box-shadow: inset 0 0 0 2px var(--oak-1), var(--shadow-board);
-}
-/* 머리줄 아래 구분선(rule 원화, 대체 2px --oak-1 선). 12px 칸. */
-.rule {
-  width: 100%;
-  height: 12px;
-  border: 0 solid transparent;
-  border-width: 5px 10px;
-  border-image: var(--art-rule) 0 20 fill / 0 10px stretch;
-  background: var(--oak-1) content-box;
-}
 
 /* ── 결과 창: 닉네임·학년·난이도 머리줄 + 성문 + 웨이브 + 한 줄 + 지표 3개 ── */
 .summary { display: grid; justify-items: center; align-content: start; gap: var(--s2); text-align: center; }
@@ -126,8 +106,3 @@
 }
 :global(:root[data-motion='minimal']) .line[data-pop] { animation: resultFade 200ms linear both !important; animation-duration: 200ms !important; }
 :global(:root[data-motion='minimal']) .waveNum[data-still] { animation-duration: 200ms !important; }
-
-/* 인쇄·강제 색(고대비)에서는 원화 대신 토큰 단색으로 그린다(v4 §3). */
-@media print, (forced-colors: active) {
-  .window, .rule { border-image: none; }
-}

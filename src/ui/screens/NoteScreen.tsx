@@ -2,7 +2,9 @@ import { useEffect, useEffectEvent, useRef } from 'react';
 import type { RuntimeQuestion } from '../../domain/context';
 import { NOTE_COPY as T } from '../copy';
 import { BackIcon } from '../icons/ControlIcons';
-import { ArtIcon, Card, IconButton } from '../kit';
+import { Card, IconButton } from '../kit';
+import { NOTE_EXTRA as X } from './home/homeCopy';
+import frame from './home/windowFrame.module.css';
 import css from './NoteScreen.module.css';
 
 /** 다른 판에서 이만큼 맞히면 노트를 졸업한다. persistence/reviewNote.ts의 REVIEW_GRADUATE_CLEARS와 같은 값이다(UI는 persistence를 가져오지 않는다). */
@@ -69,7 +71,11 @@ interface Props {
   onBack(): void;
 }
 
-/** 오답 노트 화면(R4 U3, PRD §10.2). 틀린 낱말 카드를 최근 순으로 보인다. 비면 책 아이콘과 안내 한 줄. */
+/**
+ * 오답 노트 화면(R4 U3 → R5 O1, PRD §10.2). 짙은 바탕 위에 양피지 공책 한 권(창 틀 한 벌)이 놓이고, 틀린 낱말 카드를 최근 순으로 격자에 보인다.
+ * 넓은 화면에서도 공책이 화면을 채워 빈 공간이 작다. 비면 공책 가운데에 펼친 책 그림과 안내 두 줄.
+ * 뜻·예문은 읽는 글이라 글자 크기 단계에 따라 +1·+2px 커진다(v4 §5.3).
+ */
 export function NoteScreen({ entries, onBack }: Props) {
   const titleRef = useRef<HTMLHeadingElement>(null);
 
@@ -85,20 +91,27 @@ export function NoteScreen({ entries, onBack }: Props) {
 
   return (
     <main className={css.page}>
-      <div className={css.inner}>
+      <div className={`${frame.window} ${css.notebook}`}>
         <header className={css.header}>
-          <IconButton label={T.back} icon={<BackIcon />} variant="ghost" onDark onClick={onBack} />
-          <div className={css.heading}>
-            <h1 ref={titleRef} tabIndex={-1} className={css.title}>{T.title}</h1>
-            {entries.length > 0 && <p className={css.count}>{T.count(entries.length)}</p>}
-          </div>
+          <IconButton label={T.back} icon={<BackIcon />} showLabel onClick={onBack} />
+          <h1 ref={titleRef} tabIndex={-1} className={css.title}>{T.title}</h1>
+          {entries.length > 0 && <p className={css.count}>{T.count(entries.length)}</p>}
         </header>
+        <div className={frame.rule} aria-hidden="true" />
 
         {entries.length === 0 ? (
-          <Card float className={css.empty}>
-            <ArtIcon name="note" size={72} />
+          <div className={css.empty}>
+            <img
+              src={`${import.meta.env.BASE_URL}assets/ui/note.empty.png`}
+              width={320}
+              height={223}
+              alt=""
+              draggable={false}
+              className={css.emptyArt}
+            />
             <p className={css.emptyText}>{T.empty}</p>
-          </Card>
+            <p className={css.emptyHint}>{X.emptyHint}</p>
+          </div>
         ) : (
           <>
             <p className={css.hint}>{T.hint}</p>
@@ -110,8 +123,8 @@ export function NoteScreen({ entries, onBack }: Props) {
                       <span className={css.lemma}>{e.lemma}</span>
                       <Dots clears={e.clears} />
                     </div>
-                    <p className={css.meaning}>{e.meaning}</p>
-                    {e.example && <p className={css.example}>{e.example}</p>}
+                    <p className={css.meaning} data-content>{e.meaning}</p>
+                    {e.example && <p className={css.example} data-content>{e.example}</p>}
                   </Card>
                 </li>
               ))}

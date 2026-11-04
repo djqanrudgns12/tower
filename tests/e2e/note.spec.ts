@@ -66,6 +66,12 @@ test('오답 노트가 비어 있으면: 홈 단추에 개수가 없고, 화면�
   expect(axe.violations.map(v => `${v.id}: ${v.nodes.length}`)).toEqual([]);
   await page.screenshot({ path: 'test-results/shots/note-empty.png' });
 
+  // O1: 양피지 공책이 넓은 화면을 채운다 — 빈 상태 그림이 보이고, 1440×900에서 공책 폭 1100px 이상·높이가 화면 아래까지 닿는다.
+  await expect(page.locator('img[src*="note.empty"]')).toBeVisible();
+  const book = (await page.locator('main > div').first().boundingBox())!;
+  expect(book.width, '공책 폭').toBeGreaterThanOrEqual(1100);
+  expect(book.y + book.height, '공책 아래쪽').toBeGreaterThanOrEqual(900 - 24);
+
   await page.getByRole('button', { name: '뒤로' }).click();
   await expect(page.getByRole('heading', { level: 1, name: '어휘력 타워 디펜스' })).toBeVisible();
   // Esc도 같은 뒤로다.
