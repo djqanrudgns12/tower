@@ -22,10 +22,7 @@ export const MAP_NAMES: Readonly<Record<string, string>> = {
 /** 홈·새 게임 문구(ui-rules-v3 §4 용어: 시작·새 게임·닉네임·랭킹 점수). */
 export const HOME_COPY = {
   start: '시작',
-  practiceFirst: '연습 먼저',
-  practiceAgain: '연습하기',
   gradeSoon: '문제 준비 중이에요',
-  nicknameFirst: '닉네임(2~12자)을 먼저 적어 주세요',
 } as const;
 
 export const TOWER_COPY: Record<TowerId, { role: string; good: string }> = {
