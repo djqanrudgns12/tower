@@ -43,6 +43,8 @@ export function App() {
   const [, setNoteTick] = useState(0);
 
   useEffect(() => { document.documentElement.dataset.font = settings.fontScale; }, [settings.fontScale]);
+  // 움직임 단계(full·simple·minimal). CSS는 'minimal'에서 반복·위치 움직임을 멈춘다(ui-rules-v4 §7.3, global.css·kit).
+  useEffect(() => { document.documentElement.dataset.motion = settings.motionMode; }, [settings.motionMode]);
 
   const update = useCallback((patch: Partial<Settings>) => {
     setSettings(prev => {

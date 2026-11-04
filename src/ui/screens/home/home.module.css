@@ -1,51 +1,9 @@
 /* 옛 랜딩(방향 2-A 왕국 참나무 작전실) 복원 — 2026-11-04 사용자 결정, 원본은 3426df8^.
-   R4가 전역(global.css)에서 지운 옛 토큰을 이 화면 안에서만 같은 값으로 정의한다. v3 토큰과 이름이 겹치지 않아 다른 화면에 영향이 없다. */
-.lobbyRoot {
-  --edge: #362419;
-  --danger: #a3352b;
-  --focus-on-dark: #8fd0ff;
-  --ink-soft: #574a3f;
-  --oak-amber-accent: #7a4c14;
-  --oak-board-bg: #f6ecd6;
-  --oak-board-molding: #decba8;
-  --oak-card-bg: #fbf5e8;
-  --oak-cta-green: #2e6234;
-  --oak-cta-green-hover: #25512a;
-  --oak-frame-edge: #38261a;
-  --oak-frame-outer: #754b2d;
-  --oak-inset-bg: #efe0c2;
-  --oak-inset-border: #cbb289;
-  --oak-plaque-bg: #3b2719;
-  --oak-plaque-border: #8c5c38;
-  --oak-plaque-cell: #2b1c11;
-  --oak-plaque-gold: #f7c96f;
-  --oak-plaque-ink: #fff6e3;
-  --oak-plaque-muted: #dfccb0;
-  --oak-rank-bronze: #c98352;
-  --oak-rank-gold: #d89b28;
-  --oak-rank-silver: #a7b0b8;
-  --oak-world-fallback: #5d7b41;
-  --r-input: 4px;
-  --r-panel: 8px;
-  --shadow: 0 2px 0 var(--edge);
-  --shadow-board: 0 4px 0 rgba(35, 22, 13, 0.28);
-  --shadow-pressed: none;
-}
+   색 토큰(옛 --oak-* 이름 포함)은 global.css :root 한 곳에서 나온다(ui-rules-v4 §2.4). */
 
-/* 옛 기본 글자 크기(본문 15px, 크게 16px, 아주 크게 17px). R4 창(새 게임·설정·설명서)은 전역 16px를 그대로 받도록 랜딩 본문과 상세 순위표에만 둔다. */
-.foreground,
-.modalScrim {
+/* 글자 크기 3층(v4 §5.3): 홈 글은 15px 고정이고, 읽는 글(오늘의 낱말 뜻·예문)만 글자 크기 단계에 따라 +1·+2px 커진다. */
+.foreground {
   font-size: 15px;
-}
-
-:global(:root[data-font='large']) .foreground,
-:global(:root[data-font='large']) .modalScrim {
-  font-size: 16px;
-}
-
-:global(:root[data-font='xlarge']) .foreground,
-:global(:root[data-font='xlarge']) .modalScrim {
-  font-size: 17px;
 }
 
 /* 방향 2-A: 왕국 참나무 작전실 (PRD §12.8: 반경 4px/8px/칩 999px, 단일 그림자, 그라데이션·블러 0, 굵기 400/700) */
@@ -492,14 +450,14 @@
 }
 
 .meaningText {
-  font-size: 17px;
+  font-size: calc(17px + var(--read-step));
   font-weight: 700;
   color: var(--ink);
   line-height: 1.4;
 }
 
 .exampleLine {
-  font-size: 15px;
+  font-size: calc(15px + var(--read-step));
   color: var(--ink);
   line-height: 1.5;
 }
