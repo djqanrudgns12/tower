@@ -2,6 +2,9 @@ import { existsSync, readFileSync } from 'node:fs';
 import path from 'node:path';
 import AxeBuilder from '@axe-core/playwright';
 import { expect, test, type Page } from '@playwright/test';
+import { runnerImport } from 'vite';
+import type { TowerId } from '../../src/contracts/balance';
+import type * as QaStatesModule from '../../tools/qa/states';
 import maps from '../../docs/contracts/maps.candidate.v0.4.json' with { type: 'json' };
 
 // 실제 브라우저에서 첫 판 흐름(PRD §18 P1)을 따라간다. 화면 캡처는 test-results/shots에 남긴다.
@@ -113,55 +116,32 @@ test('1440×900: 준비 → 설치 → 전투 → 정지 가림 → 재개', asy
   await expect(page.getByRole('region', { name: '어휘 문제' })).toBeVisible();
 });
 
-test('저장하고 나가기 → 새로고침 → 이어하기: 정지 상태로 같은 골드·성문·타워에서 이어진다(PRD §14)', async ({ page }) => {
+test('이어하기 없음: 정지 메뉴에 저장이 없고, 새로고침하면 그 판은 기록 없이 사라져 홈으로 온다(PRD §14.1)', async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
   await newGame(page);
   await finishPrep(page);
-  const slot = garden.slots.find(s => s.x === 8 && s.y === 2)!;
-  // 빈 자리를 누르면 옆에 작은 고르기 메뉴가 뜨고, 고르면 바로 설치된다(ui-rules-v2 §4).
-  await tapCell(page, slot.x, slot.y);
-  await page.getByRole('group', { name: '이 자리에 놓을 타워' }).getByRole('button', { name: /궁수탑/ }).click();
-  await towerCount(page, 1);
-  await page.getByRole('button', { name: '전투 시작' }).click();
-  await expect(battleTag(page)).toBeVisible();
-  await page.waitForTimeout(4000);
-
   await page.getByRole('button', { name: '일시정지' }).first().click();
-  const gold = await page.getByLabel(/^골드 \d+$/).first().getAttribute('aria-label');
-  const gate = await page.getByRole('meter', { name: '성문' }).first().getAttribute('aria-valuenow');
-  await page.getByRole('button', { name: '저장하고 나가기' }).click();
-  // 활성 저장이 있으면 홈은 이어하기를 새 게임보다 앞에 둔다(PRD §12.2).
-  const resume = page.getByRole('button', { name: '이어하기 · 하늘바람 · 1웨이브' });
-  await expect(resume).toBeVisible();
-
+  const pause = page.getByRole('dialog');
+  // 정지 메뉴: 계속하기·글자 크기·소리·이번 판 끝내기만 있다.
+  await expect(pause.getByRole('button', { name: '계속하기' })).toBeVisible();
+  await expect(pause.getByRole('button', { name: '이번 판 끝내기' })).toBeVisible();
+  await expect(pause.getByText(/저장|이어/)).toHaveCount(0);
   await page.reload();
-  await resume.click();
-  // 이어하기는 정지 상태로 시작하고 문제는 가려져 있다(PRD §14.2, §3.6).
-  await expect(page.getByRole('dialog')).toContainText('저장한 곳에서 다시 시작해요');
-  await expect(page.getByRole('region', { name: '어휘 문제' })).toHaveCount(0);
-  await expect(page.getByLabel(/^골드 \d+$/).first()).toHaveAttribute('aria-label', gold!);
-  await expect(page.getByRole('meter', { name: '성문' }).first()).toHaveAttribute('aria-valuenow', gate!);
-  await shot(page, 'desktop-restored');
-  await page.getByRole('button', { name: '계속하기' }).click();
-  await expect(page.getByRole('region', { name: '어휘 문제' })).toBeVisible();
-  await expect(battleTag(page)).toBeVisible();
-  // 설치 자리 목록은 키보드 포커스 때만 보인다(R4 PRD §3 #10). 이어한 판의 자리 수가 같은지 목록 글로 확인한다.
-  await expect(page.getByText(/빈 자리 19곳/)).toBeAttached();
-  await towerCount(page, 1);
-});
-
-test('자동 저장: 저장하고 나가기 없이 새로고침해도 마지막 저장에서 이어 한다(PRD §14.1)', async ({ page }) => {
-  await page.setViewportSize({ width: 1440, height: 900 });
-  await newGame(page);
-  await finishPrep(page);
-  await expect(page.getByRole('button', { name: '전투 시작' })).toBeVisible();
-  const gold = await page.getByLabel(/^골드 \d+$/).first().getAttribute('aria-label');
-  await page.reload();
-  await page.getByRole('button', { name: '이어하기 · 하늘바람 · 1웨이브' }).click();
-  await expect(page.getByRole('dialog')).toContainText('저장한 곳에서 다시 시작해요');
-  await expect(page.getByLabel(/^골드 \d+$/).first()).toHaveAttribute('aria-label', gold!);
-  await page.getByRole('button', { name: '계속하기' }).click();
-  await expect(page.getByRole('button', { name: '전투 시작' })).toBeVisible();
+  await expect(page.getByRole('button', { name: '시작', exact: true })).toBeVisible();
+  await expect(page.getByText(/이어하기|저장된 판/)).toHaveCount(0);
+  // 진행 중 판을 담던 옛 저장소(run)는 없고, 끝내지 않은 판은 기록되지 않는다.
+  const stored = await page.evaluate(() => new Promise<{ stores: string[]; records: number }>((resolve, reject) => {
+    const req = indexedDB.open('vocabulary-td');
+    req.onsuccess = () => {
+      const db = req.result;
+      const stores = [...db.objectStoreNames];
+      const count = db.transaction('records', 'readonly').objectStore('records').count();
+      count.onsuccess = () => { db.close(); resolve({ stores, records: count.result }); };
+      count.onerror = () => reject(count.error);
+    };
+    req.onerror = () => reject(req.error);
+  }));
+  expect(stored).toEqual({ stores: ['records', 'syncQueue'], records: 0 });
 });
 
 test('390×844 휴대폰: 가로 넘침 없음, 문제 전체가 보이고 확대 선택이 열린다', async ({ page }) => {
@@ -305,23 +285,20 @@ test('첫 연습 판: 문제 1개 → 궁수 설치 → 적 3마리 → 회복, 
   await page.getByRole('button', { name: '새 게임 시작' }).click();
   // 닉네임이 없으면 홈의 닉네임 칸으로 안내한다.
   await expect(page.getByRole('textbox', { name: '닉네임' })).toBeFocused();
-  // 다시 홈에 오면 연습 권유 대신 ‘연습하기’가 보인다. 연습은 기록·저장에 남지 않는다.
+  // 다시 홈에 오면 연습 권유 대신 ‘연습하기’가 보인다. 연습은 기록에 남지 않는다.
   await expect(page.getByRole('button', { name: '연습하기' })).toBeVisible();
   await expect(page.getByRole('button', { name: '연습 먼저' })).toHaveCount(0);
-  await expect(page.getByRole('button', { name: /이어하기/ })).toHaveCount(0);
-  const stored = await page.evaluate(() => new Promise<{ records: number; run: number }>((resolve, reject) => {
+  const records = await page.evaluate(() => new Promise<number>((resolve, reject) => {
     const req = indexedDB.open('vocabulary-td');
     req.onsuccess = () => {
       const db = req.result;
-      const tx = db.transaction(['records', 'run'], 'readonly');
-      const records = tx.objectStore('records').count();
-      const run = tx.objectStore('run').count();
-      tx.oncomplete = () => { db.close(); resolve({ records: records.result, run: run.result }); };
-      tx.onerror = () => reject(tx.error);
+      const count = db.transaction('records', 'readonly').objectStore('records').count();
+      count.onsuccess = () => { db.close(); resolve(count.result); };
+      count.onerror = () => reject(count.error);
     };
     req.onerror = () => reject(req.error);
   }));
-  expect(stored).toEqual({ records: 0, run: 0 });
+  expect(records).toBe(0);
   // 연습은 언제든 건너뛸 수 있다.
   await page.getByRole('button', { name: '연습하기' }).click();
   await page.getByRole('button', { name: '연습 건너뛰기' }).click();
@@ -467,52 +444,28 @@ test('학년 단추는 공동검수를 통과한 공개 은행만 시작할 수 
   await shot(page, `grade${top}-crazy-prep`);
 });
 
+type QaStates = typeof QaStatesModule;
+let qaStates: Promise<QaStates> | null = null;
+/** 화면 점검 장비의 장면 상태 만들기(tools/qa/states.ts)를 vite로 읽는다. 제품 엔진으로 상태를 만든다. */
+const loadQaStates = () => (qaStates ??= runnerImport<QaStates>(path.join(process.cwd(), 'tools/qa/states.ts'), { configFile: false, logLevel: 'error' }).then(r => r.module));
+
 /**
- * 새 타워 고르기가 열린 상태 fixture: 앱은 아직 시범 3종이라 새 타워 고르기가 열리지 않으므로, 멈춘 판의 저장본을 고쳐(모든 타워 사용 가능,
- * 시작 4종 장착, 후보 3종) 이어한다. 저장본은 무결성 해시를 다시 계산해 넣는다(PRD §14 형식 그대로).
+ * 새 타워 고르기가 열린 상태 fixture: 앱은 아직 시범 3종이라 실제 판에서 새 타워 고르기가 열리지 않으므로, 장면 상태
+ * 'recruit-fixture'(리뉴얼 전 10종 사용 가능, 시작 4종 장착, 후보 3종)를 개발 전용 QA 장면 로더(`/?qaRun=1`)로 열고 계속한다.
  */
-async function openDraftFixture(page: Page, offers: string[]) {
-  await page.getByRole('button', { name: '일시정지' }).first().click();
-  await expect(page.getByRole('dialog')).toBeVisible();
-  await page.waitForTimeout(300);
-  await page.evaluate(async ({ offers }) => {
-    const db = await new Promise<IDBDatabase>((resolve, reject) => {
-      const req = indexedDB.open('vocabulary-td');
-      req.onsuccess = () => resolve(req.result);
-      req.onerror = () => reject(req.error);
-    });
-    const slots = await new Promise<Array<{ slot: string; seq: number; savedAt: string; hash: string; json: string }>>((resolve, reject) => {
-      const req = db.transaction('run', 'readonly').objectStore('run').getAll();
-      req.onsuccess = () => resolve(req.result);
-      req.onerror = () => reject(req.error);
-    });
-    const last = slots.sort((a, b) => b.seq - a.seq)[0]!;
-    const state = JSON.parse(last.json);
-    state.config.availableTowers = ['archer', 'crossbow', 'cannon', 'mage', 'frost', 'lightning', 'flame', 'spear', 'guardian', 'banner'];
-    state.owned = ['archer', 'cannon', 'frost', 'mage'];
-    state.draft = { wave: 3, offers };
-    const json = JSON.stringify(state);
-    const digest = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(json));
-    const hash = [...new Uint8Array(digest)].map(b => b.toString(16).padStart(2, '0')).join('');
-    const seq = last.seq + 1;
-    await new Promise<void>((resolve, reject) => {
-      const tx = db.transaction('run', 'readwrite');
-      tx.objectStore('run').put({ slot: seq % 2 === 1 ? 'A' : 'B', seq, savedAt: new Date().toISOString(), hash, json });
-      tx.oncomplete = () => resolve();
-      tx.onerror = () => reject(tx.error);
-    });
-    db.close();
-  }, { offers });
-  await page.reload();
-  await page.getByRole('button', { name: /^이어하기 · 하늘바람/ }).click();
-  await page.getByRole('button', { name: '계속하기' }).click();
+async function openRecruitFixture(page: Page, offers: TowerId[]) {
+  const states = await loadQaStates();
+  const { state } = states.buildScene('recruit-fixture', { offers });
+  await page.goto('/');
+  await page.evaluate(({ key, json }) => { indexedDB.deleteDatabase('vocabulary-td'); sessionStorage.setItem(key, json); }, { key: states.QA_RUN_KEY, json: JSON.stringify(state) });
+  await page.goto(`/?${states.QA_RUN_PARAM}=1`);
+  await page.getByRole('dialog').getByRole('button', { name: '계속하기' }).click();
 }
 
 for (const [w, h, name] of [[1440, 900, 'desktop'], [390, 844, 'phone']] as const) {
   test(`${w}×${h} 새 타워: 카드 3장 전체가 고르기 버튼 하나, 막이 문제 카드까지 덮고, 고르면 타워 칸에 들어온다(R4 PRD §9.2)`, async ({ page }) => {
     await page.setViewportSize({ width: w, height: h });
-    await newGame(page);
-    await openDraftFixture(page, ['crossbow', 'flame', 'banner']);
+    await openRecruitFixture(page, ['crossbow', 'flame', 'banner']);
     const recruit = page.getByRole('dialog', { name: '새 타워' });
     await expect(recruit).toBeVisible();
     // 라디오 + 공통 확정 단추 대신 카드 전체를 한 번 눌러 바로 고른다.

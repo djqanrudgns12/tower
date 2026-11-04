@@ -1,24 +1,24 @@
 import type { BossTier, DifficultyId, EliteId, EnemyKind, FormId, TowerId, TraitKind } from '../contracts/balance';
 import type { OptionId } from '../contracts/questions';
 
-// 저장·재개되는 전체 상태. 순수 JSON(숫자·문자열·배열·객체)만 쓴다(PRD §10.1, §14).
+// 한 판의 전체 상태. 메모리에만 있고(이어하기 없음, PRD §14) 순수 JSON(숫자·문자열·배열·객체)만 쓴다(§10.1). 결정성 시험과 개발용 QA 장면 로더가 JSON 왕복을 쓴다.
 /**
  * 2: 타워 branch → form, 설치 취소 기한(리뉴얼 R2). 3: 적 종족·대장 단계(R2 2단계). 4: 신규 타워 효과 상태(취약·저항 차감·밀치기·공격 주기·다연발). 5: 대장 기믹 상태.
  * 6: 장판·덫·굴림체(RunState.hazards, 투사체 zone, seq.hazard).
  * 7: 오답 노트 복습·도움 단계(R4 L): QuizState.reviewSenses·reviewUsed, Encounter.review.
- * 이전 버전의 진행 중 판은 이어가지 않는다(application/session.ts resumeBlocker).
+ * 개발용 QA 장면 로더(application/qaRun.ts)는 버전이 다른 상태를 열지 않는다.
  */
 export const RUN_STATE_VERSION = 7;
 /**
  * 0.5-candidate: P2 공격 프로필(즉발·연쇄·부채꼴·화상·깃발 오라, 물리 저항 무시)과 적 화상 상태(PRD §7.1, §20.2~20.3).
- * 0.5.1-candidate: 난이도별 심화 단계 출제 순서와 한 바퀴 뒤 섞기(PRD §9.1, §9.4). 같은 시드의 출제 순서가 바뀌므로 옛 저장은 이어하지 않는다.
+ * 0.5.1-candidate: 난이도별 심화 단계 출제 순서와 한 바퀴 뒤 섞기(PRD §9.1, §9.4). 같은 시드의 출제 순서가 바뀐다.
  * 0.5.2-candidate: 판 안 도움 단계(최근 채점 4개로 단계·읽기 부담 이동)와 준비 문제의 오답 노트 복습 단계(R4 L, prd-r4 §6). 출제 순서가 바뀐다.
  * 1.0.0: 첫 출시(2026-11-04). 앱·규칙·밸런스 버전을 1.0.0으로 맞춘다.
  */
 export const RULES_VERSION = '1.0.0';
 
 export type Phase = 'PREP_QUIZ' | 'BUILD' | 'BATTLE' | 'WAVE_WRAPUP' | 'GAME_OVER';
-export type PauseReason = 'USER' | 'HIDDEN' | 'PERFORMANCE' | 'STORAGE' | 'CONTEXT_LOST' | 'OWNERSHIP' | 'RESTORED' | 'NUMERIC_LIMIT';
+export type PauseReason = 'USER' | 'HIDDEN' | 'PERFORMANCE' | 'CONTEXT_LOST' | 'NUMERIC_LIMIT';
 export type EncounterPhase = 'prep' | 'battle';
 
 export interface RunConfig {

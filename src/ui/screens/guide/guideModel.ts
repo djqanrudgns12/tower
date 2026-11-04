@@ -145,8 +145,8 @@ export function buildGuideChapters(
     },
     {
       id: 4,
-      tabLabel: '4. 시작과 저장',
-      title: '시작과 저장',
+      tabLabel: '4. 시작과 끝내기',
+      title: '시작과 끝내기',
       headline: '학년은 교과 낱말 범위를, 난이도는 전투 압박과 심화 문제를 정해요',
       illustrationUrl: 'assets/guide/guide.ch4.expedition_command.png',
       illustrationAlt: '수호 비석과 4단계 난이도 방패, 목제 방향·숫자 키캡과 정지 등불 그림',
@@ -165,10 +165,10 @@ export function buildGuideChapters(
           icon: 'key',
         },
         {
-          badge: '정지·저장',
-          title: '저장하고 이어하기',
-          // 저장·이어하기(PRD §14.1·§14.2): 저장 후 나가면 홈의 이어하기로 같은 자리에서, 정지 상태로 다시 시작한다.
-          body: '정지하면 전투가 멈추고 문제가 가려져요. ‘저장하고 나가기’ 뒤 홈의 ‘이어하기’로 그 자리부터 하고, ‘이번 판 끝내기’로 점수를 기록해요.',
+          badge: '정지·끝내기',
+          title: '정지와 이번 판 끝내기',
+          // 이어하기 없음(PRD §14.1): 판은 메모리에만 있어 끝내기·패배 때만 기록되고, 창을 닫으면 사라진다.
+          body: '정지하면 전투가 멈추고 문제가 가려져요. ‘이번 판 끝내기’로 끝내야 점수가 기록돼요. 창을 닫으면 그 판은 사라져요.',
           icon: 'pause',
         },
       ],
@@ -557,7 +557,7 @@ const CARD_SENTENCES: Record<GuideCardId, string> = {
   flow: '문제를 풀고 타워로 성문을 지켜요',
   quiz: '맞히면 골드, 모르면 뜻을 배워요',
   tower: '타워를 놓고 키워서 진화시켜요',
-  start: '저장하고 나가도 이어서 할 수 있어요',
+  start: '학년·난이도를 고르고, 끝나면 기록돼요',
 };
 
 /** 적 특성 → 상대하기 좋은 타워(docs/renewal/catalog/monsters.md·towers.md). 라벨은 계약에서 읽는다. */

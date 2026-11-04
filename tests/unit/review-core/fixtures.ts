@@ -29,7 +29,7 @@ export function controlledFrames(ctx: GameContext, s: RunState) {
   vi.stubGlobal('cancelAnimationFrame', () => undefined);
   vi.stubGlobal('document', { addEventListener() {}, removeEventListener() {}, visibilityState: 'visible' });
   vi.stubGlobal('window', { addEventListener() {}, removeEventListener() {} });
-  const controller = new RunController(ctx, s, { saveSeq: 0, ownership: null });
+  const controller = new RunController(ctx, s, { recordOnFinish: false });
   controller.start();
   return {
     controller,

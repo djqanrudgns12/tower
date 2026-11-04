@@ -19,7 +19,7 @@ describe('공개 동의·저장 회귀', () => {
   it('IndexedDB 열기 실패 뒤에는 차단 원인이 풀리면 실제로 다시 연다', async () => {
     await resetDbConnection();
     const upgraded = await new Promise<IDBDatabase>((resolve, reject) => {
-      const request = indexedDB.open('vocabulary-td', 3);
+      const request = indexedDB.open('vocabulary-td', 4);
       request.onsuccess = () => resolve(request.result);
       request.onerror = () => reject(request.error);
     });
@@ -30,7 +30,41 @@ describe('공개 동의·저장 회귀', () => {
       request.onsuccess = () => resolve();
       request.onerror = () => reject(request.error);
     });
-    expect((await db()).version).toBe(2);
+    expect((await db()).version).toBe(3);
+  });
+
+  it('v3 업그레이드는 옛 진행 중 판 저장소(run)를 지우고 기록·대기 큐는 남긴다(이어하기 없음)', async () => {
+    await resetDbConnection();
+    await new Promise<void>((resolve, reject) => {
+      const request = indexedDB.deleteDatabase('vocabulary-td');
+      request.onsuccess = () => resolve();
+      request.onerror = () => reject(request.error);
+    });
+    // 버전 2 기기: 스냅샷 슬롯·끝난 판 기록·대기 큐가 있다.
+    const old = await new Promise<IDBDatabase>((resolve, reject) => {
+      const request = indexedDB.open('vocabulary-td', 2);
+      request.onupgradeneeded = () => {
+        const d = request.result;
+        d.createObjectStore('run', { keyPath: 'slot' }).put({ slot: 'A', seq: 1, savedAt: '2026-11-01T00:00:00Z', hash: 'x', json: '{}' });
+        d.createObjectStore('records', { keyPath: 'runId' }).createIndex('endedAt', 'endedAt');
+        d.createObjectStore('syncQueue', { keyPath: 'runId' });
+      };
+      request.onsuccess = () => resolve(request.result);
+      request.onerror = () => reject(request.error);
+    });
+    await new Promise<void>((resolve, reject) => {
+      const tx = old.transaction(['records', 'syncQueue'], 'readwrite');
+      tx.objectStore('records').put(record('kept-run'));
+      tx.objectStore('syncQueue').put({ runId: 'kept-run', record: record('kept-run'), playerId: 'local', attempts: 0, queuedAt: '2026-11-01T00:00:00Z' });
+      tx.oncomplete = () => resolve();
+      tx.onerror = () => reject(tx.error);
+    });
+    old.close();
+    const upgraded = await db();
+    expect(upgraded.version).toBe(3);
+    expect([...upgraded.objectStoreNames].sort()).toEqual(['records', 'syncQueue']);
+    expect((await listRecords()).map(r => r.runId)).toEqual(['kept-run']);
+    expect((await listPendingRunSyncs()).map(r => r.runId)).toEqual(['kept-run']);
   });
 
   it('동기화 큐는 runId 대신 queuedAt 오래된 순으로 읽는다', async () => {

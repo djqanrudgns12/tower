@@ -16,19 +16,9 @@ import { SettingsModal } from './SettingsModal';
 
 type ModalState = null | 'new' | 'settings' | 'guide' | 'ranking' | 'profile';
 
-/** 이어할 수 있는 저장된 판. 홈은 이것을 새 게임보다 앞에 둔다(PRD §12.2). */
-export interface ResumeOffer {
-  nickname: string;
-  wave: number;
-}
-
 interface Props {
   message: string | null;
   settings: Settings;
-  /** 이어할 수 있는 판. 없으면 null. */
-  resume?: ResumeOffer | null;
-  /** 저장 관련 안내(손상·버전 변경·이 브라우저 저장 불가). 조용히 초기화하지 않고 알린다. */
-  savedNotice?: string | null;
   initialModal?: 'new' | null;
   focusNicknameOnMount?: boolean;
   /** 오답 노트 화면을 여는 동작. 주지 않으면 오답 노트 버튼을 숨긴다. */
@@ -39,7 +29,6 @@ interface Props {
   onHistoryCleared?(): void;
   onClearMessage(): void;
   onStartNew(input: { grade: 3 | 4 | 5 | 6; difficulty: DifficultyId; nickname: string }): void;
-  onResume?(): void;
   onPractice?(): void;
   onSettings(patch: Partial<Settings>): void;
 }
@@ -51,8 +40,6 @@ interface Props {
 export function HomeScreen({
   message,
   settings,
-  resume = null,
-  savedNotice = null,
   initialModal = null,
   focusNicknameOnMount = false,
   onOpenNote,
@@ -60,7 +47,6 @@ export function HomeScreen({
   onHistoryCleared,
   onClearMessage,
   onStartNew,
-  onResume,
   onPractice,
   onSettings,
 }: Props) {
@@ -81,7 +67,7 @@ export function HomeScreen({
   const rankDifficulty: DifficultyId = (DIFFICULTY_IDS as readonly string[]).includes(settings.lastDifficulty)
     ? (settings.lastDifficulty as DifficultyId)
     : 'Normal';
-  const practiceLabel = resume || settings.practiceSeen ? HOME_COPY.practiceAgain : HOME_COPY.practiceFirst;
+  const practiceLabel = settings.practiceSeen ? HOME_COPY.practiceAgain : HOME_COPY.practiceFirst;
   const commitProfile = {
     onCommitNickname: (n: string) => onSettings({ lastNickname: n }),
     onCommitSchool: (name: string, code: string) => onSettings({ lastSchoolName: name, lastSchoolCode: code }),
@@ -135,7 +121,6 @@ export function HomeScreen({
             </div>
 
             {message && <p className={css.notice} role="status">{message}</p>}
-            {savedNotice && <p className={css.notice} role="status">{savedNotice}</p>}
 
             {/* 주 버튼은 짙은 바탕(--bg)이 아니라 종이 카드 위에 둔다(ui-rules-v3 §2 버튼 바탕). 입력칸·시작 줄·닉네임 칩이 한 카드다. */}
             <Card className={css.launchCard} aria-label="시작">
@@ -154,38 +139,17 @@ export function HomeScreen({
             )}
 
             <div className={css.actions}>
-              {resume ? (
-                <Button
-                  id="resumeBtn"
-                  variant="primary"
-                  size="lg"
-                  className={css.resumeAction}
-                  onClick={() => {
-                    onClearMessage();
-                    onResume?.();
-                  }}
-                >
-                  {HOME_COPY.resume} · {resume.nickname} · {resume.wave}웨이브
-                </Button>
-              ) : (
-                <Button id="newGameBtn" variant="primary" size="lg" className={css.primaryAction} onClick={openNewGame}>
-                  {HOME_COPY.start}
-                </Button>
-              )}
-              {resume && (
-                <Button id="newGameBtn" onClick={openNewGame}>
-                  {HOME_COPY.newGame}
-                </Button>
-              )}
+              <Button id="newGameBtn" variant="primary" size="lg" className={css.primaryAction} onClick={openNewGame}>
+                {HOME_COPY.start}
+              </Button>
               {onPractice && (
-                <Button id="practiceBtn" className={resume ? undefined : css.secondaryAction} onClick={practice}>
+                <Button id="practiceBtn" className={css.secondaryAction} onClick={practice}>
                   {practiceLabel}
                 </Button>
               )}
-              {resume && chip}
             </div>
 
-            {!resume && chip && <div className={css.metaRow}>{chip}</div>}
+            {chip && <div className={css.metaRow}>{chip}</div>}
             </Card>
           </section>
 
@@ -212,7 +176,6 @@ export function HomeScreen({
       {activeModal === 'new' && (
         <NewGameScreen
           settings={settings}
-          replacesSave={resume !== null}
           onBack={closeModal}
           onStart={input => {
             closeModal();

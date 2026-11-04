@@ -22,7 +22,7 @@ export function isQuestionEligibleForDifficulty(
   return rule.allowedTiers.includes(q.difficultyTier ?? 'core') && rule.allowedVariants.includes(q.variantTag ?? 'standard');
 }
 
-/** 한 판 동안 바뀌지 않는 콘텐츠 묶음. 상태(RunState)와 분리해 저장 크기를 줄인다. */
+/** 한 판 동안 바뀌지 않는 콘텐츠 묶음. 상태(RunState)와 분리해 상태 크기를 줄인다. */
 export interface GameContext {
   balance: Balance;
   difficultyId: DifficultyId;

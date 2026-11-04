@@ -107,7 +107,6 @@
 .actions { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s3); }
 .root .primaryAction { flex: 2 1 100%; }
 .root .secondaryAction { flex: 1 1 100%; }
-.root .resumeAction { flex: 1 1 100%; }
 @media (min-width: 640px) {
   .root .primaryAction { flex-basis: 260px; }
   .root .secondaryAction { flex-basis: 160px; }
@@ -212,7 +211,6 @@
 .mapFigure { margin: 0; display: grid; gap: var(--s2); width: 100%; max-width: 280px; justify-self: center; }
 .mapThumb { display: block; width: 100%; height: auto; aspect-ratio: 5 / 3; border-radius: var(--r-sm); background: var(--paper-2); }
 .mapName { font-size: var(--fs-3); font-weight: 800; }
-.footNote { margin: 0; font-size: var(--fs-1); color: var(--ink-2); text-align: center; }
 
 /* 좁은 화면에서는 고르기 칸이 비좁아 '학년' 글자를 접는다(읽기 이름은 그대로). */
 @media (max-width: 440px) {

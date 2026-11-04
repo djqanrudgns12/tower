@@ -3,6 +3,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 import { build, loadConfigFromFile, mergeConfig } from 'vite';
 import { gradeContent, MAPS } from '../../src/content';
 import { mapPreviewFromLocation, parseMapPreview, PREVIEW_PARAM, startMapPreview } from '../../src/application/mapPreview';
+import { QA_RUN_KEY } from '../../src/application/qaRun';
 
 // 개발 빌드 전용 맵 미리보기(src/application/mapPreview.ts). 4~6학년 문제은행이 없어도 새 맵의 전투 화면이 열리고, 운영 빌드에는 이 경로가 없다.
 
@@ -37,8 +38,6 @@ describe('미리보기 판', () => {
       expect(c.state.config.grade).toBe(m.grade);
       expect(c.state.phase).toBe('PREP_QUIZ');
       expect(c.state.quiz.current).not.toBeNull();
-      // 저장·기록·소유권이 없는 메모리 판이다.
-      expect(c.persist).toBe(false);
       c.dispose();
     }
   });
@@ -83,7 +82,7 @@ describe('주소창 연결(개발 빌드 가드)', () => {
   });
 });
 
-describe('운영 빌드에는 미리보기 경로가 없다', () => {
+describe('운영 빌드에는 개발용 진입 경로(맵 미리보기·QA 장면 로더)가 없다', () => {
   const ROOT = process.cwd();
 
   /**
@@ -99,15 +98,12 @@ describe('운영 빌드에는 미리보기 경로가 없다', () => {
     return outputs.map(o => (o.type === 'chunk' ? o.code : '')).join('\n');
   }
 
-  it('운영 번들에는 주소 이름(previewMap)도 미리보기 함수도 없고, 개발 번들에는 있다(대조)', async () => {
+  it('운영 번들에는 주소 이름(previewMap·qaRun 키)도 미리보기·로더 함수도 없고, 개발 번들에는 있다(대조)', async () => {
     const dev = await bundle('development');
-    expect(dev).toContain(PREVIEW_PARAM);
-    expect(dev).toContain('미리볼 맵이 없다');
-    expect(dev).toContain('미리보기 명령 거부');
+    const devOnly = [PREVIEW_PARAM, '미리볼 맵이 없다', '미리보기 명령 거부', QA_RUN_KEY, 'QA 장면 상태가 없다', 'QA 장면 상태 버전이 다르다'];
+    for (const text of devOnly) expect(dev, `개발 번들: ${text}`).toContain(text);
     const prod = await bundle('production');
-    expect(prod).not.toContain(PREVIEW_PARAM);
-    expect(prod).not.toContain('미리볼 맵이 없다');
-    expect(prod).not.toContain('미리보기 명령 거부');
+    for (const text of devOnly) expect(prod, `운영 번들: ${text}`).not.toContain(text);
     // 운영 번들에서도 앱 본체는 그대로 들어 있다(빈 번들로 통과하지 않게).
     expect(prod).toContain('vocabulary-td');
   }, 120_000);

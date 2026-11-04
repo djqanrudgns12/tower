@@ -351,7 +351,7 @@ describe('거래(PRD §6.3, §7)', () => {
   });
 });
 
-describe('재현·저장(PRD §13.3, §14)', () => {
+describe('재현·JSON 왕복(PRD §13.3, §14)', () => {
   function script(seed: number, reviewSenses?: ReviewSense[]) {
     const { ctx, s } = newRun('Normal', seed, reviewSenses);
     const log: Array<{ at: number; cmd: Command }> = [];
@@ -384,7 +384,7 @@ describe('재현·저장(PRD §13.3, §14)', () => {
     expect(first.s.wave).toBeGreaterThanOrEqual(2);
   });
 
-  it('A18(오답 노트): 같은 seed·같은 오답 노트 복사본·같은 명령 기록이면 복습 문항이 낀 판도 상태가 같고, 저장·복원해도 이어진다', () => {
+  it('A18(오답 노트): 같은 seed·같은 오답 노트 복사본·같은 명령 기록이면 복습 문항이 낀 판도 상태가 같고, JSON 왕복해도 이어진다', () => {
     const { ctx } = newRun('Normal', 4321);
     const notes: ReviewSense[] = ctx.questionIds.slice(0, 8).map((id, i) => ({
       senseKey: ctx.questions.get(id)!.target.senseKey, lemma: ctx.questions.get(id)!.target.lemma, questionIds: [id], misses: 8 - i, lastSeenAt: '2026-11-01T00:00:00.000Z',
@@ -399,7 +399,7 @@ describe('재현·저장(PRD §13.3, §14)', () => {
     }
     while (i < first.log.length && first.log[i]!.at === s.tick) applyCommand(ctx2, s, first.log[i++]!.cmd);
     expect(stateHash(s)).toBe(stateHash(first.s));
-    // 복사본이 상태에 들어 있어 저장 → 복원 뒤에도 같은 다음 문항을 낸다(판 밖 저장소를 다시 읽지 않는다).
+    // 복사본이 상태에 들어 있어 JSON 왕복 뒤에도 같은 다음 문항을 낸다(판 밖 저장소를 다시 읽지 않는다).
     const restored = JSON.parse(JSON.stringify(first.s)) as typeof first.s;
     expect(restored.quiz.reviewSenses).toEqual(notes);
     expect(stateHash(restored)).toBe(stateHash(first.s));
@@ -407,7 +407,7 @@ describe('재현·저장(PRD §13.3, §14)', () => {
     expect(next(restored)).toEqual(next(first.s));
   });
 
-  it('A31: 처치 PT 상한 직전 저장·복원해도 이미 지급한 웨이브 처치 PT를 유지', () => {
+  it('A31: 처치 PT 상한 직전 상태를 복제해 이어 가도 이미 지급한 웨이브 처치 PT를 유지', () => {
     const { ctx, s } = newRun();
     finishPrep(ctx, s);
     s.waveKillPtGranted = 29;

@@ -22,12 +22,9 @@ export const MAP_NAMES: Readonly<Record<string, string>> = {
 /** 홈·새 게임 문구(ui-rules-v3 §4 용어: 시작·새 게임·닉네임·랭킹 점수). */
 export const HOME_COPY = {
   start: '시작',
-  newGame: '새 게임',
-  resume: '이어하기',
   practiceFirst: '연습 먼저',
   practiceAgain: '연습하기',
   gradeSoon: '문제 준비 중이에요',
-  replacesSave: '저장된 판은 사라져요',
   nicknameFirst: '닉네임(2~12자)을 먼저 적어 주세요',
 } as const;
 
@@ -59,11 +56,8 @@ export const PAUSE_COPY: Record<PauseReason, string> = {
   USER: '잠시 멈췄어요.',
   HIDDEN: '화면을 떠나서 멈췄어요.',
   PERFORMANCE: '기기가 잠시 느려져서 멈췄어요.',
-  RESTORED: '저장한 곳에서 다시 시작해요. 준비되면 계속을 눌러 주세요.',
   CONTEXT_LOST: '화면이 잠시 꺼졌다가 돌아왔어요. 준비되면 계속을 눌러 주세요.',
-  STORAGE: '아직 저장되지 않았어요.',
-  OWNERSHIP: '다른 창에서 이 게임을 하고 있어요.',
-  NUMERIC_LIMIT: '이 판은 숫자가 너무 커져 더 진행할 수 없어요. 지금까지의 기록은 남아 있어요.',
+  NUMERIC_LIMIT: '이 판은 숫자가 너무 커져 더 진행할 수 없어요. 처음 화면에서 새 판을 시작해 주세요.',
 };
 
 export const RENDER_WAIT = '화면을 다시 그리는 중이에요. 잠시만 기다려 주세요.';
@@ -230,7 +224,7 @@ export const SETTINGS_COPY = {
   share: '공개 기록 나누기',
   shareHint: '켜면 닉네임·학년·난이도·점수·웨이브가 다른 사람에게 보여요.',
   clear: '이 기기 기록 지우기',
-  clearHint: '이 브라우저에 저장된 판 기록과 오답 노트를 지워요. 닉네임은 그대로예요.',
+  clearHint: '이 브라우저의 끝낸 판 기록과 오답 노트를 지워요. 닉네임은 그대로예요.',
   clearAction: '지우기',
   clearConfirm: '정말 지우기',
   cancel: '취소',

@@ -8,7 +8,7 @@ test('정답 골드가 안전 범위를 넘으면 부분 채점 없이 복구 �
   const { ctx, s } = newRun();
   s.gold = Number.MAX_SAFE_INTEGER - (ctx.difficulty.correctGold - 1); // Normal 첫 정답 골드만 한계를 넘는다(첫 정답은 연속 보너스 없음).
   const before = { gold: s.gold, pt: s.pt, answer: null, correct: s.stats.correct };
-  const controller = new RunController(ctx, s, { saveSeq: 0, ownership: null });
+  const controller = new RunController(ctx, s, { recordOnFinish: false });
   let thrown = false;
   try {
     controller.dispatch({ type: 'answer', encounterId: s.quiz.current!.id, choice: correctChoice(ctx, s) });

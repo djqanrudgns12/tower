@@ -82,7 +82,7 @@ export function contextFor(grade: number, difficulty: DifficultyId, retractions:
   const { map, bank } = gradeContent(grade);
   if (!bank) throw new ContentUnavailableError(`${grade}학년 문제은행이 아직 없다`);
   const active = toRuntime(bank, retractions);
-  // 전부 철회되면 판을 시작·이어하지 않는다. 학생 패배가 아니라 복구 안내다(PRD §16.2).
+  // 전부 철회되면 판을 시작하지 않는다. 학생 패배가 아니라 복구 안내다(PRD §16.2).
   if (active.length === 0) throw new ContentUnavailableError(`${grade}학년 문항이 모두 철회되었다`);
   const questions = active.filter(q => isQuestionEligibleForDifficulty(q, difficulty, DIFFICULTY_GATE));
   if (questions.length === 0) throw new ContentUnavailableError(`${grade}학년 ${difficulty} 난이도에 쓸 수 있는 문항이 없다`);

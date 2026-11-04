@@ -8,11 +8,11 @@ import type { RunState } from '../../src/domain/types';
 import { nearestSlots, newRun, stateHash } from './helpers';
 
 // G2 첫 완성 구간 게이트(PRD §18.2): 한 판을 1→6웨이브까지 이어 가며 정답·오답·모르겠어요를 섞고,
-// 중간중간 저장·복원(JSON 왕복 + RESTORED 정지)과 학생 정지를 끼워도 끊김 없는 판과 같은 결과가 나와야 한다.
+// 중간중간 상태 JSON 왕복(RunState는 순수 JSON, QA 장면 로더가 쓰는 길)과 학생 정지를 끼워도 끊김 없는 판과 같은 결과가 나와야 한다.
 // 보상은 사건의 골드·PT 합과 상태가 맞아떨어지고(장부 대조), 같은 문항·같은 고비 보상이 두 번 들어가지 않는다.
 
 const TARGET_WAVE = 6;
-const SAVE_EVERY = 211; // 소수 간격이라 준비·전투·마무리·오답 대기 등 여러 국면에 걸린다.
+const ROUND_TRIP_EVERY = 211; // 소수 간격이라 준비·전투·마무리·오답 대기 등 여러 국면에 걸린다.
 const PAUSE_EVERY = 307;
 
 type Interrupt = (s: RunState, ctx: GameContext) => RunState;
@@ -45,10 +45,10 @@ function play(interrupt: Interrupt | null) {
   const seen = { restoredInWrongWait: false, restoredMidFlight: false, restoredWithBoss: false, restoredInWrapup: false, restores: 0 };
   let prevPhase = s.phase;
   for (let guard = 0; guard < 30 * 60 * 40 && s.phase !== 'GAME_OVER' && s.completedWave < TARGET_WAVE; guard++) {
-    // 일정 간격 저장에 더해, 마무리 문항 단계에 들어선 첫 틱에도 저장·복원한다. 밸런스가 바뀌어 판 흐름이 달라져도 이 국면을 늘 지나게 한다.
+    // 일정 간격에 더해, 마무리 문항 단계에 들어선 첫 틱에도 JSON 왕복한다. 밸런스가 바뀌어 판 흐름이 달라져도 이 국면을 늘 지나게 한다.
     const enteredWrapup = s.phase === 'WAVE_WRAPUP' && prevPhase !== 'WAVE_WRAPUP';
     prevPhase = s.phase;
-    if (interrupt && s.tick > 0 && (s.tick % SAVE_EVERY === 0 || enteredWrapup)) {
+    if (interrupt && s.tick > 0 && (s.tick % ROUND_TRIP_EVERY === 0 || enteredWrapup)) {
       const fb = s.quiz.feedback;
       if (fb?.nextEnabledTick && fb.nextEnabledTick > s.tick && fb.result === 'wrong') seen.restoredInWrongWait = true;
       if (s.projectiles.length > 0) seen.restoredMidFlight = true;
@@ -72,11 +72,11 @@ function play(interrupt: Interrupt | null) {
   return { ctx, s, events, seen };
 }
 
-/** 저장(JSON 직렬화)·불러오기와 같은 왕복. 이어하기는 RESTORED 정지로 시작하고 학생이 계속을 누른다(PRD §14.2). */
-const saveAndRestore: Interrupt = (s, ctx) => {
+/** JSON 직렬화 왕복. QA 장면 로더처럼 정지(USER)로 연 뒤 학생이 계속을 누른다. */
+const jsonRoundTrip: Interrupt = (s, ctx) => {
   const restored = JSON.parse(JSON.stringify(s)) as RunState;
-  restored.pause.push('RESTORED');
-  expect(applyCommand(ctx, restored, { type: 'resume', reason: 'RESTORED' }).ok).toBe(true);
+  restored.pause.push('USER');
+  expect(applyCommand(ctx, restored, { type: 'resume', reason: 'USER' }).ok).toBe(true);
   return restored;
 };
 
@@ -88,7 +88,7 @@ const sum = (events: DomainEvent[], key: 'gold' | 'pt') => events.reduce((a, e) 
 
 describe('G2 첫 완성 구간: 1→6웨이브 한 판', () => {
   const straight = play(null);
-  const interrupted = play(saveAndRestore);
+  const interrupted = play(jsonRoundTrip);
 
   it('끊김 없는 판이 4→5(고비 보스)→6웨이브를 지나 6웨이브를 마친다', () => {
     expect(straight.s.phase).not.toBe('GAME_OVER');
@@ -98,7 +98,7 @@ describe('G2 첫 완성 구간: 1→6웨이브 한 판', () => {
     expect(new Set(answered.map(e => e.type === 'answered' && e.result))).toEqual(new Set(['correct', 'wrong', 'skipped']));
   });
 
-  it('저장·복원과 정지를 끼운 판은 끊김 없는 판과 상태·사건이 같다', () => {
+  it('JSON 왕복과 정지를 끼운 판은 끊김 없는 판과 상태·사건이 같다', () => {
     const { seen } = interrupted;
     // 이 시험이 실제로 어려운 순간을 지났는지 확인한다.
     expect(seen).toMatchObject({ restoredInWrongWait: true, restoredMidFlight: true, restoredWithBoss: true, restoredInWrapup: true });
@@ -107,7 +107,7 @@ describe('G2 첫 완성 구간: 1→6웨이브 한 판', () => {
     expect(interrupted.events).toEqual(straight.events);
   });
 
-  for (const [name, run] of [['끊김 없는 판', straight], ['저장·복원 판', interrupted]] as const) {
+  for (const [name, run] of [['끊김 없는 판', straight], ['JSON 왕복 판', interrupted]] as const) {
     it(`${name}: 보상 사건의 합이 상태와 맞고, 같은 문항·고비 보상은 한 번뿐이다`, () => {
       const { ctx, s, events } = run;
       expect(ctx.balance.run.startGold + sum(events, 'gold')).toBe(s.gold);

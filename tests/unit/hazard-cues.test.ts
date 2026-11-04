@@ -38,12 +38,12 @@ describe('장판·덫·굴림체 표시 고르기', () => {
     expect(s.hazards.map(h => hazardLook(h))).toEqual([]);
   });
 
-  it('약병 장판: 규칙 반경(0.75칸)의 타원이고, 세로는 ZONE_FLATTEN만큼 눌린다', () => {
+  it('약병 장판: 규칙 반경(0.85칸, R4 마지막 조정)의 타원이고, 세로는 ZONE_FLATTEN만큼 눌린다', () => {
     const { ctx, s } = arena('alchemist', [8800]);
     // 약병은 날아가 착탄해야 장판이 된다.
     for (let i = 0; i < 80 && s.hazards.length === 0; i++) ticks(ctx, s, 1);
     const zone = firstHazard(s, 'zone');
-    expect(hazardLook(zone)).toEqual({ kind: 'zone', rx: 0.75, ry: 0.75 * ZONE_FLATTEN });
+    expect(hazardLook(zone)).toEqual({ kind: 'zone', rx: 0.85, ry: 0.85 * ZONE_FLATTEN });
     // 한 번 터지고 사라지는 지연 폭발은 땅에 남는 것이 아니라서 그리지 않는다.
     expect(hazardLook({ ...(zone as Extract<FieldHazard, { kind: 'zone' }>), blast: true })).toBeNull();
   });
@@ -112,7 +112,7 @@ describe('지연 폭발 표시 고르기', () => {
     const st = towerStats(BALANCE, 'ballista', 7, 'B2');
     const look = blastLook(h as Extract<typeof h, { kind: 'zone' }>);
     expect(look).toEqual({ kind: 'fuse', length: st.range / 1000, width: st.lineWidth / 1000, heading: Math.atan2(-1000, 1500) });
-    // 사건으로 읽어도 상태와 같은 모양이다(이어하기로 사건을 놓쳐도 상태만으로 그린다).
+    // 사건으로 읽어도 상태와 같은 모양이다(장면 상태로 열어 사건을 놓쳐도 상태만으로 그린다).
     expect(blastLook(placed!)).toEqual(look);
     // 찬 정도: 놓은 틱 0 → 터지는 틱(발사 18틱 뒤) 1, 틱 사이는 alpha만큼 더 간 값.
     expect(h.expiresTick! - h.createdTick).toBe(18);

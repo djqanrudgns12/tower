@@ -13,14 +13,12 @@ const gradeReady = (g: Grade) => gradeContent(g).bank !== null;
 
 interface Props {
   settings: Settings;
-  /** 이어할 저장 판이 있을 때. 새 게임을 시작하면 그 판이 사라진다는 것을 한 줄로 알린다. */
-  replacesSave?: boolean;
   onBack(): void;
   onStart(input: { grade: Grade; difficulty: DifficultyId; nickname: string }): void;
 }
 
 /** 새 게임 창: 왼쪽에서 학년 · 난이도를 고르고, 오른쪽 열의 지도 썸네일 아래 큰 '시작'을 누른다. 닉네임은 홈에서 정한 것을 그대로 쓴다. */
-export function NewGameScreen({ settings, replacesSave = false, onBack, onStart }: Props) {
+export function NewGameScreen({ settings, onBack, onStart }: Props) {
   const [grade, setGrade] = useState<Grade>(gradeReady(settings.lastGrade) ? settings.lastGrade : 3);
   const [difficulty, setDifficulty] = useState<DifficultyId>(
     (DIFFICULTY_IDS as readonly string[]).includes(settings.lastDifficulty) ? (settings.lastDifficulty as DifficultyId) : 'Normal',
@@ -89,7 +87,6 @@ export function NewGameScreen({ settings, replacesSave = false, onBack, onStart 
           <Button variant="primary" size="lg" block disabled={nickname === ''} onClick={() => onStart({ grade, difficulty, nickname })}>
             {HOME_COPY.start}
           </Button>
-          {replacesSave && <p className={css.footNote}>{HOME_COPY.replacesSave}</p>}
         </div>
       </div>
     </Modal>

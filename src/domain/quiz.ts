@@ -87,7 +87,7 @@ export function selectQuestion(ctx: GameContext, quiz: QuizState, phase: Encount
  * 1단계 도움 단계: 다단계 심화 문제은행에서는 현재 난이도의 목표 심화 단계를 h칸 옮겨(난이도 문 안에서만) 우선 고르고,
  *   단계 없는 은행에서는 h=-1이면 읽기 부담 하위 40%, h=+1이면 상위 40%를 먼저 고른다. h=0이면 일정표 단계 그대로다.
  * 이후 완화 순서(전투 읽기 부담 상한 → 최근 의미를 오래된 것부터 하나씩 → 최근 문항을 오래된 것부터 하나씩)를 그대로 지킨다.
- * 바로 앞 문항은 풀이 1개일 때만 반복한다. 저장된 큐에 철회된 문항이 남아 있으면 건너뛴다.
+ * 바로 앞 문항은 풀이 1개일 때만 반복한다. 상태의 큐에 철회된 문항이 남아 있으면 건너뛴다.
  */
 export function pickQuestion(ctx: GameContext, quiz: QuizState, phase: EncounterPhase, rng: Rng): QuestionPick {
   const pool = ctx.questionIds;

@@ -183,8 +183,6 @@ async function clearHistoryFromSettings(page: Page, nickname: string) {
   await endRun(page);
   await page.getByRole('button', { name: '홈', exact: true }).click();
   await expect(page.getByRole('button', { name: '오답 노트 1개' })).toBeVisible();
-  // 홈이 저장된 판을 읽는 비동기 갱신이 끝나게 둔다. 그 갱신이 지운 뒤에 늦게 와서 화면을 우연히 다시 그리면 개수 검사가 타이밍에 기대게 된다.
-  await page.waitForTimeout(800);
 
   await page.getByRole('button', { name: '설정' }).click();
   const dialog = page.getByRole('dialog', { name: '환경설정' });

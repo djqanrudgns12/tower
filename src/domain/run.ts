@@ -232,7 +232,7 @@ function replaceCurrent(ctx: GameContext, s: RunState, ev: DomainEvent[]) {
   ev.push({ type: 'encounter', encounterId: s.quiz.current.id });
 }
 
-/** 이어하기·철회 목록 적용 뒤 화면에 걸린 미제출 문항이 사라졌으면 바꾼다. 답한 문항은 소급 변경하지 않는다. */
+/** 밖에서 들여온 상태(개발용 QA 장면 로더)에 걸린 미제출 문항이 철회됐으면 바꾼다. 답한 문항은 소급 변경하지 않는다. */
 export function replaceUnavailableQuestion(ctx: GameContext, s: RunState): DomainEvent[] {
   const enc = s.quiz.current;
   if (!enc || enc.answer || s.phase === 'GAME_OVER') return [];

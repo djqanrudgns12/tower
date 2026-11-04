@@ -14,10 +14,9 @@ test.describe('홈(R4 U1: 타이틀 화면) 통합 검증', () => {
     });
     await page.reload();
 
-    // L01: 처음 온 학생에게는 '처음이라면 연습부터'를 보이고(PRD §12.2), 저장이 없으니 이어하기는 없다. '적용/적용됨' 버튼은 없다.
+    // L01: 처음 온 학생에게는 '처음이라면 연습부터'를 보인다(PRD §12.2). '적용/적용됨' 버튼은 없다.
     await expect(page.getByRole('button', { name: '연습 먼저' })).toBeVisible();
     await expect(page.getByRole('button', { name: '연습하기' })).toHaveCount(0);
-    await expect(page.getByRole('button', { name: /이어하기/ })).toHaveCount(0);
     await expect(page.getByRole('button', { name: /^적용/ })).toHaveCount(0);
     await expect(page.getByRole('button', { name: '시작', exact: true })).toBeVisible();
     // R4: 통계 띠(4칸)와 '내 기록' 버튼은 없다. 한 화면 위에 큰 로고(h1)가 있다.
@@ -148,7 +147,7 @@ test.describe('홈(R4 U1: 타이틀 화면) 통합 검증', () => {
 
     // 홈 기본 axe 검사(캔버스 제외 없이 전수 통과) 및 샘플 기록 적재 시 랭킹 보드 렌더링 확인
     await page.evaluate(async () => {
-      const req = indexedDB.open('vocabulary-td', 2);
+      const req = indexedDB.open('vocabulary-td', 3);
       await new Promise((resolve, reject) => {
         req.onsuccess = () => {
           const db = req.result;
@@ -273,7 +272,7 @@ test.describe('홈(R4 U1: 타이틀 화면) 통합 검증', () => {
     await expect(dialog.getByRole('button', { name: /이전 장|다음 장/ })).toHaveCount(0);
     const cards = dialog.locator('article');
     await expect(cards).toHaveCount(5);
-    const titles = ['한 판 흐름', '문제와 골드', '타워 놓기와 진화', '시작과 저장', '타워 상성'];
+    const titles = ['한 판 흐름', '문제와 골드', '타워 놓기와 진화', '시작과 끝내기', '타워 상성'];
     for (const [i, title] of titles.entries()) {
       await expect(cards.nth(i).getByRole('heading', { level: 3, name: title })).toBeVisible();
     }
@@ -281,7 +280,7 @@ test.describe('홈(R4 U1: 타이틀 화면) 통합 검증', () => {
     await expect(cards.nth(0)).toContainText('문제를 풀고 타워로 성문을 지켜요');
     await expect(cards.nth(1)).toContainText('맞히면 골드, 모르면 뜻을 배워요');
     await expect(cards.nth(2)).toContainText('타워를 놓고 키워서 진화시켜요');
-    await expect(cards.nth(3)).toContainText('저장하고 나가도 이어서 할 수 있어요');
+    await expect(cards.nth(3)).toContainText('학년·난이도를 고르고, 끝나면 기록돼요');
     await expect(cards.nth(4)).toContainText('하늘 적은 하늘을 쏘는 타워로');
     const more = dialog.getByRole('button', { name: '자세히' });
     await expect(more).toHaveCount(5);
@@ -323,9 +322,8 @@ test.describe('홈(R4 U1: 타이틀 화면) 통합 검증', () => {
     await expect(cards.nth(2)).toContainText(/\d+% 환급 판매/);
     await expect(cards.nth(3)).toContainText('속담·관용구·방언');
     await expect(cards.nth(3)).toContainText('이번 판 끝내기');
-    // G03: 저장·이어하기(PRD §14)와 첫 연습 판(§12.2) 안내가 있다.
-    await expect(cards.nth(3)).toContainText('저장하고 나가기');
-    await expect(cards.nth(3)).toContainText('이어하기');
+    // G03: 이어하기 없음(PRD §14.1: 끝내야 기록, 창을 닫으면 사라짐)과 첫 연습 판(§12.2) 안내가 있다.
+    await expect(cards.nth(3)).toContainText('창을 닫으면 그 판은 사라져요');
     await expect(cards.nth(3)).toContainText('연습 판');
     await expect(cards.nth(3)).toContainText('숫자키 1~4');
     // 상성 카드는 적 특성마다 상대하기 좋은 타워를 보인다.
@@ -403,66 +401,5 @@ test.describe('홈(R4 U1: 타이틀 화면) 통합 검증', () => {
     await page.keyboard.press('Escape');
     await expect(dialog).toHaveCount(0);
     expect(errors).toEqual([]);
-  });
-  test('L02·L03: 활성 저장이 있으면 이어하기를 새 게임 앞에 두고, 손상 저장은 조용히 지우지 않고 복구 안내를 한다(PRD §12.2, §14.1)', async ({ page }) => {
-    await page.setViewportSize({ width: 1440, height: 900 });
-    await page.goto('/');
-    await page.evaluate(() => { indexedDB.deleteDatabase('vocabulary-td'); localStorage.clear(); });
-    await page.reload();
-
-    // 한 문제를 풀고 저장하고 나간다.
-    await page.getByRole('textbox', { name: '닉네임' }).fill('이어하기검증');
-    await page.getByRole('button', { name: '시작', exact: true }).click();
-    await page.getByRole('dialog', { name: '새 게임' }).getByRole('button', { name: '시작', exact: true }).click();
-    const first = page.getByRole('region', { name: '어휘 문제' }).getByRole('group', { name: '보기' }).getByRole('button').first();
-    await first.click();
-    await expect(first).toBeDisabled();
-    await page.getByRole('button', { name: '일시정지' }).first().click();
-    await page.getByRole('button', { name: '저장하고 나가기' }).click();
-
-    const resume = page.getByRole('button', { name: '이어하기 · 이어하기검증 · 1웨이브' });
-    const newGame = page.getByRole('button', { name: '새 게임', exact: true });
-    await expect(resume).toBeVisible();
-    // 이어하기가 새 게임보다 앞(위)에 온다.
-    const [resumeBox, newBox] = [await resume.boundingBox(), await newGame.boundingBox()];
-    expect(resumeBox!.y).toBeLessThan(newBox!.y);
-    // 저장이 있는 학생에게는 연습 권유 대신 ‘연습하기’.
-    await expect(page.getByRole('button', { name: '연습하기' })).toBeVisible();
-    const axe = await new AxeBuilder({ page }).analyze();
-    expect(axe.violations.map(v => `${v.id}: ${v.nodes.length}`)).toEqual([]);
-    await page.screenshot({ path: 'test-results/shots/home-resume.png' });
-    // 새 게임을 시작하면 저장된 판이 사라진다는 것을 새 게임 창에서 한 줄로 알린다.
-    await newGame.click();
-    await expect(page.getByRole('dialog', { name: '새 게임' })).toContainText('저장된 판은 사라져요');
-    await page.keyboard.press('Escape');
-
-    // 두 슬롯을 모두 깨뜨리면 이어하기 대신 복구 안내가 뜨고, 저장은 그대로 남는다.
-    await page.evaluate(() => new Promise<void>((resolve, reject) => {
-      const req = indexedDB.open('vocabulary-td');
-      req.onsuccess = () => {
-        const db = req.result;
-        const tx = db.transaction('run', 'readwrite');
-        const store = tx.objectStore('run');
-        const all = store.getAll();
-        all.onsuccess = () => { for (const slot of all.result) store.put({ ...slot, hash: 'broken' }); };
-        tx.oncomplete = () => { db.close(); resolve(); };
-        tx.onerror = () => reject(tx.error);
-      };
-      req.onerror = () => reject(req.error);
-    }));
-    await page.reload();
-    await expect(page.getByText('저장된 판이 손상되어 이어할 수 없어요')).toBeVisible();
-    await expect(page.getByRole('button', { name: /^이어하기 ·/ })).toHaveCount(0);
-    const slots = await page.evaluate(() => new Promise<number>((resolve, reject) => {
-      const req = indexedDB.open('vocabulary-td');
-      req.onsuccess = () => {
-        const db = req.result;
-        const count = db.transaction('run').objectStore('run').count();
-        count.onsuccess = () => { db.close(); resolve(count.result); };
-        count.onerror = () => reject(count.error);
-      };
-      req.onerror = () => reject(req.error);
-    }));
-    expect(slots).toBeGreaterThan(0);
   });
 });

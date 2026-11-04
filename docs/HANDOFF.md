@@ -127,7 +127,7 @@ npm run verify
 4. **실기기 확인(G2의 마지막 조건).** 사용자의 iOS Safari·Android 기기가 필요하다. 순서:
    1. `npm run build`
    2. `npx vite preview --host --port 4173`으로 같은 네트워크에서 연다.
-   3. 한 판 흐름, 정지·저장하고 나가기·이어하기, 소리, 30분 연속 플레이를 확인한다.
+   3. 한 판 흐름, 정지·이번 판 끝내기, 소리, 30분 연속 플레이를 확인한다.
 
 ### 5.2 총괄이 할 일(순서대로)
 
@@ -139,7 +139,7 @@ npm run verify
         npm run simulate:towers -- --set towers.banner.cost=60 --set "towers.banner.auraDamageBPByLevel=[2500,2700]"
         ```
 
-     2. 통과하는 값을 `docs/contracts/balance.candidate.v0.4.json`에 넣고 `balanceVersion`을 `0.4.3-candidate`로 올린다. `balanceVersion`이 바뀌면 이전 개발용 저장은 이어하기 대상이 아니다.
+     2. 통과하는 값을 `docs/contracts/balance.candidate.v0.4.json`에 넣고 `balanceVersion`을 `0.4.3-candidate`로 올린다.
      3. `npm run simulate:towers -- --out docs/balance/s11-p2-efficiency.json`으로 결과를 다시 만든다.
      4. 기준 ②와 P1 기준이 그대로인지 확인한다.
 
@@ -151,7 +151,7 @@ npm run verify
      6. `npm run verify`를 돌린다. `validate:plan`이 `docs/contracts/prd_v0_5_validation.json` 해시를 갱신하므로 그 변경도 함께 커밋한다.
    - 선택지 나일 때: `tools/sim/towerEfficiency.ts`의 `banner-group` 비교를 칸당 측정으로 바꾸고, PRD §7.5 ① 문구를 승인된 대로 고친다.
 2. **P2 타워 7종을 게임에서 열고 ART-003을 전투로 확인한다**(CORE-P2 마무리).
-   - `docs/contracts/product.defaults.v0.5.json` `pilot.towers`(지금 3종)를 10종으로 늘린다. 이 값은 `src/content/index.ts`의 `PILOT_TOWERS`를 거쳐 `session.ts`가 판 설정 `availableTowers`에 넣는다. 이미 저장된 판은 3종 그대로다.
+   - `docs/contracts/product.defaults.v0.5.json` `pilot.towers`(지금 3종)를 10종으로 늘린다. 이 값은 `src/content/index.ts`의 `PILOT_TOWERS`를 거쳐 `session.ts`가 판 설정 `availableTowers`에 넣는다.
    - 관리 패널은 PRD §12 규격대로 만든다:
      - **기본(궁수·포탑·서리) 탭과 전체 탭**을 두고, 전체 탭에는 역할 필터를 둔다.
      - 밀도 높은 2열 항목: 항목 높이 72px, 아이콘 40~48px, 이름·가격 14px.
@@ -258,13 +258,13 @@ npm run verify
   - 화염 부채꼴은 정수식으로 판정한다.
   - 화상은 출처별 스냅샷이고, 15틱 시계로 돈다.
   - 깃발은 공격하지 않고, 2.0칸 안 공격 타워의 직접 피해를 올린다(화상에는 미적용).
-- 이어하기는 `balanceVersion`과 규칙 버전(`rulesVersion`)이 같아야 한다.
+- 이어하기는 없다(2026-11-04 사용자 결정). 판은 메모리에만 있고 '이번 판 끝내기'와 패배만 기록된다. 화면 점검 장비는 개발 전용 `?qaRun=1` 로더를 쓴다.
 - 연습 판은 정규 규칙에서 세 가지만 바꾼 문맥으로 돈다:
   - 시도 수 1
   - 적 3마리
   - 등장 간격 2.2초
 
-  저장·기록·소유권이 없고, 연습 은행은 학년 은행과 따로 만든다.
+  기록이 없고, 연습 은행은 학년 은행과 따로 만든다.
 - 내용 검사(`tests/unit/content.test.ts`)는 은행 종류마다 다르다:
   - 공개 학년 은행은 30문항 이상
   - 공개 연습 은행은 승인된 연습 문항 4개 그대로
@@ -286,7 +286,7 @@ npm run verify
 - 실행: 새 시험이 고치기 전 코드에서는 실패한다. 고치기 전 `balanced10`은 첫 진화 전에 3기만 지었고, 지금은 6기를 짓는다.
 - 실행, 인계 직전 기준선(코드는 `df7b42b`와 같음): `npm run test:e2e` **8개 통과**(2.4분, 5173 비어 있음). 통과한 시험:
   - 1440×900 한 판 흐름·정지 가림
-  - 저장하고 나가기 → 이어하기
+  - 저장하고 나가기 → 이어하기(2026-11-04 기능을 없애 이 시험도 빠졌다)
   - 390×844 넘침·확대
   - 키보드 자리 선택·설치 자리 목록
   - WebGL 문맥 손실/복구

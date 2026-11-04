@@ -1,10 +1,10 @@
-/* global window, document, indexedDB, getComputedStyle -- page.evaluate 안에서 도는 코드가 쓰는 브라우저 전역이다 */
+/* global window, document, getComputedStyle -- page.evaluate 안에서 도는 코드가 쓰는 브라우저 전역이다 */
 import { spawn } from 'node:child_process';
 import path from 'node:path';
 import { chromium } from '@playwright/test';
 import { build, loadConfigFromFile, mergeConfig, preview, runnerImport } from 'vite';
 
-// 화면 점검 공용 도구(tools/qa/scenes.mjs·perf.mjs가 쓴다): 개발 서버, 저장본 주입, 이어하기 진입, 게임 시간 시계, 객관 검사.
+// 화면 점검 공용 도구(tools/qa/scenes.mjs·perf.mjs가 쓴다): 개발 서버, 장면 상태 주입(개발 전용 `?qaRun=1` 로더), 게임 시간 시계, 객관 검사.
 export const ROOT = path.resolve(import.meta.dirname, '../..');
 
 /** 화면 크기. 1440×900이 기본이고 크롬북·휴대폰은 표가 정한 장면만 쓴다. */
@@ -14,7 +14,6 @@ export const SIZES = {
   phone: { name: 'phone', width: 390, height: 844 },
 };
 
-export const DB_NAME = 'vocabulary-td';
 export const NICKNAME = '하늘바람';
 
 export const flag = (args, name, fallback) => {
@@ -38,19 +37,21 @@ export async function ensureServer(port) {
 
 /**
  * 운영 빌드를 outDir에 만들어 vite preview로 띄운다(개발 서버는 React 개발판이라 실제 기기보다 훨씬 느리다).
+ * 장면 상태로 들어가야 하므로 이 측정용 빌드에서만 개발 진입 분기(`import.meta.env.DEV`: QA 장면 로더·맵 미리보기)를 켠다.
+ * React·번들은 운영판 그대로라 성능 측정에는 영향이 없고, 배포 빌드(npm run build)에는 이 분기가 없다.
  * ambientOff면 분위기 층(AmbientLayer)을 아무것도 안 하는 대역으로 바꿔 빌드한다. 제품 소스는 건드리지 않는다.
  */
 export async function buildAndServe({ outDir, port, ambientOff = false }) {
   const loaded = await loadConfigFromFile({ command: 'build', mode: 'production' }, path.join(ROOT, 'vite.config.ts'), ROOT);
   const stub = { name: 'qa-ambient-off', enforce: 'pre', resolveId(id) { return /layers\/AmbientLayer$/.test(id) ? '\0qa-ambient-off' : null; }, load(id) { return id === '\0qa-ambient-off' ? 'export class AmbientLayer { constructor() {} update() {} }' : null; } };
-  await build(mergeConfig(loaded.config, { configFile: false, root: ROOT, logLevel: 'error', build: { outDir, emptyOutDir: true }, plugins: ambientOff ? [stub] : [] }));
+  await build(mergeConfig(loaded.config, { configFile: false, root: ROOT, logLevel: 'error', define: { 'import.meta.env.DEV': 'true' }, build: { outDir, emptyOutDir: true }, plugins: ambientOff ? [stub] : [] }));
   const server = await preview({ configFile: false, root: ROOT, logLevel: 'error', preview: { port, strictPort: true }, build: { outDir } });
   return { base: `http://localhost:${port}`, stop: async () => { await new Promise(resolve => server.httpServer.close(() => resolve())); } };
 }
 
-/** tools/qa/saves.ts를 vite로 읽어 저장본 만들기 함수를 돌려준다. */
-export async function loadSaves() {
-  const { module } = await runnerImport(path.join(ROOT, 'tools/qa/saves.ts'), { configFile: false, logLevel: 'error', root: ROOT });
+/** tools/qa/states.ts를 vite로 읽어 장면 상태 만들기 함수(buildScene)와 로더 이름(QA_RUN_KEY·QA_RUN_PARAM)을 돌려준다. */
+export async function loadStates() {
+  const { module } = await runnerImport(path.join(ROOT, 'tools/qa/states.ts'), { configFile: false, logLevel: 'error', root: ROOT });
   return module;
 }
 
@@ -59,36 +60,6 @@ export async function loadSaves() {
  * — 소프트웨어 GL은 CPU 감속과 상관없이 느려서 성능 측정에는 쓸 수 없다(1440×900에서 1배속도 20fps대).
  */
 export const launch = ({ gpu = false } = {}) => chromium.launch(gpu ? { channel: 'chromium', args: ['--hide-scrollbars', '--use-angle=metal', '--enable-gpu', '--ignore-gpu-blocklist'] } : { args: ['--hide-scrollbars'] });
-
-/** 브라우저 안에서 실행되는 주입기: IndexedDB에 저장본을, localStorage에 설정을 쓴다(src/persistence/db.ts의 저장 형식). */
-async function inject({ json, settings, coach }) {
-  const hex = async text => [...new Uint8Array(await crypto.subtle.digest('SHA-256', new TextEncoder().encode(text)))].map(b => b.toString(16).padStart(2, '0')).join('');
-  const db = await new Promise((resolve, reject) => {
-    const open = indexedDB.open('vocabulary-td', 2);
-    open.onupgradeneeded = () => {
-      const d = open.result;
-      if (!d.objectStoreNames.contains('run')) d.createObjectStore('run', { keyPath: 'slot' });
-      if (!d.objectStoreNames.contains('records')) d.createObjectStore('records', { keyPath: 'runId' }).createIndex('endedAt', 'endedAt');
-      if (!d.objectStoreNames.contains('syncQueue')) d.createObjectStore('syncQueue', { keyPath: 'runId' });
-    };
-    open.onsuccess = () => resolve(open.result);
-    open.onerror = () => reject(open.error);
-  });
-  if (json) {
-    await new Promise((resolve, reject) => {
-      const tx = db.transaction('run', 'readwrite');
-      tx.objectStore('run').clear();
-      hex(json).then(hash => {
-        tx.objectStore('run').put({ slot: 'A', seq: 1, savedAt: new Date().toISOString(), hash, json });
-      }, reject);
-      tx.oncomplete = () => resolve();
-      tx.onerror = () => reject(tx.error);
-    });
-  }
-  db.close();
-  localStorage.setItem('vocabulary-td.settings', JSON.stringify(settings));
-  localStorage.setItem('vocabulary-td.coach', JSON.stringify(coach));
-}
 
 /** 점검 기본 설정: 소리 끔, 연습 안내 끔, 첫 판 코치 마크는 끝낸 것으로(장면 1·2만 예외). */
 export const baseSettings = (extra = {}) => ({ practiceSeen: true, soundOn: false, lastNickname: NICKNAME, lastGrade: 3, lastDifficulty: 'Normal', ...extra });
@@ -110,19 +81,27 @@ export async function openPage(browser, { base, size, clock = false, route }) {
   return { context, page, issues };
 }
 
-/** 저장본·설정을 넣고 다시 불러온다. */
-export async function seed(page, base, { state, settings, coach = ['place', 'start'] }) {
+/**
+ * 설정·첫 판 코치 마크를 localStorage에 넣는다. 장면 상태(runState: loadStates().buildScene(...).state)가 있으면 같은 탭의 sessionStorage에
+ * 넣고 개발 전용 QA 장면 로더 주소(`/?qaRun=1`)로 연다(src/application/qaRun.ts, 운영 빌드에는 없다). 없으면 홈을 다시 불러온다.
+ */
+export async function seed(page, base, { runState = null, states = null, settings, coach = ['place', 'start'] }) {
   await page.goto(`${base}/`);
-  await page.evaluate(inject, { json: state ? JSON.stringify(state) : null, settings, coach });
-  await page.reload();
+  const qa = runState ? { key: states.QA_RUN_KEY, json: JSON.stringify(runState) } : null;
+  await page.evaluate(({ settings, coach, qa }) => {
+    localStorage.setItem('vocabulary-td.settings', JSON.stringify(settings));
+    localStorage.setItem('vocabulary-td.coach', JSON.stringify(coach));
+    if (qa) sessionStorage.setItem(qa.key, qa.json);
+  }, { settings, coach, qa });
+  if (runState) await page.goto(`${base}/?${states.QA_RUN_PARAM}=1`);
+  else await page.reload();
 }
 
 /**
- * 홈에서 이어하기를 눌러 게임 화면(정지 상태, '계속하기' 대기)까지 간다.
+ * 로더가 연 게임 화면(정지 상태, '계속하기' 대기)이 다 뜰 때까지 기다린다.
  * clock이면 화면이 다 뜬 뒤 시계를 멈춘다. 이후 게임 시간은 runGame으로만 흐른다.
  */
 export async function enterGame(page, { clock = false } = {}) {
-  await page.getByRole('button', { name: /^이어하기/ }).click();
   await page.getByRole('dialog').getByRole('button', { name: '계속하기' }).waitFor();
   await page.locator('canvas').first().waitFor();
   // 텍스처·원화 로딩과 첫 장면 생성을 기다린다.
@@ -135,7 +114,7 @@ export async function enterGame(page, { clock = false } = {}) {
 }
 
 /** 정지 창의 '계속하기'. */
-export const resumeGame = page => page.getByRole('dialog').getByRole('button', { name: '계속하기' }).click();
+export const continueGame = page => page.getByRole('dialog').getByRole('button', { name: '계속하기' }).click();
 
 /** 게임 시간(가짜 시계)을 ms만큼 흘린다. 16ms마다 화면 한 프레임이 그려진다. */
 export const runGame = (page, ms) => page.clock.runFor(ms);

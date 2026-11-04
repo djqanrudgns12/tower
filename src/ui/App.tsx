@@ -1,32 +1,25 @@
 import { useCallback, useEffect, useState } from 'react';
 import { mapPreviewFromLocation } from '../application/mapPreview';
+import { qaRunFromLocation } from '../application/qaRun';
 import type { RunController } from '../application/RunController';
 import {
   bestWaveFor,
-  CORRUPT_SAVE_NOTICE,
-  loadSaved,
   loadSettings,
   normalizeSettings,
-  NO_SAVE_NOTICE,
-  resumeBlocker,
-  resumeRun,
   reviewNoteItems,
   saveSettings,
-  saveSupported,
   startNewRun,
   startPractice,
   type FontScale,
-  type LoadResult,
   type ReviewDelta,
   type Settings,
-  type StartResult,
 } from '../application/session';
 import type { DifficultyId } from '../contracts/balance';
 import { PILOT_TOWERS, reviewQuestions } from '../content';
 import type { RunState } from '../domain/types';
 import { cleanNickname } from './copy';
 import { GameScreen } from './game/GameScreen';
-import { HomeScreen, type ResumeOffer } from './screens/HomeScreen';
+import { HomeScreen } from './screens/HomeScreen';
 import { buildNoteEntries, NoteScreen } from './screens/NoteScreen';
 import { ResultScreen } from './screens/ResultScreen';
 
@@ -37,36 +30,19 @@ type Screen =
   | { name: 'result'; state: RunState; reviewDelta: ReviewDelta | null; previousBest: number | null }
   | { name: 'note'; back: Exclude<Screen, { name: 'note' | 'game' }> };
 
-/** 홈에 보일 저장 상태. 이어할 수 있으면 이어하기 단추, 아니면 이유 한 줄(손상·버전 변경·저장 불가). */
-function resumeOffer(saved: LoadResult | null): { offer: ResumeOffer | null; notice: string | null } {
-  if (!saveSupported()) return { offer: null, notice: NO_SAVE_NOTICE };
-  if (!saved || saved.kind === 'none') return { offer: null, notice: null };
-  if (saved.kind === 'corrupt') return { offer: null, notice: CORRUPT_SAVE_NOTICE };
-  const blocked = resumeBlocker(saved);
-  if (blocked) return { offer: null, notice: blocked };
-  return { offer: { nickname: saved.state.config.nickname, wave: Math.max(1, saved.state.wave) }, notice: null };
-}
-
 export function App() {
   const [settings, setSettings] = useState<Settings>(loadSettings);
-  // 개발 빌드에서만 `?previewMap=<맵 id>`로 그 맵의 전투 화면을 바로 연다(R3 P3). 운영 빌드에서는 이 분기가 통째로 빠진다.
+  // 개발 빌드에서만 `?previewMap=<맵 id>`(R3 P3 맵 미리보기)나 `?qaRun=1`(화면 점검 장면)로 전투 화면을 바로 연다.
+  // 운영 빌드에서는 이 분기가 통째로 빠진다.
   const [screen, setScreen] = useState<Screen>(() => {
-    const preview = import.meta.env.DEV ? mapPreviewFromLocation(settings.playerId) : null;
-    return preview ? { name: 'game', controller: preview } : { name: 'home' };
+    const dev = import.meta.env.DEV ? (mapPreviewFromLocation(settings.playerId) ?? qaRunFromLocation()) : null;
+    return dev ? { name: 'game', controller: dev } : { name: 'home' };
   });
-  const [saved, setSaved] = useState<LoadResult | null>(null);
   const [message, setMessage] = useState<string | null>(null);
   // 기록 지우기 뒤 오답 노트 개수를 다시 읽게 App을 다시 그린다(noteItems는 렌더 때 저장소에서 읽는다).
   const [, setNoteTick] = useState(0);
 
   useEffect(() => { document.documentElement.dataset.font = settings.fontScale; }, [settings.fontScale]);
-  // 홈에 올 때마다 저장을 다시 읽는다. 저장소를 열 수 없으면 이어하기를 보이지 않는다.
-  useEffect(() => {
-    if (screen.name !== 'home') return undefined;
-    let live = true;
-    loadSaved().then(r => { if (live) setSaved(r); }, () => { if (live) setSaved({ kind: 'none' }); });
-    return () => { live = false; };
-  }, [screen.name]);
 
   const update = useCallback((patch: Partial<Settings>) => {
     setSettings(prev => {
@@ -76,30 +52,17 @@ export function App() {
     });
   }, []);
 
-  const { offer, notice: savedNotice } = resumeOffer(saved);
-
-  const open = (result: StartResult) => {
+  const startNew = (input: { grade: 3 | 4 | 5 | 6; difficulty: DifficultyId; nickname: string }) => {
+    update({ lastGrade: input.grade, lastDifficulty: input.difficulty, lastNickname: input.nickname });
+    const result = startNewRun({ ...input, playerId: settings.playerId });
     if (!result.ok) {
       setMessage(result.message);
       setScreen({ name: 'home' });
       return;
     }
-    setMessage(result.warning);
-    // 최고 기록 선(prd-r4 §7.2-F): 같은 학년·난이도의 이 기기 기록 중 최고를 판을 열 때 한 번만 읽는다. 읽지 못하면 기록 없음으로 둔다.
-    const { grade, difficulty } = result.controller.state.config;
-    void bestWaveFor(grade, difficulty).then(bestWave => setScreen({ name: 'game', controller: result.controller, bestWave }));
-  };
-
-  // 홈에서 이어하기와 새 게임을 함께 보이고 학생이 새 게임을 골랐으므로 이전 저장을 바꾼다(PRD §12.2).
-  const startNew = (input: { grade: 3 | 4 | 5 | 6; difficulty: DifficultyId; nickname: string }) => {
-    update({ lastGrade: input.grade, lastDifficulty: input.difficulty, lastNickname: input.nickname });
-    void startNewRun({ ...input, playerId: settings.playerId, replaceSaved: true }).then(open);
-  };
-
-  const resume = () => {
-    if (saved?.kind !== 'ok') return;
     setMessage(null);
-    void resumeRun(saved).then(open);
+    // 최고 기록 선(prd-r4 §7.2-F): 같은 학년·난이도의 이 기기 기록 중 최고를 판을 열 때 한 번만 읽는다. 읽지 못하면 기록 없음으로 둔다.
+    void bestWaveFor(input.grade, input.difficulty).then(bestWave => setScreen({ name: 'game', controller: result.controller, bestWave }));
   };
 
   const startPracticeRun = () => {
@@ -116,11 +79,7 @@ export function App() {
       return;
     }
     if (next === 'new') {
-      // 이어할 판이 있으면 새 게임 창을 바로 열지 않고 홈에서 이어하기·새 게임을 고르게 한다.
-      if (offer) {
-        setMessage('연습을 잘 마쳤어요. 저장된 판을 이어하거나 새 게임을 골라 보세요.');
-        setScreen({ name: 'home' });
-      } else if (cleanNickname(settings.lastNickname).error === null) {
+      if (cleanNickname(settings.lastNickname).error === null) {
         setScreen({ name: 'home', initialModal: 'new' });
       } else {
         setMessage('연습을 잘 마쳤어요. 닉네임을 적고 새 게임을 눌러 보세요.');
@@ -131,7 +90,7 @@ export function App() {
     setScreen({ name: 'home' });
   };
 
-  const exitGame = (controller: RunController, reason: 'saved' | 'over' | 'abandon', previousBest: number | null) => {
+  const exitGame = (controller: RunController, reason: 'over' | 'abandon', previousBest: number | null) => {
     const final = structuredClone(controller.state) as RunState;
     // 판이 끝날 때 오답 노트에 담은 수(prd-r4 §6.1). 기록 쓰기가 아직 안 끝났으면 null이라 결과의 노트 줄을 숨긴다.
     const reviewDelta = controller.getView().reviewDelta;
@@ -148,8 +107,6 @@ export function App() {
         <HomeScreen
           message={message}
           settings={settings}
-          resume={offer}
-          savedNotice={savedNotice}
           initialModal={screen.initialModal ?? null}
           focusNicknameOnMount={screen.focusNickname ?? false}
           onOpenNote={() => setScreen({ name: 'note', back: { name: 'home' } })}
@@ -157,7 +114,6 @@ export function App() {
           onHistoryCleared={() => setNoteTick(t => t + 1)}
           onClearMessage={() => setMessage(null)}
           onStartNew={startNew}
-          onResume={resume}
           onPractice={startPracticeRun}
           onSettings={update}
         />
@@ -168,7 +124,6 @@ export function App() {
           key={screen.controller.state.config.runId}
           controller={screen.controller}
           towers={PILOT_TOWERS}
-          notice={message}
           fontScale={settings.fontScale}
           reducedMotion={settings.reducedMotion}
           soundOn={settings.soundOn}

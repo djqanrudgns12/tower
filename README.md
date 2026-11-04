@@ -38,8 +38,8 @@ npm run test:e2e
 | `src/domain/` | 30Hz 고정 틱 전투·경제·문항 흐름·명령(순수 함수, 안전 정수) | React·Phaser·저장소 |
 | `src/contracts/` | Zod 런타임 계약(밸런스·맵·문제은행·초안·검토·에셋 manifest) | 화면 |
 | `src/content/` | `docs/contracts/*.json`과 문제은행을 검사해 싣기, 문항 의미 검사 | 화면 |
-| `src/application/` | `RunController`(유일한 상태 작성자, 루프·저장·정지), 세션 서비스 | 특정 DB 세부 |
-| `src/persistence/` | IndexedDB 2슬롯 스냅샷·기록, Web Locks, 설정 | 전투 규칙 |
+| `src/application/` | `RunController`(유일한 상태 작성자, 루프·정지·판 끝 기록), 세션 서비스 | 특정 DB 세부 |
+| `src/persistence/` | IndexedDB 기록·동기화 큐, 오답 노트, 설정 | 전투 규칙 |
 | `src/game/` | Phaser 전장(임시 그림·manifest 원화 대체·확대·미니맵), 보행 자세 | 보상 판정 |
 | `src/ui/` | React 화면·문제판·관리 패널·정지층 | Phaser·저장소 직접 호출 |
 

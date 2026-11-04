@@ -210,20 +210,17 @@ describe('오답 노트 지우기·컨트롤러 담기', () => {
     expect(store.data.has('vocabulary-td.settings')).toBe(true);
   });
 
-  async function finished(opts: { recordOnFinish: boolean; end: 'quit' | 'saveAndExit' | 'none'; store: ReturnType<typeof fakeStorage> }) {
+  async function finished(opts: { recordOnFinish: boolean; end: 'quit' | 'leave'; store: ReturnType<typeof fakeStorage> }) {
     vi.stubGlobal('localStorage', opts.store);
     const ctx = contextFor(3, 'Normal');
     const s = createRun(ctx, runInput(ctx, `ctl-${opts.end}`));
     const wrongQuestion = ctx.questions.get(s.quiz.current!.questionId)!;
-    const controller = new RunController(ctx, s, { saveSeq: 0, ownership: opts.recordOnFinish ? { release() {} } : null, recordOnFinish: opts.recordOnFinish });
+    const controller = new RunController(ctx, s, { recordOnFinish: opts.recordOnFinish });
     controller.dispatch({ type: 'answer', encounterId: s.quiz.current!.id, choice: wrongChoice(ctx, s) });
     expect(controller.getView().reviewDelta).toBeNull();
     if (opts.end === 'quit') controller.dispatch({ type: 'quit' });
-    if (opts.end === 'saveAndExit') {
-      expect(await controller.saveAndExit()).toBe(true);
-      controller.dispose();
-    }
-    await controller.settle();
+    // 끝내지 않고 화면을 떠난 판(창 닫기·처음 화면으로)은 버려진다(이어하기 없음).
+    if (opts.end === 'leave') controller.dispose();
     await new Promise(r => setTimeout(r, 20));
     return { controller, wrongQuestion, s };
   }
@@ -237,11 +234,12 @@ describe('오답 노트 지우기·컨트롤러 담기', () => {
     controller.dispose();
   });
 
-  it('저장하고 나가기는 담지 않는다', async () => {
+  it('끝내지 않고 떠난 판은 담지도 기록하지도 않는다', async () => {
     const store = fakeStorage();
-    const { controller } = await finished({ recordOnFinish: true, end: 'saveAndExit', store });
+    const { controller } = await finished({ recordOnFinish: true, end: 'leave', store });
     expect(controller.getView().reviewDelta).toBeNull();
     expect(store.data.has(REVIEW_NOTE_KEY)).toBe(false);
+    expect(await listRecords()).toEqual([]);
   });
 
   it('연습 판(recordOnFinish: false)은 끝나도 담지 않는다', async () => {

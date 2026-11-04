@@ -7,11 +7,14 @@ import { evolutionChoices } from '../../src/domain/towers';
 import { burrowed } from '../../src/domain/traits';
 import type { RunState } from '../../src/domain/types';
 
-// 화면 점검용 저장본 만들기(tools/qa/scenes.mjs가 vite runnerImport로 읽는다). 판정은 제품 엔진이 하고,
+// 화면 점검용 장면 상태 만들기(tools/qa/scenes.mjs·perf.mjs·e2e 시험이 vite runnerImport로 읽는다). 판정은 제품 엔진이 하고,
 // 여기서는 장면에서 볼 것이 실제로 보이는 상태(웨이브·타워 형태·적·연출)를 고르는 가상 플레이어일 뿐이다.
-// 골드·장착함은 점검 편의로 늘려 쓰지만 만든 상태는 순수 RunState JSON이라 이어하기가 그대로 읽는다.
+// 골드·장착함은 점검 편의로 늘려 쓰지만 만든 상태는 순수 RunState JSON이라 개발 전용 QA 장면 로더(`?qaRun=1`)가 그대로 연다.
 
-/** 장면 하나의 저장본. runMs는 이어한 뒤 게임 시간으로 이만큼 흘리고 찍으라는 뜻(0이면 바로 찍는다). */
+/** 로더 이름(주소 매개변수·sessionStorage 키). 장비는 이 값을 써서 제품과 어긋나지 않는다. */
+export { QA_RUN_KEY, QA_RUN_PARAM } from '../../src/application/qaRun';
+
+/** 장면 하나의 상태. runMs는 로더로 연 뒤 '계속하기'를 누르고 게임 시간으로 이만큼 흘려 찍으라는 뜻(0이면 바로 찍는다). */
 export interface BuiltScene {
   state: RunState;
   runMs: number;
@@ -20,12 +23,14 @@ export interface BuiltScene {
 }
 
 export interface SceneRequest {
-  /** 학년(3~6). 맵은 학년이 정한다. 4~6학년은 공개 문제은행이 생기기 전에는 이어하기가 막힌다. */
+  /** 학년(3~6). 맵은 학년이 정한다. 4~6학년은 공개 문제은행이 생기기 전에는 로더가 열지 못한다. */
   grade?: number;
   difficulty?: DifficultyId;
   seed?: number;
   /** 'invasion' 장면의 웨이브(기본 23). 정원 맵은 W16~20 딱정벌레(등껍질)·W21~25 하늘유랑단(하늘 떼)·W31~35 가마(흙 보호막)·W36~40 두더지(땅굴). */
   wave?: number;
+  /** 'recruit-fixture' 장면의 새 타워 후보 3종. */
+  offers?: TowerId[];
 }
 
 const TICK_MS = 1000 / 30;
@@ -124,7 +129,7 @@ interface Scan { tick: number; score: number; note: string }
 
 /**
  * 전투 틱을 maxTicks까지 흘리며 장면 점수가 가장 높은 순간을 찾는다. 상태를 복제해 두고 그 순간 lead틱 앞으로 다시 흘려 돌려준다
- * (이어한 뒤 lead틱 + after틱 흘려 찍으면 연출이 한창일 때를 잡는다). 점수가 0 이하이면 던진다.
+ * (로더로 연 뒤 lead틱 + after틱 흘려 찍으면 연출이 한창일 때를 잡는다). 점수가 0 이하이면 던진다.
  */
 function findMoment(ctx: GameContext, s: RunState, maxTicks: number, score: (s: RunState, ev: DomainEvent[]) => number, lead: number): { state: RunState; peek: RunState; tick: number; score: number } {
   const base = structuredClone(s);
@@ -138,7 +143,7 @@ function findMoment(ctx: GameContext, s: RunState, maxTicks: number, score: (s: 
   const replay = structuredClone(base);
   const head = Math.max(0, best.tick - lead);
   ticks(ctx, replay, head);
-  // 이어한 뒤 lead틱을 더 흘렸을 때의 모습(찍을 순간). 보고용 요약은 이 상태로 쓴다.
+  // 로더로 연 뒤 lead틱을 더 흘렸을 때의 모습(찍을 순간). 보고용 요약은 이 상태로 쓴다.
   const peek = structuredClone(replay);
   ticks(ctx, peek, best.tick - head);
   return { state: replay, peek, tick: best.tick, score: best.score };
@@ -211,6 +216,18 @@ function effectWindow(req: SceneRequest, seed: number, wave: number, specs: read
 }
 
 export const BUILDERS: Record<string, Builder> = {
+  /**
+   * e2e 새 타워 고르기(tests/e2e/play.spec.ts): 첫 준비 문제가 걸린 새 판에 리뉴얼 전 10종을 쓸 수 있게 하고, 시작 4종 장착·후보 offers(기본 석궁·화염·깃발)를 둔다.
+   * 앱은 시범 타워만 열어 새 타워 고르기가 실제 판에서 나오지 않으므로 상태를 고쳐 연다.
+   */
+  'recruit-fixture': req => {
+    const { s } = fresh(req, 100);
+    s.config.availableTowers = ['archer', 'crossbow', 'cannon', 'mage', 'frost', 'lightning', 'flame', 'spear', 'guardian', 'banner'];
+    s.owned = ['archer', 'cannon', 'frost', 'mage'];
+    s.draft = { wave: 3, offers: req.offers ?? ['crossbow', 'flame', 'banner'] };
+    return { state: s, runMs: 0, note: `${s.phase}, 새 타워 후보 ${s.draft.offers.join('/')}` };
+  },
+
   /** 장면 2: 웨이브 1 전투 시작 직후. 타워 3기, 적이 한두 마리 길에 오른 순간. */
   'w1-battle': req => {
     const { s } = battleAt(req, 101, 1, [{ type: 'archer', slot: 'garden_u-s09' }, { type: 'cannon', slot: 'garden_u-s12' }, { type: 'frost', slot: 'garden_u-s13' }], { warm: 150, gold: 85, ownedTowers: ['archer', 'cannon', 'frost', 'mage'] });
@@ -361,7 +378,7 @@ export const BUILDERS: Record<string, Builder> = {
     return { state: s, runMs: 120, note: `${s.phase} W${s.wave}, 보물 후보 ${s.relicOffer.offers.join('/')}` };
   },
 
-  /** 장면 10: 성문이 곧 무너질 전투. 이어한 뒤 몇 초 안에 패배해 결과 화면으로 간다. */
+  /** 장면 10: 성문이 곧 무너질 전투. 계속하기 뒤 몇 초 안에 패배해 결과 화면으로 간다. */
   'defeat-w9': req => {
     const { ctx, s } = battleAt(req, 111, 9, MID_DEFENSE.slice(0, 3), { warm: 0, ownedTowers: ['archer', 'cannon', 'frost', 'mage'] });
     const m = findMoment(ctx, s, 3000, st => (st.enemies.some(e => e.progress > 22000) ? onRoad(st) : 0), 0);
@@ -380,9 +397,9 @@ export const BUILDERS: Record<string, Builder> = {
 
 export function buildScene(name: string, req: SceneRequest = {}): BuiltScene {
   const build = BUILDERS[name];
-  if (!build) throw new Error(`없는 저장본: ${name} (${Object.keys(BUILDERS).join(', ')})`);
+  if (!build) throw new Error(`없는 장면 상태: ${name} (${Object.keys(BUILDERS).join(', ')})`);
   const built = build(req);
-  // 이어하기가 읽는 JSON 그대로인지 확인한다(순수 값만).
+  // 로더가 읽는 JSON 그대로인지 확인한다(순수 값만).
   JSON.parse(JSON.stringify(built.state));
   return built;
 }

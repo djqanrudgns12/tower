@@ -73,7 +73,6 @@ export interface GameView {
 export interface Notice { id: number; text: string; tone: 'info' | 'reward' | 'warn' }
 export interface ControllerView extends GameView {
   notices: Notice[];
-  saveStatus: 'saved' | 'saving' | 'error' | 'disabled';
   /** WebGL 문맥을 잃고 아직 돌아오지 않았다. 이 동안은 ‘계속’으로 풀 수 없다. */
   renderLost: boolean;
   /**

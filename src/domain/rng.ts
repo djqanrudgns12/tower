@@ -1,4 +1,4 @@
-// xorshift32-v1(PRD §20.1). 상태는 uint32 하나라 저장·복원이 그대로 된다. 암호 용도가 아니다.
+// xorshift32-v1(PRD §20.1). 상태는 uint32 하나라 복제·JSON 왕복이 그대로 된다. 암호 용도가 아니다.
 export const RNG_ALGORITHM = 'xorshift32-v1';
 const ZERO_REMAP = 0x6d2b79f5;
 /** relic: 원정 보물 후보(R4 B3). 판 상태에 두지 않고 seed·웨이브에서 매번 만든다(domain/relics.ts relicSeed). */

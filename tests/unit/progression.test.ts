@@ -1,14 +1,13 @@
 import { describe, expect, it } from 'vitest';
 import { FORM_IDS, TOWER_IDS, type Balance, type FormId, type TowerId } from '../../src/contracts/balance';
-import { resumeBlocker } from '../../src/application/session';
-import { BALANCE, gradeContent } from '../../src/content';
+import { BALANCE } from '../../src/content';
 import type { GameContext } from '../../src/domain/context';
 import { round5Bp } from '../../src/domain/num';
 import { advanceTick, applyCommand, type Command, type CommandError } from '../../src/domain/run';
 import {
   attacks, auraReaches, bannerAura, evolutionChoices, formBranch, formConfig, formInfo, formTier, levelDamageBP, reachMilli, towerStats, upgradeCost,
 } from '../../src/domain/towers';
-import { RUN_STATE_VERSION, type RunState } from '../../src/domain/types';
+import type { RunState } from '../../src/domain/types';
 import { answerCurrent, correctChoice, finishPrep, nearestSlots, newRun, ok, stateHash, ticks } from './helpers';
 import { enemy } from './review-core/fixtures';
 
@@ -360,8 +359,8 @@ describe('설치 취소 undoBuild(run.undoBuildMs = 3000ms = 90틱)', () => {
   it('전투에서 쏜 타워와 그 공격에 오라를 준 깃발은 창 안이어도 만료, 오라 밖 깃발은 전투 중에도 취소된다', () => {
     const { ctx, s } = buildPhase();
     const archer = build(ctx, s, 'archer', 8, 2);
-    const near = build(ctx, s, 'banner', 8, 0); // 궁수와 정확히 2.0칸: 오라 반경 경계 안
-    const far = build(ctx, s, 'banner', 10, 4); // 2000²+2000² > 2000²: 오라 밖
+    const near = build(ctx, s, 'banner', 8, 0); // 궁수와 2.0칸: 오라 반경(3.0칸, R4 마지막 조정) 안
+    const far = build(ctx, s, 'banner', 11, 0); // 3000²+2000² > 3000²: 오라 밖
     const built = s.tick;
     ok(ctx, s, { type: 'startBattle' });
     s.battle!.spawnIndex = s.battle!.spawnList.length;
@@ -375,8 +374,8 @@ describe('설치 취소 undoBuild(run.undoBuildMs = 3000ms = 90틱)', () => {
     rejects(ctx, s, { type: 'undoBuild', towerId: archer.id }, 'UNDO_EXPIRED');
     rejects(ctx, s, { type: 'undoBuild', towerId: near.id }, 'UNDO_EXPIRED');
     const gold = s.gold;
-    expect(applyCommand(ctx, s, { type: 'undoBuild', towerId: far.id })).toEqual({ ok: true, events: [{ type: 'towerSold', towerId: far.id, slotId: far.slotId, gold: 100 }] });
-    expect(s.gold).toBe(gold + 100);
+    expect(applyCommand(ctx, s, { type: 'undoBuild', towerId: far.id })).toEqual({ ok: true, events: [{ type: 'towerSold', towerId: far.id, slotId: far.slotId, gold: 85 }] });
+    expect(s.gold).toBe(gold + 85);
     expect(s.towers.map(t => t.id)).toEqual([archer.id, near.id]);
   });
 
@@ -397,49 +396,6 @@ describe('설치 취소 undoBuild(run.undoBuildMs = 3000ms = 90틱)', () => {
     finishPrep(ctx, s);
     expect(s.phase).toBe('BUILD');
     rejects(ctx, s, { type: 'undoBuild', towerId: t.id }, 'UNDO_EXPIRED');
-  });
-});
-
-describe('저장 버전(progression.md §4) — 실제 이어하기 판정(session.resumeBlocker, WP-SAVE)', () => {
-  /** 저장소에서 읽은 판과 같은 모양. 은행은 그 학년 공개 은행으로 맞춘다(이어하기는 시작 때 은행 버전이 그대로여야 한다). */
-  function saved(state: unknown) {
-    return { kind: 'ok' as const, state: state as RunState, seq: 1, savedAt: '2026-10-31T00:00:00.000Z' };
-  }
-  function current() {
-    const { s } = newRun();
-    const { bank } = gradeContent(3);
-    s.config.bankId = bank!.bankId;
-    s.config.bankVersion = bank!.bankVersion;
-    return s;
-  }
-
-  it('지금 저장 버전(v7) 판은 이어하고, v1(branch 타워)·v2(종족 없는 적)·v3(신규 타워 상태 없는 타워)·v4(대장 기믹 없는 적)·v5(장판·덫 없는 판)·v6(오답 노트 복습 필드 없는 판) 스냅샷은 던지지 않고 ‘이어할 수 없어요’로 막는다', () => {
-    expect(RUN_STATE_VERSION).toBe(7);
-    const s = current();
-    expect(s.v).toBe(7);
-    expect(s.config.balanceVersion).toBe(BALANCE.balanceVersion);
-    expect(resumeBlocker(saved(JSON.parse(JSON.stringify(s))))).toBeNull();
-    const v1 = { ...structuredClone(s), v: 1, towers: [{ id: 1, type: 'archer', slotId: 's1', x: 8500, y: 2500, level: 4, branch: 'A', invested: 250, nextAttackTick: null }] };
-    expect(() => resumeBlocker(saved(v1))).not.toThrow();
-    expect(resumeBlocker(saved(v1))).toMatch(/이어할 수 없어요/);
-    const v2 = { ...structuredClone(s), v: 2, enemies: [{ id: 1, kind: 'walker', elite: null, hp: 1, maxHp: 1, progress: 0 }] };
-    expect(() => resumeBlocker(saved(v2 as never))).not.toThrow();
-    expect(resumeBlocker(saved(v2 as never))).toMatch(/이어할 수 없어요/);
-    for (const v of [3, 4]) expect(resumeBlocker(saved({ ...structuredClone(s), v }))).toMatch(/이어할 수 없어요/);
-    const v5: Partial<RunState> = { ...structuredClone(s), v: 5 };
-    delete v5.hazards;
-    expect(() => resumeBlocker(saved(v5 as never))).not.toThrow();
-    expect(resumeBlocker(saved(v5 as never))).toMatch(/이어할 수 없어요/);
-    // v6: 오답 노트 복사본(reviewSenses)·복습 횟수(reviewUsed)가 없고 규칙 버전도 이전이다. 던지지 않고 막는다.
-    const v6 = structuredClone(s) as unknown as { v: number; config: { rulesVersion: string }; quiz: Partial<RunState['quiz']> };
-    v6.v = 6;
-    v6.config.rulesVersion = '0.5.1-candidate';
-    delete v6.quiz.reviewSenses;
-    delete v6.quiz.reviewUsed;
-    expect(() => resumeBlocker(saved(v6))).not.toThrow();
-    expect(resumeBlocker(saved(v6))).toMatch(/이어할 수 없어요/);
-    // 리뉴얼 전 밸런스(0.4.2)로 시작한 판도 같은 안내로 막는다.
-    expect(resumeBlocker(saved({ ...structuredClone(s), config: { ...s.config, balanceVersion: '0.4.2-candidate' } }))).toMatch(/이어할 수 없어요/);
   });
 });
 

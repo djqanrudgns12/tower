@@ -1,10 +1,7 @@
 import { openDB, type DBSchema, type IDBPDatabase } from 'idb';
-import type { RunState } from '../domain/types';
 import { clearReviewNote } from './reviewNote';
 
-// 저장 의미(PRD §14): 전체 스냅샷 2슬롯 교대, 무결성 해시가 맞는 슬롯 중 seq가 큰 쪽을 읽는다.
-export interface SavedSlot { slot: 'A' | 'B'; seq: number; savedAt: string; hash: string; json: string }
-
+// 이 기기의 끝난 판 기록과 공개 제출 대기 큐(PRD §14). 진행 중인 판은 메모리에만 있고 여기에 쓰지 않는다(이어하기 없음).
 export interface RunRecord {
   runId: string;
   nickname: string;
@@ -46,13 +43,15 @@ export interface PendingRunSync {
 }
 
 interface TowerDb extends DBSchema {
-  run: { key: 'A' | 'B'; value: SavedSlot };
   records: { key: string; value: RunRecord; indexes: { endedAt: string } };
   syncQueue: { key: string; value: PendingRunSync };
 }
 
 const DB_NAME = 'vocabulary-td';
-const DB_VERSION = 2;
+/** 3: 옛 진행 중 판 저장소('run', 2슬롯 스냅샷)를 지운다(2026-11-04 이어하기 제거). */
+const DB_VERSION = 3;
+/** 버전 2까지 있던 진행 중 판 저장소. 업그레이드 때 지우기만 한다. */
+const RETIRED_RUN_STORE = 'run';
 const MAX_RECORDS = 100;
 let dbPromise: Promise<IDBPDatabase<TowerDb>> | null = null;
 
@@ -66,16 +65,16 @@ export function db(): Promise<IDBPDatabase<TowerDb>> {
     },
     terminated() { dbPromise = null; },
     upgrade(database, oldVersion) {
-      if (oldVersion < 1) {
-        database.createObjectStore('run', { keyPath: 'slot' });
-        database.createObjectStore('records', { keyPath: 'runId' }).createIndex('endedAt', 'endedAt');
-      }
+      if (oldVersion < 1) database.createObjectStore('records', { keyPath: 'runId' }).createIndex('endedAt', 'endedAt');
       if (oldVersion < 2 && !database.objectStoreNames.contains('syncQueue')) {
         database.createObjectStore('syncQueue', { keyPath: 'runId' });
       }
+      // 이 기기에 남은 옛 진행 중 판(스냅샷)을 정리한다. 기록·대기 큐는 그대로 둔다.
+      const legacy = database as unknown as IDBPDatabase;
+      if (legacy.objectStoreNames.contains(RETIRED_RUN_STORE)) legacy.deleteObjectStore(RETIRED_RUN_STORE);
     },
   }).catch(error => {
-    // 실패한 open promise를 고정하면 사용자의 저장 재시도도 영원히 실패한다.
+    // 실패한 open promise를 고정하면 다음 기록 읽기·쓰기도 영원히 실패한다.
     dbPromise = null;
     throw error;
   });
@@ -88,47 +87,6 @@ export async function resetDbConnection(): Promise<void> {
   const opened = await dbPromise.catch(() => null);
   opened?.close();
   dbPromise = null;
-}
-
-export async function sha256(text: string): Promise<string> {
-  const digest = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(text));
-  return [...new Uint8Array(digest)].map(b => b.toString(16).padStart(2, '0')).join('');
-}
-
-export async function writeSnapshot(state: RunState, seq: number, strict: boolean): Promise<void> {
-  const json = JSON.stringify(state);
-  const value: SavedSlot = { slot: seq % 2 === 1 ? 'A' : 'B', seq, savedAt: new Date().toISOString(), hash: await sha256(json), json };
-  const database = await db();
-  // 주기 저장은 기본(relaxed), ‘저장 후 나가기’·종료 기록은 strict(Chrome 121+ 기본값 변경 대응).
-  const tx = database.transaction('run', 'readwrite', { durability: strict ? 'strict' : 'default' });
-  await tx.store.put(value);
-  await tx.done;
-}
-
-export type LoadResult =
-  | { kind: 'none' }
-  | { kind: 'ok'; state: RunState; seq: number; savedAt: string }
-  | { kind: 'corrupt' };
-
-export async function loadSnapshot(): Promise<LoadResult> {
-  const database = await db();
-  const slots = (await database.getAll('run')).sort((a, b) => b.seq - a.seq);
-  if (slots.length === 0) return { kind: 'none' };
-  for (const slot of slots) {
-    try {
-      if ((await sha256(slot.json)) !== slot.hash) continue;
-      const state = JSON.parse(slot.json) as RunState;
-      return { kind: 'ok', state, seq: slot.seq, savedAt: slot.savedAt };
-    } catch {
-      continue;
-    }
-  }
-  return { kind: 'corrupt' };
-}
-
-export async function clearSnapshot(): Promise<void> {
-  const database = await db();
-  await database.clear('run');
 }
 
 export async function addRecord(record: RunRecord): Promise<void> {
@@ -145,13 +103,12 @@ export async function listRecords(): Promise<RunRecord[]> {
   return (await database.getAllFromIndex('records', 'endedAt')).reverse();
 }
 
-/** 환경설정의 ‘이 기기 로컬 기록 정리’: 진행 중 저장 슬롯·완료 기록·대기 동기화 큐와 오답 노트(localStorage)를 모두 비운다. */
+/** 환경설정의 ‘이 기기 로컬 기록 정리’: 완료 기록·대기 동기화 큐와 오답 노트(localStorage)를 모두 비운다. */
 export async function clearLocalHistory(): Promise<void> {
   // 오답 노트는 IndexedDB가 아니라 localStorage에 있어 같은 트랜잭션에 묶을 수 없다. 먼저 지워 IndexedDB 실패와 무관하게 비운다.
   clearReviewNote();
   const database = await db();
-  const tx = database.transaction(['run', 'records', 'syncQueue'], 'readwrite', { durability: 'strict' });
-  await tx.objectStore('run').clear();
+  const tx = database.transaction(['records', 'syncQueue'], 'readwrite', { durability: 'strict' });
   await tx.objectStore('records').clear();
   await tx.objectStore('syncQueue').clear();
   await tx.done;

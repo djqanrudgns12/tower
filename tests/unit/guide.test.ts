@@ -14,7 +14,7 @@ import {
 } from '../../src/ui/screens/guide/guideModel';
 
 describe('사용 설명서 모델 및 전용 삽화 계약 (G03~G11, G15)', () => {
-  it('G03·G05·G06·G15: 정확히 4장·3행 이하·95자 이내이며 저장·이어하기·연습 안내가 있고 느낌표·이모지·영문 라벨이 없다', () => {
+  it('G03·G05·G06·G15: 정확히 4장·3행 이하·95자 이내이며 끝내기·연습 안내가 있고(이어하기 없음) 느낌표·이모지·영문 라벨이 없다', () => {
     const chapters = buildGuideChapters();
     expect(chapters).toHaveLength(4);
     expect(chapters.map(c => c.id)).toEqual([...GUIDE_CHAPTER_IDS]);
@@ -50,9 +50,9 @@ describe('사용 설명서 모델 및 전용 삽화 계약 (G03~G11, G15)', () =
     }
 
     const joined = visibleTexts.join('\n');
-    // G03: PRD §14.1·§14.2 저장 후 나가기·이어하기와 §12.2 첫 연습 판 안내가 있다.
-    expect(joined).toContain('저장하고 나가기');
-    expect(joined).toContain('이어하기');
+    // G03: PRD §14.1 이어하기 없음(끝내야 기록, 창을 닫으면 사라짐)과 §12.2 첫 연습 판 안내가 있다.
+    expect(joined).toContain('창을 닫으면 그 판은 사라져요');
+    expect(joined).not.toMatch(/이어하기|저장하고 나가기|저장된 판/);
     expect(joined).toContain('연습 판');
     // G05: 핵심 최신 규칙 포함 확인
     expect(joined).toContain('모르겠어요');
@@ -103,7 +103,7 @@ describe('사용 설명서 모델 및 전용 삽화 계약 (G03~G11, G15)', () =
     const { cards, counters } = buildGuideCards();
     const chapters = buildGuideChapters();
     expect(cards.map(c => c.id)).toEqual(['flow', 'quiz', 'tower', 'start']);
-    expect(cards.map(c => c.title)).toEqual(['한 판 흐름', '문제와 골드', '타워 놓기와 진화', '시작과 저장']);
+    expect(cards.map(c => c.title)).toEqual(['한 판 흐름', '문제와 골드', '타워 놓기와 진화', '시작과 끝내기']);
 
     cards.forEach((card, i) => {
       expect(card.sentence.length, `${card.id} 문장 길이`).toBeLessThanOrEqual(30);

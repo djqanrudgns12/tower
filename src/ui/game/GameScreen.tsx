@@ -43,7 +43,6 @@ interface Props {
   controller: RunController;
   /** 판 설정의 타워(호환용). 화면은 엔진이 가진 타워(view.owned)를 쓴다. */
   towers: readonly TowerId[];
-  notice: string | null;
   fontScale: FontScale;
   reducedMotion: boolean;
   soundOn: boolean;
@@ -55,7 +54,7 @@ interface Props {
   bestWave?: number | null;
   onFont(scale: FontScale): void;
   onSound(on: boolean): void;
-  onExit(reason: 'saved' | 'over' | 'abandon'): void;
+  onExit(reason: 'over' | 'abandon'): void;
   /** 첫 연습 판(PRD §12.2). 있으면 안내 문장·건너뛰기·연습 끝 패널을 보인다. */
   practice?: { onFinish(next: 'new' | 'again' | 'home'): void };
 }
@@ -74,7 +73,6 @@ const spoken = (n: Notice) => n.text.replace(/버닝/g, '불꽃').replace(/고�
 
 export function GameScreen({
   controller,
-  notice,
   fontScale,
   reducedMotion,
   soundOn,
@@ -695,7 +693,6 @@ export function GameScreen({
             {field}
             <aside className={css.rail} style={{ height: layout.mapH }} aria-label="타워 관리">
               <Hud view={view} burning={b.burning} relicInfo={b} icons={icons} mode="R" compactRail={compact} goldRef={goldRef} reducedMotion={reducedMotion} bestWave={bestWave} onPause={() => controller.pause('USER')} />
-              {notice && <p className={css.hint} role="status">{notice}</p>}
               {!practiceDone && (
                 <Card className={css.sockets}>
                   {armory('rail')}
@@ -714,7 +711,6 @@ export function GameScreen({
           <>
             <Hud view={view} burning={b.burning} relicInfo={b} icons={icons} mode="S" goldRef={goldRef} reducedMotion={reducedMotion} bestWave={bestWave} onPause={() => controller.pause('USER')} />
             {layout.portraitHint && <p className={css.hint}>세로로 돌리면 더 편해요.</p>}
-            {notice && <p className={css.hint} role="status">{notice}</p>}
             {field}
             {!practiceDone && (
               <div className={css.stripRow}>
@@ -773,24 +769,16 @@ export function GameScreen({
         <PauseOverlay
           reasons={view.pause}
           renderLost={view.renderLost}
-          canSave={controller.persist}
-          saveError={view.saveStatus === 'error'}
           fontScale={fontScale}
           soundOn={soundOn}
           onResume={() => controller.resume()}
           onFont={onFont}
           onSound={onSound}
-          onSaveExit={async () => {
-            const ok = await controller.saveAndExit();
-            if (ok) onExit('saved');
-            return ok;
-          }}
-          onRetrySave={() => controller.retrySave()}
           onQuit={() => {
             controller.resume();
             controller.dispatch({ type: 'quit' });
           }}
-          onLeaveUnsaved={() => onExit('abandon')}
+          onLeave={() => onExit('abandon')}
           restoreFocus={() => document.querySelector<HTMLElement>('main button[aria-label="일시정지"]')?.focus()}
         />
       )}
