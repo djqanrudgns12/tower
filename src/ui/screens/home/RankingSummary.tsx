@@ -16,7 +16,10 @@ interface Props {
   onOpenAll(): void;
 }
 
-/** 홈의 랭킹 요약: 한 판 최고점 상위 3 + 내 순위 + 전체 보기. 학년·난이도 고르기는 전체 보기 창에만 둔다. */
+/**
+ * 홈의 랭킹 요약: 한 판 최고점 상위 3 + 내 순위 + 전체 보기. 학년·난이도 고르기는 전체 보기 창에만 둔다.
+ * 기록이 없으면 빈 상자를 늘리지 않고 한 줄 + 작은 아이콘만큼만 차지한다(오른쪽 열은 거기서 끝난다).
+ */
 export function RankingSummary({ playerId, nickname, grade, difficulty, refreshTick, onOpenAll }: Props) {
   const [data, setData] = useState<RankingResponse | null>(null);
 
@@ -32,7 +35,7 @@ export function RankingSummary({ playerId, nickname, grade, difficulty, refreshT
   const mine = data?.myEntry ?? null;
 
   return (
-    <Card float as="aside" aria-label="랭킹" className={css.rankCard}>
+    <Card float as="aside" aria-label="랭킹" className={css.rankCard} data-empty={top.length === 0 || undefined}>
       <div className={css.rankHead}>
         <h2 className={css.cardTitle}><RankingIcon size={22} />랭킹</h2>
         {data?.source === 'local_fallback' && <span className={css.rankSource}>내 기기 기록</span>}
@@ -51,8 +54,8 @@ export function RankingSummary({ playerId, nickname, grade, difficulty, refreshT
           </ol>
         ) : (
           <p className={css.rankEmpty}>
-            {data && <ArtIcon name="star" size={48} />}
-            {data ? '아직 기록이 없어요' : '\u00a0'}
+            {data && <ArtIcon name="star" size={28} />}
+            {data ? '첫 판을 마치면 순위가 나와요' : '\u00a0'}
           </p>
         )}
 

@@ -28,7 +28,7 @@ interface Props {
 }
 
 /**
- * 문제 카드(R4 PRD §9.1): 국면 태그 + 준비 점 + 문제, 2×2 답안 키캡(56px), 오른쪽 위 ‘모르겠어요’.
+ * 문제 카드(R4 PRD §9.1): 국면 태그 + 준비 점 + 문제, 2×2 답안 키캡(56px), 오른쪽 열 바닥의 ‘모르겠어요’(글자만 있는 ghost 버튼이라 다섯째 답안 키로 보이지 않는다. 휴대폰은 오른쪽 위 작은 보조 버튼).
  * - 보기 4개는 같은 크기이며, 실제 렌더 측정으로 2×2 / 1열을 정한 뒤 제출 전에 고정한다.
  * - 제출 흔들림 0: 채점 뒤에는 면 색과 투명도만 바뀐다. 해설은 오른쪽 열(넓은 화면) 또는 카드 위 말풍선(휴대폰)에 나와 보기를 밀지 않는다.
  * - 정답: 고른 키가 초록이 되고 금화가 상태 카드의 골드로 날아간다(화면이 그린다). 오답: 고른 키가 붉게 바래고 정답 키가 초록이 되며 해설 한 칸.
@@ -175,7 +175,7 @@ export function QuestionPanel({
       <div className={css.side} data-feedback data-tone={!fb ? 'idle' : fb.result === 'correct' ? 'correct' : 'wrong'} aria-live="polite">
         {!answered && (
           <>
-            <Button variant="secondary" size={variant === 'narrow' ? 'md' : 'lg'} className={css.skip} aria-describedby={skipNoteId} onClick={onSkip}>모르겠어요</Button>
+            <Button variant={variant === 'narrow' ? 'secondary' : 'ghost'} size={variant === 'narrow' ? 'md' : 'lg'} className={css.skip} aria-describedby={skipNoteId} onClick={onSkip}>모르겠어요</Button>
             <span id={skipNoteId} className="sr-only">누르면 점수가 줄지 않아요. 골드는 받지 않아요.</span>
           </>
         )}

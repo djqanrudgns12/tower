@@ -25,7 +25,8 @@ interface Props {
 interface ReviewItem { id: number; lemma: string; answer: string; stem: string; explanation: string }
 
 /**
- * 결과와 복습(R4 U3, PRD §10.1). 위: 성문 + 지킨 웨이브 + 한 줄, 가운데: 정답·처치·점수, 아래 고정: 다시 하기·홈.
+ * 결과와 복습(R4 U3, PRD §10.1). 결과 카드(성문 + 지킨 웨이브 + 한 줄 + 정답·처치·점수) 바로 아래에 다시 하기·홈이 붙는다.
+ * 틀리거나 넘긴 낱말이 있을 때만 옆에 ‘이번 판 다시 보기’ 카드가 선다(없으면 빈 카드를 그리지 않고 결과 칸이 가운데에 선다).
  * 복습 재풀이는 보상이 없으므로(PRD §2.2) 여기서는 낱말 카드를 눌러 해설만 펼쳐 보인다.
  */
 export function ResultScreen({ state, reviewDelta = null, previousBest = null, onOpenNote, onAgain, onHome }: Props) {
@@ -53,52 +54,55 @@ export function ResultScreen({ state, reviewDelta = null, previousBest = null, o
       ].filter((p): p is string => p !== null)
     : [];
 
+  const hasReview = items.length > 0;
+
   return (
     <main className={css.page}>
       <div className={css.scroll}>
-        <div className={css.body}>
-          <Card as="section" float className={css.summary} aria-labelledby="resultWave">
-            <p className={css.meta}>{state.config.nickname} · {state.config.grade}학년 · {DIFFICULTY_COPY[state.config.difficulty].label}</p>
-            <ArtIcon name="gate" size={72} />
-            <h1 id="resultWave" className={css.wave}>
-              <span className="sr-only">{T.waveSr} </span>
-              {state.completedWave}{T.wave}
-            </h1>
-            <p className={css.line} data-kind={headline.kind}>{headline.text}</p>
+        <div className={css.body} data-review={hasReview || undefined}>
+          {/* 결과 카드와 그 바로 아래 단추 두 개가 한 칸이다. 틀린 낱말이 없으면 이 칸만 가운데에 선다. */}
+          <div className={css.resultCol}>
+            <Card as="section" float className={css.summary} aria-labelledby="resultWave">
+              <p className={css.meta}>{state.config.nickname} · {state.config.grade}학년 · {DIFFICULTY_COPY[state.config.difficulty].label}</p>
+              <ArtIcon name="gate" size={72} />
+              <h1 id="resultWave" className={css.wave}>
+                <span className="sr-only">{T.waveSr} </span>
+                {state.completedWave}{T.wave}
+              </h1>
+              <p className={css.line} data-kind={headline.kind}>{headline.text}</p>
 
-            <div className={css.stats}>
-              <Stat icon={null} value={`${state.stats.correct}/${total}`} label={T.correct} className={css.tile ?? ''} />
-              <Stat icon={null} value={fmtNumber(state.stats.kills)} label={T.kills} className={css.tile ?? ''} />
-              <Stat icon={null} value={fmtNumber(state.pt)} label={T.score} className={css.tile ?? ''} />
-            </div>
-
-            <p className={css.ranking}>{T.ranking} <strong>{honorPt > 0 ? `+${fmtNumber(honorPt)}` : '0'}</strong></p>
-            {onOpenNote && noteParts.length > 0 && (
-              <div className={css.note}>
-                <p className={css.noteText}>{noteParts.join(' · ')}</p>
-                <Button onClick={onOpenNote}>{T.openNote}</Button>
+              <div className={css.stats}>
+                <Stat icon={null} value={`${state.stats.correct}/${total}`} label={T.correct} className={css.tile ?? ''} />
+                <Stat icon={null} value={fmtNumber(state.stats.kills)} label={T.kills} className={css.tile ?? ''} />
+                <Stat icon={null} value={fmtNumber(state.pt)} label={T.score} className={css.tile ?? ''} />
               </div>
-            )}
-            {state.config.contentMode === 'development' && <p className={css.dev}>{T.dev}</p>}
-          </Card>
 
-          <Card as="section" float className={css.review} aria-labelledby="resultReview">
-            <h2 id="resultReview" className={css.reviewTitle}>{T.reviewTitle}</h2>
-            {items.length === 0 ? (
-              <p className={css.empty}>{T.reviewEmpty}</p>
-            ) : (
-              // 낱말·뜻·해설은 문제 내용이라 data-content로 표시한다(상시 문장 계측에서 뺀다).
+              <p className={css.ranking}>{T.ranking} <strong>{honorPt > 0 ? `+${fmtNumber(honorPt)}` : '0'}</strong></p>
+              {onOpenNote && noteParts.length > 0 && (
+                <div className={css.note}>
+                  <p className={css.noteText}>{noteParts.join(' · ')}</p>
+                  <Button onClick={onOpenNote}>{T.openNote}</Button>
+                </div>
+              )}
+              {state.config.contentMode === 'development' && <p className={css.dev}>{T.dev}</p>}
+            </Card>
+
+            <div className={css.actions}>
+              <Button variant="primary" size="lg" className={css.again} onClick={onAgain}><RetryIcon size={24} />{T.again}</Button>
+              <Button size="lg" className={css.home} onClick={onHome}>{T.home}</Button>
+            </div>
+          </div>
+
+          {hasReview && (
+            <Card as="section" float className={css.review} aria-labelledby="resultReview">
+              <h2 id="resultReview" className={css.reviewTitle}>{T.reviewTitle}</h2>
+              {/* 낱말·뜻·해설은 문제 내용이라 data-content로 표시한다(상시 문장 계측에서 뺀다). */}
               <ul className={css.list} data-content>
                 {items.map(item => <WordCard key={item.id} item={item} />)}
               </ul>
-            )}
-          </Card>
+            </Card>
+          )}
         </div>
-      </div>
-
-      <div className={css.actions}>
-        <Button variant="primary" size="lg" className={css.again} onClick={onAgain}><RetryIcon size={24} />{T.again}</Button>
-        <Button size="lg" className={css.home} onClick={onHome}>{T.home}</Button>
       </div>
     </main>
   );

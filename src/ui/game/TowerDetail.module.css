@@ -79,7 +79,8 @@
 /* 칸은 모서리 없는 작은 면이다(둥근 알약 막대로 보이지 않게). */
 .seg {
   height: 12px;
-  background: var(--paper-2);
+  /* 빈 칸 색: 흰 카드 위는 --paper-2, 한 단 낮은 면(--paper-2) 위의 카드(ChoiceCard)는 --seg-off로 --line을 준다. */
+  background: var(--seg-off, var(--paper-2));
 }
 
 .seg[data-on] { background: var(--green); }

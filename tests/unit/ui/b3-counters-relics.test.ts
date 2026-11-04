@@ -1,3 +1,4 @@
+import { existsSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import { createElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
@@ -74,6 +75,17 @@ describe('다음 웨이브 종족 특성과 경고 한 줄', () => {
   });
 });
 
+describe('원정 보물 아이콘(계약 icon = relic.<id>, 전용 원화)', () => {
+  it('보물 12개 모두 relic.<id>이고 원화 파일이 있다', () => {
+    const items = BALANCE.relics!.items;
+    expect(Object.keys(items)).toHaveLength(12);
+    for (const [id, r] of Object.entries(items)) {
+      expect(r.icon, id).toBe(`relic.${id}`);
+      expect(existsSync(`./public/assets/ui/relic.${id}.png`), `relic.${id}.png 누락`).toBe(true);
+    }
+  });
+});
+
 describe('원정 보물 창', () => {
   const between = { draft: null, pause: [], phase: 'BUILD' as const };
   it('후보가 있고 웨이브 사이에 멈추지 않았을 때만, 새 타워 창이 먼저다', () => {
@@ -98,6 +110,12 @@ describe('원정 보물 창', () => {
       expect(html).toContain(r.summary);
     }
     expect(html.match(/data-choice/g)).toHaveLength(3);
+    // 카드 전체가 누르는 단추 하나(카드마다 고르기 단추 줄이 없다). 이름은 '<보물> 고르기: 규칙'.
+    const buttons = html.match(/<button[^>]*>/g)!;
+    expect(buttons).toHaveLength(3);
+    for (const id of offers) expect(html).toContain(`aria-label="${BALANCE.relics!.items[id]!.label} 고르기: ${BALANCE.relics!.items[id]!.summary}"`);
+    // 보물 전용 원화(public/assets/ui/relic.<id>.png)를 쓴다.
+    for (const id of offers) expect(html).toContain(`assets/ui/relic.${id}.png`);
     expect(html).not.toContain('aria-label="닫기"');
   });
 

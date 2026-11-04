@@ -149,7 +149,6 @@ export const RESULT_COPY = {
   noteGraduated: '외운 낱말',
   openNote: '노트 보기',
   reviewTitle: '이번 판 다시 보기',
-  reviewEmpty: '틀리거나 넘긴 낱말이 없어요',
   answer: '정답',
   dev: '개발용 문제라 공개 기록에는 올라가지 않아요',
   again: '다시 하기',

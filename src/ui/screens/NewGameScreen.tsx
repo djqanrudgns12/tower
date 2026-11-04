@@ -19,7 +19,7 @@ interface Props {
   onStart(input: { grade: Grade; difficulty: DifficultyId; nickname: string }): void;
 }
 
-/** 새 게임 창: 학년 · 난이도 · 지도를 고르고 시작한다. 닉네임은 홈에서 정한 것을 그대로 쓴다. */
+/** 새 게임 창: 왼쪽에서 학년 · 난이도를 고르고, 오른쪽 열의 지도 썸네일 아래 큰 '시작'을 누른다. 닉네임은 홈에서 정한 것을 그대로 쓴다. */
 export function NewGameScreen({ settings, replacesSave = false, onBack, onStart }: Props) {
   const [grade, setGrade] = useState<Grade>(gradeReady(settings.lastGrade) ? settings.lastGrade : 3);
   const [difficulty, setDifficulty] = useState<DifficultyId>(
@@ -49,14 +49,6 @@ export function NewGameScreen({ settings, replacesSave = false, onBack, onStart 
       title="새 게임"
       size="lg"
       onClose={onBack}
-      footer={
-        <>
-          {replacesSave && <span className={css.footNote}>{HOME_COPY.replacesSave}</span>}
-          <Button variant="primary" size="lg" disabled={nickname === ''} onClick={() => onStart({ grade, difficulty, nickname })}>
-            {HOME_COPY.start}
-          </Button>
-        </>
-      }
     >
       <div className={css.newGame}>
         <div className={css.newGameControls}>
@@ -81,17 +73,24 @@ export function NewGameScreen({ settings, replacesSave = false, onBack, onStart 
           </div>
         </div>
 
-        <figure className={css.mapFigure}>
-          <img
-            src={`${import.meta.env.BASE_URL}assets/maps/${map.id}.thumb.webp`}
-            width={320}
-            height={192}
-            alt={`${mapName} 지도`}
-            draggable={false}
-            className={css.mapThumb}
-          />
-          <figcaption className={css.mapName}>{mapName}</figcaption>
-        </figure>
+        {/* 오른쪽 열: 지도 썸네일 아래 맨 밑에 '시작'. 이 창에서 가장 크고 눈에 띄는 것이 지금 할 일이다. */}
+        <div className={css.newGameSide}>
+          <figure className={css.mapFigure}>
+            <img
+              src={`${import.meta.env.BASE_URL}assets/maps/${map.id}.thumb.webp`}
+              width={280}
+              height={168}
+              alt={`${mapName} 지도`}
+              draggable={false}
+              className={css.mapThumb}
+            />
+            <figcaption className={css.mapName}>{mapName}</figcaption>
+          </figure>
+          <Button variant="primary" size="lg" block disabled={nickname === ''} onClick={() => onStart({ grade, difficulty, nickname })}>
+            {HOME_COPY.start}
+          </Button>
+          {replacesSave && <p className={css.footNote}>{HOME_COPY.replacesSave}</p>}
+        </div>
       </div>
     </Modal>
   );

@@ -1,22 +1,23 @@
-/* 결과 화면(R4 U3, ui-rules-v3). v3 토큰만 쓴다. 바탕 위에 카드 2장, 아래에 고정 단추 줄. */
+/* 결과 화면(R4 U3, ui-rules-v3). v3 토큰만 쓴다. 바탕 위에 결과 칸(카드 + 바로 아래 단추 두 개)과, 틀린 낱말이 있을 때만 복습 카드. */
 .page {
   height: 100dvh;
-  display: grid;
-  grid-template-rows: minmax(0, 1fr) auto;
   background: var(--bg);
   color: var(--on-dark);
 }
-.scroll { min-height: 0; overflow-y: auto; }
+.scroll { height: 100%; overflow-y: auto; }
+/* 틀린 낱말이 없으면 결과 칸 하나가 가운데에 선다. 있으면 두 칸(결과 | 복습). */
 .body {
   width: min(1040px, 100%);
   min-height: 100%;
   margin-inline: auto;
-  padding: var(--s5) var(--s4) var(--s4);
+  padding: var(--s5) var(--s4);
   display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  align-content: start;
+  grid-template-columns: minmax(0, 440px);
+  justify-content: center;
+  align-content: center;
   gap: var(--s4);
 }
+.resultCol { display: grid; gap: var(--s4); min-width: 0; }
 
 /* ── 위 카드: 성문 + 웨이브 + 한 줄 + 지표 3개 ── */
 .summary { display: grid; justify-items: center; align-content: start; gap: var(--s2); padding: var(--s5) var(--s4); text-align: center; }
@@ -50,7 +51,6 @@
 /* ── 아래 카드: 이번 판 다시 보기 ── */
 .review { display: flex; flex-direction: column; gap: var(--s3); min-height: 0; padding: var(--s4); }
 .reviewTitle { font-size: var(--fs-3); font-weight: 800; }
-.empty { font-size: var(--fs-2); color: var(--ink-2); }
 .list { list-style: none; margin: 0; padding: var(--s2); display: grid; gap: var(--s2); min-height: 0; overflow-y: auto; }
 .word { padding: 0; }
 .word .wordBtn {
@@ -72,21 +72,15 @@
 .detail { display: grid; gap: var(--s2); padding: var(--s2) var(--s4) var(--s4); font-size: var(--fs-2); }
 .stem { color: var(--ink-2); }
 
-/* ── 아래 고정 단추 줄: 1366×650에서도 스크롤 없이 보인다 ── */
-.actions {
-  display: flex;
-  justify-content: center;
-  gap: var(--s3);
-  padding: var(--s3) var(--s4) var(--s4);
-  background: var(--bg);
-}
-.actions .again { flex: 2 1 0; max-width: 360px; }
-.actions .home { flex: 1 1 0; max-width: 180px; }
+/* ── 결과 카드 바로 아래 단추 줄: 결과 칸과 한 덩어리라 1366×650에서도 스크롤 없이 보인다 ── */
+.actions { display: flex; gap: var(--s3); }
+.actions .again { flex: 2 1 0; }
+.actions .home { flex: 1 1 0; }
 
 @media (min-width: 880px) {
-  .body { grid-template-columns: minmax(320px, 400px) minmax(0, 1fr); align-content: center; align-items: start; }
-  /* 낱말이 많으면 카드 안에서만 스크롤한다. 140px = 위아래 여백 + 아래 고정 단추 줄. */
-  .review { max-height: calc(100dvh - 140px); }
+  .body[data-review] { grid-template-columns: minmax(320px, 400px) minmax(0, 1fr); align-content: center; align-items: start; }
+  /* 낱말이 많으면 카드 안에서만 스크롤한다. 40px = 위아래 여백. */
+  .review { max-height: calc(100dvh - 2 * var(--s5)); }
 }
 
 @media (prefers-reduced-motion: reduce) {

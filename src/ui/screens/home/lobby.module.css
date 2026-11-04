@@ -149,6 +149,8 @@
 .rankCard { display: flex; flex-direction: column; gap: var(--s3); }
 @media (min-width: 960px) {
   .rankCard { flex: 1 1 auto; }
+  /* 기록이 없으면 늘리지 않는다: 한 줄 + 작은 아이콘 + 전체 보기만큼. */
+  .rankCard[data-empty] { flex: none; }
 }
 .rankHead { display: flex; align-items: center; justify-content: space-between; gap: var(--s3); }
 .rankSource { font-size: var(--fs-1); font-weight: 700; color: var(--ink-2); }
@@ -162,7 +164,7 @@
 .rankScore { font-size: var(--fs-3); font-weight: 800; }
 .rankBody { flex: 1 1 auto; display: flex; flex-direction: column; justify-content: center; gap: var(--s3); }
 .rankEmpty, .rankEmptyBig { margin: 0; color: var(--ink-2); }
-.rankEmpty { display: grid; justify-items: center; gap: var(--s2); text-align: center; }
+.rankEmpty { display: flex; align-items: center; gap: var(--s3); font-size: var(--fs-2); }
 .rankEmptyBig { padding: var(--s5) 0; font-size: var(--fs-2); text-align: center; }
 .myRank { display: flex; align-items: center; justify-content: space-between; gap: var(--s3); padding: var(--s3) var(--s4); }
 .myRankName { min-width: 0; font-size: var(--fs-2); font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
@@ -196,7 +198,7 @@
 /* ── 새 게임 창 ── */
 .newGame { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--s4); }
 @media (min-width: 640px) {
-  .newGame { grid-template-columns: minmax(0, 1fr) 320px; gap: var(--s5); align-items: start; }
+  .newGame { grid-template-columns: minmax(0, 1fr) 280px; gap: var(--s5); align-items: start; }
 }
 .newGameControls { display: grid; gap: var(--s4); }
 .group { display: grid; gap: var(--s2); }
@@ -204,10 +206,12 @@
 .groupLabel { font-size: var(--fs-2); font-weight: 700; color: var(--ink-2); }
 .groupWarn { margin: 0; font-size: var(--fs-1); font-weight: 700; color: var(--red); }
 .groupNote { margin: 0; font-size: var(--fs-2); color: var(--ink); }
-.mapFigure { margin: 0; display: grid; gap: var(--s2); width: 100%; max-width: 320px; }
+/* 오른쪽 열: 썸네일(조금 작게) → 시작. 시작이 열 맨 밑이다. */
+.newGameSide { display: grid; gap: var(--s3); align-content: start; min-width: 0; }
+.mapFigure { margin: 0; display: grid; gap: var(--s2); width: 100%; max-width: 280px; justify-self: center; }
 .mapThumb { display: block; width: 100%; height: auto; aspect-ratio: 5 / 3; border-radius: var(--r-sm); background: var(--paper-2); }
 .mapName { font-size: var(--fs-3); font-weight: 800; }
-.footNote { margin-right: auto; align-self: center; font-size: var(--fs-1); color: var(--ink-2); }
+.footNote { margin: 0; font-size: var(--fs-1); color: var(--ink-2); text-align: center; }
 
 /* 좁은 화면에서는 고르기 칸이 비좁아 '학년' 글자를 접는다(읽기 이름은 그대로). */
 @media (max-width: 440px) {

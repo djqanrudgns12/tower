@@ -275,12 +275,12 @@ describe('징집 화면(towers.md §0-2, 엔진 domain/draft)', () => {
     expect(showRecruit({ ...v, draft: null })).toBe(false);
   });
 
-  it('카드 3장(그림·이름·역할 한 줄·비행 적 공격 표시)마다 고르기 하나, 막 위 창이고 닫기 없이 꼭 고른다(R4 PRD §9.2)', async () => {
+  it('카드 3장(그림·이름·역할 한 줄·상성 아이콘, 능력치 막대 없음) 전체가 고르기 버튼 하나, 막 위 창이고 닫기 없이 꼭 고른다(R4 PRD §9.2)', async () => {
     const { selectView } = await import('../../../src/application/view');
     const { createElement } = await import('react');
     const { renderToStaticMarkup } = await import('react-dom/server');
     const { RecruitCard } = await import('../../../src/ui/game/RecruitCard');
-    const { recruitCardInfo, recruitOffer } = await import('../../../src/ui/game/recruit');
+    const { recruitOffer } = await import('../../../src/ui/game/recruit');
     const { TOWER_COPY } = await import('../../../src/ui/copy');
     const { ctx, s } = await draftOpen();
     const choices = recruitOffer(selectView(ctx, s))!;
@@ -294,10 +294,11 @@ describe('징집 화면(towers.md §0-2, 엔진 domain/draft)', () => {
       expect(html).toContain(TOWER_COPY[type].role);
       expect(html).toContain(`aria-label="${BALANCE.towers[type].label} 고르기"`);
     }
-    const air = choices.map(t => recruitCardInfo(BALANCE, t).air);
-    expect(html.match(/하늘 적 공격/g)?.length ?? 0).toBe(air.filter(a => a === true).length);
-    expect(html.match(/땅 적만/g)?.length ?? 0).toBe(air.filter(a => a === false).length);
-    // 단추는 카드마다 고르기 하나뿐이고(닫기 없음) 모두 바로 누를 수 있다.
+    // 새 타워 카드는 능력치 막대를 두지 않는다(막대는 진화 카드와 상황 카드의 몫). 하늘·땅 표시 줄도 없다.
+    expect(html).not.toContain('<dl');
+    expect(html).not.toContain('하늘 적 공격');
+    expect(html).not.toContain('땅 적만');
+    // 카드 전체가 누르는 단추 하나(카드를 덮는 투명 단추)뿐이고(닫기 없음) 모두 바로 누를 수 있다.
     const buttons = html.match(/<button[^>]*>/g)!;
     expect(buttons).toHaveLength(choices.length);
     expect(buttons.every(b => b.includes('data-choice') && !b.includes('disabled'))).toBe(true);

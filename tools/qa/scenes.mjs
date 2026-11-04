@@ -40,7 +40,7 @@ export const SCENES = [
   {
     id: '03', slug: 'draft-w3', title: 'W3 뒤 징집 화면', save: { builder: 'draft-w3' },
     steps: [
-      { op: 'resume' }, { op: 'shot', name: 'cards' },
+      { op: 'resume' }, { op: 'park' }, { op: 'shot', name: 'cards' },
       { op: 'click', role: 'button', name: /고르기/, nth: 1 }, { op: 'run', ms: 200 }, { op: 'wait', ms: 200 }, { op: 'shot', name: 'picked' },
     ],
   },
@@ -71,7 +71,7 @@ export const SCENES = [
   {
     id: '11', slug: 'relic-w10', title: 'W10 대장 뒤 원정 보물 고르기와 고른 뒤 상태 카드', sizes: ['desk', 'cb', 'phone'], save: { builder: 'relic-w10' },
     steps: [
-      { op: 'resume' }, { op: 'wait', ms: 300 }, { op: 'shot', name: 'cards' },
+      { op: 'resume' }, { op: 'park' }, { op: 'wait', ms: 300 }, { op: 'shot', name: 'cards' },
       { op: 'click', selector: '[role="dialog"] [data-choice]', nth: 0 }, { op: 'run', ms: 200 }, { op: 'wait', ms: 300 }, { op: 'shot', name: 'picked' },
     ],
   },
@@ -108,6 +108,8 @@ const STEP_OPS = {
     if (c.clock) await runGame(c.page, 80);
     await c.page.waitForTimeout(200);
   },
+  /** 마우스를 화면 모서리로 치운다(앞 클릭 자리에 있던 포인터가 카드를 호버로 띄워 한 장만 어긋나 보이는 것을 막는다). */
+  async park(c) { await c.page.mouse.move(2, 2); await c.page.waitForTimeout(120); },
   async wait(c, s) { await c.page.waitForTimeout(s.ms); },
   async scrollTop(c) { await c.page.evaluate(() => { window.scrollTo(0, 0); for (const el of document.querySelectorAll('*')) if (el.scrollTop) el.scrollTop = 0; }); await c.page.waitForTimeout(150); },
   async scrollInto(c, s) { await c.page.getByRole(s.role, { name: s.name }).first().scrollIntoViewIfNeeded(); await c.page.waitForTimeout(150); },

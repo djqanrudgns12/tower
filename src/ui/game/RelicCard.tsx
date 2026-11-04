@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { TOWER_IDS, type Balance, type TowerId } from '../../contracts/balance';
 import { relicDef } from '../../domain/relics';
 import { RELIC_TITLE } from '../copy';
@@ -21,8 +22,27 @@ const ART_ICONS: readonly ArtIconName[] = [
   'trait.armor', 'trait.ward', 'trait.flying', 'trait.swarm', 'trait.fast', 'trait.split', 'trait.clay', 'trait.burrow',
 ];
 
-/** 보물 아이콘(계약 icon): `tower.<id>`는 타워 초상화, 원화 아이콘 이름은 그 아이콘, 모르는 이름은 보물 상자. */
+/** 보물 전용 원화(public/assets/ui/relic.<id>.png). 그림 파일이 없거나 못 읽으면 보물 상자 아이콘으로 바꾼다. */
+function RelicImage({ id, size }: { id: string; size: number }) {
+  const [failed, setFailed] = useState(false);
+  if (failed) return <ArtIcon name="chest" size={size} />;
+  return (
+    <img
+      src={`${import.meta.env.BASE_URL}assets/ui/relic.${id}.png`}
+      width={size}
+      height={size}
+      alt=""
+      aria-hidden="true"
+      draggable={false}
+      style={{ display: 'inline-block', flex: 'none', objectFit: 'contain' }}
+      onError={() => setFailed(true)}
+    />
+  );
+}
+
+/** 보물 아이콘(계약 icon): `relic.<보물 id>`는 보물 전용 원화, `tower.<id>`는 타워 초상화, 원화 아이콘 이름은 그 아이콘, 모르는 이름은 보물 상자. */
 export function RelicArt({ icon, icons, size }: { icon: string; icons: Record<string, string>; size: number | 'fill' }) {
+  if (icon.startsWith('relic.')) return <RelicImage key={icon} id={icon.slice(6)} size={size === 'fill' ? 96 : size} />;
   if (icon.startsWith('tower.')) {
     const type = icon.slice(6) as TowerId;
     if (TOWER_IDS.includes(type)) return <TowerShieldPortrait type={type} icons={icons} size={size} bare />;
@@ -38,7 +58,7 @@ export function relicLine(b: Balance, id: string): string {
 }
 
 /**
- * 원정 보물 고르기 창(prd-r4 §7.2-F·§9.2): 대장 웨이브를 지키면 막이 전장과 문제 카드까지 덮고, 보물 카드 3장마다 ‘고르기’ 한 번으로 바로 고른다.
+ * 원정 보물 고르기 창(prd-r4 §7.2-F·§9.2): 대장 웨이브를 지키면 막이 전장과 문제 카드까지 덮고, 보물 카드 3장 중 하나를 눌러 바로 고른다.
  * 새 타워·진화와 같은 카드 부품(ChoiceCard)이고 꼭 골라야 하는 창이라 닫기가 없다(kit Modal dismissable=false). 효과는 그 판에서만 있다.
  */
 export function RelicCard({ balance, choices, icons, compact = false, onPick }: Props) {
@@ -58,13 +78,11 @@ export function RelicCard({ balance, choices, icons, compact = false, onPick }: 
             <ChoiceCard
               key={id}
               row={compact}
-              art={<RelicArt icon={r.icon} icons={icons} size="fill" />}
+              icon
+              art={<RelicArt icon={r.icon} icons={icons} size={compact ? 64 : 96} />}
               name={r.label}
               desc={r.summary}
-              bars={[]}
-              action="고르기"
               actionLabel={`${r.label} 고르기: ${r.summary}`}
-              variant="primary"
               onPick={() => onPick(id)}
             />
           );

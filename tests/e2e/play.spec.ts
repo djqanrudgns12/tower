@@ -509,18 +509,19 @@ async function openDraftFixture(page: Page, offers: string[]) {
 }
 
 for (const [w, h, name] of [[1440, 900, 'desktop'], [390, 844, 'phone']] as const) {
-  test(`${w}×${h} 새 타워: 카드 3장마다 고르기 하나, 막이 문제 카드까지 덮고, 고르면 타워 칸에 들어온다(R4 PRD §9.2)`, async ({ page }) => {
+  test(`${w}×${h} 새 타워: 카드 3장 전체가 고르기 버튼 하나, 막이 문제 카드까지 덮고, 고르면 타워 칸에 들어온다(R4 PRD §9.2)`, async ({ page }) => {
     await page.setViewportSize({ width: w, height: h });
     await newGame(page);
     await openDraftFixture(page, ['crossbow', 'flame', 'banner']);
     const recruit = page.getByRole('dialog', { name: '새 타워' });
     await expect(recruit).toBeVisible();
-    // 라디오 + 공통 확정 단추 대신 카드마다 ‘고르기’ 한 번으로 바로 고른다.
+    // 라디오 + 공통 확정 단추 대신 카드 전체를 한 번 눌러 바로 고른다.
     await expect(recruit.getByRole('radio')).toHaveCount(0);
     const picks = recruit.getByRole('button', { name: /고르기$/ });
     await expect(picks).toHaveCount(3);
-    await expect(recruit.getByText('하늘 적 공격')).toHaveCount(1);
-    await expect(recruit.getByText('땅 적만')).toHaveCount(1);
+    // 카드는 원화·이름·한 줄 역할·상성 아이콘만 둔다: 능력치 막대(dl)와 하늘·땅 표시 줄이 없다.
+    await expect(recruit.locator('dl')).toHaveCount(0);
+    await expect(recruit.getByText('하늘 적 공격')).toHaveCount(0);
     // 꼭 고르는 창: 닫기가 없고 Esc로 닫히지 않는다. 포커스는 창 안에서 시작한다.
     await expect(recruit.getByRole('button', { name: '닫기' })).toHaveCount(0);
     await expect(picks.first()).toBeFocused();
@@ -532,7 +533,7 @@ for (const [w, h, name] of [[1440, 900, 'desktop'], [390, 844, 'phone']] as cons
     expect(await page.evaluate(() => document.querySelector('main')!.inert)).toBe(true);
     const overflowX = await page.evaluate(() => document.documentElement.scrollWidth - innerWidth);
     expect(overflowX).toBeLessThanOrEqual(0);
-    // 카드 3장과 고르기가 창 안에서 다 보인다(휴대폰은 카드가 세로로 쌓인다).
+    // 카드 3장이 창 안에서 다 보인다(휴대폰은 카드가 세로로 쌓인다).
     for (let i = 0; i < 3; i++) await expect(picks.nth(i)).toBeInViewport();
     await shot(page, `recruit-${name}`);
     await recruit.getByRole('button', { name: '석궁탑 고르기' }).click();
