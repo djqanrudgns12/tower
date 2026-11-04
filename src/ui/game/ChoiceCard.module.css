@@ -111,6 +111,33 @@
 
 .price[data-short] { color: var(--red); }
 
+/* 진화 수치 칩(R5 B9, pre-r4 04-choice): 막대 아래 "공격력 13.1 → 18.8" 1~2개. 칩은 카드 면(--parch-1) 위에 안쪽 테만 그려
+   새 면(겹)을 만들지 않는다(v4 §3.4 안쪽 테 대용, 결정 6). 반경 4px라 알약이 아니다(§7.2). 줄어드는 능력은 테 2px --red + 글 --red(parch-1 위 6.23, §4.8). */
+.deltas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s1) var(--s2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.delta {
+  padding: 3px var(--s2);
+  border-radius: var(--r-sm);
+  box-shadow: inset 0 0 0 2px var(--oak-2);
+  font-size: var(--fs-1);
+  font-weight: 700;
+  line-height: 1.4;
+  color: var(--ink);
+}
+
+.delta[data-down] {
+  box-shadow: inset 0 0 0 2px var(--red);
+  font-weight: 800;
+  color: var(--red);
+}
+
 /* 휴대폰: 그림 | 이름·설명(·비용) 한 줄. */
 .card[data-row] {
   display: grid;
@@ -128,6 +155,8 @@
 .card[data-row] .name { font-size: var(--fs-2); }
 .card[data-row] .desc { font-size: var(--fs-1); }
 .card[data-row] .body { gap: var(--s1); }
+/* 휴대폰 진화 카드: 그림 | 글 | 비용 줄 아래에 수치 칩을 카드 폭으로 한 줄 더 둔다(글 칸이 좁아 칩이 넘치지 않게). */
+.card[data-row] .deltas { grid-column: 1 / -1; grid-row: 2; }
 
 /* 카드 묶음: 넓은 화면은 2~3칸 가로, 휴대폰은 세로로 쌓는다. */
 .list3,

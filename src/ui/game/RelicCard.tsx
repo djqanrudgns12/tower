@@ -4,7 +4,7 @@ import { relicDef } from '../../domain/relics';
 import { RELIC_TITLE } from '../copy';
 import { TowerShieldPortrait } from '../icons/GameIcons';
 import { ArtIcon, Modal, type ArtIconName } from '../kit';
-import { ChoiceCard } from './ChoiceCard';
+import { ChoiceCard, ChoiceList } from './ChoiceCard';
 import css from './ChoiceCard.module.css';
 
 interface Props {
@@ -70,7 +70,7 @@ export function RelicCard({ balance, choices, icons, compact = false, onPick }: 
       dismissable={false}
       onClose={() => {}}
     >
-      <div className={compact ? css.listRow : css.list3}>
+      <ChoiceList columns={3} row={compact}>
         {choices.map(id => {
           const r = relicDef(balance, id);
           if (!r) return null;
@@ -87,7 +87,7 @@ export function RelicCard({ balance, choices, icons, compact = false, onPick }: 
             />
           );
         })}
-      </div>
+      </ChoiceList>
     </Modal>
   );
 }

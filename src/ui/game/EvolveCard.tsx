@@ -4,11 +4,11 @@ import { fmtNumber } from '../copy';
 import { useLobbySprites } from '../screens/home/canvasAssets';
 import { BranchMarkIcon, TowerShieldPortrait } from '../icons/GameIcons';
 import { ArtIcon, Modal, Stat } from '../kit';
-import { ChoiceCard } from './ChoiceCard';
+import { ChoiceCard, ChoiceList } from './ChoiceCard';
 import { CounterIcons } from './CounterIcons';
 import css from './ChoiceCard.module.css';
 import { evolutionChoices, formBodyUrl, formInfo, towerForm, upgradeCost, type FormId } from './evolution';
-import { statBars } from './statBars';
+import { formDeltas, statBars } from './statBars';
 
 interface Props {
   balance: Balance;
@@ -26,7 +26,7 @@ interface Props {
 
 /**
  * 진화 A/B 창(progression.md §5, R4 PRD §9.2): 막 위 창에 두 형태 카드를 나란히. 카드 전체가 버튼이라 하나를 눌러 바로 진화한다.
- * 능력치는 지금 칸 + 늘어날 칸(호박색)으로 보이고(이 고름의 핵심), 비용(금화 + 숫자)이 카드 안에 있다. 골드가 모자라면 카드가 비활성(aria-disabled)이고 창 아래 이유 한 줄이 알린다.
+ * 능력치는 지금 칸 + 늘어날 칸(호박색)으로 보이고(이 고름의 핵심), 그 아래 가장 크게 바뀌는 수치 칩 두 개(줄어드는 능력은 붉은 윤곽, R5 B9)와 비용(금화 + 숫자)이 카드 안에 있다. 골드가 모자라면 카드가 비활성(aria-disabled)이고 창 아래 이유 한 줄이 알린다.
  * 닫으면(×·Esc·막) 연 단추로 포커스가 돌아간다(kit Modal).
  */
 export function EvolveCard({ balance, tower, gold, icons, lock, compact = false, onPreview, onChoose, onClose }: Props) {
@@ -48,7 +48,7 @@ export function EvolveCard({ balance, tower, gold, icons, lock, compact = false,
       onClose={onClose}
       footer={blocked ? <p id={reasonId} className={css.reason} role="status">{lock ?? `골드 ${cost! - gold} 부족`}</p> : undefined}
     >
-      <div className={compact ? css.listRow : css.list2}>
+      <ChoiceList columns={2} row={compact}>
         {choices.map(form => {
           const info = formInfo(balance, tower.type, form);
           const src = formBodyUrl(tower.type, form, id => sprites.get(id)?.url);
@@ -66,6 +66,7 @@ export function EvolveCard({ balance, tower, gold, icons, lock, compact = false,
               desc={info.summary}
               counters={<CounterIcons balance={balance} type={tower.type} form={form} icons={icons} size={compact ? 18 : 20} />}
               bars={statBars(balance, tower.type, tower.level, from, { level: tower.level + 1, form })}
+              deltas={formDeltas(balance, tower.type, tower.level, from, tower.level + 1, form)}
               price={
                 <span className={css.price} data-short={short || undefined}>
                   <Stat icon={<ArtIcon name="coin" size={24} />} value={cost !== null ? fmtNumber(cost) : '-'} srLabel="골드" size="lg" />
@@ -79,7 +80,7 @@ export function EvolveCard({ balance, tower, gold, icons, lock, compact = false,
             />
           );
         })}
-      </div>
+      </ChoiceList>
     </Modal>
   );
 }

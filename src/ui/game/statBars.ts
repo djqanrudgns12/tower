@@ -2,6 +2,7 @@ import { TOWER_IDS, type Balance, type TowerId } from '../../contracts/balance';
 import { attackIntervalTicks, attacks, bannerAura } from '../../domain/towers';
 import { fmtCells, fmtDamage } from '../copy';
 import { towerStats, type FormId } from './evolution';
+import { deltaSpeech, SHOTS_LABEL, shotsValue } from './gameCopy';
 
 // 능력치 막대(ui-rules-v2 §1): 숫자를 칸 5개 막대로 바꾼다. 기준은 전체 타워의 기준 레벨 최댓값이라
 // 같은 판에서 타워끼리 비교되고, 강화하면 막대가 자란다.
@@ -58,16 +59,47 @@ export function statBars(b: Balance, type: TowerId, level: number, form: FormId,
   ];
 }
 
-/** 진화 카드에 적을 바뀌는 수치 1~2개. */
-export function formDeltas(b: Balance, type: TowerId, level: number, form: FormId, toLevel: number, toForm: FormId): string[] {
-  if (!attacks(b, type)) return [];
-  const a = towerStats(b, type, level, form), c = towerStats(b, type, toLevel, toForm);
-  const out: Array<{ weight: number; text: string }> = [];
-  const ia = attackIntervalTicks(b, a, 0), ic = attackIntervalTicks(b, c, 0);
-  if (c.damage !== a.damage) out.push({ weight: Math.abs(c.damage / a.damage - 1), text: `공격력 ${fmtDamage(a.damage)} → ${fmtDamage(c.damage)}` });
-  if (ic !== ia) out.push({ weight: Math.abs(ia / ic - 1) + 0.05, text: `공격 간격 ${seconds(ia)} → ${seconds(ic)}` });
-  if (c.range !== a.range) out.push({ weight: Math.abs(c.range / a.range - 1) + 0.05, text: `사거리 ${fmtCells(a.range)} → ${fmtCells(c.range)}` });
-  if (c.maxTargets !== a.maxTargets) out.push({ weight: 1, text: `대상 ${a.maxTargets} → ${c.maxTargets}마리` });
-  if (c.slowBP !== a.slowBP) out.push({ weight: 1, text: `느리게 ${a.slowBP / 100}% → ${c.slowBP / 100}%` });
-  return out.sort((x, y) => y.weight - x.weight).slice(0, 2).map(x => x.text);
+/** 진화 카드의 바뀌는 수치 칩 하나(R5 B9). down이면 그 능력이 줄어든다(붉은 윤곽 칩, 화면 읽기 '줄어듦'). */
+export interface FormDelta {
+  /** 보이는 글: "공격력 27.0 → 24.6". */
+  text: string;
+  /** 화면 읽기: "공격력 줄어듦, 27.0에서 24.6". */
+  speech: string;
+  /** 능력이 줄어든다(공격 간격은 길어지면 줄어듦). */
+  down: boolean;
+}
+
+/**
+ * 진화 카드에 적을 바뀌는 수치 칩 1~2개(R5 B9, pre-r4 진화 카드): 지금 형태 → 고른 형태에서 가장 크게 바뀌는 능력 순.
+ * 줄어드는 능력이 있으면 둘째 칸을 내주어서라도 꼭 보인다(대상·느리게 같은 고정 무게에 밀려 숨지 않게, 예: 호박 설탕늪 공격력).
+ * 깃발초소는 공격하지 않으므로 주변 힘·주변 속도(bannerAura)를 비교한다.
+ */
+export function formDeltas(b: Balance, type: TowerId, level: number, form: FormId, toLevel: number, toForm: FormId): FormDelta[] {
+  const out: Array<FormDelta & { weight: number }> = [];
+  // ability: 화면 읽기의 능력 이름. 값이 클수록 좋은 능력은 up = to > from, 공격 간격만 반대다.
+  const push = (weight: number, ability: string, label: string, from: string, to: string, down: boolean) =>
+    out.push({ weight, text: `${label} ${from} → ${to}`, speech: deltaSpeech(ability, label, from, to, down), down });
+  const ratio = (x: number, y: number) => (x === 0 || y === 0 ? 1 : Math.abs(y / x - 1));
+  if (!attacks(b, type)) {
+    const a = bannerAura(b, { type, level, form }), c = bannerAura(b, { type, level: toLevel, form: toForm });
+    const pct = (bp: number) => (bp > 0 ? `+${bp / 100}%` : '0%');
+    if (c.damageBP !== a.damageBP) push(ratio(a.damageBP, c.damageBP), '주변 힘', '주변 힘', pct(a.damageBP), pct(c.damageBP), c.damageBP < a.damageBP);
+    if (c.speedBP !== a.speedBP) push(ratio(a.speedBP, c.speedBP), '주변 속도', '주변 속도', pct(a.speedBP), pct(c.speedBP), c.speedBP < a.speedBP);
+  } else {
+    const a = towerStats(b, type, level, form), c = towerStats(b, type, toLevel, toForm);
+    const ia = attackIntervalTicks(b, a, 0), ic = attackIntervalTicks(b, c, 0);
+    const shots = (s: typeof a) => s.volley * (s.fx.burst?.count ?? 1);
+    if (c.damage !== a.damage) push(ratio(a.damage, c.damage), '공격력', '공격력', fmtDamage(a.damage), fmtDamage(c.damage), c.damage < a.damage);
+    if (ic !== ia) push(Math.abs(ia / ic - 1) + 0.05, '공격 속도', '공격 간격', seconds(ia), seconds(ic), ic > ia);
+    if (c.range !== a.range) push(ratio(a.range, c.range) + 0.05, '사거리', '사거리', fmtCells(a.range), fmtCells(c.range), c.range < a.range);
+    if (shots(c) !== shots(a)) push(1, SHOTS_LABEL, SHOTS_LABEL, `${shots(a)}`, shotsValue(shots(c)), shots(c) < shots(a));
+    if (c.maxTargets !== a.maxTargets) push(1, '대상 수', '대상', `${a.maxTargets}`, `${c.maxTargets}마리`, c.maxTargets < a.maxTargets);
+    if (c.slowBP !== a.slowBP) push(1, '느리게 하는 힘', '느리게', `${a.slowBP / 100}%`, `${c.slowBP / 100}%`, c.slowBP < a.slowBP);
+  }
+  // 정렬은 안정적이라 무게가 같으면 위에 적은 순서(공격력 → 공격 간격 → 사거리 → 공격 횟수 → 대상 → 느리게)를 따른다.
+  const sorted = out.sort((x, y) => y.weight - x.weight);
+  const top = sorted.slice(0, 2);
+  const loss = sorted.find(d => d.down);
+  if (loss && !top.some(d => d.down)) top[top.length - 1] = loss;
+  return top.map(({ text, speech, down }) => ({ text, speech, down }));
 }
