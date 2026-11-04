@@ -1,10 +1,32 @@
-/* 색·간격·반경 토큰(PRD §12.6, §12.8). 토큰 밖 색·그라데이션·블러를 쓰지 않는다. */
+/* 색·간격·반경 토큰. R4 「그림책 원정대」 v3 한 벌(docs/renewal/ui-rules-v3.md)이 기준이다.
+   아래 옛 토큰(나무·oak·walnut)은 화면을 v3로 옮기는 동안만 남기고, 옮긴 화면에서는 쓰지 않는다(R4 마감에서 0). */
 :root {
-  --ink: #261f1a;
+  /* ── v3 한 벌 ── */
+  --bg: #1e3020;
+  --paper: #fffdf7;
+  --paper-2: #f2ead8;
+  --line: #e2d6bc;
+  --ink: #2b2118;
+  --ink-2: #6a5644;
+  --on-dark: #fffdf7;
+  --green: #277a4b;
+  --green-base: #1a5434;
+  --amber: #f59e0b;
+  --amber-base: #b45309;
+  --red: #c0392b;
+  --red-base: #8e2a20;
+  --blue: #2563a8;
+  --scrim: rgba(20, 14, 10, 0.55);
+  --float: 0 6px 20px rgba(20, 14, 10, 0.18);
+  --r-sm: 8px;
+  --r-md: 14px;
+  --fs-1: 13px; --fs-2: 16px; --fs-3: 20px; --fs-4: 24px; --fs-5: 32px; --fs-6: 44px;
+  --s8: 48px;
+
+  /* ── 옛 토큰(이전 중) ── */
   --ink-soft: #574a3f;
   --parchment: #f6edd9;
   --parchment-hover: #fbf4e4;
-  --paper: #fcf7eb;
   --paper-hover: #fffdf7;
   --well: #e7d9bc;
   --well-hover: #efe2c8;
@@ -19,9 +41,7 @@
   --stone: #d8d1c4;
   --cream-ink: #fbf3e4;
   --cream-muted: #dfd1b8;
-  --blue: #235885;
   --blue-light: #8fd0ff;
-  --green: #2d6336;
   --green-hover: #34703e;
   --green-surface: #eaf5ec;
   --danger: #a3352b;
@@ -125,5 +145,5 @@ h1, h2, h3, p { margin: 0; }
   *, *::before, *::after { transition-duration: 0ms !important; animation-duration: 0ms !important; }
 }
 
-/* 전투 화면 바탕: 짙은 호두나무 작업대(ui-rules-v2 §1). 홈 화면은 기존 바탕 그대로. */
-body[data-screen='battle'] { background: var(--walnut-3); }
+/* 전투 화면 바탕: 짙은 숲색 단색(ui-rules-v3 §2). 전장과 종이 카드가 그 위에 뜬다. */
+body[data-screen='battle'] { background: var(--bg); }

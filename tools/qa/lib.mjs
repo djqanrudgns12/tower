@@ -205,6 +205,39 @@ export async function domAudit(page) {
       const cut = cutBy(el);
       if (cut && (el.matches('button, input, select, [role], img') || el.textContent.trim())) out.cutOff.push(`${label(el)} cut ${cut}`);
     }
+    // slop 계측(R4 §5.1): 화면 관문 수치. 문제 본문·선택지([data-content])는 상시 문장에서 뺀다.
+    const shown = el => visible(el) && !el.closest('.sr-only') && !el.closest('canvas') && !hiddenByBox(el) && !(el.closest('[inert]') && !el.closest('[role="dialog"]'));
+    const rgba = v => (v.match(/[\d.]+/g) ?? []).map(Number);
+    const opaque = v => { const c = rgba(v); return c.length >= 3 && (c.length < 4 || c[3] > 0.05); };
+    const boxed = el => {
+      const st = getComputedStyle(el);
+      return opaque(st.backgroundColor) || ['Top', 'Right', 'Bottom', 'Left'].some(s => parseFloat(st[`border${s}Width`]) >= 1 && opaque(st[`border${s}Color`]) && st[`border${s}Style`] !== 'none');
+    };
+    const root = getComputedStyle(document.documentElement);
+    const tokens = new Set(['--bg', '--paper', '--paper-2', '--line', '--ink', '--ink-2', '--on-dark', '--green', '--green-base', '--amber', '--amber-base', '--red', '--red-base', '--blue']
+      .map(n => root.getPropertyValue(n).trim().toLowerCase()).filter(Boolean)
+      .map(hex => { const n = parseInt(hex.slice(1), 16); return `${(n >> 16) & 255},${(n >> 8) & 255},${n & 255}`; }));
+    const offToken = v => opaque(v) && !tokens.has(rgba(v).slice(0, 3).join(','));
+    const slop = { buttons: 0, sentences: [], fontSizes: new Set(), pills: 0, depth: 0, offToken: 0 };
+    for (const el of document.querySelectorAll('button, a[href], input, select, [role="button"], [role="radio"], [role="switch"], [role="checkbox"], [role="tab"]')) if (shown(el)) slop.buttons++;
+    for (const el of document.querySelectorAll('body *')) {
+      if (!shown(el)) continue;
+      const st = getComputedStyle(el);
+      const r = el.getBoundingClientRect();
+      const own = [...el.childNodes].filter(n => n.nodeType === 3).map(n => n.textContent).join('').trim().replace(/\s+/g, ' ');
+      if (own) {
+        slop.fontSizes.add(Math.round(parseFloat(st.fontSize)));
+        if (own.length >= 20 && own.includes(' ') && !el.closest('[data-content]')) slop.sentences.push(own.slice(0, 40));
+        let d = 0;
+        for (let p = el; p && p !== document.body; p = p.parentElement) if (boxed(p)) d++;
+        slop.depth = Math.max(slop.depth, d);
+        if (offToken(st.color)) slop.offToken++;
+      }
+      if (offToken(st.backgroundColor)) slop.offToken++;
+      const rad = parseFloat(st.borderTopLeftRadius);
+      if (r.height > 0 && rad >= r.height / 2 - 1 && r.width > r.height * 1.4 && boxed(el)) slop.pills++;
+    }
+    out.slop = { ...slop, sentences: [...new Set(slop.sentences)], fontSizes: [...slop.fontSizes].sort((a, b) => a - b) };
     const active = document.activeElement;
     out.focus = active && active !== document.body ? `${label(active)}${active.closest('[role="dialog"]') ? ' (대화상자 안)' : ''}` : 'body';
     for (const k of ['small', 'tiny', 'broken', 'clipped', 'cutOff']) out[k] = [...new Set(out[k])].slice(0, 12);

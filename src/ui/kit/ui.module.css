@@ -1,0 +1,180 @@
+/* R4 공용 부품(ui-rules-v3). v3 토큰만 쓴다. 테두리 없이 면 색과 키캡 바닥(--raise)으로 위계를 만든다. */
+
+/* ── 키캡 버튼: 변형마다 면(--face)·바닥(--base)·글자(--text)만 바꾼다 ── */
+.btn {
+  --face: var(--paper-2);
+  --base: var(--line);
+  --text: var(--ink);
+  min-height: var(--touch);
+  padding: 0 var(--s4);
+  border: 0;
+  border-radius: var(--r-sm);
+  background: var(--face);
+  color: var(--text);
+  box-shadow: 0 4px 0 var(--base);
+  font-size: var(--fs-2);
+  font-weight: 700;
+  line-height: 1.2;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--s2);
+  transition: transform 80ms var(--ease-out), box-shadow 80ms var(--ease-out), filter 120ms;
+  touch-action: manipulation;
+  user-select: none;
+}
+.btn:active:not(:disabled):not([aria-disabled='true']) { transform: translateY(4px); box-shadow: 0 0 0 var(--base); }
+.btn:focus-visible { outline: 3px solid var(--blue); outline-offset: 3px; }
+@media (hover: hover) {
+  .btn:hover:not(:disabled):not([aria-disabled='true']) { filter: brightness(1.06); }
+}
+.primary { --face: var(--green); --base: var(--green-base); --text: var(--on-dark); }
+.accent { --face: var(--amber); --base: var(--amber-base); --text: var(--ink); }
+.danger { --face: var(--red); --base: var(--red-base); --text: var(--on-dark); }
+.secondary { --face: var(--paper-2); --base: var(--line); --text: var(--ink); }
+.ghost { background: transparent; box-shadow: none; color: var(--ink); }
+.ghost:active:not(:disabled) { transform: none; }
+@media (hover: hover) {
+  .ghost:hover:not(:disabled) { filter: none; background: var(--paper-2); }
+}
+.onDark.ghost { color: var(--on-dark); }
+@media (hover: hover) {
+  .onDark.ghost:hover:not(:disabled) { background: rgba(255, 253, 247, 0.12); }
+}
+.btn:disabled, .btn[aria-disabled='true'] { --face: var(--paper-2); --text: var(--ink-2); box-shadow: none; opacity: 0.6; cursor: not-allowed; }
+.lg { min-height: 56px; padding: 0 var(--s5); font-size: var(--fs-3); font-weight: 800; }
+.block { width: 100%; }
+
+/* ── 아이콘 버튼 ── */
+.iconBtn { position: relative; width: var(--touch); padding: 0; }
+.iconBtn.lg { width: 56px; padding: 0; }
+
+/* ── 개수 배지(999px은 이것 하나만) ── */
+.badge {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 6px;
+  border-radius: 999px;
+  background: var(--red);
+  color: var(--on-dark);
+  font-size: var(--fs-1);
+  font-weight: 800;
+  line-height: 20px;
+  text-align: center;
+}
+
+/* ── 카드 ── */
+.card { background: var(--paper); color: var(--ink); border-radius: var(--r-md); padding: var(--s4); }
+.cardFloat { box-shadow: var(--float); }
+.cardSunk { background: var(--paper-2); }
+
+/* ── 고르기 줄(라디오 묶음) ── */
+.segmented {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
+  gap: var(--s1);
+  padding: var(--s1);
+  border-radius: var(--r-sm);
+  background: var(--paper-2);
+}
+.segment {
+  min-height: var(--touch);
+  padding: 0 var(--s3);
+  border: 0;
+  border-radius: var(--r-sm);
+  background: transparent;
+  color: var(--ink-2);
+  font-size: var(--fs-2);
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--s1);
+  transition: background-color var(--t-ui), color var(--t-ui);
+}
+.segment[aria-checked='true'] { background: var(--paper); color: var(--ink); box-shadow: 0 3px 0 var(--line); }
+.segment:focus-visible { outline: 3px solid var(--blue); outline-offset: 1px; }
+.segment[aria-disabled='true'] { opacity: 0.55; cursor: not-allowed; }
+@media (hover: hover) {
+  .segment:hover:not([aria-checked='true']):not([aria-disabled='true']) { color: var(--ink); }
+}
+
+/* ── 켜기·끄기 ── */
+.toggle {
+  min-height: var(--touch);
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--ink);
+  font-size: var(--fs-2);
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s3);
+}
+.toggle:focus-visible { outline: 3px solid var(--blue); outline-offset: 3px; border-radius: var(--r-sm); }
+.track {
+  position: relative;
+  flex: none;
+  width: 52px;
+  height: 30px;
+  border-radius: var(--r-sm);
+  background: var(--line);
+  transition: background-color var(--t-ui);
+}
+.knob {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 24px;
+  height: 24px;
+  border-radius: var(--r-sm);
+  background: var(--paper);
+  box-shadow: 0 2px 0 var(--ink-2);
+  transition: transform var(--t-ui) var(--ease-out);
+}
+.toggle[aria-checked='true'] .track { background: var(--green); }
+.toggle[aria-checked='true'] .knob { transform: translateX(22px); box-shadow: 0 2px 0 var(--green-base); }
+
+/* ── 아이콘 + 숫자 ── */
+.stat { display: inline-flex; align-items: center; gap: 6px; font-weight: 800; font-variant-numeric: tabular-nums; line-height: 1; }
+.statMd { font-size: var(--fs-2); }
+.statLg { font-size: var(--fs-4); }
+.statLabel { font-size: var(--fs-1); font-weight: 700; color: var(--ink-2); }
+
+/* ── 창 ── */
+.scrim {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: grid;
+  place-items: center;
+  padding: var(--s4);
+  background: var(--scrim);
+}
+.dialog {
+  width: 100%;
+  max-height: calc(100dvh - 2 * var(--s4));
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--s4);
+  padding: var(--s5);
+}
+.dialogSm { max-width: 440px; }
+.dialogMd { max-width: 640px; }
+.dialogLg { max-width: 900px; }
+.dialogHead { display: flex; align-items: center; justify-content: space-between; gap: var(--s3); }
+.dialogTitle { font-size: var(--fs-4); font-weight: 800; line-height: 1.25; }
+.dialogFoot { display: flex; justify-content: flex-end; gap: var(--s3); flex-wrap: wrap; }
+
+.artIcon { display: inline-block; flex: none; vertical-align: middle; object-fit: contain; image-rendering: auto; }
+
+@media (prefers-reduced-motion: reduce) {
+  .btn:active:not(:disabled) { transform: none; }
+  .knob { transition: none; }
+}
