@@ -109,7 +109,7 @@ function Chapter1Stage({ animate, highContrastMap }: { animate: boolean; highCon
       </div>
       <Segmented<`${GuideWaveBeatId}`>
         label={U.beatGroup}
-        className={css.wrapTiny}
+        className={`${css.wrapTiny} ${css.autoSeg}`}
         options={GUIDE_WAVE_BEATS.map(b => ({ value: `${b.id}`, label: b.label }))}
         value={`${beat}`}
         onChange={v => {
@@ -138,7 +138,7 @@ function Chapter2Stage({ animate }: { animate: boolean }) {
 
   return (
     <div className={css.pane}>
-      <Segmented<QuizOutcomeId> label={U.outcomeGroup} className={css.wrap4} options={outcomes.map(o => ({ value: o.id, label: o.label }))} value={active.id} onChange={setSelected} />
+      <Segmented<QuizOutcomeId> label={U.outcomeGroup} className={`${css.wrap4} ${css.autoSeg}`} options={outcomes.map(o => ({ value: o.id, label: o.label }))} value={active.id} onChange={setSelected} />
       <Card material="plaque" pad="sm" className={css.hudSim} data-outcome={active.id}>
         <span className={css.hudRow}>
           <span className={css.hudGold}><ArtIcon name="coin" size={22} />{active.goldText}</span>
