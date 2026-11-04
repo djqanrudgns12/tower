@@ -11,6 +11,26 @@ export const DIFFICULTY_COPY: Record<DifficultyId, { label: string; hint: string
   Crazy: { label: '아주 어려움', hint: '성문이 약하고 심화·방언이 많아요' },
 };
 
+/** 새 게임의 지도 이름(맵 id → 화면에 보이는 이름). */
+export const MAP_NAMES: Readonly<Record<string, string>> = {
+  garden_u: '정원',
+  river_z: '강가',
+  courtyard: '궁궐 뜰',
+  snow_step: '설원',
+};
+
+/** 홈·새 게임 문구(ui-rules-v3 §4 용어: 시작·새 게임·닉네임·랭킹 점수). */
+export const HOME_COPY = {
+  start: '시작',
+  newGame: '새 게임',
+  resume: '이어하기',
+  practiceFirst: '연습 먼저',
+  practiceAgain: '연습하기',
+  gradeSoon: '문제 준비 중이에요',
+  replacesSave: '저장된 판은 사라져요',
+  nicknameFirst: '닉네임(2~12자)을 먼저 적어 주세요',
+} as const;
+
 export const TOWER_COPY: Record<TowerId, { role: string; good: string }> = {
   archer: { role: '빠르게 쏘는 화살', good: '처음 놓기 좋아요' },
   crossbow: { role: '멀리서 세게 쏘는 쇠뇌', good: '단단한 적에게 좋아요' },
@@ -58,7 +78,7 @@ export function commandErrorText(error: CommandError, extra?: { need?: number })
     case 'INVALID_FORM': return '이 타워가 갈 수 없는 길이에요';
     case 'UNDO_EXPIRED': return '되돌릴 시간이 지났어요';
     case 'TOWER_LIMIT': return '이 타워는 더 놓을 수 없어요';
-    case 'NOT_OWNED': return '아직 장착함에 없는 타워예요';
+    case 'NOT_OWNED': return '아직 갖지 않은 타워예요';
     case 'NO_DRAFT':
     case 'INVALID_DRAFT': return '지금은 고를 수 없어요';
     case 'NEXT_NOT_READY': return '해설을 조금 더 읽어 주세요';
@@ -83,7 +103,9 @@ export const fmtNumber = (n: number) => (n < 0 ? `−${Math.abs(n).toLocaleStrin
 
 /** 홈 별명 입력과 공개 제출은 같은 규칙을 쓴다: NFC·NFKC, 제어문자 제거, 2~12글자, 전화번호·이메일·주소 차단(PRD §2.1). */
 export function cleanNickname(raw: string): { value: string; error: string | null } {
-  return cleanPublicNickname(raw);
+  const r = cleanPublicNickname(raw);
+  // 공개 계약의 오류 문구는 '별명'이라고 말한다. 화면에는 용어 규정(ui-rules-v3 §4)대로 '닉네임'으로 보인다.
+  return { value: r.value, error: r.error === null ? null : r.error.replace('별명', '닉네임') };
 }
 
 /** 받침에 따라 ‘로/으로’(ㄹ 받침은 ‘로’). */
@@ -93,3 +115,68 @@ export function withRo(word: string): string {
   const jong = code % 28;
   return `${word}${jong === 0 || jong === 8 ? '로' : '으로'}`;
 }
+
+/** 결과 화면 문구(R4 U3, ui-rules-v3 §4: 랭킹 점수·불꽃). 상시 문장은 2개 이하라 한 줄씩만 둔다. */
+export const RESULT_COPY = {
+  defeat: '성문이 무너졌어요',
+  ended: '이번 판을 마쳤어요',
+  wave: '웨이브',
+  waveSr: '지킨 웨이브',
+  correct: '정답',
+  kills: '처치',
+  score: '점수',
+  ranking: '랭킹 점수',
+  noteAdded: '새로 담은 낱말',
+  noteGraduated: '외운 낱말',
+  openNote: '노트 보기',
+  reviewTitle: '이번 판 다시 보기',
+  reviewEmpty: '틀리거나 넘긴 낱말이 없어요',
+  answer: '정답',
+  dev: '개발용 문제라 공개 기록에는 올라가지 않아요',
+  again: '다시 하기',
+  home: '홈',
+} as const;
+
+/** 오답 노트 화면 문구(R4 U3). 퍼센트·숙련도 점수는 쓰지 않는다(PRD v0.5 §20.5). */
+export const NOTE_COPY = {
+  title: '오답 노트',
+  back: '뒤로',
+  hint: '다른 판에서 2번 맞히면 졸업해요',
+  empty: '틀린 낱말이 여기 모여요',
+  count: (n: number) => `낱말 ${n}개`,
+  progress: (clears: number, total: number) => `다른 판에서 ${clears}번 맞혔어요. ${Math.max(0, total - clears)}번 더 맞히면 졸업해요`,
+} as const;
+
+/** 설정 창 문구(R4 U3). 설명은 이 기기 기록 지우기·공개 기록 두 줄에만 둔다. */
+export const SETTINGS_COPY = {
+  title: '환경설정',
+  sound: '전체 소리',
+  bgm: '배경 음악 크기',
+  sfx: '효과음 크기',
+  correctSound: '정답음',
+  fireSound: '발사음',
+  listen: '들어보기',
+  font: '글자 크기',
+  fontPreview: '‘준비물을 잘 챙길 만큼 꼼꼼하다’에서 ‘꼼꼼하다’의 뜻은?',
+  motion: '배경 움직임 단계',
+  contrast: '전장 길·받침 고대비 윤곽선',
+  keyHints: '단축키 번호 배지 표시',
+  share: '공개 기록 나누기',
+  shareHint: '켜면 닉네임·학년·난이도·점수·웨이브가 다른 사람에게 보여요.',
+  clear: '이 기기 기록 지우기',
+  clearHint: '이 브라우저에 저장된 판 기록과 오답 노트를 지워요. 닉네임은 그대로예요.',
+  clearAction: '지우기',
+  clearConfirm: '정말 지우기',
+  cancel: '취소',
+  cleared: '이 기기의 기록을 모두 지웠어요',
+  clearFailed: '기록을 지우지 못했어요. 다른 탭을 닫고 다시 시도해 주세요.',
+  blocked: '다른 탭을 닫고 다시 시도해 주세요.',
+  on: '켜짐',
+  off: '꺼짐',
+} as const;
+
+/** 설명서 화면 문구(R4 U3). 카드 문장은 guideModel이 만든다. */
+export const GUIDE_COPY = {
+  title: '사용 설명서',
+  more: '자세히',
+} as const;

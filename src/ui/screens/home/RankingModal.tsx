@@ -1,81 +1,88 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, type KeyboardEvent } from 'react';
 import { DIFFICULTY_IDS, type DifficultyId } from '../../../contracts/balance';
-import { RANKING_TAB_IDS, type RankingPeriod, type RankingResponse, type RankingTabId } from '../../../contracts/lobby';
+import { RANKING_PERIODS, type RankingPeriod, type RankingResponse, type RankingTabId } from '../../../contracts/lobby';
+import { gradeContent } from '../../../content';
 import { fetchRanking } from '../../../application/lobby';
-import { DIFFICULTY_COPY } from '../../copy';
-import { ModalShell } from './ModalShell';
-import { formatPrimaryMetric, PERIOD_LABELS, TAB_LABELS } from './RankingBoard';
-import css from './home.module.css';
+import { DIFFICULTY_COPY, HOME_COPY } from '../../copy';
+import { Card, Modal, Segmented, type SegmentOption } from '../../kit';
+import { formatPrimaryMetric, PERIOD_LABELS, RANKING_TABS, TAB_LABELS } from './rankingText';
+import css from './lobby.module.css';
+
+type GradeFilter = '3' | '4' | '5' | '6' | 'all';
 
 interface Props {
-  initialTab: RankingTabId;
-  initialGrade: 3 | 4 | 5 | 6 | 'all';
-  initialDifficulty: DifficultyId;
-  initialPeriod: RankingPeriod;
+  grade: 3 | 4 | 5 | 6;
+  difficulty: DifficultyId;
   playerId: string;
-  currentNickname: string;
+  nickname: string;
   onClose(): void;
 }
 
-export function RankingModal({
-  initialTab,
-  initialGrade,
-  initialDifficulty,
-  initialPeriod,
-  playerId,
-  currentNickname,
-  onClose,
-}: Props) {
-  const [tab, setTab] = useState<RankingTabId>(initialTab);
-  const [grade, setGrade] = useState<3 | 4 | 5 | 6 | 'all'>(initialGrade);
-  const [difficulty, setDifficulty] = useState<DifficultyId>(initialDifficulty);
-  const [period, setPeriod] = useState<RankingPeriod>(initialPeriod);
-  const [data, setData] = useState<RankingResponse | null>(null);
-  const tabRefs = useRef<(HTMLButtonElement | null)[]>([]);
+const gradeLabel = (g: string) => (g === 'all' ? '전체' : (
+  <span>{g}<span className={css.unit}>학년</span></span>
+));
 
-  const effectiveGrade: 3 | 4 | 5 | 6 | 'all' =
-    (tab === 'single_score' || tab === 'best_wave') && grade === 'all' ? 3 : grade;
+/** 랭킹 전체 보기: 탭 3개 + 학년·난이도(랭킹 점수는 학년·기간) 두 고르기 줄. 상위 50위. */
+export function RankingModal({ grade, difficulty, playerId, nickname, onClose }: Props) {
+  const [tab, setTab] = useState<RankingTabId>('single_score');
+  const [gradeFilter, setGradeFilter] = useState<GradeFilter>(String(grade) as GradeFilter);
+  const [diff, setDiff] = useState<DifficultyId>(difficulty);
+  const [period, setPeriod] = useState<RankingPeriod>('all_time');
+  const [data, setData] = useState<RankingResponse | null>(null);
+  const [blocked, setBlocked] = useState<string | null>(null);
+  const tabRefs = useRef<Array<HTMLButtonElement | null>>([]);
+
+  const honor = tab === 'honor_points';
+  // 한 판 점수·웨이브는 학년마다 따로 겨루므로 '전체'가 없다.
+  const shownGrade: GradeFilter = gradeFilter === 'all' && !honor ? (String(grade) as GradeFilter) : gradeFilter;
+  const effectiveGrade: 3 | 4 | 5 | 6 | 'all' = shownGrade === 'all' ? 'all' : (Number(shownGrade) as 3 | 4 | 5 | 6);
 
   useEffect(() => {
-    let active = true;
-    void fetchRanking(
-      { tab, grade: effectiveGrade, difficulty, period, limit: 50, offset: 0 },
-      playerId,
-      currentNickname,
-    ).then(res => {
-      if (active) setData(res);
+    let live = true;
+    void fetchRanking({ tab, grade: effectiveGrade, difficulty: diff, period, limit: 50, offset: 0 }, playerId, nickname).then(res => {
+      if (live) setData(res);
     });
-    return () => { active = false; };
-  }, [tab, effectiveGrade, difficulty, period, playerId, currentNickname]);
+    return () => { live = false; };
+  }, [tab, effectiveGrade, diff, period, playerId, nickname]);
 
-  // RankingBoard와 같은 탭 키보드: ←/→(순환)·Home·End로 선택과 포커스를 함께 옮긴다(roving tabindex).
-  const onTabKeyDown = (e: React.KeyboardEvent, idx: number) => {
-    let nextIdx = -1;
-    if (e.key === 'ArrowRight') nextIdx = (idx + 1) % RANKING_TAB_IDS.length;
-    else if (e.key === 'ArrowLeft') nextIdx = (idx - 1 + RANKING_TAB_IDS.length) % RANKING_TAB_IDS.length;
-    else if (e.key === 'Home') nextIdx = 0;
-    else if (e.key === 'End') nextIdx = RANKING_TAB_IDS.length - 1;
-    if (nextIdx >= 0) {
-      e.preventDefault();
-      setTab(RANKING_TAB_IDS[nextIdx]!);
-      tabRefs.current[nextIdx]?.focus();
-    }
+  const gradeOptions: SegmentOption<GradeFilter>[] = [
+    ...(honor ? [{ value: 'all' as const, label: gradeLabel('all'), ariaLabel: '전체 학년' }] : []),
+    ...(['3', '4', '5', '6'] as const).map(g => ({
+      value: g,
+      label: gradeLabel(g),
+      ariaLabel: `${g}학년`,
+      disabled: gradeContent(Number(g)).bank === null,
+    })),
+  ];
+  const diffOptions: SegmentOption<DifficultyId>[] = DIFFICULTY_IDS.map(id => ({ value: id, label: DIFFICULTY_COPY[id].label }));
+  const periodOptions: SegmentOption<RankingPeriod>[] = RANKING_PERIODS.map(p => ({ value: p, label: PERIOD_LABELS[p] }));
+
+  const onTabKeyDown = (e: KeyboardEvent, i: number) => {
+    const n = RANKING_TABS.length;
+    const next = e.key === 'ArrowRight' ? (i + 1) % n : e.key === 'ArrowLeft' ? (i - 1 + n) % n : e.key === 'Home' ? 0 : e.key === 'End' ? n - 1 : -1;
+    if (next < 0) return;
+    e.preventDefault();
+    setTab(RANKING_TABS[next]!);
+    tabRefs.current[next]?.focus();
   };
 
+  const entries = data?.entries ?? [];
+  const mine = data?.myEntry ?? null;
+
   return (
-    <ModalShell titleId="rankingModalTitle" title="상세 수호 순위표 (상위 50위)" wide onClose={onClose}>
-      <div className={css.tabBar} role="tablist" aria-label="상세 순위 분류">
-        {RANKING_TAB_IDS.map((id, i) => (
+    <Modal titleId="rankingModalTitle" title="랭킹" size="lg" onClose={onClose}>
+      <div className={css.rankTabs} role="tablist" aria-label="랭킹 종류">
+        {RANKING_TABS.map((id, i) => (
           <button
             key={id}
             ref={el => { tabRefs.current[i] = el; }}
-            id={`rank-modal-tab-${id}`}
+            id={`rank-tab-${id}`}
             type="button"
             role="tab"
             aria-selected={tab === id}
-            aria-controls="rank-modal-tabpanel"
+            aria-controls="rank-tabpanel"
             tabIndex={tab === id ? 0 : -1}
-            className={css.tabBtn}
+            className={css.rankTab}
             onClick={() => setTab(id)}
             onKeyDown={e => onTabKeyDown(e, i)}
           >
@@ -84,105 +91,51 @@ export function RankingModal({
         ))}
       </div>
 
-      <div className={css.filterStack}>
-        <div className={css.filterRow} role="radiogroup" aria-label="상세 학년 범위">
-          {(tab === 'honor_points' || tab === 'local_device') && (
-            <button
-              type="button"
-              role="radio"
-              aria-checked={effectiveGrade === 'all'}
-              className={css.filterBtn}
-              onClick={() => setGrade('all')}
-            >
-              전체 학년
-            </button>
-          )}
-          {([3, 4, 5, 6] as const).map(g => (
-            <button
-              key={g}
-              type="button"
-              role="radio"
-              aria-checked={effectiveGrade === g}
-              className={css.filterBtn}
-              onClick={() => setGrade(g)}
-            >
-              {g}학년
-            </button>
-          ))}
+      <div className={css.filterRow}>
+        <div className={css.filterGroup}>
+          <span className={css.fieldLabelInk}>학년</span>
+          <Segmented
+            label="학년"
+            options={gradeOptions}
+            value={shownGrade}
+            onChange={v => { setBlocked(null); setGradeFilter(v); }}
+            onBlocked={() => setBlocked(HOME_COPY.gradeSoon)}
+          />
         </div>
-
-        {(tab === 'single_score' || tab === 'best_wave') && (
-          <div className={css.filterRow} role="radiogroup" aria-label="상세 난이도 범위">
-            {DIFFICULTY_IDS.map(d => (
-              <button
-                key={d}
-                type="button"
-                role="radio"
-                aria-checked={difficulty === d}
-                className={css.filterBtn}
-                onClick={() => setDifficulty(d)}
-              >
-                {DIFFICULTY_COPY[d].label}
-              </button>
-            ))}
-          </div>
-        )}
-
-        {tab === 'honor_points' && (
-          <div className={css.filterRow} role="radiogroup" aria-label="상세 집계 기간">
-            {(['weekly', 'season1', 'all_time'] as const).map(p => (
-              <button
-                key={p}
-                type="button"
-                role="radio"
-                aria-checked={period === p}
-                className={css.filterBtn}
-                onClick={() => setPeriod(p)}
-              >
-                {PERIOD_LABELS[p]}
-              </button>
-            ))}
-          </div>
-        )}
+        <div className={css.filterGroup}>
+          <span className={css.fieldLabelInk}>{honor ? '기간' : '난이도'}</span>
+          {honor
+            ? <Segmented<RankingPeriod> label="집계 기간" options={periodOptions} value={period} onChange={v => setPeriod(v)} />
+            : <Segmented<DifficultyId> label="난이도" options={diffOptions} value={diff} onChange={v => setDiff(v)} />}
+        </div>
       </div>
+      <p className={css.fieldNoteInk} role="status">{blocked}</p>
 
-      {tab === 'honor_points' && (
-        <p className={css.sourceNotice}>
-          <span>원정 명예점은 1웨이브 이상 지킨 정규 판마다 점수와 달성 웨이브·정답 수에 따라 적립돼요.</span>
-        </p>
-      )}
-
-      <div id="rank-modal-tabpanel" role="tabpanel" aria-labelledby={`rank-modal-tab-${tab}`} style={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
-        {!data || data.entries.length === 0 ? (
-          <div className={css.emptyRankBox}>
-            <strong>{tab === 'local_device' ? '아직 기록이 없어요.' : '표시할 순위 기록이 아직 없어요.'}</strong>
-          </div>
+      <div id="rank-tabpanel" role="tabpanel" aria-labelledby={`rank-tab-${tab}`}>
+        {entries.length === 0 ? (
+          <p className={css.rankEmptyBig}>{data ? '아직 기록이 없어요' : ' '}</p>
         ) : (
-          <ol className={css.rankList} style={{ maxHeight: 360, overflowY: 'auto' }}>
-            {data.entries.map(entry => (
+          <ol className={css.rankListFull}>
+            {entries.map(entry => (
               <li key={`${entry.rank}-${entry.playerIdHash}`} className={css.rankRow} data-me={entry.isMe || undefined}>
-                <span className={css.rankMedal} data-rank={entry.rank <= 3 ? entry.rank : undefined}>
-                  {entry.rank}
-                </span>
-                <div className={css.rankInfo}>
-                  <span className={css.rankNick}>{entry.nickname}</span>
+                <span className={css.rankNum}>{entry.rank}</span>
+                <span className={css.rankNick}>
+                  {entry.nickname}
                   <span className={css.rankSub}>{entry.secondaryLabel}</span>
-                </div>
-                <strong className={css.rankScore}>{formatPrimaryMetric(tab, entry.primaryValue)}</strong>
+                </span>
+                <span className={css.rankScore}>{formatPrimaryMetric(tab, entry.primaryValue)}</span>
               </li>
             ))}
           </ol>
         )}
       </div>
 
-      {data?.myEntry && (
-        <div className={css.myRankDock}>
-          <span className={css.myRankLabel}>내 순위 · {data.myEntry.nickname}</span>
-          <span className={css.myRankValue}>
-            {data.myEntry.rank}위 · {formatPrimaryMetric(tab, data.myEntry.primaryValue)}
-          </span>
-        </div>
+      {mine && !entries.some(e => e.isMe) && (
+        <Card sunk className={css.myRank} aria-label="내 순위 요약">
+          <span className={css.myRankName}>{mine.nickname}</span>
+          <span className={css.myRankValue}>{mine.rank}위 · {formatPrimaryMetric(tab, mine.primaryValue)}</span>
+        </Card>
       )}
-    </ModalShell>
+    </Modal>
   );
 }

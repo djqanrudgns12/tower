@@ -209,15 +209,17 @@ export async function domAudit(page) {
     const shown = el => visible(el) && !el.closest('.sr-only') && !el.closest('canvas') && !hiddenByBox(el) && !(el.closest('[inert]') && !el.closest('[role="dialog"]'));
     const rgba = v => (v.match(/[\d.]+/g) ?? []).map(Number);
     const opaque = v => { const c = rgba(v); return c.length >= 3 && (c.length < 4 || c[3] > 0.05); };
+    // 반투명 막(모달 scrim 등)은 겹이 아니라 덮개라 겹·토큰 밖 색에서 뺀다.
+    const solid = v => { const c = rgba(v); return c.length >= 3 && (c.length < 4 || c[3] >= 0.9); };
     const boxed = el => {
       const st = getComputedStyle(el);
-      return opaque(st.backgroundColor) || ['Top', 'Right', 'Bottom', 'Left'].some(s => parseFloat(st[`border${s}Width`]) >= 1 && opaque(st[`border${s}Color`]) && st[`border${s}Style`] !== 'none');
+      return solid(st.backgroundColor) || ['Top', 'Right', 'Bottom', 'Left'].some(s => parseFloat(st[`border${s}Width`]) >= 1 && opaque(st[`border${s}Color`]) && st[`border${s}Style`] !== 'none');
     };
     const root = getComputedStyle(document.documentElement);
     const tokens = new Set(['--bg', '--paper', '--paper-2', '--line', '--ink', '--ink-2', '--on-dark', '--green', '--green-base', '--amber', '--amber-base', '--red', '--red-base', '--blue']
       .map(n => root.getPropertyValue(n).trim().toLowerCase()).filter(Boolean)
       .map(hex => { const n = parseInt(hex.slice(1), 16); return `${(n >> 16) & 255},${(n >> 8) & 255},${n & 255}`; }));
-    const offToken = v => opaque(v) && !tokens.has(rgba(v).slice(0, 3).join(','));
+    const offToken = v => solid(v) && !tokens.has(rgba(v).slice(0, 3).join(','));
     const slop = { buttons: 0, sentences: [], fontSizes: new Set(), pills: 0, depth: 0, offToken: 0 };
     for (const el of document.querySelectorAll('button, a[href], input, select, [role="button"], [role="radio"], [role="switch"], [role="checkbox"], [role="tab"]')) if (shown(el)) slop.buttons++;
     for (const el of document.querySelectorAll('body *')) {

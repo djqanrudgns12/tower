@@ -38,6 +38,7 @@
   .ghost:hover:not(:disabled) { filter: none; background: var(--paper-2); }
 }
 .onDark.ghost { color: var(--on-dark); }
+.onDark:focus-visible { outline-color: var(--on-dark); }
 @media (hover: hover) {
   .onDark.ghost:hover:not(:disabled) { background: rgba(255, 253, 247, 0.12); }
 }

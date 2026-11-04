@@ -16,6 +16,10 @@ const STATIC_CYCLE = 0.18;
 const STELE_FACE_Y = 0.41;
 /** 그림(타워 54px·적 36~50px)이 잘리지 않는 최소 설계 높이(css px). 무대가 이보다 낮으면 그림을 비율로 줄인다. */
 const MIN_DESIGN_H = 140;
+/** 무대가 이 크기(css px)보다 크면 그림을 키워 그린다(최대 MAX_SCALE배). */
+const BASE_W = 480;
+const BASE_H = 260;
+const MAX_SCALE = 1.6;
 
 const WAYPOINTS: readonly [number, number][] = [
   [-0.06, 0.56],
@@ -413,7 +417,8 @@ export function MiniStageCanvas({ motionMode, highContrastMap, paused, className
       const cssW = Math.max(180, Math.round(rect.width || 480));
       const cssH = Math.max(60, Math.round(rect.height || 176));
       // 낮은 무대(저높이 크롬북 홈)에서는 그림 크기를 같은 비율로 줄여 그린다. 그대로 두면 타워·적·체력 막대가 윗변에서 잘린다.
-      const k = Math.min(1, cssH / MIN_DESIGN_H);
+      // 크고 높은 무대(책상 홈)에서는 반대로 키워서 그린다. 그대로 두면 타워·적이 넓은 풀밭에 점처럼 박힌다.
+      const k = cssH < MIN_DESIGN_H ? cssH / MIN_DESIGN_H : Math.min(MAX_SCALE, Math.max(1, Math.min(cssW / BASE_W, cssH / BASE_H)));
       width = cssW / k;
       height = cssH / k;
       canvas.width = Math.round(cssW * dpr);
