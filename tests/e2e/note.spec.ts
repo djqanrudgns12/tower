@@ -26,7 +26,7 @@ async function endRun(page: Page) {
   await page.getByRole('button', { name: '일시정지' }).first().click();
   await page.getByRole('dialog').getByRole('button', { name: '이번 판 끝내기' }).click();
   await page.getByRole('dialog').getByRole('button', { name: '끝내기', exact: true }).click();
-  // 결과 화면의 첫 줄(틀린 낱말이 없으면 '이번 판 기록' 카드는 아예 없으므로 결과 카드 아래 '다시 하기'로 기다린다).
+  // 결과 화면의 첫 줄(틀린 낱말이 없으면 '틀린 낱말' 창은 아예 없으므로 결과 창 아래 '다시 하기'로 기다린다).
   await expect(page.getByRole('button', { name: '다시 하기' })).toBeVisible({ timeout: 15_000 });
 }
 
@@ -86,7 +86,7 @@ test('한 판 끝내기 → 결과의 노트 줄과 노트 보기 → 오답 노
   await skipFirstQuestion(page);
   await endRun(page);
 
-  // 결과: 넘긴 낱말 하나가 '이번 판 기록'에 있고, 노트 줄이 '새로 담은 낱말 1'과 '노트 보기'를 보인다.
+  // 결과: 넘긴 낱말 하나가 '틀린 낱말' 창에 있고, 노트 줄이 '새로 담은 낱말 1'과 '노트 보기'를 보인다.
   const words = page.locator('ul[data-content] > li');
   await expect(words).toHaveCount(1);
   const lemma = ((await words.first().getByRole('button').innerText()).split('\n')[0] ?? '').trim();
@@ -106,6 +106,25 @@ test('한 판 끝내기 → 결과의 노트 줄과 노트 보기 → 오답 노
   const resultAxe = await new AxeBuilder({ page }).analyze();
   expect(resultAxe.violations.map(v => `${v.id}: ${v.nodes.length}`)).toEqual([]);
   await page.screenshot({ path: 'test-results/shots/result-with-note.png' });
+
+  // R1: '이번 판 기록'은 접혀 있다가 누르면 푼 문제·모르겠어요·만난 낱말이 나온다(첫 문제를 넘겼으니 0·1·1개). 퍼센트·숙련도는 어디에도 없다.
+  const log = page.getByRole('button', { name: '이번 판 기록' });
+  await expect(log).toHaveAttribute('aria-expanded', 'false');
+  await expect(page.getByText('푼 문제')).toBeHidden();
+  await log.click();
+  await expect(log).toHaveAttribute('aria-expanded', 'true');
+  const logRow = (name: string) => page.locator('dl > div').filter({ hasText: name });
+  await expect(logRow('푼 문제')).toContainText('0개');
+  await expect(logRow('모르겠어요')).toContainText('1개');
+  await expect(logRow('만난 낱말')).toContainText('1개');
+  await expect(page.getByText(/%|퍼센트|정확도|숙련/)).toHaveCount(0);
+  await log.click();
+  await expect(log).toHaveAttribute('aria-expanded', 'false');
+  // 틀린 문제가 있었으니 만점 칭찬은 없다.
+  await expect(page.getByText('한 문제도 틀리지 않았어요')).toHaveCount(0);
+  // R2: 웨이브 숫자는 올라간 끝에 화면 읽기용 값과 같아진다.
+  const srWave = ((await page.locator('#resultWave .sr-only').textContent()) ?? '').match(/(\d+)웨이브/)![1];
+  await expect(page.locator('#resultWave [aria-hidden="true"]')).toHaveText(`${srWave}웨이브`);
 
   // 노트는 이 기기 localStorage에 한 낱말로 담겼다.
   const stored = await noteStored(page);
@@ -134,7 +153,7 @@ test('한 판 끝내기 → 결과의 노트 줄과 노트 보기 → 오답 노
 
   // 뒤로 → 결과 화면으로 돌아온다(노트 줄도 그대로).
   await page.getByRole('button', { name: '뒤로' }).click();
-  await expect(page.getByRole('heading', { level: 2, name: '이번 판 기록' })).toBeVisible();
+  await expect(page.getByRole('heading', { level: 2, name: '틀린 낱말' })).toBeVisible();
   await expect(openNote).toBeVisible();
   for (const [w, h] of [[390, 844], [320, 568]] as const) {
     await page.setViewportSize({ width: w, height: h });
@@ -165,8 +184,9 @@ test('틀린 낱말이 없으면 결과에 노트 줄이 없고, 홈의 오답 �
   await startRun(page, '무오답검증');
   await endRun(page);
 
-  // 복습 카드는 틀린 낱말이 있을 때만 있다: 없으면 카드도 빈 안내 문장도 그리지 않는다.
-  await expect(page.getByRole('heading', { level: 2, name: '이번 판 기록' })).toHaveCount(0);
+  // 낱말 창은 틀린 낱말이 있을 때만 있다: 없으면 창도 빈 안내 문장도 그리지 않는다. '이번 판 기록' 접기는 결과 창에 늘 있다.
+  await expect(page.getByRole('heading', { level: 2, name: '틀린 낱말' })).toHaveCount(0);
+  await expect(page.getByRole('button', { name: '이번 판 기록' })).toBeVisible();
   await expect(page.getByText('틀리거나 넘긴 낱말이 없어요')).toHaveCount(0);
   await expect(page.getByText(/새로 담은 낱말|외운 낱말/)).toHaveCount(0);
   await expect(page.getByRole('button', { name: '노트 보기' })).toHaveCount(0);
@@ -211,4 +231,21 @@ test('설정에서 기록을 지우고 닫으면 홈 ‘오답 노트’ 단추�
   await clearHistoryFromSettings(page, '개수갱신검증');
   await expect(page.getByRole('button', { name: '오답 노트', exact: true })).toBeVisible();
   await expect(page.getByRole('button', { name: /오답 노트 \d+개/ })).toHaveCount(0);
+});
+
+test('R2 움직임 줄이기: 결과의 웨이브 숫자는 올라가지 않고 투명도로만 나타난다', async ({ page }) => {
+  test.setTimeout(120_000);
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await freshHome(page);
+  await startRun(page, '움직임검증');
+  await endRun(page);
+
+  const num = page.locator('#resultWave [aria-hidden="true"]');
+  const srWave = ((await page.locator('#resultWave .sr-only').textContent()) ?? '').match(/(\d+)웨이브/)![1];
+  // 처음부터 끝 값이고(올라가기 없음), 위치·크기 움직임은 없이 투명도 애니메이션만 걸린다.
+  await expect(num).toHaveText(`${srWave}웨이브`);
+  expect(await num.getAttribute('data-still')).not.toBeNull();
+  const kinds = await page.evaluate(() => document.getAnimations().map(a => (a as CSSAnimation).animationName));
+  expect(kinds.filter(n => n === 'resultPop')).toEqual([]);
+  expect(await page.evaluate(() => document.getAnimations().filter(a => a.effect?.getComputedTiming().iterations === Infinity).length)).toBe(0);
 });

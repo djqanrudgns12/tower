@@ -1,11 +1,13 @@
-import { useId, useState } from 'react';
+import { useEffect, useId, useState } from 'react';
 import { reviewQuestions } from '../../content';
 import { computeHonorPoints } from '../../contracts/lobby';
 import type { RunState } from '../../domain/types';
 import { DIFFICULTY_COPY, fmtNumber, RESULT_COPY as T, resultHeadline } from '../copy';
 import { BackIcon, RetryIcon } from '../icons/ControlIcons';
 import { ArtIcon, Button, Card, Stat } from '../kit';
+import { RESULT_EXTRA as X } from './home/homeCopy';
 import css from './ResultScreen.module.css';
+import { countUpAt, runLog } from './resultModel';
 
 /** 오답 노트에 새로 담은 낱말 수·외운(졸업한) 낱말 수. `controller.getView().reviewDelta`와 같은 모양이다. */
 export interface ResultReviewDelta { added: number; graduated: number }
@@ -24,9 +26,34 @@ interface Props {
 
 interface ReviewItem { id: number; lemma: string; answer: string; stem: string; explanation: string }
 
+/** 움직임 줄이기(기기 설정 또는 게임 설정 '정지')인가. 켜져 있으면 숫자 올라가기·팝 대신 투명도만 쓴다(v4 §7.3). */
+function prefersStill(): boolean {
+  if (typeof document === 'undefined') return true;
+  return document.documentElement.dataset.motion === 'minimal' || (typeof matchMedia === 'function' && matchMedia('(prefers-reduced-motion: reduce)').matches);
+}
+
+/** 0에서 target까지 한 번 올라가는 숫자(약 0.4초, 끝이 느려지는 곡선). still이면 바로 target이다. */
+function useCountUp(target: number, still: boolean, ms = 420): number {
+  const [n, setN] = useState(0);
+  useEffect(() => {
+    if (still || target <= 0) return;
+    const t0 = performance.now();
+    let raf = 0;
+    const step = (now: number) => {
+      const p = Math.min(1, (now - t0) / ms);
+      setN(countUpAt(target, p));
+      if (p < 1) raf = requestAnimationFrame(step);
+    };
+    raf = requestAnimationFrame(step);
+    return () => cancelAnimationFrame(raf);
+  }, [target, still, ms]);
+  return still ? target : n;
+}
+
 /**
- * 결과와 복습(R4 U3, PRD §10.1). 결과 카드(성문 + 지킨 웨이브 + 한 줄 + 정답·처치·점수) 바로 아래에 다시 하기·홈이 붙는다.
- * 틀리거나 넘긴 낱말이 있을 때만 옆에 ‘이번 판 다시 보기’ 카드가 선다(없으면 빈 카드를 그리지 않고 결과 칸이 가운데에 선다).
+ * 결과와 복습(R4 U3 → R5 R1·R2, PRD §10.1). 결과 창(성문 + 지킨 웨이브 + 한 줄 + 정답·처치·점수) 바로 아래에 다시 하기·홈이 붙는다.
+ * '이번 판 기록'은 접어 두었다가 누르면 푼 문제·모르겠어요·만난 낱말을 보인다(퍼센트·숙련도는 없다, PRD §20.5).
+ * 틀리거나 넘긴 낱말이 있을 때만 옆에 ‘틀린 낱말’ 창이 선다(없으면 빈 창을 그리지 않고 결과 창이 가운데에 선다).
  * 복습 재풀이는 보상이 없으므로(PRD §2.2) 여기서는 낱말 카드를 눌러 해설만 펼쳐 보인다.
  */
 export function ResultScreen({ state, reviewDelta = null, previousBest = null, onOpenNote, onAgain, onHome }: Props) {
@@ -55,26 +82,36 @@ export function ResultScreen({ state, reviewDelta = null, previousBest = null, o
     : [];
 
   const hasReview = items.length > 0;
+  // R1 이번 판 기록(푼 문제·모르겠어요·만난 낱말)과 R2 만점 칭찬의 숫자.
+  const log = runLog(state.stats, answers.filter(a => a.answer), id => questions.get(id)?.target.senseKey);
+
+  const [still] = useState(prefersStill);
+  const wave = useCountUp(state.completedWave, still);
+  const logId = useId();
+  const [logOpen, setLogOpen] = useState(false);
 
   return (
     <main className={css.page}>
       <div className={css.scroll}>
         <div className={css.body} data-review={hasReview || undefined}>
-          {/* 결과 카드와 그 바로 아래 단추 두 개가 한 칸이다. 틀린 낱말이 없으면 이 칸만 가운데에 선다. */}
+          {/* 결과 창과 그 바로 아래 단추 두 개가 한 칸이다. 틀린 낱말이 없으면 이 칸만 가운데에 선다. */}
           <div className={css.resultCol}>
-            <Card as="section" float className={css.summary} aria-labelledby="resultWave">
+            <section className={`${css.window} ${css.summary}`} aria-labelledby="resultWave">
               <p className={css.meta}>{state.config.nickname} · {state.config.grade}학년 · {DIFFICULTY_COPY[state.config.difficulty].label}</p>
+              <div className={css.rule} aria-hidden="true" />
               <ArtIcon name="gate" size={72} />
+              {/* 화면 읽기에는 처음부터 끝 값을 읽히고, 눈에 보이는 숫자만 올라간다. 움직임 줄이기면 올라가지 않고 투명도로만 나타난다. */}
               <h1 id="resultWave" className={css.wave}>
-                <span className="sr-only">{T.waveSr} </span>
-                {state.completedWave}{T.wave}
+                <span className="sr-only">{T.waveSr} {state.completedWave}{T.wave}</span>
+                <span aria-hidden="true" className={css.waveNum} data-still={still || undefined}>{wave}{T.wave}</span>
               </h1>
-              <p className={css.line} data-kind={headline.kind}>{headline.text}</p>
+              <p className={css.line} data-kind={headline.kind} data-pop={headline.kind === 'newBest' || undefined}>{headline.text}</p>
+              {log.perfect && <p className={css.praise}>{X.perfect}</p>}
 
               <div className={css.stats}>
-                <Stat icon={null} value={`${state.stats.correct}/${total}`} label={T.correct} className={css.tile ?? ''} />
-                <Stat icon={null} value={fmtNumber(state.stats.kills)} label={T.kills} className={css.tile ?? ''} />
-                <Stat icon={null} value={fmtNumber(state.pt)} label={T.score} className={css.tile ?? ''} />
+                <Card sunk pad="sm" className={css.tile ?? ''}><Stat icon={null} value={`${state.stats.correct}/${total}`} label={T.correct} className={css.stat ?? ''} /></Card>
+                <Card sunk pad="sm" className={css.tile ?? ''}><Stat icon={null} value={fmtNumber(state.stats.kills)} label={T.kills} className={css.stat ?? ''} /></Card>
+                <Card sunk pad="sm" className={css.tile ?? ''}><Stat icon={null} value={fmtNumber(state.pt)} label={T.score} className={css.stat ?? ''} /></Card>
               </div>
 
               <p className={css.ranking}>{T.ranking} <strong>{honorPt > 0 ? `+${fmtNumber(honorPt)}` : '0'}</strong></p>
@@ -84,24 +121,38 @@ export function ResultScreen({ state, reviewDelta = null, previousBest = null, o
                   <Button onClick={onOpenNote}>{T.openNote}</Button>
                 </div>
               )}
+
+              {/* 이번 판 기록: 접어 두었다가 누르면 푼 문제 · 모르겠어요 · 만난 낱말(퍼센트 없음). */}
+              <div className={css.log}>
+                <Button variant="ghost" className={css.logBtn} aria-expanded={logOpen} aria-controls={logId} onClick={() => setLogOpen(v => !v)}>
+                  <span>{X.logTitle}</span>
+                  <span className={css.chevron} data-open={logOpen} aria-hidden="true"><BackIcon /></span>
+                </Button>
+                <dl id={logId} className={css.logList} hidden={!logOpen}>
+                  <div><dt>{X.solved}</dt><dd>{log.solved}{X.unit}</dd></div>
+                  <div><dt>{X.skipped}</dt><dd>{log.skipped}{X.unit}</dd></div>
+                  <div><dt>{X.words}</dt><dd>{log.words}{X.unit}</dd></div>
+                </dl>
+              </div>
+
               {state.config.contentMode === 'development' && <p className={css.dev}>{T.dev}</p>}
-              {/* 주 버튼은 짙은 바탕이 아니라 결과 카드 안에 둔다(ui-rules-v3 §2 버튼 바탕). */}
+              {/* 주 버튼은 짙은 바탕이 아니라 결과 창 안에 둔다(ui-rules-v3 §2 버튼 바탕). */}
               <div className={css.actions}>
                 <Button variant="primary" size="lg" className={css.again} onClick={onAgain}><RetryIcon size={24} />{T.again}</Button>
                 <Button size="lg" className={css.home} onClick={onHome}>{T.home}</Button>
               </div>
-            </Card>
-
+            </section>
           </div>
 
           {hasReview && (
-            <Card as="section" float className={css.review} aria-labelledby="resultReview">
-              <h2 id="resultReview" className={css.reviewTitle}>{T.reviewTitle}</h2>
+            <section className={`${css.window} ${css.review}`} aria-labelledby="resultReview">
+              <h2 id="resultReview" className={css.reviewTitle}>{X.missedTitle}</h2>
+              <div className={css.rule} aria-hidden="true" />
               {/* 낱말·뜻·해설은 문제 내용이라 data-content로 표시한다(상시 문장 계측에서 뺀다). */}
               <ul className={css.list} data-content>
                 {items.map(item => <WordCard key={item.id} item={item} />)}
               </ul>
-            </Card>
+            </section>
           )}
         </div>
       </div>

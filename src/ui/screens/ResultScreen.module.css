@@ -1,11 +1,12 @@
-/* 결과 화면(R4 U3, ui-rules-v3). v3 토큰만 쓴다. 바탕 위에 결과 칸(카드 + 바로 아래 단추 두 개)과, 틀린 낱말이 있을 때만 복습 카드. */
+/* 결과 화면(R4 U3 → R5 R1·R2, ui-rules-v4). 짙은 호두나무 바탕 위에 결과 창(+ 바로 아래 단추 두 개)과, 틀린 낱말이 있을 때만 낱말 창.
+   창은 kit Modal과 같은 한 벌이다: 호두나무 테(frame.sm 원화) + 안쪽 몰딩 + 양피지 면, 머리줄 아래 구분선(rule 원화). 화면 CSS에는 토큰만 쓴다. */
 .page {
   height: 100dvh;
   background: var(--bg);
   color: var(--on-dark);
 }
 .scroll { height: 100%; overflow-y: auto; }
-/* 틀린 낱말이 없으면 결과 칸 하나가 가운데에 선다. 있으면 두 칸(결과 | 복습). */
+/* 틀린 낱말이 없으면 결과 창 하나가 가운데에 선다. 있으면 두 칸(결과 | 낱말). */
 .body {
   width: min(1040px, 100%);
   min-height: 100%;
@@ -19,37 +20,59 @@
 }
 .resultCol { display: grid; gap: var(--s4); min-width: 0; }
 
-/* ── 위 카드: 성문 + 웨이브 + 한 줄 + 지표 3개 ── */
-.summary { display: grid; justify-items: center; align-content: start; gap: var(--s2); padding: var(--s5) var(--s4); text-align: center; }
-.meta { font-size: var(--fs-1); color: var(--ink-2); }
-.wave { font-size: var(--fs-6); font-weight: 800; line-height: 1.1; }
+/* ── 창 재질(kit Modal .dialog와 같은 값. 테 8px + 여백 16px) ── */
+.window {
+  padding: var(--s4);
+  border: var(--frame-sm) solid var(--walnut-2);
+  border-image: var(--art-frame-sm) 33 / var(--frame-sm) stretch;
+  border-radius: var(--r-md);
+  background: var(--paper) padding-box;
+  color: var(--ink);
+  box-shadow: inset 0 0 0 2px var(--oak-1), var(--shadow-board);
+}
+/* 머리줄 아래 구분선(rule 원화, 대체 2px --oak-1 선). 12px 칸. */
+.rule {
+  width: 100%;
+  height: 12px;
+  border: 0 solid transparent;
+  border-width: 5px 10px;
+  border-image: var(--art-rule) 0 20 fill / 0 10px stretch;
+  background: var(--oak-1) content-box;
+}
+
+/* ── 결과 창: 닉네임·학년·난이도 머리줄 + 성문 + 웨이브 + 한 줄 + 지표 3개 ── */
+.summary { display: grid; justify-items: center; align-content: start; gap: var(--s2); text-align: center; }
+.meta { font-size: var(--fs-1); font-weight: 700; color: var(--ink-2); }
+.wave { font-size: var(--fs-6); font-weight: 800; line-height: 1.1; font-variant-numeric: tabular-nums; }
 .line { font-size: var(--fs-3); font-weight: 700; text-wrap: balance; }
-/* 새 최고 기록·아까운 패배: 한 줄을 호박색으로 강조하고, 아래 '다시 하기'가 가장 먼저 눈에 들어오게 한다. */
+/* 새 최고 기록·아까운 패배: 한 줄을 놋쇠 짙은 색으로 강조하고, 아래 '다시 하기'가 가장 먼저 눈에 들어오게 한다. */
 .line[data-kind='newBest'],
 .line[data-kind='nearMiss'] { font-weight: 800; color: var(--amber-base); }
-.stats { width: 100%; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--s2); margin-top: var(--s3); }
-.stats .tile {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: var(--s1);
-  padding: var(--s3) var(--s2);
-  border-radius: var(--r-sm);
-  background: var(--paper-2);
-  font-size: var(--fs-5);
-  line-height: 1.1;
-}
-.stats .tile > span { max-width: 100%; overflow-wrap: anywhere; }
-.stats .tile > span:last-child { font-size: var(--fs-1); }
-.ranking { margin-top: var(--s2); font-size: var(--fs-2); color: var(--ink-2); }
+/* R2: 틀린 문제 없는 판의 칭찬 한 줄. */
+.praise { font-size: var(--fs-2); font-weight: 700; color: var(--green); }
+.stats { width: 100%; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--s2); margin-top: var(--s2); }
+/* 3지표 칸: Card sunk(음각 홈). 숫자는 크게, 이름은 13px. */
+.stats .tile { display: grid; place-items: center; }
+.stats .stat { flex-direction: column; gap: var(--s1); font-size: var(--fs-5); line-height: 1.1; }
+.stats .stat > span { max-width: 100%; overflow-wrap: anywhere; }
+.ranking { margin-top: var(--s1); font-size: var(--fs-2); color: var(--ink-2); }
 .ranking strong { color: var(--ink); font-weight: 800; }
-.note { width: 100%; display: flex; align-items: center; justify-content: space-between; gap: var(--s3); margin-top: var(--s1); text-align: left; }
+.note { width: 100%; display: flex; align-items: center; justify-content: space-between; gap: var(--s3); text-align: left; }
 .noteText { font-size: var(--fs-2); font-weight: 700; }
 .dev { font-size: var(--fs-1); color: var(--ink-2); }
 
-/* ── 아래 카드: 이번 판 다시 보기 ── */
-.review { display: flex; flex-direction: column; gap: var(--s3); min-height: 0; padding: var(--s4); }
+/* ── R1: 이번 판 기록(접기). 푼 문제 · 모르겠어요 · 만난 낱말 세 칸 ── */
+.log { width: 100%; border-top: 1px solid var(--line); }
+.logBtn { width: 100%; justify-content: space-between; padding: 0 var(--s2); }
+.logList { margin: 0; padding: 0 var(--s2) var(--s2); display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--s2); text-align: center; }
+.logList > div { display: grid; gap: 2px; }
+.logList dt { font-size: var(--fs-1); font-weight: 700; color: var(--ink-2); }
+.logList dd { margin: 0; font-size: var(--fs-3); font-weight: 800; font-variant-numeric: tabular-nums; }
+.chevron { flex: none; display: inline-flex; color: var(--ink-2); transform: rotate(-90deg); transition: transform var(--t-ui) var(--ease-out); }
+.chevron[data-open='true'] { transform: rotate(90deg); }
+
+/* ── 낱말 창: 틀리거나 넘긴 낱말 ── */
+.review { display: flex; flex-direction: column; gap: var(--s2); min-height: 0; }
 .reviewTitle { font-size: var(--fs-3); font-weight: 800; }
 .list { list-style: none; margin: 0; padding: var(--s2); display: grid; gap: var(--s2); min-height: 0; overflow-y: auto; }
 .word { padding: 0; }
@@ -66,23 +89,45 @@
 }
 .wordText { display: grid; gap: 2px; min-width: 0; }
 .lemma { font-size: var(--fs-3); font-weight: 800; }
-.answer { font-size: var(--fs-2); font-weight: 400; color: var(--ink-2); overflow-wrap: anywhere; }
-.chevron { flex: none; display: inline-flex; color: var(--ink-2); transform: rotate(-90deg); transition: transform var(--t-ui) var(--ease-out); }
-.chevron[data-open='true'] { transform: rotate(90deg); }
-.detail { display: grid; gap: var(--s2); padding: var(--s2) var(--s4) var(--s4); font-size: var(--fs-2); }
+/* 읽는 글(v4 §5.3): 정답·문제·해설은 글자 크기 단계에 따라 기본 / +1 / +2px. */
+.answer { font-size: var(--read-font); font-weight: 400; color: var(--ink-2); overflow-wrap: anywhere; }
+.detail { display: grid; gap: var(--s2); padding: var(--s2) var(--s4) var(--s4); font-size: var(--read-font); }
 .stem { color: var(--ink-2); }
 
-/* ── 결과 카드 바로 아래 단추 줄: 결과 칸과 한 덩어리라 1366×650에서도 스크롤 없이 보인다 ── */
-.actions { display: flex; gap: var(--s3); width: 100%; align-self: stretch; white-space: nowrap; }
+/* ── 결과 창 바로 아래 단추 줄: 결과 창과 한 덩어리라 1366×650에서도 스크롤 없이 보인다 ── */
+.actions { display: flex; gap: var(--s3); width: 100%; align-self: stretch; margin-top: var(--s1); white-space: nowrap; }
 .actions .again { flex: 2 1 0; }
 .actions .home { flex: 1 1 0; }
 
 @media (min-width: 880px) {
   .body[data-review] { grid-template-columns: minmax(320px, 400px) minmax(0, 1fr); align-content: center; align-items: start; }
-  /* 낱말이 많으면 카드 안에서만 스크롤한다. 40px = 위아래 여백. */
+  /* 낱말이 많으면 창 안에서만 스크롤한다. 40px = 위아래 여백. */
   .review { max-height: calc(100dvh - 2 * var(--s5)); }
 }
 
+/* ── R2: 숫자 올라가기(JS)와 새 기록 팝. 움직임 줄이기에서는 위치·크기 움직임 없이 투명도만 ── */
+.waveNum { display: inline-block; }
+.waveNum[data-still] { animation: resultFade 200ms linear both; }
+.line[data-pop] { animation: resultPop 360ms var(--ease-out) both; }
+@keyframes resultPop {
+  0% { opacity: 0; transform: scale(0.9); }
+  60% { opacity: 1; transform: scale(1.06); }
+  100% { opacity: 1; transform: scale(1); }
+}
+@keyframes resultFade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+/* global.css는 움직임 줄이기에서 모든 animation-duration을 0으로 만든다. 이 둘만은 투명도 전환(200ms)을 남긴다. */
 @media (prefers-reduced-motion: reduce) {
+  .line[data-pop] { animation: resultFade 200ms linear both !important; animation-duration: 200ms !important; }
+  .waveNum[data-still] { animation-duration: 200ms !important; }
   .chevron { transition: none; }
+}
+:global(:root[data-motion='minimal']) .line[data-pop] { animation: resultFade 200ms linear both !important; animation-duration: 200ms !important; }
+:global(:root[data-motion='minimal']) .waveNum[data-still] { animation-duration: 200ms !important; }
+
+/* 인쇄·강제 색(고대비)에서는 원화 대신 토큰 단색으로 그린다(v4 §3). */
+@media print, (forced-colors: active) {
+  .window, .rule { border-image: none; }
 }
