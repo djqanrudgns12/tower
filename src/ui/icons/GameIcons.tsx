@@ -1,21 +1,10 @@
 import type { BranchId, TowerId } from '../../contracts/balance';
 
 /**
- * 시안 1 (왕국 원정대 정통 공방 v3) 전용 단일 선 두께(1.6px) 문장형 벡터 아이콘 및 1:1 방패 초상화.
+ * 게임 그림 아이콘(금화·진화 갈래 표식·능력치·도구 키)과 1:1 방패 초상화. 누르는 조작 아이콘은 ControlIcons 한 세트다.
  * PRD §12.8 준수: 이모지·비정규 유니코드 기호 0, CSS 그라데이션 0, 단색 계단식 명암만 사용한다.
  */
 const baseStyle = { display: 'inline-block', verticalAlign: 'middle', flex: 'none' } as const;
-
-/** light: 짙은 호두나무 바탕 위(상태 바)용 밝은 윤곽. */
-export function GateShieldIcon({ size = 16, light = false }: { size?: number; light?: boolean }) {
-  const line = light ? '#fbf3e4' : '#362419';
-  return (
-    <svg width={size} height={size} viewBox="0 0 20 20" style={baseStyle} aria-hidden="true">
-      <path d="M4 3.5h3v2h2v-2h2v2h2v-2h3v7.2c0 3.8-2.9 6.3-6 7.8-3.1-1.5-6-4-6-7.8V3.5z" fill="#8f5d38" stroke={line} strokeWidth="1.6" strokeLinejoin="round" />
-      <path d="M8 10.5h4v4.8c-.7.5-1.3.9-2 1.2-.7-.3-1.3-.7-2-1.2v-4.8z" fill="#dfd1b8" stroke="#362419" strokeWidth="1.2" />
-    </svg>
-  );
-}
 
 export function GoldCoinIcon({ size = 18 }: { size?: number }) {
   return (
@@ -23,25 +12,6 @@ export function GoldCoinIcon({ size = 18 }: { size?: number }) {
       <circle cx="10" cy="10" r="8" fill="#ffd859" stroke="#362419" strokeWidth="1.6" />
       <circle cx="10" cy="10" r="5.2" fill="#eab32e" stroke="#6b4225" strokeWidth="1.1" />
       <path d="M10 6.5l1.1 2.2 2.4.3-1.7 1.7.4 2.4L10 12l-2.2 1.1.4-2.4-1.7-1.7 2.4-.3L10 6.5z" fill="#fff6cc" />
-    </svg>
-  );
-}
-
-export function ScoreCrestIcon({ size = 18 }: { size?: number }) {
-  return (
-    <svg width={size} height={size} viewBox="0 0 20 20" style={baseStyle} aria-hidden="true">
-      <polygon points="10,2 17,6 17,13.5 10,18 3,13.5 3,6" fill="#235885" stroke="#362419" strokeWidth="1.6" strokeLinejoin="round" />
-      <polygon points="10,4.5 14.6,7.2 14.6,12.3 10,15.2 5.4,12.3 5.4,7.2" fill="#3a7ab0" />
-      <path d="M10 6.3l1.1 2.2 2.4.4-1.8 1.6.5 2.4L10 11.7l-2.2 1.2.5-2.4-1.8-1.6 2.4-.4L10 6.3z" fill="#fbf3e4" />
-    </svg>
-  );
-}
-
-export function BurningGemIcon({ active, size = 14 }: { active: boolean; size?: number }) {
-  return (
-    <svg width={size} height={size} viewBox="0 0 16 16" style={baseStyle} aria-hidden="true">
-      <circle cx="8" cy="8" r="6.2" fill={active ? '#ffd859' : '#26170e'} stroke={active ? '#fbf3e4' : '#7a583b'} strokeWidth="1.5" />
-      {active && <circle cx="8" cy="8" r="3" fill="#c94b24" />}
     </svg>
   );
 }
@@ -64,77 +34,10 @@ export function BranchMarkIcon({ id, size = 22 }: { id: BranchId; size?: number 
   );
 }
 
-export function CheckSealIcon({ size = 22, label }: { size?: number; label?: string }) {
-  return (
-    <svg
-      width={size}
-      height={size}
-      viewBox="0 0 22 22"
-      style={baseStyle}
-      {...(label ? { role: 'img', 'aria-label': label } : { 'aria-hidden': true })}
-    >
-      <rect x="2" y="2" width="18" height="18" rx="4" fill="#2d6336" stroke="#362419" strokeWidth="1.6" />
-      <path d="M6.2 11.3l3.2 3.3 6.4-6.8" fill="none" stroke="#fcf7eb" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  );
-}
-
-export function CrossSealIcon({ size = 22, label }: { size?: number; label?: string }) {
-  return (
-    <svg
-      width={size}
-      height={size}
-      viewBox="0 0 22 22"
-      style={baseStyle}
-      {...(label ? { role: 'img', 'aria-label': label } : { 'aria-hidden': true })}
-    >
-      <rect x="2" y="2" width="18" height="18" rx="4" fill="#a3352b" stroke="#362419" strokeWidth="1.6" />
-      <path d="M7 7l8 8M15 7l-8 8" fill="none" stroke="#fcf7eb" strokeWidth="2.3" strokeLinecap="round" />
-    </svg>
-  );
-}
-
-export function LockPadIcon({ size = 14 }: { size?: number }) {
-  return (
-    <svg width={size} height={size} viewBox="0 0 16 16" style={baseStyle} aria-hidden="true">
-      <path d="M5 7V5a3 3 0 0 1 6 0v2" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
-      <rect x="3.2" y="7" width="9.6" height="7" rx="2" fill="currentColor" />
-    </svg>
-  );
-}
-
-export function PauseBarsIcon({ size = 18 }: { size?: number }) {
-  return (
-    <svg width={size} height={size} viewBox="0 0 20 20" style={baseStyle} aria-hidden="true">
-      <rect x="5" y="4" width="3.6" height="12" rx="1" fill="currentColor" />
-      <rect x="11.4" y="4" width="3.6" height="12" rx="1" fill="currentColor" />
-    </svg>
-  );
-}
-
-export function PlayArrowIcon({ size = 18 }: { size?: number }) {
-  return (
-    <svg width={size} height={size} viewBox="0 0 20 20" style={baseStyle} aria-hidden="true">
-      <path d="M6 4.2l10 5.8-10 5.8V4.2z" fill="currentColor" />
-    </svg>
-  );
-}
-
 export function ChevronDownIcon({ size = 12 }: { size?: number }) {
   return (
     <svg width={size} height={size} viewBox="0 0 12 12" style={baseStyle} aria-hidden="true">
       <path d="M2.2 4.2L6 8l3.8-3.8" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  );
-}
-
-/** 웨이브 깃발: 깃대와 갈라진 천. 대장 웨이브는 천을 붉게. */
-export function WaveFlagIcon({ size = 18, boss = false, light = false }: { size?: number; boss?: boolean; light?: boolean }) {
-  const line = light ? '#fbf3e4' : '#362419';
-  return (
-    <svg width={size} height={size} viewBox="0 0 20 20" style={baseStyle} aria-hidden="true">
-      <path d="M5 2.5v15" stroke={line} strokeWidth="1.8" strokeLinecap="round" />
-      <path d="M5.8 3.5h10.4l-2.6 3.6 2.6 3.6H5.8z" fill={boss ? '#a3352b' : '#3a7ab0'} stroke={line} strokeWidth="1.6" strokeLinejoin="round" />
     </svg>
   );
 }
@@ -166,55 +69,43 @@ export function StatRangeIcon({ size = 16 }: { size?: number }) {
   );
 }
 
-/** 강화(위 화살표), 판매(동전 내려놓기), 진화(별빛). 도구 묶음용. */
+/** 도구 키 아이콘(강화·진화·판매·되돌리기): 한 세트, 18 viewBox에 선 2px·둥근 끝, 색은 글자색(currentColor)을 따른다(ui-rules-v4 C6). */
+const toolStroke = { fill: 'none', stroke: 'currentColor', strokeWidth: 2, strokeLinecap: 'round', strokeLinejoin: 'round' } as const;
+
+/** 강화: 위 화살표. */
 export function UpgradeArrowIcon({ size = 18 }: { size?: number }) {
   return (
     <svg width={size} height={size} viewBox="0 0 18 18" style={baseStyle} aria-hidden="true">
-      <path d="M9 15V4M4.5 8.2L9 3.6l4.5 4.6" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M9 15V4M4.5 8.2L9 3.6l4.5 4.6" {...toolStroke} />
     </svg>
   );
 }
 
+/** 판매: 동전을 내려놓는다. */
 export function SellIcon({ size = 18 }: { size?: number }) {
   return (
     <svg width={size} height={size} viewBox="0 0 18 18" style={baseStyle} aria-hidden="true">
-      <circle cx="9" cy="7" r="4.4" fill="none" stroke="currentColor" strokeWidth="1.6" />
-      <path d="M3 15h12M9 11.4V15" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+      <circle cx="9" cy="6.8" r="4.2" {...toolStroke} />
+      <path d="M3 15h12M9 11v4" {...toolStroke} />
     </svg>
   );
 }
 
+/** 진화: 별빛(큰 별 윤곽 + 작은 반짝임). */
 export function EvolveIcon({ size = 18 }: { size?: number }) {
   return (
     <svg width={size} height={size} viewBox="0 0 18 18" style={baseStyle} aria-hidden="true">
-      <path d="M9 2.2l1.7 4.1 4.1 1.7-4.1 1.7L9 13.8l-1.7-4.1-4.1-1.7 4.1-1.7L9 2.2z" fill="currentColor" />
-      <path d="M14 12.2l.7 1.6 1.6.7-1.6.7-.7 1.6-.7-1.6-1.6-.7 1.6-.7.7-1.6z" fill="currentColor" />
+      <path d="M8 2.5l1.5 3.8 3.8 1.5-3.8 1.5L8 13.1l-1.5-3.8-3.8-1.5 3.8-1.5L8 2.5z" {...toolStroke} />
+      <path d="M14.5 11.5v4M12.5 13.5h4" {...toolStroke} />
     </svg>
   );
 }
 
-/** 하늘(나는 새 한 마리: 두 날개 곡선). 징집 카드의 ‘하늘 적 공격’ 표시용. */
-export function SkyWingIcon({ size = 16 }: { size?: number }) {
-  return (
-    <svg width={size} height={size} viewBox="0 0 16 16" style={baseStyle} aria-hidden="true">
-      <path d="M1.5 9.5C3 6.6 5.6 6.4 8 9.2c2.4-2.8 5-2.6 6.5.3" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  );
-}
-
-/** 되돌리기(왼쪽으로 굽은 화살표). 설치 직후 되돌리기 칩용. */
+/** 되돌리기: 왼쪽으로 굽은 화살표. 설치 직후 되돌리기 칩용. */
 export function UndoArrowIcon({ size = 18 }: { size?: number }) {
   return (
     <svg width={size} height={size} viewBox="0 0 18 18" style={baseStyle} aria-hidden="true">
-      <path d="M6.5 4.2L3 7.6l3.5 3.4M3.4 7.6h7.1a4.4 4.4 0 010 8.8H8" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  );
-}
-
-export function CloseIcon({ size = 16 }: { size?: number }) {
-  return (
-    <svg width={size} height={size} viewBox="0 0 16 16" style={baseStyle} aria-hidden="true">
-      <path d="M4 4l8 8M12 4l-8 8" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+      <path d="M6.5 4.2L3 7.6l3.5 3.4M3.4 7.6h7.1a4.4 4.4 0 010 8.8H8" {...toolStroke} />
     </svg>
   );
 }
