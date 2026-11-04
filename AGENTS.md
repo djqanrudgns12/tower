@@ -16,6 +16,12 @@ Claude·Codex·Antigravity와 그 서브에이전트가 이 저장소에서 일�
 - 커밋은 자기 파일만 경로를 지정해 한다(`git commit --only -- <경로>`). `git add -A`·`git add .`·`git commit -a`를 쓰지 않는다.
 - 시작할 때 `git status`로 남의 미커밋 변경이 있는지 보고, 겹치는 파일이면 그 작업이 커밋될 때까지 기다리거나 사용자에게 묻는다.
 
+## 그림 파일은 WebP로 (2026-11-05 사용자 결정)
+
+- 게임에 싣는 그림(`public/assets/**`)은 WebP로 넣는다. 기본값은 `cwebp -q 85 -alpha_q 100 -m 6`(투명도 무손실)이고, 도구는 `tools/assets/to-webp.mjs`다.
+- 선별: 비교판에서 뭉개지면 q92 → 무손실 WebP로 올린다. 작아지지 않거나 PNG가 꼭 필요한 파일은 `tools/assets/webp-exceptions.json`에 이유와 함께 적고 PNG로 둔다. 생성 원본(`asset-source/**`)·기준 그림·QA 캡처는 PNG 그대로다.
+- `manifest.json`의 `file`은 `.webp`, `artifactHash`는 WebP 해시로 적는다. 자세한 규칙은 [구현 계획서 §2](docs/HOSTING_IMPL_PLAN.md).
+
 ## 지우기 전에 확인
 
 - 사용자가 다듬은 화면이나 기능을 통째로 걷어내는 변경(화면 교체, 기능 삭제)은 사용자 확인 뒤에 한다. 2026-11-04에 R4 리뉴얼이 사용자가 다듬은 랜딩(통합 수호 랭킹)을 확인 없이 지운 일이 있었다.
