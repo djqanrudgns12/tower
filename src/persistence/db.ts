@@ -1,5 +1,6 @@
 import { openDB, type DBSchema, type IDBPDatabase } from 'idb';
 import type { RunState } from '../domain/types';
+import { clearReviewNote } from './reviewNote';
 
 // 저장 의미(PRD §14): 전체 스냅샷 2슬롯 교대, 무결성 해시가 맞는 슬롯 중 seq가 큰 쪽을 읽는다.
 export interface SavedSlot { slot: 'A' | 'B'; seq: number; savedAt: string; hash: string; json: string }
@@ -144,8 +145,10 @@ export async function listRecords(): Promise<RunRecord[]> {
   return (await database.getAllFromIndex('records', 'endedAt')).reverse();
 }
 
-/** 환경설정의 ‘이 기기 로컬 기록 정리’: 진행 중 저장 슬롯·완료 기록·대기 동기화 큐를 모두 비운다. */
+/** 환경설정의 ‘이 기기 로컬 기록 정리’: 진행 중 저장 슬롯·완료 기록·대기 동기화 큐와 오답 노트(localStorage)를 모두 비운다. */
 export async function clearLocalHistory(): Promise<void> {
+  // 오답 노트는 IndexedDB가 아니라 localStorage에 있어 같은 트랜잭션에 묶을 수 없다. 먼저 지워 IndexedDB 실패와 무관하게 비운다.
+  clearReviewNote();
   const database = await db();
   const tx = database.transaction(['run', 'records', 'syncQueue'], 'readwrite', { durability: 'strict' });
   await tx.objectStore('run').clear();

@@ -7,10 +7,10 @@ import { openDraft, pickDraft, startingOwned } from './draft';
 import { center } from './geometry';
 import { removeTowerHazards, settleHazardsAtWaveEnd } from './hazards';
 import { add, msToTicks } from './num';
-import { createEncounter } from './quiz';
+import { createEncounter, MAX_REVIEW_SENSES } from './quiz';
 import { RNG_ALGORITHM, streamSeed } from './rng';
 import { attackIntervalTicks, attacks, buildCost, evolutionChoices, sellRefund, towerStats, upgradeCost } from './towers';
-import { RULES_VERSION, RUN_STATE_VERSION, type PauseReason, type RunConfig, type RunState, type Tower } from './types';
+import { RULES_VERSION, RUN_STATE_VERSION, type PauseReason, type ReviewSense, type RunConfig, type RunState, type Tower } from './types';
 import { composeWave, hpBaseMilli, isMilestone, spawnIntervalTicks } from './waves';
 
 export type Command =
@@ -37,17 +37,36 @@ export type CommandError =
 
 export type CommandResult = { ok: true; events: DomainEvent[] } | { ok: false; error: CommandError };
 
-export type NewRunInput = Omit<RunConfig, 'rngAlgorithm' | 'rulesVersion' | 'balanceVersion' | 'mapVersion'>;
+export type NewRunInput = Omit<RunConfig, 'rngAlgorithm' | 'rulesVersion' | 'balanceVersion' | 'mapVersion'> & {
+  /**
+   * 판 밖 자료: 이 기기 오답 노트에서 고른 낱말 뜻(R4 L, prd-r4 §6.1). 판 시작 때 한 번 복사하며 판 안에서는 이 복사본만 본다.
+   * 생략하면 복습 단계 없이 예전과 같은 출제다. 최대 12뜻, 같은 뜻은 한 번만 쓴다.
+   */
+  reviewSenses?: readonly ReviewSense[];
+};
+
+/** 판에 복사할 오답 노트 뜻: 중복 제거, 앞에서부터 12개, 깊은 복사. */
+function copyReviewSenses(input: readonly ReviewSense[] | undefined): ReviewSense[] {
+  const seen = new Set<string>();
+  const out: ReviewSense[] = [];
+  for (const sense of input ?? []) {
+    if (seen.has(sense.senseKey) || out.length >= MAX_REVIEW_SENSES) continue;
+    seen.add(sense.senseKey);
+    out.push({ senseKey: sense.senseKey, lemma: sense.lemma, questionIds: [...sense.questionIds], misses: sense.misses, lastSeenAt: sense.lastSeenAt });
+  }
+  return out;
+}
 
 export function createRun(ctx: GameContext, input: NewRunInput): RunState {
-  const config: RunConfig = { ...input, rngAlgorithm: RNG_ALGORITHM, rulesVersion: RULES_VERSION, balanceVersion: ctx.balance.balanceVersion, mapVersion: ctx.map.mapVersion };
+  const { reviewSenses, ...rest } = input;
+  const config: RunConfig = { ...rest, rngAlgorithm: RNG_ALGORITHM, rulesVersion: RULES_VERSION, balanceVersion: ctx.balance.balanceVersion, mapVersion: ctx.map.mapVersion };
   const seed = config.seed >>> 0;
   const s: RunState = {
     v: RUN_STATE_VERSION, config, phase: 'PREP_QUIZ', pause: [], tick: 0, wave: 0, completedWave: 0, endedAtWave: null, endReason: null,
     gateHp: ctx.difficulty.gateHp, gateMaxHp: ctx.difficulty.gateHp, gold: ctx.balance.run.startGold, pt: 0, waveKillPtGranted: 0, burningUntilTick: -1,
     rng: { battle: streamSeed(seed, 'battle'), question: streamSeed(seed, 'question'), option: streamSeed(seed, 'option'), draft: streamSeed(seed, 'draft') },
     seq: { command: 0, enemy: 1, tower: 1, projectile: 1, hazard: 1 },
-    quiz: { queue: [], cursor: 0, cycle: 0, recentQuestions: [], recentSenses: [], current: null, feedback: null, prepTarget: 0, prepDone: 0, battleStreak: 0, nextEncounterId: 1, history: [] },
+    quiz: { queue: [], cursor: 0, cycle: 0, recentQuestions: [], recentSenses: [], current: null, feedback: null, prepTarget: 0, prepDone: 0, battleStreak: 0, nextEncounterId: 1, history: [], reviewSenses: copyReviewSenses(reviewSenses), reviewUsed: {} },
     owned: startingOwned(ctx.balance, config), draft: null,
     towers: [], enemies: [], projectiles: [], hazards: [], battle: null,
     stats: { correct: 0, wrong: 0, skipped: 0, kills: 0, bossKills: 0, bossLeaks: 0, leaks: 0, goldEarned: 0, ptFromQuestions: 0, ptFromKills: 0, activeTicks: 0, battleTicks: 0 },

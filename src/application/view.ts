@@ -3,12 +3,15 @@ import type { OptionId } from '../contracts/questions';
 import type { GameContext } from '../domain/context';
 import { formBranch } from '../domain/towers';
 import type { PauseReason, Phase, RunState, RunStats, Tower } from '../domain/types';
+import type { ReviewDelta } from '../persistence/reviewNote';
 
 // React가 구독하는 요약. 적 위치처럼 매 틱 바뀌는 값은 넣지 않는다(PRD §13.3).
 export interface QuestionView {
   encounterId: number;
   label: string;
   badge: string | null;
+  /** 오답 노트 복습 단계로 낸 문제인지(보상·채점은 똑같다). 단계·점수는 보이지 않는다(PRD v0.5 §20.5). */
+  isReview: boolean;
   stem: string;
   options: Array<{ id: OptionId; text: string }>;
   chosen: OptionId | 'skipped' | null;
@@ -68,6 +71,11 @@ export interface ControllerView extends GameView {
   saveStatus: 'saved' | 'saving' | 'error' | 'disabled';
   /** WebGL 문맥을 잃고 아직 돌아오지 않았다. 이 동안은 ‘계속’으로 풀 수 없다. */
   renderLost: boolean;
+  /**
+   * 끝난 판이 오답 노트에 새로 담은 뜻 수·졸업시킨 뜻 수. 판이 끝나 기록이 남은 뒤에만 값이 있고
+   * (진행 중·연습 판은 null), 저장소를 쓸 수 없으면 둘 다 0이다.
+   */
+  reviewDelta: ReviewDelta | null;
 }
 
 const secondsLeft = (until: number | null, tick: number) => (until === null ? 0 : Math.max(0, Math.ceil((until - tick) / 30)));
@@ -89,7 +97,7 @@ export function selectView(ctx: GameContext, s: RunState): GameView {
         : null;
     const chosen = enc.answer?.choice ?? null;
     question = {
-      encounterId: enc.id, label, badge, stem: q.stem, wrapup: enc.wrapup,
+      encounterId: enc.id, label, badge, isReview: enc.review === true, stem: q.stem, wrapup: enc.wrapup,
       options: enc.optionOrder.map(id => ({ id, text: text(id) })),
       chosen,
       reward: enc.answer ? { pt: enc.answer.pt, gold: enc.answer.gold } : null,

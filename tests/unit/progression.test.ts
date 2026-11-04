@@ -413,10 +413,10 @@ describe('저장 버전(progression.md §4) — 실제 이어하기 판정(sessi
     return s;
   }
 
-  it('지금 저장 버전(v6) 판은 이어하고, v1(branch 타워)·v2(종족 없는 적)·v3(신규 타워 상태 없는 타워)·v4(대장 기믹 없는 적)·v5(장판·덫 없는 판) 스냅샷은 던지지 않고 ‘이어할 수 없어요’로 막는다', () => {
-    expect(RUN_STATE_VERSION).toBe(6);
+  it('지금 저장 버전(v7) 판은 이어하고, v1(branch 타워)·v2(종족 없는 적)·v3(신규 타워 상태 없는 타워)·v4(대장 기믹 없는 적)·v5(장판·덫 없는 판)·v6(오답 노트 복습 필드 없는 판) 스냅샷은 던지지 않고 ‘이어할 수 없어요’로 막는다', () => {
+    expect(RUN_STATE_VERSION).toBe(7);
     const s = current();
-    expect(s.v).toBe(6);
+    expect(s.v).toBe(7);
     expect(s.config.balanceVersion).toBe(BALANCE.balanceVersion);
     expect(resumeBlocker(saved(JSON.parse(JSON.stringify(s))))).toBeNull();
     const v1 = { ...structuredClone(s), v: 1, towers: [{ id: 1, type: 'archer', slotId: 's1', x: 8500, y: 2500, level: 4, branch: 'A', invested: 250, nextAttackTick: null }] };
@@ -430,6 +430,14 @@ describe('저장 버전(progression.md §4) — 실제 이어하기 판정(sessi
     delete v5.hazards;
     expect(() => resumeBlocker(saved(v5 as never))).not.toThrow();
     expect(resumeBlocker(saved(v5 as never))).toMatch(/이어할 수 없어요/);
+    // v6: 오답 노트 복사본(reviewSenses)·복습 횟수(reviewUsed)가 없고 규칙 버전도 이전이다. 던지지 않고 막는다.
+    const v6 = structuredClone(s) as unknown as { v: number; config: { rulesVersion: string }; quiz: Partial<RunState['quiz']> };
+    v6.v = 6;
+    v6.config.rulesVersion = '0.5.1-candidate';
+    delete v6.quiz.reviewSenses;
+    delete v6.quiz.reviewUsed;
+    expect(() => resumeBlocker(saved(v6))).not.toThrow();
+    expect(resumeBlocker(saved(v6))).toMatch(/이어할 수 없어요/);
     // 리뉴얼 전 밸런스(0.4.2)로 시작한 판도 같은 안내로 막는다.
     expect(resumeBlocker(saved({ ...structuredClone(s), config: { ...s.config, balanceVersion: '0.4.2-candidate' } }))).toMatch(/이어할 수 없어요/);
   });

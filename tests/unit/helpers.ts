@@ -3,7 +3,7 @@ import { contextFor } from '../../src/content';
 import type { GameContext } from '../../src/domain/context';
 import type { DomainEvent } from '../../src/domain/events';
 import { advanceTick, applyCommand, createRun, type Command } from '../../src/domain/run';
-import type { Phase, RunState } from '../../src/domain/types';
+import type { Phase, ReviewSense, RunState } from '../../src/domain/types';
 
 /**
  * 규칙 시험의 기본 판은 처음 시범판과 같은 3종(궁수·포탑·서리)만 쓴다. 앱 기본값(PILOT_TOWERS)은 리뉴얼로 20종이 됐지만,
@@ -11,12 +11,12 @@ import type { Phase, RunState } from '../../src/domain/types';
  */
 export const THREE_TOWERS: TowerId[] = ['archer', 'cannon', 'frost'];
 
-export function newRun(difficulty: DifficultyId = 'Normal', seed = 12345): { ctx: GameContext; s: RunState } {
+export function newRun(difficulty: DifficultyId = 'Normal', seed = 12345, reviewSenses?: readonly ReviewSense[]): { ctx: GameContext; s: RunState } {
   const ctx = contextFor(3, difficulty);
   const s = createRun(ctx, {
     runId: `test-${seed}`, playerId: 'p1', nickname: '시험', grade: 3, difficulty, mapId: ctx.map.id, seed,
     bankId: 'g3-dev', bankVersion: '0.1.0-dev', contentMode: 'development', availableTowers: [...THREE_TOWERS],
-    rankingEligibility: 'personal', createdAt: '2026-10-28T00:00:00.000Z',
+    rankingEligibility: 'personal', createdAt: '2026-10-28T00:00:00.000Z', ...(reviewSenses ? { reviewSenses } : {}),
   });
   return { ctx, s };
 }

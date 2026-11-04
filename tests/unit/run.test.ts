@@ -1,8 +1,10 @@
 import fc from 'fast-check';
 import { describe, expect, it } from 'vitest';
 import type { OptionId } from '../../src/contracts/questions';
+import { createEncounter } from '../../src/domain/quiz';
 import { advanceTick, applyCommand, type Command } from '../../src/domain/run';
 import { attackIntervalTicks, evolutionChoices, towerStats } from '../../src/domain/towers';
+import type { ReviewSense } from '../../src/domain/types';
 import { answerCurrent, correctChoice, finishPrep, nearestSlots, newRun, ok, runUntil, stateHash, ticks, wrongChoice } from './helpers';
 
 describe('준비·배치·전투 흐름', () => {
@@ -342,8 +344,8 @@ describe('거래(PRD §6.3, §7)', () => {
 });
 
 describe('재현·저장(PRD §13.3, §14)', () => {
-  function script(seed: number) {
-    const { ctx, s } = newRun('Normal', seed);
+  function script(seed: number, reviewSenses?: ReviewSense[]) {
+    const { ctx, s } = newRun('Normal', seed, reviewSenses);
     const log: Array<{ at: number; cmd: Command }> = [];
     const send = (cmd: Command) => { log.push({ at: s.tick, cmd }); return applyCommand(ctx, s, cmd); };
     let guard = 0;
@@ -372,6 +374,29 @@ describe('재현·저장(PRD §13.3, §14)', () => {
     while (i < first.log.length && first.log[i]!.at === s.tick) applyCommand(ctx, s, first.log[i++]!.cmd);
     expect(stateHash(s)).toBe(stateHash(first.s));
     expect(first.s.wave).toBeGreaterThanOrEqual(2);
+  });
+
+  it('A18(오답 노트): 같은 seed·같은 오답 노트 복사본·같은 명령 기록이면 복습 문항이 낀 판도 상태가 같고, 저장·복원해도 이어진다', () => {
+    const { ctx } = newRun('Normal', 4321);
+    const notes: ReviewSense[] = ctx.questionIds.slice(0, 8).map((id, i) => ({
+      senseKey: ctx.questions.get(id)!.target.senseKey, lemma: ctx.questions.get(id)!.target.lemma, questionIds: [id], misses: 8 - i, lastSeenAt: '2026-11-01T00:00:00.000Z',
+    }));
+    const first = script(4321, notes);
+    expect(first.s.quiz.history.some(e => e.review)).toBe(true);
+    const { ctx: ctx2, s } = newRun('Normal', 4321, notes);
+    let i = 0;
+    while (s.tick < first.s.tick) {
+      while (i < first.log.length && first.log[i]!.at === s.tick) applyCommand(ctx2, s, first.log[i++]!.cmd);
+      advanceTick(ctx2, s);
+    }
+    while (i < first.log.length && first.log[i]!.at === s.tick) applyCommand(ctx2, s, first.log[i++]!.cmd);
+    expect(stateHash(s)).toBe(stateHash(first.s));
+    // 복사본이 상태에 들어 있어 저장 → 복원 뒤에도 같은 다음 문항을 낸다(판 밖 저장소를 다시 읽지 않는다).
+    const restored = JSON.parse(JSON.stringify(first.s)) as typeof first.s;
+    expect(restored.quiz.reviewSenses).toEqual(notes);
+    expect(stateHash(restored)).toBe(stateHash(first.s));
+    const next = (state: typeof first.s) => { const e = createEncounter(ctx2, structuredClone(state), 'prep'); return [e.questionId, e.review]; };
+    expect(next(restored)).toEqual(next(first.s));
   });
 
   it('A31: 처치 PT 상한 직전 저장·복원해도 이미 지급한 웨이브 처치 PT를 유지', () => {

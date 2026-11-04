@@ -6,6 +6,7 @@ import { RULES_VERSION, RUN_STATE_VERSION, type PauseReason, type RunState } fro
 import { clearLocalHistory, clearSnapshot, listRecords, loadSnapshot, type LoadResult, type RunRecord } from '../persistence/db';
 import { reportRunStarted } from '../persistence/lobbyClient';
 import { acquireRunLock, locksSupported } from '../persistence/ownership';
+import { loadReviewNote, reviewSensesForRun } from '../persistence/reviewNote';
 import {
   BGM_STEPS,
   loadSettings,
@@ -95,6 +96,8 @@ export async function startNewRun(input: { grade: number; difficulty: Difficulty
     runId: crypto.randomUUID(), playerId: input.playerId, nickname: input.nickname, grade: input.grade, difficulty: input.difficulty, mapId: map.id, seed,
     bankId: bank.bankId, bankVersion: bank.bankVersion, contentMode: bank.status === 'published' ? 'published' : 'development',
     availableTowers: [...PILOT_TOWERS], rankingEligibility: 'personal', createdAt: new Date().toISOString(),
+    // 판 밖 자료는 여기서 한 번만 읽어 RunState에 복사한다. 판 안의 출제는 이 복사본만 본다(결정성, A18).
+    reviewSenses: reviewSensesForRun(loadReviewNote(), bank.bankId, ctx.questions),
   });
   const res = await own(state, { seq: 0, clearSaved: true });
   if (res.ok) void reportRunStarted(state.config.runId, input.playerId).catch(() => undefined);

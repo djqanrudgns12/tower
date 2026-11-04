@@ -5,14 +5,16 @@ import type { OptionId } from '../contracts/questions';
 /**
  * 2: 타워 branch → form, 설치 취소 기한(리뉴얼 R2). 3: 적 종족·대장 단계(R2 2단계). 4: 신규 타워 효과 상태(취약·저항 차감·밀치기·공격 주기·다연발). 5: 대장 기믹 상태.
  * 6: 장판·덫·굴림체(RunState.hazards, 투사체 zone, seq.hazard).
+ * 7: 오답 노트 복습·도움 단계(R4 L): QuizState.reviewSenses·reviewUsed, Encounter.review.
  * 이전 버전의 진행 중 판은 이어가지 않는다(application/session.ts resumeBlocker).
  */
-export const RUN_STATE_VERSION = 6;
+export const RUN_STATE_VERSION = 7;
 /**
  * 0.5-candidate: P2 공격 프로필(즉발·연쇄·부채꼴·화상·깃발 오라, 물리 저항 무시)과 적 화상 상태(PRD §7.1, §20.2~20.3).
  * 0.5.1-candidate: 난이도별 심화 단계 출제 순서와 한 바퀴 뒤 섞기(PRD §9.1, §9.4). 같은 시드의 출제 순서가 바뀌므로 옛 저장은 이어하지 않는다.
+ * 0.5.2-candidate: 판 안 도움 단계(최근 채점 4개로 단계·읽기 부담 이동)와 준비 문제의 오답 노트 복습 단계(R4 L, prd-r4 §6). 출제 순서가 바뀐다.
  */
-export const RULES_VERSION = '0.5.1-candidate';
+export const RULES_VERSION = '0.5.2-candidate';
 
 export type Phase = 'PREP_QUIZ' | 'BUILD' | 'BATTLE' | 'WAVE_WRAPUP' | 'GAME_OVER';
 export type PauseReason = 'USER' | 'HIDDEN' | 'PERFORMANCE' | 'STORAGE' | 'CONTEXT_LOST' | 'OWNERSHIP' | 'RESTORED' | 'NUMERIC_LIMIT';
@@ -48,6 +50,8 @@ export interface Encounter {
   optionOrder: OptionId[];
   /** 전투 종료 순간 남아 있던 미제출 문항이면 true(PRD §3.5). */
   wrapup: boolean;
+  /** 오답 노트 복습 단계로 뽑은 문항이면 true(R4 L). 보상·채점은 일반 문항과 같다. */
+  review: boolean;
   answer: null | { choice: OptionId | 'skipped'; tick: number; correct: boolean; pt: number; gold: number };
 }
 
@@ -58,6 +62,19 @@ export interface Feedback {
   autoAdvanceTick: number | null;
   /** 오답·모르겠어요는 이 틱부터 ‘다음 문제’를 누를 수 있다. */
   nextEnabledTick: number | null;
+}
+
+/**
+ * 오답 노트에서 이 판으로 복사한 낱말 뜻 하나(R4 L, prd-r4 §6.1). 판 안의 문항 선택은 이 복사본만 본다(결정성, A18).
+ * 판 밖 저장소는 판이 열릴 때 한 번만 읽고, 이 목록은 createRun 입력으로만 들어온다.
+ */
+export interface ReviewSense {
+  senseKey: string;
+  lemma: string;
+  /** 전에 틀린 문항. 같은 뜻의 다른 문항이 있으면 그쪽을 먼저 낸다. */
+  questionIds: string[];
+  misses: number;
+  lastSeenAt: string;
 }
 
 export interface QuizState {
@@ -73,6 +90,10 @@ export interface QuizState {
   battleStreak: number;
   nextEncounterId: number;
   history: Encounter[];
+  /** 오답 노트 복사본(최대 12뜻, 판이 열릴 때 고정). 비어 있으면 복습 단계는 건너뛴다. */
+  reviewSenses: ReviewSense[];
+  /** 뜻(senseKey)별로 이번 판에서 복습 단계로 낸 횟수. 한 뜻은 판당 최대 2번(prd-r4 §6.1). */
+  reviewUsed: Record<string, number>;
 }
 
 export interface SlowEffect { source: number; bp: number; untilTick: number }

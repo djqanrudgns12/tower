@@ -6,6 +6,7 @@ import type { PauseReason, RunState } from '../domain/types';
 import { addRecord, clearSnapshot, writeSnapshot } from '../persistence/db';
 import { queueAndFlushCompletedRun } from '../persistence/lobbyClient';
 import type { Ownership } from '../persistence/ownership';
+import { recordFinishedRun, type ReviewDelta } from '../persistence/reviewNote';
 import { buildRunRecord } from './runRecord';
 import { selectView, viewKey, type ControllerView, type Notice } from './view';
 
@@ -52,6 +53,8 @@ export class RunController {
   private dirty = false;
   private strictPending = false;
   private finished = false;
+  /** 끝난 판이 오답 노트에 담고 졸업시킨 낱말 수. 결과 화면이 읽는다. 끝나기 전·연습 판은 null. */
+  private reviewDelta: ReviewDelta | null = null;
   private noticeSeq = 1;
   private hitches: number[] = [];
   /** 다음 논리 틱 시작에 반영할 답안·거래(PRD §3.4(2)). */
@@ -76,7 +79,7 @@ export class RunController {
     this.saveStatus = this.persist ? 'saved' : 'disabled';
     // 이어하기 사이에 철회된 미제출 문항은 시작 전에 바꾼다(PRD §9.5).
     replaceUnavailableQuestion(ctx, state);
-    this.view = { ...selectView(ctx, state), notices: [], saveStatus: this.saveStatus, renderLost: false };
+    this.view = { ...selectView(ctx, state), notices: [], saveStatus: this.saveStatus, renderLost: false, reviewDelta: null };
     this.key = viewKey(state);
   }
 
@@ -344,7 +347,7 @@ export class RunController {
   }
 
   private refresh() {
-    this.view = { ...selectView(this.ctx, this.s), notices: this.notices, saveStatus: this.saveStatus, renderLost: this.renderLost };
+    this.view = { ...selectView(this.ctx, this.s), notices: this.notices, saveStatus: this.saveStatus, renderLost: this.renderLost, reviewDelta: this.reviewDelta };
     for (const l of this.listeners) l();
   }
 
@@ -371,6 +374,9 @@ export class RunController {
     if (!this.recordOnFinish) return;
     await this.settle();
     const s = this.s;
+    // 틀린 낱말을 오답 노트에 담는다(prd-r4 §6.1). 연습 판은 위에서 빠졌고, 저장하고 나가기는 finish를 거치지 않아 담지 않는다.
+    // 동기 localStorage 쓰기라 기록 저장보다 먼저 해도 화면 전환을 막지 않고, 저장소가 막혀도 던지지 않는다.
+    this.reviewDelta = recordFinishedRun(s.quiz.history, s.config.bankId, this.ctx.questions);
     const record = buildRunRecord(s);
     try {
       await addRecord(record);
