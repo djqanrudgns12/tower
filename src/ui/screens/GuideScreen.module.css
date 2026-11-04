@@ -1,37 +1,191 @@
-/* 사용 설명서(R4 U3, ui-rules-v3). 그림 카드 4장 + 상성 카드 1장. 카드 안은 그림·제목·한 문장·'자세히'뿐이다. */
-.grid { display: grid; grid-template-columns: minmax(0, 1fr); align-items: start; gap: var(--s3); }
-.card { display: grid; align-content: start; gap: var(--s2); padding: var(--s3); }
-.art { display: block; width: 100%; aspect-ratio: 20 / 9; object-fit: contain; border-radius: var(--r-sm); }
-.title { font-size: var(--fs-3); font-weight: 800; line-height: 1.25; }
-.sentence { font-size: var(--fs-2); }
+/* 사용 설명서(R5 G1~G8, ui-rules-v4). 목차는 R4 그림 카드(카드 전체가 버튼), 장 화면은 R4 이전 교범(머리띠·시연·요약 3행·쪽 넘김).
+   재질은 kit(Modal·Card·Segmented·Button)이 그리고, 여기서는 배치와 토큰 색만 쓴다. 장 머리띠만 ribbon 원화(v4 §3.2, G8 전용).
+   1366×650 장 화면 무스크롤 예산: 창 안 내용 506px = 머리띠 48 + 시연 ≤158 + 요약 ≤200(아주 크게) + 쪽 넘김 48 + 칸 사이 8×3. */
 
-.more { justify-self: start; min-height: var(--touch); padding: 0 var(--s2); gap: var(--s1); color: var(--ink-2); }
-.card .more:hover:not(:disabled) { background: var(--parch-3); }
-.chevron { display: inline-flex; transform: rotate(-90deg); transition: transform var(--t-ui) var(--ease-out); }
-.chevron[data-open='true'] { transform: rotate(90deg); }
+/* ── 목차 ── */
+.toc { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--s3); }
+.toc > li { display: grid; }
+.tocCard {
+  display: grid;
+  grid-template-rows: auto auto 1fr auto;
+  gap: var(--s1);
+  padding: var(--s3);
+  border: 0;
+  border-radius: var(--r-md);
+  background: var(--parch-1);
+  color: var(--ink);
+  text-align: left;
+  font: inherit;
+  /* 옛 징집 카드(ChoiceCard, v4 §4.8)와 같은 옷: 안쪽 테 2px + 바닥 4px. */
+  box-shadow: inset 0 0 0 2px var(--walnut-3), 0 4px 0 var(--walnut-3);
+  transition: transform var(--t-ui) var(--ease-out), box-shadow var(--t-ui) var(--ease-out);
+}
+.tocCard:focus-visible { outline: 3px solid var(--ring); outline-offset: 3px; }
+@media (hover: hover) {
+  .tocCard:hover { transform: translateY(-2px); box-shadow: inset 0 0 0 2px var(--walnut-3), 0 6px 0 var(--walnut-3); }
+}
+.tocCard:active { transform: translateY(4px); box-shadow: inset 0 0 0 2px var(--walnut-3); }
+.tocArt { display: block; width: 100%; height: 100px; margin-bottom: var(--s1); object-fit: contain; border-radius: var(--r-sm); background: var(--paper-2); }
+.tocTraits { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); place-items: center; padding: var(--s2); }
+.tocTitle { display: flex; align-items: center; gap: var(--s2); font-size: var(--fs-3); font-weight: 800; line-height: 1.25; }
+.tocNo {
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  width: 24px;
+  height: 24px;
+  border-radius: 999px;
+  background: var(--brass-1);
+  box-shadow: inset 0 0 0 1px var(--brass-3);
+  font-size: var(--fs-1);
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+}
+.tocSentence { font-size: var(--fs-2); color: var(--ink-2); line-height: 1.4; }
+.tocMore { justify-self: end; display: inline-flex; align-items: center; gap: 2px; font-size: var(--fs-2); font-weight: 700; color: var(--ink-2); }
+.tocMore svg, .chevNext svg { transform: rotate(180deg); }
+.chevNext { display: inline-flex; }
 
-.detail { padding-top: var(--s2); }
-.rows { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--s3); font-size: var(--fs-2); }
-.rows li { display: grid; gap: 2px; }
-.rows strong { font-weight: 700; }
-.rows span { color: var(--ink-2); }
+/* ── 장 화면 ── */
+.chapter { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--s2); }
+.head { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s1) var(--s3); min-height: 48px; }
+.ribbon {
+  flex: none;
+  height: 48px;
+  padding-bottom: 12px;
+  display: inline-flex;
+  align-items: center;
+  /* ribbon 원화(ART-OAK1 manifest: slice 0 120, 표시 높이 48 → 끝 60px). 리본 얼굴은 위 36px이고 그 아래 가운데는 비어 있어
+     대체 붉은 칠 면(밝은 글 6.30)은 내용 상자(위 36px)에만 깐다 — 원화 뒤에 숨고, 원화가 없을 때만 보인다. */
+  border: 0 solid transparent;
+  border-width: 0 60px;
+  border-image: var(--art-ribbon) 0 120 fill / 0 60px stretch;
+  background: var(--red) content-box;
+  color: var(--on-dark);
+  font-size: var(--fs-2);
+  font-weight: 800;
+  white-space: nowrap;
+}
+/* 좁은 화면: 리본 끝을 줄이고(40px) 긴 장 이름은 두 줄로 — 요지는 아래 줄로 내려간다. */
+@media (max-width: 479px) {
+  .ribbon { max-width: 100%; height: auto; min-height: 48px; padding-block: 4px 14px; border-width: 0 40px; border-image-width: 0 40px; white-space: normal; text-align: center; }
+}
+.headline { flex: 1 1 16em; min-width: 0; font-size: var(--read-font); font-weight: 700; line-height: 1.35; }
 
-/* 상성 카드: 그림 자리에 적 특성 아이콘 3줄 */
-.pairs { list-style: none; margin: 0; padding: var(--s2) 0; display: grid; gap: var(--s2); }
-.pair { display: flex; align-items: center; gap: var(--s3); padding: 0 var(--s3); font-size: var(--fs-2); }
-.enemy { font-weight: 700; min-width: 6.5em; }
-.arrow { color: var(--ink-2); }
-.tower { font-weight: 800; }
+.stage { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--s3); }
+.stageArt { display: block; width: 100%; height: 120px; object-fit: contain; border-radius: var(--r-sm); background: var(--paper-2); box-shadow: inset 0 0 0 2px var(--line); }
+/* 그림이 오기 전(5장): 같은 칸에 원화 아이콘만. */
+.artSoon { display: flex; align-items: center; justify-content: center; gap: var(--s3); }
+.pane { display: grid; align-content: start; gap: var(--s2); min-width: 0; }
+.paneHead { font-size: var(--fs-1); font-weight: 800; color: var(--brass-3); }
+
+.canvasBox { position: relative; height: 84px; overflow: hidden; border: 2px solid var(--walnut-3); border-radius: var(--r-sm); background: var(--paper-2); }
+.stageCanvas { display: block; width: 100%; height: 100%; }
+.tagLeft, .tagRight {
+  position: absolute;
+  padding: 2px 6px;
+  border-radius: var(--r-sm);
+  background: var(--parch-1);
+  box-shadow: inset 0 0 0 1px var(--walnut-3);
+  color: var(--ink);
+  font-size: var(--fs-1);
+  font-weight: 800;
+  line-height: 1.3;
+  white-space: nowrap;
+}
+.tagLeft { top: 6px; left: 6px; }
+.tagRight { right: 6px; bottom: 6px; }
+
+/* 2장: 상태 카드(머리판 재질)를 본뜬 판독 판. */
+.hudSim { display: grid; gap: var(--s1); }
+.hudRow { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s1) var(--s4); }
+.hudGold { display: inline-flex; align-items: center; gap: var(--s1); color: var(--brass-1); font-size: var(--fs-2); font-weight: 800; font-variant-numeric: tabular-nums; }
+.hudItem { display: inline-flex; align-items: center; gap: var(--s1); font-size: var(--fs-2); font-weight: 700; font-variant-numeric: tabular-nums; }
+.hudNote { font-size: var(--fs-2); line-height: 1.35; }
+.unlit { opacity: 0.25; }
+.lit { opacity: 1; }
+
+/* 3장: 사거리 캔버스 + 두 갈래 진화. */
+.towerRow { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--s2); }
+.branches { list-style: none; margin: 0; padding: 0; display: grid; align-content: center; gap: var(--s2); }
+.branches li { display: flex; align-items: flex-start; gap: var(--s2); }
+.branches li > span { display: grid; gap: 2px; }
+.branches strong { font-size: var(--fs-2); font-weight: 700; line-height: 1.25; }
+.branches strong + span { font-size: var(--fs-1); color: var(--ink-2); line-height: 1.3; }
+
+/* 4장: 난이도 판독(새 게임 창과 같은 함수) + 숫자키. */
+.readout { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s2); min-height: 32px; }
+.readItem, .readScope {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s1);
+  padding: 2px var(--s2);
+  border-radius: var(--r-sm);
+  background: var(--parch-1);
+  box-shadow: inset 0 0 0 2px var(--line);
+  font-size: var(--fs-2);
+  font-weight: 700;
+  line-height: 1.5;
+}
+.readScope[data-advanced='true'] { color: var(--brass-3); box-shadow: inset 0 0 0 2px var(--brass-3); }
+.keyRow { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s2) var(--s3); }
+.keycaps { display: inline-flex; gap: var(--s2); }
+.keycap { width: var(--touch); padding: 0; font-variant-numeric: tabular-nums; }
+.keycap[aria-pressed='true'] { --face: var(--brass-1); transform: translateY(4px); box-shadow: inset 0 0 0 2px var(--walnut-3); }
+.keyHint { font-size: var(--fs-2); font-weight: 700; color: var(--ink-2); }
+.miniKey { display: inline-grid; place-items: center; width: 20px; height: 20px; border: 2px solid currentColor; border-radius: var(--r-sm); font-size: var(--fs-1); font-weight: 800; line-height: 1; }
+
+/* 5장: 적 특성 → 잘 잡는 타워. */
+.pane .traitSeg, .pane .wrap4, .pane .wrapTiny { grid-auto-flow: row; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+/* 고르기 칸 네 개는 좁은 화면에서 2×2로 접는다: 글이 긴 결과·타워·난이도는 휴대폰부터, 짧은 단계 칸은 아주 좁을 때만. */
+@media (max-width: 719px) {
+  .pane .wrap4 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 359px) {
+  .pane .wrapTiny { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+.counter { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--s1) var(--s3); align-items: center; }
+.counterEnemy { display: inline-flex; align-items: center; gap: 6px; font-size: var(--fs-2); font-weight: 800; }
+.counterLead { display: inline-flex; align-items: center; gap: 2px; font-size: var(--fs-1); font-weight: 700; color: var(--ink-2); }
+.counterLead svg { transform: rotate(180deg); }
+.counterTowers { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: var(--s1) var(--s3); }
+.counterTowers li { display: inline-flex; align-items: center; gap: var(--s1); font-size: var(--fs-2); font-weight: 700; }
+
+/* 요약 3행(G8): 행 아이콘 · 단계 배지 + 제목 · 읽는 글. */
+.rows { list-style: none; margin: 0; padding: var(--s1) var(--s3); }
+.row { display: grid; grid-template-columns: 32px minmax(0, 1fr); align-items: start; gap: 2px var(--s3); padding: 6px 0; }
+.row + .row { border-top: 1px solid var(--line); }
+.rowIcon { grid-row: span 2; display: grid; place-items: center; width: 32px; height: 32px; border-radius: 999px; background: var(--parch-1); box-shadow: inset 0 0 0 2px var(--walnut-3); color: var(--ink); }
+.rowHead { display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px var(--s2); }
+.rowBadge { font-size: var(--fs-1); font-weight: 800; color: var(--brass-3); white-space: nowrap; }
+.rowTitle { font-size: var(--fs-2); font-weight: 700; line-height: 1.3; }
+.rowBody { font-size: var(--read-font); line-height: 1.45; }
+
+/* 쪽 넘김: 왼쪽 목차, 오른쪽 ‹ 이전 장 · n/N · 다음 장 ›. */
+.pager { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--s2) var(--s3); padding-bottom: 4px; }
+.tocBtn { padding: 0 var(--s2); gap: var(--s1); color: var(--ink-2); }
+.pagerMain { display: inline-flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: var(--s2); }
+.pageNo { min-width: 3em; text-align: center; font-size: var(--fs-2); font-weight: 800; font-variant-numeric: tabular-nums; }
 
 @media (min-width: 720px) {
-  .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .counter { grid-column: 1 / -1; }
-  .counter .pairs { grid-template-columns: repeat(3, minmax(0, 1fr)); padding: var(--s3) var(--s2); }
-  .counter .pair { flex-direction: column; text-align: center; gap: var(--s1); padding: 0 var(--s1); }
-  .counter .arrow { transform: rotate(90deg); line-height: 1; }
-  .counter .enemy { min-width: 0; }
+  .toc { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .stage { grid-template-columns: 200px minmax(0, 1fr); align-items: stretch; }
+  .stageArt { height: 100%; max-height: 158px; }
+  .towerRow { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+  .pane .traitSeg { grid-template-columns: repeat(8, minmax(0, 1fr)); }
+  .counter { grid-template-columns: auto auto minmax(0, 1fr); }
+  .row { grid-template-columns: 32px 150px minmax(0, 1fr); }
+  .rowIcon { grid-row: auto; }
+  .rowHead { display: grid; gap: 0; }
+}
+@media (min-width: 960px) {
+  .toc { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .stage { grid-template-columns: 240px minmax(0, 1fr); }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .chevron { transition: none; }
+  .tocCard:hover, .tocCard:active, .keycap[aria-pressed='true'] { transform: none; }
 }
+:global(:root[data-motion='minimal']) .tocCard:hover,
+:global(:root[data-motion='minimal']) .tocCard:active,
+:global(:root[data-motion='minimal']) .keycap[aria-pressed='true'] { transform: none; }
