@@ -4,6 +4,7 @@ import { gradeContent, MAPS } from '../../content';
 import type { Settings } from '../../application/session';
 import { DIFFICULTY_COPY, HOME_COPY, MAP_NAMES } from '../copy';
 import { ArtIcon, Button, Modal, Segmented, type SegmentOption } from '../kit';
+import { difficultyReadout } from './guide/difficultyReadout';
 import { NEWGAME_COPY as N, nickProblemOf } from './home/homeCopy';
 import css from './home/lobby.module.css';
 
@@ -21,7 +22,7 @@ interface Props {
 }
 
 /**
- * 새 게임 창: 위에서 학년 · 난이도를 고르고(오른쪽 열에 지도 썸네일), 창 맨 아래 고정 줄에서 '닉네임 ○○ · 바꾸기'를 보고 큰 '시작'을 누른다.
+ * 새 게임 창: 위에서 학년 · 난이도를 고르고(난이도 아래에 설명과 판독 한 줄, 오른쪽 열에 지도 썸네일), 창 맨 아래 고정 줄에서 '닉네임 ○○ · 바꾸기'를 보고 큰 '시작'을 누른다.
  * 시작 줄은 내용이 길어 스크롤되는 좁고 낮은 화면에서도 늘 보인다(R5 N1·N2). 닉네임은 홈에서 정한 것을 쓰고, 비면 이유를 보이며 시작을 막는다.
  */
 export function NewGameScreen({ settings, onBack, onEditNickname, onStart }: Props) {
@@ -75,7 +76,11 @@ export function NewGameScreen({ settings, onBack, onEditNickname, onStart }: Pro
             <div className={css.group}>
               <span className={css.groupLabel}>난이도</span>
               <Segmented<DifficultyId> label="난이도" options={difficultyOptions} value={difficulty} onChange={v => setDifficulty(v)} />
-              <p className={css.groupNote}>{DIFFICULTY_COPY[difficulty].hint}</p>
+              {/* N3: 고른 난이도 설명 한 줄 + 판독 한 줄(성문 · 첫 정답 골드 · 낱말 범위). 고르면 읽히도록 polite. */}
+              <div className={css.difficultyInfo} aria-live="polite">
+                <p className={css.groupNote}>{DIFFICULTY_COPY[difficulty].hint}</p>
+                <p className={css.readout}>{difficultyReadout(difficulty).line}</p>
+              </div>
             </div>
           </div>
 

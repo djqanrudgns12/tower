@@ -100,6 +100,18 @@ test.describe('랜딩 페이지(방향 2-A: 왕국 참나무 작전실) 통합 �
     }
     await page.setViewportSize({ width: 1440, height: 900 });
 
+    // N3: 난이도를 고르면 설명 한 줄 아래에 판독 한 줄(성문 · 첫 정답 골드 · 낱말 범위)이 바뀌어 나온다. 퍼센트는 없다.
+    const readoutLines: string[] = [];
+    for (const name of ['쉬움', '보통', '어려움', '아주 어려움']) {
+      await dialog.getByRole('radio', { name, exact: true }).click();
+      const line = (await dialog.locator('p', { hasText: /^성문 \d+ · / }).textContent()) ?? '';
+      expect(line, `${name} 판독 줄`).toMatch(/^성문 \d+ · 정답 \+\d+골드(부터)? · 교과 /);
+      expect(line).not.toMatch(/%/);
+      readoutLines.push(line);
+    }
+    expect(new Set(readoutLines).size, '난이도마다 판독 줄이 다르다').toBeGreaterThanOrEqual(3);
+    await dialog.getByRole('radio', { name: '보통', exact: true }).click();
+
     // N1: '바꾸기'를 누르면 창이 닫히고 홈의 닉네임 입력칸에 포커스가 가며, 적어 둔 닉네임은 그대로다.
     await dialog.getByRole('button', { name: '닉네임 바꾸기' }).click();
     await expect(dialog).toHaveCount(0);

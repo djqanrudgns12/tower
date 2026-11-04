@@ -23,6 +23,9 @@
 .groupLabel { font-size: var(--fs-2); font-weight: 700; color: var(--ink-2); }
 .groupWarn { margin: 0; font-size: var(--fs-1); font-weight: 700; color: var(--red); }
 .groupNote { margin: 0; font-size: var(--fs-2); color: var(--ink); }
+/* N3: 고른 난이도 설명 아래 판독 한 줄(성문 · 정답 골드 · 낱말 범위). 13px 보조 글. */
+.difficultyInfo { display: grid; gap: var(--s1); }
+.readout { margin: 0; font-size: var(--fs-1); font-weight: 700; color: var(--ink-2); }
 /* 지도 썸네일(조금 작게). 좁은 화면에서는 고르기 아래 가운데에 선다. */
 .mapFigure { margin: 0; display: grid; gap: var(--s2); width: 100%; max-width: 280px; justify-self: center; }
 .mapThumb { display: block; width: 100%; height: auto; aspect-ratio: 5 / 3; border-radius: var(--r-sm); background: var(--paper-2); }
