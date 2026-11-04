@@ -6,8 +6,8 @@ import { nextSegment, type SegmentOption } from './segments';
 export { nextSegment, type SegmentOption };
 
 /**
- * R4 공용 부품(ui-rules-v3 §2). 화면은 버튼·카드·고르기 줄·켜기 끄기·창을 이것으로만 만든다.
- * 모든 조작 요소는 44px 이상, 포커스 링 3px --blue, 비활성은 aria-disabled로 이유를 읽을 수 있게 둔다.
+ * 공용 부품(R4 구조 + R5 참나무 옷, ui-rules-v4 §4). 화면은 버튼·카드·고르기 줄·켜기 끄기·창을 이것으로만 만든다.
+ * 모든 조작 요소는 44px 이상, 포커스 링 3px --ring, 비활성은 aria-disabled로 이유를 읽을 수 있게 둔다.
  */
 
 const cx = (...names: Array<string | false | null | undefined>) => names.filter(Boolean).join(' ');
@@ -22,14 +22,16 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   onDark?: boolean;
   /** 글자를 왼쪽에 붙인다(답안 키캡처럼 긴 글). */
   align?: 'center' | 'start';
+  /** 눌러도 자리를 옮기지 않는다(바닥만 0). 위치가 잠긴 문제판 안의 키(v4 §7.4). 묶음 전체는 조상에 --btn-press-y: 0px을 줘도 된다. */
+  still?: boolean;
   ref?: Ref<HTMLButtonElement>;
 }
 
-export function Button({ variant = 'secondary', size = 'md', block = false, onDark = false, align = 'center', className, type = 'button', ...rest }: ButtonProps) {
+export function Button({ variant = 'secondary', size = 'md', block = false, onDark = false, align = 'center', still = false, className, type = 'button', ...rest }: ButtonProps) {
   return (
     <button
       type={type}
-      className={cx(css.btn, css[variant], size === 'lg' && css.lg, block && css.block, onDark && css.onDark, align === 'start' && css.alignStart, className)}
+      className={cx(css.btn, css[variant], size === 'lg' && css.lg, block && css.block, onDark && css.onDark, align === 'start' && css.alignStart, still && css.still, className)}
       {...rest}
     />
   );
@@ -41,12 +43,15 @@ interface IconButtonProps extends Omit<ButtonProps, 'children' | 'block'> {
   icon: ReactNode;
   /** 0보다 크면 오른쪽 위에 개수 배지를 단다. */
   count?: number;
+  /** 아이콘 옆에 이름을 보인다(머리판·창 머리처럼 자리가 있는 곳, v4 §4.2). 전투 HUD는 아이콘만. */
+  showLabel?: boolean;
 }
 
-export function IconButton({ label, icon, count = 0, variant = 'secondary', size = 'md', className, ...rest }: IconButtonProps) {
+export function IconButton({ label, icon, count = 0, showLabel = false, variant = 'secondary', size = 'md', className, ...rest }: IconButtonProps) {
   return (
-    <Button variant={variant} size={size} aria-label={count > 0 ? `${label} ${count}개` : label} title={label} className={cx(css.iconBtn, className)} {...rest}>
+    <Button variant={variant} size={size} aria-label={count > 0 ? `${label} ${count}개` : label} title={label} className={cx(css.iconBtn, showLabel && css.showLabel, className)} {...rest}>
       {icon}
+      {showLabel && <span aria-hidden="true">{label}</span>}
       {count > 0 && <span className={css.badge} aria-hidden="true">{count > 99 ? '99+' : count}</span>}
     </Button>
   );
@@ -54,16 +59,23 @@ export function IconButton({ label, icon, count = 0, variant = 'secondary', size
 
 interface CardProps extends HTMLAttributes<HTMLElement> {
   as?: 'div' | 'section' | 'aside' | 'article';
-  /** 바탕 위에 떠 있는 카드(그림자 --float). */
+  /** 바탕 위에 떠 있는 카드(바닥 그림자 --float). */
   float?: boolean;
-  /** 카드 안의 한 단 낮은 면(--paper-2). 카드 안에 테두리 상자를 다시 넣지 않을 때 쓴다. */
+  /** 카드 안의 한 단 낮은 면(음각 홈, --paper-2). 카드 안에 테두리 상자를 다시 넣지 않을 때 쓴다. */
   sunk?: boolean;
+  /** 재질: 양피지 면(기본), 참나무 판(옆판·문제판 바탕·탭 줄, 글은 --ink만), 머리판(짙은 호두나무, 머리판·HUD). v4 §4.3. */
+  material?: 'parch' | 'board' | 'plaque';
   /** 안쪽 여백: md 16px(기본), sm 12px, none 0. */
   pad?: 'none' | 'sm' | 'md';
 }
 
-export function Card({ as: Tag = 'div', float = false, sunk = false, pad = 'md', className, ...rest }: CardProps) {
-  return <Tag className={cx(css.card, float && css.cardFloat, sunk && css.cardSunk, pad === 'sm' && css.padSm, pad === 'none' && css.padNone, className)} {...rest} />;
+export function Card({ as: Tag = 'div', float = false, sunk = false, material = 'parch', pad = 'md', className, ...rest }: CardProps) {
+  return (
+    <Tag
+      className={cx(css.card, float && css.cardFloat, sunk && css.cardSunk, material === 'board' && css.cardBoard, material === 'plaque' && css.cardPlaque, pad === 'sm' && css.padSm, pad === 'none' && css.padNone, className)}
+      {...rest}
+    />
+  );
 }
 
 
@@ -115,11 +127,15 @@ interface ToggleProps {
   className?: string | undefined;
 }
 
+/** 스위치. 이름 뒤 '켜짐'·'꺼짐' 글자는 보이기만 한다(상태는 aria-checked가 읽힌다, v4 §4.4). */
 export function Toggle({ label, checked, onChange, className }: ToggleProps) {
   return (
     <button type="button" role="switch" aria-checked={checked} className={cx(css.toggle, className)} onClick={() => onChange(!checked)}>
       <span className={css.track} aria-hidden="true"><span className={css.knob} /></span>
-      {label}
+      <span>
+        {label}
+        <span className={css.toggleState} aria-hidden="true">{checked ? '켜짐' : '꺼짐'}</span>
+      </span>
     </button>
   );
 }
@@ -165,8 +181,9 @@ export function ArtIcon({ name, size = 24, label, className }: { name: ArtIconNa
   );
 }
 
-export function Badge({ count }: { count: number }) {
-  return count > 0 ? <span className={css.badge}>{count > 99 ? '99+' : count}</span> : null;
+/** 개수 배지. 놋쇠(기본) 또는 밀랍(경고: 보스 웨이브·대응 공백). 글 흐름 안에 선다. */
+export function Badge({ count, tone = 'brass' }: { count: number; tone?: 'brass' | 'wax' }) {
+  return count > 0 ? <span className={cx(css.badge, css.badgeInline, tone === 'wax' && css.badgeWax)}>{count > 99 ? '99+' : count}</span> : null;
 }
 
 const FOCUSABLE = 'button:not(:disabled), input:not(:disabled), [href], select:not(:disabled), textarea:not(:disabled), [tabindex]:not([tabindex="-1"])';
@@ -184,20 +201,27 @@ interface ModalProps {
   footer?: ReactNode;
   /** 막을 눌러도 닫지 않는다(고르기 창처럼 꼭 골라야 하는 창). */
   dismissable?: boolean;
+  /** 처음 포커스를 줄 곳. 기본은 내용의 첫 조작 요소다. 내용이 읽기·둘러보기뿐인 창(전체 랭킹)은 닫기('close')에서 시작한다. */
+  initialFocus?: 'content' | 'close';
   onDialogKeyDown?(e: KeyboardEvent<HTMLDivElement>): void;
   children: ReactNode;
 }
 
-/** 막(--scrim) 위에 뜬 카드 창. 포커스를 가두고 Esc로 닫으며, 닫히면 연 버튼으로 포커스를 돌린다. */
-export function Modal({ titleId, title, onClose, size = 'md', footer, dismissable = true, onDialogKeyDown, children }: ModalProps) {
+/** 막(--scrim) 위에 뜬 나무 창(호두나무 테 + 양피지 면). 포커스를 가두고 Esc로 닫으며, 닫히면 연 버튼으로 포커스를 돌린다. */
+export function Modal({ titleId, title, onClose, size = 'md', footer, dismissable = true, initialFocus = 'content', onDialogKeyDown, children }: ModalProps) {
   const boxRef = useRef<HTMLDivElement>(null);
   const [opener] = useState<HTMLElement | null>(() => (typeof document === 'undefined' ? null : (document.activeElement as HTMLElement | null)));
   const close = useEffectEvent(() => { if (dismissable) onClose(); });
+  // 첫 포커스 자리는 열 때 한 번만 정한다(열린 뒤 바뀌어도 포커스를 옮기지 않는다).
+  const [startAtClose] = useState(initialFocus === 'close');
 
   useEffect(() => {
     const box = boxRef.current;
-    // 첫 포커스는 내용(고를 카드·입력칸)이다. 내용에 조작 요소가 없을 때만 머리줄의 닫기로 간다.
-    if (box) (tabbables(box).find(el => !el.closest('[data-dialog-head]')) ?? tabbables(box)[0])?.focus();
+    // 첫 포커스는 내용(고를 카드·입력칸)이다. 내용에 조작 요소가 없거나 initialFocus가 'close'일 때만 머리줄의 닫기로 간다.
+    if (box) {
+      const nodes = tabbables(box);
+      (startAtClose ? nodes[0] : (nodes.find(el => !el.closest('[data-dialog-head]')) ?? nodes[0]))?.focus();
+    }
     const onKeyDown = (e: globalThis.KeyboardEvent) => {
       if (e.key === 'Escape') { e.preventDefault(); close(); return; }
       if (e.key !== 'Tab' || !boxRef.current) return;
@@ -212,7 +236,7 @@ export function Modal({ titleId, title, onClose, size = 'md', footer, dismissabl
       window.removeEventListener('keydown', onKeyDown);
       if (opener && opener !== document.body && opener.isConnected) opener.focus();
     };
-  }, [opener]);
+  }, [opener, startAtClose]);
 
   return (
     <div className={css.scrim} onMouseDown={e => { if (dismissable && e.target === e.currentTarget) onClose(); }}>
@@ -221,12 +245,12 @@ export function Modal({ titleId, title, onClose, size = 'md', footer, dismissabl
         role="dialog"
         aria-modal="true"
         aria-labelledby={titleId}
-        className={cx(css.card, css.cardFloat, css.dialog, size === 'sm' ? css.dialogSm : size === 'lg' ? css.dialogLg : css.dialogMd)}
+        className={cx(css.dialog, size === 'sm' ? css.dialogSm : size === 'lg' ? css.dialogLg : css.dialogMd)}
         onKeyDown={onDialogKeyDown}
       >
         <div className={css.dialogHead} data-dialog-head>
           <h2 id={titleId} className={css.dialogTitle}>{title}</h2>
-          {dismissable && <IconButton label="닫기" icon={<CloseIcon />} variant="ghost" onClick={onClose} />}
+          {dismissable && <IconButton label="닫기" icon={<CloseIcon />} variant="secondary" onClick={onClose} />}
         </div>
         {children}
         {footer && <div className={css.dialogFoot}>{footer}</div>}

@@ -3,7 +3,7 @@ import { DIFFICULTY_IDS, type DifficultyId } from '../../../contracts/balance';
 import { RANKING_TAB_IDS, type RankingPeriod, type RankingResponse, type RankingTabId } from '../../../contracts/lobby';
 import { fetchRanking } from '../../../application/lobby';
 import { DIFFICULTY_COPY } from '../../copy';
-import { ModalShell } from './ModalShell';
+import { Modal } from '../../kit';
 import { formatPrimaryMetric, PERIOD_LABELS, TAB_LABELS } from './RankingBoard';
 import css from './home.module.css';
 
@@ -63,7 +63,8 @@ export function RankingModal({
   };
 
   return (
-    <ModalShell titleId="rankingModalTitle" title="전체 랭킹 (상위 50위)" wide onClose={onClose}>
+    // 읽고 둘러보는 창이라 첫 포커스는 닫기다(탭 줄은 Tab 한 번으로 들어간다). 창 모양은 kit Modal 한 벌(v4 §4.7).
+    <Modal titleId="rankingModalTitle" title="전체 랭킹 (상위 50위)" initialFocus="close" onClose={onClose}>
       <div className={css.tabBar} role="tablist" aria-label="랭킹 분류">
         {RANKING_TAB_IDS.map((id, i) => (
           <button
@@ -183,6 +184,6 @@ export function RankingModal({
           </span>
         </div>
       )}
-    </ModalShell>
+    </Modal>
   );
 }

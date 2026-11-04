@@ -1,17 +1,30 @@
-/* R4 공용 부품(ui-rules-v3). v3 토큰만 쓴다. 테두리 없이 면 색과 키캡 바닥(--raise)으로 위계를 만든다. */
+/* R5 공용 부품 참나무 옷(ui-rules-v4 §4). 크기·포커스·키보드는 R4 그대로, 면·테·바닥·원화만 v4 토큰으로 바꾼다.
+   상자 크기 불변(v4 §3.5): 화면 CSS가 여백을 덮어쓰는 부품(카드·키)은 테를 안쪽 그림자·뒤 가상 요소로 그리고, 부품이 여백을 정하는 곳(창·고르기 줄·배지)은 테만큼 여백을 줄인다. */
 
-/* ── 키캡 버튼: 변형마다 면(--face)·바닥(--base)·글자(--text)만 바꾼다 ── */
+/* ── 키캡 버튼: 변형마다 면(--face)·바닥(--base)·글자(--text)·원화(--key)만 바꾼다 ──
+   원화 키(ART-OAK1 key.*)는 버튼 뒤에 깐 가상 요소(::before)에 그린다. 버튼 자신은 테두리가 없어 상자·여백이 R4 그대로다
+   (화면이 여백을 덮어쓰는 답안 키도 글 폭이 줄지 않는다, v4 §3.5). 원본 높이 96의 좌우 끝 38px를 남기고 늘리며,
+   표시 끝 폭(--cap)은 높이에 비례한다(md 44px → 17px, lg 56px → 22px).
+   원화가 켜진 동안(global.css --art-clip·--art-shadow) 면 색은 내용 상자에만 깔고(원화의 둥근 끝 바깥으로 새지 않고, 글자 바탕은 실제 면 색이라
+   대비 검사가 맞게 읽는다) 테·바닥 그림자는 원화가 그린다. 화면이 한 버튼만 원화를 끄려면 그 버튼에
+   --key: none; --art-clip: initial; --art-shadow: initial 을 준다(문제판 답안 키 등). */
 .btn {
-  --face: var(--paper-2);
-  --base: var(--line);
+  --face: var(--parch-1);
+  --base: var(--walnut-3);
   --text: var(--ink);
+  --key: var(--art-key-parch);
+  --cap: 17px;
+  position: relative;
+  isolation: isolate;
   min-height: var(--touch);
   padding: 0 var(--s4);
   border: 0;
   border-radius: var(--r-sm);
   background: var(--face);
+  background-clip: var(--art-clip, border-box);
   color: var(--text);
-  box-shadow: 0 4px 0 var(--base);
+  /* 대체 단색: 안쪽 테 2px --walnut-3(그림자라 상자 크기가 그대로) + 바닥 4px. */
+  box-shadow: var(--art-shadow, inset 0 0 0 2px var(--walnut-3), 0 4px 0 var(--base));
   font-size: var(--fs-2);
   font-weight: 700;
   line-height: 1.2;
@@ -23,72 +36,105 @@
   touch-action: manipulation;
   user-select: none;
 }
-.btn:active:not(:disabled):not([aria-disabled='true']) { transform: translateY(4px); box-shadow: 0 0 0 var(--base); }
-.btn:focus-visible { outline: 3px solid var(--blue); outline-offset: 3px; }
+.btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border: 0 solid transparent;
+  border-width: 0 var(--cap);
+  border-image: var(--key) 0 38 fill / 0 var(--cap) stretch;
+  pointer-events: none;
+}
+/* 누름: 바닥 두께만큼 내려앉는다. 문제판처럼 위치가 잠긴 곳은 조상에 --btn-press-y: 0px을 주거나 still로 끈다(v4 §7.4). */
+.btn:active:not(:disabled):not([aria-disabled='true']) { transform: translateY(var(--btn-press-y, 4px)); box-shadow: var(--art-shadow, inset 0 0 0 2px var(--walnut-3)); }
+.btn.still:active:not(:disabled):not([aria-disabled='true']) { transform: none; }
+.btn:focus-visible { outline: 3px solid var(--ring); outline-offset: 3px; }
 @media (hover: hover) {
   .btn:hover:not(:disabled):not([aria-disabled='true']) { filter: brightness(1.06); }
 }
-.primary { --face: var(--green); --base: var(--green-base); --text: var(--on-dark); }
-.accent { --face: var(--amber); --base: var(--amber-base); --text: var(--ink); }
-.danger { --face: var(--red); --base: var(--red-base); --text: var(--on-dark); }
-.secondary { --face: var(--paper-2); --base: var(--line); --text: var(--ink); }
-.ghost { background: transparent; box-shadow: none; color: var(--ink); }
-.ghost:active:not(:disabled) { transform: none; }
+.primary { --face: var(--green); --base: var(--green-base); --text: var(--on-dark); --key: var(--art-key-green); }
+/* 화면당 하나인 "지금 누를 것"(primary lg)은 놋쇠로 그린다(v4 §4.1). */
+.primary.lg, .accent { --face: var(--brass-2); --base: var(--brass-3); --text: var(--ink); --key: var(--art-key-brass); }
+.danger { --face: var(--red); --base: var(--red-base); --text: var(--on-dark); --key: var(--art-key-red); }
+.secondary { --face: var(--parch-1); --base: var(--walnut-3); --text: var(--ink); --key: var(--art-key-parch); }
+.ghost { --key: none; background: transparent; background-clip: border-box; box-shadow: none; color: var(--ink); }
+.ghost:active:not(:disabled) { transform: none; box-shadow: none; }
 @media (hover: hover) {
-  .ghost:hover:not(:disabled) { filter: none; background: var(--paper-2); }
+  .ghost:hover:not(:disabled) { filter: none; background: var(--parch-3); }
 }
+/* 짙은 바탕(머리판·전투 바탕) 위: 글자는 밝게, 포커스 링은 --focus-on-dark(v4 §2.6 규칙 5). */
+.onDark { --ring: var(--focus-on-dark); }
 .onDark.ghost { color: var(--on-dark); }
-.onDark:focus-visible { outline-color: var(--on-dark); }
 @media (hover: hover) {
-  .onDark.ghost:hover:not(:disabled) { background: rgba(255, 253, 247, 0.12); }
+  .onDark.ghost:hover:not(:disabled) { background: var(--walnut-3); }
 }
-.btn:disabled, .btn[aria-disabled='true'] { --face: var(--paper-2); --text: var(--ink-2); box-shadow: none; opacity: 0.6; cursor: not-allowed; }
-.lg { min-height: 56px; padding: 0 var(--s5); font-size: var(--fs-3); font-weight: 800; }
+/* 비활성: 원화를 끄고 양피지 홈 면 + 가는 참나무 테(v4 §4.0). */
+.btn:disabled, .btn[aria-disabled='true'] { --face: var(--parch-3); --text: var(--ink-2); --key: none; background: var(--face); background-clip: border-box; box-shadow: inset 0 0 0 2px var(--oak-2); opacity: 0.6; cursor: not-allowed; }
+.ghost:disabled, .ghost[aria-disabled='true'] { background: transparent; box-shadow: none; }
+.lg { --cap: 22px; min-height: 56px; padding: 0 var(--s5); font-size: var(--fs-3); font-weight: 800; }
 .block { width: 100%; }
 .alignStart { justify-content: flex-start; text-align: left; }
 
-/* ── 아이콘 버튼 ── */
-.iconBtn { position: relative; width: var(--touch); padding: 0; }
+/* ── 아이콘 버튼(옛 머리판 단추: 양피지 키 + 아이콘) ── */
+/* 여백이 없어 내용 상자가 곧 키 전체라, 원화가 켜진 동안은 면 색을 깔지 않는다(글자가 없어 대비 검사 대상도 아니다). */
+.iconBtn { position: relative; width: var(--touch); padding: 0; background: var(--art-fill, var(--face)); }
 .iconBtn.lg { width: 56px; padding: 0; }
+/* 글자를 함께 보이는 머리판 단추(v4 §4.2): 너비는 글자를 따르고 44px보다 좁아지지 않는다. */
+.iconBtn.showLabel, .iconBtn.lg.showLabel { width: auto; min-width: var(--touch); padding: 0 var(--s3); gap: var(--s1); }
 
-/* ── 개수 배지(999px은 이것 하나만) ── */
+/* ── 개수 배지(놋쇠, 999px은 배지·칩에만) ── */
 .badge {
+  --face: var(--brass-1);
   position: absolute;
   top: -6px;
   right: -6px;
   min-width: 20px;
   height: 20px;
-  padding: 0 6px;
+  padding: 0 5px;
+  border: 1px solid var(--brass-3);
+  border-image: var(--art-badge-brass) 0 23 fill / 0 10px stretch;
   border-radius: 999px;
-  background: var(--red);
-  color: var(--on-dark);
+  background: var(--face) padding-box;
+  color: var(--ink);
   font-size: var(--fs-1);
   font-weight: 800;
-  line-height: 20px;
+  line-height: 18px;
   text-align: center;
+  font-variant-numeric: tabular-nums;
 }
+/* 밀랍(경고: 보스 웨이브·대응 공백). */
+.badgeWax { --face: var(--red); border-color: var(--red-base); border-image: none; background: var(--face); color: var(--on-dark); }
+/* 홀로 놓인 배지(Badge)는 글 흐름 안에 선다. */
+.badgeInline { position: static; display: inline-block; vertical-align: middle; }
 
-/* ── 카드 ── */
-.card { background: var(--paper); color: var(--ink); border-radius: var(--r-md); padding: var(--s4); }
-.cardFloat { box-shadow: var(--float); }
+/* ── 카드: 양피지 면 + 참나무 가는 테. 테는 안쪽 그림자라 화면이 정한 여백·크기가 그대로다 ── */
+.card { background: var(--paper); color: var(--ink); border-radius: var(--r-md); padding: var(--s4); box-shadow: inset 0 0 0 2px var(--line); }
+.cardFloat { box-shadow: var(--shadow-board), inset 0 0 0 2px var(--line); }
 .cardSunk { background: var(--paper-2); }
+/* 판 재질(옆판·문제판 바탕·탭 줄): 참나무 판 원화 타일, 글은 --ink만(v4 §2.6 규칙 1). */
+.cardBoard { background: var(--oak-1) var(--art-board) 0 0 / 128px 128px repeat; box-shadow: inset 0 0 0 2px var(--walnut-2); }
+/* 머리판 재질(머리판·HUD): 짙은 호두나무 면 + 몰딩 선. 짙은 면이라 글자·링을 밝게 바꾼다. */
+.cardPlaque { --ring: var(--focus-on-dark); --stat-label: var(--on-dark-2); background: var(--walnut-3); color: var(--on-dark); box-shadow: var(--shadow-board), inset 0 0 0 2px var(--walnut-1); }
 .padSm { padding: var(--s3); }
 .padNone { padding: 0; }
 
-/* ── 고르기 줄(라디오 묶음) ── */
+/* ── 고르기 줄(라디오 묶음): 참나무 홈 + 양피지 볼록 칸 ── */
 .segmented {
   display: grid;
   grid-auto-flow: column;
   grid-auto-columns: 1fr;
   gap: var(--s1);
-  padding: var(--s1);
+  padding: 2px;
+  border: 2px solid var(--oak-2);
+  border-image: var(--art-groove) 47 / 4px stretch;
   border-radius: var(--r-sm);
   background: var(--paper-2);
 }
 .segment {
   min-height: var(--touch);
-  padding: 0 var(--s3);
-  border: 0;
+  padding: 0 10px;
+  border: 2px solid transparent;
   border-radius: var(--r-sm);
   background: transparent;
   color: var(--ink-2);
@@ -100,14 +146,14 @@
   gap: var(--s1);
   transition: background-color var(--t-ui), color var(--t-ui);
 }
-.segment[aria-checked='true'] { background: var(--paper); color: var(--ink); box-shadow: 0 3px 0 var(--line); }
-.segment:focus-visible { outline: 3px solid var(--blue); outline-offset: 1px; }
+.segment[aria-checked='true'] { background: var(--parch-1); color: var(--ink); border-color: var(--walnut-3); box-shadow: 0 2px 0 var(--walnut-3); }
+.segment:focus-visible { outline: 3px solid var(--ring); outline-offset: 1px; }
 .segment[aria-disabled='true'] { opacity: 0.55; cursor: not-allowed; }
 @media (hover: hover) {
   .segment:hover:not([aria-checked='true']):not([aria-disabled='true']) { color: var(--ink); }
 }
 
-/* ── 켜기·끄기 ── */
+/* ── 켜기·끄기: 꺼짐은 양피지 홈, 켜짐은 숲색. 이름 뒤에 상태 글자 ── */
 .toggle {
   min-height: var(--touch);
   padding: 0;
@@ -120,37 +166,40 @@
   align-items: center;
   gap: var(--s3);
 }
-.toggle:focus-visible { outline: 3px solid var(--blue); outline-offset: 3px; border-radius: var(--r-sm); }
+.toggle:focus-visible { outline: 3px solid var(--ring); outline-offset: 3px; border-radius: var(--r-sm); }
 .track {
   position: relative;
   flex: none;
   width: 52px;
   height: 30px;
+  border: 2px solid var(--walnut-2);
   border-radius: var(--r-sm);
-  background: var(--line);
-  transition: background-color var(--t-ui);
+  background: var(--parch-3);
+  transition: background-color var(--t-ui), border-color var(--t-ui);
 }
 .knob {
   position: absolute;
-  top: 3px;
-  left: 3px;
-  width: 24px;
-  height: 24px;
+  top: 1px;
+  left: 1px;
+  width: 22px;
+  height: 22px;
+  border: 2px solid var(--walnut-3);
   border-radius: var(--r-sm);
-  background: var(--paper);
-  box-shadow: 0 2px 0 var(--ink-2);
+  background: var(--parch-1);
+  box-shadow: 0 2px 0 var(--walnut-3);
   transition: transform var(--t-ui) var(--ease-out);
 }
-.toggle[aria-checked='true'] .track { background: var(--green); }
-.toggle[aria-checked='true'] .knob { transform: translateX(22px); box-shadow: 0 2px 0 var(--green-base); }
+.toggle[aria-checked='true'] .track { background: var(--green); border-color: var(--walnut-3); }
+.toggle[aria-checked='true'] .knob { transform: translateX(24px); }
+.toggleState { margin-left: var(--s2); font-size: var(--fs-1); font-weight: 700; color: var(--ink-2); }
 
 /* ── 아이콘 + 숫자 ── */
 .stat { display: inline-flex; align-items: center; gap: 6px; font-weight: 800; font-variant-numeric: tabular-nums; line-height: 1; }
 .statMd { font-size: var(--fs-2); }
 .statLg { font-size: var(--fs-4); }
-.statLabel { font-size: var(--fs-1); font-weight: 700; color: var(--ink-2); }
+.statLabel { font-size: var(--fs-1); font-weight: 700; color: var(--stat-label, var(--ink-2)); }
 
-/* ── 창 ── */
+/* ── 창: 호두나무 테(frame.sm 원화) + 안쪽 몰딩 + 양피지 면, 제목 줄 아래 놋쇠 구분선(v4 §4.7) ── */
 .scrim {
   position: fixed;
   inset: 0;
@@ -161,24 +210,56 @@
   background: var(--scrim);
 }
 .dialog {
+  --ring: var(--blue);
   width: 100%;
   max-height: calc(100dvh - 2 * var(--s4));
   overflow: auto;
   display: flex;
   flex-direction: column;
   gap: var(--s4);
-  padding: var(--s5);
+  /* 테 8px + 여백 16px = R4 여백 24px. */
+  padding: var(--s4);
+  border: var(--frame-sm) solid var(--walnut-2);
+  border-image: var(--art-frame-sm) 33 / var(--frame-sm) stretch;
+  border-radius: var(--r-md);
+  background: var(--paper) padding-box;
+  color: var(--ink);
+  box-shadow: inset 0 0 0 2px var(--oak-1), var(--shadow-board);
 }
 .dialogSm { max-width: 440px; }
 .dialogMd { max-width: 640px; }
 .dialogLg { max-width: 900px; }
-.dialogHead { display: flex; align-items: center; justify-content: space-between; gap: var(--s3); }
-.dialogTitle { font-size: var(--fs-4); font-weight: 800; line-height: 1.25; }
+/* 머리줄 아래 12px 칸에 구분선(rule 원화, 대체 2px --oak-1 선)을 그리고, 구분선 아래는 --s2만 띄운다. */
+.dialogHead { position: relative; display: flex; align-items: center; justify-content: space-between; gap: var(--s3); padding-bottom: 12px; margin-bottom: calc(var(--s2) - var(--s4)); }
+.dialogHead::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 12px;
+  border: 0 solid transparent;
+  border-width: 5px 10px;
+  border-image: var(--art-rule) 0 20 fill / 0 10px stretch;
+  background: var(--oak-1) content-box;
+}
+.dialogTitle { font-size: var(--fs-4); font-weight: 800; line-height: 1.25; color: var(--ink); }
 .dialogFoot { display: flex; justify-content: flex-end; gap: var(--s3); flex-wrap: wrap; }
 
 .artIcon { display: inline-block; flex: none; vertical-align: middle; object-fit: contain; image-rendering: auto; }
 
+/* 인쇄·강제 색(고대비)에서는 원화 대신 토큰 단색으로 그린다(v4 §3). */
+@media print, (forced-colors: active) {
+  .btn::before { border-image: none; }
+  .btn:not(.ghost), .badge { border-image: none; background: var(--face); }
+  .segmented, .dialog { border-image: none; }
+  .dialogHead::after { border-image: none; }
+}
+
+/* 움직임 줄이기: OS 설정과 게임 설정 '움직임 최소'(<html data-motion="minimal">) 둘 다에서 위치 이동을 끈다(v4 §7.3). */
 @media (prefers-reduced-motion: reduce) {
   .btn:active:not(:disabled) { transform: none; }
   .knob { transition: none; }
 }
+:global(:root[data-motion='minimal']) .btn:active:not(:disabled) { transform: none; }
+:global(:root[data-motion='minimal']) .knob { transition: none; }
