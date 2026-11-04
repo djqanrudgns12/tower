@@ -12,6 +12,9 @@ export const SIZES = {
   desk: { name: 'desk', width: 1440, height: 900 },
   cb: { name: 'cb', width: 1366, height: 650 },
   phone: { name: 'phone', width: 390, height: 844 },
+  // 홈 머리판이 줄바꿈되는 중간 폭(R5 기준선, 12f 장면). 크롬북·휴대폰 표 밖의 확인용 크기다.
+  w1100: { name: 'w1100', width: 1100, height: 800 },
+  w1180: { name: 'w1180', width: 1180, height: 800 },
 };
 
 export const NICKNAME = '하늘바람';
@@ -82,17 +85,18 @@ export async function openPage(browser, { base, size, clock = false, route }) {
 }
 
 /**
- * 설정·첫 판 코치 마크를 localStorage에 넣는다. 장면 상태(runState: loadStates().buildScene(...).state)가 있으면 같은 탭의 sessionStorage에
+ * 설정·첫 판 코치 마크(그리고 local로 준 다른 localStorage 값: 키 → 문자열)를 localStorage에 넣는다. 장면 상태(runState: loadStates().buildScene(...).state)가 있으면 같은 탭의 sessionStorage에
  * 넣고 개발 전용 QA 장면 로더 주소(`/?qaRun=1`)로 연다(src/application/qaRun.ts, 운영 빌드에는 없다). 없으면 홈을 다시 불러온다.
  */
-export async function seed(page, base, { runState = null, states = null, settings, coach = ['place', 'start'] }) {
+export async function seed(page, base, { runState = null, states = null, settings, coach = ['place', 'start'], local = {} }) {
   await page.goto(`${base}/`);
   const qa = runState ? { key: states.QA_RUN_KEY, json: JSON.stringify(runState) } : null;
-  await page.evaluate(({ settings, coach, qa }) => {
+  await page.evaluate(({ settings, coach, qa, local }) => {
     localStorage.setItem('vocabulary-td.settings', JSON.stringify(settings));
     localStorage.setItem('vocabulary-td.coach', JSON.stringify(coach));
+    for (const [key, value] of Object.entries(local)) localStorage.setItem(key, value);
     if (qa) sessionStorage.setItem(qa.key, qa.json);
-  }, { settings, coach, qa });
+  }, { settings, coach, qa, local });
   if (runState) await page.goto(`${base}/?${states.QA_RUN_PARAM}=1`);
   else await page.reload();
 }

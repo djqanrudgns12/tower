@@ -1,11 +1,12 @@
 import { TOWER_IDS, type DifficultyId, type FormId, type TowerId } from '../../src/contracts/balance';
-import { contextFor, gradeContent } from '../../src/content';
-import type { GameContext } from '../../src/domain/context';
+import { contextFor, gradeContent, reviewQuestions } from '../../src/content';
+import type { GameContext, RuntimeQuestion } from '../../src/domain/context';
 import type { DomainEvent } from '../../src/domain/events';
 import { advanceTick, applyCommand, createRun, type Command } from '../../src/domain/run';
 import { evolutionChoices } from '../../src/domain/towers';
 import { burrowed } from '../../src/domain/traits';
 import type { RunState } from '../../src/domain/types';
+import { REVIEW_NOTE_KEY, emptyReviewNote, type ReviewNote } from '../../src/persistence/reviewNote';
 
 // 화면 점검용 장면 상태 만들기(tools/qa/scenes.mjs·perf.mjs·e2e 시험이 vite runnerImport로 읽는다). 판정은 제품 엔진이 하고,
 // 여기서는 장면에서 볼 것이 실제로 보이는 상태(웨이브·타워 형태·적·연출)를 고르는 가상 플레이어일 뿐이다.
@@ -13,6 +14,8 @@ import type { RunState } from '../../src/domain/types';
 
 /** 로더 이름(주소 매개변수·sessionStorage 키). 장비는 이 값을 써서 제품과 어긋나지 않는다. */
 export { QA_RUN_KEY, QA_RUN_PARAM } from '../../src/application/qaRun';
+/** 오답 노트 저장 키(localStorage). 장비가 buildReviewNote 결과를 이 키로 넣는다. */
+export { REVIEW_NOTE_KEY };
 
 /** 장면 하나의 상태. runMs는 로더로 연 뒤 '계속하기'를 누르고 게임 시간으로 이만큼 흘려 찍으라는 뜻(0이면 바로 찍는다). */
 export interface BuiltScene {
@@ -402,4 +405,33 @@ export function buildScene(name: string, req: SceneRequest = {}): BuiltScene {
   // 로더가 읽는 JSON 그대로인지 확인한다(순수 값만).
   JSON.parse(JSON.stringify(built.state));
   return built;
+}
+
+/**
+ * 오답 노트 화면 장면용 저장 값(localStorage `REVIEW_NOTE_KEY`). 학년 은행의 뜻(senseKey)에서 count개를 고르게 뽑아
+ * 틀린 횟수·졸업까지 맞힌 판 수(0/1)를 섞어 담는다. 제품의 listReviewNoteItems가 걸러내지 않도록 은행 id와 문항 id는 실제 값이다.
+ */
+export function buildReviewNote(count: number, grade = 3): ReviewNote {
+  const { bank } = gradeContent(grade);
+  const note = emptyReviewNote();
+  if (!bank) return note;
+  const bySense = new Map<string, RuntimeQuestion[]>();
+  for (const q of reviewQuestions(grade).values()) {
+    const list = bySense.get(q.target.senseKey);
+    if (list) list.push(q); else bySense.set(q.target.senseKey, [q]);
+  }
+  // 뜻 하나에 문항이 하나뿐인 은행이다(뜻풀이·빈칸·쓰임·유의어·반의어가 섞여 있다). 뜻을 이름순으로 고르게 뽑으면 카드마다 예문 유무가 섞여 보인다.
+  const senses = [...bySense.entries()].sort(([a], [b]) => a.localeCompare(b));
+  const step = Math.max(1, Math.floor(senses.length / Math.max(1, count)));
+  for (let i = 0; i < count && i * step < senses.length; i++) {
+    const [senseKey, qs] = senses[i * step]!;
+    const missed = qs.slice(0, 2).map(q => q.id);
+    const day = String(3 - Math.floor(i / 4)).padStart(2, '0');
+    const at = `2026-11-${day}T${String(15 - (i % 4) * 2).padStart(2, '0')}:00:00.000Z`;
+    note.items[senseKey] = {
+      lemma: qs[0]!.target.lemma, senseKey, bankId: bank.bankId, questionIds: missed,
+      misses: 1 + (i % 3), clears: i % 3 === 2 ? 1 : 0, addedAt: at, lastSeenAt: at,
+    };
+  }
+  return note;
 }

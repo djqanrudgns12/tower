@@ -1,4 +1,4 @@
-/* global window, document -- page.evaluate 안에서 도는 코드가 쓰는 브라우저 전역이다 */
+/* global window, document, getComputedStyle -- page.evaluate 안에서 도는 코드가 쓰는 브라우저 전역이다 */
 import { mkdir, readdir, readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { domAudit, ensureServer, enterGame, flag, launch, loadStates, baseSettings, openPage, continueGame, runGame, seed, SIZES } from './lib.mjs';
@@ -15,6 +15,7 @@ import { domAudit, ensureServer, enterGame, flag, launch, loadStates, baseSettin
  *  state           { builder, args } → tools/qa/states.ts BUILDERS[builder](args)의 상태로 판을 연다. 없으면 홈에서 시작한다.
  *  url             state 없이 열 주소(예: '/?previewMap=river_z'). 없으면 '/'.
  *  settings·coach  localStorage 설정·첫 판 코치 마크 덮어쓰기(기본: 연습 안내 끔, 코치 끝, 소리 끔).
+ *  reviewNote      오답 노트에 담아 둘 낱말 수(states.ts buildReviewNote). 없으면 노트가 비어 있다.
  *  steps           순서대로 실행할 동작. op는 아래 STEP_OPS.
  */
 export const SCENES = [
@@ -77,6 +78,28 @@ export const SCENES = [
   },
   { id: '10a', slug: 'pause', title: '일시정지 (1366×650)', sizes: ['cb'], state: { builder: 'pause-w9' }, steps: [{ op: 'continue' }, { op: 'click', role: 'button', name: '일시정지' }, { op: 'wait', ms: 300 }, { op: 'shot', name: 'pause' }] },
   { id: '10b', slug: 'result', title: '결과 화면 (1366×650)', sizes: ['cb'], state: { builder: 'defeat-w9' }, steps: [{ op: 'continue' }, { op: 'runUntil', text: '지킨 웨이브', stepMs: 500, maxMs: 20000 }, { op: 'wait', ms: 500 }, { op: 'shot', name: 'result' }, { op: 'shot', name: 'result-full', fullPage: true }] },
+  // R5 기준선(docs/renewal/qa/r5-baseline): 홈에서 여는 창·화면과 홈 머리판 중간 폭. 버튼 이름은 R5 P0 용어(tests/unit/terms.test.ts) 기준이다. 기준선은 용어 적용 전에 찍었다.
+  { id: '12a', slug: 'guide', title: '홈 → 사용 설명서(카드 목차)와 카드 하나의 자세히', sizes: ['desk', 'cb', 'phone'], steps: [
+    { op: 'open' }, { op: 'click', role: 'button', name: '사용 설명서' }, { op: 'wait', ms: 600 }, { op: 'shot', name: 'guide' },
+    { op: 'click', selector: '[role="dialog"] button:has-text("자세히")', nth: 0 }, { op: 'wait', ms: 400 }, { op: 'shot', name: 'guide-detail' },
+  ] },
+  { id: '12b', slug: 'settings', title: '홈 → 설정 창', sizes: ['desk', 'cb', 'phone'], steps: [
+    { op: 'open' }, { op: 'click', role: 'button', name: '설정' }, { op: 'wait', ms: 600 }, { op: 'shot', name: 'settings' },
+    { op: 'scrollDialog', to: 'bottom' }, { op: 'shot', name: 'settings-bottom', only: ['cb', 'phone'] },
+  ] },
+  { id: '12c', slug: 'ranking-modal', title: '홈 → 랭킹 전체 보기 창', sizes: ['desk', 'cb', 'phone'], steps: [
+    { op: 'open' }, { op: 'click', role: 'button', name: '전체 보기' }, { op: 'wait', ms: 800 }, { op: 'shot', name: 'ranking' },
+  ] },
+  { id: '12d', slug: 'note-empty', title: '오답 노트(비어 있음)', sizes: ['desk', 'cb', 'phone'], steps: [
+    { op: 'open' }, { op: 'click', role: 'button', name: '오답 노트', exact: true }, { op: 'wait', ms: 600 }, { op: 'shot', name: 'note-empty' },
+  ] },
+  { id: '12e', slug: 'note-items', title: '오답 노트(낱말 8개)', sizes: ['desk', 'cb', 'phone'], reviewNote: 8, steps: [
+    { op: 'open' }, { op: 'click', role: 'button', name: /^오답 노트/ }, { op: 'wait', ms: 600 }, { op: 'shot', name: 'note' },
+    { op: 'shot', name: 'note-full', fullPage: true, only: ['cb', 'phone'] },
+  ] },
+  { id: '12f', slug: 'home-mid', title: '홈 머리판 중간 폭(1100×800, 1180×800)', sizes: ['w1100', 'w1180'], steps: [
+    { op: 'open' }, { op: 'scrollTop' }, { op: 'shot', name: 'home' }, { op: 'shot', name: 'home-full', fullPage: true },
+  ] },
   // R3 P3 맵 미리보기(개발 서버 전용 `?previewMap=<맵 id>`, src/application/mapPreview.ts). 빈 맵 = 첫 준비 화면, 타워 = 타워 8기 + 전투 150틱(적이 길 위에 있다).
   ...['river_z', 'courtyard', 'snow_step'].flatMap((map, i) => [
     { id: `2${i + 1}a`, slug: `${map}-empty`, title: `${map} 빈 맵`, sizes: map === 'river_z' ? ['desk', 'phone'] : ['desk'], url: `/?previewMap=${map}`, steps: [{ op: 'open' }, { op: 'wait', ms: 2500 }, { op: 'shot', name: 'empty' }] },
@@ -97,7 +120,7 @@ const STEP_OPS = {
   async open(c) { await c.page.waitForTimeout(1200); },
   async fill(c, s) { await c.page.getByRole(s.role, { name: s.name }).fill(s.value); },
   async click(c, s) {
-    const target = s.selector ? c.page.locator(s.selector) : c.page.getByRole(s.role, s.name ? { name: s.name } : {});
+    const target = s.selector ? c.page.locator(s.selector) : c.page.getByRole(s.role, s.name ? { name: s.name, ...(s.exact ? { exact: true } : {}) } : {});
     await (s.nth !== undefined ? target.nth(s.nth) : target.first()).click();
     // 가짜 시계가 멈춰 있으면 화면 프레임이 없어 입력이 처리되지 않는다. 조금 흘려 반영한다.
     if (c.clock) await runGame(c.page, 50);
@@ -112,6 +135,13 @@ const STEP_OPS = {
   async park(c) { await c.page.mouse.move(2, 2); await c.page.waitForTimeout(120); },
   async wait(c, s) { await c.page.waitForTimeout(s.ms); },
   async scrollTop(c) { await c.page.evaluate(() => { window.scrollTo(0, 0); for (const el of document.querySelectorAll('*')) if (el.scrollTop) el.scrollTop = 0; }); await c.page.waitForTimeout(150); },
+  /** 열린 창(대화상자) 안에서 스크롤되는 상자를 끝(bottom)이나 처음(top)으로 민다. 창 아래쪽 내용을 캡처할 때 쓴다. */
+  async scrollDialog(c, s) {
+    await c.page.evaluate(to => {
+      for (const el of document.querySelectorAll('[role="dialog"], [role="dialog"] *')) if (el.scrollHeight > el.clientHeight + 1 && ['auto', 'scroll'].includes(getComputedStyle(el).overflowY)) el.scrollTop = to === 'bottom' ? el.scrollHeight : 0;
+    }, s.to ?? 'bottom');
+    await c.page.waitForTimeout(200);
+  },
   async scrollInto(c, s) { await c.page.getByRole(s.role, { name: s.name }).first().scrollIntoViewIfNeeded(); await c.page.waitForTimeout(150); },
   /** 화면에 text가 보일 때까지 게임 시간을 stepMs씩 흘린다(패배 뒤 결과 화면처럼 시간이 지나야 나오는 화면). */
   async runUntil(c, s) {
@@ -145,7 +175,8 @@ async function runScene(browser, states, ctx, scene, size) {
   const settings = baseSettings(scene.settings);
   const state = { page, scene, size, out: ctx.out, clock, built, shots: [] };
   try {
-    await seed(page, ctx.base, { runState: built?.state ?? null, states, settings, ...(scene.coach ? { coach: scene.coach } : {}) });
+    const local = scene.reviewNote ? { [states.REVIEW_NOTE_KEY]: JSON.stringify(states.buildReviewNote(scene.reviewNote)) } : {};
+    await seed(page, ctx.base, { runState: built?.state ?? null, states, settings, local, ...(scene.coach ? { coach: scene.coach } : {}) });
     if (scene.url) await page.goto(`${ctx.base}${scene.url}`);
     if (built) await enterGame(page, { clock });
     for (const step of scene.steps) await STEP_OPS[step.op](state, step);
@@ -162,7 +193,7 @@ async function runScene(browser, states, ctx, scene, size) {
 const pngSize = async file => { const b = await readFile(file); return { width: b.readUInt32BE(16), height: b.readUInt32BE(20) }; };
 
 export async function makeMontages(browser, out) {
-  const files = (await readdir(out)).filter(f => /^\d\d[a-z]?-.+-(desk|cb|phone)\.png$/.test(f) && !f.includes('-ERROR-')).sort();
+  const files = (await readdir(out)).filter(f => /^\d\d[a-z]?-.+-(desk|cb|phone|w1100|w1180)\.png$/.test(f) && !f.includes('-ERROR-')).sort();
   const pages = [];
   for (let i = 0; i < files.length; i += 4) pages.push(files.slice(i, i + 4));
   const names = [];
@@ -183,6 +214,14 @@ export async function makeMontages(browser, out) {
     names.push(name);
   }
   return names;
+}
+
+/** 보고 한 줄 요약: 장면 수·사진 수와 객관 검사 걸린 사진 수(가로 넘침·44px 미만·13px 미만·잘림·깨진 이미지)·오류 로그 수. */
+export function summarize(report) {
+  const shots = report.flatMap(r => r.shots);
+  const count = pick => shots.filter(s => pick(s.audit)).length;
+  const logs = report.reduce((n, r) => n + r.issues.pageErrors.length + r.issues.consoleErrors.length + r.issues.failedRequests.length + r.issues.badResponses.length, 0);
+  return `요약: 장면 ${report.length}회·사진 ${shots.length}장, 실패 ${report.filter(r => r.error).length}회 | 가로 넘침 ${count(a => a.overflowX > 0)}장, 44px 미만 ${count(a => a.small.length > 0)}장, 13px 미만 ${count(a => a.tiny.length > 0)}장, 잘림 ${count(a => a.cutOff.length + a.clipped.length > 0)}장, 깨진 이미지 ${count(a => a.broken.length > 0)}장 | 오류 로그 ${logs}건`;
 }
 
 async function main() {
@@ -219,6 +258,7 @@ async function main() {
         } catch { /* 이전 보고가 없다 */ }
       }
       await writeFile(reportFile, JSON.stringify(merged, null, 2));
+      console.log(summarize(merged));
     }
     if (!args.includes('--no-montage')) console.log('몽타주:', (await makeMontages(browser, out)).join(' '));
   } finally {
