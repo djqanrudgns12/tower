@@ -241,6 +241,7 @@ P0 기준선·규정(메인) ──┬─► P1 재질 원화(Antigravity 생성
 | 세션 B(P3) | `src/ui/screens/GuideScreen*`, `src/ui/screens/guide/**`, `public/assets/guide/**`, `tests/unit/guide.test.ts`, `tests/e2e/guide.spec.ts` |
 | 세션 C(P3) | `NewGameScreen.tsx`, `ResultScreen*`, `SettingsModal*`, `NoteScreen*`, `src/ui/screens/home/**`(K 소유 2개 제외), `HomeScreen.tsx`, `tests/e2e/home.spec.ts`·`note.spec.ts` |
 
+- **P2 뒤(2026-11-05)**: K의 P2 한정 소유는 넘어간다 — `ChoiceCard.*`는 A, `home.module.css`·`RankingModal.tsx`는 C, `App.tsx`는 메인. `src/ui/kit/**`·`global.css`·`icons/**`는 메인이 받아 두고, 트랙이 부품 변경을 요청하면 메인이 세션 K에 이어 맡긴다. 브리프: [`r5-briefs/A.md`](r5-briefs/A.md) · [`B.md`](r5-briefs/B.md) · [`C.md`](r5-briefs/C.md).
 - P0(2026-11-04)에 확정: 설명서 e2e는 `tests/e2e/guide.spec.ts`로 떼어 냈다(B 소유). 용어 일괄 적용(C4)은 P0에 메인이 모든 화면 파일에 한 번 했다. 이후 새 글도 `tests/unit/terms.test.ts`를 통과해야 한다.
 - **글 추가**: `copy.ts`는 메인 소유다. 트랙은 새 문구를 자기 폴더의 `*Copy.ts`(예: `src/ui/game/gameCopy.ts`)에 두고, P4에서 메인이 합칠지 정한다. 용어표는 모두 지킨다.
 - **소유 밖 변경이 필요하면** 직접 고치지 않는다. 메인에 요청한다(SendMessage). 메인이 순서를 정해 반영한다.
