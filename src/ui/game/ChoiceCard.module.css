@@ -1,0 +1,120 @@
+/* 새 타워·진화 공용 카드(R4 PRD §9.2): 창(종이 카드) 안의 한 칸. 면은 그림 무대(--paper-2)에만 두어 겹을 늘리지 않는다. */
+.card {
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  gap: var(--s3);
+  min-width: 0;
+}
+
+.stage {
+  position: relative;
+  display: grid;
+  place-items: center;
+  aspect-ratio: 4 / 3;
+  border-radius: var(--r-md);
+  background: var(--paper-2);
+  overflow: hidden;
+}
+
+/* 바닥 그림자: 원화 발밑의 납작한 타원(그림 요소라 테두리·그림자 규칙과 별개). */
+.ground {
+  position: absolute;
+  left: 22%;
+  bottom: 12%;
+  width: 56%;
+  height: 12%;
+}
+
+.ground ellipse { fill: var(--line); }
+
+/* 그림 칸은 무대 안에 크기가 정해진 상자(비율 높이가 비지 않게 inset으로 잡는다). */
+.art {
+  position: absolute;
+  inset: 8% 16% 14%;
+  display: grid;
+  place-items: center;
+}
+
+.art img { width: 100%; height: 100%; object-fit: contain; }
+
+.body {
+  display: grid;
+  gap: var(--s2);
+  align-content: start;
+  min-width: 0;
+}
+
+.name {
+  font-size: var(--fs-3);
+  font-weight: 800;
+  line-height: 1.25;
+}
+
+.desc {
+  font-size: var(--fs-2);
+  font-weight: 400;
+  color: var(--ink-2);
+  line-height: 1.4;
+}
+
+.pick { min-width: 0; }
+
+/* 휴대폰: 그림 | 이름·설명 | 고르기 한 줄. */
+.card[data-row] {
+  grid-template-rows: none;
+  grid-template-columns: 72px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--s3);
+}
+
+.card[data-row] .stage { aspect-ratio: 1; border-radius: var(--r-sm); }
+.card[data-row] .art { inset: 6%; }
+.card[data-row] .name { font-size: var(--fs-2); }
+.card[data-row] .desc { font-size: var(--fs-1); }
+.card[data-row] .body { gap: var(--s1); }
+
+/* 카드 묶음: 넓은 화면은 2~3칸 가로, 휴대폰은 세로로 쌓는다. */
+.list3,
+.list2 {
+  display: grid;
+  gap: var(--s5);
+}
+
+.list3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.list2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+
+.listRow {
+  display: grid;
+  gap: var(--s4);
+}
+
+.note {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s1);
+  font-size: var(--fs-1);
+  font-weight: 700;
+  color: var(--ink-2);
+}
+
+.note[data-air] { color: var(--blue); }
+
+/* 창 아래 이유 한 줄(골드 부족·단계 잠금). */
+.reason {
+  font-size: var(--fs-2);
+  font-weight: 800;
+  color: var(--red);
+}
+
+.price {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s1);
+}
+
+/* 진화 갈래 표식(동그라미·마름모): 그림 오른쪽 위. */
+.mark {
+  position: absolute;
+  top: 0;
+  right: 0;
+}

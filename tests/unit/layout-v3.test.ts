@@ -31,6 +31,12 @@ const tableRows = v3Doc
  */
 const DOC_ERRATA: Record<string, { mapW?: number }> = { '820×1060': { mapW: 787 }, '390×844': { mapW: 373 } };
 
+/**
+ * R4 PRD §9.3이 바꾼 행. 휴대폰 전장은 바깥 여백 없이 화면 폭 끝까지 붙는다(fieldBleed): 칸 = 폭 ÷ 15.
+ * - 390×844: 26.0 × 15 = 390 × 234(v3 표 24.9 · 373 × 224보다 전장 넓이 +9%)
+ */
+const R4_OVERRIDE: Record<string, { mapW: number; mapH: number; cell: number }> = { '390×844': { mapW: 390, mapH: 234, cell: 26 } };
+
 describe('시안 1 v3 가변 레일·수직선 잠금 레이아웃 계산(computeLayout)', () => {
   it('v3 문서 §2 표의 모든 행(모드·전장·칸·레일)을 그대로 재현한다', () => {
     expect(tableRows.length).toBeGreaterThanOrEqual(6);
@@ -43,8 +49,10 @@ describe('시안 1 v3 가변 레일·수직선 잠금 레이아웃 계산(comput
         expect(row.mapW).not.toBe(fix.mapW);
       }
       const l = computeLayout(row.W, row.H, false, 'base');
+      const r4 = R4_OVERRIDE[at];
+      if (r4) expect(r4.mapW * r4.mapH).toBeGreaterThan((fix?.mapW ?? row.mapW) * row.mapH);
       expect({ at, mode: l.mode, mapW: l.mapW, mapH: l.mapH, cell: l.cell, railW: l.railW }).toEqual({
-        at, mode: row.mode, mapW: fix?.mapW ?? row.mapW, mapH: row.mapH, cell: row.cell, railW: row.railW,
+        at, mode: row.mode, mapW: r4?.mapW ?? fix?.mapW ?? row.mapW, mapH: r4?.mapH ?? row.mapH, cell: r4?.cell ?? row.cell, railW: row.railW,
       });
     }
   });
@@ -111,7 +119,8 @@ describe('시안 1 v3 가변 레일·수직선 잠금 레이아웃 계산(comput
   it('레일 폭·프레임·압축 레일 기준은 계약 layout 값(1560·272/308/346·460)을 따른다', () => {
     expect(L.frameMaxPx).toBe(1560);
     expect([RAIL.tabletMinPx, RAIL.minPx, RAIL.maxPx, RAIL.tabletBelowWidthPx, RAIL.compactMapHeightMaxPx]).toEqual([272, 308, 346, 1160, 460]);
-    expect(L.optionGrid.twoByTwoMinCellWidthPx).toBe(200);
+    // R4 PRD §9.3: 휴대폰 문제 카드(240px 이하)도 2×2가 되도록 PRD §12.5 하한(160px)으로 내렸다.
+    expect(L.optionGrid.twoByTwoMinCellWidthPx).toBe(160);
     expect(minRailWidth(1024)).toBe(RAIL.tabletMinPx);
     expect(minRailWidth(RAIL.tabletBelowWidthPx)).toBe(RAIL.minPx);
     expect(minRailWidth(1920)).toBe(RAIL.minPx);
@@ -158,7 +167,10 @@ describe('시안 1 v3 가변 레일·수직선 잠금 레이아웃 계산(comput
       const phone = computeLayout(w, h, true, 'base');
       expect(phone.mode).toBe('S');
       expect(phone.pad).toBe(L.outerPaddingPx.phone);
-      expect(phone.mapW).toBeLessThanOrEqual(w - 2 * phone.pad);
+      // 휴대폰 전장은 화면 폭 끝까지 붙고(R4 PRD §9.3) 그 밖으로는 넘치지 않는다. 카드·버튼은 여백 안에 둔다.
+      expect(phone.fieldBleed).toBe(true);
+      expect(phone.mapW).toBeLessThanOrEqual(w);
+      expect(phone.mapW).toBeGreaterThan(w - 2 * phone.pad);
     }
 
     const landscapePhone = computeLayout(640, 360, true, 'base');

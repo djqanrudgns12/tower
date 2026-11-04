@@ -1,5 +1,5 @@
-/* 전투 화면 「원정대 작업대」(ui-rules-v2 §1): 짙은 호두나무 작업대 위에 전장(주인공)·우측 장착 레일·하단 양피지 판.
-   격자는 v3 상·하단 수직선 0.0px 잠금 규격을 따른다(PRD §12.1). */
+/* 전투 화면(R4 PRD §9, ui-rules-v3): 짙은 숲색 바탕 위에 전장(주인공)과 밝은 종이 카드.
+   R 모드는 [전장 | 오른쪽 카드 3장] 위, 아래 문제 카드. 문제 카드 오른쪽 열은 레일과 수직선을 맞춘다(PRD §12.1). */
 .screen {
   /* 계약 layout.frameMaxPx를 useLayout이 :root 변수로 넣는다. */
   max-width: var(--frame-max);
@@ -26,44 +26,63 @@
   scroll-margin-top: 80px;
 }
 
-/* 전장 액자: 호두나무 테 한 겹(바깥선)과 접지 그림자. 칸 크기에는 영향을 주지 않는다. */
+/* 전장: 둥근 모서리와 뜬 그림자만(갈색 테 없음). 휴대폰은 화면 폭 끝까지 붙인다. */
 .field {
   position: relative;
-  border-radius: var(--r-panel);
+  border-radius: var(--r-md);
   overflow: hidden;
-  outline: 4px solid var(--walnut-2);
-  box-shadow: 0 0 0 6px var(--walnut-3), var(--ambient-shadow);
+  box-shadow: var(--float);
   justify-self: center;
 }
 
+.field.bleed {
+  border-radius: 0;
+  box-shadow: none;
+}
+
+/* 전장 키보드 포커스: 캔버스 안쪽에 그려 둥근 모서리에 잘리지 않게 한다. */
+.field [data-keyscope='field']:focus-visible {
+  outline: 3px solid var(--blue);
+  outline-offset: -5px;
+}
+
+/* 오른쪽 열: 상태 카드 · 타워 칸 카드 · 상황 카드. 높이는 전장과 같고 상황 카드가 남는 높이를 가진다. */
 .rail {
+  position: relative;
   display: flex;
   flex-direction: column;
-  overflow: hidden;
-  border-radius: var(--r-panel);
-  background: var(--walnut-2);
-  border: 4px solid var(--walnut-3);
-  box-shadow: inset 0 0 0 1px var(--walnut-1), var(--ambient-shadow);
-  color: var(--cream-ink);
+  gap: var(--s2);
+  min-width: 0;
 }
 
-.railBody {
-  flex: 1;
-  min-height: 0;
-  overflow-y: auto;
-  padding: var(--s3);
+.rail > * { flex: none; }
+
+.sockets {
   display: grid;
-  gap: var(--s3);
-  align-content: start;
-}
-
-.railBodyCompact {
-  padding: var(--s2);
   gap: var(--s2);
 }
 
-/* 호두나무 위 안내 한 줄(연습 끝). 코치·이유 알약은 자기 색을 쓴다. */
-.restLine { color: var(--cream-ink); font-size: 14px; }
+.rail .sockets { padding: var(--s3); }
+
+/* 상황 카드는 내용 높이만 쓴다(빈 종이 벽을 만들지 않는다). 넘치면 카드 안에서만 스크롤한다. */
+.rail .context {
+  flex: 0 1 auto;
+  min-height: 0;
+  overflow: auto;
+  display: grid;
+  align-content: start;
+  gap: var(--s3);
+  padding: var(--s3) var(--s4);
+}
+
+/* 설치 자리 목록 자리: 레일 맨 아래에 붙어, 키보드 포커스가 닿을 때만 위로 펼쳐진다. */
+.slotDock {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 4;
+}
 
 .bottom {
   grid-column: 1 / -1;
@@ -73,7 +92,7 @@
   position: relative;
 }
 
-/* 연습 판 문제 안내는 문제판을 밀지 않도록 판 위에 띄운다. */
+/* 연습 판 문제 안내는 문제 카드를 밀지 않도록 카드 위에 띄운다. */
 .questionWrap > .coach {
   position: absolute;
   left: 50%;
@@ -84,36 +103,28 @@
   max-width: 90%;
 }
 
-/* 출격 준비판·연습 끝판: 문제판과 같은 양피지 판, 같은 수직선 격자. */
+/* 준비 바·연습 끝·판 끝: 문제 카드와 같은 종이 카드, 같은 수직선. */
 .build {
   display: grid;
   gap: var(--s3);
-  align-items: stretch;
-  background: var(--parch-face);
-  border: 4px solid var(--walnut-2);
-  border-radius: var(--r-panel);
-  outline: 2px solid var(--walnut-3);
-  outline-offset: -2px;
-  box-shadow: var(--ground-shadow), var(--ambient-shadow);
-  color: var(--ink);
+  align-items: center;
 }
 
-.seamR {
-  padding: var(--s3);
+/* 준비 바는 내용 높이만 쓴다(문제 카드 예산만큼 빈 종이를 늘리지 않는다). 오른쪽 열은 문제 카드와 같은 수직선. */
+.build.seamR {
   grid-template-columns: minmax(0, 1fr) calc(var(--rail-w, var(--rail-min)) - 16px);
   column-gap: var(--s3);
-  min-height: var(--q-h, 172px);
+  padding: var(--s4);
 }
 
-.buildStack {
-  padding: var(--s3);
+.build.stack {
   grid-template-columns: 1fr;
+  padding: var(--s3);
 }
 
 .buildMain {
   display: grid;
   gap: var(--s2);
-  align-content: center;
   justify-items: start;
   min-width: 0;
 }
@@ -122,116 +133,58 @@
   display: inline-flex;
   align-items: center;
   gap: var(--s2);
-  font-size: 24px;
+  font-size: var(--fs-4);
   font-weight: 800;
-  line-height: 1.25;
-  color: var(--ink);
+  line-height: 1.2;
+}
+
+.bossTag {
+  padding: 1px var(--s2);
+  border-radius: var(--r-sm);
+  background: var(--red);
+  color: var(--on-dark);
+  font-size: var(--fs-1);
+  font-weight: 800;
+  line-height: 1.5;
+}
+
+.buildHint {
+  font-size: var(--fs-2);
+  font-weight: 700;
+  line-height: 1.4;
+  color: var(--ink-2);
 }
 
 .buildSide {
   display: grid;
-  gap: var(--s2);
+  gap: var(--s3);
   align-content: center;
 }
 
-.confirmBox {
+.confirm {
   display: grid;
   gap: var(--s2);
 }
 
 .confirmText {
-  font-size: 16px;
+  font-size: var(--fs-2);
   font-weight: 800;
-  color: var(--ink);
 }
 
-.row {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
+.confirmRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
   gap: var(--s2);
 }
 
-/* 놋쇠 포인트: 지금 누를 가장 중요한 것 하나(전투 시작). 은은한 대기 표시가 이 화면의 무한 반복 하나다. */
-.start {
-  min-height: 56px;
-  width: 100%;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--s2);
-  padding: 0 var(--s4);
-  border: 3px solid var(--brass-3);
-  border-radius: var(--r-panel);
-  background: var(--brass-face);
-  color: var(--walnut-3);
-  font-size: 20px;
-  font-weight: 800;
-  box-shadow: 0 4px 0 var(--walnut-3), var(--ambient-shadow);
-  animation: idle 2.4s ease-in-out infinite;
-  transition: transform 80ms var(--ease-out), box-shadow 80ms var(--ease-out);
-}
-
-@keyframes idle {
-  0%, 100% { border-color: var(--brass-3); }
-  50% { border-color: #b88a2c; }
-}
-
-.start:active { transform: translateY(2px); box-shadow: 0 2px 0 var(--walnut-3); }
-.start:focus-visible { outline: 3px solid var(--blue); outline-offset: 3px; }
-
-@media (hover: hover) {
-  .start:hover { background: var(--brass-2); }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .start { animation: none; }
-}
-
-.quietKey {
-  min-height: var(--touch);
-  padding: 0 var(--s3);
-  border: 2px solid var(--walnut-1);
-  border-radius: var(--r-panel);
-  background: var(--parch-1);
-  color: var(--ink);
-  font-weight: 600;
-  box-shadow: 0 2px 0 var(--walnut-3);
-}
-
+/* 짙은 바탕 위 짧은 안내(저장 알림·세로 권유). */
 .hint {
   text-align: center;
-  font-size: 14px;
-  color: var(--cream-muted);
+  font-size: var(--fs-1);
+  font-weight: 700;
+  color: var(--on-dark);
   padding: var(--s1) var(--s2);
 }
-
-.notices {
-  position: absolute;
-  top: var(--s2);
-  left: 50%;
-  transform: translateX(-50%);
-  display: grid;
-  gap: var(--s1);
-  pointer-events: none;
-  width: max-content;
-  max-width: 90%;
-  z-index: 2;
-}
-
-.notice {
-  background: var(--walnut-3);
-  color: var(--cream-ink);
-  font-weight: 800;
-  font-size: 14px;
-  padding: var(--s1) var(--s3);
-  border-radius: 999px;
-  box-shadow: var(--ambient-shadow);
-  text-align: center;
-}
-
-.notice[data-tone='reward'] { color: var(--gold); }
-.notice[data-tone='warn'] { box-shadow: inset 0 0 0 2px var(--gold), var(--ambient-shadow); }
 
 .fullMap {
   position: absolute;
@@ -240,86 +193,17 @@
   z-index: 4;
 }
 
-/* 전장 키보드 포커스: 캔버스 안쪽에 그려 바깥 테두리에 잘리지 않게 한다(PRD §12.6 focus 2px+간격). */
-.field [data-keyscope='field']:focus-visible {
-  outline: 3px solid var(--blue);
-  outline-offset: -5px;
-}
-
-/* 설치 자리 목록(PRD §12.4): 키보드·스위치 사용자용 보조 경로. 기본은 접어 둔다. */
-.slotList {
-  font-size: 14px;
-}
-
-.slotSummary {
-  min-height: var(--touch);
-  padding: 0 var(--s3);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--s2);
-  cursor: pointer;
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--cream-muted);
-  background: var(--walnut-3);
-  border-radius: var(--r-panel);
-  list-style: none;
-}
-
-.slotSummary::-webkit-details-marker { display: none; }
-.slotList[open] .slotSummary svg { transform: rotate(180deg); }
-.slotSummary:focus-visible { outline: 3px solid var(--brass-1); outline-offset: 2px; }
-
-.modeS .slotSummary { background: var(--walnut-2); }
-
-.slotList > p { margin: var(--s2) 0 0; color: var(--cream-muted); font-size: 13px; }
-
-.slotItems {
-  margin: var(--s2) 0 0;
-  padding: 0;
-  list-style: none;
-  display: grid;
-  gap: var(--s1);
-}
-
-.slotButton {
-  width: 100%;
-  min-height: var(--touch);
-  padding: var(--s1) var(--s2);
-  text-align: left;
-  font-size: 14px;
-  word-break: keep-all;
-  color: var(--ink);
-  background: var(--parch-1);
-  border: 1px solid var(--parch-3);
-  border-radius: var(--r-input);
-  transition: transform 80ms;
-}
-
-@media (hover: hover) {
-  .slotSummary:hover { color: var(--cream-ink); }
-  .slotButton:hover { background: #fffaf0; }
-}
-
-.slotButton:active { transform: translateY(1px); }
-
-.slotButton[aria-current='true'] {
-  outline: 3px solid var(--blue);
-  outline-offset: -1px;
-}
-
-/* 코치 마크(첫 판·연습 판): 지금 할 조작 옆 한 문장. 알림(어두운 띠)과 구별되는 밝은 알약에 놋쇠 테. */
+/* 코치 한 문장(첫 판·연습 판): 지금 할 조작 옆에 뜬 종이 쪽지. */
 .coach {
   margin: 0;
-  padding: 6px var(--s3);
-  background: var(--parch-1);
+  padding: var(--s2) var(--s3);
+  border-radius: var(--r-sm);
+  background: var(--paper);
   color: var(--ink);
-  border: 2px solid var(--brass-2);
-  border-radius: 999px;
-  font-size: 15px;
-  font-weight: 600;
-  box-shadow: var(--ambient-shadow);
+  font-size: var(--fs-2);
+  font-weight: 700;
+  line-height: 1.4;
+  box-shadow: var(--float);
 }
 
 .coachField {
@@ -333,23 +217,22 @@
   z-index: 2;
 }
 
-/* 휴대폰: 전장 바로 아래 장착 홈 가로 줄(끌기 시작점). */
+.skipPractice { justify-self: start; }
+
+/* 휴대폰: 전장 바로 아래 타워 칸 한 줄(끌기 시작점). 바탕 위에 키캡만 놓는다. */
 .stripRow {
   display: grid;
-  gap: var(--s1);
-  padding: var(--s1) var(--s2);
-  border-radius: var(--r-panel);
-  background: var(--walnut-2);
-  border: 2px solid var(--walnut-3);
+  gap: var(--s2);
 }
 
+.modeS .contextS { padding: var(--s3); }
 
 .phoneExtras {
   display: grid;
   gap: var(--s2);
 }
 
-/* 끌고 있는 타워 그림자: 누른 점을 가운데로, 누르기는 받지 않는다. */
+/* 끌고 있는 타워 그림: 누른 점을 가운데로, 누르기는 받지 않는다. */
 .ghost {
   position: fixed;
   left: 0;
@@ -357,69 +240,5 @@
   z-index: 50;
   pointer-events: none;
   translate: -50% -50%;
-  filter: drop-shadow(0 6px 6px rgba(44, 26, 14, 0.45));
   opacity: 0.92;
-}
-
-/* 레일·줄의 짧은 이유(골드 부족·단계 잠금): 호두나무 위에서도 읽히게 양피지 알약. */
-.railFlash {
-  justify-self: start;
-  margin: 0;
-  padding: var(--s1) var(--s3);
-  border-radius: 999px;
-  background: var(--parch-1);
-  color: var(--danger);
-  font-size: 14px;
-  font-weight: 800;
-}
-
-/* 준비판 다음 웨이브 미리보기: 적 얼굴 + 마릿수. 대장은 붉은 테. */
-.roster {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--s2);
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.foe {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: var(--s1) var(--s3) var(--s1) var(--s1);
-  border-radius: 999px;
-  background: var(--parch-2);
-  border: 2px solid var(--parch-3);
-}
-
-.foe[data-boss] { border-color: var(--danger); }
-
-.foeArt {
-  width: 40px;
-  height: 40px;
-  border-radius: 999px;
-  display: grid;
-  place-items: center;
-  background: var(--walnut-3);
-  box-shadow: var(--well-inset);
-  overflow: hidden;
-}
-
-.foeArt img { width: 36px; height: 36px; object-fit: contain; }
-
-.foeCount {
-  font-size: 16px;
-  font-weight: 800;
-  color: var(--ink);
-}
-
-/* 휴대폰: 설치 자리 목록은 키보드·스위치 사용자의 보조 경로라, 포커스가 닿거나 펼쳤을 때만 자리를 차지한다(문제판이 첫 화면에 들어오게). */
-.modeS .slotList:not([open]):not(:focus-within) {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  overflow: hidden;
-  clip-path: inset(50%);
-  white-space: nowrap;
 }

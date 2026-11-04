@@ -1,0 +1,78 @@
+/* 설치 자리 목록(PRD §12.4): 키보드·스위치 사용자의 보조 경로. 평소에는 화면에서 숨고(R4 PRD §3 #10),
+   키보드 포커스가 닿거나 펼쳤을 때만 종이 카드로 나타난다. 놓인 자리(레일 아래·휴대폰 아래)는 화면이 정한다. */
+.slotList {
+  display: grid;
+  gap: var(--s2);
+  padding: var(--s2);
+  border-radius: var(--r-md);
+  background: var(--paper);
+  box-shadow: var(--float);
+  color: var(--ink);
+}
+
+.slotList:not([open]):not(:focus-within) {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.slotSummary {
+  min-height: var(--touch);
+  padding: 0 var(--s3);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s2);
+  cursor: pointer;
+  font-size: var(--fs-1);
+  font-weight: 700;
+  border-radius: var(--r-sm);
+  list-style: none;
+}
+
+.slotSummary::-webkit-details-marker { display: none; }
+.slotList[open] .slotSummary svg { transform: rotate(180deg); }
+.slotSummary:focus-visible { outline: 3px solid var(--blue); outline-offset: 2px; }
+
+.note {
+  margin: 0;
+  padding: 0 var(--s2);
+  font-size: var(--fs-1);
+  color: var(--ink-2);
+  white-space: normal;
+}
+
+.slotItems {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: var(--s1);
+  max-height: 40vh;
+  overflow-y: auto;
+}
+
+.slotButton {
+  width: 100%;
+  min-height: var(--touch);
+  padding: var(--s1) var(--s3);
+  text-align: left;
+  font-size: var(--fs-1);
+  font-weight: 700;
+  color: var(--ink);
+  background: var(--paper-2);
+  border: 0;
+  border-radius: var(--r-sm);
+  white-space: normal;
+}
+
+@media (hover: hover) {
+  .slotButton:hover { background: var(--line); }
+}
+
+.slotButton:focus-visible { outline: 3px solid var(--blue); outline-offset: -3px; }
+.slotButton[aria-current='true'] { outline: 3px solid var(--blue); outline-offset: -3px; }

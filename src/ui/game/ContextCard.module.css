@@ -1,0 +1,90 @@
+/* 상황 카드 내용(R4 PRD §9.1): 다음 웨이브 적 초상화 × 수 + 특성 아이콘, 전투 중 남은 적. */
+.forecast {
+  display: grid;
+  gap: var(--s3);
+  align-content: start;
+  min-width: 0;
+}
+
+.forecast[data-compact] { gap: var(--s2); }
+
+.title {
+  font-size: var(--fs-2);
+  font-weight: 800;
+  line-height: 1.2;
+}
+
+.total {
+  margin-left: var(--s1);
+  color: var(--ink-2);
+}
+
+.foes {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--s2) var(--s3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.foe {
+  display: flex;
+  align-items: center;
+  gap: var(--s2);
+  min-width: 0;
+}
+
+/* 대장은 한 줄을 다 쓰고 초상화가 크다. */
+.foe[data-boss] { grid-column: 1 / -1; }
+
+.portrait {
+  width: 40px;
+  height: 40px;
+  flex: none;
+  display: grid;
+  place-items: center;
+}
+
+.foe[data-boss] .portrait { width: 64px; height: 64px; }
+.forecast[data-compact] .portrait { width: 32px; height: 32px; }
+.forecast[data-compact] .foe[data-boss] .portrait { width: 44px; height: 44px; }
+
+.portrait img { width: 100%; height: 100%; object-fit: contain; }
+
+.count {
+  font-size: var(--fs-2);
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+}
+
+.foe[data-boss] .count { color: var(--red); }
+
+.warn {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--s2);
+  font-size: var(--fs-1);
+  font-weight: 800;
+  line-height: 1.4;
+  color: var(--red);
+}
+
+.remain {
+  display: flex;
+  align-items: baseline;
+  gap: var(--s2);
+}
+
+.remainLabel {
+  font-size: var(--fs-2);
+  font-weight: 700;
+  color: var(--ink-2);
+}
+
+.remainNum {
+  font-size: var(--fs-4);
+  font-weight: 800;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}

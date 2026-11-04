@@ -5,7 +5,8 @@ import type { TowerView } from '../../application/view';
 import { buildCost, sellRefund } from '../../domain/towers';
 import type { FieldView } from '../../game/bridge';
 import { fmtNumber } from '../copy';
-import { EvolveIcon, GoldCoinIcon, SellIcon, TowerShieldPortrait, UndoArrowIcon, UpgradeArrowIcon } from '../icons/GameIcons';
+import { EvolveIcon, SellIcon, TowerShieldPortrait, UndoArrowIcon, UpgradeArrowIcon } from '../icons/GameIcons';
+import { ArtIcon, Button } from '../kit';
 import { evolutionChoices, upgradeCost } from './evolution';
 import { cellRect, type CellRect } from './fieldGeometry';
 import css from './FieldOverlay.module.css';
@@ -42,8 +43,13 @@ interface Props {
   onClose(): void;
 }
 
+/** 키캡 안의 값(골드). 살 수 없으면 kit 비활성 모양(aria-disabled)이 알린다. */
+const Cost = ({ value, plus = false }: { value: number; plus?: boolean }) => (
+  <span className={css.cost}>{plus ? `+${fmtNumber(value)}` : <><ArtIcon name="coin" size={14} />{fmtNumber(value)}</>}</span>
+);
+
 /**
- * 전장 위 DOM 겹층(ui-rules-v2 §4): 빈 자리 옆 작은 고르기 메뉴, 설치된 타워 옆 도구 묶음(강화·진화·판매), 짧은 이유 표.
+ * 전장 위 DOM 겹층(R4 PRD §9.2): 빈 자리 옆 작은 고르기 메뉴, 설치된 타워 옆 도구 묶음(진화·강화·판매 키캡), 짧은 이유 표.
  * 칸 위치는 카메라가 알려 준 보이는 영역으로 맞춘다. 겹층 자체는 누르기를 받지 않고 메뉴만 받는다.
  */
 export function FieldOverlay(p: Props) {
@@ -91,8 +97,8 @@ export function FieldOverlay(p: Props) {
                   onBlur={() => p.onPreview(null)}
                   onClick={() => p.onBuild(p.slotId!, type)}
                 >
-                  <TowerShieldPortrait type={type} icons={p.icons} size={40} />
-                  <span className={css.cost}><GoldCoinIcon size={13} />{fmtNumber(price)}</span>
+                  <span className={css.pickArt}><TowerShieldPortrait type={type} icons={p.icons} size="fill" bare /></span>
+                  <Cost value={price} />
                 </button>
               );
             })}
@@ -106,16 +112,11 @@ export function FieldOverlay(p: Props) {
       )}
       {undoTower && undoRect && (
         <Anchored key={`undo-${undoTower.id}`} cell={undoRect} boxW={p.boxW} boxH={p.boxH} place="above">
-          <button
-            type="button"
-            className={`${css.tool} ${css.undo}`}
-            aria-label={`설치 되돌리기 +${undoTower.invested} 골드`}
-            onClick={() => p.onUndo?.(undoTower.id)}
-          >
+          <Button variant="secondary" className={css.tool} aria-label={`설치 되돌리기 +${undoTower.invested} 골드`} onClick={() => p.onUndo?.(undoTower.id)}>
             <UndoArrowIcon size={18} />
-            <span className={css.toolText}>되돌리기</span>{' '}
-            <span className={css.cost}>+{fmtNumber(undoTower.invested)}</span>
-          </button>
+            <span>되돌리기</span>{' '}
+            <Cost value={undoTower.invested} plus />
+          </Button>
         </Anchored>
       )}
       {p.flash && (
@@ -131,6 +132,7 @@ export function FieldOverlay(p: Props) {
   );
 }
 
+/** 설치된 타워 옆 도구 묶음: 진화(호박색)·강화(초록)·판매(빨강) 키캡. 설치 직후에는 판매 자리가 되돌리기다. */
 function TowerTools(p: Props & { tower: TowerView }) {
   const t = p.tower;
   const [confirmSell, setConfirmSell] = useState(false);
@@ -138,41 +140,41 @@ function TowerTools(p: Props & { tower: TowerView }) {
   const choices = evolutionChoices(p.balance, t);
   const next = upgradeCost(p.balance, t.type, t.level);
   const refund = sellRefund(p.balance, t);
-  // 설치 직후에는 판매 자리가 되돌리기(전액, 확인 없이)다.
-  const undo = t.undoable && p.onUndo ? (
-    <button type="button" className={`${css.tool} ${css.undo}`} aria-label={`설치 되돌리기 +${t.invested} 골드`} onClick={() => p.onUndo!(t.id)}>
-      <UndoArrowIcon size={18} />
-      <span className={css.toolText}>되돌리기</span>{' '}
-      <span className={css.cost}>+{fmtNumber(t.invested)}</span>
-    </button>
-  ) : null;
   return (
     <div className={css.tools} role="group" aria-label={`${label} 레벨 ${t.level}`}>
       {next !== null && (choices ? (
-        <button type="button" className={`${css.tool} ${css.evolve}`} data-short={p.gold < next || undefined} aria-label={`진화 ${next} 골드`} onClick={p.onEvolve}>
+        <Button variant="accent" className={css.tool} aria-disabled={p.gold < next || undefined} aria-label={`진화 ${next} 골드`} onClick={p.onEvolve}>
           <EvolveIcon size={18} />
-          <span className={css.toolText}>진화</span>{' '}
-          <span className={css.cost}><GoldCoinIcon size={13} />{fmtNumber(next)}</span>
-        </button>
+          <span>진화</span>{' '}
+          <Cost value={next} />
+        </Button>
       ) : (
-        <button type="button" className={`${css.tool} ${css.upgrade}`} data-short={p.gold < next || undefined} aria-label={`강화 ${next} 골드`} onClick={p.onUpgrade}>
+        <Button variant="primary" className={css.tool} aria-disabled={p.gold < next || undefined} aria-label={`강화 ${next} 골드`} onClick={p.onUpgrade}>
           <UpgradeArrowIcon size={18} />
-          <span className={css.toolText}>강화</span>{' '}
-          <span className={css.cost}><GoldCoinIcon size={13} />{fmtNumber(next)}</span>
-        </button>
+          <span>강화</span>{' '}
+          <Cost value={next} />
+        </Button>
       ))}
-      {undo ?? <button
-        type="button"
-        className={`${css.tool} ${css.sell}`}
-        data-confirm={confirmSell || undefined}
-        aria-label={confirmSell ? `판매 확인 +${refund} 골드` : `판매 +${refund} 골드`}
-        onClick={() => (confirmSell ? p.onSell() : setConfirmSell(true))}
-        onBlur={() => setConfirmSell(false)}
-      >
-        <SellIcon size={18} />
-        <span className={css.toolText}>{confirmSell ? '확인' : '판매'}</span>{' '}
-        <span className={css.cost}>+{fmtNumber(refund)}</span>
-      </button>}
+      {t.undoable && p.onUndo ? (
+        <Button variant="secondary" className={css.tool} aria-label={`설치 되돌리기 +${t.invested} 골드`} onClick={() => p.onUndo!(t.id)}>
+          <UndoArrowIcon size={18} />
+          <span>되돌리기</span>{' '}
+          <Cost value={t.invested} plus />
+        </Button>
+      ) : (
+        <Button
+          variant="danger"
+          className={css.tool}
+          data-confirm={confirmSell || undefined}
+          aria-label={confirmSell ? `판매 확인 +${refund} 골드` : `판매 +${refund} 골드`}
+          onClick={() => (confirmSell ? p.onSell() : setConfirmSell(true))}
+          onBlur={() => setConfirmSell(false)}
+        >
+          <SellIcon size={18} />
+          <span>{confirmSell ? '확인' : '판매'}</span>{' '}
+          <Cost value={refund} plus />
+        </Button>
+      )}
     </div>
   );
 }

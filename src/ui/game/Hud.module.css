@@ -1,35 +1,30 @@
-/* 상단 상태 바(ui-rules-v2 §1): 호두나무 판 한 장, 아이콘+숫자. 놋쇠는 쓰지 않는다(놋쇠는 지금 누를 것 하나에만). */
+/* 상태 카드(R4 PRD §9.1, ui-rules-v3): 종이 카드 위 원화 아이콘 + 숫자. 골드가 가장 큰 숫자다. */
 .hud {
   display: grid;
-  gap: 6px;
-  padding: var(--s2) var(--s3);
-  background: var(--walnut-face);
-  color: var(--cream-ink);
+  gap: var(--s2);
+  min-width: 0;
 }
 
-.rail {
-  /* 칸이 내용 길이에 끌려 레일보다 넓어지지 않게 한다(넘치면 일시정지 단추가 잘린다). */
-  grid-template-columns: minmax(0, 1fr);
-  border-bottom: 2px solid var(--walnut-3);
+.rail { padding: var(--s3) var(--s4); }
+.compact { padding: var(--s2) var(--s3); gap: var(--s1); }
+
+/* 줄 안 칸은 줄 높이를 다 채우고(위 끝이 같다) 내용은 각 칸 안에서 가운데에 둔다. */
+.row {
+  display: flex;
+  align-items: stretch;
+  justify-content: space-between;
+  gap: var(--s3);
+  min-width: 0;
 }
 
+.compact .row { gap: var(--s2); }
+
+/* 휴대폰: 한 줄. 성문 막대가 남는 폭을 가져가고 나머지는 제 크기만 쓴다. */
 .bar {
-  gap: var(--s1);
-  border: 2px solid var(--walnut-3);
-  border-radius: var(--r-panel);
-  box-shadow: var(--ground-shadow);
-  padding: var(--s1) var(--s2) var(--s1) var(--s3);
-}
-
-.compact {
-  gap: var(--s1);
-  padding: 6px var(--s3);
-}
-
-.top {
   display: flex;
   align-items: center;
-  gap: var(--s3);
+  gap: var(--s2);
+  padding: var(--s1) var(--s1) var(--s1) var(--s3);
 }
 
 .gate {
@@ -43,188 +38,99 @@
 .track {
   position: relative;
   flex: 1;
+  min-width: 32px;
   height: 12px;
-  border-radius: 999px;
-  background: var(--walnut-3);
-  box-shadow: var(--well-inset);
+  border-radius: var(--r-sm);
+  background: var(--paper-2);
   overflow: hidden;
 }
 
 .fill {
   position: absolute;
   inset: 0;
-  border-radius: inherit;
-  background: var(--map-leaf);
+  background: var(--green);
   transform-origin: left center;
   transition: transform 240ms var(--ease-out), background-color 240ms var(--ease-out);
 }
 
-.fill[data-low] { background: var(--danger); }
+.fill[data-low] { background: var(--red); }
 
-/* 성문 피해: 막대 테두리 붉은 깜빡임 1회(ui-rules-v2 §5). 화면 흔들림은 쓰지 않는다. */
+/* 성문이 맞으면 막대 위로 붉은 면이 한 번 켜졌다 꺼진다(600ms 이하). */
 .hit {
   position: absolute;
   inset: 0;
-  border-radius: inherit;
-  box-shadow: inset 0 0 0 2px var(--danger-light);
+  background: var(--red);
   opacity: 0;
-  animation: gateHit 420ms var(--ease-out) 1;
+  animation: hit 420ms ease-out 1;
 }
 
-@keyframes gateHit {
-  0%, 100% { opacity: 0; }
-  25% { opacity: 1; }
+@keyframes hit {
+  0% { opacity: 0.85; }
+  100% { opacity: 0; }
 }
 
 .gateNum {
-  font-size: 16px;
+  flex: none;
+  font-size: var(--fs-2);
   font-weight: 800;
   line-height: 1;
-  white-space: nowrap;
 }
 
 .of {
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--cream-muted);
+  font-size: var(--fs-1);
+  font-weight: 700;
+  color: var(--ink-2);
 }
 
-.pause {
-  flex: none;
-  width: var(--touch);
-  height: var(--touch);
-  display: grid;
-  place-items: center;
-  border: 2px solid var(--walnut-3);
-  border-radius: var(--r-panel);
-  background: var(--walnut-1);
-  color: var(--parch-1);
-  box-shadow: 0 2px 0 var(--walnut-3);
-}
+.pause { flex: none; }
 
-.pause:active { transform: translateY(1px); box-shadow: none; }
-.pause:focus-visible { outline: 3px solid var(--brass-1); outline-offset: 2px; }
-
-@media (hover: hover) {
-  .pause:hover { background: #7a5335; }
-}
-
-.stats {
-  display: flex;
+.gold {
+  display: inline-flex;
   align-items: center;
-  flex-wrap: nowrap;
-  column-gap: var(--s4);
-  row-gap: var(--s1);
-  min-height: 28px;
+  gap: var(--s2);
+  flex: none;
 }
 
-.compact .stats { column-gap: var(--s3); }
+.goldBig,
+.goldNum {
+  font-weight: 800;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.goldBig { font-size: var(--fs-4); }
+.goldNum { font-size: var(--fs-3); }
 
 .stat {
-  position: relative;
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-}
-
-/* 줄 안의 칸(골드·점수·웨이브·연속 정답)은 높이를 맞춰 윗변이 한 줄에 선다(압축 상태 바 두 줄 실측). */
-.stat,
-.streak { min-height: 24px; }
-
-.num {
-  font-size: 18px;
-  font-weight: 800;
-  line-height: 1;
-}
-
-.stat[data-kind='gold'] .num { color: var(--gold); }
-
-/* 변동 표시는 숫자 위로 떠올랐다 사라진다(600ms). 줄을 밀지 않아 상태 바 높이가 고정된다. */
-.delta {
-  position: absolute;
-  left: 50%;
-  bottom: 70%;
-  z-index: 1;
-  white-space: nowrap;
-  pointer-events: none;
-  opacity: 0;
-  animation: rise 600ms var(--ease-out) 1;
-  font-size: 13px;
-  font-weight: 800;
-  line-height: 1;
-  padding: 3px 6px;
-  border-radius: 999px;
-  background: var(--green);
-  color: var(--parch-1);
-}
-
-.delta[data-neg] { background: var(--walnut-3); color: var(--danger-light); }
-
-@keyframes rise {
-  0% { opacity: 0; transform: translate(-20%, 6px); }
-  25% { opacity: 1; transform: translate(-20%, 0); }
-  75% { opacity: 1; transform: translate(-20%, -6px); }
-  100% { opacity: 0; transform: translate(-20%, -10px); }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  @keyframes rise { 0%, 100% { opacity: 0; } 20%, 80% { opacity: 1; } }
-  .delta { animation-duration: 600ms !important; }
-}
-
-.milestone {
-  font-size: 13px;
-  font-weight: 800;
-  line-height: 1;
-  padding: 3px 6px;
-  border-radius: 999px;
-  background: var(--danger);
-  color: var(--parch-1);
-}
-
-.streak {
-  margin-left: auto;
-  display: inline-flex;
-  align-items: center;
-  gap: 3px;
-  padding: 3px 8px;
-  border-radius: 999px;
-  background: var(--walnut-3);
-}
-
-/* 데스크톱 레일은 보석이 성문 줄(성문 막대 오른쪽, 일시정지 단추 왼쪽)에 선다. */
-.top .streak {
+  gap: var(--s1);
   flex: none;
-  margin-left: 0;
+  font-size: var(--fs-2);
+  font-weight: 800;
+  line-height: 1;
 }
 
-.streak[data-burning] {
-  gap: 6px;
-  background: var(--amber-burn);
-  box-shadow: inset 0 0 0 2px var(--gold);
+.stat[data-boss] strong { color: var(--red); }
+
+.score {
+  font-weight: 700;
+  color: var(--ink-2);
 }
+
+.flames {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  flex: none;
+}
+
+.unlit { opacity: 0.25; }
+.lit { opacity: 1; transition: opacity var(--t-ui); }
 
 .burnNum {
-  font-size: 14px;
+  margin-left: var(--s1);
+  font-size: var(--fs-1);
   font-weight: 800;
-  line-height: 1;
-  color: var(--gold);
+  color: var(--amber-base);
 }
-
-/* 모션을 꺼도 깜빡임(투명도만)은 남긴다. */
-@media (prefers-reduced-motion: reduce) {
-  .hit { animation-duration: 420ms !important; }
-}
-
-/* 휴대폰 상단 바: 일시정지 키가 두 줄(성문 줄·숫자 줄)에 걸쳐 오른쪽에 선다. 높이를 줄여 문제판이 첫 화면에 들어오게 한다. */
-.bar {
-  grid-template-columns: minmax(0, 1fr) auto;
-  column-gap: var(--s3);
-  row-gap: 2px;
-  align-items: center;
-}
-
-.bar .top { display: contents; }
-.bar .gate { grid-column: 1; grid-row: 1; }
-.bar .stats { grid-column: 1; grid-row: 2; min-height: 24px; column-gap: var(--s3); }
-.bar .pause { grid-column: 2; grid-row: 1 / 3; }

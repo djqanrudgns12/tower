@@ -40,9 +40,10 @@ async function startGame(page: Page, width: number, height: number) {
   });
   await page.reload();
   await page.getByRole('textbox', { name: /닉네임|출정 별명/ }).fill('수직선검사');
-  await page.getByRole('button', { name: '새 게임' }).click();
-  await page.getByRole('button', { name: '시작하기' }).click();
-  await expect(page.getByText('준비 1/5')).toBeVisible();
+  // 홈 시작 → 새 게임 창의 시작(U1 홈 개편 전후 이름을 모두 받는다: 새 게임/시작, 시작하기/시작).
+  await page.getByRole('button', { name: /^(새 게임|시작)$/ }).first().click();
+  await page.getByRole('dialog', { name: /새 게임/ }).getByRole('button', { name: /^(시작하기|시작)$/ }).click();
+  await expect(page.getByRole('img', { name: '준비 1/5' })).toBeVisible();
 }
 
 const panelOf = (page: Page) => page.getByRole('region', { name: '어휘 문제' });
@@ -96,8 +97,12 @@ async function submit(page: Page, outcome: Outcome) {
     await optionsOf(page).nth(index).click();
   }
   await expect(optionsOf(page).first()).toBeDisabled();
+  // 정답은 ‘정답!’, 오답·모르겠어요는 정답 키가 초록이 되고 해설 한 칸이 보인다(R4 PRD §9.1).
   if (outcome === 'correct') await expect(panel.getByText('정답!')).toBeVisible();
-  else await expect(panel.getByText(/정답은 ‘/)).toBeVisible();
+  else {
+    await expect(panel.locator('[data-explain]')).toBeVisible();
+    await expect(panel.locator('[data-state="correct"]')).toHaveCount(1);
+  }
   await page.evaluate(() => new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r))));
 }
 
@@ -445,9 +450,10 @@ async function newGame(page: Page) {
   await page.evaluate(() => { indexedDB.deleteDatabase('vocabulary-td'); localStorage.removeItem('vocabulary-td.coach'); });
   await page.reload();
   await page.getByRole('textbox', { name: /닉네임|출정 별명/ }).fill('하늘바람');
-  await page.getByRole('button', { name: '새 게임' }).click();
-  await page.getByRole('button', { name: '시작하기' }).click();
-  await expect(page.getByText('준비 1/5')).toBeVisible();
+  // 홈 시작 → 새 게임 창의 시작(U1 홈 개편 전후 이름을 모두 받는다: 새 게임/시작, 시작하기/시작).
+  await page.getByRole('button', { name: /^(새 게임|시작)$/ }).first().click();
+  await page.getByRole('dialog', { name: /새 게임/ }).getByRole('button', { name: /^(시작하기|시작)$/ }).click();
+  await expect(page.getByRole('img', { name: '준비 1/5' })).toBeVisible();
 }
 
 const panel = (page: Page) => page.getByRole('region', { name: '어휘 문제' });
@@ -573,7 +579,7 @@ test('1440×900: 설치 뒤 도구 묶음·능력치 막대도 13px·44px 하한
     await nextQuestion(page);
   }
   await expect(page.getByRole('button', { name: '전투 시작' })).toBeVisible();
-  await page.getByRole('listbox', { name: '타워 장착 홈' }).getByRole('option', { name: /궁수탑/ }).click();
+  await page.getByRole('listbox', { name: '타워 칸' }).getByRole('option', { name: /궁수탑/ }).click();
   const box = (await page.locator('canvas').boundingBox())!;
   const cell = box.width / 15;
   await page.mouse.click(box.x + 8.5 * cell, box.y + 2.5 * cell);

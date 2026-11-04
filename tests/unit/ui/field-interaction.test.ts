@@ -275,7 +275,7 @@ describe('징집 화면(towers.md §0-2, 엔진 domain/draft)', () => {
     expect(showRecruit({ ...v, draft: null })).toBe(false);
   });
 
-  it('큰 카드 3장(그림·이름·역할 한 줄·비행 적 공격 표시)과 처음엔 꺼진 고르기 하나, 화면을 잠그지 않는다', async () => {
+  it('카드 3장(그림·이름·역할 한 줄·비행 적 공격 표시)마다 고르기 하나, 막 위 창이고 닫기 없이 꼭 고른다(R4 PRD §9.2)', async () => {
     const { selectView } = await import('../../../src/application/view');
     const { createElement } = await import('react');
     const { renderToStaticMarkup } = await import('react-dom/server');
@@ -285,20 +285,22 @@ describe('징집 화면(towers.md §0-2, 엔진 domain/draft)', () => {
     const { ctx, s } = await draftOpen();
     const choices = recruitOffer(selectView(ctx, s))!;
     const html = renderToStaticMarkup(createElement(RecruitCard, { balance: BALANCE, choices, icons: {}, onPick: () => {} }));
-    expect(html).toContain('aria-modal="false"');
-    expect(html.match(/role="radio"/g)).toHaveLength(3);
-    expect(html.match(/aria-checked="false"/g)).toHaveLength(3);
-    expect(html.match(/tabindex="0"/g)).toHaveLength(1);
+    // 라디오 + 공통 확정 단추 대신 카드마다 ‘고르기’ 한 번(R4 PRD §9.2). 막(--scrim) 위 창이라 문제 카드까지 덮는다.
+    expect(html).toContain('role="dialog"');
+    expect(html).toContain('aria-modal="true"');
+    expect(html).not.toContain('role="radio"');
     for (const type of choices) {
       expect(html).toContain(BALANCE.towers[type].label);
       expect(html).toContain(TOWER_COPY[type].role);
+      expect(html).toContain(`aria-label="${BALANCE.towers[type].label} 고르기"`);
     }
     const air = choices.map(t => recruitCardInfo(BALANCE, t).air);
     expect(html.match(/하늘 적 공격/g)?.length ?? 0).toBe(air.filter(a => a === true).length);
     expect(html.match(/땅 적만/g)?.length ?? 0).toBe(air.filter(a => a === false).length);
+    // 단추는 카드마다 고르기 하나뿐이고(닫기 없음) 모두 바로 누를 수 있다.
     const buttons = html.match(/<button[^>]*>/g)!;
-    expect(buttons).toHaveLength(4);
-    expect(buttons.filter(b => !b.includes('role="radio"'))).toEqual([expect.stringContaining('disabled')]);
+    expect(buttons).toHaveLength(choices.length);
+    expect(buttons.every(b => b.includes('data-choice') && !b.includes('disabled'))).toBe(true);
   });
 
   it('비행 적 표시는 엔진 대공 값을 따른다(궁수·서리는 하늘, 포탑·창병은 땅만, 깃발은 표시 없음)', async () => {

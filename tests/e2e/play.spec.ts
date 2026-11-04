@@ -13,9 +13,10 @@ async function newGame(page: Page) {
   await page.evaluate(() => indexedDB.deleteDatabase('vocabulary-td'));
   await page.reload();
   await page.getByRole('textbox', { name: /닉네임|출정 별명/ }).fill('하늘바람');
-  await page.getByRole('button', { name: '새 게임' }).click();
-  await page.getByRole('button', { name: '시작하기' }).click();
-  await expect(page.getByText('준비 1/5')).toBeVisible();
+  // 홈 시작 → 새 게임 창의 시작(U1 홈 개편 전후 이름을 모두 받는다: 새 게임/시작, 시작하기/시작).
+  await page.getByRole('button', { name: /^(새 게임|시작)$/ }).first().click();
+  await page.getByRole('dialog', { name: /새 게임/ }).getByRole('button', { name: /^(시작하기|시작)$/ }).click();
+  await expect(page.getByRole('img', { name: '준비 1/5' })).toBeVisible();
 }
 
 /** 첫 보기를 눌러 준비 문제를 끝낸다. 오답이면 4초 해설 뒤 ‘다음 문제’. */
@@ -49,7 +50,7 @@ async function tapCell(page: Page, x: number, y: number) {
 
 /** 장착 홈 소켓을 눌러 전장 칸까지 끌어 놓는다(ui-rules-v2 §4). 칸 가장자리 근처에 놓아도 자석으로 붙는다. */
 async function dragTower(page: Page, name: RegExp, x: number, y: number, offset = { dx: 0, dy: 0 }) {
-  const socket = (await page.getByRole('listbox', { name: '타워 장착 홈' }).getByRole('option', { name }).boundingBox())!;
+  const socket = (await page.getByRole('listbox', { name: '타워 칸' }).getByRole('option', { name }).boundingBox())!;
   const to = await cellCenter(page, x, y);
   await page.mouse.move(socket.x + socket.width / 2, socket.y + socket.height / 2);
   await page.mouse.down();
@@ -58,6 +59,8 @@ async function dragTower(page: Page, name: RegExp, x: number, y: number, offset 
 }
 
 const towerCount = (page: Page, n: number) => expect(page.getByRole('application', { name: new RegExp(`타워 ${n}개`) })).toBeVisible();
+/** 전투 중 문제 카드의 국면 태그(R4 PRD §9.1: 준비·전투·대장 태그 하나). 1웨이브는 ‘전투’다. */
+const battleTag = (page: Page) => page.getByRole('region', { name: '어휘 문제' }).getByText('전투', { exact: true });
 
 test('1440×900: 준비 → 설치 → 전투 → 정지 가림 → 재개', async ({ page }) => {
   const errors: string[] = [];
@@ -77,7 +80,7 @@ test('1440×900: 준비 → 설치 → 전투 → 정지 가림 → 재개', asy
   await towerCount(page, 1);
   await shot(page, 'desktop-dragged');
   // 타워를 먼저 고르고 빈 자리를 누르면 바로 설치된다. 골드가 남으면 같은 타워가 계속 골라져 있다.
-  await page.getByRole('listbox', { name: '타워 장착 홈' }).getByRole('option', { name: /궁수탑/ }).click();
+  await page.getByRole('listbox', { name: '타워 칸' }).getByRole('option', { name: /궁수탑/ }).click();
   await expect(page.getByRole('option', { name: /궁수탑/ })).toHaveAttribute('aria-selected', 'true');
   const second = garden.slots.find(s => s.x === 5 && s.y === 4)!;
   await tapCell(page, second.x, second.y);
@@ -90,7 +93,7 @@ test('1440×900: 준비 → 설치 → 전투 → 정지 가림 → 재개', asy
   await shot(page, 'desktop-built');
 
   await page.getByRole('button', { name: '전투 시작' }).click();
-  await expect(page.getByText('전투 문제')).toBeVisible();
+  await expect(battleTag(page)).toBeVisible();
   await page.waitForTimeout(6000);
   await shot(page, 'desktop-battle');
 
@@ -120,7 +123,7 @@ test('저장하고 나가기 → 새로고침 → 이어하기: 정지 상태로
   await page.getByRole('group', { name: '이 자리에 놓을 타워' }).getByRole('button', { name: /궁수탑/ }).click();
   await towerCount(page, 1);
   await page.getByRole('button', { name: '전투 시작' }).click();
-  await expect(page.getByText('전투 문제')).toBeVisible();
+  await expect(battleTag(page)).toBeVisible();
   await page.waitForTimeout(4000);
 
   await page.getByRole('button', { name: '일시정지' }).first().click();
@@ -141,8 +144,9 @@ test('저장하고 나가기 → 새로고침 → 이어하기: 정지 상태로
   await shot(page, 'desktop-restored');
   await page.getByRole('button', { name: '계속하기' }).click();
   await expect(page.getByRole('region', { name: '어휘 문제' })).toBeVisible();
-  await expect(page.getByText('전투 문제')).toBeVisible();
-  await expect(page.getByText(/빈 자리 19곳/)).toBeVisible();
+  await expect(battleTag(page)).toBeVisible();
+  // 설치 자리 목록은 키보드 포커스 때만 보인다(R4 PRD §3 #10). 이어한 판의 자리 수가 같은지 목록 글로 확인한다.
+  await expect(page.getByText(/빈 자리 19곳/)).toBeAttached();
   await towerCount(page, 1);
 });
 
@@ -200,7 +204,14 @@ test('키보드: 전장 화살표·Enter로 자리를 고르고, 설치 자리 �
   await page.keyboard.press('Escape');
   await expect(menu).toHaveCount(0);
   await expect(field).toBeFocused();
-  await page.getByText(/설치 자리 목록/).click();
+  // 설치 자리 목록은 평소 숨어 있고(R4 PRD §3 #10) 키보드 포커스가 닿으면 나타난다. 엔터로 펼친다.
+  const summary = page.locator('summary', { hasText: '설치 자리 목록' });
+  const clip = () => summary.evaluate(el => getComputedStyle(el.closest('details')!).clipPath);
+  expect(await clip()).toBe('inset(50%)');
+  await summary.focus();
+  expect(await clip()).toBe('none');
+  await expect(summary).toBeInViewport();
+  await page.keyboard.press('Enter');
   await page.getByRole('button', { name: '자리 9 · 가로 9, 세로 3 · 비어 있음' }).click();
   await expect(menu).toBeInViewport();
   // 목록은 접히고 포커스는 메뉴의 첫 타워로 간다. 엔터로 바로 설치한다.
@@ -213,7 +224,8 @@ test('키보드: 전장 화살표·Enter로 자리를 고르고, 설치 자리 �
 test('WebGL 문맥 손실: 멈추고, 화면이 돌아온 뒤 계속하면 같은 문제로 이어진다(PRD §12.7)', async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
   await newGame(page);
-  const stem = await page.getByRole('region', { name: '어휘 문제' }).locator('p').first().innerText();
+  // 문제 줄은 국면 태그·준비 점과 지문을 한 줄에 둔다. 줄바꿈이 끼는 innerText 대신 글자 그대로(textContent)를 비교한다.
+  const stem = (await page.getByRole('region', { name: '어휘 문제' }).locator('p').first().textContent())!;
   // 잃은 문맥에서는 확장을 다시 얻을 수 없으므로 처음 얻은 것을 window에 둔다.
   const lose = (restore: boolean) => page.evaluate(r => {
     const w = window as unknown as { loseExt?: WEBGL_lose_context };
@@ -260,9 +272,10 @@ test('사용 설명서 완독 후 새 게임 출정: 설명서는 4장 안내만
   await expect(guide).toHaveCount(0);
 
   await page.getByRole('textbox', { name: /닉네임|출정 별명/ }).fill('작전교범수호자');
-  await page.getByRole('button', { name: '새 게임' }).click();
-  await page.getByRole('button', { name: '시작하기' }).click();
-  await expect(page.getByText('준비 1/5')).toBeVisible();
+  // 홈 시작 → 새 게임 창의 시작(U1 홈 개편 전후 이름을 모두 받는다: 새 게임/시작, 시작하기/시작).
+  await page.getByRole('button', { name: /^(새 게임|시작)$/ }).first().click();
+  await page.getByRole('dialog', { name: /새 게임/ }).getByRole('button', { name: /^(시작하기|시작)$/ }).click();
+  await expect(page.getByRole('img', { name: '준비 1/5' })).toBeVisible();
 });
 
 test('첫 연습 판: 문제 1개 → 궁수 설치 → 적 3마리 → 회복, 안내는 조작 옆 한 문장(PRD §12.2)', async ({ page }) => {
@@ -273,7 +286,7 @@ test('첫 연습 판: 문제 1개 → 궁수 설치 → 적 3마리 → 회복, 
   await page.reload();
   await page.getByRole('button', { name: '처음이라면 연습부터' }).click();
   await expect(page.getByText('문제를 풀면 골드를 받아요. 알맞은 답을 눌러 보세요.')).toBeVisible();
-  await expect(page.getByText('준비 1/1')).toBeVisible();
+  await expect(page.getByRole('img', { name: '준비 1/1' })).toBeVisible();
   await shot(page, 'practice-question');
   await finishPrep(page);
   // 새 화면(ui-rules-v2 §4): 끌어 놓기 안내 → 빈 받침을 누르면 받침 옆 메뉴 안내 → 고르면 바로 설치.
@@ -327,7 +340,7 @@ test('키보드: 설치·판매로 단추가 사라져도 포커스가 body로 �
   await page.keyboard.press('Enter');
   await page.waitForTimeout(400);
   await expect(page.getByRole('button', { name: '전투 시작' })).toBeVisible();
-  await expect(page.getByText('전투 문제')).toHaveCount(0);
+  await expect(battleTag(page)).toHaveCount(0);
   await page.keyboard.press('Escape');
 
   // 되돌리기 창(3초)이 지나면 도구 묶음의 판매가 보인다. 판매 확인 뒤 도구 묶음이 사라지면 다시 전장으로 옮긴다.
@@ -341,7 +354,7 @@ test('키보드: 설치·판매로 단추가 사라져도 포커스가 body로 �
   expect(await page.evaluate(() => document.activeElement === document.body)).toBe(false);
   await page.keyboard.press('Enter');
   await page.waitForTimeout(400);
-  await expect(page.getByText('전투 문제')).toHaveCount(0);
+  await expect(battleTag(page)).toHaveCount(0);
 });
 
 test('설치 되돌리기: 설치 직후 그 타워 위 칩을 누르면 전액 환불되고, 3초가 지나면 칩이 사라진다(ui-rules-v2 §4)', async ({ page }) => {
@@ -374,10 +387,10 @@ test('1366×650 크롬북: R 모드와 칸 크기', async ({ page }) => {
   const box = await page.locator('canvas').boundingBox();
   expect(box!.width / 15).toBeGreaterThanOrEqual(44);
   await shot(page, 'chromebook-prep');
-  // 압축 레일: 장착 홈 8칸(4×2)과 고른 타워 요약(역할 낱말 + 아이콘·숫자 칩), 자리 목록이 레일 안에 스크롤 없이 들어간다.
+  // 압축 레일: 타워 칸(가진 4종 + 잠긴 칸 1, 4칸씩 2줄)과 고른 타워 요약(역할 낱말 + 아이콘·숫자 칩)이 레일 안에 스크롤 없이 들어간다.
   await finishPrep(page);
   const rail = page.getByRole('complementary', { name: '타워 관리' });
-  await rail.getByRole('listbox', { name: '타워 장착 홈' }).getByRole('option', { name: /서리탑/ }).click();
+  await rail.getByRole('listbox', { name: '타워 칸' }).getByRole('option', { name: /서리탑/ }).click();
   const detail = rail.getByRole('region', { name: '서리탑 능력치' });
   await expect(detail).toBeVisible();
   await expect(detail.getByText('느리게', { exact: true })).toBeVisible();
@@ -388,7 +401,7 @@ test('1366×650 크롬북: R 모드와 칸 크기', async ({ page }) => {
     return { over: body.scrollHeight - body.clientHeight, cells: sockets.length, rows: new Set(sockets.map(r => Math.round(r.top))).size, sameH: sockets.every(r => Math.abs(r.height - sockets[0]!.height) <= 0.5) };
   });
   await shot(page, 'chromebook-detail');
-  expect(fit).toEqual({ over: 0, cells: 8, rows: 2, sameH: true });
+  expect(fit).toEqual({ over: 0, cells: 5, rows: 2, sameH: true });
 });
 
 test('접근성: 홈·준비 화면 axe 위반 없음(캔버스 제외)', async ({ page }) => {
@@ -442,7 +455,7 @@ test('학년 단추는 공동검수를 통과한 공개 은행만 시작할 수 
   expect(newGameA11y.violations.map(v => `${v.id}: ${v.nodes.length}`)).toEqual([]);
 
   await page.getByRole('button', { name: '시작하기' }).click();
-  await expect(page.getByText('준비 1/5')).toBeVisible();
+  await expect(page.getByRole('img', { name: '준비 1/5' })).toBeVisible();
   await expect(page.getByRole('region', { name: '어휘 문제' })).toBeVisible();
 
   const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
@@ -492,42 +505,39 @@ async function openDraftFixture(page: Page, offers: string[]) {
 }
 
 for (const [w, h, name] of [[1440, 900, 'desktop'], [390, 844, 'phone']] as const) {
-  test(`${w}×${h} 징집: 큰 카드 3장과 고르기만, 문제 풀이를 막지 않고, 고르면 장착 홈에 들어온다(towers.md §0-2)`, async ({ page }) => {
+  test(`${w}×${h} 새 타워: 카드 3장마다 고르기 하나, 막이 문제 카드까지 덮고, 고르면 타워 칸에 들어온다(R4 PRD §9.2)`, async ({ page }) => {
     await page.setViewportSize({ width: w, height: h });
     await newGame(page);
     await openDraftFixture(page, ['crossbow', 'flame', 'banner']);
-    const recruit = page.getByRole('dialog', { name: '새 타워 징집' });
+    const recruit = page.getByRole('dialog', { name: '새 타워' });
     await expect(recruit).toBeVisible();
-    const cards = recruit.getByRole('radio');
-    await expect(cards).toHaveCount(3);
+    // 라디오 + 공통 확정 단추 대신 카드마다 ‘고르기’ 한 번으로 바로 고른다.
+    await expect(recruit.getByRole('radio')).toHaveCount(0);
+    const picks = recruit.getByRole('button', { name: /고르기$/ });
+    await expect(picks).toHaveCount(3);
     await expect(recruit.getByText('하늘 적 공격')).toHaveCount(1);
     await expect(recruit.getByText('땅 적만')).toHaveCount(1);
-    const pick = recruit.getByRole('button', { name: '고르기' });
-    await expect(pick).toBeDisabled();
-    // 모달이 아니다: 포커스를 빼앗지 않고, 문제판은 그대로 보이고 답할 수 있다.
-    expect(await page.evaluate(() => !!document.activeElement?.closest('[role="dialog"]'))).toBe(false);
+    // 꼭 고르는 창: 닫기가 없고 Esc로 닫히지 않는다. 포커스는 창 안에서 시작한다.
+    await expect(recruit.getByRole('button', { name: '닫기' })).toHaveCount(0);
+    await expect(picks.first()).toBeFocused();
+    await page.keyboard.press('Escape');
+    await expect(recruit).toBeVisible();
+    // 막이 전장과 문제 카드까지 덮는다: 문제 카드가 있는 본문은 inert라 보기를 누를 수 없다.
     const options = page.getByRole('region', { name: '어휘 문제' }).getByRole('group', { name: '보기' }).getByRole('button');
-    await expect(options.first()).toBeEnabled();
+    await expect(options.first()).toBeAttached();
+    expect(await page.evaluate(() => document.querySelector('main')!.inert)).toBe(true);
     const overflowX = await page.evaluate(() => document.documentElement.scrollWidth - innerWidth);
     expect(overflowX).toBeLessThanOrEqual(0);
-    // 카드는 문제판과 겹치지 않는다. 휴대폰은 문제판이 먼저(위에) 와서 카드가 문제를 화면 밖으로 밀지 않는다.
-    const q = (await page.getByRole('region', { name: '어휘 문제' }).boundingBox())!;
-    const r = (await recruit.boundingBox())!;
-    const overlap = Math.max(0, Math.min(q.y + q.height, r.y + r.height) - Math.max(q.y, r.y)) * Math.max(0, Math.min(q.x + q.width, r.x + r.width) - Math.max(q.x, r.x));
-    expect(overlap).toBe(0);
-    if (name === 'phone') expect(q.y).toBeLessThan(r.y);
+    // 카드 3장과 고르기가 창 안에서 다 보인다(휴대폰은 카드가 세로로 쌓인다).
+    for (let i = 0; i < 3; i++) await expect(picks.nth(i)).toBeInViewport();
     await shot(page, `recruit-${name}`);
-    await recruit.scrollIntoViewIfNeeded();
-    await shot(page, `recruit-${name}-cards`);
-    await options.first().click();
-    await expect(options.first()).toBeDisabled();
-    // 고르기: 카드를 누르면 고른 표시만, ‘고르기’로 확정하면 장착 홈에 석궁탑이 들어오고 카드가 닫힌다.
-    await cards.first().click();
-    await expect(cards.first()).toHaveAttribute('aria-checked', 'true');
-    await pick.click();
+    await recruit.getByRole('button', { name: '석궁탑 고르기' }).click();
     await expect(recruit).toHaveCount(0);
-    const armory = page.getByRole('listbox', { name: '타워 장착 홈' });
+    const armory = page.getByRole('listbox', { name: '타워 칸' });
     await expect(armory.getByRole('option')).toHaveCount(5);
     await expect(armory.getByRole('option', { name: /석궁탑/ })).toBeVisible();
+    // 창이 닫히면 문제 카드로 돌아와 바로 답할 수 있다.
+    expect(await page.evaluate(() => document.querySelector('main')!.inert)).toBe(false);
+    await expect(options.first()).toBeEnabled();
   });
 }

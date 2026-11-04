@@ -1,4 +1,4 @@
-import type { Balance, BossTier, EnemyKind } from '../../contracts/balance';
+import type { Balance, BossTier, EnemyKind, TowerId } from '../../contracts/balance';
 import { campaignOf, enemyArtId } from '../../domain/factions';
 import { composeWave } from '../../domain/waves';
 
@@ -47,4 +47,19 @@ export function wavePreview(b: Balance, mapId: string, wave: number): WavePrevie
 export function foeIconUrl(b: Balance, foe: PreviewFoe, urlOf: (artId: string) => string | undefined, fallback: string | undefined): string | undefined {
   const id = b.factions[foe.faction] ? enemyArtId(b, foe) : null;
   return (id && (urlOf(`${id}.0`) ?? urlOf(id))) ?? fallback;
+}
+
+/** 적 역할 → 원화 특성 아이콘(ui-rules-v3 §1: 상황 카드의 적 초상화 옆). 특성이 없는 역할(걷는 적·힘센 적·대장)은 없다. */
+export const ROLE_TRAIT: Partial<Record<EnemyKind, { icon: 'trait.armor' | 'trait.ward' | 'trait.flying' | 'trait.swarm' | 'trait.fast' | 'trait.split'; label: string }>> = {
+  shell: { icon: 'trait.armor', label: '단단해요' },
+  wisp: { icon: 'trait.ward', label: '마법을 막아요' },
+  flyer: { icon: 'trait.flying', label: '날아와요' },
+  swarm: { icon: 'trait.swarm', label: '떼로 와요' },
+  runner: { icon: 'trait.fast', label: '빨라요' },
+  splitter: { icon: 'trait.split', label: '쪼개져요' },
+};
+
+/** 다음 웨이브에 나는 적이 오는데 장착한 타워 가운데 하늘을 쏘는 것이 하나도 없는가(상황 카드 경고 한 줄). */
+export function airGap(preview: Pick<WavePreview, 'kinds'>, canHitAir: (type: TowerId) => boolean, owned: readonly TowerId[]): boolean {
+  return preview.kinds.some(k => k.kind === 'flyer') && !owned.some(canHitAir);
 }

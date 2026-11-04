@@ -9,12 +9,16 @@ import { bossStatus, flyerLift, introFrame, wardDotOffsets, type BossStatus, typ
 import { DEPTH, toWorld, type LayerContext } from './shared';
 
 interface EnemyView {
-  sprite: Phaser.GameObjects.Image; badge: Phaser.GameObjects.Image | null; art: EnemyArt; prev: number; cur: number; phase: number; flashUntil: number; hitAt: number | null; facing: 1 | -1;
+  sprite: Phaser.GameObjects.Image; badge: Phaser.GameObjects.Image | null; art: EnemyArt; prev: number; cur: number; phase: number; flashUntil: number; flashAt: number; hitAt: number | null; facing: 1 | -1;
   /** 지금 그린 길 위 위치(월드 px, 등장 연출 포함)와 비행 몸 높이(px). 효과 층이 맞힌 자리·기믹 위치를 맞출 때 쓴다. */
   x: number; y: number; lift: number;
   /** 분열·호위 등장 연출(시작 시각 ms). */
   intro: (SpawnIntro & { start: number }) | null;
 }
+
+/** 피격 점멸: 원화에 더하는 밝기(ADD, 약 25%)와 같은 적의 점멸 최소 간격(R4 PRD §9.2: 300ms에 한 번). */
+const FLASH_TINT = 0x404040;
+const FLASH_GAP_MS = 300;
 
 /** 발밑 기준점: 길 위치보다 0.14칸 아래(적 그림의 발). */
 const FOOT = CELL_PX * 0.14;
@@ -61,7 +65,10 @@ export class EnemyLayer {
   onHit(enemyId: number) {
     const v = this.enemies.get(enemyId);
     const now = this.c.scene.time.now;
-    if (v && acceptsHit(v.hitAt, now)) { v.hitAt = now; v.flashUntil = now + HIT_MS; }
+    if (!v || !acceptsHit(v.hitAt, now)) return;
+    v.hitAt = now;
+    // 밝게 섞는 점멸은 같은 적에 300ms에 한 번만: 계속 맞는 대장이 하얀 실루엣으로 깨져 보이지 않게 한다.
+    if (now - v.flashAt >= FLASH_GAP_MS) { v.flashAt = now; v.flashUntil = now + HIT_MS; }
   }
 
   /** 분열 파생체·호위병의 등장 연출을 예약한다. 그 적을 처음 그릴 때 시작한다. */
@@ -112,7 +119,7 @@ export class EnemyLayer {
         const intro = this.pendingIntros.get(e.id);
         this.pendingIntros.delete(e.id);
         // 개체마다 보행 위상을 다르게 둔다(PRD §11.3).
-        v = { sprite, badge, art, prev: e.progress, cur: e.progress, phase: (e.id * 0.618034) % 1, flashUntil: 0, hitAt: null, facing: 1,
+        v = { sprite, badge, art, prev: e.progress, cur: e.progress, phase: (e.id * 0.618034) % 1, flashUntil: 0, flashAt: -Infinity, hitAt: null, facing: 1,
           x: 0, y: 0, lift: flyerLift(e, s.tick) * CELL_PX, intro: intro ? { ...intro, start: time } : null };
         this.enemies.set(e.id, v);
       }
@@ -216,9 +223,9 @@ export class EnemyLayer {
     return art;
   }
 
-  /** 피격 원화가 있으면 그 그림이 피격을 보여 주므로 흰색 점멸을 덮지 않는다. */
+  /** 피격 점멸은 흰색 채움 대신 밝기만 더한다. 피격 원화가 있으면 그 그림이 피격을 보여 주므로 덮지 않는다. */
   private tint(v: EnemyView, e: Enemy, time: number, hitArt: boolean) {
-    if (time < v.flashUntil && !hitArt) { v.sprite.setTint(0xffffff).setTintMode(Phaser.TintModes.FILL); return; }
+    if (time < v.flashUntil && !hitArt) { v.sprite.setTint(FLASH_TINT).setTintMode(Phaser.TintModes.ADD); return; }
     v.sprite.setTintMode(Phaser.TintModes.MULTIPLY);
     if (e.slows.some(x => x.untilTick > this.c.bridge.controller.state.tick)) v.sprite.setTint(0xb9e2ff);
     else v.sprite.clearTint();

@@ -1,54 +1,48 @@
-/* 웨이브 번호 띠: 호두나무 띠가 전장 위에서 1초 내려왔다 올라간다. 대장 웨이브는 붉은 띠. */
+/* 웨이브 시작 띠(R4 PRD §9.2): 종이 카드가 전장 위 가운데로 1초 내려왔다 올라간다. 대장 웨이브는 대장 초상화와 빨간 태그. */
 .band {
   position: absolute;
-  top: 0;
+  top: var(--s3);
   left: 50%;
   z-index: 5;
   display: inline-flex;
   align-items: center;
-  gap: var(--s2);
-  padding: var(--s2) var(--s5);
-  border-radius: 0 0 var(--r-card) var(--r-card);
-  background: var(--walnut-face);
-  border: 2px solid var(--walnut-3);
-  border-top: 0;
-  color: var(--cream-ink);
-  box-shadow: var(--ambient-shadow);
+  gap: var(--s3);
+  padding: var(--s2) var(--s5) var(--s2) var(--s3);
+  border-radius: var(--r-md);
+  background: var(--paper);
+  color: var(--ink);
+  box-shadow: var(--float);
   pointer-events: none;
-  transform: translate(-50%, -110%);
+  transform: translate(-50%, -140%);
   animation: drop 1000ms var(--ease-out) 1 both;
 }
 
-.band[data-boss] {
-  background: linear-gradient(180deg, #b23d31, var(--danger));
-  border-color: #6e1f18;
-}
-
 .text {
-  font-size: 22px;
+  font-size: var(--fs-4);
   font-weight: 800;
   line-height: 1.2;
 }
 
 .tag {
-  font-size: 14px;
+  padding: 1px var(--s2);
+  border-radius: var(--r-sm);
+  background: var(--red);
+  color: var(--on-dark);
+  font-size: var(--fs-1);
   font-weight: 800;
-  padding: 2px var(--s2);
-  border-radius: 999px;
-  background: var(--parch-1);
-  color: var(--danger);
+  line-height: 1.5;
 }
 
 .boss {
-  width: 36px;
-  height: 36px;
+  width: 56px;
+  height: 56px;
   object-fit: contain;
 }
 
 @keyframes drop {
-  0% { transform: translate(-50%, -110%); }
+  0% { transform: translate(-50%, -140%); }
   20%, 80% { transform: translate(-50%, 0); }
-  100% { transform: translate(-50%, -110%); }
+  100% { transform: translate(-50%, -140%); }
 }
 
 @media (prefers-reduced-motion: reduce) {

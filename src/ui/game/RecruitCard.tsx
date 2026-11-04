@@ -1,73 +1,55 @@
-import { useRef, useState } from 'react';
 import type { Balance, TowerId } from '../../contracts/balance';
-import { SkyWingIcon, TowerShieldPortrait } from '../icons/GameIcons';
+import { TOWER_COPY } from '../copy';
+import { TowerShieldPortrait } from '../icons/GameIcons';
+import { ArtIcon, Modal } from '../kit';
+import { ChoiceCard } from './ChoiceCard';
+import css from './ChoiceCard.module.css';
 import { recruitCardInfo } from './recruit';
-import css from './RecruitCard.module.css';
+import { statBars } from './statBars';
 
 interface Props {
   balance: Balance;
   /** 후보 3종. */
   choices: readonly TowerId[];
   icons: Record<string, string>;
-  /** 휴대폰: 전장 아래 줄에 두고 그림을 줄인다. 아니면 전장 위 가운데에 뜬다. */
+  /** 휴대폰: 카드를 가로 한 줄 짜임으로 세로로 쌓는다. */
   compact?: boolean;
   onPick(type: TowerId): void;
 }
 
 /**
- * 징집 화면(towers.md §0-2): 큰 타워 카드 3장(그림·이름·역할 한 줄·비행 적 공격 표시)과 고르기 단추만.
- * 문제 풀이 흐름을 막지 않는다: 모달이 아니고(화면을 잠그지 않음), 열릴 때 포커스를 빼앗지 않는다. 숫자 키는 문제 답으로 그대로 간다.
- * 카드를 누르면 고른 표시만 하고 ‘고르기’로 확정한다. 닫기는 없다(고르지 않으면 다음 징집 때 첫 카드로 정해진다).
+ * 새 타워 고르기 창(towers.md §0-2, R4 PRD §9.2): 막이 전장과 문제 카드까지 덮고, 카드 3장마다 ‘고르기’ 한 번으로 바로 고른다.
+ * 꼭 골라야 하는 창이라 닫기가 없다(kit Modal dismissable=false). 열리면 첫 ‘고르기’에 포커스가 가고 Tab은 창 안에서만 돈다.
  */
 export function RecruitCard({ balance, choices, icons, compact = false, onPick }: Props) {
-  const box = useRef<HTMLDivElement>(null);
-  const [picked, setPicked] = useState<TowerId | null>(null);
-
-  const move = (from: number, step: number) => {
-    const next = (from + step + choices.length) % choices.length;
-    setPicked(choices[next]!);
-    box.current?.querySelectorAll<HTMLElement>('[role="radio"]')[next]?.focus();
-  };
-
   return (
-    <div ref={box} className={css.panel} data-compact={compact || undefined} role="dialog" aria-modal="false" aria-labelledby="recruit-title">
-      <h2 id="recruit-title" className={css.title}>새 타워 징집</h2>
-      <div className={css.choices} role="radiogroup" aria-labelledby="recruit-title">
-        {choices.map((type, i) => {
-          const selected = picked === type;
+    <Modal titleId="recruit-title" title="새 타워" size={compact ? 'sm' : 'lg'} dismissable={false} onClose={() => {}}>
+      <div className={compact ? css.listRow : css.list3}>
+        {choices.map(type => {
           const info = recruitCardInfo(balance, type);
+          const label = balance.towers[type].label;
           return (
-            <button
+            <ChoiceCard
               key={type}
-              type="button"
-              role="radio"
-              aria-checked={selected}
-              tabIndex={(picked === null ? i === 0 : selected) ? 0 : -1}
-              className={css.choice}
-              onClick={() => setPicked(type)}
-              onKeyDown={e => {
-                if (e.key === 'ArrowRight' || e.key === 'ArrowDown') { e.preventDefault(); move(i, 1); }
-                else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') { e.preventDefault(); move(i, -1); }
-              }}
-            >
-              <span className={css.art}>
-                <TowerShieldPortrait type={type} icons={icons} size={compact ? 56 : 104} bare />
-              </span>
-              <span className={css.name}>{balance.towers[type].label}</span>
-              <span className={css.role}>{info.role}</span>
-              {info.air !== null && (
-                <span className={css.air} data-air={info.air || undefined}>
-                  {info.air && <SkyWingIcon size={14} />}
+              row={compact}
+              art={<TowerShieldPortrait type={type} icons={icons} size="fill" bare />}
+              name={label}
+              desc={TOWER_COPY[type].role}
+              note={info.air !== null && (
+                <span className={css.note} data-air={info.air || undefined}>
+                  {info.air && <ArtIcon name="trait.flying" size={20} />}
                   {info.air ? '하늘 적 공격' : '땅 적만'}
                 </span>
               )}
-            </button>
+              bars={statBars(balance, type, 1, 'base')}
+              action="고르기"
+              actionLabel={`${label} 고르기`}
+              variant="primary"
+              onPick={() => onPick(type)}
+            />
           );
         })}
       </div>
-      <button type="button" className={css.pick} disabled={picked === null} onClick={() => { if (picked) onPick(picked); }}>
-        고르기
-      </button>
-    </div>
+    </Modal>
   );
 }

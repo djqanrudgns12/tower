@@ -4,10 +4,10 @@ import type { GameView } from '../../application/view';
 import type { GameContext } from '../../domain/context';
 import { buildCost } from '../../domain/towers';
 import { ChevronDownIcon } from '../icons/GameIcons';
-import kit from '../kit.module.css';
-import css from './GameScreen.module.css';
+import css from './SlotList.module.css';
 
 // 키보드·스크린리더용 설치 자리 목록(PRD §12.4). 보조 접근 경로이며 추천 자리를 알려 주지 않는다.
+// 평소에는 접혀 화면에서 숨고(R4 PRD §3 #10), 키보드 포커스가 닿거나 펼치면 나타난다.
 type Slot = MapConfig['slots'][number];
 export type Arrow = 'ArrowUp' | 'ArrowDown' | 'ArrowLeft' | 'ArrowRight';
 
@@ -57,7 +57,7 @@ export function SlotList({ ctx, view, towers, selectedSlotId, onPick }: Props) {
         <span>{built > 0 ? `설치 자리 목록 · 설치 ${built} · 빈 자리 ${empty}곳` : `설치 자리 목록 · 빈 자리 ${empty}곳`}</span>
         <ChevronDownIcon size={12} />
       </summary>
-      <p className={kit.muted}>빈 자리에 놓을 수 있는 타워: {prices}. 전장에서는 화살표로 자리를 옮기고 엔터로 골라요.</p>
+      <p className={css.note}>빈 자리에 놓을 수 있는 타워: {prices}. 전장에서는 화살표로 자리를 옮기고 엔터로 골라요.</p>
       <ol className={css.slotItems}>
         {ctx.map.slots.map(slot => (
           <li key={slot.id}>

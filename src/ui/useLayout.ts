@@ -14,6 +14,8 @@ export interface Layout {
   portraitHint: boolean;
   wideQuestion: boolean;
   compactRail: boolean;
+  /** 휴대폰: 전장을 화면 폭 끝까지 붙인다(바깥 여백 없음, R4 PRD §9.3). 카드·버튼은 여백 안에 둔다. */
+  fieldBleed: boolean;
   /** 문제판 높이 예산(px). 해설 카드는 이 안에서만 스크롤한다(PRD §12.1·§12.5). */
   q: number;
   /** 두 칸 문제판의 높이 예산(px). 휴대폰 세로 적층에서도 해설 카드 크기를 이 값에 맞춘다. */
@@ -60,13 +62,15 @@ export function computeLayout(W: number, H: number, coarse: boolean, font: FontS
   const S = L.modes.S;
   const minRailW = minRailWidth(W);
   const qWide = R.questionBaseHeightPx + L.questionFontExtraPx[font];
-  const q = phone ? 300 : qWide;
+  // 휴대폰 문제 카드 예산(R4 PRD §9.3: 300 → 240px). 휴대폰 전장은 폭으로 정해져 이 값이 칸 크기를 바꾸지 않는다.
+  const q = phone ? 240 : qWide;
   const cRMode = Math.min((rawInnerW - minRailW - R.railGapPx) / 15, (innerH - R.verticalGapPx - q) / 9);
   const cSMode = Math.min(rawInnerW / 15, (innerH - S.hudHeightPx - 3 * S.verticalGapPx - S.toolbarHeightPx - q) / 9);
   const mode: 'R' | 'S' = !phone && cRMode >= cSMode && cRMode >= 24 ? 'R' : 'S';
   const cR = Math.min((innerW - minRailW - R.railGapPx) / 15, (innerH - R.verticalGapPx - q) / 9);
   const cSfit = Math.min(innerW / 15, (innerH - S.hudHeightPx - 3 * S.verticalGapPx - S.toolbarHeightPx - q) / 9);
-  const cell = Math.max(10, Math.floor((mode === 'R' ? cR : phone || cSfit < 24 ? innerW / 15 : cSfit) * 10) / 10);
+  // 휴대폰 전장은 바깥 여백 없이 화면 폭(W)을 다 쓴다(R4 PRD §9.3: 폰 전장을 키운다).
+  const cell = Math.max(10, Math.floor((mode === 'R' ? cR : phone ? W / 15 : cSfit < 24 ? innerW / 15 : cSfit) * 10) / 10);
   const mapW = Math.floor(cell * 15);
   const mapH = Math.floor(cell * 9);
   const railW = mode === 'R' ? Math.max(minRailW, Math.min(RAIL.maxPx, innerW - mapW - R.railGapPx)) : innerW;
@@ -82,6 +86,7 @@ export function computeLayout(W: number, H: number, coarse: boolean, font: FontS
     portraitHint: H < L.portraitHintBelowHeightPx && W > H,
     wideQuestion: mode === 'R' || innerW >= L.questionWideInnerMinPx,
     compactRail: mode === 'R' && mapH <= RAIL.compactMapHeightMaxPx,
+    fieldBleed: phone,
     q,
     qWide,
     font,

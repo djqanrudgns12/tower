@@ -1,39 +1,41 @@
-/* 하단 양피지 문제판과 나무 답안 키(ui-rules-v2 §1, PRD §12.5, v3 상·하단 수직선 잠금).
-   제출 흔들림 0: 키의 크기·테두리 두께·글자 굵기는 채점 전후 같다. 상태는 색·그림자·바깥선으로만 바꾼다. */
+/* 문제 카드(R4 PRD §9.1, ui-rules-v3): 종이 카드 + 키캡 답안. 제출 흔들림 0 — 채점 뒤에는 면 색·투명도만 바뀐다. */
 .panel {
+  position: relative;
   display: grid;
-  gap: var(--s3);
-  align-items: stretch;
-  background: var(--parch-face);
-  border: 4px solid var(--walnut-2);
-  border-radius: var(--r-panel);
-  outline: 2px solid var(--walnut-3);
-  outline-offset: -2px;
-  box-shadow: var(--ground-shadow), var(--ambient-shadow);
+  min-width: 0;
+  /* 보기 글자 크기: 넓은 화면 20px, 휴대폰 16px. 글자 크기 단계(크게·아주 크게)는 한 단계 키운다. */
+  --opt-font: var(--fs-3);
 }
 
-/* R 모드 수직선 잠금: 바깥 테두리(4px) + 안쪽 여백(12px) = 16px을 빼서 [전장 | 우측 레일] 수직선과 0.0px 일치 */
-.seamR {
-  padding: var(--s3);
+:global(:root[data-font='large']) .panel,
+:global(:root[data-font='xlarge']) .panel { --opt-font: var(--fs-4); }
+
+/* R 모드 수직선 잠금: 오른쪽 열 = 레일 폭 − 오른쪽 여백(16px). 그러면 열 왼쪽이 레일 왼쪽과, 왼쪽 열 오른쪽이 전장 오른쪽과 맞는다. */
+.panel.seam {
   grid-template-columns: minmax(0, 1fr) calc(var(--rail-w, var(--rail-min)) - 16px);
   column-gap: var(--s3);
-  min-height: var(--q-h, 172px);
+  min-height: var(--q-h, 208px);
+  padding: var(--s3) var(--s4);
 }
 
-/* S 모드 와이드(태블릿): 좌측 지문·보기 + 우측 248px 보조함 */
-.wide {
-  padding: var(--s3);
-  grid-template-columns: minmax(0, 1fr) 248px;
-  column-gap: var(--s3);
-  min-height: 172px;
+/* 태블릿 두 칸: 왼쪽 문제·보기, 오른쪽 모르겠어요·해설. */
+.panel.wide {
+  grid-template-columns: minmax(0, 1fr) 264px;
+  column-gap: var(--s4);
+  padding: var(--s4);
 }
 
-/* S 모드 내로우(휴대폰): 세로 적층 */
-.narrow {
-  grid-template-columns: 1fr;
-  padding: var(--s2);
+/* 휴대폰: 문제 | 모르겠어요 / 보기 2×2. 해설은 카드 위 말풍선이라 카드 높이가 그대로다(240px 이하 목표). */
+.panel.narrow {
+  --opt-font: var(--fs-2);
+  grid-template-columns: minmax(0, 1fr) 112px;
+  grid-template-areas: 'stem side' 'opts opts';
   gap: var(--s2);
+  padding: var(--s3);
 }
+
+:global(:root[data-font='large']) .panel.narrow,
+:global(:root[data-font='xlarge']) .panel.narrow { --opt-font: var(--fs-3); }
 
 .main {
   display: grid;
@@ -42,34 +44,68 @@
   min-width: 0;
 }
 
+.narrow .main { display: contents; }
+.narrow .stem { grid-area: stem; align-self: center; }
+.narrow .options { grid-area: opts; }
+.narrow .side { grid-area: side; align-self: start; }
+
+/* 문제: 20px 700(글자 크기 단계는 --q-font로 키운다). 휴대폰은 한 단계 작게, 대신 800으로 보기와 구별한다. */
 .stem {
-  font-size: var(--q-font);
-  line-height: 1.42;
-  font-weight: 800;
+  font-size: max(var(--fs-3), var(--q-font));
+  font-weight: 700;
+  line-height: 1.35;
   color: var(--ink);
 }
 
-.label,
+.narrow .stem {
+  font-size: max(var(--fs-2), calc(var(--q-font) - 2px));
+  font-weight: 800;
+}
+
+.tag,
 .badge {
   display: inline-block;
-  font-size: 13px;
-  font-weight: 800;
-  line-height: 1.2;
-  padding: var(--s1) var(--s3);
   margin-right: var(--s2);
-  border-radius: 999px;
+  padding: 1px var(--s2);
+  border-radius: var(--r-sm);
+  font-size: var(--fs-1);
+  font-weight: 800;
+  line-height: 1.5;
   vertical-align: 0.15em;
 }
 
-.label {
-  background: var(--walnut-2);
-  color: var(--cream-ink);
+.tag[data-tone='prep'] { background: var(--green); color: var(--on-dark); }
+.tag[data-tone='battle'] { background: var(--amber); color: var(--ink); }
+.tag[data-tone='boss'] { background: var(--red); color: var(--on-dark); }
+
+.badge { background: var(--paper-2); color: var(--ink-2); }
+
+/* 준비 진행 점: 끝낸 문제는 초록, 지금 문제는 초록 테. */
+.dots {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s1);
+  margin-right: var(--s2);
+  vertical-align: 0.2em;
 }
 
-.badge {
-  padding: var(--s1) var(--s2);
-  background: var(--parch-3);
-  color: var(--ink);
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--line);
+}
+
+.dot[data-on] { background: var(--green); }
+.dot[data-now] { background: var(--paper); outline: 2px solid var(--green); outline-offset: 0; }
+
+.blank {
+  display: inline-block;
+  width: 3em;
+  height: 1em;
+  margin: 0 0.2em;
+  vertical-align: -0.15em;
+  border-bottom: 3px solid var(--ink-2);
 }
 
 .options {
@@ -81,55 +117,26 @@
 .options[data-cols='2'] { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 .options[data-cols='1'] { grid-template-columns: 1fr; }
 
-/* 나무 답안 키: 양피지 면 + 호두나무 테 + 접지 그림자. */
-.option {
-  position: relative;
-  min-height: 48px;
-  padding: 6px 40px 6px 10px;
-  display: flex;
-  align-items: center;
-  gap: var(--s2);
+/* 답안 키캡(보조 변형, 56px). 번호는 작은 숫자로만 둔다(알약 없음). */
+.panel .option {
+  justify-content: flex-start;
+  gap: var(--s3);
+  min-width: 0;
+  padding: var(--s1) var(--s3) var(--s1) var(--s4);
   text-align: left;
-  font-size: var(--q-font);
-  font-weight: 600;
-  line-height: 1.35;
-  color: var(--ink);
-  background: linear-gradient(180deg, var(--parch-1), #f6ebd2);
-  border: 3px solid var(--walnut-1);
-  border-radius: var(--r-panel);
-  box-shadow: 0 3px 0 var(--walnut-3), 0 4px 8px rgba(44, 26, 14, 0.16);
-  transition: transform 80ms var(--ease-out), box-shadow var(--t-ui) var(--ease-out), background-color var(--t-ui) var(--ease-out), border-color var(--t-ui) var(--ease-out);
-  touch-action: manipulation;
-  user-select: none;
+  font-size: var(--opt-font);
+  font-weight: 700;
+  line-height: 1.25;
 }
 
-.narrow .option { min-height: var(--touch); padding-top: var(--s1); padding-bottom: var(--s1); }
-.narrow .options { gap: 6px; }
-.narrow .stem { line-height: 1.38; }
-
-@media (hover: hover) {
-  .option:hover:not(:disabled) { border-color: var(--walnut-2); background: var(--parch-1); }
-}
-
-.option:not(:disabled):active {
-  transform: translateY(2px);
-  box-shadow: 0 1px 0 var(--walnut-3);
-}
-
-.option:focus-visible { outline: 3px solid var(--blue); outline-offset: 2px; }
-.option:disabled { cursor: default; }
+/* 휴대폰: 채점 표식은 오른쪽 여백 위에 겹쳐 그려 글자 폭을 넓힌다(표식이 나와도 글자는 그대로). */
+.narrow .option { position: relative; padding: var(--s1) 22px var(--s1) var(--s3); gap: var(--s2); }
 
 .num {
   flex: none;
-  width: 26px;
-  height: 26px;
-  border-radius: 999px;
-  display: grid;
-  place-items: center;
-  font-size: 14px;
+  font-size: var(--fs-1);
   font-weight: 800;
-  background: var(--walnut-2);
-  color: var(--parch-1);
+  color: var(--ink-2);
 }
 
 .optionText {
@@ -138,217 +145,106 @@
   overflow-wrap: anywhere;
 }
 
-.sealSlot {
-  position: absolute;
-  right: var(--s2);
-  top: 50%;
-  width: 22px;
-  height: 22px;
-  margin-top: -11px;
+/* 채점 표식 자리를 미리 비워 둔다(표식이 나와도 글자가 밀리지 않게). */
+.seal {
+  flex: none;
+  width: 24px;
+  height: 24px;
   display: grid;
   place-items: center;
 }
 
-/* 채점 대기: 고른 키만 눌린 채. */
-.option[data-state='chosen'] {
-  background: var(--parch-2);
-  box-shadow: inset 0 2px 4px rgba(44, 26, 14, 0.35);
+.narrow .seal { position: absolute; right: 2px; top: 50%; translate: 0 -50%; width: 20px; }
+
+/* 채점 뒤: 위치·크기는 그대로, 면 색과 투명도만. kit의 비활성 회색을 덮는다. */
+.panel .option:disabled {
+  --face: var(--paper-2);
+  --text: var(--ink);
+  opacity: 1;
+  box-shadow: 0 4px 0 var(--line);
+  cursor: default;
 }
 
-/* 정답 키는 떠오른다(초록 면 + 바깥 고리 + 깊은 그림자). 위치는 그대로다. */
-.option[data-state='correct'] {
-  background: var(--green-surface);
-  border-color: var(--green);
-  outline: 3px solid var(--green);
-  outline-offset: 1px;
-  box-shadow: 0 4px 0 var(--green), 0 8px 14px rgba(45, 99, 54, 0.28);
+.panel .option[data-state='chosen']:disabled { --face: var(--paper); outline: 3px solid var(--blue); outline-offset: 2px; }
+.panel .option[data-state='dim']:disabled { opacity: 0.45; }
+
+.panel .option[data-state='correct']:disabled {
+  --face: var(--green);
+  --text: var(--on-dark);
+  box-shadow: 0 4px 0 var(--green-base);
 }
 
-/* 고른 오답 키는 눌린 채 붉게 바랜다. */
-.option[data-state='wrong'] {
-  background: var(--danger-surface);
-  border-color: var(--danger);
-  color: var(--ink-soft);
-  box-shadow: inset 0 2px 5px rgba(163, 53, 43, 0.35);
+.panel .option[data-state='wrong']:disabled {
+  --face: var(--red);
+  --text: var(--on-dark);
+  box-shadow: 0 4px 0 var(--red-base);
+  opacity: 0.55;
 }
 
-.option[data-state='dim'] {
-  background: var(--parch-2);
-  border-color: var(--parch-3);
-  color: var(--ink-soft);
-  box-shadow: none;
-}
+.option[data-state='correct'] .num,
+.option[data-state='wrong'] .num { color: var(--on-dark); }
 
-.option[data-state='dim'] .num,
-.option[data-state='wrong'] .num { background: var(--parch-3); color: var(--ink-soft); }
-
-/* 오른쪽(휴대폰은 아래) 보상·해설 칸. 높이는 문제 쪽이 정하고(contain: size), 넘치는 해설은 칸 안에서만 넘긴다. */
-.feedback {
-  contain: size;
-  min-height: 0;
-  display: grid;
-  gap: var(--s2);
-  align-content: center;
-  padding: var(--s3);
-  background: var(--parch-2);
-  border: 2px solid var(--parch-3);
-  border-radius: var(--r-panel);
-  overflow: hidden;
-}
-
-.narrow .feedback {
-  height: 128px;
-  padding: var(--s2);
-}
-
-.feedback[data-tone='correct'] {
-  background: var(--green-surface);
-  border-color: var(--green);
-}
-
-.feedback[data-tone='wrong'] {
-  background: var(--danger-surface);
-  border-color: var(--danger);
-  align-content: stretch;
-}
-
-.narrow .feedback[data-tone='idle'] {
-  grid-template-columns: minmax(0, 1fr) auto;
-  align-items: center;
-}
-
-.stakes {
-  display: grid;
-  gap: 6px;
-}
-
-.stake {
+/* 오른쪽 열(휴대폰은 오른쪽 위 칸): 모르겠어요 → 정답! 또는 해설 + 다음 문제. */
+.side {
   display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 6px;
-}
-
-.chip {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  padding: 3px var(--s2);
-  border-radius: 999px;
-  background: var(--parch-1);
-  border: 1px solid var(--parch-3);
-  font-size: 14px;
-  font-weight: 800;
-  line-height: 1.2;
-  color: var(--ink);
-}
-
-.chip[data-tone='gain'] { background: var(--parch-1); border-color: var(--green); color: var(--green); }
-.chip[data-tone='loss'] { color: var(--danger); }
-
-.skip {
-  min-height: var(--touch);
-  padding: 0 var(--s3);
-  border: 2px solid var(--walnut-1);
-  border-radius: var(--r-panel);
-  background: var(--parch-1);
-  color: var(--ink);
-  font-size: 15px;
-  font-weight: 600;
-  box-shadow: 0 2px 0 var(--walnut-3);
-}
-
-.skip:active { transform: translateY(1px); box-shadow: none; }
-.skip:focus-visible { outline: 3px solid var(--blue); outline-offset: 2px; }
-
-@media (hover: hover) {
-  .skip:hover { background: #fffaf0; }
-}
-
-.grading { display: block; }
-
-.goodBox {
-  display: grid;
+  flex-direction: column;
+  align-items: stretch;
   gap: var(--s2);
-  justify-items: start;
+  min-width: 0;
 }
+
+.panel .skip {
+  align-self: flex-end;
+  color: var(--ink-2);
+}
+
+.narrow .skip { align-self: stretch; padding: 0 var(--s2); }
 
 .good {
-  display: flex;
+  display: inline-flex;
   align-items: center;
   gap: var(--s2);
-  font-size: var(--q-font);
+  font-size: var(--fs-4);
   font-weight: 800;
   color: var(--green);
 }
 
-.rewards {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-}
+.narrow .good { min-height: var(--touch); font-size: var(--fs-3); justify-content: center; }
 
-.wrongBox {
+.explainBox {
   display: grid;
-  grid-template-rows: minmax(0, 1fr) auto;
-  gap: var(--s2);
-  min-height: 0;
+  gap: var(--s3);
+  align-content: space-between;
+  flex: 1;
 }
 
 .explain {
-  display: grid;
-  align-content: start;
-  gap: var(--s1);
-  min-height: 0;
-  overflow-y: auto;
-  padding-right: var(--s1);
-}
-
-.answer {
-  font-size: 15px;
-  line-height: 1.35;
-  font-weight: 800;
-  color: var(--ink);
-}
-
-.why {
-  font-size: 14px;
+  font-size: var(--fs-2);
+  font-weight: 700;
   line-height: 1.45;
   color: var(--ink);
 }
 
-.nextRow {
-  display: flex;
-  align-items: center;
-  gap: var(--s2);
+/* 휴대폰 해설: 카드 위에 뜨는 종이 말풍선(카드 높이·보기 자리를 바꾸지 않는다). */
+.narrow .explainBox {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: calc(100% + var(--s2));
+  z-index: 6;
+  padding: var(--s3);
+  border-radius: var(--r-md);
+  background: var(--paper);
+  box-shadow: var(--float);
+  animation: rise var(--t-ui) var(--ease-out) 1;
 }
 
-.next {
-  flex: 1;
-  min-height: var(--touch);
-  padding: 0 var(--s3);
-  border: 2px solid var(--walnut-3);
-  border-radius: var(--r-panel);
-  background: var(--green);
-  color: var(--parch-1);
-  font-size: 15px;
-  font-weight: 800;
-  box-shadow: 0 2px 0 var(--walnut-3);
+@keyframes rise {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
-.next:disabled { background: var(--stone); color: var(--ink-soft); border-color: var(--ink-soft); box-shadow: none; cursor: not-allowed; }
-.next:not(:disabled):active { transform: translateY(1px); box-shadow: none; }
-.next:focus-visible { outline: 3px solid var(--blue); outline-offset: 2px; }
-
-@media (hover: hover) {
-  .next:not(:disabled):hover { background: var(--green-hover); }
-}
-
-.blank {
-  display: inline-block;
-  width: 4.2em;
-  height: 1.1em;
-  vertical-align: -0.2em;
-  margin: 0 var(--s1);
-  border-bottom: 3px solid var(--ink);
+@media (prefers-reduced-motion: reduce) {
+  .narrow .explainBox { animation-name: fadeIn; }
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 }

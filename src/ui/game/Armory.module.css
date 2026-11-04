@@ -1,5 +1,4 @@
-/* 장착 홈(ui-rules-v2 §1): 호두나무 틀에 파인 소켓, 초상화와 놋쇠 가격만. 고른 소켓 하나만 놋쇠 테. */
-/* 장착함 8칸 = 4열 × 2줄(towers.md §0-2). */
+/* 타워 칸(R4 PRD §9.1): 종이 키캡 소켓. 고른 칸은 파란 링, 막 살 수 있게 된 칸은 호박색 링이 한 번 켜진다. */
 .rail {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -7,108 +6,80 @@
   gap: var(--s2);
 }
 
-.rail[data-compact] { gap: var(--s1); }
-.rail[data-compact] .socket { padding: var(--s1) 2px 2px; gap: 2px; }
-.rail[data-compact] .price { font-size: 13px; }
-/* 압축 레일(크롬북): 홈 두 줄 + 요약 + 자리 목록이 레일 높이(전장 높이) 안에 들어가게 초상화 홈을 40px로 묶는다. */
-.rail[data-compact] .well { max-width: 40px; }
-
-/* 아직 빈 장착 칸: 파인 홈만(글자·테두리 없음). 소켓과 같은 칸을 차지해 징집으로 채워져도 배치가 움직이지 않는다. */
-.empty {
-  min-height: var(--touch);
-  border-radius: var(--r-panel);
-  background: var(--walnut-3);
-  box-shadow: var(--well-inset);
-  opacity: 0.55;
-}
-
+/* 휴대폰: 8칸이 한 줄(44px 이상)에 들어간다. 칸이 적으면 왼쪽부터 채운다. */
 .strip {
-  display: flex;
-  gap: var(--s2);
-  overflow-x: auto;
-  padding: 0;
-  scrollbar-width: none;
+  display: grid;
+  grid-template-columns: repeat(8, minmax(44px, 64px));
+  column-gap: 3px;
 }
 
-.strip::-webkit-scrollbar { display: none; }
+.socket,
+.locked {
+  min-width: var(--touch);
+  min-height: var(--touch);
+  border-radius: var(--r-sm);
+  background: var(--paper-2);
+}
 
 .socket {
   position: relative;
   display: grid;
+  grid-template-rows: 1fr auto;
   justify-items: center;
-  gap: var(--s1);
-  min-width: 0;
-  min-height: var(--touch);
-  padding: var(--s2) var(--s1) var(--s1);
-  border: 2px solid var(--walnut-3);
-  border-radius: var(--r-panel);
-  background: var(--walnut-face);
-  box-shadow: var(--ground-shadow);
-  color: var(--cream-ink);
-  transition: transform var(--t-ui) var(--ease-out), border-color var(--t-ui) var(--ease-out);
-  user-select: none;
-  -webkit-user-select: none;
-  -webkit-touch-callout: none;
-  -webkit-user-drag: none;
-  /* 레일은 세로로 넘기고 가로 끌기는 받는다. 휴대폰 줄은 가로로 넘기고 세로 끌기를 받는다. */
-  touch-action: pan-y;
-}
-
-.socket * { pointer-events: none; }
-
-.strip .socket {
-  flex: none;
-  grid-auto-flow: column;
   align-items: center;
-  gap: 6px;
-  padding: 2px var(--s2) 2px 2px;
-  touch-action: pan-x;
+  gap: 2px;
+  padding: var(--s1) 2px;
+  border: 0;
+  color: var(--ink);
+  box-shadow: 0 4px 0 var(--line);
+  touch-action: none;
+  user-select: none;
+  transition: transform 80ms var(--ease-out), box-shadow 80ms var(--ease-out);
 }
 
-.well {
+.socket:active { transform: translateY(4px); box-shadow: 0 0 0 var(--line); }
+.socket:focus-visible { outline: 3px solid var(--blue); outline-offset: 2px; }
+.socket[aria-selected='true'] { outline: 3px solid var(--blue); outline-offset: 2px; background: var(--paper); }
+
+@media (hover: hover) {
+  .socket:hover:not([data-short]) { background: var(--paper); }
+}
+
+.art {
+  width: 44px;
+  height: 44px;
   display: grid;
   place-items: center;
-  width: 100%;
-  aspect-ratio: 1;
-  max-width: 76px;
-  border-radius: var(--r-input);
-  background: var(--walnut-3);
-  box-shadow: var(--well-inset);
 }
 
-.strip .well { width: 44px; max-width: 44px; }
+.rail[data-compact] .art { width: 36px; height: 36px; }
+.strip .art { width: 30px; height: 30px; }
 
 .price {
   display: inline-flex;
   align-items: center;
-  gap: 3px;
-  font-size: 14px;
+  gap: 2px;
+  font-size: var(--fs-1);
   font-weight: 800;
-  line-height: 1.2;
-  color: var(--brass-1);
+  line-height: 1.1;
 }
 
-.socket:active:not([data-short]) { transform: translateY(1px); box-shadow: none; }
+.socket[data-short] .art { opacity: 0.5; }
+.socket[data-short] .price { color: var(--red); }
 
-.socket[aria-selected='true'] {
-  border-color: var(--brass-2);
-  outline: 2px solid var(--brass-1);
-  outline-offset: -4px;
-}
-
-.socket[data-short] .well > * { opacity: 0.55; filter: grayscale(0.7); }
-.socket[data-short] .price { color: var(--danger-light); }
-
-/* 막 살 수 있게 된 소켓: 테두리가 한 번 빛난다(ui-rules-v2 §5). */
-.socket[data-fresh] { animation: fresh 600ms var(--ease-out) 1; }
+/* 막 살 수 있게 된 칸: 호박색 링이 한 번 켜졌다 사라진다(600ms 안팎, 반복 없음). */
+.socket[data-fresh] { animation: fresh 700ms ease-out 1; }
 
 @keyframes fresh {
-  0% { border-color: var(--brass-1); box-shadow: 0 0 0 3px var(--brass-1); }
-  100% { border-color: var(--walnut-3); box-shadow: var(--ground-shadow); }
+  0% { outline: 3px solid var(--amber); outline-offset: 2px; }
+  70% { outline: 3px solid var(--amber); outline-offset: 2px; }
+  100% { outline: 3px solid transparent; outline-offset: 2px; }
 }
 
-@media (hover: hover) {
-  .socket:hover:not([aria-selected='true']) { border-color: var(--walnut-1); }
+/* 잠긴 칸 하나: 낮은 면에 자물쇠만. 안내는 호버(title)와 화면 읽기로 읽힌다. */
+.locked {
+  display: grid;
+  place-items: center;
+  opacity: 0.7;
+  cursor: help;
 }
-
-.socket:focus-visible { outline: 3px solid var(--brass-1); outline-offset: 1px; }
