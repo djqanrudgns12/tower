@@ -1,6 +1,6 @@
 import { existsSync, readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
-import { BALANCE, practiceContext } from '../../src/content';
+import { BALANCE, DIFFICULTY_GATE, practiceContext } from '../../src/content';
 import {
   buildDifficultyGuideItems,
   buildGuideCards,
@@ -12,6 +12,7 @@ import {
   nextGuideChapter,
   sampleGuideWaveLoop,
 } from '../../src/ui/screens/guide/guideModel';
+import { difficultyReadout } from '../../src/ui/screens/guide/difficultyReadout';
 
 describe('사용 설명서 모델 및 전용 삽화 계약 (G03~G11, G15)', () => {
   it('G03·G05·G06·G15: 정확히 4장·3행 이하·95자 이내이며 끝내기·연습 안내가 있고(이어하기 없음) 느낌표·이모지·영문 라벨이 없다', () => {
@@ -176,6 +177,31 @@ describe('사용 설명서 모델 및 전용 삽화 계약 (G03~G11, G15)', () =
     const staticLater = sampleGuideWaveLoop(360, 110, 7432, false, null);
     expect(static0).toEqual(staticLater);
     expect(static0.showRangeOverlay).toBe(true);
+  });
+
+  it('G5: 난이도 판독 한 줄은 계약(성문·정답 골드)과 출제 문턱(속담·관용구·방언)에서만 만든다 — 새 게임 창(N3)도 같은 함수를 쓴다', () => {
+    expect(difficultyReadout('Easy').line).toBe('성문 20 · 정답 +17골드부터 · 교과 표준 낱말');
+    expect(difficultyReadout('Normal').line).toBe('성문 15 · 정답 +19골드부터 · 교과 표준 낱말');
+    expect(difficultyReadout('Hard').line).toBe('성문 10 · 정답 +22골드부터 · 교과 낱말 + 속담·관용구·방언');
+    expect(difficultyReadout('Crazy').line).toBe('성문 7 · 정답 +25골드부터 · 교과 낱말 + 속담·관용구·방언');
+    for (const id of ['Easy', 'Normal', 'Hard', 'Crazy'] as const) {
+      const r = difficultyReadout(id);
+      expect(r.gateHp).toBe(BALANCE.difficulties[id].gateHp);
+      expect(r.correctGold).toBe(BALANCE.difficulties[id].correctGold);
+      expect(r.parts.join(' · ')).toBe(r.line);
+    }
+
+    // 계약·출제 문턱이 바뀌면 판독도 따라 바뀐다(손으로 적은 수치 없음).
+    const custom = structuredClone(BALANCE);
+    custom.difficulties.Normal.gateHp = 12;
+    custom.difficulties.Normal.correctGold = 30;
+    delete custom.difficulties.Normal.correctGoldPerWaveBP;
+    const gate = structuredClone(DIFFICULTY_GATE);
+    gate.Normal.allowedVariants = ['standard', 'dialect'];
+    const r = difficultyReadout('Normal', custom, gate);
+    expect(r.line).toBe('성문 12 · 정답 +30골드 · 교과 낱말 + 속담·관용구·방언');
+    expect(r.advanced).toBe(true);
+    expect(r.goldGrows).toBe(false);
   });
 
   it('보존 계약: 화면 버튼 제거 후에도 도메인 practiceContext 계약은 온전히 유지된다', () => {
