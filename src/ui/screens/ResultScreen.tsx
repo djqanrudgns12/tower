@@ -2,7 +2,7 @@ import { useId, useState } from 'react';
 import { reviewQuestions } from '../../content';
 import { computeHonorPoints } from '../../contracts/lobby';
 import type { RunState } from '../../domain/types';
-import { DIFFICULTY_COPY, fmtNumber, RESULT_COPY as T } from '../copy';
+import { DIFFICULTY_COPY, fmtNumber, RESULT_COPY as T, resultHeadline } from '../copy';
 import { BackIcon, RetryIcon } from '../icons/ControlIcons';
 import { ArtIcon, Button, Card, Stat } from '../kit';
 import css from './ResultScreen.module.css';
@@ -14,6 +14,8 @@ interface Props {
   state: RunState;
   /** 이 판이 노트에 담은 값. null이면 노트 줄을 보이지 않는다. */
   reviewDelta?: ResultReviewDelta | null;
+  /** 이 판 전까지 이 기기의 같은 학년·난이도 최고 기록(지킨 웨이브). 없으면 null. 첫 줄의 '새 최고 기록'·'아까워요'를 가른다. */
+  previousBest?: number | null;
   /** 있으면 노트 줄에 '노트 보기' 버튼을 단다. 없으면 노트 줄을 보이지 않는다. */
   onOpenNote?(): void;
   onAgain(): void;
@@ -26,7 +28,7 @@ interface ReviewItem { id: number; lemma: string; answer: string; stem: string; 
  * 결과와 복습(R4 U3, PRD §10.1). 위: 성문 + 지킨 웨이브 + 한 줄, 가운데: 정답·처치·점수, 아래 고정: 다시 하기·홈.
  * 복습 재풀이는 보상이 없으므로(PRD §2.2) 여기서는 낱말 카드를 눌러 해설만 펼쳐 보인다.
  */
-export function ResultScreen({ state, reviewDelta = null, onOpenNote, onAgain, onHome }: Props) {
+export function ResultScreen({ state, reviewDelta = null, previousBest = null, onOpenNote, onAgain, onHome }: Props) {
   const questions = reviewQuestions(state.config.grade);
   const answers = state.quiz.history;
   const total = answers.length;
@@ -43,6 +45,7 @@ export function ResultScreen({ state, reviewDelta = null, onOpenNote, onAgain, o
     completedWave: state.completedWave,
     correct: state.stats.correct,
   });
+  const headline = resultHeadline({ endReason: state.endReason, completedWave: state.completedWave, previousBest });
   const noteParts = reviewDelta
     ? [
         reviewDelta.added > 0 ? `${T.noteAdded} ${reviewDelta.added}` : null,
@@ -61,7 +64,7 @@ export function ResultScreen({ state, reviewDelta = null, onOpenNote, onAgain, o
               <span className="sr-only">{T.waveSr} </span>
               {state.completedWave}{T.wave}
             </h1>
-            <p className={css.line}>{state.endReason === 'DEFEAT' ? T.defeat : T.ended}</p>
+            <p className={css.line} data-kind={headline.kind}>{headline.text}</p>
 
             <div className={css.stats}>
               <Stat icon={null} value={`${state.stats.correct}/${total}`} label={T.correct} className={css.tile ?? ''} />

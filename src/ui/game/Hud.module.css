@@ -17,7 +17,7 @@
   min-width: 0;
 }
 
-.compact .row { gap: var(--s2); }
+.compact .row { gap: var(--s1); }
 
 /* 휴대폰: 한 줄. 성문 막대가 남는 폭을 가져가고 나머지는 제 크기만 쓴다. */
 .bar {
@@ -112,6 +112,73 @@
 }
 
 .stat[data-boss] strong { color: var(--red); }
+
+/* 웨이브 칸: 웨이브 번호 + 오른쪽에 작은 최고 기록 한 줄(prd-r4 §7.2-F). 좁으면 기록 줄이 먼저 줄어든다. */
+.waveCell {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s2);
+  min-width: 0;
+}
+
+.best {
+  min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: var(--fs-1);
+  font-weight: 700;
+  line-height: 1.2;
+  color: var(--ink-2);
+}
+
+/* 휴대폰: 웨이브 번호 아래에 쌓는다. 한 줄 높이(일시정지 44px) 안이고, 폭은 짧은 말만 쓴다.
+   골드가 네 자리로 커져 자리가 모자라면 성문 숫자를 지키려고 기록 줄이 먼저 줄어든다(성문 칸 최소 폭 = 아이콘 + 막대 최소 + 숫자 + 간격). */
+.bar .gate { min-width: 108px; }
+
+.bar .waveCell {
+  flex: 0 1 auto;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0;
+}
+
+.bar .best { line-height: 1.1; }
+
+/* 압축 레일: 줄 높이(22px = 아이콘)를 늘리지 않는다. 숫자가 커져 자리가 모자라면 기록 줄은 줄바꿈되어 가려지고 숫자는 그대로 남는다. */
+.compact .waveCell {
+  flex-wrap: wrap;
+  gap: 0 var(--s1);
+  height: 22px;
+  overflow: hidden;
+}
+
+/* 최고 기록 가까이(최고 기록까지 N)와 새 기록은 호박색 굵은 글씨로 눈에 띄게 한다. */
+.best[data-kind='chase'],
+.best[data-kind='new'] {
+  font-weight: 800;
+  color: var(--amber-base);
+}
+
+/* 새 기록: 켜질 때 한 번만 톡 튄다(반복 없음). 움직임을 줄인 설정이면 투명도만. */
+.best[data-kind='new'] { animation: bestPop 480ms var(--ease-out) 1; }
+.best[data-kind='new'][data-calm] { animation-name: bestFade; }
+
+@keyframes bestPop {
+  0% { opacity: 0; transform: scale(0.7); }
+  60% { opacity: 1; transform: scale(1.12); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+@keyframes bestFade {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .best[data-kind='new'] { animation-name: bestFade; }
+}
 
 .score {
   font-weight: 700;

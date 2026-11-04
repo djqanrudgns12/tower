@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { mapPreviewFromLocation } from '../application/mapPreview';
 import type { RunController } from '../application/RunController';
 import {
+  bestWaveFor,
   CORRUPT_SAVE_NOTICE,
   loadSaved,
   loadSettings,
@@ -31,8 +32,9 @@ import { ResultScreen } from './screens/ResultScreen';
 
 type Screen =
   | { name: 'home'; initialModal?: 'new' | null; focusNickname?: boolean }
-  | { name: 'game'; controller: RunController; practice?: boolean }
-  | { name: 'result'; state: RunState; reviewDelta: ReviewDelta | null }
+  // bestWave: 판을 열 때 읽은 이 기기의 최고 기록(그 판 전까지, 판 안에서 바뀌지 않는다). 연습·기록 없음은 null.
+  | { name: 'game'; controller: RunController; practice?: boolean; bestWave?: number | null }
+  | { name: 'result'; state: RunState; reviewDelta: ReviewDelta | null; previousBest: number | null }
   | { name: 'note'; back: Exclude<Screen, { name: 'note' | 'game' }> };
 
 /** 홈에 보일 저장 상태. 이어할 수 있으면 이어하기 단추, 아니면 이유 한 줄(손상·버전 변경·저장 불가). */
@@ -83,7 +85,9 @@ export function App() {
       return;
     }
     setMessage(result.warning);
-    setScreen({ name: 'game', controller: result.controller });
+    // 최고 기록 선(prd-r4 §7.2-F): 같은 학년·난이도의 이 기기 기록 중 최고를 판을 열 때 한 번만 읽는다. 읽지 못하면 기록 없음으로 둔다.
+    const { grade, difficulty } = result.controller.state.config;
+    void bestWaveFor(grade, difficulty).then(bestWave => setScreen({ name: 'game', controller: result.controller, bestWave }));
   };
 
   // 홈에서 이어하기와 새 게임을 함께 보이고 학생이 새 게임을 골랐으므로 이전 저장을 바꾼다(PRD §12.2).
@@ -127,12 +131,12 @@ export function App() {
     setScreen({ name: 'home' });
   };
 
-  const exitGame = (controller: RunController, reason: 'saved' | 'over' | 'abandon') => {
+  const exitGame = (controller: RunController, reason: 'saved' | 'over' | 'abandon', previousBest: number | null) => {
     const final = structuredClone(controller.state) as RunState;
     // 판이 끝날 때 오답 노트에 담은 수(prd-r4 §6.1). 기록 쓰기가 아직 안 끝났으면 null이라 결과의 노트 줄을 숨긴다.
     const reviewDelta = controller.getView().reviewDelta;
     controller.dispose();
-    setScreen(reason === 'over' ? { name: 'result', state: final, reviewDelta } : { name: 'home' });
+    setScreen(reason === 'over' ? { name: 'result', state: final, reviewDelta, previousBest } : { name: 'home' });
   };
 
   const noteGrade = screen.name === 'result' ? screen.state.config.grade : settings.lastGrade;
@@ -172,9 +176,10 @@ export function App() {
           sfxVolume={settings.sfxVolume}
           highContrastMap={settings.highContrastMap}
           showKeyHints={settings.showKeyHints}
+          bestWave={screen.bestWave ?? null}
           onFont={(f: FontScale) => update({ fontScale: f })}
           onSound={(on: boolean) => update({ soundOn: on })}
-          onExit={reason => (screen.practice ? finishPractice(screen.controller, 'home') : exitGame(screen.controller, reason))}
+          onExit={reason => (screen.practice ? finishPractice(screen.controller, 'home') : exitGame(screen.controller, reason, screen.bestWave ?? null))}
           {...(screen.practice ? { practice: { onFinish: (next: 'new' | 'again' | 'home') => finishPractice(screen.controller, next) } } : {})}
         />
       );
@@ -183,6 +188,7 @@ export function App() {
         <ResultScreen
           state={screen.state}
           reviewDelta={screen.reviewDelta}
+          previousBest={screen.previousBest}
           onOpenNote={() => setScreen({ name: 'note', back: screen })}
           onAgain={() => setScreen({ name: 'home', initialModal: 'new' })}
           onHome={() => setScreen({ name: 'home' })}

@@ -104,6 +104,25 @@ export async function startNewRun(input: { grade: number; difficulty: Difficulty
   return res;
 }
 
+/**
+ * 같은 학년·난이도로 끝낸 판 중 가장 높은 지킨 웨이브(prd-r4 §7.2-F 최고 기록 선). 1웨이브도 못 지킨 기록은 견줄 기록으로 세지 않는다.
+ * 기록이 없으면 null. 연습 판은 기록이 없다.
+ */
+export function bestWaveOf(records: readonly Pick<RunRecord, 'grade' | 'difficulty' | 'completedWave'>[], grade: number, difficulty: string): number | null {
+  let best = 0;
+  for (const r of records) if (r.grade === grade && r.difficulty === difficulty && r.completedWave > best) best = r.completedWave;
+  return best >= 1 ? best : null;
+}
+
+/** 판을 열 때 한 번 읽는 이 기기의 최고 기록(그 판 전까지). 저장소를 열 수 없으면 기록이 없는 것으로 본다. */
+export async function bestWaveFor(grade: number, difficulty: DifficultyId): Promise<number | null> {
+  try {
+    return bestWaveOf(await listRecords(), grade, difficulty);
+  } catch {
+    return null;
+  }
+}
+
 /** 이 학년 은행의 오답 노트 항목(R4 §6.1). 철회·다른 은행 항목은 걸러진다. 화면은 저장소를 직접 부르지 않는다(PRD §13.2). */
 export function reviewNoteItems(grade: number): ReviewNoteItem[] {
   const { bank } = gradeContent(grade);

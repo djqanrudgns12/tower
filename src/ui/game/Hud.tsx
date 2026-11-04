@@ -1,7 +1,7 @@
 import { useState, type Ref } from 'react';
 import type { Balance } from '../../contracts/balance';
 import type { GameView } from '../../application/view';
-import { fmtNumber } from '../copy';
+import { bestLine, fmtNumber } from '../copy';
 import { PauseIcon } from '../icons/ControlIcons';
 import { ArtIcon, Card, IconButton } from '../kit';
 import css from './Hud.module.css';
@@ -15,6 +15,8 @@ interface Props {
   /** 골드 칸(정답 금화가 날아갈 곳)을 화면이 알 수 있게 붙이는 ref. */
   goldRef?: Ref<HTMLElement>;
   reducedMotion?: boolean;
+  /** 이 기기의 같은 학년·난이도 최고 기록(그 판 전까지, 판 안에서 바뀌지 않는다). 없으면 null·생략. */
+  bestWave?: number | null;
   onPause(): void;
 }
 
@@ -31,7 +33,7 @@ export function streakGems(view: Pick<GameView, 'burningSecondsLeft' | 'battleSt
  * - R 압축(낮은 화면): 두 줄 — 성문·일시정지 / 골드·웨이브·점수·불꽃.
  * - S(휴대폰): 한 줄 — 성문·골드·웨이브·불꽃·일시정지(점수는 결과에서 본다).
  */
-export function Hud({ view, burning: rule, mode, compactRail = false, goldRef, reducedMotion = false, onPause }: Props) {
+export function Hud({ view, burning: rule, mode, compactRail = false, goldRef, reducedMotion = false, bestWave = null, onPause }: Props) {
   const ratio = view.gateMaxHp ? view.gateHp / view.gateMaxHp : 0;
   const waveNo = Math.max(1, view.wave);
   const { burning, lit } = streakGems(view, rule);
@@ -59,10 +61,15 @@ export function Hud({ view, burning: rule, mode, compactRail = false, goldRef, r
       <RollingNumber ref={goldRef} value={view.gold} className={big ? css.goldBig : css.goldNum} reducedMotion={reducedMotion} />
     </span>
   );
+  // 웨이브 옆 최고 기록 한 줄(prd-r4 §7.2-F): 평소 "최고 18", 가까우면 "최고 기록까지 2", 넘으면 "새 기록!".
+  const best = bestLine(bestWave, waveNo, view.completedWave, phone || !big);
   const wave = (
-    <span className={css.stat} data-boss={view.milestoneWave || undefined} role="img" aria-label={`웨이브 ${waveNo}${view.milestoneWave ? ', 대장 웨이브' : ''}`} title="웨이브">
-      <ArtIcon name="wave" size={phone ? 18 : 22} />
-      <strong>{waveNo}</strong>
+    <span className={css.waveCell}>
+      <span className={css.stat} data-boss={view.milestoneWave || undefined} role="img" aria-label={`웨이브 ${waveNo}${view.milestoneWave ? ', 대장 웨이브' : ''}`} title="웨이브">
+        <ArtIcon name="wave" size={phone ? 18 : 22} />
+        <strong>{waveNo}</strong>
+      </span>
+      {best && <span className={css.best} data-kind={best.kind} data-calm={reducedMotion || undefined}>{best.text}</span>}
     </span>
   );
   const score = (

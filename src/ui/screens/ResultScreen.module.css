@@ -22,7 +22,10 @@
 .summary { display: grid; justify-items: center; align-content: start; gap: var(--s2); padding: var(--s5) var(--s4); text-align: center; }
 .meta { font-size: var(--fs-1); color: var(--ink-2); }
 .wave { font-size: var(--fs-6); font-weight: 800; line-height: 1.1; }
-.line { font-size: var(--fs-3); font-weight: 700; }
+.line { font-size: var(--fs-3); font-weight: 700; text-wrap: balance; }
+/* 새 최고 기록·아까운 패배: 한 줄을 호박색으로 강조하고, 아래 '다시 하기'가 가장 먼저 눈에 들어오게 한다. */
+.line[data-kind='newBest'],
+.line[data-kind='nearMiss'] { font-weight: 800; color: var(--amber-base); }
 .stats { width: 100%; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--s2); margin-top: var(--s3); }
 .stats .tile {
   display: flex;

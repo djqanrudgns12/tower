@@ -48,6 +48,8 @@ interface Props {
   sfxVolume?: number;
   highContrastMap?: boolean;
   showKeyHints?: boolean;
+  /** 이 기기의 같은 학년·난이도 최고 기록(그 판 전까지). 상태 카드의 최고 기록 선에 쓴다. 연습·기록이 없으면 null·생략. */
+  bestWave?: number | null;
   onFont(scale: FontScale): void;
   onSound(on: boolean): void;
   onExit(reason: 'saved' | 'over' | 'abandon'): void;
@@ -77,6 +79,7 @@ export function GameScreen({
   sfxVolume,
   highContrastMap = false,
   showKeyHints = true,
+  bestWave = null,
   onFont,
   onSound,
   onExit,
@@ -680,7 +683,7 @@ export function GameScreen({
           <>
             {field}
             <aside className={css.rail} style={{ height: layout.mapH }} aria-label="타워 관리">
-              <Hud view={view} burning={b.burning} mode="R" compactRail={compact} goldRef={goldRef} reducedMotion={reducedMotion} onPause={() => controller.pause('USER')} />
+              <Hud view={view} burning={b.burning} mode="R" compactRail={compact} goldRef={goldRef} reducedMotion={reducedMotion} bestWave={bestWave} onPause={() => controller.pause('USER')} />
               {notice && <p className={css.hint} role="status">{notice}</p>}
               {!practiceDone && (
                 <Card className={css.sockets}>
@@ -698,7 +701,7 @@ export function GameScreen({
           </>
         ) : (
           <>
-            <Hud view={view} burning={b.burning} mode="S" goldRef={goldRef} reducedMotion={reducedMotion} onPause={() => controller.pause('USER')} />
+            <Hud view={view} burning={b.burning} mode="S" goldRef={goldRef} reducedMotion={reducedMotion} bestWave={bestWave} onPause={() => controller.pause('USER')} />
             {layout.portraitHint && <p className={css.hint}>세로로 돌리면 더 편해요.</p>}
             {notice && <p className={css.hint} role="status">{notice}</p>}
             {field}

@@ -120,6 +120,8 @@ export function withRo(word: string): string {
 export const RESULT_COPY = {
   defeat: '성문이 무너졌어요',
   ended: '이번 판을 마쳤어요',
+  newBest: '새 최고 기록이에요!',
+  nearMiss: (n: number) => `아까워요! 최고 기록까지 ${n}웨이브`,
   wave: '웨이브',
   waveSr: '지킨 웨이브',
   correct: '정답',
@@ -136,6 +138,54 @@ export const RESULT_COPY = {
   again: '다시 하기',
   home: '홈',
 } as const;
+
+/** 상태 카드의 최고 기록 문구(prd-r4 §7.2-F). 웨이브 옆에 작게 붙는다. */
+export const HUD_COPY = {
+  best: (n: number) => `최고 ${n}`,
+  chase: (n: number) => `최고 기록까지 ${n}`,
+  /** 폭이 좁은 상태 카드(휴대폰·낮은 화면 압축 레일)용 짧은 말. */
+  chaseShort: (n: number) => `기록까지 ${n}`,
+  newBest: '새 기록!',
+} as const;
+
+/** 최고 기록 2웨이브 전부터 '최고 기록까지'를 보인다(prd-r4 §7.2-F). 아까운 패배의 1~2웨이브 차이와 같은 폭이다. */
+export const CHASE_WAVES = 2;
+
+export interface BestLine { kind: 'best' | 'chase' | 'new'; text: string }
+
+/**
+ * 상태 카드가 웨이브 옆에 보일 최고 기록 한 줄. 최고 기록은 판을 열 때 정한 값(그 판 전까지)이라 판 안에서 바뀌지 않는다.
+ * - 평소: "최고 18"
+ * - 지금 웨이브 W가 최고 기록 B에 가까울 때(B−W+1이 1~2): "최고 기록까지 B−W+1" = 이 웨이브부터 몇 웨이브를 지키면 최고 기록에 닿는지
+ * - 지킨 웨이브가 B를 넘으면: "새 기록!" (결과 화면의 '새 최고 기록'과 같은 조건이라, 이 문구가 보인 판은 결과도 새 기록이다)
+ * 최고 기록이 없으면(첫 판·연습) null. `short`는 좁은 상태 카드용으로 '최고 기록까지'를 '기록까지'로 줄인다.
+ */
+export function bestLine(best: number | null, wave: number, completedWave: number, short = false): BestLine | null {
+  if (best === null) return null;
+  if (completedWave > best) return { kind: 'new', text: HUD_COPY.newBest };
+  const left = best - Math.max(1, wave) + 1;
+  if (left >= 1 && left <= CHASE_WAVES) return { kind: 'chase', text: short ? HUD_COPY.chaseShort(left) : HUD_COPY.chase(left) };
+  return { kind: 'best', text: HUD_COPY.best(best) };
+}
+
+export interface ResultHeadline { kind: 'newBest' | 'nearMiss' | 'defeat' | 'ended'; text: string }
+
+/**
+ * 결과 화면 첫 줄(prd-r4 §10.1·§7.2-F). 이전 최고 기록(그 판 전까지)과 견준다.
+ * - 1웨이브 이상 지켰고 이전 최고 기록이 없거나 넘었으면 "새 최고 기록이에요!"
+ * - 성문이 무너졌고 최고 기록과 1~2웨이브 차이면 "아까워요! 최고 기록까지 N웨이브"(N = 차이 = 최고 기록과 같아지려면 더 지킬 웨이브, prd-r4 §7.2-F 문구)
+ * - 그 밖에는 기존 줄(무너짐/마침)
+ */
+export function resultHeadline(o: { endReason: 'DEFEAT' | 'QUIT' | null; completedWave: number; previousBest: number | null }): ResultHeadline {
+  const { completedWave: done, previousBest: best } = o;
+  if (done >= 1 && (best === null || done > best)) return { kind: 'newBest', text: RESULT_COPY.newBest };
+  if (o.endReason === 'DEFEAT') {
+    const gap = best === null ? 0 : best - done;
+    if (gap >= 1 && gap <= CHASE_WAVES) return { kind: 'nearMiss', text: RESULT_COPY.nearMiss(gap) };
+    return { kind: 'defeat', text: RESULT_COPY.defeat };
+  }
+  return { kind: 'ended', text: RESULT_COPY.ended };
+}
 
 /** 오답 노트 화면 문구(R4 U3). 퍼센트·숙련도 점수는 쓰지 않는다(PRD v0.5 §20.5). */
 export const NOTE_COPY = {
