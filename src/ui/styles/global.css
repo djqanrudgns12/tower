@@ -49,8 +49,8 @@
 
   /* ── 재질 원화(ART-OAK1, v4 §3.2). slice·표시 폭은 asset-source/renewal/ART-OAK1/manifest.json 값이다.
      none으로 두면 부품이 대체 단색(테·면 토큰)으로 그린다. 키는 원화가 둥근 끝·테·바닥 입술까지 그리므로 원화가 켜진 동안
-     --art-clip(면 색을 내용 상자에만)·--art-fill(여백 없는 아이콘 키는 면 색 없음)·--art-shadow(테·바닥 그림자 없음)를 쓴다.
-     키 원화를 끄려면 --art-key-* 를 none으로, 이 세 값을 initial로 함께 바꾼다. ── */
+     --art-clip(면 색을 내용 상자에만)·--art-shadow(테·바닥 그림자 없음)를 쓴다.
+     키 원화를 모두 끄려면 --art-key-* 를 none으로, 이 두 값을 initial로 함께 바꾼다. ── */
   --art-frame-lg: url('/assets/ui/oak/frame.lg.webp');
   --art-frame-sm: url('/assets/ui/oak/frame.sm.webp');
   --art-board: url('/assets/ui/oak/board.webp');
@@ -64,7 +64,6 @@
   --art-ribbon: url('/assets/ui/oak/ribbon.webp');
   --art-rule: url('/assets/ui/oak/rule.webp');
   --art-clip: content-box;
-  --art-fill: transparent;
   --art-shadow: none;
 
   --fs-1: 13px; --fs-2: 16px; --fs-3: 20px; --fs-4: 24px; --fs-5: 32px; --fs-6: 44px;

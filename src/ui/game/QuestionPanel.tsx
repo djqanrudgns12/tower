@@ -145,6 +145,7 @@ export function QuestionPanel({
               <Button
                 key={`${question.encounterId}-${o.id}`}
                 size="lg"
+                art={false}
                 className={css.option}
                 data-state={state}
                 data-option-id={o.id}
@@ -175,7 +176,7 @@ export function QuestionPanel({
       <div className={css.side} data-feedback data-tone={!fb ? 'idle' : fb.result === 'correct' ? 'correct' : 'wrong'} aria-live="polite">
         {!answered && (
           <>
-            <Button variant={variant === 'narrow' ? 'secondary' : 'ghost'} size={variant === 'narrow' ? 'md' : 'lg'} className={css.skip} aria-describedby={skipNoteId} onClick={onSkip}>모르겠어요</Button>
+            <Button variant={variant === 'narrow' ? 'secondary' : 'ghost'} size={variant === 'narrow' ? 'md' : 'lg'} art={false} className={css.skip} aria-describedby={skipNoteId} onClick={onSkip}>모르겠어요</Button>
             <span id={skipNoteId} className="sr-only">누르면 점수가 줄지 않아요. 골드는 받지 않아요.</span>
           </>
         )}

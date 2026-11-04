@@ -6,8 +6,8 @@
    (화면이 여백을 덮어쓰는 답안 키도 글 폭이 줄지 않는다, v4 §3.5). 원본 높이 96의 좌우 끝 38px를 남기고 늘리며,
    표시 끝 폭(--cap)은 높이에 비례한다(md 44px → 17px, lg 56px → 22px).
    원화가 켜진 동안(global.css --art-clip·--art-shadow) 면 색은 내용 상자에만 깔고(원화의 둥근 끝 바깥으로 새지 않고, 글자 바탕은 실제 면 색이라
-   대비 검사가 맞게 읽는다) 테·바닥 그림자는 원화가 그린다. 화면이 한 버튼만 원화를 끄려면 그 버튼에
-   --key: none; --art-clip: initial; --art-shadow: initial 을 준다(문제판 답안 키 등). */
+   대비 검사가 맞게 읽는다) 테·바닥 그림자는 원화가 그린다. 원화를 끄려면 Button art={false}(.noArt): 양피지 볼록 면 + 안쪽 2px
+   호두나무 테 + 바닥으로 그린다(여러 줄 문장 키인 답안 보기, 라벨 없는 정사각 아이콘 키). */
 .btn {
   --face: var(--parch-1);
   --base: var(--walnut-3);
@@ -46,6 +46,9 @@
   border-image: var(--key) 0 38 fill / 0 var(--cap) stretch;
   pointer-events: none;
 }
+/* 원화가 켜진 키는 내용이 끝(캡)·리벳 안쪽으로 들어오지 않게 좌우 여백을 캡 폭 + 8px로 잡는다. 화면이 여백을 덮어써도 이것이 이긴다
+   (P2 눈 관문 반려 1: 리벳이 번호·아이콘·글자에 붙었다). 원화를 끈 키는 화면·kit 여백을 그대로 쓴다. */
+.btn:not(.ghost):not(.noArt):not(.iconBtn), .iconBtn.showLabel:not(.noArt) { padding-inline: calc(var(--cap) + var(--s2)); }
 /* 누름: 바닥 두께만큼 내려앉는다. 문제판처럼 위치가 잠긴 곳은 조상에 --btn-press-y: 0px을 주거나 still로 끈다(v4 §7.4). */
 .btn:active:not(:disabled):not([aria-disabled='true']) { transform: translateY(var(--btn-press-y, 4px)); box-shadow: var(--art-shadow, inset 0 0 0 2px var(--walnut-3)); }
 .btn.still:active:not(:disabled):not([aria-disabled='true']) { transform: none; }
@@ -58,6 +61,8 @@
 .primary.lg, .accent { --face: var(--brass-2); --base: var(--brass-3); --text: var(--ink); --key: var(--art-key-brass); }
 .danger { --face: var(--red); --base: var(--red-base); --text: var(--on-dark); --key: var(--art-key-red); }
 .secondary { --face: var(--parch-1); --base: var(--walnut-3); --text: var(--ink); --key: var(--art-key-parch); }
+/* 원화를 끈 키: 변형 규칙(primary lg 포함)보다 뒤·높은 특이도로 둔다. */
+.btn.noArt { --key: none; --art-clip: initial; --art-shadow: initial; }
 .ghost { --key: none; background: transparent; background-clip: border-box; box-shadow: none; color: var(--ink); }
 .ghost:active:not(:disabled) { transform: none; box-shadow: none; }
 @media (hover: hover) {
@@ -77,8 +82,8 @@
 .alignStart { justify-content: flex-start; text-align: left; }
 
 /* ── 아이콘 버튼(옛 머리판 단추: 양피지 키 + 아이콘) ── */
-/* 여백이 없어 내용 상자가 곧 키 전체라, 원화가 켜진 동안은 면 색을 깔지 않는다(글자가 없어 대비 검사 대상도 아니다). */
-.iconBtn { position: relative; width: var(--touch); padding: 0; background: var(--art-fill, var(--face)); }
+/* 라벨 없는 정사각 아이콘 키는 알약 원화가 동그란 메달처럼 찌그러져 원화를 끄고 사각 양피지 키로 그린다(IconButton이 art={false}를 준다). */
+.iconBtn { position: relative; width: var(--touch); padding: 0; }
 .iconBtn.lg { width: 56px; padding: 0; }
 /* 글자를 함께 보이는 머리판 단추(v4 §4.2): 너비는 글자를 따르고 44px보다 좁아지지 않는다. */
 .iconBtn.showLabel, .iconBtn.lg.showLabel { width: auto; min-width: var(--touch); padding: 0 var(--s3); gap: var(--s1); }
@@ -111,7 +116,17 @@
 /* ── 카드: 양피지 면 + 참나무 가는 테. 테는 안쪽 그림자라 화면이 정한 여백·크기가 그대로다 ── */
 .card { background: var(--paper); color: var(--ink); border-radius: var(--r-md); padding: var(--s4); box-shadow: inset 0 0 0 2px var(--line); }
 .cardFloat { box-shadow: var(--shadow-board), inset 0 0 0 2px var(--line); }
-.cardSunk { background: var(--paper-2); }
+.cardSunk { position: relative; background: var(--paper-2); }
+/* 음각 홈 테(groove 원화): 카드 위에 겹쳐 그리는 가상 요소라 상자·여백이 그대로다(안쪽 그림자와 같은 원칙). 원화가 없으면 안쪽 그림자 테만 남는다. */
+.cardSunk::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border: 4px solid transparent;
+  border-image: var(--art-groove) 47 / 4px stretch;
+  border-radius: inherit;
+  pointer-events: none;
+}
 /* 판 재질(옆판·문제판 바탕·탭 줄): 참나무 판 원화 타일, 글은 --ink만(v4 §2.6 규칙 1). */
 .cardBoard { background: var(--oak-1) var(--art-board) 0 0 / 128px 128px repeat; box-shadow: inset 0 0 0 2px var(--walnut-2); }
 /* 머리판 재질(머리판·HUD): 짙은 호두나무 면 + 몰딩 선. 짙은 면이라 글자·링을 밝게 바꾼다. */
@@ -146,7 +161,7 @@
   gap: var(--s1);
   transition: background-color var(--t-ui), color var(--t-ui);
 }
-.segment[aria-checked='true'] { background: var(--parch-1); color: var(--ink); border-color: var(--walnut-3); box-shadow: 0 2px 0 var(--walnut-3); }
+.segment[aria-checked='true'], .segment[aria-selected='true'] { background: var(--parch-1); color: var(--ink); border-color: var(--walnut-3); box-shadow: 0 2px 0 var(--walnut-3); }
 .segment:focus-visible { outline: 3px solid var(--ring); outline-offset: 1px; }
 .segment[aria-disabled='true'] { opacity: 0.55; cursor: not-allowed; }
 @media (hover: hover) {
@@ -252,7 +267,7 @@
 @media print, (forced-colors: active) {
   .btn::before { border-image: none; }
   .btn:not(.ghost), .badge { border-image: none; background: var(--face); }
-  .segmented, .dialog { border-image: none; }
+  .segmented, .dialog, .cardSunk::after { border-image: none; }
   .dialogHead::after { border-image: none; }
 }
 

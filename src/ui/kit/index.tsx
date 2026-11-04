@@ -24,14 +24,16 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   align?: 'center' | 'start';
   /** 눌러도 자리를 옮기지 않는다(바닥만 0). 위치가 잠긴 문제판 안의 키(v4 §7.4). 묶음 전체는 조상에 --btn-press-y: 0px을 줘도 된다. */
   still?: boolean;
+  /** 키 원화(알약)를 그린다(기본). false면 양피지 볼록 면 + 2px 호두나무 테 + 바닥으로 그린다: 여러 줄 문장 키(답안 보기)·정사각 아이콘 키. */
+  art?: boolean;
   ref?: Ref<HTMLButtonElement>;
 }
 
-export function Button({ variant = 'secondary', size = 'md', block = false, onDark = false, align = 'center', still = false, className, type = 'button', ...rest }: ButtonProps) {
+export function Button({ variant = 'secondary', size = 'md', block = false, onDark = false, align = 'center', still = false, art = true, className, type = 'button', ...rest }: ButtonProps) {
   return (
     <button
       type={type}
-      className={cx(css.btn, css[variant], size === 'lg' && css.lg, block && css.block, onDark && css.onDark, align === 'start' && css.alignStart, still && css.still, className)}
+      className={cx(css.btn, css[variant], size === 'lg' && css.lg, block && css.block, onDark && css.onDark, align === 'start' && css.alignStart, still && css.still, !art && css.noArt, className)}
       {...rest}
     />
   );
@@ -47,9 +49,10 @@ interface IconButtonProps extends Omit<ButtonProps, 'children' | 'block'> {
   showLabel?: boolean;
 }
 
-export function IconButton({ label, icon, count = 0, showLabel = false, variant = 'secondary', size = 'md', className, ...rest }: IconButtonProps) {
+/** 아이콘 키. 라벨 없는 정사각 키는 알약 원화가 동그란 메달로 찌그러지므로 원화를 끈 사각 양피지 키로 그린다. */
+export function IconButton({ label, icon, count = 0, showLabel = false, art = true, variant = 'secondary', size = 'md', className, ...rest }: IconButtonProps) {
   return (
-    <Button variant={variant} size={size} aria-label={count > 0 ? `${label} ${count}개` : label} title={label} className={cx(css.iconBtn, showLabel && css.showLabel, className)} {...rest}>
+    <Button variant={variant} size={size} art={showLabel && art} aria-label={count > 0 ? `${label} ${count}개` : label} title={label} className={cx(css.iconBtn, showLabel && css.showLabel, className)} {...rest}>
       {icon}
       {showLabel && <span aria-hidden="true">{label}</span>}
       {count > 0 && <span className={css.badge} aria-hidden="true">{count > 99 ? '99+' : count}</span>}
@@ -85,10 +88,15 @@ interface SegmentedProps<T extends string> {
   value: T;
   onChange(value: T): void;
   onBlocked?(value: T): void;
+  /** 고르기 줄(radiogroup, 기본) 또는 탭 줄(tablist: 고른 칸이 아래 tabpanel 내용을 바꿀 때). 모양·키보드는 같다. */
+  role?: 'radiogroup' | 'tablist';
+  /** 탭 줄일 때 칸들이 바꾸는 tabpanel의 id(aria-controls). 칸 id는 option.id. */
+  controls?: string;
   className?: string | undefined;
 }
 
-export function Segmented<T extends string>({ label, options, value, onChange, onBlocked, className }: SegmentedProps<T>) {
+export function Segmented<T extends string>({ label, options, value, onChange, onBlocked, role = 'radiogroup', controls, className }: SegmentedProps<T>) {
+  const tabs = role === 'tablist';
   const refs = useRef<Array<HTMLButtonElement | null>>([]);
   const current = Math.max(0, options.findIndex(o => o.value === value));
   const onKeyDown = (e: KeyboardEvent<HTMLDivElement>) => {
@@ -99,14 +107,17 @@ export function Segmented<T extends string>({ label, options, value, onChange, o
     refs.current[next]?.focus();
   };
   return (
-    <div role="radiogroup" aria-label={label} className={cx(css.segmented, className)} onKeyDown={onKeyDown}>
+    <div role={role} aria-label={label} className={cx(css.segmented, className)} onKeyDown={onKeyDown}>
       {options.map((o, i) => (
         <button
           key={o.value}
           ref={el => { refs.current[i] = el; }}
+          id={o.id}
           type="button"
-          role="radio"
-          aria-checked={o.value === value}
+          role={tabs ? 'tab' : 'radio'}
+          aria-checked={tabs ? undefined : o.value === value}
+          aria-selected={tabs ? o.value === value : undefined}
+          aria-controls={tabs ? controls : undefined}
           aria-disabled={o.disabled || undefined}
           aria-label={o.ariaLabel}
           tabIndex={i === current ? 0 : -1}

@@ -7,6 +7,8 @@ export interface SegmentOption<T extends string> {
   disabled?: boolean;
   /** 화면 읽기용 이름(label이 그림일 때). */
   ariaLabel?: string;
+  /** 칸 요소 id(탭 줄에서 tabpanel의 aria-labelledby가 가리킬 때). */
+  id?: string;
 }
 
 /** 화살표·Home·End로 고를 수 있는 다음 칸. 고를 수 없는 칸은 건너뛴다. */

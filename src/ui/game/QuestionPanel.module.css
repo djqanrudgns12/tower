@@ -117,7 +117,8 @@
 .options[data-cols='2'] { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 .options[data-cols='1'] { grid-template-columns: 1fr; }
 
-/* 답안 키캡(보조 변형, 56px). 번호는 작은 숫자로만 둔다(알약 없음). */
+/* 답안 키캡(보조 변형, 56px). 번호는 작은 숫자로만 둔다(알약 없음).
+   여러 줄 문장 키라 키 원화를 끄고(Button art={false}) 양피지 볼록 면 + 안쪽 2px 호두나무 테 + 바닥으로 그린다(R5 P2 눈 관문). */
 .panel .option {
   justify-content: flex-start;
   gap: var(--s3);
@@ -161,7 +162,7 @@
   --face: var(--paper-2);
   --text: var(--ink);
   opacity: 1;
-  box-shadow: 0 4px 0 var(--line);
+  box-shadow: inset 0 0 0 2px var(--walnut-3), 0 4px 0 var(--line);
   cursor: default;
 }
 
@@ -171,13 +172,13 @@
 .panel .option[data-state='correct']:disabled {
   --face: var(--green);
   --text: var(--on-dark);
-  box-shadow: 0 4px 0 var(--green-base);
+  box-shadow: inset 0 0 0 2px var(--walnut-3), 0 4px 0 var(--green-base);
 }
 
 .panel .option[data-state='wrong']:disabled {
   --face: var(--red);
   --text: var(--on-dark);
-  box-shadow: 0 4px 0 var(--red-base);
+  box-shadow: inset 0 0 0 2px var(--walnut-3), 0 4px 0 var(--red-base);
   opacity: 0.55;
 }
 
