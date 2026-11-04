@@ -72,6 +72,41 @@ test.describe('랜딩 페이지(방향 2-A: 왕국 참나무 작전실) 통합 �
     expect(errors).toEqual([]);
   });
 
+  test('N1·N2: 새 게임 창 맨 아래 시작 줄 — 닉네임 ○○ · 바꾸기, 좁고 낮은 화면에서도 스크롤 없이 시작이 보인다', async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await page.goto('/');
+    await page.evaluate(() => { indexedDB.deleteDatabase('vocabulary-td'); localStorage.clear(); });
+    await page.reload();
+
+    const nickInput = page.getByRole('textbox', { name: '닉네임' });
+    await nickInput.fill('하늘바람');
+    await page.getByRole('button', { name: '새 게임', exact: true }).click();
+    const dialog = page.getByRole('dialog', { name: '새 게임' });
+    await expect(dialog).toBeVisible();
+
+    // N1: 시작 줄에 '닉네임 하늘바람'과 바꾸기 단추가 있고, 닉네임이 있으니 시작이 막혀 있지 않다.
+    const start = dialog.getByRole('button', { name: '시작', exact: true });
+    await expect(dialog.getByText('하늘바람', { exact: true })).toBeVisible();
+    await expect(dialog.getByRole('button', { name: '닉네임 바꾸기' })).toBeVisible();
+    await expect(start).not.toHaveAttribute('aria-disabled', 'true');
+
+    // N2: 창 아래에 고정된 시작 줄이라 1366×650(낮음)·390×844(좁음)·320×568(아주 작음) 모두 스크롤 없이 시작이 화면에 온전히 들어온다.
+    for (const [w, h] of [[1366, 650], [390, 844], [320, 568]] as const) {
+      await page.setViewportSize({ width: w, height: h });
+      await expect(start, `${w}x${h} 시작`).toBeInViewport({ ratio: 1 });
+      const box = (await dialog.boundingBox())!;
+      expect(box.y + box.height, `${w}x${h} 창 아래쪽`).toBeLessThanOrEqual(h);
+      expect(await page.evaluate(() => document.documentElement.scrollWidth - innerWidth), `${w}x${h} 가로 넘침`).toBeLessThanOrEqual(0);
+    }
+    await page.setViewportSize({ width: 1440, height: 900 });
+
+    // N1: '바꾸기'를 누르면 창이 닫히고 홈의 닉네임 입력칸에 포커스가 가며, 적어 둔 닉네임은 그대로다.
+    await dialog.getByRole('button', { name: '닉네임 바꾸기' }).click();
+    await expect(dialog).toHaveCount(0);
+    await expect(nickInput).toBeFocused();
+    await expect(nickInput).toHaveValue('하늘바람');
+  });
+
   test('오답 노트 버튼: 홈 머리판에 보이고, 기록이 없으면 개수 없이 접근 이름이 정확히 「오답 노트」', async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 900 });
     await page.goto('/');

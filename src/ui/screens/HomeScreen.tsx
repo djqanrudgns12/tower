@@ -77,6 +77,15 @@ export function HomeScreen({
     }
   }, [focusNicknameOnMount]);
 
+  // 새 게임 창의 '닉네임 바꾸기': 창을 닫은 뒤(창이 연 버튼으로 포커스를 돌려준 다음) 닉네임 입력칸으로 포커스를 옮긴다.
+  const focusNickAfterClose = useRef(false);
+  useEffect(() => {
+    if (activeModal === null && focusNickAfterClose.current) {
+      focusNickAfterClose.current = false;
+      nickInputRef.current?.focus();
+    }
+  }, [activeModal]);
+
   const gateSprite = sprites.get('map.gate');
   const defaultDiff: DifficultyId = (DIFFICULTY_IDS as readonly string[]).includes(settings.lastDifficulty)
     ? (settings.lastDifficulty as DifficultyId)
@@ -209,6 +218,10 @@ export function HomeScreen({
         <NewGameScreen
           settings={settings}
           onBack={() => setActiveModal(null)}
+          onEditNickname={() => {
+            focusNickAfterClose.current = true;
+            setActiveModal(null);
+          }}
           onStart={input => {
             setActiveModal(null);
             onStartNew(input);
