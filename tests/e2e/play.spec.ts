@@ -16,8 +16,8 @@ async function newGame(page: Page) {
   await page.evaluate(() => indexedDB.deleteDatabase('vocabulary-td'));
   await page.reload();
   await page.getByRole('textbox', { name: '닉네임' }).fill('하늘바람');
-  // 홈 '시작' → 새 게임 창의 '시작'(R4 U1).
-  await page.getByRole('button', { name: '시작', exact: true }).click();
+  // 홈 '새 게임' → 새 게임 창의 '시작'.
+  await page.getByRole('button', { name: '새 게임', exact: true }).click();
   await page.getByRole('dialog', { name: '새 게임' }).getByRole('button', { name: '시작', exact: true }).click();
   await expect(page.getByRole('img', { name: '준비 1/5' })).toBeVisible();
 }
@@ -127,7 +127,7 @@ test('이어하기 없음: 정지 메뉴에 저장이 없고, 새로고침하면
   await expect(pause.getByRole('button', { name: '이번 판 끝내기' })).toBeVisible();
   await expect(pause.getByText(/저장|이어/)).toHaveCount(0);
   await page.reload();
-  await expect(page.getByRole('button', { name: '시작', exact: true })).toBeVisible();
+  await expect(page.getByRole('button', { name: '새 게임', exact: true })).toBeVisible();
   await expect(page.getByText(/이어하기|저장된 판/)).toHaveCount(0);
   // 진행 중 판을 담던 옛 저장소(run)는 없고, 끝내지 않은 판은 기록되지 않는다.
   const stored = await page.evaluate(() => new Promise<{ stores: string[]; records: number }>((resolve, reject) => {
@@ -236,7 +236,7 @@ test('사용 설명서 완독 후 새 게임 시작: 설명서는 그림 카드�
   await page.evaluate(() => { indexedDB.deleteDatabase('vocabulary-td'); localStorage.clear(); });
   await page.reload();
 
-  await page.getByRole('button', { name: '설명서', exact: true }).click();
+  await page.getByRole('button', { name: '사용 설명서', exact: true }).click();
   const guide = page.getByRole('dialog', { name: '사용 설명서' });
   await expect(guide).toBeVisible();
   await expect(guide.getByRole('button', { name: '연습 판 해 보기' })).toHaveCount(0);
@@ -254,8 +254,8 @@ test('사용 설명서 완독 후 새 게임 시작: 설명서는 그림 카드�
   await expect(guide).toHaveCount(0);
 
   await page.getByRole('textbox', { name: '닉네임' }).fill('작전교범수호자');
-  // 홈 '시작' → 새 게임 창의 '시작'(R4 U1).
-  await page.getByRole('button', { name: '시작', exact: true }).click();
+  // 홈 '새 게임' → 새 게임 창의 '시작'.
+  await page.getByRole('button', { name: '새 게임', exact: true }).click();
   await page.getByRole('dialog', { name: '새 게임' }).getByRole('button', { name: '시작', exact: true }).click();
   await expect(page.getByRole('img', { name: '준비 1/5' })).toBeVisible();
 });
@@ -266,7 +266,7 @@ test('첫 연습 판: 문제 1개 → 궁수 설치 → 적 3마리 → 회복, 
   await page.goto('/');
   await page.evaluate(() => { indexedDB.deleteDatabase('vocabulary-td'); localStorage.clear(); });
   await page.reload();
-  await page.getByRole('button', { name: '연습 먼저' }).click();
+  await page.getByRole('button', { name: '처음이라면 연습부터' }).click();
   await expect(page.getByText('문제를 풀면 골드를 받아요. 알맞은 답을 눌러 보세요.')).toBeVisible();
   await expect(page.getByRole('img', { name: '준비 1/1' })).toBeVisible();
   await shot(page, 'practice-question');
@@ -287,7 +287,7 @@ test('첫 연습 판: 문제 1개 → 궁수 설치 → 적 3마리 → 회복, 
   await expect(page.getByRole('textbox', { name: '닉네임' })).toBeFocused();
   // 다시 홈에 오면 연습 권유 대신 ‘연습하기’가 보인다. 연습은 기록에 남지 않는다.
   await expect(page.getByRole('button', { name: '연습하기' })).toBeVisible();
-  await expect(page.getByRole('button', { name: '연습 먼저' })).toHaveCount(0);
+  await expect(page.getByRole('button', { name: '처음이라면 연습부터' })).toHaveCount(0);
   const records = await page.evaluate(() => new Promise<number>((resolve, reject) => {
     const req = indexedDB.open('vocabulary-td');
     req.onsuccess = () => {
@@ -302,7 +302,7 @@ test('첫 연습 판: 문제 1개 → 궁수 설치 → 적 3마리 → 회복, 
   // 연습은 언제든 건너뛸 수 있다.
   await page.getByRole('button', { name: '연습하기' }).click();
   await page.getByRole('button', { name: '연습 건너뛰기' }).click();
-  await expect(page.getByRole('button', { name: '시작', exact: true })).toBeVisible();
+  await expect(page.getByRole('button', { name: '새 게임', exact: true })).toBeVisible();
 });
 
 test('키보드: 설치·판매로 단추가 사라져도 포커스가 body로 떨어지지 않고, Enter가 전투를 몰래 시작하지 않는다(PRD §12.4)', async ({ page }) => {
@@ -409,7 +409,7 @@ test('학년 단추는 공동검수를 통과한 공개 은행만 시작할 수 
   await page.evaluate(() => indexedDB.deleteDatabase('vocabulary-td'));
   await page.reload();
   await page.getByRole('textbox', { name: '닉네임' }).fill('어휘수호대');
-  await page.getByRole('button', { name: '시작', exact: true }).click();
+  await page.getByRole('button', { name: '새 게임', exact: true }).click();
 
   const dialog = page.getByRole('dialog', { name: '새 게임' });
   await expect(dialog).toBeVisible();

@@ -28,7 +28,7 @@ export const SCENES = [
       { op: 'scrollTop' },
       { op: 'shot', name: 'home' },
       { op: 'shot', name: 'home-full', fullPage: true, only: ['cb', 'phone'] },
-      { op: 'click', role: 'button', name: '시작' },
+      { op: 'click', role: 'button', name: '새 게임' },
       { op: 'wait', ms: 400 },
       { op: 'shot', name: 'newgame' },
       { op: 'click', selector: '[role="dialog"] button:has-text("시작")' },

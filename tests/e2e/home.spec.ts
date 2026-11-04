@@ -1,8 +1,10 @@
 import AxeBuilder from '@axe-core/playwright';
 import { expect, test } from '@playwright/test';
 
-test.describe('홈(R4 U1: 타이틀 화면) 통합 검증', () => {
-  test('L01·L04·L06·L07·L08: 처음 온 학생에게 연습 권유, 통계 띠·내 기록 버튼 제거, 입력칸·랜덤 추천·자동 연동·새 게임 닉네임 승계', async ({ page }) => {
+// 홈은 옛 랜딩(방향 2-A: 왕국 참나무 작전실)이다. R4 U1 타이틀 화면(3426df8)을 되돌린 것이며, 이어하기(저장)는 앱에서 제거됐다.
+// 새 게임 창·환경설정·사용 설명서는 R4 판 그대로라서 그 창 안의 단언은 R4 기준이고, 홈에서 여는 단추 이름만 랜딩 기준이다.
+test.describe('랜딩 페이지(방향 2-A: 왕국 참나무 작전실) 통합 검증', () => {
+  test('L01·L04·L06·L07·L08: 처음 온 학생에게 연습 권유, 적용됨 버튼 제거, 직결 닉네임 데크·랜덤 추천·자동 연동·새 게임 무마찰 승계', async ({ page }) => {
     const errors: string[] = [];
     page.on('pageerror', e => errors.push(String(e)));
 
@@ -14,42 +16,48 @@ test.describe('홈(R4 U1: 타이틀 화면) 통합 검증', () => {
     });
     await page.reload();
 
-    // L01: 처음 온 학생에게는 '처음이라면 연습부터'를 보인다(PRD §12.2). '적용/적용됨' 버튼은 없다.
-    await expect(page.getByRole('button', { name: '연습 먼저' })).toBeVisible();
+    // L01: 처음 온 학생에게는 '처음이라면 연습부터'를 보이고(PRD §12.2), 저장이 없으니 이어하기는 없다. '적용/적용됨' 버튼은 없다.
+    await expect(page.getByRole('button', { name: '처음이라면 연습부터' })).toBeVisible();
     await expect(page.getByRole('button', { name: '연습하기' })).toHaveCount(0);
+    await expect(page.getByRole('button', { name: /이어하기/ })).toHaveCount(0);
     await expect(page.getByRole('button', { name: /^적용/ })).toHaveCount(0);
-    await expect(page.getByRole('button', { name: '시작', exact: true })).toBeVisible();
-    // R4: 통계 띠(4칸)와 '내 기록' 버튼은 없다. 한 화면 위에 큰 로고(h1)가 있다.
-    await expect(page.getByRole('region', { name: '왕국 수호 현황' })).toHaveCount(0);
-    await expect(page.getByRole('button', { name: /내 기록/ })).toHaveCount(0);
-    await expect(page.getByRole('heading', { level: 1, name: '어휘력 타워 디펜스' })).toBeVisible();
+    await expect(page.getByRole('button', { name: '새 게임' })).toBeVisible();
 
-    // L06: 닉네임 미입력 상태에서 '시작'을 누르면 창이 열리지 않고 입력칸에 포커스가 간다.
-    const nickInput = page.getByRole('textbox', { name: '닉네임' });
-    await page.getByRole('button', { name: '시작', exact: true }).click();
+    // 4대 지표 영역 표시 확인
+    const telemetry = page.getByRole('region', { name: '왕국 수호 현황' });
+    await expect(telemetry).toContainText('실시간 접속');
+    await expect(telemetry).toContainText('오늘 플레이');
+    await expect(telemetry).toContainText('누적 접속');
+    await expect(telemetry).toContainText('누적 플레이');
+
+    // L06: 닉네임 미입력 상태에서 '새 게임' 클릭 시 모달이 열리지 않고 입력칸에 포커스가 간다.
+    const nickInput = page.getByRole('textbox', { name: /닉네임|출정 별명/ });
+    await page.getByRole('button', { name: '새 게임' }).click();
     await expect(page.getByRole('dialog')).toHaveCount(0);
     await expect(nickInput).toBeFocused();
-    await expect(page.locator('#inlineNickStatus')).toContainText('닉네임');
+    await expect(page.locator('#landingNickStatus')).toContainText(/닉네임|별명/);
 
-    // L05: '랜덤 추천' 클릭 시 재치 있는 닉네임이 들어가고 연속 클릭 시 다른 닉네임으로 바뀌며 바로 저장된다(랭킹과 연동).
-    const savedNick = () => page.evaluate(() => JSON.parse(localStorage.getItem('vocabulary-td.settings') ?? '{}').lastNickname as string);
+    // L05: '랜덤 추천' 클릭 시 재치 있는 닉네임이 들어가고 연속 클릭 시 다른 닉네임으로 바뀌며 내 순위 도크와 즉시 연동된다.
     const recommendBtn = page.getByRole('button', { name: '랜덤 추천' });
     await recommendBtn.click();
     const firstRec = await nickInput.inputValue();
     expect(firstRec.length).toBeGreaterThanOrEqual(2);
-    await expect.poll(savedNick).toBe(firstRec);
+    await expect(page.getByLabel('내 순위 요약')).toContainText(firstRec);
     await expect(page.getByRole('button', { name: /^적용/ })).toHaveCount(0);
 
     await recommendBtn.click();
     const secondRec = await nickInput.inputValue();
     expect(secondRec).not.toBe(firstRec);
-    await expect.poll(savedNick).toBe(secondRec);
+    await expect(page.getByLabel('내 순위 요약')).toContainText(secondRec);
 
-    // L07·L08: 새 닉네임을 타이핑하고 곧바로 '시작'을 눌러도 자동 승계되며 창 안에는 닉네임 입력칸이 없다.
+    // L07·L08: 새 닉네임을 타이핑하고 곧바로 '새 게임'을 눌러도 자동 승계되며 창 안에는 닉네임 입력칸이 없다.
+    // (R4 새 게임 창: 닉네임을 창에 다시 보이지 않으므로 '승계'는 저장된 설정 값으로 확인한다. 창 이름은 '새 게임'.)
+    const savedNick = () => page.evaluate(() => JSON.parse(localStorage.getItem('vocabulary-td.settings') ?? '{}').lastNickname as string);
     await nickInput.fill('참나무수호대');
-    await page.getByRole('button', { name: '시작', exact: true }).click();
+    await page.getByRole('button', { name: '새 게임' }).click();
     const dialog = page.getByRole('dialog', { name: '새 게임' });
     await expect(dialog).toBeVisible();
+    await expect.poll(savedNick).toBe('참나무수호대');
     await expect(dialog.getByRole('textbox')).toHaveCount(0);
     // 닫기(×)는 하나뿐이고 '뒤로'는 없다. 학년·난이도는 고르기 줄이다.
     await expect(dialog.getByRole('button', { name: '닫기' })).toHaveCount(1);
@@ -57,50 +65,65 @@ test.describe('홈(R4 U1: 타이틀 화면) 통합 검증', () => {
     await expect(dialog.getByRole('radiogroup', { name: '학년' }).getByRole('radio')).toHaveCount(4);
     await expect(dialog.getByRole('radiogroup', { name: '난이도' }).getByRole('radio')).toHaveCount(4);
 
-    // 닫으면 홈에는 닉네임 칩이 남는다. 칩을 누르면 닉네임·학교 작은 창이 열리고 닉네임 칸에 포커스가 간다.
+    // 창을 닫으면 홈의 닉네임 입력칸에 방금 정한 닉네임이 그대로 남아 있다.
     await page.keyboard.press('Escape');
     await expect(dialog).toHaveCount(0);
-    await page.getByRole('button', { name: '닉네임 참나무수호대, 바꾸기' }).click();
-    const profile = page.getByRole('dialog', { name: '내 정보' });
-    await expect(profile).toBeVisible();
-    await expect(profile.getByRole('textbox', { name: '닉네임' })).toHaveValue('참나무수호대');
-    await expect(profile.getByRole('textbox', { name: '닉네임' })).toBeFocused();
+    await expect(nickInput).toHaveValue('참나무수호대');
     expect(errors).toEqual([]);
   });
 
-  test('L09·L10·L12·L14·L17: 오늘의 낱말 카드(예문은 눌러야), 설정 한 목록(switch 줄·닉네임 배제·인게임 배지 연동), 랭킹 요약과 전체 보기', async ({ page }) => {
+  test('오답 노트 버튼: 홈 머리판에 보이고, 기록이 없으면 개수 없이 접근 이름이 정확히 「오답 노트」', async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 900 });
     await page.goto('/');
     await page.evaluate(() => localStorage.clear());
     await page.reload();
 
-    // L09·L10: 오늘의 낱말 카드(비석 그림 + 낱말 + 뜻 한 줄). 품사 칩·랜덤 버튼·이전/다음은 없고, 예문은 눌러야 보인다.
-    const stele = page.getByRole('region', { name: '오늘의 낱말' });
-    await expect(stele).toBeVisible();
-    await expect(stele.getByRole('button', { name: /랜덤|이전 낱말|다음 낱말|뜻 가리고/ })).toHaveCount(0);
-    await expect(stele).not.toContainText(/\d+\s*\/\s*\d+/);
-    expect((await stele.locator('strong').first().innerText()).length).toBeGreaterThan(0);
-    const exampleSummary = stele.locator('summary');
-    await expect(exampleSummary).toHaveText('예문 보기');
-    await expect(stele.locator('details p')).toBeHidden();
-    await exampleSummary.click();
-    await expect(stele.locator('details p')).toBeVisible();
-    await expect(exampleSummary).toHaveText('예문 닫기');
+    const noteBtn = page.getByRole('button', { name: '오답 노트', exact: true });
+    await expect(noteBtn).toBeVisible();
+    await expect(noteBtn).toHaveAttribute('id', 'noteBtn');
+    // 개수가 없으면 별도 접근 이름(오답 노트 N개)이 없다.
+    await expect(page.getByRole('button', { name: /오답 노트 \d+개/ })).toHaveCount(0);
+  });
 
-    // L17: 랭킹 요약 카드에는 탭·학년·난이도 고르기가 없고, '전체 보기' 창에만 탭 3개와 고르기 두 줄이 있다.
-    const rankBoard = page.getByRole('complementary', { name: '랭킹' });
-    await expect(rankBoard.getByRole('tab')).toHaveCount(0);
-    await expect(rankBoard.getByRole('radio')).toHaveCount(0);
-    await rankBoard.getByRole('button', { name: '전체 보기' }).click();
-    const rankDialog = page.getByRole('dialog', { name: '랭킹' });
-    await expect(rankDialog).toBeVisible();
-    await expect(rankDialog.getByRole('tab')).toHaveCount(3);
-    await expect(rankDialog.getByRole('radiogroup')).toHaveCount(2);
-    await expect(rankDialog.getByRole('radiogroup', { name: '난이도' })).toBeVisible();
-    await rankDialog.getByRole('tab', { name: '랭킹 점수' }).click();
-    await expect(rankDialog.getByRole('radiogroup', { name: '집계 기간' })).toBeVisible();
-    await rankDialog.getByRole('tab', { name: '최장 웨이브' }).click();
-    await expect(rankDialog.getByRole('radiogroup', { name: '난이도' })).toBeVisible();
+  test('L09·L10·L12·L14·L17: 비석 낱말 학습 카드, 설정 한 목록(switch 줄·닉네임 배제·인게임 배지 연동), 4분류 통합 랭킹', async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await page.goto('/');
+    await page.evaluate(() => localStorage.clear());
+    await page.reload();
+
+    // L09·L10: 오늘의 낱말 공부 패널(뜻 가리기 · <> 순서 이동 · 갯수 표시 제거, 랜덤 단일 버튼으로 서버 전체 낱말 순환)
+    const stele = page.getByRole('region', { name: '오늘의 낱말 공부' });
+    await expect(stele.getByRole('button', { name: /뜻 가리고 외우기|뜻 다시 보기/ })).toHaveCount(0);
+    await expect(stele.getByRole('button', { name: '이전 낱말' })).toHaveCount(0);
+    await expect(stele.getByRole('button', { name: '다음 낱말' })).toHaveCount(0);
+    await expect(stele).not.toContainText(/\d+\s*\/\s*\d+/);
+    await expect(stele.getByRole('button')).toHaveCount(1);
+    await expect(stele.getByRole('button', { name: '랜덤' })).toBeVisible();
+    await expect(stele).toContainText('뜻풀이');
+
+    const firstLemma = await stele.locator('strong').first().innerText();
+    expect(firstLemma.length).toBeGreaterThan(0);
+
+    await stele.getByRole('button', { name: '랜덤' }).click();
+    const randomLemma = await stele.locator('strong').first().innerText();
+    expect(randomLemma.length).toBeGreaterThan(0);
+    expect(randomLemma).not.toBe(firstLemma);
+
+    // 연속 랜덤 클릭 시 직전 낱말과 중복되지 않고 뜻풀이가 항상 바로 표시된다.
+    await stele.getByRole('button', { name: '랜덤' }).click();
+    const secondRandomLemma = await stele.locator('strong').first().innerText();
+    expect(secondRandomLemma).not.toBe(randomLemma);
+    expect([firstLemma, randomLemma, secondRandomLemma].every(w => w.length >= 1)).toBe(true);
+    await expect(stele).toContainText('뜻풀이');
+
+    // L17: 통합 수호 랭킹 4탭 전환 및 상세 모달 열기
+    const rankBoard = page.getByRole('complementary', { name: '통합 수호 랭킹' });
+    await rankBoard.getByRole('tab', { name: '누적 명예점' }).click();
+    await expect(rankBoard.getByRole('radiogroup', { name: '집계 기간' })).toBeVisible();
+    await rankBoard.getByRole('tab', { name: '최장 웨이브' }).click();
+    await expect(rankBoard.getByRole('radiogroup', { name: '난이도 범위' })).toBeVisible();
+    await rankBoard.getByRole('button', { name: '상세 순위표 열기' }).click();
+    await expect(page.getByRole('dialog', { name: /상세 수호 순위표/ })).toBeVisible();
     await page.keyboard.press('Escape');
     await expect(page.getByRole('dialog')).toHaveCount(0);
 
@@ -130,8 +153,8 @@ test.describe('홈(R4 U1: 타이틀 화면) 통합 검증', () => {
     await settingsDialog.getByRole('button', { name: '닫기' }).click();
 
     // 게임 진입 후 QuestionPanel 보기 옆 번호 배지(1~4)가 실제로 숨겨졌는지 확인
-    await page.getByRole('textbox', { name: '닉네임' }).fill('단축키검증');
-    await page.getByRole('button', { name: '시작', exact: true }).click();
+    await page.getByRole('textbox', { name: /닉네임|출정 별명/ }).fill('단축키검증');
+    await page.getByRole('button', { name: '새 게임' }).click();
     await page.getByRole('dialog', { name: '새 게임' }).getByRole('button', { name: '시작', exact: true }).click();
     const firstOption = page.getByRole('region', { name: '어휘 문제' }).getByRole('group', { name: '보기' }).getByRole('button').first();
     await expect(firstOption).toBeVisible();
@@ -141,9 +164,6 @@ test.describe('홈(R4 U1: 타이틀 화면) 통합 검증', () => {
   test('L20·L21·L22: 전 뷰포트 가로 넘침 0px, 크롬북 첫 화면 CTA 노출, axe 위반 0건, §12.8 그라디언트·블러 0건', async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 900 });
     await page.goto('/');
-    // R4 U1: 1440×900에서 세로 스크롤이 없다.
-    await page.waitForTimeout(500);
-    expect(await page.evaluate(() => document.documentElement.scrollHeight - window.innerHeight)).toBeLessThanOrEqual(0);
 
     // 홈 기본 axe 검사(캔버스 제외 없이 전수 통과) 및 샘플 기록 적재 시 랭킹 보드 렌더링 확인
     await page.evaluate(async () => {
@@ -185,8 +205,8 @@ test.describe('홈(R4 U1: 타이틀 화면) 통합 검증', () => {
         req.onerror = () => reject(req.error);
       });
     });
-    await page.getByRole('textbox', { name: '닉네임' }).fill('참나무수호대');
-    await expect(page.getByRole('complementary', { name: '랭킹' })).toContainText('별빛파수꾼');
+    await page.getByRole('textbox', { name: /닉네임|출정 별명/ }).fill('참나무수호대');
+    await expect(page.getByRole('complementary', { name: '통합 수호 랭킹' })).toContainText('별빛파수꾼');
     await expect(page.getByLabel('내 순위 요약')).toContainText('4위 · 10,420점');
 
     const homeAxe = await new AxeBuilder({ page }).analyze();
@@ -201,8 +221,8 @@ test.describe('홈(R4 U1: 타이틀 화면) 통합 검증', () => {
     await page.keyboard.press('Escape');
 
     // 새 게임 모달 캡처 및 axe 검사
-    await page.getByRole('textbox', { name: '닉네임' }).fill('참나무수호대');
-    await page.getByRole('button', { name: '시작', exact: true }).click();
+    await page.getByRole('textbox', { name: /닉네임|출정 별명/ }).fill('참나무수호대');
+    await page.getByRole('button', { name: '새 게임' }).click();
     await expect(page.getByRole('dialog', { name: '새 게임' })).toBeVisible();
     const newGameAxe = await new AxeBuilder({ page }).analyze();
     expect(newGameAxe.violations.map(v => `${v.id}: ${v.nodes.length}`)).toEqual([]);
@@ -226,9 +246,9 @@ test.describe('홈(R4 U1: 타이틀 화면) 통합 검증', () => {
     });
     expect(styleViolations).toEqual([]);
 
-    // 1366×650 크롬북 저높이 뷰포트에서 스크롤 없이 '시작' 버튼이 화면 안에 온전히 들어오는지 검증
+    // 1366×650 크롬북 저높이 뷰포트에서 스크롤 없이 '새 게임' 버튼이 화면 안에 온전히 들어오는지 검증
     await page.setViewportSize({ width: 1366, height: 650 });
-    const newBtnBox = await page.getByRole('button', { name: '시작', exact: true }).boundingBox();
+    const newBtnBox = await page.getByRole('button', { name: '새 게임' }).boundingBox();
     expect(newBtnBox).not.toBeNull();
     expect(newBtnBox!.y + newBtnBox!.height).toBeLessThanOrEqual(650);
 
@@ -244,11 +264,6 @@ test.describe('홈(R4 U1: 타이틀 화면) 통합 검증', () => {
       const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
       expect(overflow, `${w}x${h} overflow`).toBeLessThanOrEqual(0);
       if (w === 390) await page.screenshot({ path: 'test-results/shots/home-2a-mobile.png' });
-      // 폰에서도 '시작'이 첫 화면에 있다(R4 U1).
-      if (w === 390) {
-        const startBox = await page.getByRole('button', { name: '시작', exact: true }).boundingBox();
-        expect(startBox!.y + startBox!.height, '390x844 시작 버튼이 첫 화면 안').toBeLessThanOrEqual(h);
-      }
     }
   });
 
@@ -259,7 +274,7 @@ test.describe('홈(R4 U1: 타이틀 화면) 통합 검증', () => {
     await page.setViewportSize({ width: 1440, height: 900 });
     await page.goto('/');
 
-    const guideTrigger = page.getByRole('button', { name: '설명서', exact: true });
+    const guideTrigger = page.getByRole('button', { name: '사용 설명서', exact: true });
     await guideTrigger.click();
 
     const dialog = page.getByRole('dialog', { name: '사용 설명서' });
@@ -381,7 +396,7 @@ test.describe('홈(R4 U1: 타이틀 화면) 통합 검증', () => {
     }
     await page.evaluate(() => { document.documentElement.dataset.font = 'base'; });
 
-    // G08: Escape 입력 시 모달이 닫히고 홈 상단 '설명서' 버튼으로 포커스가 복귀한다.
+    // G08: Escape 입력 시 모달이 닫히고 홈 상단 '사용 설명서' 버튼으로 포커스가 복귀한다.
     await page.setViewportSize({ width: 1440, height: 900 });
     await page.keyboard.press('Escape');
     await expect(dialog).toHaveCount(0);

@@ -16,7 +16,7 @@ async function freshHome(page: Page) {
 /** 새 판을 시작해 첫 준비 문제 화면까지 간다. */
 async function startRun(page: Page, nickname: string) {
   await page.getByRole('textbox', { name: '닉네임' }).fill(nickname);
-  await page.getByRole('button', { name: '시작', exact: true }).click();
+  await page.getByRole('button', { name: '새 게임', exact: true }).click();
   await page.getByRole('dialog', { name: '새 게임' }).getByRole('button', { name: '시작', exact: true }).click();
   await expect(page.getByRole('img', { name: '준비 1/5' })).toBeVisible();
 }
