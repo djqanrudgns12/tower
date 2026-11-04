@@ -77,10 +77,10 @@ export function SteleStudyPanel({ preferredGrade }: Props) {
 
           <div className={css.meaningCard}>
             <span className={css.meaningTag}>뜻풀이</span>
-            <span className={css.meaningText}>{card.meaning}</span>
+            <span className={css.meaningText} data-content>{card.meaning}</span>
           </div>
 
-          <p className={css.exampleLine}>
+          <p className={css.exampleLine} data-content>
             <span className={css.meaningTag}>예문 </span>
             ‘{card.examplePrefix}
             {card.exampleHighlight && <mark className={css.exampleMark}>{card.exampleHighlight}</mark>}

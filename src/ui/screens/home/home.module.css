@@ -1,11 +1,6 @@
 /* 옛 랜딩(방향 2-A 왕국 참나무 작전실) 복원 — 2026-11-04 사용자 결정, 원본은 3426df8^.
    색 토큰(옛 --oak-* 이름 포함)은 global.css :root 한 곳에서 나온다(ui-rules-v4 §2.4). */
 
-/* 글자 크기 3층(v4 §5.3): 홈 글은 15px 고정이고, 읽는 글(오늘의 낱말 뜻·예문)만 글자 크기 단계에 따라 +1·+2px 커진다. */
-.foreground {
-  font-size: 15px;
-}
-
 /* 방향 2-A: 왕국 참나무 작전실 (PRD §12.8: 반경 4px/8px/칩 999px, 단일 그림자, 그라데이션·블러 0, 굵기 400/700) */
 
 .lobbyRoot {
@@ -26,9 +21,11 @@
   display: block;
 }
 
+/* 글자 크기 3층(v4 §5.3): 홈 글은 15px 고정이고, 읽는 글(오늘의 낱말 뜻·예문)만 글자 크기 단계에 따라 +1·+2px 커진다. */
 .foreground {
   position: relative;
   z-index: 1;
+  font-size: 15px;
   max-width: 1240px;
   margin: 0 auto;
   padding: var(--s4);
@@ -184,7 +181,7 @@
 }
 
 .plaqueBtn:hover {
-  background: #ffffff;
+  background: var(--parch-3);
 }
 
 .plaqueBtn:active {
@@ -250,7 +247,7 @@
   position: absolute;
   top: var(--s2);
   left: var(--s2);
-  background: rgba(43, 28, 17, 0.88);
+  background: color-mix(in srgb, var(--walnut-4) 88%, transparent);
   color: var(--oak-plaque-ink);
   border: 1px solid var(--oak-plaque-border);
   border-radius: var(--r-input);
@@ -344,7 +341,7 @@
 }
 
 .smallBtn:hover:not(:disabled) {
-  background: #ffffff;
+  background: var(--parch-3);
 }
 
 .smallBtn:active:not(:disabled) {
@@ -405,7 +402,7 @@
   transform: translate(-50%, -50%);
   font-size: 20px;
   font-weight: 700;
-  color: #463c35;
+  color: var(--ink);
   pointer-events: none;
 }
 
@@ -568,7 +565,7 @@
   width: 100%;
   text-align: left;
   padding: 8px 10px;
-  background: #ffffff;
+  background: var(--parch-1);
   border: 1px solid var(--oak-inset-border);
   border-radius: 6px;
   cursor: pointer;
@@ -580,7 +577,7 @@
 
 .schoolItem:hover,
 .schoolItem:focus-visible {
-  background: #fff8ee;
+  background: var(--parch-3);
   border-color: var(--oak-amber-accent);
   outline: none;
 }
@@ -599,17 +596,17 @@
 }
 
 .schoolItemBadge {
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 700;
   padding: 1px 6px;
   border-radius: 4px;
-  background: #eee4d5;
-  color: #4a3828;
+  background: var(--oak-1);
+  color: var(--ink);
   white-space: nowrap;
 }
 
 .schoolItemAddress {
-  font-size: 12px;
+  font-size: 13px;
   color: var(--ink-soft);
   text-overflow: ellipsis;
   overflow: hidden;
@@ -644,7 +641,7 @@
   border: 2px solid var(--oak-frame-edge);
   border-radius: var(--r-panel);
   background: var(--oak-cta-green);
-  color: #ffffff;
+  color: var(--on-dark);
   font-size: 20px;
   font-weight: 700;
   box-shadow: var(--shadow-board);
@@ -682,7 +679,7 @@
 }
 
 .secondaryCta:hover:not(:disabled) {
-  background: #ffffff;
+  background: var(--parch-3);
 }
 
 .secondaryCta:active:not(:disabled) {
@@ -728,7 +725,7 @@
 
 .tabBtn[aria-selected='true'] {
   background: var(--oak-cta-green);
-  color: #ffffff;
+  color: var(--on-dark);
   border-color: var(--oak-frame-edge);
   box-shadow: var(--shadow-pressed);
 }
@@ -759,7 +756,7 @@
 
 .filterBtn[aria-checked='true'] {
   background: var(--oak-frame-outer);
-  color: #ffffff;
+  color: var(--on-dark);
   border-color: var(--oak-frame-edge);
 }
 
@@ -798,7 +795,7 @@
 .rankRow[data-me='true'] {
   border-color: var(--oak-cta-green);
   border-width: 2px;
-  background: #eef5e8;
+  background: color-mix(in srgb, var(--green) 10%, var(--parch-1));
 }
 
 .rankMedal {
@@ -893,140 +890,6 @@
   font-weight: 700;
   color: var(--oak-plaque-gold);
   font-variant-numeric: tabular-nums;
-}
-
-/* 공통 모달 스캐폴딩 (블러 없음, 단색 스크림) */
-.modalScrim {
-  position: fixed;
-  inset: 0;
-  z-index: 50;
-  background: rgba(24, 16, 10, 0.64);
-  display: grid;
-  place-items: center;
-  padding: var(--s4);
-  overflow-y: auto;
-}
-
-.modalDialog {
-  width: min(640px, 100%);
-  max-height: calc(100dvh - 32px);
-  display: flex;
-  flex-direction: column;
-}
-
-.modalDialogWide {
-  width: min(740px, 100%);
-}
-
-.modalBody {
-  overflow-y: auto;
-  max-height: calc(100dvh - 48px);
-}
-
-.modalHeader {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--s2);
-  padding-bottom: var(--s2);
-  border-bottom: 2px solid var(--oak-board-molding);
-}
-
-/* 긴 창(저높이 크롬북·휴대폰)에서도 '시작하기'가 늘 보이도록 창 아래에 붙는 단추 줄. 불투명 바탕이라 지나가는 내용이 비치지 않는다. */
-.modalActions {
-  position: sticky;
-  /* 고정 위치는 창의 안쪽 여백 안쪽 끝이라, 그 여백만큼 내려 바탕이 아래 여백까지 덮게 한다. */
-  bottom: calc(-1 * var(--pad-y));
-  margin-bottom: calc(-1 * var(--pad-y));
-  z-index: 2;
-  padding: var(--s2) 0 calc(var(--s2) + var(--pad-y));
-  background: var(--oak-board-bg);
-  border-top: 2px solid var(--oak-board-molding);
-}
-
-.modalTitle {
-  font-size: 22px;
-  font-weight: 700;
-  color: var(--ink);
-}
-
-/* 설정 모달 전용 스타일 */
-.settingsTabs {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: var(--s1);
-  background: var(--oak-inset-bg);
-  border: 2px solid var(--oak-inset-border);
-  border-radius: var(--r-panel);
-  padding: var(--s1);
-}
-
-.settingSection {
-  background: var(--oak-inset-bg);
-  border: 2px solid var(--oak-inset-border);
-  border-radius: var(--r-panel);
-  padding: var(--s3) var(--s4);
-  display: grid;
-  gap: var(--s2);
-}
-
-.settingRow {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--s3);
-  flex-wrap: wrap;
-}
-
-.segmentedRow {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--s2);
-}
-
-.segBtn {
-  min-height: var(--touch);
-  padding: 0 var(--s3);
-  border: 2px solid var(--oak-frame-edge);
-  border-radius: var(--r-input);
-  background: var(--oak-card-bg);
-  color: var(--ink);
-  font-size: 14px;
-  font-weight: 700;
-  box-shadow: var(--shadow);
-}
-
-.segBtn[aria-checked='true'] {
-  background: var(--oak-cta-green);
-  color: #ffffff;
-}
-
-.fontPreviewBox {
-  background: var(--oak-card-bg);
-  border: 2px solid var(--oak-inset-border);
-  border-radius: var(--r-input);
-  padding: var(--s3);
-  font-size: var(--q-font);
-  font-weight: 700;
-  line-height: 1.45;
-}
-
-.inheritedNickBar {
-  background: var(--oak-inset-bg);
-  border: 2px solid var(--oak-inset-border);
-  border-radius: var(--r-panel);
-  padding: var(--s2) var(--s3);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--s2);
-  flex-wrap: wrap;
-}
-
-.choiceGrid2 {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: var(--s2);
 }
 
 /* 학교 크롬북 저높이(1366×650 등) 대응: 첫 화면(스크롤 없이)에 새 게임·연습 단추까지 다 들어오게 한다.
@@ -1181,15 +1044,6 @@
   }
   .tabBar {
     grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-  .settingsTabs {
-    grid-template-columns: 1fr;
-  }
-  .choiceGrid2 {
-    grid-template-columns: 1fr;
-  }
-  .modalScrim {
-    padding: var(--s2);
   }
 }
 
