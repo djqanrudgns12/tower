@@ -13,8 +13,9 @@ export const RUN_STATE_VERSION = 7;
  * 0.5-candidate: P2 공격 프로필(즉발·연쇄·부채꼴·화상·깃발 오라, 물리 저항 무시)과 적 화상 상태(PRD §7.1, §20.2~20.3).
  * 0.5.1-candidate: 난이도별 심화 단계 출제 순서와 한 바퀴 뒤 섞기(PRD §9.1, §9.4). 같은 시드의 출제 순서가 바뀌므로 옛 저장은 이어하지 않는다.
  * 0.5.2-candidate: 판 안 도움 단계(최근 채점 4개로 단계·읽기 부담 이동)와 준비 문제의 오답 노트 복습 단계(R4 L, prd-r4 §6). 출제 순서가 바뀐다.
+ * 1.0.0: 첫 출시(2026-11-04). 앱·규칙·밸런스 버전을 1.0.0으로 맞춘다.
  */
-export const RULES_VERSION = '0.5.2-candidate';
+export const RULES_VERSION = '1.0.0';
 
 export type Phase = 'PREP_QUIZ' | 'BUILD' | 'BATTLE' | 'WAVE_WRAPUP' | 'GAME_OVER';
 export type PauseReason = 'USER' | 'HIDDEN' | 'PERFORMANCE' | 'STORAGE' | 'CONTEXT_LOST' | 'OWNERSHIP' | 'RESTORED' | 'NUMERIC_LIMIT';
