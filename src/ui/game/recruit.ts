@@ -21,6 +21,16 @@ export function showRecruit(view: Pick<GameView, 'draft' | 'phase' | 'pause'>): 
   return view.draft !== null && view.pause.length === 0 && (view.phase === 'WAVE_WRAPUP' || view.phase === 'PREP_QUIZ' || view.phase === 'BUILD');
 }
 
+/**
+ * 원정 보물 창을 띄울 때(prd-r4 §7.2-F): 후보가 있고 웨이브 사이이며 멈추지 않았고, 새 타워 창이 떠 있지 않을 때(새 타워가 먼저).
+ */
+export function showRelic(view: Pick<GameView, 'draft' | 'relicOffer' | 'phase' | 'pause'>): boolean {
+  return view.relicOffer !== null && !showRecruit(view) && view.pause.length === 0 && (view.phase === 'WAVE_WRAPUP' || view.phase === 'PREP_QUIZ' || view.phase === 'BUILD');
+}
+
+/** 보물을 고르는 명령(엔진: NO_RELIC_OFFER·INVALID_RELIC으로 거절). */
+export const relicCommand = (relic: string): Command => ({ type: 'relicPick', relic });
+
 /** 고른 타워를 장착함에 넣는 명령(엔진: NO_DRAFT·INVALID_DRAFT로 거절). */
 export const recruitCommand = (type: TowerId): Command => ({ type: 'draftPick', tower: type });
 

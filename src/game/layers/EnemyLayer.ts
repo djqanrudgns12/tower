@@ -1,6 +1,7 @@
 import Phaser from 'phaser';
 import { positionAt } from '../../domain/geometry';
 import { enemyArtId } from '../../domain/factions';
+import { burrowed } from '../../domain/traits';
 import type { Enemy, RunState } from '../../domain/types';
 import { acceptsHit, enemyPose, HIT_MS } from '../animation/pose';
 import { PALETTE } from '../art';
@@ -9,7 +10,10 @@ import { bossStatus, flyerLift, introFrame, wardDotOffsets, type BossStatus, typ
 import { DEPTH, toWorld, type LayerContext } from './shared';
 
 interface EnemyView {
-  sprite: Phaser.GameObjects.Image; badge: Phaser.GameObjects.Image | null; art: EnemyArt; prev: number; cur: number; phase: number; flashUntil: number; flashAt: number; hitAt: number | null; facing: 1 | -1;
+  sprite: Phaser.GameObjects.Image; badge: Phaser.GameObjects.Image | null;
+  /** 종족 특성 배지(prd-r4 §7.2 E): 원화 특성 아이콘. 특성이 없거나 그림을 못 실었으면 null. */
+  trait: Phaser.GameObjects.Image | null;
+  art: EnemyArt; prev: number; cur: number; phase: number; flashUntil: number; flashAt: number; hitAt: number | null; facing: 1 | -1;
   /** 지금 그린 길 위 위치(월드 px, 등장 연출 포함)와 비행 몸 높이(px). 효과 층이 맞힌 자리·기믹 위치를 맞출 때 쓴다. */
   x: number; y: number; lift: number;
   /** 분열·호위 등장 연출(시작 시각 ms). */
@@ -19,6 +23,11 @@ interface EnemyView {
 /** 피격 점멸: 원화에 더하는 밝기(ADD, 약 25%)와 같은 적의 점멸 최소 간격(R4 PRD §9.2: 300ms에 한 번). */
 const FLASH_TINT = 0x404040;
 const FLASH_GAP_MS = 300;
+
+/** 특성 배지 크기(px). 체력 막대 왼쪽 끝 옆(막대와 같은 높이)에 붙여 정예 배지·체력 막대와 겹치지 않게 한다. */
+const TRAIT_BADGE_PX = 18;
+/** 땅굴 속(표적이 안 되는 구간)에서 적 그림·배지·체력 막대의 투명도(prd-r4 §7.2 E). */
+const BURROW_ALPHA = 0.25;
 
 /** 발밑 기준점: 길 위치보다 0.14칸 아래(적 그림의 발). */
 const FOOT = CELL_PX * 0.14;
@@ -116,10 +125,13 @@ export class EnemyLayer {
         const art = this.artOf(e);
         const sprite = scene.add.image(0, 0, art.framed ? `${art.base}.0` : art.base).setOrigin(art.originX, art.originY).setDisplaySize(CELL_PX * art.displayCells, CELL_PX * art.displayCells);
         const badge = e.elite ? scene.add.image(0, 0, ASSETS.badge[e.elite]).setDisplaySize(14, 16) : null;
+        // 하늘 떼(flyers)는 종족의 비행 비율일 뿐이라 개체에는 배지를 달지 않는다(비행 적은 그림자·띄운 몸으로 이미 보인다).
+        const traitKey = e.trait && e.trait !== 'flyers' ? ASSETS.traitBadge[e.trait] : null;
+        const trait = traitKey && scene.textures.exists(traitKey) ? scene.add.image(0, 0, traitKey).setDisplaySize(TRAIT_BADGE_PX, TRAIT_BADGE_PX) : null;
         const intro = this.pendingIntros.get(e.id);
         this.pendingIntros.delete(e.id);
         // 개체마다 보행 위상을 다르게 둔다(PRD §11.3).
-        v = { sprite, badge, art, prev: e.progress, cur: e.progress, phase: (e.id * 0.618034) % 1, flashUntil: 0, flashAt: -Infinity, hitAt: null, facing: 1,
+        v = { sprite, badge, trait, art, prev: e.progress, cur: e.progress, phase: (e.id * 0.618034) % 1, flashUntil: 0, flashAt: -Infinity, hitAt: null, facing: 1,
           x: 0, y: 0, lift: flyerLift(e, s.tick) * CELL_PX, intro: intro ? { ...intro, start: time } : null };
         this.enemies.set(e.id, v);
       }
@@ -136,6 +148,8 @@ export class EnemyLayer {
       const intro = v.intro ? introFrame(v.intro, time - v.intro.start, reduced) : null;
       if (v.intro && !intro) v.intro = null;
       let hop = 0, scaleK = 1, alphaK = 1;
+      // 땅굴 속이면 흐리게(표적이 안 되는 동안). 엔진 판정과 같은 함수를 쓴다.
+      const under = e.trait === 'burrow' && burrowed(balance, path, e);
       if (intro && v.intro) {
         if (v.intro.from) { const fx = toWorld(v.intro.from.x), fy = toWorld(v.intro.from.y); x = fx + (x - fx) * intro.t; y = fy + (y - fy) * intro.t; }
         x += intro.sway * CELL_PX;
@@ -143,6 +157,7 @@ export class EnemyLayer {
         scaleK = intro.scale;
         alphaK = intro.alpha;
       }
+      if (under) alphaK *= BURROW_ALPHA;
       v.x = x; v.y = y;
       // 걸음은 보간된 진행 거리로 맞춰 감속·맵 길이와 상관없이 발이 미끄러지지 않게 한다(RIG-001).
       // 한 장짜리 종족 그림은 frames 1이라 pose가 디딤 눌림·떠오름으로 걸음을 보여 준다.
@@ -158,14 +173,17 @@ export class EnemyLayer {
       this.tint(v, e, time, hitArt);
       const top = y - v.lift - hop;
       if (v.badge) v.badge.setPosition(x, top - CELL_PX * (e.kind === 'boss' ? 0.86 : 0.5)).setDepth(DEPTH.units + y + 0.6).setAlpha(alphaK);
+      // 특성 배지: 체력 막대(폭 28px) 왼쪽 옆, 막대 높이. 대장에게는 붙지 않는다.
+      if (v.trait) v.trait.setPosition(x - 14 - TRAIT_BADGE_PX / 2 - 2, top - CELL_PX * 0.44 + 2).setDepth(DEPTH.ui).setAlpha(alphaK);
       const status = bossStatus(balance, e, s.tick);
       if (status) this.bossMarks(status, x, y, progress, time, moving);
       if (e.hp < e.maxHp) {
         const w = e.kind === 'boss' ? 44 : 28, bx = x - w / 2, by = top - CELL_PX * (e.kind === 'boss' ? 0.78 : 0.44);
-        this.hpBars.fillStyle(PALETTE.outline, 0.9).fillRect(bx - 1, by - 1, w + 2, 6).fillStyle(0xd94f3d, 1).fillRect(bx, by, Math.max(1, (w * e.hp) / e.maxHp), 4);
+        const k = under ? BURROW_ALPHA : 1;
+        this.hpBars.fillStyle(PALETTE.outline, 0.9 * k).fillRect(bx - 1, by - 1, w + 2, 6).fillStyle(0xd94f3d, k).fillRect(bx, by, Math.max(1, (w * e.hp) / e.maxHp), 4);
       }
     }
-    for (const [id, v] of this.enemies) if (!seen.has(id)) { v.sprite.destroy(); v.badge?.destroy(); this.enemies.delete(id); }
+    for (const [id, v] of this.enemies) if (!seen.has(id)) { v.sprite.destroy(); v.badge?.destroy(); v.trait?.destroy(); this.enemies.delete(id); }
     // 그려지기 전에 사라진 적(같은 틱 처치 등)의 예약은 버린다.
     for (const id of this.pendingIntros.keys()) if (!s.enemies.some(e => e.id === id)) this.pendingIntros.delete(id);
   }

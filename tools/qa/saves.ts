@@ -4,6 +4,7 @@ import type { GameContext } from '../../src/domain/context';
 import type { DomainEvent } from '../../src/domain/events';
 import { advanceTick, applyCommand, createRun, type Command } from '../../src/domain/run';
 import { evolutionChoices } from '../../src/domain/towers';
+import { burrowed } from '../../src/domain/traits';
 import type { RunState } from '../../src/domain/types';
 
 // 화면 점검용 저장본 만들기(tools/qa/scenes.mjs가 vite runnerImport로 읽는다). 판정은 제품 엔진이 하고,
@@ -23,7 +24,7 @@ export interface SceneRequest {
   grade?: number;
   difficulty?: DifficultyId;
   seed?: number;
-  /** 'invasion' 장면의 웨이브(기본 23). */
+  /** 'invasion' 장면의 웨이브(기본 23). 정원 맵은 W16~20 딱정벌레(등껍질)·W21~25 하늘유랑단(하늘 떼)·W31~35 가마(흙 보호막)·W36~40 두더지(땅굴). */
   wave?: number;
 }
 
@@ -325,7 +326,10 @@ export const BUILDERS: Record<string, Builder> = {
     return { state: m.state, runMs: 200, note: `W17 밤 ${m.tick}틱, 적 ${alive(m.peek).length}(${crowdNote(m.peek)})` };
   },
 
-  /** 장면 9: 침입 종족. wave로 21(딱정벌레)·56(딱정벌레+가마)·61(하늘유랑단+두더지)을 고른다. 타워는 고레벨 방어. */
+  /**
+   * 장면 9: 침입 종족과 종족 특성(prd-r4 §7.2 E). 정원 맵에서 wave로 18(딱정벌레 등껍질)·23(하늘유랑단 하늘 떼)·33(가마 흙 보호막)·38(두더지 땅굴)을 고른다.
+   * 타워는 고레벨 방어. 특성 배지가 붙은 적이 많고, 땅굴 구간에 들어간(흐려진) 적이 있는 순간을 고른다.
+   */
   'invasion': req => {
     const wave = req.wave ?? 23;
     const hi: TowerSpec[] = [
@@ -335,9 +339,26 @@ export const BUILDERS: Record<string, Builder> = {
     const { ctx, s } = battleAt(req, 110 + wave, wave, hi, { warm: 0, ownedTowers: OWNED_8 });
     const m = findMoment(ctx, s, 2400, st => {
       const f = new Set(alive(st).filter(e => e.faction !== ctx.balance.campaigns[ctx.map.id]!.primary).map(e => e.faction));
-      return onRoad(st) + f.size * 6 + new Set(alive(st).map(e => e.kind)).size;
+      const traits = alive(st).filter(e => e.trait).length;
+      const under = alive(st).filter(e => burrowed(ctx.balance, ctx.path, e)).length;
+      return onRoad(st) + f.size * 6 + new Set(alive(st).map(e => e.kind)).size + Math.min(traits, 6) + Math.min(under, 2) * 6;
     }, 0);
-    return { state: m.state, runMs: 200, note: `W${wave} 침입 ${m.tick}틱, 적 ${alive(m.peek).length}(${crowdNote(m.peek)})` };
+    const traits = [...new Set(alive(m.peek).flatMap(e => (e.trait ? [e.trait] : [])))].join('/') || '없음';
+    return { state: m.state, runMs: 200, note: `W${wave} 침입 ${m.tick}틱, 특성 ${traits}, 땅속 ${alive(m.peek).filter(e => burrowed(ctx.balance, ctx.path, e)).length}, 적 ${alive(m.peek).length}(${crowdNote(m.peek)})` };
+  },
+
+  /** 장면 11: 원정 보물(prd-r4 §7.2-F). 10웨이브(대장)를 막 지킨 직후라 보물 후보 3개가 기다린다. */
+  'relic-w10': req => {
+    const { ctx, s } = battleAt(req, 113, 10, [
+      { type: 'archer', level: 6 }, { type: 'cannon', level: 6 }, { type: 'frost', level: 5 }, { type: 'mage', level: 6 },
+      { type: 'sling', level: 5 }, { type: 'falcon', level: 5 }, { type: 'trap', level: 4 }, { type: 'alchemist', level: 4 },
+    ], { warm: 0, gold: 260, ownedTowers: OWNED_8 });
+    s.gateMaxHp = s.gateHp = 100;
+    for (let i = 0; i < 9000 && s.phase === 'BATTLE'; i++) advanceTick(ctx, s);
+    if (s.phase === 'BATTLE' || s.phase === 'GAME_OVER') throw new Error(`W10이 끝나지 않았다: ${s.phase}`);
+    s.gateMaxHp = s.gateHp = ctx.difficulty.gateHp;
+    if (!s.relicOffer) throw new Error('보물 후보가 없다');
+    return { state: s, runMs: 120, note: `${s.phase} W${s.wave}, 보물 후보 ${s.relicOffer.offers.join('/')}` };
   },
 
   /** 장면 10: 성문이 곧 무너질 전투. 이어한 뒤 몇 초 안에 패배해 결과 화면으로 간다. */

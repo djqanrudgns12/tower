@@ -1,10 +1,10 @@
-import { TOWER_IDS, type DifficultyId, type FormId, type TowerId } from '../../src/contracts/balance';
+import { TOWER_IDS, type DifficultyId, type FormId, type TowerId, type TraitKind } from '../../src/contracts/balance';
 import type { RunSummary } from './bots';
 import {
   bossDeathShare, bossKill, cellKey, cellStat, firstEvoMedian, gateEarly, gradualDeath, income, indexRuns, lossBy, markdownRows, mean, median, summarize,
   type CellStat, type Dataset, type GateRow, type Income, type Metrics,
 } from './gate';
-import { ROLES, type Role } from './towerEfficiency';
+import { ROLES, TRAITS, type Role } from './towerEfficiency';
 
 // 관문 보고서: 같은 자료로 JSON(reportData)과 읽는 글(fullReport, 마크다운)을 만든다. 숫자는 모두 가상 플레이어 판에서 나온다.
 
@@ -31,7 +31,7 @@ export interface CellReport {
 export interface ReportData {
   cells: CellReport[];
   mono: Array<{ tower: TowerId; n: number; mapAvg: number | null; median: number | null; p10: number | null; p90: number | null; bossKill10: number | null; minutes: number | null }>;
-  matrix: Array<{ tower: TowerId; ratio: Record<Role, number>; per100: Record<Role, number>; attacks: boolean }>;
+  matrix: Array<{ tower: TowerId; ratio: Record<Role, number>; per100: Record<Role, number>; traitRatio: Record<TraitKind, number>; attacks: boolean }>;
   efficiency: Dataset['efficiency'];
   picks: Array<{ tower: TowerId; buildShare: number; damageShare: number; ownedShare: number; offered: number; picked: number; pickRate: number | null }>;
   w20Levels: Record<string, number>;
@@ -83,7 +83,8 @@ export function reportData(data: Dataset): ReportData {
   const matrix = TOWER_IDS.map(tower => {
     const rows = maps.map(m => data.matrix[m]!.find(r => r.tower === tower)).filter((x): x is NonNullable<typeof x> => !!x);
     const avg = (key: 'ratio' | 'per100') => Object.fromEntries(ROLES.map(role => [role, mean(rows.map(r => r[key][role])) ?? 0])) as Record<Role, number>;
-    return { tower, ratio: avg('ratio'), per100: avg('per100'), attacks: rows[0]?.attacks ?? false };
+    const traitRatio = Object.fromEntries(TRAITS.map(t => [t, mean(rows.map(r => r.traitRatio?.[t] ?? 0)) ?? 0])) as Record<TraitKind, number>;
+    return { tower, ratio: avg('ratio'), per100: avg('per100'), traitRatio, attacks: rows[0]?.attacks ?? false };
   });
 
   const opt = data.runs.filter(r => r.bot === 'optimizer' && r.difficulty === 'Normal' && !r.engineError);
@@ -164,10 +165,11 @@ export function fullReport(data: Dataset, m: Metrics, rows: readonly GateRow[], 
   out.push(`\n누적 = 구간 강화비 합 1골드당 늘어난 피해 ÷ 새 Lv1 1골드당 피해(진화 도약 포함). 공격 타워 중앙값: Lv1→6 ${r2(m.effEarly)} · Lv7→9 ${r2(m.effLate)} (관문 판정값)`);
 
   h('9. 상성표 (Lv1 기본형, 100골드당 피해 ÷ 같은 칸 궁수, 4개 맵 평균)');
-  out.push(`열: 적 역할 9종. 종족 특성 4종(딱정벌레 등껍질·가마 흙 보호막·두더지 땅굴·하늘유랑 비행 비율)은 B3 구현 전이라 N/A.`);
-  out.push(table(['타워', ...ROLES, '특성 ×4'], d.matrix.map(x => [x.tower, ...ROLES.map(r => (x.attacks ? r2(x.ratio[r]) : '-')), 'N/A'])));
+  out.push('열: 적 역할 9종 + 종족 특성 4종(R4 B3: shell 딱정벌레 등껍질 · clay 가마 흙 보호막 · burrow 두더지 땅굴 · flyers 하늘유랑단 비행 40% 줄). 특성 줄은 특성을 1웨이브부터 붙여 Lv1 눈금으로 잰다.');
+  out.push(table(['타워', ...ROLES, ...TRAITS.map(t => `특성:${t}`)], d.matrix.map(x => [x.tower, ...ROLES.map(r => (x.attacks ? r2(x.ratio[r]) : '-')), ...TRAITS.map(t => (x.attacks ? r2(x.traitRatio[t]) : '-'))])));
   out.push(`\n궁수 100골드당 피해(HP): ${ROLES.map(r => `${r} ${r2(d.matrix.find(x => x.tower === 'archer')?.per100[r], 0)}`).join(' · ')}`);
   out.push('\n역할마다 1.4배↑ 타워: ' + Object.entries(m.counterStrong).map(([r, v]) => `${r} ${v.count}종(${v.towers.join(',') || '-'})`).join(' · '));
+  out.push('\n특성마다 1.4배↑ 타워: ' + (Object.entries(m.traitStrong).map(([r, v]) => `${r} ${v!.count}종(${v!.towers.join(',') || '-'})`).join(' · ') || '자료 없음'));
   out.push('\n강점·약점(최고·최저 비): ' + m.towerRoles.map(t => `${t.tower} ${t.strongRole}×${r2(t.strong)}/${t.weakRole}×${r2(t.weak)}${t.ok ? '' : '✗'}`).join(' · '));
 
   h('10. 단일 타워 판 (정답률 80%, 보통)');
@@ -186,8 +188,9 @@ export function fullReport(data: Dataset, m: Metrics, rows: readonly GateRow[], 
   out.push(table(['추가 타워', '핵심만 맵 평균', '더한 뒤', '웨이브 차이', '핵심만 성문 피해', '더한 뒤', '변화', '판정(+1.5 또는 −25%)'],
     m.utility.map(u => [u.tower, r2(u.coreWaves, 1), r2(u.withWaves, 1), r2(u.waveDelta, 1), pct(u.coreGate, 1), pct(u.withGate, 1), u.gateDelta === null ? '-' : pct(u.gateDelta), u.pass === null ? 'N/A' : u.pass ? 'PASS' : 'FAIL'])));
 
-  h('14. 아직 측정하지 않는 것 (N/A)');
-  out.push('- 원정 보물 12개 선택률·상승폭: 보물 미구현(B3)\n- 종족 특성 4종 상성표 열: 특성 미구현(B3)\n- 다음 웨이브 특성 아이콘·경고: 화면 미구현');
+  h('14. 원정 보물 (R4 B3)');
+  out.push(`선택률(판정) = 최적화형(보통) 판에서 후보로 나왔을 때 고른 비율(다음 보물 웨이브의 자동 포함). 몫 = 전체 고른 ${m.relics.total}회 가운데 그 보물(참고, 고르게 고르면 8.3%). 상승폭 = 균형형 80%가 첫 보물 웨이브(W10)에 그 보물 하나만 가진 판 − 보물을 받지 않은 판(맵 평균 ${r2(m.relics.base, 1)}).`);
+  out.push(table(['보물', '후보', '고른 횟수', '선택률', '몫', '상승폭(웨이브)'], m.relics.ids.map(id => [id, m.relics.offered[id] ?? 0, m.relics.picks[id] ?? 0, pct(m.relics.offered[id] ? (m.relics.picks[id] ?? 0) / m.relics.offered[id]! : null), pct(m.relics.total ? (m.relics.picks[id] ?? 0) / m.relics.total : null, 1), r2(m.relics.gains[id], 1)])));
 
   if (d.engineErrors.length) {
     h('15. 엔진 수치 한계로 끊긴 판');

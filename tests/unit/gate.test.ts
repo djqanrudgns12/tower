@@ -1,5 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { TOWER_IDS, type TowerId } from '../../src/contracts/balance';
+import { BALANCE } from '../../src/content';
+import { relicIds } from '../../src/domain/relics';
 import { clonePlayer, createPlayer, GREEDY, simulateRun, stepPlayer, withOverrides } from '../../tools/sim/balanceSim';
 import { botPolicy, optimizerBrain, rollout, runBot, toSimOptions, type BotName, type RunSpec, type RunSummary } from '../../tools/sim/bots';
 import {
@@ -7,7 +9,7 @@ import {
   type Metrics,
 } from '../../tools/sim/gate';
 import { planJobs } from '../../tools/sim/gateJobs';
-import { ROLES } from '../../tools/sim/towerEfficiency';
+import { ROLES, TRAITS } from '../../tools/sim/towerEfficiency';
 
 const spec = (bot: BotName, over: Partial<RunSpec> = {}): RunSpec => ({ bot, map: 'garden_u', difficulty: 'Normal', acc: 0.8, seed: 3, maxWaves: 5, tuning: { K: 3, horizon: 1, waveTickBudget: 50_000 }, ...over });
 const stable = (r: RunSummary) => ({ ...r, ms: 0 });
@@ -88,7 +90,7 @@ function run(over: Partial<RunSummary> & { loss?: number[] } = {}): RunSummary {
   return {
     bot: 'balanced', map: 'garden_u', difficulty: 'Normal', acc: 0.8, seed: 1, completedWave: loss.length, endReason: 'DEFEAT', minutes: 20, gateMax: 15,
     waves: loss.map((l, i) => [l, l, 22, 10, i === 4 ? 75 : 0, 0, 0, 1.2, i === loss.length - 1 && rest.endReason !== 'WAVE_CAP' ? 0 : 1, 2, 0, 5]),
-    bosses: [], firstEvoWave: 6, snap20: null, finalTowers: [], builds: {}, upgrades: [], drafts: [], sells: 0, damage: {}, correct: 10, wrong: 2, ms: 1,
+    bosses: [], firstEvoWave: 6, snap20: null, finalTowers: [], builds: {}, upgrades: [], drafts: [], relics: [], sells: 0, damage: {}, correct: 10, wrong: 2, ms: 1,
     ...rest,
   };
 }
@@ -167,17 +169,34 @@ function goodMetrics(): Metrics {
     draftPicks: Object.fromEntries(TOWER_IDS.slice(4).map(t => [t, { offered: 20, picked: 6 }])),
     utility: (['frost', 'wind', 'bell', 'banner', 'alchemist', 'guardian'] as const).map(tower => ({ tower, waveDelta: 2, gateDelta: -0.1, pass: true, n: 32, coreWaves: 16, withWaves: 18, coreGate: 0.1, withGate: 0.09 })),
     utilityWindow: 15,
+    relics: { ids: RELICS, picks: Object.fromEntries(RELICS.map(id => [id, 10])), offered: Object.fromEntries(RELICS.map(id => [id, 30])), total: 120, gains: Object.fromEntries(RELICS.map(id => [id, 1])), base: 15 },
+    traitStrong: Object.fromEntries(TRAITS.map(t => [t, { count: 2, towers: ['mortar', 'roller'] as TowerId[] }])),
   };
 }
+const RELICS = relicIds(BALANCE);
 
 describe('관문 줄 판정', () => {
   const status = (m: Metrics, id: string) => evaluateGate(m).find(r => r.id === id)!.status;
 
-  it('목표를 모두 맞춘 지표는 N/A(보물·특성)를 빼고 전부 PASS다', () => {
+  it('목표를 모두 맞춘 지표는 전부 PASS다(R4 B3부터 보물·특성 줄도 판정한다)', () => {
     const rows = evaluateGate(goodMetrics());
-    expect(rows.filter(r => r.status === 'FAIL').map(r => r.id)).toEqual([]);
-    expect(rows.filter(r => r.status === 'N/A').map(r => r.id).sort()).toEqual(['tower.relics', 'tower.traits']);
-    expect(summarize(rows)).toEqual({ pass: rows.length - 2, fail: 0, na: 2, total: rows.length });
+    expect(rows.filter(r => r.status !== 'PASS').map(r => r.id)).toEqual([]);
+    expect(summarize(rows)).toEqual({ pass: rows.length, fail: 0, na: 0, total: rows.length });
+  });
+
+  it('보물 줄: 선택률 5% 미만이나 상승폭 +3 초과면 미달, 표본이 모자라면 N/A, 특성 줄: 특성마다 1.4배 타워 2종', () => {
+    const m = goodMetrics();
+    const relics = (over: Partial<Metrics['relics']>): Metrics => ({ ...m, relics: { ...m.relics, ...over } });
+    // 선택률 = 후보로 나왔을 때 고른 비율(징집과 같은 정의): 1/30 < 5% 미달, 2/30 통과, 후보 9번 이하는 표본 부족.
+    expect(status(relics({ picks: { ...m.relics.picks, [RELICS[0]!]: 1 } }), 'tower.relics')).toBe('FAIL');
+    expect(status(relics({ picks: { ...m.relics.picks, [RELICS[0]!]: 2 } }), 'tower.relics')).toBe('PASS');
+    expect(status(relics({ picks: { ...m.relics.picks, [RELICS[0]!]: 0 }, offered: { ...m.relics.offered, [RELICS[0]!]: 9 } }), 'tower.relics')).toBe('N/A');
+    expect(status(relics({ gains: { ...m.relics.gains, [RELICS[1]!]: 3.5 } }), 'tower.relics')).toBe('FAIL');
+    expect(status(relics({ gains: { ...m.relics.gains, [RELICS[1]!]: 3 } }), 'tower.relics')).toBe('PASS');
+    expect(status(relics({ offered: {}, gains: {} }), 'tower.relics')).toBe('N/A');
+    expect(status(relics({ gains: { ...m.relics.gains, [RELICS[2]!]: null } }), 'tower.relics')).toBe('N/A');
+    expect(status({ ...m, traitStrong: { ...m.traitStrong, clay: { count: 1, towers: ['hwacha'] } } }, 'tower.traits')).toBe('FAIL');
+    expect(status({ ...m, traitStrong: {} }, 'tower.traits')).toBe('N/A');
   });
 
   it('범위 줄은 경계값을 포함하고, 벗어나면 FAIL이다', () => {

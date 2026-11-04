@@ -55,15 +55,26 @@ export const SCENES = [
       { op: 'wait', ms: 600 }, { op: 'run', ms: 300 }, { op: 'shot', name: 'after-b' },
     ],
   },
+  // 상황 카드의 잘 잡는 적·약한 적 아이콘(prd-r4 §9.1, R4 B3): 덫공방(빠른 적·땅굴 / 나는 적)을 고른 모습.
+  { id: '04b', slug: 'detail-counters', title: '고른 타워 상황 카드의 잘 잡는 적·약한 적', sizes: ['desk', 'cb', 'phone'], save: { builder: 'evolve-w7' }, steps: [{ op: 'resume' }, { op: 'tapCell', x: 7, y: 7 }, { op: 'wait', ms: 200 }, { op: 'shot', name: 'trap' }] },
   { id: '05', slug: 'lv7-field', title: 'Lv7 2차형 20종이 모인 전장', save: { builder: 'lv7-field' }, steps: [{ op: 'resume' }, { op: 'shot', name: 'field' }] },
   { id: '06a', slug: 'boss-w5', title: 'W5 대장(국자대장 방어 태세)', save: { builder: 'boss-w5' }, steps: [{ op: 'resume' }, { op: 'shot', name: 'boss5' }, { op: 'run', ms: 700 }, { op: 'shot', name: 'boss5-later' }] },
   { id: '06b', slug: 'boss-w10', title: 'W10 대장(멧돼지기수 박차 행진)', save: { builder: 'boss-w10' }, steps: [{ op: 'resume' }, { op: 'shot', name: 'boss10' }] },
   { id: '07', slug: 'fx-heavy', title: '비행·분열 적, 장판·덫·굴림체·폭발', save: { builder: 'fx-heavy' }, steps: [{ op: 'resume' }, { op: 'shot', name: 'fx' }] },
   { id: '08a', slug: 'tint-w9', title: 'W9 노을 색조', save: { builder: 'tint-w9' }, steps: [{ op: 'resume' }, { op: 'shot', name: 'dusk' }] },
   { id: '08b', slug: 'tint-w17', title: 'W17 밤 색조', save: { builder: 'tint-w17' }, steps: [{ op: 'resume' }, { op: 'shot', name: 'night' }] },
-  { id: '09a', slug: 'invasion-w23', title: 'W23 침입 종족(딱정벌레 기사단)', save: { builder: 'invasion', args: { wave: 23 } }, steps: [{ op: 'resume' }, { op: 'shot', name: 'beetle' }] },
-  { id: '09b', slug: 'invasion-w56', title: 'W56 침입 종족(딱정벌레 + 가마 토기단)', save: { builder: 'invasion', args: { wave: 56 } }, steps: [{ op: 'resume' }, { op: 'shot', name: 'beetle-kiln' }] },
-  { id: '09c', slug: 'invasion-w61', title: 'W61 침입 종족(하늘유랑단 + 두더지단)', save: { builder: 'invasion', args: { wave: 61 } }, steps: [{ op: 'resume' }, { op: 'shot', name: 'corsair-mole' }] },
+  // 종족 특성(prd-r4 §7.2 E, R4 B3): 침입이 W16으로 당겨져 정원 맵은 W16~20 딱정벌레·W21~25 하늘유랑단·W31~35 가마·W36~40 두더지다.
+  { id: '09a', slug: 'invasion-w23', title: 'W23 침입 종족(하늘유랑단, 하늘 떼)', save: { builder: 'invasion', args: { wave: 23 } }, steps: [{ op: 'resume' }, { op: 'shot', name: 'corsair' }] },
+  { id: '09b', slug: 'invasion-w33', title: 'W33 침입 종족(가마 토기단, 흙 보호막)', save: { builder: 'invasion', args: { wave: 33 } }, steps: [{ op: 'resume' }, { op: 'shot', name: 'kiln' }] },
+  { id: '09c', slug: 'invasion-w38', title: 'W38 침입 종족(두더지단, 땅굴)', save: { builder: 'invasion', args: { wave: 38 } }, steps: [{ op: 'resume' }, { op: 'shot', name: 'mole' }] },
+  { id: '09d', slug: 'invasion-w18', title: 'W18 침입 종족(딱정벌레 기사단, 등껍질)', save: { builder: 'invasion', args: { wave: 18 } }, steps: [{ op: 'resume' }, { op: 'shot', name: 'beetle' }] },
+  {
+    id: '11', slug: 'relic-w10', title: 'W10 대장 뒤 원정 보물 고르기와 고른 뒤 상태 카드', sizes: ['desk', 'cb', 'phone'], save: { builder: 'relic-w10' },
+    steps: [
+      { op: 'resume' }, { op: 'wait', ms: 300 }, { op: 'shot', name: 'cards' },
+      { op: 'click', selector: '[role="dialog"] [data-choice]', nth: 0 }, { op: 'run', ms: 200 }, { op: 'wait', ms: 300 }, { op: 'shot', name: 'picked' },
+    ],
+  },
   { id: '10a', slug: 'pause', title: '일시정지 (1366×650)', sizes: ['cb'], save: { builder: 'pause-w9' }, steps: [{ op: 'resume' }, { op: 'click', role: 'button', name: '일시정지' }, { op: 'wait', ms: 300 }, { op: 'shot', name: 'pause' }] },
   { id: '10b', slug: 'result', title: '결과 화면 (1366×650)', sizes: ['cb'], save: { builder: 'defeat-w9' }, steps: [{ op: 'resume' }, { op: 'runUntil', text: '지킨 웨이브', stepMs: 500, maxMs: 20000 }, { op: 'wait', ms: 500 }, { op: 'shot', name: 'result' }, { op: 'shot', name: 'result-full', fullPage: true }] },
   // R3 P3 맵 미리보기(개발 서버 전용 `?previewMap=<맵 id>`, src/application/mapPreview.ts). 빈 맵 = 첫 준비 화면, 타워 = 타워 8기 + 전투 150틱(적이 길 위에 있다).

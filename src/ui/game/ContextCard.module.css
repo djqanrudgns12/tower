@@ -19,6 +19,18 @@
   color: var(--ink-2);
 }
 
+/* 제목 줄 오른쪽: 이 웨이브 종족 특성 아이콘(prd-r4 §7.2 E). */
+.title { display: flex; align-items: center; gap: var(--s1); }
+
+.traits {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s1);
+  margin-left: auto;
+}
+
+.trait { display: inline-flex; }
+
 .foes {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));

@@ -1,4 +1,4 @@
-import type { Balance, DifficultyConfig, EliteId, EnemyKind } from '../contracts/balance';
+import { REGULAR_KINDS, type Balance, type DifficultyConfig, type EliteId, type EnemyKind, type RegularKind } from '../contracts/balance';
 import { apportion, waveFactions, waveRoleWeights } from './factions';
 import { bpCeil, mulDivCeil, mulDivFloor, msToTicks } from './num';
 import { intBelow, shuffle, type Rng } from './rng';
@@ -103,8 +103,26 @@ export function eliteRateBP(b: Balance, wave: number): number {
 }
 
 /**
+ * 한 종족 몫 n마리를 역할에 나눈다(REGULAR_KINDS 순서의 [역할, 수]). 하늘 떼 특성(prd-r4 §7.2 E, trait flyers)이 붙은 웨이브면 먼저 비행 몫
+ * (flyerShareBP)을 떼고 나머지를 비행이 아닌 역할의 가중치로 나눈다. 그 밖은 역할 가중치 그대로다. 난수를 쓰지 않는다.
+ */
+export function factionRoleCounts(b: Balance, faction: string, wave: number, n: number, roles: ReadonlyArray<{ kind: RegularKind; weight: number }>): Array<[RegularKind, number]> {
+  const t = b.factions[faction]?.trait;
+  if (t?.kind !== 'flyers' || wave < t.fromWave) {
+    const counts = apportion(n, roles.map(r => r.weight));
+    return roles.map((r, j) => [r.kind, counts[j]!]);
+  }
+  const [ground, air] = apportion(n, [10000 - t.flyerShareBP, t.flyerShareBP]) as [number, number];
+  const groundRoles = roles.filter(r => r.kind !== 'flyer');
+  const counts = apportion(ground, groundRoles.map(r => r.weight));
+  const byKind = new Map<RegularKind, number>(groundRoles.map((r, j) => [r.kind, counts[j]!]));
+  byKind.set('flyer', air);
+  return REGULAR_KINDS.filter(k => byKind.has(k)).map(k => [k, byKind.get(k)!]);
+}
+
+/**
  * 정수 배정(최대 나머지) → 섞기 → 정예 지정 → 대장 삽입. 일반 적 수를 종족 비율로 먼저 나누고, 종족마다 같은 역할 가중치로 나눈다
- * (monsters.md §3). 난수 호출 수는 적 수로만 정해진다(종족·역할 구성이 바뀌어도 같은 seed의 호출 수는 같다).
+ * (monsters.md §3, 하늘 떼 특성은 factionRoleCounts). 난수 호출 수는 적 수로만 정해진다(종족·역할 구성이 바뀌어도 같은 seed의 호출 수는 같다).
  */
 export function composeWave(b: Balance, mapId: string, wave: number, rng: Rng): SpawnEntry[] {
   const n = waveCount(b, wave);
@@ -114,8 +132,9 @@ export function composeWave(b: Balance, mapId: string, wave: number, rng: Rng): 
   const byFaction = apportion(regular, plan.shares.map(x => x.shareBP));
   const list: SpawnEntry[] = [];
   plan.shares.forEach((share, i) => {
-    const counts = apportion(byFaction[i]!, roles.map(r => r.weight));
-    roles.forEach((r, j) => { for (let k = 0; k < counts[j]!; k++) list.push({ kind: r.kind, elite: null, faction: share.faction, bossTier: null }); });
+    for (const [kind, count] of factionRoleCounts(b, share.faction, wave, byFaction[i]!, roles)) {
+      for (let k = 0; k < count; k++) list.push({ kind, elite: null, faction: share.faction, bossTier: null });
+    }
   });
   shuffle(rng, list);
   const eliteCount = Math.floor((regular * eliteRateBP(b, wave)) / 10000);

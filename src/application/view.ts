@@ -1,7 +1,7 @@
 import type { BranchId, FormId, TowerId } from '../contracts/balance';
 import type { OptionId } from '../contracts/questions';
 import type { GameContext } from '../domain/context';
-import { correctGoldAt } from '../domain/run';
+import { nextCorrectGold } from '../domain/run';
 import { formBranch } from '../domain/towers';
 import type { PauseReason, Phase, RunState, RunStats, Tower } from '../domain/types';
 import type { ReviewDelta } from '../persistence/reviewNote';
@@ -62,6 +62,10 @@ export interface GameView {
   owned: TowerId[];
   /** 고르기를 기다리는 징집 후보. 없으면 null. */
   draft: { wave: number; offers: TowerId[] } | null;
+  /** 이 판에서 고른 원정 보물(고른 순서, prd-r4 §7.2-F). 화면은 relicBalance(balance, relics)로 값을 읽는다. */
+  relics: string[];
+  /** 고르기를 기다리는 원정 보물 후보. 없으면 null. */
+  relicOffer: { wave: number; offers: string[] } | null;
   stats: RunStats;
   milestoneWave: boolean;
 }
@@ -119,8 +123,8 @@ export function selectView(ctx: GameContext, s: RunState): GameView {
     burningSecondsLeft: secondsLeft(s.burningUntilTick, s.tick),
     battleStreak: s.quiz.battleStreak,
     stakes: {
-      // 정답 골드는 웨이브마다 오른다(R4 B1). 화면에 보이는 값도 이번 웨이브 값이다.
-      correctGold: correctGoldAt(ctx.difficulty, Math.max(1, s.wave)),
+      // 정답 골드는 웨이브마다 오른다(R4 B1). 화면에 보이는 값도 이번 웨이브 값이고, 원정 보물·연속 정답 보너스(R4 B3)까지 엔진 채점과 같은 식이다.
+      correctGold: nextCorrectGold(ctx, s),
       correctPt: ctx.difficulty.correctPt,
       wrongPt: ctx.difficulty.wrongPt,
     },
@@ -129,6 +133,8 @@ export function selectView(ctx: GameContext, s: RunState): GameView {
     towers: s.towers.map(t => ({ id: t.id, type: t.type, slotId: t.slotId, level: t.level, form: t.form, branch: formBranch(t.form), invested: t.invested, undoable: undoable(t, s.tick) })),
     owned: [...s.owned],
     draft: s.draft ? { wave: s.draft.wave, offers: [...s.draft.offers] } : null,
+    relics: [...(s.relics ?? [])],
+    relicOffer: s.relicOffer ? { wave: s.relicOffer.wave, offers: [...s.relicOffer.offers] } : null,
     stats: { ...s.stats },
     milestoneWave: s.wave % ctx.balance.waves.bossEveryWaves === 0,
   };
@@ -142,5 +148,6 @@ export function viewKey(s: RunState): string {
     fb ? `${fb.result}:${secondsLeft(fb.nextEnabledTick, s.tick)}` : '-', secondsLeft(s.burningUntilTick, s.tick),
     s.towers.map(t => `${t.id}.${t.level}.${t.form}.${undoable(t, s.tick) ? 1 : 0}`).join('|'), s.quiz.prepDone, s.quiz.battleStreak, s.stats.ptFromKills,
     s.owned.join(','), s.draft ? `${s.draft.wave}:${s.draft.offers.join(',')}` : '-',
+    (s.relics ?? []).join(','), s.relicOffer ? `${s.relicOffer.wave}:${s.relicOffer.offers.join(',')}` : '-', s.quiz.answerStreak ?? 0,
   ].join('/');
 }

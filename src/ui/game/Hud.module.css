@@ -201,3 +201,35 @@
   font-weight: 800;
   color: var(--amber-base);
 }
+
+/* 원정 보물(prd-r4 §7.2-F): 아이콘 줄(넓은 레일) 또는 보물 상자 + 개수(압축 레일·휴대폰). 줄 높이를 늘리지 않는다(아이콘 18~20px). */
+.relics {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  flex: none;
+}
+
+/* 넓은 레일 셋째 줄: 웨이브 바로 옆에 붙이고 점수는 오른쪽 끝(줄의 남는 자리는 보물 칸 오른쪽이 가져간다). */
+.rail .row .relics { margin-right: auto; }
+
+.relic {
+  display: inline-flex;
+  width: 20px;
+  height: 20px;
+}
+
+.relicMore {
+  font-size: var(--fs-1);
+  font-weight: 800;
+  line-height: 1;
+  color: var(--ink-2);
+  font-variant-numeric: tabular-nums;
+}
+
+.relicLabel {
+  margin-right: var(--s1);
+  font-size: var(--fs-1);
+  font-weight: 700;
+  color: var(--ink-2);
+}

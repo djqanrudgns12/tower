@@ -1,0 +1,34 @@
+/* 잘 잡는 적·약한 적 아이콘 한 줄(prd-r4 §9.1): 작은 이름 + 원화 특성 아이콘. 면·테두리 없이 글자 색으로만 나눈다. */
+.counters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s1) var(--s3);
+  min-width: 0;
+}
+
+.group {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s1);
+  min-width: 0;
+}
+
+.label {
+  font-size: var(--fs-1);
+  font-weight: 700;
+  color: var(--ink-2);
+  white-space: nowrap;
+}
+
+.group[data-tone="strong"] .label { color: var(--green); }
+.group[data-tone="weak"] .label { color: var(--red); }
+
+.portrait { object-fit: contain; flex: none; }
+
+.word {
+  font-size: var(--fs-1);
+  font-weight: 800;
+  color: var(--ink);
+  white-space: nowrap;
+}

@@ -6,8 +6,9 @@ import { hazardExpiredEvent, trapSpot } from './hazards';
 import { add, bpFloor, ceilDiv, isqrt, msToTicks, safe, TICK_HZ } from './num';
 import {
   attackIntervalTicks, attacks, auraDamageBonusBP, auraEliteBossBonusBP, auraRangeBonusMilli, auraReaches, auraSpeedBonusBP, effectsFor,
-  isAuraGiver, matchupBP, towerStats, type TowerStats,
+  isAuraGiver, matchupBP, matchupOf, towerStats, type TowerStats,
 } from './towers';
+import { burrowed, clayReductionMilli, enemyTrait } from './traits';
 import type {
   Enemy, FieldHazard, HazardStrike, HitFx, Projectile, RollerHazard, RunState, SpawnEntry, SplashHit, Tower, TrapHazard, ZoneHazard, ZoneSpec,
 } from './types';
@@ -71,6 +72,9 @@ function addEnemy(ctx: GameContext, s: RunState, entry: SpawnEntry, hpBase: numb
   const def = bossDef(b, { kind: entry.kind, faction, bossTier });
   const hp = enemyMaxHp(b, ctx.difficulty, hpBase, entry.kind, entry.elite, def?.hpScaleBP ?? 10000, difficultyHpBP(ctx.difficulty, s.wave));
   const res = enemyResists(b, entry.kind, entry.elite);
+  // 종족 특성(prd-r4 §7.2 E): 침입 종족의 일반 적. 등껍질은 물리 저항을 더하되 정예와 합쳐 상한을 지킨다.
+  const trait = enemyTrait(b, faction, entry.kind, s.wave);
+  if (trait?.kind === 'shell') res.physical = Math.min(b.elites.physicalResistCapBP, res.physical + trait.physicalResistAddBP);
   const skill = def?.skill;
   const enemy: Enemy = {
     id: s.seq.enemy++, kind: entry.kind, faction, bossTier, derived, flying: b.enemies[entry.kind].flying ?? false, groundedUntilTick: 0,
@@ -83,13 +87,23 @@ function addEnemy(ctx: GameContext, s: RunState, entry: SpawnEntry, hpBase: numb
     } : null,
     alive: true,
   };
+  if (trait) {
+    enemy.trait = trait.kind;
+    if (trait.kind === 'clay') enemy.clayMilli = clayReductionMilli(b, trait, s.wave);
+  }
   s.enemies.push(enemy);
   ev.push({ type: 'spawn', enemyId: enemy.id, kind: enemy.kind, faction: enemy.faction, art: enemyArtId(b, enemy) });
   return enemy;
 }
 
-/** 이 공격이 이 적을 노리고 맞힐 수 있는가. 대공이 안 되는 공격은 떠 있는 비행 적을 지나친다. */
+/** 이 공격이 이 적을 맞힐 수 있는가. 대공이 안 되는 공격은 떠 있는 비행 적을 지나친다. 바닥을 치는 범위 공격(착탄·장판·덫·굴림·폭발)이 쓴다. */
 const reachable = (canHitFlyer: boolean, e: Enemy, tick: number) => e.alive && (canHitFlyer || !airborne(e, tick));
+
+/**
+ * 이 공격이 이 적을 겨냥할 수 있는가: reachable이고 땅속(땅굴 특성, prd-r4 §7.2 E)이 아니다. 표적 고르기·단일 투사체 적중·즉발 겨냥 공격
+ * (연쇄·직선·부채꼴·고리·둘레 일격)·관통·도탄이 쓴다.
+ */
+const aimable = (ctx: GameContext, canHitFlyer: boolean, e: Enemy, tick: number) => reachable(canHitFlyer, e, tick) && !(e.trait === 'burrow' && burrowed(ctx.balance, ctx.path, e));
 
 const at = (ctx: GameContext, e: Enemy) => positionAt(ctx.path, e.progress);
 
@@ -102,7 +116,7 @@ function candidates(ctx: GameContext, s: RunState, x: number, y: number, stats: 
   const strongest = stats.fx.targetPriority === 'strongest';
   return s.enemies
     .filter(e => {
-      if (!reachable(stats.canHitFlyer, e, s.tick)) return false;
+      if (!aimable(ctx, stats.canHitFlyer, e, s.tick)) return false;
       const p = at(ctx, e);
       const d = dist2(p.x, p.y, x, y);
       return d <= r2 && d >= in2;
@@ -207,7 +221,7 @@ function fire(ctx: GameContext, s: RunState, tower: Tower, ev: DomainEvent[]) {
   if (cycle?.ring) {
     const r2 = cycle.ring.radiusMilli * cycle.ring.radiusMilli;
     const ring = s.enemies
-      .filter(e => reachable(stats.canHitFlyer, e, t) && (p => dist2(p.x, p.y, tower.x, tower.y) <= r2)(at(ctx, e)))
+      .filter(e => aimable(ctx, stats.canHitFlyer, e, t) && (p => dist2(p.x, p.y, tower.x, tower.y) <= r2)(at(ctx, e)))
       .sort((a, c) => c.progress - a.progress || a.id - c.id)
       .slice(0, cycle.ring.maxTargets);
     const elite = stats.eliteBossDamageBP + auraEliteBossBonusBP(b, s.towers, tower, burningNow(s));
@@ -317,7 +331,7 @@ function pierceTargets(ctx: GameContext, s: RunState, tower: Tower, first: Enemy
   const d = { x: f.x - tower.x, y: f.y - tower.y };
   const firstDot = d.x * d.x + d.y * d.y;
   return s.enemies
-    .filter(e => reachable(stats.canHitFlyer, e, s.tick) && e !== first)
+    .filter(e => aimable(ctx, stats.canHitFlyer, e, s.tick) && e !== first)
     .map(e => ({ e, dot: inLine(tower, d, at(ctx, e), stats.range, stats.pierceWidth) }))
     .filter((c): c is { e: Enemy; dot: number } => c.dot !== null && c.dot > firstDot)
     .sort((a, b) => a.dot - b.dot || a.e.id - b.e.id)
@@ -357,7 +371,7 @@ function lineTargets(ctx: GameContext, s: RunState, tower: Tower, first: Enemy, 
   const f = at(ctx, first);
   const d = { x: f.x - tower.x, y: f.y - tower.y };
   const others = s.enemies
-    .filter(e => reachable(stats.canHitFlyer, e, s.tick) && e !== first && inLine(tower, d, at(ctx, e), stats.range, stats.lineWidth) !== null)
+    .filter(e => aimable(ctx, stats.canHitFlyer, e, s.tick) && e !== first && inLine(tower, d, at(ctx, e), stats.range, stats.lineWidth) !== null)
     .sort((a, b) => b.progress - a.progress || a.id - b.id);
   return [first, ...others].slice(0, stats.maxTargets);
 }
@@ -365,7 +379,7 @@ function lineTargets(ctx: GameContext, s: RunState, tower: Tower, first: Enemy, 
 /** 수호기사 B 수호 일격: 첫 대상 중심 반경 안을 거리↑ → 진행도↓ → 생성순↑로 최대 수(PRD §20.3). */
 function aroundTargets(ctx: GameContext, s: RunState, first: Enemy, stats: TowerStats): Enemy[] {
   const c = at(ctx, first);
-  return nearby(ctx, s, c, stats.splashRadius, stats.maxTargets, e => reachable(stats.canHitFlyer, e, s.tick));
+  return nearby(ctx, s, c, stats.splashRadius, stats.maxTargets, e => aimable(ctx, stats.canHitFlyer, e, s.tick));
 }
 
 /** 점 c 둘레 반경 안을 거리↑ → 진행도↓ → 생성순↑로 최대 수. */
@@ -384,7 +398,7 @@ function nearby(ctx: GameContext, s: RunState, c: { x: number; y: number }, radi
 function ringTargets(ctx: GameContext, s: RunState, tower: Tower, stats: TowerStats): Enemy[] {
   const r2 = stats.range * stats.range;
   return s.enemies
-    .filter(e => reachable(stats.canHitFlyer, e, s.tick) && (p => dist2(p.x, p.y, tower.x, tower.y) <= r2)(at(ctx, e)))
+    .filter(e => aimable(ctx, stats.canHitFlyer, e, s.tick) && (p => dist2(p.x, p.y, tower.x, tower.y) <= r2)(at(ctx, e)))
     .sort((a, b) => b.progress - a.progress || a.id - b.id)
     .slice(0, stats.maxTargets);
 }
@@ -400,7 +414,7 @@ function chainTargets(ctx: GameContext, s: RunState, first: Enemy, stats: TowerS
   const chosen = [first];
   while (chosen.length < stats.maxTargets) {
     const last = at(ctx, chosen[chosen.length - 1]!);
-    const next = nearby(ctx, s, last, stats.chainRadius, 1, e => reachable(stats.canHitFlyer, e, s.tick) && !chosen.includes(e))[0];
+    const next = nearby(ctx, s, last, stats.chainRadius, 1, e => aimable(ctx, stats.canHitFlyer, e, s.tick) && !chosen.includes(e))[0];
     if (!next) break;
     chosen.push(next);
   }
@@ -418,7 +432,7 @@ function coneTargets(ctx: GameContext, s: RunState, tower: Tower, first: Enemy, 
   const r2 = stats.range * stats.range;
   return s.enemies
     .filter(e => {
-      if (!reachable(stats.canHitFlyer, e, s.tick)) return false;
+      if (!aimable(ctx, stats.canHitFlyer, e, s.tick)) return false;
       const p = at(ctx, e);
       const dx = p.x - tower.x, dy = p.y - tower.y;
       const d2 = dx * dx + dy * dy;
@@ -475,8 +489,8 @@ function resolve(ctx: GameContext, s: RunState, p: Projectile, ev: DomainEvent[]
   // 약병(§4-7 zone): 착탄 피해 없이 장판만 남긴다. 첫 타격은 이 틱의 장판 단계에서 한다.
   if (p.zone) { placeZones(ctx, s, p, p.zone, ev); return; }
   if (p.targetId !== null) {
-    // 단일 대상: 도착 전에 처치·누출되면 빗나감, 다른 적으로 바꾸지 않는다(PRD §20.3). 대공이 안 되면 다시 떠오른 비행 적도 빗나간다.
-    const target = s.enemies.find(e => e.id === p.targetId && reachable(p.canHitFlyer, e, s.tick));
+    // 단일 대상: 도착 전에 처치·누출되면 빗나감, 다른 적으로 바꾸지 않는다(PRD §20.3). 대공이 안 되면 다시 떠오른 비행 적도, 땅속으로 들어간 적도 빗나간다.
+    const target = s.enemies.find(e => e.id === p.targetId && aimable(ctx, p.canHitFlyer, e, s.tick));
     if (!target) return;
     const point = at(ctx, target);
     applyHit(ctx, s, p, target, ev);
@@ -492,7 +506,7 @@ function resolve(ctx: GameContext, s: RunState, p: Projectile, ev: DomainEvent[]
 /** 도탄(§4-3): 맞힌 자리 둘레의 아직 안 맞은 적에게 감쇠한 피해로 새 투사체를 보낸다. */
 function ricochet(ctx: GameContext, s: RunState, p: Projectile, from: { x: number; y: number }, ev: DomainEvent[]) {
   const r = p.ricochet!;
-  const next = nearby(ctx, s, from, r.radius, 1, e => reachable(p.canHitFlyer, e, s.tick) && !r.hit.includes(e.id))[0];
+  const next = nearby(ctx, s, from, r.radius, 1, e => aimable(ctx, p.canHitFlyer, e, s.tick) && !r.hit.includes(e.id))[0];
   if (!next) return;
   const tower = s.towers.find(t => t.id === p.towerId);
   if (!tower) return;
@@ -520,6 +534,18 @@ function pull(ctx: GameContext, s: RunState, rule: NonNullable<Projectile['pull'
     if (step < 0) knockback(ctx, e, -step);
     else if (step > 0) { e.progress = Math.min(ctx.path.length - 1, e.progress + step); e.moveRem = 0; }
   }
+}
+
+/**
+ * 흙 보호막(trait clay, prd-r4 §7.2 E): 저항 뒤 피해에서 타격마다 막는 양을 뺀다(최소 1 milli-HP). strongVs에 clay를 적은 타워(화차·투석·노포)는
+ * counterKeepBP만큼만 막힌다. 보호막이 없는 적이면 그대로다.
+ */
+function clayCut(b: GameContext['balance'], p: Strike, e: Enemy, damage: number): number {
+  if (!e.clayMilli || damage <= 0) return damage;
+  const t = b.factions[e.faction]?.trait;
+  const counter = t?.kind === 'clay' && matchupOf(b, p.towerType, p.towerForm ?? 'base').strongVs.includes('clay');
+  const cut = counter ? bpFloor(e.clayMilli, t.counterKeepBP, 'trait.clay') : e.clayMilli;
+  return Math.max(1, damage - cut);
 }
 
 /** 저항 계산 뒤 양의 피해는 최소 1 milli-HP(PRD §20.2). */
@@ -638,7 +664,7 @@ function applyHit(ctx: GameContext, s: RunState, p: Strike, e: Enemy, ev: Domain
     const vuln = Math.min(b.statusCaps.vulnMaxBP, strongest(e.vulns, s.tick));
     if (vuln > 0) damage = bpFloor(damage, 10000 + vuln, 'damage.vuln');
     const resist = effectiveResistBP(e, p.damageType, p.physicalResistIgnoreBP, fx.magicResistIgnoreBP, s.tick, b.statusCaps.shredMaxBP, b.statusCaps.bossResistMaxBP);
-    let dealt = Math.min(e.hp, mitigated(damage, resist));
+    let dealt = Math.min(e.hp, clayCut(b, p, e, mitigated(damage, resist)));
     // 겹방패(monsters.md §2.0): 한 번 맞을 때마다 최대 체력의 capBP까지만 받고 한 겹 벗긴다.
     if (e.boss && e.boss.wardLeft > 0) {
       const skill = bossDef(b, e)?.skill;

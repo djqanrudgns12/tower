@@ -43,4 +43,8 @@ export type DomainEvent =
   /** 징집 후보가 나왔다(웨이브 완료 직후). */
   | { type: 'draftOffered'; wave: number; offers: TowerId[] }
   /** 징집으로 장착함에 타워가 들어왔다. auto는 고르지 않은 채 다음 징집이 와서 첫 후보로 정해진 경우다. */
-  | { type: 'draftPicked'; tower: TowerId; auto: boolean };
+  | { type: 'draftPicked'; tower: TowerId; auto: boolean }
+  /** 원정 보물 후보가 나왔다(대장 웨이브 완료 직후, R4 B3). offers는 balance relics.items 키다. */
+  | { type: 'relicOffered'; wave: number; offers: string[] }
+  /** 원정 보물을 가졌다. auto는 고르지 않은 채 다음 보물 웨이브가 와서 첫 후보로 정해진 경우다. gold는 고르는 순간 받은 골드(없으면 0). */
+  | { type: 'relicPicked'; relic: string; auto: boolean; gold: number };

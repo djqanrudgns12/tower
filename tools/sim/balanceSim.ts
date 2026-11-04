@@ -256,10 +256,11 @@ export function value(ctx: GameContext, judge: Judge, type: TowerId, level: numb
 // 가상 플레이어(B0): 한 틱씩 전진하는 명시적 상태 기계. 상태가 모두 데이터라서 복제해 미리 돌려 볼 수 있다(최적화형 롤아웃).
 // ───────────────────────────────────────────────────────────────────────────────────────────
 
-/** 거래 두뇌: 거래 단계·전투 중 돈을 쓸 때(spend)와 징집 카드가 열렸을 때(draft) 부른다. */
+/** 거래 두뇌: 거래 단계·전투 중 돈을 쓸 때(spend), 징집 카드가 열렸을 때(draft), 원정 보물 창이 열렸을 때(relic, 없으면 relicGreedy). */
 export interface Brain {
   spend(p: Player): void;
   draft(p: Player): void;
+  relic?(p: Player): void;
 }
 
 export interface WaveRec {
@@ -292,6 +293,9 @@ export interface Telemetry {
   snap20: Array<{ type: TowerId; level: number; form: FormId }> | null;
   /** 징집 후보가 열린 기록. */
   offers: Array<{ wave: number; offers: TowerId[] }>;
+  /** 원정 보물 후보가 열린 기록과 가진 보물(R4 B3). auto는 고르지 않아 다음 보물 웨이브에 첫 후보로 정해진 것. */
+  relicOffers: Array<{ wave: number; offers: string[] }>;
+  relicPicks: Array<{ relic: string; auto: boolean; wave: number }>;
 }
 
 export interface Player {
@@ -345,7 +349,7 @@ export function createPlayer(opt: SimOptions): Player {
     encId: -1, answerAt: 0, startAt: -1, spendAt: 0,
     phaseTicks: { PREP_QUIZ: 0, BUILD: 0, BATTLE: 0, WAVE_WRAPUP: 0, GAME_OVER: 0 },
     firstEvoWave: null, bosses: [],
-    tel: opt.telemetry ? { waves: [], actions: [], damage: {}, snap20: null, offers: [] } : null,
+    tel: opt.telemetry ? { waves: [], actions: [], damage: {}, snap20: null, offers: [], relicOffers: [], relicPicks: [] } : null,
   };
 }
 
@@ -461,7 +465,22 @@ export function draftGreedy(p: Player, fit?: (type: TowerId) => number) {
   runCmd(p, { type: 'draftPick', tower });
 }
 
-export const GREEDY: Brain = { spend: p => spendGreedy(p), draft: p => draftGreedy(p) };
+/**
+ * 균형형·상성형·초보형의 원정 보물 고르기(R4 B3): 정해 둔 순서에서 가장 앞선 후보(초보형처럼 징집을 무작위로 고르는 습관이면 무작위).
+ * 순서는 "곧바로 힘이 되는 것 → 경제 → 특정 타워에 기대는 것"이다. 최적화형은 미리 돌려 고른다(bots.ts).
+ */
+export const RELIC_PRIORITY: readonly string[] = [
+  'hero_blade', 'big_blast', 'wise_book', 'arrow_range', 'evolve_stone', 'sky_net', 'ember_charm', 'frost_bead', 'lucky_pouch', 'quick_spring', 'tall_pole', 'trade_seal',
+];
+export function relicGreedy(p: Player) {
+  const offer = p.s.relicOffer;
+  if (!offer) return;
+  const rank = (id: string) => { const i = RELIC_PRIORITY.indexOf(id); return i < 0 ? RELIC_PRIORITY.length : i; };
+  const relic = p.draftPolicy === 'random' ? offer.offers[intBelow(p.rng, offer.offers.length)]! : offer.offers.reduce((best, id) => (rank(id) < rank(best) ? id : best));
+  runCmd(p, { type: 'relicPick', relic });
+}
+
+export const GREEDY: Brain = { spend: p => spendGreedy(p), draft: p => draftGreedy(p), relic: p => relicGreedy(p) };
 
 const WAVE_FIELDS = (wave: number, tick: number): WaveRec => ({ wave, gateLoss: 0, leaks: 0, answerGold: 0, killGold: 0, bossGold: 0, milestoneGold: 0, auraGold: 0, startTick: tick, endTick: null, completed: false, maxLevel: 0, lv7: 0, towers: 0 });
 
@@ -489,6 +508,8 @@ function record(p: Player, events: DomainEvent[], burners: Map<number, TowerId> 
       case 'leak': { const r = rec(s.wave); r.gateLoss += e.damage; r.leaks++; break; }
       case 'auraGold': rec(s.wave).auraGold += e.gold; break;
       case 'draftOffered': tel.offers.push({ wave: e.wave, offers: [...e.offers] }); break;
+      case 'relicOffered': tel.relicOffers.push({ wave: e.wave, offers: [...e.offers] }); break;
+      case 'relicPicked': tel.relicPicks.push({ relic: e.relic, auto: e.auto, wave: s.wave }); if (e.gold) rec(s.wave).milestoneGold += e.gold; break;
       case 'hit': tel.damage[e.towerType] = (tel.damage[e.towerType] ?? 0) + e.damage; break;
       case 'burn': { const owner = burners?.get(e.enemyId); if (owner) tel.damage[owner] = (tel.damage[owner] ?? 0) + e.damage; break; }
       case 'waveComplete': {
@@ -525,6 +546,7 @@ export function stepPlayer(p: Player): DomainEvent[] {
     if (s.tick >= p.startAt) { runCmd(p, { type: 'startBattle' }); p.startAt = -1; p.spendAt = s.tick + p.attention; }
   } else if (s.phase === 'BATTLE' && s.tick >= p.spendAt) { p.brain.spend(p); p.spendAt = s.tick + p.attention; }
   if (s.draft) p.brain.draft(p);
+  if (s.relicOffer) (p.brain.relic ?? relicGreedy)(p);
   p.phaseTicks[s.phase]++;
   const burners = p.tel && s.phase === 'BATTLE' ? burnOwners(s) : null;
   const events = advanceTick(ctx, s);

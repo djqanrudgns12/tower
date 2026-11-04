@@ -9,6 +9,7 @@ import {
   bestOption, clonePlayer, createPlayer, draftGreedy, finishPlayer, freeSlots, greedyOptions, playerDone, runCmd, spendGreedy, stepPlayer, STRATEGIES, value,
   GREEDY, type Brain, type Option, type Player, type SimOptions, type Strategy,
 } from './balanceSim';
+import { ownedRelics } from '../../src/domain/relics';
 import { measure, ROLE_STREAMS, ROLES, STREAMS, referenceSlot, type Role } from './towerEfficiency';
 
 // B0 가상 플레이어(PRD §7.3): 초보형·균형형·상성형·최적화형·단일 타워·조합. 판정은 제품 engine이 하고 여기서는 돈 쓰는 습관만 흉내 낸다.
@@ -19,7 +20,11 @@ export const NUMERIC_LIMIT = 'NumericLimitError';
 /** 핵심 4종 조합(유틸 시너지 시험의 기준 조합): 궁수·석궁·포탑·마법. */
 export const CORE4: readonly TowerId[] = ['archer', 'crossbow', 'cannon', 'mage'];
 
-export type BotName = 'novice' | 'balanced' | 'focused' | 'counter' | 'optimizer' | 'core4' | `mono-${TowerId}` | `core4+${TowerId}`;
+/**
+ * norelic·relic-<id>는 원정 보물 상승폭 측정용 균형형이다(R4 B3): norelic은 보물을 하나도 갖지 않고, relic-<id>는 첫 보물 웨이브(W10)에
+ * 그 보물 하나만 갖는다(후보에 없으면 후보 하나를 그 보물로 바꿔 넣는 측정 장치, 다음 보물은 받지 않는다).
+ */
+export type BotName = 'novice' | 'balanced' | 'focused' | 'counter' | 'optimizer' | 'core4' | 'norelic' | `relic-${string}` | `mono-${TowerId}` | `core4+${TowerId}`;
 
 export interface BotTuning {
   /** 최적화형: 결정마다 미리 돌려 볼 후보 수 상한. */
@@ -41,7 +46,7 @@ const ENGINE_BALANCED: Strategy = STRATEGIES.balanced10;
 export function botPolicy(bot: BotName): Strategy {
   if (bot === 'novice') return STRATEGIES.novice;
   if (bot === 'focused') return STRATEGIES.focused;
-  if (bot === 'balanced' || bot === 'optimizer') return ENGINE_BALANCED;
+  if (bot === 'balanced' || bot === 'optimizer' || bot === 'norelic' || bot.startsWith('relic-')) return ENGINE_BALANCED;
   if (bot === 'counter') return { ...ENGINE_BALANCED, pattern: [...TOWER_IDS], pick: 'free' };
   if (bot === 'core4') return { ...ENGINE_BALANCED, pattern: [...CORE4], fixedOwned: [...CORE4], useOwned: false };
   if (bot.startsWith('core4+')) {
@@ -258,12 +263,33 @@ export function optimizerBrain(tuning: BotTuning): Brain {
       const chosen = pick(p, cands, tuning.horizon + 1);
       for (const c of chosen.cmds) runCmd(p, c);
     },
+    relic(p) {
+      const offer = p.s.relicOffer;
+      if (!offer) return;
+      const cands: Cand[] = offer.offers.map(relic => ({ cmds: [{ type: 'relicPick', relic } as Command], cost: 0, label: `relic:${relic}` }));
+      const chosen = pick(p, cands, tuning.horizon + 1);
+      for (const c of chosen.cmds) runCmd(p, c);
+    },
   };
 }
+
+/** 보물 측정 장치: 보물을 받지 않는다(후보를 닫는다). */
+const declineRelic = (p: Player) => { p.s.relicOffer = null; };
+
+/** 보물 측정 장치: 아직 없으면 그 보물만 갖고(후보에 없으면 첫 후보를 그 보물로 바꾼다), 이미 있으면 다음 보물은 받지 않는다. */
+const forceRelic = (id: string) => (p: Player) => {
+  const offer = p.s.relicOffer;
+  if (!offer) return;
+  if (ownedRelics(p.s).includes(id)) { declineRelic(p); return; }
+  if (!offer.offers.includes(id)) p.s.relicOffer = { ...offer, offers: [id, ...offer.offers.slice(1)] };
+  runCmd(p, { type: 'relicPick', relic: id });
+};
 
 export function botBrain(bot: BotName, tuning: BotTuning = FAST_TUNING): Brain {
   if (bot === 'counter') return COUNTER;
   if (bot === 'optimizer') return optimizerBrain(tuning);
+  if (bot === 'norelic') return { ...GREEDY, relic: declineRelic };
+  if (bot.startsWith('relic-')) return { ...GREEDY, relic: forceRelic(bot.slice(6)) };
   return GREEDY;
 }
 
@@ -303,6 +329,8 @@ export interface RunSummary {
   builds: Partial<Record<TowerId, number>>;
   upgrades: Array<[TowerId, number, FormId | null]>;
   drafts: Array<{ wave: number; offers: TowerId[]; picked: TowerId | null }>;
+  /** 원정 보물 후보와 고른 것(R4 B3). 고르지 않아 다음 보물 웨이브에 자동으로 정해졌으면 auto. 측정 장치 봇(norelic·relic-*)은 비어 있을 수 있다. */
+  relics: Array<{ wave: number; offers: string[]; picked: string | null; auto: boolean }>;
   sells: number;
   damage: Partial<Record<TowerId, number>>;
   correct: number;
@@ -347,13 +375,18 @@ export function runBot(spec: RunSpec): RunSummary {
   }
   const picks = tel.actions.filter(a => a.type === 'draft');
   const drafts = tel.offers.map((o, i) => ({ wave: o.wave, offers: o.offers, picked: picks[i]?.tower ?? null }));
+  // 후보 하나마다 고르기 하나(직접 또는 다음 보물 웨이브의 자동)가 차례로 온다. 측정 장치 봇은 고르지 않은 후보가 있어 비어 있다.
+  const relics = tel.relicOffers.map((o, i) => {
+    const pick = tel.relicPicks[i];
+    return { wave: o.wave, offers: o.offers, picked: pick && o.offers.includes(pick.relic) ? pick.relic : null, auto: pick?.auto ?? false };
+  });
   return {
     bot: spec.bot, map: spec.map, difficulty: spec.difficulty, acc: spec.acc, seed: spec.seed,
     completedWave: r.completedWave, endReason: r.endReason, minutes: r.minutes, gateMax: p.s.gateMaxHp,
     waves, bosses: r.bosses.map(b => [b.wave, b.killed ? 1 : 0]), firstEvoWave: r.firstEvoWave,
     snap20: tel.snap20 ? tel.snap20.map(t => [t.type, t.level, t.form]) : null,
     finalTowers: p.s.towers.map(t => [t.type, t.level, t.form]),
-    builds, upgrades, drafts, sells, damage: tel.damage, correct: r.correct, wrong: r.wrong, ms: Math.round(performance.now() - t0),
+    builds, upgrades, drafts, relics, sells, damage: tel.damage, correct: r.correct, wrong: r.wrong, ms: Math.round(performance.now() - t0),
     ...(engineError ? { engineError } : {}),
   };
 }

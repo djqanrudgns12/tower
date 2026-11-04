@@ -1,4 +1,4 @@
-import type { BossTier, DifficultyId, EliteId, EnemyKind, FormId, TowerId } from '../contracts/balance';
+import type { BossTier, DifficultyId, EliteId, EnemyKind, FormId, TowerId, TraitKind } from '../contracts/balance';
 import type { OptionId } from '../contracts/questions';
 
 // 저장·재개되는 전체 상태. 순수 JSON(숫자·문자열·배열·객체)만 쓴다(PRD §10.1, §14).
@@ -94,6 +94,11 @@ export interface QuizState {
   reviewSenses: ReviewSense[];
   /** 뜻(senseKey)별로 이번 판에서 복습 단계로 낸 횟수. 한 뜻은 판당 최대 2번(prd-r4 §6.1). */
   reviewUsed: Record<string, number>;
+  /**
+   * 준비·전투·마무리를 가리지 않고 이어진 정답 수(연속 정답 보너스, balance run.answerStreakBonus가 있을 때만 센다). 오답·'모르겠어요'·패배는 0.
+   * 없으면(옛 상태·보너스 없음) 0으로 본다.
+   */
+  answerStreak?: number;
 }
 
 export interface SlowEffect { source: number; bp: number; untilTick: number }
@@ -140,6 +145,13 @@ export interface Enemy {
   /** 대장 기믹 진행(monsters.md §2.0). 기믹이 없는 적은 null. */
   boss: BossState | null;
   alive: boolean;
+  /**
+   * 종족 특성(prd-r4 §7.2 E, R4 B3): 침입 종족의 일반 적에게 생성 때 붙는다(domain/traits.ts). 없으면 특성 없음(옛 상태 포함).
+   * 상성 표지(shell·clay·burrow)를 더하고, 땅굴은 경로 구간에서 표적이 안 된다.
+   */
+  trait?: TraitKind;
+  /** 흙 보호막(trait clay): 타격마다 막는 피해(milli-HP, 생성 웨이브의 기준 체력 × reductionBP). */
+  clayMilli?: number;
 }
 
 /** 대장 기믹 진행: 등장 틱, 방어 태세(발동 여부·저항·끝 틱), 남은 겹방패, 회복 횟수·다음 회복 틱, 지난 호위 호출 단계. */
@@ -312,6 +324,9 @@ export interface BattleState {
 /** 징집 후보(towers.md §0-2). 고르기 전까지 남고, 다음 징집 웨이브가 오면 첫 후보로 정해진다. */
 export interface DraftOffer { wave: number; offers: TowerId[] }
 
+/** 원정 보물 후보(prd-r4 §7.2-F): 보물 id(balance relics.items 키). 고르기 전까지 남고, 다음 보물 웨이브가 오면 첫 후보로 정해진다. */
+export interface RelicOffer { wave: number; offers: string[] }
+
 export interface RunStats {
   correct: number;
   wrong: number;
@@ -355,6 +370,10 @@ export interface RunState {
   owned: TowerId[];
   /** 고르기를 기다리는 징집 후보. */
   draft: DraftOffer | null;
+  /** 이 판에서 고른 원정 보물(고른 순서, R4 B3). 없으면(옛 상태) 없음. 효과는 domain/relics.ts relicBalance가 밸런스 사본에 적용한다. */
+  relics?: string[];
+  /** 고르기를 기다리는 원정 보물 후보. 없으면 null·생략. */
+  relicOffer?: RelicOffer | null;
   towers: Tower[];
   enemies: Enemy[];
   projectiles: Projectile[];

@@ -1,8 +1,8 @@
 {
   "schemaVersion": "0.4",
-  "balanceVersion": "0.9.1-renewal-candidate",
+  "balanceVersion": "0.10.0-renewal-candidate",
   "status": "candidate-not-balance-approved",
-  "basedOn": "0.4.2-candidate + 리뉴얼 R2 성장·진화(docs/renewal/progression.md): Lv4·Lv7 진화, 무제한 레벨, 형태 7개, 설치 직후 취소 + R2 2단계 종족×역할 편성(docs/renewal/catalog/monsters.md §0·§3) + R4 B1 곡선·경제(docs/renewal/prd-r4-ui-learning.md §7.2 A·B·C, docs/balance/r4-b1.md): 초반 완충·총 HP 유지 개체 HP 이전·정답 골드 웨이브 성장·불꽃 2단·역할 등장 당김·징집 W3/6/9/12와 대응 보장·침입 W16 + R4 B2 타워 역할·상성(prd-r4 §7.2 D, docs/balance/r4-b2.md): 타워·형태별 strongVs/weakVs와 상성 배율(×1.3/×0.7), 강화 피해 배율 상향(강화 효율 0.88/0.78), 기준 HP 44,000 + 초반 완충 W1~13, 타워 수치 조정 + R4 B2.5: 불꽃 중 처치 골드 ×2, 비행 누출 피해 2",
+  "basedOn": "0.4.2-candidate + 리뉴얼 R2 성장·진화(docs/renewal/progression.md): Lv4·Lv7 진화, 무제한 레벨, 형태 7개, 설치 직후 취소 + R2 2단계 종족×역할 편성(docs/renewal/catalog/monsters.md §0·§3) + R4 B1 곡선·경제(docs/renewal/prd-r4-ui-learning.md §7.2 A·B·C, docs/balance/r4-b1.md): 초반 완충·총 HP 유지 개체 HP 이전·정답 골드 웨이브 성장·불꽃 2단·역할 등장 당김·징집 W3/6/9/12와 대응 보장·침입 W16 + R4 B2 타워 역할·상성(prd-r4 §7.2 D, docs/balance/r4-b2.md): 타워·형태별 strongVs/weakVs와 상성 배율(×1.3/×0.7), 강화 피해 배율 상향(강화 효율 0.88/0.78), 기준 HP 44,000 + 초반 완충 W1~13, 타워 수치 조정 + R4 B2.5: 불꽃 중 처치 골드 ×2, 비행 누출 피해 2 + R4 B3 후반·한 판 더(prd-r4 §7.2 E·F, docs/balance/r4-b3.md): 침입 종족 특성 4종(등껍질·흙 보호막·땅굴·하늘 떼)과 원정 보물 12개, 연속 정답 보너스(+3/연속, 상한 30)와 정답 골드 밑값 −3",
   "userConfirmed": { "date": "2026-10-28", "fields": ["difficulties.*.skipPt", "difficulties.*.label", "waves.hpGrowthPercent"], "rule": "확정 값은 사용자 결정 없이 바꾸지 않는다. 나머지 값은 후보다." },
   "units": {
     "tickHz": 30,
@@ -17,13 +17,15 @@
     "correctFeedbackMs": 1000,
     "wrongFeedbackMinMs": 4000,
     "sellRatioBP": 6000,
-    "undoBuildMs": 3000
+    "undoBuildMs": 3000,
+    "answerStreakBonus": { "goldPerStreak": 3, "maxGold": 30 }
   },
+  "answerStreakBonusNote": "연속 정답 보너스(R4 B3 실험 채택, docs/balance/r4-b3.md): 준비·전투·마무리 문항을 가리지 않고 이어진 정답 n개째(이번 정답 포함)에 정답 골드 + min(30, 3 × (n − 1)). 오답·'모르겠어요'는 0골드 그대로이고 연속을 끊는다. 같은 측정에서 정답 1회 골드의 밑값을 난이도마다 −3(20/22/25/28 → 17/19/22/25) 낮춰 균형형 80%를 14~17 안에 두었다.",
   "difficulties": {
-    "Easy":   { "label": "쉬움",      "gateHp": 20, "enemyHpBP": 6000,  "correctPt": 10, "wrongPt": -5,  "skipPt": 0, "correctGold": 20, "correctGoldPerWaveBP": 7500, "killGold": { "regular": 1, "elite": 3,  "boss": 60 },  "killPt": { "regular": 1, "elite": 3,  "boss": 10 }, "waveKillPtCap": 20, "milestoneSurvivalGold": 30 },
-    "Normal": { "label": "보통",      "gateHp": 15, "enemyHpBP": 10000, "correctPt": 15, "wrongPt": -8,  "skipPt": 0, "correctGold": 22, "correctGoldPerWaveBP": 7500, "killGold": { "regular": 1, "elite": 4,  "boss": 75 },  "killPt": { "regular": 2, "elite": 6,  "boss": 20 }, "waveKillPtCap": 30, "milestoneSurvivalGold": 40 },
-    "Hard":   { "label": "어려움",    "gateHp": 10, "enemyHpBP": 19000, "enemyHpRamp": { "fromBP": 10000, "waves": 5 }, "correctPt": 20, "wrongPt": -10, "skipPt": 0, "correctGold": 25, "correctGoldPerWaveBP": 7500, "killGold": { "regular": 2, "elite": 6,  "boss": 90 },  "killPt": { "regular": 3, "elite": 9,  "boss": 30 }, "waveKillPtCap": 40, "milestoneSurvivalGold": 50 },
-    "Crazy":  { "label": "아주 어려움", "gateHp": 7,  "enemyHpBP": 36000, "enemyHpRamp": { "fromBP": 10000, "waves": 5 }, "correctPt": 30, "wrongPt": -15, "skipPt": 0, "correctGold": 28, "correctGoldPerWaveBP": 7500, "killGold": { "regular": 3, "elite": 8,  "boss": 105 }, "killPt": { "regular": 4, "elite": 12, "boss": 40 }, "waveKillPtCap": 60, "milestoneSurvivalGold": 60 }
+    "Easy":   { "label": "쉬움",      "gateHp": 20, "enemyHpBP": 6000,  "correctPt": 10, "wrongPt": -5,  "skipPt": 0, "correctGold": 17, "correctGoldPerWaveBP": 7500, "killGold": { "regular": 1, "elite": 3,  "boss": 60 },  "killPt": { "regular": 1, "elite": 3,  "boss": 10 }, "waveKillPtCap": 20, "milestoneSurvivalGold": 30 },
+    "Normal": { "label": "보통",      "gateHp": 15, "enemyHpBP": 10000, "correctPt": 15, "wrongPt": -8,  "skipPt": 0, "correctGold": 19, "correctGoldPerWaveBP": 7500, "killGold": { "regular": 1, "elite": 4,  "boss": 75 },  "killPt": { "regular": 2, "elite": 6,  "boss": 20 }, "waveKillPtCap": 30, "milestoneSurvivalGold": 40 },
+    "Hard":   { "label": "어려움",    "gateHp": 10, "enemyHpBP": 19000, "enemyHpRamp": { "fromBP": 10000, "waves": 5 }, "correctPt": 20, "wrongPt": -10, "skipPt": 0, "correctGold": 22, "correctGoldPerWaveBP": 7500, "killGold": { "regular": 2, "elite": 6,  "boss": 90 },  "killPt": { "regular": 3, "elite": 9,  "boss": 30 }, "waveKillPtCap": 40, "milestoneSurvivalGold": 50 },
+    "Crazy":  { "label": "아주 어려움", "gateHp": 7,  "enemyHpBP": 36000, "enemyHpRamp": { "fromBP": 10000, "waves": 5 }, "correctPt": 30, "wrongPt": -15, "skipPt": 0, "correctGold": 25, "correctGoldPerWaveBP": 7500, "killGold": { "regular": 3, "elite": 8,  "boss": 105 }, "killPt": { "regular": 4, "elite": 12, "boss": 40 }, "waveKillPtCap": 60, "milestoneSurvivalGold": 60 }
   },
   "enemies": {
     "walker": { "hpBP": 10000, "speedBP": 10000, "physicalResistBP": 0,    "magicResistBP": 0 },
@@ -95,15 +97,15 @@
     "spear":     { "label": "창병초소", "strongVs": ["runner", "brute"], "weakVs": ["flyer", "boss"], "cost": 70,  "damage": 7,  "damageType": "physical", "intervalMs": 480,  "rangeMilli": 1300, "instant": true, "maxTargets": 1, "canHitFlyer": false },
     "guardian":  { "label": "수호기사", "strongVs": ["boss", "elite"], "weakVs": ["swarm", "flyer"], "cost": 180, "damage": 30, "damageType": "physical", "intervalMs": 1400, "rangeMilli": 1600, "instant": true, "maxTargets": 1, "maxOnField": 1, "canHitFlyer": false, "eliteBossDamageBP": 15000 },
     "banner":    { "label": "깃발초소", "strongVs": [], "weakVs": [], "cost": 100, "damage": 0,  "damageType": "none",     "intervalMs": 0,    "rangeMilli": 2000, "auraDamageBPByLevel": [1800, 2000] },
-    "sling":      { "label": "투석초소", "strongVs": ["brute"], "weakVs": ["flyer"], "cost": 65, "damage": 8, "damageType": "physical", "intervalMs": 1100, "rangeMilli": 2300, "projectileSpeedMilliPerSec": 11000, "maxTargets": 1, "canHitFlyer": true, "ricochet": { "count": 1, "radiusMilli": 1200, "falloffBP": 7000 } },
-    "ballista":   { "label": "거대노포", "strongVs": ["boss", "flyer"], "weakVs": ["runner"], "cost": 125, "damage": 35, "damageType": "physical", "intervalMs": 2400, "rangeMilli": 3800, "instant": true, "lineWidthMilli": 350, "maxTargets": 4, "chainFalloffBP": 8500, "canHitFlyer": true },
+    "sling":      { "label": "투석초소", "strongVs": ["brute", "clay"], "weakVs": ["flyer"], "cost": 65, "damage": 8, "damageType": "physical", "intervalMs": 1100, "rangeMilli": 2300, "projectileSpeedMilliPerSec": 11000, "maxTargets": 1, "canHitFlyer": true, "ricochet": { "count": 1, "radiusMilli": 1200, "falloffBP": 7000 } },
+    "ballista":   { "label": "거대노포", "strongVs": ["boss", "flyer", "clay"], "weakVs": ["runner"], "cost": 125, "damage": 35, "damageType": "physical", "intervalMs": 2400, "rangeMilli": 3800, "instant": true, "lineWidthMilli": 350, "maxTargets": 4, "chainFalloffBP": 8500, "canHitFlyer": true },
     "falcon":     { "label": "매사냥대", "strongVs": ["flyer", "runner"], "weakVs": ["shell"], "cost": 100, "damage": 16, "damageType": "physical", "intervalMs": 1200, "rangeMilli": 3400, "projectileSpeedMilliPerSec": 18000, "maxTargets": 1, "canHitFlyer": true, "preferFlyer": true, "flyerDamageBP": 10500 },
-    "mortar":     { "label": "박격포대", "strongVs": ["swarm", "splitter"], "weakVs": ["runner", "flyer"], "cost": 135, "damage": 26, "damageType": "physical", "intervalMs": 2800, "rangeMilli": 4600, "minRangeMilli": 1600, "projectileSpeedMilliPerSec": 7500, "maxTargets": 5, "splashRadiusMilli": 950, "canHitFlyer": false },
+    "mortar":     { "label": "박격포대", "strongVs": ["swarm", "burrow", "splitter"], "weakVs": ["runner", "flyer"], "cost": 135, "damage": 26, "damageType": "physical", "intervalMs": 2800, "rangeMilli": 4600, "minRangeMilli": 1600, "projectileSpeedMilliPerSec": 7500, "maxTargets": 5, "splashRadiusMilli": 950, "canHitFlyer": false },
     "hwacha":     { "label": "화차대", "strongVs": ["clay", "swarm"], "weakVs": ["shell"], "cost": 130, "damage": 10, "damageType": "physical", "intervalMs": 2500, "rangeMilli": 3100, "projectileSpeedMilliPerSec": 14000, "maxTargets": 2, "splashRadiusMilli": 350, "burst": { "count": 4, "gapTicks": 3 }, "canHitFlyer": true },
     "roller":     { "label": "통나무굴림대", "strongVs": ["swarm", "splitter", "wisp"], "weakVs": ["flyer", "brute"], "cost": 95, "damage": 15, "damageType": "physical", "intervalMs": 2200, "rangeMilli": 1800, "instant": true, "roller": { "distanceMilli": 2600, "speedMilliPerSec": 9000, "widthMilli": 600 }, "maxTargets": 5, "canHitFlyer": false },
-    "alchemist":  { "label": "약병투척소", "strongVs": ["swarm", "brute"], "weakVs": ["runner", "flyer"], "cost": 105, "damage": 5, "damageType": "magic", "intervalMs": 2200, "rangeMilli": 2300, "projectileSpeedMilliPerSec": 9500, "maxTargets": 5, "splashRadiusMilli": 750, "zone": { "durationMs": 2000, "periodMs": 500 }, "canHitFlyer": false },
+    "alchemist":  { "label": "약병투척소", "strongVs": ["swarm", "burrow", "brute"], "weakVs": ["runner", "flyer"], "cost": 105, "damage": 5, "damageType": "magic", "intervalMs": 2200, "rangeMilli": 2300, "projectileSpeedMilliPerSec": 9500, "maxTargets": 5, "splashRadiusMilli": 750, "zone": { "durationMs": 2000, "periodMs": 500 }, "canHitFlyer": false },
     "wind":       { "label": "바람개비탑", "strongVs": ["flyer"], "weakVs": ["boss"], "cost": 110, "damage": 7, "damageType": "magic", "intervalMs": 1600, "rangeMilli": 2200, "instant": true, "maxTargets": 3, "coneDegrees": 90, "knockbackMilli": 220, "knockbackFlyerMilli": 350, "knockbackBossMilli": 0, "bossSlowBP": 2000, "bossSlowMs": 1000, "canHitFlyer": true },
-    "trap":       { "label": "덫공방초소", "strongVs": ["runner", "brute"], "weakVs": ["flyer"], "cost": 85, "damage": 16, "damageType": "physical", "intervalMs": 2200, "rangeMilli": 2000, "trap": { "maxActive": 3, "detectMilli": 350, "carryOver": 2 }, "maxTargets": 1, "slowBP": 3500, "slowMs": 1500, "canHitFlyer": false },
+    "trap":       { "label": "덫공방초소", "strongVs": ["runner", "burrow", "brute"], "weakVs": ["flyer"], "cost": 85, "damage": 16, "damageType": "physical", "intervalMs": 2200, "rangeMilli": 2000, "trap": { "maxActive": 3, "detectMilli": 350, "carryOver": 2 }, "maxTargets": 1, "slowBP": 3500, "slowMs": 1500, "canHitFlyer": false },
     "bell":       { "label": "종각초소", "strongVs": ["boss", "elite"], "weakVs": ["wisp"], "cost": 125, "damage": 9, "damageType": "magic", "intervalMs": 2000, "rangeMilli": 2100, "instant": true, "ring": true, "maxTargets": 5, "vulnBP": 2000, "vulnMs": 2000, "canHitFlyer": true }
   },
   "forms": {
@@ -307,6 +309,7 @@
         "boss20": { "skill": { "kind": "call_escort", "thresholdsBP": [6600, 3300], "escorts": ["brute", "shell"], "spreadMilli": 250 } }
       } },
     "brass_mole": { "label": "태엽 등불 두더지단", "artPrefix": "mole",
+      "trait": { "kind": "burrow", "fromWave": 16, "atBP": 4500, "durationMs": 1500 },
       "names": { "walker": "안전모 곡괭이병", "runner": "외바퀴 광차질주꾼", "brute": "증기해머 큰두더지", "shell": "황동철판 두더지병", "wisp": "수정등불 측량사", "swarm": "태엽나사 꼬마단", "boss5": "굴착반장 코코아", "boss10": "광석수레 기관장", "boss15": "수정동굴 등불장인", "boss20": "광산총대장 황동드릴왕" },
       "bosses": {
         "boss5":  { "skill": { "kind": "iron_stance", "triggerBP": 5000, "durationMs": 3000, "physicalBP": 4000 } },
@@ -315,6 +318,7 @@
         "boss20": { "skill": { "kind": "call_escort", "thresholdsBP": [6000, 3000], "escorts": ["shell", "runner"], "spreadMilli": 250 } }
       } },
     "honey_beetle": { "label": "호박꿀 딱정벌레 기사단", "artPrefix": "beetle",
+      "trait": { "kind": "shell", "fromWave": 16, "physicalResistAddBP": 2000 },
       "names": { "walker": "도토리창 풍뎅이병", "runner": "꽃잎스케이트 정찰병", "brute": "호박통나무 사슴벌레장", "shell": "황금수지 중갑충", "wisp": "민들레홀씨 악사", "swarm": "꿀방울 아기풍뎅이", "boss5": "꿀단지 파수대장", "boss10": "황금뿔 돌격기사", "boss15": "꽃가루 나팔수장", "boss20": "들판총대장 호박갑충왕" },
       "bosses": {
         "boss5":  { "skill": { "kind": "snack_mend", "periodMs": 3000, "healBP": 650, "maxTimes": 4 }, "hpScaleBP": 8500 },
@@ -323,6 +327,7 @@
         "boss20": { "skill": { "kind": "iron_stance", "triggerBP": 6000, "durationMs": 4000, "physicalBP": 3000, "magicBP": 3000 } }
       } },
     "kiln_pottery": { "label": "가마터 토기 정령단", "artPrefix": "kiln",
+      "trait": { "kind": "clay", "fromWave": 16, "reductionBP": 250, "counterKeepBP": 5000 },
       "names": { "walker": "옹기단지 걸음병", "runner": "찻잔바퀴 구름꾼", "brute": "장독대 큰항아리", "shell": "청자유약 기와병", "wisp": "가마불씨 호롱병", "swarm": "종지그릇 꼬마떼", "boss5": "뚝배기 불씨대장", "boss10": "청자주전자 다관장", "boss15": "가마터 불무지장인", "boss20": "도기총대장 대장독왕" },
       "bosses": {
         "boss5":  { "skill": { "kind": "iron_stance", "triggerBP": 5500, "durationMs": 3000, "magicBP": 4000 } },
@@ -331,6 +336,7 @@
         "boss20": { "skill": { "kind": "call_escort", "thresholdsBP": [6600, 3300], "escorts": ["swarm", "swarm", "swarm"], "spreadMilli": 250 } }
       } },
     "breeze_corsair": { "label": "솔바람 하늘유랑단", "artPrefix": "corsair",
+      "trait": { "kind": "flyers", "fromWave": 16, "flyerShareBP": 4000 },
       "names": { "walker": "솔방울창 다람쥐병", "runner": "바람개비 활공꾼", "brute": "돛대어깨 큰오소리", "shell": "참나무통 갑판병", "wisp": "구름나침반 항해사", "swarm": "단풍잎 꼬마다람쥐", "boss5": "망원경 갑판장 솔솔", "boss10": "바람돛 조타수장", "boss15": "구름닻 보급선장", "boss20": "능선총대장 큰바람선장" },
       "bosses": {
         "boss5":  { "skill": { "kind": "burst_march", "periodMs": 3000, "durationMs": 1000, "speedBP": 12500 } },
@@ -339,12 +345,31 @@
         "boss20": { "skill": { "kind": "ward_layers", "layers": 5, "capBP": 1000 }, "hpScaleBP": 8500 }
       } }
   },
-  "factionsNote": "종족 팩(monsters.md §2). bosses는 대장 단계별 기믹 프리미티브(§2.0) 하나와 체력 보정(생존형 겹방패·회복은 8500부터, §0-4)이다. 규칙(수치·능력)은 enemies의 역할이 정하고 종족은 이름·그림만 바꾼다. 그림 id는 `<artPrefix>.<역할|boss5~boss20>`, artAlias가 있으면 그 그림을 쓴다. 비행·분열 개체 이름은 그림 생산 직전에 names에 더한다(§0-7). 확장 4종족(mole·beetle·kiln·corsair)은 21웨이브 침입부터 나오며 아직 그림이 없다.",
+  "factionsNote": "종족 팩(monsters.md §2). bosses는 대장 단계별 기믹 프리미티브(§2.0) 하나와 체력 보정(생존형 겹방패·회복은 8500부터, §0-4)이다. 규칙(수치·능력)은 enemies의 역할이 정하고 종족은 이름·그림만 바꾼다. 그림 id는 `<artPrefix>.<역할|boss5~boss20>`, artAlias가 있으면 그 그림을 쓴다. 비행·분열 개체 이름은 그림 생산 직전에 names에 더한다(§0-7). 확장 4종족(mole·beetle·kiln·corsair)은 16웨이브 침입부터 나온다(R4 B1에서 21 → 16). trait는 종족 특성(prd-r4 §7.2 E, R4 B3)이다: 침입 종족의 일반 적(대장 제외)에게 fromWave부터 붙는다. 딱정벌레 = 등껍질(물리 저항 +20%, 상한 50%), 가마 = 흙 보호막(타격마다 그 웨이브 기준 체력의 2.5%를 막음, strongVs clay 타워는 절반만), 두더지 = 땅굴(경로 45% 지점부터 기본 속도 1.5초 구간에서 표적이 안 됨, 바닥 공격은 맞음), 하늘유랑단 = 하늘 떼(일반 적의 40%가 비행). 표지(shell·clay·burrow)는 타워 strongVs가 읽는다(docs/balance/r4-b3.md).",
   "campaigns": {
     "garden_u":  { "primary": "acorn_goblin",  "roleOrder": ["walker", "runner", "brute", "shell", "swarm", "wisp"], "invasionOrder": ["honey_beetle", "breeze_corsair", "river_rafter", "kiln_pottery", "brass_mole", "moon_dokkaebi", "hearth_yeti"] },
     "river_z":   { "primary": "river_rafter",  "roleOrder": ["walker", "runner", "swarm", "shell", "brute", "wisp"], "invasionOrder": ["breeze_corsair", "kiln_pottery", "moon_dokkaebi", "brass_mole", "honey_beetle", "hearth_yeti", "acorn_goblin"] },
     "courtyard": { "primary": "moon_dokkaebi", "roleOrder": ["walker", "brute", "shell", "runner", "wisp", "swarm"], "invasionOrder": ["kiln_pottery", "brass_mole", "hearth_yeti", "honey_beetle", "breeze_corsair", "acorn_goblin", "river_rafter"] },
     "snow_step": { "primary": "hearth_yeti",   "roleOrder": ["walker", "brute", "runner", "wisp", "shell", "swarm"], "invasionOrder": ["brass_mole", "honey_beetle", "acorn_goblin", "breeze_corsair", "kiln_pottery", "river_rafter", "moon_dokkaebi"] }
   },
+  "relics": {
+    "fromWave": 10,
+    "offerCount": 3,
+    "items": {
+      "arrow_range":  { "label": "독수리 깃털", "summary": "화살 타워 사거리 +15%", "icon": "tower.archer", "effect": { "towers": ["archer", "crossbow", "ballista", "hwacha"], "rangeBP": 11500 } },
+      "sky_net":      { "label": "하늘 그물", "summary": "나는 적에게 피해 +25%", "icon": "trait.flying", "effect": { "flyerDamageBP": 12500 } },
+      "big_blast":    { "label": "천둥 화약", "summary": "여럿을 치는 공격 피해 +15%", "icon": "tower.cannon", "effect": { "towers": ["cannon", "flame", "lightning", "mortar", "roller", "alchemist"], "damageBP": 11500 } },
+      "frost_bead":   { "label": "서리 구슬", "summary": "느리게 하는 시간 +40%", "icon": "tower.frost", "effect": { "slowMsBP": 14000 } },
+      "hero_blade":   { "label": "용사의 칼", "summary": "대장·정예에게 피해 +20%", "icon": "tower.guardian", "effect": { "eliteBossDamageBP": 12000 } },
+      "ember_charm":  { "label": "불씨 부적", "summary": "불꽃 시간 +3초", "icon": "flame", "effect": { "burningAddMs": 3000 } },
+      "wise_book":    { "label": "지혜의 책", "summary": "정답 골드 +3", "icon": "note", "effect": { "correctGoldAdd": 3 } },
+      "lucky_pouch":  { "label": "행운 주머니", "summary": "적을 잡으면 골드 +1", "icon": "coin", "effect": { "killGoldAdd": 1 } },
+      "trade_seal":   { "label": "상인 도장", "summary": "골드 +100, 판매 환급 80%", "icon": "chest", "effect": { "sellRatioBP": 8000, "goldNow": 100 } },
+      "evolve_stone": { "label": "진화의 돌", "summary": "진화 비용 −20%", "icon": "star", "effect": { "evolveCostBP": 8000 } },
+      "quick_spring": { "label": "태엽 용수철", "summary": "덫·약병·통나무 재사용 −25%", "icon": "tower.trap", "effect": { "towers": ["trap", "alchemist", "roller"], "intervalBP": 7500 } },
+      "tall_pole":    { "label": "큰 깃대", "summary": "깃발 힘이 닿는 거리 +1칸", "icon": "tower.banner", "effect": { "towers": ["banner"], "auraRangeAddMilli": 1000 } }
+    }
+  },
+  "relicsNote": "원정 보물(prd-r4 §7.2-F, R4 B3): W10부터 대장 웨이브(10·15·20…)를 지키면 갖지 않은 보물 3개 가운데 하나를 고른다. 그 판에서만 효과가 있고(전투 밖 영구 성장·가챠가 아니다), 고른 보물로 만든 밸런스 사본(domain/relics.ts relicBalance)을 엔진과 화면이 함께 읽는다. 후보는 seed·웨이브로 정한 보물 전용 난수로 뽑는다(출제·편성·징집 난수 그대로). 고르지 않고 다음 보물 웨이브가 오면 첫 후보로 정해진다.",
   "formsNote": "1차형(A·B)은 R2 1단계에서 맞춘 값이다. 2차형(A1~B2)은 docs/renewal/catalog/towers.md §2 값을 옮겼다(R2 2단계 (d)). 1단계에서 1차형 값을 바꾼 곳(궁수 B 사거리, 포탑 A·B, 깃발 A·B 표)은 카탈로그의 1차→2차 비율을 지켜 2차 값을 맞췄다. 2차형은 부모 1차형 값을 물려받고 적은 필드만 덮어쓴다. 장판·덫·굴림(fieldHazards, towers.md §4-7)은 (f)에서 정식 구현했다: 약병 = 착탄 지점 장판(zone, 착탄 틱부터 15틱마다), 덫 = 사거리 안 성문 쪽 빈자리에 바닥 덫(trap, 웨이브 끝에 2개 이월), 통나무 = 첫 표적 진행도에서 입구 쪽으로 굴러가는 굴림체(roller), 덫 B1·노포 B2 = 지연 폭발(delayedBlast)."
 }

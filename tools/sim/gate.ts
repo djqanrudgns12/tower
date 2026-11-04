@@ -1,7 +1,9 @@
-import { TOWER_IDS, type DifficultyId, type FormId, type TowerId } from '../../src/contracts/balance';
+import { TOWER_IDS, type DifficultyId, type FormId, type TowerId, type TraitKind } from '../../src/contracts/balance';
+import { BALANCE } from '../../src/content';
+import { relicIds } from '../../src/domain/relics';
 import type { RunSummary } from './bots';
 import type { EfficiencyRow } from './gateJobs';
-import { ROLES, UTILITY_TOWERS, type MatrixRow, type Role } from './towerEfficiency';
+import { ROLES, TRAITS, UTILITY_TOWERS, type MatrixRow, type Role } from './towerEfficiency';
 
 // 관문(PRD §7.1) 집계와 판정. 실행(워커)과 분리된 순수 함수라서 시험이 가짜 지표로 줄별 판정을 확인할 수 있다.
 // 가상 플레이어 기준이며 학생 실측이 아니다. "4개 맵 평균"은 맵마다 중앙값을 구해 평균한 값(mapAvg)이다.
@@ -178,6 +180,13 @@ export interface Metrics {
   utility: UtilityRow[];
   /** 유틸 시너지의 성문 피해를 재는 웨이브 창(1~이 값). */
   utilityWindow: number;
+  /**
+   * 원정 보물(R4 B3): 최적화형(보통) 판에서 보물마다 고른 횟수와 전체 고른 횟수(자동 포함), 보물마다 상승폭
+   * (균형형 80%가 첫 보물 웨이브에 그 보물 하나만 가진 판 − 보물을 하나도 갖지 않은 판, 맵 평균) 과 기준값.
+   */
+  relics: { ids: string[]; picks: Record<string, number>; offered: Record<string, number>; total: number; gains: Record<string, number | null>; base: number | null };
+  /** 종족 특성 4열(R4 B3): 특성마다 궁수 대비 1.4배↑ 공격 타워(상성표, 맵 평균). 자료가 없으면 빈 표. */
+  traitStrong: Partial<Record<TraitKind, { count: number; towers: TowerId[] }>>;
 }
 
 export const BRANCH_MIN_N = 10;
@@ -189,6 +198,13 @@ export const MATRIX_EXEMPT: readonly TowerId[] = ['trap'];
 export const UTILITY_WAVE_GAIN = 1.5;
 export const UTILITY_GATE_DROP = -0.25;
 export const STRONG_COUNTER = 1.4;
+/**
+ * 원정 보물 판정(PRD §7.1): 보물마다 선택률 ≥ 5%, 상승폭 ≤ +3웨이브. 선택률은 징집과 같은 정의(측정 정의 보정 B2)로 후보로 나왔을 때 고른 비율이다
+ * (12개 중 3개만 나오므로 전체 몫은 후보에 나온 횟수에 묶인다). 후보 횟수가 RELIC_MIN_OFFERS보다 적은 보물은 표본 부족으로 뺀다.
+ */
+export const RELIC_MIN_SHARE = 0.05;
+export const RELIC_MAX_GAIN = 3;
+export const RELIC_MIN_OFFERS = 10;
 export const STRONG_ROLE = 1.35;
 export const WEAK_ROLE = 0.8;
 
@@ -269,6 +285,26 @@ export function computeMetrics(data: Dataset, seeds: number): Metrics {
     return { tower, waveDelta, gateDelta, pass, n: withRuns.length, coreWaves: coreWave, withWaves: w, coreGate, withGate: g };
   });
 
+  // 원정 보물: 선택률은 최적화형(미리 돌려 고름), 상승폭은 균형형 80%의 보물 하나 판 − 보물 없는 판.
+  const ids = relicIds(BALANCE);
+  const relicPicks: Record<string, number> = Object.fromEntries(ids.map(id => [id, 0]));
+  const relicOffered: Record<string, number> = Object.fromEntries(ids.map(id => [id, 0]));
+  let relicTotal = 0;
+  for (const r of optRuns) for (const x of r.relics ?? []) {
+    for (const id of x.offers) relicOffered[id] = (relicOffered[id] ?? 0) + 1;
+    if (x.picked) { relicPicks[x.picked] = (relicPicks[x.picked] ?? 0) + 1; relicTotal++; }
+  }
+  const relicBase = wavesOf(N('norelic', 0.8));
+  const relicGains = Object.fromEntries(ids.map(id => { const w = wavesOf(N(`relic-${id}`, 0.8)); return [id, w !== null && relicBase !== null ? w - relicBase : null]; }));
+
+  // 종족 특성 4열: 상성표의 특성 줄에서 궁수 대비 1.4배↑ 공격 타워(역할 줄과 같은 대상).
+  const traitRatio = (tower: TowerId, trait: TraitKind) => mean(maps.map(m => data.matrix[m]!.find(r => r.tower === tower)?.traitRatio?.[trait]).filter((x): x is number => x !== undefined)) ?? 0;
+  const hasTraits = maps.length > 0 && data.matrix[maps[0]!]!.some(r => r.traitRatio);
+  const traitStrong: Metrics['traitStrong'] = hasTraits ? Object.fromEntries(TRAITS.map(trait => {
+    const towers = attackers.filter(t => traitRatio(t, trait) >= STRONG_COUNTER);
+    return [trait, { count: towers.length, towers }];
+  })) : {};
+
   const bal80Stat = cellStat(bal80);
   const mapMedians = Object.values(bal80Stat.byMap);
   return {
@@ -294,6 +330,8 @@ export function computeMetrics(data: Dataset, seeds: number): Metrics {
     counterStrong, towerRoles,
     pickShare, pickRuns: optRuns.length, draftPicks,
     utility, utilityWindow: gateWindow,
+    relics: { ids, picks: relicPicks, offered: relicOffered, total: relicTotal, gains: relicGains, base: relicBase },
+    traitStrong,
   };
 }
 
@@ -346,7 +384,7 @@ export const ROWS: RowDef[] = [
   { id: 'diff.crazyW1', group: '난이도 간격', label: '아주 어려움 초보형 60% W1 패배', target: '≤ 15%', check: m => atMost(m.w1Loss.Crazy ?? null, 0.15, x => pct(x, 1)) },
   // 성장·진화
   { id: 'grow.firstEvo', group: '성장·진화', label: '첫 진화(Lv4) 웨이브(균형형 80% 중앙값)', target: '≤ W7', check: m => atMost(m.firstEvo, 7, x => `W${f1(x)}`) },
-  { id: 'grow.w20', group: '성장·진화', label: 'W20 판 Lv7 이상 타워 수(주력 2~3기)', target: '2 ~ 3기', check: m => (m.w20.n < 3 ? na(`표본 ${m.w20.n}판 (${m.w20.source})`) : range(m.w20.lv7, 2, 3, x => `${f1(x)}기 (n=${m.w20.n}, ${m.w20.source})`)) },
+  { id: 'grow.w20', group: '성장·진화', label: 'W20 판 Lv7 이상 타워 수(진화가 보이는가)', target: '≥ 2기', check: m => (m.w20.n < 3 ? na(`표본 ${m.w20.n}판 (${m.w20.source})`) : atLeast(m.w20.lv7, 2, x => `${f1(x)}기 (n=${m.w20.n}, ${m.w20.source})`)) },
   { id: 'grow.effEarly', group: '성장·진화', label: '강화 1골드당 DPS / 새 설치, Lv1→6', target: '0.8 ~ 1.1', check: m => range(m.effEarly, 0.8, 1.1, x => String(round(x, 2))) },
   { id: 'grow.effLate', group: '성장·진화', label: '강화 1골드당 DPS / 새 설치, Lv7→9', target: '0.6 ~ 0.9', check: m => range(m.effLate, 0.6, 0.9, x => String(round(x, 2))) },
   {
@@ -405,8 +443,33 @@ export const ROWS: RowDef[] = [
       return { status: bad.length === 0 && rated.length === m.utility.length ? 'PASS' : 'FAIL', measured: `통과 ${rated.length - bad.length}/${m.utility.length}${bad.length ? ` (미달: ${bad.map(u => u.tower).join(',')})` : ''}`, value: rated.length - bad.length };
     },
   },
-  { id: 'tower.relics', group: '타워 균형', label: '원정 보물 12개 선택률 ≥ 5%, 평균 +3웨이브 이하', target: '≥ 5% · ≤ +3', check: () => na('보물 미구현(B3)') },
-  { id: 'tower.traits', group: '타워 균형', label: '종족 특성 4종별 강점 타워(상성표 열)', target: '특성마다 ≥ 2종', check: () => na('특성 미구현(B3)') },
+  {
+    id: 'tower.relics', group: '타워 균형', label: '원정 보물 12개 선택률(최적화형, 후보로 나왔을 때 고른 비율) ≥ 5%, 상승폭(균형형 80%, 그 보물 하나 − 없음) ≤ +3웨이브', target: '≥ 5% · ≤ +3',
+    check: m => {
+      const r = m.relics;
+      const gains = r.ids.map(id => [id, r.gains[id] ?? null] as const).filter((x): x is readonly [string, number] => x[1] !== null);
+      const rates = r.ids.filter(id => (r.offered[id] ?? 0) >= RELIC_MIN_OFFERS).map(id => [id, (r.picks[id] ?? 0) / r.offered[id]!] as const);
+      if (rates.length === 0 && gains.length === 0) return na(`표본 부족(고른 횟수 ${r.total}, 상승폭 판 없음)`);
+      const low = rates.filter(([, v]) => v < RELIC_MIN_SHARE);
+      const high = gains.filter(([, g]) => g > RELIC_MAX_GAIN);
+      const lowRate = [...rates].sort((a, b) => a[1] - b[1])[0];
+      const topGain = [...gains].sort((a, b) => b[1] - a[1])[0];
+      const shareText = lowRate ? `선택률 최저 ${lowRate[0]} ${pct(lowRate[1])}(5% 미만 ${low.length}${low.length ? `: ${low.map(([id, v]) => `${id} ${pct(v)}`).join(',')}` : ''}, 고른 ${r.total}회, 표본 부족 ${r.ids.length - rates.length})` : `선택률 표본 부족(${r.total}회)`;
+      const gainText = topGain ? `상승폭 최고 ${topGain[0]} ${topGain[1] >= 0 ? '+' : ''}${f1(topGain[1])}(+3 초과 ${high.length}, 보물 없음 ${f1(r.base)})` : '상승폭 판 없음';
+      const fail = low.length > 0 || high.length > 0;
+      const complete = rates.length === r.ids.length && gains.length === r.ids.length;
+      return { status: fail ? 'FAIL' : complete ? 'PASS' : 'N/A', measured: `${shareText} · ${gainText}`, value: low.length + high.length };
+    },
+  },
+  {
+    id: 'tower.traits', group: '타워 균형', label: '종족 특성 4종별 100골드당 궁수 대비 1.4배↑ 타워(상성표 특성 열)', target: '특성마다 ≥ 2종',
+    check: m => {
+      const traits = Object.entries(m.traitStrong) as Array<[TraitKind, { count: number; towers: TowerId[] }]>;
+      if (!traits.length) return na('특성 열 자료 없음');
+      const bad = traits.filter(([, v]) => v.count < 2);
+      return { status: bad.length === 0 ? 'PASS' : 'FAIL', measured: traits.map(([t, v]) => `${t} ${v.count}종(${v.towers.join(',') || '-'})`).join(' · '), value: bad.length };
+    },
+  },
 ];
 
 export function evaluateGate(m: Metrics): GateRow[] {

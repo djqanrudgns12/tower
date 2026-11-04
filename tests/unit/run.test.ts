@@ -4,7 +4,7 @@ import type { OptionId } from '../../src/contracts/questions';
 import { BALANCE } from '../../src/content';
 import { msToTicks } from '../../src/domain/num';
 import { createEncounter } from '../../src/domain/quiz';
-import { advanceTick, applyCommand, type Command } from '../../src/domain/run';
+import { advanceTick, applyCommand, nextCorrectGold, type Command } from '../../src/domain/run';
 import { attackIntervalTicks, evolutionChoices, towerStats } from '../../src/domain/towers';
 import type { ReviewSense } from '../../src/domain/types';
 import { answerCurrent, correctChoice, finishPrep, nearestSlots, newRun, ok, runUntil, stateHash, ticks, wrongChoice } from './helpers';
@@ -147,7 +147,7 @@ describe('문항·점수(PRD §4.3~4.4, §5)', () => {
     ok(ctx, s, { type: 'answer', encounterId: id, choice });
     expect(applyCommand(ctx, s, { type: 'answer', encounterId: id, choice })).toEqual({ ok: false, error: 'ALREADY_ANSWERED' });
     expect(applyCommand(ctx, s, { type: 'skip', encounterId: id })).toEqual({ ok: false, error: 'ALREADY_ANSWERED' });
-    expect(s.gold).toBe(120 + 22);
+    expect(s.gold).toBe(120 + ctx.difficulty.correctGold);
     expect(s.pt).toBe(15);
   });
 
@@ -202,8 +202,11 @@ describe('문항·점수(PRD §4.3~4.4, §5)', () => {
     expect(s.quiz.current!.id).toBe(battleEncounter);
     expect(s.quiz.current!.wrapup).toBe(true);
     const before = { gold: s.gold, pt: s.pt };
+    // 마무리 문항도 정답 골드(연속 정답 보너스 포함, R4 B3)를 받는다. 화면 값과 같은 식이다.
+    const reward = nextCorrectGold(ctx, s);
     ok(ctx, s, { type: 'answer', encounterId: battleEncounter, choice: correctChoice(ctx, s) });
-    expect(s.gold - before.gold).toBe(22);
+    expect(s.gold - before.gold).toBe(reward);
+    expect(reward).toBeGreaterThan(ctx.difficulty.correctGold);
     expect(s.burningUntilTick).toBe(-1);
     runUntil(ctx, s, ['PREP_QUIZ']);
     expect(s.wave).toBe(2);

@@ -1,5 +1,6 @@
 import type Phaser from 'phaser';
 import type { TowerId } from '../../contracts/balance';
+import { relicBalance } from '../../domain/relics';
 import { evolutionChoices, reachMilli } from '../../domain/towers';
 import type { RunState } from '../../domain/types';
 import { PALETTE } from '../art';
@@ -80,12 +81,13 @@ export class InputLayer {
     const tower = sel.towerId !== null ? s.towers.find(t => t.id === sel.towerId) ?? null : null;
     const highContrast = Boolean((bridge as { highContrastMap?: boolean }).highContrastMap);
     const drag = bridge.drag;
-    const key = `${sel.slotId}|${sel.towerId}|${sel.previewType}|${sel.previewBranch}|${tower?.level}|${tower?.form}|${s.phase}|${s.towers.length}|${bridge.magnify}|${bridge.keyboardSlotId}|${highContrast}|${drag?.type}:${drag?.slotId}`;
+    const key = `${sel.slotId}|${sel.towerId}|${sel.previewType}|${sel.previewBranch}|${tower?.level}|${tower?.form}|${s.phase}|${s.towers.length}|${bridge.magnify}|${bridge.keyboardSlotId}|${highContrast}|${drag?.type}:${drag?.slotId}|${(s.relics ?? []).join(',')}`;
     if (key === this.overlayKey) return;
     this.overlayKey = key;
     const g = this.overlay.clear();
     const map = bridge.controller.ctx.map;
-    const b = bridge.controller.ctx.balance;
+    // 원정 보물(사거리·깃발 오라 범위)을 적용한 밸런스로 사거리 원을 그린다(엔진 판정과 같은 값).
+    const b = relicBalance(bridge.controller.ctx.balance, s.relics);
     if (highContrast) {
       const pathSet = new Set(map.pathCells.map(([px, py]) => `${px},${py}`));
       for (const [px, py] of map.pathCells) {

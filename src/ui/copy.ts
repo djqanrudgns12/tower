@@ -80,7 +80,9 @@ export function commandErrorText(error: CommandError, extra?: { need?: number })
     case 'TOWER_LIMIT': return '이 타워는 더 놓을 수 없어요';
     case 'NOT_OWNED': return '아직 갖지 않은 타워예요';
     case 'NO_DRAFT':
-    case 'INVALID_DRAFT': return '지금은 고를 수 없어요';
+    case 'INVALID_DRAFT':
+    case 'NO_RELIC_OFFER':
+    case 'INVALID_RELIC': return '지금은 고를 수 없어요';
     case 'NEXT_NOT_READY': return '해설을 조금 더 읽어 주세요';
     case 'PAUSED': return '멈춘 동안에는 할 수 없어요';
     default: return '다시 해 주세요';
@@ -88,6 +90,21 @@ export function commandErrorText(error: CommandError, extra?: { need?: number })
 }
 
 export const BRANCH_MARK: Record<BranchId, string> = { A: '동그라미 길', B: '마름모 길' };
+
+/**
+ * 상황 카드 경고 한 줄(prd-r4 §7.2 E·§9.1): 하늘을 쏘는 타워가 아예 없음(air), 또는 다음 웨이브 종족 특성을 잘 잡는 타워(계약 strongVs)가 없음.
+ * 어느 타워가 잘 잡는지는 계약이 정하므로 글은 타워 이름을 적지 않는다.
+ */
+export const FORECAST_WARNING: Record<'air' | 'shell' | 'clay' | 'burrow' | 'flyers', string> = {
+  air: '날아오는 적이 많아요 — 하늘을 쏘는 타워가 없어요',
+  shell: '단단한 적 — 잘 뚫는 타워가 없어요',
+  clay: '흙 보호막 적 — 잘 깨는 타워가 없어요',
+  burrow: '땅굴 파는 적 — 바닥을 치는 타워가 없어요',
+  flyers: '하늘 떼 — 하늘을 잘 쏘는 타워가 없어요',
+};
+
+/** 원정 보물 창(prd-r4 §7.2-F) 제목. */
+export const RELIC_TITLE = '원정 보물';
 
 export const fmtDamage = (milli: number) => {
   const v = milli / 1000;

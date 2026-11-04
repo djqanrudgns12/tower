@@ -46,6 +46,19 @@ export type BranchId = (typeof BRANCH_IDS)[number];
 export type FormId = (typeof FORM_IDS)[number];
 export type FoeTag = (typeof FOE_TAGS)[number];
 
+/**
+ * 종족 특성(prd-r4 §7.2 E, R4 B3). 침입 종족의 일반 적(대장 제외, 분열·호위 파생체 포함)에게 fromWave부터 붙는다.
+ * shell = 단단한 등껍질(물리 저항 +, 상한 유지), clay = 흙 보호막(타격마다 고정 피해 감소), burrow = 땅굴(경로의 정해진 구간에서
+ * 표적이 안 됨), flyers = 그 종족 일반 적의 비행 비율.
+ */
+export const TRAIT_KINDS = ['shell', 'clay', 'burrow', 'flyers'] as const;
+export type TraitKind = (typeof TRAIT_KINDS)[number];
+/**
+ * 특성 → 상성 표지(타워 strongVs·weakVs가 쓰는 이름이자 화면 아이콘). shell·clay·burrow는 특성이 붙은 적에게 그 표지를 더하고,
+ * flyers는 비행 역할의 비율만 바꾸므로 표지를 더하지 않는다(그 종족의 비행 적은 이미 flyer다).
+ */
+export const TRAIT_TAG: Record<TraitKind, FoeTag> = { shell: 'shell', clay: 'clay', burrow: 'burrow', flyers: 'flyer' };
+
 const tiers = z.object({ regular: nonNeg, elite: nonNeg, boss: nonNeg });
 
 const difficulty = z.object({
@@ -209,6 +222,8 @@ const tower = z.object({
   label: z.string().min(1),
   cost: int.min(1),
   damage: nonNeg,
+  /** 기본 피해 배율(BP, 레벨 배율 뒤·형태 배율 앞). 계약 파일은 적지 않고 원정 보물(광역 피해 +)이 판 안에서 쓴다. 없으면 10000. */
+  damageBP: bp.optional(),
   damageType: z.enum(['physical', 'magic', 'none']),
   intervalMs: nonNeg,
   rangeMilli: nonNeg,
@@ -270,6 +285,24 @@ const bossSkill = z.discriminatedUnion('kind', [
   z.object({ kind: z.literal('call_escort'), thresholdsBP: z.array(bp).min(1), escorts: z.array(z.enum(REGULAR_KINDS)).min(1), spreadMilli: nonNeg }),
 ]);
 
+/** 종족 특성 하나(TRAIT_KINDS). fromWave 전에는 붙지 않는다(침입이 당겨져도 특성은 이 웨이브부터). */
+const factionTrait = z.discriminatedUnion('kind', [
+  /** 단단한 등껍질: 물리 저항 +physicalResistAddBP(정예 가산과 합쳐 elites.physicalResistCapBP 상한). */
+  z.object({ kind: z.literal('shell'), fromWave: int.min(1), physicalResistAddBP: bp }),
+  /**
+   * 흙 보호막: 저항 뒤 피해에서 타격마다 (그 웨이브 기준 체력(115% 점화식) × reductionBP)를 뺀다(최소 1 milli-HP). strongVs에 clay를 적은 타워는
+   * 그 counterKeepBP만큼만 막힌다(화차의 막 깎기). 한 방이 약한 연사형일수록 손해가 크고 강타는 거의 그대로다. 화상(지속 피해)은 막지 않는다.
+   */
+  z.object({ kind: z.literal('clay'), fromWave: int.min(1), reductionBP: bp, counterKeepBP: bp }),
+  /**
+   * 땅굴: 경로 진행도 atBP(경로 길이 대비) 지점부터 기본 속도로 durationMs 걷는 구간에서 땅속에 있어 표적이 안 된다(겨냥 공격·단일 투사체 빗나감).
+   * 바닥을 치는 공격(착탄 범위·장판·덫·굴림·폭발·처치 유발)은 맞는다. 비행 적은 파지 않는다.
+   */
+  z.object({ kind: z.literal('burrow'), fromWave: int.min(1), atBP: int.min(0).max(10000), durationMs: int.min(1) }),
+  /** 하늘 떼: 이 종족 일반 적 수 가운데 flyerShareBP를 비행 적으로 낸다(나머지는 웨이브 역할 가중치대로). */
+  z.object({ kind: z.literal('flyers'), fromWave: int.min(1), flyerShareBP: int.min(0).max(10000) }),
+]);
+
 const faction = z.object({
   label: z.string().min(1),
   artPrefix: z.string().regex(/^[a-z]+$/),
@@ -277,6 +310,51 @@ const faction = z.object({
   names: z.partialRecord(z.enum(ART_ROLES), z.string().min(1)).optional(),
   /** 대장 단계별 기믹과 체력 보정(없으면 10000). */
   bosses: z.partialRecord(z.enum(BOSS_RANKS), z.object({ skill: bossSkill, hpScaleBP: int.min(1000).max(30000).optional() })).optional(),
+  /** 종족 특성(prd-r4 §7.2 E). 없으면 특성 없음(주력 4종족). */
+  trait: factionTrait.optional(),
+});
+
+const relicId = z.string().regex(/^[a-z][a-z_]*$/);
+
+/**
+ * 원정 보물 효과(prd-r4 §7.2-F). 그 판 안에서만 밸런스 사본에 적용한다(domain/relics.ts relicBalance). towers가 있으면 사거리·피해·간격·오라 범위는
+ * 그 타워(모든 형태)에만, 나머지는 판 전체에 쓴다. 배율은 BP(10000 = 그대로), 더하기는 정수다.
+ */
+const relicEffect = z.object({
+  towers: z.array(z.enum(TOWER_IDS)).min(1).optional(),
+  /** 사거리 배율(기본 사거리와 형태 사거리 보정 모두). */
+  rangeBP: bp.optional(),
+  /** 기본 피해 배율(타워 damageBP에 곱한다. 화상은 그대로). */
+  damageBP: bp.optional(),
+  /** 공격(놓기·던지기) 간격 배율. */
+  intervalBP: bp.optional(),
+  /** 오라 반경 더하기(깃발: 사거리이자 오라 반경). */
+  auraRangeAddMilli: nonNeg.optional(),
+  /** 모든 공격 타워: 비행 적 상황 배율에 곱한다. */
+  flyerDamageBP: bp.optional(),
+  /** 모든 공격 타워: 정예·대장 상황 배율에 곱한다. */
+  eliteBossDamageBP: bp.optional(),
+  /** 모든 감속(일반·정예·대장·파편 감속)의 시간 배율. */
+  slowMsBP: bp.optional(),
+  burningAddMs: nonNeg.optional(),
+  correctGoldAdd: nonNeg.optional(),
+  /** 처치 골드(일반·정예·대장) 더하기. 파생체는 여전히 0이다. */
+  killGoldAdd: nonNeg.optional(),
+  /** 판매 환급 비율(지금보다 클 때만). */
+  sellRatioBP: bp.optional(),
+  /** 진화 강화(Lv3→4, Lv6→7) 비용 배율. */
+  evolveCostBP: bp.optional(),
+  /** 고르는 순간 한 번 받는 골드(그 판의 생존·보물 골드로 센다). */
+  goldNow: nonNeg.optional(),
+});
+
+const relic = z.object({
+  label: z.string().min(1),
+  /** 고르기 카드의 한 줄 규칙. */
+  summary: z.string().min(1),
+  /** 화면 아이콘: `tower.<타워 id>`(타워 초상화) 또는 원화 아이콘 이름(coin·flame·note·star·chest·trait.*). */
+  icon: z.string().regex(/^(tower\.[a-z]+|trait\.[a-z]+|[a-z]+)$/),
+  effect: relicEffect,
 });
 
 /** 맵 한 곳의 원정 편성(monsters.md §3): 주력 종족, 기본 6역할 해금 순서, 21웨이브부터 침입하는 종족 순환. */
@@ -307,6 +385,11 @@ export const balanceSchema = z.object({
     sellRatioBP: bp,
     /** 설치 직후 전액 환불(undoBuild)을 받을 수 있는 시간. */
     undoBuildMs: nonNeg,
+    /**
+     * 연속 정답 보너스(R4 B3 실험): 준비·전투·마무리 문항을 가리지 않고 이어진 정답 수 n(이번 정답 포함)에 대해 정답 골드에
+     * min(maxGold, goldPerStreak × (n − 1))을 더한다. 오답·'모르겠어요'는 0골드 그대로이고 연속을 끊는다. 없으면 보너스 없음.
+     */
+    answerStreakBonus: z.object({ goldPerStreak: nonNeg, maxGold: nonNeg }).optional(),
   }),
   difficulties: z.record(z.enum(DIFFICULTY_IDS), difficulty),
   enemies: z.record(z.enum(ENEMY_KINDS), enemy),
@@ -401,6 +484,11 @@ export const balanceSchema = z.object({
   factions: z.record(factionId, faction),
   /** 맵 ID → 원정 편성. 모든 맵이 하나씩 가진다(content 시험). */
   campaigns: z.record(z.string().regex(/^[a-z_]+$/), campaign),
+  /**
+   * 원정 보물(prd-r4 §7.2-F, R4 B3): fromWave 이상의 대장 웨이브를 지키면 갖지 않은 보물 offerCount개 가운데 하나를 고른다. 그 판에서만 효과가 있다.
+   * 후보는 seed·웨이브로 정한 보물 전용 난수로 뽑아 출제·편성·징집 난수를 바꾸지 않는다. 없으면 보물 없음.
+   */
+  relics: z.object({ fromWave: int.min(1), offerCount: int.min(1), items: z.record(relicId, relic) }).optional(),
 }).loose().superRefine((b, ctx) => {
   const lv = b.levels;
   if (lv.upgradeCostOfBaseBP.length !== lv.damageMultiplierBP.length - 1) ctx.addIssue({ code: 'custom', message: '강화 비용 수는 피해 배율 수보다 하나 적어야 한다' });
@@ -423,6 +511,17 @@ export const balanceSchema = z.object({
   if (dr.afterWaves.some((w, i) => i > 0 && w <= dr.afterWaves[i - 1]!)) ctx.addIssue({ code: 'custom', message: '징집 웨이브는 오름차순이어야 한다' });
   const inv = b.waves.invasion;
   if (inv.invaderShareBPByOffset.length !== inv.blockWaves) ctx.addIssue({ code: 'custom', message: '침입 비율 수는 블록 웨이브 수와 같아야 한다' });
+  const relics = b.relics;
+  if (relics) {
+    const items = Object.entries(relics.items);
+    if (items.length < relics.offerCount) ctx.addIssue({ code: 'custom', message: '보물 수가 후보 수보다 적다' });
+    for (const [id, r] of items) {
+      const e = r.effect;
+      const scoped = e.rangeBP !== undefined || e.damageBP !== undefined || e.intervalBP !== undefined || e.auraRangeAddMilli !== undefined;
+      if (scoped && !e.towers) ctx.addIssue({ code: 'custom', message: `${id}: 사거리·피해·간격·오라 효과는 towers가 있어야 한다` });
+      if (Object.keys(e).filter(k => k !== 'towers').length === 0) ctx.addIssue({ code: 'custom', message: `${id}: 효과가 없다` });
+    }
+  }
   for (const [mapId, c] of Object.entries(b.campaigns)) {
     if (!b.factions[c.primary]) ctx.addIssue({ code: 'custom', message: `${mapId}: 없는 주력 종족 ${c.primary}` });
     if (new Set(c.roleOrder).size !== c.roleOrder.length) ctx.addIssue({ code: 'custom', message: `${mapId}: 역할 해금 순서가 겹친다` });
@@ -439,6 +538,9 @@ export type DifficultyConfig = Balance['difficulties'][DifficultyId];
 export type TowerConfig = Balance['towers'][TowerId];
 export type FormConfig = z.infer<typeof form>;
 export type FactionConfig = z.infer<typeof faction>;
+export type FactionTrait = z.infer<typeof factionTrait>;
+export type RelicConfig = z.infer<typeof relic>;
+export type RelicEffect = z.infer<typeof relicEffect>;
 export type BossSkill = z.infer<typeof bossSkill>;
 export type BossSkillKind = (typeof BOSS_SKILL_KINDS)[number];
 export type CampaignConfig = z.infer<typeof campaign>;

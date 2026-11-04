@@ -8,6 +8,7 @@ import { center } from './geometry';
 import { removeTowerHazards, settleHazardsAtWaveEnd } from './hazards';
 import { add, msToTicks, mulDivFloor } from './num';
 import { createEncounter, MAX_REVIEW_SENSES } from './quiz';
+import { openRelicOffer, pickRelic, relicContext } from './relics';
 import { RNG_ALGORITHM, streamSeed } from './rng';
 import { attackIntervalTicks, attacks, buildCost, evolutionChoices, sellRefund, towerStats, upgradeCost } from './towers';
 import { RULES_VERSION, RUN_STATE_VERSION, type PauseReason, type ReviewSense, type RunConfig, type RunState, type Tower } from './types';
@@ -25,6 +26,8 @@ export type Command =
   | { type: 'undoBuild'; towerId: number }
   /** 징집 후보 가운데 하나를 장착함에 넣는다(towers.md §0-2). 판이 끝나기 전 어느 단계에서나. */
   | { type: 'draftPick'; tower: TowerId }
+  /** 원정 보물 후보 가운데 하나를 갖는다(prd-r4 §7.2-F, R4 B3). 판이 끝나기 전 어느 단계에서나. */
+  | { type: 'relicPick'; relic: string }
   | { type: 'startBattle' }
   | { type: 'pause'; reason: PauseReason }
   | { type: 'resume'; reason: PauseReason }
@@ -33,7 +36,7 @@ export type Command =
 export type CommandError =
   | 'PAUSED' | 'WRONG_PHASE' | 'STALE_ENCOUNTER' | 'ALREADY_ANSWERED' | 'NEXT_NOT_READY' | 'NOT_ENOUGH_GOLD'
   | 'SLOT_TAKEN' | 'UNKNOWN_SLOT' | 'UNKNOWN_TOWER' | 'MAX_LEVEL' | 'FORM_REQUIRED' | 'INVALID_FORM' | 'UNDO_EXPIRED' | 'TOWER_LIMIT'
-  | 'GAME_OVER' | 'NOT_AVAILABLE' | 'NOT_OWNED' | 'NO_DRAFT' | 'INVALID_DRAFT' | 'NUMERIC_LIMIT';
+  | 'GAME_OVER' | 'NOT_AVAILABLE' | 'NOT_OWNED' | 'NO_DRAFT' | 'INVALID_DRAFT' | 'NO_RELIC_OFFER' | 'INVALID_RELIC' | 'NUMERIC_LIMIT';
 
 export type CommandResult = { ok: true; events: DomainEvent[] } | { ok: false; error: CommandError };
 
@@ -64,6 +67,25 @@ function copyReviewSenses(input: readonly ReviewSense[] | undefined): ReviewSens
 export function correctGoldAt(d: GameContext['difficulty'], wave: number): number {
   const perWave = d.correctGoldPerWaveBP ?? 0;
   return perWave === 0 ? d.correctGold : add(d.correctGold, mulDivFloor(perWave, Math.max(0, wave - 1), 10000, 'correctGold'), 'correctGold');
+}
+
+/**
+ * 연속 정답 보너스(balance run.answerStreakBonus, R4 B3): 이번 정답까지 이어진 정답이 streak개면 min(maxGold, goldPerStreak × (streak − 1)).
+ * 규칙이 없으면 0이다.
+ */
+export function streakBonusGold(b: GameContext['balance'], streak: number): number {
+  const rule = b.run.answerStreakBonus;
+  if (!rule || streak <= 1) return 0;
+  return Math.min(rule.maxGold, mulDivFloor(rule.goldPerStreak, streak - 1, 1, 'streakBonus'));
+}
+
+/**
+ * 다음 정답 한 번의 골드(화면의 "정답 +N"): 보물을 적용한 문맥의 정답 골드(웨이브 성장 포함) + 연속 정답 보너스.
+ * 엔진 채점(answer)과 같은 식이다.
+ */
+export function nextCorrectGold(ctx: GameContext, s: Pick<RunState, 'relics' | 'wave' | 'quiz'>): number {
+  const c = relicContext(ctx, s);
+  return add(correctGoldAt(c.difficulty, Math.max(1, s.wave)), streakBonusGold(c.balance, (s.quiz.answerStreak ?? 0) + 1), 'correctGold');
 }
 
 export function createRun(ctx: GameContext, input: NewRunInput): RunState {
@@ -110,6 +132,8 @@ export function applyCommand(ctx: GameContext, s: RunState, cmd: Command): Comma
   }
   // 정지 중에는 답안·거래를 받지 않는다. 밀린 입력을 재개 뒤 자동 실행하지 않는다(PRD §3.6, §20.3).
   if (s.pause.length > 0) return { ok: false, error: 'PAUSED' };
+  // 원정 보물(R4 B3)은 밸런스 사본으로 적용한다. 보물이 없으면 ctx 그대로다.
+  ctx = relicContext(ctx, s);
   const ev: DomainEvent[] = [];
   const result = (() => {
     switch (cmd.type) {
@@ -121,6 +145,7 @@ export function applyCommand(ctx: GameContext, s: RunState, cmd: Command): Comma
       case 'sell': return sell(ctx, s, cmd.towerId, ev);
       case 'undoBuild': return undoBuild(s, cmd.towerId, ev);
       case 'draftPick': return draftPick(s, cmd.tower, ev);
+      case 'relicPick': return relicPick(ctx, s, cmd.relic, ev);
       case 'startBattle': return startBattle(ctx, s, ev);
       case 'quit': return quit(s, ev);
     }
@@ -144,7 +169,10 @@ function answer(ctx: GameContext, s: RunState, encounterId: number, choice: Opti
   const d = ctx.difficulty;
   const result = choice === 'skipped' ? 'skipped' : choice === q.correctOptionId ? 'correct' : 'wrong';
   const pt = result === 'correct' ? d.correctPt : result === 'wrong' ? d.wrongPt : d.skipPt;
-  const gold = result === 'correct' ? correctGoldAt(d, enc.wave) : 0;
+  // 연속 정답 보너스(run.answerStreakBonus가 있을 때만 센다, R4 B3): 준비·전투·마무리 문항을 가리지 않고 이어진 정답 수.
+  const streakRule = ctx.balance.run.answerStreakBonus;
+  const answerStreak = result === 'correct' ? (s.quiz.answerStreak ?? 0) + 1 : 0;
+  const gold = result === 'correct' ? add(correctGoldAt(d, enc.wave), streakBonusGold(ctx.balance, answerStreak), 'gold') : 0;
   // 합계를 모두 계산한 뒤 반영한다. 하나라도 안전 범위를 넘으면 아무것도 바꾸지 않고 던진다(PRD §3.4(2), §8.6).
   const totals = { pt: add(s.pt, pt, 'pt'), gold: add(s.gold, gold, 'gold'), ptFromQuestions: add(s.stats.ptFromQuestions, pt), goldEarned: add(s.stats.goldEarned, gold) };
   enc.answer = { choice, tick: s.tick, correct: result === 'correct', pt, gold };
@@ -155,6 +183,7 @@ function answer(ctx: GameContext, s: RunState, encounterId: number, choice: Opti
   if (result === 'correct') s.stats.correct++;
   else if (result === 'wrong') s.stats.wrong++;
   else s.stats.skipped++;
+  if (streakRule) s.quiz.answerStreak = answerStreak;
   s.quiz.history.push(structuredClone(enc));
   if (s.phase === 'PREP_QUIZ') s.quiz.prepDone++;
   // 버닝은 전투 문항만 충전한다. 준비·마무리 문항은 충전하지 않는다(PRD §5).
@@ -317,6 +346,13 @@ function draftPick(s: RunState, tower: TowerId, ev: DomainEvent[]): CommandError
   return null;
 }
 
+function relicPick(ctx: GameContext, s: RunState, relic: string, ev: DomainEvent[]): CommandError | null {
+  if (!s.relicOffer) return 'NO_RELIC_OFFER';
+  if (!s.relicOffer.offers.includes(relic)) return 'INVALID_RELIC';
+  pickRelic(ctx.balance, s, relic, false, ev);
+  return null;
+}
+
 function startBattle(ctx: GameContext, s: RunState, ev: DomainEvent[]): CommandError | null {
   if (s.phase !== 'BUILD') return 'WRONG_PHASE';
   const b = ctx.balance;
@@ -355,6 +391,7 @@ function endRun(s: RunState, reason: 'DEFEAT' | 'QUIT', ev: DomainEvent[]) {
   s.burningUntilTick = -1;
   if (s.burningTier !== undefined) s.burningTier = 0;
   s.quiz.battleStreak = 0;
+  if (s.quiz.answerStreak !== undefined) s.quiz.answerStreak = 0;
   ev.push({ type: 'gameOver', completedWave: s.completedWave, endedAtWave: s.wave, reason }, { type: 'phase', phase: 'GAME_OVER', wave: s.wave });
 }
 
@@ -381,6 +418,7 @@ function completeWave(ctx: GameContext, s: RunState, ev: DomainEvent[]) {
   }
   ev.push({ type: 'waveComplete', wave: s.wave, milestoneGold });
   openDraft(b, s, ev);
+  openRelicOffer(b, s, ev);
   const current = s.quiz.current;
   if (current) {
     if (!current.answer) current.wrapup = true;
@@ -392,6 +430,7 @@ function completeWave(ctx: GameContext, s: RunState, ev: DomainEvent[]) {
 /** 논리 틱 하나. 정지 중에는 아무것도 하지 않는다. */
 export function advanceTick(ctx: GameContext, s: RunState): DomainEvent[] {
   if (s.pause.length > 0 || s.phase === 'GAME_OVER') return [];
+  ctx = relicContext(ctx, s);
   const ev: DomainEvent[] = [];
   // 상태를 바꾸기 전에 검사한다. 넘치면 tick을 그대로 둔 채 던지고, 컨트롤러가 수치 복구 정지로 바꾼다(PRD §8.6).
   const tick = add(s.tick, 1, 'tick');

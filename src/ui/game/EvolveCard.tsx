@@ -5,6 +5,7 @@ import { useLobbySprites } from '../screens/home/canvasAssets';
 import { BranchMarkIcon, TowerShieldPortrait } from '../icons/GameIcons';
 import { ArtIcon, Modal } from '../kit';
 import { ChoiceCard } from './ChoiceCard';
+import { CounterIcons } from './CounterIcons';
 import css from './ChoiceCard.module.css';
 import { evolutionChoices, formBodyUrl, formInfo, towerForm, upgradeCost, type FormId } from './evolution';
 import { statBars } from './statBars';
@@ -61,6 +62,7 @@ export function EvolveCard({ balance, tower, gold, icons, lock, compact = false,
               }
               name={info.label}
               desc={info.summary}
+              counters={<CounterIcons balance={balance} type={tower.type} form={form} icons={icons} size={compact ? 18 : 20} />}
               bars={statBars(balance, tower.type, tower.level, from, { level: tower.level + 1, form })}
               action={<span className={css.price}>고르기<ArtIcon name="coin" size={18} />{cost !== null ? fmtNumber(cost) : '-'}</span>}
               actionLabel={`${info.label} 고르기 ${cost ?? 0} 골드`}

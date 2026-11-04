@@ -1,5 +1,6 @@
 import type { Balance, TowerId } from '../../contracts/balance';
 import { StatPowerIcon, StatRangeIcon, StatSpeedIcon, TowerShieldPortrait } from '../icons/GameIcons';
+import { CounterIcons } from './CounterIcons';
 import { formInfo, type FormId } from './evolution';
 import { SEGMENTS, statBars, type StatBar, type StatKey } from './statBars';
 import { ROLE_LABEL, TOWER_ROLE_GROUP } from './towerRoles';
@@ -67,6 +68,7 @@ export function TowerDetail({ balance, type, level, form, icons, next = null, co
           </span>
         </div>
       </div>
+      <CounterIcons balance={balance} type={type} form={form} icons={icons} size={compact ? 18 : 20} />
       {compact ? (
         <ul className={css.chips}>
           {bars.map(bar => {

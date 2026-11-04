@@ -1,5 +1,7 @@
-import type { Balance, BossTier, EnemyKind, TowerId } from '../../contracts/balance';
+import { TRAIT_KINDS, TRAIT_TAG, type Balance, type BossTier, type EnemyKind, type FormId, type TowerId, type TraitKind } from '../../contracts/balance';
 import { campaignOf, enemyArtId } from '../../domain/factions';
+import { matchupOf } from '../../domain/towers';
+import { enemyTrait } from '../../domain/traits';
 import { composeWave } from '../../domain/waves';
 
 /** 화면 읽기용 적 이름(종족 카탈로그가 들어오면 그 이름으로 바꾼다). */
@@ -10,7 +12,14 @@ export const ENEMY_NAME: Record<EnemyKind, string> = {
 
 /** 준비판 미리보기 한 줄: 역할(kind)·마릿수, 그림을 고를 종족(그 역할이 가장 많은 종족)과 대장 단계. */
 export interface PreviewFoe { kind: EnemyKind; count: number; faction: string; bossTier: BossTier | null }
-export interface WavePreview { total: number; kinds: PreviewFoe[]; boss: boolean; bossFoe: PreviewFoe | null }
+export interface WavePreview {
+  total: number;
+  kinds: PreviewFoe[];
+  boss: boolean;
+  bossFoe: PreviewFoe | null;
+  /** 이 웨이브 적에게 붙는 종족 특성(prd-r4 §7.2 E, TRAIT_KINDS 순서). 침입 전이면 빈 목록. */
+  traits: TraitKind[];
+}
 
 /**
  * 다음 웨이브 미리보기(준비판). 종류별 마릿수는 엔진 편성기가 seed와 상관없이 정하고 순서·정예만 seed로 섞는다.
@@ -32,11 +41,18 @@ export function wavePreview(b: Balance, mapId: string, wave: number): WavePrevie
   // 같은 역할이 여러 종족에 나오면 가장 많은 종족의 그림을 쓴다(같으면 편성 순서가 앞선 종족).
   const lead = (m: Map<string, number>) => [...m].reduce((best, cur) => (cur[1] > best[1] ? cur : best))[0];
   const boss = list.find(e => e.kind === 'boss');
+  // 종족 특성: 이 웨이브에 실제로 특성이 붙는 적(대장 제외·땅굴은 비행 제외)이 있는 종족만(엔진 enemyTrait와 같은 판정).
+  const present = new Set<TraitKind>();
+  for (const e of list) {
+    const t = enemyTrait(b, e.faction ?? primary, e.kind, Math.max(1, wave));
+    if (t) present.add(t.kind);
+  }
   return {
     total: list.length,
     kinds: [...counts].map(([kind, row]) => ({ kind, count: row.count, faction: lead(row.byFaction), bossTier: null })).sort((a, c) => c.count - a.count),
     boss: boss !== undefined,
     bossFoe: boss ? { kind: 'boss', count: 1, faction: boss.faction ?? primary, bossTier: boss.bossTier ?? 1 } : null,
+    traits: TRAIT_KINDS.filter(k => present.has(k)),
   };
 }
 
@@ -62,4 +78,39 @@ export const ROLE_TRAIT: Partial<Record<EnemyKind, { icon: 'trait.armor' | 'trai
 /** 다음 웨이브에 나는 적이 오는데 장착한 타워 가운데 하늘을 쏘는 것이 하나도 없는가(상황 카드 경고 한 줄). */
 export function airGap(preview: Pick<WavePreview, 'kinds'>, canHitAir: (type: TowerId) => boolean, owned: readonly TowerId[]): boolean {
   return preview.kinds.some(k => k.kind === 'flyer') && !owned.some(canHitAir);
+}
+
+/** 종족 특성 → 원화 특성 아이콘과 이름(상황 카드 제목 줄). 하늘 떼는 비행 아이콘이다. */
+export const TRAIT_ICON: Record<TraitKind, { icon: 'trait.armor' | 'trait.clay' | 'trait.burrow' | 'trait.flying'; label: string }> = {
+  shell: { icon: 'trait.armor', label: '단단한 등껍질' },
+  clay: { icon: 'trait.clay', label: '흙 보호막' },
+  burrow: { icon: 'trait.burrow', label: '땅굴' },
+  flyers: { icon: 'trait.flying', label: '하늘 떼' },
+};
+
+/** 상황 카드 경고 한 줄의 종류: 하늘을 쏘는 타워가 아예 없음(air) 또는 특성을 잘 잡는 타워가 없음(특성 이름). */
+export type ForecastWarning = 'air' | TraitKind;
+
+/**
+ * 다음 웨이브 경고 한 줄(prd-r4 §7.2 E, §9.1). 구조 경고(나는 적이 오는데 하늘을 쏘는 타워가 없다)가 먼저이고, 그 밖에는 이 웨이브의 종족 특성
+ * (TRAIT_KINDS 순서) 가운데 그 표지(TRAIT_TAG)를 strongVs에 적은 타워가 가진 타워(장착함 기본형 + 지어 둔 타워의 지금 형태)에 없는 첫 특성.
+ * 잘 잡는 타워가 계약에 하나도 없는 특성은 경고하지 않는다. 없으면 null. 순수 함수다(계약 strongVs만 본다).
+ */
+export function forecastWarning(
+  b: Balance,
+  preview: Pick<WavePreview, 'kinds' | 'traits'>,
+  canHitAir: (type: TowerId) => boolean,
+  owned: readonly TowerId[],
+  built: ReadonlyArray<{ type: TowerId; form: FormId }>,
+): ForecastWarning | null {
+  if (airGap(preview, canHitAir, owned)) return 'air';
+  const strongIn = (type: TowerId, form: FormId, tag: (typeof TRAIT_TAG)[TraitKind]) => matchupOf(b, type, form).strongVs.includes(tag);
+  for (const trait of preview.traits) {
+    const tag = TRAIT_TAG[trait];
+    const anywhere = (Object.keys(b.towers) as TowerId[]).some(t => strongIn(t, 'base', tag));
+    if (!anywhere) continue;
+    const covered = owned.some(t => strongIn(t, 'base', tag)) || built.some(t => strongIn(t.type, t.form, tag));
+    if (!covered) return trait;
+  }
+  return null;
 }

@@ -4,7 +4,7 @@ import { ENEMY_KINDS, TOWER_IDS } from '../contracts/balance';
 import type { DomainEvent } from '../domain/events';
 import { positionAt } from '../domain/geometry';
 import { drawSprites } from './art';
-import { applyManifest, CELL_PX, WORLD_H, WORLD_W } from './assets';
+import { applyManifest, ASSETS, CELL_PX, WORLD_H, WORLD_W } from './assets';
 import type { FieldBridge } from './bridge';
 import { AmbientLayer } from './layers/AmbientLayer';
 import { EffectLayer } from './layers/EffectLayer';
@@ -45,6 +45,8 @@ export class BattleScene extends Phaser.Scene {
       if (!parsed.success) return;
       for (const a of applyManifest(parsed.data)) this.load.image(a.id, `assets/${a.file}`);
     });
+    // 종족 특성 배지: 화면의 원화 특성 아이콘과 같은 그림(R4 B3). 실패하면 배지를 그리지 않는다(loaderror 무시).
+    for (const key of Object.values(ASSETS.traitBadge)) this.load.image(key, `assets/ui/${key.slice('badge.'.length)}.png`);
     this.load.on('loaderror', () => undefined);
   }
 

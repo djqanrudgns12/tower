@@ -17,19 +17,24 @@ function endBattle(ctx: GameContext, s: RunState) {
 }
 
 describe('정답 골드 = correctGold + floor(correctGoldPerWaveBP × (웨이브 − 1) / 10000)', () => {
-  it('보통: 1웨이브 22, 웨이브마다 0.75씩 내림으로 오른다', () => {
+  it('보통: 1웨이브 19(R4 B3에서 22 → 19), 웨이브마다 0.75씩 내림으로 오른다', () => {
     const d = BALANCE.difficulties.Normal;
     expect(d.correctGoldPerWaveBP).toBe(7500);
-    expect([1, 2, 3, 5, 11, 21].map(w => correctGoldAt(d, w))).toEqual([22, 22, 23, 25, 29, 37]);
+    expect([1, 2, 3, 5, 11, 21].map(w => correctGoldAt(d, w))).toEqual([19, 19, 20, 22, 26, 34]);
     // 성장이 없는 난이도 설정이면 고정값이다.
-    expect(correctGoldAt({ ...d, correctGoldPerWaveBP: 0 }, 30)).toBe(22);
-    expect(correctGoldAt({ ...d, correctGoldPerWaveBP: undefined }, 30)).toBe(22);
+    expect(correctGoldAt({ ...d, correctGoldPerWaveBP: 0 }, 30)).toBe(19);
+    expect(correctGoldAt({ ...d, correctGoldPerWaveBP: undefined }, 30)).toBe(19);
   });
 
   it('준비 문항 정답은 그 웨이브의 값을 받고, 오답은 0골드다(확정)', () => {
-    const { ctx, s } = newRun('Normal', 7);
+    // 웨이브 성장만 본다: R4 B3 연속 정답 보너스(run.answerStreakBonus)는 뺀 밸런스로 잰다(b3-traits-relics.test.ts가 따로 본다).
+    const run = newRun('Normal', 7);
+    const balance = structuredClone(run.ctx.balance);
+    delete balance.run.answerStreakBonus;
+    const ctx = { ...run.ctx, balance, difficulty: balance.difficulties.Normal };
+    const s = run.s;
     finishPrep(ctx, s);
-    expect(s.quiz.history.filter(e => e.answer!.correct).map(e => e.answer!.gold)).toEqual([22, 22, 22, 22, 22]);
+    expect(s.quiz.history.filter(e => e.answer!.correct).map(e => e.answer!.gold)).toEqual([19, 19, 19, 19, 19]);
     // 5웨이브 준비 문항까지 건너뛴다.
     for (let w = 1; w <= 4; w++) {
       if (s.phase === 'PREP_QUIZ') finishPrep(ctx, s);
@@ -40,8 +45,8 @@ describe('정답 골드 = correctGold + floor(correctGoldPerWaveBP × (웨이브
     expect([s.phase, s.wave]).toEqual(['PREP_QUIZ', 5]);
     const gold = s.gold;
     answerCurrent(ctx, s, 'correct');
-    expect(s.gold - gold).toBe(25);
-    expect(s.quiz.history.at(-1)!.answer!.gold).toBe(25);
+    expect(s.gold - gold).toBe(22);
+    expect(s.quiz.history.at(-1)!.answer!.gold).toBe(22);
     const before = s.gold;
     answerCurrent(ctx, s, 'wrong');
     expect(s.gold).toBe(before);

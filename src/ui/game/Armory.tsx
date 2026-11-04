@@ -3,6 +3,7 @@ import type { Balance, TowerId } from '../../contracts/balance';
 import { buildCost } from '../../domain/towers';
 import { fmtNumber } from '../copy';
 import { TowerShieldPortrait } from '../icons/GameIcons';
+import { counterText } from './counters';
 import { ArtIcon } from '../kit';
 import css from './Armory.module.css';
 
@@ -48,6 +49,8 @@ export function Armory({ balance, towers, gold, armed, icons, variant, compact =
           const price = buildCost(balance, type);
           const short = gold < price;
           const label = balance.towers[type].label;
+          // 호버·길게 누르기 안내: 이름 + 잘 잡는 적·약한 적(계약 strongVs·weakVs, prd-r4 §9.1).
+          const counters = counterText(balance, type, 'base');
           return (
             <button
               key={type}
@@ -55,7 +58,7 @@ export function Armory({ balance, towers, gold, armed, icons, variant, compact =
               role="option"
               aria-selected={armed === type}
               aria-label={`${label} ${price} 골드${short ? `, ${price - gold} 부족` : ''}`}
-              title={label}
+              title={counters ? `${label} · ${counters}` : label}
               className={css.socket}
               data-short={short || undefined}
               data-fresh={fresh?.has(type) || undefined}

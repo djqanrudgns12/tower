@@ -55,7 +55,9 @@ describe('상성 표(strongVs·weakVs)', () => {
 
   it('대응 보장은 기본형 strongVs를 읽는다', () => {
     expect(countersOf(BALANCE, 'runner')).toEqual(['frost', 'spear', 'falcon', 'trap']);
-    expect(countersOf(BALANCE, 'clay')).toEqual(['hwacha']);
+    // B3: 흙 보호막은 화차(막 깎기)·투석·노포(강타), 땅굴은 덫·약병·박격포(바닥 공격)가 잘 잡는다(prd-r4 §7.2 E).
+    expect(countersOf(BALANCE, 'clay')).toEqual(['sling', 'ballista', 'hwacha']);
+    expect(countersOf(BALANCE, 'burrow')).toEqual(['mortar', 'alchemist', 'trap']);
   });
 });
 

@@ -3,6 +3,7 @@ import { TOWER_COPY } from '../copy';
 import { TowerShieldPortrait } from '../icons/GameIcons';
 import { ArtIcon, Modal } from '../kit';
 import { ChoiceCard } from './ChoiceCard';
+import { CounterIcons } from './CounterIcons';
 import css from './ChoiceCard.module.css';
 import { recruitCardInfo } from './recruit';
 import { statBars } from './statBars';
@@ -41,6 +42,7 @@ export function RecruitCard({ balance, choices, icons, compact = false, onPick }
                   {info.air ? '하늘 적 공격' : '땅 적만'}
                 </span>
               )}
+              counters={<CounterIcons balance={balance} type={type} form="base" icons={icons} size={compact ? 18 : 20} />}
               bars={statBars(balance, type, 1, 'base')}
               action="고르기"
               actionLabel={`${label} 고르기`}

@@ -1,4 +1,4 @@
-import { EFFECT_KEYS, TOWER_IDS, type Balance, type BranchId, type FoeTag, type FormConfig, type FormId, type TowerConfig, type TowerId } from '../contracts/balance';
+import { EFFECT_KEYS, TOWER_IDS, TRAIT_TAG, type Balance, type BranchId, type FoeTag, type FormConfig, type FormId, type TowerConfig, type TowerId } from '../contracts/balance';
 import { dist2 } from './geometry';
 import { bpFloor, ceilDiv, msToTicks, mulDivFloor, round5Bp } from './num';
 import type { Enemy, Tower } from './types';
@@ -131,6 +131,8 @@ function computeStats(b: Balance, type: TowerId, level: number, form: FormId): T
   const f = formConfig(b, type, form);
   const levelBP = levelDamageBP(b, level);
   let damage = bpFloor(t.damage * 1000, levelBP, 'damage.level');
+  // 기본 피해 배율(원정 보물 광역 피해 +, 계약 파일에는 없다).
+  if (t.damageBP !== undefined && t.damageBP !== 10000) damage = bpFloor(damage, t.damageBP, 'damage.tower');
   if (f?.damageBP) damage = bpFloor(damage, f.damageBP, 'damage.form');
   // 범위 공격 형태의 ‘각각 기본 피해의 N%’도 형태 배율로 한 단계 곱한다(PRD §7.3).
   if (f?.splashDamageBP) damage = bpFloor(damage, f.splashDamageBP, 'damage.splash');
@@ -183,17 +185,23 @@ export function matchupOf(b: Balance, type: TowerId, form: FormId): { strongVs: 
   return { strongVs: fx.strongVs ?? [], weakVs: fx.weakVs ?? [] };
 }
 
-/** 적 하나의 상성 표지: 역할(분열 조각은 분열), 정예면 elite. 종족 특성(clay·burrow)은 B3에서 더한다. */
-export function foeTags(e: Pick<Enemy, 'kind' | 'elite'>): FoeTag[] {
+/**
+ * 적 하나의 상성 표지: 역할(분열 조각은 분열), 정예면 elite, 종족 특성이 있으면 그 표지(shell·clay·burrow, R4 B3).
+ * 같은 표지는 한 번만 센다(단단한 적 역할에 등껍질 특성이 붙어도 shell 하나).
+ */
+export function foeTags(e: Pick<Enemy, 'kind' | 'elite'> & Partial<Pick<Enemy, 'trait'>>): FoeTag[] {
   const role: FoeTag = e.kind === 'splitling' ? 'splitter' : e.kind;
-  return e.elite ? [role, 'elite'] : [role];
+  const tags: FoeTag[] = e.elite ? [role, 'elite'] : [role];
+  const trait = e.trait && e.trait !== 'flyers' ? TRAIT_TAG[e.trait] : null;
+  if (trait && !tags.includes(trait)) tags.push(trait);
+  return tags;
 }
 
 /**
  * 직접 타격의 상성 배율(BP): 적의 표지가 strongVs에 있으면 matchup.strongBP, weakVs에 있으면 matchup.weakBP를 표지마다 한 번씩 곱한다(내림).
  * matchup이 없거나 맞는 표지가 없으면 10000.
  */
-export function matchupBP(b: Balance, type: TowerId, form: FormId, e: Pick<Enemy, 'kind' | 'elite'>): number {
+export function matchupBP(b: Balance, type: TowerId, form: FormId, e: Pick<Enemy, 'kind' | 'elite'> & Partial<Pick<Enemy, 'trait'>>): number {
   const rule = b.matchup;
   if (!rule) return 10000;
   const { strongVs, weakVs } = matchupOf(b, type, form);

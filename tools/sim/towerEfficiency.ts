@@ -1,4 +1,4 @@
-import { TOWER_IDS, type Balance, type EliteId, type EnemyKind, type FormId, type TowerId } from '../../src/contracts/balance';
+import { TOWER_IDS, TRAIT_KINDS, type Balance, type EliteId, type EnemyKind, type FormId, type TowerId, type TraitKind } from '../../src/contracts/balance';
 import { BALANCE } from '../../src/content';
 import { msToTicks } from '../../src/domain/num';
 import { advanceTick, applyCommand, createRun } from '../../src/domain/run';
@@ -14,6 +14,11 @@ export interface Stream {
   kind: EnemyKind; elite: EliteId | null; count: number; spacingMs: number;
   /** 있으면 이 순서를 되풀이해 줄을 만든다(분열 몸통 + 새끼처럼 섞인 줄). kind·elite는 대표값이다. */
   pattern?: ReadonlyArray<{ kind: EnemyKind; elite: EliteId | null }>;
+  /**
+   * 종족(특성 열, R4 B3). 있으면 그 종족 적으로 만들고, 특성이 첫 웨이브부터 붙는 밸런스 사본(traitProbe)으로 잰다.
+   * 흙 보호막이 막는 양은 1웨이브 기준 체력의 비율이라 Lv1 타워와 같은 눈금이다(W16의 Lv7~9 타워 대 W16 체력과 비슷한 비).
+   */
+  faction?: string;
 }
 
 export const STREAMS = {
@@ -42,6 +47,31 @@ export const STREAMS = {
 
 export type StreamName = keyof typeof STREAMS;
 
+/**
+ * 종족 특성 4열(PRD §7.1 상성표, R4 B3): 그 특성의 상성 표지를 가진 적 줄. 등껍질·흙 보호막·땅굴은 특성이 붙은 보병 줄이고,
+ * 하늘 떼는 표지가 비행(flyer)이라 하늘유랑단 비행 줄이다(종족 일반 적의 40%, 나머지 땅 적은 특성이 없다). 섞인 줄(보병 3 · 비행 2)은
+ * CORSAIR_MIX로 따로 재어 보고서에만 둔다. 땅굴 구간(경로 45% 지점)이 기준 칸 사거리 밖인 맵에서는 땅굴이 상성에 드러나지 않는다(맵 평균으로 본다).
+ */
+export const TRAIT_STREAMS: Record<TraitKind, Stream> = {
+  shell: { kind: 'walker', elite: null, count: 24, spacingMs: 950, faction: 'honey_beetle' },
+  clay: { kind: 'walker', elite: null, count: 24, spacingMs: 950, faction: 'kiln_pottery' },
+  burrow: { kind: 'walker', elite: null, count: 24, spacingMs: 950, faction: 'brass_mole' },
+  flyers: { kind: 'flyer', elite: null, count: 24, spacingMs: 950, faction: 'breeze_corsair' },
+};
+export const TRAITS: readonly TraitKind[] = TRAIT_KINDS;
+
+const probeCache = new WeakMap<Balance, Balance>();
+/** 특성이 첫 웨이브부터 붙는 밸런스 사본(상성표 특성 열 전용). 타워 수치는 그대로다. */
+export function traitProbe(balance: Balance): Balance {
+  let probe = probeCache.get(balance);
+  if (!probe) {
+    probe = structuredClone(balance);
+    for (const f of Object.values(probe.factions)) if (f.trait) f.trait = { ...f.trait, fromWave: 1 };
+    probeCache.set(balance, probe);
+  }
+  return probe;
+}
+
 /** 적 역할 9종(PRD §7.1 상성표 열)과 그 역할을 재는 줄. 종족 특성 열은 B3에서 더한다. */
 export const ROLE_STREAMS = {
   walker: 'line', runner: 'runner', brute: 'brute', shell: 'shell', swarm: 'swarm', wisp: 'wisp', flyer: 'air', splitter: 'splitter', boss: 'boss',
@@ -52,7 +82,7 @@ export const UTILITY_TOWERS: readonly TowerId[] = ['frost', 'wind', 'bell', 'ban
 
 /** 놓인 타워 묶음이 줄 하나에 준 총피해(milli-HP)와 들인 골드. */
 export function measure(placements: Placement[], stream: Stream, balance: Balance = BALANCE, mapId = 'garden_u'): { damage: number; gold: number } {
-  const ctx = simContext(mapId, 'Normal', balance);
+  const ctx = simContext(mapId, 'Normal', stream.faction ? traitProbe(balance) : balance);
   const s = createRun(ctx, {
     runId: 'eff', playerId: 'sim', nickname: '효율', grade: 3, difficulty: 'Normal', mapId: ctx.map.id, seed: 1,
     bankId: 'sim', bankVersion: 'sim', contentMode: 'development', availableTowers: [...TOWER_IDS], rankingEligibility: 'personal', createdAt: '2026-10-29T00:00:00.000Z',
@@ -76,7 +106,8 @@ export function measure(placements: Placement[], stream: Stream, balance: Balanc
   const r = applyCommand(ctx, s, { type: 'startBattle' });
   if (!r.ok) throw new Error(`전투 시작 실패: ${r.error}`);
   const battle = s.battle!;
-  battle.spawnList = Array.from({ length: stream.count }, (_, i) => (stream.pattern ? { ...stream.pattern[i % stream.pattern.length]! } : { kind: stream.kind, elite: stream.elite }));
+  const faction = stream.faction ? { faction: stream.faction } : {};
+  battle.spawnList = Array.from({ length: stream.count }, (_, i) => (stream.pattern ? { ...stream.pattern[i % stream.pattern.length]!, ...faction } : { kind: stream.kind, elite: stream.elite, ...faction }));
   battle.intervalTicks = msToTicks(stream.spacingMs);
   battle.hpBaseMilli = 1_000_000_000;
   let damage = 0;
@@ -110,6 +141,9 @@ export interface MatrixRow {
   per100: Record<Role, number>;
   /** 같은 줄·같은 칸의 궁수 대비. */
   ratio: Record<Role, number>;
+  /** 종족 특성 4열(R4 B3): 100골드당 피해와 같은 칸 궁수 대비. */
+  traitPer100: Record<TraitKind, number>;
+  traitRatio: Record<TraitKind, number>;
   best: { role: Role; ratio: number };
   worst: { role: Role; ratio: number };
   attacks: boolean;
@@ -132,15 +166,18 @@ export function runMatrix(balance: Balance = BALANCE, o: { mapId?: string; tower
     return (m.damage / m.gold) * 100 / 1000;
   };
   const archer = Object.fromEntries(ROLES.map(r => [r, per100Of('archer', STREAMS[ROLE_STREAMS[r]])])) as Record<Role, number>;
+  const archerTrait = Object.fromEntries(TRAITS.map(t => [t, per100Of('archer', TRAIT_STREAMS[t])])) as Record<TraitKind, number>;
   return (o.towers ?? TOWER_IDS).map(tower => {
     const attacks = balance.towers[tower].damageType !== 'none';
     const per100 = Object.fromEntries(ROLES.map(r => [r, attacks ? per100Of(tower, STREAMS[ROLE_STREAMS[r]]) : 0])) as Record<Role, number>;
     const ratio = Object.fromEntries(ROLES.map(r => [r, archer[r] > 0 ? per100[r] / archer[r] : 0])) as Record<Role, number>;
+    const traitPer100 = Object.fromEntries(TRAITS.map(t => [t, attacks ? per100Of(tower, TRAIT_STREAMS[t]) : 0])) as Record<TraitKind, number>;
+    const traitRatio = Object.fromEntries(TRAITS.map(t => [t, archerTrait[t] > 0 ? traitPer100[t] / archerTrait[t] : 0])) as Record<TraitKind, number>;
     const ranked = [...ROLES].sort((x, y) => ratio[y] - ratio[x]);
     const best = { role: ranked[0]!, ratio: ratio[ranked[0]!] };
     const worst = { role: ranked.at(-1)!, ratio: ratio[ranked.at(-1)!] };
     const utility = UTILITY_TOWERS.includes(tower);
-    return { tower, per100, ratio, best, worst, attacks, utility, pass: tower === 'archer' || utility || !attacks ? null : best.ratio >= REQUIRED_RATIO };
+    return { tower, per100, ratio, traitPer100, traitRatio, best, worst, attacks, utility, pass: tower === 'archer' || utility || !attacks ? null : best.ratio >= REQUIRED_RATIO };
   });
 }
 

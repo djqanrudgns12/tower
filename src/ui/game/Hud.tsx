@@ -5,6 +5,7 @@ import { bestLine, fmtNumber } from '../copy';
 import { PauseIcon } from '../icons/ControlIcons';
 import { ArtIcon, Card, IconButton } from '../kit';
 import css from './Hud.module.css';
+import { RelicStrip } from './RelicStrip';
 import { RollingNumber } from './RollingNumber';
 
 interface Props {
@@ -17,8 +18,13 @@ interface Props {
   reducedMotion?: boolean;
   /** 이 기기의 같은 학년·난이도 최고 기록(그 판 전까지, 판 안에서 바뀌지 않는다). 없으면 null·생략. */
   bestWave?: number | null;
+  /** 원정 보물 이름·규칙을 읽을 밸런스(prd-r4 §7.2-F). 없으면 보물 칸을 그리지 않는다. 휴대폰 한 줄에는 자리가 없어 상황 카드가 보인다. */
+  relicInfo?: Balance;
+  /** 보물 아이콘(타워 초상화)용 전장 텍스처 그림. */
+  icons?: Record<string, string>;
   onPause(): void;
 }
+
 
 /** 연속 정답 불꽃 칸: 조건 수(balance.burning.streak)마다 한 바퀴 돌고, 불꽃(버닝) 중에는 가득 찬다(PRD §5). */
 export function streakGems(view: Pick<GameView, 'burningSecondsLeft' | 'battleStreak'>, rule: Pick<Balance['burning'], 'streak'>) {
@@ -33,7 +39,7 @@ export function streakGems(view: Pick<GameView, 'burningSecondsLeft' | 'battleSt
  * - R 압축(낮은 화면): 두 줄 — 성문·일시정지 / 골드·웨이브·점수·불꽃.
  * - S(휴대폰): 한 줄 — 성문·골드·웨이브·불꽃·일시정지(점수는 결과에서 본다).
  */
-export function Hud({ view, burning: rule, mode, compactRail = false, goldRef, reducedMotion = false, bestWave = null, onPause }: Props) {
+export function Hud({ view, burning: rule, mode, compactRail = false, goldRef, reducedMotion = false, bestWave = null, relicInfo, icons = {}, onPause }: Props) {
   const ratio = view.gateMaxHp ? view.gateHp / view.gateMaxHp : 0;
   const waveNo = Math.max(1, view.wave);
   const { burning, lit } = streakGems(view, rule);
@@ -98,6 +104,9 @@ export function Hud({ view, burning: rule, mode, compactRail = false, goldRef, r
     </span>
   );
 
+  // 원정 보물(prd-r4 §7.2-F): 넓은 레일은 아이콘을 하나씩, 압축 레일은 보물 상자 + 개수 하나. 휴대폰 한 줄은 자리가 없어 그리지 않는다.
+  const relics = relicInfo && !phone ? <RelicStrip balance={relicInfo} relics={view.relics} icons={icons} variant={big ? 'icons' : 'count'} /> : null;
+
   if (phone) {
     return (
       <Card className={`${css.hud} ${css.bar}`}>
@@ -123,6 +132,7 @@ export function Hud({ view, burning: rule, mode, compactRail = false, goldRef, r
           </div>
           <div className={css.row}>
             {wave}
+            {relics}
             {score}
           </div>
         </>
@@ -130,6 +140,7 @@ export function Hud({ view, burning: rule, mode, compactRail = false, goldRef, r
         <div className={css.row}>
           {gold}
           {wave}
+          {relics}
           {score}
           {flames}
         </div>

@@ -1,5 +1,6 @@
 import { FORM_IDS, TOWER_IDS, type Balance, type DifficultyId, type FormId, type TowerId } from '../../src/contracts/balance';
 import { BALANCE, MAPS } from '../../src/content';
+import { relicIds } from '../../src/domain/relics';
 import { upgradeCost } from '../../src/domain/towers';
 import { withOverrides } from './balanceSim';
 import { CORE4, FAST_TUNING, FULL_TUNING, runBot, type BotName, type RunSpec, type RunSummary } from './bots';
@@ -44,6 +45,9 @@ export function planJobs(o: PlanOptions): GateJob[] {
   for (const t of MONO_TOWERS) cells(`mono-${t}`, 'Normal', o.mode === 'full' ? [0.6, 0.8, 0.95] : [0.8]);
   cells('core4', 'Normal', [0.8]);
   for (const u of UTILITY_SYNERGY) cells(`core4+${u}`, 'Normal', [0.8]);
+  // 원정 보물 상승폭(R4 B3): 균형형 80%가 보물 없이 / 그 보물 하나만 가진 판.
+  cells('norelic', 'Normal', [0.8]);
+  for (const id of relicIds(BALANCE)) cells(`relic-${id}`, 'Normal', [0.8]);
   // 난이도 간격: 균형형 80%, 어려움·아주 어려움 초보형 60%의 1웨이브 패배.
   for (const d of ['Easy', 'Hard', 'Crazy'] as const) cells('balanced', d, [0.8]);
   for (const d of ['Hard', 'Crazy'] as const) cells('novice', d, [0.6]);

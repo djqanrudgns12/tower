@@ -6,7 +6,7 @@ import { correctChoice, newRun } from '../helpers';
 // PRD §8.6: "위반은 학생 패배가 아니라 RECOVERY_REQUIRED(NUMERIC_LIMIT)로 정지하고 그때까지의 기록을 보존한다."
 test('정답 골드가 안전 범위를 넘으면 부분 채점 없이 복구 정지한다', () => {
   const { ctx, s } = newRun();
-  s.gold = Number.MAX_SAFE_INTEGER - 21; // Normal 정답 +22골드만 한계를 넘는다.
+  s.gold = Number.MAX_SAFE_INTEGER - (ctx.difficulty.correctGold - 1); // Normal 첫 정답 골드만 한계를 넘는다(첫 정답은 연속 보너스 없음).
   const before = { gold: s.gold, pt: s.pt, answer: null, correct: s.stats.correct };
   const controller = new RunController(ctx, s, { saveSeq: 0, ownership: null });
   let thrown = false;
