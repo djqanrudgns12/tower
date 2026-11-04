@@ -32,7 +32,7 @@ export interface BotTuning {
    */
   waveTickBudget: number;
 }
-export const FAST_TUNING: BotTuning = { K: 6, horizon: 2, waveTickBudget: 140_000 };
+export const FAST_TUNING: BotTuning = { K: 6, horizon: 3, waveTickBudget: 210_000 };
 export const FULL_TUNING: BotTuning = { K: 10, horizon: 2, waveTickBudget: 400_000 };
 
 const ENGINE_BALANCED: Strategy = STRATEGIES.balanced10;

@@ -164,6 +164,7 @@ function goodMetrics(): Metrics {
     counterStrong: strong,
     towerRoles: [{ tower: 'cannon', strongRole: 'swarm', strong: 2, weakRole: 'flyer', weak: 0, ok: true }],
     pickShare: Object.fromEntries(TOWER_IDS.map(t => [t, 0.05])), pickRuns: 30,
+    draftPicks: Object.fromEntries(TOWER_IDS.slice(4).map(t => [t, { offered: 20, picked: 6 }])),
     utility: (['frost', 'wind', 'bell', 'banner', 'alchemist', 'guardian'] as const).map(tower => ({ tower, waveDelta: 2, gateDelta: -0.1, pass: true, n: 32, coreWaves: 16, withWaves: 18, coreGate: 0.1, withGate: 0.09 })),
     utilityWindow: 15,
   };
@@ -196,9 +197,9 @@ describe('관문 줄 판정', () => {
     expect(status({ ...m, balanced95: 17 }, 'curve.accEffect')).toBe('FAIL'); // 17 - 13 = 4 < 5
     expect(status({ ...m, monoWaves: { ...m.monoWaves, crossbow: 14 } }, 'curve.bestMono')).toBe('FAIL'); // 균형형 16 - 3 = 13 < 14
     expect(status({ ...m, monoWaves: { ...m.monoWaves, crossbow: 13 } }, 'curve.bestMono')).toBe('PASS');
-    // 깃발은 공격하지 않으니 단일 타워 판정에서 빠진다.
-    expect(status({ ...m, monoWaves: { ...m.monoWaves, banner: 0 } }, 'tower.monoMin')).toBe('PASS');
-    expect(status({ ...m, monoWaves: { ...m.monoWaves, frost: 5 } }, 'tower.monoMin')).toBe('FAIL');
+    // 유틸 6종(깃발·서리·바람·종각·약병·수호기사)은 단일 타워 판정에서 빠진다(측정 정의 보정 B2). 공격 타워는 W6 미만이면 미달.
+    expect(status({ ...m, monoWaves: { ...m.monoWaves, banner: 0, frost: 2, wind: 0 } }, 'tower.monoMin')).toBe('PASS');
+    expect(status({ ...m, monoWaves: { ...m.monoWaves, mortar: 5 } }, 'tower.monoMin')).toBe('FAIL');
   });
 
   it('보스 처치율은 웨이브마다 다른 기준을 쓴다', () => {
@@ -209,10 +210,14 @@ describe('관문 줄 판정', () => {
     expect(status(kill(15, 0.69), 'curve.bossKill15')).toBe('FAIL');
   });
 
-  it('타워 균형 줄: 선택률 4~25%, 역할별 강한 타워 2종, 유틸 시너지', () => {
+  it('타워 균형 줄: 징집 선택률(후보로 나왔을 때) 10~60%, 역할별 강한 타워 2종, 유틸 시너지', () => {
     const m = goodMetrics();
-    expect(status({ ...m, pickShare: { ...m.pickShare, bell: 0.02 } }, 'tower.pickRate')).toBe('FAIL');
-    expect(status({ ...m, pickShare: { ...m.pickShare, archer: 0.3 } }, 'tower.pickRate')).toBe('FAIL');
+    expect(status({ ...m, draftPicks: { ...m.draftPicks, bell: { offered: 20, picked: 1 } } }, 'tower.pickRate')).toBe('FAIL'); // 5% < 10%
+    expect(status({ ...m, draftPicks: { ...m.draftPicks, bell: { offered: 20, picked: 13 } } }, 'tower.pickRate')).toBe('FAIL'); // 65% > 60%
+    expect(status({ ...m, draftPicks: { ...m.draftPicks, bell: { offered: 20, picked: 2 } } }, 'tower.pickRate')).toBe('PASS'); // 10%는 경계 안
+    // 후보로 9번 이하 나온 타워는 표본 부족으로 판정에서 뺀다. 설치 점유(pickShare)는 판정에 쓰지 않는다.
+    expect(status({ ...m, draftPicks: { ...m.draftPicks, bell: { offered: 9, picked: 0 } } }, 'tower.pickRate')).toBe('PASS');
+    expect(status({ ...m, pickShare: { ...m.pickShare, archer: 0.5 } }, 'tower.pickRate')).toBe('PASS');
     const weak = { ...m.counterStrong, swarm: { count: 1, towers: ['cannon' as TowerId] } };
     expect(status({ ...m, counterStrong: weak }, 'tower.counter2')).toBe('FAIL');
     // 웨이브 +1.5 또는 성문 −25% 둘 중 하나면 통과, 둘 다 못 하면 미달.
@@ -249,5 +254,18 @@ describe('관문 지표 계산', () => {
     const withError = computeMetrics({ runs: [...runs, mk('balanced', 0.8, 1, { engineError: 'NUMERIC_LIMIT' })], matrix: {}, efficiency: [] }, 2);
     expect(withError.engineErrors).toBe(1);
     expect(withError.balanced80).toBe(16);
+  });
+
+  it('측정 정의 보정(B2): 강점·약점 줄은 유틸 6종·덫을 빼고, 징집 선택률은 최적화형 판의 후보·선택을 센다', () => {
+    const ratio = (best: number, worst: number) => Object.fromEntries(ROLES.map((r, i) => [r, i === 0 ? best : i === 1 ? worst : 1]));
+    const rows = TOWER_IDS.map(tower => ({ tower, attacks: tower !== 'banner', ratio: ratio(1.5, 0.5), per100: ratio(1, 1), best: { role: ROLES[0]!, ratio: 1.5 }, worst: { role: ROLES[1]!, ratio: 0.5 }, utility: false, pass: null }));
+    const opt = run({ bot: 'optimizer', acc: 0.95, completedWave: 10, loss: Array.from({ length: 10 }, () => 0) });
+    opt.drafts = [{ wave: 3, offers: ['spear', 'trap', 'bell'], picked: 'trap' }, { wave: 6, offers: ['spear', 'falcon', 'hwacha'], picked: 'falcon' }];
+    const m = computeMetrics({ runs: [opt], matrix: { garden_u: rows as never }, efficiency: [] }, 1);
+    const judged = m.towerRoles.map(t => t.tower);
+    for (const t of ['archer', 'banner', 'frost', 'wind', 'bell', 'alchemist', 'guardian', 'trap'] as const) expect(judged).not.toContain(t);
+    expect(judged).toContain('crossbow');
+    expect(m.draftPicks.spear).toEqual({ offered: 2, picked: 0 });
+    expect(m.draftPicks.trap).toEqual({ offered: 1, picked: 1 });
   });
 });

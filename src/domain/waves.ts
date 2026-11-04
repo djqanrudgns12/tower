@@ -73,6 +73,13 @@ export function enemyMaxHp(b: Balance, d: DifficultyConfig, baseMilli: number, k
   return hp;
 }
 
+/** 성문 누출 피해: 대장·정예는 leakDamage 표, 일반은 역할의 leakDamage(없으면 표의 regular). R4 B2.5에서 비행은 2다. */
+export function leakDamageOf(b: Balance, e: Pick<Enemy, 'kind' | 'elite'>): number {
+  if (e.kind === 'boss') return b.leakDamage.boss;
+  if (e.elite) return b.leakDamage.elite;
+  return b.enemies[e.kind].leakDamage ?? b.leakDamage.regular;
+}
+
 export function enemySpeedBP(b: Balance, kind: EnemyKind, elite: EliteId | null): number {
   return elite ? mulDivFloor(b.enemies[kind].speedBP, b.elites[elite].speedBP, 10000, 'speed') : b.enemies[kind].speedBP;
 }

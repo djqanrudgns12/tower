@@ -4,7 +4,7 @@ import { buildPath, positionAt } from '../../src/domain/geometry';
 import { isqrt, msToTicks, NumericLimitError, round5Bp, safe } from '../../src/domain/num';
 import { intBelow, nextU32, shuffle, streamSeed } from '../../src/domain/rng';
 import { sellRefund, upgradeCost } from '../../src/domain/towers';
-import { composeWave, difficultyHpBP, earlyHpBP, enemyMaxHp, hpBaseMilli, hpReferenceCount, spawnIntervalTicks, waveCount, waveHpBaseMilli } from '../../src/domain/waves';
+import { composeWave, difficultyHpBP, earlyHpBP, enemyMaxHp, hpBaseMilli, hpReferenceCount, leakDamageOf, spawnIntervalTicks, waveCount, waveHpBaseMilli } from '../../src/domain/waves';
 
 describe('xorshift32-v1', () => {
   it('Marsaglia(2003) C 원형과 같은 출력을 낸다', () => {
@@ -65,8 +65,9 @@ describe('웨이브 생성(PRD §8.2~8.3)', () => {
   it('줄인 적 수만큼 개체 HP로 옮기고(총 HP 유지) 1~13웨이브는 초반 완충을 곱한다(prd-r4 §7.2 A, R4 B2)', () => {
     // 총 HP 기준 수는 옛 증가 폭(3웨이브마다 +2): 4웨이브 26, 61웨이브 64, 1웨이브는 언제나 편성 수와 같다.
     expect([1, 4, 7, 61, 200].map(w => hpReferenceCount(BALANCE, w))).toEqual([24, 26, 28, 64, 64]);
-    // 완충은 1~6웨이브의 실제 HP를 B1(기준 24000 × 0.80~0.96)과 같게 두고, 7~13웨이브에 걸쳐 1.00까지 오른다.
-    expect([1, 2, 6, 7, 13, 14].map(w => earlyHpBP(BALANCE, w))).toEqual([4364, 4582, 5455, 5884, 9269, 10000]);
+    // 완충은 1~6웨이브의 실제 HP를 B1(기준 24000 × 0.80~0.96)과 같게 두고, 7~13웨이브에 걸쳐 1.00까지 오른다(B2.5: 7~12웨이브를 조금 낮췄다).
+    expect([1, 2, 6, 7, 12, 13, 14].map(w => earlyHpBP(BALANCE, w))).toEqual([4364, 4582, 5455, 5650, 8150, 9269, 10000]);
+    for (let w = 2; w <= 14; w++) expect(earlyHpBP(BALANCE, w)).toBeGreaterThan(earlyHpBP(BALANCE, w - 1));
     // 1웨이브: ceil(44000 × 0.4364) = 19202(B1 19200). 4웨이브: ceil(66919 × 26 / 25) = 69596 → ceil(× 0.5018) = 34924(B1 34926).
     expect([1, 4, 6, 14].map(w => waveHpBaseMilli(BALANCE, w))).toEqual([19202, 34924, 50209, 309410]);
     // 총 HP(기준 HP × 적 수)는 완충이 끝난 뒤 옛 편성(기준 수 × 점화식) 이상이고, 올림 한 번(적 수 미만 milli) 차이 안이다.
@@ -100,11 +101,18 @@ describe('웨이브 생성(PRD §8.2~8.3)', () => {
     const count = (k: string) => w3.filter(e => e.kind === k).length;
     expect([count('walker'), count('runner')]).toEqual([17, 7]);
   });
+  it('누출 피해: 대장 3·정예 2·일반 1, 일반 비행은 2(R4 B2.5), 정예 비행은 정예 규칙 2', () => {
+    expect(leakDamageOf(BALANCE, { kind: 'walker', elite: null })).toBe(1);
+    expect(leakDamageOf(BALANCE, { kind: 'flyer', elite: null })).toBe(2);
+    expect(leakDamageOf(BALANCE, { kind: 'flyer', elite: 'swift' })).toBe(BALANCE.leakDamage.elite);
+    expect(leakDamageOf(BALANCE, { kind: 'splitling', elite: null })).toBe(1);
+    expect(leakDamageOf(BALANCE, { kind: 'boss', elite: null })).toBe(3);
+  });
   it('모든 난이도에서 무방비 누출 피해 합 ≥ 성문 HP(A16)', () => {
     for (const d of Object.values(BALANCE.difficulties)) {
       for (const m of MAPS) for (let w = 1; w <= 60; w++) {
         const list = composeWave(BALANCE, m.id, w, { s: w * 31 });
-        const leak = list.reduce((a, e) => a + (e.kind === 'boss' ? BALANCE.leakDamage.boss : e.elite ? BALANCE.leakDamage.elite : BALANCE.leakDamage.regular), 0);
+        const leak = list.reduce((a, e) => a + leakDamageOf(BALANCE, e), 0);
         expect(leak).toBeGreaterThanOrEqual(d.gateHp);
       }
     }

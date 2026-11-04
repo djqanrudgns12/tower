@@ -4,7 +4,7 @@ import { burningBonusBP } from '../../src/domain/combat';
 import { msToTicks } from '../../src/domain/num';
 import { correctGoldAt } from '../../src/domain/run';
 import type { GameContext } from '../../src/domain/context';
-import type { RunState } from '../../src/domain/types';
+import type { Enemy, RunState } from '../../src/domain/types';
 import { answerCurrent, finishPrep, newRun, ok, ticks } from './helpers';
 
 // R4 B1 곡선·경제(prd-r4 §7.2 A·B): 정답 골드의 웨이브 성장, 불꽃 2단, 연속 정답의 웨이브 넘김.
@@ -110,6 +110,29 @@ describe('불꽃(버닝) 2단과 웨이브를 넘는 연속 정답', () => {
     expect(s.quiz.battleStreak).toBe(2);
     answerCurrent(ctx, s, 'skip');
     expect(s.quiz.battleStreak).toBe(0);
+  });
+
+  it('불꽃이 켜진 동안 처치 골드 ×2(R4 B2.5), 꺼지면 그대로이고 파생체는 여전히 0골드다', () => {
+    expect(BALANCE.burning.killGoldBP).toBe(20000);
+    const { ctx, s } = newRun('Normal', 17);
+    finishPrep(ctx, s);
+    ok(ctx, s, { type: 'startBattle' });
+    s.gateHp = s.gateMaxHp = 1000;
+    s.battle!.spawnList = [{ kind: 'walker', elite: null }, { kind: 'walker', elite: 'armored' }, { kind: 'walker', elite: null }];
+    s.battle!.spawnIndex = 0; s.battle!.nextSpawnTick = s.tick + 1; s.battle!.intervalTicks = 1; s.battle!.hpBaseMilli = 1000;
+    ticks(ctx, s, 3);
+    const [plain, elite, derived] = s.enemies as [Enemy, Enemy, Enemy];
+    for (const e of s.enemies) e.stunUntilTick = 10_000_000;
+    derived.derived = true;
+    const shoot = (e: Enemy) => s.projectiles.push({ id: 900 + e.id, towerId: 999, towerType: 'archer', fromX: 0, fromY: 0, targetId: e.id, toX: 0, toY: 0, firedTick: s.tick, arrivalTick: s.tick + 1, damage: 1_000_000, damageType: 'physical', splashRadius: 0, maxTargets: 1, slowBP: 0, slowTicks: 0, physicalResistIgnoreBP: 0, bonusBP: 0, eliteBossDamageBP: 10000, canHitFlyer: true, flyerDamageBP: 10000 });
+    const gold = (ev: ReturnType<typeof ticks>) => ev.flatMap(x => (x.type === 'kill' ? [x.gold] : []));
+    // 꺼진 동안: 일반 1골드.
+    shoot(plain);
+    expect(gold(ticks(ctx, s, 1))).toEqual([ctx.difficulty.killGold.regular]);
+    // 켜진 동안: 정예 4 → 8, 파생체는 0.
+    s.burningUntilTick = s.tick + 100;
+    shoot(elite); shoot(derived);
+    expect(gold(ticks(ctx, s, 1))).toEqual([ctx.difficulty.killGold.elite * 2, 0]);
   });
 
   it('streakAcrossWaves가 꺼진 밸런스는 예전처럼 웨이브마다 연속을 0으로 되돌린다', () => {

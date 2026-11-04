@@ -1,7 +1,7 @@
 import { TOWER_IDS, type DifficultyId, type FormId, type TowerId } from '../../src/contracts/balance';
 import type { RunSummary } from './bots';
 import type { EfficiencyRow } from './gateJobs';
-import { ROLES, type MatrixRow, type Role } from './towerEfficiency';
+import { ROLES, UTILITY_TOWERS, type MatrixRow, type Role } from './towerEfficiency';
 
 // 관문(PRD §7.1) 집계와 판정. 실행(워커)과 분리된 순수 함수라서 시험이 가짜 지표로 줄별 판정을 확인할 수 있다.
 // 가상 플레이어 기준이며 학생 실측이 아니다. "4개 맵 평균"은 맵마다 중앙값을 구해 평균한 값(mapAvg)이다.
@@ -173,12 +173,18 @@ export interface Metrics {
   counterStrong: Record<Role, { count: number; towers: TowerId[] }>;
   towerRoles: TowerRoleRow[];
   pickShare: Partial<Record<TowerId, number>>; pickRuns: number;
+  /** 징집 선택률(측정 정의 보정 B2): 최적화형 판에서 후보로 나온 횟수와 그때 고른 횟수. 시작 타워는 후보에 안 나와 없다. */
+  draftPicks: Partial<Record<TowerId, { offered: number; picked: number }>>;
   utility: UtilityRow[];
   /** 유틸 시너지의 성문 피해를 재는 웨이브 창(1~이 값). */
   utilityWindow: number;
 }
 
 export const BRANCH_MIN_N = 10;
+/** 징집 선택률을 판정할 최소 후보 횟수(그보다 적으면 표본 부족으로 뺀다). */
+export const DRAFT_MIN_N = 10;
+/** 상성표(한 번 지나가는 줄) 대신 실제 판 지표로만 보는 타워: 덫은 미리 깔린 덫·웨이브 이월을 상성표가 못 본다(측정 정의 보정 B2). */
+export const MATRIX_EXEMPT: readonly TowerId[] = ['trap'];
 /** 유틸 시너지 판정: 웨이브 +1.5 이상 또는 성문 피해 -25% 이상. */
 export const UTILITY_WAVE_GAIN = 1.5;
 export const UTILITY_GATE_DROP = -0.25;
@@ -226,12 +232,13 @@ export function computeMetrics(data: Dataset, seeds: number): Metrics {
   // 상성표: 맵 평균 비율.
   const maps = Object.keys(data.matrix);
   const ratio = (tower: TowerId, role: Role) => mean(maps.map(m => data.matrix[m]!.find(r => r.tower === tower)?.ratio[role]).filter((x): x is number => x !== undefined)) ?? 0;
-  const attackers = TOWER_IDS.filter(t => t !== 'archer' && maps.length > 0 && data.matrix[maps[0]!]!.find(r => r.tower === t)?.attacks);
+  const attackers = TOWER_IDS.filter(t => t !== 'archer' && !MATRIX_EXEMPT.includes(t) && maps.length > 0 && data.matrix[maps[0]!]!.find(r => r.tower === t)?.attacks);
   const counterStrong = Object.fromEntries(ROLES.map(role => {
     const towers = attackers.filter(t => ratio(t, role) >= STRONG_COUNTER);
     return [role, { count: towers.length, towers }];
   })) as Metrics['counterStrong'];
-  const towerRoles: TowerRoleRow[] = attackers.map(tower => {
+  // 강점·약점 줄은 공격 타워만 본다: 유틸 6종은 유틸 시너지 줄로만 판정한다(측정 정의 보정 B2).
+  const towerRoles: TowerRoleRow[] = attackers.filter(t => !UTILITY_TOWERS.includes(t)).map(tower => {
     const ranked = [...ROLES].sort((a, b) => ratio(tower, b) - ratio(tower, a));
     const strongRole = ranked[0]!, weakRole = ranked.at(-1)!;
     return { tower, strongRole, strong: ratio(tower, strongRole), weakRole, weak: ratio(tower, weakRole), ok: ratio(tower, strongRole) >= STRONG_ROLE && ratio(tower, weakRole) <= WEAK_ROLE };
@@ -242,6 +249,11 @@ export function computeMetrics(data: Dataset, seeds: number): Metrics {
   for (const r of optRuns) for (const [t, n] of Object.entries(r.builds)) builds[t as TowerId] = (builds[t as TowerId] ?? 0) + (n ?? 0);
   const buildTotal = sum(Object.values(builds));
   const pickShare = Object.fromEntries(TOWER_IDS.map(t => [t, buildTotal ? (builds[t] ?? 0) / buildTotal : 0])) as Partial<Record<TowerId, number>>;
+  // 징집 선택률(조건부): 후보로 나왔을 때 고른 비율. 설치 점유는 징집이 4번뿐이라 징집 타워가 구조적으로 낮아 판정에 쓰지 않는다.
+  const draftPicks: Metrics['draftPicks'] = {};
+  for (const r of optRuns) for (const d of r.drafts) {
+    for (const t of d.offers) { const row = (draftPicks[t] ??= { offered: 0, picked: 0 }); row.offered++; if (d.picked === t) row.picked++; }
+  }
 
   // 유틸 시너지(핵심 4종 + 유틸 하나, 정답률 80%). 성문 피해는 핵심 4종 판이 끝까지 가는 구간(W1~핵심 중앙값-1)에서 판마다 평균한다.
   const core = N('core4', 0.8);
@@ -280,7 +292,7 @@ export function computeMetrics(data: Dataset, seeds: number): Metrics {
     effEarly: effOf('early'), effLate: effOf('late'),
     branches, branchLowN,
     counterStrong, towerRoles,
-    pickShare, pickRuns: optRuns.length,
+    pickShare, pickRuns: optRuns.length, draftPicks,
     utility, utilityWindow: gateWindow,
   };
 }
@@ -356,7 +368,7 @@ export const ROWS: RowDef[] = [
     },
   },
   {
-    id: 'tower.strengthWeakness', group: '타워 균형', label: '궁수 외 공격 타워마다 강점(≥1.35배) 1개↑·약점(≤0.8배) 1개↑', target: '위반 0종',
+    id: 'tower.strengthWeakness', group: '타워 균형', label: '궁수·유틸 6종·덫 외 공격 타워마다 강점(≥1.35배) 1개↑·약점(≤0.8배) 1개↑', target: '위반 0종',
     check: m => {
       if (!m.towerRoles.length) return na();
       const bad = m.towerRoles.filter(t => !t.ok);
@@ -364,18 +376,20 @@ export const ROWS: RowDef[] = [
     },
   },
   {
-    id: 'tower.pickRate', group: '타워 균형', label: '최적화형 선택률(설치 점유) 20종', target: '모두 ≥ 4%, 모두 ≤ 25%',
+    id: 'tower.pickRate', group: '타워 균형', label: '최적화형 징집 선택률(후보로 나왔을 때 고른 비율)', target: '모두 ≥ 10%, ≤ 60%',
     check: m => {
       if (!m.pickRuns) return na();
-      const entries = TOWER_IDS.map(t => [t, m.pickShare[t] ?? 0] as const);
-      const low = entries.filter(([, v]) => v < 0.04), high = entries.filter(([, v]) => v > 0.25);
-      return { status: low.length === 0 && high.length === 0 ? 'PASS' : 'FAIL', measured: `4% 미만 ${low.length}종${low.length ? ` (${low.map(([t]) => t).join(',')})` : ''}, 25% 초과 ${high.length}종${high.length ? ` (${high.map(([t, v]) => `${t} ${pct(v)}`).join(',')})` : ''}`, value: low.length + high.length };
+      const all = Object.entries(m.draftPicks) as Array<[TowerId, { offered: number; picked: number }]>;
+      const entries = all.filter(([, v]) => v.offered >= DRAFT_MIN_N).map(([t, v]) => [t, v.picked / v.offered] as const);
+      if (!entries.length) return na(`표본 부족(후보 ${DRAFT_MIN_N}회 미만)`);
+      const low = entries.filter(([, v]) => v < 0.1), high = entries.filter(([, v]) => v > 0.6);
+      return { status: low.length === 0 && high.length === 0 ? 'PASS' : 'FAIL', measured: `${entries.length}종 중 10% 미만 ${low.length}${low.length ? ` (${low.map(([t, v]) => `${t} ${pct(v)}`).join(',')})` : ''}, 60% 초과 ${high.length}${high.length ? ` (${high.map(([t, v]) => `${t} ${pct(v)}`).join(',')})` : ''}, 표본 부족 ${all.length - entries.length}`, value: low.length + high.length };
     },
   },
   {
-    id: 'tower.monoMin', group: '타워 균형', label: '단일 타워 판(공격 타워 19종, 80%) 모두', target: '≥ W6',
+    id: 'tower.monoMin', group: '타워 균형', label: '단일 타워 판(유틸 6종을 뺀 공격 타워 14종, 80%) 모두', target: '≥ W6',
     check: m => {
-      const entries = Object.entries(m.monoWaves).filter(([t]) => t !== 'banner');
+      const entries = Object.entries(m.monoWaves).filter(([t]) => !UTILITY_TOWERS.includes(t as TowerId));
       if (!entries.length) return na();
       const bad = entries.filter(([, w]) => w < 6);
       const worst = [...entries].sort((a, b) => a[1] - b[1])[0]!;

@@ -77,6 +77,8 @@ const enemy = z.object({
   split: z.object({ kind: z.enum(ENEMY_KINDS), count: int.min(1).max(8), spreadMilli: nonNeg }).optional(),
   /** 이 역할을 다른 역할 그림으로 그린다(파생체처럼 종족 팩에 그림이 따로 없는 역할). */
   artRole: z.enum(REGULAR_KINDS).optional(),
+  /** 일반(정예·대장 아님)일 때 성문에 주는 누출 피해. 없으면 leakDamage.regular(R4 B2.5: 비행 2). 정예·대장은 leakDamage 표 그대로다. */
+  leakDamage: int.min(1).optional(),
 });
 
 const ms = nonNeg;
@@ -367,6 +369,8 @@ export const balanceSchema = z.object({
     streak: int.min(1), durationMs: nonNeg, attackSpeedBP: bp,
     tier2: z.object({ streak: int.min(1), attackSpeedBP: bp }).optional(),
     streakAcrossWaves: z.boolean().optional(),
+    /** 불꽃이 켜진 동안 처치 골드(일반·정예·대장)에 곱하는 배율(R4 B2.5: 처치 수입도 정답 연속에 묶는다). 없으면 그대로. */
+    killGoldBP: bp.optional(),
   }),
   externalCaps: z.object({ damageBP: bp, attackSpeedBP: bp, minAttackIntervalMs: nonNeg }),
   levels: z.object({

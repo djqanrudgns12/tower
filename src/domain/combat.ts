@@ -11,7 +11,7 @@ import {
 import type {
   Enemy, FieldHazard, HazardStrike, HitFx, Projectile, RollerHazard, RunState, SpawnEntry, SplashHit, Tower, TrapHazard, ZoneHazard, ZoneSpec,
 } from './types';
-import { airborne, difficultyHpBP, enemyMaxHp, enemyResists, enemySpeedBP, waveHpBaseMilli } from './waves';
+import { airborne, difficultyHpBP, enemyMaxHp, enemyResists, enemySpeedBP, leakDamageOf, waveHpBaseMilli } from './waves';
 
 // 같은 틱 순서(PRD §3.4, §20.3): 만료 → 생성 → 도착 공격(장판 착탄 포함) → 화상 → 장판·덫·굴림체(towers.md §4-7) → 대장 회복
 // → 상시 오라 → 타워 발사(즉발·다연발·덫 놓기·굴림체 투입 포함) → 이동/누출.
@@ -688,8 +688,9 @@ function kill(ctx: GameContext, s: RunState, e: Enemy, point: { x: number; y: nu
   e.alive = false;
   const d = ctx.difficulty;
   const tier = e.kind === 'boss' ? 'boss' : e.elite ? 'elite' : 'regular';
-  // 파생체(분열·호위)는 처치 골드·PT가 없다(monsters.md §1.2, 농사 방지).
-  const gold = e.derived ? 0 : d.killGold[tier];
+  // 파생체(분열·호위)는 처치 골드·PT가 없다(monsters.md §1.2, 농사 방지). 불꽃이 켜져 있으면 처치 골드에 burning.killGoldBP를 곱한다(R4 B2.5).
+  const killGoldBP = ctx.balance.burning.killGoldBP;
+  const gold = e.derived ? 0 : killGoldBP !== undefined && burningNow(s) ? bpFloor(d.killGold[tier], killGoldBP, 'gold.burning') : d.killGold[tier];
   let pt = e.derived ? 0 : d.killPt[tier];
   if (tier !== 'boss') {
     pt = Math.max(0, Math.min(pt, d.waveKillPtCap - s.waveKillPtGranted));
@@ -801,8 +802,7 @@ function move(ctx: GameContext, s: RunState, ev: DomainEvent[]) {
 
 function leak(ctx: GameContext, s: RunState, e: Enemy, ev: DomainEvent[]) {
   e.alive = false;
-  const tier = e.kind === 'boss' ? 'boss' : e.elite ? 'elite' : 'regular';
-  const damage = ctx.balance.leakDamage[tier];
+  const damage = leakDamageOf(ctx.balance, e);
   s.gateHp -= damage;
   s.stats.leaks++;
   if (e.kind === 'boss') s.stats.bossLeaks++;
