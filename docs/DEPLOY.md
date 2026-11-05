@@ -120,12 +120,13 @@ Worker 안에도 기기·IP별 한도가 있지만, 그 판단도 D1 쓰기 행�
 | 칸 | 값 |
 |---|---|
 | Rule name | `voca-api 몰아치기` |
-| If incoming requests match | Custom expression: `(http.host eq "voca-api.ssamuniverse.com" and starts_with(http.request.uri.path, "/v1/"))` |
+| If incoming requests match | Custom expression: `(http.request.uri.path in {"/v1/device" "/v1/lobby-visit" "/v1/runs/start" "/v1/runs/submit" "/v1/leaderboard"})` |
 | With the same characteristics | IP |
 | When rate exceeds | **600** requests per **10 seconds** |
 | Then take action | Block |
 | Duration | 10 seconds(무료 플랜 고정) |
 
+- **경로만 쓰는 까닭:** 무료 플랜 규칙식은 경로(Path)와 Verified Bot 필드만 쓸 수 있고 주소(Host)는 못 쓴다([Cloudflare 문서](https://developers.cloudflare.com/waf/rate-limiting-rules/#availability), 2026-11-05 확인). 규칙은 `ssamuniverse.com` 전체에 걸리므로 쌤유니버스 경로와 겹치지 않게 이 서버의 경로 5개만 정확히 적는다(쌤유니버스 서버에는 `/v1/` 경로가 없음을 확인). 서버에 경로를 더하면 이 목록에도 더한다.
 - **600/10초인 까닭:** 학교 IP 하나 뒤의 학생 1,000명 가운데 300명이 같은 분에 홈·랭킹·시작을 누르는 정도를 막지 않으려는 값이다. 브라우저 사전 요청(OPTIONS)까지 치면 10초에 약 400번이다. Worker 안의 IP 한도는 분당 ranking 1,200·visit 600·start/submit 300이다.
 - **한계:** 이 규칙은 순간 몰아치기만 끊는다. 초당 60번 아래로 꾸준히 보내면 Workers 무료 한도(하루 10만 요청)는 여전히 바닥날 수 있다. 그런 일이 보이면 한동안 값을 `100`으로 낮추고 Claude에게 알린다.
 - 여러 IP를 쓰는 공격은 무료 플랜에서 막을 수 없다. 그날은 랭킹만 멈추고 게임은 이 기기 기록 모드로 돈다. D1 무료 한도는 매일 **오전 9시(한국)**에 다시 찬다.
