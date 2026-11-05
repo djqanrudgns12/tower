@@ -58,9 +58,12 @@ function setup(batches: QuestionDraft[][] = [[question()], [question('B', 2)]]) 
 afterEach(() => { for (const root of roots.splice(0)) fs.rmSync(root, { recursive: true, force: true }); });
 
 describe('S1 수준 판정 실행기', () => {
-  it('2배치를 독립 판정하고 추적 파일 대신 해시가 맞는 staging만 쓰며 본문은 보존한다', async () => {
+  it.each([
+    { items: [{ lemma: '약속', grade: '중급' }] },
+    { source: '한국어기초사전', items: { 약속: { grade: '중급', entryUrl: 'https://krdict.korean.go.kr/' } } },
+  ])('2배치를 독립 판정하고 사전 등급·staging·본문 보존을 확인한다: %j', async reference => {
     const { root, options, deps, respond } = setup();
-    write(root, 'content-source/reference/krdict-grade.json', { items: [{ lemma: '약속', grade: '중급' }] });
+    write(root, 'content-source/reference/krdict-grade.json', reference);
     const before = ['A', 'B'].map(id => fs.readFileSync(path.join(root, `content-source/batches/${id}/drafts.json`), 'utf8'));
     const results = await runLevels({ ...options, 'codex-model': 'gpt-6-astra', 'codex-effort': 'high' }, deps);
     expect(results.map((r: { assessed: number }) => r.assessed)).toEqual([1, 1]);

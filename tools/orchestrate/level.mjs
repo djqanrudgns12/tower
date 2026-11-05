@@ -53,7 +53,7 @@ export function stdictSpecialized(text) { return /『\s*[가-힣A-Za-z][가-힣A
 
 function krdictGrade(reference, lemma) {
   const rows = Array.isArray(reference) ? reference : reference?.items ?? reference?.entries;
-  const value = Array.isArray(rows) ? rows.find(row => row.lemma === lemma) : reference?.[lemma];
+  const value = Array.isArray(rows) ? rows.find(row => row.lemma === lemma) : rows?.[lemma] ?? reference?.[lemma];
   const grade = typeof value === 'string' ? value : value?.grade ?? value?.krdictGrade;
   return ['초급', '중급', '고급'].includes(grade) ? grade : null;
 }
