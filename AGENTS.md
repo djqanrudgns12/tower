@@ -22,6 +22,11 @@ Claude·Codex·Antigravity와 그 서브에이전트가 이 저장소에서 일�
 - 선별: 비교판에서 뭉개지면 q92 → 무손실 WebP로 올린다. 작아지지 않거나 PNG가 꼭 필요한 파일은 `tools/assets/webp-exceptions.json`에 이유와 함께 적고 PNG로 둔다. 생성 원본(`asset-source/**`)·기준 그림·QA 캡처는 PNG 그대로다.
 - `manifest.json`의 `file`은 `.webp`, `artifactHash`는 WebP 해시로 적는다. 자세한 규칙은 [구현 계획서 §2](docs/HOSTING_IMPL_PLAN.md).
 
+## 기록·랭킹 서버 (2026-11-05)
+
+- `server/**`, `src/persistence/**`, `src/contracts/lobby.ts`를 고친 커밋 전에는 `npm run test:server`를 돌린다(약 20초, verify에는 서버 타입 검사만 들어 있다). 배포 CI가 생기면 CI가 맡는다.
+- 서버 비밀값(`PLAYER_SALT`)은 저장소·대화·시험에 적지 않는다. 로컬 개발은 `server/.dev.vars`(git 제외)를 쓴다.
+
 ## 지우기 전에 확인
 
 - 사용자가 다듬은 화면이나 기능을 통째로 걷어내는 변경(화면 교체, 기능 삭제)은 사용자 확인 뒤에 한다. 2026-11-04에 R4 리뉴얼이 사용자가 다듬은 랜딩(통합 수호 랭킹)을 확인 없이 지운 일이 있었다.
