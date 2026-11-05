@@ -54,10 +54,11 @@ Claude 사용량이 바닥나 메인 세션을 Codex로 옮긴다. 이 문서만
 - Claude 사용량도 거의 소진됐다. 로그인 뒤에도 사용량이 회복될 때까지 S4는 한도 대기에 걸린다.
 - **S4가 막혀 있는 동안 공개 승인은 늘지 않는다.** 그 사이 S1~S3(수준 판정·Codex 검수·Argon 수정)와 S6(보충 제작)은 계속 돌릴 수 있다. 이것이 당장의 운영 방식이다(§6 1단계).
 
-### 4.2 돌고 있을 수 있는 프로세스
+### 4.2 시범 루프 — 끝남(마지막 커밋 `4e54fb0`)
 
-- 시범 루프: `node tools/orchestrate/content-loop.mjs --root . --gate --batches Q50-G4-001,Q50-G5-001,Q50-G6-001 …` (Claude 세션에서 띄움, 출력 `.orchestrate/pilot-run2.out`). Claude 세션이 닫히면 같이 죽을 수 있다. `pgrep -fl content-loop.mjs`로 확인한다. 살아 있으면 끝날 때까지 두거나, §6 1단계의 `--until S3` 도구가 생긴 뒤 멈추고 다시 띄운다. 모든 단계가 "아직 안 한 것만" 하므로 멈춰도 이어 간다.
-- 4학년 배치는 S4 인증 실패 4회로 중단 기록이 남았다. 5·6학년 배치도 S4에서 같은 이유로 멈출 것이다.
+- 시범 루프는 끝났다(돌고 있는 프로세스 없음). 마지막 `--plan` 결과: 4학년 001은 S3 수정 29문항, 5학년 001은 S2 Codex 검수 50문항, 6학년 001은 S1 재판정 8문항부터 이어 간다. 4학년 001은 S4까지 갔다가 Claude 인증 실패 4회로 멈췄다.
+- **`--plan`을 포함한 모든 `content-loop` 실행에 모델 옵션과 `--recheck-codex`를 붙인다.** 빼면 기본 모델(gpt-6.1-sol)로 보고 이미 gpt-6-astra로 만든 보고서나 예전 "GPT-6 (Codex)" 보고서와 섞지 않으려고 W1a 안전장치가 오류를 낸다(정상 동작).
+  `--recheck-codex --claude-model claude-sonnet-5-5 --claude-effort high --codex-model gpt-6-astra --codex-effort high`
 
 ### 4.3 끝난 도구 (모두 커밋, 시험 통과는 Claude가 직접 실행해 확인)
 
@@ -167,7 +168,7 @@ pgrep -fl content-loop.mjs
 ```
 
 ```bash
-node tools/orchestrate/content-loop.mjs --root . --gate --plan --batches Q50-G4-001,Q50-G5-001,Q50-G6-001
+node tools/orchestrate/content-loop.mjs --root . --gate --plan --recheck-codex --batches Q50-G4-001,Q50-G5-001,Q50-G6-001 --claude-model claude-sonnet-5-5 --claude-effort high --codex-model gpt-6-astra --codex-effort high
 ```
 
 ```bash
