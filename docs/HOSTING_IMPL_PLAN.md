@@ -13,8 +13,8 @@
 | 3 | **서버 작성**(Cloudflare Workers + D1) | Claude 서브에이전트 | 없음 | **완료** `1d5df7e`·`5c25030`·`ccf31c2`, Codex 검토 P1 2건 수정 `8671839`(속도 제한 역행, IP별 합산 한도). 서버 시험 64/64 |
 | 4 | **화면 그림 WebP 전환**(UI 아이콘·설명서 그림) | Claude 서브에이전트(단계 1 작성자) | R5 완료(af83bf5) | **완료** `09b3979`(ui 29·guide 5장 1.76MB → 0.33MB, 예외 0, `public/` PNG 0장) |
 | 5 | **앱을 새 서버에 연결** | Claude 서브에이전트(단계 3 작성자) | 단계 3 | **완료** `3bab9ea`(랭킹 캐시 60초)·`d9edf31`(VITE_API_BASE, 웹소켓 제거)·`ebec750`(홈 '최근 접속'). 서버 시험 70/70, 로컬 연결 e2e 1/1 |
-| 6 | **배포 장치**(GitHub Actions·Worker 설정·`supabase/` 보관) | Claude 서브에이전트(단계 3 작성자) | 사용자 결정 A(끝남: `voca`·`voca-api.ssamuniverse.com`, `main`) | 진행 중 |
-| 7 | **실제로 올리고 연결 확인** | 사용자 + Claude | 단계 6, 사용자 할 일 B~E | 대기 |
+| 6 | **배포 장치**(GitHub Actions·Worker 설정·`supabase/` 보관) | Claude 서브에이전트(단계 3 작성자) | 사용자 결정 A(끝남: `voca`·`voca-api.ssamuniverse.com`, `main`) | **완료** `0311e89`·`802492d`·`742b034`, `main` 빨리 감기(742b034). 워크플로 액션 최신 주 버전 확인, 무료 속도 제한 규칙은 경로 5개로 |
+| 7 | **실제로 올리고 연결 확인** | 사용자 + Claude | 단계 6, 사용자 할 일 B~E | 사용자 차례(GitHub Pages 켜기·DNS·Cloudflare 로그인) — 순서는 [DEPLOY.md](DEPLOY.md) |
 | 8 | **출시 뒤**: 다시 열 때 바로 뜨게(서비스 워커), 실기기·학교 망, 월 점검 | Claude + 사용자 | 단계 7 | 대기 |
 
 ```
