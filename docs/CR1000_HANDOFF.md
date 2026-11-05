@@ -75,8 +75,8 @@ Claude 사용량이 바닥나 메인 세션을 Codex로 옮긴다. 이 문서만
 
 **Claude CLI 로그인 만료.** 시범 4학년 배치가 Claude 관문(S4)에서 4번 모두 실패했다.
 `.orchestrate/review/claude/Q50-G4-001/chunk0/blind.reply1.md`: `실행 실패: Failed to authenticate: OAuth session expired and could not be refreshed`
-- 사용자가 터미널에서 `claude`를 실행해 다시 로그인해야 한다(비밀값이라 에이전트가 하지 않는다).
-- Claude 사용량도 거의 소진됐다. 로그인 뒤에도 사용량이 회복될 때까지 S4는 한도 대기에 걸린다.
+- **2026-11-06 사용자가 다시 로그인했다**(`claude auth login` 성공, `auth status`가 `loggedIn: true`). 검수 도구가 부르는 CLI는 `~/Library/Application Support/Claude/claude-code/<가장 새 판>/<hash>/claude.app/Contents/MacOS/claude`다(셸 PATH에는 `claude`가 없다). 다시 만료되면 사용자가 그 파일로 `auth login`을 실행한다(비밀값이라 에이전트가 하지 않는다).
+- 남은 막힘은 Claude 사용량이다(거의 소진). 회복될 때까지 S4는 한도 대기에 걸린다. 사용자가 회복을 알리면 관문을 돌린다.
 - **S4가 막혀 있는 동안 공개 승인은 늘지 않는다.** 그 사이 S1~S3(수준 판정·Codex 검수·Argon 수정)와 S6(보충 제작)은 계속 돌릴 수 있다. 이것이 당장의 운영 방식이다(§6 1단계).
 
 ### 4.2 시범 루프 — 끝남(마지막 커밋 `4e54fb0`)
