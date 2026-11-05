@@ -10,7 +10,7 @@
 |---|---|---|---|---|
 | 1 | **전투 그림 WebP 전환**(378장) + 변환 도구·규칙 시험 | Claude 서브에이전트 | 없음 | **완료** `9c476cc`(14.19MB → 3.20MB, 알파 불일치 0, 예외 0) |
 | 2 | **고른 맵 그림만 받기** | 단계 1과 같은 서브에이전트 | 단계 1 | 진행 중 |
-| 3 | **서버 작성**(Cloudflare Workers + D1) | Claude 서브에이전트 | 없음 | **완료** `1d5df7e`·`5c25030`·`ccf31c2`(서버 시험 57/57), Codex 검토 중 |
+| 3 | **서버 작성**(Cloudflare Workers + D1) | Claude 서브에이전트 | 없음 | **완료** `1d5df7e`·`5c25030`·`ccf31c2`, Codex 검토 P1 2건 수정 `8671839`(속도 제한 역행, IP별 합산 한도). 서버 시험 64/64 |
 | 4 | **화면 그림 WebP 전환**(UI 아이콘·설명서 그림) | R5 담당 또는 총괄 | R5 P3 관문(`src/ui/**`를 R5가 쓰는 중) | 대기 |
 | 5 | **앱을 새 서버에 연결** | Claude | 단계 3 | 대기 |
 | 6 | **배포 장치**(GitHub Actions·Worker 설정·`supabase/` 보관) | Claude | 단계 5, 사용자 결정 A | 대기 |
@@ -165,6 +165,7 @@
 - `.github/workflows/pages.yml`: 배포 브랜치에 push하면 빌드(`VITE_API_BASE` 주입) → `upload-pages-artifact` → `deploy-pages`.
 - Vite `base`: 자체 도메인 루트에 올리므로 `/`로 둔다(GitHub 기본 주소 `…github.io/towerdeffense/`로 먼저 볼 때는 `./`).
 - `server/wrangler.toml`: D1 연결, 서버 주소(예: `voca-api.<도메인>`)를 Worker 사용자 지정 도메인으로 붙인다.
+- Cloudflare 무료 속도 제한 규칙 1개(서버 주소 `/v1/*`, IP 기준 10초 단위)의 값과 거는 순서를 DEPLOY.md에 적는다. 대시보드 설정은 사용자가 한다(단계 7).
 - `docs/DEPLOY.md`를 새 방식으로 다시 쓴다. `supabase/`는 `docs/archive/supabase/`로 옮긴다(지우지 않는다).
 - 배포 브랜치(`main` 추천)에 작업 브랜치를 병합한다. 사용자 결정 A 뒤에 한다.
 - 끝 기준: 로컬 운영 빌드 통과, 워크플로 파일 점검.
