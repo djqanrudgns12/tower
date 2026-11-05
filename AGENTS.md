@@ -35,3 +35,4 @@ Claude·Codex·Antigravity와 그 서브에이전트가 이 저장소에서 일�
 
 - `docs/HANDOFF.md`, `docs/work-packages/DISPATCH.md`, `docs/EXECUTION_BOARD.md`, `docs/renewal/README.md`, `asset-source/**/REQUEST.md`에 적힌 worktree·`tower-wp` 작업 폴더 절차는 2026-11-04부로 쓰지 않는다. 기록으로만 남긴다.
 - 2026-11-04 정리: `tower-wp` 14곳과 `.claude/worktrees` 2곳을 지웠다. 모든 브랜치가 `p1/intake-round1`에 병합돼 있었다. 메인에 없던 WP-CORE 미커밋 문항 검수 결과(10/31 content-loop 중단분)는 로컬 브랜치 `wp/WP-CORE`에 커밋해 보관했다(병합 안 함, 공개 승인 `registry.json`을 바꾸는 내용이라 따로 검토).
+- 2026-11-05 정리(사용자가 총괄 판단에 맡김): 백업 태그 `backup/before-landing-restore`(`f8e427a`, 이미 브랜치 이력에 포함)와 `refs/backup/wip-progress-session-20261104`(`d51619f`, 1.0.0 릴리스 `3b9951f`로 대체됨)를 지웠다. `wp/WP-CORE`(`4a9da40`)는 병합 시험에서 승인 레지스트리 재계산 시험 7건이 실패해(끊긴 검수 묶음의 초안·보고서·해시가 서로 맞지 않음) 병합하지 않고 그대로 보관한다. 쓰려면 content-loop로 Q50-G3-004~006을 다시 돌려 `npm run build:bank`·`bank-build.test`를 통과시켜야 한다.
