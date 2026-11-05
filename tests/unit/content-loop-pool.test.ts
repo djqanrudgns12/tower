@@ -43,6 +43,37 @@ function fixture(count = 21) {
 }
 
 describe('배치를 넘는 재판정 회차', () => {
+  it.each([false, true, 'wrapped'] as const)('반영 차단 뒤 대기 중인 호출과 내부 후속 호출을 시작하지 않는다 (후속=%s)', async followup => {
+    const f = fixture(1);
+    const originalApply = f.deps.apply.getMockImplementation()!;
+    const originalLevel = f.deps.level.getMockImplementation()!;
+    let release!: () => void;
+    const inflight = new Promise<void>(resolve => { release = resolve; });
+    f.deps.level.mockImplementation(async (id, keys, cb) => {
+      if (id !== 'B') return originalLevel(id, keys, cb);
+      cb({ type: 'call', who: 'argon', batchIds: [id] });
+      await inflight;
+      if (followup) {
+        try { cb({ type: 'call', who: 'codex', batchIds: [id] }); }
+        catch (error) {
+          if (followup === 'wrapped') throw new Error('4회 모두 형식 오류', { cause: error });
+          throw error;
+        }
+      }
+      return { assessed: 1 };
+    });
+    f.deps.apply.mockImplementation(async id => {
+      const result = await originalApply(id);
+      if (id === 'A' && result.runs.length) throw Object.assign(new Error('자원 대기'), { code: 'RESOURCE_WAIT' });
+      return result;
+    });
+    f.deps.log.mockImplementation((message: string) => { if (message.startsWith('A 차단:')) release(); });
+    const summary = await runGate({ ...f.options, until: 'S3', codex: 1, argon: 1 }, f.deps);
+    expect(f.deps.level.mock.calls.map(([id]) => id)).toEqual(['A', 'B']);
+    expect(summary.B.modelCalls).toMatchObject({ argon: 1, codex: 0 });
+    expect(summary.C.modelCalls).toMatchObject({ argon: 0, codex: 0 });
+    for (const id of ['A', 'B', 'C']) expect(summary[id]).toMatchObject({ blocked: true, blockedReason: 'resource' });
+  });
   it('--until S3은 여러 배치의 수정·재검수와 재시작에서도 Claude를 부르지 않는다', async () => {
     const f = fixture(2);
     const summary = await runGate({ ...f.options, until: 'S3' }, f.deps);

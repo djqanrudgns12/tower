@@ -267,6 +267,8 @@ export async function runGate(options = {}, deps = {}) {
     applying = applying.then(() => runtime.apply(id, { noCommit })).catch(error => { applyError = error; throw error; });
     return applying;
   };
+  const requireApplyReady = () => { if (applyError) throw applyError; };
+  const startModel = fn => { requireApplyReady(); return fn(); };
   const workIds = noCommit ? ids.slice(0, 1) : ids;
   for (const id of ids.slice(workIds.length)) summary[id] = { awaitingApply: true };
   for (const id of workIds) summary[id] = { startedAt: new Date().toISOString(), stages: [], runId, firstPassComplete: previous[id]?.firstPassComplete === true, lastRound: previous[id]?.lastRound ?? 0, modelCalls: emptyCalls(), waits: emptyCalls(), waitMs: emptyCalls(), modelCallsBasis: 'measured' };
@@ -305,6 +307,8 @@ export async function runGate(options = {}, deps = {}) {
         summary[id].stages.push(record); summary[id].lastRound = Math.max(summary[id].lastRound, round); return [id, record];
       }));
       const onEvent = event => {
+        // 큐 대기뿐 아니라 하위 실행기의 재시도·다음 단계 호출도 실제 실행 직전에 막는다.
+        if (event.type === 'call') requireApplyReady();
         const who = event.who === 'antigravity' || event.who === 'bridge' ? 'argon' : event.who;
         if (!['claude', 'codex', 'argon'].includes(who)) throw new Error(`계측 모델 오류: ${who}`);
         const participants = [...new Set(event.batchIds ?? batchIds)].filter(id => records.has(id)).sort();
@@ -340,7 +344,9 @@ export async function runGate(options = {}, deps = {}) {
         for (const id of batchIds) if (JSON.stringify(await runtime.snapshot(id)) === before.get(id)) unchanged.push(id);
         if (unchanged.length === batchIds.length) throw new Error(`${stage}: 대상 상태가 바뀌지 않음`);
         return true;
-      } catch (error) {
+      } catch (caught) {
+        // 하위 실행기가 형식 오류로 감싸도 최초 반영 차단의 원인을 유지한다.
+        const error = applyError ?? caught;
         for (const record of records.values()) record.error = error.message;
         if (['CLAUDE_AUTH_BLOCKED', 'RESOURCE_WAIT'].includes(error.code)) {
           for (const record of records.values()) record.status = 'blocked';
@@ -362,20 +368,21 @@ export async function runGate(options = {}, deps = {}) {
         const state = await runtime.snapshot(id), keys = state?.[field] ?? [];
         if (!keys.length) continue;
         const ok = await execute(stage, refsOf(id, keys), [id], 0, cb => who
-          ? pools[who](() => runtime.review(id, who, keys, cb))
-          : pools.codex(() => pools.antigravity(() => runtime.level(id, keys, cb))));
+          ? pools[who](() => startModel(() => runtime.review(id, who, keys, cb)))
+          : pools.codex(() => pools.antigravity(() => startModel(() => runtime.level(id, keys, cb)))));
         if (!ok) return;
       }
       await assessFront(id, 0);
       const state = await runtime.snapshot(id);
       const passed = new Set(state?.front.batchDefects.length ? [] : state?.front.items.filter(q => q.status === 'pass').map(keyOf));
       const keys = state?.claudePending.filter(key => passed.has(key)) ?? [];
-      if (!frontOnly && keys.length && !await execute('S4', refsOf(id, keys), [id], 0, cb => pools.claude(() => runtime.review(id, 'claude', keys, cb)))) return;
+      if (!frontOnly && keys.length && !await execute('S4', refsOf(id, keys), [id], 0, cb => pools.claude(() => startModel(() => runtime.review(id, 'claude', keys, cb))))) return;
       summary[id].firstPassComplete = true; save();
     } catch (error) { markError([id], error); }
   };
   const pooled = async (stage, refs, batchIds, round, who) => {
     const invoke = async cb => {
+      requireApplyReady();
       if (stage === 'S1' && runtime.levelQuestions) return runtime.levelQuestions(refs, cb);
       if (who && runtime.reviewQuestions) return runtime.reviewQuestions(refs, who, cb);
       if (!who && stage !== 'S1' && runtime.reviseQuestions) return runtime.reviseQuestions(refs, cb, batchIds);
