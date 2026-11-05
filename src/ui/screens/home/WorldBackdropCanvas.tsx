@@ -115,7 +115,21 @@ function ensureWorldBaked(
       53,
     );
 
-    // 우측 정자 동산을 지나 중앙 보드 뒤로 이어지는 5겹 오솔길
+    // 우측 기와 정자 앞마당에서 산책 오솔길로 이어지는 아담한 정원 마당길 지선
+    drawNaturalRoad(
+      ctx,
+      sprites,
+      [
+        [rx - 4 * sc, h * 0.35],
+        [rx - 10 * sc, h * 0.43],
+        [rx - 16 * sc, h * 0.51],
+      ],
+      10.5 * sc,
+      137,
+      false,
+    );
+
+    // 우측 정자 동산을 지나 중앙 보드 뒤로 이어지는 5겹 오솔길 본선
     const roadSpine = drawNaturalRoad(
       ctx,
       sprites,
@@ -155,10 +169,10 @@ function ensureWorldBaked(
       { key: 'edge.forest.0', x: 58 * sc, y: 78 * sc, w: 184 * sc, h: 126 * sc, sh: 0 },
       { key: 'edge.forest.1', x: w - 58 * sc, y: 80 * sc, w: 188 * sc, h: 128 * sc, sh: 0 },
 
-      // 좌측 수변 계곡 테마: 봄꽃나무 + 물레방아 오두막 + 꽃밭 + 나무 울타리 + 갈대 + 수양버들
-      { key: 'map.courtyard.tree.0', x: lx - 22 * sc, y: h * 0.23, w: 92 * sc, h: 92 * sc, sh: 0.24 },
-      { key: 'prop.flowerbed', x: lx + 34 * sc, y: h * 0.25, w: 54 * sc, h: 40 * sc, sh: 0.14 },
-      { key: 'map.river_z.landmark.watermill', x: lx + 4 * sc, y: h * 0.41, w: 126 * sc, h: 126 * sc, sh: 0.18 },
+      // 좌측 수변 계곡 테마: 봄꽃나무 + 강변 물레방아 오두막 + 꽃밭 + 나무 울타리 + 갈대 + 수양버들
+      { key: 'map.courtyard.tree.0', x: lx - 24 * sc, y: h * 0.23, w: 92 * sc, h: 92 * sc, sh: 0.24 },
+      { key: 'prop.flowerbed', x: lx + 36 * sc, y: h * 0.25, w: 54 * sc, h: 40 * sc, sh: 0.14 },
+      { key: 'map.river_z.landmark.watermill', x: lx - 14 * sc, y: h * 0.41, w: 124 * sc, h: 124 * sc, sh: 0.18 },
       { key: 'prop.fence.h', x: lx + 36 * sc, y: h * 0.53, w: 58 * sc, h: 32 * sc, sh: 0.16 },
       { key: 'map.river_z.prop.reeds', x: lx + 26 * sc, y: h * 0.63, w: 54 * sc, h: 50 * sc, sh: 0.12 },
       { key: 'prop.flowerbed', x: lx - 30 * sc, y: h * 0.69, w: 56 * sc, h: 42 * sc, sh: 0.14 },

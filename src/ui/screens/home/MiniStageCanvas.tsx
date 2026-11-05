@@ -79,6 +79,8 @@ export interface DemoProjectile {
   towerId: 'archer' | 'frost' | 'cannon';
   x: number;
   y: number;
+  vx: number;
+  vy: number;
   flying: boolean;
   impactT: number | null;
   targetX: number;
@@ -191,8 +193,11 @@ export function sampleStageDemo(w: number, h: number, timeMs: number, animateCom
       const flying = shotPhase <= 0.86;
       const flightT = Math.min(1, shotPhase / 0.86);
       const arc = td.id === 'cannon' ? Math.sin(flightT * Math.PI) * 18 : 0;
+      const dArc = td.id === 'cannon' ? Math.cos(flightT * Math.PI) * Math.PI * 18 : 0;
       const px = sx0 + (txEnd - sx0) * flightT;
       const py = sy0 + (tyEnd - sy0) * flightT - arc;
+      const vx = txEnd - sx0;
+      const vy = tyEnd - sy0 - dArc;
       const impactT = shotPhase >= 0.82 ? Math.min(1, (shotPhase - 0.82) / 0.18) : null;
       if (impactT !== null && target.hpRatio > 0) {
         target.hit = true;
@@ -201,6 +206,8 @@ export function sampleStageDemo(w: number, h: number, timeMs: number, animateCom
         towerId: td.id,
         x: px,
         y: py,
+        vx,
+        vy,
         flying,
         impactT,
         targetX: txEnd,
@@ -292,10 +299,10 @@ function ensureStageBaked(
     if (img) ctx.drawImage(img, d.x, d.y, d.w, d.h);
   }
 
-  // 4) 연못 & 설치 이끼 기단 (흙길과 잔디 여유 확보)
+  // 4) 연못 & 설치 이끼 기단 (상단 오버레이 배지와 겹치지 않도록 여유 확보)
   const pond = sprites.get('landmark.pond')?.img;
   if (pond) {
-    ctx.drawImage(pond, w * 0.055, h * 0.11, 88, 50);
+    ctx.drawImage(pond, w * 0.062, h * 0.245, 84, 46);
   }
 
   const pad0 = sprites.get('slot.pad.0')?.img ?? sprites.get('slot.base')?.img;
@@ -326,18 +333,18 @@ function ensureStageBaked(
     if (padImg) ctx.drawImage(padImg, tx - 23, ty - 16, 46, 35);
   }
 
-  // 5) 정원 풍경 프롭 (뒤쪽 레이어 Y-정렬)
+  // 5) 정원 풍경 프롭 (뒤쪽 레이어 Y-정렬, 상단 좌·우 배지 회피 구도)
   const staticProps: { key: string; x: number; y: number; w: number; h: number; sh: number }[] = [
-    { key: 'edge.forest.0', x: 34, y: 42, w: 110, h: 72, sh: 0 },
-    { key: 'edge.forest.1', x: w - 34, y: 40, w: 110, h: 72, sh: 0 },
+    { key: 'edge.forest.0', x: 34, y: 38, w: 108, h: 68, sh: 0 },
+    { key: 'edge.forest.1', x: w - 34, y: 38, w: 108, h: 68, sh: 0 },
     { key: 'prop.fence.h', x: w * 0.37, y: h * 0.19, w: 46, h: 25, sh: 0.14 },
     { key: 'deco.rock', x: w * 0.43, y: h * 0.22, w: 28, h: 22, sh: 0.16 },
     { key: 'map.courtyard.prop.flowerpot', x: w * 0.53, y: h * 0.23, w: 26, h: 26, sh: 0.16 },
-    { key: 'map.river_z.prop.reeds', x: w * 0.22, y: h * 0.26, w: 36, h: 34, sh: 0.1 },
-    { key: 'map.courtyard.tree.0', x: w * 0.035, y: h * 0.4, w: 58, h: 58, sh: 0.22 },
-    { key: 'map.entry', x: w * 0.065, y: h * 0.54, w: 30, h: 32, sh: 0.18 },
-    { key: 'edge.hedge.0', x: w * 0.95, y: h * 0.5, w: 68, h: 46, sh: 0.16 },
-    { key: 'tower.banner.A1', x: w * 0.83, y: h * 0.46, w: 52, h: 52, sh: 0.24 },
+    { key: 'map.river_z.prop.reeds', x: w * 0.225, y: h * 0.38, w: 35, h: 33, sh: 0.1 },
+    { key: 'map.courtyard.tree.0', x: w * 0.032, y: h * 0.51, w: 54, h: 54, sh: 0.22 },
+    { key: 'map.entry', x: w * 0.072, y: h * 0.56, w: 28, h: 30, sh: 0.18 },
+    { key: 'edge.hedge.0', x: w * 0.95, y: h * 0.52, w: 66, h: 44, sh: 0.16 },
+    { key: 'tower.banner.A1', x: w * 0.81, y: h * 0.52, w: 50, h: 50, sh: 0.24 },
     { key: 'prop.flowerbed', x: w * 0.12, y: h * 0.87, w: 48, h: 35, sh: 0.14 },
     { key: 'prop.mushrooms', x: w * 0.56, y: h * 0.85, w: 27, h: 23, sh: 0.14 },
     { key: 'prop.stump', x: w * 0.64, y: h * 0.89, w: 30, h: 26, sh: 0.18 },
@@ -506,16 +513,72 @@ function drawStageFrame(
     ctx.restore();
   }
 
-  // 투사체 연출 및 탄착 파문
+  // 투사체 연출 및 탄착 파문 (타워 유형별 공예 디테일 적용)
   for (const p of demo.projectiles) {
     if (p.flying) {
-      ctx.fillStyle = p.towerId === 'frost' ? '#8de4ff' : p.towerId === 'cannon' ? '#2c2520' : '#fff0a6';
-      ctx.strokeStyle = '#261c14';
-      ctx.lineWidth = 1.5;
-      ctx.beginPath();
-      ctx.arc(p.x, p.y, p.towerId === 'cannon' ? 4.3 : 3.3, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.stroke();
+      ctx.save();
+      const ang = Math.atan2(p.vy, p.vx);
+      if (p.towerId === 'cannon') {
+        // 불꽃 심지 꼬리 + 반사광이 맺힌 무쇠 대포알
+        const tailX = p.x - Math.cos(ang) * 5.2;
+        const tailY = p.y - Math.sin(ang) * 5.2;
+        ctx.fillStyle = '#ff9f43';
+        ctx.beginPath();
+        ctx.arc(tailX, tailY, 2.4, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.fillStyle = '#3f352f';
+        ctx.strokeStyle = '#1f1712';
+        ctx.lineWidth = 1.4;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, 4.2, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.stroke();
+
+        ctx.fillStyle = '#cfc3b8';
+        ctx.beginPath();
+        ctx.arc(p.x - 1.3, p.y - 1.3, 1.3, 0, Math.PI * 2);
+        ctx.fill();
+      } else if (p.towerId === 'frost') {
+        // 하늘빛 얼음 결정 마름모
+        ctx.translate(p.x, p.y);
+        ctx.rotate(ang);
+        ctx.fillStyle = '#9be8ff';
+        ctx.strokeStyle = '#245875';
+        ctx.lineWidth = 1.3;
+        ctx.beginPath();
+        ctx.moveTo(5, 0);
+        ctx.lineTo(0, 3.4);
+        ctx.lineTo(-4.5, 0);
+        ctx.lineTo(0, -3.4);
+        ctx.closePath();
+        ctx.fill();
+        ctx.stroke();
+      } else {
+        // 궁수 깃화살
+        ctx.translate(p.x, p.y);
+        ctx.rotate(ang);
+        ctx.strokeStyle = '#261c14';
+        ctx.lineWidth = 2.6;
+        ctx.beginPath();
+        ctx.moveTo(-5.5, 0);
+        ctx.lineTo(4.5, 0);
+        ctx.stroke();
+        ctx.strokeStyle = '#ffe999';
+        ctx.lineWidth = 1.4;
+        ctx.beginPath();
+        ctx.moveTo(-5, 0);
+        ctx.lineTo(4, 0);
+        ctx.stroke();
+        ctx.fillStyle = '#fff7d1';
+        ctx.beginPath();
+        ctx.moveTo(6, 0);
+        ctx.lineTo(2, -2.5);
+        ctx.lineTo(2, 2.5);
+        ctx.closePath();
+        ctx.fill();
+      }
+      ctx.restore();
     }
     if (p.impactT !== null) {
       ctx.save();

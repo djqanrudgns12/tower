@@ -40,10 +40,15 @@ function renderSteleGarden(
   drawCloud(w * 0.24, h * 0.19, 8.2);
   drawCloud(w * 0.78, h * 0.23, 7);
 
-  // 뒤쪽 봄꽃나무 수관이 살짝 비치는 정원 깊이감
+  // 뒤쪽 봄꽃나무 수관이 살짝 비치는 정원 깊이감 (초소형 가로 파노라마 창문에서도 양옆 균형 유지)
+  const isWide = w > h * 1.45;
   const blossom = sprites.get('map.courtyard.tree.0')?.img;
+  const pine = sprites.get('map.courtyard.tree.1')?.img;
   if (blossom) {
-    ctx.drawImage(blossom, -14, h * 0.18, 46, 46);
+    ctx.drawImage(blossom, isWide ? 4 : -14, h * 0.14, isWide ? 52 : 46, isWide ? 52 : 46);
+  }
+  if (isWide && pine) {
+    ctx.drawImage(pine, w - 54, h * 0.18, 48, 48);
   }
 
   // 2단 초록 잔디 언덕
@@ -59,13 +64,13 @@ function renderSteleGarden(
 
   const flowerbed = sprites.get('prop.flowerbed')?.img;
   if (flowerbed) {
-    ctx.drawImage(flowerbed, -5, h - 30, 36, 26);
-    ctx.drawImage(flowerbed, w - 31, h - 28, 34, 25);
+    ctx.drawImage(flowerbed, isWide ? 12 : -5, h - 29, 36, 26);
+    ctx.drawImage(flowerbed, isWide ? w - 48 : w - 31, h - 28, 34, 25);
   }
 
-  const size = Math.min(w * 0.78, h * 0.74);
+  const size = Math.min(w * 0.76, h * 0.76);
   const sx = w * 0.5;
-  const sy = h * 0.87;
+  const sy = h * 0.89;
   if (!drawSpriteGrounded(ctx, sprites, 'deco.stele', sx, sy, size, size, 0.22)) {
     ctx.fillStyle = '#c8c0b4';
     ctx.strokeStyle = '#6c6258';

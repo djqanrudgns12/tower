@@ -323,6 +323,10 @@ export function RankingBoard({
                     </div>
                   ))}
                 </div>
+
+                <p className={css.emptyFooterTip}>
+                  학교 이름을 적으면 우리 학교 친구들의 기록도 한눈에 모여요
+                </p>
               </div>
             ) : (
               // 안에서 스크롤하므로 키보드로 닿도록 포커스 가능한 이름 있는 영역으로 감싼다(WCAG 2.1.1).
