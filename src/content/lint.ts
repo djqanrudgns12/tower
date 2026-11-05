@@ -200,3 +200,22 @@ export function lintBatchStrict(questions: readonly LintInput[]): string[] {
 }
 
 export const loadOf = readingLoad;
+
+// 수준 판정·분포 보고도 기존 엄격 검사의 상한을 재사용한다.
+export { GRADE_ABS_READING_LOAD, GRADE_BATTLE_READING_LOAD };
+
+/** CR-1000 §3.5. 수준 합의가 있는 revision의 앞단에서만 호출한다. 기존 초안 검사에는 연결하지 않는다. */
+export function lintGradeBasisUnit(unit: string, curriculumCodes: Set<string> | null): string[] {
+  const value = unit.trim();
+  if (/\d+\s*(?:쪽|단원)/u.test(value)) return ['학년 근거에 교과서 쪽수·단원을 쓰지 않는다'];
+  const curriculum = /^\[(\d{1,2}국\d{2}-\d{2})\](?:\s+\S.*)?$/u.exec(value);
+  if (curriculum) {
+    const code = curriculum[1]!;
+    return curriculumCodes?.has(code) || curriculumCodes?.has(`[${code}]`)
+      ? [] : ['학년 근거의 성취기준 코드가 정본 목록에 없다'];
+  }
+  if (/^krdict:(?:초급|중급|고급)$/u.test(value)) return [];
+  if (/^stdict:\S.*$/u.test(value)) return [];
+  if (/^rubric_inferred\(L=[0-6],\s*T=[0-9]\)$/u.test(value)) return [];
+  return ['학년 근거는 정본 성취기준 코드·krdict:·stdict:·rubric_inferred(L=…,T=…) 형식이어야 한다'];
+}
