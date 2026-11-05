@@ -21,10 +21,11 @@ function* evolutions(): Generator<{ type: TowerId; from: FormId; to: FormId; lev
 }
 
 describe('B9 진화 카드 바뀌는 수치 칩', () => {
-  it('계약에서 능력이 줄어드는 형태 16종은 모두 붉은 감소 칩이 있고, 나머지 형태에는 감소 칩이 없다', () => {
-    // 계획서 §5.2는 "archer A2 등 6종"이라 적었지만, 계약 balance v0.4를 읽으면 16종이다(공격력·대상·느리게·공격 횟수·깃발 주변 효과).
+  it('계약에서 능력이 줄어드는 형태 15종은 모두 붉은 감소 칩이 있고, 나머지 형태에는 감소 칩이 없다', () => {
+    // 계획서 §5.2는 "archer A2 등 6종"이라 적었지만, 계약 balance v0.4를 읽으면 15종이다(공격력·대상·느리게·공격 횟수·깃발 주변 효과).
+    // 깃발 A2는 2026-11-05 시작값을 A 마지막 값(3200)에 맞춰 감소에서 빠졌다. 깃발 B(피해 → 속도)·B2(속도 일부 → 공격력)는 의도된 맞바꿈이다.
     const expected = [
-      'archer A2 공격력', 'cannon B 대상', 'frost B 느리게', 'banner B 주변 힘', 'banner A2 주변 힘', 'banner B2 주변 속도',
+      'archer A2 공격력', 'cannon B 대상', 'frost B 느리게', 'banner B 주변 힘', 'banner B2 주변 속도',
       'lightning B 대상', 'sling A2 공격력', 'ballista B 대상', 'falcon A2 공격력', 'mortar B1 공격력', 'roller B 대상',
       'alchemist A1 공격력', 'alchemist B2 공격력', 'trap B2 대상', 'hwacha B 공격 횟수',
     ];
