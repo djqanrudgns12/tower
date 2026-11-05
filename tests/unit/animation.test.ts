@@ -1,34 +1,17 @@
 import { readFileSync } from 'node:fs';
-import { inflateSync } from 'node:zlib';
+import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
 import type { EnemyKind } from '../../src/contracts/balance';
 import { BALANCE, MAPS } from '../../src/content';
 import { GAITS } from '../../src/game/animation/gait';
 import { acceptsHit, enemyPose, HIT_MS, type PoseInput } from '../../src/game/animation/pose';
 import { ASSETS, CELL_PX, ENEMY_DISPLAY } from '../../src/game/assets';
+import { readAlpha } from './imageMeta';
 
-// 납품 PNG(8bit RGBA, 비인터레이스)의 알파만 읽는다.
+// 납품 그림(PNG 또는 WebP)의 알파만 읽는다.
 function alphaOf(file: string) {
-  const buf = readFileSync(new URL(`../../public/assets/${file}`, import.meta.url));
-  let pos = 8, w = 0, h = 0;
-  const idat: Buffer[] = [];
-  while (pos < buf.length) {
-    const len = buf.readUInt32BE(pos), type = buf.toString('ascii', pos + 4, pos + 8), data = buf.subarray(pos + 8, pos + 8 + len);
-    if (type === 'IHDR') { w = data.readUInt32BE(0); h = data.readUInt32BE(4); expect([data[8], data[9], data[12]]).toEqual([8, 6, 0]); }
-    if (type === 'IDAT') idat.push(data);
-    pos += 12 + len;
-  }
-  const stride = w * 4, raw = inflateSync(Buffer.concat(idat)), px = Buffer.alloc(h * stride);
-  for (let y = 0; y < h; y++) {
-    const f = raw[y * (stride + 1)]!;
-    for (let x = 0; x < stride; x++) {
-      const a = x >= 4 ? px[y * stride + x - 4]! : 0, b = y > 0 ? px[(y - 1) * stride + x]! : 0, c = x >= 4 && y > 0 ? px[(y - 1) * stride + x - 4]! : 0;
-      const p = a + b - c, pa = Math.abs(p - a), pb = Math.abs(p - b), pc = Math.abs(p - c);
-      const pred = [0, a, b, (a + b) >> 1, pa <= pb && pa <= pc ? a : pb <= pc ? b : c][f]!;
-      px[y * stride + x] = (raw[y * (stride + 1) + 1 + x]! + pred) & 255;
-    }
-  }
-  return { w, h, solid: (x: number, y: number) => px[(y * w + x) * 4 + 3]! >= 128 };
+  const { width: w, height: h, alpha } = readAlpha(fileURLToPath(new URL(`../../public/assets/${file}`, import.meta.url)));
+  return { w, h, solid: (x: number, y: number) => alpha[y * w + x]! >= 128 };
 }
 
 /** 가장 아래 불투명 행과, 바닥 4행에서 아래 2행까지 닿은 신발 덩어리의 x 중심. */

@@ -1,10 +1,10 @@
 import { readFileSync } from 'node:fs';
-import { inflateSync } from 'node:zlib';
 import { describe, expect, it } from 'vitest';
 import { MAPS } from '../../src/content';
 import { assetManifestSchema } from '../../src/contracts/assetManifest';
 import { PAD_CELLS } from '../../src/game/layoutGround';
 import { artRect, claimedDecorations, distanceToPolyline, GROUND_KITS, grassMasks, groundKitFor, layoutFor, mapLayoutSchema, pathCenterline, pathPolyline, RAW_LAYOUTS, resolvePlacements, steleOriginY } from '../../src/game/layouts';
+import { readAlpha } from './imageMeta';
 
 // 맵 배치표(art-bible-v2 §2)의 형식·가림·풀 마스크 검사. 그림 위치는 렌더러와 같은 artRect로 계산한다.
 
@@ -13,33 +13,6 @@ const fileOf = new Map(manifest.assets.filter(a => a.status === 'integrated_pass
 const garden = MAPS.find(m => m.id === 'garden_u')!;
 /** 배치표가 있는 맵. 맵마다 같은 형식·가림 검사를 한다. */
 const LAYOUT_MAPS = Object.keys(RAW_LAYOUTS);
-
-/** 8비트 RGBA·비월 없음 PNG의 알파 채널만 읽는다(이 저장소의 원화 형식). */
-function readAlpha(file: string) {
-  const buf = readFileSync(file);
-  const width = buf.readUInt32BE(16), height = buf.readUInt32BE(20);
-  if (buf[24] !== 8 || buf[25] !== 6 || buf[28] !== 0) throw new Error(`${file}: 8비트 RGBA 비월 없음 PNG가 아니다`);
-  const idat: Buffer[] = [];
-  for (let o = 8; o < buf.length;) {
-    const len = buf.readUInt32BE(o);
-    if (buf.toString('latin1', o + 4, o + 8) === 'IDAT') idat.push(buf.subarray(o + 8, o + 8 + len));
-    o += 12 + len;
-  }
-  const raw = inflateSync(Buffer.concat(idat));
-  const stride = width * 4, px = Buffer.alloc(height * stride);
-  for (let y = 0; y < height; y++) {
-    const filter = raw[y * (stride + 1)]!, row = y * (stride + 1) + 1;
-    for (let x = 0; x < stride; x++) {
-      const a = x >= 4 ? px[y * stride + x - 4]! : 0, b = y ? px[(y - 1) * stride + x]! : 0, c = y && x >= 4 ? px[(y - 1) * stride + x - 4]! : 0;
-      const p = a + b - c, pa = Math.abs(p - a), pb = Math.abs(p - b), pc = Math.abs(p - c);
-      const pred = [0, a, b, (a + b) >> 1, pa <= pb && pa <= pc ? a : pb <= pc ? b : c][filter] ?? 0;
-      px[y * stride + x] = (raw[row + x]! + pred) & 255;
-    }
-  }
-  const alpha = new Uint8Array(width * height);
-  for (let k = 0; k < alpha.length; k++) alpha[k] = px[k * 4 + 3]!;
-  return { width, height, alpha };
-}
 
 describe('지면 배치표(garden_u)', () => {
   it('연못(d03~d05)·바위 정원(d02)을 배치표가 맡고 비석(d01)은 기존 그림을 쓴다', () => {

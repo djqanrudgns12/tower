@@ -10,7 +10,8 @@ export const assetEntrySchema = z.object({
   /** 타워 진화 형태 꼬리(`tower.<타워>.A`·`.B2` 등, FormId 그대로)만 대문자를 쓴다. */
   id: z.string().regex(/^[a-z]+(\.[a-z0-9_]+)+(\.[AB][12]?)?$/),
   revision: z.number().int().min(1),
-  file: z.string().regex(/^[a-z0-9_-]+(\.[a-z0-9_-]+|\.[AB][12]?)*\.png$/),
+  /** 게임에 싣는 그림은 WebP다(구현 계획서 §2). .png는 tools/assets/webp-exceptions.json에 올린 예외만 쓴다(tests/unit/webp-assets.test.ts가 지킨다). */
+  file: z.string().regex(/^[a-z0-9_-]+(\.[a-z0-9_-]+|\.[AB][12]?)*\.(webp|png)$/),
   width: z.number().int().min(8).max(2048),
   height: z.number().int().min(8).max(2048),
   originX: z.number().min(0).max(1),

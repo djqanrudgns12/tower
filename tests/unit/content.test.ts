@@ -7,6 +7,7 @@ import { bankFileSchema, readingLoad } from '../../src/contracts/questions';
 import defaults from '../../docs/contracts/product.defaults.v0.5.json';
 import { lintBatchStrict, lintQuestion } from '../../src/content/lint';
 import { isPractice, MIN_PUBLISHED, PRACTICE_SIZE } from '../../tools/content/bankBuild';
+import { readImageInfo } from './imageMeta';
 
 // npm run validate:content / validate:assets의 본체. 작업자 RETURN은 이 검사를 통과해야 RETURNED다.
 // 배치·보고서·manifest가 아직 없으면 해당 describe에는 시험이 생기지 않는다.
@@ -91,18 +92,20 @@ describe('독립 검토 보고서', () => {
 
 describe.skipIf(Object.keys(manifests).length === 0)('에셋 manifest(validate:assets)', () => {
   for (const [path, raw] of Object.entries(manifests)) {
-    it(`${path}: 형식·PNG 크기·알파·해시`, () => {
+    it(`${path}: 형식·크기·알파·해시`, () => {
       const m = assetManifestSchema.parse(raw);
       const dir = `.${path.replace(/\/manifest\.json$/, '')}`;
       for (const a of m.assets) {
         const file = `${dir}/${a.file}`;
         expect(existsSync(file), `${file} 없음`).toBe(true);
-        const png = readFileSync(file);
-        expect(png.subarray(1, 4).toString('latin1')).toBe('PNG');
-        expect([png.readUInt32BE(16), png.readUInt32BE(20)]).toEqual([a.width, a.height]);
-        // 색 형식 6(RGBA) 또는 4(회색+알파)만 실제 투명도를 가진다. 체크무늬 배경을 투명으로 보지 않는다.
-        expect([4, 6]).toContain(png[25]);
-        expect(sha256(png)).toBe(a.artifactHash);
+        const bytes = readFileSync(file);
+        const info = readImageInfo(bytes, file);
+        expect(info.format, `${file}: 확장자와 파일 내용의 형식이 다르다`).toBe(a.file.endsWith('.webp') ? 'webp' : 'png');
+        expect([info.width, info.height]).toEqual([a.width, a.height]);
+        // 알파 채널이 있는 형식(PNG 색 형식 4·6, WebP 알파 표시)만 실제 투명도를 가진다. 체크무늬 배경을 투명으로 보지 않는다.
+        // 예외: 바닥 타일(layer ground)은 전부 불투명이라 cwebp가 알파 채널을 빼 버린다(손실 없음, 모두 255와 같다).
+        expect(info.hasAlpha || (info.format === 'webp' && a.layer === 'ground'), `${file}: 알파 채널이 없다`).toBe(true);
+        expect(sha256(bytes)).toBe(a.artifactHash);
       }
     });
   }
