@@ -1,29 +1,37 @@
-# 어휘력 타워 디펜스 기록·랭킹 서버. 구현 계획서(docs/HOSTING_IMPL_PLAN.md) 단계 3.
-# 비밀값은 PLAYER_SALT 하나뿐이고 이 파일에 적지 않는다(배포 때 `npx wrangler secret put PLAYER_SALT`, 로컬은 server/.dev.vars).
+# 어휘력 타워 디펜스 기록·랭킹 서버(Cloudflare Workers + D1). 운영 절차는 docs/DEPLOY.md.
+# 비밀값은 PLAYER_SALT 하나뿐이고 이 파일에 적지 않는다(운영: `npx wrangler secret put PLAYER_SALT --config server/wrangler.toml`,
+# 로컬: server/.dev.vars — server/.dev.vars.example을 복사).
 name = "vocabulary-td-api"
 main = "src/index.ts"
 compatibility_date = "2026-10-15"
 # Cloudflare로 사용 통계를 보내지 않는다.
 send_metrics = false
 
+# 서버 주소는 사용자 지정 도메인 하나뿐이다. workers.dev·미리보기 주소를 끄는 까닭:
+# 도메인에 거는 무료 속도 제한 규칙(WAF)과 랭킹 캐시(Cache API)는 workers.dev에서 동작하지 않아, 켜 두면 우회 입구가 된다.
+routes = [{ pattern = "voca-api.ssamuniverse.com", custom_domain = true }]
+workers_dev = false
+preview_urls = false
+
+# KT 학교 요청은 미국 거점(LAX)에 닿고 D1은 아시아(apac)에 있다. Smart Placement는 D1을 여러 번 부르는 Worker를
+# D1 가까운 거점에서 돌려 왕복을 줄인다. 효과가 없거나 나쁘면 이 두 줄을 지우고 다시 배포한다(docs/DEPLOY.md §6).
+[placement]
+mode = "smart"
+
 [vars]
-# 쉼표로 나눈 허용 출처. 기본값은 로컬 개발 주소(vite dev 5173, vite preview 4173)다.
-# 학생 주소가 정해지면(단계 6) 예: "https://voca.example.com" 를 더한다.
-ALLOWED_ORIGINS = "http://localhost:5173,http://127.0.0.1:5173,http://localhost:4173,http://127.0.0.1:4173"
-# 랭킹 응답 캐시(초). 공용 순위표만 거점 캐시에 담고 0이면 끈다. workers.dev 주소에서는 Cache API가 동작하지 않아
-# 사용자 지정 도메인(단계 6)에서만 효과가 있다.
+# 쉼표로 나눈 허용 출처(학생 주소). 로컬 개발 주소는 server/.dev.vars가 덮어쓴다.
+ALLOWED_ORIGINS = "https://voca.ssamuniverse.com"
+# 랭킹 응답 캐시(초). 공용 순위표만 거점 캐시에 담고 0이면 끈다. 사용자 지정 도메인에서만 효과가 있다.
 RANKING_CACHE_SECONDS = "60"
 
 [[d1_databases]]
 binding = "DB"
 database_name = "vocabulary-td"
-# 자리표시. 단계 7에서 `wrangler d1 create vocabulary-td` 결과로 바꾼다. 로컬(--local)은 이 값으로 파일 이름만 정한다.
+# 자리표시. 단계 7에서 `npx wrangler d1 create vocabulary-td --location apac` 결과의 database_id로 바꾼다.
+# 로컬(--local)은 이 값으로 파일 이름만 정하므로 그대로 둬도 돈다.
 database_id = "00000000-0000-0000-0000-000000000000"
 migrations_dir = "migrations"
 
 [triggers]
 # 매일 04:00 KST(19:00 UTC)에 지난 방문 해시·시작 기록·속도 제한·접속 기록을 지운다(Postgres cleanup_ephemeral_lobby_hashes).
 crons = ["0 19 * * *"]
-
-# 사용자 지정 도메인(단계 6·7에서 채운다). 예:
-# routes = [{ pattern = "voca-api.example.com", custom_domain = true }]

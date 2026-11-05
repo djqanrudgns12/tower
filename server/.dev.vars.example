@@ -1,0 +1,6 @@
+# 로컬 개발 값. server/.dev.vars로 복사해 쓴다(server/.dev.vars는 커밋하지 않는다).
+# wrangler dev는 이 파일 값으로 wrangler.toml [vars]를 덮어쓴다.
+# PLAYER_SALT: 로컬 전용 아무 문자열(32자 이상). 운영 값은 `npx wrangler secret put PLAYER_SALT --config server/wrangler.toml`로만 넣는다.
+PLAYER_SALT=local-dev-only-not-a-secret-replace-me-000000000000
+# 로컬 앱 주소(vite dev 5173, vite preview 4173)
+ALLOWED_ORIGINS=http://localhost:5173,http://127.0.0.1:5173,http://localhost:4173,http://127.0.0.1:4173

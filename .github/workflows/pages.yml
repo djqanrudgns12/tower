@@ -1,0 +1,74 @@
+# 게임 파일(GitHub Pages) 자동 배포: main에 올라가면 검사 → 빌드 → 배포. 손으로 다시 돌릴 때는 Actions 탭의 Run workflow.
+# 기록·랭킹 서버(Cloudflare Workers + D1)는 여기서 배포하지 않는다. Cloudflare API 토큰을 저장소에 두지 않으려고
+# 서버는 사람이 명령으로 올린다(docs/DEPLOY.md §4.2).
+name: Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+# 배포는 한 번에 하나씩. 진행 중인 배포는 끝까지 두고 다음 것을 기다리게 한다.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  check:
+    name: 검사(verify·서버 시험)
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - run: npm run verify
+      # 로컬 workerd·로컬 D1로 Worker를 띄운다. Cloudflare 계정에는 닿지 않는다.
+      - run: npm run test:server
+        env:
+          WRANGLER_SEND_METRICS: 'false'
+
+  build:
+    name: 빌드
+    needs: check
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+        env:
+          # 앱이 부르는 기록·랭킹 서버 주소. 비우면 이 기기 기록 모드로만 돈다.
+          VITE_API_BASE: https://voca-api.ssamuniverse.com
+      - uses: actions/upload-pages-artifact@v5
+        with:
+          path: dist
+
+  deploy:
+    name: 배포
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v5

@@ -7,7 +7,7 @@ import { createTestHarness } from 'wrangler';
 import { handleRequest, type Env } from '../../src/app';
 import type { D1ResultLike, SqlStats } from '../../src/db';
 import type { CacheLike } from '../../src/ranking-cache';
-import { SERVER_DIR, TEST_SALT } from './constants';
+import { SERVER_DIR, TEST_ORIGIN, TEST_SALT } from './constants';
 
 export { REPO_DIR, SERVER_DIR, TEST_ORIGIN, TEST_SALT } from './constants';
 
@@ -105,7 +105,8 @@ export async function startServer(options: { salt?: string; seed?: boolean; rank
     root: SERVER_DIR,
     workers: [{
       configPath: 'wrangler.toml',
-      secrets: { PLAYER_SALT: options.salt ?? TEST_SALT },
+      // 개발자 기기에 server/.dev.vars가 있어도 시험 값이 이기도록 secrets로 넣는다(secrets가 .dev.vars를 덮어쓴다).
+      secrets: { PLAYER_SALT: options.salt ?? TEST_SALT, ALLOWED_ORIGINS: TEST_ORIGIN },
       vars: { RANKING_CACHE_SECONDS: String(options.rankingCacheSeconds ?? 0) },
     }],
   });
