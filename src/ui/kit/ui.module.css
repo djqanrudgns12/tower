@@ -169,6 +169,134 @@
   .segment:hover:not([aria-checked='true']):not([aria-disabled='true']) { color: var(--ink); }
 }
 
+/* ── 책갈피형 색인 탭(ModalTabs + ModalTabPanel): 음각 레일 + 양피지 일체형 본문 시트 ── */
+.modalTabShell {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+.modalTabRail {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--s2);
+  padding: var(--s1) var(--s2) 0;
+  border: 2px solid var(--walnut-2);
+  border-bottom: 0;
+  border-radius: var(--r-md) var(--r-md) 0 0;
+  background: var(--parch-3);
+}
+.modalTabList {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--s1);
+  min-width: 0;
+  flex: 1 1 auto;
+}
+.modalTab {
+  position: relative;
+  min-width: var(--touch);
+  min-height: var(--touch);
+  padding: 0 var(--s3);
+  border: 2px solid transparent;
+  border-bottom: 0;
+  border-radius: var(--r-sm) var(--r-sm) 0 0;
+  background: transparent;
+  color: var(--ink-2);
+  font-size: var(--fs-2);
+  font-weight: 700;
+  line-height: 1.2;
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  transition: background-color var(--t-ui), color var(--t-ui);
+}
+.modalTab[aria-selected='true'] {
+  z-index: 1;
+  margin-bottom: -2px;
+  padding-bottom: 2px;
+  border-color: var(--walnut-3);
+  background: var(--parch-2);
+  color: var(--ink);
+  font-weight: 800;
+  box-shadow: inset 0 4px 0 var(--green);
+}
+.modalTab:focus-visible { outline: 3px solid var(--ring); outline-offset: -3px; }
+.modalTab[aria-disabled='true'] { opacity: 0.55; cursor: not-allowed; }
+@media (hover: hover) {
+  .modalTab:hover:not([aria-selected='true']):not([aria-disabled='true']) {
+    background: var(--parch-1);
+    color: var(--ink);
+  }
+}
+.modalTabCount {
+  min-width: 20px;
+  height: 20px;
+  padding: 0 5px;
+  border: 1px solid var(--brass-3);
+  border-radius: var(--r-sm);
+  background: var(--brass-1);
+  color: var(--ink);
+  font-size: var(--fs-1);
+  font-weight: 800;
+  line-height: 18px;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+.modalTabAside {
+  flex: none;
+  align-self: center;
+  padding: 0 var(--s1) var(--s1);
+  font-size: var(--fs-1);
+  font-weight: 700;
+  color: var(--ink-2);
+  white-space: nowrap;
+}
+.modalTabPanel {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  padding: var(--s4);
+  border: 2px solid var(--walnut-2);
+  border-radius: 0 0 var(--r-md) var(--r-md);
+  background: var(--parch-2);
+}
+.modalTabPanel.padSm { padding: var(--s3); }
+.modalTabPanel.padNone { padding: 0; }
+@media (max-width: 679px) {
+  .modalTabRail {
+    flex-direction: column;
+    align-items: stretch;
+    padding: var(--s1);
+    gap: var(--s1);
+  }
+  .modalTabList {
+    flex-wrap: wrap;
+    align-items: stretch;
+  }
+  .modalTab {
+    flex: 1 1 auto;
+    padding: 0 var(--s2);
+    border: 2px solid transparent;
+    border-radius: var(--r-sm);
+  }
+  .modalTab[aria-selected='true'] {
+    margin-bottom: 0;
+    padding-bottom: 0;
+    background: var(--parch-1);
+  }
+  .modalTabAside {
+    align-self: flex-start;
+    white-space: normal;
+    padding: 0 var(--s1);
+  }
+}
+
 /* ── 켜기·끄기: 꺼짐은 양피지 홈, 켜짐은 숲색. 이름 뒤에 상태 글자 ── */
 .toggle {
   min-height: var(--touch);
@@ -245,9 +373,13 @@
   flex-direction: column;
   gap: var(--s4);
 }
-.dialogSm { max-width: 440px; }
-.dialogMd { max-width: 640px; }
-.dialogLg { max-width: 900px; }
+.dialogSm { max-width: 420px; }
+.dialogMd { max-width: 680px; }
+.dialogLg { max-width: 860px; }
+@media (min-width: 720px) and (min-height: 620px) {
+  .frameFixed.dialogMd { width: 100%; height: 540px; }
+  .frameFixed.dialogLg { width: 100%; height: 580px; }
+}
 /* 머리줄 아래 12px 칸에 구분선(rule 원화, 대체 2px --oak-1 선)을 그리고, 구분선 아래는 --s2만 띄운다. */
 .dialogHead { position: relative; display: flex; align-items: center; justify-content: space-between; gap: var(--s3); padding-bottom: 12px; margin-bottom: calc(var(--s2) - var(--s4)); }
 .dialogHead::after {
@@ -283,6 +415,7 @@
 @media (forced-colors: active) {
   .btn:not(.ghost) { outline: 2px solid ButtonText; outline-offset: -2px; }
   .card { outline: 2px solid CanvasText; outline-offset: -2px; }
+  .modalTab[aria-selected='true'] { outline: 2px solid Highlight; outline-offset: -2px; }
   .btn:focus-visible { outline: 3px solid Highlight; outline-offset: 3px; }
 }
 

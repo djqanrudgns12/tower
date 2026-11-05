@@ -197,13 +197,118 @@ export function Badge({ count, tone = 'brass' }: { count: number; tone?: 'brass'
   return count > 0 ? <span className={cx(css.badge, css.badgeInline, tone === 'wax' && css.badgeWax)}>{count > 99 ? '99+' : count}</span> : null;
 }
 
+export interface ModalTabOption<T extends string = string> extends SegmentOption<T> {
+  /** 0보다 크면 탭 이름 옆에 작은 개수 표식을 붙인다. */
+  count?: number | undefined;
+}
+
+interface ModalTabsProps<T extends string> {
+  label: string;
+  options: readonly ModalTabOption<T>[];
+  value: T;
+  onChange(value: T): void;
+  onBlocked?(value: T): void;
+  /** 고른 탭이 바꾸는 tabpanel의 id(aria-controls). */
+  controls: string;
+  /** 탭 줄 오른쪽 보조 문구(선택). */
+  aside?: ReactNode;
+  className?: string | undefined;
+}
+
+/**
+ * 창 상단 책갈피형 색인 탭(ModalTabs). 창 안의 값 선택기(Segmented radiogroup)와 시각 위계를 분리해
+ * 아래 본문 시트(ModalTabPanel)와 한 장의 양피지처럼 맞물린다. 방향키·Home·End가 선택과 포커스를 함께 옮긴다.
+ */
+export function ModalTabs<T extends string>({ label, options, value, onChange, onBlocked, controls, aside, className }: ModalTabsProps<T>) {
+  const refs = useRef<Array<HTMLButtonElement | null>>([]);
+  const current = Math.max(0, options.findIndex(o => o.value === value));
+  const onKeyDown = (e: KeyboardEvent<HTMLDivElement>) => {
+    const next = nextSegment(options, current, e.key);
+    if (next === current || next < 0) return;
+    e.preventDefault();
+    onChange(options[next]!.value);
+    refs.current[next]?.focus();
+  };
+  return (
+    <div className={cx(css.modalTabRail, className)}>
+      <div role="tablist" aria-label={label} className={css.modalTabList} onKeyDown={onKeyDown}>
+        {options.map((o, i) => (
+          <button
+            key={o.value}
+            ref={el => { refs.current[i] = el; }}
+            id={o.id}
+            type="button"
+            role="tab"
+            aria-selected={o.value === value}
+            aria-controls={controls}
+            aria-disabled={o.disabled || undefined}
+            aria-label={o.ariaLabel}
+            tabIndex={i === current ? 0 : -1}
+            className={css.modalTab}
+            onClick={() => (o.disabled ? onBlocked?.(o.value) : onChange(o.value))}
+          >
+            <span>{o.label}</span>
+            {o.count !== undefined && o.count > 0 && (
+              <span className={css.modalTabCount} aria-hidden="true">{o.count > 99 ? '99+' : o.count}</span>
+            )}
+          </button>
+        ))}
+      </div>
+      {aside && <div className={css.modalTabAside}>{aside}</div>}
+    </div>
+  );
+}
+
+interface ModalTabShellProps extends HTMLAttributes<HTMLDivElement> {
+  children: ReactNode;
+}
+
+/** ModalTabs와 ModalTabPanel을 틈 없이 한 덩어리로 묶는 외곽 상자. 고정 프레임 안에서 남은 높이를 채운다. */
+export function ModalTabShell({ className, ...rest }: ModalTabShellProps) {
+  return <div className={cx(css.modalTabShell, className)} {...rest} />;
+}
+
+interface ModalTabPanelProps extends HTMLAttributes<HTMLDivElement> {
+  id: string;
+  labelledBy?: string | undefined;
+  pad?: 'none' | 'sm' | 'md';
+}
+
+/** ModalTabs 아래 맞물리는 양피지 본문 시트(role="tabpanel"). */
+export function ModalTabPanel({ id, labelledBy, pad = 'md', className, ...rest }: ModalTabPanelProps) {
+  return (
+    <div
+      id={id}
+      role="tabpanel"
+      aria-labelledby={labelledBy}
+      className={cx(css.modalTabPanel, pad === 'sm' && css.padSm, pad === 'none' && css.padNone, className)}
+      {...rest}
+    />
+  );
+}
+
 interface WindowProps extends HTMLAttributes<HTMLElement> {
   as?: 'div' | 'section' | 'article' | 'aside';
+  size?: 'sm' | 'md' | 'lg' | undefined;
+  /** 데스크톱·크롬북(≥720×620)에서 3단 고정 프레임 크기(md 680×540, lg 860×580)로 잠근다. */
+  fixed?: boolean | undefined;
 }
 
 /** 화면에 서는 나무 창(결과·오답 노트): Modal과 같은 틀 한 벌(호두나무 테 + 안쪽 몰딩 + 양피지 면). 배치는 화면 CSS가 정한다. */
-export function Window({ as: Tag = 'div', className, ...rest }: WindowProps) {
-  return <Tag className={cx(css.window, className)} {...rest} />;
+export function Window({ as: Tag = 'div', size, fixed = false, className, ...rest }: WindowProps) {
+  return (
+    <Tag
+      className={cx(
+        css.window,
+        size === 'sm' && css.dialogSm,
+        size === 'md' && css.dialogMd,
+        size === 'lg' && css.dialogLg,
+        fixed && css.frameFixed,
+        className,
+      )}
+      {...rest}
+    />
+  );
 }
 
 /** 창 머리줄 아래 놋쇠 구분선(rule 원화). 꾸밈이라 읽지 않는다. */
@@ -225,6 +330,8 @@ interface ModalProps {
   title: ReactNode;
   onClose(): void;
   size?: 'sm' | 'md' | 'lg';
+  /** 데스크톱·크롬북(≥720×620)에서 창 높이를 고정 규격(md 680×540, lg 860×580)으로 잠가 탭 전환 흔들림을 없앤다. */
+  fixed?: boolean;
   /** 아래 버튼 줄(오른쪽 정렬). */
   footer?: ReactNode;
   /** 막을 눌러도 닫지 않는다(고르기 창처럼 꼭 골라야 하는 창). */
@@ -236,7 +343,7 @@ interface ModalProps {
 }
 
 /** 막(--scrim) 위에 뜬 나무 창(호두나무 테 + 양피지 면). 포커스를 가두고 Esc로 닫으며, 닫히면 연 버튼으로 포커스를 돌린다. */
-export function Modal({ titleId, title, onClose, size = 'md', footer, dismissable = true, initialFocus = 'content', onDialogKeyDown, children }: ModalProps) {
+export function Modal({ titleId, title, onClose, size = 'md', fixed = false, footer, dismissable = true, initialFocus = 'content', onDialogKeyDown, children }: ModalProps) {
   const boxRef = useRef<HTMLDivElement>(null);
   const [opener] = useState<HTMLElement | null>(() => (typeof document === 'undefined' ? null : (document.activeElement as HTMLElement | null)));
   const close = useEffectEvent(() => { if (dismissable) onClose(); });
@@ -278,7 +385,7 @@ export function Modal({ titleId, title, onClose, size = 'md', footer, dismissabl
         role="dialog"
         aria-modal="true"
         aria-labelledby={titleId}
-        className={cx(css.dialog, size === 'sm' ? css.dialogSm : size === 'lg' ? css.dialogLg : css.dialogMd)}
+        className={cx(css.dialog, size === 'sm' ? css.dialogSm : size === 'lg' ? css.dialogLg : css.dialogMd, fixed && css.frameFixed)}
         onKeyDown={onDialogKeyDown}
       >
         <div className={css.dialogHead} data-dialog-head>
