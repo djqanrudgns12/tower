@@ -18,7 +18,6 @@ import {
   type TelemetrySnapshot,
 } from '../contracts/lobby';
 import {
-  connectPresenceChannel,
   fetchInitialTelemetry,
   fetchRanking,
   flushPendingRunSyncs,
@@ -599,7 +598,8 @@ export function recommendNickname(previous = ''): string {
 
 /**
  * 상단 4대 지표 전용 격리 스토어.
- * 실시간 접속자 수가 바뀌어도 TelemetryStrip만 다시 그려지고 별명 입력창은 리렌더링되지 않는다.
+ * 접속자 수는 실시간 연결 대신 홈 방문 응답의 "최근 5분 안에 홈을 연 기기 수"다(호스팅 계획서 §5.2).
+ * 지표가 바뀌어도 TelemetryStrip만 다시 그려지고 별명 입력창은 리렌더링되지 않는다.
  */
 export interface LobbyTelemetryStore {
   subscribe(listener: () => void): () => void;
@@ -618,7 +618,6 @@ export function createLobbyTelemetryStore(): LobbyTelemetryStore {
     updatedAtIso: null,
   };
   const listeners = new Set<() => void>();
-  let debounceTimer: ReturnType<typeof setTimeout> | null = null;
   let refreshSequence = 0;
 
   const emit = () => {
@@ -638,6 +637,7 @@ export function createLobbyTelemetryStore(): LobbyTelemetryStore {
     if (sequence !== refreshSequence || sharing !== isRecordSharingEnabled()) return;
     setPatch({
       status: sharing ? initial.status : 'disabled',
+      onlineNow: sharing ? initial.onlineNow : null,
       todayPlays: initial.todayPlays,
       totalVisitors: initial.totalVisitors,
       totalPlays: initial.totalPlays,
@@ -657,19 +657,6 @@ export function createLobbyTelemetryStore(): LobbyTelemetryStore {
       void flushPendingRunSyncs();
       void refreshCounts(playerId);
 
-      const disconnectPresence = connectPresenceChannel(playerId, count => {
-        if (!active) return;
-        if (debounceTimer) clearTimeout(debounceTimer);
-        if (snapshot.onlineNow === null || count === null) {
-          setPatch({ onlineNow: count });
-        } else {
-          debounceTimer = setTimeout(() => {
-            if (!active) return;
-            setPatch({ onlineNow: count });
-          }, 1500);
-        }
-      });
-
       const onOnline = () => {
         if (!active) return;
         void flushPendingRunSyncs();
@@ -680,9 +667,7 @@ export function createLobbyTelemetryStore(): LobbyTelemetryStore {
       return () => {
         active = false;
         refreshSequence++;
-        if (debounceTimer) clearTimeout(debounceTimer);
         window.removeEventListener('online', onOnline);
-        disconnectPresence();
       };
     },
   };

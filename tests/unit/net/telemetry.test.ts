@@ -2,7 +2,6 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import type { TelemetrySnapshot } from '../../../src/contracts/lobby';
 
 vi.mock('../../../src/persistence/lobbyClient', () => ({
-  connectPresenceChannel: vi.fn(() => () => undefined),
   fetchInitialTelemetry: vi.fn(),
   fetchRanking: vi.fn(),
   flushPendingRunSyncs: vi.fn(async () => undefined),
@@ -11,9 +10,9 @@ vi.mock('../../../src/persistence/lobbyClient', () => ({
 import { createLobbyTelemetryStore } from '../../../src/application/lobby';
 import { fetchInitialTelemetry } from '../../../src/persistence/lobbyClient';
 
-type Counts = Omit<TelemetrySnapshot, 'onlineNow'>;
-const live: Counts = { status: 'live', todayPlays: 100, totalVisitors: 200, totalPlays: 300, updatedAtIso: '2026-10-30T13:00:00Z' };
-const local: Counts = { status: 'offline', todayPlays: 2, totalVisitors: null, totalPlays: 3, updatedAtIso: '2026-10-30T13:01:00Z' };
+type Counts = TelemetrySnapshot;
+const live: Counts = { status: 'live', onlineNow: 7, todayPlays: 100, totalVisitors: 200, totalPlays: 300, updatedAtIso: '2026-10-30T13:00:00Z' };
+const local: Counts = { status: 'offline', onlineNow: null, todayPlays: 2, totalVisitors: null, totalPlays: 3, updatedAtIso: '2026-10-30T13:01:00Z' };
 
 function deferredCounts() {
   let resolve!: (counts: Counts) => void;
@@ -53,6 +52,23 @@ describe('로비 통계 응답 순서', () => {
     earlier.resolve(live);
     await earlier.promise;
     expect(store.getSnapshot()).toMatchObject({ ...local, status: 'disabled' });
+  });
+
+  it('홈 방문 응답의 최근 5분 방문 기기 수를 접속 수로 쓰고, 실패하면 비운다', async () => {
+    vi.mocked(fetchInitialTelemetry).mockResolvedValueOnce(live).mockResolvedValueOnce(local);
+    const store = createLobbyTelemetryStore();
+    await store.refreshCounts('local');
+    expect(store.getSnapshot().onlineNow).toBe(7);
+    await store.refreshCounts('local');
+    expect(store.getSnapshot().onlineNow).toBeNull();
+  });
+
+  it('공개 기록을 끈 상태에서는 접속 수를 보이지 않는다', async () => {
+    sharing = false;
+    vi.mocked(fetchInitialTelemetry).mockResolvedValueOnce(live);
+    const store = createLobbyTelemetryStore();
+    await store.refreshCounts('local');
+    expect(store.getSnapshot()).toMatchObject({ status: 'disabled', onlineNow: null });
   });
 
   it('로비 연결을 종료한 뒤 도착한 통계로 구독자에게 알리지 않는다', async () => {

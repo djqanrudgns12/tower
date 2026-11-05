@@ -1,5 +1,6 @@
-import { expireAccessToken, getAccessToken, readSupabaseEnv, setPublicRecordNotice, type SupabaseEnv } from './auth';
-import { isRecordSharingEnabled, SETTINGS_CHANGED_EVENT } from './settings';
+import { z } from 'zod';
+import { getAccessToken, readApiEnv, rejectAccessToken, setPublicRecordNotice, type ApiEnv } from './auth';
+import { isRecordSharingEnabled } from './settings';
 import type { DifficultyId } from '../contracts/balance';
 import {
   cleanPublicNickname,
@@ -25,7 +26,9 @@ import {
 
 const VISIT_DAY_KEY = 'vocabulary-td.visitDay';
 const RPC_TIMEOUT_MS = 4500;
-const PRESENCE_TIMEOUT_MS = 4000;
+
+/** 홈 방문 응답: 지금 RPC 결과 4개 + 서버가 세는 최근 5분 방문 기기 수(실시간 접속 웹소켓 대체). */
+const lobbyVisitWithRecentSchema = lobbyVisitResponseSchema.extend({ recentVisitors: z.number().int().min(0) });
 
 class PermanentRpcError extends Error {
   constructor(readonly reason?: string) { super('RPC_REJECTED'); }
@@ -41,24 +44,26 @@ function retryAfterMs(response: Response): number {
   return Number.isFinite(delay) ? Math.max(30_000, Math.min(delay, Number.MAX_SAFE_INTEGER - Date.now())) : 30_000;
 }
 
-async function callRpc<T>(env: SupabaseEnv, fnName: string, body: Record<string, unknown>, canSend?: () => Promise<boolean>): Promise<T | null> {
+/**
+ * 기록·랭킹 서버 호출. 401은 토큰을 버리고 다음에 새로 받으며, 408·429·5xx·연결 실패는 나중에 다시 보낸다.
+ * 그 밖의 4xx는 서버가 판정해 거부한 것이므로 다시 보내지 않는다.
+ */
+async function callApi<T>(env: ApiEnv, method: 'GET' | 'POST', path: string, body?: Record<string, unknown>, canSend?: () => Promise<boolean>): Promise<T | null> {
   const ctrl = new AbortController();
   const timer = setTimeout(() => ctrl.abort(), RPC_TIMEOUT_MS);
   try {
     const token = await getAccessToken(env);
     if (!token || (canSend && !await canSend()) || !isRecordSharingEnabled()) return null;
-    const res = await fetch(`${env.url}/rest/v1/rpc/${fnName}`, {
-      method: 'POST',
-      headers: {
-        apikey: env.anonKey,
-        Authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(body),
+    const headers: Record<string, string> = { Authorization: `Bearer ${token}` };
+    if (body) headers['Content-Type'] = 'application/json';
+    const res = await fetch(`${env.base}${path}`, {
+      method,
+      headers,
+      ...(body ? { body: JSON.stringify(body) } : {}),
       signal: ctrl.signal,
     });
     if (!res.ok) {
-      if (res.status === 401) expireAccessToken(env);
+      if (res.status === 401) rejectAccessToken(env);
       if (res.status >= 400 && res.status < 500 && ![401, 408, 429].includes(res.status)) {
         const detail = await res.json().catch(() => null) as { error?: unknown } | null;
         throw new PermanentRpcError(typeof detail?.error === 'string' ? detail.error : undefined);
@@ -226,16 +231,17 @@ export async function fetchRanking(query: RankingQuery, _playerId: string, curre
   if (query.tab === 'local_device') {
     return buildLocalRanking(query, currentNickname);
   }
-  const env = readSupabaseEnv();
+  const env = readApiEnv();
   if (env) {
-    const raw = await callRpc<unknown>(env, 'get_leaderboard_slice', {
+    const params = new URLSearchParams({
       p_tab: query.tab,
-      p_grade: query.grade === 'all' ? 0 : query.grade,
+      p_grade: String(query.grade === 'all' ? 0 : query.grade),
       p_difficulty: query.difficulty,
       p_period: query.period,
-      p_limit: query.limit,
-      p_offset: query.offset,
-    }).catch(() => null);
+      p_limit: String(query.limit),
+      p_offset: String(query.offset),
+    });
+    const raw = await callApi<unknown>(env, 'GET', `/v1/leaderboard?${params}`).catch(() => null);
     const parsed = rankingSliceResponseSchema.safeParse(raw);
     if (parsed.success) {
       const deviceRunIds = new Set((await listRecords().catch(() => [])).map(r => r.runId));
@@ -267,36 +273,29 @@ export async function computeLocalPlayCounts(now: Date = new Date()): Promise<{ 
   }
 }
 
-/** 로비 초기 방문 기록 및 누적·일일 지표 스냅샷을 가져온다. */
-export async function fetchInitialTelemetry(playerId: string): Promise<Omit<TelemetrySnapshot, 'onlineNow'>> {
+/** 로비 방문 기록 및 누적·일일 지표, 최근 5분 홈 방문 기기 수(onlineNow)를 가져온다. */
+export async function fetchInitialTelemetry(playerId: string): Promise<TelemetrySnapshot> {
   void playerId;
   const local = await computeLocalPlayCounts();
-  const env = readSupabaseEnv();
-  if (!env) {
-    return {
-      status: isRecordSharingEnabled() ? 'offline' : 'disabled',
-      todayPlays: local.todayPlays,
-      totalVisitors: null,
-      totalPlays: local.totalPlays,
-      updatedAtIso: new Date().toISOString(),
-    };
-  }
-  const raw = await callRpc<unknown>(env, 'record_lobby_visit', {}).catch(() => null);
-  const parsed = lobbyVisitResponseSchema.safeParse(raw);
-  if (!parsed.success) {
-    return {
-      status: 'offline',
-      todayPlays: local.todayPlays,
-      totalVisitors: null,
-      totalPlays: local.totalPlays,
-      updatedAtIso: new Date().toISOString(),
-    };
-  }
+  const offline = (status: TelemetrySnapshot['status']): TelemetrySnapshot => ({
+    status,
+    onlineNow: null,
+    todayPlays: local.todayPlays,
+    totalVisitors: null,
+    totalPlays: local.totalPlays,
+    updatedAtIso: new Date().toISOString(),
+  });
+  const env = readApiEnv();
+  if (!env) return offline(isRecordSharingEnabled() ? 'offline' : 'disabled');
+  const raw = await callApi<unknown>(env, 'POST', '/v1/lobby-visit', {}).catch(() => null);
+  const parsed = lobbyVisitWithRecentSchema.safeParse(raw);
+  if (!parsed.success) return offline('offline');
   try {
     localStorage.setItem(VISIT_DAY_KEY, kstDateKey());
   } catch { /* 저장소 차단 무시 */ }
   return {
     status: 'live',
+    onlineNow: parsed.data.recentVisitors,
     todayPlays: parsed.data.todayPlays,
     totalVisitors: parsed.data.totalVisitors,
     totalPlays: parsed.data.totalPlays,
@@ -307,9 +306,9 @@ export async function fetchInitialTelemetry(playerId: string): Promise<Omit<Tele
 /** 정규 판 시작 시 일일·누적 플레이 카운트를 비동기로 알린다(연습 판 제외). */
 export async function reportRunStarted(runId: string, playerId: string): Promise<void> {
   void playerId;
-  const env = readSupabaseEnv();
+  const env = readApiEnv();
   if (!env) return;
-  await callRpc(env, 'record_run_start', { p_run_id: runId }).catch(() => null);
+  await callApi(env, 'POST', '/v1/runs/start', { p_run_id: runId }).catch(() => null);
 }
 
 /** 정규 판 종료 시 동기화 큐에 적재하고 가능한 즉시 서버에 전송한다. */
@@ -334,7 +333,7 @@ function reportSubmissionRejection(runId: string, reason?: string): void {
 let flushing = false;
 export async function flushPendingRunSyncs(): Promise<void> {
   if (flushing) return;
-  const env = readSupabaseEnv();
+  const env = readApiEnv();
   if (!env) return;
   flushing = true;
   try {
@@ -348,7 +347,7 @@ export async function flushPendingRunSyncs(): Promise<void> {
       if (r.contentMode !== 'published' || r.completedWave < 1) { await removePendingRunSync(item.runId); continue; }
       const isStillQueued = async () => (await getPendingRunSync(item.runId))?.queuedAt === item.queuedAt;
       try {
-        const res = await callRpc<{ ok?: boolean; status?: string; error?: string }>(env, 'submit_completed_run', {
+        const res = await callApi<{ ok?: boolean; status?: string; error?: string }>(env, 'POST', '/v1/runs/submit', {
           p_run_id: r.runId,
           p_nickname: cleanPublicNickname(r.nickname).value,
           p_grade: r.grade,
@@ -388,112 +387,4 @@ export async function flushPendingRunSyncs(): Promise<void> {
   } finally {
     flushing = false;
   }
-}
-
-/**
- * Supabase Realtime Phoenix WebSocket 경량 Presence 연결기.
- * 외부 패키지 없이 동작하며, 4초 내 연결되지 않거나 방화벽에 막히면 조용히 닫고 null을 알린다.
- */
-export function connectPresenceChannel(
-  _playerId: string,
-  onOnlineCount: (count: number | null) => void,
-): () => void {
-  const env = readSupabaseEnv();
-  if (!env || typeof WebSocket === 'undefined') {
-    onOnlineCount(null);
-    return () => undefined;
-  }
-
-  let closed = false;
-  let seq = 1;
-  let heartbeat: ReturnType<typeof setInterval> | null = null;
-  const presenceKeys = new Map<string, Set<string>>();
-  const presenceKey = crypto.randomUUID();
-  const wsBase = env.url.replace(/^http/i, 'ws');
-  const wsUrl = `${wsBase}/realtime/v1/websocket?apikey=${encodeURIComponent(env.anonKey)}&vsn=1.0.0`;
-
-  let ws: WebSocket | null = null;
-  try {
-    ws = new WebSocket(wsUrl);
-  } catch {
-    onOnlineCount(null);
-    return () => undefined;
-  }
-
-  const timeout = setTimeout(() => {
-    if (ws && ws.readyState !== WebSocket.OPEN) {
-      try { ws.close(); } catch { /* ignore */ }
-      if (!closed) onOnlineCount(null);
-    }
-  }, PRESENCE_TIMEOUT_MS);
-
-  const send = (topic: string, event: string, payload: Record<string, unknown>) => {
-    if (!isRecordSharingEnabled() || !ws || ws.readyState !== WebSocket.OPEN) return;
-    ws.send(JSON.stringify({ topic, event, payload, ref: String(seq++) }));
-  };
-
-  ws.addEventListener('open', () => {
-    clearTimeout(timeout);
-    if (closed) { ws?.close(); return; }
-    send('realtime:lobby:presence', 'phx_join', {
-      config: { broadcast: { self: false }, presence: { key: presenceKey } },
-    });
-    send('realtime:lobby:presence', 'presence', {
-      type: 'presence',
-      event: 'track',
-      payload: { state: 'lobby', joinedAt: Date.now() },
-    });
-    heartbeat = setInterval(() => send('phoenix', 'heartbeat', {}), 25000);
-  });
-
-  ws.addEventListener('message', ev => {
-    if (closed || !isRecordSharingEnabled() || typeof ev.data !== 'string') return;
-    try {
-      const msg = JSON.parse(ev.data) as { event?: string; payload?: Record<string, unknown> };
-      if (msg.event === 'presence_state' && msg.payload && typeof msg.payload === 'object') {
-        presenceKeys.clear();
-        for (const [key, value] of Object.entries(msg.payload)) {
-          const metas = (value as { metas?: { phx_ref?: string }[] }).metas ?? [];
-          presenceKeys.set(key, new Set(metas.map(m => m.phx_ref ?? 'unknown')));
-        }
-        onOnlineCount(Math.max(1, presenceKeys.size));
-      } else if (msg.event === 'presence_diff' && msg.payload) {
-        const joins = msg.payload.joins as Record<string, unknown> | undefined;
-        const leaves = msg.payload.leaves as Record<string, unknown> | undefined;
-        if (joins) for (const [key, value] of Object.entries(joins)) {
-          const refs = presenceKeys.get(key) ?? new Set<string>();
-          for (const meta of (value as { metas?: { phx_ref?: string }[] }).metas ?? []) refs.add(meta.phx_ref ?? 'unknown');
-          presenceKeys.set(key, refs);
-        }
-        if (leaves) for (const [key, value] of Object.entries(leaves)) {
-          const refs = presenceKeys.get(key);
-          for (const meta of (value as { metas?: { phx_ref?: string }[] }).metas ?? []) refs?.delete(meta.phx_ref ?? 'unknown');
-          if (!refs?.size) presenceKeys.delete(key);
-        }
-        onOnlineCount(Math.max(1, presenceKeys.size));
-      }
-    } catch {
-      // 비정상 프레임 무시
-    }
-  });
-
-  const handleClose = () => {
-    clearTimeout(timeout);
-    if (heartbeat) clearInterval(heartbeat);
-    heartbeat = null;
-    if (!closed) onOnlineCount(null);
-  };
-
-  ws.addEventListener('error', handleClose);
-  ws.addEventListener('close', handleClose);
-
-  const onSettingsChange = () => { if (!isRecordSharingEnabled()) { closed = true; if (heartbeat) clearInterval(heartbeat); clearTimeout(timeout); ws?.close(); onOnlineCount(null); } };
-  if (typeof window !== 'undefined') { window.addEventListener(SETTINGS_CHANGED_EVENT, onSettingsChange); window.addEventListener('storage', onSettingsChange); }
-  return () => {
-    if (typeof window !== 'undefined') { window.removeEventListener(SETTINGS_CHANGED_EVENT, onSettingsChange); window.removeEventListener('storage', onSettingsChange); }
-    closed = true;
-    clearTimeout(timeout);
-    if (heartbeat) clearInterval(heartbeat);
-    try { ws?.close(); } catch { /* ignore */ }
-  };
 }

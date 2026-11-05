@@ -1,10 +1,16 @@
 import 'fake-indexeddb/auto';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { addRecord, clearLocalHistory, db, enqueueRunSync, listPendingRunSyncs, listRecords, resetDbConnection, type RunRecord } from '../../../src/persistence/db';
-import { buildLocalRanking, connectPresenceChannel, fetchInitialTelemetry, fetchRanking, flushPendingRunSyncs, reportRunStarted } from '../../../src/persistence/lobbyClient';
+import { buildLocalRanking, fetchInitialTelemetry, fetchRanking, flushPendingRunSyncs, reportRunStarted } from '../../../src/persistence/lobbyClient';
 import { getPublicRecordNotice, setPublicRecordNotice } from '../../../src/persistence/auth';
 import { loadSettings } from '../../../src/persistence/settings';
 
+const API = 'https://api.example';
+const DEVICE_TOKEN = `v1.459d7cbc-0b34-4e94-82a5-26fe45038796.${'A'.repeat(43)}`;
+const memoryStorage = () => {
+  const store = new Map<string, string>();
+  return { getItem: (k: string) => store.get(k) ?? null, setItem: (k: string, v: string) => { store.set(k, v); }, removeItem: (k: string) => { store.delete(k); }, key: (i: number) => [...store.keys()][i] ?? null, get length() { return store.size; } };
+};
 const record = (runId: string): RunRecord => ({ runId, nickname: '솔방울', grade: 3, difficulty: 'Normal', mapId: 'garden_u', pt: 30, completedWave: 1, endedAtWave: 1, correct: 2, wrong: 0, skipped: 0, endedAt: '2026-10-30T01:00:00Z', endReason: 'QUIT', contentMode: 'published', balanceVersion: 'test', bankVersion: 'test' });
 
 describe('공개 동의·저장 회귀', () => {
@@ -86,22 +92,17 @@ describe('공개 동의·저장 회귀', () => {
     expect(loadSettings().reducedMotion).toBe(true);
   });
 
-  it('공개 동의가 없으면 로비·시작·제출·랭킹·Presence에서 fetch와 WebSocket을 쓰지 않는다', async () => {
-    vi.stubEnv('VITE_SUPABASE_URL', 'https://example.supabase.co');
-    vi.stubEnv('VITE_SUPABASE_ANON_KEY', 'test-key');
+  it('공개 동의가 없으면 기기 발급·로비·시작·제출·랭킹에서 fetch를 쓰지 않는다', async () => {
+    vi.stubEnv('VITE_API_BASE', API);
     const fetchSpy = vi.fn(async () => new Response('{}', { status: 200 }));
-    const wsSpy = vi.fn(function () { return { addEventListener: vi.fn(), close: vi.fn() }; });
     vi.stubGlobal('fetch', fetchSpy);
-    vi.stubGlobal('WebSocket', wsSpy);
     await enqueueRunSync(record('pending'), 'local');
-    await fetchInitialTelemetry('local');
+    const telemetry = await fetchInitialTelemetry('local');
     await reportRunStarted('run', 'local');
     await fetchRanking({ tab: 'single_score', grade: 3, difficulty: 'Normal', period: 'all_time', limit: 8, offset: 0 }, 'local', '솔방울');
     await flushPendingRunSyncs();
-    const disconnect = connectPresenceChannel('local', vi.fn());
-    disconnect();
     expect(fetchSpy).toHaveBeenCalledTimes(0);
-    expect(wsSpy).toHaveBeenCalledTimes(0);
+    expect(telemetry).toMatchObject({ status: 'disabled', onlineNow: null });
   });
 
   it('현재 별명의 기록이 없어도 다른 별명의 최고 기록을 내 기록으로 대체하지 않는다', async () => {
@@ -113,16 +114,14 @@ describe('공개 동의·저장 회귀', () => {
 
 describe('일시 장애 동기화 보존', () => {
   beforeEach(async () => {
-    const store = new Map<string,string>();
-    vi.stubGlobal('localStorage', { getItem:(k:string)=>store.get(k)??null, setItem:(k:string,v:string)=>store.set(k,v) });
+    vi.stubGlobal('localStorage', memoryStorage());
     localStorage.setItem('vocabulary-td.settings', JSON.stringify({shareRecords:true}));
-    localStorage.setItem('vocabulary-td.anonymousSession:https://example.supabase.co', JSON.stringify({access_token:'user-token',refresh_token:'refresh-token',expires_at:Date.now()/1000+3600}));
-    vi.stubEnv('VITE_SUPABASE_URL','https://example.supabase.co');
-    vi.stubEnv('VITE_SUPABASE_ANON_KEY','public-key');
+    localStorage.setItem(`vocabulary-td.device:${API}`, JSON.stringify({ deviceId: '459d7cbc-0b34-4e94-82a5-26fe45038796', token: DEVICE_TOKEN }));
+    vi.stubEnv('VITE_API_BASE', API);
     await resetDbConnection(); await clearLocalHistory();
   });
   afterEach(()=>{ vi.unstubAllGlobals(); vi.unstubAllEnvs(); });
-  it.each([408,429,500,503])('HTTP %s 응답을 반복해도 큐와 시도 횟수를 보존하며 사용자 JWT로 보낸다', async status => {
+  it.each([408,429,500,503])('HTTP %s 응답을 반복해도 큐와 시도 횟수를 보존하며 기기 토큰으로 보낸다', async status => {
     const fetchSpy=vi.fn(async (url: string, init: RequestInit)=>{ void url; void init; return new Response('{}',{status}); }); vi.stubGlobal('fetch',fetchSpy);
     await enqueueRunSync(record('pending'), 'local-device-id');
     for(let i=0;i<7;i++) {
@@ -133,7 +132,9 @@ describe('일시 장애 동기화 보존', () => {
     const pending=await listPendingRunSyncs();
     expect(pending).toHaveLength(1); expect(pending[0]?.attempts).toBe(0); expect(pending[0]?.retryAt).toBeGreaterThan(Date.now());
     const init=fetchSpy.mock.calls[0]?.[1] as RequestInit | undefined;
-    expect(init?.headers).toMatchObject({Authorization:'Bearer user-token'});
+    expect(fetchSpy.mock.calls[0]?.[0]).toBe(`${API}/v1/runs/submit`);
+    expect(init?.method).toBe('POST');
+    expect(init?.headers).toMatchObject({Authorization:`Bearer ${DEVICE_TOKEN}`});
     expect(JSON.parse(init?.body as string)).not.toHaveProperty('p_player_id');
   });
   it('공개 내 기록은 별명 대신 이 기기의 runId와 인증 소유권을 함께 확인한다', async () => {
@@ -198,14 +199,14 @@ describe('일시 장애 동기화 보존', () => {
     expect(await listPendingRunSyncs()).toEqual([]);
   });
 
-  it('인증 갱신 대기 중 로컬 기록을 정리하면 갱신 뒤 삭제한 기록을 보내지 않는다', async () => {
-    localStorage.setItem('vocabulary-td.anonymousSession:https://example.supabase.co', JSON.stringify({ access_token: 'expired', refresh_token: 'refresh-token', expires_at: 0 }));
+  it('기기 발급 대기 중 로컬 기록을 정리하면 발급 뒤 삭제한 기록을 보내지 않는다', async () => {
+    localStorage.removeItem(`vocabulary-td.device:${API}`);
     let reply!: (response: Response) => void;
     let started!: () => void;
     const requestStarted = new Promise<void>(resolve => { started = resolve; });
     const authReply = new Promise<Response>(resolve => { reply = resolve; });
     const fetchSpy = vi.fn((url: string) => {
-      if (url.includes('/auth/v1/')) { started(); return authReply; }
+      if (url.endsWith('/v1/device')) { started(); return authReply; }
       return Promise.resolve(new Response('{"ok":true}'));
     });
     vi.stubGlobal('fetch', fetchSpy);
@@ -213,9 +214,9 @@ describe('일시 장애 동기화 보존', () => {
     const flushing = flushPendingRunSyncs();
     await requestStarted;
     await clearLocalHistory();
-    reply(new Response(JSON.stringify({ access_token: 'renewed', refresh_token: 'renewed-refresh', expires_in: 3600 })));
+    reply(new Response(JSON.stringify({ deviceId: '11111111-1111-4111-8111-111111111111', token: `v1.11111111-1111-4111-8111-111111111111.${'B'.repeat(43)}` })));
     await flushing;
-    expect(fetchSpy.mock.calls.map(([url]) => url)).toEqual(['https://example.supabase.co/auth/v1/token?grant_type=refresh_token']);
+    expect(fetchSpy.mock.calls.map(([url]) => url)).toEqual([`${API}/v1/device`]);
     expect(await listPendingRunSyncs()).toEqual([]);
   });
 
