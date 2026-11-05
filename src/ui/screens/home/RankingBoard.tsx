@@ -4,6 +4,7 @@ import { RANKING_TAB_IDS, type RankingPeriod, type RankingResponse, type Ranking
 import { gradeContent } from '../../../content';
 import { fetchRanking } from '../../../application/lobby';
 import { DIFFICULTY_COPY, fmtNumber } from '../../copy';
+import { RANKING_EXTRA } from './homeCopy';
 import { TrophyIcon } from './HomeIcons';
 import css from './home.module.css';
 
@@ -213,20 +214,23 @@ export function RankingBoard({
               <span className={css.rankSub}>새 게임을 시작해 성문을 지키면 첫 기록이 남아요.</span>
             </div>
           ) : (
-            <ol className={css.rankList}>
-              {data.entries.map(entry => (
-                <li key={`${entry.rank}-${entry.playerIdHash}`} className={css.rankRow} data-me={entry.isMe || undefined}>
-                  <span className={css.rankMedal} data-rank={entry.rank <= 3 ? entry.rank : undefined}>
-                    {entry.rank}
-                  </span>
-                  <div className={css.rankInfo}>
-                    <span className={css.rankNick}>{entry.nickname}</span>
-                    <span className={css.rankSub}>{entry.secondaryLabel}</span>
-                  </div>
-                  <strong className={css.rankScore}>{formatPrimaryMetric(tab, entry.primaryValue)}</strong>
-                </li>
-              ))}
-            </ol>
+            // 저높이 화면에서는 목록이 200px로 줄어 안에서 스크롤하므로, 키보드로 닿도록 포커스 가능한 이름 있는 영역으로 감싼다.
+            <div className={css.rankScroll} tabIndex={0} role="region" aria-label={RANKING_EXTRA.listLabel}>
+              <ol className={css.rankList}>
+                {data.entries.map(entry => (
+                  <li key={`${entry.rank}-${entry.playerIdHash}`} className={css.rankRow} data-me={entry.isMe || undefined}>
+                    <span className={css.rankMedal} data-rank={entry.rank <= 3 ? entry.rank : undefined}>
+                      {entry.rank}
+                    </span>
+                    <div className={css.rankInfo}>
+                      <span className={css.rankNick}>{entry.nickname}</span>
+                      <span className={css.rankSub}>{entry.secondaryLabel}</span>
+                    </div>
+                    <strong className={css.rankScore}>{formatPrimaryMetric(tab, entry.primaryValue)}</strong>
+                  </li>
+                ))}
+              </ol>
+            </div>
           )}
         </div>
 

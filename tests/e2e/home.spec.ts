@@ -1,5 +1,42 @@
 import AxeBuilder from '@axe-core/playwright';
-import { expect, test } from '@playwright/test';
+import { expect, test, type Locator, type Page } from '@playwright/test';
+
+/** 서로 다른 닉네임 count개의 3학년·보통 기록을 이 기기 IndexedDB에 심는다(로컬 랭킹은 닉네임마다 한 줄이라 줄 수 = 닉네임 수). */
+async function seedRecords(page: Page, count: number) {
+  await page.evaluate(async n => {
+    const req = indexedDB.open('vocabulary-td', 3);
+    await new Promise<void>((resolve, reject) => {
+      req.onsuccess = () => {
+        const db = req.result;
+        const tx = db.transaction('records', 'readwrite');
+        const store = tx.objectStore('records');
+        for (let i = 0; i < n; i++) {
+          store.put({
+            runId: `00000000-0000-4000-8000-${String(100 + i).padStart(12, '0')}`,
+            nickname: `기록시험${String(i + 1).padStart(2, '0')}`,
+            grade: 3,
+            difficulty: 'Normal',
+            mapId: 'garden_u',
+            pt: 20000 - i * 100,
+            completedWave: 20 - (i % 15),
+            endedAtWave: 21 - (i % 15),
+            correct: 30,
+            wrong: 3,
+            skipped: 1,
+            endedAt: new Date(Date.now() - i * 3600_000).toISOString(),
+            endReason: 'DEFEAT',
+            contentMode: 'published',
+            balanceVersion: '0.4.0',
+            bankVersion: 'pub-test',
+          });
+        }
+        tx.oncomplete = () => { db.close(); resolve(); };
+        tx.onerror = () => reject(tx.error);
+      };
+      req.onerror = () => reject(req.error);
+    });
+  }, count);
+}
 
 // 홈은 옛 랜딩(방향 2-A: 왕국 참나무 작전실)이다. R4 U1 타이틀 화면(3426df8)을 되돌린 것이며, 이어하기(저장)는 앱에서 제거됐다.
 // 새 게임 창·환경설정·사용 설명서는 R4 판 그대로라서 그 창 안의 단언은 R4 기준이고, 홈에서 여는 단추 이름만 랜딩 기준이다.
@@ -209,6 +246,50 @@ test.describe('랜딩 페이지(방향 2-A: 왕국 참나무 작전실) 통합 �
     const firstOption = page.getByRole('region', { name: '어휘 문제' }).getByRole('group', { name: '보기' }).getByRole('button').first();
     await expect(firstOption).toBeVisible();
     await expect(firstOption.locator('[aria-hidden="true"]')).toHaveCount(0);
+  });
+
+  test('H1·접근성: 랭킹 목록은 안에서 스크롤해도 Tab으로 닿고 방향키로 스크롤된다(전체 랭킹 창·저높이 홈 판)', async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await page.goto('/');
+    await page.evaluate(() => localStorage.clear());
+    await seedRecords(page, 30);
+    await page.reload();
+
+    const board = page.getByRole('complementary', { name: '랭킹', exact: true });
+    const scrollGap = (el: Locator) => el.evaluate(n => n.scrollHeight - n.clientHeight);
+    const scrollTop = (el: Locator) => el.evaluate(n => n.scrollTop);
+
+    // 전체 랭킹 창: 상위 50위 목록이 360px를 넘어 안에서 스크롤된다. 첫 포커스는 닫기이고, Tab으로 목록 영역에 닿는다.
+    await board.getByRole('button', { name: '전체 보기' }).click();
+    const dialog = page.getByRole('dialog', { name: /전체 랭킹/ });
+    const modalList = dialog.getByRole('region', { name: '랭킹 목록' });
+    await expect(modalList.getByRole('listitem')).toHaveCount(30);
+    await expect(modalList).toHaveAttribute('tabindex', '0');
+    expect(await scrollGap(modalList), '창 목록이 스크롤된다').toBeGreaterThan(0);
+    await expect(dialog.getByRole('button', { name: '닫기' })).toBeFocused();
+    for (let i = 0; i < 8 && !(await modalList.evaluate(n => n === document.activeElement)); i++) await page.keyboard.press('Tab');
+    await expect(modalList).toBeFocused();
+    const before = await scrollTop(modalList);
+    await page.keyboard.press('ArrowDown');
+    await page.keyboard.press('PageDown');
+    await expect.poll(() => scrollTop(modalList), '방향키로 목록이 내려간다').toBeGreaterThan(before);
+    expect((await new AxeBuilder({ page }).analyze()).violations.map(v => `${v.id}: ${v.nodes.length}`)).toEqual([]);
+    await page.keyboard.press('Escape');
+    await expect(dialog).toHaveCount(0);
+
+    // 저높이(1366×650) 홈 판: 목록이 200px로 줄어 안에서 스크롤된다. 같은 영역이 Tab으로 닿고 방향키로 내려간다.
+    await page.setViewportSize({ width: 1366, height: 650 });
+    const boardList = board.getByRole('region', { name: '랭킹 목록' });
+    await expect(boardList.getByRole('listitem')).toHaveCount(8);
+    await expect(boardList).toHaveAttribute('tabindex', '0');
+    expect(await scrollGap(boardList), '홈 판 목록이 스크롤된다').toBeGreaterThan(0);
+    await boardList.focus();
+    await expect(boardList).toBeFocused();
+    const homeBefore = await scrollTop(boardList);
+    await page.keyboard.press('ArrowDown');
+    await page.keyboard.press('PageDown');
+    await expect.poll(() => scrollTop(boardList), '방향키로 홈 판 목록이 내려간다').toBeGreaterThan(homeBefore);
+    expect((await new AxeBuilder({ page }).analyze()).violations.map(v => `${v.id}: ${v.nodes.length}`)).toEqual([]);
   });
 
   test('S1·S2: 설정 — 소제목 3개, 900px 이상 2열, 1366×650에서 창 안 스크롤 0(글자 3단계), 기본 표식·한 줄 설명·켜짐/꺼짐 글자', async ({ page }) => {

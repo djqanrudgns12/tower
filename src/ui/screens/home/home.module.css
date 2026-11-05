@@ -781,6 +781,25 @@
   min-height: 280px;
 }
 
+/* 랭킹 목록 스크롤 상자: 안에서 스크롤하므로 키보드로 닿고(tabIndex 0) 방향키로 내릴 수 있다(WCAG 2.1.1). 보통 크기는 모양이 그대로고,
+   저높이 홈 판은 아래 media에서 200px로 줄고 전체 랭킹 창은 360px에서 스크롤한다. 포커스 링은 --ring. */
+.rankScroll,
+.rankScrollModal {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+.rankScrollModal {
+  max-height: 360px;
+  overflow-y: auto;
+}
+.rankScroll:focus-visible,
+.rankScrollModal:focus-visible {
+  outline: 3px solid var(--ring);
+  outline-offset: 2px;
+  border-radius: var(--r-input);
+}
+
 .rankRow {
   display: grid;
   grid-template-columns: 36px minmax(0, 1fr) auto;
@@ -959,6 +978,8 @@
   }
   .rankList {
     min-height: 140px;
+  }
+  .rankScroll {
     max-height: 200px;
     overflow-y: auto;
   }

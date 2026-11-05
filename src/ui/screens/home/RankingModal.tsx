@@ -4,6 +4,7 @@ import { RANKING_TAB_IDS, type RankingPeriod, type RankingResponse, type Ranking
 import { fetchRanking } from '../../../application/lobby';
 import { DIFFICULTY_COPY } from '../../copy';
 import { Card, Modal, Segmented, type SegmentOption } from '../../kit';
+import { RANKING_EXTRA } from './homeCopy';
 import { formatPrimaryMetric, PERIOD_LABELS, TAB_LABELS } from './RankingBoard';
 import css from './home.module.css';
 
@@ -87,20 +88,23 @@ export function RankingModal({
             <strong>{tab === 'local_device' ? '아직 기록이 없어요.' : '표시할 순위 기록이 아직 없어요.'}</strong>
           </Card>
         ) : (
-          <ol className={css.rankList} style={{ maxHeight: 360, overflowY: 'auto' }}>
-            {data.entries.map(entry => (
-              <li key={`${entry.rank}-${entry.playerIdHash}`} className={css.rankRow} data-me={entry.isMe || undefined}>
-                <span className={css.rankMedal} data-rank={entry.rank <= 3 ? entry.rank : undefined}>
-                  {entry.rank}
-                </span>
-                <div className={css.rankInfo}>
-                  <span className={css.rankNick}>{entry.nickname}</span>
-                  <span className={css.rankSub}>{entry.secondaryLabel}</span>
-                </div>
-                <strong className={css.rankScore}>{formatPrimaryMetric(tab, entry.primaryValue)}</strong>
-              </li>
-            ))}
-          </ol>
+          // 360px를 넘으면 안에서 스크롤하므로 Tab으로 닿고 방향키로 내릴 수 있게 포커스 가능한 이름 있는 영역으로 감싼다(WCAG 2.1.1).
+          <div className={css.rankScrollModal} tabIndex={0} role="region" aria-label={RANKING_EXTRA.listLabel}>
+            <ol className={css.rankList}>
+              {data.entries.map(entry => (
+                <li key={`${entry.rank}-${entry.playerIdHash}`} className={css.rankRow} data-me={entry.isMe || undefined}>
+                  <span className={css.rankMedal} data-rank={entry.rank <= 3 ? entry.rank : undefined}>
+                    {entry.rank}
+                  </span>
+                  <div className={css.rankInfo}>
+                    <span className={css.rankNick}>{entry.nickname}</span>
+                    <span className={css.rankSub}>{entry.secondaryLabel}</span>
+                  </div>
+                  <strong className={css.rankScore}>{formatPrimaryMetric(tab, entry.primaryValue)}</strong>
+                </li>
+              ))}
+            </ol>
+          </div>
         )}
       </div>
 

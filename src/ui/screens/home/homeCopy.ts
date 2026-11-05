@@ -49,3 +49,8 @@ export const NOTE_EXTRA = {
   /** 빈 상태에서 '틀린 낱말이 여기 모여요' 아래에 한 줄 더하는 안내. */
   emptyHint: '문제를 틀리거나 모르겠어요를 누르면 여기에 담겨요',
 } as const;
+
+/** 랭킹 목록(홈 판·전체 랭킹 창). 안에서 스크롤하는 상자라 키보드로 닿는 이름 있는 영역이다. */
+export const RANKING_EXTRA = {
+  listLabel: '랭킹 목록',
+} as const;
