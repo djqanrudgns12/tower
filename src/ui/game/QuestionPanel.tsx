@@ -171,10 +171,11 @@ export function QuestionPanel({
           )}
           {question.badge && <span className={css.badge}>{question.badge}</span>}
           {narrow && (
+            // 좁은 문제 줄을 덜 꺾도록 금화 + "+N"만 보이고(금화가 곧 골드), 화면 읽기는 "정답이면 +N 골드".
             <span className={css.stakeTag}>
-              <span className="sr-only">{STAKES_LABEL} </span>
+              <span className="sr-only">{`${STAKES_LABEL} ${stakesGold(correctGold)}`}</span>
               <ArtIcon name="coin" size={14} />
-              {stakesGold(correctGold)}
+              <span aria-hidden="true">+{correctGold}</span>
             </span>
           )}
           <Stem text={question.stem} />

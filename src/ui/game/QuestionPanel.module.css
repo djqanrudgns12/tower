@@ -292,7 +292,8 @@
   color: var(--ink);
   font-size: var(--fs-1);
   font-weight: 800;
-  line-height: 20px;
+  /* 테 포함 18px: 문제 줄 높이(16px × 1.35)보다 낮아 줄 상자를 키우지 않는다. */
+  line-height: 16px;
   vertical-align: 0.1em;
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
