@@ -474,7 +474,7 @@
   box-shadow: none;
 }
 
-/* ── 2B. 오늘의 낱말 (음각 정원 창문 액자 + 46px 라벨 수직선 칼정렬 어휘 노트) ── */
+/* ── 2B. 오늘의 낱말 (1:1 음각 액자 몬스터 일상 원화 + 46px 라벨 수직선 칼정렬 어휘 노트) ── */
 .wordStudyBody {
   display: grid;
   grid-template-columns: 100px minmax(0, 1fr);
@@ -485,22 +485,24 @@
 .steleGardenFrame {
   position: relative;
   width: 100px;
-  height: 104px;
+  height: 100px;
   flex-shrink: 0;
   border-radius: var(--r-md);
   border: 3px solid transparent;
   border-image: var(--art-groove) 47 / 3px stretch;
-  background: #dcecf4;
+  background: var(--parch-3);
   overflow: hidden;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-.steleGardenCanvas {
+.steleStudyArt {
   width: 100%;
   height: 100%;
   display: block;
+  object-fit: cover;
+  user-select: none;
 }
 
 .wordStudyContent {
@@ -1658,7 +1660,7 @@
   }
   .steleGardenFrame {
     width: 88px;
-    height: 90px;
+    height: 88px;
   }
   .noteGridBox {
     padding: 5px 9px;
@@ -1744,11 +1746,11 @@
     padding-bottom: 3px;
   }
   .wordStudyBody {
-    grid-template-columns: 74px minmax(0, 1fr);
+    grid-template-columns: 78px minmax(0, 1fr);
     gap: 8px;
   }
   .steleGardenFrame {
-    width: 74px;
+    width: 78px;
     height: 78px;
   }
   .lemmaWord {
@@ -1951,7 +1953,7 @@
   }
   .steleGardenFrame {
     width: 84px;
-    height: 96px;
+    height: 84px;
   }
   .ledgerTabRail {
     gap: 3px;
@@ -1988,7 +1990,8 @@
     grid-template-columns: 1fr;
   }
   .steleGardenFrame {
-    width: 100%;
-    height: 84px;
+    width: 96px;
+    height: 96px;
+    justify-self: center;
   }
 }

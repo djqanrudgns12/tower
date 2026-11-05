@@ -185,20 +185,42 @@ test.describe('랜딩 페이지(방향 2-A: 왕국 참나무 작전실) 통합 �
     await expect(stele.getByRole('button', { name: '랜덤' })).toBeVisible();
     await expect(stele).toContainText('뜻풀이');
 
+    const studyImg = stele.locator('img[src*="study.monster."]');
+    await expect(studyImg).toHaveCount(1);
+    await expect
+      .poll(() => studyImg.evaluate((el: HTMLImageElement) => el.complete && el.naturalWidth === 192 && el.naturalHeight === 192))
+      .toBe(true);
+    const firstArtSrc = await studyImg.getAttribute('src');
+    expect(firstArtSrc).toMatch(/assets\/ui\/study\/study\.monster\.\d{2}\.webp$/);
+
     const firstLemma = await stele.locator('strong').first().innerText();
     expect(firstLemma.length).toBeGreaterThan(0);
 
     await stele.getByRole('button', { name: '랜덤' }).click();
     const randomLemma = await stele.locator('strong').first().innerText();
+    const secondArtSrc = await studyImg.getAttribute('src');
     expect(randomLemma.length).toBeGreaterThan(0);
     expect(randomLemma).not.toBe(firstLemma);
+    expect(secondArtSrc).toMatch(/assets\/ui\/study\/study\.monster\.\d{2}\.webp$/);
+    expect(secondArtSrc).not.toBe(firstArtSrc);
 
-    // 연속 랜덤 클릭 시 직전 낱말과 중복되지 않고 뜻풀이가 항상 바로 표시된다.
+    // 연속 랜덤 클릭 시 직전 낱말·일러스트와 중복되지 않고 뜻풀이가 항상 바로 표시된다.
     await stele.getByRole('button', { name: '랜덤' }).click();
     const secondRandomLemma = await stele.locator('strong').first().innerText();
+    const thirdArtSrc = await studyImg.getAttribute('src');
     expect(secondRandomLemma).not.toBe(randomLemma);
+    expect(thirdArtSrc).not.toBe(secondArtSrc);
     expect([firstLemma, randomLemma, secondRandomLemma].every(w => w.length >= 1)).toBe(true);
     await expect(stele).toContainText('뜻풀이');
+
+    // 대표 뷰포트(데스크톱·크롬북·모바일·초소형) 모두 액자 내부 그림 표시 영역이 1:1 정사각형(잘림 0px)인지 확인
+    for (const [vw, vh] of [[1440, 900], [1366, 650], [390, 844], [320, 568]] as const) {
+      await page.setViewportSize({ width: vw, height: vh });
+      const artBox = (await studyImg.boundingBox())!;
+      expect(artBox.width, `${vw}x${vh} 액자 폭`).toBeGreaterThanOrEqual(70);
+      expect(Math.abs(artBox.width - artBox.height), `${vw}x${vh} 1:1 종횡비`).toBeLessThanOrEqual(0.5);
+    }
+    await page.setViewportSize({ width: 1440, height: 900 });
 
     // L17: 랭킹 4탭 전환 및 상세 모달 열기
     const rankBoard = page.getByRole('complementary', { name: '랭킹', exact: true });

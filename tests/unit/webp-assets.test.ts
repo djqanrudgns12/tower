@@ -59,6 +59,23 @@ describe('그림 WebP 규칙(public/assets)', () => {
     const manifest = assetManifestSchema.parse(JSON.parse(readFileSync(`${ASSETS}/manifest.json`, 'utf8')));
     for (const a of manifest.assets.filter(x => x.file.endsWith('.webp'))) expect(readImageInfo(readFileSync(`${ASSETS}/${a.file}`), a.file).format, a.file).toBe('webp');
   });
+
+  it('오늘의 낱말 몬스터 일상 원화 30종(ui/study/study.monster.01~30.webp)은 192×192 불투명 WebP다', () => {
+    for (let i = 1; i <= 30; i++) {
+      const rel = `ui/study/study.monster.${String(i).padStart(2, '0')}.webp`;
+      const full = `${ASSETS}/${rel}`;
+      expect(existsSync(full), `${rel} 파일 없음`).toBe(true);
+      const buf = readFileSync(full);
+      expect(buf.byteLength, `${rel} 용량 비정상`).toBeGreaterThan(2048);
+      expect(buf.byteLength, `${rel} 용량 상한(28KB) 초과`).toBeLessThanOrEqual(28 * 1024);
+      expect(readImageInfo(buf, rel), rel).toEqual({
+        format: 'webp',
+        width: 192,
+        height: 192,
+        hasAlpha: false,
+      });
+    }
+  });
 });
 
 // ── 알파 풀이 표본: 48×40, 알파는 둥근 그라데이션+점무늬. cwebp 1.6.0 (-q 85 -alpha_q 100 등)으로 만들었다 ───────────────────────────

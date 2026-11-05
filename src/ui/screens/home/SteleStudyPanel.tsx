@@ -1,125 +1,67 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import {
   kstDateKey,
   pickRandomStudyIndex,
   selectDailySteleCards,
 } from '../../../application/lobby';
-import { useLobbySprites, type SpriteMap } from './canvasAssets';
 import { HomeUiArt, ShuffleIcon } from './HomeIcons';
-import { drawSpriteGrounded } from './terrainBaker';
 import css from './home.module.css';
 
 interface Props {
   preferredGrade: number;
 }
 
-function renderSteleGarden(
-  ctx: CanvasRenderingContext2D,
-  w: number,
-  h: number,
-  sprites: SpriteMap,
-  glyph: string,
-): void {
-  // 맑은 봄하늘 단색 바탕 + 몽글 크림 구름 2조각 (그라데이션 없음)
-  ctx.fillStyle = '#dcecf4';
-  ctx.fillRect(0, 0, w, h);
+/** 오늘의 낱말 액자용 인게임 8종족 평화로운 일상 일러스트 30종 (192×192 불투명 WebP). */
+export const STUDY_MONSTER_ARTS = [
+  'assets/ui/study/study.monster.01.webp',
+  'assets/ui/study/study.monster.02.webp',
+  'assets/ui/study/study.monster.03.webp',
+  'assets/ui/study/study.monster.04.webp',
+  'assets/ui/study/study.monster.05.webp',
+  'assets/ui/study/study.monster.06.webp',
+  'assets/ui/study/study.monster.07.webp',
+  'assets/ui/study/study.monster.08.webp',
+  'assets/ui/study/study.monster.09.webp',
+  'assets/ui/study/study.monster.10.webp',
+  'assets/ui/study/study.monster.11.webp',
+  'assets/ui/study/study.monster.12.webp',
+  'assets/ui/study/study.monster.13.webp',
+  'assets/ui/study/study.monster.14.webp',
+  'assets/ui/study/study.monster.15.webp',
+  'assets/ui/study/study.monster.16.webp',
+  'assets/ui/study/study.monster.17.webp',
+  'assets/ui/study/study.monster.18.webp',
+  'assets/ui/study/study.monster.19.webp',
+  'assets/ui/study/study.monster.20.webp',
+  'assets/ui/study/study.monster.21.webp',
+  'assets/ui/study/study.monster.22.webp',
+  'assets/ui/study/study.monster.23.webp',
+  'assets/ui/study/study.monster.24.webp',
+  'assets/ui/study/study.monster.25.webp',
+  'assets/ui/study/study.monster.26.webp',
+  'assets/ui/study/study.monster.27.webp',
+  'assets/ui/study/study.monster.28.webp',
+  'assets/ui/study/study.monster.29.webp',
+  'assets/ui/study/study.monster.30.webp',
+] as const;
 
-  const drawCloud = (cx: number, cy: number, r: number) => {
-    ctx.fillStyle = '#fbf6ea';
-    const puffs: readonly [number, number, number][] = [
-      [-r * 0.85, r * 0.16, r * 0.72],
-      [0, -r * 0.1, r],
-      [r * 0.85, r * 0.18, r * 0.68],
-    ];
-    for (const [dx, dy, cr] of puffs) {
-      ctx.beginPath();
-      ctx.arc(cx + dx, cy + dy, cr, 0, Math.PI * 2);
-      ctx.fill();
-    }
-  };
-  drawCloud(w * 0.24, h * 0.19, 8.2);
-  drawCloud(w * 0.78, h * 0.23, 7);
-
-  // 뒤쪽 봄꽃나무 수관이 살짝 비치는 정원 깊이감 (초소형 가로 파노라마 창문에서도 양옆 균형 유지)
-  const isWide = w > h * 1.45;
-  const blossom = sprites.get('map.courtyard.tree.0')?.img;
-  const pine = sprites.get('map.courtyard.tree.1')?.img;
-  if (blossom) {
-    ctx.drawImage(blossom, isWide ? 4 : -14, h * 0.14, isWide ? 52 : 46, isWide ? 52 : 46);
+/** crypto.getRandomValues 기반 Fisher-Yates 순열 덱 생성 (재셔플 경계 연속 중복 방지 포함). */
+function shuffleArtDeck(excludeFirst?: string): string[] {
+  const deck: string[] = [...STUDY_MONSTER_ARTS];
+  const rand = new Uint32Array(deck.length);
+  crypto.getRandomValues(rand);
+  for (let i = deck.length - 1; i > 0; i--) {
+    const j = (rand[i]! >>> 0) % (i + 1);
+    const tmp = deck[i]!;
+    deck[i] = deck[j]!;
+    deck[j] = tmp;
   }
-  if (isWide && pine) {
-    ctx.drawImage(pine, w - 54, h * 0.18, 48, 48);
+  if (excludeFirst && deck.length > 1 && deck[0] === excludeFirst) {
+    const first = deck[0]!;
+    deck[0] = deck[1]!;
+    deck[1] = first;
   }
-
-  // 2단 초록 잔디 언덕
-  ctx.fillStyle = '#8cb956';
-  ctx.beginPath();
-  ctx.ellipse(w * 0.52, h * 0.94, w * 0.8, h * 0.38, 0, 0, Math.PI * 2);
-  ctx.fill();
-
-  ctx.fillStyle = '#719e41';
-  ctx.beginPath();
-  ctx.ellipse(w * 0.5, h * 1.02, w * 0.72, h * 0.25, 0, 0, Math.PI * 2);
-  ctx.fill();
-
-  const flowerbed = sprites.get('prop.flowerbed')?.img;
-  if (flowerbed) {
-    ctx.drawImage(flowerbed, isWide ? 12 : -5, h - 29, 36, 26);
-    ctx.drawImage(flowerbed, isWide ? w - 48 : w - 31, h - 28, 34, 25);
-  }
-
-  const size = Math.min(w * 0.76, h * 0.76);
-  const sx = w * 0.5;
-  const sy = h * 0.89;
-  if (!drawSpriteGrounded(ctx, sprites, 'deco.stele', sx, sy, size, size, 0.22)) {
-    ctx.fillStyle = '#c8c0b4';
-    ctx.strokeStyle = '#6c6258';
-    ctx.lineWidth = 2;
-    ctx.beginPath();
-    ctx.roundRect(sx - size * 0.3, sy - size * 0.76, size * 0.6, size * 0.68, [12, 12, 4, 4]);
-    ctx.fill();
-    ctx.stroke();
-  }
-
-  const bf = sprites.get('fx.butterfly.yellow.0')?.img;
-  if (bf) {
-    ctx.drawImage(bf, sx + size * 0.2, sy - size * 0.88, 14, 14);
-  }
-
-  ctx.fillStyle = '#3f352e';
-  ctx.font = `800 ${Math.max(14, Math.round(size * 0.25))}px "Pretendard Variable", Pretendard, sans-serif`;
-  ctx.textAlign = 'center';
-  ctx.textBaseline = 'middle';
-  ctx.fillText(glyph, sx, sy - size * 0.49);
-}
-
-function SteleGardenCanvas({ glyph, sprites }: { glyph: string; sprites: SpriteMap }) {
-  const ref = useRef<HTMLCanvasElement>(null);
-
-  useEffect(() => {
-    const canvas = ref.current;
-    if (!canvas) return undefined;
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return undefined;
-
-    const paint = () => {
-      const rect = canvas.getBoundingClientRect();
-      const dpr = Math.min(2, window.devicePixelRatio || 1);
-      const w = Math.max(64, Math.round(rect.width || 96));
-      const h = Math.max(68, Math.round(rect.height || 104));
-      canvas.width = Math.round(w * dpr);
-      canvas.height = Math.round(h * dpr);
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      renderSteleGarden(ctx, w, h, sprites, glyph);
-    };
-
-    paint();
-    const ro = typeof ResizeObserver !== 'undefined' ? new ResizeObserver(paint) : null;
-    ro?.observe(canvas);
-    return () => ro?.disconnect();
-  }, [glyph, sprites]);
-
-  return <canvas ref={ref} className={css.steleGardenCanvas} aria-hidden="true" />;
+  return deck;
 }
 
 export function SteleStudyPanel({ preferredGrade }: Props) {
@@ -127,8 +69,22 @@ export function SteleStudyPanel({ preferredGrade }: Props) {
   const cards = useMemo(() => selectDailySteleCards(preferredGrade, new Date(`${date}T00:00:00+09:00`)), [preferredGrade, date]);
   const key = `${date}:${preferredGrade}`;
   const [selection, setSelection] = useState({ key, index: 0, visited: [0] });
+  const [artDeck, setArtDeck] = useState(() => ({
+    deck: shuffleArtDeck(),
+    cursor: 0,
+  }));
+
   const index = selection.key === key ? selection.index : 0;
-  const sprites = useLobbySprites();
+  const currentArt = artDeck.deck[artDeck.cursor]!;
+  const nextArt = artDeck.deck[artDeck.cursor + 1];
+
+  // 다음 1장만 백그라운드로 예열하여 초기 네트워크 비용(~30KB)과 클릭 전환 지연(0ms)을 동시에 확보한다.
+  useEffect(() => {
+    if (!nextArt || typeof Image === 'undefined') return;
+    const preload = new Image();
+    preload.decoding = 'async';
+    preload.src = `${import.meta.env.BASE_URL}${nextArt}`;
+  }, [nextArt]);
 
   if (cards.length === 0) {
     return (
@@ -158,6 +114,17 @@ export function SteleStudyPanel({ preferredGrade }: Props) {
     const next = pickRandomStudyIndex(cards, safeIndex, visited);
     visited.add(next);
     setSelection({ key, index: next, visited: [...visited] });
+    setArtDeck(prev => {
+      const nextCursor = prev.cursor + 1;
+      if (nextCursor >= prev.deck.length - 1) {
+        const currentLast = prev.deck[prev.deck.length - 1]!;
+        return {
+          deck: [currentLast, ...shuffleArtDeck(currentLast)],
+          cursor: 0,
+        };
+      }
+      return { deck: prev.deck, cursor: nextCursor };
+    });
   };
 
   return (
@@ -184,7 +151,16 @@ export function SteleStudyPanel({ preferredGrade }: Props) {
 
       <div className={css.wordStudyBody}>
         <div className={css.steleGardenFrame} aria-hidden="true">
-          <SteleGardenCanvas glyph={card.glyph} sprites={sprites} />
+          <img
+            src={`${import.meta.env.BASE_URL}${currentArt}`}
+            width={192}
+            height={192}
+            alt=""
+            aria-hidden="true"
+            decoding="async"
+            draggable={false}
+            className={css.steleStudyArt}
+          />
         </div>
 
         <div className={css.wordStudyContent}>
