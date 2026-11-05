@@ -4,7 +4,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 // @ts-expect-error MJS 실행기의 선언 파일 없음
 import { runGate, createGateRuntime } from '../../tools/orchestrate/content-loop.mjs';
 // @ts-expect-error MJS 실행기의 선언 파일 없음
-import { pending, buildPhase, ingest, acceptPhase, resolveReviewConfig } from '../../tools/orchestrate/review.mjs';
+import { pending, buildPhase, ingest, acceptPhase, resolveReviewConfig, runPhase } from '../../tools/orchestrate/review.mjs';
 // @ts-expect-error MJS 실행기의 선언 파일 없음
 import { promptFor } from '../../tools/orchestrate/level.mjs';
 
@@ -54,6 +54,46 @@ function fixture(count = 1) {
 }
 
 describe('단계 순서 관문 실행기', () => {
+  it('--until S3은 관문을 대기시키고 이후 일반 실행에서 이어 간다', async () => {
+    const f = fixture();
+    const front = await runGate({ ...f.options, until: 'S3' }, f.deps);
+    expect(f.deps.review.mock.calls.map(c => c[1])).toEqual(['codex']);
+    expect(front.A.awaitingClaude).toBe(1);
+    const plan = await runGate({ ...f.options, until: 'S3', plan: true }, f.deps);
+    expect(plan.A.next).toEqual({ stage: 'S4 대기', target: 1 });
+    await runGate(f.options, f.deps);
+    expect(f.deps.review.mock.calls.map(c => c[1])).toEqual(['codex', 'claude']);
+  });
+  it('--until S3은 기존 관문 결함을 수정하지 않는다', async () => {
+    const f = fixture(); f.items[0]!.status = 'gate-defect'; f.items[0]!.claude = true;
+    const snapshot = f.deps.snapshot;
+    f.deps.snapshot = () => { const s = snapshot(); s.front.items.forEach(q => { q.status = 'pass'; }); return s; };
+    await runGate({ ...f.options, until: 'S3' }, f.deps);
+    expect(f.deps.revise).not.toHaveBeenCalled();
+    expect(f.deps.review.mock.calls.map(c => c[1])).toEqual(['codex']);
+  });
+  it('잘못된 --until은 호출 전에 거절한다', async () => {
+    const f = fixture();
+    await expect(runGate({ ...f.options, until: 'S2' }, f.deps)).rejects.toThrow('--until');
+    expect(f.events).toEqual([]);
+  });
+  it('Claude 인증 차단은 S4 blocked로 기록하고 재시도하지 않는다', async () => {
+    const f = fixture(); f.items[0]!.level = true; f.items[0]!.codex = true;
+    f.deps.review.mockRejectedValue(Object.assign(new Error('Claude 인증 차단'), { code: 'CLAUDE_AUTH_BLOCKED' }));
+    const result = await runGate(f.options, f.deps);
+    expect(f.deps.review).toHaveBeenCalledTimes(1);
+    expect(result.A).toMatchObject({ blocked: true, blockedReason: 'authentication', skipped: false });
+    expect(result.A.stages.find((s: { stage: string }) => s.stage === 'S4')).toMatchObject({ status: 'blocked' });
+  });
+  it('잠금 반영의 자원 대기는 시험 실패·모델 재시도로 처리하지 않는다', async () => {
+    const f = fixture();
+    f.deps.apply.mockResolvedValueOnce({ runs: [] }).mockRejectedValue(Object.assign(new Error('자원 대기'), { code: 'RESOURCE_WAIT' }));
+    const result = await runGate({ ...f.options, until: 'S3' }, f.deps);
+    expect(f.deps.level).toHaveBeenCalledTimes(1);
+    expect(f.deps.review).not.toHaveBeenCalled();
+    expect(result.A).toMatchObject({ blocked: true, blockedReason: 'resource', skipped: false });
+    expect(result.A.stages[0].status).toBe('blocked');
+  });
   it('S1→S2→S4 사이마다 반영하고 호출 수·시각을 기록한다', async () => {
     const f = fixture(); const summary = await runGate(f.options, f.deps);
     expect(f.events).toEqual(['apply', 'S1', 'apply', 'codex:q0@1', 'apply', 'claude:q0@1', 'apply']);
@@ -132,6 +172,13 @@ function reviewFixture() {
 }
 
 describe('문항 제한·D3·성취기준 연결', () => {
+  it.each(['Failed to authenticate', 'OAuth session expired and could not be refreshed', 'not logged in'])('인증 실패 %s는 형식 재시도와 사용량 대기를 쓰지 않는다', async message => {
+    const f = reviewFixture(), respond = vi.fn(async () => ({ code: 1, out: '', err: message })), sleep = vi.fn();
+    await expect(runPhase(f.bank, f.root, 'claude', 'A', 'blind', vi.fn(), { respond, sleep }))
+      .rejects.toMatchObject({ code: 'CLAUDE_AUTH_BLOCKED' });
+    expect(respond).toHaveBeenCalledTimes(1);
+    expect(sleep).not.toHaveBeenCalled();
+  });
   it('문항 제한을 blind→reveal→ingest까지 유지하고 기존 다른 문항은 보존한다', async () => {
     const f = reviewFixture();
     const config = resolveReviewConfig({}, {}).codex;

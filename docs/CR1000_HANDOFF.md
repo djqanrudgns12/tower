@@ -3,6 +3,18 @@
 작성 2026-11-06 · 작성 Claude Opus 5.5(총괄) · 받는 쪽 Codex(메인 세션)
 같이 읽을 것: [계획서 CONTENT_REVIEW_PLAN.md](CONTENT_REVIEW_PLAN.md)(기준 문서), [AGENTS.md](../AGENTS.md)
 
+### Codex 인계 후 갱신 (2026-11-06)
+
+- W2e 구현: `--gate --until S3`, 인증 실패 즉시 `blocked`(재시도 없음), produce 린트 2건 수정. 첫 판·배치 간 수정·재시작 모두 S4/S5를 실행하지 않는 시험 포함.
+- 병렬 제작 준비: produce 근거 조회도 `.orchestrate`에 쓰고 원문·index·초안을 함께 staging한다. 추적 콘텐츠 반영은 commit-lock만 한다.
+- 실제 gate의 잠금 반영은 서버 시험을 resource-guard(test)·worker 1로 실행한다. 종료 75는 시험 실패가 아닌 자원 대기다. 독립 commit-lock CLI 반영은 `resource-guard run --profile test -- node tools/orchestrate/commit-lock.mjs apply …`로 보호한다.
+- 직접 검증: 관련 5파일의 95시험 통과(마지막 잠금·관문 37시험 재실행, 나머지 58시험 결과 재사용), 시험 타입 검사·변경 파일 린트 통과. 전체 verify·실제 서버 시험·e2e는 미실행이다.
+- 기존 시범 루프 PID 826은 S4 실행 금지 지시에 맞춰 중지했다. 기록은 `.orchestrate/content-loop-history/pre-w2e-20261105T224948Z/`에 보존했다. 기존 고부하 작업은 변경하지 않았다.
+- 4학년 21배치 plan 확인: 001은 S3 29문항, 002~021은 S1 각 50문항. 실제 실행 결과는 아래 원래 계획과 구분해 후속 기록한다.
+- 좁은 단위 시험에는 전체 시험용 자원 대기를 잘못 적용했던 것을 바로잡았다. 전체 시험·e2e·제품 빌드에는 자원 보호를 계속 적용한다.
+
+이 갱신 아래의 Claude 인계 내용은 당시 기록이며, 이미 완료된 W2e를 다시 구현하지 않는다. S4는 사용자 로그인·사용량 회복 통지 전까지 실행 금지다.
+
 Claude 사용량이 바닥나 메인 세션을 Codex로 옮긴다. 이 문서만 읽고 이어서 일할 수 있게 썼다. 계획서와 이 문서가 다르면 **이 문서의 "현재 상태·방침"이 최신**이다.
 
 ---

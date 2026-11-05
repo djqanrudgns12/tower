@@ -2,6 +2,7 @@
 // 추적 콘텐츠 쓰기·빌드·서버 시험·경로 한정 커밋을 하나의 잠금으로 묶는다.
 import fs from 'node:fs';
 import path from 'node:path';
+import os from 'node:os';
 import { createHash, randomUUID } from 'node:crypto';
 import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
@@ -21,10 +22,20 @@ const safeId = id => typeof id === 'string' && /^[A-Za-z0-9_-]+$/.test(id);
 const write = (file, bytes) => { fs.mkdirSync(path.dirname(file), { recursive: true }); fs.writeFileSync(file, bytes); };
 function command(root, executable, args) {
   const result = spawnSync(executable, args, { cwd: root, encoding: 'utf8', maxBuffer: 32 * 1024 * 1024, env: { ...process.env, GIT_LITERAL_PATHSPECS: '1' } });
+  if (path.basename(executable) === 'resource-guard' && result.status === 75) {
+    throw Object.assign(new Error('자원 대기: 서버 시험은 실행되지 않았다. 반영 기록과 staging을 보존한다.'), { code: 'RESOURCE_WAIT' });
+  }
   if (result.error || result.status !== 0) throw new Error(`${executable} ${args.join(' ')} 실패 (${result.status}): ${result.error?.message ?? ''}\n${result.stdout ?? ''}${result.stderr ?? ''}`);
   return result.stdout;
 }
 const git = (root, ...args) => command(root, 'git', args);
+export function guardedServerTest(root) {
+  const args = ['run', 'test:server', '--', '--maxWorkers=1'];
+  const guard = path.join(os.homedir(), '.local/bin/resource-guard');
+  if (process.env.RESOURCE_GUARD_ACTIVE === '1' || !fs.existsSync(guard)) return command(root, 'npm', args);
+  command(root, guard, ['status', '--profile', 'avatar']);
+  return command(root, guard, ['run', '--profile', 'test', '--wait-seconds', '600', '--', 'npm', ...args]);
+}
 function alive(pid) {
   if (!Number.isSafeInteger(pid) || pid <= 0) throw new Error('잠금 PID가 잘못되어 자동 회수할 수 없다');
   try { process.kill(pid, 0); return true; }
@@ -215,7 +226,7 @@ export async function applyStaged(opts = {}) {
     }
     await (opts.buildBank ?? (r => command(r, process.execPath, ['tools/build-bank.mjs'])))(root);
     await (opts.buildQuestionKeys ?? (r => command(r, process.execPath, ['tools/build-question-keys.mjs'])))(root);
-    if (!opts.noServerTest) await (opts.testServer ?? (r => command(r, 'npm', ['run', 'test:server'])))(root);
+    if (!opts.noServerTest) await (opts.testServer ?? (r => command(r, 'npm', ['run', 'test:server', '--', '--maxWorkers=1'])))(root);
     const result = { committed: false, runs: pending.runs, paths: [...paths].sort() };
     if (opts.noCommit || opts.commit === false) return result;
     const tracked = new Set(git(root, 'ls-files', '-z').split('\0').filter(Boolean));

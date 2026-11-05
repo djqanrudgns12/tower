@@ -43,6 +43,16 @@ function fixture(count = 21) {
 }
 
 describe('배치를 넘는 재판정 회차', () => {
+  it('--until S3은 여러 배치의 수정·재검수와 재시작에서도 Claude를 부르지 않는다', async () => {
+    const f = fixture(2);
+    const summary = await runGate({ ...f.options, until: 'S3' }, f.deps);
+    expect(f.deps.reviseQuestions.mock.calls.map(([refs]) => refs.length)).toEqual([3, 3, 3]);
+    expect(f.deps.review.mock.calls.map(c => c[1])).toEqual(['codex', 'codex', 'codex']);
+    expect(f.deps.reviewQuestions.mock.calls.map(c => c[1])).toEqual(['codex', 'codex']);
+    for (const id of ['A', 'B', 'C']) expect(summary[id].awaitingClaude).toBe(1);
+    await runGate({ ...f.options, until: 'S3' }, f.deps);
+    expect(f.deps.reviewQuestions.mock.calls.map(c => c[1])).toEqual(['codex', 'codex']);
+  });
   it('3배치 첫 판 뒤 전역 목록을 넘기고 두 번 수정 뒤 버린다', async () => {
     const f = fixture(); const summary = await runGate(f.options, f.deps);
     expect(f.events.indexOf('pooled-revise')).toBeGreaterThan(f.events.indexOf('first-claude:C'));

@@ -19,7 +19,7 @@ const sha = v => crypto.createHash('sha256').update(v).digest('hex');
 const write = (f, v) => { fs.mkdirSync(path.dirname(f), { recursive: true }); fs.writeFileSync(f, json(v)); };
 const norm = s => String(s).normalize('NFC').trim().replace(/\s+/g, ' ');
 const head = s => norm(s).replace(/[-^()]/g, '');
-const pos = s => norm(s).replace(/[「」\[\]]/g, '');
+const pos = s => norm(s).replace(/[「」[\]]/g, '');
 
 function files(dir, name) {
   if (!fs.existsSync(dir)) return [];
@@ -257,12 +257,12 @@ function command(exe, argv, cwd, input) {
   });
 }
 
-async function fetchEvidence({ root, batchId, inputFile }) {
+async function fetchEvidence({ root, batchId, inputFile, outputDir }) {
   // fetch-evidence는 자기 파일 위치로 root를 정하므로 반드시 요청한 저장소의 스크립트를 실행한다.
-  await command(process.execPath, ['--use-system-ca', path.join(root, 'tools/fetch-evidence.mjs'), batchId, '--file', inputFile], root);
-  const dir = path.join(root, 'content-source/batches', batchId, 'evidence');
+  await command(process.execPath, ['--use-system-ca', path.join(root, 'tools/fetch-evidence.mjs'), batchId, '--file', inputFile, '--output-dir', outputDir], root);
+  const dir = outputDir;
   const index = read(path.join(dir, 'index.json'));
-  return { entries: index.entries, texts: Object.fromEntries(index.entries.map(e => {
+  return { index, entries: index.entries, texts: Object.fromEntries(index.entries.map(e => {
     if (path.basename(e.file) !== e.file) throw new Error('근거 파일 경로 오류');
     return [e.file, fs.readFileSync(path.join(dir, e.file), 'utf8')];
   })) };
@@ -278,7 +278,7 @@ export async function produce(options, deps = {}) {
   fs.mkdirSync(dir, { recursive: true });
   const lock = path.join(dir, 'producer.lock');
   try { fs.writeFileSync(lock, json({ pid: process.pid, batchId: options.batchId }), { flag: 'wx' }); }
-  catch (e) { if (e.code === 'EEXIST') throw new Error(`다른 제작 실행의 ID 예약 잠금이 있다: ${lock}. 종료된 실행이면 총괄이 확인 후 해제한다.`); throw e; }
+  catch (e) { if (e.code === 'EEXIST') throw new Error(`다른 제작 실행의 ID 예약 잠금이 있다: ${lock}. 종료된 실행이면 총괄이 확인 후 해제한다.`, { cause: e }); throw e; }
   try { return await produceRun(options, deps); }
   finally { fs.unlinkSync(lock); }
 }
@@ -304,7 +304,7 @@ async function produceRun(options, deps) {
   write(inputFile, evidenceInput(items));
   // 조회 직전에도 확인한다. 다른 제작기의 이미 반영된 배치를 건드리지 않는다.
   if (fs.existsSync(draftsPath)) throw new Error('근거 조회 전에 대상 배치가 생성되었다');
-  const evidence = await (deps.fetchEvidence ?? fetchEvidence)({ root, batchId, inputFile, items });
+  const evidence = await (deps.fetchEvidence ?? fetchEvidence)({ root, batchId, inputFile, items, outputDir: path.join(work, 'evidence') });
   const prepared = prepare(root, batchId, grade, items, evidence);
   const rejected = [...prepared.rejected], pairs = [];
   for (let offset = 0; offset < prepared.accepted.length; offset += 12) {
@@ -349,12 +349,20 @@ async function produceRun(options, deps) {
   if (drafts.length) m.d.draftBatchSchema.parse(drafts);
   const sidecar = m.d.draftSidecarSchema.parse({ batchId, jobId: batchId, producer: { model: MODEL, tool: TOOL, date: createdAt.slice(0, 10) }, items: accepted.map(p => p.side), rejected });
   const dir = path.join(root, '.orchestrate/staging', batchId, runId);
-  // 전부 거절된 경우 빈 drafts.json은 로더 계약 위반이므로 sidecar만 대기한다.
-  const outputs = { ...(drafts.length ? { 'drafts.json': drafts } : {}), 'sidecar.json': sidecar };
-  const writes = Object.entries(outputs).map(([name, value]) => {
+  // 전부 거절된 경우 빈 drafts.json 없이 반려 기록·근거만 보존한다.
+  const outputs = { ...(drafts.length ? { 'drafts.json': json(drafts) } : {}), 'sidecar.json': json(sidecar),
+    'evidence/index.json': json(evidence.index ?? { entries: evidence.entries }) };
+  for (const entry of evidence.entries) {
+    const text = evidence.texts[entry.file];
+    if (path.basename(entry.file) !== entry.file || entry.file === 'index.json' || typeof text !== 'string' || sha(text) !== entry.sha256) throw new Error('근거 staging 경로·해시 불일치');
+    outputs[`evidence/${entry.file}`] = text;
+  }
+  const writes = Object.entries(outputs).map(([name, bytes]) => {
     const relative = `content-source/batches/${batchId}/${name}`;
-    write(path.join(dir, 'files', relative), value);
-    return { path: relative, sha256: sha(json(value)) };
+    const file = path.join(dir, 'files', relative);
+    fs.mkdirSync(path.dirname(file), { recursive: true });
+    fs.writeFileSync(file, bytes);
+    return { path: relative, sha256: sha(bytes) };
   });
   const manifest = { batchId, runId, tool: TOOL, model: MODEL, createdAt, writes, deletes: [] };
   // manifest를 마지막에 쓰므로 완성되지 않은 파일은 W2b가 읽지 않는다.

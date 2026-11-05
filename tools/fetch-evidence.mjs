@@ -13,11 +13,16 @@ const args = process.argv.slice(2);
 const batchId = args[0];
 const rest = args.slice(1);
 let rawTargets = [];
+let outputDir;
 for (let i = 0; i < rest.length; i++) {
   if (rest[i] === '--file' && rest[i + 1]) {
     const fileContent = fs.readFileSync(path.resolve(root, rest[++i]), 'utf8').trim();
     if (fileContent.startsWith('[')) rawTargets.push(...JSON.parse(fileContent));
     else rawTargets.push(...fileContent.split(/\r?\n/).map(s => s.trim()).filter(Boolean));
+  } else if (rest[i] === '--output-dir') {
+    if (!rest[i + 1] || rest[i + 1].startsWith('--')) throw new Error('--output-dir 값이 필요하다');
+    outputDir = path.resolve(root, rest[++i]);
+    if (!path.relative(root, outputDir).startsWith(`.orchestrate${path.sep}`)) throw new Error('--output-dir은 저장소 .orchestrate 안이어야 한다');
   } else rawTargets.push(rest[i]);
 }
 
@@ -28,7 +33,7 @@ if (!batchId || rawTargets.length === 0) {
 
 const { module: sd } = await runnerImport(path.join(root, 'tools/content/stdict.ts'), { configFile: false, logLevel: 'error', root });
 
-const dir = path.join(root, 'content-source/batches', batchId, 'evidence');
+const dir = outputDir ?? path.join(root, 'content-source/batches', batchId, 'evidence');
 fs.mkdirSync(dir, { recursive: true });
 const indexPath = path.join(dir, 'index.json');
 const index = fs.existsSync(indexPath)

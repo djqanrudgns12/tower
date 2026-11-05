@@ -328,6 +328,11 @@ export function claudeCliArgs(config) {
   return ['-p', '--output-format', 'json', '--model', checked.model, '--effort', checked.effort, '--disallowedTools', ...BLOCKED_TOOLS];
 }
 
+function claudeAuthError(message) {
+  if (!/Failed to authenticate|\bOAuth\b|not logged in/i.test(message)) return null;
+  return Object.assign(new Error('Claude 인증 차단: 사용자 로그인 복구 후 관문을 다시 실행해야 한다'), { code: 'CLAUDE_AUTH_BLOCKED' });
+}
+
 function claudeCli(cwd, body, timeoutSec, config) {
   return new Promise((resolve, reject) => {
     const child = spawn(claudeCliPath(), claudeCliArgs(config), { cwd, stdio: ['pipe', 'pipe', 'pipe'] });
@@ -340,6 +345,8 @@ function claudeCli(cwd, body, timeoutSec, config) {
       clearTimeout(timer);
       let text = out.trim();
       try { const j = JSON.parse(text); text = j.is_error ? `실행 실패: ${j.result ?? j.subtype}` : String(j.result ?? ''); } catch { /* 원문 그대로 */ }
+      const authError = claudeAuthError(`${text}\n${err}`);
+      if (authError) { reject(authError); return; }
       resolve({ code, out: text, err: err.trim() });
     });
     child.once('error', error => { clearTimeout(timer); reject(error); });
@@ -429,6 +436,8 @@ export async function modelAttempt(who, invoke, options = {}, context = {}) {
     if (!options.liveArgon) options.onEvent?.({ type: 'call', who, ...context });
     try { result = await invoke(); } catch (e) { error = e; }
     const message = error?.message ?? (typeof result === 'string' ? result : `${result?.out ?? ''}\n${result?.err ?? ''}`);
+    const authError = who === 'claude' && (error?.code === 'CLAUDE_AUTH_BLOCKED' ? error : claudeAuthError(message));
+    if (authError) throw authError;
     const hourly = /시간당 실행 상한/.test(message);
     const usage = /session limit|usage limit|rate[_ ]limit|\b429\b|hit your limit/i.test(message) && !/```/.test(message);
     if (!hourly && !usage) { if (error) throw error; return result; }

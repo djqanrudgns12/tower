@@ -171,8 +171,9 @@ describe('S6 보충 제작', () => {
     expect(result.produced).toBe(3);
     expect(result.rejected).toBe(0);
     expect(deps.fetchEvidence).toHaveBeenCalledTimes(1);
-    const fetchArgs = deps.fetchEvidence.mock.calls[0] as unknown as [{ inputFile: string }];
+    const fetchArgs = deps.fetchEvidence.mock.calls[0] as unknown as [{ inputFile: string; outputDir: string }];
     expect(read(fetchArgs[0].inputFile)).toEqual(['word:간직하다', 'idiom:귀가 얇다', 'dialect:정구지']);
+    expect(path.relative(root, fetchArgs[0].outputDir)).toMatch(/^\.orchestrate\/produce\/Q50-G4-022\/.+\/evidence$/);
     const call = deps.respond.mock.calls[0] as unknown as [{ prompt: string; cwd: string }];
     expect(call[0].prompt).toContain('뜻만 되풀이하는 해설');
     expect(call[0].prompt).toContain('전투 상한');
@@ -202,9 +203,12 @@ describe('S6 보충 제작', () => {
     expect(Object.keys(result.manifest).sort()).toEqual(['batchId', 'createdAt', 'deletes', 'model', 'runId', 'tool', 'writes']);
     expect(result.manifest.runId).toMatch(/^20261106T031500000Z-\d+-[a-f0-9]+$/);
     expect(result.manifest.deletes).toEqual([]);
-    expect(result.manifest.writes).toHaveLength(2);
+    expect(result.manifest.writes.map((w: { path: string }) => w.path)).toEqual([
+      'drafts.json', 'sidecar.json', 'evidence/index.json', ...evidence.entries.map(e => `evidence/${e.file}`),
+    ].map(file => `content-source/batches/${batchId}/${file}`));
+    expect(read(path.join(result.stagingDir, 'files', `content-source/batches/${batchId}/evidence/index.json`)).entries).toEqual(evidence.entries);
+    for (const e of evidence.entries) expect(fs.readFileSync(path.join(result.stagingDir, 'files', `content-source/batches/${batchId}/evidence/${e.file}`), 'utf8')).toBe(evidence.texts[e.file]);
     for (const w of result.manifest.writes as { path: string; sha256: string }[]) {
-      expect(w.path).toMatch(/^content-source\/batches\/Q50-G4-022\/(drafts|sidecar)\.json$/);
       expect(w.sha256).toBe(hash(fs.readFileSync(path.join(result.stagingDir, 'files', w.path), 'utf8')));
       expect(fs.existsSync(path.join(root, w.path))).toBe(false);
     }
@@ -262,13 +266,15 @@ describe('S6 보충 제작', () => {
   });
 
   it('잘못된 JSON은 두 번으로 멈추고 전부 거절되면 빈 초안을 게시하지 않는다', async () => {
-    const { options, deps } = setup();
+    const { options, deps, evidence } = setup();
     deps.respond.mockResolvedValue('```json\n{"items":[');
     const result = await produce(options, deps);
     expect(deps.respond).toHaveBeenCalledTimes(2);
     expect(result.produced).toBe(0);
     expect(result.rejected).toBe(3);
-    expect(result.manifest.writes.map((w: { path: string }) => w.path)).toEqual([`content-source/batches/${batchId}/sidecar.json`]);
+    expect(result.manifest.writes.map((w: { path: string }) => w.path)).toEqual([
+      'sidecar.json', 'evidence/index.json', ...evidence.entries.map(e => `evidence/${e.file}`),
+    ].map(file => `content-source/batches/${batchId}/${file}`));
     const side = read(path.join(result.stagingDir, 'files', result.manifest.writes[0].path));
     expect(side.rejected.map((r: { lemma: string }) => r.lemma)).toEqual(words.map(w => w.lemma));
   });

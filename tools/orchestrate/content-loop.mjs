@@ -5,6 +5,7 @@
 //
 // --gate: S1 수준 → S2 앞단 검수 → S3 수정 → S4 Claude → S5 수정. --plan은 다음 단계만 조회.
 // --pool-after N: N배치의 첫 판 완료 뒤 전역 회차(수정12·수준/검수50). 생략하면 전체 배치.
+// --until S3: 앞단 수정·재검수까지만 진행하고 Claude 관문은 대기한다.
 // --recheck-codex 및 --claude-model/--claude-effort/--codex-model/--codex-effort 지원.
 //   node tools/orchestrate/content-loop.mjs --root <dir> [--batches A,B | --all] [--claude 2] [--codex 2] [--argon 2] [--rounds 2] [--commit | --no-commit]
 import fs from 'node:fs';
@@ -12,7 +13,7 @@ import path from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { randomUUID } from 'node:crypto';
 import * as level from './level.mjs';
-import { applyStaged } from './commit-lock.mjs';
+import { applyStaged, guardedServerTest } from './commit-lock.mjs';
 import * as review from './review.mjs';
 import * as revise from './revise.mjs';
 
@@ -38,6 +39,7 @@ function pool(size) {
 
 async function main() {
   const a = args(process.argv.slice(2));
+  if (a.until && !a.gate && !a.plan) throw new Error('--until은 --gate 또는 --plan과 함께 써야 한다');
   if (a.gate || a.plan) {
     const summary = await runGate(a);
     console.log(JSON.stringify(summary));
@@ -200,11 +202,11 @@ export async function createGateRuntime(options, modules) {
     levelQuestions: (questions, onEvent) => level.runLevels({ ...options, questions, all: false, batches: undefined, argon: 1, codex: 1, onEvent }, { modules: lm }),
     reviewQuestions: (questions, who, onEvent) => review.runQuestions(rb, root, who, questions, log, { ...options, ...reviewOptions(who), onEvent }),
     reviseQuestions: (questions, onEvent, batchIds) => revise.reviseQuestions(rm, root, questions, 'antigravity', log, { ...options, batchIds, onEvent }),
-    apply: (id, opts) => applyStaged({ root, batch: id, ...opts }),
+    apply: (id, opts) => applyStaged({ root, batch: id, ...opts, testServer: guardedServerTest }),
   };
 }
 
-function nextGateAction(state) {
+function nextGateAction(state, frontOnly = false) {
   if (!state || !state.drafts.length) return null;
   for (const [stage, field, who] of [['S1', 'levelPending', null], ['S2-codex', 'codexPending', 'codex'], ['S2-argon', 'argonPending', 'antigravity']]) {
     if (state[field].length) return { stage, keys: state[field], who };
@@ -213,7 +215,8 @@ function nextGateAction(state) {
   if (front.length || state.front.batchDefects.length) return { stage: 'S3', phase: 'front', keys: front };
   const passed = new Set(state.front.items.filter(item => item.status === 'pass').map(keyOf));
   const claude = state.claudePending.filter(key => passed.has(key));
-  if (claude.length) return { stage: 'S4', who: 'claude', keys: claude };
+  if (claude.length) return { stage: frontOnly ? 'S4 대기' : 'S4', who: 'claude', keys: claude };
+  if (frontOnly) return null;
   const gate = state.flagged.filter(item => item.phase === 'gate' && passed.has(keyOf(item.q))).map(item => keyOf(item.q));
   if (gate.length) return { stage: 'S5', phase: 'gate', keys: gate };
   return null;
@@ -221,6 +224,8 @@ function nextGateAction(state) {
 
 /** --gate: 단계별 staging을 반영한 후 반드시 현재 판을 다시 읽는다. deps는 모델/브리지/git 없는 시험 주입점. */
 export async function runGate(options = {}, deps = {}) {
+  if (options.until != null && options.until !== 'S3') throw new Error('--until은 S3만 지원한다');
+  const frontOnly = options.until === 'S3';
   if (options.commit && options['no-commit']) throw new Error('--commit과 --no-commit을 함께 쓸 수 없다');
   if (Boolean(options.all) === Boolean(options.batches)) throw new Error('--all 또는 --batches 중 하나가 필요하다');
   const root = path.resolve(options.root ?? path.resolve(import.meta.dirname, '../..'));
@@ -241,7 +246,7 @@ export async function runGate(options = {}, deps = {}) {
   if (options.plan) {
     for (const id of ids) {
       const state = await runtime.snapshot(id);
-      const action = nextGateAction(state);
+      const action = nextGateAction(state, frontOnly);
       summary[id] = { next: state?.awaitingStaging ? { stage: 'applyStaged', target: state.drafts.length } : { stage: action?.stage ?? '완료/대기', target: action?.keys.length ?? 0 } };
       log(`${id}: 다음 ${summary[id].next.stage} · 대상 ${summary[id].next.target}문항`);
     }
@@ -271,7 +276,13 @@ export async function runGate(options = {}, deps = {}) {
     return { batchId: id, questionId: key.slice(0, at), revision: Number(key.slice(at + 1)), ...(phase ? { phase } : {}) };
   });
   const markError = (batchIds, error) => {
-    for (const id of batchIds) { summary[id].error = error.message; summary[id].skipped = !applyError; log(`${id} 중단: ${error.message}`); }
+    for (const id of batchIds) {
+      summary[id].error = error.message;
+      summary[id].blocked = ['CLAUDE_AUTH_BLOCKED', 'RESOURCE_WAIT'].includes(error.code);
+      if (summary[id].blocked) summary[id].blockedReason = error.code === 'RESOURCE_WAIT' ? 'resource' : 'authentication';
+      summary[id].skipped = !applyError && !summary[id].blocked;
+      log(`${id} ${summary[id].blocked ? '차단' : '중단'}: ${error.message}`);
+    }
   };
   const assessFront = async (id, round) => {
     const state = await runtime.snapshot(id);
@@ -331,6 +342,10 @@ export async function runGate(options = {}, deps = {}) {
         return true;
       } catch (error) {
         for (const record of records.values()) record.error = error.message;
+        if (['CLAUDE_AUTH_BLOCKED', 'RESOURCE_WAIT'].includes(error.code)) {
+          for (const record of records.values()) record.status = 'blocked';
+          markError(batchIds, error); return false;
+        }
         if (applyError || attempt === 3 || /4회 모두 형식 오류|재요청 3회 소진|수정기 재요청 한도 소진/.test(error.message)) { markError(batchIds, error); return false; }
       } finally {
         for (const record of records.values()) record.endedAt = new Date().toISOString();
@@ -355,7 +370,7 @@ export async function runGate(options = {}, deps = {}) {
       const state = await runtime.snapshot(id);
       const passed = new Set(state?.front.batchDefects.length ? [] : state?.front.items.filter(q => q.status === 'pass').map(keyOf));
       const keys = state?.claudePending.filter(key => passed.has(key)) ?? [];
-      if (keys.length && !await execute('S4', refsOf(id, keys), [id], 0, cb => pools.claude(() => runtime.review(id, 'claude', keys, cb)))) return;
+      if (!frontOnly && keys.length && !await execute('S4', refsOf(id, keys), [id], 0, cb => pools.claude(() => runtime.review(id, 'claude', keys, cb)))) return;
       summary[id].firstPassComplete = true; save();
     } catch (error) { markError([id], error); }
   };
@@ -379,6 +394,10 @@ export async function runGate(options = {}, deps = {}) {
   };
   const recheck = async (cohort, round) => {
     for (const [stage, field, who] of [['S1', 'levelPending', null], ['S2-codex', 'codexPending', 'codex'], ['S4', 'claudePending', 'claude']]) {
+      if (frontOnly && stage === 'S4') {
+        for (const id of cohort.filter(active)) await assessFront(id, round);
+        continue;
+      }
       let refs = [];
       for (const id of cohort.filter(active)) {
         const state = await runtime.snapshot(id); if (!state) continue;
@@ -406,7 +425,7 @@ export async function runGate(options = {}, deps = {}) {
         const defects = new Set(state.front.items.filter(q => q.status === 'defect').map(keyOf));
         const passed = new Set(state.front.batchDefects.length ? [] : state.front.items.filter(q => q.status === 'pass').map(keyOf));
         refs.push(...refsOf(id, [...defects], 'front'));
-        refs.push(...refsOf(id, state.flagged.filter(x => x.phase === 'gate' && passed.has(keyOf(x.q))).map(x => keyOf(x.q)), 'gate'));
+        if (!frontOnly) refs.push(...refsOf(id, state.flagged.filter(x => x.phase === 'gate' && passed.has(keyOf(x.q))).map(x => keyOf(x.q)), 'gate'));
         if (state.front.batchDefects.length) repairIds.push(id);
       }
       const reviseIds = [...new Set([...refs.map(q => q.batchId), ...repairIds])];
@@ -421,6 +440,11 @@ export async function runGate(options = {}, deps = {}) {
       const state = await runtime.snapshot(id);
       summary[id].closed = !state || !state.drafts.length;
       summary[id].pending = state?.front.items.filter(q => q.status === 'pending').length ?? 0;
+      if (frontOnly) {
+        const passed = new Set(state?.front.batchDefects.length ? [] : state?.front.items.filter(q => q.status === 'pass').map(keyOf));
+        summary[id].until = 'S3';
+        summary[id].awaitingClaude = state?.claudePending.filter(key => passed.has(key)).length ?? 0;
+      }
       summary[id].endedAt = new Date().toISOString();
     }
     save();
