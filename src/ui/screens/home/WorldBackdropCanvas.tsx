@@ -98,7 +98,8 @@ function ensureWorldBaked(
 
   let leftSpine: SplineSample[] | null = null;
   if (w >= 1040) {
-    const sc = Math.min(1.06, Math.max(0.76, sideMargin / 156));
+    const sc = Math.min(1.2, Math.max(0.76, sideMargin / 160));
+    const wideMeadow = sideMargin >= 240;
 
     // 좌측 시냇물 계곡 물길
     leftSpine = drawNaturalBrook(
@@ -191,6 +192,16 @@ function ensureWorldBaked(
       { key: 'deco.tree', x: rx + 20 * sc, y: h * 0.87, w: 98 * sc, h: 98 * sc, sh: 0.24 },
       { key: 'prop.mushrooms', x: rx - 22 * sc, y: h * 0.89, w: 32 * sc, h: 28 * sc, sh: 0.14 },
       { key: 'edge.rocks.1', x: w - 48 * sc, y: h + 8, w: 126 * sc, h: 90 * sc, sh: 0 },
+      ...(wideMeadow
+        ? [
+            { key: 'deco.tree', x: 64, y: h * 0.56, w: 94 * sc, h: 94 * sc, sh: 0.24 },
+            { key: 'prop.flowerbed', x: sideMargin * 0.78, y: h * 0.36, w: 56 * sc, h: 40 * sc, sh: 0.14 },
+            { key: 'deco.rock', x: sideMargin * 0.76, y: h * 0.75, w: 34 * sc, h: 26 * sc, sh: 0.16 },
+            { key: 'map.courtyard.tree.0', x: w - 66, y: h * 0.48, w: 92 * sc, h: 92 * sc, sh: 0.24 },
+            { key: 'prop.flowerbed', x: w - sideMargin * 0.78, y: h * 0.29, w: 56 * sc, h: 40 * sc, sh: 0.14 },
+            { key: 'deco.rock', x: w - sideMargin * 0.76, y: h * 0.8, w: 34 * sc, h: 26 * sc, sh: 0.16 },
+          ]
+        : []),
     ];
 
     props.sort((a, b) => a.y - b.y);

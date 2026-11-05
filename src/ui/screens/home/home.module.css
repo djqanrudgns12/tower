@@ -42,7 +42,7 @@
 .headerPlaque {
   --ring: var(--focus-on-dark);
   border: 10px solid transparent;
-  border-image: var(--art-frame-lg) 98 / 10px stretch;
+  border-image: var(--art-frame-sm) 33 / 10px stretch;
   background: var(--walnut-3) padding-box;
   border-radius: var(--r-md);
   box-shadow: var(--shadow-board);
@@ -1423,17 +1423,20 @@
   border-radius: var(--r-sm);
 }
 
-.rankRow[data-rank-num='1'] {
+.rankRow[data-rank-num='1'],
+.rankRow:has(> .rankMedal[data-rank='1']) {
   background: #fcf4df;
   border-left: 3px solid var(--brass-2);
 }
 
-.rankRow[data-rank-num='2'] {
+.rankRow[data-rank-num='2'],
+.rankRow:has(> .rankMedal[data-rank='2']) {
   background: #f9f4e9;
   border-left: 3px solid #68737d;
 }
 
-.rankRow[data-rank-num='3'] {
+.rankRow[data-rank-num='3'],
+.rankRow:has(> .rankMedal[data-rank='3']) {
   background: #faf2e6;
   border-left: 3px solid #7c4925;
 }
@@ -1526,7 +1529,8 @@
   white-space: nowrap;
 }
 
-.rankRow[data-rank-num] .rankScore {
+.rankRow[data-rank-num] .rankScore,
+.rankRow:has(> .rankMedal[data-rank]) .rankScore {
   color: var(--brass-3);
 }
 
@@ -1575,7 +1579,8 @@
   font-variant-numeric: tabular-nums;
 }
 
-.myRankValue[data-has-entry='true'] {
+.myRankValue[data-has-entry='true'],
+.myRankDockModal .myRankValue {
   color: var(--brass-1);
 }
 
