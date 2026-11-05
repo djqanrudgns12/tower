@@ -360,22 +360,28 @@
   color: var(--ink);
 }
 
-/* 휴대폰 해설: 카드 위에 뜨는 종이 말풍선(카드 높이·보기 자리를 바꾸지 않는다). */
+/* 휴대폰 해설: 문제 카드 위 타워 칸을 가리지 않도록 카드 바로 아래 자리에 펼친다(카드 높이·보기 자리는 그대로). */
 .narrow .explainBox {
   position: absolute;
   left: 0;
   right: 0;
-  bottom: calc(100% + var(--s2));
+  top: calc(100% + var(--s2));
+  max-height: 132px;
   z-index: 6;
-  padding: var(--s3);
+  padding: var(--s2) var(--s3);
+  gap: 6px;
   border-radius: var(--r-md);
   background: var(--paper);
   box-shadow: var(--float);
   animation: rise var(--t-ui) var(--ease-out) 1;
 }
 
+.narrow .explainText {
+  max-height: 66px;
+}
+
 @keyframes rise {
-  from { opacity: 0; transform: translateY(8px); }
+  from { opacity: 0; transform: translateY(-6px); }
   to { opacity: 1; transform: translateY(0); }
 }
 

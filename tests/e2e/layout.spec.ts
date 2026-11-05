@@ -171,6 +171,12 @@ for (const vp of VIEWPORTS) {
         expect(Math.abs(r.h - after.options[0]!.h)).toBeLessThanOrEqual(TOLERANCE);
         expect(r.h).toBeGreaterThanOrEqual(defaults.layout.touchMinPx);
       }
+      if (vp.w === 390 && outcome !== 'correct') {
+        // 휴대폰 해설은 문제판 아래로만 펼쳐져 위쪽 타워 칸(Armory)을 덮지 않는다.
+        const armoryBox = (await page.getByRole('listbox', { name: '타워 칸' }).boundingBox())!;
+        const explainBox = (await panelOf(page).locator('[data-explain]').boundingBox())!;
+        expect(explainBox.y, '휴대폰 해설이 타워 칸을 덮지 않음').toBeGreaterThan(armoryBox.y + armoryBox.height);
+      }
       if (vp.mode === 'R') {
         const s = await seams(page);
         const seamDelta = Math.max(Math.abs(s.fieldRight + railGap - s.railLeft), Math.abs(s.railLeft - s.cardLeft), Math.abs(s.fieldRight - s.mainRight));
@@ -267,10 +273,12 @@ test('모달 포커스: 열면 내용의 첫 요소, 키보드로 설정을 바�
   await settingsBtn.click();
   const settingsDialog = page.getByRole('dialog', { name: '환경설정' });
   await expect(settingsDialog).toBeVisible();
-  // R4 kit Modal: 첫 포커스는 머리줄의 닫기가 아니라 내용의 첫 조작 요소다(설정은 첫 줄 '전체 소리' switch).
-  await expect(settingsDialog.getByRole('switch', { name: '전체 소리' })).toBeFocused();
+  // R4/R5 kit Modal: 첫 포커스는 머리줄의 닫기가 아니라 내용의 첫 조작 요소다(설정은 활성 '소리' 탭).
+  await expect(settingsDialog.getByRole('tab', { name: '소리' })).toBeFocused();
+  await page.keyboard.press('ArrowRight');
+  await expect(settingsDialog.getByRole('tab', { name: '화면·조작' })).toBeFocused();
 
-  // 키보드로 항목을 바꿔 부모가 다시 렌더돼도(onClose가 새 함수) 포커스가 그 라디오에 남는다. 탭이 없으므로 같은 목록에서 바로 찾는다.
+  // 키보드로 항목을 바꿔 부모가 다시 렌더돼도(onClose가 새 함수) 포커스가 그 라디오에 남는다.
   const large = settingsDialog
     .getByRole('radiogroup', { name: '글자 크기', exact: true })
     .getByRole('radio', { name: '글자 크게', exact: true });
@@ -445,16 +453,21 @@ test('13px·44px 하한: 홈·새 게임·전체 랭킹·설정·사용 설명�
   await page.keyboard.press('Escape');
 
   await page.locator('#settingsBtn').click();
-  results.settings = await floors(page, '[role="dialog"]');
+  const settings = page.getByRole('dialog', { name: '환경설정' });
+  results.settingsSound = await floors(page, '[role="dialog"]');
+  await settings.getByRole('tab', { name: '화면·조작' }).click();
+  results.settingsDisplay = await floors(page, '[role="dialog"]');
+  await settings.getByRole('tab', { name: '기록 관리' }).click();
+  results.settingsRecords = await floors(page, '[role="dialog"]');
   await page.keyboard.press('Escape');
 
   await page.locator('#guideBtn').click();
   const guide = page.getByRole('dialog', { name: '사용 설명서' });
-  results.guide = await floors(page, '[role="dialog"]');
-  // 목차 카드를 눌러 장 화면(시연·요약·쪽 넘김)을 연 상태에서도 글자·누름 하한을 지킨다(R5 G1). 다섯 장 × 글자 3단계 전수는 guide.spec G12.
-  await guide.getByRole('navigation', { name: '사용 설명서 목차' }).getByRole('button').first().click();
   await expect(guide.getByRole('heading', { level: 3, name: '제1장 · 한 판 흐름' })).toBeVisible();
-  results.guideOpen = await floors(page, '[role="dialog"]');
+  results.guideCh1 = await floors(page, '[role="dialog"]');
+  await guide.getByRole('tab', { name: '5. 새 타워와 적 특성' }).click();
+  await expect(guide.getByRole('heading', { level: 3, name: '제5장 · 새 타워와 적 특성' })).toBeVisible();
+  results.guideCh5 = await floors(page, '[role="dialog"]');
   await page.keyboard.press('Escape');
 
   // 오답 노트(빈 상태): 홈의 '오답 노트' 단추로 들어간다.

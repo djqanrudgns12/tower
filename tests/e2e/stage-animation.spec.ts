@@ -32,6 +32,7 @@ test.describe('홈 전장 미리보기(미니 무대) 애니메이션 검증', (
     // 사용자가 직접 전체 연출을 선택하면 새로고침 후에도 재생한다.
     await page.getByRole('button', { name: '설정' }).click();
     const settingsDialog = page.getByRole('dialog', { name: '환경설정' });
+    await settingsDialog.getByRole('tab', { name: '화면·조작' }).click();
     await settingsDialog.getByRole('radiogroup', { name: '배경 움직임 단계' }).getByRole('radio', { name: '전체 연출' }).click();
     await settingsDialog.getByRole('button', { name: '닫기' }).click();
 
@@ -48,7 +49,7 @@ test('설정 라디오는 방향키로 선택하고 하나의 Tab 진입점을 �
   await page.goto('/');
   await page.getByRole('button', { name: '설정', exact: true }).click();
   const dialog = page.getByRole('dialog', { name: '환경설정' });
-  // R4 U3: 설정은 탭 없는 한 목록이다. 켜기/끄기 줄은 switch로 바뀌어, 방향키로 고르는 라디오는 글자 크기·배경 움직임·소리 크기 줄이다.
+  await dialog.getByRole('tab', { name: '화면·조작' }).click();
   const group = dialog.getByRole('radiogroup', { name: '글자 크기', exact: true });
   const base = group.getByRole('radio', { name: '글자 보통' });
   const large = group.getByRole('radio', { name: '글자 크게' });
@@ -78,6 +79,7 @@ test('설정 switch(공개 기록 나누기)는 Space로 켜고 끄며 값이 �
   await page.goto('/');
   await page.getByRole('button', { name: '설정', exact: true }).click();
   const dialog = page.getByRole('dialog', { name: '환경설정' });
+  await dialog.getByRole('tab', { name: '기록 관리' }).click();
   const share = dialog.getByRole('switch', { name: '공개 기록 나누기' });
   const shared = () => page.evaluate(() => JSON.parse(localStorage.getItem('vocabulary-td.settings') ?? '{}').shareRecords);
   // 기본은 꺼짐: 공개 기록은 학생이 직접 켠다.

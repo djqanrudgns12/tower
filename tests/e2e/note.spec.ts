@@ -66,11 +66,13 @@ test('오답 노트가 비어 있으면: 홈 단추에 개수가 없고, 화면�
   expect(axe.violations.map(v => `${v.id}: ${v.nodes.length}`)).toEqual([]);
   await page.screenshot({ path: 'test-results/shots/note-empty.png' });
 
-  // O1: 양피지 공책이 넓은 화면을 채운다 — 빈 상태 그림이 보이고, 1440×900에서 공책 폭 1100px 이상·높이가 화면 아래까지 닿는다.
+  // O1: 양피지 공책이 lg(860×580) 고정 규격으로 바탕 한가운데에 정돈되어 놓인다.
   await expect(page.locator('img[src*="note.empty"]')).toBeVisible();
   const book = (await page.locator('main > div').first().boundingBox())!;
-  expect(book.width, '공책 폭').toBeGreaterThanOrEqual(1100);
-  expect(book.y + book.height, '공책 아래쪽').toBeGreaterThanOrEqual(900 - 24);
+  expect(Math.round(book.width), '공책 대형 고정 폭').toBe(860);
+  expect(Math.round(book.height), '공책 대형 고정 높이').toBe(580);
+  expect(book.x, '공책 왼쪽 여백').toBeGreaterThanOrEqual(200);
+  expect(book.y + book.height, '공책 아래쪽').toBeLessThanOrEqual(900);
 
   await page.getByRole('button', { name: '뒤로' }).click();
   await expect(page.getByRole('heading', { level: 1, name: '어휘력 타워 디펜스' })).toBeVisible();
@@ -136,16 +138,33 @@ test('한 판 끝내기 → 결과의 노트 줄과 노트 보기 → 오답 노
   const stored = await noteStored(page);
   expect(Object.values(stored!.items).map(i => i.lemma)).toEqual([lemma]);
 
-  // 노트 보기 → 오답 노트 화면에 그 낱말 카드가 있다(뜻 한 줄 + 졸업까지 ●○).
+  // 노트 보기 → 오답 노트 화면에 3탭(전체 / 집중 복습 / 졸업 임박)과 그 낱말 카드가 있다(뜻 한 줄 + 졸업까지 ●○).
   await openNote.click();
   await expect(page.getByRole('heading', { level: 1, name: '오답 노트' })).toBeVisible();
   await expect(page.getByText(NOTE_EMPTY)).toHaveCount(0);
   await expect(page.getByText('낱말 1개', { exact: true })).toBeVisible();
   await expect(page.getByText('다른 판에서 2번 맞히면 졸업해요')).toBeVisible();
+  const noteBook = page.locator('main > div').first();
+  const noteBox0 = (await noteBook.boundingBox())!;
+  expect(Math.round(noteBox0.width)).toBe(860);
+  expect(Math.round(noteBox0.height)).toBe(580);
+
+  const noteTabs = page.getByRole('tablist', { name: '복습 단계 분류' }).getByRole('tab');
+  await expect(noteTabs).toHaveCount(3);
   const cards = page.getByRole('listitem');
   await expect(cards).toHaveCount(1);
   await expect(cards.first()).toContainText(lemma);
   await expect(cards.first().getByRole('img', { name: '다른 판에서 0번 맞혔어요. 2번 더 맞히면 졸업해요' })).toBeVisible();
+
+  // 탭 전환 시 창 크기가 0px도 흔들리지 않는다.
+  await page.getByRole('tab', { name: /^집중 복습/ }).click();
+  await expect(cards).toHaveCount(1);
+  await page.getByRole('tab', { name: /^졸업 임박/ }).click();
+  await expect(page.getByText('졸업 임박한 낱말이 없어요')).toBeVisible();
+  const noteBoxEmptyTab = (await noteBook.boundingBox())!;
+  expect(Math.abs(noteBoxEmptyTab.height - noteBox0.height), '노트 탭 전환 높이 고정').toBeLessThanOrEqual(0.5);
+  await page.getByRole('tab', { name: /^전체/ }).click();
+
   const noteAxe = await new AxeBuilder({ page }).analyze();
   expect(noteAxe.violations.map(v => `${v.id}: ${v.nodes.length}`)).toEqual([]);
   await page.screenshot({ path: 'test-results/shots/note-with-word.png' });
@@ -212,6 +231,7 @@ async function clearHistoryFromSettings(page: Page, nickname: string) {
 
   await page.getByRole('button', { name: '설정' }).click();
   const dialog = page.getByRole('dialog', { name: '환경설정' });
+  await dialog.getByRole('tab', { name: '기록 관리' }).click();
   await dialog.getByRole('button', { name: '지우기' }).click();
   await dialog.getByRole('button', { name: '정말 지우기' }).click();
   await expect(dialog.getByText('이 기기의 기록을 모두 지웠어요')).toBeVisible();

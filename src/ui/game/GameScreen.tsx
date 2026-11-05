@@ -681,6 +681,8 @@ export function GameScreen({
           flash={flash}
           pillar={pillar}
           onPillarDone={id => setPillar(p => (p?.id === id ? null : p))}
+          avoidTopLeft={magnify}
+          avoidBottom={coach?.at === 'field'}
           onBuild={(slotId, type) => build(slotId, type, false)}
           onPreview={type => setSelection(s => (s.slotId ? { ...s, previewType: type } : s))}
           onUpgrade={onUpgrade}
@@ -764,7 +766,10 @@ export function GameScreen({
             )}
             {bottom}
             {!practiceDone && contextBody && view.phase !== 'BATTLE' && (
-              <Card className={css.contextS}>
+              <Card
+                className={css.contextS}
+                data-covered={(!layout.wideQuestion && !!view.question?.feedback && view.question.feedback.result !== 'correct') || undefined}
+              >
                 {contextBody}
                 {/* 휴대폰은 상태 카드 한 줄에 자리가 없어 가진 원정 보물을 상황 카드 아래에 작게 보인다(prd-r4 §7.2-F). */}
                 <RelicStrip balance={b} relics={view.relics} icons={icons} variant="icons" size={20} max={6} labeled />

@@ -32,6 +32,10 @@ interface Props {
   /** 막 진화한 타워 칸의 빛기둥. */
   pillar?: { id: number; slotId: string } | null;
   onPillarDone?(id: number): void;
+  /** 전장 왼쪽 위 '전체 지도' 단추와 겹치지 않도록 자리를 피한다. */
+  avoidTopLeft?: boolean;
+  /** 전장 아래쪽 가운데 안내 쪽지와 겹치지 않도록 자리를 피한다. */
+  avoidBottom?: boolean;
   onBuild(slotId: string, type: TowerId): void;
   onPreview(type: TowerId | null): void;
   onUpgrade(): void;
@@ -62,9 +66,10 @@ export function FieldOverlay(p: Props) {
   const toolSlot = p.tower ? rectOf(p.tower.slotId) : null;
   const flashRect = p.flash ? rectOf(p.flash.slotId) : null;
   const pillarRect = p.pillar ? rectOf(p.pillar.slotId) : null;
-  // 도구 묶음이 열린 타워는 판매 자리가 되돌리기로 바뀌므로 칩을 따로 띄우지 않는다.
-  const undoTower = p.undo && p.undo.undoable && p.undo.id !== p.tower?.id ? p.undo : null;
+  // 작은 고르기 메뉴나 도구 묶음이 열린 동안에는 되돌리기 칩을 따로 띄우지 않아 전장 위 말풍선 겹침을 막는다.
+  const undoTower = p.undo && p.undo.undoable && !p.slotId && !p.tower ? p.undo : null;
   const undoRect = undoTower ? rectOf(undoTower.slotId) : null;
+  const activePopover = menuSlot !== null || toolSlot !== null;
 
   return (
     <div className={css.layer}>
@@ -78,7 +83,15 @@ export function FieldOverlay(p: Props) {
         />
       )}
       {menuSlot && p.slotId && (
-        <Anchored key={`menu-${p.slotId}`} cell={menuSlot} boxW={p.boxW} boxH={p.boxH} onEscape={p.onClose}>
+        <Anchored
+          key={`menu-${p.slotId}`}
+          cell={menuSlot}
+          boxW={p.boxW}
+          boxH={p.boxH}
+          avoidTopLeft={p.avoidTopLeft}
+          avoidBottom={p.avoidBottom}
+          onEscape={p.onClose}
+        >
           <div className={css.menu} role="group" aria-label="이 자리에 놓을 타워">
             {p.towers.map(type => {
               const price = buildCost(p.balance, type);
@@ -106,12 +119,28 @@ export function FieldOverlay(p: Props) {
         </Anchored>
       )}
       {toolSlot && p.tower && (
-        <Anchored key={`tools-${p.tower.id}`} cell={toolSlot} boxW={p.boxW} boxH={p.boxH} onEscape={p.onClose}>
+        <Anchored
+          key={`tools-${p.tower.id}`}
+          cell={toolSlot}
+          boxW={p.boxW}
+          boxH={p.boxH}
+          avoidTopLeft={p.avoidTopLeft}
+          avoidBottom={p.avoidBottom}
+          onEscape={p.onClose}
+        >
           <TowerTools {...p} tower={p.tower} />
         </Anchored>
       )}
       {undoTower && undoRect && (
-        <Anchored key={`undo-${undoTower.id}`} cell={undoRect} boxW={p.boxW} boxH={p.boxH} place="above">
+        <Anchored
+          key={`undo-${undoTower.id}`}
+          cell={undoRect}
+          boxW={p.boxW}
+          boxH={p.boxH}
+          place="above"
+          avoidTopLeft={p.avoidTopLeft}
+          avoidBottom={p.avoidBottom}
+        >
           <Button variant="secondary" className={css.tool} aria-label={`설치 되돌리기 +${undoTower.invested} 골드`} onClick={() => p.onUndo?.(undoTower.id)}>
             <UndoArrowIcon size={18} />
             <span>되돌리기</span>{' '}
@@ -120,8 +149,16 @@ export function FieldOverlay(p: Props) {
         </Anchored>
       )}
       {p.flash && (
-        flashRect ? (
-          <Anchored key={`flash-${p.flash.id}`} cell={flashRect} boxW={p.boxW} boxH={p.boxH} place="below">
+        flashRect && !activePopover ? (
+          <Anchored
+            key={`flash-${p.flash.id}`}
+            cell={flashRect}
+            boxW={p.boxW}
+            boxH={p.boxH}
+            place="below"
+            avoidTopLeft={p.avoidTopLeft}
+            avoidBottom={p.avoidBottom}
+          >
             <p className={css.flash} role="status">{p.flash.text}</p>
           </Anchored>
         ) : (
@@ -183,7 +220,25 @@ function TowerTools(p: Props & { tower: TowerView }) {
  * 칸 옆에 붙는 상자. 칸이 전장 오른쪽 절반이면 왼쪽에, 아니면 오른쪽에 둔다. 전장 밖으로 나가지 않게 한 번 재서 당긴다.
  * place가 below면 칸 바로 아래 가운데, above면 칸 바로 위 가운데에 둔다.
  */
-function Anchored({ cell, boxW, boxH, place = 'side', onEscape, children }: { cell: CellRect; boxW: number; boxH: number; place?: 'side' | 'below' | 'above'; onEscape?(): void; children: ReactNode }) {
+function Anchored({
+  cell,
+  boxW,
+  boxH,
+  place = 'side',
+  avoidTopLeft = false,
+  avoidBottom = false,
+  onEscape,
+  children,
+}: {
+  cell: CellRect;
+  boxW: number;
+  boxH: number;
+  place?: 'side' | 'below' | 'above';
+  avoidTopLeft?: boolean | undefined;
+  avoidBottom?: boolean | undefined;
+  onEscape?(): void;
+  children: ReactNode;
+}) {
   const ref = useRef<HTMLDivElement>(null);
   const [pos, setPos] = useState<{ left: number; top: number } | null>(null);
   const gap = 6;
@@ -198,14 +253,23 @@ function Anchored({ cell, boxW, boxH, place = 'side', onEscape, children }: { ce
       below: { left: midX, top: cell.top + cell.size + gap },
       above: { left: midX, top: cell.top - h - gap },
     };
-    // 칸을 가리지 않는 쪽 중 전장 안에 들어가는 첫 자리. 오른쪽 절반의 칸은 왼쪽부터 본다.
+    // 칸을 가리지 않는 쪽 중 전장 안에 들어가고 고정 안내 요소(전체 지도·하단 쪽지)와 겹치지 않는 첫 자리.
     const order = place === 'below' ? (['below', 'above'] as const) : place === 'above' ? (['above', 'below'] as const) : cell.left + cell.size / 2 < boxW / 2 ? (['right', 'left', 'below', 'above'] as const) : (['left', 'right', 'below', 'above'] as const);
-    const fits = (p: { left: number; top: number }) => p.left >= 4 && p.left + w <= boxW - 4 && p.top >= 4 && p.top + h <= boxH - 4;
-    const pick = order.map(k => sides[k]).find(fits) ?? sides[order[0]];
+    const inBounds = (p: { left: number; top: number }) => p.left >= 4 && p.left + w <= boxW - 4 && p.top >= 4 && p.top + h <= boxH - 4;
+    const clearZones = (p: { left: number; top: number }) => {
+      if (avoidTopLeft && p.left < 128 && p.top < 56) return false;
+      if (avoidBottom && p.top + h > boxH - 56 && p.left + w > boxW * 0.15 && p.left < boxW * 0.85) return false;
+      return true;
+    };
+    const pick = order.map(k => sides[k]).find(p => inBounds(p) && clearZones(p))
+      ?? order.map(k => sides[k]).find(inBounds)
+      ?? sides[order[0]];
     const left = Math.max(4, Math.min(boxW - w - 4, pick.left));
-    const top = Math.max(4, Math.min(boxH - h - 4, pick.top));
+    const maxTop = avoidBottom && left + w > boxW * 0.15 && left < boxW * 0.85 ? Math.max(4, boxH - 56 - h) : boxH - h - 4;
+    const minTop = avoidTopLeft && left < 128 ? Math.min(maxTop, 56) : 4;
+    const top = Math.max(minTop, Math.min(maxTop, pick.top));
     setPos(prev => (prev && prev.left === left && prev.top === top ? prev : { left, top }));
-  }, [cell.left, cell.top, cell.size, boxW, boxH, place]);
+  }, [cell.left, cell.top, cell.size, boxW, boxH, place, avoidTopLeft, avoidBottom]);
   return (
     <div
       ref={ref}

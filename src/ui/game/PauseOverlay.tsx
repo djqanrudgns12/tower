@@ -32,6 +32,8 @@ const stay = () => undefined;
  */
 export function PauseOverlay(p: Props) {
   const first = useRef<HTMLButtonElement>(null);
+  const quitRef = useRef<HTMLButtonElement>(null);
+  const cancelRef = useRef<HTMLButtonElement>(null);
   const [confirmQuit, setConfirmQuit] = useState(false);
   const blocked = p.reasons.includes('NUMERIC_LIMIT');
   const main = blocked ? 'NUMERIC_LIMIT' : p.reasons[p.reasons.length - 1] ?? 'USER';
@@ -72,17 +74,39 @@ export function PauseOverlay(p: Props) {
               />
             </div>
             <Toggle label="소리" checked={p.soundOn} onChange={p.onSound} className={css.toggle} />
-            {confirmQuit ? (
-              <Card sunk pad="sm" className={css.confirm}>
-                <p>이번 판을 끝낼까요? 지금까지의 점수가 기록돼요.</p>
-                <div className={css.row}>
-                  <Button variant="danger" onClick={p.onQuit}>끝내기</Button>
-                  <Button variant="secondary" onClick={() => setConfirmQuit(false)}>취소</Button>
-                </div>
-              </Card>
-            ) : (
-              <Button variant="ghost" block className={css.quit} onClick={() => setConfirmQuit(true)}>이번 판 끝내기</Button>
-            )}
+            <div className={css.quitSlot}>
+              {confirmQuit ? (
+                <Card sunk pad="sm" className={css.confirm}>
+                  <p>이번 판을 끝낼까요? 지금까지의 점수가 기록돼요.</p>
+                  <div className={css.row}>
+                    <Button variant="danger" onClick={p.onQuit}>끝내기</Button>
+                    <Button
+                      ref={cancelRef}
+                      variant="secondary"
+                      onClick={() => {
+                        setConfirmQuit(false);
+                        requestAnimationFrame(() => quitRef.current?.focus());
+                      }}
+                    >
+                      취소
+                    </Button>
+                  </div>
+                </Card>
+              ) : (
+                <Button
+                  ref={quitRef}
+                  variant="ghost"
+                  block
+                  className={css.quit}
+                  onClick={() => {
+                    setConfirmQuit(true);
+                    requestAnimationFrame(() => cancelRef.current?.focus());
+                  }}
+                >
+                  이번 판 끝내기
+                </Button>
+              )}
+            </div>
           </div>
         )}
       </Modal>

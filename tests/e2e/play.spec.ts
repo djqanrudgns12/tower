@@ -141,10 +141,17 @@ test('이어하기 없음: 정지 메뉴에 저장이 없고, 새로고침하면
   await finishPrep(page);
   await page.getByRole('button', { name: '일시정지' }).first().click();
   const pause = page.getByRole('dialog');
-  // 정지 메뉴: 계속하기·글자 크기·소리·이번 판 끝내기만 있다.
+  // 정지 메뉴: 계속하기·글자 크기·소리·이번 판 끝내기만 있고, 끝내기 확인으로 바뀌어도 창 높이가 흔들리지 않는다.
   await expect(pause.getByRole('button', { name: '계속하기' })).toBeVisible();
-  await expect(pause.getByRole('button', { name: '이번 판 끝내기' })).toBeVisible();
+  const quitBtn = pause.getByRole('button', { name: '이번 판 끝내기' });
+  await expect(quitBtn).toBeVisible();
   await expect(pause.getByText(/저장|이어/)).toHaveCount(0);
+  const pauseBox0 = (await pause.boundingBox())!;
+  await quitBtn.click();
+  const pauseBox1 = (await pause.boundingBox())!;
+  expect(Math.abs(pauseBox1.height - pauseBox0.height), '일시정지 끝내기 확인 높이 고정').toBeLessThanOrEqual(0.5);
+  await pause.getByRole('button', { name: '취소' }).click();
+  await expect(quitBtn).toBeFocused();
   await page.reload();
   await expect(page.getByRole('button', { name: '새 게임', exact: true })).toBeVisible();
   await expect(page.getByText(/이어하기|저장된 판/)).toHaveCount(0);
@@ -210,7 +217,15 @@ test('키보드: 전장 화살표·Enter로 자리를 고르고, 설치 자리 �
   await summary.focus();
   expect(await clip()).toBe('none');
   await expect(summary).toBeInViewport();
+  // 포커스로 나타났을 때도 아래 상황 카드([data-context])를 덮지 않고, 펼치면 상황 카드가 숨어 레일 안에서만 자리잡는다.
+  const details = page.locator('aside[aria-label="타워 관리"] details');
+  const contextCard = page.locator('aside[aria-label="타워 관리"] [data-context]');
+  const [dBox0, cBox0] = [(await details.boundingBox())!, (await contextCard.boundingBox())!];
+  expect(dBox0.y + dBox0.height, '설치 자리 목록 요약이 상황 카드와 겹치지 않음').toBeLessThanOrEqual(cBox0.y + 0.5);
   await page.keyboard.press('Enter');
+  await expect(contextCard).toBeHidden();
+  const [dBox1, railBox] = [(await details.boundingBox())!, (await page.locator('aside[aria-label="타워 관리"]').boundingBox())!];
+  expect(dBox1.y + dBox1.height, '펼친 목록이 레일 안에 수납됨').toBeLessThanOrEqual(railBox.y + railBox.height + 0.5);
   await page.getByRole('button', { name: '자리 9 · 가로 9, 세로 3 · 비어 있음' }).click();
   await expect(menu).toBeInViewport();
   // 목록은 접히고 포커스는 메뉴의 첫 타워로 간다. 엔터로 바로 설치한다.
@@ -261,16 +276,13 @@ test('사용 설명서 완독 후 새 게임 시작: 목차에서 1장을 열어
   await expect(guide.getByRole('button', { name: '연습 판 해 보기' })).toHaveCount(0);
   await expect(guide.getByRole('button', { name: '처음으로' })).toHaveCount(0);
 
-  // 목차(장 카드 5 + 타워 상성) → 1장부터 '다음 장'으로 5장까지 읽는다(R5 G1).
-  const toc = guide.getByRole('navigation', { name: '사용 설명서 목차' }).getByRole('button');
-  await expect(toc).toHaveCount(6);
-  await toc.first().click();
-  const pager = guide.getByRole('navigation', { name: '장 넘기기' });
-  for (let n = 1; n < 5; n++) {
-    await expect(pager).toContainText(`${n} / 5`);
-    await pager.getByRole('button', { name: '다음 장' }).click();
+  // 상단 직행 5장 탭으로 1장부터 5장까지 모두 둘러본다.
+  const tabs = guide.getByRole('tablist', { name: '설명서 장 선택' }).getByRole('tab');
+  await expect(tabs).toHaveCount(5);
+  for (let n = 1; n <= 5; n++) {
+    await tabs.nth(n - 1).click();
+    await expect(guide.getByRole('heading', { level: 3, name: new RegExp(`^제${n}장 · `) })).toBeVisible();
   }
-  await expect(pager).toContainText('5 / 5');
   await guide.getByRole('button', { name: '닫기' }).click();
   await expect(guide).toHaveCount(0);
 

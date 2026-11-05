@@ -2,6 +2,7 @@ import { useEffect, useRef, useState, type RefObject } from 'react';
 import { recommendNickname } from '../../../application/lobby';
 import { searchNeisSchools, type NeisSchool } from '../../../application/neis';
 import { cleanNickname } from '../../copy';
+import { Button, Card, Modal } from '../../kit';
 import css from './home.module.css';
 
 interface Props {
@@ -40,10 +41,8 @@ export function LaunchDeck({
   const [schoolDraft, setSchoolDraft] = useState(savedSchoolName);
   const [schoolResults, setSchoolResults] = useState<NeisSchool[]>([]);
   const [isSearchingSchool, setIsSearchingSchool] = useState(false);
-  const [schoolDropdownOpen, setSchoolDropdownOpen] = useState(false);
+  const [schoolModalOpen, setSchoolModalOpen] = useState(false);
   const [schoolStatusMsg, setSchoolStatusMsg] = useState<string | null>(null);
-
-  const schoolBlockRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     commitRef.current = onCommitNickname;
@@ -67,17 +66,6 @@ export function LaunchDeck({
       setSchoolDraft(savedSchoolName);
     }
   }
-
-  // 드롭다운 외부 클릭 시 닫기
-  useEffect(() => {
-    const handleClickOutside = (e: MouseEvent) => {
-      if (schoolBlockRef.current && !schoolBlockRef.current.contains(e.target as Node)) {
-        setSchoolDropdownOpen(false);
-      }
-    };
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
 
   // 유효한 닉네임을 입력하면 자동으로 저장·순위표와 연동
   useEffect(() => {
@@ -136,18 +124,18 @@ export function LaunchDeck({
     onOpenNewGame(cleaned.value);
   };
 
-  // 학교 검색 실행
+  // 학교 검색 실행(소형 모달에서 결과를 보여 아래 CTA와 겹치지 않게 한다)
   const performSchoolSearch = async () => {
+    setSchoolModalOpen(true);
     const query = schoolDraft.trim();
     if (query.length < 2) {
+      setSchoolResults([]);
       setSchoolStatusMsg('학교명을 2자 이상 입력해 주세요.');
-      setSchoolDropdownOpen(false);
       return;
     }
 
     setIsSearchingSchool(true);
     setSchoolStatusMsg('NEIS에서 학교를 찾는 중...');
-    setSchoolDropdownOpen(true);
 
     try {
       const results = await searchNeisSchools(query);
@@ -167,7 +155,7 @@ export function LaunchDeck({
 
   const handleSelectSchool = (school: NeisSchool) => {
     setSchoolDraft(school.schoolName);
-    setSchoolDropdownOpen(false);
+    setSchoolModalOpen(false);
     setSchoolStatusMsg(`${school.schoolName} (${school.schoolKind})`);
     onCommitSchool?.(school.schoolName, school.schoolCode);
   };
@@ -244,8 +232,8 @@ export function LaunchDeck({
         </div>
       </div>
 
-      {/* 학교 이름 입력 영역 (NEIS API 연동) */}
-      <div className={css.schoolBlock} ref={schoolBlockRef}>
+      {/* 학교 이름 입력 영역 (NEIS API 연동 · 결과는 소형 모달로 열어 아래 단추와 겹치지 않는다) */}
+      <div className={css.schoolBlock}>
         <div className={css.nickHeader}>
           <label htmlFor="landingSchoolInput" className={css.nickLabel}>학교 이름</label>
           <span
@@ -274,11 +262,9 @@ export function LaunchDeck({
             }}
             onBlur={handleSchoolBlur}
             onKeyDown={e => {
-              if (e.key === 'Enter') {
+              if (e.key === 'Enter' && !e.nativeEvent.isComposing) {
                 e.preventDefault();
-                performSchoolSearch();
-              } else if (e.key === 'Escape') {
-                setSchoolDropdownOpen(false);
+                void performSchoolSearch();
               }
             }}
           />
@@ -286,48 +272,87 @@ export function LaunchDeck({
             type="button"
             className={css.smallBtn}
             style={{ minHeight: 44, padding: '0 14px', whiteSpace: 'nowrap' }}
-            onClick={performSchoolSearch}
+            onClick={() => void performSchoolSearch()}
             disabled={isSearchingSchool}
           >
             {isSearchingSchool ? '검색 중' : '학교 검색'}
           </button>
         </div>
-
-        {/* NEIS 검색 결과 드롭다운 */}
-        {schoolDropdownOpen && (
-          <div className={css.schoolDropdown} role="listbox" aria-label="학교 검색 결과">
-            {isSearchingSchool ? (
-              <div className={css.schoolEmpty}>NEIS에서 학교를 검색하고 있어요...</div>
-            ) : schoolResults.length === 0 ? (
-              <div className={css.schoolEmpty}>
-                검색된 학교가 없습니다. 직접 이름을 입력해 사용할 수 있어요.
-              </div>
-            ) : (
-              <ul className={css.schoolList}>
-                {schoolResults.map(s => (
-                  <li key={`${s.officeCode}-${s.schoolCode}-${s.schoolName}`}>
-                    <button
-                      type="button"
-                      className={css.schoolItem}
-                      onClick={() => handleSelectSchool(s)}
-                    >
-                      <div className={css.schoolItemTop}>
-                        <span className={css.schoolItemName}>{s.schoolName}</span>
-                        {s.schoolKind && (
-                          <span className={css.schoolItemBadge}>{s.schoolKind}</span>
-                        )}
-                      </div>
-                      <div className={css.schoolItemAddress}>
-                        {s.officeName} · {s.roadAddress || s.locationName}
-                      </div>
-                    </button>
-                  </li>
-                ))}
-              </ul>
-            )}
-          </div>
-        )}
       </div>
+
+      {schoolModalOpen && (
+        <Modal
+          titleId="schoolModalTitle"
+          title="학교 찾기"
+          size="sm"
+          onClose={() => setSchoolModalOpen(false)}
+        >
+          <div className={css.schoolModalStack}>
+            <div className={css.schoolModalSearch}>
+              <input
+                id="schoolModalInput"
+                aria-label="학교 이름 검색"
+                className={css.nickInput}
+                value={schoolDraft}
+                maxLength={30}
+                autoComplete="off"
+                placeholder="학교 이름 (2자 이상)"
+                onChange={e => {
+                  setSchoolDraft(e.target.value);
+                  setSchoolStatusMsg(null);
+                }}
+                onKeyDown={e => {
+                  if (e.key === 'Enter' && !e.nativeEvent.isComposing) {
+                    e.preventDefault();
+                    void performSchoolSearch();
+                  }
+                }}
+              />
+              <Button
+                variant="secondary"
+                onClick={() => void performSchoolSearch()}
+                disabled={isSearchingSchool}
+              >
+                {isSearchingSchool ? '검색 중' : '검색'}
+              </Button>
+            </div>
+            <p className={css.schoolModalStatus} role="status" aria-live="polite">
+              {schoolStatusMsg ?? '학교 이름을 입력하고 검색을 눌러요.'}
+            </p>
+            <Card sunk pad="sm" className={css.schoolModalResults}>
+              {isSearchingSchool ? (
+                <p className={css.schoolEmpty}>NEIS에서 학교를 검색하고 있어요...</p>
+              ) : schoolResults.length === 0 ? (
+                <p className={css.schoolEmpty}>
+                  검색된 학교가 없습니다. 직접 이름을 입력해 사용할 수 있어요.
+                </p>
+              ) : (
+                <ul className={css.schoolList} aria-label="학교 검색 결과">
+                  {schoolResults.map(s => (
+                    <li key={`${s.officeCode}-${s.schoolCode}-${s.schoolName}`}>
+                      <button
+                        type="button"
+                        className={css.schoolItem}
+                        onClick={() => handleSelectSchool(s)}
+                      >
+                        <span className={css.schoolItemTop}>
+                          <span className={css.schoolItemName}>{s.schoolName}</span>
+                          {s.schoolKind && (
+                            <span className={css.schoolItemBadge}>{s.schoolKind}</span>
+                          )}
+                        </span>
+                        <span className={css.schoolItemAddress}>
+                          {s.officeName} · {s.roadAddress || s.locationName}
+                        </span>
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </Card>
+          </div>
+        </Modal>
+      )}
 
       {message && <p className={css.bannerNotice} role="status">{message}</p>}
 

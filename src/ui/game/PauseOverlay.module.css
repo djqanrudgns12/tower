@@ -6,6 +6,24 @@
 .setting { display: grid; gap: var(--s1); }
 .label { font-size: var(--fs-1); font-weight: 700; color: var(--ink-2); }
 .toggle { justify-self: start; }
+.quitSlot {
+  min-height: 124px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
 .quit { color: var(--red); }
-.confirm { display: grid; gap: var(--s2); font-size: var(--fs-2); }
+.confirm {
+  min-height: 124px;
+  display: grid;
+  align-content: space-between;
+  gap: var(--s2);
+  font-size: var(--fs-2);
+}
+:global(:root[data-font='large']) .quitSlot,
+:global(:root[data-font='xlarge']) .quitSlot,
+:global(:root[data-font='large']) .confirm,
+:global(:root[data-font='xlarge']) .confirm {
+  min-height: 136px;
+}
 .row { display: flex; flex-wrap: wrap; gap: var(--s2); }

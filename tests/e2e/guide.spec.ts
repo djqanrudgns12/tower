@@ -12,12 +12,13 @@ async function openGuide(page: Page) {
   return dialog;
 }
 
-/** 목차 카드(장 5장 + 타워 상성). */
-const tocCards = (dialog: Locator) => dialog.getByRole('navigation', { name: '사용 설명서 목차' }).getByRole('button');
+/** 상단 직행 5장 탭과 장 제목. */
+const guideTabs = (dialog: Locator) => dialog.getByRole('tablist', { name: '설명서 장 선택' }).getByRole('tab');
+const guideTab = (dialog: Locator, n: number) => dialog.getByRole('tab', { name: `${n}. ${CHAPTERS[n - 1]}` });
 const chapterHead = (dialog: Locator, n: number) => dialog.getByRole('heading', { level: 3, name: `제${n}장 · ${CHAPTERS[n - 1]}` });
 
 async function openChapter(dialog: Locator, n: number) {
-  await tocCards(dialog).nth(n - 1).click();
+  await guideTab(dialog, n).click();
   await expect(chapterHead(dialog, n)).toBeVisible();
 }
 
@@ -49,7 +50,7 @@ function fitAudit(dialog: Locator) {
       const own = [...el.childNodes].some(n => n.nodeType === Node.TEXT_NODE && n.textContent!.trim() !== '');
       if (own && parseFloat(getComputedStyle(el).fontSize) < 13) small.push(`${el.tagName} "${el.textContent!.trim().slice(0, 12)}" ${getComputedStyle(el).fontSize}`);
     }
-    const tiny = [...root.querySelectorAll<HTMLElement>('button, [role="radio"]')]
+    const tiny = [...root.querySelectorAll<HTMLElement>('button, [role="tab"], [role="radio"]')]
       .filter(visible)
       .map(el => ({ el, r: el.getBoundingClientRect() }))
       .filter(({ r }) => r.height < 44 || r.width < 44)
@@ -66,7 +67,7 @@ async function axe(page: Page) {
 }
 
 test.describe('사용 설명서', () => {
-  test('G1·G8: 그림 카드 목차(장 5 + 상성) → 장 화면(머리띠·시연·요약 3행·쪽 넘김), ←→·Home·End, 포커스 복귀, axe·스타일 전수', async ({ page }) => {
+  test('G1·G8: 상단 5장 직행 책갈피 탭 + lg(860×580) 고정 프레임 → 시연·요약 3행 2열 배치, ←→·Home·End, 포커스 복귀, axe·스타일 전수', async ({ page }) => {
     const errors: string[] = [];
     page.on('pageerror', e => errors.push(String(e)));
     await page.setViewportSize({ width: 1440, height: 900 });
@@ -74,36 +75,24 @@ test.describe('사용 설명서', () => {
     const guideTrigger = page.getByRole('button', { name: '사용 설명서', exact: true });
     const dialog = await openGuide(page);
 
-    // 목차: 옛 탭·'연습 판 해 보기'·'처음으로'는 없고, 장 카드 5장 + 타워 상성 카드 1장(카드 전체가 버튼)이다.
-    await expect(dialog.getByRole('tab')).toHaveCount(0);
+    // 상단 5장 직행 탭: 목차 왕복·하단 쪽 넘김·'연습 판 해 보기'·'처음으로' 없이 바로 1장이 열린다.
     await expect(dialog.getByRole('button', { name: '연습 판 해 보기' })).toHaveCount(0);
     await expect(dialog.getByRole('button', { name: '처음으로' })).toHaveCount(0);
-    const cards = tocCards(dialog);
-    await expect(cards).toHaveCount(6);
+    await expect(dialog.getByRole('navigation', { name: '장 넘기기' })).toHaveCount(0);
+    const tabs = guideTabs(dialog);
+    await expect(tabs).toHaveCount(5);
     for (const [i, title] of CHAPTERS.entries()) {
-      await expect(cards.nth(i)).toContainText(title);
-      await expect(cards.nth(i)).toContainText('자세히');
-      await expect(cards.nth(i)).toHaveAccessibleName(new RegExp(`^제${i + 1}장 ${title}`));
+      await expect(tabs.nth(i)).toHaveText(`${i + 1}. ${title}`);
     }
-    await expect(cards.nth(0)).toContainText('문제를 풀고 타워로 성문을 지켜요');
-    await expect(cards.nth(1)).toContainText('맞히면 골드, 모르면 뜻을 배워요');
-    await expect(cards.nth(5)).toContainText('타워 상성');
-    await expect(cards.nth(5)).toContainText('적 특성마다 잘 잡는 타워가 있어요');
-    // 첫 포커스는 내용의 첫 카드다(R4 규칙).
-    await expect(cards.nth(0)).toBeFocused();
-    // 장 카드 5장 모두 실제 삽화가 로드된다(5장은 ART-OAK2 띠 그림). 상성 카드에는 적 특성 아이콘 8개.
-    const pictures = cards.locator('img[src*="assets/guide/"]');
-    await expect(pictures).toHaveCount(5);
-    for (let i = 0; i < 5; i++) await expect.poll(() => pictures.nth(i).evaluate((el: HTMLImageElement) => el.naturalWidth)).toBeGreaterThan(300);
-    await expect(cards.nth(5).locator('img[src*="trait."]')).toHaveCount(8);
-    expect(await axe(page)).toEqual([]);
-    expect(await styleIssues(dialog)).toEqual([]);
-    await page.screenshot({ path: 'test-results/shots/guide-toc-desktop.png' });
+    const frame0 = (await dialog.boundingBox())!;
+    expect(Math.round(frame0.width)).toBe(860);
+    expect(Math.round(frame0.height)).toBe(580);
 
-    // 키보드로 1장을 연다: 장 머리띠로 포커스가 가고, 머리띠·요지·요약 3행(아이콘·단계 배지)·쪽 넘김이 있다.
-    await page.keyboard.press('Enter');
+    // 첫 포커스는 활성 1장 탭이고, 1장 머리띠·요지·시연 무대·요약 3행(아이콘·단계 배지)이 즉시 보인다.
+    await expect(tabs.nth(0)).toBeFocused();
+    await expect(tabs.nth(0)).toHaveAttribute('aria-selected', 'true');
     const head1 = chapterHead(dialog, 1);
-    await expect(head1).toBeFocused();
+    await expect(head1).toBeVisible();
     const section = dialog.locator('section[data-chapter]');
     await expect(section).toContainText('문제로 골드를 모아 타워를 세우고, 성문을 끝까지 지켜요');
     const rows = section.getByRole('list', { name: '한 판 흐름 요약' }).getByRole('listitem');
@@ -111,24 +100,26 @@ test.describe('사용 설명서', () => {
     await expect(rows.nth(0)).toContainText('1단계');
     await expect(rows.nth(0)).toContainText('준비 문제');
     await expect(rows.nth(2)).toContainText('성문 회복과 보스');
-    const pager = dialog.getByRole('navigation', { name: '장 넘기기' });
-    const prev = pager.getByRole('button', { name: '이전 장' });
-    const next = pager.getByRole('button', { name: '다음 장' });
-    await expect(prev).toBeDisabled();
-    await expect(pager).toContainText('1 / 5');
     expect(await axe(page)).toEqual([]);
     expect(await styleIssues(dialog)).toEqual([]);
+    await page.screenshot({ path: 'test-results/shots/guide-tabs-desktop.png' });
 
-    // ←→·Home·End는 장 화면에서 장을 넘긴다. 고르기 줄 안의 방향키는 그 줄이 쓴다(장이 넘어가지 않음).
+    // 탭 줄의 ←→·Home·End(roving tabindex)로 장과 포커스를 함께 옮긴다.
     await page.keyboard.press('ArrowRight');
     await expect(chapterHead(dialog, 2)).toBeVisible();
-    await expect(pager).toContainText('2 / 5');
+    await expect(tabs.nth(1)).toBeFocused();
     await page.keyboard.press('End');
     await expect(chapterHead(dialog, 5)).toBeVisible();
-    await expect(next).toBeDisabled();
+    await expect(tabs.nth(4)).toBeFocused();
     await page.keyboard.press('Home');
     await expect(chapterHead(dialog, 1)).toBeVisible();
-    await page.keyboard.press('ArrowLeft');
+    await expect(tabs.nth(0)).toBeFocused();
+
+    // 본문 영역에서도 ←→·Home·End로 장을 넘길 수 있고, 고르기 줄 안의 방향키는 그 줄이 쓴다(장이 넘어가지 않음).
+    await head1.focus();
+    await page.keyboard.press('ArrowRight');
+    await expect(chapterHead(dialog, 2)).toBeVisible();
+    await page.keyboard.press('Home');
     await expect(chapterHead(dialog, 1)).toBeVisible();
     const beats = dialog.getByRole('radiogroup', { name: '한 판 단계 시연' });
     await beats.getByRole('radio', { name: '2. 설치' }).click();
@@ -136,25 +127,18 @@ test.describe('사용 설명서', () => {
     await expect(beats.getByRole('radio', { name: '3. 전투' })).toBeChecked();
     await expect(chapterHead(dialog, 1)).toBeVisible();
 
-    // 단추로 넘기고, 경계에서 단추가 꺼지면 포커스는 머리띠로 간다. 모든 장이 axe·스타일 검사를 통과한다.
-    await next.click();
-    for (let n = 2; n <= 5; n++) {
-      await expect(chapterHead(dialog, n)).toBeVisible();
-      await expect(pager).toContainText(`${n} / 5`);
+    // 1~5장 모두 삽화 로드·창 크기 불변(0px 흔들림)·axe·스타일 검사를 통과한다.
+    for (let n = 1; n <= 5; n++) {
+      await openChapter(dialog, n);
+      const art = dialog.locator(`[data-chapter="${n}"] img[src*="assets/guide/"]`);
+      await expect(art).toHaveCount(1);
+      await expect.poll(() => art.evaluate((el: HTMLImageElement) => el.naturalWidth)).toBeGreaterThan(300);
+      const box = (await dialog.boundingBox())!;
+      expect(Math.abs(box.width - frame0.width), `${n}장 창 폭 고정`).toBeLessThanOrEqual(0.5);
+      expect(Math.abs(box.height - frame0.height), `${n}장 창 높이 고정`).toBeLessThanOrEqual(0.5);
       expect(await axe(page), `${n}장 axe`).toEqual([]);
       expect(await styleIssues(dialog), `${n}장 스타일`).toEqual([]);
-      if (n < 5) await next.click();
     }
-    await expect(next).toBeDisabled();
-    await expect(chapterHead(dialog, 5)).toBeFocused();
-
-    // 목차로 돌아오면 지금 장(5장)의 카드로 포커스가 돌아간다. 상성 카드는 5장을 열고, 돌아오면 상성 카드로 간다.
-    await pager.getByRole('button', { name: '목차' }).click();
-    await expect(cards.nth(4)).toBeFocused();
-    await cards.nth(5).click();
-    await expect(chapterHead(dialog, 5)).toBeFocused();
-    await pager.getByRole('button', { name: '목차' }).click();
-    await expect(cards.nth(5)).toBeFocused();
 
     // Esc로 창이 닫히고 홈 '사용 설명서' 단추로 포커스가 돌아간다.
     await page.keyboard.press('Escape');
@@ -192,7 +176,7 @@ test.describe('사용 설명서', () => {
     await page.screenshot({ path: 'test-results/shots/guide-ch1-desktop.png' });
 
     // G3: 2장 — 결과를 고르면 골드·점수·성문 메모가 바뀐다. 연속 정답은 보너스 골드와 2단 속도를 보인다.
-    await dialog.getByRole('button', { name: '다음 장' }).click();
+    await openChapter(dialog, 2);
     const outcomes = dialog.getByRole('radiogroup', { name: '문제 결과별 변화' });
     const hud = dialog.locator('[data-outcome]');
     // 아무것도 고르지 않으면 2.4초마다 다음 결과로 넘어간다.
@@ -219,7 +203,7 @@ test.describe('사용 설명서', () => {
     await expect(outcomes.getByRole('radio', { name: '3연속 정답' }), '고른 뒤에는 순환을 멈춘다').toBeChecked();
 
     // G4: 3장 — 시작 4종의 비용·사거리 배지와 두 갈래 진화.
-    await dialog.getByRole('button', { name: '다음 장' }).click();
+    await openChapter(dialog, 3);
     const towers = dialog.getByRole('radiogroup', { name: '시작 타워 사거리와 진화' });
     await expect(towers.getByRole('radio')).toHaveCount(4);
     await towers.getByRole('radio', { name: '포탑' }).click();
@@ -229,7 +213,7 @@ test.describe('사용 설명서', () => {
     await expect(dialog.locator('section')).toContainText('마름모 길 · 중포');
 
     // G5: 4장 — 난이도 판독 한 줄(새 게임 창과 같은 함수)과 실제 숫자키에 눌리는 1~4 키.
-    await dialog.getByRole('button', { name: '다음 장' }).click();
+    await openChapter(dialog, 4);
     const readout = dialog.locator('[data-readout]');
     await expect(readout).toHaveText(/성문 15.*정답 \+19골드부터.*교과 표준 낱말/);
     await dialog.getByRole('radiogroup', { name: '난이도별 성문·골드·낱말 범위' }).getByRole('radio', { name: '어려움', exact: true }).click();
@@ -241,7 +225,7 @@ test.describe('사용 설명서', () => {
     await expect(dialog.locator('section')).toContainText('보기 3번 고르기');
 
     // G7: 5장 — 적 특성 아이콘 8개를 고르면 계약 strongVs의 타워가 보인다.
-    await dialog.getByRole('button', { name: '다음 장' }).click();
+    await openChapter(dialog, 5);
     const traits = dialog.getByRole('radiogroup', { name: '적 특성' });
     await expect(traits.getByRole('radio')).toHaveCount(8);
     const counter = dialog.locator('[data-counter]');
@@ -261,51 +245,45 @@ test.describe('사용 설명서', () => {
     expect(errors).toEqual([]);
   });
 
-  test('G12: 크롬북 1366×650 — 목차와 장 화면 5장이 글자 크기 3단계 모두 스크롤 없이 들어가고, 13px·44px 하한을 지킨다', async ({ page }) => {
+  test('G12: 크롬북 1366×650 — 5장 탭 화면이 글자 크기 3단계 모두 스크롤·크기 흔들림 없이 들어가고, 13px·44px 하한을 지킨다', async ({ page }) => {
     await page.setViewportSize({ width: 1366, height: 650 });
     await page.goto('/');
     for (const font of ['base', 'large', 'xlarge'] as const) {
       await page.evaluate(f => { document.documentElement.dataset.font = f; }, font);
       const dialog = await openGuide(page);
-      const toc = await fitAudit(dialog);
-      expect(toc.top, `${font} 목차 창 위쪽`).toBeGreaterThanOrEqual(0);
-      expect(toc.bottom, `${font} 목차 창 아래쪽`).toBeLessThanOrEqual(650);
-      expect(toc.hOverflow, `${font} 목차 가로 넘침`).toBe(0);
-      expect(toc.small, `${font} 목차 13px 미만`).toEqual([]);
-      expect(toc.tiny, `${font} 목차 44px 미만`).toEqual([]);
-      await openChapter(dialog, 1);
+      const box0 = (await dialog.boundingBox())!;
       for (let n = 1; n <= 5; n++) {
-        await expect(chapterHead(dialog, n)).toBeVisible();
+        await openChapter(dialog, n);
         const fit = await fitAudit(dialog);
+        expect(fit.top, `${font} ${n}장 창 위쪽`).toBeGreaterThanOrEqual(0);
         expect(fit.vScroll, `${font} ${n}장 세로 스크롤`).toBeLessThanOrEqual(0);
         expect(fit.hOverflow, `${font} ${n}장 가로 넘침`).toBe(0);
         expect(fit.bottom, `${font} ${n}장 창 아래쪽`).toBeLessThanOrEqual(650);
         expect(fit.small, `${font} ${n}장 13px 미만`).toEqual([]);
         expect(fit.tiny, `${font} ${n}장 44px 미만`).toEqual([]);
+        const b = (await dialog.boundingBox())!;
+        expect(Math.abs(b.height - box0.height), `${font} ${n}장 높이 고정`).toBeLessThanOrEqual(0.5);
         if (font === 'xlarge') await page.screenshot({ path: `test-results/shots/guide-ch${n}-chromebook-xlarge.png` });
-        if (n < 5) await dialog.getByRole('button', { name: '다음 장' }).click();
       }
       await page.keyboard.press('Escape');
       await expect(dialog).toHaveCount(0);
     }
   });
 
-  test('G13: 휴대폰 390×844·초소형 320×568 글자 아주 크게 — 목차·장 화면 가로 넘침 0', async ({ page }) => {
+  test('G13: 휴대폰 390×844·초소형 320×568 글자 아주 크게 — 5장 모두 가로 넘침 0', async ({ page }) => {
     await page.goto('/');
     await page.evaluate(() => { document.documentElement.dataset.font = 'xlarge'; });
     for (const [w, h] of [[390, 844], [320, 568]] as const) {
       await page.setViewportSize({ width: w, height: h });
       const dialog = await openGuide(page);
-      const views = ['목차', ...CHAPTERS.map((_, i) => `${i + 1}장`)];
-      for (const [i, view] of views.entries()) {
-        if (i === 1) await openChapter(dialog, 1);
-        else if (i > 1) await dialog.getByRole('button', { name: '다음 장' }).click();
+      for (let n = 1; n <= 5; n++) {
+        await openChapter(dialog, n);
         const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
-        expect(overflow, `${w}x${h} ${view} 문서 가로 넘침`).toBeLessThanOrEqual(0);
+        expect(overflow, `${w}x${h} ${n}장 문서 가로 넘침`).toBeLessThanOrEqual(0);
         const fit = await fitAudit(dialog);
-        expect(fit.right, `${w}x${h} ${view} 창 오른쪽`).toBeLessThanOrEqual(w);
-        expect(fit.hOverflow, `${w}x${h} ${view} 창 안 가로 넘침`).toBe(0);
-        if (w === 390 && i <= 1) await page.screenshot({ path: `test-results/shots/guide-${i ? 'ch1' : 'toc'}-mobile.png` });
+        expect(fit.right, `${w}x${h} ${n}장 창 오른쪽`).toBeLessThanOrEqual(w);
+        expect(fit.hOverflow, `${w}x${h} ${n}장 창 안 가로 넘침`).toBe(0);
+        if (w === 390 && n === 1) await page.screenshot({ path: 'test-results/shots/guide-ch1-mobile.png' });
       }
       await page.keyboard.press('Escape');
       await expect(dialog).toHaveCount(0);
@@ -319,7 +297,7 @@ test.describe('사용 설명서', () => {
     let dialog = await openGuide(page);
     await openChapter(dialog, 1);
     await expect(dialog.locator('canvas')).toHaveAttribute('data-animate', 'false');
-    await dialog.getByRole('button', { name: '다음 장' }).click();
+    await openChapter(dialog, 2);
     const outcomes = dialog.getByRole('radiogroup', { name: '문제 결과별 변화' });
     const shown = await outcomes.getByRole('radio', { checked: true }).textContent();
     await page.waitForTimeout(2800);
@@ -331,6 +309,7 @@ test.describe('사용 설명서', () => {
     await page.emulateMedia({ reducedMotion: 'no-preference' });
     await page.getByRole('button', { name: '설정' }).click();
     const settings = page.getByRole('dialog', { name: '환경설정' });
+    await settings.getByRole('tab', { name: '화면·조작' }).click();
     await settings.getByRole('radiogroup', { name: '배경 움직임 단계' }).getByRole('radio', { name: '정지' }).click();
     await settings.getByRole('switch', { name: '전장 길·받침 고대비 윤곽선' }).click();
     await settings.getByRole('button', { name: '닫기' }).click();
@@ -339,8 +318,7 @@ test.describe('사용 설명서', () => {
     const canvas = dialog.locator('canvas');
     await expect(canvas).toHaveAttribute('data-animate', 'false');
     await expect(canvas).toHaveAttribute('data-contrast', 'true');
-    await dialog.getByRole('button', { name: '다음 장' }).click();
-    await dialog.getByRole('button', { name: '다음 장' }).click();
+    await openChapter(dialog, 3);
     await expect(dialog.locator('canvas')).toHaveAttribute('data-contrast', 'true');
   });
 });
