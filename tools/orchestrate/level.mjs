@@ -98,11 +98,21 @@ export function rubricText(plan = fs.readFileSync(path.join(SOURCE_ROOT, 'docs/C
   return [section('### 3.1 ', '### 3.2 '), section('판정 예(Antigravity', '### 3.3 '), section('### 3.5 ', '### 3.6 ')].join('\n\n');
 }
 
-export function promptFor(items, rubric, phase = 'assess') {
+export function promptFor(items, rubric, phase = 'assess', root = SOURCE_ROOT) {
+  const file = path.join(root, 'content-source/reference/curriculum-2022.json');
+  const standards = [];
+  const visit = value => {
+    if (!value || typeof value !== 'object') return;
+    if (typeof value.code === 'string' && typeof value.text === 'string') standards.push({ code: value.code, text: value.text });
+    for (const child of Object.values(value)) visit(child);
+  };
+  if (fs.existsSync(file)) visit(read(file));
   return [
     '대한민국 초등학교 3~6학년 어휘 문항의 독립 수준 판정자다. 다른 판정자의 결과는 제공하지 않는다.',
     '명령 실행·파일 쓰기 금지. 파일 읽기·인터넷 조회도 하지 말고 아래 입력만 판단한다.',
     rubric,
+    'curriculum_explicit은 이 목록의 코드만, 원문 뜻이 낱말과 맞을 때만 사용한다. 목록이 비어 있으면 curriculum_explicit을 쓰지 않는다.',
+    '----- 성취기준 정본 코드·원문 전체 -----', JSON.stringify(standards, null, 1),
     phase === 'spotcheck' ? '이번은 근거 대조 표본 재판정이다. 사전 근거와 각 축의 근거를 다시 대조해 reason에 적는다. 합의 변경용이 아니다.' : '각 축을 독립적으로 판정한다.',
     'T2 유형·길이, T3 기본값, 읽기량은 precomputed를 그대로 사용한다. krdictGrade=null은 조회 불가다. 관용구만 idiomOpacity=2 또는 3, 나머지는 null.',
     'L1·L2·T1은 0~3 정수, inference는 0 또는 1. elementaryFit은 pass|too_low|too_high.',
@@ -254,7 +264,7 @@ export async function runLevels(options, deps = {}) {
       for (let attempt = 1; attempt <= 4; attempt++) {
         const cwd = path.join(work, 'sealed', judge, `${phase}-${chunk}-${attempt}`);
         fs.mkdirSync(cwd, { recursive: true });
-        const prompt = promptFor(items, rubric, phase) + (error ? '\n지난 답장이 JSON·스키마·입력 1:1 검사를 통과하지 못했다. 원래 입력 전체를 형식에 맞게 다시 답한다.' : '');
+        const prompt = promptFor(items, rubric, phase, root) + (error ? '\n지난 답장이 JSON·스키마·입력 1:1 검사를 통과하지 못했다. 원래 입력 전체를 형식에 맞게 다시 답한다.' : '');
         const reply = await pools[judge](() => respond({ judge, phase, batchId, chunk, attempt, cwd, prompt, config, items }));
         const full = judge === 'argon' && !dryRun && !deps.respond ? recoverReply(reply, validate, deps.brain) : reply;
         write(path.join(work, 'replies', `${judge}-${phase}-${chunk}-${attempt}.json`), { config, reply: full });

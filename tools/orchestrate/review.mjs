@@ -9,6 +9,7 @@
 //   node tools/orchestrate/review.mjs prompt --root <dir> --reviewer claude --batch Q50-G3-004 --phase blind|reveal
 //   node tools/orchestrate/review.mjs accept --root <dir> --reviewer claude --batch Q50-G3-004 --phase blind|reveal --file <답장>
 //   node tools/orchestrate/review.mjs ingest --root <dir> --reviewer claude --batch Q50-G3-004
+// 문항 제한: --questions ID@revision,ID@revision (모든 단계에 같은 목록 전달)
 //   node tools/orchestrate/review.mjs run --root <dir> --reviewer claude [--batches A,B | --all] [--parallel 3]
 import fs from 'node:fs';
 import path from 'node:path';
@@ -49,7 +50,9 @@ export function resolveReviewConfig(cli = {}, env = process.env) {
 }
 
 function reviewOptions(reviewer, options = {}) {
-  return { config: validateConfig(reviewer, options.config ?? resolveReviewConfig()[reviewer]), archiveExisting: options.archiveExisting === true };
+  const questionKeys = options.questionKeys == null ? null : new Set(typeof options.questionKeys === 'string' ? options.questionKeys.split(',') : options.questionKeys);
+  if (questionKeys && [...questionKeys].some(key => typeof key !== 'string' || !/^.+@[1-9]\d*$/.test(key))) throw new Error('--questions는 ID@revision 목록이어야 한다');
+  return { config: validateConfig(reviewer, options.config ?? resolveReviewConfig()[reviewer]), archiveExisting: options.archiveExisting === true, questionKeys };
 }
 
 export function assertPhaseConfig(saved, current, phase) {
@@ -88,13 +91,15 @@ const writeJson = (f, v) => { fs.mkdirSync(path.dirname(f), { recursive: true })
 /** 이 검수자가 아직 같은 revision·contentHash로 보지 않은 문항. */
 export function pending(b, batch, reviewer, options) {
   const done = new Set();
+  const selected = options ? reviewOptions(reviewer, options).questionKeys : null;
+  const drafts = batch.drafts.filter(q => !selected || selected.has(`${q.id}@${q.revision}`));
   const report = reviewer === 'antigravity' ? batch.argonBlind : batch.reviews[reviewer];
   if (options) {
     const { config, archiveExisting } = reviewOptions(reviewer, options);
-    if (existingReportArchive(batch.batchId, reviewer, report, config, archiveExisting)) return batch.drafts;
+    if (existingReportArchive(batch.batchId, reviewer, report, config, archiveExisting)) return drafts;
   }
   for (const i of report?.items ?? []) done.add(`${i.questionId}@${i.revision}:${i.contentHash}`);
-  return batch.drafts.filter(q => !done.has(`${q.id}@${q.revision}:${b.contentHash(q)}`));
+  return drafts.filter(q => !done.has(`${q.id}@${q.revision}:${b.contentHash(q)}`));
 }
 
 function blindItem(b, q) {
@@ -230,7 +235,7 @@ export function acceptPhase(root, reviewer, batchId, phase, text, expected, opti
 
 /** blind+reveal 병합 결과만 대기시킨다. 추적 파일 반영·커밋은 W2b 잠금 담당이다. */
 export async function ingest(b, root, reviewer, batchId, options = {}) {
-  const { config, archiveExisting } = reviewOptions(reviewer, options);
+  const { config, archiveExisting, questionKeys } = reviewOptions(reviewer, options);
   const dir = workDir(root, reviewer, batchId);
   const blind = readJson(path.join(dir, 'blind.result.json'));
   const reveal = readJson(path.join(dir, 'reveal.result.json'));
@@ -240,7 +245,7 @@ export async function ingest(b, root, reviewer, batchId, options = {}) {
   const batch = await findBatch(b, root, batchId);
   const drafts = new Map(batch.drafts.map(q => [`${q.id}@${q.revision}`, q]));
   const blindBy = new Map(blind.items.map(i => [`${i.questionId}@${i.revision}:${i.contentHash}`, i]));
-  const merged = reveal.items.filter(r => blindBy.has(`${r.questionId}@${r.revision}:${r.contentHash}`)).map(r => {
+  const merged = reveal.items.filter(r => (!questionKeys || questionKeys.has(`${r.questionId}@${r.revision}`)) && blindBy.has(`${r.questionId}@${r.revision}:${r.contentHash}`)).map(r => {
     const bl = blindBy.get(`${r.questionId}@${r.revision}:${r.contentHash}`);
     return { questionId: r.questionId, revision: r.revision, contentHash: r.contentHash, blindChoice: bl.blindChoice, verdicts: r.verdicts,
       findings: [...bl.findings.map(f => `[블라인드] ${f}`), ...r.findings.map(f => `[공개 대조] ${f}`)] };
@@ -423,7 +428,7 @@ async function main() {
   const reviewer = a.reviewer ?? 'claude';
   if (!FILE_OF[reviewer]) throw new Error(`검수자는 ${Object.keys(FILE_OF).join('·')}`);
   const configs = resolveReviewConfig(a);
-  const options = { config: configs[reviewer], archiveExisting: a['archive-existing'] === true || a['archive-existing'] === reviewer };
+  const options = { config: configs[reviewer], questionKeys: a.questions, archiveExisting: a['archive-existing'] === true || a['archive-existing'] === reviewer };
   const b = await load(root);
   const log = m => { const line = `[${new Date().toISOString()}] ${m}`; console.log(line); fs.appendFileSync(path.join(root, '.orchestrate/review', `${reviewer}.log`), `${line}\n`); };
   fs.mkdirSync(path.join(root, '.orchestrate/review'), { recursive: true });
