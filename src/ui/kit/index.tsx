@@ -217,6 +217,9 @@ function tabbables(root: HTMLElement): HTMLElement[] {
   return [...root.querySelectorAll<HTMLElement>(FOCUSABLE)].filter(el => el.tabIndex >= 0 && el.offsetParent !== null);
 }
 
+/** 열린 창 차례. 창이 겹치면(진화 창 위 자동 정지) 맨 위 창만 Esc·Tab 가둠을 처리한다. */
+const openModals: object[] = [];
+
 interface ModalProps {
   titleId: string;
   title: ReactNode;
@@ -239,8 +242,10 @@ export function Modal({ titleId, title, onClose, size = 'md', footer, dismissabl
   const close = useEffectEvent(() => { if (dismissable) onClose(); });
   // 첫 포커스 자리는 열 때 한 번만 정한다(열린 뒤 바뀌어도 포커스를 옮기지 않는다).
   const [startAtClose] = useState(initialFocus === 'close');
+  const [token] = useState<object>(() => ({}));
 
   useEffect(() => {
+    openModals.push(token);
     const box = boxRef.current;
     // 첫 포커스는 내용(고를 카드·입력칸)이다. 내용에 조작 요소가 없거나 initialFocus가 'close'일 때만 머리줄의 닫기로 간다.
     if (box) {
@@ -248,6 +253,7 @@ export function Modal({ titleId, title, onClose, size = 'md', footer, dismissabl
       (startAtClose ? nodes[0] : (nodes.find(el => !el.closest('[data-dialog-head]')) ?? nodes[0]))?.focus();
     }
     const onKeyDown = (e: globalThis.KeyboardEvent) => {
+      if (openModals[openModals.length - 1] !== token) return;
       if (e.key === 'Escape') { e.preventDefault(); close(); return; }
       if (e.key !== 'Tab' || !boxRef.current) return;
       const nodes = tabbables(boxRef.current);
@@ -259,9 +265,11 @@ export function Modal({ titleId, title, onClose, size = 'md', footer, dismissabl
     window.addEventListener('keydown', onKeyDown);
     return () => {
       window.removeEventListener('keydown', onKeyDown);
+      const at = openModals.lastIndexOf(token);
+      if (at >= 0) openModals.splice(at, 1);
       if (opener && opener !== document.body && opener.isConnected) opener.focus();
     };
-  }, [opener, startAtClose]);
+  }, [opener, startAtClose, token]);
 
   return (
     <div className={css.scrim} onMouseDown={e => { if (dismissable && e.target === e.currentTarget) onClose(); }}>
