@@ -15,6 +15,19 @@
 
 이 갱신 아래의 Claude 인계 내용은 당시 기록이며, 이미 완료된 W2e를 다시 구현하지 않는다. S4는 사용자 로그인·사용량 회복 통지 전까지 실행 금지다.
 
+#### 실제 실행 상태 (Codex, 2026-11-06)
+
+| 항목 | 확인한 상태 |
+|---|---|
+| 코드 | `832f2fc` 커밋·push 완료 |
+| 4학년 기존 21배치 | PID 22002, `--gate --until S3` 실행 중. 실행 정보 `.orchestrate/g4-front.run.json`, 로그 `.orchestrate/g4-front.out`, 결과 `.orchestrate/content-loop.summary.json` |
+| 제작 시범 | 5개 요청 → 4개 생성, 1개(정돈하다)는 사전 근거 불확정으로 제작 전 제외. manifest 24파일 해시를 Codex가 확인. 공개 승인 수가 아님 |
+| 시범 기록 | `.orchestrate/g4-produce-pilot.json`, `.orchestrate/g4-produce-pilot.review.json`, 원본 보존 `.orchestrate/produce-pilots/Q50-G4-022/20261105T230134629Z-22003-e701ab/` |
+| 보충 6배치 | PID 25037, `Q50-G4-022~027` 각 50개 요청을 순차 실행 중. 실행기 `.orchestrate/run-g4-supplement.mjs`, 상태 `.orchestrate/g4-supplement.summary.json`, PID·로그 `.orchestrate/g4-supplement.run.json`. 기록 시점에는 022 제작 중, 완료 배치 0 |
+| 이후 자동 순서 | 6배치 제작 → 기존 앞단 종료 대기(최대 24시간) → 미완 pending 반영 → 새 배치별 잠금 반영 → 새 배치 S1~S3. 오류 시 기록·staging을 보존하고 중지 |
+
+시범의 사전 근거 불확정 1건은 제외한 채 인계서의 3~5문항 시범 범위에서 제작 확대를 판단했다. 원래 낱말 목록은 고치지 않고 `.orchestrate/produce/g4-production-list-{1,2}.json`에서 해당 낱말만 제외했다. 생성 수·공개 승인 수를 구별하고, 배치 완료 수는 실행 상태 파일을 다시 읽어 보고한다. 5·6학년과 3학년 확대, S4 및 최종 공개는 아직 남았다.
+
 Claude 사용량이 바닥나 메인 세션을 Codex로 옮긴다. 이 문서만 읽고 이어서 일할 수 있게 썼다. 계획서와 이 문서가 다르면 **이 문서의 "현재 상태·방침"이 최신**이다.
 
 ---
