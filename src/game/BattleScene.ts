@@ -1,10 +1,11 @@
 import Phaser from 'phaser';
 import { assetManifestSchema } from '../contracts/assetManifest';
 import { ENEMY_KINDS, TOWER_IDS } from '../contracts/balance';
+import { MAPS } from '../content';
 import type { DomainEvent } from '../domain/events';
 import { positionAt } from '../domain/geometry';
 import { drawSprites } from './art';
-import { applyManifest, ASSETS, CELL_PX, WORLD_H, WORLD_W } from './assets';
+import { applyManifest, ASSETS, CELL_PX, entriesForMap, WORLD_H, WORLD_W } from './assets';
 import type { FieldBridge } from './bridge';
 import { AmbientLayer } from './layers/AmbientLayer';
 import { EffectLayer } from './layers/EffectLayer';
@@ -37,13 +38,17 @@ export class BattleScene extends Phaser.Scene {
 
   init(data: { bridge: FieldBridge }) { this.bridge = data.bridge; }
 
-  /** 인수된 원화(public/assets/manifest.json의 integrated_pass)가 있으면 같은 ID로 먼저 싣는다. 없으면 임시 그림. */
+  /**
+   * 인수된 원화(public/assets/manifest.json의 integrated_pass)가 있으면 같은 ID로 먼저 싣는다. 없으면 임시 그림.
+   * 지금 맵의 재료와 공용 그림만 받고 다른 맵 재료는 받지 않는다(맵 id는 전투 제어기의 판 정보, `?previewMap`·`?qaRun`도 같다).
+   */
   preload() {
+    const mapId = this.bridge.controller.ctx.map.id;
     this.load.json('asset-manifest', 'assets/manifest.json');
     this.load.once('filecomplete-json-asset-manifest', (_key: string, _type: string, data: unknown) => {
       const parsed = assetManifestSchema.safeParse(data);
       if (!parsed.success) return;
-      for (const a of applyManifest(parsed.data)) this.load.image(a.id, `assets/${a.file}`);
+      for (const a of entriesForMap(applyManifest(parsed.data), mapId, MAPS.map(m => m.id))) this.load.image(a.id, `assets/${a.file}`);
     });
     // 종족 특성 배지: 화면의 원화 특성 아이콘과 같은 그림(R4 B3). 실패하면 배지를 그리지 않는다(loaderror 무시).
     for (const key of Object.values(ASSETS.traitBadge)) this.load.image(key, `assets/ui/${key.slice('badge.'.length)}.png`);

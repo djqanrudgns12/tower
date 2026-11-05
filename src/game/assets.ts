@@ -133,3 +133,12 @@ export function applyManifest(manifest: AssetManifest): AssetEntry[] {
   }
   return accepted;
 }
+
+/**
+ * 이 맵 판에서 실을 그림만 남긴다(구현 계획서 단계 2). 다른 맵의 재료(`map.<다른 맵 id>.…`)는 빼고,
+ * 지금 맵의 재료(`map.<지금 맵 id>.…`)와 공용 그림(타워·몬스터·정원 지면·성문 등)은 둔다. 맵 id 뒤의 점까지 맞춰서 `river_z`가 `river`와 헷갈리지 않는다.
+ */
+export function entriesForMap(entries: readonly AssetEntry[], mapId: string, allMapIds: readonly string[]): AssetEntry[] {
+  const others = allMapIds.filter(id => id !== mapId).map(id => `map.${id}.`);
+  return entries.filter(a => !others.some(prefix => a.id.startsWith(prefix)));
+}
