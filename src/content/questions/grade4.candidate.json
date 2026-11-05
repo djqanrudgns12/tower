@@ -1,128 +1,48 @@
 {
   "bankId": "g4-candidate",
-  "bankVersion": "cand-117124ab5487",
+  "bankVersion": "cand-90f0ac013dbe",
   "grade": 4,
   "status": "verified_candidate",
   "note": "공동검수 진행 중인 후보 은행. 같은 revision의 외부 블라인드 검수(codex·claude) 1건 이상과 새 문맥 argon-blind를 통과했다. 3모델 공동검수 승인 전에는 게임에 싣지 않는다(PRD §9.3).",
   "questions": [
     {
-      "id": "g4-argon-0001",
-      "revision": 1,
+      "id": "g4-argon-0002",
+      "revision": 2,
       "status": "verified_candidate",
       "grade": 4,
-      "type": "definition",
+      "type": "synonym_context",
       "difficultyTier": "core",
       "variantTag": "standard",
       "target": {
-        "lemma": "간직하다",
-        "partOfSpeech": "동사",
-        "senseKey": "간직하다/동사/4638-1"
+        "lemma": "결국",
+        "partOfSpeech": "부사",
+        "senseKey": "결국/부사/17346-4"
       },
-      "stem": "선물 받은 시계를 상자 속에 잘 간직했습니다. ‘간직하다’의 뜻으로 알맞은 것은 무엇일까요?",
+      "stem": "여러 번 다시 시도한 민호는 ‘결국’ 퍼즐을 다 맞추었습니다. ‘결국’과 바꾸어 쓸 말은 무엇일까요?",
       "options": [
         {
           "id": "a",
-          "text": "물건을 남에게 빌려주다"
+          "text": "일을 시작하기도 전에"
         },
         {
           "id": "b",
-          "text": "물건을 시장에 내다 팔다"
+          "text": "아무 노력도 하지 않고"
         },
         {
           "id": "c",
-          "text": "물건을 잘 챙겨 보관하다"
+          "text": "일의 마무리에 이르러"
         },
         {
           "id": "d",
-          "text": "물건을 밖으로 내어 버리다"
+          "text": "가끔 생각이 날 때마다"
         }
       ],
       "correctOptionId": "c",
-      "explanation": "‘간직하다’는 물건을 어떤 곳에 잘 챙겨 두어 보관한다는 뜻이에요.",
+      "explanation": "‘결국’은 일의 마무리에 이르러 결과가 그렇게 된다는 뜻이에요.",
       "distractorRationales": {
-        "a": "남에게 빌려주는 것은 보관해 두는 뜻과 달라요.",
-        "b": "시장에 파는 행동은 간직하는 뜻이 아니에요.",
-        "d": "밖으로 버리는 것은 보관하는 것과 반대예요."
-      }
-    },
-    {
-      "id": "g4-argon-0003",
-      "revision": 1,
-      "status": "verified_candidate",
-      "grade": 4,
-      "type": "usage",
-      "difficultyTier": "core",
-      "variantTag": "standard",
-      "target": {
-        "lemma": "기대하다",
-        "partOfSpeech": "동사",
-        "senseKey": "기대하다/동사/48632-1"
-      },
-      "stem": "다음 중 ‘기대하다’를 뜻에 맞게 바르게 쓴 문장은 무엇일까요?",
-      "options": [
-        {
-          "id": "a",
-          "text": "무거운 가방을 벽에 살짝 기대했다."
-        },
-        {
-          "id": "b",
-          "text": "어제 먹은 급식 반찬을 기대했다."
-        },
-        {
-          "id": "c",
-          "text": "책상 위의 연필을 필통에 기대했다."
-        },
-        {
-          "id": "d",
-          "text": "내일 소풍 날씨가 맑기를 기대했다."
-        }
-      ],
-      "correctOptionId": "d",
-      "explanation": "‘기대하다’는 바라는 일이 이루어지기를 기다린다는 뜻이에요.",
-      "distractorRationales": {
-        "a": "벽에 물건을 비스듬히 대는 말은 ‘기대다’예요.",
-        "b": "이미 지나간 어제 일을 바라며 기다릴 수는 없어요.",
-        "c": "연필을 필통에 넣는 행동에는 쓰지 않는 말이에요."
-      }
-    },
-    {
-      "id": "g4-argon-0004",
-      "revision": 1,
-      "status": "verified_candidate",
-      "grade": 4,
-      "type": "cloze",
-      "difficultyTier": "core",
-      "variantTag": "standard",
-      "target": {
-        "lemma": "깨닫다",
-        "partOfSpeech": "동사",
-        "senseKey": "깨닫다/동사/404189-1"
-      },
-      "stem": "실수한 까닭을 깊이 생각해 본 덕분에 풀이 원리를 (    ) 문제를 해결했습니다. 빈칸에 알맞은 말은 무엇일까요?",
-      "options": [
-        {
-          "id": "a",
-          "text": "잊어버려"
-        },
-        {
-          "id": "b",
-          "text": "외면해서"
-        },
-        {
-          "id": "c",
-          "text": "깨달아서"
-        },
-        {
-          "id": "d",
-          "text": "미루어서"
-        }
-      ],
-      "correctOptionId": "c",
-      "explanation": "‘깨닫다’는 사물의 이치를 깊이 생각하여 알게 된다는 뜻이에요.",
-      "distractorRationales": {
-        "a": "원리를 잊어버리면 문제를 해결할 수 없어요.",
-        "b": "원리를 외면했다는 말은 문맥의 결과와 어긋나요.",
-        "d": "원리를 미루었다는 표현은 어법과 뜻에 맞지 않아요."
+        "a": "일을 시작하기 전이라는 뜻은 마무리 단계와 반대예요.",
+        "b": "노력하지 않았다는 뜻은 여러 번 시도한 문맥과 달라요.",
+        "d": "가끔씩 반복한다는 뜻은 최종 결과를 나타내지 않아요."
       }
     },
     {
@@ -166,163 +86,43 @@
       }
     },
     {
-      "id": "g4-argon-0006",
-      "revision": 1,
+      "id": "g4-argon-0010",
+      "revision": 2,
       "status": "verified_candidate",
       "grade": 4,
       "type": "definition",
       "difficultyTier": "basic",
       "variantTag": "standard",
       "target": {
-        "lemma": "단정하다",
-        "partOfSpeech": "형용사",
-        "senseKey": "단정하다/형용사/75422-1"
+        "lemma": "결국",
+        "partOfSpeech": "부사",
+        "senseKey": "결국/부사/17346-4"
       },
-      "stem": "지수는 늘 옷매무새가 단정하다며 칭찬받습니다. ‘단정하다’의 뜻은 무엇일까요?",
+      "stem": "“비바람이 거세지더니 결국 소풍이 연기되었다.”에서 ‘결국’의 뜻은 무엇일까요?",
       "options": [
         {
           "id": "a",
-          "text": "목소리가 우렁차고 크다"
+          "text": "일의 결과가 그렇게 돌아가게"
         },
         {
           "id": "b",
-          "text": "몸가짐이 얌전하고 바르다"
+          "text": "남들이 전혀 알아채지 못하게"
         },
         {
           "id": "c",
-          "text": "걸음걸이가 무척 빠르다"
+          "text": "정해진 시각보다 훨씬 빠르게"
         },
         {
           "id": "d",
-          "text": "말솜씨가 재치 있고 좋다"
-        }
-      ],
-      "correctOptionId": "b",
-      "explanation": "‘단정하다’는 옷차림이나 몸가짐이 얌전하고 바르다는 뜻이에요.",
-      "distractorRationales": {
-        "a": "목소리의 크기를 나타내는 말이 아니에요.",
-        "c": "걸음의 빠르기와는 관련이 없는 낱말이에요.",
-        "d": "말을 잘하는 솜씨를 뜻하는 말이 아니에요."
-      }
-    },
-    {
-      "id": "g4-argon-0007",
-      "revision": 1,
-      "status": "verified_candidate",
-      "grade": 4,
-      "type": "synonym_context",
-      "difficultyTier": "core",
-      "variantTag": "standard",
-      "target": {
-        "lemma": "당당하다",
-        "partOfSpeech": "형용사",
-        "senseKey": "당당하다/형용사/77854-1"
-      },
-      "stem": "수호는 남 앞에서도 부끄럼 없이 태도가 ‘당당했습니다’. 바꾸어 쓸 말로 알맞은 것은 무엇일까요?",
-      "options": [
-        {
-          "id": "a",
-          "text": "초조했습니다"
-        },
-        {
-          "id": "b",
-          "text": "떳떳했습니다"
-        },
-        {
-          "id": "c",
-          "text": "조용했습니다"
-        },
-        {
-          "id": "d",
-          "text": "미안했습니다"
-        }
-      ],
-      "correctOptionId": "b",
-      "explanation": "‘당당하다’는 남 앞에 내세울 만큼 태도가 떳떳하다는 뜻이에요.",
-      "distractorRationales": {
-        "a": "마음이 불안하고 초조한 것과는 뜻이 반대예요.",
-        "c": "소리 없이 조용한 상태를 뜻하는 말이 아니에요.",
-        "d": "남에게 미안해하는 마음과는 어울리지 않아요."
-      }
-    },
-    {
-      "id": "g4-argon-0008",
-      "revision": 1,
-      "status": "verified_candidate",
-      "grade": 4,
-      "type": "usage",
-      "difficultyTier": "advanced",
-      "variantTag": "standard",
-      "target": {
-        "lemma": "독특하다",
-        "partOfSpeech": "형용사",
-        "senseKey": "독특하다/형용사/413944-1"
-      },
-      "stem": "다음 중 ‘독특하다’를 뜻에 맞게 바르게 쓴 문장은 무엇일까요?",
-      "options": [
-        {
-          "id": "a",
-          "text": "이 악기는 모양이 남달리 독특하다."
-        },
-        {
-          "id": "b",
-          "text": "두 공책이 서로 똑같아서 독특하다."
-        },
-        {
-          "id": "c",
-          "text": "가방에 교과서를 차곡차곡 독특하다."
-        },
-        {
-          "id": "d",
-          "text": "어제 본 영화를 내일 다시 독특하다."
+          "text": "주변이 아주 조용하고 고요하게"
         }
       ],
       "correctOptionId": "a",
-      "explanation": "‘독특하다’는 다른 것과 견주어 특별하게 다르다는 뜻이에요.",
+      "explanation": "‘결국’은 일의 마무리에 이르러 결과가 그렇게 돌아가게 된다는 뜻이에요.",
       "distractorRationales": {
-        "b": "서로 똑같다는 말은 특별히 다르다는 뜻과 어긋나요.",
-        "c": "물건을 챙겨 넣는 동작을 나타내는 말이 아니에요.",
-        "d": "영화를 다시 본다는 뜻으로 쓸 수 없는 형용사예요."
-      }
-    },
-    {
-      "id": "g4-argon-0009",
-      "revision": 1,
-      "status": "verified_candidate",
-      "grade": 4,
-      "type": "cloze",
-      "difficultyTier": "basic",
-      "variantTag": "standard",
-      "target": {
-        "lemma": "마련하다",
-        "partOfSpeech": "동사",
-        "senseKey": "마련하다/동사/107985-1"
-      },
-      "stem": "비 오는 날에 대비해 여분의 우산을 교실에 미리 (    ) 덕분에 모두가 젖지 않았습니다. 빈칸에 알맞은 말은 무엇일까요?",
-      "options": [
-        {
-          "id": "a",
-          "text": "버려둔"
-        },
-        {
-          "id": "b",
-          "text": "잃어버린"
-        },
-        {
-          "id": "c",
-          "text": "망가뜨린"
-        },
-        {
-          "id": "d",
-          "text": "마련한"
-        }
-      ],
-      "correctOptionId": "d",
-      "explanation": "‘마련하다’는 필요한 것을 미리 헤아려서 갖춘다는 뜻이에요.",
-      "distractorRationales": {
-        "a": "우산을 버려두었다면 비를 피할 수 없어요.",
-        "b": "우산을 잃어버렸다는 말은 뒤 문장과 맞지 않아요.",
-        "c": "우산을 망가뜨렸다면 비에 젖지 않을 수 없어요."
+        "b": "남들이 알아채지 못하게 몰래 한다는 뜻이 아니에요.",
+        "c": "정해진 시각보다 빠르게 서두른다는 뜻과는 달라요.",
+        "d": "주변이 조용하고 고요한 상태를 나타내는 말이 아니에요."
       }
     },
     {
@@ -366,6 +166,46 @@
       }
     },
     {
+      "id": "g4-argon-0012",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 4,
+      "type": "synonym_context",
+      "difficultyTier": "core",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "보람",
+        "partOfSpeech": "명사",
+        "senseKey": "보람/명사/435865-3"
+      },
+      "stem": "텃밭을 가꾸어 상추를 거두니 큰 ‘보람’을 느꼈습니다. ‘보람’과 바꾸어 쓸 말은 무엇일까요?",
+      "options": [
+        {
+          "id": "a",
+          "text": "일을 시작하기 전의 걱정"
+        },
+        {
+          "id": "b",
+          "text": "일한 뒤에 얻는 만족감"
+        },
+        {
+          "id": "c",
+          "text": "실수했을 때 드는 부끄러움"
+        },
+        {
+          "id": "d",
+          "text": "기다리면서 느끼는 지루함"
+        }
+      ],
+      "correctOptionId": "b",
+      "explanation": "여기서 ‘보람’은 일을 해낸 뒤에 얻는 좋은 결과나 만족감을 뜻해요.",
+      "distractorRationales": {
+        "a": "일을 시작하기 전에 앞서 하는 걱정을 뜻하지 않아요.",
+        "c": "실수해서 부끄러운 마음은 보람과 뜻이 어울리지 않아요.",
+        "d": "지루하게 기다리는 느낌은 좋은 결과의 기쁨이 아니에요."
+      }
+    },
+    {
       "id": "g4-argon-0014",
       "revision": 1,
       "status": "verified_candidate",
@@ -406,43 +246,43 @@
       }
     },
     {
-      "id": "g4-argon-0016",
-      "revision": 1,
+      "id": "g4-argon-0015",
+      "revision": 2,
       "status": "verified_candidate",
       "grade": 4,
-      "type": "definition",
+      "type": "cloze",
       "difficultyTier": "basic",
       "variantTag": "standard",
       "target": {
-        "lemma": "기뻐하다",
-        "partOfSpeech": "동사",
-        "senseKey": "기뻐하다/동사/405463-1"
+        "lemma": "결국",
+        "partOfSpeech": "부사",
+        "senseKey": "결국/부사/17346-4"
       },
-      "stem": "방울토마토가 익자 동생이 무척 기뻐했습니다. ‘기뻐하다’의 뜻은 무엇일까요?",
+      "stem": "미로 찾기가 무척 복잡했지만 끝까지 길을 따라간 끝에 (    ) 출구를 찾아냈습니다. 빈칸에 알맞은 말은 무엇일까요?",
       "options": [
         {
           "id": "a",
-          "text": "마음에 기쁨을 느끼어 좋아하다"
+          "text": "아직"
         },
         {
           "id": "b",
-          "text": "마음에 슬픔을 느끼어 눈물짓다"
+          "text": "설마"
         },
         {
           "id": "c",
-          "text": "모르는 사실을 책에서 찾아보다"
+          "text": "미리"
         },
         {
           "id": "d",
-          "text": "어질러진 물건을 제자리에 두다"
+          "text": "결국"
         }
       ],
-      "correctOptionId": "a",
-      "explanation": "‘기뻐하다’는 마음에 기쁨을 느끼며 즐거워한다는 뜻이에요.",
+      "correctOptionId": "d",
+      "explanation": "일의 마무리에 이르러 결과가 그렇게 되었을 때 ‘결국’을 써요.",
       "distractorRationales": {
-        "b": "슬픔을 느끼는 것은 기뻐하는 것과 반대예요.",
-        "c": "책에서 사실을 찾는 행동과는 관련이 없어요.",
-        "d": "물건을 치우고 정돈하는 뜻의 낱말이 아니에요."
+        "a": "‘아직’은 일이 끝나지 않았을 때 써서 문맥과 맞지 않아요.",
+        "b": "‘설마’는 믿기 어려운 일을 의심할 때 쓰는 말이에요.",
+        "c": "‘미리’는 일이 일어나기 전에 앞서 한다는 뜻이라 어색해요."
       }
     },
     {
@@ -486,46 +326,6 @@
       }
     },
     {
-      "id": "g4-argon-0018",
-      "revision": 1,
-      "status": "verified_candidate",
-      "grade": 4,
-      "type": "usage",
-      "difficultyTier": "advanced",
-      "variantTag": "standard",
-      "target": {
-        "lemma": "다양하다",
-        "partOfSpeech": "형용사",
-        "senseKey": "다양하다/형용사/73284-1"
-      },
-      "stem": "다음 중 ‘다양하다’를 뜻에 맞게 바르게 쓴 문장은 무엇일까요?",
-      "options": [
-        {
-          "id": "a",
-          "text": "전시장에는 그릇 모양이 무척 다양하다."
-        },
-        {
-          "id": "b",
-          "text": "상자에 똑같은 공 한 개만 다양하다."
-        },
-        {
-          "id": "c",
-          "text": "동생에게 동화책을 소리 내어 다양하다."
-        },
-        {
-          "id": "d",
-          "text": "아침마다 차가운 물로 세수를 다양하다."
-        }
-      ],
-      "correctOptionId": "a",
-      "explanation": "‘다양하다’는 모양이나 빛깔 따위가 여러 가지로 많다는 뜻이에요.",
-      "distractorRationales": {
-        "b": "공 한 개만 있는 상태에는 쓸 수 없는 말이에요.",
-        "c": "책을 읽어 주는 동작을 나타내는 동사가 아니에요.",
-        "d": "세수를 하는 행동 뒤에는 어울리지 않는 말이에요."
-      }
-    },
-    {
       "id": "g4-argon-0019",
       "revision": 1,
       "status": "verified_candidate",
@@ -563,6 +363,46 @@
         "a": "‘복잡하다’는 갈피를 잡기 어렵게 얽혀 있다는 뜻이에요.",
         "b": "‘위험하다’는 해를 입을 수 있어 안전하지 않다는 뜻이에요.",
         "c": "‘답답하다’는 속이 시원하지 못하고 갑갑하다는 뜻이에요."
+      }
+    },
+    {
+      "id": "g4-argon-0020",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 4,
+      "type": "cloze",
+      "difficultyTier": "core",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "규칙적",
+        "partOfSpeech": "관형사",
+        "senseKey": "규칙적/관형사/43932-2"
+      },
+      "stem": "매일 같은 시각에 자고 일어나는 (    ) 생활이 건강을 지키는 데 도움을 줍니다. 빈칸에 알맞은 말은 무엇일까요?",
+      "options": [
+        {
+          "id": "a",
+          "text": "일시적"
+        },
+        {
+          "id": "b",
+          "text": "감정적"
+        },
+        {
+          "id": "c",
+          "text": "순간적"
+        },
+        {
+          "id": "d",
+          "text": "규칙적"
+        }
+      ],
+      "correctOptionId": "d",
+      "explanation": "‘규칙적’은 일정한 질서가 있거나 규칙을 따르는 것을 뜻해요.",
+      "distractorRationales": {
+        "a": "‘일시적’은 잠깐 동안만 그러한 것을 뜻해 맞지 않아요.",
+        "b": "‘감정적’은 기분에 따라 움직이는 것을 뜻해 어색해요.",
+        "c": "‘순간적’은 아주 짧은 찰나에 그치는 것을 나타내요."
       }
     },
     {
@@ -646,46 +486,6 @@
       }
     },
     {
-      "id": "g4-argon-0023",
-      "revision": 1,
-      "status": "verified_candidate",
-      "grade": 4,
-      "type": "usage",
-      "difficultyTier": "advanced",
-      "variantTag": "standard",
-      "target": {
-        "lemma": "바람직하다",
-        "partOfSpeech": "형용사",
-        "senseKey": "바람직하다/형용사/430009-1"
-      },
-      "stem": "다음 중 ‘바람직하다’를 뜻에 맞게 바르게 쓴 문장은 무엇일까요?",
-      "options": [
-        {
-          "id": "a",
-          "text": "휴지를 아무 데나 버려 바람직하다."
-        },
-        {
-          "id": "b",
-          "text": "고운 말을 쓰는 습관은 바람직하다."
-        },
-        {
-          "id": "c",
-          "text": "선선한 바람이 창가로 바람직하다."
-        },
-        {
-          "id": "d",
-          "text": "가방 속의 공책이 세 권 바람직하다."
-        }
-      ],
-      "correctOptionId": "b",
-      "explanation": "‘바람직하다’는 바랄 만한 좋은 가치가 있다는 뜻이에요.",
-      "distractorRationales": {
-        "a": "휴지를 함부로 버리는 행동은 바랄 만한 일이 아니에요.",
-        "c": "부는 바람을 뜻하는 낱말이 아니라 가치 판단을 나타내요.",
-        "d": "공책의 개수를 세는 문장에는 쓸 수 없는 말이에요."
-      }
-    },
-    {
       "id": "g4-argon-0024",
       "revision": 1,
       "status": "verified_candidate",
@@ -763,46 +563,6 @@
         "a": "화려하고 비싸다는 뜻은 수수한 모습과 반대예요.",
         "b": "소리가 시끄럽고 어수선한 상태를 뜻하지 않아요.",
         "d": "물건의 무게나 크기를 나타내는 말이 아니에요."
-      }
-    },
-    {
-      "id": "g4-argon-0027",
-      "revision": 1,
-      "status": "verified_candidate",
-      "grade": 4,
-      "type": "synonym_context",
-      "difficultyTier": "core",
-      "variantTag": "standard",
-      "target": {
-        "lemma": "수줍다",
-        "partOfSpeech": "형용사",
-        "senseKey": "수줍다/형용사/446787-1"
-      },
-      "stem": "전학 온 첫날이라 친구들 앞에서 인사하기가 ‘수줍었습니다’. 바꾸어 쓸 말로 알맞은 것은 무엇일까요?",
-      "options": [
-        {
-          "id": "a",
-          "text": "부끄러웠습니다"
-        },
-        {
-          "id": "b",
-          "text": "자랑스러웠습니다"
-        },
-        {
-          "id": "c",
-          "text": "시원섭섭했습니다"
-        },
-        {
-          "id": "d",
-          "text": "여유로웠습니다"
-        }
-      ],
-      "correctOptionId": "a",
-      "explanation": "‘수줍다’는 숫기가 없어 남 앞에 나서기가 어렵고 부끄럽다는 뜻이에요.",
-      "distractorRationales": {
-        "b": "남에게 뽐낼 만큼 자랑스러운 마음과는 반대예요.",
-        "c": "아쉬움과 시원함이 섞인 감정과는 뜻이 달라요.",
-        "d": "마음이 느긋하고 여유로운 상태가 아니에요."
       }
     },
     {
@@ -886,83 +646,43 @@
       }
     },
     {
-      "id": "g4-argon-0031",
-      "revision": 1,
-      "status": "verified_candidate",
-      "grade": 4,
-      "type": "cloze",
-      "difficultyTier": "challenge",
-      "variantTag": "idiom_proverb",
-      "target": {
-        "lemma": "비행기를 태우다",
-        "partOfSpeech": "관용구",
-        "senseKey": "비행기를 태우다/관용구/528938-1"
-      },
-      "stem": "동생이 심부름을 기분 좋게 하도록 형이 동생을 지나치게 추어올리며 (    ). 빈칸에 알맞은 관용구는 무엇일까요?",
-      "options": [
-        {
-          "id": "a",
-          "text": "발걸음을 재촉했다"
-        },
-        {
-          "id": "b",
-          "text": "찬물을 끼얹었다"
-        },
-        {
-          "id": "c",
-          "text": "시치미를 떼었다"
-        },
-        {
-          "id": "d",
-          "text": "비행기를 태웠다"
-        }
-      ],
-      "correctOptionId": "d",
-      "explanation": "‘비행기를 태우다’는 남을 지나치게 칭찬해 추어올려 준다는 뜻이에요.",
-      "distractorRationales": {
-        "a": "‘발걸음을 재촉하다’는 빨리 걸어가게 서두른다는 뜻이에요.",
-        "b": "‘찬물을 끼얹다’는 좋은 분위기를 갑자기 깨뜨린다는 뜻이에요.",
-        "c": "‘시치미를 떼다’는 알고도 모르는 체한다는 뜻이에요."
-      }
-    },
-    {
-      "id": "g4-argon-0032",
-      "revision": 1,
+      "id": "g4-argon-0030",
+      "revision": 2,
       "status": "verified_candidate",
       "grade": 4,
       "type": "cloze",
       "difficultyTier": "advanced",
       "variantTag": "idiom_proverb",
       "target": {
-        "lemma": "가슴을 펴다",
+        "lemma": "머리를 맞대다",
         "partOfSpeech": "관용구",
-        "senseKey": "가슴을 펴다/관용구/525110-1"
+        "senseKey": "머리를 맞대다/관용구/527506-1"
       },
-      "stem": "정직하게 행동했으니 부끄러워하지 말고 남 앞에서 당당하게 (    ) 걸어가거라. 빈칸에 알맞은 말은 무엇일까요?",
+      "stem": "학급 문제를 해결하려고 모둠 친구들이 서로 (    ) 진지하게 의논했습니다. 빈칸에 알맞은 관용구는 무엇일까요?",
       "options": [
         {
           "id": "a",
-          "text": "고개를 숙이고"
+          "text": "시치미를 떼고"
         },
         {
           "id": "b",
-          "text": "가슴을 펴고"
+          "text": "찬물을 끼얹고"
         },
         {
           "id": "c",
-          "text": "눈빛을 피하고"
+          "text": "머리를 맞대고"
         },
         {
           "id": "d",
-          "text": "무릎을 꿇고"
+          "text": "뒷짐만 지고"
         }
       ],
-      "correctOptionId": "b",
-      "explanation": "‘가슴을 펴다’는 굽힐 것 없이 당당하게 행동한다는 뜻이에요.",
+      "correctOptionId": "c",
+      "explanation": "‘머리를 맞대다’는 일을 의논하거나 결정하려고 서로 마주 대한다는 뜻이에요.",
       "distractorRationales": {
-        "a": "고개를 숙이는 것은 부끄럽거나 잘못을 뉘우치는 모습이에요.",
-        "c": "눈빛을 피하는 것은 떳떳하지 못해 숨는 태도예요.",
-        "d": "무릎을 꿇는 것은 항복하거나 용서를 비는 모습이에요."
+        "a": "‘시치미를 떼다’는 알고도 모르는 체한다는 뜻이라 어색해요.",
+        "b": "‘찬물을 끼얹다’는 좋은 분위기를 갑자기 깨뜨린다는 뜻이에요.",
+        "d": "‘뒷짐을 지다’는 일에 나서지 않고 물러서 있다는 뜻이에요."
       }
     },
     {
@@ -1046,86 +766,6 @@
       }
     },
     {
-      "id": "g4-argon-0035",
-      "revision": 1,
-      "status": "verified_candidate",
-      "grade": 4,
-      "type": "cloze",
-      "difficultyTier": "challenge",
-      "variantTag": "idiom_proverb",
-      "target": {
-        "lemma": "돌다리도 두들겨 보고 건너라",
-        "partOfSpeech": "속담",
-        "senseKey": "돌다리도 두들겨 보고 건너라/속담/520819-1"
-      },
-      "stem": "잘 아는 일이라도 실수하지 않게 세심히 살피라는 뜻으로 “(    )”라고 합니다. 빈칸에 알맞은 속담은 무엇일까요?",
-      "options": [
-        {
-          "id": "a",
-          "text": "돌다리도 두들겨 보고 건너라"
-        },
-        {
-          "id": "b",
-          "text": "떡 본 김에 제사를 지내라"
-        },
-        {
-          "id": "c",
-          "text": "달리는 말에 채찍질을 하라"
-        },
-        {
-          "id": "d",
-          "text": "소 잃기 전에 외양간 고쳐라"
-        }
-      ],
-      "correctOptionId": "a",
-      "explanation": "잘 아는 일이라도 세심하게 주의를 기울이라는 뜻의 속담이에요.",
-      "distractorRationales": {
-        "b": "좋은 기회가 생겼을 때 일을 해 치우라는 뜻이에요.",
-        "c": "잘하고 있을 때 더욱 힘을 내어 노력하라는 뜻이에요.",
-        "d": "표준 속담 형태가 아니며 아는 일을 확인하라는 비유도 아니에요."
-      }
-    },
-    {
-      "id": "g4-argon-0036",
-      "revision": 1,
-      "status": "verified_candidate",
-      "grade": 4,
-      "type": "cloze",
-      "difficultyTier": "challenge",
-      "variantTag": "idiom_proverb",
-      "target": {
-        "lemma": "누워서 떡 먹기",
-        "partOfSpeech": "속담",
-        "senseKey": "누워서 떡 먹기/속담/526606-1"
-      },
-      "stem": "자전거 타기에 익숙해진 형에게 운동장 한 바퀴 돌기는 아주 쉬워서 그야말로 (    )입니다. 빈칸에 알맞은 속담은 무엇일까요?",
-      "options": [
-        {
-          "id": "a",
-          "text": "하늘의 별 따기"
-        },
-        {
-          "id": "b",
-          "text": "수박 겉 핥기"
-        },
-        {
-          "id": "c",
-          "text": "누워서 떡 먹기"
-        },
-        {
-          "id": "d",
-          "text": "우물 안 개구리"
-        }
-      ],
-      "correctOptionId": "c",
-      "explanation": "‘누워서 떡 먹기’는 하기가 매우 쉬운 일을 비유하는 속담이에요.",
-      "distractorRationales": {
-        "a": "‘하늘의 별 따기’는 이루기가 매우 어렵다는 반대 뜻이에요.",
-        "b": "‘수박 겉 핥기’는 속내용은 모르고 겉만 건드린다는 뜻이에요.",
-        "d": "‘우물 안 개구리’는 세상 물정을 넓게 모르는 사람을 뜻해요."
-      }
-    },
-    {
       "id": "g4-argon-0037",
       "revision": 1,
       "status": "verified_candidate",
@@ -1163,414 +803,6 @@
         "a": "아무리 좋은 구경도 배가 불러야 즐겁다는 뜻이에요.",
         "b": "강한 이들 싸움에 약한 이가 해를 입는다는 뜻이에요.",
         "c": "실속 없는 사람이 겉으로 더 떠벌린다는 뜻이에요."
-      }
-    },
-    {
-      "id": "g4-argon-0038",
-      "revision": 1,
-      "status": "verified_candidate",
-      "grade": 4,
-      "type": "cloze",
-      "difficultyTier": "challenge",
-      "variantTag": "idiom_proverb",
-      "target": {
-        "lemma": "우물을 파도 한 우물을 파라",
-        "partOfSpeech": "속담",
-        "senseKey": "우물을 파도 한 우물을 파라/속담/530910-1"
-      },
-      "stem": "하던 일을 자주 바꾸지 말고 한 가지 일을 끝까지 해야 성공한다는 뜻으로 “(    )”라고 합니다. 빈칸에 알맞은 속담은 무엇일까요?",
-      "options": [
-        {
-          "id": "a",
-          "text": "우물을 파도 한 우물을 파라"
-        },
-        {
-          "id": "b",
-          "text": "급할수록 천천히 돌아서 가라"
-        },
-        {
-          "id": "c",
-          "text": "작은 불씨도 미리 살펴 꺼 두라"
-        },
-        {
-          "id": "d",
-          "text": "빈 수레처럼 요란하게 굴지 마라"
-        }
-      ],
-      "correctOptionId": "a",
-      "explanation": "한 가지 일을 끝까지 꾸준히 해야 성공할 수 있다는 속담이에요.",
-      "distractorRationales": {
-        "b": "바쁠수록 침착하게 일하라는 뜻이라 문맥과 달라요.",
-        "c": "작은 위험을 미리 조심하라는 뜻이라 어울리지 않아요.",
-        "d": "겉으로 떠벌리지 말라는 뜻이라 끈기와는 거리가 멀어요."
-      }
-    },
-    {
-      "id": "g4-argon-0039",
-      "revision": 1,
-      "status": "verified_candidate",
-      "grade": 4,
-      "type": "cloze",
-      "difficultyTier": "challenge",
-      "variantTag": "idiom_proverb",
-      "target": {
-        "lemma": "될성부른 나무는 떡잎부터 알아본다",
-        "partOfSpeech": "속담",
-        "senseKey": "될성부른 나무는 떡잎부터 알아본다/속담/527059-1"
-      },
-      "stem": "크게 잘될 사람은 어릴 때부터 남다른 장래성이 보인다는 뜻으로 “(    )”라고 합니다. 빈칸에 알맞은 속담은 무엇일까요?",
-      "options": [
-        {
-          "id": "a",
-          "text": "원숭이도 나무에서 떨어질 때가 있다"
-        },
-        {
-          "id": "b",
-          "text": "발 없는 말이 천 리까지 멀리 간다"
-        },
-        {
-          "id": "c",
-          "text": "세 살 버릇이 여든까지 이어진다"
-        },
-        {
-          "id": "d",
-          "text": "될성부른 나무는 떡잎부터 알아본다"
-        }
-      ],
-      "correctOptionId": "d",
-      "explanation": "잘될 사람은 어려서부터 남다른 가능성을 보인다는 속담이에요.",
-      "distractorRationales": {
-        "a": "잘하는 사람도 때로는 실수할 수 있다는 뜻이에요.",
-        "b": "말소문은 순식간에 멀리까지 퍼진다는 뜻이에요.",
-        "c": "어릴 적 습관이 늙어서까지 고치기 어렵다는 뜻이에요."
-      }
-    },
-    {
-      "id": "g4-argon-0040",
-      "revision": 1,
-      "status": "verified_candidate",
-      "grade": 4,
-      "type": "definition",
-      "difficultyTier": "challenge",
-      "variantTag": "dialect",
-      "dialectRegion": "제주",
-      "target": {
-        "lemma": "도새기",
-        "partOfSpeech": "명사",
-        "senseKey": "도새기/명사/od-756725-1"
-      },
-      "stem": "제주 할머니께서 진흙탕에서 꿀꿀거리는 모습을 보시며 “우리 도새기가 먹이를 참 복스럽게 잘 먹는구나.”라고 하셨습니다. ‘도새기’의 뜻은 무엇일까요?",
-      "options": [
-        {
-          "id": "a",
-          "text": "염소"
-        },
-        {
-          "id": "b",
-          "text": "오리"
-        },
-        {
-          "id": "c",
-          "text": "돼지"
-        },
-        {
-          "id": "d",
-          "text": "토끼"
-        }
-      ],
-      "correctOptionId": "c",
-      "explanation": "진흙탕에서 꿀꿀거린다는 단서로 ‘도새기’가 ‘돼지’의 제주 방언임을 알 수 있어요.",
-      "distractorRationales": {
-        "a": "염소는 매애 하고 울며 진흙탕에서 꿀꿀거리지 않아요.",
-        "b": "오리는 꽥꽥 소리를 내는 물새라 문맥과 맞지 않아요.",
-        "d": "토끼는 깡충깡충 뛰며 꿀꿀 소리를 내지 않아요."
-      }
-    },
-    {
-      "id": "g4-argon-0041",
-      "revision": 1,
-      "status": "verified_candidate",
-      "grade": 4,
-      "type": "definition",
-      "difficultyTier": "challenge",
-      "variantTag": "dialect",
-      "dialectRegion": "충청",
-      "target": {
-        "lemma": "개구락지",
-        "partOfSpeech": "명사",
-        "senseKey": "개구락지/명사/od-80130-1"
-      },
-      "stem": "비 개인 논둑을 걷던 할아버지께서 “개구락지가 연잎 위에서 개굴개굴 힘차게 우는구나.”라고 말씀하셨습니다. ‘개구락지’의 뜻은 무엇일까요?",
-      "options": [
-        {
-          "id": "a",
-          "text": "개구리"
-        },
-        {
-          "id": "b",
-          "text": "잠자리"
-        },
-        {
-          "id": "c",
-          "text": "다람쥐"
-        },
-        {
-          "id": "d",
-          "text": "지렁이"
-        }
-      ],
-      "correctOptionId": "a",
-      "explanation": "연잎 위에서 개굴개굴 운다는 단서로 ‘개구락지’가 ‘개구리’의 방언임을 알 수 있어요.",
-      "distractorRationales": {
-        "b": "잠자리는 하늘을 날아다니며 개굴개굴 울지 않아요.",
-        "c": "다람쥐는 숲속 나무에 살며 연잎 위에서 울지 않아요.",
-        "d": "지렁이는 땅속에 살며 울음소리를 내지 않아요."
-      }
-    },
-    {
-      "id": "g4-argon-0042",
-      "revision": 1,
-      "status": "verified_candidate",
-      "grade": 4,
-      "type": "definition",
-      "difficultyTier": "challenge",
-      "variantTag": "dialect",
-      "dialectRegion": "경기",
-      "target": {
-        "lemma": "깨구락지",
-        "partOfSpeech": "명사",
-        "senseKey": "깨구락지/명사/od-563343-1"
-      },
-      "stem": "연못가에서 올챙이가 뒷다리가 자라더니 폴짝 뛰어오르는 것을 보고 삼촌이 “벌써 깨구락지가 다 되었네.”라고 하셨습니다. ‘깨구락지’의 뜻은 무엇일까요?",
-      "options": [
-        {
-          "id": "a",
-          "text": "개구리"
-        },
-        {
-          "id": "b",
-          "text": "물고기"
-        },
-        {
-          "id": "c",
-          "text": "거북이"
-        },
-        {
-          "id": "d",
-          "text": "소라게"
-        }
-      ],
-      "correctOptionId": "a",
-      "explanation": "올챙이의 뒷다리가 자라 폴짝 뛰는 동물은 ‘개구리’예요.",
-      "distractorRationales": {
-        "b": "물고기는 지느러미로 헤엄치며 올챙이가 자란 동물이 아니에요.",
-        "c": "거북이는 단단한 등딱지가 있고 올챙이에서 자라지 않아요.",
-        "d": "소라게는 바닷가에 살며 폴짝 뛰어오르지 않아요."
-      }
-    },
-    {
-      "id": "g4-argon-0043",
-      "revision": 1,
-      "status": "verified_candidate",
-      "grade": 4,
-      "type": "definition",
-      "difficultyTier": "challenge",
-      "variantTag": "dialect",
-      "dialectRegion": "전라",
-      "target": {
-        "lemma": "바구리",
-        "partOfSpeech": "명사",
-        "senseKey": "바구리/명사/od-161327-1"
-      },
-      "stem": "텃밭에서 상추를 뜯으시던 할머니께서 “채소를 담을 둥근 바구리 좀 가져오너라.”라고 말씀하셨습니다. ‘바구리’의 뜻은 무엇일까요?",
-      "options": [
-        {
-          "id": "a",
-          "text": "주전자"
-        },
-        {
-          "id": "b",
-          "text": "빗자루"
-        },
-        {
-          "id": "c",
-          "text": "절구통"
-        },
-        {
-          "id": "d",
-          "text": "바구니"
-        }
-      ],
-      "correctOptionId": "d",
-      "explanation": "뜯은 상추를 담는 둥근 그릇이라는 단서로 ‘바구리’가 ‘바구니’임을 알 수 있어요.",
-      "distractorRationales": {
-        "a": "주전자는 물이나 차를 끓여 따르는 도구예요.",
-        "b": "빗자루는 바닥의 먼지를 쓸어 내는 청소 도구예요.",
-        "c": "절구통은 곡식이나 떡을 찧는 무거운 도구예요."
-      }
-    },
-    {
-      "id": "g4-argon-0044",
-      "revision": 1,
-      "status": "verified_candidate",
-      "grade": 4,
-      "type": "definition",
-      "difficultyTier": "challenge",
-      "variantTag": "dialect",
-      "dialectRegion": "경상",
-      "target": {
-        "lemma": "국시",
-        "partOfSpeech": "명사",
-        "senseKey": "국시/명사/od-99250-1"
-      },
-      "stem": "잔칫날 할머니께서 멸치 육수에 긴 밀가루 면을 말아 주시며 “따뜻할 때 국시 한 그릇 어서 먹어라.”라고 하셨습니다. ‘국시’의 뜻은 무엇일까요?",
-      "options": [
-        {
-          "id": "a",
-          "text": "송편"
-        },
-        {
-          "id": "b",
-          "text": "국수"
-        },
-        {
-          "id": "c",
-          "text": "식혜"
-        },
-        {
-          "id": "d",
-          "text": "강정"
-        }
-      ],
-      "correctOptionId": "b",
-      "explanation": "육수에 긴 면을 말아 먹는 음식인 ‘국시’는 ‘국수’의 방언이에요.",
-      "distractorRationales": {
-        "a": "송편은 쌀가루를 빚어 찌는 명절 떡이에요.",
-        "c": "식혜는 엿기름과 밥으로 만드는 달콤한 음료예요.",
-        "d": "강정은 찹쌀을 튀겨 꿀과 고물을 묻힌 한과예요."
-      }
-    },
-    {
-      "id": "g4-argon-0045",
-      "revision": 1,
-      "status": "verified_candidate",
-      "grade": 4,
-      "type": "definition",
-      "difficultyTier": "challenge",
-      "variantTag": "dialect",
-      "dialectRegion": "전라",
-      "target": {
-        "lemma": "괴양이",
-        "partOfSpeech": "명사",
-        "senseKey": "괴양이/명사/od-866372-1"
-      },
-      "stem": "마루 밑에서 야옹 하며 수염을 움직이는 모습을 보시고 외할머니께서 “저 괴양이가 쥐를 잘 잡는단다.”라고 하셨습니다. ‘괴양이’의 뜻은 무엇일까요?",
-      "options": [
-        {
-          "id": "a",
-          "text": "강아지"
-        },
-        {
-          "id": "b",
-          "text": "고양이"
-        },
-        {
-          "id": "c",
-          "text": "병아리"
-        },
-        {
-          "id": "d",
-          "text": "송아지"
-        }
-      ],
-      "correctOptionId": "b",
-      "explanation": "야옹 하고 울며 쥐를 잘 잡는 ‘괴양이’는 ‘고양이’의 전라 방언이에요.",
-      "distractorRationales": {
-        "a": "강아지는 멍멍 짖으며 야옹 소리를 내지 않아요.",
-        "c": "병아리는 삐약삐약 우는 어린 닭이라 쥐를 잡지 못해요.",
-        "d": "송아지는 음매 하고 우는 소의 새끼예요."
-      }
-    },
-    {
-      "id": "g4-argon-0046",
-      "revision": 1,
-      "status": "verified_candidate",
-      "grade": 4,
-      "type": "definition",
-      "difficultyTier": "challenge",
-      "variantTag": "dialect",
-      "dialectRegion": "제주",
-      "target": {
-        "lemma": "빙애기",
-        "partOfSpeech": "명사",
-        "senseKey": "빙애기/명사/od-461035-1"
-      },
-      "stem": "어미 닭 뒤를 삐약삐약 따라다니는 노란 새끼를 보며 제주 이모가 “빙애기가 참 귀엽지?”라고 물으셨습니다. ‘빙애기’의 뜻은 무엇일까요?",
-      "options": [
-        {
-          "id": "a",
-          "text": "병아리"
-        },
-        {
-          "id": "b",
-          "text": "강아지"
-        },
-        {
-          "id": "c",
-          "text": "망아지"
-        },
-        {
-          "id": "d",
-          "text": "송아지"
-        }
-      ],
-      "correctOptionId": "a",
-      "explanation": "어미 닭을 삐약삐약 따라다니는 ‘빙애기’는 ‘병아리’의 제주 방언이에요.",
-      "distractorRationales": {
-        "b": "강아지는 개의 새끼라 어미 닭의 새끼가 아니에요.",
-        "c": "망아지는 말의 새끼를 이르는 말이에요.",
-        "d": "송아지는 소의 새끼라 삐약삐약 울지 않아요."
-      }
-    },
-    {
-      "id": "g4-argon-0047",
-      "revision": 1,
-      "status": "verified_candidate",
-      "grade": 4,
-      "type": "definition",
-      "difficultyTier": "challenge",
-      "variantTag": "dialect",
-      "dialectRegion": "전라",
-      "target": {
-        "lemma": "가새",
-        "partOfSpeech": "명사",
-        "senseKey": "가새/명사/od-74536-3"
-      },
-      "stem": "선물 포장지를 반듯하게 오리려던 할머니께서 “서랍에서 종이 자를 가새 좀 꺼내 다오.”라고 말씀하셨습니다. ‘가새’의 뜻은 무엇일까요?",
-      "options": [
-        {
-          "id": "a",
-          "text": "가위"
-        },
-        {
-          "id": "b",
-          "text": "단추"
-        },
-        {
-          "id": "c",
-          "text": "바늘"
-        },
-        {
-          "id": "d",
-          "text": "자석"
-        }
-      ],
-      "correctOptionId": "a",
-      "explanation": "포장지를 반듯하게 오리는 도구인 ‘가새’는 ‘가위’의 방언이에요.",
-      "distractorRationales": {
-        "b": "단추는 옷깃을 여미는 데 쓰는 물건이에요.",
-        "c": "바늘은 천을 꿰매는 도구라 종이를 오리지 못해요.",
-        "d": "자석은 쇠붙이를 끌어당기는 물체예요."
       }
     },
     {
@@ -1612,88 +844,6 @@
         "a": "골무는 바느질할 때 손가락에 끼우는 보호 도구예요.",
         "c": "옷핀은 옷감을 임시로 고정할 때 꽂는 핀이에요.",
         "d": "실패는 실을 감아 두는 도구라 실을 자르지 못해요."
-      }
-    },
-    {
-      "id": "g4-argon-0049",
-      "revision": 1,
-      "status": "verified_candidate",
-      "grade": 4,
-      "type": "definition",
-      "difficultyTier": "challenge",
-      "variantTag": "dialect",
-      "dialectRegion": "충청",
-      "target": {
-        "lemma": "괴기",
-        "partOfSpeech": "명사",
-        "senseKey": "괴기/명사/od-656990-6"
-      },
-      "stem": "불판 위에서 노릇노릇하게 구워지는 삼겹살을 보며 삼촌이 “오늘 저녁엔 괴기를 실컷 먹자.”라고 하셨습니다. ‘괴기’의 뜻은 무엇일까요?",
-      "options": [
-        {
-          "id": "a",
-          "text": "두부"
-        },
-        {
-          "id": "b",
-          "text": "감자"
-        },
-        {
-          "id": "c",
-          "text": "상추"
-        },
-        {
-          "id": "d",
-          "text": "고기"
-        }
-      ],
-      "correctOptionId": "d",
-      "explanation": "불판에서 구워지는 삼겹살을 가리키는 ‘괴기’는 ‘고기’의 방언이에요.",
-      "distractorRationales": {
-        "a": "두부는 콩으로 만든 음식이라 삼겹살이 아니에요.",
-        "b": "감자는 땅속에서 자라는 채소예요.",
-        "c": "상추는 고기를 싸서 먹는 잎채소예요."
-      }
-    },
-    {
-      "id": "g4-argon-0050",
-      "revision": 1,
-      "status": "verified_candidate",
-      "grade": 4,
-      "type": "definition",
-      "difficultyTier": "challenge",
-      "variantTag": "dialect",
-      "dialectRegion": "경상",
-      "target": {
-        "lemma": "당추",
-        "partOfSpeech": "명사",
-        "senseKey": "당추/명사/od-628278-1"
-      },
-      "stem": "외투 앞섶이 자꾸 벌어지는 것을 보신 할머니께서 “옷에 떨어진 당추를 바늘과 실로 다시 달아야겠구나.”라고 하셨습니다. ‘당추’의 뜻은 무엇일까요?",
-      "options": [
-        {
-          "id": "a",
-          "text": "모자"
-        },
-        {
-          "id": "b",
-          "text": "양말"
-        },
-        {
-          "id": "c",
-          "text": "장갑"
-        },
-        {
-          "id": "d",
-          "text": "단추"
-        }
-      ],
-      "correctOptionId": "d",
-      "explanation": "옷 앞섶을 여미려고 바늘과 실로 다는 ‘당추’는 ‘단추’의 경상 방언이에요.",
-      "distractorRationales": {
-        "a": "모자는 머리에 쓰는 물건이라 외투 앞섶에 달지 않아요.",
-        "b": "양말은 발에 신는 물건이라 문맥과 맞지 않아요.",
-        "c": "장갑은 손에 끼는 물건이라 옷깃에 달지 않아요."
       }
     },
     {
