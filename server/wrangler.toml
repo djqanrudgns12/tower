@@ -27,9 +27,9 @@ RANKING_CACHE_SECONDS = "60"
 [[d1_databases]]
 binding = "DB"
 database_name = "vocabulary-td"
-# 자리표시. 단계 7에서 `npx wrangler d1 create vocabulary-td --location apac` 결과의 database_id로 바꾼다.
-# 로컬(--local)은 이 값으로 파일 이름만 정하므로 그대로 둬도 돈다.
-database_id = "00000000-0000-0000-0000-000000000000"
+# 2026-11-05 `npx wrangler d1 create vocabulary-td --location apac`로 만든 운영 DB(APAC). 비밀값이 아니다.
+# 로컬(--local)은 이 값으로 파일 이름만 정한다.
+database_id = "6a88c701-db22-4ee6-826f-68b51bff63b9"
 migrations_dir = "migrations"
 
 [triggers]
