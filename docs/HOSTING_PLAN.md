@@ -133,12 +133,9 @@
 
 메뉴 이름은 서비스가 화면을 바꾸면 조금 달라질 수 있다. 막히면 화면에 보이는 글을 Claude에게 그대로 알려 준다. **비밀값(소금값·비밀번호·토큰)은 채팅에 붙이지 않는다.**
 
-### A. 결정 두 가지 (5분)
-1. **학생 주소 이름을 정한다.**
-   - 추천: `ssamuniverse.com`의 하위 주소, 예: `voca.ssamuniverse.com`
-   - 서버 주소는 Claude가 같은 도메인에 `voca-api.ssamuniverse.com`처럼 붙인다.
-   - 쌤유니버스와 묶이는 게 싫으면 `rollinthunder.net` 하위 주소나 새 도메인을 쓴다. 새 .com은 연 약 $11이고, 수업 2~4주 전에 등록해 두는 편이 안전하다.
-2. **배포 브랜치를 정한다.** 추천은 `main`이다. 지금 작업은 `p1/intake-round1`에 있고 `main`보다 커밋 193개 앞서 있다. Claude에게 "main에 병합해"라고 하면 된다.
+### A. 결정 두 가지 — **끝남(2026-11-05 사용자 승인)**
+- 학생 주소: **`voca.ssamuniverse.com`**, 서버 주소: **`voca-api.ssamuniverse.com`**
+- 배포 브랜치: **`main`**. `main`에 올라가면 게임이 자동으로 배포된다. 작업 브랜치 `p1/intake-round1`을 `main`에 빨리 감기로 합친다(충돌 없음).
 
 ### B. Cloudflare 접속 허락 (5분, Claude 작업 뒤)
 1. Claude가 터미널에서 `npx wrangler login`을 실행하면 브라우저 창이 열린다.
