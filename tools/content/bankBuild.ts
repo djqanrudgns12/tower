@@ -65,7 +65,7 @@ export function loadBatches(root: string): BatchInput[] {
   const read = (p: string): unknown => JSON.parse(readFileSync(p, 'utf8'));
   return readdirSync(dir).sort().flatMap(batchId => {
     const draftsPath = path.join(dir, batchId, 'drafts.json');
-    if (!existsSync(draftsPath)) return [];
+    if (!existsSync(draftsPath) || existsSync(path.join(dir, batchId, 'closed.json'))) return [];
     const reviews: BatchInput['reviews'] = {};
     for (const who of BLIND_REVIEWERS) {
       const p = path.join(root, 'content-source/reviews', batchId, `${who}.json`);
