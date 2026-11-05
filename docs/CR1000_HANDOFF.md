@@ -3,6 +3,15 @@
 작성 2026-11-06 · 작성 Claude Opus 5.5(총괄) · 받는 쪽 Codex(메인 세션)
 같이 읽을 것: [계획서 CONTENT_REVIEW_PLAN.md](CONTENT_REVIEW_PLAN.md)(기준 문서), [AGENTS.md](../AGENTS.md)
 
+### 최신 추가 갱신 (Codex, 2026-11-06 08:37 KST)
+
+- 사용자 지정 전환 계정과 CLI 계정의 일치를 확인했다. `loggedIn=true`, `authMethod=claude.ai`, 구독은 **Pro**다. 실제 `claude-sonnet-5-5` 요청도 `OK`로 성공했다. 계정 식별자·인증값은 저장소에 적지 않는다. 로컬 확인 기록: `.orchestrate/claude-auth-check.json`. 남은 사용량 전체를 조회한 것은 아니다.
+- 사용자 최신 Claude 배정: **어려운 작업 Opus 5.5/xhigh**, **적당한 작업 Opus 5.5/high**, **잡다한 작업 Sonnet 5.5/xhigh**. `agent-bridge tiers`도 deep / standard / trivial·light 순으로 이 설정과 일치함을 확인했다. S4 공동검수는 어려운 작업으로 분류한다. 이전 Sonnet/high 관문 방침은 대체됐다.
+- `c2715da`: 반영 차단 뒤 큐의 신규 모델 호출과 하위 실행기의 후속 호출을 막고, 형식 오류로 감싸져도 최초 자원 차단 사유를 보존한다. 신규 회귀 3건의 수정 전 실패 확인 후 관련 35시험·시험 타입·린트 통과. 진행 중인 PID 22002·25037은 이전 코드를 사용하며 중지·재시작하지 않았다.
+- 4학년 002~004의 수준 판정은 커밋 완료. 005는 서버 시험의 자원 대기로 pending을 보존하고 있다. 보충 022는 제작 진행 중이다. 5·6학년 각 21배치 plan도 확인했다(5학년 다음 S1 1,000문항 + S2 50문항, 6학년 다음 S1 1,008문항). 이 숫자는 승인 수가 아니다.
+
+연결 점검 이후 S4 대량 실행은 아직 시작하지 않았다. 실제 실행 상태 파일을 확인한 뒤 재개하며, 계정 연결 확인과 학년별 공개 완료를 구별한다.
+
 ### Codex 인계 후 갱신 (2026-11-06)
 
 - W2e 구현: `--gate --until S3`, 인증 실패 즉시 `blocked`(재시도 없음), produce 린트 2건 수정. 첫 판·배치 간 수정·재시작 모두 S4/S5를 실행하지 않는 시험 포함.
@@ -45,7 +54,7 @@ Claude 사용량이 바닥나 메인 세션을 Codex로 옮긴다. 이 문서만
 | 수량 | 학년마다 1,000문항 이상, 가능한 한 많이. 학년·수준이 겹쳐도 되고 같은 낱말로 여러 문항도 허용(중복 허용) | 11-05 |
 | 분류 | 난이도·수준을 세심한 기준으로 분류(계획서 §3 루브릭 `lv1`) | 11-05 |
 | 위임 | Antigravity(Argon High)·Codex(gpt-6-astra high)에 무거운 일을 몰아주고 Claude 사용은 최소로 | 11-05 |
-| D1 | Claude 관문(S4)은 Claude Sonnet 5.5, effort high | 11-06 승인 |
+| D1 | 최신 사용자 난이도별 배정에 따라 S4는 Claude Opus 5.5, effort xhigh | 11-06 갱신 |
 | D2 | 학년 띠 공유는 학년별 자기 문항 1,000을 넘긴 뒤 켠다. 공유분은 "출제 풀"로 따로 센다 | 11-06 |
 | D3 | 기존 Codex rev 1 검수(사전 뜻풀이가 들어가 블라인드가 약했음)는 다시 한다(`--recheck-codex`) | 11-06 |
 | D4 | 3학년도 포함. 순서 4 → 5 → 6 → 3 | 11-06 |
@@ -73,17 +82,17 @@ Claude 사용량이 바닥나 메인 세션을 Codex로 옮긴다. 이 문서만
 
 ### 4.1 막혀 있는 것 — 사용자 할 일
 
-**Claude CLI 로그인 만료.** 시범 4학년 배치가 Claude 관문(S4)에서 4번 모두 실패했다.
+**이전 Claude CLI 로그인 만료 기록(현재 해결).** 시범 4학년 배치가 Claude 관문(S4)에서 4번 모두 실패했다.
 `.orchestrate/review/claude/Q50-G4-001/chunk0/blind.reply1.md`: `실행 실패: Failed to authenticate: OAuth session expired and could not be refreshed`
 - **2026-11-06 사용자가 다시 로그인했다**(`claude auth login` 성공, `auth status`가 `loggedIn: true`). 검수 도구가 부르는 CLI는 `~/Library/Application Support/Claude/claude-code/<가장 새 판>/<hash>/claude.app/Contents/MacOS/claude`다(셸 PATH에는 `claude`가 없다). 다시 만료되면 사용자가 그 파일로 `auth login`을 실행한다(비밀값이라 에이전트가 하지 않는다).
-- 남은 막힘은 Claude 사용량이다(거의 소진). 회복될 때까지 S4는 한도 대기에 걸린다. 사용자가 회복을 알리면 관문을 돌린다.
+- 08:36 사용자 지정 새 계정(Pro)으로 전환 완료, 실제 Sonnet 요청 성공. 이전 계정의 사용량 소진을 새 계정의 현재 상태로 해석하지 않는다. 정확한 잔여 사용량은 미확인이다.
 - **S4가 막혀 있는 동안 공개 승인은 늘지 않는다.** 그 사이 S1~S3(수준 판정·Codex 검수·Argon 수정)와 S6(보충 제작)은 계속 돌릴 수 있다. 이것이 당장의 운영 방식이다(§6 1단계).
 
 ### 4.2 시범 루프 — 끝남(마지막 커밋 `4e54fb0`)
 
 - 시범 루프는 끝났다(돌고 있는 프로세스 없음). 마지막 `--plan` 결과: 4학년 001은 S3 수정 29문항, 5학년 001은 S2 Codex 검수 50문항, 6학년 001은 S1 재판정 8문항부터 이어 간다. 4학년 001은 S4까지 갔다가 Claude 인증 실패 4회로 멈췄다.
 - **`--plan`을 포함한 모든 `content-loop` 실행에 모델 옵션과 `--recheck-codex`를 붙인다.** 빼면 기본 모델(gpt-6.1-sol)로 보고 이미 gpt-6-astra로 만든 보고서나 예전 "GPT-6 (Codex)" 보고서와 섞지 않으려고 W1a 안전장치가 오류를 낸다(정상 동작).
-  `--recheck-codex --claude-model claude-sonnet-5-5 --claude-effort high --codex-model gpt-6-astra --codex-effort high`
+  `--recheck-codex --claude-model claude-opus-5-5 --claude-effort xhigh --codex-model gpt-6-astra --codex-effort high`
 
 ### 4.3 끝난 도구 (모두 커밋, 시험 통과는 Claude가 직접 실행해 확인)
 
@@ -171,10 +180,10 @@ node tools/orchestrate/produce.mjs run --root . --wordlist content-source/wordli
 ### 3단계 — 사용자가 Claude 로그인·사용량 회복하면 관문
 
 ```bash
-COMMIT_CO_AUTHOR="Codex <noreply@openai.com>" node tools/orchestrate/content-loop.mjs --root . --gate --batches <앞단 끝난 배치들> --claude-model claude-sonnet-5-5 --claude-effort high --codex-model gpt-6-astra --codex-effort high --claude 2 --codex 3 --argon 3 --commit
+COMMIT_CO_AUTHOR="Codex <noreply@openai.com>" node tools/orchestrate/content-loop.mjs --root . --gate --batches <앞단 끝난 배치들> --claude-model claude-opus-5-5 --claude-effort xhigh --codex-model gpt-6-astra --codex-effort high --claude 2 --codex 3 --argon 3 --commit
 ```
 
-- **G1(시범 판정)**: 시범 3배치의 S4 결과로 Sonnet 지적률을 본다. 15% 미만이면 Opus 5.5로 20문항을 따로 풀려 관대함을 대조(D1). 단계별 통과율·실측 호출 수로 계획서 §2·§9 숫자를 고친다. 관문 통과율이 0.6 밑이면 멈추고 사용자에게 보고.
+- **G1(시범 판정)**: 최신 정책의 Opus 5.5/xhigh로 시범 3배치 S4를 평가한다. 이전 Sonnet 지적률 15% 대조 조건은 현재 배정에는 적용하지 않는다. 단계별 통과율·실측 호출 수로 계획서 §2·§9 숫자를 고친다. 관문 통과율이 0.6 밑이면 멈추고 사용자에게 보고.
 - 학년별 공개 승인이 30을 넘는 순간 로컬 게임에서 그 학년이 열린다.
 
 ### 4단계 — 학년별 마무리와 그 뒤
@@ -193,7 +202,7 @@ pgrep -fl content-loop.mjs
 ```
 
 ```bash
-node tools/orchestrate/content-loop.mjs --root . --gate --plan --recheck-codex --batches Q50-G4-001,Q50-G5-001,Q50-G6-001 --claude-model claude-sonnet-5-5 --claude-effort high --codex-model gpt-6-astra --codex-effort high
+node tools/orchestrate/content-loop.mjs --root . --gate --plan --recheck-codex --batches Q50-G4-001,Q50-G5-001,Q50-G6-001 --claude-model claude-opus-5-5 --claude-effort xhigh --codex-model gpt-6-astra --codex-effort high
 ```
 
 ```bash

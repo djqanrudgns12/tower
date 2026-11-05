@@ -4,6 +4,8 @@
 입력: 현황 측정(이 문서 §1, 부록 A), Codex 코드 영향 조사(`.orchestrate/plan-input/codex-code-scope.md`, git 제외), Antigravity 수준 기준 의견(§3에 반영), Codex 계획 검토(`.orchestrate/plan-input/codex-plan-review.md`, 지적 14건 반영)
 관련: [공동검수 절차](joint_review_protocol_v0_2.md) · [실행 게시판](EXECUTION_BOARD.md) · `tools/content/bankBuild.ts` · `tools/orchestrate/*.mjs`
 
+**2026-11-06 최신 사용자 배정:** Claude 어려운 작업은 Opus 5.5/xhigh, 적당한 작업은 Opus 5.5/high, 잡다한 작업은 Sonnet 5.5/xhigh로 보낸다. S4 공동검수는 어려운 작업으로 분류해 Opus 5.5/xhigh를 쓴다. 아래의 이전 Sonnet/high 배정과 Sonnet 관대함 대조 조건은 이 결정으로 대체된다. §9 사용량은 이전 배정의 추정치이므로 새 모델 실측과 구별한다. 공개 승인 규칙·수정 한도·통과율 중단 기준은 유지한다.
+
 ---
 
 ## 0. 한눈에
