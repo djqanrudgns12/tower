@@ -118,6 +118,13 @@ export function QuestionPanel({
 
   const skipNoteId = `skip-note-${question.encounterId}`;
   const narrow = variant === 'narrow';
+  // 보상 미리보기 값은 답한 순간에 고정한다(B2). 답하면 엔진이 연속 정답 수를 바로 바꿔 correctGold가 다음 문제 값이 되므로,
+  // 채점 전 한 틱·채점 뒤에도 보던 숫자가 바뀌지 않게 문제마다 답하기 전 마지막 값을 붙든다(렌더 중 파생 상태).
+  const [stakeAt, setStakeAt] = useState({ id: question.encounterId, gold: correctGold });
+  if (!answered && (stakeAt.id !== question.encounterId || stakeAt.gold !== correctGold)) setStakeAt({ id: question.encounterId, gold: correctGold });
+  const stakeGold = stakeAt.id === question.encounterId ? stakeAt.gold : correctGold;
+  /** 채점 뒤 받은 골드(오답·모르겠어요는 0). 채점 전에는 null. */
+  const earned = fb ? (question.reward?.gold ?? 0) : null;
   const missed = fb !== null && fb.result !== 'correct';
   // 오답 이유는 해설 칸 맨 위 한 줄(옛 문제판 B3). 해설·이유는 읽는 글이라 글자 크기 설정을 따른다(--read-font).
   const explain = missed ? (
@@ -144,7 +151,7 @@ export function QuestionPanel({
       <span className={css.stakeLabel}>{STAKES_LABEL}</span>
       <span className={css.stakeValue}>
         <ArtIcon name="coin" size={22} />
-        {stakesGold(correctGold)}
+        {stakesGold(stakeGold)}
       </span>
     </p>
   ) : null;
@@ -171,11 +178,15 @@ export function QuestionPanel({
           )}
           {question.badge && <span className={css.badge}>{question.badge}</span>}
           {narrow && (
-            // 좁은 문제 줄을 덜 꺾도록 금화 + "+N"만 보이고(금화가 곧 골드), 화면 읽기는 "정답이면 +N 골드".
-            <span className={css.stakeTag}>
-              <span className="sr-only">{`${STAKES_LABEL} ${stakesGold(correctGold)}`}</span>
+            // 좁은 문제 줄을 덜 꺾도록 금화 + "+N"만 보이고(금화가 곧 골드), 화면 읽기는 "정답이면 +N 골드" → 채점 뒤 "받은 골드 +N 골드".
+            // 채점 뒤에는 받은 골드를 보인다. 두 값을 같은 칸에 겹쳐 두어 칩 너비가 그대로라 문제 줄이 다시 흐르지 않는다(제출 흔들림 0).
+            <span className={css.stakeTag} data-stake data-missed={earned === 0 || undefined}>
+              <span className="sr-only">{earned === null ? `${STAKES_LABEL} ${stakesGold(stakeGold)}` : `${EARNED_LABEL} ${stakesGold(earned)}`}</span>
               <ArtIcon name="coin" size={14} />
-              <span aria-hidden="true">+{correctGold}</span>
+              <span className={css.stakeNums} aria-hidden="true">
+                <span data-shown={earned === null || undefined}>+{stakeGold}</span>
+                <span data-shown={earned !== null || undefined}>+{earned ?? 0}</span>
+              </span>
             </span>
           )}
           <Stem text={question.stem} />

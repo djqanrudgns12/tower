@@ -54,7 +54,8 @@
 .narrow .main { display: contents; }
 .narrow .stem { grid-area: stem; align-self: center; }
 .narrow .options { grid-area: opts; }
-.narrow .side { grid-area: side; align-self: start; }
+/* 오른쪽 위 칸은 '모르겠어요'(44px)가 빠져도 44px를 지킨다: 해설 말풍선은 absolute라 칸이 비면 1행이 줄어 보기가 올라간다(제출 흔들림 0). */
+.narrow .side { grid-area: side; align-self: start; min-height: var(--touch); }
 
 /* 문제: 20px 700(글자 크기 단계는 --q-font로 키운다). 휴대폰은 한 단계 작게, 대신 800으로 보기와 구별한다. */
 .stem {
@@ -298,6 +299,14 @@
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
 }
+
+/* 받지 못한 보상(오답·모르겠어요): 양피지 홈 면 + 보조 글(parch-3 위 6.56). */
+.stakeTag[data-missed] { border-color: var(--oak-2); background: var(--parch-3); color: var(--ink-2); }
+
+/* 미리보기 값과 받은 값을 한 칸에 겹친다: 너비는 둘 중 큰 쪽이라 바뀌어도 칩이 그대로다. */
+.stakeNums { display: inline-grid; }
+.stakeNums > * { grid-area: 1 / 1; text-align: right; visibility: hidden; }
+.stakeNums > [data-shown] { visibility: visible; }
 
 .narrow .skip { align-self: stretch; padding: 0 var(--s2); }
 

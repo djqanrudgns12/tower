@@ -44,6 +44,11 @@
 .socket:active { transform: translateY(4px); box-shadow: inset 0 0 0 2px var(--walnut-3), 0 0 0 var(--walnut-3); }
 /* 넓은 화면 레일 안은 누름도 자리를 옮기지 않는다(바닥만 0, v4 §7.4). 휴대폰 줄은 레일 밖이라 R4 그대로. */
 .rail .socket:active { transform: none; }
+/* 움직임 줄이기: OS 설정과 게임 설정 '움직임 최소'(<html data-motion="minimal">) 둘 다에서 휴대폰 줄 누름도 자리를 옮기지 않는다(v4 §7.3). */
+@media (prefers-reduced-motion: reduce) {
+  .socket:active { transform: none; }
+}
+:global(:root[data-motion='minimal']) .socket:active { transform: none; }
 .socket:focus-visible { outline: 3px solid var(--ring); outline-offset: 2px; }
 .socket[aria-selected='true'] { outline: 3px solid var(--ring); outline-offset: 2px; background: var(--paper); }
 

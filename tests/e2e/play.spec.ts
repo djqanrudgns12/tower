@@ -661,3 +661,53 @@ for (const [w, h] of [[1440, 900], [390, 844]] as const) {
     await expect(page.getByRole('listbox', { name: '타워 칸' }).getByRole('option', { name: /화염탑/ })).toBeVisible();
   });
 }
+
+for (const [w, h] of [[390, 844], [560, 900]] as const) {
+  test(`${w}×${h} 휴대폰 문제판: 짧은 문제에서 답해도 보기 자리·문제판 높이가 그대로, 보상 칩은 답한 순간 값 → 받은 골드(R5 B2·B10)`, async ({ page }) => {
+    await page.setViewportSize({ width: w, height: h });
+    // 짧은 문제(3학년 공개 은행에서 가장 짧은 축)를 첫 준비 문제로 건다. 판정·보상은 제품 엔진 그대로다.
+    await openQaScene(page, 'recruit-fixture', s => {
+      s.draft = null;
+      Object.assign(s.quiz.current!, { questionId: 'g3-argon-0033', revision: 1, optionOrder: ['a', 'b', 'c', 'd'] });
+    });
+    const panel = page.getByRole('region', { name: '어휘 문제' });
+    const measure = () => panel.evaluate(p => {
+      const r = (el: Element) => { const b = el.getBoundingClientRect(); return { x: b.x, y: b.y, w: b.width, h: b.height }; };
+      return {
+        options: [...p.querySelectorAll('[data-option-id]')].map(r),
+        panel: r(p),
+        side: r(p.querySelector('[data-feedback]')!),
+        stem: r(p.querySelector('p')!),
+        shown: p.querySelector('[data-stake] [data-shown]')?.textContent ?? '',
+      };
+    });
+    await expect(panel.getByRole('group', { name: '보기' }).getByRole('button').first()).toBeEnabled({ timeout: 8000 });
+    const before = await measure();
+    // 560px에서는 문제가 한 줄이다(오른쪽 칸 '모르겠어요' 44px보다 낮다): 칸이 비면 1행이 줄어드는 경우를 잰다.
+    if (w === 560) expect(before.stem.h).toBeLessThan(44);
+    expect(before.shown).toMatch(/^\+\d+$/);
+
+    // 오답: 오른쪽 칸은 44px를 지키고, 보기·문제판은 제자리. 칩은 받은 골드 +0.
+    await answerNow(page, 'wrong');
+    await expect(panel.locator('[data-explain]')).toBeVisible();
+    const after = await measure();
+    expect(after.side.h).toBeGreaterThanOrEqual(44);
+    expect(Math.abs(after.panel.h - before.panel.h)).toBeLessThanOrEqual(0.5);
+    after.options.forEach((r, i) => {
+      expect(Math.abs(r.y - before.options[i]!.y), `보기 ${i + 1} 세로`).toBeLessThanOrEqual(0.5);
+      expect(Math.abs(r.x - before.options[i]!.x), `보기 ${i + 1} 가로`).toBeLessThanOrEqual(0.5);
+    });
+    expect(after.shown).toBe('+0');
+    await shot(page, `r5-phone-wrong-${w}`);
+
+    // 다음 문제를 맞히면 칩은 답하기 전에 보던 값 그대로(= 받은 골드)다. 연속 정답 수가 바뀐 다음 문제 값으로 바뀌지 않는다.
+    const next = panel.getByRole('button', { name: '다음 문제' });
+    await expect(next).toBeEnabled({ timeout: 8000 });
+    await next.click();
+    await expect.poll(async () => { await resumeIfPaused(page); return panel.getByRole('group', { name: '보기' }).getByRole('button').first().isEnabled().catch(() => false); }, { timeout: 8000 }).toBe(true);
+    const seen = (await measure()).shown;
+    await answerNow(page, 'correct');
+    await expect(panel.getByText('정답!')).toBeVisible();
+    await expect(panel.locator('[data-stake] [data-shown]')).toHaveText(seen);
+  });
+}
