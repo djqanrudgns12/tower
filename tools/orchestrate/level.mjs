@@ -86,6 +86,8 @@ function inputItem(m, root, batchId, q, reference) {
     target: q.target, stem: q.stem, options: q.options, correctOptionId: q.correctOptionId,
     explanation: q.explanation, distractorRationales: q.distractorRationales,
     source: { ...q.source, evidenceText }, precomputed: m.levels.precompute(q, evidence),
+    // 판정자가 대상 문항을 스스로 맞히지 않게 불투명도(2/3)가 필요한 문항을 표시한다(variantTag=idiom_proverb, 속담 포함).
+    needsIdiomOpacity: (q.variantTag ?? 'standard') === 'idiom_proverb',
   };
 }
 
@@ -115,7 +117,7 @@ export function promptFor(items, rubric, phase = 'assess', root = SOURCE_ROOT) {
     'curriculum_explicit은 이 목록의 코드만, 원문 뜻이 낱말과 맞을 때만 사용한다. 목록이 비어 있으면 curriculum_explicit을 쓰지 않는다.',
     '----- 성취기준 정본 코드·원문 전체 -----', JSON.stringify(standards, null, 1),
     phase === 'spotcheck' ? '이번은 근거 대조 표본 재판정이다. 사전 근거와 각 축의 근거를 다시 대조해 reason에 적는다. 합의 변경용이 아니다.' : '각 축을 독립적으로 판정한다.',
-    'T2 유형·길이, T3 기본값, 읽기량은 precomputed를 그대로 사용한다. krdictGrade=null은 조회 불가다. 관용구만 idiomOpacity=2 또는 3, 나머지는 null.',
+    'T2 유형·길이, T3 기본값, 읽기량은 precomputed를 그대로 사용한다. krdictGrade=null은 조회 불가다. needsIdiomOpacity=true인 문항만 idiomOpacity=2(비유가 쉬움) 또는 3(불투명), 나머지는 반드시 null.',
     'L1·L2·T1은 0~3 정수, inference는 0 또는 1. elementaryFit은 pass|too_low|too_high.',
     'basisType은 corpus_graded|curriculum_explicit|stdict_structural|rubric_inferred. unit은 §3.5 형식만, 교과서 단원·쪽수 금지. basisType과 unit의 출처를 일치시킨다.',
     'tier·학년 띠·V·R은 답하지 않는다. 입력의 questionId·revision마다 정확히 한 항목을 쓴다.',
@@ -136,7 +138,9 @@ export function parseReply(m, text, expected, judge, model) {
     const key = `${item?.questionId}@${item?.revision}`, input = byKey.get(key);
     if (!input) throw new Error(`미요청·중복·revision 불일치: ${key}`);
     if (['contentHash', 'judge', 'model'].some(k => Object.hasOwn(item, k))) throw new Error('도구 전용 식별 필드가 답장에 있다');
-    const parsed = m.contracts.levelJudgeSchema.parse({ ...item, contentHash: input.contentHash, judge, model });
+    // 대상이 아닌 문항의 불투명도는 판정에 쓰이지 않으므로 버린다. 대상인데 없으면 아래 judgeScores가 재요청 사유로 던진다.
+    const opacity = input.needsIdiomOpacity ? item.idiomOpacity : null;
+    const parsed = m.contracts.levelJudgeSchema.parse({ ...item, idiomOpacity: opacity, contentHash: input.contentHash, judge, model });
     m.levels.judgeScores(input.precomputed, parsed); // 관용구 불투명도도 이 묶음의 재요청 대상으로 검사한다.
     output.push(parsed);
     byKey.delete(key);

@@ -308,13 +308,16 @@ describe('최소 보기 재배열', () => {
     const locked = new Set(batch.drafts.slice(-4).map(q => `${q.id}@${q.revision}`));
     expect(() => front.fixBatchStrict(batch.drafts, batch.sidecar, locked)).toThrow('해소할 수 없다');
   });
-  it('재배열로 고칠 수 없는 문항 결함이나 자체 반박 불일치가 남으면 결과를 거절한다', () => {
+  it('문항 결함·자체 반박 불일치 문항은 옮기지 않고 다음 수정 회차로 남긴 채 배치 결함만 해소한다', () => {
     const batch = fixture('a'.repeat(20));
     batch.drafts[0]!.explanation = '가'.repeat(61);
-    expect(() => front.fixBatchStrict(batch.drafts, batch.sidecar, new Set())).toThrow('문항 결함');
-    const valid = fixture('abacbdcdabdcabdcabcd');
-    valid.sidecar.items[0]!.selfRefutation[1]!.verdict = 'fits';
-    expect(() => front.fixBatchStrict(valid.drafts, valid.sidecar, new Set())).toThrow('자체 반박');
+    batch.sidecar.items[1]!.selfRefutation[1]!.verdict = 'fits';
+    const fixed = front.fixBatchStrict(batch.drafts, batch.sidecar, new Set());
+    expect(fixed.drafts[0]).toEqual(batch.drafts[0]);
+    expect(fixed.drafts[1]).toEqual(batch.drafts[1]);
+    const left = lint.lintBatchStrict(fixed.drafts);
+    expect(left.length).toBeGreaterThan(0);
+    expect(left.every(s => s.startsWith(`${batch.drafts[0]!.id}: `))).toBe(true);
   });
   it('유효한 배치는 판을 올리지 않는다', () => {
     const batch = fixture('abacbdcdabdcabdcabcd');

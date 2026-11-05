@@ -155,19 +155,18 @@ function minimumSequence(drafts: QuestionDraft[], mutable: boolean[]): OptionId[
   throw new Error('배치 엄격 결함을 관문 통과 문항 보존 조건으로 해소할 수 없다');
 }
 
-/** 입력은 변경하지 않는다. 보기 이동으로 고칠 수 없는 문항 결함이 남으면 결과를 반영하지 않는다. */
+/**
+ * 입력은 변경하지 않는다. 배치 단위 결함(정답 분포·연속·순환)만 보기 이동으로 해소한다.
+ * 문항 단위 결함은 앞단 판정이 다음 수정 회차로 넘기므로 여기서 막지 않는다. 그런 문항과 자체 반박이
+ * 어긋난 문항, 관문 통과 문항은 옮기지 않는다. 배치 단위 결함이 남으면 결과를 반영하지 않는다.
+ */
 export function fixBatchStrict(drafts: QuestionDraft[], sidecar: DraftSidecar, gatePassed: Set<string>) {
   const result = { drafts: structuredClone(drafts), sidecar: structuredClone(sidecar), changed: [] as string[] };
+  const isQuestionIssue = (s: string) => drafts.some(q => s.startsWith(`${q.id}: `));
   const before = lintBatchStrict(drafts);
-  const questionIssues = before.filter(s => drafts.some(q => s.startsWith(`${q.id}: `)));
-  if (questionIssues.length) throw new Error(`보기 재배열 전 문항 결함: ${questionIssues.join('; ')}`);
-  for (const q of drafts) {
-    if (!selfRefutationPasses(q, sidecar.items.find(s => s.id === q.id && s.revision === q.revision))) {
-      throw new Error(`${q.id}: 보기 재배열 전 자체 반박 불일치`);
-    }
-  }
-  if (!before.length) return result;
-  const mutable = drafts.map(q => !gatePassed.has(`${q.id}@${q.revision}`)
+  const defective = new Set(drafts.filter(q => before.some(s => s.startsWith(`${q.id}: `))).map(q => q.id));
+  if (!before.some(s => !isQuestionIssue(s))) return result;
+  const mutable = drafts.map(q => !gatePassed.has(`${q.id}@${q.revision}`) && !defective.has(q.id)
     && selfRefutationPasses(q, sidecar.items.find(s => s.id === q.id && s.revision === q.revision)));
   const seq = minimumSequence(drafts, mutable);
   result.drafts = result.drafts.map((q, index) => {
@@ -186,7 +185,7 @@ export function fixBatchStrict(drafts: QuestionDraft[], sidecar: DraftSidecar, g
     result.changed.push(`${q.id}@${q.revision}`);
     return q;
   });
-  const after = lintBatchStrict(result.drafts);
+  const after = lintBatchStrict(result.drafts).filter(s => !isQuestionIssue(s));
   if (after.length) throw new Error(`보기 재배열 뒤 엄격 검사 실패: ${after.join('; ')}`);
   return result;
 }

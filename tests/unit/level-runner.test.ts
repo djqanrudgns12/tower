@@ -166,7 +166,13 @@ describe('S1 수준 판정 실행기', () => {
     const input = [{ questionId: q.id, revision: q.revision, contentHash: contentHash(q), precomputed: levels.precompute(q) }];
     const parse = (items: unknown[]) => parseReply(modules, JSON.stringify({ items }), input, 'argon', '시험 모델');
     expect(parse([reply(q)])[0]).toMatchObject({ contentHash: contentHash(q), judge: 'argon', model: '시험 모델' });
-    for (const items of [[], [reply(q), reply(q)], [reply(q, { revision: 2 })], [reply(q, { L1: 4 })], [reply(q, { idiomOpacity: 2 })], [reply(q, { ownTier: 'basic' })]]) expect(() => parse(items)).toThrow();
+    for (const items of [[], [reply(q), reply(q)], [reply(q, { revision: 2 })], [reply(q, { L1: 4 })], [reply(q, { ownTier: 'basic' })]]) expect(() => parse(items)).toThrow();
+    // 관용구가 아닌 문항에 들어온 불투명도는 판정에 쓰이지 않으므로 버린다(형식 오류로 재요청하지 않는다).
+    expect(parse([reply(q, { idiomOpacity: 2 })])[0]!.idiomOpacity).toBeNull();
+    // 관용구 문항인데 불투명도가 없으면 재요청 사유다.
+    const idiom = { ...q, variantTag: 'idiom_proverb' as const, difficultyTier: 'advanced' as const };
+    const idiomInput = [{ questionId: idiom.id, revision: idiom.revision, contentHash: contentHash(idiom), precomputed: levels.precompute(idiom), needsIdiomOpacity: true }];
+    expect(() => parseReply(modules, JSON.stringify({ items: [reply(idiom)] }), idiomInput, 'argon', '시험 모델')).toThrow();
   });
 
   it('잘린 브리지 답장은 명시된 대화 폴더에서 현재 입력과 일치하는 전문만 복원한다', () => {
