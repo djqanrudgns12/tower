@@ -9,6 +9,7 @@ import { BODY_LIMIT_SMALL, BODY_LIMIT_SUBMIT, HttpError, json, readJsonObject } 
 import { cleanServerNickname } from './nickname';
 import { minimumDurationMs, parseVerificationRules } from './rules';
 import { rankStandings, type RankedPlayer, type StandingRow } from './ranking';
+import type { RankingCache } from './ranking-cache';
 import {
   existingRunStatement, insertCompletedRunStatement, leaderboardRowsStatement, myHonorRunIdsStatement,
   DEVICE_RATE_LIMITS, IP_RATE_LIMITS, rateLimitState, rateLimitStatement, startStatements, submitLookupStatements, VERIFIED_LEVEL,
@@ -30,6 +31,8 @@ export interface Context {
    * 본문이 있는 요청은 본문을 다 받은 뒤 다시 정한다(readBody). 느리게 올라온 본문이 옛 시각으로 세지지 않게.
    */
   now: number;
+  /** 랭킹 응답 캐시. workers.dev·로컬 Node·RANKING_CACHE_SECONDS=0이면 null. */
+  rankingCache: RankingCache | null;
 }
 
 /** 본문을 크기 제한 안에서 읽고, 다 받은 시각을 이 요청의 시각으로 삼는다. */
@@ -186,6 +189,8 @@ export async function submitCompletedRun(ctx: Context, hash: string): Promise<Re
     }
     throw error;
   }
+  // 새 기록이 바꾸는 랭킹 범위를 이 거점 캐시에서 지운다(제출한 학생이 홈으로 돌아가 바로 보게).
+  await ctx.rankingCache?.purgeForRun({ grade: row.grade, difficulty: row.difficulty, weekKey: row.weekKey });
   return json({ ok: true, status: 'recorded', verificationLevel: VERIFIED_LEVEL });
 }
 
@@ -204,10 +209,21 @@ export async function getLeaderboard(ctx: Context, hash: string): Promise<Respon
   }
   const weekKey = params.period === 'weekly' ? kstIsoWeekKey(new Date(ctx.now)) : null;
   const scope: LeaderboardScope = { tab: params.tab, period: weekKey ? `week:${weekKey}` : 'all', grade: params.grade, difficulty: params.difficulty };
-  const statements = [leaderboardRowsStatement(scope)];
-  if (params.tab === 'honor_points') statements.push(myHonorRunIdsStatement(hash, params.grade, weekKey));
-  const [standingRows = [], myRunRows = []] = await limited(ctx, hash, 'ranking', statements);
-  const ranked = rankStandings(standingRows as unknown as StandingRow[], params.tab);
+  // 캐시 적중이면 속도 제한 칸을 쓰지 않는다: 적중은 D1 행을 쓰지 않으므로 아낄 것이 없고, 칸을 세면 그것만으로 쓰기 2행이 든다.
+  let ranked = await ctx.rankingCache?.get(scope) ?? null;
+  let myRunRows: SqlRow[] = [];
+  if (ranked) {
+    if (params.tab === 'honor_points' && ranked.some(p => p.hash === hash)) {
+      [myRunRows = []] = await ctx.db.batch([myHonorRunIdsStatement(hash, params.grade, weekKey)]);
+    }
+  } else {
+    const statements = [leaderboardRowsStatement(scope)];
+    if (params.tab === 'honor_points') statements.push(myHonorRunIdsStatement(hash, params.grade, weekKey));
+    const [standingRows = [], mine = []] = await limited(ctx, hash, 'ranking', statements);
+    ranked = rankStandings(standingRows as unknown as StandingRow[], params.tab);
+    myRunRows = mine;
+    await ctx.rankingCache?.put(scope, ranked);
+  }
   const myHonorRunIds = myRunRows.map(r => String(r.run_id));
   const toEntry = (p: RankedPlayer) => {
     const isMe = p.hash === hash;

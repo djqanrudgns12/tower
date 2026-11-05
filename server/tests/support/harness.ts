@@ -6,6 +6,7 @@ import { readFile } from 'node:fs/promises';
 import { createTestHarness } from 'wrangler';
 import { handleRequest, type Env } from '../../src/app';
 import type { D1ResultLike, SqlStats } from '../../src/db';
+import type { CacheLike } from '../../src/ranking-cache';
 import { SERVER_DIR, TEST_SALT } from './constants';
 
 export { REPO_DIR, SERVER_DIR, TEST_ORIGIN, TEST_SALT } from './constants';
@@ -69,7 +70,7 @@ export interface TestServer {
   call(path: string, options?: CallOptions): Promise<CallResult>;
   newDevice(ip?: string): Promise<Device>;
   /** Worker를 거치지 않고 같은 처리기를 Node에서 부른다(시계 고정·D1 행 수 측정용). 같은 로컬 D1을 쓴다. */
-  direct(path: string, options: CallOptions & { now: number | (() => number); stats?: SqlStats }): Promise<CallResult>;
+  direct(path: string, options: CallOptions & { now: number | (() => number); stats?: SqlStats; cache?: CacheLike }): Promise<CallResult>;
   scheduled(scheduledTime: number): Promise<void>;
   close(): Promise<void>;
 }
@@ -95,10 +96,18 @@ function requestInit(options: CallOptions): RequestInit {
   return init;
 }
 
-export async function startServer(options: { salt?: string; seed?: boolean } = {}): Promise<TestServer> {
+/**
+ * 시험 서버. 랭킹 캐시는 기본으로 끈다(DB를 직접 고친 뒤 바로 랭킹을 보는 시험이 많다).
+ * 캐시 시험만 rankingCacheSeconds를 준다.
+ */
+export async function startServer(options: { salt?: string; seed?: boolean; rankingCacheSeconds?: number } = {}): Promise<TestServer> {
   const server = createTestHarness({
     root: SERVER_DIR,
-    workers: [{ configPath: 'wrangler.toml', secrets: { PLAYER_SALT: options.salt ?? TEST_SALT } }],
+    workers: [{
+      configPath: 'wrangler.toml',
+      secrets: { PLAYER_SALT: options.salt ?? TEST_SALT },
+      vars: { RANKING_CACHE_SECONDS: String(options.rankingCacheSeconds ?? 0) },
+    }],
   });
   await server.listen();
   const worker = server.getWorker();
@@ -119,10 +128,13 @@ export async function startServer(options: { salt?: string; seed?: boolean } = {
       return result.body as unknown as Device;
     },
     async direct(path, callOptions) {
-      const testEnv: Env = { DB: db, PLAYER_SALT: options.salt ?? TEST_SALT, ALLOWED_ORIGINS: env.ALLOWED_ORIGINS };
+      const testEnv: Env = {
+        DB: db, PLAYER_SALT: options.salt ?? TEST_SALT, ALLOWED_ORIGINS: env.ALLOWED_ORIGINS,
+        RANKING_CACHE_SECONDS: callOptions.cache ? '60' : '0',
+      };
       const request = new Request(new URL(path, 'http://localhost'), requestInit(callOptions));
       const clock = typeof callOptions.now === 'function' ? callOptions.now : () => callOptions.now as number;
-      const deps = callOptions.stats ? { now: clock, stats: callOptions.stats } : { now: clock };
+      const deps = { now: clock, cache: callOptions.cache ?? null, ...(callOptions.stats ? { stats: callOptions.stats } : {}) };
       return toResult(await handleRequest(request, testEnv, deps));
     },
     async scheduled(scheduledTime) {
@@ -183,4 +195,18 @@ export function submitBody(runId: string, overrides: Record<string, unknown> = {
 export async function avoidMinuteBoundary(): Promise<void> {
   const intoMinute = Date.now() % 60_000;
   if (intoMinute > 55_000) await new Promise(resolve => setTimeout(resolve, 60_000 - intoMinute + 200));
+}
+
+/** Node에서 direct()로 부를 때 쓰는 메모리 캐시(Workers caches.default 대신). 만료는 보지 않는다. */
+export function memoryCache(): CacheLike & { keys(): string[] } {
+  const store = new Map<string, string>();
+  return {
+    async match(request) {
+      const body = store.get(request.url);
+      return body === undefined ? undefined : new Response(body);
+    },
+    async put(request, response) { store.set(request.url, await response.text()); },
+    async delete(request) { return store.delete(request.url); },
+    keys: () => [...store.keys()],
+  };
 }

@@ -10,6 +10,9 @@ send_metrics = false
 # 쉼표로 나눈 허용 출처. 기본값은 로컬 개발 주소(vite dev 5173, vite preview 4173)다.
 # 학생 주소가 정해지면(단계 6) 예: "https://voca.example.com" 를 더한다.
 ALLOWED_ORIGINS = "http://localhost:5173,http://127.0.0.1:5173,http://localhost:4173,http://127.0.0.1:4173"
+# 랭킹 응답 캐시(초). 공용 순위표만 거점 캐시에 담고 0이면 끈다. workers.dev 주소에서는 Cache API가 동작하지 않아
+# 사용자 지정 도메인(단계 6)에서만 효과가 있다.
+RANKING_CACHE_SECONDS = "60"
 
 [[d1_databases]]
 binding = "DB"
