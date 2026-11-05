@@ -17,8 +17,7 @@ import os from 'node:os';
 import { spawn } from 'node:child_process';
 import { createHash, randomUUID } from 'node:crypto';
 import { runnerImport } from 'vite';
-
-const BRIDGE = process.env.AGENT_BRIDGE ?? path.join(os.homedir(), '.local/bin/agent-bridge');
+import { agyCall, AGY_MODEL } from './agy.mjs';
 const REVIEWERS = { claude: 'claude-opus-5-5', codex: 'gpt-6.1-sol', antigravity: 'Gemini 4 Argon (High)' };
 const FILE_OF = { claude: 'claude.json', codex: 'codex.json', antigravity: 'argon-blind.json' };
 const CHOICES = ['a', 'b', 'c', 'd', 'none', 'multiple'];
@@ -378,16 +377,8 @@ function codexCli(cwd, body, timeoutSec, config) {
   });
 }
 
-function bridge(reviewer, cwd, body, waitSec) {
-  return new Promise(resolve => {
-    const child = spawn(BRIDGE, ['ask', '--from', 'claude', '--to', reviewer, '--cwd', cwd, '--wait', String(waitSec), '-'], { stdio: ['pipe', 'pipe', 'pipe'] });
-    let out = '';
-    let err = '';
-    child.stdout.on('data', d => { out += d; });
-    child.stderr.on('data', d => { err += d; });
-    child.on('close', code => resolve({ code, out: out.trim(), err: err.trim() }));
-    child.stdin.end(body);
-  });
+export function antigravityRespond(request, deps = {}) {
+  return (deps.agyCall ?? agyCall)({ ...request, model: AGY_MODEL, timeoutSec: 1200 });
 }
 
 const sleep = ms => new Promise(r => setTimeout(r, ms));
@@ -403,7 +394,10 @@ export async function runPhase(b, root, reviewer, batchId, phase, log, options =
   for (let attempt = 1; attempt <= 4; attempt++) {
     const started = Date.now();
     const body = promptFor(phase, items) + note;
-    const res = reviewer === 'claude' ? await claudeCli(sealed, body, 1500, resolved.config) : reviewer === 'codex' ? await codexCli(sealed, body, 1800, resolved.config) : await bridge(reviewer, sealed, body, 1200);
+    const res = reviewer === 'claude' ? await claudeCli(sealed, body, 1500, resolved.config)
+      : reviewer === 'codex' ? await codexCli(sealed, body, 1800, resolved.config)
+      : await antigravityRespond({ root, cwd: sealed, prompt: body,
+        argonPerHour: options.argonPerHour ?? options['argon-per-hour'], validate: text => parseReply(text, phase, items) }, options);
     // 계정 사용량 한도에 걸리면 시도 횟수를 쓰지 않고 기다렸다 같은 묶음을 다시 보낸다.
     if (/session limit|usage limit|rate[_ ]limit|\b429\b|hit your limit/i.test(`${res.out}\n${res.err}`) && !/```/.test(res.out)) {
       log(`${batchId} ${phase}: 사용량 한도 — 20분 대기 후 재시도`);
@@ -434,7 +428,7 @@ async function main() {
   const reviewer = a.reviewer ?? 'claude';
   if (!FILE_OF[reviewer]) throw new Error(`검수자는 ${Object.keys(FILE_OF).join('·')}`);
   const configs = resolveReviewConfig(a);
-  const options = { config: configs[reviewer], questionKeys: a.questions, archiveExisting: a['archive-existing'] === true || a['archive-existing'] === reviewer };
+  const options = { argonPerHour: a['argon-per-hour'], config: configs[reviewer], questionKeys: a.questions, archiveExisting: a['archive-existing'] === true || a['archive-existing'] === reviewer };
   const b = await load(root);
   const log = m => { const line = `[${new Date().toISOString()}] ${m}`; console.log(line); fs.appendFileSync(path.join(root, '.orchestrate/review', `${reviewer}.log`), `${line}\n`); };
   fs.mkdirSync(path.join(root, '.orchestrate/review'), { recursive: true });
@@ -465,7 +459,7 @@ async function main() {
   }
   if (cmd === 'run') {
     const ids = a.all ? all.filter(x => pending(b, x, reviewer, options).length).map(x => x.batchId) : String(a.batches).split(',');
-    const parallel = Number(a.parallel ?? 3);
+    const parallel = Number((reviewer === 'antigravity' ? a.argon : undefined) ?? a.parallel ?? 3);
     const queue = [...ids];
     const summary = [];
     const worker = async () => {

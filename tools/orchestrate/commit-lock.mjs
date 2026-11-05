@@ -12,7 +12,7 @@ const generatedPaths = [
   ...[3, 4, 5, 6].flatMap(grade => [`src/content/questions/grade${grade}.json`, `src/content/questions/grade${grade}.candidate.json`]),
   'src/content/questions/practice.json', 'server/seed/question_keys.sql',
 ];
-const inputScopes = ['content-source', 'src/content/questions', 'server/seed/question_keys.sql', 'src/content/retractions.json',
+const inputScopes = ['content-source', 'src/content/questions', 'server/seed', 'src/content/retractions.json',
   'docs/contracts/balance.candidate.v0.4.json', 'docs/contracts/maps.candidate.v0.4.json'];
 const readJson = file => JSON.parse(fs.readFileSync(file, 'utf8'));
 const json = value => `${JSON.stringify(value, null, 2)}\n`;
@@ -111,10 +111,22 @@ function quarantine(root, run) {
   fs.renameSync(path.join(root, run.dir), fs.existsSync(failed) ? `${failed}-${randomUUID()}` : failed);
 }
 function changedInputs(root) {
-  return new Set([
-    ...git(root, 'diff', '--name-only', '--no-renames', '-z', 'HEAD', '--', ...inputScopes).split('\0'),
-    ...git(root, 'ls-files', '--others', '--exclude-standard', '-z', '--', ...inputScopes).split('\0'),
-  ].filter(Boolean));
+  // -z 보존: 공백·한글·개행 경로, staged 삭제/추가, 이름 변경 양쪽을 빠뜨리지 않는다.
+  const entries = git(root, 'status', '--porcelain=v1', '-z', '--untracked-files=all', '--', ...inputScopes).split('\0');
+  const changed = new Set();
+  for (let i = 0; i < entries.length; i++) {
+    if (!entries[i]) continue;
+    const status = entries[i].slice(0, 2);
+    changed.add(entries[i].slice(3));
+    if (/[RC]/.test(status) && entries[i + 1]) changed.add(entries[++i]);
+  }
+  return changed;
+}
+
+export function resolveCoAuthor(opts = {}, env = process.env) {
+  const value = opts.coAuthor ?? opts['co-author'] ?? env.COMMIT_CO_AUTHOR ?? 'Claude Opus 5.5 <noreply@anthropic.com>';
+  if (typeof value !== 'string' || !value.trim() || /[\r\n\0]/.test(value)) throw new Error('공동 작성자는 비어 있지 않은 한 줄이어야 한다');
+  return value.trim();
 }
 
 /**
@@ -124,6 +136,7 @@ function changedInputs(root) {
 export async function applyStaged(opts = {}) {
   const root = fs.realpathSync(path.resolve(opts.root ?? path.resolve(import.meta.dirname, '../..')));
   const batch = opts.batch ?? opts.batchId;
+  const coAuthor = resolveCoAuthor(opts);
   if (batch && !safeId(batch)) throw new Error('잘못된 batch');
   const release = acquire(root);
   const pendingFile = path.join(root, '.orchestrate/commit.pending.json');
@@ -139,15 +152,26 @@ export async function applyStaged(opts = {}) {
     }
     if (!runs.length && !pending.runs.length) return { committed: false, runs: [], paths: [] };
     const paths = new Set(pending.paths);
-    // 빌드가 읽는 다른 배치의 미커밋 소스를 산출물에 끼워 넣지 않는다.
-    // 아직 초안이 없는 새 배치의 evidence만 제작기가 잠금 밖에서 준비할 수 있다.
+    // manifest 밖 오염은 복사·삭제·빌드 전에 전체 경로 목록으로 보고한다.
+    const manifestPaths = new Set();
+    for (const run of runs) {
+      const manifest = readJson(destination(root, `${run.dir}/manifest.json`));
+      for (const file of [...manifest.writes.map(w => w.path), ...manifest.deletes]) {
+        destination(root, file);
+        if (!owns(run.batchId, file)) throw new Error(`배치 밖 경로: ${file}`);
+        manifestPaths.add(file);
+      }
+    }
+    const contamination = [];
     for (const file of changedInputs(root)) {
-      if (paths.has(file)) continue;
+      if (paths.has(file) || manifestPaths.has(file)) continue;
+      // 계획 §8의 새 배치 evidence 예외만 유지한다. 기존 배치의 근거는 예외가 아니다.
       const evidence = /^content-source\/batches\/([^/]+)\/evidence\//.exec(file);
       if (evidence && runs.some(run => run.batchId === evidence[1]) && !fs.existsSync(path.join(root, `content-source/batches/${evidence[1]}/drafts.json`))) {
         paths.add(file);
-      } else throw new Error(`미커밋 콘텐츠가 있어 반영 중단: ${file}`);
+      } else contamination.push(file);
     }
+    if (contamination.length) throw new Error(`미커밋 콘텐츠 오염으로 반영 중단:\n${contamination.sort().join('\n')}`);
     for (const file of generatedPaths) paths.add(file);
     const draftsChanged = new Map();
     for (const run of runs) {
@@ -202,7 +226,7 @@ export async function applyStaged(opts = {}) {
     if (deleted.length) git(root, 'rm', '--cached', '--ignore-unmatch', '-q', '--', ...deleted);
     const batches = [...new Set(pending.runs.map(run => run.batchId))].sort();
     const summary = pending.runs.map(run => `${run.tool ?? 'apply'} ${run.runId}`).join(', ');
-    git(root, 'commit', '--only', '--allow-empty', '-m', `content(${batches.join(',')}): ${summary}\n\nCo-Authored-By: Codex <noreply@openai.com>`, '--', ...existing, ...deleted);
+    git(root, 'commit', '--only', '--allow-empty', '-m', `content(${batches.join(',')}): ${summary}\n\nCo-Authored-By: ${coAuthor}`, '--', ...existing, ...deleted);
     result.committed = true;
     result.commit = git(root, 'rev-parse', 'HEAD').trim();
     // 커밋 실패 시 이 줄에 도달하지 않아 대기분과 반영 기록이 모두 남는다.
@@ -219,7 +243,7 @@ async function main(argv) {
     const arg = argv[i];
     if (arg === '--no-commit') opts.noCommit = true;
     else if (arg === '--no-server-test') opts.noServerTest = true;
-    else if (['--root', '--batch'].includes(arg) && argv[i + 1] && !argv[i + 1].startsWith('--')) opts[arg.slice(2)] = argv[++i];
+    else if (['--root', '--batch', '--co-author'].includes(arg) && argv[i + 1] && !argv[i + 1].startsWith('--')) opts[arg.slice(2)] = argv[++i];
     else throw new Error(`알 수 없는 옵션: ${arg}`);
   }
   console.log(JSON.stringify(await applyStaged(opts)));

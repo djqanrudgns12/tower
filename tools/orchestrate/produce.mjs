@@ -5,6 +5,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import os from 'node:os';
 import crypto from 'node:crypto';
+import { agyCall, AGY_MODEL } from './agy.mjs';
 import { spawn } from 'node:child_process';
 import { pathToFileURL } from 'node:url';
 import { runnerImport } from 'vite';
@@ -267,9 +268,8 @@ async function fetchEvidence({ root, batchId, inputFile }) {
   })) };
 }
 
-async function author({ prompt, cwd }) {
-  return command(process.env.AGENT_BRIDGE ?? path.join(os.homedir(), '.local/bin/agent-bridge'),
-    ['ask', '--from', 'claude', '--to', 'antigravity', '--tier', 'standard', '--cwd', cwd, '--wait', '1200', '-'], cwd, prompt);
+export async function author(request, deps = {}) {
+  return (await (deps.agyCall ?? agyCall)({ ...request, model: AGY_MODEL, timeoutSec: 1200 })).out;
 }
 
 /** dryRun에서는 두 의존성을 반드시 주입한다. 실수로 모델·네트워크를 호출하지 않는다. */
@@ -313,7 +313,11 @@ async function produceRun(options, deps) {
       let parsed;
       try {
         const prompt = promptFor(root, batchId, pending, note);
-        const reply = await (deps.respond ?? author)({ prompt, cwd, items: pending, attempt });
+        const reply = await (deps.respond ?? (request => author(request, deps)))({ prompt, cwd, items: pending, attempt, root,
+          argonPerHour: options.argonPerHour ?? options['argon-per-hour'], validate: text => {
+            const data = replyData(text);
+            if (data.items.length !== pending.length || !pending.every(x => data.items.filter(i => i.questionId === x.fixed.id).length === 1)) throw new Error('제작 대상 불일치');
+          } });
         const full = recoverReply(reply, pending, deps.brain);
         fs.writeFileSync(path.join(work, `chunk${offset / 12 + 1}.reply${attempt}.md`), full);
         parsed = parseDrafts(m, full, pending);
@@ -370,7 +374,7 @@ export function parseArgs(args) {
   if (argv.shift() !== 'run') throw new Error('사용: produce.mjs run --root <dir> --wordlist <json[,json]> [--wordlist <json>] --batch Q50-G<N>-0NN --grade <N> [--count 50] [--dry-run --fixture <json>]');
   for (let i = 0; i < argv.length; i++) {
     if (argv[i] === '--dry-run') a.dryRun = true;
-    else if (/^--(root|wordlist|batch|grade|count|fixture)$/.test(argv[i]) && argv[i + 1] && !argv[i + 1].startsWith('--')) {
+    else if (/^--(root|wordlist|batch|grade|count|fixture|argon-per-hour)$/.test(argv[i]) && argv[i + 1] && !argv[i + 1].startsWith('--')) {
       const name = argv[i].slice(2), value = argv[++i];
       if (name === 'wordlist') a.wordlist.push(value);
       else a[name] = value;
@@ -391,7 +395,7 @@ async function main() {
     deps.fetchEvidence = async () => fixture.evidence;
     deps.respond = async () => { const response = fixture.responses[call++]; if (!response) throw new Error('가짜 응답 부족'); return typeof response === 'string' ? response : json(response); };
   }
-  console.log(json(await produce({ root, wordlist: a.wordlist, batchId: a.batch, grade: Number(a.grade), count: Number(a.count ?? 50), dryRun: a.dryRun }, deps)));
+  console.log(json(await produce({ root, wordlist: a.wordlist, batchId: a.batch, grade: Number(a.grade), count: Number(a.count ?? 50), dryRun: a.dryRun, argonPerHour: a['argon-per-hour'] }, deps)));
 }
 
 if (process.argv[1] && import.meta.url === pathToFileURL(path.resolve(process.argv[1])).href) main().catch(e => { console.error(e.message); process.exitCode = 1; });

@@ -4,7 +4,7 @@ import crypto from 'node:crypto';
 import { execFileSync } from 'node:child_process';
 import { afterEach, describe, expect, it } from 'vitest';
 // @ts-expect-error 독립 실행 MJS 도구에는 별도 선언 파일이 없다.
-import { applyStaged } from '../../tools/orchestrate/commit-lock.mjs';
+import { applyStaged, resolveCoAuthor } from '../../tools/orchestrate/commit-lock.mjs';
 
 const roots: string[] = [];
 const source = (batch: string) => `content-source/batches/${batch}/drafts.json`;
@@ -91,6 +91,7 @@ describe('대기분 반영·잠금·배치 커밋', () => {
     const first = await applyStaged(options(root));
     expect(first.committed).toBe(true);
     const sha1 = git(root, 'rev-parse', 'HEAD');
+    expect(git(root, 'log', '-1', '--format=%B')).toContain(`Co-Authored-By: ${resolveCoAuthor()}`);
     assertReproducible(root, sha1);
     stage(root, 'B', '03', { [source('B')]: [draft('b', 3)] });
     stage(root, 'A', '02', { [source('A')]: [draft('a', 3)] });
@@ -245,11 +246,58 @@ describe('대기분 반영·잠금·배치 커밋', () => {
       'content-source/approvals/archive/A.explanation.old-model.json': { previousModel: true },
     });
     const cli = path.resolve('tools/orchestrate/commit-lock.mjs');
-    const output = execFileSync(process.execPath, [cli, 'apply', '--root', root, '--batch', 'A'], { encoding: 'utf8' });
+    const output = execFileSync(process.execPath, [cli, 'apply', '--root', root, '--batch', 'A', '--co-author', 'CLI 실행 <cli@example.test>'], { encoding: 'utf8' });
     expect(JSON.parse(output).committed).toBe(true);
+    expect(git(root, 'log', '-1', '--format=%B')).toMatch(/\n\nCo-Authored-By: CLI 실행 <cli@example.test>$/);
     expect(fs.readFileSync(path.join(root, '.orchestrate/order'), 'utf8')).toBe('bank\nkeys\nserver\n');
     expect(JSON.parse(git(root, 'show', 'HEAD:content-source/reviews/A/codex.json'))).toEqual({ items: [] });
     expect(JSON.parse(git(root, 'show', 'HEAD:content-source/approvals/archive/A.explanation.old-model.json'))).toEqual({ previousModel: true });
+  });
+
+  it('manifest 밖 수정·추가·삭제와 seed 전체 오염을 모두 보고하고 반영하지 않는다', async () => {
+    const root = fixture(), head = git(root, 'rev-parse', 'HEAD');
+    const dir = stage(root, 'A', '01', { [source('A')]: [draft('a', 2)] });
+    write(root, source('B'), json([draft('b', 9)]));
+    write(root, 'server/seed/새 근거.sql', '오염');
+    fs.unlinkSync(path.join(root, bankPath));
+    git(root, 'add', '--', source('B'), bankPath, 'server/seed/새 근거.sql');
+    write(root, 'content-source/새 폴더/근거.json', '{}');
+    const before = git(root, 'status', '--porcelain');
+    const result = await applyStaged(options(root)).catch((e: Error) => e);
+    expect(result).toBeInstanceOf(Error);
+    for (const file of [source('B'), bankPath, 'server/seed/새 근거.sql', 'content-source/새 폴더/근거.json']) expect(result.message).toContain(file);
+    expect(git(root, 'rev-parse', 'HEAD')).toBe(head);
+    expect(git(root, 'status', '--porcelain')).toBe(before);
+    expect(JSON.parse(fs.readFileSync(path.join(root, source('A')), 'utf8'))[0].revision).toBe(1);
+    expect(fs.existsSync(path.join(dir, 'manifest.json'))).toBe(true);
+    expect(fs.existsSync(path.join(root, '.orchestrate/commit.pending.json'))).toBe(false);
+  });
+
+  it('manifest에 명시된 경로만 변경되어 있으면 반영할 수 있다', async () => {
+    const root = fixture();
+    write(root, source('A'), json([draft('a', 2)]));
+    stage(root, 'A', '01', { [source('A')]: [draft('a', 3)] });
+    await applyStaged(options(root));
+    assertReproducible(root, git(root, 'rev-parse', 'HEAD'));
+    expect(JSON.parse(git(root, 'show', `HEAD:${source('A')}`))[0].revision).toBe(3);
+  });
+
+  it('이름 변경의 이전 경로도 manifest 밖이면 거절한다', async () => {
+    const root = fixture();
+    git(root, 'mv', '--', source('B'), 'content-source/batches/B/renamed.json');
+    stage(root, 'B', '01', { 'content-source/batches/B/renamed.json': [draft('b', 2)] });
+    await expect(applyStaged(options(root))).rejects.toThrow(source('B'));
+  });
+
+  it('공동 작성자는 옵션 > 환경변수 > Claude 기본값이고 실제 커밋에 기록된다', async () => {
+    expect(resolveCoAuthor({}, {})).toBe('Claude Opus 5.5 <noreply@anthropic.com>');
+    expect(resolveCoAuthor({}, { COMMIT_CO_AUTHOR: '환경 <env@example.test>' })).toBe('환경 <env@example.test>');
+    expect(resolveCoAuthor({ 'co-author': 'CLI <cli@example.test>' }, { COMMIT_CO_AUTHOR: '환경' })).toBe('CLI <cli@example.test>');
+    expect(() => resolveCoAuthor({ coAuthor: '이름\n다른 줄' })).toThrow(/한 줄/);
+    const root = fixture();
+    stage(root, 'A', '01', { [source('A')]: [draft('a', 2)] });
+    await applyStaged({ ...options(root), coAuthor: '실행 주체 <runner@example.test>' });
+    expect(git(root, 'log', '-1', '--format=%B')).toMatch(/\n\nCo-Authored-By: 실행 주체 <runner@example.test>$/);
   });
 
 });

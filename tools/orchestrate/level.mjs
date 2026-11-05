@@ -11,6 +11,7 @@ import { spawn } from 'node:child_process';
 import { pathToFileURL } from 'node:url';
 import { runnerImport } from 'vite';
 import { resolveReviewConfig, codexCliArgs, codexCliPath } from './review.mjs';
+import { agyCall, AGY_MODEL } from './agy.mjs';
 
 const SOURCE_ROOT = path.resolve(import.meta.dirname, '../..');
 const read = file => JSON.parse(fs.readFileSync(file, 'utf8'));
@@ -195,11 +196,10 @@ function execute(command, args, cwd, prompt, timeoutMs) {
   });
 }
 
-async function liveRespond(request) {
+export async function liveRespond(request, deps = {}) {
   const { judge, cwd, prompt, config } = request;
   if (judge === 'argon') {
-    const bridge = process.env.AGENT_BRIDGE ?? path.join(os.homedir(), '.local/bin/agent-bridge');
-    return execute(bridge, ['ask', '--from', 'claude', '--to', 'antigravity', '--tier', 'standard', '--cwd', cwd, '--wait', '1200', '-'], cwd, prompt, 1_260_000);
+    return (await (deps.agyCall ?? agyCall)({ ...request, model: AGY_MODEL, timeoutSec: 1200 })).out;
   }
   const cli = codexCliPath();
   const outFile = path.join(cwd, `last-${randomUUID()}.md`);
@@ -225,7 +225,7 @@ export async function runLevels(options, deps = {}) {
   const dryRun = options.dryRun === true || options['dry-run'] === true;
   if (dryRun && !options.fixture && !deps.respond) throw new Error('--dry-run은 fixture 또는 가짜 응답기가 필요하다');
   if (options.fixture && !dryRun) throw new Error('--fixture는 --dry-run과 함께 쓴다');
-  const respond = deps.respond ?? (dryRun ? fixtureResponder(read(path.resolve(options.fixture))) : liveRespond);
+  const respond = deps.respond ?? (dryRun ? fixtureResponder(read(path.resolve(options.fixture))) : request => liveRespond(request, deps));
   const m = deps.modules ?? await load();
   const configs = resolveReviewConfig(options);
   const pools = { argon: limit(Number(options.argon ?? 2)), codex: limit(Number(options.codex ?? 2)) };
@@ -265,7 +265,8 @@ export async function runLevels(options, deps = {}) {
         const cwd = path.join(work, 'sealed', judge, `${phase}-${chunk}-${attempt}`);
         fs.mkdirSync(cwd, { recursive: true });
         const prompt = promptFor(items, rubric, phase, root) + (error ? '\n지난 답장이 JSON·스키마·입력 1:1 검사를 통과하지 못했다. 원래 입력 전체를 형식에 맞게 다시 답한다.' : '');
-        const reply = await pools[judge](() => respond({ judge, phase, batchId, chunk, attempt, cwd, prompt, config, items }));
+        const reply = await pools[judge](() => respond({ judge, phase, batchId, chunk, attempt, cwd, prompt, config, items, root,
+          argonPerHour: options.argonPerHour ?? options['argon-per-hour'], validate }));
         const full = judge === 'argon' && !dryRun && !deps.respond ? recoverReply(reply, validate, deps.brain) : reply;
         write(path.join(work, 'replies', `${judge}-${phase}-${chunk}-${attempt}.json`), { config, reply: full });
         try { return validate(full); } catch (e) { error = e; }

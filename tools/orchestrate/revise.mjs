@@ -13,6 +13,7 @@ import os from 'node:os';
 import { createHash, randomUUID } from 'node:crypto';
 import { spawn } from 'node:child_process';
 import { runnerImport } from 'vite';
+import { agyCall, AGY_MODEL } from './agy.mjs';
 
 const BRIDGE = process.env.AGENT_BRIDGE ?? path.join(os.homedir(), '.local/bin/agent-bridge');
 const CHUNK = 12;
@@ -283,7 +284,9 @@ export async function apply(root, batchId, accepted, options = {}) {
   return { staging, changed: fixed.changed, closed: !fixed.drafts.length };
 }
 
-function author(who, cwd, body) {
+export function author(who, cwd, body, options = {}) {
+  if (who === 'antigravity') return (options.agyCall ?? agyCall)({ root: options.root, cwd, prompt: body, model: AGY_MODEL, timeoutSec: 1200,
+    argonPerHour: options.argonPerHour ?? options['argon-per-hour'], validate: options.validate });
   return new Promise(resolve => {
     const child = spawn(BRIDGE, ['ask', '--from', 'claude', '--to', who, '--cwd', cwd, '--wait', '1200', '-'], { stdio: ['pipe', 'pipe', 'pipe'] });
     let out = '';
@@ -295,7 +298,7 @@ function author(who, cwd, body) {
   });
 }
 
-export async function reviseBatch(m, root, batchId, who, log) {
+export async function reviseBatch(m, root, batchId, who, log, options = {}) {
   const loaded = m.b.loadBatches(root).find(x => x.batchId === batchId);
   const batch = loaded ? stagedBatch(root, loaded) : null;
   if (!batch) return { batchId, revised: 0, dropped: 0, rejected: 0 };
@@ -307,7 +310,8 @@ export async function reviseBatch(m, root, batchId, who, log) {
     return { batchId, revised: 0, dropped: 0, rejected: 0, ...staged };
   }
   const dir = path.join(root, '.orchestrate/revise', batchId);
-  fs.mkdirSync(dir, { recursive: true });
+  const sealed = path.join(dir, 'sealed', randomUUID());
+  fs.mkdirSync(sealed, { recursive: true });
   let revised = 0;
   let dropped = 0;
   let rejectedCount = 0;
@@ -319,7 +323,10 @@ export async function reviseBatch(m, root, batchId, who, log) {
     chunk = chunk.filter(x => !exhausted.includes(x));
     let note = '';
     for (let attempt = 1; attempt <= 3 && chunk.length; attempt++) {
-      const res = await author(who, dir, promptFor(root, batchId, chunk) + note);
+      const res = await author(who, sealed, promptFor(root, batchId, chunk) + note, { ...options, root, validate: text => {
+        const result = parseRevisions(m, text, chunk);
+        if (result.rejected.length) throw new Error(result.rejected.join('; '));
+      } });
       fs.writeFileSync(path.join(dir, `chunk${i / CHUNK + 1}.reply${attempt}.md`), res.out || res.err);
       if (/시간당 실행 상한/.test(res.out)) { log(`${batchId}: 시간당 상한 — 10분 대기`); await sleep(600_000); attempt--; continue; }
       let parsed;
@@ -361,8 +368,8 @@ async function main() {
     const who = a.author ?? 'antigravity';
     const queue = [...ids];
     const results = [];
-    const worker = async () => { while (queue.length) { const id = queue.shift(); try { const r = await reviseBatch(m, root, id, who, log); log(JSON.stringify(r)); results.push(r); } catch (e) { log(`${id} 실패: ${e.message}`); results.push({ batchId: id, error: e.message }); } } };
-    await Promise.all(Array.from({ length: Math.min(Number(a.parallel ?? 2), ids.length) }, worker));
+    const worker = async () => { while (queue.length) { const id = queue.shift(); try { const r = await reviseBatch(m, root, id, who, log, a); log(JSON.stringify(r)); results.push(r); } catch (e) { log(`${id} 실패: ${e.message}`); results.push({ batchId: id, error: e.message }); } } };
+    await Promise.all(Array.from({ length: Math.min(Number((who === 'antigravity' ? a.argon : undefined) ?? a.parallel ?? 2), ids.length) }, worker));
     console.log(JSON.stringify(results, null, 1));
     return;
   }
