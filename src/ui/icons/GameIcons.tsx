@@ -1,20 +1,10 @@
 import type { BranchId, TowerId } from '../../contracts/balance';
 
 /**
- * 게임 그림 아이콘(금화·진화 갈래 표식·능력치·도구 키)과 1:1 방패 초상화. 누르는 조작 아이콘은 ControlIcons 한 세트다.
+ * 게임 그림 아이콘(진화 갈래 표식·능력치·도구 키)과 1:1 방패 초상화. 누르는 조작 아이콘은 ControlIcons 한 세트다.
  * PRD §12.8 준수: 이모지·비정규 유니코드 기호 0, CSS 그라데이션 0, 단색 계단식 명암만 사용한다.
  */
 const baseStyle = { display: 'inline-block', verticalAlign: 'middle', flex: 'none' } as const;
-
-export function GoldCoinIcon({ size = 18 }: { size?: number }) {
-  return (
-    <svg width={size} height={size} viewBox="0 0 20 20" style={baseStyle} aria-hidden="true">
-      <circle cx="10" cy="10" r="8" fill="#ffd859" stroke="#362419" strokeWidth="1.6" />
-      <circle cx="10" cy="10" r="5.2" fill="#eab32e" stroke="#6b4225" strokeWidth="1.1" />
-      <path d="M10 6.5l1.1 2.2 2.4.3-1.7 1.7.4 2.4L10 12l-2.2 1.1.4-2.4-1.7-1.7 2.4-.3L10 6.5z" fill="#fff6cc" />
-    </svg>
-  );
-}
 
 export function BranchMarkIcon({ id, size = 22 }: { id: BranchId; size?: number }) {
   return (

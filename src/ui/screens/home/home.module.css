@@ -126,13 +126,13 @@
   width: 8px;
   height: 8px;
   border-radius: 999px;
-  background: #5ce068;
+  background: var(--online);
   display: inline-block;
   flex-shrink: 0;
 }
 
 .statusDot[data-offline='true'] {
-  background: #b5a38e;
+  background: var(--offline);
 }
 
 .metricValue {

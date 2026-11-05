@@ -2,9 +2,8 @@ import { useEffect, useEffectEvent, useRef } from 'react';
 import type { RuntimeQuestion } from '../../domain/context';
 import { NOTE_COPY as T } from '../copy';
 import { BackIcon } from '../icons/ControlIcons';
-import { Card, IconButton } from '../kit';
+import { Card, IconButton, Rule, Window } from '../kit';
 import { NOTE_EXTRA as X } from './home/homeCopy';
-import frame from './home/windowFrame.module.css';
 import css from './NoteScreen.module.css';
 
 /** 다른 판에서 이만큼 맞히면 노트를 졸업한다. persistence/reviewNote.ts의 REVIEW_GRADUATE_CLEARS와 같은 값이다(UI는 persistence를 가져오지 않는다). */
@@ -91,13 +90,13 @@ export function NoteScreen({ entries, onBack }: Props) {
 
   return (
     <main className={css.page}>
-      <div className={`${frame.window} ${css.notebook}`}>
+      <Window className={css.notebook}>
         <header className={css.header}>
           <IconButton label={T.back} icon={<BackIcon />} showLabel onClick={onBack} />
           <h1 ref={titleRef} tabIndex={-1} className={css.title}>{T.title}</h1>
           {entries.length > 0 && <p className={css.count}>{T.count(entries.length)}</p>}
         </header>
-        <div className={frame.rule} aria-hidden="true" />
+        <Rule />
 
         {entries.length === 0 ? (
           <div className={css.empty}>
@@ -131,7 +130,7 @@ export function NoteScreen({ entries, onBack }: Props) {
             </ul>
           </>
         )}
-      </div>
+      </Window>
     </main>
   );
 }

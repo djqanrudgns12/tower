@@ -197,6 +197,20 @@ export function Badge({ count, tone = 'brass' }: { count: number; tone?: 'brass'
   return count > 0 ? <span className={cx(css.badge, css.badgeInline, tone === 'wax' && css.badgeWax)}>{count > 99 ? '99+' : count}</span> : null;
 }
 
+interface WindowProps extends HTMLAttributes<HTMLElement> {
+  as?: 'div' | 'section' | 'article' | 'aside';
+}
+
+/** 화면에 서는 나무 창(결과·오답 노트): Modal과 같은 틀 한 벌(호두나무 테 + 안쪽 몰딩 + 양피지 면). 배치는 화면 CSS가 정한다. */
+export function Window({ as: Tag = 'div', className, ...rest }: WindowProps) {
+  return <Tag className={cx(css.window, className)} {...rest} />;
+}
+
+/** 창 머리줄 아래 놋쇠 구분선(rule 원화). 꾸밈이라 읽지 않는다. */
+export function Rule({ className }: { className?: string | undefined }) {
+  return <span className={cx(css.rule, className)} aria-hidden="true" />;
+}
+
 const FOCUSABLE = 'button:not(:disabled), input:not(:disabled), [href], select:not(:disabled), textarea:not(:disabled), [tabindex]:not([tabindex="-1"])';
 
 function tabbables(root: HTMLElement): HTMLElement[] {

@@ -4,9 +4,8 @@ import { computeHonorPoints } from '../../contracts/lobby';
 import type { RunState } from '../../domain/types';
 import { DIFFICULTY_COPY, fmtNumber, RESULT_COPY as T, resultHeadline } from '../copy';
 import { BackIcon, RetryIcon } from '../icons/ControlIcons';
-import { ArtIcon, Button, Card, Stat } from '../kit';
+import { ArtIcon, Button, Card, Rule, Stat, Window } from '../kit';
 import { RESULT_EXTRA as X } from './home/homeCopy';
-import frame from './home/windowFrame.module.css';
 import css from './ResultScreen.module.css';
 import { countUpAt, runLog } from './resultModel';
 
@@ -97,9 +96,9 @@ export function ResultScreen({ state, reviewDelta = null, previousBest = null, o
         <div className={css.body} data-review={hasReview || undefined}>
           {/* 결과 창과 그 바로 아래 단추 두 개가 한 칸이다. 틀린 낱말이 없으면 이 칸만 가운데에 선다. */}
           <div className={css.resultCol}>
-            <section className={`${frame.window} ${css.summary}`} aria-labelledby="resultWave">
+            <Window as="section" className={css.summary} aria-labelledby="resultWave">
               <p className={css.meta}>{state.config.nickname} · {state.config.grade}학년 · {DIFFICULTY_COPY[state.config.difficulty].label}</p>
-              <div className={frame.rule} aria-hidden="true" />
+              <Rule />
               <ArtIcon name="gate" size={72} />
               {/* 화면 읽기에는 처음부터 끝 값을 읽히고, 눈에 보이는 숫자만 올라간다. 움직임 줄이기면 올라가지 않고 투명도로만 나타난다. */}
               <h1 id="resultWave" className={css.wave}>
@@ -142,18 +141,18 @@ export function ResultScreen({ state, reviewDelta = null, previousBest = null, o
                 <Button variant="primary" size="lg" className={css.again} onClick={onAgain}><RetryIcon size={24} />{T.again}</Button>
                 <Button size="lg" className={css.home} onClick={onHome}>{T.home}</Button>
               </div>
-            </section>
+            </Window>
           </div>
 
           {hasReview && (
-            <section className={`${frame.window} ${css.review}`} aria-labelledby="resultReview">
+            <Window as="section" className={css.review} aria-labelledby="resultReview">
               <h2 id="resultReview" className={css.reviewTitle}>{X.missedTitle}</h2>
-              <div className={frame.rule} aria-hidden="true" />
+              <Rule />
               {/* 낱말·뜻·해설은 문제 내용이라 data-content로 표시한다(상시 문장 계측에서 뺀다). */}
               <ul className={css.list} data-content>
                 {items.map(item => <WordCard key={item.id} item={item} />)}
               </ul>
-            </section>
+            </Window>
           )}
         </div>
       </div>

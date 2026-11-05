@@ -214,7 +214,8 @@
 .statLg { font-size: var(--fs-4); }
 .statLabel { font-size: var(--fs-1); font-weight: 700; color: var(--stat-label, var(--ink-2)); }
 
-/* ── 창: 호두나무 테(frame.sm 원화) + 안쪽 몰딩 + 양피지 면, 제목 줄 아래 놋쇠 구분선(v4 §4.7) ── */
+/* ── 창: 호두나무 테(frame.sm 원화) + 안쪽 몰딩 + 양피지 면, 제목 줄 아래 놋쇠 구분선(v4 §4.7) ──
+   틀 한 벌을 막 위의 창(Modal .dialog)과 화면에 서는 창(Window .window: 결과·오답 노트)이 함께 쓴다. */
 .scrim {
   position: fixed;
   inset: 0;
@@ -224,14 +225,8 @@
   padding: var(--s4);
   background: var(--scrim);
 }
-.dialog {
+.dialog, .window {
   --ring: var(--blue);
-  width: 100%;
-  max-height: calc(100dvh - 2 * var(--s4));
-  overflow: auto;
-  display: flex;
-  flex-direction: column;
-  gap: var(--s4);
   /* 테 8px + 여백 16px = R4 여백 24px. */
   padding: var(--s4);
   border: var(--frame-sm) solid var(--walnut-2);
@@ -240,6 +235,14 @@
   background: var(--paper) padding-box;
   color: var(--ink);
   box-shadow: inset 0 0 0 2px var(--oak-1), var(--shadow-board);
+}
+.dialog {
+  width: 100%;
+  max-height: calc(100dvh - 2 * var(--s4));
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--s4);
 }
 .dialogSm { max-width: 440px; }
 .dialogMd { max-width: 640px; }
@@ -252,12 +255,16 @@
   left: 0;
   right: 0;
   bottom: 0;
+}
+/* 구분선(rule 원화 12px 칸, 대체 2px --oak-1 선): 창 머리줄 아래(Modal은 위 ::after, 화면 창은 Rule). */
+.dialogHead::after, .rule {
   height: 12px;
   border: 0 solid transparent;
   border-width: 5px 10px;
   border-image: var(--art-rule) 0 20 fill / 0 10px stretch;
   background: var(--oak-1) content-box;
 }
+.rule { display: block; width: 100%; flex: none; }
 .dialogTitle { font-size: var(--fs-4); font-weight: 800; line-height: 1.25; color: var(--ink); }
 .dialogFoot { display: flex; justify-content: flex-end; gap: var(--s3); flex-wrap: wrap; }
 
@@ -267,8 +274,8 @@
 @media print, (forced-colors: active) {
   .btn::before { border-image: none; }
   .btn:not(.ghost), .badge { border-image: none; background: var(--face); }
-  .segmented, .dialog, .cardSunk::after { border-image: none; }
-  .dialogHead::after { border-image: none; }
+  .segmented, .dialog, .window, .cardSunk::after { border-image: none; }
+  .dialogHead::after, .rule { border-image: none; }
 }
 
 /* 움직임 줄이기: OS 설정과 게임 설정 '움직임 최소'(<html data-motion="minimal">) 둘 다에서 위치 이동을 끈다(v4 §7.3). */

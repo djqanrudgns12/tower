@@ -1,5 +1,5 @@
 /* 결과 화면(R4 U3 → R5 R1·R2, ui-rules-v4). 짙은 호두나무 바탕 위에 결과 창(+ 바로 아래 단추 두 개)과, 틀린 낱말이 있을 때만 낱말 창.
-   창은 kit Modal과 같은 한 벌이다(home/windowFrame.module.css: 호두나무 테 + 안쪽 몰딩 + 양피지 면, 머리줄 아래 구분선). 화면 CSS에는 토큰만 쓴다. */
+   창은 kit Window(Modal과 같은 틀 한 벌: 호두나무 테 + 안쪽 몰딩 + 양피지 면)와 머리줄 아래 Rule 구분선이다. 화면 CSS에는 배치와 토큰만 쓴다. */
 .page {
   height: 100dvh;
   background: var(--bg);
