@@ -49,9 +49,9 @@ export function TelemetryStrip({ playerId, refreshTick }: Props) {
     <div className={css.telemetryStrip} role="region" aria-label="접속 현황">
       {sharing && notice && <p role="status" style={{ gridColumn: '1 / -1' }}>{notice.message}</p>}
       <div className={css.metricCell}>
-        <span className={css.metricLabel}>
+        <span className={css.metricLabel} title="최근 5분 안에 홈을 연 기기 수">
           <span className={css.statusDot} data-offline={offline || snap.onlineNow === null} aria-hidden="true" />
-          실시간 접속
+          최근 접속
         </span>
         <strong className={css.metricValue}>{onlineText}</strong>
       </div>

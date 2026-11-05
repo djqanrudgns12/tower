@@ -62,7 +62,7 @@ test.describe('랜딩 페이지(방향 2-A: 왕국 참나무 작전실) 통합 �
 
     // 4대 지표 영역 표시 확인
     const telemetry = page.getByRole('region', { name: '접속 현황' });
-    await expect(telemetry).toContainText('실시간 접속');
+    await expect(telemetry).toContainText('최근 접속');
     await expect(telemetry).toContainText('오늘 플레이');
     await expect(telemetry).toContainText('누적 접속');
     await expect(telemetry).toContainText('누적 플레이');
