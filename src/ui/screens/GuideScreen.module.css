@@ -1,73 +1,117 @@
-/* 사용 설명서(R5 G1~G8, ui-rules-v4). 목차는 R4 그림 카드(카드 전체가 버튼), 장 화면은 R4 이전 교범(머리띠·시연·요약 3행·쪽 넘김).
-   재질은 kit(Modal·Card·Segmented·Button)이 그리고, 여기서는 배치와 토큰 색만 쓴다. 장 머리띠만 ribbon 원화(v4 §3.2, G8 전용).
-   1366×650 장 화면 무스크롤 예산: 창 안 내용 506px = 머리띠 48 + 시연 ≤158 + 요약 ≤200(아주 크게) + 쪽 넘김 48 + 칸 사이 8×3. */
+/* 사용 설명서(lg 860×580 고정 프레임 + 상단 5장 직행 ModalTabs, ui-rules-v4 §4.7).
+   재질은 kit(Modal·ModalTabs·Card·Segmented·Button)이 그리고, 여기서는 배치와 토큰 색만 쓴다.
+   760px 이상에서는 [왼쪽 시연 무대 카드 | 오른쪽 3단계 요약 카드] 2열로 시선을 정리한다. */
 
-/* ── 목차 ── */
-.toc { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--s3); }
-.toc > li { display: grid; }
-.tocCard {
-  display: grid;
-  grid-template-rows: auto auto 1fr auto;
-  gap: var(--s1);
-  padding: var(--s3);
-  border: 0;
-  border-radius: var(--r-md);
-  background: var(--parch-1);
-  color: var(--ink);
-  text-align: left;
-  font: inherit;
-  /* 옛 징집 카드(ChoiceCard, v4 §4.8)와 같은 옷: 안쪽 테 2px + 바닥 4px. */
-  box-shadow: inset 0 0 0 2px var(--walnut-3), 0 4px 0 var(--walnut-3);
-  transition: transform var(--t-ui) var(--ease-out), box-shadow var(--t-ui) var(--ease-out);
+.guideTabs [role='tab'] {
+  flex: 1 1 auto;
+  padding-inline: var(--s2);
+  font-size: 15px;
 }
-.tocCard:focus-visible { outline: 3px solid var(--ring); outline-offset: 3px; }
-@media (hover: hover) {
-  .tocCard:hover { transform: translateY(-2px); box-shadow: inset 0 0 0 2px var(--walnut-3), 0 6px 0 var(--walnut-3); }
+
+.guidePanel {
+  display: flex;
+  flex-direction: column;
 }
-.tocCard:active { transform: translateY(4px); box-shadow: inset 0 0 0 2px var(--walnut-3); }
-.tocArt { display: block; width: 100%; height: 100px; margin-bottom: var(--s1); object-fit: contain; border-radius: var(--r-sm); background: var(--paper-2); }
-.tocTraits { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); place-items: center; padding: var(--s2); }
-.tocTitle { display: flex; align-items: center; gap: var(--s2); font-size: var(--fs-3); font-weight: 800; line-height: 1.25; }
-.tocNo { flex: none; min-width: 1em; color: var(--brass-3); font-variant-numeric: tabular-nums; }
-.tocSentence { font-size: var(--fs-2); color: var(--ink-2); line-height: 1.4; }
-.tocMore { justify-self: end; display: inline-flex; align-items: center; gap: 2px; font-size: var(--fs-2); font-weight: 700; color: var(--ink-2); }
-.tocMore svg, .chevNext svg { transform: rotate(180deg); }
-.chevNext { display: inline-flex; }
 
 /* ── 장 화면 ── */
-.chapter { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--s2); }
-.head { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s1) var(--s3); min-height: 48px; }
-.ribbon {
+.chapter {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s2);
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+.head {
   flex: none;
-  height: 48px;
-  padding-bottom: 12px;
-  display: inline-flex;
-  align-items: center;
-  /* ribbon 원화(ART-OAK1 manifest: slice 0 120, 표시 높이 48 → 끝 60px). 리본 얼굴은 위 36px이고 그 아래 가운데는 비어 있어
-     대체 붉은 칠 면(밝은 글 6.30)은 내용 상자(위 36px)에만 깐다 — 원화 뒤에 숨고, 원화가 없을 때만 보인다. */
-  border: 0 solid transparent;
-  border-width: 0 60px;
-  border-image: var(--art-ribbon) 0 120 fill / 0 60px stretch;
-  background: var(--red) content-box;
-  color: var(--on-dark);
-  font-size: var(--fs-2);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px var(--s2);
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--line);
+}
+.chapterTitle {
+  margin: 0;
+  font-size: var(--fs-3);
   font-weight: 800;
+  line-height: 1.25;
+  color: var(--ink);
   white-space: nowrap;
 }
-/* 좁은 화면: 리본 끝을 줄이고(40px) 긴 장 이름은 두 줄로 — 요지는 아래 줄로 내려간다. */
-@media (max-width: 479px) {
-  .ribbon { max-width: 100%; height: auto; min-height: 48px; padding-block: 4px 14px; border-width: 0 40px; border-image-width: 0 40px; white-space: normal; text-align: center; }
+.chapterTitle:focus { outline: none; }
+.headSep {
+  color: var(--brass-3);
+  font-weight: 800;
 }
-.headline { flex: 1 1 16em; min-width: 0; font-size: var(--read-font); font-weight: 700; line-height: 1.35; }
+@media (max-width: 639px) {
+  .headSep { display: none; }
+  .chapterTitle { white-space: normal; }
+}
+.headline {
+  margin: 0;
+  flex: 1 1 16em;
+  min-width: 0;
+  font-size: var(--read-font);
+  font-weight: 700;
+  line-height: 1.3;
+  color: var(--ink-2);
+}
 
-.stage { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--s3); }
-.stageArt { display: block; width: 100%; height: 120px; object-fit: contain; border-radius: var(--r-sm); background: var(--paper-2); box-shadow: inset 0 0 0 2px var(--line); }
-/* 5장 그림은 납작한 띠(680×124, 2배 밀도 → 표시 폭 340px)라 칸 높이를 그림 비율에 맞춘다. */
-.stage[data-chapter='5'] .stageArt { height: auto; aspect-ratio: 680 / 124; padding: var(--s1); }
-.pane { display: grid; align-content: start; gap: var(--s2); min-width: 0; }
+.chapterBody {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--s3);
+  flex: 1 1 auto;
+  min-height: 0;
+  align-items: stretch;
+}
+
+/* 왼쪽 시연 무대 카드 */
+.stageCol {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-width: 0;
+}
+@media (max-width: 479px) {
+  .stageCol { padding: var(--s2); }
+}
+
+.stage {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--s2);
+  align-content: start;
+  min-width: 0;
+}
+.stageArt {
+  display: block;
+  width: 100%;
+  height: 82px;
+  object-fit: contain;
+  border-radius: var(--r-sm);
+  background: var(--parch-1);
+  box-shadow: inset 0 0 0 1px var(--line);
+}
+/* 5장 그림은 납작한 띠(680×124, 2배 밀도)라 칸 높이를 그림 비율에 맞춘다. */
+.stage[data-chapter='5'] .stageArt {
+  height: auto;
+  aspect-ratio: 680 / 124;
+  padding: 2px var(--s1);
+}
+
+.pane { display: grid; align-content: start; gap: 6px; min-width: 0; }
 .paneHead { font-size: var(--fs-1); font-weight: 800; color: var(--brass-3); }
 
-.canvasBox { position: relative; height: 84px; overflow: hidden; border: 2px solid var(--walnut-3); border-radius: var(--r-sm); background: var(--paper-2); }
+.canvasBox {
+  position: relative;
+  height: 84px;
+  overflow: hidden;
+  border: 2px solid var(--walnut-3);
+  border-radius: var(--r-sm);
+  background: var(--paper-2);
+}
 .stageCanvas { display: block; width: 100%; height: 100%; }
 .tagLeft, .tagRight {
   position: absolute;
@@ -78,31 +122,32 @@
   color: var(--ink);
   font-size: var(--fs-1);
   font-weight: 800;
-  line-height: 1.3;
+  line-height: 1.25;
   white-space: nowrap;
 }
-.tagLeft { top: 6px; left: 6px; }
-.tagRight { right: 6px; bottom: 6px; }
+.tagLeft { top: 4px; left: 4px; }
+.tagRight { right: 4px; bottom: 4px; }
 
 /* 2장: 상태 카드(머리판 재질)를 본뜬 판독 판. */
-.hudSim { display: grid; gap: var(--s1); }
-.hudRow { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s1) var(--s4); }
+.hudSim { display: grid; gap: 4px; padding: var(--s2) var(--s3); }
+.hudRow { display: flex; flex-wrap: wrap; align-items: center; gap: 4px var(--s3); }
 .hudGold { display: inline-flex; align-items: center; gap: var(--s1); color: var(--brass-1); font-size: var(--fs-2); font-weight: 800; font-variant-numeric: tabular-nums; }
-.hudItem { display: inline-flex; align-items: center; gap: var(--s1); font-size: var(--fs-2); font-weight: 700; font-variant-numeric: tabular-nums; }
-.hudNote { font-size: var(--fs-2); line-height: 1.35; }
+.hudItem { display: inline-flex; align-items: center; gap: var(--s1); font-size: var(--fs-1); font-weight: 700; font-variant-numeric: tabular-nums; }
+.hudNote { font-size: var(--fs-1); line-height: 1.35; }
 .unlit { opacity: 0.25; }
 .lit { opacity: 1; }
 
 /* 3장: 사거리 캔버스 + 두 갈래 진화. */
-.towerRow { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--s2); }
-.branches { list-style: none; margin: 0; padding: 0; display: grid; align-content: center; gap: var(--s2); }
-.branches li { display: flex; align-items: flex-start; gap: var(--s2); }
-.branches li > span { display: grid; gap: 2px; }
-.branches strong { font-size: var(--fs-2); font-weight: 700; line-height: 1.25; }
-.branches strong + span { font-size: var(--fs-1); color: var(--ink-2); line-height: 1.3; }
+.towerRow { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--s2); align-items: center; }
+.towerRow .canvasBox { height: 92px; }
+.branches { list-style: none; margin: 0; padding: 0; display: grid; align-content: center; gap: 6px; }
+.branches li { display: flex; align-items: flex-start; gap: var(--s1); }
+.branches li > span { display: grid; gap: 1px; min-width: 0; }
+.branches strong { font-size: var(--fs-1); font-weight: 800; line-height: 1.25; }
+.branches strong + span { font-size: var(--fs-1); color: var(--ink-2); line-height: 1.25; }
 
 /* 4장: 난이도 판독(새 게임 창과 같은 함수) + 숫자키. */
-.readout { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s2); min-height: 32px; }
+.readout { margin: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
 .readItem, .readScope {
   display: inline-flex;
   align-items: center;
@@ -111,75 +156,111 @@
   border-radius: var(--r-sm);
   background: var(--parch-1);
   box-shadow: inset 0 0 0 2px var(--line);
-  font-size: var(--fs-2);
+  font-size: var(--fs-1);
   font-weight: 700;
-  line-height: 1.5;
+  line-height: 1.4;
 }
 .readScope[data-advanced='true'] { color: var(--brass-3); box-shadow: inset 0 0 0 2px var(--brass-3); }
-.keyRow { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s2) var(--s3); }
-.keycaps { display: inline-flex; gap: var(--s2); }
+.keyRow { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s2); }
+.keycaps { display: inline-flex; gap: 6px; }
+@media (max-width: 399px) {
+  .keycaps { gap: 4px; }
+}
 .keycap { width: var(--touch); padding: 0; font-variant-numeric: tabular-nums; }
 .keycap[aria-pressed='true'] { --face: var(--brass-1); transform: translateY(4px); box-shadow: inset 0 0 0 2px var(--walnut-3); }
-.keyHint { font-size: var(--fs-2); font-weight: 700; color: var(--ink-2); }
-.miniKey { display: inline-grid; place-items: center; width: 20px; height: 20px; border: 2px solid currentColor; border-radius: var(--r-sm); font-size: var(--fs-1); font-weight: 800; line-height: 1; }
+.keyHint { font-size: var(--fs-1); font-weight: 700; color: var(--ink-2); }
+.miniKey { display: inline-grid; place-items: center; width: 18px; height: 18px; border: 2px solid currentColor; border-radius: var(--r-sm); font-size: var(--fs-1); font-weight: 800; line-height: 1; }
 
-/* 5장: 적 특성 → 잘 잡는 타워. */
-.pane .traitSeg, .pane .wrap4, .pane .wrapTiny { grid-auto-flow: row; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+/* 고르기 줄 격자: 4×2 적 특성 아이콘, 4칸 시연 고르기 */
+.pane .traitSeg, .pane .wrap4, .pane .wrapTiny {
+  grid-auto-flow: row;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 2px;
+}
+.pane .wrap4 > button,
+.pane .wrapTiny > button {
+  padding-inline: 4px;
+  font-size: var(--fs-1);
+  gap: 2px;
+}
+.pane .traitSeg > button {
+  padding-inline: 2px;
+}
 /* 저절로 넘어가는 고르기 줄(1장 단계·2장 결과)은 색 전환을 끈다: 넘어갈 때마다 중간색이 생기지 않게. */
 .pane .autoSeg > [role='radio'] { transition: none; }
-/* 고르기 칸 네 개는 좁은 화면에서 2×2로 접는다: 글이 긴 결과·타워·난이도는 휴대폰부터, 짧은 단계 칸은 아주 좁을 때만. */
-@media (max-width: 719px) {
+/* 좁은 휴대폰에서는 글이 긴 4칸 고르기를 2×2로 접는다. */
+@media (max-width: 479px) {
   .pane .wrap4 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 @media (max-width: 359px) {
   .pane .wrapTiny { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
-.counter { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--s1) var(--s3); align-items: center; }
+
+/* 5장: 적 특성 → 잘 잡는 타워. */
+.counter { display: grid; grid-template-columns: minmax(0, 1fr); gap: 4px var(--s2); align-items: center; }
 .counterEnemy { display: inline-flex; align-items: center; gap: 6px; font-size: var(--fs-2); font-weight: 800; }
 .counterLead { display: inline-flex; align-items: center; gap: 2px; font-size: var(--fs-1); font-weight: 700; color: var(--ink-2); }
 .counterLead svg { transform: rotate(180deg); }
-.counterTowers { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: var(--s1) var(--s3); }
-.counterTowers li { display: inline-flex; align-items: center; gap: var(--s1); font-size: var(--fs-2); font-weight: 700; }
+.counterTowers { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 4px var(--s2); }
+.counterTowers li { display: inline-flex; align-items: center; gap: 4px; font-size: var(--fs-1); font-weight: 700; }
 
-/* 요약 3행(G8): 행 아이콘 · 단계 배지 + 제목 · 읽는 글. */
-.rows { list-style: none; margin: 0; padding: var(--s1) var(--s3); }
-.row { display: grid; grid-template-columns: 32px minmax(0, 1fr); align-items: start; gap: 2px var(--s3); padding: 6px 0; }
-.row + .row { border-top: 1px solid var(--line); }
-.rowIcon { grid-row: span 2; display: grid; place-items: center; width: 32px; height: 32px; border-radius: 999px; background: var(--parch-1); box-shadow: inset 0 0 0 2px var(--walnut-3); color: var(--ink); }
-.rowHead { display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px var(--s2); }
-.rowBadge { font-size: var(--fs-1); font-weight: 800; color: var(--brass-3); white-space: nowrap; }
-.rowTitle { font-size: var(--fs-2); font-weight: 700; line-height: 1.3; }
-.rowBody { font-size: var(--read-font); line-height: 1.45; }
-
-/* 쪽 넘김: 왼쪽 목차, 오른쪽 ‹ 이전 장 · n/N · 다음 장 ›. */
-.pager { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--s2) var(--s3); padding-bottom: 4px; }
-.tocBtn { padding: 0 var(--s2); gap: var(--s1); color: var(--ink-2); }
-.pagerMain { display: inline-flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: var(--s2); }
-.pageNo { min-width: 3em; text-align: center; font-size: var(--fs-2); font-weight: 800; font-variant-numeric: tabular-nums; }
-
-@media (min-width: 720px) {
-  .toc { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .stage { grid-template-columns: 200px minmax(0, 1fr); align-items: stretch; }
-  .stageArt { height: 100%; max-height: 158px; }
-  .towerRow { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
-  .pane .traitSeg { grid-template-columns: repeat(8, minmax(0, 1fr)); }
-  .counter { grid-template-columns: auto auto minmax(0, 1fr); }
-  .row { grid-template-columns: 32px 150px minmax(0, 1fr); }
-  .rowIcon { grid-row: auto; }
-  .rowHead { display: grid; gap: 0; }
+/* 오른쪽 요약 3단계 카드(G8) */
+.rows {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 6px;
+  align-content: space-between;
+  min-width: 0;
 }
-@media (min-width: 960px) {
-  .toc { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-  .stage { grid-template-columns: 240px minmax(0, 1fr); }
+.rowCard {
+  display: grid;
+  gap: 2px;
+  padding: 6px 10px;
+  border-radius: var(--r-md);
+  background: var(--parch-1);
+  box-shadow: inset 0 0 0 2px var(--line);
 }
-@media (min-width: 720px) {
-  .stage[data-chapter='5'] { grid-template-columns: minmax(0, 340px) minmax(0, 1fr); }
-  .stage[data-chapter='5'] .stageArt { align-self: center; max-height: none; }
+.rowHead {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px var(--s2);
+}
+.rowIcon {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  color: var(--ink);
+}
+.rowBadge {
+  padding: 1px 6px;
+  border-radius: var(--r-sm);
+  background: var(--paper-2);
+  box-shadow: inset 0 0 0 1px var(--oak-2);
+  font-size: var(--fs-1);
+  font-weight: 800;
+  line-height: 1.25;
+  color: var(--brass-3);
+  white-space: nowrap;
+}
+.rowTitle { font-size: var(--fs-2); font-weight: 800; line-height: 1.25; color: var(--ink); }
+.rowBody { margin: 0; font-size: var(--read-font); line-height: 1.3; color: var(--ink); }
+
+@media (min-width: 560px) {
+  .towerRow { grid-template-columns: 152px minmax(0, 1fr); }
+}
+
+@media (min-width: 760px) {
+  .chapterBody {
+    grid-template-columns: minmax(0, 1.02fr) minmax(0, 0.98fr);
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .tocCard:hover, .tocCard:active, .keycap[aria-pressed='true'] { transform: none; }
+  .keycap[aria-pressed='true'] { transform: none; }
 }
-:global(:root[data-motion='minimal']) .tocCard:hover,
-:global(:root[data-motion='minimal']) .tocCard:active,
 :global(:root[data-motion='minimal']) .keycap[aria-pressed='true'] { transform: none; }

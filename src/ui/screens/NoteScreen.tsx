@@ -1,13 +1,15 @@
-import { useEffect, useEffectEvent, useRef } from 'react';
+import { useEffect, useEffectEvent, useMemo, useRef, useState } from 'react';
 import type { RuntimeQuestion } from '../../domain/context';
 import { NOTE_COPY as T } from '../copy';
 import { BackIcon } from '../icons/ControlIcons';
-import { Card, IconButton, Rule, Window } from '../kit';
+import { Card, IconButton, ModalTabPanel, ModalTabs, ModalTabShell, Rule, Window, type ModalTabOption } from '../kit';
 import { NOTE_EXTRA as X } from './home/homeCopy';
 import css from './NoteScreen.module.css';
 
 /** 다른 판에서 이만큼 맞히면 노트를 졸업한다. persistence/reviewNote.ts의 REVIEW_GRADUATE_CLEARS와 같은 값이다(UI는 persistence를 가져오지 않는다). */
 export const NOTE_GRADUATE_CLEARS = 2;
+
+type NoteTabId = 'all' | 'focus' | 'graduating';
 
 /** 노트 한 항목. persistence의 ReviewNoteItem이 이 모양을 만족한다. */
 export interface NoteItemLike {
@@ -71,12 +73,12 @@ interface Props {
 }
 
 /**
- * 오답 노트 화면(R4 U3 → R5 O1, PRD §10.2). 짙은 바탕 위에 양피지 공책 한 권(창 틀 한 벌)이 놓이고, 틀린 낱말 카드를 최근 순으로 격자에 보인다.
- * 넓은 화면에서도 공책이 화면을 채워 빈 공간이 작다. 비면 공책 가운데에 펼친 책 그림과 안내 두 줄.
- * 뜻·예문은 읽는 글이라 글자 크기 단계에 따라 +1·+2px 커진다(v4 §5.3).
+ * 오답 노트 화면(lg 860×580 고정 프레임 Window + 3탭: 전체 / 집중 복습 / 졸업 임박, PRD §10.2).
+ * 짙은 바탕 한가운데에 정돈된 양피지 공책 창이 놓이고, 복습 단계별로 낱말 카드를 균일 2열 격자에 보인다.
  */
 export function NoteScreen({ entries, onBack }: Props) {
   const titleRef = useRef<HTMLHeadingElement>(null);
+  const [tab, setTab] = useState<NoteTabId>('all');
 
   // 부모가 렌더마다 새 onBack을 넘겨도 효과가 다시 돌지 않게(포커스를 다시 뺏지 않게) 최신 onBack만 부른다.
   const back = useEffectEvent(() => onBack());
@@ -88,9 +90,22 @@ export function NoteScreen({ entries, onBack }: Props) {
     return () => window.removeEventListener('keydown', onKeyDown);
   }, []);
 
+  const focusEntries = useMemo(() => entries.filter(e => e.clears === 0), [entries]);
+  const gradEntries = useMemo(() => entries.filter(e => e.clears > 0 && e.clears < NOTE_GRADUATE_CLEARS), [entries]);
+  const visibleEntries = tab === 'focus' ? focusEntries : tab === 'graduating' ? gradEntries : entries;
+
+  const tabOptions: readonly ModalTabOption<NoteTabId>[] = useMemo(
+    () => [
+      { value: 'all', label: '전체', id: 'note-tab-all', count: entries.length },
+      { value: 'focus', label: '집중 복습', id: 'note-tab-focus', count: focusEntries.length },
+      { value: 'graduating', label: '졸업 임박', id: 'note-tab-graduating', count: gradEntries.length },
+    ],
+    [entries.length, focusEntries.length, gradEntries.length],
+  );
+
   return (
     <main className={css.page}>
-      <Window className={css.notebook}>
+      <Window size="lg" fixed className={css.notebook}>
         <header className={css.header}>
           <IconButton label={T.back} icon={<BackIcon />} showLabel onClick={onBack} />
           <h1 ref={titleRef} tabIndex={-1} className={css.title}>{T.title}</h1>
@@ -102,8 +117,8 @@ export function NoteScreen({ entries, onBack }: Props) {
           <div className={css.empty}>
             <img
               src={`${import.meta.env.BASE_URL}assets/ui/note.empty.webp`}
-              width={320}
-              height={223}
+              width={240}
+              height={167}
               alt=""
               draggable={false}
               className={css.emptyArt}
@@ -112,23 +127,40 @@ export function NoteScreen({ entries, onBack }: Props) {
             <p className={css.emptyHint}>{X.emptyHint}</p>
           </div>
         ) : (
-          <>
-            <p className={css.hint}>{T.hint}</p>
-            <ul className={css.list}>
-              {entries.map(e => (
-                <li key={e.senseKey}>
-                  <Card className={css.word}>
-                    <div className={css.top}>
-                      <span className={css.lemma}>{e.lemma}</span>
-                      <Dots clears={e.clears} />
-                    </div>
-                    <p className={css.meaning} data-content>{e.meaning}</p>
-                    {e.example && <p className={css.example} data-content>{e.example}</p>}
-                  </Card>
-                </li>
-              ))}
-            </ul>
-          </>
+          <ModalTabShell>
+            <ModalTabs<NoteTabId>
+              label="복습 단계 분류"
+              options={tabOptions}
+              value={tab}
+              onChange={setTab}
+              controls="note-tabpanel"
+              aside={T.hint}
+            />
+            <ModalTabPanel id="note-tabpanel" labelledBy={`note-tab-${tab}`} pad="sm">
+              {visibleEntries.length === 0 ? (
+                <Card sunk className={css.tabEmpty}>
+                  <p className={css.tabEmptyText}>
+                    {tab === 'focus' ? '집중 복습할 낱말이 없어요' : '졸업 임박한 낱말이 없어요'}
+                  </p>
+                </Card>
+              ) : (
+                <ul className={css.list}>
+                  {visibleEntries.map(e => (
+                    <li key={e.senseKey}>
+                      <Card pad="sm" className={css.word}>
+                        <div className={css.top}>
+                          <span className={css.lemma}>{e.lemma}</span>
+                          <Dots clears={e.clears} />
+                        </div>
+                        <p className={css.meaning} data-content>{e.meaning}</p>
+                        {e.example && <p className={css.example} data-content>{e.example}</p>}
+                      </Card>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </ModalTabPanel>
+          </ModalTabShell>
         )}
       </Window>
     </main>
