@@ -1,5 +1,6 @@
 import { useSyncExternalStore } from 'react';
 import { assetManifestSchema, type AssetEntry } from '../../../contracts/assetManifest';
+import { MAPS } from '../../../content';
 
 export interface LoadedSprite {
   entry: AssetEntry;
@@ -60,7 +61,9 @@ export function loadLobbySprites(): Promise<SpriteMap> {
         cachedMap = map;
         return map;
       }
-      const passed = parsed.data.assets.filter(a => a.status === 'integrated_pass');
+      // 홈·전투 화면·설명서 캔버스는 공용 그림만 쓴다. 맵별 재료(map.<맵 id>.*)는 전투 장면이 그 맵에서만 받는다.
+      const mapPrefixes = MAPS.map(m => `map.${m.id}.`);
+      const passed = parsed.data.assets.filter(a => a.status === 'integrated_pass' && !mapPrefixes.some(p => a.id.startsWith(p)));
       await Promise.all(
         passed.map(async entry => {
           const url = `assets/${entry.file}`;
