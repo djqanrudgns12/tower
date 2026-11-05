@@ -249,7 +249,7 @@ test('WebGL 문맥 손실: 멈추고, 화면이 돌아온 뒤 계속하면 같�
   await shot(page, 'desktop-context-restored');
 });
 
-test('사용 설명서 완독 후 새 게임 시작: 설명서는 그림 카드와 자세히 안내만 두고 바로 본 게임으로 진입한다', async ({ page }) => {
+test('사용 설명서 완독 후 새 게임 시작: 목차에서 1장을 열어 다섯 장을 넘겨 읽고, 닫으면 바로 본 게임으로 진입한다(R5 G1)', async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.goto('/');
   await page.evaluate(() => { indexedDB.deleteDatabase('vocabulary-td'); localStorage.clear(); });
@@ -261,14 +261,16 @@ test('사용 설명서 완독 후 새 게임 시작: 설명서는 그림 카드�
   await expect(guide.getByRole('button', { name: '연습 판 해 보기' })).toHaveCount(0);
   await expect(guide.getByRole('button', { name: '처음으로' })).toHaveCount(0);
 
-  // 옛 '다음 장' 쪽 넘김 대신, 카드 5장을 위에서 아래로 읽으며 '자세히'를 모두 펼쳐 본다.
-  await expect(guide.locator('article')).toHaveCount(5);
-  const more = guide.getByRole('button', { name: '자세히' });
-  await expect(more).toHaveCount(5);
-  for (let i = 0; i < 5; i++) {
-    await more.nth(i).click();
-    await expect(more.nth(i)).toHaveAttribute('aria-expanded', 'true');
+  // 목차(장 카드 5 + 타워 상성) → 1장부터 '다음 장'으로 5장까지 읽는다(R5 G1).
+  const toc = guide.getByRole('navigation', { name: '사용 설명서 목차' }).getByRole('button');
+  await expect(toc).toHaveCount(6);
+  await toc.first().click();
+  const pager = guide.getByRole('navigation', { name: '장 넘기기' });
+  for (let n = 1; n < 5; n++) {
+    await expect(pager).toContainText(`${n} / 5`);
+    await pager.getByRole('button', { name: '다음 장' }).click();
   }
+  await expect(pager).toContainText('5 / 5');
   await guide.getByRole('button', { name: '닫기' }).click();
   await expect(guide).toHaveCount(0);
 

@@ -217,9 +217,14 @@ test('제출 뒤 화면 회전(R 1024×690 ↔ S 820×1060)에서 보기 배치�
 
   await page.setViewportSize({ width: 820, height: 1060 });
   await expect(page.getByRole('complementary', { name: '타워 관리' })).toHaveCount(0);
+  // 부하가 높으면 멈춤 층이 재는 도중에도 뜬다(그동안 보기가 DOM에서 빠짐) → 보기가 없으면 계속하고 다시 잰다.
+  let s: { cols: string | null; cellOk: boolean; textFits: boolean; linesOk: boolean; sameSize: boolean; overflowX: number } | null = null;
+  for (let attempt = 0; attempt < 5 && !s; attempt++) {
+  await resumeIfPaused(page);
   await page.evaluate(() => new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r))));
-  const s = await page.evaluate(({ minCell, maxLines }) => {
-    const group = document.querySelector('section[aria-label="어휘 문제"] [role="group"][aria-label="보기"]') as HTMLElement;
+  s = await page.evaluate(({ minCell, maxLines }) => {
+    const group = document.querySelector('section[aria-label="어휘 문제"] [role="group"][aria-label="보기"]') as HTMLElement | null;
+    if (!group) return null;
     const cols = group.getAttribute('data-cols');
     const texts = [...group.querySelectorAll<HTMLElement>('[data-option-text]')];
     const lineHeight = Number.parseFloat(getComputedStyle(texts[0]!).lineHeight);
@@ -235,7 +240,9 @@ test('제출 뒤 화면 회전(R 1024×690 ↔ S 820×1060)에서 보기 배치�
       overflowX: document.documentElement.scrollWidth - innerWidth,
     };
   }, { minCell: defaults.layout.optionGrid.twoByTwoMinCellWidthPx, maxLines: defaults.layout.optionGrid.twoByTwoMaxLines });
+  }
   console.log(`[rotate] R=${r1.cols} → S=${JSON.stringify(s)}`);
+  if (!s) throw new Error('회전 뒤 보기를 다섯 번 모두 재지 못했다(멈춤 층)');
   expect(s.cellOk).toBe(true);
   expect(s.textFits).toBe(true);
   expect(s.linesOk).toBe(true);
@@ -244,6 +251,7 @@ test('제출 뒤 화면 회전(R 1024×690 ↔ S 820×1060)에서 보기 배치�
 
   await page.setViewportSize({ width: 1024, height: 690 });
   await expect(page.getByRole('complementary', { name: '타워 관리' })).toHaveCount(1);
+  await resumeIfPaused(page);
   await page.evaluate(() => new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r))));
   const r2 = await snapshot(page);
   expect(r2.cols).toBe(r1.cols);
@@ -421,7 +429,7 @@ async function floors(page: Page, scope: string) {
   }, scope);
 }
 
-test('13px·44px 하한: 홈·새 게임·전체 랭킹·설정·사용 설명서(접힘·펼침)·오답 노트(1366×650)', async ({ page }) => {
+test('13px·44px 하한: 홈·새 게임·전체 랭킹·설정·사용 설명서(목차·장 화면)·오답 노트(1366×650)', async ({ page }) => {
   await page.setViewportSize({ width: 1366, height: 650 });
   await page.goto('/');
   const results: Record<string, Awaited<ReturnType<typeof floors>>> = {};
@@ -443,9 +451,9 @@ test('13px·44px 하한: 홈·새 게임·전체 랭킹·설정·사용 설명�
   await page.locator('#guideBtn').click();
   const guide = page.getByRole('dialog', { name: '사용 설명서' });
   results.guide = await floors(page, '[role="dialog"]');
-  // 탭 대신 카드의 '자세히'를 모두 펼친 상태에서도 글자·누름 하한을 지킨다.
-  const more = guide.getByRole('button', { name: '자세히' });
-  for (let i = 0; i < (await more.count()); i++) await more.nth(i).click();
+  // 목차 카드를 눌러 장 화면(시연·요약·쪽 넘김)을 연 상태에서도 글자·누름 하한을 지킨다(R5 G1). 다섯 장 × 글자 3단계 전수는 guide.spec G12.
+  await guide.getByRole('navigation', { name: '사용 설명서 목차' }).getByRole('button').first().click();
+  await expect(guide.getByRole('heading', { level: 3, name: '제1장 · 한 판 흐름' })).toBeVisible();
   results.guideOpen = await floors(page, '[role="dialog"]');
   await page.keyboard.press('Escape');
 
@@ -533,6 +541,19 @@ async function submitWithoutShift(page: Page, how: 'first' | 'skip') {
   const h1 = (await panel(page).boundingBox())!.height;
   expect(boxDelta(before, after)).toBeLessThanOrEqual(0.5);
   expect(Math.abs(h1 - h0)).toBeLessThanOrEqual(0.5);
+}
+
+/** 화면 크기를 바꾼 직후 긴 프레임으로 기기 느려짐 멈춤 층(PERFORMANCE)이 떴으면 계속하고, 보기가 다시 보일 때까지 기다린다. */
+async function resumeIfPaused(page: Page) {
+  const resume = page.getByRole('button', { name: '계속하기' });
+  // 멈춤 층은 크기를 바꾸고 조금 뒤에 뜰 수도 있어 보기가 잠시 보이는 것만으로 끝내지 않고 한 번 더 확인한다.
+  let steady = 0;
+  for (let i = 0; i < 40 && steady < 2; i++) {
+    if (await resume.isVisible()) { await resume.click(); steady = 0; }
+    else if (await options(page).first().isVisible()) steady++;
+    await page.waitForTimeout(250);
+  }
+  await expect(options(page).first()).toBeVisible();
 }
 
 /** 다음 보기가 열리거나 준비가 끝날 때까지 기다린다. 오답·모르겠어요는 해설 뒤 ‘다음 문제’를 누른다. */
