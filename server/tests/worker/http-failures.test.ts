@@ -4,7 +4,7 @@
  */
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { deriveKeys, ipHash, playerHash } from '../../src/crypto';
-import { RATE_LIMITS } from '../../src/store';
+import { IP_RATE_LIMITS } from '../../src/store';
 import { avoidMinuteBoundary, exec, rows, startServer, TEST_ORIGIN, TEST_SALT, type Device, type TestServer } from '../support/harness';
 
 let t: TestServer;
@@ -79,7 +79,7 @@ describe('429와 Retry-After', () => {
   });
 
   it('기기 발급은 IP별로 센다(학교 IP 하나에 한 반이 몰려도 막지 않는 넉넉한 한도)', async () => {
-    expect(RATE_LIMITS.device.minute).toBeGreaterThanOrEqual(60);
+    expect(IP_RATE_LIMITS.device.minute).toBeGreaterThanOrEqual(60);
     await avoidMinuteBoundary();
     await exec(t.db, 'DELETE FROM rate_limits');
     for (let i = 0; i < 30; i++) await t.newDevice('203.0.113.7');

@@ -38,6 +38,8 @@ export interface CallOptions {
   token?: string;
   body?: unknown;
   rawBody?: string;
+  /** 천천히 올라오는 본문을 흉내 낼 때 쓴다(direct 전용). */
+  stream?: ReadableStream<Uint8Array>;
   headers?: Record<string, string>;
 }
 
@@ -67,7 +69,7 @@ export interface TestServer {
   call(path: string, options?: CallOptions): Promise<CallResult>;
   newDevice(ip?: string): Promise<Device>;
   /** Worker를 거치지 않고 같은 처리기를 Node에서 부른다(시계 고정·D1 행 수 측정용). 같은 로컬 D1을 쓴다. */
-  direct(path: string, options: CallOptions & { now: number; stats?: SqlStats }): Promise<CallResult>;
+  direct(path: string, options: CallOptions & { now: number | (() => number); stats?: SqlStats }): Promise<CallResult>;
   scheduled(scheduledTime: number): Promise<void>;
   close(): Promise<void>;
 }
@@ -80,9 +82,12 @@ async function toResult(response: Response): Promise<CallResult> {
 function requestInit(options: CallOptions): RequestInit {
   const headers: Record<string, string> = { ...options.headers };
   if (options.token) headers.Authorization = `Bearer ${options.token}`;
-  const method = options.method ?? (options.body !== undefined || options.rawBody !== undefined ? 'POST' : 'GET');
-  const init: RequestInit = { method, headers };
-  if (options.rawBody !== undefined) init.body = options.rawBody;
+  const method = options.method ?? (options.body !== undefined || options.rawBody !== undefined || options.stream ? 'POST' : 'GET');
+  const init: RequestInit & { duplex?: 'half' } = { method, headers };
+  if (options.stream) {
+    init.body = options.stream;
+    init.duplex = 'half';
+  } else if (options.rawBody !== undefined) init.body = options.rawBody;
   else if (options.body !== undefined) {
     headers['Content-Type'] = 'application/json';
     init.body = JSON.stringify(options.body);
@@ -116,7 +121,8 @@ export async function startServer(options: { salt?: string; seed?: boolean } = {
     async direct(path, callOptions) {
       const testEnv: Env = { DB: db, PLAYER_SALT: options.salt ?? TEST_SALT, ALLOWED_ORIGINS: env.ALLOWED_ORIGINS };
       const request = new Request(new URL(path, 'http://localhost'), requestInit(callOptions));
-      const deps = callOptions.stats ? { now: () => callOptions.now, stats: callOptions.stats } : { now: () => callOptions.now };
+      const clock = typeof callOptions.now === 'function' ? callOptions.now : () => callOptions.now as number;
+      const deps = callOptions.stats ? { now: clock, stats: callOptions.stats } : { now: clock };
       return toResult(await handleRequest(request, testEnv, deps));
     },
     async scheduled(scheduledTime) {

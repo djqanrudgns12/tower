@@ -3,7 +3,7 @@
  * 속도 제한 → 입력 검사 → 승인 조건 → 중복 → 시작 기록 → 시간 → 재채점 → 점수 → 기록.
  */
 import { computeHonorPoints, matchesRegradedRun, regradeRunAnswers } from '../../src/contracts/lobby';
-import { ipHash, sha256Hex, signDeviceToken, type ServerKeys } from './crypto';
+import { sha256Hex, signDeviceToken, type ServerKeys } from './crypto';
 import { isConstraintError, type SqlDatabase, type SqlRow, type SqlStatement } from './db';
 import { BODY_LIMIT_SMALL, BODY_LIMIT_SUBMIT, HttpError, json, readJsonObject } from './http';
 import { cleanServerNickname } from './nickname';
@@ -11,8 +11,8 @@ import { minimumDurationMs, parseVerificationRules } from './rules';
 import { rankStandings, type RankedPlayer, type StandingRow } from './ranking';
 import {
   existingRunStatement, insertCompletedRunStatement, leaderboardRowsStatement, myHonorRunIdsStatement,
-  RATE_LIMITS, rateLimitState, rateLimitStatement, startStatements, submitLookupStatements, VERIFIED_LEVEL, visitStatements,
-  type LeaderboardScope, type RateAction,
+  DEVICE_RATE_LIMITS, IP_RATE_LIMITS, rateLimitState, rateLimitStatement, startStatements, submitLookupStatements, VERIFIED_LEVEL,
+  visitStatements, type LeaderboardScope, type RateAction, type RateLimit,
 } from './store';
 import { DAY_MS, isoSeconds, kstDateKey, kstIsoWeekKey, secondsUntilKstMidnight, secondsUntilNextMinute } from './time';
 import { canonicalJson, parseAnswers, parseRankingParams, parseRunId, parseSubmitClaim, questionIdsOf } from './validate';
@@ -22,41 +22,70 @@ export interface Context {
   url: URL;
   db: SqlDatabase;
   keys: ServerKeys;
-  /** 요청 하나에서 같은 시각을 쓴다(Postgres now()가 트랜잭션 시작 시각인 것과 같다). */
+  /** 속도 제한에 쓰는 IP 식별자(`ip:<HMAC>`). IP 원문은 저장하지 않는다. */
+  ipSubject: string;
+  clock(): number;
+  /**
+   * 요청 하나에서 같은 시각을 쓴다(Postgres now()가 트랜잭션 시작 시각인 것과 같다).
+   * 본문이 있는 요청은 본문을 다 받은 뒤 다시 정한다(readBody). 느리게 올라온 본문이 옛 시각으로 세지지 않게.
+   */
   now: number;
 }
 
-/** Postgres lobby_retry_after: 일 한도에 닿았으면 다음 한국 자정까지, 아니면 다음 분까지. */
-async function rateLimitedError(ctx: Context, subject: string, action: RateAction): Promise<HttpError> {
-  const [rows = []] = await ctx.db.batch([rateLimitState(subject, action)]);
-  const row = rows[0];
-  const dayFull = row !== undefined && row.day_key === kstDateKey(new Date(ctx.now)) && Number(row.day_calls) >= RATE_LIMITS[action].day;
+/** 본문을 크기 제한 안에서 읽고, 다 받은 시각을 이 요청의 시각으로 삼는다. */
+async function readBody(ctx: Context, limit: number): Promise<Record<string, unknown>> {
+  const body = await readJsonObject(ctx.request, limit);
+  ctx.now = ctx.clock();
+  return body;
+}
+
+interface Bucket {
+  subject: string;
+  action: string;
+  limit: RateLimit;
+}
+
+/** 기기 칸(Postgres allow_lobby_rpc)과 IP 칸. 기기 발급은 IP 칸만 본다. */
+function buckets(ctx: Context, hash: string | null, action: RateAction | 'device'): Bucket[] {
+  const list: Bucket[] = [{ subject: ctx.ipSubject, action, limit: IP_RATE_LIMITS[action] }];
+  if (hash !== null && action !== 'device') list.unshift({ subject: hash, action, limit: DEVICE_RATE_LIMITS[action] });
+  return list;
+}
+
+/** Postgres lobby_retry_after: 어느 칸이든 일 한도에 닿았으면 다음 한국 자정까지, 아니면 다음 분까지. */
+async function rateLimitedError(ctx: Context, list: Bucket[]): Promise<HttpError> {
+  const states = await ctx.db.batch(list.map(b => rateLimitState(b.subject, b.action)));
+  const today = kstDateKey(new Date(ctx.now));
+  const dayFull = states.some(rows => rows.some(row => row.day_key === today && Number(row.day_calls) >= Number(row.day_limit)));
   return new HttpError(429, 'RATE_LIMITED', dayFull ? secondsUntilKstMidnight(ctx.now) : secondsUntilNextMinute(ctx.now));
 }
 
-/** 속도 제한 증가와 나머지 문장을 한 batch로 보낸다. 한도를 넘으면 전부 되돌아가고 429가 된다. */
-async function limited(ctx: Context, subject: string, action: RateAction, statements: SqlStatement[] = []): Promise<SqlRow[][]> {
+/**
+ * 기기 칸·IP 칸 증가와 나머지 문장을 한 batch로 보낸다. 어느 칸이든 한도를 넘으면 전부 되돌아가고 429가 된다.
+ * 기기 칸은 Postgres allow_lobby_rpc와 같고, IP 칸은 기기를 여러 개 받아 우회하는 것을 막는다.
+ */
+async function limited(ctx: Context, hash: string | null, action: RateAction | 'device', statements: SqlStatement[] = []): Promise<SqlRow[][]> {
+  const list = buckets(ctx, hash, action);
+  const checks = list.map(b => rateLimitStatement(b.subject, b.action, b.limit, ctx.now));
   try {
-    const [, ...rest] = await ctx.db.batch([rateLimitStatement(subject, action, ctx.now), ...statements]);
-    return rest;
+    return (await ctx.db.batch([...checks, ...statements])).slice(checks.length);
   } catch (error) {
-    if (isConstraintError(error, 'rate_limited')) throw await rateLimitedError(ctx, subject, action);
+    if (isConstraintError(error, 'rate_limited')) throw await rateLimitedError(ctx, list);
     throw error;
   }
 }
 
 /** POST /v1/device: 기기 ID와 서명 토큰. 학교 IP 하나에 한 반이 몰려도 막히지 않을 만큼 IP 한도를 넉넉히 둔다. */
 export async function issueDevice(ctx: Context): Promise<Response> {
-  await readJsonObject(ctx.request, BODY_LIMIT_SMALL);
-  const ip = ctx.request.headers.get('CF-Connecting-IP') ?? 'unknown';
-  await limited(ctx, `ip:${await ipHash(ctx.keys, ip)}`, 'device');
+  await readBody(ctx, BODY_LIMIT_SMALL);
+  await limited(ctx, null, 'device');
   const deviceId = crypto.randomUUID();
   return json({ deviceId, token: await signDeviceToken(ctx.keys, deviceId) });
 }
 
 /** POST /v1/lobby-visit: record_lobby_visit + 최근 5분 방문 기기 수. */
 export async function recordLobbyVisit(ctx: Context, hash: string): Promise<Response> {
-  await readJsonObject(ctx.request, BODY_LIMIT_SMALL);
+  await readBody(ctx, BODY_LIMIT_SMALL);
   const [, , metrics = []] = await limited(ctx, hash, 'visit', visitStatements(hash, ctx.now));
   const m = metrics[0] ?? {};
   return json({
@@ -70,14 +99,14 @@ export async function recordLobbyVisit(ctx: Context, hash: string): Promise<Resp
 
 /** POST /v1/runs/start: record_run_start. */
 export async function recordRunStart(ctx: Context, hash: string): Promise<Response> {
-  const body = await readJsonObject(ctx.request, BODY_LIMIT_SMALL);
+  const body = await readBody(ctx, BODY_LIMIT_SMALL);
   const runId = parseRunId(body.p_run_id);
   if (runId === null) {
     await limited(ctx, hash, 'start');
     throw new HttpError(422, 'INVALID_RUN_ID');
   }
   const [recent = [], owner = [], inserted = []] = await limited(ctx, hash, 'start', startStatements(runId, hash, ctx.now));
-  if (Number(recent[0]?.recent ?? 0) >= 3) throw await rateLimitedError(ctx, hash, 'start');
+  if (Number(recent[0]?.recent ?? 0) >= 3) throw await rateLimitedError(ctx, buckets(ctx, hash, 'start'));
   if (Number(owner[0]?.owner_conflict ?? 0) === 1) throw new HttpError(403, 'OWNER_REJECTED');
   return json({ counted: inserted.length > 0 });
 }
@@ -91,7 +120,7 @@ function duplicateOutcome(existing: SqlRow, hash: string, payloadHash: string): 
 
 /** POST /v1/runs/submit: submit_completed_run(서버 재채점). */
 export async function submitCompletedRun(ctx: Context, hash: string): Promise<Response> {
-  const body = await readJsonObject(ctx.request, BODY_LIMIT_SUBMIT);
+  const body = await readBody(ctx, BODY_LIMIT_SUBMIT);
   const reject = async (status: number, code: string): Promise<never> => {
     await limited(ctx, hash, 'submit');
     throw new HttpError(status, code);

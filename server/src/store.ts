@@ -7,42 +7,75 @@ import { DAY_MS, kstDateKey, kstDateKeyDaysAgo, utcMinuteKey } from './time';
 
 export const VERIFIED_LEVEL = 'question_regraded_combat_bounded';
 
-/** Postgres allow_lobby_rpc 호출의 (분당, 하루) 한도. device는 IP별 기기 발급 한도(Supabase 익명 가입 한도 대체)다. */
-export const RATE_LIMITS = {
+export interface RateLimit {
+  minute: number;
+  day: number;
+}
+
+/** 기기별 (분당, 하루) 한도. Postgres allow_lobby_rpc 호출과 같은 값이다. */
+export const DEVICE_RATE_LIMITS = {
   visit: { minute: 60, day: 2000 },
   start: { minute: 3, day: 200 },
   submit: { minute: 6, day: 100 },
   ranking: { minute: 120, day: 10000 },
-  device: { minute: 120, day: 3000 },
-} as const;
-export type RateAction = keyof typeof RATE_LIMITS;
+} as const satisfies Record<string, RateLimit>;
+export type RateAction = keyof typeof DEVICE_RATE_LIMITS;
 
-/** 한도를 넘으면 CHECK(rate_limited)가 실패해 같은 batch의 다른 문장도 모두 되돌아간다. */
-export function rateLimitStatement(subject: string, action: RateAction, nowMs: number): SqlStatement {
-  const limit = RATE_LIMITS[action];
+/**
+ * IP별 (분당, 하루) 한도. 기기를 여러 개 받아 기기별 한도를 우회해도 한 IP가 D1 쓰기 한도(하루 10만 행)를
+ * 혼자 다 쓰지 못하게, 그러면서도 학교 IP 하나 뒤에 학생 1,000명이 하루 3판(3,000판)을 해도 막히지 않게 정했다.
+ *   start·submit 4,000/일: 3,000판 + 중간에 그만둔 판·재전송 여유. 분당 300: 300명이 한꺼번에 시작.
+ *   visit 10,000/일: 판마다 홈 2~3번(9,000). 분당 600.
+ *   ranking 20,000/일: 판마다 랭킹 2~5번(최대 15,000). 분당 1,200.
+ *   device 2,000/일: 학생 1,000명 × 저장소를 지우는 공용 기기에서 하루 두 번 새로 받기. 분당 120: 네 반이 한꺼번에.
+ */
+export const IP_RATE_LIMITS = {
+  visit: { minute: 600, day: 10000 },
+  start: { minute: 300, day: 4000 },
+  submit: { minute: 300, day: 4000 },
+  ranking: { minute: 1200, day: 20000 },
+  device: { minute: 120, day: 2000 },
+} as const satisfies Record<RateAction | 'device', RateLimit>;
+
+/**
+ * 한도를 넘으면 CHECK(rate_limited)가 실패해 같은 batch의 다른 문장도 모두 되돌아간다.
+ * 분·일 키는 앞으로만 간다: 더 새 키가 오면 1부터 다시 세고, 늦게 도착한 요청(옛 키)은 지금 칸에 더한다.
+ * 키를 그대로 덮어쓰면 늦게 온 요청 하나가 최신 칸을 1로 되돌려 한도를 풀어 버린다.
+ */
+export function rateLimitStatement(subject: string, action: string, limit: RateLimit, nowMs: number): SqlStatement {
   return sql(
     `INSERT INTO rate_limits (subject, action, minute_key, minute_calls, minute_limit, day_key, day_calls, day_limit)
      VALUES (?1, ?2, ?3, 1, ?4, ?5, 1, ?6)
      ON CONFLICT (subject, action) DO UPDATE SET
-       minute_calls = CASE WHEN rate_limits.minute_key = excluded.minute_key THEN rate_limits.minute_calls + 1 ELSE 1 END,
-       day_calls = CASE WHEN rate_limits.day_key = excluded.day_key THEN rate_limits.day_calls + 1 ELSE 1 END,
-       minute_key = excluded.minute_key, day_key = excluded.day_key,
+       minute_calls = CASE WHEN excluded.minute_key > rate_limits.minute_key THEN 1 ELSE rate_limits.minute_calls + 1 END,
+       day_calls = CASE WHEN excluded.day_key > rate_limits.day_key THEN 1 ELSE rate_limits.day_calls + 1 END,
+       minute_key = max(rate_limits.minute_key, excluded.minute_key),
+       day_key = max(rate_limits.day_key, excluded.day_key),
        minute_limit = excluded.minute_limit, day_limit = excluded.day_limit`,
     subject, action, utcMinuteKey(nowMs), limit.minute, kstDateKey(new Date(nowMs)), limit.day,
   );
 }
 
-export const rateLimitState = (subject: string, action: RateAction) =>
-  sql('SELECT day_key, day_calls FROM rate_limits WHERE subject = ?1 AND action = ?2', subject, action);
+export const rateLimitState = (subject: string, action: string) =>
+  sql('SELECT day_key, day_calls, day_limit FROM rate_limits WHERE subject = ?1 AND action = ?2', subject, action);
 
+/** 접속 기록은 마지막 기록 뒤 60초가 지났을 때만 고친다(홈을 자주 열어도 쓰기 행이 늘지 않게). */
+export const PRESENCE_REFRESH_MS = 60_000;
 export const PRESENCE_WINDOW_MS = 5 * 60 * 1000;
 
-/** 홈 방문: 오늘 첫 방문이면 트리거가 지표를 올린다. 최근 5분 방문 기기 수를 함께 읽는다. */
+/**
+ * 홈 방문: 오늘 첫 방문이면 트리거가 지표를 올린다. 최근 5분 방문 기기 수를 함께 읽는다.
+ * 접속 기록을 60초에 한 번만 고치므로 "최근 5분"은 실제로 최근 4~5분 사이에서 1분만큼 흔들린다.
+ */
 export function visitStatements(hash: string, nowMs: number): SqlStatement[] {
   const today = kstDateKey(new Date(nowMs));
   return [
     sql('INSERT INTO daily_visitor_hashes (kst_date, visitor_hash, created_at) VALUES (?1, ?2, ?3) ON CONFLICT DO NOTHING', today, hash, nowMs),
-    sql('INSERT INTO lobby_presence (visitor_hash, seen_at) VALUES (?1, ?2) ON CONFLICT (visitor_hash) DO UPDATE SET seen_at = excluded.seen_at', hash, nowMs),
+    sql(
+      `INSERT INTO lobby_presence (visitor_hash, seen_at) VALUES (?1, ?2)
+       ON CONFLICT (visitor_hash) DO UPDATE SET seen_at = excluded.seen_at WHERE excluded.seen_at >= lobby_presence.seen_at + ?3`,
+      hash, nowMs, PRESENCE_REFRESH_MS,
+    ),
     sql(
       `SELECT coalesce((SELECT plays FROM daily_metrics WHERE kst_date = ?1), 0) AS today_plays,
               total_visitors, total_plays,

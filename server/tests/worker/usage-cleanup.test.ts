@@ -31,7 +31,8 @@ describe('요청당 D1 행 수', () => {
     keep('POST /v1/device', issued);
     const device = issued.body as unknown as Device;
     keep('POST /v1/lobby-visit (오늘 처음)', await measure('/v1/lobby-visit', { token: device.token, body: {}, now }));
-    keep('POST /v1/lobby-visit (다시)', await measure('/v1/lobby-visit', { token: device.token, body: {}, now: now + 1000 }));
+    keep('POST /v1/lobby-visit (60초 안에 다시)', await measure('/v1/lobby-visit', { token: device.token, body: {}, now: now + 1000 }));
+    keep('POST /v1/lobby-visit (60초 뒤 다시)', await measure('/v1/lobby-visit', { token: device.token, body: {}, now: now + 61_000 }));
     const runId = crypto.randomUUID();
     keep('POST /v1/runs/start', await measure('/v1/runs/start', { token: device.token, body: { p_run_id: runId }, now }));
     const submitAt = now + 2 * MINUTE;
@@ -62,11 +63,13 @@ describe('요청당 D1 행 수', () => {
     console.log('요청당 D1 행 수(로컬 D1 meta)\n' + Object.entries(table).map(([k, v]) => `  ${k}: batch ${v.batches}, 읽기 ${v.rowsRead}, 쓰기 ${v.rowsWritten}`).join('\n'));
 
     // 무료 한도 계산이 기대는 상한. 넘으면 설계가 바뀐 것이므로 계산을 다시 한다.
+    // 속도 제한 칸(기기 1 + IP 1)이 쓰는 행도 들어 있다.
     expect(table['POST /v1/device']!.rowsWritten).toBeLessThanOrEqual(1);
     expect(table['POST /v1/lobby-visit (오늘 처음)']!.rowsWritten).toBeLessThanOrEqual(8);
-    expect(table['POST /v1/runs/start']!.rowsWritten).toBeLessThanOrEqual(6);
+    expect(table['POST /v1/lobby-visit (60초 안에 다시)']!.rowsWritten).toBeLessThanOrEqual(2);
+    expect(table['POST /v1/runs/start']!.rowsWritten).toBeLessThanOrEqual(7);
     expect(table['POST /v1/runs/submit (첫 기록)']!.rowsWritten).toBeLessThanOrEqual(12);
-    expect(table['GET /v1/leaderboard 점수 (기기 301)']!.rowsWritten).toBeLessThanOrEqual(1);
+    expect(table['GET /v1/leaderboard 점수 (기기 301)']!.rowsWritten).toBeLessThanOrEqual(2);
     // 랭킹 읽기는 기록 수가 아니라 리그에 든 기기 수에 비례한다.
     expect(table['GET /v1/leaderboard 점수 (기기 301)']!.rowsRead).toBeLessThan(2000);
     for (const v of Object.values(table)) expect(v.batches).toBeLessThanOrEqual(2);

@@ -1,4 +1,4 @@
-import { deriveKeys, isUsableSalt, playerHash, verifyDeviceToken } from './crypto';
+import { deriveKeys, ipHash, isUsableSalt, playerHash, verifyDeviceToken } from './crypto';
 import { d1Database, type D1DatabaseLike, type SqlStats } from './db';
 import { getLeaderboard, issueDevice, recordLobbyVisit, recordRunStart, submitCompletedRun, type Context } from './handlers';
 import { bearerToken, errorResponse, HttpError, parseAllowedOrigins, preflight, withCors } from './http';
@@ -37,7 +37,11 @@ async function route(request: Request, env: Env, deps: Deps): Promise<Response> 
   // Postgres private_player_hash가 PT503으로 막던 경우. 토큰 서명 키도 이 값에서 나오므로 가장 먼저 본다.
   if (!isUsableSalt(env.PLAYER_SALT)) throw new HttpError(503, 'PLAYER_SALT_REQUIRED');
   const keys = await deriveKeys(env.PLAYER_SALT);
-  const ctx: Context = { request, url, db: d1Database(env.DB, deps.stats), keys, now: deps.now() };
+  const ip = request.headers.get('CF-Connecting-IP') ?? 'unknown';
+  const ctx: Context = {
+    request, url, db: d1Database(env.DB, deps.stats), keys, ipSubject: `ip:${await ipHash(keys, ip)}`,
+    clock: () => deps.now(), now: deps.now(),
+  };
   let hash = '';
   if (target.auth) {
     const token = bearerToken(request);
