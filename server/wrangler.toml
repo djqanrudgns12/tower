@@ -1,0 +1,26 @@
+# 어휘력 타워 디펜스 기록·랭킹 서버. 구현 계획서(docs/HOSTING_IMPL_PLAN.md) 단계 3.
+# 비밀값은 PLAYER_SALT 하나뿐이고 이 파일에 적지 않는다(배포 때 `npx wrangler secret put PLAYER_SALT`, 로컬은 server/.dev.vars).
+name = "vocabulary-td-api"
+main = "src/index.ts"
+compatibility_date = "2026-10-15"
+# Cloudflare로 사용 통계를 보내지 않는다.
+send_metrics = false
+
+[vars]
+# 쉼표로 나눈 허용 출처. 기본값은 로컬 개발 주소(vite dev 5173, vite preview 4173)다.
+# 학생 주소가 정해지면(단계 6) 예: "https://voca.example.com" 를 더한다.
+ALLOWED_ORIGINS = "http://localhost:5173,http://127.0.0.1:5173,http://localhost:4173,http://127.0.0.1:4173"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "vocabulary-td"
+# 자리표시. 단계 7에서 `wrangler d1 create vocabulary-td` 결과로 바꾼다. 로컬(--local)은 이 값으로 파일 이름만 정한다.
+database_id = "00000000-0000-0000-0000-000000000000"
+migrations_dir = "migrations"
+
+[triggers]
+# 매일 04:00 KST(19:00 UTC)에 지난 방문 해시·시작 기록·속도 제한·접속 기록을 지운다(Postgres cleanup_ephemeral_lobby_hashes).
+crons = ["0 19 * * *"]
+
+# 사용자 지정 도메인(단계 6·7에서 채운다). 예:
+# routes = [{ pattern = "voca-api.example.com", custom_domain = true }]

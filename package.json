@@ -14,6 +14,9 @@
     "lint": "eslint .",
     "test": "vitest run tests/unit",
     "test:e2e": "playwright test",
+    "test:server": "tsc -p server/tsconfig.json && tsc -p server/tsconfig.test.json && vitest run --config server/vitest.config.ts",
+    "server:dev": "wrangler dev --config server/wrangler.toml --local",
+    "server:db:local": "wrangler d1 migrations apply DB --local --config server/wrangler.toml && wrangler d1 execute DB --local --config server/wrangler.toml --file server/seed/question_keys.sql",
     "validate:plan": "node tools/validate-plan.mjs",
     "validate:content": "vitest run tests/unit/content.test.ts",
     "validate:assets": "vitest run tests/unit/content.test.ts -t manifest",
@@ -49,6 +52,7 @@
     "typescript": "6.0.3",
     "typescript-eslint": "8.72.1",
     "vite": "8.3.5",
-    "vitest": "5.0.5"
+    "vitest": "5.0.5",
+    "wrangler": "4.151.3"
   }
 }
