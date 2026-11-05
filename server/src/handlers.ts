@@ -1,5 +1,5 @@
 /**
- * 엔드포인트 판단. 검사 순서는 Postgres 함수(supabase/migrations 네 번째 판)와 같다:
+ * 엔드포인트 판단. 검사 순서는 Postgres 함수(docs/archive/supabase/migrations 네 번째 판)와 같다:
  * 속도 제한 → 입력 검사 → 승인 조건 → 중복 → 시작 기록 → 시간 → 재채점 → 점수 → 기록.
  */
 import { computeHonorPoints, matchesRegradedRun, regradeRunAnswers } from '../../src/contracts/lobby';

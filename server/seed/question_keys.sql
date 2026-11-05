@@ -1,4 +1,5 @@
--- 공개 은행 정답 키·검증 규칙(D1). server/migrations 적용 뒤 `wrangler d1 execute DB --file server/seed/question_keys.sql`로 넣는다.
+-- 공개 은행 정답 키·검증 규칙(D1). server/migrations 적용 뒤에 넣는다.
+--   로컬: npm run server:db:local · 운영: npm run server:seed:remote
 -- tools/build-question-keys.mjs가 만든다. 손으로 고치지 않는다.
 update approved_run_conditions set active=0 where grade in (3,4,5,6);
 insert into question_keys(bank_version,question_id,revision,correct_option,grade) values('pub-965fc76be294','g3-argon-0001',1,'a',3) on conflict do nothing;

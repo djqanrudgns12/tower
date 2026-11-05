@@ -1,5 +1,5 @@
 -- 어휘력 타워 디펜스 기록·랭킹 서버(Cloudflare D1, SQLite) 표 정의.
--- 기준: supabase/migrations/*.sql 4개(Postgres)를 같은 의미로 옮겼다.
+-- 기준: docs/archive/supabase/migrations/*.sql 4개(Postgres)를 같은 의미로 옮겼다.
 -- 시각은 모두 UTC 기준 epoch 밀리초 정수, 한국 날짜(kst_date)는 'YYYY-MM-DD', 주차(week_key)는 'YYYY-Www'다.
 -- 쓰기 행 수를 줄이려고 기본 키가 곧 표인 WITHOUT ROWID를 쓰고, 보조 색인은 조회에 꼭 필요한 것만 둔다.
 -- Postgres의 leaderboard_best·leaderboard_honor는 두 번째 마이그레이션부터 아무도 읽거나 쓰지 않아 옮기지 않았다.

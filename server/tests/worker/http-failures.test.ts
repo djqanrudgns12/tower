@@ -1,5 +1,5 @@
 /**
- * supabase/tests/http-failures.sql의 경우를 옮기고, 새 서버가 직접 맡게 된 HTTP 경계(CORS·본문 크기·경로)를 더했다.
+ * docs/archive/supabase/tests/http-failures.sql의 경우를 옮기고, 새 서버가 직접 맡게 된 HTTP 경계(CORS·본문 크기·경로)를 더했다.
  * 논리적 실패를 HTTP 성공으로 돌려주지 않는다(PRD §16.3).
  */
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';

@@ -1,5 +1,5 @@
 /**
- * supabase/tests/unicode-grapheme-regression.sql을 옮겼다. Unicode 17.0 GraphemeBreakTest.txt 전체를 그대로 읽는다.
+ * docs/archive/supabase/tests/unicode-grapheme-regression.sql을 옮겼다. Unicode 17.0 GraphemeBreakTest.txt 전체를 그대로 읽는다.
  * Postgres 글은 NUL을 담을 수 없어 SQL 시험은 NUL 74건을 뺐다. JS 문자열은 담을 수 있으므로 766건 모두 본다.
  */
 import { readFile } from 'node:fs/promises';

@@ -1,5 +1,5 @@
 /**
- * supabase/tests/net-regression.sql의 경우를 로컬 D1 Worker로 옮겼다.
+ * docs/archive/supabase/tests/net-regression.sql의 경우를 로컬 D1 Worker로 옮겼다.
  * 소유권·권한·별명·시간·재채점·멱등·접수 시각·종료 시각 묶기·소금값.
  */
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';

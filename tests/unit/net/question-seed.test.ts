@@ -22,17 +22,17 @@ describe('서버 공개 정답 키 seed', () => {
       { ...published, grade: 4, bankVersion: 'candidate-secret', status: 'verified_candidate' },
     ], { entries: [{ questionId: first.id, revision: first.revision }] });
     expect(result.status).toBe(0);
-    expect(result.stdout).toContain('set active=false where grade in (3,4,5,6)');
+    expect(result.stdout).toContain('set active=0 where grade in (3,4,5,6)');
     expect(result.stdout).not.toContain('candidate-secret');
     expect(result.stdout).not.toContain(`values('${published.bankVersion}','${first.id}'`);
     expect(result.stdout).toContain(`values('${published.bankVersion}','${second.id}'`);
-    expect(result.stdout).toContain(`delete from public.question_keys where question_id='${first.id}' and revision=${first.revision}`);
+    expect(result.stdout).toContain(`delete from question_keys where question_id='${first.id}' and revision=${first.revision}`);
   });
   it('공개 문항이 사라진 학년의 이전 조건도 비활성화한다', () => {
     const result = generate([]);
     expect(result.status).toBe(0);
-    expect(result.stdout).toContain('set active=false where grade in (3,4,5,6)');
-    expect(result.stdout).not.toContain('insert into public.approved_run_conditions');
+    expect(result.stdout).toContain('set active=0 where grade in (3,4,5,6)');
+    expect(result.stdout).not.toContain('insert into approved_run_conditions');
   });
   it('동일 은행·문항·revision에 다른 정답이 있으면 seed를 만들지 않는다', () => {
     const question = published.questions[0]!;
