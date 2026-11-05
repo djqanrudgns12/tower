@@ -29,6 +29,7 @@ function pool(size) {
 
 async function main() {
   const a = args(process.argv.slice(2));
+  const configs = review.resolveReviewConfig(a);
   const root = path.resolve(a.root ?? path.resolve(import.meta.dirname, '../..'));
   const logFile = path.join(root, '.orchestrate/content-loop.log');
   fs.mkdirSync(path.dirname(logFile), { recursive: true });
@@ -39,38 +40,56 @@ async function main() {
   const ids = a.all ? rb.loadBatches(root).map(x => x.batchId).filter(id => /^Q50-/.test(id)) : String(a.batches).split(',');
   const pools = { claude: pool(Number(a.claude ?? 2)), codex: pool(Number(a.codex ?? 2)), antigravity: pool(Number(a.argon ?? 2)) };
   const rounds = Number(a.rounds ?? 2);
+  const stagedBatches = new Set();
+  const optionsFor = who => ({ config: configs[who], archiveExisting: a['archive-existing'] === true || a['archive-existing'] === who });
 
   const reviewWith = async (who, id) => {
-    if (!review.pending(rb, batchOf(id), who).length) return;
+    const options = optionsFor(who);
+    if (!review.pending(rb, batchOf(id), who, options).length) return;
     await pools[who](async () => {
-      await review.runPhase(rb, root, who, id, 'blind', log);
-      await review.runPhase(rb, root, who, id, 'reveal', log);
-      const r = await review.ingest(rb, root, who, id);
-      log(`${id} ${who} 병합 ${r.merged}문항 · 지적 ${r.flagged}`);
+      await review.runPhase(rb, root, who, id, 'blind', log, options);
+      await review.runPhase(rb, root, who, id, 'reveal', log, options);
+      const r = await review.ingest(rb, root, who, id, options);
+      stagedBatches.add(id);
+      log(`${id} ${who} 병합 대기 ${r.merged}문항 · 지적 ${r.flagged} (${r.staging})`);
     });
+  };
+  const reviewBoth = async id => {
+    // 한쪽 보고서가 거절될 때 다른 쪽 모델부터 실행하지 않는다.
+    const batch = batchOf(id);
+    for (const who of ['claude', 'codex']) review.pending(rb, batch, who, optionsFor(who));
+    const results = await Promise.allSettled([reviewWith('claude', id), reviewWith('codex', id)]);
+    const failed = results.find(result => result.status === 'rejected');
+    if (failed) throw failed.reason;
   };
 
   const summary = {};
   await Promise.all(ids.map(async id => {
     try {
-      await Promise.all([reviewWith('claude', id), reviewWith('codex', id)]);
+      await reviewBoth(id);
+      // W2b의 잠금 안 반영이 연결되기 전에는 옛 보고서로 수정·빌드를 이어 가지 않는다.
+      if (stagedBatches.has(id)) { summary[id] = { awaitingApply: true }; return; }
       for (let round = 1; round <= rounds; round++) {
         const n = revise.flagged(rm, batchOf(id)).length;
         if (!n) break;
         const r = await pools.antigravity(() => revise.reviseBatch(rm, root, id, 'antigravity', log));
         log(`${id} 수정 ${round}회: 고침 ${r.revised} · 버림 ${r.dropped} · 거절 ${r.rejected}`);
         if (!r.revised) break;
-        await Promise.all([reviewWith('claude', id), reviewWith('codex', id)]);
+        await reviewBoth(id);
+        if (stagedBatches.has(id)) break;
       }
-      summary[id] = { remainingDefects: revise.flagged(rm, batchOf(id)).length };
+      summary[id] = stagedBatches.has(id) ? { awaitingApply: true } : { remainingDefects: revise.flagged(rm, batchOf(id)).length };
     } catch (e) {
       log(`${id} 중단: ${e.message}`);
       summary[id] = { error: e.message };
     }
   }));
 
-  const built = spawnSync('node', ['tools/build-bank.mjs'], { cwd: root, encoding: 'utf8' });
-  log(`build-bank 종료 ${built.status}\n${built.stdout}${built.stderr}`);
+  if (stagedBatches.size) log('검수 결과 반영 대기: W2b 잠금 안 반영 후 수정·빌드를 이어 간다');
+  else {
+    const built = spawnSync('node', ['tools/build-bank.mjs'], { cwd: root, encoding: 'utf8' });
+    log(`build-bank 종료 ${built.status}\n${built.stdout}${built.stderr}`);
+  }
   fs.writeFileSync(path.join(root, '.orchestrate/content-loop.summary.json'), `${JSON.stringify(summary, null, 2)}\n`);
   console.log(JSON.stringify(summary));
 }

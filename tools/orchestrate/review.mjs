@@ -2,7 +2,7 @@
 // 공동검수 자동화(공동검수 절차 3~5단계, PRD §9.3). 한 검수자의 한 배치를 두 번에 나눠 맡긴다.
 //   1) blind  : 정답 키·해설·오답 이유·사전 뜻풀이 없이 직접 풀고 유일성·학년·문장을 본다.
 //   2) reveal : 정답 키·해설·오답 이유·사전 근거를 공개하고, 첫 풀이는 그대로 둔 채 최종 판정을 낸다.
-// 답장 JSON을 형식·대상 일치로 검사한 뒤 content-source/reviews/<batch>/<reviewer>.json에 병합한다.
+// 답장 JSON을 형식·대상 일치로 검사한 뒤 보고서 병합 결과를 .orchestrate/staging에 쌓는다.
 // 검수자가 claude면 공개 단계의 해설 판정으로 총괄 해설 대조(approvals/<batch>.explanation.json)도 만든다.
 //
 //   node tools/orchestrate/review.mjs status --root <dir> --reviewer claude
@@ -14,6 +14,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import os from 'node:os';
 import { spawn } from 'node:child_process';
+import { createHash, randomUUID } from 'node:crypto';
 import { runnerImport } from 'vite';
 
 const BRIDGE = process.env.AGENT_BRIDGE ?? path.join(os.homedir(), '.local/bin/agent-bridge');
@@ -22,6 +23,48 @@ const FILE_OF = { claude: 'claude.json', codex: 'codex.json', antigravity: 'argo
 const CHOICES = ['a', 'b', 'c', 'd', 'none', 'multiple'];
 const VERDICT = ['pass', 'fail', 'uncertain'];
 const today = () => new Date().toISOString().slice(0, 10);
+const EFFORTS = {
+  claude: ['low', 'medium', 'high', 'xhigh', 'max'],
+  codex: ['minimal', 'low', 'medium', 'high', 'xhigh'],
+  antigravity: ['high'],
+};
+
+function validateConfig(reviewer, config) {
+  const family = reviewer === 'claude' ? /^claude-/ : reviewer === 'codex' ? /^gpt-/ : /^Gemini /;
+  if (typeof config?.model !== 'string' || !family.test(config.model) || !EFFORTS[reviewer]?.includes(config.effort)) {
+    throw new Error(`${reviewer}: 모델·effort 설정 오류 (${JSON.stringify(config)})`);
+  }
+  return { model: config.model, effort: config.effort };
+}
+
+/** CLI > 환경변수 > 기존 기본값. 실행 전에 양쪽 역할의 설정을 모두 검사한다. */
+export function resolveReviewConfig(cli = {}, env = process.env) {
+  return Object.fromEntries(Object.keys(REVIEWERS).map(reviewer => {
+    const prefix = `REVIEW_${reviewer.toUpperCase()}`;
+    return [reviewer, validateConfig(reviewer, {
+      model: cli[`${reviewer}-model`] ?? env[`${prefix}_MODEL`] ?? REVIEWERS[reviewer],
+      effort: cli[`${reviewer}-effort`] ?? env[`${prefix}_EFFORT`] ?? (reviewer === 'codex' ? 'xhigh' : 'high'),
+    })];
+  }));
+}
+
+function reviewOptions(reviewer, options = {}) {
+  return { config: validateConfig(reviewer, options.config ?? resolveReviewConfig()[reviewer]), archiveExisting: options.archiveExisting === true };
+}
+
+export function assertPhaseConfig(saved, current, phase) {
+  if (!saved || saved.model !== current.model || saved.effort !== current.effort) {
+    throw new Error(`${phase}: 저장된 검수 설정과 현재 설정이 다르다. 같은 모델·effort로 다시 시작해야 한다`);
+  }
+}
+
+/** 다른 모델의 보고서를 자동으로 재사용하지 않는다. 보관은 ingest의 staging에서 수행한다. */
+export function existingReportArchive(batchId, reviewer, report, config, archiveExisting = false) {
+  if (!report || report.reviewer?.model === config.model) return null;
+  if (!archiveExisting) throw new Error(`${batchId} ${reviewer}: 기존 보고서 모델 ${report.reviewer?.model} ≠ ${config.model}. --archive-existing 필요`);
+  if (typeof report.reviewer?.model !== 'string' || !report.reviewer.model) throw new Error(`${batchId}: 기존 보고서 모델이 없다`);
+  return `content-source/reviews/archive/${batchId}.${reviewer}.${report.reviewer.model.replace(/[^A-Za-z0-9]/g, '-')}.json`;
+}
 
 function args(argv) {
   const out = { _: [] };
@@ -43,9 +86,13 @@ const readJson = (f, fb = null) => (fs.existsSync(f) ? JSON.parse(fs.readFileSyn
 const writeJson = (f, v) => { fs.mkdirSync(path.dirname(f), { recursive: true }); fs.writeFileSync(f, `${JSON.stringify(v, null, 2)}\n`); };
 
 /** 이 검수자가 아직 같은 revision·contentHash로 보지 않은 문항. */
-export function pending(b, batch, reviewer) {
+export function pending(b, batch, reviewer, options) {
   const done = new Set();
   const report = reviewer === 'antigravity' ? batch.argonBlind : batch.reviews[reviewer];
+  if (options) {
+    const { config, archiveExisting } = reviewOptions(reviewer, options);
+    if (existingReportArchive(batch.batchId, reviewer, report, config, archiveExisting)) return batch.drafts;
+  }
   for (const i of report?.items ?? []) done.add(`${i.questionId}@${i.revision}:${i.contentHash}`);
   return batch.drafts.filter(q => !done.has(`${q.id}@${q.revision}:${b.contentHash(q)}`));
 }
@@ -149,30 +196,47 @@ async function findBatch(b, root, batchId) {
 }
 
 /** 단계별 입력을 만든다. reveal은 blind 결과가 있어야 한다. */
-export async function buildPhase(b, root, reviewer, batchId, phase) {
+export async function buildPhase(b, root, reviewer, batchId, phase, options = {}) {
+  const resolved = reviewOptions(reviewer, options);
   const batch = await findBatch(b, root, batchId);
   const dir = workDir(root, reviewer, batchId);
-  const todo = pending(b, batch, reviewer);
-  if (phase === 'blind') return { items: todo.map(q => blindItem(b, q)) };
+  const todo = pending(b, batch, reviewer, resolved);
+  if (phase === 'blind') {
+    const input = { config: resolved.config, items: todo.map(q => blindItem(b, q)) };
+    writeJson(path.join(dir, 'blind.input.json'), input);
+    return input;
+  }
+  if (phase !== 'reveal') throw new Error(`검수 단계 오류: ${phase}`);
   const blind = readJson(path.join(dir, 'blind.result.json'));
   if (!blind) throw new Error(`${batchId}: blind 결과가 먼저 필요하다`);
+  assertPhaseConfig(blind.config, resolved.config, 'blind');
   const byKey = new Map(blind.items.map(i => [`${i.questionId}@${i.revision}:${i.contentHash}`, i]));
   const items = todo.filter(q => byKey.has(`${q.id}@${q.revision}:${b.contentHash(q)}`)).map(q => revealItem(b, root, batchId, q, byKey.get(`${q.id}@${q.revision}:${b.contentHash(q)}`)));
-  return { items };
+  const input = { config: resolved.config, items };
+  writeJson(path.join(dir, 'reveal.input.json'), input);
+  return input;
 }
 
-export function acceptPhase(root, reviewer, batchId, phase, text, expected) {
+export function acceptPhase(root, reviewer, batchId, phase, text, expected, options = {}) {
+  const { config } = reviewOptions(reviewer, options);
+  if (!['blind', 'reveal'].includes(phase)) throw new Error(`검수 단계 오류: ${phase}`);
+  const dir = workDir(root, reviewer, batchId);
+  assertPhaseConfig(readJson(path.join(dir, `${phase}.input.json`))?.config, config, `${phase} 입력`);
+  if (phase === 'reveal') assertPhaseConfig(readJson(path.join(dir, 'blind.result.json'))?.config, config, 'blind');
   const parsed = parseReply(text, phase, expected);
-  writeJson(path.join(workDir(root, reviewer, batchId), `${phase}.result.json`), { at: new Date().toISOString(), items: parsed });
+  writeJson(path.join(dir, `${phase}.result.json`), { at: new Date().toISOString(), config, items: parsed });
   return parsed;
 }
 
-/** blind+reveal 결과를 보고서에 병합한다. claude면 총괄 해설 대조 파일도 만든다(옛 Argon 대조는 archive로 옮긴다). */
-export async function ingest(b, root, reviewer, batchId) {
+/** blind+reveal 병합 결과만 대기시킨다. 추적 파일 반영·커밋은 W2b 잠금 담당이다. */
+export async function ingest(b, root, reviewer, batchId, options = {}) {
+  const { config, archiveExisting } = reviewOptions(reviewer, options);
   const dir = workDir(root, reviewer, batchId);
   const blind = readJson(path.join(dir, 'blind.result.json'));
   const reveal = readJson(path.join(dir, 'reveal.result.json'));
   if (!blind || !reveal) throw new Error(`${batchId}: blind·reveal 결과가 모두 있어야 한다`);
+  assertPhaseConfig(blind.config, config, 'blind');
+  assertPhaseConfig(reveal.config, config, 'reveal');
   const batch = await findBatch(b, root, batchId);
   const drafts = new Map(batch.drafts.map(q => [`${q.id}@${q.revision}`, q]));
   const blindBy = new Map(blind.items.map(i => [`${i.questionId}@${i.revision}:${i.contentHash}`, i]));
@@ -181,23 +245,38 @@ export async function ingest(b, root, reviewer, batchId) {
     return { questionId: r.questionId, revision: r.revision, contentHash: r.contentHash, blindChoice: bl.blindChoice, verdicts: r.verdicts,
       findings: [...bl.findings.map(f => `[블라인드] ${f}`), ...r.findings.map(f => `[공개 대조] ${f}`)] };
   });
-  const reportPath = path.join(root, 'content-source/reviews', batchId, FILE_OF[reviewer]);
-  const report = readJson(reportPath) ?? {
+  const writes = new Map();
+  const jsonWrite = (file, value) => writes.set(file, `${JSON.stringify(value, null, 2)}\n`);
+  // 보관은 원문 바이트를 그대로 복사한다. 기존 보관본과 충돌하면 덮어쓰지 않는다.
+  const archive = (source, target) => {
+    const bytes = fs.readFileSync(path.join(root, source));
+    const existing = path.join(root, target);
+    if (fs.existsSync(existing) && !fs.readFileSync(existing).equals(bytes)) throw new Error(`보관 경로 충돌: ${target}`);
+    writes.set(target, bytes);
+  };
+  const reportPath = `content-source/reviews/${batchId}/${FILE_OF[reviewer]}`;
+  const oldReport = readJson(path.join(root, reportPath));
+  const archivedReport = existingReportArchive(batchId, reviewer, oldReport, config, archiveExisting);
+  if (archivedReport) archive(reportPath, archivedReport);
+  const report = (archivedReport ? null : oldReport) ?? {
     reviewId: `QR-AUTO-${reviewer}-${batchId}`, jobId: batchId,
-    reviewer: { model: REVIEWERS[reviewer], tool: 'agent-bridge 2단계 블라인드 검수(tools/orchestrate/review.mjs)', freshContext: true, date: today() },
+    reviewer: { model: config.model, tool: '2단계 블라인드 검수(tools/orchestrate/review.mjs)', freshContext: true, date: today() },
     items: [],
   };
   const keep = report.items.filter(i => !merged.some(m => m.questionId === i.questionId && m.revision === i.revision && m.contentHash === i.contentHash));
   report.items = [...keep, ...merged].sort((x, y) => x.questionId.localeCompare(y.questionId) || x.revision - y.revision);
-  writeJson(reportPath, report);
+  jsonWrite(reportPath, report);
 
   if (reviewer === 'claude') {
-    const expPath = path.join(root, 'content-source/approvals', `${batchId}.explanation.json`);
-    const old = readJson(expPath);
-    const commander = old && /claude/i.test(old.reviewer.model) ? old : { batchId, reviewer: { model: REVIEWERS.claude, role: 'commander', date: today() }, items: [] };
+    const expPath = `content-source/approvals/${batchId}.explanation.json`;
+    const old = readJson(path.join(root, expPath));
+    if (old && /claude/i.test(old.reviewer.model) && old.reviewer.model !== config.model && !archiveExisting) {
+      throw new Error(`${batchId}: 해설 대조 모델이 다르다. --archive-existing 필요`);
+    }
+    const commander = old?.reviewer.model === config.model ? old : { batchId, reviewer: { model: config.model, role: 'commander', date: today() }, items: [] };
     if (old && old !== commander) {
-      const archived = path.join(root, 'content-source/approvals/archive', `${batchId}.explanation.${old.reviewer.model.replace(/[^A-Za-z0-9]+/g, '-')}.json`);
-      if (!fs.existsSync(archived)) writeJson(archived, old);
+      const archived = `content-source/approvals/archive/${batchId}.explanation.${old.reviewer.model.replace(/[^A-Za-z0-9]/g, '-')}.json`;
+      archive(expPath, archived);
     }
     const expItems = merged.map(m => {
       const q = drafts.get(`${m.questionId}@${m.revision}`);
@@ -207,10 +286,22 @@ export async function ingest(b, root, reviewer, batchId) {
     const keepExp = commander.items.filter(i => !expItems.some(e => e.questionId === i.questionId && e.revision === i.revision));
     commander.items = [...keepExp, ...expItems].sort((x, y) => x.questionId.localeCompare(y.questionId) || x.revision - y.revision);
     commander.reviewer.date = today();
-    writeJson(expPath, commander);
+    jsonWrite(expPath, commander);
   }
   const fails = merged.filter(m => m.blindChoice !== drafts.get(`${m.questionId}@${m.revision}`)?.correctOptionId || Object.values(m.verdicts).some(v => v !== 'pass'));
-  return { merged: merged.length, flagged: fails.length };
+  const createdAt = new Date().toISOString();
+  const runId = `${createdAt.replace(/[-:.]/g, '')}-${process.pid}-${randomUUID()}`;
+  const staging = `.orchestrate/staging/${batchId}/${runId}`;
+  const manifest = { batchId, runId, tool: 'review', model: config.model, createdAt, writes: [], deletes: [] };
+  for (const [file, bytes] of writes) {
+    const destination = path.join(root, staging, 'files', file);
+    fs.mkdirSync(path.dirname(destination), { recursive: true });
+    fs.writeFileSync(destination, bytes);
+    manifest.writes.push({ path: file, sha256: createHash('sha256').update(bytes).digest('hex') });
+  }
+  // manifest는 모든 파일을 쓴 뒤 마지막에 만들어 불완전한 실행을 반영하지 않게 한다.
+  writeJson(path.join(root, staging, 'manifest.json'), manifest);
+  return { merged: merged.length, flagged: fails.length, staging };
 }
 
 /** Claude 검수는 브리지가 자기 자신에게 보내기를 막으므로 Claude Code CLI를 직접 부른다. 파일·명령·웹 도구를 모두 막아 블라인드를 권한으로 보장한다. */
@@ -228,9 +319,14 @@ function claudeCliPath() {
 }
 const BLOCKED_TOOLS = ['Bash', 'Read', 'Glob', 'Grep', 'Edit', 'Write', 'NotebookEdit', 'WebFetch', 'WebSearch', 'Agent', 'Task'];
 
-function claudeCli(cwd, body, timeoutSec) {
+export function claudeCliArgs(config) {
+  const checked = validateConfig('claude', config);
+  return ['-p', '--output-format', 'json', '--model', checked.model, '--effort', checked.effort, '--disallowedTools', ...BLOCKED_TOOLS];
+}
+
+function claudeCli(cwd, body, timeoutSec, config) {
   return new Promise(resolve => {
-    const child = spawn(claudeCliPath(), ['-p', '--output-format', 'json', '--model', REVIEWERS.claude, '--effort', 'high', '--disallowedTools', ...BLOCKED_TOOLS], { cwd, stdio: ['pipe', 'pipe', 'pipe'] });
+    const child = spawn(claudeCliPath(), claudeCliArgs(config), { cwd, stdio: ['pipe', 'pipe', 'pipe'] });
     let out = '';
     let err = '';
     const timer = setTimeout(() => child.kill('SIGTERM'), timeoutSec * 1000);
@@ -248,10 +344,15 @@ function claudeCli(cwd, body, timeoutSec) {
 
 /** Codex 검수도 브리지 시간당 상한을 다른 세션과 나눠 쓰지 않도록 codex exec를 직접 부른다(읽기 전용 sandbox, 기록 없는 세션). */
 const CODEX_CLI = process.env.CODEX_CLI ?? '/Users/bodyking/Desktop/ChatGPT.app/Contents/Resources/codex-cli/CodexCLI.app/Contents/MacOS/codex';
-function codexCli(cwd, body, timeoutSec) {
+export function codexCliArgs(cwd, outFile, config) {
+  const checked = validateConfig('codex', config);
+  return ['exec', '--skip-git-repo-check', '--ephemeral', '--color', 'never', '-s', 'read-only', '-C', cwd, '-o', outFile, '-m', checked.model, '-c', `model_reasoning_effort="${checked.effort}"`, '-'];
+}
+
+function codexCli(cwd, body, timeoutSec, config) {
   return new Promise(resolve => {
     const outFile = path.join(cwd, `last-${process.pid}-${Date.now()}.md`);
-    const child = spawn(CODEX_CLI, ['exec', '--skip-git-repo-check', '--ephemeral', '--color', 'never', '-s', 'read-only', '-C', cwd, '-o', outFile, '-m', REVIEWERS.codex, '-c', 'model_reasoning_effort="xhigh"', '-'], { cwd, stdio: ['pipe', 'pipe', 'pipe'] });
+    const child = spawn(CODEX_CLI, codexCliArgs(cwd, outFile, config), { cwd, stdio: ['pipe', 'pipe', 'pipe'] });
     let err = '';
     const timer = setTimeout(() => child.kill('SIGTERM'), timeoutSec * 1000);
     child.stdout.on('data', () => {});
@@ -280,8 +381,9 @@ function bridge(reviewer, cwd, body, waitSec) {
 
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 
-export async function runPhase(b, root, reviewer, batchId, phase, log) {
-  const { items } = await buildPhase(b, root, reviewer, batchId, phase);
+export async function runPhase(b, root, reviewer, batchId, phase, log, options = {}) {
+  const resolved = reviewOptions(reviewer, options);
+  const { items } = await buildPhase(b, root, reviewer, batchId, phase, resolved);
   if (items.length === 0) return 0;
   const sealed = path.join(root, '.orchestrate/review/sealed', `${reviewer}-${batchId}-${phase}`);
   fs.mkdirSync(sealed, { recursive: true });
@@ -290,7 +392,7 @@ export async function runPhase(b, root, reviewer, batchId, phase, log) {
   for (let attempt = 1; attempt <= 4; attempt++) {
     const started = Date.now();
     const body = promptFor(phase, items) + note;
-    const res = reviewer === 'claude' ? await claudeCli(sealed, body, 1500) : reviewer === 'codex' ? await codexCli(sealed, body, 1800) : await bridge(reviewer, sealed, body, 1200);
+    const res = reviewer === 'claude' ? await claudeCli(sealed, body, 1500, resolved.config) : reviewer === 'codex' ? await codexCli(sealed, body, 1800, resolved.config) : await bridge(reviewer, sealed, body, 1200);
     // 계정 사용량 한도에 걸리면 시도 횟수를 쓰지 않고 기다렸다 같은 묶음을 다시 보낸다.
     if (/session limit|usage limit|rate[_ ]limit|\b429\b|hit your limit/i.test(`${res.out}\n${res.err}`) && !/```/.test(res.out)) {
       log(`${batchId} ${phase}: 사용량 한도 — 20분 대기 후 재시도`);
@@ -303,7 +405,7 @@ export async function runPhase(b, root, reviewer, batchId, phase, log) {
     if (/자기 자신에게는|CLI를 찾지 못했다|깨우기 깊이 한도/.test(res.out + res.err)) throw new Error(`${batchId} ${phase}: 실행 수단 오류 — ${(res.out || res.err).slice(0, 200)}`);
     if (!res.out) { log(`${batchId} ${phase} ${attempt}회차: 빈 답장(코드 ${res.code}) ${res.err.slice(0, 200)}`); await sleep(30_000); continue; }
     try {
-      acceptPhase(root, reviewer, batchId, phase, res.out, items);
+      acceptPhase(root, reviewer, batchId, phase, res.out, items, resolved);
       log(`${batchId} ${phase}: ${items.length}문항 ${Math.round((Date.now() - started) / 1000)}초`);
       return items.length;
     } catch (e) {
@@ -320,6 +422,8 @@ async function main() {
   const root = path.resolve(a.root ?? path.resolve(import.meta.dirname, '../..'));
   const reviewer = a.reviewer ?? 'claude';
   if (!FILE_OF[reviewer]) throw new Error(`검수자는 ${Object.keys(FILE_OF).join('·')}`);
+  const configs = resolveReviewConfig(a);
+  const options = { config: configs[reviewer], archiveExisting: a['archive-existing'] === true || a['archive-existing'] === reviewer };
   const b = await load(root);
   const log = m => { const line = `[${new Date().toISOString()}] ${m}`; console.log(line); fs.appendFileSync(path.join(root, '.orchestrate/review', `${reviewer}.log`), `${line}\n`); };
   fs.mkdirSync(path.join(root, '.orchestrate/review'), { recursive: true });
@@ -332,22 +436,24 @@ async function main() {
     return;
   }
   if (cmd === 'prompt') {
-    const { items } = await buildPhase(b, root, reviewer, a.batch, a.phase);
+    const { items } = await buildPhase(b, root, reviewer, a.batch, a.phase, options);
     process.stdout.write(promptFor(a.phase, items));
     return;
   }
   if (cmd === 'accept') {
-    const { items } = await buildPhase(b, root, reviewer, a.batch, a.phase);
-    const n = acceptPhase(root, reviewer, a.batch, a.phase, fs.readFileSync(a.file, 'utf8'), items).length;
+    // prompt 때 저장한 입력을 사용해야 accept 옵션 변경으로 봉인이 덮어써지지 않는다.
+    const input = readJson(path.join(workDir(root, reviewer, a.batch), `${a.phase}.input.json`));
+    if (!input) throw new Error(`${a.batch}: 먼저 prompt로 입력을 생성해야 한다`);
+    const n = acceptPhase(root, reviewer, a.batch, a.phase, fs.readFileSync(a.file, 'utf8'), input.items, options).length;
     console.log(`${a.batch} ${a.phase}: ${n}문항 저장`);
     return;
   }
   if (cmd === 'ingest') {
-    console.log(JSON.stringify(await ingest(b, root, reviewer, a.batch)));
+    console.log(JSON.stringify(await ingest(b, root, reviewer, a.batch, options)));
     return;
   }
   if (cmd === 'run') {
-    const ids = a.all ? all.filter(x => pending(b, x, reviewer).length).map(x => x.batchId) : String(a.batches).split(',');
+    const ids = a.all ? all.filter(x => pending(b, x, reviewer, options).length).map(x => x.batchId) : String(a.batches).split(',');
     const parallel = Number(a.parallel ?? 3);
     const queue = [...ids];
     const summary = [];
@@ -355,10 +461,12 @@ async function main() {
       while (queue.length) {
         const id = queue.shift();
         try {
-          await runPhase(b, root, reviewer, id, 'blind', log);
-          await runPhase(b, root, reviewer, id, 'reveal', log);
-          const r = await ingest(b, root, reviewer, id);
-          log(`${id} 병합: ${r.merged}문항, 지적 ${r.flagged}`);
+          const batch = await findBatch(b, root, id);
+          if (!pending(b, batch, reviewer, options).length) { summary.push({ id, skipped: true }); continue; }
+          await runPhase(b, root, reviewer, id, 'blind', log, options);
+          await runPhase(b, root, reviewer, id, 'reveal', log, options);
+          const r = await ingest(b, root, reviewer, id, options);
+          log(`${id} 병합 대기: ${r.merged}문항, 지적 ${r.flagged} (${r.staging})`);
           summary.push({ id, ...r });
         } catch (e) {
           log(`${id} 실패: ${e.message}`);
