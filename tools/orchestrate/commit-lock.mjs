@@ -70,7 +70,9 @@ function destination(root, relative) {
 function owns(batchId, file) {
   return file.startsWith(`content-source/batches/${batchId}/`) || file.startsWith(`content-source/reviews/${batchId}/`)
     || file.startsWith(`content-source/reviews/archive/${batchId}.`) || file === `content-source/approvals/${batchId}.explanation.json`
-    || file.startsWith(`content-source/approvals/archive/${batchId}.explanation.`) || file === `content-source/levels/${batchId}.json`;
+    || file.startsWith(`content-source/approvals/archive/${batchId}.explanation.`) || file === `content-source/levels/${batchId}.json`
+    // 배치가 아닌 공용 참조 파일은 같은 이름의 대기 폴더만 쓴다(W9 tools/fetch-krdict-grade.mjs).
+    || (batchId === 'krdict-grade' && file === 'content-source/reference/krdict-grade.json');
 }
 function discover(root, batch) {
   const base = path.join(root, '.orchestrate/staging');
