@@ -7,7 +7,7 @@ import type { DraftSidecar, QuestionDraft } from '../../src/contracts/questionDr
 import * as b from '../../tools/content/bankBuild';
 import * as lint from '../../src/content/lint';
 // @ts-expect-error 독립 실행 MJS 도구에는 별도 선언 파일이 없다.
-import { produce, prepare, selectItems, evidenceInput, parseDrafts, balanceAnswers, moveAnswer, recoverReply } from '../../tools/orchestrate/produce.mjs';
+import { produce, prepare, selectItems, evidenceInput, parseDrafts, balanceAnswers, moveAnswer, recoverReply, parseArgs } from '../../tools/orchestrate/produce.mjs';
 
 const modules = { d, b, lint };
 const batchId = 'Q50-G4-022';
@@ -40,7 +40,7 @@ function setup() {
   fs.mkdirSync('.orchestrate', { recursive: true });
   const root = fs.mkdtempSync(path.resolve('.orchestrate/produce-test-'));
   roots.push(root);
-  write(root, 'content-source/batches/old/nested/drafts.json', [{ id: 'g6-argon-0041', target: { lemma: '기존어' } }]);
+  write(root, 'content-source/batches/old/nested/drafts.json', [{ id: 'g6-argon-0041', grade: 6, target: { lemma: '기존어' }, type: 'cloze', source: { senseOrder: 1 } }]);
   write(root, 'content-source/wordlists/g4-r1.json', { grade: 4, round: 1, items: [{ ...words[0], lemma: '기존어' }, { ...words[0], lemma: '미확인', checked: false }, ...words, words[0]] });
   fs.mkdirSync(path.join(root, 'docs'), { recursive: true });
   fs.copyFileSync('docs/model_work_orders_v0_5.md', path.join(root, 'docs/model_work_orders_v0_5.md'));
@@ -56,6 +56,112 @@ function results(dir: string) {
   return { drafts: read(path.join(base, 'drafts.json')) as QuestionDraft[], side: read(path.join(base, 'sidecar.json')) as DraftSidecar };
 }
 afterEach(() => { for (const root of roots.splice(0)) fs.rmSync(root, { recursive: true, force: true }); });
+
+type Slot = typeof words[number] & { id: string; type: string };
+const slots = (items: Slot[]) => items.map(i => [i.lemma, i.type]);
+
+describe('S6 낱말·유형 칸', () => {
+  it('checked=true의 모든 유형을 칸으로 펴고 중복 칸·미확인 항목은 빼며 근거 조회는 묶는다', () => {
+    const { root, evidence } = setup();
+    const first = { ...words[0], types: ['cloze', 'usage', 'cloze'] };
+    const second = { ...words[1], types: ['cloze', 'definition'] };
+    const selected = selectItems(root, { grade: 4, items: [first, second, first, { ...words[2], checked: false }, { ...words[2], checked: undefined }] }, 4, 50);
+    expect(slots(selected)).toEqual([['간직하다', 'cloze'], ['귀가 얇다', 'cloze'], ['간직하다', 'usage'], ['귀가 얇다', 'definition']]);
+    expect(new Set(selected.map((i: Slot) => i.id)).size).toBe(4);
+    expect(evidenceInput(selected)).toEqual(['word:간직하다', 'idiom:귀가 얇다']);
+    const prepared = prepare(root, batchId, 4, selected, evidence);
+    expect(prepared.rejected).toEqual([]);
+    expect(prepared.accepted.map((x: { fixed: QuestionDraft }) => x.fixed.type)).toEqual(['cloze', 'cloze', 'usage', 'definition']);
+    expect(prepared.accepted[2].fixed.difficultyTier).toBe('core');
+  });
+
+  it('다른 학년·대기의 사용 칸을 빼고 같은 낱말의 다른 유형은 남긴다', () => {
+    const { root } = setup();
+    write(root, 'content-source/batches/used/drafts.json', [{ id: 'g5-argon-0090', grade: 5, target: { lemma: words[0]!.lemma.normalize('NFD') }, type: 'cloze', source: { senseOrder: 1 } }]);
+    write(root, '.orchestrate/staging/other/run/files/content-source/batches/other/drafts.json', [{ id: 'g4-argon-0091', grade: 4, target: { lemma: words[1]!.lemma }, type: 'definition', source: { senseOrder: 1 } }]);
+    const selected = selectItems(root, { grade: 4, items: [{ ...words[0], types: ['cloze', 'usage'] }, { ...words[1], types: ['cloze', 'definition'] }] }, 4, 50);
+    expect(slots(selected)).toEqual([['간직하다', 'usage'], ['귀가 얇다', 'cloze']]);
+    expect(selected.map((i: Slot) => i.id)).toEqual(['g4-argon-0092', 'g4-argon-0093']);
+  });
+
+  it('학년별 낱말 4문항·다의어 5문항 한도에 이번 선택도 포함한다', () => {
+    const { root } = setup();
+    const limits = [{ lemma: '일반여유', n: 3, variantTag: 'standard' }, { lemma: '일반가득', n: 4, variantTag: 'standard' }, { lemma: '다의여유', n: 4, variantTag: 'polysemy' }, { lemma: '다의가득', n: 5, variantTag: 'polysemy' }];
+    const existing = limits.flatMap((w, j) => Array.from({ length: w.n }, (_, i) => ({ id: `g4-argon-${100 + j * 10 + i}`, grade: 4, target: { lemma: w.lemma }, type: 'definition', variantTag: w.variantTag, source: { senseOrder: i + 1 } })));
+    write(root, 'content-source/batches/limits/drafts.json', existing);
+    // 반영 전 같은 문항은 추가 한 건으로 세지 않는다.
+    write(root, '.orchestrate/staging/limits/run/files/content-source/batches/limits/drafts.json', existing);
+    const selected = selectItems(root, { grade: 4, items: limits.map(w => ({ ...words[0], lemma: w.lemma, variantTag: w.variantTag, senseOrder: 10, types: ['cloze', 'usage'] })) }, 4, 50);
+    expect(slots(selected)).toEqual([['일반여유', 'cloze'], ['다의여유', 'cloze']]);
+  });
+
+  it('같은 뜻은 유형을 달리해 2문항까지만 고르고 다른 뜻·학년의 여유는 남긴다', () => {
+    const { root } = setup();
+    write(root, 'content-source/batches/senses/drafts.json', [
+      { id: 'g4-argon-0100', grade: 4, target: { lemma: '간직하다' }, type: 'cloze', source: { senseOrder: 1 } },
+      { id: 'g4-argon-0101', grade: 4, target: { lemma: '다른뜻' }, type: 'cloze', source: { senseOrder: 1 } },
+      { id: 'g4-argon-0102', grade: 4, target: { lemma: '다른뜻' }, type: 'definition', source: { senseOrder: 1 } },
+      ...Array.from({ length: 4 }, (_, i) => ({ id: `g5-argon-${200 + i}`, grade: 5, target: { lemma: '간직하다' }, type: 'cloze', source: { senseOrder: 1 } })),
+    ]);
+    const selected = selectItems(root, { grade: 4, items: [
+      { ...words[0], types: ['definition', 'usage'] },
+      { ...words[0], lemma: '다른뜻', types: ['usage'] },
+      { ...words[0], lemma: '다른뜻', senseOrder: 2, types: ['usage'] },
+    ] }, 4, 50);
+    expect(slots(selected)).toEqual([['간직하다', 'definition'], ['다른뜻', 'usage']]);
+    expect(selected.map((i: Slot) => i.senseOrder)).toEqual([1, 2]);
+  });
+
+  it('한 배치의 같은 낱말은 2칸 이하이며 연달아 놓지 않는다', () => {
+    const { root } = setup();
+    const items = words.map(w => ({ ...w, types: ['cloze', 'definition', 'usage'] }));
+    const selected = selectItems(root, { grade: 4, items: [...items, { ...items[0], senseOrder: 2, types: ['antonym_context'] }] }, 4, 50);
+    expect(selected).toHaveLength(6);
+    for (const w of words) expect(selected.filter((i: Slot) => i.lemma === w.lemma)).toHaveLength(2);
+    expect(selected.slice(1).every((i: Slot, n: number) => i.lemma !== selected[n].lemma)).toBe(true);
+    const uneven = selectItems(root, { grade: 4, items: [words[0], words[1], { ...words[2], types: ['cloze', 'definition'] }] }, 4, 4);
+    expect(uneven).toHaveLength(4);
+    expect(uneven.slice(1).every((i: Slot, n: number) => i.lemma !== uneven[n].lemma)).toBe(true);
+    expect(selectItems(root, { grade: 4, items: [items[0]] }, 4, 50)).toHaveLength(1);
+    expect(selectItems(root, { grade: 4, items }, 4, 3)).toHaveLength(3);
+  });
+
+  it.each([
+    ['반복 옵션', ['run', '--wordlist', 'content-source/wordlists/g4-r1.json', '--wordlist', 'content-source/wordlists/g4-r1b.json']],
+    ['쉼표 옵션', ['run', '--wordlist', 'content-source/wordlists/g4-r1.json, content-source/wordlists/g4-r1b.json']],
+    ['혼합 옵션', ['run', '--wordlist', 'content-source/wordlists/g4-r1.json,content-source/wordlists/g4-r1b.json', '--wordlist', 'content-source/wordlists/g4-r1.json']],
+  ])('%s의 여러 목록을 합치고 중복 칸을 한 번만 제작한다', async (_label, argv) => {
+    const { root, options, deps } = setup();
+    write(root, options.wordlist, { grade: 4, items: [words[0]] });
+    write(root, 'content-source/wordlists/g4-r1b.json', { grade: 4, items: [words[0], words[1], words[2]] });
+    const args = parseArgs(argv);
+    const result = await produce({ ...options, wordlist: args.wordlist }, deps);
+    expect(result.produced).toBe(3);
+    expect(result.rejected).toBe(0);
+    expect(results(result.stagingDir).drafts.map(q => [q.target.lemma, q.type])).toEqual(words.map(w => [w.lemma, 'cloze']));
+    expect(() => selectItems(root, [{ grade: 4, items: words }, { grade: 5, items: words }], 4, 3)).toThrow('학년');
+  });
+
+  it.each([false, true])('유형별 초안을 대기하고 중간 문항 탈락 뒤에도 낱말을 분산한다(탈락=%s)', async rejectMiddle => {
+    const { root, options, deps } = setup();
+    write(root, options.wordlist, { grade: 4, items: [{ ...words[0], types: ['cloze', 'definition'] }, words[1]] });
+    const definition = { ...drafts[0]!, stem: '선물을 “간직하다”에서 이 낱말의 뜻은 무엇일까요?', options: [
+      { id: 'a', text: '잘 챙겨 두다' }, { id: 'b', text: '멀리 내던지다' }, { id: 'c', text: '잠깐 빌려주다' }, { id: 'd', text: '곧바로 가져가다' },
+    ] };
+    const last = { ...replies[0]!, questionId: 'g4-argon-0044', draft: definition, selfRefutation: definition.options.map(o => ({ optionId: o.id, substituted: `${definition.stem} ${o.text}`, verdict: o.id === 'a' ? 'fits' : 'does_not_fit', reason: '선물을 보관한다는 뜻과 맞는지 대조했어요.' })) };
+    const middle = structuredClone(replies[1]!);
+    if (rejectMiddle) middle.selfRefutation[0]!.verdict = 'does_not_fit';
+    deps.respond.mockResolvedValueOnce(JSON.stringify({ items: [replies[0], middle, last] }));
+    if (rejectMiddle) deps.respond.mockResolvedValueOnce(JSON.stringify({ items: [middle] }));
+    const result = await produce(options, deps);
+    const out = results(result.stagingDir);
+    expect(result.produced).toBe(rejectMiddle ? 1 : 3);
+    expect(result.rejected).toBe(rejectMiddle ? 2 : 0);
+    expect(out.drafts.map(q => q.type)).toEqual(rejectMiddle ? ['cloze'] : ['cloze', 'cloze', 'definition']);
+    expect(lint.lintBatchStrict(out.drafts)).toEqual([]);
+    if (rejectMiddle) expect(out.side.rejected.some(r => /연속/.test(r.reason))).toBe(true);
+  });
+});
 
 describe('S6 보충 제작', () => {
   it('3문항을 새 낱말 선택부터 근거·검사·배열 조정·대기 manifest까지 만든다', async () => {

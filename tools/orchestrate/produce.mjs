@@ -31,28 +31,74 @@ export async function load(root) {
   return { d: await imp('src/contracts/questionDraft.ts'), b: await imp('tools/content/bankBuild.ts'), lint: await imp('src/content/lint.ts') };
 }
 
-export function selectItems(root, wordlist, grade, count) {
-  if (wordlist.grade !== grade || !Array.isArray(wordlist.items)) throw new Error('낱말 목록의 학년·items 형식 오류');
-  const existing = files(path.join(root, 'content-source/batches'), 'drafts.json')
-    .concat(files(path.join(root, '.orchestrate/staging'), 'drafts.json')).flatMap(read);
-  const used = new Set(existing.map(q => norm(q.target.lemma)));
-  // 다른 학년을 포함한 전 배치 최대 번호. 아직 반영되지 않은 대기 초안도 예약으로 센다.
-  let next = existing.reduce((n, q) => Math.max(n, Number(/^g[3-6]-argon-(\d+)$/.exec(q.id)?.[1] ?? 0)), 0) + 1;
-  const selected = [];
-  for (const item of wordlist.items) {
-    if (selected.length === count) break;
-    if (item.checked !== true || typeof item.lemma !== 'string' || !item.lemma.trim() || used.has(norm(item.lemma))) continue;
-    selected.push({ ...item, id: `g${grade}-argon-${String(next++).padStart(4, '0')}` });
-    used.add(norm(item.lemma));
+// 남은 칸이 많은 낱말부터 교차한다. 분리할 낱말이 없으면 마지막 중복 칸은 다음 배치에 남긴다.
+function spreadItems(items, lemmaFor = i => i.lemma) {
+  const groups = new Map();
+  for (const item of items) {
+    const lemma = norm(lemmaFor(item));
+    if (!groups.has(lemma)) groups.set(lemma, []);
+    groups.get(lemma).push(item);
   }
-  return selected;
+  const out = [];
+  let last;
+  while (out.length < items.length) {
+    let next;
+    for (const [lemma, queue] of groups) {
+      if (lemma !== last && queue.length && (!next || queue.length > next[1].length)) next = [lemma, queue];
+    }
+    if (!next) break;
+    last = next[0];
+    out.push(next[1].shift());
+  }
+  return out;
+}
+
+export function selectItems(root, wordlist, grade, count) {
+  const lists = Array.isArray(wordlist) ? wordlist : [wordlist];
+  if (!lists.length || lists.some(w => !w || w.grade !== grade || !Array.isArray(w.items))) throw new Error('낱말 목록의 학년·items 형식 오류');
+  const drafts = files(path.join(root, 'content-source/batches'), 'drafts.json')
+    .concat(files(path.join(root, '.orchestrate/staging'), 'drafts.json')).flatMap(read);
+  const key = (lemma, value) => JSON.stringify([norm(lemma), value]);
+  const used = new Set(drafts.map(q => key(q.target.lemma, q.type)));
+  // 대기 중인 같은 ID의 새 revision은 추가 문항이 아니다.
+  const existing = [...new Map(drafts.map(q => [q.id, q])).values()].filter(q => q.grade === grade);
+  const lemmaCounts = new Map(), senseCounts = new Map();
+  const add = (map, k) => map.set(k, (map.get(k) ?? 0) + 1);
+  for (const q of existing) {
+    add(lemmaCounts, norm(q.target.lemma));
+    add(senseCounts, key(q.target.lemma, q.source?.senseOrder));
+  }
+  const candidates = lists.flatMap(w => w.items).filter(i => i.checked === true && typeof i.lemma === 'string' && i.lemma.trim());
+  const polysemy = new Set([...existing.map(q => ({ ...q, lemma: q.target.lemma })), ...candidates]
+    .filter(i => i.variantTag === 'polysemy').map(i => norm(i.lemma)));
+  // 다른 학년을 포함한 전 배치 최대 번호. 아직 반영되지 않은 대기 초안도 예약으로 센다.
+  let next = drafts.reduce((n, q) => Math.max(n, Number(/^g[3-6]-argon-(\d+)$/.exec(q.id)?.[1] ?? 0)), 0) + 1;
+  const groups = new Map();
+  for (const item of candidates) {
+    const lemma = norm(item.lemma), sense = key(lemma, item.senseOrder);
+    for (const type of Array.isArray(item.types) ? item.types : []) {
+      const slot = key(lemma, type), group = groups.get(lemma) ?? [];
+      if (used.has(slot) || group.length >= 2 || (lemmaCounts.get(lemma) ?? 0) >= (polysemy.has(lemma) ? 5 : 4) || (senseCounts.get(sense) ?? 0) >= 2) continue;
+      group.push({ ...item, type });
+      groups.set(lemma, group);
+      used.add(slot);
+      add(lemmaCounts, lemma);
+      add(senseCounts, sense);
+    }
+  }
+  // 먼저 각 낱말 1칸씩 골라 다양성을 확보하고, 남은 자리에 두 번째 칸을 채운다.
+  const selected = [];
+  for (let round = 0; round < 2; round++) for (const group of groups.values()) {
+    if (selected.length < count && group[round]) selected.push(group[round]);
+  }
+  return spreadItems(selected).map(item => ({ ...item, id: `g${grade}-argon-${String(next++).padStart(4, '0')}` }));
 }
 
 export function evidenceInput(items) {
-  return items.map(i => {
+  return [...new Set(items.map(i => {
     if (!['word', 'idiom', 'proverb', 'dialect'].includes(i.kind)) throw new Error(`지원하지 않는 kind: ${i.kind}`);
-    return `${i.kind}:${i.lemma}`;
-  });
+    return `${i.kind}:${norm(i.lemma)}`;
+  }))];
 }
 
 function gradeBasis(root, item) {
@@ -73,7 +119,7 @@ function gradeBasis(root, item) {
 
 function targetTier(item, grade) {
   if (![item.expectedL1, item.expectedL2].every(n => Number.isInteger(n) && n >= 0 && n <= 3)) throw new Error('expectedL1·expectedL2는 0~3 정수여야 한다');
-  const type = item.types?.[0];
+  const type = item.type ?? item.types?.[0];
   if (!['definition', 'cloze', 'synonym_context', 'antonym_context', 'usage'].includes(type)) throw new Error('지원하지 않는 목표 유형');
   const variants = ['standard', 'polysemy', 'confusable', 'idiom_proverb', 'dialect'];
   if (!variants.includes(item.variantTag)) throw new Error('지원하지 않는 variantTag');
@@ -99,7 +145,7 @@ export function prepare(root, batchId, grade, items, evidence) {
         schemaVersion: '0.2', batchId, id: item.id, revision: 1, status: 'machine_checked', grade,
         gradeBasis: gradeBasis(root, item),
         target: { lemma: item.lemma, partOfSpeech: item.partOfSpeech, senseKey: `${item.lemma}/${item.partOfSpeech}/${e.provider === 'opendict' ? 'od-' : ''}${e.wordNo}-${e.senseOrder}` },
-        type: item.types[0], difficultyTier: targetTier(item, grade), variantTag: item.variantTag,
+        type: item.type ?? item.types?.[0], difficultyTier: targetTier(item, grade), variantTag: item.variantTag,
         ...(item.dialectRegion ? { dialectRegion: item.dialectRegion } : {}),
         source: { provider: e.provider ?? 'stdict', entryId: String(e.wordNo), senseId: e.senseId == null ? null : String(e.senseId), senseOrder: e.senseOrder,
           url: e.url, retrievedAt: e.retrievedAt, license: e.license, evidenceHash: e.sha256, evidenceArtifactId: e.file },
@@ -246,8 +292,9 @@ async function produceRun(options, deps) {
   if (files(path.join(root, '.orchestrate/staging', batchId), 'manifest.json').length) throw new Error('이미 대기 결과가 있는 배치');
   if (dryRun && (!deps.respond || !deps.fetchEvidence)) throw new Error('--dry-run은 가짜 응답기·근거 조회 주입이 필요하다(--fixture <json>)');
   const m = deps.modules ?? await load(root);
-  const items = selectItems(root, read(path.resolve(root, wordlist)), grade, count);
-  if (!items.length) throw new Error('제작할 checked=true 새 낱말이 없다');
+  const lists = wordlistPaths(wordlist).map(file => read(path.resolve(root, file)));
+  const items = selectItems(root, lists, grade, count);
+  if (!items.length) throw new Error('제작할 checked=true 낱말·유형 칸이 없다');
   const createdAt = (deps.now?.() ?? new Date()).toISOString();
   const runId = `${createdAt.replace(/[-:]/g, '').replace('.', '')}-${process.pid}-${crypto.randomBytes(3).toString('hex')}`;
   const work = path.join(root, '.orchestrate/produce', batchId, runId);
@@ -288,7 +335,10 @@ async function produceRun(options, deps) {
     if (reasons.length) rejected.push({ lemma: p.draft.target.lemma, reason: reasons.join('; ') });
     return !reasons.length;
   });
-  accepted = balanceAnswers(accepted);
+  const spaced = spreadItems(accepted, p => p.draft.target.lemma);
+  const kept = new Set(spaced.map(p => p.draft.id));
+  for (const p of accepted) if (!kept.has(p.draft.id)) rejected.push({ lemma: p.draft.target.lemma, reason: '같은 낱말이 연속되지 않도록 분리할 다른 낱말이 없다' });
+  accepted = balanceAnswers(spaced);
   const drafts = accepted.map(p => p.draft);
   const issues = m.lint.lintBatchStrict(drafts);
   if (issues.length) throw new Error(`최종 배치 검사 실패: ${issues.join('; ')}`);
@@ -309,14 +359,30 @@ async function produceRun(options, deps) {
   return { manifest, stagingDir: dir, produced: drafts.length, rejected: rejected.length };
 }
 
-async function main() {
-  const argv = process.argv.slice(2), a = {};
-  if (argv.shift() !== 'run') throw new Error('사용: produce.mjs run --root <dir> --wordlist <json> --batch Q50-G<N>-0NN --grade <N> [--count 50] [--dry-run --fixture <json>]');
+function wordlistPaths(value) {
+  const paths = (Array.isArray(value) ? value : [value]).flatMap(file => typeof file === 'string' ? file.split(',').map(s => s.trim()) : ['']);
+  if (!paths.length || paths.some(file => !file)) throw new Error('--wordlist에 하나 이상의 목록 경로가 필요하다');
+  return [...new Set(paths)];
+}
+
+export function parseArgs(args) {
+  const argv = [...args], a = { wordlist: [] };
+  if (argv.shift() !== 'run') throw new Error('사용: produce.mjs run --root <dir> --wordlist <json[,json]> [--wordlist <json>] --batch Q50-G<N>-0NN --grade <N> [--count 50] [--dry-run --fixture <json>]');
   for (let i = 0; i < argv.length; i++) {
     if (argv[i] === '--dry-run') a.dryRun = true;
-    else if (/^--(root|wordlist|batch|grade|count|fixture)$/.test(argv[i]) && argv[i + 1] && !argv[i + 1].startsWith('--')) a[argv[i].slice(2)] = argv[++i];
+    else if (/^--(root|wordlist|batch|grade|count|fixture)$/.test(argv[i]) && argv[i + 1] && !argv[i + 1].startsWith('--')) {
+      const name = argv[i].slice(2), value = argv[++i];
+      if (name === 'wordlist') a.wordlist.push(value);
+      else a[name] = value;
+    }
     else throw new Error(`알 수 없거나 값이 없는 인자: ${argv[i]}`);
   }
+  a.wordlist = wordlistPaths(a.wordlist);
+  return a;
+}
+
+async function main() {
+  const a = parseArgs(process.argv.slice(2));
   const root = path.resolve(a.root ?? path.join(import.meta.dirname, '../..'));
   const deps = {};
   if (a.dryRun && a.fixture) {
