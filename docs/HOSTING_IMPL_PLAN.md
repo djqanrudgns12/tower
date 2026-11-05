@@ -14,7 +14,7 @@
 | 4 | **화면 그림 WebP 전환**(UI 아이콘·설명서 그림) | Claude 서브에이전트(단계 1 작성자) | R5 완료(af83bf5) | **완료** `09b3979`(ui 29·guide 5장 1.76MB → 0.33MB, 예외 0, `public/` PNG 0장) |
 | 5 | **앱을 새 서버에 연결** | Claude 서브에이전트(단계 3 작성자) | 단계 3 | **완료** `3bab9ea`(랭킹 캐시 60초)·`d9edf31`(VITE_API_BASE, 웹소켓 제거)·`ebec750`(홈 '최근 접속'). 서버 시험 70/70, 로컬 연결 e2e 1/1 |
 | 6 | **배포 장치**(GitHub Actions·Worker 설정·`supabase/` 보관) | Claude 서브에이전트(단계 3 작성자) | 사용자 결정 A(끝남: `voca`·`voca-api.ssamuniverse.com`, `main`) | **완료** `0311e89`·`802492d`·`742b034`, `main` 빨리 감기(742b034). 워크플로 액션 최신 주 버전 확인, 무료 속도 제한 규칙은 경로 5개로 |
-| 7 | **실제로 올리고 연결 확인** | 사용자 + Claude | 단계 6, 사용자 할 일 B~E | 사용자 차례(GitHub Pages 켜기·DNS·Cloudflare 로그인) — 순서는 [DEPLOY.md](DEPLOY.md) |
+| 7 | **실제로 올리고 연결 확인** | 사용자 + Claude | 단계 6, 사용자 할 일 B~E | **거의 끝(2026-11-05)**: 게임 `https://voca.ssamuniverse.com`(Let's Encrypt, HTTPS 강제), 서버 `voca-api`(D1 `vocabulary-td` APAC, 정답 키 적용, 비밀값 사용자 입력, 매일 04:00 정리 예약). 실제 브라우저에서 공개 기록 켬 → 기기·홈·랭킹 200. 남은 것: 사용자 WAF 규칙 1개, 사용자 한 판 랭킹 확인 |
 | 8 | **출시 뒤**: 다시 열 때 바로 뜨게(서비스 워커), 실기기·학교 망, 월 점검 | Claude + 사용자 | 단계 7 | 대기 |
 
 ```
