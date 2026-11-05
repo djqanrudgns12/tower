@@ -6,6 +6,7 @@ import { describe, expect, it } from 'vitest';
 // 화면 용어 검사(R5 C4, docs/renewal/prd-r5-oak-v2.md §3.3·ui-rules-v4). 학생에게 보이는 글은 평이한 범용어만 쓴다.
 // 세계관 말투(수호·출정·징집·작전실·명예점 등)는 2026-11-04 사용자 결정으로 쓰지 않는다.
 // 코드의 문자열·템플릿 조각·JSX 글만 읽고 주석은 읽지 않는다. 엔진(src/domain)·계약(src/contracts)의 개발자용 오류 문구는 화면에 나오지 않아 대상이 아니다.
+// 단, 밸런스 계약 JSON의 진화 형태·보물 label·summary는 카드에 그대로 보이므로 따로 읽는다(R5 P4).
 
 /** 쓰지 않는 말 → 대신 쓰는 말. */
 const BANNED: Readonly<Record<string, string>> = {
@@ -93,6 +94,31 @@ describe('화면 용어(평이한 말)', () => {
         for (const [word, use] of Object.entries(BANNED)) {
           if (text.includes(word)) found.push(`${path.relative(PROJECT, f)}:${line} 「${word}」→ ${use} · ${text.replace(/\s+/g, ' ').trim().slice(0, 60)}`);
         }
+      }
+    }
+    expect(found).toEqual([]);
+  });
+
+  it('진화·보물 카드 문구(밸런스 계약 JSON의 label·summary)에 쓰지 않는 말과 느낌표가 없다', () => {
+    type Card = { label?: string; summary?: string };
+    const balance = JSON.parse(readFileSync(path.join(PROJECT, 'docs/contracts/balance.candidate.v0.4.json'), 'utf8')) as {
+      forms: Record<string, Record<string, Card>>;
+      relics: { items: Record<string, Card> };
+    };
+    const cards: [string, Card][] = [
+      ...Object.entries(balance.forms).flatMap(([tower, forms]) => Object.entries(forms).map(([form, card]): [string, Card] => [`forms.${tower}.${form}`, card])),
+      ...Object.entries(balance.relics.items).map(([id, card]): [string, Card] => [`relics.${id}`, card]),
+    ];
+    expect(cards.length).toBeGreaterThan(100);
+    const found: string[] = [];
+    for (const [id, card] of cards) {
+      for (const field of ['label', 'summary'] as const) {
+        const text = card[field];
+        if (typeof text !== 'string') continue;
+        for (const [word, use] of Object.entries(BANNED)) {
+          if (text.includes(word)) found.push(`${id}.${field} 「${word}」→ ${use} · ${text}`);
+        }
+        if (/[!！]/.test(text)) found.push(`${id}.${field} 느낌표 · ${text}`);
       }
     }
     expect(found).toEqual([]);
