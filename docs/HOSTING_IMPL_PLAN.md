@@ -11,7 +11,7 @@
 | 1 | **전투 그림 WebP 전환**(378장) + 변환 도구·규칙 시험 | Claude 서브에이전트 | 없음 | **완료** `9c476cc`(14.19MB → 3.20MB, 알파 불일치 0, 예외 0) |
 | 2 | **고른 맵 그림만 받기** | 단계 1과 같은 서브에이전트 | 단계 1 | **완료** `b2b14af`·`21f6c49`(전투 장면과 홈 캔버스 모두 다른 맵 재료 0장). 정원 판 첫 전투 전: 그림 2.43MB + JS 0.62MB(압축) ≈ 3.05MB, 글꼴·manifest까지 3.68MB(전 15.4MB) |
 | 3 | **서버 작성**(Cloudflare Workers + D1) | Claude 서브에이전트 | 없음 | **완료** `1d5df7e`·`5c25030`·`ccf31c2`, Codex 검토 P1 2건 수정 `8671839`(속도 제한 역행, IP별 합산 한도). 서버 시험 64/64 |
-| 4 | **화면 그림 WebP 전환**(UI 아이콘·설명서 그림) | Claude 서브에이전트(단계 1 작성자) | R5 완료(af83bf5) | 진행 중 |
+| 4 | **화면 그림 WebP 전환**(UI 아이콘·설명서 그림) | Claude 서브에이전트(단계 1 작성자) | R5 완료(af83bf5) | **완료** `09b3979`(ui 29·guide 5장 1.76MB → 0.33MB, 예외 0, `public/` PNG 0장) |
 | 5 | **앱을 새 서버에 연결** | Claude 서브에이전트(단계 3 작성자) | 단계 3 | **완료** `3bab9ea`(랭킹 캐시 60초)·`d9edf31`(VITE_API_BASE, 웹소켓 제거)·`ebec750`(홈 '최근 접속'). 서버 시험 70/70, 로컬 연결 e2e 1/1 |
 | 6 | **배포 장치**(GitHub Actions·Worker 설정·`supabase/` 보관) | Claude | 단계 5, 사용자 결정 A | 대기 |
 | 7 | **실제로 올리고 연결 확인** | 사용자 + Claude | 단계 6, 사용자 할 일 B~E | 대기 |
@@ -145,8 +145,8 @@
 ### 단계 4 · 화면 그림 WebP 전환 (R5 P3 뒤)
 
 - 대상
-  - `public/assets/ui/*.png` 28장(0.43MB)
-  - `public/assets/guide/*.png` 4장(0.99MB)
+  - `public/assets/ui/*.png` 29장(0.64MB)
+  - `public/assets/guide/*.png` 5장(1.12MB)
 - 그림을 부르는 곳: kit `ArtIcon`, `RelicCard`, `guideModel`, `global.css`, `BattleScene` 특성 배지, `tests/unit/guide.test.ts`
 - R5 P3가 `src/ui/**`를 쓰는 중이라, R5 P3 관문 뒤에 하거나 R5 메인에 넘긴다. 같은 파일을 동시에 고치지 않는다.
 - 끝 기준: 예외 목록 밖 PNG 0, verify·e2e 통과, 화면 캡처 비교.
