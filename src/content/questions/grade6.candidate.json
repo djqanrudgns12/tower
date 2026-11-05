@@ -1,6 +1,6 @@
 {
   "bankId": "g6-candidate",
-  "bankVersion": "cand-6b83c83c852d",
+  "bankVersion": "cand-9a6850aff9a8",
   "grade": 6,
   "status": "verified_candidate",
   "note": "공동검수 진행 중인 후보 은행. 같은 revision의 외부 블라인드 검수(codex·claude) 1건 이상과 새 문맥 argon-blind를 통과했다. 3모델 공동검수 승인 전에는 게임에 싣지 않는다(PRD §9.3).",
@@ -246,86 +246,6 @@
       }
     },
     {
-      "id": "g6-argon-0007",
-      "revision": 1,
-      "status": "verified_candidate",
-      "grade": 6,
-      "type": "synonym_context",
-      "difficultyTier": "basic",
-      "variantTag": "standard",
-      "target": {
-        "lemma": "성숙하다",
-        "partOfSpeech": "동사",
-        "senseKey": "성숙하다/동사/187493-1"
-      },
-      "stem": "\"봄에 태어난 어린 사슴이 가을이 되자 몸집이 완전히 성숙하여 스스로 먹이를 찾았습니다.\" 문장의 ‘성숙하여’와 바꾸어 쓸 수 있는 말은 무엇일까요?",
-      "options": [
-        {
-          "id": "a",
-          "text": "다 자라서"
-        },
-        {
-          "id": "b",
-          "text": "작아져서"
-        },
-        {
-          "id": "c",
-          "text": "약해져서"
-        },
-        {
-          "id": "d",
-          "text": "잠들어서"
-        }
-      ],
-      "correctOptionId": "a",
-      "explanation": "여기서 ‘성숙하다’는 생물의 발육이 완전히 이루어진다는 뜻이므로 ‘다 자라서’와 통해요.",
-      "distractorRationales": {
-        "b": "‘작아져서’는 발육이 이루어진 상태와 반대돼요.",
-        "c": "‘약해져서’는 기운이 줄어든다는 뜻이라 어색해요.",
-        "d": "‘잠들어서’는 잠에 빠진다는 뜻이라 맞지 않아요."
-      }
-    },
-    {
-      "id": "g6-argon-0008",
-      "revision": 1,
-      "status": "verified_candidate",
-      "grade": 6,
-      "type": "usage",
-      "difficultyTier": "basic",
-      "variantTag": "standard",
-      "target": {
-        "lemma": "가치관",
-        "partOfSpeech": "명사",
-        "senseKey": "가치관/명사/393146-1"
-      },
-      "stem": "‘가치관’의 쓰임이 가장 자연스러운 문장은 무엇일까요?",
-      "options": [
-        {
-          "id": "a",
-          "text": "독서를 하며 무엇이 옳고 소중한지 아는 가치관을 길렀다."
-        },
-        {
-          "id": "b",
-          "text": "연필 길이를 재려고 필통에서 곧은 가치관을 꺼냈다."
-        },
-        {
-          "id": "c",
-          "text": "뜨거운 냄비를 옮기려고 옆에 달린 가치관을 잡았다."
-        },
-        {
-          "id": "d",
-          "text": "지붕 위에 빗물이 흘러내리는 가치관을 설치했다."
-        }
-      ],
-      "correctOptionId": "a",
-      "explanation": "‘가치관’은 사물이나 세계를 평가할 때 기준이 되는 근본 태도와 관점을 뜻해요.",
-      "distractorRationales": {
-        "b": "길이를 재는 도구는 ‘자’이므로 쓰임이 틀려요.",
-        "c": "냄비 옆에 달린 것은 ‘손잡이’예요.",
-        "d": "빗물을 흘려보내는 통로는 ‘배수관’이에요."
-      }
-    },
-    {
       "id": "g6-argon-0009",
       "revision": 1,
       "status": "verified_candidate",
@@ -523,6 +443,46 @@
         "a": "음식의 짠 정도는 ‘맛’이나 ‘간’이라고 해요.",
         "c": "도서관에서 지켜야 하는 것은 ‘정숙’이나 ‘예절’이에요.",
         "d": "하늘에 걸리는 일곱 빛깔 현상은 ‘무지개’예요."
+      }
+    },
+    {
+      "id": "g6-argon-0014",
+      "revision": 3,
+      "status": "verified_candidate",
+      "grade": 6,
+      "type": "cloze",
+      "difficultyTier": "basic",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "자주적",
+        "partOfSpeech": "관형사",
+        "senseKey": "자주적/관형사/277567-2"
+      },
+      "stem": "어린이회 임원들은 어른의 간섭을 받지 않고 학급 문제를 스스로 해결하려는 (    ) 태도를 보였다.",
+      "options": [
+        {
+          "id": "a",
+          "text": "자주적"
+        },
+        {
+          "id": "b",
+          "text": "의존적"
+        },
+        {
+          "id": "c",
+          "text": "수동적"
+        },
+        {
+          "id": "d",
+          "text": "강압적"
+        }
+      ],
+      "correctOptionId": "a",
+      "explanation": "남의 간섭을 받지 않고 자기 일을 스스로 처리하는 성질이므로 ‘자주적’이 알맞아요.",
+      "distractorRationales": {
+        "b": "남에게 기대어 의지하는 태도라 스스로 해결한다는 말과 반대예요.",
+        "c": "남이 시키는 대로만 움직이는 뜻이라 문맥에 맞지 않아요.",
+        "d": "힘으로 억눌러 따르게 하는 태도라 자치 활동과 어긋나요."
       }
     },
     {
@@ -806,86 +766,6 @@
       }
     },
     {
-      "id": "g6-argon-0022",
-      "revision": 1,
-      "status": "verified_candidate",
-      "grade": 6,
-      "type": "synonym_context",
-      "difficultyTier": "basic",
-      "variantTag": "standard",
-      "target": {
-        "lemma": "절제하다",
-        "partOfSpeech": "동사",
-        "senseKey": "절제하다/동사/481938-1"
-      },
-      "stem": "건강을 위해 단 음식을 먹는 양을 스스로 ‘절제했습니다’. ‘절제했습니다’와 바꾸어 쓸 수 있는 말은 무엇일까요?",
-      "options": [
-        {
-          "id": "a",
-          "text": "끝없이 마음껏 늘렸습니다"
-        },
-        {
-          "id": "b",
-          "text": "남에게 억지로 권했습니다"
-        },
-        {
-          "id": "c",
-          "text": "알맞게 조절해 줄였습니다"
-        },
-        {
-          "id": "d",
-          "text": "아무 생각 없이 먹었습니다"
-        }
-      ],
-      "correctOptionId": "c",
-      "explanation": "여기서 ‘절제하다’는 정도에 넘지 않도록 알맞게 조절하여 제한한다는 뜻이에요.",
-      "distractorRationales": {
-        "a": "마음껏 늘리는 것은 절제와 반대돼요.",
-        "b": "남에게 억지로 권하는 행동과는 뜻이 달라요.",
-        "d": "생각 없이 먹는 것은 조절하는 태도가 아니에요."
-      }
-    },
-    {
-      "id": "g6-argon-0023",
-      "revision": 1,
-      "status": "verified_candidate",
-      "grade": 6,
-      "type": "usage",
-      "difficultyTier": "basic",
-      "variantTag": "standard",
-      "target": {
-        "lemma": "온정",
-        "partOfSpeech": "명사",
-        "senseKey": "온정/명사/246085-1"
-      },
-      "stem": "‘온정’을 ‘따뜻한 사랑이나 인정’이라는 뜻에 맞게 쓴 문장은 무엇일까요?",
-      "options": [
-        {
-          "id": "a",
-          "text": "연필심이 부러져서 필통에서 온정을 꺼내 깎았다."
-        },
-        {
-          "id": "b",
-          "text": "자전거 바퀴에 펌프로 시원한 온정을 가득 넣었다."
-        },
-        {
-          "id": "c",
-          "text": "시험지 맨 윗줄에 학년과 온정을 또박또박 적었다."
-        },
-        {
-          "id": "d",
-          "text": "어려운 이웃을 돕는 주민들의 따뜻한 온정이 모였다."
-        }
-      ],
-      "correctOptionId": "d",
-      "explanation": "여기서 ‘온정’은 남을 생각하는 따뜻한 사랑이나 인정을 뜻해요.",
-      "distractorRationales": {
-        "a": "연필을 깎는 학용품을 가리키지 않아요.",
-        "b": "바퀴에 넣는 바람이나 공기가 아니에요.",
-        "c": "시험지에 적는 이름이나 번호가 아니에요."
-      }
-    },
-    {
       "id": "g6-argon-0024",
       "revision": 1,
       "status": "verified_candidate",
@@ -1126,46 +1006,6 @@
       }
     },
     {
-      "id": "g6-argon-0030",
-      "revision": 1,
-      "status": "verified_candidate",
-      "grade": 6,
-      "type": "cloze",
-      "difficultyTier": "advanced",
-      "variantTag": "idiom_proverb",
-      "target": {
-        "lemma": "머리를 숙이다",
-        "partOfSpeech": "관용구",
-        "senseKey": "머리를 숙이다/관용구/527508-1"
-      },
-      "stem": "처음에는 큰소리를 치며 맞서던 상대도 분명한 증거 앞에서는 결국 (    ) 순순히 물러섰다. 빈칸에 알맞은 말은 무엇일까요?",
-      "options": [
-        {
-          "id": "a",
-          "text": "어깨를 으쓱하고"
-        },
-        {
-          "id": "b",
-          "text": "머리를 숙이고"
-        },
-        {
-          "id": "c",
-          "text": "가슴을 펴고"
-        },
-        {
-          "id": "d",
-          "text": "두 팔을 걷고"
-        }
-      ],
-      "correctOptionId": "b",
-      "explanation": "여기서 ‘머리를 숙이다’는 상대에게 굴복하거나 저자세를 보인다는 뜻이에요.",
-      "distractorRationales": {
-        "a": "‘어깨를 으쓱하다’는 뽐내며 우쭐거리는 태도예요.",
-        "c": "‘가슴을 펴다’는 당당하게 나서는 모습이에요.",
-        "d": "‘두 팔을 걷다’는 일에 적극 나서는 모습이에요."
-      }
-    },
-    {
       "id": "g6-argon-0031",
       "revision": 1,
       "status": "verified_candidate",
@@ -1326,46 +1166,6 @@
       }
     },
     {
-      "id": "g6-argon-0035",
-      "revision": 1,
-      "status": "verified_candidate",
-      "grade": 6,
-      "type": "cloze",
-      "difficultyTier": "advanced",
-      "variantTag": "idiom_proverb",
-      "target": {
-        "lemma": "콩 심은 데 콩 나고 팥 심은 데 팥 난다",
-        "partOfSpeech": "속담",
-        "senseKey": "콩 심은 데 콩 나고 팥 심은 데 팥 난다/속담/532418-1"
-      },
-      "stem": "정직하게 노력한 만큼 정직한 결과가 나타난다는 뜻으로 쓰는 속담은 ‘(    )’입니다. 빈칸에 알맞은 말은 무엇일까요?",
-      "options": [
-        {
-          "id": "a",
-          "text": "낮말은 새가 듣고 밤말은 쥐가 듣는다"
-        },
-        {
-          "id": "b",
-          "text": "가는 말이 고와야 오는 말이 곱다"
-        },
-        {
-          "id": "c",
-          "text": "콩 심은 데 콩 나고 팥 심은 데 팥 난다"
-        },
-        {
-          "id": "d",
-          "text": "사공이 많으면 배가 산으로 간다"
-        }
-      ],
-      "correctOptionId": "c",
-      "explanation": "모든 일은 근본이나 원인에 걸맞은 결과가 나타난다는 뜻의 속담이에요.",
-      "distractorRationales": {
-        "a": "말조심을 해야 한다는 뜻의 속담이에요.",
-        "b": "남에게 먼저 좋게 대해야 한다는 속담이에요.",
-        "d": "주장하는 사람이 많으면 일이 어긋난다는 뜻이에요."
-      }
-    },
-    {
       "id": "g6-argon-0036",
       "revision": 1,
       "status": "verified_candidate",
@@ -1446,86 +1246,6 @@
       }
     },
     {
-      "id": "g6-argon-0038",
-      "revision": 1,
-      "status": "verified_candidate",
-      "grade": 6,
-      "type": "cloze",
-      "difficultyTier": "advanced",
-      "variantTag": "idiom_proverb",
-      "target": {
-        "lemma": "지렁이도 밟으면 꿈틀한다",
-        "partOfSpeech": "속담",
-        "senseKey": "지렁이도 밟으면 꿈틀한다/속담/532017-1"
-      },
-      "stem": "평소 아무리 순하고 착한 사람이라도 자꾸 업신여기고 괴롭히면 가만있지 않는다는 속담은 ‘(    )’입니다. 빈칸에 알맞은 것은 무엇일까요?",
-      "options": [
-        {
-          "id": "a",
-          "text": "개구리 올챙이 적 생각 못 한다"
-        },
-        {
-          "id": "b",
-          "text": "가랑비에 옷 젖는 줄 모른다"
-        },
-        {
-          "id": "c",
-          "text": "지렁이도 밟으면 꿈틀한다"
-        },
-        {
-          "id": "d",
-          "text": "남의 떡이 더 커 보인다"
-        }
-      ],
-      "correctOptionId": "c",
-      "explanation": "아무리 순한 사람이라도 너무 업신여기면 참지 않고 맞선다는 속담이에요.",
-      "distractorRationales": {
-        "a": "형편이 나아진 뒤 지난날을 잊는다는 뜻이에요.",
-        "b": "작은 일도 쌓이면 크게 된다는 뜻이에요.",
-        "d": "남의 것이 자기 것보다 좋아 보인다는 뜻이에요."
-      }
-    },
-    {
-      "id": "g6-argon-0039",
-      "revision": 1,
-      "status": "verified_candidate",
-      "grade": 6,
-      "type": "cloze",
-      "difficultyTier": "advanced",
-      "variantTag": "idiom_proverb",
-      "target": {
-        "lemma": "백 번 듣는 것이 한 번 보는 것만 못하다",
-        "partOfSpeech": "속담",
-        "senseKey": "백 번 듣는 것이 한 번 보는 것만 못하다/속담/528394-1"
-      },
-      "stem": "책으로만 여러 번 읽던 유적을 현장에 가서 직접 눈으로 보니 단번에 이해되었다는 상황에 알맞은 속담은 ‘(    )’입니다. 빈칸에 알맞은 것은 무엇일까요?",
-      "options": [
-        {
-          "id": "a",
-          "text": "서당 개 삼 년이면 풍월을 읊는다"
-        },
-        {
-          "id": "b",
-          "text": "고래 싸움에 새우 등 터진다"
-        },
-        {
-          "id": "c",
-          "text": "백 번 듣는 것이 한 번 보는 것만 못하다"
-        },
-        {
-          "id": "d",
-          "text": "보기 좋은 떡이 먹기도 좋다"
-        }
-      ],
-      "correctOptionId": "c",
-      "explanation": "아무리 여러 번 듣더라도 직접 한 번 눈으로 보는 것이 훨씬 확실하다는 속담이에요.",
-      "distractorRationales": {
-        "a": "오래 곁에서 보고 들으면 자연히 익힌다는 뜻이에요.",
-        "b": "강한 자들 싸움에 약한 자가 해를 입는다는 뜻이에요.",
-        "d": "내용이 좋으면 겉모양도 좋다는 뜻이에요."
-      }
-    },
-    {
       "id": "g6-argon-0040",
       "revision": 1,
       "status": "verified_candidate",
@@ -1567,44 +1287,44 @@
       }
     },
     {
-      "id": "g6-argon-0041",
-      "revision": 1,
+      "id": "g6-argon-0042",
+      "revision": 2,
       "status": "verified_candidate",
       "grade": 6,
       "type": "definition",
       "difficultyTier": "challenge",
       "variantTag": "dialect",
-      "dialectRegion": "충청",
+      "dialectRegion": "제주",
       "target": {
-        "lemma": "나숭개",
+        "lemma": "강생이",
         "partOfSpeech": "명사",
-        "senseKey": "나숭개/명사/od-111466-1"
+        "senseKey": "강생이/명사/od-486494-1"
       },
-      "stem": "이른 봄 들판에서 할머니께서 향긋한 뿌리 봄나물을 캐시며 \"오늘 저녁엔 나숭개를 넣어 구수한 된장국을 끓이자.\"라고 하셨습니다. ‘나숭개’의 표준어는 무엇일까요?",
+      "stem": "\"제주 할머니께서 마당의 개집을 가리키시며 '지난달에 우리 집 어미 개가 낳은 강생이가 벌써 꼬리를 흔들며 멍멍 잘도 짖는구나.'라고 말씀하셨다.\" 이 대화에서 ‘강생이’의 뜻은 무엇일까요?",
       "options": [
         {
           "id": "a",
-          "text": "수박"
+          "text": "강아지"
         },
         {
           "id": "b",
-          "text": "미역"
+          "text": "송아지"
         },
         {
           "id": "c",
-          "text": "냉이"
+          "text": "망아지"
         },
         {
           "id": "d",
-          "text": "버섯"
+          "text": "고양이"
         }
       ],
-      "correctOptionId": "c",
-      "explanation": "‘나숭개’는 이른 봄 들에서 캐어 국이나 무침으로 먹는 ‘냉이’의 방언이에요.",
+      "correctOptionId": "a",
+      "explanation": "어미 개가 낳아 개집에 살며 멍멍 짖는 새끼이므로 ‘강생이’는 ‘강아지’예요.",
       "distractorRationales": {
-        "a": "‘수박’은 여름철에 먹는 둥근 과일 채소예요.",
-        "b": "‘미역’은 바다에서 자라는 해조류예요.",
-        "d": "‘버섯’은 그늘진 땅이나 나무에서 자라는 균류예요."
+        "b": "소의 새끼는 어미 개가 낳거나 멍멍 짖지 않아요.",
+        "c": "말의 새끼라 개집에서 어미 개가 낳았다는 단서와 달라요.",
+        "d": "어미 개에게서 태어나 멍멍 짖는 동물이 아니에요."
       }
     },
     {
@@ -1728,47 +1448,6 @@
         "a": "‘여름’은 솜이불이 필요 없는 더운 계절이에요.",
         "b": "‘가을’은 추위가 본격적으로 오기 전 선선한 계절이에요.",
         "c": "‘새벽’은 해가 뜨기 직전의 하루 시간대예요."
-      }
-    },
-    {
-      "id": "g6-argon-0046",
-      "revision": 1,
-      "status": "verified_candidate",
-      "grade": 6,
-      "type": "definition",
-      "difficultyTier": "challenge",
-      "variantTag": "dialect",
-      "dialectRegion": "전라",
-      "target": {
-        "lemma": "나락",
-        "partOfSpeech": "명사",
-        "senseKey": "나락/명사/od-331685-2"
-      },
-      "stem": "추수를 마친 농부 아저씨께서 \"햇볕에 말린 나락의 겉껍질을 벗겨 내면 우리가 밥으로 짓는 하얀 쌀이 나온단다.\"라고 하셨습니다. ‘나락’의 표준어는 무엇일까요?",
-      "options": [
-        {
-          "id": "a",
-          "text": "벼"
-        },
-        {
-          "id": "b",
-          "text": "콩"
-        },
-        {
-          "id": "c",
-          "text": "팥"
-        },
-        {
-          "id": "d",
-          "text": "깨"
-        }
-      ],
-      "correctOptionId": "a",
-      "explanation": "‘나락’은 껍질을 벗기면 쌀이 되는 곡식인 ‘벼’를 이르는 방언이에요.",
-      "distractorRationales": {
-        "b": "‘콩’은 두부나 메주를 만드는 둥근 곡식이에요.",
-        "c": "‘팥’은 붉은빛이 돌며 떡고물이나 죽에 써요.",
-        "d": "‘깨’는 기름을 짜거나 양념으로 쓰는 작은 씨앗이에요."
       }
     },
     {
