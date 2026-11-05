@@ -1,6 +1,6 @@
 # 4~6학년 공개 문항 1,000+ 공동검수 계획 (CR-1000)
 
-기준일 2026-11-05 · 작성 Claude(총괄) · 상태: **사용자 검토 전**
+기준일 2026-11-05 · 작성 Claude(총괄) · 상태: **사용자 승인 2026-11-06, D1~D5 권장안으로 진행 중**
 입력: 현황 측정(이 문서 §1, 부록 A), Codex 코드 영향 조사(`.orchestrate/plan-input/codex-code-scope.md`, git 제외), Antigravity 수준 기준 의견(§3에 반영), Codex 계획 검토(`.orchestrate/plan-input/codex-plan-review.md`, 지적 14건 반영)
 관련: [공동검수 절차](joint_review_protocol_v0_2.md) · [실행 게시판](EXECUTION_BOARD.md) · `tools/content/bankBuild.ts` · `tools/orchestrate/*.mjs`
 
@@ -485,6 +485,8 @@ Antigravity는 읽기 전용이다. **모든 지시는 "답장 본문에 JSON으
 | `content-source/approvals/{registry,candidate-registry}.json`, `src/content/questions/grade*.json`(삭제 포함), `server/seed/question_keys.sql` | 잠금 안의 생성기만 | 잠금 커밋 |
 | `content-source/wordlists/**`, `content-source/reference/**` | Codex(O-C5·O-C6), 도구 | 목록마다 |
 | 코드 조각 파일 | §6.1 표의 담당 | 조각마다 |
+
+**대기 형식**(W1a·W7·W4a 지시서부터 공통, 바꾸지 않는다): `.orchestrate/staging/<batchId>/<runId>/manifest.json` = `{batchId, runId, tool, model, createdAt, writes:[{path, sha256}], deletes:[path]}`, 쓸 파일의 전체 새 내용은 `.orchestrate/staging/<batchId>/<runId>/files/<저장소 상대 경로>`. `runId`는 정렬하면 시간순(예: `20261106T031500Z-<pid>`). 반영은 W2b 잠금이 `runId` 순서로 하고, sha256을 확인한 뒤 대기 폴더를 지운다. 예외: 아직 `drafts.json`이 없는 새 배치의 `evidence/`는 `fetch-evidence`가 직접 쓴다(로더가 읽지 않으므로).
 
 - 루프가 도는 동안 위 콘텐츠 경로는 루프 전용이다. 다른 세션·에이전트는 고치지 않는다. 빌드 계약을 바꾸는 W5는 루프를 멈춘 지점에서 통합한다.
 - 공개 은행이 30문항을 넘는 순간부터 그 학년이 로컬 게임에서 열리고, 커밋마다 판 번호가 바뀐다. 로컬 seed는 잠금 커밋에 함께 들어가므로 로컬 서버 시험은 맞는다. **운영 서버와 배포는 S8에서 한 번만** 한다.
