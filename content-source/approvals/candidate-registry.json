@@ -2,7 +2,7 @@
   "schemaVersion": "1",
   "rule": "3모델 공동검수 승인 문항 또는 (Argon 자체 반박에서 정답만 맞음 · 같은 revision·contentHash의 외부 블라인드 검수(codex·claude) 1건 이상이 있고 있는 것은 모두 pass · 새 문맥 argon-blind 독립 풀이가 정답과 같고 source·uniqueness·grade·language 모두 pass · 해설 대조 pass · 게시 형식·의미·엄격 검사 통과). 하나라도 어긋나면 격리한다. 후보 은행은 제작 진척 확인용이며 게임에 싣지 않는다(PRD §9.3).",
   "approved": 2721,
-  "quarantined": 1494,
+  "quarantined": 1492,
   "entries": [
     {
       "questionId": "g3-argon-0001",
@@ -27536,23 +27536,14 @@
     },
     {
       "questionId": "g6-argon-0007",
-      "revision": 1,
+      "revision": 2,
       "batchId": "Q50-G6-001",
-      "contentHash": "8881223db4d12227909dd379d73b0b9c8366e76b26a8438fee4ae945cc498803",
+      "contentHash": "de24f5d70520b3ed206bf987095f147701398c18ed6c96d7d34b2e80b610d8b1",
       "decision": "quarantined",
       "reasons": [
-        "codex: grade uncertain",
-        "codex: language fail"
-      ]
-    },
-    {
-      "questionId": "g6-argon-0008",
-      "revision": 1,
-      "batchId": "Q50-G6-001",
-      "contentHash": "e13950f2b22d5991aef475a4c8bfabfc84f8291f35ecc1f502f5580c01ca22ed",
-      "decision": "quarantined",
-      "reasons": [
-        "codex: language fail"
+        "외부 블라인드 검수(codex·claude): 이 revision의 검수 없음",
+        "argon-blind: 이 revision의 독립 검토 없음",
+        "총괄 해설 대조 없음"
       ]
     },
     {
@@ -27661,22 +27652,26 @@
     },
     {
       "questionId": "g6-argon-0022",
-      "revision": 1,
+      "revision": 2,
       "batchId": "Q50-G6-001",
-      "contentHash": "f8810a9cb3f596859f691c99ca00cf8cf8092826d0ccb409cf718f40e24000c3",
+      "contentHash": "695fb31e814e07cfb0609001697c5fc0833f814e4c9053f45025ef0596771f6f",
       "decision": "quarantined",
       "reasons": [
-        "codex: language uncertain"
+        "외부 블라인드 검수(codex·claude): 이 revision의 검수 없음",
+        "argon-blind: 이 revision의 독립 검토 없음",
+        "총괄 해설 대조 없음"
       ]
     },
     {
       "questionId": "g6-argon-0023",
-      "revision": 1,
+      "revision": 2,
       "batchId": "Q50-G6-001",
-      "contentHash": "a504aa76fa02cf43e4f43bd3a7c2a4852782f44e8597e8e1bf358fd5b00e64e4",
+      "contentHash": "af2e7089c358ee5ad67a76b420ee06b47b7f2c20b0852c632a0f70887ef7c4f6",
       "decision": "quarantined",
       "reasons": [
-        "codex: explanation fail"
+        "외부 블라인드 검수(codex·claude): 이 revision의 검수 없음",
+        "argon-blind: 이 revision의 독립 검토 없음",
+        "총괄 해설 대조 없음"
       ]
     },
     {
@@ -27729,15 +27724,14 @@
     },
     {
       "questionId": "g6-argon-0030",
-      "revision": 1,
+      "revision": 2,
       "batchId": "Q50-G6-001",
-      "contentHash": "9eb796279d452850758d8b269d0897fa864f47d44404bf4b87c19333ccf076cc",
+      "contentHash": "d90c7fd18a4de12fc10f5727d266343b30f5f6e90edcd06d81634aaa21d70552",
       "decision": "quarantined",
       "reasons": [
-        "codex: 독립 풀이 multiple ≠ 정답",
-        "codex: uniqueness fail",
-        "codex: language uncertain",
-        "codex: explanation fail"
+        "외부 블라인드 검수(codex·claude): 이 revision의 검수 없음",
+        "argon-blind: 이 revision의 독립 검토 없음",
+        "총괄 해설 대조 없음"
       ]
     },
     {
@@ -27774,12 +27768,14 @@
     },
     {
       "questionId": "g6-argon-0035",
-      "revision": 1,
+      "revision": 2,
       "batchId": "Q50-G6-001",
-      "contentHash": "abc5f558e2db70efa7472374ebd2da397d70ed2a3f2d0ef3b8a8fa66a377435c",
+      "contentHash": "a1a5def3b34ab142512d47fae96e64afdf643cc585a68a80dac10ae927c72d59",
       "decision": "quarantined",
       "reasons": [
-        "codex: language fail"
+        "외부 블라인드 검수(codex·claude): 이 revision의 검수 없음",
+        "argon-blind: 이 revision의 독립 검토 없음",
+        "총괄 해설 대조 없음"
       ]
     },
     {
@@ -27800,22 +27796,26 @@
     },
     {
       "questionId": "g6-argon-0038",
-      "revision": 1,
+      "revision": 2,
       "batchId": "Q50-G6-001",
-      "contentHash": "5f6f395aabee44444b0ac7d40835b31bfcc76babbb433ab1b7d7873ea545f6e9",
+      "contentHash": "1039769b6a7d8d74b159c0e59707153768a8ab1c4fb27ab951b1e2af8b7b054d",
       "decision": "quarantined",
       "reasons": [
-        "codex: explanation fail"
+        "외부 블라인드 검수(codex·claude): 이 revision의 검수 없음",
+        "argon-blind: 이 revision의 독립 검토 없음",
+        "총괄 해설 대조 없음"
       ]
     },
     {
       "questionId": "g6-argon-0039",
-      "revision": 1,
+      "revision": 2,
       "batchId": "Q50-G6-001",
-      "contentHash": "4c7209a52b220135a29552ea95281bcc611551c6d9193ce1a5e86869858101f7",
+      "contentHash": "f95c5fafd542834b0c7d3367ef839ab13c9a973c9d8cb76a1376ac21edd2b387",
       "decision": "quarantined",
       "reasons": [
-        "codex: language fail"
+        "외부 블라인드 검수(codex·claude): 이 revision의 검수 없음",
+        "argon-blind: 이 revision의 독립 검토 없음",
+        "총괄 해설 대조 없음"
       ]
     },
     {
@@ -27828,12 +27828,14 @@
     },
     {
       "questionId": "g6-argon-0041",
-      "revision": 1,
+      "revision": 2,
       "batchId": "Q50-G6-001",
-      "contentHash": "4af3fda2a71c3b136f82aab41aed89a40c4e733f06f6e1aedaadac0fb4ab45a6",
+      "contentHash": "8053c7158edcd992b787f9fec2f733d8c651994dbcd6e1e806f5778d2baa5d4d",
       "decision": "quarantined",
       "reasons": [
-        "codex: language fail"
+        "외부 블라인드 검수(codex·claude): 이 revision의 검수 없음",
+        "argon-blind: 이 revision의 독립 검토 없음",
+        "총괄 해설 대조 없음"
       ]
     },
     {
@@ -27867,17 +27869,6 @@
       "contentHash": "a71e77573c086f41923432595af38ded12344db6abd7edc80c4b22b034f14226",
       "decision": "approved",
       "reasons": []
-    },
-    {
-      "questionId": "g6-argon-0046",
-      "revision": 1,
-      "batchId": "Q50-G6-001",
-      "contentHash": "094d432234614b0e42c87b76e6a076245458b1f2a3ef46448dae52dae2e1cda2",
-      "decision": "quarantined",
-      "reasons": [
-        "codex: grade uncertain",
-        "codex: language fail"
-      ]
     },
     {
       "questionId": "g6-argon-0047",
