@@ -740,6 +740,52 @@
   flex-wrap: wrap;
   gap: var(--s1);
   align-items: center;
+  min-height: var(--touch);
+}
+
+.filterMeta {
+  font-size: var(--fs-1);
+  font-weight: 700;
+  color: var(--ink-soft);
+}
+
+/* 전체 랭킹 창(md 680×540 고정 프레임 + ModalTabs): 필터 줄 높이를 4탭 모두 고정하고 목록만 안에서 스크롤한다. */
+.rankModalPanel {
+  gap: var(--s2);
+  overflow: hidden;
+}
+
+.modalFilterBar {
+  flex: none;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s2);
+  min-height: 48px;
+  padding-bottom: var(--s2);
+  border-bottom: 1px solid var(--line);
+}
+
+.compactSeg {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 2px;
+}
+
+.compactSeg > button {
+  min-width: var(--touch);
+  padding: 0 var(--s2);
+  font-size: var(--fs-1);
+  white-space: nowrap;
+}
+
+.modalEmptyRank {
+  flex: 1 1 auto;
+  min-height: 180px;
+  display: grid;
+  place-items: center;
+  text-align: center;
 }
 
 .filterBtn {
@@ -782,16 +828,23 @@
 }
 
 /* 랭킹 목록 스크롤 상자: 안에서 스크롤하므로 키보드로 닿고(tabIndex 0) 방향키로 내릴 수 있다(WCAG 2.1.1). 보통 크기는 모양이 그대로고,
-   저높이 홈 판은 아래 media에서 200px로 줄고 전체 랭킹 창은 360px에서 스크롤한다. 포커스 링은 --ring. */
+   저높이 홈 판은 아래 media에서 200px로 줄고 전체 랭킹 창은 고정 창 남은 높이를 채워 스크롤한다. 포커스 링은 --ring. */
 .rankScroll,
 .rankScrollModal {
   display: flex;
   flex-direction: column;
-  flex: 1;
+  flex: 1 1 auto;
+  min-height: 0;
 }
 .rankScrollModal {
-  max-height: 360px;
   overflow-y: auto;
+}
+.rankListModal {
+  min-height: 0;
+}
+.myRankDockModal {
+  flex: none;
+  margin-top: 0;
 }
 .rankScroll:focus-visible,
 .rankScrollModal:focus-visible {

@@ -3,7 +3,7 @@ import { DIFFICULTY_IDS, type DifficultyId } from '../../contracts/balance';
 import { gradeContent, MAPS } from '../../content';
 import type { Settings } from '../../application/session';
 import { DIFFICULTY_COPY, HOME_COPY, MAP_NAMES } from '../copy';
-import { ArtIcon, Button, Modal, Segmented, type SegmentOption } from '../kit';
+import { ArtIcon, Button, Card, Modal, Segmented, type SegmentOption } from '../kit';
 import { difficultyReadout } from './guide/difficultyReadout';
 import { NEWGAME_COPY as N, nickProblemOf } from './home/homeCopy';
 import css from './home/lobby.module.css';
@@ -53,7 +53,8 @@ export function NewGameScreen({ settings, onBack, onEditNickname, onStart }: Pro
     <Modal
       titleId="newGameModalTitle"
       title="새 게임"
-      size="lg"
+      size="md"
+      fixed
       onClose={onBack}
     >
       <div className={css.newGame}>
@@ -77,18 +78,18 @@ export function NewGameScreen({ settings, onBack, onEditNickname, onStart }: Pro
               <span className={css.groupLabel}>난이도</span>
               <Segmented<DifficultyId> label="난이도" options={difficultyOptions} value={difficulty} onChange={v => setDifficulty(v)} />
               {/* N3: 고른 난이도 설명 한 줄 + 판독 한 줄(성문 · 첫 정답 골드 · 낱말 범위). 고르면 읽히도록 polite. */}
-              <div className={css.difficultyInfo} aria-live="polite">
+              <Card sunk pad="sm" className={css.difficultyInfo} aria-live="polite">
                 <p className={css.groupNote}>{DIFFICULTY_COPY[difficulty].hint}</p>
                 <p className={css.readout}>{difficultyReadout(difficulty).line}</p>
-              </div>
+              </Card>
             </div>
           </div>
 
           <figure className={css.mapFigure}>
             <img
               src={`${import.meta.env.BASE_URL}assets/maps/${map.id}.thumb.webp`}
-              width={280}
-              height={168}
+              width={204}
+              height={122}
               alt={`${mapName} 지도`}
               draggable={false}
               className={css.mapThumb}

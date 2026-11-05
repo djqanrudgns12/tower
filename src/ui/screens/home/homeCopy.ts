@@ -17,11 +17,14 @@ export function nickProblemOf(raw: string): { nickname: string; problem: string 
   return { nickname: value, problem: error === null ? null : value === '' ? NEWGAME_COPY.needNickname : error };
 }
 
-/** 설정 창(S1·S2): 소제목 3개와 한 줄 설명. 이름·조작 문구는 copy.ts의 SETTINGS_COPY를 그대로 쓴다. 설명은 공백 포함 20자 미만으로 짧게(상시 문장 셈에 들지 않게). */
+/** 설정 창(S1·S2): 3탭 이름과 한 줄 설명. 이름·조작 문구는 copy.ts의 SETTINGS_COPY를 그대로 쓴다. 설명은 공백 포함 20자 미만으로 짧게(상시 문장 셈에 들지 않게). */
 export const SETTINGS_SECTIONS = {
+  tabLabel: '환경설정 분류',
   sound: '소리',
-  display: '화면·글자',
-  records: '기록',
+  display: '화면·조작',
+  records: '기록 관리',
+  previewSound: '소리 들어보기',
+  caution: '주의',
   /** 기본값인 고르기 칸 글자 아래 작게 붙는 표식. */
   base: '(기본)',
   baseSr: '기본',
@@ -53,4 +56,6 @@ export const NOTE_EXTRA = {
 /** 랭킹 목록(홈 판·전체 랭킹 창). 안에서 스크롤하는 상자라 키보드로 닿는 이름 있는 영역이다. */
 export const RANKING_EXTRA = {
   listLabel: '랭킹 목록',
+  honorShort: '1웨이브 이상 정규 판 합산',
+  localShort: '이 기기에 저장된 기록이에요',
 } as const;

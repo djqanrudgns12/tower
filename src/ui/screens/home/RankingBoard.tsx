@@ -194,6 +194,12 @@ export function RankingBoard({
               ))}
             </div>
           )}
+
+          {tab === 'local_device' && (
+            <div className={css.filterRow}>
+              <span className={css.filterMeta}>{RANKING_EXTRA.localShort}</span>
+            </div>
+          )}
         </div>
 
         {tab !== 'local_device' && data?.source === 'local_fallback' && (

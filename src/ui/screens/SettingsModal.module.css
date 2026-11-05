@@ -1,22 +1,29 @@
-/* 환경설정(R4 U3 → R5 S1·S2, ui-rules-v4). 한 목록에 소제목 3개(소리 / 화면·글자 / 기록). 900px 이상에서는 2열
-   (소리 | 화면·글자, 아래에 기록이 가로 가득). 줄마다 이름 + 조작 하나, 줄 사이는 1px --line으로만 나눈다. */
-.body { display: grid; gap: var(--s3); }
-.section { display: grid; gap: var(--s1); align-content: start; min-width: 0; }
-.sectionTitle {
-  padding-bottom: var(--s1);
-  border-bottom: 2px solid var(--oak-1);
-  font-size: var(--fs-2);
-  font-weight: 800;
-  color: var(--ink);
-}
-.rows { display: grid; }
+/* 환경설정(md 680×540 고정 프레임 + ModalTabs 3탭: 소리 / 화면·조작 / 기록 관리, ui-rules-v4 §4.7).
+   한 탭에는 4개 이하의 동질한 조작만 두고, 오른쪽 조작 트랙을 348px 단일 수직 축에 맞춘다. */
+.rows { display: grid; align-content: start; }
 .rows > :last-child { border-bottom: 0; }
 
-.row { display: grid; gap: 2px; padding: 0; border-bottom: 1px solid var(--line); }
-.head { display: flex; align-items: center; justify-content: space-between; gap: var(--s4); flex-wrap: wrap; min-height: var(--touch); }
-.name { font-size: var(--fs-2); font-weight: 700; }
-.head > :last-child { min-width: 0; }
-.head [role='radiogroup'] { flex: 1 1 280px; max-width: 320px; }
+.row { display: grid; gap: 2px; padding: 2px 0; border-bottom: 1px solid var(--line); }
+.rowsSpacious .row { padding: 8px 0; }
+
+.head {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--s2);
+  align-items: center;
+  min-height: var(--touch);
+}
+.name { font-size: var(--fs-2); font-weight: 700; color: var(--ink); }
+.controlTrack { min-width: 0; width: 100%; }
+.controlTrack [role='radiogroup'] { width: 100%; }
+.controlTrack [role='radiogroup'] > button { padding-inline: 4px; }
+
+.previewBtns {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--s2);
+  width: 100%;
+}
 
 /* 켜기·끄기 줄: 줄 전체가 스위치다(이름 왼쪽, 스위치 오른쪽). 설명이 붙으면 같은 .row 안에서 스위치 아래에 선다. */
 .row > .switchRow {
@@ -27,20 +34,48 @@
 }
 
 /* 한 줄 설명(움직임·고대비·공개 기록·기록 지우기)은 13px 보조 글. */
-.hint { font-size: var(--fs-1); color: var(--ink-2); }
-.preview { margin: var(--s1) 0; font-size: var(--q-font); font-weight: 700; line-height: 1.45; }
+.hint { margin: 0; font-size: var(--fs-1); line-height: 1.35; color: var(--ink-2); }
+.preview {
+  margin: 4px 0;
+  padding: var(--s2) var(--s3);
+  font-size: var(--q-font);
+  font-weight: 700;
+  line-height: 1.35;
+}
+
+/* 기록 관리 탭: 공개 기록 스위치와 위험 동작(기록 지우기)을 시각적으로 격리한다. */
+.recordsPane { display: grid; gap: var(--s4); align-content: start; }
+.cautionBox { display: grid; gap: var(--s2); }
+.cautionHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s3);
+  flex-wrap: wrap;
+}
+.cautionTitle { display: inline-flex; align-items: center; gap: var(--s2); min-width: 0; }
+.cautionTag {
+  flex: none;
+  padding: 2px 6px;
+  border-radius: var(--r-sm);
+  background: var(--red);
+  color: var(--on-dark);
+  font-size: var(--fs-1);
+  font-weight: 800;
+  line-height: 1.2;
+}
+
 .actions { display: inline-flex; gap: var(--s2); flex-wrap: wrap; }
-.alert { padding-top: var(--s2); font-size: var(--fs-2); font-weight: 700; color: var(--red); }
-.status { padding-top: var(--s2); font-size: var(--fs-2); font-weight: 700; color: var(--green); }
+.alert { margin: 0; font-size: var(--fs-2); font-weight: 700; color: var(--red); }
+.status { margin: 0; font-size: var(--fs-2); font-weight: 700; color: var(--green); }
 
 /* 기본값인 고르기 칸: 숫자·이름 아래 '(기본)'을 13px로 작게 붙인다. 두 줄이어도 칸은 44px 안에 든다. */
 .optTwo { display: grid; justify-items: center; line-height: 1.15; }
 .optMark { font-size: var(--fs-1); font-weight: 700; color: var(--ink-2); }
 
-@media (min-width: 900px) {
-  .body { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: var(--s5); align-items: start; }
-  /* 기록은 가로 가득 놓고 안의 두 줄(공개 기록 · 기록 지우기)을 2열로. */
-  .wide { grid-column: 1 / -1; }
-  .wide .rows { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: var(--s5); align-items: start; }
-  .wide .rows > * { border-bottom: 0; }
+@media (min-width: 640px) {
+  .head {
+    grid-template-columns: minmax(0, 1fr) 348px;
+    gap: var(--s3);
+  }
 }
