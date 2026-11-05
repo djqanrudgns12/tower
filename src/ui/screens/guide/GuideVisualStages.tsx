@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState, useSyncExternalStore } from 'react';
+import { useEffect, useMemo, useState, useSyncExternalStore, type FocusEvent } from 'react';
 import { DIFFICULTY_IDS, type DifficultyId, type FoeTag, type TowerId } from '../../../contracts/balance';
 import { BALANCE } from '../../../content';
 import { DIFFICULTY_COPY } from '../../copy';
@@ -71,26 +71,45 @@ function useIconUrls(): Record<string, string> {
   }, [sprites]);
 }
 
-/** 1장(G2): 준비·설치·전투·회복 4박 수비 캔버스. 칸을 누르면 그 박에 고정되고, 다시 누르면 순환으로 돌아간다. */
+/**
+ * 저절로 넘어가는 시연(1장 단계·2장 결과)을 잠시 멈춘다: 시연 칸 안에 포커스나 마우스가 있는 동안.
+ * 고르기 줄(roving)은 고른 칸에 tabIndex 0을 주므로, 포커스가 든 채로 고른 값이 바뀌면 방향키가 칸을 건너뛴다.
+ */
+function useHoldWhileInside() {
+  const [focus, setFocus] = useState(false);
+  const [hover, setHover] = useState(false);
+  const handlers = {
+    onFocus: () => setFocus(true),
+    onBlur: (e: FocusEvent<HTMLDivElement>) => { if (!e.currentTarget.contains(e.relatedTarget as Node | null)) setFocus(false); },
+    onPointerEnter: () => setHover(true),
+    onPointerLeave: () => setHover(false),
+  };
+  return [focus || hover, handlers] as const;
+}
+
+/** 1장(G2): 준비·설치·전투·회복 4박 수비 캔버스. 칸을 누르면 그 박에 고정되고, 다시 누르면 순환으로 돌아간다. 칸 안에 포커스·마우스가 있으면 멈춘다. */
 function Chapter1Stage({ animate, highContrastMap }: { animate: boolean; highContrastMap: boolean }) {
   const [pinned, setPinned] = useState<GuideWaveBeatId | null>(null);
   const [autoBeat, setAutoBeat] = useState<GuideWaveBeatId>(2);
+  const [hold, holdHandlers] = useHoldWhileInside();
 
   useEffect(() => {
-    if (!animate || pinned !== null) return undefined;
+    if (!animate || pinned !== null || hold) return undefined;
     const sync = () => setAutoBeat(sampleGuideWaveLoop(320, 100, performance.now(), true, null).beat);
     sync();
     const timer = window.setInterval(sync, 400);
     return () => window.clearInterval(timer);
-  }, [animate, pinned]);
+  }, [animate, pinned, hold]);
 
   const beat: GuideWaveBeatId = pinned ?? (animate ? autoBeat : 2);
   const readout = sampleGuideWaveLoop(320, 100, 1250, false, beat);
+  // 멈춘 동안은 캔버스도 지금 박에 묶어 고르기 줄과 어긋나지 않게 한다(그 박 안의 움직임은 계속).
+  const canvasBeat = pinned ?? (hold && animate ? autoBeat : null);
 
   return (
-    <div className={css.pane}>
+    <div className={css.pane} {...holdHandlers}>
       <div className={css.canvasBox}>
-        <GuideStageCanvas mode="wave_loop" animate={animate} highContrastMap={highContrastMap} pinnedBeat={pinned} className={css.stageCanvas} />
+        <GuideStageCanvas mode="wave_loop" animate={animate} highContrastMap={highContrastMap} pinnedBeat={canvasBeat} className={css.stageCanvas} />
         <span className={css.tagLeft}>{readout.statusTag}</span>
         <span className={css.tagRight}>{readout.goldTag}</span>
       </div>
@@ -108,23 +127,24 @@ function Chapter1Stage({ animate, highContrastMap }: { animate: boolean; highCon
   );
 }
 
-/** 2장(G3): 결과마다 골드·점수·성문 메모와 연속 정답 칸. 움직임이 켜져 있고 아무것도 고르지 않았으면 2.4초마다 다음 결과로 넘어간다. */
+/** 2장(G3): 결과마다 골드·점수·성문 메모와 연속 정답 칸. 움직임이 켜져 있고 아무것도 고르지 않았으면 2.4초마다 다음 결과로 넘어간다(칸 안에 포커스·마우스가 있으면 멈춤). */
 function Chapter2Stage({ animate }: { animate: boolean }) {
   const outcomes = useMemo(() => buildQuizOutcomeSpecs(), []);
   const streak = BALANCE.burning.streak;
   const [selected, setSelected] = useState<QuizOutcomeId | null>(null);
   const [autoIdx, setAutoIdx] = useState(0);
+  const [hold, holdHandlers] = useHoldWhileInside();
 
   useEffect(() => {
-    if (!animate || selected !== null) return undefined;
+    if (!animate || selected !== null || hold) return undefined;
     const timer = window.setInterval(() => setAutoIdx(i => (i + 1) % outcomes.length), 2400);
     return () => window.clearInterval(timer);
-  }, [animate, selected, outcomes.length]);
+  }, [animate, selected, hold, outcomes.length]);
 
   const active = (selected ? outcomes.find(o => o.id === selected) : outcomes[animate ? autoIdx : outcomes.length - 1]) ?? outcomes[0]!;
 
   return (
-    <div className={css.pane}>
+    <div className={css.pane} {...holdHandlers}>
       <Segmented<QuizOutcomeId> label={U.outcomeGroup} className={`${css.wrap4} ${css.autoSeg}`} options={outcomes.map(o => ({ value: o.id, label: o.label }))} value={active.id} onChange={setSelected} />
       <Card material="plaque" pad="sm" className={css.hudSim} data-outcome={active.id}>
         <span className={css.hudRow}>
@@ -160,7 +180,7 @@ function Chapter3Stage({ highContrastMap }: { highContrastMap: boolean }) {
         onChange={setTowerId}
       />
       <div className={css.towerRow}>
-        <div className={`${css.canvasBox} ${css.rangeBox}`}>
+        <div className={css.canvasBox}>
           <GuideStageCanvas mode="range_demo" animate={false} highContrastMap={highContrastMap} towerId={t.id} rangeMilli={t.rangeMilli} className={css.stageCanvas} />
           <span className={css.tagLeft}>{`${t.label} · ${t.costGold}골드`}</span>
           <span className={css.tagRight}>{`사거리 ${t.rangeCellsText}`}</span>

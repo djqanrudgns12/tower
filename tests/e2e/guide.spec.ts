@@ -177,6 +177,12 @@ test.describe('사용 설명서', () => {
     await expect(stage).toHaveAttribute('data-animate', 'true');
     const beats = dialog.getByRole('radiogroup', { name: '한 판 단계 시연' });
     await expect(beats.getByRole('radio')).toHaveCount(4);
+    // 고르기 줄에 포커스가 든 동안은 단계 순환이 멈춘다(roving 칸과 고른 칸이 어긋나지 않게).
+    const beatNow = beats.getByRole('radio', { checked: true });
+    const beatBefore = await beatNow.textContent();
+    await beatNow.focus();
+    await page.waitForTimeout(2800);
+    await expect(beats.getByRole('radio', { checked: true }), '포커스가 든 동안 단계 순환이 멈춘다').toHaveText(beatBefore!);
     await beats.getByRole('radio', { name: '1. 준비' }).click();
     await expect(dialog.locator('section')).toContainText('정답 +19골드');
     await beats.getByRole('radio', { name: '4. 회복' }).click();
@@ -192,6 +198,15 @@ test.describe('사용 설명서', () => {
     // 아무것도 고르지 않으면 2.4초마다 다음 결과로 넘어간다.
     await expect(outcomes.getByRole('radio', { name: '정답', exact: true })).toBeChecked();
     await expect(outcomes.getByRole('radio', { name: '오답' })).toBeChecked({ timeout: 4000 });
+    // 포커스가 고르기 줄에 들어가면 순환이 멈춰, 방향키가 포커스된 칸 바로 옆으로 간다(roving 어긋남 없음).
+    const wrongRadio = outcomes.getByRole('radio', { name: '오답' });
+    await wrongRadio.focus();
+    await page.waitForTimeout(2800);
+    await expect(wrongRadio, '포커스가 든 동안 결과 순환이 멈춘다').toBeChecked();
+    await expect(wrongRadio).toHaveAttribute('tabindex', '0');
+    await page.keyboard.press('ArrowRight');
+    await expect(outcomes.getByRole('radio', { name: '모르겠어요' })).toBeChecked();
+    await expect(outcomes.getByRole('radio', { name: '모르겠어요' })).toBeFocused();
     await outcomes.getByRole('radio', { name: '모르겠어요' }).click();
     await expect(hud).toContainText('0골드');
     await expect(hud).toContainText('0점');
