@@ -15,6 +15,21 @@ let cachedMap: SpriteMap | null = null;
 let loadingPromise: Promise<SpriteMap> | null = null;
 const subscribers = new Set<() => void>();
 
+/**
+ * 홈 파노라마 배경·미니 정원 무대에서만 추가로 쓰는 풍경 원화 8종.
+ * 전투 장면의 맵별 자산 로더(src/game/assets.ts entriesForMap)와는 분리되어 전투 메모리 범위에 영향을 주지 않는다.
+ */
+const LOBBY_SCENIC_ALLOWLIST: ReadonlySet<string> = new Set([
+  'map.river_z.landmark.watermill',
+  'map.river_z.prop.stepstones',
+  'map.river_z.prop.reeds',
+  'map.river_z.tree.0',
+  'map.courtyard.landmark.pavilion',
+  'map.courtyard.tree.0',
+  'map.courtyard.tree.1',
+  'map.courtyard.prop.flowerpot',
+]);
+
 /** 부동소수점 시드 PRNG나 Math.random 없이 고정 위상값을 얻는다(PRD §13.3). */
 export function rand01(index: number, salt: number): number {
   let h = (Math.imul(index + 1, 374761393) + Math.imul(salt + 1, 668265263)) | 0;
@@ -61,9 +76,11 @@ export function loadLobbySprites(): Promise<SpriteMap> {
         cachedMap = map;
         return map;
       }
-      // 홈·전투 화면·설명서 캔버스는 공용 그림만 쓴다. 맵별 재료(map.<맵 id>.*)는 전투 장면이 그 맵에서만 받는다.
+      // 홈·설명서 캔버스는 공용 그림과 홈 전용 풍경 허용 목록(LOBBY_SCENIC_ALLOWLIST)만 받는다.
       const mapPrefixes = MAPS.map(m => `map.${m.id}.`);
-      const passed = parsed.data.assets.filter(a => a.status === 'integrated_pass' && !mapPrefixes.some(p => a.id.startsWith(p)));
+      const passed = parsed.data.assets.filter(
+        a => a.status === 'integrated_pass' && (!mapPrefixes.some(p => a.id.startsWith(p)) || LOBBY_SCENIC_ALLOWLIST.has(a.id)),
+      );
       await Promise.all(
         passed.map(async entry => {
           const url = `assets/${entry.file}`;

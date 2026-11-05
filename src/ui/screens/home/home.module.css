@@ -1,14 +1,16 @@
-/* 옛 랜딩(방향 2-A 왕국 참나무 작전실) 복원 — 2026-11-04 사용자 결정, 원본은 3426df8^.
-   색 토큰(옛 --oak-* 이름 포함)은 global.css :root 한 곳에서 나온다(ui-rules-v4 §2.4). */
-
-/* 방향 2-A: 왕국 참나무 작전실 (PRD §12.8: 반경 4px/8px/칩 999px, 단일 그림자, 그라데이션·블러 0, 굵기 400/700) */
+/* R6 참나무·양피지 공예 랜딩 스타일 (ui-rules-v4 토큰 정합: 그라데이션 0, 블러 0, 모든 조작 44px 이상, 글자 13px 이상). */
 
 .lobbyRoot {
   position: relative;
+  width: 100%;
   min-height: 100dvh;
   background: var(--oak-world-fallback);
+  color: var(--ink);
   overflow-x: clip;
   word-break: keep-all;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 .backdropCanvas {
@@ -21,110 +23,142 @@
   display: block;
 }
 
-/* 글자 크기 3층(v4 §5.3): 홈 글은 15px 고정이고, 읽는 글(오늘의 낱말 뜻·예문)만 글자 크기 단계에 따라 +1·+2px 커진다. */
+/* 전경 컨테이너: 1128px 순수 보드 폭으로 내부 밀도와 좌우 월드맵 파노라마를 동시에 확보 */
 .foreground {
   position: relative;
   z-index: 1;
-  font-size: 15px;
-  max-width: 1240px;
+  width: 100%;
+  max-width: 1168px;
   margin: 0 auto;
-  padding: var(--s4);
+  padding: 12px 20px;
+  font-size: 15px;
   display: grid;
-  gap: var(--s3);
+  gap: 12px;
 }
 
-/* 상단 다크 오크 커맨드 현판 */
-.plaqueOuter {
-  background: var(--oak-frame-outer);
-  border: 2px solid var(--oak-frame-edge);
-  border-radius: var(--r-panel);
-  padding: var(--s1);
+/* ══════════════════════════════════════════════════════════════
+   1. 상단 커맨드 현판 (호두나무 frame.lg + 음각 계기 캡슐 + 양피지 리벳 키캡)
+   ══════════════════════════════════════════════════════════════ */
+.headerPlaque {
+  --ring: var(--focus-on-dark);
+  border: 10px solid transparent;
+  border-image: var(--art-frame-lg) 98 / 10px stretch;
+  background: var(--walnut-3) padding-box;
+  border-radius: var(--r-md);
   box-shadow: var(--shadow-board);
+  padding: 7px 14px;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 12px;
+  color: var(--on-dark);
 }
 
-.plaqueInner {
-  background: var(--oak-plaque-bg);
-  border: 2px solid var(--oak-plaque-border);
-  border-radius: var(--r-input);
-  padding: var(--s2) var(--s3);
-  color: var(--oak-plaque-ink);
-  display: grid;
-  grid-template-columns: auto 1fr auto;
-  align-items: center;
-  gap: var(--s3);
+.headerPlaque :focus-visible {
+  outline: 3px solid var(--focus-on-dark);
+  outline-offset: 2px;
 }
 
 .brandGroup {
   display: flex;
   align-items: center;
-  gap: var(--s3);
+  gap: 11px;
   min-width: 0;
 }
 
 .crestBox {
-  width: 44px;
-  height: 44px;
-  flex-shrink: 0;
-  background: var(--oak-plaque-cell);
-  border: 2px solid var(--oak-plaque-border);
-  border-radius: var(--r-input);
+  width: 46px;
+  height: 46px;
+  border-radius: var(--r-md);
+  background: var(--parch-1);
+  border: 2px solid var(--brass-2);
+  box-shadow: 0 2px 0 var(--walnut-4);
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-shrink: 0;
   overflow: hidden;
 }
 
 .crestImg {
-  width: 38px;
-  height: 38px;
+  width: 34px;
+  height: 34px;
   object-fit: contain;
+  display: block;
+}
+
+.brandText {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
 }
 
 .brandTitle {
-  font-size: 21px;
-  font-weight: 700;
-  line-height: 1.2;
-  color: var(--oak-plaque-ink);
+  font-size: 20px;
+  font-weight: 800;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  color: var(--on-dark);
+  white-space: nowrap;
 }
 
 .brandSub {
   font-size: 13px;
-  color: var(--oak-plaque-muted);
-  line-height: 1.3;
+  font-weight: 700;
+  line-height: 1.25;
+  color: var(--on-dark-2);
+  white-space: nowrap;
 }
 
-/* 실시간·누적 4대 지표 스트립 */
+/* 중앙 통합 음각 계기 캡슐 (초기 '공개 기록 꺼짐' 말줄임 0%) */
 .telemetryStrip {
   display: grid;
-  grid-template-columns: repeat(4, minmax(96px, 1fr));
-  gap: var(--s2);
-  justify-self: center;
+  grid-template-columns: 1.28fr 1fr 1fr 1fr;
+  align-items: center;
+  background: var(--walnut-4);
+  border-radius: var(--r-sm);
+  border: 3px solid transparent;
+  border-image: var(--art-groove) 47 / 3px stretch;
+  padding: 4px 5px;
+  max-width: 472px;
   width: 100%;
-  max-width: 540px;
+  justify-self: center;
+}
+
+.telemetryNotice {
+  grid-column: 1 / -1;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--brass-1);
+  padding: 2px 6px 4px;
 }
 
 .metricCell {
-  background: var(--oak-plaque-cell);
-  border: 1px solid var(--oak-plaque-border);
-  border-radius: var(--r-input);
-  padding: var(--s1) var(--s2);
+  padding: 1px 7px;
   display: grid;
-  gap: 2px;
+  gap: 1px;
+  min-width: 0;
+  border-left: 1px solid var(--walnut-2);
+}
+
+.metricCell:first-of-type {
+  border-left: 0;
 }
 
 .metricLabel {
-  font-size: 13px;
-  line-height: 18px;
-  color: var(--oak-plaque-muted);
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  gap: var(--s1);
+  gap: 5px;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.2;
+  color: var(--on-dark-2);
   white-space: nowrap;
 }
 
 .statusDot {
-  width: 8px;
-  height: 8px;
+  width: 7px;
+  height: 7px;
   border-radius: 999px;
   background: var(--online);
   display: inline-block;
@@ -136,105 +170,143 @@
 }
 
 .metricValue {
-  font-size: 15px;
-  font-weight: 700;
-  color: var(--oak-plaque-gold);
-  font-variant-numeric: tabular-nums;
+  font-size: 13px;
+  font-weight: 800;
+  line-height: 1.25;
+  color: var(--on-dark);
   white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-variant-numeric: tabular-nums;
 }
 
+.metricValue[data-active='true'] {
+  color: var(--brass-1);
+}
+
+/* 우측 보조 행동 4단추: 정품 양피지 리벳 키캡 */
 .headerActions {
   display: flex;
   align-items: center;
-  gap: var(--s2);
+  gap: 6px;
   flex-wrap: wrap;
+  justify-content: flex-end;
 }
 
-.plaqueBtn {
-  min-height: var(--touch);
-  padding: 0 var(--s3);
-  border: 2px solid var(--oak-plaque-border);
-  border-radius: var(--r-input);
-  background: var(--oak-card-bg);
+.plaqueKeyBtn {
+  --cap: 16px;
+  position: relative;
+  isolation: isolate;
+  min-height: 45px;
+  min-width: 45px;
+  padding: 0 calc(var(--cap) + 5px);
+  border: 0;
+  border-radius: var(--r-sm);
+  background: var(--parch-1) content-box;
   color: var(--ink);
-  font-weight: 700;
   font-size: 14px;
-  box-shadow: var(--shadow);
+  font-weight: 800;
+  line-height: 1.2;
   display: inline-flex;
   align-items: center;
-  gap: var(--s1);
-  transition: transform 80ms, box-shadow 80ms;
+  justify-content: center;
+  gap: 5px;
+  white-space: nowrap;
+  transition: transform 80ms var(--ease-out), filter 120ms;
 }
 
-/* 오답 노트 단추의 낱말 개수(2026-11-04 복원 때 더함) */
+.plaqueKeyBtn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border: 0 solid transparent;
+  border-width: 0 var(--cap);
+  border-image: var(--art-key-parch) 0 38 fill / 0 var(--cap) stretch;
+  pointer-events: none;
+}
+
+@media (hover: hover) {
+  .plaqueKeyBtn:hover {
+    filter: brightness(1.04);
+  }
+}
+
+.plaqueKeyBtn:active {
+  transform: translateY(2px);
+}
+
+.btnIconArt {
+  width: 17px;
+  height: 17px;
+  object-fit: contain;
+  flex-shrink: 0;
+  display: block;
+}
+
+.btnIconSvg {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  display: block;
+}
+
 .plaqueCount {
-  min-width: 22px;
-  height: 22px;
-  padding: 0 6px;
-  border-radius: 11px;
-  background: var(--oak-plaque-bg);
-  color: var(--oak-plaque-gold);
+  position: absolute;
+  top: -5px;
+  right: -4px;
+  min-width: 21px;
+  height: 21px;
+  padding: 0 5px;
+  border-radius: var(--r-sm);
+  background: var(--brass-1);
+  border: 1.5px solid var(--brass-3);
+  box-shadow: 0 1px 0 var(--walnut-4);
+  color: var(--ink);
   font-size: 13px;
   font-weight: 800;
-  line-height: 22px;
+  line-height: 18px;
   text-align: center;
+  font-variant-numeric: tabular-nums;
+  pointer-events: none;
 }
 
-.plaqueBtn:hover {
-  background: var(--parch-3);
-}
-
-.plaqueBtn:active {
-  transform: translateY(1px);
-  box-shadow: var(--shadow-pressed);
-}
-
-/* 짙은 헤더 판(--oak-plaque-bg) 위 포커스 고리: 기본 --blue는 판 배경과 대비가 모자라 밝은 고리로 바꾼다(PRD §12.6) */
-.plaqueInner :focus-visible {
-  outline: 2px solid var(--focus-on-dark);
-  outline-offset: 2px;
-}
-
-/* 좌·우 2열 작전실 보드 그리드 */
+/* ══════════════════════════════════════════════════════════════
+   2. 메인 2열 보드 그리드 (참나무 널빤지 트레이 + 양피지 카드 재질)
+   ══════════════════════════════════════════════════════════════ */
 .warRoomGrid {
   display: grid;
-  grid-template-columns: minmax(0, 1.14fr) minmax(0, 0.86fr);
-  gap: var(--s4);
+  grid-template-columns: minmax(0, 1.24fr) minmax(380px, 1fr);
+  gap: 16px;
   align-items: stretch;
 }
 
-/* 이중 몰딩 참나무 액자 (단일 그림자 + 중첩 실선 테두리) */
-.oakFrame {
-  background: var(--oak-frame-outer);
-  border: 2px solid var(--oak-frame-edge);
-  border-radius: var(--r-panel);
-  padding: var(--s1);
+/* 1단 외곽 액자(frame.sm) + 2단 참나무 널빤지 트레이(board.webp) 통합 보드 */
+.woodBoard {
+  border: 10px solid transparent;
+  border-image: var(--art-frame-sm) 33 / 10px stretch;
+  background: var(--oak-1) var(--art-board) 0 0 / 160px 160px repeat;
+  background-clip: padding-box;
+  border-radius: var(--r-md);
   box-shadow: var(--shadow-board);
+  padding: 9px;
   display: flex;
   flex-direction: column;
+  gap: 9px;
+  min-width: 0;
 }
 
-.parchmentInner {
-  --pad-y: var(--s4);
-  background: var(--oak-board-bg);
-  border: 2px solid var(--oak-board-molding);
-  border-radius: var(--r-input);
-  padding: var(--pad-y) var(--s4);
-  display: flex;
-  flex-direction: column;
-  gap: var(--s3);
-  flex: 1;
-}
-
-/* 좌측 상단: 실시간 수비전 미니 관측창 */
+/* ── 2A. 정원 미리보기 미니 무대 액자 ── */
 .stageViewport {
   position: relative;
   width: 100%;
-  height: 180px;
-  border: 2px solid var(--oak-frame-edge);
-  border-radius: var(--r-panel);
+  height: 164px;
+  border-radius: var(--r-md);
+  border: 3px solid var(--walnut-3);
+  box-shadow: 0 2px 0 var(--walnut-3);
+  background: #6f9e46;
   overflow: hidden;
-  background: var(--oak-world-fallback);
+  flex-shrink: 0;
 }
 
 .stageCanvas {
@@ -243,298 +315,481 @@
   display: block;
 }
 
-.stageBadgeLeft {
+.stageOverlayTop {
   position: absolute;
-  top: var(--s2);
-  left: var(--s2);
-  background: color-mix(in srgb, var(--walnut-4) 88%, transparent);
-  color: var(--oak-plaque-ink);
-  border: 1px solid var(--oak-plaque-border);
-  border-radius: var(--r-input);
-  padding: var(--s1) var(--s2);
-  font-size: 13px;
-  font-weight: 700;
-}
-
-.stageBadgeRight {
-  position: absolute;
-  top: var(--s2);
-  right: var(--s2);
-  background: var(--oak-card-bg);
-  color: var(--ink);
-  border: 1.5px solid var(--oak-frame-edge);
-  border-radius: var(--r-input);
-  padding: var(--s1) var(--s2);
-  font-size: 13px;
-  font-weight: 700;
-}
-
-/* 공통 단일 칩 클래스 (999px 반경 허용 1종) */
-.chip {
-  display: inline-flex;
-  align-items: center;
-  padding: 2px var(--s2);
-  border-radius: 999px;
-  border: 1px solid var(--oak-inset-border);
-  background: var(--oak-card-bg);
-  color: var(--oak-amber-accent);
-  font-size: 13px;
-  font-weight: 700;
-  line-height: 1.3;
-  white-space: nowrap;
-}
-
-/* 좌측 중단: 확대형 오늘의 낱말 공부 카드 */
-.stelePanel {
-  background: var(--oak-inset-bg);
-  border: 2px solid var(--oak-inset-border);
-  border-radius: var(--r-panel);
-  padding: var(--s4);
-  display: grid;
-  gap: var(--s3);
-}
-
-.steleHeader {
+  top: 8px;
+  left: 8px;
+  right: 8px;
+  z-index: 2;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: var(--s2);
-  flex-wrap: wrap;
-}
-
-.steleTitleGroup {
-  display: flex;
-  align-items: center;
-  gap: var(--s2);
-  flex-wrap: wrap;
-}
-
-.sectionTitle {
-  font-size: 18px;
-  font-weight: 700;
-  color: var(--ink);
-}
-
-.steleControls {
-  display: flex;
-  align-items: center;
-  gap: var(--s2);
-  flex-wrap: wrap;
-}
-
-.smallBtn {
-  min-width: var(--touch);
-  min-height: var(--touch);
-  padding: 0 var(--s2);
-  border: 2px solid var(--oak-frame-edge);
-  border-radius: var(--r-input);
-  background: var(--oak-card-bg);
-  color: var(--ink);
-  font-size: 13px;
-  font-weight: 700;
-  box-shadow: var(--shadow);
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--s1);
-  transition: transform 80ms, box-shadow 80ms;
-}
-
-.smallBtn:hover:not(:disabled) {
-  background: var(--parch-3);
-}
-
-.smallBtn:active:not(:disabled) {
-  transform: translateY(1px);
-  box-shadow: var(--shadow-pressed);
-}
-
-/* 누르는 영역 44px 하한(계약 layout.touchMinPx): 버튼 자체가 44px 이상이다(min-width·min-height). 아래 투명 히트 영역은 글자가 길어
-   더 커진 버튼에서도 가운데 기준으로 44px 이상을 보장하는 안전망이다. */
-.smallBtn,
-.tabBtn,
-.filterBtn {
-  position: relative;
-}
-
-.smallBtn::after,
-.tabBtn::after,
-.filterBtn::after {
-  content: '';
-  position: absolute;
-  z-index: 1;
-  top: 50%;
-  left: 50%;
-  width: max(100%, var(--touch));
-  height: max(100%, var(--touch));
-  transform: translate(-50%, -50%);
-}
-
-.steleBody {
-  display: grid;
-  grid-template-columns: 92px minmax(0, 1fr);
-  gap: var(--s4);
-  align-items: center;
-}
-
-.steleArtBox {
-  position: relative;
-  width: 92px;
-  height: 108px;
-  background: var(--oak-card-bg);
-  border: 2px solid var(--oak-inset-border);
-  border-radius: var(--r-panel);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.steleImg {
-  width: 84px;
-  height: 84px;
-  object-fit: contain;
-}
-
-.steleGlyph {
-  position: absolute;
-  top: 40%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  font-size: 20px;
-  font-weight: 700;
-  color: var(--ink);
+  gap: 8px;
   pointer-events: none;
 }
 
-.steleContent {
+.stageBadgeLeft,
+.stageBadgeRight {
+  height: 26px;
+  padding: 0 10px;
+  border-radius: var(--r-sm);
+  font-size: 13px;
+  font-weight: 800;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  box-shadow: 0 2px 0 var(--walnut-4);
+}
+
+.stageBadgeLeft {
+  background: var(--walnut-3);
+  color: var(--on-dark);
+  border: 1.5px solid var(--walnut-1);
+}
+
+.stageLiveDot {
+  width: 7px;
+  height: 7px;
+  border-radius: 999px;
+  background: var(--online);
+  flex-shrink: 0;
+}
+
+.stageBadgeRight {
+  background: var(--walnut-4);
+  color: var(--brass-1);
+  border: 1.5px solid var(--brass-2);
+}
+
+.stageBossIcon {
+  width: 15px;
+  height: 15px;
+  object-fit: contain;
+  display: block;
+}
+
+/* ── 3단 재질: 정품 양피지 카드 (parch.webp 9-slice, SteleStudyPanel & LaunchDeck 공통) ── */
+.subCard {
+  border: 6px solid transparent;
+  border-image: var(--art-parch) 13 fill / 6px stretch;
+  background: var(--parch-1) padding-box;
+  border-radius: var(--r-md);
+  box-shadow: 0 2px 0 var(--walnut-3);
+  padding: 5px 10px 8px;
   display: grid;
-  gap: var(--s2);
+  gap: 8px;
+}
+
+.cardHeaderRow {
+  min-height: 45px;
+  padding-bottom: 4px;
+  border-bottom: 1.5px solid var(--oak-2);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.cardTitleWrap {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  flex-wrap: wrap;
   min-width: 0;
 }
 
-.lemmaRow {
+.sectionIconBadge {
+  width: 26px;
+  height: 26px;
+  border-radius: var(--r-sm);
+  background: var(--parch-3);
+  border: 1.5px solid var(--oak-2);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.sectionIcon {
+  width: 18px;
+  height: 18px;
+  object-fit: contain;
+  display: block;
+}
+
+.sectionTitle {
+  font-size: 17px;
+  font-weight: 800;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+}
+
+.metaTag {
+  display: inline-flex;
+  align-items: center;
+  height: 24px;
+  padding: 0 8px;
+  border-radius: var(--r-sm);
+  background: var(--parch-3);
+  border: 1.5px solid var(--oak-2);
+  color: var(--brass-3);
+  font-size: 13px;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+/* 정갈한 양피지 보조 액션 키캡 단추 (랜덤 / 전체 보기 공통) */
+.keyBtnSm {
+  min-height: 45px;
+  min-width: 45px;
+  padding: 0 12px;
+  border: 2px solid var(--walnut-3);
+  border-radius: var(--r-sm);
+  background: var(--parch-1);
+  box-shadow: 0 2px 0 var(--walnut-3);
+  color: var(--ink);
+  font-size: 14px;
+  font-weight: 800;
+  line-height: 1.2;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  white-space: nowrap;
+  transition: transform 80ms var(--ease-out), background-color 120ms;
+}
+
+@media (hover: hover) {
+  .keyBtnSm:hover:not(:disabled) {
+    background: var(--parch-2);
+  }
+}
+
+.keyBtnSm:active:not(:disabled) {
+  transform: translateY(2px);
+  box-shadow: none;
+}
+
+/* ── 2B. 오늘의 낱말 (음각 정원 창문 액자 + 46px 라벨 수직선 칼정렬 어휘 노트) ── */
+.wordStudyBody {
+  display: grid;
+  grid-template-columns: 100px minmax(0, 1fr);
+  gap: 12px;
+  align-items: stretch;
+}
+
+.steleGardenFrame {
+  position: relative;
+  width: 100px;
+  min-height: 104px;
+  border-radius: var(--r-md);
+  border: 3px solid transparent;
+  border-image: var(--art-groove) 47 / 3px stretch;
+  background: #dcecf4;
+  overflow: hidden;
   display: flex;
-  align-items: baseline;
-  gap: var(--s2);
+  align-items: center;
+  justify-content: center;
+}
+
+.steleGardenCanvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.wordStudyContent {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 7px;
+  min-width: 0;
+}
+
+.lemmaHeader {
+  display: flex;
+  align-items: center;
+  gap: 8px;
   flex-wrap: wrap;
 }
 
 .lemmaWord {
-  font-size: 24px;
-  font-weight: 700;
-  line-height: 1.25;
+  font-size: 21px;
+  font-weight: 800;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
   color: var(--ink);
 }
 
-.meaningCard {
-  background: var(--oak-card-bg);
-  border: 2px solid var(--oak-inset-border);
-  border-radius: var(--r-input);
-  padding: var(--s3);
-  min-height: 56px;
-  display: flex;
+.posTag {
+  display: inline-flex;
   align-items: center;
-  gap: var(--s2);
-  text-align: left;
-  width: 100%;
+  height: 22px;
+  padding: 0 7px;
+  border-radius: var(--r-sm);
+  background: var(--parch-3);
+  border: 1.5px solid var(--oak-2);
+  color: var(--ink-2);
+  font-size: 13px;
+  font-weight: 800;
+  white-space: nowrap;
 }
 
-.meaningTag {
+.noteGridBox {
+  background: var(--parch-2);
+  border-radius: var(--r-sm);
+  border: 1.5px solid var(--oak-2);
+  padding: 7px 11px;
+  display: grid;
+  gap: 5px;
+}
+
+.noteGridRow {
+  display: grid;
+  grid-template-columns: 46px minmax(0, 1fr);
+  gap: 8px;
+  align-items: baseline;
+}
+
+.noteRowDivider {
+  height: 1px;
+  background: var(--oak-2);
+}
+
+.noteRowLabel {
   font-size: 13px;
-  font-weight: 700;
-  color: var(--oak-amber-accent);
-  flex-shrink: 0;
+  font-weight: 800;
+  color: var(--brass-3);
+  white-space: nowrap;
+}
+
+.noteRowLabelMuted {
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--ink-2);
+  white-space: nowrap;
 }
 
 .meaningText {
-  font-size: calc(17px + var(--read-step));
-  font-weight: 700;
-  color: var(--ink);
-  line-height: 1.4;
-}
-
-.exampleLine {
   font-size: calc(15px + var(--read-step));
+  font-weight: 700;
+  line-height: 1.38;
   color: var(--ink);
-  line-height: 1.5;
 }
 
-.exampleMark {
+.exampleText {
+  font-size: calc(14px + var(--read-step));
+  font-weight: 400;
+  line-height: 1.4;
+  color: var(--ink);
+}
+
+.exampleHighlight {
   background: transparent;
-  color: var(--oak-amber-accent);
-  font-weight: 700;
+  color: var(--brass-3);
+  font-weight: 800;
   text-decoration: underline;
   text-underline-offset: 3px;
 }
 
-/* 좌측 하단: 직결 출정 별명 데크 & 단일 '새 게임' CTA */
-.launchDeck {
+/* ── 2C. 새 게임 준비 카드 (음각 입력 트레이 + 108px 보조 버튼 열 잠금 + 챔퍼 명패 CTA) ── */
+.launchCard {
   margin-top: auto;
-  background: var(--oak-inset-bg);
-  border: 2px solid var(--oak-inset-border);
-  border-radius: var(--r-panel);
-  padding: var(--s3) var(--s4);
-  display: grid;
-  gap: var(--s3);
+  gap: 8px;
 }
 
-.nickHeader {
+.readyStatusTag {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  height: 24px;
+  padding: 0 8px;
+  border-radius: var(--r-sm);
+  background: var(--parch-2);
+  border: 1.5px solid var(--oak-2);
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--ink-2);
+  white-space: nowrap;
+}
+
+.readyStatusTag[data-ready='true'] {
+  background: #e6f2e4;
+  border-color: var(--green);
+  color: var(--green-base);
+}
+
+.readyStatusTag[data-error='true'] {
+  background: #fbeae8;
+  border-color: var(--red);
+  color: var(--red-base);
+}
+
+.formFieldsTray {
+  background: var(--parch-2);
+  border-radius: var(--r-md);
+  border: 1.5px solid var(--oak-2);
+  padding: 7px 10px;
+  display: grid;
+  gap: 6px;
+}
+
+.trayDivider {
+  height: 1px;
+  background: var(--oak-2);
+}
+
+.fieldGroup {
+  display: grid;
+  gap: 4px;
+}
+
+.fieldLabelRow {
   display: flex;
-  align-items: baseline;
+  align-items: center;
   justify-content: space-between;
-  gap: var(--s2);
+  gap: 8px;
   flex-wrap: wrap;
 }
 
-.nickLabel {
-  font-size: 16px;
-  font-weight: 700;
+.fieldLabelTitle {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  font-weight: 800;
   color: var(--ink);
+}
+
+.stepNumBadge {
+  width: 19px;
+  height: 19px;
+  border-radius: var(--r-sm);
+  background: var(--brass-1);
+  border: 1.5px solid var(--brass-3);
+  color: var(--ink);
+  font-size: 13px;
+  font-weight: 800;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.optionalTag {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--ink-2);
 }
 
 .nickStatus {
   font-size: 13px;
-  color: var(--ink-soft);
+  font-weight: 700;
+  color: var(--ink-2);
 }
 
 .nickStatus[data-error='true'] {
-  color: var(--danger);
-  font-weight: 700;
+  color: var(--red-base);
+  font-weight: 800;
 }
 
 .nickStatus[data-ready='true'] {
-  color: var(--oak-cta-green);
+  color: var(--green-base);
+  font-weight: 800;
+}
+
+/* 우측 보조 버튼 열을 108px로 잠가 위·아래 입력창 및 단추 좌우 경계선 0.00px 일치 */
+.lockedInputRow {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 108px;
+  gap: 8px;
+  align-items: center;
+}
+
+.inputIconWrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  min-width: 0;
+}
+
+.inputInnerIcon {
+  position: absolute;
+  left: 11px;
+  width: 16px;
+  height: 16px;
+  color: var(--walnut-2);
+  pointer-events: none;
+  flex-shrink: 0;
+}
+
+.parchInput {
+  width: 100%;
+  min-width: 0;
+  min-height: 45px;
+  padding: 0 12px 0 34px;
+  border: 2px solid var(--walnut-3);
+  border-radius: var(--r-sm);
+  background: var(--parch-1);
+  color: var(--ink);
+  font-size: 15px;
   font-weight: 700;
 }
 
-.nickRow {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  gap: var(--s2);
-  align-items: center;
-  margin-top: var(--s2);
+.parchInput::placeholder {
+  color: var(--ink-2);
+  font-weight: 400;
 }
 
+.parchInput[aria-invalid='true'] {
+  border-color: var(--red);
+}
+
+.lockedSlotBtn {
+  width: 100%;
+  min-height: 45px;
+  padding: 0 10px;
+  border: 2px solid var(--walnut-3);
+  border-radius: var(--r-sm);
+  background: var(--parch-1);
+  box-shadow: 0 2px 0 var(--walnut-3);
+  color: var(--ink);
+  font-size: 14px;
+  font-weight: 800;
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 80ms var(--ease-out), background-color 120ms;
+}
+
+@media (hover: hover) {
+  .lockedSlotBtn:hover:not(:disabled) {
+    background: var(--parch-3);
+  }
+}
+
+.lockedSlotBtn:active:not(:disabled) {
+  transform: translateY(2px);
+  box-shadow: none;
+}
+
+/* 학교 찾기 소형 모달(Modal size="sm") 내부 스타일 */
 .nickInput {
   width: 100%;
   min-width: 0;
-  min-height: var(--touch);
+  min-height: 45px;
   padding: 0 var(--s3);
-  border: 2px solid var(--oak-frame-edge);
-  border-radius: var(--r-input);
-  background: var(--oak-card-bg);
-  font-size: 16px;
+  border: 2px solid var(--walnut-3);
+  border-radius: var(--r-sm);
+  background: var(--parch-1);
+  font-size: 15px;
   font-weight: 700;
   color: var(--ink);
-}
-
-.nickInput[aria-invalid='true'] {
-  border-color: var(--danger);
-}
-
-.schoolBlock {
-  display: grid;
-  gap: 8px;
 }
 
 .schoolModalStack {
@@ -552,7 +807,8 @@
 .schoolModalStatus {
   margin: 0;
   font-size: var(--fs-1);
-  color: var(--ink-soft);
+  font-weight: 700;
+  color: var(--ink-2);
 }
 
 .schoolModalResults {
@@ -573,11 +829,11 @@
 
 .schoolItem {
   width: 100%;
-  min-height: var(--touch);
+  min-height: 45px;
   text-align: left;
   padding: 8px 10px;
   background: var(--parch-1);
-  border: 1px solid var(--oak-inset-border);
+  border: 1.5px solid var(--oak-2);
   border-radius: var(--r-sm);
   cursor: pointer;
   display: flex;
@@ -590,7 +846,7 @@
 .schoolItem:hover,
 .schoolItem:focus-visible {
   background: var(--parch-2);
-  border-color: var(--oak-amber-accent);
+  border-color: var(--brass-3);
   outline: 3px solid var(--ring);
   outline-offset: -3px;
 }
@@ -604,13 +860,13 @@
 
 .schoolItemName {
   font-size: 14px;
-  font-weight: 700;
+  font-weight: 800;
   color: var(--ink);
 }
 
 .schoolItemBadge {
   font-size: 13px;
-  font-weight: 700;
+  font-weight: 800;
   padding: 1px 6px;
   border-radius: var(--r-sm);
   background: var(--oak-1);
@@ -620,7 +876,7 @@
 
 .schoolItemAddress {
   font-size: 13px;
-  color: var(--ink-soft);
+  color: var(--ink-2);
   text-overflow: ellipsis;
   overflow: hidden;
   white-space: nowrap;
@@ -630,140 +886,682 @@
   margin: auto 0;
   padding: 12px 8px;
   font-size: 13px;
-  color: var(--ink-soft);
+  font-weight: 700;
+  color: var(--ink-2);
   text-align: center;
 }
 
 .bannerNotice {
   padding: var(--s2) var(--s3);
-  background: var(--oak-card-bg);
-  border: 2px dashed var(--oak-frame-outer);
-  border-radius: var(--r-input);
+  background: var(--parch-1);
+  border: 2px dashed var(--walnut-2);
+  border-radius: var(--r-sm);
   font-size: 14px;
+  font-weight: 700;
   color: var(--ink);
 }
 
+/* 주·보조 시작 데크: 사각 챔퍼 황동 리벳 명패 CTA */
 .ctaStack {
   display: grid;
-  gap: var(--s2);
+  gap: 7px;
 }
 
-.primaryCta {
-  width: 100%;
-  min-height: 56px;
-  padding: 0 var(--s4);
-  border: 2px solid var(--oak-frame-edge);
-  border-radius: var(--r-panel);
-  background: var(--oak-cta-green);
-  color: var(--on-dark);
-  font-size: 20px;
-  font-weight: 700;
-  box-shadow: var(--shadow-board);
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--s2);
-  transition: transform 80ms, box-shadow 80ms, background-color 80ms;
-}
-
-.primaryCta:hover:not(:disabled) {
-  background: var(--oak-cta-green-hover);
-}
-
-.primaryCta:active:not(:disabled) {
-  transform: translateY(1px);
-  box-shadow: var(--shadow-pressed);
-}
-
-.secondaryCta {
+.craftCtaPrimary {
+  --ring: var(--blue);
+  position: relative;
   width: 100%;
   min-height: 48px;
-  padding: 0 var(--s4);
-  border: 2px solid var(--oak-frame-edge);
-  border-radius: var(--r-panel);
-  background: var(--oak-card-bg);
-  color: var(--ink);
-  font-size: 17px;
-  font-weight: 700;
-  box-shadow: var(--shadow);
+  padding: 0 28px;
+  border: 2px solid var(--walnut-3);
+  border-radius: 6px;
+  background: var(--green);
+  box-shadow: 0 4px 0 var(--green-base);
+  color: var(--on-dark);
+  font-size: 19px;
+  font-weight: 800;
+  letter-spacing: -0.01em;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: var(--s2);
+  gap: 8px;
+  transition: transform 80ms var(--ease-out), background-color 120ms;
 }
 
-.secondaryCta:hover:not(:disabled) {
-  background: var(--parch-3);
+.craftCtaPrimary::before,
+.craftCtaPrimary::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  width: 6px;
+  height: 6px;
+  margin-top: -3px;
+  border-radius: 999px;
+  background: var(--brass-1);
+  box-shadow: 0 1px 0 var(--walnut-4);
+  pointer-events: none;
 }
 
-.secondaryCta:active:not(:disabled) {
-  transform: translateY(1px);
-  box-shadow: var(--shadow-pressed);
+.craftCtaPrimary::before {
+  left: 12px;
 }
 
-/* 우측 보드: 세분화 통합 수호 랭킹 센터 */
-.rankHeader {
+.craftCtaPrimary::after {
+  right: 12px;
+}
+
+@media (hover: hover) {
+  .craftCtaPrimary:hover:not(:disabled) {
+    background: var(--oak-cta-green-hover);
+  }
+}
+
+.craftCtaPrimary:active:not(:disabled) {
+  transform: translateY(3px);
+  box-shadow: 0 1px 0 var(--green-base);
+}
+
+.ctaArtIcon {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+  flex-shrink: 0;
+  display: block;
+}
+
+.craftCtaSecondary {
+  position: relative;
+  width: 100%;
+  min-height: 45px;
+  padding: 0 24px;
+  border: 2px solid var(--walnut-3);
+  border-radius: 6px;
+  background: var(--parch-1);
+  box-shadow: 0 3px 0 var(--walnut-3);
+  color: var(--ink);
+  font-size: 15px;
+  font-weight: 800;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  transition: transform 80ms var(--ease-out), background-color 120ms;
+}
+
+.craftCtaSecondary::before,
+.craftCtaSecondary::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  width: 5px;
+  height: 5px;
+  margin-top: -2.5px;
+  border-radius: 999px;
+  background: var(--oak-2);
+  box-shadow: 0 1px 0 var(--walnut-2);
+  pointer-events: none;
+}
+
+.craftCtaSecondary::before {
+  left: 12px;
+}
+
+.craftCtaSecondary::after {
+  right: 12px;
+}
+
+@media (hover: hover) {
+  .craftCtaSecondary:hover:not(:disabled) {
+    background: var(--parch-2);
+  }
+}
+
+.craftCtaSecondary:active:not(:disabled) {
+  transform: translateY(2px);
+  box-shadow: none;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   3. 우측 랭킹 보드 — 「책갈피 색인 탭 + 명예 기록장 시트」 일체형 아키텍처
+   ══════════════════════════════════════════════════════════════ */
+.rankHeaderCard {
+  border: 6px solid transparent;
+  border-image: var(--art-parch) 13 fill / 6px stretch;
+  background: var(--parch-1) padding-box;
+  border-radius: var(--r-md);
+  box-shadow: 0 2px 0 var(--walnut-3);
+  padding: 4px 10px;
+  min-height: 56px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: var(--s2);
+  gap: 8px;
   flex-wrap: wrap;
 }
 
-.tabBar {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: var(--s1);
-  background: var(--oak-inset-bg);
-  border: 2px solid var(--oak-inset-border);
-  border-radius: var(--r-panel);
-  padding: var(--s1);
-}
-
-.tabBtn {
-  min-height: var(--touch);
-  padding: 0 var(--s1);
-  border: 2px solid transparent;
-  border-radius: var(--r-input);
-  background: transparent;
-  color: var(--ink);
+.syncStatusPill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 24px;
+  padding: 0 8px;
+  border-radius: var(--r-sm);
+  background: var(--parch-3);
+  border: 1.5px solid var(--oak-2);
   font-size: 13px;
-  font-weight: 700;
-  text-align: center;
+  font-weight: 800;
+  color: var(--ink-2);
   white-space: nowrap;
 }
 
-.tabBtn:hover {
-  background: var(--oak-card-bg);
-}
-
-.tabBtn[aria-selected='true'] {
-  background: var(--oak-cta-green);
-  color: var(--on-dark);
-  border-color: var(--oak-frame-edge);
-  box-shadow: var(--shadow-pressed);
-}
-
-.filterStack {
-  display: grid;
-  gap: var(--s2);
-}
-
-.filterRow {
+.ledgerWrap {
+  flex: 1;
+  min-height: 0;
   display: flex;
-  flex-wrap: wrap;
-  gap: var(--s1);
+  flex-direction: column;
+}
+
+/* 1단 대분류: 책갈피형 색인 탭 레일 (46px 높이 + z-index: 2로 전체 터치 영역 보장) */
+.ledgerTabRail {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 4px;
+  padding: 0 6px;
+  position: relative;
+  z-index: 2;
+}
+
+.ledgerTab {
+  min-height: 46px;
+  min-width: 45px;
+  padding: 0 6px;
+  border: 2px solid var(--walnut-2);
+  border-bottom: 0;
+  border-radius: 6px 6px 0 0;
+  background: var(--parch-3);
+  color: var(--ink-2);
+  font-size: 14px;
+  font-weight: 800;
+  line-height: 1.2;
+  white-space: nowrap;
+  display: inline-flex;
   align-items: center;
-  min-height: var(--touch);
+  justify-content: center;
+  transition: background-color 140ms, color 140ms;
+}
+
+@media (hover: hover) {
+  .ledgerTab:hover:not([aria-selected='true']) {
+    background: var(--parch-2);
+    color: var(--ink);
+  }
+}
+
+.ledgerTab[aria-selected='true'] {
+  margin-bottom: -2px;
+  padding-bottom: 2px;
+  border-color: var(--walnut-3);
+  background: var(--parch-1);
+  color: var(--ink);
+  box-shadow: inset 0 4px 0 var(--green);
+}
+
+/* 2단 기록장 본문 시트: 선택된 책갈피 탭과 한 장의 양피지로 직결 */
+.ledgerSheet {
+  position: relative;
+  z-index: 1;
+  flex: 1;
+  min-height: 0;
+  border: 2px solid var(--walnut-3);
+  border-radius: var(--r-md);
+  background: var(--parch-1);
+  box-shadow: 0 2px 0 var(--walnut-3);
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+
+.ledgerFilterTray {
+  background: var(--parch-3);
+  border-radius: 6px;
+  border: 1.5px solid var(--oak-2);
+  padding: 5px;
+  display: grid;
+  gap: 5px;
+}
+
+.segmentedTrack {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 4px;
+}
+
+.segmentedTrack[data-cols='5'] {
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+}
+
+.segmentedTrack[data-cols='3'] {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.segItem {
+  min-height: 45px;
+  min-width: 45px;
+  padding: 0 6px;
+  border: 1.5px solid transparent;
+  border-radius: var(--r-sm);
+  background: var(--parch-2);
+  color: var(--ink-2);
+  font-size: 14px;
+  font-weight: 800;
+  line-height: 1.15;
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 120ms, color 120ms;
+}
+
+@media (hover: hover) {
+  .segItem:hover:not([aria-checked='true']) {
+    background: var(--parch-1);
+    color: var(--ink);
+  }
+}
+
+.segItem[aria-checked='true'] {
+  background: var(--parch-1);
+  color: var(--ink);
+  border-color: var(--walnut-3);
+  box-shadow: 0 2px 0 var(--walnut-3);
+}
+
+.fixedFilterInfoBar {
+  min-height: 45px;
+  padding: 0 12px;
+  border-radius: var(--r-sm);
+  background: var(--parch-2);
+  border: 1px solid var(--oak-2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--ink-2);
 }
 
 .filterMeta {
   font-size: var(--fs-1);
   font-weight: 700;
-  color: var(--ink-soft);
+  color: var(--ink-2);
 }
 
-/* 전체 랭킹 창(md 680×540 고정 프레임 + ModalTabs): 필터 줄 높이를 4탭 모두 고정하고 목록만 안에서 스크롤한다. */
+/* 기록장 본문 컨테이너 (데스크톱에서 좌측 보드 높이에 동기화 + 내부 스크롤) */
+.rankBodyBox {
+  position: relative;
+  flex: 1;
+  min-height: 168px;
+  display: flex;
+  flex-direction: column;
+}
+
+/* 초기 접속 빈 상태 쇼케이스 */
+.emptyShowcase {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.emptyHero {
+  background: var(--parch-2);
+  border-radius: 6px;
+  border: 1.5px solid var(--oak-2);
+  padding: 10px 12px;
+  display: grid;
+  grid-template-columns: 88px minmax(0, 1fr);
+  align-items: center;
+  gap: 12px;
+}
+
+.emptyVignette {
+  position: relative;
+  width: 88px;
+  height: 62px;
+  border-radius: var(--r-sm);
+  background: var(--parch-1);
+  border: 1.5px solid var(--oak-2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.emptyBookArt {
+  width: 68px;
+  height: 50px;
+  object-fit: contain;
+  display: block;
+}
+
+.emptyFloatStar {
+  position: absolute;
+  top: 3px;
+  left: 5px;
+  width: 18px;
+  height: 18px;
+  object-fit: contain;
+}
+
+.emptyFloatChest {
+  position: absolute;
+  bottom: 3px;
+  right: 5px;
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+}
+
+.emptyHeroCopy {
+  display: grid;
+  gap: 3px;
+  min-width: 0;
+}
+
+.emptyTitle {
+  font-size: 16px;
+  font-weight: 800;
+  color: var(--ink);
+}
+
+.emptyDesc {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--ink-2);
+  line-height: 1.35;
+}
+
+.emptyRewardTag {
+  justify-self: start;
+  margin-top: 2px;
+  display: inline-flex;
+  align-items: center;
+  height: 22px;
+  padding: 0 8px;
+  border-radius: var(--r-sm);
+  background: var(--brass-1);
+  border: 1px solid var(--brass-3);
+  color: var(--ink);
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.podiumPreviewList {
+  flex: 1;
+  display: grid;
+  grid-auto-rows: 1fr;
+  gap: 6px;
+}
+
+.podiumGhostRow {
+  display: grid;
+  grid-template-columns: 32px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 11px;
+  border-radius: var(--r-sm);
+  background: var(--parch-2);
+  border: 1.5px solid var(--oak-2);
+}
+
+.podiumGhostRow[data-podium='1'] {
+  border-left: 3px solid var(--brass-2);
+  background: #faf1dc;
+}
+
+.podiumGhostRow[data-podium='2'] {
+  border-left: 3px solid #68737d;
+}
+
+.podiumGhostRow[data-podium='3'] {
+  border-left: 3px solid #7c4925;
+}
+
+.ghostRowMeta {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+  flex-wrap: wrap;
+  min-width: 0;
+}
+
+.ghostRowTitle {
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--ink);
+}
+
+.ghostRowSub {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--ink-2);
+}
+
+.ghostRowScore {
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--ink-2);
+  white-space: nowrap;
+}
+
+/* 랭킹 목록 스크롤 상자 (홈 판 & 전체 랭킹 모달 공유) */
+.rankScroll {
+  position: absolute;
+  inset: 0;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  padding-right: 2px;
+}
+
+.rankScrollModal {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+.rankScroll:focus-visible,
+.rankScrollModal:focus-visible {
+  outline: 3px solid var(--ring);
+  outline-offset: 2px;
+  border-radius: var(--r-sm);
+}
+
+.rankList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 6px;
+  align-content: start;
+}
+
+.rankListModal {
+  min-height: 0;
+}
+
+.rankRow {
+  display: grid;
+  grid-template-columns: 32px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 10px;
+  min-height: 46px;
+  padding: 6px 11px;
+  background: var(--parch-2);
+  border: 1.5px solid var(--oak-2);
+  border-radius: var(--r-sm);
+}
+
+.rankRow[data-rank-num='1'] {
+  background: #fcf4df;
+  border-left: 3px solid var(--brass-2);
+}
+
+.rankRow[data-rank-num='2'] {
+  background: #f9f4e9;
+  border-left: 3px solid #68737d;
+}
+
+.rankRow[data-rank-num='3'] {
+  background: #faf2e6;
+  border-left: 3px solid #7c4925;
+}
+
+.rankRow[data-me='true'] {
+  background: #eef6ec;
+  border: 2px solid var(--green);
+}
+
+.rankMedal {
+  width: 30px;
+  height: 30px;
+  border-radius: var(--r-sm);
+  background: var(--parch-3);
+  border: 1.5px solid var(--oak-2);
+  color: var(--ink);
+  font-size: 14px;
+  font-weight: 800;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-variant-numeric: tabular-nums;
+}
+
+.rankMedal[data-rank='1'] {
+  background: var(--brass-1);
+  border: 2px solid var(--brass-3);
+  color: var(--ink);
+}
+
+.rankMedal[data-rank='2'] {
+  background: #dce3e8;
+  border: 2px solid #68737d;
+  color: var(--ink);
+}
+
+.rankMedal[data-rank='3'] {
+  background: #e5a879;
+  border: 2px solid #7c4925;
+  color: var(--ink);
+}
+
+.rankInfo {
+  min-width: 0;
+  display: grid;
+  gap: 1px;
+}
+
+.rankNickWrap {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+
+.rankNick {
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--ink);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.meTag {
+  display: inline-flex;
+  align-items: center;
+  height: 20px;
+  padding: 0 6px;
+  border-radius: var(--r-sm);
+  background: var(--green);
+  color: var(--on-dark);
+  font-size: 13px;
+  font-weight: 800;
+  flex-shrink: 0;
+}
+
+.rankSub {
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.3;
+  color: var(--ink-2);
+}
+
+.rankScore {
+  font-size: 16px;
+  font-weight: 800;
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.rankRow[data-rank-num] .rankScore {
+  color: var(--brass-3);
+}
+
+/* 하단 내 순위 요약 호두나무 명패 바 (홈 판 & 전체 랭킹 모달 공유) */
+.myRankDock {
+  margin-top: auto;
+  min-height: 46px;
+  background: var(--walnut-3);
+  color: var(--on-dark);
+  border-radius: var(--r-md);
+  border: 2px solid var(--walnut-4);
+  box-shadow: inset 0 0 0 1.5px var(--walnut-1);
+  padding: 7px 13px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.myRankDockModal {
+  flex: none;
+  margin-top: 0;
+}
+
+.myRankLabel {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--on-dark);
+}
+
+.dockStarIcon {
+  width: 16px;
+  height: 16px;
+  object-fit: contain;
+  display: block;
+}
+
+.myRankValue {
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--on-dark-2);
+  font-variant-numeric: tabular-nums;
+}
+
+.myRankValue[data-has-entry='true'] {
+  color: var(--brass-1);
+}
+
+/* 전체 랭킹 모달(RankingModal.tsx) 전용 보조 클래스 */
 .rankModalPanel {
   gap: var(--s2);
   overflow: hidden;
@@ -802,341 +1600,273 @@
   text-align: center;
 }
 
-.filterBtn {
-  min-width: var(--touch);
-  min-height: var(--touch);
-  padding: 0 var(--s2);
-  border: 1.5px solid var(--oak-inset-border);
-  border-radius: var(--r-input);
-  background: var(--oak-card-bg);
-  color: var(--ink);
-  font-size: 13px;
-  font-weight: 700;
-}
-
-.filterBtn[aria-checked='true'] {
-  background: var(--oak-frame-outer);
-  color: var(--on-dark);
-  border-color: var(--oak-frame-edge);
-}
-
-.sourceNotice {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--s2);
-  font-size: 13px;
-  line-height: 18px;
-  color: var(--ink-soft);
-}
-
-.rankList {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: grid;
-  gap: var(--s1);
-  align-content: start;
-  flex: 1;
-  min-height: 280px;
-}
-
-/* 랭킹 목록 스크롤 상자: 안에서 스크롤하므로 키보드로 닿고(tabIndex 0) 방향키로 내릴 수 있다(WCAG 2.1.1). 보통 크기는 모양이 그대로고,
-   저높이 홈 판은 아래 media에서 200px로 줄고 전체 랭킹 창은 고정 창 남은 높이를 채워 스크롤한다. 포커스 링은 --ring. */
-.rankScroll,
-.rankScrollModal {
-  display: flex;
-  flex-direction: column;
-  flex: 1 1 auto;
-  min-height: 0;
-}
-.rankScrollModal {
-  overflow-y: auto;
-}
-.rankListModal {
-  min-height: 0;
-}
-.myRankDockModal {
-  flex: none;
-  margin-top: 0;
-}
-.rankScroll:focus-visible,
-.rankScrollModal:focus-visible {
-  outline: 3px solid var(--ring);
-  outline-offset: 2px;
-  border-radius: var(--r-input);
-}
-
-.rankRow {
-  display: grid;
-  grid-template-columns: 36px minmax(0, 1fr) auto;
-  align-items: center;
-  gap: var(--s2);
-  padding: var(--s2) var(--s3);
-  background: var(--oak-card-bg);
-  border: 1.5px solid var(--oak-inset-border);
-  border-radius: var(--r-input);
-}
-
-.rankRow[data-me='true'] {
-  border-color: var(--oak-cta-green);
-  border-width: 2px;
-  background: color-mix(in srgb, var(--green) 10%, var(--parch-1));
-}
-
-.rankMedal {
-  width: 28px;
-  height: 28px;
-  border-radius: var(--r-input);
-  border: 1.5px solid var(--oak-frame-edge);
-  background: var(--oak-inset-bg);
-  color: var(--ink);
-  font-size: 13px;
-  font-weight: 700;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  font-variant-numeric: tabular-nums;
-}
-
-.rankMedal[data-rank='1'] {
-  background: var(--oak-rank-gold);
-}
-
-.rankMedal[data-rank='2'] {
-  background: var(--oak-rank-silver);
-}
-
-.rankMedal[data-rank='3'] {
-  background: var(--oak-rank-bronze);
-}
-
-.rankInfo {
-  min-width: 0;
-  display: grid;
-  gap: 2px;
-}
-
-.rankNick {
-  font-size: 15px;
-  font-weight: 700;
-  color: var(--ink);
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.rankSub {
-  font-size: 13px;
-  line-height: 18px;
-  color: var(--ink-soft);
-}
-
-.rankScore {
-  font-size: 16px;
-  font-weight: 700;
-  color: var(--ink);
-  font-variant-numeric: tabular-nums;
-  white-space: nowrap;
-}
-
-.emptyRankBox {
-  background: var(--oak-inset-bg);
-  border: 2px dashed var(--oak-inset-border);
-  border-radius: var(--r-panel);
-  padding: var(--s5) var(--s4);
-  text-align: center;
-  display: grid;
-  gap: var(--s2);
-  align-content: center;
-  min-height: 220px;
-}
-
-.myRankDock {
-  margin-top: auto;
-  background: var(--oak-plaque-bg);
-  color: var(--oak-plaque-ink);
-  border: 2px solid var(--oak-frame-edge);
-  border-radius: var(--r-panel);
-  padding: var(--s2) var(--s3);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--s2);
-  flex-wrap: wrap;
-}
-
-.myRankLabel {
-  font-size: 14px;
-  font-weight: 700;
-}
-
-.myRankValue {
-  font-size: 14px;
-  font-weight: 700;
-  color: var(--oak-plaque-gold);
-  font-variant-numeric: tabular-nums;
-}
-
-/* 학교 크롬북 저높이(1366×650 등) 대응: 첫 화면(스크롤 없이)에 새 게임·연습 단추까지 다 들어오게 한다.
-   조작 요소는 44px 아래로 줄이지 않고, 두 단추를 한 줄에 놓고 여백·미니 무대를 줄여 높이를 만든다. */
-@media (max-height: 740px) and (min-width: 960px) {
+/* ══════════════════════════════════════════════════════════════
+   4. 크롬북 저높이 뷰포트 (1366×650) 무스크롤 1화면 완결 대응
+   ══════════════════════════════════════════════════════════════ */
+@media (max-height: 750px) and (min-width: 960px) {
   .foreground {
-    padding: var(--s1) var(--s4);
-    gap: var(--s1);
+    padding: 5px 18px;
+    gap: 6px;
   }
-  .plaqueInner {
-    padding: var(--s1) var(--s3);
+  .headerPlaque {
+    border-width: 6px;
+    padding: 4px 12px;
+    gap: 10px;
   }
-  .parchmentInner {
-    --pad-y: var(--s2);
-    padding: var(--pad-y) var(--s3);
-    gap: var(--s1);
+  .crestBox {
+    width: 38px;
+    height: 38px;
+  }
+  .crestImg {
+    width: 28px;
+    height: 28px;
+  }
+  .brandTitle {
+    font-size: 18px;
+  }
+  .telemetryStrip {
+    padding: 2px 4px;
+  }
+  .woodBoard {
+    border-width: 7px;
+    padding: 6px 8px;
+    gap: 5px;
   }
   .stageViewport {
     height: 88px;
   }
-  .stelePanel {
-    padding: var(--s2) var(--s3);
-    gap: var(--s1);
-  }
-  .steleArtBox {
-    width: 68px;
-    height: 76px;
-  }
-  .meaningCard {
-    padding: var(--s1) var(--s2);
-    min-height: 40px;
-  }
-  .launchDeck {
-    padding: var(--s2) var(--s3);
-    gap: var(--s1);
-  }
-  .nickRow {
-    gap: var(--s1);
-    margin-top: var(--s1);
-  }
-  .nickInput {
-    min-height: var(--touch);
-    font-size: 14px;
-  }
-  .schoolBlock {
+  .subCard {
+    border-width: 4px;
+    padding: 4px 8px 5px;
     gap: 4px;
   }
-  /* 새 게임과 연습을 두 칸 격자로 놓아 세로를 한 단추 높이로 줄인다. */
+  .cardHeaderRow {
+    min-height: 45px;
+    padding-bottom: 3px;
+  }
+  /* 새 게임 준비 카드 헤더에는 버튼이 없으므로 저높이에서 높이를 알뜰하게 줄인다 */
+  .launchCard > .cardHeaderRow {
+    min-height: 28px;
+    padding-bottom: 3px;
+  }
+  .wordStudyBody {
+    grid-template-columns: 74px minmax(0, 1fr);
+    gap: 8px;
+  }
+  .steleGardenFrame {
+    width: 74px;
+    min-height: 76px;
+  }
+  .lemmaWord {
+    font-size: 18px;
+  }
+  .noteGridBox {
+    padding: 4px 8px;
+    gap: 3px;
+  }
+  .meaningText {
+    font-size: calc(14px + var(--read-step));
+    line-height: 1.26;
+  }
+  .exampleText {
+    font-size: calc(13px + var(--read-step));
+    line-height: 1.26;
+  }
+  .formFieldsTray {
+    padding: 4px 8px;
+    gap: 3px;
+  }
+  .fieldGroup {
+    gap: 2px;
+  }
   .ctaStack {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    grid-auto-flow: dense;
-    gap: var(--s1) var(--s2);
+    grid-template-columns: 1.25fr 1fr;
+    gap: 8px;
   }
   .ctaStack > :only-child {
     grid-column: 1 / -1;
   }
-  .ctaStack > [id='practiceBtn'] {
-    grid-column: 2;
+  .craftCtaPrimary {
+    min-height: 45px;
+    font-size: 16px;
+    padding: 0 22px;
   }
-  .primaryCta {
-    min-height: var(--touch);
-    font-size: 17px;
+  .craftCtaSecondary {
+    min-height: 45px;
+    font-size: 14px;
+    padding: 0 18px;
   }
-  .secondaryCta {
-    min-height: var(--touch);
-    font-size: 15px;
+  .rankHeaderCard {
+    border-width: 4px;
+    min-height: 49px;
+    padding: 2px 8px;
   }
-  .rankList {
-    min-height: 140px;
+  .ledgerSheet {
+    padding: 6px 8px;
+    gap: 5px;
   }
-  .rankScroll {
-    max-height: 200px;
-    overflow-y: auto;
+  .ledgerFilterTray {
+    padding: 4px;
+    gap: 4px;
   }
-}
-
-/* 태블릿·휴대폰 단일 열 전환 */
-/* 오답 노트 단추가 더해져 머리판 단추가 4개가 되면 1061~1215px에서 한 줄에 들어가지 않아 '설정'만 아랫줄로 떨어진다
-   (통계 4칸은 이미 최소 폭 96px). 이 구간에서만 단추 여백을 줄이고(~1239px, 부제 줄바꿈도 막음) 1215px 이하에서는 작은 아이콘도 감춰 옛 랜딩처럼 한 줄·같은 높이를 지킨다. */
-@media (min-width: 1061px) and (max-width: 1239px) {
-  .headerActions:has(> :nth-child(4)) {
-    gap: 6px;
+  .rankBodyBox {
+    min-height: 120px;
   }
-  .headerActions:has(> :nth-child(4)) .plaqueBtn {
-    padding: 0 var(--s2);
+  .emptyShowcase {
+    gap: 5px;
   }
-}
-@media (min-width: 1061px) and (max-width: 1215px) {
-  .headerActions:has(> :nth-child(4)) .plaqueBtn > svg {
+  .emptyHero {
+    padding: 6px 10px;
+    grid-template-columns: 72px minmax(0, 1fr);
+    gap: 8px;
+  }
+  .emptyRewardTag {
     display: none;
   }
+  .emptyVignette {
+    width: 72px;
+    height: 46px;
+  }
+  .emptyBookArt {
+    width: 58px;
+    height: 42px;
+  }
+  .emptyTitle {
+    font-size: 15px;
+  }
+  .podiumGhostRow:nth-child(n + 3) {
+    display: none;
+  }
+  .podiumGhostRow {
+    padding: 4px 10px;
+  }
+  .myRankDock {
+    min-height: 45px;
+    padding: 5px 11px;
+  }
 }
 
-@media (max-width: 1060px) {
-  .plaqueInner {
-    grid-template-columns: 1fr;
-    justify-items: stretch;
+/* ══════════════════════════════════════════════════════════════
+   5. 중간 폭 데스크톱 & 태블릿 & 모바일 반응형
+   ══════════════════════════════════════════════════════════════ */
+@media (min-width: 1121px) and (max-width: 1240px) {
+  .headerActions:has(> :nth-child(4)) .plaqueKeyBtn {
+    --cap: 14px;
+    padding: 0 calc(var(--cap) + 3px);
+  }
+}
+
+@media (max-width: 1120px) {
+  .headerPlaque {
+    grid-template-columns: 1fr auto;
   }
   .telemetryStrip {
+    grid-column: 1 / -1;
+    order: 3;
     max-width: none;
-  }
-  .headerActions {
-    justify-content: flex-end;
   }
 }
 
 @media (max-width: 959px) {
+  .lobbyRoot {
+    justify-content: flex-start;
+  }
   .warRoomGrid {
     grid-template-columns: 1fr;
+  }
+  .rankBodyBox {
+    min-height: 0;
+  }
+  .rankScroll {
+    position: static;
+    max-height: 320px;
   }
 }
 
 @media (max-width: 600px) {
   .foreground {
-    padding: var(--s3);
+    padding: 10px;
+    gap: 10px;
   }
-  .parchmentInner {
-    --pad-y: var(--s3);
-    padding: var(--s3);
+  .headerPlaque {
+    grid-template-columns: 1fr;
+    gap: 8px;
+    padding: 8px 10px;
+    border-width: 8px;
+  }
+  .brandTitle {
+    white-space: normal;
+  }
+  .brandSub {
+    white-space: normal;
   }
   .telemetryStrip {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 4px;
+  }
+  .metricCell:nth-of-type(3) {
+    border-left: 0;
   }
   .headerActions {
     justify-content: stretch;
   }
-  /* 오답 노트 단추가 더해져 4개일 때는 한 줄에 들어가지 않으므로 2×2로 놓는다(마지막 하나만 아랫줄에 떨어지지 않게). */
   .headerActions:has(> :nth-child(4)) {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
-  .plaqueBtn {
-    flex: 1 1 auto;
-    justify-content: center;
-    padding: 0 var(--s2);
+  .plaqueKeyBtn {
+    width: 100%;
   }
   .stageViewport {
-    height: 148px;
+    height: 146px;
   }
   .stageBadgeRight {
     display: none;
   }
-  .steleBody {
-    grid-template-columns: 1fr;
+  .wordStudyBody {
+    grid-template-columns: 84px minmax(0, 1fr);
+    gap: 10px;
   }
-  .steleArtBox {
-    width: 76px;
-    height: 88px;
+  .steleGardenFrame {
+    width: 84px;
+    min-height: 92px;
   }
-  .smallBtn,
-  .filterBtn,
-  .tabBtn {
-    min-height: var(--touch);
+  .ledgerTabRail {
+    gap: 3px;
+    padding: 0 3px;
   }
-  .tabBar {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+  .ledgerTab {
+    font-size: 13px;
+    padding: 0 3px;
+  }
+  .segItem {
+    font-size: 13px;
+    padding: 0 3px;
   }
 }
 
 @media (max-width: 360px) {
-  .nickRow {
+  .lockedInputRow {
     grid-template-columns: 1fr;
+  }
+  .ledgerTabRail {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 4px;
+  }
+  .ledgerTab {
+    border-bottom: 2px solid var(--walnut-2);
+    border-radius: var(--r-sm);
+  }
+  .ledgerTab[aria-selected='true'] {
+    margin-bottom: 0;
+    padding-bottom: 0;
+    border-color: var(--walnut-3);
+  }
+  .wordStudyBody {
+    grid-template-columns: 1fr;
+  }
+  .steleGardenFrame {
+    width: 84px;
+    min-height: 88px;
   }
 }

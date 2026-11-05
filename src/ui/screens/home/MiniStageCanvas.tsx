@@ -1,6 +1,16 @@
 import { useEffect, useRef } from 'react';
 import type { MotionMode } from '../../../application/session';
 import { rand01, useLobbySprites, type SpriteMap } from './canvasAssets';
+import {
+  bakeThreeToneGrass,
+  buildArcTable,
+  drawNaturalRoad,
+  drawSpriteGrounded,
+  sampleArcTable,
+  sampleSpline,
+  type ArcSample,
+  type TonePool,
+} from './terrainBaker';
 
 interface Props {
   motionMode: MotionMode;
@@ -13,29 +23,42 @@ const FRAME_MS = 1000 / 30;
 const LOOP_MS = 11000;
 const ACTIVE_SPAN = 0.84;
 const STATIC_CYCLE = 0.18;
-const STELE_FACE_Y = 0.41;
-/** 그림(타워 54px·적 36~50px)이 잘리지 않는 최소 설계 높이(css px). 무대가 이보다 낮으면 그림을 비율로 줄인다. */
-const MIN_DESIGN_H = 140;
-/** 무대가 이 크기(css px)보다 크면 그림을 키워 그린다(최대 MAX_SCALE배). */
-const BASE_W = 480;
-const BASE_H = 260;
-const MAX_SCALE = 1.6;
+const STATIC_TIME_MS = 2000;
+/** 그림(타워·적·연못·비석)이 잘리지 않는 최소 설계 높이(css px). 크롬북 등 낮은 무대에서는 이 비율로 축소해 구도를 그대로 유지한다. */
+const MIN_DESIGN_H = 156;
+const BASE_W = 540;
+const BASE_H = 190;
+const MAX_SCALE = 1.45;
 
-const WAYPOINTS: readonly [number, number][] = [
-  [-0.06, 0.56],
-  [0.2, 0.56],
-  [0.32, 0.34],
-  [0.54, 0.34],
-  [0.66, 0.66],
-  [0.86, 0.66],
+const STAGE_CTRL_NORM: readonly (readonly [number, number])[] = [
+  [-0.06, 0.64],
+  [0.16, 0.63],
+  [0.31, 0.38],
+  [0.53, 0.37],
+  [0.68, 0.69],
+  [0.89, 0.68],
 ];
 
-const DEFEAT_PROGRESS: readonly [number, number, number, number, number] = [0.74, 0.68, 0.8, 0.71, 0.88];
+const DEFEAT_PROGRESS: readonly [number, number, number, number, number] = [0.76, 0.7, 0.82, 0.73, 0.89];
 
-const TOWER_DEFS: readonly { x: number; y: number; id: 'archer' | 'frost' | 'cannon'; fixed?: boolean }[] = [
-  { x: 0.25, y: 0.72, id: 'archer' },
-  { x: 0.46, y: 0.56, id: 'frost', fixed: true },
-  { x: 0.69, y: 0.41, id: 'cannon' },
+const ACORN_BY_SLOT: readonly string[] = [
+  'acorn.runner',
+  'acorn.shell',
+  'acorn.brute',
+  'acorn.wisp',
+  'acorn.boss5',
+];
+
+const TOWER_DEFS: readonly {
+  x: number;
+  y: number;
+  id: 'archer' | 'frost' | 'cannon';
+  pad: 'slot.pad.0' | 'slot.pad.1';
+  fixed?: boolean;
+}[] = [
+  { x: 0.26, y: 0.8, id: 'archer', pad: 'slot.pad.0' },
+  { x: 0.46, y: 0.62, id: 'frost', pad: 'slot.pad.1', fixed: true },
+  { x: 0.69, y: 0.41, id: 'cannon', pad: 'slot.pad.0' },
 ];
 
 export interface DemoEnemy {
@@ -69,36 +92,23 @@ export interface StageDemoSnapshot {
   projectiles: DemoProjectile[];
 }
 
-function samplePath(progress01: number, w: number, h: number): { x: number; y: number } {
-  const clamped = Math.max(0, Math.min(1, progress01));
-  const segCount = WAYPOINTS.length - 1;
-  let totalLen = 0;
-  const segLens: number[] = [];
-  for (let i = 0; i < segCount; i++) {
-    const [x0, y0] = WAYPOINTS[i]!;
-    const [x1, y1] = WAYPOINTS[i + 1]!;
-    const len = Math.hypot((x1 - x0) * w, (y1 - y0) * h);
-    segLens.push(len);
-    totalLen += len;
+interface PathArcMemo {
+  w: number;
+  h: number;
+  table: ArcSample[];
+  totalDist: number;
+}
+
+let pathMemo: PathArcMemo | null = null;
+
+function sampleStagePath(progress01: number, w: number, h: number): { x: number; y: number } {
+  if (!pathMemo || pathMemo.w !== w || pathMemo.h !== h) {
+    const ctrlPts = STAGE_CTRL_NORM.map(([nx, ny]): readonly [number, number] => [nx * w, ny * h]);
+    const spine = sampleSpline(ctrlPts, 96);
+    const { table, totalDist } = buildArcTable(spine);
+    pathMemo = { w, h, table, totalDist };
   }
-  if (totalLen <= 0) {
-    const [fx, fy] = WAYPOINTS[0]!;
-    return { x: fx * w, y: fy * h };
-  }
-  const targetDist = clamped * totalLen;
-  let acc = 0;
-  for (let i = 0; i < segCount; i++) {
-    const segLen = segLens[i]!;
-    if (acc + segLen >= targetDist || i === segCount - 1) {
-      const localT = segLen > 0 ? Math.max(0, Math.min(1, (targetDist - acc) / segLen)) : 0;
-      const [x0, y0] = WAYPOINTS[i]!;
-      const [x1, y1] = WAYPOINTS[i + 1]!;
-      return { x: (x0 + (x1 - x0) * localT) * w, y: (y0 + (y1 - y0) * localT) * h };
-    }
-    acc += segLen;
-  }
-  const [lx, ly] = WAYPOINTS[segCount]!;
-  return { x: lx * w, y: ly * h };
+  return sampleArcTable(pathMemo.table, pathMemo.totalDist, progress01);
 }
 
 function unitStateAt(slot: number, timeMs: number, w: number, h: number, animateCombat: boolean) {
@@ -107,15 +117,15 @@ function unitStateAt(slot: number, timeMs: number, w: number, h: number, animate
   if (unitCycle >= ACTIVE_SPAN) return null;
   const kind: 'walker' | 'boss' = slot === 4 ? 'boss' : 'walker';
   const march01 = unitCycle / ACTIVE_SPAN;
-  const defeatP = DEFEAT_PROGRESS[slot] ?? 0.74;
+  const defeatP = DEFEAT_PROGRESS[slot] ?? 0.76;
   const rawP = march01 * defeatP;
-  const pos = samplePath(rawP, w, h);
-  const hpRatio = march01 < 0.92 ? Math.max(0.05, 1 - (march01 / 0.92) * 0.95) : 0;
+  const pos = sampleStagePath(rawP, w, h);
+  const hpRatio = march01 < 0.92 ? Math.max(0.06, 1 - (march01 / 0.92) * 0.94) : 0;
   const alpha = march01 < 0.92 ? 1 : Math.max(0, 1 - (march01 - 0.92) / 0.08);
   return { slot, kind, x: pos.x, y: pos.y, rawP, march01, hpRatio, alpha };
 }
 
-/** 5웨이브 수비전 미니 시연의 시간별 결정론 상태를 계산한다(단위 검증 겸용). */
+/** 5웨이브 미니 시연의 시간별 결정론 상태를 계산한다(단위 검증 겸용 — DOM 비의존). */
 export function sampleStageDemo(w: number, h: number, timeMs: number, animateCombat: boolean): StageDemoSnapshot {
   const bySlot = new Map<number, DemoEnemy>();
   for (let slot = 0; slot < 5; slot++) {
@@ -142,7 +152,6 @@ export function sampleStageDemo(w: number, h: number, timeMs: number, animateCom
     const shotPhase = (((shotClock % shotPeriod) + shotPeriod) % shotPeriod) / shotPeriod;
     const tStart = shotSeq * shotPeriod - phaseOffset;
 
-    // 발사 시점에 살아 있고 탄착 때까지 전장에 남아 있을 가장 가까운 적 슬롯을 고정 추적한다.
     let lockedSlot = -1;
     let bestDist = Infinity;
     for (let slot = 0; slot < 5; slot++) {
@@ -204,181 +213,307 @@ export function sampleStageDemo(w: number, h: number, timeMs: number, animateCom
   return { enemies, towerAngles, towerRecoils, projectiles };
 }
 
-function drawStageFrame(
-  ctx: CanvasRenderingContext2D,
+interface StageTerrainCache {
+  key: string;
+  canvas: HTMLCanvasElement;
+}
+
+function ensureStageBaked(
+  cacheRef: { current: StageTerrainCache | null },
   w: number,
   h: number,
+  pxScale: number,
   sprites: SpriteMap,
-  timeMs: number,
-  animateCombat: boolean,
   highContrastMap: boolean,
-) {
-  ctx.fillStyle = '#6f9c44';
-  ctx.fillRect(0, 0, w, h);
-
-  const grass = sprites.get('ground.grass')?.img;
-  if (grass && grass.width > 0) {
-    const tile = 112;
-    for (let y = 0; y < h; y += tile) {
-      for (let x = 0; x < w; x += tile) ctx.drawImage(grass, x, y, tile + 1, tile + 1);
-    }
+): StageTerrainCache {
+  const cacheKey = `${Math.round(w)}x${Math.round(h)}@${pxScale.toFixed(3)}@hc${highContrastMap ? 1 : 0}@sp${sprites.size}`;
+  if (cacheRef.current && cacheRef.current.key === cacheKey) {
+    return cacheRef.current;
   }
 
-  // S자 수비 도로(고대비 설정 켜짐 시 진한 윤곽선 + 밝은 안내선 추가)
-  ctx.lineCap = 'round';
-  ctx.lineJoin = 'round';
-  const traceRoad = () => {
-    ctx.beginPath();
-    for (let i = 0; i < WAYPOINTS.length; i++) {
-      const [nx, ny] = WAYPOINTS[i]!;
-      if (i === 0) ctx.moveTo(nx * w, ny * h);
-      else ctx.lineTo(nx * w, ny * h);
-    }
-  };
-
-  if (highContrastMap) {
-    traceRoad();
-    ctx.strokeStyle = '#261c14';
-    ctx.lineWidth = 38;
-    ctx.stroke();
-    traceRoad();
-    ctx.strokeStyle = '#fff6d8';
-    ctx.lineWidth = 33;
-    ctx.stroke();
-  } else {
-    traceRoad();
-    ctx.strokeStyle = '#7b5933';
-    ctx.lineWidth = 32;
-    ctx.stroke();
+  if (cacheRef.current) {
+    cacheRef.current.canvas.width = 0;
+    cacheRef.current.canvas.height = 0;
   }
 
-  traceRoad();
-  ctx.strokeStyle = '#d9b577';
-  ctx.lineWidth = 26;
-  ctx.stroke();
-
-  // 배경 소품(나무·꽃·바위)
-  const tree = sprites.get('deco.tree')?.img;
-  const rock = sprites.get('deco.rock')?.img;
-  const flowers = sprites.get('deco.flowers')?.img;
-  if (flowers) {
-    ctx.drawImage(flowers, w * 0.14, h * 0.72, 28, 28);
-    ctx.drawImage(flowers, w * 0.74, h * 0.2, 26, 26);
-  }
-  if (rock) ctx.drawImage(rock, w * 0.44, h * 0.73, 34, 34);
-  if (tree) {
-    ctx.drawImage(tree, w * 0.03, h * 0.04, 58, 58);
-    ctx.drawImage(tree, w * 0.89, h * 0.03, 56, 56);
+  const off = document.createElement('canvas');
+  off.width = Math.max(1, Math.round(w * pxScale));
+  off.height = Math.max(1, Math.round(h * pxScale));
+  const ctx = off.getContext('2d');
+  if (!ctx) {
+    const empty: StageTerrainCache = { key: cacheKey, canvas: off };
+    cacheRef.current = empty;
+    return empty;
   }
 
-  // 상단 중앙 수호 비석 원화 + 첫 글자 각인(좌측 상단 배지와 겹치지 않는 열린 잔디 위치)
-  const stele = sprites.get('deco.stele')?.img;
-  const sx = w * 0.43;
-  const sy = h * 0.27;
-  if (stele) {
-    const sw = 50;
-    const sh = 50;
-    ctx.drawImage(stele, sx - sw / 2, sy - sh * 0.85, sw, sh);
-    const glyphY = sy - (0.85 - STELE_FACE_Y) * sh;
-    ctx.fillStyle = '#463c35';
-    ctx.font = '700 13px "Pretendard Variable", Pretendard, sans-serif';
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    ctx.fillText('한', sx, glyphY);
+  ctx.setTransform(pxScale, 0, 0, pxScale, 0, 0);
+
+  const shadePools: TonePool[] = [
+    { x: w * 0.08, y: h * 0.18, rx: 95, ry: 65, str: 0.38 },
+    { x: w * 0.92, y: h * 0.22, rx: 95, ry: 65, str: 0.36 },
+    { x: w * 0.84, y: h * 0.44, rx: 70, ry: 55, str: 0.26 },
+    { x: w * 0.16, y: h * 0.82, rx: 80, ry: 52, str: 0.24 },
+  ];
+  const lightPools: TonePool[] = [
+    { x: w * 0.44, y: h * 0.48, rx: 165, ry: 90, str: 0.38 },
+    { x: w * 0.68, y: h * 0.56, rx: 120, ry: 75, str: 0.28 },
+  ];
+
+  // 1) 3톤 저주파 잔디 언덕
+  bakeThreeToneGrass(ctx, w, h, sprites, shadePools, lightPools, 109);
+
+  // 2) 들꽃 군락 패치
+  const m0 = sprites.get('ground.meadow.0')?.img;
+  const m1 = sprites.get('ground.meadow.1')?.img;
+  const m2 = sprites.get('ground.meadow.2')?.img;
+  ctx.save();
+  ctx.globalAlpha = 0.8;
+  if (m0) ctx.drawImage(m0, w * 0.03, h * 0.66, 92, 62);
+  if (m1) ctx.drawImage(m1, w * 0.51, h * 0.72, 94, 64);
+  if (m2) ctx.drawImage(m2, w * 0.56, h * 0.06, 86, 56);
+  ctx.restore();
+
+  // 3) 본게임 5겹 S자 입체 흙길 (고대비 설정 반영)
+  const ctrlPts = STAGE_CTRL_NORM.map(([nx, ny]): readonly [number, number] => [nx * w, ny * h]);
+  drawNaturalRoad(ctx, sprites, ctrlPts, 14.2, 211, highContrastMap);
+
+  // 길가 자갈 & 풀술 디테일
+  const roadDetails: readonly { key: string; x: number; y: number; w: number; h: number }[] = [
+    { key: 'path.pebbles.0', x: w * 0.12, y: h * 0.55, w: 17, h: 13 },
+    { key: 'path.pebbles.1', x: w * 0.39, y: h * 0.31, w: 16, h: 12 },
+    { key: 'path.pebbles.2', x: w * 0.62, y: h * 0.53, w: 16, h: 12 },
+    { key: 'path.pebbles.0', x: w * 0.78, y: h * 0.64, w: 17, h: 13 },
+    { key: 'path.tuft.0', x: w * 0.19, y: h * 0.64, w: 18, h: 14 },
+    { key: 'path.tuft.1', x: w * 0.54, y: h * 0.41, w: 17, h: 13 },
+    { key: 'path.tuft.2', x: w * 0.72, y: h * 0.74, w: 18, h: 14 },
+  ];
+  for (const d of roadDetails) {
+    const img = sprites.get(d.key)?.img;
+    if (img) ctx.drawImage(img, d.x, d.y, d.w, d.h);
   }
 
-  // 우측 왕국 성문
-  const gate = sprites.get('map.gate')?.img;
-  const gx = w * 0.89;
-  const gy = h * 0.67;
-  if (gate) {
-    ctx.drawImage(gate, gx - 42, gy - 66, 84, 84);
-  } else {
-    ctx.fillStyle = '#754b2d';
-    ctx.fillRect(gx - 22, gy - 36, 44, 48);
+  // 4) 연못 & 설치 이끼 기단 (흙길과 잔디 여유 확보)
+  const pond = sprites.get('landmark.pond')?.img;
+  if (pond) {
+    ctx.drawImage(pond, w * 0.055, h * 0.11, 88, 50);
   }
 
-  const demo = sampleStageDemo(w, h, timeMs, animateCombat);
+  const pad0 = sprites.get('slot.pad.0')?.img ?? sprites.get('slot.base')?.img;
+  const pad1 = sprites.get('slot.pad.1')?.img ?? pad0;
+  const emptyPads: readonly [number, number][] = [
+    [w * 0.38, h * 0.81],
+    [w * 0.59, h * 0.19],
+  ];
+  if (pad1) {
+    ctx.drawImage(pad1, emptyPads[0]![0] - 19, emptyPads[0]![1] - 14, 38, 28);
+  }
+  if (pad0) {
+    ctx.drawImage(pad0, emptyPads[1]![0] - 19, emptyPads[1]![1] - 14, 38, 28);
+  }
 
-  // 타워 3기(궁수·서리·대포)
-  const slotImg = sprites.get('slot.base')?.img;
-  for (let ti = 0; ti < TOWER_DEFS.length; ti++) {
-    const td = TOWER_DEFS[ti]!;
+  for (const td of TOWER_DEFS) {
     const tx = td.x * w;
     const ty = td.y * h;
     if (highContrastMap) {
       ctx.strokeStyle = '#261c14';
       ctx.lineWidth = 3;
-      ctx.strokeRect(tx - 21, ty - 14, 42, 28);
-      ctx.strokeStyle = '#f5d98e';
+      ctx.strokeRect(tx - 22, ty - 15, 44, 30);
+      ctx.strokeStyle = '#fff6d8';
       ctx.lineWidth = 1.5;
-      ctx.strokeRect(tx - 19, ty - 12, 38, 24);
+      ctx.strokeRect(tx - 20, ty - 13, 40, 26);
     }
-    if (slotImg) ctx.drawImage(slotImg, tx - 22, ty - 18, 44, 44);
-
-    const bodyImg = sprites.get(`tower.${td.id}`)?.img;
-    const weaponImg = sprites.get(`tower.${td.id}.weapon`)?.img;
-    if (bodyImg) {
-      ctx.drawImage(bodyImg, tx - 27, ty - 42, 54, 54);
-    } else {
-      ctx.fillStyle = '#6c5a49';
-      ctx.beginPath();
-      ctx.arc(tx, ty - 6, 14, 0, Math.PI * 2);
-      ctx.fill();
-    }
-
-    const angle = demo.towerAngles[ti] ?? -0.6;
-    const recoil = demo.towerRecoils[ti] ?? 0;
-    if (weaponImg) {
-      ctx.save();
-      const hoverY = td.fixed && animateCombat ? Math.sin(timeMs * 0.004 + ti) * 2 : 0;
-      const rx = td.fixed ? 0 : -Math.cos(angle) * recoil;
-      const ry = td.fixed ? 0 : -Math.sin(angle) * recoil;
-      ctx.translate(tx + rx, ty - 18 + hoverY + ry);
-      if (!td.fixed) ctx.rotate(angle);
-      ctx.drawImage(weaponImg, -18, -18, 36, 36);
-      ctx.restore();
-    }
+    const padImg = sprites.get(td.pad)?.img ?? pad0;
+    if (padImg) ctx.drawImage(padImg, tx - 23, ty - 16, 46, 35);
   }
 
-  // 적 스프라이트 및 체력 막대
-  for (const e of demo.enemies) {
+  // 5) 정원 풍경 프롭 (뒤쪽 레이어 Y-정렬)
+  const staticProps: { key: string; x: number; y: number; w: number; h: number; sh: number }[] = [
+    { key: 'edge.forest.0', x: 34, y: 42, w: 110, h: 72, sh: 0 },
+    { key: 'edge.forest.1', x: w - 34, y: 40, w: 110, h: 72, sh: 0 },
+    { key: 'prop.fence.h', x: w * 0.37, y: h * 0.19, w: 46, h: 25, sh: 0.14 },
+    { key: 'deco.rock', x: w * 0.43, y: h * 0.22, w: 28, h: 22, sh: 0.16 },
+    { key: 'map.courtyard.prop.flowerpot', x: w * 0.53, y: h * 0.23, w: 26, h: 26, sh: 0.16 },
+    { key: 'map.river_z.prop.reeds', x: w * 0.22, y: h * 0.26, w: 36, h: 34, sh: 0.1 },
+    { key: 'map.courtyard.tree.0', x: w * 0.035, y: h * 0.4, w: 58, h: 58, sh: 0.22 },
+    { key: 'map.entry', x: w * 0.065, y: h * 0.54, w: 30, h: 32, sh: 0.18 },
+    { key: 'edge.hedge.0', x: w * 0.95, y: h * 0.5, w: 68, h: 46, sh: 0.16 },
+    { key: 'tower.banner.A1', x: w * 0.83, y: h * 0.46, w: 52, h: 52, sh: 0.24 },
+    { key: 'prop.flowerbed', x: w * 0.12, y: h * 0.87, w: 48, h: 35, sh: 0.14 },
+    { key: 'prop.mushrooms', x: w * 0.56, y: h * 0.85, w: 27, h: 23, sh: 0.14 },
+    { key: 'prop.stump', x: w * 0.64, y: h * 0.89, w: 30, h: 26, sh: 0.18 },
+    { key: 'prop.log', x: w * 0.75, y: h * 0.91, w: 38, h: 25, sh: 0.16 },
+    { key: 'edge.hedge.1', x: w * 0.94, y: h * 0.94, w: 72, h: 48, sh: 0.16 },
+  ];
+
+  staticProps.sort((a, b) => a.y - b.y);
+  for (const p of staticProps) {
+    drawSpriteGrounded(ctx, sprites, p.key, p.x, p.y, p.w, p.h, p.sh);
+  }
+
+  // 상단 중앙 한글 돌조각 ('한' 각인)
+  const sw = 44;
+  const sx = w * 0.48;
+  const sy = h * 0.24;
+  if (drawSpriteGrounded(ctx, sprites, 'deco.stele', sx, sy + sw * 0.12, sw, sw, 0.2)) {
+    ctx.fillStyle = '#3f342c';
+    ctx.font = '800 12px "Pretendard Variable", Pretendard, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('한', sx, sy - sw * 0.34);
+  }
+
+  const built: StageTerrainCache = { key: cacheKey, canvas: off };
+  cacheRef.current = built;
+  return built;
+}
+
+type StageRenderable =
+  | { kind: 'gate'; y: number }
+  | {
+      kind: 'tower';
+      y: number;
+      ti: number;
+      tx: number;
+      ty: number;
+      td: (typeof TOWER_DEFS)[number];
+      angle: number;
+      recoil: number;
+    }
+  | { kind: 'enemy'; y: number; enemy: DemoEnemy };
+
+function drawStageFrame(
+  ctx: CanvasRenderingContext2D,
+  cacheRef: { current: StageTerrainCache | null },
+  w: number,
+  h: number,
+  pxScale: number,
+  sprites: SpriteMap,
+  timeMs: number,
+  animateCombat: boolean,
+  highContrastMap: boolean,
+): void {
+  const baked = ensureStageBaked(cacheRef, w, h, pxScale, sprites, highContrastMap);
+  if (baked.canvas.width > 0 && baked.canvas.height > 0) {
+    ctx.drawImage(baked.canvas, 0, 0, w, h);
+  }
+
+  // 서리 타워 주위 은은한 냉기 오라 링
+  const frostPulse = ((animateCombat ? timeMs : STATIC_TIME_MS) % 2400) / 2400;
+  ctx.save();
+  ctx.strokeStyle = `rgba(155, 232, 255, ${(1 - frostPulse) * 0.42})`;
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.ellipse(w * 0.46, h * 0.6, 18 + frostPulse * 28, 11 + frostPulse * 17, 0, 0, Math.PI * 2);
+  ctx.stroke();
+  ctx.restore();
+
+  const demo = sampleStageDemo(w, h, timeMs, animateCombat);
+
+  // 타워 + 성문 + 도토리 적군 통합 Y-정렬 렌더 큐
+  const renderables: StageRenderable[] = [{ kind: 'gate', y: h * 0.7 }];
+  for (let ti = 0; ti < TOWER_DEFS.length; ti++) {
+    const td = TOWER_DEFS[ti]!;
+    const tx = td.x * w;
+    const ty = td.y * h;
+    renderables.push({
+      kind: 'tower',
+      y: ty,
+      ti,
+      tx,
+      ty,
+      td,
+      angle: demo.towerAngles[ti] ?? -0.6,
+      recoil: demo.towerRecoils[ti] ?? 0,
+    });
+  }
+  for (const enemy of demo.enemies) {
+    renderables.push({ kind: 'enemy', y: enemy.y, enemy });
+  }
+  renderables.sort((a, b) => a.y - b.y);
+
+  for (const item of renderables) {
+    if (item.kind === 'gate') {
+      const gx = w * 0.9;
+      const gy = h * 0.72;
+      if (!drawSpriteGrounded(ctx, sprites, 'map.gate', gx, gy, 76, 76, 0.24)) {
+        ctx.fillStyle = '#754b2d';
+        ctx.fillRect(gx - 22, gy - 44, 44, 46);
+      }
+      continue;
+    }
+
+    if (item.kind === 'tower') {
+      const { ti, tx, ty, td, angle, recoil } = item;
+      const bodyImg = sprites.get(`tower.${td.id}`)?.img;
+      const weaponImg = sprites.get(`tower.${td.id}.weapon`)?.img;
+      if (bodyImg) {
+        ctx.drawImage(bodyImg, tx - 26, ty - 42, 52, 52);
+      } else {
+        ctx.fillStyle = '#6c5a49';
+        ctx.beginPath();
+        ctx.arc(tx, ty - 8, 14, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      if (weaponImg) {
+        ctx.save();
+        const hoverY = td.fixed && animateCombat ? Math.sin(timeMs * 0.004 + ti) * 2.1 : 0;
+        const rx = td.fixed ? 0 : -Math.cos(angle) * recoil;
+        const ry = td.fixed ? 0 : -Math.sin(angle) * recoil;
+        ctx.translate(tx + rx, ty - 18 + hoverY + ry);
+        if (!td.fixed) ctx.rotate(angle);
+        ctx.drawImage(weaponImg, -17, -17, 34, 34);
+        ctx.restore();
+      }
+      continue;
+    }
+
+    const e = item.enemy;
+    const acornKey = ACORN_BY_SLOT[e.slot] ?? 'acorn.runner';
+    const acornSprite = sprites.get(acornKey)?.img;
     const hitSprite = e.hit ? sprites.get(`enemy.${e.kind}.hit`)?.img : null;
     const walkSprite =
+      acornSprite ??
       hitSprite ??
       sprites.get(`enemy.${e.kind}.${e.frameIdx}`)?.img ??
       sprites.get(`enemy.${e.kind}.0`)?.img;
-    const size = e.kind === 'boss' ? 50 : 36;
+    const size = e.kind === 'boss' ? 48 : 35;
+
     ctx.save();
     ctx.globalAlpha = e.alpha;
+    ctx.fillStyle = 'rgba(34, 24, 14, 0.28)';
+    ctx.beginPath();
+    ctx.ellipse(e.x, e.y - 2, size * 0.3, size * 0.12, 0, 0, Math.PI * 2);
+    ctx.fill();
+
     if (walkSprite) {
-      ctx.drawImage(walkSprite, e.x - size / 2, e.y - size * 0.78 - e.bob, size, size);
+      ctx.drawImage(walkSprite, e.x - size / 2, e.y - size * 0.84 - e.bob, size, size);
     } else {
       ctx.fillStyle = e.kind === 'boss' ? '#7a2520' : '#4a6b3b';
       ctx.beginPath();
       ctx.arc(e.x, e.y - 8 - e.bob, e.kind === 'boss' ? 13 : 9, 0, Math.PI * 2);
       ctx.fill();
     }
+
     if (e.hpRatio > 0) {
-      const barW = e.kind === 'boss' ? 34 : 24;
+      const barW = e.kind === 'boss' ? 34 : 22;
       const bx = e.x - barW / 2;
-      const by = e.y - size * 0.76 - 6;
+      const by = e.y - size * 0.86 - 5;
       ctx.fillStyle = '#261c14';
       ctx.fillRect(bx - 1, by - 1, barW + 2, 5);
-      ctx.fillStyle = '#d94f3d';
+      ctx.fillStyle = e.kind === 'boss' ? '#e0533c' : '#58c24c';
       ctx.fillRect(bx, by, Math.max(2, barW * e.hpRatio), 3);
     }
     ctx.restore();
   }
 
-  // 투사체 연출(화살·서리탄·포탄) 및 탄착 파문
+  // 투사체 연출 및 탄착 파문
   for (const p of demo.projectiles) {
     if (p.flying) {
       ctx.fillStyle = p.towerId === 'frost' ? '#8de4ff' : p.towerId === 'cannon' ? '#2c2520' : '#fff0a6';
       ctx.strokeStyle = '#261c14';
       ctx.lineWidth = 1.5;
       ctx.beginPath();
-      ctx.arc(p.x, p.y, p.towerId === 'cannon' ? 4.4 : 3.4, 0, Math.PI * 2);
+      ctx.arc(p.x, p.y, p.towerId === 'cannon' ? 4.3 : 3.3, 0, Math.PI * 2);
       ctx.fill();
       ctx.stroke();
     }
@@ -393,11 +528,43 @@ function drawStageFrame(
       ctx.restore();
     }
   }
+
+  // 구름 그림자 & 연못가 나비 (전체 연출에서는 실시간 이동, 정지에서는 결정론 고정)
+  if (animateCombat) {
+    const cloud = sprites.get('fx.cloudshadow.0')?.img;
+    if (cloud) {
+      ctx.save();
+      ctx.globalCompositeOperation = 'multiply';
+      ctx.globalAlpha = 0.11;
+      const cx = ((timeMs * 0.012) % (w + 220)) - 110;
+      ctx.drawImage(cloud, cx, -10, 190, 110);
+      ctx.restore();
+    }
+  }
+  const bfKey = animateCombat && Math.floor(timeMs / 220) % 2 === 1 ? 'fx.butterfly.yellow.1' : 'fx.butterfly.yellow.0';
+  const bf = sprites.get(bfKey)?.img;
+  if (bf) {
+    const tClock = animateCombat ? timeMs : STATIC_TIME_MS;
+    const bx = w * 0.17 + Math.sin(tClock * 0.0018) * 11;
+    const by = h * 0.25 + Math.cos(tClock * 0.0023) * 5;
+    ctx.drawImage(bf, bx, by, 16, 16);
+  }
 }
 
 export function MiniStageCanvas({ motionMode, highContrastMap, paused, className }: Props) {
   const ref = useRef<HTMLCanvasElement>(null);
+  const cacheRef = useRef<StageTerrainCache | null>(null);
   const sprites = useLobbySprites();
+
+  useEffect(() => {
+    return () => {
+      if (cacheRef.current) {
+        cacheRef.current.canvas.width = 0;
+        cacheRef.current.canvas.height = 0;
+        cacheRef.current = null;
+      }
+    };
+  }, []);
 
   useEffect(() => {
     const canvas = ref.current;
@@ -405,8 +572,9 @@ export function MiniStageCanvas({ motionMode, highContrastMap, paused, className
     const ctx = canvas.getContext('2d');
     if (!ctx) return undefined;
 
-    let width = 320;
-    let height = 160;
+    let width = 480;
+    let height = 162;
+    let pxScale = 1;
     let raf = 0;
     let lastDraw = -Infinity;
     const animateCombat = motionMode === 'full' && !paused;
@@ -415,16 +583,28 @@ export function MiniStageCanvas({ motionMode, highContrastMap, paused, className
       const rect = canvas.getBoundingClientRect();
       const dpr = Math.min(2, window.devicePixelRatio || 1);
       const cssW = Math.max(180, Math.round(rect.width || 480));
-      const cssH = Math.max(60, Math.round(rect.height || 176));
-      // 낮은 무대(저높이 크롬북 홈)에서는 그림 크기를 같은 비율로 줄여 그린다. 그대로 두면 타워·적·체력 막대가 윗변에서 잘린다.
-      // 크고 높은 무대(책상 홈)에서는 반대로 키워서 그린다. 그대로 두면 타워·적이 넓은 풀밭에 점처럼 박힌다.
-      const k = cssH < MIN_DESIGN_H ? cssH / MIN_DESIGN_H : Math.min(MAX_SCALE, Math.max(1, Math.min(cssW / BASE_W, cssH / BASE_H)));
+      const cssH = Math.max(60, Math.round(rect.height || 162));
+      const k =
+        cssH < MIN_DESIGN_H
+          ? cssH / MIN_DESIGN_H
+          : Math.min(MAX_SCALE, Math.max(1, Math.min(cssW / BASE_W, cssH / BASE_H)));
       width = cssW / k;
       height = cssH / k;
+      pxScale = dpr * k;
       canvas.width = Math.round(cssW * dpr);
       canvas.height = Math.round(cssH * dpr);
-      ctx.setTransform(dpr * k, 0, 0, dpr * k, 0, 0);
-      drawStageFrame(ctx, width, height, sprites, performance.now(), animateCombat, highContrastMap);
+      ctx.setTransform(pxScale, 0, 0, pxScale, 0, 0);
+      drawStageFrame(
+        ctx,
+        cacheRef,
+        width,
+        height,
+        pxScale,
+        sprites,
+        animateCombat ? performance.now() : STATIC_TIME_MS,
+        animateCombat,
+        highContrastMap,
+      );
     };
 
     syncSize();
@@ -444,7 +624,7 @@ export function MiniStageCanvas({ motionMode, highContrastMap, paused, className
       if (document.visibilityState === 'hidden') return;
       if (now >= lastDraw && now - lastDraw < FRAME_MS) return;
       lastDraw = now;
-      drawStageFrame(ctx, width, height, sprites, now, true, highContrastMap);
+      drawStageFrame(ctx, cacheRef, width, height, pxScale, sprites, now, true, highContrastMap);
     };
 
     if (animateCombat) raf = requestAnimationFrame(loop);

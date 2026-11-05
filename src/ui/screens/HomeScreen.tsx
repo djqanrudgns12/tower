@@ -4,7 +4,7 @@ import type { RankingPeriod, RankingTabId } from '../../contracts/lobby';
 import type { Settings } from '../../application/session';
 import { GuideScreen } from './GuideScreen';
 import { useLobbySprites } from './home/canvasAssets';
-import { BookIcon, GearIcon, NoteIcon, RecordIcon } from './home/HomeIcons';
+import { GearIcon, HomeUiArt } from './home/HomeIcons';
 import { LaunchDeck } from './home/LaunchDeck';
 import { MiniStageCanvas } from './home/MiniStageCanvas';
 import { RankingBoard } from './home/RankingBoard';
@@ -47,9 +47,8 @@ interface Props {
 }
 
 /**
- * 첫 화면(방향 2-A: 왕국 참나무 작전실). 처음 온 학생에게는 연습을 권한다(PRD §12.2).
- * 별명 설정·오늘의 낱말 공부·통합 수호 랭킹·오답 노트·환경설정을 한 화면에서 제공한다.
- * R4 U1(3426df8)이 타이틀 화면으로 바꿨던 것을 2026-11-04 사용자 결정으로 이 랜딩으로 되돌렸다. 오답 노트 단추만 더했다.
+ * 첫 화면(R6 참나무·양피지 공예 랜딩). 처음 온 학생에게는 연습을 권한다(PRD §12.2).
+ * 닉네임·학교 설정, 오늘의 낱말, 통합 랭킹, 오답 노트, 환경설정을 한 화면에서 제공한다.
  */
 export function HomeScreen({
   message,
@@ -77,7 +76,7 @@ export function HomeScreen({
     }
   }, [focusNicknameOnMount]);
 
-  // 새 게임 창의 '닉네임 바꾸기': 창을 닫은 뒤(창이 연 버튼으로 포커스를 돌려준 다음) 닉네임 입력칸으로 포커스를 옮긴다.
+  // 새 게임 창의 '닉네임 바꾸기': 창을 닫은 뒤 닉네임 입력칸으로 포커스를 옮긴다.
   const focusNickAfterClose = useRef(false);
   useEffect(() => {
     if (activeModal === null && focusNickAfterClose.current) {
@@ -94,7 +93,10 @@ export function HomeScreen({
   const handleMyRecordsShortcut = () => {
     setRankingTab('local_device');
     if (typeof window !== 'undefined' && window.innerWidth <= 959) {
-      rankingBoardRef.current?.scrollIntoView({ behavior: settings.reducedMotion ? 'auto' : 'smooth', block: 'start' });
+      rankingBoardRef.current?.scrollIntoView({
+        behavior: settings.reducedMotion ? 'auto' : 'smooth',
+        block: 'start',
+      });
     }
   };
 
@@ -103,101 +105,113 @@ export function HomeScreen({
       <WorldBackdropCanvas motionMode={settings.motionMode} className={css.backdropCanvas} />
 
       <div className={css.foreground} inert={activeModal !== null}>
-        <header className={css.plaqueOuter}>
-          <div className={css.plaqueInner}>
-            <div className={css.brandGroup}>
-              <div className={css.crestBox} aria-hidden="true">
-                {gateSprite && <img src={gateSprite.url} alt="" className={css.crestImg} />}
-              </div>
-              <div>
-                <h1 className={css.brandTitle}>어휘력 타워 디펜스</h1>
-                <p className={css.brandSub}>낱말 문제를 풀고 타워로 성문을 지켜요</p>
-              </div>
-            </div>
-
-            <TelemetryStrip playerId={settings.playerId} refreshTick={refreshTick} />
-
-            <div className={css.headerActions}>
-              <button
-                id="guideBtn"
-                type="button"
-                className={css.plaqueBtn}
-                onClick={() => setActiveModal('guide')}
-              >
-                <BookIcon />
-                사용 설명서
-              </button>
-              <button
-                id="recordsBtn"
-                type="button"
-                className={css.plaqueBtn}
-                onClick={handleMyRecordsShortcut}
-              >
-                <RecordIcon />
-                내 기록
-              </button>
-              {onOpenNote && (
-                <button
-                  id="noteBtn"
-                  type="button"
-                  className={css.plaqueBtn}
-                  aria-label={noteCount > 0 ? `오답 노트 ${noteCount}개` : undefined}
-                  onClick={onOpenNote}
-                >
-                  <NoteIcon />
-                  오답 노트
-                  {noteCount > 0 && <span className={css.plaqueCount}>{noteCount}</span>}
-                </button>
+        <header className={css.headerPlaque}>
+          <div className={css.brandGroup}>
+            <div className={css.crestBox} aria-hidden="true">
+              {gateSprite ? (
+                <img src={gateSprite.url} alt="" draggable={false} className={css.crestImg} />
+              ) : (
+                <HomeUiArt file="icon.gate.webp" className={css.crestImg} />
               )}
-              <button
-                id="settingsBtn"
-                type="button"
-                className={css.plaqueBtn}
-                onClick={() => setActiveModal('settings')}
-              >
-                <GearIcon />
-                설정
-              </button>
             </div>
+            <div className={css.brandText}>
+              <h1 className={css.brandTitle}>어휘력 타워 디펜스</h1>
+              <p className={css.brandSub}>낱말 문제를 풀고 타워로 성문을 지켜요</p>
+            </div>
+          </div>
+
+          <TelemetryStrip playerId={settings.playerId} refreshTick={refreshTick} />
+
+          <div className={css.headerActions}>
+            <button
+              id="guideBtn"
+              type="button"
+              className={css.plaqueKeyBtn}
+              onClick={() => setActiveModal('guide')}
+            >
+              <HomeUiArt file="relic.wise_book.webp" className={css.btnIconArt} />
+              사용 설명서
+            </button>
+            <button
+              id="recordsBtn"
+              type="button"
+              className={css.plaqueKeyBtn}
+              onClick={handleMyRecordsShortcut}
+            >
+              <HomeUiArt file="icon.star.webp" className={css.btnIconArt} />
+              내 기록
+            </button>
+            {onOpenNote && (
+              <button
+                id="noteBtn"
+                type="button"
+                className={css.plaqueKeyBtn}
+                aria-label={noteCount > 0 ? `오답 노트 ${noteCount}개` : undefined}
+                onClick={onOpenNote}
+              >
+                <HomeUiArt file="icon.note.webp" className={css.btnIconArt} />
+                오답 노트
+                {noteCount > 0 && (
+                  <span className={css.plaqueCount} aria-hidden="true">
+                    {noteCount > 99 ? '99+' : noteCount}
+                  </span>
+                )}
+              </button>
+            )}
+            <button
+              id="settingsBtn"
+              type="button"
+              className={css.plaqueKeyBtn}
+              onClick={() => setActiveModal('settings')}
+            >
+              <GearIcon className={css.btnIconSvg} />
+              설정
+            </button>
           </div>
         </header>
 
         <main className={css.warRoomGrid}>
-          <div className={css.oakFrame}>
-            <div className={css.parchmentInner}>
-              <div className={css.stageViewport} role="img" aria-label="전장 미리보기">
-                <MiniStageCanvas
-                  motionMode={settings.motionMode}
-                  highContrastMap={settings.highContrastMap}
-                  paused={activeModal !== null}
-                  className={css.stageCanvas}
-                />
-                <span className={css.stageBadgeLeft}>정원 미리보기</span>
-                <span className={css.stageBadgeRight}>5웨이브 보스</span>
-              </div>
-
-              <SteleStudyPanel preferredGrade={settings.lastGrade} />
-
-              <LaunchDeck
-                savedNickname={settings.lastNickname}
-                savedSchoolName={settings.lastSchoolName}
-                savedSchoolCode={settings.lastSchoolCode}
-                message={message}
-                practiceLabel={settings.practiceSeen ? '연습하기' : '처음이라면 연습부터'}
-                onPractice={() => {
-                  onClearMessage();
-                  onPractice?.();
-                }}
-                inputRef={nickInputRef}
-                onCommitNickname={nick => onSettings({ lastNickname: nick })}
-                onCommitSchool={(name, code) => onSettings({ lastSchoolName: name, lastSchoolCode: code })}
-                onOpenNewGame={nick => {
-                  onSettings({ lastNickname: nick });
-                  onClearMessage();
-                  setActiveModal('new');
-                }}
+          <div className={css.woodBoard}>
+            <div className={css.stageViewport} role="img" aria-label="전장 미리보기">
+              <MiniStageCanvas
+                motionMode={settings.motionMode}
+                highContrastMap={settings.highContrastMap}
+                paused={activeModal !== null}
+                className={css.stageCanvas}
               />
+              <div className={css.stageOverlayTop}>
+                <span className={css.stageBadgeLeft}>
+                  <span className={css.stageLiveDot} aria-hidden="true" />
+                  정원 미리보기
+                </span>
+                <span className={css.stageBadgeRight}>
+                  <HomeUiArt file="icon.flame.webp" className={css.stageBossIcon} />
+                  5웨이브 보스
+                </span>
+              </div>
             </div>
+
+            <SteleStudyPanel preferredGrade={settings.lastGrade} />
+
+            <LaunchDeck
+              savedNickname={settings.lastNickname}
+              savedSchoolName={settings.lastSchoolName}
+              savedSchoolCode={settings.lastSchoolCode}
+              message={message}
+              practiceLabel={settings.practiceSeen ? '연습하기' : '처음이라면 연습부터'}
+              onPractice={() => {
+                onClearMessage();
+                onPractice?.();
+              }}
+              inputRef={nickInputRef}
+              onCommitNickname={nick => onSettings({ lastNickname: nick })}
+              onCommitSchool={(name, code) => onSettings({ lastSchoolName: name, lastSchoolCode: code })}
+              onOpenNewGame={nick => {
+                onSettings({ lastNickname: nick });
+                onClearMessage();
+                setActiveModal('new');
+              }}
+            />
           </div>
 
           <RankingBoard

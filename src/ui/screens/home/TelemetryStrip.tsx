@@ -1,5 +1,11 @@
 import { useEffect, useSyncExternalStore } from 'react';
-import { getPublicRecordNotice, isRecordSharingEnabled, lobbyTelemetryStore, subscribePublicRecordNotice, subscribeRecordSharing } from '../../../application/lobby';
+import {
+  getPublicRecordNotice,
+  isRecordSharingEnabled,
+  lobbyTelemetryStore,
+  subscribePublicRecordNotice,
+  subscribeRecordSharing,
+} from '../../../application/lobby';
 import { fmtNumber } from '../../copy';
 import css from './home.module.css';
 
@@ -20,12 +26,15 @@ export function TelemetryStrip({ playerId, refreshTick }: Props) {
 
   const offline = snap.status === 'offline' || snap.status === 'disabled';
   const loading = snap.status === 'loading';
+  const liveActive = sharing && !offline && !loading;
 
-  const onlineText = !sharing ? '공개 기록 꺼짐' : loading
-    ? '—'
-    : snap.onlineNow !== null
-      ? `${fmtNumber(snap.onlineNow)}명`
-      : '오프라인';
+  const onlineText = !sharing
+    ? '공개 기록 꺼짐'
+    : loading
+      ? '—'
+      : snap.onlineNow !== null
+        ? `${fmtNumber(snap.onlineNow)}명`
+        : '오프라인';
 
   const todayText = loading
     ? '—'
@@ -47,25 +56,37 @@ export function TelemetryStrip({ playerId, refreshTick }: Props) {
 
   return (
     <div className={css.telemetryStrip} role="region" aria-label="접속 현황">
-      {sharing && notice && <p role="status" style={{ gridColumn: '1 / -1' }}>{notice.message}</p>}
+      {sharing && notice && (
+        <p role="status" className={css.telemetryNotice}>
+          {notice.message}
+        </p>
+      )}
       <div className={css.metricCell}>
         <span className={css.metricLabel} title="최근 5분 안에 홈을 연 기기 수">
           <span className={css.statusDot} data-offline={offline || snap.onlineNow === null} aria-hidden="true" />
           최근 접속
         </span>
-        <strong className={css.metricValue}>{onlineText}</strong>
+        <strong className={css.metricValue} data-active={liveActive && snap.onlineNow !== null ? 'true' : undefined}>
+          {onlineText}
+        </strong>
       </div>
       <div className={css.metricCell}>
         <span className={css.metricLabel}>오늘 플레이</span>
-        <strong className={css.metricValue}>{todayText}</strong>
+        <strong className={css.metricValue} data-active={liveActive ? 'true' : undefined}>
+          {todayText}
+        </strong>
       </div>
       <div className={css.metricCell}>
         <span className={css.metricLabel}>누적 접속</span>
-        <strong className={css.metricValue}>{totalVisitorsText}</strong>
+        <strong className={css.metricValue} data-active={liveActive && snap.totalVisitors !== null ? 'true' : undefined}>
+          {totalVisitorsText}
+        </strong>
       </div>
       <div className={css.metricCell}>
         <span className={css.metricLabel}>누적 플레이</span>
-        <strong className={css.metricValue}>{totalPlaysText}</strong>
+        <strong className={css.metricValue} data-active={liveActive ? 'true' : undefined}>
+          {totalPlaysText}
+        </strong>
       </div>
     </div>
   );
