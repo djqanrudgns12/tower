@@ -26,14 +26,17 @@ const practice = b.buildPracticeBank(batches, registry);
 if (practice.bank) fs.writeFileSync(path.join(root, 'src/content/questions/practice.json'), JSON.stringify(practice.bank, null, 2) + '\n');
 console.log(practice.note);
 
-const grades = [...new Set(batches.flatMap(x => x.drafts.map(q => q.grade)))].sort();
-for (const grade of grades) {
+// 초안이 없는 학년도 돌아야 승인이 기준 밑으로 줄었을 때 낡은 은행 파일이 남지 않는다.
+for (const grade of [3, 4, 5, 6]) {
   const r = b.buildBank(batches, registry, grade);
+  const out = path.join(root, `src/content/questions/grade${grade}.json`);
   if (r.bank) {
-    const out = path.join(root, `src/content/questions/grade${grade}.json`);
     fs.writeFileSync(out, JSON.stringify(r.bank, null, 2) + '\n');
     console.log(`${r.note} → ${path.relative(root, out)}`);
-  } else console.log(r.note);
+  } else {
+    if (fs.existsSync(out)) fs.unlinkSync(out);
+    console.log(r.note);
+  }
 
   const cand = b.buildCandidateBank(batches, registry, candidateRegistry, grade);
   const candOut = path.join(root, `src/content/questions/grade${grade}.candidate.json`);

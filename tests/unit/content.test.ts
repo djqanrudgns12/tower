@@ -14,7 +14,7 @@ import { readImageInfo } from './imageMeta';
 const banks = import.meta.glob('/src/content/questions/*.json', { eager: true, import: 'default' });
 const drafts = import.meta.glob('/content-source/batches/*/drafts.json', { eager: true, import: 'default' });
 const sidecars = import.meta.glob('/content-source/batches/*/sidecar.json', { eager: true, import: 'default' });
-const reviews = import.meta.glob(['/content-source/reviews/*/*.json', '!/content-source/reviews/*/blind-input.json'], { eager: true, import: 'default' });
+const reviews = import.meta.glob(['/content-source/reviews/*/*.json', '!/content-source/reviews/*/blind-input.json', '!/content-source/reviews/archive/*.blind-input.*.json'], { eager: true, import: 'default' });
 const blindInputs = import.meta.glob('/content-source/reviews/*/blind-input.json', { eager: true, import: 'default' }) as Record<string, { jobId: string; items: Array<{ questionId: string; revision: number; contentHash: string }> }>;
 const manifests = import.meta.glob(['/public/assets/manifest.json', '/asset-source/incoming/*/manifest.json'], { eager: true, import: 'default' });
 const caps = defaults.questionSelection.battleReadingLoadMaxSyllables as Record<string, number>;
