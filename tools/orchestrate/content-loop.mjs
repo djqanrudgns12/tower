@@ -4,11 +4,13 @@
 // 각 단계의 대기분을 잠금 안에서 반영·빌드·커밋한다. 모든 단계가 "아직 안 한 것만" 하므로 멈춰도 다시 돌리면 이어 간다.
 //
 // --gate: S1 수준 → S2 앞단 검수 → S3 수정 → S4 Claude → S5 수정. --plan은 다음 단계만 조회.
+// --pool-after N: N배치의 첫 판 완료 뒤 전역 회차(수정12·수준/검수50). 생략하면 전체 배치.
 // --recheck-codex 및 --claude-model/--claude-effort/--codex-model/--codex-effort 지원.
 //   node tools/orchestrate/content-loop.mjs --root <dir> [--batches A,B | --all] [--claude 2] [--codex 2] [--argon 2] [--rounds 2] [--commit | --no-commit]
 import fs from 'node:fs';
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
+import { randomUUID } from 'node:crypto';
 import * as level from './level.mjs';
 import { applyStaged } from './commit-lock.mjs';
 import * as review from './review.mjs';
@@ -67,23 +69,36 @@ async function main() {
     });
     return applying;
   };
+  const legacyMeter = (id, stage, round) => {
+    const entry = summary[id] ??= { modelCallsBasis: 'measured', stages: [] };
+    const record = { stage, round, modelCalls: emptyCalls(), waits: emptyCalls(), waitMs: emptyCalls(), modelCallsBasis: 'measured', startedAt: new Date().toISOString(), events: [] };
+    entry.stages.push(record);
+    return { record, onEvent(event) {
+      record.events.push(event);
+      if (event.type === 'call') record.modelCalls[event.who]++;
+      else if (event.type === 'wait') { record.waits[event.who]++; record.waitMs[event.who] += event.durationMs; }
+      fs.writeFileSync(path.join(root, '.orchestrate/content-loop.summary.json'), `${JSON.stringify(summary, null, 2)}\n`);
+    } };
+  };
   const optionsFor = who => ({ config: configs[who], archiveExisting: a['archive-existing'] === true || a['archive-existing'] === who });
 
-  const reviewWith = async (who, id) => {
+  const reviewWith = async (who, id, round) => {
     const options = optionsFor(who);
     if (!review.pending(rb, batchOf(id), who, options).length) return;
+    const meter = legacyMeter(id, `review-${who}`, round);
+    options.onEvent = meter.onEvent;
     await pools[who](async () => {
       await review.runPhase(rb, root, who, id, 'blind', log, options);
       await review.runPhase(rb, root, who, id, 'reveal', log, options);
       const r = await review.ingest(rb, root, who, id, options);
       log(`${id} ${who} 병합 대기 ${r.merged}문항 · 지적 ${r.flagged} (${r.staging})`);
-    });
+    }).finally(() => { meter.record.endedAt = new Date().toISOString(); });
   };
-  const reviewBoth = async id => {
+  const reviewBoth = async (id, round = 0) => {
     // 한쪽 보고서가 거절될 때 다른 쪽 모델부터 실행하지 않는다.
     const batch = batchOf(id);
     for (const who of ['claude', 'codex']) review.pending(rb, batch, who, optionsFor(who));
-    const results = await Promise.allSettled([reviewWith('claude', id), reviewWith('codex', id)]);
+    const results = await Promise.allSettled([reviewWith('claude', id, round), reviewWith('codex', id, round)]);
     const failed = results.find(result => result.status === 'rejected');
     if (failed) throw failed.reason;
   };
@@ -97,25 +112,27 @@ async function main() {
     try {
       // 지난 실행의 대기분을 먼저 반영해야 옛 초안/보고서로 모델을 호출하지 않는다.
       const resumed = await applyBatch(id);
-      if (!commit && resumed.runs.length) { summary[id] = { awaitingCommit: true }; return; }
-      if (!batchOf(id)) { summary[id] = { closed: true }; return; }
+      if (!commit && resumed.runs.length) { summary[id] = { ...summary[id], awaitingCommit: true }; return; }
+      if (!batchOf(id)) { summary[id] = { ...summary[id], closed: true }; return; }
       await reviewBoth(id);
       await applyBatch(id);
-      if (!commit) { summary[id] = { awaitingCommit: true }; return; }
+      if (!commit) { summary[id] = { ...summary[id], awaitingCommit: true }; return; }
       for (let round = 1; round <= rounds; round++) {
         const n = revise.flagged(rm, batchOf(id)).length;
         if (!n) break;
-        const r = await pools.antigravity(() => revise.reviseBatch(rm, root, id, 'antigravity', log));
+        const meter = legacyMeter(id, 'revise', round);
+        const r = await pools.antigravity(() => revise.reviseBatch(rm, root, id, 'antigravity', log, { ...a, onEvent: meter.onEvent }))
+          .finally(() => { meter.record.endedAt = new Date().toISOString(); });
         log(`${id} 수정 ${round}회: 고침 ${r.revised} · 버림 ${r.dropped} · 거절 ${r.rejected}`);
         if (r.staging) await applyBatch(id);
         if (!r.revised || !batchOf(id)) break;
-        await reviewBoth(id);
+        await reviewBoth(id, round);
         await applyBatch(id);
       }
-      summary[id] = { remainingDefects: batchOf(id) ? revise.flagged(rm, batchOf(id)).length : 0 };
+      summary[id] = { ...summary[id], remainingDefects: batchOf(id) ? revise.flagged(rm, batchOf(id)).length : 0 };
     } catch (e) {
       log(`${id} 중단: ${e.message}`);
-      summary[id] = { error: e.message };
+      summary[id] = { ...summary[id], error: e.message };
     }
   }));
 
@@ -127,7 +144,7 @@ async function main() {
 if (process.argv[1] && import.meta.url === pathToFileURL(path.resolve(process.argv[1])).href) main().catch(e => { console.error(e.stack ?? e.message); process.exitCode = 1; });
 
 const keyOf = q => `${q.id ?? q.questionId}@${q.revision}`;
-const emptyCalls = () => ({ claude: 0, codex: 0, bridge: 0 });
+const emptyCalls = () => ({ claude: 0, codex: 0, argon: 0, bridge: 0 });
 const readJson = (file, fallback = null) => fs.existsSync(file) ? JSON.parse(fs.readFileSync(file, 'utf8')) : fallback;
 
 /** 실제 실행기와 가짜 실행기는 같은 상태/실행 계약을 쓴다. 추적 파일 쓰기는 apply만 담당한다. */
@@ -157,7 +174,7 @@ export async function createGateRuntime(options, modules) {
         drafts: batch.drafts,
         levelPending: batch.drafts.filter(q => !(levels?.items ?? []).some(item => lm.levels.isCurrentLevelAssessment(q, item))).map(keyOf),
         codexPending: review.pending(rb, batch, 'codex', reviewOptions('codex')).map(keyOf),
-        argonPending: produced ? review.pending(rb, batch, 'antigravity', reviewOptions('antigravity')).map(keyOf) : [],
+        argonPending: produced ? review.pending(rb, batch, 'antigravity', reviewOptions('antigravity')).filter(q => q.revision === 1).map(keyOf) : [],
         // 모델 변경 검사는 실제 관문 대상이 있을 때만 한다.
         claudePending: batch.drafts.filter(q => !(batch.reviews.claude?.items ?? []).some(i => keyOf(i) === keyOf(q) && i.contentHash === rb.contentHash(q))).map(keyOf),
         front, flagged: revise.flagged(rm, batch, { root, levelFile: levels }),
@@ -165,51 +182,26 @@ export async function createGateRuntime(options, modules) {
           && fs.readdirSync(path.join(root, '.orchestrate/staging', id)).some(run => fs.existsSync(path.join(root, '.orchestrate/staging', id, run, 'manifest.json'))),
       };
     },
-    async level(id) {
-      const results = await level.runLevels({ ...options, all: false, batches: id, argon: 1, codex: 1 }, { modules: lm });
+    async level(id, questionKeys, onEvent) {
+      const results = await level.runLevels({ ...options, all: false, batches: id, argon: 1, codex: 1, onEvent }, { modules: lm });
       return results[0];
     },
-    async review(id, who, questionKeys) {
-      const opts = reviewOptions(who, questionKeys);
+    async review(id, who, questionKeys, onEvent) {
+      const opts = { ...options, ...reviewOptions(who, questionKeys), onEvent };
       await review.runPhase(rb, root, who, id, 'blind', log, opts);
       await review.runPhase(rb, root, who, id, 'reveal', log, opts);
       return review.ingest(rb, root, who, id, opts);
     },
-    async revise(id, phase, questionKeys) {
-      const wanted = new Set(questionKeys);
-      // reviseBatch/flagged가 전체 초안을 보존한 채 이번 단계의 결함만 고르게 한다.
-      const scoped = { ...rm, front: { ...rm.front,
-        frontGate(...args) {
-          const result = rm.front.frontGate(...args);
-          return { ...result, items: result.items.filter(item => wanted.has(keyOf(item))) };
-        },
-      } };
-      return revise.reviseBatch(scoped, root, id, 'antigravity', log);
+    async revise(id, phase, questionKeys, onEvent) {
+      return (await revise.reviseQuestions(rm, root, questionKeys.map(key => {
+        const at = key.lastIndexOf('@'); return { batchId: id, questionId: key.slice(0, at), revision: Number(key.slice(at + 1)), phase };
+      }), 'antigravity', log, { ...options, batchIds: [id], onEvent }))[0];
     },
+    levelQuestions: (questions, onEvent) => level.runLevels({ ...options, questions, all: false, batches: undefined, argon: 1, codex: 1, onEvent }, { modules: lm }),
+    reviewQuestions: (questions, who, onEvent) => review.runQuestions(rb, root, who, questions, log, { ...options, ...reviewOptions(who), onEvent }),
+    reviseQuestions: (questions, onEvent, batchIds) => revise.reviseQuestions(rm, root, questions, 'antigravity', log, { ...options, batchIds, onEvent }),
     apply: (id, opts) => applyStaged({ root, batch: id, ...opts }),
-    callRecords: id => callRecords(root, id),
   };
-}
-
-// 기존 도구가 기록한 답장 파일로 실제 응답 시도(형식 오류 포함)를 센다.
-// 사용량 한도 응답은 기존 도구가 파일을 쓰지 않으므로 별도 계측 전에는 이 수의 하한이다.
-function callRecords(root, id) {
-  const records = new Map();
-  const scan = (dir, who, pattern) => {
-    if (!fs.existsSync(dir)) return;
-    for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
-      const file = path.join(dir, entry.name);
-      if (entry.isDirectory()) scan(file, who, pattern);
-      else if (pattern.test(entry.name)) {
-        const stat = fs.statSync(file, { bigint: true });
-        records.set(file, { who: who ?? (entry.name.startsWith('argon-') ? 'bridge' : 'codex'), stamp: `${stat.mtimeNs}:${stat.size}` });
-      }
-    }
-  };
-  scan(path.join(root, '.orchestrate/level', id), null, /^(argon|codex)-(assess|spotcheck)-\d+-\d+\.json$/);
-  for (const who of ['claude', 'codex', 'antigravity']) scan(path.join(root, '.orchestrate/review', who, id), who === 'antigravity' ? 'bridge' : who, /^(blind|reveal)\.reply\d+\.md$/);
-  scan(path.join(root, '.orchestrate/revise', id), 'bridge', /^chunk\d+\.reply\d+\.md$/);
-  return records;
 }
 
 function nextGateAction(state) {
@@ -241,7 +233,11 @@ export async function runGate(options = {}, deps = {}) {
   const log = runtime.log ?? console.log;
   const summary = {};
   const file = path.join(root, '.orchestrate/content-loop.summary.json');
-  const save = () => { fs.mkdirSync(path.dirname(file), { recursive: true }); fs.writeFileSync(file, `${JSON.stringify(summary, null, 2)}\n`); };
+  const save = () => {
+    fs.mkdirSync(path.dirname(file), { recursive: true });
+    const temp = `${file}.${process.pid}.tmp`;
+    fs.writeFileSync(temp, `${JSON.stringify(summary, null, 2)}\n`); fs.renameSync(temp, file);
+  };
   if (options.plan) {
     for (const id of ids) {
       const state = await runtime.snapshot(id);
@@ -251,82 +247,201 @@ export async function runGate(options = {}, deps = {}) {
     }
     return summary;
   }
+  const previous = readJson(file, {});
+  const runId = `${new Date().toISOString().replace(/[-:.]/g, '')}-${randomUUID()}`;
+  if (fs.existsSync(file)) {
+    const archive = path.join(root, '.orchestrate/content-loop-history', `${runId}.json`);
+    fs.mkdirSync(path.dirname(archive), { recursive: true }); fs.copyFileSync(file, archive);
+  }
+  const threshold = Number(options['pool-after'] ?? (ids.length || 1));
+  if (!Number.isSafeInteger(threshold) || threshold < 1) throw new Error('--pool-after는 양의 정수여야 한다');
   const pools = { claude: pool(sizes.claude), codex: pool(sizes.codex), antigravity: pool(sizes.argon) };
   const noCommit = Boolean(options['no-commit']);
-  let applying = Promise.resolve(), applyError;
+  let applying = Promise.resolve(), applyError, callSequence = 0;
   const apply = id => {
     applying = applying.then(() => runtime.apply(id, { noCommit })).catch(error => { applyError = error; throw error; });
     return applying;
   };
   const workIds = noCommit ? ids.slice(0, 1) : ids;
   for (const id of ids.slice(workIds.length)) summary[id] = { awaitingApply: true };
-  await Promise.all(workIds.map(async id => {
-    const entry = summary[id] = { startedAt: new Date().toISOString(), stages: [] };
-    const failures = new Map();
+  for (const id of workIds) summary[id] = { startedAt: new Date().toISOString(), stages: [], runId, firstPassComplete: previous[id]?.firstPassComplete === true, lastRound: previous[id]?.lastRound ?? 0, modelCalls: emptyCalls(), waits: emptyCalls(), waitMs: emptyCalls(), modelCallsBasis: 'measured' };
+  const active = id => !summary[id].error && !summary[id].awaitingCommit;
+  const refsOf = (id, keys, phase) => keys.map(key => {
+    const at = key.lastIndexOf('@');
+    return { batchId: id, questionId: key.slice(0, at), revision: Number(key.slice(at + 1)), ...(phase ? { phase } : {}) };
+  });
+  const markError = (batchIds, error) => {
+    for (const id of batchIds) { summary[id].error = error.message; summary[id].skipped = !applyError; log(`${id} 중단: ${error.message}`); }
+  };
+  const assessFront = async (id, round) => {
+    const state = await runtime.snapshot(id);
+    if (!state || state.levelPending.length || state.codexPending.length || state.argonPending.length) return;
+    const at = new Date().toISOString();
+    summary[id].stages.push({ stage: 'S3', action: '판정', round, target: state.front.items.length,
+      passed: state.front.items.filter(q => q.status === 'pass').length, defects: state.front.items.filter(q => q.status === 'defect').length,
+      pending: state.front.items.filter(q => q.status === 'pending').length, dropped: 0, modelCalls: emptyCalls(), modelCallsBasis: 'measured', startedAt: at, endedAt: at });
+  };
+  // 한 묶음 호출은 첫 소유 배치에 1회 귀속한다. 모든 참여 배치에는 같은 callId를 기록한다.
+  // 따라서 modelCalls는 배치 합산 가능하고 sharedModelCalls는 참여 횟수(합산 금지)다.
+  const execute = async (stage, refs, batchIds, round, invoke) => {
+    const before = new Map();
+    for (const id of batchIds) before.set(id, JSON.stringify(await runtime.snapshot(id)));
+    for (let attempt = 1; attempt <= 3; attempt++) {
+      if (applyError) { markError(batchIds, applyError); return false; }
+      const records = new Map(batchIds.map(id => {
+        const record = { stage, round, target: refs.filter(q => q.batchId === id).length, passed: 0, defects: 0, dropped: 0,
+          modelCalls: emptyCalls(), sharedModelCalls: emptyCalls(), waits: emptyCalls(), waitMs: emptyCalls(), events: [], modelCallsBasis: 'measured', startedAt: new Date().toISOString() };
+        summary[id].stages.push(record); summary[id].lastRound = Math.max(summary[id].lastRound, round); return [id, record];
+      }));
+      const onEvent = event => {
+        const who = event.who === 'antigravity' || event.who === 'bridge' ? 'argon' : event.who;
+        if (!['claude', 'codex', 'argon'].includes(who)) throw new Error(`계측 모델 오류: ${who}`);
+        const participants = [...new Set(event.batchIds ?? batchIds)].filter(id => records.has(id)).sort();
+        if (!participants.length) throw new Error('계측 호출의 소유 배치 없음');
+        const callId = `${runId}-${stage}-${round}-${++callSequence}`;
+        for (const id of participants) {
+          const record = records.get(id);
+          record.events.push({ ...event, who, callId, attributedTo: participants[0] });
+          if (event.type === 'call') {
+            record.sharedModelCalls[who]++;
+            if (id === participants[0]) { record.modelCalls[who]++; summary[id].modelCalls[who]++; }
+          } else if (event.type === 'wait' && id === participants[0]) { record.waits[who]++; record.waitMs[who] += event.durationMs; summary[id].waits[who]++; summary[id].waitMs[who] += event.durationMs; }
+        }
+        save();
+      };
+      try {
+        const result = await invoke(onEvent);
+        const results = Array.isArray(result) ? result : [{ batchId: batchIds[0], ...result }];
+        for (const row of results) {
+          const record = records.get(row.batchId);
+          if (!record) throw new Error(`미요청 결과 배치: ${row.batchId}`);
+          record.passed += row.assessed ?? (row.merged == null ? 0 : row.merged - (row.flagged ?? 0));
+          record.defects += row.flagged ?? row.rejected ?? 0; record.dropped += row.dropped ?? 0;
+          // 기존 가짜 실행기 계약 호환. 실실행은 콜백으로만 계측한다.
+          if (row.modelCalls && !record.events.length) Object.assign(record.modelCalls, row.modelCalls);
+        }
+        for (const id of batchIds) {
+          const applied = await apply(id);
+          if (noCommit && applied.runs.length) { summary[id].awaitingCommit = true; return false; }
+        }
+        if (results.some(row => row.rejected > 0)) throw new Error(`${stage}: 수정기 재요청 한도 소진`);
+        const unchanged = [];
+        for (const id of batchIds) if (JSON.stringify(await runtime.snapshot(id)) === before.get(id)) unchanged.push(id);
+        if (unchanged.length === batchIds.length) throw new Error(`${stage}: 대상 상태가 바뀌지 않음`);
+        return true;
+      } catch (error) {
+        for (const record of records.values()) record.error = error.message;
+        if (applyError || attempt === 3 || /4회 모두 형식 오류|재요청 3회 소진|수정기 재요청 한도 소진/.test(error.message)) { markError(batchIds, error); return false; }
+      } finally {
+        for (const record of records.values()) record.endedAt = new Date().toISOString();
+        save();
+      }
+    }
+  };
+  const firstPass = async id => {
     try {
       const resumed = await apply(id);
-      if (noCommit && resumed.runs.length) { entry.awaitingCommit = true; return; }
-      let state = await runtime.snapshot(id);
-      // 각 문항 front 2회 + gate 2회와 각 재판정/재검수, 배치 재배열을 포함한 유한 안전 상한.
-      const budget = 30 * (state?.drafts.length ?? 0) + 10;
-      let assessedFront;
-      for (let step = 0; ; step++) {
-        if (applyError) throw applyError;
-        const action = nextGateAction(state);
-        if (state && !state.levelPending.length && !state.codexPending.length && !state.argonPending.length) {
-          const fingerprint = JSON.stringify(state.front);
-          if (fingerprint !== assessedFront && action?.stage !== 'S3') {
-            const at = new Date().toISOString();
-            entry.stages.push({ stage: 'S3', action: '판정', target: state.front.items.length,
-              passed: state.front.items.filter(i => i.status === 'pass').length,
-              defects: state.front.items.filter(i => i.status === 'defect').length,
-              pending: state.front.items.filter(i => i.status === 'pending').length,
-              dropped: 0, modelCalls: emptyCalls(), startedAt: at, endedAt: at });
-          }
-          assessedFront = fingerprint;
-        }
-        if (!action) { entry.closed = !state || !state.drafts.length; entry.pending = state?.front.items.filter(i => i.status === 'pending').length ?? 0; break; }
-        if (step >= budget) throw new Error('단계 실행 안전 상한 소진');
-        const record = { stage: action.stage, target: action.keys.length, passed: 0, defects: 0, dropped: 0,
-          modelCalls: emptyCalls(), startedAt: new Date().toISOString() };
-        entry.stages.push(record);
-        const beforeCalls = runtime.callRecords?.(id) ?? new Map();
-        let result;
-        try {
-          if (action.stage === 'S1') result = await pools.codex(() => pools.antigravity(() => runtime.level(id)));
-          else if (action.who) result = await pools[action.who](() => runtime.review(id, action.who, action.keys));
-          else result = await pools.antigravity(() => runtime.revise(id, action.phase, action.keys));
-          if (applyError) throw applyError;
-          const applied = await apply(id);
-          record.passed = result.assessed ?? (result.merged == null ? 0 : result.merged - (result.flagged ?? 0));
-          record.defects = result.flagged ?? result.rejected ?? 0;
-          record.dropped = result.dropped ?? 0;
-          if (noCommit && applied.runs.length) { entry.awaitingCommit = true; break; }
-          if (result.rejected > 0) throw new Error(`${action.stage}: 수정기 재요청 한도 소진, 거절 ${result.rejected}문항`);
-          const next = await runtime.snapshot(id);
-          // staging 없는 응답/거절만 반복해도 같은 묶음 오류 세 번 규칙에 들어간다.
-          const again = nextGateAction(next);
-          if (again?.stage === action.stage && JSON.stringify(again.keys) === JSON.stringify(action.keys)) throw new Error(`${action.stage}: 대상 상태가 바뀌지 않음`);
-          state = next;
-        } catch (error) {
-          record.error = error.message;
-          if (applyError) throw applyError; // 반영 실패에는 모델 재호출 금지.
-          const signature = `${action.stage}:${action.keys.join(',')}:${error.message}`;
-          const count = (failures.get(signature) ?? 0) + 1;
-          failures.set(signature, count);
-          log(`${id} ${action.stage}: ${error.message} (${count}/3)`);
-          if (count >= 3 || /4회 모두 형식 오류|재요청 3회 소진|수정기 재요청 한도 소진/.test(error.message)) { entry.skipped = true; throw error; }
-          state = await runtime.snapshot(id);
-        } finally {
-          const afterCalls = runtime.callRecords?.(id) ?? new Map();
-          for (const [file, item] of afterCalls) if (beforeCalls.get(file)?.stamp !== item.stamp) record.modelCalls[item.who]++;
-          if (result?.modelCalls) Object.assign(record.modelCalls, result.modelCalls);
-          record.modelCallsBasis = runtime.callRecords ? 'recorded-replies-lower-bound' : 'injected-runner';
-          record.endedAt = new Date().toISOString(); save();
-        }
+      if (noCommit && resumed.runs.length) { summary[id].awaitingCommit = true; return; }
+      if (summary[id].firstPassComplete) return;
+      for (const [stage, field, who] of [['S1', 'levelPending', null], ['S2-codex', 'codexPending', 'codex'], ['S2-argon', 'argonPending', 'antigravity']]) {
+        const state = await runtime.snapshot(id), keys = state?.[field] ?? [];
+        if (!keys.length) continue;
+        const ok = await execute(stage, refsOf(id, keys), [id], 0, cb => who
+          ? pools[who](() => runtime.review(id, who, keys, cb))
+          : pools.codex(() => pools.antigravity(() => runtime.level(id, keys, cb))));
+        if (!ok) return;
       }
-    } catch (error) { entry.error = error.message; log(`${id} 중단: ${error.message}`); }
-    finally { entry.endedAt = new Date().toISOString(); save(); }
-  }));
+      await assessFront(id, 0);
+      const state = await runtime.snapshot(id);
+      const passed = new Set(state?.front.batchDefects.length ? [] : state?.front.items.filter(q => q.status === 'pass').map(keyOf));
+      const keys = state?.claudePending.filter(key => passed.has(key)) ?? [];
+      if (keys.length && !await execute('S4', refsOf(id, keys), [id], 0, cb => pools.claude(() => runtime.review(id, 'claude', keys, cb)))) return;
+      summary[id].firstPassComplete = true; save();
+    } catch (error) { markError([id], error); }
+  };
+  const pooled = async (stage, refs, batchIds, round, who) => {
+    const invoke = async cb => {
+      if (stage === 'S1' && runtime.levelQuestions) return runtime.levelQuestions(refs, cb);
+      if (who && runtime.reviewQuestions) return runtime.reviewQuestions(refs, who, cb);
+      if (!who && stage !== 'S1' && runtime.reviseQuestions) return runtime.reviseQuestions(refs, cb, batchIds);
+      const results = [];
+      for (const id of batchIds) {
+        const selected = refs.filter(q => q.batchId === id), keys = selected.map(keyOf);
+        const scoped = event => cb({ ...event, batchIds: event.batchIds ?? [id] });
+        const result = stage === 'S1' ? await runtime.level(id, keys, scoped)
+          : who ? await runtime.review(id, who, keys, scoped) : await runtime.revise(id, selected[0]?.phase ?? 'front', keys, scoped);
+        results.push({ batchId: id, ...result });
+      }
+      return results;
+    };
+    return execute(stage, refs, batchIds, round, cb => stage === 'S1'
+      ? pools.codex(() => pools.antigravity(() => invoke(cb))) : pools[who ?? 'antigravity'](() => invoke(cb)));
+  };
+  const recheck = async (cohort, round) => {
+    for (const [stage, field, who] of [['S1', 'levelPending', null], ['S2-codex', 'codexPending', 'codex'], ['S4', 'claudePending', 'claude']]) {
+      let refs = [];
+      for (const id of cohort.filter(active)) {
+        const state = await runtime.snapshot(id); if (!state) continue;
+        if (stage === 'S4') await assessFront(id, round);
+        const passed = new Set(state.front.batchDefects.length ? [] : state.front.items.filter(q => q.status === 'pass').map(keyOf));
+        refs.push(...refsOf(id, state[field].filter(key => stage !== 'S4' || passed.has(key))));
+      }
+      if (refs.length) await pooled(stage, refs, [...new Set(refs.map(q => q.batchId))], round, who);
+      if (applyError) break;
+    }
+  };
+  // --pool-after는 첫 판 완료 배치 수의 장벽이다. 기본값은 선택한 모든 배치.
+  for (let offset = 0; offset < workIds.length; offset += threshold) {
+    const cohort = workIds.slice(offset, offset + threshold);
+    await Promise.all(cohort.map(firstPass));
+    const roundBase = Math.max(0, ...cohort.map(id => previous[id]?.lastRound ?? 0), ...cohort.flatMap(id => previous[id]?.stages?.map(stage => stage.round ?? 0) ?? []));
+    if (!applyError && cohort.some(id => previous[id]?.firstPassComplete)) await recheck(cohort, roundBase);
+    let budget = 10;
+    for (const id of cohort.filter(active)) budget += 30 * ((await runtime.snapshot(id))?.drafts.length ?? 0);
+    for (let round = roundBase + 1; round <= roundBase + budget && !applyError; round++) {
+      let refs = [], repairIds = [];
+      for (const id of cohort.filter(active)) {
+        const state = await runtime.snapshot(id);
+        if (!state) continue;
+        const defects = new Set(state.front.items.filter(q => q.status === 'defect').map(keyOf));
+        const passed = new Set(state.front.batchDefects.length ? [] : state.front.items.filter(q => q.status === 'pass').map(keyOf));
+        refs.push(...refsOf(id, [...defects], 'front'));
+        refs.push(...refsOf(id, state.flagged.filter(x => x.phase === 'gate' && passed.has(keyOf(x.q))).map(x => keyOf(x.q)), 'gate'));
+        if (state.front.batchDefects.length) repairIds.push(id);
+      }
+      const reviseIds = [...new Set([...refs.map(q => q.batchId), ...repairIds])];
+      if (!reviseIds.length) break;
+      const phases = new Set(refs.map(q => q.phase));
+      await pooled(phases.size === 1 && phases.has('gate') ? 'S5' : phases.size > 1 ? 'S3/S5' : 'S3', refs, reviseIds, round);
+      if (applyError) break;
+      await recheck(cohort, round);
+      if (round === roundBase + budget) markError(cohort.filter(active), new Error('전역 회차 안전 상한 소진'));
+    }
+    for (const id of cohort) {
+      const state = await runtime.snapshot(id);
+      summary[id].closed = !state || !state.drafts.length;
+      summary[id].pending = state?.front.items.filter(q => q.status === 'pending').length ?? 0;
+      summary[id].endedAt = new Date().toISOString();
+    }
+    save();
+    if (applyError || noCommit) break;
+  }
   return summary;
+}
+
+/** 제작 경로도 같은 계측기를 주입할 수 있다. 독립 produce CLI는 별도 파일 소유자 작업이다. */
+export async function runProduce(options, deps = {}) {
+  const { produce } = await import('./produce.mjs');
+  const metrics = { modelCallsBasis: 'measured', modelCalls: emptyCalls(), waits: emptyCalls(), waitMs: emptyCalls(), events: [] };
+  const onEvent = event => {
+    metrics.events.push(event);
+    if (event.type === 'call') metrics.modelCalls[event.who]++;
+    else if (event.type === 'wait') { metrics.waits[event.who]++; metrics.waitMs[event.who] += event.durationMs; }
+    (options.onEvent ?? deps.onEvent)?.(event);
+  };
+  const callContext = { batchIds: [options.batchId], phase: 'produce', round: options.round ?? 0 };
+  const injected = { ...deps, agyCall: request => review.modelAttempt('argon', () => (deps.agyCall ?? review.measuredAgyCall)({ ...request, onEvent, callContext }),
+    { onEvent, sleep: deps.sleep, liveArgon: !deps.agyCall }, callContext) };
+  if (deps.respond) injected.respond = request => review.modelAttempt('argon', () => deps.respond(request), { onEvent, sleep: deps.sleep }, callContext);
+  return { ...await produce(options, injected), ...metrics };
 }

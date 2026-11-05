@@ -13,7 +13,8 @@ import os from 'node:os';
 import { createHash, randomUUID } from 'node:crypto';
 import { spawn } from 'node:child_process';
 import { runnerImport } from 'vite';
-import { agyCall, AGY_MODEL } from './agy.mjs';
+import { AGY_MODEL } from './agy.mjs';
+import { questionRefs, measuredAgyCall, modelAttempt } from './review.mjs';
 
 const BRIDGE = process.env.AGENT_BRIDGE ?? path.join(os.homedir(), '.local/bin/agent-bridge');
 const CHUNK = 12;
@@ -31,7 +32,6 @@ function args(argv) {
 }
 const readJson = f => JSON.parse(fs.readFileSync(f, 'utf8'));
 const writeJson = (f, v) => { fs.mkdirSync(path.dirname(f), { recursive: true }); fs.writeFileSync(f, `${JSON.stringify(v, null, 2)}\n`); };
-const sleep = ms => new Promise(r => setTimeout(r, ms));
 
 export async function load(root) {
   const imp = p => runnerImport(path.join(root, p), { configFile: false, logLevel: 'error', root }).then(r => r.module);
@@ -114,7 +114,7 @@ function evidenceOf(root, batchId, q) {
 }
 
 export function promptFor(root, batchId, list) {
-  const items = list.map(({ q, phase, rounds, reasons, findings }) => ({ draft: q, phase, revisionRounds: rounds, evidenceText: evidenceOf(root, batchId, q), defects: reasons, reviewerFindings: findings }));
+  const items = list.map(({ q, phase, rounds, reasons, findings }) => ({ draft: q, phase, revisionRounds: rounds, evidenceText: evidenceOf(root, batchId ?? q.batchId, q), defects: reasons, reviewerFindings: findings }));
   return [
     '너는 대한민국 초등학교 3~6학년용 한국어 어휘 문항의 작성자(Argon)다. 총괄은 Claude다. 아래 문항들은 공동검수에서 결함이 지적되어 격리되었다.',
     '파일을 쓰거나 명령을 실행하지 말고, 고친 결과를 답장 JSON으로만 보낸다(총괄의 도구가 검사해 파일에 쓴다).',
@@ -285,8 +285,8 @@ export async function apply(root, batchId, accepted, options = {}) {
 }
 
 export function author(who, cwd, body, options = {}) {
-  if (who === 'antigravity') return (options.agyCall ?? agyCall)({ root: options.root, cwd, prompt: body, model: AGY_MODEL, timeoutSec: 1200,
-    argonPerHour: options.argonPerHour ?? options['argon-per-hour'], validate: options.validate });
+  if (who === 'antigravity') return (options.agyCall ?? measuredAgyCall)({ root: options.root, cwd, prompt: body, model: AGY_MODEL, timeoutSec: 1200,
+    onEvent: options.onEvent, callContext: options.callContext, argonPerHour: options.argonPerHour ?? options['argon-per-hour'], validate: options.validate });
   return new Promise(resolve => {
     const child = spawn(BRIDGE, ['ask', '--from', 'claude', '--to', who, '--cwd', cwd, '--wait', '1200', '-'], { stdio: ['pipe', 'pipe', 'pipe'] });
     let out = '';
@@ -299,58 +299,76 @@ export function author(who, cwd, body, options = {}) {
 }
 
 export async function reviseBatch(m, root, batchId, who, log, options = {}) {
-  const loaded = m.b.loadBatches(root).find(x => x.batchId === batchId);
-  const batch = loaded ? stagedBatch(root, loaded) : null;
-  if (!batch) return { batchId, revised: 0, dropped: 0, rejected: 0 };
-  const list = flagged(m, batch, { root });
-  const accepted = [];
-  if (!list.length) {
-    const front = m.front.frontGate(batch, null);
-    const staged = front.batchDefects.length ? await apply(root, batchId, [], { modules: m, batch, model: who }) : {};
-    return { batchId, revised: 0, dropped: 0, rejected: 0, ...staged };
+  return (await reviseMany(m, root, [batchId], null, who, log, options))[0];
+}
+
+export async function reviseQuestions(m, root, questions, who = 'antigravity', log = console.log, options = {}) {
+  const refs = questionRefs(questions);
+  return reviseMany(m, root, [...new Set([...refs.map(q => q.batchId), ...(options.batchIds ?? [])])], refs, who, log, options);
+}
+
+async function reviseMany(m, root, ids, refs, who, log, options) {
+  const all = m.b.loadBatches(root);
+  const contexts = ids.map(batchId => {
+    const loaded = all.find(x => x.batchId === batchId), batch = loaded ? stagedBatch(root, loaded) : null;
+    const wanted = refs ? new Map(refs.filter(q => q.batchId === batchId).map(q => [`${q.questionId}@${q.revision}`, q.phase])) : null;
+    const list = batch ? flagged(m, batch, { root }).filter(x => !wanted || (wanted.has(`${x.q.id}@${x.q.revision}`) && (!wanted.get(`${x.q.id}@${x.q.revision}`) || wanted.get(`${x.q.id}@${x.q.revision}`) === x.phase))) : [];
+    return { batchId, batch, list };
+  });
+  const list = contexts.flatMap(ctx => ctx.list), owner = new Map();
+  for (const ctx of contexts) for (const item of ctx.list) {
+    if (owner.has(item.q.id)) throw new Error(`배치 간 중복 문항 ID: ${item.q.id}`);
+    owner.set(item.q.id, ctx.batchId);
   }
-  const dir = path.join(root, '.orchestrate/revise', batchId);
-  const sealed = path.join(dir, 'sealed', randomUUID());
+  const accepted = [], rejected = new Set();
+  const dir = path.join(root, '.orchestrate/revise', refs ? 'pool' : ids[0], randomUUID());
+  const sealed = path.join(dir, 'sealed');
   fs.mkdirSync(sealed, { recursive: true });
-  let revised = 0;
-  let dropped = 0;
-  let rejectedCount = 0;
-  for (let i = 0; i < list.length; i += CHUNK) {
-    let chunk = list.slice(i, i + CHUNK);
-    const exhausted = chunk.filter(x => x.rounds[x.phase] >= MAX_REVISION_ROUNDS);
-    accepted.push(...exhausted.map(x => ({ ...x, action: 'drop', reason: `${x.phase} 수정 ${MAX_REVISION_ROUNDS}회 한도 소진` })));
-    dropped += exhausted.length;
-    chunk = chunk.filter(x => !exhausted.includes(x));
-    let note = '';
+  // 한도 초과 문항은 모델 입력에서 먼저 빼고, 남은 대상만 12개씩 꽉 채운다.
+  const exhausted = list.filter(x => x.rounds[x.phase] >= MAX_REVISION_ROUNDS);
+  accepted.push(...exhausted.map(x => ({ ...x, action: 'drop', reason: `${x.phase} 수정 ${MAX_REVISION_ROUNDS}회 한도 소진` })));
+  const pending = list.filter(x => !exhausted.includes(x));
+  for (let i = 0; i < pending.length; i += CHUNK) {
+    let chunk = pending.slice(i, i + CHUNK), note = '';
     for (let attempt = 1; attempt <= 3 && chunk.length; attempt++) {
-      const res = await author(who, sealed, promptFor(root, batchId, chunk) + note, { ...options, root, validate: text => {
-        const result = parseRevisions(m, text, chunk);
-        if (result.rejected.length) throw new Error(result.rejected.join('; '));
-      } });
-      fs.writeFileSync(path.join(dir, `chunk${i / CHUNK + 1}.reply${attempt}.md`), res.out || res.err);
-      if (/시간당 실행 상한/.test(res.out)) { log(`${batchId}: 시간당 상한 — 10분 대기`); await sleep(600_000); attempt--; continue; }
+      const callContext = { batchIds: [...new Set(chunk.map(x => owner.get(x.q.id)))], phase: 'revise', attempt };
+      const prompt = promptFor(root, refs ? undefined : ids[0], chunk) + note;
+      const res = await modelAttempt(who === 'antigravity' ? 'argon' : who,
+        () => options.respond ? options.respond({ who, prompt, items: chunk, cwd: sealed, attempt })
+          : author(who, sealed, prompt, { ...options, root, callContext, validate: text => {
+            const result = parseRevisions(m, text, chunk);
+            if (result.rejected.length) throw new Error(result.rejected.join('; '));
+          } }), { ...options, liveArgon: who === 'antigravity' && !options.respond && !options.agyCall }, callContext);
+      fs.writeFileSync(path.join(dir, `chunk${i / CHUNK + 1}.reply${attempt}.md`), res.out || res.err || '');
       let parsed;
-      try { parsed = parseRevisions(m, res.out, chunk); } catch (e) { log(`${batchId} 묶음${i / CHUNK + 1} ${attempt}회차 답장 오류: ${e.message.slice(0, 200)}`); note = `\n\n지난 답장을 읽지 못했다(${e.message.slice(0, 200)}). 형식을 지켜 다시 답한다.`; continue; }
+      try { parsed = parseRevisions(m, res.out, chunk); }
+      catch (e) { log(`수정 묶음${i / CHUNK + 1} ${attempt}회차 답장 오류: ${e.message.slice(0, 200)}`); note = `\n지난 답장을 읽지 못했다(${e.message.slice(0, 200)}). 형식을 지켜 다시 답한다.`; continue; }
       accepted.push(...parsed.accepted);
-      revised += parsed.accepted.filter(a => a.action === 'revise').length;
-      dropped += parsed.accepted.filter(a => a.action === 'drop').length;
       const done = new Set(parsed.accepted.map(a => a.q.id));
       chunk = chunk.filter(x => !done.has(x.q.id));
-      if (parsed.rejected.length) {
-        log(`${batchId} 묶음${i / CHUNK + 1} ${attempt}회차 거절 ${parsed.rejected.length}: ${parsed.rejected.slice(0, 3).join(' | ').slice(0, 400)}`);
-        note = `\n\n지난 답장에서 아래 문항이 검사를 통과하지 못했다. 이 문항만 고쳐 다시 답한다.\n${parsed.rejected.join('\n')}`;
-      }
+      if (parsed.rejected.length) note = `\n지난 답장에서 아래 문항이 검사를 통과하지 못했다. 이 문항만 고쳐 다시 답한다.\n${parsed.rejected.join('\n')}`;
     }
-    rejectedCount += chunk.length;
+    for (const x of chunk) rejected.add(x.q.id);
   }
-  const staged = accepted.length ? await apply(root, batchId, accepted, { modules: m, batch, model: who }) : {};
-  return { batchId, revised, dropped, rejected: rejectedCount, ...staged };
+  const results = [];
+  for (const { batchId, batch } of contexts) {
+    const selected = accepted.filter(x => owner.get(x.q.id) === batchId);
+    const needsRepair = batch && m.front.frontGate(batch, null).batchDefects.length;
+    const staged = batch && (selected.length || needsRepair) ? await apply(root, batchId, selected, { modules: m, batch, model: who }) : {};
+    results.push({ batchId, revised: selected.filter(x => x.action === 'revise').length,
+      dropped: selected.filter(x => x.action === 'drop').length, rejected: [...rejected].filter(id => owner.get(id) === batchId).length, ...staged });
+  }
+  return results;
 }
 
 async function main() {
   const a = args(process.argv.slice(2));
   const root = path.resolve(a.root ?? path.resolve(import.meta.dirname, '../..'));
   const m = await load(root);
+  if (a._[0] === 'run' && a['question-list']) {
+    console.log(JSON.stringify(await reviseQuestions(m, root, a['question-list'], a.author ?? 'antigravity', console.log, a)));
+    return;
+  }
   const all = m.b.loadBatches(root);
   const log = msg => { const line = `[${new Date().toISOString()}] ${msg}`; console.log(line); fs.mkdirSync(path.join(root, '.orchestrate/revise'), { recursive: true }); fs.appendFileSync(path.join(root, '.orchestrate/revise/revise.log'), `${line}\n`); };
   if (a._[0] === 'status') {

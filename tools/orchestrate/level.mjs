@@ -10,8 +10,8 @@ import { createHash, randomUUID } from 'node:crypto';
 import { spawn } from 'node:child_process';
 import { pathToFileURL } from 'node:url';
 import { runnerImport } from 'vite';
-import { resolveReviewConfig, codexCliArgs, codexCliPath } from './review.mjs';
-import { agyCall, AGY_MODEL } from './agy.mjs';
+import { resolveReviewConfig, codexCliArgs, codexCliPath, questionRefs, measuredAgyCall, modelAttempt } from './review.mjs';
+import { AGY_MODEL } from './agy.mjs';
 
 const SOURCE_ROOT = path.resolve(import.meta.dirname, '../..');
 const read = file => JSON.parse(fs.readFileSync(file, 'utf8'));
@@ -199,7 +199,7 @@ function execute(command, args, cwd, prompt, timeoutMs) {
 export async function liveRespond(request, deps = {}) {
   const { judge, cwd, prompt, config } = request;
   if (judge === 'argon') {
-    return (await (deps.agyCall ?? agyCall)({ ...request, model: AGY_MODEL, timeoutSec: 1200 })).out;
+    return (await (deps.agyCall ?? measuredAgyCall)({ ...request, model: AGY_MODEL, timeoutSec: 1200 })).out;
   }
   const cli = codexCliPath();
   const outFile = path.join(cwd, `last-${randomUUID()}.md`);
@@ -232,30 +232,42 @@ export async function runLevels(options, deps = {}) {
   const rubric = rubricText(), codes = curriculumCodes(root);
   const refFile = path.join(root, 'content-source/reference/krdict-grade.json');
   const reference = fs.existsSync(refFile) ? read(refFile) : null;
-  if (Boolean(options.all) === Boolean(options.batches)) throw new Error('--all 또는 --batches 중 하나가 필요하다');
+  const refs = options.questions != null || options['question-list'] != null ? questionRefs(options.questions ?? options['question-list']) : null;
+  if (!refs && Boolean(options.all) === Boolean(options.batches)) throw new Error('--all 또는 --batches 중 하나가 필요하다');
   const batchDirs = ['content-source/batches', '.orchestrate/staging'].flatMap(relative => {
     const dir = path.join(root, relative);
     return fs.existsSync(dir) ? fs.readdirSync(dir, { withFileTypes: true }).filter(e => e.isDirectory()).map(e => e.name) : [];
   });
-  const ids = [...new Set(options.all ? batchDirs.sort() : String(options.batches).split(',').map(s => s.trim()))].map(safeId);
+  const ids = [...new Set(refs ? refs.map(q => q.batchId) : options.all ? batchDirs.sort() : String(options.batches).split(',').map(s => s.trim()))].map(safeId);
 
-  async function runBatch(batchId) {
-    const draftPath = `content-source/batches/${batchId}/drafts.json`, levelPath = `content-source/levels/${batchId}.json`;
-    if (pendingJson(root, batchId, `content-source/batches/${batchId}/closed.json`)) return { batchId, assessed: 0, closed: true };
-    const raw = pendingJson(root, batchId, draftPath);
-    if (!raw) throw new Error(`배치 초안 없음: ${batchId}`);
-    const drafts = m.d.draftBatchSchema.parse(raw), latest = new Map();
-    for (const q of drafts) {
-      if (q.batchId !== batchId) throw new Error(`초안 배치 ID 불일치: ${q.id}`);
-      if (!latest.has(q.id) || latest.get(q.id).revision < q.revision) latest.set(q.id, q);
-    }
-    const old = pendingJson(root, batchId, levelPath, { items: [] });
-    const todo = [...latest.values()].filter(q => !old.items.some(item => m.levels.isCurrentLevelAssessment(q, item)));
-    if (!todo.length) return { batchId, assessed: 0 };
+  if (!ids.length) return [];
+
+  async function runGroup(batchIds) {
+    const contexts = batchIds.map(batchId => {
+      const draftPath = `content-source/batches/${batchId}/drafts.json`, levelPath = `content-source/levels/${batchId}.json`;
+      if (pendingJson(root, batchId, `content-source/batches/${batchId}/closed.json`)) return { batchId, closed: true, todo: [] };
+      const raw = pendingJson(root, batchId, draftPath);
+      if (!raw) throw new Error(`배치 초안 없음: ${batchId}`);
+      const drafts = m.d.draftBatchSchema.parse(raw), latest = new Map();
+      for (const q of drafts) {
+        if (q.batchId !== batchId) throw new Error(`초안 배치 ID 불일치: ${q.id}`);
+        if (!latest.has(q.id) || latest.get(q.id).revision < q.revision) latest.set(q.id, q);
+      }
+      const old = pendingJson(root, batchId, levelPath, { items: [] });
+      const wanted = refs ? new Set(refs.filter(q => q.batchId === batchId).map(q => `${q.questionId}@${q.revision}`)) : null;
+      const todo = [...latest.values()].filter(q => (!wanted || wanted.has(`${q.id}@${q.revision}`)) && !old.items.some(item => m.levels.isCurrentLevelAssessment(q, item)));
+      return { batchId, raw, draftPath, levelPath, latest, old, todo };
+    });
+    const owner = new Map();
+    const inputs = contexts.flatMap(ctx => ctx.todo.map(q => {
+      if (owner.has(q.id)) throw new Error(`배치 간 중복 문항 ID: ${q.id}`);
+      owner.set(q.id, ctx.batchId);
+      return inputItem(m, root, ctx.batchId, q, reference);
+    }));
+    const batchId = batchIds.join(',');
     const createdAt = new Date().toISOString();
     const runId = `${createdAt.replace(/[-:.]/g, '')}-${process.pid}-${randomUUID()}`;
-    const work = path.join(root, '.orchestrate/level', batchId, runId);
-    const inputs = todo.map(q => inputItem(m, root, batchId, q, reference));
+    const work = path.join(root, '.orchestrate/level', refs ? 'pool' : batchIds[0], runId);
     const request = async (judge, items, chunk, phase = 'assess') => {
       const config = judge === 'argon' ? configs.antigravity : configs.codex;
       const validate = text => parseReply(m, text, items, judge, config.model);
@@ -265,8 +277,11 @@ export async function runLevels(options, deps = {}) {
         const cwd = path.join(work, 'sealed', judge, `${phase}-${chunk}-${attempt}`);
         fs.mkdirSync(cwd, { recursive: true });
         const prompt = promptFor(items, rubric, phase, root) + (error ? '\n지난 답장이 JSON·스키마·입력 1:1 검사를 통과하지 못했다. 원래 입력 전체를 형식에 맞게 다시 답한다.' : '');
-        const reply = await pools[judge](() => respond({ judge, phase, batchId, chunk, attempt, cwd, prompt, config, items, root,
-          argonPerHour: options.argonPerHour ?? options['argon-per-hour'], validate }));
+        const callContext = { batchIds: [...new Set(items.map(q => owner.get(q.questionId)))], phase, attempt };
+        const onEvent = options.onEvent ?? deps.onEvent;
+        const reply = await pools[judge](() => modelAttempt(judge, () => respond({ judge, phase, batchId, chunk, attempt, cwd, prompt, config, items, root,
+          onEvent, callContext, argonPerHour: options.argonPerHour ?? options['argon-per-hour'], validate }),
+        { onEvent, sleep: deps.sleep ?? options.sleep, liveArgon: judge === 'argon' && !deps.respond && !dryRun && !deps.agyCall }, callContext));
         const full = judge === 'argon' && !dryRun && !deps.respond ? recoverReply(reply, validate, deps.brain) : reply;
         write(path.join(work, 'replies', `${judge}-${phase}-${chunk}-${attempt}.json`), { config, reply: full });
         try { return validate(full); } catch (e) { error = e; }
@@ -283,39 +298,45 @@ export async function runLevels(options, deps = {}) {
     const failed = judged.find(result => result.status === 'rejected');
     if (failed) throw failed.reason;
     const [argon, codex] = judged.map(result => new Map(result.value.map(j => [j.questionId, j])));
-    const merged = inputs.map(input => m.levels.assessLevel(latest.get(input.questionId), argon.get(input.questionId), codex.get(input.questionId), input.precomputed));
-    const byId = new Map(merged.map(item => [item.questionId, item]));
-    const nextDrafts = raw.map(q => {
-      const item = byId.get(q.id);
-      if (!item || item.revision !== q.revision) return q;
-      const next = { ...q, difficultyTier: item.merged.ownTier, gradeBasis: { ...q.gradeBasis, ...selectGradeBasis(m, argon.get(q.id), codex.get(q.id), item.merged, codes) } };
-      if (sha(m.d.contentHashInput(next)) !== item.contentHash) throw new Error(`${q.id}: 수준 보강이 본문 해시를 바꿨다`);
-      return next;
-    });
-    const nextLevel = m.contracts.levelBatchSchema.parse({ batchId, rubricVersion: m.contracts.LEVEL_RUBRIC_VERSION,
-      items: [...old.items.filter(item => m.contracts.levelAssessmentSchema.safeParse(item).success && !merged.some(j => j.questionId === item.questionId && j.revision === item.revision)), ...merged]
-        .sort((a, b) => a.questionId.localeCompare(b.questionId) || a.revision - b.revision) });
-    const spots = nextLevel.items.filter(item => item.merged.rule === 4 && latest.has(item.questionId) && m.levels.isCurrentLevelAssessment(latest.get(item.questionId), item)).slice(0, 5);
-    if (spots.length) {
-      const spotInputs = spots.map(item => inputItem(m, root, batchId, latest.get(item.questionId), reference));
-      const items = await request('codex', spotInputs, 0, 'spotcheck');
-      write(path.join(root, '.orchestrate/level-spotcheck', `${batchId}.json`), { batchId, runId, createdAt, model: configs.codex.model, items });
+    const results = [];
+    for (const ctx of contexts) {
+      const { batchId, raw, draftPath, levelPath, latest, old, todo } = ctx;
+      if (!todo.length) { results.push({ batchId, assessed: 0, ...(ctx.closed ? { closed: true } : {}) }); continue; }
+      const merged = inputs.filter(input => owner.get(input.questionId) === batchId).map(input => m.levels.assessLevel(latest.get(input.questionId), argon.get(input.questionId), codex.get(input.questionId), input.precomputed));
+      const byId = new Map(merged.map(item => [item.questionId, item]));
+      const nextDrafts = raw.map(q => {
+        const item = byId.get(q.id);
+        if (!item || item.revision !== q.revision) return q;
+        const next = { ...q, difficultyTier: item.merged.ownTier, gradeBasis: { ...q.gradeBasis, ...selectGradeBasis(m, argon.get(q.id), codex.get(q.id), item.merged, codes) } };
+        if (sha(m.d.contentHashInput(next)) !== item.contentHash) throw new Error(`${q.id}: 수준 보강이 본문 해시를 바꿨다`);
+        return next;
+      });
+      const nextLevel = m.contracts.levelBatchSchema.parse({ batchId, rubricVersion: m.contracts.LEVEL_RUBRIC_VERSION,
+        items: [...old.items.filter(item => m.contracts.levelAssessmentSchema.safeParse(item).success && !merged.some(j => j.questionId === item.questionId && j.revision === item.revision)), ...merged]
+          .sort((a, b) => a.questionId.localeCompare(b.questionId) || a.revision - b.revision) });
+      const spots = merged.filter(item => item.merged.rule === 4 && latest.has(item.questionId) && m.levels.isCurrentLevelAssessment(latest.get(item.questionId), item)).slice(0, 5);
+      if (spots.length) {
+        const spotInputs = spots.map(item => inputItem(m, root, batchId, latest.get(item.questionId), reference));
+        const items = await request('codex', spotInputs, contexts.indexOf(ctx), 'spotcheck');
+        write(path.join(root, '.orchestrate/level-spotcheck', `${batchId}.json`), { batchId, runId, createdAt, model: configs.codex.model, items });
+      }
+      const staging = `.orchestrate/staging/${batchId}/${runId}`;
+      const manifest = { batchId, runId, tool: 'level', model: `argon=${configs.antigravity.model};codex=${configs.codex.model}`, createdAt, writes: [], deletes: [] };
+      for (const [file, value] of [[levelPath, nextLevel], [draftPath, nextDrafts]]) {
+        const bytes = json(value), target = path.join(root, staging, 'files', file);
+        fs.mkdirSync(path.dirname(target), { recursive: true });
+        fs.writeFileSync(target, bytes);
+        manifest.writes.push({ path: file, sha256: sha(bytes) });
+      }
+      write(path.join(root, staging, 'manifest.json'), manifest);
+      results.push({ batchId, assessed: merged.length, spotChecked: spots.length, staging });
     }
-    const staging = `.orchestrate/staging/${batchId}/${runId}`;
-    const manifest = { batchId, runId, tool: 'level', model: `argon=${configs.antigravity.model};codex=${configs.codex.model}`, createdAt, writes: [], deletes: [] };
-    for (const [file, value] of [[levelPath, nextLevel], [draftPath, nextDrafts]]) {
-      const bytes = json(value), target = path.join(root, staging, 'files', file);
-      fs.mkdirSync(path.dirname(target), { recursive: true });
-      fs.writeFileSync(target, bytes);
-      manifest.writes.push({ path: file, sha256: sha(bytes) });
-    }
-    write(path.join(root, staging, 'manifest.json'), manifest);
-    return { batchId, assessed: merged.length, spotChecked: spots.length, staging };
+    return results;
   }
-  const results = await Promise.allSettled(ids.map(runBatch));
+  const results = await Promise.allSettled((refs ? [ids] : ids.map(id => [id])).map(runGroup));
   const errors = results.flatMap(result => result.status === 'rejected' ? [result.reason] : []);
   if (errors.length) throw new AggregateError(errors, `수준 판정 실패: ${errors.map(e => e.message).join('; ')}`);
-  return results.map(result => result.value);
+  return results.flatMap(result => result.value);
 }
 
 async function main() {

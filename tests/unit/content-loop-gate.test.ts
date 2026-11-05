@@ -178,6 +178,12 @@ describe('문항 제한·D3·성취기준 연결', () => {
     f.batch.sidecar.producer.tool = '기존 제작기';
     expect(runtime.snapshot('A').argonPending).toEqual([]);
   });
+  it('produce 수정판에는 Argon 새 문맥 검수를 반복하지 않는다', async () => {
+    const f = reviewFixture(); f.drafts.forEach(q => { q.revision++; });
+    const runtime = await createGateRuntime(f.options, f.modules);
+    expect(runtime.snapshot('A').argonPending).toEqual([]);
+    expect(runtime.snapshot('A').codexPending).toEqual(['q1@2', 'q2@2']);
+  });
   it('성취기준 모든 코드·원문을 지시문에 포함하며 빈 정본에서는 사용을 금한다', () => {
     const f = fixture(); const file = path.join(f.root, 'content-source/reference/curriculum-2022.json');
     fs.mkdirSync(path.dirname(file), { recursive: true });

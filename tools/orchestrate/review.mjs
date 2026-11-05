@@ -329,7 +329,7 @@ export function claudeCliArgs(config) {
 }
 
 function claudeCli(cwd, body, timeoutSec, config) {
-  return new Promise(resolve => {
+  return new Promise((resolve, reject) => {
     const child = spawn(claudeCliPath(), claudeCliArgs(config), { cwd, stdio: ['pipe', 'pipe', 'pipe'] });
     let out = '';
     let err = '';
@@ -342,6 +342,8 @@ function claudeCli(cwd, body, timeoutSec, config) {
       try { const j = JSON.parse(text); text = j.is_error ? `실행 실패: ${j.result ?? j.subtype}` : String(j.result ?? ''); } catch { /* 원문 그대로 */ }
       resolve({ code, out: text, err: err.trim() });
     });
+    child.once('error', error => { clearTimeout(timer); reject(error); });
+    child.stdin.on('error', error => { if (error.code !== 'EPIPE') reject(error); });
     child.stdin.end(body);
   });
 }
@@ -360,7 +362,7 @@ export function codexCliArgs(cwd, outFile, config) {
 }
 
 function codexCli(cwd, body, timeoutSec, config) {
-  return new Promise(resolve => {
+  return new Promise((resolve, reject) => {
     const outFile = path.join(cwd, `last-${process.pid}-${Date.now()}.md`);
     const child = spawn(CODEX_CLI, codexCliArgs(cwd, outFile, config), { cwd, stdio: ['pipe', 'pipe', 'pipe'] });
     let err = '';
@@ -373,56 +375,141 @@ function codexCli(cwd, body, timeoutSec, config) {
       if (fs.existsSync(outFile)) fs.unlinkSync(outFile);
       resolve({ code, out, err: err.trim().slice(-2000) });
     });
+    child.once('error', error => { clearTimeout(timer); reject(error); });
+    child.stdin.on('error', error => { if (error.code !== 'EPIPE') reject(error); });
     child.stdin.end(body);
   });
 }
 
 export function antigravityRespond(request, deps = {}) {
-  return (deps.agyCall ?? agyCall)({ ...request, model: AGY_MODEL, timeoutSec: 1200 });
+  return (deps.agyCall ?? measuredAgyCall)({ ...request, model: AGY_MODEL, timeoutSec: 1200 });
 }
 
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 
-export async function runPhase(b, root, reviewer, batchId, phase, log, options = {}) {
-  const resolved = reviewOptions(reviewer, options);
-  const { items } = await buildPhase(b, root, reviewer, batchId, phase, resolved);
-  if (items.length === 0) return 0;
-  const sealed = path.join(root, '.orchestrate/review/sealed', `${reviewer}-${batchId}-${phase}`);
+/** 공통 입력 계약: [{batchId, questionId, revision}]. ID가 여러 배치에 있으면 분배하지 않는다. */
+export function questionRefs(value) {
+  const refs = typeof value === 'string' ? readJson(path.resolve(value)) : value;
+  if (!Array.isArray(refs)) throw new Error('questions는 문항 목록 또는 JSON 파일이어야 한다');
+  const ids = new Set();
+  for (const ref of refs) {
+    if (!ref || !/^[A-Za-z0-9][A-Za-z0-9_-]*$/.test(ref.batchId) || typeof ref.questionId !== 'string'
+      || !ref.questionId || !Number.isSafeInteger(ref.revision) || ref.revision < 1 || ids.has(ref.questionId)) throw new Error('문항 목록의 배치·ID·revision 오류 또는 중복');
+    ids.add(ref.questionId);
+  }
+  return refs;
+}
+
+/** agy 예약 성공 뒤 subprocess 직전에 센다. 예약 거절은 모델 호출이 아니다. */
+export async function measuredAgyCall(request, deps = {}) {
+  let response;
+  try { return await agyCall(request, { ...deps, execute: async (exe, argv, execOptions) => {
+    request.onEvent?.({ type: 'call', who: 'argon', ...request.callContext });
+    if (deps.execute) return (response = await deps.execute(exe, argv, execOptions));
+    return (response = await new Promise((resolve, reject) => {
+      const child = spawn(exe, argv, { cwd: execOptions.cwd, stdio: ['ignore', 'pipe', 'pipe'] });
+      let out = '', err = '', timedOut = false;
+      const timer = setTimeout(() => { timedOut = true; child.kill('SIGKILL'); }, (execOptions.timeoutSec + 10) * 1000);
+      child.stdout.on('data', data => { out += data; });
+      child.stderr.on('data', data => { err += data; });
+      child.once('error', error => { clearTimeout(timer); reject(error); });
+      child.once('close', code => { clearTimeout(timer); if (timedOut) reject(new Error('agy 호출 시간 초과')); else resolve({ code, out, err: err.trim() }); });
+    }));
+  } }); } catch (error) {
+    // agy가 실행은 마쳤지만 envelope/전문을 못 읽은 경우에도 호출자의 형식 재시도에 넣는다.
+    if (response?.code === 0) return { ...response, err: error.message };
+    throw error;
+  }
+}
+
+/** 형식 재시도는 호출자가, 사용량 대기는 여기서 처리한다. 실패 호출도 실측에 포함한다. */
+export async function modelAttempt(who, invoke, options = {}, context = {}) {
+  for (;;) {
+    let result, error;
+    if (!options.liveArgon) options.onEvent?.({ type: 'call', who, ...context });
+    try { result = await invoke(); } catch (e) { error = e; }
+    const message = error?.message ?? (typeof result === 'string' ? result : `${result?.out ?? ''}\n${result?.err ?? ''}`);
+    const hourly = /시간당 실행 상한/.test(message);
+    const usage = /session limit|usage limit|rate[_ ]limit|\b429\b|hit your limit/i.test(message) && !/```/.test(message);
+    if (!hourly && !usage) { if (error) throw error; return result; }
+    const requestedMs = hourly ? 600_000 : 1_200_000;
+    const started = Date.now();
+    try { await (options.sleep ?? sleep)(requestedMs); }
+    finally { options.onEvent?.({ type: 'wait', who, ...context, reason: hourly ? 'hourly-limit' : 'usage-limit', requestedMs, durationMs: Date.now() - started }); }
+  }
+}
+
+async function reviewChunk(root, reviewer, phase, items, log, options, context, dir) {
+  const config = reviewOptions(reviewer, options).config;
+  const sealed = path.join(root, '.orchestrate/review/sealed', randomUUID());
   fs.mkdirSync(sealed, { recursive: true });
-  fs.mkdirSync(workDir(root, reviewer, batchId), { recursive: true });
+  fs.mkdirSync(dir, { recursive: true });
   let note = '';
   for (let attempt = 1; attempt <= 4; attempt++) {
-    const started = Date.now();
-    const body = promptFor(phase, items) + note;
-    const res = reviewer === 'claude' ? await claudeCli(sealed, body, 1500, resolved.config)
-      : reviewer === 'codex' ? await codexCli(sealed, body, 1800, resolved.config)
-      : await antigravityRespond({ root, cwd: sealed, prompt: body,
-        argonPerHour: options.argonPerHour ?? options['argon-per-hour'], validate: text => parseReply(text, phase, items) }, options);
-    // 계정 사용량 한도에 걸리면 시도 횟수를 쓰지 않고 기다렸다 같은 묶음을 다시 보낸다.
-    if (/session limit|usage limit|rate[_ ]limit|\b429\b|hit your limit/i.test(`${res.out}\n${res.err}`) && !/```/.test(res.out)) {
-      log(`${batchId} ${phase}: 사용량 한도 — 20분 대기 후 재시도`);
-      await sleep(1_200_000);
-      attempt--;
-      continue;
+    const prompt = promptFor(phase, items) + note;
+    const callContext = { ...context, phase, attempt };
+    const liveArgon = reviewer === 'antigravity' && !options.respond && !options.agyCall;
+    const res = await modelAttempt(reviewer === 'antigravity' ? 'argon' : reviewer, () => options.respond
+      ? options.respond({ root, reviewer, phase, items, prompt, cwd: sealed, config, attempt })
+      : reviewer === 'claude' ? claudeCli(sealed, prompt, 1500, config)
+      : reviewer === 'codex' ? codexCli(sealed, prompt, 1800, config)
+      : (options.agyCall ?? measuredAgyCall)({ root, cwd: sealed, prompt, model: AGY_MODEL, timeoutSec: 1200,
+        onEvent: options.onEvent, callContext, argonPerHour: options.argonPerHour ?? options['argon-per-hour'], validate: text => parseReply(text, phase, items) }),
+    { ...options, liveArgon }, callContext);
+    fs.writeFileSync(path.join(dir, `${phase}.reply${attempt}.md`), res.out || res.err || '');
+    if (/자기 자신에게는|CLI를 찾지 못했다|깨우기 깊이 한도/.test(res.out + res.err)) throw new Error(`${phase}: 실행 수단 오류 — ${(res.out || res.err).slice(0, 200)}`);
+    try { return parseReply(res.out ?? '', phase, items); }
+    catch (e) { log(`${phase} ${attempt}회차 형식 오류: ${e.message.slice(0, 300)}`); note = `\n지난 답장 형식 오류: ${e.message.slice(0, 600)}\n원래 입력 전체를 형식에 맞게 다시 답한다.`; }
+  }
+  throw new Error(`${phase}: 4회 모두 형식 오류`);
+}
+
+export async function runPhase(b, root, reviewer, batchId, phase, log, options = {}) {
+  const { items } = await buildPhase(b, root, reviewer, batchId, phase, options);
+  if (!items.length) return 0;
+  const parsed = [];
+  for (let offset = 0; offset < items.length; offset += 50) parsed.push(...await reviewChunk(root, reviewer, phase, items.slice(offset, offset + 50), log, options,
+    { batchIds: [batchId] }, path.join(workDir(root, reviewer, batchId), `chunk${offset / 50}`)));
+  writeJson(path.join(workDir(root, reviewer, batchId), `${phase}.result.json`), { at: new Date().toISOString(), config: reviewOptions(reviewer, options).config, items: parsed });
+  return items.length;
+}
+
+/** 모든 blind 묶음이 끝난 뒤 reveal. 배치별 기존 보고서는 ingest에서 한 번만 병합한다. */
+export async function runQuestions(b, root, reviewer, questions, log = console.log, options = {}) {
+  const refs = questionRefs(questions), ids = [...new Set(refs.map(q => q.batchId))];
+  const owner = new Map(refs.map(q => [q.questionId, q.batchId]));
+  const opts = id => ({ ...options, questionKeys: refs.filter(q => q.batchId === id).map(q => `${q.questionId}@${q.revision}`) });
+  const active = new Set();
+  for (const phase of ['blind', 'reveal']) {
+    const inputs = [];
+    for (const id of ids) {
+      const { items } = await buildPhase(b, root, reviewer, id, phase, opts(id));
+      inputs.push(...items); if (items.length) active.add(id);
     }
-    fs.writeFileSync(path.join(workDir(root, reviewer, batchId), `${phase}.reply${attempt}.md`), res.out || res.err);
-    if (/시간당 실행 상한/.test(res.out)) { log(`${batchId} ${phase}: 시간당 상한 — 10분 뒤 다시`); await sleep(600_000); attempt--; continue; }
-    if (/자기 자신에게는|CLI를 찾지 못했다|깨우기 깊이 한도/.test(res.out + res.err)) throw new Error(`${batchId} ${phase}: 실행 수단 오류 — ${(res.out || res.err).slice(0, 200)}`);
-    if (!res.out) { log(`${batchId} ${phase} ${attempt}회차: 빈 답장(코드 ${res.code}) ${res.err.slice(0, 200)}`); await sleep(30_000); continue; }
-    try {
-      acceptPhase(root, reviewer, batchId, phase, res.out, items, resolved);
-      log(`${batchId} ${phase}: ${items.length}문항 ${Math.round((Date.now() - started) / 1000)}초`);
-      return items.length;
-    } catch (e) {
-      log(`${batchId} ${phase} ${attempt}회차 형식 오류: ${e.message.slice(0, 300)}`);
-      note = `\n\n지난 답장이 형식 검사를 통과하지 못했다: ${e.message.slice(0, 600)}\n형식을 정확히 지켜 전체를 다시 답한다.`;
+    const results = [];
+    for (let offset = 0; offset < inputs.length; offset += 50) {
+      const items = inputs.slice(offset, offset + 50);
+      results.push(...await reviewChunk(root, reviewer, phase, items, log, options,
+        { batchIds: [...new Set(items.map(q => owner.get(q.questionId)))] }, path.join(root, '.orchestrate/review/pool', randomUUID())));
+    }
+    for (const id of active) {
+      const items = results.filter(q => owner.get(q.questionId) === id);
+      writeJson(path.join(workDir(root, reviewer, id), `${phase}.result.json`), { at: new Date().toISOString(), config: reviewOptions(reviewer, options).config, items });
     }
   }
-  throw new Error(`${batchId} ${phase}: 4회 모두 형식 오류`);
+  const results = [];
+  for (const id of active) results.push({ batchId: id, ...await ingest(b, root, reviewer, id, opts(id)) });
+  return results;
 }
 
 async function main() {
   const a = args(process.argv.slice(2));
+  if (a._[0] === 'run' && a['question-list']) {
+    const root = path.resolve(a.root ?? path.resolve(import.meta.dirname, '../..'));
+    const reviewer = a.reviewer ?? 'claude';
+    console.log(JSON.stringify(await runQuestions(await load(root), root, reviewer, a['question-list'], console.log, { ...a, archiveExisting: a['archive-existing'] === true || a['archive-existing'] === reviewer, config: resolveReviewConfig(a)[reviewer] })));
+    return;
+  }
   const cmd = a._[0];
   const root = path.resolve(a.root ?? path.resolve(import.meta.dirname, '../..'));
   const reviewer = a.reviewer ?? 'claude';
