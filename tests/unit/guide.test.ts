@@ -258,24 +258,30 @@ describe('사용 설명서 모델 (R5 G1~G9)', () => {
     expect(nextGuideChapter(5, -1)).toBe(4);
   });
 
-  it('그림: 1~4장 전용 삽화는 RGBA PNG, 5장은 그림이 오기 전까지 자리만 잡는다(ART-OAK2)', () => {
+  it('그림: 다섯 장 모두 전용 삽화(RGBA PNG) — 1~4장은 가로 400~800·세로 180~360, 5장(ART-OAK2)은 2배 밀도 납작한 띠', () => {
     const chapters = buildGuideChapters();
-    for (const ch of chapters.slice(0, 4)) expect(ch.illustrationUrl, `${ch.id}장 그림`).not.toBeNull();
+    expect(chapters[4]!.illustrationUrl).toBe('assets/guide/guide.ch5.new_features.png');
     for (const ch of chapters) {
-      if (!ch.illustrationUrl) continue;
       const diskPath = `./public/${ch.illustrationUrl}`;
       expect(existsSync(diskPath), `${diskPath} 누락`).toBe(true);
+      expect(ch.illustrationAlt.length, `${ch.id}장 대체 글`).toBeGreaterThan(0);
       const png = readFileSync(diskPath);
       expect(png.byteLength).toBeGreaterThan(10_000);
       expect(png.byteLength).toBeLessThanOrEqual(450 * 1024);
       expect(png.subarray(1, 4).toString('latin1')).toBe('PNG');
-      expect(png.readUInt32BE(16)).toBeGreaterThanOrEqual(400);
-      expect(png.readUInt32BE(16)).toBeLessThanOrEqual(800);
-      expect(png.readUInt32BE(20)).toBeGreaterThanOrEqual(180);
-      expect(png.readUInt32BE(20)).toBeLessThanOrEqual(360);
-      expect(png[25], 'RGBA(colorType 6)').toBe(6);
+      expect(png[25], `${ch.id}장 RGBA(colorType 6)`).toBe(6);
+      const [w, h] = [png.readUInt32BE(16), png.readUInt32BE(20)];
+      expect(w, `${ch.id}장 가로`).toBeGreaterThanOrEqual(400);
+      expect(w, `${ch.id}장 가로`).toBeLessThanOrEqual(800);
+      if (ch.id === 5) {
+        // 물건 5개를 한 줄로 둔 띠 그림: 표시 폭 340px의 2배 밀도, 가로:세로 4:1 이상(장 화면이 그림 비율대로 칸을 잡는다).
+        expect(w).toBe(680);
+        expect(w / h).toBeGreaterThanOrEqual(4);
+      } else {
+        expect(h, `${ch.id}장 세로`).toBeGreaterThanOrEqual(180);
+        expect(h, `${ch.id}장 세로`).toBeLessThanOrEqual(360);
+      }
     }
-    expect(chapters[4]!.illustrationAlt.length).toBeGreaterThan(0);
   });
 
   it('보존 계약: 도메인 practiceContext 계약은 그대로다', () => {

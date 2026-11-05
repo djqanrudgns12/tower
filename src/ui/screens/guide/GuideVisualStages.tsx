@@ -4,7 +4,7 @@ import { BALANCE } from '../../../content';
 import { DIFFICULTY_COPY } from '../../copy';
 import { BackIcon, CheckIcon, NoteIcon, PauseIcon, PlayIcon } from '../../icons/ControlIcons';
 import { BranchMarkIcon, StatRangeIcon, TowerShieldPortrait, UndoArrowIcon } from '../../icons/GameIcons';
-import { ArtIcon, Button, Card, Segmented, type ArtIconName } from '../../kit';
+import { ArtIcon, Button, Card, Segmented } from '../../kit';
 import css from '../GuideScreen.module.css';
 import { useLobbySprites } from '../home/canvasAssets';
 import { difficultyReadout } from './difficultyReadout';
@@ -57,22 +57,9 @@ export function GuideRowIcon({ icon }: { icon: GuideRowIconId }) {
   }
 }
 
-/** 장 그림. 그림이 아직 없는 장(5장, ART-OAK2)은 같은 크기 칸에 원화 아이콘만 둔다. 대체 글이 비면(목차 카드) 꾸밈으로 숨긴다. */
-const PLACEHOLDER_ICONS: readonly ArtIconName[] = ['chest', 'trait.flying', 'star', 'note'];
-
+/** 장 그림. 대체 글이 비면(목차 카드) 꾸밈으로 숨는다. */
 export function GuideArt({ chapter, className }: { chapter: GuideChapterSpec; className?: string | undefined }) {
-  if (chapter.illustrationUrl) {
-    return <img className={className} src={`${import.meta.env.BASE_URL}${chapter.illustrationUrl}`} alt={chapter.illustrationAlt} draggable={false} />;
-  }
-  return (
-    <span
-      className={`${className ?? ''} ${css.artSoon}`}
-      {...(chapter.illustrationAlt ? { role: 'img', 'aria-label': `${chapter.illustrationAlt}(${U.artSoon})` } : { 'aria-hidden': true })}
-      data-placeholder
-    >
-      {PLACEHOLDER_ICONS.map(name => <ArtIcon key={name} name={name} size={40} />)}
-    </span>
-  );
+  return <img className={className} src={`${import.meta.env.BASE_URL}${chapter.illustrationUrl}`} alt={chapter.illustrationAlt} draggable={false} />;
 }
 
 function useIconUrls(): Record<string, string> {

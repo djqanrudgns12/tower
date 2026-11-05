@@ -91,11 +91,10 @@ test.describe('사용 설명서', () => {
     await expect(cards.nth(5)).toContainText('적 특성마다 잘 잡는 타워가 있어요');
     // 첫 포커스는 내용의 첫 카드다(R4 규칙).
     await expect(cards.nth(0)).toBeFocused();
-    // 1~4장은 실제 삽화가 로드되고, 5장은 그림이 오기 전 자리(원화 아이콘)만 있다. 상성 카드에는 적 특성 아이콘 8개.
+    // 장 카드 5장 모두 실제 삽화가 로드된다(5장은 ART-OAK2 띠 그림). 상성 카드에는 적 특성 아이콘 8개.
     const pictures = cards.locator('img[src*="assets/guide/"]');
-    await expect(pictures).toHaveCount(4);
-    for (let i = 0; i < 4; i++) await expect.poll(() => pictures.nth(i).evaluate((el: HTMLImageElement) => el.naturalWidth)).toBeGreaterThan(300);
-    await expect(cards.nth(4).locator('[data-placeholder]')).toHaveCount(1);
+    await expect(pictures).toHaveCount(5);
+    for (let i = 0; i < 5; i++) await expect.poll(() => pictures.nth(i).evaluate((el: HTMLImageElement) => el.naturalWidth)).toBeGreaterThan(300);
     await expect(cards.nth(5).locator('img[src*="trait."]')).toHaveCount(8);
     expect(await axe(page)).toEqual([]);
     expect(await styleIssues(dialog)).toEqual([]);
@@ -238,6 +237,12 @@ test.describe('사용 설명서', () => {
     await expect(counter).toContainText('마법탑');
     await expect(dialog.locator('section')).toContainText('3·6·9·12웨이브');
     await expect(dialog.locator('section')).toContainText('3초 안에는 되돌려');
+    // 5장 머리 그림은 납작한 띠라 칸 높이를 그림 비율에 맞춘다(그림 위아래로 빈 칸이 크게 남지 않음).
+    const art5 = dialog.locator('[data-chapter="5"] img[src*="guide.ch5.new_features"]');
+    await expect(art5).toHaveAttribute('alt', /새 타워.*보물.*최고 기록.*오답 노트.*되돌리기/);
+    await expect.poll(() => art5.evaluate((el: HTMLImageElement) => el.naturalWidth)).toBe(680);
+    const box5 = await art5.evaluate(el => { const r = el.getBoundingClientRect(); return { w: r.width, h: r.height }; });
+    expect(box5.w / box5.h, '5장 그림 칸 비율').toBeGreaterThan(4);
     expect(errors).toEqual([]);
   });
 

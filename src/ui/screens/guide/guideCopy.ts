@@ -14,5 +14,4 @@ export const GUIDE_UI = {
   traitGroup: '적 특성',
   traitHead: '적 특성과 잘 잡는 타워',
   counterLead: '잘 잡는 타워',
-  artSoon: '그림 준비 중',
 } as const;

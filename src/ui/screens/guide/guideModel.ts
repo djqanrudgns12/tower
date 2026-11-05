@@ -30,8 +30,8 @@ export interface GuideChapterSpec {
   sentence: string;
   /** 장 머리띠 옆 한 줄 요지. */
   headline: string;
-  /** 그림 경로(public 기준). 아직 그림이 없으면 null — 화면은 같은 크기의 자리만 잡는다. */
-  illustrationUrl: string | null;
+  /** 그림 경로(public 기준). */
+  illustrationUrl: string;
   illustrationAlt: string;
   rows: readonly [GuideSummaryRow, GuideSummaryRow, GuideSummaryRow];
 }
@@ -181,9 +181,9 @@ export function buildGuideChapters(balance: Balance = BALANCE): readonly GuideCh
       title: '새 타워와 적 특성',
       sentence: '새 타워·보물을 고르고 적 특성을 살펴요',
       headline: relics ? `${draftWaves}웨이브를 지키면 새 타워를, ${relics.fromWave}웨이브부터는 보물을 골라요` : `${draftWaves}웨이브를 지키면 새 타워를 골라요`,
-      // ART-OAK2 guide.ch5.new_features(메인이 넣어 준다). 오기 전에는 화면이 자리만 잡는다.
-      illustrationUrl: null,
-      illustrationAlt: '펼친 타워 카드 세 장, 보물 상자, 트로피, 오답 노트, 끌어 놓는 타워와 되돌리기 화살표 그림',
+      // ART-OAK2(11bf25e): 다른 장보다 납작한 띠 그림(680×124, 2배 밀도). 장 화면은 그림 비율대로 칸을 잡는다.
+      illustrationUrl: 'assets/guide/guide.ch5.new_features.png',
+      illustrationAlt: '새 타워 카드 세 장, 보물 상자, 최고 기록 트로피, 펼친 오답 노트, 손으로 끌어 놓는 타워와 되돌리기 화살표 그림',
       rows: [
         {
           badge: `${draftWaves}웨이브`,

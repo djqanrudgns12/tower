@@ -62,8 +62,8 @@
 
 .stage { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--s3); }
 .stageArt { display: block; width: 100%; height: 120px; object-fit: contain; border-radius: var(--r-sm); background: var(--paper-2); box-shadow: inset 0 0 0 2px var(--line); }
-/* 그림이 오기 전(5장): 같은 칸에 원화 아이콘만. */
-.artSoon { display: flex; align-items: center; justify-content: center; gap: var(--s3); }
+/* 5장 그림은 납작한 띠(680×124, 2배 밀도 → 표시 폭 340px)라 칸 높이를 그림 비율에 맞춘다. */
+.stage[data-chapter='5'] .stageArt { height: auto; aspect-ratio: 680 / 124; padding: var(--s1); }
 .pane { display: grid; align-content: start; gap: var(--s2); min-width: 0; }
 .paneHead { font-size: var(--fs-1); font-weight: 800; color: var(--brass-3); }
 
@@ -171,6 +171,10 @@
 @media (min-width: 960px) {
   .toc { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .stage { grid-template-columns: 240px minmax(0, 1fr); }
+}
+@media (min-width: 720px) {
+  .stage[data-chapter='5'] { grid-template-columns: minmax(0, 340px) minmax(0, 1fr); }
+  .stage[data-chapter='5'] .stageArt { align-self: center; max-height: none; }
 }
 
 @media (prefers-reduced-motion: reduce) {
