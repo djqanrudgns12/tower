@@ -81,7 +81,7 @@ describe('원정 보물 아이콘(계약 icon = relic.<id>, 전용 원화)', () 
     expect(Object.keys(items)).toHaveLength(12);
     for (const [id, r] of Object.entries(items)) {
       expect(r.icon, id).toBe(`relic.${id}`);
-      expect(existsSync(`./public/assets/ui/relic.${id}.png`), `relic.${id}.png 누락`).toBe(true);
+      expect(existsSync(`./public/assets/ui/relic.${id}.webp`), `relic.${id}.webp 누락`).toBe(true);
     }
   });
 });
@@ -114,8 +114,8 @@ describe('보물 창', () => {
     const buttons = html.match(/<button[^>]*>/g)!;
     expect(buttons).toHaveLength(3);
     for (const id of offers) expect(html).toContain(`aria-label="${BALANCE.relics!.items[id]!.label} 고르기: ${BALANCE.relics!.items[id]!.summary}"`);
-    // 보물 전용 원화(public/assets/ui/relic.<id>.png)를 쓴다.
-    for (const id of offers) expect(html).toContain(`assets/ui/relic.${id}.png`);
+    // 보물 전용 원화(public/assets/ui/relic.<id>.webp)를 쓴다.
+    for (const id of offers) expect(html).toContain(`assets/ui/relic.${id}.webp`);
     expect(html).not.toContain('aria-label="닫기"');
   });
 

@@ -67,7 +67,7 @@ export function buildGuideChapters(balance: Balance = BALANCE): readonly GuideCh
       title: '한 판 흐름',
       sentence: '문제를 풀고 타워로 성문을 지켜요',
       headline: '문제로 골드를 모아 타워를 세우고, 성문을 끝까지 지켜요',
-      illustrationUrl: 'assets/guide/guide.ch1.wave_cycle.png',
+      illustrationUrl: 'assets/guide/guide.ch1.wave_cycle.webp',
       illustrationAlt: '금화 준비부터 궁수·서리 타워의 공격과 성문 회복으로 이어지는 수비 흐름 그림',
       rows: [
         {
@@ -95,7 +95,7 @@ export function buildGuideChapters(balance: Balance = BALANCE): readonly GuideCh
       title: '문제와 골드',
       sentence: '맞히면 골드, 모르면 뜻을 배워요',
       headline: `모르면 감점 없이 뜻을 배우고, ${burning.streak}연속 정답이면 보너스가 켜져요`,
-      illustrationUrl: 'assets/guide/guide.ch2.quiz_burning.png',
+      illustrationUrl: 'assets/guide/guide.ch2.quiz_burning.webp',
       illustrationAlt: '골드 주화와 문장 방패, 세 개의 붉은 보석과 빨라진 화살 그림',
       rows: [
         {
@@ -123,7 +123,7 @@ export function buildGuideChapters(balance: Balance = BALANCE): readonly GuideCh
       title: '타워 놓기와 진화',
       sentence: '타워를 놓고 키워서 진화시켜요',
       headline: `밝은 흙길이 많이 닿는 길목에 놓고, 레벨 ${evolveA}에서 진화 길을 골라요`,
-      illustrationUrl: 'assets/guide/guide.ch3.tower_evolution.png',
+      illustrationUrl: 'assets/guide/guide.ch3.tower_evolution.webp',
       illustrationAlt: '굽은 흙길 위 밝은 사거리 원과 두 갈래 진화 문장, 판매 환급 상자 그림',
       rows: [
         {
@@ -151,7 +151,7 @@ export function buildGuideChapters(balance: Balance = BALANCE): readonly GuideCh
       title: '시작과 끝내기',
       sentence: '학년·난이도를 고르고, 끝나면 기록돼요',
       headline: '학년은 낱말과 지도를, 난이도는 성문 체력과 문제 범위를 정해요',
-      illustrationUrl: 'assets/guide/guide.ch4.expedition_command.png',
+      illustrationUrl: 'assets/guide/guide.ch4.expedition_command.webp',
       illustrationAlt: '돌 표지석과 4단계 난이도 방패, 나무 방향·숫자 키와 정지 등불 그림',
       rows: [
         {
@@ -182,7 +182,7 @@ export function buildGuideChapters(balance: Balance = BALANCE): readonly GuideCh
       sentence: '새 타워·보물을 고르고 적 특성을 살펴요',
       headline: relics ? `${draftWaves}웨이브를 지키면 새 타워를, ${relics.fromWave}웨이브부터는 보물을 골라요` : `${draftWaves}웨이브를 지키면 새 타워를 골라요`,
       // ART-OAK2(11bf25e): 다른 장보다 납작한 띠 그림(680×124, 2배 밀도). 장 화면은 그림 비율대로 칸을 잡는다.
-      illustrationUrl: 'assets/guide/guide.ch5.new_features.png',
+      illustrationUrl: 'assets/guide/guide.ch5.new_features.webp',
       illustrationAlt: '새 타워 카드 세 장, 보물 상자, 최고 기록 트로피, 펼친 오답 노트, 손으로 끌어 놓는 타워와 되돌리기 화살표 그림',
       rows: [
         {

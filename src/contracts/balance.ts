@@ -352,7 +352,7 @@ const relic = z.object({
   label: z.string().min(1),
   /** 고르기 카드의 한 줄 규칙. */
   summary: z.string().min(1),
-  /** 화면 아이콘: `relic.<보물 id>`(보물 전용 원화 public/assets/ui/relic.<id>.png), `tower.<타워 id>`(타워 초상화) 또는 원화 아이콘 이름(coin·flame·note·star·chest·trait.*). */
+  /** 화면 아이콘: `relic.<보물 id>`(보물 전용 원화 public/assets/ui/relic.<id>.webp), `tower.<타워 id>`(타워 초상화) 또는 원화 아이콘 이름(coin·flame·note·star·chest·trait.*). */
   icon: z.string().regex(/^(relic\.[a-z_]+|tower\.[a-z]+|trait\.[a-z]+|[a-z]+)$/),
   effect: relicEffect,
 });

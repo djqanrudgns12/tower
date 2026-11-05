@@ -22,13 +22,13 @@ const ART_ICONS: readonly ArtIconName[] = [
   'trait.armor', 'trait.ward', 'trait.flying', 'trait.swarm', 'trait.fast', 'trait.split', 'trait.clay', 'trait.burrow',
 ];
 
-/** 보물 전용 원화(public/assets/ui/relic.<id>.png). 그림 파일이 없거나 못 읽으면 보물 상자 아이콘으로 바꾼다. */
+/** 보물 전용 원화(public/assets/ui/relic.<id>.webp). 그림 파일이 없거나 못 읽으면 보물 상자 아이콘으로 바꾼다. */
 function RelicImage({ id, size }: { id: string; size: number }) {
   const [failed, setFailed] = useState(false);
   if (failed) return <ArtIcon name="chest" size={size} />;
   return (
     <img
-      src={`${import.meta.env.BASE_URL}assets/ui/relic.${id}.png`}
+      src={`${import.meta.env.BASE_URL}assets/ui/relic.${id}.webp`}
       width={size}
       height={size}
       alt=""

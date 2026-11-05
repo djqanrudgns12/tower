@@ -22,7 +22,7 @@ describe('잠긴 칸 숫자 배지(B12)', () => {
     for (const variant of ['rail', 'strip'] as const) {
       const html = armory(variant, 5);
       // 배지: 웨이브 아이콘 + 숫자(타워 칸의 가격 줄 자리).
-      expect(html).toMatch(/icon\.wave\.png"[^>]*\/>5<\/span><\/span>/);
+      expect(html).toMatch(/icon\.wave\.webp"[^>]*\/>5<\/span><\/span>/);
       // 화면 읽기 문장은 그대로 남는다.
       expect(html).toContain('잠긴 칸: 5웨이브를 지키면 새 타워');
     }
@@ -30,8 +30,8 @@ describe('잠긴 칸 숫자 배지(B12)', () => {
 
   it('웨이브 번호를 모르면 배지 없이 자물쇠만 둔다', () => {
     const html = armory('rail', null);
-    expect(html).toContain('icon.lock.png');
-    expect(html).not.toContain('icon.wave.png');
+    expect(html).toContain('icon.lock.webp');
+    expect(html).not.toContain('icon.wave.webp');
   });
 });
 

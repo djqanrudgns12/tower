@@ -101,7 +101,7 @@ export function NoteScreen({ entries, onBack }: Props) {
         {entries.length === 0 ? (
           <div className={css.empty}>
             <img
-              src={`${import.meta.env.BASE_URL}assets/ui/note.empty.png`}
+              src={`${import.meta.env.BASE_URL}assets/ui/note.empty.webp`}
               width={320}
               height={223}
               alt=""

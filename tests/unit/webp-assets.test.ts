@@ -1,4 +1,4 @@
-import { readdirSync, readFileSync, statSync } from 'node:fs';
+import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import { assetManifestSchema } from '../../src/contracts/assetManifest';
 import { readAlphaFromBuffer, readImageInfo } from './imageMeta';
@@ -41,6 +41,18 @@ describe('그림 WebP 규칙(public/assets)', () => {
     const manifest = assetManifestSchema.parse(JSON.parse(readFileSync(`${ASSETS}/manifest.json`, 'utf8')));
     const bad = manifest.assets.filter(a => a.file.endsWith('.png') && !pngKept.some(e => matches(e, a.file))).map(a => a.file);
     expect(bad).toEqual([]);
+  });
+
+  it('src가 부르는 그림 경로는 .webp이고, 글자 그대로 적힌 경로는 파일이 있다(단계 4: 화면 그림 전환 뒤 PNG 호출 0)', () => {
+    const sources = (readdirSync('src', { recursive: true }) as string[]).filter(f => /\.(ts|tsx|css)$/.test(f));
+    const png: string[] = [], missing: string[] = [];
+    for (const f of sources) {
+      const text = readFileSync(`src/${f}`, 'utf8');
+      for (const m of text.matchAll(/assets\/[^'"`\s)]*\.png\b/g)) png.push(`${f}: ${m[0]}`);
+      for (const m of text.matchAll(/assets\/((?:ui|guide|maps)\/[\w.-]+(?:\/[\w.-]+)*\.webp)/g)) if (!existsSync(`${ASSETS}/${m[1]}`)) missing.push(`${f}: ${m[0]}`);
+    }
+    expect(png, '.png로 부르는 그림 경로').toEqual([]);
+    expect(missing, '파일이 없는 그림 경로').toEqual([]);
   });
 
   it('manifest의 .webp 파일은 WebP 형식이다', () => {

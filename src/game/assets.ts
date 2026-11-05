@@ -41,7 +41,7 @@ export const ASSETS = {
   enemy: (kind: EnemyKind, frame: 0 | 1): AssetSpec => ({ key: `enemy.${kind}.${frame}`, width: kind === 'boss' ? 192 : 128, height: kind === 'boss' ? 192 : 128, originX: ENEMY_ORIGIN[kind]?.x ?? 0.5, originY: ENEMY_ORIGIN[kind]?.y ?? 0.78, displayCells: ENEMY_DISPLAY[kind] }),
   projectile: { arrow: 'fx.arrow', ball: 'fx.ball', shard: 'fx.shard', spark: 'fx.spark', puff: 'fx.puff' },
   badge: { armored: 'badge.armored', swift: 'badge.swift' },
-  /** 종족 특성 배지(prd-r4 §7.2 E): 화면 원화 아이콘(public/assets/ui/trait.*.png)을 같은 그림으로 싣는다. 못 실으면 배지 없이 둔다. 하늘 떼는 배지를 달지 않는다. */
+  /** 종족 특성 배지(prd-r4 §7.2 E): 화면 원화 아이콘(public/assets/ui/trait.*.webp)을 같은 그림으로 싣는다. 못 실으면 배지 없이 둔다. 하늘 떼는 배지를 달지 않는다. */
   traitBadge: { shell: 'badge.trait.armor', clay: 'badge.trait.clay', burrow: 'badge.trait.burrow' },
 } as const;
 

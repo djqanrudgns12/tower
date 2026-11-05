@@ -2,7 +2,7 @@ import type { ReactNode } from 'react';
 
 /**
  * 조작 아이콘 한 세트(ui-rules-v3 §2.2): 24 viewBox, 선 2px, 둥근 끝, 색은 글자색(currentColor)을 따른다.
- * 상태·적 특성은 원화 PNG(kit ArtIcon)를 쓰고, 여기에는 누르는 조작만 둔다.
+ * 상태·적 특성은 원화(kit ArtIcon, WebP)를 쓰고, 여기에는 누르는 조작만 둔다.
  */
 interface IconProps { size?: number }
 

@@ -51,7 +51,7 @@ export class BattleScene extends Phaser.Scene {
       for (const a of entriesForMap(applyManifest(parsed.data), mapId, MAPS.map(m => m.id))) this.load.image(a.id, `assets/${a.file}`);
     });
     // 종족 특성 배지: 화면의 원화 특성 아이콘과 같은 그림(R4 B3). 실패하면 배지를 그리지 않는다(loaderror 무시).
-    for (const key of Object.values(ASSETS.traitBadge)) this.load.image(key, `assets/ui/${key.slice('badge.'.length)}.png`);
+    for (const key of Object.values(ASSETS.traitBadge)) this.load.image(key, `assets/ui/${key.slice('badge.'.length)}.webp`);
     this.load.on('loaderror', () => undefined);
   }
 

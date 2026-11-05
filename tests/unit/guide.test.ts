@@ -5,6 +5,7 @@ import { TOWER_IDS } from '../../src/contracts/balance';
 import { correctGoldAt, streakBonusGold } from '../../src/domain/run';
 import { REVIEW_GRADUATE_CLEARS } from '../../src/persistence/reviewNote';
 import { difficultyReadout } from '../../src/ui/screens/guide/difficultyReadout';
+import { readImageInfo } from './imageMeta';
 import {
   buildCounterRows,
   buildGuideChapters,
@@ -239,7 +240,7 @@ describe('사용 설명서 모델 (R5 G1~G9)', () => {
       const expected = TOWER_IDS.filter(id => (BALANCE.towers[id].strongVs ?? []).includes(r.tag));
       expect(r.towers.map(t => t.id), `${r.enemy}`).toEqual(expected);
       expect(r.towers.map(t => t.label)).toEqual(expected.map(id => BALANCE.towers[id].label));
-      expect(existsSync(`./public/assets/ui/${r.icon}.png`), `${r.icon} 아이콘`).toBe(true);
+      expect(existsSync(`./public/assets/ui/${r.icon}.webp`), `${r.icon} 아이콘`).toBe(true);
     }
     // 지금 계약: 나는 적은 거대노포·매사냥대·바람개비탑.
     expect(rows[0]!.towers.map(t => t.id)).toEqual(['ballista', 'falcon', 'wind']);
@@ -258,19 +259,20 @@ describe('사용 설명서 모델 (R5 G1~G9)', () => {
     expect(nextGuideChapter(5, -1)).toBe(4);
   });
 
-  it('그림: 다섯 장 모두 전용 삽화(RGBA PNG) — 1~4장은 가로 400~800·세로 180~360, 5장(ART-OAK2)은 2배 밀도 납작한 띠', () => {
+  it('그림: 다섯 장 모두 전용 삽화(알파 있는 WebP) — 1~4장은 가로 400~800·세로 180~360, 5장(ART-OAK2)은 2배 밀도 납작한 띠', () => {
     const chapters = buildGuideChapters();
-    expect(chapters[4]!.illustrationUrl).toBe('assets/guide/guide.ch5.new_features.png');
+    expect(chapters[4]!.illustrationUrl).toBe('assets/guide/guide.ch5.new_features.webp');
     for (const ch of chapters) {
       const diskPath = `./public/${ch.illustrationUrl}`;
       expect(existsSync(diskPath), `${diskPath} 누락`).toBe(true);
       expect(ch.illustrationAlt.length, `${ch.id}장 대체 글`).toBeGreaterThan(0);
-      const png = readFileSync(diskPath);
-      expect(png.byteLength).toBeGreaterThan(10_000);
-      expect(png.byteLength).toBeLessThanOrEqual(450 * 1024);
-      expect(png.subarray(1, 4).toString('latin1')).toBe('PNG');
-      expect(png[25], `${ch.id}장 RGBA(colorType 6)`).toBe(6);
-      const [w, h] = [png.readUInt32BE(16), png.readUInt32BE(20)];
+      const bytes = readFileSync(diskPath);
+      expect(bytes.byteLength).toBeGreaterThan(10_000);
+      expect(bytes.byteLength).toBeLessThanOrEqual(450 * 1024);
+      const info = readImageInfo(bytes, diskPath);
+      expect(info.format, `${ch.id}장 WebP(구현 계획서 §2)`).toBe('webp');
+      expect(info.hasAlpha, `${ch.id}장 알파 채널`).toBe(true);
+      const [w, h] = [info.width, info.height];
       expect(w, `${ch.id}장 가로`).toBeGreaterThanOrEqual(400);
       expect(w, `${ch.id}장 가로`).toBeLessThanOrEqual(800);
       if (ch.id === 5) {

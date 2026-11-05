@@ -5,7 +5,7 @@
 ## 한 일
 
 - `public/assets/manifest.json`의 `integrated_pass` 378장을 `cwebp -q 85 -alpha_q 100 -m 6`으로 바꿨다(예외 없음). `file`은 `.webp`, `artifactHash`는 WebP 파일의 sha256이고 `sourceHash`는 그대로다. 옛 PNG는 `git rm`으로 뺐다. 되살리려면 이 작업 커밋의 부모에서 `git show <부모>:public/assets/<이름>.png`로 꺼낸다.
-- `public/assets/ui/**`·`guide/**`의 PNG 34장은 단계 4(R5 P3 뒤) 몫이라 그대로 두고 `tools/assets/webp-exceptions.json`에 "단계 4 전환 대기"로 올렸다. 단위 시험(`tests/unit/webp-assets.test.ts`)은 이 목록 밖의 PNG가 `public/assets/`에 있으면 실패한다.
+- `public/assets/ui/**`·`guide/**`의 PNG 34장은 단계 4(R5 P3 뒤) 몫이라 그대로 두고 `tools/assets/webp-exceptions.json`에 "단계 4 전환 대기"로 올렸다(단계 4에서 전환하고 지웠다. 아래 「단계 4」). 단위 시험(`tests/unit/webp-assets.test.ts`)은 이 목록 밖의 PNG가 `public/assets/`에 있으면 실패한다.
 
 ## 용량
 
@@ -48,3 +48,24 @@
 ## 참고: `-sharp_yuv`
 
 기본값(-q 85)에 `-sharp_yuv`를 더하면 윤곽선 둘레의 색 번짐이 줄어든다. 가장 낮던 6장 표본에서 PSNR이 +0.7~2.5dB 오르고 용량은 +3~8%(q92는 +0.4~0.9dB에 +20%)였다. 지금 화질에 문제가 없어 계획서 기본값을 그대로 썼다. 쓰기로 하면 `tools/assets/to-webp.mjs`의 `MODES.default`에 `-sharp_yuv`를 더하고 PNG를 되살려 다시 변환한다(전체 약 3.4MB 예상).
+
+---
+
+# 단계 4 · 화면 그림 WebP 전환 (ui 29장 + 설명서 삽화 5장)
+
+2026-11-05, Claude 서브에이전트. 단계 1과 같은 도구·기본값(`cwebp -q 85 -alpha_q 100 -m 6`)으로 `public/assets/ui/*.png` 29장(상태 아이콘 8, 적 특성 8, 보물 12, 오답 노트 빈 상태 1)과 `public/assets/guide/*.png` 5장(ART-OAK2의 5장 포함)을 `.webp`로 바꿨다. 옛 PNG는 `git rm`으로 뺐다(되살리려면 이 작업 커밋의 부모에서 꺼낸다). 이미 WebP였던 `ui/oak/**` 12장과 `maps/` 4장은 그대로다.
+
+| 묶음 | PNG | WebP | 비율 |
+|---|---|---|---|
+| 아이콘·특성·보물 28장(128×128) | 0.43MB | 0.10MB | 24% |
+| 오답 노트 빈 상태 그림 1장 | 0.21MB | 0.03MB | 15% |
+| 설명서 삽화 5장 | 1.12MB | 0.19MB | 17% |
+| **합계 34장** | **1.76MB** | **0.33MB** | **19%** |
+
+- **예외 0개.** 가장 안 줄어든 그림이 PNG의 31%라 "90% 이상이면 PNG 유지" 기준에 걸리는 그림이 없다. `webp-exceptions.json`은 빈 목록(`[]`)이 됐다(「단계 4 전환 대기」 두 줄을 지웠다).
+- 알파: 34장 모두 PNG와 WebP의 알파가 바이트 단위로 같다(불일치 0). 34장 모두 알파 평면이 있다(불투명 바닥 타일 같은 예외 없음).
+- 화질: PSNR 평균 36.6dB, 최저 30.2dB(`ui/trait.ward`), 그 다음 `ui/relic.sky_net` 32.9dB. 수치는 `stats-ui-guide.json`. 하위 3장(`trait.ward`, `relic.sky_net`, `icon.coin`)을 3배 확대와 차이 6배 강조로 따로 봤다. 윤곽선 둘레의 색 번짐뿐이고 실제 표시 크기(14~96px)에서는 보이지 않는다.
+- 비교판: `webp1-ui-guide.webp`(무손실 WebP, 34장). 아이콘 계열은 48px(1배)·96px(2배), 오답 노트 그림과 삽화는 원본의 절반(1배)·원본 크기(2배)다. 배치와 읽는 법은 위 「비교판 읽는 법」과 같다. 다시 만들기: `node tools/assets/webp-compare.mjs --out asset-source/renewal/WEBP-1 --png-rev <변환 커밋의 부모> --files 'ui/icon.*.webp,ui/trait.*.webp,ui/relic.*.webp,ui/note.empty.webp,guide/*.webp' --name ui-guide --stats`
+- 눈 확인: 시트를 열어 뭉개지거나 테두리 얼룩이 있는 그림이 없었다. 화면 캡처(`node tools/qa/scenes.mjs`: 홈·새 게임·첫 준비, W1 전투, 침입 종족 4장면(적 특성 배지), 상황 카드(특성 아이콘), 보물 고르기, 설명서, 오답 노트 비어 있음)에서도 그림이 빠진 곳(보물 카드가 상자 아이콘으로 바뀐 곳, 배지 없음, 깨진 이미지)이 없었다.
+
+부르는 곳은 모두 `.webp`로 바꿨다: kit `ArtIcon`(`src/ui/kit/index.tsx`), `RelicImage`(`src/ui/game/RelicCard.tsx`), `NoteScreen`의 빈 상태 그림, `guideModel`의 삽화 5개 경로, `BattleScene`의 종족 특성 배지, 그 주석과 시험(`guide.test.ts`, `b3-counters-relics.test.ts`, `r5-battle-hud.test.ts`). `src/ui/styles/global.css`의 12곳은 이미 `.webp`(`ui/oak/**`)였다. `tests/unit/webp-assets.test.ts`가 `src` 안의 `.png` 그림 경로와 글자 그대로 적힌 `.webp` 경로의 파일 유무를 지킨다.

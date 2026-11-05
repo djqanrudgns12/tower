@@ -181,7 +181,7 @@ export function ArtIcon({ name, size = 24, label, className }: { name: ArtIconNa
   const file = name.startsWith('trait.') ? name : `icon.${name}`;
   return (
     <img
-      src={`${import.meta.env.BASE_URL}assets/ui/${file}.png`}
+      src={`${import.meta.env.BASE_URL}assets/ui/${file}.webp`}
       width={size}
       height={size}
       alt={label ?? ''}
