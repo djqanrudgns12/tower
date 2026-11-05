@@ -10,7 +10,7 @@ import { createHash, randomUUID } from 'node:crypto';
 import { spawn } from 'node:child_process';
 import { pathToFileURL } from 'node:url';
 import { runnerImport } from 'vite';
-import { resolveReviewConfig, codexCliArgs } from './review.mjs';
+import { resolveReviewConfig, codexCliArgs, codexCliPath } from './review.mjs';
 
 const SOURCE_ROOT = path.resolve(import.meta.dirname, '../..');
 const read = file => JSON.parse(fs.readFileSync(file, 'utf8'));
@@ -201,7 +201,7 @@ async function liveRespond(request) {
     const bridge = process.env.AGENT_BRIDGE ?? path.join(os.homedir(), '.local/bin/agent-bridge');
     return execute(bridge, ['ask', '--from', 'claude', '--to', 'antigravity', '--tier', 'standard', '--cwd', cwd, '--wait', '1200', '-'], cwd, prompt, 1_260_000);
   }
-  const cli = process.env.CODEX_CLI ?? '/Users/bodyking/Desktop/ChatGPT.app/Contents/Resources/codex-cli/CodexCLI.app/Contents/MacOS/codex';
+  const cli = codexCliPath();
   const outFile = path.join(cwd, `last-${randomUUID()}.md`);
   try {
     await execute(cli, codexCliArgs(cwd, outFile, config), cwd, prompt, 1_800_000);

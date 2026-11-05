@@ -348,7 +348,13 @@ function claudeCli(cwd, body, timeoutSec, config) {
 }
 
 /** Codex 검수도 브리지 시간당 상한을 다른 세션과 나눠 쓰지 않도록 codex exec를 직접 부른다(읽기 전용 sandbox, 기록 없는 세션). */
-const CODEX_CLI = process.env.CODEX_CLI ?? '/Users/bodyking/Desktop/ChatGPT.app/Contents/Resources/codex-cli/CodexCLI.app/Contents/MacOS/codex';
+// ChatGPT 앱 위치가 바뀌어도 찾도록 브리지(agent-bridge resolveCli)와 같은 후보를 차례로 본다.
+export function codexCliPath() {
+  const inner = app => path.join(app, 'Contents/Resources/codex-cli/CodexCLI.app/Contents/MacOS/codex');
+  const apps = ['Desktop/Developer Tools/ChatGPT.app', 'Desktop/ChatGPT.app', 'Applications/ChatGPT.app'].map(a => path.join(os.homedir(), a)).concat(['/Applications/ChatGPT.app', '/Applications/Codex.app']);
+  return process.env.CODEX_CLI ?? apps.map(inner).find(p => fs.existsSync(p)) ?? inner(apps[0]);
+}
+const CODEX_CLI = codexCliPath();
 export function codexCliArgs(cwd, outFile, config) {
   const checked = validateConfig('codex', config);
   return ['exec', '--skip-git-repo-check', '--ephemeral', '--color', 'never', '-s', 'read-only', '-C', cwd, '-o', outFile, '-m', checked.model, '-c', `model_reasoning_effort="${checked.effort}"`, '-'];
