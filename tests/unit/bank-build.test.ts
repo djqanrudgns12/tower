@@ -64,11 +64,11 @@ describe('승인 레지스트리·게시 은행 빌드', () => {
     expect(r.approved).toBe(MIN_PUBLISHED - 1);
   });
 
-  it('저장된 공개 은행은 승인 레지스트리에서 다시 만든 것과 같다(손으로 문항을 넣거나 고칠 수 없다)', () => {
-    const { bank } = buildBank(batches, buildRegistry(batches), 3);
-    const path3 = path.join(root, 'src/content/questions/grade3.json');
-    if (!bank) { expect(existsSync(path3)).toBe(false); return; }
-    expect(JSON.parse(readFileSync(path3, 'utf8'))).toEqual(bank);
+  it.each([3, 4, 5, 6])('저장된 %i학년 공개 은행의 존재 여부와 내용은 재계산과 같다', grade => {
+    const { bank } = buildBank(batches, buildRegistry(batches), grade);
+    const bankPath = path.join(root, `src/content/questions/grade${grade}.json`);
+    expect(existsSync(bankPath)).toBe(bank !== null);
+    if (bank) expect(JSON.parse(readFileSync(bankPath, 'utf8'))).toEqual(bank);
   });
 
   it('연습 문항은 학년 은행에 들어가지 않고, 연습 은행은 네 문항이 모두 승인되어야 바뀐다(저장된 파일과 같다)', () => {
@@ -100,7 +100,7 @@ describe('승인 레지스트리·게시 은행 빌드', () => {
 
   it('저장된 후보 레지스트리·학년별 후보 은행(grade3~6.candidate.json)도 초안·검수 보고서에서 다시 계산한 것과 같다', () => {
     const candRegPath = path.join(root, 'content-source/approvals/candidate-registry.json');
-    if (!existsSync(candRegPath)) return;
+    expect(existsSync(candRegPath)).toBe(true);
     const pubRegistry = buildRegistry(batches);
     const candRegistry = buildCandidateRegistry(batches);
     const storedCandReg = JSON.parse(readFileSync(candRegPath, 'utf8')) as Registry;
@@ -109,9 +109,8 @@ describe('승인 레지스트리·게시 은행 빌드', () => {
     for (const grade of [3, 4, 5, 6]) {
       const { bank } = buildCandidateBank(batches, pubRegistry, candRegistry, grade);
       const candBankPath = path.join(root, `src/content/questions/grade${grade}.candidate.json`);
-      if (!bank) {
-        expect(existsSync(candBankPath)).toBe(false);
-      } else {
+      expect(existsSync(candBankPath)).toBe(bank !== null);
+      if (bank) {
         expect(JSON.parse(readFileSync(candBankPath, 'utf8'))).toEqual(bank);
       }
     }
