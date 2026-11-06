@@ -309,6 +309,126 @@
       "levelAssessmentHash": "a48021c9617fca0befde4782d73e2094ab5da584e00adbc01412d0e8099088b9"
     },
     {
+      "questionId": "g6-argon-0605",
+      "revision": 2,
+      "contentHash": "1717be66b275eb75f092000c3a87de444c64641c589eb0b5edfdb0cc46b4be11",
+      "precomputed": {
+        "typeBase": 1,
+        "lengthBump": 2,
+        "t3Base": 0,
+        "readingLoad": 92,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g6-argon-0605",
+          "revision": 2,
+          "contentHash": "1717be66b275eb75f092000c3a87de444c64641c589eb0b5edfdb0cc46b4be11",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 3,
+          "L2": 2,
+          "T1": 2,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "구어 빈도가 낮은 격식 문어 추상 명사이며, 지문에 대조 단서가 분명하지만 추상 성질 한자어 오답들과 반의 경계를 구별해야 해 초등 고학년에 알맞다."
+        },
+        {
+          "questionId": "g6-argon-0605",
+          "revision": 2,
+          "contentHash": "1717be66b275eb75f092000c3a87de444c64641c589eb0b5edfdb0cc46b4be11",
+          "judge": "codex",
+          "model": "gpt-6-astra",
+          "L1": 3,
+          "L2": 2,
+          "T1": 1,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "curriculum_explicit",
+          "unit": "[4국04-01] 단어와 단어 간의 의미 관계",
+          "reason": "명확성은 설명·평가에 쓰이는 추상적 성질어이며, 복잡성이 일부 혼동을 주지만 날짜를 분명하게 밝힌 직접 단서로 반의 관계를 판단할 수 있다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 5,
+        "T": 5,
+        "V": 15,
+        "ownTier": "core",
+        "band": {
+          "min": 5,
+          "max": 6
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "a9cbecbef213cdaa20df7ff04b3ed6673bfb372f0872e3825c114260a311808a"
+    },
+    {
+      "questionId": "g6-argon-0605",
+      "revision": 3,
+      "contentHash": "3c0bb89a0a720c6b56ffe4790d739fa9a1a14fab9a11acd91195a299bad3789d",
+      "precomputed": {
+        "typeBase": 1,
+        "lengthBump": 2,
+        "t3Base": 0,
+        "readingLoad": 92,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g6-argon-0605",
+          "revision": 3,
+          "contentHash": "3c0bb89a0a720c6b56ffe4790d739fa9a1a14fab9a11acd91195a299bad3789d",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 3,
+          "L2": 2,
+          "T1": 1,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "‘명확성’은 구어 저빈도 격식·비평 문어(L1=3)이자 한자 형태소 결합 추상 개념어(L2=2)로 초등 범위에 적합하며, 중심 의미에 같은 의미장 오답(복잡성 등)이 일부 포함되고(T1=1) 지문에 대조와 직접 행동 단서가 명시됨(inference=0)."
+        },
+        {
+          "questionId": "g6-argon-0605",
+          "revision": 3,
+          "contentHash": "3c0bb89a0a720c6b56ffe4790d739fa9a1a14fab9a11acd91195a299bad3789d",
+          "judge": "codex",
+          "model": "gpt-6-astra",
+          "L1": 3,
+          "L2": 3,
+          "T1": 1,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "명확성은 설명·비평 문어에서 쓰이는 추상적 성질의 한자어로 초등 고학년에 적합하다. 중심 의미의 반의어를 묻고 복잡성이 일부 혼동을 유발하지만, 날짜와 시각을 밝혀 적었다는 직접 행동 단서가 있다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 6,
+        "T": 4,
+        "V": 16,
+        "ownTier": "core",
+        "band": {
+          "min": 6,
+          "max": 6
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "93fb2c75ed2f0d32d42925f9448c1e6a5958a13f491040676bc5667ab013c5b8"
+    },
+    {
       "questionId": "g6-argon-0606",
       "revision": 1,
       "contentHash": "4ae634cc860097802e132a6bb25332e314304a3dd21eff0b66153e4590975d17",
@@ -367,6 +487,66 @@
         "flags": []
       },
       "levelAssessmentHash": "2471dc30fc1df1d31a5706ecffc7b560a2f078bb05cbbb7dd90850c7cc43f8ec"
+    },
+    {
+      "questionId": "g6-argon-0606",
+      "revision": 2,
+      "contentHash": "8b2d5f01624d75097d5da19fd4eb9237cad39a1ac0223e776260adb5ccecedf3",
+      "precomputed": {
+        "typeBase": 2,
+        "lengthBump": 2,
+        "t3Base": 0,
+        "readingLoad": 95,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g6-argon-0606",
+          "revision": 2,
+          "contentHash": "8b2d5f01624d75097d5da19fd4eb9237cad39a1ac0223e776260adb5ccecedf3",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 3,
+          "L2": 3,
+          "T1": 2,
+          "inference": 1,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "논설·비평에 쓰이는 고추상 한자어로, 선택지의 앞뒤 상황을 종합해 단순 대립·기대 어긋남과 논리적 불일치를 가려야 해 6학년 수준에 적합하다."
+        },
+        {
+          "questionId": "g6-argon-0606",
+          "revision": 2,
+          "contentHash": "8b2d5f01624d75097d5da19fd4eb9237cad39a1ac0223e776260adb5ccecedf3",
+          "judge": "codex",
+          "model": "gpt-6-astra",
+          "L1": 2,
+          "L2": 3,
+          "T1": 2,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "모순은 사실 사이의 논리적 불일치를 나타내는 고추상 한자어로, 단순한 차이·실수·기대 불일치와 구별해야 하지만 자유 가입과 제한된 수용의 대조가 직접 제시된다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 6,
+        "T": 5,
+        "V": 17,
+        "ownTier": "advanced",
+        "band": {
+          "min": 6,
+          "max": 6
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "0c23291a4ca09f5cd5f019f79d8eff195b40ea59dce374243f023a73cd8bf0a7"
     },
     {
       "questionId": "g6-argon-0607",
@@ -1291,6 +1471,66 @@
       "levelAssessmentHash": "f12e60b56885d926c4007e2750b3178708b9b2841c17d321e1bc049423187786"
     },
     {
+      "questionId": "g6-argon-0620",
+      "revision": 2,
+      "contentHash": "deda119de6df276e62dbfa890aeba84308b88d8bd5fe8618668d1a42c16c3eec",
+      "precomputed": {
+        "typeBase": 2,
+        "lengthBump": 2,
+        "t3Base": 0,
+        "readingLoad": 96,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g6-argon-0620",
+          "revision": 2,
+          "contentHash": "deda119de6df276e62dbfa890aeba84308b88d8bd5fe8618668d1a42c16c3eec",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 2,
+          "L2": 2,
+          "T1": 2,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "교과 탐구·설명 문어에 쓰이는 한자 파생 개념어이며, 직접 행동 단서는 있으나 요약·종합·직관 등 인접·반의 사고 표현과 구별해야 해 고학년에 적절하다."
+        },
+        {
+          "questionId": "g6-argon-0620",
+          "revision": 2,
+          "contentHash": "deda119de6df276e62dbfa890aeba84308b88d8bd5fe8618668d1a42c16c3eec",
+          "judge": "codex",
+          "model": "gpt-6-astra",
+          "L1": 3,
+          "L2": 2,
+          "T1": 2,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "분석적은 비평·설명 문어에서 쓰이는 사고 방식의 개념어로, 요약·종합과의 의미 경계를 구별해야 하며 박자·음정·발음의 열거가 직접 단서가 된다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 5,
+        "T": 5,
+        "V": 15,
+        "ownTier": "core",
+        "band": {
+          "min": 5,
+          "max": 6
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "15ffd7691a8b7c2858bccf5175e7c49bb77c51dc59aab7d75b7e260f722fb527"
+    },
+    {
       "questionId": "g6-argon-0621",
       "revision": 1,
       "contentHash": "b03950461732b8702fa7fe87bfd9792b668aa3973a22ae659950eaac4304f75e",
@@ -1899,6 +2139,66 @@
       "levelAssessmentHash": "16aa60d3c9b93c78c177017eca71463a7d7459d383de13559ef329d1c9845329"
     },
     {
+      "questionId": "g6-argon-0630",
+      "revision": 2,
+      "contentHash": "ea531a4efdd77b951c39644348b93982109903fe6ad946fe149f0ac422ea9b2e",
+      "precomputed": {
+        "typeBase": 0,
+        "lengthBump": 2,
+        "t3Base": 1,
+        "readingLoad": 90,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g6-argon-0630",
+          "revision": 2,
+          "contentHash": "ea531a4efdd77b951c39644348b93982109903fe6ad946fe149f0ac422ea9b2e",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 2,
+          "L2": 2,
+          "T1": 2,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "토의·계획 문어에 쓰이는 한자 파생 동사로, 지문에 실행 단서가 제시된 상태에서 문서 계획을 실행되게 만든다는 다의어 확장 의미를 묻고 있어 초등 고학년에 적합하다."
+        },
+        {
+          "questionId": "g6-argon-0630",
+          "revision": 2,
+          "contentHash": "ea531a4efdd77b951c39644348b93982109903fe6ad946fe149f0ac422ea9b2e",
+          "judge": "codex",
+          "model": "gpt-6-astra",
+          "L1": 2,
+          "L2": 2,
+          "T1": 2,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:뜻 번호 2",
+          "reason": "구체화하다는 계획과 실행의 관계를 나타내는 개념어로 둘째 뜻을 구별해야 하지만, 부스 설치와 당번 활동으로 옮겼다는 행동 단서가 명시되어 있다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 4,
+        "T": 5,
+        "V": 13,
+        "ownTier": "core",
+        "band": {
+          "min": 6,
+          "max": 6
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "72b99c5537a861ac871e7caa464a524a5e24f85818b3c0a52c0960f7ea2f4c10"
+    },
+    {
       "questionId": "g6-argon-0631",
       "revision": 3,
       "contentHash": "9d2ac008c4739f846abbb6ba9f24fd55e4a6b330d5070f6fd87efb8a29d1bac3",
@@ -1957,6 +2257,66 @@
         "flags": []
       },
       "levelAssessmentHash": "e3b48722700f733c79414b794ab914b38158004443609aa938ad4d9630e0b4f8"
+    },
+    {
+      "questionId": "g6-argon-0631",
+      "revision": 4,
+      "contentHash": "416b5a9d536c048675930e527b4ad3442a9a234d72cb76b0baca49c3b94e6af9",
+      "precomputed": {
+        "typeBase": 2,
+        "lengthBump": 2,
+        "t3Base": 0,
+        "readingLoad": 94,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g6-argon-0631",
+          "revision": 4,
+          "contentHash": "416b5a9d536c048675930e527b4ad3442a9a234d72cb76b0baca49c3b94e6af9",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 2,
+          "L2": 2,
+          "T1": 1,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "사회·학급 토의 문어에 자주 쓰이는 추상 동사이며, 직접 단서가 있는 문장에서 중심 의미와 조직 기능 위축·지연 오답을 구별하는 문항이라 초등 고학년에 알맞다."
+        },
+        {
+          "questionId": "g6-argon-0631",
+          "revision": 4,
+          "contentHash": "416b5a9d536c048675930e527b4ad3442a9a234d72cb76b0baca49c3b94e6af9",
+          "judge": "codex",
+          "model": "gpt-6-astra",
+          "L1": 2,
+          "L2": 2,
+          "T1": 1,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "활성화하다는 조직의 활동과 기능을 나타내는 추상 개념어이며, 소통·토론 관련 오답도 있으나 모임이 뜸했다는 상태와 짝꿍 책 읽기라는 직접 행동으로 중심 뜻을 판단할 수 있다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 4,
+        "T": 4,
+        "V": 12,
+        "ownTier": "basic",
+        "band": {
+          "min": 6,
+          "max": 6
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "d77b695f23b4e309fa74762bf5d91ac65c180bd0ab35057273484667645070ea"
     },
     {
       "questionId": "g6-argon-0632",
