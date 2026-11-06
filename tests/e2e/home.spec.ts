@@ -4,7 +4,7 @@ import { expect, test, type Locator, type Page } from './tower-browser';
 /** 서로 다른 닉네임 count개의 3학년·보통 기록을 이 기기 IndexedDB에 심는다(로컬 랭킹은 닉네임마다 한 줄이라 줄 수 = 닉네임 수). */
 async function seedRecords(page: Page, count: number) {
   await page.evaluate(async n => {
-    const req = indexedDB.open('vocabulary-td', 3);
+    const req = indexedDB.open('vocabulary-td');
     await new Promise<void>((resolve, reject) => {
       req.onsuccess = () => {
         const db = req.result;
@@ -404,7 +404,7 @@ test.describe('랜딩 페이지(방향 2-A: 왕국 참나무 작전실) 통합 �
 
     // 홈 기본 axe 검사(캔버스 제외 없이 전수 통과) 및 샘플 기록 적재 시 랭킹 보드 렌더링 확인
     await page.evaluate(async () => {
-      const req = indexedDB.open('vocabulary-td', 3);
+      const req = indexedDB.open('vocabulary-td');
       await new Promise((resolve, reject) => {
         req.onsuccess = () => {
           const db = req.result;

@@ -25,7 +25,7 @@ describe('공개 동의·저장 회귀', () => {
   it('IndexedDB 열기 실패 뒤에는 차단 원인이 풀리면 실제로 다시 연다', async () => {
     await resetDbConnection();
     const upgraded = await new Promise<IDBDatabase>((resolve, reject) => {
-      const request = indexedDB.open('vocabulary-td', 4);
+      const request = indexedDB.open('vocabulary-td', 5);
       request.onsuccess = () => resolve(request.result);
       request.onerror = () => reject(request.error);
     });
@@ -36,10 +36,10 @@ describe('공개 동의·저장 회귀', () => {
       request.onsuccess = () => resolve();
       request.onerror = () => reject(request.error);
     });
-    expect((await db()).version).toBe(3);
+    expect((await db()).version).toBe(4);
   });
 
-  it('v3 업그레이드는 옛 진행 중 판 저장소(run)를 지우고 기록·대기 큐는 남긴다(이어하기 없음)', async () => {
+  it('v4 업그레이드는 옛 진행 중 판 저장소(run)를 지우고 기록·대기 큐는 남긴다(이어하기 없음)', async () => {
     await resetDbConnection();
     await new Promise<void>((resolve, reject) => {
       const request = indexedDB.deleteDatabase('vocabulary-td');
@@ -67,8 +67,8 @@ describe('공개 동의·저장 회귀', () => {
     });
     old.close();
     const upgraded = await db();
-    expect(upgraded.version).toBe(3);
-    expect([...upgraded.objectStoreNames].sort()).toEqual(['records', 'syncQueue']);
+    expect(upgraded.version).toBe(4);
+    expect([...upgraded.objectStoreNames].sort()).toEqual(['questionHistory', 'records', 'syncQueue']);
     expect((await listRecords()).map(r => r.runId)).toEqual(['kept-run']);
     expect((await listPendingRunSyncs()).map(r => r.runId)).toEqual(['kept-run']);
   });

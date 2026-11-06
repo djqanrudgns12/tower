@@ -42,18 +42,42 @@ export interface PendingRunSync {
   retryDelayMs?: number;
 }
 
+/** 학년·은행 판 번호가 바뀌어도 같은 원문항 ID로 이어지는 이 기기의 풀이 이력. */
+export interface QuestionHistory {
+  questionId: string;
+  lastSeenAt: string;
+}
+
 interface TowerDb extends DBSchema {
   records: { key: string; value: RunRecord; indexes: { endedAt: string } };
   syncQueue: { key: string; value: PendingRunSync };
+  questionHistory: { key: string; value: QuestionHistory };
 }
 
 const DB_NAME = 'vocabulary-td';
-/** 3: 옛 진행 중 판 저장소('run', 2슬롯 스냅샷)를 지운다(2026-11-04 이어하기 제거). */
-const DB_VERSION = 3;
+/** 3: 옛 진행 중 판 저장소 삭제. 4: 학년 공통 문항 이력과 기존 완료 기록 이관. */
+const DB_VERSION = 4;
 /** 버전 2까지 있던 진행 중 판 저장소. 업그레이드 때 지우기만 한다. */
 const RETIRED_RUN_STORE = 'run';
 const MAX_RECORDS = 100;
 let dbPromise: Promise<IDBPDatabase<TowerDb>> | null = null;
+
+interface QuestionHistoryWriter {
+  get(questionId: string): Promise<QuestionHistory | undefined>;
+  put(item: QuestionHistory): Promise<string>;
+}
+
+async function rememberAnswers(store: QuestionHistoryWriter, record: RunRecord): Promise<void> {
+  const time = Date.parse(record.endedAt);
+  if (!Number.isFinite(time)) return;
+  const lastSeenAt = new Date(time).toISOString();
+  const ids = new Set((record.answers ?? []).map(answer => answer.questionId));
+  for (const questionId of ids) {
+    if (typeof questionId !== 'string' || questionId.length === 0) continue;
+    const previous = await store.get(questionId);
+    if (!previous || previous.lastSeenAt < lastSeenAt) await store.put({ questionId, lastSeenAt });
+  }
+}
 
 export function db(): Promise<IDBPDatabase<TowerDb>> {
   dbPromise ??= openDB<TowerDb>(DB_NAME, DB_VERSION, {
@@ -64,7 +88,7 @@ export function db(): Promise<IDBPDatabase<TowerDb>> {
       void resetDbConnection();
     },
     terminated() { dbPromise = null; },
-    upgrade(database, oldVersion) {
+    upgrade(database, oldVersion, _newVersion, transaction) {
       if (oldVersion < 1) database.createObjectStore('records', { keyPath: 'runId' }).createIndex('endedAt', 'endedAt');
       if (oldVersion < 2 && !database.objectStoreNames.contains('syncQueue')) {
         database.createObjectStore('syncQueue', { keyPath: 'runId' });
@@ -72,6 +96,16 @@ export function db(): Promise<IDBPDatabase<TowerDb>> {
       // 이 기기에 남은 옛 진행 중 판(스냅샷)을 정리한다. 기록·대기 큐는 그대로 둔다.
       const legacy = database as unknown as IDBPDatabase;
       if (legacy.objectStoreNames.contains(RETIRED_RUN_STORE)) legacy.deleteObjectStore(RETIRED_RUN_STORE);
+      if (oldVersion < 4) {
+        const history = database.createObjectStore('questionHistory', { keyPath: 'questionId' });
+        // IndexedDB 요청만 기다려 업그레이드 트랜잭션 안에서 기존 answers까지 함께 이관한다.
+        void (async () => {
+          const records = await transaction.objectStore('records').getAll();
+          for (const record of records) await rememberAnswers(history, record);
+        })().catch(() => {
+          try { transaction.abort(); } catch { /* 이미 중단된 업그레이드는 openDB가 실패로 돌려준다. */ }
+        });
+      }
     },
   }).catch(error => {
     // 실패한 open promise를 고정하면 다음 기록 읽기·쓰기도 영원히 실패한다.
@@ -91,11 +125,19 @@ export async function resetDbConnection(): Promise<void> {
 
 export async function addRecord(record: RunRecord): Promise<void> {
   const database = await db();
-  const tx = database.transaction('records', 'readwrite', { durability: 'strict' });
-  await tx.store.put(record);
-  const all = await tx.store.index('endedAt').getAllKeys();
-  for (const key of all.slice(0, Math.max(0, all.length - MAX_RECORDS))) await tx.store.delete(key);
-  await tx.done;
+  const tx = database.transaction(['records', 'questionHistory'], 'readwrite', { durability: 'strict' });
+  try {
+    const records = tx.objectStore('records');
+    await records.put(record);
+    await rememberAnswers(tx.objectStore('questionHistory'), record);
+    const all = await records.index('endedAt').getAllKeys();
+    for (const key of all.slice(0, Math.max(0, all.length - MAX_RECORDS))) await records.delete(key);
+    await tx.done;
+  } catch (error) {
+    try { tx.abort(); } catch { /* 이미 중단된 트랜잭션의 원래 오류를 보존한다. */ }
+    await tx.done.catch(() => undefined);
+    throw error;
+  }
 }
 
 export async function listRecords(): Promise<RunRecord[]> {
@@ -103,14 +145,21 @@ export async function listRecords(): Promise<RunRecord[]> {
   return (await database.getAllFromIndex('records', 'endedAt')).reverse();
 }
 
-/** 환경설정의 ‘이 기기 로컬 기록 정리’: 완료 기록·대기 동기화 큐와 오답 노트(localStorage)를 모두 비운다. */
+/** 판 시작 때 한 번 읽어 복사한다. ID 순서는 기기 로캘과 관계없이 같다. */
+export async function listQuestionHistory(): Promise<QuestionHistory[]> {
+  const database = await db();
+  return (await database.getAll('questionHistory')).sort((a, b) => a.questionId < b.questionId ? -1 : a.questionId > b.questionId ? 1 : 0);
+}
+
+/** 환경설정의 ‘이 기기 로컬 기록 정리’: 완료 기록·문항 이력·대기 동기화 큐와 오답 노트를 모두 비운다. */
 export async function clearLocalHistory(): Promise<void> {
   // 오답 노트는 IndexedDB가 아니라 localStorage에 있어 같은 트랜잭션에 묶을 수 없다. 먼저 지워 IndexedDB 실패와 무관하게 비운다.
   clearReviewNote();
   const database = await db();
-  const tx = database.transaction(['records', 'syncQueue'], 'readwrite', { durability: 'strict' });
+  const tx = database.transaction(['records', 'syncQueue', 'questionHistory'], 'readwrite', { durability: 'strict' });
   await tx.objectStore('records').clear();
   await tx.objectStore('syncQueue').clear();
+  await tx.objectStore('questionHistory').clear();
   await tx.done;
 }
 
