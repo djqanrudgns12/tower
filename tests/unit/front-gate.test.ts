@@ -342,6 +342,34 @@ describe('최소 보기 재배열', () => {
     for (const [i, q] of fixed.drafts.entries()) if (locks.has(`${q.id}@3`)) expect(q).toEqual(batch.drafts[i]);
     expect(() => front.fixBatchStrict(batch.drafts, batch.sidecar, gatePassedKeys(m, batch))).toThrow('해소할 수 없다');
   });
+  it('Codex 관문 통과 문항도 보기 재배열에서 고정하고 현재 증거가 깨지면 고정하지 않는다', () => {
+    const batch = fixture('abcd'.repeat(5)); gatePass(batch);
+    batch.sidecar.publicationPolicy = 'codex-argon-v1';
+    delete batch.reviews.claude;
+    batch.reviews.codex!.reviewer.freshContext = true;
+    for (const item of batch.reviews.codex!.items) {
+      item.run = { id: 'independent', model: 'gpt-6-astra', effort: 'high' };
+      item.verdicts.explanation = 'pass';
+    }
+    batch.explanation!.reviewer.model = 'gpt-6-astra';
+    for (const item of batch.explanation!.items) item.run = { id: 'reveal', model: 'gpt-6-astra', effort: 'high' };
+    const locks = gatePassedKeys(m, batch);
+    expect([...locks]).toEqual(batch.drafts.map(q => `${q.id}@${q.revision}`));
+    locks.delete(`${batch.drafts[6]!.id}@3`); locks.delete(`${batch.drafts[14]!.id}@3`);
+    const fixed = front.fixBatchStrict(batch.drafts, batch.sidecar, locks);
+    expect(fixed.changed).toHaveLength(2);
+    for (const [i, q] of fixed.drafts.entries()) if (locks.has(`${q.id}@3`)) expect(q).toEqual(batch.drafts[i]);
+    batch.explanation!.items[0]!.rationalesHash = 'stale';
+    batch.reviews.codex!.items[1]!.contentHash = 'stale';
+    batch.reviews.codex!.items[2]!.run!.effort = 'low';
+    batch.explanation!.items[3]!.explanation = 'fail';
+    expect([...gatePassedKeys(m, batch)]).toEqual(batch.drafts.slice(4).map(q => `${q.id}@3`));
+    // 항목별 출처 도입 전의 실제 2단계 보고서는 기존 승인 계약과 같이 다룬다.
+    delete batch.reviews.codex!.items[2]!.run;
+    batch.reviews.codex!.reviewer.model = 'gpt-6-astra';
+    batch.reviews.codex!.reviewer.tool = '2단계 블라인드 검수(tools/orchestrate/review.mjs)';
+    expect(gatePassedKeys(m, batch).has(`${batch.drafts[2]!.id}@3`)).toBe(true);
+  });
   it('50문항 편중도 최소 33개만 고치고 잠긴 끝부분의 불가능한 연속을 거절한다', () => {
     const batch = fixture('a'.repeat(50));
     const fixed = front.fixBatchStrict(batch.drafts, batch.sidecar, new Set());

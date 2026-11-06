@@ -203,12 +203,23 @@ export function parseRevisions(m, text, list, reviseLog = null) {
   return { accepted, rejected };
 }
 
-/** 관문을 통과한 같은 판만 고정한다. 다른 앞단 결함 여부와 무관하게 Claude 결과를 보존한다. */
+/** 정책별 관문을 통과한 같은 판만 고정한다. 다른 앞단 결함 때문에 완료한 검수가 무효화되지 않게 한다. */
 export function gatePassedKeys(m, batch) {
   return new Set(batch.drafts.filter(q => {
     const hash = m.b.contentHash(q);
-    const review = batch.reviews.claude?.items.find(i => i.questionId === q.id && i.revision === q.revision && i.contentHash === hash);
+    const withoutClaude = batch.sidecar.publicationPolicy === 'codex-argon-v1';
+    const report = batch.reviews[withoutClaude ? 'codex' : 'claude'];
+    const review = report?.items.find(i => i.questionId === q.id && i.revision === q.revision && i.contentHash === hash);
     const exp = batch.explanation?.items.find(i => i.questionId === q.id && i.revision === q.revision && i.contentHash === hash && i.rationalesHash === m.b.rationalesHash(q));
+    if (withoutClaude) {
+      const strong = run => run?.model === 'gpt-6-astra' && ['high', 'xhigh'].includes(run.effort);
+      const reportProvenance = review && !review.run && report.reviewer.model === 'gpt-6-astra'
+        && report.reviewer.tool === '2단계 블라인드 검수(tools/orchestrate/review.mjs)';
+      return report?.reviewer.freshContext === true && (strong(review?.run) || reportProvenance)
+        && review?.blindChoice === q.correctOptionId
+        && ['source', 'uniqueness', 'grade', 'language', 'explanation'].every(k => review.verdicts[k] === 'pass')
+        && batch.explanation?.reviewer.model === 'gpt-6-astra' && strong(exp?.run) && exp.explanation === 'pass';
+    }
     return review?.blindChoice === q.correctOptionId && ['source', 'uniqueness', 'grade', 'language'].every(k => review.verdicts[k] === 'pass')
       && review.verdicts.explanation !== 'fail' && exp?.explanation === 'pass' && m.b.isCommanderModel(batch.explanation.reviewer.model);
   }).map(q => `${q.id}@${q.revision}`));
