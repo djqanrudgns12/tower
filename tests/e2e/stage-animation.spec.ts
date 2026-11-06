@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test';
+import { expect, test } from './tower-browser';
 
 test.describe('홈 전장 미리보기(미니 무대) 애니메이션 검증', () => {
   test('OS reduced-motion 및 기존 minimal 저장본은 정지하고 직접 전체 선택 시 재생한다', async ({ page }) => {

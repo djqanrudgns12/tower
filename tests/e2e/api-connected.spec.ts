@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test';
+import { expect, test } from './tower-browser';
 
 /**
  * 단계 5: 앱이 로컬 기록·랭킹 서버(server/, wrangler dev)에 붙었을 때. 평소 e2e(서버 없는 모드)에서는 건너뛴다.

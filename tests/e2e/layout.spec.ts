@@ -1,5 +1,5 @@
 import AxeBuilder from '@axe-core/playwright';
-import { expect, test, type Page } from '@playwright/test';
+import { expect, test, type Page } from './tower-browser';
 import defaults from '../../docs/contracts/product.defaults.v0.5.json' with { type: 'json' };
 import grade3 from '../../src/content/questions/grade3.json' with { type: 'json' };
 import grade3Candidate from '../../src/content/questions/grade3.candidate.json' with { type: 'json' };

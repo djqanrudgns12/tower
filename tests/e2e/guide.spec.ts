@@ -1,5 +1,5 @@
 import AxeBuilder from '@axe-core/playwright';
-import { expect, test, type Locator, type Page } from '@playwright/test';
+import { expect, test, type Locator, type Page } from './tower-browser';
 
 // 사용 설명서 창(R5 G1~G9: 그림 카드 목차 → 장 화면). R5 P0에서 home.spec.ts에서 떼어 냈다(트랙 B 소유, docs/renewal/prd-r5-oak-v2.md §7.1).
 

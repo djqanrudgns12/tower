@@ -1,7 +1,7 @@
 import { existsSync, readFileSync } from 'node:fs';
 import path from 'node:path';
 import AxeBuilder from '@axe-core/playwright';
-import { expect, test, type Page } from '@playwright/test';
+import { expect, test, type Page } from './tower-browser';
 import { runnerImport } from 'vite';
 import type { TowerId } from '../../src/contracts/balance';
 import type * as QaStatesModule from '../../tools/qa/states';

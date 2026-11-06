@@ -1,5 +1,5 @@
 import AxeBuilder from '@axe-core/playwright';
-import { expect, test, type Page } from '@playwright/test';
+import { expect, test, type Page } from './tower-browser';
 
 // 오답 노트(R4 L·U3, prd-r4 §6.1·§10.1·§10.2): 한 판을 끝내면 틀리거나 넘긴 낱말이 이 기기 노트에 담기고,
 // 결과 화면의 '노트 보기'와 홈의 '오답 노트' 단추로 같은 노트 화면에 들어간다. 노트는 localStorage에만 있다.
