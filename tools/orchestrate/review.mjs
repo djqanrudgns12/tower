@@ -241,12 +241,15 @@ export async function ingest(b, root, reviewer, batchId, options = {}) {
   if (!blind || !reveal) throw new Error(`${batchId}: blind·reveal 결과가 모두 있어야 한다`);
   assertPhaseConfig(blind.config, config, 'blind');
   assertPhaseConfig(reveal.config, config, 'reveal');
+  const createdAt = new Date().toISOString();
+  const runId = `${createdAt.replace(/[-:.]/g, '')}-${process.pid}-${randomUUID()}`;
+  const run = { id: runId, model: config.model, effort: config.effort };
   const batch = await findBatch(b, root, batchId);
   const drafts = new Map(batch.drafts.map(q => [`${q.id}@${q.revision}`, q]));
   const blindBy = new Map(blind.items.map(i => [`${i.questionId}@${i.revision}:${i.contentHash}`, i]));
   const merged = reveal.items.filter(r => (!questionKeys || questionKeys.has(`${r.questionId}@${r.revision}`)) && blindBy.has(`${r.questionId}@${r.revision}:${r.contentHash}`)).map(r => {
     const bl = blindBy.get(`${r.questionId}@${r.revision}:${r.contentHash}`);
-    return { questionId: r.questionId, revision: r.revision, contentHash: r.contentHash, blindChoice: bl.blindChoice, verdicts: r.verdicts,
+    return { questionId: r.questionId, revision: r.revision, contentHash: r.contentHash, run, blindChoice: bl.blindChoice, verdicts: r.verdicts,
       findings: [...bl.findings.map(f => `[블라인드] ${f}`), ...r.findings.map(f => `[공개 대조] ${f}`)] };
   });
   const writes = new Map();
@@ -284,7 +287,7 @@ export async function ingest(b, root, reviewer, batchId, options = {}) {
     }
     const expItems = merged.map(m => {
       const q = drafts.get(`${m.questionId}@${m.revision}`);
-      return { questionId: m.questionId, revision: m.revision, contentHash: m.contentHash, rationalesHash: b.rationalesHash(q),
+      return { questionId: m.questionId, revision: m.revision, contentHash: m.contentHash, rationalesHash: b.rationalesHash(q), run: m.run,
         explanation: m.verdicts.explanation === 'pass' ? 'pass' : 'fail', findings: m.verdicts.explanation === 'pass' ? [] : m.findings.filter(f => f.startsWith('[공개 대조]')) };
     });
     const keepExp = commander.items.filter(i => !expItems.some(e => e.questionId === i.questionId && e.revision === i.revision));
@@ -293,8 +296,6 @@ export async function ingest(b, root, reviewer, batchId, options = {}) {
     jsonWrite(expPath, commander);
   }
   const fails = merged.filter(m => m.blindChoice !== drafts.get(`${m.questionId}@${m.revision}`)?.correctOptionId || Object.values(m.verdicts).some(v => v !== 'pass'));
-  const createdAt = new Date().toISOString();
-  const runId = `${createdAt.replace(/[-:.]/g, '')}-${process.pid}-${randomUUID()}`;
   const staging = `.orchestrate/staging/${batchId}/${runId}`;
   const manifest = { batchId, runId, tool: 'review', model: config.model, createdAt, writes: [], deletes: [] };
   for (const [file, bytes] of writes) {

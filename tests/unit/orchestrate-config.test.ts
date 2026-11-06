@@ -3,6 +3,7 @@ import os from 'node:os';
 import path from 'node:path';
 import { createHash } from 'node:crypto';
 import { afterEach, describe, expect, it } from 'vitest';
+import { blindReviewSchema, explanationReviewSchema } from '../../src/contracts/questionDraft';
 // @ts-expect-error 독립 실행 MJS 도구에는 별도 선언 파일이 없다.
 import { resolveReviewConfig, assertPhaseConfig, existingReportArchive, claudeCliArgs, codexCliArgs, buildPhase, acceptPhase, ingest, pending } from '../../tools/orchestrate/review.mjs';
 
@@ -94,6 +95,53 @@ function fixture(oldModel?: string) {
 }
 
 describe('모델 호출 없는 단계 통합', () => {
+  it('새 항목과 해설 대조에 같은 실행 출처를 기록하고 기존 항목은 보존한다', async () => {
+    const f = fixture();
+    const previousRun = { id: 'previous-run', ...sonnet };
+    const legacy = { ...f.item, questionId: 'legacy', blindChoice: 'a', verdicts: {
+      source: 'pass', uniqueness: 'pass', grade: 'pass', language: 'pass', explanation: 'pass',
+    }, findings: [] };
+    const prior = { ...legacy, questionId: 'prior', run: previousRun };
+    const oldReport = { reviewId: 'old', jobId: 'B', reviewer: {
+      model: sonnet.model, tool: 'old', freshContext: true, date: '2026-11-06',
+    }, items: [legacy, prior] };
+    fs.mkdirSync(path.dirname(f.reportPath), { recursive: true });
+    fs.writeFileSync(f.reportPath, JSON.stringify(oldReport));
+    const config = { ...sonnet, effort: 'xhigh' };
+    for (const phase of ['blind', 'reveal']) {
+      const { items } = await buildPhase(f.bank, f.root, 'claude', 'B', phase, { config });
+      acceptPhase(f.root, 'claude', 'B', phase, f.reply(phase), items, { config });
+    }
+    const result = await ingest(f.bank, f.root, 'claude', 'B', { config });
+    const stage = path.join(f.root, result.staging);
+    const manifest = JSON.parse(fs.readFileSync(path.join(stage, 'manifest.json'), 'utf8'));
+    const report = JSON.parse(fs.readFileSync(path.join(stage, 'files/content-source/reviews/B/claude.json'), 'utf8'));
+    const approval = JSON.parse(fs.readFileSync(path.join(stage, 'files/content-source/approvals/B.explanation.json'), 'utf8'));
+    expect(report.items.find((i: { questionId: string }) => i.questionId === 'q1').run)
+      .toEqual({ id: manifest.runId, ...config });
+    expect(approval.items[0].run).toEqual({ id: manifest.runId, ...config });
+    expect(report.items.find((i: { questionId: string }) => i.questionId === 'prior')).toEqual(prior);
+    expect(report.items.find((i: { questionId: string }) => i.questionId === 'legacy')).toEqual(legacy);
+    expect(JSON.parse(fs.readFileSync(f.reportPath, 'utf8'))).toEqual(oldReport);
+  });
+  it('보고서 스키마는 실행 출처를 보존하고 옛 항목도 허용하되 잘못된 출처는 거절한다', () => {
+    const common = { questionId: 'q1', revision: 1, contentHash: 'a'.repeat(64), findings: [] };
+    const run = { id: 'execution-1', ...astra };
+    const item = { ...common, blindChoice: 'a', verdicts: {
+      source: 'pass', uniqueness: 'pass', grade: 'pass', language: 'pass', explanation: 'pass',
+    } };
+    const report = { reviewId: 'R', jobId: 'B', reviewer: {
+      model: astra.model, tool: 'test', freshContext: true, date: '2026-11-06',
+    }, items: [item, { ...item, questionId: 'q2', run }] };
+    expect(blindReviewSchema.parse(report).items[1]).toHaveProperty('run', run);
+    const approval = { batchId: 'B', reviewer: { model: sonnet.model, role: 'commander', date: '2026-11-06' },
+      items: [{ ...common, rationalesHash: 'b'.repeat(64), explanation: 'pass', run: { ...run, ...sonnet } }] };
+    expect(explanationReviewSchema.parse(approval).items[0]).toHaveProperty('run', { ...run, ...sonnet });
+    for (const invalid of [{ ...run, id: '' }, { ...run, model: '' }, { ...run, effort: 'invented' }]) {
+      expect(blindReviewSchema.safeParse({ ...report, items: [{ ...item, run: invalid }] }).success).toBe(false);
+      expect(explanationReviewSchema.safeParse({ ...approval, items: [{ ...approval.items[0], run: invalid }] }).success).toBe(false);
+    }
+  });
   it('기존 모델이 다르면 미검수 0건이어도 거절하고, 보관 시 전부 다시 검수한다', async () => {
     const f = fixture('claude-opus-5-5');
     const options = { config: sonnet };

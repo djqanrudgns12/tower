@@ -53,6 +53,13 @@ export const draftSidecarSchema = z.object({
   rejected: z.array(z.object({ lemma: z.string().min(1), reason: z.string().min(1) }).strict()),
 }).strict();
 
+/** 도구가 기록한 실행 출처. 기존 보고서 항목에는 없을 수 있다. */
+const reviewRunSchema = z.object({
+  id: z.string().min(1),
+  model: z.string().min(1),
+  effort: z.enum(['minimal', 'low', 'medium', 'high', 'xhigh', 'max']),
+}).strict();
+
 /** 정답 키를 보지 않은 독립 검토 보고서(PRD §19.4, model_work_orders §10). */
 export const blindReviewSchema = z.object({
   reviewId: z.string().min(1),
@@ -62,6 +69,7 @@ export const blindReviewSchema = z.object({
     questionId: z.string().min(1),
     revision: z.number().int().min(1),
     contentHash: sha,
+    run: reviewRunSchema.optional(),
     blindChoice: z.enum(['a', 'b', 'c', 'd', 'none', 'multiple']),
     verdicts: z.object({
       source: z.enum(['pass', 'fail', 'uncertain']),
@@ -86,6 +94,7 @@ export const explanationReviewSchema = z.object({
     revision: z.number().int().min(1),
     contentHash: sha,
     rationalesHash: sha,
+    run: reviewRunSchema.optional(),
     explanation: z.enum(['pass', 'fail']),
     findings: z.array(z.string()),
   }).strict()).min(1),
