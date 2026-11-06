@@ -1,6 +1,6 @@
 {
   "bankId": "g5-candidate",
-  "bankVersion": "cand-bb30335cf595",
+  "bankVersion": "cand-4cad72b62883",
   "grade": 5,
   "status": "verified_candidate",
   "note": "공동검수 진행 중인 후보 은행. 같은 revision의 외부 블라인드 검수(codex·claude) 1건 이상과 새 문맥 argon-blind를 통과했다. 3모델 공동검수 승인 전에는 게임에 싣지 않는다(PRD §9.3).",
@@ -30211,7 +30211,7 @@
       "status": "verified_candidate",
       "grade": 5,
       "type": "synonym_context",
-      "difficultyTier": "basic",
+      "difficultyTier": "core",
       "variantTag": "standard",
       "target": {
         "lemma": "성취하다",
@@ -30251,7 +30251,7 @@
       "status": "verified_candidate",
       "grade": 5,
       "type": "antonym_context",
-      "difficultyTier": "basic",
+      "difficultyTier": "core",
       "variantTag": "standard",
       "target": {
         "lemma": "원칙",
@@ -30291,7 +30291,7 @@
       "status": "verified_candidate",
       "grade": 5,
       "type": "usage",
-      "difficultyTier": "basic",
+      "difficultyTier": "core",
       "variantTag": "standard",
       "target": {
         "lemma": "발달하다",
@@ -30371,7 +30371,7 @@
       "status": "verified_candidate",
       "grade": 5,
       "type": "definition",
-      "difficultyTier": "basic",
+      "difficultyTier": "core",
       "variantTag": "standard",
       "target": {
         "lemma": "창의적",
@@ -30403,6 +30403,126 @@
         "a": "똑같이 되풀이하는 것은 반복적인 일이에요.",
         "b": "남의 것을 베끼는 것은 모방이에요.",
         "c": "시간을 흘려보내는 일과는 뜻이 달라요."
+      }
+    },
+    {
+      "id": "g5-argon-0806",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "synonym_context",
+      "difficultyTier": "advanced",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "객관적",
+        "partOfSpeech": "명사",
+        "senseKey": "객관적/명사/390530-1"
+      },
+      "stem": "“심판이 객관적으로 판정했다.”에서 ‘객관적으로’와 뜻이 통하는 말은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "한쪽에 치우치지 않고 공정하게"
+        },
+        {
+          "id": "b",
+          "text": "자기 기분만 앞세워 불공평하게"
+        },
+        {
+          "id": "c",
+          "text": "친한 선수에게만 훨씬 유리하게"
+        },
+        {
+          "id": "d",
+          "text": "경기 규칙을 무시하고 무리하게"
+        }
+      ],
+      "correctOptionId": "a",
+      "explanation": "‘객관적’은 자기 입장에서 벗어나 제삼자의 눈으로 공정히 보는 것이에요.",
+      "distractorRationales": {
+        "b": "자기 기분만 앞세우는 것은 주관적이고 편파적인 태도예요.",
+        "c": "친한 편만 유리하게 봐주는 것은 공정한 판정이 아니에요.",
+        "d": "규칙을 무시하는 것은 바른 심판의 모습과 거리가 멀어요."
+      }
+    },
+    {
+      "id": "g5-argon-0807",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "antonym_context",
+      "difficultyTier": "core",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "자발적",
+        "partOfSpeech": "명사",
+        "senseKey": "자발적/명사/475371-1"
+      },
+      "stem": "“마을 청소에 자발적으로 참여했다.”에서 ‘자발적’과 뜻이 반대되는 것은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "시키지 않아도 스스로 하는 것"
+        },
+        {
+          "id": "b",
+          "text": "기쁜 마음으로 앞장서 하는 것"
+        },
+        {
+          "id": "c",
+          "text": "남이 시켜서 억지로 하는 것"
+        },
+        {
+          "id": "d",
+          "text": "해야 할 일을 찾아서 하는 것"
+        }
+      ],
+      "correctOptionId": "c",
+      "explanation": "스스로 나아가 행하는 ‘자발적’의 반대는 시켜서 억지로 하는 것이에요.",
+      "distractorRationales": {
+        "a": "시키지 않아도 스스로 하는 것은 ‘자발적’의 본래 뜻이에요.",
+        "b": "기쁘게 앞장서는 것은 자발적인 태도와 뜻이 통해요.",
+        "d": "할 일을 스스로 찾아 하는 것도 자발적인 모습이에요."
+      }
+    },
+    {
+      "id": "g5-argon-0808",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "usage",
+      "difficultyTier": "core",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "배경지식",
+        "partOfSpeech": "명사",
+        "senseKey": "배경지식/명사/518300-1"
+      },
+      "stem": "‘배경지식’을 자연스럽게 사용한 문장은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "비 새는 지붕 위에 두꺼운 배경지식을 덮었다."
+        },
+        {
+          "id": "b",
+          "text": "반찬으로 나온 고소한 배경지식을 먹었다."
+        },
+        {
+          "id": "c",
+          "text": "화산에 대한 배경지식을 떠올리며 책을 읽었다."
+        },
+        {
+          "id": "d",
+          "text": "구멍 난 바퀴를 새 배경지식으로 갈았다."
+        }
+      ],
+      "correctOptionId": "c",
+      "explanation": "‘배경지식’은 어떤 일을 할 때 이미 알고 있거나 필요한 기본 지식이에요.",
+      "distractorRationales": {
+        "a": "지붕 위에 덮는 천막이나 기와 같은 물건이 아니에요.",
+        "b": "식탁에 오르는 음식처럼 먹을 수 있는 대상이 아니에요.",
+        "d": "바퀴를 고칠 때 갈아 끼우는 부품으로 쓸 수 없어요."
       }
     },
     {
@@ -30447,7 +30567,7 @@
     },
     {
       "id": "g5-argon-0810",
-      "revision": 1,
+      "revision": 2,
       "status": "verified_candidate",
       "grade": 5,
       "type": "definition",
@@ -30462,7 +30582,7 @@
       "options": [
         {
           "id": "a",
-          "text": "무게와 길이를 저울로 재는 일"
+          "text": "무게와 길이를 저울과 자로 재는 일"
         },
         {
           "id": "b",
@@ -30571,7 +30691,7 @@
       "status": "verified_candidate",
       "grade": 5,
       "type": "usage",
-      "difficultyTier": "basic",
+      "difficultyTier": "core",
       "variantTag": "standard",
       "target": {
         "lemma": "유산",
@@ -30647,11 +30767,11 @@
     },
     {
       "id": "g5-argon-0815",
-      "revision": 1,
+      "revision": 2,
       "status": "verified_candidate",
       "grade": 5,
       "type": "synonym_context",
-      "difficultyTier": "core",
+      "difficultyTier": "basic",
       "variantTag": "standard",
       "target": {
         "lemma": "깨우치다",
@@ -30670,7 +30790,7 @@
         },
         {
           "id": "c",
-          "text": "잊어버리게 방해하다"
+          "text": "잊어버리게 만들다"
         },
         {
           "id": "d",
@@ -30681,8 +30801,48 @@
       "explanation": "‘깨우치다’는 도리나 뜻을 깨달아 알게 한다는 뜻이에요.",
       "distractorRationales": {
         "a": "감추어 두는 것은 알게 하는 것과 반대예요.",
-        "c": "잊어버리게 방해하는 일과는 뜻이 달라요.",
+        "c": "기억하지 못하고 잊어버리게 만드는 것은 깨달아 알게 하는 뜻과 달라요.",
         "d": "거짓으로 속이는 것은 그릇되게 만드는 일이에요."
+      }
+    },
+    {
+      "id": "g5-argon-0816",
+      "revision": 3,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "antonym_context",
+      "difficultyTier": "basic",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "내세우다",
+        "partOfSpeech": "동사",
+        "senseKey": "내세우다/동사/406432-1"
+      },
+      "stem": "“지휘자가 독창자를 무대 앞줄에 내세웠다.”에서 ‘내세우다’와 뜻이 반대되는 말은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "앞쪽으로 나오게 하다"
+        },
+        {
+          "id": "b",
+          "text": "가운데에 우뚝 세우다"
+        },
+        {
+          "id": "c",
+          "text": "뒤로 물러서게 하다"
+        },
+        {
+          "id": "d",
+          "text": "맨 앞에 자리 잡게 하다"
+        }
+      ],
+      "correctOptionId": "c",
+      "explanation": "앞으로 나와 서게 하는 ‘내세우다’의 반대는 ‘뒤로 물러서게 하다’예요.",
+      "distractorRationales": {
+        "a": "앞쪽으로 나오게 하는 것은 ‘내세우다’의 뜻이에요.",
+        "b": "가운데에 세우는 것은 뒤로 물리는 일이 아니에요.",
+        "d": "맨 앞에 자리 잡게 하는 것도 같은 방향이에요."
       }
     },
     {
@@ -30723,6 +30883,46 @@
         "a": "빗물이 고이는 현상에는 쓸 수 없어요.",
         "b": "물이 수증기가 되는 변화를 뜻하지 않아요.",
         "c": "액체가 어는 상태에는 어울리지 않아요."
+      }
+    },
+    {
+      "id": "g5-argon-0818",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "cloze",
+      "difficultyTier": "basic",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "더듬다",
+        "partOfSpeech": "동사",
+        "senseKey": "더듬다/동사/83333-1"
+      },
+      "stem": "정전이 되어 어두운 방에서 벽의 스위치를 손으로 (    ).",
+      "options": [
+        {
+          "id": "a",
+          "text": "비추었다"
+        },
+        {
+          "id": "b",
+          "text": "외쳤다"
+        },
+        {
+          "id": "c",
+          "text": "더듬었다"
+        },
+        {
+          "id": "d",
+          "text": "마셨다"
+        }
+      ],
+      "correctOptionId": "c",
+      "explanation": "잘 보이지 않는 것을 손으로 만져 보며 찾는 것은 ‘더듬다’예요.",
+      "distractorRationales": {
+        "a": "손으로 빛을 비추었다는 표현은 어색해요.",
+        "b": "스위치를 손으로 외쳤다는 말은 문법에 맞지 않아요.",
+        "d": "스위치를 마셨다는 것은 뜻이 통하지 않아요."
       }
     },
     {
@@ -30811,7 +31011,7 @@
       "status": "verified_candidate",
       "grade": 5,
       "type": "antonym_context",
-      "difficultyTier": "core",
+      "difficultyTier": "basic",
       "variantTag": "standard",
       "target": {
         "lemma": "떠맡다",
@@ -30846,12 +31046,92 @@
       }
     },
     {
+      "id": "g5-argon-0822",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "usage",
+      "difficultyTier": "basic",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "맞서다",
+        "partOfSpeech": "동사",
+        "senseKey": "맞서다/동사/423759-2"
+      },
+      "stem": "‘맞서다’를 알맞게 사용한 문장은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "뜻을 모아 사이좋게 도우며 다정하게 맞섰다."
+        },
+        {
+          "id": "b",
+          "text": "줄다리기 시합에서 두 팀이 팽팽하게 맞섰다."
+        },
+        {
+          "id": "c",
+          "text": "상대의 요구를 다 들어주며 순순히 맞섰다."
+        },
+        {
+          "id": "d",
+          "text": "시합 전에 스스로 기권하고 물러나 맞섰다."
+        }
+      ],
+      "correctOptionId": "b",
+      "explanation": "‘맞서다’는 서로 굽히지 않고 마주 겨루어 버틴다는 뜻이에요.",
+      "distractorRationales": {
+        "a": "사이좋게 돕는 상황은 마주 겨루는 일과 어울리지 않아요.",
+        "c": "순순히 요구를 들어주는 것은 버티는 태도와 반대예요.",
+        "d": "기권하고 물러나면 겨루어 버틴다고 할 수 없어요."
+      }
+    },
+    {
+      "id": "g5-argon-0823",
+      "revision": 3,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "cloze",
+      "difficultyTier": "basic",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "요점",
+        "partOfSpeech": "명사",
+        "senseKey": "요점/명사/467000-1"
+      },
+      "stem": "긴 설명문을 읽을 때는 문단마다 가장 중심이 되는 (    )을 간추려 적으면 내용을 한눈에 파악하기 쉽다.",
+      "options": [
+        {
+          "id": "a",
+          "text": "군말"
+        },
+        {
+          "id": "b",
+          "text": "표정"
+        },
+        {
+          "id": "c",
+          "text": "여백"
+        },
+        {
+          "id": "d",
+          "text": "요점"
+        }
+      ],
+      "correctOptionId": "d",
+      "explanation": "가장 중요하고 중심이 되는 사실이나 관점을 ‘요점’이라고 해요.",
+      "distractorRationales": {
+        "a": "‘군말’은 안 해도 될 쓸데없는 말이라 중심 내용과 반대예요.",
+        "b": "‘표정’은 얼굴에 드러나는 감정 모습이라 글 요약과 무관해요.",
+        "c": "‘여백’은 종이의 빈 공간이라 문단의 중심 사실이 아니에요."
+      }
+    },
+    {
       "id": "g5-argon-0824",
       "revision": 1,
       "status": "verified_candidate",
       "grade": 5,
       "type": "definition",
-      "difficultyTier": "core",
+      "difficultyTier": "basic",
       "variantTag": "standard",
       "target": {
         "lemma": "북돋우다",
@@ -30883,6 +31163,566 @@
         "a": "비웃는 것은 오히려 기운을 꺾는 행동이에요.",
         "c": "일을 멈추게 막는 것은 저지하다예요.",
         "d": "물건을 감추는 행동과는 뜻이 달라요."
+      }
+    },
+    {
+      "id": "g5-argon-0825",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "synonym_context",
+      "difficultyTier": "core",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "요점",
+        "partOfSpeech": "명사",
+        "senseKey": "요점/명사/467000-1"
+      },
+      "stem": "“학급 회의에서는 말하고자 하는 요점을 분명히 밝혀야 한다.”에서 ‘요점’과 바꾸어 쓸 말로 알맞은 것은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "주제와 동떨어진 농담"
+        },
+        {
+          "id": "b",
+          "text": "끝없이 덧붙이는 인사말"
+        },
+        {
+          "id": "c",
+          "text": "근거가 없는 헛소문"
+        },
+        {
+          "id": "d",
+          "text": "가장 중심이 되는 내용"
+        }
+      ],
+      "correctOptionId": "d",
+      "explanation": "‘요점’은 가장 중요하고 중심이 되는 사실이나 관점을 뜻해요.",
+      "distractorRationales": {
+        "a": "주제에서 벗어난 농담은 중심 내용과 거리가 멀어요.",
+        "b": "길게 덧붙이는 인사말은 회의의 핵심 관점이 아니에요.",
+        "c": "근거 없는 소문은 중요하고 중심이 되는 사실과 달라요."
+      }
+    },
+    {
+      "id": "g5-argon-0826",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "synonym_context",
+      "difficultyTier": "core",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "핵심",
+        "partOfSpeech": "명사",
+        "senseKey": "핵심/명사/498674-1"
+      },
+      "stem": "“토론에서 문제의 핵심을 정확히 짚어냈다.”에서 ‘핵심’과 뜻이 가장 비슷한 말은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "겉으로 꾸며 놓은 모양"
+        },
+        {
+          "id": "b",
+          "text": "가장 중심이 되는 부분"
+        },
+        {
+          "id": "c",
+          "text": "지나가며 스친 사소한 일"
+        },
+        {
+          "id": "d",
+          "text": "맨 나중에 덧붙인 장식"
+        }
+      ],
+      "correctOptionId": "b",
+      "explanation": "‘핵심’은 사물이나 일에서 가장 중심이 되는 부분을 말해요.",
+      "distractorRationales": {
+        "a": "겉으로만 꾸민 모양은 중심 부분인 핵심과 반대예요.",
+        "c": "사소한 일은 가장 중요한 중심 부분이라고 볼 수 없어요.",
+        "d": "나중에 덧붙인 장식은 부수적인 요소에 해당해요."
+      }
+    },
+    {
+      "id": "g5-argon-0827",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "usage",
+      "difficultyTier": "core",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "핵심",
+        "partOfSpeech": "명사",
+        "senseKey": "핵심/명사/498674-1"
+      },
+      "stem": "‘핵심’을 바르게 사용한 문장은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "해설사가 물시계 작동 원리의 핵심을 설명했다."
+        },
+        {
+          "id": "b",
+          "text": "글자도 없는 종이 가장자리 여백이 책의 핵심이다."
+        },
+        {
+          "id": "c",
+          "text": "내용과 무관하게 표지에 묻은 먼지가 핵심이다."
+        },
+        {
+          "id": "d",
+          "text": "작동과 전혀 상관없는 포장 비닐이 시계의 핵심이다."
+        }
+      ],
+      "correctOptionId": "a",
+      "explanation": "‘핵심’은 사물에서 가장 중심이 되는 부분을 가리키는 명사예요.",
+      "distractorRationales": {
+        "b": "종이 가장자리의 빈 여백은 책의 중심 부분이 아니에요.",
+        "c": "표지에 우연히 묻은 먼지는 중심 내용과 관련이 없어요.",
+        "d": "버리는 포장 비닐은 시계의 중심 부품이 될 수 없어요."
+      }
+    },
+    {
+      "id": "g5-argon-0828",
+      "revision": 3,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "definition",
+      "difficultyTier": "core",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "공헌하다",
+        "partOfSpeech": "동사",
+        "senseKey": "공헌하다/동사/28501-1"
+      },
+      "stem": "“과학자가 백신 연구로 인류 건강에 크게 공헌했다.”에서 ‘공헌하다’의 뜻은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "남의 연구 결과를 몰래 가로채다"
+        },
+        {
+          "id": "b",
+          "text": "어떤 일에 힘을 써 이바지하다"
+        },
+        {
+          "id": "c",
+          "text": "공동체의 규칙을 어겨 해를 끼치다"
+        },
+        {
+          "id": "d",
+          "text": "약속한 기한을 넘겨 일을 미루다"
+        }
+      ],
+      "correctOptionId": "b",
+      "explanation": "‘공헌하다’는 어떤 일이나 사회에 힘을 써 이바지한다는 뜻이에요.",
+      "distractorRationales": {
+        "a": "남의 결과를 가로채는 것은 부정한 행위예요.",
+        "c": "규칙을 어겨 해를 끼치는 것은 이바지와 반대예요.",
+        "d": "기한을 넘겨 미루는 것은 ‘지연하다’에 가까워요."
+      }
+    },
+    {
+      "id": "g5-argon-0829",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "cloze",
+      "difficultyTier": "core",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "상징",
+        "partOfSpeech": "명사",
+        "senseKey": "상징/명사/438951-1"
+      },
+      "stem": "빈칸에 알맞은 말은? “올리브 가지를 문 흰 비둘기는 눈에 보이지 않는 평화의 뜻을 구체적인 모습으로 나타낸 대표적인 (    )이다.”",
+      "options": [
+        {
+          "id": "a",
+          "text": "상징"
+        },
+        {
+          "id": "b",
+          "text": "모방"
+        },
+        {
+          "id": "c",
+          "text": "과장"
+        },
+        {
+          "id": "d",
+          "text": "착각"
+        }
+      ],
+      "correctOptionId": "a",
+      "explanation": "추상적인 개념을 구체적인 사물로 나타낸 것을 ‘상징’이라고 해요.",
+      "distractorRationales": {
+        "b": "‘모방’은 남의 모습을 그대로 본떠 따라 하는 것이에요.",
+        "c": "‘과장’은 사실보다 지나치게 부풀려 나타내는 것이에요.",
+        "d": "‘착각’은 사실을 실제와 다르게 잘못 아는 것이에요."
+      }
+    },
+    {
+      "id": "g5-argon-0830",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "synonym_context",
+      "difficultyTier": "advanced",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "상징",
+        "partOfSpeech": "명사",
+        "senseKey": "상징/명사/438951-1"
+      },
+      "stem": "“흰 눈 속에서도 푸른 대나무를 곧은 마음의 상징으로 삼았다.”에서 ‘상징’과 뜻이 가장 비슷한 말은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "겉모습만 똑같이 본뜬 복제품"
+        },
+        {
+          "id": "b",
+          "text": "잠깐 쓰고 버리는 일회용 도구"
+        },
+        {
+          "id": "c",
+          "text": "잘잘못을 가려 정하는 심판 기준"
+        },
+        {
+          "id": "d",
+          "text": "뜻을 사물로 드러낸 대표 표지"
+        }
+      ],
+      "correctOptionId": "d",
+      "explanation": "‘상징’은 추상적인 개념이나 뜻을 구체적인 사물로 나타낸 표지예요.",
+      "distractorRationales": {
+        "a": "겉모습만 그대로 베껴 만든 복제품은 상징과 달라요.",
+        "b": "잠시 쓰고 버리는 일회용 도구는 상징의 뜻이 아니에요.",
+        "c": "잘잘못을 따지는 심판 기준은 사물 표지와 무관해요."
+      }
+    },
+    {
+      "id": "g5-argon-0831",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "usage",
+      "difficultyTier": "basic",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "감탄하다",
+        "partOfSpeech": "동사",
+        "senseKey": "감탄하다/동사/8100-1"
+      },
+      "stem": "‘감탄하다’를 바르게 사용한 문장은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "지루한 내용에 흥미를 잃고 하품하며 감탄했다."
+        },
+        {
+          "id": "b",
+          "text": "장인의 정교한 조각 솜씨를 보고 깊이 감탄했다."
+        },
+        {
+          "id": "c",
+          "text": "약속을 어긴 행동에 실망해 화를 내며 감탄했다."
+        },
+        {
+          "id": "d",
+          "text": "작품을 보지도 않고 무심코 지나치며 감탄했다."
+        }
+      ],
+      "correctOptionId": "b",
+      "explanation": "‘감탄하다’는 훌륭한 점 등을 마음속 깊이 느끼어 탄복한다는 뜻이에요.",
+      "distractorRationales": {
+        "a": "흥미를 잃고 지루해하는 상황에는 어울리지 않아요.",
+        "c": "실망하여 화를 내는 것은 탄복하는 마음과 반대예요.",
+        "d": "보지도 않고 무심히 지나치면 감탄할 수 없어요."
+      }
+    },
+    {
+      "id": "g5-argon-0832",
+      "revision": 3,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "definition",
+      "difficultyTier": "basic",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "겪다",
+        "partOfSpeech": "동사",
+        "senseKey": "겪다/동사/392104-1"
+      },
+      "stem": "“전학 온 뒤 낯선 환경에서 여러 변화를 겪었다.”에서 ‘겪다’의 뜻은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "어렵거나 경험될 만한 일을 당하여 치르다"
+        },
+        {
+          "id": "b",
+          "text": "일어날 일을 미리 달력에 적어 표시하다"
+        },
+        {
+          "id": "c",
+          "text": "남의 이야기를 책으로 읽으며 상상하다"
+        },
+        {
+          "id": "d",
+          "text": "하기 싫은 당번 일을 친구에게 떠넘기다"
+        }
+      ],
+      "correctOptionId": "a",
+      "explanation": "‘겪다’는 어렵거나 경험할 만한 일을 직접 당하여 치른다는 뜻이에요.",
+      "distractorRationales": {
+        "b": "미리 달력에 적어 두는 것은 예정이나 계획이에요.",
+        "c": "남의 이야기를 읽고 상상하는 것은 간접 경험이에요.",
+        "d": "친구에게 떠넘기는 것은 직접 치르는 일이 아니에요."
+      }
+    },
+    {
+      "id": "g5-argon-0833",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "cloze",
+      "difficultyTier": "basic",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "공손하다",
+        "partOfSpeech": "형용사",
+        "senseKey": "공손하다/형용사/395134-1"
+      },
+      "stem": "빈칸에 알맞은 말은? “지호는 마을 어르신께 두 손으로 물건을 드리고 높임말을 쓰는 등 언제나 (    ) 태도로 예의를 지켰다.”",
+      "options": [
+        {
+          "id": "a",
+          "text": "무례한"
+        },
+        {
+          "id": "b",
+          "text": "거만한"
+        },
+        {
+          "id": "c",
+          "text": "공손한"
+        },
+        {
+          "id": "d",
+          "text": "산만한"
+        }
+      ],
+      "correctOptionId": "c",
+      "explanation": "말이나 행동이 겸손하고 예의 바르다는 뜻의 ‘공손한’이 알맞아요.",
+      "distractorRationales": {
+        "a": "‘무례한’은 예의가 없다는 뜻이라 문맥과 정반대예요.",
+        "b": "‘거만한’은 잘난 체하며 남을 낮추어 보는 태도예요.",
+        "d": "‘산만한’은 어수선하고 집중하지 못하는 상태를 뜻해요."
+      }
+    },
+    {
+      "id": "g5-argon-0834",
+      "revision": 3,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "definition",
+      "difficultyTier": "core",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "견주다",
+        "partOfSpeech": "동사",
+        "senseKey": "견주다/동사/392108-1"
+      },
+      "stem": "“두 지역의 강수량을 그래프로 견주어 보았다.”에서 ‘견주다’의 뜻은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "차이를 알기 위해 둘 이상의 대상을 대어 보다"
+        },
+        {
+          "id": "b",
+          "text": "흩어진 물건을 한 바구니에 모아서 담아 두다"
+        },
+        {
+          "id": "c",
+          "text": "틀리게 적힌 글자를 지우개로 깨끗이 지우다"
+        },
+        {
+          "id": "d",
+          "text": "한 가지 대상만 골라 끝까지 외워서 말하다"
+        }
+      ],
+      "correctOptionId": "a",
+      "explanation": "‘견주다’는 차이를 알기 위해 둘 이상의 대상을 서로 대어 보는 뜻이에요.",
+      "distractorRationales": {
+        "b": "한곳에 모아 담는 것은 수집이나 정리예요.",
+        "c": "글자를 지우는 것은 수정이나 삭제에 해당해요.",
+        "d": "하나만 외우는 것은 서로 대어 보는 일이 아니에요."
+      }
+    },
+    {
+      "id": "g5-argon-0835",
+      "revision": 3,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "definition",
+      "difficultyTier": "core",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "자율적",
+        "partOfSpeech": "관형사",
+        "senseKey": "자율적/관형사/274730-2"
+      },
+      "stem": "“우리 반은 아침마다 자율적 독서 시간을 운영한다.”에서 ‘자율적’의 뜻은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "누군가가 감시해야만 억지로 움직이는"
+        },
+        {
+          "id": "b",
+          "text": "아무 규칙도 없이 제멋대로 소란 피우는"
+        },
+        {
+          "id": "c",
+          "text": "남의 의견을 무조건 그대로 따라만 하는"
+        },
+        {
+          "id": "d",
+          "text": "스스로의 원칙에 따라 일하거나 절제하는"
+        }
+      ],
+      "correctOptionId": "d",
+      "explanation": "‘자율적’은 스스로의 원칙에 따라 일하거나 자신을 절제하는 뜻이에요.",
+      "distractorRationales": {
+        "a": "감시해야만 움직이는 것은 ‘타율적’인 모습이에요.",
+        "b": "규칙 없이 소란 피우는 것은 절제와 거리가 멀어요.",
+        "c": "남의 의견만 무조건 따르는 것은 스스로 정한 게 아니에요."
+      }
+    },
+    {
+      "id": "g5-argon-0836",
+      "revision": 3,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "definition",
+      "difficultyTier": "core",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "주도적",
+        "partOfSpeech": "관형사",
+        "senseKey": "주도적/관형사/478331-2"
+      },
+      "stem": "“모둠장이 자료 조사에서 주도적 역할을 맡았다.”에서 ‘주도적’의 뜻은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "맨 뒤로 물러나 구경만 하고 있는"
+        },
+        {
+          "id": "b",
+          "text": "맡은 일을 남에게 미루며 피하는"
+        },
+        {
+          "id": "c",
+          "text": "앞장서서 조직이나 무리를 이끄는"
+        },
+        {
+          "id": "d",
+          "text": "정해진 약속 시각에 늘 늦게 오는"
+        }
+      ],
+      "correctOptionId": "c",
+      "explanation": "‘주도적’은 앞장서서 조직이나 무리를 이끄는 것을 뜻하는 관형사예요.",
+      "distractorRationales": {
+        "a": "뒤에서 구경만 하는 것은 방관하는 태도예요.",
+        "b": "맡은 일을 미루며 피하는 것은 회피하는 모습이에요.",
+        "d": "약속 시각에 늦는 습관과는 뜻이 전혀 달라요."
+      }
+    },
+    {
+      "id": "g5-argon-0837",
+      "revision": 3,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "definition",
+      "difficultyTier": "core",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "능동적",
+        "partOfSpeech": "관형사",
+        "senseKey": "능동적/관형사/71225-2"
+      },
+      "stem": "“학생들이 수업에 능동적 자세로 참여했다.”에서 ‘능동적’의 뜻은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "남에게 이끌리지 않고 스스로 움직이는"
+        },
+        {
+          "id": "b",
+          "text": "누가 시킬 때까지 가만히 기다리는"
+        },
+        {
+          "id": "c",
+          "text": "어려운 문제를 보면 곧바로 포기하는"
+        },
+        {
+          "id": "d",
+          "text": "주변 친구의 발표를 시끄럽게 방해하는"
+        }
+      ],
+      "correctOptionId": "a",
+      "explanation": "‘능동적’은 남에게 이끌리지 않고 스스로 일으키거나 움직이는 뜻이에요.",
+      "distractorRationales": {
+        "b": "시킬 때까지 기다리는 것은 ‘수동적’인 태도예요.",
+        "c": "곧바로 포기하는 것은 ‘소극적’인 모습이에요.",
+        "d": "발표를 방해하는 무례한 행동과는 뜻이 달라요."
+      }
+    },
+    {
+      "id": "g5-argon-0838",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "definition",
+      "difficultyTier": "core",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "중재하다",
+        "partOfSpeech": "동사",
+        "senseKey": "중재하다/동사/307474-1"
+      },
+      "stem": "“학급 회장이 자리 문제로 다투는 두 친구 사이를 차분히 중재했다.”에서 ‘중재하다’의 뜻은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "분쟁에 끼어들어 양쪽을 화해시키다"
+        },
+        {
+          "id": "b",
+          "text": "한쪽 편만 들며 갈등을 더 키우다"
+        },
+        {
+          "id": "c",
+          "text": "잘못한 사람에게 무거운 벌을 주다"
+        },
+        {
+          "id": "d",
+          "text": "의견 차이를 모른 체하고 자리를 뜨다"
+        }
+      ],
+      "correctOptionId": "a",
+      "explanation": "‘중재하다’는 다툼이나 분쟁에 끼어들어 양쪽을 화해시킨다는 뜻이에요.",
+      "distractorRationales": {
+        "b": "한쪽 편만 들어 갈등을 키우는 것은 중재와 반대예요.",
+        "c": "잘못을 따져 벌을 내리는 것은 처벌이나 징계예요.",
+        "d": "모른 체하고 피하는 것은 방관하거나 외면하는 태도예요."
       }
     },
     {
@@ -30926,12 +31766,212 @@
       }
     },
     {
+      "id": "g5-argon-0840",
+      "revision": 3,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "definition",
+      "difficultyTier": "basic",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "겹치다",
+        "partOfSpeech": "동사",
+        "senseKey": "겹치다/동사/392490-1"
+      },
+      "stem": "“두 색종이의 모서리가 반듯하게 겹쳤다.”에서 ‘겹치다’의 뜻은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "붙은 종이가 두 조각으로 길게 찢어지다"
+        },
+        {
+          "id": "b",
+          "text": "모여 있던 물건이 멀리 떨어져 흩어지다"
+        },
+        {
+          "id": "c",
+          "text": "여러 사물이 서로 덧놓이거나 포개어지다"
+        },
+        {
+          "id": "d",
+          "text": "심하게 구겨진 종이가 평평하게 펴지다"
+        }
+      ],
+      "correctOptionId": "c",
+      "explanation": "‘겹치다’는 여러 사물이나 내용이 서로 덧놓이거나 포개어지는 뜻이에요.",
+      "distractorRationales": {
+        "a": "두 조각으로 찢어지는 것은 나뉘거나 망가지는 일이에요.",
+        "b": "멀리 흩어지는 것은 포개어지는 것과 반대예요.",
+        "d": "평평하게 펴지는 것은 겹치는 동작이 아니에요."
+      }
+    },
+    {
+      "id": "g5-argon-0841",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "synonym_context",
+      "difficultyTier": "advanced",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "중재하다",
+        "partOfSpeech": "동사",
+        "senseKey": "중재하다/동사/307474-1"
+      },
+      "stem": "“시간 문제로 맞선 두 동아리를 선생님이 중재하셨다.”에서 ‘중재하셨다’와 뜻이 통하는 말은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "두 모임의 활동을 모두 금지하셨다"
+        },
+        {
+          "id": "b",
+          "text": "사이에 나서서 서로 화해시키셨다"
+        },
+        {
+          "id": "c",
+          "text": "한쪽 동아리만 쓰도록 편드셨다"
+        },
+        {
+          "id": "d",
+          "text": "스스로 해결하라며 지켜만 보셨다"
+        }
+      ],
+      "correctOptionId": "b",
+      "explanation": "‘중재하다’는 맞서는 양쪽 사이에 나서서 화해시키는 일을 뜻해요.",
+      "distractorRationales": {
+        "a": "활동을 모두 막아 버리는 것은 화해시키는 중재가 아니에요.",
+        "c": "한쪽만 편드는 것은 불공정하여 분쟁을 풀기 어려워요.",
+        "d": "끼어들지 않고 지켜만 보는 것은 중재하는 행동과 달라요."
+      }
+    },
+    {
+      "id": "g5-argon-0842",
+      "revision": 3,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "cloze",
+      "difficultyTier": "basic",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "감싸다",
+        "partOfSpeech": "동사",
+        "senseKey": "감싸다/동사/391375-1"
+      },
+      "stem": "빈칸에 알맞은 말은? “유리 꽃병이 부딪혀 깨지지 않도록 폭신한 천으로 꽃병 전체를 두껍게 (    ) 상자에 넣었다.”",
+      "options": [
+        {
+          "id": "a",
+          "text": "털어서"
+        },
+        {
+          "id": "b",
+          "text": "감싸서"
+        },
+        {
+          "id": "c",
+          "text": "밀어서"
+        },
+        {
+          "id": "d",
+          "text": "제쳐서"
+        }
+      ],
+      "correctOptionId": "b",
+      "explanation": "물건 전체를 둘러서 싼다는 뜻의 ‘감싸서’가 문맥에 알맞아요.",
+      "distractorRationales": {
+        "a": "‘털어서’는 먼지 따위를 떼어 내는 것이라 충격을 막지 못해요.",
+        "c": "‘밀어서’는 힘주어 옮기는 동작이라 둘러 싸는 뜻이 아니에요.",
+        "d": "‘제쳐서’는 옆으로 치워 놓는다는 뜻이라 보호 맥락과 달라요."
+      }
+    },
+    {
+      "id": "g5-argon-0843",
+      "revision": 3,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "usage",
+      "difficultyTier": "core",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "순환하다",
+        "partOfSpeech": "동사",
+        "senseKey": "순환하다/동사/197470-1"
+      },
+      "stem": "‘순환하다’가 알맞게 쓰인 문장은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "지나간 어제 시간이 영영 멈춘 채로 순환한다."
+        },
+        {
+          "id": "b",
+          "text": "타 버린 재가 다시 나무가 못 되고 순환한다."
+        },
+        {
+          "id": "c",
+          "text": "혈액은 온몸의 혈관을 따라 쉬지 않고 순환한다."
+        },
+        {
+          "id": "d",
+          "text": "바위가 한자리에 멈추어 꼼짝 않고 순환한다."
+        }
+      ],
+      "correctOptionId": "c",
+      "explanation": "‘순환하다’는 주기적으로 자꾸 되풀이하여 돈다는 뜻이에요.",
+      "distractorRationales": {
+        "a": "영영 멈춘 시간은 되풀이하여 도는 현상이 아니에요.",
+        "b": "이 문장에는 주기적으로 되풀이하여 도는 과정이 드러나지 않아요.",
+        "d": "한자리에 멈추어 움직이지 않는 것과는 뜻이 반대예요."
+      }
+    },
+    {
+      "id": "g5-argon-0844",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "usage",
+      "difficultyTier": "advanced",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "발굴하다",
+        "partOfSpeech": "동사",
+        "senseKey": "발굴하다/동사/134009-2"
+      },
+      "stem": "‘발굴하다’가 자연스럽게 쓰인 문장은 무엇일까요?",
+      "options": [
+        {
+          "id": "a",
+          "text": "주전자의 보리차가 센 불에서 거품을 발굴하였다."
+        },
+        {
+          "id": "b",
+          "text": "비 그친 하늘이 둥근 무지개를 높게 발굴하였다."
+        },
+        {
+          "id": "c",
+          "text": "냉동실에 넣은 우유가 단단한 얼음을 발굴하였다."
+        },
+        {
+          "id": "d",
+          "text": "이번 대회는 숨어 있던 음악 인재를 발굴하는 자리였다."
+        }
+      ],
+      "correctOptionId": "d",
+      "explanation": "여기서 ‘발굴하다’는 알려지지 않은 뛰어난 인재나 가치를 찾아 밝혀내는 뜻이에요.",
+      "distractorRationales": {
+        "a": "물이 끓어 거품이 나는 현상에는 쓰지 않아요.",
+        "b": "하늘에 무지개가 뜨는 일과 어울리지 않아요.",
+        "c": "우유가 어는 자연 현상을 뜻하지 않아요."
+      }
+    },
+    {
       "id": "g5-argon-0845",
       "revision": 1,
       "status": "verified_candidate",
       "grade": 5,
       "type": "definition",
-      "difficultyTier": "challenge",
+      "difficultyTier": "core",
       "variantTag": "polysemy",
       "target": {
         "lemma": "역사적",
@@ -30966,52 +32006,92 @@
       }
     },
     {
-      "id": "g5-argon-0848",
-      "revision": 1,
+      "id": "g5-argon-0846",
+      "revision": 2,
       "status": "verified_candidate",
       "grade": 5,
       "type": "usage",
-      "difficultyTier": "challenge",
-      "variantTag": "polysemy",
+      "difficultyTier": "core",
+      "variantTag": "standard",
       "target": {
-        "lemma": "낙관적",
-        "partOfSpeech": "명사",
-        "senseKey": "낙관적/명사/405666-2"
+        "lemma": "비판하다",
+        "partOfSpeech": "동사",
+        "senseKey": "비판하다/동사/441309-1"
       },
-      "stem": "‘낙관적’이 자연스럽게 쓰인 문장은 무엇일까요?",
+      "stem": "‘비판하다’가 자연스럽게 쓰인 문장은 무엇일까요?",
       "options": [
         {
           "id": "a",
-          "text": "냄비 속 된장국이 보글보글 낙관적인 거품으로 끓었다."
+          "text": "독자들은 광고의 과장된 표현을 날카롭게 비판하였다."
         },
         {
           "id": "b",
-          "text": "대원들은 날씨가 곧 개리라는 낙관적인 전망을 내놓았다."
+          "text": "봄볕이 화단의 봉선화 씨앗을 따스히 비판하였다."
         },
         {
           "id": "c",
-          "text": "자전거 바퀴에 바람을 넣자 낙관적인 고무가 부풀었다."
+          "text": "냉장고 속 찬 공기가 우유를 시원하게 비판하였다."
         },
         {
           "id": "d",
-          "text": "연필깎이를 돌리자 낙관적인 나무 가루가 떨어졌다."
+          "text": "불어오는 가을바람이 나뭇잎을 노랗게 비판하였다."
         }
       ],
-      "correctOptionId": "b",
-      "explanation": "‘낙관적’은 앞으로의 일이 잘되어 갈 것으로 여기는 것이에요.",
+      "correctOptionId": "a",
+      "explanation": "‘비판하다’는 옳고 그름을 판단해 밝히거나 잘못된 점을 지적하는 뜻이에요.",
       "distractorRationales": {
-        "a": "끓는 국물의 거품을 꾸밀 수 없어요.",
-        "c": "고무가 부푸는 물리적 상태가 아니에요.",
-        "d": "깎여 나온 나무 가루와는 어울리지 않아요."
+        "b": "햇볕이 씨앗을 비추는 현상에는 쓸 수 없어요.",
+        "c": "찬 공기가 우유를 식히는 작용이 아니에요.",
+        "d": "단풍이 들게 하는 자연 현상과 어울리지 않아요."
+      }
+    },
+    {
+      "id": "g5-argon-0847",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "synonym_context",
+      "difficultyTier": "basic",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "감싸다",
+        "partOfSpeech": "동사",
+        "senseKey": "감싸다/동사/391375-1"
+      },
+      "stem": "“찬 바람을 막으려고 목도리로 목을 감쌌다.”에서 ‘감쌌다’와 뜻이 가장 비슷한 말은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "가볍게 스쳐 털었다"
+        },
+        {
+          "id": "b",
+          "text": "옆으로 밀어 치웠다"
+        },
+        {
+          "id": "c",
+          "text": "바닥에 길게 펼쳤다"
+        },
+        {
+          "id": "d",
+          "text": "전체를 둘러서 쌌다"
+        }
+      ],
+      "correctOptionId": "d",
+      "explanation": "여기서 ‘감싸다’는 물건이나 몸의 전체를 둘러서 싼다는 뜻이에요.",
+      "distractorRationales": {
+        "a": "가볍게 스쳐 터는 것은 먼지 따위를 없애는 동작이에요.",
+        "b": "옆으로 밀어 치우는 것은 둘러서 싸는 행동과 달라요.",
+        "c": "바닥에 펼치는 것은 감아서 싸는 동작의 반대예요."
       }
     },
     {
       "id": "g5-argon-0849",
-      "revision": 1,
+      "revision": 2,
       "status": "verified_candidate",
       "grade": 5,
       "type": "usage",
-      "difficultyTier": "challenge",
+      "difficultyTier": "core",
       "variantTag": "polysemy",
       "target": {
         "lemma": "적당히",
@@ -31026,23 +32106,23 @@
         },
         {
           "id": "b",
-          "text": "현관 비밀번호는 아무 숫자나 적당히 눌러도 활짝 열린다."
+          "text": "삼각형에는 곧은 변과 꼭짓점이 적당히 세 개씩 있다."
         },
         {
           "id": "c",
-          "text": "공식 육상 대회의 신기록은 시계 없이 적당히 눈짐작으로 잰다."
+          "text": "달력에서 오월이 지나면 바로 다음 달로 유월이 적당히 온다."
         },
         {
           "id": "d",
-          "text": "은행 통장의 잔액은 계산하지 않고 적당히 어림잡아 적는다."
+          "text": "내가 태어난 생일 날짜는 해마다 바뀜 없이 적당히 똑같다."
         }
       ],
       "correctOptionId": "a",
       "explanation": "여기서 ‘적당히’는 엇비슷하게 요령이 있게라는 뜻이에요.",
       "distractorRationales": {
-        "b": "비밀번호는 정확히 눌러야만 열려요.",
-        "c": "공식 신기록은 정밀한 계측기로 정확히 재야 해요.",
-        "d": "은행 잔액은 한 푼의 오차도 없이 정확히 적어요."
+        "b": "변과 꼭짓점이 세 개로 정해진 사실에는 ‘적당히’를 쓸 수 없어요.",
+        "c": "정해진 달력의 순서대로 유월이 오는 일에는 ‘적당히’가 어울리지 않아요.",
+        "d": "바뀜 없이 똑같다는 말은 요령이나 정도를 조절하는 ‘적당히’와 맞지 않아요."
       }
     },
     {
@@ -31051,7 +32131,7 @@
       "status": "verified_candidate",
       "grade": 5,
       "type": "definition",
-      "difficultyTier": "challenge",
+      "difficultyTier": "core",
       "variantTag": "polysemy",
       "target": {
         "lemma": "지나치다",
@@ -31406,6 +32486,86 @@
       }
     },
     {
+      "id": "g5-argon-0859",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "cloze",
+      "difficultyTier": "basic",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "겪다",
+        "partOfSpeech": "동사",
+        "senseKey": "겪다/동사/392104-1"
+      },
+      "stem": "빈칸에 알맞은 말은? “낯선 고장으로 이사한 첫해에는 크고 작은 어려움을 많이 (    ).”",
+      "options": [
+        {
+          "id": "a",
+          "text": "뽐냈다"
+        },
+        {
+          "id": "b",
+          "text": "권했다"
+        },
+        {
+          "id": "c",
+          "text": "탐냈다"
+        },
+        {
+          "id": "d",
+          "text": "겪었다"
+        }
+      ],
+      "correctOptionId": "d",
+      "explanation": "어렵거나 경험할 만한 일을 당하여 치른다는 뜻의 ‘겪었다’가 알맞아요.",
+      "distractorRationales": {
+        "a": "‘뽐냈다’는 잘난 체하며 자랑한다는 뜻이라 어색해요.",
+        "b": "‘권했다’는 남에게 어떤 일을 하도록 이른다는 뜻이에요.",
+        "c": "‘탐냈다’는 욕심을 내어 가지려 한다는 뜻이라 맞지 않아요."
+      }
+    },
+    {
+      "id": "g5-argon-0860",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "usage",
+      "difficultyTier": "core",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "돋보이다",
+        "partOfSpeech": "동사",
+        "senseKey": "돋보이다/동사/87896-2"
+      },
+      "stem": "‘돋보이다’를 바르게 사용한 문장은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "어둠에 가려 전혀 안 보이는 글씨가 돋보였다."
+        },
+        {
+          "id": "b",
+          "text": "출품작 가운데 민지의 뛰어난 솜씨가 단연 돋보였다."
+        },
+        {
+          "id": "c",
+          "text": "모두와 똑같아 아무 차이 없는 점이 돋보였다."
+        },
+        {
+          "id": "d",
+          "text": "서랍 속에 숨겨 두어 안 보이는 공이 돋보였다."
+        }
+      ],
+      "correctOptionId": "b",
+      "explanation": "‘돋보이다’는 무리 중에서 훌륭하거나 뛰어나 도드라져 보인다는 뜻이에요.",
+      "distractorRationales": {
+        "a": "어둠에 가려 보이지 않는 것에는 쓸 수 없어요.",
+        "c": "남들과 똑같아 차이가 없으면 도드라져 보이지 않아요.",
+        "d": "숨겨 두어 눈에 띄지 않는 상황과 어울리지 않아요."
+      }
+    },
+    {
       "id": "g5-argon-0861",
       "revision": 1,
       "status": "verified_candidate",
@@ -31487,18 +32647,18 @@
     },
     {
       "id": "g5-argon-0863",
-      "revision": 1,
+      "revision": 2,
       "status": "verified_candidate",
       "grade": 5,
       "type": "synonym_context",
-      "difficultyTier": "basic",
+      "difficultyTier": "core",
       "variantTag": "standard",
       "target": {
         "lemma": "만회하다",
         "partOfSpeech": "동사",
         "senseKey": "만회하다/동사/109962-1"
       },
-      "stem": "다음 문장의 ‘만회하려고’와 바꾸어 쓸 수 있는 말은 무엇일까요? \"전반전의 실수를 만회하려고 끝까지 힘껏 뛰었습니다.\"",
+      "stem": "다음 문장의 ‘만회하려고’와 바꾸어 쓸 수 있는 말은 무엇일까요? \"초반에는 조금 뒤처졌지만 막판에 만회하려고 끝까지 힘껏 달렸습니다.\"",
       "options": [
         {
           "id": "a",
@@ -31506,7 +32666,7 @@
         },
         {
           "id": "b",
-          "text": "바로잡아 되찾으려고"
+          "text": "바로잡아 회복하려고"
         },
         {
           "id": "c",
@@ -31520,129 +32680,209 @@
       "correctOptionId": "b",
       "explanation": "‘만회하다’는 잘못된 것을 바로잡아 회복한다는 뜻이에요.",
       "distractorRationales": {
-        "a": "단념하고 그만두는 뜻이라 끝까지 뛴 맥락과 반대돼요.",
-        "c": "책임을 미루는 뜻이라 스스로 회복하는 것과 달라요.",
-        "d": "실수를 숨기는 뜻이라 바로잡는 의미와 맞지 않아요."
+        "a": "단념하고 그만두는 뜻이라 끝까지 달린 맥락과 반대돼요.",
+        "c": "책임을 미루는 뜻이라 스스로 회복하려는 맥락과 달라요.",
+        "d": "숨기려는 뜻이라 바로잡아 회복한다는 의미와 맞지 않아요."
       }
     },
     {
-      "id": "g5-argon-0867",
-      "revision": 1,
+      "id": "g5-argon-0864",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "synonym_context",
+      "difficultyTier": "basic",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "견주다",
+        "partOfSpeech": "동사",
+        "senseKey": "견주다/동사/392108-1"
+      },
+      "stem": "“시장에서 두 수박의 무게를 견주어 보았다.”에서 ‘견주어 보았다’와 뜻이 가장 비슷한 말은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "반으로 쪼개어 나누었다"
+        },
+        {
+          "id": "b",
+          "text": "보이지 않는 곳에 숨겼다"
+        },
+        {
+          "id": "c",
+          "text": "값도 묻지 않고 사들였다"
+        },
+        {
+          "id": "d",
+          "text": "차이를 알기 위해 비교했다"
+        }
+      ],
+      "correctOptionId": "d",
+      "explanation": "‘견주다’는 둘 이상의 사물에 어떤 차이가 있는지 서로 대어 보는 것이에요.",
+      "distractorRationales": {
+        "a": "물건을 쪼개어 나누는 것은 비교하는 행동이 아니에요.",
+        "b": "보이지 않게 숨기는 것은 대어 보는 일과 무관해요.",
+        "c": "살펴보지 않고 곧장 사는 것은 차이를 따지는 게 아니에요."
+      }
+    },
+    {
+      "id": "g5-argon-0865",
+      "revision": 2,
       "status": "verified_candidate",
       "grade": 5,
       "type": "cloze",
-      "difficultyTier": "core",
+      "difficultyTier": "basic",
       "variantTag": "standard",
       "target": {
-        "lemma": "접미사",
-        "partOfSpeech": "명사",
-        "senseKey": "접미사/명사/479036-1"
+        "lemma": "견주다",
+        "partOfSpeech": "동사",
+        "senseKey": "견주다/동사/392108-1"
       },
-      "stem": "다음 대화의 빈칸에 들어갈 알맞은 말을 고르세요. \"‘잠꾸러기’에서 ‘-꾸러기’는 어떤 역할을 하니?\" \"낱말 뒤에 붙어 새 단어를 만드는 (    )야.\"",
+      "stem": "빈칸에 알맞은 말은? “화분 두 개에 심은 강낭콩 줄기의 길이에 어떤 차이가 있는지 자를 대어 서로 (    ) 보았다.”",
       "options": [
         {
           "id": "a",
-          "text": "접두사"
+          "text": "감추어"
         },
         {
           "id": "b",
-          "text": "단일어"
+          "text": "견주어"
         },
         {
           "id": "c",
-          "text": "접미사"
+          "text": "흔들어"
         },
         {
           "id": "d",
-          "text": "외래어"
-        }
-      ],
-      "correctOptionId": "c",
-      "explanation": "낱말의 뒤에 붙어 새로운 단어를 만드는 말을 ‘접미사’라고 해요.",
-      "distractorRationales": {
-        "a": "‘접두사’는 낱말의 앞에 붙는 말이라 위치가 반대예요.",
-        "b": "‘단일어’는 하나의 뿌리로 된 단어라 설명과 달라요.",
-        "d": "‘외래어’는 외국에서 들어온 단어라 관련이 없어요."
-      }
-    },
-    {
-      "id": "g5-argon-0868",
-      "revision": 1,
-      "status": "verified_candidate",
-      "grade": 5,
-      "type": "definition",
-      "difficultyTier": "core",
-      "variantTag": "standard",
-      "target": {
-        "lemma": "동음이의어",
-        "partOfSpeech": "명사",
-        "senseKey": "동음이의어/명사/89596-1"
-      },
-      "stem": "다음 글에서 ‘동음이의어’의 뜻으로 알맞은 것은 무엇일까요? \"먹는 ‘배’와 타는 ‘배’는 동음이의어입니다.\"",
-      "options": [
-        {
-          "id": "a",
-          "text": "소리는 다르지만 뜻이 비슷한 낱말"
-        },
-        {
-          "id": "b",
-          "text": "소리는 같지만 뜻이 서로 다른 낱말"
-        },
-        {
-          "id": "c",
-          "text": "뜻이 서로 정반대가 되는 낱말"
-        },
-        {
-          "id": "d",
-          "text": "외국에서 들어와 굳어진 낱말"
+          "text": "짓눌러"
         }
       ],
       "correctOptionId": "b",
-      "explanation": "‘동음이의어’는 소리는 같으나 뜻이 다른 단어를 말해요.",
+      "explanation": "차이를 알기 위해 둘 이상의 사물을 대어 본다는 뜻의 ‘견주어’가 알맞아요.",
       "distractorRationales": {
-        "a": "소리가 다르고 뜻이 비슷한 말은 유의어예요.",
-        "c": "뜻이 서로 반대되는 관계의 말은 반의어예요.",
-        "d": "외국에서 들어와 쓰이는 단어는 외래어예요."
+        "a": "‘감추어’는 보이지 않게 숨긴다는 뜻이라 길이 확인과 달라요.",
+        "c": "‘흔들어’는 이리저리 움직인다는 뜻이라 자로 재는 맥락이 아니에요.",
+        "d": "‘짓눌러’는 힘주어 누른다는 뜻이라 줄기를 비교하는 일이 아니에요."
       }
     },
     {
-      "id": "g5-argon-0870",
-      "revision": 1,
+      "id": "g5-argon-0866",
+      "revision": 2,
       "status": "verified_candidate",
       "grade": 5,
-      "type": "antonym_context",
+      "type": "usage",
       "difficultyTier": "core",
       "variantTag": "standard",
       "target": {
-        "lemma": "반의어",
-        "partOfSpeech": "명사",
-        "senseKey": "반의어/명사/427153-1"
+        "lemma": "견주다",
+        "partOfSpeech": "동사",
+        "senseKey": "견주다/동사/392108-1"
       },
-      "stem": "다음 문장의 ‘반의어’와 뜻이 서로 반대되는 개념의 말은 무엇일까요? \"국어사전에서 ‘밝다’의 반의어로 ‘어둡다’를 찾았습니다.\"",
+      "stem": "‘견주다’가 바르게 쓰인 문장은?",
       "options": [
         {
           "id": "a",
-          "text": "단일어"
+          "text": "다른 물건 없이 연필 한 자루만 들고 서로 견주었다."
         },
         {
           "id": "b",
-          "text": "외래어"
+          "text": "두 천의 두께가 어떻게 다른지 맞대어 견주었다."
         },
         {
           "id": "c",
-          "text": "유의어"
+          "text": "바닥에 쏟아진 물을 걸레로 닦아 내어 견주었다."
         },
         {
           "id": "d",
-          "text": "유행어"
+          "text": "창문을 열어 교실 안의 탁한 공기를 견주었다."
         }
       ],
-      "correctOptionId": "c",
-      "explanation": "뜻이 반대인 ‘반의어’와 대조되는 개념은 뜻이 비슷한 ‘유의어’예요.",
+      "correctOptionId": "b",
+      "explanation": "‘견주다’는 둘 이상의 사물에 어떤 차이가 있는지 대어 볼 때 써요.",
       "distractorRationales": {
-        "a": "낱말의 짜임에 따른 분류라 의미 관계와 무관해요.",
-        "b": "낱말의 유래에 따른 구분이라 반대 개념이 아니에요.",
-        "d": "일시적으로 널리 쓰이는 말이라 반의 관계와 달라요."
+        "a": "사물이 하나뿐이면 서로 대어 보며 비교할 수 없어요.",
+        "c": "쏟아진 물을 닦아 내는 동작에는 쓰지 않는 말이에요.",
+        "d": "탁한 공기를 환기하는 상황과는 뜻이 전혀 맞지 않아요."
+      }
+    },
+    {
+      "id": "g5-argon-0869",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "synonym_context",
+      "difficultyTier": "basic",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "겹치다",
+        "partOfSpeech": "동사",
+        "senseKey": "겹치다/동사/392490-1"
+      },
+      "stem": "“투명 필름 두 장이 서로 겹치자 색이 더 진해졌다.”에서 ‘겹치자’와 뜻이 가장 비슷한 말은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "멀리 떨어져 나뉘자"
+        },
+        {
+          "id": "b",
+          "text": "덧놓여 포개어지자"
+        },
+        {
+          "id": "c",
+          "text": "잘게 조각나 흩어지자"
+        },
+        {
+          "id": "d",
+          "text": "열기에 녹아 사라지자"
+        }
+      ],
+      "correctOptionId": "b",
+      "explanation": "‘겹치다’는 여러 사물이나 내용이 서로 덧놓이거나 포개어지는 것이에요.",
+      "distractorRationales": {
+        "a": "멀리 떨어져 나뉘는 것은 포개어지는 것과 반대예요.",
+        "c": "조각나 흩어지는 것은 덧놓이는 상태와 관련이 없어요.",
+        "d": "녹아서 사라지는 것은 사물이 포개어지는 뜻이 아니에요."
+      }
+    },
+    {
+      "id": "g5-argon-0871",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "usage",
+      "difficultyTier": "basic",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "머리말",
+        "partOfSpeech": "명사",
+        "senseKey": "머리말/명사/420894-1"
+      },
+      "stem": "‘머리말’을 가장 자연스럽게 쓴 문장은 무엇일까요?",
+      "options": [
+        {
+          "id": "a",
+          "text": "책 첫머리에 실린 글쓴이의 머리말을 읽었다."
+        },
+        {
+          "id": "b",
+          "text": "미용실에서 길게 자란 머리말을 단정히 잘랐다."
+        },
+        {
+          "id": "c",
+          "text": "모자를 벗자 땀에 젖은 머리말이 드러났다."
+        },
+        {
+          "id": "d",
+          "text": "찬 바람을 막으려고 머리말에 털모자를 썼다."
+        }
+      ],
+      "correctOptionId": "a",
+      "explanation": "‘머리말’은 책 첫머리에 목적이나 내용을 간략히 적은 글이에요.",
+      "distractorRationales": {
+        "b": "자르는 대상은 글이 아니라 ‘머리카락’이어야 해요.",
+        "c": "땀에 젖어 드러나는 신체 부위는 ‘머리카락’이나 ‘이마’예요.",
+        "d": "털모자를 쓰는 신체 부위는 ‘머리’라고 해야 자연스러워요."
       }
     },
     {
@@ -31651,7 +32891,7 @@
       "status": "verified_candidate",
       "grade": 5,
       "type": "cloze",
-      "difficultyTier": "core",
+      "difficultyTier": "advanced",
       "variantTag": "standard",
       "target": {
         "lemma": "열거",
@@ -31683,6 +32923,126 @@
         "a": "‘비교’는 둘 이상의 공통점을 견주어 밝히는 방법이에요.",
         "c": "‘대조’는 둘 이상의 차이점을 맞대어 밝히는 방법이에요.",
         "d": "‘정의’는 대상의 뜻을 분명하게 규정하는 방법이에요."
+      }
+    },
+    {
+      "id": "g5-argon-0873",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "synonym_context",
+      "difficultyTier": "basic",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "고집하다",
+        "partOfSpeech": "동사",
+        "senseKey": "고집하다/동사/25109-1"
+      },
+      "stem": "“민호는 잘못된 방법이 드러났는데도 자기 방식만 고집했다.”에서 ‘고집했다’와 뜻이 통하는 말은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "바꾸지 않고 굳게 버텼다"
+        },
+        {
+          "id": "b",
+          "text": "미련 없이 곧바로 버렸다"
+        },
+        {
+          "id": "c",
+          "text": "조심스럽게 되돌아보았다"
+        },
+        {
+          "id": "d",
+          "text": "친구들에게 자세히 물었다"
+        }
+      ],
+      "correctOptionId": "a",
+      "explanation": "‘고집하다’는 자기 의견을 바꾸거나 고치지 않고 굳게 버티는 것이에요.",
+      "distractorRationales": {
+        "b": "방식을 미련 없이 버리는 것은 고집하는 태도와 반대예요.",
+        "c": "조심스럽게 되돌아보는 것은 반성하고 살피는 모습이에요.",
+        "d": "친구들에게 묻는 것은 의견을 구하는 태도라 뜻이 달라요."
+      }
+    },
+    {
+      "id": "g5-argon-0874",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "usage",
+      "difficultyTier": "basic",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "고집하다",
+        "partOfSpeech": "동사",
+        "senseKey": "고집하다/동사/25109-1"
+      },
+      "stem": "‘고집하다’가 알맞게 쓰인 문장은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "좋은 제안을 듣고 내 생각을 곧바로 고쳐 고집했다."
+        },
+        {
+          "id": "b",
+          "text": "상대의 말에 공감하며 내 주장을 접고 고집했다."
+        },
+        {
+          "id": "c",
+          "text": "내 의견 없이 남이 하자는 대로만 따라 고집했다."
+        },
+        {
+          "id": "d",
+          "text": "모두가 말렸지만 그는 처음 세운 계획을 고집했다."
+        }
+      ],
+      "correctOptionId": "d",
+      "explanation": "‘고집하다’는 자기 의견을 바꾸지 않고 굳게 버틸 때 쓰는 말이에요.",
+      "distractorRationales": {
+        "a": "생각을 곧바로 고치는 것은 버티는 태도와 정반대예요.",
+        "b": "주장을 접고 양보하는 상황에는 어울리지 않아요.",
+        "c": "남이 정한 대로만 따르는 것은 자기 의견을 지키는 게 아니에요."
+      }
+    },
+    {
+      "id": "g5-argon-0875",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "synonym_context",
+      "difficultyTier": "basic",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "골똘히",
+        "partOfSpeech": "부사",
+        "senseKey": "골똘히/부사/27067-1"
+      },
+      "stem": "“수아는 어려운 수학 문제를 풀려고 골똘히 생각했다.”에서 ‘골똘히’와 뜻이 가장 비슷한 말은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "집중하지 않고 건성건성 대충"
+        },
+        {
+          "id": "b",
+          "text": "주변 눈치를 살피며 불안하게"
+        },
+        {
+          "id": "c",
+          "text": "딴생각 없이 온 정신을 쏟아"
+        },
+        {
+          "id": "d",
+          "text": "아무 고민 없이 장난스럽게"
+        }
+      ],
+      "correctOptionId": "c",
+      "explanation": "‘골똘히’는 한 가지 일에 온 정신을 쏟아 딴생각이 없음을 뜻해요.",
+      "distractorRationales": {
+        "a": "건성으로 대충 생각하는 것은 정신을 쏟는 것과 반대예요.",
+        "b": "불안하게 눈치를 살피는 것은 몰두하는 모습이 아니에요.",
+        "d": "장난스럽게 넘기는 태도는 깊이 생각하는 것과 달라요."
       }
     },
     {
@@ -31811,7 +33171,7 @@
       "status": "verified_candidate",
       "grade": 5,
       "type": "definition",
-      "difficultyTier": "advanced",
+      "difficultyTier": "challenge",
       "variantTag": "polysemy",
       "target": {
         "lemma": "낙관적",
@@ -31846,12 +33206,52 @@
       }
     },
     {
+      "id": "g5-argon-0880",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "usage",
+      "difficultyTier": "basic",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "골똘히",
+        "partOfSpeech": "부사",
+        "senseKey": "골똘히/부사/27067-1"
+      },
+      "stem": "‘골똘히’를 알맞게 사용한 문장은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "딴생각에 빠져 친구의 설명을 골똘히 흘려들었다."
+        },
+        {
+          "id": "b",
+          "text": "뜨거운 물에 닿자 생각할 틈 없이 골똘히 손을 뗐다."
+        },
+        {
+          "id": "c",
+          "text": "깊이 잠들어 아무 의식 없이 밤새 골똘히 코를 골았다."
+        },
+        {
+          "id": "d",
+          "text": "기사는 다음 바둑돌을 어디에 둘지 골똘히 궁리했다."
+        }
+      ],
+      "correctOptionId": "d",
+      "explanation": "‘골똘히’는 한 가지 일에 온 정신을 쏟아 생각할 때 쓰는 부사예요.",
+      "distractorRationales": {
+        "a": "딴생각을 하며 흘려듣는 행동과는 뜻이 서로 충돌해요.",
+        "b": "생각할 틈도 없는 반사적인 행동에는 쓸 수 없어요.",
+        "c": "잠들어 의식이 없는 상태에서는 정신을 쏟을 수 없어요."
+      }
+    },
+    {
       "id": "g5-argon-0881",
       "revision": 1,
       "status": "verified_candidate",
       "grade": 5,
       "type": "definition",
-      "difficultyTier": "advanced",
+      "difficultyTier": "core",
       "variantTag": "polysemy",
       "target": {
         "lemma": "적당히",
@@ -31886,12 +33286,52 @@
       }
     },
     {
+      "id": "g5-argon-0882",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "cloze",
+      "difficultyTier": "basic",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "구별하다",
+        "partOfSpeech": "동사",
+        "senseKey": "구별하다/동사/36557-1"
+      },
+      "stem": "빈칸에 알맞은 말은? “자석에 붙는 금속과 붙지 않는 비금속을 성질에 따라 정확히 (    ) 서로 다른 바구니에 담았다.”",
+      "options": [
+        {
+          "id": "a",
+          "text": "혼합하여"
+        },
+        {
+          "id": "b",
+          "text": "구별하여"
+        },
+        {
+          "id": "c",
+          "text": "방치하여"
+        },
+        {
+          "id": "d",
+          "text": "축소하여"
+        }
+      ],
+      "correctOptionId": "b",
+      "explanation": "성질이나 종류에 따라 갈라놓는다는 뜻의 ‘구별하여’가 알맞아요.",
+      "distractorRationales": {
+        "a": "‘혼합하여’는 한데 섞는다는 뜻이라 따로 담는 맥락과 반대예요.",
+        "c": "‘방치하여’는 그대로 내버려 둔다는 뜻이라 갈라놓지 못해요.",
+        "d": "‘축소하여’는 크기를 줄인다는 뜻이라 성질 분류와 무관해요."
+      }
+    },
+    {
       "id": "g5-argon-0883",
       "revision": 1,
       "status": "verified_candidate",
       "grade": 5,
       "type": "definition",
-      "difficultyTier": "advanced",
+      "difficultyTier": "core",
       "variantTag": "polysemy",
       "target": {
         "lemma": "지나치다",
@@ -31926,12 +33366,372 @@
       }
     },
     {
+      "id": "g5-argon-0884",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "definition",
+      "difficultyTier": "basic",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "굽히다",
+        "partOfSpeech": "동사",
+        "senseKey": "굽히다/동사/405394-1"
+      },
+      "stem": "“공예 시간에 곧은 철사를 펜치로 둥글게 굽혔다.”에서 ‘굽히다’의 뜻으로 알맞은 것은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "곧은 물체를 한쪽으로 휘게 하다"
+        },
+        {
+          "id": "b",
+          "text": "구부러진 물체를 반듯하게 펴다"
+        },
+        {
+          "id": "c",
+          "text": "긴 막대를 여러 토막으로 자르다"
+        },
+        {
+          "id": "d",
+          "text": "거친 표면을 사포로 매끄럽게 갈다"
+        }
+      ],
+      "correctOptionId": "a",
+      "explanation": "여기서 ‘굽히다’는 곧은 것을 한쪽으로 휘게 한다는 뜻이에요.",
+      "distractorRationales": {
+        "b": "구부러진 것을 반듯하게 펴는 것은 ‘굽히다’의 반대예요.",
+        "c": "여러 토막으로 자르는 것은 절단하다에 해당하는 뜻이에요.",
+        "d": "표면을 매끄럽게 가는 것은 연마하거나 다듬는 일이에요."
+      }
+    },
+    {
+      "id": "g5-argon-0885",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "cloze",
+      "difficultyTier": "basic",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "굽히다",
+        "partOfSpeech": "동사",
+        "senseKey": "굽히다/동사/405394-1"
+      },
+      "stem": "빈칸에 알맞은 말은? “전통 부채의 둥근 테두리를 만들려고 꼿꼿하던 대나무 살을 반원 모양이 되도록 부드럽게 (    ).”",
+      "options": [
+        {
+          "id": "a",
+          "text": "쪼갰다"
+        },
+        {
+          "id": "b",
+          "text": "굽혔다"
+        },
+        {
+          "id": "c",
+          "text": "털었다"
+        },
+        {
+          "id": "d",
+          "text": "늘였다"
+        }
+      ],
+      "correctOptionId": "b",
+      "explanation": "곧은 물체를 한쪽으로 휘게 한다는 뜻의 ‘굽혔다’가 알맞아요.",
+      "distractorRationales": {
+        "a": "‘쪼갰다’는 조각으로 가른다는 뜻이라 반원 모양을 못 만들어요.",
+        "c": "‘털었다’는 먼지 따위를 떼어 내는 동작이라 휘는 것과 달라요.",
+        "d": "‘늘였다’는 길이를 더 길게 하는 것이라 둥글게 휘지 않아요."
+      }
+    },
+    {
+      "id": "g5-argon-0886",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "definition",
+      "difficultyTier": "core",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "지속적",
+        "partOfSpeech": "관형사",
+        "senseKey": "지속적/관형사/314475-2"
+      },
+      "stem": "다음 글에서 ‘지속적’의 뜻은 무엇일까요? \"문화유산을 온전히 지키려면 우리의 지속적 관심이 필요합니다.\"",
+      "options": [
+        {
+          "id": "a",
+          "text": "한순간만 반짝하고 곧 끝나는"
+        },
+        {
+          "id": "b",
+          "text": "전혀 예상하지 못해 갑작스러운"
+        },
+        {
+          "id": "c",
+          "text": "어떤 상태가 오래 계속되는"
+        },
+        {
+          "id": "d",
+          "text": "겉모습만 화려하게 꾸며 놓은"
+        }
+      ],
+      "correctOptionId": "c",
+      "explanation": "‘지속적’은 어떤 상태가 끊이지 않고 오래 계속되는 것을 뜻해요.",
+      "distractorRationales": {
+        "a": "금방 끝나는 것은 반대 개념인 ‘일시적’에 가까워요.",
+        "b": "갑작스러운 상태를 뜻하는 낱말이 아니에요.",
+        "d": "겉치레를 나타내는 뜻과는 관련이 없어요."
+      }
+    },
+    {
+      "id": "g5-argon-0887",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "definition",
+      "difficultyTier": "core",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "일시적",
+        "partOfSpeech": "관형사",
+        "senseKey": "일시적/관형사/271225-2"
+      },
+      "stem": "다음 글에서 ‘일시적’의 뜻은 무엇일까요? \"갑자기 내린 소나기는 일시적 현상이라 곧 그쳤습니다.\"",
+      "options": [
+        {
+          "id": "a",
+          "text": "영원히 변하지 않고 이어지는"
+        },
+        {
+          "id": "b",
+          "text": "오래가지 않는 짧은 한때의"
+        },
+        {
+          "id": "c",
+          "text": "모든 분야에 두루 걸쳐 있는"
+        },
+        {
+          "id": "d",
+          "text": "속마음 깊은 곳에서 우러나는"
+        }
+      ],
+      "correctOptionId": "b",
+      "explanation": "‘일시적’은 오래 이어지지 않는 짧은 한때를 가리키는 말이에요.",
+      "distractorRationales": {
+        "a": "오래 변하지 않는 것은 반대되는 ‘영구적’의 뜻이에요.",
+        "c": "전체에 걸친다는 것은 ‘전반적’의 뜻풀이예요.",
+        "d": "마음속 깊은 곳과 관련된 뜻이 아니에요."
+      }
+    },
+    {
+      "id": "g5-argon-0888",
+      "revision": 3,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "definition",
+      "difficultyTier": "core",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "영구적",
+        "partOfSpeech": "관형사",
+        "senseKey": "영구적/관형사/236008-2"
+      },
+      "stem": "다음 글에서 ‘영구적’의 뜻은 무엇일까요? \"박물관은 고문서의 영구적 보존을 위해 습도를 조절합니다.\"",
+      "options": [
+        {
+          "id": "a",
+          "text": "잠시 동안만 머물다 사라지는"
+        },
+        {
+          "id": "b",
+          "text": "손의 힘만으로 기계를 돌리는"
+        },
+        {
+          "id": "c",
+          "text": "오래도록 변하지 아니하는"
+        },
+        {
+          "id": "d",
+          "text": "겉으로만 살짝 드러나 보이는"
+        }
+      ],
+      "correctOptionId": "c",
+      "explanation": "‘영구적’은 오래도록 변하지 아니하는 성질을 나타내는 말이에요.",
+      "distractorRationales": {
+        "a": "짧은 한때에 그치는 ‘일시적’의 뜻이라 반대돼요.",
+        "b": "손으로 기계를 움직이는 ‘수동’의 뜻이라 보존 기간과 무관해요.",
+        "d": "겉으로만 나타나는 ‘표면적’의 뜻이라 맞지 않아요."
+      }
+    },
+    {
+      "id": "g5-argon-0889",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "definition",
+      "difficultyTier": "core",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "전반적",
+        "partOfSpeech": "관형사",
+        "senseKey": "전반적/관형사/284779-2"
+      },
+      "stem": "다음 글에서 ‘전반적’의 뜻은 무엇일까요? \"지진 대비 훈련 전에 학교 시설의 전반적 점검을 했습니다.\"",
+      "options": [
+        {
+          "id": "a",
+          "text": "관계되는 부문 전체에 두루 걸친"
+        },
+        {
+          "id": "b",
+          "text": "아주 작은 한 구석에만 국한된"
+        },
+        {
+          "id": "c",
+          "text": "아주 짧은 순간에만 나타나는"
+        },
+        {
+          "id": "d",
+          "text": "남이 시키는 대로만 움직이는"
+        }
+      ],
+      "correctOptionId": "a",
+      "explanation": "‘전반적’은 어떤 일과 관계되는 전체에 걸친 것을 뜻해요.",
+      "distractorRationales": {
+        "b": "일부에만 한정되는 ‘부분적’의 뜻이라 반대돼요.",
+        "c": "짧은 한때를 뜻하는 ‘일시적’에 해당해요.",
+        "d": "스스로 움직이지 않는 태도와는 무관한 말이에요."
+      }
+    },
+    {
+      "id": "g5-argon-0890",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "synonym_context",
+      "difficultyTier": "basic",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "굽히다",
+        "partOfSpeech": "동사",
+        "senseKey": "굽히다/동사/405394-1"
+      },
+      "stem": "“두꺼운 구리선을 기역 자 모양으로 굽혀 고리를 만들었다.”에서 ‘굽혀’와 바꾸어 쓸 말로 알맞은 것은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "일직선으로 곧게 펴"
+        },
+        {
+          "id": "b",
+          "text": "짧은 토막으로 잘라"
+        },
+        {
+          "id": "c",
+          "text": "불에 달구어 녹여서"
+        },
+        {
+          "id": "d",
+          "text": "한쪽으로 휘게 하여"
+        }
+      ],
+      "correctOptionId": "d",
+      "explanation": "사물을 한쪽으로 휘게 하는 ‘굽히다’의 뜻과 통하는 표현이에요.",
+      "distractorRationales": {
+        "a": "일직선으로 곧게 펴는 것은 ‘굽히다’와 반대되는 동작이에요.",
+        "b": "토막으로 자르는 것은 구리선을 끊어 내는 일이라 뜻이 달라요.",
+        "c": "불에 녹이는 것은 고체 형태를 없애는 것이라 고리가 안 돼요."
+      }
+    },
+    {
+      "id": "g5-argon-0891",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "usage",
+      "difficultyTier": "core",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "자율적",
+        "partOfSpeech": "관형사",
+        "senseKey": "자율적/관형사/274730-2"
+      },
+      "stem": "‘자율적’을 가장 자연스럽게 쓴 문장은 무엇일까요?",
+      "options": [
+        {
+          "id": "a",
+          "text": "억지로 끌려가 하는 자율적 복종을 했다."
+        },
+        {
+          "id": "b",
+          "text": "빗방울이 떨어지는 자율적 낙하를 보았다."
+        },
+        {
+          "id": "c",
+          "text": "찬물이 불 위에서 자율적 수증기로 끓었다."
+        },
+        {
+          "id": "d",
+          "text": "학생들의 자율적 참여로 문고를 가꾸었다."
+        }
+      ],
+      "correctOptionId": "d",
+      "explanation": "‘자율적’은 스스로의 원칙에 따라 일하거나 절제할 때 써요.",
+      "distractorRationales": {
+        "a": "억지로 끌려가는 강제 상황에는 쓸 수 없어요.",
+        "b": "자연 현상인 빗방울의 낙하에는 어울리지 않아요.",
+        "c": "물이 끓는 물리적 변화에는 쓰이지 않는 말이에요."
+      }
+    },
+    {
+      "id": "g5-argon-0892",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "usage",
+      "difficultyTier": "core",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "깨우치다",
+        "partOfSpeech": "동사",
+        "senseKey": "깨우치다/동사/55798-1"
+      },
+      "stem": "‘깨우치다’가 바르게 쓰인 문장은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "선생님은 학생들에게 안전의 중요성을 깨우치셨다."
+        },
+        {
+          "id": "b",
+          "text": "남이 모르도록 비밀을 꼭 숨겨 깨우쳤다."
+        },
+        {
+          "id": "c",
+          "text": "거짓말로 친구를 더 헷갈리게 속여서 깨우쳤다."
+        },
+        {
+          "id": "d",
+          "text": "아무 설명도 없이 모른 체 지나가며 깨우쳤다."
+        }
+      ],
+      "correctOptionId": "a",
+      "explanation": "‘깨우치다’는 잘 모르는 사실을 깨달아 알게 한다는 뜻이에요.",
+      "distractorRationales": {
+        "b": "비밀을 숨겨 모르게 하는 것은 알게 하는 일과 반대예요.",
+        "c": "거짓말로 헷갈리게 속이는 상황에는 쓸 수 없어요.",
+        "d": "아무 설명 없이 지나가면 깨달아 알게 할 수 없어요."
+      }
+    },
+    {
       "id": "g5-argon-0893",
       "revision": 1,
       "status": "verified_candidate",
       "grade": 5,
       "type": "definition",
-      "difficultyTier": "challenge",
+      "difficultyTier": "core",
       "variantTag": "polysemy",
       "target": {
         "lemma": "긍정적",
@@ -31966,12 +33766,212 @@
       }
     },
     {
+      "id": "g5-argon-0894",
+      "revision": 3,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "usage",
+      "difficultyTier": "advanced",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "핵심적",
+        "partOfSpeech": "관형사",
+        "senseKey": "핵심적/관형사/362594-2"
+      },
+      "stem": "‘핵심적’을 가장 자연스럽게 쓴 문장은 무엇일까요?",
+      "options": [
+        {
+          "id": "a",
+          "text": "버려도 될 자투리를 핵심적 휴지라 불렀다."
+        },
+        {
+          "id": "b",
+          "text": "글에서 쓸데없는 핵심적 군더더기를 모두 지웠다."
+        },
+        {
+          "id": "c",
+          "text": "주제에서 한참 벗어난 핵심적 딴소리를 늘어놓았다."
+        },
+        {
+          "id": "d",
+          "text": "탐사에서 통신 장비가 핵심적 역할을 맡았다."
+        }
+      ],
+      "correctOptionId": "d",
+      "explanation": "‘핵심적’은 사물의 가장 중심이 되는 것을 나타낼 때 써요.",
+      "distractorRationales": {
+        "a": "중요하지 않은 자투리에는 ‘핵심적’이 어울리지 않아요.",
+        "b": "쓸데없이 덧붙은 군더더기는 중심이 되는 것과 반대돼요.",
+        "c": "주제에서 벗어난 딴소리에는 중심을 뜻하는 말이 맞지 않아요."
+      }
+    },
+    {
+      "id": "g5-argon-0895",
+      "revision": 3,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "definition",
+      "difficultyTier": "basic",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "깨우치다",
+        "partOfSpeech": "동사",
+        "senseKey": "깨우치다/동사/55798-1"
+      },
+      "stem": "“코치는 선수에게 패배의 원인을 차분히 짚어 주어 문제점을 깨우쳤다.”에서 ‘깨우치다’의 뜻은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "미처 몰랐던 것을 깨달아 알게 하다"
+        },
+        {
+          "id": "b",
+          "text": "남의 작은 실수를 사람들 앞에 폭로하다"
+        },
+        {
+          "id": "c",
+          "text": "어려운 과제를 대신 맡아서 처리하다"
+        },
+        {
+          "id": "d",
+          "text": "상대의 의견을 묻지 않고 강요하다"
+        }
+      ],
+      "correctOptionId": "a",
+      "explanation": "‘깨우치다’는 잘 몰랐던 사실을 깨달아 알게 한다는 뜻이에요.",
+      "distractorRationales": {
+        "b": "남의 실수를 들추어 알리는 것은 ‘폭로하다’예요.",
+        "c": "일을 대신 맡아 처리하는 것은 대행하는 행동이에요.",
+        "d": "의견을 묻지 않고 시키는 것은 ‘강요하다’에 가까워요."
+      }
+    },
+    {
+      "id": "g5-argon-0896",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "cloze",
+      "difficultyTier": "basic",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "깨우치다",
+        "partOfSpeech": "동사",
+        "senseKey": "깨우치다/동사/55798-1"
+      },
+      "stem": "빈칸에 알맞은 말은? “어머니는 장난감을 혼자만 쓰려던 동생이 양보의 가치를 알도록 차근차근 타일러 잘못을 (    ).”",
+      "options": [
+        {
+          "id": "a",
+          "text": "부추기셨다"
+        },
+        {
+          "id": "b",
+          "text": "칭찬하셨다"
+        },
+        {
+          "id": "c",
+          "text": "깨우치셨다"
+        },
+        {
+          "id": "d",
+          "text": "외면하셨다"
+        }
+      ],
+      "correctOptionId": "c",
+      "explanation": "잘못이나 도리를 깨달아 알게 한다는 뜻의 ‘깨우치셨다’가 알맞아요.",
+      "distractorRationales": {
+        "a": "‘부추기셨다’는 나쁜 행동을 더 하도록 부채질한다는 뜻이에요.",
+        "b": "‘칭찬하셨다’는 잘했다고 높이 평가하는 것이라 타이르는 맥락과 반대예요.",
+        "d": "‘외면하셨다’는 모른 체하고 피한다는 뜻이라 차근히 일러 준 상황과 달라요."
+      }
+    },
+    {
+      "id": "g5-argon-0897",
+      "revision": 3,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "usage",
+      "difficultyTier": "challenge",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "실질적",
+        "partOfSpeech": "관형사",
+        "senseKey": "실질적/관형사/453196-2"
+      },
+      "stem": "‘실질적’을 가장 자연스럽게 쓴 문장은 무엇일까요?",
+      "options": [
+        {
+          "id": "a",
+          "text": "필요한 물품을 전해 실질적 도움을 주었다."
+        },
+        {
+          "id": "b",
+          "text": "빈말뿐인 약속을 실질적 허풍이라 한다."
+        },
+        {
+          "id": "c",
+          "text": "알맹이 없이 겉만 꾸민 실질적 겉치레에 그쳤다."
+        },
+        {
+          "id": "d",
+          "text": "현실과 동떨어진 헛된 실질적 공상에 빠졌다."
+        }
+      ],
+      "correctOptionId": "a",
+      "explanation": "‘실질적’은 실제 본바탕과 같거나 그것에 근거하는 것을 뜻해요.",
+      "distractorRationales": {
+        "b": "빈말뿐인 허풍은 실제에 근거하는 뜻과 모순돼요.",
+        "c": "알맹이 없이 겉만 꾸민 겉치레에는 ‘실질적’이 어울리지 않아요.",
+        "d": "현실과 동떨어진 헛된 공상은 실제 본바탕에 근거하지 않아요."
+      }
+    },
+    {
+      "id": "g5-argon-0898",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "cloze",
+      "difficultyTier": "basic",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "끌어내다",
+        "partOfSpeech": "동사",
+        "senseKey": "끌어내다/동사/57317-1"
+      },
+      "stem": "빈칸에 알맞은 말은? “대원들은 진흙 구덩이에 빠진 수레에 밧줄을 묶어 힘을 모아 마침내 수레를 무사히 (    ).”",
+      "options": [
+        {
+          "id": "a",
+          "text": "끌어냈다"
+        },
+        {
+          "id": "b",
+          "text": "파묻었다"
+        },
+        {
+          "id": "c",
+          "text": "뒤집었다"
+        },
+        {
+          "id": "d",
+          "text": "부수었다"
+        }
+      ],
+      "correctOptionId": "a",
+      "explanation": "구덩이에 빠진 수레를 당겨서 밖으로 낸다는 뜻의 ‘끌어냈다’가 알맞아요.",
+      "distractorRationales": {
+        "b": "‘파묻었다’는 흙 속에 묻는다는 뜻이라 구출하는 상황과 반대예요.",
+        "c": "‘뒤집었다’는 위아래를 거꾸로 한다는 뜻이라 무사히 꺼낸 게 아니에요.",
+        "d": "‘부수었다’는 깨뜨려 망가뜨린다는 뜻이라 문맥에 맞지 않아요."
+      }
+    },
+    {
       "id": "g5-argon-0899",
       "revision": 1,
       "status": "verified_candidate",
       "grade": 5,
       "type": "usage",
-      "difficultyTier": "challenge",
+      "difficultyTier": "advanced",
       "variantTag": "polysemy",
       "target": {
         "lemma": "발전",
@@ -32011,7 +34011,7 @@
       "status": "verified_candidate",
       "grade": 5,
       "type": "usage",
-      "difficultyTier": "challenge",
+      "difficultyTier": "core",
       "variantTag": "polysemy",
       "target": {
         "lemma": "간절히",
@@ -32051,7 +34051,7 @@
       "status": "verified_candidate",
       "grade": 5,
       "type": "antonym_context",
-      "difficultyTier": "basic",
+      "difficultyTier": "core",
       "variantTag": "standard",
       "target": {
         "lemma": "몰두하다",
@@ -32087,11 +34087,11 @@
     },
     {
       "id": "g5-argon-0902",
-      "revision": 1,
+      "revision": 2,
       "status": "verified_candidate",
       "grade": 5,
       "type": "usage",
-      "difficultyTier": "basic",
+      "difficultyTier": "core",
       "variantTag": "standard",
       "target": {
         "lemma": "보완하다",
@@ -32110,7 +34110,7 @@
         },
         {
           "id": "c",
-          "text": "운동장 트랙을 친구와 빠르게 보완했다."
+          "text": "운동장에 울리는 메아리를 친구와 함께 보완했다."
         },
         {
           "id": "d",
@@ -32122,7 +34122,47 @@
       "distractorRationales": {
         "a": "과일을 먹는 동작에는 ‘보완하다’가 어울리지 않아요.",
         "b": "바람을 맞는 행동에는 쓸 수 없는 낱말이에요.",
-        "c": "달리기하는 동작과는 뜻이 전혀 맞지 않아요."
+        "c": "울리는 메아리는 부족한 것을 보충할 대상이 아니에요."
+      }
+    },
+    {
+      "id": "g5-argon-0903",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "cloze",
+      "difficultyTier": "basic",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "사로잡다",
+        "partOfSpeech": "동사",
+        "senseKey": "사로잡다/동사/440114-1"
+      },
+      "stem": "빈칸에 알맞은 말은? “구조 대원들은 농가에 나타난 멧돼지를 해치지 않고 그물로 (    ) 깊은 숲으로 돌려보냈다.”",
+      "options": [
+        {
+          "id": "a",
+          "text": "외면하여"
+        },
+        {
+          "id": "b",
+          "text": "칭찬하여"
+        },
+        {
+          "id": "c",
+          "text": "기억하여"
+        },
+        {
+          "id": "d",
+          "text": "사로잡아"
+        }
+      ],
+      "correctOptionId": "d",
+      "explanation": "‘사로잡다’는 사람이나 짐승 따위를 산 채로 잡는다는 뜻이에요.",
+      "distractorRationales": {
+        "a": "모른 체하고 피한다는 뜻이라 그물로 잡는 상황과 맞지 않아요.",
+        "b": "좋은 점을 높이 평가한다는 뜻이라 동물 구조 맥락과 무관해요.",
+        "c": "머릿속에 간직한다는 뜻이라 숲으로 돌려보내는 일과 달라요."
       }
     },
     {
@@ -32171,7 +34211,7 @@
       "status": "verified_candidate",
       "grade": 5,
       "type": "synonym_context",
-      "difficultyTier": "basic",
+      "difficultyTier": "challenge",
       "variantTag": "standard",
       "target": {
         "lemma": "결재",
@@ -32211,7 +34251,7 @@
       "status": "verified_candidate",
       "grade": 5,
       "type": "antonym_context",
-      "difficultyTier": "basic",
+      "difficultyTier": "challenge",
       "variantTag": "standard",
       "target": {
         "lemma": "계발",
@@ -32251,7 +34291,7 @@
       "status": "verified_candidate",
       "grade": 5,
       "type": "definition",
-      "difficultyTier": "basic",
+      "difficultyTier": "core",
       "variantTag": "standard",
       "target": {
         "lemma": "제시하다",
@@ -32286,83 +34326,43 @@
       }
     },
     {
-      "id": "g5-argon-0909",
-      "revision": 1,
-      "status": "verified_candidate",
-      "grade": 5,
-      "type": "antonym_context",
-      "difficultyTier": "basic",
-      "variantTag": "standard",
-      "target": {
-        "lemma": "접두사",
-        "partOfSpeech": "명사",
-        "senseKey": "접두사/명사/478417-1"
-      },
-      "stem": "다음 문장의 ‘접두사’와 붙는 위치가 정반대인 말은 무엇일까요? \"‘풋사과’의 ‘풋-’은 낱말 앞에 붙는 접두사입니다.\"",
-      "options": [
-        {
-          "id": "a",
-          "text": "접미사"
-        },
-        {
-          "id": "b",
-          "text": "합성어"
-        },
-        {
-          "id": "c",
-          "text": "단일어"
-        },
-        {
-          "id": "d",
-          "text": "고유어"
-        }
-      ],
-      "correctOptionId": "a",
-      "explanation": "앞에 붙는 ‘접두사’와 달리 ‘접미사’는 낱말의 뒤에 붙어요.",
-      "distractorRationales": {
-        "b": "뜻을 가진 말끼리 합쳐진 단어를 가리켜요.",
-        "c": "하나의 뿌리로만 이루어진 단어를 뜻해요.",
-        "d": "예전부터 전해 오는 순우리말을 이르는 말이에요."
-      }
-    },
-    {
-      "id": "g5-argon-0910",
-      "revision": 1,
+      "id": "g5-argon-0908",
+      "revision": 2,
       "status": "verified_candidate",
       "grade": 5,
       "type": "usage",
       "difficultyTier": "basic",
       "variantTag": "standard",
       "target": {
-        "lemma": "다의어",
-        "partOfSpeech": "명사",
-        "senseKey": "다의어/명사/74220-1"
+        "lemma": "끌어내다",
+        "partOfSpeech": "동사",
+        "senseKey": "끌어내다/동사/57317-1"
       },
-      "stem": "‘다의어’를 가장 바르게 쓴 문장은 무엇일까요?",
+      "stem": "‘끌어내다’가 알맞게 쓰인 문장은?",
       "options": [
         {
           "id": "a",
-          "text": "뜻이 하나뿐인 낱말을 모두 다의어라 한다."
+          "text": "옷장 안쪽으로 이불을 깊이 밀어 넣어 끌어냈다."
         },
         {
           "id": "b",
-          "text": "문장 사이에 찍는 쉼표를 다의어라 부른다."
+          "text": "서랍장 뒤에 끼어 있던 공을 막대기로 끌어냈다."
         },
         {
           "id": "c",
-          "text": "외국에서 들어온 음식 이름을 다의어라 한다."
+          "text": "가방 속에 책을 넣고 지퍼를 꼭 닫아 끌어냈다."
         },
         {
           "id": "d",
-          "text": "여러 뜻을 지닌 ‘손’은 대표적인 다의어이다."
+          "text": "화분 속에 씨앗을 심고 흙으로 덮어 끌어냈다."
         }
       ],
-      "correctOptionId": "d",
-      "explanation": "‘다의어’는 두 가지 이상의 뜻을 가진 단어를 말해요.",
+      "correctOptionId": "b",
+      "explanation": "‘끌어내다’는 안에 있는 것을 당겨서 밖으로 낸다는 뜻이에요.",
       "distractorRationales": {
-        "a": "뜻이 한 가지뿐인 단어는 ‘단어의 뜻’이 여럿이 아니에요.",
-        "b": "쉼표는 단어가 아니라 문장 부호에 해당해요.",
-        "c": "외국에서 들어온 말은 ‘외래어’라고 불러야 해요."
+        "a": "안쪽으로 깊이 밀어 넣는 것은 밖으로 내는 일과 반대예요.",
+        "c": "가방에 넣고 지퍼를 닫는 동작에는 어울리지 않아요.",
+        "d": "흙 속에 심고 덮는 것은 당겨 꺼내는 행동이 아니에요."
       }
     },
     {
@@ -32371,7 +34371,7 @@
       "status": "verified_candidate",
       "grade": 5,
       "type": "cloze",
-      "difficultyTier": "basic",
+      "difficultyTier": "core",
       "variantTag": "standard",
       "target": {
         "lemma": "한자어",
@@ -32406,83 +34406,243 @@
       }
     },
     {
-      "id": "g5-argon-0912",
-      "revision": 1,
+      "id": "g5-argon-0914",
+      "revision": 2,
       "status": "verified_candidate",
       "grade": 5,
-      "type": "definition",
+      "type": "cloze",
       "difficultyTier": "basic",
       "variantTag": "standard",
       "target": {
-        "lemma": "유의어",
-        "partOfSpeech": "명사",
-        "senseKey": "유의어/명사/259676-1"
+        "lemma": "나아지다",
+        "partOfSpeech": "동사",
+        "senseKey": "나아지다/동사/405932-1"
       },
-      "stem": "‘유의어’의 뜻은 무엇일까요? \"‘가게’와 ‘상점’은 서로 바꾸어 쓸 수 있는 유의어입니다.\"",
+      "stem": "빈칸에 알맞은 말은? “며칠 동안 꾸준히 치료를 받은 덕분에 다쳤던 발목 상태가 한결 (    ) 이제는 가볍게 걷는다.”",
       "options": [
         {
           "id": "a",
-          "text": "뜻이 서로 비슷한 관계에 있는 말"
+          "text": "나빠져서"
         },
         {
           "id": "b",
-          "text": "소리만 같고 뜻이 서로 다른 말"
+          "text": "흐려져서"
         },
         {
           "id": "c",
-          "text": "뜻이 서로 정반대가 되는 말"
+          "text": "좁아져서"
         },
         {
           "id": "d",
-          "text": "외국에서 들어와 굳어진 말"
+          "text": "나아져서"
         }
       ],
-      "correctOptionId": "a",
-      "explanation": "‘유의어’는 뜻이 서로 비슷한 말을 가리켜요.",
+      "correctOptionId": "d",
+      "explanation": "어떤 일이나 상태가 전보다 좋아진다는 뜻의 ‘나아져서’가 알맞아요.",
       "distractorRationales": {
-        "b": "소리가 같고 뜻이 다른 말은 ‘동음이의어’예요.",
-        "c": "뜻이 반대되는 관계의 말은 ‘반의어’예요.",
-        "d": "외국에서 들어와 쓰이는 말은 ‘외래어’예요."
+        "a": "‘나빠져서’는 상태가 더 안 좋아진 것이라 걷기 편해진 맥락과 반대예요.",
+        "b": "‘흐려져서’는 빛깔이나 기억이 불분명해지는 것이라 맞지 않아요.",
+        "c": "‘좁아져서’는 면적이나 폭이 줄어든다는 뜻이라 발목 회복과 무관해요."
       }
     },
     {
-      "id": "g5-argon-0913",
-      "revision": 1,
+      "id": "g5-argon-0915",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "synonym_context",
+      "difficultyTier": "core",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "보충하다",
+        "partOfSpeech": "동사",
+        "senseKey": "보충하다/동사/148580-1"
+      },
+      "stem": "다음 문장의 ‘보충했습니다’와 바꾸어 쓸 수 있는 말은 무엇일까요? \"텃밭의 메마른 흙에 거름과 물을 보충했습니다.\"",
+      "options": [
+        {
+          "id": "a",
+          "text": "덜어내 버렸습니다"
+        },
+        {
+          "id": "b",
+          "text": "보태어 채웠습니다"
+        },
+        {
+          "id": "c",
+          "text": "남김없이 비웠습니다"
+        },
+        {
+          "id": "d",
+          "text": "흩어지게 뿌렸습니다"
+        }
+      ],
+      "correctOptionId": "b",
+      "explanation": "‘보충하다’는 부족한 것을 보태어 채운다는 뜻이에요.",
+      "distractorRationales": {
+        "a": "있는 것을 빼내는 뜻이라 오히려 반대돼요.",
+        "c": "속을 비우는 동작이라 채우는 뜻과 맞지 않아요.",
+        "d": "사방으로 흩뿌리는 것만으로는 채우는 뜻이 안 돼요."
+      }
+    },
+    {
+      "id": "g5-argon-0916",
+      "revision": 2,
       "status": "verified_candidate",
       "grade": 5,
       "type": "synonym_context",
       "difficultyTier": "basic",
       "variantTag": "standard",
       "target": {
-        "lemma": "하위어",
-        "partOfSpeech": "명사",
-        "senseKey": "하위어/명사/517848-1"
+        "lemma": "나아지다",
+        "partOfSpeech": "동사",
+        "senseKey": "나아지다/동사/405932-1"
       },
-      "stem": "다음 글의 ‘하위어’와 뜻이 통하는 말은 무엇일까요? \"‘과일’에 비해 ‘사과’와 ‘포도’는 하위어입니다.\"",
+      "stem": "“매일 바른 자세로 연습했더니 글씨체가 많이 나아졌다.”에서 ‘나아졌다’와 뜻이 가장 비슷한 말은?",
       "options": [
         {
           "id": "a",
-          "text": "더 구체적이고 자세한 말"
+          "text": "전보다 상태가 좋아졌다"
         },
         {
           "id": "b",
-          "text": "범위가 훨씬 더 넓은 말"
+          "text": "전보다 모양이 엉망이 되었다"
         },
         {
           "id": "c",
-          "text": "뜻이 정반대가 되는 말"
+          "text": "처음과 똑같이 그대로였다"
         },
         {
           "id": "d",
-          "text": "지금은 사라져 안 쓰는 말"
+          "text": "연습을 멈추고 포기하였다"
         }
       ],
       "correctOptionId": "a",
-      "explanation": "‘하위어’는 어떤 말보다 구체적이고 자세한 뜻이 있는 말이에요.",
+      "explanation": "‘나아지다’는 어떤 일이나 상태가 전보다 좋아진다는 뜻이에요.",
       "distractorRationales": {
-        "b": "범위가 더 넓어 아우르는 말은 ‘상위어’예요.",
-        "c": "뜻이 서로 맞서는 말은 ‘반의어’에 해당해요.",
-        "d": "예전에만 쓰이던 옛말을 뜻하는 것이 아니에요."
+        "b": "모양이 엉망이 되는 것은 좋아지는 것과 정반대예요.",
+        "c": "변화 없이 그대로인 상태는 나아졌다고 할 수 없어요.",
+        "d": "중간에 멈추고 포기하는 것은 상태 호전과 무관해요."
+      }
+    },
+    {
+      "id": "g5-argon-0917",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "usage",
+      "difficultyTier": "basic",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "나아지다",
+        "partOfSpeech": "동사",
+        "senseKey": "나아지다/동사/405932-1"
+      },
+      "stem": "‘나아지다’를 바르게 쓴 문장은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "고장이 더 심해져 작동이 멈출 만큼 나아졌다."
+        },
+        {
+          "id": "b",
+          "text": "폭우로 길이 무너져 통행이 막힐 만큼 나아졌다."
+        },
+        {
+          "id": "c",
+          "text": "정화 활동 덕분에 하천의 수질이 한결 나아졌다."
+        },
+        {
+          "id": "d",
+          "text": "실수가 늘어 기록이 크게 떨어질 만큼 나아졌다."
+        }
+      ],
+      "correctOptionId": "c",
+      "explanation": "‘나아지다’는 일이나 상태가 전보다 좋아질 때 사용하는 말이에요.",
+      "distractorRationales": {
+        "a": "고장이 심해져 멈춘 것은 상태가 악화된 경우예요.",
+        "b": "길이 무너져 통행이 막힌 상황에는 쓸 수 없어요.",
+        "d": "실수가 늘어 기록이 떨어진 것은 나아진 게 아니에요."
+      }
+    },
+    {
+      "id": "g5-argon-0918",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "cloze",
+      "difficultyTier": "core",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "직접적",
+        "partOfSpeech": "명사",
+        "senseKey": "직접적/명사/315466-1"
+      },
+      "stem": "다음 문장의 빈칸에 들어갈 알맞은 말을 고르세요. \"다른 단계를 거치지 않고 곧바로 영향을 준 가장 (    )인 원인을 찾았습니다.\"",
+      "options": [
+        {
+          "id": "a",
+          "text": "직접적"
+        },
+        {
+          "id": "b",
+          "text": "간접적"
+        },
+        {
+          "id": "c",
+          "text": "형식적"
+        },
+        {
+          "id": "d",
+          "text": "우발적"
+        }
+      ],
+      "correctOptionId": "a",
+      "explanation": "중간 매개물 없이 바로 연결되는 것을 ‘직접적’이라고 해요.",
+      "distractorRationales": {
+        "b": "중간 단계를 거쳐 이어지는 것이라 문맥과 반대돼요.",
+        "c": "겉모양만 갖춘다는 뜻이라 곧바로 연결됨과 달라요.",
+        "d": "예기치 않게 우연히 일어나는 것이라 어울리지 않아요."
+      }
+    },
+    {
+      "id": "g5-argon-0919",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "cloze",
+      "difficultyTier": "basic",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "내세우다",
+        "partOfSpeech": "동사",
+        "senseKey": "내세우다/동사/406432-1"
+      },
+      "stem": "빈칸에 알맞은 말은? “운동회 입장식 때 씩씩한 친구를 기수로 뽑아 행렬 맨 앞에 (    ).”",
+      "options": [
+        {
+          "id": "a",
+          "text": "감추었다"
+        },
+        {
+          "id": "b",
+          "text": "따돌렸다"
+        },
+        {
+          "id": "c",
+          "text": "내세웠다"
+        },
+        {
+          "id": "d",
+          "text": "물리쳤다"
+        }
+      ],
+      "correctOptionId": "c",
+      "explanation": "사람을 앞으로 나와 서게 한다는 뜻의 ‘내세웠다’가 알맞아요.",
+      "distractorRationales": {
+        "a": "‘감추었다’는 보이지 않게 숨긴다는 뜻이라 맨 앞과 어긋나요.",
+        "b": "‘따돌렸다’는 무리에서 빼놓고 멀리한다는 뜻이라 맞지 않아요.",
+        "d": "‘물리쳤다’는 뒤로 물러가게 한다는 뜻이라 기수 역할과 반대예요."
       }
     },
     {
@@ -32491,7 +34651,7 @@
       "status": "verified_candidate",
       "grade": 5,
       "type": "synonym_context",
-      "difficultyTier": "core",
+      "difficultyTier": "basic",
       "variantTag": "standard",
       "target": {
         "lemma": "적절하다",
@@ -32531,7 +34691,7 @@
       "status": "verified_candidate",
       "grade": 5,
       "type": "antonym_context",
-      "difficultyTier": "core",
+      "difficultyTier": "challenge",
       "variantTag": "standard",
       "target": {
         "lemma": "모호하다",
@@ -32563,6 +34723,126 @@
         "a": "똑똑하지 않다는 뜻이라 ‘모호하다’와 비슷해요.",
         "c": "뜻이 확실하지 않다는 유의어에 가까워요.",
         "d": "얽혀 있어 까다롭다는 뜻이지 반대말이 아니에요."
+      }
+    },
+    {
+      "id": "g5-argon-0922",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "usage",
+      "difficultyTier": "basic",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "생생하다",
+        "partOfSpeech": "형용사",
+        "senseKey": "생생하다/형용사/446583-1"
+      },
+      "stem": "‘생생하다’를 가장 자연스럽게 쓴 문장은 무엇일까요?",
+      "options": [
+        {
+          "id": "a",
+          "text": "건전지가 닳아 멈춘 시계가 생생하다."
+        },
+        {
+          "id": "b",
+          "text": "갓 딴 상추가 시들지 않고 생생하다."
+        },
+        {
+          "id": "c",
+          "text": "필통 속에서 부러진 연필심이 생생하다."
+        },
+        {
+          "id": "d",
+          "text": "바싹 말라 부스러진 낙엽이 생생하다."
+        }
+      ],
+      "correctOptionId": "b",
+      "explanation": "여기서 ‘생생하다’는 시들거나 상하지 않고 생기가 있을 때 써요.",
+      "distractorRationales": {
+        "a": "멈춰 버린 기계에는 생기가 있다는 말을 못 써요.",
+        "c": "부러진 무생물인 연필심에는 어울리지 않아요.",
+        "d": "이미 바싹 말라 시든 낙엽과는 뜻이 모순돼요."
+      }
+    },
+    {
+      "id": "g5-argon-0923",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "cloze",
+      "difficultyTier": "core",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "교훈적",
+        "partOfSpeech": "명사",
+        "senseKey": "교훈적/명사/34635-1"
+      },
+      "stem": "다음 대화의 빈칸에 들어갈 알맞은 말을 고르세요. \"이 전래 동화를 읽고 어떤 점을 깨달았니?\" \"욕심을 버리고 나눔을 실천하라는 (    )인 내용이 인상 깊었어.\"",
+      "options": [
+        {
+          "id": "a",
+          "text": "충동적"
+        },
+        {
+          "id": "b",
+          "text": "형식적"
+        },
+        {
+          "id": "c",
+          "text": "이기적"
+        },
+        {
+          "id": "d",
+          "text": "교훈적"
+        }
+      ],
+      "correctOptionId": "d",
+      "explanation": "가르침이나 본보기로 삼을 만한 것을 ‘교훈적’이라고 해요.",
+      "distractorRationales": {
+        "a": "순간적인 욕구로 행동하는 뜻이라 깨달음과 달라요.",
+        "b": "겉모양만 치중하는 뜻이라 동화의 가르침과 맞지 않아요.",
+        "c": "자기 이익만 꾀하는 뜻이라 나눔의 주제와 반대돼요."
+      }
+    },
+    {
+      "id": "g5-argon-0924",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "definition",
+      "difficultyTier": "challenge",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "보편적",
+        "partOfSpeech": "명사",
+        "senseKey": "보편적/명사/150636-1"
+      },
+      "stem": "‘보편적’의 뜻은 무엇일까요? \"생명을 소중히 여기는 마음은 인류의 보편적인 가치입니다.\"",
+      "options": [
+        {
+          "id": "a",
+          "text": "어디에나 두루 미치거나 통하는 것"
+        },
+        {
+          "id": "b",
+          "text": "한 사람에게만 몰래 적용되는 것"
+        },
+        {
+          "id": "c",
+          "text": "아주 짧은 순간에만 나타나는 것"
+        },
+        {
+          "id": "d",
+          "text": "겉모양만 그럴듯하게 꾸며 놓은 것"
+        }
+      ],
+      "correctOptionId": "a",
+      "explanation": "‘보편적’은 대상 전체에 두루 미치거나 통하는 것을 뜻해요.",
+      "distractorRationales": {
+        "b": "일부에게만 한정되는 것은 ‘특수적’에 가까워요.",
+        "c": "잠깐만 이어지는 것은 ‘일시적’의 뜻풀이예요.",
+        "d": "겉모습만 꾸미는 ‘형식적’의 뜻이라 알맞지 않아요."
       }
     },
     {
@@ -32651,7 +34931,7 @@
       "status": "verified_candidate",
       "grade": 5,
       "type": "usage",
-      "difficultyTier": "core",
+      "difficultyTier": "challenge",
       "variantTag": "standard",
       "target": {
         "lemma": "자긍심",
@@ -32686,12 +34966,212 @@
       }
     },
     {
+      "id": "g5-argon-0928",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "synonym_context",
+      "difficultyTier": "basic",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "내세우다",
+        "partOfSpeech": "동사",
+        "senseKey": "내세우다/동사/406432-1"
+      },
+      "stem": "“선생님께서는 발표할 모둠 대표를 교탁 앞에 내세우셨다.”에서 ‘내세우셨다’와 뜻이 가장 비슷한 말은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "자기 자리로 돌려보내셨다"
+        },
+        {
+          "id": "b",
+          "text": "조용히 앉아서 듣게 하셨다"
+        },
+        {
+          "id": "c",
+          "text": "앞으로 나와 서게 하셨다"
+        },
+        {
+          "id": "d",
+          "text": "교실 밖으로 나가게 하셨다"
+        }
+      ],
+      "correctOptionId": "c",
+      "explanation": "여기서 ‘내세우다’는 사람을 앞으로 나와 서게 한다는 뜻이에요.",
+      "distractorRationales": {
+        "a": "자리로 돌려보내는 것은 나와 서게 하는 동작과 반대예요.",
+        "b": "자리에 앉아서 듣게 하는 것은 서게 하는 뜻이 아니에요.",
+        "d": "교실 밖으로 내보내는 것은 교탁 앞에 세우는 일과 달라요."
+      }
+    },
+    {
+      "id": "g5-argon-0929",
+      "revision": 3,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "synonym_context",
+      "difficultyTier": "basic",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "넓히다",
+        "partOfSpeech": "동사",
+        "senseKey": "넓히다/동사/405870-1"
+      },
+      "stem": "“주민들이 모일 수 있도록 마을 회관 앞마당을 넓혔다.”에서 ‘넓히다’와 뜻이 가장 가까운 말은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "전체 면적을 좁게 줄이다"
+        },
+        {
+          "id": "b",
+          "text": "바닥을 깊숙이 파헤치다"
+        },
+        {
+          "id": "c",
+          "text": "바닥의 면적을 크게 하다"
+        },
+        {
+          "id": "d",
+          "text": "출입을 막아서 폐쇄하다"
+        }
+      ],
+      "correctOptionId": "c",
+      "explanation": "여기서 ‘넓히다’는 면이나 바닥 따위의 면적을 크게 한다는 뜻이에요.",
+      "distractorRationales": {
+        "a": "면적을 좁게 줄이는 것은 ‘좁히다’로 반대되는 뜻이에요.",
+        "b": "바닥을 파헤치는 것은 면적을 크게 하는 일과 무관해요.",
+        "d": "출입을 막아서 폐쇄하는 것은 마당을 넓히는 뜻이 아니에요."
+      }
+    },
+    {
+      "id": "g5-argon-0930",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "usage",
+      "difficultyTier": "basic",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "넓히다",
+        "partOfSpeech": "동사",
+        "senseKey": "넓히다/동사/405870-1"
+      },
+      "stem": "‘넓히다’를 알맞게 사용한 문장은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "울타리를 안쪽으로 당겨 세워 운동장을 넓혔다."
+        },
+        {
+          "id": "b",
+          "text": "꽃을 더 심으려고 마당의 좁던 화단을 넓혔다."
+        },
+        {
+          "id": "c",
+          "text": "돗자리 반쪽을 접어 포개어 앉을 자리를 넓혔다."
+        },
+        {
+          "id": "d",
+          "text": "방바닥에 큰 짐을 잔뜩 쌓아 빈 공간을 넓혔다."
+        }
+      ],
+      "correctOptionId": "b",
+      "explanation": "‘넓히다’는 바닥이나 공간의 면적을 더 크게 할 때 쓰는 말이에요.",
+      "distractorRationales": {
+        "a": "울타리를 안쪽으로 당기면 운동장 면적이 오히려 줄어들어요.",
+        "c": "돗자리를 접어 포개면 앉을 수 있는 바닥이 더 좁아져요.",
+        "d": "큰 짐을 잔뜩 쌓아 두면 빈 바닥 공간이 줄어들어 어색해요."
+      }
+    },
+    {
+      "id": "g5-argon-0931",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "definition",
+      "difficultyTier": "basic",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "눈여겨보다",
+        "partOfSpeech": "동사",
+        "senseKey": "눈여겨보다/동사/71205-1"
+      },
+      "stem": "“수목원에서 나뭇잎 모양이 어떻게 다른지 눈여겨보았다.”에서 ‘눈여겨보다’의 뜻은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "주의 깊게 차근차근 살펴보다"
+        },
+        {
+          "id": "b",
+          "text": "관심 없이 대충 스쳐 지나가다"
+        },
+        {
+          "id": "c",
+          "text": "보지 않고 머릿속으로 상상하다"
+        },
+        {
+          "id": "d",
+          "text": "눈을 감고 소리만 가만히 듣다"
+        }
+      ],
+      "correctOptionId": "a",
+      "explanation": "‘눈여겨보다’는 어떤 대상을 주의 깊게 잘 살펴본다는 뜻이에요.",
+      "distractorRationales": {
+        "b": "대충 스쳐 지나가는 것은 주의 깊게 보는 태도와 반대예요.",
+        "c": "직접 보지 않고 상상만 하는 것은 관찰하는 일이 아니에요.",
+        "d": "눈을 감고 소리에 집중하는 것은 귀 기울이는 행동이에요."
+      }
+    },
+    {
+      "id": "g5-argon-0932",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "usage",
+      "difficultyTier": "basic",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "눈여겨보다",
+        "partOfSpeech": "동사",
+        "senseKey": "눈여겨보다/동사/71205-1"
+      },
+      "stem": "‘눈여겨보다’가 바르게 쓰인 문장은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "두 눈을 감고 뒤돌아서서 안내판을 눈여겨보았다."
+        },
+        {
+          "id": "b",
+          "text": "그릇 빚는 손놀림을 배우려고 눈여겨보았다."
+        },
+        {
+          "id": "c",
+          "text": "관심 없이 스쳐 지나가며 꽃을 눈여겨보았다."
+        },
+        {
+          "id": "d",
+          "text": "고개를 돌려 한 번도 안 쳐다보며 눈여겨보았다."
+        }
+      ],
+      "correctOptionId": "b",
+      "explanation": "‘눈여겨보다’는 관심을 두고 주의 깊게 잘 살펴볼 때 써요.",
+      "distractorRationales": {
+        "a": "눈을 감고 뒤돌아선 채로는 대상을 살펴볼 수 없어요.",
+        "c": "관심 없이 대충 스쳐 지나가는 태도와는 뜻이 반대예요.",
+        "d": "고개를 돌려 쳐다보지도 않는 상황에는 어울리지 않아요."
+      }
+    },
+    {
       "id": "g5-argon-0933",
       "revision": 1,
       "status": "verified_candidate",
       "grade": 5,
       "type": "definition",
-      "difficultyTier": "advanced",
+      "difficultyTier": "challenge",
       "variantTag": "polysemy",
       "target": {
         "lemma": "내면적",
@@ -32731,7 +35211,7 @@
       "status": "verified_candidate",
       "grade": 5,
       "type": "definition",
-      "difficultyTier": "advanced",
+      "difficultyTier": "challenge",
       "variantTag": "polysemy",
       "target": {
         "lemma": "외면적",
@@ -32766,12 +35246,92 @@
       }
     },
     {
+      "id": "g5-argon-0935",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "definition",
+      "difficultyTier": "core",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "다듬어지다",
+        "partOfSpeech": "동사",
+        "senseKey": "다듬어지다/동사/515268-1"
+      },
+      "stem": "“연습을 거듭하자 사회자의 진행 모습이 한결 다듬어졌다.”에서 ‘다듬어지다’의 뜻은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "긴장한 탓에 실수가 자꾸 늘어나다"
+        },
+        {
+          "id": "b",
+          "text": "정해진 순서를 어기고 마음대로 하다"
+        },
+        {
+          "id": "c",
+          "text": "말씨나 솜씨가 세련되고 깔끔해지다"
+        },
+        {
+          "id": "d",
+          "text": "목소리가 점점 작아져 안 들리다"
+        }
+      ],
+      "correctOptionId": "c",
+      "explanation": "‘다듬어지다’는 말씨나 태도, 솜씨 따위가 세련되고 깔끔해지는 것이에요.",
+      "distractorRationales": {
+        "a": "긴장하여 실수가 늘어나는 것은 서툴러지는 상황이에요.",
+        "b": "순서를 어기고 멋대로 하는 것은 깔끔해지는 뜻과 반대예요.",
+        "d": "목소리가 작아져 안 들리는 것은 세련됨과 관련이 없어요."
+      }
+    },
+    {
+      "id": "g5-argon-0936",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "cloze",
+      "difficultyTier": "basic",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "다듬어지다",
+        "partOfSpeech": "동사",
+        "senseKey": "다듬어지다/동사/515268-1"
+      },
+      "stem": "빈칸에 알맞은 말은? “처음에는 거칠고 투박하던 피리 연주 솜씨가 석 달 동안 연습을 거듭하자 매끄럽게 (    ).”",
+      "options": [
+        {
+          "id": "a",
+          "text": "흐트러졌다"
+        },
+        {
+          "id": "b",
+          "text": "엉클어졌다"
+        },
+        {
+          "id": "c",
+          "text": "다듬어졌다"
+        },
+        {
+          "id": "d",
+          "text": "일그러졌다"
+        }
+      ],
+      "correctOptionId": "c",
+      "explanation": "솜씨나 태도가 세련되고 깔끔해진다는 뜻의 ‘다듬어졌다’가 알맞아요.",
+      "distractorRationales": {
+        "a": "‘흐트러졌다’는 질서나 모양이 어지러워진다는 뜻이라 반대예요.",
+        "b": "‘엉클어졌다’는 실이나 일 따위가 뒤섞여 꼬인다는 뜻이에요.",
+        "d": "‘일그러졌다’는 모양이 비뚤어져 망가진다는 뜻이라 어색해요."
+      }
+    },
+    {
       "id": "g5-argon-0937",
       "revision": 1,
       "status": "verified_candidate",
       "grade": 5,
       "type": "definition",
-      "difficultyTier": "advanced",
+      "difficultyTier": "core",
       "variantTag": "polysemy",
       "target": {
         "lemma": "평화",
@@ -32803,6 +35363,46 @@
         "a": "소리는 같지만 보통 이야기를 뜻하는 다른 ‘평화’예요.",
         "b": "가치를 따져 매기는 ‘평가’의 뜻이라 달라요.",
         "c": "갈등하고 대립하는 상태라 오히려 반대돼요."
+      }
+    },
+    {
+      "id": "g5-argon-0938",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "usage",
+      "difficultyTier": "basic",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "더듬다",
+        "partOfSpeech": "동사",
+        "senseKey": "더듬다/동사/83333-1"
+      },
+      "stem": "‘더듬다’를 알맞게 사용한 문장은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "불 꺼진 방에서 벽을 손으로 더듬어 스위치를 찾았다."
+        },
+        {
+          "id": "b",
+          "text": "부엌에서 풍겨 오는 된장국 냄새를 코로 더듬었다."
+        },
+        {
+          "id": "c",
+          "text": "멀리서 들려오는 맑은 종소리를 두 귀로 더듬었다."
+        },
+        {
+          "id": "d",
+          "text": "뒷짐을 지고 아무것도 안 만지며 하늘의 별을 더듬었다."
+        }
+      ],
+      "correctOptionId": "a",
+      "explanation": "‘더듬다’는 잘 안 보이는 것을 손으로 만져 보며 찾는다는 뜻이에요.",
+      "distractorRationales": {
+        "b": "코로 음식 냄새를 맡는 감각에는 ‘더듬다’를 쓸 수 없어요.",
+        "c": "귀로 소리를 듣는 행동은 손으로 만져 찾는 일이 아니에요.",
+        "d": "손을 대지 않고 먼 별을 보는 상황과는 뜻이 맞지 않아요."
       }
     },
     {
@@ -32846,12 +35446,292 @@
       }
     },
     {
-      "id": "g5-argon-0947",
-      "revision": 1,
+      "id": "g5-argon-0940",
+      "revision": 2,
       "status": "verified_candidate",
       "grade": 5,
       "type": "definition",
-      "difficultyTier": "challenge",
+      "difficultyTier": "basic",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "덧붙이다",
+        "partOfSpeech": "동사",
+        "senseKey": "덧붙이다/동사/415071-1"
+      },
+      "stem": "“찢어진 문풍지 자리에 두꺼운 한지를 한 겹 더 덧붙였다.”에서 ‘덧붙이다’의 뜻은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "붙어 있던 종이를 말끔히 떼어 내다"
+        },
+        {
+          "id": "b",
+          "text": "종이 가운데를 가위로 둥글게 오리다"
+        },
+        {
+          "id": "c",
+          "text": "젖은 종이를 햇볕에 넓게 펴 말리다"
+        },
+        {
+          "id": "d",
+          "text": "이미 붙은 것 위에 겹쳐서 붙이다"
+        }
+      ],
+      "correctOptionId": "d",
+      "explanation": "여기서 ‘덧붙이다’는 붙은 것 위에 겹쳐 붙인다는 뜻이에요.",
+      "distractorRationales": {
+        "a": "붙은 종이를 떼어 내는 것은 ‘덧붙이다’와 반대되는 행동이에요.",
+        "b": "가위로 오려 내는 것은 겹쳐 붙이는 일과 관련이 없어요.",
+        "c": "햇볕에 펴서 말리는 것은 건조하는 동작이라 뜻이 달라요."
+      }
+    },
+    {
+      "id": "g5-argon-0941",
+      "revision": 3,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "usage",
+      "difficultyTier": "basic",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "덧붙이다",
+        "partOfSpeech": "동사",
+        "senseKey": "덧붙이다/동사/415071-1"
+      },
+      "stem": "‘덧붙이다’를 알맞게 사용한 문장은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "유리창에 아무것도 붙이지 않으려고 스티커를 덧붙였다."
+        },
+        {
+          "id": "b",
+          "text": "상자에 붙은 이름표 위에 새 스티커를 덧붙였다."
+        },
+        {
+          "id": "c",
+          "text": "쓰다 남은 색종이를 휴지통에 버리며 덧붙였다."
+        },
+        {
+          "id": "d",
+          "text": "벽보를 전부 뜯어내 빈 벽으로 만들며 덧붙였다."
+        }
+      ],
+      "correctOptionId": "b",
+      "explanation": "‘덧붙이다’는 이미 붙은 것 위에 겹쳐 붙일 때 사용하는 말이에요.",
+      "distractorRationales": {
+        "a": "아무것도 붙이지 않으려는 상황에는 ‘덧붙이다’가 어울리지 않아요.",
+        "c": "색종이를 휴지통에 버리는 행동에는 어울리지 않아요.",
+        "d": "벽보를 모두 뜯어내 빈 벽으로 만드는 상황과 어긋나요."
+      }
+    },
+    {
+      "id": "g5-argon-0942",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "synonym_context",
+      "difficultyTier": "basic",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "덧붙이다",
+        "partOfSpeech": "동사",
+        "senseKey": "덧붙이다/동사/415071-1"
+      },
+      "stem": "“모형 비행기 날개가 약해서 붙어 있던 종이 위에 마분지를 덧붙였다.”에서 ‘덧붙였다’와 뜻이 통하는 말은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "남김없이 뜯어 버렸다"
+        },
+        {
+          "id": "b",
+          "text": "가위로 잘게 오렸다"
+        },
+        {
+          "id": "c",
+          "text": "반으로 접어 숨겼다"
+        },
+        {
+          "id": "d",
+          "text": "한 겹 더 겹쳐 붙였다"
+        }
+      ],
+      "correctOptionId": "d",
+      "explanation": "붙은 것 위에 겹쳐 붙인다는 ‘덧붙이다’의 뜻과 통하는 말이에요.",
+      "distractorRationales": {
+        "a": "뜯어 버리는 것은 겹쳐 붙이는 동작과 정반대예요.",
+        "b": "가위로 잘게 오리는 것은 종이를 자르는 행동이에요.",
+        "c": "반으로 접어 숨기는 것은 보강하여 붙이는 일과 달라요."
+      }
+    },
+    {
+      "id": "g5-argon-0943",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "usage",
+      "difficultyTier": "basic",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "되돌아보다",
+        "partOfSpeech": "동사",
+        "senseKey": "되돌아보다/동사/415163-1"
+      },
+      "stem": "‘되돌아보다’가 바르게 쓰인 문장은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "걸어가다가 부르는 소리에 멈춰 뒤를 되돌아보았다."
+        },
+        {
+          "id": "b",
+          "text": "고개를 고정한 채 정면만 응시하며 되돌아보았다."
+        },
+        {
+          "id": "c",
+          "text": "눈을 꼭 감고 앞만 보고 곧장 달리며 되돌아보았다."
+        },
+        {
+          "id": "d",
+          "text": "뒤쪽은 안 쳐다보고 앞길만 살피며 되돌아보았다."
+        }
+      ],
+      "correctOptionId": "a",
+      "explanation": "‘되돌아보다’는 가던 방향에서 몸이나 얼굴을 돌려 다시 보는 것이에요.",
+      "distractorRationales": {
+        "b": "고개를 돌리지 않고 정면만 응시하면 뒤를 볼 수 없어요.",
+        "c": "눈을 감고 앞만 향해 달리는 동작과는 뜻이 어긋나요.",
+        "d": "뒤를 쳐다보지 않고 앞길만 살피는 상황과 정반대예요."
+      }
+    },
+    {
+      "id": "g5-argon-0944",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "synonym_context",
+      "difficultyTier": "basic",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "되돌아보다",
+        "partOfSpeech": "동사",
+        "senseKey": "되돌아보다/동사/415163-1"
+      },
+      "stem": "“산길을 오르던 등산객이 걸음을 멈추고 마을 쪽을 되돌아보았다.”에서 ‘되돌아보았다’와 뜻이 통하는 말은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "몸을 돌려 다시 바라보았다"
+        },
+        {
+          "id": "b",
+          "text": "고개를 숙여 발끝만 보았다"
+        },
+        {
+          "id": "c",
+          "text": "뒤도 안 보고 뛰어 올라갔다"
+        },
+        {
+          "id": "d",
+          "text": "눈을 감고 가만히 쉬었다"
+        }
+      ],
+      "correctOptionId": "a",
+      "explanation": "가던 방향에서 몸이나 얼굴을 돌려 다시 바라본다는 뜻이에요.",
+      "distractorRationales": {
+        "b": "고개를 숙여 발끝만 보는 것은 방향을 돌린 게 아니에요.",
+        "c": "뒤도 보지 않고 뛰어가는 것은 되돌아보는 일과 반대예요.",
+        "d": "눈을 감고 쉬는 것은 다시 바라보는 동작과 무관해요."
+      }
+    },
+    {
+      "id": "g5-argon-0945",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "synonym_context",
+      "difficultyTier": "core",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "두드러지다",
+        "partOfSpeech": "동사",
+        "senseKey": "두드러지다/동사/93139-1"
+      },
+      "stem": "“오래된 느티나무의 굵은 뿌리가 흙바닥 위로 두드러졌다.”에서 ‘두드러졌다’와 뜻이 가장 비슷한 말은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "깊숙하게 푹 꺼졌다"
+        },
+        {
+          "id": "b",
+          "text": "평평하게 잘 다져졌다"
+        },
+        {
+          "id": "c",
+          "text": "흔적 없이 사라졌다"
+        },
+        {
+          "id": "d",
+          "text": "불룩하게 쑥 나왔다"
+        }
+      ],
+      "correctOptionId": "d",
+      "explanation": "여기서 ‘두드러지다’는 가운데가 불룩하게 쑥 나온다는 뜻이에요.",
+      "distractorRationales": {
+        "a": "깊숙하게 푹 꺼지는 것은 불룩 나오는 모양과 반대예요.",
+        "b": "평평하게 다져진 상태는 솟아 나온 모양이 아니에요.",
+        "c": "흔적 없이 사라지는 것은 겉으로 나온 상태와 달라요."
+      }
+    },
+    {
+      "id": "g5-argon-0946",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "usage",
+      "difficultyTier": "advanced",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "뒷받침하다",
+        "partOfSpeech": "동사",
+        "senseKey": "뒷받침하다/동사/93526-1"
+      },
+      "stem": "‘뒷받침하다’가 바르게 쓰인 문장은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "가족들이 선수의 도전을 든든하게 뒷받침했다."
+        },
+        {
+          "id": "b",
+          "text": "친구의 계획을 사사건건 방해하며 뒷받침했다."
+        },
+        {
+          "id": "c",
+          "text": "힘든 동료를 모른 체하고 외면하며 뒷받침했다."
+        },
+        {
+          "id": "d",
+          "text": "행사를 망치려고 도구를 숨기며 뒷받침했다."
+        }
+      ],
+      "correctOptionId": "a",
+      "explanation": "‘뒷받침하다’는 뒤에서 지지하고 도와준다는 뜻이에요.",
+      "distractorRationales": {
+        "b": "계획을 사사건건 방해하는 것은 도와주는 일과 반대예요.",
+        "c": "모른 체하고 외면하는 태도는 지지하는 모습이 아니에요.",
+        "d": "도구를 숨겨 행사를 망치는 행동에는 쓸 수 없어요."
+      }
+    },
+    {
+      "id": "g5-argon-0947",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "definition",
+      "difficultyTier": "advanced",
       "variantTag": "polysemy",
       "target": {
         "lemma": "구상하다",
@@ -32880,9 +35760,129 @@
       "correctOptionId": "c",
       "explanation": "여기서 ‘구상하다’는 창작할 작품의 내용과 형식을 정리하는 뜻이에요.",
       "distractorRationales": {
-        "a": "작품을 설치하고 ‘전시하다’에 해당하는 뜻이에요.",
-        "b": "잘못을 지적하고 ‘꾸짖다’와는 관련이 없어요.",
-        "d": "부품을 교체하고 ‘수리하다’의 뜻이라 맞지 않아요."
+        "a": "작품을 설치하는 것은 ‘전시하다’에 해당하는 뜻이에요.",
+        "b": "잘못을 지적해 나무라는 것은 ‘구상하다’와 관련이 없어요.",
+        "d": "부품을 교체하는 것은 ‘수리하다’의 뜻이라 맞지 않아요."
+      }
+    },
+    {
+      "id": "g5-argon-0948",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "definition",
+      "difficultyTier": "core",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "뒷받침하다",
+        "partOfSpeech": "동사",
+        "senseKey": "뒷받침하다/동사/93526-1"
+      },
+      "stem": "“봉사단이 마을 축제가 잘 열리도록 묵묵히 뒷받침했다.”에서 ‘뒷받침하다’의 뜻은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "앞에 나서서 모든 공로를 차지하다"
+        },
+        {
+          "id": "b",
+          "text": "작은 실수를 찾아내어 엄히 꾸짖다"
+        },
+        {
+          "id": "c",
+          "text": "정해진 일정을 일방적으로 취소하다"
+        },
+        {
+          "id": "d",
+          "text": "뒤에서 지지하고 힘을 보태 돕다"
+        }
+      ],
+      "correctOptionId": "d",
+      "explanation": "‘뒷받침하다’는 뒤에서 지지하고 도와준다는 뜻이에요.",
+      "distractorRationales": {
+        "a": "앞에 나서서 공로를 독차지하는 것은 뒷받침과 달라요.",
+        "b": "실수를 찾아 꾸짖는 것은 도와주는 행동이 아니에요.",
+        "c": "일정을 마음대로 취소하는 것은 지지하는 일과 반대예요."
+      }
+    },
+    {
+      "id": "g5-argon-0949",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "usage",
+      "difficultyTier": "basic",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "깊숙이",
+        "partOfSpeech": "부사",
+        "senseKey": "깊숙이/부사/52887-1"
+      },
+      "stem": "‘깊숙이’가 알맞게 쓰인 문장은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "가방 바깥 고리에 열쇠를 잘 보이게 깊숙이 걸었다."
+        },
+        {
+          "id": "b",
+          "text": "식탁 맨 끝에 숟가락을 살짝 걸쳐 깊숙이 두었다."
+        },
+        {
+          "id": "c",
+          "text": "소중한 편지를 서랍 안쪽 깊숙이 넣어 보관했다."
+        },
+        {
+          "id": "d",
+          "text": "현관문 바로 앞에 우산을 눈에 띄게 깊숙이 세웠다."
+        }
+      ],
+      "correctOptionId": "c",
+      "explanation": "‘깊숙이’는 겉에서 속까지의 거리가 멀고 으슥하게라는 뜻이에요.",
+      "distractorRationales": {
+        "a": "가방 바깥에 눈에 띄게 거는 것은 속이 깊은 위치가 아니에요.",
+        "b": "겉면에 살짝 걸쳐 올려 두는 동작과는 뜻이 서로 반대예요.",
+        "d": "입구 바로 앞은 안쪽으로 멀리 들어간 곳이 아니에요."
+      }
+    },
+    {
+      "id": "g5-argon-0950",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "usage",
+      "difficultyTier": "advanced",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "드높이다",
+        "partOfSpeech": "동사",
+        "senseKey": "드높이다/동사/92866-1"
+      },
+      "stem": "‘드높이다’를 알맞게 사용한 문장은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "거짓말로 신뢰를 무너뜨려 모임의 명예를 드높였다."
+        },
+        {
+          "id": "b",
+          "text": "아기가 깨지 않게 목소리를 한껏 낮추어 드높였다."
+        },
+        {
+          "id": "c",
+          "text": "훌륭한 전통 예술이 우리나라의 위상을 드높였다."
+        },
+        {
+          "id": "d",
+          "text": "강바람을 피하려고 천막 지붕을 낮게 내려 드높였다."
+        }
+      ],
+      "correctOptionId": "c",
+      "explanation": "‘드높이다’는 가치나 위상, 기세 따위를 매우 높게 한다는 뜻이에요.",
+      "distractorRationales": {
+        "a": "신뢰를 무너뜨리는 행동은 명예를 높이는 일과 반대예요.",
+        "b": "목소리를 낮추는 상황에는 ‘드높이다’를 쓸 수 없어요.",
+        "d": "지붕을 아래로 낮게 내리는 동작과는 뜻이 어긋나요."
       }
     },
     {
@@ -32931,7 +35931,7 @@
       "status": "verified_candidate",
       "grade": 5,
       "type": "usage",
-      "difficultyTier": "basic",
+      "difficultyTier": "core",
       "variantTag": "standard",
       "target": {
         "lemma": "대조",
@@ -33011,7 +36011,7 @@
       "status": "verified_candidate",
       "grade": 5,
       "type": "definition",
-      "difficultyTier": "basic",
+      "difficultyTier": "core",
       "variantTag": "standard",
       "target": {
         "lemma": "조정하다",
@@ -33051,7 +36051,7 @@
       "status": "verified_candidate",
       "grade": 5,
       "type": "synonym_context",
-      "difficultyTier": "basic",
+      "difficultyTier": "core",
       "variantTag": "standard",
       "target": {
         "lemma": "존중",
@@ -33091,7 +36091,7 @@
       "status": "verified_candidate",
       "grade": 5,
       "type": "antonym_context",
-      "difficultyTier": "basic",
+      "difficultyTier": "advanced",
       "variantTag": "standard",
       "target": {
         "lemma": "해결책",
@@ -33131,7 +36131,7 @@
       "status": "verified_candidate",
       "grade": 5,
       "type": "usage",
-      "difficultyTier": "basic",
+      "difficultyTier": "core",
       "variantTag": "standard",
       "target": {
         "lemma": "응용하다",
@@ -33211,7 +36211,7 @@
       "status": "verified_candidate",
       "grade": 5,
       "type": "definition",
-      "difficultyTier": "basic",
+      "difficultyTier": "core",
       "variantTag": "standard",
       "target": {
         "lemma": "재구성하다",
@@ -33246,12 +36246,52 @@
       }
     },
     {
+      "id": "g5-argon-0960",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "definition",
+      "difficultyTier": "basic",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "드높이다",
+        "partOfSpeech": "동사",
+        "senseKey": "드높이다/동사/92866-1"
+      },
+      "stem": "“힘찬 응원 소리가 선수들의 사기를 드높였다.”에서 ‘드높이다’의 뜻은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "크던 소리를 아주 작게 줄이다"
+        },
+        {
+          "id": "b",
+          "text": "수준이나 기세를 매우 높게 하다"
+        },
+        {
+          "id": "c",
+          "text": "흩어진 물건을 한곳에 모으다"
+        },
+        {
+          "id": "d",
+          "text": "급하게 가던 걸음을 멈추다"
+        }
+      ],
+      "correctOptionId": "b",
+      "explanation": "‘드높이다’는 기세나 위상 따위를 매우 높게 한다는 뜻이에요.",
+      "distractorRationales": {
+        "a": "소리를 작게 줄이는 것은 높게 하는 것과 반대예요.",
+        "c": "물건을 한곳에 모으는 것은 수집하거나 정리하는 일이에요.",
+        "d": "가던 걸음을 멈추는 것은 정지하는 동작이라 뜻이 달라요."
+      }
+    },
+    {
       "id": "g5-argon-0961",
       "revision": 1,
       "status": "verified_candidate",
       "grade": 5,
       "type": "antonym_context",
-      "difficultyTier": "basic",
+      "difficultyTier": "challenge",
       "variantTag": "standard",
       "target": {
         "lemma": "함축적",
@@ -33291,7 +36331,7 @@
       "status": "verified_candidate",
       "grade": 5,
       "type": "usage",
-      "difficultyTier": "basic",
+      "difficultyTier": "core",
       "variantTag": "standard",
       "target": {
         "lemma": "사실적",
@@ -33331,7 +36371,7 @@
       "status": "verified_candidate",
       "grade": 5,
       "type": "cloze",
-      "difficultyTier": "basic",
+      "difficultyTier": "advanced",
       "variantTag": "standard",
       "target": {
         "lemma": "타당하다",
@@ -33363,6 +36403,46 @@
         "a": "흐리터분하여 분명하지 않다는 뜻이라 이치에 맞음과 달라요.",
         "b": "이치에 맞지 않고 그르다는 뜻이라 정반대예요.",
         "c": "상식에서 벗어나 전혀 맞지 않는다는 뜻이라 어색해요."
+      }
+    },
+    {
+      "id": "g5-argon-0964",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "cloze",
+      "difficultyTier": "basic",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "드높이다",
+        "partOfSpeech": "동사",
+        "senseKey": "드높이다/동사/92866-1"
+      },
+      "stem": "빈칸에 알맞은 말은? “해외 박물관에서 열린 한글 전시회가 우리 문화의 우수성을 널리 알리고 나라의 위상을 한층 (    ).”",
+      "options": [
+        {
+          "id": "a",
+          "text": "낮추었다"
+        },
+        {
+          "id": "b",
+          "text": "드높였다"
+        },
+        {
+          "id": "c",
+          "text": "감추었다"
+        },
+        {
+          "id": "d",
+          "text": "미루었다"
+        }
+      ],
+      "correctOptionId": "b",
+      "explanation": "가치나 위상을 매우 높게 한다는 뜻의 ‘드높였다’가 알맞아요.",
+      "distractorRationales": {
+        "a": "‘낮추었다’는 아래로 내린다는 뜻이라 우수성 홍보와 반대예요.",
+        "c": "‘감추었다’는 드러나지 않게 숨긴다는 뜻이라 널리 알린 일과 어긋나요.",
+        "d": "‘미루었다’는 날짜나 시간을 뒤로 늦춘다는 뜻이라 맞지 않아요."
       }
     },
     {
@@ -33403,6 +36483,126 @@
         "a": "소리는 같지만 여러 섬을 뜻하는 동음이의어예요.",
         "b": "설계 도면을 그리는 동음이의어 ‘제도’의 뜻이에요.",
         "d": "개인의 비밀 기록과는 아무 관련이 없는 말이에요."
+      }
+    },
+    {
+      "id": "g5-argon-0966",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "synonym_context",
+      "difficultyTier": "basic",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "들여다보다",
+        "partOfSpeech": "동사",
+        "senseKey": "들여다보다/동사/94383-1"
+      },
+      "stem": "“복도 창문 너머로 교실 쪽을 살며시 들여다보았다.”에서 ‘들여다보았다’와 뜻이 가장 비슷한 말은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "안에서 밖을 내다보았다"
+        },
+        {
+          "id": "b",
+          "text": "밖에서 안을 바라보았다"
+        },
+        {
+          "id": "c",
+          "text": "고개 들어 위를 쳐다보았다"
+        },
+        {
+          "id": "d",
+          "text": "뒤돌아서서 먼 곳을 보았다"
+        }
+      ],
+      "correctOptionId": "b",
+      "explanation": "여기서 ‘들여다보다’는 밖에서 안을 본다는 뜻이에요.",
+      "distractorRationales": {
+        "a": "안에서 밖을 보는 것은 ‘내다보다’에 해당하는 뜻이에요.",
+        "c": "고개를 들어 위를 보는 것은 ‘올려다보다’나 ‘쳐다보다’예요.",
+        "d": "뒤돌아서 먼 곳을 보는 것은 안을 살피는 동작과 달라요."
+      }
+    },
+    {
+      "id": "g5-argon-0967",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "definition",
+      "difficultyTier": "basic",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "떠맡다",
+        "partOfSpeech": "동사",
+        "senseKey": "떠맡다/동사/418762-1"
+      },
+      "stem": "“야영장에서 힘든 설거지 뒷정리를 형이 혼자 떠맡았다.”에서 ‘떠맡다’의 뜻으로 알맞은 것은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "일이나 책임을 한꺼번에 모두 맡다"
+        },
+        {
+          "id": "b",
+          "text": "자기가 할 몫을 남에게 미루다"
+        },
+        {
+          "id": "c",
+          "text": "여러 사람에게 골고루 나누어 주다"
+        },
+        {
+          "id": "d",
+          "text": "시작한 과제를 도중에 그만두다"
+        }
+      ],
+      "correctOptionId": "a",
+      "explanation": "‘떠맡다’는 일이나 책임 따위를 모두 맡는다는 뜻이에요.",
+      "distractorRationales": {
+        "b": "할 일을 남에게 미루는 것은 ‘떠넘기다’에 가까워요.",
+        "c": "여럿에게 골고루 나누어 주는 것은 분담하는 일이에요.",
+        "d": "하던 일을 도중에 그만두는 것은 중도 포기예요."
+      }
+    },
+    {
+      "id": "g5-argon-0968",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "cloze",
+      "difficultyTier": "basic",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "떠맡다",
+        "partOfSpeech": "동사",
+        "senseKey": "떠맡다/동사/418762-1"
+      },
+      "stem": "빈칸에 알맞은 말은? “짝꿍이 감기로 결석하자 지수가 두 사람의 발표 준비를 혼자 다 (    ) 무사히 발표를 마쳤다.”",
+      "options": [
+        {
+          "id": "a",
+          "text": "포기해서"
+        },
+        {
+          "id": "b",
+          "text": "떠맡아서"
+        },
+        {
+          "id": "c",
+          "text": "미루어서"
+        },
+        {
+          "id": "d",
+          "text": "외면해서"
+        }
+      ],
+      "correctOptionId": "b",
+      "explanation": "남은 일이나 책임을 모두 맡는다는 뜻의 ‘떠맡아서’가 알맞아요.",
+      "distractorRationales": {
+        "a": "‘포기해서’는 도중에 그만둔다는 뜻이라 발표를 마친 결과와 반대예요.",
+        "c": "‘미루어서’는 뒤로 늦춘다는 뜻이라 제때 마친 상황과 어긋나요.",
+        "d": "‘외면해서’는 모른 체한다는 뜻이라 혼자 준비한 맥락과 달라요."
       }
     },
     {
@@ -33451,7 +36651,7 @@
       "status": "verified_candidate",
       "grade": 5,
       "type": "definition",
-      "difficultyTier": "core",
+      "difficultyTier": "basic",
       "variantTag": "standard",
       "target": {
         "lemma": "골똘히",
@@ -33483,6 +36683,166 @@
         "a": "정신을 쏟지 않는 태도로 ‘골똘히’와 반대돼요.",
         "b": "주의가 흩어진 모습이라 깊은 궁리와 맞지 않아요.",
         "d": "조급하게 서두르는 태도를 뜻하는 말이 아니에요."
+      }
+    },
+    {
+      "id": "g5-argon-0971",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "synonym_context",
+      "difficultyTier": "basic",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "에너지",
+        "partOfSpeech": "명사",
+        "senseKey": "에너지/명사/458648-1"
+      },
+      "stem": "다음 글의 ‘에너지’와 바꾸어 쓸 수 있는 말은 무엇일까요? \"든든히 아침밥을 먹었더니 하루를 보낼 에너지가 넘쳤습니다.\"",
+      "options": [
+        {
+          "id": "a",
+          "text": "활동하는 근원이 되는 힘"
+        },
+        {
+          "id": "b",
+          "text": "마음을 어둡게 하는 걱정"
+        },
+        {
+          "id": "c",
+          "text": "남에게 잘못을 미루는 핑계"
+        },
+        {
+          "id": "d",
+          "text": "일을 그르치게 하는 실수"
+        }
+      ],
+      "correctOptionId": "a",
+      "explanation": "여기서 ‘에너지’는 인간이 활동하는 근원이 되는 힘을 뜻해요.",
+      "distractorRationales": {
+        "b": "기운을 빼앗는 근심이라 활력과 반대돼요.",
+        "c": "책임을 회피하는 구실과는 관련이 없어요.",
+        "d": "잘못 저지른 일을 가리키는 말이 아니에요."
+      }
+    },
+    {
+      "id": "g5-argon-0972",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "synonym_context",
+      "difficultyTier": "basic",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "떠맡다",
+        "partOfSpeech": "동사",
+        "senseKey": "떠맡다/동사/418762-1"
+      },
+      "stem": "“도서부장이 까다로운 도서 정리 책임을 기꺼이 떠맡았다.”에서 ‘떠맡았다’와 바꾸어 쓸 말로 알맞은 것은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "후배에게 슬쩍 미루었다"
+        },
+        {
+          "id": "b",
+          "text": "모른 체하며 외면하였다"
+        },
+        {
+          "id": "c",
+          "text": "남김없이 모두 맡았다"
+        },
+        {
+          "id": "d",
+          "text": "시작도 전에 포기하였다"
+        }
+      ],
+      "correctOptionId": "c",
+      "explanation": "‘떠맡다’는 일이나 책임을 남김없이 모두 맡는다는 뜻이에요.",
+      "distractorRationales": {
+        "a": "남에게 슬쩍 미루는 것은 책임을 피하는 행동이에요.",
+        "b": "모른 체하며 외면하는 것은 맡는 태도와 정반대예요.",
+        "d": "시작하기 전에 포기하는 것은 일을 맡는 것과 달라요."
+      }
+    },
+    {
+      "id": "g5-argon-0973",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "usage",
+      "difficultyTier": "core",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "역사적",
+        "partOfSpeech": "명사",
+        "senseKey": "역사적/명사/230138-1"
+      },
+      "stem": "‘역사적’을 가장 자연스럽게 쓴 문장은 무엇일까요?",
+      "options": [
+        {
+          "id": "a",
+          "text": "냉장고에서 역사적인 얼음을 꺼내 깨물었다."
+        },
+        {
+          "id": "b",
+          "text": "연필깎이에 역사적인 연필심을 넣고 돌렸다."
+        },
+        {
+          "id": "c",
+          "text": "박물관에서 역사적인 기록물을 직접 살펴보았다."
+        },
+        {
+          "id": "d",
+          "text": "비누 거품으로 양손의 역사적인 흙을 씻었다."
+        }
+      ],
+      "correctOptionId": "c",
+      "explanation": "‘역사적’은 역사에 관한 것이나 역사에 남을 만한 것에 써요.",
+      "distractorRationales": {
+        "a": "평범한 얼음을 꾸미는 말로는 어울리지 않아요.",
+        "b": "학용품의 연필심을 가리킬 때 쓰지 않아요.",
+        "d": "손에 묻은 일반 흙과는 의미가 맞지 않아요."
+      }
+    },
+    {
+      "id": "g5-argon-0974",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "cloze",
+      "difficultyTier": "basic",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "마주하다",
+        "partOfSpeech": "동사",
+        "senseKey": "마주하다/동사/424101-1"
+      },
+      "stem": "수민이는 발표대 앞에 서서 시선을 맞추며 당당하게 청중을 (    ).",
+      "options": [
+        {
+          "id": "a",
+          "text": "외면했다"
+        },
+        {
+          "id": "b",
+          "text": "마주했다"
+        },
+        {
+          "id": "c",
+          "text": "회피했다"
+        },
+        {
+          "id": "d",
+          "text": "무시했다"
+        }
+      ],
+      "correctOptionId": "b",
+      "explanation": "‘마주하다’는 서로 마주 대한다는 뜻으로 시선을 맞춘 상황에 알맞아요.",
+      "distractorRationales": {
+        "a": "못 본 체하고 고개를 돌리는 것이라 시선을 맞춘 상황과 반대예요.",
+        "c": "피하여 물러나는 것이라 당당하게 선 모습과 어울리지 않아요.",
+        "d": "상대를 존중하지 않고 가볍게 여기는 것이라 문맥에 맞지 않아요."
       }
     },
     {
@@ -33526,12 +36886,132 @@
       }
     },
     {
+      "id": "g5-argon-0976",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "synonym_context",
+      "difficultyTier": "basic",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "마주하다",
+        "partOfSpeech": "동사",
+        "senseKey": "마주하다/동사/424101-1"
+      },
+      "stem": "다음 문장의 ‘마주하고’와 바꾸어 쓸 수 있는 말은 무엇일까요? \"골목길을 사이에 두고 두 집의 대문이 서로 마주하고 있다.\"",
+      "options": [
+        {
+          "id": "a",
+          "text": "등을 돌리고"
+        },
+        {
+          "id": "b",
+          "text": "굳게 닫히고"
+        },
+        {
+          "id": "c",
+          "text": "새로 고치고"
+        },
+        {
+          "id": "d",
+          "text": "마주 대하고"
+        }
+      ],
+      "correctOptionId": "d",
+      "explanation": "‘마주하다’는 ‘마주 대하다’와 뜻이 같아서 자연스럽게 바꾸어 쓸 수 있어요.",
+      "distractorRationales": {
+        "a": "반대쪽을 향한다는 뜻이라 마주 보는 방향과 반대예요.",
+        "b": "문이 잠기거나 닫힌다는 뜻이라 위치 관계와 관련이 없어요.",
+        "c": "낡은 곳을 수리한다는 뜻이라 마주 보는 상황과 달라요."
+      }
+    },
+    {
+      "id": "g5-argon-0977",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "usage",
+      "difficultyTier": "basic",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "마주하다",
+        "partOfSpeech": "동사",
+        "senseKey": "마주하다/동사/424101-1"
+      },
+      "stem": "‘마주하다’를 바르게 쓴 문장은 무엇일까요?",
+      "options": [
+        {
+          "id": "a",
+          "text": "뒤돌아 눈을 감은 채 친구와 시선을 마주했다."
+        },
+        {
+          "id": "b",
+          "text": "밀가루에 물을 부어 손으로 반죽을 마주했다."
+        },
+        {
+          "id": "c",
+          "text": "가족이 식탁에서 얼굴을 마주하며 대화했다."
+        },
+        {
+          "id": "d",
+          "text": "구겨진 종이를 다리미로 평평하게 마주했다."
+        }
+      ],
+      "correctOptionId": "c",
+      "explanation": "‘마주하다’는 서로 마주 대한다는 뜻으로 얼굴을 보며 대화할 때 자연스러워요.",
+      "distractorRationales": {
+        "a": "뒤돌아 눈을 감은 상태에서는 시선을 마주할 수 없어요.",
+        "b": "재료를 섞어 반죽을 만드는 동작에는 쓸 수 없어요.",
+        "d": "구겨진 종이를 펴는 행동과는 뜻이 맞지 않아요."
+      }
+    },
+    {
+      "id": "g5-argon-0978",
+      "revision": 3,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "definition",
+      "difficultyTier": "core",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "만회하다",
+        "partOfSpeech": "동사",
+        "senseKey": "만회하다/동사/109962-1"
+      },
+      "stem": "\"전반전에 뒤처졌던 우리 팀은 후반전에 집중력을 발휘해 점수 차이를 만회했다.\" 이 문장에서 ‘만회하다’의 뜻은 무엇일까요?",
+      "options": [
+        {
+          "id": "a",
+          "text": "못해진 상태를 바로잡아 회복하다"
+        },
+        {
+          "id": "b",
+          "text": "불리한 결과를 인정하고 포기하다"
+        },
+        {
+          "id": "c",
+          "text": "유리한 격차를 더욱 크게 벌리다"
+        },
+        {
+          "id": "d",
+          "text": "정해진 규칙을 바꾸어 새로 짜다"
+        }
+      ],
+      "correctOptionId": "a",
+      "explanation": "‘만회하다’는 뒤처지거나 잘못된 것을 바로잡아 회복한다는 뜻이에요.",
+      "distractorRationales": {
+        "b": "끝까지 집중해 따라잡은 상황이므로 포기하는 것과 반대예요.",
+        "c": "뒤처진 상태를 바로잡는 말이지 격차를 더 벌리는 뜻이 아니에요.",
+        "d": "경기 규칙을 새로 만드는 것과는 뜻이 전혀 달라요."
+      }
+    },
+    {
       "id": "g5-argon-0979",
       "revision": 1,
       "status": "verified_candidate",
       "grade": 5,
       "type": "definition",
-      "difficultyTier": "advanced",
+      "difficultyTier": "challenge",
       "variantTag": "polysemy",
       "target": {
         "lemma": "혁신적",
@@ -33606,12 +37086,172 @@
       }
     },
     {
+      "id": "g5-argon-0981",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "definition",
+      "difficultyTier": "basic",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "간절히",
+        "partOfSpeech": "부사",
+        "senseKey": "간절히/부사/4513-2"
+      },
+      "stem": "‘간절히’의 뜻은 무엇일까요? \"농부들은 단비가 내리기를 간절히 소망했습니다.\"",
+      "options": [
+        {
+          "id": "a",
+          "text": "기대도 없이 마지못해 억지로"
+        },
+        {
+          "id": "b",
+          "text": "눈치를 살피며 조심스럽게"
+        },
+        {
+          "id": "c",
+          "text": "계획하지 않고 갑자기 우연히"
+        },
+        {
+          "id": "d",
+          "text": "바라는 정도가 매우 절실하게"
+        }
+      ],
+      "correctOptionId": "d",
+      "explanation": "‘간절히’는 마음속에서 우러나와 바라는 정도가 매우 절실한 모양이에요.",
+      "distractorRationales": {
+        "a": "바라는 마음이 없는 억지 태도라 정반대예요.",
+        "b": "조심하는 태도를 뜻할 뿐 절실한 소망과 달라요.",
+        "c": "뜻밖에 일어나는 ‘우연히’의 뜻풀이예요."
+      }
+    },
+    {
+      "id": "g5-argon-0982",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "usage",
+      "difficultyTier": "challenge",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "만회하다",
+        "partOfSpeech": "동사",
+        "senseKey": "만회하다/동사/109962-1"
+      },
+      "stem": "‘만회하다’를 알맞게 사용한 문장은 무엇일까요?",
+      "options": [
+        {
+          "id": "a",
+          "text": "처음부터 끝까지 한 번도 안 지고 선두 자리를 만회했다."
+        },
+        {
+          "id": "b",
+          "text": "아직 시작하지도 않은 내일 발표를 미리 연습해 만회했다."
+        },
+        {
+          "id": "c",
+          "text": "초반의 실수로 뒤처진 기록을 끝까지 달려서 만회했다."
+        },
+        {
+          "id": "d",
+          "text": "새로 산 공책을 잃어버리지 않도록 가방 속에 잘 만회했다."
+        }
+      ],
+      "correctOptionId": "c",
+      "explanation": "‘만회하다’는 손실이나 잘못된 상태를 바로잡아 회복할 때 쓰는 말이에요.",
+      "distractorRationales": {
+        "a": "계속 선두를 지킨 상황에는 ‘유지했다’를 써야 자연스러워요.",
+        "b": "아직 일어나지 않은 일을 미리 챙기는 것은 ‘대비했다’예요.",
+        "d": "물건을 잘 챙겨 두는 행동에는 ‘보관했다’가 알맞아요."
+      }
+    },
+    {
+      "id": "g5-argon-0983",
+      "revision": 3,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "cloze",
+      "difficultyTier": "basic",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "맞서다",
+        "partOfSpeech": "동사",
+        "senseKey": "맞서다/동사/423759-1"
+      },
+      "stem": "경기 시작 신호가 울리자 두 선수는 경기장 중앙선 앞으로 바짝 다가와 서로의 눈을 바라보며 정면으로 (    ).",
+      "options": [
+        {
+          "id": "a",
+          "text": "돌아섰다"
+        },
+        {
+          "id": "b",
+          "text": "물러섰다"
+        },
+        {
+          "id": "c",
+          "text": "비켜섰다"
+        },
+        {
+          "id": "d",
+          "text": "맞섰다"
+        }
+      ],
+      "correctOptionId": "d",
+      "explanation": "‘맞서다’는 서로 마주 선다는 뜻으로 정면에서 바라본 상황에 맞아요.",
+      "distractorRationales": {
+        "a": "뒤로 방향을 바꾸는 것이라 서로 바라본 상황과 어긋나요.",
+        "b": "뒤로 발을 빼는 것이라 앞으로 다가온 상황과 반대예요.",
+        "c": "옆으로 길을 터 주는 것이라 정면으로 선 자세가 아니에요."
+      }
+    },
+    {
+      "id": "g5-argon-0984",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "usage",
+      "difficultyTier": "core",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "맞서다",
+        "partOfSpeech": "동사",
+        "senseKey": "맞서다/동사/423759-1"
+      },
+      "stem": "‘맞서다’를 알맞게 사용한 문장은 무엇일까요?",
+      "options": [
+        {
+          "id": "a",
+          "text": "학생들이 앞사람의 등만 보며 한 줄로 나란히 맞섰다."
+        },
+        {
+          "id": "b",
+          "text": "혼자 빈 운동장 구석에 등을 돌리고 앉아 조용히 맞섰다."
+        },
+        {
+          "id": "c",
+          "text": "두 팀 주장이 경기장 중앙에서 서로를 바라보며 맞섰다."
+        },
+        {
+          "id": "d",
+          "text": "결승선을 통과한 선수가 같은 방향으로 계속 달려 맞섰다."
+        }
+      ],
+      "correctOptionId": "c",
+      "explanation": "‘맞서다’는 두 대상이 서로 마주 선다는 뜻으로 쓰는 동사예요.",
+      "distractorRationales": {
+        "a": "앞사람의 등을 보며 한 줄로 서는 것은 마주 선 것이 아니에요.",
+        "b": "혼자 돌아앉아 있는 자세에는 ‘맞서다’를 쓸 수 없어요.",
+        "d": "같은 방향으로 계속 달리는 동작과는 의미가 맞지 않아요."
+      }
+    },
+    {
       "id": "g5-argon-0985",
       "revision": 1,
       "status": "verified_candidate",
       "grade": 5,
       "type": "definition",
-      "difficultyTier": "advanced",
+      "difficultyTier": "core",
       "variantTag": "polysemy",
       "target": {
         "lemma": "견디다",
@@ -33643,6 +37283,86 @@
         "a": "힘을 버티지 못하고 깨어지는 반대 상황이에요.",
         "c": "빛깔이 변하는 성질과는 관련이 없는 말이에요.",
         "d": "물에 녹는 현상을 뜻하는 낱말이 아니에요."
+      }
+    },
+    {
+      "id": "g5-argon-0986",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "definition",
+      "difficultyTier": "core",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "머뭇거리다",
+        "partOfSpeech": "동사",
+        "senseKey": "머뭇거리다/동사/114335-1"
+      },
+      "stem": "\"내 답이 맞는지 확신이 서지 않아 손을 들까 말까 머뭇거렸다.\" 여기서 ‘머뭇거리다’의 뜻은 무엇일까요?",
+      "options": [
+        {
+          "id": "a",
+          "text": "조금도 미루지 않고 그 자리에서 실행하다"
+        },
+        {
+          "id": "b",
+          "text": "지나간 잘못을 떠올리며 깊이 뉘우치다"
+        },
+        {
+          "id": "c",
+          "text": "다른 사람 앞에서 자신의 주장을 내세우다"
+        },
+        {
+          "id": "d",
+          "text": "선뜻 결단하여 행하지 못하고 망설이다"
+        }
+      ],
+      "correctOptionId": "d",
+      "explanation": "‘머뭇거리다’는 말이나 행동을 선뜻 결단하지 못하고 자꾸 망설인다는 뜻이에요.",
+      "distractorRationales": {
+        "a": "미루지 않고 바로 실행하는 것은 망설이는 것과 반대예요.",
+        "b": "지난 잘못을 반성하는 마음과는 뜻이 달라요.",
+        "c": "자기 생각을 강하게 주장하는 태도를 뜻하지 않아요."
+      }
+    },
+    {
+      "id": "g5-argon-0987",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "cloze",
+      "difficultyTier": "basic",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "머뭇거리다",
+        "partOfSpeech": "동사",
+        "senseKey": "머뭇거리다/동사/114335-1"
+      },
+      "stem": "진호는 친구에게 먼저 사과하고 싶었지만 용기가 나지 않아 교실 문 앞에서 선뜻 들어가지 못하고 한참 동안 (    ).",
+      "options": [
+        {
+          "id": "a",
+          "text": "머뭇거렸다"
+        },
+        {
+          "id": "b",
+          "text": "우쭐거렸다"
+        },
+        {
+          "id": "c",
+          "text": "싱글거렸다"
+        },
+        {
+          "id": "d",
+          "text": "빈정거렸다"
+        }
+      ],
+      "correctOptionId": "a",
+      "explanation": "용기가 나지 않아 선뜻 들어가지 못하고 망설인 상황에는 ‘머뭇거렸다’가 알맞아요.",
+      "distractorRationales": {
+        "b": "잘난 체하며 뽐내는 태도라 사과하러 간 상황과 어울리지 않아요.",
+        "c": "기분 좋게 자꾸 웃는 모습이라 미안해하는 상황과 맞지 않아요.",
+        "d": "남을 얄밉게 비웃는 행동이라 문맥과 전혀 달라요."
       }
     },
     {
@@ -33686,12 +37406,52 @@
       }
     },
     {
+      "id": "g5-argon-0989",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "synonym_context",
+      "difficultyTier": "basic",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "머뭇거리다",
+        "partOfSpeech": "동사",
+        "senseKey": "머뭇거리다/동사/114335-1"
+      },
+      "stem": "다음 문장의 ‘머뭇거리지’와 바꾸어 쓸 수 있는 말은 무엇일까요? \"위급한 상황을 본 시민들은 조금도 머뭇거리지 않고 곧바로 구조 대원을 도왔다.\"",
+      "options": [
+        {
+          "id": "a",
+          "text": "망설이지"
+        },
+        {
+          "id": "b",
+          "text": "서두르지"
+        },
+        {
+          "id": "c",
+          "text": "협조하지"
+        },
+        {
+          "id": "d",
+          "text": "집중하지"
+        }
+      ],
+      "correctOptionId": "a",
+      "explanation": "‘머뭇거리다’는 선뜻 행동하지 못하고 ‘망설이다’라는 뜻과 통해요.",
+      "distractorRationales": {
+        "b": "급히 행동하지 않는다는 뜻이라 곧바로 도운 상황과 어긋나요.",
+        "c": "힘을 보태지 않는다는 뜻이라 도왔다는 내용과 모순돼요.",
+        "d": "주의를 기울이지 않는다는 뜻이라 ‘머뭇거리다’와 의미가 달라요."
+      }
+    },
+    {
       "id": "g5-argon-0990",
       "revision": 1,
       "status": "verified_candidate",
       "grade": 5,
       "type": "definition",
-      "difficultyTier": "challenge",
+      "difficultyTier": "advanced",
       "variantTag": "polysemy",
       "target": {
         "lemma": "발전",
@@ -33726,12 +37486,52 @@
       }
     },
     {
+      "id": "g5-argon-0991",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "usage",
+      "difficultyTier": "core",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "머뭇거리다",
+        "partOfSpeech": "동사",
+        "senseKey": "머뭇거리다/동사/114335-1"
+      },
+      "stem": "‘머뭇거리다’를 알맞게 사용한 문장은 무엇일까요?",
+      "options": [
+        {
+          "id": "a",
+          "text": "무대 위에서 긴장한 탓에 첫마디를 떼지 못하고 머뭇거렸다."
+        },
+        {
+          "id": "b",
+          "text": "이번 방학에는 시골 할머니 댁에서 사흘 동안 머뭇거렸다."
+        },
+        {
+          "id": "c",
+          "text": "출발 신호가 울리자 조금의 지체도 없이 단숨에 머뭇거렸다."
+        },
+        {
+          "id": "d",
+          "text": "혼자 외운 시의 구절을 입속말로 막힘없이 줄줄 머뭇거렸다."
+        }
+      ],
+      "correctOptionId": "a",
+      "explanation": "‘머뭇거리다’는 말이나 행동을 선뜻 하지 못하고 망설일 때 써요.",
+      "distractorRationales": {
+        "b": "일정 기간 묵는 상황에는 ‘머물렀다’를 써야 바른 표현이에요.",
+        "c": "지체 없이 단숨에 행동하는 것은 망설이는 것과 정반대예요.",
+        "d": "막힘없이 줄줄 말하는 상황과는 의미가 서로 부딪혀요."
+      }
+    },
+    {
       "id": "g5-argon-0992",
       "revision": 1,
       "status": "verified_candidate",
       "grade": 5,
       "type": "definition",
-      "difficultyTier": "challenge",
+      "difficultyTier": "advanced",
       "variantTag": "polysemy",
       "target": {
         "lemma": "내다보다",
@@ -33766,12 +37566,132 @@
       }
     },
     {
+      "id": "g5-argon-0993",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "definition",
+      "difficultyTier": "core",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "몰두하다",
+        "partOfSpeech": "동사",
+        "senseKey": "몰두하다/동사/119740-1"
+      },
+      "stem": "\"과학자는 시간 가는 줄도 모른 채 새로운 실험에만 몰두했다.\" 여기서 ‘몰두하다’의 뜻은 무엇일까요?",
+      "options": [
+        {
+          "id": "a",
+          "text": "어떤 대상에 온 정신을 기울여 열중하다"
+        },
+        {
+          "id": "b",
+          "text": "여러 가지 과제를 번갈아 조금씩 살피다"
+        },
+        {
+          "id": "c",
+          "text": "하던 작업을 멈추고 주변 환경을 정돈하다"
+        },
+        {
+          "id": "d",
+          "text": "어려운 과정을 남에게 맡기고 물러나 있다"
+        }
+      ],
+      "correctOptionId": "a",
+      "explanation": "‘몰두하다’는 어떤 일에 온 정신을 다 기울여 깊이 열중한다는 뜻이에요.",
+      "distractorRationales": {
+        "b": "여러 일을 조금씩 번갈아 보는 것은 한곳에 집중하는 것과 달라요.",
+        "c": "하던 일을 멈추고 치우는 행동은 뜻풀이와 맞지 않아요.",
+        "d": "남에게 일을 맡기고 물러나는 것은 열중하는 태도가 아니에요."
+      }
+    },
+    {
+      "id": "g5-argon-0994",
+      "revision": 3,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "usage",
+      "difficultyTier": "basic",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "눈부시다",
+        "partOfSpeech": "형용사",
+        "senseKey": "눈부시다/형용사/68791-2"
+      },
+      "stem": "‘눈부시다’를 뜻에 맞게 쓴 문장은 무엇일까요?",
+      "options": [
+        {
+          "id": "a",
+          "text": "선수들이 대회에서 눈부신 활약을 펼쳤다."
+        },
+        {
+          "id": "b",
+          "text": "상한 우유에서 눈부신 냄새가 풍겼다."
+        },
+        {
+          "id": "c",
+          "text": "공책 한쪽에 눈부신 소리를 받아 적었다."
+        },
+        {
+          "id": "d",
+          "text": "부엌에서 냄비의 물을 눈부시게 끓였다."
+        }
+      ],
+      "correctOptionId": "a",
+      "explanation": "여기서 ‘눈부시다’는 활약이나 업적이 뛰어날 때 써요.",
+      "distractorRationales": {
+        "b": "불쾌한 냄새를 꾸미는 말로는 쓸 수 없어요.",
+        "c": "여기서 소리는 뛰어난 활약이나 업적을 뜻하지 않아요.",
+        "d": "물을 끓이는 동작은 뛰어난 활약이나 업적을 뜻하지 않아요."
+      }
+    },
+    {
+      "id": "g5-argon-0995",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "cloze",
+      "difficultyTier": "basic",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "몰두하다",
+        "partOfSpeech": "동사",
+        "senseKey": "몰두하다/동사/119740-1"
+      },
+      "stem": "지훈이는 도서관에서 재미있는 역사책을 펼치자마자 옆에서 부르는 소리도 못 들을 만큼 책 읽기에 (    ).",
+      "options": [
+        {
+          "id": "a",
+          "text": "소홀했다"
+        },
+        {
+          "id": "b",
+          "text": "몰두했다"
+        },
+        {
+          "id": "c",
+          "text": "반대했다"
+        },
+        {
+          "id": "d",
+          "text": "항의했다"
+        }
+      ],
+      "correctOptionId": "b",
+      "explanation": "옆에서 부르는 소리도 못 들을 만큼 온 정신을 기울였으므로 ‘몰두했다’가 알맞아요.",
+      "distractorRationales": {
+        "a": "정성을 들이지 않았다는 뜻이라 책에 푹 빠진 상황과 반대예요.",
+        "c": "어떤 의견이나 일에 맞선다는 뜻이라 문맥에 어울리지 않아요.",
+        "d": "부당하다고 따진다는 뜻이라 책을 읽는 상황과 맞지 않아요."
+      }
+    },
+    {
       "id": "g5-argon-0996",
       "revision": 1,
       "status": "verified_candidate",
       "grade": 5,
       "type": "definition",
-      "difficultyTier": "challenge",
+      "difficultyTier": "core",
       "variantTag": "polysemy",
       "target": {
         "lemma": "되짚다",
@@ -33806,12 +37726,52 @@
       }
     },
     {
+      "id": "g5-argon-0997",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "usage",
+      "difficultyTier": "advanced",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "드러내다",
+        "partOfSpeech": "동사",
+        "senseKey": "드러내다/동사/93851-2"
+      },
+      "stem": "‘드러내다’를 뜻에 맞게 자연스럽게 쓴 문장은 무엇일까요?",
+      "options": [
+        {
+          "id": "a",
+          "text": "새로 발견된 문서가 숨겨졌던 역사적 사실을 드러냈다."
+        },
+        {
+          "id": "b",
+          "text": "시원한 냉수를 유리컵에 가득 따라 맛있게 드러냈다."
+        },
+        {
+          "id": "c",
+          "text": "연필을 깎아서 필통 속 깊은 곳에 안 보이게 드러냈다."
+        },
+        {
+          "id": "d",
+          "text": "운동화 끈을 단단히 묶고 출발선 앞으로 힘껏 드러냈다."
+        }
+      ],
+      "correctOptionId": "a",
+      "explanation": "여기서 ‘드러내다’는 알려지지 않은 사실을 밝힐 때 써요.",
+      "distractorRationales": {
+        "b": "물을 마시는 동작에는 ‘드러내다’를 쓸 수 없어요.",
+        "c": "안 보이게 ‘숨기다’가 들어가야 할 자리라 모순돼요.",
+        "d": "달려 나가는 동작과는 뜻이 전혀 맞지 않아요."
+      }
+    },
+    {
       "id": "g5-argon-0998",
       "revision": 1,
       "status": "verified_candidate",
       "grade": 5,
       "type": "definition",
-      "difficultyTier": "challenge",
+      "difficultyTier": "core",
       "variantTag": "polysemy",
       "target": {
         "lemma": "떠오르다",
@@ -33846,12 +37806,92 @@
       }
     },
     {
+      "id": "g5-argon-0999",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "usage",
+      "difficultyTier": "core",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "맞이하다",
+        "partOfSpeech": "동사",
+        "senseKey": "맞이하다/동사/112675-2"
+      },
+      "stem": "‘맞이하다’를 뜻에 맞게 자연스럽게 쓴 문장은 무엇일까요?",
+      "options": [
+        {
+          "id": "a",
+          "text": "작은삼촌이 따뜻한 성품을 지닌 분을 아내로 맞이했다."
+        },
+        {
+          "id": "b",
+          "text": "연필로 공책 빈칸에 오늘 배운 공식들을 맞이했다."
+        },
+        {
+          "id": "c",
+          "text": "시원한 수돗물로 진흙이 묻은 장화를 깨끗이 맞이했다."
+        },
+        {
+          "id": "d",
+          "text": "가위로 색종이를 반듯하게 오려서 도화지에 맞이했다."
+        }
+      ],
+      "correctOptionId": "a",
+      "explanation": "여기서 ‘맞이하다’는 예의를 갖추어 가족의 일원이 되게 할 때 써요.",
+      "distractorRationales": {
+        "b": "공식을 공책에 ‘적다’ 대신 쓸 수 없는 말이에요.",
+        "c": "장화를 물로 ‘씻다’와 뜻이 전혀 맞지 않아요.",
+        "d": "색종이를 풀로 ‘붙이다’ 자리에 쓸 수 없어요."
+      }
+    },
+    {
+      "id": "g5-argon-1000",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "usage",
+      "difficultyTier": "core",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "몰입하다",
+        "partOfSpeech": "동사",
+        "senseKey": "몰입하다/동사/120414-1"
+      },
+      "stem": "‘몰입하다’를 자연스럽게 쓴 문장은 무엇일까요?",
+      "options": [
+        {
+          "id": "a",
+          "text": "끓는 냄비에 감자를 썰어서 몰입했다."
+        },
+        {
+          "id": "b",
+          "text": "관객들은 흥미로운 연극에 깊이 몰입했다."
+        },
+        {
+          "id": "c",
+          "text": "구겨진 종이를 반듯하게 펴서 몰입했다."
+        },
+        {
+          "id": "d",
+          "text": "젖은 우산을 우산꽂이에 세워 몰입했다."
+        }
+      ],
+      "correctOptionId": "b",
+      "explanation": "‘몰입하다’는 어떤 일에 깊이 파고들거나 빠질 때 써요.",
+      "distractorRationales": {
+        "a": "냄비에 재료를 ‘넣다’ 대신 쓸 수 없어요.",
+        "c": "종이를 펴는 물리적 동작에는 어울리지 않아요.",
+        "d": "우산을 꽂아 두는 행동과 뜻이 맞지 않아요."
+      }
+    },
+    {
       "id": "g5-argon-1001",
       "revision": 1,
       "status": "verified_candidate",
       "grade": 5,
       "type": "definition",
-      "difficultyTier": "basic",
+      "difficultyTier": "core",
       "variantTag": "standard",
       "target": {
         "lemma": "명확하다",
@@ -33886,12 +37926,52 @@
       }
     },
     {
+      "id": "g5-argon-1002",
+      "revision": 3,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "synonym_context",
+      "difficultyTier": "core",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "몰두하다",
+        "partOfSpeech": "동사",
+        "senseKey": "몰두하다/동사/119740-1"
+      },
+      "stem": "다음 문장의 ‘몰두하고’와 뜻이 가장 비슷한 말은 무엇일까요? \"언니는 방에서 모형 비행기를 조립하는 데 몰두하고 있다.\"",
+      "options": [
+        {
+          "id": "a",
+          "text": "반대하고"
+        },
+        {
+          "id": "b",
+          "text": "실망하고"
+        },
+        {
+          "id": "c",
+          "text": "열중하고"
+        },
+        {
+          "id": "d",
+          "text": "불평하고"
+        }
+      ],
+      "correctOptionId": "c",
+      "explanation": "‘몰두하다’는 어떤 일에 온 정신을 기울여 열중한다는 뜻이에요.",
+      "distractorRationales": {
+        "a": "의견이나 행동을 막아선다는 뜻이라 집중하는 것과 달라요.",
+        "b": "바라던 대로 되지 않아 속상해한다는 뜻이라 문맥과 어긋나요.",
+        "d": "마음에 들지 않아 투덜거린다는 뜻이라 바꾸어 쓸 수 없어요."
+      }
+    },
+    {
       "id": "g5-argon-1003",
       "revision": 1,
       "status": "verified_candidate",
       "grade": 5,
       "type": "antonym_context",
-      "difficultyTier": "basic",
+      "difficultyTier": "core",
       "variantTag": "standard",
       "target": {
         "lemma": "감동적",
@@ -33923,6 +38003,46 @@
         "a": "‘감동적’의 본래 사전 뜻과 같은 표현이에요.",
         "b": "마음에 깊은 울림이 남는 유의 표현이에요.",
         "c": "감동을 비유적으로 나타낸 비슷한 표현이에요."
+      }
+    },
+    {
+      "id": "g5-argon-1004",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "usage",
+      "difficultyTier": "challenge",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "전형적",
+        "partOfSpeech": "명사",
+        "senseKey": "전형적/명사/287631-1"
+      },
+      "stem": "‘전형적’을 바르게 쓴 문장은 무엇일까요?",
+      "options": [
+        {
+          "id": "a",
+          "text": "특징이 전혀 안 나타나는 전형적인 표본이다."
+        },
+        {
+          "id": "b",
+          "text": "속한 부류가 전혀 없는 전형적인 새 물건이다."
+        },
+        {
+          "id": "c",
+          "text": "공통점 없이 제각각 다른 전형적인 모양이다."
+        },
+        {
+          "id": "d",
+          "text": "온돌과 마루를 갖춘 한옥은 전형적인 전통 집이다."
+        }
+      ],
+      "correctOptionId": "d",
+      "explanation": "‘전형적’은 어떤 부류의 특징을 가장 잘 나타내는 것에 쓰는 말이에요.",
+      "distractorRationales": {
+        "a": "특징이 전혀 없는 대상에는 ‘전형적’을 쓸 수 없어요.",
+        "b": "비교할 부류가 없는 대상은 부류의 특징을 보여 줄 수 없어요.",
+        "c": "공통점이 없이 제각각인 모양과는 뜻이 서로 어긋나요."
       }
     },
     {
@@ -33971,7 +38091,7 @@
       "status": "verified_candidate",
       "grade": 5,
       "type": "definition",
-      "difficultyTier": "basic",
+      "difficultyTier": "core",
       "variantTag": "standard",
       "target": {
         "lemma": "투명성",
@@ -34011,7 +38131,7 @@
       "status": "verified_candidate",
       "grade": 5,
       "type": "synonym_context",
-      "difficultyTier": "basic",
+      "difficultyTier": "core",
       "variantTag": "standard",
       "target": {
         "lemma": "소속감",
@@ -34046,12 +38166,52 @@
       }
     },
     {
+      "id": "g5-argon-1008",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "definition",
+      "difficultyTier": "core",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "보완하다",
+        "partOfSpeech": "동사",
+        "senseKey": "보완하다/동사/433540-1"
+      },
+      "stem": "\"발표 자료에서 빠진 내용을 찾아 보완했다.\" 여기서 ‘보완하다’의 뜻은 무엇일까요?",
+      "options": [
+        {
+          "id": "a",
+          "text": "다 만든 결과물을 처음부터 지우다"
+        },
+        {
+          "id": "b",
+          "text": "중요한 내용을 남에게 몰래 숨기다"
+        },
+        {
+          "id": "c",
+          "text": "정해진 순서를 마음대로 뒤섞어 놓다"
+        },
+        {
+          "id": "d",
+          "text": "모자란 것을 보충하여 완전하게 하다"
+        }
+      ],
+      "correctOptionId": "d",
+      "explanation": "‘보완하다’는 모자라거나 부족한 것을 채워 완전하게 한다는 뜻이에요.",
+      "distractorRationales": {
+        "a": "만든 것을 지워 없애는 것은 보충하는 일과 반대예요.",
+        "b": "내용을 감추어 숨기는 행동과는 뜻이 전혀 달라요.",
+        "c": "차례를 뒤섞어 어지럽히는 뜻은 담고 있지 않아요."
+      }
+    },
+    {
       "id": "g5-argon-1009",
       "revision": 1,
       "status": "verified_candidate",
       "grade": 5,
       "type": "usage",
-      "difficultyTier": "basic",
+      "difficultyTier": "core",
       "variantTag": "standard",
       "target": {
         "lemma": "법률",
@@ -34086,12 +38246,52 @@
       }
     },
     {
+      "id": "g5-argon-1010",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "cloze",
+      "difficultyTier": "core",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "보완하다",
+        "partOfSpeech": "동사",
+        "senseKey": "보완하다/동사/433540-1"
+      },
+      "stem": "연습 과정에서 드러난 문제점과 부족한 부분을 꼼꼼히 (    ) 본공연을 훌륭하게 마쳤다.",
+      "options": [
+        {
+          "id": "a",
+          "text": "무시하여"
+        },
+        {
+          "id": "b",
+          "text": "보완하여"
+        },
+        {
+          "id": "c",
+          "text": "방치하여"
+        },
+        {
+          "id": "d",
+          "text": "외면하여"
+        }
+      ],
+      "correctOptionId": "b",
+      "explanation": "부족한 부분을 채워 바로잡아야 공연을 잘 마칠 수 있으므로 ‘보완하여’가 알맞아요.",
+      "distractorRationales": {
+        "a": "문제점을 가볍게 넘기면 부족한 점이 고쳐지지 않아요.",
+        "c": "그대로 내버려 두면 공연을 훌륭하게 마치기 어려워요.",
+        "d": "모른 체하고 피하는 태도라 앞뒤 문맥이 통하지 않아요."
+      }
+    },
+    {
       "id": "g5-argon-1011",
       "revision": 1,
       "status": "verified_candidate",
       "grade": 5,
       "type": "definition",
-      "difficultyTier": "basic",
+      "difficultyTier": "core",
       "variantTag": "standard",
       "target": {
         "lemma": "다수결",
@@ -34131,7 +38331,7 @@
       "status": "verified_candidate",
       "grade": 5,
       "type": "synonym_context",
-      "difficultyTier": "basic",
+      "difficultyTier": "core",
       "variantTag": "standard",
       "target": {
         "lemma": "보도",
@@ -34171,7 +38371,7 @@
       "status": "verified_candidate",
       "grade": 5,
       "type": "antonym_context",
-      "difficultyTier": "basic",
+      "difficultyTier": "core",
       "variantTag": "standard",
       "target": {
         "lemma": "소통하다",
@@ -34206,12 +38406,52 @@
       }
     },
     {
+      "id": "g5-argon-1014",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "usage",
+      "difficultyTier": "core",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "북돋우다",
+        "partOfSpeech": "동사",
+        "senseKey": "북돋우다/동사/438706-1"
+      },
+      "stem": "‘북돋우다’를 바르게 쓴 문장은 무엇일까요?",
+      "options": [
+        {
+          "id": "a",
+          "text": "따뜻한 응원 한마디가 친구의 용기를 북돋웠다."
+        },
+        {
+          "id": "b",
+          "text": "실수를 심하게 꾸짖어 의욕을 잔뜩 북돋웠다."
+        },
+        {
+          "id": "c",
+          "text": "깎은 연필을 필통 속에 가지런히 북돋웠다."
+        },
+        {
+          "id": "d",
+          "text": "창문의 커튼을 닫아 햇빛을 어둡게 북돋웠다."
+        }
+      ],
+      "correctOptionId": "a",
+      "explanation": "‘북돋우다’는 기운이나 정신 따위를 더욱 높여 줄 때 쓰는 말이에요.",
+      "distractorRationales": {
+        "b": "심하게 꾸짖으면 의욕이 꺾이므로 ‘북돋웠다’와 어울리지 않아요.",
+        "c": "학용품을 필통에 정리해 넣는 동작에는 쓸 수 없어요.",
+        "d": "빛을 가려 어둡게 만드는 상황과는 뜻이 맞지 않아요."
+      }
+    },
+    {
       "id": "g5-argon-1015",
       "revision": 1,
       "status": "verified_candidate",
       "grade": 5,
       "type": "cloze",
-      "difficultyTier": "core",
+      "difficultyTier": "basic",
       "variantTag": "standard",
       "target": {
         "lemma": "정직성",
@@ -34246,8 +38486,128 @@
       }
     },
     {
+      "id": "g5-argon-1016",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "definition",
+      "difficultyTier": "core",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "주도적",
+        "partOfSpeech": "명사",
+        "senseKey": "주도적/명사/478331-1"
+      },
+      "stem": "‘주도적’의 뜻은 무엇일까요? \"축제 준비에서 주도적인 역할을 맡았습니다.\"",
+      "options": [
+        {
+          "id": "a",
+          "text": "남의 뒤에 숨어 시키는 일만 하는 것"
+        },
+        {
+          "id": "b",
+          "text": "곁가지로 딸려서 조금만 거드는 것"
+        },
+        {
+          "id": "c",
+          "text": "앞장서서 조직이나 무리를 이끄는 것"
+        },
+        {
+          "id": "d",
+          "text": "아무 관심 없이 구경만 하고 있는 것"
+        }
+      ],
+      "correctOptionId": "c",
+      "explanation": "‘주도적’은 앞장서서 조직이나 무리를 이끄는 것을 뜻해요.",
+      "distractorRationales": {
+        "a": "피동적으로 끌려가는 태도로 ‘주도적’과 반대돼요.",
+        "b": "주된 것에 덧붙어 따르는 ‘부수적’에 가까워요.",
+        "d": "참여하지 않는 방관 태도라 이끄는 뜻과 달라요."
+      }
+    },
+    {
+      "id": "g5-argon-1017",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "synonym_context",
+      "difficultyTier": "core",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "긍정적",
+        "partOfSpeech": "명사",
+        "senseKey": "긍정적/명사/48468-1"
+      },
+      "stem": "‘긍정적’과 뜻이 통하는 표현은 무엇일까요? \"새 제안에 위원들이 긍정적인 반응을 보였습니다.\"",
+      "options": [
+        {
+          "id": "a",
+          "text": "옳다고 인정하여 받아들이는 것"
+        },
+        {
+          "id": "b",
+          "text": "틀렸다고 물리쳐 반대하는 것"
+        },
+        {
+          "id": "c",
+          "text": "이유 없이 대답을 회피하는 것"
+        },
+        {
+          "id": "d",
+          "text": "사실을 부풀려 거짓말하는 것"
+        }
+      ],
+      "correctOptionId": "a",
+      "explanation": "여기서 ‘긍정적’은 그러하거나 옳다고 인정하는 것을 뜻해요.",
+      "distractorRationales": {
+        "b": "옳지 않다고 거부하는 ‘부정적’ 반응이라 반대돼요.",
+        "c": "응답을 피하는 모호한 태도와는 뜻이 달라요.",
+        "d": "거짓으로 꾸며 말하는 행동과 관련이 없어요."
+      }
+    },
+    {
+      "id": "g5-argon-1018",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "cloze",
+      "difficultyTier": "basic",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "북돋우다",
+        "partOfSpeech": "동사",
+        "senseKey": "북돋우다/동사/438706-1"
+      },
+      "stem": "주장은 실수해서 풀이 죽은 후배가 다시 힘내어 도전할 수 있도록 사기를 (    ) 격려의 말을 건넸다.",
+      "options": [
+        {
+          "id": "a",
+          "text": "떨어뜨리는"
+        },
+        {
+          "id": "b",
+          "text": "북돋우는"
+        },
+        {
+          "id": "c",
+          "text": "꺾어 버리는"
+        },
+        {
+          "id": "d",
+          "text": "외면하는"
+        }
+      ],
+      "correctOptionId": "b",
+      "explanation": "풀이 죽은 후배에게 힘을 주는 상황이므로 기운을 높여 주는 ‘북돋우는’이 알맞아요.",
+      "distractorRationales": {
+        "a": "사기를 낮추는 말이라 다시 힘내게 한다는 문맥과 반대예요.",
+        "c": "의욕을 잃게 만드는 행동이라 격려의 말과 어울리지 않아요.",
+        "d": "모른 체하는 태도라 후배를 돕는 상황과 맞지 않아요."
+      }
+    },
+    {
       "id": "g5-argon-1019",
-      "revision": 1,
+      "revision": 2,
       "status": "verified_candidate",
       "grade": 5,
       "type": "usage",
@@ -34270,19 +38630,59 @@
         },
         {
           "id": "c",
-          "text": "둥근 축구공이 파란 하늘을 철저히 마셨다."
+          "text": "방학 동안 동생의 키가 어느새 철저히 자랐다."
         },
         {
           "id": "d",
-          "text": "연필 끝에 달린 지우개가 바람을 철저히 씹었다."
+          "text": "졸음을 참지 못해 입에서 하품이 철저히 나왔다."
         }
       ],
       "correctOptionId": "a",
       "explanation": "‘철저히’는 밑바닥까지 빈틈이나 부족함이 없이 할 때 써요.",
       "distractorRationales": {
         "b": "‘대충 건성으로’는 빈틈없는 태도와 모순돼요.",
-        "c": "공이 하늘을 마신다는 어색한 문장에는 못 써요.",
-        "d": "지우개가 바람을 씹는다는 뜻이 안 통하는 문장이에요."
+        "c": "키가 자라는 현상에는 빈틈없다는 뜻의 ‘철저히’가 어울리지 않아요.",
+        "d": "저절로 하품이 나오는 상황에는 ‘철저히’를 쓸 수 없어요."
+      }
+    },
+    {
+      "id": "g5-argon-1020",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "synonym_context",
+      "difficultyTier": "core",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "북돋우다",
+        "partOfSpeech": "동사",
+        "senseKey": "북돋우다/동사/438706-1"
+      },
+      "stem": "다음 문장의 ‘북돋우는’과 바꾸어 쓸 수 있는 말은 무엇일까요? \"관중들의 힘찬 함성이 지친 선수들의 기운을 북돋우는 힘이 되었다.\"",
+      "options": [
+        {
+          "id": "a",
+          "text": "크게 꺾어 놓는"
+        },
+        {
+          "id": "b",
+          "text": "더욱 높여 주는"
+        },
+        {
+          "id": "c",
+          "text": "몰래 감추어 두는"
+        },
+        {
+          "id": "d",
+          "text": "점점 약하게 하는"
+        }
+      ],
+      "correctOptionId": "b",
+      "explanation": "‘북돋우다’는 기운이나 정신을 ‘더욱 높여 주다’라는 뜻과 같아요.",
+      "distractorRationales": {
+        "a": "기운을 잃게 만드는 뜻이라 응원 함성의 역할과 반대예요.",
+        "c": "드러나지 않게 숨긴다는 뜻이라 문맥에 맞지 않아요.",
+        "d": "힘이 줄어들게 한다는 뜻이라 ‘북돋우다’와 반대 방향이에요."
       }
     },
     {
@@ -34291,7 +38691,7 @@
       "status": "verified_candidate",
       "grade": 5,
       "type": "definition",
-      "difficultyTier": "core",
+      "difficultyTier": "basic",
       "variantTag": "standard",
       "target": {
         "lemma": "균형",
@@ -34323,6 +38723,446 @@
         "b": "치우친 ‘불균형’ 상태로 본래 뜻과 정반대예요.",
         "c": "회전하는 운동 상태를 가리키는 말이 아니에요.",
         "d": "추락하는 현상과는 관련이 없는 낱말이에요."
+      }
+    },
+    {
+      "id": "g5-argon-1022",
+      "revision": 3,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "synonym_context",
+      "difficultyTier": "core",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "지속적",
+        "partOfSpeech": "명사",
+        "senseKey": "지속적/명사/314475-1"
+      },
+      "stem": "‘지속적’과 뜻이 통하는 표현은 무엇일까요? \"천연 염색 옷감은 지속적인 손질이 필요합니다.\"",
+      "options": [
+        {
+          "id": "a",
+          "text": "한 번만 하고 곧바로 끝나는 것"
+        },
+        {
+          "id": "b",
+          "text": "전혀 뜻밖이라 매우 갑작스러운 것"
+        },
+        {
+          "id": "c",
+          "text": "끊기지 않고 오래 이어지는 것"
+        },
+        {
+          "id": "d",
+          "text": "겉모양만 화려하게 꾸며 놓은 것"
+        }
+      ],
+      "correctOptionId": "c",
+      "explanation": "‘지속적’은 어떤 상태가 오래 계속되는 것을 말해요.",
+      "distractorRationales": {
+        "a": "잠깐에 그치는 ‘일시적’의 뜻이라 반대돼요.",
+        "b": "예상 밖인 ‘돌발적’ 상태라 뜻이 달라요.",
+        "d": "겉모양을 꾸민 상태로, 오래 계속된다는 뜻과 달라요."
+      }
+    },
+    {
+      "id": "g5-argon-1023",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "antonym_context",
+      "difficultyTier": "basic",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "전반적",
+        "partOfSpeech": "명사",
+        "senseKey": "전반적/명사/284779-1"
+      },
+      "stem": "다음 문장의 ‘전반적’과 뜻이 반대되는 말은 무엇일까요? \"발표 자료의 전반적인 구성을 다시 점검했습니다.\"",
+      "options": [
+        {
+          "id": "a",
+          "text": "지속적"
+        },
+        {
+          "id": "b",
+          "text": "부분적"
+        },
+        {
+          "id": "c",
+          "text": "자율적"
+        },
+        {
+          "id": "d",
+          "text": "긍정적"
+        }
+      ],
+      "correctOptionId": "b",
+      "explanation": "전체에 걸친 ‘전반적’과 반대되는 말은 일부에 관계된 ‘부분적’이에요.",
+      "distractorRationales": {
+        "a": "오래 이어진다는 뜻이라 범위의 대조가 아니에요.",
+        "c": "스스로 통제한다는 뜻이라 전체와 반대가 안 돼요.",
+        "d": "옳다고 인정한다는 뜻이라 의미 차원이 달라요."
+      }
+    },
+    {
+      "id": "g5-argon-1024",
+      "revision": 3,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "usage",
+      "difficultyTier": "challenge",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "부수적",
+        "partOfSpeech": "명사",
+        "senseKey": "부수적/명사/159763-1"
+      },
+      "stem": "‘부수적’을 자연스럽게 쓴 문장은 무엇일까요?",
+      "options": [
+        {
+          "id": "a",
+          "text": "가장 중요한 중심 원리를 부수적인 핵심이라 한다."
+        },
+        {
+          "id": "b",
+          "text": "글을 이끄는 부수적인 중심 문장을 쓰고 설명을 덧붙였다."
+        },
+        {
+          "id": "c",
+          "text": "부수적인 주재료를 먼저 고르고 곁들일 양념을 조금 샀다."
+        },
+        {
+          "id": "d",
+          "text": "주된 과제를 마친 뒤 부수적인 일을 정리했다."
+        }
+      ],
+      "correctOptionId": "d",
+      "explanation": "‘부수적’은 주된 것이나 기본적인 것에 붙어 따르는 것에 써요.",
+      "distractorRationales": {
+        "a": "중심이 되는 ‘핵심’과 ‘부수적인’은 뜻이 서로 모순돼요.",
+        "b": "글을 이끄는 ‘중심 문장’은 주된 것이지 딸린 것이 아니에요.",
+        "c": "요리의 중심인 ‘주재료’에는 ‘부수적인’을 붙여 쓸 수 없어요."
+      }
+    },
+    {
+      "id": "g5-argon-1025",
+      "revision": 3,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "cloze",
+      "difficultyTier": "basic",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "비롯되다",
+        "partOfSpeech": "동사",
+        "senseKey": "비롯되다/동사/161214-1"
+      },
+      "stem": "인류의 위대한 발명품들은 대부분 일상의 작은 불편함을 해결하려는 노력에서 (    ).",
+      "options": [
+        {
+          "id": "a",
+          "text": "중단되었다"
+        },
+        {
+          "id": "b",
+          "text": "제외되었다"
+        },
+        {
+          "id": "c",
+          "text": "비롯되었다"
+        },
+        {
+          "id": "d",
+          "text": "삭제되었다"
+        }
+      ],
+      "correctOptionId": "c",
+      "explanation": "‘비롯되다’는 처음으로 시작된다는 뜻으로 발명의 출발점을 나타내요.",
+      "distractorRationales": {
+        "a": "도중에 멈추어 끊어졌다는 뜻이라 발명 문맥과 반대예요.",
+        "b": "대상에서 빠졌다는 뜻이라 발명품이 생겨난 뜻과 안 맞아요.",
+        "d": "기록이나 내용이 지워졌다는 뜻이라 문맥이 통하지 않아요."
+      }
+    },
+    {
+      "id": "g5-argon-1026",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "definition",
+      "difficultyTier": "core",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "형식적",
+        "partOfSpeech": "명사",
+        "senseKey": "형식적/명사/371479-1"
+      },
+      "stem": "‘형식적’의 뜻은 무엇일까요? \"형식적인 절차보다 진정한 도움이 중요합니다.\"",
+      "options": [
+        {
+          "id": "a",
+          "text": "실제 본바탕과 알맹이를 중시하는 것"
+        },
+        {
+          "id": "b",
+          "text": "오래도록 조금도 바뀌지 아니하는 것"
+        },
+        {
+          "id": "c",
+          "text": "겉으로 나타나는 모양을 위주로 하는 것"
+        },
+        {
+          "id": "d",
+          "text": "앞으로 일이 잘될 것이라 여기는 것"
+        }
+      ],
+      "correctOptionId": "c",
+      "explanation": "‘형식적’은 사물이 외부로 나타나 보이는 모양을 위주로 하는 것이에요.",
+      "distractorRationales": {
+        "a": "본바탕을 중시하는 ‘실질적’의 뜻이라 반대돼요.",
+        "b": "오래 변하지 않는 ‘영구적’의 뜻풀이예요.",
+        "d": "앞날을 밝게 보는 ‘낙관적’의 뜻이라 맞지 않아요."
+      }
+    },
+    {
+      "id": "g5-argon-1027",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "synonym_context",
+      "difficultyTier": "core",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "비롯되다",
+        "partOfSpeech": "동사",
+        "senseKey": "비롯되다/동사/161214-1"
+      },
+      "stem": "다음 문장의 ‘비롯된’과 바꾸어 쓸 수 있는 말은 무엇일까요? \"정월 대보름에 부럼을 깨무는 행사는 옛 조상들의 건강 기원에서 비롯된 풍습이다.\"",
+      "options": [
+        {
+          "id": "a",
+          "text": "처음 시작된"
+        },
+        {
+          "id": "b",
+          "text": "완전히 끝난"
+        },
+        {
+          "id": "c",
+          "text": "억지로 막힌"
+        },
+        {
+          "id": "d",
+          "text": "중간에 끊긴"
+        }
+      ],
+      "correctOptionId": "a",
+      "explanation": "‘비롯되다’는 어떤 바탕에서 ‘처음으로 시작되다’라는 뜻이에요.",
+      "distractorRationales": {
+        "b": "이미 모두 끝났다는 뜻이라 오늘날까지 전해진 풍습과 달라요.",
+        "c": "가로막혀 못 하게 된 뜻이라 풍습의 유래를 설명할 수 없어요.",
+        "d": "이어지지 못하고 끊어졌다는 뜻이라 ‘비롯되다’와 반대예요."
+      }
+    },
+    {
+      "id": "g5-argon-1028",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "definition",
+      "difficultyTier": "basic",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "비롯되다",
+        "partOfSpeech": "동사",
+        "senseKey": "비롯되다/동사/161214-1"
+      },
+      "stem": "\"깊은 오해는 사소한 말실수에서 비롯되었다.\" 여기서 ‘비롯되다’의 뜻은 무엇일까요?",
+      "options": [
+        {
+          "id": "a",
+          "text": "어떤 일을 바탕으로 처음 시작되다"
+        },
+        {
+          "id": "b",
+          "text": "이어지던 일이 마침내 마무리되다"
+        },
+        {
+          "id": "c",
+          "text": "드러났던 사실이 조용히 감추어지다"
+        },
+        {
+          "id": "d",
+          "text": "어긋났던 관계가 다시 회복되다"
+        }
+      ],
+      "correctOptionId": "a",
+      "explanation": "‘비롯되다’는 어떤 원인이나 바탕에서 처음으로 시작된다는 뜻이에요.",
+      "distractorRationales": {
+        "b": "일이 끝맺어지는 것은 시작된다는 뜻과 반대예요.",
+        "c": "사실이 숨겨지는 것과는 의미가 전혀 달라요.",
+        "d": "사이가 다시 좋아지는 것이 아니라 오해가 생겨난 출발을 뜻해요."
+      }
+    },
+    {
+      "id": "g5-argon-1029",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "cloze",
+      "difficultyTier": "basic",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "스며들다",
+        "partOfSpeech": "동사",
+        "senseKey": "스며들다/동사/193061-1"
+      },
+      "stem": "화분에 물을 천천히 부었더니 마른 흙 위에 잠시 고여 있던 물이 흙 알갱이 틈을 따라 속으로 서서히 (    ).",
+      "options": [
+        {
+          "id": "a",
+          "text": "흘러넘쳤다"
+        },
+        {
+          "id": "b",
+          "text": "얼어붙었다"
+        },
+        {
+          "id": "c",
+          "text": "스며들었다"
+        },
+        {
+          "id": "d",
+          "text": "증발하였다"
+        }
+      ],
+      "correctOptionId": "c",
+      "explanation": "액체가 틈을 따라 속으로 배어드는 현상을 나타내므로 ‘스며들었다’가 알맞아요.",
+      "distractorRationales": {
+        "a": "화분 밖으로 넘쳐 나가는 것이라 흙 속으로 들어간 상황과 달라요.",
+        "b": "차갑게 굳어 얼음이 되는 현상이라 문맥에 맞지 않아요.",
+        "d": "수증기가 되어 공기 중으로 날아가는 것이라 속으로 배어든 게 아니에요."
+      }
+    },
+    {
+      "id": "g5-argon-1030",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "usage",
+      "difficultyTier": "core",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "스며들다",
+        "partOfSpeech": "동사",
+        "senseKey": "스며들다/동사/193061-1"
+      },
+      "stem": "‘스며들다’를 알맞게 사용한 문장은 무엇일까요?",
+      "options": [
+        {
+          "id": "a",
+          "text": "단단한 쇠구슬이 유리판 속으로 사르르 스며들었다."
+        },
+        {
+          "id": "b",
+          "text": "한지에 떨어진 먹물이 종이 결을 따라 속으로 스며들었다."
+        },
+        {
+          "id": "c",
+          "text": "나무 블록들을 책상 위에 차곡차곡 높이 스며들었다."
+        },
+        {
+          "id": "d",
+          "text": "지붕에 부딪힌 우박이 바깥쪽으로 통통 스며들었다."
+        }
+      ],
+      "correctOptionId": "b",
+      "explanation": "‘스며들다’는 액체 따위가 물체 속으로 배어들 때 자연스럽게 써요.",
+      "distractorRationales": {
+        "a": "단단한 쇠구슬은 유리판 속으로 배어들 수 없어요.",
+        "c": "물건을 쌓아 올리는 행동에는 자동사 ‘스며들다’를 못 써요.",
+        "d": "부딪혀 밖으로 튀어 나가는 모습과는 뜻이 정반대예요."
+      }
+    },
+    {
+      "id": "g5-argon-1031",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "synonym_context",
+      "difficultyTier": "core",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "어우러지다",
+        "partOfSpeech": "동사",
+        "senseKey": "어우러지다/동사/457900-1"
+      },
+      "stem": "다음 문장의 ‘어우러져’와 바꾸어 쓸 수 있는 말은 무엇일까요? \"피아노 반주와 합창단의 맑은 목소리가 아름답게 어우러져 강당을 가득 채웠다.\"",
+      "options": [
+        {
+          "id": "a",
+          "text": "서로 분리되어"
+        },
+        {
+          "id": "b",
+          "text": "차례로 끊어져"
+        },
+        {
+          "id": "c",
+          "text": "한쪽만 두드러져"
+        },
+        {
+          "id": "d",
+          "text": "조화를 이루어"
+        }
+      ],
+      "correctOptionId": "d",
+      "explanation": "‘어우러지다’는 여럿이 ‘조화를 이루어’ 한 덩어리가 된다는 뜻과 통해요.",
+      "distractorRationales": {
+        "a": "따로 갈라진다는 뜻이라 아름다운 합창을 이룬 상황과 반대예요.",
+        "b": "소리가 이어지지 못하고 멈춘다는 뜻이라 문맥에 맞지 않아요.",
+        "c": "한 소리만 튀어 나온다는 뜻이라 조화롭게 섞인 상태가 아니에요."
+      }
+    },
+    {
+      "id": "g5-argon-1032",
+      "revision": 3,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "definition",
+      "difficultyTier": "basic",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "기울기",
+        "partOfSpeech": "명사",
+        "senseKey": "기울기/명사/50800-3"
+      },
+      "stem": "‘기울기’의 뜻은 무엇일까요? \"휠체어가 안전하게 오르도록 경사로의 기울기를 완만하게 만들었습니다.\"",
+      "options": [
+        {
+          "id": "a",
+          "text": "물체의 가로와 세로를 더한 전체 길이"
+        },
+        {
+          "id": "b",
+          "text": "저울에 올려놓았을 때 나가는 무게"
+        },
+        {
+          "id": "c",
+          "text": "어떤 물체가 비스듬히 기울어진 정도"
+        },
+        {
+          "id": "d",
+          "text": "액체가 끓어오르기 시작하는 온도"
+        }
+      ],
+      "correctOptionId": "c",
+      "explanation": "여기서 ‘기울기’는 어떤 물체의 기울어진 정도를 뜻해요.",
+      "distractorRationales": {
+        "a": "길이를 더한 값으로, 기울어진 정도와 달라요.",
+        "b": "물체의 무거운 정도인 ‘무게’를 설명한 말이에요.",
+        "d": "액체가 기체로 변하는 ‘끓는점’의 뜻이에요."
       }
     },
     {
@@ -34406,12 +39246,52 @@
       }
     },
     {
+      "id": "g5-argon-1035",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "usage",
+      "difficultyTier": "core",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "어우러지다",
+        "partOfSpeech": "동사",
+        "senseKey": "어우러지다/동사/457900-1"
+      },
+      "stem": "‘어우러지다’를 바르게 쓴 문장은 무엇일까요?",
+      "options": [
+        {
+          "id": "a",
+          "text": "붉은 단풍과 맑은 계곡물이 어우러져 경치가 아름다웠다."
+        },
+        {
+          "id": "b",
+          "text": "빈 책상 위에 지우개 한 개만 외따로 놓여 어우러졌다."
+        },
+        {
+          "id": "c",
+          "text": "색종이 한 장을 가위로 오려 세모 모양을 어우러졌다."
+        },
+        {
+          "id": "d",
+          "text": "서로 양보하지 않고 심하게 말다툼을 벌여 어우러졌다."
+        }
+      ],
+      "correctOptionId": "a",
+      "explanation": "‘어우러지다’는 여럿이 조화되어 잘 어울린 상태를 나타낼 때 써요.",
+      "distractorRationales": {
+        "b": "물건 하나만 홀로 놓인 상태에는 ‘어우러지다’를 쓸 수 없어요.",
+        "c": "모양을 오려 만드는 타동사 자리에는 쓸 수 없는 자동사예요.",
+        "d": "심하게 다투며 부딪히는 상황은 조화를 이루는 뜻과 반대예요."
+      }
+    },
+    {
       "id": "g5-argon-1036",
       "revision": 1,
       "status": "verified_candidate",
       "grade": 5,
       "type": "definition",
-      "difficultyTier": "advanced",
+      "difficultyTier": "core",
       "variantTag": "polysemy",
       "target": {
         "lemma": "내다보다",
@@ -34446,12 +39326,52 @@
       }
     },
     {
+      "id": "g5-argon-1037",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "definition",
+      "difficultyTier": "basic",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "구별하다",
+        "partOfSpeech": "동사",
+        "senseKey": "구별하다/동사/36557-1"
+      },
+      "stem": "‘구별하다’의 뜻은 무엇일까요? \"식용 버섯과 독버섯을 모양과 색깔로 정확히 구별했습니다.\"",
+      "options": [
+        {
+          "id": "a",
+          "text": "성질이나 종류에 따라 갈라놓다"
+        },
+        {
+          "id": "b",
+          "text": "서로 다른 것을 한데 섞어 합치다"
+        },
+        {
+          "id": "c",
+          "text": "필요 없는 물건을 아낌없이 버리다"
+        },
+        {
+          "id": "d",
+          "text": "원래 크기보다 훨씬 크게 늘리다"
+        }
+      ],
+      "correctOptionId": "a",
+      "explanation": "‘구별하다’는 성질이나 종류에 따라 갈라놓는다는 뜻이에요.",
+      "distractorRationales": {
+        "b": "뒤섞어 하나로 합치는 것은 정반대 동작이에요.",
+        "c": "물건을 폐기하는 행동이지 종류를 나누는 게 아니에요.",
+        "d": "크기를 확대하는 일과는 관련이 없는 말이에요."
+      }
+    },
+    {
       "id": "g5-argon-1038",
       "revision": 1,
       "status": "verified_candidate",
       "grade": 5,
       "type": "definition",
-      "difficultyTier": "advanced",
+      "difficultyTier": "core",
       "variantTag": "polysemy",
       "target": {
         "lemma": "눈부시다",
@@ -34486,12 +39406,132 @@
       }
     },
     {
+      "id": "g5-argon-1039",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "synonym_context",
+      "difficultyTier": "basic",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "헤아리다",
+        "partOfSpeech": "동사",
+        "senseKey": "헤아리다/동사/504046-1"
+      },
+      "stem": "다음 문장의 ‘헤아리셨다’와 바꾸어 쓸 수 있는 말은 무엇일까요? \"할머니께서는 바구니에 담긴 밤이 모두 몇 알인지 차근차근 헤아리셨다.\"",
+      "options": [
+        {
+          "id": "a",
+          "text": "마음을 살피셨다"
+        },
+        {
+          "id": "b",
+          "text": "껍질을 까셨다"
+        },
+        {
+          "id": "c",
+          "text": "개수를 세셨다"
+        },
+        {
+          "id": "d",
+          "text": "무게를 재셨다"
+        }
+      ],
+      "correctOptionId": "c",
+      "explanation": "여기서 ‘헤아리다’는 몇 알인지 ‘수량을 세다’라는 뜻으로 쓰였어요.",
+      "distractorRationales": {
+        "a": "속마음을 짐작한다는 뜻은 밤이 몇 알인지 세는 문맥에 안 맞아요.",
+        "b": "밤껍질을 벗기는 행동만으로는 모두 몇 알인지 알 수 없어요.",
+        "d": "저울로 무거움을 측정하는 일은 알 수를 세는 것과 달라요."
+      }
+    },
+    {
+      "id": "g5-argon-1040",
+      "revision": 3,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "usage",
+      "difficultyTier": "basic",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "미루다",
+        "partOfSpeech": "동사",
+        "senseKey": "미루다/동사/428858-2"
+      },
+      "stem": "다음 중 ‘미루다’를 바르게 사용한 문장은 무엇일까요?",
+      "options": [
+        {
+          "id": "a",
+          "text": "시원한 수박을 한입 베어 물고 미루었다."
+        },
+        {
+          "id": "b",
+          "text": "맡은 청소 일을 친구에게 미루면 안 된다."
+        },
+        {
+          "id": "c",
+          "text": "도화지 한가운데에 둥근 원을 미루었다."
+        },
+        {
+          "id": "d",
+          "text": "가을 하늘에 높이 뜬 구름을 미루었다."
+        }
+      ],
+      "correctOptionId": "b",
+      "explanation": "여기서 ‘미루다’는 해야 할 일을 남에게 넘길 때 써요.",
+      "distractorRationales": {
+        "a": "음식을 씹어 먹는 동작에는 쓸 수 없어요.",
+        "c": "종이에 그림을 ‘그리다’ 대신 쓸 수 없는 말이에요.",
+        "d": "하늘의 구름을 ‘바라보다’ 자리에 어울리지 않아요."
+      }
+    },
+    {
+      "id": "g5-argon-1041",
+      "revision": 3,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "usage",
+      "difficultyTier": "basic",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "복잡하다",
+        "partOfSpeech": "형용사",
+        "senseKey": "복잡하다/형용사/437504-2"
+      },
+      "stem": "다음 중 ‘복잡하다’를 바르게 사용한 문장은 무엇일까요?",
+      "options": [
+        {
+          "id": "a",
+          "text": "주말 기차역이 여행객들로 무척 복잡하다."
+        },
+        {
+          "id": "b",
+          "text": "아무도 없는 빈 운동장이 사람들로 복잡하다."
+        },
+        {
+          "id": "c",
+          "text": "시원한 얼음물이 주전자 속에서 맛있게 복잡하다."
+        },
+        {
+          "id": "d",
+          "text": "새 지우개 한 개가 필통 안에서 조용히 복잡하다."
+        }
+      ],
+      "correctOptionId": "a",
+      "explanation": "여기서 ‘복잡하다’는 사람 등이 복작거리어 혼잡스러울 때 써요.",
+      "distractorRationales": {
+        "b": "아무도 없는 빈 운동장과 ‘복잡하다’는 서로 모순돼요.",
+        "c": "얼음물의 상태를 ‘맛있게 복잡하다’로 꾸밀 수 없어요.",
+        "d": "가만히 놓인 지우개 한 개에는 혼잡한 뜻이 안 맞아요."
+      }
+    },
+    {
       "id": "g5-argon-1042",
       "revision": 1,
       "status": "verified_candidate",
       "grade": 5,
       "type": "definition",
-      "difficultyTier": "challenge",
+      "difficultyTier": "core",
       "variantTag": "polysemy",
       "target": {
         "lemma": "부담",
@@ -34523,6 +39563,326 @@
         "a": "걱정을 덜어 홀가분해진 반대 마음 상태예요.",
         "b": "비용을 분담하는 금전적 행위라 마음 상태와 달라요.",
         "d": "어려움 없이 해결하는 상황이라 버거움과 어긋나요."
+      }
+    },
+    {
+      "id": "g5-argon-1043",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "usage",
+      "difficultyTier": "core",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "헤아리다",
+        "partOfSpeech": "동사",
+        "senseKey": "헤아리다/동사/504046-1"
+      },
+      "stem": "‘헤아리다’를 알맞게 사용한 문장은 무엇일까요?",
+      "options": [
+        {
+          "id": "a",
+          "text": "낯선 골목에서 길을 잃어 출구를 못 찾고 한참 헤아렸다."
+        },
+        {
+          "id": "b",
+          "text": "상자에 담긴 구슬이 몇 개인지 하나씩 짚으며 헤아렸다."
+        },
+        {
+          "id": "c",
+          "text": "무성하게 자란 풀숲을 두 손으로 양옆으로 밀며 헤아렸다."
+        },
+        {
+          "id": "d",
+          "text": "깊은 수렁에 빠졌다가 친구의 도움으로 무사히 헤아렸다."
+        }
+      ],
+      "correctOptionId": "b",
+      "explanation": "‘헤아리다’는 물건의 수량을 하나씩 세는 상황에 바르게 쓸 수 있어요.",
+      "distractorRationales": {
+        "a": "길을 잃고 이리저리 돌아다닌 상황에는 ‘헤맸다’를 써야 해요.",
+        "c": "풀숲을 양옆으로 가르며 나아갈 때는 ‘헤쳤다’가 알맞아요.",
+        "d": "위기나 수렁에서 벗어난 상황에는 ‘헤어났다’를 써야 맞아요."
+      }
+    },
+    {
+      "id": "g5-argon-1044",
+      "revision": 4,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "definition",
+      "difficultyTier": "basic",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "생각하다",
+        "partOfSpeech": "동사",
+        "senseKey": "생각하다/동사/440804-2"
+      },
+      "stem": "\"옛 사진첩을 보며 작년에 가족과 캠핑 갔던 일을 생각했다.\" 여기서 ‘생각하다’의 뜻은 무엇일까요?",
+      "options": [
+        {
+          "id": "a",
+          "text": "어려운 문제를 풀 방법을 궁리하다"
+        },
+        {
+          "id": "b",
+          "text": "어떤 사람이나 일에 대하여 기억하다"
+        },
+        {
+          "id": "c",
+          "text": "앞으로 할 일을 미리 정해 계획하다"
+        },
+        {
+          "id": "d",
+          "text": "옳고 그름을 깊이 따져 보고 판단하다"
+        }
+      ],
+      "correctOptionId": "b",
+      "explanation": "여기서 ‘생각하다’는 어떤 사람이나 일에 대하여 기억한다는 뜻이에요.",
+      "distractorRationales": {
+        "a": "사진을 보며 지난 일을 떠올리는 맥락이라 방법을 궁리하는 뜻이 아니에요.",
+        "c": "이미 겪은 작년 일을 떠올리는 것이므로 앞일을 계획하는 뜻과 달라요.",
+        "d": "옛 추억을 떠올리는 상황이라 옳고 그름을 판단한다는 뜻은 맞지 않아요."
+      }
+    },
+    {
+      "id": "g5-argon-1045",
+      "revision": 3,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "definition",
+      "difficultyTier": "core",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "개발",
+        "partOfSpeech": "명사",
+        "senseKey": "개발/명사/10324-1"
+      },
+      "stem": "\"마을 밖 황무지의 개발이 시작되었다.\" 여기서 ‘개발’의 뜻은 무엇일까요?",
+      "options": [
+        {
+          "id": "a",
+          "text": "토지나 천연자원을 유용하게 만듦"
+        },
+        {
+          "id": "b",
+          "text": "타고난 슬기나 재능을 일깨워 줌"
+        },
+        {
+          "id": "c",
+          "text": "훼손된 자연을 원래대로 되돌림"
+        },
+        {
+          "id": "d",
+          "text": "오래된 시설을 허물어 없애 버림"
+        }
+      ],
+      "correctOptionId": "a",
+      "explanation": "여기서 ‘개발’은 토지나 천연자원을 쓸모 있고 유용하게 만든다는 뜻이에요.",
+      "distractorRationales": {
+        "b": "슬기나 재능을 일깨워 주는 것은 ‘계발’의 뜻풀이예요.",
+        "c": "자연을 본래 모습으로 되돌리는 것은 ‘복원’에 해당해요.",
+        "d": "기존 시설을 부수어 없애는 ‘철거’와는 뜻이 달라요."
+      }
+    },
+    {
+      "id": "g5-argon-1046",
+      "revision": 3,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "synonym_context",
+      "difficultyTier": "advanced",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "개발",
+        "partOfSpeech": "명사",
+        "senseKey": "개발/명사/10324-1"
+      },
+      "stem": "“오랫동안 비어 있던 황무지의 개발로 넓은 농경지가 생겨났다.”에서 ‘개발’과 뜻이 가장 가까운 말은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "숨어 있는 재능을 일깨워 주는 일"
+        },
+        {
+          "id": "b",
+          "text": "땅이나 자원을 유용하게 만드는 일"
+        },
+        {
+          "id": "c",
+          "text": "거친 땅을 빈터로 내버려두는 일"
+        },
+        {
+          "id": "d",
+          "text": "잘 쓰던 시설을 부수어 없애는 일"
+        }
+      ],
+      "correctOptionId": "b",
+      "explanation": "여기서 ‘개발’은 토지나 천연자원 따위를 유용하게 만드는 일이에요.",
+      "distractorRationales": {
+        "a": "재능을 일깨우는 것은 ‘계발’의 뜻이라 땅 문맥과 달라요.",
+        "c": "빈터로 내버려두는 것은 농경지를 만든 것과 반대예요.",
+        "d": "잘 쓰던 시설을 없애는 것은 유용하게 만든 일이 아니에요."
+      }
+    },
+    {
+      "id": "g5-argon-1047",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "definition",
+      "difficultyTier": "advanced",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "계발",
+        "partOfSpeech": "명사",
+        "senseKey": "계발/명사/392447-1"
+      },
+      "stem": "\"학교 도서관의 다양한 독서 프로그램은 학생들의 잠재된 창의성 계발에 큰 도움을 주었다.\" 이 문장에서 ‘계발’의 뜻은 무엇일까요?",
+      "options": [
+        {
+          "id": "a",
+          "text": "토지나 천연자원을 유용하게 만듦"
+        },
+        {
+          "id": "b",
+          "text": "슬기나 재능 따위를 일깨워 줌"
+        },
+        {
+          "id": "c",
+          "text": "잘못된 습관을 강제로 못 하게 막음"
+        },
+        {
+          "id": "d",
+          "text": "정해진 법칙을 그대로 따라 지킴"
+        }
+      ],
+      "correctOptionId": "b",
+      "explanation": "‘계발’은 숨어 있는 슬기나 재능, 사상 따위를 일깨워 준다는 뜻이에요.",
+      "distractorRationales": {
+        "a": "땅이나 천연자원을 쓸모 있게 만드는 것은 ‘개발’이에요.",
+        "c": "나쁜 버릇을 억누르거나 금지하는 뜻은 담고 있지 않아요.",
+        "d": "규칙이나 법칙을 어기지 않고 지키는 ‘준수’와는 달라요."
+      }
+    },
+    {
+      "id": "g5-argon-1048",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "cloze",
+      "difficultyTier": "core",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "계발",
+        "partOfSpeech": "명사",
+        "senseKey": "계발/명사/392447-1"
+      },
+      "stem": "진로 체험 활동은 어린이들이 미처 몰랐던 자신의 숨은 소질과 슬기를 일깨우는 자기 (    )에 큰 도움이 된다.",
+      "options": [
+        {
+          "id": "a",
+          "text": "변명"
+        },
+        {
+          "id": "b",
+          "text": "과시"
+        },
+        {
+          "id": "c",
+          "text": "부정"
+        },
+        {
+          "id": "d",
+          "text": "계발"
+        }
+      ],
+      "correctOptionId": "d",
+      "explanation": "숨은 소질과 슬기를 일깨우는 일이므로 ‘자기 계발’에 들어갈 ‘계발’이 알맞아요.",
+      "distractorRationales": {
+        "a": "잘못에 대해 구실을 대는 말이라 소질을 일깨우는 뜻과 달라요.",
+        "b": "남에게 자랑하여 뽐내는 일이라 숨은 소질을 찾는 문맥과 어긋나요.",
+        "c": "스스로를 인정하지 않는 태도라 성장을 돕는 문맥과 반대예요."
+      }
+    },
+    {
+      "id": "g5-argon-1049",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "usage",
+      "difficultyTier": "core",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "알아차리다",
+        "partOfSpeech": "동사",
+        "senseKey": "알아차리다/동사/215304-2"
+      },
+      "stem": "‘알아차리다’를 자연스럽게 쓴 문장은 무엇일까요?",
+      "options": [
+        {
+          "id": "a",
+          "text": "도마 위에 놓인 당근을 칼로 둥글게 썰어 알아차렸다."
+        },
+        {
+          "id": "b",
+          "text": "제비가 낮게 나는 모습을 보고 비가 올 낌새를 알아차렸다."
+        },
+        {
+          "id": "c",
+          "text": "주전자에 담긴 차가운 물을 컵에 가득 부어 알아차렸다."
+        },
+        {
+          "id": "d",
+          "text": "운동화 끈을 두 손으로 단단히 잡아당겨서 알아차렸다."
+        }
+      ],
+      "correctOptionId": "b",
+      "explanation": "여기서 ‘알아차리다’는 어떤 일의 낌새를 미리 알 때 써요.",
+      "distractorRationales": {
+        "a": "채소를 썰어 손질하는 동작에는 쓸 수 없어요.",
+        "c": "물을 따르는 물리적 행동과 뜻이 맞지 않아요.",
+        "d": "신발 끈을 묶는 동작을 나타내는 말이 아니에요."
+      }
+    },
+    {
+      "id": "g5-argon-1050",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "synonym_context",
+      "difficultyTier": "challenge",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "계발",
+        "partOfSpeech": "명사",
+        "senseKey": "계발/명사/392447-1"
+      },
+      "stem": "문장의 ‘계발’과 바꾸어 쓸 수 있는 말은 무엇일까요? \"숨은 소질이 있으므로, 계발을 통해 잠재력을 키울 수 있다.\"",
+      "options": [
+        {
+          "id": "a",
+          "text": "땅과 자원을 유용하게 만드는 일"
+        },
+        {
+          "id": "b",
+          "text": "개성과 생각을 눌러 감추는 일"
+        },
+        {
+          "id": "c",
+          "text": "남의 작품을 그대로 베끼는 일"
+        },
+        {
+          "id": "d",
+          "text": "슬기나 재능을 일깨우는 일"
+        }
+      ],
+      "correctOptionId": "d",
+      "explanation": "‘계발’은 잠재된 ‘슬기나 재능을 일깨우는 일’로 바꾸어 쓸 수 있어요.",
+      "distractorRationales": {
+        "a": "토지나 천연자원을 가꾸는 것은 ‘개발’의 의미예요.",
+        "b": "생각을 눌러 숨기는 것은 잠재력을 키우는 일과 반대예요.",
+        "c": "남의 것을 따라 베끼는 ‘모방’은 소질을 일깨우는 뜻이 아니에요."
       }
     }
   ]
