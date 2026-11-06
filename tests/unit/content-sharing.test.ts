@@ -1,5 +1,9 @@
 import { expect, it, vi } from 'vitest';
 
+vi.mock('../../src/content/questions/manifest.json', () => ({ default: { schemaVersion: '1', banks: [
+  { grade: 5, bankId: 'g5', bankVersion: 'fixture-shared-5', questionCount: 1001, ownCount: 1000, sharedCount: 1 },
+] } }));
+
 vi.mock('../../src/content/questions/grade5.json', async () => {
   const { bankQuestionSchema, sharedBankFileSchema } = await import('../../src/contracts/questions');
   const question = (grade: number, index: number) => bankQuestionSchema.parse({
@@ -18,6 +22,7 @@ vi.mock('../../src/content/questions/grade5.json', async () => {
 
 it('실제 공개 로더와 출제 컨텍스트가 공유 문항의 원ID·학년과 받는 학년 수준을 보존한다', async () => {
   const content = await import('../../src/content');
+  await content.loadGradeContent(5);
   const bank = content.gradeContent(5).bank!;
   expect(bank.bankVersion).toBe('fixture-shared-5');
   expect(bank.questions).toHaveLength(1001);

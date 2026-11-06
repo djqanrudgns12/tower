@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState, type KeyboardEvent, type RefObject } from 'react';
 import { DIFFICULTY_IDS, type DifficultyId } from '../../../contracts/balance';
 import { RANKING_TAB_IDS, type RankingPeriod, type RankingResponse, type RankingTabId } from '../../../contracts/lobby';
-import { gradeContent } from '../../../content';
+import { isGradeAvailable } from '../../../content';
 import { fetchRanking } from '../../../application/lobby';
 import { DIFFICULTY_COPY, fmtNumber } from '../../copy';
 import { HomeUiArt } from './HomeIcons';
@@ -80,7 +80,7 @@ export function RankingBoard({
   const periodList: readonly RankingPeriod[] = ['weekly', 'season1', 'all_time'];
 
   const bankMissing =
-    effectiveGrade !== 'all' && tab !== 'local_device' && gradeContent(effectiveGrade).bank === null;
+    effectiveGrade !== 'all' && tab !== 'local_device' && !isGradeAvailable(effectiveGrade);
 
   useEffect(() => {
     let active = true;

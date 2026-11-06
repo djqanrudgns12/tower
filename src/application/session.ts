@@ -1,5 +1,5 @@
 import type { DifficultyId } from '../contracts/balance';
-import { ContentUnavailableError, contextFor, gradeContent, PILOT_TOWERS, PRACTICE, PRACTICE_BANK, practiceContext, reviewQuestions } from '../content';
+import { ContentUnavailableError, contextFor, gradeContent, gradeLoadState, PILOT_TOWERS, PRACTICE, PRACTICE_BANK, practiceContext, reviewQuestions } from '../content';
 import type { GameContext } from '../domain/context';
 import { createRun } from '../domain/run';
 import { clearLocalHistory, listRecords, type RunRecord } from '../persistence/db';
@@ -40,6 +40,7 @@ function tryContext(grade: number, difficulty: DifficultyId): GameContext | null
 /** 새 정규 판. 판은 메모리에만 있고(이어하기 없음, PRD §14), 끝내기·패배 때만 기록에 남는다. */
 export function startNewRun(input: { grade: number; difficulty: DifficultyId; nickname: string; playerId: string }): StartResult {
   const { map, bank } = gradeContent(input.grade);
+  if (!bank && gradeLoadState(input.grade) !== 'unavailable') return { ok: false, message: '문제를 불러온 뒤 다시 시작해 주세요.' };
   if (!bank) return { ok: false, message: '이 학년의 문제가 아직 준비되지 않았어요.' };
   const ctx = tryContext(input.grade, input.difficulty);
   if (!ctx) return { ok: false, message: NO_QUESTIONS };

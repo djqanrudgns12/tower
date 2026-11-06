@@ -5,6 +5,7 @@ import {
   selectDailySteleCards,
 } from '../../../application/lobby';
 import { HomeUiArt, ShuffleIcon } from './HomeIcons';
+import { useGradeContent } from '../../useGradeContent';
 import css from './home.module.css';
 
 interface Props {
@@ -66,7 +67,8 @@ function shuffleArtDeck(excludeFirst?: string): string[] {
 
 export function SteleStudyPanel({ preferredGrade }: Props) {
   const date = kstDateKey();
-  const cards = useMemo(() => selectDailySteleCards(preferredGrade, new Date(`${date}T00:00:00+09:00`)), [preferredGrade, date]);
+  const { status, retry } = useGradeContent(preferredGrade);
+  const cards = useMemo(() => status === 'ready' ? selectDailySteleCards(preferredGrade, new Date(`${date}T00:00:00+09:00`)) : [], [preferredGrade, date, status]);
   const key = `${date}:${preferredGrade}`;
   const [selection, setSelection] = useState({ key, index: 0, visited: [0] });
   const [artDeck, setArtDeck] = useState(() => ({
@@ -97,7 +99,8 @@ export function SteleStudyPanel({ preferredGrade }: Props) {
             <h2 className={css.sectionTitle}>오늘의 낱말</h2>
           </div>
         </div>
-        <p className={css.exampleText}>검수된 오늘의 낱말을 준비하는 중이에요.</p>
+        <p className={css.exampleText} role="status">{status === 'error' ? '낱말을 불러오지 못했어요.' : status === 'ready' || status === 'unavailable' ? '검수된 오늘의 낱말을 준비하는 중이에요.' : '오늘의 낱말을 불러오는 중이에요.'}</p>
+        {status === 'error' && <button type="button" className={css.keyBtnSm} onClick={retry}>다시 불러오기</button>}
       </section>
     );
   }

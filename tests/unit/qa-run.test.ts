@@ -17,9 +17,9 @@ function sceneJson() {
 }
 
 describe('QA 장면 로더', () => {
-  it('상태 JSON 그대로(골드·문항·기록) 정지된 판을 열고, 지난 정지 이유는 학생 정지 하나로 바꾼다', () => {
+  it('상태 JSON 그대로(골드·문항·기록) 정지된 판을 열고, 지난 정지 이유는 학생 정지 하나로 바꾼다', async () => {
     const json = sceneJson();
-    const c = startQaRun(json);
+    const c = await startQaRun(json);
     expect(c.state.pause).toEqual(['USER']);
     expect({ ...c.state, pause: [] }).toEqual({ ...JSON.parse(json), pause: [] });
     expect(c.state.stats.correct).toBe(1);
@@ -28,24 +28,24 @@ describe('QA 장면 로더', () => {
     c.dispose();
   });
 
-  it('수치 한계 정지는 상태 자체의 문제라 그대로 남긴다', () => {
+  it('수치 한계 정지는 상태 자체의 문제라 그대로 남긴다', async () => {
     const { s } = newRun('Normal', 32);
     s.pause = ['NUMERIC_LIMIT', 'HIDDEN'];
-    const c = startQaRun(JSON.stringify(s));
+    const c = await startQaRun(JSON.stringify(s));
     expect(c.state.pause).toEqual(['NUMERIC_LIMIT', 'USER']);
     c.dispose();
   });
 
-  it('지금 코드와 상태 버전이 다르면 열지 않는다', () => {
+  it('지금 코드와 상태 버전이 다르면 열지 않는다', async () => {
     const { s } = newRun('Normal', 33);
-    expect(() => startQaRun(JSON.stringify({ ...s, v: RUN_STATE_VERSION - 1 }))).toThrow(/버전이 다르다/);
+    await expect(startQaRun(JSON.stringify({ ...s, v: RUN_STATE_VERSION - 1 }))).rejects.toThrow(/버전이 다르다/);
   });
 
-  it('개발 빌드에서는 `?qaRun=1`과 sessionStorage 상태로 열고, 매개변수가 없으면 null, 상태가 없으면 던진다', () => {
+  it('개발 빌드에서는 `?qaRun=1`과 sessionStorage 상태로 열고, 매개변수가 없으면 null, 상태가 없으면 던진다', async () => {
     const json = sceneJson();
     const store = new Map<string, string>([[QA_RUN_KEY, json]]);
     vi.stubGlobal('window', { location: { search: `?${QA_RUN_PARAM}=1` }, sessionStorage: { getItem: (k: string) => store.get(k) ?? null } });
-    const c = qaRunFromLocation();
+    const c = await qaRunFromLocation();
     expect(c?.state.config.runId).toBe(JSON.parse(json).config.runId);
     c?.dispose();
     store.clear();

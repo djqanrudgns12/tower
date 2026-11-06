@@ -22,6 +22,7 @@ import { GameScreen } from './game/GameScreen';
 import { HomeScreen } from './screens/HomeScreen';
 import { buildNoteEntries, NoteScreen } from './screens/NoteScreen';
 import { ResultScreen } from './screens/ResultScreen';
+import { useGradeContent } from './useGradeContent';
 
 type Screen =
   | { name: 'home'; initialModal?: 'new' | null; focusNickname?: boolean }
@@ -34,11 +35,18 @@ export function App() {
   const [settings, setSettings] = useState<Settings>(loadSettings);
   // 개발 빌드에서만 `?previewMap=<맵 id>`(R3 P3 맵 미리보기)나 `?qaRun=1`(화면 점검 장면)로 전투 화면을 바로 연다.
   // 운영 빌드에서는 이 분기가 통째로 빠진다.
-  const [screen, setScreen] = useState<Screen>(() => {
-    const dev = import.meta.env.DEV ? (mapPreviewFromLocation(settings.playerId) ?? qaRunFromLocation()) : null;
-    return dev ? { name: 'game', controller: dev } : { name: 'home' };
-  });
+  const [screen, setScreen] = useState<Screen>({ name: 'home' });
   const [message, setMessage] = useState<string | null>(null);
+  useEffect(() => {
+    if (!import.meta.env.DEV) return;
+    let cancelled = false;
+    void Promise.resolve().then(() => mapPreviewFromLocation(settings.playerId) ?? qaRunFromLocation()).then(controller => {
+      if (!controller) return;
+      if (cancelled) controller.dispose();
+      else setScreen({ name: 'game', controller });
+    }).catch(() => { if (!cancelled) setMessage('점검 장면을 불러오지 못했어요.'); });
+    return () => { cancelled = true; };
+  }, [settings.playerId]);
   // 기록 지우기 뒤 오답 노트 개수를 다시 읽게 App을 다시 그린다(noteItems는 렌더 때 저장소에서 읽는다).
   const [, setNoteTick] = useState(0);
 
@@ -101,6 +109,7 @@ export function App() {
   };
 
   const noteGrade = screen.name === 'result' ? screen.state.config.grade : settings.lastGrade;
+  const noteContent = useGradeContent(noteGrade);
   const noteItems = screen.name === 'home' || screen.name === 'note' ? reviewNoteItems(noteGrade) : [];
 
   switch (screen.name) {
@@ -152,6 +161,6 @@ export function App() {
         />
       );
     case 'note':
-      return <NoteScreen entries={buildNoteEntries(noteItems, reviewQuestions(noteGrade))} onBack={() => setScreen(screen.back)} />;
+      return <NoteScreen entries={buildNoteEntries(noteItems, reviewQuestions(noteGrade))} loading={noteContent.status === 'loading' || noteContent.status === 'unloaded'} loadError={noteContent.status === 'error'} onRetry={noteContent.retry} onBack={() => setScreen(screen.back)} />;
   }
 }

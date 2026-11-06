@@ -11,7 +11,7 @@ import { readImageInfo } from './imageMeta';
 
 // npm run validate:content / validate:assets의 본체. 작업자 RETURN은 이 검사를 통과해야 RETURNED다.
 // 배치·보고서·manifest가 아직 없으면 해당 describe에는 시험이 생기지 않는다.
-const banks = import.meta.glob('/src/content/questions/*.json', { eager: true, import: 'default' });
+const banks = import.meta.glob(['/src/content/questions/*.json', '!/src/content/questions/manifest.json'], { eager: true, import: 'default' });
 const drafts = import.meta.glob('/content-source/batches/*/drafts.json', { eager: true, import: 'default' });
 const sidecars = import.meta.glob('/content-source/batches/*/sidecar.json', { eager: true, import: 'default' });
 const reviews = import.meta.glob(['/content-source/reviews/*/*.json', '!/content-source/reviews/*/blind-input.json', '!/content-source/reviews/archive/*.blind-input.*.json'], { eager: true, import: 'default' });

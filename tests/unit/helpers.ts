@@ -1,9 +1,11 @@
 import type { DifficultyId, TowerId } from '../../src/contracts/balance';
-import { contextFor } from '../../src/content';
+import { contextFor, loadGradeContent } from '../../src/content';
 import type { GameContext } from '../../src/domain/context';
 import type { DomainEvent } from '../../src/domain/events';
 import { advanceTick, applyCommand, createRun, type Command } from '../../src/domain/run';
 import type { Phase, ReviewSense, RunState } from '../../src/domain/types';
+
+await loadGradeContent(3);
 
 /**
  * 규칙 시험의 기본 판은 처음 시범판과 같은 3종(궁수·포탑·서리)만 쓴다. 앱 기본값(PILOT_TOWERS)은 리뉴얼로 20종이 됐지만,

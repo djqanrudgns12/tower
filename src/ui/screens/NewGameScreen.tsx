@@ -1,6 +1,7 @@
 import { useId, useState } from 'react';
 import { DIFFICULTY_IDS, type DifficultyId } from '../../contracts/balance';
-import { gradeContent, MAPS } from '../../content';
+import { isGradeAvailable, MAPS } from '../../content';
+import { useGradeContent } from '../useGradeContent';
 import type { Settings } from '../../application/session';
 import { DIFFICULTY_COPY, HOME_COPY, MAP_NAMES } from '../copy';
 import { ArtIcon, Button, Card, Modal, Segmented, type SegmentOption } from '../kit';
@@ -11,7 +12,7 @@ import css from './home/lobby.module.css';
 const GRADES = [3, 4, 5, 6] as const;
 type Grade = (typeof GRADES)[number];
 
-const gradeReady = (g: Grade) => gradeContent(g).bank !== null;
+const gradeReady = (g: Grade) => isGradeAvailable(g);
 
 interface Props {
   settings: Settings;
@@ -31,6 +32,7 @@ export function NewGameScreen({ settings, onBack, onEditNickname, onStart }: Pro
     (DIFFICULTY_IDS as readonly string[]).includes(settings.lastDifficulty) ? (settings.lastDifficulty as DifficultyId) : 'Normal',
   );
   const [notice, setNotice] = useState<string | null>(null);
+  const { status, retry } = useGradeContent(grade);
   const problemId = useId();
   const map = MAPS.find(m => m.grade === grade)!;
   const mapName = MAP_NAMES[map.id] ?? map.id;
@@ -63,7 +65,7 @@ export function NewGameScreen({ settings, onBack, onEditNickname, onStart }: Pro
             <div className={css.group}>
               <div className={css.groupHead}>
                 <span className={css.groupLabel}>학년</span>
-                <p className={css.groupWarn} role="status">{notice}</p>
+                <p className={css.groupWarn} role="status">{notice ?? (status === 'error' ? '문제를 불러오지 못했어요.' : status !== 'ready' && status !== 'unavailable' ? '문제를 불러오는 중이에요.' : null)}</p>
               </div>
               <Segmented
                 label="학년"
@@ -110,12 +112,13 @@ export function NewGameScreen({ settings, onBack, onEditNickname, onStart }: Pro
             variant="primary"
             size="lg"
             className={css.startBtn ?? ''}
-            aria-disabled={problem !== null || undefined}
+            aria-disabled={problem !== null || status !== 'ready' || undefined}
             aria-describedby={problem !== null ? problemId : undefined}
-            onClick={() => { if (problem === null) onStart({ grade, difficulty, nickname }); }}
+            onClick={() => { if (problem === null && status === 'ready') onStart({ grade, difficulty, nickname }); }}
           >
             {HOME_COPY.start}
           </Button>
+          {status === 'error' && <Button onClick={retry}>다시 불러오기</Button>}
         </div>
       </div>
     </Modal>

@@ -1,11 +1,13 @@
 import { describe, expect, it } from 'vitest';
 import type { DifficultyId } from '../../src/contracts/balance';
 import type { DifficultyTier, VariantTag } from '../../src/contracts/questions';
-import { BALANCE, contextFor, DIFFICULTY_GATE, gradeContent, MAPS, PILOT_TOWERS } from '../../src/content';
+import { BALANCE, contextFor, DIFFICULTY_GATE, gradeContent, loadGradeContent, MAPS, PILOT_TOWERS } from '../../src/content';
 import { createContext, isQuestionEligibleForDifficulty, type RuntimeQuestion } from '../../src/domain/context';
 import { createEncounter, DEFAULT_TIER_SCHEDULE, helpLevel, pickQuestion } from '../../src/domain/quiz';
 import { createRun } from '../../src/domain/run';
 import type { Encounter, EncounterPhase, RunState } from '../../src/domain/types';
+
+await Promise.all([3, 4, 5, 6].map(loadGradeContent));
 
 function makeSyntheticPool(grade = 4): RuntimeQuestion[] {
   const specs: Array<{ tier: DifficultyTier; tag: VariantTag; count: number }> = [
@@ -250,8 +252,14 @@ describe('도움 단계 × 단계 있는 은행(합성 은행: 코드 변경 없
   });
 });
 
-describe('도움 단계 × 단계 없는 은행(읽기 부담, 공개 3학년 51문항)', () => {
-  const ctx = contextFor(3, 'Normal');
+describe('도움 단계 × 단계 없는 시험 은행(읽기 부담, 51문항)', () => {
+  // 공개 은행에는 이제 여러 단계가 있다. 단계 없는 입력의 읽기 부담 경로는 고정 시험 은행으로 검증한다.
+  const questions = makeSyntheticPool(3).slice(0, 51).map((source, i) => {
+    const q = { ...source, readingLoad: 30 + i };
+    delete q.difficultyTier;
+    return q;
+  });
+  const ctx = createContext({ balance: BALANCE, difficulty: 'Normal', map: MAPS.find(m => m.grade === 3)!, questions, battleReadingLoadMax: 70 });
   const loadOf = (id: string) => ctx.questions.get(id)!.readingLoad;
   const byLoad = [...ctx.questionIds].sort((a, b) => loadOf(a) - loadOf(b) || (a < b ? -1 : 1));
   const k = Math.ceil(byLoad.length * 0.4);
@@ -264,7 +272,7 @@ describe('도움 단계 × 단계 없는 은행(읽기 부담, 공개 3학년 51
     return Array.from({ length: n }, (_, i) => drawGraded(ctx, s, 'prep', answerAt(i)));
   };
 
-  it('공개 은행에는 단계가 없다(그래서 읽기 부담 경로가 실제로 일한다)', () => {
+  it('시험 은행에는 단계가 없다(그래서 읽기 부담 경로가 실제로 일한다)', () => {
     expect(new Set([...ctx.questions.values()].map(q => q.difficultyTier ?? 'core')).size).toBe(1);
     expect(low.size).toBe(21);
   });

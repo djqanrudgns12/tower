@@ -2,7 +2,7 @@ import { existsSync, readFileSync } from 'node:fs';
 import path from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { retractionListSchema } from '../../src/contracts/questions';
-import { loadLevelAssessments, prepareSharedBank } from '../../tools/content/sharedBankPlan';
+import { buildBankManifest, loadLevelAssessments, prepareSharedBank } from '../../tools/content/sharedBankPlan';
 import {
   buildBank,
   buildCandidateBank,
@@ -34,6 +34,15 @@ function withDraft(change: (q: BatchInput['drafts'][number]) => void): BatchInpu
 const decisionOf = (batch: BatchInput) => decide(batch).find(d => d.questionId === approvedId)!;
 
 describe('승인 레지스트리·게시 은행 빌드', () => {
+  it('작은 공개 목록은 실제 공개 은행의 판 번호·자기 및 공유 문항 수와 일치한다', () => {
+    const banks = [3, 4, 5, 6].flatMap(grade => {
+      const file = path.join(root, `src/content/questions/grade${grade}.json`);
+      return existsSync(file) ? [JSON.parse(readFileSync(file, 'utf8'))] : [];
+    });
+    const stored = JSON.parse(readFileSync(path.join(root, 'src/content/questions/manifest.json'), 'utf8'));
+    expect(stored).toEqual(buildBankManifest(banks));
+    expect(JSON.stringify(stored).length).toBeLessThan(2000);
+  });
   it('저장된 레지스트리는 초안·보고서에서 다시 계산한 것과 같다(손으로 승인할 수 없다)', () => {
     const stored = JSON.parse(readFileSync(path.join(root, 'content-source/approvals/registry.json'), 'utf8')) as Registry;
     expect(stored).toEqual(buildRegistry(batches));

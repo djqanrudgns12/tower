@@ -11,7 +11,7 @@ import { makeBlindInput } from '../make-blind-input.mjs';
 const generatedPaths = [
   'content-source/approvals/registry.json', 'content-source/approvals/candidate-registry.json',
   ...[3, 4, 5, 6].flatMap(grade => [`src/content/questions/grade${grade}.json`, `src/content/questions/grade${grade}.candidate.json`]),
-  'src/content/questions/practice.json', 'server/seed/question_keys.sql',
+  'src/content/questions/practice.json', 'src/content/questions/manifest.json', 'server/seed/question_keys.sql',
 ];
 const inputScopes = ['content-source', 'src/content/questions', 'server/seed', 'src/content/retractions.json',
   'docs/contracts/balance.candidate.v0.4.json', 'docs/contracts/maps.candidate.v0.4.json'];

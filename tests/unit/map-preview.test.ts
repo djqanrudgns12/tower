@@ -1,4 +1,5 @@
 import path from 'node:path';
+import { gzipSync } from 'node:zlib';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { build, loadConfigFromFile, mergeConfig } from 'vite';
 import { gradeContent, MAPS } from '../../src/content';
@@ -29,7 +30,7 @@ describe('주소 읽기', () => {
 describe('미리보기 판', () => {
   const preview = MAPS.filter(m => m.grade >= 4);
 
-  it('4~6학년 맵 3개가 공개 문제은행 없이 열리고, 요청한 맵으로 돈다', () => {
+  it('4~6학년 맵 3개가 공개 문제은행 없이 열리고, 요청한 맵으로 돈다', async () => {
     const realGradeContent = content.gradeContent;
     vi.spyOn(content, 'gradeContent').mockImplementation(grade => {
       const data = realGradeContent(grade);
@@ -38,7 +39,7 @@ describe('미리보기 판', () => {
     expect(preview.map(m => m.id)).toEqual(['river_z', 'courtyard', 'snow_step']);
     for (const m of preview) {
       expect(gradeContent(m.grade).bank, `${m.id}: 이 학년 은행`).toBeNull();
-      const c = startMapPreview({ mapId: m.id, towers: 0, wave: 1, ticks: 0 }, 'tester');
+      const c = await startMapPreview({ mapId: m.id, towers: 0, wave: 1, ticks: 0 }, 'tester');
       expect(c.ctx.map.id).toBe(m.id);
       expect(c.state.config.mapId).toBe(m.id);
       expect(c.state.config.grade).toBe(m.grade);
@@ -48,8 +49,8 @@ describe('미리보기 판', () => {
     }
   });
 
-  it('towers·wave·ticks를 주면 문제를 건너뛰고 타워를 세워 배치 단계 또는 전투로 연다', () => {
-    const build = startMapPreview({ mapId: 'river_z', towers: 8, wave: 17, ticks: 0 }, 'tester');
+  it('towers·wave·ticks를 주면 문제를 건너뛰고 타워를 세워 배치 단계 또는 전투로 연다', async () => {
+    const build = await startMapPreview({ mapId: 'river_z', towers: 8, wave: 17, ticks: 0 }, 'tester');
     expect(build.state.phase).toBe('BUILD');
     expect(build.state.wave).toBe(17);
     expect(build.state.towers).toHaveLength(8);
@@ -59,22 +60,22 @@ describe('미리보기 판', () => {
     expect(build.state.owned.length).toBeLessThanOrEqual(8); // 장착함은 원래대로
     build.dispose();
 
-    const battle = startMapPreview({ mapId: 'snow_step', towers: 6, wave: 1, ticks: 150 }, 'tester');
+    const battle = await startMapPreview({ mapId: 'snow_step', towers: 6, wave: 1, ticks: 150 }, 'tester');
     expect(battle.state.phase).toBe('BATTLE');
     expect(battle.state.enemies.some(e => e.alive)).toBe(true);
     expect(battle.state.gateHp).toBe(battle.state.gateMaxHp);
     battle.dispose();
   });
 
-  it('요청한 맵이 목록에 없으면 던진다', () => {
-    expect(() => startMapPreview({ mapId: 'nowhere', towers: 0, wave: 1, ticks: 0 }, 'tester')).toThrow(/미리볼 맵이 없다/);
+  it('요청한 맵이 목록에 없으면 던진다', async () => {
+    await expect(startMapPreview({ mapId: 'nowhere', towers: 0, wave: 1, ticks: 0 }, 'tester')).rejects.toThrow(/미리볼 맵이 없다/);
   });
 });
 
 describe('주소창 연결(개발 빌드 가드)', () => {
-  it('개발 빌드에서는 주소의 요청대로 판을 만들고, 요청이 없으면 null이다', () => {
+  it('개발 빌드에서는 주소의 요청대로 판을 만들고, 요청이 없으면 null이다', async () => {
     vi.stubGlobal('window', { location: { search: '?previewMap=courtyard' } });
-    const c = mapPreviewFromLocation('tester');
+    const c = await mapPreviewFromLocation('tester');
     expect(c?.ctx.map.id).toBe('courtyard');
     c?.dispose();
     vi.stubGlobal('window', { location: { search: '' } });
@@ -101,16 +102,30 @@ describe('운영 빌드에는 개발용 진입 경로(맵 미리보기·QA 장�
     if (!loaded) throw new Error('vite 설정을 읽지 못했다');
     const result = await build(mergeConfig(loaded.config, { configFile: false, root: ROOT, mode, logLevel: 'silent', build: { write: false } }));
     const outputs = (Array.isArray(result) ? result : [result]).flatMap(r => ('output' in r ? r.output : []));
-    return outputs.map(o => (o.type === 'chunk' ? o.code : '')).join('\n');
+    return { code: outputs.map(o => (o.type === 'chunk' ? o.code : '')).join('\n'), chunks: outputs.filter(o => o.type === 'chunk') };
   }
 
   it('운영 번들에는 주소 이름(previewMap·qaRun 키)도 미리보기·로더 함수도 없고, 개발 번들에는 있다(대조)', async () => {
     const dev = await bundle('development');
     const devOnly = [PREVIEW_PARAM, '미리볼 맵이 없다', '미리보기 명령 거부', QA_RUN_KEY, 'QA 장면 상태가 없다', 'QA 장면 상태 버전이 다르다'];
-    for (const text of devOnly) expect(dev, `개발 번들: ${text}`).toContain(text);
+    for (const text of devOnly) expect(dev.code, `개발 번들: ${text}`).toContain(text);
     const prod = await bundle('production');
-    for (const text of devOnly) expect(prod, `운영 번들: ${text}`).not.toContain(text);
+    for (const text of devOnly) expect(prod.code, `운영 번들: ${text}`).not.toContain(text);
     // 운영 번들에서도 앱 본체는 그대로 들어 있다(빈 번들로 통과하지 않게).
-    expect(prod).toContain('vocabulary-td');
+    expect(prod.code).toContain('vocabulary-td');
+    const entry = prod.chunks.find(chunk => chunk.isEntry)!;
+    const eager = new Set<string>();
+    const visit = (name: string) => {
+      if (eager.has(name)) return;
+      eager.add(name);
+      prod.chunks.find(chunk => chunk.fileName === name)?.imports.forEach(visit);
+    };
+    visit(entry.fileName);
+    const gradeChunks = [3, 4, 5, 6].map(grade => prod.chunks.find(chunk =>
+      chunk.moduleIds.some(id => id.endsWith(`/src/content/questions/grade${grade}.json`)))!);
+    expect(gradeChunks.every(Boolean)).toBe(true);
+    expect(new Set(gradeChunks.map(chunk => chunk.fileName)).size).toBe(4);
+    for (const chunk of gradeChunks) expect(eager.has(chunk.fileName)).toBe(false);
+    console.info('W6 청크 크기(bytes)', [entry, ...gradeChunks].map(chunk => ({ file: chunk.fileName, bytes: Buffer.byteLength(chunk.code), gzip: gzipSync(chunk.code).length })));
   }, 120_000);
 });

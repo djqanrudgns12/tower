@@ -2,7 +2,7 @@ import { useEffect, useEffectEvent, useMemo, useRef, useState } from 'react';
 import type { RuntimeQuestion } from '../../domain/context';
 import { NOTE_COPY as T } from '../copy';
 import { BackIcon } from '../icons/ControlIcons';
-import { Card, IconButton, ModalTabPanel, ModalTabs, ModalTabShell, Rule, Window, type ModalTabOption } from '../kit';
+import { Button, Card, IconButton, ModalTabPanel, ModalTabs, ModalTabShell, Rule, Window, type ModalTabOption } from '../kit';
 import { NOTE_EXTRA as X } from './home/homeCopy';
 import css from './NoteScreen.module.css';
 
@@ -70,13 +70,16 @@ export function buildNoteEntries(items: readonly NoteItemLike[], questions: Read
 interface Props {
   entries: readonly NoteEntry[];
   onBack(): void;
+  loading?: boolean;
+  loadError?: boolean;
+  onRetry?(): void;
 }
 
 /**
  * 오답 노트 화면(lg 860×580 고정 프레임 Window + 3탭: 전체 / 집중 복습 / 졸업 임박, PRD §10.2).
  * 짙은 바탕 한가운데에 정돈된 양피지 공책 창이 놓이고, 복습 단계별로 낱말 카드를 균일 2열 격자에 보인다.
  */
-export function NoteScreen({ entries, onBack }: Props) {
+export function NoteScreen({ entries, onBack, loading = false, loadError = false, onRetry }: Props) {
   const titleRef = useRef<HTMLHeadingElement>(null);
   const [tab, setTab] = useState<NoteTabId>('all');
 
@@ -113,7 +116,12 @@ export function NoteScreen({ entries, onBack }: Props) {
         </header>
         <Rule />
 
-        {entries.length === 0 ? (
+        {loading || loadError ? (
+          <div className={css.empty}>
+            <p className={css.emptyText} role="status">{loadError ? '오답 노트를 불러오지 못했어요.' : '오답 노트를 불러오는 중이에요.'}</p>
+            {loadError && onRetry && <Button onClick={onRetry}>다시 불러오기</Button>}
+          </div>
+        ) : entries.length === 0 ? (
           <div className={css.empty}>
             <img
               src={`${import.meta.env.BASE_URL}assets/ui/note.empty.webp`}

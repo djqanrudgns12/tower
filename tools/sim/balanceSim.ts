@@ -1,5 +1,5 @@
 import { balanceSchema, FORM_IDS, TOWER_IDS, type Balance, type DifficultyId, type FormId, type TowerId } from '../../src/contracts/balance';
-import { BALANCE, gradeContent, MAPS, PILOT_TOWERS, toRuntime } from '../../src/content';
+import { BALANCE, gradeContent, loadGradeContent, MAPS, PILOT_TOWERS, toRuntime } from '../../src/content';
 import { createContext, type GameContext } from '../../src/domain/context';
 import { center, dist2, positionAt } from '../../src/domain/geometry';
 import { msToTicks, TICK_HZ } from '../../src/domain/num';
@@ -9,6 +9,8 @@ import { advanceTick, applyCommand, createRun, type Command } from '../../src/do
 import { attackIntervalTicks, attacks, bannerAura, buildCost, evolutionChoices, formTier, towerStats, upgradeCost } from '../../src/domain/towers';
 import type { Phase, RunState, Tower } from '../../src/domain/types';
 import { measure, STREAMS } from './towerEfficiency';
+
+await loadGradeContent(3);
 
 // S11 엔진 밸런스 시뮬레이터(PRD §17.3, §18.1). 판정은 제품 domain 엔진(createRun·applyCommand·advanceTick)이 하고,
 // 여기서는 가상 플레이어(읽기 시간·정답률·돈 쓰는 습관)만 흉내 낸다. 학생 실측이 아니다.

@@ -2,8 +2,8 @@ import fs from 'node:fs';
 import path from 'node:path';
 import type { LevelAssessment } from '../../src/contracts/levels';
 import { levelBatchSchema } from '../../src/contracts/levels';
-import type { BankQuestion, RetractionList, SharedBankFile, SharedBankQuestion } from '../../src/contracts/questions';
-import { sharedBankFileSchema } from '../../src/contracts/questions';
+import type { BankManifest, BankQuestion, RetractionList, SharedBankFile, SharedBankQuestion } from '../../src/contracts/questions';
+import { bankManifestSchema, sharedBankFileSchema } from '../../src/contracts/questions';
 import { lintBatchForGrade } from '../../src/content/lint';
 import { MIN_PUBLISHED, toBankQuestion, type BatchInput } from './bankBuild';
 import { selectUpwardShares } from './gradeSharing';
@@ -14,6 +14,14 @@ export { sharedBankVersion } from './sharedBankVersion';
 export type { SharedBankQuestion } from '../../src/contracts/questions';
 /** 공유 은행의 빌드 입력. 이 모듈은 파일을 쓰거나 은행을 공개하지 않는다. */
 export type SharedBankPlan = SharedBankFile;
+
+export function buildBankManifest(banks: readonly SharedBankFile[]): BankManifest {
+  return bankManifestSchema.parse({ schemaVersion: '1', banks: banks.filter(bank => bank.status === 'published').map(bank => ({
+    grade: bank.grade, bankId: bank.bankId, bankVersion: bank.bankVersion,
+    questionCount: bank.questions.length, ownCount: bank.questions.filter(q => q.grade === bank.grade).length,
+    sharedCount: bank.questions.filter(q => q.grade !== bank.grade).length,
+  })).sort((a, b) => a.grade - b.grade) });
+}
 
 /** 커밋된 수준 평가만 읽는다. 진행 중인 staging 판정은 공개 빌드에 넣지 않는다. */
 export function loadLevelAssessments(root: string): LevelAssessment[] {

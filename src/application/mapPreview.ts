@@ -1,5 +1,5 @@
 import { TOWER_IDS, type TowerId } from '../contracts/balance';
-import { contextFor, gradeContent, MAPS, PILOT_TOWERS } from '../content';
+import { contextFor, gradeContent, loadGradeContent, MAPS, PILOT_TOWERS } from '../content';
 import type { GameContext } from '../domain/context';
 import { buildPath } from '../domain/geometry';
 import { advanceTick, applyCommand, createRun, type Command } from '../domain/run';
@@ -88,9 +88,10 @@ function prepare(ctx: GameContext, s: RunState, req: MapPreviewRequest) {
 }
 
 /** 요청대로 맵 미리보기 판을 만든다. 문제는 3학년 개발용 은행이고 맵만 요청한 맵이다. */
-export function startMapPreview(req: MapPreviewRequest, playerId: string): RunController {
+export async function startMapPreview(req: MapPreviewRequest, playerId: string): Promise<RunController> {
   const map = MAPS.find(m => m.id === req.mapId);
   if (!map) throw new Error(`미리볼 맵이 없다: ${req.mapId}`);
+  await loadGradeContent(3);
   const base = contextFor(3, 'Normal');
   const ctx: GameContext = { ...base, map, path: buildPath(map) };
   const { bank } = gradeContent(3);
@@ -103,7 +104,7 @@ export function startMapPreview(req: MapPreviewRequest, playerId: string): RunCo
 }
 
 /** 지금 주소에 미리보기 요청이 있으면 그 판을, 없으면 null. 개발 빌드가 아니면 늘 null이다. */
-export function mapPreviewFromLocation(playerId: string): RunController | null {
+export function mapPreviewFromLocation(playerId: string): Promise<RunController> | null {
   if (!import.meta.env.DEV) return null;
   const req = parseMapPreview(window.location.search);
   return req ? startMapPreview(req, playerId) : null;

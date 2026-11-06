@@ -1,5 +1,5 @@
 import { TOWER_IDS, type DifficultyId, type FormId, type TowerId } from '../../src/contracts/balance';
-import { contextFor, gradeContent, reviewQuestions } from '../../src/content';
+import { contextFor, gradeContent, loadGradeContent, PUBLISHED_GRADES, reviewQuestions } from '../../src/content';
 import type { GameContext, RuntimeQuestion } from '../../src/domain/context';
 import type { DomainEvent } from '../../src/domain/events';
 import { advanceTick, applyCommand, createRun, type Command } from '../../src/domain/run';
@@ -7,6 +7,8 @@ import { evolutionChoices } from '../../src/domain/towers';
 import { burrowed } from '../../src/domain/traits';
 import type { RunState } from '../../src/domain/types';
 import { REVIEW_NOTE_KEY, emptyReviewNote, type ReviewNote } from '../../src/persistence/reviewNote';
+
+await Promise.all([...new Set([3, ...PUBLISHED_GRADES])].map(loadGradeContent));
 
 // 화면 점검용 장면 상태 만들기(tools/qa/scenes.mjs·perf.mjs·e2e 시험이 vite runnerImport로 읽는다). 판정은 제품 엔진이 하고,
 // 여기서는 장면에서 볼 것이 실제로 보이는 상태(웨이브·타워 형태·적·연출)를 고르는 가상 플레이어일 뿐이다.

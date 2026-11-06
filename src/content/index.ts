@@ -3,9 +3,10 @@ import mapsJson from '../../docs/contracts/maps.candidate.v0.4.json';
 import defaultsJson from '../../docs/contracts/product.defaults.v0.5.json';
 import { balanceSchema, type DifficultyId, type TowerId } from '../contracts/balance';
 import { mapsFileSchema, type MapConfig } from '../contracts/maps';
-import { bankFileSchema, sharedBankFileSchema, difficultyGateSchema, readingLoad, retractionListSchema, type BankFile, type DifficultyTier, type RetractionList } from '../contracts/questions';
+import { bankFileSchema, bankManifestSchema, difficultyGateSchema, readingLoad, retractionListSchema, type BankFile, type DifficultyTier, type RetractionList } from '../contracts/questions';
 import { createContext, isQuestionEligibleForDifficulty, type DifficultyGate, type GameContext, type RuntimeQuestion } from '../domain/context';
-import grade3Dev from './questions/grade3.dev.json';
+import manifestJson from './questions/manifest.json';
+import { createGradeLoader, type BankLoader } from './gradeLoader';
 import practiceJson from './questions/practice.json';
 import retractionsJson from './retractions.json';
 
@@ -19,15 +20,18 @@ export const RETRACTIONS: RetractionList = retractionListSchema.parse(retraction
 
 // 사용자에게는 공동검수를 통과한 공개 은행(grade<N>.json, status=published)만 싣는다(PRD §9.3 "승인 문항만 배포",
 // §9.4 "미승인 문항을 가져오지 않는다"). 공동검수 전 후보 은행(grade<N>.candidate.json)은 제작 도구만 읽고 번들에 넣지 않는다.
-const publishedRaw = import.meta.glob<unknown>('./questions/grade[3-6].json', { eager: true, import: 'default' });
-const publishedBanks = Object.values(publishedRaw).map(raw => sharedBankFileSchema.parse(raw)).filter(bank => bank.status === 'published');
-
-/** 학년별 공개 은행 목록(오늘의 낱말 카드 등 화면 보조 기능이 쓴다). */
-export const VERIFIED_GRADE_BANKS: readonly BankFile[] = publishedBanks;
-
-// 공개 은행이 없는 학년은 비워 둔다. 3학년만 개발용 문항으로 화면을 확인할 수 있다(contentMode=development, 공개 기록 제외).
-const banks: Record<number, BankFile> = { 3: bankFileSchema.parse(grade3Dev) };
-for (const bank of publishedBanks) banks[bank.grade] = bank;
+const publishedRaw = import.meta.glob<unknown>('./questions/grade[3-6].json', { import: 'default' });
+const manifest = bankManifestSchema.parse(manifestJson);
+const loaders: Record<number, BankLoader> = {};
+for (const entry of manifest.banks) {
+  const load = publishedRaw[`./questions/grade${entry.grade}.json`];
+  if (load) loaders[entry.grade] = load;
+}
+const gradeLoader = createGradeLoader(manifest, loaders, { 3: () => import('./questions/grade3.dev.json').then(module => module.default) });
+export const PUBLISHED_GRADES: readonly number[] = gradeLoader.publishedGrades;
+export const isGradeAvailable = gradeLoader.available;
+export const gradeLoadState = gradeLoader.state;
+export const subscribeGradeContent = gradeLoader.subscribe;
 
 export const DIFFICULTY_GATE: DifficultyGate = difficultyGateSchema.parse(defaultsJson.questionSelection.difficultyGate);
 
@@ -40,7 +44,14 @@ export interface GradeContent {
 export function gradeContent(grade: number): GradeContent {
   const map = MAPS.find(m => m.grade === grade);
   if (!map) throw new Error(`${grade}학년 맵이 없다`);
-  return { grade, map, bank: banks[grade] ?? null };
+  return { grade, map, bank: gradeLoader.peek(grade) };
+}
+
+/** 문제 본문이 필요한 화면·도구의 진입점. 같은 학년의 동시 호출은 하나로 합친다. */
+export async function loadGradeContent(grade: number): Promise<GradeContent> {
+  gradeContent(grade); // 지원하지 않는 학년은 파일 요청 전에 거절한다.
+  await gradeLoader.load(grade);
+  return gradeContent(grade);
 }
 
 /** 철회 목록을 겹친 뒤 남은 문항. 같은 ID라도 철회된 revision만 뺀다(PRD §9.5, A26). */
@@ -77,10 +88,16 @@ export const PRACTICE_BANK = { bankId: practiceBank.bankId, bankVersion: practic
 export class ContentUnavailableError extends Error {
   constructor(message: string) { super(message); this.name = 'ContentUnavailableError'; }
 }
+export class ContentNotLoadedError extends Error {
+  constructor(grade: number) { super(`${grade}학년 문제를 먼저 불러와야 한다`); this.name = 'ContentNotLoadedError'; }
+}
 
 export function contextFor(grade: number, difficulty: DifficultyId, retractions: RetractionList = RETRACTIONS): GameContext {
   const { map, bank } = gradeContent(grade);
-  if (!bank) throw new ContentUnavailableError(`${grade}학년 문제은행이 아직 없다`);
+  if (!bank) {
+    if (isGradeAvailable(grade)) throw new ContentNotLoadedError(grade);
+    throw new ContentUnavailableError(`${grade}학년 문제은행이 아직 없다`);
+  }
   const active = toRuntime(bank, retractions);
   // 전부 철회되면 판을 시작하지 않는다. 학생 패배가 아니라 복구 안내다(PRD §16.2).
   if (active.length === 0) throw new ContentUnavailableError(`${grade}학년 문항이 모두 철회되었다`);

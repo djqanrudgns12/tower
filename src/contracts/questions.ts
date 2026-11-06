@@ -131,6 +131,22 @@ export type BankFile = z.infer<typeof bankFileSchema>;
 export type SharedBankQuestion = z.infer<typeof sharedBankQuestionSchema>;
 export type SharedBankFile = z.infer<typeof sharedBankFileSchema>;
 
+/** 본문을 내려받기 전 공개 여부와 판 번호를 확인하는 작은 목록. */
+export const bankManifestSchema = z.object({
+  schemaVersion: z.literal('1'),
+  banks: z.array(z.object({
+    grade: z.number().int().min(3).max(6), bankId: z.string().min(1), bankVersion: z.string().min(1),
+    questionCount: z.number().int().min(30), ownCount: z.number().int().min(30), sharedCount: z.number().int().min(0),
+  }).strict()).max(4),
+}).strict().superRefine((manifest, ctx) => {
+  if (new Set(manifest.banks.map(bank => bank.grade)).size !== manifest.banks.length) ctx.addIssue({ code: 'custom', message: '공개 학년 중복' });
+  for (const bank of manifest.banks) {
+    if (bank.bankId !== `g${bank.grade}` || bank.questionCount !== bank.ownCount + bank.sharedCount) ctx.addIssue({ code: 'custom', message: '은행 목록의 학년·문항 수 불일치' });
+    if (bank.sharedCount && (bank.ownCount < 1000 || bank.sharedCount > Math.floor(bank.ownCount * .24))) ctx.addIssue({ code: 'custom', message: '은행 목록의 공유 하한·상한 위반' });
+  }
+});
+export type BankManifest = z.infer<typeof bankManifestSchema>;
+
 /** 지문+보기 4개의 한글 음절 수(PRD §9.2 readingLoad). */
 export function readingLoad(q: Pick<BankQuestion, 'stem' | 'options'>): number {
   const text = q.stem + q.options.map(o => o.text).join('');

@@ -6,7 +6,7 @@ export function subscribeRecordSharing(listener: () => void): () => void {
   window.addEventListener('storage', listener);
   return () => { window.removeEventListener(SETTINGS_CHANGED_EVENT, listener); window.removeEventListener('storage', listener); };
 }
-import { gradeContent, RETRACTIONS, toRuntime } from '../content';
+import { gradeContent, loadGradeContent, PUBLISHED_GRADES, RETRACTIONS, toRuntime } from '../content';
 import type { RetractionList } from '../contracts/questions';
 import {
   computeHonorPoints,
@@ -253,7 +253,7 @@ let cachedDefaultAllStudyCards: readonly SteleCardItem[] | null = null;
 
 function loadRawStudyPool(): Promise<readonly StudyQuestionLike[]> {
   if (rawStudyPoolPromise) return rawStudyPoolPromise;
-  rawStudyPoolPromise = Promise.resolve().then(() => {
+  rawStudyPoolPromise = Promise.all(PUBLISHED_GRADES.map(loadGradeContent)).then(() => {
     const byId = new Map<string, StudyQuestionLike>();
     const orderedBanks = [3,4,5,6].flatMap(g => { const bank = gradeContent(g).bank; return bank?.status === 'published' ? [bank] : []; }).sort((a, b) => {
       if (a.status !== b.status) return a.status === 'published' ? 1 : -1;
@@ -270,7 +270,7 @@ function loadRawStudyPool(): Promise<readonly StudyQuestionLike[]> {
       }
     }
     return [...byId.values()];
-  });
+  }).catch((error: unknown) => { rawStudyPoolPromise = null; throw error; });
   return rawStudyPoolPromise;
 }
 

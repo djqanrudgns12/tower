@@ -31,11 +31,13 @@ if (practice.bank) fs.writeFileSync(path.join(root, 'src/content/questions/pract
 console.log(practice.note);
 
 // 초안이 없는 학년도 돌아야 승인이 기준 밑으로 줄었을 때 낡은 은행 파일이 남지 않는다.
+const publishedBanks = [];
 for (const grade of [3, 4, 5, 6]) {
   const r = sharing.prepareSharedBank(batches, levels, retractions, grade);
   const note = `${grade}학년 자기 승인 ${r.ownApproved} · 공유 ${r.shared}${r.bank ? '' : ' · 공개 하한 미달'}`;
   const out = path.join(root, `src/content/questions/grade${grade}.json`);
   if (r.bank) {
+    publishedBanks.push(r.bank);
     fs.writeFileSync(out, JSON.stringify(r.bank, null, 2) + '\n');
     console.log(`${note} → ${path.relative(root, out)}`);
   } else {
@@ -53,3 +55,4 @@ for (const grade of [3, 4, 5, 6]) {
     console.log(cand.note);
   }
 }
+fs.writeFileSync(path.join(root, 'src/content/questions/manifest.json'), JSON.stringify(sharing.buildBankManifest(publishedBanks), null, 2) + '\n');
