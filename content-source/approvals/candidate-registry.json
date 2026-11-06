@@ -1,8 +1,8 @@
 {
   "schemaVersion": "1",
   "rule": "publicationPolicy=codex-argon-v1은 공개 승인과 동일한 판정만 사용한다(Claude나 legacy 후보 경로로 우회 불가). 정책 없는 legacy: 공개 승인 문항 또는 (Argon 자체 반박에서 정답만 맞음 · 같은 revision·contentHash의 외부 블라인드 검수(codex·claude) 1건 이상이 있고 있는 것은 모두 정답 일치, source·uniqueness·grade·language pass, explanation fail 금지 · 새 문맥 argon-blind 독립 풀이가 정답과 같고 source·uniqueness·grade·language 모두 pass, explanation fail 금지 · 현재 revision·contentHash·rationalesHash의 해설 대조 pass · 게시 형식·의미·Q50 엄격 검사 통과). 하나라도 어긋나면 격리한다. 후보 은행은 제작 진척 확인용이며 게임에 싣지 않는다(PRD §9.3).",
-  "approved": 4648,
-  "quarantined": 105,
+  "approved": 4669,
+  "quarantined": 70,
   "entries": [
     {
       "questionId": "g3-argon-0001",
@@ -4021,9 +4021,9 @@
     },
     {
       "questionId": "g3-argon-0611",
-      "revision": 1,
+      "revision": 2,
       "batchId": "Q50-G3-014",
-      "contentHash": "c4fa574f7046a88cea8e07aa54af0f5c06d91787cb10b3e1a1d83ff695816b55",
+      "contentHash": "735d86c342a2795815f86c30dff5b882dfff43fe035722d5cea414f64c7bc2bc",
       "decision": "approved",
       "reasons": []
     },
@@ -4064,10 +4064,8 @@
       "revision": 2,
       "batchId": "Q50-G3-014",
       "contentHash": "5a004cdaede32f44f3d699e0f99135a37099f70900e1abd62d11acf98faea404",
-      "decision": "quarantined",
-      "reasons": [
-        "외부 블라인드 검수(codex·claude): 이 revision의 검수 없음"
-      ]
+      "decision": "approved",
+      "reasons": []
     },
     {
       "questionId": "g3-argon-0617",
@@ -4082,14 +4080,6 @@
       "revision": 1,
       "batchId": "Q50-G3-014",
       "contentHash": "5d149a64d051c8bae40b388248f2b7640492ed331f713771c5f14e4e686984d3",
-      "decision": "approved",
-      "reasons": []
-    },
-    {
-      "questionId": "g3-argon-0619",
-      "revision": 1,
-      "batchId": "Q50-G3-014",
-      "contentHash": "64e605e9a49109b60abfe1068fa8919f066fa9ecc92ef4ea816a65c7b8008ac0",
       "decision": "approved",
       "reasons": []
     },
@@ -4119,21 +4109,17 @@
     },
     {
       "questionId": "g3-argon-0623",
-      "revision": 2,
+      "revision": 3,
       "batchId": "Q50-G3-014",
-      "contentHash": "871e2b453c5e864a2fa4b898735d2c7105cef2a7245d5af9f7ad0dc6305f67d1",
-      "decision": "quarantined",
-      "reasons": [
-        "외부 블라인드 검수(codex·claude): 이 revision의 검수 없음",
-        "argon-blind: source fail",
-        "argon-blind: language fail"
-      ]
+      "contentHash": "d53c57a264a29626960984551e9fc9b8ae3824968ba868e12334e15ed478c69e",
+      "decision": "approved",
+      "reasons": []
     },
     {
       "questionId": "g3-argon-0624",
-      "revision": 1,
+      "revision": 2,
       "batchId": "Q50-G3-014",
-      "contentHash": "6a38001a1235baf4bb60777a9400210a8b2657c38dd3623aba3c88b4ba568066",
+      "contentHash": "95cefc75ade0a41f177eba8c5c7e988187d9be85f634398982ede439ad481e5a",
       "decision": "approved",
       "reasons": []
     },
@@ -4147,9 +4133,9 @@
     },
     {
       "questionId": "g3-argon-0626",
-      "revision": 1,
+      "revision": 2,
       "batchId": "Q50-G3-014",
-      "contentHash": "41d8cf7436a1f761e654aa103eb53002f04b39f4aafa5f9592bdd1fe70243e9d",
+      "contentHash": "18f81516e5c315d234b79fe4ff9d7af9196755e1dc88890e2db5a393a2cc516d",
       "decision": "approved",
       "reasons": []
     },
@@ -4171,19 +4157,9 @@
     },
     {
       "questionId": "g3-argon-0629",
-      "revision": 2,
+      "revision": 3,
       "batchId": "Q50-G3-014",
-      "contentHash": "7ed84c543a73bfc4db7745c64dc606bbdc25a403277c23613b31fe5abbf892cb",
-      "decision": "quarantined",
-      "reasons": [
-        "외부 블라인드 검수(codex·claude): 이 revision의 검수 없음"
-      ]
-    },
-    {
-      "questionId": "g3-argon-0630",
-      "revision": 1,
-      "batchId": "Q50-G3-014",
-      "contentHash": "dbc70cad6c51ce04a62af25c98c725443703e54606aa7bdc709ebbf943208e65",
+      "contentHash": "b6d95be2eea5d97cc39ca6e7c0e92e881dc16726586e39e67af61a7f871b51e0",
       "decision": "approved",
       "reasons": []
     },
@@ -4192,10 +4168,8 @@
       "revision": 2,
       "batchId": "Q50-G3-014",
       "contentHash": "c725b848b6f91a37915360783560b1de31941d1bbaae3e2f93b68ec43840bf7c",
-      "decision": "quarantined",
-      "reasons": [
-        "외부 블라인드 검수(codex·claude): 이 revision의 검수 없음"
-      ]
+      "decision": "approved",
+      "reasons": []
     },
     {
       "questionId": "g3-argon-0632",
@@ -4234,20 +4208,16 @@
       "revision": 2,
       "batchId": "Q50-G3-014",
       "contentHash": "60e192325c3c33900fd326755960920f2362a0a29d4498dbaabafab8492c9459",
-      "decision": "quarantined",
-      "reasons": [
-        "외부 블라인드 검수(codex·claude): 이 revision의 검수 없음"
-      ]
+      "decision": "approved",
+      "reasons": []
     },
     {
       "questionId": "g3-argon-0637",
       "revision": 2,
       "batchId": "Q50-G3-014",
       "contentHash": "ec07d352faf80c7f4cb753b7df54f19c25dc99fb090767544553369512a54662",
-      "decision": "quarantined",
-      "reasons": [
-        "외부 블라인드 검수(codex·claude): 이 revision의 검수 없음"
-      ]
+      "decision": "approved",
+      "reasons": []
     },
     {
       "questionId": "g3-argon-0638",
@@ -4266,14 +4236,6 @@
       "reasons": []
     },
     {
-      "questionId": "g3-argon-0640",
-      "revision": 1,
-      "batchId": "Q50-G3-014",
-      "contentHash": "531218add345e80fe4a115a72d06a02708374e309c2fc049c3df88af1d5d4443",
-      "decision": "approved",
-      "reasons": []
-    },
-    {
       "questionId": "g3-argon-0641",
       "revision": 1,
       "batchId": "Q50-G3-014",
@@ -4286,10 +4248,8 @@
       "revision": 2,
       "batchId": "Q50-G3-014",
       "contentHash": "4e99e571d6e1c823235d627e4f2e2b9511c8c5c3910bab1dc607541d084d95b0",
-      "decision": "quarantined",
-      "reasons": [
-        "외부 블라인드 검수(codex·claude): 이 revision의 검수 없음"
-      ]
+      "decision": "approved",
+      "reasons": []
     },
     {
       "questionId": "g3-argon-0643",
@@ -4301,9 +4261,9 @@
     },
     {
       "questionId": "g3-argon-0644",
-      "revision": 1,
+      "revision": 3,
       "batchId": "Q50-G3-014",
-      "contentHash": "5d40af9d90b9323fa17c3c401ee0b4be7be07cc217b5b49710838eb31fbfacad",
+      "contentHash": "cd670409165e3780b72b8161f218404d41c6144c278f6d9a9e38b4e8f643b453",
       "decision": "approved",
       "reasons": []
     },
@@ -4312,10 +4272,8 @@
       "revision": 2,
       "batchId": "Q50-G3-014",
       "contentHash": "6034fefda30ceb48c936f2ce683fca5848506cb53c3aa68bbf6fcb42851e5508",
-      "decision": "quarantined",
-      "reasons": [
-        "외부 블라인드 검수(codex·claude): 이 revision의 검수 없음"
-      ]
+      "decision": "approved",
+      "reasons": []
     },
     {
       "questionId": "g3-argon-0646",
@@ -4327,9 +4285,9 @@
     },
     {
       "questionId": "g3-argon-0647",
-      "revision": 1,
+      "revision": 3,
       "batchId": "Q50-G3-014",
-      "contentHash": "481712fef7ec7810db555ffa93773e925d60a9b17f10021d43a9ab66179231f9",
+      "contentHash": "eaf8718fd40e60f06cfb43dac834f5ebb20676ee831d4b089740fa9f5443d120",
       "decision": "approved",
       "reasons": []
     },
@@ -4338,20 +4296,16 @@
       "revision": 2,
       "batchId": "Q50-G3-014",
       "contentHash": "eacf2d4295d37669b2b17448ad4de96ad16023e51e40a6f187593be1c80343c6",
-      "decision": "quarantined",
-      "reasons": [
-        "외부 블라인드 검수(codex·claude): 이 revision의 검수 없음"
-      ]
+      "decision": "approved",
+      "reasons": []
     },
     {
       "questionId": "g3-argon-0649",
       "revision": 2,
       "batchId": "Q50-G3-014",
       "contentHash": "9f4b25bf2ffac30cd93e1a147ece5d5f3a9bb9e1f127551d96adbb4307fa552a",
-      "decision": "quarantined",
-      "reasons": [
-        "외부 블라인드 검수(codex·claude): 이 revision의 검수 없음"
-      ]
+      "decision": "approved",
+      "reasons": []
     },
     {
       "questionId": "g3-argon-0650",
@@ -4386,22 +4340,12 @@
       "reasons": []
     },
     {
-      "questionId": "g3-argon-0654",
-      "revision": 1,
-      "batchId": "Q50-G3-015",
-      "contentHash": "fef6adb0613a8f5fa16049edaeb92547d5ecb5a96c4b3d4e29b98caa885c3612",
-      "decision": "approved",
-      "reasons": []
-    },
-    {
       "questionId": "g3-argon-0655",
       "revision": 2,
       "batchId": "Q50-G3-015",
       "contentHash": "939dd429524f384c686b221b3fed06b02ac0aee867d99c425c5330225aa502c0",
-      "decision": "quarantined",
-      "reasons": [
-        "외부 블라인드 검수(codex·claude): 이 revision의 검수 없음"
-      ]
+      "decision": "approved",
+      "reasons": []
     },
     {
       "questionId": "g3-argon-0656",
@@ -4416,26 +4360,22 @@
       "revision": 2,
       "batchId": "Q50-G3-015",
       "contentHash": "e15152e1d3af97965cb3cfb2cf9b588d230c5a002dffd22f1af08987ae118f87",
-      "decision": "quarantined",
-      "reasons": [
-        "외부 블라인드 검수(codex·claude): 이 revision의 검수 없음"
-      ]
+      "decision": "approved",
+      "reasons": []
     },
     {
       "questionId": "g3-argon-0658",
       "revision": 2,
       "batchId": "Q50-G3-015",
       "contentHash": "83fb1a1860b6d307ada7c0723f1ea37487a441c9159e7f63064e68a5af873b50",
-      "decision": "quarantined",
-      "reasons": [
-        "외부 블라인드 검수(codex·claude): 이 revision의 검수 없음"
-      ]
+      "decision": "approved",
+      "reasons": []
     },
     {
       "questionId": "g3-argon-0659",
-      "revision": 1,
+      "revision": 3,
       "batchId": "Q50-G3-015",
-      "contentHash": "03b85622512096e54073b10e6452e9565bd70a609d8c0b777b8335c05f581718",
+      "contentHash": "296f386d800dc1fb140b539978493ba10d81557e0fc4b459a38b5f6702100c8a",
       "decision": "approved",
       "reasons": []
     },
@@ -4548,20 +4488,16 @@
       "revision": 2,
       "batchId": "Q50-G3-015",
       "contentHash": "227da99b8d1aaac1955aec62c2dfd7c320fab6f19526d0075b393c9fb30f8c93",
-      "decision": "quarantined",
-      "reasons": [
-        "외부 블라인드 검수(codex·claude): 이 revision의 검수 없음"
-      ]
+      "decision": "approved",
+      "reasons": []
     },
     {
       "questionId": "g3-argon-0674",
       "revision": 2,
       "batchId": "Q50-G3-015",
       "contentHash": "936e7e1808f0209ebb73e48a099e6b88c667e6d4b85dd5285d72e6598b7c1bb9",
-      "decision": "quarantined",
-      "reasons": [
-        "외부 블라인드 검수(codex·claude): 이 revision의 검수 없음"
-      ]
+      "decision": "approved",
+      "reasons": []
     },
     {
       "questionId": "g3-argon-0675",
@@ -4596,18 +4532,10 @@
       "reasons": []
     },
     {
-      "questionId": "g3-argon-0679",
-      "revision": 1,
-      "batchId": "Q50-G3-015",
-      "contentHash": "cd944a649a3bc17638cd0ac68fb1002b795e8a00c1c4d29fd2f6e796bc497f39",
-      "decision": "approved",
-      "reasons": []
-    },
-    {
       "questionId": "g3-argon-0680",
-      "revision": 1,
+      "revision": 2,
       "batchId": "Q50-G3-015",
-      "contentHash": "d76aa5f7ded788e0c4b26a3f3c29912e93dfe6d1076a67b83ece9f75971f681e",
+      "contentHash": "f1ab7b326b2b00854b7b9ad01b4bdad1b198d08c6ec278b84b96c23807c25b98",
       "decision": "approved",
       "reasons": []
     },
@@ -4621,9 +4549,9 @@
     },
     {
       "questionId": "g3-argon-0682",
-      "revision": 1,
+      "revision": 2,
       "batchId": "Q50-G3-015",
-      "contentHash": "573f0cc788b8eaf9e504c9168bfd33ffdb249154e4608cc00a228e6d71c584a6",
+      "contentHash": "c162425febd0a3355135798b030e0da40ac577325a7132e4e4a49342b46080c1",
       "decision": "approved",
       "reasons": []
     },
@@ -4644,28 +4572,18 @@
       "reasons": []
     },
     {
-      "questionId": "g3-argon-0685",
-      "revision": 1,
+      "questionId": "g3-argon-0686",
+      "revision": 3,
       "batchId": "Q50-G3-015",
-      "contentHash": "8cdad77ee5973a2bd9a7be91d048e935fef688bc065b0ddf7c5fd9177f6c7ef7",
+      "contentHash": "646db793d3b135f545eaee64c44142855b8c96cff1038e035f088847ef55215e",
       "decision": "approved",
       "reasons": []
     },
     {
-      "questionId": "g3-argon-0686",
+      "questionId": "g3-argon-0687",
       "revision": 2,
       "batchId": "Q50-G3-015",
-      "contentHash": "e1de834bf228b52837c67a34d94b437470a872fd8e23161d03393f51ca32aa22",
-      "decision": "quarantined",
-      "reasons": [
-        "외부 블라인드 검수(codex·claude): 이 revision의 검수 없음"
-      ]
-    },
-    {
-      "questionId": "g3-argon-0687",
-      "revision": 1,
-      "batchId": "Q50-G3-015",
-      "contentHash": "7a68d3ce6a182a8d9300dd06dc2e5e1d75620c42596335328838b8831c0c57d9",
+      "contentHash": "da2f34f8aeeb5eea93c92a73b0362719f0dfeea5cb2c86d33c340cc6c17e15d4",
       "decision": "approved",
       "reasons": []
     },
@@ -4719,13 +4637,11 @@
     },
     {
       "questionId": "g3-argon-0694",
-      "revision": 2,
+      "revision": 3,
       "batchId": "Q50-G3-015",
-      "contentHash": "138b0ecb2e8a7be8f60e5d7f953a64cb0dc1c80c1ffd94e11707a4038537cef3",
-      "decision": "quarantined",
-      "reasons": [
-        "외부 블라인드 검수(codex·claude): 이 revision의 검수 없음"
-      ]
+      "contentHash": "fb8be2d1669d4d4715143ab38681ea4b5aa3e282a4f8dcf9dd6f0f2a96ce59d1",
+      "decision": "approved",
+      "reasons": []
     },
     {
       "questionId": "g3-argon-0695",
@@ -4740,10 +4656,8 @@
       "revision": 2,
       "batchId": "Q50-G3-015",
       "contentHash": "8000cd73c977c6f359a167b386583adf4eb2e0ab74df1c11b93c47113d07fa59",
-      "decision": "quarantined",
-      "reasons": [
-        "외부 블라인드 검수(codex·claude): 이 revision의 검수 없음"
-      ]
+      "decision": "approved",
+      "reasons": []
     },
     {
       "questionId": "g3-argon-0697",
@@ -4758,10 +4672,8 @@
       "revision": 2,
       "batchId": "Q50-G3-015",
       "contentHash": "fc4876f762d14ebccf72a99e87f7479b29112349560fdb36475f0d96c98af002",
-      "decision": "quarantined",
-      "reasons": [
-        "외부 블라인드 검수(codex·claude): 이 revision의 검수 없음"
-      ]
+      "decision": "approved",
+      "reasons": []
     },
     {
       "questionId": "g3-argon-0699",
@@ -4888,20 +4800,16 @@
       "revision": 2,
       "batchId": "Q50-G3-016",
       "contentHash": "62d260d839ef01020a7dced379d658feed6669a7af3be4395c4c96a3cb64bca7",
-      "decision": "quarantined",
-      "reasons": [
-        "외부 블라인드 검수(codex·claude): 이 revision의 검수 없음"
-      ]
+      "decision": "approved",
+      "reasons": []
     },
     {
       "questionId": "g3-argon-0715",
       "revision": 2,
       "batchId": "Q50-G3-016",
       "contentHash": "fc628ccf812c02bb79d21b3baf4b7e8c63196da3fad935eab330a6fd31fc6392",
-      "decision": "quarantined",
-      "reasons": [
-        "외부 블라인드 검수(codex·claude): 이 revision의 검수 없음"
-      ]
+      "decision": "approved",
+      "reasons": []
     },
     {
       "questionId": "g3-argon-0716",
@@ -4952,14 +4860,6 @@
       "reasons": []
     },
     {
-      "questionId": "g3-argon-0722",
-      "revision": 1,
-      "batchId": "Q50-G3-016",
-      "contentHash": "237101a2fe8eb87c2c8bea5804f5cedd506f036ab88e07ec214f2681657b6765",
-      "decision": "approved",
-      "reasons": []
-    },
-    {
       "questionId": "g3-argon-0723",
       "revision": 1,
       "batchId": "Q50-G3-016",
@@ -4976,18 +4876,10 @@
       "reasons": []
     },
     {
-      "questionId": "g3-argon-0725",
-      "revision": 1,
-      "batchId": "Q50-G3-016",
-      "contentHash": "018cd96c816552cf3bbfd77ed7afa640de6d39021a45f3457555db6cee283b86",
-      "decision": "approved",
-      "reasons": []
-    },
-    {
       "questionId": "g3-argon-0726",
-      "revision": 1,
+      "revision": 2,
       "batchId": "Q50-G3-016",
-      "contentHash": "3f2dd840f394c85b73a791079133508726f0a3c0f4037eb1377f5486f147a582",
+      "contentHash": "b06c065ff47236ee346e5df105a687727c6edea86aaf1e67dc87041ced6aa56f",
       "decision": "approved",
       "reasons": []
     },
@@ -4996,21 +4888,16 @@
       "revision": 2,
       "batchId": "Q50-G3-016",
       "contentHash": "df4a334584594ea18c2d69c3b8b0ce9e8f433c278532aaa52de8ee33ffdaf32f",
-      "decision": "quarantined",
-      "reasons": [
-        "외부 블라인드 검수(codex·claude): 이 revision의 검수 없음"
-      ]
+      "decision": "approved",
+      "reasons": []
     },
     {
       "questionId": "g3-argon-0728",
-      "revision": 2,
+      "revision": 3,
       "batchId": "Q50-G3-016",
-      "contentHash": "4996c15d60421f7dec24917a5510d034b77b2791595a070cb1823bbd470c4d14",
-      "decision": "quarantined",
-      "reasons": [
-        "외부 블라인드 검수(codex·claude): 이 revision의 검수 없음",
-        "argon-blind: language fail"
-      ]
+      "contentHash": "f5163c0a0fbee2fe42467c15c14a058a5ac06e418a1312c77a022cd3cb275f47",
+      "decision": "approved",
+      "reasons": []
     },
     {
       "questionId": "g3-argon-0729",
@@ -5033,46 +4920,38 @@
       "revision": 2,
       "batchId": "Q50-G3-016",
       "contentHash": "6b7fa118357c9f40458ffa4d1c1b58e313641bbe50db13a304886ce6a965a2dd",
-      "decision": "quarantined",
-      "reasons": [
-        "외부 블라인드 검수(codex·claude): 이 revision의 검수 없음"
-      ]
+      "decision": "approved",
+      "reasons": []
     },
     {
       "questionId": "g3-argon-0732",
       "revision": 2,
       "batchId": "Q50-G3-016",
       "contentHash": "1c9da44003ee76b1781d3b2c2de3407ea41a05c665d66fb4c2098bff6a55d8d2",
-      "decision": "quarantined",
-      "reasons": [
-        "외부 블라인드 검수(codex·claude): 이 revision의 검수 없음"
-      ]
+      "decision": "approved",
+      "reasons": []
     },
     {
       "questionId": "g3-argon-0733",
       "revision": 2,
       "batchId": "Q50-G3-016",
       "contentHash": "59439c9926c6934d6b8511011df28461a1ebd41cdc8bb45089aa6cde7c2e2491",
-      "decision": "quarantined",
-      "reasons": [
-        "외부 블라인드 검수(codex·claude): 이 revision의 검수 없음"
-      ]
+      "decision": "approved",
+      "reasons": []
     },
     {
       "questionId": "g3-argon-0734",
       "revision": 2,
       "batchId": "Q50-G3-016",
       "contentHash": "c6d1abfb60e389dc7f3337fec27df4843d688a71157da649a3defe18a8da398a",
-      "decision": "quarantined",
-      "reasons": [
-        "외부 블라인드 검수(codex·claude): 이 revision의 검수 없음"
-      ]
+      "decision": "approved",
+      "reasons": []
     },
     {
       "questionId": "g3-argon-0735",
-      "revision": 1,
+      "revision": 2,
       "batchId": "Q50-G3-016",
-      "contentHash": "21c39b7cea1634acace463a0b48298d853f1f45c641d21ff8178ebf6a508b0a1",
+      "contentHash": "3189a6d996bbbbd84f3a6f98e641c561fd324e49e554dd813176a9703ea99f03",
       "decision": "approved",
       "reasons": []
     },
@@ -5105,10 +4984,8 @@
       "revision": 2,
       "batchId": "Q50-G3-016",
       "contentHash": "ff2413f3b9b92d1f4d869f676fba9df92803542aa0053027f670bddbfdb3bd6f",
-      "decision": "quarantined",
-      "reasons": [
-        "외부 블라인드 검수(codex·claude): 이 revision의 검수 없음"
-      ]
+      "decision": "approved",
+      "reasons": []
     },
     {
       "questionId": "g3-argon-0740",
@@ -5136,9 +5013,9 @@
     },
     {
       "questionId": "g3-argon-0743",
-      "revision": 1,
+      "revision": 3,
       "batchId": "Q50-G3-016",
-      "contentHash": "c1d99ed386d17eb999ae59e90b74092e249ecd40bb1c65636f05422617ba858f",
+      "contentHash": "041ba8608bf3ab9d14067d8bac3265bb0cd3a45778945ef561708cf1fd7d8386",
       "decision": "approved",
       "reasons": []
     },
@@ -5160,17 +5037,17 @@
     },
     {
       "questionId": "g3-argon-0746",
-      "revision": 1,
+      "revision": 2,
       "batchId": "Q50-G3-016",
-      "contentHash": "79ef2678363bbc17af9bd525fc03290eff0e1e7ce2580f672faee640082d6d44",
+      "contentHash": "aa36318203d66c6de614dfb987547b4fcbe732f966adbf279b9e505be414cd90",
       "decision": "approved",
       "reasons": []
     },
     {
       "questionId": "g3-argon-0747",
-      "revision": 1,
+      "revision": 2,
       "batchId": "Q50-G3-016",
-      "contentHash": "8a9b07139e88583cf3cf8522dcc2a6f1c3b1dc579c0b63416f7ce77ef1fa030f",
+      "contentHash": "530609c22fdd1f680f617cc27293e276913c37533b2e57c687a4e9c68d824293",
       "decision": "approved",
       "reasons": []
     },
@@ -5187,10 +5064,8 @@
       "revision": 2,
       "batchId": "Q50-G3-016",
       "contentHash": "dbe9099f4042f359ea4a217b7f04088e25618d25ed4138aa3fb6c57389ba55ee",
-      "decision": "quarantined",
-      "reasons": [
-        "외부 블라인드 검수(codex·claude): 이 revision의 검수 없음"
-      ]
+      "decision": "approved",
+      "reasons": []
     },
     {
       "questionId": "g3-argon-0750",
@@ -5229,10 +5104,8 @@
       "revision": 2,
       "batchId": "Q50-G3-017",
       "contentHash": "190b94e5d9e4c300479659eb740a76ca9c28d31515623643a74c51076a778833",
-      "decision": "quarantined",
-      "reasons": [
-        "외부 블라인드 검수(codex·claude): 이 revision의 검수 없음"
-      ]
+      "decision": "approved",
+      "reasons": []
     },
     {
       "questionId": "g3-argon-0755",
@@ -5287,16 +5160,6 @@
       "revision": 2,
       "batchId": "Q50-G3-017",
       "contentHash": "3d3f9c46dc719e44c7bc6460bbfe46bc7cf79a59d84e5d23a151f9f0b14a7cc8",
-      "decision": "quarantined",
-      "reasons": [
-        "외부 블라인드 검수(codex·claude): 이 revision의 검수 없음"
-      ]
-    },
-    {
-      "questionId": "g3-argon-0762",
-      "revision": 1,
-      "batchId": "Q50-G3-017",
-      "contentHash": "d2b0205aa788a25dd896f2681a8a9e6924b4566cc15bb3b5088c6b9850997879",
       "decision": "approved",
       "reasons": []
     },
@@ -5310,17 +5173,9 @@
     },
     {
       "questionId": "g3-argon-0764",
-      "revision": 1,
+      "revision": 2,
       "batchId": "Q50-G3-017",
-      "contentHash": "8007b6424030571739a42b8e6ccd7a158a5653836fba128561b77017612d0b6c",
-      "decision": "approved",
-      "reasons": []
-    },
-    {
-      "questionId": "g3-argon-0765",
-      "revision": 1,
-      "batchId": "Q50-G3-017",
-      "contentHash": "a25974f5e6dd29e2ca0718d2ef1e88b88a505c73206e94a0fe3800f6abc126da",
+      "contentHash": "1a8dfb0bdbb56b5482889d518c7011607d9d81f935ee3cc7c725df2ec6077642",
       "decision": "approved",
       "reasons": []
     },
@@ -5341,18 +5196,10 @@
       "reasons": []
     },
     {
-      "questionId": "g3-argon-0768",
-      "revision": 1,
-      "batchId": "Q50-G3-017",
-      "contentHash": "6781c6a589b16ee422fb6a225ebda372788007f1943b913741f42877c940d179",
-      "decision": "approved",
-      "reasons": []
-    },
-    {
       "questionId": "g3-argon-0769",
-      "revision": 1,
+      "revision": 2,
       "batchId": "Q50-G3-017",
-      "contentHash": "e189eb70ab2e0fb17addff8ff3a85364f8dc4e9fe04714d0763a981c228fa2b5",
+      "contentHash": "ad001a1d43a95b0d45f756f6729b6793127e17a2a18980b267c45bcf38672b7e",
       "decision": "approved",
       "reasons": []
     },
@@ -5361,10 +5208,8 @@
       "revision": 2,
       "batchId": "Q50-G3-017",
       "contentHash": "84883ecc4f070b82d5e8f7fec60507901897b62c876da440309e2611f975cf7e",
-      "decision": "quarantined",
-      "reasons": [
-        "외부 블라인드 검수(codex·claude): 이 revision의 검수 없음"
-      ]
+      "decision": "approved",
+      "reasons": []
     },
     {
       "questionId": "g3-argon-0771",
@@ -5416,9 +5261,9 @@
     },
     {
       "questionId": "g3-argon-0777",
-      "revision": 1,
+      "revision": 2,
       "batchId": "Q50-G3-017",
-      "contentHash": "72e3697fc94c35a87046fd80916ada48bb31b2edbe45953cd74b8ebfbbe80024",
+      "contentHash": "51d114f97cb59b26565db47c452acf7c82c6a24bfba9659f01be510daaf43419",
       "decision": "approved",
       "reasons": []
     },
@@ -5447,38 +5292,18 @@
       "reasons": []
     },
     {
-      "questionId": "g3-argon-0781",
-      "revision": 2,
-      "batchId": "Q50-G3-017",
-      "contentHash": "eb5168cf20914bb39c18032fd5b2e45b938581aed5f5d8f797b042ac42273a74",
-      "decision": "quarantined",
-      "reasons": [
-        "외부 블라인드 검수(codex·claude): 이 revision의 검수 없음"
-      ]
-    },
-    {
       "questionId": "g3-argon-0782",
       "revision": 2,
       "batchId": "Q50-G3-017",
       "contentHash": "3df60f92d097651a152aa620242adbe53cdcfdfc4d3b0e94d154576fde5b37ea",
-      "decision": "quarantined",
-      "reasons": [
-        "외부 블라인드 검수(codex·claude): 이 revision의 검수 없음"
-      ]
+      "decision": "approved",
+      "reasons": []
     },
     {
       "questionId": "g3-argon-0783",
       "revision": 1,
       "batchId": "Q50-G3-017",
       "contentHash": "302a546cea7e8e94b67f4f22a1dc645ab32ad9385b0e7447bde0c0a85de44e2b",
-      "decision": "approved",
-      "reasons": []
-    },
-    {
-      "questionId": "g3-argon-0784",
-      "revision": 1,
-      "batchId": "Q50-G3-017",
-      "contentHash": "0f46a96009704372661c448a1de3944f1d98ebadc1f450df3b80bd8158b5f55c",
       "decision": "approved",
       "reasons": []
     },
@@ -5495,14 +5320,6 @@
       "revision": 1,
       "batchId": "Q50-G3-017",
       "contentHash": "0f97c560513e6ecc1b2cbb3fcf66bc438d30e3f365b7cf1b02b8ce85ddd48eff",
-      "decision": "approved",
-      "reasons": []
-    },
-    {
-      "questionId": "g3-argon-0787",
-      "revision": 1,
-      "batchId": "Q50-G3-017",
-      "contentHash": "a726fbf993f9f2ae5009c8d6a502e2cc51e8c8201292c26d6b4ba49825ac5cc7",
       "decision": "approved",
       "reasons": []
     },
@@ -5524,9 +5341,9 @@
     },
     {
       "questionId": "g3-argon-0790",
-      "revision": 1,
+      "revision": 2,
       "batchId": "Q50-G3-017",
-      "contentHash": "b46ab6791e18852b89508eb4f7649931a1bbf0c27fa0fb559bb2e01ea5a2ce2f",
+      "contentHash": "afe534b19f523c9330d0f9c53c979092e6f4ab2085b43ea4ddb61b4610057149",
       "decision": "approved",
       "reasons": []
     },
@@ -5564,9 +5381,9 @@
     },
     {
       "questionId": "g3-argon-0795",
-      "revision": 1,
+      "revision": 2,
       "batchId": "Q50-G3-017",
-      "contentHash": "e8df18f20e04f12655ef1997d680782264e1e97b7786d11fc95a04a309d5343d",
+      "contentHash": "af678d50a6b86834be481e8c9caa15641b5dd7107d04707785adfe634baffd7e",
       "decision": "approved",
       "reasons": []
     },
@@ -5580,13 +5397,11 @@
     },
     {
       "questionId": "g3-argon-0797",
-      "revision": 2,
+      "revision": 4,
       "batchId": "Q50-G3-017",
-      "contentHash": "c558a86cf13c5a482ffef85d70bd8263a48f4116bffdb1f7dda04ebe36231f1c",
-      "decision": "quarantined",
-      "reasons": [
-        "외부 블라인드 검수(codex·claude): 이 revision의 검수 없음"
-      ]
+      "contentHash": "d089d65882e47c0adba4ad8c6fa590c5dd3b6b7b9b758bbb112379af8865bd44",
+      "decision": "approved",
+      "reasons": []
     },
     {
       "questionId": "g3-argon-0798",
