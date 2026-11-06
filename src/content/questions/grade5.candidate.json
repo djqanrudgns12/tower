@@ -1,6 +1,6 @@
 {
   "bankId": "g5-candidate",
-  "bankVersion": "cand-7ab39b2261ee",
+  "bankVersion": "cand-bb30335cf595",
   "grade": 5,
   "status": "verified_candidate",
   "note": "공동검수 진행 중인 후보 은행. 같은 revision의 외부 블라인드 검수(codex·claude) 1건 이상과 새 문맥 argon-blind를 통과했다. 3모델 공동검수 승인 전에는 게임에 싣지 않는다(PRD §9.3).",
@@ -15411,7 +15411,7 @@
       "status": "verified_candidate",
       "grade": 5,
       "type": "usage",
-      "difficultyTier": "basic",
+      "difficultyTier": "core",
       "variantTag": "standard",
       "target": {
         "lemma": "여론",
@@ -15447,7 +15447,7 @@
     },
     {
       "id": "g5-argon-0402",
-      "revision": 1,
+      "revision": 2,
       "status": "verified_candidate",
       "grade": 5,
       "type": "cloze",
@@ -15458,7 +15458,7 @@
         "partOfSpeech": "명사",
         "senseKey": "보도/명사/143218-1"
       },
-      "stem": "길을 걸을 때는 차도로 내려가지 말고 안전한 (    )로 걸어야 합니다.",
+      "stem": "길을 걸을 때는 차도로 내려가지 말고 안전한 (    )(으)로 걸어야 합니다.",
       "options": [
         {
           "id": "a",
@@ -15491,7 +15491,7 @@
       "status": "verified_candidate",
       "grade": 5,
       "type": "antonym_context",
-      "difficultyTier": "basic",
+      "difficultyTier": "core",
       "variantTag": "standard",
       "target": {
         "lemma": "정보화",
@@ -15523,6 +15523,46 @@
         "a": "자료를 다듬어 활용하는 것은 정보화와 같은 방향이에요.",
         "c": "표로 가공하는 것은 정보화의 예시에 해당해요.",
         "d": "가치를 높이는 행동이라 반대되는 뜻이 아니에요."
+      }
+    },
+    {
+      "id": "g5-argon-0404",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "cloze",
+      "difficultyTier": "basic",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "전반적",
+        "partOfSpeech": "관형사",
+        "senseKey": "전반적/관형사/284779-2"
+      },
+      "stem": "학예회 준비가 잘되고 있는지 첫 순서부터 끝 순서까지 (    ) 상황을 점검했다.",
+      "options": [
+        {
+          "id": "a",
+          "text": "부분적"
+        },
+        {
+          "id": "b",
+          "text": "일시적"
+        },
+        {
+          "id": "c",
+          "text": "개인적"
+        },
+        {
+          "id": "d",
+          "text": "전반적"
+        }
+      ],
+      "correctOptionId": "d",
+      "explanation": "‘전반적’은 관계되는 전체에 걸친다는 뜻의 관형사예요.",
+      "distractorRationales": {
+        "a": "‘부분적’은 전체 가운데 일부만 가리켜서 맞지 않아요.",
+        "b": "‘일시적’은 짧은 한때를 뜻하여 전체 점검과 달라요.",
+        "c": "‘개인적’은 한 사람에게만 관계된 것이라 어색해요."
       }
     },
     {
@@ -15563,6 +15603,46 @@
         "a": "반대하며 다투는 것은 공감과 어긋나요.",
         "b": "모른 체 피하는 것은 외면하는 태도예요.",
         "c": "그대로 베끼는 행동과는 뜻이 달라요."
+      }
+    },
+    {
+      "id": "g5-argon-0406",
+      "revision": 4,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "usage",
+      "difficultyTier": "advanced",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "전반적",
+        "partOfSpeech": "관형사",
+        "senseKey": "전반적/관형사/284779-2"
+      },
+      "stem": "‘전반적’을 바르게 쓴 문장은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "전체가 아닌 일부분만 다룬 내용을 전반적 내용이라고 했다."
+        },
+        {
+          "id": "b",
+          "text": "우리 반에서 나 혼자만의 전반적 별명을 지었다."
+        },
+        {
+          "id": "c",
+          "text": "발표 전에 계획의 전반적 흐름을 두루 살폈다."
+        },
+        {
+          "id": "d",
+          "text": "긴 영화에서 딱 일 초뿐인 전반적 장면을 봤다."
+        }
+      ],
+      "correctOptionId": "c",
+      "explanation": "‘전반적’은 어떤 일과 관계되는 전체에 걸친다는 뜻이에요.",
+      "distractorRationales": {
+        "a": "전체가 아닌 일부분만 다룬 내용은 ‘부분적’ 내용에 해당해요.",
+        "b": "별명은 일의 전체 범위를 나타내지 않아 전반적과 어울리지 않아요.",
+        "d": "딱 일 초뿐인 짧은 장면에는 어울리지 않아요."
       }
     },
     {
@@ -15607,11 +15687,11 @@
     },
     {
       "id": "g5-argon-0408",
-      "revision": 1,
+      "revision": 3,
       "status": "verified_candidate",
       "grade": 5,
       "type": "antonym_context",
-      "difficultyTier": "basic",
+      "difficultyTier": "core",
       "variantTag": "standard",
       "target": {
         "lemma": "순환하다",
@@ -15641,8 +15721,8 @@
       "explanation": "‘순환하다’는 주기적으로 되풀이하여 돈다는 뜻이라 멈추는 것과 반대돼요.",
       "distractorRationales": {
         "a": "되풀이되는 것은 순환하다와 비슷한 뜻이에요.",
-        "b": "차례대로 도는 것은 순환하다의 본래 의미예요.",
-        "d": "이어져 흐르는 것은 멈추는 반대 상황으로 볼 수 없어요."
+        "b": "차례대로 도는 것은 한곳에 멈춘다는 뜻이 아니에요.",
+        "d": "이어져 흐르는 것은 순환과 반대되는 멈춤을 뜻하지 않아요."
       }
     },
     {
@@ -15686,12 +15766,52 @@
       }
     },
     {
+      "id": "g5-argon-0410",
+      "revision": 3,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "synonym_context",
+      "difficultyTier": "basic",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "역사적",
+        "partOfSpeech": "관형사",
+        "senseKey": "역사적/관형사/230138-4"
+      },
+      "stem": "“도서관에서 조선 시대의 역사적 자료를 찾아 읽었다.”에서 ‘역사적’과 바꾸어 쓸 수 있는 말은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "날씨에 관한"
+        },
+        {
+          "id": "b",
+          "text": "역사에 관한"
+        },
+        {
+          "id": "c",
+          "text": "계절에 따른"
+        },
+        {
+          "id": "d",
+          "text": "미래를 그린"
+        }
+      ],
+      "correctOptionId": "b",
+      "explanation": "여기서 ‘역사적’은 ‘역사에 관한’이라는 뜻을 나타내는 관형사예요.",
+      "distractorRationales": {
+        "a": "날씨와 관련된 뜻은 ‘기상’에 가까워 맞지 않아요.",
+        "c": "계절 변화에 따른다는 뜻은 문맥과 어긋나요.",
+        "d": "아직 오지 않은 미래를 그린다는 뜻이 아니에요."
+      }
+    },
+    {
       "id": "g5-argon-0411",
       "revision": 1,
       "status": "verified_candidate",
       "grade": 5,
       "type": "usage",
-      "difficultyTier": "basic",
+      "difficultyTier": "core",
       "variantTag": "standard",
       "target": {
         "lemma": "유적",
@@ -15726,12 +15846,92 @@
       }
     },
     {
+      "id": "g5-argon-0412",
+      "revision": 3,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "synonym_context",
+      "difficultyTier": "core",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "전반적",
+        "partOfSpeech": "관형사",
+        "senseKey": "전반적/관형사/284779-2"
+      },
+      "stem": "“모둠원들과 행사의 전반적 과정을 다시 확인했다.”에서 ‘전반적’과 바꾸어 쓸 수 있는 말은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "전체에 걸친"
+        },
+        {
+          "id": "b",
+          "text": "일부에 그친"
+        },
+        {
+          "id": "c",
+          "text": "잠깐만 스친"
+        },
+        {
+          "id": "d",
+          "text": "겉으로 꾸민"
+        }
+      ],
+      "correctOptionId": "a",
+      "explanation": "관형사 ‘전반적’은 ‘관계되는 전체에 걸친’이라는 뜻으로 쓰여요.",
+      "distractorRationales": {
+        "b": "일부에 그친 것은 ‘부분적’의 뜻이라 반대돼요.",
+        "c": "잠깐만 스친 것은 ‘일시적’에 가까운 뜻이에요.",
+        "d": "겉으로만 꾸민 것은 ‘형식적’에 가까운 말이에요."
+      }
+    },
+    {
+      "id": "g5-argon-0413",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "antonym_context",
+      "difficultyTier": "core",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "기여하다",
+        "partOfSpeech": "동사",
+        "senseKey": "기여하다/동사/49712-1"
+      },
+      "stem": "“주민들이 깨끗한 마을 만들기에 크게 기여했다.”에서 ‘기여하다’와 뜻이 반대되는 말은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "협조하다"
+        },
+        {
+          "id": "b",
+          "text": "공헌하다"
+        },
+        {
+          "id": "c",
+          "text": "방해하다"
+        },
+        {
+          "id": "d",
+          "text": "후원하다"
+        }
+      ],
+      "correctOptionId": "c",
+      "explanation": "‘기여하다’는 도움이 되도록 이바지한다는 뜻이라 ‘방해하다’와 반대돼요.",
+      "distractorRationales": {
+        "a": "‘협조하다’는 힘을 보태 돕는다는 비슷한 말이에요.",
+        "b": "‘공헌하다’는 힘을 써 이바지한다는 유의어예요.",
+        "d": "‘후원하다’는 뒤에서 도와준다는 뜻이라 반대가 아니에요."
+      }
+    },
+    {
       "id": "g5-argon-0414",
       "revision": 1,
       "status": "verified_candidate",
       "grade": 5,
       "type": "antonym_context",
-      "difficultyTier": "core",
+      "difficultyTier": "advanced",
       "variantTag": "standard",
       "target": {
         "lemma": "유물",
@@ -15763,6 +15963,46 @@
         "a": "후대에 물려준 그릇은 ‘유물’에 해당해요.",
         "b": "전해 내려온 옛 물건은 ‘유물’의 뜻이에요.",
         "d": "선조들의 자취가 담긴 도구도 ‘유물’이에요."
+      }
+    },
+    {
+      "id": "g5-argon-0415",
+      "revision": 3,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "definition",
+      "difficultyTier": "core",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "부분적",
+        "partOfSpeech": "관형사",
+        "senseKey": "부분적/관형사/156319-2"
+      },
+      "stem": "“글을 처음부터 새로 쓰지 않고 어색한 곳만 부분적 수정을 했다.”에서 ‘부분적’의 뜻은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "전체 가운데 일부에 관계되는"
+        },
+        {
+          "id": "b",
+          "text": "빠짐없이 모든 범위에 걸치는"
+        },
+        {
+          "id": "c",
+          "text": "오래도록 변함없이 이어지는"
+        },
+        {
+          "id": "d",
+          "text": "겉으로 드러난 모양만 따지는"
+        }
+      ],
+      "correctOptionId": "a",
+      "explanation": "‘부분적’은 전체 가운데 한 부분이 되거나 일부에 관계되는 뜻이에요.",
+      "distractorRationales": {
+        "b": "모든 범위에 걸치는 것은 ‘전반적’의 뜻이에요.",
+        "c": "오래도록 변함없이 이어지는 것은 ‘영구적’이에요.",
+        "d": "겉모양만 따지는 것은 ‘형식적’을 뜻하는 말이에요."
       }
     },
     {
@@ -15851,7 +16091,7 @@
       "status": "verified_candidate",
       "grade": 5,
       "type": "cloze",
-      "difficultyTier": "core",
+      "difficultyTier": "basic",
       "variantTag": "standard",
       "target": {
         "lemma": "봉사하다",
@@ -15891,7 +16131,7 @@
       "status": "verified_candidate",
       "grade": 5,
       "type": "antonym_context",
-      "difficultyTier": "core",
+      "difficultyTier": "advanced",
       "variantTag": "standard",
       "target": {
         "lemma": "역지사지",
@@ -15926,12 +16166,52 @@
       }
     },
     {
+      "id": "g5-argon-0420",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "cloze",
+      "difficultyTier": "basic",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "부분적",
+        "partOfSpeech": "관형사",
+        "senseKey": "부분적/관형사/156319-2"
+      },
+      "stem": "운동장 전체가 아니라 배수구가 막힌 구석 자리만 (    ) 보수를 마쳤다.",
+      "options": [
+        {
+          "id": "a",
+          "text": "전반적"
+        },
+        {
+          "id": "b",
+          "text": "영구적"
+        },
+        {
+          "id": "c",
+          "text": "부분적"
+        },
+        {
+          "id": "d",
+          "text": "획일적"
+        }
+      ],
+      "correctOptionId": "c",
+      "explanation": "전부가 아닌 구석 자리 일부만 고쳤으므로 ‘부분적’이 가장 알맞아요.",
+      "distractorRationales": {
+        "a": "‘전반적’은 전체에 걸친다는 뜻이라 문맥과 반대돼요.",
+        "b": "‘영구적’은 영원히 변치 않는다는 뜻이라 맞지 않아요.",
+        "d": "‘획일적’은 모두 한결같게 만든다는 뜻이라 어색해요."
+      }
+    },
+    {
       "id": "g5-argon-0421",
       "revision": 1,
       "status": "verified_candidate",
       "grade": 5,
       "type": "synonym_context",
-      "difficultyTier": "core",
+      "difficultyTier": "basic",
       "variantTag": "standard",
       "target": {
         "lemma": "인내",
@@ -15967,7 +16247,7 @@
     },
     {
       "id": "g5-argon-0422",
-      "revision": 1,
+      "revision": 2,
       "status": "verified_candidate",
       "grade": 5,
       "type": "usage",
@@ -16000,7 +16280,7 @@
       "correctOptionId": "a",
       "explanation": "‘성실성’은 정성스럽고 진실한 품성을 뜻해요.",
       "distractorRationales": {
-        "b": "고무줄이 늘어나는 성질은 ‘탄력성’이라고 해요.",
+        "b": "고무줄이 늘어났다가 본래 모양으로 돌아가려는 성질은 ‘탄력성’이에요.",
         "c": "거짓말을 일삼는 태도는 성실성과 정반대예요.",
         "d": "성실성은 사람의 품성이라 하늘에 떠오르지 않아요."
       }
@@ -16046,6 +16326,126 @@
       }
     },
     {
+      "id": "g5-argon-0424",
+      "revision": 3,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "synonym_context",
+      "difficultyTier": "core",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "부분적",
+        "partOfSpeech": "관형사",
+        "senseKey": "부분적/관형사/156319-2"
+      },
+      "stem": "“규칙을 통째로 바꾸기보다 부분적 변경만 하기로 했다.”에서 ‘부분적’과 바꾸어 쓸 수 있는 말은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "전체에 걸치는"
+        },
+        {
+          "id": "b",
+          "text": "영원히 이어지는"
+        },
+        {
+          "id": "c",
+          "text": "일부에 관계되는"
+        },
+        {
+          "id": "d",
+          "text": "겉모양만 차리는"
+        }
+      ],
+      "correctOptionId": "c",
+      "explanation": "관형사 ‘부분적’은 ‘전체 가운데 일부에 관계되는’이라는 뜻이에요.",
+      "distractorRationales": {
+        "a": "전체에 걸치는 것은 ‘전반적’이라 뜻이 반대돼요.",
+        "b": "영원히 이어지는 것은 ‘영구적’의 의미예요.",
+        "d": "겉모양만 차리는 것은 ‘형식적’의 의미예요."
+      }
+    },
+    {
+      "id": "g5-argon-0425",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "usage",
+      "difficultyTier": "advanced",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "부분적",
+        "partOfSpeech": "관형사",
+        "senseKey": "부분적/관형사/156319-2"
+      },
+      "stem": "‘부분적’을 바르게 쓴 문장은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "처음부터 끝까지 빠짐없이 부분적 점검을 했다."
+        },
+        {
+          "id": "b",
+          "text": "전교생 모두가 예외 없이 부분적 투표에 나섰다."
+        },
+        {
+          "id": "c",
+          "text": "벽화 전체는 두고 귀퉁이만 부분적 보수를 했다."
+        },
+        {
+          "id": "d",
+          "text": "모든 구역을 남김없이 묶어 부분적 청소를 했다."
+        }
+      ],
+      "correctOptionId": "c",
+      "explanation": "‘부분적’은 전체 가운데 일부에 관계되는 일을 꾸밀 때 알맞아요.",
+      "distractorRationales": {
+        "a": "처음부터 끝까지 빠짐없이 살피는 일은 ‘전반적’이에요.",
+        "b": "전교생 모두가 예외 없이 나선 일에는 맞지 않아요.",
+        "d": "모든 구역을 남김없이 청소하는 것은 일부가 아니에요."
+      }
+    },
+    {
+      "id": "g5-argon-0426",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "synonym_context",
+      "difficultyTier": "core",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "부정적",
+        "partOfSpeech": "관형사",
+        "senseKey": "부정적/관형사/438537-3"
+      },
+      "stem": "“새 규칙안에 대해 여러 위원이 부정적 의견을 내놓았다.”에서 ‘부정적’과 바꾸어 쓸 수 있는 말은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "옳다고 기꺼이 찬성하는"
+        },
+        {
+          "id": "b",
+          "text": "아무 생각 없이 따르는"
+        },
+        {
+          "id": "c",
+          "text": "앞날을 밝게 기대하는"
+        },
+        {
+          "id": "d",
+          "text": "옳지 않다고 반대하는"
+        }
+      ],
+      "correctOptionId": "d",
+      "explanation": "여기서 ‘부정적’은 옳지 않다고 반대하는 뜻을 나타내는 관형사예요.",
+      "distractorRationales": {
+        "a": "기꺼이 찬성하는 것은 ‘긍정적’이라 뜻이 반대돼요.",
+        "b": "아무 생각 없이 따르는 것은 반대 의견과 거리가 멀어요.",
+        "c": "앞날을 밝게 기대하는 것은 ‘낙관적’의 의미예요."
+      }
+    },
+    {
       "id": "g5-argon-0427",
       "revision": 1,
       "status": "verified_candidate",
@@ -16086,43 +16486,43 @@
       }
     },
     {
-      "id": "g5-argon-0428",
-      "revision": 1,
+      "id": "g5-argon-0429",
+      "revision": 3,
       "status": "verified_candidate",
       "grade": 5,
-      "type": "usage",
-      "difficultyTier": "advanced",
-      "variantTag": "confusable",
+      "type": "definition",
+      "difficultyTier": "core",
+      "variantTag": "standard",
       "target": {
-        "lemma": "결재",
-        "partOfSpeech": "명사",
-        "senseKey": "결재/명사/17721-1"
+        "lemma": "핵심적",
+        "partOfSpeech": "관형사",
+        "senseKey": "핵심적/관형사/362594-2"
       },
-      "stem": "‘결재’를 바르게 사용한 문장을 고르세요.",
+      "stem": "“토론에서 상대방을 설득하려면 주장을 뒷받침하는 핵심적 근거를 들어야 한다.”에서 ‘핵심적’의 뜻은?",
       "options": [
         {
           "id": "a",
-          "text": "문구점에서 공책 값을 카드로 결재를 했다."
+          "text": "사물의 가장 중심이 되는"
         },
         {
           "id": "b",
-          "text": "식당에서 저녁 밥값을 현금으로 결재를 했다."
+          "text": "주된 것에 덧붙어 따라오는"
         },
         {
           "id": "c",
-          "text": "부장님이 계획안을 검토하고 결재를 하셨다."
+          "text": "겉모습만 그럴듯하게 꾸미는"
         },
         {
           "id": "d",
-          "text": "나무를 톱으로 잘라서 책상 결재를 만들었다."
+          "text": "짧은 한때만 잠깐 나타나는"
         }
       ],
-      "correctOptionId": "c",
-      "explanation": "‘결재’는 윗사람이 안건을 검토하여 허가하거나 승인하는 일이에요.",
+      "correctOptionId": "a",
+      "explanation": "관형사 ‘핵심적’은 ‘사물의 가장 중심이 되는’이라는 뜻이에요.",
       "distractorRationales": {
-        "a": "물건값을 치르는 일은 ‘결제’라고 써야 해요.",
-        "b": "밥값을 내는 거래 마무리는 ‘결제’가 알맞아요.",
-        "d": "책상을 만드는 재료는 ‘목재’나 ‘부재’라고 해요."
+        "b": "주된 것에 덧붙어 따라오는 것은 ‘부수적’의 뜻이에요.",
+        "c": "겉모습만 꾸미는 것은 ‘형식적’에 해당하는 뜻이에요.",
+        "d": "짧은 한때만 나타나는 것은 ‘일시적’을 뜻해요."
       }
     },
     {
@@ -16131,7 +16531,7 @@
       "status": "verified_candidate",
       "grade": 5,
       "type": "cloze",
-      "difficultyTier": "advanced",
+      "difficultyTier": "core",
       "variantTag": "confusable",
       "target": {
         "lemma": "개발",
@@ -16167,42 +16567,42 @@
     },
     {
       "id": "g5-argon-0431",
-      "revision": 1,
+      "revision": 2,
       "status": "verified_candidate",
       "grade": 5,
-      "type": "usage",
+      "type": "definition",
       "difficultyTier": "advanced",
-      "variantTag": "confusable",
+      "variantTag": "standard",
       "target": {
         "lemma": "계발",
         "partOfSpeech": "명사",
         "senseKey": "계발/명사/392447-1"
       },
-      "stem": "‘계발’을 바르게 사용한 문장을 고르세요.",
+      "stem": "“동아리에서 여러 활동을 직접 해 보며 아직 몰랐던 나의 소질 계발에 힘썼다.”에서 ‘계발’의 뜻은?",
       "options": [
         {
           "id": "a",
-          "text": "독서는 슬기와 재능 계발에 도움이 된다."
+          "text": "슬기나 재능 따위를 일깨워 주는 일"
         },
         {
           "id": "b",
-          "text": "바다 밑 석유 자원의 계발이 시작되었다."
+          "text": "남의 말이나 행동을 그대로 본뜨는 일"
         },
         {
           "id": "c",
-          "text": "빈 땅에 아파트를 짓는 택지 계발을 했다."
+          "text": "하던 일을 도중에 그만두어 버리는 일"
         },
         {
           "id": "d",
-          "text": "아침에 현관문을 열어 교실 계발을 했다."
+          "text": "자기의 장점을 남에게 드러내 뽐내는 일"
         }
       ],
       "correctOptionId": "a",
       "explanation": "‘계발’은 슬기나 재능, 사상 따위를 일깨워 주는 일을 뜻해요.",
       "distractorRationales": {
-        "b": "천연자원을 쓸모 있게 만드는 일은 ‘개발’이에요.",
-        "c": "토지를 유용하게 만드는 일은 ‘택지 개발’이라고 해요.",
-        "d": "문을 열어 놓는 일은 ‘개방’이라고 해야 맞아요."
+        "b": "남의 말이나 행동을 본뜨는 일은 ‘모방’의 뜻이에요.",
+        "c": "하던 일을 도중에 그만두는 일은 ‘포기’의 뜻이에요.",
+        "d": "자기의 장점을 남에게 뽐내는 일은 ‘자랑’의 뜻이에요."
       }
     },
     {
@@ -16211,7 +16611,7 @@
       "status": "verified_candidate",
       "grade": 5,
       "type": "cloze",
-      "difficultyTier": "advanced",
+      "difficultyTier": "core",
       "variantTag": "confusable",
       "target": {
         "lemma": "연기하다",
@@ -16246,12 +16646,52 @@
       }
     },
     {
+      "id": "g5-argon-0433",
+      "revision": 3,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "cloze",
+      "difficultyTier": "core",
+      "variantTag": "confusable",
+      "target": {
+        "lemma": "핵심적",
+        "partOfSpeech": "관형사",
+        "senseKey": "핵심적/관형사/362594-2"
+      },
+      "stem": "긴 설명문에서 곁가지 예시는 줄이고 글쓴이가 말하려는 (    ) 주제를 한 문장으로 요약했다.",
+      "options": [
+        {
+          "id": "a",
+          "text": "부수적"
+        },
+        {
+          "id": "b",
+          "text": "핵심적"
+        },
+        {
+          "id": "c",
+          "text": "표면적"
+        },
+        {
+          "id": "d",
+          "text": "지엽적"
+        }
+      ],
+      "correctOptionId": "b",
+      "explanation": "곁가지를 빼고 가장 중심이 되는 주제를 요약한 것이므로 ‘핵심적’이 맞아요.",
+      "distractorRationales": {
+        "a": "‘부수적’은 주된 것에 딸린 것이라 중심 주제와 반대돼요.",
+        "c": "‘표면적’은 겉으로 드러난다는 뜻으로, 가장 중심이 된다는 뜻과 달라요.",
+        "d": "‘지엽적’은 중요하지 않은 곁가지라는 뜻이라 어긋나요."
+      }
+    },
+    {
       "id": "g5-argon-0434",
       "revision": 1,
       "status": "verified_candidate",
       "grade": 5,
       "type": "cloze",
-      "difficultyTier": "advanced",
+      "difficultyTier": "core",
       "variantTag": "confusable",
       "target": {
         "lemma": "이상",
@@ -16291,7 +16731,7 @@
       "status": "verified_candidate",
       "grade": 5,
       "type": "usage",
-      "difficultyTier": "advanced",
+      "difficultyTier": "challenge",
       "variantTag": "confusable",
       "target": {
         "lemma": "초과",
@@ -16331,7 +16771,7 @@
       "status": "verified_candidate",
       "grade": 5,
       "type": "cloze",
-      "difficultyTier": "advanced",
+      "difficultyTier": "core",
       "variantTag": "confusable",
       "target": {
         "lemma": "이하",
@@ -16367,11 +16807,11 @@
     },
     {
       "id": "g5-argon-0437",
-      "revision": 1,
+      "revision": 2,
       "status": "verified_candidate",
       "grade": 5,
       "type": "usage",
-      "difficultyTier": "advanced",
+      "difficultyTier": "challenge",
       "variantTag": "confusable",
       "target": {
         "lemma": "미만",
@@ -16390,11 +16830,11 @@
         },
         {
           "id": "c",
-          "text": "바구니에 사과가 기준보다 넘쳐서 정원 미만이 되었다."
+          "text": "바구니에 사과가 기준보다 넘쳐서 기준 수량 미만이 되었다."
         },
         {
           "id": "d",
-          "text": "백 점 만점 시험에서 백이십 점을 받아 기준 미만이다."
+          "text": "통과 기준이 칠십 점인 시험에서 팔십 점을 받아 기준 미만이다."
         }
       ],
       "correctOptionId": "b",
@@ -16406,12 +16846,92 @@
       }
     },
     {
+      "id": "g5-argon-0438",
+      "revision": 3,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "synonym_context",
+      "difficultyTier": "advanced",
+      "variantTag": "confusable",
+      "target": {
+        "lemma": "핵심적",
+        "partOfSpeech": "관형사",
+        "senseKey": "핵심적/관형사/362594-2"
+      },
+      "stem": "“회의 시간을 줄이려고 안건의 핵심적 쟁점부터 먼저 다루었다.”에서 ‘핵심적’과 바꾸어 쓸 수 있는 말은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "주된 것에 덧붙는"
+        },
+        {
+          "id": "b",
+          "text": "겉으로만 드러나는"
+        },
+        {
+          "id": "c",
+          "text": "잠시 스쳐 지나가는"
+        },
+        {
+          "id": "d",
+          "text": "가장 중심이 되는"
+        }
+      ],
+      "correctOptionId": "d",
+      "explanation": "‘핵심적’은 ‘사물의 가장 중심이 되는’이라는 뜻이에요.",
+      "distractorRationales": {
+        "a": "주된 것에 덧붙는 것은 ‘부수적’의 뜻이라 반대돼요.",
+        "b": "겉으로만 드러나는 것은 ‘표면적’의 뜻이에요.",
+        "c": "잠시 스쳐 지나가는 것은 ‘일시적’의 의미예요."
+      }
+    },
+    {
+      "id": "g5-argon-0439",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "usage",
+      "difficultyTier": "advanced",
+      "variantTag": "confusable",
+      "target": {
+        "lemma": "감소하다",
+        "partOfSpeech": "동사",
+        "senseKey": "감소하다/동사/6847-1"
+      },
+      "stem": "‘감소하다’를 바르게 쓴 문장을 고르세요.",
+      "options": [
+        {
+          "id": "a",
+          "text": "절약 덕분에 한 달 쓰레기 양이 감소했다."
+        },
+        {
+          "id": "b",
+          "text": "미술관에서 멋진 풍경화를 조용히 감소했다."
+        },
+        {
+          "id": "c",
+          "text": "힘든 훈련의 괴로움을 달갑게 감소했다."
+        },
+        {
+          "id": "d",
+          "text": "틀린 글자가 없는지 원고를 감소했다."
+        }
+      ],
+      "correctOptionId": "a",
+      "explanation": "‘감소하다’는 양이나 수치가 줄어들거나 수치를 줄인다는 뜻이에요.",
+      "distractorRationales": {
+        "b": "그림을 보며 즐기는 일은 ‘감상하다’라고 해요.",
+        "c": "괴로움을 받아들이는 일은 ‘감수하다’가 알맞아요.",
+        "d": "원고의 잘못을 살피는 일은 ‘감수하다’나 ‘교정하다’예요."
+      }
+    },
+    {
       "id": "g5-argon-0440",
       "revision": 1,
       "status": "verified_candidate",
       "grade": 5,
       "type": "cloze",
-      "difficultyTier": "challenge",
+      "difficultyTier": "advanced",
       "variantTag": "idiom_proverb",
       "target": {
         "lemma": "발 없는 말이 천 리 간다",
@@ -16491,7 +17011,7 @@
       "status": "verified_candidate",
       "grade": 5,
       "type": "usage",
-      "difficultyTier": "challenge",
+      "difficultyTier": "advanced",
       "variantTag": "idiom_proverb",
       "target": {
         "lemma": "도토리 키 재기",
@@ -16571,7 +17091,7 @@
       "status": "verified_candidate",
       "grade": 5,
       "type": "usage",
-      "difficultyTier": "challenge",
+      "difficultyTier": "advanced",
       "variantTag": "idiom_proverb",
       "target": {
         "lemma": "꿩 대신 닭",
@@ -16611,7 +17131,7 @@
       "status": "verified_candidate",
       "grade": 5,
       "type": "usage",
-      "difficultyTier": "challenge",
+      "difficultyTier": "advanced",
       "variantTag": "idiom_proverb",
       "target": {
         "lemma": "작은 고추가 더 맵다",
@@ -16691,7 +17211,7 @@
       "status": "verified_candidate",
       "grade": 5,
       "type": "definition",
-      "difficultyTier": "challenge",
+      "difficultyTier": "advanced",
       "variantTag": "idiom_proverb",
       "target": {
         "lemma": "밑 빠진 독에 물 붓기",
@@ -16731,7 +17251,7 @@
       "status": "verified_candidate",
       "grade": 5,
       "type": "definition",
-      "difficultyTier": "challenge",
+      "difficultyTier": "advanced",
       "variantTag": "idiom_proverb",
       "target": {
         "lemma": "새 발의 피",
@@ -16771,7 +17291,7 @@
       "status": "verified_candidate",
       "grade": 5,
       "type": "definition",
-      "difficultyTier": "challenge",
+      "difficultyTier": "advanced",
       "variantTag": "idiom_proverb",
       "target": {
         "lemma": "울며 겨자 먹기",
@@ -16806,12 +17326,52 @@
       }
     },
     {
+      "id": "g5-argon-0450",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "usage",
+      "difficultyTier": "challenge",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "부수적",
+        "partOfSpeech": "관형사",
+        "senseKey": "부수적/관형사/159763-2"
+      },
+      "stem": "‘부수적’을 바르게 쓴 문장은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "집을 지탱하는 중심 기둥을 공사의 부수적 뿌리로 삼았다."
+        },
+        {
+          "id": "b",
+          "text": "살아가는 데 꼭 필요한 호흡을 몸의 부수적 근본이라 한다."
+        },
+        {
+          "id": "c",
+          "text": "주된 목표 외에 친목 도모라는 부수적 효과도 얻었다."
+        },
+        {
+          "id": "d",
+          "text": "가장 먼저 지켜야 할 첫째 규칙을 부수적 핵심으로 정했다."
+        }
+      ],
+      "correctOptionId": "c",
+      "explanation": "‘부수적’은 주된 것이나 기본적인 것에 붙어서 따른다는 뜻이에요.",
+      "distractorRationales": {
+        "a": "집을 지탱하는 중심 기둥은 주된 것이지 딸린 것이 아니에요.",
+        "b": "생명에 꼭 필요한 호흡은 기본적인 핵심 작용이에요.",
+        "d": "첫째 규칙이자 핵심은 ‘부수적’과 뜻이 정반대예요."
+      }
+    },
+    {
       "id": "g5-argon-0451",
       "revision": 1,
       "status": "verified_candidate",
       "grade": 5,
       "type": "definition",
-      "difficultyTier": "basic",
+      "difficultyTier": "core",
       "variantTag": "standard",
       "target": {
         "lemma": "희생하다",
@@ -16851,7 +17411,7 @@
       "status": "verified_candidate",
       "grade": 5,
       "type": "synonym_context",
-      "difficultyTier": "basic",
+      "difficultyTier": "core",
       "variantTag": "standard",
       "target": {
         "lemma": "기부하다",
@@ -16891,7 +17451,7 @@
       "status": "verified_candidate",
       "grade": 5,
       "type": "usage",
-      "difficultyTier": "basic",
+      "difficultyTier": "core",
       "variantTag": "standard",
       "target": {
         "lemma": "화합하다",
@@ -16927,7 +17487,7 @@
     },
     {
       "id": "g5-argon-0454",
-      "revision": 1,
+      "revision": 2,
       "status": "verified_candidate",
       "grade": 5,
       "type": "cloze",
@@ -16938,7 +17498,7 @@
         "partOfSpeech": "명사",
         "senseKey": "협동/명사/369400-1"
       },
-      "stem": "혼자 옮기기 무거운 책상도 친구들과 마음과 힘을 합치는 (    )을 발휘하면 쉽게 나를 수 있다.",
+      "stem": "혼자 옮기기 무거운 책상도 친구들과 마음과 힘을 합치는 (    )을 하면 쉽게 나를 수 있다.",
       "options": [
         {
           "id": "a",
@@ -16971,7 +17531,7 @@
       "status": "verified_candidate",
       "grade": 5,
       "type": "antonym_context",
-      "difficultyTier": "basic",
+      "difficultyTier": "core",
       "variantTag": "standard",
       "target": {
         "lemma": "열정",
@@ -17011,7 +17571,7 @@
       "status": "verified_candidate",
       "grade": 5,
       "type": "definition",
-      "difficultyTier": "basic",
+      "difficultyTier": "core",
       "variantTag": "standard",
       "target": {
         "lemma": "정직성",
@@ -17046,12 +17606,172 @@
       }
     },
     {
+      "id": "g5-argon-0457",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "synonym_context",
+      "difficultyTier": "challenge",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "부수적",
+        "partOfSpeech": "관형사",
+        "senseKey": "부수적/관형사/159763-2"
+      },
+      "stem": "“마을 청소에서 주된 일 외에 꽃길 조성이라는 부수적 성과도 거두었다.”에서 ‘부수적’과 바꾸어 쓸 수 있는 말은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "가장 중심을 이루는"
+        },
+        {
+          "id": "b",
+          "text": "전체 바탕이 되는"
+        },
+        {
+          "id": "c",
+          "text": "주된 것에 따라붙는"
+        },
+        {
+          "id": "d",
+          "text": "영원히 변치 않는"
+        }
+      ],
+      "correctOptionId": "c",
+      "explanation": "관형사 ‘부수적’은 주된 것이나 기본적인 것에 붙어 따르는 뜻이에요.",
+      "distractorRationales": {
+        "a": "가장 중심을 이루는 것은 ‘핵심적’의 뜻이에요.",
+        "b": "전체 바탕이 되는 것은 ‘근본적’의 의미예요.",
+        "d": "영원히 변치 않는 것은 ‘영구적’의 의미예요."
+      }
+    },
+    {
+      "id": "g5-argon-0458",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "definition",
+      "difficultyTier": "advanced",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "부수적",
+        "partOfSpeech": "관형사",
+        "senseKey": "부수적/관형사/159763-2"
+      },
+      "stem": "“핵심 안건을 먼저 정한 뒤에 부수적 절차는 나중에 의논했다.”에서 ‘부수적’의 뜻은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "사물의 가장 중심을 이루는"
+        },
+        {
+          "id": "b",
+          "text": "오래도록 변함없이 유지되는"
+        },
+        {
+          "id": "c",
+          "text": "기본적인 것에 붙어서 따르는"
+        },
+        {
+          "id": "d",
+          "text": "전체 범위에 빠짐없이 걸치는"
+        }
+      ],
+      "correctOptionId": "c",
+      "explanation": "‘부수적’은 주된 것이나 기본적인 것에 붙어서 따른다는 뜻이에요.",
+      "distractorRationales": {
+        "a": "사물의 중심을 이루는 것은 ‘핵심적’의 뜻이에요.",
+        "b": "오래도록 유지되는 것은 ‘영구적’에 해당해요.",
+        "d": "전체 범위에 걸치는 것은 ‘전반적’을 뜻해요."
+      }
+    },
+    {
+      "id": "g5-argon-0459",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "cloze",
+      "difficultyTier": "basic",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "긍정적",
+        "partOfSpeech": "관형사",
+        "senseKey": "긍정적/관형사/48468-3"
+      },
+      "stem": "심사 위원들은 건의안의 내용이 타당하고 옳다고 인정하며 (    ) 답변을 보내왔다.",
+      "options": [
+        {
+          "id": "a",
+          "text": "긍정적"
+        },
+        {
+          "id": "b",
+          "text": "부정적"
+        },
+        {
+          "id": "c",
+          "text": "강압적"
+        },
+        {
+          "id": "d",
+          "text": "모순적"
+        }
+      ],
+      "correctOptionId": "a",
+      "explanation": "‘긍정적’은 그러하거나 옳다고 인정하는 뜻을 나타내는 관형사예요.",
+      "distractorRationales": {
+        "b": "‘부정적’은 옳지 않다고 반대하는 뜻이라 정반대예요.",
+        "c": "‘강압적’은 억지로 누르는 뜻이라 인정과 맞지 않아요.",
+        "d": "‘모순적’은 앞뒤가 서로 어긋난다는 뜻이라 어색해요."
+      }
+    },
+    {
+      "id": "g5-argon-0460",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "definition",
+      "difficultyTier": "advanced",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "낙관적",
+        "partOfSpeech": "관형사",
+        "senseKey": "낙관적/관형사/405666-3"
+      },
+      "stem": "“어려운 경기였지만 선수들은 낙관적 전망을 품고 끝까지 뛰었다.”에서 ‘낙관적’의 뜻은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "세상을 어둡고 절망스럽게 여기는"
+        },
+        {
+          "id": "b",
+          "text": "겉으로 드러난 모양만 중시하는"
+        },
+        {
+          "id": "c",
+          "text": "과거에 일어난 기록만 조사하는"
+        },
+        {
+          "id": "d",
+          "text": "앞날이나 사물을 밝고 희망차게 보는"
+        }
+      ],
+      "correctOptionId": "d",
+      "explanation": "관형사 ‘낙관적’은 인생이나 사물을 밝고 희망적으로 보는 뜻이에요.",
+      "distractorRationales": {
+        "a": "어둡고 절망스럽게 여기는 것은 ‘비관적’의 뜻이에요.",
+        "b": "겉모양만 중시하는 것은 ‘형식적’에 해당해요.",
+        "c": "과거 기록을 조사하는 것은 희망적 시선과 무관해요."
+      }
+    },
+    {
       "id": "g5-argon-0461",
       "revision": 1,
       "status": "verified_candidate",
       "grade": 5,
       "type": "definition",
-      "difficultyTier": "basic",
+      "difficultyTier": "advanced",
       "variantTag": "standard",
       "target": {
         "lemma": "면밀히",
@@ -17091,7 +17811,7 @@
       "status": "verified_candidate",
       "grade": 5,
       "type": "synonym_context",
-      "difficultyTier": "basic",
+      "difficultyTier": "core",
       "variantTag": "standard",
       "target": {
         "lemma": "철저히",
@@ -17171,7 +17891,7 @@
       "status": "verified_candidate",
       "grade": 5,
       "type": "cloze",
-      "difficultyTier": "core",
+      "difficultyTier": "basic",
       "variantTag": "standard",
       "target": {
         "lemma": "꼼꼼히",
@@ -17211,7 +17931,7 @@
       "status": "verified_candidate",
       "grade": 5,
       "type": "antonym_context",
-      "difficultyTier": "core",
+      "difficultyTier": "basic",
       "variantTag": "standard",
       "target": {
         "lemma": "충분히",
@@ -17291,7 +18011,7 @@
       "status": "verified_candidate",
       "grade": 5,
       "type": "synonym_context",
-      "difficultyTier": "core",
+      "difficultyTier": "basic",
       "variantTag": "standard",
       "target": {
         "lemma": "모자람",
@@ -17323,6 +18043,46 @@
         "b": "‘넉넉함’은 모자람이 없는 반대 상태예요.",
         "c": "‘풍부함’은 넉넉하고 많음을 뜻해 반대돼요.",
         "d": "‘넘쳐남’은 기준을 넘어 남는 상태라 어긋나요."
+      }
+    },
+    {
+      "id": "g5-argon-0468",
+      "revision": 3,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "cloze",
+      "difficultyTier": "advanced",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "부수적",
+        "partOfSpeech": "관형사",
+        "senseKey": "부수적/관형사/159763-2"
+      },
+      "stem": "도서관의 주된 역할은 책 대출이지만 주민 쉼터가 되는 (    ) 기능도 함께 한다.",
+      "options": [
+        {
+          "id": "a",
+          "text": "근본적"
+        },
+        {
+          "id": "b",
+          "text": "핵심적"
+        },
+        {
+          "id": "c",
+          "text": "절대적"
+        },
+        {
+          "id": "d",
+          "text": "부수적"
+        }
+      ],
+      "correctOptionId": "d",
+      "explanation": "주된 역할에 덧붙어 함께 따르는 것이므로 ‘부수적’이 알맞아요.",
+      "distractorRationales": {
+        "a": "‘근본적’은 바탕이 되는 주된 것이라 문맥과 반대돼요.",
+        "b": "‘핵심적’은 가장 중심이 되는 것이라 맞지 않아요.",
+        "c": "‘절대적’은 아무 조건이나 제약이 붙지 않는다는 뜻으로, 주된 기능에 덧붙는다는 뜻과 달라요."
       }
     },
     {
@@ -17366,6 +18126,166 @@
       }
     },
     {
+      "id": "g5-argon-0470",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "definition",
+      "difficultyTier": "core",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "근본적",
+        "partOfSpeech": "관형사",
+        "senseKey": "근본적/관형사/46177-2"
+      },
+      "stem": "“잦은 고장을 막으려면 임시 수리 대신 근본적 원인을 찾아야 한다.”에서 ‘근본적’의 뜻은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "주된 일에 덧붙어 따라오는"
+        },
+        {
+          "id": "b",
+          "text": "사물의 본바탕이나 뿌리가 되는"
+        },
+        {
+          "id": "c",
+          "text": "겉모양만 그럴듯하게 꾸미는"
+        },
+        {
+          "id": "d",
+          "text": "짧은 한때만 잠깐 이어지는"
+        }
+      ],
+      "correctOptionId": "b",
+      "explanation": "관형사 ‘근본적’은 사물의 근본을 이루거나 근본이 되는 뜻이에요.",
+      "distractorRationales": {
+        "a": "주된 일에 덧붙어 따르는 것은 ‘부수적’의 뜻이에요.",
+        "c": "겉모양만 꾸미는 것은 ‘형식적’의 의미예요.",
+        "d": "짧은 한때만 이어지는 것은 ‘일시적’의 의미예요."
+      }
+    },
+    {
+      "id": "g5-argon-0471",
+      "revision": 3,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "cloze",
+      "difficultyTier": "core",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "근본적",
+        "partOfSpeech": "관형사",
+        "senseKey": "근본적/관형사/46177-2"
+      },
+      "stem": "겉으로 드러난 현상만 보지 말고 문제의 뿌리를 바로잡는 (    ) 해결책을 세워야 한다.",
+      "options": [
+        {
+          "id": "a",
+          "text": "근본적"
+        },
+        {
+          "id": "b",
+          "text": "표면적"
+        },
+        {
+          "id": "c",
+          "text": "일시적"
+        },
+        {
+          "id": "d",
+          "text": "형식적"
+        }
+      ],
+      "correctOptionId": "a",
+      "explanation": "‘근본적’은 근본이 되는 것을 뜻하므로 문제의 뿌리를 바로잡는 해결책에 알맞아요.",
+      "distractorRationales": {
+        "b": "‘표면적’은 겉으로만 드러난 것이라 문맥과 반대돼요.",
+        "c": "‘일시적’은 잠깐뿐인 미봉책이라 뿌리 해결과 달라요.",
+        "d": "‘형식적’은 겉치레만 차리는 것이라 어울리지 않아요."
+      }
+    },
+    {
+      "id": "g5-argon-0472",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "synonym_context",
+      "difficultyTier": "core",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "근본적",
+        "partOfSpeech": "관형사",
+        "senseKey": "근본적/관형사/46177-2"
+      },
+      "stem": "“생활 습관을 고치는 것이 건강 관리의 근본적 방법이다.”에서 ‘근본적’과 바꾸어 쓸 수 있는 말은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "겉만 치장하는"
+        },
+        {
+          "id": "b",
+          "text": "잠깐에 그치는"
+        },
+        {
+          "id": "c",
+          "text": "곁에 따라붙는"
+        },
+        {
+          "id": "d",
+          "text": "바탕을 이루는"
+        }
+      ],
+      "correctOptionId": "d",
+      "explanation": "‘근본적’은 사물의 뿌리나 바탕을 이루는이라는 뜻의 관형사예요.",
+      "distractorRationales": {
+        "a": "겉만 치장하는 것은 ‘형식적’이나 ‘표면적’에 가까워요.",
+        "b": "잠깐에 그치는 것은 ‘일시적’의 의미예요.",
+        "c": "곁에 따라붙는 것은 ‘부수적’의 의미예요."
+      }
+    },
+    {
+      "id": "g5-argon-0473",
+      "revision": 3,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "usage",
+      "difficultyTier": "advanced",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "근본적",
+        "partOfSpeech": "관형사",
+        "senseKey": "근본적/관형사/46177-2"
+      },
+      "stem": "‘근본적’을 바르게 쓴 문장은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "당장 오늘만 대충 넘기려고 근본적 눈가림을 했다."
+        },
+        {
+          "id": "b",
+          "text": "사고를 막으려고 시설의 근본적 문제를 바로잡았다."
+        },
+        {
+          "id": "c",
+          "text": "속은 비워 둔 채 겉만 꾸미는 근본적 치장을 했다."
+        },
+        {
+          "id": "d",
+          "text": "아무 준비 없이 즉흥적으로 근본적 변덕을 부렸다."
+        }
+      ],
+      "correctOptionId": "b",
+      "explanation": "‘근본적’은 사물의 뿌리나 바탕이 되는 것을 가리킬 때 써요.",
+      "distractorRationales": {
+        "a": "당장 대충 넘기는 눈가림은 바탕이 되는 일이 아니에요.",
+        "c": "겉모양만 꾸미는 치장은 ‘외면적’이나 ‘형식적’에 가까워요.",
+        "d": "즉흥적으로 부리는 변덕은 뿌리가 되는 것과 반대돼요."
+      }
+    },
+    {
       "id": "g5-argon-0474",
       "revision": 1,
       "status": "verified_candidate",
@@ -17403,6 +18323,46 @@
         "a": "‘내면적’은 속이나 내부에 관한 것이라 반대돼요.",
         "b": "‘심리적’은 마음의 상태에 관한 것을 뜻해요.",
         "d": "‘정신적’은 생각이나 마음에 관한 것이라 어긋나요."
+      }
+    },
+    {
+      "id": "g5-argon-0475",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "definition",
+      "difficultyTier": "core",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "형식적",
+        "partOfSpeech": "관형사",
+        "senseKey": "형식적/관형사/371479-2"
+      },
+      "stem": "“진심 어린 사과 대신 형식적 인사만 건네서 서운했다.”에서 ‘형식적’의 뜻은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "실제 내용과 본바탕을 충실히 채우는"
+        },
+        {
+          "id": "b",
+          "text": "겉으로 나타나 보이는 모양을 위주로 하는"
+        },
+        {
+          "id": "c",
+          "text": "사물의 가장 중심이나 뿌리가 되는"
+        },
+        {
+          "id": "d",
+          "text": "오래도록 변하지 않고 계속 이어지는"
+        }
+      ],
+      "correctOptionId": "b",
+      "explanation": "관형사 ‘형식적’은 겉으로 드러나 보이는 모양을 위주로 하는 뜻이에요.",
+      "distractorRationales": {
+        "a": "실제 본바탕을 채우는 것은 ‘실질적’이라 반대돼요.",
+        "c": "중심이나 뿌리가 되는 것은 ‘근본적’의 뜻이에요.",
+        "d": "오래도록 변하지 않는 것은 ‘영구적’의 뜻이에요."
       }
     },
     {
@@ -17486,6 +18446,46 @@
       }
     },
     {
+      "id": "g5-argon-0478",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "definition",
+      "difficultyTier": "challenge",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "실질적",
+        "partOfSpeech": "관형사",
+        "senseKey": "실질적/관형사/453196-2"
+      },
+      "stem": "“겉치레를 줄이고 주민에게 실질적 보탬이 되는 일을 했다.”에서 ‘실질적’의 뜻은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "외부로 보이는 모양만 위주로 하는"
+        },
+        {
+          "id": "b",
+          "text": "실제로 있는 본바탕에 근거하는"
+        },
+        {
+          "id": "c",
+          "text": "머릿속으로만 막연히 상상해 그리는"
+        },
+        {
+          "id": "d",
+          "text": "주된 것에 부차적으로 덧붙어 따르는"
+        }
+      ],
+      "correctOptionId": "b",
+      "explanation": "‘실질적’은 실제로 있는 본바탕과 같거나 그것에 근거하는 뜻이에요.",
+      "distractorRationales": {
+        "a": "겉으로 보이는 모양만 위주로 하는 것은 ‘형식적’이에요.",
+        "c": "막연히 상상만 하는 것은 실제 바탕과 거리가 멀어요.",
+        "d": "주된 것에 덧붙어 따르는 것은 ‘부수적’의 뜻이에요."
+      }
+    },
+    {
       "id": "g5-argon-0479",
       "revision": 1,
       "status": "verified_candidate",
@@ -17566,12 +18566,52 @@
       }
     },
     {
+      "id": "g5-argon-0481",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "cloze",
+      "difficultyTier": "advanced",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "실질적",
+        "partOfSpeech": "관형사",
+        "senseKey": "실질적/관형사/453196-2"
+      },
+      "stem": "말뿐인 구호에 그치지 않고 어려움을 겪는 이웃에게 (    ) 도움을 주어야 한다.",
+      "options": [
+        {
+          "id": "a",
+          "text": "실질적"
+        },
+        {
+          "id": "b",
+          "text": "형식적"
+        },
+        {
+          "id": "c",
+          "text": "표면적"
+        },
+        {
+          "id": "d",
+          "text": "추상적"
+        }
+      ],
+      "correctOptionId": "a",
+      "explanation": "겉치레나 말뿐이 아닌 실제 바탕의 도움이므로 ‘실질적’이 알맞아요.",
+      "distractorRationales": {
+        "b": "‘형식적’은 겉모양만 차리는 것이라 문맥과 반대돼요.",
+        "c": "‘표면적’은 겉으로만 드러난 것이라 실제 도움과 달라요.",
+        "d": "‘추상적’은 구체적 실체가 없는 것이라 어울리지 않아요."
+      }
+    },
+    {
       "id": "g5-argon-0482",
       "revision": 1,
       "status": "verified_candidate",
       "grade": 5,
       "type": "usage",
-      "difficultyTier": "advanced",
+      "difficultyTier": "challenge",
       "variantTag": "confusable",
       "target": {
         "lemma": "이상",
@@ -17606,12 +18646,172 @@
       }
     },
     {
+      "id": "g5-argon-0483",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "cloze",
+      "difficultyTier": "core",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "발달하다",
+        "partOfSpeech": "동사",
+        "senseKey": "발달하다/동사/134376-2"
+      },
+      "stem": "정보 통신 기술이 높은 수준으로 (    ) 먼 나라 사람과도 실시간으로 화상 통화를 나눈다.",
+      "options": [
+        {
+          "id": "a",
+          "text": "쇠퇴하여"
+        },
+        {
+          "id": "b",
+          "text": "발달하여"
+        },
+        {
+          "id": "c",
+          "text": "정체되어"
+        },
+        {
+          "id": "d",
+          "text": "단절되어"
+        }
+      ],
+      "correctOptionId": "b",
+      "explanation": "여기서 ‘발달하다’는 기술이나 문명이 더 높은 수준에 이른다는 뜻이에요.",
+      "distractorRationales": {
+        "a": "‘쇠퇴하여’는 기운이나 수준이 꺾여 줄어든다는 반대말이에요.",
+        "c": "‘정체되어’는 앞으로 나아가지 못하고 머무른다는 뜻이에요.",
+        "d": "‘단절되어’는 이어지지 않고 끊어진다는 뜻이라 맞지 않아요."
+      }
+    },
+    {
+      "id": "g5-argon-0484",
+      "revision": 4,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "synonym_context",
+      "difficultyTier": "challenge",
+      "variantTag": "confusable",
+      "target": {
+        "lemma": "실질적",
+        "partOfSpeech": "관형사",
+        "senseKey": "실질적/관형사/453196-2"
+      },
+      "stem": "“학급 규칙을 정할 때는 보여 주기 식 약속보다 실질적 변화가 중요하다.”에서 ‘실질적’과 뜻이 가장 가까운 말은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "겉모양만 중요하게 여기는"
+        },
+        {
+          "id": "b",
+          "text": "실제 본바탕에 근거하는"
+        },
+        {
+          "id": "c",
+          "text": "이름만 내세워 꾸미는"
+        },
+        {
+          "id": "d",
+          "text": "잠깐 동안만 이어지는"
+        }
+      ],
+      "correctOptionId": "b",
+      "explanation": "‘실질적’은 겉모양이 아니라 실제 있는 본바탕에 근거하는 뜻이에요.",
+      "distractorRationales": {
+        "a": "겉모양만 중요하게 여기는 것은 ‘형식적’이라 정반대예요.",
+        "c": "이름만 내세워 꾸미는 것은 실제 본바탕과 거리가 멀어요.",
+        "d": "잠깐 동안만 이어지는 것은 ‘일시적’의 뜻이에요."
+      }
+    },
+    {
+      "id": "g5-argon-0485",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "cloze",
+      "difficultyTier": "core",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "형식적",
+        "partOfSpeech": "관형사",
+        "senseKey": "형식적/관형사/371479-2"
+      },
+      "stem": "속마음은 전혀 담기지 않고 겉모양만 그럴듯하게 차린 (    ) 절차는 줄이는 편이 낫다.",
+      "options": [
+        {
+          "id": "a",
+          "text": "실질적"
+        },
+        {
+          "id": "b",
+          "text": "근본적"
+        },
+        {
+          "id": "c",
+          "text": "핵심적"
+        },
+        {
+          "id": "d",
+          "text": "형식적"
+        }
+      ],
+      "correctOptionId": "d",
+      "explanation": "진심이나 알맹이 없이 겉모양만 위주로 한 것이므로 ‘형식적’이 맞아요.",
+      "distractorRationales": {
+        "a": "‘실질적’은 실제 본바탕을 갖춘 것이라 문맥과 반대돼요.",
+        "b": "‘근본적’은 뿌리가 되는 바탕이라 줄이자는 말과 어긋나요.",
+        "c": "‘핵심적’은 가장 중심이 되는 것이라 겉치레와 달라요."
+      }
+    },
+    {
+      "id": "g5-argon-0486",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "usage",
+      "difficultyTier": "challenge",
+      "variantTag": "confusable",
+      "target": {
+        "lemma": "형식적",
+        "partOfSpeech": "관형사",
+        "senseKey": "형식적/관형사/371479-2"
+      },
+      "stem": "‘형식적’을 바르게 쓴 문장은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "온 정성과 진심을 다해 형식적 위로를 전했다."
+        },
+        {
+          "id": "b",
+          "text": "진심 없이 겉모양만 차려 형식적 인사를 건넸다."
+        },
+        {
+          "id": "c",
+          "text": "겉치레를 빼고 알맹이만 담아 형식적 도움을 줬다."
+        },
+        {
+          "id": "d",
+          "text": "문제의 깊은 뿌리를 찾아 형식적 본질을 밝혔다."
+        }
+      ],
+      "correctOptionId": "b",
+      "explanation": "‘형식적’은 겉으로 보이는 모양만 위주로 하는 뜻이라 겉모양 인사와 맞아요.",
+      "distractorRationales": {
+        "a": "온 정성과 진심을 다한 위로는 ‘형식적’과 정반대예요.",
+        "c": "겉치레를 빼고 알맹이를 담은 도움은 ‘실질적’이에요.",
+        "d": "뿌리와 본질을 밝히는 일에는 어울리지 않는 말이에요."
+      }
+    },
+    {
       "id": "g5-argon-0487",
       "revision": 1,
       "status": "verified_candidate",
       "grade": 5,
       "type": "cloze",
-      "difficultyTier": "advanced",
+      "difficultyTier": "core",
       "variantTag": "confusable",
       "target": {
         "lemma": "제시하다",
@@ -17646,12 +18846,92 @@
       }
     },
     {
+      "id": "g5-argon-0488",
+      "revision": 3,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "synonym_context",
+      "difficultyTier": "advanced",
+      "variantTag": "confusable",
+      "target": {
+        "lemma": "형식적",
+        "partOfSpeech": "관형사",
+        "senseKey": "형식적/관형사/371479-2"
+      },
+      "stem": "“알맹이 없는 형식적 회의를 줄이고 실천 방안을 논의했다.”에서 ‘형식적’과 뜻이 가장 가까운 말은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "실제 바탕에 근거하는"
+        },
+        {
+          "id": "b",
+          "text": "겉모양을 위주로 하는"
+        },
+        {
+          "id": "c",
+          "text": "사물의 바탕을 이루는"
+        },
+        {
+          "id": "d",
+          "text": "새로운 방법을 꾀하는"
+        }
+      ],
+      "correctOptionId": "b",
+      "explanation": "관형사 ‘형식적’은 외부로 보이는 겉모양을 위주로 하는 뜻이에요.",
+      "distractorRationales": {
+        "a": "실제 바탕에 근거하는 것은 ‘실질적’이라 반대돼요.",
+        "c": "사물의 바탕을 이루는 것은 ‘근본적’에 해당해요.",
+        "d": "새로운 방법을 꾀하는 것은 ‘혁신적’에 가까워요."
+      }
+    },
+    {
+      "id": "g5-argon-0489",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "cloze",
+      "difficultyTier": "core",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "혁신적",
+        "partOfSpeech": "관형사",
+        "senseKey": "혁신적/관형사/505835-2"
+      },
+      "stem": "오래된 낡은 방식을 과감히 버리고 완전히 새롭게 바꾼 (    ) 기술이 개발되었다.",
+      "options": [
+        {
+          "id": "a",
+          "text": "혁신적"
+        },
+        {
+          "id": "b",
+          "text": "관습적"
+        },
+        {
+          "id": "c",
+          "text": "보수적"
+        },
+        {
+          "id": "d",
+          "text": "형식적"
+        }
+      ],
+      "correctOptionId": "a",
+      "explanation": "‘혁신적’은 묵은 방법 따위를 완전히 바꾸어 새롭게 하는 뜻이에요.",
+      "distractorRationales": {
+        "b": "‘관습적’은 옛 버릇대로 따르는 것이라 문맥과 반대돼요.",
+        "c": "‘보수적’은 기존 것을 그대로 지키려는 뜻이라 어긋나요.",
+        "d": "‘형식적’은 겉모양만 차리는 것이라 새 기술과 맞지 않아요."
+      }
+    },
+    {
       "id": "g5-argon-0490",
       "revision": 1,
       "status": "verified_candidate",
       "grade": 5,
       "type": "cloze",
-      "difficultyTier": "challenge",
+      "difficultyTier": "advanced",
       "variantTag": "idiom_proverb",
       "target": {
         "lemma": "도토리 키 재기",
@@ -17691,7 +18971,7 @@
       "status": "verified_candidate",
       "grade": 5,
       "type": "cloze",
-      "difficultyTier": "challenge",
+      "difficultyTier": "advanced",
       "variantTag": "idiom_proverb",
       "target": {
         "lemma": "꿩 대신 닭",
@@ -17731,7 +19011,7 @@
       "status": "verified_candidate",
       "grade": 5,
       "type": "cloze",
-      "difficultyTier": "challenge",
+      "difficultyTier": "advanced",
       "variantTag": "idiom_proverb",
       "target": {
         "lemma": "호미로 막을 것을 가래로 막는다",
@@ -17771,7 +19051,7 @@
       "status": "verified_candidate",
       "grade": 5,
       "type": "usage",
-      "difficultyTier": "challenge",
+      "difficultyTier": "advanced",
       "variantTag": "idiom_proverb",
       "target": {
         "lemma": "밑 빠진 독에 물 붓기",
@@ -17811,7 +19091,7 @@
       "status": "verified_candidate",
       "grade": 5,
       "type": "usage",
-      "difficultyTier": "challenge",
+      "difficultyTier": "advanced",
       "variantTag": "idiom_proverb",
       "target": {
         "lemma": "새 발의 피",
@@ -17851,7 +19131,7 @@
       "status": "verified_candidate",
       "grade": 5,
       "type": "usage",
-      "difficultyTier": "challenge",
+      "difficultyTier": "advanced",
       "variantTag": "idiom_proverb",
       "target": {
         "lemma": "울며 겨자 먹기",
@@ -17886,12 +19166,172 @@
       }
     },
     {
+      "id": "g5-argon-0496",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "cloze",
+      "difficultyTier": "core",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "보호하다",
+        "partOfSpeech": "동사",
+        "senseKey": "보호하다/동사/145225-2"
+      },
+      "stem": "박물관은 천 년 된 벽화가 빛에 바래지 않고 본래 모습대로 유지되도록 유리벽을 설치해 유물을 (    ).",
+      "options": [
+        {
+          "id": "a",
+          "text": "방치한다"
+        },
+        {
+          "id": "b",
+          "text": "변형한다"
+        },
+        {
+          "id": "c",
+          "text": "보호한다"
+        },
+        {
+          "id": "d",
+          "text": "처분한다"
+        }
+      ],
+      "correctOptionId": "c",
+      "explanation": "여기서 ‘보호하다’는 대상을 잘 지켜 원래대로 보존되게 한다는 뜻이에요.",
+      "distractorRationales": {
+        "a": "‘방치한다’는 돌보지 않고 내버려 둔다는 반대 뜻이에요.",
+        "b": "‘변형한다’는 원래 모양을 다르게 바꾸므로 어긋나요.",
+        "d": "‘처분한다’는 물건을 치우거나 팔아 넘긴다는 뜻이에요."
+      }
+    },
+    {
+      "id": "g5-argon-0497",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "usage",
+      "difficultyTier": "challenge",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "혁신적",
+        "partOfSpeech": "관형사",
+        "senseKey": "혁신적/관형사/505835-2"
+      },
+      "stem": "‘혁신적’을 바르게 쓴 문장은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "이번의 혁신적 방안은 옛 방식을 조금도 안 고쳤다."
+        },
+        {
+          "id": "b",
+          "text": "그들의 혁신적 태도는 변화를 거부하며 옛것만 지켰다."
+        },
+        {
+          "id": "c",
+          "text": "모임의 혁신적 규칙은 예전 절차를 그대로 답습했다."
+        },
+        {
+          "id": "d",
+          "text": "회사의 혁신적 제도가 묵은 관습을 새롭게 바꾸었다."
+        }
+      ],
+      "correctOptionId": "d",
+      "explanation": "‘혁신적’은 묵은 관습이나 방법을 완전히 바꾸어 새롭게 하는 뜻이에요.",
+      "distractorRationales": {
+        "a": "옛 방식을 조금도 고치지 않는 것은 ‘혁신적’과 정반대예요.",
+        "b": "변화를 거부하고 옛것만 지키는 것은 ‘보수적’에 해당해요.",
+        "c": "예전 절차를 그대로 답습하는 일에는 쓸 수 없어요."
+      }
+    },
+    {
+      "id": "g5-argon-0498",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "synonym_context",
+      "difficultyTier": "advanced",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "혁신적",
+        "partOfSpeech": "관형사",
+        "senseKey": "혁신적/관형사/505835-2"
+      },
+      "stem": "“오랜 관행을 탈피한 혁신적 운영 방식으로 큰 호응을 얻었다.”에서 ‘혁신적’과 바꾸어 쓸 수 있는 말은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "묵은 것을 완전히 바꾼"
+        },
+        {
+          "id": "b",
+          "text": "옛 풍속을 그대로 지킨"
+        },
+        {
+          "id": "c",
+          "text": "겉모양만 화려하게 꾸민"
+        },
+        {
+          "id": "d",
+          "text": "주된 일에 덤으로 딸린"
+        }
+      ],
+      "correctOptionId": "a",
+      "explanation": "관형사 ‘혁신적’은 묵은 조직이나 방법을 완전히 바꾸어 새롭게 한 뜻이에요.",
+      "distractorRationales": {
+        "b": "옛 풍속을 그대로 지킨 것은 ‘보수적’이나 ‘전통적’이에요.",
+        "c": "겉모양만 꾸민 것은 ‘형식적’에 해당하는 뜻이에요.",
+        "d": "주된 일에 덤으로 딸린 것은 ‘부수적’의 의미예요."
+      }
+    },
+    {
+      "id": "g5-argon-0499",
+      "revision": 3,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "usage",
+      "difficultyTier": "advanced",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "기록하다",
+        "partOfSpeech": "동사",
+        "senseKey": "기록하다/동사/405075-2"
+      },
+      "stem": "경기 성적을 수치로 나타낸다는 뜻의 ‘기록하다’를 바르게 쓴 문장은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "시원한 보리차를 한 컵 가득 기록했다."
+        },
+        {
+          "id": "b",
+          "text": "추운 날 목도리를 목에 따뜻이 기록했다."
+        },
+        {
+          "id": "c",
+          "text": "수영 선수가 대회 최고 성적을 기록했다."
+        },
+        {
+          "id": "d",
+          "text": "화분의 토마토가 빨갛게 익어 기록했다."
+        }
+      ],
+      "correctOptionId": "c",
+      "explanation": "운동 경기에서 세운 성적이나 결과를 수치로 나타낼 때 ‘기록하다’를 써요.",
+      "distractorRationales": {
+        "a": "물을 마시거나 따르는 일에는 쓰지 않아요.",
+        "b": "목도리를 두르는 동작과 어울리지 않아요.",
+        "d": "열매가 익는 자연 현상에는 쓸 수 없어요."
+      }
+    },
+    {
       "id": "g5-argon-0500",
       "revision": 1,
       "status": "verified_candidate",
       "grade": 5,
       "type": "usage",
-      "difficultyTier": "challenge",
+      "difficultyTier": "advanced",
       "variantTag": "polysemy",
       "target": {
         "lemma": "개선하다",
@@ -17927,7 +19367,7 @@
     },
     {
       "id": "g5-argon-0501",
-      "revision": 1,
+      "revision": 2,
       "status": "verified_candidate",
       "grade": 5,
       "type": "cloze",
@@ -17938,7 +19378,7 @@
         "partOfSpeech": "동사",
         "senseKey": "지나치다/동사/313157-1"
       },
-      "stem": "책을 읽느라 정신이 팔려 내려야 할 정류장에 들르지 않고 그대로 (    ).",
+      "stem": "책을 읽느라 정신이 팔려 내려야 할 정류장에서 내리지 못하고 그대로 (    ).",
       "options": [
         {
           "id": "a",
@@ -17971,7 +19411,7 @@
       "status": "verified_candidate",
       "grade": 5,
       "type": "antonym_context",
-      "difficultyTier": "basic",
+      "difficultyTier": "core",
       "variantTag": "standard",
       "target": {
         "lemma": "균형",
@@ -18003,6 +19443,286 @@
         "b": "양쪽이 고른 상태는 균형의 본래 뜻이에요.",
         "c": "수평을 이룬 상태는 균형이 잘 잡힌 모습이에요.",
         "d": "치우침 없는 상태는 균형과 같은 의미예요."
+      }
+    },
+    {
+      "id": "g5-argon-0503",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "definition",
+      "difficultyTier": "advanced",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "객관적",
+        "partOfSpeech": "관형사",
+        "senseKey": "객관적/관형사/390530-3"
+      },
+      "stem": "“심판은 친분과 관계없이 객관적 기준으로 승패를 판정했다.”에서 ‘객관적’의 뜻은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "제삼자의 입장에서 사물을 생각하는"
+        },
+        {
+          "id": "b",
+          "text": "자기 개인의 감정만을 앞세우는"
+        },
+        {
+          "id": "c",
+          "text": "오래도록 변함없이 계속 이어지는"
+        },
+        {
+          "id": "d",
+          "text": "전체 가운데 일부에만 관계되는"
+        }
+      ],
+      "correctOptionId": "a",
+      "explanation": "‘객관적’은 자기와의 관계에서 벗어나 제삼자 입장에서 보는 뜻이에요.",
+      "distractorRationales": {
+        "b": "개인 감정과 취향만 앞세우는 것은 ‘주관적’이에요.",
+        "c": "오래도록 유지되는 것은 ‘영구적’에 해당해요.",
+        "d": "일부에만 관계되는 것은 ‘부분적’을 뜻해요."
+      }
+    },
+    {
+      "id": "g5-argon-0504",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "synonym_context",
+      "difficultyTier": "advanced",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "객관적",
+        "partOfSpeech": "관형사",
+        "senseKey": "객관적/관형사/390530-3"
+      },
+      "stem": "“기사문에는 글쓴이의 편견을 빼고 객관적 사실만 적어야 한다.”에서 ‘객관적’과 바꾸어 쓸 수 있는 말은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "개인 기분만 앞세운"
+        },
+        {
+          "id": "b",
+          "text": "겉모습만 대충 꾸민"
+        },
+        {
+          "id": "c",
+          "text": "잠깐 생겼다 사라진"
+        },
+        {
+          "id": "d",
+          "text": "제삼자 입장에서 본"
+        }
+      ],
+      "correctOptionId": "d",
+      "explanation": "관형사 ‘객관적’은 자기 관계에서 벗어나 제삼자 입장에서 보는 뜻이에요.",
+      "distractorRationales": {
+        "a": "개인 기분만 앞세운 것은 ‘주관적’이라 정반대예요.",
+        "b": "겉모습만 대충 꾸민 것은 ‘형식적’에 가까워요.",
+        "c": "잠깐 생겼다 사라진 것은 ‘일시적’의 의미예요."
+      }
+    },
+    {
+      "id": "g5-argon-0505",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "usage",
+      "difficultyTier": "challenge",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "객관적",
+        "partOfSpeech": "관형사",
+        "senseKey": "객관적/관형사/390530-3"
+      },
+      "stem": "‘객관적’을 바르게 쓴 문장은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "오직 내 기분만 앞세워 객관적 고집을 부렸다."
+        },
+        {
+          "id": "b",
+          "text": "심판은 개인 감정을 빼고 객관적 근거로 판정했다."
+        },
+        {
+          "id": "c",
+          "text": "친한 친구 편만 드는 객관적 편애를 보였다."
+        },
+        {
+          "id": "d",
+          "text": "사실 확인 없이 느낌만으로 객관적 억측을 했다."
+        }
+      ],
+      "correctOptionId": "b",
+      "explanation": "‘객관적’은 자기 감정을 떠나 제삼자 입장에서 보는 뜻이에요.",
+      "distractorRationales": {
+        "a": "오직 내 기분만 앞세우는 것은 ‘주관적’이에요.",
+        "c": "친한 친구 편만 드는 태도와는 뜻이 정반대예요.",
+        "d": "느낌만으로 억측하는 일에는 쓸 수 없는 말이에요."
+      }
+    },
+    {
+      "id": "g5-argon-0506",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "cloze",
+      "difficultyTier": "core",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "객관적",
+        "partOfSpeech": "관형사",
+        "senseKey": "객관적/관형사/390530-3"
+      },
+      "stem": "개인의 막연한 느낌 대신 누구나 확인할 수 있는 (    ) 통계 자료를 제시했다.",
+      "options": [
+        {
+          "id": "a",
+          "text": "객관적"
+        },
+        {
+          "id": "b",
+          "text": "주관적"
+        },
+        {
+          "id": "c",
+          "text": "감정적"
+        },
+        {
+          "id": "d",
+          "text": "독단적"
+        }
+      ],
+      "correctOptionId": "a",
+      "explanation": "개인의 느낌에서 벗어나 제삼자 입장에서 보는 ‘객관적’이 알맞아요.",
+      "distractorRationales": {
+        "b": "‘주관적’은 자기만의 관점이라 통계 자료와 반대돼요.",
+        "c": "‘감정적’은 기분에 치우치는 뜻이라 어울리지 않아요.",
+        "d": "‘독단적’은 혼자 마음대로 정하는 뜻이라 어색해요."
+      }
+    },
+    {
+      "id": "g5-argon-0507",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "definition",
+      "difficultyTier": "core",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "구체적",
+        "partOfSpeech": "관형사",
+        "senseKey": "구체적/관형사/39469-3"
+      },
+      "stem": "“평화를 비둘기 같은 구체적 형상으로 나타냈다.”에서 ‘구체적’의 뜻은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "형태가 없어 머릿속으로만 떠올리는"
+        },
+        {
+          "id": "b",
+          "text": "짧은 한때만 잠깐 머물다 사라지는"
+        },
+        {
+          "id": "c",
+          "text": "전체 가운데 일부에만 좁게 걸치는"
+        },
+        {
+          "id": "d",
+          "text": "직접 지각하도록 일정한 형태를 갖춘"
+        }
+      ],
+      "correctOptionId": "d",
+      "explanation": "여기서 ‘구체적’은 직접 지각할 수 있도록 일정한 형태를 갖춘 뜻이에요.",
+      "distractorRationales": {
+        "a": "형태 없이 머릿속으로만 떠올리는 것은 ‘추상적’이에요.",
+        "b": "잠깐 머물다 사라지는 것은 ‘일시적’의 뜻이에요.",
+        "c": "일부에만 좁게 걸치는 것은 ‘부분적’의 뜻이에요."
+      }
+    },
+    {
+      "id": "g5-argon-0508",
+      "revision": 4,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "definition",
+      "difficultyTier": "advanced",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "내면적",
+        "partOfSpeech": "관형사",
+        "senseKey": "내면적/관형사/62981-3"
+      },
+      "stem": "“모둠의 내면적 체계를 다지려고 구성원의 역할과 회의 규칙을 정했다.”에서 ‘내면적’의 뜻은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "사물이나 조직의 내부에 관한"
+        },
+        {
+          "id": "b",
+          "text": "바깥으로 드러난 겉면에 관한"
+        },
+        {
+          "id": "c",
+          "text": "오랜 세월을 거쳐 전해 내려오는"
+        },
+        {
+          "id": "d",
+          "text": "주된 일에 덧붙어 함께 따르는"
+        }
+      ],
+      "correctOptionId": "a",
+      "explanation": "여기서 관형사 ‘내면적’은 사물이나 조직의 내부에 관한 뜻이에요.",
+      "distractorRationales": {
+        "b": "바깥으로 드러난 겉면에 관한 것은 ‘외면적’이에요.",
+        "c": "오랜 세월 전해 내려오는 것은 ‘전통적’에 가까워요.",
+        "d": "주된 일에 덧붙어 따르는 것은 ‘부수적’의 뜻이에요."
+      }
+    },
+    {
+      "id": "g5-argon-0509",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "cloze",
+      "difficultyTier": "core",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "구체적",
+        "partOfSpeech": "관형사",
+        "senseKey": "구체적/관형사/39469-3"
+      },
+      "stem": "머릿속 상상만으로는 이해하기 어려워 손으로 직접 만져 볼 수 있는 (    ) 모형을 만들었다.",
+      "options": [
+        {
+          "id": "a",
+          "text": "추상적"
+        },
+        {
+          "id": "b",
+          "text": "관념적"
+        },
+        {
+          "id": "c",
+          "text": "구체적"
+        },
+        {
+          "id": "d",
+          "text": "우발적"
+        }
+      ],
+      "correctOptionId": "c",
+      "explanation": "직접 만지고 지각할 수 있는 형태를 갖춘 ‘구체적’이 알맞아요.",
+      "distractorRationales": {
+        "a": "‘추상적’은 일정한 형태가 없는 것이라 정반대예요.",
+        "b": "‘관념적’은 머릿속 생각에만 머무는 뜻이라 어긋나요.",
+        "d": "‘우발적’은 우연히 갑자기 일어난다는 뜻이라 어색해요."
       }
     },
     {
@@ -18091,7 +19811,7 @@
       "status": "verified_candidate",
       "grade": 5,
       "type": "antonym_context",
-      "difficultyTier": "basic",
+      "difficultyTier": "core",
       "variantTag": "standard",
       "target": {
         "lemma": "발전",
@@ -18131,7 +19851,7 @@
       "status": "verified_candidate",
       "grade": 5,
       "type": "definition",
-      "difficultyTier": "basic",
+      "difficultyTier": "challenge",
       "variantTag": "standard",
       "target": {
         "lemma": "변혁",
@@ -18171,7 +19891,7 @@
       "status": "verified_candidate",
       "grade": 5,
       "type": "usage",
-      "difficultyTier": "core",
+      "difficultyTier": "advanced",
       "variantTag": "standard",
       "target": {
         "lemma": "진보",
@@ -18246,12 +19966,52 @@
       }
     },
     {
+      "id": "g5-argon-0516",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "cloze",
+      "difficultyTier": "basic",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "가늠하다",
+        "partOfSpeech": "동사",
+        "senseKey": "가늠하다/동사/686-2"
+      },
+      "stem": "줄자가 없을 때는 발걸음 수로 운동장의 대략적인 길이를 (    ) 볼 수 있다.",
+      "options": [
+        {
+          "id": "a",
+          "text": "수선해"
+        },
+        {
+          "id": "b",
+          "text": "가늠해"
+        },
+        {
+          "id": "c",
+          "text": "반납해"
+        },
+        {
+          "id": "d",
+          "text": "양보해"
+        }
+      ],
+      "correctOptionId": "b",
+      "explanation": "여기서 ‘가늠하다’는 길이 따위를 어림잡아 헤아린다는 뜻이에요.",
+      "distractorRationales": {
+        "a": "‘수선하다’는 낡거나 고장 난 물건을 고치는 일이에요.",
+        "c": "‘반납하다’는 빌린 물건을 돌려주는 일이라 맞지 않아요.",
+        "d": "‘양보하다’는 남을 위해 사양하는 일이라 어색해요."
+      }
+    },
+    {
       "id": "g5-argon-0517",
       "revision": 1,
       "status": "verified_candidate",
       "grade": 5,
       "type": "definition",
-      "difficultyTier": "core",
+      "difficultyTier": "challenge",
       "variantTag": "standard",
       "target": {
         "lemma": "감안하다",
@@ -18331,7 +20091,7 @@
       "status": "verified_candidate",
       "grade": 5,
       "type": "usage",
-      "difficultyTier": "core",
+      "difficultyTier": "basic",
       "variantTag": "standard",
       "target": {
         "lemma": "견디다",
@@ -18371,7 +20131,7 @@
       "status": "verified_candidate",
       "grade": 5,
       "type": "cloze",
-      "difficultyTier": "core",
+      "difficultyTier": "basic",
       "variantTag": "standard",
       "target": {
         "lemma": "경고하다",
@@ -18491,7 +20251,7 @@
       "status": "verified_candidate",
       "grade": 5,
       "type": "synonym_context",
-      "difficultyTier": "core",
+      "difficultyTier": "basic",
       "variantTag": "standard",
       "target": {
         "lemma": "교훈",
@@ -18526,12 +20286,52 @@
       }
     },
     {
+      "id": "g5-argon-0524",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "usage",
+      "difficultyTier": "advanced",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "구체적",
+        "partOfSpeech": "관형사",
+        "senseKey": "구체적/관형사/39469-3"
+      },
+      "stem": "다음 중 ‘구체적’을 바르게 쓴 문장은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "머릿속의 구체적 공상은 형태와 성질이 전혀 없다."
+        },
+        {
+          "id": "b",
+          "text": "과학실의 구체적 모형은 직접 만져 볼 수 있다."
+        },
+        {
+          "id": "c",
+          "text": "마음속의 구체적 추상은 눈으로 보지 못한다."
+        },
+        {
+          "id": "d",
+          "text": "상상 속의 구체적 무형은 만질 실체가 전혀 없다."
+        }
+      ],
+      "correctOptionId": "b",
+      "explanation": "‘구체적’은 직접 경험하거나 지각할 형태와 성질을 갖춘 뜻이에요.",
+      "distractorRationales": {
+        "a": "형태와 성질이 전혀 없는 공상에는 어울리지 않아요.",
+        "c": "눈으로 보지 못하는 추상은 ‘구체적’과 반대돼요.",
+        "d": "만질 실체가 전혀 없는 무형에는 쓸 수 없어요."
+      }
+    },
+    {
       "id": "g5-argon-0525",
       "revision": 1,
       "status": "verified_candidate",
       "grade": 5,
       "type": "cloze",
-      "difficultyTier": "core",
+      "difficultyTier": "basic",
       "variantTag": "standard",
       "target": {
         "lemma": "기대감",
@@ -18571,7 +20371,7 @@
       "status": "verified_candidate",
       "grade": 5,
       "type": "antonym_context",
-      "difficultyTier": "core",
+      "difficultyTier": "basic",
       "variantTag": "standard",
       "target": {
         "lemma": "기울기",
@@ -18611,7 +20411,7 @@
       "status": "verified_candidate",
       "grade": 5,
       "type": "definition",
-      "difficultyTier": "core",
+      "difficultyTier": "basic",
       "variantTag": "standard",
       "target": {
         "lemma": "깊숙이",
@@ -18651,7 +20451,7 @@
       "status": "verified_candidate",
       "grade": 5,
       "type": "definition",
-      "difficultyTier": "advanced",
+      "difficultyTier": "core",
       "variantTag": "polysemy",
       "target": {
         "lemma": "개발",
@@ -18683,6 +20483,46 @@
         "a": "산이나 땅을 쓸모 있게 만드는 것은 다른 뜻이에요.",
         "b": "출입문을 열어 놓는 일은 ‘개방’이라고 해요.",
         "c": "물건을 창고에 넣어 두는 일은 ‘보관’이에요."
+      }
+    },
+    {
+      "id": "g5-argon-0529",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "definition",
+      "difficultyTier": "core",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "구체적",
+        "partOfSpeech": "관형사",
+        "senseKey": "구체적/관형사/39469-4"
+      },
+      "stem": "“시각과 준비물까지 적은 구체적 계획표를 받았다.”에서 ‘구체적’의 뜻은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "대강 어림잡아 두루뭉술하게 넘어가는"
+        },
+        {
+          "id": "b",
+          "text": "겉모양만 화려하게 차려 눈가림하는"
+        },
+        {
+          "id": "c",
+          "text": "오랜 세월 동안 대대로 전해 내려오는"
+        },
+        {
+          "id": "d",
+          "text": "실제적이고 세밀한 부분까지 담고 있는"
+        }
+      ],
+      "correctOptionId": "d",
+      "explanation": "여기서 ‘구체적’은 실제적이고 세밀한 부분까지 담고 있는 뜻이에요.",
+      "distractorRationales": {
+        "a": "두루뭉술하게 넘어가는 것은 세밀한 계획과 반대돼요.",
+        "b": "겉모양만 차리는 것은 ‘형식적’에 해당해요.",
+        "c": "대대로 전해 내려오는 것은 ‘전통적’의 뜻이에요."
       }
     },
     {
@@ -18726,8 +20566,88 @@
       }
     },
     {
+      "id": "g5-argon-0531",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "cloze",
+      "difficultyTier": "core",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "구체적",
+        "partOfSpeech": "관형사",
+        "senseKey": "구체적/관형사/39469-4"
+      },
+      "stem": "막연한 다짐만 늘어놓지 말고 실천 시간과 순서까지 세밀히 담은 (    ) 방안을 세워야 한다.",
+      "options": [
+        {
+          "id": "a",
+          "text": "개략적"
+        },
+        {
+          "id": "b",
+          "text": "형식적"
+        },
+        {
+          "id": "c",
+          "text": "일시적"
+        },
+        {
+          "id": "d",
+          "text": "구체적"
+        }
+      ],
+      "correctOptionId": "d",
+      "explanation": "실제적이고 세밀한 부분까지 담은 방안을 뜻하므로 ‘구체적’이 맞아요.",
+      "distractorRationales": {
+        "a": "‘개략적’은 대강 추린 것이라 세밀한 방안과 반대돼요.",
+        "b": "‘형식적’은 겉모양만 차리는 것이라 실천과 어긋나요.",
+        "c": "‘일시적’은 잠깐뿐인 것이라 세밀함과는 뜻이 달라요."
+      }
+    },
+    {
+      "id": "g5-argon-0532",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "synonym_context",
+      "difficultyTier": "core",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "구체적",
+        "partOfSpeech": "관형사",
+        "senseKey": "구체적/관형사/39469-4"
+      },
+      "stem": "“안내문에는 대피 경로와 행동 요령에 대한 구체적 설명이 실려 있다.”에서 ‘구체적’과 바꾸어 쓸 수 있는 말은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "대강 줄여 간략한"
+        },
+        {
+          "id": "b",
+          "text": "겉모습만 요란한"
+        },
+        {
+          "id": "c",
+          "text": "근거 없이 막연한"
+        },
+        {
+          "id": "d",
+          "text": "실제적이고 세밀한"
+        }
+      ],
+      "correctOptionId": "d",
+      "explanation": "관형사 ‘구체적’은 실제적이고 세밀한 부분까지 담은 뜻이에요.",
+      "distractorRationales": {
+        "a": "대강 줄여 간략한 것은 ‘개략적’이라 뜻이 반대돼요.",
+        "b": "겉모습만 요란한 것은 세밀한 설명과 맞지 않아요.",
+        "c": "근거 없이 막연한 것은 ‘구체적’과 정반대예요."
+      }
+    },
+    {
       "id": "g5-argon-0533",
-      "revision": 1,
+      "revision": 2,
       "status": "verified_candidate",
       "grade": 5,
       "type": "usage",
@@ -18754,7 +20674,7 @@
         },
         {
           "id": "d",
-          "text": "차가 빨리 못 달리게 속도를 제시했다."
+          "text": "차가 빨리 못 달리게 도로에 과속 방지턱을 제시했다."
         }
       ],
       "correctOptionId": "c",
@@ -18762,47 +20682,47 @@
       "distractorRationales": {
         "a": "먼지를 닦아 없애는 일은 ‘제거하다’예요.",
         "b": "공장에서 물품을 만드는 일은 ‘제조하다’예요.",
-        "d": "속도를 넘지 못하게 막는 일은 ‘제한하다’예요."
+        "d": "도로에 과속 방지턱을 만들어 두는 일은 ‘설치하다’라고 해요."
       }
     },
     {
-      "id": "g5-argon-0535",
-      "revision": 1,
+      "id": "g5-argon-0534",
+      "revision": 3,
       "status": "verified_candidate",
       "grade": 5,
-      "type": "definition",
+      "type": "usage",
       "difficultyTier": "advanced",
-      "variantTag": "polysemy",
+      "variantTag": "standard",
       "target": {
-        "lemma": "고유어",
-        "partOfSpeech": "명사",
-        "senseKey": "고유어/명사/395883-2"
+        "lemma": "구체적",
+        "partOfSpeech": "관형사",
+        "senseKey": "구체적/관형사/39469-4"
       },
-      "stem": "제주도를 여행하며 그 지역에만 전해 오는 ‘고유어’를 수집했다. 여기서 ‘고유어’의 뜻은 무엇일까요?",
+      "stem": "‘구체적’을 알맞게 사용한 문장은?",
       "options": [
         {
           "id": "a",
-          "text": "컴퓨터가 기계를 작동시킬 때 쓰는 부호"
+          "text": "모임의 구체적 계획은 날짜도 없이 막연하기만 하다."
         },
         {
           "id": "b",
-          "text": "갓난아기가 말을 배우기 전에 내는 울음"
+          "text": "답사의 구체적 일정에 시각과 세부 경로까지 적었다."
         },
         {
           "id": "c",
-          "text": "어떤 고장만의 고유하고 독특한 말"
+          "text": "실험의 구체적 절차에는 세부 과정이 전혀 없고 막연한 말만 있다."
         },
         {
           "id": "d",
-          "text": "소리만 흉내 내어 만든 짧은 감탄 표현"
+          "text": "발표의 구체적 근거는 사례 하나 없이 두루뭉술하다."
         }
       ],
-      "correctOptionId": "c",
-      "explanation": "여기서 ‘고유어’는 어떤 고장 고유의 독특한 말을 가리켜요.",
+      "correctOptionId": "b",
+      "explanation": "여기서 ‘구체적’은 실제적이고 세밀한 부분까지 담고 있는 뜻이에요.",
       "distractorRationales": {
-        "a": "컴퓨터가 쓰는 신호 부호는 ‘기계어’라고 해요.",
-        "b": "아기가 말 배우기 전에 내는 소리는 ‘옹알이’예요.",
-        "d": "소리를 흉내 낸 말은 ‘의성어’라고 불러요."
+        "a": "날짜도 없이 막연한 계획은 ‘구체적’과 정반대예요.",
+        "c": "세부 과정이 전혀 없고 막연한 절차에는 어울리지 않아요.",
+        "d": "사례 없이 두루뭉술한 근거에는 쓸 수 없는 말이에요."
       }
     },
     {
@@ -18851,7 +20771,7 @@
       "status": "verified_candidate",
       "grade": 5,
       "type": "definition",
-      "difficultyTier": "advanced",
+      "difficultyTier": "challenge",
       "variantTag": "polysemy",
       "target": {
         "lemma": "본문",
@@ -18886,12 +20806,92 @@
       }
     },
     {
+      "id": "g5-argon-0538",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "definition",
+      "difficultyTier": "core",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "효율적",
+        "partOfSpeech": "명사",
+        "senseKey": "효율적/명사/384313-1"
+      },
+      "stem": "다음에서 ‘효율적’의 뜻으로 알맞은 것은 무엇일까요? 「역할을 알맞게 나누니 모둠 과제를 효율적으로 마칠 수 있었다.」",
+      "options": [
+        {
+          "id": "a",
+          "text": "들인 힘이나 노력에 비하여 얻는 결과가 큰 것"
+        },
+        {
+          "id": "b",
+          "text": "많은 시간을 쏟고도 아무런 성과를 못 얻는 것"
+        },
+        {
+          "id": "c",
+          "text": "규칙을 무시하고 자기 마음대로만 행동하는 것"
+        },
+        {
+          "id": "d",
+          "text": "남의 의견에 무조건 고개를 끄덕이며 따르는 것"
+        }
+      ],
+      "correctOptionId": "a",
+      "explanation": "‘효율적’은 들인 노력에 비하여 얻는 결과가 큰 것을 뜻해요.",
+      "distractorRationales": {
+        "b": "성과를 못 얻는 것은 비효율적인 상태예요.",
+        "c": "규칙을 무시하고 멋대로 구는 뜻이 아니에요.",
+        "d": "무조건 남을 따르는 태도와는 관련이 없어요."
+      }
+    },
+    {
+      "id": "g5-argon-0539",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "synonym_context",
+      "difficultyTier": "challenge",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "함축적",
+        "partOfSpeech": "관형사",
+        "senseKey": "함축적/관형사/368318-3"
+      },
+      "stem": "“시인은 짧은 시구에 깊은 삶의 지혜를 함축적 표현으로 담아냈다.”에서 ‘함축적’과 바꾸어 쓸 수 있는 말은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "뜻을 속에 담고 있는"
+        },
+        {
+          "id": "b",
+          "text": "겉뜻만 곧바로 드러내는"
+        },
+        {
+          "id": "c",
+          "text": "아무 의미 없이 나열하는"
+        },
+        {
+          "id": "d",
+          "text": "사실과 다르게 부풀리는"
+        }
+      ],
+      "correctOptionId": "a",
+      "explanation": "관형사 ‘함축적’은 말이나 글이 어떤 뜻을 속에 담고 있는 뜻이에요.",
+      "distractorRationales": {
+        "b": "겉뜻만 곧바로 드러내는 것은 ‘직설적’에 가까워요.",
+        "c": "의미 없이 나열하는 것은 깊은 뜻을 담은 것과 달라요.",
+        "d": "사실보다 크게 부풀리는 것은 ‘과장된’의 의미예요."
+      }
+    },
+    {
       "id": "g5-argon-0540",
       "revision": 1,
       "status": "verified_candidate",
       "grade": 5,
       "type": "cloze",
-      "difficultyTier": "challenge",
+      "difficultyTier": "advanced",
       "variantTag": "idiom_proverb",
       "target": {
         "lemma": "새 발의 피",
@@ -18926,12 +20926,92 @@
       }
     },
     {
+      "id": "g5-argon-0541",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "synonym_context",
+      "difficultyTier": "core",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "직접적",
+        "partOfSpeech": "관형사",
+        "senseKey": "직접적/관형사/315466-3"
+      },
+      "stem": "“가뭄이 농작물 피해의 직접적 원인으로 밝혀졌다.”에서 ‘직접적’과 바꾸어 쓸 수 있는 말은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "다른 단계를 거쳐 전해지는"
+        },
+        {
+          "id": "b",
+          "text": "매개물 없이 바로 연결되는"
+        },
+        {
+          "id": "c",
+          "text": "주된 일에 부차적으로 딸리는"
+        },
+        {
+          "id": "d",
+          "text": "겉으로만 잠깐 스쳐 지나가는"
+        }
+      ],
+      "correctOptionId": "b",
+      "explanation": "‘직접적’은 중간에 제삼자나 매개물 없이 바로 연결되는 뜻이에요.",
+      "distractorRationales": {
+        "a": "다른 단계를 거쳐 전해지는 것은 ‘간접적’이라 반대돼요.",
+        "c": "주된 일에 부차적으로 딸리는 것은 ‘부수적’이에요.",
+        "d": "잠깐 스쳐 지나가는 것은 ‘일시적’의 의미예요."
+      }
+    },
+    {
+      "id": "g5-argon-0542",
+      "revision": 3,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "usage",
+      "difficultyTier": "advanced",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "직접적",
+        "partOfSpeech": "관형사",
+        "senseKey": "직접적/관형사/315466-3"
+      },
+      "stem": "‘직접적’을 바르게 쓴 문장은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "세 사람을 건너 말을 전하며 직접적 대화를 나눴다."
+        },
+        {
+          "id": "b",
+          "text": "대리인을 통해서만 연락하며 직접적 소통을 했다."
+        },
+        {
+          "id": "c",
+          "text": "중개인 없이 농부와 소비자가 직접적 거래를 했다."
+        },
+        {
+          "id": "d",
+          "text": "중간 상인을 여럿 거치면서 직접적 구매를 마쳤다."
+        }
+      ],
+      "correctOptionId": "c",
+      "explanation": "‘직접적’은 중간에 제삼자나 매개물 없이 바로 연결되는 뜻이에요.",
+      "distractorRationales": {
+        "a": "여러 사람을 건너 말을 전하는 것은 ‘간접적’이에요.",
+        "b": "대리인을 통해서만 연락하는 것은 바로 연결된 게 아니에요.",
+        "d": "중간 상인을 여럿 거치는 구매는 ‘직접적’과 반대돼요."
+      }
+    },
+    {
       "id": "g5-argon-0543",
       "revision": 1,
       "status": "verified_candidate",
       "grade": 5,
       "type": "definition",
-      "difficultyTier": "challenge",
+      "difficultyTier": "core",
       "variantTag": "polysemy",
       "target": {
         "lemma": "목표",
@@ -18963,6 +21043,286 @@
         "b": "지나간 과거는 앞으로 이룰 대상이 아니에요.",
         "c": "우연히 저지른 잘못은 ‘실수’라고 해요.",
         "d": "미리 빌린 도구는 ‘준비물’이나 ‘장비’예요."
+      }
+    },
+    {
+      "id": "g5-argon-0544",
+      "revision": 3,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "usage",
+      "difficultyTier": "core",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "역사적",
+        "partOfSpeech": "관형사",
+        "senseKey": "역사적/관형사/230138-4"
+      },
+      "stem": "다음 중 ‘역사적’을 알맞게 쓴 문장은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "옛 문헌을 살펴 조선 시대의 역사적 사실을 밝혔다."
+        },
+        {
+          "id": "b",
+          "text": "백 년 뒤 세상만 상상한 미래의 역사적 예언을 썼다."
+        },
+        {
+          "id": "c",
+          "text": "과거와 무관한 지금 기분만 내세운 역사적 변덕이다."
+        },
+        {
+          "id": "d",
+          "text": "필통을 열어 지금 남은 연필의 역사적 개수를 세었다."
+        }
+      ],
+      "correctOptionId": "a",
+      "explanation": "‘역사적’은 ‘역사에 관한’이라는 뜻으로, 과거의 역사와 관련된 말 앞에 써요.",
+      "distractorRationales": {
+        "b": "아직 오지 않은 미래만 상상한 예언은 역사가 아니에요.",
+        "c": "과거와 무관한 순간의 기분이나 변덕에는 맞지 않아요.",
+        "d": "필통 속 연필 개수를 세는 일은 역사와 관련이 없어요."
+      }
+    },
+    {
+      "id": "g5-argon-0545",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "definition",
+      "difficultyTier": "core",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "발달하다",
+        "partOfSpeech": "동사",
+        "senseKey": "발달하다/동사/134376-1"
+      },
+      "stem": "“운동과 독서를 꾸준히 하면 몸과 마음이 고르게 발달한다.”에서 ‘발달하다’의 뜻은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "학문이나 기술이 높은 수준에 오르다"
+        },
+        {
+          "id": "b",
+          "text": "신체나 정서가 성장하거나 성숙하다"
+        },
+        {
+          "id": "c",
+          "text": "구름이나 태풍의 세력이 점점 커지다"
+        },
+        {
+          "id": "d",
+          "text": "상업이나 물건 거래가 널리 퍼지다"
+        }
+      ],
+      "correctOptionId": "b",
+      "explanation": "여기서 ‘발달하다’는 신체나 정서, 지능이 성장하거나 성숙하다는 뜻이에요.",
+      "distractorRationales": {
+        "a": "기술이나 문명이 발전할 때 쓰는 다른 뜻이에요.",
+        "c": "기상 현상의 세력이 커질 때 쓰는 다른 뜻이에요.",
+        "d": "교통이나 상업이 번성하는 문맥이 아니에요."
+      }
+    },
+    {
+      "id": "g5-argon-0546",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "definition",
+      "difficultyTier": "core",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "역사적",
+        "partOfSpeech": "관형사",
+        "senseKey": "역사적/관형사/230138-4"
+      },
+      "stem": "“학자들은 유물을 통해 삼국 시대의 역사적 맥락을 연구했다.”에서 ‘역사적’의 뜻은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "개인의 사사로운 취향에만 치우치는"
+        },
+        {
+          "id": "b",
+          "text": "아직 오지 않은 먼 미래만 예측하는"
+        },
+        {
+          "id": "c",
+          "text": "자연의 날씨와 기온 변화를 관측하는"
+        },
+        {
+          "id": "d",
+          "text": "인류 사회의 지난 역사에 관계되는"
+        }
+      ],
+      "correctOptionId": "d",
+      "explanation": "관형사 ‘역사적’은 여기서 과거 역사에 관한이라는 뜻으로 쓰였어요.",
+      "distractorRationales": {
+        "a": "개인의 사사로운 취향에 치우치는 것은 ‘주관적’이에요.",
+        "b": "다가오지 않은 미래를 예측하는 뜻이 아니에요.",
+        "c": "날씨와 기온 변화를 관측하는 것은 ‘기상’과 관련돼요."
+      }
+    },
+    {
+      "id": "g5-argon-0547",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "cloze",
+      "difficultyTier": "basic",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "역사적",
+        "partOfSpeech": "관형사",
+        "senseKey": "역사적/관형사/230138-4"
+      },
+      "stem": "박물관 해설사는 유물이 만들어진 연대와 당시 사건 등 (    ) 배경을 자세히 들려주었다.",
+      "options": [
+        {
+          "id": "a",
+          "text": "우발적"
+        },
+        {
+          "id": "b",
+          "text": "일시적"
+        },
+        {
+          "id": "c",
+          "text": "역사적"
+        },
+        {
+          "id": "d",
+          "text": "형식적"
+        }
+      ],
+      "correctOptionId": "c",
+      "explanation": "유물이 만들어진 연대와 옛 사건에 관한 배경이므로 ‘역사적’이 맞아요.",
+      "distractorRationales": {
+        "a": "‘우발적’은 우연히 갑자기 일어난 뜻이라 맞지 않아요.",
+        "b": "‘일시적’은 잠깐뿐인 한때를 뜻하여 시대 배경과 달라요.",
+        "d": "‘형식적’은 겉모양만 차리는 뜻이라 해설 맥락과 어긋나요."
+      }
+    },
+    {
+      "id": "g5-argon-0548",
+      "revision": 3,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "usage",
+      "difficultyTier": "advanced",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "역사적",
+        "partOfSpeech": "관형사",
+        "senseKey": "역사적/관형사/230138-5"
+      },
+      "stem": "다음 문장 중 ‘역사적’을 바르게 사용한 것은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "어제 처음 만들고 오늘 없앤 역사적 규칙을 따랐다."
+        },
+        {
+          "id": "b",
+          "text": "수백 년간 이어져 온 마을의 역사적 풍습을 지켰다."
+        },
+        {
+          "id": "c",
+          "text": "방금 대충 적고 바로 버릴 역사적 쪽지를 건넸다."
+        },
+        {
+          "id": "d",
+          "text": "하루만 반짝 유행하고 끝난 역사적 놀이를 즐겼다."
+        }
+      ],
+      "correctOptionId": "b",
+      "explanation": "여기서 ‘역사적’은 오랜 세월을 두고 전해지는 것을 꾸며요.",
+      "distractorRationales": {
+        "a": "어제 만들어 오늘 없앤 규칙은 오랜 세월 전해진 게 아니에요.",
+        "c": "방금 적어 바로 버릴 쪽지에는 ‘역사적’이 어울리지 않아요.",
+        "d": "하루만 반짝 유행한 놀이는 오랜 전통과 거리가 멀어요."
+      }
+    },
+    {
+      "id": "g5-argon-0549",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "definition",
+      "difficultyTier": "core",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "역사적",
+        "partOfSpeech": "관형사",
+        "senseKey": "역사적/관형사/230138-5"
+      },
+      "stem": "“주민들은 조상 대대로 물려받아 지켜 온 마을의 역사적 전통을 아낀다.”에서 ‘역사적’의 뜻은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "어제오늘 사이에 잠깐 유행하는"
+        },
+        {
+          "id": "b",
+          "text": "개인의 사사로운 이익만 추구하는"
+        },
+        {
+          "id": "c",
+          "text": "오랜 세월을 두고 전해지는"
+        },
+        {
+          "id": "d",
+          "text": "겉으로 보이는 모양만 꾸미는"
+        }
+      ],
+      "correctOptionId": "c",
+      "explanation": "여기서 ‘역사적’은 오랜 세월을 두고 전해지는이라는 뜻이에요.",
+      "distractorRationales": {
+        "a": "잠깐 유행하는 것은 ‘일시적’이라 뜻이 정반대예요.",
+        "b": "개인의 이익만 추구하는 태도와는 관련이 없어요.",
+        "d": "겉모양만 꾸미는 것은 ‘형식적’에 해당해요."
+      }
+    },
+    {
+      "id": "g5-argon-0550",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 5,
+      "type": "cloze",
+      "difficultyTier": "core",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "역사적",
+        "partOfSpeech": "관형사",
+        "senseKey": "역사적/관형사/230138-5"
+      },
+      "stem": "천 년 넘게 옛 모습 그대로 전해 내려온 이 사찰은 지역의 (    ) 건축물이다.",
+      "options": [
+        {
+          "id": "a",
+          "text": "일시적"
+        },
+        {
+          "id": "b",
+          "text": "현대적"
+        },
+        {
+          "id": "c",
+          "text": "가상적"
+        },
+        {
+          "id": "d",
+          "text": "역사적"
+        }
+      ],
+      "correctOptionId": "d",
+      "explanation": "천 년 넘게 오랜 세월을 두고 전해진 것이므로 ‘역사적’이 알맞아요.",
+      "distractorRationales": {
+        "a": "‘일시적’은 짧은 한때뿐이라 천 년 세월과 반대돼요.",
+        "b": "‘현대적’은 지금 시대에 알맞은 것이라 옛 사찰과 달라요.",
+        "c": "‘가상적’은 실제로 없는 상상의 것이라 맞지 않아요."
       }
     },
     {

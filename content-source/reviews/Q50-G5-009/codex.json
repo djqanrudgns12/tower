@@ -1,962 +1,1249 @@
 {
-  "reviewId": "Q50-G5-009-codex",
-  "jobId": "QR-Q50-CODEX",
+  "reviewId": "QR-AUTO-codex-Q50-G5-009",
+  "jobId": "Q50-G5-009",
   "reviewer": {
-    "model": "GPT-6 (Codex)",
-    "tool": "Codex",
+    "model": "gpt-6-astra",
+    "tool": "2단계 블라인드 검수(tools/orchestrate/review.mjs)",
     "freshContext": true,
-    "date": "2026-10-30"
+    "date": "2026-11-06"
   },
   "items": [
     {
       "questionId": "g5-argon-0401",
       "revision": 1,
       "contentHash": "4e4a1f626682d6213d55fa562a448d5c5fff37d402483620dad68125e1250585",
+      "run": {
+        "id": "20261106T124205341Z-65193-007ca969-4fe9-482a-ad18-52eee5d61cd1",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
       "blindChoice": "c",
       "verdicts": {
         "source": "pass",
         "uniqueness": "pass",
         "grade": "pass",
         "language": "pass",
-        "explanation": "uncertain"
+        "explanation": "pass"
       },
-      "findings": [
-        "독립 풀이 및 보기별 대입: c 주민 의견; a 음료·b 가위·d 빨래 물체 아님.",
-        "출처 대조: 여론 / 명사 / 뜻번호 1 / senseId 356015; 표제어: 여론 | sense_no: 356015 | sense_order: 1 | 품사: 「명사」 | 뜻풀이: 사회 대중의 공통된 의견. ≒ 공론 , 세론 . — 해당 뜻의 핵심 의미와 대조함.",
-        "유형·학년 검토: usage, basic, standard. 제시 맥락과 보기의 의미 차이로 단일 답을 판단할 수 있고 해당 난이도의 5–6학년 어휘 학습에 허용 가능하다. 보기 결합·종결 및 정답 표면·길이 단서를 확인하였다.",
-        "해설과 제작 정답은 비공개이므로 explanation=uncertain."
-      ]
+      "findings": []
     },
     {
       "questionId": "g5-argon-0402",
       "revision": 1,
       "contentHash": "7c7d95c1116137f47a0fa452bbbc4a5e0b10f392b841e5dcb5c377078309458d",
+      "run": {
+        "id": "20261106T124205341Z-65193-007ca969-4fe9-482a-ad18-52eee5d61cd1",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "b",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "fail",
+        "explanation": "pass"
+      },
+      "findings": [
+        "[공개 대조] 빈칸 뒤 ‘로’에는 보도만 연결되고 나머지는 모두 ‘으로’가 필요하여 조사만으로 정답이 드러납니다. ‘(    )(으)로’로 고치세요."
+      ]
+    },
+    {
+      "questionId": "g5-argon-0402",
+      "revision": 2,
+      "contentHash": "6dffab15b109e98864259ba61a8b3ada71fc38ffc8867bcbeb21e2b7af0b7f48",
+      "run": {
+        "id": "20261106T133332548Z-65193-da9a10d6-f212-43fd-8175-4ab8a1394712",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
       "blindChoice": "b",
       "verdicts": {
         "source": "pass",
         "uniqueness": "pass",
         "grade": "pass",
         "language": "pass",
-        "explanation": "uncertain"
+        "explanation": "pass"
       },
-      "findings": [
-        "독립 풀이 및 보기별 대입: b 보행로; a 지붕·c 창·d 책상은 도로 아님.",
-        "출처 대조: 보도 / 명사 / 뜻번호 1 / senseId 533420; 표제어: 보도 | sense_no: 533420 | sense_order: 1 | 품사: 「명사」 | 뜻풀이: 보행자의 통행에 사용하도록 된 도로. ≒ 보행로 , 인도 . — 해당 뜻의 핵심 의미와 대조함.",
-        "유형·학년 검토: cloze, basic, standard. 제시 맥락과 보기의 의미 차이로 단일 답을 판단할 수 있고 해당 난이도의 5–6학년 어휘 학습에 허용 가능하다. 보기 결합·종결 및 정답 표면·길이 단서를 확인하였다.",
-        "해설과 제작 정답은 비공개이므로 explanation=uncertain."
-      ]
+      "findings": []
     },
     {
       "questionId": "g5-argon-0403",
       "revision": 1,
       "contentHash": "6c989cc565c4a482fe9e5d19f10405ba1f3e858f3cdbac335a0aacdc2978da3e",
+      "run": {
+        "id": "20261106T124205341Z-65193-007ca969-4fe9-482a-ad18-52eee5d61cd1",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
       "blindChoice": "b",
       "verdicts": {
         "source": "pass",
         "uniqueness": "pass",
         "grade": "pass",
         "language": "pass",
-        "explanation": "uncertain"
+        "explanation": "pass"
       },
-      "findings": [
-        "독립 풀이 및 보기별 대입: b 자료 방치; a 다듬음·c 표·d 취합은 정보 가치 상승.",
-        "출처 대조: 정보화 / 명사 / 뜻번호 1 / senseId 596414; 표제어: 정보-화 | sense_no: 596414 | sense_order: 1 | 품사: 「명사」 | 뜻풀이: 지식과 자료 따위를 정보의 형태로 가공하여 가치를 높임. — 해당 뜻의 핵심 의미와 대조함.",
-        "유형·학년 검토: antonym_context, basic, standard. 제시 맥락과 보기의 의미 차이로 단일 답을 판단할 수 있고 해당 난이도의 5–6학년 어휘 학습에 허용 가능하다. 보기 결합·종결 및 정답 표면·길이 단서를 확인하였다.",
-        "해설과 제작 정답은 비공개이므로 explanation=uncertain."
-      ]
+      "findings": []
     },
     {
       "questionId": "g5-argon-0404",
-      "revision": 1,
-      "contentHash": "8aa60444ecbf01b3b7c2b43c8b2e156a2c8269dc3b5c6f5ef9a4f3a0e79a3952",
+      "revision": 2,
+      "contentHash": "d8100b52625d2a5df3add0f340e811afff9d3a8a9f408e454a2c32a32a513dfc",
+      "run": {
+        "id": "20261106T124205341Z-65193-007ca969-4fe9-482a-ad18-52eee5d61cd1",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
       "blindChoice": "d",
       "verdicts": {
         "source": "pass",
         "uniqueness": "pass",
-        "grade": "fail",
-        "language": "fail",
-        "explanation": "uncertain"
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
       },
-      "findings": [
-        "독립 풀이 및 보기별 대입: d 바른길 회복 예상; a 운반·b 사전·c 예보는 윤리 회복 아님.",
-        "출처 대조: 극복하다 / 동사 / 뜻번호 3 / senseId null; 표제어: 극복-하다 | sense_no: 없음 | sense_order: 3 | 품사: 「동사」 | 뜻풀이: 정도(正道)로 돌아가다. 또는 그것으로 돌아가게 하다. — 해당 뜻의 핵심 의미와 대조함.",
-        "유형·학년 검토: definition, basic, standard. 극복하다의 정도로 돌아감이라는 희귀 동음이의 뜻을 basic 출제. '바른 삶을 극복하다'는 목적어도 어색하다. 어려움을 이겨 냄 의미·출처로 교체.",
-        "해설과 제작 정답은 비공개이므로 explanation=uncertain."
-      ]
+      "findings": []
     },
     {
       "questionId": "g5-argon-0405",
       "revision": 1,
       "contentHash": "d26b7bba127834dbfdae3f68d45be9ca85b8dfecd09541e8949c9e9408f5be39",
+      "run": {
+        "id": "20261106T124205341Z-65193-007ca969-4fe9-482a-ad18-52eee5d61cd1",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
       "blindChoice": "d",
       "verdicts": {
         "source": "pass",
         "uniqueness": "pass",
         "grade": "pass",
         "language": "pass",
-        "explanation": "uncertain"
+        "explanation": "pass"
+      },
+      "findings": []
+    },
+    {
+      "questionId": "g5-argon-0406",
+      "revision": 2,
+      "contentHash": "60785ed4eff01f4c6b7021c7678bad09c44433df1b06419074b68571aa9f4165",
+      "run": {
+        "id": "20261106T124205341Z-65193-007ca969-4fe9-482a-ad18-52eee5d61cd1",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "multiple",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "fail",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "fail"
       },
       "findings": [
-        "독립 풀이 및 보기별 대입: d 동감; a 반대·b 외면·c 복사는 감정·의견 수용 아님.",
-        "출처 대조: 공감하다 / 동사 / 뜻번호 1 / senseId 92337; 표제어: 공감-하다 | sense_no: 92337 | sense_order: 1 | 품사: 「동사」 | 뜻풀이: 남의 감정, 의견, 주장 따위에 대하여 자기도 그렇다고 느끼다. — 해당 뜻의 핵심 의미와 대조함.",
-        "유형·학년 검토: synonym_context, basic, standard. 제시 맥락과 보기의 의미 차이로 단일 답을 판단할 수 있고 해당 난이도의 5–6학년 어휘 학습에 허용 가능하다. 보기 결합·종결 및 정답 표면·길이 단서를 확인하였다.",
-        "해설과 제작 정답은 비공개이므로 explanation=uncertain."
+        "[블라인드] a도 한 줄을 전체에 걸친 내용으로 고쳤다는 뜻으로 성립하여 c와 복수 정답이다. a를 ‘전체를 다루지 않고 한 부분만 다루는 내용을 전반적 내용이라고 했다.’로 바꾼다.",
+        "[공개 대조] a도 한 줄을 전체에 걸친 내용으로 고쳤다는 뜻으로 성립합니다. 오답 이유 역시 수정 분량과 내용의 범위를 혼동합니다. a를 ‘전체가 아닌 일부분만 다룬 내용을 전반적 내용이라고 했다’로 바꾸세요."
       ]
     },
     {
       "questionId": "g5-argon-0406",
-      "revision": 1,
-      "contentHash": "a4d738bcd5cabba49816cf9f3f08951759abfd53dfe75635be77f3a90811258b",
+      "revision": 3,
+      "contentHash": "fafecbca517b7e2a96a97cd4f926afe3021fed75fd1b58641bde6eddc73b7fa7",
+      "run": {
+        "id": "20261106T133332548Z-65193-da9a10d6-f212-43fd-8175-4ab8a1394712",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
       "blindChoice": "c",
       "verdicts": {
         "source": "pass",
         "uniqueness": "pass",
-        "grade": "fail",
+        "grade": "pass",
         "language": "pass",
-        "explanation": "uncertain"
+        "explanation": "pass"
       },
-      "findings": [
-        "독립 풀이 및 보기별 대입: c 맑은 하늘; a 보관·b 끈·d 음식은 형용사 의미 부적합.",
-        "출처 대조: 경청하다 / 형용사 / 뜻번호 1 / senseId 4031; 표제어: 경청-하다 | sense_no: 4031 | sense_order: 1 | 품사: 「형용사」 | 뜻풀이: 「1」 날씨나 빛깔 따위가 맑고 산뜻하다. — 해당 뜻의 핵심 의미와 대조함.",
-        "유형·학년 검토: usage, basic, standard. 경청하다04 희귀 형용사(하늘빛)를 basic에 사용. 일반 듣기 동사로 교체.",
-        "해설과 제작 정답은 비공개이므로 explanation=uncertain."
-      ]
+      "findings": []
+    },
+    {
+      "questionId": "g5-argon-0406",
+      "revision": 4,
+      "contentHash": "1434ca3c226e3156d0457e855ff4ae43c58d1d4e45d5a3b9d700f9b07297725d",
+      "run": {
+        "id": "20261106T144233830Z-43390-c596706d-c885-4899-a57c-e4bca2258fe2",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "c",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": []
     },
     {
       "questionId": "g5-argon-0407",
       "revision": 1,
       "contentHash": "d4499ac247fb9ec3e585c6e5a9cd7c9e2f4ba730e86111e4f6bac8863426b11f",
+      "run": {
+        "id": "20261106T124205341Z-65193-007ca969-4fe9-482a-ad18-52eee5d61cd1",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
       "blindChoice": "a",
       "verdicts": {
         "source": "pass",
         "uniqueness": "pass",
         "grade": "pass",
         "language": "pass",
-        "explanation": "uncertain"
+        "explanation": "pass"
       },
-      "findings": [
-        "독립 풀이 및 보기별 대입: a 활동 힘; b 메아리·c 무지개·d 그림자는 영양 힘 아님.",
-        "출처 대조: 에너지 / 명사 / 뜻번호 1 / senseId 553125; 표제어: 에너지 | sense_no: 553125 | sense_order: 1 | 품사: 「명사」 | 뜻풀이: 「1」 인간이 활동하는 근원이 되는 힘. — 해당 뜻의 핵심 의미와 대조함.",
-        "유형·학년 검토: cloze, basic, standard. 제시 맥락과 보기의 의미 차이로 단일 답을 판단할 수 있고 해당 난이도의 5–6학년 어휘 학습에 허용 가능하다. 보기 결합·종결 및 정답 표면·길이 단서를 확인하였다.",
-        "해설과 제작 정답은 비공개이므로 explanation=uncertain."
-      ]
+      "findings": []
     },
     {
       "questionId": "g5-argon-0408",
       "revision": 1,
       "contentHash": "e2fbe3fe83ddf8a6195ae5c634501f3eed511dcd4c41bf730c17b8bacdca4b06",
+      "run": {
+        "id": "20261106T124205341Z-65193-007ca969-4fe9-482a-ad18-52eee5d61cd1",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
       "blindChoice": "c",
       "verdicts": {
         "source": "pass",
         "uniqueness": "pass",
         "grade": "pass",
         "language": "pass",
-        "explanation": "uncertain"
+        "explanation": "fail"
       },
       "findings": [
-        "독립 풀이 및 보기별 대입: c 정지; a 반복·b 회전·d 이어 흐름은 순환 방향.",
-        "출처 대조: 순환하다 / 동사 / 뜻번호 1 / senseId 479382; 표제어: 순환-하다 | sense_no: 479382 | sense_order: 1 | 품사: 「동사」 | 뜻풀이: 「1」 주기적으로 자꾸 되풀이하여 돌다. — 해당 뜻의 핵심 의미와 대조함.",
-        "유형·학년 검토: antonym_context, basic, standard. 제시 맥락과 보기의 의미 차이로 단일 답을 판단할 수 있고 해당 난이도의 5–6학년 어휘 학습에 허용 가능하다. 보기 결합·종결 및 정답 표면·길이 단서를 확인하였다.",
-        "해설과 제작 정답은 비공개이므로 explanation=uncertain."
+        "[공개 대조] d의 ‘멈추는 반대 상황으로 볼 수 없어요’는 흐름과 멈춤의 관계를 거꾸로 설명합니다. ‘이어져 흐르는 것은 순환과 반대되는 멈춤을 뜻하지 않아요’로 고치세요."
       ]
+    },
+    {
+      "questionId": "g5-argon-0408",
+      "revision": 2,
+      "contentHash": "31eb3093616e98056eac404cd7a2cf29a5add53e99be61a2c4c81bd6c1a6ae06",
+      "run": {
+        "id": "20261106T133332548Z-65193-da9a10d6-f212-43fd-8175-4ab8a1394712",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "c",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "fail"
+      },
+      "findings": [
+        "[공개 대조] b의 오답 이유 ‘차례대로 도는 것은 순환하다의 본래 의미예요’는 순서대로 도는 것과 주기적으로 되풀이하여 도는 것을 동일시합니다. ‘차례대로 도는 것은 한곳에 멈춘다는 뜻이 아니에요’로 고치세요."
+      ]
+    },
+    {
+      "questionId": "g5-argon-0408",
+      "revision": 3,
+      "contentHash": "ecfbe91c5b13308c4e182a56307a1c0e2ed2a5bb7bb01e73b3821cedecbcd3ad",
+      "run": {
+        "id": "20261106T135349610Z-43390-02a8097a-56f9-43d1-86bd-bfe268ca8e85",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "c",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": []
     },
     {
       "questionId": "g5-argon-0409",
       "revision": 1,
       "contentHash": "dacee4dfaae46aa6a26b3feb1c1a9aa3f3d535cd915ae98c3dcfc90837ee0524",
+      "run": {
+        "id": "20261106T124205341Z-65193-007ca969-4fe9-482a-ad18-52eee5d61cd1",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
       "blindChoice": "d",
       "verdicts": {
         "source": "pass",
         "uniqueness": "pass",
         "grade": "pass",
         "language": "pass",
-        "explanation": "uncertain"
+        "explanation": "pass"
+      },
+      "findings": []
+    },
+    {
+      "questionId": "g5-argon-0410",
+      "revision": 2,
+      "contentHash": "a456f8631bbe7b2950097bf1a05e91dbd4bf9efbc4ba635807148db93c11355e",
+      "run": {
+        "id": "20261106T124205341Z-65193-007ca969-4fe9-482a-ad18-52eee5d61cd1",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "b",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "fail",
+        "explanation": "pass"
       },
       "findings": [
-        "독립 풀이 및 보기별 대입: d 지향 대상; a 과거 실수·b 우연·c 동전은 독서 목표 아님.",
-        "출처 대조: 목표 / 명사 / 뜻번호 1 / senseId 5693; 표제어: 목표 | sense_no: 5693 | sense_order: 1 | 품사: 「명사」 | 뜻풀이: 「1」 어떤 목적을 이루려고 지향하는 실제적 대상으로 삼음. 또는 그 대상. ≒ 표목 . — 해당 뜻의 핵심 의미와 대조함.",
-        "유형·학년 검토: definition, basic, standard. 제시 맥락과 보기의 의미 차이로 단일 답을 판단할 수 있고 해당 난이도의 5–6학년 어휘 학습에 허용 가능하다. 보기 결합·종결 및 정답 표면·길이 단서를 확인하였다.",
-        "해설과 제작 정답은 비공개이므로 explanation=uncertain."
+        "[공개 대조] 해설의 ‘역사에 관한이라는’은 문법적 연결이 잘못됐습니다. 뜻풀이 ‘역사에 관한’을 인용 부호로 묶으세요."
       ]
     },
     {
       "questionId": "g5-argon-0410",
-      "revision": 1,
-      "contentHash": "79215580062ffd3a58755b93cf45bb1f1d5b94aedf94e729174e7d43378400c5",
+      "revision": 3,
+      "contentHash": "8ce6e9d9661b902397c37e6de25a0041412262590e32c21c55318cb9180945bd",
+      "run": {
+        "id": "20261106T133332548Z-65193-da9a10d6-f212-43fd-8175-4ab8a1394712",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
       "blindChoice": "b",
       "verdicts": {
-        "source": "fail",
+        "source": "pass",
         "uniqueness": "pass",
         "grade": "pass",
         "language": "pass",
-        "explanation": "uncertain"
+        "explanation": "pass"
       },
-      "findings": [
-        "독립 풀이 및 보기별 대입: b 역사 관련; a 날씨·c 운동·d 요리는 역사적 아님.",
-        "출처 대조: 역사적 / 명사 / 뜻번호 1 / senseId 17622; 표제어: 역사-적 | sense_no: 17622 | sense_order: 1 | 품사: [Ⅰ] 「명사」 | 뜻풀이: 「1」 역사에 관한 것. ≒ 사적 . — 해당 뜻의 핵심 의미와 대조함.",
-        "유형·학년 검토: synonym_context, basic, standard. 역사적 자료는 관형사 용법인데 명사 출처. 역사적인 자료 또는 관형사 뜻으로 수정.",
-        "해설과 제작 정답은 비공개이므로 explanation=uncertain."
-      ]
+      "findings": []
     },
     {
       "questionId": "g5-argon-0411",
       "revision": 1,
       "contentHash": "b9bf5caf433ba7fdc12ad1dd1596b64205132fe9a9c94171ff592c8f10e508ce",
+      "run": {
+        "id": "20261106T124205341Z-65193-007ca969-4fe9-482a-ad18-52eee5d61cd1",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
       "blindChoice": "d",
       "verdicts": {
         "source": "pass",
         "uniqueness": "pass",
         "grade": "pass",
         "language": "pass",
-        "explanation": "uncertain"
+        "explanation": "pass"
       },
-      "findings": [
-        "독립 풀이 및 보기별 대입: d 옛 자취; a 음식·b 도구·c 음료는 유적 아님.",
-        "출처 대조: 유적 / 명사 / 뜻번호 1 / senseId 504753; 표제어: 유적 | sense_no: 504753 | sense_order: 1 | 품사: 「명사」 | 뜻풀이: 남아 있는 자취. 건축물이나 싸움터 또는 역사적인 사건이 벌어졌던 곳이나 패총, 고분 따위를 이른다. ≒ 유진 . — 해당 뜻의 핵심 의미와 대조함.",
-        "유형·학년 검토: usage, basic, standard. 제시 맥락과 보기의 의미 차이로 단일 답을 판단할 수 있고 해당 난이도의 5–6학년 어휘 학습에 허용 가능하다. 보기 결합·종결 및 정답 표면·길이 단서를 확인하였다.",
-        "해설과 제작 정답은 비공개이므로 explanation=uncertain."
-      ]
+      "findings": []
     },
     {
       "questionId": "g5-argon-0412",
-      "revision": 1,
-      "contentHash": "47275f9380f9f56b69eb0333521003b5470683ffdc503b1b119c3952bd1bece7",
+      "revision": 2,
+      "contentHash": "b999930257327b28f9aebdbb52f410ecb5e94510805148cd9d10ba8dd6e95712",
+      "run": {
+        "id": "20261106T124205341Z-65193-007ca969-4fe9-482a-ad18-52eee5d61cd1",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
       "blindChoice": "a",
       "verdicts": {
         "source": "pass",
         "uniqueness": "pass",
-        "grade": "fail",
-        "language": "pass",
-        "explanation": "uncertain"
+        "grade": "pass",
+        "language": "fail",
+        "explanation": "pass"
       },
       "findings": [
-        "독립 풀이 및 보기별 대입: a 일본 화폐 예상; b 온도·c 계절·d 속도는 화폐 아님.",
-        "출처 대조: 일화 / 명사 / 뜻번호 1 / senseId 20768; 표제어: 일화 | sense_no: 20768 | sense_order: 1 | 품사: 「명사」 | 뜻풀이: 「1」 일본 화폐. — 해당 뜻의 핵심 의미와 대조함.",
-        "유형·학년 검토: cloze, basic, standard. 일화(日貨)는 일본 화폐의 드문 한자어다. basic 교과 어휘로는 엔/화폐 또는 널리 쓰이는 일화(짧은 이야기)로 교체.",
-        "해설과 제작 정답은 비공개이므로 explanation=uncertain."
+        "[공개 대조] 해설의 ‘관계되는 전체에 걸친이라는’은 문법적 연결이 잘못됐습니다. 뜻풀이 ‘관계되는 전체에 걸친’을 인용 부호로 묶으세요."
       ]
     },
     {
+      "questionId": "g5-argon-0412",
+      "revision": 3,
+      "contentHash": "ad59a314225c865ba90082ca8a325af319c5a955abb7e020c00efd84bfb839d5",
+      "run": {
+        "id": "20261106T133332548Z-65193-da9a10d6-f212-43fd-8175-4ab8a1394712",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "a",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": []
+    },
+    {
       "questionId": "g5-argon-0413",
-      "revision": 1,
-      "contentHash": "9b7fff6148ef1dfa6aa60f20eca94ff1d6f5943f36abd0b6dc9d08ec09a1124d",
+      "revision": 2,
+      "contentHash": "aa3ead05f92d348cfc1c51bc29758d7220e2a950d76833692dd7b19a4cbd7784",
+      "run": {
+        "id": "20261106T124205341Z-65193-007ca969-4fe9-482a-ad18-52eee5d61cd1",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
       "blindChoice": "c",
       "verdicts": {
         "source": "pass",
         "uniqueness": "pass",
         "grade": "pass",
         "language": "pass",
-        "explanation": "uncertain"
+        "explanation": "pass"
       },
-      "findings": [
-        "독립 풀이 및 보기별 대입: c 방해; a 협조·b 공헌·d 후원은 도움.",
-        "출처 대조: 기여하다 / 동사 / 뜻번호 1 / senseId 526188; 표제어: 기여-하다 | sense_no: 526188 | sense_order: 1 | 품사: 「동사」 | 뜻풀이: 도움이 되도록 이바지하다. — 해당 뜻의 핵심 의미와 대조함.",
-        "유형·학년 검토: antonym_context, basic, standard. 제시 맥락과 보기의 의미 차이로 단일 답을 판단할 수 있고 해당 난이도의 5–6학년 어휘 학습에 허용 가능하다. 보기 결합·종결 및 정답 표면·길이 단서를 확인하였다.",
-        "해설과 제작 정답은 비공개이므로 explanation=uncertain."
-      ]
+      "findings": []
     },
     {
       "questionId": "g5-argon-0414",
       "revision": 1,
       "contentHash": "22f26c657b20a77274b0e765fe89bea6393399415b78a0a8eeaca680ec477a9a",
+      "run": {
+        "id": "20261106T124205341Z-65193-007ca969-4fe9-482a-ad18-52eee5d61cd1",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
       "blindChoice": "c",
       "verdicts": {
         "source": "pass",
         "uniqueness": "pass",
         "grade": "pass",
         "language": "pass",
-        "explanation": "uncertain"
+        "explanation": "pass"
       },
-      "findings": [
-        "독립 풀이 및 보기별 대입: c 신제품 대조; a 조상 그릇·b 옛 물건·d 옛 도구는 유물.",
-        "출처 대조: 유물 / 명사 / 뜻번호 1 / senseId 19329; 표제어: 유물 | sense_no: 19329 | sense_order: 1 | 품사: 「명사」 | 뜻풀이: 「1」 선대의 인류가 후대에 남긴 물건. — 해당 뜻의 핵심 의미와 대조함.",
-        "유형·학년 검토: antonym_context, core, standard. 제시 맥락과 보기의 의미 차이로 단일 답을 판단할 수 있고 해당 난이도의 5–6학년 어휘 학습에 허용 가능하다. 보기 결합·종결 및 정답 표면·길이 단서를 확인하였다.",
-        "해설과 제작 정답은 비공개이므로 explanation=uncertain."
-      ]
+      "findings": []
     },
     {
       "questionId": "g5-argon-0415",
-      "revision": 1,
-      "contentHash": "0f1f1b8bba6d29745b00b6318c2ae80cfc9d8f043fa87d8d5852bed9ac0f6180",
+      "revision": 3,
+      "contentHash": "ca161f53d135ec2afc997b9bebf14e494703ad02532e13a6ce91c3f8b0c1762f",
+      "run": {
+        "id": "20261106T124205341Z-65193-007ca969-4fe9-482a-ad18-52eee5d61cd1",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
       "blindChoice": "a",
       "verdicts": {
         "source": "pass",
         "uniqueness": "pass",
-        "grade": "fail",
+        "grade": "pass",
         "language": "pass",
-        "explanation": "uncertain"
+        "explanation": "pass"
       },
-      "findings": [
-        "독립 풀이 및 보기별 대입: a 깊이 헤아림; b 먹이·c 역사 자료·d 요금은 결정 과정 아님.",
-        "출처 대조: 사료 / 명사 / 뜻번호 1 / senseId null; 표제어: 사료 | sense_no: 없음 | sense_order: 1 | 품사: 「명사」 | 뜻풀이: 깊이 생각하여 헤아림. — 해당 뜻의 핵심 의미와 대조함.",
-        "유형·학년 검토: definition, core, standard. 사료(깊이 생각함)는 역사 자료·먹이와 다른 희귀 동음이의어다. core 교과 의미의 실제 사료 문맥으로 교체.",
-        "해설과 제작 정답은 비공개이므로 explanation=uncertain."
-      ]
+      "findings": []
     },
     {
       "questionId": "g5-argon-0416",
       "revision": 1,
       "contentHash": "ca8bd6a58eafd981bbaa6a460f87601a346a65b472d3bb94ed70cfc9384436b7",
+      "run": {
+        "id": "20261106T124205341Z-65193-007ca969-4fe9-482a-ad18-52eee5d61cd1",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
       "blindChoice": "a",
       "verdicts": {
         "source": "pass",
         "uniqueness": "pass",
         "grade": "pass",
         "language": "pass",
-        "explanation": "uncertain"
+        "explanation": "pass"
       },
-      "findings": [
-        "독립 풀이 및 보기별 대입: a 공적; b 실수·c 변명·d 고민은 성과 아님.",
-        "출처 대조: 업적 / 명사 / 뜻번호 1 / senseId 392222; 표제어: 업적 | sense_no: 392222 | sense_order: 1 | 품사: 「명사」 | 뜻풀이: 어떤 사업이나 연구 따위에서 세운 공적. — 해당 뜻의 핵심 의미와 대조함.",
-        "유형·학년 검토: synonym_context, core, standard. 제시 맥락과 보기의 의미 차이로 단일 답을 판단할 수 있고 해당 난이도의 5–6학년 어휘 학습에 허용 가능하다. 보기 결합·종결 및 정답 표면·길이 단서를 확인하였다.",
-        "해설과 제작 정답은 비공개이므로 explanation=uncertain."
-      ]
+      "findings": []
     },
     {
       "questionId": "g5-argon-0417",
       "revision": 1,
       "contentHash": "d0fffaaa60c2147e2c95bc9d35803b5b9fa982d834f5a7dc21a5731bd6135264",
+      "run": {
+        "id": "20261106T124205341Z-65193-007ca969-4fe9-482a-ad18-52eee5d61cd1",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
       "blindChoice": "b",
       "verdicts": {
         "source": "pass",
         "uniqueness": "pass",
         "grade": "pass",
         "language": "pass",
-        "explanation": "uncertain"
+        "explanation": "pass"
       },
-      "findings": [
-        "독립 풀이 및 보기별 대입: b 사회 기여; a 지각 기여는 긍정 가치 불일치, c 빵·d 우산 목적어 부적합.",
-        "출처 대조: 공헌하다 / 동사 / 뜻번호 1 / senseId 331383; 표제어: 공헌-하다 | sense_no: 331383 | sense_order: 1 | 품사: 「동사」 | 뜻풀이: 「1」 힘을 써 이바지하다. — 해당 뜻의 핵심 의미와 대조함.",
-        "유형·학년 검토: usage, core, standard. 제시 맥락과 보기의 의미 차이로 단일 답을 판단할 수 있고 해당 난이도의 5–6학년 어휘 학습에 허용 가능하다. 보기 결합·종결 및 정답 표면·길이 단서를 확인하였다.",
-        "해설과 제작 정답은 비공개이므로 explanation=uncertain."
-      ]
+      "findings": []
     },
     {
       "questionId": "g5-argon-0418",
       "revision": 1,
       "contentHash": "3c87f1aa807de5b3bab454d1d12bd0dea2846356db537304d0761461875f07f3",
+      "run": {
+        "id": "20261106T124205341Z-65193-007ca969-4fe9-482a-ad18-52eee5d61cd1",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
       "blindChoice": "a",
       "verdicts": {
         "source": "pass",
         "uniqueness": "pass",
         "grade": "pass",
         "language": "pass",
-        "explanation": "uncertain"
+        "explanation": "pass"
       },
-      "findings": [
-        "독립 풀이 및 보기별 대입: a 무상 노력; b 거래·c 경쟁·d 구경은 봉사 아님.",
-        "출처 대조: 봉사하다 / 동사 / 뜻번호 1 / senseId 172932; 표제어: 봉사-하다 | sense_no: 172932 | sense_order: 1 | 품사: 「동사」 | 뜻풀이: 국가나 사회 또는 남을 위하여 대가를 바라지 아니하고 힘을 바쳐 애쓰다. — 해당 뜻의 핵심 의미와 대조함.",
-        "유형·학년 검토: cloze, core, standard. 제시 맥락과 보기의 의미 차이로 단일 답을 판단할 수 있고 해당 난이도의 5–6학년 어휘 학습에 허용 가능하다. 보기 결합·종결 및 정답 표면·길이 단서를 확인하였다.",
-        "해설과 제작 정답은 비공개이므로 explanation=uncertain."
-      ]
+      "findings": []
     },
     {
       "questionId": "g5-argon-0419",
       "revision": 1,
       "contentHash": "90ba8b4e5ab14ddf1d235a42b7983307c4701769a8ca491e32a1432ee8f63f77",
+      "run": {
+        "id": "20261106T124205341Z-65193-007ca969-4fe9-482a-ad18-52eee5d61cd1",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
       "blindChoice": "b",
       "verdicts": {
         "source": "pass",
         "uniqueness": "pass",
         "grade": "pass",
         "language": "pass",
-        "explanation": "uncertain"
+        "explanation": "pass"
       },
-      "findings": [
-        "독립 풀이 및 보기별 대입: b 자기만 주장; a 남 헤아림·c 이해·d 양보는 역지사지 방향.",
-        "출처 대조: 역지사지 / 명사 / 뜻번호 1 / senseId 539905; 표제어: 역지사지 | sense_no: 539905 | sense_order: 1 | 품사: 「명사」 | 뜻풀이: 처지를 바꾸어서 생각하여 봄. — 해당 뜻의 핵심 의미와 대조함.",
-        "유형·학년 검토: antonym_context, core, standard. 제시 맥락과 보기의 의미 차이로 단일 답을 판단할 수 있고 해당 난이도의 5–6학년 어휘 학습에 허용 가능하다. 보기 결합·종결 및 정답 표면·길이 단서를 확인하였다.",
-        "해설과 제작 정답은 비공개이므로 explanation=uncertain."
-      ]
+      "findings": []
     },
     {
       "questionId": "g5-argon-0420",
-      "revision": 1,
-      "contentHash": "fd74151e6f51b1feb2f610c29ba20364605f3d227b9e2af44ccbc8f795a1a350",
+      "revision": 2,
+      "contentHash": "fd69d09637ae8b60a32dd8731b104580fb86b169d1f4e3a0bbd455c2e6b3dc08",
+      "run": {
+        "id": "20261106T124205341Z-65193-007ca969-4fe9-482a-ad18-52eee5d61cd1",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
       "blindChoice": "c",
       "verdicts": {
         "source": "pass",
         "uniqueness": "pass",
         "grade": "pass",
         "language": "pass",
-        "explanation": "uncertain"
+        "explanation": "pass"
       },
-      "findings": [
-        "독립 풀이 및 보기별 대입: c 마음·힘 뭉침; a 분산·b 중단·d 단독 독서는 단결 아님.",
-        "출처 대조: 단결하다 / 동사 / 뜻번호 1 / senseId 121082; 표제어: 단결-하다 | sense_no: 121082 | sense_order: 1 | 품사: 「동사」 | 뜻풀이: 많은 사람이 마음과 힘을 한데 뭉치다. ≒ 단합하다 . — 해당 뜻의 핵심 의미와 대조함.",
-        "유형·학년 검토: definition, core, standard. 제시 맥락과 보기의 의미 차이로 단일 답을 판단할 수 있고 해당 난이도의 5–6학년 어휘 학습에 허용 가능하다. 보기 결합·종결 및 정답 표면·길이 단서를 확인하였다.",
-        "해설과 제작 정답은 비공개이므로 explanation=uncertain."
-      ]
+      "findings": []
     },
     {
       "questionId": "g5-argon-0421",
       "revision": 1,
       "contentHash": "bccbd75dd85efc21a2e300d474a729dd5d589feb9d1e5d639ca8af1abe95f4ea",
+      "run": {
+        "id": "20261106T124205341Z-65193-007ca969-4fe9-482a-ad18-52eee5d61cd1",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
       "blindChoice": "b",
       "verdicts": {
         "source": "pass",
         "uniqueness": "pass",
         "grade": "pass",
         "language": "pass",
-        "explanation": "uncertain"
+        "explanation": "pass"
       },
-      "findings": [
-        "독립 풀이 및 보기별 대입: b 참고 견딤; a 포기·c 자랑·d 미룸은 인내 아님.",
-        "출처 대조: 인내 / 명사 / 뜻번호 1 / senseId 251258; 표제어: 인내 | sense_no: 251258 | sense_order: 1 | 품사: 「명사」 | 뜻풀이: 괴로움이나 어려움을 참고 견딤. ≒ 내인 . — 해당 뜻의 핵심 의미와 대조함.",
-        "유형·학년 검토: synonym_context, core, standard. 제시 맥락과 보기의 의미 차이로 단일 답을 판단할 수 있고 해당 난이도의 5–6학년 어휘 학습에 허용 가능하다. 보기 결합·종결 및 정답 표면·길이 단서를 확인하였다.",
-        "해설과 제작 정답은 비공개이므로 explanation=uncertain."
-      ]
+      "findings": []
     },
     {
       "questionId": "g5-argon-0422",
       "revision": 1,
       "contentHash": "40fcc766d93866aed3e8ea7dcdacea5a84a4a519a3fecc4938293d9945663b0b",
+      "run": {
+        "id": "20261106T124205341Z-65193-007ca969-4fe9-482a-ad18-52eee5d61cd1",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
       "blindChoice": "a",
       "verdicts": {
         "source": "pass",
         "uniqueness": "pass",
         "grade": "pass",
         "language": "pass",
-        "explanation": "uncertain"
+        "explanation": "pass"
       },
-      "findings": [
-        "독립 풀이 및 보기별 대입: a 정성 수행; b 탄성·c 거짓·d 하늘 물체는 성실성 아님.",
-        "출처 대조: 성실성 / 명사 / 뜻번호 1 / senseId 499743; 표제어: 성실-성 | sense_no: 499743 | sense_order: 1 | 품사: 「명사」 | 뜻풀이: 정성스럽고 진실한 품성. — 해당 뜻의 핵심 의미와 대조함.",
-        "유형·학년 검토: usage, core, standard. 제시 맥락과 보기의 의미 차이로 단일 답을 판단할 수 있고 해당 난이도의 5–6학년 어휘 학습에 허용 가능하다. 보기 결합·종결 및 정답 표면·길이 단서를 확인하였다.",
-        "해설과 제작 정답은 비공개이므로 explanation=uncertain."
-      ]
+      "findings": []
+    },
+    {
+      "questionId": "g5-argon-0422",
+      "revision": 2,
+      "contentHash": "af3f5d28e628d1aac8b8ef101d1bbfbfb81d0c2ae424938c9a42a5f5ada38d9a",
+      "run": {
+        "id": "20261106T144233830Z-43390-c596706d-c885-4899-a57c-e4bca2258fe2",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "a",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": []
     },
     {
       "questionId": "g5-argon-0423",
       "revision": 1,
       "contentHash": "b3f8c7e9df9208a55e4c21fe013446566a15245476add94f5abe9cfd437d1d1c",
+      "run": {
+        "id": "20261106T124205341Z-65193-007ca969-4fe9-482a-ad18-52eee5d61cd1",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
       "blindChoice": "d",
       "verdicts": {
         "source": "pass",
         "uniqueness": "pass",
         "grade": "pass",
         "language": "pass",
-        "explanation": "uncertain"
+        "explanation": "pass"
+      },
+      "findings": []
+    },
+    {
+      "questionId": "g5-argon-0424",
+      "revision": 2,
+      "contentHash": "63b83cb224b6e82e52e767e41b4d2f4fd1d5a484a88d4fe9fa70fbda326eacda",
+      "run": {
+        "id": "20261106T124205341Z-65193-007ca969-4fe9-482a-ad18-52eee5d61cd1",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "c",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "fail",
+        "explanation": "pass"
       },
       "findings": [
-        "독립 풀이 및 보기별 대입: d 한결같음; a 다양·b 창의·c 위험은 일정함 아님.",
-        "출처 대조: 일관성 / 명사 / 뜻번호 1 / senseId 358651; 표제어: 일관-성 | sense_no: 358651 | sense_order: 1 | 품사: 「명사」 | 뜻풀이: 방법이나 태도 따위가 한결같은 성질. — 해당 뜻의 핵심 의미와 대조함.",
-        "유형·학년 검토: cloze, core, standard. 제시 맥락과 보기의 의미 차이로 단일 답을 판단할 수 있고 해당 난이도의 5–6학년 어휘 학습에 허용 가능하다. 보기 결합·종결 및 정답 표면·길이 단서를 확인하였다.",
-        "해설과 제작 정답은 비공개이므로 explanation=uncertain."
+        "[공개 대조] 해설의 ‘전체 가운데 일부에 관계되는이라는’은 문법적 연결이 잘못됐습니다. 뜻풀이 ‘전체 가운데 일부에 관계되는’을 인용 부호로 묶으세요."
       ]
     },
     {
       "questionId": "g5-argon-0424",
-      "revision": 1,
-      "contentHash": "78dd70433f502981450ac58133517b25523e710648a4220e795ddea3f00d52d7",
+      "revision": 3,
+      "contentHash": "7cd7340b0b55a9e9857832f2efc9ec0b7a11cfe30122ef4ebbfb6b3289c0ae55",
+      "run": {
+        "id": "20261106T133332548Z-65193-da9a10d6-f212-43fd-8175-4ab8a1394712",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
       "blindChoice": "c",
       "verdicts": {
-        "source": "fail",
+        "source": "pass",
         "uniqueness": "pass",
         "grade": "pass",
         "language": "pass",
-        "explanation": "uncertain"
+        "explanation": "pass"
       },
-      "findings": [
-        "독립 풀이 및 보기별 대입: c 소극 추종; a 앞장·b 진행·d 지휘는 주도.",
-        "출처 대조: 주도적 / 명사 / 뜻번호 1 / senseId 275243; 표제어: 주도-적 | sense_no: 275243 | sense_order: 1 | 품사: [Ⅰ] 「명사」 | 뜻풀이: 앞장서서 조직이나 무리를 이끄는 것. — 해당 뜻의 핵심 의미와 대조함.",
-        "유형·학년 검토: antonym_context, core, standard. 주도적 모습은 관형사지만 명사 출처. 주도적인 모습 또는 관형사 source로 수정.",
-        "해설과 제작 정답은 비공개이므로 explanation=uncertain."
-      ]
+      "findings": []
     },
     {
       "questionId": "g5-argon-0425",
-      "revision": 1,
-      "contentHash": "8148e83bdf56b941d50d0ab820fedb6984ca95b9c03e7258ca761f133cbd7d10",
+      "revision": 2,
+      "contentHash": "72fb06ffdd8ce32eda3eadf94fcf32f0c9187d1301ce2e380c19c414656a80b7",
+      "run": {
+        "id": "20261106T124205341Z-65193-007ca969-4fe9-482a-ad18-52eee5d61cd1",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
       "blindChoice": "c",
       "verdicts": {
-        "source": "fail",
+        "source": "pass",
         "uniqueness": "pass",
         "grade": "pass",
         "language": "pass",
-        "explanation": "uncertain"
+        "explanation": "pass"
       },
-      "findings": [
-        "독립 풀이 및 보기별 대입: c 손 힘 작동; a 흐름·b 자동·d 교대는 수동 조작 아님.",
-        "출처 대조: 수동적 / 명사 / 뜻번호 1 / senseId 500512; 표제어: 수동-적 | sense_no: 500512 | sense_order: 1 | 품사: [Ⅰ] 「명사」 | 뜻풀이: 다른 동력을 이용하지 않고 손의 힘으로 일을 하는 것. — 해당 뜻의 핵심 의미와 대조함.",
-        "유형·학년 검토: definition, core, standard. 수동적 방법은 관형사 용법인데 명사 출처. 수동적인 방법으로 고치거나 관형사 뜻번호 사용.",
-        "해설과 제작 정답은 비공개이므로 explanation=uncertain."
-      ]
+      "findings": []
     },
     {
       "questionId": "g5-argon-0426",
-      "revision": 1,
-      "contentHash": "2847be3002589cc153890611670b0ae148c3d53c50f64401c6b1f1396ef48e27",
+      "revision": 2,
+      "contentHash": "9cd8813b8b7f9ce3ef51cdffd563d8b94cbf46e64d63987f45942fe9056dc0a6",
+      "run": {
+        "id": "20261106T124205341Z-65193-007ca969-4fe9-482a-ad18-52eee5d61cd1",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
       "blindChoice": "d",
       "verdicts": {
-        "source": "fail",
+        "source": "pass",
         "uniqueness": "pass",
         "grade": "pass",
         "language": "pass",
-        "explanation": "uncertain"
+        "explanation": "pass"
       },
-      "findings": [
-        "독립 풀이 및 보기별 대입: d 반대 판단; a 환영·b 찬성·c 추종은 긍정 방향.",
-        "출처 대조: 부정적 / 명사 / 뜻번호 1 / senseId 405114; 표제어: 부정-적 | sense_no: 405114 | sense_order: 1 | 품사: [Ⅰ] 「명사」 | 뜻풀이: 「1」 그렇지 아니하다고 단정하거나 옳지 아니하다고 반대하는 것. — 해당 뜻의 핵심 의미와 대조함.",
-        "유형·학년 검토: synonym_context, core, standard. 부정적 의견은 관형사 용법인데 명사 출처. 부정적인 의견 또는 관형사 source로 수정.",
-        "해설과 제작 정답은 비공개이므로 explanation=uncertain."
-      ]
+      "findings": []
     },
     {
       "questionId": "g5-argon-0427",
       "revision": 1,
       "contentHash": "cd38652d4895fa8f2b891f2816cd7cfb5e0e57a55cd5172486d45a1b950b0565",
+      "run": {
+        "id": "20261106T124205341Z-65193-007ca969-4fe9-482a-ad18-52eee5d61cd1",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
       "blindChoice": "b",
       "verdicts": {
         "source": "pass",
         "uniqueness": "pass",
         "grade": "pass",
         "language": "pass",
-        "explanation": "uncertain"
+        "explanation": "pass"
       },
-      "findings": [
-        "독립 풀이 및 보기별 대입: b 빠른 대피; a 느림·c 하루 멍함·d 물건 취급은 부사 부적합.",
-        "출처 대조: 신속히 / 부사 / 뜻번호 1 / senseId 538035; 표제어: 신속-히 | sense_no: 538035 | sense_order: 1 | 품사: 「부사」 | 뜻풀이: 매우 날쌔고 빠르게. — 해당 뜻의 핵심 의미와 대조함.",
-        "유형·학년 검토: usage, core, standard. 제시 맥락과 보기의 의미 차이로 단일 답을 판단할 수 있고 해당 난이도의 5–6학년 어휘 학습에 허용 가능하다. 보기 결합·종결 및 정답 표면·길이 단서를 확인하였다.",
-        "해설과 제작 정답은 비공개이므로 explanation=uncertain."
-      ]
+      "findings": []
     },
     {
       "questionId": "g5-argon-0428",
       "revision": 1,
       "contentHash": "24f1bed32975cc5c3cb8dbfa6095ebd089fd5906c1fcc244e8e414fbfd2cd274",
+      "run": {
+        "id": "20261106T124205341Z-65193-007ca969-4fe9-482a-ad18-52eee5d61cd1",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
       "blindChoice": "c",
       "verdicts": {
         "source": "pass",
         "uniqueness": "pass",
         "grade": "pass",
         "language": "pass",
-        "explanation": "uncertain"
+        "explanation": "pass"
       },
-      "findings": [
-        "독립 풀이 및 보기별 대입: c 상관 승인; a 공책값·b 밥값은 결제, d 가구 물체는 결재 아님.",
-        "출처 대조: 결재 / 명사 / 뜻번호 1 / senseId 376770; 표제어: 결재 | sense_no: 376770 | sense_order: 1 | 품사: 「명사」 | 뜻풀이: 결정할 권한이 있는 상관이 부하가 제출한 안건을 검토하여 허가하거나 승인함. — 해당 뜻의 핵심 의미와 대조함.",
-        "유형·학년 검토: usage, advanced, confusable. 제시 맥락과 보기의 의미 차이로 단일 답을 판단할 수 있고 해당 난이도의 5–6학년 어휘 학습에 허용 가능하다. 보기 결합·종결 및 정답 표면·길이 단서를 확인하였다.",
-        "해설과 제작 정답은 비공개이므로 explanation=uncertain."
-      ]
+      "findings": []
     },
     {
       "questionId": "g5-argon-0429",
-      "revision": 1,
-      "contentHash": "117f8dd19c05719e45126231e2f7cd74b515260b4eb32b040943fe79ca82ac0a",
+      "revision": 2,
+      "contentHash": "614efc321aeadb2696addf76a18ef28b43efbb741f06a881398e7339445562a3",
+      "run": {
+        "id": "20261106T124205341Z-65193-007ca969-4fe9-482a-ad18-52eee5d61cd1",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
       "blindChoice": "a",
       "verdicts": {
         "source": "pass",
         "uniqueness": "pass",
-        "grade": "fail",
-        "language": "pass",
-        "explanation": "uncertain"
+        "grade": "pass",
+        "language": "fail",
+        "explanation": "pass"
       },
       "findings": [
-        "독립 풀이 및 보기별 대입: a 업무 완료; b 허가 결재·c 일정·d 수리는 뜻 다름.",
-        "출처 대조: 결제 / 명사 / 뜻번호 1 / senseId null; 표제어: 결제 | sense_no: 없음 | sense_order: 1 | 품사: 「명사」 | 뜻풀이: 「1」 일을 처리하여 끝을 냄. — 해당 뜻의 핵심 의미와 대조함.",
-        "유형·학년 검토: definition, advanced, polysemy. 결제의 드문 업무 마침 의미보다 결재와 혼동되는 대금 지급 의미를 가르쳐야 함. 해당 사전 뜻·예문 교체.",
-        "해설과 제작 정답은 비공개이므로 explanation=uncertain."
+        "[공개 대조] 해설의 ‘사물의 가장 중심이 되는이라는’은 문법적 연결이 잘못됐습니다. 뜻풀이 ‘사물의 가장 중심이 되는’을 인용 부호로 묶으세요."
       ]
+    },
+    {
+      "questionId": "g5-argon-0429",
+      "revision": 3,
+      "contentHash": "d94ea1b5d0b208bf50f1e6f558650bddef8e5322e7e1299a1bec0a13e05a62c8",
+      "run": {
+        "id": "20261106T133332548Z-65193-da9a10d6-f212-43fd-8175-4ab8a1394712",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "a",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": []
     },
     {
       "questionId": "g5-argon-0430",
       "revision": 1,
       "contentHash": "e3b44ba866a929cf1329c3f345dad260789faf826ec4ff88614b7ff8c9bc6eae",
+      "run": {
+        "id": "20261106T124205341Z-65193-007ca969-4fe9-482a-ad18-52eee5d61cd1",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
       "blindChoice": "d",
       "verdicts": {
         "source": "pass",
         "uniqueness": "pass",
         "grade": "pass",
         "language": "pass",
-        "explanation": "uncertain"
+        "explanation": "pass"
       },
-      "findings": [
-        "독립 풀이 및 보기별 대입: d 자원 유용화; a 재능·b 문 엶·c 찾아냄은 토지 개발 아님.",
-        "출처 대조: 개발 / 명사 / 뜻번호 1 / senseId 331150; 표제어: 개발 | sense_no: 331150 | sense_order: 1 | 품사: 「명사」 | 뜻풀이: 「1」 토지나 천연자원 따위를 유용하게 만듦. — 해당 뜻의 핵심 의미와 대조함.",
-        "유형·학년 검토: cloze, advanced, confusable. 제시 맥락과 보기의 의미 차이로 단일 답을 판단할 수 있고 해당 난이도의 5–6학년 어휘 학습에 허용 가능하다. 보기 결합·종결 및 정답 표면·길이 단서를 확인하였다.",
-        "해설과 제작 정답은 비공개이므로 explanation=uncertain."
-      ]
+      "findings": []
     },
     {
       "questionId": "g5-argon-0431",
       "revision": 1,
       "contentHash": "00a9c6d611aba11c37d7a877b0221ae48c8d41c9df2807f7ce3eb0b9e06faee0",
+      "run": {
+        "id": "20261106T124205341Z-65193-007ca969-4fe9-482a-ad18-52eee5d61cd1",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
       "blindChoice": "a",
       "verdicts": {
         "source": "pass",
         "uniqueness": "pass",
         "grade": "pass",
         "language": "pass",
-        "explanation": "uncertain"
+        "explanation": "pass"
       },
-      "findings": [
-        "독립 풀이 및 보기별 대입: a 슬기 발전; b 석유·c 택지는 개발, d 문 열기는 개방.",
-        "출처 대조: 계발 / 명사 / 뜻번호 1 / senseId 88061; 표제어: 계발 | sense_no: 88061 | sense_order: 1 | 품사: 「명사」 | 뜻풀이: 슬기나 재능, 사상 따위를 일깨워 줌. — 해당 뜻의 핵심 의미와 대조함.",
-        "유형·학년 검토: usage, advanced, confusable. 제시 맥락과 보기의 의미 차이로 단일 답을 판단할 수 있고 해당 난이도의 5–6학년 어휘 학습에 허용 가능하다. 보기 결합·종결 및 정답 표면·길이 단서를 확인하였다.",
-        "해설과 제작 정답은 비공개이므로 explanation=uncertain."
-      ]
+      "findings": []
+    },
+    {
+      "questionId": "g5-argon-0431",
+      "revision": 2,
+      "contentHash": "e92c99dd4ee2fca6789b539efa084e7247ec26dcd94f5b1793541163b8dd7cd5",
+      "run": {
+        "id": "20261106T133332548Z-65193-da9a10d6-f212-43fd-8175-4ab8a1394712",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "a",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": []
     },
     {
       "questionId": "g5-argon-0432",
       "revision": 1,
       "contentHash": "293a49128f5ce19d877f67e1998288ea24e22be34a562b834a2b757862b2b380",
+      "run": {
+        "id": "20261106T124205341Z-65193-007ca969-4fe9-482a-ad18-52eee5d61cd1",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
       "blindChoice": "b",
       "verdicts": {
         "source": "pass",
         "uniqueness": "pass",
         "grade": "pass",
         "language": "pass",
-        "explanation": "uncertain"
+        "explanation": "pass"
       },
-      "findings": [
-        "독립 풀이 및 보기별 대입: b 일정 뒤로; a 연주·c 연습·d 연결은 날짜 미룸 아님.",
-        "출처 대조: 연기하다 / 동사 / 뜻번호 1 / senseId 465990; 표제어: 연기-하다 | sense_no: 465990 | sense_order: 1 | 품사: 「동사」 | 뜻풀이: 정해진 기한을 뒤로 물려서 늘리다. — 해당 뜻의 핵심 의미와 대조함.",
-        "유형·학년 검토: cloze, advanced, confusable. 제시 맥락과 보기의 의미 차이로 단일 답을 판단할 수 있고 해당 난이도의 5–6학년 어휘 학습에 허용 가능하다. 보기 결합·종결 및 정답 표면·길이 단서를 확인하였다.",
-        "해설과 제작 정답은 비공개이므로 explanation=uncertain."
-      ]
+      "findings": []
     },
     {
       "questionId": "g5-argon-0433",
-      "revision": 1,
-      "contentHash": "efa61574175b487f1462a4a19fc9404e1e7f4000c50b5df0468b9879563c9baa",
+      "revision": 2,
+      "contentHash": "6ca865eed08f6e2b4da340aa7dd694d6c342cfa0f49fceabbea952c97828ba5a",
+      "run": {
+        "id": "20261106T124205341Z-65193-007ca969-4fe9-482a-ad18-52eee5d61cd1",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
       "blindChoice": "b",
       "verdicts": {
         "source": "pass",
         "uniqueness": "pass",
-        "grade": "fail",
+        "grade": "pass",
         "language": "pass",
-        "explanation": "uncertain"
+        "explanation": "fail"
       },
       "findings": [
-        "독립 풀이 및 보기별 대입: b 담 잇닿음; a 반납기한·c 경기시간·d 전시기간은 다른 동음 뜻.",
-        "출처 대조: 연장하다 / 동사 / 뜻번호 1 / senseId null; 표제어: 연장-하다 | sense_no: 없음 | sense_order: 1 | 품사: 「동사」 | 뜻풀이: 담이 서로 잇대어 닿다. — 해당 뜻의 핵심 의미와 대조함.",
-        "유형·학년 검토: usage, advanced, confusable. 연장하다(담 잇닿음)의 희귀 동음이의어가 기간 연장과 연기 구별 목표를 흐린다. 시간을 늘린다는 일반 의미로 문항 재설계.",
-        "해설과 제작 정답은 비공개이므로 explanation=uncertain."
+        "[공개 대조] c의 ‘깊은 주제와 달라요’는 중심 여부를 깊이와 혼동하며 문맥에도 없는 기준입니다. ‘겉으로 드러난다는 뜻으로, 가장 중심이 된다는 뜻과 달라요’로 고치세요."
       ]
+    },
+    {
+      "questionId": "g5-argon-0433",
+      "revision": 3,
+      "contentHash": "db789d9dc883436eca51f4351508fdd513528d15aed477bbe54184e454ada902",
+      "run": {
+        "id": "20261106T133332548Z-65193-da9a10d6-f212-43fd-8175-4ab8a1394712",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "b",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": []
     },
     {
       "questionId": "g5-argon-0434",
       "revision": 1,
       "contentHash": "58258b04106bcda2cb0582d03e1d3e04a20fadd81fe07b82a0c9e575f6f659c8",
+      "run": {
+        "id": "20261106T124205341Z-65193-007ca969-4fe9-482a-ad18-52eee5d61cd1",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
       "blindChoice": "d",
       "verdicts": {
         "source": "pass",
         "uniqueness": "pass",
         "grade": "pass",
         "language": "pass",
-        "explanation": "uncertain"
+        "explanation": "pass"
       },
-      "findings": [
-        "독립 풀이 및 보기별 대입: d 기준 포함 위; a 미만·b 이하·c 초과는 포함 조건 불일치.",
-        "출처 대조: 이상 / 명사 / 뜻번호 1 / senseId 332832; 표제어: 이상 | sense_no: 332832 | sense_order: 1 | 품사: 「명사」 | 뜻풀이: 「1」 수량이나 정도가 일정한 기준보다 더 많거나 나음. 기준이 수량으로 제시될 경우에는, 그 수량이 범위에 포함되면서 그 위인 경우를 가리킨다. — 해당 뜻의 핵심 의미와 대조함.",
-        "유형·학년 검토: cloze, advanced, confusable. 제시 맥락과 보기의 의미 차이로 단일 답을 판단할 수 있고 해당 난이도의 5–6학년 어휘 학습에 허용 가능하다. 보기 결합·종결 및 정답 표면·길이 단서를 확인하였다.",
-        "해설과 제작 정답은 비공개이므로 explanation=uncertain."
-      ]
+      "findings": []
     },
     {
       "questionId": "g5-argon-0435",
       "revision": 1,
       "contentHash": "91ebe19c94e07e5c55899f60c280a805b5cf115f6d50b448431a9e4de1eb01f0",
+      "run": {
+        "id": "20261106T124205341Z-65193-007ca969-4fe9-482a-ad18-52eee5d61cd1",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
       "blindChoice": "c",
       "verdicts": {
         "source": "pass",
         "uniqueness": "pass",
         "grade": "pass",
         "language": "pass",
-        "explanation": "uncertain"
+        "explanation": "pass"
       },
-      "findings": [
-        "독립 풀이 및 보기별 대입: c 제한 넘음; a 낮은 점수·b 작은 키·d 적게 씀은 미달.",
-        "출처 대조: 초과 / 명사 / 뜻번호 1 / senseId 290816; 표제어: 초과 | sense_no: 290816 | sense_order: 1 | 품사: 「명사」 | 뜻풀이: 일정한 수나 한도 따위를 넘음. 기준이 수량으로 제시될 경우에는, 그 수량이 범위에 포함되지 않으면서 그 위인 경우를 가리킨다. — 해당 뜻의 핵심 의미와 대조함.",
-        "유형·학년 검토: usage, advanced, confusable. 제시 맥락과 보기의 의미 차이로 단일 답을 판단할 수 있고 해당 난이도의 5–6학년 어휘 학습에 허용 가능하다. 보기 결합·종결 및 정답 표면·길이 단서를 확인하였다.",
-        "해설과 제작 정답은 비공개이므로 explanation=uncertain."
-      ]
+      "findings": []
     },
     {
       "questionId": "g5-argon-0436",
       "revision": 1,
       "contentHash": "fafb5346ee377909709418f010a7390e1f8f1000159efb5470d6d53130babf43",
+      "run": {
+        "id": "20261106T124205341Z-65193-007ca969-4fe9-482a-ad18-52eee5d61cd1",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
       "blindChoice": "a",
       "verdicts": {
         "source": "pass",
         "uniqueness": "pass",
         "grade": "pass",
         "language": "pass",
-        "explanation": "uncertain"
+        "explanation": "pass"
       },
-      "findings": [
-        "독립 풀이 및 보기별 대입: a 기준 포함 아래; b 이상·c 초과·d 미만은 범위 다름.",
-        "출처 대조: 이하 / 명사 / 뜻번호 1 / senseId 19548; 표제어: 이하 | sense_no: 19548 | sense_order: 1 | 품사: 「명사」 | 뜻풀이: 「1」 수량이나 정도가 일정한 기준보다 더 적거나 모자람. 기준이 수량으로 제시될 경우에는, 그 수량이 범위에 포함되면서 그 아래인 경우를 가리킨다. — 해당 뜻의 핵심 의미와 대조함.",
-        "유형·학년 검토: cloze, advanced, confusable. 제시 맥락과 보기의 의미 차이로 단일 답을 판단할 수 있고 해당 난이도의 5–6학년 어휘 학습에 허용 가능하다. 보기 결합·종결 및 정답 표면·길이 단서를 확인하였다.",
-        "해설과 제작 정답은 비공개이므로 explanation=uncertain."
-      ]
+      "findings": []
     },
     {
       "questionId": "g5-argon-0437",
       "revision": 1,
       "contentHash": "5d883fc8cb4e6e2c90273116fcde44fda980761f1ab75538d72e2f06975315d1",
+      "run": {
+        "id": "20261106T124205341Z-65193-007ca969-4fe9-482a-ad18-52eee5d61cd1",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
       "blindChoice": "b",
       "verdicts": {
         "source": "pass",
         "uniqueness": "pass",
         "grade": "pass",
         "language": "pass",
-        "explanation": "uncertain"
+        "explanation": "pass"
       },
-      "findings": [
-        "독립 풀이 및 보기별 대입: b 10 제외 아래; a 포함 오류·c 넘음·d 120점 초과는 미만 반대.",
-        "출처 대조: 미만 / 명사 / 뜻번호 1 / senseId 9170; 표제어: 미만 | sense_no: 9170 | sense_order: 1 | 품사: 「명사」 | 뜻풀이: 「1」 정한 수효나 정도에 차지 못함. 또는 그런 상태. 기준이 수량으로 제시될 경우에는, 그 수량이 범위에 포함되지 않으면서 그 아래인 경우를 가리킨다. — 해당 뜻의 핵심 의미와 대조함.",
-        "유형·학년 검토: usage, advanced, confusable. 제시 맥락과 보기의 의미 차이로 단일 답을 판단할 수 있고 해당 난이도의 5–6학년 어휘 학습에 허용 가능하다. 보기 결합·종결 및 정답 표면·길이 단서를 확인하였다.",
-        "해설과 제작 정답은 비공개이므로 explanation=uncertain."
-      ]
+      "findings": []
+    },
+    {
+      "questionId": "g5-argon-0437",
+      "revision": 2,
+      "contentHash": "594acb4b94c92995fe5f664e732e1fc2b8c4c9e6224d849c6eac09ab1da35c81",
+      "run": {
+        "id": "20261106T144233830Z-43390-c596706d-c885-4899-a57c-e4bca2258fe2",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "b",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": []
     },
     {
       "questionId": "g5-argon-0438",
-      "revision": 1,
-      "contentHash": "16e29915eb29453dd46b3c9874d362c1a95a688ea134ca39369c4a8855fd8af4",
+      "revision": 2,
+      "contentHash": "b4f40a1f1af2a6f4f2c1094dd06825997d1c8212cac9cb180103790bae6273d0",
+      "run": {
+        "id": "20261106T124205341Z-65193-007ca969-4fe9-482a-ad18-52eee5d61cd1",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
       "blindChoice": "d",
       "verdicts": {
         "source": "pass",
         "uniqueness": "pass",
-        "grade": "fail",
-        "language": "pass",
-        "explanation": "uncertain"
+        "grade": "pass",
+        "language": "fail",
+        "explanation": "pass"
       },
       "findings": [
-        "독립 풀이 및 보기별 대입: d 단잠 의미 예상; a 감시·b 감소·c 감사는 수면 아님.",
-        "출처 대조: 감수하다 / 동사 / 뜻번호 1 / senseId null; 표제어: 감수-하다 | sense_no: 없음 | sense_order: 1 | 품사: 「동사」 | 뜻풀이: 깊이 단잠을 자다. = 감면하다 . — 해당 뜻의 핵심 의미와 대조함.",
-        "유형·학년 검토: cloze, advanced, confusable. 감수하다(단잠 자다)는 일반 감수(견딤/원고 검토)와 다른 희귀 동음이의어다. 혼동 학습에 맞게 일반 감수 의미로 교체.",
-        "해설과 제작 정답은 비공개이므로 explanation=uncertain."
+        "[공개 대조] 해설의 ‘사물이나 일에서 가장 중심이 되는이라는’은 문법적 연결이 잘못됐습니다. 뜻풀이 ‘사물이나 일에서 가장 중심이 되는’을 인용 부호로 묶으세요."
       ]
     },
     {
+      "questionId": "g5-argon-0438",
+      "revision": 3,
+      "contentHash": "d2910672476344d552bf0584d0adc6710a1c41587ef1088b2de2de95b4210de1",
+      "run": {
+        "id": "20261106T133332548Z-65193-da9a10d6-f212-43fd-8175-4ab8a1394712",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "d",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": []
+    },
+    {
       "questionId": "g5-argon-0439",
-      "revision": 1,
-      "contentHash": "e06de33d0c15da6a901e5b159ee302c184e040485e00d4f8d1254d65f41e1387",
+      "revision": 2,
+      "contentHash": "40d395e7ba35df12b770f24de73a4c265556b8ea5d8f5682e7f7e8e50b5cb0b4",
+      "run": {
+        "id": "20261106T124205341Z-65193-007ca969-4fe9-482a-ad18-52eee5d61cd1",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
       "blindChoice": "a",
       "verdicts": {
         "source": "pass",
         "uniqueness": "pass",
         "grade": "pass",
         "language": "pass",
-        "explanation": "uncertain"
+        "explanation": "pass"
       },
-      "findings": [
-        "독립 풀이 및 보기별 대입: a 양 감소; b 그림 감상·c 괴로움 감수·d 원고 감수는 의미 다름.",
-        "출처 대조: 감소하다 / 동사 / 뜻번호 1 / senseId 78133; 표제어: 감소-하다 | sense_no: 78133 | sense_order: 1 | 품사: 「동사」 | 뜻풀이: 양이나 수치가 줄다. 또는 양이나 수치를 줄이다. — 해당 뜻의 핵심 의미와 대조함.",
-        "유형·학년 검토: usage, advanced, confusable. 제시 맥락과 보기의 의미 차이로 단일 답을 판단할 수 있고 해당 난이도의 5–6학년 어휘 학습에 허용 가능하다. 보기 결합·종결 및 정답 표면·길이 단서를 확인하였다.",
-        "해설과 제작 정답은 비공개이므로 explanation=uncertain."
-      ]
+      "findings": []
     },
     {
       "questionId": "g5-argon-0440",
       "revision": 1,
       "contentHash": "c39b473c0fc73609d716f854768dde236bf5f603d1ad1f018f077022ff6f8230",
+      "run": {
+        "id": "20261106T124205341Z-65193-007ca969-4fe9-482a-ad18-52eee5d61cd1",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
       "blindChoice": "b",
       "verdicts": {
         "source": "pass",
         "uniqueness": "pass",
         "grade": "pass",
         "language": "pass",
-        "explanation": "uncertain"
+        "explanation": "pass"
       },
-      "findings": [
-        "독립 풀이 및 보기별 대입: b 말 퍼짐; a 협력·c 식사·d 사후 보수는 소문 아님.",
-        "출처 대조: 발 없는 말이 천 리 간다 / 속담 / 뜻번호 1 / senseId null; 표제어: 발 없는 말이 천 리 간다 | sense_no: 없음 | sense_order: 1 | 품사: [속담] | 뜻풀이: 말은 비록 발이 없지만 천 리 밖까지도 순식간에 퍼진다는 뜻으로, 말을 삼가야 함을 비유적으로 이르는 말. — 해당 뜻의 핵심 의미와 대조함.",
-        "유형·학년 검토: cloze, challenge, idiom_proverb. 제시 맥락과 보기의 의미 차이로 단일 답을 판단할 수 있고 해당 난이도의 5–6학년 어휘 학습에 허용 가능하다. 보기 결합·종결 및 정답 표면·길이 단서를 확인하였다.",
-        "해설과 제작 정답은 비공개이므로 explanation=uncertain."
-      ]
+      "findings": []
     },
     {
       "questionId": "g5-argon-0441",
       "revision": 1,
       "contentHash": "5b3fbe61a42bb35b89ad0f97e28a0f28ff44dd55ad9ee42cb606205196da8aac",
+      "run": {
+        "id": "20261106T124205341Z-65193-007ca969-4fe9-482a-ad18-52eee5d61cd1",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
       "blindChoice": "a",
       "verdicts": {
         "source": "pass",
         "uniqueness": "pass",
         "grade": "pass",
         "language": "pass",
-        "explanation": "uncertain"
+        "explanation": "pass"
       },
-      "findings": [
-        "독립 풀이 및 보기별 대입: a 자료 정리 가치; b 불가능 실행·c 성급·d 부분 판단은 자료 활용 아님.",
-        "출처 대조: 구슬이 서 말이라도 꿰어야 보배 / 속담 / 뜻번호 1 / senseId null; 표제어: 구슬이 서 말이라도 꿰어야 보배(라) | sense_no: 없음 | sense_order: 1 | 품사: [속담] | 뜻풀이: 아무리 훌륭하고 좋은 것이라도 다듬고 정리하여 쓸모 있게 만들어 놓아야 값어치가 있음을 비유적으로 이르는 말. ≒ 진주가 열 그릇이나 꿰어야 구슬 . — 해당 뜻의 핵심 의미와 대조함.",
-        "유형·학년 검토: cloze, challenge, idiom_proverb. 제시 맥락과 보기의 의미 차이로 단일 답을 판단할 수 있고 해당 난이도의 5–6학년 어휘 학습에 허용 가능하다. 보기 결합·종결 및 정답 표면·길이 단서를 확인하였다.",
-        "해설과 제작 정답은 비공개이므로 explanation=uncertain."
-      ]
+      "findings": []
     },
     {
       "questionId": "g5-argon-0442",
       "revision": 1,
       "contentHash": "dcbc8615cd9ad09933d8f9ef2375859a6939e76e680e033f0829d2852c2150ed",
+      "run": {
+        "id": "20261106T124205341Z-65193-007ca969-4fe9-482a-ad18-52eee5d61cd1",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
       "blindChoice": "a",
       "verdicts": {
         "source": "pass",
         "uniqueness": "pass",
         "grade": "pass",
         "language": "pass",
-        "explanation": "uncertain"
+        "explanation": "pass"
       },
-      "findings": [
-        "독립 풀이 및 보기별 대입: a 비슷한 실력 다툼; b 큰 격차·c 실제 계량·d 협력은 관용 뜻 아님.",
-        "출처 대조: 도토리 키 재기 / 속담 / 뜻번호 1 / senseId null; 표제어: 도토리 키 재기 | sense_no: 없음 | sense_order: 1 | 품사: [속담] | 뜻풀이: 「1」 정도가 고만고만한 사람끼리 서로 다툼을 이르는 말. ≒ 난쟁이끼리 키 자랑하기 . — 해당 뜻의 핵심 의미와 대조함.",
-        "유형·학년 검토: usage, challenge, idiom_proverb. 제시 맥락과 보기의 의미 차이로 단일 답을 판단할 수 있고 해당 난이도의 5–6학년 어휘 학습에 허용 가능하다. 보기 결합·종결 및 정답 표면·길이 단서를 확인하였다.",
-        "해설과 제작 정답은 비공개이므로 explanation=uncertain."
-      ]
+      "findings": []
     },
     {
       "questionId": "g5-argon-0443",
       "revision": 1,
       "contentHash": "1bb96d1492251fe484b3ecb922002c411e3a36db5167226ddd8f44900623b3ae",
+      "run": {
+        "id": "20261106T124205341Z-65193-007ca969-4fe9-482a-ad18-52eee5d61cd1",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
       "blindChoice": "d",
       "verdicts": {
         "source": "pass",
         "uniqueness": "pass",
         "grade": "pass",
         "language": "pass",
-        "explanation": "uncertain"
+        "explanation": "pass"
       },
-      "findings": [
-        "독립 풀이 및 보기별 대입: d 시련 뒤 강화; a 무노력 수상·b 소문·c 포기는 뜻 다름.",
-        "출처 대조: 비 온 뒤에 땅이 굳어진다 / 속담 / 뜻번호 1 / senseId null; 표제어: 비 온 뒤에 땅이 굳어진다 | sense_no: 없음 | sense_order: 1 | 품사: [속담] | 뜻풀이: 비에 젖어 질척거리던 흙도 마르면서 단단하게 굳어진다는 뜻으로, 어떤 시련을 겪은 뒤에 더 강해짐을 비유적으로 이르는 말. — 해당 뜻의 핵심 의미와 대조함.",
-        "유형·학년 검토: usage, challenge, idiom_proverb. 제시 맥락과 보기의 의미 차이로 단일 답을 판단할 수 있고 해당 난이도의 5–6학년 어휘 학습에 허용 가능하다. 보기 결합·종결 및 정답 표면·길이 단서를 확인하였다.",
-        "해설과 제작 정답은 비공개이므로 explanation=uncertain."
-      ]
+      "findings": []
     },
     {
       "questionId": "g5-argon-0444",
       "revision": 1,
       "contentHash": "15c5de1f54cfae88509db4f60996461318ffcb51fb1d3c60d09246a9f82e9e9f",
+      "run": {
+        "id": "20261106T124205341Z-65193-007ca969-4fe9-482a-ad18-52eee5d61cd1",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
       "blindChoice": "c",
       "verdicts": {
         "source": "pass",
         "uniqueness": "pass",
         "grade": "pass",
         "language": "pass",
-        "explanation": "uncertain"
+        "explanation": "pass"
       },
-      "findings": [
-        "독립 풀이 및 보기별 대입: c 물감 대신 색연필; a 정확한 물건·b 관람·d 협력은 대체 아님.",
-        "출처 대조: 꿩 대신 닭 / 속담 / 뜻번호 1 / senseId null; 표제어: 꿩 대신 닭 | sense_no: 없음 | sense_order: 1 | 품사: [속담] | 뜻풀이: 꼭 적당한 것이 없을 때 그와 비슷한 것으로 대신하는 경우를 비유적으로 이르는 말. ≒ 봉 아니면 꿩이다 . — 해당 뜻의 핵심 의미와 대조함.",
-        "유형·학년 검토: usage, challenge, idiom_proverb. 제시 맥락과 보기의 의미 차이로 단일 답을 판단할 수 있고 해당 난이도의 5–6학년 어휘 학습에 허용 가능하다. 보기 결합·종결 및 정답 표면·길이 단서를 확인하였다.",
-        "해설과 제작 정답은 비공개이므로 explanation=uncertain."
-      ]
+      "findings": []
     },
     {
       "questionId": "g5-argon-0445",
       "revision": 1,
       "contentHash": "9367d0b049dc6e3528c57bceaa1dd334842139ecfbb08f79c99435b5c5b81eab",
+      "run": {
+        "id": "20261106T124205341Z-65193-007ca969-4fe9-482a-ad18-52eee5d61cd1",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
       "blindChoice": "b",
       "verdicts": {
         "source": "pass",
         "uniqueness": "pass",
         "grade": "pass",
         "language": "pass",
-        "explanation": "uncertain"
+        "explanation": "pass"
       },
-      "findings": [
-        "독립 풀이 및 보기별 대입: b 작은 체구 뛰어남; a 시듦·c 큰 체구·d 미룸은 속뜻 아님.",
-        "출처 대조: 작은 고추가 더 맵다 / 속담 / 뜻번호 1 / senseId null; 표제어: 작은 고추가 더 맵다 | sense_no: 없음 | sense_order: 1 | 품사: [속담] | 뜻풀이: 몸집이 작은 사람이 큰 사람보다 재주가 뛰어나고 야무짐을 비유적으로 이르는 말. ≒ 고추는 작아도 맵다 , 고추보다 후추가 더 맵다 , 대국 고추는 작아도 맵다 , 작아도 후추알[고추알] , 작은 탕관이 이내 뜨거워진다 , 후추는 작아도 맵다 , 후추는 작아도 진상에만 간다 . — 해당 뜻의 핵심 의미와 대조함.",
-        "유형·학년 검토: usage, challenge, idiom_proverb. 제시 맥락과 보기의 의미 차이로 단일 답을 판단할 수 있고 해당 난이도의 5–6학년 어휘 학습에 허용 가능하다. 보기 결합·종결 및 정답 표면·길이 단서를 확인하였다.",
-        "해설과 제작 정답은 비공개이므로 explanation=uncertain."
-      ]
+      "findings": []
     },
     {
       "questionId": "g5-argon-0446",
       "revision": 1,
       "contentHash": "1deb9602acdd0c339ccc8eae651dcc94964d2c78e1c6ffc10fd29600929eb295",
+      "run": {
+        "id": "20261106T124205341Z-65193-007ca969-4fe9-482a-ad18-52eee5d61cd1",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
       "blindChoice": "d",
       "verdicts": {
         "source": "pass",
         "uniqueness": "pass",
         "grade": "pass",
         "language": "pass",
-        "explanation": "uncertain"
+        "explanation": "pass"
       },
-      "findings": [
-        "독립 풀이 및 보기별 대입: d 작은 일 큰 힘; a 감사·b 협력·c 예방은 과도 노력 아님.",
-        "출처 대조: 호미로 막을 것을 가래로 막는다 / 속담 / 뜻번호 1 / senseId null; 표제어: 호미로 막을 것을 가래로 막는다 | sense_no: 없음 | sense_order: 1 | 품사: [속담] | 뜻풀이: 「1」 적은 힘으로 충분히 처리할 수 있는 일에 쓸데없이 많은 힘을 들이는 경우를 비유적으로 이르는 말. — 해당 뜻의 핵심 의미와 대조함.",
-        "유형·학년 검토: usage, challenge, idiom_proverb. 제시 맥락과 보기의 의미 차이로 단일 답을 판단할 수 있고 해당 난이도의 5–6학년 어휘 학습에 허용 가능하다. 보기 결합·종결 및 정답 표면·길이 단서를 확인하였다.",
-        "해설과 제작 정답은 비공개이므로 explanation=uncertain."
-      ]
+      "findings": []
     },
     {
       "questionId": "g5-argon-0447",
       "revision": 1,
       "contentHash": "1f8775769634079cab43abd3304941eab1ebcc5f8674e485bc1cf9c84db05633",
+      "run": {
+        "id": "20261106T124205341Z-65193-007ca969-4fe9-482a-ad18-52eee5d61cd1",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
       "blindChoice": "d",
       "verdicts": {
         "source": "pass",
         "uniqueness": "pass",
         "grade": "pass",
         "language": "pass",
-        "explanation": "uncertain"
+        "explanation": "pass"
       },
-      "findings": [
-        "독립 풀이 및 보기별 대입: d 헛수고; a 축적 성공·b 도움·c 이중 이득은 반대.",
-        "출처 대조: 밑 빠진 독에 물 붓기 / 속담 / 뜻번호 1 / senseId null; 표제어: 밑 빠진 독[가마/항아리]에 물 붓기 | sense_no: 없음 | sense_order: 1 | 품사: [속담] | 뜻풀이: 밑 빠진 독에 아무리 물을 부어도 독이 채워질 수 없다는 뜻으로, 아무리 힘이나 밑천을 들여도 보람 없이 헛된 일이 되는 상태를 비유적으로 이르는 말. — 해당 뜻의 핵심 의미와 대조함.",
-        "유형·학년 검토: definition, challenge, idiom_proverb. 제시 맥락과 보기의 의미 차이로 단일 답을 판단할 수 있고 해당 난이도의 5–6학년 어휘 학습에 허용 가능하다. 보기 결합·종결 및 정답 표면·길이 단서를 확인하였다.",
-        "해설과 제작 정답은 비공개이므로 explanation=uncertain."
-      ]
+      "findings": []
     },
     {
       "questionId": "g5-argon-0448",
       "revision": 1,
       "contentHash": "d2e12b570b26f9b4aa319d73c1bb1a6c09dbcc937989b3af5342d978f92d47b4",
+      "run": {
+        "id": "20261106T124205341Z-65193-007ca969-4fe9-482a-ad18-52eee5d61cd1",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
       "blindChoice": "a",
       "verdicts": {
         "source": "pass",
         "uniqueness": "pass",
         "grade": "pass",
         "language": "pass",
-        "explanation": "uncertain"
+        "explanation": "pass"
       },
-      "findings": [
-        "독립 풀이 및 보기별 대입: a 극히 적음; b 능력·c 정성 작품·d 거대는 소량 아님.",
-        "출처 대조: 새 발의 피 / 속담 / 뜻번호 1 / senseId null; 표제어: 새 발의 피 | sense_no: 없음 | sense_order: 1 | 품사: [속담] | 뜻풀이: 새의 가느다란 발에서 나오는 피라는 뜻으로, 아주 하찮은 일이나 극히 적은 분량임을 비유적으로 이르는 말. — 해당 뜻의 핵심 의미와 대조함.",
-        "유형·학년 검토: definition, challenge, idiom_proverb. 제시 맥락과 보기의 의미 차이로 단일 답을 판단할 수 있고 해당 난이도의 5–6학년 어휘 학습에 허용 가능하다. 보기 결합·종결 및 정답 표면·길이 단서를 확인하였다.",
-        "해설과 제작 정답은 비공개이므로 explanation=uncertain."
-      ]
+      "findings": []
     },
     {
       "questionId": "g5-argon-0449",
       "revision": 1,
       "contentHash": "6700be40a6ab698718f7b43362504e455bca6549c48e5094389516adb980311e",
+      "run": {
+        "id": "20261106T124205341Z-65193-007ca969-4fe9-482a-ad18-52eee5d61cd1",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
       "blindChoice": "b",
       "verdicts": {
         "source": "pass",
         "uniqueness": "pass",
         "grade": "pass",
         "language": "pass",
-        "explanation": "uncertain"
+        "explanation": "pass"
       },
-      "findings": [
-        "독립 풀이 및 보기별 대입: b 마지못해; a 즐거움·c 음식 문자·d 나눔은 강요된 행동 아님.",
-        "출처 대조: 울며 겨자 먹기 / 속담 / 뜻번호 1 / senseId null; 표제어: 울며 겨자 먹기 | sense_no: 없음 | sense_order: 1 | 품사: [속담] | 뜻풀이: 맵다고 울면서도 겨자를 먹는다는 뜻으로, 싫은 일을 억지로 마지못하여 함을 비유적으로 이르는 말. ≒ 눈물 흘리면서 겨자 먹기 . — 해당 뜻의 핵심 의미와 대조함.",
-        "유형·학년 검토: definition, challenge, idiom_proverb. 제시 맥락과 보기의 의미 차이로 단일 답을 판단할 수 있고 해당 난이도의 5–6학년 어휘 학습에 허용 가능하다. 보기 결합·종결 및 정답 표면·길이 단서를 확인하였다.",
-        "해설과 제작 정답은 비공개이므로 explanation=uncertain."
-      ]
+      "findings": []
     },
     {
       "questionId": "g5-argon-0450",
-      "revision": 1,
-      "contentHash": "3f87283562d126c99c4e54ba9652b0d0f5f2ef2a435a1ed3ef2dbd970369004c",
+      "revision": 2,
+      "contentHash": "26ab47d48f30d9c926f20a355a6a288838f1fd27fdf9a06cfcdd7b995193314d",
+      "run": {
+        "id": "20261106T124205341Z-65193-007ca969-4fe9-482a-ad18-52eee5d61cd1",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
       "blindChoice": "c",
       "verdicts": {
         "source": "pass",
         "uniqueness": "pass",
-        "grade": "fail",
+        "grade": "pass",
         "language": "pass",
-        "explanation": "uncertain"
+        "explanation": "pass"
       },
-      "findings": [
-        "독립 풀이 및 보기별 대입: c 맑은 피리; a 하늘·b 국물은 다른 뜻, d 탁함은 반대.",
-        "출처 대조: 경청하다 / 형용사 / 뜻번호 2 / senseId 33004; 표제어: 경청-하다 | sense_no: 33004 | sense_order: 2 | 품사: 「형용사」 | 뜻풀이: 「2」 곡조 따위가 맑고 가볍다. — 해당 뜻의 핵심 의미와 대조함.",
-        "유형·학년 검토: usage, challenge, polysemy. 경청하다의 드문 형용사 의미 암기보다 실제 듣기 의미 또는 의도 명확한 동음이의어 비교로 개선.",
-        "해설과 제작 정답은 비공개이므로 explanation=uncertain."
-      ]
+      "findings": []
     }
   ]
 }
