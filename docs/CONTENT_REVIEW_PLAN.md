@@ -415,6 +415,9 @@ Antigravity는 읽기 전용이다. **모든 지시는 "답장 본문에 JSON으
 우선: 아래 "모자란 칸"(tier·변형·유형) 순서대로. basic standard를 15개 이상.
 각 낱말: kind(word·idiom·proverb·dialect), lemma, partOfSpeech, 예상 L1·L2(루브릭 §3.1), 쓸 뜻 번호(표준국어대사전),
 추천 유형 1~2개, variantTag, 학년 근거(§3.5 형식. 교과서 단원명·쪽수 금지).
+같은 표제어·품사·뜻 번호의 동음이의 항목이 여러 개면, 제공된 사전 조회 결과에서 선택한
+sourceEntry:{provider:"stdict"|"opendict",entryId:"양의 정수 문자열"}를 덧붙인다. ID를 추측하지 않는다.
+지정한 항목의 뜻·학년 적합성은 O-C5에서 독립 확인하기 전까지 checked:true로 하지 않는다.
 금지: 사전에 없는 낱말, 비속어·공포·차별 표현, 6학년보다 어려운 전문어.
 {"items":[{"kind":"word","lemma":"…","partOfSpeech":"…","expectedL1":1,"expectedL2":1,"senseOrder":2,"types":["cloze"],"variantTag":"standard","gradeEvidence":"…"}]}
 ----- 이미 쓴 낱말 ----- (도구가 붙임)
@@ -445,6 +448,8 @@ Antigravity는 읽기 전용이다. **모든 지시는 "답장 본문에 JSON으
 1) 기존 초안(content-source/batches/**/drafts.json)의 낱말과 겹치는지 2) 다른 학년 목록과 겹치는지
 3) 표준국어대사전에 그 품사·뜻 번호가 있는지(조회만, 파일 쓰기 없이) 4) §3.6 분포 칸을 얼마나 채우는지
 5) kind가 idiom·proverb·dialect인 항목의 분류가 맞는지.
+sourceEntry가 있으면 그 제공자·항목 ID의 실제 뜻과 후보의 품사·뜻 번호·학년 근거가 일치하는지 확인한다.
+ID 지정은 조회 범위를 좁힐 뿐 승인 근거가 아니다. ID 지정 여부와 관계없이 항목을 하나로 확정하지 못하면 checked:false다.
 겹치거나 사전에 없으면 checked:false와 이유. 커밋: git commit --only -- content-source/wordlists/g<N>-r<R>.json
 ```
 

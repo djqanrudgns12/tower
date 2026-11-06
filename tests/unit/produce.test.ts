@@ -236,6 +236,47 @@ describe('S6 보충 제작', () => {
     expect(evidenceInput([{ kind: 'proverb', lemma: '가는 말이 고와야 오는 말이 곱다' }])).toEqual(['proverb:가는 말이 고와야 오는 말이 곱다']);
   });
 
+  it('독립 검사에서 지정한 사전 항목만 고르고 지정이 없으면 동음이의어를 거절한다', () => {
+    const { root, evidence } = setup();
+    const item = { ...words[0], id: 'g4-argon-0042', sourceEntry: { provider: 'stdict', entryId: '999' } };
+    const text = '선택한 동음이의어의 독립 근거';
+    evidence.entries.push({ ...evidence.entries[0]!, wordNo: '999', file: 'homonym.txt', sha256: hash(text) });
+    evidence.texts['homonym.txt'] = text;
+    const result = prepare(root, batchId, 4, [item], evidence);
+    expect(result.rejected).toEqual([]);
+    expect(result.accepted).toHaveLength(1);
+    expect(result.accepted[0].fixed.source.entryId).toBe('999');
+    expect(result.accepted[0].fixed.target.senseKey).toBe('간직하다/동사/999-1');
+    expect(result.accepted[0].evidenceText).toBe(text);
+    expect(prepare(root, batchId, 4, [words[0]], evidence).rejected[0].reason).toContain('모호성');
+    evidence.entries.push({ ...evidence.entries.at(-1)! });
+    expect(prepare(root, batchId, 4, [item], evidence).rejected[0].reason).toContain('모호성');
+  });
+
+  it.each([
+    { provider: 'stdict', entryId: '999' },
+    { provider: 'opendict', entryId: '100' },
+    { provider: 'other', entryId: '100' },
+    { provider: 'stdict', entryId: 100 },
+    { provider: 'stdict', entryId: '' },
+    null,
+  ])('잘못 지정한 사전 항목 %j를 기존 유일 근거로 대신 통과시키지 않는다', sourceEntry => {
+    const { root, evidence } = setup();
+    const result = prepare(root, batchId, 4, [{ ...words[0], sourceEntry }], evidence);
+    expect(result.accepted).toEqual([]);
+    expect(result.rejected).toHaveLength(1);
+    expect(result.rejected[0].reason).toMatch(/사전 항목|불일치/);
+  });
+
+  it.each([{ headword: '다른말' }, { partOfSpeech: '명사' }, { senseOrder: 9 }, { sha256: '0'.repeat(64) }])('사전 항목 ID가 맞아도 기존 근거 검사 %j를 생략하지 않는다', patch => {
+    const { root, evidence } = setup();
+    Object.assign(evidence.entries[0]!, patch);
+    const result = prepare(root, batchId, 4, [{ ...words[0], sourceEntry: { provider: 'stdict', entryId: '100' } }], evidence);
+    expect(result.accepted).toEqual([]);
+    expect(result.rejected).toHaveLength(1);
+    expect(result.rejected[0].reason).toMatch(/불일치/);
+  });
+
   it('기존 배치에는 근거 조회를 하지 않으며 dry-run 의존성 누락도 먼저 거부한다', async () => {
     const { root, options, deps } = setup();
     await expect(produce(options, { modules })).rejects.toThrow('가짜 응답기');

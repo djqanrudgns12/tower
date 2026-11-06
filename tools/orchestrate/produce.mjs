@@ -135,8 +135,16 @@ export function prepare(root, batchId, grade, items, evidence) {
   const accepted = [], rejected = [];
   for (const item of items) {
     try {
+      // 동음이의어는 O-A1 제안·O-C5 독립 확인을 거친 제공자/항목 ID로만 좁힌다.
+      const sourceEntry = item.sourceEntry;
+      if (sourceEntry !== undefined && (!sourceEntry || typeof sourceEntry !== 'object'
+        || !['stdict', 'opendict'].includes(sourceEntry.provider)
+        || typeof sourceEntry.entryId !== 'string' || !/^[1-9]\d*$/.test(sourceEntry.entryId))) {
+        throw new Error('사전 항목 선택자는 provider와 양의 정수 문자열 entryId가 필요하다');
+      }
       const matches = evidence.entries.filter(e => norm(e.lemma) === norm(item.lemma) && head(e.headword) === head(item.lemma)
-        && pos(e.partOfSpeech) === pos(item.partOfSpeech) && e.senseOrder === item.senseOrder);
+        && pos(e.partOfSpeech) === pos(item.partOfSpeech) && e.senseOrder === item.senseOrder
+        && (sourceEntry === undefined || ((e.provider ?? 'stdict') === sourceEntry.provider && String(e.wordNo) === sourceEntry.entryId)));
       if (matches.length !== 1) throw new Error('근거 표제어·품사·뜻 번호 불일치, 누락 또는 동음이의어 모호성');
       const e = matches[0];
       if (path.basename(e.file) !== e.file) throw new Error('근거 파일 경로 오류');
