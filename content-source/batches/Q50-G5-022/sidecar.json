@@ -1,0 +1,1362 @@
+{
+  "batchId": "Q50-G5-022",
+  "jobId": "Q50-G5-022",
+  "publicationPolicy": "codex-argon-v1",
+  "producer": {
+    "model": "Gemini 4 Argon (High)",
+    "tool": "tools/orchestrate/produce.mjs",
+    "date": "2026-11-06"
+  },
+  "items": [
+    {
+      "id": "g5-argon-1388",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "속이 텅 빈 작은 종이 상자라 한 손으로 들기에 아주 무겁다.",
+          "verdict": "does_not_fit",
+          "reason": "속이 텅 빈 작은 종이 상자라는 앞부분의 이유와 무게가 많이 나간다는 뜻이 서로 모순된다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "속이 텅 빈 작은 종이 상자라 한 손으로 들기에 아주 가뿐하다.",
+          "verdict": "fits",
+          "reason": "속이 빈 작은 종이 상자여서 들기 좋을 정도로 가볍다는 뜻이 자연스럽게 통한다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "속이 텅 빈 작은 종이 상자라 한 손으로 들기에 아주 급하다.",
+          "verdict": "does_not_fit",
+          "reason": "시간이 없거나 서두른다는 뜻은 상자를 한 손으로 드는 무게감과 어울리지 않는다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "속이 텅 빈 작은 종이 상자라 한 손으로 들기에 아주 답답하다.",
+          "verdict": "does_not_fit",
+          "reason": "마음이나 공기가 시원하지 않다는 뜻이라 물건을 들기 가벼운 상태를 나타낼 수 없다."
+        }
+      ],
+      "uniquenessNote": "‘속이 텅 빈 작은 종이 상자’와 ‘한 손으로 들기에’라는 단서가 물건을 들 때 가벼운 상태(가뿐하다「1」)를 직접 가리키므로 다른 보기는 성립하지 않는다.",
+      "gradeEvidence": "rubric_inferred(L=3,T=2)"
+    },
+    {
+      "id": "g5-argon-1389",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "뚜껑을 한 번만 누르면 바로 열리는 물통이라 쓰기가 참 복잡하다.",
+          "verdict": "does_not_fit",
+          "reason": "한 번만 누르면 바로 열린다는 간단한 작동 방식과 반대되어 앞뒤가 맞지 않는다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "뚜껑을 한 번만 누르면 바로 열리는 물통이라 쓰기가 참 어렵다.",
+          "verdict": "does_not_fit",
+          "reason": "한 번만 눌러 바로 여는 쉬운 방법이므로 쓰기 어렵다는 말과 모순된다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "뚜껑을 한 번만 누르면 바로 열리는 물통이라 쓰기가 참 불편하다.",
+          "verdict": "does_not_fit",
+          "reason": "바로 열려서 쓰기 좋다는 이유 뒤에 불편하다는 결과가 오면 뜻이 어긋난다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "뚜껑을 한 번만 누르면 바로 열리는 물통이라 쓰기가 참 간편하다.",
+          "verdict": "fits",
+          "reason": "작동이 간단하고 쓰기에 편리하다는 의미가 앞절의 이유와 정확히 맞물린다."
+        }
+      ],
+      "uniquenessNote": "‘한 번만 누르면 바로 열리는’이라는 간단함과 ‘쓰기가’라는 편리함의 단서가 결합되어 ‘간편하다’만 정답이 된다.",
+      "gradeEvidence": "krdict:중급"
+    },
+    {
+      "id": "g5-argon-1390",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "누구도 손해 보지 않게 똑같은 수로 나누어 주니 참 공평하다.",
+          "verdict": "fits",
+          "reason": "어느 쪽으로도 치우치지 않고 고르게 나누어 준 상태에 정확히 들어맞는다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "누구도 손해 보지 않게 똑같은 수로 나누어 주니 참 위험하다.",
+          "verdict": "does_not_fit",
+          "reason": "물건을 똑같은 수로 나누어 주는 일은 안전이나 해로움과 관련이 없다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "누구도 손해 보지 않게 똑같은 수로 나누어 주니 참 억울하다.",
+          "verdict": "does_not_fit",
+          "reason": "누구도 손해 보지 않게 똑같이 나누어 주었으므로 억울할 까닭이 없어 문맥에 어긋난다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "누구도 손해 보지 않게 똑같은 수로 나누어 주니 참 게으르다.",
+          "verdict": "does_not_fit",
+          "reason": "부지런하지 못하다는 뜻은 치우침 없이 똑같이 나눈 결과를 설명할 수 없다."
+        }
+      ],
+      "uniquenessNote": "‘누구도 손해 보지 않게 똑같은 수로’라는 조건이 치우침 없이 고르다는 ‘공평하다’의 핵심 뜻을 유일하게 지시한다.",
+      "gradeEvidence": "krdict:중급"
+    },
+    {
+      "id": "g5-argon-1391",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "버스가 막 떠나려 해서 친구를 부르는 목소리가 무척 느긋하다.",
+          "verdict": "does_not_fit",
+          "reason": "버스가 막 떠나려 하는 급박한 이유와 여유롭고 느긋한 목소리는 서로 반대된다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "버스가 막 떠나려 해서 친구를 부르는 목소리가 무척 심심하다.",
+          "verdict": "does_not_fit",
+          "reason": "할 일이 없어 지루하다는 뜻은 목소리의 급한 느낌을 나타내지 못한다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "버스가 막 떠나려 해서 친구를 부르는 목소리가 무척 다급하다.",
+          "verdict": "fits",
+          "reason": "버스가 곧 출발하는 일이 코앞에 바싹 닥쳐 매우 급한 목소리를 자연스럽게 나타낸다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "버스가 막 떠나려 해서 친구를 부르는 목소리가 무척 친절하다.",
+          "verdict": "does_not_fit",
+          "reason": "버스가 막 떠나려 한다는 이유가 목소리가 상냥해지는 원인이 될 수 없다."
+        }
+      ],
+      "uniquenessNote": "사람의 평소 성질이 아니라 ‘버스가 막 떠나려 해서’처럼 눈앞에 바싹 닥친 일 때문에 급해진 맥락이므로 ‘다급하다’만 맞는다.",
+      "gradeEvidence": "krdict:중급"
+    },
+    {
+      "id": "g5-argon-1392",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "흰 바탕에 동그라미 하나만 그려 넣어서 무늬가 아주 단순하다.",
+          "verdict": "fits",
+          "reason": "동그라미 하나만 그린 무늬가 복잡하지 않고 간단하다는 뜻으로 자연스럽다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "흰 바탕에 동그라미 하나만 그려 넣어서 무늬가 아주 복잡하다.",
+          "verdict": "does_not_fit",
+          "reason": "동그라미 하나만 그려 넣었다는 앞부분의 이유와 복잡하다는 결과가 모순된다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "흰 바탕에 동그라미 하나만 그려 넣어서 무늬가 아주 위험하다.",
+          "verdict": "does_not_fit",
+          "reason": "다치거나 해로울 수 있다는 뜻은 그림 무늬의 모양을 설명하는 데 맞지 않는다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "흰 바탕에 동그라미 하나만 그려 넣어서 무늬가 아주 부지런하다.",
+          "verdict": "does_not_fit",
+          "reason": "사람이나 동물의 성실한 태도를 가리키는 말이라 무늬에 쓸 수 없다."
+        }
+      ],
+      "uniquenessNote": "무늬의 구성 요소가 동그라미 하나뿐이라 복잡하지 않고 간단하다는 뜻(단순하다「1」)만 정확히 성립한다.",
+      "gradeEvidence": "krdict:초급"
+    },
+    {
+      "id": "g5-argon-1394",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "나는 여러 번 설명을 들어야 겨우 이해할 만큼 그쪽 재주가 조금 빠르다.",
+          "verdict": "does_not_fit",
+          "reason": "여러 번 들어야 겨우 이해한다는 말과 반대될 뿐 아니라 ‘재주가 빠르다’는 호응도 어색하다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "나는 여러 번 설명을 들어야 겨우 이해할 만큼 그쪽 재주가 조금 뛰어나다.",
+          "verdict": "does_not_fit",
+          "reason": "여러 번 설명을 들어야 겨우 이해하는 상태는 재주가 뛰어나다는 뜻과 정반대이다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "나는 여러 번 설명을 들어야 겨우 이해할 만큼 그쪽 재주가 조금 둔하다.",
+          "verdict": "fits",
+          "reason": "깨침이 늦고 재주가 무디다는 ‘둔하다’의 첫째 뜻이 문맥과 정확히 일치한다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "나는 여러 번 설명을 들어야 겨우 이해할 만큼 그쪽 재주가 조금 시원하다.",
+          "verdict": "does_not_fit",
+          "reason": "온도나 기분이 상쾌하다는 말은 깨침과 재주의 정도를 나타낼 수 없다."
+        }
+      ],
+      "uniquenessNote": "몸놀림이나 감각이 아닌 ‘여러 번 설명을 들어야 겨우 이해할 만큼’과 ‘재주가’를 결합해 ‘둔하다’「1」(깨침이 늦고 재주가 무디다)만 가리키도록 설계했다.",
+      "gradeEvidence": "krdict:중급"
+    },
+    {
+      "id": "g5-argon-1395",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "책을 빌릴 때마다 이름과 번호를 세 곳에 따로 적어야 해서 일이 참 간단하다.",
+          "verdict": "does_not_fit",
+          "reason": "같은 내용을 세 곳에 따로 적어야 하는 복잡한 이유와 간단하다는 결과가 모순된다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "책을 빌릴 때마다 이름과 번호를 세 곳에 따로 적어야 해서 일이 참 번거롭다.",
+          "verdict": "fits",
+          "reason": "절차가 여러 갈래로 나뉘어 일의 갈피가 어수선하고 복잡하다는 뜻에 꼭 맞는다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "책을 빌릴 때마다 이름과 번호를 세 곳에 따로 적어야 해서 일이 참 편하다.",
+          "verdict": "does_not_fit",
+          "reason": "여러 번 나누어 적어야 하는 불편한 과정이므로 일이 편하다는 뜻과 맞지 않는다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "책을 빌릴 때마다 이름과 번호를 세 곳에 따로 적어야 해서 일이 참 반갑다.",
+          "verdict": "does_not_fit",
+          "reason": "누군가를 만나 기쁘다는 감정 표현이라 일의 복잡한 절차를 나타낼 수 없다."
+        }
+      ],
+      "uniquenessNote": "‘매번 세 곳에 따로 적어야 해서’라는 단서가 일의 갈피가 어수선하고 복잡한 상태(번거롭다「1」)를 명확히 보여 준다.",
+      "gradeEvidence": "krdict:중급"
+    },
+    {
+      "id": "g5-argon-1396",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "바느질을 오늘 처음 해 보아서 바늘을 잡는 손놀림이 아직 익숙하다.",
+          "verdict": "does_not_fit",
+          "reason": "오늘 처음 해 보았다는 이유와 반대되며 부사 ‘아직’과도 자연스럽게 어울리지 않는다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "바느질을 오늘 처음 해 보아서 바늘을 잡는 손놀림이 아직 자연스럽다.",
+          "verdict": "does_not_fit",
+          "reason": "처음 해 보아서 아직 어떻다고 말할 때는 매끄럽고 자연스럽다는 뜻이 맞지 않는다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "바느질을 오늘 처음 해 보아서 바늘을 잡는 손놀림이 아직 조용하다.",
+          "verdict": "does_not_fit",
+          "reason": "소리의 크고 작음을 뜻하는 말이라 바늘을 다루는 숙련도와 무관하다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "바느질을 오늘 처음 해 보아서 바늘을 잡는 손놀림이 아직 서투르다.",
+          "verdict": "fits",
+          "reason": "처음 해 보는 일이라 익숙하지 못하여 다루기에 설다는 뜻이 자연스럽게 이어진다."
+        }
+      ],
+      "uniquenessNote": "‘오늘 처음 해 보아서’와 ‘아직’이 결합되어 일에 익숙하지 못하고 다루기에 선 상태(서투르다「1」)만 정답으로 확정한다.",
+      "gradeEvidence": "krdict:초급"
+    },
+    {
+      "id": "g5-argon-1397",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "동생은 문제를 끝까지 읽지도 않고 답부터 고를 만큼 무척 차분하다.",
+          "verdict": "does_not_fit",
+          "reason": "문제를 끝까지 읽지 않고 답부터 고르는 행동은 차분한 태도와 정반대이다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "동생은 문제를 끝까지 읽지도 않고 답부터 고를 만큼 무척 성급하다.",
+          "verdict": "fits",
+          "reason": "참을성 있게 끝까지 읽지 못하고 서두르는 모습에서 성질이 급하다는 뜻이 잘 드러난다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "동생은 문제를 끝까지 읽지도 않고 답부터 고를 만큼 무척 부지런하다.",
+          "verdict": "does_not_fit",
+          "reason": "문제를 제대로 읽지 않고 서둘러 찍듯 고르는 것은 부지런함과는 거리가 멀다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "동생은 문제를 끝까지 읽지도 않고 답부터 고를 만큼 무척 솔직하다.",
+          "verdict": "does_not_fit",
+          "reason": "거짓이나 숨김이 없다는 뜻은 문제를 대충 읽고 서두르는 습관과 관련이 없다."
+        }
+      ],
+      "uniquenessNote": "외부 상황이 급박한 것이 아니라 스스로 참지 못하고 답부터 고르는 성질을 묘사하므로 ‘성급하다’만 어울린다.",
+      "gradeEvidence": "krdict:중급"
+    },
+    {
+      "id": "g5-argon-1398",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "새로 산 작은 청소기는 무게가 가벼워서 한 손으로 다루기에 힘들다.",
+          "verdict": "does_not_fit",
+          "reason": "작고 무게가 가볍다는 앞절의 이유와 다루기 힘들다는 결과가 서로 모순된다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "새로 산 작은 청소기는 무게가 가벼워서 한 손으로 다루기에 어둡다.",
+          "verdict": "does_not_fit",
+          "reason": "밝기를 나타내는 말은 청소기를 한 손으로 다루는 쉬움과 어울리지 않는다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "새로 산 작은 청소기는 무게가 가벼워서 한 손으로 다루기에 불편하다.",
+          "verdict": "does_not_fit",
+          "reason": "무게가 가벼운 점이 한 손으로 다루기 불편한 까닭이 될 수 없으므로 어색하다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "새로 산 작은 청소기는 무게가 가벼워서 한 손으로 다루기에 거뜬하다.",
+          "verdict": "fits",
+          "reason": "물건이 다루기에 가볍고 간편하거나 손쉽다는 ‘거뜬하다’의 첫째 뜻에 정확히 맞는다."
+        }
+      ],
+      "uniquenessNote": "‘작은 청소기’, ‘무게가 가벼워서’, ‘한 손으로 다루기에’가 결합해 다루기에 가볍고 손쉽다는 뜻(거뜬하다「1」)만 성립한다.",
+      "gradeEvidence": "rubric_inferred(L=3,T=2)"
+    },
+    {
+      "id": "g5-argon-1399",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "땀 흘려 청소한 교실이 깨끗해진 것을 보니 오늘 한 일이 참 보람차다.",
+          "verdict": "fits",
+          "reason": "힘들여 일한 뒤 좋은 결과를 얻어 자랑스럽고 만족스럽다는 뜻이 자연스럽게 통한다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "땀 흘려 청소한 교실이 깨끗해진 것을 보니 오늘 한 일이 참 어색하다.",
+          "verdict": "does_not_fit",
+          "reason": "낯설고 자연스럽지 못하다는 뜻은 수고한 뒤 좋은 결과를 본 만족감과 어울리지 않는다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "땀 흘려 청소한 교실이 깨끗해진 것을 보니 오늘 한 일이 참 속상하다.",
+          "verdict": "does_not_fit",
+          "reason": "노력한 결과 교실이 깨끗해졌으므로 속상하다는 부정적 감정과 맞지 않는다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "땀 흘려 청소한 교실이 깨끗해진 것을 보니 오늘 한 일이 참 부끄럽다.",
+          "verdict": "does_not_fit",
+          "reason": "열심히 청소해 깨끗한 결과를 얻은 일은 창피하거나 부끄러워할 일이 아니다."
+        }
+      ],
+      "uniquenessNote": "직접 땀 흘려 일한 뒤 깨끗해진 좋은 결과를 보며 느끼는 자랑스러움과 만족감이므로 ‘보람차다’가 유일한 정답이다.",
+      "gradeEvidence": "rubric_inferred(L=3,T=2)"
+    },
+    {
+      "id": "g5-argon-1400",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "자세한 그림 설명이 함께 있어서 종이접기를 따라 하기가 참 힘들다.",
+          "verdict": "does_not_fit",
+          "reason": "자세한 그림 설명이 함께 있다는 도움 조건과 따라 하기 힘들다는 결과가 반대된다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "자세한 그림 설명이 함께 있어서 종이접기를 따라 하기가 참 어렵다.",
+          "verdict": "does_not_fit",
+          "reason": "자세한 그림 설명 덕분에 이해하기 좋은 상황이므로 어렵다는 말과 모순된다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "자세한 그림 설명이 함께 있어서 종이접기를 따라 하기가 참 수월하다.",
+          "verdict": "fits",
+          "reason": "까다롭거나 힘들지 않아 따라 하기가 쉽다는 뜻이 앞절의 이유와 잘 맞는다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "자세한 그림 설명이 함께 있어서 종이접기를 따라 하기가 참 외롭다.",
+          "verdict": "does_not_fit",
+          "reason": "홀로 되어 쓸쓸하다는 감정 표현은 종이접기를 따라 하는 난이도와 맞지 않는다."
+        }
+      ],
+      "uniquenessNote": "‘자세한 그림 설명이 함께 있어서’라는 조건이 일을 따라 하기에 까다롭거나 힘들지 않고 쉽다는 ‘수월하다’「1」만 성립시킨다.",
+      "gradeEvidence": "krdict:중급"
+    },
+    {
+      "id": "g5-argon-1401",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "민수는 비밀과 약속을 꼭 지키는 단짝 친구를 언제나 신뢰한다.",
+          "verdict": "fits",
+          "reason": "비밀과 약속을 잘 지키는 친구를 굳게 믿고 의지한다는 문맥에 자연스럽게 들어맞는다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "민수는 비밀과 약속을 꼭 지키는 단짝 친구를 언제나 싫어한다.",
+          "verdict": "does_not_fit",
+          "reason": "목적격 조사 ‘를’과는 호응하지만 약속을 잘 지키는 단짝 친구를 싫어한다는 뜻은 문맥과 어긋난다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "민수는 비밀과 약속을 꼭 지키는 단짝 친구를 언제나 피한다.",
+          "verdict": "does_not_fit",
+          "reason": "문법적으로는 성립하나 믿을 만한 단짝 친구를 멀리한다는 뜻이라 앞 내용과 맞지 않는다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "민수는 비밀과 약속을 꼭 지키는 단짝 친구를 언제나 놀린다.",
+          "verdict": "does_not_fit",
+          "reason": "문법적으로는 성립하나 약속을 잘 지키는 친구를 장난삼아 비웃을 까닭이 없다."
+        }
+      ],
+      "uniquenessNote": "네 보기 모두 목적어 ‘친구를’과 호응하는 현재형 타동사이지만, 비밀과 약속을 지키는 친구를 굳게 믿고 의지한다는 문맥에는 ‘신뢰한다’만 성립한다.",
+      "gradeEvidence": "krdict:중급"
+    },
+    {
+      "id": "g5-argon-1402",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "이 작은 수첩은 오늘 해야 할 일을 바로 적어 둘 수 있어서 참 불편하다.",
+          "verdict": "does_not_fit",
+          "reason": "할 일을 바로 적어 둘 수 있다는 편리한 이유 뒤에 ‘불편하다’가 오면 앞뒤 뜻이 반대된다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "이 작은 수첩은 오늘 해야 할 일을 바로 적어 둘 수 있어서 참 무겁다.",
+          "verdict": "does_not_fit",
+          "reason": "글을 적어 둘 수 있다는 이유가 무게가 무겁다는 결과로 이어지지 않는다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "이 작은 수첩은 오늘 해야 할 일을 바로 적어 둘 수 있어서 참 유용하다.",
+          "verdict": "fits",
+          "reason": "필요할 때 바로 적어 둘 수 있어 쓸모가 있다는 문맥에 정확히 어울린다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "이 작은 수첩은 오늘 해야 할 일을 바로 적어 둘 수 있어서 참 지저분하다.",
+          "verdict": "does_not_fit",
+          "reason": "수첩의 쓸모를 설명하는 앞부분과 깨끗하지 않다는 뒷부분이 서로 맞지 않는다."
+        }
+      ],
+      "uniquenessNote": "네 보기 모두 사물 주어 ‘수첩은’의 서술어로 쓰일 수 있는 형용사이지만, 할 일을 바로 적어 둘 수 있다는 이유와 자연스럽게 이어지는 말은 ‘유용하다’뿐이다.",
+      "gradeEvidence": "krdict:중급"
+    },
+    {
+      "id": "g5-argon-1403",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "늘 가지런한 언니의 책상과 달리 동생의 책상은 책과 연필이 마구 뒤섞여 무척 반듯하다.",
+          "verdict": "does_not_fit",
+          "reason": "‘가지런한 언니의 책상과 달리’라는 대조 표현 및 물건이 뒤섞였다는 내용과 반대된다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "늘 가지런한 언니의 책상과 달리 동생의 책상은 책과 연필이 마구 뒤섞여 무척 어수선하다.",
+          "verdict": "fits",
+          "reason": "가지런한 상태와 대조되며 물건이 마구 뒤섞여 헝클어진 모습을 정확히 나타낸다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "늘 가지런한 언니의 책상과 달리 동생의 책상은 책과 연필이 마구 뒤섞여 무척 단단하다.",
+          "verdict": "does_not_fit",
+          "reason": "책상이 단단하다는 뜻은 물건이 마구 뒤섞인 상태와 연결되지 않는다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "늘 가지런한 언니의 책상과 달리 동생의 책상은 책과 연필이 마구 뒤섞여 무척 깨끗하다.",
+          "verdict": "does_not_fit",
+          "reason": "책과 연필이 마구 뒤섞여 있는 모습을 ‘깨끗하다’고 할 수 없다."
+        }
+      ],
+      "uniquenessNote": "‘가지런한 언니의 책상과 달리’라는 반의 문맥과 ‘마구 뒤섞여’라는 단서가 함께 있어 헝클어진 모습을 뜻하는 ‘어수선하다’만 정답이 된다.",
+      "gradeEvidence": "krdict:중급"
+    },
+    {
+      "id": "g5-argon-1404",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "새 바구니는 대나무 줄이 빈틈없이 꽉 짜여 있지만 낡은 바구니는 줄 사이가 벌어져 단단하다.",
+          "verdict": "does_not_fit",
+          "reason": "줄 사이가 벌어져 틈이 생겼다는 앞 내용과 ‘단단하다’는 뜻이 어울리지 않는다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "새 바구니는 대나무 줄이 빈틈없이 꽉 짜여 있지만 낡은 바구니는 줄 사이가 벌어져 빽빽하다.",
+          "verdict": "does_not_fit",
+          "reason": "줄 사이가 벌어졌다는 내용과 ‘빽빽하다’는 서로 반대되어 모순된다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "새 바구니는 대나무 줄이 빈틈없이 꽉 짜여 있지만 낡은 바구니는 줄 사이가 벌어져 매끄럽다.",
+          "verdict": "does_not_fit",
+          "reason": "겉면의 느낌을 뜻하는 ‘매끄럽다’는 꽉 짜이지 않고 빈틈이 생긴 모습과 맞지 않는다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "새 바구니는 대나무 줄이 빈틈없이 꽉 짜여 있지만 낡은 바구니는 줄 사이가 벌어져 엉성하다.",
+          "verdict": "fits",
+          "reason": "빈틈없이 꽉 짜인 새 바구니와 대조되어 꽉 짜이지 않고 빈틈이 있는 모습을 정확히 나타낸다."
+        }
+      ],
+      "uniquenessNote": "‘빈틈없이 꽉 짜여 있지만’이라는 반의 대조 단서와 ‘줄 사이가 벌어져’라는 단서가 결합되어 ‘엉성하다’만 성립한다.",
+      "gradeEvidence": "rubric_inferred(L=3,T=2)"
+    },
+    {
+      "id": "g5-argon-1408",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "동생은 친구의 말을 그대로 믿었지만 형은 확실하지 않다며 그 말을 반긴다.",
+          "verdict": "does_not_fit",
+          "reason": "확실하지 않다고 여기는 말을 기쁘게 반긴다는 것은 앞뒤 뜻이 맞지 않는다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "동생은 친구의 말을 그대로 믿었지만 형은 확실하지 않다며 그 말을 의심한다.",
+          "verdict": "fits",
+          "reason": "‘그대로 믿었지만’과 대조되며 확실히 알 수 없어 믿지 못한다는 뜻에 정확히 들어맞는다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "동생은 친구의 말을 그대로 믿었지만 형은 확실하지 않다며 그 말을 자랑한다.",
+          "verdict": "does_not_fit",
+          "reason": "믿기 어려운 남의 말을 뽐내며 자랑한다는 것은 문맥상 어색하다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "동생은 친구의 말을 그대로 믿었지만 형은 확실하지 않다며 그 말을 따른다.",
+          "verdict": "does_not_fit",
+          "reason": "‘믿었지만’ 뒤에 이어지는 반대 상황인데 말을 믿고 따른다고 하면 모순된다."
+        }
+      ],
+      "uniquenessNote": "‘그대로 믿었지만’이라는 반의 대조 표현과 ‘확실하지 않다며’라는 까닭이 제시되어 믿지 못한다는 뜻의 ‘의심한다’만 정답이 된다.",
+      "gradeEvidence": "krdict:중급"
+    },
+    {
+      "id": "g5-argon-1410",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "새 학기 첫날에는 반 친구들이 낯설었지만 매일 함께 웃고 놀다 보니 이제는 무척 부럽다.",
+          "verdict": "does_not_fit",
+          "reason": "함께 어울려 가까워졌다는 내용에는 남을 부러워할 까닭이 나타나 있지 않다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "새 학기 첫날에는 반 친구들이 낯설었지만 매일 함께 웃고 놀다 보니 이제는 무척 어색하다.",
+          "verdict": "does_not_fit",
+          "reason": "‘낯설었지만’ 뒤에 반대되는 변화가 와야 하는데 ‘어색하다’는 뜻이 비슷해 어긋난다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "새 학기 첫날에는 반 친구들이 낯설었지만 매일 함께 웃고 놀다 보니 이제는 무척 무섭다.",
+          "verdict": "does_not_fit",
+          "reason": "매일 함께 웃고 놀았다는 즐거운 상황 뒤에 친구들이 무섭다는 말은 어울리지 않는다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "새 학기 첫날에는 반 친구들이 낯설었지만 매일 함께 웃고 놀다 보니 이제는 무척 친숙하다.",
+          "verdict": "fits",
+          "reason": "‘낯설었지만’과 대조되며 함께 놀면서 친하고 익숙해졌다는 흐름에 자연스럽게 맞는다."
+        }
+      ],
+      "uniquenessNote": "‘낯설었지만’이라는 반의 대조 단서와 ‘매일 함께 웃고 놀다 보니’라는 단서가 결합되어 친하고 익숙하다는 뜻의 ‘친숙하다’만 정답이 된다.",
+      "gradeEvidence": "krdict:중급"
+    },
+    {
+      "id": "g5-argon-1411",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "덥고 답답하던 교실이 창문을 열어 맑은 바람을 들이니 무척 쾌적하다.",
+          "verdict": "fits",
+          "reason": "덥고 답답하던 모습과 대조되어 기분이 시원하고 즐거운 모습을 자연스럽게 나타낸다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "덥고 답답하던 교실이 창문을 열어 맑은 바람을 들이니 무척 비좁다.",
+          "verdict": "does_not_fit",
+          "reason": "창문을 열어 바람을 들인 일과 교실 넓이가 좁다는 말은 서로 이어지지 않는다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "덥고 답답하던 교실이 창문을 열어 맑은 바람을 들이니 무척 어둡다.",
+          "verdict": "does_not_fit",
+          "reason": "시원한 바람을 들인 상황에서 밝기가 어두워졌다고 할 근거가 없다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "덥고 답답하던 교실이 창문을 열어 맑은 바람을 들이니 무척 무덥다.",
+          "verdict": "does_not_fit",
+          "reason": "덥고 답답하던 교실에 맑은 바람을 들인 결과로 ‘무덥다’가 오는 것은 앞뒤가 반대된다."
+        }
+      ],
+      "uniquenessNote": "‘덥고 답답하던’이라는 반의 단서와 ‘맑은 바람을 들이니’라는 변화 까닭이 제시되어 기분 좋게 시원해진 모습을 뜻하는 ‘쾌적하다’만 성립한다.",
+      "gradeEvidence": "krdict:중급"
+    },
+    {
+      "id": "g5-argon-1412",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "마을 사람들은 평생 어려운 이웃을 도운 할아버지를 높이 받들며 언제나 미워한다.",
+          "verdict": "does_not_fit",
+          "reason": "‘높이 받들며’라는 유의 단서와 ‘미워한다’는 뜻이 서로 정반대이다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "마을 사람들은 평생 어려운 이웃을 도운 할아버지를 높이 받들며 언제나 꾸짖는다.",
+          "verdict": "does_not_fit",
+          "reason": "훌륭한 일을 하신 어르신을 높이 받들면서 혼낸다는 것은 앞뒤가 맞지 않는다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "마을 사람들은 평생 어려운 이웃을 도운 할아버지를 높이 받들며 언제나 존경한다.",
+          "verdict": "fits",
+          "reason": "남의 훌륭한 행동을 높이 받든다는 유의 문맥과 ‘존경한다’의 뜻이 자연스럽게 어울린다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "마을 사람들은 평생 어려운 이웃을 도운 할아버지를 높이 받들며 언제나 부끄러워한다.",
+          "verdict": "does_not_fit",
+          "reason": "이웃을 도운 할아버지를 높이 받드는 모습에서 부끄럽게 여길 까닭이 없다."
+        }
+      ],
+      "uniquenessNote": "‘평생 어려운 이웃을 도운’이라는 행동 단서와 ‘높이 받들며’라는 유의 표현이 함께 제시되어 ‘존경한다’만 정답이 된다.",
+      "gradeEvidence": "krdict:중급"
+    },
+    {
+      "id": "g5-argon-1413",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "삼촌은 여러 해 동안 자전거를 고쳐 와서 도구를 다루는 손놀림이 익숙하고 능숙하다.",
+          "verdict": "fits",
+          "reason": "오랜 경험으로 손놀림이 익숙하다는 유의 단서와 ‘능하고 익숙하다’는 뜻이 자연스럽게 이어진다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "삼촌은 여러 해 동안 자전거를 고쳐 와서 도구를 다루는 손놀림이 익숙하고 서투르다.",
+          "verdict": "does_not_fit",
+          "reason": "‘익숙하고’ 뒤에 정반대 뜻인 ‘서투르다’가 나란히 올 수 없다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "삼촌은 여러 해 동안 자전거를 고쳐 와서 도구를 다루는 손놀림이 익숙하고 어색하다.",
+          "verdict": "does_not_fit",
+          "reason": "여러 해 동안 고쳐 와서 익숙해진 손놀림을 ‘어색하다’고 하는 것은 앞뒤가 맞지 않는다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "삼촌은 여러 해 동안 자전거를 고쳐 와서 도구를 다루는 손놀림이 익숙하고 답답하다.",
+          "verdict": "does_not_fit",
+          "reason": "도구를 익숙하게 다루는 모습을 ‘답답하다’고 연결하면 앞뒤 뜻이 어긋난다."
+        }
+      ],
+      "uniquenessNote": "‘여러 해 동안 자전거를 고쳐 와서’라는 배경과 ‘익숙하고’라는 유의 단서가 나란히 놓여 ‘능숙하다’만 성립한다.",
+      "gradeEvidence": "krdict:중급"
+    },
+    {
+      "id": "g5-argon-1414",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "해야 할 숙제를 자꾸 내일로 미루며 하루 종일 빈둥거리는 모습은 참 부지런하다.",
+          "verdict": "does_not_fit",
+          "reason": "숙제를 미루고 빈둥거리는 게으른 행동과 ‘부지런하다’는 서로 정반대이다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "해야 할 숙제를 자꾸 내일로 미루며 하루 종일 빈둥거리는 모습은 참 용감하다.",
+          "verdict": "does_not_fit",
+          "reason": "할 일을 미루며 빈둥거리는 모습을 용감하다고 할 수 없다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "해야 할 숙제를 자꾸 내일로 미루며 하루 종일 빈둥거리는 모습은 참 나태하다.",
+          "verdict": "fits",
+          "reason": "할 일을 미루고 빈둥거리는 모습이 행동이 느리고 게으르다는 뜻에 정확히 맞는다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "해야 할 숙제를 자꾸 내일로 미루며 하루 종일 빈둥거리는 모습은 참 친절하다.",
+          "verdict": "does_not_fit",
+          "reason": "혼자 할 일을 미루는 행동은 남에게 상냥하게 대하는 것과 관련이 없다."
+        }
+      ],
+      "uniquenessNote": "네 보기 모두 사람의 행동 모습을 나타내는 형용사이지만, 숙제를 미루고 빈둥거리는 게으른 모습에는 ‘나태하다’만 어울린다.",
+      "gradeEvidence": "rubric_inferred(L=4,T=1)"
+    },
+    {
+      "id": "g5-argon-1415",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "모두가 무서워서 물러설 때 친구들을 위해 겁내지 않고 앞장서다니 지수는 참 게으르다.",
+          "verdict": "does_not_fit",
+          "reason": "먼저 나서서 앞장선 행동을 ‘게으르다’고 할 수 없다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "모두가 무서워서 물러설 때 친구들을 위해 겁내지 않고 앞장서다니 지수는 참 대담하다.",
+          "verdict": "fits",
+          "reason": "무서운 일에도 겁내지 않고 큰 용기를 내어 앞장선 모습에 정확히 어울린다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "모두가 무서워서 물러설 때 친구들을 위해 겁내지 않고 앞장서다니 지수는 참 수줍다.",
+          "verdict": "does_not_fit",
+          "reason": "겁 없이 맨 앞으로 나선 행동은 부끄러움을 타는 ‘수줍다’와 맞지 않는다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "모두가 무서워서 물러설 때 친구들을 위해 겁내지 않고 앞장서다니 지수는 참 심술궂다.",
+          "verdict": "does_not_fit",
+          "reason": "친구들을 위해 용기를 낸 행동을 남을 괴롭히는 ‘심술궂다’로 설명할 수 없다."
+        }
+      ],
+      "uniquenessNote": "네 보기 모두 사람의 성품을 나타내는 형용사이지만, 모두가 무서워할 때 겁내지 않고 앞장선 큰 용기를 뜻하는 말은 ‘대담하다’뿐이다.",
+      "gradeEvidence": "krdict:중급"
+    },
+    {
+      "id": "g5-argon-1416",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "커서 어떤 일을 할지 아직 하나도 정하지 못해서 앞으로의 계획이 무척 뚜렷하다.",
+          "verdict": "does_not_fit",
+          "reason": "아직 하나도 정하지 못했다는 앞부분과 계획이 확실하다는 ‘뚜렷하다’는 서로 반대된다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "커서 어떤 일을 할지 아직 하나도 정하지 못해서 앞으로의 계획이 무척 자세하다.",
+          "verdict": "does_not_fit",
+          "reason": "아무것도 정하지 못한 모습에서 계획이 꼼꼼하고 자세할 수는 없다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "커서 어떤 일을 할지 아직 하나도 정하지 못해서 앞으로의 계획이 무척 특별하다.",
+          "verdict": "does_not_fit",
+          "reason": "계획을 세우지 못했다는 까닭이 계획이 남다르고 특별하다는 뜻으로 이어지지 않는다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "커서 어떤 일을 할지 아직 하나도 정하지 못해서 앞으로의 계획이 무척 막연하다.",
+          "verdict": "fits",
+          "reason": "정해진 것이 없어 앞으로 어떻게 할지 아득하다는 문맥에 정확히 들어맞는다."
+        }
+      ],
+      "uniquenessNote": "네 보기 모두 ‘계획이’를 주어로 삼을 수 있는 형용사이지만, 아무것도 정하지 못해 아득한 모습을 나타내는 말은 ‘막연하다’뿐이다.",
+      "gradeEvidence": "krdict:중급"
+    },
+    {
+      "id": "g5-argon-1417",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "‘민첩하다’는 ‘몸집이 크고 힘이 세다’라는 뜻이다.",
+          "verdict": "does_not_fit",
+          "reason": "‘민첩하다’는 동작의 빠르기를 나타내며 몸집이나 힘의 세기와는 관련이 없다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "‘민첩하다’는 ‘움직임이 재빠르고 날쌔다’라는 뜻이다.",
+          "verdict": "fits",
+          "reason": "사전 뜻풀이인 ‘재빠르고 날쌔다’와 정확히 일치한다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "‘민첩하다’는 ‘성격이 조용하고 차분하다’라는 뜻이다.",
+          "verdict": "does_not_fit",
+          "reason": "조용하고 차분한 성격은 날쌘 동작을 뜻하는 ‘민첩하다’와 의미가 다르다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "‘민첩하다’는 ‘행동이 느리고 조심스럽다’라는 뜻이다.",
+          "verdict": "does_not_fit",
+          "reason": "행동이 느리다는 것은 재빠르고 날쌔다는 뜻과 반대된다."
+        }
+      ],
+      "uniquenessNote": "사전 뜻풀이 ‘재빠르고 날쌔다’에 해당하는 보기는 a뿐이며, b(크기와 힘)·c(차분한 성격)·d(느린 행동)는 의미가 전혀 다르다.",
+      "gradeEvidence": "rubric_inferred(L=4,T=1)"
+    },
+    {
+      "id": "g5-argon-1421",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "민수는 발표하기 전에 숨을 깊이 쉬며 흥분한 마음을 부풀리고 차분하게 무대에 올랐다.",
+          "verdict": "does_not_fit",
+          "reason": "흥분한 마음을 더 크게 부풀리면 차분하게 무대에 올랐다는 뒷부분과 앞뒤가 맞지 않는다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "민수는 발표하기 전에 숨을 깊이 쉬며 흥분한 마음을 일으키고 차분하게 무대에 올랐다.",
+          "verdict": "does_not_fit",
+          "reason": "흥분한 마음을 새로 일으키는 것은 숨을 깊이 쉬어 차분해지는 맥락과 반대된다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "민수는 발표하기 전에 숨을 깊이 쉬며 흥분한 마음을 가라앉히고 차분하게 무대에 올랐다.",
+          "verdict": "fits",
+          "reason": "흥분을 수그러들게 한다는 뜻이 숨을 깊이 쉬어 차분해졌다는 문맥에 정확히 들어맞는다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "민수는 발표하기 전에 숨을 깊이 쉬며 흥분한 마음을 앞세우고 차분하게 무대에 올랐다.",
+          "verdict": "does_not_fit",
+          "reason": "흥분한 마음을 먼저 앞세우면 차분하게 행동했다는 내용과 어긋난다."
+        }
+      ],
+      "uniquenessNote": "‘숨을 깊이 쉬며’와 ‘차분하게 무대에 올랐다’가 흥분이 수그러드는 맥락을 고정하므로, 흥분을 키우거나 드러내는 a·b·c는 모두 성립하지 않고 d만 정답이다.",
+      "gradeEvidence": "krdict:중급"
+    },
+    {
+      "id": "g5-argon-1422",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "수풀을 지나다가 모기에게 물리자마자 팔의 살가죽이 볼록하게 부풀어 무척 가려웠다.",
+          "verdict": "fits",
+          "reason": "살가죽이 붓거나 부르터 오른다는 뜻이 모기에 물려 볼록해진 상황과 정확히 맞는다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "수풀을 지나다가 모기에게 물리자마자 팔의 살가죽이 볼록하게 가라앉아 무척 가려웠다.",
+          "verdict": "does_not_fit",
+          "reason": "‘볼록하게’ 올라온 모양과 ‘가라앉아’는 의미가 서로 맞지 않는다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "수풀을 지나다가 모기에게 물리자마자 팔의 살가죽이 볼록하게 오그라들어 무척 가려웠다.",
+          "verdict": "does_not_fit",
+          "reason": "안으로 쭈그러드는 ‘오그라들어’는 모기에 물려 볼록하게 붓는 현상과 맞지 않는다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "수풀을 지나다가 모기에게 물리자마자 팔의 살가죽이 볼록하게 메말라 무척 가려웠다.",
+          "verdict": "does_not_fit",
+          "reason": "물기가 말라 버린다는 뜻은 살가죽이 볼록하게 부어오르는 상황과 어울리지 않는다."
+        }
+      ],
+      "uniquenessNote": "‘모기에게 물리자마자’와 ‘살가죽이 볼록하게’라는 단서가 피부가 부어오르는 상태만 허용하므로 b·c·d는 모두 불가능하고 a만 정답이다.",
+      "gradeEvidence": "krdict:중급"
+    },
+    {
+      "id": "g5-argon-1423",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "누나는 단단한 버터를 약한 열기로 부드럽게 얼리려고 따뜻한 냄비에 담아 두었다.",
+          "verdict": "does_not_fit",
+          "reason": "열기로 부드럽게 만든다는 말과 차갑게 얼린다는 말은 서로 반대된다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "누나는 단단한 버터를 약한 열기로 부드럽게 굳히려고 따뜻한 냄비에 담아 두었다.",
+          "verdict": "does_not_fit",
+          "reason": "딱딱하게 만드는 ‘굳히려고’는 ‘부드럽게’ 및 ‘따뜻한 냄비’와 의미가 맞지 않는다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "누나는 단단한 버터를 약한 열기로 부드럽게 녹이려고 따뜻한 냄비에 담아 두었다.",
+          "verdict": "fits",
+          "reason": "고체인 버터를 열기로 물러지게 한다는 뜻이 따뜻한 냄비에 담아 두는 행동과 정확히 맞는다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "누나는 단단한 버터를 약한 열기로 부드럽게 말리려고 따뜻한 냄비에 담아 두었다.",
+          "verdict": "does_not_fit",
+          "reason": "물기를 없애는 ‘말리려고’는 단단한 고체를 부드럽게 무르게 하는 뜻이 아니다."
+        }
+      ],
+      "uniquenessNote": "‘단단한 버터를 약한 열기로 부드럽게’와 ‘따뜻한 냄비’라는 조건 때문에 고체를 무르게 하는 b만 성립하며, 얼리거나 굳히거나 말리는 a·c·d는 모두 불가능하다.",
+      "gradeEvidence": "krdict:중급"
+    },
+    {
+      "id": "g5-argon-1424",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "오랫동안 꼿꼿하게 앉아 있던 형은 다리가 저리자 곧은 자세를 세우고 바닥에 편히 누웠다.",
+          "verdict": "does_not_fit",
+          "reason": "앉아 있던 곧은 자세를 꼿꼿이 세우고 바닥에 편히 누웠다는 것은 앞뒤 동작이 맞지 않는다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "오랫동안 꼿꼿하게 앉아 있던 형은 다리가 저리자 곧은 자세를 허물고 바닥에 편히 누웠다.",
+          "verdict": "fits",
+          "reason": "꼿꼿하던 자세를 그대로 이어 가지 않고 풀었다는 뜻이 다리가 저려 바닥에 누운 상황과 정확히 맞는다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "오랫동안 꼿꼿하게 앉아 있던 형은 다리가 저리자 곧은 자세를 지키고 바닥에 편히 누웠다.",
+          "verdict": "does_not_fit",
+          "reason": "곧게 앉은 자세를 그대로 유지하면서 바닥에 편히 누울 수는 없다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "오랫동안 꼿꼿하게 앉아 있던 형은 다리가 저리자 곧은 자세를 바로잡고 바닥에 편히 누웠다.",
+          "verdict": "does_not_fit",
+          "reason": "자세를 반듯하게 고치는 ‘바로잡고’는 앉은 자세를 풀고 눕는 맥락과 어긋난다."
+        }
+      ],
+      "uniquenessNote": "‘꼿꼿하게 앉아 있던’과 ‘바닥에 편히 누웠다’ 사이에는 곧은 자세를 풀었다는 서술만 올 수 있어, 자세를 유지하거나 고치는 a·b·d는 모두 배제되고 c만 성립한다.",
+      "gradeEvidence": "krdict:중급"
+    },
+    {
+      "id": "g5-argon-1425",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "겨울잠을 앞둔 곰이 먹이를 많이 먹어 살이 찌면서 몸통이 옆으로 넓게 가늘어지고 걸음도 느려졌다.",
+          "verdict": "does_not_fit",
+          "reason": "살이 찌고 옆으로 넓어진다는 맥락과 굵기가 얇아지는 ‘가늘어지고’는 서로 반대된다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "겨울잠을 앞둔 곰이 먹이를 많이 먹어 살이 찌면서 몸통이 옆으로 넓게 솟구치고 걸음도 느려졌다.",
+          "verdict": "does_not_fit",
+          "reason": "위로 세차게 솟아오르는 ‘솟구치고’는 몸통이 옆으로 넓어지는 모양과 맞지 않는다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "겨울잠을 앞둔 곰이 먹이를 많이 먹어 살이 찌면서 몸통이 옆으로 넓게 갈라지고 걸음도 느려졌다.",
+          "verdict": "does_not_fit",
+          "reason": "쪼개지거나 틈이 벌어지는 ‘갈라지고’는 살이 찐 몸통의 변화를 설명할 수 없다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "겨울잠을 앞둔 곰이 먹이를 많이 먹어 살이 찌면서 몸통이 옆으로 넓게 퍼지고 걸음도 느려졌다.",
+          "verdict": "fits",
+          "reason": "몸이 살이 쪄서 가로로 벌어진다는 뜻이 먹이를 많이 먹어 몸통이 옆으로 넓어진 상황에 정확히 맞는다."
+        }
+      ],
+      "uniquenessNote": "‘살이 찌면서 몸통이 옆으로 넓게’라는 구절이 살이 쪄 가로로 벌어지는 의미만 허용하므로, 가늘어짐·솟구침·갈라짐을 뜻하는 a·b·c는 모두 부적합하고 d만 정답이다.",
+      "gradeEvidence": "krdict:중급"
+    },
+    {
+      "id": "g5-argon-1426",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "날이 밝고 상인들이 물건을 펼치며 마을 장터에 새벽장이 막히자 손님들이 하나둘 모여들었다.",
+          "verdict": "does_not_fit",
+          "reason": "물건을 펼쳐 장을 시작하고 손님이 모여드는 맥락과 ‘막히자’는 서로 어긋난다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "날이 밝고 상인들이 물건을 펼치며 마을 장터에 새벽장이 트이자 손님들이 하나둘 모여들었다.",
+          "verdict": "fits",
+          "reason": "장이 열린다는 뜻이 상인들이 물건을 펼치고 손님들이 모여드는 상황에 정확히 들어맞는다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "날이 밝고 상인들이 물건을 펼치며 마을 장터에 새벽장이 끊기자 손님들이 하나둘 모여들었다.",
+          "verdict": "does_not_fit",
+          "reason": "새벽장이 끊겼는데 상인들이 물건을 펼치고 손님이 모였다는 것은 앞뒤가 맞지 않는다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "날이 밝고 상인들이 물건을 펼치며 마을 장터에 새벽장이 사라지자 손님들이 하나둘 모여들었다.",
+          "verdict": "does_not_fit",
+          "reason": "장이 없어져 사라졌다는 말은 물건을 펼치고 손님이 모여드는 내용과 맞지 않는다."
+        }
+      ],
+      "uniquenessNote": "상인들이 물건을 펼치고 손님들이 모여드는 맥락에서 ‘새벽장이 열리다’의 의미를 가진 보기는 a뿐이며, 가로막힘·끊김·없어짐을 뜻하는 b·c·d는 모두 성립하지 않는다.",
+      "gradeEvidence": "krdict:중급"
+    },
+    {
+      "id": "g5-argon-1427",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "할머니 입에서 재미있는 옛날이야기가 술술 막히자 아이들은 눈을 반짝이며 귀를 기울였다.",
+          "verdict": "does_not_fit",
+          "reason": "거침없이 나오는 모양을 뜻하는 ‘술술’과 ‘막히자’가 의미상 어울리지 않는다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "할머니 입에서 재미있는 옛날이야기가 술술 숨겨지자 아이들은 눈을 반짝이며 귀를 기울였다.",
+          "verdict": "does_not_fit",
+          "reason": "이야기가 숨겨진다는 것은 입에서 술술 말해져 아이들이 귀를 기울이는 상황과 반대된다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "할머니 입에서 재미있는 옛날이야기가 술술 잊히자 아이들은 눈을 반짝이며 귀를 기울였다.",
+          "verdict": "does_not_fit",
+          "reason": "‘할머니 입에서 술술 잊히자’는 자연스럽지 않으며 아이들이 이야기를 듣는 맥락과도 어긋난다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "할머니 입에서 재미있는 옛날이야기가 술술 풀리자 아이들은 눈을 반짝이며 귀를 기울였다.",
+          "verdict": "fits",
+          "reason": "이야기가 말해지다는 뜻이 할머니 입에서 이야기가 술술 나와 아이들이 귀를 기울이는 상황에 정확히 맞는다."
+        }
+      ],
+      "uniquenessNote": "‘할머니 입에서 ~ 술술’과 ‘귀를 기울였다’가 이야기가 막힘없이 말해지는 상황을 확정하므로, 말이 막히거나 잊히거나 숨겨지는 a·c·d는 모두 불가능하고 b만 정답이다.",
+      "gradeEvidence": "krdict:중급"
+    },
+    {
+      "id": "g5-argon-1428",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "서로 연락을 잘못 주고받아 순서가 뒤섞이면서 행사 준비 일이 복잡하게 엉키자 무엇부터 해야 할지 알 수 없었다.",
+          "verdict": "fits",
+          "reason": "일이 서로 뒤섞이고 얽혀 갈피를 잡을 수 없게 된다는 뜻이 문맥 전체와 정확히 들어맞는다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "서로 연락을 잘못 주고받아 순서가 뒤섞이면서 행사 준비 일이 복잡하게 해결되자 무엇부터 해야 할지 알 수 없었다.",
+          "verdict": "does_not_fit",
+          "reason": "일이 해결되었다는 말은 순서가 뒤섞여 무엇부터 할지 모르는 상황과 정반대이다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "서로 연락을 잘못 주고받아 순서가 뒤섞이면서 행사 준비 일이 복잡하게 정리되자 무엇부터 해야 할지 알 수 없었다.",
+          "verdict": "does_not_fit",
+          "reason": "‘복잡하게 정리되자’는 어색하며, 일이 정리되었다면 무엇부터 할지 알 수 없었다는 뒷부분과 맞지 않는다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "서로 연락을 잘못 주고받아 순서가 뒤섞이면서 행사 준비 일이 복잡하게 갖추어지자 무엇부터 해야 할지 알 수 없었다.",
+          "verdict": "does_not_fit",
+          "reason": "제대로 마련됨을 뜻하는 ‘갖추어지자’는 연락 실수로 일이 복잡해진 맥락에 맞지 않는다."
+        }
+      ],
+      "uniquenessNote": "‘순서가 뒤섞이면서’, ‘복잡하게’, ‘무엇부터 해야 할지 알 수 없었다’가 일이 어지럽게 얽힌 상태를 고정하므로 정돈·해결·구비를 뜻하는 a·b·d는 모두 배제되고 c만 성립한다.",
+      "gradeEvidence": "krdict:중급"
+    },
+    {
+      "id": "g5-argon-1430",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "수민이는 숙제를 대신 해 달라는 친구의 잘못된 부탁을 딱 잘라 받아들이고 스스로 해 보라고 말했다.",
+          "verdict": "does_not_fit",
+          "reason": "부탁을 받아들였다면 대신 해 준다는 뜻이므로 스스로 해 보라고 말한 뒷부분과 앞뒤가 맞지 않는다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "수민이는 숙제를 대신 해 달라는 친구의 잘못된 부탁을 딱 잘라 들어주고 스스로 해 보라고 말했다.",
+          "verdict": "does_not_fit",
+          "reason": "부탁을 들어준 행동과 ‘딱 잘라’ 및 ‘스스로 해 보라고 말했다’는 의미가 정반대이다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "수민이는 숙제를 대신 해 달라는 친구의 잘못된 부탁을 딱 잘라 뿌리치고 스스로 해 보라고 말했다.",
+          "verdict": "fits",
+          "reason": "청하는 것을 힘차게 거절한다는 뜻이 잘못된 부탁을 딱 잘라 거절하고 스스로 하라고 말한 상황과 정확히 맞는다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "수민이는 숙제를 대신 해 달라는 친구의 잘못된 부탁을 딱 잘라 칭찬하고 스스로 해 보라고 말했다.",
+          "verdict": "does_not_fit",
+          "reason": "잘못된 부탁을 칭찬한다는 것은 어색하며 ‘딱 잘라’와도 어울리지 않는다."
+        }
+      ],
+      "uniquenessNote": "‘잘못된 부탁을 딱 잘라’와 ‘스스로 해 보라고 말했다’가 부탁을 강하게 거절한 행동을 확정하므로 수락·칭찬을 뜻하는 a·b·c는 모두 불가능하고 d만 정답이다.",
+      "gradeEvidence": "krdict:중급"
+    },
+    {
+      "id": "g5-argon-1432",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "삼촌은 후배들에게 일을 넘겨주려고 오랫동안 맡던 대표 자리에서 물러섰다.",
+          "verdict": "fits",
+          "reason": "지위나 하던 일을 내놓다는 다의적 의미가 맡던 대표 자리를 후배에게 넘겨주는 문맥에 자연스럽게 들어맞는다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "삼촌은 후배들에게 일을 넘겨주려고 오랫동안 맡던 대표 자리에서 버텼다.",
+          "verdict": "does_not_fit",
+          "reason": "자리를 내놓지 않고 끝까지 지켰다는 뜻이므로 후배들에게 일을 넘겨주려 했다는 앞부분과 뜻이 반대된다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "삼촌은 후배들에게 일을 넘겨주려고 오랫동안 맡던 대표 자리에서 자라났다.",
+          "verdict": "does_not_fit",
+          "reason": "생물이 점점 커졌다는 뜻이므로 맡고 있던 대표 지위를 내놓는 상황과 의미가 통하지 않는다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "삼촌은 후배들에게 일을 넘겨주려고 오랫동안 맡던 대표 자리에서 헤맸다.",
+          "verdict": "does_not_fit",
+          "reason": "어찌할 바를 몰라 갈팡질팡했다는 뜻이므로 후배에게 일을 넘겨주려는 의도적인 행동과 맞지 않는다."
+        }
+      ],
+      "uniquenessNote": "네 보기 모두 부사어 ‘대표 자리에서’와 문법적으로 결합할 수 있는 자동사 과거형이지만, 후배에게 일을 넘겨주려고 맡던 지위를 내놓는 문맥에는 ‘물러서다(424788-2)’의 활용형인 ‘물러섰다’만 성립한다.",
+      "gradeEvidence": "krdict:중급"
+    },
+    {
+      "id": "g5-argon-1433",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "민수는 매일 꾸준히 연습한 덕분에 목표했던 줄넘기 1급 기준에 어긋났다.",
+          "verdict": "does_not_fit",
+          "reason": "기준에 맞지 않고 벗어났다는 부정적 뜻이므로 ‘꾸준히 연습한 덕분에’라는 긍정적 인과 표현과 모순된다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "민수는 매일 꾸준히 연습한 덕분에 목표했던 줄넘기 1급 기준에 기댔다.",
+          "verdict": "does_not_fit",
+          "reason": "몸이나 마음을 다른 대상에 의지했다는 뜻이므로 스스로 연습해 목표 기준에 가까워진 상황에 맞지 않는다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "민수는 매일 꾸준히 연습한 덕분에 목표했던 줄넘기 1급 기준에 다가섰다.",
+          "verdict": "fits",
+          "reason": "일정한 기준에 가까이 가다는 뜻과 ‘…에’ 문형이 목표했던 줄넘기 1급 기준에 가까워진 문맥에 정확히 들어맞는다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "민수는 매일 꾸준히 연습한 덕분에 목표했던 줄넘기 1급 기준에 숨었다.",
+          "verdict": "does_not_fit",
+          "reason": "보이지 않게 몸을 감추었다는 뜻이므로 추상적인 통과 기준을 대상으로 쓸 수 없다."
+        }
+      ],
+      "uniquenessNote": "네 보기 모두 조사 ‘…에’와 문법적으로 결합하지만, 물리적 접근이 아니라 추상적인 목표 기준(줄넘기 1급 기준)에 긍정적으로 가까워진 결과를 나타내는 말은 ‘다가서다(73812-2)’의 활용형인 ‘다가섰다’뿐이다.",
+      "gradeEvidence": "krdict:중급"
+    },
+    {
+      "id": "g5-argon-1434",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "회장은 오늘 나눈 이야기를 정리하고 헤어지는 인사를 하며 독서 모임을 열었다.",
+          "verdict": "does_not_fit",
+          "reason": "모임을 시작했다는 반대 뜻이므로 오늘 나눈 이야기를 정리하고 헤어지는 인사를 하는 마침 시점과 모순된다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "회장은 오늘 나눈 이야기를 정리하고 헤어지는 인사를 하며 독서 모임을 닫았다.",
+          "verdict": "fits",
+          "reason": "회의나 모임 따위를 끝내다는 다의적 의미가 이야기를 정리하고 헤어지는 인사를 하는 상황에 정확히 부합한다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "회장은 오늘 나눈 이야기를 정리하고 헤어지는 인사를 하며 독서 모임을 빌렸다.",
+          "verdict": "does_not_fit",
+          "reason": "빌리는 대상은 책이나 장소 같은 사물이지 진행하던 모임 자체가 될 수 없어 의미가 통하지 않는다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "회장은 오늘 나눈 이야기를 정리하고 헤어지는 인사를 하며 독서 모임을 닦았다.",
+          "verdict": "does_not_fit",
+          "reason": "구체적인 물건의 표면을 문질러 깨끗이 한다는 뜻이므로 독서 모임을 목적어로 취할 수 없다."
+        }
+      ],
+      "uniquenessNote": "네 보기 모두 목적어 ‘독서 모임을’ 뒤에 오는 3음절 타동사 과거형이며, 오늘 활동을 정리하고 헤어지는 인사를 하는 맥락으로 반의어 ‘열었다’까지 배제되어 ‘닫다(413536-2)’의 활용형인 ‘닫았다’만 정답이 된다.",
+      "gradeEvidence": "krdict:초급"
+    },
+    {
+      "id": "g5-argon-1435",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "선물을 고르며 망설이던 지호는 동생이 그림책을 좋아한다는 말을 듣고 마음이 그쪽으로 구부러졌다.",
+          "verdict": "does_not_fit",
+          "reason": "물체의 모양이 휘어졌다는 물리적 의미만 있어 추상 명사인 ‘마음’을 주어로 쓸 수 없다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "선물을 고르며 망설이던 지호는 동생이 그림책을 좋아한다는 말을 듣고 마음이 그쪽으로 흩어졌다.",
+          "verdict": "does_not_fit",
+          "reason": "모이지 않고 여러 갈래로 뿔뿔이 갈라졌다는 뜻이므로 한 가지 선택지로 마음이 모이는 상황과 어긋난다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "선물을 고르며 망설이던 지호는 동생이 그림책을 좋아한다는 말을 듣고 마음이 그쪽으로 튀었다.",
+          "verdict": "does_not_fit",
+          "reason": "물방울이나 공 같은 물체가 튕겨 나갔다는 뜻이므로 마음이나 생각이 쏠리는 문맥에 어울리지 않는다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "선물을 고르며 망설이던 지호는 동생이 그림책을 좋아한다는 말을 듣고 마음이 그쪽으로 기울었다.",
+          "verdict": "fits",
+          "reason": "마음이나 생각 따위가 어느 한쪽으로 쏠리다는 다의적 의미가 선물 선택 상황에서 자연스럽게 성립한다."
+        }
+      ],
+      "uniquenessNote": "주어에 ‘마음이’를 명시하여 물체의 물리적 기울어짐이 아닌 심리적 쏠림(‘기울다/407999-2’)임을 분명히 했고, 물리적 변화 동사와 분산 의미 동사만 오답으로 두어 ‘기울었다’만 유일하게 성립한다.",
+      "gradeEvidence": "krdict:중급"
+    },
+    {
+      "id": "g5-argon-1436",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "밖에서 큰 천둥소리가 나자 거실 유리창이 잠깐 녹았다.",
+          "verdict": "does_not_fit",
+          "reason": "고체가 열을 받아 액체로 변했다는 뜻이므로 큰 천둥소리 때문에 유리창에 일어나는 현상이 될 수 없다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "밖에서 큰 천둥소리가 나자 거실 유리창이 잠깐 흔들렸다.",
+          "verdict": "fits",
+          "reason": "큰 소리나 충격에 물체가 울리다는 뜻이 큰 천둥소리에 거실 유리창이 울린 상황과 정확히 들어맞는다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "밖에서 큰 천둥소리가 나자 거실 유리창이 잠깐 자랐다.",
+          "verdict": "does_not_fit",
+          "reason": "생물이 자라 커졌다는 뜻이므로 무생물인 유리창을 주어로 쓸 수 없다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "밖에서 큰 천둥소리가 나자 거실 유리창이 잠깐 부풀었다.",
+          "verdict": "does_not_fit",
+          "reason": "속이 차올라 둥글게 커졌다는 뜻이므로 단단한 유리창이 큰 소리에 반응하는 모습으로 맞지 않는다."
+        }
+      ],
+      "uniquenessNote": "바람이나 마음의 동요가 아닌 ‘큰 천둥소리’와 물체인 ‘거실 유리창’을 제시해 ‘흔들리다(388817-2)’의 뜻만 가리키게 했으며, 나머지 보기는 유리창과 결합할 수 없는 상태 변화 동사여서 ‘흔들렸다’만 정답이 된다.",
+      "gradeEvidence": "krdict:중급"
+    },
+    {
+      "id": "g5-argon-1418",
+      "revision": 2,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "‘부당하다’는 ‘마음이 넓고 따뜻하다’라는 뜻이다.",
+          "verdict": "does_not_fit",
+          "reason": "너그럽고 따뜻한 성품을 뜻하는 말로 이치에 맞지 아니하다는 뜻과 다릅니다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "‘부당하다’는 ‘생각이 깊고 슬기롭다’라는 뜻이다.",
+          "verdict": "does_not_fit",
+          "reason": "지혜로운 태도를 나타내는 말로 바른 이치에 맞지 않는다는 뜻과 다릅니다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "‘부당하다’는 ‘할 일이 많고 바쁘다’라는 뜻이다.",
+          "verdict": "does_not_fit",
+          "reason": "일이 많아 분주한 상태를 뜻하며 이치에 맞지 않는다는 뜻과 다릅니다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "‘부당하다’는 ‘바른 이치에 맞지 않다’라는 뜻이다.",
+          "verdict": "fits",
+          "reason": "표준국어대사전의 ‘이치에 맞지 아니하다’라는 뜻풀이와 일치합니다."
+        }
+      ],
+      "uniquenessNote": "네 보기 가운데 ‘이치에 맞지 아니하다’라는 사전 뜻풀이와 일치하는 것은 d뿐이며, 나머지 보기는 성품·지혜·바쁨을 뜻해 명확히 구별됩니다.",
+      "gradeEvidence": "초등 5학년 도덕·사회 교과 및 일상생활에서 공정함과 규칙을 다룰 때 자주 접하는 어휘입니다."
+    },
+    {
+      "id": "g5-argon-1420",
+      "revision": 2,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "‘중시하다’는 ‘매우 크고 중요하게 여기다’라는 뜻이다.",
+          "verdict": "fits",
+          "reason": "표준국어대사전의 ‘가볍게 여길 수 없을 만큼 매우 크고 중요하게 여기다’와 일치합니다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "‘중시하다’는 ‘어려운 일을 미루어 피하다’라는 뜻이다.",
+          "verdict": "does_not_fit",
+          "reason": "책임이나 일을 회피하는 행동으로 대상을 중요하게 여긴다는 뜻과 다릅니다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "‘중시하다’는 ‘남의 잘못을 가볍게 넘기다’라는 뜻이다.",
+          "verdict": "does_not_fit",
+          "reason": "대수롭지 않게 여겨 넘기는 태도로 가볍게 보지 않는다는 뜻과 반대됩니다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "‘중시하다’는 ‘작은 사실을 크게 부풀리다’라는 뜻이다.",
+          "verdict": "does_not_fit",
+          "reason": "과장하여 말한다는 뜻으로 가치를 중요하게 여긴다는 뜻과 다릅니다."
+        }
+      ],
+      "uniquenessNote": "대상을 크고 중요하게 여긴다는 사전 뜻풀이에 해당하는 보기는 a 하나뿐이고, b·c·d는 회피·경시·과장을 나타내어 겹치지 않습니다.",
+      "gradeEvidence": "초등 5학년 사회·국어 지문에서 가치나 안전, 약속을 중요하게 여기는 맥락에 널리 쓰이는 어휘입니다."
+    }
+  ],
+  "rejected": [
+    {
+      "lemma": "동의하다",
+      "reason": "근거 표제어·품사·뜻 번호 불일치, 누락 또는 동음이의어 모호성"
+    },
+    {
+      "lemma": "예민하다",
+      "reason": "근거 표제어·품사·뜻 번호 불일치, 누락 또는 동음이의어 모호성"
+    },
+    {
+      "lemma": "온순하다",
+      "reason": "근거 표제어·품사·뜻 번호 불일치, 누락 또는 동음이의어 모호성"
+    },
+    {
+      "lemma": "완전하다",
+      "reason": "근거 표제어·품사·뜻 번호 불일치, 누락 또는 동음이의어 모호성"
+    },
+    {
+      "lemma": "증가하다",
+      "reason": "근거 표제어·품사·뜻 번호 불일치, 누락 또는 동음이의어 모호성"
+    },
+    {
+      "lemma": "정당하다",
+      "reason": "근거 표제어·품사·뜻 번호 불일치, 누락 또는 동음이의어 모호성"
+    },
+    {
+      "lemma": "메우다",
+      "reason": "근거 표제어·품사·뜻 번호 불일치, 누락 또는 동음이의어 모호성"
+    },
+    {
+      "lemma": "되찾다",
+      "reason": "근거 표제어·품사·뜻 번호 불일치, 누락 또는 동음이의어 모호성"
+    },
+    {
+      "lemma": "열매",
+      "reason": "근거 표제어·품사·뜻 번호 불일치, 누락 또는 동음이의어 모호성"
+    }
+  ]
+}
