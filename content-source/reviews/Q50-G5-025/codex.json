@@ -1,0 +1,501 @@
+{
+  "reviewId": "QR-AUTO-codex-Q50-G5-025",
+  "jobId": "Q50-G5-025",
+  "reviewer": {
+    "model": "gpt-6-astra",
+    "tool": "2단계 블라인드 검수(tools/orchestrate/review.mjs)",
+    "freshContext": true,
+    "date": "2026-11-06"
+  },
+  "items": [
+    {
+      "questionId": "g5-argon-1537",
+      "revision": 1,
+      "contentHash": "535191dd2ca13e8a46c3d1c273060d859fb052ea4b53b55a606700e2896ef217",
+      "run": {
+        "id": "20261106T164758459Z-66385-54873f08-0bb9-4ac6-8b8e-0579f08cab3c",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "b",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": []
+    },
+    {
+      "questionId": "g5-argon-1539",
+      "revision": 1,
+      "contentHash": "72735d1316baa0db1e40170e7aafa580230e33adbffe0ac138e1ff222109b07a",
+      "run": {
+        "id": "20261106T164758459Z-66385-54873f08-0bb9-4ac6-8b8e-0579f08cab3c",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "d",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": []
+    },
+    {
+      "questionId": "g5-argon-1540",
+      "revision": 1,
+      "contentHash": "6e7e040529a4807b5cf42e64b61db9d54f1535fc244cab7f5f65dbd9cdc6598b",
+      "run": {
+        "id": "20261106T164758459Z-66385-54873f08-0bb9-4ac6-8b8e-0579f08cab3c",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "multiple",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "fail",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "fail"
+      },
+      "findings": [
+        "[블라인드] 제안이 하나여도 새 규칙으로 '선택했다'가 성립하여 a와 b가 모두 가능하다. b를 '예측했다'로 바꾼다.",
+        "[공개 대조] 제안이 하나여도 그 의견을 새 규칙으로 '선택했다'가 성립하므로 b를 배제하는 설명은 타당하지 않아요. b를 '예측했다'로 바꾸고 오답 이유를 맞추세요."
+      ]
+    },
+    {
+      "questionId": "g5-argon-1540",
+      "revision": 2,
+      "contentHash": "62ccde1a98c94d2cabfdee72d6394126edcc1a3ac9558e61fcee6fe62e7bdf69",
+      "run": {
+        "id": "20261106T180338434Z-66385-36a3b028-6ecb-4727-aa06-7ce1bcbec4bf",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "a",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": []
+    },
+    {
+      "questionId": "g5-argon-1542",
+      "revision": 1,
+      "contentHash": "36c079ebc23303c165e5b6808fc12a1d672b3ad81c6ec7c53925d858b40cc06d",
+      "run": {
+        "id": "20261106T164758459Z-66385-54873f08-0bb9-4ac6-8b8e-0579f08cab3c",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "c",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "fail",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "fail"
+      },
+      "findings": [
+        "[공개 대조] '겸비하다'는 두 가지 이상을 함께 갖춘다는 뜻으로 능력이나 성품에만 한정되지 않아 여러 물품을 갖춘 문맥에서도 배제하기 어려워요. a를 '허비했다'로 바꾸고 오답 이유를 맞추세요."
+      ]
+    },
+    {
+      "questionId": "g5-argon-1542",
+      "revision": 2,
+      "contentHash": "5d1368bd9e43aa37884d97468ac8df6a79cb963c5dbff45110586ee1d8179487",
+      "run": {
+        "id": "20261106T180338434Z-66385-36a3b028-6ecb-4727-aa06-7ce1bcbec4bf",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "c",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": []
+    },
+    {
+      "questionId": "g5-argon-1543",
+      "revision": 1,
+      "contentHash": "1bf712139bc349b62aaea617f9301972490e93145cb73fb23c48d8bb97afc93a",
+      "run": {
+        "id": "20261106T164758459Z-66385-54873f08-0bb9-4ac6-8b8e-0579f08cab3c",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "a",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": []
+    },
+    {
+      "questionId": "g5-argon-1545",
+      "revision": 1,
+      "contentHash": "689597306cae425e3a4b980de1000863e9056b352566eddbb23162bff046fef9",
+      "run": {
+        "id": "20261106T164758459Z-66385-54873f08-0bb9-4ac6-8b8e-0579f08cab3c",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "c",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": []
+    },
+    {
+      "questionId": "g5-argon-1550",
+      "revision": 1,
+      "contentHash": "15d569ab41cb67ea574d09114889fe599e7c3ee8afdbdcc48b83bef84128615e",
+      "run": {
+        "id": "20261106T164758459Z-66385-54873f08-0bb9-4ac6-8b8e-0579f08cab3c",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "b",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "fail"
+      },
+      "findings": [
+        "[공개 대조] '전담했다'를 반드시 '혼자서' 하는 것으로 설명하면 여러 사람이 속한 집단의 전담을 배제하게 돼요. a의 이유를 '특정 일을 도맡는다는 뜻으로, 일을 공평하게 나누어 맡는다는 뜻과 달라요'로 고치세요."
+      ]
+    },
+    {
+      "questionId": "g5-argon-1550",
+      "revision": 2,
+      "contentHash": "cb18c8f8c2d143d9e1fefe9555f5fbc108693a9679f899f76941705834d1cc1a",
+      "run": {
+        "id": "20261106T180338434Z-66385-36a3b028-6ecb-4727-aa06-7ce1bcbec4bf",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "b",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": []
+    },
+    {
+      "questionId": "g5-argon-1551",
+      "revision": 1,
+      "contentHash": "ffe532801ad924048f004b6325eaca10e8814ff21a1bc67e1e7f87e27c9a3406",
+      "run": {
+        "id": "20261106T164758459Z-66385-54873f08-0bb9-4ac6-8b8e-0579f08cab3c",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "d",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "fail",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "fail"
+      },
+      "findings": [
+        "[공개 대조] '가는 시간을 십 분이나 축소했다'도 시간을 줄였다는 뜻으로 성립하여 '시간에는 쓰지 않아요'라는 설명이 부정확해요. a를 '확대했다'로 바꾸고 오답 이유를 맞추세요."
+      ]
+    },
+    {
+      "questionId": "g5-argon-1551",
+      "revision": 2,
+      "contentHash": "9d5826be7c1275f3a59340ae619307e192b88c90ffaf0685fda9b11665002e13",
+      "run": {
+        "id": "20261106T180338434Z-66385-36a3b028-6ecb-4727-aa06-7ce1bcbec4bf",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "d",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": []
+    },
+    {
+      "questionId": "g5-argon-1553",
+      "revision": 1,
+      "contentHash": "617e0e8049cc94315775b9dcf473035e0fff4a05ad72b5ba08d74175845409bc",
+      "run": {
+        "id": "20261106T164758459Z-66385-54873f08-0bb9-4ac6-8b8e-0579f08cab3c",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "multiple",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "fail",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "fail"
+      },
+      "findings": [
+        "[블라인드] 시청이 축제를 책임지고 '주관하고' 도서관이 현장 업무를 맡는 것도 성립하여 a와 b가 모두 가능하다. a를 '연기하고'로 바꾼다.",
+        "[공개 대조] 시청이 축제를 '주관하고' 도서관이 현장 진행을 맡는 역할 분담도 성립하므로 역할이 겹친다는 이유만으로 a를 배제할 수 없어요. a를 '연기하고'로 바꾸고 오답 이유를 맞추세요."
+      ]
+    },
+    {
+      "questionId": "g5-argon-1553",
+      "revision": 2,
+      "contentHash": "ced1b881622a39110f7cde50e426be85dc6e3c7577f1f267a99ab795f634fa45",
+      "run": {
+        "id": "20261106T180338434Z-66385-36a3b028-6ecb-4727-aa06-7ce1bcbec4bf",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "b",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": []
+    },
+    {
+      "questionId": "g5-argon-1554",
+      "revision": 1,
+      "contentHash": "7b29c8b47cc6caa3d5ea87939327b00cb9cb216733bb654014e0836cca109574",
+      "run": {
+        "id": "20261106T164758459Z-66385-54873f08-0bb9-4ac6-8b8e-0579f08cab3c",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "d",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": []
+    },
+    {
+      "questionId": "g5-argon-1559",
+      "revision": 1,
+      "contentHash": "8a1a5f6750d0f6f976879546712599a8e45cb31ac2b5daf33824eec0dec77832",
+      "run": {
+        "id": "20261106T164758459Z-66385-54873f08-0bb9-4ac6-8b8e-0579f08cab3c",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "a",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "fail"
+      },
+      "findings": [
+        "[공개 대조] '부딪히다'를 '다른 힘에 밀려 닿을 때'로 한정하는 설명은 부정확해요. b의 이유를 '부딪음을 당한다는 뜻이므로, 손바닥을 마주 닿게 하는 이 문장에는 부딪치고가 알맞아요'로 고치세요."
+      ]
+    },
+    {
+      "questionId": "g5-argon-1559",
+      "revision": 2,
+      "contentHash": "e248885c8b09ea51f4e5fc0a157c8a65c09938083d8f1347b9c9e6427f586d9f",
+      "run": {
+        "id": "20261106T180338434Z-66385-36a3b028-6ecb-4727-aa06-7ce1bcbec4bf",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "a",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": []
+    },
+    {
+      "questionId": "g5-argon-1560",
+      "revision": 1,
+      "contentHash": "babefb08479cfb87f74373ff333f73420beb881d69d12f3c1dbc66e07867d986",
+      "run": {
+        "id": "20261106T164758459Z-66385-54873f08-0bb9-4ac6-8b8e-0579f08cab3c",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "c",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": []
+    },
+    {
+      "questionId": "g5-argon-1561",
+      "revision": 1,
+      "contentHash": "aff19982f1a056cbabbc585357582fce586c8f533bae94e3578cb9565339e89f",
+      "run": {
+        "id": "20261106T164758459Z-66385-54873f08-0bb9-4ac6-8b8e-0579f08cab3c",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "a",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": []
+    },
+    {
+      "questionId": "g5-argon-1565",
+      "revision": 1,
+      "contentHash": "a21a5db6ae79f3b2869dfc1e00fc86a2e16df5f87d08547c1641fa00db96b4ae",
+      "run": {
+        "id": "20261106T164758459Z-66385-54873f08-0bb9-4ac6-8b8e-0579f08cab3c",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "c",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": []
+    },
+    {
+      "questionId": "g5-argon-1566",
+      "revision": 1,
+      "contentHash": "ea1d18eeecf7d07f8aea8ea8f2278895707d95732d2d3321c2550170b505a5eb",
+      "run": {
+        "id": "20261106T164758459Z-66385-54873f08-0bb9-4ac6-8b8e-0579f08cab3c",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "b",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": []
+    },
+    {
+      "questionId": "g5-argon-1574",
+      "revision": 1,
+      "contentHash": "42a11c6ad9d3e4169873f640c0f4e8aed1a6d066fe18a1be1762cb400a46939d",
+      "run": {
+        "id": "20261106T164758459Z-66385-54873f08-0bb9-4ac6-8b8e-0579f08cab3c",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "d",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": []
+    },
+    {
+      "questionId": "g5-argon-1577",
+      "revision": 1,
+      "contentHash": "b80dd386afdb02d170fe729bd6cdee2b0ce219d317a5d902dffe2559ee8edbde",
+      "run": {
+        "id": "20261106T164758459Z-66385-54873f08-0bb9-4ac6-8b8e-0579f08cab3c",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "b",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": []
+    },
+    {
+      "questionId": "g5-argon-1584",
+      "revision": 1,
+      "contentHash": "c0ed54c5a95ef3dcae8de4b9af88137fa4263dea07ded2639d9a19ed0ed31b3b",
+      "run": {
+        "id": "20261106T164758459Z-66385-54873f08-0bb9-4ac6-8b8e-0579f08cab3c",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "d",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": []
+    },
+    {
+      "questionId": "g5-argon-1586",
+      "revision": 1,
+      "contentHash": "a050583b31d3bb426e4739420a72220a3308cd98d70d7f5ca223b56aaa640c7f",
+      "run": {
+        "id": "20261106T164758459Z-66385-54873f08-0bb9-4ac6-8b8e-0579f08cab3c",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "a",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": []
+    }
+  ]
+}

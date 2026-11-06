@@ -185,6 +185,66 @@
       "levelAssessmentHash": "fc2eceabb5464ceb2a3f44b869793331a3129be05c908ce4caf1b19c5ad0c881"
     },
     {
+      "questionId": "g6-argon-0503",
+      "revision": 2,
+      "contentHash": "7a417bc81639466c355aef8656dada194a4d32b5f2142a6e78079b7a4c4ce044",
+      "precomputed": {
+        "typeBase": 1,
+        "lengthBump": 2,
+        "t3Base": 0,
+        "readingLoad": 95,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g6-argon-0503",
+          "revision": 2,
+          "contentHash": "7a417bc81639466c355aef8656dada194a4d32b5f2142a6e78079b7a4c4ce044",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 3,
+          "L2": 3,
+          "T1": 1,
+          "inference": 1,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "구어 저빈도 격식 문어이자 음훈 추론이 필요한 한자어로, 말과 행동의 불일치 및 양보 상황을 종합해 속내 파악 의미를 추론해야 함."
+        },
+        {
+          "questionId": "g6-argon-0503",
+          "revision": 2,
+          "contentHash": "7a417bc81639466c355aef8656dada194a4d32b5f2142a6e78079b7a4c4ce044",
+          "judge": "codex",
+          "model": "gpt-6-astra",
+          "L1": 3,
+          "L2": 3,
+          "T1": 2,
+          "inference": 1,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "저빈도 문어 한자어로 속내 파악이라는 추상성이 높으며, 말과 행동을 종합해 알아차림의 방식을 구별해야 한다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 6,
+        "T": 5,
+        "V": 17,
+        "ownTier": "advanced",
+        "band": {
+          "min": 6,
+          "max": 6
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "c9266d81f2c38105d64cd2eeaf09e64b387cd173e4e3ab59d9794ced6392b669"
+    },
+    {
       "questionId": "g6-argon-0504",
       "revision": 3,
       "contentHash": "fdecf216d0b6919a23ab342c5d855467e9283a7d525cdfb29efcf3bdb92ed30e",
@@ -429,6 +489,66 @@
         "flags": []
       },
       "levelAssessmentHash": "dd07956658c03c06618108b14a1d6bd3457c42844fb0a7442aced5ffbb36708d"
+    },
+    {
+      "questionId": "g6-argon-0506",
+      "revision": 2,
+      "contentHash": "b68edf9ca76e12dc52c157cfd32a5d96ae7913e94109d123684a17e269480e60",
+      "precomputed": {
+        "typeBase": 1,
+        "lengthBump": 2,
+        "t3Base": 0,
+        "readingLoad": 91,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g6-argon-0506",
+          "revision": 2,
+          "contentHash": "b68edf9ca76e12dc52c157cfd32a5d96ae7913e94109d123684a17e269480e60",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 2,
+          "L2": 2,
+          "T1": 1,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "초등 고학년 토의·논설에 쓰이는 한자 개념어로, 친분 대신 작품성을 기준으로 투표한 직접 행동 단서를 통해 반의어 주관을 고르는 문항임."
+        },
+        {
+          "questionId": "g6-argon-0506",
+          "revision": 2,
+          "contentHash": "b68edf9ca76e12dc52c157cfd32a5d96ae7913e94109d123684a17e269480e60",
+          "judge": "codex",
+          "model": "gpt-6-astra",
+          "L1": 2,
+          "L2": 3,
+          "T1": 1,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "판단의 관점을 나타내는 고추상 개념어이며, 작품의 완성도를 따라 투표한 직접 행동 단서로 의견 관련 오답을 구별할 수 있다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 5,
+        "T": 4,
+        "V": 14,
+        "ownTier": "core",
+        "band": {
+          "min": 6,
+          "max": 6
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "52d89e3a1690ffe9428f2f445530d3f57a2866d6c4e706d5f0986027cb92cdf6"
     },
     {
       "questionId": "g6-argon-0507",
@@ -985,6 +1105,66 @@
       "levelAssessmentHash": "c2010ecb7c9da2f368643f22b18228f4980737785cd0d71bacc91a6c79b71b21"
     },
     {
+      "questionId": "g6-argon-0515",
+      "revision": 2,
+      "contentHash": "e3b43fa14cf60eb5f9be1b0c502b0f4d5fce7bd12e912d27c17de96a8ded3a99",
+      "precomputed": {
+        "typeBase": 1,
+        "lengthBump": 2,
+        "t3Base": 0,
+        "readingLoad": 93,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g6-argon-0515",
+          "revision": 2,
+          "contentHash": "e3b43fa14cf60eb5f9be1b0c502b0f4d5fce7bd12e912d27c17de96a8ded3a99",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 3,
+          "L2": 3,
+          "T1": 1,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "탐구·논설에 쓰이는 고추상 격식 한자어이나, 원인 질문과 조건 비교라는 직접 행동 단서가 제시되어 중심 의미를 수월하게 구별할 수 있음."
+        },
+        {
+          "questionId": "g6-argon-0515",
+          "revision": 2,
+          "contentHash": "e3b43fa14cf60eb5f9be1b0c502b0f4d5fce7bd12e912d27c17de96a8ded3a99",
+          "judge": "codex",
+          "model": "gpt-6-astra",
+          "L1": 3,
+          "L2": 3,
+          "T1": 1,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "격식 있는 탐구 문어로 한자 의미 추론 부담이 있으나, 원인을 찾고 조건을 비교한다는 직접 단서가 기록·발표와의 구별을 돕는다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 6,
+        "T": 4,
+        "V": 16,
+        "ownTier": "core",
+        "band": {
+          "min": 6,
+          "max": 6
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "facbef3cb068f5f44fc793c787da028041d16ea3db5a8c1e8f06dd2e211dd739"
+    },
+    {
       "questionId": "g6-argon-0516",
       "revision": 1,
       "contentHash": "672cb6d397c88b8e9fe3a471d1872d36da20900e38d7d64b234f7e8f5a5c4b10",
@@ -1407,6 +1587,66 @@
         "flags": []
       },
       "levelAssessmentHash": "d7e9f97a856af684f7c441fd9695cad89dbf6e11a556d10360c2aa204b751296"
+    },
+    {
+      "questionId": "g6-argon-0521",
+      "revision": 3,
+      "contentHash": "219108c0693e6f93fc96fd3edb5c4d49827fe6e6262211ce16b86c393574a4d9",
+      "precomputed": {
+        "typeBase": 2,
+        "lengthBump": 2,
+        "t3Base": 0,
+        "readingLoad": 94,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g6-argon-0521",
+          "revision": 3,
+          "contentHash": "219108c0693e6f93fc96fd3edb5c4d49827fe6e6262211ce16b86c393574a4d9",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 3,
+          "L2": 3,
+          "T1": 2,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "격식 문어에 쓰이는 고추상 한자어로, 근본 까닭을 짚는 직접 단서가 있으나 오답 세 개가 모두 인지 능력 어휘로 구성되어 의미 경계 변별을 요구함."
+        },
+        {
+          "questionId": "g6-argon-0521",
+          "revision": 3,
+          "contentHash": "219108c0693e6f93fc96fd3edb5c4d49827fe6e6262211ce16b86c393574a4d9",
+          "judge": "codex",
+          "model": "gpt-6-astra",
+          "L1": 3,
+          "L2": 3,
+          "T1": 2,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "핵심을 꿰뚫는 추상적 인지 능력을 뜻하는 문어로 다른 인지 능력 세 가지와 구별해야 하지만, 근본 까닭을 짚는다는 직접 단서가 있다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 6,
+        "T": 5,
+        "V": 17,
+        "ownTier": "advanced",
+        "band": {
+          "min": 6,
+          "max": 6
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "36f3db5970a51678911193134571e5fe1618ecca06772b418975e01bb61793c9"
     },
     {
       "questionId": "g6-argon-0522",
@@ -2385,6 +2625,66 @@
         "flags": []
       },
       "levelAssessmentHash": "f345b29f9896b5dd807307626c05b2d325ea272db9dd3b8e94c58033a8652422"
+    },
+    {
+      "questionId": "g6-argon-0536",
+      "revision": 3,
+      "contentHash": "3115e6f1ddad051df99bbe9373fb8b54b91f52a27130e5c1ba836ea13932cc1a",
+      "precomputed": {
+        "typeBase": 2,
+        "lengthBump": 2,
+        "t3Base": 0,
+        "readingLoad": 93,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g6-argon-0536",
+          "revision": 3,
+          "contentHash": "3115e6f1ddad051df99bbe9373fb8b54b91f52a27130e5c1ba836ea13932cc1a",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 3,
+          "L2": 2,
+          "T1": 2,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "논설·시사 문어에서 주목받는 안건으로 나타난다는 다의 확장 의미를 묻고, 동일한 부사격 구문 오답들과의 의미 자질 구별을 요구함."
+        },
+        {
+          "questionId": "g6-argon-0536",
+          "revision": 3,
+          "contentHash": "3115e6f1ddad051df99bbe9373fb8b54b91f52a27130e5c1ba836ea13932cc1a",
+          "judge": "codex",
+          "model": "gpt-6-astra",
+          "L1": 2,
+          "L2": 2,
+          "T1": 2,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "설명·토의에서 쓰이는 추상적 변화 표현의 제2의미를 묻지만, 지나치던 문제가 안건으로 등장한다는 직접 단서로 쓰임을 판단할 수 있다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 5,
+        "T": 5,
+        "V": 15,
+        "ownTier": "core",
+        "band": {
+          "min": 5,
+          "max": 6
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "b06494f752234b655db3945df43b8f283ace6d45616604c023d277e4a80fd070"
     },
     {
       "questionId": "g6-argon-0537",
