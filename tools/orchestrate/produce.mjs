@@ -234,7 +234,10 @@ export function parseDrafts(m, text, list) {
       const it = rows[0];
       const allowed = ['stem', 'options', 'correctOptionId', 'explanation', 'distractorRationales'];
       if (!it.draft || Object.keys(it.draft).some(k => !allowed.includes(k))) throw new Error('초안에 허용되지 않은 필드');
-      const draft = m.d.questionDraftSchema.parse({ ...it.draft, ...x.fixed });
+      // 밑줄로만 표시한 빈칸은 내용 변경 없이 게시 표준 공백으로 통일한다.
+      const stem = x.fixed.type === 'cloze' && typeof it.draft.stem === 'string'
+        ? it.draft.stem.replace(/\([ \t]*_+[ \t]*\)/g, '(    )') : it.draft.stem;
+      const draft = m.d.questionDraftSchema.parse({ ...it.draft, stem, ...x.fixed });
       if (new Set(draft.options.map(o => o.id)).size !== 4) throw new Error('보기 ID 중복');
       const side = m.d.draftSidecarSchema.shape.items.element.parse({ id: draft.id, revision: 1, selfRefutation: it.selfRefutation,
         uniquenessNote: it.uniquenessNote, gradeEvidence: x.item.gradeEvidence });

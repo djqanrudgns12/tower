@@ -406,6 +406,31 @@ describe('S6 보충 제작', () => {
     expect(() => parseDrafts(modules, '{"items":[{"questionId":"unknown"}]}', list)).toThrow('요청하지 않은');
   });
 
+  it('밑줄만 있는 빈칸을 표준 공백으로 바꾸고 나머지 문항과 자체 반박을 보존한다', () => {
+    const { root, evidence } = setup();
+    const selected = selectItems(root, read(path.join(root, 'content-source/wordlists/g4-r1.json')), 4, 3);
+    const list = prepare(root, batchId, 4, selected, evidence).accepted;
+    const raw = structuredClone(replies);
+    raw[0]!.draft.stem = raw[0]!.draft.stem.replace('(    )', '( ____ )');
+    const parsed = parseDrafts(modules, JSON.stringify({ items: raw }), list);
+    expect(parsed.rejected).toEqual([]);
+    expect(parsed.accepted).toEqual(parseDrafts(modules, JSON.stringify({ items: replies }), list).accepted);
+    expect(raw[0]!.draft.stem).toContain('( ____ )');
+    expect(lint.lintQuestion(b.toBankQuestion({ ...parsed.accepted[0].draft, stem: raw[0]!.draft.stem }))).toContain('빈칸 문제에 ‘(    )’ 빈칸이 없다');
+  });
+
+  it.each(['(힌트____)', '선물을 상자에 잘 보관했다.'])('문자가 든 괄호나 빈칸 없는 문항은 그대로 반려한다: %s', stem => {
+    const { root, evidence } = setup();
+    const selected = selectItems(root, read(path.join(root, 'content-source/wordlists/g4-r1.json')), 4, 3);
+    const list = prepare(root, batchId, 4, selected, evidence).accepted;
+    const raw = structuredClone(replies);
+    raw[0]!.draft.stem = stem;
+    const parsed = parseDrafts(modules, JSON.stringify({ items: raw }), list);
+    expect(parsed.accepted).toHaveLength(2);
+    expect(parsed.rejected).toHaveLength(1);
+    expect(parsed.rejected[0].reason).toContain('빈칸 문제');
+  });
+
   it('50문항의 정답 분포·연속·순환을 고치면서 보기/오답 이유/자체 반박의 결합을 지킨다', () => {
     const { root, evidence } = setup();
     const selected = selectItems(root, read(path.join(root, 'content-source/wordlists/g4-r1.json')), 4, 3);
