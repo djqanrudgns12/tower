@@ -381,8 +381,9 @@ async function runGateUnlocked(options, deps, releases) {
   const markError = (batchIds, error) => {
     for (const id of batchIds) {
       summary[id].error = error.message;
-      summary[id].blocked = ['CLAUDE_AUTH_BLOCKED', 'RESOURCE_WAIT'].includes(error.code);
-      if (summary[id].blocked) summary[id].blockedReason = error.code === 'RESOURCE_WAIT' ? 'resource' : 'authentication';
+      const blockedReason = { CLAUDE_AUTH_BLOCKED: 'authentication', RESOURCE_WAIT: 'resource', MODEL_USAGE_BLOCKED: 'usage' }[error.code];
+      summary[id].blocked = Boolean(blockedReason);
+      if (summary[id].blocked) summary[id].blockedReason = blockedReason;
       summary[id].skipped = !applyError && !summary[id].blocked;
       log(`${id} ${summary[id].blocked ? '차단' : '중단'}: ${error.message}`);
     }
@@ -449,7 +450,7 @@ async function runGateUnlocked(options, deps, releases) {
         // 하위 실행기가 형식 오류로 감싸도 최초 반영 차단의 원인을 유지한다.
         const error = applyError ?? caught;
         for (const record of records.values()) record.error = error.message;
-        if (['CLAUDE_AUTH_BLOCKED', 'RESOURCE_WAIT'].includes(error.code)) {
+        if (['CLAUDE_AUTH_BLOCKED', 'RESOURCE_WAIT', 'MODEL_USAGE_BLOCKED'].includes(error.code)) {
           for (const record of records.values()) record.status = 'blocked';
           markError(batchIds, error); return false;
         }

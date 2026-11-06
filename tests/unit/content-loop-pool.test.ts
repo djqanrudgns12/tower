@@ -204,6 +204,19 @@ it('사용량 대기 후 재호출과 실제 대기 시간을 함께 기록한�
   } finally { vi.useRealTimers(); }
 });
 
+it('사용량 한도가 세 번 이어지면 추가 호출 없이 차단한다', async () => {
+  const invoke = vi.fn()
+    .mockResolvedValueOnce({ code: 1, out: '', err: 'usage limit' })
+    .mockResolvedValueOnce({ code: 1, out: '', err: 'usage limit' })
+    .mockResolvedValueOnce({ code: 1, out: '', err: 'usage limit' })
+    .mockRejectedValue(new Error('네 번째 호출 금지'));
+  const sleep = vi.fn(async () => {});
+  await expect(modelAttempt('codex', invoke, { sleep }, { batchIds: ['A'] }))
+    .rejects.toMatchObject({ code: 'MODEL_USAGE_BLOCKED', reviewer: 'codex', attempts: 3 });
+  expect(invoke).toHaveBeenCalledTimes(3);
+  expect(sleep.mock.calls).toHaveLength(2);
+});
+
 it('첫 판 완료 후 중단된 재판정은 재시작 때도 혼합 목록으로 이어 간다', async () => {
   const f = fixture(2);
   const original = f.deps.levelQuestions.getMockImplementation()!;

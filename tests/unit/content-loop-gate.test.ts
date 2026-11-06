@@ -89,6 +89,14 @@ describe('단계 순서 관문 실행기', () => {
     expect(result.A).toMatchObject({ blocked: true, blockedReason: 'authentication', skipped: false });
     expect(result.A.stages.find((s: { stage: string }) => s.stage === 'S4')).toMatchObject({ status: 'blocked' });
   });
+  it('사용량 차단을 형식 실패로 재시도하지 않는다', async () => {
+    const f = fixture(); f.items[0]!.level = true;
+    f.deps.review.mockRejectedValue(Object.assign(new Error('codex 사용량 차단'), { code: 'MODEL_USAGE_BLOCKED' }));
+    const result = await runGate(f.options, f.deps);
+    expect(f.deps.review).toHaveBeenCalledTimes(1);
+    expect(result.A).toMatchObject({ blocked: true, blockedReason: 'usage', skipped: false });
+    expect(result.A.stages.find((s: { stage: string }) => s.stage === 'S2-codex')).toMatchObject({ status: 'blocked' });
+  });
   it('잠금 반영의 자원 대기는 시험 실패·모델 재시도로 처리하지 않는다', async () => {
     const f = fixture();
     f.deps.apply.mockResolvedValueOnce({ runs: [] }).mockRejectedValue(Object.assign(new Error('자원 대기'), { code: 'RESOURCE_WAIT' }));

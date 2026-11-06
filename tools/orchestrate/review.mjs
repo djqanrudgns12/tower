@@ -470,6 +470,7 @@ export async function measuredAgyCall(request, deps = {}) {
 
 /** 형식 재시도는 호출자가, 사용량 대기는 여기서 처리한다. 실패 호출도 실측에 포함한다. */
 export async function modelAttempt(who, invoke, options = {}, context = {}) {
+  let usageFailures = 0;
   for (;;) {
     let result, error;
     if (!options.liveArgon) options.onEvent?.({ type: 'call', who, ...context });
@@ -480,6 +481,10 @@ export async function modelAttempt(who, invoke, options = {}, context = {}) {
     const hourly = /시간당 실행 상한/.test(message);
     const usage = /session limit|usage limit|rate[_ ]limit|\b429\b|hit your limit/i.test(message) && !/```/.test(message);
     if (!hourly && !usage) { if (error) throw error; return result; }
+    if (usage && !hourly && ++usageFailures >= 3) {
+      throw Object.assign(new Error(`${who} 사용량 차단: 3회 연속 한도 응답. 사용량 복구 확인 후 다시 실행해야 한다`),
+        { code: 'MODEL_USAGE_BLOCKED', reviewer: who, attempts: usageFailures });
+    }
     const requestedMs = hourly ? 600_000 : 1_200_000;
     const started = Date.now();
     try { await (options.sleep ?? sleep)(requestedMs); }
