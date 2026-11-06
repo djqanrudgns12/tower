@@ -7,7 +7,7 @@ import type { DraftSidecar, QuestionDraft } from '../../src/contracts/questionDr
 import * as b from '../../tools/content/bankBuild';
 import * as lint from '../../src/content/lint';
 // @ts-expect-error 독립 실행 MJS 도구에는 별도 선언 파일이 없다.
-import { produce, prepare, selectItems, evidenceInput, parseDrafts, balanceAnswers, moveAnswer, recoverReply, parseArgs } from '../../tools/orchestrate/produce.mjs';
+import { produce, prepare, selectItems, evidenceInput, parseDrafts, balanceAnswers, moveAnswer, recoverReply, parseArgs, promptFor } from '../../tools/orchestrate/produce.mjs';
 
 const modules = { d, b, lint };
 const batchId = 'Q50-G4-022';
@@ -63,6 +63,22 @@ const slots = (items: Slot[]) => items.map(i => [i.lemma, i.type]);
 describe('S6 낱말·유형 칸', () => {
   it('Normal 심화 제작 옵션을 CLI에서 받는다', () => {
     expect(parseArgs(['run', '--wordlist', 'words.json', '--normal-advanced']).normalAdvanced).toBe(true);
+  });
+
+  it.each([
+    { grade: 5, expectedL1: 3, expectedL2: 2, targetT: { min: 3, max: 4 } },
+    { grade: 6, expectedL1: 3, expectedL2: 3, targetT: { min: 5, max: 6 } },
+  ])('Normal 심화 작성자에게 $grade 학년 후보 점수와 필요한 문맥 부담을 전달한다', ({ grade, expectedL1, expectedL2, targetT }) => {
+    const { root, evidence } = setup();
+    const candidate = { ...words[0], id: `g${grade}-argon-0042`, type: 'usage', expectedL1, expectedL2 };
+    const list = prepare(root, batchId, grade, [candidate], evidence).accepted;
+    const input = (prompt: string) => JSON.parse(prompt.split('\n\n').find(s => s.startsWith('{\n "batchId"'))!);
+    const prompt = promptFor(root, batchId, list, '', true);
+    expect(input(prompt).items[0].normalAdvancedDesign).toEqual({ expectedL1, expectedL2, targetT });
+    expect(prompt).toContain('예상값');
+    expect(prompt).toContain('T2=min(3, 유형+길이+추론)');
+    expect(prompt).toContain('실제 S1 두 판정자가 정한다');
+    expect(input(promptFor(root, batchId, list)).items[0]).not.toHaveProperty('normalAdvancedDesign');
   });
 
   it('Normal 심화 목표는 일반·다의어만 제작하고 최종 tier를 미리 확정하지 않는다', async () => {

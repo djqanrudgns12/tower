@@ -175,6 +175,8 @@ export function promptFor(root, batchId, list, note = '', normalAdvanced = false
     ...(normalAdvanced ? [
       '이번 제작 목표는 Normal용 advanced다. standard 또는 polysemy만 쓰고 지문+보기 읽기량은 전투 상한(3학년 70, 4학년 80, 5학년 90, 6학년 100음절) 이하여야 한다. 아래 difficultyTier는 목록의 잠정값이며 승인·최종 난이도가 아니다. 실제 S1 두 판정자가 정한다.',
       '단순 뜻 맞히기를 넘어 두 상황 단서나 의미·정도·의도·결과의 차이를 대조해야 풀리게 설계한다. R=2L+T-4(학년-3)의 5~6이 목표다. L은 낱말 자체의 낯섦과 추상성, T는 문맥 판단·유형·추론·다의성 부담이다. 점수를 답장에 쓰거나 임의로 올리지 않는다. 어려운 주변 말·긴 문장·모호한 정답·억지 상황으로 난도를 높이지 않는다.',
+      'normalAdvancedDesign은 후보 목록의 예상값이다. expectedL1+expectedL2를 L로 가정했을 때 필요한 T 범위가 targetT이며 확정 점수가 아니다. 그 범위가 해당 유형·변형에서 불가능해도 유형·낱말·점수를 임의로 바꾸지 않는다. 실제 S1 두 판정자가 정한다.',
+      'T=T1+T2+T3. T1은 뜻 구별·오답 부담 0~3이다: 서로 다른 의미장의 오답은 0, 같은 의미장 1~2개는 1, 유의·반의 경계의 오답 2~3개는 2, 추상·비유 전이나 고매력 혼동 오답 3개는 3. T2=min(3, 유형+길이+추론)이다. 유형은 definition·cloze 0, synonym_context·antonym_context 1, usage 2. 길이는 지문+보기 65음절 이하 0, 66~85음절 1, 86음절 이상 2. 추론은 정의·대조·원인 표지나 직접 행동 단서가 있으면 0, 상황 전체를 종합해야 하면 1. T3은 standard 0, polysemy 1이다. 점수에 맞추려고 불필요하게 문장을 늘리지 않는다.',
     ] : []),
     '지문·보기·해설·오답 이유에 목표 낱말 외 그 학년보다 어려운 낱말 금지. 해설은 1~2문장 60자 이내. 오답 이유는 화면에 그대로 보이는 한 문장.',
     '문장은 아이가 겪을 만한 구체적인 상황을 짧고 분명하게 쓴다. 추상 명사 나열·어색한 직역·억지 교훈·내용 없는 상투 문장(AI SLOP)은 쓰지 않는다. 해설은 왜 정답인지, 오답 이유는 왜 그 상황에 맞지 않는지만 말한다. 목표 낱말은 배우는 말이므로 쉬운 주변 말과 상황 단서로 뜻을 알 수 있게 한다.',
@@ -183,7 +185,15 @@ export function promptFor(root, batchId, list, note = '', normalAdvanced = false
     'draft에는 stem, options(a~d 각 한 번), correctOptionId, explanation, distractorRationales(오답 3개)만 쓴다. source·ID·학년·tier·유형 등은 도구가 고정한다.',
     '출력은 JSON 하나: {"items":[{"questionId":"…","draft":{"stem":"…","options":[{"id":"a","text":"…"},{"id":"b","text":"…"},{"id":"c","text":"…"},{"id":"d","text":"…"}],"correctOptionId":"a","explanation":"…","distractorRationales":{"b":"…","c":"…","d":"…"}},"selfRefutation":[{"optionId":"a","substituted":"…","verdict":"fits","reason":"…"},…4개],"uniquenessNote":"…"}]}',
     JSON.stringify({ batchId, items: list.map(x => ({ questionId: x.fixed.id, grade: x.fixed.grade, target: x.fixed.target, difficultyTier: x.fixed.difficultyTier,
-      type: x.fixed.type, variantTag: x.fixed.variantTag, dialectRegion: x.fixed.dialectRegion, confusableWith: x.item.confusableWith, gradeEvidence: x.item.gradeEvidence, evidenceText: x.evidenceText })) }, null, 1),
+      type: x.fixed.type, variantTag: x.fixed.variantTag, dialectRegion: x.fixed.dialectRegion, confusableWith: x.item.confusableWith, gradeEvidence: x.item.gradeEvidence, evidenceText: x.evidenceText,
+      ...(normalAdvanced ? { normalAdvancedDesign: {
+        expectedL1: x.item.expectedL1, expectedL2: x.item.expectedL2,
+        targetT: {
+          min: 5 + 4 * (x.fixed.grade - 3) - 2 * (x.item.expectedL1 + x.item.expectedL2),
+          max: 6 + 4 * (x.fixed.grade - 3) - 2 * (x.item.expectedL1 + x.item.expectedL2),
+        },
+      } } : {}),
+    })) }, null, 1),
     note, '답장 본문에 JSON으로 답하라. 명령 실행·파일 쓰기 금지.',
   ].join('\n\n');
 }
