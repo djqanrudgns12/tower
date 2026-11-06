@@ -3,6 +3,14 @@
 작성 2026-11-06 · 작성 Claude Opus 5.5(총괄) · 받는 쪽 Codex(메인 세션)
 같이 읽을 것: [계획서 CONTENT_REVIEW_PLAN.md](CONTENT_REVIEW_PLAN.md)(기준 문서), [AGENTS.md](../AGENTS.md)
 
+### 40개 재검수 누적 확인·시범 Claude 66개 시작 (Codex, 2026-11-06 15:53 KST)
+
+- 병합 수정 **`82e1304`**를 실제 재검수 결과에 적용했다. 메인이 현재 초안과 blind/reveal 입력·원본 응답·gpt-6-astra/high 봉인·항목별 실행 출처·새 manifest/스키마를 직접 대조했다. **4학년 새 26개 = 21통과·5지적, 5학년 새 14개 = 12통과·2지적**, 합계 40개다. 앞선 대기 보고서 **129항목(79+50)을 그대로 보존**했고 새 보고서는 105/64항목이다. `.orchestrate/recovery/pilot-recheck/{phase.audit,audit,ingest.summary}.json`, audit는 `verified-awaiting-apply`다. 추가 모델 호출은 없다.
+- 새 staging: `Q50-G4-001/20261106T064807836Z-37293-bd5b70db-46c0-49e3-99d6-f9b3a423c26a`, `Q50-G5-001/20261106T064807841Z-37293-2b981fc3-8411-4d0a-8807-26bed9c80aa6`. 각 1파일이며 이전 보고서 누락 없이 누적된 것을 확인했다. **잠금 반영/공개 승인은 아직 아니다.** 반영 실행기는 이 병합의 audit·manifest도 확인한다.
+- 수준·자체 반박·엄격 검사까지 합친 앞단은 **4학년 42통과·8결함, 5학년 48통과·2결함**, 배치 단위 결함은 없다. 4학년 결함 중 `0008/0018/0039/0046`은 앞단 2회 소진으로 다음 S3에서 버림 대상이다. 나머지 앞단 수정 가능 대상은 4학년 4개·5학년 2개다. 아직 이 수정/버림은 실행하지 않았다. `.orchestrate/recovery/pilot-recheck/next-plan.json`에 현재 판·회차·사유를 보존했다.
+- **PID 37733** `.orchestrate/recovery/pilot-gate/run.mjs`: 앞단 통과·현재 Claude 미검수 **4학년 18개 + 5학년 48개 = 66개**의 시범 S4를 **Opus 5.5/xhigh**로 진행 중이다. 06:52:34Z 첫 블라인드 호출을 확인했다. 기존 4학년 Claude 통과 24개는 요청하지 않는다. 상태 `summary.json`, 입력/기존 manifest 해시 `plan.json`, 로그 `run.out`(같은 폴더); 기존 Claude 작업 파일 8개도 해시 대조 후 보관했다. 끝나면 staging만 쓰고 `awaiting-main-audit`에서 멈춘다. 반영 실행기는 관문 결과의 메인 확인 전 거절한다.
+- G1 시범 세 배치의 S5 완료 전 일반 배치 S4 확대는 계속 보류한다. 관문 결과 대조 뒤 남은 앞단 수정/한도 소진 버림·관문 지적을 처리하고 6학년 시범 S2도 이어 간다. 5학년 보충 PID 78689는 026 제작 중, 6학년 제작 PID 91819는 대기다. 서버 시험/005 pending 반영은 다른 보호 작업 때문에 **미실행**이며 관련 92시험·타입·린트 결과는 재사용한다.
+
 ### 수준 40개 확인·대기 보고서 누락 방지 수정 (Codex, 2026-11-06 15:45 KST)
 
 - PID 24535 정상 종료. **S1 40개, Argon 1회·Codex 2회(전체 1+표본 1)**를 메인이 원본 답장·현 판/revision/hash·사전 표지·합의/assessment hash 재계산·표본 대응으로 확인했다. **미대상 60문항·기존 수준 기록 불변**, 대상도 tier/gradeBasis 외 필드와 본문 해시 불변이다. 결과 basic 2·core 16·advanced 9·challenge 13, `too_hard` 1·`long_basic` 2·`too_easy` 1·표본 1. `.orchestrate/recovery/pilot-relevel/audit.json`(`verified-awaiting-apply`, 수준 산출물 확인이며 앞단 승인이 아님).
