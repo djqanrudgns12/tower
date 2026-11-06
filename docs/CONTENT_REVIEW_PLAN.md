@@ -4,6 +4,8 @@
 입력: 현황 측정(이 문서 §1, 부록 A), Codex 코드 영향 조사(`.orchestrate/plan-input/codex-code-scope.md`, git 제외), Antigravity 수준 기준 의견(§3에 반영), Codex 계획 검토(`.orchestrate/plan-input/codex-plan-review.md`, 지적 14건 반영)
 관련: [공동검수 절차](joint_review_protocol_v0_2.md) · [실행 게시판](EXECUTION_BOARD.md) · `tools/content/bankBuild.ts` · `tools/orchestrate/*.mjs`
 
+**2026-11-06 추가 사용자 지시(우선):** 처리량을 높이고 취향 중심 반려·중복 검수를 줄인다. [실용 검수 정책](CR1000_REVIEW_POLICY.md)의 오류/권고 구분, AI SLOP 금지, staging 자동 진행 및 선택적 보조 검사 생략을 적용한다. 공개 승인에 필요한 독립 풀이·자체 반박·Claude 해설 대조는 유지한다. 아래의 원래 공정 설명 중 해당 정책과 충돌하는 부분은 최신 정책을 따른다.
+
 **2026-11-06 최신 사용자 배정:** Claude 어려운 작업은 Opus 5.5/xhigh, 적당한 작업은 Opus 5.5/high, 잡다한 작업은 Sonnet 5.5/xhigh로 보낸다. S4 공동검수는 어려운 작업으로 분류해 Opus 5.5/xhigh를 쓴다. 아래의 이전 Sonnet/high 배정과 Sonnet 관대함 대조 조건은 이 결정으로 대체된다. §9 사용량은 이전 배정의 추정치이므로 새 모델 실측과 구별한다. 공개 승인 규칙·수정 한도·통과율 중단 기준은 유지한다.
 
 ---

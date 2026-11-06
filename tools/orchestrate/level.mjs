@@ -319,7 +319,9 @@ export async function runLevels(options, deps = {}) {
         items: [...old.items.filter(item => m.contracts.levelAssessmentSchema.safeParse(item).success && !merged.some(j => j.questionId === item.questionId && j.revision === item.revision)), ...merged]
           .sort((a, b) => a.questionId.localeCompare(b.questionId) || a.revision - b.revision) });
       const spots = merged.filter(item => item.merged.rule === 4 && latest.has(item.questionId) && m.levels.isCurrentLevelAssessment(latest.get(item.questionId), item)).slice(0, 5);
-      if (spots.length) {
+      // 참고용 표본만 생략한다. nextLevel·nextDrafts·spotCheck 표시는 두 독립 판정 그대로다.
+      const checkSpots = options['skip-level-spotcheck'] !== true && spots.length > 0;
+      if (checkSpots) {
         const spotInputs = spots.map(item => inputItem(m, root, batchId, latest.get(item.questionId), reference));
         const items = await request('codex', spotInputs, contexts.indexOf(ctx), 'spotcheck');
         write(path.join(root, '.orchestrate/level-spotcheck', `${batchId}.json`), { batchId, runId, createdAt, model: configs.codex.model, items });
@@ -333,7 +335,7 @@ export async function runLevels(options, deps = {}) {
         manifest.writes.push({ path: file, sha256: sha(bytes) });
       }
       write(path.join(root, staging, 'manifest.json'), manifest);
-      results.push({ batchId, assessed: merged.length, spotChecked: spots.length, staging });
+      results.push({ batchId, assessed: merged.length, spotChecked: checkSpots ? spots.length : 0, staging });
     }
     return results;
   }
@@ -345,11 +347,11 @@ export async function runLevels(options, deps = {}) {
 
 async function main() {
   const args = process.argv.slice(2), options = {};
-  if (args.shift() !== 'run') throw new Error('사용: level.mjs run --root <dir> (--batches A,B | --all) [--argon 2 --codex 2] [--dry-run --fixture <json>]');
+  if (args.shift() !== 'run') throw new Error('사용: level.mjs run --root <dir> (--batches A,B | --all) [--argon 2 --codex 2] [--skip-level-spotcheck] [--dry-run --fixture <json>]');
   for (let i = 0; i < args.length; i++) {
     if (!args[i].startsWith('--')) throw new Error(`옵션 오류: ${args[i]}`);
     const key = args[i].slice(2);
-    options[key] = ['all', 'dry-run'].includes(key) ? true : args[++i];
+    options[key] = ['all', 'dry-run', 'skip-level-spotcheck'].includes(key) ? true : args[++i];
     if (options[key] === undefined) throw new Error(`옵션 값 없음: ${key}`);
   }
   console.log(JSON.stringify(await runLevels(options), null, 2));

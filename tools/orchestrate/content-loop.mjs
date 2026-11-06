@@ -6,12 +6,16 @@
 // --gate: S1 수준 → S2 앞단 검수 → S3 수정 → S4 Claude → S5 수정. --plan은 다음 단계만 조회.
 // --pool-after N: N배치의 첫 판 완료 뒤 전역 회차(수정12·수준/검수50). 생략하면 전체 배치.
 // --until S3: 앞단 수정·재검수까지만 진행하고 Claude 관문은 대기한다.
+// --stage-only --gate: 기존 추적 배치의 staging overlay만 전진, apply/build/test/git 없이 awaitingApply.
+// 별도 실행은 --summary-file <경로>로 기록을 분리한다. 같은 배치의 standalone 도구/apply와 함께 실행하지 않는다.
+// --skip-argon-fresh: 제작 배치의 추가 Argon 새 문맥 호출만 생략(기존 실패 판정은 유지).
+// --skip-level-spotcheck: S1 참고용 표본 재호출만 생략(독립 2판정·합의 유지).
 // --recheck-codex 및 --claude-model/--claude-effort/--codex-model/--codex-effort 지원.
 //   node tools/orchestrate/content-loop.mjs --root <dir> [--batches A,B | --all] [--claude 2] [--codex 2] [--argon 2] [--rounds 2] [--commit | --no-commit]
 import fs from 'node:fs';
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
-import { randomUUID } from 'node:crypto';
+import { createHash, randomUUID } from 'node:crypto';
 import * as level from './level.mjs';
 import { applyStaged, guardedServerTest } from './commit-lock.mjs';
 import * as review from './review.mjs';
@@ -39,6 +43,7 @@ function pool(size) {
 
 async function main() {
   const a = args(process.argv.slice(2));
+  if (a['stage-only'] && !a.gate && !a.plan) throw new Error('--stage-only는 --gate 또는 --plan과 함께 써야 한다');
   if (a.until && !a.gate && !a.plan) throw new Error('--until은 --gate 또는 --plan과 함께 써야 한다');
   if (a.gate || a.plan) {
     const summary = await runGate(a);
@@ -149,26 +154,111 @@ const keyOf = q => `${q.id ?? q.questionId}@${q.revision}`;
 const emptyCalls = () => ({ claude: 0, codex: 0, argon: 0, bridge: 0 });
 const readJson = (file, fallback = null) => fs.existsSync(file) ? JSON.parse(fs.readFileSync(file, 'utf8')) : fallback;
 
+/** apply와 동일한 배치 경로 범위만 overlay로 읽는다. 손상된 미적용 파일은 모델 호출 전에 거절한다. */
+function validateOverlay(root, id) {
+  const safePath = relative => {
+    if (!relative || typeof relative !== 'string' || relative.includes('\\') || relative.includes('\0') || path.isAbsolute(relative)
+      || relative.split('/').some(p => !p || p === '.' || p === '..' || p === '.git')) throw new Error(`staging 경로 오류: ${relative}`);
+    let current = root;
+    for (const part of relative.split('/')) {
+      current = path.join(current, part);
+      if (fs.existsSync(current) && fs.lstatSync(current).isSymbolicLink()) throw new Error(`staging 심볼릭 링크 거절: ${relative}`);
+    }
+    return current;
+  };
+  const base = safePath(`.orchestrate/staging/${id}`);
+  if (!fs.existsSync(base)) return;
+  for (const run of fs.readdirSync(base).sort()) {
+    const dir = `.orchestrate/staging/${id}/${run}`;
+    const file = safePath(`${dir}/manifest.json`);
+    if (!fs.existsSync(file)) continue;
+    const m = readJson(file);
+    if (!/^[A-Za-z0-9_-]+$/.test(run) || m.batchId !== id || m.runId !== run || !Array.isArray(m.writes) || !Array.isArray(m.deletes)) throw new Error('staging manifest 식별자·목록 불일치');
+    const seen = new Set();
+    for (const relative of [...m.writes.map(w => w.path), ...m.deletes]) {
+      safePath(relative);
+      if (!(relative.startsWith(`content-source/batches/${id}/`) || relative.startsWith(`content-source/reviews/${id}/`)
+        || relative.startsWith(`content-source/reviews/archive/${id}.`) || relative === `content-source/approvals/${id}.explanation.json`
+        || relative.startsWith(`content-source/approvals/archive/${id}.explanation.`) || relative === `content-source/levels/${id}.json`)
+        || seen.has(relative)) throw new Error(`staging 배치 밖 또는 중복 경로: ${relative}`);
+      seen.add(relative);
+    }
+    for (const w of m.writes) {
+      const bytes = fs.readFileSync(safePath(`${dir}/files/${w.path}`));
+      if (createHash('sha256').update(bytes).digest('hex') !== w.sha256) throw new Error(`staging 해시 불일치: ${w.path}`);
+    }
+  }
+}
+
+function overlayBatch(root, raw) {
+  const id = raw.batchId;
+  validateOverlay(root, id);
+  const read = (relative, fallback = null) => revise.pendingJson(root, id, relative, fallback);
+  if (read(`content-source/batches/${id}/closed.json`)) return null;
+  return { ...raw,
+    drafts: read(`content-source/batches/${id}/drafts.json`, raw.drafts),
+    sidecar: read(`content-source/batches/${id}/sidecar.json`, raw.sidecar),
+    reviews: Object.fromEntries(['codex', 'claude'].map(who => [who, read(`content-source/reviews/${id}/${who}.json`, raw.reviews[who])])),
+    argonBlind: read(`content-source/reviews/${id}/argon-blind.json`, raw.argonBlind),
+    explanation: read(`content-source/approvals/${id}.explanation.json`, raw.explanation),
+  };
+}
+
+// gate 실행끼리 같은 배치의 review 임시 파일을 덮어쓰지 않는다. standalone 제작/검수/apply는 함께 실행하지 않는다.
+function acquireGateRun(root, id) {
+  const file = path.join(root, '.orchestrate/gate-locks', `${id}.json`), token = randomUUID();
+  fs.mkdirSync(path.dirname(file), { recursive: true });
+  const take = () => fs.writeFileSync(file, JSON.stringify({ pid: process.pid, token }), { flag: 'wx' });
+  try { take(); } catch (error) {
+    if (error.code !== 'EEXIST') throw error;
+    const reclaim = `${file}.reclaim`;
+    fs.mkdirSync(reclaim);
+    try {
+      if (fs.existsSync(file)) {
+        const owner = readJson(file);
+        if (!Number.isSafeInteger(owner.pid) || owner.pid < 1) throw new Error('gate 잠금 PID 오류', { cause: error });
+        let alive = true;
+        try { process.kill(owner.pid, 0); } catch (e) { if (e.code === 'ESRCH') alive = false; else if (e.code !== 'EPERM') throw e; }
+        if (alive) throw new Error(`${id}: gate 실행 중 (PID ${owner.pid})`, { cause: error });
+        fs.unlinkSync(file);
+      }
+      take();
+    } finally { fs.rmdirSync(reclaim); }
+  }
+  return () => { if (readJson(file)?.token === token) fs.unlinkSync(file); };
+}
+
 /** 실제 실행기와 가짜 실행기는 같은 상태/실행 계약을 쓴다. 추적 파일 쓰기는 apply만 담당한다. */
 export async function createGateRuntime(options, modules) {
   const root = options.root;
-  const rb = modules?.rb ?? await review.load(root);
-  const rm = modules?.rm ?? await revise.load(root);
+  const baseBank = modules?.rb ?? await review.load(root);
+  const stageOnly = Boolean(options['stage-only']);
+  const selected = options.all ? null : new Set(String(options.batches).split(',').map(id => id.trim()));
+  const rb = stageOnly ? { ...baseBank, loadBatches: () => baseBank.loadBatches(root).filter(b => !selected || selected.has(b.batchId)).map(b => overlayBatch(root, b)).filter(Boolean) } : baseBank;
+  const baseRevise = modules?.rm ?? await revise.load(root);
+  const rm = stageOnly ? { ...baseRevise, b: { ...baseRevise.b, loadBatches: rb.loadBatches } } : baseRevise;
   const lm = modules?.lm ?? await level.load();
   const configs = review.resolveReviewConfig(options);
   const reviewOptions = (who, questionKeys) => ({ config: configs[who], questionKeys,
     archiveExisting: (who === 'codex' && Boolean(options['recheck-codex']))
       || options['archive-existing'] === true || options['archive-existing'] === who });
-  const batchOf = id => rb.loadBatches(root).find(b => b.batchId === id);
+  const batchOf = id => {
+    const raw = baseBank.loadBatches(root).find(b => b.batchId === id);
+    if (!stageOnly) return raw;
+    if (raw) return overlayBatch(root, raw);
+    validateOverlay(root, id);
+    if (revise.pendingJson(root, id, `content-source/batches/${id}/closed.json`)) return null;
+    throw new Error(`${id}: stage-only는 기존 추적 배치만 지원한다. 새 배치는 먼저 apply가 필요하다`);
+  };
   const log = options.log ?? console.log;
   return {
-    ids: options.all ? rb.loadBatches(root).map(b => b.batchId).filter(id => /^Q50-/.test(id)) : String(options.batches).split(',').map(id => id.trim()),
+    ids: options.all ? baseBank.loadBatches(root).map(b => b.batchId).filter(id => /^Q50-/.test(id)) : String(options.batches).split(',').map(id => id.trim()),
     log,
     snapshot(id) {
       const raw = batchOf(id);
       if (!raw) return null;
       const batch = { ...raw, drafts: rm.front.currentDrafts(raw.drafts) };
-      const levels = readJson(path.join(root, `content-source/levels/${id}.json`));
+      const levels = stageOnly ? revise.pendingJson(root, id, `content-source/levels/${id}.json`) : readJson(path.join(root, `content-source/levels/${id}.json`));
       const front = rm.front.frontGate(batch, levels, { root });
       // produce 배치의 현재 판만. 기존 제작 배치에는 새 Argon 호출을 만들지 않는다.
       const produced = /(?:^|\/)produce\.mjs(?:$|\b)/.test(batch.sidecar.producer?.tool ?? '');
@@ -176,11 +266,11 @@ export async function createGateRuntime(options, modules) {
         drafts: batch.drafts,
         levelPending: batch.drafts.filter(q => !(levels?.items ?? []).some(item => lm.levels.isCurrentLevelAssessment(q, item))).map(keyOf),
         codexPending: review.pending(rb, batch, 'codex', reviewOptions('codex')).map(keyOf),
-        argonPending: produced ? review.pending(rb, batch, 'antigravity', reviewOptions('antigravity')).filter(q => q.revision === 1).map(keyOf) : [],
+        argonPending: produced && options['skip-argon-fresh'] !== true ? review.pending(rb, batch, 'antigravity', reviewOptions('antigravity')).filter(q => q.revision === 1).map(keyOf) : [],
         // 모델 변경 검사는 실제 관문 대상이 있을 때만 한다.
         claudePending: batch.drafts.filter(q => !(batch.reviews.claude?.items ?? []).some(i => keyOf(i) === keyOf(q) && i.contentHash === rb.contentHash(q))).map(keyOf),
         front, flagged: revise.flagged(rm, batch, { root, levelFile: levels }),
-        awaitingStaging: fs.existsSync(path.join(root, '.orchestrate/staging', id))
+        awaitingStaging: !stageOnly && fs.existsSync(path.join(root, '.orchestrate/staging', id))
           && fs.readdirSync(path.join(root, '.orchestrate/staging', id)).some(run => fs.existsSync(path.join(root, '.orchestrate/staging', id, run, 'manifest.json'))),
       };
     },
@@ -202,7 +292,7 @@ export async function createGateRuntime(options, modules) {
     levelQuestions: (questions, onEvent) => level.runLevels({ ...options, questions, all: false, batches: undefined, argon: 1, codex: 1, onEvent }, { modules: lm }),
     reviewQuestions: (questions, who, onEvent) => review.runQuestions(rb, root, who, questions, log, { ...options, ...reviewOptions(who), onEvent }),
     reviseQuestions: (questions, onEvent, batchIds) => revise.reviseQuestions(rm, root, questions, 'antigravity', log, { ...options, batchIds, onEvent }),
-    apply: (id, opts) => applyStaged({ root, batch: id, ...opts, testServer: guardedServerTest }),
+    apply: (id, opts) => { if (stageOnly) throw new Error('stage-only에서는 apply를 호출할 수 없다'); return applyStaged({ root, batch: id, ...opts, testServer: guardedServerTest }); },
   };
 }
 
@@ -224,6 +314,14 @@ function nextGateAction(state, frontOnly = false) {
 
 /** --gate: 단계별 staging을 반영한 후 반드시 현재 판을 다시 읽는다. deps는 모델/브리지/git 없는 시험 주입점. */
 export async function runGate(options = {}, deps = {}) {
+  const releases = [];
+  try { return await runGateUnlocked(options, deps, releases); }
+  finally { for (const release of releases.reverse()) release(); }
+}
+
+async function runGateUnlocked(options, deps, releases) {
+  const stageOnly = Boolean(options['stage-only']);
+  if (stageOnly && (options.commit || options['no-commit'])) throw new Error('--stage-only는 --commit/--no-commit과 함께 쓸 수 없다');
   if (options.until != null && options.until !== 'S3') throw new Error('--until은 S3만 지원한다');
   const frontOnly = options.until === 'S3';
   if (options.commit && options['no-commit']) throw new Error('--commit과 --no-commit을 함께 쓸 수 없다');
@@ -237,7 +335,7 @@ export async function runGate(options = {}, deps = {}) {
   if (ids.some(id => !/^[A-Za-z0-9][A-Za-z0-9_-]*$/.test(id))) throw new Error('배치 ID 오류');
   const log = runtime.log ?? console.log;
   const summary = {};
-  const file = path.join(root, '.orchestrate/content-loop.summary.json');
+  const file = options['summary-file'] ? path.resolve(root, String(options['summary-file'])) : path.join(root, stageOnly ? '.orchestrate/content-loop.stage-only.summary.json' : '.orchestrate/content-loop.summary.json');
   const save = () => {
     fs.mkdirSync(path.dirname(file), { recursive: true });
     const temp = `${file}.${process.pid}.tmp`;
@@ -247,11 +345,13 @@ export async function runGate(options = {}, deps = {}) {
     for (const id of ids) {
       const state = await runtime.snapshot(id);
       const action = nextGateAction(state, frontOnly);
-      summary[id] = { next: state?.awaitingStaging ? { stage: 'applyStaged', target: state.drafts.length } : { stage: action?.stage ?? '완료/대기', target: action?.keys.length ?? 0 } };
+      summary[id] = { ...(stageOnly ? { awaitingApply: true } : {}), next: state?.awaitingStaging ? { stage: 'applyStaged', target: state.drafts.length } : { stage: action?.stage ?? (stageOnly ? '반영 대기' : '완료/대기'), target: action?.keys.length ?? 0 } };
       log(`${id}: 다음 ${summary[id].next.stage} · 대상 ${summary[id].next.target}문항`);
     }
     return summary;
   }
+  for (const id of [...ids].sort()) releases.push(acquireGateRun(root, id));
+  if (stageOnly) for (const id of ids) await runtime.snapshot(id); // 손상은 모델 호출 전 중단한다.
   const previous = readJson(file, {});
   const runId = `${new Date().toISOString().replace(/[-:.]/g, '')}-${randomUUID()}`;
   if (fs.existsSync(file)) {
@@ -264,6 +364,7 @@ export async function runGate(options = {}, deps = {}) {
   const noCommit = Boolean(options['no-commit']);
   let applying = Promise.resolve(), applyError, callSequence = 0;
   const apply = id => {
+    if (stageOnly) return Promise.resolve({ runs: [] });
     applying = applying.then(() => runtime.apply(id, { noCommit })).catch(error => { applyError = error; throw error; });
     return applying;
   };
@@ -271,7 +372,7 @@ export async function runGate(options = {}, deps = {}) {
   const startModel = fn => { requireApplyReady(); return fn(); };
   const workIds = noCommit ? ids.slice(0, 1) : ids;
   for (const id of ids.slice(workIds.length)) summary[id] = { awaitingApply: true };
-  for (const id of workIds) summary[id] = { startedAt: new Date().toISOString(), stages: [], runId, firstPassComplete: previous[id]?.firstPassComplete === true, lastRound: previous[id]?.lastRound ?? 0, modelCalls: emptyCalls(), waits: emptyCalls(), waitMs: emptyCalls(), modelCallsBasis: 'measured' };
+  for (const id of workIds) summary[id] = { ...(stageOnly ? { awaitingApply: true } : {}), startedAt: new Date().toISOString(), stages: [], runId, firstPassComplete: previous[id]?.firstPassComplete === true, lastRound: previous[id]?.lastRound ?? 0, modelCalls: emptyCalls(), waits: emptyCalls(), waitMs: emptyCalls(), modelCallsBasis: 'measured' };
   const active = id => !summary[id].error && !summary[id].awaitingCommit;
   const refsOf = (id, keys, phase) => keys.map(key => {
     const at = key.lastIndexOf('@');

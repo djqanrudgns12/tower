@@ -1,5 +1,9 @@
 import fs from 'node:fs';
 import path from 'node:path';
+import { createHash } from 'node:crypto';
+import * as actualFront from '../../tools/content/frontGate';
+import { contentHash as actualContentHash } from '../../tools/content/bankBuild';
+import type { QuestionDraft } from '../../src/contracts/questionDraft';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 // @ts-expect-error MJS 실행기의 선언 파일 없음
 import { runGate, createGateRuntime } from '../../tools/orchestrate/content-loop.mjs';
@@ -158,14 +162,14 @@ describe('단계 순서 관문 실행기', () => {
 
 function reviewFixture() {
   const f = fixture();
-  const drafts = ['q1', 'q2'].map(id => ({ id, revision: 1, grade: 4, type: 'definition', target: { lemma: '낱말', partOfSpeech: '명사' },
+  const drafts = ['q1', 'q2'].map(id => ({ id, revision: 1, grade: 4, type: 'definition', target: { lemma: '낱말', partOfSpeech: '명사', senseKey: '낱말/명사/1' },
     stem: '문제', options: [{ id: 'a', text: '답' }], correctOptionId: 'a', explanation: '해설', source: { evidenceArtifactId: 'missing.json' }, gradeBasis: {}, distractorRationales: {} }));
   const old = { reviewer: { model: 'gpt-6.1-sol' }, items: drafts.map(q => ({ questionId: q.id, revision: q.revision, contentHash: 'hash', findings: [] })) };
   const batch = { batchId: 'A', drafts, sidecar: { producer: { tool: 'produce.mjs' } }, reviews: { codex: old }, argonBlind: null };
-  const bank = { loadBatches: () => [batch], contentHash: () => 'hash', rationalesHash: () => 'rationales', decide: () => drafts.map(q => ({ questionId: q.id, revision: q.revision, reasons: [] })) };
+  const bank = { loadBatches: () => [batch], contentHash: () => 'hash', rationalesHash: () => 'rationales', decide: (input: { drafts: typeof drafts } = { drafts }) => input.drafts.map(q => ({ questionId: q.id, revision: q.revision, reasons: [] })) };
   const front = { currentDrafts: (qs: typeof drafts) => qs,
-    frontGate: () => ({ items: drafts.map(q => ({ questionId: q.id, revision: q.revision, contentHash: 'hash', status: 'pass', defects: [], pending: [] })), batchDefects: [] }) };
-  const modules = { rb: bank, rm: { b: bank, front, root: f.root }, lm: { levels: { isCurrentLevelAssessment: () => true } } };
+    frontGate: (input: { drafts: typeof drafts } = { drafts }) => ({ items: input.drafts.map(q => ({ questionId: q.id, revision: q.revision, contentHash: 'hash', status: 'pass', defects: [], pending: [] })), batchDefects: [] }) };
+  const modules = { rb: bank, rm: { b: bank, front, root: f.root }, lm: { levels: { isCurrentLevelAssessment: (q: { revision: number }, item: { revision: number }) => q.revision === item.revision } } };
   const reportPath = path.join(f.root, 'content-source/reviews/A/codex.json');
   fs.mkdirSync(path.dirname(reportPath), { recursive: true }); fs.writeFileSync(reportPath, JSON.stringify(old));
   return { ...f, drafts, old, batch, bank, modules, reportPath };
@@ -240,5 +244,148 @@ describe('문항 제한·D3·성취기준 연결', () => {
     for (const item of items) { expect(prompt).toContain(item.code); expect(prompt).toContain(item.text); }
     expect(prompt).toContain('curriculum_explicit은 이 목록의 코드만, 원문 뜻이 낱말과 맞을 때만');
     expect(promptFor([], '루브릭', 'assess', path.join(f.root, 'absent'))).toContain('목록이 비어 있으면 curriculum_explicit을 쓰지 않는다');
+  });
+});
+
+function stageFiles(root: string, runId: string, values: Record<string, unknown>, deletes: string[] = []) {
+  const base = path.join(root, '.orchestrate/staging/A', runId);
+  const writes = Object.entries(values).map(([relative, value]) => {
+    const bytes = JSON.stringify(value), file = path.join(base, 'files', relative);
+    fs.mkdirSync(path.dirname(file), { recursive: true }); fs.writeFileSync(file, bytes);
+    return { path: relative, sha256: createHash('sha256').update(bytes).digest('hex') };
+  });
+  fs.mkdirSync(base, { recursive: true });
+  fs.writeFileSync(path.join(base, 'manifest.json'), JSON.stringify({ batchId: 'A', runId, createdAt: new Date().toISOString(), writes, deletes }));
+  return base;
+}
+
+function stagedFixture() {
+  const f = reviewFixture();
+  const drafts = f.drafts.map(q => ({ ...q, revision: 2 }));
+  const staged = stageFiles(f.root, '0001', {
+    'content-source/batches/A/drafts.json': drafts,
+    'content-source/batches/A/sidecar.json': { producer: { tool: '기존 제작기' } },
+    'content-source/levels/A.json': { items: drafts },
+    'content-source/reviews/A/codex.json': { ...f.old, items: [] },
+  });
+  const respond = vi.fn(async (request: { items: { questionId: string; revision: number }[] }) => ({ code: 0, err: '', out: JSON.stringify({ items: request.items.map(q => ({ questionId: q.questionId, revision: q.revision, blindChoice: 'a', verdicts: { uniqueness: 'pass', grade: 'pass', language: 'pass', source: 'pass', explanation: 'pass' }, findings: [] })) }) }));
+  return { ...f, staged, respond, options: { ...f.options, 'stage-only': true, until: 'S3', respond } };
+}
+
+describe('staging 전용 gate', () => {
+  it('현재 staging 판을 검수하고 apply 없이 재개하며 추적 파일과 기존 요약을 보존한다', async () => {
+    const f = stagedFixture();
+    const tracked = fs.readFileSync(f.reportPath, 'utf8');
+    const pendingPath = path.join(f.root, '.orchestrate/commit.pending.json');
+    fs.writeFileSync(pendingPath, '{"batches":["OTHER"]}');
+    const summaryPath = path.join(f.root, '.orchestrate/content-loop.summary.json');
+    fs.writeFileSync(summaryPath, '{"legacy":true}');
+    const runtime = await createGateRuntime(f.options, f.modules);
+    const apply = vi.fn(); runtime.apply = apply;
+    const plan = await runGate({ ...f.options, plan: true }, runtime);
+    expect(plan.A).toEqual({ awaitingApply: true, next: { stage: 'S2-codex', target: 2 } });
+    expect(f.respond).not.toHaveBeenCalled();
+    const first = await runGate(f.options, runtime);
+    expect(first.A.error).toBeUndefined();
+    expect(first.A).toMatchObject({ awaitingApply: true, awaitingClaude: 2, firstPassComplete: true });
+    expect(f.respond).toHaveBeenCalledTimes(2);
+    expect(f.respond.mock.calls.flatMap(([r]) => r.items.map(q => q.revision))).toEqual([2, 2, 2, 2]);
+    await runGate(f.options, runtime);
+    expect(f.respond).toHaveBeenCalledTimes(2);
+    expect(apply).not.toHaveBeenCalled();
+    expect(fs.readFileSync(f.reportPath, 'utf8')).toBe(tracked);
+    expect(fs.readFileSync(summaryPath, 'utf8')).toBe('{"legacy":true}');
+    expect(fs.readFileSync(pendingPath, 'utf8')).toBe('{"batches":["OTHER"]}');
+    expect(fs.existsSync(path.join(f.root, '.orchestrate/content-loop.stage-only.summary.json'))).toBe(true);
+  });
+  it('S3 수정 staging에서 S1 재판정과 S2 재검수까지 자동 진행한다', async () => {
+    const f = stagedFixture();
+    f.modules.rm.front.frontGate = (batch = { drafts: f.drafts }) => ({ items: batch.drafts.map(q => ({ questionId: q.id, revision: q.revision, contentHash: 'hash', status: q.revision === 2 ? 'defect' : 'pass', defects: [], pending: [] })), batchDefects: [] });
+    const runtime = await createGateRuntime(f.options, f.modules);
+    runtime.apply = vi.fn();
+    runtime.reviseQuestions = vi.fn(async () => {
+      stageFiles(f.root, '0002', { 'content-source/batches/A/drafts.json': f.drafts.map(q => ({ ...q, revision: 3 })) });
+      return [{ batchId: 'A', revised: 2, dropped: 0, rejected: 0 }];
+    });
+    runtime.levelQuestions = vi.fn(async () => {
+      stageFiles(f.root, '0003', { 'content-source/levels/A.json': { items: f.drafts.map(q => ({ ...q, revision: 3 })) } });
+      return [{ batchId: 'A', assessed: 2 }];
+    });
+    const result = await runGate(f.options, runtime);
+    expect(result.A.error).toBeUndefined();
+    expect(result.A.stages.map((s: { stage: string }) => s.stage)).toEqual(['S2-codex', 'S3', 'S3', 'S1', 'S2-codex', 'S3']);
+    expect(f.respond.mock.calls.flatMap(([r]) => r.items.map(q => q.revision))).toEqual([2, 2, 2, 2, 3, 3, 3, 3]);
+    await runGate(f.options, runtime);
+    expect(runtime.reviseQuestions).toHaveBeenCalledTimes(1);
+    expect(runtime.levelQuestions).toHaveBeenCalledTimes(1);
+    expect(f.respond).toHaveBeenCalledTimes(4);
+    expect(runtime.apply).not.toHaveBeenCalled();
+  });
+  it('manifest의 배치 밖 경로도 읽기 전에 거절한다', async () => {
+    const f = stagedFixture(), file = path.join(f.staged, 'manifest.json');
+    const manifest = JSON.parse(fs.readFileSync(file, 'utf8'));
+    manifest.deletes.push('content-source/batches/OTHER/drafts.json');
+    fs.writeFileSync(file, JSON.stringify(manifest));
+    await expect(runGate(f.options, { modules: f.modules })).rejects.toThrow('배치 밖');
+    expect(f.respond).not.toHaveBeenCalled();
+  });
+  it('손상된 manifest는 plan과 실행 모두 모델 호출 전에 거절한다', async () => {
+    const f = stagedFixture();
+    fs.writeFileSync(path.join(f.staged, 'files/content-source/batches/A/drafts.json'), '[]');
+    await expect(runGate({ ...f.options, plan: true }, { modules: f.modules })).rejects.toThrow('해시 불일치');
+    await expect(runGate(f.options, { modules: f.modules })).rejects.toThrow('해시 불일치');
+    expect(f.respond).not.toHaveBeenCalled();
+  });
+  it('staged closed 배치는 재검수 없이 반영 대기로 남긴다', async () => {
+    const f = stagedFixture();
+    stageFiles(f.root, '0002', { 'content-source/batches/A/closed.json': { batchId: 'A' } }, ['content-source/batches/A/drafts.json']);
+    const result = await runGate(f.options, { modules: f.modules });
+    expect(result.A).toMatchObject({ closed: true, awaitingApply: true });
+    expect(f.respond).not.toHaveBeenCalled();
+  });
+  it('추적되지 않은 새 staging 배치를 완료로 오인하지 않는다', async () => {
+    const f = stagedFixture();
+    await expect(runGate(f.options, { modules: { ...f.modules, rb: { ...f.bank, loadBatches: () => [] } } })).rejects.toThrow('기존 추적 배치만');
+  });
+  it('같은 배치 writer의 실행잠금을 존중한다', async () => {
+    const f = stagedFixture(), dir = path.join(f.root, '.orchestrate/gate-locks');
+    fs.mkdirSync(dir, { recursive: true }); fs.writeFileSync(path.join(dir, 'A.json'), JSON.stringify({ pid: process.pid, token: 'other' }));
+    await expect(runGate(f.options, { modules: f.modules })).rejects.toThrow('gate 실행 중');
+    expect(f.respond).not.toHaveBeenCalled();
+  });
+});
+
+describe('선택적 추가 검수 생략', () => {
+  it('--skip-argon-fresh는 제작 배치의 추가 2단계 호출만 생략한다', async () => {
+    const f = stagedFixture();
+    stageFiles(f.root, '0002', {
+      'content-source/batches/A/drafts.json': f.drafts,
+      'content-source/batches/A/sidecar.json': { producer: { tool: 'produce.mjs' } },
+      'content-source/levels/A.json': { items: f.drafts },
+    });
+    const normal = await createGateRuntime(f.options, f.modules);
+    expect(normal.snapshot('A').argonPending).toEqual(['q1@1', 'q2@1']);
+    const options = { ...f.options, 'skip-argon-fresh': true };
+    const runtime = await createGateRuntime(options, f.modules);
+    expect(runtime.snapshot('A').argonPending).toEqual([]);
+    const result = await runGate(options, runtime);
+    expect(result.A.error).toBeUndefined();
+    expect(result.A.stages.map((s: { stage: string }) => s.stage)).toEqual(['S2-codex', 'S3']);
+    expect(f.respond).toHaveBeenCalledTimes(2);
+    expect(result.A.awaitingClaude).toBe(2);
+  });
+  it('--skip-argon-fresh도 기존 argon-blind 실패를 frontGate와 수정 대상으로 보존한다', async () => {
+    const f = reviewFixture();
+    const report = { reviewer: { model: 'Gemini 4 Argon' }, items: f.drafts.map(q => ({ questionId: q.id, revision: q.revision,
+      contentHash: actualContentHash(q as unknown as QuestionDraft), blindChoice: 'a', verdicts: { uniqueness: 'pass', grade: 'pass', language: 'fail', source: 'pass', explanation: 'pass' }, findings: ['명백한 비문'] })) };
+    const batch = { ...f.batch, sidecar: { ...f.batch.sidecar, items: [] }, reviews: {}, argonBlind: report };
+    const modules = { ...f.modules, rb: { ...f.bank, loadBatches: () => [batch] }, rm: { ...f.modules.rm, front: actualFront } };
+    const options = { ...f.options, 'archive-existing': true };
+    const before = (await createGateRuntime(options, modules)).snapshot('A');
+    const after = (await createGateRuntime({ ...options, 'skip-argon-fresh': true }, modules)).snapshot('A');
+    expect(after.front).toEqual(before.front);
+    expect(after.flagged).toEqual(before.flagged);
+    expect(after.front.items.every((q: { defects: string[] }) => q.defects.includes('argon-blind: language fail'))).toBe(true);
+    expect(batch.argonBlind).toEqual(report);
   });
 });

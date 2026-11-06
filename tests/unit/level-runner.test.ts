@@ -145,6 +145,24 @@ describe('S1 수준 판정 실행기', () => {
     expect(report.items[0]).toMatchObject({ L1: 3, L2: 3, T1: 3 });
   });
 
+  it('--skip-level-spotcheck는 추가 호출만 줄이고 두 독립 판정·합의·초안을 보존한다', async () => {
+    const qs = Array.from({ length: 6 }, (_, i) => question('A', i + 1));
+    const normal = setup([qs]), skipped = setup([qs]);
+    for (const f of [normal, skipped]) f.respond.mockImplementation(async r => JSON.stringify({ items: r.items.map(item => reply({ id: item.questionId, revision: item.revision } as QuestionDraft,
+      r.phase === 'spotcheck' ? { L1: 3, L2: 3, T1: 3 } : r.judge === 'codex' ? { L1: 3, L2: 1 } : {})) }));
+    const [a] = await runLevels(normal.options, normal.deps);
+    const [b] = await runLevels({ ...skipped.options, 'skip-level-spotcheck': true }, skipped.deps);
+    expect(normal.respond).toHaveBeenCalledTimes(3);
+    expect(skipped.respond).toHaveBeenCalledTimes(2);
+    expect(skipped.respond.mock.calls.map(([r]) => [r.judge, r.phase])).toEqual([['argon', 'assess'], ['codex', 'assess']]);
+    expect(a.spotChecked).toBe(5); expect(b.spotChecked).toBe(0);
+    for (const relative of ['content-source/levels/A.json', 'content-source/batches/A/drafts.json']) {
+      expect(read(path.join(skipped.root, b.staging, 'files', relative))).toEqual(read(path.join(normal.root, a.staging, 'files', relative)));
+    }
+    expect(read(path.join(skipped.root, b.staging, 'files/content-source/levels/A.json')).items.every((i: { merged: { flags: string[] } }) => i.merged.flags.includes('spotCheck'))).toBe(true);
+    expect(fs.existsSync(path.join(skipped.root, '.orchestrate/level-spotcheck/A.json'))).toBe(false);
+  });
+
   it('Argon → Codex → 계산값 순으로 유효한 unit을 고르고 선택된 근거로 reviewed를 정한다', () => {
     const a = reply(question());
     const c = { ...a, basisType: 'corpus_graded', unit: 'krdict:중급' };
@@ -194,6 +212,17 @@ describe('S1 수준 판정 실행기', () => {
     const fake = fixtureResponder({ responses: { A: { argon: [{ items: [reply(question())] }] } } });
     expect(await fake({ batchId: 'A', judge: 'argon', phase: 'assess' })).toContain('g4-test-0001');
     await expect(fake({ batchId: 'A', judge: 'codex', phase: 'assess' })).rejects.toThrow(/fixture/);
+  });
+
+  it('실제 CLI도 --skip-level-spotcheck를 값 없는 옵션으로 받아 표본 fixture 없이 끝난다', () => {
+    const { root } = setup([[question()]]);
+    write(root, 'fixture.json', { responses: { A: { argon: [{ items: [reply(question())] }], codex: [{ items: [reply(question(), { L1: 3, L2: 1 })] }] } } });
+    const output = execFileSync(process.execPath, ['tools/orchestrate/level.mjs', 'run', '--root', root, '--batches', 'A', '--skip-level-spotcheck', '--dry-run', '--fixture', path.join(root, 'fixture.json')], {
+      encoding: 'utf8', timeout: 30_000, env: { ...process.env, AGENT_BRIDGE: '/존재하지않는/bridge', CODEX_CLI: '/존재하지않는/codex' },
+    });
+    const [result] = JSON.parse(output);
+    expect(result).toMatchObject({ assessed: 1, spotChecked: 0 });
+    expect(read(path.join(root, result.staging, 'files/content-source/levels/A.json')).items[0].merged).toMatchObject({ rule: 4, flags: ['stdictSpecialized', 'spotCheck'] });
   });
 
   it('실제 CLI의 dry-run이 fixture만으로 모듈을 읽고 한 배치를 staging한다', () => {
