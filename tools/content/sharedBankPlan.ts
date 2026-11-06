@@ -1,14 +1,15 @@
 import { createHash } from 'node:crypto';
 import type { LevelAssessment } from '../../src/contracts/levels';
-import type { BankFile, BankQuestion, RetractionList } from '../../src/contracts/questions';
+import type { BankQuestion, RetractionList, SharedBankFile, SharedBankQuestion } from '../../src/contracts/questions';
+import { sharedBankFileSchema } from '../../src/contracts/questions';
 import { lintBatchForGrade } from '../../src/content/lint';
 import { MIN_PUBLISHED, toBankQuestion, type BatchInput } from './bankBuild';
 import { selectUpwardShares } from './gradeSharing';
 import { buildSharingInputs } from './sharingInputs';
 
-export type SharedBankQuestion = BankQuestion & { gradeBand?: LevelAssessment['merged']['band'] };
+export type { SharedBankQuestion } from '../../src/contracts/questions';
 /** 런타임 계약 통합 전의 빌드 입력. 이 모듈은 파일을 쓰거나 은행을 공개하지 않는다. */
-export type SharedBankPlan = Omit<BankFile, 'questions'> & { questions: SharedBankQuestion[] };
+export type SharedBankPlan = SharedBankFile;
 
 function canonical(value: unknown): string {
   if (Array.isArray(value)) return `[${value.map(canonical).join(',')}]`;
@@ -58,6 +59,6 @@ export function prepareSharedBank(batches: BatchInput[], assessments: readonly L
     shared++;
   }
   questions.sort((a, b) => a.id < b.id ? -1 : a.id > b.id ? 1 : 0);
-  return { bank: { bankId: `g${grade}`, bankVersion: sharedBankVersion(grade, questions), grade, status: 'published', questions },
+  return { bank: sharedBankFileSchema.parse({ bankId: `g${grade}`, bankVersion: sharedBankVersion(grade, questions), grade, status: 'published', questions }),
     ownApproved, shared, rejectedShares };
 }

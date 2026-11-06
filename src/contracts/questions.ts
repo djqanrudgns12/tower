@@ -74,6 +74,40 @@ export const bankFileSchema = z.object({
   for (const q of b.questions) if (q.grade !== b.grade || q.status !== b.status) ctx.addIssue({ code: 'custom', message: `${q.id}: 은행의 학년·상태와 다름` });
 });
 
+/** W5 통합용 별도 계약. 현재 은행 로더는 위의 자기 학년 전용 계약을 계속 사용한다. */
+export const sharedBankQuestionSchema = bankQuestionSchema.safeExtend({
+  gradeBand: z.object({ min: z.number().int().min(3).max(6), max: z.number().int().min(3).max(6) }).strict().optional(),
+}).superRefine((q, ctx) => {
+  const band = q.gradeBand;
+  if (band && (band.min > q.grade || band.max < q.grade || band.min < q.grade - 1 || band.max > q.grade + 1)) {
+    ctx.addIssue({ code: 'custom', message: `${q.id}: 공유 학년 띠는 원학년을 포함한 인접 학년 범위여야 한다` });
+  }
+});
+
+export const sharedBankFileSchema = z.object({
+  ...bankFileSchema.shape,
+  questions: z.array(sharedBankQuestionSchema).min(1),
+}).strict().superRefine((bank, ctx) => {
+  if (new Set(bank.questions.map(q => q.id)).size !== bank.questions.length) ctx.addIssue({ code: 'custom', message: '문항 ID 중복' });
+  const shared = bank.questions.filter(q => q.grade !== bank.grade);
+  for (const q of bank.questions) if (q.status !== bank.status) ctx.addIssue({ code: 'custom', message: `${q.id}: 은행의 상태와 다름` });
+  if (!shared.length) return;
+  if (bank.status !== 'published' || bank.bankId !== `g${bank.grade}`) {
+    ctx.addIssue({ code: 'custom', message: '공유 문항은 공개 학년 은행에만 수록한다' });
+  }
+  const own = bank.questions.filter(q => q.grade === bank.grade && !/^g[3-6]-practice-/.test(q.id)).length;
+  if (own < 1000) ctx.addIssue({ code: 'custom', message: '공유 전에 자기 학년 승인 1000문항이 필요하다' });
+  if (shared.length > Math.floor(own * 24 / 100)) ctx.addIssue({ code: 'custom', message: '위로 공유 상한 24%를 넘었다' });
+  for (const q of shared) {
+    if (q.grade + 1 !== bank.grade || /^g[3-6]-practice-/.test(q.id)) {
+      ctx.addIssue({ code: 'custom', message: `${q.id}: 정규 문항을 바로 위 학년으로만 공유할 수 있다` });
+    }
+    if (!q.gradeBand || bank.grade < q.gradeBand.min || bank.grade > q.gradeBand.max) {
+      ctx.addIssue({ code: 'custom', message: `${q.id}: 받는 학년을 포함한 공유 학년 띠가 필요하다` });
+    }
+  }
+});
+
 /**
  * 긴급 철회 목록(PRD §9.5, §16.4). 실행 중 은행을 덮어쓰지 않고 버전이 붙은 별도 목록으로 겹쳐 적용한다.
  * 이미 끝난 답변은 소급 변경하지 않는다. 걸려 있던 미제출 문항만 무벌점·무보상으로 바뀐다.
@@ -94,6 +128,8 @@ export const retractionListSchema = z.object({
 export type RetractionList = z.infer<typeof retractionListSchema>;
 export type BankQuestion = z.infer<typeof bankQuestionSchema>;
 export type BankFile = z.infer<typeof bankFileSchema>;
+export type SharedBankQuestion = z.infer<typeof sharedBankQuestionSchema>;
+export type SharedBankFile = z.infer<typeof sharedBankFileSchema>;
 
 /** 지문+보기 4개의 한글 음절 수(PRD §9.2 readingLoad). */
 export function readingLoad(q: Pick<BankQuestion, 'stem' | 'options'>): number {

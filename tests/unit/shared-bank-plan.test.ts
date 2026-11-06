@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import type { LevelJudge } from '../../src/contracts/levels';
 import { questionDraftSchema, type QuestionDraft } from '../../src/contracts/questionDraft';
 import type { RetractionList } from '../../src/contracts/questions';
+import { sharedBankFileSchema } from '../../src/contracts/questions';
 import { contentHash, rationalesHash, toBankQuestion, type BatchInput } from '../../tools/content/bankBuild';
 import { assessLevel } from '../../tools/content/levels';
 import { prepareSharedBank, sharedBankVersion } from '../../tools/content/sharedBankPlan';
@@ -89,5 +90,28 @@ describe('학년 공유 은행 빌드 준비', () => {
     expect(sharedBankVersion(5, [q])).not.toBe(sharedBankVersion(5, [{ ...q, difficultyTier: 'core' }]));
     expect(sharedBankVersion(5, [q])).not.toBe(sharedBankVersion(5, [{ ...q, distractorRationales: { ...q.distractorRationales, b: '다듬은 이유' } }]));
     expect(sharedBankVersion(5, [q, second])).toBe(sharedBankVersion(5, [second, q]));
+  });
+  it('공유 계약은 정상 빌드 결과를 받되 띠 없는 외부 문항과 잘못된 원학년을 거절한다', () => {
+    const q = question(4, 1), bank = prepareSharedBank([own, approved([q])], [level(q)], empty, 5).bank!;
+    expect(sharedBankFileSchema.parse(bank)).toEqual(bank);
+    const noBand = structuredClone(bank); delete noBand.questions.find(item => item.grade === 4)!.gradeBand;
+    expect(() => sharedBankFileSchema.parse(noBand)).toThrow(/공유 학년 띠/);
+    const wrongId = structuredClone(bank); wrongId.questions.find(item => item.grade === 4)!.grade = 5;
+    expect(() => sharedBankFileSchema.parse(wrongId)).toThrow(/학년과 ID 불일치/);
+  });
+  it('공유 계약도 자기 1000개·24% 상한과 바로 위 학년 조건을 확인한다', () => {
+    const q = question(4, 1), bank = prepareSharedBank([own, approved([q])], [level(q)], empty, 5).bank!;
+    expect(() => sharedBankFileSchema.parse({ ...bank, questions: bank.questions.filter(item => item.id !== residents[0]!.id) })).toThrow(/자기 학년 승인 1000/);
+    const shared = bank.questions.find(item => item.grade === 4)!;
+    const many = Array.from({ length: 241 }, (_, i) => ({ ...shared, id: `g4-plan-${String(i + 1).padStart(4, '0')}` }));
+    expect(() => sharedBankFileSchema.parse({ ...bank, questions: [...bank.questions.filter(item => item.grade === 5), ...many] })).toThrow(/공유 상한 24%/);
+    expect(() => sharedBankFileSchema.parse({ ...bank, grade: 6, bankId: 'g6' })).toThrow(/바로 위 학년/);
+  });
+  it('후보·개발·연습 은행에 공유 문항을 넣어 공개 계약을 우회하지 못한다', () => {
+    const q = question(4, 1), bank = prepareSharedBank([own, approved([q])], [level(q)], empty, 5).bank!;
+    for (const status of ['verified_candidate', 'dev_fixture'] as const) {
+      expect(() => sharedBankFileSchema.parse({ ...bank, status, questions: bank.questions.map(item => ({ ...item, status })) })).toThrow(/공개 학년 은행/);
+    }
+    expect(() => sharedBankFileSchema.parse({ ...bank, bankId: 'practice' })).toThrow(/공개 학년 은행/);
   });
 });
