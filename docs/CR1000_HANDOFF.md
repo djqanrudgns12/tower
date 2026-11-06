@@ -1,6 +1,6 @@
 # CR-1000 현재 인계
 
-갱신: 2026-11-07 05:49 KST · 총괄 Codex · 작업 폴더 `/Users/bodyking/Desktop/Architecture/towerdeffense` · 브랜치 `p1/intake-round1`
+갱신: 2026-11-07 05:52 KST · 총괄 Codex · 작업 폴더 `/Users/bodyking/Desktop/Architecture/towerdeffense` · 브랜치 `p1/intake-round1`
 
 이 문서가 현재 실행 기준이다. 과거 진행 기록과 이전 명령은 [원문 보관](CR1000_HANDOFF_HISTORY_20261107.md)에 **바이트 그대로** 보존했다. 보관본의 Claude 호출·완료된 작업 재실행 지시는 사용하지 않는다. 규칙은 [AGENTS.md](../AGENTS.md), 세부 설계는 [계획서](CONTENT_REVIEW_PLAN.md), 도구 조각은 `.orchestrate/wp/`를 필요한 범위만 읽는다.
 
@@ -67,6 +67,7 @@ PID는 기록값이므로 `ps`로 실제 생존과 실행 파일을 확인한다
 | Normal 심화 확대30 원실행 종료 | 18762 / 18771 종료 확인 | G6-030 출력 한도/후속20분 시간 초과로 종료. 원실패 기록 보존, 완료 응답은 아래 별도 회수 | `normal-advanced-expansion-30.run.json` |
 | G6-030 완료 응답 회수 완료 | 조정46337 / 검수46807 종료 | 10개 최종 승인·c2fc3a9 잠금 반영. Normal심화+5, Hard/Crazy+10. 원실패·2제외·18미생성 보존 | `normal-advanced-g6-expansion-30-gate.run.json` |
 | 6학년 개선 후속 연결 | 조정57130 (원54540 종료) | 021 실패로 원예약 종료. 별도계획에서 미착수002/016/017/019/014 각5개(25개)를 호출당3개로 분리. 자원7GiB·원소스 확인, 실패입력 재호출0 | `normal-advanced-g6-refinement-next-continued.run.json`, `normal-advanced/refinement-next-continued.plan.json` |
+| 6학년 추가 개선 예약 | 60338 | 현재57130의25개가정상종료한뒤미착수11배치31개. L6·core/basic·현판승인·front/gate0, 호출당3개. 기존실패와이미계획한배치제외 | `normal-advanced-g6-refinement-rest.run.json`, `normal-advanced/refinement-rest.plan.json` |
 | 3학년 보충 후보 시범 완료 | 53962 종료 | 20후보 중1통과/19제외·제작1칸. native 감사 뒤62e98af 목록만 반영. 원목록checked는사전검증완료가아니었음. 15개사전항목불명확 원인확정,100개 확대미실행·새문항승인0 | `g3-candidate-reuse.run.json`, `wordlists/g3-reuse-r1/summary.json` |
 | 3학년 사전 항목 보정 완료 | 57699 종료 | 13개 중8통과/5제외,16제작칸. native 감사 뒤45f3cf5로목록만잠금반영·새문항승인0 | `g3-source-correction.run.json`, `wordlists/g3-source-correction-r2/summary.json` |
 | 3학년 추가 후보 시범 실행 | 58473 / 59221 | 57699 정상종료 뒤20:45:09Z 실제Argon호출. G4-r2의후보20개를G3으로재선정·독립검수. 전체161개 사전통과, 일반/다의어126개. 시범완료·반영 뒤잔여100개확대 | `g3-staged-candidate-reuse.run.json`, `wordlists/g3-reuse-r3/queue.json` |
@@ -78,6 +79,8 @@ PID는 기록값이므로 `ps`로 실제 생존과 실행 파일을 확인한다
 위 상태 경로는 모두 `.orchestrate/` 아래다. 3학년은 **running**이다. 자원 허용 확인과 최신 native 계획 재검사를 거쳐 시작했고, PID72501 실제 생존 및004의 Codex1/Argon1·005의 Codex1 호출을 확인했다. Claude 호출0이다. 5학년 새 낱말120개는 **61통과·59제외**(출처39/내용20), 제작 가능122칸으로 확정했다. 두 묶음의 원본/299사전파일/해시/독립 검사 대응을 메인이 확인했고 `wordlist-g5-r2`를 잠금 반영했다. 목록 검증이며 문항 승인은 아니다. W5 선행 구현 PID60559는 정상 종료했고 그 자리는3학년 예약이 승계한다. 옛 43390/43407 및 front/final-tail 실패 예약은 다시 시작하지 않는다. 원본/실패 기록은 보존했다.
 
 ## 5. 완료한 코드와 검증
+
+- **6학년 미착수31개 후속 연결:** 현재공개·현수준해시가맞는후보를다시계측해, 이미시도/계획한배치밖의 L6·rule3·core/basic·읽기100이하·front/gate0 후보31개를확인했다. 001/005/015 각4개,004/018/020/022 각3개,003/006/008 각2개,009 1개를native `--plan`으로직접확인했다(11배치·모델0회).60338이현재25개조정57130의실제정상종료뒤같은자리·자원7GiB·묶음3으로진행한다. 선행실패면자동시작하지않는다. 실패입력이나기존계획을다시돌리는것이아니며새공개문항/Normal심화증가로세지않는다. `normal-advanced/refinement-rest.{plan,launch}.json`, `normal-advanced/g6/refinement-remaining-feasibility.json`. 나머지 rule4·L5다의어·이전회차사용·029/030 후보16개는이번계획에서제외했으며기준/범위를임의변경하지않았다.
 
 - **3학년 보정 목록 반영·제작 연결:** 57699는13개 중 Argon11개제안 뒤Codex8개통과/5개제외로정상종료했다. 메인이원응답·사전·목록고정필드·staging을 native 감사한 뒤 `45f3cf5`로 g3-r2 목록만잠금반영했다(16제작칸, 새공개문항0). 기존소스/콘텐츠/은행/키10,576파일해시와실제커밋1파일불변을확인하여직전서버70·은행/키21검사는재사용했다. 이어G3-024를5개/서로다른새낱말5개·호출묶음5로native계획확인했다.59823이기존후보시범58473과G6-031제작의정상종료·자원7GiB·제작잠금해제를기다린다. 실행전목록/계획/코드해시와native선택을재확인하고원본감사·Codex/Argon검수로이어간다.5문항실제승인뒤에만확대한다. 기존감사기·관문조정자·완료탐색기에G3확대를추가했으며5/6기존경로는그대로다. 바뀐도구구문검사·실제5개계획통과, 실제제작·독립검수는미실행이다. 원코드 `normal-advanced/history/pre-g3-supplement/` 보존.
 - **6학년 묶음 분리 첫 응답:** G6-002 첫3개는 native 응답 검사에통과했고20:44:14Z 나머지2개호출을시작했다. 아직전체작성·독립검수·반영전이며Normal심화증가로세지않는다.5학년G5-030은20:43:30Z 후속Argon호출을확인했고기존생산을유지한다.
