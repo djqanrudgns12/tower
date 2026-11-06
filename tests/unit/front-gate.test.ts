@@ -163,6 +163,48 @@ describe('수정 단계와 회차', () => {
     expect(revision(batch, 'gate', { front: 0, gate: 2 }).parsed.accepted[0].action).toBe('drop');
     expect(promptFor(temp(batch), batch.batchId, revision(batch).list)).not.toContain('revision 3 이상');
   });
+  it('changes 응답은 전체 draft 응답과 같은 검증 결과를 내고 원본을 보존한다', () => {
+    const batch = fixture(), original = structuredClone(batch), { list, reply, parsed } = revision(batch);
+    const { draft, ...item } = reply.items[0]!;
+    const compact = { items: [{ ...item, changes: { explanation: draft.explanation } }] };
+    expect(parseRevisions(m, JSON.stringify(compact), list)).toEqual(parsed);
+    expect(parsed.accepted[0].draft).toMatchObject({ revision: 4, status: 'machine_checked', target: batch.drafts[0]!.target, source: batch.drafts[0]!.source });
+    expect(batch).toEqual(original);
+    const prompt = promptFor(temp(batch), batch.batchId, list);
+    expect(prompt).toContain('"changes"');
+    expect(prompt).toContain('파일을 읽거나 추가 조회하지 말고');
+    expect(prompt).not.toContain('고친 draft 전체');
+  });
+  it.each(['source', 'target', 'grade', 'gradeBasis', 'review', 'schemaVersion', 'id', 'batchId', 'revision', 'status', 'unknown', '__proto__'])('changes의 고정·알 수 없는 필드 %s를 거절한다', key => {
+    const batch = fixture(), { list, reply } = revision(batch);
+    const { draft, ...item } = reply.items[0]!;
+    const changes = { explanation: draft.explanation, [key]: '변경 금지' };
+    const result = parseRevisions(m, JSON.stringify({ items: [{ ...item, changes }] }), list);
+    expect(result.accepted).toEqual([]);
+    expect(result.rejected[0]).toContain(`changes에 허용되지 않은 필드: ${key}`);
+  });
+  it.each([null, [], ['문자'], '문자', 1].map(changes => ({ changes })))('changes는 배열·스칼라·null이 아닌 객체만 받는다: %j', ({ changes }) => {
+    const { list, reply } = revision(fixture());
+    const item = { ...reply.items[0], draft: undefined, changes };
+    const result = parseRevisions(m, JSON.stringify({ items: [item] }), list);
+    expect(result.accepted).toEqual([]);
+    expect(result.rejected[0]).toContain('changes는 객체여야 한다');
+  });
+  it('draft와 changes 동시 입력은 어느 쪽도 선택하지 않고 거절한다', () => {
+    const { list, reply } = revision(fixture());
+    const result = parseRevisions(m, JSON.stringify({ items: [{ ...reply.items[0], changes: { explanation: '다른 해설' } }] }), list);
+    expect(result.accepted).toEqual([]);
+    expect(result.rejected[0]).toContain('draft와 changes를 함께 쓸 수 없다');
+  });
+  it('changes도 스키마·의미·자체 반박과 단계별 수정 한도를 그대로 검사한다', () => {
+    const { list, reply } = revision(fixture());
+    const item = { ...reply.items[0], draft: undefined, changes: { explanation: '가'.repeat(61) } };
+    expect(parseRevisions(m, JSON.stringify({ items: [item] }), list).rejected[0]).toContain('의미 검사');
+    expect(parseRevisions(m, JSON.stringify({ items: [{ ...item, changes: { options: [] } }] }), list).rejected[0]).toContain('초안 형식');
+    expect(parseRevisions(m, JSON.stringify({ items: [{ ...item, changes: { explanation: '알맞은 해설이에요.' }, selfRefutation: [] }] }), list).rejected[0]).toContain('자체 반박 형식');
+    const exhausted = list.map(entry => ({ ...entry, rounds: { ...entry.rounds, front: 2 } }));
+    expect(parseRevisions(m, JSON.stringify({ items: [item] }), exhausted).accepted[0]).toMatchObject({ action: 'drop', reason: 'front 수정 2회 한도 소진' });
+  });
   it('다른 대상·고정 필드 변경·누락 답장·잘못된 action을 거절한다', () => {
     const batch = fixture(), { list, reply } = revision(batch);
     reply.items[0]!.draft.source = { ...reply.items[0]!.draft.source, entryId: 'changed' };

@@ -117,11 +117,11 @@ export function promptFor(root, batchId, list) {
   const items = list.map(({ q, phase, rounds, reasons, findings }) => ({ draft: q, phase, revisionRounds: rounds, evidenceText: evidenceOf(root, batchId ?? q.batchId, q), defects: reasons, reviewerFindings: findings }));
   return [
     '너는 대한민국 초등학교 3~6학년용 한국어 어휘 문항의 작성자(Argon)다. 총괄은 Claude다. 아래 문항들은 공동검수에서 결함이 지적되어 격리되었다.',
-    '파일을 쓰거나 명령을 실행하지 말고, 고친 결과를 답장 JSON으로만 보낸다(총괄의 도구가 검사해 파일에 쓴다).',
+    '입력에 문항과 사전 근거를 모두 제공했으므로 파일을 읽거나 추가 조회하지 말고 입력만으로 답한다. 파일 쓰기·명령 실행도 금지한다. 고친 결과를 답장 JSON으로만 보낸다(총괄의 도구가 검사해 파일에 쓴다).',
     '',
     '문항마다 둘 중 하나로 답한다.',
-    '1) 고친다(action "revise"): draft 전체를 고쳐서 보낸다.',
-    '   - revision은 정확히 1 올린다. status는 "machine_checked". id·batchId·grade·target·source·gradeBasis·review·schemaVersion은 그대로 둔다(대상 낱말과 사전 근거는 바꿀 수 없다).',
+    '1) 고친다(action "revise"): changes 객체에 실제로 바꿀 필드만 보낸다. 바꾸지 않는 필드는 생략하고 draft 전체는 보내지 않는다.',
+    '   - 도구가 원래 draft에 changes를 합치고 revision을 정확히 1 올려 status를 "machine_checked"로 기록한다. revision·status·id·batchId·grade·target·source·gradeBasis·review·schemaVersion은 응답에 쓰지 않는다(대상 낱말과 사전 근거는 바꿀 수 없다).',
     '   - 바꿀 수 있는 것: stem, options(a~d 4개), correctOptionId, explanation, distractorRationales(오답 3개에만 하나씩), type, difficultyTier, variantTag, dialectRegion(방언일 때만, 방언은 challenge만).',
     '   - 실제 결함을 해소한다: 정답이 문맥상 하나뿐, 다른 보기는 분명히 틀림, 자연스러운 문장(문맥 조각 뒤에 기본형을 붙인 비문 금지), 맞춤법·띄어쓰기·조사 호응, 학년에 맞는 쉬운 보기 말, 뜻을 몰라도 형식만으로 정답이 드러나는 단서 없음, 어린이에게 알맞은 내용, 해설·오답 이유는 각 60자 이내.',
     '   - 실제 결함만 최소한으로 고친다. [권고] 제안은 수정 의무가 아니며 이미 자연스럽고 정확한 부분은 유지한다. 추상 명사 나열·어색한 직역·억지 교훈·내용 없는 상투 문장(AI SLOP)을 넣지 않는다. 아이가 겪을 만한 구체적인 상황과 짧고 분명한 말로 쓴다.',
@@ -130,13 +130,14 @@ export function promptFor(root, batchId, list) {
     `2) 버린다(action "drop"): 이 낱말·뜻으로는 아이들에게 알맞은 유일 정답 문항을 만들 수 없을 때. reason에 이유를 쓴다. 이번 작업에서 그 단계(front 또는 gate)의 ${MAX_REVISION_ROUNDS}회 한도를 다 쓴 문항이 또 지적되면 버린다. revision 번호가 아니라 revisionRounds[phase]로 판단한다.`,
     '',
     '출력: 아래 형식의 JSON 하나만 ```json 코드 블록으로. 입력의 모든 문항에 하나씩 답한다.',
-    '{"items":[{"questionId":"…","action":"revise","draft":{…고친 draft 전체…},"selfRefutation":[{"optionId":"a","substituted":"…","verdict":"does_not_fit","reason":"…"},…4개],"uniquenessNote":"…","gradeEvidence":"…"},{"questionId":"…","action":"drop","reason":"…"}]}',
+    '{"items":[{"questionId":"…","action":"revise","changes":{…실제로 바꿀 필드만…},"selfRefutation":[{"optionId":"a","substituted":"…","verdict":"does_not_fit","reason":"…"},…4개],"uniquenessNote":"…","gradeEvidence":"…"},{"questionId":"…","action":"drop","reason":"…"}]}',
     '',
     '----- 입력 -----',
     JSON.stringify({ batchId, items }, null, 1),
   ].join('\n');
 }
 
+const CHANGE_FIELDS = new Set(['stem', 'options', 'correctOptionId', 'explanation', 'distractorRationales', 'type', 'difficultyTier', 'variantTag', 'dialectRegion']);
 const FIXED = ['schemaVersion', 'batchId', 'id', 'grade', 'gradeBasis', 'target', 'source', 'review'];
 
 /** 답장을 검사해 적용할 변경을 돌려준다. 문항 하나라도 틀리면 그 문항만 이유와 함께 거절한다. */
@@ -164,8 +165,18 @@ export function parseRevisions(m, text, list, reviseLog = null) {
       else accepted.push({ action: 'drop', q: cur.q, ...meta, reason: it.reason });
       continue;
     }
+    let candidate = it.draft;
+    if (Object.hasOwn(it, 'changes')) {
+      if (Object.hasOwn(it, 'draft')) { rejected.push(`${it.questionId}: draft와 changes를 함께 쓸 수 없다`); continue; }
+      if (!it.changes || typeof it.changes !== 'object' || Array.isArray(it.changes)) {
+        rejected.push(`${it.questionId}: changes는 객체여야 한다`); continue;
+      }
+      const forbidden = Object.keys(it.changes).filter(key => !CHANGE_FIELDS.has(key));
+      if (forbidden.length) { rejected.push(`${it.questionId}: changes에 허용되지 않은 필드: ${forbidden.join(', ')}`); continue; }
+      candidate = { ...cur.q, ...it.changes, revision: cur.q.revision + 1, status: 'machine_checked' };
+    }
     const problems = [];
-    const draft = m.d.questionDraftSchema.safeParse(it.draft);
+    const draft = m.d.questionDraftSchema.safeParse(candidate);
     if (!draft.success) problems.push(`초안 형식: ${draft.error.issues.slice(0, 3).map(i => `${i.path.join('.')} ${i.message}`).join(', ')}`);
     else {
       for (const k of FIXED) if (JSON.stringify(draft.data[k]) !== JSON.stringify(cur.q[k])) problems.push(`${k}는 바꿀 수 없다`);
