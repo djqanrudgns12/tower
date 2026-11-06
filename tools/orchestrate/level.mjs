@@ -229,7 +229,7 @@ export async function runLevels(options, deps = {}) {
   const respond = deps.respond ?? (dryRun ? fixtureResponder(read(path.resolve(options.fixture))) : request => liveRespond(request, deps));
   const m = deps.modules ?? await load();
   const configs = resolveReviewConfig(options);
-  const pools = { argon: limit(Number(options.argon ?? 2)), codex: limit(Number(options.codex ?? 2)) };
+  const pools = deps.modelPools ?? { argon: limit(Number(options.argon ?? 2)), codex: limit(Number(options.codex ?? 2)) };
   const rubric = rubricText(), codes = curriculumCodes(root);
   const refFile = path.join(root, 'content-source/reference/krdict-grade.json');
   const reference = fs.existsSync(refFile) ? read(refFile) : null;

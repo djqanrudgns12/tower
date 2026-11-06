@@ -288,6 +288,7 @@ export async function createGateRuntime(options, modules) {
   };
   const log = options.log ?? console.log;
   return {
+    levelModelPools: true,
     ids: options.all ? baseBank.loadBatches(root).map(b => b.batchId).filter(id => /^Q50-/.test(id)) : String(options.batches).split(',').map(id => id.trim()),
     log,
     batch: batchOf,
@@ -317,8 +318,8 @@ export async function createGateRuntime(options, modules) {
           && fs.readdirSync(path.join(root, '.orchestrate/staging', id)).some(run => fs.existsSync(path.join(root, '.orchestrate/staging', id, run, 'manifest.json'))),
       };
     },
-    async level(id, questionKeys, onEvent) {
-      const results = await level.runLevels({ ...options, all: false, batches: id, argon: 1, codex: 1, onEvent }, { modules: lm });
+    async level(id, questionKeys, onEvent, modelPools) {
+      const results = await level.runLevels({ ...options, all: false, batches: id, argon: 1, codex: 1, onEvent }, { modules: lm, modelPools });
       return results[0];
     },
     async review(id, who, questionKeys, onEvent) {
@@ -336,7 +337,7 @@ export async function createGateRuntime(options, modules) {
       const { finalizeCodex } = await import('./finalize-codex.mjs');
       return finalizeCodex({ ...options, root, questions: refs, onEvent }, { runtime: this, bank: rb });
     },
-    levelQuestions: (questions, onEvent) => level.runLevels({ ...options, questions, all: false, batches: undefined, argon: 1, codex: 1, onEvent }, { modules: lm }),
+    levelQuestions: (questions, onEvent, modelPools) => level.runLevels({ ...options, questions, all: false, batches: undefined, argon: 1, codex: 1, onEvent }, { modules: lm, modelPools }),
     reviewQuestions: (questions, who, onEvent) => review.runQuestions(rb, root, who, questions, log, { ...options, ...reviewOptions(who), onEvent }),
     reviseQuestions: (questions, onEvent, batchIds) => revise.reviseQuestions(rm, root, questions, 'antigravity', log, { ...options, batchIds, onEvent }),
     apply: (id, opts) => { if (stageOnly) throw new Error('stage-only에서는 apply를 호출할 수 없다'); return applyStaged({ root, batch: id, ...opts, testServer: guardedServerTest }); },
@@ -421,6 +422,12 @@ async function runGateUnlocked(options, deps, releases) {
   };
   const requireApplyReady = () => { if (applyError) throw applyError; };
   const startModel = fn => { requireApplyReady(); return fn(); };
+  // S1 두 판정자의 실행 자리는 각 응답이 끝날 때 반환한다.
+  // 느린 Argon 응답·예약 대기가 이미 끝난 Codex 자리까지 붙잡지 않는다.
+  const levelPools = {
+    codex: fn => pools.codex(() => startModel(fn)),
+    argon: fn => pools.antigravity(() => startModel(fn)),
+  };
   const workIds = noCommit ? ids.slice(0, 1) : ids;
   for (const id of ids.slice(workIds.length)) summary[id] = { awaitingApply: true };
   for (const id of workIds) summary[id] = { ...(stageOnly ? { awaitingApply: true } : {}), startedAt: new Date().toISOString(), stages: [], runId, firstPassComplete: previous[id]?.firstPassComplete === true, lastRound: previous[id]?.lastRound ?? 0, modelCalls: emptyCalls(), waits: emptyCalls(), waitMs: emptyCalls(), modelCallsBasis: 'measured' };
@@ -522,6 +529,7 @@ async function runGateUnlocked(options, deps, releases) {
         if (!keys.length) continue;
         const ok = await execute(stage, refsOf(id, keys), [id], 0, cb => who
           ? pools[who](() => startModel(() => runtime.review(id, who, keys, cb)))
+          : runtime.levelModelPools ? startModel(() => runtime.level(id, keys, cb, levelPools))
           : pools.codex(() => pools.antigravity(() => startModel(() => runtime.level(id, keys, cb)))));
         if (!ok) return;
       }
@@ -538,21 +546,22 @@ async function runGateUnlocked(options, deps, releases) {
     const invoke = async cb => {
       requireApplyReady();
       if (stage === 'S4' && !withClaude) return runtime.finalizeQuestions(refs, cb);
-      if (stage === 'S1' && runtime.levelQuestions) return runtime.levelQuestions(refs, cb);
+      if (stage === 'S1' && runtime.levelQuestions) return runtime.levelQuestions(refs, cb, levelPools);
       if (who && runtime.reviewQuestions) return runtime.reviewQuestions(refs, who, cb);
       if (!who && stage !== 'S1' && runtime.reviseQuestions) return runtime.reviseQuestions(refs, cb, batchIds);
       const results = [];
       for (const id of batchIds) {
         const selected = refs.filter(q => q.batchId === id), keys = selected.map(keyOf);
         const scoped = event => cb({ ...event, batchIds: event.batchIds ?? [id] });
-        const result = stage === 'S1' ? await runtime.level(id, keys, scoped)
+        const result = stage === 'S1' ? await runtime.level(id, keys, scoped, levelPools)
           : who ? await runtime.review(id, who, keys, scoped) : await runtime.revise(id, selected[0]?.phase ?? 'front', keys, scoped);
         results.push({ batchId: id, ...result });
       }
       return results;
     };
     return execute(stage, refs, batchIds, round, cb => stage === 'S1'
-      ? pools.codex(() => pools.antigravity(() => invoke(cb))) : pools[who ?? 'antigravity'](() => invoke(cb)));
+      ? runtime.levelModelPools ? invoke(cb) : pools.codex(() => pools.antigravity(() => invoke(cb)))
+      : pools[who ?? 'antigravity'](() => invoke(cb)));
   };
   const recheck = async (cohort, round) => {
     for (const [stage, field, who] of [['S1', 'levelPending', null], ['S2-codex', 'codexPending', 'codex'], ['S4', finalField, finalWho]]) {

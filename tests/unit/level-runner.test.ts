@@ -58,6 +58,24 @@ function setup(batches: QuestionDraft[][] = [[question()], [question('B', 2)]]) 
 afterEach(() => { for (const root of roots.splice(0)) fs.rmSync(root, { recursive: true, force: true }); });
 
 describe('S1 수준 판정 실행기', () => {
+  it('공유 실행 풀을 실제 모델 호출마다 적용해 여러 배치의 동시 상한을 지킨다', async () => {
+    const f = setup(), original = f.respond.getMockImplementation()!;
+    const active = { argon: 0, codex: 0 }, maximum = { argon: 0, codex: 0 };
+    const serial = () => {
+      let tail = Promise.resolve();
+      return <T>(job: () => Promise<T>): Promise<T> => {
+        const result = tail.then(job); tail = result.then(() => {}, () => {}); return result;
+      };
+    };
+    f.respond.mockImplementation(async r => {
+      active[r.judge]++; maximum[r.judge] = Math.max(maximum[r.judge], active[r.judge]);
+      try { await new Promise<void>(resolve => setImmediate(resolve)); return await original(r); }
+      finally { active[r.judge]--; }
+    });
+    await runLevels({ ...f.options, 'skip-level-spotcheck': true }, { ...f.deps, modelPools: { argon: serial(), codex: serial() } });
+    expect(maximum).toEqual({ argon: 1, codex: 1 });
+    expect(f.respond).toHaveBeenCalledTimes(4);
+  });
   it('아직 반영하지 않은 제작 배치의 사전 근거를 수준 판정에 제공한다', async () => {
     const f = setup([[question()]]), runId = '0001';
     const base = path.join(f.root, '.orchestrate/staging/A', runId);

@@ -43,6 +43,39 @@ function fixture(count = 21) {
 }
 
 describe('배치를 넘는 재판정 회차', () => {
+  it('S1의 Argon 응답을 기다리는 동안 다른 배치의 Codex 판정을 진행한다', async () => {
+    const f = fixture(1), originalLevel = f.deps.level.getMockImplementation()!;
+    let release!: () => void, entered!: () => void, codexB!: () => void;
+    const hold = new Promise<void>(resolve => { release = resolve; });
+    const argonA = new Promise<void>(resolve => { entered = resolve; });
+    const ranCodexB = new Promise<void>(resolve => { codexB = resolve; });
+    type Pool = <T>(job: () => Promise<T>) => Promise<T>;
+    const direct: Pool = job => job();
+    const running = { codex: 0, argon: 0 }, maximum = { codex: 0, argon: 0 };
+    const runtime = { ...f.deps, levelModelPools: true,
+      level: async (id: string, keys: string[], cb: (e: Event) => void, pools = { codex: direct, argon: direct }) => {
+        await Promise.all((['argon', 'codex'] as const).map(who => pools[who](async () => {
+          running[who]++; maximum[who] = Math.max(maximum[who], running[who]);
+          try {
+            if (id === 'A' && who === 'argon') { entered(); await hold; }
+            if (id === 'B' && who === 'codex') codexB();
+            await new Promise<void>(resolve => setImmediate(resolve));
+          } finally { running[who]--; }
+        })));
+        return originalLevel(id, keys, cb);
+      },
+    };
+    const work = runGate({ ...f.options, until: 'S3', codex: 1, argon: 1 }, runtime);
+    let proceeded: boolean;
+    try {
+      await argonA;
+      proceeded = await Promise.race([ranCodexB.then(() => true), new Promise<boolean>(resolve => setTimeout(() => resolve(false), 100))]);
+    } finally { release(); }
+    const summary = await work;
+    expect(proceeded).toBe(true);
+    expect(maximum).toEqual({ codex: 1, argon: 1 });
+    for (const row of Object.values(summary) as Array<{ error?: string }>) expect(row.error).toBeUndefined();
+  });
   it.each([false, true, 'wrapped'] as const)('반영 차단 뒤 대기 중인 호출과 내부 후속 호출을 시작하지 않는다 (후속=%s)', async followup => {
     const f = fixture(1);
     const originalApply = f.deps.apply.getMockImplementation()!;
