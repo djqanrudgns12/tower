@@ -1,0 +1,347 @@
+{
+  "grade": 3,
+  "round": 3,
+  "designGoal": "grade-supplement",
+  "source": {
+    "producer": "Gemini 4 Argon (High)",
+    "origin": "다른 학년 후보의 사전 근거·3학년 적합 재검수",
+    "sources": [
+      {
+        "path": ".orchestrate/staging/wordlist-g4-r2/20261106T040732029Z-95753/files/content-source/wordlists/g4-r2.json",
+        "sha256": "163f2eaed85a8a9b3150517fe336e091482851ea6208125299e5472255bfc0a4"
+      }
+    ],
+    "checker": "gpt-6-astra",
+    "effort": "high",
+    "checkedAt": "2026-11-06T20:56:10.671Z"
+  },
+  "items": [
+    {
+      "kind": "word",
+      "lemma": "느긋하다",
+      "partOfSpeech": "형용사",
+      "sourceEntry": {
+        "provider": "stdict",
+        "entryId": "409480"
+      },
+      "senseOrder": 1,
+      "types": [
+        "cloze",
+        "antonym_context"
+      ],
+      "variantTag": "standard",
+      "expectedL1": 1,
+      "expectedL2": 1,
+      "gradeEvidence": "[4국04-01] 단어와 단어 간의 의미 관계를 파악한다.",
+      "checked": false,
+      "reason": "Argon 재선정 제외: 제공된 뜻번호 1('마음에 흡족하여 여유가 있고 넉넉하다')은 3학년이 일상에서 쓰는 '서두르지 않고 여유 있다'(뜻번호 2)와 달라 문맥 혼선과 반의 관계 불일치를 유발하므로 제외함."
+    },
+    {
+      "kind": "word",
+      "lemma": "매섭다",
+      "partOfSpeech": "형용사",
+      "expectedL1": 1,
+      "expectedL2": 1,
+      "senseOrder": 2,
+      "types": [
+        "cloze",
+        "synonym_context"
+      ],
+      "variantTag": "polysemy",
+      "gradeEvidence": "[4국04-01] 단어와 단어 간의 의미 관계를 파악한다.",
+      "checked": true,
+      "reason": "형용사 2번 뜻과 word·polysemy가 맞는다. 추위나 바람의 심한 정도는 3학년이 이해할 수 있고 cloze·synonym_context도 자연스럽다. 예상 L=2는 타당하며 성취기준은 의미 관계 활동의 근거다."
+    },
+    {
+      "kind": "word",
+      "lemma": "조급하다",
+      "partOfSpeech": "형용사",
+      "sourceEntry": {
+        "provider": "stdict",
+        "entryId": "482114"
+      },
+      "senseOrder": 1,
+      "types": [
+        "cloze",
+        "antonym_context"
+      ],
+      "variantTag": "standard",
+      "expectedL1": 1,
+      "expectedL2": 1,
+      "gradeEvidence": "[4국04-01] 단어와 단어 간의 의미 관계를 파악한다.",
+      "checked": true,
+      "reason": "형용사 1번 뜻과 word·standard가 일치한다. 차례를 기다리는 생활 상황에서 뜻과 반대되는 태도를 구별할 수 있어 두 유형이 적절하다. 예상 L=2와 의미 관계 성취기준의 연결이 타당하다."
+    },
+    {
+      "kind": "word",
+      "lemma": "따갑다",
+      "partOfSpeech": "형용사",
+      "expectedL1": 1,
+      "expectedL2": 0,
+      "senseOrder": 2,
+      "types": [
+        "cloze",
+        "usage"
+      ],
+      "variantTag": "polysemy",
+      "gradeEvidence": "[4국04-01] 단어와 단어 간의 의미 관계를 파악한다.",
+      "checked": false,
+      "reason": "Argon 재선정 제외: 뜻번호 2('눈길이나 충고 따위가 매섭고 날카롭다')는 추상적 대인관계 비유 의미로 3학년에게 이르고 훈계조 문항이 되기 쉬워 제외함."
+    },
+    {
+      "kind": "word",
+      "lemma": "서먹하다",
+      "partOfSpeech": "형용사",
+      "expectedL1": 1,
+      "expectedL2": 1,
+      "senseOrder": 1,
+      "types": [
+        "cloze",
+        "synonym_context"
+      ],
+      "variantTag": "standard",
+      "gradeEvidence": "[4국05-01] 인물과 이야기의 흐름을 중심으로 작품을 감상한다.",
+      "checked": true,
+      "reason": "형용사 1번 뜻과 word·standard가 맞는다. 처음 만난 친구 사이의 어색함은 3학년에 적합하며 두 유형도 가능하다. 예상 L=2는 타당하다. 성취기준은 인물 관계 이해와 연결되지만 해당 낱말의 출현 학년을 증명하지는 않는다."
+    },
+    {
+      "kind": "word",
+      "lemma": "쓰리다",
+      "partOfSpeech": "형용사",
+      "expectedL1": 1,
+      "expectedL2": 0,
+      "senseOrder": 2,
+      "types": [
+        "cloze",
+        "usage"
+      ],
+      "variantTag": "polysemy",
+      "gradeEvidence": "[4국04-01] 단어와 단어 간의 의미 관계를 파악한다.",
+      "checked": false,
+      "reason": "Argon 재선정 제외: 제공된 뜻풀이('몹시 시장하거나 과음하거나 하여 뱃속이 거북하다')가 성인 음주·공복 증상 중심이어서 3학년 학습 소재로 부적합함."
+    },
+    {
+      "kind": "word",
+      "lemma": "울적하다",
+      "partOfSpeech": "형용사",
+      "expectedL1": 1,
+      "expectedL2": 1,
+      "senseOrder": 1,
+      "types": [
+        "cloze",
+        "synonym_context"
+      ],
+      "variantTag": "standard",
+      "gradeEvidence": "[4국05-01] 인물과 이야기의 흐름을 중심으로 작품을 감상한다.",
+      "checked": false,
+      "reason": "Argon 재선정 제외: 불투명 한자어 기반의 성숙한 정서 어휘로 3학년 일상·동화 수준보다 높고 3학년 눈높이의 명확한 단일 유의어 설정도 모호하여 제외함."
+    },
+    {
+      "kind": "word",
+      "lemma": "빛나다",
+      "partOfSpeech": "동사",
+      "expectedL1": 1,
+      "expectedL2": 0,
+      "senseOrder": 2,
+      "types": [
+        "cloze",
+        "usage"
+      ],
+      "variantTag": "polysemy",
+      "gradeEvidence": "[4국04-01] 단어와 단어 간의 의미 관계를 파악한다.",
+      "checked": false,
+      "reason": "Argon 재선정 제외: 뜻번호 2('빛이 반사되어 반짝거리거나 윤이 나다')는 뜻번호 1(스스로 빛이 나다)과 물리적 광학 기준으로만 갈려 3학년 다의어 변별과 쓰임 문항에 모호함."
+    },
+    {
+      "kind": "word",
+      "lemma": "화창하다",
+      "partOfSpeech": "형용사",
+      "expectedL1": 1,
+      "expectedL2": 1,
+      "senseOrder": 1,
+      "types": [
+        "cloze"
+      ],
+      "variantTag": "standard",
+      "gradeEvidence": "rubric_inferred(L=2,T=0)",
+      "checked": true,
+      "reason": "형용사 1번 뜻과 word·standard가 일치한다. 맑고 온화한 날씨를 다루는 cloze는 3학년에 적합하고 예상 L=2도 수용 가능하다. rubric_inferred는 추정 근거이며 T=0은 문항 제작 전 확정할 수 없다."
+    },
+    {
+      "kind": "word",
+      "lemma": "일어서다",
+      "partOfSpeech": "동사",
+      "expectedL1": 1,
+      "expectedL2": 0,
+      "senseOrder": 2,
+      "types": [
+        "cloze",
+        "synonym_context"
+      ],
+      "variantTag": "polysemy",
+      "gradeEvidence": "[4국04-01] 단어와 단어 간의 의미 관계를 파악한다.",
+      "checked": false,
+      "reason": "Argon 재선정 제외: 제공된 뜻('누워 있다가 일어나다')은 현대 어감상 '일어나다'로 쓰이는 영역이며 기본 의미('앉아 있다가 서다')와의 다의 변별 가치도 낮아 부적합함."
+    },
+    {
+      "kind": "word",
+      "lemma": "선선하다",
+      "partOfSpeech": "형용사",
+      "expectedL1": 1,
+      "expectedL2": 0,
+      "senseOrder": 1,
+      "types": [
+        "cloze"
+      ],
+      "variantTag": "standard",
+      "gradeEvidence": "[4국05-04] 감각적 표현에 유의하여 작품을 감상하고, 감각적 표현을 활용하여 자신의 생각이나 감정을 표현한다.",
+      "checked": true,
+      "reason": "형용사 1번 뜻과 word·standard가 맞는다. 시원하게 느껴지는 서늘함은 생활 속 감각으로 이해할 수 있어 cloze와 감각적 표현 성취기준의 연결이 자연스럽다. 예상 L=1은 수용 가능하나 생활 노출에 따라 L1=0도 검토할 수 있다."
+    },
+    {
+      "kind": "word",
+      "lemma": "빈틈없다",
+      "partOfSpeech": "형용사",
+      "sourceEntry": {
+        "provider": "stdict",
+        "entryId": "167649"
+      },
+      "senseOrder": 2,
+      "types": [
+        "antonym_context",
+        "synonym_context"
+      ],
+      "variantTag": "polysemy",
+      "expectedL1": 1,
+      "expectedL2": 1,
+      "gradeEvidence": "[4국04-01] 단어와 단어 간의 의미 관계를 파악한다.",
+      "checked": true,
+      "reason": "형용사 2번 뜻과 word·polysemy가 일치한다. 준비나 확인에 빠진 점이 없는 상황은 3학년에 적합하다. 허술함과의 대조 및 꼼꼼함과의 유사성을 다루는 두 유형이 타당하고 예상 L=2도 수용 가능하다."
+    },
+    {
+      "kind": "word",
+      "lemma": "후련하다",
+      "partOfSpeech": "형용사",
+      "expectedL1": 1,
+      "expectedL2": 1,
+      "senseOrder": 1,
+      "types": [
+        "cloze",
+        "antonym_context"
+      ],
+      "variantTag": "standard",
+      "gradeEvidence": "[4국04-01] 단어와 단어 간의 의미 관계를 파악한다.",
+      "checked": true,
+      "reason": "형용사 1번 뜻과 word·standard가 맞는다. 제공된 뜻은 좋지 않던 속이 풀리는 신체 상태이며, 이 범위에서는 3학년용 cloze·antonym_context가 가능하다. 마음의 걱정이 풀리는 뜻으로 바꾸어 쓰면 안 된다. 예상 L=2는 수용 가능하다."
+    },
+    {
+      "kind": "word",
+      "lemma": "초라하다",
+      "partOfSpeech": "형용사",
+      "expectedL1": 1,
+      "expectedL2": 1,
+      "senseOrder": 1,
+      "types": [
+        "cloze",
+        "antonym_context"
+      ],
+      "variantTag": "standard",
+      "gradeEvidence": "[4국04-01] 단어와 단어 간의 의미 관계를 파악한다.",
+      "checked": true,
+      "reason": "형용사 1번 뜻과 word·standard가 일치한다. 겉모양이나 옷차림을 나타내는 뜻은 3학년 이야기 맥락에서 이해 가능하며 두 유형도 타당하다. 예상 L=2는 적절하다. 반의 문맥은 외양을 기준으로 하고 사람의 가치 평가로 확대하지 않아야 한다."
+    },
+    {
+      "kind": "word",
+      "lemma": "화려하다",
+      "partOfSpeech": "형용사",
+      "expectedL1": 1,
+      "expectedL2": 1,
+      "senseOrder": 1,
+      "types": [
+        "cloze",
+        "antonym_context"
+      ],
+      "variantTag": "standard",
+      "gradeEvidence": "[4국04-01] 단어와 단어 간의 의미 관계를 파악한다.",
+      "checked": true,
+      "reason": "형용사 1번 뜻과 word·standard가 맞는다. 빛이나 장식의 곱고 아름다운 모습을 다루면 3학년에 적합하며 두 유형도 가능하다. 예상 L=2는 수용 가능하다. 반의 문맥은 외양의 대비를 분명히 해야 하며 사전의 낯선 유의어를 보기로 쓸 근거는 아니다."
+    },
+    {
+      "kind": "word",
+      "lemma": "견학하다",
+      "partOfSpeech": "동사",
+      "expectedL1": 1,
+      "expectedL2": 1,
+      "senseOrder": 1,
+      "types": [
+        "cloze"
+      ],
+      "variantTag": "standard",
+      "gradeEvidence": "rubric_inferred(L=2,T=0)",
+      "checked": true,
+      "reason": "동사 1번 뜻과 word·standard가 일치한다. 직접 보고 배우는 학교 활동은 3학년에 적합하고 cloze도 자연스럽다. 예상 L=2는 타당하다. rubric_inferred의 T=0은 잠정값이며 단순한 구경과 학습 목적을 구별해야 한다."
+    },
+    {
+      "kind": "word",
+      "lemma": "결석하다",
+      "partOfSpeech": "동사",
+      "expectedL1": 0,
+      "expectedL2": 1,
+      "senseOrder": 1,
+      "types": [
+        "cloze",
+        "antonym_context"
+      ],
+      "variantTag": "standard",
+      "gradeEvidence": "[4국04-01] 단어와 단어 간의 의미 관계를 파악한다.",
+      "checked": true,
+      "reason": "동사 1번 뜻과 word·standard가 맞는다. 학교에 나가야 하는 날 나오지 않는 상황과 출석의 대비가 명확하여 두 유형이 적절하다. 기초 학교생활어인 L1=0과 생활 한자어인 L2=1이 타당하다."
+    },
+    {
+      "kind": "word",
+      "lemma": "외출하다",
+      "partOfSpeech": "동사",
+      "expectedL1": 1,
+      "expectedL2": 1,
+      "senseOrder": 1,
+      "types": [
+        "cloze"
+      ],
+      "variantTag": "standard",
+      "gradeEvidence": "rubric_inferred(L=2,T=0)",
+      "checked": true,
+      "reason": "동사 1번 뜻과 word·standard가 일치하며 집에서 잠시 밖으로 나가는 cloze는 3학년에 적합하다. 다만 기초 생활 노출을 고려하면 예상 L1=1보다 0이 적절할 수 있다. L=2·T=0을 확정 근거로 사용할 수는 없다."
+    },
+    {
+      "kind": "word",
+      "lemma": "예습하다",
+      "partOfSpeech": "동사",
+      "expectedL1": 1,
+      "expectedL2": 1,
+      "senseOrder": 1,
+      "types": [
+        "cloze",
+        "antonym_context"
+      ],
+      "variantTag": "standard",
+      "gradeEvidence": "[4국04-01] 단어와 단어 간의 의미 관계를 파악한다.",
+      "checked": true,
+      "reason": "동사 1번 뜻과 word·standard가 맞는다. 배우기 전에 미리 익히는 활동은 3학년에 적합하다. cloze와 학습 전후를 기준으로 한 복습과의 반의 문맥이 타당하며 예상 L=2도 수용 가능하다."
+    },
+    {
+      "kind": "word",
+      "lemma": "완주하다",
+      "partOfSpeech": "동사",
+      "expectedL1": 1,
+      "expectedL2": 1,
+      "senseOrder": 1,
+      "types": [
+        "cloze"
+      ],
+      "variantTag": "standard",
+      "gradeEvidence": "rubric_inferred(L=2,T=0)",
+      "checked": true,
+      "reason": "동사 1번 뜻과 word·standard가 일치한다. 정해진 지점까지 끝까지 달리는 상황은 3학년용 cloze로 자연스럽고 예상 L=2도 타당하다. 일반적인 과제 완료로 뜻을 넓히면 안 되며 rubric_inferred의 T=0은 아직 확정할 수 없다."
+    }
+  ]
+}
