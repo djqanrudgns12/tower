@@ -1,6 +1,6 @@
 # CR-1000 현재 인계
 
-갱신: 2026-11-07 00:24 KST · 총괄 Codex · 작업 폴더 `/Users/bodyking/Desktop/Architecture/towerdeffense` · 브랜치 `p1/intake-round1`
+갱신: 2026-11-07 00:42 KST · 총괄 Codex · 작업 폴더 `/Users/bodyking/Desktop/Architecture/towerdeffense` · 브랜치 `p1/intake-round1`
 
 이 문서가 현재 실행 기준이다. 과거 진행 기록과 이전 명령은 [원문 보관](CR1000_HANDOFF_HISTORY_20261107.md)에 **바이트 그대로** 보존했다. 보관본의 Claude 호출·완료된 작업 재실행 지시는 사용하지 않는다. 규칙은 [AGENTS.md](../AGENTS.md), 세부 설계는 [계획서](CONTENT_REVIEW_PLAN.md), 도구 조각은 `.orchestrate/wp/`를 필요한 범위만 읽는다.
 
@@ -40,15 +40,15 @@ PID는 기록값이므로 `ps`로 실제 생존과 실행 파일을 확인한다
 | 실행 | 확인한 PID | 현재 범위·다음 연결 | 상태 파일 |
 |---|---:|---|---|
 | 5학년 후반 완료 | 44425 종료 확인 | 016~021 전체289개 반영. 자기 수량1,021개 달성 | `g5-gate-resume-b.summary.json` |
-| 6학년 후반 | 16557 | 017~021 S1/S2 진행. 012~016 반영됨 | `g6-gate-fast-b.summary.json` |
+| 6학년 후반 | 16557 | 017~021 1차검수 완료·21개 수정/재검수. 012~016 반영됨 | `g6-gate-fast-b.summary.json` |
 | 5학년 보충 검수 | 66385 / 조정24838 | 4학년022~027 정상 종료·164개 전부 반영. 5학년022~027 223개 S1 시작 | `supplement-gates.run.json`, `g5-supplement-gate.summary.json` |
-| 6학년 보충 제작 | 48074 | 마지막027 제작. 022~026 182생성·메인 audit 완료 | `g6-supplement.summary.json`, `g6-supplement.staging-audit.json` |
-| 6학년 보충 검수 예약 | 29054 | 16557/48074 실제 종료 + 022~027 audit6개 뒤 시작 | `g6-supplement-gate-queue.run.json` |
-| Normal 심화 시범 예약 | 55045 | 48074 정상 종료 뒤G5-028 → G6-028 각5개 제작 | `normal-advanced-pilots.run.json` |
-| Normal 심화 후보 목록 | 조정59577 | 5학년120 → 6학년180 후보. Argon 생성/Codex 독립 확인을60개 묶음으로 겹쳐 진행 | `normal-advanced-wordlists.run.json`, `wordlists/gN-normal-advanced/{summary.json,check/summary.json}` |
+| 6학년 보충 제작 완료 | 48074 종료 확인 | 022~027 219생성·81제외. 메인 audit6개 완료 | `g6-supplement.summary.json`, `g6-supplement.staging-audit.json` |
+| 6학년 보충 검수 예약 | 29054 | 16557 실제 종료 뒤219개 검수 시작. 제작 종료/audit6개 조건 충족 | `g6-supplement-gate-queue.run.json` |
+| Normal 심화 시범 | 70626 / 조정70623 | G5-028 5개 제작 중. 이어G6-028 5개 | `normal-advanced-pilots.run.json` |
+| Normal 심화 후보 목록 | 조정59577 | 5학년61통과 목록 반영 완료. 6학년180 후보 생성69288/검사69302 진행 | `normal-advanced-wordlists.run.json`, `wordlists/gN-normal-advanced/{summary.json,check/summary.json}` |
 | 3학년 예약 | 61279 | 4·5·6 자기 승인 각1000 + 기존 자리/자원 확보 뒤004~023 20배치 | `g3-next-phase.run.json`, `g3-next-phase.plan.json` |
 
-위 상태 경로는 모두 `.orchestrate/` 아래다. 3학년은 아직 **waiting-for-own-1000**, 모델 호출0이다. 6학년210개가 수량 조건에 남았다. 새5학년 낱말 첫60개는 Codex 독립 확인34통과·26제외(출처18/내용8). 메인이 원본/158사전파일/해시/현재 checked 항목 대응을 확인했다. `wordlists/g5-normal-advanced/check/chunk1/audit.json`에 보존했으며, 목록 전체 반영/문항 승인은 아직 아니다. W5 선행 구현 PID60559는 정상 종료했고 그 자리는3학년 예약이 승계한다. 옛 43390/43407 및 front/final-tail 실패 예약은 다시 시작하지 않는다. 원본/실패 기록은 보존했다.
+위 상태 경로는 모두 `.orchestrate/` 아래다. 3학년은 아직 **waiting-for-own-1000**, 모델 호출0이다. 6학년210개가 수량 조건에 남았다. 5학년 새 낱말120개는 **61통과·59제외**(출처39/내용20), 제작 가능122칸으로 확정했다. 두 묶음의 원본/299사전파일/해시/독립 검사 대응을 메인이 확인했고 `wordlist-g5-r2`를 잠금 반영했다. 목록 검증이며 문항 승인은 아니다. W5 선행 구현 PID60559는 정상 종료했고 그 자리는3학년 예약이 승계한다. 옛 43390/43407 및 front/final-tail 실패 예약은 다시 시작하지 않는다. 원본/실패 기록은 보존했다.
 
 ## 5. 완료한 코드와 검증
 
@@ -60,6 +60,9 @@ PID는 기록값이므로 `ps`로 실제 생존과 실행 파일을 확인한다
 - 5학년 마무리 반영 **016 47개**: `e38a44be0f654485c17b1d18c2ce123513fddc12`, 17 manifest, 은행/키 생성·서버 시험 통과. 반영 후 bank-build/question-seed17시험 통과. 부모 PID44425의 실제 종료도 확인했다. 5학년 수량 목표는 달성했고 Normal 심화는68/120이라 보충을 계속한다.
 - 4학년 보충 반영 **025/027 43개(20·23)**: `d1f3eac68017a778d5e44d4ecbd55cdaee985c1e`, 18 manifest, 은행/키 생성·서버 시험 통과, 반영 후 관련17시험 통과. 현재 공개3,018개이나 4학년 초과분 증가라 목표 진척은71.0% 그대로다.
 - 최신 반영 **4학년026 20개**: `fe2ed41a1f30340c2297bf6fb1ca5590b4fed53a`, 13 manifest, 은행/키 생성·서버 시험 및 반영 후 관련17시험 통과. 4학년 보충172개 중164개 최종 승인, 실행 PID25440 정상 종료(exit0/오류0)를 확인했다. 조정자는 **PID66385**로 5학년 보충223개를 자동 시작했고 S1/실제 생존을 확인했다.
+- **새5학년 낱말 목록** `aa0c4846b8987a108b127321f3acdc63f931ae1e`: 원본/manifest 감사 뒤 잠금 반영·서버 시험 통과. 실제 변경은 `content-source/wordlists/g5-r2.json` 한 파일뿐이며 은행/키는 불변이므로 직전17시험 결과를 재사용했다. `wordlists/g5-normal-advanced/check/staging.audit.json`은 committed다. 완료 목록 audit 도구는 커밋/현 파일 해시를 확인하고 재사용으로 보고한다.
+- **6학년027 제작 감사:** 37생성·13제외, Argon7호출, 99파일, 사전 근거 제외9건 재현, 전역ID충돌0. 6배치 누계219생성·81제외이며 최종 승인 수가 아니다. `g6-supplement.staging-audit.json`의6개 기록을 보존했다.
+- **심화 시범 복구:** 첫 시범 PID69629는 기존 목록 순서 때문에 새 낱말0개를 골라 **모델 호출0으로 종료**했다. 종료한 조정자55045와 실패 입력/로그는 `normal-advanced/history/first-pilot-55045`에 이동 보존했다. 새 검증 목록을 포함하고 전체 목록의 새 낱말을 먼저 고르도록 수정했다. 새 낱말은 서로 다른 표제어로 센다. 수정 후 두 학년 `--plan`에서5개/새 낱말5개 확인, 기존3개 이상 조건 유지. 새 조정70623·5학년 제작70626, **15:40:03Z 실제 Argon 호출** 확인. 원인/입력 변화/스크립트 해시는 `normal-advanced/{pilot-selection-diagnosis.json,pilot-recovery.json}`이다. 살아 있던 작업을 재시작한 것이 아니다.
 - 직전347개 반영: 6학년008~011 199개 `923e7dc`, 5학년009~011 148개 `254646d`; 각각 잠금/서버·관련17시험 통과. 이전 반영 증거는 `content-loop-history/incremental-apply-<commit>.json`, 최신은 `two-model-incremental-apply.json`.
 - 전체 검증 기준 기록 `cr1000-publish-verify.json/.log`: 타입/전체 린트 통과, 최초 단위1395통과3실패. 오래된 fixture 가정3곳 수정 뒤 해당80시험 통과, 나머지 결과 재사용. 제품 변경 없는 콘텐츠 반영마다 전체 검사를 반복하지 않는다. 최종 W5/W6/W8 통합 뒤 필요한 대표 검사는 별도다.
 - 현재 남의 변경 `docs/contracts/prd_v0_5_validation.json`은 커밋 제외. 이전 validate:plan이 시간/해시를 갱신했으므로 원래와 바이트 동일하다고 주장하지 않는다. 홈/e2e/그림 등 새 변경이 생기면 다시 소유권 확인.
@@ -67,8 +70,8 @@ PID는 기록값이므로 `ps`로 실제 생존과 실행 파일을 확인한다
 ## 6. 다음 작업
 
 1. 완료 배치만 현재 판 증거를 확인해 선반영한다. 부모의 다른 배치가 진행 중이어도 해당 배치의 `firstPassComplete`, 오류 없음, 모든 단계 종료, native 다음단계 반영대기/대상0, snapshot 미검수/결함0, 실제 `bank.decide` 전부approved면 가능하다. 살아 있는 부모/잠금을 변경하지 않는다.
-2. 6학년027 제작 완료 시 기존 audit 방식으로 원본/manifest/해시/스키마/자체반박/ID 충돌을 확인한다. audit6개가 모여야 예약 검수가 열린다.
-3. Normal 시범 G5/G6-028 결과는 `normal-advanced/gN/pilot.json`. 제작만으로 승인/심화로 세지 말고 메인 구조 확인 → 실제 S1/독립/최종 검수 후 수율에 따라 확대한다. 새 목록은 `wordlist-g5-r2`/`wordlist-g6-r2` staging을 감사하고 잠금 반영해야 한다. 사전 미확정/독립 반려는 유지한다.
+2. 6학년 보충 검수 예약이 PID16557 종료 뒤219개를 실제 시작하는지 확인한다. 제작022~027의 audit6개는 완료했으므로 다시 검사하지 않는다.
+3. Normal 시범 G5/G6-028 결과는 `normal-advanced/gN/pilot.json`. 제작만으로 승인/심화로 세지 말고 메인 구조 확인 → 실제 S1/독립/최종 검수 후 수율에 따라 확대한다. 5학년 새 목록은 `content-source/wordlists/g5-r2.json`으로 반영 완료했다. 6학년 `wordlist-g6-r2` staging은 생성/독립 검사 완료 뒤 감사하고 잠금 반영해야 한다. 사전 미확정/독립 반려는 유지한다.
 4. 5·6학년 심화 부족을 실제 S1 분포로 채운다. 3학년은 수량 조건을 만족하면 예약이 자동 시작하며, 실제 수율에 따라 보충한다. 3학년 예약은48시간 상한이다.
 5. 루프 정지 지점에서 W5 계약/빌드/받는 학년 검사/버전/서버키/철회를 통합한다. 자기1000 전 공유 비활성, 위로1학년/24%, ID·원학년 보존, 받는 학년 tier·버전. 아래 공유D5는 후속 단계로 남긴다. Claude 확인으로 되돌리지 않는다.
 6. W5 커밋 → W6 학년별 지연 적재 → W8 한 판 반복 규칙. [W8 조사](CR1000_W8_RESEARCH.md) 참조. 관련 파일의 타인 변경 확인 후 순서대로 진행한다.
@@ -88,7 +91,6 @@ node .orchestrate/published-progress.mjs
 
 ```bash
 COMMIT_CO_AUTHOR="Codex <noreply@openai.com>" resource-guard run --profile test -- node .orchestrate/apply-completed-batches.mjs
-AUDIT_CONTENT_BATCH=Q50-G6-027 node .orchestrate/audit-g6-supplement.mjs
 node .orchestrate/wordlists/normal-advanced/audit.mjs 5
 node tools/content/coverage-report.mjs
 ```
