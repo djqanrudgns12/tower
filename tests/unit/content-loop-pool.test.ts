@@ -193,6 +193,44 @@ it.each([0, 5, 1.5])('잘못된 검수 동시 수 %s는 입력 로드 전에 거
   expect(loadBatches).not.toHaveBeenCalled();
 });
 
+function savedBlindFixture() {
+  const root = rootDir(), q = draft('A', 0), config = resolveReviewConfig({}, {}).claude;
+  const report = { at: '2026-11-06T10:00:00Z', config, items: [{ questionId: q.id, revision: q.revision, contentHash: 'hash', blindChoice: 'a', verdicts: { uniqueness: 'pass', grade: 'pass', language: 'pass' }, findings: [] }] };
+  const file = '.orchestrate/review/claude/A/blind.result.json';
+  write(root, file, report);
+  const b = { loadBatches: () => [{ batchId: 'A', reviews: {}, drafts: [q] }], contentHash: () => 'hash', rationalesHash: () => 'rh' };
+  const refs = [{ batchId: 'A', questionId: q.id, revision: q.revision }];
+  return { root, q, config, report, file, b, refs };
+}
+
+it('중단 뒤 재개는 현재 판·해시·모델의 블라인드 결과를 보존하고 공개 대조만 호출한다', async () => {
+  const f = savedBlindFixture(), before = fs.readFileSync(path.join(f.root, f.file), 'utf8');
+  const events: Event[] = [];
+  const respond = vi.fn(async () => ({ out: JSON.stringify({ items: [{ questionId: f.q.id, revision: f.q.revision, blindChoice: 'a', verdicts: { uniqueness: 'pass', grade: 'pass', language: 'pass', source: 'pass', explanation: 'pass' }, findings: [] }] }), err: '' }));
+  const result = await runQuestions(f.b, f.root, 'claude', f.refs, () => {}, {
+    config: f.config, respond, 'resume-blind': true, onEvent: (event: Event) => events.push(event),
+  });
+  expect(respond).toHaveBeenCalledTimes(1);
+  expect(respond).toHaveBeenCalledWith(expect.objectContaining({ phase: 'reveal' }));
+  expect(events.filter(e => e.type === 'call')).toHaveLength(1);
+  expect(fs.readFileSync(path.join(f.root, f.file), 'utf8')).toBe(before);
+  expect(result[0].merged).toBe(1);
+});
+
+it.each(['hash', 'revision', 'model', 'missing', 'invalid'] as const)('재개 블라인드의 %s 불일치는 모델 호출 전에 거절한다', async mismatch => {
+  const f = savedBlindFixture();
+  if (mismatch === 'hash') f.report.items[0]!.contentHash = 'old-hash';
+  if (mismatch === 'revision') f.report.items[0]!.revision++;
+  if (mismatch === 'model') f.report.config = { ...f.config, model: 'other-model' };
+  if (mismatch === 'invalid') f.report.items[0]!.blindChoice = 'invalid';
+  write(f.root, f.file, f.report);
+  if (mismatch === 'missing') fs.unlinkSync(path.join(f.root, f.file));
+  const respond = vi.fn();
+  await expect(runQuestions(f.b, f.root, 'claude', f.refs, () => {}, { config: f.config, respond, 'resume-blind': true })).rejects.toThrow();
+  expect(respond).not.toHaveBeenCalled();
+  expect(fs.existsSync(path.join(f.root, '.orchestrate/staging'))).toBe(false);
+});
+
 function draft(batchId: string, i: number): d.QuestionDraft {
   return { schemaVersion: '0.2', batchId, id: `g4-pool-${batchId.toLowerCase()}-${String(i).padStart(4, '0')}`, revision: 1, status: 'draft', grade: 4, type: 'cloze', variantTag: 'standard',
     gradeBasis: { reference: '출처', editionYear: 2022, unit: 'stdict:전문어 표지 없음', reviewed: false },

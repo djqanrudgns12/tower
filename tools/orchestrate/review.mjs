@@ -548,6 +548,20 @@ export async function runQuestions(b, root, reviewer, questions, log = console.l
       const { items } = await buildPhase(b, root, reviewer, id, phase, opts(id));
       inputs.push(...items); if (items.length) active.add(id);
     }
+    if (phase === 'blind' && options['resume-blind'] === true) {
+      for (const id of active) {
+        const expected = inputs.filter(q => owner.get(q.questionId) === id);
+        const saved = readJson(path.join(workDir(root, reviewer, id), 'blind.result.json'));
+        if (!saved || !Array.isArray(saved.items)) throw new Error(`${id}: 재개할 blind 결과가 없다`);
+        assertPhaseConfig(saved.config, reviewOptions(reviewer, options).config, '재개 blind');
+        const wanted = new Map(expected.map(q => [`${q.questionId}@${q.revision}`, q.contentHash]));
+        const selected = saved.items.filter(q => wanted.has(`${q.questionId}@${q.revision}`));
+        if (selected.some(q => q.contentHash !== wanted.get(`${q.questionId}@${q.revision}`))) throw new Error(`${id}: 재개 blind 내용 해시 불일치`);
+        parseReply(JSON.stringify({ items: selected }), 'blind', expected);
+      }
+      // 검증된 기존 결과를 덮어쓰거나 새 모델 호출로 집계하지 않는다.
+      continue;
+    }
     const chunks = [];
     for (let offset = 0; offset < inputs.length; offset += 50) chunks.push(inputs.slice(offset, offset + 50));
     const chunkResults = new Array(chunks.length);
