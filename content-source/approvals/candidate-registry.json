@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1",
   "rule": "publicationPolicy=codex-argon-v1은 공개 승인과 동일한 판정만 사용한다(Claude나 legacy 후보 경로로 우회 불가). 정책 없는 legacy: 공개 승인 문항 또는 (Argon 자체 반박에서 정답만 맞음 · 같은 revision·contentHash의 외부 블라인드 검수(codex·claude) 1건 이상이 있고 있는 것은 모두 정답 일치, source·uniqueness·grade·language pass, explanation fail 금지 · 새 문맥 argon-blind 독립 풀이가 정답과 같고 source·uniqueness·grade·language 모두 pass, explanation fail 금지 · 현재 revision·contentHash·rationalesHash의 해설 대조 pass · 게시 형식·의미·Q50 엄격 검사 통과). 하나라도 어긋나면 격리한다. 후보 은행은 제작 진척 확인용이며 게임에 싣지 않는다(PRD §9.3).",
-  "approved": 4103,
+  "approved": 4108,
   "quarantined": 193,
   "entries": [
     {
@@ -26518,6 +26518,46 @@
       "revision": 2,
       "batchId": "Q50-G5-021",
       "contentHash": "b4116a3e2debaede8ae85c4322559041dd61b03afa67ab9ae6a4f1a8de9d36cc",
+      "decision": "approved",
+      "reasons": []
+    },
+    {
+      "questionId": "g5-argon-1985",
+      "revision": 1,
+      "batchId": "Q50-G5-028",
+      "contentHash": "fb0cda81ecaf89069312d2310c3e2b8abe376a1d39eea36bf582d00b76741eb0",
+      "decision": "approved",
+      "reasons": []
+    },
+    {
+      "questionId": "g5-argon-1986",
+      "revision": 1,
+      "batchId": "Q50-G5-028",
+      "contentHash": "396636e7fae47f79a1ab655d54db5df63b4c82183df07c47246325f3d653101a",
+      "decision": "approved",
+      "reasons": []
+    },
+    {
+      "questionId": "g5-argon-1987",
+      "revision": 1,
+      "batchId": "Q50-G5-028",
+      "contentHash": "c341ca5ce79df30e23510d1808474168ec5b261c4f5bb8aebfb1f2d046d7e008",
+      "decision": "approved",
+      "reasons": []
+    },
+    {
+      "questionId": "g5-argon-1988",
+      "revision": 1,
+      "batchId": "Q50-G5-028",
+      "contentHash": "494fb9d3932de1781eb83ab53fc315a92cb8428950e0fd3fc103abed6f0f4ae6",
+      "decision": "approved",
+      "reasons": []
+    },
+    {
+      "questionId": "g5-argon-1989",
+      "revision": 2,
+      "batchId": "Q50-G5-028",
+      "contentHash": "ed849d39b9e32c3ff207cde71829f1c1fb4267c9d94ce75787a723d5cd16ba75",
       "decision": "approved",
       "reasons": []
     },

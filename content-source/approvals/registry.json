@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1",
   "rule": "publicationPolicy=codex-argon-v1: 현재 id·revision의 Argon 자체 반박은 서로 다른 4개 보기에서 정답만 fits, 나머지는 does_not_fit · 현재 revision·contentHash의 Codex 독립 풀이가 정답과 같고 source·uniqueness·grade·language·explanation 모두 pass · freshContext=true 및 항목 run.model=gpt-6-astra, effort=high 또는 xhigh(항목 출처 도입 전에는 gpt-6-astra 2단계 도구 보고서로 독립 풀이 출처 확인; 과거 effort는 추정하지 않음) · 현재 revision·contentHash·rationalesHash의 Codex 해설 대조 pass(reviewer.model과 run.model=gpt-6-astra, effort=high 또는 xhigh) · 현재 argon-blind가 있으면 새 문맥·같은 해시·정답 일치·source/uniqueness/grade/language pass 및 explanation fail 금지 · 게시 형식·의미 검사와 Q50 엄격 배치 검사 통과. Claude는 사용하지 않는다. 정책 없는 legacy: Argon 자체 반박에서 정답만 맞음 · 현재 revision·contentHash의 Codex·Claude 독립 풀이가 정답과 같고 source·uniqueness·grade·language 모두 pass, explanation fail 금지 · 현재 revision·contentHash·rationalesHash의 Claude 총괄 해설 대조 pass · 게시 형식·의미 검사 통과. 각 정책의 조건이 하나라도 어긋나면 그 revision은 격리한다.",
-  "approved": 3286,
+  "approved": 3291,
   "quarantined": 1010,
   "entries": [
     {
@@ -29305,6 +29305,46 @@
       "revision": 2,
       "batchId": "Q50-G5-021",
       "contentHash": "b4116a3e2debaede8ae85c4322559041dd61b03afa67ab9ae6a4f1a8de9d36cc",
+      "decision": "approved",
+      "reasons": []
+    },
+    {
+      "questionId": "g5-argon-1985",
+      "revision": 1,
+      "batchId": "Q50-G5-028",
+      "contentHash": "fb0cda81ecaf89069312d2310c3e2b8abe376a1d39eea36bf582d00b76741eb0",
+      "decision": "approved",
+      "reasons": []
+    },
+    {
+      "questionId": "g5-argon-1986",
+      "revision": 1,
+      "batchId": "Q50-G5-028",
+      "contentHash": "396636e7fae47f79a1ab655d54db5df63b4c82183df07c47246325f3d653101a",
+      "decision": "approved",
+      "reasons": []
+    },
+    {
+      "questionId": "g5-argon-1987",
+      "revision": 1,
+      "batchId": "Q50-G5-028",
+      "contentHash": "c341ca5ce79df30e23510d1808474168ec5b261c4f5bb8aebfb1f2d046d7e008",
+      "decision": "approved",
+      "reasons": []
+    },
+    {
+      "questionId": "g5-argon-1988",
+      "revision": 1,
+      "batchId": "Q50-G5-028",
+      "contentHash": "494fb9d3932de1781eb83ab53fc315a92cb8428950e0fd3fc103abed6f0f4ae6",
+      "decision": "approved",
+      "reasons": []
+    },
+    {
+      "questionId": "g5-argon-1989",
+      "revision": 2,
+      "batchId": "Q50-G5-028",
+      "contentHash": "ed849d39b9e32c3ff207cde71829f1c1fb4267c9d94ce75787a723d5cd16ba75",
       "decision": "approved",
       "reasons": []
     },

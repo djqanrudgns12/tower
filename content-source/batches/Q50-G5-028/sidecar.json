@@ -1,0 +1,173 @@
+{
+  "batchId": "Q50-G5-028",
+  "jobId": "Q50-G5-028",
+  "publicationPolicy": "codex-argon-v1",
+  "producer": {
+    "model": "Gemini 4 Argon (High)",
+    "tool": "tools/orchestrate/produce.mjs",
+    "date": "2026-11-06"
+  },
+  "items": [
+    {
+      "id": "g5-argon-1985",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "소풍 갈 생각에 들뜬 경각심이 생겼다.",
+          "verdict": "does_not_fit",
+          "reason": "소풍을 기대하며 설레고 들뜨는 마음은 위험을 경계하여 조심하는 마음이 아니다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "불이 날 뻔한 일을 겪고 경각심을 가졌다.",
+          "verdict": "fits",
+          "reason": "위험한 일을 겪은 뒤 정신을 차리고 주의 깊게 살피어 경계하는 마음을 가졌다는 뜻으로 자연스럽다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "시험이 끝나 마음이 놓이는 경각심이 들었다.",
+          "verdict": "does_not_fit",
+          "reason": "일이 끝나 마음이 놓이는 안도감은 정신을 차려 경계하는 마음과 정반대다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "숙제를 다 마쳐 뿌듯한 경각심이 생겼다.",
+          "verdict": "does_not_fit",
+          "reason": "할 일을 끝내고 느끼는 뿌듯함은 주의 깊게 살피어 조심하는 마음과 다르다."
+        }
+      ],
+      "uniquenessNote": "위험을 겪고 정신을 차려 조심하는 상황인 b만 사전 뜻풀이에 맞고, 설렘(a)·안도감(c)·뿌듯함(d)은 경계하는 마음과 어긋난다.",
+      "gradeEvidence": "rubric_inferred(L=5,T=3)"
+    },
+    {
+      "id": "g5-argon-1986",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "종이 끝에 연필로 작은 구심점을 찍었다.",
+          "verdict": "does_not_fit",
+          "reason": "종이 끝에 찍은 물리적인 작은 점은 중심적 역할을 비유하는 뜻은 물론 기하학적 중심점에도 맞지 않는다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "다툼이 친구들을 갈라놓는 구심점이 되었다.",
+          "verdict": "does_not_fit",
+          "reason": "사람들을 흩어지게 갈라놓는 원인은 하나로 모으는 중심 역할과 반대된다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "모임에서 혼자 따로 떨어져 구심점이 되었다.",
+          "verdict": "does_not_fit",
+          "reason": "모임에 섞이지 않고 혼자 떨어져 있는 상태는 중심 역할을 하는 것과 맞지 않는다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "반장은 우리 반을 하나로 모으는 구심점이 되었다.",
+          "verdict": "fits",
+          "reason": "학급 구성원을 하나로 모으며 중심적 역할을 하는 사람을 비유적으로 이르는 말로 알맞다."
+        }
+      ],
+      "uniquenessNote": "비유적으로 사람들의 중심 역할을 하는 대상을 나타낸 c만 바르며, 종이 끝의 점(a), 사이를 갈라놓는 일(b), 모임 밖으로 혼자 떨어진 상태(d)는 모두 어긋난다.",
+      "gradeEvidence": "rubric_inferred(L=5,T=4)"
+    },
+    {
+      "id": "g5-argon-1987",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "발표 주제를 동물 이야기로 국한하였다.",
+          "verdict": "fits",
+          "reason": "발표 주제의 범위를 동물 이야기라는 일정한 부분에 한정하였다는 뜻으로 자연스럽다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "모든 주제를 가리지 않고 넓혀 국한하였다.",
+          "verdict": "does_not_fit",
+          "reason": "가리지 않고 범위를 넓히는 것은 일정한 부분에 한정하는 뜻과 정반대다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "작은 모임을 온 동네로 키워 국한하였다.",
+          "verdict": "does_not_fit",
+          "reason": "모임의 규모를 온 동네로 넓혀 키우는 상황에는 범위를 한정하는 동사가 어울리지 않는다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "모자란 연필을 친구에게 빌려 국한하였다.",
+          "verdict": "does_not_fit",
+          "reason": "부족한 물건을 빌려 채우는 행동은 범위를 한정하는 뜻과 무관하다."
+        }
+      ],
+      "uniquenessNote": "주제의 범위를 일정한 부분으로 한정한 a만 바르며, 범위를 가리지 않고 넓힘(b), 규모를 키움(c), 부족한 물건을 빌림(d)은 모두 틀리다.",
+      "gradeEvidence": "rubric_inferred(L=5,T=4)"
+    },
+    {
+      "id": "g5-argon-1988",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "내일 하려고 놀이를 잠깐 근절하기로 했다.",
+          "verdict": "does_not_fit",
+          "reason": "내일 다시 하려고 잠시 멈추는 일은 다시 살아날 수 없도록 뿌리째 없애는 뜻과 맞지 않는다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "꾸준히 이어 가려고 독서 습관을 근절하기로 했다.",
+          "verdict": "does_not_fit",
+          "reason": "좋은 습관을 계속 이어 가려는 목적과 뿌리째 없애 버린다는 뜻이 서로 모순된다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "급식실의 나쁜 새치기 버릇을 근절하기로 했다.",
+          "verdict": "fits",
+          "reason": "잘못된 새치기 버릇이 다시 생기지 못하도록 뿌리째 없애 버리기로 했다는 뜻으로 자연스럽다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "동생 주려고 간식을 반만 근절하기로 했다.",
+          "verdict": "does_not_fit",
+          "reason": "간식을 절반 남겨 두는 행동은 남김없이 아주 없애 버리는 뜻과 어긋난다."
+        }
+      ],
+      "uniquenessNote": "나쁜 버릇을 다시 생기지 못하도록 완전히 없애려는 d만 적합하며, 일시 중단(a), 지속 유지(b), 절반만 남김(c)은 뿌리째 없앤다는 의미 조건에 어긋난다.",
+      "gradeEvidence": "rubric_inferred(L=5,T=4)"
+    },
+    {
+      "id": "g5-argon-1989",
+      "revision": 2,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "골키퍼는 상대의 눈빛과 발끝을 살피다가 공을 차는 순간 재빠르게 몸을 날려 막았다.",
+          "verdict": "fits",
+          "reason": "'기민하다'는 눈치가 빠르고 동작이 날쌔다는 뜻이므로 상대를 살피다 순간적으로 몸을 날린 문맥에서 '재빠르게'와 바꿔 쓸 수 있다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "골키퍼는 상대의 눈빛과 발끝을 살피다가 공을 차는 순간 성급하게 몸을 날려 막았다.",
+          "verdict": "does_not_fit",
+          "reason": "'성급하게'는 침착하지 못하고 급히 서두르는 뜻이라 상대를 살피다가 날쌔게 움직인 '기민하게'와 바꿔 쓸 수 없다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "골키퍼는 상대의 눈빛과 발끝을 살피다가 공을 차는 순간 느긋하게 몸을 날려 막았다.",
+          "verdict": "does_not_fit",
+          "reason": "'느긋하게'는 급하지 않고 여유를 부리는 모습이라 동작이 날쌘 '기민하게'와 뜻이 반대이다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "골키퍼는 상대의 눈빛과 발끝을 살피다가 공을 차는 순간 조심스럽게 몸을 날려 막았다.",
+          "verdict": "does_not_fit",
+          "reason": "'조심스럽게'는 실수하지 않도록 주의를 기울이는 태도를 뜻하며 눈치와 동작이 빠르다는 뜻이 아니므로 '기민하게'와 바꿔 쓸 수 없다."
+        }
+      ],
+      "uniquenessNote": "'기민하다'(눈치가 빠르고 동작이 날쌔다)의 뜻풀이와 공을 차는 순간 몸을 날려 막는 문맥에 모두 맞는 보기는 a('재빠르게')뿐이며, b·c·d는 서두름·여유·주의를 뜻해 바꿔 쓸 수 없다.",
+      "gradeEvidence": "5학년 심화(advanced) 한자어 '기민하다'를 초등학생에게 친숙한 축구 골키퍼 상황으로 제시했고, 보기는 모두 학년 수준에 맞는 쉬운 일상어로 구성했다."
+    }
+  ],
+  "rejected": []
+}

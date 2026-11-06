@@ -1,0 +1,128 @@
+{
+  "reviewId": "QR-AUTO-codex-Q50-G5-028",
+  "jobId": "Q50-G5-028",
+  "reviewer": {
+    "model": "gpt-6-astra",
+    "tool": "2단계 블라인드 검수(tools/orchestrate/review.mjs)",
+    "freshContext": true,
+    "date": "2026-11-06"
+  },
+  "items": [
+    {
+      "questionId": "g5-argon-1985",
+      "revision": 1,
+      "contentHash": "fb0cda81ecaf89069312d2310c3e2b8abe376a1d39eea36bf582d00b76741eb0",
+      "run": {
+        "id": "20261106T160437138Z-74620-37fc53c7-6163-4883-b7df-74f4ef02193f",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "b",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": []
+    },
+    {
+      "questionId": "g5-argon-1986",
+      "revision": 1,
+      "contentHash": "396636e7fae47f79a1ab655d54db5df63b4c82183df07c47246325f3d653101a",
+      "run": {
+        "id": "20261106T160437138Z-74620-37fc53c7-6163-4883-b7df-74f4ef02193f",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "d",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": []
+    },
+    {
+      "questionId": "g5-argon-1987",
+      "revision": 1,
+      "contentHash": "c341ca5ce79df30e23510d1808474168ec5b261c4f5bb8aebfb1f2d046d7e008",
+      "run": {
+        "id": "20261106T160437138Z-74620-37fc53c7-6163-4883-b7df-74f4ef02193f",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "a",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": []
+    },
+    {
+      "questionId": "g5-argon-1988",
+      "revision": 1,
+      "contentHash": "494fb9d3932de1781eb83ab53fc315a92cb8428950e0fd3fc103abed6f0f4ae6",
+      "run": {
+        "id": "20261106T160437138Z-74620-37fc53c7-6163-4883-b7df-74f4ef02193f",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "c",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": []
+    },
+    {
+      "questionId": "g5-argon-1989",
+      "revision": 1,
+      "contentHash": "bdb4b04688cc5af2fcd1affb030c8d81dce502862397a7b626a72ad88fecf48d",
+      "run": {
+        "id": "20261106T160437138Z-74620-37fc53c7-6163-4883-b7df-74f4ef02193f",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "a",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "fail"
+      },
+      "findings": [
+        "[공개 대조] d의 오답 이유에서 ‘조심스럽게’를 ‘살살 움직이는 모습’으로 설명하고 날쌘 동작과 대립시킨 것은 부정확해요. ‘실수하지 않도록 주의를 기울이는 태도를 뜻하며, 눈치와 동작이 빠르다는 뜻은 아니에요’로 수정하세요."
+      ]
+    },
+    {
+      "questionId": "g5-argon-1989",
+      "revision": 2,
+      "contentHash": "ed849d39b9e32c3ff207cde71829f1c1fb4267c9d94ce75787a723d5cd16ba75",
+      "run": {
+        "id": "20261106T160913790Z-74620-3dfbe519-7591-4f17-8760-6601f413924b",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "a",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": []
+    }
+  ]
+}
