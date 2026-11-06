@@ -1,0 +1,173 @@
+{
+  "batchId": "Q50-G6-029",
+  "jobId": "Q50-G6-029",
+  "producer": {
+    "model": "Gemini 4 Argon (High)",
+    "tool": "tools/orchestrate/produce.mjs",
+    "date": "2026-11-06"
+  },
+  "items": [
+    {
+      "id": "g6-argon-2040",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "친구의 의견에 찬성하며 좋은 점만 잘못된 점을 조리 있게 공격하여 말했다.",
+          "verdict": "does_not_fit",
+          "reason": "의견에 찬성하며 좋은 점을 말하는 상황과 잘못된 점을 공격하여 말한다는 뜻이 충돌한다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "상대편 주장의 틀린 근거를 자료를 들어 조리 있게 공격하여 말했다.",
+          "verdict": "fits",
+          "reason": "상대 주장의 잘못된 근거를 자료로 조리 있게 따져 공격하는 상황이므로 뜻과 정확히 맞는다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "토론 전에 발표 순서와 지킬 규칙만 잘못된 점을 조리 있게 공격하여 말했다.",
+          "verdict": "does_not_fit",
+          "reason": "절차와 규칙을 안내하는 일은 주장의 잘못된 점을 공격하는 행위가 아니다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "아무 까닭 없이 무조건 싫다며 잘못된 점을 조리 있게 공격하여 말했다.",
+          "verdict": "does_not_fit",
+          "reason": "아무 까닭 없이 떼쓰는 태도는 ‘조리 있게’ 따져 말한다는 필수 의미 조건과 모순된다."
+        }
+      ],
+      "uniquenessNote": "‘논박하다’는 상대 주장의 잘못된 점을 조리 있게 공격하여 말한다는 세 조건(반대 입장, 잘못 지적, 논리적 근거)을 모두 갖추어야 하므로 b만 성립하고, 찬성(a), 단순 안내(c), 근거 없는 우기기(d)는 배제된다.",
+      "gradeEvidence": "[6국01-07] 절차와 규칙을 지키고 타당한 이유와 근거를 제시하며 토론한다."
+    },
+    {
+      "id": "g6-argon-2041",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "토론 규칙을 적은 논하는 말이나 글의 취지를 접어 가방에 넣었다.",
+          "verdict": "does_not_fit",
+          "reason": "추상적인 말이나 글의 취지는 물리적으로 접어서 가방에 넣을 수 있는 종이가 아니다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "목소리를 키우니 내 논하는 말이나 글의 취지가 복도까지 울렸다.",
+          "verdict": "does_not_fit",
+          "reason": "공간에 울려 퍼지는 것은 소리의 크기이지 논하는 말의 중심 취지가 아니다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "사전에서 모르는 낱말의 정확한 논하는 말이나 글의 취지를 찾았다.",
+          "verdict": "does_not_fit",
+          "reason": "개별 낱말의 사전적 의미는 논하는 말이나 글 전체의 취지를 뜻하는 ‘논지’가 아니다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "주장에서 벗어난 예를 빼니 글의 논하는 취지가 분명해졌다.",
+          "verdict": "fits",
+          "reason": "주장하는 글에서 불필요한 예를 덜어 내어 중심 취지가 또렷해졌다는 문맥과 자연스럽게 어울린다."
+        }
+      ],
+      "uniquenessNote": "‘논지’는 논하는 말이나 글의 중심 취지를 뜻하므로 주장하는 글의 통일성을 다룬 d만 성립하며, 실물 종이(a), 물리적 소리(b), 개별 낱말의 뜻풀이(c)와 결합한 문장은 모두 성립하지 않는다.",
+      "gradeEvidence": "[6국02-01] 글의 구조를 고려하며 주제나 주장을 파악하고 글 내용을 요약한다."
+    },
+    {
+      "id": "g6-argon-2042",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "하지만 노랫말 속 가족을 위하는 마음의 바탕에는 그와 반대되는 동질성이 담겨 있다.",
+          "verdict": "fits",
+          "reason": "앞 문장의 ‘서로 다른 성질’과 반대되면서 두 민요의 마음 바탕이 같다는 내용에 정확히 부합한다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "하지만 노랫말 속 가족을 위하는 마음의 바탕에는 그와 반대되는 독창성이 담겨 있다.",
+          "verdict": "does_not_fit",
+          "reason": "독창성은 남과 다른 고유한 새로움을 뜻하므로 ‘서로 다른 성질’의 반대말이 될 수 없다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "하지만 노랫말 속 가족을 위하는 마음의 바탕에는 그와 반대되는 다양성이 담겨 있다.",
+          "verdict": "does_not_fit",
+          "reason": "다양성은 여러 가지로 다른 특성이 많음을 뜻하므로 앞 문장과 반대가 아니라 오히려 비슷한 방향이다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "하지만 노랫말 속 가족을 위하는 마음의 바탕에는 그와 반대되는 일관성이 담겨 있다.",
+          "verdict": "does_not_fit",
+          "reason": "일관성은 시간 흐름 속에서 하나의 기준이 변함없음을 뜻할 뿐 두 대상의 바탕이 같다는 뜻이 아니다."
+        }
+      ],
+      "uniquenessNote": "앞 문장의 ‘서로 다른 성질’과 반의 대조를 이루면서 두 지역 민요의 마음 바탕이 서로 같음을 나타내는 낱말은 ‘동질성’(a)뿐이며, 네 보기 모두 받침 있는 ‘-성’ 명사여서 조사 ‘이’로도 구별되지 않는다.",
+      "gradeEvidence": "rubric_inferred(L=6,T=5)"
+    },
+    {
+      "id": "g6-argon-2043",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "하지만 매달 직접 그린 그림엽서를 주고받으면서 그 엽서가 떨어진 둘 사이를 이어 주는 이정표가 되었다.",
+          "verdict": "does_not_fit",
+          "reason": "이정표는 나아갈 방향을 가리키는 표지이므로 떨어진 두 사람을 오가며 이어 준다는 문맥과 맞지 않는다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "하지만 매달 직접 그린 그림엽서를 주고받으면서 그 엽서가 떨어진 둘 사이를 이어 주는 본보기가 되었다.",
+          "verdict": "does_not_fit",
+          "reason": "본보기는 본받을 모범을 뜻하므로 둘 사이의 관계를 맺어 주는 수단으로 쓸 수 없다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "하지만 매달 직접 그린 그림엽서를 주고받으면서 그 엽서가 떨어진 둘 사이를 이어 주는 매개체가 되었다.",
+          "verdict": "fits",
+          "reason": "주고받는 그림엽서가 떨어진 할머니와 나 사이에서 정과 소통을 맺어 주므로 뜻에 정확히 맞는다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "하지만 매달 직접 그린 그림엽서를 주고받으면서 그 엽서가 떨어진 둘 사이를 이어 주는 울타리가 되었다.",
+          "verdict": "does_not_fit",
+          "reason": "울타리는 외부 위험으로부터 둘러싸 보호하는 대상이지 떨어진 두 주체를 연결하는 수단이 아니다."
+        }
+      ],
+      "uniquenessNote": "네 보기 모두 받침 없는 3음절 명사로 조사 ‘가’와 동일하게 호응하지만, 떨어진 두 사람 사이를 오가며 관계를 맺어 주는 사물을 뜻하는 말은 ‘매개체’(c)뿐이다.",
+      "gradeEvidence": "rubric_inferred(L=6,T=5)"
+    },
+    {
+      "id": "g6-argon-2044",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "곰팡이 위에 새 벽지만 붙인 것은 미봉책이다.",
+          "verdict": "fits",
+          "reason": "곰팡이를 없애지 않은 채 새 벽지만 붙여 겉을 가린 것은 당장 눈가림만 하는 임시 방법이므로 '미봉책'의 뜻에 알맞다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "물이 새는 원인을 찾아 고친 것은 미봉책이다.",
+          "verdict": "does_not_fit",
+          "reason": "물이 새는 원인을 찾아 제대로 고친 것은 문제를 해결한 방법이지, 눈가림만 하는 임시 방법이 아니므로 맞지 않는다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "깨진 창문을 그냥 내버려 둔 것은 미봉책이다.",
+          "verdict": "does_not_fit",
+          "reason": "깨진 창문을 임시로 막는 방법조차 쓰지 않고 그대로 내버려 두었으므로 '미봉책'의 뜻에 맞지 않는다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "불이 나지 않게 전선을 미리 살핀 것은 미봉책이다.",
+          "verdict": "does_not_fit",
+          "reason": "불이 나지 않게 전선을 미리 살핀 것은 사고를 막으려는 대비 활동이지, 생긴 문제를 눈가림한 임시 방법이 아니므로 맞지 않는다."
+        }
+      ],
+      "uniquenessNote": "b만 문제를 고치지 않고 겉만 가려 잠시 넘긴 임시 방법이고, a는 원인을 고친 해결 방법, c는 아무 방법도 쓰지 않고 내버려 둔 일, d는 사고 전에 미리 대비한 일이라 정답은 b뿐이다.",
+      "gradeEvidence": "[6국02-04] 문제 상황과 관련된 다양한 관점의 글을 읽고 이를 문제 해결에 활용한다."
+    }
+  ],
+  "rejected": [],
+  "publicationPolicy": "codex-argon-v1"
+}

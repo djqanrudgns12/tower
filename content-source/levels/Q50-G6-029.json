@@ -1,0 +1,308 @@
+{
+  "batchId": "Q50-G6-029",
+  "rubricVersion": "lv1",
+  "items": [
+    {
+      "questionId": "g6-argon-2040",
+      "revision": 1,
+      "contentHash": "fdc572a59d389ba62b27e7a99b7c1b7dbeedb561690d67cd42908abfc7424efe",
+      "precomputed": {
+        "typeBase": 2,
+        "lengthBump": 2,
+        "t3Base": 0,
+        "readingLoad": 90,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g6-argon-2040",
+          "revision": 1,
+          "contentHash": "fdc572a59d389ba62b27e7a99b7c1b7dbeedb561690d67cd42908abfc7424efe",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 3,
+          "L2": 3,
+          "T1": 2,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "6학년 토론·논설에서 쓰이는 고추상 격식 한자어이며, 선지에 직접 행동 단서가 있으나 토론 담화 내 반의·유사 말하기 오답을 변별해야 한다."
+        },
+        {
+          "questionId": "g6-argon-2040",
+          "revision": 1,
+          "contentHash": "fdc572a59d389ba62b27e7a99b7c1b7dbeedb561690d67cd42908abfc7424efe",
+          "judge": "codex",
+          "model": "gpt-6-astra",
+          "L1": 3,
+          "L2": 3,
+          "T1": 2,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "curriculum_explicit",
+          "unit": "[6국01-07] 절차와 규칙을 지키고 타당한 이유와 근거를 제시하며 토론한다.",
+          "reason": "격식적인 논증 한자어로, 찬성과 근거 없는 비난을 조리 있는 반박과 구별해야 하지만 자료로 잘못을 따지는 직접 단서가 있다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 6,
+        "T": 5,
+        "V": 17,
+        "ownTier": "advanced",
+        "band": {
+          "min": 6,
+          "max": 6
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "021dd78d8247262c24e1dc556463b1c4598418b09457a5fbbe8bfd44431a841d"
+    },
+    {
+      "questionId": "g6-argon-2041",
+      "revision": 1,
+      "contentHash": "e4de8ae12e07eec831c9e479b812bda0e03f6ba27ca953f382ea81c81540ffa5",
+      "precomputed": {
+        "typeBase": 2,
+        "lengthBump": 2,
+        "t3Base": 0,
+        "readingLoad": 92,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g6-argon-2041",
+          "revision": 1,
+          "contentHash": "e4de8ae12e07eec831c9e479b812bda0e03f6ba27ca953f382ea81c81540ffa5",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 3,
+          "L2": 3,
+          "T1": 1,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "구어 빈도가 낮은 6학년 논설·비평용 고추상 한자어이며, 중심 의미를 직접 단서로 묻고 오답 일부만 언어·의미 영역을 공유한다."
+        },
+        {
+          "questionId": "g6-argon-2041",
+          "revision": 1,
+          "contentHash": "e4de8ae12e07eec831c9e479b812bda0e03f6ba27ca953f382ea81c81540ffa5",
+          "judge": "codex",
+          "model": "gpt-6-astra",
+          "L1": 3,
+          "L2": 3,
+          "T1": 1,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "curriculum_explicit",
+          "unit": "[6국02-01] 글의 구조를 고려하며 주제나 주장을 파악하고 글 내용을 요약한다.",
+          "reason": "논설문에서 쓰이는 추상적인 중심 뜻 개념이며, 낱말의 뜻과 혼동할 수 있으나 주장과 무관한 예를 뺀다는 직접 단서가 있다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 6,
+        "T": 4,
+        "V": 16,
+        "ownTier": "core",
+        "band": {
+          "min": 6,
+          "max": 6
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "b3a8cfae43cb39325beaf208e59b805bfa6ae37878d62c4a590b9861aeb1e06d"
+    },
+    {
+      "questionId": "g6-argon-2042",
+      "revision": 1,
+      "contentHash": "f07294c3440c57b19eb5a126a55f80239d0757950e32f080eb99a543b07c7491",
+      "precomputed": {
+        "typeBase": 1,
+        "lengthBump": 2,
+        "t3Base": 0,
+        "readingLoad": 87,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g6-argon-2042",
+          "revision": 1,
+          "contentHash": "f07294c3440c57b19eb5a126a55f80239d0757950e32f080eb99a543b07c7491",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 3,
+          "L2": 2,
+          "T1": 2,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "격식 문어에 쓰이는 한자 결합 속성 추상어로, 지문에 명시적 대조 표지가 있으나 추상 성질 명사 오답들이 유의·반의 경계를 이룬다."
+        },
+        {
+          "questionId": "g6-argon-2042",
+          "revision": 1,
+          "contentHash": "f07294c3440c57b19eb5a126a55f80239d0757950e32f080eb99a543b07c7491",
+          "judge": "codex",
+          "model": "gpt-6-astra",
+          "L1": 3,
+          "L2": 3,
+          "T1": 2,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "대상의 바탕이 같음을 나타내는 고추상 한자어로 다양성·일관성과의 의미 경계를 구별해야 하며, 반대 관계가 명시되어 있다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 6,
+        "T": 5,
+        "V": 17,
+        "ownTier": "advanced",
+        "band": {
+          "min": 6,
+          "max": 6
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "7011c5aa5fc190e847348df9c0bc1f3b78b7ed30024d26476e095385cfa6fc71"
+    },
+    {
+      "questionId": "g6-argon-2043",
+      "revision": 1,
+      "contentHash": "b1a73c79b4d17ff1cf394dbe11c416ebc070c9d58be7f68a43c1319a4ec283a5",
+      "precomputed": {
+        "typeBase": 0,
+        "lengthBump": 2,
+        "t3Base": 0,
+        "readingLoad": 89,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g6-argon-2043",
+          "revision": 1,
+          "contentHash": "b1a73c79b4d17ff1cf394dbe11c416ebc070c9d58be7f68a43c1319a4ec283a5",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 2,
+          "L2": 2,
+          "T1": 1,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "설명 문어에 쓰이는 관계 추상 한자어로, 지문에 뜻풀이에 준하는 직접 단서가 제시되고 오답은 비유적 역할 명사군으로 구성되었다."
+        },
+        {
+          "questionId": "g6-argon-2043",
+          "revision": 1,
+          "contentHash": "b1a73c79b4d17ff1cf394dbe11c416ebc070c9d58be7f68a43c1319a4ec283a5",
+          "judge": "codex",
+          "model": "gpt-6-astra",
+          "L1": 3,
+          "L2": 3,
+          "T1": 0,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "둘 사이를 연결하는 기능을 추상화한 문어적 한자어지만, 중심 의미를 직접 풀어 주며 오답도 방향·모범·보호로 구별된다."
+        }
+      ],
+      "merged": {
+        "rule": 4,
+        "L": 6,
+        "T": 3,
+        "V": 15,
+        "ownTier": "core",
+        "band": {
+          "min": 6,
+          "max": 6
+        },
+        "flags": [
+          "spotCheck"
+        ]
+      },
+      "levelAssessmentHash": "0a039d58526be6035258d44b425d0a7a17506374a95593ae1a1dbc68c52a40a8"
+    },
+    {
+      "questionId": "g6-argon-2044",
+      "revision": 1,
+      "contentHash": "acb91c02573d2007c1173c0a0ef4c31c74e6274a7571b42d8be250c2bb76d364",
+      "precomputed": {
+        "typeBase": 2,
+        "lengthBump": 2,
+        "t3Base": 0,
+        "readingLoad": 89,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g6-argon-2044",
+          "revision": 1,
+          "contentHash": "acb91c02573d2007c1173c0a0ef4c31c74e6274a7571b42d8be250c2bb76d364",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 3,
+          "L2": 3,
+          "T1": 2,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "음훈 추론이 필요한 6학년 비평 격식 한자어이며, 직접 행동 단서가 제시되나 근본 해결·방치·예방 등 대처 방식의 경계를 구별해야 한다."
+        },
+        {
+          "questionId": "g6-argon-2044",
+          "revision": 1,
+          "contentHash": "acb91c02573d2007c1173c0a0ef4c31c74e6274a7571b42d8be250c2bb76d364",
+          "judge": "codex",
+          "model": "gpt-6-astra",
+          "L1": 3,
+          "L2": 3,
+          "T1": 2,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "형태만으로 뜻을 짐작하기 어려운 비평적 한자어로 근본 해결·방치와 임시 눈가림을 구별해야 하며, 벽지만 덧붙이는 직접 행동 단서가 있다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 6,
+        "T": 5,
+        "V": 17,
+        "ownTier": "advanced",
+        "band": {
+          "min": 6,
+          "max": 6
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "b790d629e43d1afd52139403894ddf29b14c95b971cf5a67a3e20aead606c06e"
+    }
+  ]
+}

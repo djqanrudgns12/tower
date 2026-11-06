@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1",
   "rule": "publicationPolicy=codex-argon-v1: 현재 id·revision의 Argon 자체 반박은 서로 다른 4개 보기에서 정답만 fits, 나머지는 does_not_fit · 현재 revision·contentHash의 Codex 독립 풀이가 정답과 같고 source·uniqueness·grade·language·explanation 모두 pass · freshContext=true 및 항목 run.model=gpt-6-astra, effort=high 또는 xhigh(항목 출처 도입 전에는 gpt-6-astra 2단계 도구 보고서로 독립 풀이 출처 확인; 과거 effort는 추정하지 않음) · 현재 revision·contentHash·rationalesHash의 Codex 해설 대조 pass(reviewer.model과 run.model=gpt-6-astra, effort=high 또는 xhigh) · 현재 argon-blind가 있으면 새 문맥·같은 해시·정답 일치·source/uniqueness/grade/language pass 및 explanation fail 금지 · 게시 형식·의미 검사와 Q50 엄격 배치 검사 통과. Claude는 사용하지 않는다. 정책 없는 legacy: Argon 자체 반박에서 정답만 맞음 · 현재 revision·contentHash의 Codex·Claude 독립 풀이가 정답과 같고 source·uniqueness·grade·language 모두 pass, explanation fail 금지 · 현재 revision·contentHash·rationalesHash의 Claude 총괄 해설 대조 pass · 게시 형식·의미 검사 통과. 각 정책의 조건이 하나라도 어긋나면 그 revision은 격리한다.",
-  "approved": 3932,
+  "approved": 3983,
   "quarantined": 760,
   "entries": [
     {
@@ -30022,6 +30022,374 @@
       "reasons": []
     },
     {
+      "questionId": "g5-argon-1990",
+      "revision": 1,
+      "batchId": "Q50-G5-029",
+      "contentHash": "09d785ab84499e1ffa33f5b25f6eae83c8228ce03a46c54032990c3023e7cb03",
+      "decision": "approved",
+      "reasons": []
+    },
+    {
+      "questionId": "g5-argon-1991",
+      "revision": 1,
+      "batchId": "Q50-G5-029",
+      "contentHash": "3430f3762d6770d5a05c32c4038341ab9c6c38fc5d1a086056e3e807faf5c232",
+      "decision": "approved",
+      "reasons": []
+    },
+    {
+      "questionId": "g5-argon-1992",
+      "revision": 1,
+      "batchId": "Q50-G5-029",
+      "contentHash": "a595401f69f6c11ea1f7c85469e417cfdd2b726dfaf524614026ff0122b6a5d7",
+      "decision": "approved",
+      "reasons": []
+    },
+    {
+      "questionId": "g5-argon-1993",
+      "revision": 2,
+      "batchId": "Q50-G5-029",
+      "contentHash": "892fdac56e9026375b84feefed54992ff0faf850d31c9ef4213001c5db5fdae8",
+      "decision": "approved",
+      "reasons": []
+    },
+    {
+      "questionId": "g5-argon-1994",
+      "revision": 1,
+      "batchId": "Q50-G5-029",
+      "contentHash": "bc739e3a5ea4391cb72820e4e6eb9eb2708de57e510a8507725ac66a36d22e5f",
+      "decision": "approved",
+      "reasons": []
+    },
+    {
+      "questionId": "g5-argon-1995",
+      "revision": 1,
+      "batchId": "Q50-G5-029",
+      "contentHash": "57d9683613b62c988c56cd18dd141280aa70faee20294663f5eadba5a4526044",
+      "decision": "approved",
+      "reasons": []
+    },
+    {
+      "questionId": "g5-argon-1996",
+      "revision": 2,
+      "batchId": "Q50-G5-029",
+      "contentHash": "2f64b6740d280c08e1805194cfbb20e8e4781e8d417babdd077f6313a86f244c",
+      "decision": "approved",
+      "reasons": []
+    },
+    {
+      "questionId": "g5-argon-1997",
+      "revision": 1,
+      "batchId": "Q50-G5-029",
+      "contentHash": "5e9c135f1ae99565368c5b518013a7b604d14596ed51973fa95144cd6341b810",
+      "decision": "approved",
+      "reasons": []
+    },
+    {
+      "questionId": "g5-argon-1998",
+      "revision": 1,
+      "batchId": "Q50-G5-029",
+      "contentHash": "811f35ee2a5fe0430db1eb68ee1f5ff267137b1584d6b5bc216cd93472e76655",
+      "decision": "approved",
+      "reasons": []
+    },
+    {
+      "questionId": "g5-argon-1999",
+      "revision": 1,
+      "batchId": "Q50-G5-029",
+      "contentHash": "d974700355655104822354d36aa324304ba5f24daeb297d316fb7ce2400cfa17",
+      "decision": "approved",
+      "reasons": []
+    },
+    {
+      "questionId": "g5-argon-2000",
+      "revision": 1,
+      "batchId": "Q50-G5-029",
+      "contentHash": "7d312c87a5b4bd19877d3d7ffdb8827d2920508448a1f6880aabbb28cedebde2",
+      "decision": "approved",
+      "reasons": []
+    },
+    {
+      "questionId": "g5-argon-2001",
+      "revision": 1,
+      "batchId": "Q50-G5-029",
+      "contentHash": "3cdaca3d2382244cab130398f17e77af6ac0274fbf2373a810b7744234b76ff1",
+      "decision": "approved",
+      "reasons": []
+    },
+    {
+      "questionId": "g5-argon-2003",
+      "revision": 1,
+      "batchId": "Q50-G5-029",
+      "contentHash": "b62f9f1bde95ae242097924d256794860f3506beea9e48426ca046607473a18f",
+      "decision": "approved",
+      "reasons": []
+    },
+    {
+      "questionId": "g5-argon-2004",
+      "revision": 1,
+      "batchId": "Q50-G5-029",
+      "contentHash": "d9791dc4272ecba6fa77ad7223a46c4e9cfa169d18daa3c7ca32527bb7c625cb",
+      "decision": "approved",
+      "reasons": []
+    },
+    {
+      "questionId": "g5-argon-2005",
+      "revision": 1,
+      "batchId": "Q50-G5-029",
+      "contentHash": "0ad987845b929c8b816706481be0209c54291762eefb35344adfc027e5c86121",
+      "decision": "approved",
+      "reasons": []
+    },
+    {
+      "questionId": "g5-argon-2006",
+      "revision": 1,
+      "batchId": "Q50-G5-029",
+      "contentHash": "b4cad62656c981117cf827cc56c974e97b8c3dff8b421c80b81f6c58f1c2d6cd",
+      "decision": "approved",
+      "reasons": []
+    },
+    {
+      "questionId": "g5-argon-2007",
+      "revision": 1,
+      "batchId": "Q50-G5-029",
+      "contentHash": "de9fff77478bb64b9c4dfab9311b571aabe55f868cff2cc39e9817142c135a44",
+      "decision": "approved",
+      "reasons": []
+    },
+    {
+      "questionId": "g5-argon-2008",
+      "revision": 2,
+      "batchId": "Q50-G5-029",
+      "contentHash": "0f7d867f357725d7ac0e422091cde5e31c0d8e8d9f21810151e8596db94594bf",
+      "decision": "approved",
+      "reasons": []
+    },
+    {
+      "questionId": "g5-argon-2009",
+      "revision": 1,
+      "batchId": "Q50-G5-029",
+      "contentHash": "b7b86c7eda5ab5548e5ea5e72aece0ac5fc002f26490e19f8574db39fdc4a5fb",
+      "decision": "approved",
+      "reasons": []
+    },
+    {
+      "questionId": "g5-argon-2010",
+      "revision": 1,
+      "batchId": "Q50-G5-029",
+      "contentHash": "96cd7b01db4a3095842160fbb94589439688c89b5f087fe5f9ba60fc4ce4c1c5",
+      "decision": "approved",
+      "reasons": []
+    },
+    {
+      "questionId": "g5-argon-2011",
+      "revision": 1,
+      "batchId": "Q50-G5-029",
+      "contentHash": "4498e4bfa2dac6ea10579359c8944bbea30f61bfb7fdcc5e8200fef09ed31ffd",
+      "decision": "approved",
+      "reasons": []
+    },
+    {
+      "questionId": "g5-argon-2012",
+      "revision": 1,
+      "batchId": "Q50-G5-029",
+      "contentHash": "6cbe99bb10e651972a746b6c2b29b288db95483832f8c39599ffa421428fd6bb",
+      "decision": "approved",
+      "reasons": []
+    },
+    {
+      "questionId": "g5-argon-2013",
+      "revision": 2,
+      "batchId": "Q50-G5-029",
+      "contentHash": "f2099496d5c7dca95f0f62e2feff980682dee881be26c86057dfbf39f5fbba6f",
+      "decision": "approved",
+      "reasons": []
+    },
+    {
+      "questionId": "g5-argon-2014",
+      "revision": 1,
+      "batchId": "Q50-G5-029",
+      "contentHash": "fb60be7ce6b7aa38b8b463ddd34a5ec7a4077fe83abea129e329233d76bf8b49",
+      "decision": "approved",
+      "reasons": []
+    },
+    {
+      "questionId": "g5-argon-2015",
+      "revision": 1,
+      "batchId": "Q50-G5-029",
+      "contentHash": "c5658de987a07e704b8749e852ea0f8b675a786ac7207e5d4687205d560fec02",
+      "decision": "approved",
+      "reasons": []
+    },
+    {
+      "questionId": "g5-argon-2016",
+      "revision": 1,
+      "batchId": "Q50-G5-029",
+      "contentHash": "ea2607c382d703d4f9af3edca3324c17fe5c097294c5955bd6a2a1101a72513e",
+      "decision": "approved",
+      "reasons": []
+    },
+    {
+      "questionId": "g5-argon-2017",
+      "revision": 2,
+      "batchId": "Q50-G5-029",
+      "contentHash": "23a5cc0a948d371d7e9a83d8562a2cde07e0b638d7ab50f67f728a014ac4dc71",
+      "decision": "approved",
+      "reasons": []
+    },
+    {
+      "questionId": "g5-argon-2018",
+      "revision": 1,
+      "batchId": "Q50-G5-029",
+      "contentHash": "76560b8216f16ba2e593b0360ad5c856ebca2fbd5e59a5fcdeab9894abb7614f",
+      "decision": "approved",
+      "reasons": []
+    },
+    {
+      "questionId": "g5-argon-2019",
+      "revision": 1,
+      "batchId": "Q50-G5-029",
+      "contentHash": "75203cec7ad0f6a2ec3cdbf88cbf161a0503d7f97e97ca4120cf9be2ea773cab",
+      "decision": "approved",
+      "reasons": []
+    },
+    {
+      "questionId": "g5-argon-2020",
+      "revision": 1,
+      "batchId": "Q50-G5-029",
+      "contentHash": "67e66ac87cd1e0afa3407b175d1c52d4ca0493657d2a38a63943ada1064aa536",
+      "decision": "approved",
+      "reasons": []
+    },
+    {
+      "questionId": "g5-argon-2021",
+      "revision": 1,
+      "batchId": "Q50-G5-029",
+      "contentHash": "7e17fd7bc8284698a02ab59bbff1bc30d629eb6630dba717a5834ccd40d32b5d",
+      "decision": "approved",
+      "reasons": []
+    },
+    {
+      "questionId": "g5-argon-2024",
+      "revision": 1,
+      "batchId": "Q50-G5-029",
+      "contentHash": "de021dab8ff25f8f5bf684482d25b79aea7408b4112fca27fc8343d86b87b69e",
+      "decision": "approved",
+      "reasons": []
+    },
+    {
+      "questionId": "g5-argon-2025",
+      "revision": 1,
+      "batchId": "Q50-G5-029",
+      "contentHash": "43b9291c20e854b9ce88f23f8f54454c3ca2cc08d28d485864184bb06e6e82ba",
+      "decision": "approved",
+      "reasons": []
+    },
+    {
+      "questionId": "g5-argon-2026",
+      "revision": 1,
+      "batchId": "Q50-G5-029",
+      "contentHash": "6e9687ea39453f190c11bff9f15fa89faa4907036e6f3f4340d7dc8e91da84cc",
+      "decision": "approved",
+      "reasons": []
+    },
+    {
+      "questionId": "g5-argon-2027",
+      "revision": 1,
+      "batchId": "Q50-G5-029",
+      "contentHash": "81d8abb992ee020add1ccce9e98cde903d76b690adabae3d198d3b060e9261c2",
+      "decision": "approved",
+      "reasons": []
+    },
+    {
+      "questionId": "g5-argon-2028",
+      "revision": 1,
+      "batchId": "Q50-G5-029",
+      "contentHash": "09947ae1071d42c261e15943ec29c1050159ba267684a98c8577aa6452dcd2e0",
+      "decision": "approved",
+      "reasons": []
+    },
+    {
+      "questionId": "g5-argon-2029",
+      "revision": 1,
+      "batchId": "Q50-G5-029",
+      "contentHash": "77f4b9d27a7ed95d3f436f4304bd1d01a301aa2e7ecdd646a1c9b326a7fb4042",
+      "decision": "approved",
+      "reasons": []
+    },
+    {
+      "questionId": "g5-argon-2030",
+      "revision": 1,
+      "batchId": "Q50-G5-029",
+      "contentHash": "170796bd5cf114f56e1f178c32bb580be5cfa8e3cfe47bd4d6722537964464b5",
+      "decision": "approved",
+      "reasons": []
+    },
+    {
+      "questionId": "g5-argon-2031",
+      "revision": 1,
+      "batchId": "Q50-G5-029",
+      "contentHash": "f1605a4822425b25f45a00ac713d92f4b01173b240977f0b08e38cb72576f9a1",
+      "decision": "approved",
+      "reasons": []
+    },
+    {
+      "questionId": "g5-argon-2032",
+      "revision": 1,
+      "batchId": "Q50-G5-029",
+      "contentHash": "05b07bb64820561166a6650414b15d948c566bd63e18bd669019249f5cb842ba",
+      "decision": "approved",
+      "reasons": []
+    },
+    {
+      "questionId": "g5-argon-2033",
+      "revision": 1,
+      "batchId": "Q50-G5-029",
+      "contentHash": "d02b2ac0072f0e67e7d4d399d10650e5a62e8c487b9ca979bf69ec50a5d5c27f",
+      "decision": "approved",
+      "reasons": []
+    },
+    {
+      "questionId": "g5-argon-2034",
+      "revision": 1,
+      "batchId": "Q50-G5-029",
+      "contentHash": "95f1269c7f513366ee17abdfa77eaf4c5d80cd4ed95fd299899a2c9da77ee21d",
+      "decision": "approved",
+      "reasons": []
+    },
+    {
+      "questionId": "g5-argon-2035",
+      "revision": 2,
+      "batchId": "Q50-G5-029",
+      "contentHash": "06f36a414fecd8367a7df2889276d4923d79ddfd8c46b999bf721361987d7bfd",
+      "decision": "approved",
+      "reasons": []
+    },
+    {
+      "questionId": "g5-argon-2036",
+      "revision": 1,
+      "batchId": "Q50-G5-029",
+      "contentHash": "0d79d736294a0ab6f801619c8251a07973785cd5714861a139211ffe08685469",
+      "decision": "approved",
+      "reasons": []
+    },
+    {
+      "questionId": "g5-argon-2038",
+      "revision": 1,
+      "batchId": "Q50-G5-029",
+      "contentHash": "bc827072e3ba520d46dbccea6c09e7cdd70098de9e6d4b913d1ffa2f2150879e",
+      "decision": "approved",
+      "reasons": []
+    },
+    {
+      "questionId": "g5-argon-2039",
+      "revision": 1,
+      "batchId": "Q50-G5-029",
+      "contentHash": "de58d58aa5a4c48f3d8f73714a1723b0e0602710e39cb009b62c901de09a1abd",
+      "decision": "approved",
+      "reasons": []
+    },
+    {
       "questionId": "g6-argon-0001",
       "revision": 1,
       "batchId": "Q50-G6-001",
@@ -39954,6 +40322,46 @@
       "revision": 1,
       "batchId": "Q50-G6-027",
       "contentHash": "821109560185bfb0ec2a9db9982441500f66195e6be1ea667168042b84a41618",
+      "decision": "approved",
+      "reasons": []
+    },
+    {
+      "questionId": "g6-argon-2040",
+      "revision": 1,
+      "batchId": "Q50-G6-029",
+      "contentHash": "fdc572a59d389ba62b27e7a99b7c1b7dbeedb561690d67cd42908abfc7424efe",
+      "decision": "approved",
+      "reasons": []
+    },
+    {
+      "questionId": "g6-argon-2041",
+      "revision": 1,
+      "batchId": "Q50-G6-029",
+      "contentHash": "e4de8ae12e07eec831c9e479b812bda0e03f6ba27ca953f382ea81c81540ffa5",
+      "decision": "approved",
+      "reasons": []
+    },
+    {
+      "questionId": "g6-argon-2042",
+      "revision": 1,
+      "batchId": "Q50-G6-029",
+      "contentHash": "f07294c3440c57b19eb5a126a55f80239d0757950e32f080eb99a543b07c7491",
+      "decision": "approved",
+      "reasons": []
+    },
+    {
+      "questionId": "g6-argon-2043",
+      "revision": 1,
+      "batchId": "Q50-G6-029",
+      "contentHash": "b1a73c79b4d17ff1cf394dbe11c416ebc070c9d58be7f68a43c1319a4ec283a5",
+      "decision": "approved",
+      "reasons": []
+    },
+    {
+      "questionId": "g6-argon-2044",
+      "revision": 1,
+      "batchId": "Q50-G6-029",
+      "contentHash": "acb91c02573d2007c1173c0a0ef4c31c74e6274a7571b42d8be250c2bb76d364",
       "decision": "approved",
       "reasons": []
     }
