@@ -14,6 +14,7 @@
     "lint": "eslint .",
     "test": "vitest run tests/unit",
     "test:e2e": "playwright test",
+    "test:api-connected": "node tools/qa/api-connected.mjs",
     "test:server": "tsc -p server/tsconfig.json && tsc -p server/tsconfig.test.json && vitest run --config server/vitest.config.ts",
     "server:dev": "wrangler dev --config server/wrangler.toml --local",
     "server:db:local": "wrangler d1 migrations apply DB --local --config server/wrangler.toml && wrangler d1 execute DB --local --config server/wrangler.toml --file server/seed/question_keys.sql",

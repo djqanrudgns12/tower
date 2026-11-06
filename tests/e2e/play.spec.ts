@@ -167,7 +167,8 @@ test('이어하기 없음: 정지 메뉴에 저장이 없고, 새로고침하면
     };
     req.onerror = () => reject(req.error);
   }));
-  expect(stored).toEqual({ stores: ['records', 'syncQueue'], records: 0 });
+  // DB v4는 완료 문항의 전역 이력을 별도로 보존한다. 진행 중 판을 저장하는 공간은 여전히 없다.
+  expect(stored).toEqual({ stores: ['questionHistory', 'records', 'syncQueue'], records: 0 });
 });
 
 test('390×844 휴대폰: 가로 넘침 없음, 문제 전체가 보이고 확대 선택이 열린다', async ({ page }) => {
