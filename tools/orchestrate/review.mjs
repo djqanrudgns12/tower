@@ -415,13 +415,13 @@ export async function measuredAgyCall(request, deps = {}) {
     request.onEvent?.({ type: 'call', who: 'argon', ...request.callContext });
     if (deps.execute) return (response = await deps.execute(exe, argv, execOptions));
     return (response = await new Promise((resolve, reject) => {
-      const child = spawn(exe, argv, { cwd: execOptions.cwd, stdio: ['ignore', 'pipe', 'pipe'] });
+      const child = (deps.spawn ?? spawn)(exe, argv, { cwd: execOptions.cwd, stdio: ['ignore', 'pipe', 'pipe'] });
       let out = '', err = '', timedOut = false;
       const timer = setTimeout(() => { timedOut = true; child.kill('SIGKILL'); }, (execOptions.timeoutSec + 10) * 1000);
       child.stdout.on('data', data => { out += data; });
       child.stderr.on('data', data => { err += data; });
       child.once('error', error => { clearTimeout(timer); reject(error); });
-      child.once('close', code => { clearTimeout(timer); if (timedOut) reject(new Error('agy 호출 시간 초과')); else resolve({ code, out, err: err.trim() }); });
+      child.once('close', code => { clearTimeout(timer); if (timedOut) reject(Object.assign(new Error('agy 호출 시간 초과'), { code: 'AGY_TIMEOUT' })); else resolve({ code, out, err: err.trim() }); });
     }));
   } }); } catch (error) {
     // agy가 실행은 마쳤지만 envelope/전문을 못 읽은 경우에도 호출자의 형식 재시도에 넣는다.

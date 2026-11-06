@@ -1,11 +1,12 @@
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
+import { EventEmitter } from 'node:events';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 // @ts-expect-error 독립 실행 MJS 도구에는 별도 선언 파일이 없다.
 import { agyArgs, agyCall, parseAgyOutput, reserveAgyCall } from '../../tools/orchestrate/agy.mjs';
 // @ts-expect-error 독립 실행 MJS 도구에는 별도 선언 파일이 없다.
-import { antigravityRespond } from '../../tools/orchestrate/review.mjs';
+import { antigravityRespond, measuredAgyCall } from '../../tools/orchestrate/review.mjs';
 // @ts-expect-error 독립 실행 MJS 도구에는 별도 선언 파일이 없다.
 import { liveRespond } from '../../tools/orchestrate/level.mjs';
 // @ts-expect-error 독립 실행 MJS 도구에는 별도 선언 파일이 없다.
@@ -15,7 +16,7 @@ import { author as produceAuthor } from '../../tools/orchestrate/produce.mjs';
 
 const roots: string[] = [];
 const temp = () => { const root = fs.mkdtempSync(path.join(os.tmpdir(), 'agy-test-')); roots.push(root); return root; };
-afterEach(() => { for (const root of roots.splice(0)) fs.rmSync(root, { recursive: true, force: true }); });
+afterEach(() => { vi.useRealTimers(); for (const root of roots.splice(0)) fs.rmSync(root, { recursive: true, force: true }); });
 const block = (data: unknown) => `\`\`\`json\n${JSON.stringify(data)}\n\`\`\``;
 const output = (response: string, extra = {}) => JSON.stringify({ response, ...extra });
 
@@ -121,6 +122,26 @@ describe('봉인 폴더만 읽는 agy 직접 호출', () => {
     expect(f.execute).toHaveBeenCalledTimes(1);
     const args = f.execute.mock.calls[0]![1], logFile = args[args.indexOf('--log-file') + 1]!;
     expect(JSON.parse(fs.readFileSync(`${logFile}.recovery.json`, 'utf8'))).toMatchObject({ conversationId: f.id, reason: 'AGY_TIMEOUT' });
+  });
+
+  it('호출 집계 실행기의 실제 타이머 경로도 완료 답장을 검증해 복구한다', async () => {
+    const f = timeoutFixture();
+    vi.useFakeTimers();
+    const child = Object.assign(new EventEmitter(), { stdout: new EventEmitter(), stderr: new EventEmitter(),
+      kill: vi.fn(() => { child.emit('close', null); return true; }) });
+    const spawn = vi.fn((_exe: string, args: string[]) => {
+      fs.writeFileSync(args[args.indexOf('--log-file') + 1]!, `Stream goroutine exited for ${f.id}, sending completion signal\n`);
+      return child;
+    });
+    const onEvent = vi.fn();
+    const result = measuredAgyCall({ root: f.root, cwd: f.cwd, prompt: f.prompt, timeoutSec: 1, validate: f.validate, onEvent },
+      { spawn, brain: f.brain }).catch((error: unknown) => ({ error }));
+    await vi.advanceTimersByTimeAsync(11_000);
+    expect(await result).toMatchObject({ code: 0, recovered: true });
+    expect(child.kill).toHaveBeenCalledExactlyOnceWith('SIGKILL');
+    expect(spawn).toHaveBeenCalledTimes(1);
+    expect(onEvent).toHaveBeenCalledExactlyOnceWith({ type: 'call', who: 'argon' });
+    expect(f.validate).toHaveBeenCalledTimes(1);
   });
 
   it.each([
