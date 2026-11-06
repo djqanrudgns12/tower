@@ -83,6 +83,50 @@ function assertReproducible(root: string, sha: string) {
 }
 
 describe('대기분 반영·잠금·배치 커밋', () => {
+  it('선택한 여러 배치만 한 번 빌드·서버 검사·커밋하고 미선택 대기분은 보존한다', async () => {
+    const root = fixture();
+    stage(root, 'A', '01', { [source('A')]: [draft('a', 2)] });
+    stage(root, 'B', '02', { [source('B')]: [draft('b', 2)] });
+    const excluded = stage(root, 'wordlist-g4-r2', '03', { 'content-source/wordlists/g4-r2.json': { items: [] } });
+    const calls: string[] = [];
+    const result = await applyStaged({ ...options(root), batches: 'A,B,A', noServerTest: false,
+      buildBank: (r: string) => { calls.push('bank'); buildBank(r); },
+      buildQuestionKeys: (r: string) => { calls.push('keys'); buildQuestionKeys(r); },
+      testServer: () => { calls.push('server'); },
+    });
+    expect(result.runs.map((r: { batchId: string }) => r.batchId)).toEqual(['A', 'B']);
+    expect(calls).toEqual(['bank', 'keys', 'server']);
+    expect(git(root, 'rev-list', '--count', 'HEAD')).toBe('2');
+    expect(fs.existsSync(excluded)).toBe(true);
+    expect(fs.existsSync(path.join(root, 'content-source/wordlists/g4-r2.json'))).toBe(false);
+    assertReproducible(root, git(root, 'rev-parse', 'HEAD'));
+  });
+
+  it('여러 배치 선택에도 이전 미커밋 배치를 모두 포함해야 하고 포함하면 함께 완료한다', async () => {
+    const root = fixture();
+    stage(root, 'A', '01', { [source('A')]: [draft('a', 2)] });
+    await applyStaged({ ...options(root), batch: 'A', noCommit: true });
+    stage(root, 'B', '02', { [source('B')]: [draft('b', 2)] });
+    await expect(applyStaged({ ...options(root), batches: 'B' })).rejects.toThrow(/미커밋/);
+    expect(JSON.parse(fs.readFileSync(path.join(root, source('B')), 'utf8'))[0].revision).toBe(1);
+    const result = await applyStaged({ ...options(root), batches: 'A,B' });
+    expect(result.committed).toBe(true);
+    expect(fs.existsSync(path.join(root, '.orchestrate/commit.pending.json'))).toBe(false);
+    assertReproducible(root, git(root, 'rev-parse', 'HEAD'));
+  });
+
+  it.each(['', 'A,,B', '../A', 'A/B'])('잘못된 배치 목록 %s는 쓰기 전에 거절한다', async batches => {
+    const root = fixture();
+    stage(root, 'A', '01', { [source('A')]: [draft('a', 2)] });
+    await expect(applyStaged({ ...options(root), batches })).rejects.toThrow(/batches/);
+    expect(git(root, 'status', '--porcelain')).toBe('');
+  });
+
+  it('단일 배치와 여러 배치 옵션의 중복 지정은 거절한다', async () => {
+    const root = fixture();
+    await expect(applyStaged({ ...options(root), batch: 'A', batches: 'A,B' })).rejects.toThrow(/함께/);
+  });
+
   it('낱말 목록 전용 staging은 같은 학년·라운드 목록만 잠금 커밋한다', async () => {
     const root = fixture();
     const file = 'content-source/wordlists/g4-r2.json';

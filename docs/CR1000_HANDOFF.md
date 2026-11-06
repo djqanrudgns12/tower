@@ -10,6 +10,8 @@
 - 기본 native `--gate`는 이제 Codex 최종 대조다. `--without-claude`로 명시할 수 있고 옛 경로는 `--with-claude`로만 선택된다. Argon 자체 반박·Codex 독립 풀이·Codex 해설 대조·현재 판/본문/해설 해시를 검증한다. `codex-argon-v1` sidecar가 있는 배치만 새 공개 기준을 적용하고 기존 완료된 공개 승인51개는 보존한다.
 - `finalize-codex.mjs`는 기존 독립 풀이를 보존하고 실제 현재 해설 대조만 보충한다. 일치하는 기존 Codex 증거를 재사용하며 신규 대조는 gpt-6-astra/high, 50개 묶음·동시2개다. 과거 보고서에 항목별 run이 없으면 지정 모델/도구/freshContext를 확인하고 새 해설 대조를 수행한다. 과거 effort를 꾸며 쓰지 않는다.
 - 메인이 직접 확인한 범위 시험: native gate/pool/두 모델82개, 새 승인45개, bank-build14개, front-gate48개, finalizer7개 통과(겹치는 실행의 재사용 포함). 범위 ESLint·시험 타입 검사 통과. 넓은 검사는 타 보호 작업으로 미실행이다. `revise`는 새 Codex 대조 지적만 받아 수정한다.
+- **실제 가동:** 커밋 `4e7a0b8` push 후 `two-model-final-a` PID95035(436개)·`two-model-final-b` PID95036(587개)를 시작했다. native plan 21배치 모두 다음 S4·who=codex임을 확인했다. 두 실행에서 실제 Codex 동시4호출·Claude0호출을 확인했고, 후속 결함은 Argon S5→변경판 S1/S2→Codex 대조로 자동 연결된다. 최초 네 배치의 현재 판·해시 기준 187개 통과를 직접 재계산했다. 최신 수는 `two-model-final.approval-snapshot.json`과 각 summary를 함께 확인한다. 공개 승인 수가 아니다.
+- **반영 검사 묶기:** `commit-lock.mjs apply --batches A,B`로 완료된 배치만 선택해 잠금 안에서 한 번 빌드·키 생성·서버 검사·커밋한다. 기존 pending의 모든 배치를 선택에 포함해야 한다. 현재는 005가 해당되므로 005를 먼저 끝내거나 완료 묶음에 포함한다. 미선택 배치·다른 미커밋 변경을 보존한다. 진행 중 writer가 있는 배치는 반영하지 않는다. 기존 및 신규 잠금 시험28개·범위 ESLint·시험 타입 검사 통과, 넓은 검사는 타 보호 작업으로 미실행이다.
 - 최종 대조 준비 대상은 **1,023개: 4학년826·5학년149·6학년48**. 최종 공개 승인과 구분한다. 실제 실행은 `.orchestrate/two-model-final*.run.json`·summary에서 확인한다. 기존 완료 cohort를 대상으로 하며 아직 앞단 writer가 소유한 배치는 겹쳐 잡지 않는다.
 - 005 반영용 자원 대기 PID87950은 새 정책 전환 중 옛 반영을 시작하지 않도록 취소했다(exit143, 반영 미실행). `.orchestrate/commit.pending.json`의 005 미커밋 변경은 보존하며 보호 작업이 끝나면 **005부터** 잠금 안에서 반영한다. 실제 공개는 현재 3학년51/4,000, 나머지3,949이다.
 

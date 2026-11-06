@@ -88,12 +88,12 @@ function owns(batchId, file) {
     // 배치가 아닌 공용 참조 파일은 같은 이름의 대기 폴더만 쓴다(W9 tools/fetch-krdict-grade.mjs).
     || (batchId === 'krdict-grade' && file === 'content-source/reference/krdict-grade.json');
 }
-function discover(root, batch) {
+function discover(root, selected) {
   const base = path.join(root, '.orchestrate/staging');
   if (!fs.existsSync(base)) return [];
   const runs = [];
   for (const entry of fs.readdirSync(base, { withFileTypes: true })) {
-    if (!entry.isDirectory() || (batch && entry.name !== batch)) continue;
+    if (!entry.isDirectory() || (selected && !selected.has(entry.name))) continue;
     for (const run of fs.readdirSync(path.join(base, entry.name), { withFileTypes: true })) {
       if (!run.isDirectory()) continue;
       const dir = `.orchestrate/staging/${entry.name}/${run.name}`;
@@ -152,6 +152,9 @@ export async function applyStaged(opts = {}) {
   const batch = opts.batch ?? opts.batchId;
   const coAuthor = resolveCoAuthor(opts);
   if (batch && !safeId(batch)) throw new Error('잘못된 batch');
+  if (batch != null && opts.batches != null) throw new Error('--batch와 --batches는 함께 쓸 수 없다');
+  if (opts.batches != null && (typeof opts.batches !== 'string' || opts.batches.split(',').some(id => !safeId(id.trim())))) throw new Error('잘못된 batches');
+  const selected = opts.batches != null ? new Set(opts.batches.split(',').map(id => id.trim())) : batch ? new Set([batch]) : null;
   const release = acquire(root);
   const pendingFile = path.join(root, '.orchestrate/commit.pending.json');
   let pending;
@@ -159,8 +162,8 @@ export async function applyStaged(opts = {}) {
   try {
     if (fs.realpathSync(git(root, 'rev-parse', '--show-toplevel').trim()) !== root) throw new Error('--root는 git 저장소 루트여야 한다');
     pending = fs.existsSync(pendingFile) ? readJson(pendingFile) : { runs: [], paths: [] };
-    if (batch && pending.runs.some(run => run.batchId !== batch)) throw new Error('다른 배치의 미커밋 반영이 남아 있다. 해당 배치 또는 전체 apply를 먼저 완료한다');
-    const runs = discover(root, batch);
+    if (selected && pending.runs.some(run => !selected.has(run.batchId))) throw new Error('다른 배치의 미커밋 반영이 남아 있다. 해당 배치를 포함하거나 전체 apply를 먼저 완료한다');
+    const runs = discover(root, selected);
     for (const run of pending.runs) {
       if (!runs.some(r => r.dir === run.dir)) throw new Error(`미커밋 반영의 대기분이 없다: ${run.dir}. staging-failed와 작업 파일을 확인해야 한다`);
     }
@@ -251,13 +254,13 @@ export async function applyStaged(opts = {}) {
 }
 
 async function main(argv) {
-  if (argv.shift() !== 'apply') throw new Error('사용: commit-lock.mjs apply --root <dir> [--batch <id>] [--no-commit] [--no-server-test]');
+  if (argv.shift() !== 'apply') throw new Error('사용: commit-lock.mjs apply --root <dir> [--batch <id> | --batches <id,id>] [--no-commit] [--no-server-test]');
   const opts = {};
   for (let i = 0; i < argv.length; i++) {
     const arg = argv[i];
     if (arg === '--no-commit') opts.noCommit = true;
     else if (arg === '--no-server-test') opts.noServerTest = true;
-    else if (['--root', '--batch', '--co-author'].includes(arg) && argv[i + 1] && !argv[i + 1].startsWith('--')) opts[arg.slice(2)] = argv[++i];
+    else if (['--root', '--batch', '--batches', '--co-author'].includes(arg) && argv[i + 1] && !argv[i + 1].startsWith('--')) opts[arg.slice(2)] = argv[++i];
     else throw new Error(`알 수 없는 옵션: ${arg}`);
   }
   console.log(JSON.stringify(await applyStaged(opts)));
