@@ -1646,6 +1646,126 @@
       "levelAssessmentHash": "c7da02986acaf954dd595f52f9fb0d685d6776cc66a9a5c03f946ebb2c643ef6"
     },
     {
+      "questionId": "g6-argon-1969",
+      "revision": 2,
+      "contentHash": "0b0cf0b36ef9b49b7a5510e52f9844fe673145536599b3399a77532ad68bc056",
+      "precomputed": {
+        "typeBase": 2,
+        "lengthBump": 2,
+        "t3Base": 0,
+        "readingLoad": 94,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g6-argon-1969",
+          "revision": 2,
+          "contentHash": "0b0cf0b36ef9b49b7a5510e52f9844fe673145536599b3399a77532ad68bc056",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 3,
+          "L2": 3,
+          "T1": 3,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "구어 빈도가 낮은 격식 문어이자 음훈 추론이 필요한 고추상 한자어로, 전제 위반·거절하다·철수하다 혼동 오답 3개의 변별 부담이 크지만 학급 회의 맥락에서 초등 6학년에 적합함."
+        },
+        {
+          "questionId": "g6-argon-1969",
+          "revision": 2,
+          "contentHash": "0b0cf0b36ef9b49b7a5510e52f9844fe673145536599b3399a77532ad68bc056",
+          "judge": "codex",
+          "model": "gpt-6-astra",
+          "L1": 3,
+          "L2": 3,
+          "T1": 2,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "격식적인 주장 회수의 한자어로, 생각 변경·거절·철수와의 의미 경계를 구별해야 하며 '내놓았던 의견'이 직접 단서다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 6,
+        "T": 6,
+        "V": 18,
+        "ownTier": "advanced",
+        "band": {
+          "min": 6,
+          "max": 6
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "67294fb3ae938c29c93544355a8452abc8b0024d3cdfc6bde0ca3c472222c3ef"
+    },
+    {
+      "questionId": "g6-argon-1969",
+      "revision": 3,
+      "contentHash": "c77ea19327647dc2725656d05a73a1962552f4247f4b1041fd89d1093743c4d9",
+      "precomputed": {
+        "typeBase": 2,
+        "lengthBump": 2,
+        "t3Base": 0,
+        "readingLoad": 95,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g6-argon-1969",
+          "revision": 3,
+          "contentHash": "c77ea19327647dc2725656d05a73a1962552f4247f4b1041fd89d1093743c4d9",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 3,
+          "L2": 3,
+          "T1": 2,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "'철회하다'는 구어 빈도가 낮고 음훈 추론이 필요한 6학년 격식 추상 한자어이나 초등 회의 맥락에 적합하며, 속생각 번복·물건 회수·'철수하다' 등 인접 오답을 변별해야 한다."
+        },
+        {
+          "questionId": "g6-argon-1969",
+          "revision": 3,
+          "contentHash": "c77ea19327647dc2725656d05a73a1962552f4247f4b1041fd89d1093743c4d9",
+          "judge": "codex",
+          "model": "gpt-6-astra",
+          "L1": 3,
+          "L2": 3,
+          "T1": 2,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "격식 문어에서 쓰이는 추상적 한자어로, 생각 바꾸기·물건 회수·철수와 이미 내놓은 주장 거두기를 구별해야 하지만 ‘회의에 내놓았던 의견’이라는 직접 단서가 있어 초등 고학년 범위에 적합하다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 6,
+        "T": 5,
+        "V": 17,
+        "ownTier": "advanced",
+        "band": {
+          "min": 6,
+          "max": 6
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "945402ea57c67b8a7c7dee42b38245541024a41ae3bc229b1b6831eb76ea54c3"
+    },
+    {
       "questionId": "g6-argon-1971",
       "revision": 1,
       "contentHash": "49dc3aa47333b6f2df3477e64bcd663b927158acf2ebdf5d6ddc19b9edec2997",
@@ -1706,6 +1826,126 @@
       "levelAssessmentHash": "fa9ac7f46d126df77600fc4bd55855fbd2dd7a70b4fbaff39b71516c90138ff5"
     },
     {
+      "questionId": "g6-argon-1971",
+      "revision": 2,
+      "contentHash": "b1b194a3e893daaec27d1bc2b5434cb44c50224f0a956dbf6af5009ad8826503",
+      "precomputed": {
+        "typeBase": 2,
+        "lengthBump": 2,
+        "t3Base": 0,
+        "readingLoad": 92,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g6-argon-1971",
+          "revision": 2,
+          "contentHash": "b1b194a3e893daaec27d1bc2b5434cb44c50224f0a956dbf6af5009ad8826503",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 3,
+          "L2": 3,
+          "T1": 3,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "논설·사회 문어에 주로 쓰이는 고추상 한자어로 물리적 파괴·약속 파기·격파하다 등 고매력 혼동 오답 3개를 구별해야 하나 초등 6학년 수준에 적합함."
+        },
+        {
+          "questionId": "g6-argon-1971",
+          "revision": 2,
+          "contentHash": "b1b194a3e893daaec27d1bc2b5434cb44c50224f0a956dbf6af5009ad8826503",
+          "judge": "codex",
+          "model": "gpt-6-astra",
+          "L1": 3,
+          "L2": 3,
+          "T1": 3,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "논설에서 쓰이는 추상적 한자어로, 깨뜨림을 부정적 관습의 제거로 전이하여 이해해야 하며 '독차지하던 관습'이 직접 단서다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 6,
+        "T": 6,
+        "V": 18,
+        "ownTier": "advanced",
+        "band": {
+          "min": 6,
+          "max": 6
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "2804f37e920b7ee34286eafe066760845566fcac2cd46ec993b2c5c66567df38"
+    },
+    {
+      "questionId": "g6-argon-1971",
+      "revision": 3,
+      "contentHash": "88bac41815bff74ebb75b7898836a7b44303b642fca2952dc88e1dac88d8b460",
+      "precomputed": {
+        "typeBase": 2,
+        "lengthBump": 2,
+        "t3Base": 0,
+        "readingLoad": 95,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g6-argon-1971",
+          "revision": 3,
+          "contentHash": "88bac41815bff74ebb75b7898836a7b44303b642fca2952dc88e1dac88d8b460",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 3,
+          "L2": 3,
+          "T1": 2,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "'타파하다'는 부정적 제도·관습 철폐를 뜻하는 저빈도 고추상 격식 한자어이나 초등 고학년 범위에 적합하며, 바람직한 약속 위반·경기 상대 격파 등 유의 경계 오답을 구별해야 한다."
+        },
+        {
+          "questionId": "g6-argon-1971",
+          "revision": 3,
+          "contentHash": "88bac41815bff74ebb75b7898836a7b44303b642fca2952dc88e1dac88d8b460",
+          "judge": "codex",
+          "model": "gpt-6-astra",
+          "L1": 3,
+          "L2": 3,
+          "T1": 2,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "논설에서 쓰이는 추상적 한자어로, 약속 위반·상대 격파와 부정적 관습 없애기의 의미 경계를 구별해야 하지만 ‘고학년만 독차지하던 관습’이라는 직접 단서가 있어 초등 고학년 범위에 적합하다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 6,
+        "T": 5,
+        "V": 17,
+        "ownTier": "advanced",
+        "band": {
+          "min": 6,
+          "max": 6
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "0c39c536d4c00f71e57520c0cadde6eec96c5a41b5063b3b3f6697c717cd7de7"
+    },
+    {
       "questionId": "g6-argon-1972",
       "revision": 1,
       "contentHash": "4b17ee49a9ccd88c8fd23e2c47ac0390fdc85dd0ac75b1b4831574162bd491d4",
@@ -1764,6 +2004,66 @@
         "flags": []
       },
       "levelAssessmentHash": "ae6cc835c2f5b576a46e10f7a93557da3c617577a03e58793f0e27398415b3ff"
+    },
+    {
+      "questionId": "g6-argon-1972",
+      "revision": 2,
+      "contentHash": "2537504dce6f92ac2f952d0210b6accbbb6aeb9b925b5223987797de4ee388c0",
+      "precomputed": {
+        "typeBase": 1,
+        "lengthBump": 2,
+        "t3Base": 0,
+        "readingLoad": 93,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g6-argon-1972",
+          "revision": 2,
+          "contentHash": "2537504dce6f92ac2f952d0210b6accbbb6aeb9b925b5223987797de4ee388c0",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 3,
+          "L2": 3,
+          "T1": 2,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "음훈이 불투명한 비평·격식 고추상 한자어이나 지문에 대조 단서가 명확하고 오답 2개가 유의·인접 경계를 이루어 초등 6학년 심화 수준에 적합함."
+        },
+        {
+          "questionId": "g6-argon-1972",
+          "revision": 2,
+          "contentHash": "2537504dce6f92ac2f952d0210b6accbbb6aeb9b925b5223987797de4ee388c0",
+          "judge": "codex",
+          "model": "gpt-6-astra",
+          "L1": 3,
+          "L2": 3,
+          "T1": 1,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "curriculum_explicit",
+          "unit": "[4국04-01] 단어와 단어 간의 의미 관계",
+          "reason": "옛 방식을 좇는다는 저빈도 문어 한자어지만, 선배들의 구성과 색다른 공연의 대조가 명시되고 유의어 오답 하나가 주된 혼동 요소다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 6,
+        "T": 5,
+        "V": 17,
+        "ownTier": "advanced",
+        "band": {
+          "min": 6,
+          "max": 6
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "3ce58b72def2053e5dad4c6dc9cee3a10a6f44fadf9ad34be79f952b63af39c9"
     },
     {
       "questionId": "g6-argon-1973",
@@ -1888,6 +2188,66 @@
       "levelAssessmentHash": "59d0a82f8362dff5aa1c8c99d755ca19e5ca672364060542a5003d737236b93a"
     },
     {
+      "questionId": "g6-argon-1974",
+      "revision": 2,
+      "contentHash": "dd8a058f8534eced47f3e2b6ee03608db50e502e5ca5539d033e068eb0853a9e",
+      "precomputed": {
+        "typeBase": 1,
+        "lengthBump": 2,
+        "t3Base": 0,
+        "readingLoad": 94,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g6-argon-1974",
+          "revision": 2,
+          "contentHash": "dd8a058f8534eced47f3e2b6ee03608db50e502e5ca5539d033e068eb0853a9e",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 3,
+          "L2": 2,
+          "T1": 2,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "설명·논설에 쓰이는 격식 문어이자 한자 형태소 결합 관계 추상어로, 지문에 대조 단서가 명시되고 유의 함정 등 인접 경계 오답이 배치되어 초등 6학년에 적합함."
+        },
+        {
+          "questionId": "g6-argon-1974",
+          "revision": 2,
+          "contentHash": "dd8a058f8534eced47f3e2b6ee03608db50e502e5ca5539d033e068eb0853a9e",
+          "judge": "codex",
+          "model": "gpt-6-astra",
+          "L1": 3,
+          "L2": 2,
+          "T1": 2,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "curriculum_explicit",
+          "unit": "[4국04-01] 단어와 단어 간의 의미 관계",
+          "reason": "격식적인 방해 관계를 나타내는 개념어로, 방치·방해·지연과 도움을 구별해야 하며 비웃는 태도와 편안한 분위기의 대조가 직접 단서다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 5,
+        "T": 5,
+        "V": 15,
+        "ownTier": "core",
+        "band": {
+          "min": 5,
+          "max": 6
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "b1e9feb7d310f3de357d7b0b982999a42cd7eb13c433ca1c517967ec02583032"
+    },
+    {
       "questionId": "g6-argon-1975",
       "revision": 1,
       "contentHash": "b6948b623353b50c157bb2025d842772541268295f4b08bb156ff5cc382b66b5",
@@ -2006,6 +2366,66 @@
         "flags": []
       },
       "levelAssessmentHash": "7607ee0647818dc533fbad5432f57fd842d377c12c861065ca6967d98341d1e8"
+    },
+    {
+      "questionId": "g6-argon-1977",
+      "revision": 2,
+      "contentHash": "b49ce4a8a873a16269cead42af6a14c4dca63b48c736e98820c6ee2f3a76efd7",
+      "precomputed": {
+        "typeBase": 2,
+        "lengthBump": 2,
+        "t3Base": 0,
+        "readingLoad": 92,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g6-argon-1977",
+          "revision": 2,
+          "contentHash": "b49ce4a8a873a16269cead42af6a14c4dca63b48c736e98820c6ee2f3a76efd7",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 3,
+          "L2": 3,
+          "T1": 2,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "규범·비평 담화의 고추상 격식 한자어로 인지 전제와 부정 대상 제약을 건드리는 경계 오답 2개가 변별력을 높이며 초등 6학년 수준에 적합함."
+        },
+        {
+          "questionId": "g6-argon-1977",
+          "revision": 2,
+          "contentHash": "b49ce4a8a873a16269cead42af6a14c4dca63b48c736e98820c6ee2f3a76efd7",
+          "judge": "codex",
+          "model": "gpt-6-astra",
+          "L1": 3,
+          "L2": 3,
+          "T1": 2,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "잘못의 인지와 의도적 용인을 함께 담은 격식적 한자어로, 모름·선행 외면·문제 건너뛰기와 구별해야 하며 '규칙을 어긴 줄 알면서도'가 직접 단서다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 6,
+        "T": 5,
+        "V": 17,
+        "ownTier": "advanced",
+        "band": {
+          "min": 6,
+          "max": 6
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "27c0e03b003e00de2e118dd95fd6f855c0abfbf148a883f6143484b414121847"
     },
     {
       "questionId": "g6-argon-1978",

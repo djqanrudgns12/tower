@@ -528,6 +528,47 @@
       "findings": []
     },
     {
+      "questionId": "g6-argon-1969",
+      "revision": 2,
+      "contentHash": "0b0cf0b36ef9b49b7a5510e52f9844fe673145536599b3399a77532ad68bc056",
+      "run": {
+        "id": "20261106T200656838Z-49540-149a0607-362a-4cfa-a75b-b474b831a94f",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "multiple",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "fail",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "fail"
+      },
+      "findings": [
+        "[블라인드] b도 짝이 자신이 한 부탁을 거두었다는 뜻으로 성립한다. b를 ‘짝에게 빌려줄 가위를 철회했다’로 바꾼다.",
+        "[공개 대조] b는 짝이 자신이 한 부탁을 거두었다는 뜻으로도 성립하므로, 다른 사람의 부탁을 거절한 상황이라고 단정한 오답 이유도 맞지 않는다. b를 ‘짝이 건넨 가위를 서랍에 철회했다’로 바꾼다."
+      ]
+    },
+    {
+      "questionId": "g6-argon-1969",
+      "revision": 3,
+      "contentHash": "c77ea19327647dc2725656d05a73a1962552f4247f4b1041fd89d1093743c4d9",
+      "run": {
+        "id": "20261106T201411241Z-49540-f1fa272a-26e0-4fc8-9da3-a18a7df121db",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "d",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": []
+    },
+    {
       "questionId": "g6-argon-1971",
       "revision": 1,
       "contentHash": "49dc3aa47333b6f2df3477e64bcd663b927158acf2ebdf5d6ddc19b9edec2997",
@@ -547,11 +588,70 @@
       "findings": []
     },
     {
+      "questionId": "g6-argon-1971",
+      "revision": 2,
+      "contentHash": "b1b194a3e893daaec27d1bc2b5434cb44c50224f0a956dbf6af5009ad8826503",
+      "run": {
+        "id": "20261106T200656838Z-49540-149a0607-362a-4cfa-a75b-b474b831a94f",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "multiple",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": [
+        "[블라인드] a의 ‘벽돌담을 망치로 타파했다’도 쳐서 깨뜨렸다는 뜻으로 성립한다. a를 ‘화단의 벽돌담에 꽃 그림을 타파했다’로 바꾼다."
+      ]
+    },
+    {
+      "questionId": "g6-argon-1971",
+      "revision": 3,
+      "contentHash": "88bac41815bff74ebb75b7898836a7b44303b642fca2952dc88e1dac88d8b460",
+      "run": {
+        "id": "20261106T201411241Z-49540-f1fa272a-26e0-4fc8-9da3-a18a7df121db",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "b",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": []
+    },
+    {
       "questionId": "g6-argon-1972",
       "revision": 1,
       "contentHash": "4b17ee49a9ccd88c8fd23e2c47ac0390fdc85dd0ac75b1b4831574162bd491d4",
       "run": {
         "id": "20261106T171824676Z-71910-66211d3d-36a3-405e-94be-a49a33a030b4",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "c",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": []
+    },
+    {
+      "questionId": "g6-argon-1972",
+      "revision": 2,
+      "contentHash": "2537504dce6f92ac2f952d0210b6accbbb6aeb9b925b5223987797de4ee388c0",
+      "run": {
+        "id": "20261106T200656838Z-49540-149a0607-362a-4cfa-a75b-b474b831a94f",
         "model": "gpt-6-astra",
         "effort": "high"
       },
@@ -604,6 +704,25 @@
       "findings": []
     },
     {
+      "questionId": "g6-argon-1974",
+      "revision": 2,
+      "contentHash": "dd8a058f8534eced47f3e2b6ee03608db50e502e5ca5539d033e068eb0853a9e",
+      "run": {
+        "id": "20261106T200656838Z-49540-149a0607-362a-4cfa-a75b-b474b831a94f",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "c",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": []
+    },
+    {
       "questionId": "g6-argon-1975",
       "revision": 1,
       "contentHash": "b6948b623353b50c157bb2025d842772541268295f4b08bb156ff5cc382b66b5",
@@ -632,6 +751,25 @@
         "effort": "high"
       },
       "blindChoice": "d",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": []
+    },
+    {
+      "questionId": "g6-argon-1977",
+      "revision": 2,
+      "contentHash": "b49ce4a8a873a16269cead42af6a14c4dca63b48c736e98820c6ee2f3a76efd7",
+      "run": {
+        "id": "20261106T200656838Z-49540-149a0607-362a-4cfa-a75b-b474b831a94f",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "a",
       "verdicts": {
         "source": "pass",
         "uniqueness": "pass",
