@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1",
   "rule": "publicationPolicy=codex-argon-v1: 현재 id·revision의 Argon 자체 반박은 서로 다른 4개 보기에서 정답만 fits, 나머지는 does_not_fit · 현재 revision·contentHash의 Codex 독립 풀이가 정답과 같고 source·uniqueness·grade·language·explanation 모두 pass · freshContext=true 및 항목 run.model=gpt-6-astra, effort=high 또는 xhigh(항목 출처 도입 전에는 gpt-6-astra 2단계 도구 보고서로 독립 풀이 출처 확인; 과거 effort는 추정하지 않음) · 현재 revision·contentHash·rationalesHash의 Codex 해설 대조 pass(reviewer.model과 run.model=gpt-6-astra, effort=high 또는 xhigh) · 현재 argon-blind가 있으면 새 문맥·같은 해시·정답 일치·source/uniqueness/grade/language pass 및 explanation fail 금지 · 게시 형식·의미 검사와 Q50 엄격 배치 검사 통과. Claude는 사용하지 않는다. 정책 없는 legacy: Argon 자체 반박에서 정답만 맞음 · 현재 revision·contentHash의 Codex·Claude 독립 풀이가 정답과 같고 source·uniqueness·grade·language 모두 pass, explanation fail 금지 · 현재 revision·contentHash·rationalesHash의 Claude 총괄 해설 대조 pass · 게시 형식·의미 검사 통과. 각 정책의 조건이 하나라도 어긋나면 그 revision은 격리한다.",
-  "approved": 4245,
+  "approved": 4250,
   "quarantined": 510,
   "entries": [
     {
@@ -9534,6 +9534,46 @@
         "claude: 이 revision의 독립 검토 없음",
         "총괄 해설 대조자가 Claude가 아님: Gemini 4 Argon (High)"
       ]
+    },
+    {
+      "questionId": "g3-argon-2105",
+      "revision": 1,
+      "batchId": "Q50-G3-024",
+      "contentHash": "19ca045e4545700f9e685d359d47536cfa325108c2142d555a1ccdd09d44a1f2",
+      "decision": "approved",
+      "reasons": []
+    },
+    {
+      "questionId": "g3-argon-2106",
+      "revision": 1,
+      "batchId": "Q50-G3-024",
+      "contentHash": "d2b263105e3e9d73b89f1bbd0426e4ec269d38d769e7dd5d26b52eeb5aed8cb2",
+      "decision": "approved",
+      "reasons": []
+    },
+    {
+      "questionId": "g3-argon-2107",
+      "revision": 1,
+      "batchId": "Q50-G3-024",
+      "contentHash": "bfaf355548b5596970ffc782ef95d0dce00beafe822070620997b743ca7466a5",
+      "decision": "approved",
+      "reasons": []
+    },
+    {
+      "questionId": "g3-argon-2108",
+      "revision": 1,
+      "batchId": "Q50-G3-024",
+      "contentHash": "31834cf74b6cad3ba2fb14560fca747e9251d2fd5b4cfb9ecedd2cd2a06b5482",
+      "decision": "approved",
+      "reasons": []
+    },
+    {
+      "questionId": "g3-argon-2109",
+      "revision": 1,
+      "batchId": "Q50-G3-024",
+      "contentHash": "16b075dd31e412380d3b59a66e6ddc45270298d2a058efc60186114000463e3a",
+      "decision": "approved",
+      "reasons": []
     },
     {
       "questionId": "g3-practice-0001",

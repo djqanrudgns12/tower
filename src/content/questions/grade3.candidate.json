@@ -1,6 +1,6 @@
 {
   "bankId": "g3-candidate",
-  "bankVersion": "cand-25d30dced187",
+  "bankVersion": "cand-408a53ae830e",
   "grade": 3,
   "status": "verified_candidate",
   "note": "공동검수 진행 중인 후보 은행. 같은 revision의 외부 블라인드 검수(codex·claude) 1건 이상과 새 문맥 argon-blind를 통과했다. 3모델 공동검수 승인 전에는 게임에 싣지 않는다(PRD §9.3).",
@@ -34896,6 +34896,206 @@
         "b": "발이 걸려 몸이 기울어지는 기본 뜻이에요.",
         "c": "물체가 쓰러지는 현상이에요.",
         "d": "산이나 고개를 ‘넘어가다’의 뜻이에요."
+      }
+    },
+    {
+      "id": "g3-argon-2105",
+      "revision": 1,
+      "status": "verified_candidate",
+      "grade": 3,
+      "type": "cloze",
+      "difficultyTier": "challenge",
+      "variantTag": "polysemy",
+      "target": {
+        "lemma": "벗어나다",
+        "partOfSpeech": "동사",
+        "senseKey": "벗어나다/동사/428955-2"
+      },
+      "stem": "자석에 붙어 있던 작은 못을 손으로 멀리 옮겼다. 그러자 못이 자석의 끌어당기는 힘에서 (    ).",
+      "options": [
+        {
+          "id": "a",
+          "text": "생겨났다"
+        },
+        {
+          "id": "b",
+          "text": "벗어났다"
+        },
+        {
+          "id": "c",
+          "text": "자라났다"
+        },
+        {
+          "id": "d",
+          "text": "깨어났다"
+        }
+      ],
+      "correctOptionId": "b",
+      "explanation": "못을 멀리 옮겨 자석이 끌어당기는 힘 밖으로 빠져나왔으므로 '벗어났다'가 알맞아요.",
+      "distractorRationales": {
+        "a": "이미 자석에 붙어 있던 못을 멀리 옮긴 것이지 못이 새로 만들어진 것이 아니에요.",
+        "c": "못을 손으로 옮겨 놓은 것이지 못이 풀이나 나무처럼 쑥쑥 큰 것이 아니에요.",
+        "d": "못이 자석의 힘 밖으로 나온 것이지 잠을 자다가 눈을 뜬 것이 아니에요."
+      }
+    },
+    {
+      "id": "g3-argon-2106",
+      "revision": 1,
+      "status": "verified_candidate",
+      "grade": 3,
+      "type": "cloze",
+      "difficultyTier": "core",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "정돈하다",
+        "partOfSpeech": "동사",
+        "senseKey": "정돈하다/동사/479507-1"
+      },
+      "stem": "현관 바닥에 신발들이 이리저리 흩어져 있었다. 민준이는 짝을 맞추어 나란히 놓으며 신발을 (    ).",
+      "options": [
+        {
+          "id": "a",
+          "text": "던졌다"
+        },
+        {
+          "id": "b",
+          "text": "숨겼다"
+        },
+        {
+          "id": "c",
+          "text": "버렸다"
+        },
+        {
+          "id": "d",
+          "text": "정돈했다"
+        }
+      ],
+      "correctOptionId": "d",
+      "explanation": "흩어져 있던 신발의 짝을 맞추어 가지런히 바로잡아 놓았으므로 '정돈했다'가 알맞아요.",
+      "distractorRationales": {
+        "a": "신발의 짝을 맞추어 얌전히 나란히 놓았지 멀리 집어 던진 것이 아니에요.",
+        "c": "신발을 현관에 가지런히 맞추어 두었지 쓸모없어서 내다 버린 것이 아니에요.",
+        "b": "신발을 현관 바닥에 잘 보이게 나란히 놓았지 남이 못 찾게 감춘 것이 아니에요."
+      }
+    },
+    {
+      "id": "g3-argon-2107",
+      "revision": 1,
+      "status": "verified_candidate",
+      "grade": 3,
+      "type": "cloze",
+      "difficultyTier": "challenge",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "동의하다",
+        "partOfSpeech": "동사",
+        "senseKey": "동의하다/동사/89600-1"
+      },
+      "stem": "민수가 비가 오니 교실에서 끝말잇기를 하자고 말했다. 친구들도 좋은 생각이라며 고개를 끄덕이고 민수의 말에 (    ).",
+      "options": [
+        {
+          "id": "a",
+          "text": "동의했다"
+        },
+        {
+          "id": "b",
+          "text": "속았다"
+        },
+        {
+          "id": "c",
+          "text": "반대했다"
+        },
+        {
+          "id": "d",
+          "text": "실망했다"
+        }
+      ],
+      "correctOptionId": "a",
+      "explanation": "끝말잇기를 하자는 말에 좋은 생각이라며 생각을 같이했으므로 '동의했다'가 알맞아요.",
+      "distractorRationales": {
+        "c": "좋은 생각이라며 고개를 끄덕였지 그 말에 맞서 싫다고 한 것이 아니에요.",
+        "b": "함께할 놀이를 기분 좋게 정한 것이지 거짓말을 참말로 잘못 믿은 것이 아니에요.",
+        "d": "민수의 말을 좋은 생각이라고 반겼지 바라던 것과 달라 마음이 상한 것이 아니에요."
+      }
+    },
+    {
+      "id": "g3-argon-2108",
+      "revision": 1,
+      "status": "verified_candidate",
+      "grade": 3,
+      "type": "cloze",
+      "difficultyTier": "challenge",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "집중하다",
+        "partOfSpeech": "동사",
+        "senseKey": "집중하다/동사/487425-1"
+      },
+      "stem": "오늘 우리 반에 새 친구가 전학을 왔다. 아이들은 궁금한 것을 서로 먼저 물어보려고 새 친구 한 명에게 질문을 (    ).",
+      "options": [
+        {
+          "id": "a",
+          "text": "숨겼다"
+        },
+        {
+          "id": "b",
+          "text": "양보했다"
+        },
+        {
+          "id": "c",
+          "text": "집중했다"
+        },
+        {
+          "id": "d",
+          "text": "맡겼다"
+        }
+      ],
+      "correctOptionId": "c",
+      "explanation": "궁금한 것을 물어보려고 새 친구 한 명에게 질문을 한데 모았으므로 '집중했다'가 알맞아요.",
+      "distractorRationales": {
+        "a": "궁금한 것을 서로 먼저 물어보려고 했지 물어볼 말을 감추고 안 한 것이 아니에요.",
+        "b": "아이들이 서로 먼저 물어보려고 나섰지 다른 친구에게 순서를 내준 것이 아니에요.",
+        "d": "새 친구에게 직접 궁금한 것을 물어본 것이지 물건이나 일을 대신 해 달라고 넘긴 것이 아니에요."
+      }
+    },
+    {
+      "id": "g3-argon-2109",
+      "revision": 1,
+      "status": "verified_candidate",
+      "grade": 3,
+      "type": "cloze",
+      "difficultyTier": "challenge",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "증가하다",
+        "partOfSpeech": "동사",
+        "senseKey": "증가하다/동사/306367-1"
+      },
+      "stem": "빈 바구니에 사과를 더 담을 때마다 저울 바늘이 점점 큰 숫자를 가리켰다. 사과가 많아지자 바구니의 무게가 (    ).",
+      "options": [
+        {
+          "id": "a",
+          "text": "증가했다"
+        },
+        {
+          "id": "b",
+          "text": "줄어들었다"
+        },
+        {
+          "id": "c",
+          "text": "사라졌다"
+        },
+        {
+          "id": "d",
+          "text": "나뉘었다"
+        }
+      ],
+      "correctOptionId": "a",
+      "explanation": "사과를 더 담아 저울 숫자가 커지며 무게가 전보다 늘었으므로 '증가했다'가 알맞아요.",
+      "distractorRationales": {
+        "b": "사과를 더 담아 저울 숫자가 커졌으므로 무게가 전보다 적어졌다는 말은 맞지 않아요.",
+        "c": "바구니에 사과가 많아져 더 무거워졌지 무게가 아예 없어진 것이 아니에요.",
+        "d": "한 바구니에 사과를 계속 더 담았지 무게가 여러 곳으로 갈라진 것이 아니에요."
       }
     }
   ]

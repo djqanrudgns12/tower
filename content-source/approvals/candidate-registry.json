@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1",
   "rule": "publicationPolicy=codex-argon-v1은 공개 승인과 동일한 판정만 사용한다(Claude나 legacy 후보 경로로 우회 불가). 정책 없는 legacy: 공개 승인 문항 또는 (Argon 자체 반박에서 정답만 맞음 · 같은 revision·contentHash의 외부 블라인드 검수(codex·claude) 1건 이상이 있고 있는 것은 모두 정답 일치, source·uniqueness·grade·language pass, explanation fail 금지 · 새 문맥 argon-blind 독립 풀이가 정답과 같고 source·uniqueness·grade·language 모두 pass, explanation fail 금지 · 현재 revision·contentHash·rationalesHash의 해설 대조 pass · 게시 형식·의미·Q50 엄격 검사 통과). 하나라도 어긋나면 격리한다. 후보 은행은 제작 진척 확인용이며 게임에 싣지 않는다(PRD §9.3).",
-  "approved": 4640,
+  "approved": 4645,
   "quarantined": 115,
   "entries": [
     {
@@ -8157,6 +8157,46 @@
       "reasons": [
         "외부 블라인드 검수(codex·claude): 이 revision의 검수 없음"
       ]
+    },
+    {
+      "questionId": "g3-argon-2105",
+      "revision": 1,
+      "batchId": "Q50-G3-024",
+      "contentHash": "19ca045e4545700f9e685d359d47536cfa325108c2142d555a1ccdd09d44a1f2",
+      "decision": "approved",
+      "reasons": []
+    },
+    {
+      "questionId": "g3-argon-2106",
+      "revision": 1,
+      "batchId": "Q50-G3-024",
+      "contentHash": "d2b263105e3e9d73b89f1bbd0426e4ec269d38d769e7dd5d26b52eeb5aed8cb2",
+      "decision": "approved",
+      "reasons": []
+    },
+    {
+      "questionId": "g3-argon-2107",
+      "revision": 1,
+      "batchId": "Q50-G3-024",
+      "contentHash": "bfaf355548b5596970ffc782ef95d0dce00beafe822070620997b743ca7466a5",
+      "decision": "approved",
+      "reasons": []
+    },
+    {
+      "questionId": "g3-argon-2108",
+      "revision": 1,
+      "batchId": "Q50-G3-024",
+      "contentHash": "31834cf74b6cad3ba2fb14560fca747e9251d2fd5b4cfb9ecedd2cd2a06b5482",
+      "decision": "approved",
+      "reasons": []
+    },
+    {
+      "questionId": "g3-argon-2109",
+      "revision": 1,
+      "batchId": "Q50-G3-024",
+      "contentHash": "16b075dd31e412380d3b59a66e6ddc45270298d2a058efc60186114000463e3a",
+      "decision": "approved",
+      "reasons": []
     },
     {
       "questionId": "g3-practice-0001",
