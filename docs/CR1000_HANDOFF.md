@@ -3,6 +3,15 @@
 작성 2026-11-06 · 작성 Claude Opus 5.5(총괄) · 받는 쪽 Codex(메인 세션)
 같이 읽을 것: [계획서 CONTENT_REVIEW_PLAN.md](CONTENT_REVIEW_PLAN.md)(기준 문서), [AGENTS.md](../AGENTS.md)
 
+### S3 3회 실패·부분 답장 36문항 복구 (Codex, 2026-11-06 13:08 KST)
+
+- 4학년 **001~003 S3의 세 번째 시간 초과가 04:02:46Z에 확정**됐다. 해당 작업은 실패 종료로 표시됐고 같은 S3를 새로 호출하지 않았다. PID 55822 자체는 다른 배치의 Codex 검수(005 등)를 계속한다. 실패 단계 기록은 `.orchestrate/recovery/g4-s3-partials/failed-attempts.json`, 이전 두 차례 기록은 `.orchestrate/g4-s3-attempts.audit.json`이다.
+- 보존된 부분 답장 11개를 현재 초안·수정 대상으로 대조했다. 2개는 JSON 형식 오류이며 사용하지 않았다. 나머지에서 기존 `parseRevisions`를 통과한 **서로 다른 36개**를 확인해, 현재 초안 해시·원본 답장 해시가 그대로인지 다시 확인한 뒤 기존 `revise.apply`로 staging을 복구했다. **새 모델 호출 0**이다. 001은 29수정·기존 Claude 통과 12개 완전 보존, 002는 7수정이다. 추가 보기 재배열·버림은 없고, 각 revision/앞단 회차가 정확히 한 번 증가했다. 6파일 manifest SHA·스키마·자체 반박도 확인했다.
+- 복구 근거 `.orchestrate/recovery/g4-s3-partials/{inventory,recovery}.json`. staging은 각 배치의 `20261106T040528…-99479-…` run이다(정확한 경로는 recovery.json). **추적 반영·S1 재판정·재검수 전**이다. 나머지 40개와 시간 초과 대화의 완료 답장은 추가 복구 대조 대상이며, 처음부터 76개를 다시 요청하지 않는다.
+- `.orchestrate/apply-pilot-results.mjs`는 이 복구 2배치를 먼저 반영하도록 준비했다. 새 보정 목록 staging이 생기면 자동 반영하지 않도록, 확인한 목록 run 이외의 추가 run을 발견하면 중단한다. 보정 목록을 모두 직접 확인한 뒤 반영 대상을 갱신해야 한다. 이 실행기는 이번에는 **구문 확인만 했으며 실행하지 않았다**. 다른 보호 작업 때문에 실제 반영은 계속 대기다.
+- 보정 두 번째 묶음은 **21제안 중 Codex 20통과·1반려**, Argon 보류 1개다. 메인이 57개 근거 파일 해시·지정 항목·뜻 번호·모든 추천 유형·판정 외 원본 불변을 확인했다(`corrections/codex/check/chunk2/audit.json`). 첫 두 묶음에서 **추가 38후보 통과**, 아직 목록 반영/문항 승인은 아니다. PID 94475는 마지막 제안 묶음, PID 95753은 그 답장 대기다. 부족한 메모리에서는 검수 호출을 대기했고 6.3GiB 확인 후 두 번째 묶음만 실행했다.
+- 제품 코드 변경·제품 시험 재실행은 없으며 `503059c` 검증을 재사용한다. 5학년 023 제작과 6학년 시범 대기, 원래 통과 106개 목록 staging도 보존 중이다.
+
 ### 보정 독립 검수 시작·기존 S3 내부 실패 확인 (Codex, 2026-11-06 12:54 KST)
 
 - **PID 95753** `.orchestrate/wordlists/g4-r2/review-corrections.mjs`가 Argon 보정 답장을 순서대로 Codex O-C5에 넘긴다. 상태 `corrections/codex/summary.json`, 로그 `review-corrections.out`. 한 번에 한 묶음이며 메모리 여유·압력을 확인한 뒤 호출한다. 기존 검사 실행기를 실제 입력 개수(1~60개)에 맞춰 재사용하되 응답 개수·표제어·인덱스·출처 불확정 승인 차단은 그대로 유지한다. 자동 콘텐츠 반영은 하지 않는다.
