@@ -3,14 +3,18 @@
 작성 2026-11-06 · 작성 Claude Opus 5.5(총괄) · 받는 쪽 Codex(메인 세션)
 같이 읽을 것: [계획서 CONTENT_REVIEW_PLAN.md](CONTENT_REVIEW_PLAN.md)(기준 문서), [AGENTS.md](../AGENTS.md)
 
-### 완료 답장 추가 복구·005 반영 대기 (Codex, 2026-11-06 13:23 KST)
+### 완료 답장 추가 복구·005 반영 대기 (Codex, 2026-11-06 13:27 KST)
 
 - 시간 초과한 세 번째 S3 호출의 원래 입력과 완료 대화를 대조해 **12개 수정안 추가 복구**, 앞서 36개와 합계 **48개**를 확보했다. 새 모델 호출은 **0**이다. 기존 추적 초안 기준 76개 대상·정확한 프롬프트·대화 UUID·완료 상태·로그/답장 해시를 확인했다. 근거 `.orchestrate/recovery/g4-s3-partials/{transcript-inventory,timeout-recovery}.json`; 원본 대화·프롬프트·답장도 같은 폴더에 보존했다. 같은 S3 호출을 다시 시도하지 않았다.
 - 추가 staging은 002의 8개(앞선 7개 불변), 003의 4개다. 003은 기존 엄격 검사 보정으로 별도 1문항의 보기 순서도 바뀌어 **전체 revision 변경은 49문항**이다. 해당 문항은 보기 문구별 정답·오답 이유 대응과 나머지 필드 불변, revision 1회 증가를 확인했다. 001의 기존 Claude 통과 12개는 그대로다. 이들은 아직 **추적 반영·S1 재판정·재검수 전**이며 공개 승인으로 세지 않는다.
 - **005 Codex 검수 50개 완료: 앞단 21통과·29결함.** 메인이 보고서 스키마·현재 revision/본문 해시·blind/reveal의 gpt-6-astra/high 설정·판정 대응·원래 보고서 보관본을 직접 확인했다(`.orchestrate/g4-005-pending.audit.json`). 잠금 반영 중 서버 시험이 자원 대기 600초 후 미실행으로 끝나 잠금은 해제됐지만, `.orchestrate/commit.pending.json`과 미커밋 보고서·레지스트리·후보 은행은 보존됐다. **005를 먼저 잠금 재개해야 한다.** 다른 보호 작업 PID 61118이 실행 중이며 종료·우회하지 않았다.
 - `.orchestrate/apply-pilot-results.mjs`는 확인한 005 pending만 우선 재개하고, 복구 001~003 → 5학년 시범 → 6학년 시범 → 새 낱말 목록 순으로 반영하도록 준비했다. pending/manifest가 확인 기록과 다르면 중단한다. 이번에는 **구문 확인만 했고 실행하지 않았다**. 기존 PID 55822·25037과 동시에 콘텐츠를 반영하지 않는다.
 - 새 4학년 목록 161통과의 운영 사본과 **5문항 사전 준비 5통과·0반려**를 직접 대조했다. `.orchestrate/produce-pilots/g4-r2-preflight/{summary,audit}.json`, 운영 목록 `.orchestrate/produce/g4-production-list-r2.json`. 검수 staging과 사본의 동일 SHA, 기존 사전 index 3개와 원문 9파일, 실제 선택 후보와 모든 `prepare` 통과를 확인했다. 2개는 검수된 사전 항목 ID를 지정한다. 새 조회/모델 호출은 0이며 **문항 제작 전**이다. 5학년 제작과 대기 중인 6학년 시범이 끝난 뒤 `Q50-G4-028` 5문항 시범을 실행한다.
-- 5학년 감독 PID 78689는 023 제작 중, 6학년 PID 91819는 제작 잠금 대기다. 제품 코드 변경·제품 시험 재실행은 없으며 `503059c` 검증 결과를 재사용한다. 관련 없는 `docs/contracts/prd_v0_5_validation.json` 변경은 보존했다.
+- 원래 앞단 PID 55822는 **04:23:34Z `front-needs-attention` 종료**했다. 기존 보충 PID 25037이 04:23:59Z에 005 pending 반영을 이어받아 잠금을 보유하며 서버 시험 자원 대기 중이다. 메인이 중복 반영을 시작하지 않았다.
+- 006은 블라인드 50개 완료 뒤 자원 차단으로 공개 대조 호출 전에 멈췄다. 원래 앞단 종료·현재 revision/본문 해시·입력과 답장 대응을 확인하고 **PID 4481** `.orchestrate/resume-g4-006-reveal.mjs`로 **공개 대조만** 재개했다. gpt-6-astra/high, 상태 `.orchestrate/g4-006-reveal.summary.json`, 로그 같은 이름의 `.out`. 완료하면 `awaiting-ingest`에서 멈추고 추적 파일·staging은 쓰지 않는다. 이후 메인 대조와 ingest는 기존 PID 25037 종료 뒤 새 계약으로 수행한다. 블라인드를 다시 요청하지 않았다.
+- 5학년 **023 완료: 43생성·7반려**, Argon 6회. 메인이 **194파일** 해시·스키마·정답만 fits·엄격 검사·전역 ID 충돌 0·출처 불확정 6후보 제외 근거를 직접 확인했다. 나머지 반려 1개는 빈칸 형식 오류다. 022와 합계 **84생성·16반려**, 확인 기록 `.orchestrate/g5-supplement.staging-audit.json`. 감독 PID 78689는 **024 제작 중**, 6학년 PID 91819는 대기다.
+- 4학년 r2 시범 실행기 `.orchestrate/run-g4-r2-produce-pilot.mjs`는 준비·구문 확인만 했고 **미실행**이다. 선행 5학년 제작 및 6학년 시범 정상 종료와 입력 해시·후보 동일성을 확인하고 5문항만 제작하도록 되어 있다. 자동 6배치 확대나 콘텐츠 반영은 하지 않는다.
+- 제품 코드 변경·제품 시험 재실행은 없으며 `503059c` 검증 결과를 재사용한다. 관련 없는 `docs/contracts/prd_v0_5_validation.json` 변경은 보존했다.
 
 ### 추가 낱말 보정 검수 완료 (Codex, 2026-11-06 13:10 KST)
 
