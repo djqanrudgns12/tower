@@ -1,4 +1,3 @@
-import { createHash } from 'node:crypto';
 import type { LevelAssessment } from '../../src/contracts/levels';
 import type { BankQuestion, RetractionList, SharedBankFile, SharedBankQuestion } from '../../src/contracts/questions';
 import { sharedBankFileSchema } from '../../src/contracts/questions';
@@ -6,27 +5,12 @@ import { lintBatchForGrade } from '../../src/content/lint';
 import { MIN_PUBLISHED, toBankQuestion, type BatchInput } from './bankBuild';
 import { selectUpwardShares } from './gradeSharing';
 import { buildSharingInputs } from './sharingInputs';
+import { sharedBankVersion } from './sharedBankVersion';
+export { sharedBankVersion } from './sharedBankVersion';
 
 export type { SharedBankQuestion } from '../../src/contracts/questions';
 /** 런타임 계약 통합 전의 빌드 입력. 이 모듈은 파일을 쓰거나 은행을 공개하지 않는다. */
 export type SharedBankPlan = SharedBankFile;
-
-function canonical(value: unknown): string {
-  if (Array.isArray(value)) return `[${value.map(canonical).join(',')}]`;
-  if (value !== null && typeof value === 'object') return `{${Object.entries(value)
-    .filter(([, child]) => child !== undefined).sort(([a], [b]) => a < b ? -1 : a > b ? 1 : 0)
-    .map(([key, child]) => `${JSON.stringify(key)}:${canonical(child)}`).join(',')}}`;
-  const encoded = JSON.stringify(value);
-  if (encoded === undefined) throw new TypeError('은행 판 번호 입력은 JSON 값이어야 한다');
-  return encoded;
-}
-
-/** 대상 학년과 실제 런타임 필드 전체를 묶는다. 원학년·본문이 같아도 다른 은행의 키와 섞이지 않는다. */
-export function sharedBankVersion(grade: number, questions: readonly SharedBankQuestion[]): string {
-  if (!Number.isInteger(grade) || grade < 3 || grade > 6) throw new RangeError('받는 학년은 3~6학년이어야 한다');
-  const sorted = [...questions].sort((a, b) => a.id < b.id ? -1 : a.id > b.id ? 1 : 0);
-  return `pub-g${grade}-${createHash('sha256').update(canonical({ grade, questions: sorted })).digest('hex').slice(0, 12)}`;
-}
 
 /**
  * 원 검수 보고서·최신 판·철회에서 공개 입력을 다시 계산하고 위로 공유할 은행을 준비한다.

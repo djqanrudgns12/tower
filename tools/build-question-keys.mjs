@@ -1,6 +1,8 @@
 import { readFile, writeFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
+import { sharedBankFileSchema } from '../src/contracts/questions.ts';
+import { sharedBankVersion } from './content/sharedBankVersion.ts';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const quote = value => `'${String(value).replaceAll("'", "''")}'`;
@@ -16,7 +18,23 @@ const HEADER = [
  * D1은 BEGIN/COMMIT 문을 받지 않는다. `wrangler d1 execute --file`이 파일 하나를 한 번에 실행한다.
  * Supabase(Postgres) 판은 2026-11-05 단계 6에서 멈췄다. 마지막 출력은 docs/archive/supabase/question_keys.seed.sql.
  */
-export function buildQuestionKeySeed({ banks, balance, maps, retractions }) {
+export function buildQuestionKeySeed(input) {
+  return buildSeed(input, (q, bank) => q.grade === bank.grade);
+}
+
+/** W5 연결용. 원 ID·학년을 보존하고 실제 받는 은행의 버전·학년으로 키를 만든다. 현재 CLI는 기존 경로를 쓴다. */
+export function buildSharedQuestionKeySeed(input) {
+  const banks = input.banks.map(bank => bank.status === 'published' ? sharedBankFileSchema.parse(bank) : bank);
+  for (const bank of banks) {
+    if (bank.status !== 'published') continue;
+    if (bank.bankVersion !== sharedBankVersion(bank.grade, bank.questions)) {
+      throw new Error(`${bank.bankId}: 받는 학년 은행 판 번호가 현재 문항과 일치하지 않는다`);
+    }
+  }
+  return buildSeed({ ...input, banks }, (q, bank) => q.grade === bank.grade || q.grade + 1 === bank.grade);
+}
+
+function buildSeed({ banks, balance, maps, retractions }, belongs) {
   const sql = [HEADER];
   // 파일이 없어지거나 published가 아니게 된 학년도 이전 승인을 남기지 않는다.
   sql.push('update approved_run_conditions set active=0 where grade in (3,4,5,6);');
@@ -34,7 +52,7 @@ export function buildQuestionKeySeed({ banks, balance, maps, retractions }) {
     const questions = bank.questions.filter(q => q.status === 'published' && !retracted.has(`${q.id}@${q.revision}`));
     if (questions.length === 0) continue;
     for (const q of questions) {
-      if (q.grade !== grade || !Number.isSafeInteger(q.revision) || q.revision < 1 || !['a', 'b', 'c', 'd'].includes(q.correctOptionId)) throw new Error(`잘못된 정답 키: ${q.id}`);
+      if (!belongs(q, bank) || !Number.isSafeInteger(q.revision) || q.revision < 1 || !['a', 'b', 'c', 'd'].includes(q.correctOptionId)) throw new Error(`잘못된 정답 키: ${q.id}`);
       const key = `${bank.bankVersion}:${q.id}@${q.revision}`;
       if (seen.has(key)) throw new Error(`중복 정답 키: ${key}`);
       seen.add(key);
