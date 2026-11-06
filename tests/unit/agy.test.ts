@@ -39,6 +39,14 @@ describe('봉인 폴더만 읽는 agy 직접 호출', () => {
     expect(parseAgyOutput(output('작성이 거부되었습니다.'))).toBe('작성이 거부되었습니다.');
   });
 
+  it('중첩된 agy 봉투는 실제 답장까지 꺼내고 잘린 내부 응답은 거절한다', () => {
+    const brain = temp(), conversation_id = '12345678-1234-1234-1234-123456789abc';
+    const answer = { items: [{ questionId: 'q1', action: 'revise' }] };
+    const nested = (response: string) => output(JSON.stringify({ conversation_id, status: 'ERROR', response }));
+    expect(JSON.parse(parseAgyOutput(nested(JSON.stringify(answer)), { brain }))).toEqual(answer);
+    expect(() => parseAgyOutput(nested('{"items":['), { brain })).toThrow(/잘린|불완전/);
+  });
+
   it('출력 상한 뒤 이어 쓴 답장은 마지막 완결 JSON 블록을 고른다', () => {
     const answer = { items: [{ questionId: 'q1' }, { questionId: 'q2' }] };
     const response = `${block({ items: [] })}\nexceeded the output token limit … continue\n${block(answer)}`;

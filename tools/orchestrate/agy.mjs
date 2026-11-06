@@ -69,13 +69,21 @@ function brainFiles(dir) {
     : e.isFile() && /\.(json|md|txt)(\.resolved)?$/.test(e.name) ? [path.join(dir, e.name)] : []);
 }
 
-export function parseAgyOutput(raw, { brain = BRAIN, validate } = {}) {
+export function parseAgyOutput(raw, { brain = BRAIN, validate, depth = 0 } = {}) {
+  if (depth > 4) throw new Error('agy 중첩 응답 한도 초과');
   const envelope = JSON.parse(raw);
   const response = typeof envelope.response === 'string' ? envelope.response : '';
   const complete = completeJson(response);
-  if (complete) return complete; // 문항별 형식·대상 검사는 기존 호출자의 검사로 남긴다.
+  if (complete) {
+    const value = JSON.parse(complete);
+    // CLI가 오류 봉투를 response 안에 한 번 더 넣기도 한다. 봉투를 문항 답장으로 넘기지 않는다.
+    if (typeof value.response === 'string' && typeof value.conversation_id === 'string') {
+      return parseAgyOutput(complete, { brain, validate, depth: depth + 1 });
+    }
+    return complete; // 문항별 형식·대상 검사는 기존 호출자의 검사로 남긴다.
+  }
   const incomplete = /```|[[{]|exceeded the output token limit/i.test(response);
-  if (!envelope.is_error && response && !incomplete) return response;
+  if (!envelope.is_error && envelope.status !== 'ERROR' && response && !incomplete) return response;
   const id = envelope.conversation_id;
   if (typeof id === 'string' && /^[a-f0-9]{8}-(?:[a-f0-9]{4}-){3}[a-f0-9]{12}$/i.test(id)) {
     const files = brainFiles(path.join(brain, id)).sort((a, b) => fs.statSync(b).mtimeMs - fs.statSync(a).mtimeMs);
