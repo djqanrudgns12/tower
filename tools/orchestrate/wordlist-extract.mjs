@@ -4,12 +4,12 @@ import fs from 'node:fs';
 const [file, gradeArg, usedFile, outPath] = process.argv.slice(2);
 const raw = fs.readFileSync(file, 'utf8');
 let texts = [raw];
-for (const line of raw.split('\n')) if (line.startsWith('{"conversation_id"')) { try { texts.unshift(JSON.parse(line).response ?? ''); } catch {} }
+for (const line of raw.split('\n')) if (line.startsWith('{"conversation_id"')) { try { texts.unshift(JSON.parse(line).response ?? ''); } catch { /* 잘린 봉투는 다음 행·원문 블록에서 복구한다. */ } }
 let data = null;
 for (const t of texts) {
   const blocks = []; let at = 0;
   while ((at = t.indexOf('```json', at)) >= 0) { const st = t.indexOf('\n', at) + 1, en = t.indexOf('```', st); if (en < 0) break; blocks.push(t.slice(st, en)); at = st; }
-  for (const b of blocks.reverse()) { try { const d = JSON.parse(b); if (Array.isArray(d.items)) { data = d; break; } } catch {} }
+  for (const b of blocks.reverse()) { try { const d = JSON.parse(b); if (Array.isArray(d.items)) { data = d; break; } } catch { /* 미완성 블록을 건너뛰고 앞의 완결 JSON을 찾는다. */ } }
   if (data) break;
 }
 if (!data) { console.log('JSON 목록을 찾지 못함'); process.exit(1); }

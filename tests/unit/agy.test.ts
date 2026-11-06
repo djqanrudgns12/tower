@@ -90,6 +90,53 @@ describe('봉인 폴더만 읽는 agy 직접 호출', () => {
     expect(execute).toHaveBeenCalledTimes(1);
   });
 
+  function timeoutFixture(change: { input?: string; status?: string; reply?: string; code?: string; logId?: string } = {}) {
+    const root = temp(), cwd = path.join(root, '.orchestrate/sealed'), brain = path.join(root, 'brain');
+    const id = '12345678-1234-1234-1234-123456789abc', prompt = '현재 입력 q1@2를 판정한다';
+    const transcript = path.join(brain, id, '.system_generated/logs/transcript_full.jsonl');
+    fs.mkdirSync(cwd, { recursive: true }); fs.mkdirSync(path.dirname(transcript), { recursive: true });
+    fs.writeFileSync(transcript, [
+      { type: 'USER_INPUT', content: change.input ?? prompt },
+      { type: 'PLANNER_RESPONSE', status: change.status ?? 'DONE', content: change.reply ?? block({ items: [{ questionId: 'q1', revision: 2 }] }) },
+    ].map(row => JSON.stringify(row)).join('\n'));
+    const failure = Object.assign(new Error('agy 호출 시간 초과'), { code: change.code ?? 'AGY_TIMEOUT' });
+    const execute = vi.fn(async (_executable: string, args: string[]) => {
+      const index = args.indexOf('--log-file');
+      if (index >= 0) fs.writeFileSync(args[index + 1]!, `Stream goroutine exited for ${change.logId ?? id}, sending completion signal\n`);
+      throw failure;
+    });
+    const validate = vi.fn((text: string) => {
+      const parsed: unknown = JSON.parse(text);
+      if (JSON.stringify(parsed) !== JSON.stringify({ items: [{ questionId: 'q1', revision: 2 }] })) throw new Error('현재 대상과 불일치');
+    });
+    return { root, cwd, brain, id, prompt, failure, execute, validate };
+  }
+
+  it('CLI 시간 초과라도 같은 호출·입력의 완료 답장은 대상 검사 후 복구한다', async () => {
+    const f = timeoutFixture();
+    const result = await agyCall({ root: f.root, cwd: f.cwd, prompt: f.prompt, validate: f.validate }, { execute: f.execute, brain: f.brain });
+    expect(JSON.parse(result.out)).toEqual({ items: [{ questionId: 'q1', revision: 2 }] });
+    expect(result.recovered).toBe(true);
+    expect(f.validate).toHaveBeenCalledTimes(1);
+    expect(f.execute).toHaveBeenCalledTimes(1);
+    const args = f.execute.mock.calls[0]![1], logFile = args[args.indexOf('--log-file') + 1]!;
+    expect(JSON.parse(fs.readFileSync(`${logFile}.recovery.json`, 'utf8'))).toMatchObject({ conversationId: f.id, reason: 'AGY_TIMEOUT' });
+  });
+
+  it.each([
+    { input: '다른 입력 q2@1' }, { status: 'RUNNING' }, { reply: '{"items":[' },
+    { reply: block({ items: [{ questionId: 'other', revision: 2 }] }) },
+    { logId: '87654321-1234-1234-1234-123456789abc' }, { code: 'AUTH_FAILED' },
+  ])('미완·다른 요청·잘못된 답장·인증 실패는 복구하지 않는다: %j', async change => {
+    const f = timeoutFixture(change);
+    await expect(agyCall({ root: f.root, cwd: f.cwd, prompt: f.prompt, validate: f.validate }, { execute: f.execute, brain: f.brain })).rejects.toBe(f.failure);
+  });
+
+  it('대상 검사기가 없으면 시간 초과 답장을 승인하지 않는다', async () => {
+    const f = timeoutFixture();
+    await expect(agyCall({ root: f.root, cwd: f.cwd, prompt: f.prompt }, { execute: f.execute, brain: f.brain })).rejects.toBe(f.failure);
+  });
+
   it('네 도구가 브리지 대신 주입한 agyCall에 모델·cwd·상한을 전달한다', async () => {
     const root = temp(), cwd = path.join(root, 'sealed');
     fs.mkdirSync(cwd);

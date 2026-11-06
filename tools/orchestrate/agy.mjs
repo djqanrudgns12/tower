@@ -3,7 +3,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import os from 'node:os';
 import { spawn } from 'node:child_process';
-import { randomUUID } from 'node:crypto';
+import { createHash, randomUUID } from 'node:crypto';
 
 export const AGY_MODEL = 'gemini-4-argon-high';
 const BRAIN = path.join(os.homedir(), '.gemini/antigravity-cli/brain');
@@ -103,17 +103,56 @@ function execute(executable, args, { cwd, timeoutSec }) {
     child.once('error', error => { clearTimeout(timer); reject(error); });
     child.once('close', code => {
       clearTimeout(timer);
-      if (timedOut) reject(new Error('agy 호출 시간 초과'));
+      if (timedOut) reject(Object.assign(new Error('agy 호출 시간 초과'), { code: 'AGY_TIMEOUT' }));
       else resolve({ code, out, err: err.trim() });
     });
   });
 }
 
+// 일부 CLI 실행은 답장이 DONE인 뒤에도 종료되지 않았다. 호출별 로그에 연결된
+// 단일 대화만 읽고, 원래 입력과 대상 검사기를 모두 통과한 경우에만 재사용한다.
+async function recoverTimedOut({ logFile, prompt, validate, brain = BRAIN }) {
+  if (typeof validate !== 'function' || !prompt.trim()) return null;
+  try {
+    const log = fs.readFileSync(logFile, 'utf8');
+    const ids = [...new Set([...log.matchAll(/Stream goroutine exited for ([a-f0-9]{8}-(?:[a-f0-9]{4}-){3}[a-f0-9]{12}), sending completion signal/gi)].map(m => m[1]))];
+    if (ids.length !== 1) return null;
+    const conversationId = ids[0], dir = path.join(brain, conversationId);
+    if (fs.lstatSync(dir).isSymbolicLink()) return null;
+    const file = path.join(dir, '.system_generated/logs/transcript_full.jsonl');
+    if (!fs.realpathSync(file).startsWith(`${fs.realpathSync(dir)}${path.sep}`)) return null;
+    const bytes = fs.readFileSync(file), entries = bytes.toString('utf8').split('\n').filter(Boolean).map(line => JSON.parse(line));
+    const users = entries.filter(e => e.type === 'USER_INPUT');
+    const answers = entries.filter(e => e.type === 'PLANNER_RESPONSE');
+    if (users.length !== 1 || typeof users[0].content !== 'string' || !users[0].content.includes(prompt)
+      || answers.length !== 1 || answers[0].status !== 'DONE' || typeof answers[0].content !== 'string') return null;
+    const out = completeJson(answers[0].content);
+    if (!out) return null;
+    await validate(out);
+    const sha = value => createHash('sha256').update(value).digest('hex');
+    fs.writeFileSync(`${logFile}.recovery.json`, `${JSON.stringify({
+      reason: 'AGY_TIMEOUT', conversationId, transcriptSha256: sha(bytes), promptSha256: sha(prompt),
+      responseSha256: sha(out), recoveredAt: new Date().toISOString(),
+    }, null, 2)}\n`);
+    return { code: 0, out, err: '', recovered: true };
+  } catch { return null; } // 출처·입력·스키마가 확인되지 않으면 원래 시간 초과를 유지한다.
+}
+
 export async function agyCall({ cwd, prompt, model = AGY_MODEL, timeoutSec = 1200, root, argonPerHour = 40, validate }, deps = {}) {
   const args = agyArgs({ cwd, prompt, model, timeoutSec });
+  const logFile = path.join(fs.realpathSync(cwd), `agy-${randomUUID()}.log`);
+  args.push('--log-file', logFile);
   await reserveAgyCall({ root: root ?? rateRoot(cwd), perHour: argonPerHour });
   const installed = path.join(os.homedir(), '.gemini/bin/agy');
-  const result = await (deps.execute ?? execute)(fs.existsSync(installed) ? installed : 'agy', args, { cwd, timeoutSec });
+  let result;
+  try { result = await (deps.execute ?? execute)(fs.existsSync(installed) ? installed : 'agy', args, { cwd, timeoutSec }); }
+  catch (error) {
+    if (error.code === 'AGY_TIMEOUT') {
+      const recovered = await recoverTimedOut({ logFile, prompt, validate, brain: deps.brain });
+      if (recovered) return recovered;
+    }
+    throw error;
+  }
   if (result.code !== 0) throw new Error(`agy 실행 실패(${result.code}): ${result.err || result.out}`);
   return { ...result, out: parseAgyOutput(result.out, { brain: deps.brain, validate }) };
 }
