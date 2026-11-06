@@ -1,0 +1,1194 @@
+{
+  "batchId": "Q50-G5-026",
+  "jobId": "Q50-G5-026",
+  "publicationPolicy": "codex-argon-v1",
+  "producer": {
+    "model": "Gemini 4 Argon (High)",
+    "tool": "tools/orchestrate/produce.mjs",
+    "date": "2026-11-06"
+  },
+  "items": [
+    {
+      "id": "g5-argon-1588",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "학급 회의에서 민수가 낸 의견을 우리 반 새 규칙으로 남들에게 널리 알렸습니다.",
+          "verdict": "does_not_fit",
+          "reason": "'채택하다'는 의견이나 제도를 뽑아 쓰는 것이지 널리 알리는 뜻이 아니다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "학급 회의에서 민수가 낸 의견을 우리 반 새 규칙으로 속으로 점찍어 두었습니다.",
+          "verdict": "does_not_fit",
+          "reason": "공식 회의를 거쳐 우리 반 새 규칙으로 삼았다는 문맥에 마음속으로만 골라 두었다는 말은 맞지 않는다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "학급 회의에서 민수가 낸 의견을 우리 반 새 규칙으로 차례로 비교해 보았습니다.",
+          "verdict": "does_not_fit",
+          "reason": "의견을 새 규칙으로 삼아 뽑아 쓴 결과와 단순 비교 행위는 뜻이 다르다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "학급 회의에서 민수가 낸 의견을 우리 반 새 규칙으로 골라서 뽑아 썼습니다.",
+          "verdict": "fits",
+          "reason": "회의에서 나온 의견을 골라 실제로 다루고 쓰기로 정한 문맥과 '채택하다'의 사전적 의미에 정확히 맞는다."
+        }
+      ],
+      "uniquenessNote": "단순히 마음속으로 고르거나 비교·전달하는 행위를 배제하고, 의견을 골라서 실제로 뽑아 쓴다는 핵심 자질을 담은 a만 정답이 된다.",
+      "gradeEvidence": "krdict:고급"
+    },
+    {
+      "id": "g5-argon-1589",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "과학실에 실험할 때 쓸 안전 용품을 빠짐없이 다 갖추었습니다.",
+          "verdict": "fits",
+          "reason": "있어야 할 안전 용품을 빠짐없이 다 갖추었다는 뜻으로 원래 문장의 의미와 정확히 일치한다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "과학실에 실험할 때 쓸 안전 용품을 골고루 나누어 주었습니다.",
+          "verdict": "does_not_fit",
+          "reason": "물품을 나누어 주는 행위이지 과학실에 필요한 것을 다 갖추어 놓는 뜻이 아니다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "과학실에 실험할 때 쓸 안전 용품을 잠시 빌려서 썼습니다.",
+          "verdict": "does_not_fit",
+          "reason": "과학실에 필요한 물품을 상시 갖추어 두었다는 뜻과 잠시 빌려 썼다는 뜻은 다르다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "과학실에 실험할 때 쓸 안전 용품을 고장 난 곳을 고쳤습니다.",
+          "verdict": "does_not_fit",
+          "reason": "문장 호응도 어색하고 수리한다는 뜻은 있어야 할 것을 다 갖춘다는 '구비하다'의 의미가 아니다."
+        }
+      ],
+      "uniquenessNote": "대여·배분·수리 의미를 모두 배제하고, 있어야 할 물품을 빠짐없이 다 갖춘다는 c만 '구비하다'와 바꾸어 쓸 수 있다.",
+      "gradeEvidence": "rubric_inferred(L=5,T=5)"
+    },
+    {
+      "id": "g5-argon-1590",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "마을 도서관에 새 책을 보내 주며 어린이 독서 모임을 처음 만들어 열었습니다.",
+          "verdict": "does_not_fit",
+          "reason": "새 책을 보내 보탬을 준 상황이지 모임을 처음 만들어 연 것이 아니다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "마을 도서관에 새 책을 보내 주며 어린이 독서 모임을 직접 맡아 이끌었습니다.",
+          "verdict": "does_not_fit",
+          "reason": "밖에서 물품을 보내 도운 것이지 모임을 직접 운영하며 이끈 것이 아니다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "마을 도서관에 새 책을 보내 주며 어린이 독서 모임을 뒤에서 도와주었습니다.",
+          "verdict": "fits",
+          "reason": "새 책을 보내 모임을 뒤에서 도와주었다는 뜻으로 문맥과 사전적 의미에 모두 정확히 맞는다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "마을 도서관에 새 책을 보내 주며 어린이 독서 모임을 큰 소리로 응원했습니다.",
+          "verdict": "does_not_fit",
+          "reason": "도서관에 책을 보내 지원한 행동은 경기장 등에서 큰 소리로 응원하는 것과 맞지 않는다."
+        }
+      ],
+      "uniquenessNote": "개설·운영 및 혼동어 '응원하다'(큰 소리로 응원하다)를 배제하고, 새 책을 보내 뒤에서 돕는 문맥에 맞는 d만 유일한 정답이다.",
+      "gradeEvidence": "krdict:중급"
+    },
+    {
+      "id": "g5-argon-1591",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "모둠 발표에서 자료 조사를 혼자서 도맡았습니다.",
+          "verdict": "fits",
+          "reason": "여럿이 나누어 맡는 '분담하다'와 정반대로 한 사람이 전부 맡는 상황이 자연스럽게 성립한다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "모둠 발표에서 자료 조사를 나누어서 맡았습니다.",
+          "verdict": "does_not_fit",
+          "reason": "'분담하다'와 같은 뜻이 되므로 반대되는 말을 찾는 조건에 맞지 않는다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "모둠 발표에서 자료 조사를 끝까지 미루었습니다.",
+          "verdict": "does_not_fit",
+          "reason": "일을 제때 하지 않고 늦추는 것일 뿐 역할을 나누어 맡는 것의 반대 개념이 아니다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "모둠 발표에서 자료 조사를 차례로 말했습니다.",
+          "verdict": "does_not_fit",
+          "reason": "말하는 순서를 뜻할 뿐 일을 맡는 주체의 수와 무관하다."
+        }
+      ],
+      "uniquenessNote": "유의 표현(나누어서 맡다)과 무관한 행위(미루다, 말하다)를 제외하면 여럿이 나누어 맡음의 정반대인 b만 정답이다.",
+      "gradeEvidence": "krdict:중급"
+    },
+    {
+      "id": "g5-argon-1592",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "비 때문에 오늘 체육 행사 일정의 시간을 짧게 줄였습니다.",
+          "verdict": "does_not_fit",
+          "reason": "원래 문장의 '단축하다'와 같은 뜻이어서 반대말이 되지 않는다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "비 때문에 오늘 체육 행사 일정의 규모를 크게 넓혔습니다.",
+          "verdict": "does_not_fit",
+          "reason": "크기나 규모를 줄이는 '축소하다'의 반대 개념이며 시간·거리를 줄이는 '단축하다'의 반대말이 아니다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "비 때문에 오늘 체육 행사 일정의 시간을 길게 늘렸습니다.",
+          "verdict": "fits",
+          "reason": "시간을 짧게 줄이는 '단축하다'와 정반대 의미로 어미까지 자연스럽게 호응한다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "비 때문에 오늘 체육 행사 일정의 순서를 다시 바꾸었습니다.",
+          "verdict": "does_not_fit",
+          "reason": "진행 차례를 변경하는 뜻이므로 시간이나 거리의 길이를 줄이는 것의 반대말이 아니다."
+        }
+      ],
+      "uniquenessNote": "유의 표현(a), 혼동어 '축소하다'의 반의 표현(b), 순서 변경(d)을 배제하여 시간·거리 영역의 반의 표현인 c만 유일하게 성립한다.",
+      "gradeEvidence": "krdict:중급"
+    },
+    {
+      "id": "g5-argon-1594",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "학생회가 알뜰 장터라는 행사를 계획하여 열었습니다.",
+          "verdict": "does_not_fit",
+          "reason": "행사나 모임을 계획하여 여는 것은 혼동어 '주최하다'의 뜻이지 진행을 맡아 관리하는 '주관하다'의 뜻이 아니다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "학생회가 알뜰 장터의 진행을 여럿이 나누어 맡았습니다.",
+          "verdict": "does_not_fit",
+          "reason": "역할을 나누어 맡는 것은 '분담하다'의 뜻으로 책임지고 관리한다는 정의와 다르다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "학생회가 알뜰 장터의 진행에 손님으로 찾아가 즐겼습니다.",
+          "verdict": "does_not_fit",
+          "reason": "손님으로 즐기는 것은 장터 진행을 책임지고 관리하는 문맥과 반대된다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "학생회가 알뜰 장터의 진행이라는 일을 책임지고 맡아 관리했습니다.",
+          "verdict": "fits",
+          "reason": "어떤 일을 책임을 지고 맡아 관리한다는 '주관하다'의 사전 뜻풀이와 정확히 일치한다."
+        }
+      ],
+      "uniquenessNote": "혼동어 '주최하다'(a), '분담하다'(b), 단순 참여(c)를 모두 배제하고 사전적 의미에 부합하는 d만 정답이다.",
+      "gradeEvidence": "krdict:고급"
+    },
+    {
+      "id": "g5-argon-1596",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "비에 젖어 빳빳하던 셔츠 옷깃에서 땅에서 자라던 풀이 말라 시들었습니다.",
+          "verdict": "does_not_fit",
+          "reason": "셔츠 옷깃의 상태를 설명하는 문장이므로 식물인 풀이 시든다는 문자 그대로의 해석은 맞지 않는다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "비에 젖어 빳빳하던 셔츠 옷깃의 옷감 색깔이 흐리게 바랬습니다.",
+          "verdict": "does_not_fit",
+          "reason": "'빳빳하던' 옷깃이 비에 젖은 변화를 말하므로 색깔이 바랜다는 뜻은 어긋난다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "비에 젖어 빳빳하던 셔츠 옷깃이 마르며 작게 줄어들었습니다.",
+          "verdict": "does_not_fit",
+          "reason": "비에 젖어 풀기가 빠진 상태이지 옷이 마르며 줄어든다는 뜻이 아니다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "비에 젖어 빳빳하던 셔츠 옷깃의 풀기가 빠져서 빳빳하지 않게 되었습니다.",
+          "verdict": "fits",
+          "reason": "빳빳하던 옷깃의 풀기가 빠져 흐물흐물해진 문맥과 524635-1 의미에 정확히 들어맞는다."
+        }
+      ],
+      "uniquenessNote": "셔츠 옷깃 문맥을 제시하여 사람의 기세가 꺾이는 다른 의미와의 혼동을 막고, 문자 그대로의 오해(a)와 변색·수축(b, d)을 배제해 c만 정답이 된다.",
+      "gradeEvidence": "rubric_inferred(L=4,T=5)"
+    },
+    {
+      "id": "g5-argon-1601",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "'구더기 무서워 장 못 담글까'는 방해되는 일이 있어도 할 일은 해야 한다는 뜻이다.",
+          "verdict": "fits",
+          "reason": "방해되는 것이 있더라도 마땅히 할 일은 해야 한다는 사전 뜻풀이와 정확히 일치한다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "'구더기 무서워 장 못 담글까'는 문제가 안 생기게 처음부터 준비해야 한다는 뜻이다.",
+          "verdict": "does_not_fit",
+          "reason": "미리 준비하라는 뜻이 아니라 방해되는 것이 있어도 할 일은 해야 한다는 뜻이므로 맞지 않는다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "'구더기 무서워 장 못 담글까'는 나쁜 일이 생길까 봐 할 일을 포기한다는 뜻이다.",
+          "verdict": "does_not_fit",
+          "reason": "'장 못 담글까'는 당연히 장을 담근다는 뜻이므로 일을 포기한다는 풀이는 정반대이다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "'구더기 무서워 장 못 담글까'는 작은 문제를 가볍게 보면 일을 망친다는 뜻이다.",
+          "verdict": "does_not_fit",
+          "reason": "작은 문제를 키우지 말라는 뜻이 아니라 방해를 무릅쓰고 할 일을 하라는 뜻이므로 맞지 않는다."
+        }
+      ],
+      "uniquenessNote": "네 보기 모두 '~다는 뜻' 형태로 길이와 어미를 통일했고, 방해가 있어도 마땅히 할 일을 해야 한다는 사전 의미와 일치하는 것은 c뿐이다.",
+      "gradeEvidence": "rubric_inferred(L=4,T=5)"
+    },
+    {
+      "id": "g5-argon-1602",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "속담 ‘도둑이 제 발 저리다’는 ‘급한 일일수록 서두르지 말고 차근차근 순서대로 처리해야 한다’라는 뜻이다.",
+          "verdict": "does_not_fit",
+          "reason": "침착한 일 처리를 권하는 내용으로 지은 잘못 때문에 조마조마해지는 속담의 뜻과 무관하다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "속담 ‘도둑이 제 발 저리다’는 ‘남의 물건을 탐내다가 오히려 자기 것까지 모두 잃어버린다’라는 뜻이다.",
+          "verdict": "does_not_fit",
+          "reason": "‘도둑’이라는 낱말만 보고 재물 손실로 잘못 연결한 뜻으로, 스스로 마음이 불안해지는 뜻이 없다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "속담 ‘도둑이 제 발 저리다’는 ‘지은 잘못이 있으면 들킬까 봐 저절로 마음이 조마조마해진다’라는 뜻이다.",
+          "verdict": "fits",
+          "reason": "사전 뜻풀이인 ‘지은 죄가 있으면 자연히 마음이 조마조마하여짐’과 의미가 정확히 일치한다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "속담 ‘도둑이 제 발 저리다’는 ‘작은 실수를 바로잡으려다가 도리어 더 큰 문제를 일으킨다’라는 뜻이다.",
+          "verdict": "does_not_fit",
+          "reason": "일을 그르쳐 손해가 커진다는 뜻이므로 죄책감으로 마음이 불안해지는 이 속담과 맞지 않는다."
+        }
+      ],
+      "uniquenessNote": "사전 근거(527097-1)의 핵심 의미인 ‘지은 죄(잘못)로 인해 자연히 마음이 조마조마해짐’을 나타내는 보기는 a뿐이다.",
+      "gradeEvidence": "rubric_inferred(L=4,T=5)"
+    },
+    {
+      "id": "g5-argon-1606",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "‘가을 저녁 풀숲에서 무당벌레 한 마리를 보았다’처럼 방언 ‘귀뚜래미’를 표준어 ‘무당벌레’로 바꾸어 쓸 수 있다.",
+          "verdict": "does_not_fit",
+          "reason": "‘무당벌레’는 ‘귀뚜래미’와 전혀 다른 곤충이므로 뜻이 맞지 않는다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "‘가을 저녁 풀숲에서 쓰르라미 한 마리를 보았다’처럼 방언 ‘귀뚜래미’를 표준어 ‘쓰르라미’로 바꾸어 쓸 수 있다.",
+          "verdict": "does_not_fit",
+          "reason": "‘쓰르라미’는 매미과의 다른 곤충으로 ‘귀뚜래미’의 표준어가 아니다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "‘가을 저녁 풀숲에서 방아깨비 한 마리를 보았다’처럼 방언 ‘귀뚜래미’를 표준어 ‘방아깨비’로 바꾸어 쓸 수 있다.",
+          "verdict": "does_not_fit",
+          "reason": "‘방아깨비’는 메뚜기과의 다른 곤충이므로 ‘귀뚜래미’의 뜻과 맞지 않는다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "‘가을 저녁 풀숲에서 귀뚜라미 한 마리를 보았다’처럼 방언 ‘귀뚜래미’를 표준어 ‘귀뚜라미’로 바꾸어 쓸 수 있다.",
+          "verdict": "fits",
+          "reason": "사전 근거(od-644149-1)에서 ‘귀뚜래미’는 ‘귀뚜라미’의 방언이므로 정확히 들어맞는다."
+        }
+      ],
+      "uniquenessNote": "사전 근거(od-644149-1)상 ‘귀뚜래미’의 표준어는 ‘귀뚜라미’(a)뿐이며 오답은 모두 다른 곤충 이름이다.",
+      "gradeEvidence": "stdict:방언(표준어=귀뚜라미)"
+    },
+    {
+      "id": "g5-argon-1615",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "도서관에서는 요일별로 나뉘어 있던 어린이 독서 과정을 수준별 과정으로 새롭게 개정했다.",
+          "verdict": "does_not_fit",
+          "reason": "‘개정하다’는 주로 법률이나 규칙, 문서의 잘못되거나 낡은 내용을 바르게 고칠 때 쓰며, 요일별 과정을 수준별 과정으로 다시 엮어 짜는 문맥에는 맞지 않는다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "도서관에서는 요일별로 나뉘어 있던 어린이 독서 과정을 수준별 과정으로 새롭게 개방했다.",
+          "verdict": "does_not_fit",
+          "reason": "‘개방하다’는 공간이나 시설을 열어 놓는다는 뜻이므로 ‘~을 수준별 과정으로 개방했다’는 호응하지 않는다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "도서관에서는 요일별로 나뉘어 있던 어린이 독서 과정을 수준별 과정으로 새롭게 개편했다.",
+          "verdict": "fits",
+          "reason": "사전 근거(10103-1)의 ‘책이나 과정 따위를 고쳐 다시 엮다’라는 뜻이 독서 과정을 수준별로 재구성하는 문맥에 정확히 들어맞는다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "도서관에서는 요일별로 나뉘어 있던 어린이 독서 과정을 수준별 과정으로 새롭게 개최했다.",
+          "verdict": "does_not_fit",
+          "reason": "‘개최하다’는 회의나 행사를 연다는 뜻이므로 기존 과정을 다른 방식의 과정으로 바꾸어 엮는 문장 구조에 맞지 않는다."
+        }
+      ],
+      "uniquenessNote": "기존 요일별 과정을 수준별 과정으로 고쳐 다시 엮는 문맥이므로 혼동어 ‘개정하다’(법·규칙 수정)가 배제되고 10103-1 의미의 ‘개편했다’(c)만 성립한다.",
+      "gradeEvidence": "rubric_inferred(L=4,T=4)"
+    },
+    {
+      "id": "g5-argon-1616",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "‘친구를 함부로 비난하는 태도’와 반대되는 표현으로 ‘친구를 비판하는 태도’를 넣는다.",
+          "verdict": "does_not_fit",
+          "reason": "‘비판하다’는 옳고 그름을 따져 판단한다는 뜻으로 ‘비난하다’와 혼동하기 쉬운 낱말이지 반대말이 아니다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "‘친구를 함부로 비난하는 태도’와 반대되는 표현으로 ‘친구를 칭찬하는 태도’를 넣는다.",
+          "verdict": "fits",
+          "reason": "남의 잘못이나 결점을 책잡아 나쁘게 말하는 ‘비난하다’(159069-1)와 좋은 점을 높이 평가하여 좋게 말하는 ‘칭찬하다’는 뜻이 정확히 반대된다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "‘친구를 함부로 비난하는 태도’와 반대되는 표현으로 ‘친구를 의심하는 태도’를 넣는다.",
+          "verdict": "does_not_fit",
+          "reason": "‘의심하다’는 확실하지 않아 믿지 못한다는 뜻이므로 ‘비난하다’의 반의어가 아니다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "‘친구를 함부로 비난하는 태도’와 반대되는 표현으로 ‘친구를 지적하는 태도’를 넣는다.",
+          "verdict": "does_not_fit",
+          "reason": "‘지적하다’는 잘못이나 허물을 짚어낸다는 뜻이므로 결점을 책잡아 나쁘게 말하는 ‘비난하다’와 반대되지 않는다."
+        }
+      ],
+      "uniquenessNote": "혼동어 ‘비판하는’과 부정적 평가·태도 어휘(‘지적하는’, ‘의심하는’) 사이에서 ‘비난하는’과 긍정·부정 방향이 정반대인 보기는 ‘칭찬하는’(d)뿐이다.",
+      "gradeEvidence": "rubric_inferred(L=4,T=4)"
+    },
+    {
+      "id": "g5-argon-1619",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "늦게 오는 친구를 현관에서 지그시 기다렸다.",
+          "verdict": "does_not_fit",
+          "reason": "끈기 있게 참고 기다리는 모양에는 ‘지긋이’를 써야 하며 슬며시 힘을 주는 모양인 ‘지그시’는 어울리지 않는다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "풀칠한 종이 끝을 손가락으로 지그시 눌렀다.",
+          "verdict": "fits",
+          "reason": "풀칠한 종이가 잘 붙도록 손가락에 슬며시 힘을 주어 누르는 모양이므로 ‘지그시(486095-1)’의 뜻에 정확히 맞는다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "운동장을 빨리 달려서 숨이 지그시 차올랐다.",
+          "verdict": "does_not_fit",
+          "reason": "달리기를 한 뒤 숨이 가쁘게 차오르는 생리 현상은 슬며시 힘을 주는 모양과 호응하지 않는다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "오후부터 굵은 소나기가 지그시 쏟아졌다.",
+          "verdict": "does_not_fit",
+          "reason": "세차게 쏟아지는 소나기의 모습에는 슬며시 힘을 주는 모양인 ‘지그시’를 쓸 수 없다."
+        }
+      ],
+      "uniquenessNote": "‘지그시(486095-1)’의 고유 의미인 ‘슬며시 힘을 주는 모양’은 손가락으로 종이 끝을 누르는 b에서만 성립하며, a는 혼동어 ‘지긋이’를 써야 하는 자리이고 c·d는 서술어와 호응하지 않는다.",
+      "gradeEvidence": "rubric_inferred(L=4,T=4)"
+    },
+    {
+      "id": "g5-argon-1620",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "연세가 일부러 드신 할머니께서 따뜻한 미소로 우리를 맞아 주셨다.",
+          "verdict": "does_not_fit",
+          "reason": "나이는 사람의 의지로 마음먹고 드는 것이 아니므로 ‘일부러’는 ‘연세가 드신’과 호응하지 않는다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "연세가 지그시 드신 할머니께서 따뜻한 미소로 우리를 맞아 주셨다.",
+          "verdict": "does_not_fit",
+          "reason": "‘지그시’는 슬며시 힘을 주는 모양을 뜻하므로 나이가 많다는 맥락에는 쓸 수 없다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "연세가 꼼꼼히 드신 할머니께서 따뜻한 미소로 우리를 맞아 주셨다.",
+          "verdict": "does_not_fit",
+          "reason": "‘꼼꼼히’는 빈틈없이 살피는 태도를 나타내므로 나이가 드는 상태를 꾸밀 수 없다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "연세가 지긋이 드신 할머니께서 따뜻한 미소로 우리를 맞아 주셨다.",
+          "verdict": "fits",
+          "reason": "나이가 비교적 많아 듬직하다는 ‘지긋이(305973-1)’의 뜻이 ‘연세가 드신’과 자연스럽게 어울린다."
+        }
+      ],
+      "uniquenessNote": "‘연세가 … 드신’과 결합하여 나이가 비교적 많아 듬직하다는 뜻(305973-1)을 나타내는 부사는 ‘지긋이’뿐이며, 혼동어 ‘지그시’와 의도·태도 부사인 ‘일부러’, ‘꼼꼼히’는 모두 결합이 불가능하다.",
+      "gradeEvidence": "rubric_inferred(L=4,T=4)"
+    },
+    {
+      "id": "g5-argon-1621",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "공연이 시작된 뒤에는 옆 사람에게 방해가 되는 귓속말을 일절 하지 않기로 했다.",
+          "verdict": "fits",
+          "reason": "방해가 되는 행위를 전혀 하지 않기로 할 때 쓰는 부사이므로 하지 않기로 했다와 자연스럽게 호응한다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "공연이 시작된 뒤에는 옆 사람에게 방해가 되는 귓속말을 한창 하지 않기로 했다.",
+          "verdict": "does_not_fit",
+          "reason": "일이 가장 활발하게 진행되는 때를 뜻하는 한창은 하지 않기로 했다는 부정 표현과 어울리지 않는다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "공연이 시작된 뒤에는 옆 사람에게 방해가 되는 귓속말을 일체 하지 않기로 했다.",
+          "verdict": "does_not_fit",
+          "reason": "행위를 전혀 하지 않겠다는 부정의 뜻으로는 일체가 아니라 일절을 써야 맞다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "공연이 시작된 뒤에는 옆 사람에게 방해가 되는 귓속말을 부쩍 하지 않기로 했다.",
+          "verdict": "does_not_fit",
+          "reason": "눈에 띄게 늘어난 모양을 나타내는 부쩍은 행동을 금하는 다짐 문장과 호응하지 않는다."
+        }
+      ],
+      "uniquenessNote": "행위를 하지 않기로 다짐하는 부정 서술어를 두어 긍정적 진행이나 증가를 나타내는 부사들과 혼동어 일체를 모두 배제했다.",
+      "gradeEvidence": "rubric_inferred(L=4,T=4)"
+    },
+    {
+      "id": "g5-argon-1622",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "동생이 아침부터 밝은 미소를 보관하고 있다.",
+          "verdict": "does_not_fit",
+          "reason": "미소는 얼굴 표정이지 맡아서 간직하고 관리하는 물건이 아니므로 어색하다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "주민들이 소중한 자연환경을 보관하고 있다.",
+          "verdict": "does_not_fit",
+          "reason": "자연환경은 맡아 두는 물건이 아니라 훼손되지 않게 보호하여 남기는 대상이므로 ‘보존하다’를 써야 한다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "교무실에서 주인 없는 시계를 보관하고 있다.",
+          "verdict": "fits",
+          "reason": "구체적인 물건인 시계를 교무실에서 맡아서 간직하고 관리하는 상황이므로 ‘보관하다’의 사전 뜻풀이에 꼭 맞는다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "선수들이 경기 중에 안전 규칙을 보관하고 있다.",
+          "verdict": "does_not_fit",
+          "reason": "규칙은 따르고 지키는 기준이지 맡아 간직하는 물건이 아니므로 ‘보관하다’와 호응하지 않는다."
+        }
+      ],
+      "uniquenessNote": "물건을 맡아서 간직하고 관리한다는 의미 조건을 충족하는 목적어는 구체적 물건인 ‘시계(a)’뿐이며, ‘자연환경(b)’은 혼동어 ‘보존하다’의 대상이고 ‘미소(c)’, ‘안전 규칙(d)’은 추상·행위 명사라 성립하지 않는다.",
+      "gradeEvidence": "rubric_inferred(L=4,T=4)"
+    },
+    {
+      "id": "g5-argon-1625",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "박물관 전시실에 옛날 초가집 마을의 모습을 모형으로 재연했다.",
+          "verdict": "does_not_fit",
+          "reason": "‘재연하다’는 연극·공연이나 사건의 동작을 다시 해 보이는 일이라 정적인 마을 모습을 모형으로 만들어 나타낸 상황에는 맞지 않는다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "박물관 전시실에 옛날 초가집 마을의 모습을 모형으로 재현했다.",
+          "verdict": "fits",
+          "reason": "‘…에 …을 다시 나타내다’라는 사전 문형과 의미에 따라 전시실에 옛날 마을 모습을 모형으로 다시 나타낸 상황에 정확히 맞는다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "박물관 전시실에 옛날 초가집 마을의 모습을 모형으로 사과했다.",
+          "verdict": "does_not_fit",
+          "reason": "용서를 빈다는 뜻의 ‘사과했다’는 마을 모습을 목적어로 취할 수 없다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "박물관 전시실에 옛날 초가집 마을의 모습을 모형으로 거절했다.",
+          "verdict": "does_not_fit",
+          "reason": "부탁이나 제안을 물리친다는 뜻의 ‘거절했다’는 ‘전시실에 … 모습을 모형으로’와 호응하지 않는다."
+        }
+      ],
+      "uniquenessNote": "공연이나 행위 연기가 아니라 ‘전시실에’ 정적인 ‘초가집 마을의 모습을 모형으로’ 다시 나타낸 맥락이므로 혼동어 ‘재연했다’가 완전히 배제되고 ‘재현했다’만 유일하게 성립한다.",
+      "gradeEvidence": "rubric_inferred(L=4,T=4)"
+    },
+    {
+      "id": "g5-argon-1626",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "시청은 길을 잃은 아이를 도운 시민에게 상장을 수리했다.",
+          "verdict": "does_not_fit",
+          "reason": "고장 난 물건을 고친다는 ‘수리했다’는 시민에게 상장을 주는 맥락과 맞지 않는다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "시청은 길을 잃은 아이를 도운 시민에게 상장을 수상했다.",
+          "verdict": "does_not_fit",
+          "reason": "‘수상하다’는 상을 받는 쪽의 행동이므로 주어 ‘시청은’과 부사어 ‘시민에게’가 있는 수여 구문에는 쓸 수 없다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "시청은 길을 잃은 아이를 도운 시민에게 상장을 치료했다.",
+          "verdict": "does_not_fit",
+          "reason": "상장은 병이나 상처가 아니므로 ‘치료했다’의 목적어가 될 수 없다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "시청은 길을 잃은 아이를 도운 시민에게 상장을 수여했다.",
+          "verdict": "fits",
+          "reason": "시청이 선행을 한 시민에게 상장을 주었다는 뜻으로 ‘수여하다’의 사전 의미와 문형에 정확히 맞는다."
+        }
+      ],
+      "uniquenessNote": "주는 주체(‘시청은’)와 받는 대상(‘시민에게’), 목적어(‘상장을’)가 명시되어 상장을 준다는 ‘수여했다’만 성립하며, 상을 받는다는 뜻의 혼동어 ‘수상했다’는 방향이 반대라 배제된다.",
+      "gradeEvidence": "rubric_inferred(L=4,T=4)"
+    },
+    {
+      "id": "g5-argon-1628",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "그릇에 밀가루와 설탕을 골고루 혼동했다.",
+          "verdict": "does_not_fit",
+          "reason": "물질인 밀가루와 설탕을 그릇에 담아 실제로 섞어 합치는 일에는 ‘혼합하다’를 써야 하며 ‘혼동하다’는 맞지 않는다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "목소리가 비슷해 언니를 동생과 혼동했다.",
+          "verdict": "fits",
+          "reason": "사전 문형 ‘…을 …과 혼동하다’를 따르며 두 사람의 목소리를 구별하지 못하고 뒤섞어 생각한 상황에 정확히 부합한다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "햇볕이 좋아서 젖은 빨래를 바싹 혼동했다.",
+          "verdict": "does_not_fit",
+          "reason": "젖은 빨래를 햇볕에 말리는 상황에는 생각 속에서 구별하지 못한다는 ‘혼동하다’가 성립하지 않는다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "아침마다 넓은 운동장을 힘차게 혼동했다.",
+          "verdict": "does_not_fit",
+          "reason": "운동장을 달리는 신체 활동에는 머릿속으로 뒤섞어 생각한다는 ‘혼동하다’를 쓸 수 없다."
+        }
+      ],
+      "uniquenessNote": "구별하지 못하고 뒤섞어 생각한다는 뜻과 ‘…을 …과’ 문형을 모두 만족하는 문장은 b뿐이며, a는 물질을 섞는 혼동어 ‘혼합하다’의 맥락이고 c·d는 물리적 행위 문장이라 성립하지 않는다.",
+      "gradeEvidence": "rubric_inferred(L=4,T=4)"
+    },
+    {
+      "id": "g5-argon-1629",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "초록색을 만들려고 노란 물감과 파란 물감을 골고루 혼동했다.",
+          "verdict": "does_not_fit",
+          "reason": "머릿속으로 구별하지 못해 헷갈린다는 ‘혼동했다’로는 두 물감을 골고루 섞어 초록색을 만들 수 없다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "초록색을 만들려고 노란 물감과 파란 물감을 골고루 계산했다.",
+          "verdict": "does_not_fit",
+          "reason": "수를 셈한다는 ‘계산했다’는 물감을 섞어 다른 색을 만드는 행위와 맞지 않는다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "초록색을 만들려고 노란 물감과 파란 물감을 골고루 복습했다.",
+          "verdict": "does_not_fit",
+          "reason": "배운 것을 다시 익힌다는 ‘복습했다’는 물질인 물감을 합치는 문맥에 쓸 수 없다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "초록색을 만들려고 노란 물감과 파란 물감을 골고루 혼합했다.",
+          "verdict": "fits",
+          "reason": "두 가지 물감을 뒤섞어서 한데 합하여 초록색을 만든 상황이므로 ‘혼합하다(504962-1)’의 뜻에 꼭 맞는다."
+        }
+      ],
+      "uniquenessNote": "초록색을 만들기 위해 두 물감을 실제로 뒤섞어 한데 합하는 물리적 행위이므로, 머릿속 착각을 뜻하는 혼동어 ‘혼동했다’를 포함한 오답이 모두 배제되고 ‘혼합했다’만 성립한다.",
+      "gradeEvidence": "rubric_inferred(L=4,T=4)"
+    },
+    {
+      "id": "g5-argon-1634",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "낙엽이 썩어 영양이 많은 토양에서 강낭콩이 튼튼하게 자랐다.",
+          "verdict": "fits",
+          "reason": "식물에 영양을 공급하여 자라게 할 수 있는 흙이라는 ‘토양(497254-2)’의 의미에 정확히 들어맞는다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "낙엽이 썩어 영양이 많은 그늘에서 강낭콩이 튼튼하게 자랐다.",
+          "verdict": "does_not_fit",
+          "reason": "그늘은 빛이 가려진 공간일 뿐 낙엽이 썩어 영양이 쌓이는 물질이 아니며 강낭콩이 튼튼하게 자라는 조건도 아니다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "낙엽이 썩어 영양이 많은 바람에서 강낭콩이 튼튼하게 자랐다.",
+          "verdict": "does_not_fit",
+          "reason": "바람은 공기의 흐름이므로 낙엽이 썩어 영양이 많아지거나 식물이 그 안에서 자랄 수 없다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "낙엽이 썩어 영양이 많은 자갈에서 강낭콩이 튼튼하게 자랐다.",
+          "verdict": "does_not_fit",
+          "reason": "자갈은 단단한 돌조각이므로 낙엽이 썩어 영양이 많아진 흙을 가리킬 수 없다."
+        }
+      ],
+      "uniquenessNote": "다의어 ‘토양’ 중 비유적 바탕이 아니라 식물에 영양을 공급하여 자라게 하는 흙(497254-2)의 의미가 구현된 문장으로, 받침 조건까지 동일한 ‘자갈·그늘·바람’은 영양 공급 및 식물 생장 조건과 맞지 않아 ‘토양’만 유일한 정답이 된다.",
+      "gradeEvidence": "rubric_inferred(L=4,T=4)"
+    },
+    {
+      "id": "g5-argon-1636",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "옛날 사람들은 밤이 되면 기름을 담은 작은 그릇에 모닥불을 켜서 방 안을 밝혔다.",
+          "verdict": "does_not_fit",
+          "reason": "모닥불은 밖에서 마른 나뭇가지를 모아 피우는 불이므로 기름을 담은 작은 그릇에 켜서 방 안을 밝히는 상황에 맞지 않는다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "옛날 사람들은 밤이 되면 기름을 담은 작은 그릇에 손전등을 켜서 방 안을 밝혔다.",
+          "verdict": "does_not_fit",
+          "reason": "손전등은 건전지로 켜서 손에 들고 비추는 전등이므로 기름을 담은 작은 그릇에 켜는 상황에 맞지 않는다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "옛날 사람들은 밤이 되면 기름을 담은 작은 그릇에 등불을 켜서 방 안을 밝혔다.",
+          "verdict": "fits",
+          "reason": "등불은 기름 그릇인 등잔에 켠 불을 뜻하므로 옛날에 기름을 담은 작은 그릇에 켜서 방 안을 밝히는 상황과 조사 '을'에 알맞다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "옛날 사람들은 밤이 되면 기름을 담은 작은 그릇에 가로등을 켜서 방 안을 밝혔다.",
+          "verdict": "does_not_fit",
+          "reason": "가로등은 밤길을 밝히려고 길가에 세워 놓은 등이므로 작은 기름 그릇에 켜서 방 안을 밝히는 상황에 맞지 않는다."
+        }
+      ],
+      "uniquenessNote": "네 보기 모두 받침이 있는 명사라 조사 '을'과 똑같이 자연스럽게 이어진다. 기름을 담은 작은 그릇에 불을 켜서 방 안을 밝혔다는 조건에서 등잔에 켠 불을 뜻하는 '등불'만 참이 되고, 밖에서 피우는 '모닥불', 건전지로 켜는 '손전등', 길가에 세우는 '가로등'은 모두 맞지 않아 복수 정답이 없다.",
+      "gradeEvidence": "rubric_inferred(L=4,T=4)"
+    },
+    {
+      "id": "g5-argon-1593",
+      "revision": 2,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "우리 학교에서 가을 독서 축제를 '맡은 일을 책임지고 관리했습니다'",
+          "verdict": "does_not_fit",
+          "reason": "맡은 일을 관리한다는 뜻만으로는 행사나 모임을 직접 계획하여 연다는 '주최하다'의 의미가 드러나지 않는다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "우리 학교에서 가을 독서 축제를 '행사나 모임을 계획하여 열었습니다'",
+          "verdict": "fits",
+          "reason": "표준국어대사전의 '행사나 모임을 주장하고 기획하여 열다'라는 뜻풀이와 정확히 일치한다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "우리 학교에서 가을 독서 축제를 '행사에 직접 찾아가 지켜보았습니다'",
+          "verdict": "does_not_fit",
+          "reason": "행사를 여는 쪽이 아니라 참관하러 가는 뜻이므로 '주최하다'의 뜻이 아니다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "우리 학교에서 가을 독서 축제를 '필요한 것을 뒤에서 도와주었습니다'",
+          "verdict": "does_not_fit",
+          "reason": "행사를 직접 여는 것이 아니라 뒤에서 후원하거나 돕는 뜻이므로 '주최하다'의 뜻이 아니다."
+        }
+      ],
+      "uniquenessNote": "사전 뜻풀이인 '행사나 모임을 주장하고 기획하여 열다'에 해당하는 보기는 b 하나뿐이며, a(주관)·c(참관)·d(후원)는 모두 다른 역할을 뜻한다.",
+      "gradeEvidence": "학교에서 가을 독서 축제를 여는 친숙한 상황을 제시하고 5학년 수준에 맞는 쉬운 풀이말로 보기를 구성했다."
+    },
+    {
+      "id": "g5-argon-1595",
+      "revision": 2,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "이번 토론 대회는 발표자로 직접 나서지 않고 교실 뒤편에 앉아 조용히 참가했다.",
+          "verdict": "does_not_fit",
+          "reason": "발표자로 나서지 않고 뒤편에 앉아 지켜보기만 한 상황이므로 대회에 직접 끼어 활동한다는 '참가했다'와 맞지 않는다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "이번 토론 대회는 발표자로 직접 나서지 않고 교실 뒤편에 앉아 조용히 참관했다.",
+          "verdict": "fits",
+          "reason": "어떤 자리에 직접 나아가서 지켜보았다는 뜻과 맞고 평서문 종결 호응도 자연스럽다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "이번 토론 대회는 발표자로 직접 나서지 않고 교실 뒤편에 앉아 조용히 주최했다.",
+          "verdict": "does_not_fit",
+          "reason": "교실 뒤편에 앉아 조용히 지켜본 행동은 대회를 계획하여 여는 '주최했다'와 어울리지 않는다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "이번 토론 대회는 발표자로 직접 나서지 않고 교실 뒤편에 앉아 조용히 진행했다.",
+          "verdict": "does_not_fit",
+          "reason": "교실 뒤편에 조용히 앉아 있었다는 문맥은 순서를 이끌어 가는 '진행했다'와 맞지 않는다."
+        }
+      ],
+      "uniquenessNote": "발표자로 나서지 않고 교실 뒤편에 앉아 대회를 지켜본 상황에 어울리는 활용형 보기는 '참관했다'뿐이다.",
+      "gradeEvidence": "교실 토론 대회를 뒤편에서 지켜보는 학교생활 장면이며, 5학년 학생에게 익숙한 행사 관련 한자어 동사로 구성했다."
+    },
+    {
+      "id": "g5-argon-1603",
+      "revision": 2,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "가을 들판 위로 까마귀 한 마리가 날아갔다",
+          "verdict": "fits",
+          "reason": "사전 근거에 등재된 경상 방언 '까마구'의 표준어 뜻인 '까마귀'와 정확히 일치한다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "가을 들판 위로 까치 한 마리가 날아갔다",
+          "verdict": "does_not_fit",
+          "reason": "'까마구'는 '까치'가 아니라 '까마귀'를 이르는 경상 방언이므로 뜻으로 알맞지 않다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "가을 들판 위로 갈매기 한 마리가 날아갔다",
+          "verdict": "does_not_fit",
+          "reason": "'까마구'는 '갈매기'가 아니라 '까마귀'를 이르는 경상 방언이므로 뜻으로 알맞지 않다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "가을 들판 위로 뻐꾸기 한 마리가 날아갔다",
+          "verdict": "does_not_fit",
+          "reason": "'까마구'는 '뻐꾸기'가 아니라 '까마귀'를 이르는 경상 방언이므로 뜻으로 알맞지 않다."
+        }
+      ],
+      "uniquenessNote": "사전 근거에 따라 경상 방언 '까마구'에 대응하는 표준어는 '까마귀' 하나뿐이다.",
+      "gradeEvidence": "[6국04-02] 표준어와 방언 성취기준에 맞춘 심화(challenge) 문항으로, 소리 변화를 통해 쉽게 유추할 수 있는 친숙한 새 이름 방언을 다루었다."
+    },
+    {
+      "id": "g5-argon-1604",
+      "revision": 2,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "할머니께서 장에서 푸른 잎이 싱싱한 솔방울을 한 바구니 사다가 끓는 물에 데쳐 반찬으로 무치셨다",
+          "verdict": "does_not_fit",
+          "reason": "솔방울은 푸른 잎이 없고 끓는 물에 데쳐 반찬으로 무쳐 먹는 식재료가 아니므로 문맥에 맞지 않는다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "할머니께서 장에서 푸른 잎이 싱싱한 물고기를 한 바구니 사다가 끓는 물에 데쳐 반찬으로 무치셨다",
+          "verdict": "does_not_fit",
+          "reason": "물고기는 푸른 잎이 없으므로 '푸른 잎이 싱싱한'이라는 수식어와 호응하지 않는다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "할머니께서 장에서 푸른 잎이 싱싱한 채소나 나물을 한 바구니 사다가 끓는 물에 데쳐 반찬으로 무치셨다",
+          "verdict": "fits",
+          "reason": "푸성귀를 뜻하는 제주 방언 '송키'의 사전적 의미와 맞고, 푸른 잎을 데쳐 반찬으로 무치는 상황에 자연스럽게 어울린다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "할머니께서 장에서 푸른 잎이 싱싱한 달콤한 과일을 한 바구니 사다가 끓는 물에 데쳐 반찬으로 무치셨다",
+          "verdict": "does_not_fit",
+          "reason": "달콤한 과일은 나무 열매이므로 푸른 잎이 싱싱한 것을 끓는 물에 데쳐 반찬으로 무쳤다는 문맥과 맞지 않는다."
+        }
+      ],
+      "uniquenessNote": "푸른 잎이 싱싱하며 끓는 물에 데쳐 반찬으로 무쳐 먹는 식재료는 채소나 나물(푸성귀)뿐이므로 솔방울·물고기·과일이 모두 배제된다.",
+      "gradeEvidence": "[6국04-02] 방언 성취기준에 맞춘 심화(challenge) 문항으로, 푸른 잎을 데쳐 반찬으로 무치는 구체적인 식생활 단서를 주어 5학년 학생이 문맥으로 뜻을 추론할 수 있게 했다."
+    },
+    {
+      "id": "g5-argon-1605",
+      "revision": 2,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "아이들이 양 끝을 비스듬히 깎은 [연줄을 감거나 풀 때 쓰는 나무 틀]을 땅에 놓고 한쪽 끝을 내리쳐 공중으로 튀어 오르게 했다.",
+          "verdict": "does_not_fit",
+          "reason": "연줄을 감는 얼레는 손에 들고 쓰는 네모난 틀이라 양 끝을 비스듬히 깎아 땅에 놓고 쳐서 튀어 오르게 하는 도구가 아니다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "아이들이 양 끝을 비스듬히 깎은 [자치기를 할 때 쓰는 작은 막대기]를 땅에 놓고 한쪽 끝을 내리쳐 공중으로 튀어 오르게 했다.",
+          "verdict": "fits",
+          "reason": "강원 방언 ‘메띠기’는 양 끝을 비스듬하게 깎아 쳐서 튀어 오르게 만든 자치기용 작은 막대기를 뜻하므로 문맥과 사전 근거에 정확히 맞는다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "아이들이 양 끝을 비스듬히 깎은 [네 개를 함께 던져서 노는 윷가락]을 땅에 놓고 한쪽 끝을 내리쳐 공중으로 튀어 오르게 했다.",
+          "verdict": "does_not_fit",
+          "reason": "윷가락은 네 개를 손으로 던져 앞뒤를 보는 도구이지 양 끝을 비스듬히 깎아 한쪽 끝을 내리쳐 튀기는 도구가 아니다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "아이들이 양 끝을 비스듬히 깎은 [얼음판 위에서 채로 치는 나무 팽이]를 땅에 놓고 한쪽 끝을 내리쳐 공중으로 튀어 오르게 했다.",
+          "verdict": "does_not_fit",
+          "reason": "나무 팽이는 아랫부분만 뾰족하며 채로 옆을 쳐서 돌리는 도구이므로 양 끝을 깎아 공중으로 튀어 오르게 하는 설명과 맞지 않는다."
+        }
+      ],
+      "uniquenessNote": "양 끝을 비스듬히 깎아 땅에 놓고 한쪽 끝을 내리쳐 공중으로 튀어 오르게 한다는 놀이 단서를 통해 자치기용 작은 막대기(b)만 유일하게 성립하며, 사전 근거에 맞춰 지역을 ‘강원’으로 바로잡았다.",
+      "gradeEvidence": "초등 5~6학년 방언 성취기준([6국04-02])의 심화(challenge) 문항으로, 전통놀이인 자치기의 구체적 동작 단서를 제시해 초등 5학년이 추론할 수 있도록 구성했다."
+    },
+    {
+      "id": "g5-argon-1607",
+      "revision": 2,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "비가 그친 뒤 흙길 위에서 달팽이를 보았다. (‘지렝이’ = 달팽이)",
+          "verdict": "does_not_fit",
+          "reason": "‘지렝이’는 ‘지렁이’의 방언이므로 ‘달팽이’와 뜻이 다르다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "비가 그친 뒤 흙길 위에서 지렁이를 보았다. (‘지렝이’ = 지렁이)",
+          "verdict": "fits",
+          "reason": "우리말샘 근거에 따라 ‘지렝이’는 ‘지렁이’의 방언(경기, 경상, 충청 등)이며 비가 그친 뒤 흙길에 나타나는 문맥에도 잘 맞는다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "비가 그친 뒤 흙길 위에서 굼벵이를 보았다. (‘지렝이’ = 굼벵이)",
+          "verdict": "does_not_fit",
+          "reason": "‘굼벵이’는 매미나 풍뎅이의 애벌레를 뜻하므로 ‘지렝이’의 뜻이 아니다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "비가 그친 뒤 흙길 위에서 올챙이를 보았다. (‘지렝이’ = 올챙이)",
+          "verdict": "does_not_fit",
+          "reason": "‘올챙이’는 물속에 사는 개구리의 새끼를 뜻하므로 ‘지렝이’의 뜻이 아니다."
+        }
+      ],
+      "uniquenessNote": "사전 뜻풀이상 ‘지렝이’는 ‘지렁이’만을 가리키는 방언이며, 방언 지역 표기를 사전 근거에 있는 ‘충청’으로 일치시켰다.",
+      "gradeEvidence": "[6국04-02] 표준어와 방언 단원에 부합하며, 친숙한 동물 이름의 모음 변화를 통해 5학년 학생이 쉽게 이해할 수 있다."
+    },
+    {
+      "id": "g5-argon-1623",
+      "revision": 2,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "우리는 들판을 돌아다니며 잠자리채로 관찰할 풀벌레를 채집했다.",
+          "verdict": "fits",
+          "reason": "들판을 돌아다니며 잠자리채로 풀벌레를 찾아 잡아 모았으므로 ‘채집했다’가 정확히 맞는다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "우리는 들판을 돌아다니며 잠자리채로 관찰할 풀벌레를 재배했다.",
+          "verdict": "does_not_fit",
+          "reason": "‘재배하다’는 식물을 심어 가꾼다는 뜻이므로 풀벌레를 잠자리채로 잡는 문맥에 쓸 수 없다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "우리는 들판을 돌아다니며 잠자리채로 관찰할 풀벌레를 제작했다.",
+          "verdict": "does_not_fit",
+          "reason": "‘제작하다’는 물건을 만든다는 뜻이므로 살아 있는 풀벌레를 잡는 행동에 맞지 않는다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "우리는 들판을 돌아다니며 잠자리채로 관찰할 풀벌레를 사육했다.",
+          "verdict": "does_not_fit",
+          "reason": "‘사육하다’는 동물을 먹여 기른다는 뜻이므로 들판을 돌아다니며 잠자리채로 잡는 행동에 맞지 않는다."
+        }
+      ],
+      "uniquenessNote": "풀벌레를 모았다는 뜻으로 함께 성립하던 ‘수집했다’를 ‘사육했다’로 교체하여, 잠자리채로 찾아 잡아 모으는 행위에 ‘채집했다’(a)만 정답이 되도록 했다.",
+      "gradeEvidence": "초등 과학 탐구 활동에서 자주 접하는 어휘(‘채집하다’, ‘재배하다’, ‘사육하다’)를 구별하는 문항으로 5학년 수준에 알맞다."
+    },
+    {
+      "id": "g5-argon-1624",
+      "revision": 2,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "두 도시를 잇는 긴 철로를 완성하여 기차가 다니도록 개정했다.",
+          "verdict": "does_not_fit",
+          "reason": "‘개정하다’는 법이나 규칙, 글 따위를 고쳐 다시 정한다는 뜻이므로 철로를 이어 기차가 다니게 하는 일에 쓸 수 없다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "두 도시를 잇는 긴 철로를 완성하여 기차가 다니도록 칭찬했다.",
+          "verdict": "does_not_fit",
+          "reason": "‘칭찬하다’는 좋은 점을 높이 평가해 말한다는 뜻이므로 문맥에 어울리지 않는다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "두 도시를 잇는 긴 철로를 완성하여 기차가 다니도록 개통했다.",
+          "verdict": "fits",
+          "reason": "철로를 완성하거나 이어 통하게 한다는 사전 뜻풀이 그대로이므로 정확히 성립한다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "두 도시를 잇는 긴 철로를 완성하여 기차가 다니도록 절약했다.",
+          "verdict": "does_not_fit",
+          "reason": "‘절약하다’는 아껴 쓴다는 뜻이므로 철로를 이어 기차가 다니게 한 상황과 맞지 않는다."
+        }
+      ],
+      "uniquenessNote": "철로를 열어 이용하게 한다는 뜻으로 통할 여지가 있던 ‘개방했다’를 ‘개정했다’로 교체하여 ‘개통했다’(c)만 유일한 정답이 되게 했다.",
+      "gradeEvidence": "초등 5학년 사회과의 교통 발달 단원 등에서 자주 쓰이는 ‘개통하다’와 형태가 비슷한 ‘개정하다’를 변별하도록 구성했다."
+    },
+    {
+      "id": "g5-argon-1611",
+      "revision": 2,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "숲속 바위 옆에서 산토끼 한 마리를 보았다",
+          "verdict": "does_not_fit",
+          "reason": "우리말샘 근거에서 ‘다람지’는 ‘다람쥐’의 방언(경북)이므로 ‘산토끼’는 뜻이 맞지 않는다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "숲속 바위 옆에서 두더지 한 마리를 보았다",
+          "verdict": "does_not_fit",
+          "reason": "끝 글자 소리가 비슷할 뿐 ‘두더지’는 다른 동물이며 ‘다람지’의 사전적 뜻이 아니다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "숲속 바위 옆에서 다람쥐 한 마리를 보았다",
+          "verdict": "fits",
+          "reason": "우리말샘 뜻풀이 ‘다람쥐의 방언(경북)’과 정확히 일치하며 숲속 바위 옆에서 보았다는 문맥에도 자연스럽다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "숲속 바위 옆에서 족제비 한 마리를 보았다",
+          "verdict": "does_not_fit",
+          "reason": "‘족제비’는 ‘다람쥐’와 다른 동물로, 방언 ‘다람지’의 뜻에 해당하지 않는다."
+        }
+      ],
+      "uniquenessNote": "사전 근거상 ‘다람지’는 ‘다람쥐’의 경북 방언이므로 보기 중 ‘다람쥐’(c)만 유일한 정답이다. 스키마 허용 권역에 맞춰 dialectRegion을 ‘경상’으로 수정했다.",
+      "gradeEvidence": "5~6학년군 성취기준 [6국04-02]에 맞춘 심화(challenge) 방언 문항으로, 초등학생이 잘 아는 동물 이름 ‘다람쥐’와 친숙한 동물 보기들로 구성해 5학년 수준에 알맞다."
+    },
+    {
+      "id": "g5-argon-1612",
+      "revision": 2,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "방학마다 시골에 계신 할아버지 댁에 놀러 간다",
+          "verdict": "fits",
+          "reason": "우리말샘 뜻풀이 ‘할아버지의 방언(경남)’과 정확히 일치하며 시골 댁에 놀러 간다는 문맥에도 자연스럽다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "방학마다 시골에 계신 할머니 댁에 놀러 간다",
+          "verdict": "does_not_fit",
+          "reason": "‘할부지’는 ‘할아버지’의 방언이므로 ‘할머니’를 뜻하지 않는다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "방학마다 시골에 계신 큰아버지 댁에 놀러 간다",
+          "verdict": "does_not_fit",
+          "reason": "‘큰아버지’는 아버지의 형을 이르는 말로, ‘할아버지’의 방언인 ‘할부지’와 뜻이 다르다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "방학마다 시골에 계신 외삼촌 댁에 놀러 간다",
+          "verdict": "does_not_fit",
+          "reason": "‘외삼촌’은 어머니의 남자 형제를 이르는 말로, ‘할부지’의 사전적 뜻과 맞지 않는다."
+        }
+      ],
+      "uniquenessNote": "사전 근거상 ‘할부지’는 ‘할아버지’의 경남 방언이므로 보기 중 ‘할아버지’(a)만 유일한 정답이다. 스키마 허용 권역에 맞춰 dialectRegion을 ‘경상’으로 수정했다.",
+      "gradeEvidence": "5~6학년군 성취기준 [6국04-02]에 따른 심화(challenge) 방언 문항이며, 가족·친척 호칭인 ‘할아버지’와 보기 어휘 모두 초등 5학년 수준에 적합하다."
+    },
+    {
+      "id": "g5-argon-1609",
+      "revision": 3,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "할아버지께서 시골집 뒤편에서 가지에 홍시가 주렁주렁 달린 감자밭을 살펴보셨다",
+          "verdict": "does_not_fit",
+          "reason": "감자밭은 땅에서 감자를 기르는 밭이므로 나무 가지에 홍시가 달렸다는 문맥 및 ‘감낭구’의 뜻과 맞지 않는다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "할아버지께서 시골집 뒤편에서 가지에 홍시가 주렁주렁 달린 밤나무를 살펴보셨다",
+          "verdict": "does_not_fit",
+          "reason": "밤나무에는 밤송이가 열리지 홍시가 달리지 않으며 ‘감낭구’의 뜻과도 다르다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "할아버지께서 시골집 뒤편에서 가지에 홍시가 주렁주렁 달린 대나무를 살펴보셨다",
+          "verdict": "does_not_fit",
+          "reason": "대나무에는 홍시가 열리지 않으며 ‘감낭구’는 감나무를 이르는 방언이므로 맞지 않는다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "할아버지께서 시골집 뒤편에서 가지에 홍시가 주렁주렁 달린 감나무를 살펴보셨다",
+          "verdict": "fits",
+          "reason": "홍시는 잘 익은 감이므로 가지에 홍시가 달린 나무는 ‘감나무’이며, 충남 방언 ‘감낭구’의 뜻풀이와 일치한다."
+        }
+      ],
+      "uniquenessNote": "가지에 홍시(익은 감)가 주렁주렁 달렸다는 상황 단서와 ‘감낭구’의 어형을 모두 만족하는 보기는 ‘감나무’뿐이며, ‘감자밭·밤나무·대나무’는 문맥상 성립하지 않는다.",
+      "gradeEvidence": "[6국04-02] 성취기준에 맞춰 5학년에게 친숙한 ‘가지에 홍시가 주렁주렁 달린’ 맥락 단서를 제시하여 방언을 처음 접하는 학생도 뜻을 짐작할 수 있다."
+    },
+    {
+      "id": "g5-argon-1610",
+      "revision": 3,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "아침 일찍 마당에서 어미 소의 젖을 먹는 송아지 한 마리를 보았다",
+          "verdict": "fits",
+          "reason": "어미 소의 젖을 먹는 새끼는 소의 새끼인 ‘송아지’이며, 제주 방언 ‘송애기’의 뜻풀이와 정확히 일치한다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "아침 일찍 마당에서 어미 소의 젖을 먹는 망아지 한 마리를 보았다",
+          "verdict": "does_not_fit",
+          "reason": "망아지는 말의 새끼이므로 어미 소의 젖을 먹는 상황 및 ‘송애기’의 뜻과 맞지 않는다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "아침 일찍 마당에서 어미 소의 젖을 먹는 병아리 한 마리를 보았다",
+          "verdict": "does_not_fit",
+          "reason": "병아리는 닭의 새끼로 젖을 먹지 않으며 ‘송애기’의 뜻과도 맞지 않는다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "아침 일찍 마당에서 어미 소의 젖을 먹는 강아지 한 마리를 보았다",
+          "verdict": "does_not_fit",
+          "reason": "강아지는 개의 새끼이므로 어미 소의 젖을 먹는 새끼를 가리키는 ‘송애기’와 맞지 않는다."
+        }
+      ],
+      "uniquenessNote": "‘어미 소의 젖을 먹는’이라는 구체적 단서로 소의 새끼임이 분명해지므로 말·닭·개의 새끼인 ‘망아지·병아리·강아지’는 모두 배제되고 ‘송아지’만 정답이 된다.",
+      "gradeEvidence": "[6국04-02] 성취기준에 따라 5학년 학생이 ‘어미 소의 젖을 먹는’이라는 상황 단서와 어형을 바탕으로 제주 방언 ‘송애기’의 뜻을 추론할 수 있다."
+    },
+    {
+      "id": "g5-argon-1617",
+      "revision": 3,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "선생님은 상자마다 자석과 꼬마전구, 건전지 등 다섯 가지 부품을 담아 실험 꾸러미를 감상했다.",
+          "verdict": "does_not_fit",
+          "reason": "‘감상하다’는 예술 작품이나 풍경을 즐기며 맛본다는 뜻이므로 부품을 모아 실험 꾸러미를 짜 이루는 문맥에 맞지 않는다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "선생님은 상자마다 자석과 꼬마전구, 건전지 등 다섯 가지 부품을 담아 실험 꾸러미를 절약했다.",
+          "verdict": "does_not_fit",
+          "reason": "‘절약하다’는 물건이나 시간을 아껴 쓴다는 뜻이므로 다섯 가지 부품을 담아 꾸러미를 만드는 문맥과 맞지 않는다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "선생님은 상자마다 자석과 꼬마전구, 건전지 등 다섯 가지 부품을 담아 실험 꾸러미를 연기했다.",
+          "verdict": "does_not_fit",
+          "reason": "‘연기하다’는 날짜를 미루거나 배역을 맡아 표현한다는 뜻이므로 사물인 실험 꾸러미를 목적어로 삼아 짜 이루는 문맥에 성립하지 않는다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "선생님은 상자마다 자석과 꼬마전구, 건전지 등 다섯 가지 부품을 담아 실험 꾸러미를 구성했다.",
+          "verdict": "fits",
+          "reason": "다섯 가지 부품이라는 요소들을 모아서 실험 꾸러미라는 일정한 전체를 짜 이루었으므로 표준국어대사전의 첫째 뜻풀이와 일치한다."
+        }
+      ],
+      "uniquenessNote": "여러 부품을 모아 하나의 실험 꾸러미를 짜 이룬다는 문맥에 맞는 보기는 ‘구성했다’뿐이며, 문맥상 성립 여지가 있던 ‘관찰했다’를 ‘연기했다’로 바꾸어 오답을 명확히 배제했다.",
+      "gradeEvidence": "초등학교 과학 수업의 실험 준비 상황을 소재로 삼았고 보기 어휘(감상·절약·연기·구성)가 모두 5학년 어휘 수준에 알맞다."
+    }
+  ],
+  "rejected": [
+    {
+      "lemma": "우물에서 숭늉 찾는다",
+      "reason": "근거 표제어·품사·뜻 번호 불일치, 누락 또는 동음이의어 모호성"
+    },
+    {
+      "lemma": "고양이 목에 방울 달기",
+      "reason": "근거 표제어·품사·뜻 번호 불일치, 누락 또는 동음이의어 모호성"
+    },
+    {
+      "lemma": "길고 짧은 것은 대어 보아야 안다",
+      "reason": "근거 표제어·품사·뜻 번호 불일치, 누락 또는 동음이의어 모호성"
+    },
+    {
+      "lemma": "고구메",
+      "reason": "근거 표제어·품사·뜻 번호 불일치, 누락 또는 동음이의어 모호성"
+    },
+    {
+      "lemma": "배상하다",
+      "reason": "근거 표제어·품사·뜻 번호 불일치, 누락 또는 동음이의어 모호성"
+    },
+    {
+      "lemma": "배포하다",
+      "reason": "근거 표제어·품사·뜻 번호 불일치, 누락 또는 동음이의어 모호성"
+    },
+    {
+      "lemma": "조성하다",
+      "reason": "근거 표제어·품사·뜻 번호 불일치, 누락 또는 동음이의어 모호성"
+    },
+    {
+      "lemma": "감축하다",
+      "reason": "근거 표제어·품사·뜻 번호 불일치, 누락 또는 동음이의어 모호성"
+    },
+    {
+      "lemma": "분류하다",
+      "reason": "근거 표제어·품사·뜻 번호 불일치, 누락 또는 동음이의어 모호성"
+    },
+    {
+      "lemma": "분리하다",
+      "reason": "근거 표제어·품사·뜻 번호 불일치, 누락 또는 동음이의어 모호성"
+    },
+    {
+      "lemma": "관문",
+      "reason": "근거 표제어·품사·뜻 번호 불일치, 누락 또는 동음이의어 모호성"
+    },
+    {
+      "lemma": "초석",
+      "reason": "근거 표제어·품사·뜻 번호 불일치, 누락 또는 동음이의어 모호성"
+    },
+    {
+      "lemma": "파문",
+      "reason": "근거 표제어·품사·뜻 번호 불일치, 누락 또는 동음이의어 모호성"
+    },
+    {
+      "lemma": "까마귀 날자 배 떨어진다",
+      "reason": "빈칸 문제에 ‘(    )’ 빈칸이 없다; g5-argon-1597: 빈칸 문제에 ‘(    )’ 빈칸이 없다"
+    },
+    {
+      "lemma": "울림",
+      "reason": "g5-argon-1587 r1 공동검수 결함으로 제외: 사전 근거인 '울림' 「2」는 『물리』 전문어인 '맥놀이'(진동수가 약간 다른 두 파동이 간섭을 일으켜 주기적으로 세기가 변하는 현상)를 뜻하므로, 초등 교육과정 수준을 벗어난 물리 전문 개념(stdictSpecialized 및 elementaryFit 금지 조건)이라 어린이에게 알맞은 문항을 만들 수 없습니다."
+    }
+  ]
+}
