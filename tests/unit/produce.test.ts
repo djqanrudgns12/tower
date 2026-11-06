@@ -61,6 +61,17 @@ type Slot = typeof words[number] & { id: string; type: string };
 const slots = (items: Slot[]) => items.map(i => [i.lemma, i.type]);
 
 describe('S6 낱말·유형 칸', () => {
+  it('한 호출의 문항 수를 CLI에서 받는다', () => {
+    expect(parseArgs(['run', '--wordlist', 'words.json', '--chunk-size', '6'])['chunk-size']).toBe('6');
+  });
+
+  it.each([0, 13, 1.5, -1, '6'])('잘못된 호출 묶음 크기 %s는 근거·모델 호출 전에 거절한다', async chunkSize => {
+    const { options, deps } = setup();
+    await expect(produce({ ...options, chunkSize }, deps)).rejects.toThrow('chunkSize');
+    expect(deps.fetchEvidence).not.toHaveBeenCalled();
+    expect(deps.respond).not.toHaveBeenCalled();
+  });
+
   it('Normal 심화 제작 옵션을 CLI에서 받는다', () => {
     expect(parseArgs(['run', '--wordlist', 'words.json', '--normal-advanced']).normalAdvanced).toBe(true);
   });
@@ -446,7 +457,7 @@ describe('S6 보충 제작', () => {
     expect(selected.map((x: { lemma: string; id: string }) => [x.lemma, x.id])).toEqual([['새로운말', 'g4-argon-0045']]);
   });
 
-  it('13문항은 12개와 1개로 나누고 동시 제작은 ID 배정 전에 막는다', async () => {
+  it.each([{ chunkSize: undefined, sizes: [12, 1] }, { chunkSize: 6, sizes: [6, 6, 1] }])('13문항을 $sizes 묶음으로 나누고 동시 제작은 ID 배정 전에 막는다', async ({ chunkSize, sizes }) => {
     const { root, options, deps, evidence } = setup();
     const extended = Array.from({ length: 13 }, (_, i) => ({ ...words[0], lemma: `낱말${i}` }));
     write(root, options.wordlist, { grade: 4, round: 1, items: extended });
@@ -457,13 +468,20 @@ describe('S6 보충 제작', () => {
       await expect(produce({ ...options, batchId: 'Q50-G4-023' }, deps)).rejects.toThrow('ID 예약 잠금');
       return fetched;
     });
-    deps.respond.mockResolvedValueOnce(JSON.stringify({ items: responseItems.slice(0, 12) })).mockResolvedValueOnce(JSON.stringify({ items: responseItems.slice(12) }));
-    const result = await produce({ ...options, count: 13 }, deps);
+    let offset = 0;
+    for (const size of sizes) {
+      deps.respond.mockResolvedValueOnce(JSON.stringify({ items: responseItems.slice(offset, offset + size) }));
+      offset += size;
+    }
+    const result = await produce({ ...options, count: 13, chunkSize }, deps);
     expect(result.produced).toBe(13);
     expect(result.rejected).toBe(0);
-    expect(deps.respond).toHaveBeenCalledTimes(2);
+    expect(deps.respond).toHaveBeenCalledTimes(sizes.length);
     const calls = deps.respond.mock.calls as unknown as [{ items: unknown[] }][];
-    expect(calls.map(c => c[0].items.length)).toEqual([12, 1]);
+    expect(calls.map(c => c[0].items.length)).toEqual(sizes);
+    expect(result.chunkSize).toBe(chunkSize ?? 12);
+    const work = path.join(root, '.orchestrate/produce', batchId, result.manifest.runId);
+    for (let i = 0; i < sizes.length; i++) expect(JSON.parse(fs.readFileSync(path.join(work, `chunk${i + 1}.reply1.md`), 'utf8')).items).toHaveLength(sizes[i]!);
     expect(fs.existsSync(path.join(root, '.orchestrate/produce/producer.lock'))).toBe(false);
     expect(fs.existsSync(path.join(result.stagingDir, 'manifest.tmp'))).toBe(false);
   });

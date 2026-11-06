@@ -307,7 +307,8 @@ export async function produce(options, deps = {}) {
 }
 
 async function produceRun(options, deps) {
-  const { root: rootArg, wordlist, batchId, grade, count = 50, dryRun = false, normalAdvanced = false } = options;
+  const { root: rootArg, wordlist, batchId, grade, count = 50, dryRun = false, normalAdvanced = false, chunkSize = 12 } = options;
+  if (!Number.isInteger(chunkSize) || chunkSize < 1 || chunkSize > 12) throw new Error('chunkSize는 1~12 정수여야 한다');
   if (typeof normalAdvanced !== 'boolean') throw new Error('normalAdvanced는 불리언이어야 한다');
   const root = path.resolve(rootArg);
   if (!/^Q50-G[3-6]-\d{3}$/.test(batchId) || !batchId.startsWith(`Q50-G${grade}-`) || !Number.isInteger(count) || count < 1 || count > 60) throw new Error('배치·학년·count 인자 오류');
@@ -334,8 +335,8 @@ async function produceRun(options, deps) {
   const evidence = await (deps.fetchEvidence ?? fetchEvidence)({ root, batchId, inputFile, items, outputDir: path.join(work, 'evidence') });
   const prepared = prepare(root, batchId, grade, items, evidence);
   const rejected = [...prepared.rejected], pairs = [];
-  for (let offset = 0; offset < prepared.accepted.length; offset += 12) {
-    let pending = prepared.accepted.slice(offset, offset + 12), note = '';
+  for (let offset = 0; offset < prepared.accepted.length; offset += chunkSize) {
+    let pending = prepared.accepted.slice(offset, offset + chunkSize), note = '';
     for (let attempt = 1; attempt <= 2 && pending.length; attempt++) {
       let parsed;
       try {
@@ -346,7 +347,7 @@ async function produceRun(options, deps) {
             if (data.items.length !== pending.length || !pending.every(x => data.items.filter(i => i.questionId === x.fixed.id).length === 1)) throw new Error('제작 대상 불일치');
           } });
         const full = recoverReply(reply, pending, deps.brain);
-        fs.writeFileSync(path.join(work, `chunk${offset / 12 + 1}.reply${attempt}.md`), full);
+        fs.writeFileSync(path.join(work, `chunk${offset / chunkSize + 1}.reply${attempt}.md`), full);
         parsed = parseDrafts(m, full, pending);
         if (normalAdvanced) parsed.accepted = parsed.accepted.filter(pair => {
           const cap = m.lint.GRADE_BATTLE_READING_LOAD[grade], load = m.lint.loadOf(pair.draft);
@@ -405,7 +406,7 @@ async function produceRun(options, deps) {
   // manifest를 마지막에 쓰므로 완성되지 않은 파일은 W2b가 읽지 않는다.
   write(path.join(dir, 'manifest.tmp'), manifest);
   fs.renameSync(path.join(dir, 'manifest.tmp'), path.join(dir, 'manifest.json'));
-  return { manifest, stagingDir: dir, produced: drafts.length, rejected: rejected.length };
+  return { manifest, stagingDir: dir, produced: drafts.length, rejected: rejected.length, chunkSize };
 }
 
 function wordlistPaths(value) {
@@ -416,11 +417,11 @@ function wordlistPaths(value) {
 
 export function parseArgs(args) {
   const argv = [...args], a = { wordlist: [] };
-  if (argv.shift() !== 'run') throw new Error('사용: produce.mjs run --root <dir> --wordlist <json[,json]> [--wordlist <json>] --batch Q50-G<N>-0NN --grade <N> [--count 50] [--normal-advanced] [--dry-run --fixture <json>]');
+  if (argv.shift() !== 'run') throw new Error('사용: produce.mjs run --root <dir> --wordlist <json[,json]> [--wordlist <json>] --batch Q50-G<N>-0NN --grade <N> [--count 50] [--chunk-size 12] [--normal-advanced] [--dry-run --fixture <json>]');
   for (let i = 0; i < argv.length; i++) {
     if (argv[i] === '--dry-run') a.dryRun = true;
     else if (argv[i] === '--normal-advanced') a.normalAdvanced = true;
-    else if (/^--(root|wordlist|batch|grade|count|fixture|argon-per-hour)$/.test(argv[i]) && argv[i + 1] && !argv[i + 1].startsWith('--')) {
+    else if (/^--(root|wordlist|batch|grade|count|chunk-size|fixture|argon-per-hour)$/.test(argv[i]) && argv[i + 1] && !argv[i + 1].startsWith('--')) {
       const name = argv[i].slice(2), value = argv[++i];
       if (name === 'wordlist') a.wordlist.push(value);
       else a[name] = value;
@@ -441,7 +442,7 @@ async function main() {
     deps.fetchEvidence = async () => fixture.evidence;
     deps.respond = async () => { const response = fixture.responses[call++]; if (!response) throw new Error('가짜 응답 부족'); return typeof response === 'string' ? response : json(response); };
   }
-  console.log(json(await produce({ root, wordlist: a.wordlist, batchId: a.batch, grade: Number(a.grade), count: Number(a.count ?? 50), dryRun: a.dryRun, normalAdvanced: a.normalAdvanced, argonPerHour: a['argon-per-hour'] }, deps)));
+  console.log(json(await produce({ root, wordlist: a.wordlist, batchId: a.batch, grade: Number(a.grade), count: Number(a.count ?? 50), chunkSize: Number(a['chunk-size'] ?? 12), dryRun: a.dryRun, normalAdvanced: a.normalAdvanced, argonPerHour: a['argon-per-hour'] }, deps)));
 }
 
 if (process.argv[1] && import.meta.url === pathToFileURL(path.resolve(process.argv[1])).href) main().catch(e => { console.error(e.message); process.exitCode = 1; });
