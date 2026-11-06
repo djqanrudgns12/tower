@@ -9,12 +9,12 @@ import { sharedBankVersion } from './sharedBankVersion';
 export { sharedBankVersion } from './sharedBankVersion';
 
 export type { SharedBankQuestion } from '../../src/contracts/questions';
-/** 런타임 계약 통합 전의 빌드 입력. 이 모듈은 파일을 쓰거나 은행을 공개하지 않는다. */
+/** 공유 은행의 빌드 입력. 이 모듈은 파일을 쓰거나 은행을 공개하지 않는다. */
 export type SharedBankPlan = SharedBankFile;
 
 /**
  * 원 검수 보고서·최신 판·철회에서 공개 입력을 다시 계산하고 위로 공유할 은행을 준비한다.
- * 현재 빌드/런타임에는 연결하지 않는다. 계약·키 생성기의 통합은 루프 정지 지점에서 한다.
+ * 실제 은행·키 생성기 연결은 루프 정지 지점에서 한다. 공개 로더는 이 계약을 받는다.
  * 자기 문항 수와 공유 수는 분리하며, 같은 지문이나 받는 학년 검사에 걸린 공유는 제외한다.
  */
 export function prepareSharedBank(batches: BatchInput[], assessments: readonly LevelAssessment[], retractions: RetractionList, grade: number): {

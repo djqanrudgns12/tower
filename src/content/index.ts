@@ -3,7 +3,7 @@ import mapsJson from '../../docs/contracts/maps.candidate.v0.4.json';
 import defaultsJson from '../../docs/contracts/product.defaults.v0.5.json';
 import { balanceSchema, type DifficultyId, type TowerId } from '../contracts/balance';
 import { mapsFileSchema, type MapConfig } from '../contracts/maps';
-import { bankFileSchema, difficultyGateSchema, readingLoad, retractionListSchema, type BankFile, type DifficultyTier, type RetractionList } from '../contracts/questions';
+import { bankFileSchema, sharedBankFileSchema, difficultyGateSchema, readingLoad, retractionListSchema, type BankFile, type DifficultyTier, type RetractionList } from '../contracts/questions';
 import { createContext, isQuestionEligibleForDifficulty, type DifficultyGate, type GameContext, type RuntimeQuestion } from '../domain/context';
 import grade3Dev from './questions/grade3.dev.json';
 import practiceJson from './questions/practice.json';
@@ -20,7 +20,7 @@ export const RETRACTIONS: RetractionList = retractionListSchema.parse(retraction
 // 사용자에게는 공동검수를 통과한 공개 은행(grade<N>.json, status=published)만 싣는다(PRD §9.3 "승인 문항만 배포",
 // §9.4 "미승인 문항을 가져오지 않는다"). 공동검수 전 후보 은행(grade<N>.candidate.json)은 제작 도구만 읽고 번들에 넣지 않는다.
 const publishedRaw = import.meta.glob<unknown>('./questions/grade[3-6].json', { eager: true, import: 'default' });
-const publishedBanks = Object.values(publishedRaw).map(raw => bankFileSchema.parse(raw)).filter(bank => bank.status === 'published');
+const publishedBanks = Object.values(publishedRaw).map(raw => sharedBankFileSchema.parse(raw)).filter(bank => bank.status === 'published');
 
 /** 학년별 공개 은행 목록(오늘의 낱말 카드 등 화면 보조 기능이 쓴다). */
 export const VERIFIED_GRADE_BANKS: readonly BankFile[] = publishedBanks;

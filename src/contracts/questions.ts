@@ -74,7 +74,7 @@ export const bankFileSchema = z.object({
   for (const q of b.questions) if (q.grade !== b.grade || q.status !== b.status) ctx.addIssue({ code: 'custom', message: `${q.id}: 은행의 학년·상태와 다름` });
 });
 
-/** W5 통합용 별도 계약. 현재 은행 로더는 위의 자기 학년 전용 계약을 계속 사용한다. */
+/** 공개 학년 은행의 공유 계약. 개발·후보·연습 은행은 위의 자기 학년 전용 계약을 쓴다. */
 export const sharedBankQuestionSchema = bankQuestionSchema.safeExtend({
   gradeBand: z.object({ min: z.number().int().min(3).max(6), max: z.number().int().min(3).max(6) }).strict().optional(),
 }).superRefine((q, ctx) => {
