@@ -3,6 +3,13 @@
 작성 2026-11-06 · 작성 Claude Opus 5.5(총괄) · 받는 쪽 Codex(메인 세션)
 같이 읽을 것: [계획서 CONTENT_REVIEW_PLAN.md](CONTENT_REVIEW_PLAN.md)(기준 문서), [AGENTS.md](../AGENTS.md)
 
+### 5학년 시범 앞단 선행 (Codex, 2026-11-06 10:58 KST)
+
+- 4학년 Argon 수정·제작이 진행되는 동안, 별도 시범 `Q50-G5-001`의 S2 Codex 검수를 단일 작업으로 완료했다. **gpt-6-astra/high, 50문항, 독립 풀이·공개 대조 각 1회, 재시도 0**이다. 현재 보고서로 앞단을 계산하면 **36통과·14결함**, 배치 단위 결함은 없다. Claude 관문·공개 승인은 아직 아니다.
+- Codex 메인이 staging 2파일 SHA-256, 50문항의 현재 revision·내용 해시, 양쪽 단계의 모델/effort 설정, 기존 보고서 아카이브의 바이트 일치를 직접 확인했다. 기록은 `.orchestrate/g5-pilot-codex.{summary,audit}.json`, 실행기는 `.orchestrate/run-g5-pilot-codex.mjs`다. 검수 프로세스 PID 66632는 정상 종료했다.
+- 잠금 반영은 `resource-guard run --profile test --wait-seconds 180`에서 **종료 75**로 보류됐다. 다른 프로젝트의 보호 작업이 진행 중이라 반영·은행 빌드·서버 시험은 **미실행**이며, 이는 시험 실패가 아니다. `.orchestrate/staging/Q50-G5-001/20261106T015324064Z-66632-8d416aaf-6aba-495a-ad9e-7091ce5adf45/`를 보존했다. 자원이 허용될 때 기존 commit-lock CLI로 이 배치부터 반영하며, 모델 검수를 다시 호출하지 않는다.
+- 4학년 PID 55822·25037은 계속 실행 중이다. 새 gate 실행으로 공용 `.orchestrate/content-loop.summary.json`을 덮어쓰지 않았다. S4 확대 보류는 유지한다.
+
 ### 후속 준비 (Codex, 2026-11-06 10:43 KST 갱신)
 
 - 보충 022~024의 사전 근거 반려 46건은 서로 다른 낱말 21개에서 나왔다. 이 중 10개는 세 배치 모두에서 다시 선택돼 반려됐다. `selectItems`는 수록된 초안만 사용 이력으로 세므로, 제작 전 반려 항목은 다음 배치에 다시 들어가는 구조다.
