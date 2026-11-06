@@ -3,6 +3,15 @@
 작성 2026-11-06 · 작성 Claude Opus 5.5(총괄) · 받는 쪽 Codex(메인 세션)
 같이 읽을 것: [계획서 CONTENT_REVIEW_PLAN.md](CONTENT_REVIEW_PLAN.md)(기준 문서), [AGENTS.md](../AGENTS.md)
 
+### 보충 5학년 6배치 확인·수정판 28개 수준 재판정 (Codex, 2026-11-06 16:51 KST)
+
+- **5학년 보충 PID 78689 정상 종료(`awaiting-apply`)**. 마지막 027은 **42생성·8반려, Argon 7호출, 105파일**이다. 메인이 경로/해시·스키마·정답만 fits·엄격 검사·전역 ID 충돌 0·출처 불확정 8후보 제외 근거를 확인했다. `.orchestrate/g5-supplement.staging-audit.json`의 **022~027 합계는 223생성·77반려, 919파일, Argon 37호출, 출처 불확정 제외 72후보**다. 보관한 5문항 시범은 이 합계에서 제외한다. 공개 승인 수가 아니다. **PID 91819**는 선행 종료를 확인하고 **07:49:48Z 6학년 5문항 제작 시범** 첫 Argon 호출을 시작했다.
+- PID 43186 정상 종료. 세 시범 수정은 **29수정·4버림·미처리 0, Argon 3호출**이다. 메인이 원본 12+12+5의 정확한 대응, 고정 필드·revision/단계 회차, 미대상 **115문항과 Claude 조건 통과 115개 보존**을 확인했다. 추가 보기 재배열은 없다. `.orchestrate/recovery/pilot-revise/audit.json`은 `verified-structure-awaiting-level`이며 원래 실패를 보존했다: **4학년 `g4-argon-0015` 같은 뜻·유형 중복**, **6학년 `g6-argon-0012` basic 읽기량 118 > 112음절**이다.
+- 4학년 중복 문항은 이제 앞단 수정 2회를 소진했으므로 **모델 호출 없이 추가 1개를 제외**했다. `.orchestrate/recovery/pilot-exhausted-drop/{plan,baseline,summary,audit}.json`에 근거를 보존했다. 메인이 남은 **45문항·자체 반박·기존 회차 불변, Claude 통과 42개 보존, 동일 엄격 검사 통과**를 확인했다. 이 회차 묶음은 결과적으로 **수정판 28개 잔존·총 5개 버림**이다. 원래 29수정 기록과 실패 기록을 고쳐 쓰지 않았다.
+- **PID 46060** `.orchestrate/recovery/pilot-revise-level/run.mjs`: 실제 잔존 변경판 **28개(4학년 3·5학년 11·6학년 14)**를 S1 재판정 중이다. **07:50:15Z Argon 1호출, Codex 0**을 확인했다. 두 판정자는 같은 입력의 별도 세션이며 호출은 순차다. `inputs/`에 각 요청 입력을 보존해 원본 초안/사전 표지와 대조할 수 있게 했다. `plan.json`·`baseline.json`·`summary.json`·`run.out`은 같은 폴더다. 원래 6학년 읽기량 실패는 S1 대조 후 같은 기준으로 다시 검사한다.
+- 다음 S2용 `.orchestrate/recovery/pilot-revise-review/run.mjs`도 준비·구문 확인했으나 **미실행**이다. 수준 결과 메인 audit 뒤 변경판만 gpt-6-astra/high로 묶고 기존 검수 작업 파일을 보관한다. 반영 실행기는 후속 제외·S1·S2의 메인 audit/manifest도 요구한다. **앞선 4학년 후속 수정 audit와 이번 수정의 실패 상태는 유지**했으므로, S1 결과 대조 뒤 실제 해결 근거를 별도 후속 audit로 연결해야 전체 반영 실행기를 사용할 수 있다.
+- 최신 자원 보호 확인은 다른 보호 작업 PID 61118/46188·예상 여유 5.6GiB로 거절이다. 서버 시험·005 pending 반영은 **미실행**, 기존 제품 시험 92개는 재사용이다. 제품 코드 변경 없이 완료한 산출물/운영 실행기만 확인했다. 6학년 6배치 확대는 5문항 시범의 메인 검증 뒤에만 하며, 현재 실행 중인 두 모델 흐름을 늘리지 않는다. G1 시범 S5 완료 전 일반 S4 확대 보류도 유지한다.
+
 ### 6학년 관문 34통과 확인·세 시범 수정 33개 시작 (Codex, 2026-11-06 16:29 KST)
 
 - PID 41190 정상 종료. 6학년 시범 **48개 = 34통과·14지적**, Opus 5.5/xhigh 두 단계 2호출이다. 메인이 원본 응답·블라인드 입력 제한·현 판/해설 해시·항목별 모델/effort·이전 모델 해설 보관본의 원문 바이트를 대조했다. 지적 축은 **문장 11·해설 4·학년 1**(항목 간 중복)이다. `.orchestrate/recovery/g6-pilot-gate/audit.json`은 `verified-awaiting-apply`, staging `Q50-G6-001/20261106T072829781Z-41190-53b025a0-d0ec-4cdd-89a4-41f3a81955d4`다.
