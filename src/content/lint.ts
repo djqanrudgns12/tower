@@ -105,11 +105,16 @@ export function lintQuestion(q: LintInput): string[] {
  * 기존 파일럿 배치(Q20-001~003)의 격리 사례(순환 정답, 저학년 어려운 한자어 풀이, 단서 노출, 중복 의미)를 사전 차단한다.
  */
 export function lintBatchStrict(questions: readonly LintInput[]): string[] {
+  return lintBatch(questions);
+}
+
+function lintBatch(questions: readonly LintInput[], recipientGrade?: number): string[] {
   const issues: string[] = [];
   const stems = new Set<string>();
   const senseTypes = new Set<string>();
 
   for (const q of questions) {
+    const grade = recipientGrade ?? q.grade;
     for (const p of lintQuestion(q)) issues.push(`${q.id}: ${p}`);
     const fullText = [q.stem, q.explanation, ...q.options.map(o => o.text), ...Object.values(q.distractorRationales)].join(' ');
     if (SPACING_ERRORS.test(fullText)) issues.push(`${q.id}: 띄어쓰기 오류 의심 표현이 있다`);
@@ -119,19 +124,19 @@ export function lintBatchStrict(questions: readonly LintInput[]): string[] {
     stems.add(normStem);
 
     if (q.target.senseKey) {
-      const key = `${q.grade}:${q.target.senseKey}:${q.type}`;
+      const key = `${grade}:${q.target.senseKey}:${q.type}`;
       if (senseTypes.has(key)) issues.push(`${q.id}: 같은 의미·같은 유형 중복(${key})`);
       senseTypes.add(key);
     }
 
-    if (q.grade <= 4) {
+    if (grade <= 4) {
       const metaText = [q.explanation, ...Object.values(q.distractorRationales), ...q.options.map(o => o.text)].join(' ');
       for (const word of HARD_META_LOW_GRADE) {
         if (!q.target.lemma.includes(word) && metaText.includes(word)) {
-          issues.push(`${q.id}: ${q.grade}학년(3~4학년군)에 어려운 풀이·보기 어휘(${word})`);
+          issues.push(`${q.id}: ${grade}학년(3~4학년군)에 어려운 풀이·보기 어휘(${word})`);
         }
       }
-      if (q.grade === 3) {
+      if (grade === 3) {
         for (const word of HARD_META_GRADE3_ONLY) {
           if (!q.target.lemma.includes(word) && metaText.includes(word)) {
             issues.push(`${q.id}: 3학년 수준 초과 추상 어휘(${word})`);
@@ -141,9 +146,9 @@ export function lintBatchStrict(questions: readonly LintInput[]): string[] {
     }
 
     const load = readingLoad(q);
-    const absCap = GRADE_ABS_READING_LOAD[q.grade] ?? 100;
+    const absCap = GRADE_ABS_READING_LOAD[grade] ?? 100;
     if (load > absCap) {
-      issues.push(`${q.id}: ${q.grade}학년 절대 읽기 부담 상한 초과(${load}음절 > ${absCap}음절)`);
+      issues.push(`${q.id}: ${grade}학년 절대 읽기 부담 상한 초과(${load}음절 > ${absCap}음절)`);
     }
 
     // 4단계 난이도 티어별 엄격 일관성 검사(basic / core / advanced / challenge).
@@ -151,7 +156,7 @@ export function lintBatchStrict(questions: readonly LintInput[]): string[] {
       if (q.variantTag && q.variantTag !== 'standard') {
         issues.push(`${q.id}: basic 단계 문항은 variantTag=standard여야 한다(현재 ${q.variantTag})`);
       }
-      const basicCap = (GRADE_BATTLE_READING_LOAD[q.grade] ?? 70) + 12;
+      const basicCap = (GRADE_BATTLE_READING_LOAD[grade] ?? 70) + 12;
       if (load > basicCap) {
         issues.push(`${q.id}: basic 단계 문항 읽기 부담 과다(${load}음절 > ${basicCap}음절)`);
       }
@@ -200,6 +205,12 @@ export function lintBatchStrict(questions: readonly LintInput[]): string[] {
 }
 
 export const loadOf = readingLoad;
+
+/** 공유 승인 판단은 하지 않는다. 받는 학년용 tier를 가진 문항을 검사하는 W5 진입점. */
+export function lintBatchForGrade(questions: readonly LintInput[], grade: number): string[] {
+  if (!Number.isInteger(grade) || grade < 3 || grade > 6) throw new RangeError('받는 학년은 3~6학년이어야 한다');
+  return lintBatch(questions, grade);
+}
 
 // 수준 판정·분포 보고도 기존 엄격 검사의 상한을 재사용한다.
 export { GRADE_ABS_READING_LOAD, GRADE_BATTLE_READING_LOAD };
