@@ -1,50 +1,10 @@
 {
   "bankId": "g4-candidate",
-  "bankVersion": "cand-90f0ac013dbe",
+  "bankVersion": "cand-ac55b3e404c2",
   "grade": 4,
   "status": "verified_candidate",
   "note": "공동검수 진행 중인 후보 은행. 같은 revision의 외부 블라인드 검수(codex·claude) 1건 이상과 새 문맥 argon-blind를 통과했다. 3모델 공동검수 승인 전에는 게임에 싣지 않는다(PRD §9.3).",
   "questions": [
-    {
-      "id": "g4-argon-0002",
-      "revision": 2,
-      "status": "verified_candidate",
-      "grade": 4,
-      "type": "synonym_context",
-      "difficultyTier": "core",
-      "variantTag": "standard",
-      "target": {
-        "lemma": "결국",
-        "partOfSpeech": "부사",
-        "senseKey": "결국/부사/17346-4"
-      },
-      "stem": "여러 번 다시 시도한 민호는 ‘결국’ 퍼즐을 다 맞추었습니다. ‘결국’과 바꾸어 쓸 말은 무엇일까요?",
-      "options": [
-        {
-          "id": "a",
-          "text": "일을 시작하기도 전에"
-        },
-        {
-          "id": "b",
-          "text": "아무 노력도 하지 않고"
-        },
-        {
-          "id": "c",
-          "text": "일의 마무리에 이르러"
-        },
-        {
-          "id": "d",
-          "text": "가끔 생각이 날 때마다"
-        }
-      ],
-      "correctOptionId": "c",
-      "explanation": "‘결국’은 일의 마무리에 이르러 결과가 그렇게 된다는 뜻이에요.",
-      "distractorRationales": {
-        "a": "일을 시작하기 전이라는 뜻은 마무리 단계와 반대예요.",
-        "b": "노력하지 않았다는 뜻은 여러 번 시도한 문맥과 달라요.",
-        "d": "가끔씩 반복한다는 뜻은 최종 결과를 나타내지 않아요."
-      }
-    },
     {
       "id": "g4-argon-0005",
       "revision": 1,
@@ -163,46 +123,6 @@
         "a": "물건을 닦아 손질하는 행동과는 뜻이 달라요.",
         "b": "시간을 미리 정하는 것은 발견과 관련이 없어요.",
         "c": "이야기를 옮겨 적는 행동은 찾아내는 뜻이 아니에요."
-      }
-    },
-    {
-      "id": "g4-argon-0012",
-      "revision": 2,
-      "status": "verified_candidate",
-      "grade": 4,
-      "type": "synonym_context",
-      "difficultyTier": "core",
-      "variantTag": "standard",
-      "target": {
-        "lemma": "보람",
-        "partOfSpeech": "명사",
-        "senseKey": "보람/명사/435865-3"
-      },
-      "stem": "텃밭을 가꾸어 상추를 거두니 큰 ‘보람’을 느꼈습니다. ‘보람’과 바꾸어 쓸 말은 무엇일까요?",
-      "options": [
-        {
-          "id": "a",
-          "text": "일을 시작하기 전의 걱정"
-        },
-        {
-          "id": "b",
-          "text": "일한 뒤에 얻는 만족감"
-        },
-        {
-          "id": "c",
-          "text": "실수했을 때 드는 부끄러움"
-        },
-        {
-          "id": "d",
-          "text": "기다리면서 느끼는 지루함"
-        }
-      ],
-      "correctOptionId": "b",
-      "explanation": "여기서 ‘보람’은 일을 해낸 뒤에 얻는 좋은 결과나 만족감을 뜻해요.",
-      "distractorRationales": {
-        "a": "일을 시작하기 전에 앞서 하는 걱정을 뜻하지 않아요.",
-        "c": "실수해서 부끄러운 마음은 보람과 뜻이 어울리지 않아요.",
-        "d": "지루하게 기다리는 느낌은 좋은 결과의 기쁨이 아니에요."
       }
     },
     {
@@ -326,46 +246,6 @@
       }
     },
     {
-      "id": "g4-argon-0019",
-      "revision": 1,
-      "status": "verified_candidate",
-      "grade": 4,
-      "type": "cloze",
-      "difficultyTier": "advanced",
-      "variantTag": "standard",
-      "target": {
-        "lemma": "담백하다",
-        "partOfSpeech": "형용사",
-        "senseKey": "담백하다/형용사/413853-1"
-      },
-      "stem": "욕심을 부리지 않고 마음이 맑고 깨끗한 상태를 가리켜 ‘(    )’라고 합니다. 빈칸에 알맞은 말은 무엇일까요?",
-      "options": [
-        {
-          "id": "a",
-          "text": "복잡하다"
-        },
-        {
-          "id": "b",
-          "text": "위험하다"
-        },
-        {
-          "id": "c",
-          "text": "답답하다"
-        },
-        {
-          "id": "d",
-          "text": "담백하다"
-        }
-      ],
-      "correctOptionId": "d",
-      "explanation": "욕심이 없고 마음이 깨끗한 상태를 ‘담백하다’라고 해요.",
-      "distractorRationales": {
-        "a": "‘복잡하다’는 갈피를 잡기 어렵게 얽혀 있다는 뜻이에요.",
-        "b": "‘위험하다’는 해를 입을 수 있어 안전하지 않다는 뜻이에요.",
-        "c": "‘답답하다’는 속이 시원하지 못하고 갑갑하다는 뜻이에요."
-      }
-    },
-    {
       "id": "g4-argon-0020",
       "revision": 2,
       "status": "verified_candidate",
@@ -443,46 +323,6 @@
         "a": "무게나 크기가 작다는 뜻과는 관련이 없어요.",
         "b": "움직임의 빠르기를 설명하는 낱말이 아니에요.",
         "d": "손으로 만졌을 때의 촉감을 뜻하지 않아요."
-      }
-    },
-    {
-      "id": "g4-argon-0022",
-      "revision": 1,
-      "status": "verified_candidate",
-      "grade": 4,
-      "type": "synonym_context",
-      "difficultyTier": "core",
-      "variantTag": "standard",
-      "target": {
-        "lemma": "만족하다",
-        "partOfSpeech": "동사",
-        "senseKey": "만족하다/동사/423287-1"
-      },
-      "stem": "정성껏 만든 도자기가 마음에 꼭 들어 스스로 ‘만족했습니다’. 바꾸어 쓸 말로 알맞은 것은 무엇일까요?",
-      "options": [
-        {
-          "id": "a",
-          "text": "아쉽게 여겼습니다"
-        },
-        {
-          "id": "b",
-          "text": "흐뭇하게 여겼습니다"
-        },
-        {
-          "id": "c",
-          "text": "낯설게 여겼습니다"
-        },
-        {
-          "id": "d",
-          "text": "귀찮게 여겼습니다"
-        }
-      ],
-      "correctOptionId": "b",
-      "explanation": "‘만족하다’는 모자람이 없이 마음에 들어 좋게 여긴다는 뜻이에요.",
-      "distractorRationales": {
-        "a": "아쉽게 여기는 것은 만족하지 못했을 때의 마음이에요.",
-        "c": "처음 보아 어색하고 낯설게 느끼는 뜻이 아니에요.",
-        "d": "하기 싫어 귀찮게 여기는 것과는 뜻이 전혀 달라요."
       }
     },
     {
@@ -566,86 +406,6 @@
       }
     },
     {
-      "id": "g4-argon-0028",
-      "revision": 1,
-      "status": "verified_candidate",
-      "grade": 4,
-      "type": "cloze",
-      "difficultyTier": "advanced",
-      "variantTag": "idiom_proverb",
-      "target": {
-        "lemma": "눈을 붙이다",
-        "partOfSpeech": "관용구",
-        "senseKey": "눈을 붙이다/관용구/526498-1"
-      },
-      "stem": "새벽 일찍 일어나 무척 졸렸던 삼촌은 소파에 기대어 잠깐 (    ). 빈칸에 알맞은 관용구는 무엇일까요?",
-      "options": [
-        {
-          "id": "a",
-          "text": "눈을 붙였다"
-        },
-        {
-          "id": "b",
-          "text": "발을 벗었다"
-        },
-        {
-          "id": "c",
-          "text": "입을 모았다"
-        },
-        {
-          "id": "d",
-          "text": "귀를 열었다"
-        }
-      ],
-      "correctOptionId": "a",
-      "explanation": "‘눈을 붙이다’는 잠을 잔다는 뜻의 관용구예요.",
-      "distractorRationales": {
-        "b": "‘발을 벗다’는 일에 적극적으로 나선다는 뜻이에요.",
-        "c": "‘입을 모으다’는 여러 사람이 같은 말을 한다는 뜻이에요.",
-        "d": "‘귀를 열다’는 남의 말을 잘 듣는다는 뜻이에요."
-      }
-    },
-    {
-      "id": "g4-argon-0029",
-      "revision": 1,
-      "status": "verified_candidate",
-      "grade": 4,
-      "type": "cloze",
-      "difficultyTier": "advanced",
-      "variantTag": "idiom_proverb",
-      "target": {
-        "lemma": "손에 익다",
-        "partOfSpeech": "관용구",
-        "senseKey": "손에 익다/관용구/529759-1"
-      },
-      "stem": "처음에는 종이접기가 서툴렀지만 여러 번 연습하니 이제는 (    ) 빠르게 접습니다. 빈칸에 알맞은 말은 무엇일까요?",
-      "options": [
-        {
-          "id": "a",
-          "text": "눈에 밟혀"
-        },
-        {
-          "id": "b",
-          "text": "손에 익어"
-        },
-        {
-          "id": "c",
-          "text": "입에 발려"
-        },
-        {
-          "id": "d",
-          "text": "귀에 설어"
-        }
-      ],
-      "correctOptionId": "b",
-      "explanation": "‘손에 익다’는 어떤 일이 손에 익숙해진다는 뜻이에요.",
-      "distractorRationales": {
-        "a": "‘눈에 밟히다’는 자꾸 떠올라 잊히지 않는다는 뜻이에요.",
-        "c": "‘입에 발리다’는 마음에도 없는 겉치레 말을 뜻해요.",
-        "d": "‘귀에 설다’는 들어 본 적이 없어 낯설다는 뜻이에요."
-      }
-    },
-    {
       "id": "g4-argon-0030",
       "revision": 2,
       "status": "verified_candidate",
@@ -683,126 +443,6 @@
         "a": "‘시치미를 떼다’는 알고도 모르는 체한다는 뜻이라 어색해요.",
         "b": "‘찬물을 끼얹다’는 좋은 분위기를 갑자기 깨뜨린다는 뜻이에요.",
         "d": "‘뒷짐을 지다’는 일에 나서지 않고 물러서 있다는 뜻이에요."
-      }
-    },
-    {
-      "id": "g4-argon-0033",
-      "revision": 1,
-      "status": "verified_candidate",
-      "grade": 4,
-      "type": "cloze",
-      "difficultyTier": "advanced",
-      "variantTag": "idiom_proverb",
-      "target": {
-        "lemma": "숨을 돌리다",
-        "partOfSpeech": "관용구",
-        "senseKey": "숨을 돌리다/관용구/529516-1"
-      },
-      "stem": "가파른 계단을 뛰어 올라가느라 숨이 턱까지 찼지만 잠시 멈추어 서서 (    ). 빈칸에 알맞은 관용구는 무엇일까요?",
-      "options": [
-        {
-          "id": "a",
-          "text": "숨을 돌렸다"
-        },
-        {
-          "id": "b",
-          "text": "발을 굴렀다"
-        },
-        {
-          "id": "c",
-          "text": "손을 떼었다"
-        },
-        {
-          "id": "d",
-          "text": "입을 맞추었다"
-        }
-      ],
-      "correctOptionId": "a",
-      "explanation": "‘숨을 돌리다’는 가쁘게 몰아쉬던 숨을 가라앉힌다는 뜻이에요.",
-      "distractorRationales": {
-        "b": "‘발을 구르다’는 안타깝거나 급해서 초조해한다는 뜻이에요.",
-        "c": "‘손을 떼다’는 하던 일을 그만둔다는 뜻이에요.",
-        "d": "‘입을 맞추다’는 말을 미리 서로 같게 정한다는 뜻이에요."
-      }
-    },
-    {
-      "id": "g4-argon-0034",
-      "revision": 1,
-      "status": "verified_candidate",
-      "grade": 4,
-      "type": "cloze",
-      "difficultyTier": "advanced",
-      "variantTag": "idiom_proverb",
-      "target": {
-        "lemma": "가는 말이 고와야 오는 말이 곱다",
-        "partOfSpeech": "속담",
-        "senseKey": "가는 말이 고와야 오는 말이 곱다/속담/519151-1"
-      },
-      "stem": "내가 먼저 다정하게 말해야 상대방도 좋게 말한다는 뜻으로 “(    )”라고 합니다. 빈칸에 알맞은 속담은 무엇일까요?",
-      "options": [
-        {
-          "id": "a",
-          "text": "낮말은 새가 듣고 밤말은 쥐가 듣는다"
-        },
-        {
-          "id": "b",
-          "text": "가는 말이 고와야 오는 말이 곱다"
-        },
-        {
-          "id": "c",
-          "text": "천 리 길도 한 걸음부터 시작한다"
-        },
-        {
-          "id": "d",
-          "text": "구슬이 서 말이라도 꿰어야 보배다"
-        }
-      ],
-      "correctOptionId": "b",
-      "explanation": "내가 남에게 좋게 해야 남도 나에게 좋게 한다는 뜻의 속담이에요.",
-      "distractorRationales": {
-        "a": "말조심을 해야 한다는 뜻의 속담이라 문맥과 달라요.",
-        "c": "작은 일부터 차근차근 시작하라는 뜻의 속담이에요.",
-        "d": "아무리 좋은 것도 쓸모 있게 다듬어야 한다는 뜻이에요."
-      }
-    },
-    {
-      "id": "g4-argon-0037",
-      "revision": 1,
-      "status": "verified_candidate",
-      "grade": 4,
-      "type": "cloze",
-      "difficultyTier": "challenge",
-      "variantTag": "idiom_proverb",
-      "target": {
-        "lemma": "호랑이도 제 말 하면 온다",
-        "partOfSpeech": "속담",
-        "senseKey": "호랑이도 제 말 하면 온다/속담/533131-1"
-      },
-      "stem": "그 자리에 없다고 남을 함부로 흉보아서는 안 된다는 뜻으로 “(    )”라고 합니다. 빈칸에 알맞은 속담은 무엇일까요?",
-      "options": [
-        {
-          "id": "a",
-          "text": "금강산도 식후경이라 한다"
-        },
-        {
-          "id": "b",
-          "text": "고래 싸움에 새우 등 터진다"
-        },
-        {
-          "id": "c",
-          "text": "빈 수레가 더 요란한 법이다"
-        },
-        {
-          "id": "d",
-          "text": "호랑이도 제 말 하면 온다"
-        }
-      ],
-      "correctOptionId": "d",
-      "explanation": "없다고 남을 흉보지 말라는 뜻으로 쓰는 속담이에요.",
-      "distractorRationales": {
-        "a": "아무리 좋은 구경도 배가 불러야 즐겁다는 뜻이에요.",
-        "b": "강한 이들 싸움에 약한 이가 해를 입는다는 뜻이에요.",
-        "c": "실속 없는 사람이 겉으로 더 떠벌린다는 뜻이에요."
       }
     },
     {

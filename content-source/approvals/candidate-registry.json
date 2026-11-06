@@ -1,8 +1,8 @@
 {
   "schemaVersion": "1",
   "rule": "3모델 공동검수 승인 문항 또는 (Argon 자체 반박에서 정답만 맞음 · 같은 revision·contentHash의 외부 블라인드 검수(codex·claude) 1건 이상이 있고 있는 것은 모두 pass · 새 문맥 argon-blind 독립 풀이가 정답과 같고 source·uniqueness·grade·language 모두 pass · 해설 대조 pass · 게시 형식·의미·엄격 검사 통과). 하나라도 어긋나면 격리한다. 후보 은행은 제작 진척 확인용이며 게임에 싣지 않는다(PRD §9.3).",
-  "approved": 2721,
-  "quarantined": 1492,
+  "approved": 2712,
+  "quarantined": 1501,
   "entries": [
     {
       "questionId": "g3-argon-0001",
@@ -8952,7 +8952,8 @@
       "contentHash": "261468b6eeca3bfa8fd38dceadaaee972137eda3b82a28ca490a922f32d29b9b",
       "decision": "quarantined",
       "reasons": [
-        "codex: language fail"
+        "codex: language fail",
+        "총괄 해설 대조 없음"
       ]
     },
     {
@@ -8960,8 +8961,10 @@
       "revision": 2,
       "batchId": "Q50-G4-001",
       "contentHash": "2615a2ca70f5a59f6d21888beef01939ed30ec6ae865a11f08da1e4ac38a1c51",
-      "decision": "approved",
-      "reasons": []
+      "decision": "quarantined",
+      "reasons": [
+        "claude: language uncertain"
+      ]
     },
     {
       "questionId": "g4-argon-0003",
@@ -8973,7 +8976,8 @@
         "codex: 독립 풀이 multiple ≠ 정답",
         "codex: uniqueness fail",
         "codex: language fail",
-        "codex: explanation fail"
+        "codex: explanation fail",
+        "총괄 해설 대조 없음"
       ]
     },
     {
@@ -8983,7 +8987,8 @@
       "contentHash": "ddba6e7193b39bbd9ff22dd698e9a05077116e86bdf37009c62cfb08834312dd",
       "decision": "quarantined",
       "reasons": [
-        "codex: explanation fail"
+        "codex: explanation fail",
+        "총괄 해설 대조 없음"
       ]
     },
     {
@@ -9001,7 +9006,8 @@
       "contentHash": "8b80b40d76c6a8af301a5953e6cb28c1385cbbcfb3f08cc3d60b21f5d5a93cc3",
       "decision": "quarantined",
       "reasons": [
-        "codex: uniqueness uncertain"
+        "codex: uniqueness uncertain",
+        "총괄 해설 대조 없음"
       ]
     },
     {
@@ -9011,7 +9017,8 @@
       "contentHash": "61b21bee607d75c17c1f554617dfddd991069eb5a480c83262d0390cc02cca27",
       "decision": "quarantined",
       "reasons": [
-        "codex: explanation fail"
+        "codex: explanation fail",
+        "총괄 해설 대조 없음"
       ]
     },
     {
@@ -9025,7 +9032,8 @@
         "codex: uniqueness fail",
         "codex: grade uncertain",
         "codex: language fail",
-        "codex: explanation fail"
+        "codex: explanation fail",
+        "총괄 해설 대조 없음"
       ]
     },
     {
@@ -9035,7 +9043,8 @@
       "contentHash": "0d95f2c465bb2754a9b4ec25100b0e2ad0a5090da43672f2aef88652f51943b7",
       "decision": "quarantined",
       "reasons": [
-        "codex: explanation fail"
+        "codex: explanation fail",
+        "총괄 해설 대조 없음"
       ]
     },
     {
@@ -9059,8 +9068,10 @@
       "revision": 2,
       "batchId": "Q50-G4-001",
       "contentHash": "9a04edc8aca8536014c40f165025d0d9e29da0a89e6609494d96d060ec902f0a",
-      "decision": "approved",
-      "reasons": []
+      "decision": "quarantined",
+      "reasons": [
+        "claude: language fail"
+      ]
     },
     {
       "questionId": "g4-argon-0013",
@@ -9072,7 +9083,8 @@
         "codex: 독립 풀이 multiple ≠ 정답",
         "codex: uniqueness fail",
         "codex: language fail",
-        "codex: explanation fail"
+        "codex: explanation fail",
+        "총괄 해설 대조 없음"
       ]
     },
     {
@@ -9098,7 +9110,8 @@
       "contentHash": "d75ac8615f8ff46e3a5942424ab412959f16640b3e337dcb63a6b220a0c8d763",
       "decision": "quarantined",
       "reasons": [
-        "codex: language fail"
+        "codex: language fail",
+        "총괄 해설 대조 없음"
       ]
     },
     {
@@ -9118,7 +9131,8 @@
       "reasons": [
         "codex: grade uncertain",
         "codex: language fail",
-        "codex: explanation fail"
+        "codex: explanation fail",
+        "총괄 해설 대조 없음"
       ]
     },
     {
@@ -9126,8 +9140,10 @@
       "revision": 1,
       "batchId": "Q50-G4-001",
       "contentHash": "a439eab959e66c3ba35d8af6f586393049215e25b5a868cf7eabfaa78bb83ad7",
-      "decision": "approved",
-      "reasons": []
+      "decision": "quarantined",
+      "reasons": [
+        "claude: grade uncertain"
+      ]
     },
     {
       "questionId": "g4-argon-0020",
@@ -9150,8 +9166,10 @@
       "revision": 1,
       "batchId": "Q50-G4-001",
       "contentHash": "f4cda08b8010373b2a1b46d08481a6c2a0dec506434bd0dd7c77b5949572dc29",
-      "decision": "approved",
-      "reasons": []
+      "decision": "quarantined",
+      "reasons": [
+        "claude: language uncertain"
+      ]
     },
     {
       "questionId": "g4-argon-0023",
@@ -9161,7 +9179,8 @@
       "decision": "quarantined",
       "reasons": [
         "codex: grade uncertain",
-        "codex: language fail"
+        "codex: language fail",
+        "총괄 해설 대조 없음"
       ]
     },
     {
@@ -9180,7 +9199,8 @@
       "decision": "quarantined",
       "reasons": [
         "codex: grade uncertain",
-        "codex: explanation fail"
+        "codex: explanation fail",
+        "총괄 해설 대조 없음"
       ]
     },
     {
@@ -9198,7 +9218,8 @@
       "contentHash": "eca1987531d284b2697e37efcb534e16e478d2b874bd83753388aff3cafe4f3e",
       "decision": "quarantined",
       "reasons": [
-        "codex: explanation fail"
+        "codex: explanation fail",
+        "총괄 해설 대조 없음"
       ]
     },
     {
@@ -9206,16 +9227,22 @@
       "revision": 1,
       "batchId": "Q50-G4-001",
       "contentHash": "402b7f527d96d8e5cb71c3c59251362af7415bc8143f60362d0e0bec0e65cc09",
-      "decision": "approved",
-      "reasons": []
+      "decision": "quarantined",
+      "reasons": [
+        "claude: language fail",
+        "claude: explanation fail",
+        "총괄 해설 대조 fail: [공개 대조] a는 근거 ‘눈(을) 붙이다: 잠을 자다’와 맞고 졸린 상황에도 a만 맞아 정답은 하나다. / [공개 대조] 오답 b ‘발을 벗었다’는 사전에 있는 관용구가 아니다(바른 꼴은 ‘발 벗고 나서다’). 그런데 오답 이유는 ‘발을 벗다’가 적극적으로 나선다는 뜻이라고 잘못 가르친다. b를 ‘발을 뺐다’·‘손을 씻었다’처럼 문맥에 맞지 않는 실제 관용구로 바꾸고, 오답 이유도 그 관용구의 사전 뜻으로 고칠 것."
+      ]
     },
     {
       "questionId": "g4-argon-0029",
       "revision": 1,
       "batchId": "Q50-G4-001",
       "contentHash": "95a1295175318ecdf8a6c129cd56e3fd598414a098dbb3857b474d22c0e92623",
-      "decision": "approved",
-      "reasons": []
+      "decision": "quarantined",
+      "reasons": [
+        "총괄 해설 대조 fail: [공개 대조] b는 근거 ‘일이 손에 익숙해지다’와 맞고 여러 번 연습한 문맥에 b만 맞아 정답은 하나다. 오답 관용구가 낯설지만 advanced 단계와 맞다. / [공개 대조] 오답 c의 관용구는 사전에서 ‘입에 발린 소리(말)’ 꼴로 쓰인다. 그런데 오답 이유는 ‘입에 발리다는 겉치레 말을 뜻해요’라고 써서 동사가 말을 뜻한다고 설명하는 꼴이다. 오답 이유를 ‘입에 발린 말은 마음에도 없이 겉으로만 하는 말이에요’처럼 고치거나, c를 ‘발이 넓어’처럼 꼴이 분명한 관용구로 바꿀 것."
+      ]
     },
     {
       "questionId": "g4-argon-0030",
@@ -9234,7 +9261,8 @@
       "reasons": [
         "codex: 독립 풀이 multiple ≠ 정답",
         "codex: uniqueness fail",
-        "codex: explanation fail"
+        "codex: explanation fail",
+        "총괄 해설 대조 없음"
       ]
     },
     {
@@ -9244,7 +9272,8 @@
       "contentHash": "88dad56c907c499194f4b7ff9be976a5d6738c98f01159308b06c5a1003eefe3",
       "decision": "quarantined",
       "reasons": [
-        "codex: explanation fail"
+        "codex: explanation fail",
+        "총괄 해설 대조 없음"
       ]
     },
     {
@@ -9252,16 +9281,20 @@
       "revision": 1,
       "batchId": "Q50-G4-001",
       "contentHash": "4cd0a863c1251b82925ad87d7c76055f4e55df05485a887df0f8c5bd562a77e5",
-      "decision": "approved",
-      "reasons": []
+      "decision": "quarantined",
+      "reasons": [
+        "claude: language fail"
+      ]
     },
     {
       "questionId": "g4-argon-0034",
       "revision": 1,
       "batchId": "Q50-G4-001",
       "contentHash": "ecc15b9bece9b9baeedacd2cee895b598733323bc14ef08e04b53068c35bcc89",
-      "decision": "approved",
-      "reasons": []
+      "decision": "quarantined",
+      "reasons": [
+        "claude: language fail"
+      ]
     },
     {
       "questionId": "g4-argon-0035",
@@ -9272,7 +9305,8 @@
       "reasons": [
         "codex: 독립 풀이 multiple ≠ 정답",
         "codex: uniqueness uncertain",
-        "codex: language fail"
+        "codex: language fail",
+        "총괄 해설 대조 없음"
       ]
     },
     {
@@ -9282,7 +9316,8 @@
       "contentHash": "16f05d3e2f79943bbacee205c9b76231c8bcafbbc43fe19f620be1e65a286bff",
       "decision": "quarantined",
       "reasons": [
-        "codex: grade uncertain"
+        "codex: grade uncertain",
+        "총괄 해설 대조 없음"
       ]
     },
     {
@@ -9290,8 +9325,10 @@
       "revision": 1,
       "batchId": "Q50-G4-001",
       "contentHash": "6fb438c3491e714bcb30840a5a95c3d5c6fcde5a2f1f5de66f28140c309ea3a7",
-      "decision": "approved",
-      "reasons": []
+      "decision": "quarantined",
+      "reasons": [
+        "claude: language fail"
+      ]
     },
     {
       "questionId": "g4-argon-0038",
@@ -9301,7 +9338,8 @@
       "decision": "quarantined",
       "reasons": [
         "codex: grade uncertain",
-        "codex: language fail"
+        "codex: language fail",
+        "총괄 해설 대조 없음"
       ]
     },
     {
@@ -9311,7 +9349,8 @@
       "contentHash": "c82ad9c5614ea6ffc6d531989a7967fa820d2d0b2bcd8955a598418966b22c73",
       "decision": "quarantined",
       "reasons": [
-        "codex: language uncertain"
+        "codex: language uncertain",
+        "총괄 해설 대조 없음"
       ]
     },
     {
@@ -9321,7 +9360,8 @@
       "contentHash": "9b2a2616473555d30f74b73fe55e90b8e7df0a866e34bc5f8e82cf71d8fefa6a",
       "decision": "quarantined",
       "reasons": [
-        "codex: grade uncertain"
+        "codex: grade uncertain",
+        "총괄 해설 대조 없음"
       ]
     },
     {
@@ -9332,7 +9372,8 @@
       "decision": "quarantined",
       "reasons": [
         "codex: grade uncertain",
-        "codex: language fail"
+        "codex: language fail",
+        "총괄 해설 대조 없음"
       ]
     },
     {
@@ -9343,7 +9384,8 @@
       "decision": "quarantined",
       "reasons": [
         "codex: grade uncertain",
-        "codex: language uncertain"
+        "codex: language uncertain",
+        "총괄 해설 대조 없음"
       ]
     },
     {
@@ -9353,7 +9395,8 @@
       "contentHash": "6a72858eaa5697c61ee94177117e493457f803a1b8cc4ef9a8d747ae3de11a1c",
       "decision": "quarantined",
       "reasons": [
-        "codex: grade uncertain"
+        "codex: grade uncertain",
+        "총괄 해설 대조 없음"
       ]
     },
     {
@@ -9363,7 +9406,8 @@
       "contentHash": "0cd2ead71ce0594c7705d8ca2d15c81d73f92580a66cc701d25be9cbeacc3477",
       "decision": "quarantined",
       "reasons": [
-        "codex: grade uncertain"
+        "codex: grade uncertain",
+        "총괄 해설 대조 없음"
       ]
     },
     {
@@ -9374,7 +9418,8 @@
       "decision": "quarantined",
       "reasons": [
         "codex: grade uncertain",
-        "codex: language uncertain"
+        "codex: language uncertain",
+        "총괄 해설 대조 없음"
       ]
     },
     {
@@ -9384,7 +9429,8 @@
       "contentHash": "cbc403486569628b77d3eb17644dcc5711dfa002cc557168738280dd1252a4d9",
       "decision": "quarantined",
       "reasons": [
-        "codex: grade uncertain"
+        "codex: grade uncertain",
+        "총괄 해설 대조 없음"
       ]
     },
     {
@@ -9394,7 +9440,8 @@
       "contentHash": "5e5ff55e68c4cb36e9c61e7216e0446473e6a62fb6900ab2ba9e9a7d9ed6c1fd",
       "decision": "quarantined",
       "reasons": [
-        "codex: grade uncertain"
+        "codex: grade uncertain",
+        "총괄 해설 대조 없음"
       ]
     },
     {
@@ -9412,7 +9459,8 @@
       "contentHash": "cf5555698fc3123bfd35bc81c268fdda7e7737dee0fc00692caaa425b5d8003d",
       "decision": "quarantined",
       "reasons": [
-        "codex: grade uncertain"
+        "codex: grade uncertain",
+        "총괄 해설 대조 없음"
       ]
     },
     {
@@ -9423,7 +9471,8 @@
       "decision": "quarantined",
       "reasons": [
         "codex: grade uncertain",
-        "codex: language fail"
+        "codex: language fail",
+        "총괄 해설 대조 없음"
       ]
     },
     {
