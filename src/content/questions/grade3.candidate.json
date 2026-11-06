@@ -1,6 +1,6 @@
 {
   "bankId": "g3-candidate",
-  "bankVersion": "cand-408a53ae830e",
+  "bankVersion": "cand-99ad5e9e7b73",
   "grade": 3,
   "status": "verified_candidate",
   "note": "공동검수 진행 중인 후보 은행. 같은 revision의 외부 블라인드 검수(codex·claude) 1건 이상과 새 문맥 argon-blind를 통과했다. 3모델 공동검수 승인 전에는 게임에 싣지 않는다(PRD §9.3).",
@@ -25704,7 +25704,7 @@
       "status": "verified_candidate",
       "grade": 3,
       "type": "antonym_context",
-      "difficultyTier": "basic",
+      "difficultyTier": "core",
       "variantTag": "standard",
       "target": {
         "lemma": "무지개",
@@ -25744,7 +25744,7 @@
       "status": "verified_candidate",
       "grade": 3,
       "type": "definition",
-      "difficultyTier": "basic",
+      "difficultyTier": "core",
       "variantTag": "standard",
       "target": {
         "lemma": "이슬",
@@ -25779,12 +25779,52 @@
       }
     },
     {
+      "id": "g3-argon-0803",
+      "revision": 3,
+      "status": "verified_candidate",
+      "grade": 3,
+      "type": "synonym_context",
+      "difficultyTier": "core",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "시원하다",
+        "partOfSpeech": "형용사",
+        "senseKey": "시원하다/형용사/451652-1"
+      },
+      "stem": "“저녁이 되니 강바람이 불어 날씨가 시원하다.”에서 ‘시원하다’와 바꾸어 쓸 말은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "땀 나도록 무덥다"
+        },
+        {
+          "id": "b",
+          "text": "알맞게 서늘하다"
+        },
+        {
+          "id": "c",
+          "text": "꽁꽁 얼 듯 춥다"
+        },
+        {
+          "id": "d",
+          "text": "구름 끼어 흐리다"
+        }
+      ],
+      "correctOptionId": "b",
+      "explanation": "여기서 ‘시원하다’는 덥거나 춥지 않고 알맞게 서늘하다는 뜻이에요.",
+      "distractorRationales": {
+        "a": "더위가 심해 답답한 반대 날씨를 뜻해요.",
+        "c": "기온이 너무 낮아 추운 날씨를 뜻해요.",
+        "d": "구름이 많아 해가 가려진 날씨를 뜻해요."
+      }
+    },
+    {
       "id": "g3-argon-0804",
       "revision": 1,
       "status": "verified_candidate",
       "grade": 3,
       "type": "usage",
-      "difficultyTier": "basic",
+      "difficultyTier": "core",
       "variantTag": "standard",
       "target": {
         "lemma": "햇살",
@@ -25864,7 +25904,7 @@
       "status": "verified_candidate",
       "grade": 3,
       "type": "antonym_context",
-      "difficultyTier": "basic",
+      "difficultyTier": "core",
       "variantTag": "standard",
       "target": {
         "lemma": "새싹",
@@ -25899,12 +25939,52 @@
       }
     },
     {
+      "id": "g3-argon-0807",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 3,
+      "type": "definition",
+      "difficultyTier": "core",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "낙엽",
+        "partOfSpeech": "명사",
+        "senseKey": "낙엽/명사/58851-2"
+      },
+      "stem": "“길가에 수북이 쌓인 낙엽을 빗자루로 쓸었다.”에서 ‘낙엽’의 뜻은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "봄에 새로 돋아난 연한 싹"
+        },
+        {
+          "id": "b",
+          "text": "말라서 땅에 떨어진 나뭇잎"
+        },
+        {
+          "id": "c",
+          "text": "가지 끝에 활짝 핀 봄꽃"
+        },
+        {
+          "id": "d",
+          "text": "땅속 깊이 뻗어 간 나무뿌리"
+        }
+      ],
+      "correctOptionId": "b",
+      "explanation": "여기서 ‘낙엽’은 가을이나 겨울에 말라서 떨어진 나뭇잎을 뜻해요.",
+      "distractorRationales": {
+        "a": "봄철에 처음 돋아 나오는 ‘새싹’을 뜻해요.",
+        "c": "나뭇가지에 피어난 ‘꽃송이’를 뜻해요.",
+        "d": "땅속에서 물기를 빨아들이는 ‘뿌리’예요."
+      }
+    },
+    {
       "id": "g3-argon-0808",
       "revision": 1,
       "status": "verified_candidate",
       "grade": 3,
       "type": "synonym_context",
-      "difficultyTier": "basic",
+      "difficultyTier": "core",
       "variantTag": "standard",
       "target": {
         "lemma": "씨앗",
@@ -25940,12 +26020,12 @@
     },
     {
       "id": "g3-argon-0809",
-      "revision": 1,
+      "revision": 2,
       "status": "verified_candidate",
       "grade": 3,
       "type": "usage",
-      "difficultyTier": "basic",
-      "variantTag": "standard",
+      "difficultyTier": "challenge",
+      "variantTag": "polysemy",
       "target": {
         "lemma": "줄기",
         "partOfSpeech": "명사",
@@ -25955,27 +26035,27 @@
       "options": [
         {
           "id": "a",
-          "text": "공책에 둥근 한숨 줄기를 적었다."
+          "text": "화분에 심은 고추의 줄기가 곧게 자랐다."
         },
         {
           "id": "b",
-          "text": "컵에 매운 바람 줄기를 부었다."
+          "text": "창문 틈으로 밝은 빛의 줄기가 비쳤다."
         },
         {
           "id": "c",
-          "text": "베개에 노란 졸음 줄기를 깔았다."
+          "text": "재미있게 읽은 이야기의 중심 줄기를 적었다."
         },
         {
           "id": "d",
-          "text": "강물의 큰 줄기가 바다로 흘러간다."
+          "text": "큰 강의 줄기가 넓은 바다로 흘러간다."
         }
       ],
       "correctOptionId": "d",
       "explanation": "여기서 ‘줄기’는 잇대어 뻗어 나가는 물이나 산 따위의 갈래를 뜻해요.",
       "distractorRationales": {
-        "a": "한숨은 숨소리라 공책에 적는 줄기가 아니에요.",
-        "b": "바람은 매운 액체처럼 컵에 부을 수 없어요.",
-        "c": "졸음은 색깔이 있거나 베개에 까는 게 아니에요."
+        "a": "식물의 잎이나 꽃을 받치는 부분을 뜻해요.",
+        "b": "빛이 한데 이어져 뻗은 갈래를 뜻해요.",
+        "c": "이야기에서 중심이 되는 갈래를 뜻해요."
       }
     },
     {
@@ -25984,7 +26064,7 @@
       "status": "verified_candidate",
       "grade": 3,
       "type": "cloze",
-      "difficultyTier": "basic",
+      "difficultyTier": "advanced",
       "variantTag": "standard",
       "target": {
         "lemma": "포근하다",
@@ -26024,7 +26104,7 @@
       "status": "verified_candidate",
       "grade": 3,
       "type": "definition",
-      "difficultyTier": "basic",
+      "difficultyTier": "challenge",
       "variantTag": "standard",
       "target": {
         "lemma": "싱그럽다",
@@ -26064,7 +26144,7 @@
       "status": "verified_candidate",
       "grade": 3,
       "type": "synonym_context",
-      "difficultyTier": "basic",
+      "difficultyTier": "advanced",
       "variantTag": "standard",
       "target": {
         "lemma": "미안하다",
@@ -26104,7 +26184,7 @@
       "status": "verified_candidate",
       "grade": 3,
       "type": "antonym_context",
-      "difficultyTier": "basic",
+      "difficultyTier": "core",
       "variantTag": "standard",
       "target": {
         "lemma": "깨끗하다",
@@ -26144,7 +26224,7 @@
       "status": "verified_candidate",
       "grade": 3,
       "type": "antonym_context",
-      "difficultyTier": "core",
+      "difficultyTier": "challenge",
       "variantTag": "polysemy",
       "target": {
         "lemma": "소식",
@@ -26184,7 +26264,7 @@
       "status": "verified_candidate",
       "grade": 3,
       "type": "usage",
-      "difficultyTier": "core",
+      "difficultyTier": "advanced",
       "variantTag": "polysemy",
       "target": {
         "lemma": "부드럽다",
@@ -26224,7 +26304,7 @@
       "status": "verified_candidate",
       "grade": 3,
       "type": "cloze",
-      "difficultyTier": "core",
+      "difficultyTier": "challenge",
       "variantTag": "polysemy",
       "target": {
         "lemma": "넉넉하다",
@@ -26259,12 +26339,92 @@
       }
     },
     {
+      "id": "g3-argon-0817",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 3,
+      "type": "definition",
+      "difficultyTier": "core",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "시원하다",
+        "partOfSpeech": "형용사",
+        "senseKey": "시원하다/형용사/451652-1"
+      },
+      "stem": "“창문을 여니 방 안 공기가 시원하다.”에서 ‘시원하다’의 뜻은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "국물 맛이 개운하고 산뜻하다"
+        },
+        {
+          "id": "b",
+          "text": "불기운이 세서 몹시 뜨겁다"
+        },
+        {
+          "id": "c",
+          "text": "덥거나 춥지 않고 서늘하다"
+        },
+        {
+          "id": "d",
+          "text": "습기가 가득 차 후덥지근하다"
+        }
+      ],
+      "correctOptionId": "c",
+      "explanation": "여기서 ‘시원하다’는 덥거나 춥지 않고 알맞게 서늘하다는 뜻이에요.",
+      "distractorRationales": {
+        "a": "음식 국물을 마실 때 쓰는 다른 뜻이에요.",
+        "b": "온도가 아주 높아 더운 반대 상태예요.",
+        "d": "습하고 더워서 불쾌한 상태를 뜻해요."
+      }
+    },
+    {
+      "id": "g3-argon-0818",
+      "revision": 3,
+      "status": "verified_candidate",
+      "grade": 3,
+      "type": "synonym_context",
+      "difficultyTier": "challenge",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "넉넉하다",
+        "partOfSpeech": "형용사",
+        "senseKey": "넉넉하다/형용사/404832-1"
+      },
+      "stem": "“열 명이 다 먹어도 될 만큼 사과 수가 넉넉하다.”에서 ‘넉넉하다’와 바꾸어 쓸 말은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "턱없이 적어 부족하다"
+        },
+        {
+          "id": "b",
+          "text": "매우 적고 빠듯하다"
+        },
+        {
+          "id": "c",
+          "text": "크기가 작고 비좁다"
+        },
+        {
+          "id": "d",
+          "text": "충분하고 남음이 있다"
+        }
+      ],
+      "correctOptionId": "d",
+      "explanation": "여기서 ‘넉넉하다’는 수량이나 크기가 기준에 차고도 남음이 있다는 뜻이에요.",
+      "distractorRationales": {
+        "a": "수량이 기준보다 모자란 반대 상태예요.",
+        "b": "여유 없이 필요한 정도에 겨우 맞는 상태예요.",
+        "c": "공간의 너비가 좁다는 뜻의 말이에요."
+      }
+    },
+    {
       "id": "g3-argon-0819",
       "revision": 1,
       "status": "verified_candidate",
       "grade": 3,
       "type": "antonym_context",
-      "difficultyTier": "core",
+      "difficultyTier": "challenge",
       "variantTag": "standard",
       "target": {
         "lemma": "격려하다",
@@ -26304,7 +26464,7 @@
       "status": "verified_candidate",
       "grade": 3,
       "type": "usage",
-      "difficultyTier": "core",
+      "difficultyTier": "advanced",
       "variantTag": "standard",
       "target": {
         "lemma": "행복하다",
@@ -26344,7 +26504,7 @@
       "status": "verified_candidate",
       "grade": 3,
       "type": "cloze",
-      "difficultyTier": "core",
+      "difficultyTier": "challenge",
       "variantTag": "polysemy",
       "target": {
         "lemma": "산뜻하다",
@@ -26424,7 +26584,7 @@
       "status": "verified_candidate",
       "grade": 3,
       "type": "synonym_context",
-      "difficultyTier": "core",
+      "difficultyTier": "advanced",
       "variantTag": "polysemy",
       "target": {
         "lemma": "뜨겁다",
@@ -26500,11 +26660,11 @@
     },
     {
       "id": "g3-argon-0825",
-      "revision": 1,
+      "revision": 2,
       "status": "verified_candidate",
       "grade": 3,
       "type": "usage",
-      "difficultyTier": "core",
+      "difficultyTier": "challenge",
       "variantTag": "standard",
       "target": {
         "lemma": "관찰하다",
@@ -26515,27 +26675,27 @@
       "options": [
         {
           "id": "a",
-          "text": "눈을 꼭 감고 잠자며 별을 관찰했다."
+          "text": "눈을 꼭 감고 밤하늘의 별을 관찰했다."
         },
         {
           "id": "b",
-          "text": "등 돌리고 안 보며 꽃을 관찰했다."
+          "text": "고개를 돌려 보지 않고 꽃을 관찰했다."
         },
         {
           "id": "c",
-          "text": "관심을 끊고 외면하며 새를 관찰했다."
+          "text": "관심 없이 그냥 지나가며 나비를 관찰했다."
         },
         {
           "id": "d",
-          "text": "돋보기로 나뭇잎 맥을 관찰했다."
+          "text": "돋보기를 들고 강낭콩의 싹을 관찰했다."
         }
       ],
       "correctOptionId": "d",
       "explanation": "‘관찰하다’는 사물이나 현상을 주의하여 자세히 살펴본다는 뜻이에요.",
       "distractorRationales": {
-        "a": "눈을 감고 자면서 별을 살필 수는 없어요.",
-        "b": "보지 않고 등을 돌리면 관찰할 수 없어요.",
-        "c": "외면하는 것은 주의해 살피는 것과 반대예요."
+        "a": "눈을 꼭 감고 있으면 별을 살필 수 없어요.",
+        "b": "고개를 돌려 보지 않으면 관찰할 수 없어요.",
+        "c": "관심 없이 그냥 지나가는 것은 자세히 살피는 것과 반대예요."
       }
     },
     {
@@ -26544,7 +26704,7 @@
       "status": "verified_candidate",
       "grade": 3,
       "type": "cloze",
-      "difficultyTier": "core",
+      "difficultyTier": "challenge",
       "variantTag": "standard",
       "target": {
         "lemma": "표현하다",
@@ -26580,7 +26740,7 @@
     },
     {
       "id": "g3-argon-0827",
-      "revision": 1,
+      "revision": 2,
       "status": "verified_candidate",
       "grade": 3,
       "type": "definition",
@@ -26614,7 +26774,7 @@
       "explanation": "여기서 ‘잡다’는 손으로 움키고 놓지 않는다는 뜻이에요.",
       "distractorRationales": {
         "a": "약속 날짜 따위를 정한다는 다른 뜻이에요.",
-        "b": "주름이나 비뚤어진 것을 바로잡는 뜻이에요.",
+        "b": "구겨진 주름을 펴는 것은 손을 움켜쥐는 행동과 달라요.",
         "c": "불길을 진압한다는 다른 문맥의 뜻이에요."
       }
     },
@@ -26624,7 +26784,7 @@
       "status": "verified_candidate",
       "grade": 3,
       "type": "definition",
-      "difficultyTier": "advanced",
+      "difficultyTier": "core",
       "variantTag": "polysemy",
       "target": {
         "lemma": "붙이다",
@@ -26664,7 +26824,7 @@
       "status": "verified_candidate",
       "grade": 3,
       "type": "definition",
-      "difficultyTier": "advanced",
+      "difficultyTier": "core",
       "variantTag": "polysemy",
       "target": {
         "lemma": "치우다",
@@ -26699,12 +26859,52 @@
       }
     },
     {
+      "id": "g3-argon-0830",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 3,
+      "type": "usage",
+      "difficultyTier": "challenge",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "넉넉하다",
+        "partOfSpeech": "형용사",
+        "senseKey": "넉넉하다/형용사/404832-1"
+      },
+      "stem": "‘넉넉하다’를 바르게 쓴 문장은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "의자가 한 개라 열 명 앉기 넉넉하다."
+        },
+        {
+          "id": "b",
+          "text": "빈자리가 남을 만큼 방이 넉넉하다."
+        },
+        {
+          "id": "c",
+          "text": "신발이 작아 발이 꽉 끼어 넉넉하다."
+        },
+        {
+          "id": "d",
+          "text": "물통이 비어 마실 물 양이 넉넉하다."
+        }
+      ],
+      "correctOptionId": "b",
+      "explanation": "크기나 수량이 기준에 차고도 남을 때 ‘넉넉하다’를 써요.",
+      "distractorRationales": {
+        "a": "의자가 모자라는 상황에는 ‘부족하다’가 맞아요.",
+        "c": "신발이 작아 꽉 끼는 상태와는 반대예요.",
+        "d": "물통이 빈 상태에는 쓸 수 없는 말이에요."
+      }
+    },
+    {
       "id": "g3-argon-0831",
       "revision": 1,
       "status": "verified_candidate",
       "grade": 3,
       "type": "definition",
-      "difficultyTier": "advanced",
+      "difficultyTier": "core",
       "variantTag": "polysemy",
       "target": {
         "lemma": "걸다",
@@ -26739,52 +26939,12 @@
       }
     },
     {
-      "id": "g3-argon-0832",
-      "revision": 1,
-      "status": "verified_candidate",
-      "grade": 3,
-      "type": "definition",
-      "difficultyTier": "advanced",
-      "variantTag": "polysemy",
-      "target": {
-        "lemma": "입다",
-        "partOfSpeech": "동사",
-        "senseKey": "입다/동사/471529-2"
-      },
-      "stem": "‘이웃들에게 큰 도움을 입어 일을 무사히 마쳤다.’에서 ‘입다’의 뜻은?",
-      "options": [
-        {
-          "id": "a",
-          "text": "은혜나 손해 따위를 받거나 당하다"
-        },
-        {
-          "id": "b",
-          "text": "바지나 윗옷을 몸에 걸치어 두르다"
-        },
-        {
-          "id": "c",
-          "text": "입고 있던 외투를 벗어 내려놓다"
-        },
-        {
-          "id": "d",
-          "text": "남에게 자기가 가진 물건을 주다"
-        }
-      ],
-      "correctOptionId": "a",
-      "explanation": "여기서 ‘입다’는 도움이나 손해 따위를 받거나 당한다는 뜻이에요.",
-      "distractorRationales": {
-        "b": "옷을 몸에 걸치는 기본 뜻에 해당해요.",
-        "c": "옷을 몸에서 떼어 내는 ‘벗다’의 뜻이에요.",
-        "d": "받는 것이 아니라 남에게 베푸는 행동이에요."
-      }
-    },
-    {
       "id": "g3-argon-0833",
-      "revision": 1,
+      "revision": 2,
       "status": "verified_candidate",
       "grade": 3,
       "type": "definition",
-      "difficultyTier": "advanced",
+      "difficultyTier": "core",
       "variantTag": "polysemy",
       "target": {
         "lemma": "벗다",
@@ -26799,7 +26959,7 @@
         },
         {
           "id": "b",
-          "text": "억울하게 쓴 오해를 씻다"
+          "text": "억울하게 쓴 누명을 씻다"
         },
         {
           "id": "c",
@@ -26816,6 +26976,86 @@
         "b": "누명이나 책임을 면한다는 다른 뜻이에요.",
         "c": "옷을 입거나 걸치는 반대 동작이에요.",
         "d": "모자를 다시 바르게 쓰는 동작이에요."
+      }
+    },
+    {
+      "id": "g3-argon-0834",
+      "revision": 3,
+      "status": "verified_candidate",
+      "grade": 3,
+      "type": "definition",
+      "difficultyTier": "advanced",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "알맞다",
+        "partOfSpeech": "형용사",
+        "senseKey": "알맞다/형용사/456609-1"
+      },
+      "stem": "“이 화분은 식물 크기에 꼭 알맞다.”에서 ‘알맞다’의 뜻은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "기준을 크게 넘어 지나치다"
+        },
+        {
+          "id": "b",
+          "text": "기준에 넘치거나 모자라지 않다"
+        },
+        {
+          "id": "c",
+          "text": "필요한 양보다 턱없이 적다"
+        },
+        {
+          "id": "d",
+          "text": "모양이 비뚤어져 어긋나다"
+        }
+      ],
+      "correctOptionId": "b",
+      "explanation": "‘알맞다’는 일정한 기준이나 정도에 넘치거나 모자라지 않다는 뜻이에요.",
+      "distractorRationales": {
+        "a": "정도가 너무 지나쳐 넘치는 반대 상태예요.",
+        "c": "기준에 미치지 못해 부족한 반대 상태예요.",
+        "d": "바르지 않고 삐뚤어진 상태를 뜻해요."
+      }
+    },
+    {
+      "id": "g3-argon-0835",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 3,
+      "type": "synonym_context",
+      "difficultyTier": "advanced",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "알맞다",
+        "partOfSpeech": "형용사",
+        "senseKey": "알맞다/형용사/456609-1"
+      },
+      "stem": "“국물 간이 짜지도 싱겁지도 않아 알맞다.”에서 ‘알맞다’와 바꾸어 쓸 말은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "정도가 너무 지나치다"
+        },
+        {
+          "id": "b",
+          "text": "턱없이 적어 부족하다"
+        },
+        {
+          "id": "c",
+          "text": "과함 없이 적당하다"
+        },
+        {
+          "id": "d",
+          "text": "엉뚱하고 생뚱맞다"
+        }
+      ],
+      "correctOptionId": "c",
+      "explanation": "‘알맞다’는 정도가 넘치거나 모자라지 않아 ‘적당하다’와 뜻이 통해요.",
+      "distractorRationales": {
+        "a": "기준을 넘어 과하다는 반대 뜻이에요.",
+        "b": "필요한 정도보다 모자란다는 뜻이에요.",
+        "d": "상황에 맞지 않고 엉뚱하다는 뜻이에요."
       }
     },
     {
@@ -26864,7 +27104,7 @@
       "status": "verified_candidate",
       "grade": 3,
       "type": "definition",
-      "difficultyTier": "advanced",
+      "difficultyTier": "challenge",
       "variantTag": "polysemy",
       "target": {
         "lemma": "놓다",
@@ -26979,48 +27219,8 @@
       }
     },
     {
-      "id": "g3-argon-0840",
-      "revision": 1,
-      "status": "verified_candidate",
-      "grade": 3,
-      "type": "usage",
-      "difficultyTier": "challenge",
-      "variantTag": "polysemy",
-      "target": {
-        "lemma": "가리키다",
-        "partOfSpeech": "동사",
-        "senseKey": "가리키다/동사/383017-2"
-      },
-      "stem": "‘대상을 특별히 집어 일컫다’는 뜻으로 ‘가리키다’를 쓴 것은?",
-      "options": [
-        {
-          "id": "a",
-          "text": "동생에게 구구단을 친절히 가리켜 줬다."
-        },
-        {
-          "id": "b",
-          "text": "아무것도 안 집고 숨기며 가리켜 감췄다."
-        },
-        {
-          "id": "c",
-          "text": "효도하는 사람을 가리켜 효자라 한다."
-        },
-        {
-          "id": "d",
-          "text": "뜨거운 국물을 숟가락으로 가리켜 마셨다."
-        }
-      ],
-      "correctOptionId": "c",
-      "explanation": "여기서 ‘가리키다’는 주로 ‘가리켜’ 꼴로 쓰여 대상을 특별히 집어 나타낸다는 뜻이에요.",
-      "distractorRationales": {
-        "a": "지식을 알려 줄 때는 ‘가르쳐’라고 써야 해요.",
-        "b": "숨기며 감추는 것은 집어 나타내는 것과 반대예요.",
-        "d": "국물을 떠서 마실 때는 어울리지 않아요."
-      }
-    },
-    {
       "id": "g3-argon-0841",
-      "revision": 1,
+      "revision": 2,
       "status": "verified_candidate",
       "grade": 3,
       "type": "definition",
@@ -27031,71 +27231,31 @@
         "partOfSpeech": "동사",
         "senseKey": "잃다/동사/472851-3"
       },
-      "stem": "‘옛이야기 속 주인공은 일찍 아버지를 잃고도 씩씩하게 자랐다.’에서 ‘잃다’의 뜻은?",
+      "stem": "‘옛이야기 속 주인공은 어릴 때 아버지를 잃고도 씩씩하게 자랐다.’에서 ‘잃다’의 뜻은?",
       "options": [
         {
           "id": "a",
-          "text": "주머니 속 물건이 빠져 없어지다"
+          "text": "가지고 있던 물건이 없어지다"
         },
         {
           "id": "b",
-          "text": "가야 할 방향을 몰라 길을 헤매다"
+          "text": "가야 할 길을 몰라 헤매다"
         },
         {
           "id": "c",
-          "text": "경기에서 상대 팀에게 져서 패하다"
+          "text": "시합에서 상대편에게 지다"
         },
         {
           "id": "d",
-          "text": "가까운 사람이 세상을 떠나 이별하다"
+          "text": "가까운 사람이 죽어서 헤어지다"
         }
       ],
       "correctOptionId": "d",
-      "explanation": "여기서 ‘잃다’는 가까운 사람이 죽어서 그와 이별한다는 뜻이에요.",
+      "explanation": "여기서 ‘잃다’는 가까운 사람이 죽어서 그와 헤어져 이별한다는 뜻이에요.",
       "distractorRationales": {
-        "a": "가졌던 물건이 없어지는 기본 뜻이에요.",
-        "b": "‘길을 잃다’처럼 방향을 모르는 뜻이에요.",
-        "c": "승부에서 이기지 못했을 때 쓰는 뜻이에요."
-      }
-    },
-    {
-      "id": "g3-argon-0842",
-      "revision": 1,
-      "status": "verified_candidate",
-      "grade": 3,
-      "type": "definition",
-      "difficultyTier": "challenge",
-      "variantTag": "polysemy",
-      "target": {
-        "lemma": "맞추다",
-        "partOfSpeech": "동사",
-        "senseKey": "맞추다/동사/112735-3"
-      },
-      "stem": "‘합창 대회에서 친구들과 목소리 호흡을 잘 맞추었다.’에서 ‘맞추다’의 뜻은?",
-      "options": [
-        {
-          "id": "a",
-          "text": "수수께끼의 바른 정답을 알아내다"
-        },
-        {
-          "id": "b",
-          "text": "양복 가게에 옷을 만들어 달라고 맡기다"
-        },
-        {
-          "id": "c",
-          "text": "서로 어긋남이 없이 조화를 이루다"
-        },
-        {
-          "id": "d",
-          "text": "서로 의견이 달라 끝까지 다투다"
-        }
-      ],
-      "correctOptionId": "c",
-      "explanation": "여기서 ‘맞추다’는 서로 어긋남이 없이 조화를 이룬다는 뜻이에요.",
-      "distractorRationales": {
-        "a": "정답을 알아내는 것은 ‘맞히다’를 써야 해요.",
-        "b": "옷 따위를 주문하여 제작하는 다른 뜻이에요.",
-        "d": "다투는 것은 조화를 이루는 것과 반대예요."
+        "a": "가지고 있던 물건이 없어질 때 쓰는 기본 뜻이에요.",
+        "b": "‘길을 잃다’처럼 가야 할 길을 모를 때 쓰는 뜻이에요.",
+        "c": "시합에서 지는 것은 ‘잃다’가 아니라 ‘지다’라고 해요."
       }
     },
     {
@@ -27139,83 +27299,83 @@
       }
     },
     {
-      "id": "g3-argon-0845",
-      "revision": 1,
+      "id": "g3-argon-0844",
+      "revision": 2,
       "status": "verified_candidate",
       "grade": 3,
-      "type": "definition",
+      "type": "usage",
       "difficultyTier": "challenge",
-      "variantTag": "polysemy",
+      "variantTag": "standard",
       "target": {
-        "lemma": "반질반질",
-        "partOfSpeech": "부사",
-        "senseKey": "반질반질/부사/427555-3"
+        "lemma": "알맞다",
+        "partOfSpeech": "형용사",
+        "senseKey": "알맞다/형용사/456609-1"
       },
-      "stem": "‘제 몫의 일은 안 하고 반질반질 놀기만 하면 안 된다.’에서 ‘반질반질’의 뜻은?",
+      "stem": "‘알맞다’를 바르게 쓴 문장은?",
       "options": [
         {
           "id": "a",
-          "text": "윤기가 돌아 매끄럽게 빛나는 모양"
+          "text": "목욕물 온도가 뜨겁지도 차갑지도 않아 알맞다."
         },
         {
           "id": "b",
-          "text": "게으름 피우며 일을 안 하는 모양"
+          "text": "바지가 너무 길어 바닥에 질질 끌려서 알맞다."
         },
         {
           "id": "c",
-          "text": "쉬지 않고 부지런히 일하는 모양"
+          "text": "소금을 한 사발이나 쏟아 국이 너무 짜서 알맞다."
         },
         {
           "id": "d",
-          "text": "겉면이 거칠고 울퉁불퉁한 모양"
+          "text": "가방이 너무 작아 교과서가 반도 안 들어가 알맞다."
         }
       ],
-      "correctOptionId": "b",
-      "explanation": "여기서 ‘반질반질’은 게으름을 피우며 맡은 일을 잘 하지 않는 모양이에요.",
+      "correctOptionId": "a",
+      "explanation": "기준이나 정도에 넘치거나 모자라지 않을 때 ‘알맞다’를 써요.",
       "distractorRationales": {
-        "a": "물체 표면이 매끄럽고 윤이 나는 다른 뜻이에요.",
-        "c": "부지런히 일하는 것은 게으름과 반대예요.",
-        "d": "표면이 거친 상태를 뜻하는 말이 아니에요."
+        "b": "너무 길어 바닥에 끌리는 것은 지나친 상태예요.",
+        "c": "소금이 많아 너무 짠 것은 정도를 넘은 상태예요.",
+        "d": "물건이 안 들어갈 만큼 작은 것은 모자란 상태예요."
       }
     },
     {
-      "id": "g3-argon-0847",
-      "revision": 1,
+      "id": "g3-argon-0848",
+      "revision": 2,
       "status": "verified_candidate",
       "grade": 3,
-      "type": "definition",
-      "difficultyTier": "challenge",
-      "variantTag": "polysemy",
+      "type": "usage",
+      "difficultyTier": "advanced",
+      "variantTag": "standard",
       "target": {
-        "lemma": "단단하다",
-        "partOfSpeech": "형용사",
-        "senseKey": "단단하다/형용사/412395-3"
+        "lemma": "준비하다",
+        "partOfSpeech": "동사",
+        "senseKey": "준비하다/동사/303329-1"
       },
-      "stem": "‘작은 가게지만 살림이 단단하다.’에서 ‘단단하다’의 뜻은?",
+      "stem": "‘준비하다’를 알맞게 사용한 문장은?",
       "options": [
         {
           "id": "a",
-          "text": "돌이나 쇠처럼 딱딱하다"
+          "text": "내일 수업에 쓸 물감을 전날 미리 준비했다."
         },
         {
           "id": "b",
-          "text": "속이 꽉 차서 실속이 있다"
+          "text": "어제 끝난 소풍에 가져갈 김밥을 오늘 준비했다."
         },
         {
           "id": "c",
-          "text": "몸이 약해 병에 걸리다"
+          "text": "꼭 써야 할 재료를 모두 내다 버려 준비했다."
         },
         {
           "id": "d",
-          "text": "겉만 화려해 실속 없다"
+          "text": "발표 날인 줄도 모르고 빈손으로 와 준비했다."
         }
       ],
-      "correctOptionId": "b",
-      "explanation": "여기서 ‘단단하다’는 속이 차서 실속이 있다는 뜻이에요.",
+      "correctOptionId": "a",
+      "explanation": "필요한 것을 미리 마련하여 갖출 때 ‘준비하다’를 써요.",
       "distractorRationales": {
-        "a": "물체의 굳기를 나타내는 기본 뜻이에요.",
-        "c": "약하고 허약한 것은 ‘단단하다’와 반대예요.",
-        "d": "실속이 없는 상태는 정반대 뜻이에요."
+        "b": "이미 끝난 일에 가져갈 것을 뒤늦게 챙길 수는 없어요.",
+        "c": "재료를 버리는 것은 마련해 갖추는 일과 반대예요.",
+        "d": "몰라서 빈손으로 온 상황은 준비한 것이 아니에요."
       }
     },
     {
@@ -27256,46 +27416,6 @@
         "a": "혀로 느끼는 단맛을 말하는 기본 뜻이에요.",
         "b": "불안하고 잠 못 이루는 반대 상태예요.",
         "c": "매운맛을 느꼈을 때의 상태를 뜻해요."
-      }
-    },
-    {
-      "id": "g3-argon-0850",
-      "revision": 1,
-      "status": "verified_candidate",
-      "grade": 3,
-      "type": "definition",
-      "difficultyTier": "challenge",
-      "variantTag": "polysemy",
-      "target": {
-        "lemma": "짭짤하다",
-        "partOfSpeech": "형용사",
-        "senseKey": "짭짤하다/형용사/486919-3"
-      },
-      "stem": "‘나눔 장터에서 헌 책을 팔아 모은 용돈이 꽤 짭짤하다.’에서 ‘짭짤하다’의 뜻은?",
-      "options": [
-        {
-          "id": "a",
-          "text": "일이 잘되어 알차고 실속이 있다"
-        },
-        {
-          "id": "b",
-          "text": "소금 간이 배어 조금 짠맛이 나다"
-        },
-        {
-          "id": "c",
-          "text": "손해를 크게 보아 남는 것이 없다"
-        },
-        {
-          "id": "d",
-          "text": "싱거워서 아무런 맛도 안 느껴지다"
-        }
-      ],
-      "correctOptionId": "a",
-      "explanation": "여기서 ‘짭짤하다’는 일이 잘되어 실속이 있다는 뜻이에요.",
-      "distractorRationales": {
-        "b": "음식의 맛을 나타내는 기본 뜻이에요.",
-        "c": "손해를 보아 실속이 없는 반대 상황이에요.",
-        "d": "간이 약해 싱거운 맛을 뜻하는 말이에요."
       }
     },
     {
