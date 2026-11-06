@@ -1,8 +1,8 @@
 {
   "schemaVersion": "1",
   "rule": "publicationPolicy=codex-argon-v1: 현재 id·revision의 Argon 자체 반박은 서로 다른 4개 보기에서 정답만 fits, 나머지는 does_not_fit · 현재 revision·contentHash의 Codex 독립 풀이가 정답과 같고 source·uniqueness·grade·language·explanation 모두 pass · freshContext=true 및 항목 run.model=gpt-6-astra, effort=high 또는 xhigh(항목 출처 도입 전에는 gpt-6-astra 2단계 도구 보고서로 독립 풀이 출처 확인; 과거 effort는 추정하지 않음) · 현재 revision·contentHash·rationalesHash의 Codex 해설 대조 pass(reviewer.model과 run.model=gpt-6-astra, effort=high 또는 xhigh) · 현재 argon-blind가 있으면 새 문맥·같은 해시·정답 일치·source/uniqueness/grade/language pass 및 explanation fail 금지 · 게시 형식·의미 검사와 Q50 엄격 배치 검사 통과. Claude는 사용하지 않는다. 정책 없는 legacy: Argon 자체 반박에서 정답만 맞음 · 현재 revision·contentHash의 Codex·Claude 독립 풀이가 정답과 같고 source·uniqueness·grade·language 모두 pass, explanation fail 금지 · 현재 revision·contentHash·rationalesHash의 Claude 총괄 해설 대조 pass · 게시 형식·의미 검사 통과. 각 정책의 조건이 하나라도 어긋나면 그 revision은 격리한다.",
-  "approved": 4118,
-  "quarantined": 610,
+  "approved": 4202,
+  "quarantined": 510,
   "entries": [
     {
       "questionId": "g3-argon-0001",
@@ -2599,556 +2599,344 @@
       "revision": 1,
       "batchId": "Q50-G3-010",
       "contentHash": "46d2661aeb6985e5a011d55cbb9ef126e84e8f6d9dbed35c6bdaaddffa55d1f3",
-      "decision": "quarantined",
-      "reasons": [
-        "claude: 이 revision의 독립 검토 없음",
-        "총괄 해설 대조자가 Claude가 아님: Gemini 4 Argon (High)"
-      ]
+      "decision": "approved",
+      "reasons": []
     },
     {
       "questionId": "g3-argon-0402",
       "revision": 1,
       "batchId": "Q50-G3-010",
       "contentHash": "5debbd6ed6daf8be12a0020b187e688ac1b5b5673c23821a2c8577cb7d1788fc",
-      "decision": "quarantined",
-      "reasons": [
-        "claude: 이 revision의 독립 검토 없음",
-        "총괄 해설 대조자가 Claude가 아님: Gemini 4 Argon (High)"
-      ]
+      "decision": "approved",
+      "reasons": []
     },
     {
       "questionId": "g3-argon-0403",
-      "revision": 1,
+      "revision": 2,
       "batchId": "Q50-G3-010",
-      "contentHash": "216574912bd1c3d056b729cf80e34c0e0bb86c1020df6f78519c96db2842c67b",
-      "decision": "quarantined",
-      "reasons": [
-        "claude: 이 revision의 독립 검토 없음",
-        "총괄 해설 대조자가 Claude가 아님: Gemini 4 Argon (High)"
-      ]
+      "contentHash": "36c20a41f18e6d38f9247dd03149bbcb429a83291f9260281701b4cffd7649c0",
+      "decision": "approved",
+      "reasons": []
     },
     {
       "questionId": "g3-argon-0404",
-      "revision": 1,
+      "revision": 2,
       "batchId": "Q50-G3-010",
-      "contentHash": "823ca34ad2a4fe7b89c29c56fc6f08e60c9f2cf783a0977b549762212fe7185e",
-      "decision": "quarantined",
-      "reasons": [
-        "claude: 이 revision의 독립 검토 없음",
-        "총괄 해설 대조자가 Claude가 아님: Gemini 4 Argon (High)"
-      ]
+      "contentHash": "5d578bb43f25e516542ec892d9e332d8987bd0dab382dfdaa2563058ccce93a3",
+      "decision": "approved",
+      "reasons": []
     },
     {
       "questionId": "g3-argon-0405",
       "revision": 1,
       "batchId": "Q50-G3-010",
       "contentHash": "6c7cfc300cee8623fd6c32dc072f47642e3aa20af4c6960e61463c55dcb9a65b",
-      "decision": "quarantined",
-      "reasons": [
-        "claude: 이 revision의 독립 검토 없음",
-        "총괄 해설 대조자가 Claude가 아님: Gemini 4 Argon (High)"
-      ]
+      "decision": "approved",
+      "reasons": []
     },
     {
       "questionId": "g3-argon-0406",
       "revision": 1,
       "batchId": "Q50-G3-010",
       "contentHash": "2effd18ac1126d65da0cad35752e8d622ea5ea068c9162fc871f0c944128636d",
-      "decision": "quarantined",
-      "reasons": [
-        "claude: 이 revision의 독립 검토 없음",
-        "총괄 해설 대조자가 Claude가 아님: Gemini 4 Argon (High)"
-      ]
+      "decision": "approved",
+      "reasons": []
     },
     {
       "questionId": "g3-argon-0407",
       "revision": 1,
       "batchId": "Q50-G3-010",
       "contentHash": "32d9a88996949997270401b0dc6e8f6d624f859024b41dff436b6e9c568c1eb0",
-      "decision": "quarantined",
-      "reasons": [
-        "claude: 이 revision의 독립 검토 없음",
-        "총괄 해설 대조자가 Claude가 아님: Gemini 4 Argon (High)"
-      ]
+      "decision": "approved",
+      "reasons": []
     },
     {
       "questionId": "g3-argon-0408",
       "revision": 1,
       "batchId": "Q50-G3-010",
       "contentHash": "3d105081745e281415558953516cb4b44397d225462d5ae2968a898fdae0859a",
-      "decision": "quarantined",
-      "reasons": [
-        "claude: 이 revision의 독립 검토 없음",
-        "총괄 해설 대조자가 Claude가 아님: Gemini 4 Argon (High)"
-      ]
+      "decision": "approved",
+      "reasons": []
     },
     {
       "questionId": "g3-argon-0409",
       "revision": 1,
       "batchId": "Q50-G3-010",
       "contentHash": "d478ec499d97b3d8490a4ccf8651fe0e39bd304582990a88ce6b6cd19c991ca7",
-      "decision": "quarantined",
-      "reasons": [
-        "claude: 이 revision의 독립 검토 없음",
-        "총괄 해설 대조자가 Claude가 아님: Gemini 4 Argon (High)"
-      ]
+      "decision": "approved",
+      "reasons": []
     },
     {
       "questionId": "g3-argon-0410",
       "revision": 1,
       "batchId": "Q50-G3-010",
       "contentHash": "9e122b93df4da3ae51705b3727598000ffef6643a080e837f10583ae12d2ee3b",
-      "decision": "quarantined",
-      "reasons": [
-        "claude: 이 revision의 독립 검토 없음",
-        "총괄 해설 대조자가 Claude가 아님: Gemini 4 Argon (High)"
-      ]
+      "decision": "approved",
+      "reasons": []
     },
     {
       "questionId": "g3-argon-0411",
       "revision": 1,
       "batchId": "Q50-G3-010",
       "contentHash": "bac7aff380eaf84027fbcb5dff54009396ed08912ec7589360f5c1501333b753",
-      "decision": "quarantined",
-      "reasons": [
-        "claude: 이 revision의 독립 검토 없음",
-        "총괄 해설 대조자가 Claude가 아님: Gemini 4 Argon (High)"
-      ]
+      "decision": "approved",
+      "reasons": []
     },
     {
       "questionId": "g3-argon-0412",
-      "revision": 1,
+      "revision": 2,
       "batchId": "Q50-G3-010",
-      "contentHash": "3e05f72dcae204c9decbad5d8fa5a3fb0d5072519555411124c528a2c5bf8e18",
-      "decision": "quarantined",
-      "reasons": [
-        "claude: 이 revision의 독립 검토 없음",
-        "총괄 해설 대조자가 Claude가 아님: Gemini 4 Argon (High)"
-      ]
+      "contentHash": "74674f4eb716c35bb0114d544e539540ab7e0223b697226fe2f4dfefbc06f4f8",
+      "decision": "approved",
+      "reasons": []
     },
     {
       "questionId": "g3-argon-0413",
       "revision": 1,
       "batchId": "Q50-G3-010",
       "contentHash": "934ba4b1b30102877d0847d3535e7d603ed44f535d33ee1a47190ae5ff9debba",
-      "decision": "quarantined",
-      "reasons": [
-        "claude: 이 revision의 독립 검토 없음",
-        "총괄 해설 대조자가 Claude가 아님: Gemini 4 Argon (High)"
-      ]
+      "decision": "approved",
+      "reasons": []
     },
     {
       "questionId": "g3-argon-0414",
       "revision": 1,
       "batchId": "Q50-G3-010",
       "contentHash": "dbca95b2b98a84f3b91a3c00fcecc51385142e92ad8b568435447d36f6a81fef",
-      "decision": "quarantined",
-      "reasons": [
-        "claude: 이 revision의 독립 검토 없음",
-        "총괄 해설 대조자가 Claude가 아님: Gemini 4 Argon (High)"
-      ]
+      "decision": "approved",
+      "reasons": []
     },
     {
       "questionId": "g3-argon-0415",
       "revision": 1,
       "batchId": "Q50-G3-010",
       "contentHash": "cd51b58109fbd0ac385c99a4d8712206417d4deb87dc22ef2affa41770dceb7d",
-      "decision": "quarantined",
-      "reasons": [
-        "claude: 이 revision의 독립 검토 없음",
-        "총괄 해설 대조자가 Claude가 아님: Gemini 4 Argon (High)"
-      ]
+      "decision": "approved",
+      "reasons": []
     },
     {
       "questionId": "g3-argon-0416",
       "revision": 1,
       "batchId": "Q50-G3-010",
       "contentHash": "81f1aaf2aa1ded2067e1697cebc3dc82d6c614b1f4c99addaacdb8d4038998c5",
-      "decision": "quarantined",
-      "reasons": [
-        "claude: 이 revision의 독립 검토 없음",
-        "총괄 해설 대조자가 Claude가 아님: Gemini 4 Argon (High)"
-      ]
+      "decision": "approved",
+      "reasons": []
     },
     {
       "questionId": "g3-argon-0417",
       "revision": 1,
       "batchId": "Q50-G3-010",
       "contentHash": "7971dd49625396b0366541671551b1dbf2ac7a31869a968772e9435bc2a959af",
-      "decision": "quarantined",
-      "reasons": [
-        "claude: 이 revision의 독립 검토 없음",
-        "총괄 해설 대조자가 Claude가 아님: Gemini 4 Argon (High)"
-      ]
+      "decision": "approved",
+      "reasons": []
     },
     {
       "questionId": "g3-argon-0418",
       "revision": 1,
       "batchId": "Q50-G3-010",
       "contentHash": "d6a05efce4270a0fdebed89eb81674b0d6389f98397e5643d6fb75a3afaab308",
-      "decision": "quarantined",
-      "reasons": [
-        "claude: 이 revision의 독립 검토 없음",
-        "총괄 해설 대조자가 Claude가 아님: Gemini 4 Argon (High)"
-      ]
+      "decision": "approved",
+      "reasons": []
     },
     {
       "questionId": "g3-argon-0419",
       "revision": 1,
       "batchId": "Q50-G3-010",
       "contentHash": "60594fee54ae2f241ee1f235aed6788e2d79edb1b0570f8d2756376e3840b5d8",
-      "decision": "quarantined",
-      "reasons": [
-        "claude: 이 revision의 독립 검토 없음",
-        "총괄 해설 대조자가 Claude가 아님: Gemini 4 Argon (High)"
-      ]
+      "decision": "approved",
+      "reasons": []
     },
     {
       "questionId": "g3-argon-0420",
       "revision": 1,
       "batchId": "Q50-G3-010",
       "contentHash": "067e9cbd0ccc597c6cf2b9d52a3178a8f6cc665fd5f4b225b3cb8f5fd32758c3",
-      "decision": "quarantined",
-      "reasons": [
-        "claude: 이 revision의 독립 검토 없음",
-        "총괄 해설 대조자가 Claude가 아님: Gemini 4 Argon (High)"
-      ]
+      "decision": "approved",
+      "reasons": []
     },
     {
       "questionId": "g3-argon-0421",
       "revision": 1,
       "batchId": "Q50-G3-010",
       "contentHash": "a29ed38a64949ab4fb0414757b3770c27d20655150335a3419a099cc8e549658",
-      "decision": "quarantined",
-      "reasons": [
-        "claude: 이 revision의 독립 검토 없음",
-        "총괄 해설 대조자가 Claude가 아님: Gemini 4 Argon (High)"
-      ]
+      "decision": "approved",
+      "reasons": []
     },
     {
       "questionId": "g3-argon-0422",
       "revision": 1,
       "batchId": "Q50-G3-010",
       "contentHash": "ef412e88bd7495758f8326a8851a288796c0d40d7e80783226ed0dafd06d2a3a",
-      "decision": "quarantined",
-      "reasons": [
-        "claude: 이 revision의 독립 검토 없음",
-        "총괄 해설 대조자가 Claude가 아님: Gemini 4 Argon (High)"
-      ]
+      "decision": "approved",
+      "reasons": []
     },
     {
       "questionId": "g3-argon-0423",
       "revision": 1,
       "batchId": "Q50-G3-010",
       "contentHash": "7de4b34c51f62f151dcf74eb3f2d0df4cb399eeb8a8ed10bb9cf130fe259a6fc",
-      "decision": "quarantined",
-      "reasons": [
-        "claude: 이 revision의 독립 검토 없음",
-        "총괄 해설 대조자가 Claude가 아님: Gemini 4 Argon (High)"
-      ]
+      "decision": "approved",
+      "reasons": []
     },
     {
       "questionId": "g3-argon-0424",
       "revision": 1,
       "batchId": "Q50-G3-010",
       "contentHash": "69278645179de241f904a1dffd3160b90d8456148ddb082cc911efd7d70963e2",
-      "decision": "quarantined",
-      "reasons": [
-        "claude: 이 revision의 독립 검토 없음",
-        "총괄 해설 대조자가 Claude가 아님: Gemini 4 Argon (High)"
-      ]
+      "decision": "approved",
+      "reasons": []
     },
     {
       "questionId": "g3-argon-0425",
-      "revision": 1,
+      "revision": 2,
       "batchId": "Q50-G3-010",
-      "contentHash": "223c416e9f33281e786c4a0466cee642dbaba31a00957f539dc4f795b585e070",
-      "decision": "quarantined",
-      "reasons": [
-        "claude: 이 revision의 독립 검토 없음",
-        "총괄 해설 대조자가 Claude가 아님: Gemini 4 Argon (High)"
-      ]
+      "contentHash": "92edadf90bc93ac15f9a9baac92afed458a0cada08ae05c067a3af6bf7dd9313",
+      "decision": "approved",
+      "reasons": []
     },
     {
       "questionId": "g3-argon-0426",
       "revision": 1,
       "batchId": "Q50-G3-010",
       "contentHash": "6c19f45af7423fc6913794c40de09f1464f55c22cbe7ef5035797c97d262d3f9",
-      "decision": "quarantined",
-      "reasons": [
-        "claude: 이 revision의 독립 검토 없음",
-        "총괄 해설 대조자가 Claude가 아님: Gemini 4 Argon (High)"
-      ]
+      "decision": "approved",
+      "reasons": []
     },
     {
       "questionId": "g3-argon-0427",
       "revision": 1,
       "batchId": "Q50-G3-010",
       "contentHash": "129771060a8e13d67e7047aa31d8013a1397747a93cedbb1b0df62b93cbb6721",
-      "decision": "quarantined",
-      "reasons": [
-        "claude: 이 revision의 독립 검토 없음",
-        "총괄 해설 대조자가 Claude가 아님: Gemini 4 Argon (High)"
-      ]
+      "decision": "approved",
+      "reasons": []
     },
     {
       "questionId": "g3-argon-0428",
       "revision": 2,
       "batchId": "Q50-G3-010",
       "contentHash": "7373cbf4cc1bd8de4d1ba2547cfa296286bcdb43410c3cabf04c575bc0075e50",
-      "decision": "quarantined",
-      "reasons": [
-        "codex: 이 revision의 독립 검토 없음",
-        "claude: 이 revision의 독립 검토 없음",
-        "총괄 해설 대조자가 Claude가 아님: Gemini 4 Argon (High)"
-      ]
+      "decision": "approved",
+      "reasons": []
     },
     {
       "questionId": "g3-argon-0429",
       "revision": 1,
       "batchId": "Q50-G3-010",
       "contentHash": "7baa7584425c09dd8d1cc14f25ee934e33ee3d1edfffb09ab3db3dd9f5015097",
-      "decision": "quarantined",
-      "reasons": [
-        "claude: 이 revision의 독립 검토 없음",
-        "총괄 해설 대조자가 Claude가 아님: Gemini 4 Argon (High)"
-      ]
+      "decision": "approved",
+      "reasons": []
     },
     {
       "questionId": "g3-argon-0430",
       "revision": 2,
       "batchId": "Q50-G3-010",
       "contentHash": "dd27167e09d0ff6fcee8ff25baed1f5a6a224a7b5538973308d6c235bf442f77",
-      "decision": "quarantined",
-      "reasons": [
-        "codex: 이 revision의 독립 검토 없음",
-        "claude: 이 revision의 독립 검토 없음",
-        "총괄 해설 대조자가 Claude가 아님: Gemini 4 Argon (High)"
-      ]
+      "decision": "approved",
+      "reasons": []
     },
     {
       "questionId": "g3-argon-0431",
       "revision": 1,
       "batchId": "Q50-G3-010",
       "contentHash": "767caf0df2e3f7b8856e37bd993a875b29eed9f033da36a1d4c1b6e852f6494e",
-      "decision": "quarantined",
-      "reasons": [
-        "claude: 이 revision의 독립 검토 없음",
-        "총괄 해설 대조자가 Claude가 아님: Gemini 4 Argon (High)"
-      ]
+      "decision": "approved",
+      "reasons": []
     },
     {
       "questionId": "g3-argon-0432",
-      "revision": 1,
+      "revision": 2,
       "batchId": "Q50-G3-010",
-      "contentHash": "ad3c880ecfa950f6e338c092748f3663dfb57a90413cf733b99b380169111a59",
-      "decision": "quarantined",
-      "reasons": [
-        "claude: 이 revision의 독립 검토 없음",
-        "총괄 해설 대조자가 Claude가 아님: Gemini 4 Argon (High)"
-      ]
+      "contentHash": "ac712adf1e3e2fa6b0b34807f5a9c6dde4484b7f8f2ccc2142a61109072a9ad1",
+      "decision": "approved",
+      "reasons": []
     },
     {
       "questionId": "g3-argon-0433",
       "revision": 1,
       "batchId": "Q50-G3-010",
       "contentHash": "a43d9e9fa63ecf718fe9e9763057a101652af4a3652ae969cae33c2fb5e8fa22",
-      "decision": "quarantined",
-      "reasons": [
-        "claude: 이 revision의 독립 검토 없음",
-        "총괄 해설 대조자가 Claude가 아님: Gemini 4 Argon (High)"
-      ]
+      "decision": "approved",
+      "reasons": []
     },
     {
       "questionId": "g3-argon-0434",
       "revision": 1,
       "batchId": "Q50-G3-010",
       "contentHash": "2d11678862c17d438ede65b1a591203ca6aaa4d64ea517c16263fa29ec911e0b",
-      "decision": "quarantined",
-      "reasons": [
-        "claude: 이 revision의 독립 검토 없음",
-        "총괄 해설 대조자가 Claude가 아님: Gemini 4 Argon (High)"
-      ]
+      "decision": "approved",
+      "reasons": []
     },
     {
       "questionId": "g3-argon-0435",
       "revision": 1,
       "batchId": "Q50-G3-010",
       "contentHash": "7f19e90ac5e4f284371bf7a59161ad8f722d774e96c77505265fab9af5c6f73b",
-      "decision": "quarantined",
-      "reasons": [
-        "claude: 이 revision의 독립 검토 없음",
-        "총괄 해설 대조자가 Claude가 아님: Gemini 4 Argon (High)"
-      ]
+      "decision": "approved",
+      "reasons": []
     },
     {
       "questionId": "g3-argon-0436",
       "revision": 2,
       "batchId": "Q50-G3-010",
       "contentHash": "55e2a96e52f7b173ea8adae2e2e2ed1ea4189d76168ff03ace3d866d1d22ef18",
-      "decision": "quarantined",
-      "reasons": [
-        "codex: 이 revision의 독립 검토 없음",
-        "claude: 이 revision의 독립 검토 없음",
-        "총괄 해설 대조자가 Claude가 아님: Gemini 4 Argon (High)"
-      ]
+      "decision": "approved",
+      "reasons": []
     },
     {
       "questionId": "g3-argon-0437",
-      "revision": 1,
+      "revision": 2,
       "batchId": "Q50-G3-010",
-      "contentHash": "afa963c3394ab1e2cc0cdb481e8b196a4533723f2dbd9f45a856f0a4b3d22669",
-      "decision": "quarantined",
-      "reasons": [
-        "claude: 이 revision의 독립 검토 없음",
-        "총괄 해설 대조자가 Claude가 아님: Gemini 4 Argon (High)"
-      ]
+      "contentHash": "62d502ff5169c49df9c8273e17938596e7a6b2770bcfe535734e5172ec046ad9",
+      "decision": "approved",
+      "reasons": []
     },
     {
       "questionId": "g3-argon-0438",
-      "revision": 1,
+      "revision": 2,
       "batchId": "Q50-G3-010",
-      "contentHash": "ecc6b21f983be97fdb5ea7ca051ecef62fef8c8f98ec1324380ebd9de682f5fb",
-      "decision": "quarantined",
-      "reasons": [
-        "claude: 이 revision의 독립 검토 없음",
-        "총괄 해설 대조자가 Claude가 아님: Gemini 4 Argon (High)"
-      ]
+      "contentHash": "7a2bd11afe25def3e7665ce8fa1e6b55a316711d2cce0e25ab8180dc9b1753b4",
+      "decision": "approved",
+      "reasons": []
     },
     {
       "questionId": "g3-argon-0439",
       "revision": 1,
       "batchId": "Q50-G3-010",
       "contentHash": "a9148ebae71ee80979315b90ac75994095198cee54627d66539450d2a2891f73",
-      "decision": "quarantined",
-      "reasons": [
-        "claude: 이 revision의 독립 검토 없음",
-        "총괄 해설 대조자가 Claude가 아님: Gemini 4 Argon (High)"
-      ]
-    },
-    {
-      "questionId": "g3-argon-0440",
-      "revision": 1,
-      "batchId": "Q50-G3-010",
-      "contentHash": "7157b5d3222327a6f2e37d7455a8bad8479c85585a71048242d3c7a0b033c263",
-      "decision": "quarantined",
-      "reasons": [
-        "claude: 이 revision의 독립 검토 없음",
-        "총괄 해설 대조자가 Claude가 아님: Gemini 4 Argon (High)"
-      ]
+      "decision": "approved",
+      "reasons": []
     },
     {
       "questionId": "g3-argon-0441",
       "revision": 1,
       "batchId": "Q50-G3-010",
       "contentHash": "2e9a21dbabfd31b633eb23af39420193624797ab6c3c711e85f37186b7dcea3b",
-      "decision": "quarantined",
-      "reasons": [
-        "claude: 이 revision의 독립 검토 없음",
-        "총괄 해설 대조자가 Claude가 아님: Gemini 4 Argon (High)"
-      ]
+      "decision": "approved",
+      "reasons": []
     },
     {
       "questionId": "g3-argon-0442",
-      "revision": 1,
+      "revision": 3,
       "batchId": "Q50-G3-010",
-      "contentHash": "fe7e386b9d817bcf1ff8deae6ff1db42aa4cda0d491ec460003da2f4477a8595",
-      "decision": "quarantined",
-      "reasons": [
-        "claude: 이 revision의 독립 검토 없음",
-        "총괄 해설 대조자가 Claude가 아님: Gemini 4 Argon (High)"
-      ]
+      "contentHash": "d3efd8b080f9cb6d4ae7a0fc8c22563517091373b010f3483e3f2694473f3b01",
+      "decision": "approved",
+      "reasons": []
     },
     {
       "questionId": "g3-argon-0443",
-      "revision": 2,
+      "revision": 3,
       "batchId": "Q50-G3-010",
-      "contentHash": "7bb865fe9f3022c1b601e72a4260e0a4d7084df39964ca5518924c4dd5914bbb",
-      "decision": "quarantined",
-      "reasons": [
-        "codex: 이 revision의 독립 검토 없음",
-        "claude: 이 revision의 독립 검토 없음",
-        "총괄 해설 대조자가 Claude가 아님: Gemini 4 Argon (High)"
-      ]
-    },
-    {
-      "questionId": "g3-argon-0444",
-      "revision": 1,
-      "batchId": "Q50-G3-010",
-      "contentHash": "f7df10eebd925fc60b73956207c93cf972fb29119337c3a111b82dd6610e51b9",
-      "decision": "quarantined",
-      "reasons": [
-        "claude: 이 revision의 독립 검토 없음",
-        "총괄 해설 대조자가 Claude가 아님: Gemini 4 Argon (High)"
-      ]
-    },
-    {
-      "questionId": "g3-argon-0445",
-      "revision": 2,
-      "batchId": "Q50-G3-010",
-      "contentHash": "bf1bbbff8fc410e952533523b9b6d757e72c0f192b7ff3b27583c000cabc00de",
-      "decision": "quarantined",
-      "reasons": [
-        "codex: 이 revision의 독립 검토 없음",
-        "claude: 이 revision의 독립 검토 없음",
-        "총괄 해설 대조자가 Claude가 아님: Gemini 4 Argon (High)"
-      ]
+      "contentHash": "bfc9476a4e7c0a5cbc6dcb0d10e37c4d452c9d3d7b13bfafa1e5fe1ee391bd0b",
+      "decision": "approved",
+      "reasons": []
     },
     {
       "questionId": "g3-argon-0446",
       "revision": 1,
       "batchId": "Q50-G3-010",
       "contentHash": "c0dfc19989c688ed88cb08a948fc75f9ec27ddc225d04f6e0984f55c0f79d1ce",
-      "decision": "quarantined",
-      "reasons": [
-        "claude: 이 revision의 독립 검토 없음",
-        "총괄 해설 대조자가 Claude가 아님: Gemini 4 Argon (High)"
-      ]
-    },
-    {
-      "questionId": "g3-argon-0447",
-      "revision": 1,
-      "batchId": "Q50-G3-010",
-      "contentHash": "9eecacb20cb788195af7d6f89aaaae39c47138f782d62507303478037b3c6616",
-      "decision": "quarantined",
-      "reasons": [
-        "claude: 이 revision의 독립 검토 없음",
-        "총괄 해설 대조자가 Claude가 아님: Gemini 4 Argon (High)"
-      ]
-    },
-    {
-      "questionId": "g3-argon-0448",
-      "revision": 2,
-      "batchId": "Q50-G3-010",
-      "contentHash": "107d20e16f5c38af1c4d3554f90947b39a9146a389c115322ff991e34e90ad0d",
-      "decision": "quarantined",
-      "reasons": [
-        "codex: 이 revision의 독립 검토 없음",
-        "claude: 이 revision의 독립 검토 없음",
-        "총괄 해설 대조자가 Claude가 아님: Gemini 4 Argon (High)"
-      ]
-    },
-    {
-      "questionId": "g3-argon-0449",
-      "revision": 1,
-      "batchId": "Q50-G3-010",
-      "contentHash": "2df39c154810e4629c61e8566c141141103a9db754a3004ab94ef5a9db7e179f",
-      "decision": "quarantined",
-      "reasons": [
-        "claude: 이 revision의 독립 검토 없음",
-        "총괄 해설 대조자가 Claude가 아님: Gemini 4 Argon (High)"
-      ]
-    },
-    {
-      "questionId": "g3-argon-0450",
-      "revision": 1,
-      "batchId": "Q50-G3-010",
-      "contentHash": "fe3e228221ca6115b93d06c3ea01890945d7500006158ab5877f5812d2c78bd9",
-      "decision": "quarantined",
-      "reasons": [
-        "claude: 이 revision의 독립 검토 없음",
-        "총괄 해설 대조자가 Claude가 아님: Gemini 4 Argon (High)"
-      ]
+      "decision": "approved",
+      "reasons": []
     },
     {
       "questionId": "g3-argon-0451",
@@ -3483,561 +3271,328 @@
       "revision": 1,
       "batchId": "Q50-G3-012",
       "contentHash": "14a9fd0ad8b4d3c8c9d70c6a7013df75bee2ce57653ee21b3428d0955494e52c",
-      "decision": "quarantined",
-      "reasons": [
-        "claude: 이 revision의 독립 검토 없음",
-        "총괄 해설 대조자가 Claude가 아님: Gemini 4 Argon (High)"
-      ]
+      "decision": "approved",
+      "reasons": []
     },
     {
       "questionId": "g3-argon-0502",
       "revision": 1,
       "batchId": "Q50-G3-012",
       "contentHash": "05414b1c08e3473c6ff8d5811c8baaae9a9e39b6d9ce4ab363277c9a048d7e47",
-      "decision": "quarantined",
-      "reasons": [
-        "claude: 이 revision의 독립 검토 없음",
-        "총괄 해설 대조자가 Claude가 아님: Gemini 4 Argon (High)"
-      ]
+      "decision": "approved",
+      "reasons": []
     },
     {
       "questionId": "g3-argon-0503",
       "revision": 1,
       "batchId": "Q50-G3-012",
       "contentHash": "fae920f77825d0e3df990230975caa9171a198e4e9b0db2bad1d2c1e0dbc4c6a",
-      "decision": "quarantined",
-      "reasons": [
-        "claude: 이 revision의 독립 검토 없음",
-        "총괄 해설 대조자가 Claude가 아님: Gemini 4 Argon (High)"
-      ]
+      "decision": "approved",
+      "reasons": []
     },
     {
       "questionId": "g3-argon-0504",
       "revision": 1,
       "batchId": "Q50-G3-012",
       "contentHash": "06b6dd04def7c1aca060e53b4643460b6b912e6754a58a4b39a78c11b1e985d4",
-      "decision": "quarantined",
-      "reasons": [
-        "claude: 이 revision의 독립 검토 없음",
-        "총괄 해설 대조자가 Claude가 아님: Gemini 4 Argon (High)"
-      ]
+      "decision": "approved",
+      "reasons": []
     },
     {
       "questionId": "g3-argon-0505",
       "revision": 1,
       "batchId": "Q50-G3-012",
       "contentHash": "9e8c677ff0a9fc3486190169960367f787681659c87db3f19e7325ab3239c800",
-      "decision": "quarantined",
-      "reasons": [
-        "claude: 이 revision의 독립 검토 없음",
-        "총괄 해설 대조자가 Claude가 아님: Gemini 4 Argon (High)"
-      ]
+      "decision": "approved",
+      "reasons": []
     },
     {
       "questionId": "g3-argon-0506",
       "revision": 1,
       "batchId": "Q50-G3-012",
       "contentHash": "a04259870b4b6f1584269681d7720bf3ba63ea2bae1c96dcc3b919bca11324c8",
-      "decision": "quarantined",
-      "reasons": [
-        "claude: 이 revision의 독립 검토 없음",
-        "총괄 해설 대조자가 Claude가 아님: Gemini 4 Argon (High)"
-      ]
+      "decision": "approved",
+      "reasons": []
     },
     {
       "questionId": "g3-argon-0507",
       "revision": 1,
       "batchId": "Q50-G3-012",
       "contentHash": "c655ce6f2e872a7f6bcb9e9dee1a641072a4a690f4579c44bd450d95214c82f2",
-      "decision": "quarantined",
-      "reasons": [
-        "claude: 이 revision의 독립 검토 없음",
-        "총괄 해설 대조자가 Claude가 아님: Gemini 4 Argon (High)"
-      ]
+      "decision": "approved",
+      "reasons": []
     },
     {
       "questionId": "g3-argon-0508",
       "revision": 1,
       "batchId": "Q50-G3-012",
       "contentHash": "1618c10a7cf48423bfbc2e1fa4742335d91c8cfc5a6eeeaa03a4a622c67196c5",
-      "decision": "quarantined",
-      "reasons": [
-        "claude: 이 revision의 독립 검토 없음",
-        "총괄 해설 대조자가 Claude가 아님: Gemini 4 Argon (High)"
-      ]
+      "decision": "approved",
+      "reasons": []
     },
     {
       "questionId": "g3-argon-0509",
       "revision": 2,
       "batchId": "Q50-G3-012",
       "contentHash": "b1226f625e25467e83aa8b1a49927afd7024dbdf54cdf139bf35b47dad2960c4",
-      "decision": "quarantined",
-      "reasons": [
-        "codex: 이 revision의 독립 검토 없음",
-        "claude: 이 revision의 독립 검토 없음",
-        "총괄 해설 대조자가 Claude가 아님: Gemini 4 Argon (High)"
-      ]
+      "decision": "approved",
+      "reasons": []
     },
     {
       "questionId": "g3-argon-0510",
       "revision": 2,
       "batchId": "Q50-G3-012",
       "contentHash": "9317b792c5fc1934c7ed123c8d2b40748fd2743f8091a2a94bc34f196a39e520",
-      "decision": "quarantined",
-      "reasons": [
-        "codex: 이 revision의 독립 검토 없음",
-        "claude: 이 revision의 독립 검토 없음",
-        "총괄 해설 대조자가 Claude가 아님: Gemini 4 Argon (High)"
-      ]
+      "decision": "approved",
+      "reasons": []
     },
     {
       "questionId": "g3-argon-0511",
       "revision": 1,
       "batchId": "Q50-G3-012",
       "contentHash": "c0ae0012d106097b1d4488bbd9a4075d2898db6dfbae2393b69a9d0f0df0ec56",
-      "decision": "quarantined",
-      "reasons": [
-        "claude: 이 revision의 독립 검토 없음",
-        "총괄 해설 대조자가 Claude가 아님: Gemini 4 Argon (High)"
-      ]
+      "decision": "approved",
+      "reasons": []
     },
     {
       "questionId": "g3-argon-0512",
       "revision": 1,
       "batchId": "Q50-G3-012",
       "contentHash": "f99d65c29d752a779c03621cee6ddd6fb905741b85897e321ee617d66815b09c",
-      "decision": "quarantined",
-      "reasons": [
-        "claude: 이 revision의 독립 검토 없음",
-        "총괄 해설 대조자가 Claude가 아님: Gemini 4 Argon (High)"
-      ]
+      "decision": "approved",
+      "reasons": []
     },
     {
       "questionId": "g3-argon-0513",
       "revision": 2,
       "batchId": "Q50-G3-012",
       "contentHash": "d0a6ca10ca33e155292b0f56bb3682ea88a75084eeeba08b6b49c5f98b75d79b",
-      "decision": "quarantined",
-      "reasons": [
-        "codex: 이 revision의 독립 검토 없음",
-        "claude: 이 revision의 독립 검토 없음",
-        "총괄 해설 대조자가 Claude가 아님: Gemini 4 Argon (High)"
-      ]
+      "decision": "approved",
+      "reasons": []
     },
     {
       "questionId": "g3-argon-0514",
       "revision": 1,
       "batchId": "Q50-G3-012",
       "contentHash": "f29e0bf7af5b5250ff7afe7516dd8af90798a90db25bd2b7667b361a26fb3d37",
-      "decision": "quarantined",
-      "reasons": [
-        "claude: 이 revision의 독립 검토 없음",
-        "총괄 해설 대조자가 Claude가 아님: Gemini 4 Argon (High)"
-      ]
+      "decision": "approved",
+      "reasons": []
     },
     {
       "questionId": "g3-argon-0515",
       "revision": 1,
       "batchId": "Q50-G3-012",
       "contentHash": "2cf9e7ab29dac4d18f19570d46fc2937fd3589026de37516cf6717a741256677",
-      "decision": "quarantined",
-      "reasons": [
-        "claude: 이 revision의 독립 검토 없음",
-        "총괄 해설 대조자가 Claude가 아님: Gemini 4 Argon (High)"
-      ]
+      "decision": "approved",
+      "reasons": []
     },
     {
       "questionId": "g3-argon-0516",
       "revision": 1,
       "batchId": "Q50-G3-012",
       "contentHash": "99311bc19c1367b52712bdba72469d2aba9a10f03ed92aed5d0cce0ed75dc7fc",
-      "decision": "quarantined",
-      "reasons": [
-        "claude: 이 revision의 독립 검토 없음",
-        "총괄 해설 대조자가 Claude가 아님: Gemini 4 Argon (High)"
-      ]
+      "decision": "approved",
+      "reasons": []
     },
     {
       "questionId": "g3-argon-0517",
       "revision": 2,
       "batchId": "Q50-G3-012",
       "contentHash": "29bdc66cb97c4e4284c3e180ee8d39f6b0dae221d6393fe20928e32da8f53407",
-      "decision": "quarantined",
-      "reasons": [
-        "codex: 이 revision의 독립 검토 없음",
-        "claude: 이 revision의 독립 검토 없음",
-        "총괄 해설 대조자가 Claude가 아님: Gemini 4 Argon (High)"
-      ]
+      "decision": "approved",
+      "reasons": []
     },
     {
       "questionId": "g3-argon-0518",
       "revision": 1,
       "batchId": "Q50-G3-012",
       "contentHash": "03fb2256924fd7a24c09cfd91bdd30c4e7829e110e9541b40108981bf9981fce",
-      "decision": "quarantined",
-      "reasons": [
-        "claude: 이 revision의 독립 검토 없음",
-        "총괄 해설 대조자가 Claude가 아님: Gemini 4 Argon (High)"
-      ]
+      "decision": "approved",
+      "reasons": []
     },
     {
       "questionId": "g3-argon-0519",
       "revision": 1,
       "batchId": "Q50-G3-012",
       "contentHash": "26d75001fe183210aa5a28cd2878f3a666acb51453b6c33c520d87929a183046",
-      "decision": "quarantined",
-      "reasons": [
-        "claude: 이 revision의 독립 검토 없음",
-        "총괄 해설 대조자가 Claude가 아님: Gemini 4 Argon (High)"
-      ]
+      "decision": "approved",
+      "reasons": []
     },
     {
       "questionId": "g3-argon-0520",
       "revision": 1,
       "batchId": "Q50-G3-012",
       "contentHash": "170771faaf0fd17596104c5728fc650fcbad20a1ba6c300b605b7f56b9ea8d23",
-      "decision": "quarantined",
-      "reasons": [
-        "claude: 이 revision의 독립 검토 없음",
-        "총괄 해설 대조자가 Claude가 아님: Gemini 4 Argon (High)"
-      ]
+      "decision": "approved",
+      "reasons": []
     },
     {
       "questionId": "g3-argon-0521",
       "revision": 1,
       "batchId": "Q50-G3-012",
       "contentHash": "2b69fff1a5445b4427f98b5d78ada59fe9c1f9a005747131fb14869e7b8176b1",
-      "decision": "quarantined",
-      "reasons": [
-        "claude: 이 revision의 독립 검토 없음",
-        "총괄 해설 대조자가 Claude가 아님: Gemini 4 Argon (High)"
-      ]
+      "decision": "approved",
+      "reasons": []
     },
     {
       "questionId": "g3-argon-0522",
       "revision": 1,
       "batchId": "Q50-G3-012",
       "contentHash": "31e02f0189e5f3f4fdc5d3d88fbbd064531b56e60a1dae178f66cb90fcd77d01",
-      "decision": "quarantined",
-      "reasons": [
-        "claude: 이 revision의 독립 검토 없음",
-        "총괄 해설 대조자가 Claude가 아님: Gemini 4 Argon (High)"
-      ]
+      "decision": "approved",
+      "reasons": []
     },
     {
       "questionId": "g3-argon-0523",
       "revision": 1,
       "batchId": "Q50-G3-012",
       "contentHash": "ce1e562617868a02e4f9a2cef7b0ced4f0ede5f6121a0690b511fa09885e8491",
-      "decision": "quarantined",
-      "reasons": [
-        "claude: 이 revision의 독립 검토 없음",
-        "총괄 해설 대조자가 Claude가 아님: Gemini 4 Argon (High)"
-      ]
+      "decision": "approved",
+      "reasons": []
     },
     {
       "questionId": "g3-argon-0524",
-      "revision": 1,
+      "revision": 2,
       "batchId": "Q50-G3-012",
-      "contentHash": "786436fac37578c9b11e7b6bc3125da3e038d84a2f5c67af85ac6b18bbeac575",
-      "decision": "quarantined",
-      "reasons": [
-        "claude: 이 revision의 독립 검토 없음",
-        "총괄 해설 대조자가 Claude가 아님: Gemini 4 Argon (High)"
-      ]
+      "contentHash": "cc1f21d718d2a63543f966b0f18c3adb2c1de83d9052ce30dcc1795a4ad471e4",
+      "decision": "approved",
+      "reasons": []
     },
     {
       "questionId": "g3-argon-0525",
       "revision": 1,
       "batchId": "Q50-G3-012",
       "contentHash": "028820d8cd5981a0b5f47c57679c96a1248bf882438f17a073e1f636e3be38f8",
-      "decision": "quarantined",
-      "reasons": [
-        "claude: 이 revision의 독립 검토 없음",
-        "총괄 해설 대조자가 Claude가 아님: Gemini 4 Argon (High)"
-      ]
+      "decision": "approved",
+      "reasons": []
     },
     {
       "questionId": "g3-argon-0526",
       "revision": 1,
       "batchId": "Q50-G3-012",
       "contentHash": "f414b211b746ea4d19e4d5b0c5ec7fa4a55da952de9260c66d2b5d7056c9e556",
-      "decision": "quarantined",
-      "reasons": [
-        "claude: 이 revision의 독립 검토 없음",
-        "총괄 해설 대조자가 Claude가 아님: Gemini 4 Argon (High)"
-      ]
+      "decision": "approved",
+      "reasons": []
     },
     {
       "questionId": "g3-argon-0527",
       "revision": 1,
       "batchId": "Q50-G3-012",
       "contentHash": "1f53132c3a58a9fdb56a11c5f7175b919e4343b47d25529fdc22646aa76b6ad1",
-      "decision": "quarantined",
-      "reasons": [
-        "claude: 이 revision의 독립 검토 없음",
-        "총괄 해설 대조자가 Claude가 아님: Gemini 4 Argon (High)"
-      ]
+      "decision": "approved",
+      "reasons": []
     },
     {
       "questionId": "g3-argon-0528",
       "revision": 1,
       "batchId": "Q50-G3-012",
       "contentHash": "931321c0c03713bc653ead64536c550e0ad63d849fdbe150d0718c033e0a5548",
-      "decision": "quarantined",
-      "reasons": [
-        "claude: 이 revision의 독립 검토 없음",
-        "총괄 해설 대조자가 Claude가 아님: Gemini 4 Argon (High)"
-      ]
+      "decision": "approved",
+      "reasons": []
     },
     {
       "questionId": "g3-argon-0529",
       "revision": 2,
       "batchId": "Q50-G3-012",
       "contentHash": "a7ad5b5427bd261da45b112d23a6fe1a09b993af400b7bceeba9dd1deab6b444",
-      "decision": "quarantined",
-      "reasons": [
-        "codex: 이 revision의 독립 검토 없음",
-        "claude: 이 revision의 독립 검토 없음",
-        "총괄 해설 대조자가 Claude가 아님: Gemini 4 Argon (High)"
-      ]
+      "decision": "approved",
+      "reasons": []
     },
     {
       "questionId": "g3-argon-0530",
       "revision": 2,
       "batchId": "Q50-G3-012",
       "contentHash": "11c8a4ae4e788bc7e07023256b2e92e7bc58f67a1505c922f403646343d178de",
-      "decision": "quarantined",
-      "reasons": [
-        "codex: 이 revision의 독립 검토 없음",
-        "claude: 이 revision의 독립 검토 없음",
-        "총괄 해설 대조자가 Claude가 아님: Gemini 4 Argon (High)"
-      ]
+      "decision": "approved",
+      "reasons": []
     },
     {
       "questionId": "g3-argon-0531",
       "revision": 1,
       "batchId": "Q50-G3-012",
       "contentHash": "d442b9b92b385340a5bf3a8c59e8ed22316aeae01cf2dfe6380fd4e789045681",
-      "decision": "quarantined",
-      "reasons": [
-        "claude: 이 revision의 독립 검토 없음",
-        "총괄 해설 대조자가 Claude가 아님: Gemini 4 Argon (High)"
-      ]
+      "decision": "approved",
+      "reasons": []
     },
     {
       "questionId": "g3-argon-0532",
       "revision": 2,
       "batchId": "Q50-G3-012",
       "contentHash": "b5c983515621b294f7c7d571c607a2c75075360a74255ae41a5053aa6f0230d8",
-      "decision": "quarantined",
-      "reasons": [
-        "codex: 이 revision의 독립 검토 없음",
-        "claude: 이 revision의 독립 검토 없음",
-        "총괄 해설 대조자가 Claude가 아님: Gemini 4 Argon (High)"
-      ]
+      "decision": "approved",
+      "reasons": []
     },
     {
       "questionId": "g3-argon-0533",
-      "revision": 1,
+      "revision": 2,
       "batchId": "Q50-G3-012",
-      "contentHash": "b3ed921aacbc36f4437615aff4ba556656b799b96962882d6bb3618b52dbc3e7",
-      "decision": "quarantined",
-      "reasons": [
-        "claude: 이 revision의 독립 검토 없음",
-        "총괄 해설 대조자가 Claude가 아님: Gemini 4 Argon (High)"
-      ]
+      "contentHash": "5548d7b73ae3160cb1756895210d073f110e6d9d321c8a8be6429c4d9ea3a758",
+      "decision": "approved",
+      "reasons": []
     },
     {
       "questionId": "g3-argon-0534",
       "revision": 2,
       "batchId": "Q50-G3-012",
       "contentHash": "9db734357fabb15568567e48f0456cb24b30aa6e2bb6cb35cbfc4c99aead9dca",
-      "decision": "quarantined",
-      "reasons": [
-        "codex: 이 revision의 독립 검토 없음",
-        "claude: 이 revision의 독립 검토 없음",
-        "총괄 해설 대조자가 Claude가 아님: Gemini 4 Argon (High)"
-      ]
+      "decision": "approved",
+      "reasons": []
     },
     {
       "questionId": "g3-argon-0535",
       "revision": 1,
       "batchId": "Q50-G3-012",
       "contentHash": "69269f6f80ebac03458b52d3a0376e75a36b29331d1a26117552a583026cc1f4",
-      "decision": "quarantined",
-      "reasons": [
-        "claude: 이 revision의 독립 검토 없음",
-        "총괄 해설 대조자가 Claude가 아님: Gemini 4 Argon (High)"
-      ]
+      "decision": "approved",
+      "reasons": []
     },
     {
       "questionId": "g3-argon-0536",
       "revision": 1,
       "batchId": "Q50-G3-012",
       "contentHash": "1aa9f6d2e1782b4d0ea0a73d09c6fb69d5a5668edb029048f6942b49832e16eb",
-      "decision": "quarantined",
-      "reasons": [
-        "claude: 이 revision의 독립 검토 없음",
-        "총괄 해설 대조자가 Claude가 아님: Gemini 4 Argon (High)"
-      ]
+      "decision": "approved",
+      "reasons": []
     },
     {
       "questionId": "g3-argon-0537",
       "revision": 1,
       "batchId": "Q50-G3-012",
       "contentHash": "5ad1b9bb40328e96ef7cb69e4ebab1b2416794af808bd3fb9777e2ba10ddba9f",
-      "decision": "quarantined",
-      "reasons": [
-        "claude: 이 revision의 독립 검토 없음",
-        "총괄 해설 대조자가 Claude가 아님: Gemini 4 Argon (High)"
-      ]
+      "decision": "approved",
+      "reasons": []
     },
     {
       "questionId": "g3-argon-0538",
-      "revision": 1,
+      "revision": 2,
       "batchId": "Q50-G3-012",
-      "contentHash": "8a1a57653c459b9137bd36a2c5227d2d147b119867d89b151a4820ccb8c4d32d",
-      "decision": "quarantined",
-      "reasons": [
-        "claude: 이 revision의 독립 검토 없음",
-        "총괄 해설 대조자가 Claude가 아님: Gemini 4 Argon (High)"
-      ]
+      "contentHash": "ac49b72f3cab2c29c95de3f813ab36549cb9e5e7dafed2af70d73a319a42f852",
+      "decision": "approved",
+      "reasons": []
     },
     {
       "questionId": "g3-argon-0539",
-      "revision": 2,
+      "revision": 3,
       "batchId": "Q50-G3-012",
-      "contentHash": "246dc369fccba3f6023faf6ac13ff30b860c3135f36e515233fc56753913102a",
-      "decision": "quarantined",
-      "reasons": [
-        "codex: 이 revision의 독립 검토 없음",
-        "claude: 이 revision의 독립 검토 없음",
-        "총괄 해설 대조자가 Claude가 아님: Gemini 4 Argon (High)"
-      ]
-    },
-    {
-      "questionId": "g3-argon-0540",
-      "revision": 2,
-      "batchId": "Q50-G3-012",
-      "contentHash": "1548378a25d2d638338d2ebc15a0456da06a42794dd582a462f1ffb80d6ce58a",
-      "decision": "quarantined",
-      "reasons": [
-        "codex: 이 revision의 독립 검토 없음",
-        "claude: 이 revision의 독립 검토 없음",
-        "총괄 해설 대조자가 Claude가 아님: Gemini 4 Argon (High)"
-      ]
+      "contentHash": "70b18fca3b76cd57735ef759ca13c7365bd4dde1cf958a55aec8c338c19552a4",
+      "decision": "approved",
+      "reasons": []
     },
     {
       "questionId": "g3-argon-0541",
       "revision": 2,
       "batchId": "Q50-G3-012",
       "contentHash": "31b9c7d95ffab84ed8b9f5ab63f5f6f29bc83ae3073908249c3270573208c8bf",
-      "decision": "quarantined",
-      "reasons": [
-        "codex: 이 revision의 독립 검토 없음",
-        "claude: 이 revision의 독립 검토 없음",
-        "총괄 해설 대조자가 Claude가 아님: Gemini 4 Argon (High)"
-      ]
-    },
-    {
-      "questionId": "g3-argon-0542",
-      "revision": 1,
-      "batchId": "Q50-G3-012",
-      "contentHash": "10c904a123f42e9e6fc335544398c4b4fa50610aea13c4e96dfcd374480e1f59",
-      "decision": "quarantined",
-      "reasons": [
-        "claude: 이 revision의 독립 검토 없음",
-        "총괄 해설 대조자가 Claude가 아님: Gemini 4 Argon (High)"
-      ]
-    },
-    {
-      "questionId": "g3-argon-0543",
-      "revision": 1,
-      "batchId": "Q50-G3-012",
-      "contentHash": "ee12276de07fc29e3d8281ba3785e8c92236b423cfb5b220ada77177ead0b308",
-      "decision": "quarantined",
-      "reasons": [
-        "claude: 이 revision의 독립 검토 없음",
-        "총괄 해설 대조자가 Claude가 아님: Gemini 4 Argon (High)"
-      ]
-    },
-    {
-      "questionId": "g3-argon-0544",
-      "revision": 1,
-      "batchId": "Q50-G3-012",
-      "contentHash": "f8465f68e9453bef29f09c646a5025a83c87e19cf7415cd237527d33040ad579",
-      "decision": "quarantined",
-      "reasons": [
-        "claude: 이 revision의 독립 검토 없음",
-        "총괄 해설 대조자가 Claude가 아님: Gemini 4 Argon (High)"
-      ]
-    },
-    {
-      "questionId": "g3-argon-0545",
-      "revision": 1,
-      "batchId": "Q50-G3-012",
-      "contentHash": "e50a9e70b7befd5eee7c018a5aaf032cca9154ad62aa26ac960e06873b94f255",
-      "decision": "quarantined",
-      "reasons": [
-        "claude: 이 revision의 독립 검토 없음",
-        "총괄 해설 대조자가 Claude가 아님: Gemini 4 Argon (High)"
-      ]
-    },
-    {
-      "questionId": "g3-argon-0546",
-      "revision": 1,
-      "batchId": "Q50-G3-012",
-      "contentHash": "df26289c97b4e8579e1e312d0120deaa5f48d9f26df11c65e3ea68a8081fb297",
-      "decision": "quarantined",
-      "reasons": [
-        "claude: 이 revision의 독립 검토 없음",
-        "총괄 해설 대조자가 Claude가 아님: Gemini 4 Argon (High)"
-      ]
-    },
-    {
-      "questionId": "g3-argon-0547",
-      "revision": 1,
-      "batchId": "Q50-G3-012",
-      "contentHash": "7ae7283305d98a5327d42f38337720d4673a276c30394a6d499856cfbc308f8c",
-      "decision": "quarantined",
-      "reasons": [
-        "claude: 이 revision의 독립 검토 없음",
-        "총괄 해설 대조자가 Claude가 아님: Gemini 4 Argon (High)"
-      ]
-    },
-    {
-      "questionId": "g3-argon-0548",
-      "revision": 1,
-      "batchId": "Q50-G3-012",
-      "contentHash": "7b7791c545b24e56882dbd75ffe75a4b39ca9889490d00be0f981f9449a33a1a",
-      "decision": "quarantined",
-      "reasons": [
-        "claude: 이 revision의 독립 검토 없음",
-        "총괄 해설 대조자가 Claude가 아님: Gemini 4 Argon (High)"
-      ]
+      "decision": "approved",
+      "reasons": []
     },
     {
       "questionId": "g3-argon-0549",
-      "revision": 1,
+      "revision": 3,
       "batchId": "Q50-G3-012",
-      "contentHash": "a9315f3c964325da99b1740420d0110e01c1d78ae0565f9d3fbf74a941962cd3",
-      "decision": "quarantined",
-      "reasons": [
-        "claude: 이 revision의 독립 검토 없음",
-        "총괄 해설 대조자가 Claude가 아님: Gemini 4 Argon (High)"
-      ]
-    },
-    {
-      "questionId": "g3-argon-0550",
-      "revision": 1,
-      "batchId": "Q50-G3-012",
-      "contentHash": "69b0d5f0b48430c8164259111668e6b282c17a4555b6df3dd8d75644eab6df37",
-      "decision": "quarantined",
-      "reasons": [
-        "claude: 이 revision의 독립 검토 없음",
-        "총괄 해설 대조자가 Claude가 아님: Gemini 4 Argon (High)"
-      ]
+      "contentHash": "1b51bcc9c1353ae026ba55451673c2c78e29df20cd6b3c4b71157d90df832b63",
+      "decision": "approved",
+      "reasons": []
     },
     {
       "questionId": "g3-argon-0551",
