@@ -3,6 +3,14 @@
 작성 2026-11-06 · 작성 Claude Opus 5.5(총괄) · 받는 쪽 Codex(메인 세션)
 같이 읽을 것: [계획서 CONTENT_REVIEW_PLAN.md](CONTENT_REVIEW_PLAN.md)(기준 문서), [AGENTS.md](../AGENTS.md)
 
+### 복구 49문항 S1 확인 완료·S2 재검수 시작 (Codex, 2026-11-06 13:55 KST)
+
+- PID 5293이 **04:51:05Z 정상 종료**했다. 001 29개·002 15개·003 5개의 수준 재판정과 필요한 표본 대조 5개를 완료했다. **Argon 1회·Codex 3회**(전체 판정 1 + 표본 2)다. Argon CLI는 완료 신호 뒤 종료가 지연됐으나, 현재 도구가 제한 시간에 원래 입력·단일 DONE 대화·스키마를 확인해 답장을 복구했다. 추가 Argon 호출은 없다. 복구 UUID `4e309b53-e7f2-467f-92fa-172578a9b158`, 근거는 아래 audit에 해시와 함께 연결돼 있다.
+- 메인이 양쪽 원본 답장·현재 대상/revision·사전 표지/등급 입력·합의 재계산·assessment hash·표본 답장·6파일 manifest를 직접 대조했다. **재판정 대상 외 101문항과 기존 수준 기록은 그대로**이며, 대상 49문항도 tier·gradeBasis 외 필드와 본문 해시가 불변이다. 결과 basic 7·core 9·advanced 12·challenge 21, `too_hard` 3·`too_easy` 1·`spotCheck` 5. 이는 **수준 판정 결과이며 앞단/공개 승인 수가 아니다**. `.orchestrate/recovery/g4-s3-partials/relevel.audit.json`(`verified-awaiting-apply`).
+- 자원 보호는 메모리 여유 7.7GiB·정상 압력이지만 다른 보호 작업 PID 61118 때문에 반영/서버 시험이 아직 불가다. 005 pending과 모든 staging을 보존하고 즉시 서버 시험을 반복하지 않았다. 검증한 최신 staging을 고정 입력으로 읽는 얇은 실행기를 통해 기존 `review.runQuestions`의 블라인드→공개 대조→ingest를 수행하도록 했다. 판정 기준·프롬프트·읽기 전용 CLI·검수 스키마는 그대로다. 각 호출과 종료 때 원본/manifest 해시·최신 대기 초안 불변을 확인하며, 기존 검수 작업 파일 **18개**도 해시 대조 후 `codex-before-recheck/`에 보관했다.
+- **PID 9703** `.orchestrate/recovery/g4-s3-partials/recheck.mjs`: 복구한 **49문항만 gpt-6-astra/high S2 재검수 진행 중**. 상태 `recheck.summary.json`, 로그 `recheck.out`(같은 폴더). 현재 블라인드 1호출, 완료 판정은 아직 없다. 끝나면 staging을 쓰고 `awaiting-main-audit`에서 멈춘다. 추적 콘텐츠·공개 은행은 쓰지 않는다. **반영 실행기는 이 재검수까지 메인 확인을 마쳐야 허용**하도록 잠갔다. 재개할 때는 `recheck.audit.json`의 batches/staging/manifestSha256을 대조한다.
+- 5학년 감독 PID 78689는 024 제작 중, 6학년 PID 91819는 선행 제작 대기다. 이번에는 제품 코드 변경·제품 시험 재실행이 없다. 3학년 공개 51, 4·5·6학년 공개 0을 현재 은행에서 다시 확인했으며 목표는 아직 미달이다.
+
 ### 006 검수 완료·복구 49문항 수준 재판정 (Codex, 2026-11-06 13:36 KST)
 
 - **006 공개 대조 완료**, 기존 블라인드 50개 재사용·새 Codex 호출 1회. PID 4481 정상 종료. 현재 초안/입력/블라인드/공개 답장의 모델·revision·본문 해시·대응을 직접 확인했다. Codex 검수 판정은 **18통과·32지적**이며, 수준·배치 규칙까지 합친 앞단은 **14통과·36결함**이다. 서로 다른 수치로 구분한다.
