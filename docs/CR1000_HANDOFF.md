@@ -3,6 +3,13 @@
 작성 2026-11-06 · 작성 Claude Opus 5.5(총괄) · 받는 쪽 Codex(메인 세션)
 같이 읽을 것: [계획서 CONTENT_REVIEW_PLAN.md](CONTENT_REVIEW_PLAN.md)(기준 문서), [AGENTS.md](../AGENTS.md)
 
+### 보충 5배치·6학년 시범 재개 (Codex, 2026-11-06 11:16 KST)
+
+- 보충 026은 **24생성·26반려**, Argon 4회로 완료했다. 반려 26건은 모두 사전 근거 불확정이다. 022~026 누계 **148생성·102반려**이며, PID 25037은 마지막 027을 제작 중이다.
+- 026의 151파일을 새로 대조했고 이전 4배치 검사는 manifest 해시가 그대로여서 재사용했다. 누계 **991파일·148문항**의 무결성 확인 기록은 `.orchestrate/g4-supplement.staging-audit.json`에 있다. 027의 실제 사전 조회 입력 50개에서 누적 제외 후보 47개와 겹침이 **0개**임을 확인했다. 생성 수는 공동검수 승인 수가 아니다.
+- 6학년 시범 `Q50-G6-001`은 현재 초안 48문항 중 수준 판정 대기 8문항만 실행했다. PID **72343**, `.orchestrate/run-g6-pilot-level.mjs`, 상태 `.orchestrate/g6-pilot-level.summary.json`, 로그 `.orchestrate/g6-pilot-level.out`. Argon High·Codex gpt-6-astra/high 각 1회 호출, Codex 답장은 도착했고 Argon 응답 대기 중이다. 별도 staging만 만들며 자동 잠금 반영·S2·Claude 호출은 하지 않는다.
+- PID 55822의 4학년 S3는 계속 실행 중이다. 5학년 시범 staging은 이전 자원 보류 상태로 보존돼 있다. 이번에는 생성물·입력 목록만 확인했으며 제품 시험은 재실행하지 않았다.
+
 ### W1b 출처 기록·보충 목록 보완 (Codex, 2026-11-06 11:05 KST)
 
 - 5학년 결과 확인 중 계획의 W1b 항목별 출처가 실제 구현에는 빠져 있음을 확인해 보완했다. 새 독립 검수 항목과 Claude 해설 대조 항목에 `run:{id,model,effort}`를 기록하며, `id`는 해당 staging manifest의 실행 ID다. 기존 항목·아카이브는 다시 쓰거나 추정 출처를 채우지 않는다. 계약은 선택 필드로 받아 옛 보고서를 계속 읽는다.
