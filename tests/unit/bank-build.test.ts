@@ -1,6 +1,8 @@
 import { existsSync, readFileSync } from 'node:fs';
 import path from 'node:path';
 import { describe, expect, it } from 'vitest';
+import { retractionListSchema } from '../../src/contracts/questions';
+import { loadLevelAssessments, prepareSharedBank } from '../../tools/content/sharedBankPlan';
 import {
   buildBank,
   buildCandidateBank,
@@ -65,7 +67,8 @@ describe('승인 레지스트리·게시 은행 빌드', () => {
   });
 
   it.each([3, 4, 5, 6])('저장된 %i학년 공개 은행의 존재 여부와 내용은 재계산과 같다', grade => {
-    const { bank } = buildBank(batches, buildRegistry(batches), grade);
+    const retractions = retractionListSchema.parse(JSON.parse(readFileSync(path.join(root, 'src/content/retractions.json'), 'utf8')));
+    const { bank } = prepareSharedBank(batches, loadLevelAssessments(root), retractions, grade);
     const bankPath = path.join(root, `src/content/questions/grade${grade}.json`);
     expect(existsSync(bankPath)).toBe(bank !== null);
     if (bank) expect(JSON.parse(readFileSync(bankPath, 'utf8'))).toEqual(bank);

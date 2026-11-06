@@ -1,6 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { runnerImport } from 'vite';
+import { retractionListSchema } from '../src/contracts/questions.ts';
 
 // 승인 레지스트리·게시 은행·후보 은행 빌드 실행기. 판정은 tools/content/bankBuild.ts가 한다.
 // 사용: npm run build:bank → content-source/approvals/registry.json과 candidate-registry.json을 다시 쓰고,
@@ -8,10 +9,13 @@ import { runnerImport } from 'vite';
 // 새 문맥 블라인드 검증 통과 후보 문항이 더 많고 30개 이상이면 grade<N>.candidate.json(verified_candidate)을 쓴다.
 const root = path.resolve(import.meta.dirname, '..');
 const { module: b } = await runnerImport(path.join(root, 'tools/content/bankBuild.ts'), { configFile: false, logLevel: 'error', root });
+const { module: sharing } = await runnerImport(path.join(root, 'tools/content/sharedBankPlan.ts'), { configFile: false, logLevel: 'error', root });
 
 const batches = b.loadBatches(root);
 const registry = b.buildRegistry(batches);
 const candidateRegistry = b.buildCandidateRegistry(batches);
+const levels = sharing.loadLevelAssessments(root);
+const retractions = retractionListSchema.parse(JSON.parse(fs.readFileSync(path.join(root, 'src/content/retractions.json'), 'utf8')));
 
 const registryPath = path.join(root, 'content-source/approvals/registry.json');
 const candidateRegistryPath = path.join(root, 'content-source/approvals/candidate-registry.json');
@@ -28,14 +32,15 @@ console.log(practice.note);
 
 // 초안이 없는 학년도 돌아야 승인이 기준 밑으로 줄었을 때 낡은 은행 파일이 남지 않는다.
 for (const grade of [3, 4, 5, 6]) {
-  const r = b.buildBank(batches, registry, grade);
+  const r = sharing.prepareSharedBank(batches, levels, retractions, grade);
+  const note = `${grade}학년 자기 승인 ${r.ownApproved} · 공유 ${r.shared}${r.bank ? '' : ' · 공개 하한 미달'}`;
   const out = path.join(root, `src/content/questions/grade${grade}.json`);
   if (r.bank) {
     fs.writeFileSync(out, JSON.stringify(r.bank, null, 2) + '\n');
-    console.log(`${r.note} → ${path.relative(root, out)}`);
+    console.log(`${note} → ${path.relative(root, out)}`);
   } else {
     if (fs.existsSync(out)) fs.unlinkSync(out);
-    console.log(r.note);
+    console.log(note);
   }
 
   const cand = b.buildCandidateBank(batches, registry, candidateRegistry, grade);

@@ -4,7 +4,7 @@ import crypto from 'node:crypto';
 import { execFileSync } from 'node:child_process';
 import { afterEach, describe, expect, it } from 'vitest';
 // @ts-expect-error 독립 실행 MJS 도구에는 별도 선언 파일이 없다.
-import { applyStaged, resolveCoAuthor } from '../../tools/orchestrate/commit-lock.mjs';
+import { applyStaged, resolveCoAuthor, withCommitLock } from '../../tools/orchestrate/commit-lock.mjs';
 
 const roots: string[] = [];
 const source = (batch: string) => `content-source/batches/${batch}/drafts.json`;
@@ -83,6 +83,30 @@ function assertReproducible(root: string, sha: string) {
 }
 
 describe('대기분 반영·잠금·배치 커밋', () => {
+  it('은행 전환도 반영과 같은 잠금을 쓰고 실패 뒤 잠금을 반환한다', async () => {
+    const root = fixture();
+    const staged = stage(root, 'A', '01', { [source('A')]: [draft('a', 2)] });
+    await expect(withCommitLock(root, async () => {
+      await expect(applyStaged(options(root))).rejects.toThrow(/커밋 잠금 사용 중/);
+      expect(fs.existsSync(staged)).toBe(true);
+      expect(JSON.parse(fs.readFileSync(path.join(root, source('A')), 'utf8'))[0].revision).toBe(1);
+      throw new Error('전환 검사 실패');
+    })).rejects.toThrow('전환 검사 실패');
+    expect(fs.existsSync(path.join(root, '.orchestrate/commit.lock'))).toBe(false);
+    expect((await applyStaged(options(root))).committed).toBe(true);
+    assertReproducible(root, git(root, 'rev-parse', 'HEAD'));
+  });
+
+  it('미커밋 반영이 있으면 은행 전환 콜백을 실행하지 않는다', async () => {
+    const root = fixture();
+    stage(root, 'A', '01', { [source('A')]: [draft('a', 2)] });
+    await applyStaged({ ...options(root), noCommit: true });
+    let called = false;
+    await expect(withCommitLock(root, () => { called = true; })).rejects.toThrow(/미커밋 반영/);
+    expect(called).toBe(false);
+    expect(fs.existsSync(path.join(root, '.orchestrate/commit.pending.json'))).toBe(true);
+  });
+
   it('선택한 여러 배치만 한 번 빌드·서버 검사·커밋하고 미선택 대기분은 보존한다', async () => {
     const root = fixture();
     stage(root, 'A', '01', { [source('A')]: [draft('a', 2)] });

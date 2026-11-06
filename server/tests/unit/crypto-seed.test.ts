@@ -61,11 +61,11 @@ describe('D1 정답 키 seed(tools/build-question-keys.mjs)', () => {
 
   it('저장소의 server/seed/question_keys.sql은 지금 공개 은행으로 만든 출력과 같다(다시 만들기: node tools/build-question-keys.mjs)', async () => {
     const script = `import { readFile } from 'node:fs/promises';
-      import { buildQuestionKeySeed } from './tools/build-question-keys.mjs';
+      import { buildSharedQuestionKeySeed } from './tools/build-question-keys.mjs';
       const j = async p => JSON.parse(await readFile(p, 'utf8'));
       const banks = [];
       for (const g of [3, 4, 5, 6]) { try { banks.push(await j('src/content/questions/grade' + g + '.json')); } catch (e) { if (e.code !== 'ENOENT') throw e; } }
-      process.stdout.write(buildQuestionKeySeed({ banks, balance: await j('docs/contracts/balance.candidate.v0.4.json'), maps: await j('docs/contracts/maps.candidate.v0.4.json'), retractions: await j('src/content/retractions.json') }));`;
+      process.stdout.write(buildSharedQuestionKeySeed({ banks, balance: await j('docs/contracts/balance.candidate.v0.4.json'), maps: await j('docs/contracts/maps.candidate.v0.4.json'), retractions: await j('src/content/retractions.json') }));`;
     const result = spawnSync(process.execPath, ['--input-type=module', '-e', script], { cwd: REPO_DIR, encoding: 'utf8' });
     expect(result.status, result.stderr).toBe(0);
     expect(await readFile(`${REPO_DIR}server/seed/question_keys.sql`, 'utf8')).toBe(result.stdout);

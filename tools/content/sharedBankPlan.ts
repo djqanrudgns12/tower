@@ -1,4 +1,7 @@
+import fs from 'node:fs';
+import path from 'node:path';
 import type { LevelAssessment } from '../../src/contracts/levels';
+import { levelBatchSchema } from '../../src/contracts/levels';
 import type { BankQuestion, RetractionList, SharedBankFile, SharedBankQuestion } from '../../src/contracts/questions';
 import { sharedBankFileSchema } from '../../src/contracts/questions';
 import { lintBatchForGrade } from '../../src/content/lint';
@@ -12,9 +15,17 @@ export type { SharedBankQuestion } from '../../src/contracts/questions';
 /** 공유 은행의 빌드 입력. 이 모듈은 파일을 쓰거나 은행을 공개하지 않는다. */
 export type SharedBankPlan = SharedBankFile;
 
+/** 커밋된 수준 평가만 읽는다. 진행 중인 staging 판정은 공개 빌드에 넣지 않는다. */
+export function loadLevelAssessments(root: string): LevelAssessment[] {
+  const dir = path.join(root, 'content-source/levels');
+  if (!fs.existsSync(dir)) return [];
+  return fs.readdirSync(dir).filter(file => file.endsWith('.json')).sort().flatMap(file =>
+    levelBatchSchema.parse(JSON.parse(fs.readFileSync(path.join(dir, file), 'utf8'))).items);
+}
+
 /**
  * 원 검수 보고서·최신 판·철회에서 공개 입력을 다시 계산하고 위로 공유할 은행을 준비한다.
- * 실제 은행·키 생성기 연결은 루프 정지 지점에서 한다. 공개 로더는 이 계약을 받는다.
+ * 은행 생성기는 커밋 잠금 안에서 이 결과를 쓰고 같은 판 번호로 서버 키를 만든다.
  * 자기 문항 수와 공유 수는 분리하며, 같은 지문이나 받는 학년 검사에 걸린 공유는 제외한다.
  */
 export function prepareSharedBank(batches: BatchInput[], assessments: readonly LevelAssessment[], retractions: RetractionList, grade: number): {

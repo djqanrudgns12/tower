@@ -66,6 +66,17 @@ function acquire(root) {
   return () => { if (fs.existsSync(lock) && readJson(lock).token === token) fs.unlinkSync(lock); };
 }
 
+/** 모델의 stage-only 작업과 분리된 은행 전환도 같은 쓰기 잠금 안에서 실행한다. */
+export async function withCommitLock(root, operation) {
+  root = fs.realpathSync(path.resolve(root));
+  const release = acquire(root);
+  try {
+    if (fs.realpathSync(git(root, 'rev-parse', '--show-toplevel').trim()) !== root) throw new Error('저장소 루트가 필요하다');
+    if (fs.existsSync(path.join(root, '.orchestrate/commit.pending.json'))) throw new Error('다른 배치의 미커밋 반영을 먼저 완료해야 한다');
+    return await operation(root);
+  } finally { release(); }
+}
+
 /** 상대 경로와 모든 기존 부모를 검사해 저장소 밖/심볼릭 링크 쓰기를 막는다. */
 function destination(root, relative) {
   if (typeof relative !== 'string' || !relative || relative.includes('\\') || relative.includes('\0')

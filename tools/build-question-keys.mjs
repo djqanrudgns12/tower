@@ -22,7 +22,7 @@ export function buildQuestionKeySeed(input) {
   return buildSeed(input, (q, bank) => q.grade === bank.grade);
 }
 
-/** W5 연결용. 원 ID·학년을 보존하고 실제 받는 은행의 버전·학년으로 키를 만든다. 현재 CLI는 기존 경로를 쓴다. */
+/** 원 ID·학년을 보존하고 실제 받는 은행의 버전·학년으로 키를 만든다. 공개 CLI와 같은 경로다. */
 export function buildSharedQuestionKeySeed(input) {
   const banks = input.banks.map(bank => bank.status === 'published' ? sharedBankFileSchema.parse(bank) : bank);
   for (const bank of banks) {
@@ -79,7 +79,7 @@ if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.me
     try { banks.push(await readJson(`src/content/questions/grade${grade}.json`)); }
     catch (error) { if (error.code !== 'ENOENT') throw error; }
   }
-  const sql = buildQuestionKeySeed({ banks, balance, maps, retractions });
+  const sql = buildSharedQuestionKeySeed({ banks, balance, maps, retractions });
   await writeFile(path.join(root, 'server/seed/question_keys.sql'), sql);
   const count = sql.split('\n').filter(line => line.startsWith('insert into question_keys(')).length;
   console.log(`공개 정답 키 ${count}개, 검증 규칙 ${Object.keys(balance.difficulties).length}개 생성(server/seed/question_keys.sql)`);

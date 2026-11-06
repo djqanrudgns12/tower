@@ -3,9 +3,9 @@ import { existsSync, readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import { assetManifestSchema } from '../../src/contracts/assetManifest';
 import { blindReviewSchema, contentHashInput, draftBatchSchema, draftSidecarSchema } from '../../src/contracts/questionDraft';
-import { bankFileSchema, readingLoad } from '../../src/contracts/questions';
+import { bankFileSchema, sharedBankFileSchema, readingLoad } from '../../src/contracts/questions';
 import defaults from '../../docs/contracts/product.defaults.v0.5.json';
-import { lintBatchStrict, lintQuestion } from '../../src/content/lint';
+import { lintBatchStrict, lintQuestion, lintBatchForGrade } from '../../src/content/lint';
 import { isPractice, MIN_PUBLISHED, PRACTICE_SIZE } from '../../tools/content/bankBuild';
 import { readImageInfo } from './imageMeta';
 
@@ -24,8 +24,9 @@ describe('런타임 문제은행', () => {
   it('은행 파일이 하나 이상 있다', () => { expect(Object.keys(banks).length).toBeGreaterThan(0); });
   for (const [path, raw] of Object.entries(banks)) {
     it(`${path}: 스키마·의미 검사·전투 읽기 부담`, () => {
-      const bank = bankFileSchema.parse(raw);
-      const problems = bank.questions.flatMap(q => lintQuestion(q).map(p => `${q.id}: ${p}`));
+      const bank = (/\/grade[3-6]\.json$/.test(path) ? sharedBankFileSchema : bankFileSchema).parse(raw);
+      const problems = bank.questions.flatMap(q => q.grade === bank.grade
+        ? lintQuestion(q).map(p => `${q.id}: ${p}`) : lintBatchForGrade([q], bank.grade));
       expect(problems).toEqual([]);
       const stems = bank.questions.map(q => q.stem.normalize('NFC'));
       expect(new Set(stems).size).toBe(stems.length);

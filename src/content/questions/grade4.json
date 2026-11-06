@@ -1,9 +1,5412 @@
 {
   "bankId": "g4",
-  "bankVersion": "pub-87ff828f8347",
+  "bankVersion": "pub-g4-92360470cd4b",
   "grade": 4,
   "status": "published",
   "questions": [
+    {
+      "id": "g3-argon-0103",
+      "revision": 1,
+      "status": "published",
+      "grade": 3,
+      "type": "usage",
+      "difficultyTier": "core",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "다정하다",
+        "partOfSpeech": "형용사",
+        "senseKey": "다정하다/형용사/73282-1"
+      },
+      "stem": "‘다정하다’를 바르게 쓴 문장은 무엇일까요?",
+      "options": [
+        {
+          "id": "a",
+          "text": "언니가 내 손을 다정하게 잡았다."
+        },
+        {
+          "id": "b",
+          "text": "책상이 창가로 다정하게 굴렀다."
+        },
+        {
+          "id": "c",
+          "text": "소나기가 종일 다정하게 퍼부었다."
+        },
+        {
+          "id": "d",
+          "text": "시계가 벽에서 다정하게 멈추었다."
+        }
+      ],
+      "correctOptionId": "a",
+      "explanation": "‘다정하다’는 정이 많고 따뜻하다는 뜻으로 사람 태도에 써요.",
+      "distractorRationales": {
+        "b": "책상은 정을 느낄 수 없어 어색해요.",
+        "c": "세찬 소나기에는 어울리지 않는 말이에요.",
+        "d": "시계가 멈춘 상황에 쓸 수 없는 말이에요."
+      },
+      "gradeBand": {
+        "min": 3,
+        "max": 4
+      }
+    },
+    {
+      "id": "g3-argon-0107",
+      "revision": 1,
+      "status": "published",
+      "grade": 3,
+      "type": "synonym_context",
+      "difficultyTier": "core",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "신기하다",
+        "partOfSpeech": "형용사",
+        "senseKey": "신기하다/형용사/204662-1"
+      },
+      "stem": "‘색이 바뀌는 꽃이 참 신기하다.’에서 ‘신기하다’와 바꾸어 쓸 말은 무엇일까요?",
+      "options": [
+        {
+          "id": "a",
+          "text": "익숙하고 흔하다"
+        },
+        {
+          "id": "b",
+          "text": "색다르고 놀랍다"
+        },
+        {
+          "id": "c",
+          "text": "조용하고 잔잔하다"
+        },
+        {
+          "id": "d",
+          "text": "무겁고 단단하다"
+        }
+      ],
+      "correctOptionId": "b",
+      "explanation": "‘신기하다’는 믿기 어려울 만큼 색다르고 놀랍다는 뜻이에요.",
+      "distractorRationales": {
+        "a": "늘 보던 흔한 상태라 뜻이 반대예요.",
+        "c": "소리가 없는 상태라 문맥에 맞지 않아요.",
+        "d": "무게나 굳기를 나타내는 말이라 달라요."
+      },
+      "gradeBand": {
+        "min": 3,
+        "max": 4
+      }
+    },
+    {
+      "id": "g3-argon-0108",
+      "revision": 2,
+      "status": "published",
+      "grade": 3,
+      "type": "usage",
+      "difficultyTier": "core",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "다짐하다",
+        "partOfSpeech": "동사",
+        "senseKey": "다짐하다/동사/74882-2"
+      },
+      "stem": "‘다짐하다’를 바르게 쓴 문장은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "연필을 필통 안에다 다짐했다."
+        },
+        {
+          "id": "b",
+          "text": "젖은 수건을 햇볕에 다짐했다."
+        },
+        {
+          "id": "c",
+          "text": "매일 책을 읽기로 굳게 다짐했다."
+        },
+        {
+          "id": "d",
+          "text": "맑은 우유를 컵에다 다짐했다."
+        }
+      ],
+      "correctOptionId": "c",
+      "explanation": "‘다짐하다’는 마음이나 뜻을 굳게 가다듬어 정한다는 뜻이에요.",
+      "distractorRationales": {
+        "a": "학용품을 필통에 넣는 동작에는 쓰지 않아요.",
+        "b": "젖은 빨래를 말리는 행동과는 어울리지 않아요.",
+        "d": "마실 것을 컵에 따르는 일에는 쓸 수 없어요."
+      },
+      "gradeBand": {
+        "min": 3,
+        "max": 4
+      }
+    },
+    {
+      "id": "g3-argon-0109",
+      "revision": 1,
+      "status": "published",
+      "grade": 3,
+      "type": "cloze",
+      "difficultyTier": "core",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "질서",
+        "partOfSpeech": "명사",
+        "senseKey": "질서/명사/309066-1"
+      },
+      "stem": "급식실에서는 새치기하지 않고 차례대로 줄을 서는 (    )가 중요하다.",
+      "options": [
+        {
+          "id": "a",
+          "text": "노래"
+        },
+        {
+          "id": "b",
+          "text": "박수"
+        },
+        {
+          "id": "c",
+          "text": "놀이"
+        },
+        {
+          "id": "d",
+          "text": "질서"
+        }
+      ],
+      "correctOptionId": "d",
+      "explanation": "혼란 없이 차례대로 이루어지게 하는 순서를 ‘질서’라고 해요.",
+      "distractorRationales": {
+        "a": "가락에 맞추어 부르는 소리를 뜻해 문맥에 맞지 않아요.",
+        "b": "두 손바닥을 마주 쳐 소리 내는 일이라 어울리지 않아요.",
+        "c": "재미있게 노는 일을 뜻하여 줄 서기와 관련 없어요."
+      },
+      "gradeBand": {
+        "min": 3,
+        "max": 4
+      }
+    },
+    {
+      "id": "g3-argon-0111",
+      "revision": 1,
+      "status": "published",
+      "grade": 3,
+      "type": "definition",
+      "difficultyTier": "basic",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "정답다",
+        "partOfSpeech": "형용사",
+        "senseKey": "정답다/형용사/291761-1"
+      },
+      "stem": "‘할머니의 말씀이 참 정답다.’에서 ‘정답다’의 뜻은 무엇일까요?",
+      "options": [
+        {
+          "id": "a",
+          "text": "따뜻한 정이 있다"
+        },
+        {
+          "id": "b",
+          "text": "차가운 바람이 분다"
+        },
+        {
+          "id": "c",
+          "text": "시끄러운 소리가 난다"
+        },
+        {
+          "id": "d",
+          "text": "무거운 짐이 쌓인다"
+        }
+      ],
+      "correctOptionId": "a",
+      "explanation": "‘정답다’는 서로 아끼는 따뜻한 정이 있다는 뜻이에요.",
+      "distractorRationales": {
+        "b": "날씨를 나타내는 말이라 뜻이 달라요.",
+        "c": "소리의 크기를 설명하는 말이에요.",
+        "d": "물건의 무게를 나타내는 말이에요."
+      },
+      "gradeBand": {
+        "min": 3,
+        "max": 4
+      }
+    },
+    {
+      "id": "g3-argon-0114",
+      "revision": 1,
+      "status": "published",
+      "grade": 3,
+      "type": "cloze",
+      "difficultyTier": "basic",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "상쾌하다",
+        "partOfSpeech": "형용사",
+        "senseKey": "상쾌하다/형용사/443646-1"
+      },
+      "stem": "아침 숲속을 걸을 때처럼 느낌이 시원하고 산뜻한 상태를 ‘(    )’라고 합니다.",
+      "options": [
+        {
+          "id": "a",
+          "text": "상쾌하다"
+        },
+        {
+          "id": "b",
+          "text": "답답하다"
+        },
+        {
+          "id": "c",
+          "text": "미안하다"
+        },
+        {
+          "id": "d",
+          "text": "침침하다"
+        }
+      ],
+      "correctOptionId": "a",
+      "explanation": "느낌이 시원하고 산뜻할 때 ‘상쾌하다’라고 해요.",
+      "distractorRationales": {
+        "b": "숨이 막힐 듯 갑갑하다는 뜻이라 반대예요.",
+        "c": "남에게 부끄럽고 편치 않은 마음이에요.",
+        "d": "어둡고 흐릿한 상태를 가리키는 말이에요."
+      },
+      "gradeBand": {
+        "min": 3,
+        "max": 4
+      }
+    },
+    {
+      "id": "g3-argon-0115",
+      "revision": 1,
+      "status": "published",
+      "grade": 3,
+      "type": "antonym_context",
+      "difficultyTier": "core",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "싱그럽다",
+        "partOfSpeech": "형용사",
+        "senseKey": "싱그럽다/형용사/210931-1"
+      },
+      "stem": "‘비 온 뒤 풀잎이 참 싱그럽다.’에서 ‘싱그럽다’와 뜻이 반대인 말은 무엇일까요?",
+      "options": [
+        {
+          "id": "a",
+          "text": "싱싱하고 맑다"
+        },
+        {
+          "id": "b",
+          "text": "시들고 탁하다"
+        },
+        {
+          "id": "c",
+          "text": "향긋하고 곱다"
+        },
+        {
+          "id": "d",
+          "text": "푸르고 산뜻하다"
+        }
+      ],
+      "correctOptionId": "b",
+      "explanation": "‘싱그럽다’는 싱싱하고 맑은 향기가 있다는 뜻이므로 ‘시들고 탁하다’와 반대예요.",
+      "distractorRationales": {
+        "a": "‘싱그럽다’의 본뜻과 아주 가까운 말이에요.",
+        "c": "좋은 향기와 모습을 나타내어 반대말이 아니에요.",
+        "d": "깨끗하고 싱싱한 느낌이라 뜻이 비슷해요."
+      },
+      "gradeBand": {
+        "min": 3,
+        "max": 4
+      }
+    },
+    {
+      "id": "g3-argon-0116",
+      "revision": 1,
+      "status": "published",
+      "grade": 3,
+      "type": "definition",
+      "difficultyTier": "basic",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "든든하다",
+        "partOfSpeech": "형용사",
+        "senseKey": "든든하다/형용사/419368-1"
+      },
+      "stem": "‘언니가 곁에 있어 마음이 든든하다.’에서 ‘든든하다’의 뜻은 무엇일까요?",
+      "options": [
+        {
+          "id": "a",
+          "text": "믿음이 있어 두렵지 않다"
+        },
+        {
+          "id": "b",
+          "text": "겁이 나서 자꾸 떨린다"
+        },
+        {
+          "id": "c",
+          "text": "할 일이 없어 심심하다"
+        },
+        {
+          "id": "d",
+          "text": "잠이 와서 눈이 감긴다"
+        }
+      ],
+      "correctOptionId": "a",
+      "explanation": "‘든든하다’는 믿음이 생겨 두렵지 않고 굳세다는 뜻이에요.",
+      "distractorRationales": {
+        "b": "두려움을 느끼는 상태라 뜻이 반대예요.",
+        "c": "지루한 기분을 나타내는 말이라 달라요.",
+        "d": "졸린 상태를 설명하는 말이라 맞지 않아요."
+      },
+      "gradeBand": {
+        "min": 3,
+        "max": 4
+      }
+    },
+    {
+      "id": "g3-argon-0117",
+      "revision": 2,
+      "status": "published",
+      "grade": 3,
+      "type": "synonym_context",
+      "difficultyTier": "basic",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "고맙다",
+        "partOfSpeech": "형용사",
+        "senseKey": "고맙다/형용사/396122-1"
+      },
+      "stem": "‘우산을 빌려준 친구가 참 고맙다.’에서 ‘고맙다’와 바꾸어 쓸 말은 무엇일까요?",
+      "options": [
+        {
+          "id": "a",
+          "text": "서운하다"
+        },
+        {
+          "id": "b",
+          "text": "부끄럽다"
+        },
+        {
+          "id": "c",
+          "text": "감사하다"
+        },
+        {
+          "id": "d",
+          "text": "심심하다"
+        }
+      ],
+      "correctOptionId": "c",
+      "explanation": "도움을 받아 마음이 흐뭇할 때 쓰는 ‘고맙다’는 ‘감사하다’와 뜻이 비슷해요.",
+      "distractorRationales": {
+        "a": "섭섭하고 아쉬운 마음을 뜻해요.",
+        "b": "수줍거나 창피한 마음을 뜻해요.",
+        "d": "할 일이 없어 지루한 상태를 뜻해요."
+      },
+      "gradeBand": {
+        "min": 3,
+        "max": 4
+      }
+    },
+    {
+      "id": "g3-argon-0119",
+      "revision": 1,
+      "status": "published",
+      "grade": 3,
+      "type": "cloze",
+      "difficultyTier": "basic",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "활발하다",
+        "partOfSpeech": "형용사",
+        "senseKey": "활발하다/형용사/505764-1"
+      },
+      "stem": "움직임이나 태도가 생기 있고 힘차며 시원스러운 모습을 ‘(    )’라고 합니다.",
+      "options": [
+        {
+          "id": "a",
+          "text": "조용하다"
+        },
+        {
+          "id": "b",
+          "text": "쓸쓸하다"
+        },
+        {
+          "id": "c",
+          "text": "느긋하다"
+        },
+        {
+          "id": "d",
+          "text": "활발하다"
+        }
+      ],
+      "correctOptionId": "d",
+      "explanation": "생기 있고 힘차며 시원스러운 모습은 ‘활발하다’예요.",
+      "distractorRationales": {
+        "a": "아무 소리 없이 고요한 상태를 뜻해요.",
+        "b": "외롭고 허전한 느낌을 나타내는 말이에요.",
+        "c": "급하지 않고 여유 있는 태도를 뜻해요."
+      },
+      "gradeBand": {
+        "min": 3,
+        "max": 4
+      }
+    },
+    {
+      "id": "g3-argon-0120",
+      "revision": 1,
+      "status": "published",
+      "grade": 3,
+      "type": "antonym_context",
+      "difficultyTier": "core",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "기특하다",
+        "partOfSpeech": "형용사",
+        "senseKey": "기특하다/형용사/407434-1"
+      },
+      "stem": "‘스스로 정리하는 동생이 기특하다.’에서 ‘기특하다’와 뜻이 반대인 말은 무엇일까요?",
+      "options": [
+        {
+          "id": "a",
+          "text": "대견스럽다"
+        },
+        {
+          "id": "b",
+          "text": "사랑스럽다"
+        },
+        {
+          "id": "c",
+          "text": "자랑스럽다"
+        },
+        {
+          "id": "d",
+          "text": "밉살스럽다"
+        }
+      ],
+      "correctOptionId": "d",
+      "explanation": "‘기특하다’는 행동이 신통해 귀엽다는 뜻이므로 미운 데가 있는 ‘밉살스럽다’와 반대예요.",
+      "distractorRationales": {
+        "a": "흐뭇하고 대견하다는 뜻이라 비슷해요.",
+        "b": "아끼고 귀여워하는 마음이라 반대말이 아니에요.",
+        "c": "남에게 뽐낼 만하다는 좋은 뜻이에요."
+      },
+      "gradeBand": {
+        "min": 3,
+        "max": 4
+      }
+    },
+    {
+      "id": "g3-argon-0122",
+      "revision": 1,
+      "status": "published",
+      "grade": 3,
+      "type": "synonym_context",
+      "difficultyTier": "core",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "예절",
+        "partOfSpeech": "명사",
+        "senseKey": "예절/명사/244811-1"
+      },
+      "stem": "‘어른께 인사하는 예절을 배웠다.’에서 ‘예절’과 바꾸어 쓸 말은 무엇일까요?",
+      "options": [
+        {
+          "id": "a",
+          "text": "예법"
+        },
+        {
+          "id": "b",
+          "text": "장난"
+        },
+        {
+          "id": "c",
+          "text": "소풍"
+        },
+        {
+          "id": "d",
+          "text": "구경"
+        }
+      ],
+      "correctOptionId": "a",
+      "explanation": "‘예절’은 예의에 관한 절차나 질서로 ‘예법’과 바꾸어 쓸 수 있어요.",
+      "distractorRationales": {
+        "b": "재미로 하는 짓궂은 행동을 뜻해요.",
+        "c": "야외로 놀러 나가는 일을 뜻해요.",
+        "d": "흥미로 사물을 보는 일을 뜻해요."
+      },
+      "gradeBand": {
+        "min": 3,
+        "max": 4
+      }
+    },
+    {
+      "id": "g3-argon-0123",
+      "revision": 1,
+      "status": "published",
+      "grade": 3,
+      "type": "usage",
+      "difficultyTier": "core",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "소식",
+        "partOfSpeech": "명사",
+        "senseKey": "소식/명사/190646-1"
+      },
+      "stem": "다음 중 ‘소식’을 바르게 쓴 문장은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "비가 내려서 두 발에 소식을 신었다."
+        },
+        {
+          "id": "b",
+          "text": "날씨가 추워서 머리에 소식을 썼다."
+        },
+        {
+          "id": "c",
+          "text": "배가 고파서 그릇에 소식을 삶았다."
+        },
+        {
+          "id": "d",
+          "text": "고향에 계신 할머니께 소식을 전했다."
+        }
+      ],
+      "correctOptionId": "d",
+      "explanation": "‘소식’은 멀리 있는 사람의 사정을 알리는 말이나 글이에요.",
+      "distractorRationales": {
+        "a": "신발처럼 발에 신는 물건이 아니라 어색해요.",
+        "b": "모자처럼 머리에 쓰는 물건이 아니에요.",
+        "c": "그릇에 넣어 삶는 음식이 아니라 맞지 않아요."
+      },
+      "gradeBand": {
+        "min": 3,
+        "max": 4
+      }
+    },
+    {
+      "id": "g3-argon-0124",
+      "revision": 1,
+      "status": "published",
+      "grade": 3,
+      "type": "cloze",
+      "difficultyTier": "core",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "화목하다",
+        "partOfSpeech": "형용사",
+        "senseKey": "화목하다/형용사/378673-1"
+      },
+      "stem": "가족이나 친구 사이에 서로 뜻이 맞고 정다운 상태를 ‘(    )’라고 합니다.",
+      "options": [
+        {
+          "id": "a",
+          "text": "어색하다"
+        },
+        {
+          "id": "b",
+          "text": "냉랭하다"
+        },
+        {
+          "id": "c",
+          "text": "화목하다"
+        },
+        {
+          "id": "d",
+          "text": "불편하다"
+        }
+      ],
+      "correctOptionId": "c",
+      "explanation": "서로 뜻이 맞고 정다운 상태를 ‘화목하다’라고 해요.",
+      "distractorRationales": {
+        "a": "서먹하고 자연스럽지 못한 상태예요.",
+        "b": "분위기가 싸늘하고 정이 없는 상태예요.",
+        "d": "몸이나 마음이 편치 않은 상태예요."
+      },
+      "gradeBand": {
+        "min": 3,
+        "max": 4
+      }
+    },
+    {
+      "id": "g3-argon-0125",
+      "revision": 1,
+      "status": "published",
+      "grade": 3,
+      "type": "antonym_context",
+      "difficultyTier": "basic",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "따스하다",
+        "partOfSpeech": "형용사",
+        "senseKey": "따스하다/형용사/95855-1"
+      },
+      "stem": "‘봄볕이 참 따스하다.’에서 ‘따스하다’와 뜻이 가장 반대인 말은 무엇일까요?",
+      "options": [
+        {
+          "id": "a",
+          "text": "쌀쌀하다"
+        },
+        {
+          "id": "b",
+          "text": "포근하다"
+        },
+        {
+          "id": "c",
+          "text": "훈훈하다"
+        },
+        {
+          "id": "d",
+          "text": "따뜻하다"
+        }
+      ],
+      "correctOptionId": "a",
+      "explanation": "‘따스하다’는 조금 다스하고 따뜻한 느낌이므로 차가운 ‘쌀쌀하다’와 반대예요.",
+      "distractorRationales": {
+        "b": "보드랍고 따뜻한 느낌이라 뜻이 비슷해요.",
+        "c": "따뜻한 기운이 도는 상태라 반대말이 아니에요.",
+        "d": "‘따스하다’와 뜻이 가까운 말이에요."
+      },
+      "gradeBand": {
+        "min": 3,
+        "max": 4
+      }
+    },
+    {
+      "id": "g3-argon-0126",
+      "revision": 1,
+      "status": "published",
+      "grade": 3,
+      "type": "definition",
+      "difficultyTier": "core",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "넉넉하다",
+        "partOfSpeech": "형용사",
+        "senseKey": "넉넉하다/형용사/404832-1"
+      },
+      "stem": "‘나누어 줄 공책의 수가 넉넉하다.’에서 ‘넉넉하다’의 뜻은 무엇일까요?",
+      "options": [
+        {
+          "id": "a",
+          "text": "양이나 수가 매우 모자라다"
+        },
+        {
+          "id": "b",
+          "text": "무게가 아주 가벼워 들기 쉽다"
+        },
+        {
+          "id": "c",
+          "text": "모양이 동그랗고 매끄럽다"
+        },
+        {
+          "id": "d",
+          "text": "양이나 수가 차고도 남다"
+        }
+      ],
+      "correctOptionId": "d",
+      "explanation": "‘넉넉하다’는 크기나 수량이 기준에 차고도 남음이 있다는 뜻이에요.",
+      "distractorRationales": {
+        "a": "모자란다는 뜻이라 ‘넉넉하다’와 반대예요.",
+        "b": "무게가 적다는 뜻이라 문맥에 맞지 않아요.",
+        "c": "물건의 겉모양을 설명하는 말이라 달라요."
+      },
+      "gradeBand": {
+        "min": 3,
+        "max": 4
+      }
+    },
+    {
+      "id": "g3-argon-0127",
+      "revision": 1,
+      "status": "published",
+      "grade": 3,
+      "type": "synonym_context",
+      "difficultyTier": "core",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "비슷하다",
+        "partOfSpeech": "형용사",
+        "senseKey": "비슷하다/형용사/436692-1"
+      },
+      "stem": "‘내 필통과 동생 필통은 모양이 비슷하다.’에서 ‘비슷하다’와 뜻이 가장 가까운 말은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "같은 점이 많다"
+        },
+        {
+          "id": "b",
+          "text": "서로 정반대다"
+        },
+        {
+          "id": "c",
+          "text": "무게가 가볍다"
+        },
+        {
+          "id": "d",
+          "text": "색깔이 어둡다"
+        }
+      ],
+      "correctOptionId": "a",
+      "explanation": "‘비슷하다’는 똑같지는 않지만 서로 같은 점이 많다는 뜻이에요.",
+      "distractorRationales": {
+        "b": "전혀 다르다는 뜻이라 ‘비슷하다’와 반대예요.",
+        "c": "물건의 무게를 나타내는 말이라 뜻이 달라요.",
+        "d": "빛깔의 밝기를 설명하는 말이라 맞지 않아요."
+      },
+      "gradeBand": {
+        "min": 3,
+        "max": 4
+      }
+    },
+    {
+      "id": "g3-argon-0128",
+      "revision": 1,
+      "status": "published",
+      "grade": 3,
+      "type": "cloze",
+      "difficultyTier": "advanced",
+      "variantTag": "idiom_proverb",
+      "target": {
+        "lemma": "눈이 높다",
+        "partOfSpeech": "관용구",
+        "senseKey": "눈이 높다/관용구/526505-1"
+      },
+      "stem": "민수는 물건을 고를 때 아주 좋은 것만 찾아서 ‘(    )’라는 말을 듣는다.",
+      "options": [
+        {
+          "id": "a",
+          "text": "발이 넓다"
+        },
+        {
+          "id": "b",
+          "text": "눈이 높다"
+        },
+        {
+          "id": "c",
+          "text": "입이 짧다"
+        },
+        {
+          "id": "d",
+          "text": "귀가 얇다"
+        }
+      ],
+      "correctOptionId": "b",
+      "explanation": "정도 이상의 좋은 것만 찾는 버릇이 있을 때 ‘눈이 높다’라고 해요.",
+      "distractorRationales": {
+        "a": "아는 사람이 많다는 뜻의 관용구예요.",
+        "c": "음식을 가려 적게 먹는다는 뜻이에요.",
+        "d": "남의 말을 쉽게 그대로 믿는다는 뜻이에요."
+      },
+      "gradeBand": {
+        "min": 3,
+        "max": 4
+      }
+    },
+    {
+      "id": "g3-argon-0129",
+      "revision": 1,
+      "status": "published",
+      "grade": 3,
+      "type": "cloze",
+      "difficultyTier": "advanced",
+      "variantTag": "idiom_proverb",
+      "target": {
+        "lemma": "손이 크다",
+        "partOfSpeech": "관용구",
+        "senseKey": "손이 크다/관용구/529792-1"
+      },
+      "stem": "이모는 이웃에게 음식을 늘 푸짐하게 나누어 주어서 ‘(    )’라는 말을 듣는다.",
+      "options": [
+        {
+          "id": "a",
+          "text": "입이 무겁다"
+        },
+        {
+          "id": "b",
+          "text": "눈이 어둡다"
+        },
+        {
+          "id": "c",
+          "text": "귀가 밝다"
+        },
+        {
+          "id": "d",
+          "text": "손이 크다"
+        }
+      ],
+      "correctOptionId": "d",
+      "explanation": "씀씀이가 후하고 넉넉할 때 ‘손이 크다’라는 관용구를 써요.",
+      "distractorRationales": {
+        "a": "비밀을 잘 지킨다는 뜻의 관용구예요.",
+        "b": "사물을 잘 보지 못하거나 욕심이 앞선다는 뜻이에요.",
+        "c": "소리를 아주 잘 듣는다는 뜻이에요."
+      },
+      "gradeBand": {
+        "min": 3,
+        "max": 4
+      }
+    },
+    {
+      "id": "g3-argon-0130",
+      "revision": 1,
+      "status": "published",
+      "grade": 3,
+      "type": "cloze",
+      "difficultyTier": "advanced",
+      "variantTag": "idiom_proverb",
+      "target": {
+        "lemma": "마음이 통하다",
+        "partOfSpeech": "관용구",
+        "senseKey": "마음이 통하다/관용구/527643-1"
+      },
+      "stem": "말하지 않아도 서로 생각이 같아 이해가 잘될 때 ‘(    )’라고 합니다.",
+      "options": [
+        {
+          "id": "a",
+          "text": "가슴이 철렁하다"
+        },
+        {
+          "id": "b",
+          "text": "입이 벌어지다"
+        },
+        {
+          "id": "c",
+          "text": "고개를 갸웃하다"
+        },
+        {
+          "id": "d",
+          "text": "마음이 통하다"
+        }
+      ],
+      "correctOptionId": "d",
+      "explanation": "서로 생각이 같아서 이해가 잘되는 것을 ‘마음이 통하다’라고 해요.",
+      "distractorRationales": {
+        "a": "갑자기 놀라거나 두려운 느낌을 뜻해요.",
+        "b": "몹시 놀라 어리둥절해하는 모습을 뜻해요.",
+        "c": "미심쩍어 의심하는 동작을 뜻해요."
+      },
+      "gradeBand": {
+        "min": 3,
+        "max": 4
+      }
+    },
+    {
+      "id": "g3-argon-0138",
+      "revision": 1,
+      "status": "published",
+      "grade": 3,
+      "type": "cloze",
+      "difficultyTier": "advanced",
+      "variantTag": "idiom_proverb",
+      "target": {
+        "lemma": "가는 말이 고와야 오는 말이 곱다",
+        "partOfSpeech": "속담",
+        "senseKey": "가는 말이 고와야 오는 말이 곱다/속담/null"
+      },
+      "stem": "남에게 말과 행동을 좋게 해야 남도 나에게 좋게 한다는 속담은 ‘(    )’이다.",
+      "options": [
+        {
+          "id": "a",
+          "text": "원숭이도 나무에서 떨어진다"
+        },
+        {
+          "id": "b",
+          "text": "세 살 버릇 여든까지 간다"
+        },
+        {
+          "id": "c",
+          "text": "소문난 잔치에 먹을 것 없다"
+        },
+        {
+          "id": "d",
+          "text": "가는 말이 고와야 오는 말이 곱다"
+        }
+      ],
+      "correctOptionId": "d",
+      "explanation": "내가 먼저 좋게 대해야 상대방도 좋게 대한다는 뜻의 속담이에요.",
+      "distractorRationales": {
+        "a": "잘하는 사람도 때로는 실수한다는 뜻의 속담이에요.",
+        "b": "어릴 적 버릇이 늙어서까지 이어진다는 속담이에요.",
+        "c": "소문에 비해 실제 실속이 없다는 뜻의 속담이에요."
+      },
+      "gradeBand": {
+        "min": 3,
+        "max": 4
+      }
+    },
+    {
+      "id": "g3-argon-0140",
+      "revision": 1,
+      "status": "published",
+      "grade": 3,
+      "type": "definition",
+      "difficultyTier": "challenge",
+      "variantTag": "dialect",
+      "dialectRegion": "경상",
+      "target": {
+        "lemma": "강생이",
+        "partOfSpeech": "명사",
+        "senseKey": "강생이/명사/od-486494-1"
+      },
+      "stem": "경상도 할머니께서 \"마당에서 꼬리 치며 멍멍 짖는 강생이 밥 좀 주렴.\" 하고 말씀하셨어요. ‘강생이’는 무엇일까요?",
+      "options": [
+        {
+          "id": "a",
+          "text": "송아지"
+        },
+        {
+          "id": "b",
+          "text": "병아리"
+        },
+        {
+          "id": "c",
+          "text": "강아지"
+        },
+        {
+          "id": "d",
+          "text": "고양이"
+        }
+      ],
+      "correctOptionId": "c",
+      "explanation": "‘강생이’는 경상도와 제주 지역에서 ‘강아지’를 부르는 방언이에요.",
+      "distractorRationales": {
+        "a": "소의 새끼라 멍멍 짖지 않아요.",
+        "b": "닭의 새끼라 꼬리를 치며 짖지 않아요.",
+        "d": "야옹 하고 우는 동물이라 단서와 달라요."
+      },
+      "gradeBand": {
+        "min": 3,
+        "max": 4
+      }
+    },
+    {
+      "id": "g3-argon-0141",
+      "revision": 1,
+      "status": "published",
+      "grade": 3,
+      "type": "definition",
+      "difficultyTier": "challenge",
+      "variantTag": "dialect",
+      "dialectRegion": "경상",
+      "target": {
+        "lemma": "정구지",
+        "partOfSpeech": "명사",
+        "senseKey": "정구지/명사/od-433889-1"
+      },
+      "stem": "할머니께서 텃밭의 가늘고 긴 초록 잎 채소를 베시며 \"오늘 저녁엔 향긋한 정구지 무침을 해 주마.\" 하셨어요. ‘정구지’는 무엇일까요?",
+      "options": [
+        {
+          "id": "a",
+          "text": "당근"
+        },
+        {
+          "id": "b",
+          "text": "감자"
+        },
+        {
+          "id": "c",
+          "text": "부추"
+        },
+        {
+          "id": "d",
+          "text": "버섯"
+        }
+      ],
+      "correctOptionId": "c",
+      "explanation": "‘정구지’는 경상·전북·충청 지역에서 ‘부추’를 이르는 방언이에요.",
+      "distractorRationales": {
+        "a": "주황색 뿌리채소라 초록 잎 채소가 아니에요.",
+        "b": "땅속에서 캐는 동그란 줄기채소예요.",
+        "d": "나무나 흙에서 자라는 갓 모양 식재료예요."
+      },
+      "gradeBand": {
+        "min": 3,
+        "max": 4
+      }
+    },
+    {
+      "id": "g3-argon-0142",
+      "revision": 1,
+      "status": "published",
+      "grade": 3,
+      "type": "definition",
+      "difficultyTier": "challenge",
+      "variantTag": "dialect",
+      "dialectRegion": "경상",
+      "target": {
+        "lemma": "가시개",
+        "partOfSpeech": "명사",
+        "senseKey": "가시개/명사/od-338954-1"
+      },
+      "stem": "색종이를 오리려던 할머니께서 \"서랍에서 종이 자르는 가시개 좀 가져오너라.\" 하고 말씀하셨어요. ‘가시개’는 무엇일까요?",
+      "options": [
+        {
+          "id": "a",
+          "text": "연필"
+        },
+        {
+          "id": "b",
+          "text": "가위"
+        },
+        {
+          "id": "c",
+          "text": "공책"
+        },
+        {
+          "id": "d",
+          "text": "분필"
+        }
+      ],
+      "correctOptionId": "b",
+      "explanation": "‘가시개’는 경상 지역에서 종이나 천을 자르는 ‘가위’를 뜻하는 방언이에요.",
+      "distractorRationales": {
+        "a": "글씨를 쓰는 도구라 종이를 자르지 못해요.",
+        "c": "글씨를 적는 종이 묶음이라 도구가 아니에요.",
+        "d": "칠판에 글씨를 쓰는 막대 모양 도구예요."
+      },
+      "gradeBand": {
+        "min": 3,
+        "max": 4
+      }
+    },
+    {
+      "id": "g3-argon-0143",
+      "revision": 2,
+      "status": "published",
+      "grade": 3,
+      "type": "definition",
+      "difficultyTier": "challenge",
+      "variantTag": "dialect",
+      "dialectRegion": "제주",
+      "target": {
+        "lemma": "하르방",
+        "partOfSpeech": "명사",
+        "senseKey": "하르방/명사/od-314185-1"
+      },
+      "stem": "제주도 사촌 형이 흰 수염이 나신 아버지의 아버지께 \"하르방, 건강하시지요?\" 하고 인사했어요. ‘하르방’은 누구일까요?",
+      "options": [
+        {
+          "id": "a",
+          "text": "아주머니"
+        },
+        {
+          "id": "b",
+          "text": "사촌 동생"
+        },
+        {
+          "id": "c",
+          "text": "할아버지"
+        },
+        {
+          "id": "d",
+          "text": "이모부님"
+        }
+      ],
+      "correctOptionId": "c",
+      "explanation": "‘하르방’은 제주 지역에서 ‘할아버지’를 부르는 정겨운 방언이에요.",
+      "distractorRationales": {
+        "a": "이웃이나 친척 여자 어른을 부르는 말이에요.",
+        "b": "나이가 어린 친척 동생을 가리키는 말이에요.",
+        "d": "이모의 남편을 높여 부르는 말이에요."
+      },
+      "gradeBand": {
+        "min": 3,
+        "max": 4
+      }
+    },
+    {
+      "id": "g3-argon-0144",
+      "revision": 1,
+      "status": "published",
+      "grade": 3,
+      "type": "definition",
+      "difficultyTier": "challenge",
+      "variantTag": "dialect",
+      "dialectRegion": "제주",
+      "target": {
+        "lemma": "할망",
+        "partOfSpeech": "명사",
+        "senseKey": "할망/명사/od-476359-1"
+      },
+      "stem": "제주에 사시는 어머니의 어머니께서 내 손을 잡으시며 \"이 할망이 맛있는 귤 따 줄게.\" 하고 웃으셨어요. ‘할망’은 누구일까요?",
+      "options": [
+        {
+          "id": "a",
+          "text": "아버지"
+        },
+        {
+          "id": "b",
+          "text": "할머니"
+        },
+        {
+          "id": "c",
+          "text": "아저씨"
+        },
+        {
+          "id": "d",
+          "text": "남동생"
+        }
+      ],
+      "correctOptionId": "b",
+      "explanation": "‘할망’은 제주와 경북 지역에서 ‘할머니’를 이르는 방언이에요.",
+      "distractorRationales": {
+        "a": "나를 낳아 주신 남자 부모님을 뜻해요.",
+        "c": "남자 어른을 부르는 말이라 맞지 않아요.",
+        "d": "나이가 적은 남자 형제를 가리키는 말이에요."
+      },
+      "gradeBand": {
+        "min": 3,
+        "max": 4
+      }
+    },
+    {
+      "id": "g3-argon-0146",
+      "revision": 1,
+      "status": "published",
+      "grade": 3,
+      "type": "definition",
+      "difficultyTier": "challenge",
+      "variantTag": "dialect",
+      "dialectRegion": "충청",
+      "target": {
+        "lemma": "복송아",
+        "partOfSpeech": "명사",
+        "senseKey": "복송아/명사/od-745752-1"
+      },
+      "stem": "충청도 외할머니께서 보송보송한 털이 난 분홍빛 여름 과일을 깎으시며 \"달콤한 복송아 먹어 봐유.\" 하셨어요. ‘복송아’는 무엇일까요?",
+      "options": [
+        {
+          "id": "a",
+          "text": "바나나"
+        },
+        {
+          "id": "b",
+          "text": "오렌지"
+        },
+        {
+          "id": "c",
+          "text": "한라봉"
+        },
+        {
+          "id": "d",
+          "text": "복숭아"
+        }
+      ],
+      "correctOptionId": "d",
+      "explanation": "‘복송아’는 충청·강원·경상·전북 지역에서 ‘복숭아’를 이르는 방언이에요.",
+      "distractorRationales": {
+        "a": "길쭉하고 노란 껍질을 벗겨 먹는 과일이에요.",
+        "b": "둥글고 주황색이며 털이 없는 과일이에요.",
+        "c": "꼭지가 볼록 나온 노란 감귤류 과일이에요."
+      },
+      "gradeBand": {
+        "min": 3,
+        "max": 4
+      }
+    },
+    {
+      "id": "g3-argon-0147",
+      "revision": 1,
+      "status": "published",
+      "grade": 3,
+      "type": "definition",
+      "difficultyTier": "challenge",
+      "variantTag": "dialect",
+      "dialectRegion": "전라",
+      "target": {
+        "lemma": "옥수시",
+        "partOfSpeech": "명사",
+        "senseKey": "옥수시/명사/od-633864-1"
+      },
+      "stem": "전라도 할머니께서 수염을 벗기며 노란 알갱이가 촘촘히 박힌 옥수시를 솥에 찌셨어요. 여기서 ‘옥수시’는 무엇일까요?",
+      "options": [
+        {
+          "id": "a",
+          "text": "시금치"
+        },
+        {
+          "id": "b",
+          "text": "옥수수"
+        },
+        {
+          "id": "c",
+          "text": "도라지"
+        },
+        {
+          "id": "d",
+          "text": "미나리"
+        }
+      ],
+      "correctOptionId": "b",
+      "explanation": "‘옥수시’는 전라와 경남 지역에서 ‘옥수수’를 이르는 방언이에요.",
+      "distractorRationales": {
+        "a": "초록색 잎과 뿌리를 먹는 나물 채소예요.",
+        "c": "하얀 뿌리를 무쳐 먹는 채소예요.",
+        "d": "물가에서 자라는 향긋한 줄기채소예요."
+      },
+      "gradeBand": {
+        "min": 3,
+        "max": 4
+      }
+    },
+    {
+      "id": "g3-argon-0148",
+      "revision": 1,
+      "status": "published",
+      "grade": 3,
+      "type": "definition",
+      "difficultyTier": "challenge",
+      "variantTag": "dialect",
+      "dialectRegion": "강원",
+      "target": {
+        "lemma": "부치개",
+        "partOfSpeech": "명사",
+        "senseKey": "부치개/명사/od-177403-1"
+      },
+      "stem": "비 오는 날 강원도 할머니께서 프라이팬에 반죽을 얇게 펴서 지글지글 부치개를 구우셨어요. ‘부치개’는 무엇일까요?",
+      "options": [
+        {
+          "id": "a",
+          "text": "부침개"
+        },
+        {
+          "id": "b",
+          "text": "미역국"
+        },
+        {
+          "id": "c",
+          "text": "비빔밥"
+        },
+        {
+          "id": "d",
+          "text": "깍두기"
+        }
+      ],
+      "correctOptionId": "a",
+      "explanation": "‘부치개’는 강원과 경기 지역에서 ‘부침개’를 이르는 방언이에요.",
+      "distractorRationales": {
+        "b": "미역을 넣고 끓인 국물 요리예요.",
+        "c": "밥에 여러 나물을 넣고 비빈 음식이에요.",
+        "d": "무를 네모나게 썰어 담근 김치예요."
+      },
+      "gradeBand": {
+        "min": 3,
+        "max": 4
+      }
+    },
+    {
+      "id": "g3-argon-0149",
+      "revision": 1,
+      "status": "published",
+      "grade": 3,
+      "type": "definition",
+      "difficultyTier": "challenge",
+      "variantTag": "dialect",
+      "dialectRegion": "전라",
+      "target": {
+        "lemma": "짐치",
+        "partOfSpeech": "명사",
+        "senseKey": "짐치/명사/od-509047-1"
+      },
+      "stem": "전라도 할머니께서 절인 배추에 빨간 양념을 버무리시며 \"올겨울 먹을 짐치가 참 맛있겠다.\" 하셨어요. ‘짐치’는 무엇일까요?",
+      "options": [
+        {
+          "id": "a",
+          "text": "김치"
+        },
+        {
+          "id": "b",
+          "text": "된장"
+        },
+        {
+          "id": "c",
+          "text": "간장"
+        },
+        {
+          "id": "d",
+          "text": "식혜"
+        }
+      ],
+      "correctOptionId": "a",
+      "explanation": "‘짐치’는 전라를 비롯한 여러 지역에서 ‘김치’를 부르는 방언이에요.",
+      "distractorRationales": {
+        "b": "콩을 발효시켜 만든 구수한 장이에요.",
+        "c": "음식의 간을 맞추는 짭짤한 액체 장이에요.",
+        "d": "엿기름과 밥으로 만든 달콤한 음료예요."
+      },
+      "gradeBand": {
+        "min": 3,
+        "max": 4
+      }
+    },
+    {
+      "id": "g3-argon-0150",
+      "revision": 1,
+      "status": "published",
+      "grade": 3,
+      "type": "definition",
+      "difficultyTier": "challenge",
+      "variantTag": "dialect",
+      "dialectRegion": "경상",
+      "target": {
+        "lemma": "무시",
+        "partOfSpeech": "명사",
+        "senseKey": "무시/명사/od-457983-1"
+      },
+      "stem": "경상도 할머니께서 하얗고 굵은 뿌리채소를 네모나게 썰어 깍두기를 담그시며 \"가을 무시가 참 달다.\" 하셨어요. ‘무시’는 무엇일까요?",
+      "options": [
+        {
+          "id": "a",
+          "text": "파"
+        },
+        {
+          "id": "b",
+          "text": "콩"
+        },
+        {
+          "id": "c",
+          "text": "팥"
+        },
+        {
+          "id": "d",
+          "text": "무"
+        }
+      ],
+      "correctOptionId": "d",
+      "explanation": "‘무시’는 경상과 전라 지역에서 채소 ‘무’를 이르는 방언이에요.",
+      "distractorRationales": {
+        "a": "초록색 줄기가 길쭉한 양념 채소예요.",
+        "b": "꼬투리 속에 동그란 알이 드는 곡식이에요.",
+        "c": "붉은 알갱이로 떡고물을 만드는 곡식이에요."
+      },
+      "gradeBand": {
+        "min": 3,
+        "max": 4
+      }
+    },
+    {
+      "id": "g3-argon-0152",
+      "revision": 1,
+      "status": "published",
+      "grade": 3,
+      "type": "antonym_context",
+      "difficultyTier": "core",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "분명하다",
+        "partOfSpeech": "형용사",
+        "senseKey": "분명하다/형용사/155625-1"
+      },
+      "stem": "‘안개가 걷히자 산의 모습이 분명하다.’에서 ‘분명하다’와 뜻이 반대인 말은 무엇일까요?",
+      "options": [
+        {
+          "id": "a",
+          "text": "뚜렷하다"
+        },
+        {
+          "id": "b",
+          "text": "흐릿하다"
+        },
+        {
+          "id": "c",
+          "text": "똑똑하다"
+        },
+        {
+          "id": "d",
+          "text": "선명하다"
+        }
+      ],
+      "correctOptionId": "b",
+      "explanation": "‘분명하다’는 흐릿함이 없이 뚜렷하다는 뜻이므로 ‘흐릿하다’와 반대예요.",
+      "distractorRationales": {
+        "a": "‘분명하다’와 뜻이 비슷한 말이에요.",
+        "c": "모습이나 소리가 분명하다는 뜻이에요.",
+        "d": "산뜻하고 뚜렷하다는 뜻이라 반대말이 아니에요."
+      },
+      "gradeBand": {
+        "min": 3,
+        "max": 4
+      }
+    },
+    {
+      "id": "g3-argon-0155",
+      "revision": 1,
+      "status": "published",
+      "grade": 3,
+      "type": "usage",
+      "difficultyTier": "advanced",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "격려하다",
+        "partOfSpeech": "동사",
+        "senseKey": "격려하다/동사/391022-1"
+      },
+      "stem": "‘격려하다’를 바르게 쓴 문장은 무엇일까요?",
+      "options": [
+        {
+          "id": "a",
+          "text": "교실 바닥의 먼지를 격려했다."
+        },
+        {
+          "id": "b",
+          "text": "지친 친구가 힘내도록 격려했다."
+        },
+        {
+          "id": "c",
+          "text": "깎은 연필을 필통에 격려했다."
+        },
+        {
+          "id": "d",
+          "text": "차가운 물을 컵에다 격려했다."
+        }
+      ],
+      "correctOptionId": "b",
+      "explanation": "‘격려하다’는 용기나 의욕이 솟아나도록 북돋아 주는 말이에요.",
+      "distractorRationales": {
+        "a": "먼지는 용기를 북돋울 대상이 아니에요.",
+        "c": "연필을 넣는 동작에는 쓸 수 없어요.",
+        "d": "물을 따르는 행동과 어울리지 않아요."
+      },
+      "gradeBand": {
+        "min": 3,
+        "max": 4
+      }
+    },
+    {
+      "id": "g3-argon-0157",
+      "revision": 1,
+      "status": "published",
+      "grade": 3,
+      "type": "antonym_context",
+      "difficultyTier": "basic",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "즐겁다",
+        "partOfSpeech": "형용사",
+        "senseKey": "즐겁다/형용사/483118-1"
+      },
+      "stem": "‘친구들과 공놀이를 하니 마음이 즐겁다.’에서 ‘즐겁다’와 뜻이 반대인 말은 무엇일까요?",
+      "options": [
+        {
+          "id": "a",
+          "text": "기쁘다"
+        },
+        {
+          "id": "b",
+          "text": "신나다"
+        },
+        {
+          "id": "c",
+          "text": "반갑다"
+        },
+        {
+          "id": "d",
+          "text": "괴롭다"
+        }
+      ],
+      "correctOptionId": "d",
+      "explanation": "‘즐겁다’는 흐뭇하고 기쁘다는 뜻이므로 마음이 아픈 ‘괴롭다’와 반대예요.",
+      "distractorRationales": {
+        "a": "‘즐겁다’와 뜻이 아주 가까운 말이에요.",
+        "b": "흥이 일어나 기분이 좋다는 비슷한 말이에요.",
+        "c": "만나서 기쁘고 흐뭇하다는 뜻이에요."
+      },
+      "gradeBand": {
+        "min": 3,
+        "max": 4
+      }
+    },
+    {
+      "id": "g3-argon-0158",
+      "revision": 1,
+      "status": "published",
+      "grade": 3,
+      "type": "definition",
+      "difficultyTier": "core",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "산뜻하다",
+        "partOfSpeech": "형용사",
+        "senseKey": "산뜻하다/형용사/441740-1"
+      },
+      "stem": "‘세수를 하고 나니 기분이 산뜻하다.’에서 ‘산뜻하다’의 뜻은 무엇일까요?",
+      "options": [
+        {
+          "id": "a",
+          "text": "마음이 무겁고 답답하다"
+        },
+        {
+          "id": "b",
+          "text": "몸이 지쳐서 나른하다"
+        },
+        {
+          "id": "c",
+          "text": "주변이 어둡고 컴컴하다"
+        },
+        {
+          "id": "d",
+          "text": "느낌이 깨끗하고 시원하다"
+        }
+      ],
+      "correctOptionId": "d",
+      "explanation": "‘산뜻하다’는 기분이나 느낌이 깨끗하고 시원하다는 뜻이에요.",
+      "distractorRationales": {
+        "a": "기분이 가라앉고 갑갑한 상태라 반대예요.",
+        "b": "피곤하여 기운이 빠진 상태를 뜻해요.",
+        "c": "빛이 없는 어두운 상태를 설명하는 말이에요."
+      },
+      "gradeBand": {
+        "min": 3,
+        "max": 4
+      }
+    },
+    {
+      "id": "g3-argon-0162",
+      "revision": 1,
+      "status": "published",
+      "grade": 3,
+      "type": "antonym_context",
+      "difficultyTier": "core",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "보살피다",
+        "partOfSpeech": "동사",
+        "senseKey": "보살피다/동사/433327-1"
+      },
+      "stem": "‘다친 새를 정성껏 보살피다.’에서 ‘보살피다’와 뜻이 반대인 말은 무엇일까요?",
+      "options": [
+        {
+          "id": "a",
+          "text": "정성껏 돕다"
+        },
+        {
+          "id": "b",
+          "text": "따뜻이 돕다"
+        },
+        {
+          "id": "c",
+          "text": "아끼며 돕다"
+        },
+        {
+          "id": "d",
+          "text": "모른 체하다"
+        }
+      ],
+      "correctOptionId": "d",
+      "explanation": "‘보살피다’는 정성을 기울여 보호하며 돕는 것이므로 ‘모른 체하다’와 반대예요.",
+      "distractorRationales": {
+        "a": "‘보살피다’의 뜻과 아주 비슷한 표현이에요.",
+        "b": "따뜻하게 돌보는 행동이라 반대말이 아니에요.",
+        "c": "소중히 여기며 돕는다는 비슷한 뜻이에요."
+      },
+      "gradeBand": {
+        "min": 3,
+        "max": 4
+      }
+    },
+    {
+      "id": "g3-argon-0163",
+      "revision": 1,
+      "status": "published",
+      "grade": 3,
+      "type": "definition",
+      "difficultyTier": "basic",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "정리하다",
+        "partOfSpeech": "동사",
+        "senseKey": "정리하다/동사/296740-1"
+      },
+      "stem": "‘어질러진 책을 정리하다.’에서 ‘정리하다’의 뜻은 무엇일까요?",
+      "options": [
+        {
+          "id": "a",
+          "text": "모아 둔 것을 바닥에 쏟다"
+        },
+        {
+          "id": "b",
+          "text": "필요한 물건을 새로 사 오다"
+        },
+        {
+          "id": "c",
+          "text": "흐트러진 것을 바르게 치우다"
+        },
+        {
+          "id": "d",
+          "text": "아끼던 물건을 남에게 주다"
+        }
+      ],
+      "correctOptionId": "c",
+      "explanation": "‘정리하다’는 흐트러진 것을 모으거나 치워 질서 있게 만드는 것이에요.",
+      "distractorRationales": {
+        "a": "오히려 어지럽히는 행동이라 뜻이 반대예요.",
+        "b": "물건을 구매하는 일이라 뜻이 달라요.",
+        "d": "선물하거나 나누어 주는 행동이에요."
+      },
+      "gradeBand": {
+        "min": 3,
+        "max": 4
+      }
+    },
+    {
+      "id": "g3-argon-0164",
+      "revision": 2,
+      "status": "published",
+      "grade": 3,
+      "type": "usage",
+      "difficultyTier": "core",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "자세하다",
+        "partOfSpeech": "형용사",
+        "senseKey": "자세하다/형용사/471541-1"
+      },
+      "stem": "‘자세하다’를 바르게 쓴 문장은 무엇일까요?",
+      "options": [
+        {
+          "id": "a",
+          "text": "안내판의 길 안내 설명이 자세하다."
+        },
+        {
+          "id": "b",
+          "text": "사과 맛이 빨갛고 아주 자세하다."
+        },
+        {
+          "id": "c",
+          "text": "구름이 바람을 타고 참 자세하다."
+        },
+        {
+          "id": "d",
+          "text": "운동화 끈이 짧아서 늘 자세하다."
+        }
+      ],
+      "correctOptionId": "a",
+      "explanation": "‘자세하다’는 작은 부분까지 구체적이고 분명하다는 뜻이에요.",
+      "distractorRationales": {
+        "b": "과일 맛이나 색깔에는 어울리지 않아요.",
+        "c": "구름이 흘러가는 모습에는 쓰지 않아요.",
+        "d": "운동화 끈의 길이와 관련이 없어요."
+      },
+      "gradeBand": {
+        "min": 3,
+        "max": 4
+      }
+    },
+    {
+      "id": "g3-argon-0166",
+      "revision": 1,
+      "status": "published",
+      "grade": 3,
+      "type": "antonym_context",
+      "difficultyTier": "core",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "응원하다",
+        "partOfSpeech": "동사",
+        "senseKey": "응원하다/동사/264187-1"
+      },
+      "stem": "‘달리기 선수들을 힘껏 응원하다.’에서 ‘응원하다’와 뜻이 반대인 말은 무엇일까요?",
+      "options": [
+        {
+          "id": "a",
+          "text": "격려하다"
+        },
+        {
+          "id": "b",
+          "text": "도와주다"
+        },
+        {
+          "id": "c",
+          "text": "칭찬하다"
+        },
+        {
+          "id": "d",
+          "text": "방해하다"
+        }
+      ],
+      "correctOptionId": "d",
+      "explanation": "‘응원하다’는 힘을 내도록 돕는 것이므로 일을 막는 ‘방해하다’와 반대예요.",
+      "distractorRationales": {
+        "a": "용기를 북돋아 준다는 비슷한 말이에요.",
+        "b": "남을 위해 애써 준다는 뜻이라 비슷해요.",
+        "c": "잘한 일을 좋게 말해 준다는 뜻이에요."
+      },
+      "gradeBand": {
+        "min": 3,
+        "max": 4
+      }
+    },
+    {
+      "id": "g3-argon-0168",
+      "revision": 1,
+      "status": "published",
+      "grade": 3,
+      "type": "synonym_context",
+      "difficultyTier": "basic",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "행복하다",
+        "partOfSpeech": "형용사",
+        "senseKey": "행복하다/형용사/368198-1"
+      },
+      "stem": "‘가족과 저녁을 함께 먹으니 행복하다.’에서 ‘행복하다’와 뜻이 비슷한 말은 무엇일까요?",
+      "options": [
+        {
+          "id": "a",
+          "text": "슬프고 외롭다"
+        },
+        {
+          "id": "b",
+          "text": "두렵고 떨리다"
+        },
+        {
+          "id": "c",
+          "text": "기쁘고 흐뭇하다"
+        },
+        {
+          "id": "d",
+          "text": "지치고 고단하다"
+        }
+      ],
+      "correctOptionId": "c",
+      "explanation": "‘행복하다’는 생활에서 만족과 기쁨을 느껴 흐뭇하다는 뜻이에요.",
+      "distractorRationales": {
+        "a": "마음이 아프고 쓸쓸한 반대 감정이에요.",
+        "b": "겁이 나서 불안한 상태를 뜻해요.",
+        "d": "몸이 피곤하여 힘든 상태를 뜻해요."
+      },
+      "gradeBand": {
+        "min": 3,
+        "max": 4
+      }
+    },
+    {
+      "id": "g3-argon-0169",
+      "revision": 1,
+      "status": "published",
+      "grade": 3,
+      "type": "usage",
+      "difficultyTier": "advanced",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "편안하다",
+        "partOfSpeech": "형용사",
+        "senseKey": "편안하다/형용사/353724-1"
+      },
+      "stem": "‘편안하다’를 바르게 쓴 문장은 무엇일까요?",
+      "options": [
+        {
+          "id": "a",
+          "text": "조용히 쉬니 마음이 참 편안하다."
+        },
+        {
+          "id": "b",
+          "text": "다리를 다쳐 아픔이 참 편안하다."
+        },
+        {
+          "id": "c",
+          "text": "우산을 잃어 걱정이 참 편안하다."
+        },
+        {
+          "id": "d",
+          "text": "소음이 심해 귓속이 참 편안하다."
+        }
+      ],
+      "correctOptionId": "a",
+      "explanation": "‘편안하다’는 몸이나 마음이 편하고 걱정이 없을 때 써요.",
+      "distractorRationales": {
+        "b": "다쳐서 아픈 상황에는 어울리지 않아요.",
+        "c": "걱정이 생긴 상태와는 뜻이 반대예요.",
+        "d": "시끄러운 소음 속에서는 쓰기 어색해요."
+      },
+      "gradeBand": {
+        "min": 3,
+        "max": 4
+      }
+    },
+    {
+      "id": "g3-argon-0170",
+      "revision": 1,
+      "status": "published",
+      "grade": 3,
+      "type": "cloze",
+      "difficultyTier": "core",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "가지런하다",
+        "partOfSpeech": "형용사",
+        "senseKey": "가지런하다/형용사/3065-1"
+      },
+      "stem": "여러 물건이 들쭉날쭉하지 않고 나란히 고르게 놓인 상태를 ‘(    )’라고 합니다.",
+      "options": [
+        {
+          "id": "a",
+          "text": "어수선하다"
+        },
+        {
+          "id": "b",
+          "text": "울퉁불퉁하다"
+        },
+        {
+          "id": "c",
+          "text": "삐뚤삐뚤하다"
+        },
+        {
+          "id": "d",
+          "text": "가지런하다"
+        }
+      ],
+      "correctOptionId": "d",
+      "explanation": "여럿이 층이 나지 않고 고르게 되어 있는 상태를 ‘가지런하다’라고 해요.",
+      "distractorRationales": {
+        "a": "정돈되지 않고 어지러운 상태를 뜻해요.",
+        "b": "바닥이나 겉면이 고르지 못한 모양이에요.",
+        "c": "선이 바르지 않고 이리저리 굽은 모양이에요."
+      },
+      "gradeBand": {
+        "min": 3,
+        "max": 4
+      }
+    },
+    {
+      "id": "g3-argon-0176",
+      "revision": 1,
+      "status": "published",
+      "grade": 3,
+      "type": "antonym_context",
+      "difficultyTier": "advanced",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "비교하다",
+        "partOfSpeech": "동사",
+        "senseKey": "비교하다/동사/153326-1"
+      },
+      "stem": "‘두 잎의 모양을 비교하다.’에서 ‘비교하다’와 반대되는 행동은 무엇일까요?",
+      "options": [
+        {
+          "id": "a",
+          "text": "견주지 않고 따로 두다"
+        },
+        {
+          "id": "b",
+          "text": "나란히 대어 살펴보다"
+        },
+        {
+          "id": "c",
+          "text": "닮은 점을 찾아내다"
+        },
+        {
+          "id": "d",
+          "text": "다른 점을 견주어 보다"
+        }
+      ],
+      "correctOptionId": "a",
+      "explanation": "‘비교하다’는 둘 이상을 견주어 살피는 것이므로 견주지 않고 따로 두는 것과 반대예요.",
+      "distractorRationales": {
+        "b": "서로 견주어 보는 행동이라 뜻이 비슷해요.",
+        "c": "비교하며 공통점을 찾는 행동이에요.",
+        "d": "차이점을 견주는 일이라 반대말이 아니에요."
+      },
+      "gradeBand": {
+        "min": 3,
+        "max": 4
+      }
+    },
+    {
+      "id": "g3-argon-0177",
+      "revision": 1,
+      "status": "published",
+      "grade": 3,
+      "type": "definition",
+      "difficultyTier": "core",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "표현하다",
+        "partOfSpeech": "동사",
+        "senseKey": "표현하다/동사/499247-1"
+      },
+      "stem": "‘고마운 마음을 그림으로 표현하다.’에서 ‘표현하다’의 뜻은 무엇일까요?",
+      "options": [
+        {
+          "id": "a",
+          "text": "비밀을 끝까지 숨겨 두다"
+        },
+        {
+          "id": "b",
+          "text": "속생각을 겉으로 드러내다"
+        },
+        {
+          "id": "c",
+          "text": "남의 물건을 잠시 빌리다"
+        },
+        {
+          "id": "d",
+          "text": "약속한 시간을 잊어버리다"
+        }
+      ],
+      "correctOptionId": "b",
+      "explanation": "‘표현하다’는 생각이나 느낌을 말이나 모양 따위로 드러내어 나타내는 것이에요.",
+      "distractorRationales": {
+        "a": "겉으로 나타내지 않고 감추는 반대 행동이에요.",
+        "c": "물건을 빌리는 일이라 뜻이 달라요.",
+        "d": "기억하지 못하는 일이라 맞지 않아요."
+      },
+      "gradeBand": {
+        "min": 3,
+        "max": 4
+      }
+    },
+    {
+      "id": "g3-argon-0179",
+      "revision": 1,
+      "status": "published",
+      "grade": 3,
+      "type": "definition",
+      "difficultyTier": "core",
+      "variantTag": "polysemy",
+      "target": {
+        "lemma": "포근하다",
+        "partOfSpeech": "형용사",
+        "senseKey": "포근하다/형용사/498686-2"
+      },
+      "stem": "‘교실 안의 분위기가 참 포근하다.’에서 ‘포근하다’의 뜻은 무엇일까요?",
+      "options": [
+        {
+          "id": "a",
+          "text": "두께가 얇고 아주 딱딱하다"
+        },
+        {
+          "id": "b",
+          "text": "소리가 시끄럽고 어수선하다"
+        },
+        {
+          "id": "c",
+          "text": "느낌이 따뜻하고 편안하다"
+        },
+        {
+          "id": "d",
+          "text": "무게가 무거워 들기 힘들다"
+        }
+      ],
+      "correctOptionId": "c",
+      "explanation": "‘포근하다’는 감정이나 분위기가 따뜻하여 편안한 느낌이 있다는 뜻도 있어요.",
+      "distractorRationales": {
+        "a": "물건의 두께나 굳기를 나타내는 말이에요.",
+        "b": "소리가 크고 어지러운 반대 분위기예요.",
+        "d": "물건의 무게를 설명하는 말이라 달라요."
+      },
+      "gradeBand": {
+        "min": 3,
+        "max": 4
+      }
+    },
+    {
+      "id": "g3-argon-0180",
+      "revision": 1,
+      "status": "published",
+      "grade": 3,
+      "type": "definition",
+      "difficultyTier": "core",
+      "variantTag": "polysemy",
+      "target": {
+        "lemma": "고소하다",
+        "partOfSpeech": "형용사",
+        "senseKey": "고소하다/형용사/396087-2"
+      },
+      "stem": "‘얄미운 애가 혼나 속이 고소하다.’에서 ‘고소하다’의 뜻은 무엇일까요?",
+      "options": [
+        {
+          "id": "a",
+          "text": "참기름처럼 향기가 진하다"
+        },
+        {
+          "id": "b",
+          "text": "기분이 유쾌하고 재미있다"
+        },
+        {
+          "id": "c",
+          "text": "마음이 슬프고 눈물이 난다"
+        },
+        {
+          "id": "d",
+          "text": "몸이 지쳐서 잠이 쏟아진다"
+        }
+      ],
+      "correctOptionId": "b",
+      "explanation": "‘고소하다’에는 기분이 유쾌하고 재미있다는 뜻도 있어요.",
+      "distractorRationales": {
+        "a": "음식의 맛이나 냄새를 나타내는 뜻이에요.",
+        "c": "슬픈 감정을 나타내어 문맥과 반대예요.",
+        "d": "피곤하고 졸린 상태를 설명하는 말이에요."
+      },
+      "gradeBand": {
+        "min": 3,
+        "max": 4
+      }
+    },
+    {
+      "id": "g3-argon-0181",
+      "revision": 1,
+      "status": "published",
+      "grade": 3,
+      "type": "definition",
+      "difficultyTier": "core",
+      "variantTag": "polysemy",
+      "target": {
+        "lemma": "든든하다",
+        "partOfSpeech": "형용사",
+        "senseKey": "든든하다/형용사/419368-2"
+      },
+      "stem": "‘통나무로 만든 다리가 아주 든든하다.’에서 ‘든든하다’의 뜻은 무엇일까요?",
+      "options": [
+        {
+          "id": "a",
+          "text": "배가 고파서 힘이 빠지다"
+        },
+        {
+          "id": "b",
+          "text": "물건이나 몸이 튼튼하다"
+        },
+        {
+          "id": "c",
+          "text": "모양이 작아 눈에 안 띄다"
+        },
+        {
+          "id": "d",
+          "text": "빛깔이 흐려 잘 안 보이다"
+        }
+      ],
+      "correctOptionId": "b",
+      "explanation": "‘든든하다’는 물건이나 몸이 실하고 튼튼하다는 뜻으로 쓰여요.",
+      "distractorRationales": {
+        "a": "기운이 없는 상태라 뜻이 맞지 않아요.",
+        "c": "크기가 작은 모습을 설명하는 말이에요.",
+        "d": "색깔이 흐릿한 상태를 나타내는 말이에요."
+      },
+      "gradeBand": {
+        "min": 3,
+        "max": 4
+      }
+    },
+    {
+      "id": "g3-argon-0182",
+      "revision": 1,
+      "status": "published",
+      "grade": 3,
+      "type": "definition",
+      "difficultyTier": "core",
+      "variantTag": "polysemy",
+      "target": {
+        "lemma": "미안하다",
+        "partOfSpeech": "형용사",
+        "senseKey": "미안하다/형용사/428103-2"
+      },
+      "stem": "‘미안하지만 창문 좀 닫아 줄래?’에 쓰인 ‘미안하다’의 뜻은 무엇일까요?",
+      "options": [
+        {
+          "id": "a",
+          "text": "큰 잘못을 세게 꾸짖다"
+        },
+        {
+          "id": "b",
+          "text": "기쁜 일을 함께 축하하다"
+        },
+        {
+          "id": "c",
+          "text": "어려운 문제를 대신 풀다"
+        },
+        {
+          "id": "d",
+          "text": "겸손하게 양해를 구하다"
+        }
+      ],
+      "correctOptionId": "d",
+      "explanation": "‘미안하지만’ 꼴로 쓰인 ‘미안하다’는 겸손히 양해를 구하는 뜻이에요.",
+      "distractorRationales": {
+        "a": "남을 혼내는 행동이라 뜻이 달라요.",
+        "b": "축하하는 인사말이 아니라 부탁하는 말이에요.",
+        "c": "문제를 풀어 주는 행동과는 관련 없어요."
+      },
+      "gradeBand": {
+        "min": 3,
+        "max": 4
+      }
+    },
+    {
+      "id": "g3-argon-0183",
+      "revision": 2,
+      "status": "published",
+      "grade": 3,
+      "type": "definition",
+      "difficultyTier": "core",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "반듯하다",
+        "partOfSpeech": "형용사",
+        "senseKey": "반듯하다/형용사/426432-2"
+      },
+      "stem": "‘친구는 얼굴과 눈매가 참 반듯하다.’에서 ‘반듯하다’의 뜻은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "표정이 어둡고 시무룩하다"
+        },
+        {
+          "id": "b",
+          "text": "성격이 급하고 참을성 없다"
+        },
+        {
+          "id": "c",
+          "text": "생김새가 아담하고 말끔하다"
+        },
+        {
+          "id": "d",
+          "text": "목소리가 크고 우렁차다"
+        }
+      ],
+      "correctOptionId": "c",
+      "explanation": "외모에 쓰인 ‘반듯하다’는 생김새가 아담하고 말끔하다는 뜻이에요.",
+      "distractorRationales": {
+        "a": "얼굴빛이 어둡고 우울한 상태를 뜻해요.",
+        "b": "성질이 조급하여 참지 못하는 태도예요.",
+        "d": "소리가 크고 힘찬 상태를 설명하는 말이에요."
+      },
+      "gradeBand": {
+        "min": 3,
+        "max": 4
+      }
+    },
+    {
+      "id": "g3-argon-0185",
+      "revision": 1,
+      "status": "published",
+      "grade": 3,
+      "type": "definition",
+      "difficultyTier": "core",
+      "variantTag": "polysemy",
+      "target": {
+        "lemma": "조용하다",
+        "partOfSpeech": "형용사",
+        "senseKey": "조용하다/형용사/480583-2"
+      },
+      "stem": "‘동생은 평소 행동이 참 조용하다.’에서 ‘조용하다’의 뜻은 무엇일까요?",
+      "options": [
+        {
+          "id": "a",
+          "text": "방 안에 아무 소리도 안 나다"
+        },
+        {
+          "id": "b",
+          "text": "거리에 지나는 사람이 없다"
+        },
+        {
+          "id": "c",
+          "text": "성격이나 태도가 얌전하다"
+        },
+        {
+          "id": "d",
+          "text": "바람이 멈추어 물결이 잔잔하다"
+        }
+      ],
+      "correctOptionId": "c",
+      "explanation": "사람의 말이나 태도에 쓰인 ‘조용하다’는 수선스럽지 않고 얌전하다는 뜻이에요.",
+      "distractorRationales": {
+        "a": "주변 소리가 들리지 않는 상태를 뜻해요.",
+        "b": "사람이 없어 한산한 풍경을 말해요.",
+        "d": "자연 현상이 고요한 상태를 뜻해요."
+      },
+      "gradeBand": {
+        "min": 3,
+        "max": 4
+      }
+    },
+    {
+      "id": "g3-argon-0187",
+      "revision": 1,
+      "status": "published",
+      "grade": 3,
+      "type": "definition",
+      "difficultyTier": "core",
+      "variantTag": "polysemy",
+      "target": {
+        "lemma": "다짐하다",
+        "partOfSpeech": "동사",
+        "senseKey": "다짐하다/동사/74882-2"
+      },
+      "stem": "‘책을 매일 읽기로 속으로 다짐하다.’에서 ‘다짐하다’의 뜻은 무엇일까요?",
+      "options": [
+        {
+          "id": "a",
+          "text": "다른 사람에게 길을 묻다"
+        },
+        {
+          "id": "b",
+          "text": "마음이나 뜻을 굳게 정하다"
+        },
+        {
+          "id": "c",
+          "text": "어려운 숙제를 미루어 두다"
+        },
+        {
+          "id": "d",
+          "text": "지나간 잘못을 남 탓으로 돌리다"
+        }
+      ],
+      "correctOptionId": "b",
+      "explanation": "혼자 속으로 하는 ‘다짐하다’는 마음이나 뜻을 굳게 가다듬어 정하는 것이에요.",
+      "distractorRationales": {
+        "a": "모르는 것을 질문하는 행동이에요.",
+        "c": "할 일을 뒤로 미루는 반대 태도예요.",
+        "d": "책임을 남에게 떠넘기는 행동이에요."
+      },
+      "gradeBand": {
+        "min": 3,
+        "max": 4
+      }
+    },
+    {
+      "id": "g3-argon-0190",
+      "revision": 1,
+      "status": "published",
+      "grade": 3,
+      "type": "definition",
+      "difficultyTier": "challenge",
+      "variantTag": "dialect",
+      "dialectRegion": "경상",
+      "target": {
+        "lemma": "배차",
+        "partOfSpeech": "명사",
+        "senseKey": "배차/명사/od-496332-1"
+      },
+      "stem": "경상도 할머니께서 속이 노랗고 잎이 겹겹이 감싼 채소를 소금에 절이시며 \"김장할 배차가 참 실하다.\" 하셨어요. ‘배차’는 무엇일까요?",
+      "options": [
+        {
+          "id": "a",
+          "text": "고추"
+        },
+        {
+          "id": "b",
+          "text": "오이"
+        },
+        {
+          "id": "c",
+          "text": "배추"
+        },
+        {
+          "id": "d",
+          "text": "가지"
+        }
+      ],
+      "correctOptionId": "c",
+      "explanation": "‘배차’는 경상·강원·경기·충청 지역에서 ‘배추’를 이르는 방언이에요.",
+      "distractorRationales": {
+        "a": "매운맛이 나는 빨갛거나 푸른 열매채소예요.",
+        "b": "길쭉하고 초록색인 아삭한 열매채소예요.",
+        "d": "보랏빛 껍질을 가진 길쭉한 채소예요."
+      },
+      "gradeBand": {
+        "min": 3,
+        "max": 4
+      }
+    },
+    {
+      "id": "g3-argon-0191",
+      "revision": 1,
+      "status": "published",
+      "grade": 3,
+      "type": "definition",
+      "difficultyTier": "challenge",
+      "variantTag": "dialect",
+      "dialectRegion": "경상",
+      "target": {
+        "lemma": "할매",
+        "partOfSpeech": "명사",
+        "senseKey": "할매/명사/od-318792-1"
+      },
+      "stem": "부산에 사시는 아버지의 어머니께서 나를 안아 주시며 \"이 할매가 맛있는 떡 해 놨다.\" 하고 반기셨어요. ‘할매’는 누구일까요?",
+      "options": [
+        {
+          "id": "a",
+          "text": "아버지"
+        },
+        {
+          "id": "b",
+          "text": "남동생"
+        },
+        {
+          "id": "c",
+          "text": "할머니"
+        },
+        {
+          "id": "d",
+          "text": "아저씨"
+        }
+      ],
+      "correctOptionId": "c",
+      "explanation": "‘할매’는 경상·강원·전남·충남 지역에서 ‘할머니’를 부르는 방언이에요.",
+      "distractorRationales": {
+        "a": "나를 낳아 주신 남자 부모님이에요.",
+        "b": "나이가 적은 남자 형제를 가리켜요.",
+        "d": "이웃의 남자 어른을 부르는 말이에요."
+      },
+      "gradeBand": {
+        "min": 3,
+        "max": 4
+      }
+    },
+    {
+      "id": "g3-argon-0192",
+      "revision": 2,
+      "status": "published",
+      "grade": 3,
+      "type": "definition",
+      "difficultyTier": "challenge",
+      "variantTag": "dialect",
+      "dialectRegion": "경상",
+      "target": {
+        "lemma": "할배",
+        "partOfSpeech": "명사",
+        "senseKey": "할배/명사/od-319049-1"
+      },
+      "stem": "대구에 계신 아버지의 아버지께서 돋보기를 쓰시며 \"이 할배한테 재미난 옛이야기 들으러 오너라.\" 하셨어요. ‘할배’는 누구일까요?",
+      "options": [
+        {
+          "id": "a",
+          "text": "할아버지"
+        },
+        {
+          "id": "b",
+          "text": "아주머니"
+        },
+        {
+          "id": "c",
+          "text": "어린아이"
+        },
+        {
+          "id": "d",
+          "text": "사촌 누나"
+        }
+      ],
+      "correctOptionId": "a",
+      "explanation": "‘할배’는 경상과 강원 지역에서 ‘할아버지’를 부르는 정겨운 방언이에요.",
+      "distractorRationales": {
+        "b": "결혼한 여자 어른을 가리키는 표준어예요.",
+        "c": "나이가 어린 아이를 뜻하는 말이에요.",
+        "d": "친척 여자 형제를 부르는 말이에요."
+      },
+      "gradeBand": {
+        "min": 3,
+        "max": 4
+      }
+    },
+    {
+      "id": "g3-argon-0193",
+      "revision": 1,
+      "status": "published",
+      "grade": 3,
+      "type": "definition",
+      "difficultyTier": "challenge",
+      "variantTag": "dialect",
+      "dialectRegion": "경상",
+      "target": {
+        "lemma": "아지매",
+        "partOfSpeech": "명사",
+        "senseKey": "아지매/명사/od-354941-1"
+      },
+      "stem": "시장에서 과일을 파시는 이웃집 여자 어른께서 \"옆집 아지매가 단감 하나 더 줄게.\" 하며 웃으셨어요. ‘아지매’는 누구일까요?",
+      "options": [
+        {
+          "id": "a",
+          "text": "아주머니"
+        },
+        {
+          "id": "b",
+          "text": "할아버지"
+        },
+        {
+          "id": "c",
+          "text": "남자아이"
+        },
+        {
+          "id": "d",
+          "text": "초등학생"
+        }
+      ],
+      "correctOptionId": "a",
+      "explanation": "‘아지매’는 경상과 강원 지역에서 ‘아주머니’를 이르는 방언이에요.",
+      "distractorRationales": {
+        "b": "나이가 많은 남자 어른을 부르는 말이에요.",
+        "c": "어린 사내아이를 가리키는 말이에요.",
+        "d": "초등학교에 다니는 학생을 뜻해요."
+      },
+      "gradeBand": {
+        "min": 3,
+        "max": 4
+      }
+    },
+    {
+      "id": "g3-argon-0194",
+      "revision": 2,
+      "status": "published",
+      "grade": 3,
+      "type": "definition",
+      "difficultyTier": "challenge",
+      "variantTag": "dialect",
+      "dialectRegion": "경상",
+      "target": {
+        "lemma": "얼라",
+        "partOfSpeech": "명사",
+        "senseKey": "얼라/명사/od-502816-1"
+      },
+      "stem": "이웃 어르신께서 아장아장 걸음마를 배우는 동생을 보시며 \"집에 귀여운 얼라가 있네.\" 하고 말씀하셨어요. ‘얼라’는 누구일까요?",
+      "options": [
+        {
+          "id": "a",
+          "text": "할아버지"
+        },
+        {
+          "id": "b",
+          "text": "아주머니"
+        },
+        {
+          "id": "c",
+          "text": "어린아이"
+        },
+        {
+          "id": "d",
+          "text": "버스 기사"
+        }
+      ],
+      "correctOptionId": "c",
+      "explanation": "‘얼라’는 경상·강원·함경 지역에서 ‘어린아이’를 이르는 방언이에요.",
+      "distractorRationales": {
+        "a": "연세가 많은 남자 어르신을 뜻해요.",
+        "b": "결혼한 여자 어른을 부르는 말이에요.",
+        "d": "버스를 운전하는 직업을 가진 어른이에요."
+      },
+      "gradeBand": {
+        "min": 3,
+        "max": 4
+      }
+    },
+    {
+      "id": "g3-argon-0195",
+      "revision": 2,
+      "status": "published",
+      "grade": 3,
+      "type": "definition",
+      "difficultyTier": "challenge",
+      "variantTag": "dialect",
+      "dialectRegion": "제주",
+      "target": {
+        "lemma": "어멍",
+        "partOfSpeech": "명사",
+        "senseKey": "어멍/명사/od-539583-1"
+      },
+      "stem": "제주도 친구가 자기를 열 달 동안 배 속에 품어 낳아 주신 분께 \"우리 어멍 고마워요!\" 하고 인사했어요. ‘어멍’은 누구일까요?",
+      "options": [
+        {
+          "id": "a",
+          "text": "아버지"
+        },
+        {
+          "id": "b",
+          "text": "남동생"
+        },
+        {
+          "id": "c",
+          "text": "아저씨"
+        },
+        {
+          "id": "d",
+          "text": "어머니"
+        }
+      ],
+      "correctOptionId": "d",
+      "explanation": "‘어멍’은 제주와 경남 지역에서 ‘어머니’를 이르는 방언이에요.",
+      "distractorRationales": {
+        "a": "아빠를 이르는 말이라 성별이 맞지 않아요.",
+        "b": "나이가 어린 남자 형제를 가리키는 말이에요.",
+        "c": "이웃의 남자 어른을 부르는 말이라 달라요."
+      },
+      "gradeBand": {
+        "min": 3,
+        "max": 4
+      }
+    },
+    {
+      "id": "g3-argon-0196",
+      "revision": 1,
+      "status": "published",
+      "grade": 3,
+      "type": "definition",
+      "difficultyTier": "challenge",
+      "variantTag": "dialect",
+      "dialectRegion": "제주",
+      "target": {
+        "lemma": "깅이",
+        "partOfSpeech": "명사",
+        "senseKey": "깅이/명사/od-109969-1"
+      },
+      "stem": "제주 바닷가 바위틈에서 집게발을 들고 옆으로 기어가는 깅이를 보았어요. 여기서 ‘깅이’는 무엇일까요?",
+      "options": [
+        {
+          "id": "a",
+          "text": "게"
+        },
+        {
+          "id": "b",
+          "text": "굴"
+        },
+        {
+          "id": "c",
+          "text": "김"
+        },
+        {
+          "id": "d",
+          "text": "꿩"
+        }
+      ],
+      "correctOptionId": "a",
+      "explanation": "‘깅이’는 제주 지역에서 옆으로 걷는 ‘게’를 가리키는 방언이에요.",
+      "distractorRationales": {
+        "b": "바위에 붙어 자라는 조개류라 집게발이 없어요.",
+        "c": "바다에서 자라는 해조류라 기어가지 않아요.",
+        "d": "산이나 들에 사는 새라 바위틈 갑각류가 아니에요."
+      },
+      "gradeBand": {
+        "min": 3,
+        "max": 4
+      }
+    },
+    {
+      "id": "g3-argon-0197",
+      "revision": 1,
+      "status": "published",
+      "grade": 3,
+      "type": "cloze",
+      "difficultyTier": "challenge",
+      "variantTag": "dialect",
+      "dialectRegion": "경상",
+      "target": {
+        "lemma": "강생이",
+        "partOfSpeech": "명사",
+        "senseKey": "강생이/명사/od-486494-1"
+      },
+      "stem": "경상도 외할머니께서 \"우리 집 강생이 산책시키자.\" 하셔서 꼬리 치며 멍멍 짖는 (    ) 목줄을 챙겼다.",
+      "options": [
+        {
+          "id": "a",
+          "text": "강아지"
+        },
+        {
+          "id": "b",
+          "text": "병아리"
+        },
+        {
+          "id": "c",
+          "text": "송아지"
+        },
+        {
+          "id": "d",
+          "text": "고양이"
+        }
+      ],
+      "correctOptionId": "a",
+      "explanation": "‘강생이’는 ‘강아지’의 방언이므로 멍멍 짖는 강아지가 알맞아요.",
+      "distractorRationales": {
+        "b": "삐약삐약 우는 닭의 새끼예요.",
+        "c": "음매 하고 우는 소의 새끼예요.",
+        "d": "야옹 하고 우는 동물이라 단서와 달라요."
+      },
+      "gradeBand": {
+        "min": 3,
+        "max": 4
+      }
+    },
+    {
+      "id": "g3-argon-0198",
+      "revision": 1,
+      "status": "published",
+      "grade": 3,
+      "type": "cloze",
+      "difficultyTier": "challenge",
+      "variantTag": "dialect",
+      "dialectRegion": "경상",
+      "target": {
+        "lemma": "정구지",
+        "partOfSpeech": "명사",
+        "senseKey": "정구지/명사/od-433889-1"
+      },
+      "stem": "할머니께서 만두소에 넣을 ‘정구지’를 썰자고 하셔서 가늘고 긴 초록 잎 채소인 (    ) 한 단을 씻었다.",
+      "options": [
+        {
+          "id": "a",
+          "text": "당근"
+        },
+        {
+          "id": "b",
+          "text": "부추"
+        },
+        {
+          "id": "c",
+          "text": "연근"
+        },
+        {
+          "id": "d",
+          "text": "우엉"
+        }
+      ],
+      "correctOptionId": "b",
+      "explanation": "‘정구지’는 ‘부추’의 방언으로 초록 잎이 가늘고 긴 채소예요.",
+      "distractorRationales": {
+        "a": "주황색 굵은 뿌리를 먹는 채소예요.",
+        "c": "구멍이 뚫린 연꽃의 땅속줄기예요.",
+        "d": "땅속에서 길게 자라는 갈색 뿌리채소예요."
+      },
+      "gradeBand": {
+        "min": 3,
+        "max": 4
+      }
+    },
+    {
+      "id": "g3-argon-0199",
+      "revision": 1,
+      "status": "published",
+      "grade": 3,
+      "type": "cloze",
+      "difficultyTier": "challenge",
+      "variantTag": "dialect",
+      "dialectRegion": "경상",
+      "target": {
+        "lemma": "가시개",
+        "partOfSpeech": "명사",
+        "senseKey": "가시개/명사/od-338954-1"
+      },
+      "stem": "할아버지께서 포장 끈을 자를 ‘가시개’를 찾으셔서 날이 두 개 맞물린 (    ) 하나를 건네 드렸다.",
+      "options": [
+        {
+          "id": "a",
+          "text": "공책"
+        },
+        {
+          "id": "b",
+          "text": "분필"
+        },
+        {
+          "id": "c",
+          "text": "필통"
+        },
+        {
+          "id": "d",
+          "text": "가위"
+        }
+      ],
+      "correctOptionId": "d",
+      "explanation": "‘가시개’는 경상 지역에서 끈이나 종이를 자르는 ‘가위’를 뜻해요.",
+      "distractorRationales": {
+        "a": "글씨를 쓰는 종이책이라 끈을 못 잘라요.",
+        "b": "칠판에 글씨를 적는 도구예요.",
+        "c": "학용품을 담아 두는 통이라 맞지 않아요."
+      },
+      "gradeBand": {
+        "min": 3,
+        "max": 4
+      }
+    },
+    {
+      "id": "g3-argon-0200",
+      "revision": 2,
+      "status": "published",
+      "grade": 3,
+      "type": "cloze",
+      "difficultyTier": "challenge",
+      "variantTag": "dialect",
+      "dialectRegion": "제주",
+      "target": {
+        "lemma": "하르방",
+        "partOfSpeech": "명사",
+        "senseKey": "하르방/명사/od-314185-1"
+      },
+      "stem": "제주도 고모가 \"하르방께 세배 드리렴.\" 하셔서 흰머리가 성성하신 아버지의 아버지인 (    ) 앞에 절을 올렸다.",
+      "options": [
+        {
+          "id": "a",
+          "text": "아주머니"
+        },
+        {
+          "id": "b",
+          "text": "어린아이"
+        },
+        {
+          "id": "c",
+          "text": "할아버지"
+        },
+        {
+          "id": "d",
+          "text": "사촌 동생"
+        }
+      ],
+      "correctOptionId": "c",
+      "explanation": "‘하르방’은 제주 방언으로 아버지의 아버지인 ‘할아버지’를 뜻해요.",
+      "distractorRationales": {
+        "a": "여자 어른을 가리키는 표준어예요.",
+        "b": "나이가 어린 아이를 가리키는 말이에요.",
+        "d": "친척 동생을 가리키므로 문맥과 달라요."
+      },
+      "gradeBand": {
+        "min": 3,
+        "max": 4
+      }
+    },
+    {
+      "id": "g3-argon-0201",
+      "revision": 1,
+      "status": "published",
+      "grade": 3,
+      "type": "synonym_context",
+      "difficultyTier": "core",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "관찰하다",
+        "partOfSpeech": "동사",
+        "senseKey": "관찰하다/동사/398462-1"
+      },
+      "stem": "‘강낭콩이 자라는 모습을 매일 관찰하다.’에서 ‘관찰하다’와 바꾸어 쓸 말은 무엇일까요?",
+      "options": [
+        {
+          "id": "a",
+          "text": "외면하다"
+        },
+        {
+          "id": "b",
+          "text": "거절하다"
+        },
+        {
+          "id": "c",
+          "text": "살펴보다"
+        },
+        {
+          "id": "d",
+          "text": "방해하다"
+        }
+      ],
+      "correctOptionId": "c",
+      "explanation": "‘관찰하다’는 사물이나 현상을 주의 깊게 자세히 살펴본다는 뜻이에요.",
+      "distractorRationales": {
+        "a": "관심을 두지 않고 모른 체한다는 뜻이에요.",
+        "b": "남의 요청을 받아들이지 않는다는 뜻이에요.",
+        "d": "하던 일을 가로막아 어렵게 만든다는 뜻이에요."
+      },
+      "gradeBand": {
+        "min": 3,
+        "max": 4
+      }
+    },
+    {
+      "id": "g3-argon-0202",
+      "revision": 2,
+      "status": "published",
+      "grade": 3,
+      "type": "usage",
+      "difficultyTier": "core",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "설명하다",
+        "partOfSpeech": "동사",
+        "senseKey": "설명하다/동사/443122-1"
+      },
+      "stem": "‘설명하다’를 바르게 쓴 문장은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "놀이 규칙을 친구에게 쉽게 설명했다."
+        },
+        {
+          "id": "b",
+          "text": "양손에 따뜻한 털장갑을 설명했다."
+        },
+        {
+          "id": "c",
+          "text": "차가운 우유를 유리컵에 설명했다."
+        },
+        {
+          "id": "d",
+          "text": "더러워진 신발을 비눗물로 설명했다."
+        }
+      ],
+      "correctOptionId": "a",
+      "explanation": "‘설명하다’는 내용을 상대가 잘 알도록 밝혀 말한다는 뜻이에요.",
+      "distractorRationales": {
+        "b": "장갑을 손에 끼는 동작에는 쓸 수 없어요.",
+        "c": "우유를 컵에 따르는 행동과 어울리지 않아요.",
+        "d": "신발을 물로 씻는 일에는 쓰지 않아요."
+      },
+      "gradeBand": {
+        "min": 3,
+        "max": 4
+      }
+    },
+    {
+      "id": "g3-argon-0203",
+      "revision": 1,
+      "status": "published",
+      "grade": 3,
+      "type": "cloze",
+      "difficultyTier": "basic",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "상상하다",
+        "partOfSpeech": "동사",
+        "senseKey": "상상하다/동사/442107-1"
+      },
+      "stem": "동화책을 읽으며 아직 가 보지 못한 우주 모습을 마음속으로 (    ).",
+      "options": [
+        {
+          "id": "a",
+          "text": "세탁했다"
+        },
+        {
+          "id": "b",
+          "text": "상상했다"
+        },
+        {
+          "id": "c",
+          "text": "수리했다"
+        },
+        {
+          "id": "d",
+          "text": "포장했다"
+        }
+      ],
+      "correctOptionId": "b",
+      "explanation": "겪어 보지 않은 일을 마음속으로 그려 보는 것은 ‘상상하다’예요.",
+      "distractorRationales": {
+        "a": "더러워진 옷이나 이불을 빠는 일을 뜻해요.",
+        "c": "고장 난 물건을 고치는 일이라 맞지 않아요.",
+        "d": "물건을 종이나 상자로 싸는 일을 뜻해요."
+      },
+      "gradeBand": {
+        "min": 3,
+        "max": 4
+      }
+    },
+    {
+      "id": "g3-argon-0209",
+      "revision": 1,
+      "status": "published",
+      "grade": 3,
+      "type": "antonym_context",
+      "difficultyTier": "core",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "초대하다",
+        "partOfSpeech": "동사",
+        "senseKey": "초대하다/동사/327122-1"
+      },
+      "stem": "‘생일 모임에 반 친구들을 초대하다.’에서 ‘초대하다’와 뜻이 반대인 말은 무엇일까요?",
+      "options": [
+        {
+          "id": "a",
+          "text": "못 오게 막다"
+        },
+        {
+          "id": "b",
+          "text": "반갑게 부르다"
+        },
+        {
+          "id": "c",
+          "text": "함께 모으다"
+        },
+        {
+          "id": "d",
+          "text": "자리에 청하다"
+        }
+      ],
+      "correctOptionId": "a",
+      "explanation": "모임에 와 달라고 청하는 ‘초대하다’는 ‘못 오게 막다’와 반대예요.",
+      "distractorRationales": {
+        "b": "기쁘게 오라고 부르는 일이라 뜻이 비슷해요.",
+        "c": "한곳에 모이게 하는 일이라 반대말이 아니에요.",
+        "d": "모임 자리에 오기를 바라는 비슷한 뜻이에요."
+      },
+      "gradeBand": {
+        "min": 3,
+        "max": 4
+      }
+    },
+    {
+      "id": "g3-argon-0210",
+      "revision": 1,
+      "status": "published",
+      "grade": 3,
+      "type": "definition",
+      "difficultyTier": "core",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "자랑스럽다",
+        "partOfSpeech": "형용사",
+        "senseKey": "자랑스럽다/형용사/473516-1"
+      },
+      "stem": "‘열심히 뛴 선수들이 자랑스럽다.’에서 ‘자랑스럽다’의 뜻은 무엇일까요?",
+      "options": [
+        {
+          "id": "a",
+          "text": "잘못이 있어 매우 부끄럽다"
+        },
+        {
+          "id": "b",
+          "text": "기운이 빠져 몸이 나른하다"
+        },
+        {
+          "id": "c",
+          "text": "소리가 작아 잘 안 들리다"
+        },
+        {
+          "id": "d",
+          "text": "남에게 드러내 뽐낼 만하다"
+        }
+      ],
+      "correctOptionId": "d",
+      "explanation": "‘자랑스럽다’는 남에게 드러내어 뽐낼 만한 데가 있다는 뜻이에요.",
+      "distractorRationales": {
+        "a": "창피하고 수줍은 마음이라 뜻이 반대예요.",
+        "b": "몸이 지치고 피곤한 상태를 뜻해요.",
+        "c": "소리의 크기를 설명하는 말이라 달라요."
+      },
+      "gradeBand": {
+        "min": 3,
+        "max": 4
+      }
+    },
+    {
+      "id": "g3-argon-0212",
+      "revision": 2,
+      "status": "published",
+      "grade": 3,
+      "type": "usage",
+      "difficultyTier": "core",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "전하다",
+        "partOfSpeech": "동사",
+        "senseKey": "전하다/동사/474916-2"
+      },
+      "stem": "‘전하다’를 바르게 쓴 문장은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "아침에 찬물로 세수를 전했다."
+        },
+        {
+          "id": "b",
+          "text": "공원에서 줄넘기를 백 번 전했다."
+        },
+        {
+          "id": "c",
+          "text": "할머니 선물을 삼촌께 전했다."
+        },
+        {
+          "id": "d",
+          "text": "오후에 침대에서 낮잠을 전했다."
+        }
+      ],
+      "correctOptionId": "c",
+      "explanation": "‘전하다’는 어떤 것을 상대에게 옮기어 준다는 뜻이에요.",
+      "distractorRationales": {
+        "a": "얼굴을 씻는 행동에는 ‘하다’를 써야 해요.",
+        "b": "줄넘기 횟수를 세는 일에는 쓸 수 없어요.",
+        "d": "잠을 자는 행동과는 뜻이 어울리지 않아요."
+      },
+      "gradeBand": {
+        "min": 3,
+        "max": 4
+      }
+    },
+    {
+      "id": "g3-argon-0217",
+      "revision": 1,
+      "status": "published",
+      "grade": 3,
+      "type": "antonym_context",
+      "difficultyTier": "core",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "찾아보다",
+        "partOfSpeech": "동사",
+        "senseKey": "찾아보다/동사/321387-1"
+      },
+      "stem": "‘주말에 시골 할머니를 직접 찾아보다.’에서 ‘찾아보다’와 반대되는 행동은 무엇일까요?",
+      "options": [
+        {
+          "id": "a",
+          "text": "가지 않고 만나지 않다"
+        },
+        {
+          "id": "b",
+          "text": "계신 곳으로 가 뵙다"
+        },
+        {
+          "id": "c",
+          "text": "직접 방문하여 만나다"
+        },
+        {
+          "id": "d",
+          "text": "집으로 찾아가 인사하다"
+        }
+      ],
+      "correctOptionId": "a",
+      "explanation": "‘찾아보다’는 그 사람이 있는 곳으로 가서 만나는 것이므로 가지 않는 것과 반대예요.",
+      "distractorRationales": {
+        "b": "‘찾아보다’를 높여 말한 같은 뜻이에요.",
+        "c": "직접 가서 만난다는 비슷한 뜻이에요.",
+        "d": "찾아가서 뵙는 행동이라 반대말이 아니에요."
+      },
+      "gradeBand": {
+        "min": 3,
+        "max": 4
+      }
+    },
+    {
+      "id": "g3-argon-0218",
+      "revision": 1,
+      "status": "published",
+      "grade": 3,
+      "type": "definition",
+      "difficultyTier": "basic",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "아끼다",
+        "partOfSpeech": "동사",
+        "senseKey": "아끼다/동사/216488-1"
+      },
+      "stem": "‘용돈과 물품을 늘 아끼다.’에서 ‘아끼다’의 뜻은 무엇일까요?",
+      "options": [
+        {
+          "id": "a",
+          "text": "가진 것을 함부로 쓰지 않다"
+        },
+        {
+          "id": "b",
+          "text": "가진 것을 마구 써서 없애다"
+        },
+        {
+          "id": "c",
+          "text": "남의 것을 허락 없이 쓰다"
+        },
+        {
+          "id": "d",
+          "text": "필요한 것을 자꾸 잃어버리다"
+        }
+      ],
+      "correctOptionId": "a",
+      "explanation": "‘아끼다’는 물건이나 돈, 시간 따위를 함부로 쓰지 않는다는 뜻이에요.",
+      "distractorRationales": {
+        "b": "낭비한다는 뜻으로 ‘아끼다’와 반대예요.",
+        "c": "남의 물건을 마음대로 쓰는 잘못된 일이에요.",
+        "d": "간수를 못해 없애는 일이라 뜻이 달라요."
+      },
+      "gradeBand": {
+        "min": 3,
+        "max": 4
+      }
+    },
+    {
+      "id": "g3-argon-0219",
+      "revision": 1,
+      "status": "published",
+      "grade": 3,
+      "type": "synonym_context",
+      "difficultyTier": "basic",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "인사하다",
+        "partOfSpeech": "동사",
+        "senseKey": "인사하다/동사/269661-1"
+      },
+      "stem": "‘아침에 선생님을 만나 공손히 인사하다.’에서 ‘인사하다’와 뜻이 같은 말은 무엇일까요?",
+      "options": [
+        {
+          "id": "a",
+          "text": "못 본 척 지나치다"
+        },
+        {
+          "id": "b",
+          "text": "큰 소리로 다투다"
+        },
+        {
+          "id": "c",
+          "text": "만날 때 예를 표하다"
+        },
+        {
+          "id": "d",
+          "text": "등을 돌리고 숨다"
+        }
+      ],
+      "correctOptionId": "c",
+      "explanation": "‘인사하다’는 마주 대하거나 헤어질 때 예를 표한다는 뜻이에요.",
+      "distractorRationales": {
+        "a": "예의를 갖추지 않고 외면하는 행동이에요.",
+        "b": "서로 싸우는 행동이라 뜻이 달라요.",
+        "d": "피해서 숨는 행동이라 맞지 않아요."
+      },
+      "gradeBand": {
+        "min": 3,
+        "max": 4
+      }
+    },
+    {
+      "id": "g3-argon-0220",
+      "revision": 1,
+      "status": "published",
+      "grade": 3,
+      "type": "usage",
+      "difficultyTier": "basic",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "선물하다",
+        "partOfSpeech": "동사",
+        "senseKey": "선물하다/동사/182501-1"
+      },
+      "stem": "‘선물하다’를 바르게 쓴 문장은 무엇일까요?",
+      "options": [
+        {
+          "id": "a",
+          "text": "햇살이 구름을 크게 선물했다."
+        },
+        {
+          "id": "b",
+          "text": "모래가 바람을 자꾸 선물했다."
+        },
+        {
+          "id": "c",
+          "text": "시계가 숫자를 빨리 선물했다."
+        },
+        {
+          "id": "d",
+          "text": "친구에게 동화책을 선물했다."
+        }
+      ],
+      "correctOptionId": "d",
+      "explanation": "‘선물하다’는 남에게 정성을 담아 물건 따위를 주는 것을 뜻해요.",
+      "distractorRationales": {
+        "a": "햇살이 구름을 준다는 말은 어색해요.",
+        "b": "모래가 바람을 줄 수는 없어요.",
+        "c": "시계가 숫자를 준다는 표현은 맞지 않아요."
+      },
+      "gradeBand": {
+        "min": 3,
+        "max": 4
+      }
+    },
+    {
+      "id": "g3-argon-0221",
+      "revision": 1,
+      "status": "published",
+      "grade": 3,
+      "type": "cloze",
+      "difficultyTier": "core",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "평화롭다",
+        "partOfSpeech": "형용사",
+        "senseKey": "평화롭다/형용사/503466-1"
+      },
+      "stem": "다툼이나 걱정 없이 조용히 평온하고 화목한 상태를 ‘(    )’라고 합니다.",
+      "options": [
+        {
+          "id": "a",
+          "text": "위험하다"
+        },
+        {
+          "id": "b",
+          "text": "평화롭다"
+        },
+        {
+          "id": "c",
+          "text": "소란하다"
+        },
+        {
+          "id": "d",
+          "text": "불안하다"
+        }
+      ],
+      "correctOptionId": "b",
+      "explanation": "평온하고 화목한 분위기를 ‘평화롭다’라고 해요.",
+      "distractorRationales": {
+        "a": "다치거나 해를 입을 수 있는 상태예요.",
+        "c": "시끄럽고 어수선한 반대 상태예요.",
+        "d": "마음이 편치 않고 걱정스러운 상태예요."
+      },
+      "gradeBand": {
+        "min": 3,
+        "max": 4
+      }
+    },
+    {
+      "id": "g3-argon-0230",
+      "revision": 1,
+      "status": "published",
+      "grade": 3,
+      "type": "definition",
+      "difficultyTier": "advanced",
+      "variantTag": "polysemy",
+      "target": {
+        "lemma": "부드럽다",
+        "partOfSpeech": "형용사",
+        "senseKey": "부드럽다/형용사/434669-2"
+      },
+      "stem": "‘담임 선생님은 말씨와 표정이 참 부드럽다.’에서 ‘부드럽다’의 뜻은 무엇일까요?",
+      "options": [
+        {
+          "id": "a",
+          "text": "솜털처럼 스치는 결이 보드랍다"
+        },
+        {
+          "id": "b",
+          "text": "태도가 억세지 않고 따뜻하다"
+        },
+        {
+          "id": "c",
+          "text": "국수 면발이 질기지 않고 연하다"
+        },
+        {
+          "id": "d",
+          "text": "바람이 거의 불지 않아 고요하다"
+        }
+      ],
+      "correctOptionId": "b",
+      "explanation": "성질이나 태도에 쓰인 ‘부드럽다’는 억세지 않고 매우 따뜻하다는 뜻이에요.",
+      "distractorRationales": {
+        "a": "손에 닿는 촉감을 설명하는 첫째 뜻이에요.",
+        "c": "음식이 씹기에 연하다는 뜻이에요.",
+        "d": "날씨나 바람 상태를 설명하는 말이에요."
+      },
+      "gradeBand": {
+        "min": 3,
+        "max": 4
+      }
+    },
+    {
+      "id": "g3-argon-0231",
+      "revision": 2,
+      "status": "published",
+      "grade": 3,
+      "type": "definition",
+      "difficultyTier": "core",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "시원하다",
+        "partOfSpeech": "형용사",
+        "senseKey": "시원하다/형용사/451652-2"
+      },
+      "stem": "‘따끈한 뭇국이 참 시원하다.’에서 ‘시원하다’의 뜻은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "가을 날씨가 알맞게 서늘하다"
+        },
+        {
+          "id": "b",
+          "text": "음식이 속을 후련하게 하다"
+        },
+        {
+          "id": "c",
+          "text": "방 안이 넓어서 트여 보이다"
+        },
+        {
+          "id": "d",
+          "text": "성격이 구김살 없이 활달하다"
+        }
+      ],
+      "correctOptionId": "b",
+      "explanation": "국물이나 음식에 쓰인 ‘시원하다’는 속을 후련하게 한다는 뜻이에요.",
+      "distractorRationales": {
+        "a": "기온이 알맞게 서늘하다는 날씨의 뜻이에요.",
+        "c": "공간이 막힘없이 넓다는 다른 뜻이에요.",
+        "d": "사람의 성품을 설명할 때 쓰는 뜻이에요."
+      },
+      "gradeBand": {
+        "min": 3,
+        "max": 4
+      }
+    },
+    {
+      "id": "g3-argon-0232",
+      "revision": 1,
+      "status": "published",
+      "grade": 3,
+      "type": "definition",
+      "difficultyTier": "core",
+      "variantTag": "polysemy",
+      "target": {
+        "lemma": "넉넉하다",
+        "partOfSpeech": "형용사",
+        "senseKey": "넉넉하다/형용사/404832-2"
+      },
+      "stem": "‘부지런히 일해 집안 형편이 넉넉하다.’에서 ‘넉넉하다’의 뜻은 무엇일까요?",
+      "options": [
+        {
+          "id": "a",
+          "text": "살림살이에 여유가 있다"
+        },
+        {
+          "id": "b",
+          "text": "그릇의 크기가 매우 크다"
+        },
+        {
+          "id": "c",
+          "text": "옷 품이 넓어서 헐렁하다"
+        },
+        {
+          "id": "d",
+          "text": "남은 시간이 아주 길다"
+        }
+      ],
+      "correctOptionId": "a",
+      "explanation": "집안 형편에 쓰인 ‘넉넉하다’는 살림살이가 모자라지 않고 여유가 있다는 뜻이에요.",
+      "distractorRationales": {
+        "b": "물건의 부피나 크기를 뜻하는 말이에요.",
+        "c": "옷의 치수가 크다는 뜻이에요.",
+        "d": "시간의 여유를 나타내는 경우예요."
+      },
+      "gradeBand": {
+        "min": 3,
+        "max": 4
+      }
+    },
+    {
+      "id": "g3-argon-0233",
+      "revision": 3,
+      "status": "published",
+      "grade": 3,
+      "type": "usage",
+      "difficultyTier": "core",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "먼저",
+        "partOfSpeech": "부사",
+        "senseKey": "먼저/부사/424492-2"
+      },
+      "stem": "‘먼저’를 바르게 쓴 문장은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "모두 떠난 맨 마지막에 먼저 나갔다."
+        },
+        {
+          "id": "b",
+          "text": "둘이 같은 시각에 서로보다 먼저 뛰었다."
+        },
+        {
+          "id": "c",
+          "text": "정류장에 친구보다 먼저 도착했다."
+        },
+        {
+          "id": "d",
+          "text": "가장 늦게 꼴찌로 달리며 먼저 왔다."
+        }
+      ],
+      "correctOptionId": "c",
+      "explanation": "‘먼저’는 시간이나 순서상으로 앞서서 행동할 때 쓰는 말이에요.",
+      "distractorRationales": {
+        "a": "맨 마지막 차례에는 ‘나중에’를 써야 해요.",
+        "b": "동시에 뛰었으므로 서로보다 앞섰다고 할 수 없어요.",
+        "d": "가장 늦게 온 상황과는 뜻이 반대예요."
+      },
+      "gradeBand": {
+        "min": 3,
+        "max": 4
+      }
+    },
+    {
+      "id": "g3-argon-0234",
+      "revision": 1,
+      "status": "published",
+      "grade": 3,
+      "type": "definition",
+      "difficultyTier": "core",
+      "variantTag": "polysemy",
+      "target": {
+        "lemma": "분명하다",
+        "partOfSpeech": "형용사",
+        "senseKey": "분명하다/형용사/155625-2"
+      },
+      "stem": "‘지호는 이루고 싶은 꿈이 분명하다.’에서 ‘분명하다’의 뜻은 무엇일까요?",
+      "options": [
+        {
+          "id": "a",
+          "text": "태도나 목표가 확실하다"
+        },
+        {
+          "id": "b",
+          "text": "멀리 보이는 산이 선명하다"
+        },
+        {
+          "id": "c",
+          "text": "들려오는 노랫소리가 크다"
+        },
+        {
+          "id": "d",
+          "text": "그려 놓은 선이 아주 굵다"
+        }
+      ],
+      "correctOptionId": "a",
+      "explanation": "꿈이나 생각에 쓰인 ‘분명하다’는 태도나 목표가 흐릿하지 않고 확실하다는 뜻이에요.",
+      "distractorRationales": {
+        "b": "눈에 보이는 물체의 모양이 뚜렷한 경우예요.",
+        "c": "소리의 크기를 나타내는 말이에요.",
+        "d": "선의 두께를 설명하는 말이라 달라요."
+      },
+      "gradeBand": {
+        "min": 3,
+        "max": 4
+      }
+    },
+    {
+      "id": "g3-argon-0237",
+      "revision": 2,
+      "status": "published",
+      "grade": 3,
+      "type": "synonym_context",
+      "difficultyTier": "core",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "싱그럽다",
+        "partOfSpeech": "형용사",
+        "senseKey": "싱그럽다/형용사/210931-1"
+      },
+      "stem": "‘갓 딴 유자에서 나는 향기가 참 싱그럽다.’에서 ‘싱그럽다’와 바꾸어 쓸 말은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "구수하고 진하다"
+        },
+        {
+          "id": "b",
+          "text": "싱싱하고 맑다"
+        },
+        {
+          "id": "c",
+          "text": "맵고 칼칼하다"
+        },
+        {
+          "id": "d",
+          "text": "탁하고 답답하다"
+        }
+      ],
+      "correctOptionId": "b",
+      "explanation": "‘싱그럽다’는 싱싱하고 맑은 향기나 분위기가 있다는 뜻이에요.",
+      "distractorRationales": {
+        "a": "누룽지처럼 고소하고 진한 냄새를 뜻해요.",
+        "c": "고추나 마늘처럼 매운 기운을 나타내요.",
+        "d": "공기가 맑지 못하고 막힌 느낌을 뜻해요."
+      },
+      "gradeBand": {
+        "min": 3,
+        "max": 4
+      }
+    },
+    {
+      "id": "g3-argon-0238",
+      "revision": 2,
+      "status": "published",
+      "grade": 3,
+      "type": "definition",
+      "difficultyTier": "advanced",
+      "variantTag": "polysemy",
+      "target": {
+        "lemma": "응원하다",
+        "partOfSpeech": "동사",
+        "senseKey": "응원하다/동사/264187-2"
+      },
+      "stem": "‘새로운 도전을 시작한 언니를 응원하다.’에서 ‘응원하다’의 뜻은 무엇일까요?",
+      "options": [
+        {
+          "id": "a",
+          "text": "운동장 경기에서 노래를 부르다"
+        },
+        {
+          "id": "b",
+          "text": "남이 하는 일을 막아 방해하다"
+        },
+        {
+          "id": "c",
+          "text": "잘못한 점을 찾아내어 꾸짖다"
+        },
+        {
+          "id": "d",
+          "text": "곁에서 마음을 보태 도와주다"
+        }
+      ],
+      "correctOptionId": "d",
+      "explanation": "‘응원하다’는 곁에서 성원하거나 호응하여 도와준다는 뜻으로도 쓰여요.",
+      "distractorRationales": {
+        "a": "경기장에서 노래를 부르는 행동으로, 언니의 도전에 마음을 보태는 문맥과 달라요.",
+        "b": "일을 가로막는 반대 행동이에요.",
+        "c": "혼내고 나무라는 행동이라 뜻이 달라요."
+      },
+      "gradeBand": {
+        "min": 3,
+        "max": 4
+      }
+    },
+    {
+      "id": "g3-argon-0239",
+      "revision": 2,
+      "status": "published",
+      "grade": 3,
+      "type": "usage",
+      "difficultyTier": "core",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "싱그럽다",
+        "partOfSpeech": "형용사",
+        "senseKey": "싱그럽다/형용사/210931-1"
+      },
+      "stem": "‘싱그럽다’를 바르게 쓴 문장은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "까맣게 탄 냄비 연기가 싱그럽다."
+        },
+        {
+          "id": "b",
+          "text": "오래되어 상한 우유가 싱그럽다."
+        },
+        {
+          "id": "c",
+          "text": "아침 숲길의 풀 내음이 싱그럽다."
+        },
+        {
+          "id": "d",
+          "text": "시끄러운 기계 소리가 싱그럽다."
+        }
+      ],
+      "correctOptionId": "c",
+      "explanation": "‘싱그럽다’는 싱싱하고 맑은 향기나 분위기를 나타낼 때 써요.",
+      "distractorRationales": {
+        "a": "탄 냄새가 나는 매운 연기에는 쓰지 않아요.",
+        "b": "상해서 나쁜 냄새가 나는 것과는 반대예요.",
+        "d": "귀가 아픈 기계 소음에는 어울리지 않아요."
+      },
+      "gradeBand": {
+        "min": 3,
+        "max": 4
+      }
+    },
+    {
+      "id": "g3-argon-0240",
+      "revision": 1,
+      "status": "published",
+      "grade": 3,
+      "type": "cloze",
+      "difficultyTier": "challenge",
+      "variantTag": "dialect",
+      "dialectRegion": "제주",
+      "target": {
+        "lemma": "할망",
+        "partOfSpeech": "명사",
+        "senseKey": "할망/명사/od-476359-1"
+      },
+      "stem": "제주도 외갓집에서 어머니를 낳아 주신 ‘할망’이 반갑게 맞아 주셔서 사랑하는 (    ) 품에 폭 안겼다.",
+      "options": [
+        {
+          "id": "a",
+          "text": "아버지"
+        },
+        {
+          "id": "b",
+          "text": "할머니"
+        },
+        {
+          "id": "c",
+          "text": "남동생"
+        },
+        {
+          "id": "d",
+          "text": "아저씨"
+        }
+      ],
+      "correctOptionId": "b",
+      "explanation": "‘할망’은 제주와 경북 방언으로 표준어 ‘할머니’를 뜻해요.",
+      "distractorRationales": {
+        "a": "남자 부모님을 가리키는 말이에요.",
+        "c": "나이가 적은 남자 형제를 뜻해요.",
+        "d": "남자 어른을 부르는 말이라 맞지 않아요."
+      },
+      "gradeBand": {
+        "min": 3,
+        "max": 4
+      }
+    },
+    {
+      "id": "g3-argon-0241",
+      "revision": 1,
+      "status": "published",
+      "grade": 3,
+      "type": "cloze",
+      "difficultyTier": "challenge",
+      "variantTag": "dialect",
+      "dialectRegion": "제주",
+      "target": {
+        "lemma": "감저",
+        "partOfSpeech": "명사",
+        "senseKey": "감저/명사/od-866153-4"
+      },
+      "stem": "제주 삼촌이 화롯불에 ‘감저’를 구워 주셔서 보랏빛 껍질을 벗기고 노랗고 달콤한 (    ) 속살을 맛있게 먹었다.",
+      "options": [
+        {
+          "id": "a",
+          "text": "고구마"
+        },
+        {
+          "id": "b",
+          "text": "시금치"
+        },
+        {
+          "id": "c",
+          "text": "오렌지"
+        },
+        {
+          "id": "d",
+          "text": "토마토"
+        }
+      ],
+      "correctOptionId": "a",
+      "explanation": "‘감저’는 제주 방언으로 보랏빛 껍질에 달콤한 ‘고구마’를 가리켜요.",
+      "distractorRationales": {
+        "b": "푸른 잎을 무쳐 먹는 나물 채소예요.",
+        "c": "구워 먹지 않는 둥근 감귤류 과일이에요.",
+        "d": "빨갛게 익는 즙이 많은 열매채소예요."
+      },
+      "gradeBand": {
+        "min": 3,
+        "max": 4
+      }
+    },
+    {
+      "id": "g3-argon-0242",
+      "revision": 1,
+      "status": "published",
+      "grade": 3,
+      "type": "cloze",
+      "difficultyTier": "challenge",
+      "variantTag": "dialect",
+      "dialectRegion": "충청",
+      "target": {
+        "lemma": "복송아",
+        "partOfSpeech": "명사",
+        "senseKey": "복송아/명사/od-745752-1"
+      },
+      "stem": "충청도 할아버지께서 과수원에서 딴 ‘복송아’를 주셔서 솜털이 보송한 분홍빛 (    ) 껍질을 조심히 깎았다.",
+      "options": [
+        {
+          "id": "a",
+          "text": "바나나"
+        },
+        {
+          "id": "b",
+          "text": "오렌지"
+        },
+        {
+          "id": "c",
+          "text": "한라봉"
+        },
+        {
+          "id": "d",
+          "text": "복숭아"
+        }
+      ],
+      "correctOptionId": "d",
+      "explanation": "‘복송아’는 충청 등 여러 지역의 방언으로 ‘복숭아’를 뜻해요.",
+      "distractorRationales": {
+        "a": "노란 껍질에 솜털이 없는 열대 과일이에요.",
+        "b": "주황색 단단한 껍질을 가진 과일이에요.",
+        "c": "울퉁불퉁한 노란 껍질의 겨울 과일이에요."
+      },
+      "gradeBand": {
+        "min": 3,
+        "max": 4
+      }
+    },
+    {
+      "id": "g3-argon-0243",
+      "revision": 1,
+      "status": "published",
+      "grade": 3,
+      "type": "cloze",
+      "difficultyTier": "challenge",
+      "variantTag": "dialect",
+      "dialectRegion": "전라",
+      "target": {
+        "lemma": "옥수시",
+        "partOfSpeech": "명사",
+        "senseKey": "옥수시/명사/od-633864-1"
+      },
+      "stem": "전라도 이모가 찐 ‘옥수시’를 건네주셔서 길쭉한 자루에 노랗게 줄지어 박힌 (    ) 알갱이를 톡톡 떼어 먹었다.",
+      "options": [
+        {
+          "id": "a",
+          "text": "미나리"
+        },
+        {
+          "id": "b",
+          "text": "도라지"
+        },
+        {
+          "id": "c",
+          "text": "옥수수"
+        },
+        {
+          "id": "d",
+          "text": "고사리"
+        }
+      ],
+      "correctOptionId": "c",
+      "explanation": "‘옥수시’는 전라와 경남 지역에서 ‘옥수수’를 이르는 방언이에요.",
+      "distractorRationales": {
+        "a": "향긋한 줄기를 먹는 초록 채소예요.",
+        "b": "하얀 뿌리를 양념해 먹는 채소예요.",
+        "d": "산에서 자라는 갈색 봄나물이에요."
+      },
+      "gradeBand": {
+        "min": 3,
+        "max": 4
+      }
+    },
+    {
+      "id": "g3-argon-0244",
+      "revision": 1,
+      "status": "published",
+      "grade": 3,
+      "type": "cloze",
+      "difficultyTier": "challenge",
+      "variantTag": "dialect",
+      "dialectRegion": "강원",
+      "target": {
+        "lemma": "부치개",
+        "partOfSpeech": "명사",
+        "senseKey": "부치개/명사/od-177403-1"
+      },
+      "stem": "강원도 고모가 비 오는 날 ‘부치개’를 부치신다며 밀가루 반죽에 파를 넣어 노릇한 (    ) 한 접시를 구워 주셨다.",
+      "options": [
+        {
+          "id": "a",
+          "text": "콩나물"
+        },
+        {
+          "id": "b",
+          "text": "미역국"
+        },
+        {
+          "id": "c",
+          "text": "깍두기"
+        },
+        {
+          "id": "d",
+          "text": "부침개"
+        }
+      ],
+      "correctOptionId": "d",
+      "explanation": "‘부치개’는 강원과 경기 방언으로 반죽을 펴서 지진 ‘부침개’예요.",
+      "distractorRationales": {
+        "a": "콩을 길러 무치거나 끓여 먹는 채소예요.",
+        "b": "미역을 넣고 끓이는 국물 요리예요.",
+        "c": "무를 썰어 양념에 버무린 김치예요."
+      },
+      "gradeBand": {
+        "min": 3,
+        "max": 4
+      }
+    },
+    {
+      "id": "g3-argon-0245",
+      "revision": 2,
+      "status": "published",
+      "grade": 3,
+      "type": "cloze",
+      "difficultyTier": "challenge",
+      "variantTag": "dialect",
+      "dialectRegion": "경상",
+      "target": {
+        "lemma": "짐치",
+        "partOfSpeech": "명사",
+        "senseKey": "짐치/명사/od-509047-1"
+      },
+      "stem": "경상도 외할머니께서 \"오늘 짐치 맛있다.\" 하시며 절인 배추에 빨간 고춧가루 양념을 버무려 담근 (    ) 한 접시를 주셨다.",
+      "options": [
+        {
+          "id": "a",
+          "text": "식혜"
+        },
+        {
+          "id": "b",
+          "text": "된장"
+        },
+        {
+          "id": "c",
+          "text": "송편"
+        },
+        {
+          "id": "d",
+          "text": "김치"
+        }
+      ],
+      "correctOptionId": "d",
+      "explanation": "‘짐치’는 경상 등 여러 지역에서 ‘김치’를 부르는 방언이에요.",
+      "distractorRationales": {
+        "a": "엿기름과 밥으로 만드는 달콤한 전통 음료예요.",
+        "b": "메주로 담그는 구수한 갈색 장이라 달라요.",
+        "c": "쌀가루로 빚어 찌는 명절 떡이라 맞지 않아요."
+      },
+      "gradeBand": {
+        "min": 3,
+        "max": 4
+      }
+    },
+    {
+      "id": "g3-argon-0246",
+      "revision": 1,
+      "status": "published",
+      "grade": 3,
+      "type": "cloze",
+      "difficultyTier": "challenge",
+      "variantTag": "dialect",
+      "dialectRegion": "경상",
+      "target": {
+        "lemma": "무시",
+        "partOfSpeech": "명사",
+        "senseKey": "무시/명사/od-457983-1"
+      },
+      "stem": "경상도 할머니께서 국에 넣을 ‘무시’를 뽑아 오라고 하셔서 텃밭에서 하얗고 굵은 뿌리채소인 (    ) 한 개를 뽑았다.",
+      "options": [
+        {
+          "id": "a",
+          "text": "파"
+        },
+        {
+          "id": "b",
+          "text": "무"
+        },
+        {
+          "id": "c",
+          "text": "콩"
+        },
+        {
+          "id": "d",
+          "text": "깨"
+        }
+      ],
+      "correctOptionId": "b",
+      "explanation": "‘무시’는 경상과 전라 지역에서 뿌리채소 ‘무’를 이르는 방언이에요.",
+      "distractorRationales": {
+        "a": "길쭉한 초록 잎줄기를 쓰는 채소예요.",
+        "c": "꼬투리 속에 동그란 알이 드는 곡식이에요.",
+        "d": "볶아서 기름을 짜는 아주 작은 씨앗이에요."
+      },
+      "gradeBand": {
+        "min": 3,
+        "max": 4
+      }
+    },
+    {
+      "id": "g3-argon-0247",
+      "revision": 1,
+      "status": "published",
+      "grade": 3,
+      "type": "cloze",
+      "difficultyTier": "challenge",
+      "variantTag": "dialect",
+      "dialectRegion": "경상",
+      "target": {
+        "lemma": "배차",
+        "partOfSpeech": "명사",
+        "senseKey": "배차/명사/od-496332-1"
+      },
+      "stem": "할아버지께서 김장할 ‘배차’를 나르자고 하셔서 푸른 겉잎이 노란 속을 겹겹이 감싼 (    ) 열 포기를 옮겼다.",
+      "options": [
+        {
+          "id": "a",
+          "text": "오이"
+        },
+        {
+          "id": "b",
+          "text": "고추"
+        },
+        {
+          "id": "c",
+          "text": "당근"
+        },
+        {
+          "id": "d",
+          "text": "배추"
+        }
+      ],
+      "correctOptionId": "d",
+      "explanation": "‘배차’는 경상·강원·경기·충청 방언으로 김장 채소 ‘배추’를 뜻해요.",
+      "distractorRationales": {
+        "a": "길쭉하고 초록색인 열매채소예요.",
+        "b": "매운맛을 내는 작은 열매채소예요.",
+        "c": "주황색 뿌리를 먹는 채소라 단서와 달라요."
+      },
+      "gradeBand": {
+        "min": 3,
+        "max": 4
+      }
+    },
+    {
+      "id": "g3-argon-0248",
+      "revision": 1,
+      "status": "published",
+      "grade": 3,
+      "type": "cloze",
+      "difficultyTier": "challenge",
+      "variantTag": "dialect",
+      "dialectRegion": "경상",
+      "target": {
+        "lemma": "할매",
+        "partOfSpeech": "명사",
+        "senseKey": "할매/명사/od-318792-1"
+      },
+      "stem": "경주에 사시는 ‘할매’께서 전화로 안부를 물으셔서 아버지의 어머니이신 (    ) 목소리를 반갑게 들었다.",
+      "options": [
+        {
+          "id": "a",
+          "text": "아버지"
+        },
+        {
+          "id": "b",
+          "text": "할머니"
+        },
+        {
+          "id": "c",
+          "text": "남동생"
+        },
+        {
+          "id": "d",
+          "text": "아저씨"
+        }
+      ],
+      "correctOptionId": "b",
+      "explanation": "‘할매’는 경상 등지에서 ‘할머니’를 부르는 정겨운 방언이에요.",
+      "distractorRationales": {
+        "a": "남자 부모님을 가리키는 표준어예요.",
+        "c": "나이가 어린 남자 형제를 뜻해요.",
+        "d": "이웃 남자 어른을 부르는 말이에요."
+      },
+      "gradeBand": {
+        "min": 3,
+        "max": 4
+      }
+    },
+    {
+      "id": "g3-argon-0249",
+      "revision": 2,
+      "status": "published",
+      "grade": 3,
+      "type": "cloze",
+      "difficultyTier": "challenge",
+      "variantTag": "dialect",
+      "dialectRegion": "경상",
+      "target": {
+        "lemma": "할배",
+        "partOfSpeech": "명사",
+        "senseKey": "할배/명사/od-319049-1"
+      },
+      "stem": "안동에 계신 ‘할배’께서 나무 팽이를 깎아 주셔서 아버지의 아버지이신 (    )께 감사 인사를 드렸다.",
+      "options": [
+        {
+          "id": "a",
+          "text": "할아버지"
+        },
+        {
+          "id": "b",
+          "text": "아주머니"
+        },
+        {
+          "id": "c",
+          "text": "이모부님"
+        },
+        {
+          "id": "d",
+          "text": "작은엄마"
+        }
+      ],
+      "correctOptionId": "a",
+      "explanation": "‘할배’는 경상과 강원 지역에서 ‘할아버지’를 뜻하는 방언이에요.",
+      "distractorRationales": {
+        "b": "결혼한 여자 어른을 부르는 말이라 달라요.",
+        "c": "이모의 남편을 높여 부르는 말이에요.",
+        "d": "작은아버지의 아내를 부르는 말이에요."
+      },
+      "gradeBand": {
+        "min": 3,
+        "max": 4
+      }
+    },
+    {
+      "id": "g3-argon-0250",
+      "revision": 2,
+      "status": "published",
+      "grade": 3,
+      "type": "cloze",
+      "difficultyTier": "challenge",
+      "variantTag": "dialect",
+      "dialectRegion": "경상",
+      "target": {
+        "lemma": "아지매",
+        "partOfSpeech": "명사",
+        "senseKey": "아지매/명사/od-354941-1"
+      },
+      "stem": "떡집 ‘아지매’께서 따끈한 가래떡을 썰어 주셔서 친절한 이웃집 여자 어른인 (    ) 앞에서 꾸벅 인사했다.",
+      "options": [
+        {
+          "id": "a",
+          "text": "아주머니"
+        },
+        {
+          "id": "b",
+          "text": "할아버지"
+        },
+        {
+          "id": "c",
+          "text": "남자아이"
+        },
+        {
+          "id": "d",
+          "text": "어린 동생"
+        }
+      ],
+      "correctOptionId": "a",
+      "explanation": "‘아지매’는 경상과 강원 지역에서 ‘아주머니’를 이르는 방언이에요.",
+      "distractorRationales": {
+        "b": "연세가 많은 남자 어르신을 뜻해요.",
+        "c": "나이가 어린 사내아이를 가리켜요.",
+        "d": "자기보다 나이가 적은 아우를 뜻해요."
+      },
+      "gradeBand": {
+        "min": 3,
+        "max": 4
+      }
+    },
+    {
+      "id": "g3-argon-0251",
+      "revision": 1,
+      "status": "published",
+      "grade": 3,
+      "type": "antonym_context",
+      "difficultyTier": "basic",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "가리키다",
+        "partOfSpeech": "동사",
+        "senseKey": "가리키다/동사/383017-1"
+      },
+      "stem": "‘손가락으로 동쪽 길을 가리키다.’에서 ‘가리키다’와 반대되는 행동은 무엇일까요?",
+      "options": [
+        {
+          "id": "a",
+          "text": "손으로 집어 보여 주다"
+        },
+        {
+          "id": "b",
+          "text": "어느 쪽인지 알려 주다"
+        },
+        {
+          "id": "c",
+          "text": "위치를 짚어 말해 주다"
+        },
+        {
+          "id": "d",
+          "text": "방향을 감추어 안 알리다"
+        }
+      ],
+      "correctOptionId": "d",
+      "explanation": "‘가리키다’는 방향이나 대상을 집어 알리는 것이므로 감추어 알리지 않는 것과 반대예요.",
+      "distractorRationales": {
+        "a": "‘가리키다’의 본뜻과 같은 행동이에요.",
+        "b": "방향을 일러 주는 비슷한 행동이에요.",
+        "c": "대상을 짚어 알리는 같은 뜻이에요."
+      },
+      "gradeBand": {
+        "min": 3,
+        "max": 4
+      }
+    },
+    {
+      "id": "g3-argon-0254",
+      "revision": 2,
+      "status": "published",
+      "grade": 3,
+      "type": "antonym_context",
+      "difficultyTier": "basic",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "꺼풀",
+        "partOfSpeech": "명사",
+        "senseKey": "꺼풀/명사/404018-1"
+      },
+      "stem": "‘양파의 마른 꺼풀을 한 겹 벗겼다.’에서 ‘꺼풀’과 대조되는 안쪽 부분은 무엇일까요?",
+      "options": [
+        {
+          "id": "a",
+          "text": "가장 안쪽의 알맹이"
+        },
+        {
+          "id": "b",
+          "text": "겹겹이 싼 겉껍질"
+        },
+        {
+          "id": "c",
+          "text": "바깥을 덮은 껍데기"
+        },
+        {
+          "id": "d",
+          "text": "겉에 붙은 얇은 층"
+        }
+      ],
+      "correctOptionId": "a",
+      "explanation": "‘꺼풀’은 여러 겹으로 된 바깥 껍질 층이므로 안쪽 알맹이와 대조돼요.",
+      "distractorRationales": {
+        "b": "‘꺼풀’과 뜻이 비슷한 바깥 부분이에요.",
+        "c": "물체의 겉을 감싼 바깥 층을 뜻해요.",
+        "d": "겉면을 덮고 있는 얇은 껍질 층이에요."
+      },
+      "gradeBand": {
+        "min": 3,
+        "max": 4
+      }
+    },
+    {
+      "id": "g3-argon-0255",
+      "revision": 3,
+      "status": "published",
+      "grade": 3,
+      "type": "cloze",
+      "difficultyTier": "basic",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "든든하다",
+        "partOfSpeech": "형용사",
+        "senseKey": "든든하다/형용사/419368-1"
+      },
+      "stem": "어두운 밤길도 믿음직한 언니가 곁에서 함께 걸어 주니 무섭지 않고 마음이 참 (    ).",
+      "options": [
+        {
+          "id": "a",
+          "text": "불안하다"
+        },
+        {
+          "id": "b",
+          "text": "든든하다"
+        },
+        {
+          "id": "c",
+          "text": "서운하다"
+        },
+        {
+          "id": "d",
+          "text": "창피하다"
+        }
+      ],
+      "correctOptionId": "b",
+      "explanation": "믿음으로 마음이 두렵지 않고 굳셀 때 ‘든든하다’라고 해요.",
+      "distractorRationales": {
+        "a": "마음이 편하지 않고 조마조마하다는 반대 뜻이에요.",
+        "c": "마음에 모자라 아쉽고 섭섭하다는 뜻이에요.",
+        "d": "부끄러워 남 보기가 떳떳하지 않다는 뜻이에요."
+      },
+      "gradeBand": {
+        "min": 3,
+        "max": 4
+      }
+    },
+    {
+      "id": "g3-argon-0258",
+      "revision": 1,
+      "status": "published",
+      "grade": 3,
+      "type": "cloze",
+      "difficultyTier": "basic",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "건조하다",
+        "partOfSpeech": "동사",
+        "senseKey": "건조하다/동사/393153-1"
+      },
+      "stem": "비에 젖은 운동화를 햇볕에 널어 물기를 바짝 (    ).",
+      "options": [
+        {
+          "id": "a",
+          "text": "조립했다"
+        },
+        {
+          "id": "b",
+          "text": "건조했다"
+        },
+        {
+          "id": "c",
+          "text": "포장했다"
+        },
+        {
+          "id": "d",
+          "text": "배달했다"
+        }
+      ],
+      "correctOptionId": "b",
+      "explanation": "물기나 습기를 말려서 없애는 일을 ‘건조하다’라고 해요.",
+      "distractorRationales": {
+        "a": "부품을 맞추어 만드는 일이라 물기와 맞지 않아요.",
+        "c": "물건을 종이나 상자로 싸는 일을 뜻해요.",
+        "d": "물건을 목적지까지 갖다주는 일이라 어색해요."
+      },
+      "gradeBand": {
+        "min": 3,
+        "max": 4
+      }
+    },
+    {
+      "id": "g3-argon-0266",
+      "revision": 1,
+      "status": "published",
+      "grade": 3,
+      "type": "antonym_context",
+      "difficultyTier": "basic",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "말랑말랑",
+        "partOfSpeech": "부사",
+        "senseKey": "말랑말랑/부사/109819-1"
+      },
+      "stem": "‘찰흙이 말랑말랑 무르다.’에서 ‘말랑말랑’과 반대인 것은 무엇일까요?",
+      "options": [
+        {
+          "id": "a",
+          "text": "야들야들 보드라운 느낌"
+        },
+        {
+          "id": "b",
+          "text": "단단하고 딱딱한 느낌"
+        },
+        {
+          "id": "c",
+          "text": "물렁물렁하고 무른 느낌"
+        },
+        {
+          "id": "d",
+          "text": "폭신하고 부드러운 느낌"
+        }
+      ],
+      "correctOptionId": "b",
+      "explanation": "보드랍고 무른 느낌인 ‘말랑말랑’과 반대되는 것은 단단하고 딱딱한 느낌이에요.",
+      "distractorRationales": {
+        "a": "‘말랑말랑’과 뜻이 아주 비슷한 느낌이에요.",
+        "c": "무르고 연한 촉감이라 반대말이 아니에요.",
+        "d": "부드러운 촉감을 나타내어 뜻이 가까워요."
+      },
+      "gradeBand": {
+        "min": 3,
+        "max": 4
+      }
+    },
+    {
+      "id": "g3-argon-0269",
+      "revision": 1,
+      "status": "published",
+      "grade": 3,
+      "type": "usage",
+      "difficultyTier": "core",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "매콤하다",
+        "partOfSpeech": "형용사",
+        "senseKey": "매콤하다/형용사/112841-1"
+      },
+      "stem": "‘매콤하다’를 바르게 쓴 문장은 무엇일까요?",
+      "options": [
+        {
+          "id": "a",
+          "text": "하얀 설탕을 넣은 물이 매콤하다."
+        },
+        {
+          "id": "b",
+          "text": "맑은 시냇물 소리가 참 매콤하다."
+        },
+        {
+          "id": "c",
+          "text": "새로 산 나무 의자가 늘 매콤하다."
+        },
+        {
+          "id": "d",
+          "text": "고추를 넣은 국물 맛이 매콤하다."
+        }
+      ],
+      "correctOptionId": "d",
+      "explanation": "‘매콤하다’는 냄새나 맛이 약간 맵다는 뜻이에요.",
+      "distractorRationales": {
+        "a": "설탕물은 단맛이 나므로 어울리지 않아요.",
+        "b": "물소리에는 매운맛을 뜻하는 말을 안 써요.",
+        "c": "나무 의자는 맛이나 매운 냄새와 관련 없어요."
+      },
+      "gradeBand": {
+        "min": 3,
+        "max": 4
+      }
+    },
+    {
+      "id": "g3-argon-0271",
+      "revision": 1,
+      "status": "published",
+      "grade": 3,
+      "type": "antonym_context",
+      "difficultyTier": "core",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "상큼하다",
+        "partOfSpeech": "형용사",
+        "senseKey": "상큼하다/형용사/179646-1"
+      },
+      "stem": "‘단정히 자른 머리 모양이 보기에 상큼하다.’에서 ‘상큼하다’와 뜻이 반대인 것은 무엇일까요?",
+      "options": [
+        {
+          "id": "a",
+          "text": "보기에 시원스럽고 좋다"
+        },
+        {
+          "id": "b",
+          "text": "보기에 말끔하고 산뜻하다"
+        },
+        {
+          "id": "c",
+          "text": "보기에 답답하고 어수선하다"
+        },
+        {
+          "id": "d",
+          "text": "보기에 깔끔하고 단정하다"
+        }
+      ],
+      "correctOptionId": "c",
+      "explanation": "보기에 시원스럽고 좋다는 뜻의 ‘상큼하다’는 답답하고 어수선한 모습과 반대예요.",
+      "distractorRationales": {
+        "a": "‘상큼하다’의 사전 뜻과 똑같은 표현이에요.",
+        "b": "깨끗하고 시원스러운 비슷한 느낌이에요.",
+        "d": "정돈되어 보기 좋다는 비슷한 뜻이에요."
+      },
+      "gradeBand": {
+        "min": 3,
+        "max": 4
+      }
+    },
+    {
+      "id": "g3-argon-0273",
+      "revision": 1,
+      "status": "published",
+      "grade": 3,
+      "type": "synonym_context",
+      "difficultyTier": "basic",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "출렁출렁",
+        "partOfSpeech": "부사",
+        "senseKey": "출렁출렁/부사/331286-1"
+      },
+      "stem": "‘바닷물이 바람에 출렁출렁 흔들린다.’에서 ‘출렁출렁’과 뜻이 가장 비슷한 말은 무엇일까요?",
+      "options": [
+        {
+          "id": "a",
+          "text": "큰 물결이 일며"
+        },
+        {
+          "id": "b",
+          "text": "얼음처럼 굳어"
+        },
+        {
+          "id": "c",
+          "text": "한 방울씩 떨어져"
+        },
+        {
+          "id": "d",
+          "text": "연기처럼 사라져"
+        }
+      ],
+      "correctOptionId": "a",
+      "explanation": "‘출렁출렁’은 물이 자꾸 큰 물결을 이루며 흔들리는 모양이에요.",
+      "distractorRationales": {
+        "b": "움직이지 않고 단단히 언 상태예요.",
+        "c": "물방울이 똑똑 떨어지는 모양이에요.",
+        "d": "형체가 없이 흩어져 없어지는 모양이에요."
+      },
+      "gradeBand": {
+        "min": 3,
+        "max": 4
+      }
+    },
+    {
+      "id": "g3-argon-0276",
+      "revision": 1,
+      "status": "published",
+      "grade": 3,
+      "type": "antonym_context",
+      "difficultyTier": "basic",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "뭉툭하다",
+        "partOfSpeech": "형용사",
+        "senseKey": "뭉툭하다/형용사/127300-1"
+      },
+      "stem": "‘오래 써서 색연필 끝이 뭉툭하다.’에서 ‘뭉툭하다’와 뜻이 반대인 말은 무엇일까요?",
+      "options": [
+        {
+          "id": "a",
+          "text": "뭉뚝하다"
+        },
+        {
+          "id": "b",
+          "text": "네모나다"
+        },
+        {
+          "id": "c",
+          "text": "평평하다"
+        },
+        {
+          "id": "d",
+          "text": "뾰족하다"
+        }
+      ],
+      "correctOptionId": "d",
+      "explanation": "사물의 끝이 짧고 무딘 ‘뭉툭하다’의 반대말은 끝이 날카로운 ‘뾰족하다’예요.",
+      "distractorRationales": {
+        "a": "‘뭉툭하다’보다 여린 느낌의 비슷한 말이에요.",
+        "b": "모양이 네모꼴로 되어 있다는 뜻이에요.",
+        "c": "높낮이가 없이 고르고 판판하다는 뜻이에요."
+      },
+      "gradeBand": {
+        "min": 3,
+        "max": 4
+      }
+    },
+    {
+      "id": "g3-argon-0278",
+      "revision": 1,
+      "status": "published",
+      "grade": 3,
+      "type": "definition",
+      "difficultyTier": "core",
+      "variantTag": "polysemy",
+      "target": {
+        "lemma": "산뜻하다",
+        "partOfSpeech": "형용사",
+        "senseKey": "산뜻하다/형용사/441740-2"
+      },
+      "stem": "‘새로 갈아입은 하늘색 셔츠가 참 산뜻하다.’에서 ‘산뜻하다’의 뜻은 무엇일까요?",
+      "options": [
+        {
+          "id": "a",
+          "text": "찬바람이 불어 몸이 떨리다"
+        },
+        {
+          "id": "b",
+          "text": "옷감이 두꺼워 매우 무겁다"
+        },
+        {
+          "id": "c",
+          "text": "보기에 시원스럽고 말쑥하다"
+        },
+        {
+          "id": "d",
+          "text": "얼룩이 묻어 지저분해 보이다"
+        }
+      ],
+      "correctOptionId": "c",
+      "explanation": "옷차림이나 겉모습에 쓰인 ‘산뜻하다’는 보기에 시원스럽고 말쑥하다는 뜻이에요.",
+      "distractorRationales": {
+        "a": "날씨가 추워 떨리는 상태를 뜻해요.",
+        "b": "두께와 무게를 설명하는 말이라 달라요.",
+        "d": "더러워 보인다는 반대 상태예요."
+      },
+      "gradeBand": {
+        "min": 3,
+        "max": 4
+      }
+    },
+    {
+      "id": "g3-argon-0279",
+      "revision": 2,
+      "status": "published",
+      "grade": 3,
+      "type": "definition",
+      "difficultyTier": "core",
+      "variantTag": "polysemy",
+      "target": {
+        "lemma": "밝다",
+        "partOfSpeech": "형용사",
+        "senseKey": "밝다/형용사/141119-2"
+      },
+      "stem": "‘거실 천장에 켠 전등이 무척 밝다.’에서 형용사 ‘밝다’의 뜻은 무엇일까요?",
+      "options": [
+        {
+          "id": "a",
+          "text": "불빛 따위가 아주 환하다"
+        },
+        {
+          "id": "b",
+          "text": "밤이 지나 새날이 찾아오다"
+        },
+        {
+          "id": "c",
+          "text": "약속한 날이 돌아오다"
+        },
+        {
+          "id": "d",
+          "text": "귀가 좋아 소리를 잘 듣다"
+        }
+      ],
+      "correctOptionId": "a",
+      "explanation": "전등이나 햇빛에 쓰인 형용사 ‘밝다’는 불빛 따위가 환하다는 뜻이에요.",
+      "distractorRationales": {
+        "b": "동사 ‘밝다’의 뜻이라 품사가 달라요.",
+        "c": "정한 날이 돌아온다는 동사의 뜻이에요.",
+        "d": "감각이 뛰어나다는 다른 뜻이에요."
+      },
+      "gradeBand": {
+        "min": 3,
+        "max": 4
+      }
+    },
+    {
+      "id": "g3-argon-0280",
+      "revision": 3,
+      "status": "published",
+      "grade": 3,
+      "type": "definition",
+      "difficultyTier": "core",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "깊다",
+        "partOfSpeech": "형용사",
+        "senseKey": "깊다/형용사/51971-2"
+      },
+      "stem": "‘동생을 먼저 챙기는 형은 나이에 비해 생각이 참 깊다.’에서 ‘깊다’의 뜻은 무엇일까요?",
+      "options": [
+        {
+          "id": "a",
+          "text": "바다 밑바닥까지 거리가 멀다"
+        },
+        {
+          "id": "b",
+          "text": "산속으로 들어간 길이 길다"
+        },
+        {
+          "id": "c",
+          "text": "잠이 들어 깨어나지 못하다"
+        },
+        {
+          "id": "d",
+          "text": "가볍지 않고 매우 조심스럽다"
+        }
+      ],
+      "correctOptionId": "d",
+      "explanation": "사람의 생각에 쓰인 ‘깊다’는 생각이 가볍지 않고 매우 조심스럽다는 뜻이에요.",
+      "distractorRationales": {
+        "a": "물이나 구덩이의 실제 깊이를 나타내는 뜻이에요.",
+        "b": "안쪽까지의 거리가 멀다는 뜻이에요.",
+        "c": "잠이 푹 든 정도를 설명하는 뜻이에요."
+      },
+      "gradeBand": {
+        "min": 3,
+        "max": 4
+      }
+    },
+    {
+      "id": "g3-argon-0283",
+      "revision": 2,
+      "status": "published",
+      "grade": 3,
+      "type": "definition",
+      "difficultyTier": "core",
+      "variantTag": "polysemy",
+      "target": {
+        "lemma": "뜨겁다",
+        "partOfSpeech": "형용사",
+        "senseKey": "뜨겁다/형용사/98047-2"
+      },
+      "stem": "‘감기에 걸려 동생의 이마가 뜨겁다.’에서 ‘뜨겁다’의 뜻은 무엇일까요?",
+      "options": [
+        {
+          "id": "a",
+          "text": "끓는 국물 온도가 매우 높다"
+        },
+        {
+          "id": "b",
+          "text": "몸의 열이 평소보다 높다"
+        },
+        {
+          "id": "c",
+          "text": "응원하는 열기가 매우 세차다"
+        },
+        {
+          "id": "d",
+          "text": "부끄러워 뺨이 붉어지다"
+        }
+      ],
+      "correctOptionId": "b",
+      "explanation": "아픈 사람의 몸에 쓰인 ‘뜨겁다’는 정상에 비해 몸의 열이 높다는 뜻이에요.",
+      "distractorRationales": {
+        "a": "사물이나 음식의 온도가 높은 경우예요.",
+        "c": "감정이나 열정이 격렬한 비유적 뜻이에요.",
+        "d": "창피하여 얼굴빛이 변하는 모습이에요."
+      },
+      "gradeBand": {
+        "min": 3,
+        "max": 4
+      }
+    },
+    {
+      "id": "g3-argon-0284",
+      "revision": 2,
+      "status": "published",
+      "grade": 3,
+      "type": "cloze",
+      "difficultyTier": "basic",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "보살피다",
+        "partOfSpeech": "동사",
+        "senseKey": "보살피다/동사/433327-1"
+      },
+      "stem": "다친 아기 새가 건강해지도록 누나가 매일 정성껏 (    ).",
+      "options": [
+        {
+          "id": "a",
+          "text": "보살폈다"
+        },
+        {
+          "id": "b",
+          "text": "외면했다"
+        },
+        {
+          "id": "c",
+          "text": "밀어냈다"
+        },
+        {
+          "id": "d",
+          "text": "꾸짖었다"
+        }
+      ],
+      "correctOptionId": "a",
+      "explanation": "정성을 기울여 보호하며 돕는 일을 ‘보살피다’라고 해요.",
+      "distractorRationales": {
+        "b": "관심을 두지 않고 모른 체한다는 반대 뜻이에요.",
+        "c": "가까이 오지 못하게 밀쳐 낸다는 뜻이에요.",
+        "d": "잘못을 타일러 혼낸다는 뜻이라 어울리지 않아요."
+      },
+      "gradeBand": {
+        "min": 3,
+        "max": 4
+      }
+    },
+    {
+      "id": "g3-argon-0286",
+      "revision": 2,
+      "status": "published",
+      "grade": 3,
+      "type": "synonym_context",
+      "difficultyTier": "core",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "든든하다",
+        "partOfSpeech": "형용사",
+        "senseKey": "든든하다/형용사/419368-1"
+      },
+      "stem": "‘발표할 때 단짝 친구가 응원해 주어 마음이 든든하다.’에서 ‘든든하다’와 바꾸어 쓸 말은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "불안하고 초조하다"
+        },
+        {
+          "id": "b",
+          "text": "허전하고 쓸쓸하다"
+        },
+        {
+          "id": "c",
+          "text": "두렵지 않고 굳세다"
+        },
+        {
+          "id": "d",
+          "text": "부끄럽고 창피하다"
+        }
+      ],
+      "correctOptionId": "c",
+      "explanation": "‘든든하다’는 믿음으로 마음이 허전하거나 두렵지 않고 굳세다는 뜻이에요.",
+      "distractorRationales": {
+        "a": "마음이 편치 않고 조마조마한 반대 상태예요.",
+        "b": "마음이 비어 외롭고 허전한 반대 느낌이에요.",
+        "d": "남을 보기에 떳떳하지 못한 기분을 뜻해요."
+      },
+      "gradeBand": {
+        "min": 3,
+        "max": 4
+      }
+    },
+    {
+      "id": "g3-argon-0287",
+      "revision": 2,
+      "status": "published",
+      "grade": 3,
+      "type": "definition",
+      "difficultyTier": "core",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "비교하다",
+        "partOfSpeech": "동사",
+        "senseKey": "비교하다/동사/153326-1"
+      },
+      "stem": "‘두 나뭇잎의 생김새를 비교하다.’에서 ‘비교하다’의 뜻은 무엇일까요?",
+      "options": [
+        {
+          "id": "a",
+          "text": "상자 속에 넣어 깊이 감추다"
+        },
+        {
+          "id": "b",
+          "text": "견주어 같고 다른 점을 살피다"
+        },
+        {
+          "id": "c",
+          "text": "부서진 곳을 풀로 붙여 고치다"
+        },
+        {
+          "id": "d",
+          "text": "더러운 곳을 빗자루로 쓸어내다"
+        }
+      ],
+      "correctOptionId": "b",
+      "explanation": "‘비교하다’는 둘 이상을 견주어 같고 다른 점을 살피는 일이에요.",
+      "distractorRationales": {
+        "a": "보이지 않게 숨기는 행동이라 뜻이 달라요.",
+        "c": "망가진 물건을 수리하는 일을 뜻해요.",
+        "d": "주변을 깨끗이 청소하는 행동이라 맞지 않아요."
+      },
+      "gradeBand": {
+        "min": 3,
+        "max": 4
+      }
+    },
+    {
+      "id": "g3-argon-0288",
+      "revision": 2,
+      "status": "published",
+      "grade": 3,
+      "type": "usage",
+      "difficultyTier": "core",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "든든하다",
+        "partOfSpeech": "형용사",
+        "senseKey": "든든하다/형용사/419368-1"
+      },
+      "stem": "‘든든하다’를 바르게 쓴 문장은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "혼자 낯선 길에서 헤매니 무서워 든든하다."
+        },
+        {
+          "id": "b",
+          "text": "유리컵이 바닥에 깨져 산산조각 든든하다."
+        },
+        {
+          "id": "c",
+          "text": "믿음직한 형이 도와주니 마음이 든든하다."
+        },
+        {
+          "id": "d",
+          "text": "약속 시각에 늦어 마음이 초조해 든든하다."
+        }
+      ],
+      "correctOptionId": "c",
+      "explanation": "‘든든하다’는 믿음으로 마음이 두렵지 않고 굳셀 때 써요.",
+      "distractorRationales": {
+        "a": "무서워 떨리는 상황과는 뜻이 반대예요.",
+        "b": "물건이 깨지는 현상에는 쓸 수 없어요.",
+        "d": "초조하고 불안한 마음과는 어울리지 않아요."
+      },
+      "gradeBand": {
+        "min": 3,
+        "max": 4
+      }
+    },
+    {
+      "id": "g3-argon-0290",
+      "revision": 2,
+      "status": "published",
+      "grade": 3,
+      "type": "cloze",
+      "difficultyTier": "challenge",
+      "variantTag": "dialect",
+      "dialectRegion": "경상",
+      "target": {
+        "lemma": "얼라",
+        "partOfSpeech": "명사",
+        "senseKey": "얼라/명사/od-502816-1"
+      },
+      "stem": "경상도 할머니께서 \"방에서 자는 얼라 깨우지 마라.\" 하셔서 딸랑이를 쥐고 낮잠 자는 돌 지난 (    ) 곁을 살금살금 지나갔다.",
+      "options": [
+        {
+          "id": "a",
+          "text": "어린아이"
+        },
+        {
+          "id": "b",
+          "text": "할아버지"
+        },
+        {
+          "id": "c",
+          "text": "아주머니"
+        },
+        {
+          "id": "d",
+          "text": "택배 기사"
+        }
+      ],
+      "correctOptionId": "a",
+      "explanation": "‘얼라’는 경상·강원·함경 방언으로 표준어 ‘어린아이’를 뜻해요.",
+      "distractorRationales": {
+        "b": "연세가 많은 남자 어르신을 뜻해요.",
+        "c": "이웃이나 친척 여자 어른을 가리켜요.",
+        "d": "물건을 배달하는 직업을 가진 어른이에요."
+      },
+      "gradeBand": {
+        "min": 3,
+        "max": 4
+      }
+    },
+    {
+      "id": "g3-argon-0291",
+      "revision": 1,
+      "status": "published",
+      "grade": 3,
+      "type": "cloze",
+      "difficultyTier": "challenge",
+      "variantTag": "dialect",
+      "dialectRegion": "제주",
+      "target": {
+        "lemma": "어멍",
+        "partOfSpeech": "명사",
+        "senseKey": "어멍/명사/od-539583-1"
+      },
+      "stem": "제주도 숙모가 딸에게 \"이 어멍 심부름 좀 다녀오렴.\" 하셔서 나를 낳아 길러 주신 (    ) 말씀을 떠올리며 미소 지었다.",
+      "options": [
+        {
+          "id": "a",
+          "text": "아버지"
+        },
+        {
+          "id": "b",
+          "text": "남동생"
+        },
+        {
+          "id": "c",
+          "text": "아저씨"
+        },
+        {
+          "id": "d",
+          "text": "어머니"
+        }
+      ],
+      "correctOptionId": "d",
+      "explanation": "‘어멍’은 제주와 경남 방언으로 표준어 ‘어머니’를 뜻해요.",
+      "distractorRationales": {
+        "a": "남자 부모님을 부르는 표준어예요.",
+        "b": "나이가 어린 남자 형제를 가리켜요.",
+        "c": "남자 어른을 부르는 말이라 달라요."
+      },
+      "gradeBand": {
+        "min": 3,
+        "max": 4
+      }
+    },
+    {
+      "id": "g3-argon-0292",
+      "revision": 1,
+      "status": "published",
+      "grade": 3,
+      "type": "cloze",
+      "difficultyTier": "challenge",
+      "variantTag": "dialect",
+      "dialectRegion": "제주",
+      "target": {
+        "lemma": "깅이",
+        "partOfSpeech": "명사",
+        "senseKey": "깅이/명사/od-109969-1"
+      },
+      "stem": "제주 해녀 할머니께서 바위틈 ‘깅이’를 잡으셨는데 단단한 등딱지에 집게발을 든 (    ) 한 마리가 옆으로 걸어갔다.",
+      "options": [
+        {
+          "id": "a",
+          "text": "굴"
+        },
+        {
+          "id": "b",
+          "text": "김"
+        },
+        {
+          "id": "c",
+          "text": "새"
+        },
+        {
+          "id": "d",
+          "text": "게"
+        }
+      ],
+      "correctOptionId": "d",
+      "explanation": "‘깅이’는 제주 지역에서 옆으로 기어가는 ‘게’를 부르는 방언이에요.",
+      "distractorRationales": {
+        "a": "바위에 붙어 자라는 조개류라 걷지 못해요.",
+        "b": "바다에서 자라는 검은 해조류예요.",
+        "c": "날개로 하늘을 나는 동물이라 달라요."
+      },
+      "gradeBand": {
+        "min": 3,
+        "max": 4
+      }
+    },
+    {
+      "id": "g3-argon-0299",
+      "revision": 2,
+      "status": "published",
+      "grade": 3,
+      "type": "definition",
+      "difficultyTier": "advanced",
+      "variantTag": "idiom_proverb",
+      "target": {
+        "lemma": "고개를 끄덕이다",
+        "partOfSpeech": "관용구",
+        "senseKey": "고개를 끄덕이다/관용구/525257-1"
+      },
+      "stem": "“내 제안을 들은 민수가 고개를 끄덕였다.”에서 ‘고개를 끄덕이다’의 뜻은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "싫다는 뜻으로 머리를 가로젓다"
+        },
+        {
+          "id": "b",
+          "text": "부끄러워 얼굴을 두 손에 묻다"
+        },
+        {
+          "id": "c",
+          "text": "옳다고 머리를 위아래로 흔들다"
+        },
+        {
+          "id": "d",
+          "text": "졸음을 못 이겨 자꾸만 꾸벅거리다"
+        }
+      ],
+      "correctOptionId": "c",
+      "explanation": "‘고개를 끄덕이다’는 옳다거나 좋다는 뜻으로 고개를 위아래로 흔드는 거예요.",
+      "distractorRationales": {
+        "a": "반대하거나 거절할 때 하는 동작이에요.",
+        "b": "창피해서 얼굴을 가리는 행동이에요.",
+        "d": "잠이 와서 정신없이 조는 모습이에요."
+      },
+      "gradeBand": {
+        "min": 3,
+        "max": 4
+      }
+    },
+    {
+      "id": "g3-argon-0308",
+      "revision": 1,
+      "status": "published",
+      "grade": 3,
+      "type": "synonym_context",
+      "difficultyTier": "basic",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "고요하다",
+        "partOfSpeech": "형용사",
+        "senseKey": "고요하다/형용사/396318-1"
+      },
+      "stem": "“밤이 깊어 온 동네가 고요하다.”에서 ‘고요하다’와 뜻이 가장 비슷한 말은 무엇일까요?",
+      "options": [
+        {
+          "id": "a",
+          "text": "조용하다"
+        },
+        {
+          "id": "b",
+          "text": "소란스럽다"
+        },
+        {
+          "id": "c",
+          "text": "복잡하다"
+        },
+        {
+          "id": "d",
+          "text": "화려하다"
+        }
+      ],
+      "correctOptionId": "a",
+      "explanation": "‘고요하다’는 아무 소리 없이 조용하고 잠잠하다는 뜻이에요.",
+      "distractorRationales": {
+        "b": "‘소란스럽다’는 시끄럽고 어수선하다는 반대 뜻이에요.",
+        "c": "‘복잡하다’는 뒤섞여 어수선하다는 뜻이에요.",
+        "d": "‘화려하다’는 빛깔이나 모양이 고와 눈에 띄는 거예요."
+      },
+      "gradeBand": {
+        "min": 3,
+        "max": 4
+      }
+    },
+    {
+      "id": "g3-argon-0318",
+      "revision": 1,
+      "status": "published",
+      "grade": 3,
+      "type": "definition",
+      "difficultyTier": "core",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "흐리다",
+        "partOfSpeech": "형용사",
+        "senseKey": "흐리다/형용사/385177-1"
+      },
+      "stem": "‘오래전 일이라 기억이 흐리다.’에서 ‘흐리다’의 뜻은 무엇일까요?",
+      "options": [
+        {
+          "id": "a",
+          "text": "생각이나 판단이 분명하지 않다"
+        },
+        {
+          "id": "b",
+          "text": "먹구름이 끼어 날씨가 어둡다"
+        },
+        {
+          "id": "c",
+          "text": "몸에 힘이 넘치고 튼튼하다"
+        },
+        {
+          "id": "d",
+          "text": "목소리가 크고 귀에 잘 들린다"
+        }
+      ],
+      "correctOptionId": "a",
+      "explanation": "여기서 ‘흐리다’는 기억력이나 판단력이 분명하지 않다는 뜻이에요.",
+      "distractorRationales": {
+        "b": "날씨가 맑지 않다는 뜻이라 이 문맥과 달라요.",
+        "c": "몸이 건강한 상태를 나타내어 맞지 않아요.",
+        "d": "소리가 또렷하게 들리는 상태를 뜻해요."
+      },
+      "gradeBand": {
+        "min": 3,
+        "max": 4
+      }
+    },
+    {
+      "id": "g3-argon-0325",
+      "revision": 2,
+      "status": "published",
+      "grade": 3,
+      "type": "usage",
+      "difficultyTier": "core",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "흩어지다",
+        "partOfSpeech": "동사",
+        "senseKey": "흩어지다/동사/504530-1"
+      },
+      "stem": "‘흩어지다’를 바르게 쓴 문장은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "퍼즐을 맞추니 하나로 흩어졌다."
+        },
+        {
+          "id": "b",
+          "text": "바람에 낙엽이 사방으로 흩어졌다."
+        },
+        {
+          "id": "c",
+          "text": "친구들이 한 줄로 꼭 붙어 흩어졌다."
+        },
+        {
+          "id": "d",
+          "text": "실로 구슬을 꿰어 단단히 흩어졌다."
+        }
+      ],
+      "correctOptionId": "b",
+      "explanation": "‘흩어지다’는 한데 모였던 것이 따로 떨어지거나 사방으로 퍼지는 거예요.",
+      "distractorRationales": {
+        "a": "하나로 합쳐지는 상황에는 ‘모이다’가 알맞아요.",
+        "c": "꼭 붙어 있는 모습과는 뜻이 서로 반대예요.",
+        "d": "구슬을 한 줄로 꿰는 상황에는 어울리지 않아요."
+      },
+      "gradeBand": {
+        "min": 3,
+        "max": 4
+      }
+    },
+    {
+      "id": "g3-argon-0327",
+      "revision": 1,
+      "status": "published",
+      "grade": 3,
+      "type": "antonym_context",
+      "difficultyTier": "core",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "지나가다",
+        "partOfSpeech": "동사",
+        "senseKey": "지나가다/동사/487197-1"
+      },
+      "stem": "“어느새 여름 방학이 다 지나갔다.”에서 ‘지나가다’와 뜻이 반대되는 말은 무엇일까요?",
+      "options": [
+        {
+          "id": "a",
+          "text": "흘러가다"
+        },
+        {
+          "id": "b",
+          "text": "멀어지다"
+        },
+        {
+          "id": "c",
+          "text": "끝나가다"
+        },
+        {
+          "id": "d",
+          "text": "다가오다"
+        }
+      ],
+      "correctOptionId": "d",
+      "explanation": "시간이 흘러 그 시기에서 벗어나는 ‘지나가다’의 반대말은 시기가 가까워지는 ‘다가오다’예요.",
+      "distractorRationales": {
+        "a": "‘흘러가다’는 시간이 지나가는 것과 비슷한 뜻이에요.",
+        "b": "‘멀어지다’는 거리가 점점 떨어지는 것을 뜻해요.",
+        "c": "‘끝나가다’는 거의 마쳐 간다는 비슷한 뜻이에요."
+      },
+      "gradeBand": {
+        "min": 3,
+        "max": 4
+      }
+    },
+    {
+      "id": "g3-argon-0333",
+      "revision": 2,
+      "status": "published",
+      "grade": 3,
+      "type": "definition",
+      "difficultyTier": "core",
+      "variantTag": "polysemy",
+      "target": {
+        "lemma": "찾아보다",
+        "partOfSpeech": "동사",
+        "senseKey": "찾아보다/동사/321387-2"
+      },
+      "stem": "“사전에서 낱말을 찾아보았다.”에서 ‘찾아보다’의 뜻은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "알고 싶은 것을 조사하다"
+        },
+        {
+          "id": "b",
+          "text": "반가운 분을 만나러 가다"
+        },
+        {
+          "id": "c",
+          "text": "맡긴 물건을 도로 받다"
+        },
+        {
+          "id": "d",
+          "text": "숨어 있는 친구를 잡다"
+        }
+      ],
+      "correctOptionId": "a",
+      "explanation": "사전이나 책을 ‘찾아보다’는 원하는 정보를 얻으려고 조사한다는 뜻이에요.",
+      "distractorRationales": {
+        "b": "사람을 만나러 가는 것은 ‘선생님을 찾아보다’예요.",
+        "c": "물건을 도로 받는 것은 ‘되찾다’의 뜻이에요.",
+        "d": "숨은 친구를 잡는 것은 놀이에서 찾는 행동이에요."
+      },
+      "gradeBand": {
+        "min": 3,
+        "max": 4
+      }
+    },
+    {
+      "id": "g3-argon-0335",
+      "revision": 1,
+      "status": "published",
+      "grade": 3,
+      "type": "definition",
+      "difficultyTier": "core",
+      "variantTag": "polysemy",
+      "target": {
+        "lemma": "아끼다",
+        "partOfSpeech": "동사",
+        "senseKey": "아끼다/동사/216488-2"
+      },
+      "stem": "“언니가 동생을 아낀다.”에서 ‘아끼다’의 뜻은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "돈을 덜 쓰려고 남기다"
+        },
+        {
+          "id": "b",
+          "text": "소중히 여겨 보살피다"
+        },
+        {
+          "id": "c",
+          "text": "힘을 조금만 들이다"
+        },
+        {
+          "id": "d",
+          "text": "할 말을 끝까지 참다"
+        }
+      ],
+      "correctOptionId": "b",
+      "explanation": "사람이나 물건을 소중하게 여겨 보살피는 마음을 ‘아끼다’라고 해요.",
+      "distractorRationales": {
+        "a": "돈을 절약하는 것은 ‘용돈을 아끼다’의 뜻이에요.",
+        "c": "힘을 덜 들이는 것은 ‘몸을 아끼다’의 뜻이에요.",
+        "d": "말을 삼가는 것은 ‘말을 아끼다’의 뜻이에요."
+      },
+      "gradeBand": {
+        "min": 3,
+        "max": 4
+      }
+    },
+    {
+      "id": "g3-argon-0336",
+      "revision": 1,
+      "status": "published",
+      "grade": 3,
+      "type": "definition",
+      "difficultyTier": "core",
+      "variantTag": "polysemy",
+      "target": {
+        "lemma": "지키다",
+        "partOfSpeech": "동사",
+        "senseKey": "지키다/동사/488705-2"
+      },
+      "stem": "“수문장이 성문을 지킨다.”에서 ‘지키다’의 뜻은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "정해 둔 약속을 따르다"
+        },
+        {
+          "id": "b",
+          "text": "음식의 맛을 남기다"
+        },
+        {
+          "id": "c",
+          "text": "앉은 자리를 안 떠나다"
+        },
+        {
+          "id": "d",
+          "text": "지나는 길목을 잘 살피다"
+        }
+      ],
+      "correctOptionId": "d",
+      "explanation": "문이나 길목을 ‘지키다’는 통과하는 곳을 주의 깊게 살핀다는 뜻이에요.",
+      "distractorRationales": {
+        "a": "규칙을 따르는 것은 ‘약속을 지키다’의 뜻이에요.",
+        "b": "맛을 유지하는 것은 ‘전통 맛을 지키다’예요.",
+        "c": "자리에 머무는 것은 ‘자리를 지키다’의 뜻이에요."
+      },
+      "gradeBand": {
+        "min": 3,
+        "max": 4
+      }
+    },
+    {
+      "id": "g3-argon-0337",
+      "revision": 1,
+      "status": "published",
+      "grade": 3,
+      "type": "definition",
+      "difficultyTier": "core",
+      "variantTag": "polysemy",
+      "target": {
+        "lemma": "인사하다",
+        "partOfSpeech": "동사",
+        "senseKey": "인사하다/동사/269661-2"
+      },
+      "stem": "“도와주신 분께 인사했다.”에서 ‘인사하다’의 뜻은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "처음 만나 이름을 밝히다"
+        },
+        {
+          "id": "b",
+          "text": "자기 전에 손을 흔들다"
+        },
+        {
+          "id": "c",
+          "text": "헤어질 때 잘 가라 하다"
+        },
+        {
+          "id": "d",
+          "text": "받은 은혜에 예를 차리다"
+        }
+      ],
+      "correctOptionId": "d",
+      "explanation": "여기서 ‘인사하다’는 입은 은혜를 갚거나 고마운 일에 예의를 차리는 뜻이에요.",
+      "distractorRationales": {
+        "a": "처음 만나 소개하는 인사말과는 뜻이 달라요.",
+        "b": "잠자기 전에 나누는 평범한 인사를 뜻해요.",
+        "c": "헤어질 때 하는 작별 인사를 나타낸 거예요."
+      },
+      "gradeBand": {
+        "min": 3,
+        "max": 4
+      }
+    },
+    {
+      "id": "g3-argon-0339",
+      "revision": 1,
+      "status": "published",
+      "grade": 3,
+      "type": "definition",
+      "difficultyTier": "core",
+      "variantTag": "polysemy",
+      "target": {
+        "lemma": "어울리다",
+        "partOfSpeech": "동사",
+        "senseKey": "어울리다/동사/456640-2"
+      },
+      "stem": "“전학 온 민수가 반 아이들과 금방 어울렸다.”에서 ‘어울리다’의 뜻은 무엇일까요?",
+      "options": [
+        {
+          "id": "a",
+          "text": "함께 사귀어 사이좋게 잘 지내다"
+        },
+        {
+          "id": "b",
+          "text": "옷과 모자의 색깔이 잘 맞다"
+        },
+        {
+          "id": "c",
+          "text": "서로 생각이 달라 크게 다투다"
+        },
+        {
+          "id": "d",
+          "text": "혼자 떨어져 조용히 지내다"
+        }
+      ],
+      "correctOptionId": "a",
+      "explanation": "친구들과 ‘어울리다’는 함께 사귀어 잘 지낸다는 뜻이에요.",
+      "distractorRationales": {
+        "b": "색깔이 잘 맞는 것은 ‘옷이 어울리다’의 뜻이에요.",
+        "c": "서로 싸우는 것은 ‘다투다’로 반대되는 상황이에요.",
+        "d": "혼자 지내는 것은 어울리지 않는 모습이에요."
+      },
+      "gradeBand": {
+        "min": 3,
+        "max": 4
+      }
+    },
     {
       "id": "g4-argon-0001",
       "revision": 5,
