@@ -1,6 +1,6 @@
 # CR-1000 현재 인계
 
-갱신: 2026-11-07 04:28 KST · 총괄 Codex · 작업 폴더 `/Users/bodyking/Desktop/Architecture/towerdeffense` · 브랜치 `p1/intake-round1`
+갱신: 2026-11-07 04:27 KST · 총괄 Codex · 작업 폴더 `/Users/bodyking/Desktop/Architecture/towerdeffense` · 브랜치 `p1/intake-round1`
 
 이 문서가 현재 실행 기준이다. 과거 진행 기록과 이전 명령은 [원문 보관](CR1000_HANDOFF_HISTORY_20261107.md)에 **바이트 그대로** 보존했다. 보관본의 Claude 호출·완료된 작업 재실행 지시는 사용하지 않는다. 규칙은 [AGENTS.md](../AGENTS.md), 세부 설계는 [계획서](CONTENT_REVIEW_PLAN.md), 도구 조각은 `.orchestrate/wp/`를 필요한 범위만 읽는다.
 
@@ -63,6 +63,7 @@ PID는 기록값이므로 `ps`로 실제 생존과 실행 파일을 확인한다
 | 6학년 기존 후보 재선정 완료 | 2072/30741 종료 확인 | 60개 중21통과/39제외,32제작칸. 원본·사전·응답 대조 후r4 목록만11a4125로 반영 | `wordlists/g6-reuse-r4/summary.json` |
 | 6학년 개선 첫 묶음 종료 | 조정99749 / 작성279 종료 확인 | G6-012 9개 시간 초과, 결과·반영0. 원본 해시 불변 | `normal-advanced-g6-refinement-expansion.run.json` |
 | 6학년 개선 후속 종료 | 조정4322 / 작성21333 종료 확인 | G6-013 반영 완료. G6-007은 출력 한도 오류 봉투·내부 JSON 손상으로 종료, 신규 반영0·원소스6개 불변. 다음010/027/021은 별도unstarted 예약으로 연결 | `normal-advanced-g6-refinement-followup.run.json` |
+| 6학년 미착수 개선 연결 | 조정34136 / 작성34187 | 종료한4322/21333 자리 승계. 자원 허용7.51GiB 확인 후010의5개 작성 시작, 이후027/021 각5개. 실패007은 재호출하지 않는다 | `normal-advanced-g6-refinement-unstarted.run.json` |
 | Normal 심화 확대30 | 조정18762 / 작성18771 | G6-030 30개(새낱말28) 실제 제작 시작 → G5-030 50개. 제작은 순차, 종료 뒤 별도 검수 연결 | `normal-advanced-expansion-30.run.json` |
 | 6학년 출제 풀 보충 예약 | 조정33162 | 종료한2072/30741 자리 승계. 선행6→5 제작 종료 뒤r4에서30개(현재선정 새낱말21) 제작→기존 감사/검수 연결. 자원7GiB·제작잠금·새낱말60% 재확인, 오류 자동 재시도 없음 | `normal-advanced-g6-expansion-31-queue.run.json` |
 | 3학년 검수 | 72501 / 조정61279 | 004~008 최종219개 반영. 009~013 첫 검토182통과/68수정대상(배치별12/16/13/14/13), 현재S3 재작성. 이후014~023 | `g3-next-phase.run.json`, `g3-next-phase.plan.json` |
