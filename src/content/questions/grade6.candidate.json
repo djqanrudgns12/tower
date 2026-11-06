@@ -1,6 +1,6 @@
 {
   "bankId": "g6-candidate",
-  "bankVersion": "cand-a8c2f1b286a2",
+  "bankVersion": "cand-f0087e6621be",
   "grade": 6,
   "status": "verified_candidate",
   "note": "공동검수 진행 중인 후보 은행. 같은 revision의 외부 블라인드 검수(codex·claude) 1건 이상과 새 문맥 argon-blind를 통과했다. 3모델 공동검수 승인 전에는 게임에 싣지 않는다(PRD §9.3).",
@@ -23813,7 +23813,7 @@
       "status": "verified_candidate",
       "grade": 6,
       "type": "synonym_context",
-      "difficultyTier": "basic",
+      "difficultyTier": "core",
       "variantTag": "standard",
       "target": {
         "lemma": "순응하다",
@@ -23845,6 +23845,86 @@
         "a": "저항하는 것은 맞서 버티는 일이라 반대예요.",
         "b": "거부하는 것은 받아들이지 않고 물리치는 일이에요.",
         "c": "대항하는 것은 맞서 싸운다는 뜻이에요."
+      }
+    },
+    {
+      "id": "g6-argon-0702",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 6,
+      "type": "usage",
+      "difficultyTier": "basic",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "매듭짓다",
+        "partOfSpeech": "동사",
+        "senseKey": "매듭짓다/동사/112536-1"
+      },
+      "stem": "‘매듭짓다’가 자연스럽게 쓰인 문장은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "창문을 활짝 열어 교실의 탁한 공기를 매듭지었다."
+        },
+        {
+          "id": "b",
+          "text": "구슬이 빠지지 않게 실 끝을 단단히 매듭지었다."
+        },
+        {
+          "id": "c",
+          "text": "시원한 보리차를 유리컵에 가득 따라 매듭지었다."
+        },
+        {
+          "id": "d",
+          "text": "연필로 쓴 글씨를 지우개로 깨끗하게 매듭지었다."
+        }
+      ],
+      "correctOptionId": "b",
+      "explanation": "‘매듭짓다’는 실이나 끈 따위를 잡아매어 마디를 만든다는 뜻이에요.",
+      "distractorRationales": {
+        "a": "공기를 환기하는 상황에는 ‘매듭짓다’를 쓸 수 없어요.",
+        "c": "마실 것을 컵에 따르는 동작에는 어울리지 않아요.",
+        "d": "글씨를 지우는 행동에는 ‘매듭짓다’를 쓰지 않아요."
+      }
+    },
+    {
+      "id": "g6-argon-0703",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 6,
+      "type": "synonym_context",
+      "difficultyTier": "basic",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "매듭짓다",
+        "partOfSpeech": "동사",
+        "senseKey": "매듭짓다/동사/112536-1"
+      },
+      "stem": "다음 문장의 ‘매듭지었다’와 바꾸어 쓸 수 있는 말로 알맞은 것은? “상자를 감싼 노끈이 풀리지 않도록 끝부분을 매듭지었다.”",
+      "options": [
+        {
+          "id": "a",
+          "text": "잡아매어 마디를 만들었다"
+        },
+        {
+          "id": "b",
+          "text": "가위로 짧게 잘라 버렸다"
+        },
+        {
+          "id": "c",
+          "text": "물감을 묻혀 색을 칠했다"
+        },
+        {
+          "id": "d",
+          "text": "바닥에 길게 펼쳐 놓았다"
+        }
+      ],
+      "correctOptionId": "a",
+      "explanation": "여기서 ‘매듭짓다’는 노끈 따위를 잡아매어 마디를 만든다는 뜻이에요.",
+      "distractorRationales": {
+        "b": "자르는 행동이라 풀리지 않게 묶는 뜻과 달라요.",
+        "c": "색을 칠하는 일은 끈을 묶는 것과 관련이 없어요.",
+        "d": "그냥 펼쳐 놓으면 끈이 풀리므로 문맥에 어긋나요."
       }
     },
     {
@@ -23965,6 +24045,46 @@
         "a": "쉽게 흔들리는 것은 불안정한 성질이에요.",
         "c": "수시로 변하는 것은 가변성에 해당해요.",
         "d": "빛이 여러 색으로 번지는 것은 광학 현상이에요."
+      }
+    },
+    {
+      "id": "g6-argon-0707",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 6,
+      "type": "usage",
+      "difficultyTier": "basic",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "앞장서다",
+        "partOfSpeech": "동사",
+        "senseKey": "앞장서다/동사/457011-1"
+      },
+      "stem": "‘앞장서다’가 알맞게 쓰인 문장은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "방에 혼자 앉아 조용히 눈을 감고 음악에 앞장섰다."
+        },
+        {
+          "id": "b",
+          "text": "빈 필통 속에 지우개와 연필을 나란히 넣어 앞장섰다."
+        },
+        {
+          "id": "c",
+          "text": "현장 학습을 가는 줄에서 반장이 깃발을 들고 앞장섰다."
+        },
+        {
+          "id": "d",
+          "text": "끓는 냄비의 뚜껑을 닫고 불을 약하게 줄여 앞장섰다."
+        }
+      ],
+      "correctOptionId": "c",
+      "explanation": "‘앞장서다’는 무리의 맨 앞에 선다는 뜻으로 쓰여요.",
+      "distractorRationales": {
+        "a": "혼자 음악을 듣는 상황에는 쓸 수 없어요.",
+        "b": "학용품을 필통에 넣는 동작에는 어울리지 않아요.",
+        "d": "불을 줄여 요리하는 일에는 쓰지 않아요."
       }
     },
     {
@@ -24208,6 +24328,86 @@
       }
     },
     {
+      "id": "g6-argon-0714",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 6,
+      "type": "usage",
+      "difficultyTier": "basic",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "발휘하다",
+        "partOfSpeech": "동사",
+        "senseKey": "발휘하다/동사/136022-1"
+      },
+      "stem": "‘발휘하다’가 알맞게 쓰인 문장은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "풀숲에서 잃어버렸던 열쇠고리를 우연히 발휘하였다."
+        },
+        {
+          "id": "b",
+          "text": "밤사이 내린 폭우로 도로에 침수 피해가 발휘하였다."
+        },
+        {
+          "id": "c",
+          "text": "다 읽은 책을 도서관 반납함에 차곡차곡 발휘하였다."
+        },
+        {
+          "id": "d",
+          "text": "민서는 대회에서 갈고닦은 실력을 마음껏 발휘하였다."
+        }
+      ],
+      "correctOptionId": "d",
+      "explanation": "‘발휘하다’는 재능이나 능력을 떨치어 나타낸다는 뜻이에요.",
+      "distractorRationales": {
+        "a": "물건을 찾아낸 상황에는 ‘발견하다’가 알맞아요.",
+        "b": "피해가 생긴 일에는 ‘발생하다’를 써야 해요.",
+        "c": "책을 돌려주는 행동에는 ‘반납하다’가 어울려요."
+      }
+    },
+    {
+      "id": "g6-argon-0715",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 6,
+      "type": "antonym_context",
+      "difficultyTier": "core",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "주체적",
+        "partOfSpeech": "명사",
+        "senseKey": "주체적/명사/479626-1"
+      },
+      "stem": "동아리 발표 주제를 남이 시켜서가 아니라 부원들이 ‘주체적’으로 정했습니다. ‘주체적’과 반대되는 말은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "수동적"
+        },
+        {
+          "id": "b",
+          "text": "자율적"
+        },
+        {
+          "id": "c",
+          "text": "능동적"
+        },
+        {
+          "id": "d",
+          "text": "자주적"
+        }
+      ],
+      "correctOptionId": "a",
+      "explanation": "자유롭고 자주적으로 실천하는 ‘주체적’의 반대는 남에게 끌려가는 ‘수동적’이에요.",
+      "distractorRationales": {
+        "b": "자율적은 스스로 규칙을 세워 행동하는 뜻이에요.",
+        "c": "능동적은 스스로 내켜서 움직이는 뜻이에요.",
+        "d": "자주적은 남의 간섭 없이 스스로 처리하는 뜻이에요."
+      }
+    },
+    {
       "id": "g6-argon-0716",
       "revision": 1,
       "status": "verified_candidate",
@@ -24253,7 +24453,7 @@
       "status": "verified_candidate",
       "grade": 6,
       "type": "cloze",
-      "difficultyTier": "core",
+      "difficultyTier": "basic",
       "variantTag": "standard",
       "target": {
         "lemma": "지속하다",
@@ -24288,8 +24488,128 @@
       }
     },
     {
+      "id": "g6-argon-0718",
+      "revision": 3,
+      "status": "verified_candidate",
+      "grade": 6,
+      "type": "cloze",
+      "difficultyTier": "basic",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "방관하다",
+        "partOfSpeech": "동사",
+        "senseKey": "방관하다/동사/135284-1"
+      },
+      "stem": "친구가 부당한 따돌림을 당할 때 남의 일처럼 (    ) 말고 용기 있게 나서서 도와주어야 한다.",
+      "options": [
+        {
+          "id": "a",
+          "text": "방관하지"
+        },
+        {
+          "id": "b",
+          "text": "배려하지"
+        },
+        {
+          "id": "c",
+          "text": "공감하지"
+        },
+        {
+          "id": "d",
+          "text": "위로하지"
+        }
+      ],
+      "correctOptionId": "a",
+      "explanation": "‘방관하다’는 직접 나서서 관여하지 않고 곁에서 보기만 한다는 뜻이에요.",
+      "distractorRationales": {
+        "b": "남을 보살피는 뜻이라 하지 말라는 문맥과 반대예요.",
+        "c": "남의 감정을 함께 느끼는 일은 권장해야 할 태도예요.",
+        "d": "따뜻한 말로 달래 주는 행동이라 문맥에 어긋나요."
+      }
+    },
+    {
+      "id": "g6-argon-0719",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 6,
+      "type": "usage",
+      "difficultyTier": "basic",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "방관하다",
+        "partOfSpeech": "동사",
+        "senseKey": "방관하다/동사/135284-1"
+      },
+      "stem": "‘방관하다’가 알맞게 쓰인 문장은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "박물관의 옛 그림을 감명 깊게 방관하였다."
+        },
+        {
+          "id": "b",
+          "text": "명절을 맞아 할머니 댁을 오랜만에 반갑게 방관하였다."
+        },
+        {
+          "id": "c",
+          "text": "이웃의 어려움을 방관할 수 없어 주민들이 돕기에 나섰다."
+        },
+        {
+          "id": "d",
+          "text": "남은 음식이 상하지 않도록 냉장고 안에 잘 방관하였다."
+        }
+      ],
+      "correctOptionId": "c",
+      "explanation": "‘방관하다’는 어떤 일에 나서지 않고 곁에서 보기만 한다는 뜻이에요.",
+      "distractorRationales": {
+        "a": "전시물을 구경하는 일에는 ‘관람하다’가 알맞아요.",
+        "b": "누군가를 찾아가는 상황에는 ‘방문하다’를 써야 해요.",
+        "d": "음식을 넣어 두는 행동에는 ‘보관하다’가 어울려요."
+      }
+    },
+    {
+      "id": "g6-argon-0720",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 6,
+      "type": "cloze",
+      "difficultyTier": "basic",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "심화하다",
+        "partOfSpeech": "동사",
+        "senseKey": "심화하다/동사/206757-1"
+      },
+      "stem": "기본 개념을 익힌 뒤 관련 자료를 더 찾아 읽으며 역사에 대한 이해를 한층 (    ) 수 있었다.",
+      "options": [
+        {
+          "id": "a",
+          "text": "중단할"
+        },
+        {
+          "id": "b",
+          "text": "외면할"
+        },
+        {
+          "id": "c",
+          "text": "축소할"
+        },
+        {
+          "id": "d",
+          "text": "심화할"
+        }
+      ],
+      "correctOptionId": "d",
+      "explanation": "‘심화하다’는 정도나 경지가 점점 깊어지거나 깊어지게 한다는 뜻이에요.",
+      "distractorRationales": {
+        "a": "도중에 그만둔다는 뜻이라 자료를 더 읽은 맥락과 반대예요.",
+        "b": "모른 체한다는 뜻이라 이해를 넓히는 흐름과 맞지 않아요.",
+        "c": "줄여서 작게 만든다는 뜻이라 더 깊이 공부한 상황과 달라요."
+      }
+    },
+    {
       "id": "g6-argon-0721",
-      "revision": 1,
+      "revision": 2,
       "status": "verified_candidate",
       "grade": 6,
       "type": "usage",
@@ -24316,7 +24636,7 @@
         },
         {
           "id": "d",
-          "text": "창틀에 쌓인 먼지를 젖은 수건으로 깨끗이 판단력을 닦았다."
+          "text": "창틀에 쌓인 판단력을 젖은 수건으로 깨끗이 닦았다."
         }
       ],
       "correctOptionId": "b",
@@ -24324,7 +24644,7 @@
       "distractorRationales": {
         "a": "음식에 넣는 재료가 아니에요.",
         "c": "물에 비치는 물체 대신 쓸 수 없어요.",
-        "d": "먼지를 닦는 동작과 어울리지 않아요."
+        "d": "창틀에 쌓이거나 수건으로 닦아 내는 대상이 아니에요."
       }
     },
     {
@@ -24408,6 +24728,46 @@
       }
     },
     {
+      "id": "g6-argon-0724",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 6,
+      "type": "synonym_context",
+      "difficultyTier": "basic",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "심화하다",
+        "partOfSpeech": "동사",
+        "senseKey": "심화하다/동사/206757-1"
+      },
+      "stem": "다음 문장의 ‘심화하였다’와 바꾸어 쓸 수 있는 말은? “작은 오해로 생긴 갈등이 대화가 끊기자 심화하였다.”",
+      "options": [
+        {
+          "id": "a",
+          "text": "금세 사라졌다"
+        },
+        {
+          "id": "b",
+          "text": "처음 시작됐다"
+        },
+        {
+          "id": "c",
+          "text": "점점 깊어졌다"
+        },
+        {
+          "id": "d",
+          "text": "쉽게 해결됐다"
+        }
+      ],
+      "correctOptionId": "c",
+      "explanation": "‘심화하다’는 어떤 상태나 정도가 점점 깊어진다는 뜻이에요.",
+      "distractorRationales": {
+        "a": "없어진다는 뜻이라 갈등이 커진 문맥과 정반대예요.",
+        "b": "이미 오해로 생긴 갈등이므로 처음 시작됐다는 말은 틀려요.",
+        "d": "문제가 풀렸다는 뜻이라 대화가 끊긴 상황과 맞지 않아요."
+      }
+    },
+    {
       "id": "g6-argon-0725",
       "revision": 1,
       "status": "verified_candidate",
@@ -24449,7 +24809,7 @@
     },
     {
       "id": "g6-argon-0726",
-      "revision": 1,
+      "revision": 2,
       "status": "verified_candidate",
       "grade": 6,
       "type": "usage",
@@ -24468,7 +24828,7 @@
         },
         {
           "id": "b",
-          "text": "뜨거운 감자를 포크로 콕 찍어 접시 한가운데에 맥락을 식혔다."
+          "text": "뜨거운 감자를 포크로 콕 찍어 접시 한가운데에서 맥락을 식혔다."
         },
         {
           "id": "c",
@@ -24488,12 +24848,92 @@
       }
     },
     {
+      "id": "g6-argon-0727",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 6,
+      "type": "cloze",
+      "difficultyTier": "basic",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "선별하다",
+        "partOfSpeech": "동사",
+        "senseKey": "선별하다/동사/177995-1"
+      },
+      "stem": "가: 문집에 넣으려고 찍은 사진이 너무 많네. 나: 지면이 부족하니 초점이 선명하고 주제에 맞는 사진만 (    ) 보자.",
+      "options": [
+        {
+          "id": "a",
+          "text": "선별해"
+        },
+        {
+          "id": "b",
+          "text": "포기해"
+        },
+        {
+          "id": "c",
+          "text": "외면해"
+        },
+        {
+          "id": "d",
+          "text": "연기해"
+        }
+      ],
+      "correctOptionId": "a",
+      "explanation": "‘선별하다’는 여럿 가운데 기준에 맞게 가려서 따로 나눈다는 뜻이에요.",
+      "distractorRationales": {
+        "b": "하던 일을 그만둔다는 뜻이라 좋은 사진을 고르는 맥락과 반대예요.",
+        "c": "보지 않고 모른 체한다는 뜻이라 문집 편집 상황과 어긋나요.",
+        "d": "정한 날짜를 뒤로 미룬다는 뜻이라 사진 정리와 맞지 않아요."
+      }
+    },
+    {
+      "id": "g6-argon-0728",
+      "revision": 3,
+      "status": "verified_candidate",
+      "grade": 6,
+      "type": "usage",
+      "difficultyTier": "core",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "심화하다",
+        "partOfSpeech": "동사",
+        "senseKey": "심화하다/동사/206757-1"
+      },
+      "stem": "‘심화하다’가 문맥에 맞게 바르게 쓰인 문장은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "복잡한 신청 절차를 한 단계로 간단히 줄여 과정을 심화하였다."
+        },
+        {
+          "id": "b",
+          "text": "기초 실험을 마친 뒤 실험 조건을 달리하며 과학 탐구를 심화하였다."
+        },
+        {
+          "id": "c",
+          "text": "서로 진심으로 사과해 팽팽하던 긴장을 가볍게 풀어 심화하였다."
+        },
+        {
+          "id": "d",
+          "text": "책의 내용은 안 보고 겉표지만 대충 훑어보며 독서를 심화하였다."
+        }
+      ],
+      "correctOptionId": "b",
+      "explanation": "‘심화하다’는 학문이나 탐구의 정도를 점점 깊어지게 한다는 뜻이에요.",
+      "distractorRationales": {
+        "a": "절차를 간단히 줄이는 일에는 ‘간소화하다’가 알맞아요.",
+        "c": "긴장을 부드럽게 누그러뜨리는 일은 ‘완화하다’에 해당해요.",
+        "d": "겉표지만 대충 훑어보는 태도는 깊이를 더하는 일과 반대예요."
+      }
+    },
+    {
       "id": "g6-argon-0729",
       "revision": 1,
       "status": "verified_candidate",
       "grade": 6,
       "type": "definition",
-      "difficultyTier": "advanced",
+      "difficultyTier": "core",
       "variantTag": "polysemy",
       "target": {
         "lemma": "섬세하다",
@@ -24529,11 +24969,11 @@
     },
     {
       "id": "g6-argon-0730",
-      "revision": 1,
+      "revision": 3,
       "status": "verified_candidate",
       "grade": 6,
       "type": "definition",
-      "difficultyTier": "advanced",
+      "difficultyTier": "core",
       "variantTag": "polysemy",
       "target": {
         "lemma": "정교하다",
@@ -24548,7 +24988,7 @@
         },
         {
           "id": "b",
-          "text": "재료가 흔하여 어디서나 구하다"
+          "text": "재료가 흔하여 어디서나 구할 수 있다"
         },
         {
           "id": "c",
@@ -24562,7 +25002,7 @@
       "correctOptionId": "d",
       "explanation": "‘정교하다’는 솜씨나 기술 따위가 정밀하고 교묘하다는 뜻이에요.",
       "distractorRationales": {
-        "a": "단순해 고장 나는 것은 허술한 상태예요.",
+        "a": "구조가 단순하다는 것만으로 정밀한 솜씨나 기술을 뜻하지는 않아요.",
         "b": "재료가 흔한 것은 희소성과 관련된 말이에요.",
         "c": "무게가 가벼운 것은 질량에 관한 설명이에요."
       }
@@ -24573,7 +25013,7 @@
       "status": "verified_candidate",
       "grade": 6,
       "type": "definition",
-      "difficultyTier": "advanced",
+      "difficultyTier": "core",
       "variantTag": "polysemy",
       "target": {
         "lemma": "짜임새",
@@ -24613,7 +25053,7 @@
       "status": "verified_candidate",
       "grade": 6,
       "type": "definition",
-      "difficultyTier": "advanced",
+      "difficultyTier": "core",
       "variantTag": "polysemy",
       "target": {
         "lemma": "애틋하다",
@@ -24653,7 +25093,7 @@
       "status": "verified_candidate",
       "grade": 6,
       "type": "definition",
-      "difficultyTier": "advanced",
+      "difficultyTier": "core",
       "variantTag": "polysemy",
       "target": {
         "lemma": "간절하다",
@@ -24688,12 +25128,132 @@
       }
     },
     {
+      "id": "g6-argon-0734",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 6,
+      "type": "synonym_context",
+      "difficultyTier": "basic",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "억제하다",
+        "partOfSpeech": "동사",
+        "senseKey": "억제하다/동사/460702-1"
+      },
+      "stem": "다음 문장의 ‘억제하며’와 바꾸어 쓸 수 있는 말은? “준호는 억울함에 화가 치밀었지만 흥분된 감정을 억제하며 차분히 반론을 폈다.”",
+      "options": [
+        {
+          "id": "a",
+          "text": "내리눌러 그치게 하며"
+        },
+        {
+          "id": "b",
+          "text": "겉으로 거침없이 드러내며"
+        },
+        {
+          "id": "c",
+          "text": "남의 탓으로 돌려 회피하며"
+        },
+        {
+          "id": "d",
+          "text": "일부러 부풀려 과장하며"
+        }
+      ],
+      "correctOptionId": "a",
+      "explanation": "‘억제하다’는 감정이나 충동을 내리눌러서 그치게 한다는 뜻이에요.",
+      "distractorRationales": {
+        "b": "감정을 그대로 터뜨리면 차분히 반론을 폈다는 말과 어긋나요.",
+        "c": "책임을 남에게 떠넘긴다는 뜻이라 감정 조절과 관련 없어요.",
+        "d": "감정을 더 크게 부풀린다는 뜻이라 내리누르는 뜻과 반대예요."
+      }
+    },
+    {
+      "id": "g6-argon-0735",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 6,
+      "type": "definition",
+      "difficultyTier": "basic",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "완화하다",
+        "partOfSpeech": "동사",
+        "senseKey": "완화하다/동사/244073-1"
+      },
+      "stem": "‘완화하다’의 뜻은? “사회자는 밝은 인사로 얼어붙은 분위기를 완화하였다.”",
+      "options": [
+        {
+          "id": "a",
+          "text": "갈등이나 대립의 정도를 더 깊어지게 하다"
+        },
+        {
+          "id": "b",
+          "text": "기준에 어긋난 행동을 엄격하게 제한하다"
+        },
+        {
+          "id": "c",
+          "text": "긴장되거나 급박한 상태를 느슨하게 하다"
+        },
+        {
+          "id": "d",
+          "text": "숨겨진 사건의 원인을 낱낱이 밝혀내다"
+        }
+      ],
+      "correctOptionId": "c",
+      "explanation": "‘완화하다’는 긴장된 상태나 급박한 것을 느슨하게 한다는 뜻이에요.",
+      "distractorRationales": {
+        "a": "정도를 더 깊어지게 하는 것은 ‘심화하다’의 뜻이에요.",
+        "b": "행동을 엄격히 제한하는 것은 ‘통제하다’에 가까워요.",
+        "d": "원인을 밝혀내는 일은 분위기를 푸는 뜻과 관련 없어요."
+      }
+    },
+    {
+      "id": "g6-argon-0736",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 6,
+      "type": "cloze",
+      "difficultyTier": "basic",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "완화하다",
+        "partOfSpeech": "동사",
+        "senseKey": "완화하다/동사/244073-1"
+      },
+      "stem": "중재자가 양측의 의견을 고루 경청하며 대화를 이끌어, 팽팽하던 긴장 상태를 조금씩 (    ) 수 있었다.",
+      "options": [
+        {
+          "id": "a",
+          "text": "유발할"
+        },
+        {
+          "id": "b",
+          "text": "완화할"
+        },
+        {
+          "id": "c",
+          "text": "조장할"
+        },
+        {
+          "id": "d",
+          "text": "외면할"
+        }
+      ],
+      "correctOptionId": "b",
+      "explanation": "‘완화하다’는 긴장되거나 급박한 상태를 느슨하게 한다는 뜻이에요.",
+      "distractorRationales": {
+        "a": "새로운 일을 일으킨다는 뜻이라 긴장을 푸는 중재와 반대예요.",
+        "c": "바람직하지 않은 일을 부추긴다는 뜻이라 문맥에 어긋나요.",
+        "d": "모른 체한다는 뜻이라 의견을 경청한 행동과 맞지 않아요."
+      }
+    },
+    {
       "id": "g6-argon-0737",
       "revision": 1,
       "status": "verified_candidate",
       "grade": 6,
       "type": "definition",
-      "difficultyTier": "advanced",
+      "difficultyTier": "core",
       "variantTag": "polysemy",
       "target": {
         "lemma": "안목",
@@ -24725,6 +25285,526 @@
         "a": "소리 내 읽는 속도는 낭독 속도예요.",
         "b": "책꽂이를 정리하는 일은 정돈 요령이에요.",
         "d": "종이를 수리하는 것은 복원 기술이에요."
+      }
+    },
+    {
+      "id": "g6-argon-0738",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 6,
+      "type": "cloze",
+      "difficultyTier": "basic",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "유발하다",
+        "partOfSpeech": "동사",
+        "senseKey": "유발하다/동사/257678-1"
+      },
+      "stem": "겉으로 드러난 다툼만 말리려 하기보다, 친구들 사이의 오해를 (    ) 근본 원인을 먼저 살펴야 문제를 바로잡을 수 있다.",
+      "options": [
+        {
+          "id": "a",
+          "text": "해소한"
+        },
+        {
+          "id": "b",
+          "text": "완화한"
+        },
+        {
+          "id": "c",
+          "text": "예방한"
+        },
+        {
+          "id": "d",
+          "text": "유발한"
+        }
+      ],
+      "correctOptionId": "d",
+      "explanation": "‘유발하다’는 어떤 것이 원인이 되어 다른 일을 일어나게 한다는 뜻이에요.",
+      "distractorRationales": {
+        "a": "문제를 없앴다는 뜻이라 다툼의 근본 원인을 찾는 맥락과 반대예요.",
+        "b": "긴장을 누그러뜨린다는 뜻이라 오해가 생긴 원인과 맞지 않아요.",
+        "c": "미리 막았다는 뜻이라 이미 벌어진 다툼의 원인이 될 수 없어요."
+      }
+    },
+    {
+      "id": "g6-argon-0739",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 6,
+      "type": "synonym_context",
+      "difficultyTier": "basic",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "유발하다",
+        "partOfSpeech": "동사",
+        "senseKey": "유발하다/동사/257678-1"
+      },
+      "stem": "다음 문장의 ‘유발하는’과 바꾸어 쓸 수 있는 말로 가장 알맞은 것은? “도입부에 흥미로운 질문을 던지는 것은 독자의 호기심을 유발하는 좋은 글쓰기 방법이다.”",
+      "options": [
+        {
+          "id": "a",
+          "text": "억누르게 하는"
+        },
+        {
+          "id": "b",
+          "text": "일어나게 하는"
+        },
+        {
+          "id": "c",
+          "text": "뒤로 미루게 하는"
+        },
+        {
+          "id": "d",
+          "text": "줄어들게 하는"
+        }
+      ],
+      "correctOptionId": "b",
+      "explanation": "‘유발하다’는 어떤 것이 계기가 되어 다른 일이 일어나게 한다는 뜻이에요.",
+      "distractorRationales": {
+        "a": "감정이나 마음을 내리누른다는 뜻이라 호기심 유도와 반대예요.",
+        "c": "일을 뒤로 미루게 한다는 뜻이라 도입부의 역할과 맞지 않아요.",
+        "d": "관심이 적어지게 한다는 뜻이라 좋은 글쓰기 방법과 어긋나요."
+      }
+    },
+    {
+      "id": "g6-argon-0740",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 6,
+      "type": "cloze",
+      "difficultyTier": "basic",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "절실하다",
+        "partOfSpeech": "형용사",
+        "senseKey": "절실하다/형용사/481424-1"
+      },
+      "stem": "평소에는 당연하게 여겼지만, 전학을 와서 친구의 빈자리가 크게 다가오니 그때의 고마움을 느끼는 마음이 어느 때보다 (    ).",
+      "options": [
+        {
+          "id": "a",
+          "text": "절실하였다"
+        },
+        {
+          "id": "b",
+          "text": "담담하였다"
+        },
+        {
+          "id": "c",
+          "text": "막연하였다"
+        },
+        {
+          "id": "d",
+          "text": "경솔하였다"
+        }
+      ],
+      "correctOptionId": "a",
+      "explanation": "‘절실하다’는 어떤 느낌이나 생각이 뼈저리게 강렬한 상태에 있다는 뜻이에요.",
+      "distractorRationales": {
+        "b": "차분하고 아무렇지 않다는 뜻이라 빈자리를 크게 느낀 맥락과 반대예요.",
+        "c": "뚜렷하지 않고 어렴풋하다는 뜻이라 깊은 고마움과 어울리지 않아요.",
+        "d": "말이나 행동이 조심성 없다는 뜻이라 고마워하는 마음과 무관해요."
+      }
+    },
+    {
+      "id": "g6-argon-0741",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 6,
+      "type": "usage",
+      "difficultyTier": "basic",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "유발하다",
+        "partOfSpeech": "동사",
+        "senseKey": "유발하다/동사/257678-1"
+      },
+      "stem": "‘유발하다’가 바르게 쓰인 문장은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "미끄럼 방지 매트를 깔아 사고가 없도록 유발하였다."
+        },
+        {
+          "id": "b",
+          "text": "아침 여덟 시에 정문에서 버스를 타고 유발하였다."
+        },
+        {
+          "id": "c",
+          "text": "밤늦은 층간 소음은 이웃 간 갈등을 유발할 수 있다."
+        },
+        {
+          "id": "d",
+          "text": "창문을 닫아 실내 온도를 일정하게 유발하였다."
+        }
+      ],
+      "correctOptionId": "c",
+      "explanation": "‘유발하다’는 어떤 것이 원인이 되어 다른 일을 일어나게 한다는 뜻이에요.",
+      "distractorRationales": {
+        "a": "사고가 생기지 않게 미리 막는 일에는 ‘예방하다’가 알맞아요.",
+        "b": "차를 타고 길을 떠나는 행동에는 ‘출발하다’를 써야 해요.",
+        "d": "일정한 상태를 그대로 지키는 일에는 ‘유지하다’가 어울려요."
+      }
+    },
+    {
+      "id": "g6-argon-0742",
+      "revision": 3,
+      "status": "verified_candidate",
+      "grade": 6,
+      "type": "synonym_context",
+      "difficultyTier": "basic",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "절실하다",
+        "partOfSpeech": "형용사",
+        "senseKey": "절실하다/형용사/481424-1"
+      },
+      "stem": "“아쉽게 경기에서 진 뒤 협동이 중요하다는 생각이 어느 때보다 절실하였다.”에서 ‘절실하였다’와 뜻이 가장 가까운 말은 무엇일까요?",
+      "options": [
+        {
+          "id": "a",
+          "text": "가볍고 대수롭지 않았다"
+        },
+        {
+          "id": "b",
+          "text": "뼈저리게 강렬하였다"
+        },
+        {
+          "id": "c",
+          "text": "갈피를 못 잡아 막연하였다"
+        },
+        {
+          "id": "d",
+          "text": "마음의 움직임 없이 담담하였다"
+        }
+      ],
+      "correctOptionId": "b",
+      "explanation": "여기서 ‘절실하다’는 느낌이나 생각이 뼈저리게 강렬하다는 뜻이에요.",
+      "distractorRationales": {
+        "a": "중요하게 여기지 않는 상태라 강렬한 생각과 정반대예요.",
+        "c": "생각이 뚜렷하지 않다는 뜻이라 문맥과 어울리지 않아요.",
+        "d": "마음의 움직임이 없다는 뜻이라 깊은 깨달음과 어긋나요."
+      }
+    },
+    {
+      "id": "g6-argon-0743",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 6,
+      "type": "usage",
+      "difficultyTier": "challenge",
+      "variantTag": "confusable",
+      "target": {
+        "lemma": "집약하다",
+        "partOfSpeech": "동사",
+        "senseKey": "집약하다/동사/316547-1"
+      },
+      "stem": "‘집약하다’가 바르게 쓰인 문장은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "지나간 작은 실수에 마음을 못 놓고 집약하였다."
+        },
+        {
+          "id": "b",
+          "text": "빈 교실 전등을 끄며 전기를 알뜰히 집약하였다."
+        },
+        {
+          "id": "c",
+          "text": "연휴 기차 좌석을 한 달 전에 미리 집약하였다."
+        },
+        {
+          "id": "d",
+          "text": "수백 쪽의 자료를 두 쪽 보고서로 집약하였다."
+        }
+      ],
+      "correctOptionId": "d",
+      "explanation": "‘집약하다’는 여러 내용을 한데 모아서 요약한다는 뜻이에요.",
+      "distractorRationales": {
+        "a": "한 가지에 매달린다는 맥락이므로 ‘집착하다’를 써야 해요.",
+        "b": "아껴서 낭비를 줄이는 행동에는 ‘절약하다’가 알맞아요.",
+        "c": "좌석을 미리 정해 두는 일에는 ‘예약하다’가 어울려요."
+      }
+    },
+    {
+      "id": "g6-argon-0744",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 6,
+      "type": "cloze",
+      "difficultyTier": "advanced",
+      "variantTag": "confusable",
+      "target": {
+        "lemma": "함축하다",
+        "partOfSpeech": "동사",
+        "senseKey": "함축하다/동사/368319-1"
+      },
+      "stem": "그 초상화 속 인물은 슬픔을 겉으로 터뜨리는 대신, 차분한 눈빛 속에 깊은 아픔을 고요히 (    ) 있는 듯했다.",
+      "options": [
+        {
+          "id": "a",
+          "text": "비축하고"
+        },
+        {
+          "id": "b",
+          "text": "구축하고"
+        },
+        {
+          "id": "c",
+          "text": "단축하고"
+        },
+        {
+          "id": "d",
+          "text": "함축하고"
+        }
+      ],
+      "correctOptionId": "d",
+      "explanation": "‘함축하다’는 감정 따위를 겉으로 드러내지 않고 속에 간직한다는 뜻이에요.",
+      "distractorRationales": {
+        "a": "물자나 식량을 미리 모아 둔다는 뜻이라 감정 표현과 맞지 않아요.",
+        "b": "체제나 시설을 쌓아 이룬다는 뜻이라 눈빛 묘사와 어울리지 않아요.",
+        "c": "시간이나 거리를 줄인다는 뜻이라 아픔을 간직한 맥락과 달라요."
+      }
+    },
+    {
+      "id": "g6-argon-0745",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 6,
+      "type": "synonym_context",
+      "difficultyTier": "challenge",
+      "variantTag": "confusable",
+      "target": {
+        "lemma": "함축하다",
+        "partOfSpeech": "동사",
+        "senseKey": "함축하다/동사/368319-1"
+      },
+      "stem": "다음 문장의 ‘함축한’과 바꾸어 쓸 수 있는 말로 가장 알맞은 것은? “느린 호흡과 절제된 손끝 움직임에는 무용수가 함축한 애틋한 정서가 배어 있었다.”",
+      "options": [
+        {
+          "id": "a",
+          "text": "여분으로 미리 모아 둔"
+        },
+        {
+          "id": "b",
+          "text": "드러내지 않고 간직한"
+        },
+        {
+          "id": "c",
+          "text": "튼튼한 틀로 쌓아 세운"
+        },
+        {
+          "id": "d",
+          "text": "숨김없이 밖으로 터뜨린"
+        }
+      ],
+      "correctOptionId": "b",
+      "explanation": "여기서 ‘함축하다’는 정서를 겉으로 드러내지 않고 속에 간직한다는 뜻이에요.",
+      "distractorRationales": {
+        "a": "물자를 미리 모아 둔다는 ‘비축하다’의 뜻과 혼동한 표현이에요.",
+        "c": "체제나 기반을 세운다는 ‘구축하다’의 뜻이라 정서와 맞지 않아요.",
+        "d": "절제된 움직임이라는 단서와 어긋나는 반대 방향의 표현이에요."
+      }
+    },
+    {
+      "id": "g6-argon-0746",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 6,
+      "type": "definition",
+      "difficultyTier": "core",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "지양하다",
+        "partOfSpeech": "동사",
+        "senseKey": "지양하다/동사/316909-1"
+      },
+      "stem": "‘지양하다’의 뜻은? “성숙한 토론을 위해 근거 없는 비난은 지양해야 한다.”",
+      "options": [
+        {
+          "id": "a",
+          "text": "정한 목표를 이루려고 한쪽으로 뜻을 향하다"
+        },
+        {
+          "id": "b",
+          "text": "이전 방식을 바꾸지 않고 그대로 이어 나가다"
+        },
+        {
+          "id": "c",
+          "text": "문제에 직접 나서지 않고 곁에서 지켜만 보다"
+        },
+        {
+          "id": "d",
+          "text": "더 높은 단계를 위하여 어떤 일을 하지 않다"
+        }
+      ],
+      "correctOptionId": "d",
+      "explanation": "‘지양하다’는 더 높은 단계로 오르기 위해 어떤 것을 하지 않는다는 뜻이에요.",
+      "distractorRationales": {
+        "a": "목표를 향해 뜻이 쏠린다는 뜻은 ‘지향하다’에 해당해요.",
+        "b": "이전 상태를 그대로 이어 가는 것은 ‘유지하다’의 뜻이에요.",
+        "c": "나서지 않고 곁에서 보기만 하는 것은 ‘방관하다’예요."
+      }
+    },
+    {
+      "id": "g6-argon-0747",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 6,
+      "type": "cloze",
+      "difficultyTier": "advanced",
+      "variantTag": "confusable",
+      "target": {
+        "lemma": "지양하다",
+        "partOfSpeech": "동사",
+        "senseKey": "지양하다/동사/316909-1"
+      },
+      "stem": "환경과 조화를 이루는 더 나은 생활로 나아가려면, 편리하다는 이유만으로 일회용품을 무분별하게 쓰는 습관은 (    ) 다회용기를 가까이해야 한다.",
+      "options": [
+        {
+          "id": "a",
+          "text": "지향하고"
+        },
+        {
+          "id": "b",
+          "text": "지양하고"
+        },
+        {
+          "id": "c",
+          "text": "지속하고"
+        },
+        {
+          "id": "d",
+          "text": "지지하고"
+        }
+      ],
+      "correctOptionId": "b",
+      "explanation": "더 나은 단계로 나아가기 위해 그릇된 습관을 하지 않는 것은 ‘지양하다’예요.",
+      "distractorRationales": {
+        "a": "‘지향하다’는 그 방향으로 나아간다는 뜻이라 문맥과 정반대예요.",
+        "c": "무분별한 사용을 계속 이어 간다는 뜻이라 환경 보호와 어긋나요.",
+        "d": "잘못된 습관을 찬성하여 돕는다는 뜻이라 문맥에 맞지 않아요."
+      }
+    },
+    {
+      "id": "g6-argon-0748",
+      "revision": 3,
+      "status": "verified_candidate",
+      "grade": 6,
+      "type": "synonym_context",
+      "difficultyTier": "advanced",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "지양하다",
+        "partOfSpeech": "동사",
+        "senseKey": "지양하다/동사/316909-1"
+      },
+      "stem": "“역사를 깊이 탐구하는 사람은 한쪽 기록만 믿는 태도를 지양한다.”에서 ‘지양한다’와 뜻이 가장 가까운 말은 무엇일까요?",
+      "options": [
+        {
+          "id": "a",
+          "text": "목표로 삼아 꾸준히 추구한다"
+        },
+        {
+          "id": "b",
+          "text": "바꾸지 않고 끝까지 고수한다"
+        },
+        {
+          "id": "c",
+          "text": "발전을 위해 삼가고 피한다"
+        },
+        {
+          "id": "d",
+          "text": "당연한 원칙으로 여겨 따른다"
+        }
+      ],
+      "correctOptionId": "c",
+      "explanation": "‘지양하다’는 더 높은 단계로 오르기 위해 어떤 것을 하지 않는다는 뜻이에요.",
+      "distractorRationales": {
+        "a": "목표로 삼아 나아가는 것은 ‘지향하다’의 뜻이라 정반대예요.",
+        "b": "이전 태도를 그대로 지킨다는 뜻이라 비판적 탐구와 어긋나요.",
+        "d": "그대로 받아들여 따른다는 뜻이라 경계하는 문맥과 맞지 않아요."
+      }
+    },
+    {
+      "id": "g6-argon-0749",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 6,
+      "type": "cloze",
+      "difficultyTier": "basic",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "반응",
+        "partOfSpeech": "명사",
+        "senseKey": "반응/명사/427379-1"
+      },
+      "stem": "식물은 가만히 있다고 여기기 쉽지만, 미모사 잎을 살짝 건드리면 자극에 따라 즉시 잎을 오므리는 (    )이 나타난다.",
+      "options": [
+        {
+          "id": "a",
+          "text": "적응"
+        },
+        {
+          "id": "b",
+          "text": "반응"
+        },
+        {
+          "id": "c",
+          "text": "생장"
+        },
+        {
+          "id": "d",
+          "text": "순환"
+        }
+      ],
+      "correctOptionId": "b",
+      "explanation": "자극에 대응하여 어떤 현상이 일어나는 것을 ‘반응’이라고 해요.",
+      "distractorRationales": {
+        "a": "오랜 시간에 걸쳐 환경에 맞추어 변하는 현상이라 즉시 오므리는 것과 달라요.",
+        "c": "식물의 줄기나 뿌리가 자라는 현상이라 자극에 잎을 접는 일과 맞지 않아요.",
+        "d": "물질이 돌고 도는 현상을 뜻하므로 건드릴 때 나타나는 변화가 아니에요."
+      }
+    },
+    {
+      "id": "g6-argon-0750",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 6,
+      "type": "usage",
+      "difficultyTier": "core",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "타당성",
+        "partOfSpeech": "명사",
+        "senseKey": "타당성/명사/345318-1"
+      },
+      "stem": "‘타당성’의 쓰임이 가장 자연스러운 문장은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "얼음물에 손을 담갔더니 손끝의 차가운 타당성이 금세 느껴졌다."
+        },
+        {
+          "id": "b",
+          "text": "주장을 뒷받침하는 근거가 이치에 맞는지 타당성을 따져 보았다."
+        },
+        {
+          "id": "c",
+          "text": "운동장을 달리고 나서 이마에 맺힌 타당성을 수건으로 닦았다."
+        },
+        {
+          "id": "d",
+          "text": "가을 하늘에 떠가는 양떼구름의 하얀 타당성을 그림으로 그렸다."
+        }
+      ],
+      "correctOptionId": "b",
+      "explanation": "‘타당성’은 사물의 이치에 맞는 옳은 성질을 뜻해요.",
+      "distractorRationales": {
+        "a": "물체의 차가운 온도를 뜻하는 말이 아니에요.",
+        "c": "이마에 맺힌 땀 대신 쓸 수 없어요.",
+        "d": "구름의 모양이나 색깔을 가리키지 않아요."
       }
     },
     {
@@ -24813,7 +25893,7 @@
       "status": "verified_candidate",
       "grade": 6,
       "type": "synonym_context",
-      "difficultyTier": "basic",
+      "difficultyTier": "core",
       "variantTag": "standard",
       "target": {
         "lemma": "연대하다",
@@ -24853,7 +25933,7 @@
       "status": "verified_candidate",
       "grade": 6,
       "type": "antonym_context",
-      "difficultyTier": "basic",
+      "difficultyTier": "core",
       "variantTag": "standard",
       "target": {
         "lemma": "형평성",
@@ -25009,7 +26089,7 @@
     },
     {
       "id": "g6-argon-0758",
-      "revision": 1,
+      "revision": 2,
       "status": "verified_candidate",
       "grade": 6,
       "type": "synonym_context",
@@ -25024,7 +26104,7 @@
       "options": [
         {
           "id": "a",
-          "text": "빠르게 달리는 지구력"
+          "text": "오래 달리는 지구력"
         },
         {
           "id": "b",
@@ -25248,12 +26328,52 @@
       }
     },
     {
+      "id": "g6-argon-0764",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 6,
+      "type": "definition",
+      "difficultyTier": "basic",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "다방면",
+        "partOfSpeech": "명사",
+        "senseKey": "다방면/명사/72288-1"
+      },
+      "stem": "“그 과학자는 천문학과 생물학 등 다방면에 지식이 깊다.”에서 ‘다방면’의 뜻은 무엇일까요?",
+      "options": [
+        {
+          "id": "a",
+          "text": "오직 한 가지뿐인 좁은 영역"
+        },
+        {
+          "id": "b",
+          "text": "한곳에 그치지 않는 여러 분야"
+        },
+        {
+          "id": "c",
+          "text": "아무도 관심을 두지 않는 구석"
+        },
+        {
+          "id": "d",
+          "text": "출입이 엄격히 금지된 장소"
+        }
+      ],
+      "correctOptionId": "b",
+      "explanation": "‘다방면’은 한 분야에 머물지 않는 여러 방면을 뜻해요.",
+      "distractorRationales": {
+        "a": "한 가지 영역만 가리키는 것은 다방면과 반대예요.",
+        "c": "관심 밖의 구석은 여러 분야라는 뜻과 맞지 않아요.",
+        "d": "출입 금지 장소는 학문이나 활동 분야를 뜻하지 않아요."
+      }
+    },
+    {
       "id": "g6-argon-0765",
       "revision": 1,
       "status": "verified_candidate",
       "grade": 6,
       "type": "synonym_context",
-      "difficultyTier": "core",
+      "difficultyTier": "basic",
       "variantTag": "standard",
       "target": {
         "lemma": "예측하다",
@@ -25328,6 +26448,46 @@
       }
     },
     {
+      "id": "g6-argon-0767",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 6,
+      "type": "usage",
+      "difficultyTier": "core",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "갈무리하다",
+        "partOfSpeech": "동사",
+        "senseKey": "갈무리하다/동사/6537-2"
+      },
+      "stem": "‘갈무리하다’가 알맞게 쓰인 문장은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "새 학기 첫날 처음 만난 짝에게 첫인사를 갈무리하였다."
+        },
+        {
+          "id": "b",
+          "text": "한 학기 동안 맡은 학급 임원 활동을 잘 갈무리하였다."
+        },
+        {
+          "id": "c",
+          "text": "수업 중 궁금한 점을 선생님께 손들고 갈무리하였다."
+        },
+        {
+          "id": "d",
+          "text": "출발 신호가 울리자마자 앞으로 힘차게 갈무리하였다."
+        }
+      ],
+      "correctOptionId": "b",
+      "explanation": "여기서 ‘갈무리하다’는 맡은 일을 처리하여 마무리한다는 뜻이에요.",
+      "distractorRationales": {
+        "a": "처음 인사를 건네는 상황에는 ‘나누다’ 따위가 알맞아요.",
+        "c": "궁금한 것을 물어보는 행동에는 ‘질문하다’를 써야 해요.",
+        "d": "신호에 맞춰 달려 나가는 시작 동작에는 쓸 수 없어요."
+      }
+    },
+    {
       "id": "g6-argon-0768",
       "revision": 1,
       "status": "verified_candidate",
@@ -25368,12 +26528,52 @@
       }
     },
     {
+      "id": "g6-argon-0769",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 6,
+      "type": "synonym_context",
+      "difficultyTier": "basic",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "반응",
+        "partOfSpeech": "명사",
+        "senseKey": "반응/명사/427379-1"
+      },
+      "stem": "다음 문장의 ‘반응’과 바꾸어 쓸 수 있는 말은? “밝은 빛을 비출 때 눈동자가 작아지는 것은 자연스러운 반응이다.”",
+      "options": [
+        {
+          "id": "a",
+          "text": "실험 전에 미리 어림잡은 예상"
+        },
+        {
+          "id": "b",
+          "text": "도구를 사용해 길이를 잰 기록"
+        },
+        {
+          "id": "c",
+          "text": "자극에 대응해 일어나는 현상"
+        },
+        {
+          "id": "d",
+          "text": "규칙을 어기지 않고 지킨 질서"
+        }
+      ],
+      "correctOptionId": "c",
+      "explanation": "‘반응’은 외부 자극에 대응하여 어떤 현상이 일어나는 것을 뜻해요.",
+      "distractorRationales": {
+        "a": "미리 짐작해 보는 일이라 빛에 따라 나타나는 현상과 달라요.",
+        "b": "수치를 재어 적어 둔 것이라 몸에 일어나는 현상이 아니에요.",
+        "d": "차례나 규칙을 지키는 일이라 자극과 대응의 맥락에 어긋나요."
+      }
+    },
+    {
       "id": "g6-argon-0770",
       "revision": 1,
       "status": "verified_candidate",
       "grade": 6,
       "type": "synonym_context",
-      "difficultyTier": "core",
+      "difficultyTier": "basic",
       "variantTag": "standard",
       "target": {
         "lemma": "너머",
@@ -25413,7 +26613,7 @@
       "status": "verified_candidate",
       "grade": 6,
       "type": "antonym_context",
-      "difficultyTier": "core",
+      "difficultyTier": "basic",
       "variantTag": "standard",
       "target": {
         "lemma": "다방면",
@@ -25493,7 +26693,7 @@
       "status": "verified_candidate",
       "grade": 6,
       "type": "cloze",
-      "difficultyTier": "core",
+      "difficultyTier": "basic",
       "variantTag": "standard",
       "target": {
         "lemma": "두루",
@@ -25573,7 +26773,7 @@
       "status": "verified_candidate",
       "grade": 6,
       "type": "synonym_context",
-      "difficultyTier": "core",
+      "difficultyTier": "basic",
       "variantTag": "standard",
       "target": {
         "lemma": "발휘하다",
@@ -25613,7 +26813,7 @@
       "status": "verified_candidate",
       "grade": 6,
       "type": "antonym_context",
-      "difficultyTier": "core",
+      "difficultyTier": "advanced",
       "variantTag": "polysemy",
       "target": {
         "lemma": "부각하다",
@@ -25648,12 +26848,92 @@
       }
     },
     {
+      "id": "g6-argon-0777",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 6,
+      "type": "cloze",
+      "difficultyTier": "basic",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "해명하다",
+        "partOfSpeech": "동사",
+        "senseKey": "해명하다/동사/364340-1"
+      },
+      "stem": "억울한 오해를 산 지훈이는 늦을 수밖에 없었던 사정을 차분하게 (    ) 친구들의 신뢰를 되찾았다.",
+      "options": [
+        {
+          "id": "a",
+          "text": "해명하여"
+        },
+        {
+          "id": "b",
+          "text": "회피하여"
+        },
+        {
+          "id": "c",
+          "text": "과장하여"
+        },
+        {
+          "id": "d",
+          "text": "외면하여"
+        }
+      ],
+      "correctOptionId": "a",
+      "explanation": "‘해명하다’는 오해 따위의 까닭이나 내용을 풀어서 밝힌다는 뜻이에요.",
+      "distractorRationales": {
+        "b": "자리를 피한다는 뜻이라 오해를 바로잡고 신뢰를 얻은 맥락과 반대예요.",
+        "c": "사실보다 부풀려 말한다는 뜻이라 신뢰를 되찾은 상황과 맞지 않아요.",
+        "d": "모른 체하고 피한다는 뜻이라 사정을 차분히 밝힌 흐름과 어긋나요."
+      }
+    },
+    {
+      "id": "g6-argon-0778",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 6,
+      "type": "cloze",
+      "difficultyTier": "basic",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "본론",
+        "partOfSpeech": "명사",
+        "senseKey": "본론/명사/429490-1"
+      },
+      "stem": "논설문의 첫머리에서 문제 상황을 가볍게 환기한 뒤, 이어지는 (    )에서는 글쓴이의 핵심 주장과 이를 뒷받침하는 근거를 본격적으로 제시해야 한다.",
+      "options": [
+        {
+          "id": "a",
+          "text": "서론"
+        },
+        {
+          "id": "b",
+          "text": "본론"
+        },
+        {
+          "id": "c",
+          "text": "결론"
+        },
+        {
+          "id": "d",
+          "text": "여담"
+        }
+      ],
+      "correctOptionId": "b",
+      "explanation": "말이나 글에서 글쓴이의 중심 주장이 담긴 부분을 ‘본론’이라고 해요.",
+      "distractorRationales": {
+        "a": "글을 시작하며 관심을 끄는 첫머리 부분이므로 이미 지나간 단계예요.",
+        "c": "앞에서 편 주장을 마지막으로 요약하며 마무리하는 끝부분이에요.",
+        "d": "주제에서 벗어난 가벼운 이야기라 핵심 주장을 펴는 곳과 달라요."
+      }
+    },
+    {
       "id": "g6-argon-0779",
       "revision": 1,
       "status": "verified_candidate",
       "grade": 6,
       "type": "definition",
-      "difficultyTier": "advanced",
+      "difficultyTier": "core",
       "variantTag": "polysemy",
       "target": {
         "lemma": "감당하다",
@@ -25688,12 +26968,172 @@
       }
     },
     {
+      "id": "g6-argon-0780",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 6,
+      "type": "synonym_context",
+      "difficultyTier": "basic",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "본론",
+        "partOfSpeech": "명사",
+        "senseKey": "본론/명사/429490-1"
+      },
+      "stem": "다음 문장의 ‘본론’과 바꾸어 쓸 수 있는 말은? “회의 시간이 부족하니 안부 인사는 줄이고 곧바로 본론부터 시작하자.”",
+      "options": [
+        {
+          "id": "a",
+          "text": "말문을 여는 인사말 부분"
+        },
+        {
+          "id": "b",
+          "text": "회의를 끝맺는 마무리 말"
+        },
+        {
+          "id": "c",
+          "text": "주장이 있는 중심 부분"
+        },
+        {
+          "id": "d",
+          "text": "주제와 무관한 주변 화제"
+        }
+      ],
+      "correctOptionId": "c",
+      "explanation": "‘본론’은 말이나 글에서 중심 주장이 있는 부분을 뜻해요.",
+      "distractorRationales": {
+        "a": "안부 인사를 줄이자는 앞 문맥과 정반대되는 도입 부분이에요.",
+        "b": "회의를 시작하며 곧바로 다루는 내용이므로 끝맺는 말과 달라요.",
+        "d": "시간이 부족해 핵심만 말하려는 상황에 어긋나는 표현이에요."
+      }
+    },
+    {
+      "id": "g6-argon-0781",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 6,
+      "type": "cloze",
+      "difficultyTier": "basic",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "신뢰성",
+        "partOfSpeech": "명사",
+        "senseKey": "신뢰성/명사/452130-1"
+      },
+      "stem": "누가 썼는지 출처가 불분명하고 통계 수치마저 실제 조사 결과와 어긋나는 자료는 발표 근거로서의 (    )이 크게 떨어진다.",
+      "options": [
+        {
+          "id": "a",
+          "text": "독창성"
+        },
+        {
+          "id": "b",
+          "text": "편리성"
+        },
+        {
+          "id": "c",
+          "text": "다양성"
+        },
+        {
+          "id": "d",
+          "text": "신뢰성"
+        }
+      ],
+      "correctOptionId": "d",
+      "explanation": "‘신뢰성’은 굳게 믿고 의지할 수 있는 성질을 뜻해요.",
+      "distractorRationales": {
+        "a": "남과 다른 새로운 성질이라 출처와 사실 여부를 따지는 맥락과 달라요.",
+        "b": "쓰기에 편한 성질을 뜻하므로 통계가 정확한지와는 관련이 없어요.",
+        "c": "여러 가지가 고루 섞인 성질이라 자료의 믿음성을 묻는 문맥에 어긋나요."
+      }
+    },
+    {
+      "id": "g6-argon-0783",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 6,
+      "type": "synonym_context",
+      "difficultyTier": "core",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "시의성",
+        "partOfSpeech": "명사",
+        "senseKey": "시의성/명사/534236-1"
+      },
+      "stem": "다음 문장의 ‘시의성’과 바꾸어 쓸 수 있는 말은? “장마철 직전에 빗길 안전을 다룬 방송은 시의성이 돋보였다.”",
+      "options": [
+        {
+          "id": "a",
+          "text": "늘 변함없이 그대로 지키는 성질"
+        },
+        {
+          "id": "b",
+          "text": "적은 노력으로 큰 효과를 내는 성질"
+        },
+        {
+          "id": "c",
+          "text": "남과 다르게 새롭게 만들어 내는 성질"
+        },
+        {
+          "id": "d",
+          "text": "그때의 사정과 요구에 맞는 성질"
+        }
+      ],
+      "correctOptionId": "d",
+      "explanation": "‘시의성’은 그 당시의 사정이나 사회적 요구에 들어맞는 성질이에요.",
+      "distractorRationales": {
+        "a": "변함없이 이어지는 성질이라 시기에 맞춘 방송의 특징과 달라요.",
+        "b": "노력 대비 결과 비율이 높은 것은 ‘효율성’을 가리키는 말이에요.",
+        "c": "새롭게 만들어 내는 성질은 ‘독창성’에 해당하는 설명이에요."
+      }
+    },
+    {
+      "id": "g6-argon-0784",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 6,
+      "type": "synonym_context",
+      "difficultyTier": "basic",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "독창성",
+        "partOfSpeech": "명사",
+        "senseKey": "독창성/명사/416232-1"
+      },
+      "stem": "‘독창성’과 바꾸어 쓸 수 있는 말은? “톱니바퀴 대신 자석의 힘으로 움직이게 한 시계는 독창성이 돋보였다.”",
+      "options": [
+        {
+          "id": "a",
+          "text": "기존 방식을 그대로 따라 하는 성질"
+        },
+        {
+          "id": "b",
+          "text": "누구나 굳게 믿고 의지할 만한 성질"
+        },
+        {
+          "id": "c",
+          "text": "그 당시의 사회적 요구에 맞는 성질"
+        },
+        {
+          "id": "d",
+          "text": "남을 본뜨지 않고 새로 지어내는 성질"
+        }
+      ],
+      "correctOptionId": "d",
+      "explanation": "‘독창성’은 남을 모방하지 않고 새로운 것을 만들어 내는 성질이에요.",
+      "distractorRationales": {
+        "a": "이전 방식을 그대로 따르는 것은 새로움을 뜻하는 말과 정반대예요.",
+        "b": "굳게 믿고 의지할 수 있는 성질은 ‘신뢰성’을 뜻하는 말이에요.",
+        "c": "시대적 요구에 들어맞는 성질은 ‘시의성’에 해당하는 설명이에요."
+      }
+    },
+    {
       "id": "g6-argon-0785",
       "revision": 1,
       "status": "verified_candidate",
       "grade": 6,
       "type": "definition",
-      "difficultyTier": "advanced",
+      "difficultyTier": "core",
       "variantTag": "polysemy",
       "target": {
         "lemma": "건전하다",
@@ -25728,12 +27168,132 @@
       }
     },
     {
+      "id": "g6-argon-0786",
+      "revision": 3,
+      "status": "verified_candidate",
+      "grade": 6,
+      "type": "usage",
+      "difficultyTier": "core",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "독창성",
+        "partOfSpeech": "명사",
+        "senseKey": "독창성/명사/416232-1"
+      },
+      "stem": "‘독창성’이 문맥에 맞게 바르게 쓰인 문장은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "남의 그림을 선 하나 바꾸지 않고 똑같이 베껴 독창성을 인정받았다."
+        },
+        {
+          "id": "b",
+          "text": "기존 틀에서 벗어나 폐품을 악기로 바꾼 발상에서 독창성이 돋보였다."
+        },
+        {
+          "id": "c",
+          "text": "정밀한 저울이 영점 오차도 없이 무게를 재어 저울의 독창성이 높았다."
+        },
+        {
+          "id": "d",
+          "text": "버스가 시간표에 적힌 시각마다 늦지 않고 도착해 독창성이 뛰어났다."
+        }
+      ],
+      "correctOptionId": "b",
+      "explanation": "‘독창성’은 남을 모방하지 않고 새로운 것을 만들어 내는 성질이에요.",
+      "distractorRationales": {
+        "a": "남의 작품을 똑같이 베끼는 것은 모방이므로 독창성과 정반대예요.",
+        "c": "오차 없이 바르게 측정하는 성질에는 ‘정확성’이 알맞아요.",
+        "d": "정해진 시각을 어기지 않는 일은 독창성과 관련이 없어요."
+      }
+    },
+    {
+      "id": "g6-argon-0787",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 6,
+      "type": "definition",
+      "difficultyTier": "basic",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "효율성",
+        "partOfSpeech": "명사",
+        "senseKey": "효율성/명사/515627-1"
+      },
+      "stem": "‘효율성’의 뜻은? “이동 동선을 줄이자 정리 작업의 효율성이 높아졌다.”",
+      "options": [
+        {
+          "id": "a",
+          "text": "들인 노력 대비 얻는 결과 비율이 높은 특성"
+        },
+        {
+          "id": "b",
+          "text": "어느 쪽에도 치우침 없이 늘 공평한 특성"
+        },
+        {
+          "id": "c",
+          "text": "남을 모방하지 않고 새로 만들어 내는 특성"
+        },
+        {
+          "id": "d",
+          "text": "출처가 분명해 굳게 믿고 의지할 만한 특성"
+        }
+      ],
+      "correctOptionId": "a",
+      "explanation": "‘효율성’은 들인 노력과 얻은 결과의 비율이 높은 특성을 뜻해요.",
+      "distractorRationales": {
+        "b": "치우침 없이 공평한 특성은 ‘공정성’에 해당하는 뜻이에요.",
+        "c": "남과 다르게 새로 만들어 내는 특성은 ‘독창성’을 뜻해요.",
+        "d": "굳게 믿고 의지할 수 있는 성질은 ‘신뢰성’을 가리켜요."
+      }
+    },
+    {
+      "id": "g6-argon-0788",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 6,
+      "type": "synonym_context",
+      "difficultyTier": "core",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "효율성",
+        "partOfSpeech": "명사",
+        "senseKey": "효율성/명사/515627-1"
+      },
+      "stem": "‘효율성’과 바꾸어 쓸 수 있는 말은? “특기에 맞게 역할을 나누면 모둠 과제의 효율성을 높일 수 있다.”",
+      "options": [
+        {
+          "id": "a",
+          "text": "시대적 요구에 꼭 들어맞는 특성"
+        },
+        {
+          "id": "b",
+          "text": "노력에 비해 성과 비율이 높은 특성"
+        },
+        {
+          "id": "c",
+          "text": "충격에도 쉽게 망가지지 않는 특성"
+        },
+        {
+          "id": "d",
+          "text": "내부 비밀이 새지 않게 지키는 특성"
+        }
+      ],
+      "correctOptionId": "b",
+      "explanation": "‘효율성’은 들인 노력과 얻은 결과의 비율이 높은 특성이에요.",
+      "distractorRationales": {
+        "a": "당시의 사정이나 요구에 들어맞는 성질은 ‘시의성’이에요.",
+        "c": "오래 버티며 망가지지 않는 성질은 ‘내구성’을 뜻해요.",
+        "d": "비밀을 안전하게 지키는 성질은 ‘보안성’에 해당해요."
+      }
+    },
+    {
       "id": "g6-argon-0789",
       "revision": 1,
       "status": "verified_candidate",
       "grade": 6,
       "type": "definition",
-      "difficultyTier": "advanced",
+      "difficultyTier": "core",
       "variantTag": "polysemy",
       "target": {
         "lemma": "경향",
@@ -25765,6 +27325,446 @@
         "a": "서울과 시골을 뜻하는 말은 한자가 다른 동음이의어예요.",
         "b": "잠시 쉬는 틈은 겨를이나 여가를 뜻하는 말이에요.",
         "c": "위에서 내려다보는 것은 조망이나 전망에 해당해요."
+      }
+    },
+    {
+      "id": "g6-argon-0790",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 6,
+      "type": "usage",
+      "difficultyTier": "core",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "효율성",
+        "partOfSpeech": "명사",
+        "senseKey": "효율성/명사/515627-1"
+      },
+      "stem": "‘효율성’이 문맥에 맞게 쓰인 문장은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "많은 시간과 비용을 들이고도 얻은 성과가 전혀 없어 효율성이 높았다."
+        },
+        {
+          "id": "b",
+          "text": "불필요한 절차를 줄여 적은 시간으로 큰 성과를 내니 효율성이 높아졌다."
+        },
+        {
+          "id": "c",
+          "text": "실수를 숨기지 않고 친구에게 솔직히 사과하여 양심의 효율성을 지켰다."
+        },
+        {
+          "id": "d",
+          "text": "천 년 전 조상의 숨결이 깃든 옛 석탑은 세월의 효율성이 깊었다."
+        }
+      ],
+      "correctOptionId": "b",
+      "explanation": "‘효율성’은 들인 노력과 얻은 결과의 비율이 높은 특성을 뜻해요.",
+      "distractorRationales": {
+        "a": "많은 노력에도 얻은 성과가 없다면 효율성이 낮은 상태예요.",
+        "c": "잘못을 솔직하게 고백하는 양심의 문제에는 어울리지 않아요.",
+        "d": "유물에 깃든 오랜 세월의 가치를 나타내는 말로는 쓰지 않아요."
+      }
+    },
+    {
+      "id": "g6-argon-0791",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 6,
+      "type": "usage",
+      "difficultyTier": "core",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "실효성",
+        "partOfSpeech": "명사",
+        "senseKey": "실효성/명사/209028-1"
+      },
+      "stem": "‘실효성’이 문맥에 맞게 쓰인 문장은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "계획만 화려할 뿐 현실에서 아무 효과도 못 내어 실효성이 높았다."
+        },
+        {
+          "id": "b",
+          "text": "현실과 무관한 공상으로만 신비로운 동화를 꾸며 실효성이 높았다."
+        },
+        {
+          "id": "c",
+          "text": "구호에 그치지 않고 실제로 문제를 해결할 대책이어야 실효성이 있다."
+        },
+        {
+          "id": "d",
+          "text": "생일과 고향이 우연히 같은 친구를 처음 만나 인연의 실효성이 높았다."
+        }
+      ],
+      "correctOptionId": "c",
+      "explanation": "‘실효성’은 계획이나 대책이 실제로 효과를 나타내는 성질이에요.",
+      "distractorRationales": {
+        "a": "현실에서 아무 효과를 내지 못했다면 실효성이 없는 경우예요.",
+        "b": "현실과 무관한 상상의 이야기에는 실제 효과를 따지기 어려워요.",
+        "d": "우연히 겹친 인연을 두고 실제 효과가 있다고 말하지는 않아요."
+      }
+    },
+    {
+      "id": "g6-argon-0792",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 6,
+      "type": "definition",
+      "difficultyTier": "core",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "실효성",
+        "partOfSpeech": "명사",
+        "senseKey": "실효성/명사/209028-1"
+      },
+      "stem": "‘실효성’의 뜻으로 가장 알맞은 것은? “자치회는 새 규칙이 현장의 문제를 개선할 실효성이 있는지 점검하였다.”",
+      "options": [
+        {
+          "id": "a",
+          "text": "굳게 믿고 의지할 수 있는 성질"
+        },
+        {
+          "id": "b",
+          "text": "시대적 요구에 들어맞는 성질"
+        },
+        {
+          "id": "c",
+          "text": "새롭게 혼자 만들어 내는 성질"
+        },
+        {
+          "id": "d",
+          "text": "실제로 효과를 나타내는 성질"
+        }
+      ],
+      "correctOptionId": "d",
+      "explanation": "‘실효성’은 실제로 효과를 나타내는 성질을 뜻하는 말이에요.",
+      "distractorRationales": {
+        "a": "굳게 믿고 의지할 수 있는 성질은 ‘신뢰성’의 뜻이에요.",
+        "b": "당시의 요구에 들어맞는 성질은 ‘시의성’을 가리켜요.",
+        "c": "남과 다르게 새로 만드는 성질은 ‘독창성’에 해당해요."
+      }
+    },
+    {
+      "id": "g6-argon-0793",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 6,
+      "type": "cloze",
+      "difficultyTier": "basic",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "실효성",
+        "partOfSpeech": "명사",
+        "senseKey": "실효성/명사/209028-1"
+      },
+      "stem": "겉보기에는 그럴듯한 방안이라도 현장에 적용했을 때 실질적인 개선이 뒤따르지 않는다면 대책으로서의 (    )을 인정받기 어렵다.",
+      "options": [
+        {
+          "id": "a",
+          "text": "독창성"
+        },
+        {
+          "id": "b",
+          "text": "형평성"
+        },
+        {
+          "id": "c",
+          "text": "투명성"
+        },
+        {
+          "id": "d",
+          "text": "실효성"
+        }
+      ],
+      "correctOptionId": "d",
+      "explanation": "현장에서 실제로 효과를 나타내는 성질을 ‘실효성’이라고 해요.",
+      "distractorRationales": {
+        "a": "새롭게 만들어 내는 성질이라 실제 개선 결과 유무와는 달라요.",
+        "b": "어느 한쪽에 치우치지 않고 공평한 성질이라 문맥에 맞지 않아요.",
+        "c": "과정을 숨김없이 공개하는 성질이라 효과의 유무와는 무관해요."
+      }
+    },
+    {
+      "id": "g6-argon-0794",
+      "revision": 3,
+      "status": "verified_candidate",
+      "grade": 6,
+      "type": "usage",
+      "difficultyTier": "core",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "설득력",
+        "partOfSpeech": "명사",
+        "senseKey": "설득력/명사/177963-1"
+      },
+      "stem": "‘설득력’이 문맥에 맞게 바르게 쓰인 문장은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "근거 없는 억지 주장만 늘어놓아 청중이 모두 반발할 만큼 설득력이 높았다."
+        },
+        {
+          "id": "b",
+          "text": "남에게 말하지 않고 혼자 조용히 역사 연표를 외우는 설득력을 길렀다."
+        },
+        {
+          "id": "c",
+          "text": "타당한 근거를 들어 반대 측까지 수긍하게 한 걸 보니 설득력이 높았다."
+        },
+        {
+          "id": "d",
+          "text": "자신의 생각은 숨긴 채 남의 지시만 무조건 따르는 설득력이 뛰어났다."
+        }
+      ],
+      "correctOptionId": "c",
+      "explanation": "‘설득력’은 상대편이 이쪽 이야기를 따르도록 깨우치는 힘이에요.",
+      "distractorRationales": {
+        "a": "청중이 모두 반발했다면 상대를 수긍하게 하지 못한 상황이에요.",
+        "b": "혼자 내용을 외우는 능력은 ‘기억력’이나 ‘암기력’에 해당해요.",
+        "d": "남의 지시만 그대로 따르는 태도는 상대를 깨우치는 힘과 반대예요."
+      }
+    },
+    {
+      "id": "g6-argon-0795",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 6,
+      "type": "usage",
+      "difficultyTier": "core",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "지속하다",
+        "partOfSpeech": "동사",
+        "senseKey": "지속하다/동사/314476-1"
+      },
+      "stem": "다음 중 ‘지속하다’를 뜻에 맞게 가장 자연스럽게 사용한 문장은 무엇일까요?",
+      "options": [
+        {
+          "id": "a",
+          "text": "연필심이 뭉툭해져서 연필깎이에 넣고 뾰족하게 지속하였다."
+        },
+        {
+          "id": "b",
+          "text": "해양 생태계를 살리려면 일회용품 줄이기 실천을 꾸준히 지속해야 한다."
+        },
+        {
+          "id": "c",
+          "text": "운동장에서 주운 파란색 볼펜의 주인을 게시판에 지속하였다."
+        },
+        {
+          "id": "d",
+          "text": "우유 한 팩과 사과 두 개를 장바구니에 나란히 지속하였다."
+        }
+      ],
+      "correctOptionId": "b",
+      "explanation": "‘지속하다’는 어떤 상태를 오래 계속 이어 나갈 때 쓰는 말이에요.",
+      "distractorRationales": {
+        "a": "연필을 깎는 동작에는 지속한다는 말이 어울리지 않아요.",
+        "c": "물건 주인을 찾아 알리는 행동에는 쓸 수 없어요.",
+        "d": "장바구니에 물건을 담는 상황과 전혀 맞지 않아요."
+      }
+    },
+    {
+      "id": "g6-argon-0796",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 6,
+      "type": "usage",
+      "difficultyTier": "core",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "매너",
+        "partOfSpeech": "명사",
+        "senseKey": "매너/명사/420507-1"
+      },
+      "stem": "‘매너’가 문맥에 맞게 쓰인 문장은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "새로 산 현미경의 조립 순서가 적힌 사용 매너를 꼼꼼히 읽어 보았다."
+        },
+        {
+          "id": "b",
+          "text": "진행자는 돌발 상황에서도 침착하고 여유로운 매너로 토론을 이끌었다."
+        },
+        {
+          "id": "c",
+          "text": "급식실 게시판에 붙은 오늘 점심 식단 매너를 보며 반찬을 확인했다."
+        },
+        {
+          "id": "d",
+          "text": "밑변과 높이를 이용해 도형의 넓이를 구하는 계산 매너를 외웠다."
+        }
+      ],
+      "correctOptionId": "b",
+      "explanation": "‘매너’는 사람이 행동하는 방식이나 자세를 뜻하는 말이에요.",
+      "distractorRationales": {
+        "a": "조립 순서나 사용법을 적은 설명서는 ‘매뉴얼’이라고 해야 해요.",
+        "c": "식단에 나오는 음식 차림표를 가리킬 때는 ‘메뉴’가 알맞아요.",
+        "d": "수학 문제를 푸는 방법에는 ‘방식’을 쓰고 ‘매너’는 쓰지 않아요."
+      }
+    },
+    {
+      "id": "g6-argon-0797",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 6,
+      "type": "cloze",
+      "difficultyTier": "basic",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "설득력",
+        "partOfSpeech": "명사",
+        "senseKey": "설득력/명사/177963-1"
+      },
+      "stem": "목소리만 크게 높인다고 상대가 동의하는 것은 아니며, 타당한 근거로 반대편의 공감을 이끌어 내야 주장의 (    )이 생겨난다.",
+      "options": [
+        {
+          "id": "a",
+          "text": "설득력"
+        },
+        {
+          "id": "b",
+          "text": "암기력"
+        },
+        {
+          "id": "c",
+          "text": "상상력"
+        },
+        {
+          "id": "d",
+          "text": "순발력"
+        }
+      ],
+      "correctOptionId": "a",
+      "explanation": "상대편이 이쪽 이야기를 따르도록 깨우치는 힘을 ‘설득력’이라고 해요.",
+      "distractorRationales": {
+        "b": "내용을 외워 기억하는 능력이라 상대의 동의를 얻는 힘과 달라요.",
+        "c": "경험하지 않은 일을 마음속으로 그리는 힘이라 근거 제시와 어긋나요.",
+        "d": "순간적으로 재빠르게 대처하는 능력이라 주장의 힘과는 맞지 않아요."
+      }
+    },
+    {
+      "id": "g6-argon-0798",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 6,
+      "type": "definition",
+      "difficultyTier": "basic",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "동반하다",
+        "partOfSpeech": "동사",
+        "senseKey": "동반하다/동사/89585-2"
+      },
+      "stem": "다음 문장에서 ‘동반하다’의 뜻으로 가장 알맞은 것은? “이번 태풍은 거센 돌풍과 폭우를 동반하였다.”",
+      "options": [
+        {
+          "id": "a",
+          "text": "길을 갈 때 다른 사람과 짝하여 가다"
+        },
+        {
+          "id": "b",
+          "text": "앞으로 닥칠 위험을 미리 알려 주다"
+        },
+        {
+          "id": "c",
+          "text": "어떤 사물이나 현상이 함께 생기다"
+        },
+        {
+          "id": "d",
+          "text": "거세던 세력이 점점 약해져 사라지다"
+        }
+      ],
+      "correctOptionId": "c",
+      "explanation": "이 문장에서 ‘동반하다’는 어떤 현상이 함께 생긴다는 뜻으로 쓰였어요.",
+      "distractorRationales": {
+        "a": "사람이 짝지어 길을 가는 뜻은 태풍과 폭우의 문맥에 맞지 않아요.",
+        "b": "위험을 미리 알리는 것은 ‘예보하다’나 ‘경고하다’의 뜻이에요.",
+        "d": "세력이 약해져 사라진다는 뜻은 폭우가 함께 온 상황과 반대예요."
+      }
+    },
+    {
+      "id": "g6-argon-0799",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 6,
+      "type": "synonym_context",
+      "difficultyTier": "basic",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "설득력",
+        "partOfSpeech": "명사",
+        "senseKey": "설득력/명사/177963-1"
+      },
+      "stem": "‘설득력’과 바꾸어 쓸 수 있는 말은? “설문 결과와 현장 사진까지 제시한 건의문에는 남다른 설득력이 있었다.”",
+      "options": [
+        {
+          "id": "a",
+          "text": "상대가 주장을 따르도록 깨우치는 힘"
+        },
+        {
+          "id": "b",
+          "text": "복잡한 수식을 빠르게 계산하는 힘"
+        },
+        {
+          "id": "c",
+          "text": "지난 일을 잊지 않고 떠올리는 힘"
+        },
+        {
+          "id": "d",
+          "text": "겪지 않은 일을 마음속에 그리는 힘"
+        }
+      ],
+      "correctOptionId": "a",
+      "explanation": "‘설득력’은 상대편이 이쪽 이야기를 따르도록 깨우치는 힘이에요.",
+      "distractorRationales": {
+        "b": "수식을 빠르게 계산하는 능력은 건의문의 근거 제시와 무관해요.",
+        "c": "지난 일을 떠올리는 능력은 ‘기억력’을 가리키는 말이에요.",
+        "d": "겪지 않은 일을 그리는 능력은 ‘상상력’에 해당하는 설명이에요."
+      }
+    },
+    {
+      "id": "g6-argon-0800",
+      "revision": 3,
+      "status": "verified_candidate",
+      "grade": 6,
+      "type": "definition",
+      "difficultyTier": "basic",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "전달력",
+        "partOfSpeech": "명사",
+        "senseKey": "전달력/명사/536049-1"
+      },
+      "stem": "‘전달력’의 뜻은? “정확한 발음과 알맞은 빠르기로 읽자 발표의 전달력이 높아졌다.”",
+      "options": [
+        {
+          "id": "a",
+          "text": "상대편이 내 주장을 따르도록 깨우치는 능력"
+        },
+        {
+          "id": "b",
+          "text": "겪지 않은 현상을 마음속에 그려 보는 능력"
+        },
+        {
+          "id": "c",
+          "text": "표현할 바를 남이 그대로 알게 하는 능력"
+        },
+        {
+          "id": "d",
+          "text": "새로운 대상을 처음으로 생각해 내는 능력"
+        }
+      ],
+      "correctOptionId": "c",
+      "explanation": "‘전달력’은 표현하려는 바를 다른 사람이 그대로 알 수 있게 하는 능력이에요.",
+      "distractorRationales": {
+        "a": "상대편이 주장을 따르도록 깨우치는 힘은 ‘설득력’의 뜻이에요.",
+        "b": "겪지 않은 현상을 마음속으로 그리는 힘은 ‘상상력’이에요.",
+        "d": "새로운 것을 처음으로 생각해 내는 힘은 ‘창의력’에 해당해요."
       }
     },
     {
