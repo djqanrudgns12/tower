@@ -63,6 +63,66 @@
       "levelAssessmentHash": "2fc15452f8778cd205adbb48c1c05d7dfae1914a2c8bbaa74ecd70e8957b3677"
     },
     {
+      "questionId": "g6-argon-0751",
+      "revision": 2,
+      "contentHash": "f3968b4f084b880c571150e8835908bc12e9d516bff0f3ccdb9b720225a368ed",
+      "precomputed": {
+        "typeBase": 2,
+        "lengthBump": 2,
+        "t3Base": 0,
+        "readingLoad": 95,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g6-argon-0751",
+          "revision": 2,
+          "contentHash": "f3968b4f084b880c571150e8835908bc12e9d516bff0f3ccdb9b720225a368ed",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 3,
+          "L2": 3,
+          "T1": 2,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "‘신빙성’은 음훈 추론이 필요한 6학년 논설·비평 격식 한자어이며, 자료 평가 발화에서 객관적 근거성과 조회 수·입장 일치를 변별해야 한다."
+        },
+        {
+          "questionId": "g6-argon-0751",
+          "revision": 2,
+          "contentHash": "f3968b4f084b880c571150e8835908bc12e9d516bff0f3ccdb9b720225a368ed",
+          "judge": "codex",
+          "model": "gpt-6-astra",
+          "L1": 3,
+          "L2": 3,
+          "T1": 2,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "curriculum_explicit",
+          "unit": "[6국06-02] 뉴스 및 각종 정보 매체 자료의 신뢰성을 평가한다.",
+          "reason": "격식적인 고추상 한자어이며 믿을 만한 근거를 관심도·흥미·생각의 일치와 구별해야 하지만, 사진과 측정 기록의 일치가 직접 단서다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 6,
+        "T": 5,
+        "V": 17,
+        "ownTier": "advanced",
+        "band": {
+          "min": 6,
+          "max": 6
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "0541eaaa74e256164cf55e67da4c163de29114b780ce6378302ede2611a9f955"
+    },
+    {
       "questionId": "g6-argon-0752",
       "revision": 1,
       "contentHash": "e0b3d80c33a2fdcd168789870ec5ac02793ba1750d8538db6c9fdfd28a5ce4d9",
@@ -243,6 +303,66 @@
         "flags": []
       },
       "levelAssessmentHash": "1e6f0b4335a3339c82803c1d5570024b1e89b3edcf390adae4fb330de7a8e5db"
+    },
+    {
+      "questionId": "g6-argon-0754",
+      "revision": 2,
+      "contentHash": "a78b670c7a1a11728b3459c04337186631c40e0bce81284ed632f222a2862e54",
+      "precomputed": {
+        "typeBase": 1,
+        "lengthBump": 2,
+        "t3Base": 0,
+        "readingLoad": 95,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g6-argon-0754",
+          "revision": 2,
+          "contentHash": "a78b670c7a1a11728b3459c04337186631c40e0bce81284ed632f222a2862e54",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 3,
+          "L2": 3,
+          "T1": 1,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "‘형평성’은 음훈 추론이 요구되는 6학년 토의·논설 추상 한자어이나, 순번 이동이라는 직접 행동 단서가 있고 오답의 의미 축이 구별된다."
+        },
+        {
+          "questionId": "g6-argon-0754",
+          "revision": 2,
+          "contentHash": "a78b670c7a1a11728b3459c04337186631c40e0bce81284ed632f222a2862e54",
+          "judge": "codex",
+          "model": "gpt-6-astra",
+          "L1": 3,
+          "L2": 3,
+          "T1": 1,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "균형과 공정한 배분을 나타내는 추상적인 문어로, 일관성과의 혼동 부담은 있으나 순번을 돌아가며 바꾸는 행동이 직접 단서다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 6,
+        "T": 4,
+        "V": 16,
+        "ownTier": "core",
+        "band": {
+          "min": 6,
+          "max": 6
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "e64fc48a7dc81afd76b3f8e81368948f8103c5fdaad62f5632977d504ff92ed1"
     },
     {
       "questionId": "g6-argon-0755",
@@ -2143,6 +2263,66 @@
       "levelAssessmentHash": "15b97e33686f183d78f25b32c86eca6386a442a88f76b37b42a11cf28187f5b1"
     },
     {
+      "questionId": "g6-argon-0783",
+      "revision": 3,
+      "contentHash": "36e511ae6b764900773cdf7ca170041b91466f1b50b3a32a5c1639508303a087",
+      "precomputed": {
+        "typeBase": 1,
+        "lengthBump": 2,
+        "t3Base": 0,
+        "readingLoad": 95,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g6-argon-0783",
+          "revision": 3,
+          "contentHash": "36e511ae6b764900773cdf7ca170041b91466f1b50b3a32a5c1639508303a087",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 3,
+          "L2": 3,
+          "T1": 2,
+          "inference": 1,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "‘시의성’은 구어 빈도가 낮은 6학년 비평 고추상 한자어로, 시간 표지 없이 상황을 종합해야 하며 공익성·미래 예측성 오답과의 변별이 필요하다."
+        },
+        {
+          "questionId": "g6-argon-0783",
+          "revision": 3,
+          "contentHash": "36e511ae6b764900773cdf7ca170041b91466f1b50b3a32a5c1639508303a087",
+          "judge": "codex",
+          "model": "gpt-6-astra",
+          "L1": 3,
+          "L2": 3,
+          "T1": 1,
+          "inference": 1,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "생활 노출이 적고 당시 요구와의 적합성을 나타내는 고추상 한자어로, 독감 증가와 특집 발행의 관계를 종합해야 하며 공익성·예측과 구별해야 한다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 6,
+        "T": 5,
+        "V": 17,
+        "ownTier": "advanced",
+        "band": {
+          "min": 6,
+          "max": 6
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "13698e251805069f7583daf4a9a9c796de32972b4f80b811c047d980f7868d9f"
+    },
+    {
       "questionId": "g6-argon-0784",
       "revision": 2,
       "contentHash": "8664af903e257556b6b01e9600bf6c52168633f0702a3ac915135d771eba253d",
@@ -2683,6 +2863,66 @@
         "flags": []
       },
       "levelAssessmentHash": "7d62bbdf7fc317889adc98630af071811422accdf282e621700fd9409e1f4ef9"
+    },
+    {
+      "questionId": "g6-argon-0792",
+      "revision": 3,
+      "contentHash": "a4c917838a524aa4c6b3aee4e9c35b51bdc7a1a61ddb0182eeae2c137fc2b36c",
+      "precomputed": {
+        "typeBase": 1,
+        "lengthBump": 2,
+        "t3Base": 0,
+        "readingLoad": 96,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g6-argon-0792",
+          "revision": 3,
+          "contentHash": "a4c917838a524aa4c6b3aee4e9c35b51bdc7a1a61ddb0182eeae2c137fc2b36c",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 3,
+          "L2": 3,
+          "T1": 2,
+          "inference": 1,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "‘실효성’은 대책·활동을 평가하는 6학년 격식 추상 한자어로, 상황 전체를 종합해 효율성·절차성 등 인접 경계 오답과 구별해야 한다."
+        },
+        {
+          "questionId": "g6-argon-0792",
+          "revision": 3,
+          "contentHash": "a4c917838a524aa4c6b3aee4e9c35b51bdc7a1a61ddb0182eeae2c137fc2b36c",
+          "judge": "codex",
+          "model": "gpt-6-astra",
+          "L1": 3,
+          "L2": 3,
+          "T1": 1,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "실제 효과의 유무를 평가하는 추상적인 문어로 효율과 혼동할 수 있으나, 활동 뒤에도 사고가 그대로라는 결과가 직접 단서다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 6,
+        "T": 5,
+        "V": 17,
+        "ownTier": "advanced",
+        "band": {
+          "min": 6,
+          "max": 6
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "c4bada0685b93dfdf365ccbce90d3e13b061a99f31feea371cc0126fe60128b4"
     },
     {
       "questionId": "g6-argon-0793",
