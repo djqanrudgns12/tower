@@ -25,7 +25,7 @@ const words = [
   { kind: 'idiom', lemma: '귀가 얇다', partOfSpeech: '관용구', senseOrder: 1, types: ['cloze'], variantTag: 'idiom_proverb', expectedL1: 1, expectedL2: 1, gradeEvidence: 'stdict:관용구 등재', checked: true },
   { kind: 'dialect', lemma: '정구지', partOfSpeech: '명사', senseOrder: 1, types: ['cloze'], variantTag: 'dialect', dialectRegion: '경상', expectedL1: 1, expectedL2: 1, gradeEvidence: 'rubric_inferred(L=2,T=3)', checked: true },
 ];
-const drafts = [
+const drafts: Array<Pick<QuestionDraft, 'stem' | 'options' | 'correctOptionId' | 'explanation' | 'distractorRationales'>> = [
   { stem: '선물을 상자에 잘 (    ).', options: [{ id: 'a', text: '간직하다' }, { id: 'b', text: '내던지다' }, { id: 'c', text: '빌려주다' }, { id: 'd', text: '가져가다' }], correctOptionId: 'a', explanation: '선물을 잘 챙겨 두어 보관한다는 뜻이에요.', distractorRationales: { b: '내던지는 것은 보관하는 것과 반대예요.', c: '빌려주는 것은 남에게 잠시 맡기는 일이에요.', d: '가져가는 것은 다른 곳으로 옮기는 일이에요.' } },
   { stem: '남의 말을 쉽게 믿는 동생에게 (    )고 했다.', options: [{ id: 'a', text: '귀가 얇다' }, { id: 'b', text: '손이 크다' }, { id: 'c', text: '발이 넓다' }, { id: 'd', text: '입이 무겁다' }], correctOptionId: 'a', explanation: '남의 말을 쉽게 받아들이는 것을 뜻해요.', distractorRationales: { b: '씀씀이가 크다는 말은 믿는 것과 달라요.', c: '아는 사람이 많다는 말은 믿는 것과 달라요.', d: '비밀을 잘 지킨다는 말은 믿는 것과 달라요.' } },
   { stem: '경상도 할머니가 부추를 썰며 “이 (    )로 전을 부치자.”라고 하셨다.', options: [{ id: 'a', text: '정구지' }, { id: 'b', text: '감자' }, { id: 'c', text: '고구마' }, { id: 'd', text: '호박' }], correctOptionId: 'a', explanation: '정구지는 부추를 가리키는 경상도 말이에요.', distractorRationales: { b: '감자는 할머니가 써는 부추와 달라요.', c: '고구마는 할머니가 써는 부추와 달라요.', d: '호박은 할머니가 써는 부추와 달라요.' } },
@@ -61,6 +61,38 @@ type Slot = typeof words[number] & { id: string; type: string };
 const slots = (items: Slot[]) => items.map(i => [i.lemma, i.type]);
 
 describe('S6 낱말·유형 칸', () => {
+  it('Normal 심화 제작 옵션을 CLI에서 받는다', () => {
+    expect(parseArgs(['run', '--wordlist', 'words.json', '--normal-advanced']).normalAdvanced).toBe(true);
+  });
+
+  it('Normal 심화 목표는 일반·다의어만 제작하고 최종 tier를 미리 확정하지 않는다', async () => {
+    const { options, deps } = setup();
+    deps.respond.mockImplementation(async () => JSON.stringify({ items: [replies[0]] }));
+    const result = await produce({ ...options, normalAdvanced: true }, deps);
+    expect(result.produced).toBe(1);
+    expect(result.rejected).toBe(0);
+    const evidenceCalls = deps.fetchEvidence.mock.calls as unknown as Array<[{ items: Slot[] }]>;
+    const authorCalls = deps.respond.mock.calls as unknown as Array<[{ prompt: string }]>;
+    expect(evidenceCalls[0]![0].items.map(i => i.variantTag)).toEqual(['standard']);
+    expect(authorCalls[0]![0].prompt).toContain('Normal용 advanced');
+    expect(results(result.stagingDir).drafts[0]!.difficultyTier).toBe('basic'); // 실제 tier는 이후 S1이 판정한다.
+  });
+
+  it('Normal 심화 목표의 전투 읽기 상한 초과는 재작성 뒤에도 남으면 제외한다', async () => {
+    const { options, deps } = setup();
+    const reply = structuredClone(replies[0]!);
+    const cap = lint.GRADE_BATTLE_READING_LOAD[4]!;
+    reply.draft.stem += '가'.repeat(cap + 1 - lint.loadOf(reply.draft));
+    expect(lint.loadOf(reply.draft)).toBe(cap + 1);
+    deps.respond.mockResolvedValue(JSON.stringify({ items: [reply] }));
+    const result = await produce({ ...options, count: 1, normalAdvanced: true }, deps);
+    expect(result.produced).toBe(0);
+    expect(result.rejected).toBe(1);
+    expect(deps.respond).toHaveBeenCalledTimes(2);
+    const side = read(path.join(result.stagingDir, 'files/content-source/batches', batchId, 'sidecar.json')) as DraftSidecar;
+    expect(side.rejected[0]!.reason).toContain('Normal용 advanced 전투 읽기 상한');
+  });
+
   it('checked=true의 모든 유형을 칸으로 펴고 중복 칸·미확인 항목은 빼며 근거 조회는 묶는다', () => {
     const { root, evidence } = setup();
     const first = { ...words[0], types: ['cloze', 'usage', 'cloze'] };

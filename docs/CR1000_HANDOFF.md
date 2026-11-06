@@ -3,6 +3,13 @@
 작성 2026-11-06 · 작성 Claude Opus 5.5(총괄) · 받는 쪽 Codex(메인 세션)
 같이 읽을 것: [계획서 CONTENT_REVIEW_PLAN.md](CONTENT_REVIEW_PLAN.md)(기준 문서), [AGENTS.md](../AGENTS.md)
 
+### Normal 심화 보충 제작 경로·5문항 시범 예약 (Codex, 2026-11-06 23:28 KST)
+
+- `produce.mjs --normal-advanced`를 추가했다. **standard/polysemy만 선택**, 실제 지문+보기의 학년 전투 읽기 상한을 검사하고 초과 문항은 1회 재작성 뒤에도 초과하면 이유와 함께 제외한다. 생성 프롬프트는 상황 단서·의미 차이를 판단하는 짧은 문항을 요구한다. **잠정 tier·S1 점수·최종 공개 조건은 바꾸지 않는다.** 기존 제작은 캐시된 이전 코드로 그대로 진행하며 새 실행만 옵션을 쓴다.
+- 검증: 추가 시험3개가 기존 코드에서 실패 → 제작 **34시험 통과**, 새 제작분 staging 검수 연결 **2시험 통과**, 범위 ESLint·시험 타입 검사 통과. 전부 제외될 때 drafts가 없는 기존 계약에 맞춰 시험이 sidecar를 읽도록 했고, 기대값은 유지했다. 제품/서버/은행 코드는 이번 조각에서 변경하지 않아 이전 넓은 검사 결과를 재사용한다.
+- 시범 실행기 `.orchestrate/produce-normal-advanced-pilot.mjs`와 예약 `.orchestrate/run-normal-advanced-pilots.py`는 구문 확인했다. 기존 **PID48074**의 실제 종료와 `g6-supplement.summary.json` 정상 완료를 확인한 뒤 같은 자리를 이어받아 **G5-028 → G6-028 각5개**를 만든다. 검증된 운영 낱말 목록에서 일반/다의어·예상 L을 기준으로 선택하며, 실행 직전 **5개 확보·새 낱말3개 이상**을 재확인한다. 부족하면 모델 호출 전에 멈추고 새 후보 목록을 마련한다. 원래 제작/검수는 재시작하지 않는다.
+- 예약의 실제 PID/상태는 `.orchestrate/normal-advanced-pilots.run.json`, 시범 결과는 `.orchestrate/normal-advanced/g5|g6/pilot.json`이다. **생성 후 awaiting-main-audit에서 멈춘다.** 원본/manifest/해시·자체 반박 확인 뒤 시범 S1~최종 대조로 실제 advanced 수율을 확인해야 확대한다. 제작 성공을 심화 승인으로 세지 않는다. 추적 콘텐츠는 직접 쓰지 않는다.
+
 ### 공개 승인 2,339개·4학년 심화 바닥 충족 (Codex, 2026-11-06 23:19 KST)
 
 - **실제 공개:** 4학년 **1,113**, 5학년 **584**, 6학년 **591**, 3학년 **51**, 합계 **2,339**. 학년별 부족은 **0·416·409·949 = 1,774**, 초과분 제외 진척 **2,226/4,000 = 55.7%**다. 현재 은행을 직접 읽은 `.orchestrate/cr1000-published-progress.json` 기준이다.

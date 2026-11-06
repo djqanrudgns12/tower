@@ -166,12 +166,16 @@ export function prepare(root, batchId, grade, items, evidence) {
   return { accepted, rejected };
 }
 
-export function promptFor(root, batchId, list, note = '') {
+export function promptFor(root, batchId, list, note = '', normalAdvanced = false) {
   const orders = fs.readFileSync(path.join(root, 'docs/model_work_orders_v0_5.md'), 'utf8');
   const section = orders.match(/^## 5\.[\s\S]*?(?=^## 6\.)/m)?.[0];
   if (!section) throw new Error('작업 지시문 §5를 찾을 수 없다');
   return [section,
     '너는 초등학교 한국어 어휘 문항 작성자 Argon이다. 아래 목표 tier는 예상 L과 최소 과제 부담으로 잡은 잠정 목표이며 S1에서 확정한다.',
+    ...(normalAdvanced ? [
+      '이번 제작 목표는 Normal용 advanced다. standard 또는 polysemy만 쓰고 지문+보기 읽기량은 전투 상한(3학년 70, 4학년 80, 5학년 90, 6학년 100음절) 이하여야 한다. 아래 difficultyTier는 목록의 잠정값이며 승인·최종 난이도가 아니다. 실제 S1 두 판정자가 정한다.',
+      '단순 뜻 맞히기를 넘어 두 상황 단서나 의미·정도·의도·결과의 차이를 대조해야 풀리게 설계한다. R=2L+T-4(학년-3)의 5~6이 목표다. L은 낱말 자체의 낯섦과 추상성, T는 문맥 판단·유형·추론·다의성 부담이다. 점수를 답장에 쓰거나 임의로 올리지 않는다. 어려운 주변 말·긴 문장·모호한 정답·억지 상황으로 난도를 높이지 않는다.',
+    ] : []),
     '지문·보기·해설·오답 이유에 목표 낱말 외 그 학년보다 어려운 낱말 금지. 해설은 1~2문장 60자 이내. 오답 이유는 화면에 그대로 보이는 한 문장.',
     '문장은 아이가 겪을 만한 구체적인 상황을 짧고 분명하게 쓴다. 추상 명사 나열·어색한 직역·억지 교훈·내용 없는 상투 문장(AI SLOP)은 쓰지 않는다. 해설은 왜 정답인지, 오답 이유는 왜 그 상황에 맞지 않는지만 말한다. 목표 낱말은 배우는 말이므로 쉬운 주변 말과 상황 단서로 뜻을 알 수 있게 한다.',
     'basic은 지문+보기 읽기량이 전투 상한(3학년 70, 4학년 80, 5학년 90, 6학년 100)+12음절 이하. 사전 용례를 베끼지 않는다.',
@@ -293,7 +297,8 @@ export async function produce(options, deps = {}) {
 }
 
 async function produceRun(options, deps) {
-  const { root: rootArg, wordlist, batchId, grade, count = 50, dryRun = false } = options;
+  const { root: rootArg, wordlist, batchId, grade, count = 50, dryRun = false, normalAdvanced = false } = options;
+  if (typeof normalAdvanced !== 'boolean') throw new Error('normalAdvanced는 불리언이어야 한다');
   const root = path.resolve(rootArg);
   if (!/^Q50-G[3-6]-\d{3}$/.test(batchId) || !batchId.startsWith(`Q50-G${grade}-`) || !Number.isInteger(count) || count < 1 || count > 60) throw new Error('배치·학년·count 인자 오류');
   const draftsPath = path.join(root, 'content-source/batches', batchId, 'drafts.json');
@@ -302,7 +307,10 @@ async function produceRun(options, deps) {
   if (dryRun && (!deps.respond || !deps.fetchEvidence)) throw new Error('--dry-run은 가짜 응답기·근거 조회 주입이 필요하다(--fixture <json>)');
   const m = deps.modules ?? await load(root);
   const lists = wordlistPaths(wordlist).map(file => read(path.resolve(root, file)));
-  const items = selectItems(root, lists, grade, count);
+  const selectedLists = normalAdvanced ? lists.map(list => ({ ...list,
+    items: Array.isArray(list.items) ? list.items.filter(item => ['standard', 'polysemy'].includes(item.variantTag)) : list.items,
+  })) : lists;
+  const items = selectItems(root, selectedLists, grade, count);
   if (!items.length) throw new Error('제작할 checked=true 낱말·유형 칸이 없다');
   const createdAt = (deps.now?.() ?? new Date()).toISOString();
   const runId = `${createdAt.replace(/[-:]/g, '').replace('.', '')}-${process.pid}-${crypto.randomBytes(3).toString('hex')}`;
@@ -321,7 +329,7 @@ async function produceRun(options, deps) {
     for (let attempt = 1; attempt <= 2 && pending.length; attempt++) {
       let parsed;
       try {
-        const prompt = promptFor(root, batchId, pending, note);
+        const prompt = promptFor(root, batchId, pending, note, normalAdvanced);
         const reply = await (deps.respond ?? (request => author(request, deps)))({ prompt, cwd, items: pending, attempt, root,
           argonPerHour: options.argonPerHour ?? options['argon-per-hour'], validate: text => {
             const data = replyData(text);
@@ -330,6 +338,12 @@ async function produceRun(options, deps) {
         const full = recoverReply(reply, pending, deps.brain);
         fs.writeFileSync(path.join(work, `chunk${offset / 12 + 1}.reply${attempt}.md`), full);
         parsed = parseDrafts(m, full, pending);
+        if (normalAdvanced) parsed.accepted = parsed.accepted.filter(pair => {
+          const cap = m.lint.GRADE_BATTLE_READING_LOAD[grade], load = m.lint.loadOf(pair.draft);
+          if (load <= cap) return true;
+          parsed.rejected.push({ id: pair.draft.id, lemma: pair.draft.target.lemma, reason: `Normal용 advanced 전투 읽기 상한 초과: ${load} > ${cap}` });
+          return false;
+        });
       } catch (e) { parsed = { accepted: [], rejected: pending.map(x => ({ id: x.fixed.id, lemma: x.item.lemma, reason: e.message })) }; }
       pairs.push(...parsed.accepted);
       const done = new Set(parsed.accepted.map(p => p.draft.id));
@@ -388,9 +402,10 @@ function wordlistPaths(value) {
 
 export function parseArgs(args) {
   const argv = [...args], a = { wordlist: [] };
-  if (argv.shift() !== 'run') throw new Error('사용: produce.mjs run --root <dir> --wordlist <json[,json]> [--wordlist <json>] --batch Q50-G<N>-0NN --grade <N> [--count 50] [--dry-run --fixture <json>]');
+  if (argv.shift() !== 'run') throw new Error('사용: produce.mjs run --root <dir> --wordlist <json[,json]> [--wordlist <json>] --batch Q50-G<N>-0NN --grade <N> [--count 50] [--normal-advanced] [--dry-run --fixture <json>]');
   for (let i = 0; i < argv.length; i++) {
     if (argv[i] === '--dry-run') a.dryRun = true;
+    else if (argv[i] === '--normal-advanced') a.normalAdvanced = true;
     else if (/^--(root|wordlist|batch|grade|count|fixture|argon-per-hour)$/.test(argv[i]) && argv[i + 1] && !argv[i + 1].startsWith('--')) {
       const name = argv[i].slice(2), value = argv[++i];
       if (name === 'wordlist') a.wordlist.push(value);
@@ -412,7 +427,7 @@ async function main() {
     deps.fetchEvidence = async () => fixture.evidence;
     deps.respond = async () => { const response = fixture.responses[call++]; if (!response) throw new Error('가짜 응답 부족'); return typeof response === 'string' ? response : json(response); };
   }
-  console.log(json(await produce({ root, wordlist: a.wordlist, batchId: a.batch, grade: Number(a.grade), count: Number(a.count ?? 50), dryRun: a.dryRun, argonPerHour: a['argon-per-hour'] }, deps)));
+  console.log(json(await produce({ root, wordlist: a.wordlist, batchId: a.batch, grade: Number(a.grade), count: Number(a.count ?? 50), dryRun: a.dryRun, normalAdvanced: a.normalAdvanced, argonPerHour: a['argon-per-hour'] }, deps)));
 }
 
 if (process.argv[1] && import.meta.url === pathToFileURL(path.resolve(process.argv[1])).href) main().catch(e => { console.error(e.message); process.exitCode = 1; });
