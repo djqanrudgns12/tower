@@ -1,6 +1,6 @@
 # CR-1000 현재 인계
 
-갱신: 2026-11-07 00:15 KST · 총괄 Codex · 작업 폴더 `/Users/bodyking/Desktop/Architecture/towerdeffense` · 브랜치 `p1/intake-round1`
+갱신: 2026-11-07 00:21 KST · 총괄 Codex · 작업 폴더 `/Users/bodyking/Desktop/Architecture/towerdeffense` · 브랜치 `p1/intake-round1`
 
 이 문서가 현재 실행 기준이다. 과거 진행 기록과 이전 명령은 [원문 보관](CR1000_HANDOFF_HISTORY_20261107.md)에 **바이트 그대로** 보존했다. 보관본의 Claude 호출·완료된 작업 재실행 지시는 사용하지 않는다. 규칙은 [AGENTS.md](../AGENTS.md), 세부 설계는 [계획서](CONTENT_REVIEW_PLAN.md), 도구 조각은 `.orchestrate/wp/`를 필요한 범위만 읽는다.
 
@@ -25,13 +25,13 @@
 
 | 학년 | 최종 승인 | 남은 문항 | 목표 | 문항 진척 | Normal advanced / 최소120 |
 |---|---:|---:|---:|---:|---:|
-| 4 | 1,113 | 0 | 1,000 | 100% | 122 |
+| 4 | 1,156 | 0 | 1,000 | 100% | 122 |
 | 5 | 1,021 | 0 | 1,000 | 100% | 68 |
 | 6 | 790 | 210 | 1,000 | 79.0% | 16 |
 | 3 | 51 | 949 | 1,000 | 5.1% | 0 |
-| 합계 | 2,975 | 1,159 | 4,000 | 71.0% | — |
+| 합계 | 3,018 | 1,159 | 4,000 | 71.0% | — |
 
-4학년 초과113개·5학년 초과21개는 다른 학년 목표에 합산하지 않는다. 목표에 반영한 수는2,841/4,000이다. staging의 생성/앞단/최종 검수 수를 이 표에 섞지 않는다. 나머지 난이도별 바닥은 최종 coverage에서 별도로 확인한다.
+4학년 초과156개·5학년 초과21개는 다른 학년 목표에 합산하지 않는다. 목표에 반영한 수는2,841/4,000이다. staging의 생성/앞단/최종 검수 수를 이 표에 섞지 않는다. 나머지 난이도별 바닥은 최종 coverage에서 별도로 확인한다.
 
 ## 4. 실행 소유권
 
@@ -41,14 +41,14 @@ PID는 기록값이므로 `ps`로 실제 생존과 실행 파일을 확인한다
 |---|---:|---|---|
 | 5학년 후반 완료 | 44425 종료 확인 | 016~021 전체289개 반영. 자기 수량1,021개 달성 | `g5-gate-resume-b.summary.json` |
 | 6학년 후반 | 16557 | 017~021 S1/S2 진행. 012~016 반영됨 | `g6-gate-fast-b.summary.json` |
-| 4→5학년 보충 검수 | 25440 / 조정24838 | 4학년025~027 수정 중. 종료 뒤5학년022~027 223개 자동 연결 | `supplement-gates.run.json`, `g4-supplement-gate.summary.json` |
+| 4→5학년 보충 검수 | 25440 / 조정24838 | 4학년025/027 43개 반영, 026 재검수 중. 종료 뒤5학년022~027 223개 자동 연결 | `supplement-gates.run.json`, `g4-supplement-gate.summary.json` |
 | 6학년 보충 제작 | 48074 | 마지막027 제작. 022~026 182생성·메인 audit 완료 | `g6-supplement.summary.json`, `g6-supplement.staging-audit.json` |
 | 6학년 보충 검수 예약 | 29054 | 16557/48074 실제 종료 + 022~027 audit6개 뒤 시작 | `g6-supplement-gate-queue.run.json` |
 | Normal 심화 시범 예약 | 55045 | 48074 정상 종료 뒤G5-028 → G6-028 각5개 제작 | `normal-advanced-pilots.run.json` |
 | Normal 심화 후보 목록 | 조정59577 | 5학년120 → 6학년180 후보. Argon 생성/Codex 독립 확인을60개 묶음으로 겹쳐 진행 | `normal-advanced-wordlists.run.json`, `wordlists/gN-normal-advanced/{summary.json,check/summary.json}` |
 | 3학년 예약 | 61279 | 4·5·6 자기 승인 각1000 + 기존 자리/자원 확보 뒤004~023 20배치 | `g3-next-phase.run.json`, `g3-next-phase.plan.json` |
 
-위 상태 경로는 모두 `.orchestrate/` 아래다. 3학년은 아직 **waiting-for-own-1000**, 모델 호출0이다. 6학년210개가 수량 조건에 남았다. 새5학년 낱말 첫60개는 사전 유일 일치42·출처 미확정18로 Codex 독립 확인 중이며 아직 목록 승인/문항 승인이 아니다. W5 선행 구현 PID60559는 정상 종료했고 그 자리는3학년 예약이 승계한다. 옛 43390/43407 및 front/final-tail 실패 예약은 다시 시작하지 않는다. 원본/실패 기록은 보존했다.
+위 상태 경로는 모두 `.orchestrate/` 아래다. 3학년은 아직 **waiting-for-own-1000**, 모델 호출0이다. 6학년210개가 수량 조건에 남았다. 새5학년 낱말 첫60개는 Codex 독립 확인34통과·26제외(출처18/내용8). 메인이 원본/158사전파일/해시/현재 checked 항목 대응을 확인했다. `wordlists/g5-normal-advanced/check/chunk1/audit.json`에 보존했으며, 목록 전체 반영/문항 승인은 아직 아니다. W5 선행 구현 PID60559는 정상 종료했고 그 자리는3학년 예약이 승계한다. 옛 43390/43407 및 front/final-tail 실패 예약은 다시 시작하지 않는다. 원본/실패 기록은 보존했다.
 
 ## 5. 완료한 코드와 검증
 
@@ -57,7 +57,8 @@ PID는 기록값이므로 `ps`로 실제 생존과 실행 파일을 확인한다
 - W5 오답 노트 `(bankId,senseKey)`·저장소v2/이전·졸업/상한 범위 적용. 오답노트25·서버70시험/린트/시험 타입 통과(`0763502`).
 - W5 순수 선택 `tools/content/gradeSharing.ts`: 최신 승인 입력에서 자기1000/상한24%, 현 수준 평가·자동 합의·위로1학년 확인, 원 ID/학년 보존. **아직 은행 연결 안 됨**. Codex 작성 후 메인이 코드/단언/명령 성공 출력을 확인했다. 28시험/린트/시험 타입 통과(`5288682`), 기록 `w5-sharing-helper/run.json`.
 - 직전 반영 **5학년017~021 242개**: `c14ae2135c3837080b196aba51d621fc6b9e960a`, 38 manifest, 은행/키 생성·서버 시험 통과. 이어 bank-build/question-seed17시험 통과. 실제 현 판 미검수0·결함0·승인 전부 일치 확인.
-- 최신 반영 **5학년016 47개**: `e38a44be0f654485c17b1d18c2ce123513fddc12`, 17 manifest, 은행/키 생성·서버 시험 통과. 반영 후 bank-build/question-seed17시험 통과. 부모 PID44425의 실제 종료도 확인했다. 5학년 수량 목표는 달성했고 Normal 심화는68/120이라 보충을 계속한다.
+- 5학년 마무리 반영 **016 47개**: `e38a44be0f654485c17b1d18c2ce123513fddc12`, 17 manifest, 은행/키 생성·서버 시험 통과. 반영 후 bank-build/question-seed17시험 통과. 부모 PID44425의 실제 종료도 확인했다. 5학년 수량 목표는 달성했고 Normal 심화는68/120이라 보충을 계속한다.
+- 최신 반영 **4학년025/027 43개(20·23)**: `d1f3eac68017a778d5e44d4ecbd55cdaee985c1e`, 18 manifest, 은행/키 생성·서버 시험 통과, 반영 후 관련17시험 통과. 현재 공개3,018개이나 4학년 초과분 증가라 목표 진척은71.0% 그대로다.
 - 직전347개 반영: 6학년008~011 199개 `923e7dc`, 5학년009~011 148개 `254646d`; 각각 잠금/서버·관련17시험 통과. 이전 반영 증거는 `content-loop-history/incremental-apply-<commit>.json`, 최신은 `two-model-incremental-apply.json`.
 - 전체 검증 기준 기록 `cr1000-publish-verify.json/.log`: 타입/전체 린트 통과, 최초 단위1395통과3실패. 오래된 fixture 가정3곳 수정 뒤 해당80시험 통과, 나머지 결과 재사용. 제품 변경 없는 콘텐츠 반영마다 전체 검사를 반복하지 않는다. 최종 W5/W6/W8 통합 뒤 필요한 대표 검사는 별도다.
 - 현재 남의 변경 `docs/contracts/prd_v0_5_validation.json`은 커밋 제외. 이전 validate:plan이 시간/해시를 갱신했으므로 원래와 바이트 동일하다고 주장하지 않는다. 홈/e2e/그림 등 새 변경이 생기면 다시 소유권 확인.
@@ -87,6 +88,7 @@ node .orchestrate/published-progress.mjs
 ```bash
 COMMIT_CO_AUTHOR="Codex <noreply@openai.com>" resource-guard run --profile test -- node .orchestrate/apply-completed-batches.mjs
 AUDIT_CONTENT_BATCH=Q50-G6-027 node .orchestrate/audit-g6-supplement.mjs
+node .orchestrate/wordlists/normal-advanced/audit.mjs 5
 node tools/content/coverage-report.mjs
 ```
 
