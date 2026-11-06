@@ -388,7 +388,7 @@ Claude 지적 → Argon 수정(관문 회차 +1) → S1 재판정 → Codex 재�
 | C-2 | **W4b** 수준 판정 실행기 | 새 `tools/orchestrate/level.mjs`, 새 `tests/unit/level-runner.test.ts` | Argon(브리지 JSON, 4.4KB 넘으면 `~/.gemini/antigravity-cli/brain/<id>/`에서 전문)·Codex(`codex exec` 읽기 전용)에 50문항씩. 결과는 W2b 대기 경로로. 근거 조회 불가는 명시 기록. **W4a·W2b 커밋 뒤** | 1배치 실행 |
 | D-1 | **W5** 학년 띠 공유 빌드 | `src/contracts/questions.ts`, `tools/content/bankBuild.ts`, `src/content/lint.ts`(받는 학년 기준 검사 진입점), `tools/build-bank.mjs`, `tools/build-question-keys.mjs`, `src/content/index.ts`, `src/application/lobby.ts`, `src/persistence/reviewNote.ts`(`(bankId,senseKey)` 키, v1 이전), 해당 시험 | Codex 조사 추천안: 원 ID·`q.grade` 유지, 선택 `gradeBand`, 받는 학년 은행에 빌드 때 수록, **버전 산식에 대상 학년 포함**. 서버 코드 0줄 목표. 셋으로 나눠 발송(계약·빌드 / 키 seed·서버 시험 / 오답 노트). **루프 정지 지점에서 통합** | `bank-build`·`content`·`question-seed`·`review-note`·`retraction`·`lobby` 시험, `test:server` |
 | D-2 | **W6** 학년별 지연 적재 | `src/content/index.ts`, `tools/build-bank.mjs`(작은 manifest), `src/application/{session,qaRun,mapPreview,lobby}.ts`, `src/ui/App.tsx`, `NewGameScreen.tsx`, `ResultScreen.tsx`, 홈 `SteleStudyPanel.tsx`·`RankingBoard.tsx` | 학년당 1,000+면 eager 적재가 최소 JSON 3.7~6MB(gzip 0.8~1.3MB)로 커진다(Codex 추정). 선택 학년만 적재, "아직 안 불러옴"과 "미공개"를 구분. **W5 커밋 뒤, 홈 파일의 남의 미커밋 변경이 커밋된 뒤** | 관련 단위 시험, e2e 1개, 청크 크기 |
-| D-3 | **W8** 한 판 반복 규칙 | 먼저 조사만(`light`): 출제 큐(`src/domain/context.ts` 등)와 풀이 이력 저장 위치. 뒤에 §3.7 구현 | 조사 결과로 고칠 파일 확정 | 같은 시드 재현성 유지 |
+| D-3 | **W8** 한 판 반복 규칙 | [선행 조사 완료](CR1000_W8_RESEARCH.md)(2026-11-06): 출제 큐·풀이 이력 저장 위치·변경 파일 확정. W5 → W6 뒤에 §3.7 구현 | `domain/{quiz,types,run,context}`·전역 ID 이력·시작/완료 경계, 상세는 조사서 | 같은 시드·시작 이력 복사본·명령 입력의 재현성 유지 |
 
 순서와 의존:
 
