@@ -368,6 +368,15 @@ describe('S6 보충 제작', () => {
     expect(side.rejected.map((r: { lemma: string }) => r.lemma)).toEqual(words.map(w => w.lemma));
   });
 
+  it('모델 시간 초과는 문항 반려나 내용 수정 재요청으로 바꾸지 않는다', async () => {
+    const { root, options, deps } = setup();
+    const error = Object.assign(new Error('agy 호출 시간 초과'), { code: 'AGY_TIMEOUT', retryable: false });
+    deps.respond.mockRejectedValue(error);
+    await expect(produce(options, deps)).rejects.toBe(error);
+    expect(deps.respond).toHaveBeenCalledTimes(1);
+    expect(fs.existsSync(path.join(root, '.orchestrate/staging', batchId))).toBe(false);
+  });
+
   it('중복 문항·보기 ID·자체 반박 ID 및 모델의 source 주입을 거절한다', () => {
     const { root, evidence } = setup();
     const selected = selectItems(root, read(path.join(root, 'content-source/wordlists/g4-r1.json')), 4, 3);

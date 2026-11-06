@@ -153,6 +153,16 @@ export async function agyCall({ cwd, prompt, model = AGY_MODEL, timeoutSec = 120
     }
     throw error;
   }
-  if (result.code !== 0) throw new Error(`agy 실행 실패(${result.code}): ${result.err || result.out}`);
+  if (result.code !== 0) {
+    const details = String(result.err ?? '').split('\n').filter(line => line.startsWith('AGY_ERROR: ')).flatMap(line => {
+      try { return [JSON.parse(line.slice('AGY_ERROR: '.length))]; } catch { return []; }
+    });
+    if (details.length === 1 && details[0]?.reason === 'print_timeout' && details[0]?.status === 'DEADLINE_EXCEEDED') {
+      const recovered = await recoverTimedOut({ logFile, prompt, validate, brain: deps.brain });
+      if (recovered) return recovered;
+      throw Object.assign(new Error(`agy 호출 시간 초과: ${result.err}`), { code: 'AGY_TIMEOUT', retryable: false });
+    }
+    throw new Error(`agy 실행 실패(${result.code}): ${result.err || result.out}`);
+  }
   return { ...result, out: parseAgyOutput(result.out, { brain: deps.brain, validate }) };
 }

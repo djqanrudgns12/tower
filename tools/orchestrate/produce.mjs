@@ -354,7 +354,11 @@ async function produceRun(options, deps) {
           parsed.rejected.push({ id: pair.draft.id, lemma: pair.draft.target.lemma, reason: `Normal용 advanced 전투 읽기 상한 초과: ${load} > ${cap}` });
           return false;
         });
-      } catch (e) { parsed = { accepted: [], rejected: pending.map(x => ({ id: x.fixed.id, lemma: x.item.lemma, reason: e.message })) }; }
+      } catch (e) {
+        // 실행 시간 초과는 문항 내용 결함이 아니다. 원본 작업 기록을 보존하고 총괄에게 넘긴다.
+        if (e.code === 'AGY_TIMEOUT') throw e;
+        parsed = { accepted: [], rejected: pending.map(x => ({ id: x.fixed.id, lemma: x.item.lemma, reason: e.message })) };
+      }
       pairs.push(...parsed.accepted);
       const done = new Set(parsed.accepted.map(p => p.draft.id));
       pending = pending.filter(x => !done.has(x.fixed.id));

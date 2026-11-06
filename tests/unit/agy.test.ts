@@ -124,6 +124,33 @@ describe('봉인 폴더만 읽는 agy 직접 호출', () => {
     expect(JSON.parse(fs.readFileSync(`${logFile}.recovery.json`, 'utf8'))).toMatchObject({ conversationId: f.id, reason: 'AGY_TIMEOUT' });
   });
 
+  it.each(['DONE', 'RUNNING'])('CLI 종료 코드 3의 print_timeout도 완료 상태 %s를 확인한다', async status => {
+    const f = timeoutFixture({ status });
+    const execute = vi.fn(async (_exe: string, args: string[]) => {
+      fs.writeFileSync(args[args.indexOf('--log-file') + 1]!, `Stream goroutine exited for ${f.id}, sending completion signal\n`);
+      return { code: 3, out: '', err: 'AGY_ERROR: {"reason":"print_timeout","status":"DEADLINE_EXCEEDED","retryable":false}' };
+    });
+    const result = agyCall({ root: f.root, cwd: f.cwd, prompt: f.prompt, validate: f.validate }, { execute, brain: f.brain });
+    if (status === 'DONE') {
+      await expect(result).resolves.toMatchObject({ code: 0, recovered: true, out: '{"items":[{"questionId":"q1","revision":2}]}' });
+      expect(f.validate).toHaveBeenCalledTimes(1);
+    } else {
+      await expect(result).rejects.toMatchObject({ code: 'AGY_TIMEOUT', retryable: false });
+      expect(f.validate).not.toHaveBeenCalled();
+    }
+    expect(execute).toHaveBeenCalledTimes(1);
+  });
+
+  it.each([
+    { reason: 'auth_failed', status: 'UNAUTHENTICATED' },
+    { reason: 'print_timeout', status: 'UNKNOWN' },
+  ])('다른 CLI 오류는 시간 초과로 바꾸지 않는다: %j', async detail => {
+    const f = timeoutFixture();
+    const execute = vi.fn(async () => ({ code: 3, out: '', err: `AGY_ERROR: ${JSON.stringify(detail)}` }));
+    await expect(agyCall({ root: f.root, cwd: f.cwd, prompt: f.prompt, validate: f.validate }, { execute, brain: f.brain })).rejects.toThrow('agy 실행 실패(3)');
+    expect(f.validate).not.toHaveBeenCalled();
+  });
+
   it('호출 집계 실행기의 실제 타이머 경로도 완료 답장을 검증해 복구한다', async () => {
     const f = timeoutFixture();
     vi.useFakeTimers();
