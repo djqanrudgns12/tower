@@ -1,0 +1,983 @@
+{
+  "grade": 6,
+  "round": 2,
+  "designGoal": "normal-advanced",
+  "source": {
+    "producer": "Gemini 4 Argon (High)",
+    "order": "O-A1",
+    "date": "2026-11-06",
+    "checker": "gpt-6-astra",
+    "effort": "high",
+    "checkedAt": "2026-11-06T16:47:30.411Z",
+    "partial": {
+      "reason": "생성 시간 초과 뒤 완료·독립검사 묶음만 먼저 사용",
+      "planned": 180,
+      "completed": 60,
+      "remaining": 120,
+      "generatorSummarySha256": "3388d87781ae8c2a72ceb8d28cdfce199635fe818494dc31cc72f5d4fa9a3e8a",
+      "checkerSummarySha256": "27566ecbae8ff906e4ed8e6eb8b74a83062eda0db9a23e5121d8c05531084166"
+    }
+  },
+  "items": [
+    {
+      "kind": "word",
+      "lemma": "감내하다",
+      "partOfSpeech": "동사",
+      "expectedL1": 3,
+      "expectedL2": 3,
+      "senseOrder": 1,
+      "types": [
+        "usage",
+        "synonym_context"
+      ],
+      "variantTag": "standard",
+      "gradeEvidence": "rubric_inferred(L=6,T=5)",
+      "checked": false,
+      "reason": "동사·제1뜻·word는 일치한다. 어려움을 견디는 태도 의미는 L2=2가 더 타당하며, 예상 L=6은 과대하다. 초등 적합성과 별개로 이번 심화 보충 근거가 부족하다."
+    },
+    {
+      "kind": "word",
+      "lemma": "강구하다",
+      "partOfSpeech": "동사",
+      "expectedL1": 3,
+      "expectedL2": 3,
+      "senseOrder": 1,
+      "types": [
+        "usage",
+        "cloze"
+      ],
+      "variantTag": "standard",
+      "gradeEvidence": "[6국02-04] 문제 상황과 관련된 다양한 관점의 글을 읽고 이를 문제 해결에 활용한다.",
+      "checked": false,
+      "reason": "preflight가 false여서 표제어·품사·뜻 번호의 사전 근거가 확정되지 않았다."
+    },
+    {
+      "kind": "word",
+      "lemma": "공언하다",
+      "partOfSpeech": "동사",
+      "expectedL1": 3,
+      "expectedL2": 3,
+      "senseOrder": 1,
+      "types": [
+        "usage",
+        "synonym_context"
+      ],
+      "variantTag": "standard",
+      "gradeEvidence": "rubric_inferred(L=6,T=5)",
+      "checked": false,
+      "reason": "preflight가 false여서 표제어·품사·뜻 번호의 사전 근거가 확정되지 않았다."
+    },
+    {
+      "kind": "word",
+      "lemma": "극명하다",
+      "partOfSpeech": "형용사",
+      "expectedL1": 3,
+      "expectedL2": 3,
+      "senseOrder": 1,
+      "types": [
+        "synonym_context",
+        "antonym_context"
+      ],
+      "variantTag": "standard",
+      "gradeEvidence": "[6국02-04] 문제 상황과 관련된 다양한 관점의 글을 읽고 이를 문제 해결에 활용한다.",
+      "checked": false,
+      "reason": "preflight가 false여서 표제어·품사·뜻 번호의 사전 근거가 확정되지 않았다."
+    },
+    {
+      "kind": "word",
+      "lemma": "기인하다",
+      "partOfSpeech": "동사",
+      "expectedL1": 3,
+      "expectedL2": 3,
+      "senseOrder": 1,
+      "types": [
+        "usage",
+        "cloze"
+      ],
+      "variantTag": "standard",
+      "gradeEvidence": "rubric_inferred(L=6,T=5)",
+      "checked": false,
+      "reason": "preflight가 false여서 표제어·품사·뜻 번호의 사전 근거가 확정되지 않았다."
+    },
+    {
+      "kind": "word",
+      "lemma": "논박하다",
+      "partOfSpeech": "동사",
+      "expectedL1": 3,
+      "expectedL2": 3,
+      "senseOrder": 1,
+      "types": [
+        "usage",
+        "synonym_context"
+      ],
+      "variantTag": "standard",
+      "gradeEvidence": "[6국01-07] 절차와 규칙을 지키고 타당한 이유와 근거를 제시하며 토론한다.",
+      "checked": true,
+      "reason": "동사·제1뜻·word와 standard가 맞는다. 주장의 잘못을 조리 있게 지적하는 뜻은 토론 기준과 연결되며, 6학년 심화 어휘로 L=6 추정과 용법·유의어 유형이 타당하다."
+    },
+    {
+      "kind": "word",
+      "lemma": "논지",
+      "partOfSpeech": "명사",
+      "expectedL1": 3,
+      "expectedL2": 3,
+      "senseOrder": 1,
+      "types": [
+        "usage",
+        "synonym_context"
+      ],
+      "variantTag": "standard",
+      "gradeEvidence": "[6국02-01] 글의 구조를 고려하며 주제나 주장을 파악하고 글 내용을 요약한다.",
+      "checked": true,
+      "reason": "명사·제1뜻·word가 일치한다. 글의 취지를 파악하는 추상 개념으로 L=6 추정이 가능하며, 제시한 읽기 기준과 용법·유의어 유형이 적절하다."
+    },
+    {
+      "kind": "word",
+      "lemma": "도모하다",
+      "partOfSpeech": "동사",
+      "expectedL1": 3,
+      "expectedL2": 3,
+      "senseOrder": 1,
+      "types": [
+        "usage",
+        "cloze"
+      ],
+      "variantTag": "standard",
+      "gradeEvidence": "[6국01-06] 토의에 협력적으로 참여하며 서로의 의견을 비교하고 조정한다.",
+      "checked": false,
+      "reason": "동사·제1뜻은 일치하지만 대책과 방법을 세우는 의미는 L2=2가 더 타당하다. 토의 기준만으로 고추상성이나 L=6을 뒷받침하기 어렵다."
+    },
+    {
+      "kind": "word",
+      "lemma": "도출하다",
+      "partOfSpeech": "동사",
+      "expectedL1": 3,
+      "expectedL2": 3,
+      "senseOrder": 1,
+      "types": [
+        "cloze",
+        "usage"
+      ],
+      "variantTag": "standard",
+      "gradeEvidence": "[6국01-06] 토의에 협력적으로 참여하며 서로의 의견을 비교하고 조정한다.",
+      "checked": false,
+      "reason": "preflight가 false여서 표제어·품사·뜻 번호의 사전 근거가 확정되지 않았다."
+    },
+    {
+      "kind": "word",
+      "lemma": "동질성",
+      "partOfSpeech": "명사",
+      "expectedL1": 3,
+      "expectedL2": 3,
+      "senseOrder": 1,
+      "types": [
+        "antonym_context",
+        "usage"
+      ],
+      "variantTag": "standard",
+      "gradeEvidence": "rubric_inferred(L=6,T=5)",
+      "checked": true,
+      "reason": "명사·제1뜻·word와 standard가 맞는다. 바탕의 동일성을 다루는 추상 개념으로 6학년 심화 후보와 L=6 추정이 타당하다. 반의 문맥은 성질의 차이를 같은 비교 축에서 다뤄야 한다."
+    },
+    {
+      "kind": "word",
+      "lemma": "매개체",
+      "partOfSpeech": "명사",
+      "expectedL1": 3,
+      "expectedL2": 3,
+      "senseOrder": 1,
+      "types": [
+        "cloze",
+        "usage"
+      ],
+      "variantTag": "standard",
+      "gradeEvidence": "rubric_inferred(L=6,T=5)",
+      "checked": true,
+      "reason": "명사·제1뜻·word가 일치한다. 두 대상의 관계를 이어 주는 역할이라는 추상 개념으로 L=6 추정이 가능하며 용법·빈칸 유형도 적절하다. 전문적 의미로 확대하지 않아야 한다."
+    },
+    {
+      "kind": "word",
+      "lemma": "맹신하다",
+      "partOfSpeech": "동사",
+      "expectedL1": 3,
+      "expectedL2": 3,
+      "senseOrder": 1,
+      "types": [
+        "usage",
+        "antonym_context"
+      ],
+      "variantTag": "standard",
+      "gradeEvidence": "[6국06-02] 뉴스 및 각종 정보 매체 자료의 신뢰성을 평가한다.",
+      "checked": false,
+      "reason": "동사·제1뜻과 매체 신뢰성 평가의 연계는 적절하다. 다만 무조건 믿는 태도는 L2=2가 더 타당하여 L=6 근거가 약하다. 반의 유형에서도 단순한 불신을 반대 뜻으로 삼을 수 없다."
+    },
+    {
+      "kind": "word",
+      "lemma": "명시하다",
+      "partOfSpeech": "동사",
+      "expectedL1": 3,
+      "expectedL2": 3,
+      "senseOrder": 1,
+      "types": [
+        "usage",
+        "cloze"
+      ],
+      "variantTag": "standard",
+      "gradeEvidence": "[6국03-02] 적절한 근거를 사용하고 인용의 출처를 밝히며 주장하는 글을 쓴다.",
+      "checked": false,
+      "reason": "preflight가 false여서 표제어·품사·뜻 번호의 사전 근거가 확정되지 않았다."
+    },
+    {
+      "kind": "word",
+      "lemma": "무마하다",
+      "partOfSpeech": "동사",
+      "expectedL1": 3,
+      "expectedL2": 3,
+      "senseOrder": 1,
+      "types": [
+        "usage",
+        "synonym_context"
+      ],
+      "variantTag": "standard",
+      "gradeEvidence": "rubric_inferred(L=6,T=6)",
+      "checked": false,
+      "reason": "제공된 제1뜻은 손으로 어루만지는 구체적 동작이다. 이를 갈등이나 사건을 수습하는 의미로 해석할 수 없으며, 예상 L2=3과 이번 심화 후보 근거가 맞지 않는다."
+    },
+    {
+      "kind": "word",
+      "lemma": "미봉책",
+      "partOfSpeech": "명사",
+      "expectedL1": 3,
+      "expectedL2": 3,
+      "senseOrder": 1,
+      "types": [
+        "usage",
+        "antonym_context"
+      ],
+      "variantTag": "standard",
+      "gradeEvidence": "[6국02-04] 문제 상황과 관련된 다양한 관점의 글을 읽고 이를 문제 해결에 활용한다.",
+      "checked": true,
+      "reason": "명사·제1뜻·word가 일치한다. 눈가림에 그치는 일시적 대책이라는 평가 개념으로 L=6 추정과 6학년 문제 해결 맥락이 타당하다. 반의 유형은 근본적 해결과의 문맥 대조가 필요하다."
+    },
+    {
+      "kind": "word",
+      "lemma": "반례",
+      "partOfSpeech": "명사",
+      "expectedL1": 3,
+      "expectedL2": 3,
+      "senseOrder": 1,
+      "types": [
+        "usage",
+        "cloze"
+      ],
+      "variantTag": "standard",
+      "gradeEvidence": "[6국01-07] 절차와 규칙을 지키고 타당한 이유와 근거를 제시하며 토론한다.",
+      "checked": false,
+      "reason": "preflight가 false여서 표제어·품사·뜻 번호의 사전 근거가 확정되지 않았다."
+    },
+    {
+      "kind": "word",
+      "lemma": "반추하다",
+      "partOfSpeech": "동사",
+      "expectedL1": 3,
+      "expectedL2": 3,
+      "senseOrder": 2,
+      "types": [
+        "usage",
+        "synonym_context"
+      ],
+      "variantTag": "polysemy",
+      "gradeEvidence": "[6국05-06] 작품을 읽고 자신의 삶과 연관 지어 성찰하는 태도를 지닌다.",
+      "checked": true,
+      "reason": "동사·제2뜻과 polysemy가 적절하다. 일을 되풀이하여 음미하는 의미는 삶을 성찰하는 기준과 연결되며, L=6 추정과 용법·유의어 유형이 6학년 심화 후보로 타당하다."
+    },
+    {
+      "kind": "word",
+      "lemma": "범주",
+      "partOfSpeech": "명사",
+      "expectedL1": 3,
+      "expectedL2": 3,
+      "senseOrder": 1,
+      "types": [
+        "cloze",
+        "usage"
+      ],
+      "variantTag": "standard",
+      "gradeEvidence": "rubric_inferred(L=6,T=5)",
+      "checked": false,
+      "reason": "preflight가 false여서 표제어·품사·뜻 번호의 사전 근거가 확정되지 않았다."
+    },
+    {
+      "kind": "word",
+      "lemma": "병행하다",
+      "partOfSpeech": "동사",
+      "expectedL1": 3,
+      "expectedL2": 3,
+      "senseOrder": 1,
+      "types": [
+        "usage",
+        "cloze"
+      ],
+      "variantTag": "standard",
+      "gradeEvidence": "rubric_inferred(L=6,T=5)",
+      "checked": false,
+      "reason": "제1뜻은 둘 이상의 사물이 나란히 가는 의미다. 여러 일을 함께 수행하는 뜻을 대신 적용할 수 없으며, 제시된 뜻 자체로는 고추상 한자어라는 L2=3 근거가 부족하다."
+    },
+    {
+      "kind": "word",
+      "lemma": "부단하다",
+      "partOfSpeech": "형용사",
+      "expectedL1": 3,
+      "expectedL2": 3,
+      "senseOrder": 1,
+      "types": [
+        "synonym_context",
+        "antonym_context"
+      ],
+      "variantTag": "standard",
+      "gradeEvidence": "rubric_inferred(L=6,T=5)",
+      "checked": false,
+      "reason": "형용사·제1뜻은 일치하나 끊임없이 이어지는 상태는 L2=3보다 낮게 보는 것이 타당하다. 예상 L=6은 과대하며, 실제 제작에서는 주로 쓰이는 '부단한' 형태도 반영해야 한다."
+    },
+    {
+      "kind": "word",
+      "lemma": "비호하다",
+      "partOfSpeech": "동사",
+      "expectedL1": 3,
+      "expectedL2": 3,
+      "senseOrder": 1,
+      "types": [
+        "usage",
+        "synonym_context"
+      ],
+      "variantTag": "standard",
+      "gradeEvidence": "rubric_inferred(L=6,T=6)",
+      "checked": false,
+      "reason": "preflight가 false여서 표제어·품사·뜻 번호의 사전 근거가 확정되지 않았다."
+    },
+    {
+      "kind": "word",
+      "lemma": "상쇄하다",
+      "partOfSpeech": "동사",
+      "expectedL1": 3,
+      "expectedL2": 3,
+      "senseOrder": 1,
+      "types": [
+        "usage",
+        "synonym_context"
+      ],
+      "variantTag": "standard",
+      "gradeEvidence": "rubric_inferred(L=6,T=6)",
+      "checked": true,
+      "reason": "동사·제1뜻·word와 standard가 맞는다. 상반되는 영향으로 효과가 없어지는 관계는 L=6 추정이 가능한 추상 개념이며, 생활 속 결과 비교로 용법·유의어 문항을 만들 수 있다."
+    },
+    {
+      "kind": "word",
+      "lemma": "상응하다",
+      "partOfSpeech": "동사",
+      "expectedL1": 3,
+      "expectedL2": 3,
+      "senseOrder": 1,
+      "types": [
+        "usage",
+        "cloze"
+      ],
+      "variantTag": "standard",
+      "gradeEvidence": "rubric_inferred(L=6,T=5)",
+      "checked": true,
+      "reason": "동사·제1뜻·word가 일치한다. 대상 사이의 대응과 적합성을 다루어 L=6 추정이 가능하고, 6학년 용법·빈칸 후보로 적절하다. 제시된 조사 결합을 지켜야 한다."
+    },
+    {
+      "kind": "word",
+      "lemma": "승화하다",
+      "partOfSpeech": "동사",
+      "expectedL1": 3,
+      "expectedL2": 3,
+      "senseOrder": 2,
+      "types": [
+        "usage",
+        "synonym_context"
+      ],
+      "variantTag": "polysemy",
+      "gradeEvidence": "[6국02-02] 글에서 생략된 내용이나 함축된 표현을 문맥을 고려하여 추론한다.",
+      "checked": false,
+      "reason": "제2뜻은 전문 분야 표지가 있는 물리적 상태 변화다. 함축 표현 추론 기준과 연결한 비유적 의미의 근거가 아니며, 전문어 표지에 따른 수정 검토 대상이다."
+    },
+    {
+      "kind": "word",
+      "lemma": "시정하다",
+      "partOfSpeech": "동사",
+      "expectedL1": 3,
+      "expectedL2": 3,
+      "senseOrder": 1,
+      "types": [
+        "usage",
+        "synonym_context"
+      ],
+      "variantTag": "standard",
+      "gradeEvidence": "rubric_inferred(L=6,T=5)",
+      "checked": false,
+      "reason": "preflight가 false여서 표제어·품사·뜻 번호의 사전 근거가 확정되지 않았다."
+    },
+    {
+      "kind": "word",
+      "lemma": "안배하다",
+      "partOfSpeech": "동사",
+      "expectedL1": 3,
+      "expectedL2": 3,
+      "senseOrder": 1,
+      "types": [
+        "usage",
+        "cloze"
+      ],
+      "variantTag": "standard",
+      "gradeEvidence": "[6국01-06] 토의에 협력적으로 참여하며 서로의 의견을 비교하고 조정한다.",
+      "checked": false,
+      "reason": "동사·제1뜻은 일치한다. 알맞게 배치하거나 처리하는 의미는 L2=2가 더 타당하고, 토의 기준이 L=6을 직접 뒷받침하지는 않는다. 이번 심화 보충 근거가 부족하다."
+    },
+    {
+      "kind": "word",
+      "lemma": "야기하다",
+      "partOfSpeech": "동사",
+      "expectedL1": 3,
+      "expectedL2": 3,
+      "senseOrder": 1,
+      "types": [
+        "usage",
+        "synonym_context"
+      ],
+      "variantTag": "standard",
+      "gradeEvidence": "rubric_inferred(L=6,T=5)",
+      "checked": false,
+      "reason": "동사·제1뜻과 용법·유의어 유형은 맞는다. 사건을 일으키는 인과 관계 의미는 L2=2가 더 타당하여, 예상 L=6과 심화 보충 근거가 과대하다."
+    },
+    {
+      "kind": "word",
+      "lemma": "양면성",
+      "partOfSpeech": "명사",
+      "expectedL1": 3,
+      "expectedL2": 3,
+      "senseOrder": 1,
+      "types": [
+        "usage",
+        "cloze"
+      ],
+      "variantTag": "standard",
+      "gradeEvidence": "[6국02-04] 문제 상황과 관련된 다양한 관점의 글을 읽고 이를 문제 해결에 활용한다.",
+      "checked": true,
+      "reason": "명사·제1뜻·word가 일치한다. 한 대상에 공존하는 상반된 성질이라는 추상 개념으로 L=6 추정이 가능하다. 다양한 관점의 읽기와 연결되며 용법·빈칸 유형도 적절하다."
+    },
+    {
+      "kind": "word",
+      "lemma": "엄정하다",
+      "partOfSpeech": "형용사",
+      "expectedL1": 3,
+      "expectedL2": 3,
+      "senseOrder": 1,
+      "types": [
+        "synonym_context",
+        "usage"
+      ],
+      "variantTag": "standard",
+      "gradeEvidence": "rubric_inferred(L=6,T=5)",
+      "checked": false,
+      "reason": "preflight가 false여서 표제어·품사·뜻 번호의 사전 근거가 확정되지 않았다."
+    },
+    {
+      "kind": "word",
+      "lemma": "역설하다",
+      "partOfSpeech": "동사",
+      "expectedL1": 3,
+      "expectedL2": 3,
+      "senseOrder": 1,
+      "types": [
+        "usage",
+        "synonym_context"
+      ],
+      "variantTag": "standard",
+      "gradeEvidence": "[6국01-02] 주장을 파악하고 이유나 근거가 타당한지 평가하며 듣는다.",
+      "checked": false,
+      "reason": "preflight가 false여서 표제어·품사·뜻 번호의 사전 근거가 확정되지 않았다."
+    },
+    {
+      "kind": "word",
+      "lemma": "예단하다",
+      "partOfSpeech": "동사",
+      "expectedL1": 3,
+      "expectedL2": 3,
+      "senseOrder": 1,
+      "types": [
+        "usage",
+        "synonym_context"
+      ],
+      "variantTag": "standard",
+      "gradeEvidence": "[6국02-03] 글이나 자료를 읽고 내용의 타당성과 표현의 적절성을 평가한다.",
+      "checked": true,
+      "reason": "동사·제1뜻·word가 일치한다. 판단 시점과 근거의 충분함을 구별하는 6학년 심화 맥락에서 L=6 추정과 용법·유의어 유형이 가능하다. 사전 뜻을 반드시 틀리게 판단한다는 의미로 확대하면 안 된다."
+    },
+    {
+      "kind": "word",
+      "lemma": "우회하다",
+      "partOfSpeech": "동사",
+      "expectedL1": 3,
+      "expectedL2": 2,
+      "senseOrder": 2,
+      "types": [
+        "usage",
+        "antonym_context"
+      ],
+      "variantTag": "polysemy",
+      "gradeEvidence": "rubric_inferred(L=5,T=7)",
+      "checked": false,
+      "reason": "preflight가 false여서 표제어·품사·뜻 번호의 사전 근거가 확정되지 않았다."
+    },
+    {
+      "kind": "word",
+      "lemma": "유보하다",
+      "partOfSpeech": "동사",
+      "expectedL1": 3,
+      "expectedL2": 3,
+      "senseOrder": 1,
+      "types": [
+        "usage",
+        "synonym_context"
+      ],
+      "variantTag": "standard",
+      "gradeEvidence": "[6국01-06] 토의에 협력적으로 참여하며 서로의 의견을 비교하고 조정한다.",
+      "checked": false,
+      "reason": "preflight가 false여서 표제어·품사·뜻 번호의 사전 근거가 확정되지 않았다."
+    },
+    {
+      "kind": "word",
+      "lemma": "이질감",
+      "partOfSpeech": "명사",
+      "expectedL1": 3,
+      "expectedL2": 3,
+      "senseOrder": 1,
+      "types": [
+        "antonym_context",
+        "usage"
+      ],
+      "variantTag": "standard",
+      "gradeEvidence": "rubric_inferred(L=6,T=5)",
+      "checked": false,
+      "reason": "명사·제1뜻은 일치한다. 성질 차이로 느끼는 낯섦은 L2=2가 더 타당하여 L=6 근거가 약하다. 느낌을 나타내므로 '동질성'과 직접적인 반의 짝으로 처리해서도 안 된다."
+    },
+    {
+      "kind": "word",
+      "lemma": "자각하다",
+      "partOfSpeech": "동사",
+      "expectedL1": 3,
+      "expectedL2": 3,
+      "senseOrder": 1,
+      "types": [
+        "usage",
+        "synonym_context"
+      ],
+      "variantTag": "standard",
+      "gradeEvidence": "[6국05-06] 작품을 읽고 자신의 삶과 연관 지어 성찰하는 태도를 지닌다.",
+      "checked": false,
+      "reason": "preflight가 false여서 표제어·품사·뜻 번호의 사전 근거가 확정되지 않았다."
+    },
+    {
+      "kind": "word",
+      "lemma": "자명하다",
+      "partOfSpeech": "형용사",
+      "expectedL1": 3,
+      "expectedL2": 3,
+      "senseOrder": 1,
+      "types": [
+        "synonym_context",
+        "antonym_context"
+      ],
+      "variantTag": "standard",
+      "gradeEvidence": "[6국02-03] 글이나 자료를 읽고 내용의 타당성과 표현의 적절성을 평가한다.",
+      "checked": true,
+      "reason": "형용사·제1뜻·word가 일치한다. 별도 증명 없이 명백하다는 인식·논증 개념으로 L=6 추정이 타당하며, 타당성 평가와 유의·반의 문맥 유형에 연결할 수 있다."
+    },
+    {
+      "kind": "word",
+      "lemma": "재단하다",
+      "partOfSpeech": "동사",
+      "expectedL1": 3,
+      "expectedL2": 3,
+      "senseOrder": 2,
+      "types": [
+        "usage",
+        "synonym_context"
+      ],
+      "variantTag": "polysemy",
+      "gradeEvidence": "[6국02-02] 글에서 생략된 내용이나 함축된 표현을 문맥을 고려하여 추론한다.",
+      "checked": false,
+      "reason": "제2뜻은 옷감이나 재목을 치수에 맞게 재거나 자르는 구체적 행위다. 사람이나 사물을 판단하는 비유적 의미의 근거가 아니므로, 함축 표현 기준과 예상 L2=3이 맞지 않는다."
+    },
+    {
+      "kind": "word",
+      "lemma": "전가하다",
+      "partOfSpeech": "동사",
+      "expectedL1": 3,
+      "expectedL2": 3,
+      "senseOrder": 1,
+      "types": [
+        "usage",
+        "antonym_context"
+      ],
+      "variantTag": "standard",
+      "gradeEvidence": "rubric_inferred(L=6,T=5)",
+      "checked": false,
+      "reason": "preflight가 false여서 표제어·품사·뜻 번호의 사전 근거가 확정되지 않았다."
+    },
+    {
+      "kind": "word",
+      "lemma": "전례",
+      "partOfSpeech": "명사",
+      "expectedL1": 3,
+      "expectedL2": 3,
+      "senseOrder": 1,
+      "types": [
+        "cloze",
+        "usage"
+      ],
+      "variantTag": "standard",
+      "gradeEvidence": "rubric_inferred(L=6,T=5)",
+      "checked": false,
+      "reason": "preflight가 false여서 표제어·품사·뜻 번호의 사전 근거가 확정되지 않았다."
+    },
+    {
+      "kind": "word",
+      "lemma": "조망하다",
+      "partOfSpeech": "동사",
+      "expectedL1": 3,
+      "expectedL2": 3,
+      "senseOrder": 2,
+      "types": [
+        "usage",
+        "synonym_context"
+      ],
+      "variantTag": "polysemy",
+      "gradeEvidence": "[6국02-02] 글에서 생략된 내용이나 함축된 표현을 문맥을 고려하여 추론한다.",
+      "checked": false,
+      "reason": "preflight가 false여서 표제어·품사·뜻 번호의 사전 근거가 확정되지 않았다."
+    },
+    {
+      "kind": "word",
+      "lemma": "좌초하다",
+      "partOfSpeech": "동사",
+      "expectedL1": 3,
+      "expectedL2": 3,
+      "senseOrder": 2,
+      "types": [
+        "usage",
+        "synonym_context"
+      ],
+      "variantTag": "polysemy",
+      "gradeEvidence": "[6국02-02] 글에서 생략된 내용이나 함축된 표현을 문맥을 고려하여 추론한다.",
+      "checked": true,
+      "reason": "동사·제2뜻에 비유 표지가 있어 polysemy가 타당하다. 곤경에 빠지는 뜻은 6학년 문맥 추론과 연결되며 L=6 추정이 가능하다. 반드시 완전히 실패한다는 뜻으로 좁혀서는 안 된다."
+    },
+    {
+      "kind": "word",
+      "lemma": "주입하다",
+      "partOfSpeech": "동사",
+      "expectedL1": 3,
+      "expectedL2": 2,
+      "senseOrder": 2,
+      "types": [
+        "usage",
+        "antonym_context"
+      ],
+      "variantTag": "polysemy",
+      "gradeEvidence": "rubric_inferred(L=5,T=7)",
+      "checked": false,
+      "reason": "preflight가 false여서 표제어·품사·뜻 번호의 사전 근거가 확정되지 않았다."
+    },
+    {
+      "kind": "word",
+      "lemma": "직시하다",
+      "partOfSpeech": "동사",
+      "expectedL1": 3,
+      "expectedL2": 2,
+      "senseOrder": 2,
+      "types": [
+        "usage",
+        "antonym_context"
+      ],
+      "variantTag": "polysemy",
+      "gradeEvidence": "rubric_inferred(L=5,T=7)",
+      "checked": true,
+      "reason": "동사·제2뜻과 polysemy가 맞는다. 진실을 바로 보는 추상적 의미로 L=5 추정과 6학년 적합성이 타당하다. 용법·반의 문맥은 가능하나 예상 T=7은 실제 문항에서 확인해야 한다."
+    },
+    {
+      "kind": "word",
+      "lemma": "참작하다",
+      "partOfSpeech": "동사",
+      "expectedL1": 3,
+      "expectedL2": 3,
+      "senseOrder": 1,
+      "types": [
+        "usage",
+        "synonym_context"
+      ],
+      "variantTag": "standard",
+      "gradeEvidence": "rubric_inferred(L=6,T=5)",
+      "checked": false,
+      "reason": "preflight가 false여서 표제어·품사·뜻 번호의 사전 근거가 확정되지 않았다."
+    },
+    {
+      "kind": "word",
+      "lemma": "책무",
+      "partOfSpeech": "명사",
+      "expectedL1": 3,
+      "expectedL2": 3,
+      "senseOrder": 1,
+      "types": [
+        "usage",
+        "synonym_context"
+      ],
+      "variantTag": "standard",
+      "gradeEvidence": "rubric_inferred(L=6,T=5)",
+      "checked": false,
+      "reason": "명사·제1뜻과 standard는 맞는다. 직무에 따른 책임·임무는 관계 추상어인 L2=2가 더 타당하여, 예상 L=6과 이번 심화 보충 근거가 과대하다."
+    },
+    {
+      "kind": "word",
+      "lemma": "철폐하다",
+      "partOfSpeech": "동사",
+      "expectedL1": 3,
+      "expectedL2": 3,
+      "senseOrder": 1,
+      "types": [
+        "usage",
+        "synonym_context"
+      ],
+      "variantTag": "standard",
+      "gradeEvidence": "rubric_inferred(L=6,T=5)",
+      "checked": true,
+      "reason": "동사·제1뜻·word가 일치한다. 제도나 규칙을 없애는 사회적 개념으로 L=6 추정이 가능하고 6학년 심화 후보로 적절하다. 용법·유의어 유형에서 단순 물건 제거와 구별해야 한다."
+    },
+    {
+      "kind": "word",
+      "lemma": "첨예하다",
+      "partOfSpeech": "형용사",
+      "expectedL1": 3,
+      "expectedL2": 3,
+      "senseOrder": 2,
+      "types": [
+        "usage",
+        "antonym_context"
+      ],
+      "variantTag": "polysemy",
+      "gradeEvidence": "[6국01-07] 절차와 규칙을 지키고 타당한 이유와 근거를 제시하며 토론한다.",
+      "checked": true,
+      "reason": "형용사·제2뜻과 polysemy가 맞는다. 상황의 날카로움과 격함을 나타내어 L=6 추정이 가능하다. 토론 상황과 간접 연결되며, 용법·반의 문맥은 같은 상황의 격렬함을 비교해야 한다."
+    },
+    {
+      "kind": "word",
+      "lemma": "촉발하다",
+      "partOfSpeech": "동사",
+      "expectedL1": 3,
+      "expectedL2": 3,
+      "senseOrder": 1,
+      "types": [
+        "usage",
+        "synonym_context"
+      ],
+      "variantTag": "standard",
+      "gradeEvidence": "rubric_inferred(L=6,T=5)",
+      "checked": false,
+      "reason": "preflight가 false여서 표제어·품사·뜻 번호의 사전 근거가 확정되지 않았다."
+    },
+    {
+      "kind": "word",
+      "lemma": "퇴색하다",
+      "partOfSpeech": "동사",
+      "expectedL1": 3,
+      "expectedL2": 2,
+      "senseOrder": 2,
+      "types": [
+        "usage",
+        "synonym_context"
+      ],
+      "variantTag": "polysemy",
+      "gradeEvidence": "rubric_inferred(L=5,T=7)",
+      "checked": true,
+      "reason": "동사·제2뜻의 비유 표지가 polysemy를 뒷받침한다. 존재나 가치가 희미해지는 맥락은 6학년에게 적절하고 L=5 추정도 타당하다. 용법·유의어 유형은 가능하나 T=7은 미확정이다."
+    },
+    {
+      "kind": "word",
+      "lemma": "투영하다",
+      "partOfSpeech": "동사",
+      "expectedL1": 3,
+      "expectedL2": 3,
+      "senseOrder": 2,
+      "types": [
+        "usage",
+        "cloze"
+      ],
+      "variantTag": "polysemy",
+      "gradeEvidence": "[6국05-01] 작가의 의도를 생각하며 작품을 읽는다.",
+      "checked": false,
+      "reason": "preflight가 false여서 표제어·품사·뜻 번호의 사전 근거가 확정되지 않았다."
+    },
+    {
+      "kind": "word",
+      "lemma": "투철하다",
+      "partOfSpeech": "형용사",
+      "expectedL1": 3,
+      "expectedL2": 3,
+      "senseOrder": 1,
+      "types": [
+        "usage",
+        "synonym_context"
+      ],
+      "variantTag": "standard",
+      "gradeEvidence": "rubric_inferred(L=6,T=5)",
+      "checked": false,
+      "reason": "제1뜻은 사리에 밝고 정확하다는 의미다. 신념이나 의식이 철저하다는 의미로 대체해 판단할 수 없으며, 제공 자료만으로 이 제1뜻의 6학년 적합성과 L=6 근거를 충분히 확인하기 어렵다."
+    },
+    {
+      "kind": "word",
+      "lemma": "편승하다",
+      "partOfSpeech": "동사",
+      "expectedL1": 3,
+      "expectedL2": 3,
+      "senseOrder": 2,
+      "types": [
+        "usage",
+        "synonym_context"
+      ],
+      "variantTag": "polysemy",
+      "gradeEvidence": "[6국02-02] 글에서 생략된 내용이나 함축된 표현을 문맥을 고려하여 추론한다.",
+      "checked": false,
+      "reason": "제2뜻은 편선을 타는 구체적 의미다. 기회나 세력에 기대는 비유적 의미의 근거가 아니므로, 함축 표현 추론 기준과 예상 L2=3이 맞지 않는다."
+    },
+    {
+      "kind": "word",
+      "lemma": "편협하다",
+      "partOfSpeech": "형용사",
+      "expectedL1": 3,
+      "expectedL2": 3,
+      "senseOrder": 1,
+      "types": [
+        "antonym_context",
+        "usage"
+      ],
+      "variantTag": "standard",
+      "gradeEvidence": "[6국02-04] 문제 상황과 관련된 다양한 관점의 글을 읽고 이를 문제 해결에 활용한다.",
+      "checked": true,
+      "reason": "형용사·제1뜻·word가 일치한다. 치우친 관점과 좁은 도량을 함께 나타내는 평가어로 L=6 추정이 가능하다. 다양한 관점의 읽기와 연결되며 용법·반의 문맥도 적절하다."
+    },
+    {
+      "kind": "word",
+      "lemma": "폄하하다",
+      "partOfSpeech": "동사",
+      "expectedL1": 3,
+      "expectedL2": 3,
+      "senseOrder": 1,
+      "types": [
+        "usage",
+        "antonym_context"
+      ],
+      "variantTag": "standard",
+      "gradeEvidence": "[6국01-07] 절차와 규칙을 지키고 타당한 이유와 근거를 제시하며 토론한다.",
+      "checked": true,
+      "reason": "동사·제1뜻·word가 일치한다. 가치를 낮추어 평가하는 개념으로 L=6 추정이 가능하고 6학년 심화 후보로 적절하다. 토론 기준과는 간접 연계이며, 반박과 폄하를 같은 뜻으로 처리하면 안 된다."
+    },
+    {
+      "kind": "word",
+      "lemma": "포착하다",
+      "partOfSpeech": "동사",
+      "expectedL1": 3,
+      "expectedL2": 3,
+      "senseOrder": 1,
+      "types": [
+        "usage",
+        "cloze"
+      ],
+      "variantTag": "standard",
+      "gradeEvidence": "rubric_inferred(L=6,T=5)",
+      "checked": false,
+      "reason": "제1뜻은 꼭 붙잡는 구체적 동작이다. 기회나 단서를 알아채는 의미를 대신 적용할 수 없으며, 제시된 뜻으로는 예상 L2=3과 심화 보충 근거가 맞지 않는다."
+    },
+    {
+      "kind": "word",
+      "lemma": "표방하다",
+      "partOfSpeech": "동사",
+      "expectedL1": 3,
+      "expectedL2": 3,
+      "senseOrder": 1,
+      "types": [
+        "usage",
+        "synonym_context"
+      ],
+      "variantTag": "standard",
+      "gradeEvidence": "[6국06-02] 뉴스 및 각종 정보 매체 자료의 신뢰성을 평가한다.",
+      "checked": true,
+      "reason": "동사·제1뜻·word와 standard가 맞는다. 주의·주장·처지를 내세우는 추상적 언어 행위로 L=6 추정과 용법·유의어 유형이 타당하다. 매체 신뢰성 기준은 활용 맥락의 간접 근거다."
+    },
+    {
+      "kind": "word",
+      "lemma": "피력하다",
+      "partOfSpeech": "동사",
+      "expectedL1": 3,
+      "expectedL2": 3,
+      "senseOrder": 1,
+      "types": [
+        "usage",
+        "synonym_context"
+      ],
+      "variantTag": "standard",
+      "gradeEvidence": "[6국01-06] 토의에 협력적으로 참여하며 서로의 의견을 비교하고 조정한다.",
+      "checked": false,
+      "reason": "동사·제1뜻과 토의 활동의 연결은 적절하다. 생각을 털어놓고 말하는 의미는 L2=2가 더 타당하며, 격식적인 표현이라는 점만으로 L=6을 부여하기 어렵다."
+    },
+    {
+      "kind": "word",
+      "lemma": "합치하다",
+      "partOfSpeech": "동사",
+      "expectedL1": 3,
+      "expectedL2": 3,
+      "senseOrder": 1,
+      "types": [
+        "synonym_context",
+        "antonym_context"
+      ],
+      "variantTag": "standard",
+      "gradeEvidence": "[6국01-02] 주장을 파악하고 이유나 근거가 타당한지 평가하며 듣는다.",
+      "checked": false,
+      "reason": "동사·제1뜻과 유의·반의 유형은 적절하다. 의견이나 주장의 일치는 관계 추상어인 L2=2가 더 타당하여 예상 L=6이 과대하다. 의견의 일치 자체가 근거의 타당성을 뜻하지도 않는다."
+    },
+    {
+      "kind": "word",
+      "lemma": "항변하다",
+      "partOfSpeech": "동사",
+      "expectedL1": 3,
+      "expectedL2": 3,
+      "senseOrder": 1,
+      "types": [
+        "usage",
+        "synonym_context"
+      ],
+      "variantTag": "standard",
+      "gradeEvidence": "rubric_inferred(L=6,T=5)",
+      "checked": false,
+      "reason": "preflight가 false여서 표제어·품사·뜻 번호의 사전 근거가 확정되지 않았다."
+    },
+    {
+      "kind": "word",
+      "lemma": "확증하다",
+      "partOfSpeech": "동사",
+      "expectedL1": 3,
+      "expectedL2": 3,
+      "senseOrder": 1,
+      "types": [
+        "usage",
+        "synonym_context"
+      ],
+      "variantTag": "standard",
+      "gradeEvidence": "[6국02-03] 글이나 자료를 읽고 내용의 타당성과 표현의 적절성을 평가한다.",
+      "checked": true,
+      "reason": "동사·제1뜻·word가 일치한다. 확실한 증명을 뜻하는 논증 개념으로 L=6 추정이 가능하며, 내용의 타당성 평가와 용법·유의어 유형이 6학년 심화 후보로 적절하다."
+    }
+  ]
+}
