@@ -3,6 +3,14 @@
 작성 2026-11-06 · 작성 Claude Opus 5.5(총괄) · 받는 쪽 Codex(메인 세션)
 같이 읽을 것: [계획서 CONTENT_REVIEW_PLAN.md](CONTENT_REVIEW_PLAN.md)(기준 문서), [AGENTS.md](../AGENTS.md)
 
+### 수정판 재관문 21통과 확인·잔여 7개 수정 (Codex, 2026-11-06 17:28 KST)
+
+- Claude CLI의 현재 `auth status`는 **사용자가 지정한 새 계정·`loggedIn: true`·Pro**다. PID 49069는 정상 종료했다. **Opus 5.5/xhigh 2호출, 25검수 = 21통과·4지적**을 메인이 블라인드/공개 대조 원본, 입력/현 판 해시, 항목별 실행 출처, Claude 해설 대조와 확인했다. 이전 검수 **155항목 보존**, 새 지적은 문장 축 4개다. `.orchestrate/recovery/pilot-revise-gate/audit.json`은 `verified-awaiting-apply`다.
+- 새 관문은 **4학년 2/3·5학년 6/9·6학년 13/13 통과**다. 기존 현재 판 통과를 합치면 **4학년 44·5학년 45·6학년 47**, 합계 136개다. **공개 승인·G1 완료 수가 아니다.** 공개 파일 직접 확인 결과 3학년 자기 문항 51개이며 4~6학년 공개 파일은 아직 없다.
+- **PID 51041** `.orchestrate/recovery/pilot-next-revise/run.mjs`: 새 관문 지적 4개와 기존 앞단 지적 3개를 합친 **7개(4학년 1·5학년 5·6학년 1)**를 Argon으로 수정 중이다. **08:23:16Z 첫 호출**, 시작 시 한도 소진 0개다. 실제 수정/버림 수는 완료 뒤 확인한다. `baseline.json`·`plan.json`에 선행 확인/manifest·현재 판/회차·통과 136개를 봉인했고, `summary.json`·`run.out`에 상태를 남긴다. 통과한 문항은 다시 요청하지 않는다.
+- 다음 단계 `.orchestrate/recovery/pilot-next-level/run.mjs`·`pilot-next-review/run.mjs`는 **준비·구문 확인만**, 아직 실행하지 않았다. 수정 결과 메인 확인 뒤 실제 변경판만 S1 → S2로 보내며 선행 확인 없이는 거절한다. 반영 실행기에도 두 결과의 메인 확인/manifest 조건을 추가했다. **다음 초안 변경 뒤 기존 `after-followup.audit.json`·`after-level.audit.json`의 현재 초안 연결 근거를 새 S1 확인으로 갱신해야 한다.** 원래 실패 기록은 보존한다.
+- 6학년 보충 **PID 48074**는 022 제작 중이며 **08:26:37Z 네 번째 Argon 호출**, 완료 배치는 아직 없다. 다른 보호 작업 PID 61118/51086과 예상 여유 약 6.7GiB 때문에 서버 시험·005 pending 반영은 **미실행**이다. 관련 제품 시험 92개는 **재사용**했고 제품 코드·타인 변경은 건드리지 않았다. G1 시범 S5 및 공개 반영 완료 전 일반 S4 확대 보류를 유지한다.
+
 ### 수정판 25개 재관문·6학년 보충 6배치 시작 (Codex, 2026-11-06 17:10 KST)
 
 - PID 46060 정상 종료. **수준 재판정 28개**, Argon 1·Codex 2호출(전체 1+표본 1)을 메인이 원본 입력/응답·현 판/사전 표지·합의/해시 재계산·표본 대응으로 확인했다. **미대상 115문항·기존 수준 기록 보존, 대상 본문 해시 불변**이다. basic 4·core 7·advanced 7·challenge 10, `too_easy` 9·`long_basic` 1·표본 1이다. 세 배치 모두 동일 엄격 검사 통과. 6학년 `g6-argon-0012@2`는 정상 루브릭에 따라 core(`too_easy`,`long_basic`)가 됐다. `.orchestrate/recovery/pilot-revise-level/audit.json`은 `verified-awaiting-apply`이며 수준 산출물 확인이지 공개 승인이 아니다.
