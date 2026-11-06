@@ -1,6 +1,6 @@
 {
   "bankId": "g4-candidate",
-  "bankVersion": "cand-ac55b3e404c2",
+  "bankVersion": "cand-670ddbd92610",
   "grade": 4,
   "status": "verified_candidate",
   "note": "공동검수 진행 중인 후보 은행. 같은 revision의 외부 블라인드 검수(codex·claude) 1건 이상과 새 문맥 argon-blind를 통과했다. 3모델 공동검수 승인 전에는 게임에 싣지 않는다(PRD §9.3).",
@@ -727,46 +727,6 @@
       }
     },
     {
-      "id": "g4-argon-0057",
-      "revision": 1,
-      "status": "verified_candidate",
-      "grade": 4,
-      "type": "antonym_context",
-      "difficultyTier": "core",
-      "variantTag": "standard",
-      "target": {
-        "lemma": "열심",
-        "partOfSpeech": "명사",
-        "senseKey": "열심/명사/459671-1"
-      },
-      "stem": "맡은 청소에 온 정성을 다해 힘쓰는 ‘열심’과 뜻이 반대되는 말은 무엇일까요?",
-      "options": [
-        {
-          "id": "a",
-          "text": "정성을 다해 꾸준히 힘씀"
-        },
-        {
-          "id": "b",
-          "text": "친구를 반갑게 맞이함"
-        },
-        {
-          "id": "c",
-          "text": "대충 하며 게으름을 피움"
-        },
-        {
-          "id": "d",
-          "text": "약속 시각에 맞추어 도착함"
-        }
-      ],
-      "correctOptionId": "c",
-      "explanation": "온 정성을 다해 힘쓰는 ‘열심’의 반대는 대충 하며 게으름을 피우는 것이에요.",
-      "distractorRationales": {
-        "a": "정성을 다해 힘쓰는 것은 ‘열심’과 같은 뜻이에요.",
-        "b": "친구를 맞이하는 인사 예절이라 반대 뜻이 아니에요.",
-        "d": "시각을 맞춰 도착하는 행동은 정성의 반대가 아니에요."
-      }
-    },
-    {
       "id": "g4-argon-0058",
       "revision": 1,
       "status": "verified_candidate",
@@ -844,46 +804,6 @@
         "a": "방해가 되는 것은 해롭다는 뜻이라 반대예요.",
         "b": "근심과 걱정이 된다는 뜻으로 쓰이지 않아요.",
         "d": "마음에 짐이나 부담이 된다는 뜻과 달라요."
-      }
-    },
-    {
-      "id": "g4-argon-0060",
-      "revision": 1,
-      "status": "verified_candidate",
-      "grade": 4,
-      "type": "usage",
-      "difficultyTier": "core",
-      "variantTag": "standard",
-      "target": {
-        "lemma": "자연스럽다",
-        "partOfSpeech": "형용사",
-        "senseKey": "자연스럽다/형용사/472721-1"
-      },
-      "stem": "다음 중 ‘자연스럽다’를 뜻에 맞게 쓴 문장은 무엇일까요?",
-      "options": [
-        {
-          "id": "a",
-          "text": "웃는 모습이 꾸밈없이 자연스럽다."
-        },
-        {
-          "id": "b",
-          "text": "억지로 꾸며 어색하니 자연스럽다."
-        },
-        {
-          "id": "c",
-          "text": "가방을 책상 옆에 걸어 자연스럽다."
-        },
-        {
-          "id": "d",
-          "text": "신발을 현관에 벗어 자연스럽다."
-        }
-      ],
-      "correctOptionId": "a",
-      "explanation": "‘자연스럽다’는 억지로 꾸미지 않아 이상함이 없다는 뜻이에요.",
-      "distractorRationales": {
-        "b": "억지로 꾸며 어색한 상태는 자연스러운 것과 반대예요.",
-        "c": "가방을 거는 동작만으로는 어법이 어색해요.",
-        "d": "신발을 벗는 행동 뒤에 바로 호응하지 않아요."
       }
     },
     {
@@ -1007,46 +927,6 @@
       }
     },
     {
-      "id": "g4-argon-0064",
-      "revision": 1,
-      "status": "verified_candidate",
-      "grade": 4,
-      "type": "usage",
-      "difficultyTier": "core",
-      "variantTag": "standard",
-      "target": {
-        "lemma": "슬기롭다",
-        "partOfSpeech": "형용사",
-        "senseKey": "슬기롭다/형용사/210033-1"
-      },
-      "stem": "다음 중 ‘슬기롭다’를 뜻에 맞게 쓴 문장은 무엇일까요?",
-      "options": [
-        {
-          "id": "a",
-          "text": "어려운 문제를 지혜롭게 풀어 슬기롭다."
-        },
-        {
-          "id": "b",
-          "text": "돌멩이가 물속으로 가라앉아 슬기롭다."
-        },
-        {
-          "id": "c",
-          "text": "아무 생각 없이 약속을 어겨 슬기롭다."
-        },
-        {
-          "id": "d",
-          "text": "시계 초침이 한 바퀴 돌아서 슬기롭다."
-        }
-      ],
-      "correctOptionId": "a",
-      "explanation": "‘슬기롭다’는 일을 잘 헤아려 처리하는 슬기가 있다는 뜻이에요.",
-      "distractorRationales": {
-        "b": "돌멩이 같은 무생물에는 ‘슬기롭다’를 쓰지 않아요.",
-        "c": "약속을 함부로 어기는 행동은 슬기로운 모습이 아니에요.",
-        "d": "시계 바늘의 움직임을 설명하는 말이 아니에요."
-      }
-    },
-    {
       "id": "g4-argon-0065",
       "revision": 1,
       "status": "verified_candidate",
@@ -1124,86 +1004,6 @@
         "a": "‘가엾고 불쌍하다’는 안타까운 마음과 비슷해요.",
         "c": "‘답답하고 속상하다’는 뜻대로 안 될 때의 비슷한 감정이에요.",
         "d": "‘걱정스럽고 슬프다’는 아픈 마음이므로 반대말이 아니에요."
-      }
-    },
-    {
-      "id": "g4-argon-0068",
-      "revision": 1,
-      "status": "verified_candidate",
-      "grade": 4,
-      "type": "synonym_context",
-      "difficultyTier": "core",
-      "variantTag": "standard",
-      "target": {
-        "lemma": "여유",
-        "partOfSpeech": "명사",
-        "senseKey": "여유/명사/462085-1"
-      },
-      "stem": "기차 출발 시각까지 아직 시간 ‘여유’가 있습니다. 여기서 ‘여유’와 바꾸어 쓸 말은 무엇일까요?",
-      "options": [
-        {
-          "id": "a",
-          "text": "급하게 서두름"
-        },
-        {
-          "id": "b",
-          "text": "넉넉히 남은 틈"
-        },
-        {
-          "id": "c",
-          "text": "모자라는 분량"
-        },
-        {
-          "id": "d",
-          "text": "지켜야 할 규칙"
-        }
-      ],
-      "correctOptionId": "b",
-      "explanation": "‘여유’는 시간이나 공간 따위가 넉넉하여 남음이 있는 상태를 뜻해요.",
-      "distractorRationales": {
-        "a": "급하게 서두르는 것은 여유가 없을 때의 모습이에요.",
-        "c": "모자라는 분량은 넉넉히 남은 상태와 반대예요.",
-        "d": "지켜야 하는 규칙과는 의미가 전혀 달라요."
-      }
-    },
-    {
-      "id": "g4-argon-0069",
-      "revision": 1,
-      "status": "verified_candidate",
-      "grade": 4,
-      "type": "usage",
-      "difficultyTier": "challenge",
-      "variantTag": "standard",
-      "target": {
-        "lemma": "온화하다",
-        "partOfSpeech": "형용사",
-        "senseKey": "온화하다/형용사/240995-1"
-      },
-      "stem": "다음 중 ‘온화하다’를 날씨 뜻에 맞게 쓴 문장은 무엇일까요?",
-      "options": [
-        {
-          "id": "a",
-          "text": "얼음이 얼 만큼 추워 날씨가 온화하다."
-        },
-        {
-          "id": "b",
-          "text": "필통에 지우개를 넣어 두니 온화하다."
-        },
-        {
-          "id": "c",
-          "text": "봄볕과 바람이 포근해 날씨가 온화하다."
-        },
-        {
-          "id": "d",
-          "text": "연필로 공책에 글씨를 써서 온화하다."
-        }
-      ],
-      "correctOptionId": "c",
-      "explanation": "날씨가 맑고 따뜻하며 바람이 부드러울 때 ‘온화하다’라고 해요.",
-      "distractorRationales": {
-        "a": "얼음이 얼 만큼 매서운 추위에는 쓸 수 없어요.",
-        "b": "필통에 물건을 넣는 행동과는 어울리지 않아요.",
-        "d": "글씨를 쓰는 동작 뒤에 쓸 수 없는 말이에요."
       }
     },
     {
@@ -1367,43 +1167,83 @@
       }
     },
     {
-      "id": "g4-argon-0074",
-      "revision": 1,
+      "id": "g4-argon-0075",
+      "revision": 2,
       "status": "verified_candidate",
       "grade": 4,
-      "type": "usage",
-      "difficultyTier": "advanced",
+      "type": "cloze",
+      "difficultyTier": "core",
       "variantTag": "standard",
       "target": {
-        "lemma": "찬성하다",
-        "partOfSpeech": "동사",
-        "senseKey": "찬성하다/동사/488470-1"
+        "lemma": "책임",
+        "partOfSpeech": "명사",
+        "senseKey": "책임/명사/487785-2"
       },
-      "stem": "다음 중 ‘찬성하다’를 뜻에 맞게 쓴 문장은 무엇일까요?",
+      "stem": "규칙을 어겨 문제가 생겼을 때는 그 결과에 대한 의무나 부담인 (    )이 따릅니다. 빈칸에 알맞은 말은 무엇일까요?",
       "options": [
         {
           "id": "a",
-          "text": "도서관을 넓히자는 의견에 찬성했다."
+          "text": "칭찬"
         },
         {
           "id": "b",
-          "text": "차가운 우유를 컵에 가득 찬성했다."
+          "text": "자랑"
         },
         {
           "id": "c",
-          "text": "어두운 밤하늘에 별빛이 찬성했다."
+          "text": "책임"
         },
         {
           "id": "d",
-          "text": "무거운 책가방을 어깨에 찬성했다."
+          "text": "선물"
         }
       ],
-      "correctOptionId": "a",
-      "explanation": "‘찬성하다’는 어떤 의견이나 제안이 좋다고 판단해 동의한다는 뜻이에요.",
+      "correctOptionId": "c",
+      "explanation": "일의 결과에 대하여 지는 의무나 부담을 ‘책임’이라고 해요.",
       "distractorRationales": {
-        "b": "컵에 우유를 따르는 동작에는 쓸 수 없어요.",
-        "c": "별빛이 반짝이는 모습에는 어울리지 않아요.",
-        "d": "가방을 어깨에 메는 행동과 뜻이 맞지 않아요."
+        "a": "잘한 일을 높이 평가하는 ‘칭찬’은 규칙 위반과 맞지 않아요.",
+        "b": "남에게 뽐내는 ‘자랑’은 결과에 대한 부담을 뜻하지 않아요.",
+        "d": "남에게 주는 물건인 ‘선물’은 의무나 부담과 관련이 없어요."
+      }
+    },
+    {
+      "id": "g4-argon-0076",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 4,
+      "type": "synonym_context",
+      "difficultyTier": "core",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "간직하다",
+        "partOfSpeech": "동사",
+        "senseKey": "간직하다/동사/4638-1"
+      },
+      "stem": "할머니께 받은 편지를 서랍 속에 소중히 ‘간직했습니다’. ‘간직했습니다’와 바꾸어 쓸 말은 무엇일까요?",
+      "options": [
+        {
+          "id": "a",
+          "text": "남에게 빌려주었습니다"
+        },
+        {
+          "id": "b",
+          "text": "밖으로 내다 버렸습니다"
+        },
+        {
+          "id": "c",
+          "text": "조각내어 찢었습니다"
+        },
+        {
+          "id": "d",
+          "text": "잘 챙겨 보관했습니다"
+        }
+      ],
+      "correctOptionId": "d",
+      "explanation": "‘간직하다’는 물건을 어떤 장소에 잘 챙겨 보관한다는 뜻이에요.",
+      "distractorRationales": {
+        "a": "남에게 빌려주는 것은 서랍에 보관하는 뜻과 달라요.",
+        "b": "밖으로 버리는 것은 소중히 간수하는 것과 반대예요.",
+        "c": "종이를 찢어 없애는 행동은 보관하는 뜻이 아니에요."
       }
     },
     {
@@ -1447,46 +1287,6 @@
       }
     },
     {
-      "id": "g4-argon-0078",
-      "revision": 1,
-      "status": "verified_candidate",
-      "grade": 4,
-      "type": "cloze",
-      "difficultyTier": "challenge",
-      "variantTag": "idiom_proverb",
-      "target": {
-        "lemma": "오르지 못할 나무는 쳐다보지도 마라",
-        "partOfSpeech": "속담",
-        "senseKey": "오르지 못할 나무는 쳐다보지도 마라/속담/530691-1"
-      },
-      "stem": "능력 밖의 불가능한 일에는 처음부터 욕심을 내지 말라는 뜻으로 “(    )”라고 합니다. 알맞은 속담은 무엇일까요?",
-      "options": [
-        {
-          "id": "a",
-          "text": "돌다리도 잘 두들겨 보고 건너라"
-        },
-        {
-          "id": "b",
-          "text": "우물을 파도 한 우물을 깊이 파라"
-        },
-        {
-          "id": "c",
-          "text": "오르지 못할 나무는 쳐다보지도 마라"
-        },
-        {
-          "id": "d",
-          "text": "떡 본 김에 정성껏 제사를 지내라"
-        }
-      ],
-      "correctOptionId": "c",
-      "explanation": "분수에 넘쳐 불가능한 일은 처음부터 욕심내지 말라는 속담이에요.",
-      "distractorRationales": {
-        "a": "잘 아는 일도 세심히 확인하라는 뜻의 속담이에요.",
-        "b": "한 가지 일을 끝까지 꾸준히 하라는 뜻의 속담이에요.",
-        "d": "좋은 기회가 왔을 때 일을 해 치우라는 뜻이에요."
-      }
-    },
-    {
       "id": "g4-argon-0079",
       "revision": 1,
       "status": "verified_candidate",
@@ -1524,6 +1324,86 @@
         "a": "물건을 장소에 보관하는 뜻은 이 문맥에 맞지 않아요.",
         "b": "이야기를 널리 알리는 것은 마음속에 두는 것과 달라요.",
         "c": "지난 일을 잊어버리는 것은 간직하는 것과 반대예요."
+      }
+    },
+    {
+      "id": "g4-argon-0080",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 4,
+      "type": "cloze",
+      "difficultyTier": "basic",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "걱정하다",
+        "partOfSpeech": "동사",
+        "senseKey": "걱정하다/동사/394343-1"
+      },
+      "stem": "밤늦도록 강아지가 집으로 돌아오지 않자 마음이 놓이지 않아 온 가족이 발을 동동 구르며 (    ). 빈칸에 알맞은 말은 무엇일까요?",
+      "options": [
+        {
+          "id": "a",
+          "text": "안심했습니다"
+        },
+        {
+          "id": "b",
+          "text": "걱정했습니다"
+        },
+        {
+          "id": "c",
+          "text": "만족했습니다"
+        },
+        {
+          "id": "d",
+          "text": "자랑했습니다"
+        }
+      ],
+      "correctOptionId": "b",
+      "explanation": "안심이 되지 않아 속을 태울 때 ‘걱정하다’를 써요.",
+      "distractorRationales": {
+        "a": "‘안심하다’는 마음을 놓는다는 뜻이라 문맥과 반대예요.",
+        "c": "마음에 꼭 들어 ‘만족하다’를 쓸 상황이 아니에요.",
+        "d": "남에게 뽐내는 ‘자랑하다’는 불안한 마음과 맞지 않아요."
+      }
+    },
+    {
+      "id": "g4-argon-0081",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 4,
+      "type": "synonym_context",
+      "difficultyTier": "core",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "걱정하다",
+        "partOfSpeech": "동사",
+        "senseKey": "걱정하다/동사/394343-1"
+      },
+      "stem": "발표 때 실수할까 봐 내내 ‘걱정했습니다’. ‘걱정했습니다’와 바꾸어 쓸 말은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "마음을 놓고 편히 쉬었습니다"
+        },
+        {
+          "id": "b",
+          "text": "기쁜 마음으로 기대했습니다"
+        },
+        {
+          "id": "c",
+          "text": "관심 없이 그냥 넘겼습니다"
+        },
+        {
+          "id": "d",
+          "text": "불안해하며 속을 태웠습니다"
+        }
+      ],
+      "correctOptionId": "d",
+      "explanation": "‘걱정하다’는 안심이 되지 않아 불안해하며 속을 태운다는 뜻이에요.",
+      "distractorRationales": {
+        "a": "마음을 놓고 쉬는 것은 걱정하는 상태와 정반대예요.",
+        "b": "기쁜 마음으로 바라며 기다리는 뜻과는 거리가 멀어요.",
+        "c": "관심 없이 넘기는 태도는 속을 태우는 모습이 아니에요."
       }
     },
     {
@@ -1607,46 +1487,6 @@
       }
     },
     {
-      "id": "g4-argon-0084",
-      "revision": 1,
-      "status": "verified_candidate",
-      "grade": 4,
-      "type": "definition",
-      "difficultyTier": "core",
-      "variantTag": "polysemy",
-      "target": {
-        "lemma": "감사하다",
-        "partOfSpeech": "형용사",
-        "senseKey": "감사하다/형용사/387972-2"
-      },
-      "stem": "「우산을 씌워 준 친구의 배려가 참 감사하다.」에서 ‘감사하다’의 뜻은?",
-      "options": [
-        {
-          "id": "a",
-          "text": "섭섭하고 서운한 감정이 남아 있다"
-        },
-        {
-          "id": "b",
-          "text": "해야 할 일이 없어 무료하고 지루하다"
-        },
-        {
-          "id": "c",
-          "text": "낯선 곳에 혼자 있어 무섭고 떨리다"
-        },
-        {
-          "id": "d",
-          "text": "도움에 대하여 고마운 마음이 있다"
-        }
-      ],
-      "correctOptionId": "d",
-      "explanation": "여기서 형용사 ‘감사하다’는 고마운 마음이 있다는 뜻이에요.",
-      "distractorRationales": {
-        "a": "아쉽고 서운한 마음이라 고마움과 반대예요.",
-        "b": "심심하고 지루한 기분을 나타내는 말이에요.",
-        "c": "두렵고 불안한 상태를 설명하는 말이에요."
-      }
-    },
-    {
       "id": "g4-argon-0085",
       "revision": 1,
       "status": "verified_candidate",
@@ -1687,6 +1527,46 @@
       }
     },
     {
+      "id": "g4-argon-0086",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 4,
+      "type": "usage",
+      "difficultyTier": "core",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "걱정하다",
+        "partOfSpeech": "동사",
+        "senseKey": "걱정하다/동사/394343-1"
+      },
+      "stem": "‘걱정하다’를 바르게 쓴 문장은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "문제가 다 풀려 마음을 놓으며 걱정했다."
+        },
+        {
+          "id": "b",
+          "text": "원하던 상을 받아 신이 나서 걱정했다."
+        },
+        {
+          "id": "c",
+          "text": "동생의 열이 내리지 않아 밤새 걱정했다."
+        },
+        {
+          "id": "d",
+          "text": "마음이 아주 편하고 든든해서 걱정했다."
+        }
+      ],
+      "correctOptionId": "c",
+      "explanation": "‘걱정하다’는 안심이 되지 않아 마음을 졸이고 속을 태울 때 써요.",
+      "distractorRationales": {
+        "a": "마음을 놓는 상황은 속을 태우는 ‘걱정하다’와 반대예요.",
+        "b": "상을 받아 신이 난 기분에는 ‘기뻐했다’가 어울려요.",
+        "d": "편하고 든든한 마음 상태에는 ‘걱정하다’를 쓰지 않아요."
+      }
+    },
+    {
       "id": "g4-argon-0088",
       "revision": 1,
       "status": "verified_candidate",
@@ -1724,47 +1604,6 @@
         "a": "수가 적고 약한 모습은 세력이 큰 것과 반대예요.",
         "c": "겁을 먹고 숨는 행동은 당당한 기세와 어긋나요.",
         "d": "물건의 길이나 폭을 재는 뜻이 아니에요."
-      }
-    },
-    {
-      "id": "g4-argon-0090",
-      "revision": 1,
-      "status": "verified_candidate",
-      "grade": 4,
-      "type": "definition",
-      "difficultyTier": "challenge",
-      "variantTag": "dialect",
-      "dialectRegion": "강원",
-      "target": {
-        "lemma": "딸구",
-        "partOfSpeech": "명사",
-        "senseKey": "딸구/명사/od-419142-1"
-      },
-      "stem": "밭에서 빨갛게 익은 열매를 따시던 강원도 할머니께서 “새콤달콤한 딸구 좀 맛보렴.”이라고 하셨습니다. ‘딸구’의 뜻은 무엇일까요?",
-      "options": [
-        {
-          "id": "a",
-          "text": "수박"
-        },
-        {
-          "id": "b",
-          "text": "딸기"
-        },
-        {
-          "id": "c",
-          "text": "참외"
-        },
-        {
-          "id": "d",
-          "text": "포도"
-        }
-      ],
-      "correctOptionId": "b",
-      "explanation": "밭에서 빨갛게 익고 새콤달콤한 ‘딸구’는 ‘딸기’의 방언이에요.",
-      "distractorRationales": {
-        "a": "수박은 겉이 초록색이고 덩치가 큰 여름 열매예요.",
-        "c": "참외는 껍질이 노란 열매라 빨갛게 익지 않아요.",
-        "d": "포도는 보랏빛 알맹이가 송이째 열리는 과일이에요."
       }
     },
     {
@@ -1891,44 +1730,85 @@
       }
     },
     {
-      "id": "g4-argon-0094",
-      "revision": 1,
+      "id": "g4-argon-0095",
+      "revision": 2,
       "status": "verified_candidate",
       "grade": 4,
       "type": "definition",
       "difficultyTier": "challenge",
       "variantTag": "dialect",
-      "dialectRegion": "전라",
+      "dialectRegion": "제주",
       "target": {
-        "lemma": "복쟁이",
+        "lemma": "강생이",
         "partOfSpeech": "명사",
-        "senseKey": "복쟁이/명사/od-988133-2"
+        "senseKey": "강생이/명사/od-486494-1"
       },
-      "stem": "봄날 도랑물에서 개구리 알에서 갓 깨어나 꼬리를 흔들며 헤엄치는 모습을 보고 할아버지께서 “복쟁이가 많구나.”라고 하셨습니다. ‘복쟁이’의 뜻은 무엇일까요?",
+      "stem": "멍멍 짖으며 꼬리를 흔들고 달려오는 새끼 동물을 보시고 제주 할머니께서 “우리 강생이가 참 귀엽구나.”라고 하셨습니다. ‘강생이’의 뜻은 무엇일까요?",
       "options": [
         {
           "id": "a",
-          "text": "올챙이"
+          "text": "송아지"
         },
         {
           "id": "b",
-          "text": "송사리"
+          "text": "강아지"
         },
         {
           "id": "c",
-          "text": "다슬기"
+          "text": "병아리"
         },
         {
           "id": "d",
-          "text": "물방개"
+          "text": "고양이"
         }
       ],
-      "correctOptionId": "a",
-      "explanation": "개구리 알에서 깨어나 헤엄치는 ‘복쟁이’는 ‘올챙이’의 전라 방언이에요.",
+      "correctOptionId": "b",
+      "explanation": "멍멍 짖으며 꼬리를 흔드는 새끼 동물인 ‘강생이’는 ‘강아지’의 제주 방언이에요.",
       "distractorRationales": {
-        "b": "송사리는 물고기라 개구리 알에서 깨어나지 않아요.",
-        "c": "다슬기는 돌에 붙어 사는 고둥 모양 동물이에요.",
-        "d": "물방개는 딱딱한 날개를 가진 물속 곤충이에요."
+        "a": "송아지는 음매 하고 우는 소의 새끼라 멍멍 짖지 않아요.",
+        "c": "병아리는 삐약삐약 우는 닭의 새끼라 문맥과 맞지 않아요.",
+        "d": "고양이는 야옹 하고 울며 멍멍 짖는 동물이 아니에요."
+      }
+    },
+    {
+      "id": "g4-argon-0097",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 4,
+      "type": "definition",
+      "difficultyTier": "challenge",
+      "variantTag": "dialect",
+      "dialectRegion": "충청",
+      "target": {
+        "lemma": "올갱이",
+        "partOfSpeech": "명사",
+        "senseKey": "올갱이/명사/od-577416-1"
+      },
+      "stem": "맑은 시냇물 돌 밑에서 까맣고 작은 민물 고둥을 줍던 삼촌이 “국 끓일 올갱이를 많이 잡았다.”라고 하셨습니다. ‘올갱이’의 뜻은 무엇일까요?",
+      "options": [
+        {
+          "id": "a",
+          "text": "피라미"
+        },
+        {
+          "id": "b",
+          "text": "다슬기"
+        },
+        {
+          "id": "c",
+          "text": "가자미"
+        },
+        {
+          "id": "d",
+          "text": "오징어"
+        }
+      ],
+      "correctOptionId": "b",
+      "explanation": "시냇물 돌 밑에 사는 작은 민물 고둥인 ‘올갱이’는 ‘다슬기’의 방언이에요.",
+      "distractorRationales": {
+        "a": "피라미는 시냇물을 헤엄치는 물고기라 고둥이 아니에요.",
+        "c": "가자미는 몸이 납작한 바닷물고기라 시냇물에 살지 않아요.",
+        "d": "오징어는 다리가 열 개인 바다 동물이라 문맥과 달라요."
       }
     },
     {
@@ -1970,47 +1850,6 @@
         "a": "밤나무는 가시 송이 속에 밤이 열리며 겨울에 잎이 져요.",
         "b": "감나무는 가을에 주황빛 감이 열리고 솔방울이 없어요.",
         "d": "배나무는 과수원에서 배가 열리는 넓은잎 나무예요."
-      }
-    },
-    {
-      "id": "g4-argon-0099",
-      "revision": 1,
-      "status": "verified_candidate",
-      "grade": 4,
-      "type": "definition",
-      "difficultyTier": "challenge",
-      "variantTag": "dialect",
-      "dialectRegion": "전라",
-      "target": {
-        "lemma": "도채비",
-        "partOfSpeech": "명사",
-        "senseKey": "도채비/명사/od-127441-1"
-      },
-      "stem": "옛날이야기를 들려주시던 할머니께서 “뿔 달린 도채비가 방망이를 두드리면 금은보화가 나왔단다.”라고 하셨습니다. ‘도채비’의 뜻은 무엇일까요?",
-      "options": [
-        {
-          "id": "a",
-          "text": "도깨비"
-        },
-        {
-          "id": "b",
-          "text": "호랑이"
-        },
-        {
-          "id": "c",
-          "text": "산신령"
-        },
-        {
-          "id": "d",
-          "text": "원숭이"
-        }
-      ],
-      "correctOptionId": "a",
-      "explanation": "방망이를 두드려 보물을 내는 ‘도채비’는 ‘도깨비’의 방언이에요.",
-      "distractorRationales": {
-        "b": "호랑이는 날카로운 이빨을 가진 산속 맹수예요.",
-        "c": "산신령은 산을 지키는 신령님으로 뿔과 방망이가 없어요.",
-        "d": "원숭이는 나무를 잘 타는 동물이라 요술 방망이가 없어요."
       }
     },
     {
