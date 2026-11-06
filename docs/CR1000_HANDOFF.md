@@ -3,6 +3,13 @@
 작성 2026-11-06 · 작성 Claude Opus 5.5(총괄) · 받는 쪽 Codex(메인 세션)
 같이 읽을 것: [계획서 CONTENT_REVIEW_PLAN.md](CONTENT_REVIEW_PLAN.md)(기준 문서), [AGENTS.md](../AGENTS.md)
 
+### 5학년 026 확인·6학년 기존 검수 40개 재사용 (Codex, 2026-11-06 16:10 KST)
+
+- 5학년 **026은 36생성·14반려**, Argon 7호출로 완료했다. 메인이 **116파일**의 경로/해시·초안/자체 반박 스키마·정답만 fits·엄격 검사·전역 ID 충돌 0을 확인했다. 출처 불확정 13후보는 원본 목록과 조회 근거로 제외 사유를 대조했고, 나머지 1개는 빈칸 형식 오류다. `.orchestrate/g5-supplement.staging-audit.json`에 보존했다. **022~026 확인 누계 181생성·69반려**이며 공개 승인 수가 아니다. PID 78689는 마지막 027 제작 중이다.
+- 6학년 시범 S2 대상은 **48개 전체가 아니라 수정판 8개**다. 처음 예상한 48과 실제 미검수 8의 차이를 조사했고, 커밋 `7f38061`의 gpt-6-astra/high 검수 40개가 현재 revision/content hash와 일치함을 **두 단계 원본 응답·입력·저장 보고서로 직접 대조**했다. 블라인드 입력에는 정답·해설·사전 뜻풀이가 없었다. `.orchestrate/recovery/g6-pilot-review/existing.audit.json`에 처음 가정의 오류와 재사용 근거를 함께 보존했다. 같은 40개를 다시 호출하지 않는다.
+- **PID 40155** `.orchestrate/recovery/g6-pilot-review/run.mjs`는 현재 `awaiting-pilot-gate`, 모델 호출 **0회**다. 진행 중인 4·5학년 시범 Claude PID 37733 종료 뒤 같은 실행 자리를 이어받아 **8개만 gpt-6-astra/high**로 검수한다. 선행 종료 대기는 최대 2시간이고, 비정상 중단/입력 변경 시 멈춘다. 이전 검수 원본은 해시 대조 후 별도 보관하며 결과는 staging에만 쓰고 메인 확인을 기다린다. `plan.json`, `summary.json`, `run.out`은 같은 폴더다. 반영 실행기에 이 결과의 audit·manifest 확인도 연결했고 두 운영 실행기의 구문 확인이 통과했다.
+- Claude PID 37733은 66개 블라인드를 마치고 첫 해설 대조 호출 중(총 3호출)이다. **완료 판정 수는 아직 집계하지 않는다.** G1 완료 전 일반 배치 S4 확대 보류는 유지한다. 다른 보호 작업 PID 61118이 계속 실행 중이므로 서버 시험·005 pending 반영은 **미실행**이다. 제품 코드 변경은 없고 앞선 관련 92시험 결과를 재사용한다. 타인 변경과 005 pending은 그대로 보존했다.
+
 ### 40개 재검수 누적 확인·시범 Claude 66개 시작 (Codex, 2026-11-06 15:53 KST)
 
 - 병합 수정 **`82e1304`**를 실제 재검수 결과에 적용했다. 메인이 현재 초안과 blind/reveal 입력·원본 응답·gpt-6-astra/high 봉인·항목별 실행 출처·새 manifest/스키마를 직접 대조했다. **4학년 새 26개 = 21통과·5지적, 5학년 새 14개 = 12통과·2지적**, 합계 40개다. 앞선 대기 보고서 **129항목(79+50)을 그대로 보존**했고 새 보고서는 105/64항목이다. `.orchestrate/recovery/pilot-recheck/{phase.audit,audit,ingest.summary}.json`, audit는 `verified-awaiting-apply`다. 추가 모델 호출은 없다.
