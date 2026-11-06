@@ -261,6 +261,8 @@ function loadRawStudyPool(): Promise<readonly StudyQuestionLike[]> {
     });
     for (const bank of orderedBanks) {
       for (const q of bank.questions) {
+        // 전체 목록은 원학년으로 표시하므로 그 학년의 수준을 쓴다. 공유본의 수준은 오늘의 낱말에서 쓴다.
+        if (q.grade !== bank.grade) continue;
         const prev = byId.get(q.id);
         if (!prev || q.revision >= prev.revision) {
           byId.set(q.id, { ...q, fromBank: true });
