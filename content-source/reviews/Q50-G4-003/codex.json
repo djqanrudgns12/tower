@@ -1,11 +1,11 @@
 {
-  "reviewId": "Q50-G4-003-codex",
-  "jobId": "QR-Q50-CODEX",
+  "reviewId": "QR-AUTO-codex-Q50-G4-003",
+  "jobId": "Q50-G4-003",
   "reviewer": {
-    "model": "GPT-6 (Codex)",
-    "tool": "Codex",
+    "model": "gpt-6-astra",
+    "tool": "2단계 블라인드 검수(tools/orchestrate/review.mjs)",
     "freshContext": true,
-    "date": "2026-10-30"
+    "date": "2026-11-06"
   },
   "items": [
     {
@@ -18,13 +18,11 @@
         "uniqueness": "pass",
         "grade": "pass",
         "language": "pass",
-        "explanation": "uncertain"
+        "explanation": "pass"
       },
       "findings": [
-        "차분한 a; b 성급,c 소란,d 불안은 침착의 반대 방향.",
-        "사전 대조: 침착하다 / 형용사 / 뜻번호 1 / senseId 510942. 뜻풀이: 행동이 들뜨지 아니하고 차분하다. 문맥·보기와 대조.",
-        "학년 3~4의 일상·학교·자연 맥락 및 basic/standard 적합. 보기의 문법 결합·문장 종결·표면 반복/길이 단서를 점검함.",
-        "해설과 정답키는 블라인드 입력에 없어 explanation=uncertain."
+        "[블라인드] 갑작스러운 소식에도 흔들리지 않는 태도이므로 ‘차분하다’만 뜻이 가깝습니다. 문장과 보기 모두 4학년에게 적절합니다.",
+        "[공개 대조] ‘차분하다’만 침착한 태도와 뜻이 가까우며, 제시된 형용사 뜻풀이와 일치합니다. 해설과 오답 이유도 적절합니다."
       ]
     },
     {
@@ -35,15 +33,13 @@
       "verdicts": {
         "source": "pass",
         "uniqueness": "pass",
-        "grade": "pass",
+        "grade": "uncertain",
         "language": "pass",
-        "explanation": "uncertain"
+        "explanation": "pass"
       },
       "findings": [
-        "문제 처리 a; b 끈 묶기,c 물 흐름,d 꽃 핌은 해결 동사와 안 맞음.",
-        "사전 대조: 해결하다 / 동사 / 뜻번호 1 / senseId 318627. 뜻풀이: 제기된 문제를 해명하거나 얽힌 일을 잘 처리하다. 문맥·보기와 대조.",
-        "학년 3~4의 일상·학교·자연 맥락 및 basic/standard 적합. 보기의 문법 결합·문장 종결·표면 반복/길이 단서를 점검함.",
-        "해설과 정답키는 블라인드 입력에 없어 explanation=uncertain."
+        "[블라인드] 문제를 해결했다는 a만 올바른 용례이며, 오답의 잘못된 용법도 분명합니다. 일상적인 어휘와 쉽게 배제되는 오답으로 구성되어 advanced보다는 basic 또는 core가 적절합니다.",
+        "[공개 대조] 문제를 처리한다는 a만 근거의 뜻에 맞고 해설도 정확합니다. 익숙한 용례와 쉽게 배제되는 오답이므로 difficultyTier를 advanced에서 basic 또는 core로 조정하세요."
       ]
     },
     {
@@ -56,13 +52,11 @@
         "uniqueness": "pass",
         "grade": "pass",
         "language": "pass",
-        "explanation": "uncertain"
+        "explanation": "pass"
       },
       "findings": [
-        "확인된 확실 c; a 불안,b 모호,d 수상은 확인 사실과 모순.",
-        "사전 대조: 확실하다 / 형용사 / 뜻번호 1 / senseId 325389. 뜻풀이: 틀림없이 그러하다. 문맥·보기와 대조.",
-        "학년 3~4의 일상·학교·자연 맥락 및 basic/standard 적합. 보기의 문법 결합·문장 종결·표면 반복/길이 단서를 점검함.",
-        "해설과 정답키는 블라인드 입력에 없어 explanation=uncertain."
+        "[블라인드] 자료를 대조하여 사실임을 확인했다는 근거가 있어 ‘확실하다’가 유일하게 적절합니다. 어휘와 문장 수준도 core에 맞습니다.",
+        "[공개 대조] 자료를 대조해 사실임을 확인했다는 문맥에는 ‘확실하다’만 적절합니다. 정답과 해설이 근거의 ‘틀림없이 그러하다’에 부합합니다."
       ]
     },
     {
@@ -75,13 +69,11 @@
         "uniqueness": "pass",
         "grade": "pass",
         "language": "pass",
-        "explanation": "uncertain"
+        "explanation": "pass"
       },
       "findings": [
-        "포기 절망 b; a 동의,c 정성,d 약속은 희망의 반대 아님.",
-        "사전 대조: 희망 / 명사 / 뜻번호 1 / senseId 29163. 뜻풀이: 「1」 어떤 일을 이루거나 하기를 바람. ≒ 기망 , 기원 , 희기 , 희원 , 희행 . 문맥·보기와 대조.",
-        "학년 3~4의 일상·학교·자연 맥락 및 basic/standard 적합. 보기의 문법 결합·문장 종결·표면 반복/길이 단서를 점검함.",
-        "해설과 정답키는 블라인드 입력에 없어 explanation=uncertain."
+        "[블라인드] 이루어지기를 바라는 희망과 반대되는 것은 기대를 잃는 절망입니다. 보기의 형식이 비슷하고 정답도 하나로 구별됩니다.",
+        "[공개 대조] 어떤 일을 이루기를 바라는 희망과 반대되는 것은 바람을 잃는 절망입니다. 보기의 형식이 균형을 이루며 해설과 오답 이유도 타당합니다."
       ]
     },
     {
@@ -92,15 +84,13 @@
       "verdicts": {
         "source": "pass",
         "uniqueness": "pass",
-        "grade": "pass",
+        "grade": "uncertain",
         "language": "pass",
-        "explanation": "uncertain"
+        "explanation": "pass"
       },
       "findings": [
-        "욕심 없는 c; a 맛은 다른 뜻,b 급함,d 욕심은 성품 문맥 불일치.",
-        "사전 대조: 담백하다 / 형용사 / 뜻번호 1 / senseId 478666. 뜻풀이: 「1」 욕심이 없고 마음이 깨끗하다. ≒ 담박하다 , 담하다 . 문맥·보기와 대조.",
-        "학년 3~4의 일상·학교·자연 맥락 및 basic/standard 적합. 보기의 문법 결합·문장 종결·표면 반복/길이 단서를 점검함.",
-        "해설과 정답키는 블라인드 입력에 없어 explanation=uncertain."
+        "[블라인드] 남의 물건을 탐내지 않는 성품을 설명하므로 c가 맞습니다. 맛을 나타내는 뜻과 성품을 나타내는 뜻을 구별하는 구성이므로 variantTag를 standard에서 polysemy로 바꾸는 것이 적절합니다.",
+        "[공개 대조] 성품을 설명하는 c가 제시된 첫 번째 뜻과 정확히 일치하며, 음식 맛을 설명하는 a는 해당 문맥에 맞지 않습니다. 서로 다른 뜻을 구별하는 구성이므로 variantTag를 polysemy로 조정하세요."
       ]
     },
     {
@@ -113,32 +103,28 @@
         "uniqueness": "pass",
         "grade": "pass",
         "language": "pass",
-        "explanation": "uncertain"
+        "explanation": "pass"
       },
       "findings": [
-        "대상에 대한 생각 c; a 옷차림,b 위치,d 별명은 의견 아님.",
-        "사전 대조: 의견 / 명사 / 뜻번호 1 / senseId 578719. 뜻풀이: 어떤 대상에 대하여 가지는 생각. 문맥·보기와 대조.",
-        "학년 3~4의 일상·학교·자연 맥락 및 basic/standard 적합. 보기의 문법 결합·문장 종결·표면 반복/길이 단서를 점검함.",
-        "해설과 정답키는 블라인드 입력에 없어 explanation=uncertain."
+        "[블라인드] 주인공의 행동에 대한 의견은 각자의 생각을 뜻하므로 c만 알맞습니다. 독서 모임 상황과 문장이 자연스럽습니다.",
+        "[공개 대조] 주인공의 행동에 대한 의견은 각자의 생각을 뜻하므로 c만 적절합니다. 근거와 해설이 일치하고 독서 모임 문맥도 자연스럽습니다."
       ]
     },
     {
       "questionId": "g4-argon-0107",
-      "revision": 1,
-      "contentHash": "df6a39dfcb9de0db0cb3326cd54fa17d88aaa94faac8f681357584fa1e9b3b2b",
+      "revision": 2,
+      "contentHash": "878d3548582a6220f15aed669a963d4d527132626356b592dc47d10ec81ea55c",
       "blindChoice": "b",
       "verdicts": {
         "source": "pass",
-        "uniqueness": "fail",
+        "uniqueness": "pass",
         "grade": "pass",
         "language": "pass",
-        "explanation": "uncertain"
+        "explanation": "pass"
       },
       "findings": [
-        "비를 미리 짐작 b; a 어제 경기 점수를 과거에 예상했다는 해석도 가능,c 깎기,d 먹기는 예상 아님.",
-        "사전 대조: 예상하다 / 동사 / 뜻번호 1 / senseId 17906. 뜻풀이: 「1」 어떤 일을 직접 당하기 전에 미리 생각하여 두다. 문맥·보기와 대조.",
-        "a ‘어제 끝난 경기 점수를 예상했다’도 경기 전 예측을 회상하거나 아직 결과를 모르는 상황에서 성립. ‘이미 점수를 확인하고도 ...’로 시간관계 명시.",
-        "해설과 정답키는 블라인드 입력에 없어 explanation=uncertain."
+        "[블라인드] 캠핑을 손꼽아 기대했다는 것은 가기를 바라면서 기다렸다는 뜻입니다. 다른 보기는 기대와 다른 감정이나 행동을 나타냅니다.",
+        "[공개 대조] 캠핑을 가기를 바라면서 기다렸다는 b만 기대의 뜻을 유지합니다. 정답과 해설이 동사 뜻풀이에 부합하며 다른 감정이나 행동을 나타내는 보기와 구별됩니다."
       ]
     },
     {
@@ -151,13 +137,11 @@
         "uniqueness": "pass",
         "grade": "pass",
         "language": "pass",
-        "explanation": "uncertain"
+        "explanation": "pass"
       },
       "findings": [
-        "뒤 경치 배경 c; a 글씨,b 약속,d 순서는 경치 아님.",
-        "사전 대조: 배경 / 명사 / 뜻번호 1 / senseId 10316. 뜻풀이: 「1」 뒤쪽의 경치. ≒ 뒷배경 . 문맥·보기와 대조.",
-        "학년 3~4의 일상·학교·자연 맥락 및 basic/standard 적합. 보기의 문법 결합·문장 종결·표면 반복/길이 단서를 점검함.",
-        "해설과 정답키는 블라인드 입력에 없어 explanation=uncertain."
+        "[블라인드] 가족사진의 뒤쪽에 보이는 바다와 등대를 가리키는 말은 ‘배경’입니다. 익숙한 사진 촬영 상황으로 basic 수준에 적합합니다.",
+        "[공개 대조] 바다와 등대가 이루는 뒤쪽 경치를 가리키는 말은 ‘배경’입니다. 사진 촬영 상황, 사전 근거, 해설이 서로 맞습니다."
       ]
     },
     {
@@ -168,15 +152,13 @@
       "verdicts": {
         "source": "pass",
         "uniqueness": "pass",
-        "grade": "pass",
+        "grade": "uncertain",
         "language": "pass",
-        "explanation": "uncertain"
+        "explanation": "fail"
       },
       "findings": [
-        "평온한 일상 d; a 뜻밖 일,b 소동,c 이상 소문은 사건 쪽.",
-        "사전 대조: 사건 / 명사 / 뜻번호 1 / senseId 12589. 뜻풀이: 「1」 사회적으로 문제를 일으키거나 주목을 받을 만한 뜻밖의 일. 문맥·보기와 대조.",
-        "학년 3~4의 일상·학교·자연 맥락 및 basic/standard 적합. 보기의 문법 결합·문장 종결·표면 반복/길이 단서를 점검함.",
-        "해설과 정답키는 블라인드 입력에 없어 explanation=uncertain."
+        "[블라인드] 제시한 뜻밖의 큰 사건과 대조되는 상황은 d로 분명하지만, ‘사건’과 ‘일상’ 자체가 반의어인 것은 아닙니다. 상황 대조 유형으로 분류하고, 단순한 대조만 요구하는 난도를 고려하여 advanced를 core로 조정하는 것이 좋습니다.",
+        "[공개 대조] d만 제시된 사건 상황과 대조되지만, 사건과 일상 자체를 반의어로 단정한 해설은 부정확하므로 ‘이 상황과 대조되는 것은 별일 없는 일상’으로 고치세요. 유형을 상황 대조로 정리하고 difficultyTier는 core로 조정하세요."
       ]
     },
     {
@@ -189,13 +171,11 @@
         "uniqueness": "pass",
         "grade": "pass",
         "language": "pass",
-        "explanation": "uncertain"
+        "explanation": "pass"
       },
       "findings": [
-        "중심 문제 c; a 초라함은 동음어,b 뒷정리,d 음량은 중심 의제 아님.",
-        "사전 대조: 주제 / 명사 / 뜻번호 1 / senseId 22770. 뜻풀이: 「1」 대화나 연구 따위에서 중심이 되는 문제. 문맥·보기와 대조.",
-        "학년 3~4의 일상·학교·자연 맥락 및 basic/standard 적합. 보기의 문법 결합·문장 종결·표면 반복/길이 단서를 점검함.",
-        "해설과 정답키는 블라인드 입력에 없어 explanation=uncertain."
+        "[블라인드] 학급 회의에서 중심으로 다루는 문제를 뜻하므로 c가 맞습니다. 회의라는 문맥이 있어 옷차림을 뜻하는 다른 ‘주제’와도 구별됩니다.",
+        "[공개 대조] 학급 회의에서 중심으로 다루는 문제라는 c가 해당 명사 뜻과 일치합니다. 옷차림을 가리키는 동음이의어와도 문맥상 구별되며 오답 설명이 타당합니다."
       ]
     },
     {
@@ -208,13 +188,11 @@
         "uniqueness": "pass",
         "grade": "pass",
         "language": "pass",
-        "explanation": "uncertain"
+        "explanation": "pass"
       },
       "findings": [
-        "매달린 c; a 쏟아짐,b 파손,d 소멸은 벽에 달린 상태 아님.",
-        "사전 대조: 걸리다 / 동사 / 뜻번호 1 / senseId 370738. 뜻풀이: 「1」 어떤 물체가 떨어지지 않고 벽이나 못 따위에 매달리다. ‘ 걸다 ’의 피동사. 문맥·보기와 대조.",
-        "학년 3~4의 일상·학교·자연 맥락 및 basic/standard 적합. 보기의 문법 결합·문장 종결·표면 반복/길이 단서를 점검함.",
-        "해설과 정답키는 블라인드 입력에 없어 explanation=uncertain."
+        "[블라인드] 못에 달력이 걸린 상태는 ‘매달려’로 바꾸어 표현할 수 있습니다. 다른 보기는 달력이 반듯하게 걸린 상태와 맞지 않습니다.",
+        "[공개 대조] 못에 달력이 걸린 상태는 ‘매달려’로 바꾸어 표현할 수 있으며 다른 보기는 뜻을 유지하지 못합니다. 근거의 물리적 매달림과 해설이 일치합니다."
       ]
     },
     {
@@ -227,13 +205,11 @@
         "uniqueness": "pass",
         "grade": "pass",
         "language": "pass",
-        "explanation": "uncertain"
+        "explanation": "pass"
       },
       "findings": [
-        "찰흙 단단해짐 a; b 녹음은 반대,c 날짜 쓰기,d 책 반환은 굳다 아님.",
-        "사전 대조: 굳다 / 동사 / 뜻번호 1 / senseId 29285. 뜻풀이: 「1」 무른 물질이 단단하게 되다. 문맥·보기와 대조.",
-        "학년 3~4의 일상·학교·자연 맥락 및 basic/standard 적합. 보기의 문법 결합·문장 종결·표면 반복/길이 단서를 점검함.",
-        "해설과 정답키는 블라인드 입력에 없어 explanation=uncertain."
+        "[블라인드] 무르던 찰흙이 단단해지는 상황에 ‘굳다’를 쓴 a만 적절합니다. 용법의 옳고 그름을 판단하는 basic 문항으로 무리가 없습니다.",
+        "[공개 대조] 무르던 찰흙이 단단해지는 a만 해당 동사 뜻에 맞습니다. 용법 판단을 위한 오용 보기와 그 이유도 분명합니다."
       ]
     },
     {
@@ -245,14 +221,12 @@
         "source": "pass",
         "uniqueness": "pass",
         "grade": "pass",
-        "language": "pass",
-        "explanation": "uncertain"
+        "language": "fail",
+        "explanation": "pass"
       },
       "findings": [
-        "껍질 깎는 c; a 묶기,b 입기,d 신기는 과일 껍질 제거 아님.",
-        "사전 대조: 깎다 / 동사 / 뜻번호 1 / senseId 30372. 뜻풀이: 「1」 칼 따위로 물건의 거죽이나 표면을 얇게 벗겨 내다. 문맥·보기와 대조.",
-        "학년 3~4의 일상·학교·자연 맥락 및 basic/standard 적합. 보기의 문법 결합·문장 종결·표면 반복/길이 단서를 점검함.",
-        "해설과 정답키는 블라인드 입력에 없어 explanation=uncertain."
+        "[블라인드] 보기 중에는 ‘깎아’만 맞지만, 껍질을 벗겨 낸 뒤 다시 깎는 것처럼 같은 동작을 중복하여 서술했습니다. 지문을 ‘할머니께서 과도로 사과를 정성껏 (    ) 주셨습니다’로 고치면 자연스럽습니다.",
+        "[공개 대조] 정답과 해설은 표면을 얇게 벗겨 낸다는 근거에 맞지만, 지문은 껍질을 벗겨 낸 뒤 다시 깎는 것처럼 같은 동작을 중복합니다. ‘할머니께서 과도로 사과를 정성껏 (    ) 주셨습니다’로 고치세요."
       ]
     },
     {
@@ -265,13 +239,11 @@
         "uniqueness": "pass",
         "grade": "pass",
         "language": "pass",
-        "explanation": "uncertain"
+        "explanation": "pass"
       },
       "findings": [
-        "재미있는 d; a 지루,b 위험,c 비슷은 흥미 아님.",
-        "사전 대조: 흥미롭다 / 형용사 / 뜻번호 1 / senseId 330228. 뜻풀이: 흥을 느끼는 재미가 있다. 문맥·보기와 대조.",
-        "학년 3~4의 일상·학교·자연 맥락 및 core/standard 적합. 보기의 문법 결합·문장 종결·표면 반복/길이 단서를 점검함.",
-        "해설과 정답키는 블라인드 입력에 없어 explanation=uncertain."
+        "[블라인드] 영상이 흥미로웠다는 말은 재미있었다는 말과 가장 가깝습니다. 과학관 관람 상황과 보기의 표현이 자연스럽습니다.",
+        "[공개 대조] ‘재미있었습니다’만 영상이 흥미로웠다는 뜻을 유지합니다. 제시된 형용사 뜻, 해설, 오답 이유가 서로 맞습니다."
       ]
     },
     {
@@ -282,15 +254,13 @@
       "verdicts": {
         "source": "pass",
         "uniqueness": "pass",
-        "grade": "pass",
+        "grade": "uncertain",
         "language": "pass",
-        "explanation": "uncertain"
+        "explanation": "pass"
       },
       "findings": [
-        "문제 해결 실마리 a; b 마심,c 공 차기,d 목도리 두르기는 단서를 물건으로 오용.",
-        "사전 대조: 단서 / 명사 / 뜻번호 1 / senseId 403975. 뜻풀이: 「1」 어떤 문제를 해결하는 방향으로 이끌어 가는 일의 첫 부분. ≒ 서단 . 문맥·보기와 대조.",
-        "학년 3~4의 일상·학교·자연 맥락 및 core/standard 적합. 보기의 문법 결합·문장 종결·표면 반복/길이 단서를 점검함.",
-        "해설과 정답키는 블라인드 입력에 없어 explanation=uncertain."
+        "[블라인드] 문제를 풀 실마리라는 뜻으로 ‘단서’를 쓴 a만 적절합니다. 나머지가 모두 단서를 음식이나 물건처럼 취급하는 명백한 오답이므로 advanced보다는 core가 적절합니다.",
+        "[공개 대조] 문제 해결의 실마리라는 a만 사전 근거에 부합합니다. 다른 보기는 단서를 음식이나 생활 도구로 취급하여 쉽게 배제되므로 difficultyTier를 advanced에서 core로 조정하세요."
       ]
     },
     {
@@ -301,15 +271,13 @@
       "verdicts": {
         "source": "pass",
         "uniqueness": "pass",
-        "grade": "pass",
+        "grade": "uncertain",
         "language": "pass",
-        "explanation": "uncertain"
+        "explanation": "pass"
       },
       "findings": [
-        "의견 내놓기 b; a 구경,c 양보,d 정리는 제안 아님.",
-        "사전 대조: 제안하다 / 동사 / 뜻번호 1 / senseId 268329. 뜻풀이: 안이나 의견으로 내놓다. 문맥·보기와 대조.",
-        "학년 3~4의 일상·학교·자연 맥락 및 core/standard 적합. 보기의 문법 결합·문장 종결·표면 반복/길이 단서를 점검함.",
-        "해설과 정답키는 블라인드 입력에 없어 explanation=uncertain."
+        "[블라인드] 생각을 안이나 의견으로 내놓는 행위는 ‘제안하다’이므로 b가 맞습니다. 뜻풀이를 직접 대응시키는 문항이라 advanced를 뒷받침할 추론이나 의미 구별이 부족하므로 core로 조정하는 것이 좋습니다.",
+        "[공개 대조] 안이나 의견으로 내놓는 행위는 ‘제안하다’이며 근거와 해설이 일치합니다. 직접적인 뜻풀이 대응 문항이므로 difficultyTier를 advanced에서 core로 조정하세요."
       ]
     },
     {
@@ -320,34 +288,30 @@
       "verdicts": {
         "source": "pass",
         "uniqueness": "pass",
-        "grade": "pass",
+        "grade": "uncertain",
         "language": "pass",
-        "explanation": "uncertain"
+        "explanation": "pass"
       },
       "findings": [
-        "사실의 반대 거짓 b; a 진실,c 현실,d 근거는 거짓 아님.",
-        "사전 대조: 사실 / 명사 / 뜻번호 1 / senseId 2672. 뜻풀이: 「1」 실제로 있었던 일이나 현재에 있는 일. 문맥·보기와 대조.",
-        "학년 3~4의 일상·학교·자연 맥락 및 core/standard 적합. 보기의 문법 결합·문장 종결·표면 반복/길이 단서를 점검함.",
-        "해설과 정답키는 블라인드 입력에 없어 explanation=uncertain."
+        "[블라인드] 실제로 일어난 사실과 반대되는 말은 ‘거짓’입니다. 익숙한 반의 관계를 직접 묻고 있어 advanced보다는 basic 또는 core에 적합합니다.",
+        "[공개 대조] 실제로 일어난 사실과 반대되는 것은 거짓이며 나머지 보기는 반대말이 아닙니다. 익숙한 반의 관계를 직접 묻는 문항이므로 difficultyTier를 basic 또는 core로 조정하세요."
       ]
     },
     {
       "questionId": "g4-argon-0118",
-      "revision": 1,
-      "contentHash": "b51109024abbd7f16efc64de2a488ba43d355945567420746aa98543c4182bf2",
+      "revision": 2,
+      "contentHash": "35e7abc8349aa2173c8bf74e1722fdf29575b3d4f8ffa7ca9a7e10ba0fb66d5d",
       "blindChoice": "a",
       "verdicts": {
         "source": "pass",
         "uniqueness": "pass",
         "grade": "pass",
-        "language": "pass",
-        "explanation": "uncertain"
+        "language": "fail",
+        "explanation": "pass"
       },
       "findings": [
-        "예술을 즐기는 a; b 감상적 슬픔 동음,c 수선,d 청소는 예술 감상 아님.",
-        "사전 대조: 감상하다 / 동사 / 뜻번호 1 / senseId 375913. 뜻풀이: 주로 예술 작품을 이해하여 즐기고 평가하다. ≒ 상감하다 . 문맥·보기와 대조.",
-        "학년 3~4의 일상·학교·자연 맥락 및 core/standard 적합. 보기의 문법 결합·문장 종결·표면 반복/길이 단서를 점검함.",
-        "해설과 정답키는 블라인드 입력에 없어 explanation=uncertain."
+        "[블라인드] 상을 받고 환하게 웃는 상황에는 ‘기뻐했습니다’가 맞습니다. ‘오랫동안 연습한 피아노 대회’는 연습의 대상을 대회로 표현하여 어색하므로 ‘오랫동안 준비한 피아노 대회’로 고치세요.",
+        "[공개 대조] 상을 받고 환하게 웃는 상황에는 ‘기뻐했습니다’만 적절하며 근거와 해설도 맞습니다. ‘오랫동안 연습한 피아노 대회’는 수식 관계가 어색하므로 ‘오랫동안 준비한 피아노 대회’로 고치세요."
       ]
     },
     {
@@ -357,35 +321,31 @@
       "blindChoice": "b",
       "verdicts": {
         "source": "pass",
-        "uniqueness": "pass",
+        "uniqueness": "fail",
         "grade": "pass",
         "language": "pass",
-        "explanation": "uncertain"
+        "explanation": "fail"
       },
       "findings": [
-        "됨됨이로 본 사람 b; a 계절,c 물건,d 풍경은 인물 아님.",
-        "사전 대조: 인물 / 명사 / 뜻번호 1 / senseId 20955. 뜻풀이: 「1」 생김새나 됨됨이로 본 사람. 문맥·보기와 대조.",
-        "학년 3~4의 일상·학교·자연 맥락 및 core/standard 적합. 보기의 문법 결합·문장 종결·표면 반복/길이 단서를 점검함.",
-        "해설과 정답키는 블라인드 입력에 없어 explanation=uncertain."
+        "[블라인드] 됨됨이가 바르고 훌륭한 인물은 훌륭한 사람을 뜻하므로 b만 가능합니다. 문장 안에서 의미가 충분히 드러나 basic 수준으로 풀 수 있습니다.",
+        "[공개 대조] b는 근거에 맞지만, ‘물건’도 사람을 비유적으로 가리킬 수 있어 ‘훌륭한 물건’이라는 해석을 배제하기 어렵습니다. c를 ‘건물’처럼 사람을 가리키지 않는 보기로 바꾸고, 물건은 사람이 아니라는 단정적인 오답 이유도 수정하세요."
       ]
     },
     {
       "questionId": "g4-argon-0120",
-      "revision": 1,
-      "contentHash": "65754b7b712085b8faaedc58c91bc85d4921758deb82fc5867f55be834426dfe",
+      "revision": 2,
+      "contentHash": "df02e733da2d9ee87d6d4c2ba136e8dde3f29e4e321d298b3fbaa0f3eb3eaf43",
       "blindChoice": "c",
       "verdicts": {
         "source": "pass",
         "uniqueness": "pass",
-        "grade": "fail",
+        "grade": "pass",
         "language": "pass",
-        "explanation": "uncertain"
+        "explanation": "pass"
       },
       "findings": [
-        "잎 없는 가지 c; a 지우개,b 우유,d 모래는 줄거리 뜻과 안 맞음.",
-        "사전 대조: 줄거리 / 명사 / 뜻번호 1 / senseId 22131. 뜻풀이: 「1」 잎이 다 떨어진 나뭇가지. 문맥·보기와 대조.",
-        "줄거리의 드문 가지 뜻을 core/standard로 출제. 풀이를 주었지만 학교의 이야기 줄거리와 다른 뜻이므로 polysemy/advanced로 분류하거나 흔한 뜻으로 교체.",
-        "해설과 정답키는 블라인드 입력에 없어 explanation=uncertain."
+        "[블라인드] 선물을 받고 손뼉을 치는 상황에서 기뻐했다고 한 c가 적절합니다. 나머지는 서러움·실망·통증을 기쁨의 직접적인 이유로 제시하여 일반적인 문맥에 맞지 않습니다.",
+        "[공개 대조] 선물을 받고 손뼉을 치며 즐거워하는 c가 근거의 뜻에 맞습니다. 다른 보기는 서러움·실망·통증을 제시하여 일반적인 문맥에서 기뻐하는 용법과 구별됩니다."
       ]
     },
     {
@@ -398,13 +358,11 @@
         "uniqueness": "pass",
         "grade": "pass",
         "language": "pass",
-        "explanation": "uncertain"
+        "explanation": "pass"
       },
       "findings": [
-        "정리해 거두기 d; a 벌임,b 펼침,c 흩뜨림은 반대.",
-        "사전 대조: 거두다 / 동사 / 뜻번호 1 / senseId 449002. 뜻풀이: 「1」 벌여 놓거나 차려 놓은 것을 정리하다. 문맥·보기와 대조.",
-        "학년 3~4의 일상·학교·자연 맥락 및 core/standard 적합. 보기의 문법 결합·문장 종결·표면 반복/길이 단서를 점검함.",
-        "해설과 정답키는 블라인드 입력에 없어 explanation=uncertain."
+        "[블라인드] 벌이거나 차려 놓은 것을 치워 정리한다는 뜻에는 ‘거두다’만 맞습니다. 뜻풀이와 보기 모두 4학년이 이해할 수 있습니다.",
+        "[공개 대조] 벌이거나 차려 놓은 것을 정리한다는 뜻에는 ‘거두다’만 맞으며 해설도 정확합니다. 외국어 학습용 등급 표기와 별개로, 제시된 뜻풀이와 보기는 4학년이 이해할 수 있습니다."
       ]
     },
     {
@@ -417,13 +375,11 @@
         "uniqueness": "pass",
         "grade": "pass",
         "language": "pass",
-        "explanation": "uncertain"
+        "explanation": "pass"
       },
       "findings": [
-        "간격 불균일 b; a 가지런,c 한결,d 일정은 고름.",
-        "사전 대조: 고르다 / 형용사 / 뜻번호 1 / senseId 367855. 뜻풀이: 「1」 여럿이 다 높낮이, 크기, 양 따위의 차이가 없이 한결같다. 문맥·보기와 대조.",
-        "학년 3~4의 일상·학교·자연 맥락 및 core/standard 적합. 보기의 문법 결합·문장 종결·표면 반복/길이 단서를 점검함.",
-        "해설과 정답키는 블라인드 입력에 없어 explanation=uncertain."
+        "[블라인드] 간격이 일정하게 고른 상태의 반대는 간격이 들쭉날쭉한 상태입니다. 나머지 보기는 고른 상태와 비슷한 방향의 뜻이므로 정답이 분명합니다.",
+        "[공개 대조] 간격의 차이가 없이 고른 상태와 반대되는 것은 ‘들쭉날쭉하다’입니다. 구체적인 모종 간격이 뜻을 뒷받침하며 해설과 오답 이유도 적절합니다."
       ]
     },
     {
@@ -436,51 +392,45 @@
         "uniqueness": "pass",
         "grade": "pass",
         "language": "pass",
-        "explanation": "uncertain"
+        "explanation": "pass"
       },
       "findings": [
-        "보살펴 자람 c; a 수확,b 가지치기,d 흙 파기는 기르기 전체 뜻 아님.",
-        "사전 대조: 기르다 / 동사 / 뜻번호 1 / senseId 6992. 뜻풀이: 「1」 동식물을 보살펴 자라게 하다. 문맥·보기와 대조.",
-        "학년 3~4의 일상·학교·자연 맥락 및 core/standard 적합. 보기의 문법 결합·문장 종결·표면 반복/길이 단서를 점검함.",
-        "해설과 정답키는 블라인드 입력에 없어 explanation=uncertain."
+        "[블라인드] 방울토마토를 기른다는 것은 보살펴 자라게 한다는 뜻입니다. 수확이나 가지치기 같은 개별 행동을 제시한 다른 보기와 구별됩니다.",
+        "[공개 대조] 방울토마토를 보살펴 자라게 한다는 c가 근거와 일치합니다. 수확이나 가지치기 같은 개별 작업은 기르다의 뜻 전체를 대신하지 못합니다."
       ]
     },
     {
       "questionId": "g4-argon-0124",
-      "revision": 1,
-      "contentHash": "2dec3f038b4608b150a7ab0881593ac5cfa2c770d2d43da964aa005a8cfc7f0f",
+      "revision": 2,
+      "contentHash": "b424c07ad72e85ce316f71297bbed3d715390db50a6ba6b7f30baf5958d39875",
       "blindChoice": "b",
       "verdicts": {
         "source": "pass",
         "uniqueness": "pass",
         "grade": "pass",
         "language": "pass",
-        "explanation": "uncertain"
+        "explanation": "pass"
       },
       "findings": [
-        "잡아당기는 b; a 밀기 반대,c 들기,d 내려놓기 바닥 대고 이동 아님.",
-        "사전 대조: 끌다 / 동사 / 뜻번호 1 / senseId 30482. 뜻풀이: 「1」 바닥에 댄 채로 잡아당기다. 문맥·보기와 대조.",
-        "학년 3~4의 일상·학교·자연 맥락 및 core/standard 적합. 보기의 문법 결합·문장 종결·표면 반복/길이 단서를 점검함.",
-        "해설과 정답키는 블라인드 입력에 없어 explanation=uncertain."
+        "[블라인드] ‘끌어’와 뜻을 유지하며 바꿀 수 있는 말은 ‘잡아당겨’입니다. ‘밀어내어’도 상자를 옮기는 방법이지만 힘을 가하는 방향과 행동의 뜻이 달라 동의 표현은 아닙니다.",
+        "[공개 대조] ‘잡아당겨’만 끌다의 뜻을 유지하며, 밀어내는 것은 상자를 옮길 수 있어도 다른 행동입니다. 바닥에 댄 상태라는 조건과 사전 근거가 일치합니다."
       ]
     },
     {
       "questionId": "g4-argon-0125",
       "revision": 1,
       "contentHash": "90bf8024445448cfdbd001e0b08c8394de06f1447a34bf015796870157dee5de",
-      "blindChoice": "b",
+      "blindChoice": "multiple",
       "verdicts": {
         "source": "pass",
-        "uniqueness": "pass",
+        "uniqueness": "fail",
         "grade": "pass",
         "language": "pass",
-        "explanation": "uncertain"
+        "explanation": "fail"
       },
       "findings": [
-        "일부 잔액 b; a 완전히 비움과 모순,c 날림,d 묶기는 남기다 아님.",
-        "사전 대조: 남기다 / 동사 / 뜻번호 1 / senseId 29901. 뜻풀이: 「1」 다 쓰거나 정해진 수준에 이르지 않고 나머지가 있게 하다. ‘ 남다 ’의 사동사. 문맥·보기와 대조.",
-        "학년 3~4의 일상·학교·자연 맥락 및 core/standard 적합. 보기의 문법 결합·문장 종결·표면 반복/길이 단서를 점검함.",
-        "해설과 정답키는 블라인드 입력에 없어 explanation=uncertain."
+        "[블라인드] b는 돈을 일부 남긴다는 뜻으로 맞고, d도 운동화 끈을 묶은 상태로 남겨 두었다는 뜻으로 해석할 수 있습니다. d를 ‘남기다’가 성립하지 않는 명백한 오용 문장으로 바꾸어야 합니다.",
+        "[공개 대조] b는 제시된 뜻에 맞지만 d도 끈을 묶은 상태로 남겨 두었다는 용례로 해석할 수 있어 1단계의 복수 정답 판단을 유지합니다. d를 ‘운동화 끈이 저절로 남겼다’처럼 명백한 오용으로 바꾸고, 묶는 행동과 다르다는 이유만으로 배제한 설명도 수정하세요."
       ]
     },
     {
@@ -493,108 +443,96 @@
         "uniqueness": "pass",
         "grade": "pass",
         "language": "pass",
-        "explanation": "uncertain"
+        "explanation": "pass"
       },
       "findings": [
-        "기한을 넘기는 a; b 멈춤,c 당김,d 맞춤은 벗어나 지남 아님.",
-        "사전 대조: 넘기다 / 동사 / 뜻번호 1 / senseId 31150. 뜻풀이: 「1」 일정한 시간, 시기, 범위 따위를 벗어나 지나게 하다. ‘ 넘다 ’의 사동사. 문맥·보기와 대조.",
-        "학년 3~4의 일상·학교·자연 맥락 및 core/standard 적합. 보기의 문법 결합·문장 종결·표면 반복/길이 단서를 점검함.",
-        "해설과 정답키는 블라인드 입력에 없어 explanation=uncertain."
+        "[블라인드] 정해진 시간이나 시기를 지나게 하는 것은 ‘넘기다’입니다. 다른 보기는 멈추거나 앞당기거나 맞추는 행동이므로 구별됩니다.",
+        "[공개 대조] 정해진 시간이나 시기를 벗어나 지나게 한다는 뜻에는 ‘넘기다’만 맞습니다. 정답과 해설이 해당 사동사 뜻풀이에 부합합니다."
       ]
     },
     {
       "questionId": "g4-argon-0127",
-      "revision": 1,
-      "contentHash": "eb525c4edc3e7b109e316ec0bc2df504ce1c4d7817f7c1cafd489ab5dda0f66b",
+      "revision": 2,
+      "contentHash": "cbab81f4a6d48d551dc0a2bc7fd82b4732fe26800ffa2ec2f6ef8ecfcbd0558f",
       "blindChoice": "a",
       "verdicts": {
         "source": "pass",
         "uniqueness": "pass",
         "grade": "pass",
-        "language": "fail",
-        "explanation": "uncertain"
+        "language": "pass",
+        "explanation": "pass"
       },
       "findings": [
-        "방치 a; b 처리,c 자료 정리,d 진행 알림은 일처리와 관련되어 반대 아님.",
-        "사전 대조: 다루다 / 동사 / 뜻번호 1 / senseId 30093. 뜻풀이: 「1」 일거리를 처리하다. 문맥·보기와 대조.",
-        "‘맡은 일거리를 다루다와’ 연결 부자연스러움. 인용문 뒤 ‘다루다와 반대인 행동’으로 분리.",
-        "해설과 정답키는 블라인드 입력에 없어 explanation=uncertain."
+        "[블라인드] 판매할 목적으로 들여온 과일을 전문적으로 취급한다는 뜻에서 ‘다룹니다’가 맞습니다. 판매 목적이 명시되어 버리거나 숨긴다는 보기와 구별됩니다.",
+        "[공개 대조] 상점이 판매하려고 들여온 과일을 전문으로 취급한다는 문맥이므로 ‘다룹니다’가 적절합니다. 물건을 사고파는 일을 한다는 두 번째 뜻과 해설이 일치합니다."
       ]
     },
     {
       "questionId": "g4-argon-0128",
       "revision": 1,
       "contentHash": "06f71ae995614bea54a0b67ea5e86372b06cb9d4d45d86831268d4e02bf3dd89",
-      "blindChoice": "b",
+      "blindChoice": "none",
       "verdicts": {
         "source": "pass",
         "uniqueness": "pass",
         "grade": "pass",
         "language": "pass",
-        "explanation": "uncertain"
+        "explanation": "pass"
       },
       "findings": [
-        "견줄 수 없게 뛰어난 b; a 평범,c 서툼,d 작은 크기는 탁월함 아님.",
-        "사전 대조: 독특하다 / 형용사 / 뜻번호 2 / senseId 38371. 뜻풀이: 「2」 다른 것과 견줄 수 없을 정도로 뛰어나다. 문맥·보기와 대조.",
-        "학년 3~4의 일상·학교·자연 맥락 및 advanced/polysemy 적합. 보기의 문법 결합·문장 종결·표면 반복/길이 단서를 점검함.",
-        "해설과 정답키는 블라인드 입력에 없어 explanation=uncertain."
+        "[블라인드] ‘독특하다’는 보통의 것과 특별하게 다르다는 뜻이며, b의 비교할 대상이 없을 만큼 뛰어나다는 뜻과 같지 않아 정답이 없습니다. ‘그 장인의 도자기는 모양과 무늬가 독특했습니다’와 올바른 뜻풀이로 고치고, 근거 없는 polysemy 분류와 challenge 난도도 재설정하세요.",
+        "[공개 대조] 1단계의 none은 흔한 첫 번째 뜻만 고려하여 두 번째 뜻을 놓친 판단이었습니다. 1단계 응답은 유지하되, 제공된 근거의 ‘견줄 수 없을 정도로 뛰어나다’와 지문의 ‘누구도 따라갈 수 없이’에 따라 최종적으로 b의 유일성과 해설의 타당성을 인정합니다."
       ]
     },
     {
       "questionId": "g4-argon-0129",
-      "revision": 1,
-      "contentHash": "11d21cfa4be5b94247a931395a6fa68398e2a1c4600b58f1e8a075e60f0c038a",
+      "revision": 2,
+      "contentHash": "70499cab8719a93b1cab878a9212ec655b1899a7e3a27e12f574cc7894210d29",
       "blindChoice": "b",
       "verdicts": {
         "source": "pass",
-        "uniqueness": "pass",
-        "grade": "fail",
-        "language": "uncertain",
-        "explanation": "uncertain"
+        "uniqueness": "fail",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "fail"
       },
       "findings": [
-        "조건에 비한 b; a 준비,c 수선,d 수납은 이런 조건치고는 뜻 아님.",
-        "사전 대조: 마련하다 / 동사 / 뜻번호 2 / senseId 371854. 뜻풀이: 「2」 ((주로 ‘마련하면’, ‘마련해서는’ 꼴로 쓰여)) ‘그런 것치고는’, ‘그런 것에 비하여서는’의 뜻을 나타내는 말. 문맥·보기와 대조.",
-        "마련해서는의 드문 문어 용법은 4학년 일상 추론에 부적합하고 ‘초보자가 만든 것이라 마련해서는’ 연결도 부자연. ‘초보자가 만든 것으로 마련하면’ 등 사전 용례 확인 또는 보통 갖추다 뜻으로 교체.",
-        "해설과 정답키는 블라인드 입력에 없어 explanation=uncertain."
+        "[블라인드] 필요한 의자를 미리 준비했다는 뜻으로 ‘마련하다’를 쓴 b가 적절합니다. 다른 보기에는 필요한 것을 갖추었다고 해석할 근거가 없습니다.",
+        "[공개 대조] 1단계 선택 b는 근거에 맞지만, c도 준비물을 잃어버렸기 때문에 다시 마련했다는 인과관계로 자연스럽게 읽힙니다. c를 ‘필요한 준비물이 저절로 마련했다’처럼 명백한 오용으로 바꾸고, 분실이 마련의 이유가 될 수 없다고 전제한 오답 설명을 수정하세요."
       ]
     },
     {
       "questionId": "g4-argon-0130",
-      "revision": 1,
-      "contentHash": "258901af5a33c1c3ad13a81cd72c6d878546da16c09fb52b87a43ae5822d405d",
+      "revision": 2,
+      "contentHash": "7ad6ff2d9233ba233661ed471cd5fb472624de4e3901df01504b3ee1e34feaaf",
       "blindChoice": "d",
       "verdicts": {
         "source": "pass",
         "uniqueness": "pass",
         "grade": "pass",
-        "language": "pass",
-        "explanation": "uncertain"
+        "language": "fail",
+        "explanation": "pass"
       },
       "findings": [
-        "마음에 드는 d; a 아쉬움,b 복잡,c 피로는 흡족함 아님.",
-        "사전 대조: 만족하다 / 형용사 / 뜻번호 2 / senseId 331005. 뜻풀이: 「1」 마음에 흡족하다. 문맥·보기와 대조.",
-        "학년 3~4의 일상·학교·자연 맥락 및 advanced/polysemy 적합. 보기의 문법 결합·문장 종결·표면 반복/길이 단서를 점검함.",
-        "해설과 정답키는 블라인드 입력에 없어 explanation=uncertain."
+        "[블라인드] 의도한 뜻은 d이지만, 사람이 칭찬에 흡족해한다는 문맥에서는 ‘나는 작은 칭찬만으로도 충분히 만족한다’가 자연스럽습니다. 해당 용법에 맞게 종결형을 고치고 partOfSpeech도 동사로 수정하세요.",
+        "[공개 대조] d와 해설은 제시된 형용사 뜻 ‘마음에 흡족하다’에 부합하지만, ‘나는 작은 칭찬만으로도 충분히 만족하다’는 사람의 반응을 나타내는 문장으로 부자연스럽습니다. 현재 품사와 근거를 유지하려면 ‘이번 결과는 내 마음에 아주 만족하다’처럼 대상이 흡족함을 나타내는 문장으로 고치세요."
       ]
     },
     {
       "questionId": "g4-argon-0131",
-      "revision": 1,
-      "contentHash": "565842c237fbcf089486c6d7688c892e3d171f204a7c62f129db42f6c6151687",
+      "revision": 2,
+      "contentHash": "5892c45eaa87b9e1feec073d26d92870b9a81b25f9296a6ee7154ff3091a0c85",
       "blindChoice": "c",
       "verdicts": {
         "source": "pass",
         "uniqueness": "pass",
-        "grade": "fail",
+        "grade": "pass",
         "language": "pass",
-        "explanation": "uncertain"
+        "explanation": "pass"
       },
       "findings": [
-        "떳떳한 c; a 부끄럼,b 성급,d 무기력은 당당한 태도 아님.",
-        "사전 대조: 당당하다 / 형용사 / 뜻번호 1 / senseId 1395. 뜻풀이: 「1」 남 앞에 내세울 만큼 모습이나 태도가 떳떳하다. 문맥·보기와 대조.",
-        "기본 뜻만 묻고 의미 대조도 없어서 advanced/polysemy 부적합. core/standard로 조정.",
-        "해설과 정답키는 블라인드 입력에 없어 explanation=uncertain."
+        "[블라인드] 정직하게 말하여 태도가 떳떳하다는 뜻이므로 c가 맞습니다. 위축되거나 서두르거나 기운이 없는 상태와 분명히 구별됩니다.",
+        "[공개 대조] 정직하게 말한 뒤의 떳떳한 태도를 설명하는 c만 적절합니다. 제시된 형용사 뜻과 해설이 일치하며 다른 상태를 나타내는 보기와 구별됩니다."
       ]
     },
     {
@@ -606,90 +544,80 @@
         "source": "pass",
         "uniqueness": "pass",
         "grade": "pass",
-        "language": "pass",
-        "explanation": "uncertain"
+        "language": "fail",
+        "explanation": "pass"
       },
       "findings": [
-        "다툼 방향으로 전개 a; b 개선은 부정적 변화와 다름,c 진정,d 중단은 확대와 반대.",
-        "사전 대조: 발전하다 / 동사 / 뜻번호 2 / senseId 519092. 뜻풀이: 「2」 【…으로】 일이 어떤 방향으로 전개되다. 문맥·보기와 대조.",
-        "학년 3~4의 일상·학교·자연 맥락 및 advanced/polysemy 적합. 보기의 문법 결합·문장 종결·표면 반복/길이 단서를 점검함.",
-        "해설과 정답키는 블라인드 입력에 없어 explanation=uncertain."
+        "[블라인드] 오해가 다툼으로 이어지는 문맥에서는 일이 어떤 방향으로 펼쳐져 나아간다는 a가 맞고 polysemy 분류도 적절합니다. b의 ‘더 높이 좋아지다’는 부자연스러우므로 ‘기술이나 수준이 이전보다 높아지다’로 고치세요.",
+        "[공개 대조] 다툼으로 전개된다는 a가 두 번째 뜻에 맞고, 더 좋아진다는 뜻과의 구별도 타당합니다. b의 ‘더 높이 좋아지다’는 부자연스러우므로 ‘기술이나 수준이 이전보다 높아지다’로 고치세요."
       ]
     },
     {
       "questionId": "g4-argon-0133",
-      "revision": 1,
-      "contentHash": "755d97dde215af7315999ef66f750d1ddbb701e21283481db33aeac312b39bd0",
+      "revision": 2,
+      "contentHash": "8da86ea641b20892863bfddf78fcdfc8d7a22df13d8d54ad2683401ead9b9521",
       "blindChoice": "d",
       "verdicts": {
         "source": "pass",
         "uniqueness": "pass",
-        "grade": "uncertain",
+        "grade": "pass",
         "language": "pass",
-        "explanation": "uncertain"
+        "explanation": "pass"
       },
       "findings": [
-        "기억 위한 표적 d; a 성취감 다른 뜻,b 의자,c 겉옷은 길 표시 아님.",
-        "사전 대조: 보람 / 명사 / 뜻번호 2 / senseId 482558. 뜻풀이: 「2」 다른 물건과 구별하거나 잊지 않기 위하여 표를 해 둠. 또는 그런 표적. 문맥·보기와 대조.",
-        "보람의 표적 뜻이 매우 드물어 4학년에는 사전 풀이와 함께 추론하도록 보완 필요.",
-        "해설과 정답키는 블라인드 입력에 없어 explanation=uncertain."
+        "[블라인드] 자신이 한 일이 친구들에게 도움이 되는 모습을 보며 느끼는 긍정적인 감정은 ‘보람’입니다. 상황 단서가 충분하며 문장도 자연스럽습니다.",
+        "[공개 대조] 자신이 한 일이 친구들에게 도움이 되는 모습을 보고 느끼는 만족감은 ‘보람’입니다. 지문과 해설이 근거의 세 번째 뜻에 부합합니다."
       ]
     },
     {
       "questionId": "g4-argon-0134",
-      "revision": 1,
-      "contentHash": "af00ee63d56860eed8b568182f3efff8933aff792cea8c60d3039936695b9cff",
+      "revision": 2,
+      "contentHash": "f3df9f7debc352d0984e6cc14bd01a86eb038902c65ac427a27aea9f50a4be06",
       "blindChoice": "d",
       "verdicts": {
         "source": "pass",
         "uniqueness": "pass",
         "grade": "pass",
-        "language": "pass",
-        "explanation": "uncertain"
+        "language": "fail",
+        "explanation": "pass"
       },
       "findings": [
-        "바쁘게 뛰는 d; a 식물 나눔 동음,b 휴식,c 숨음은 분주함 아님.",
-        "사전 대조: 분주하다 / 동사 / 뜻번호 1 / senseId 177903. 뜻풀이: 몹시 바쁘게 뛰어다니다. 문맥·보기와 대조.",
-        "학년 3~4의 일상·학교·자연 맥락 및 advanced/polysemy 적합. 보기의 문법 결합·문장 종결·표면 반복/길이 단서를 점검함.",
-        "해설과 정답키는 블라인드 입력에 없어 explanation=uncertain."
+        "[블라인드] 강아지를 되찾고 기뻐한 상황에는 d가 맞습니다. 다만 정답 보기에 목표어와 직접 연결되는 ‘기쁨’을 넣어 형태상 단서를 주므로 ‘마음이 즐거워 환하게 웃었습니다’처럼 바꾸세요.",
+        "[공개 대조] d만 근거의 뜻과 일치하지만 목표어 ‘기뻐하다’와 직접 연결되는 ‘기쁨’을 정답에 넣어 형태상 단서를 줍니다. d를 ‘마음이 즐거워 환하게 웃었습니다’로 고치세요."
       ]
     },
     {
       "questionId": "g4-argon-0135",
-      "revision": 1,
-      "contentHash": "04ad3b17ee5728649928e24ff12c2f856c12c40d450b6e1e1803e5e3228f5c7a",
-      "blindChoice": "a",
+      "revision": 2,
+      "contentHash": "348c3330aa0ca281af707459e2444cc21ee74df51057d5a59a3dcd444e62f2ed",
+      "blindChoice": "multiple",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "fail",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "fail"
+      },
+      "findings": [
+        "[블라인드] 합창 소리가 훌륭해서 감탄한 것인지 갑작스러운 소리에 놀란 것인지 지문만으로는 확정하기 어려워 a와 b가 모두 성립할 여지가 있습니다. ‘아름다운 화음에 감탄할 만큼 어린 단원들의 합창 실력이 놀랍다’처럼 감탄의 이유를 명시하세요.",
+        "[공개 대조] a는 제시된 근거에 맞지만 지문에는 감탄과 두려움을 구별할 정보가 부족하여 1단계의 복수 가능성 판단을 유지합니다. ‘아름다운 화음에 감탄할 만큼 합창 실력이 놀랍다’로 고치고, 현재 지문에 없는 아름다움과 칭찬을 전제한 b의 오답 이유도 함께 수정하세요."
+      ]
+    },
+    {
+      "questionId": "g4-argon-0136",
+      "revision": 2,
+      "contentHash": "65e17d04c22d4e048447e772f82e24c705e8fc468e2b9eb217d90d8de03903b4",
+      "blindChoice": "d",
       "verdicts": {
         "source": "pass",
         "uniqueness": "pass",
         "grade": "pass",
         "language": "pass",
-        "explanation": "uncertain"
+        "explanation": "pass"
       },
       "findings": [
-        "견주어 판단 a; b 고집,c 무기준,d 삭제는 비교 아님.",
-        "사전 대조: 비교적 / 관형사 / 뜻번호 2 / senseId 461041. 뜻풀이: 다른 것과 견주어서 판단하는. 문맥·보기와 대조.",
-        "학년 3~4의 일상·학교·자연 맥락 및 advanced/polysemy 적합. 보기의 문법 결합·문장 종결·표면 반복/길이 단서를 점검함.",
-        "해설과 정답키는 블라인드 입력에 없어 explanation=uncertain."
-      ]
-    },
-    {
-      "questionId": "g4-argon-0136",
-      "revision": 1,
-      "contentHash": "f5ea6f7ed47ac0580a004c63e95e1ac4c309f82f925adb1c766a4052f3d5f1ff",
-      "blindChoice": "d",
-      "verdicts": {
-        "source": "pass",
-        "uniqueness": "pass",
-        "grade": "fail",
-        "language": "pass",
-        "explanation": "uncertain"
-      },
-      "findings": [
-        "특별히 다른 d; a 평범,b 낡음,c 작음은 독특함 아님.",
-        "사전 대조: 독특하다 / 형용사 / 뜻번호 1 / senseId 7341. 뜻풀이: 「1」 특별하게 다르다. 문맥·보기와 대조.",
-        "기본 독특하다 뜻에 다른 뜻 대조가 없어 advanced/polysemy 부적합. core/standard로 조정.",
-        "해설과 정답키는 블라인드 입력에 없어 explanation=uncertain."
+        "[블라인드] 그림의 색감과 모양이 독특하다는 것은 보통의 것과 특별하게 다르다는 뜻입니다. 다른 보기는 흔함·낡음·작은 크기를 나타내므로 정답이 분명합니다.",
+        "[공개 대조] 색감과 모양이 보통의 것과 특별하게 다르다는 d가 첫 번째 뜻에 부합합니다. 흔함·낡음·작은 크기를 나타내는 다른 보기와 명확히 구별됩니다."
       ]
     },
     {
@@ -700,15 +628,13 @@
       "verdicts": {
         "source": "pass",
         "uniqueness": "pass",
-        "grade": "pass",
+        "grade": "uncertain",
         "language": "pass",
-        "explanation": "uncertain"
+        "explanation": "pass"
       },
       "findings": [
-        "바라는 일 d; a 정원,b 멀어진 사이,c 후회는 소망 뜻 아님.",
-        "사전 대조: 소원 / 명사 / 뜻번호 1 / senseId 200080. 뜻풀이: 어떤 일이 이루어지기를 바람. 또는 그런 일. 문맥·보기와 대조.",
-        "학년 3~4의 일상·학교·자연 맥락 및 advanced/polysemy 적합. 보기의 문법 결합·문장 종결·표면 반복/길이 단서를 점검함.",
-        "해설과 정답키는 블라인드 입력에 없어 explanation=uncertain."
+        "[블라인드] 새해에 비는 소원은 어떤 일이 이루어지기를 바라는 일이므로 d가 맞습니다. 사이가 멀다는 ‘소원’은 바람을 뜻하는 ‘소원’의 다의적 의미가 아니므로 polysemy를 standard 또는 해당 분류 체계의 동음이의어 구별 태그로 바꾸세요.",
+        "[공개 대조] 새해에 비는 소원은 어떤 일이 이루어지기를 바라는 일이며 d와 해설이 근거에 맞습니다. 사이가 멀다는 말이나 작은 정원을 가리키는 말은 같은 낱말의 다의적 의미가 아니므로 variantTag를 standard로 바꾸세요."
       ]
     },
     {
@@ -719,34 +645,30 @@
       "verdicts": {
         "source": "pass",
         "uniqueness": "pass",
-        "grade": "pass",
+        "grade": "uncertain",
         "language": "pass",
-        "explanation": "uncertain"
+        "explanation": "pass"
       },
       "findings": [
-        "섞임 없는 b; a 혼합 반대,c 임금 순행 동음,d 무게는 순수함 아님.",
-        "사전 대조: 순수하다 / 형용사 / 뜻번호 1 / senseId 14790. 뜻풀이: 「1」 전혀 다른 것의 섞임이 없다. 문맥·보기와 대조.",
-        "학년 3~4의 일상·학교·자연 맥락 및 advanced/polysemy 적합. 보기의 문법 결합·문장 종결·표면 반복/길이 단서를 점검함.",
-        "해설과 정답키는 블라인드 입력에 없어 explanation=uncertain."
+        "[블라인드] 불순물을 제거한 소금이라는 문맥에서는 다른 물질이 섞이지 않았다는 b만 맞습니다. 사람의 마음이 순수하다는 용법과 다른 물질의 순수성을 다루므로 polysemy 분류도 적절합니다.",
+        "[공개 대조] 다른 물질이 섞이지 않았다는 b가 근거와 일치하지만, 불순물을 모두 제거했다는 직접적인 설명만으로 쉽게 풀려 challenge 난도는 과합니다. difficultyTier를 core로 조정하고, polysemy를 유지하려면 c 대신 마음의 순수함을 설명하는 보기를 넣어 같은 낱말의 뜻을 구별하게 하세요."
       ]
     },
     {
       "questionId": "g4-argon-0139",
-      "revision": 1,
-      "contentHash": "0fca53f9dd3eb2f36597d7f62a684b83174682f0d5863e5308d960631598ba51",
+      "revision": 2,
+      "contentHash": "e3f4a2e7bb9ffdff73f53a8725a68e73ac1d9fddaf4c0d667479b347abeeb81a",
       "blindChoice": "a",
       "verdicts": {
         "source": "pass",
         "uniqueness": "pass",
-        "grade": "fail",
-        "language": "pass",
-        "explanation": "uncertain"
+        "grade": "pass",
+        "language": "fail",
+        "explanation": "pass"
       },
       "findings": [
-        "계획 실행 a; b 미실행,c 관람,d 되돌림은 실천 아님.",
-        "사전 대조: 실천하다 / 동사 / 뜻번호 1 / senseId 212382. 뜻풀이: 생각한 바를 실제로 행하다. 문맥·보기와 대조.",
-        "실천하다 기본 뜻이며 다의어 구별 없이 advanced/polysemy 표기. core/standard로 조정.",
-        "해설과 정답키는 블라인드 입력에 없어 explanation=uncertain."
+        "[블라인드] 감동할 만큼 훌륭하다는 설명에 맞는 보기는 ‘놀라웠습니다’입니다. ‘석탑의 정교한 솜씨’는 솜씨의 주체가 불분명하므로 ‘옛 석탑을 세운 장인의 솜씨’로 바꾸면 자연스럽습니다.",
+        "[공개 대조] 감동할 만큼 훌륭하다는 조건에는 ‘놀라웠습니다’만 맞으며 근거와 해설도 일치합니다. ‘옛 석탑의 정교한 솜씨’는 솜씨의 주체가 어색하므로 ‘옛 석탑을 세운 장인의 정교한 솜씨’로 고치세요."
       ]
     },
     {
@@ -757,15 +679,13 @@
       "verdicts": {
         "source": "pass",
         "uniqueness": "pass",
-        "grade": "pass",
+        "grade": "uncertain",
         "language": "pass",
-        "explanation": "uncertain"
+        "explanation": "pass"
       },
       "findings": [
-        "꿀꿀 돼지 d; a 거위,b 토끼,c 염소 울음 불일치.",
-        "사전 대조: 도새기 / 명사 / 뜻번호 1 / senseId 756725. 뜻풀이: ‘돼지’의 방언(제주). 문맥·보기와 대조.",
-        "학년 3~4의 일상·학교·자연 맥락 및 challenge/dialect 적합. 보기의 문법 결합·문장 종결·표면 반복/길이 단서를 점검함.",
-        "해설과 정답키는 블라인드 입력에 없어 explanation=uncertain."
+        "[블라인드] 납작한 코와 꿀꿀거리는 울음이 돼지를 가리키므로 d가 유일하게 맞습니다. 제주 지역과 발화 상황이 명시되어 방언을 문맥으로 추론할 수 있습니다.",
+        "[공개 대조] ‘도새기’와 돼지의 대응 및 제주 지역 표기가 근거와 일치하고 대화 상황도 충분합니다. 꿀꿀거리는 울음만으로 정답을 바로 고를 수 있으므로 difficultyTier는 challenge보다 basic 또는 core가 적절합니다."
       ]
     },
     {
@@ -776,34 +696,30 @@
       "verdicts": {
         "source": "pass",
         "uniqueness": "pass",
-        "grade": "pass",
-        "language": "pass",
-        "explanation": "uncertain"
+        "grade": "uncertain",
+        "language": "uncertain",
+        "explanation": "pass"
       },
       "findings": [
-        "폴짝/개굴 개구리 a; b 방아깨비,c 지렁이,d 달팽이는 개굴 울지 않음.",
-        "사전 대조: 개구락지 / 명사 / 뜻번호 1 / senseId 80130. 뜻풀이: ‘개구리’의 방언(강원, 충청, 함경). 문맥·보기와 대조.",
-        "학년 3~4의 일상·학교·자연 맥락 및 challenge/dialect 적합. 보기의 문법 결합·문장 종결·표면 반복/길이 단서를 점검함.",
-        "해설과 정답키는 블라인드 입력에 없어 explanation=uncertain."
+        "[블라인드] 연못가에서 뛰고 개굴개굴 우는 동물은 개구리이므로 a가 맞습니다. ‘뒷다리로 폴짝 뛰며’라는 시각 정보를 소리를 듣는 서술에 붙였으므로 ‘폴짝 뛰는 모습을 보고 개굴개굴 우는 소리를 듣고’로 정리하세요.",
+        "[공개 대조] 개구리라는 정답과 충청 지역 표기는 근거에 맞지만 울음소리가 정답을 직접 알려 주므로 difficultyTier를 basic 또는 core로 조정하세요. 뛰는 모습까지 소리로 확인하는 듯한 표현은 ‘폴짝 뛰는 모습을 보고 개굴개굴 우는 소리를 듣고’로 정리하면 명확합니다."
       ]
     },
     {
       "questionId": "g4-argon-0142",
-      "revision": 1,
-      "contentHash": "51bdfa9aec65a041385c55843fedfcc42dd8d1ff713e218493a7e86e359cd167",
+      "revision": 2,
+      "contentHash": "89538ca85a38b20cde860a4cd2d7696ddf3df31145b462dd485011a69f4596d4",
       "blindChoice": "d",
       "verdicts": {
         "source": "pass",
         "uniqueness": "pass",
-        "grade": "pass",
-        "language": "fail",
-        "explanation": "uncertain"
+        "grade": "uncertain",
+        "language": "uncertain",
+        "explanation": "pass"
       },
       "findings": [
-        "볼 부풀려 개굴 개구리 d; a 거북,b 도마뱀,c 가재미 울음 불일치.",
-        "사전 대조: 깨구락지 / 명사 / 뜻번호 1 / senseId 563343. 뜻풀이: ‘개구리’의 방언(경기, 충남). 문맥·보기와 대조.",
-        "오답 ‘가재미’는 ‘가자미’의 잘못된 표기. 표준 표기로 수정.",
-        "해설과 정답키는 블라인드 입력에 없어 explanation=uncertain."
+        "[블라인드] 수련 잎과 개굴개굴 우는 소리로 개구리를 고를 수 있습니다. ‘볼을 부풀리며’는 개구리의 울음주머니를 부정확하게 묘사하므로 ‘목 아래 울음주머니를 부풀리며’로 고치거나 해당 구절을 빼세요.",
+        "[공개 대조] 정답은 개구리이며 근거의 충남은 충청에 포함되지만, 울음소리만으로 풀리는 문항이므로 difficultyTier를 basic 또는 core로 조정하세요. ‘볼을 부풀리며’는 울음주머니의 위치를 부정확하게 이해하게 할 수 있으므로 해당 구절을 빼세요."
       ]
     },
     {
@@ -814,15 +730,13 @@
       "verdicts": {
         "source": "pass",
         "uniqueness": "pass",
-        "grade": "pass",
+        "grade": "uncertain",
         "language": "pass",
-        "explanation": "uncertain"
+        "explanation": "pass"
       },
       "findings": [
-        "고구마 담는 바구니 c; a 주전자,b 부채살,d 빗자루 운반 용도 불일치.",
-        "사전 대조: 바구리 / 명사 / 뜻번호 1 / senseId 161327. 뜻풀이: ‘바구니’의 방언(경남, 전라, 제주, 충청). 문맥·보기와 대조.",
-        "학년 3~4의 일상·학교·자연 맥락 및 challenge/dialect 적합. 보기의 문법 결합·문장 종결·표면 반복/길이 단서를 점검함.",
-        "해설과 정답키는 블라인드 입력에 없어 explanation=uncertain."
+        "[블라인드] 캔 고구마를 담을 대나무 용기라는 설명에 맞는 것은 바구니입니다. 대화 속 용도가 구체적으로 제시되어 방언의 뜻을 추론할 수 있습니다.",
+        "[공개 대조] 고구마를 담는 대나무 용기는 바구니이며 전라 지역도 근거에 포함됩니다. 구체적인 용도와 표준어에 가까운 형태로 쉽게 풀 수 있으므로 difficultyTier를 challenge에서 core로 조정하세요."
       ]
     },
     {
@@ -833,15 +747,13 @@
       "verdicts": {
         "source": "pass",
         "uniqueness": "pass",
-        "grade": "pass",
+        "grade": "uncertain",
         "language": "pass",
-        "explanation": "uncertain"
+        "explanation": "pass"
       },
       "findings": [
-        "소면 국수 a; b 약과,c 떡,d 음료는 소면 아님.",
-        "사전 대조: 국시 / 명사 / 뜻번호 1 / senseId 99250. 뜻풀이: ‘국수’의 방언(강원, 경상, 전남, 제주, 충북, 함경). 문맥·보기와 대조.",
-        "학년 3~4의 일상·학교·자연 맥락 및 challenge/dialect 적합. 보기의 문법 결합·문장 종결·표면 반복/길이 단서를 점검함.",
-        "해설과 정답키는 블라인드 입력에 없어 explanation=uncertain."
+        "[블라인드] 삶은 소면을 콩물에 담아 먹는 음식이므로 ‘국시’는 국수로 해석됩니다. 조리 상황과 대화가 충분한 단서를 제공합니다.",
+        "[공개 대조] 소면을 콩물에 담는 상황에서 국수만 맞으며 경상 지역 표기와 해설도 근거에 부합합니다. ‘소면’이 답을 직접 좁혀 주므로 difficultyTier를 challenge에서 core로 조정하세요."
       ]
     },
     {
@@ -852,15 +764,13 @@
       "verdicts": {
         "source": "pass",
         "uniqueness": "pass",
-        "grade": "pass",
+        "grade": "uncertain",
         "language": "pass",
-        "explanation": "uncertain"
+        "explanation": "pass"
       },
       "findings": [
-        "야옹 고양이 d; a 개,b 소,c 말 울음 불일치.",
-        "사전 대조: 괴양이 / 명사 / 뜻번호 1 / senseId 866372. 뜻풀이: ‘고양이’의 방언(전라). 문맥·보기와 대조.",
-        "학년 3~4의 일상·학교·자연 맥락 및 challenge/dialect 적합. 보기의 문법 결합·문장 종결·표면 반복/길이 단서를 점검함.",
-        "해설과 정답키는 블라인드 입력에 없어 explanation=uncertain."
+        "[블라인드] 앞발로 세수하고 야옹 우는 동물은 고양이입니다. 행동과 울음소리가 함께 제시되어 다른 보기와 혼동할 가능성이 낮습니다.",
+        "[공개 대조] 고양이라는 정답과 전라 지역 표기가 근거와 일치하고 대화 상황도 적절합니다. 야옹이라는 울음만으로 정답이 결정되므로 difficultyTier를 challenge에서 basic 또는 core로 조정하세요."
       ]
     },
     {
@@ -871,15 +781,13 @@
       "verdicts": {
         "source": "pass",
         "uniqueness": "pass",
-        "grade": "pass",
+        "grade": "uncertain",
         "language": "pass",
-        "explanation": "uncertain"
+        "explanation": "pass"
       },
       "findings": [
-        "달걀 노란 새끼 병아리 d; a 개,b 두꺼비,c 다람쥐 특징 불일치.",
-        "사전 대조: 빙애기 / 명사 / 뜻번호 1 / senseId 461035. 뜻풀이: ‘병아리’의 방언(제주). 문맥·보기와 대조.",
-        "학년 3~4의 일상·학교·자연 맥락 및 challenge/dialect 적합. 보기의 문법 결합·문장 종결·표면 반복/길이 단서를 점검함.",
-        "해설과 정답키는 블라인드 입력에 없어 explanation=uncertain."
+        "[블라인드] 달걀에서 나와 노란 솜털을 지니고 삐약거리는 새끼는 병아리입니다. 부화 상황과 대화를 통해 방언의 뜻을 분명히 추론할 수 있습니다.",
+        "[공개 대조] 병아리라는 정답과 제주 지역 표기가 근거에 맞으며 해설도 정확합니다. 달걀·노란 솜털·삐약거림이 정답을 직접 알려 주므로 difficultyTier를 challenge에서 basic 또는 core로 조정하세요."
       ]
     },
     {
@@ -890,53 +798,47 @@
       "verdicts": {
         "source": "pass",
         "uniqueness": "pass",
-        "grade": "pass",
+        "grade": "uncertain",
         "language": "pass",
-        "explanation": "uncertain"
+        "explanation": "pass"
       },
       "findings": [
-        "색종이 절단 가위 b; a 지우개,c 크레파스,d 물감은 절단 못함.",
-        "사전 대조: 가새 / 명사 / 뜻번호 3 / senseId 74536. 뜻풀이: ‘가위’의 방언(경기, 경상, 전라, 충청). 문맥·보기와 대조.",
-        "학년 3~4의 일상·학교·자연 맥락 및 challenge/dialect 적합. 보기의 문법 결합·문장 종결·표면 반복/길이 단서를 점검함.",
-        "해설과 정답키는 블라인드 입력에 없어 explanation=uncertain."
+        "[블라인드] 색종이를 별 모양으로 오리는 도구는 가위이므로 b가 맞습니다. 어린이에게 익숙한 활동과 대화가 방언 해석을 돕습니다.",
+        "[공개 대조] 색종이를 오리는 도구는 가위이고 전라 지역도 근거에 포함됩니다. 익숙한 도구의 용도를 직접 제시하여 쉽게 풀리므로 difficultyTier를 challenge에서 basic 또는 core로 조정하세요."
       ]
     },
     {
       "questionId": "g4-argon-0148",
-      "revision": 1,
-      "contentHash": "e460be02783eff5eaf7136effa00b675de76a4ae12026a8967da042e276ca629",
+      "revision": 2,
+      "contentHash": "147ad0ac14e1825cffc8ebebc4a72c8c806b0f56afc8a8f223e576a50c6b3cf1",
       "blindChoice": "c",
       "verdicts": {
         "source": "pass",
         "uniqueness": "pass",
-        "grade": "pass",
+        "grade": "uncertain",
         "language": "pass",
-        "explanation": "uncertain"
+        "explanation": "pass"
       },
       "findings": [
-        "끈 절단 가위 c; a 장화,b 호미,d 조리개는 적합한 절단 도구 아님.",
-        "사전 대조: 가시게 / 명사 / 뜻번호 1 / senseId 639761. 뜻풀이: ‘가위’의 방언(강원, 충북, 중국 흑룡강성). 문맥·보기와 대조.",
-        "학년 3~4의 일상·학교·자연 맥락 및 challenge/dialect 적합. 보기의 문법 결합·문장 종결·표면 반복/길이 단서를 점검함.",
-        "해설과 정답키는 블라인드 입력에 없어 explanation=uncertain."
+        "[블라인드] 끈을 자르기 위해 건네 달라고 한 도구는 보기 중 가위뿐입니다. 포도송이를 감싸는 작업과 직접적인 용도 설명이 있어 문맥이 충분합니다.",
+        "[공개 대조] 끈을 자르는 도구라는 문맥과 근거가 가위를 가리키며 충북은 충청에 포함됩니다. 보기 중 자르는 도구가 하나뿐이므로 difficultyTier를 challenge에서 core로 조정하세요."
       ]
     },
     {
       "questionId": "g4-argon-0149",
-      "revision": 1,
-      "contentHash": "2e494301597529138af4ab94c5c4e41968967f598307bcee4ec9afed715bcd4c",
+      "revision": 2,
+      "contentHash": "347c5e86a628e5bb0a3a6dca5dee883a5dbcba1de1017666353b5634bd82b290",
       "blindChoice": "a",
       "verdicts": {
         "source": "pass",
         "uniqueness": "pass",
-        "grade": "pass",
-        "language": "pass",
-        "explanation": "uncertain"
+        "grade": "uncertain",
+        "language": "fail",
+        "explanation": "pass"
       },
       "findings": [
-        "양지 고기 a; b 미역,c 콩나물,d 시금치는 양지 아님.",
-        "사전 대조: 괴기 / 명사 / 뜻번호 6 / senseId 656990. 뜻풀이: ‘고기’의 방언(강원, 경남, 전북, 충청). 문맥·보기와 대조.",
-        "학년 3~4의 일상·학교·자연 맥락 및 challenge/dialect 적합. 보기의 문법 결합·문장 종결·표면 반복/길이 단서를 점검함.",
-        "해설과 정답키는 블라인드 입력에 없어 explanation=uncertain."
+        "[블라인드] 정육점에서 사 와 뭇국에 넣는 재료라는 단서로 고기를 고를 수 있습니다. ‘국물이 깊단다’는 맛의 성질을 생략한 어색한 표현이므로 ‘국물 맛이 깊어진단다’로 고치세요.",
+        "[공개 대조] 정육점에서 사 온 재료라는 단서로 고기가 유일하고 경남은 경상에 포함되지만, 직접적인 단서에 비해 challenge 난도는 높으므로 core로 조정하세요. ‘국물이 깊단다’는 ‘국물 맛이 깊어진단다’로 고치세요."
       ]
     },
     {
@@ -947,15 +849,13 @@
       "verdicts": {
         "source": "pass",
         "uniqueness": "pass",
-        "grade": "pass",
+        "grade": "uncertain",
         "language": "pass",
-        "explanation": "uncertain"
+        "explanation": "pass"
       },
       "findings": [
-        "소매 여밈 단추 b; a 허리띠,c 운동화,d 목도리는 소매 구멍에 끼우는 부품 아님.",
-        "사전 대조: 당추 / 명사 / 뜻번호 1 / senseId 628278. 뜻풀이: ‘단추’의 방언(경북). 문맥·보기와 대조.",
-        "학년 3~4의 일상·학교·자연 맥락 및 challenge/dialect 적합. 보기의 문법 결합·문장 종결·표면 반복/길이 단서를 점검함.",
-        "해설과 정답키는 블라인드 입력에 없어 explanation=uncertain."
+        "[블라인드] 셔츠 소매 끝에서 구멍에 끼워 잠그는 것은 단추입니다. 구체적인 착용 상황과 대화가 있어 정답이 하나로 결정됩니다.",
+        "[공개 대조] 소매 끝 구멍에 끼워 잠그는 것은 단추이며 근거의 경북은 경상에 포함됩니다. 용도와 낱말 형태가 정답을 쉽게 알려 주므로 difficultyTier를 challenge에서 basic 또는 core로 조정하세요."
       ]
     }
   ]
