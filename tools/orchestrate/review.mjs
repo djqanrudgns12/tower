@@ -486,7 +486,11 @@ export async function modelAttempt(who, invoke, options = {}, context = {}) {
       throw Object.assign(new Error(`${who} 사용량 차단: 3회 연속 한도 응답. 사용량 복구 확인 후 다시 실행해야 한다`),
         { code: 'MODEL_USAGE_BLOCKED', reviewer: who, attempts: usageFailures });
     }
-    const requestedMs = hourly ? 600_000 : 1_200_000;
+    // 원장이 알려 준 첫 예약 시각에 다시 예약한다. 상한은 reserveAgyCall이 그대로 검사한다.
+    const nextReservation = hourly ? Date.parse(/다음 예약 가능 (\S+)/.exec(message)?.[1] ?? '') : NaN;
+    const requestedMs = hourly
+      ? Number.isFinite(nextReservation) ? Math.max(1_000, Math.min(600_000, nextReservation - Date.now())) : 600_000
+      : 1_200_000;
     const started = Date.now();
     try { await (options.sleep ?? sleep)(requestedMs); }
     finally { options.onEvent?.({ type: 'wait', who, ...context, reason: hourly ? 'hourly-limit' : 'usage-limit', requestedMs, durationMs: Date.now() - started }); }

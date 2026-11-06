@@ -306,6 +306,25 @@ it('사용량 대기 후 재호출과 실제 대기 시간을 함께 기록한�
   } finally { vi.useRealTimers(); }
 });
 
+it('Argon 상한을 지키면서 다음 예약 가능 시각에 재개하고 10분을 더 기다리지 않는다', async () => {
+  vi.useFakeTimers();
+  try {
+    vi.setSystemTime(3_600_000);
+    const root = rootDir(), cwd = path.join(root, '.orchestrate/sealed'); fs.mkdirSync(cwd, { recursive: true });
+    fs.writeFileSync(path.join(root, '.orchestrate/agy-rate.json'), JSON.stringify({ calls: [2_000] }));
+    const events: Event[] = [];
+    const execute = vi.fn(async () => { throw new Error('예약 완료 후 실행 도달'); });
+    const sleep = vi.fn(async (ms: number) => { vi.setSystemTime(Date.now() + ms); });
+    await expect(modelAttempt('argon', () => measuredAgyCall({ root, cwd, prompt: 'fixture', argonPerHour: 1,
+      onEvent: (e: Event) => events.push(e) }, { execute }),
+    { liveArgon: true, sleep, onEvent: (e: Event) => events.push(e) })).rejects.toThrow('예약 완료 후 실행 도달');
+    expect(sleep.mock.calls).toEqual([[2_000]]);
+    expect(execute).toHaveBeenCalledTimes(1);
+    expect(events.map(e => e.type)).toEqual(['wait', 'call']);
+    expect(JSON.parse(fs.readFileSync(path.join(root, '.orchestrate/agy-rate.json'), 'utf8')).calls).toEqual([3_602_000]);
+  } finally { vi.useRealTimers(); }
+});
+
 it('사용량 한도가 세 번 이어지면 추가 호출 없이 차단한다', async () => {
   const invoke = vi.fn()
     .mockResolvedValueOnce({ code: 1, out: '', err: 'usage limit' })
