@@ -3,7 +3,8 @@ import type { Encounter, ReviewSense } from '../domain/types';
 
 // 이 기기 오답 노트(R4 L, docs/renewal/prd-r4-ui-learning.md §6.1). localStorage에만 두고 동기화·점수·퍼센트는 없다(PRD v0.5 §20.5 예외).
 // IndexedDB 버전은 올리지 않는다(privacy-storage 시험·e2e가 v2를 가정). 읽기 실패·저장 차단은 빈 노트로 보고 게임을 막지 않는다.
-export const REVIEW_NOTE_KEY = 'vocabulary-td.reviewNote.v1';
+export const REVIEW_NOTE_KEY = 'vocabulary-td.reviewNote.v2';
+const LEGACY_REVIEW_NOTE_KEY = 'vocabulary-td.reviewNote.v1';
 /** 노트에 두는 뜻의 상한. 넘으면 오래 안 본 것부터 뺀다. */
 export const REVIEW_NOTE_MAX = 60;
 /** 다른 판에서 이만큼 맞히면 졸업한다. */
@@ -25,7 +26,7 @@ export interface ReviewNoteItem {
 }
 
 export interface ReviewNote {
-  v: 1;
+  v: 2;
   items: Record<string, ReviewNoteItem>;
   graduated: number;
 }
@@ -52,15 +53,18 @@ export interface SenseResult {
 
 type QuestionTarget = { target: { lemma: string; senseKey: string } };
 
-export const emptyReviewNote = (): ReviewNote => ({ v: 1, items: {}, graduated: 0 });
+export const emptyReviewNote = (): ReviewNote => ({ v: 2, items: {}, graduated: 0 });
+
+/** 같은 뜻도 받는 학년 은행마다 복습 기록을 따로 보존한다. 구분자가 들어간 값도 충돌하지 않는다. */
+export const reviewNoteItemKey = (bankId: string, senseKey: string): string => JSON.stringify([bankId, senseKey]);
 
 const isCount = (x: unknown, min: number): x is number => typeof x === 'number' && Number.isInteger(x) && x >= min;
 
-/** 저장된 값을 검사해 쓸 수 있는 항목만 남긴다. 버전이 다르거나 모양이 깨졌으면 빈 노트다. */
+/** v1·v2의 쓸 수 있는 항목을 은행·뜻 키로 읽는다. 지원하지 않는 버전이나 깨진 값은 빈 노트다. */
 export function normalizeReviewNote(raw: unknown): ReviewNote {
   if (typeof raw !== 'object' || raw === null) return emptyReviewNote();
   const r = raw as { v?: unknown; items?: unknown; graduated?: unknown };
-  if (r.v !== 1 || typeof r.items !== 'object' || r.items === null) return emptyReviewNote();
+  if ((r.v !== 1 && r.v !== 2) || typeof r.items !== 'object' || r.items === null) return emptyReviewNote();
   const note = emptyReviewNote();
   if (isCount(r.graduated, 0)) note.graduated = r.graduated;
   for (const value of Object.values(r.items as Record<string, unknown>)) {
@@ -69,7 +73,7 @@ export function normalizeReviewNote(raw: unknown): ReviewNote {
     if (typeof i.senseKey !== 'string' || i.senseKey === '' || typeof i.lemma !== 'string' || typeof i.bankId !== 'string') continue;
     if (!isCount(i.misses, 1) || !isCount(i.clears, 0) || typeof i.addedAt !== 'string' || typeof i.lastSeenAt !== 'string') continue;
     if (!Array.isArray(i.questionIds)) continue;
-    note.items[i.senseKey] = {
+    note.items[reviewNoteItemKey(i.bankId, i.senseKey)] = {
       lemma: i.lemma, senseKey: i.senseKey, bankId: i.bankId,
       questionIds: i.questionIds.filter((id): id is string => typeof id === 'string').slice(0, MAX_QUESTION_IDS),
       misses: i.misses, clears: i.clears, addedAt: i.addedAt, lastSeenAt: i.lastSeenAt,
@@ -96,7 +100,7 @@ export function senseResultsOf(history: readonly Encounter[], questions: Readonl
 }
 
 const byAge = (a: ReviewNoteItem, b: ReviewNoteItem) =>
-  a.lastSeenAt.localeCompare(b.lastSeenAt) || a.addedAt.localeCompare(b.addedAt) || a.senseKey.localeCompare(b.senseKey);
+  a.lastSeenAt.localeCompare(b.lastSeenAt) || a.addedAt.localeCompare(b.addedAt) || a.senseKey.localeCompare(b.senseKey) || a.bankId.localeCompare(b.bankId);
 
 /**
  * 끝난 판을 노트에 반영한다(순수 함수, 입력 노트는 바꾸지 않는다).
@@ -106,25 +110,25 @@ const byAge = (a: ReviewNoteItem, b: ReviewNoteItem) =>
  * - 60개를 넘으면 오래 안 본 것부터 뺀다.
  */
 export function applyRunToNote(note: ReviewNote, results: readonly SenseResult[], bankId: string, now: string): { note: ReviewNote; delta: ReviewDelta } {
-  const next: ReviewNote = { v: 1, items: structuredClone(note.items), graduated: note.graduated };
+  const next: ReviewNote = { v: 2, items: structuredClone(note.items), graduated: note.graduated };
   const touched = new Set<string>();
   let graduated = 0;
   for (const r of results) {
-    const current = next.items[r.senseKey];
-    const sameBank = current?.bankId === bankId;
+    const key = reviewNoteItemKey(bankId, r.senseKey);
+    const current = next.items[key];
     if (r.missed > 0) {
-      next.items[r.senseKey] = sameBank
+      next.items[key] = current
         ? {
             ...current, bankId, lemma: r.lemma, misses: current.misses + 1, clears: 0, lastSeenAt: now,
             questionIds: [...r.missedQuestionIds, ...current.questionIds.filter(id => !r.missedQuestionIds.includes(id))].slice(0, MAX_QUESTION_IDS),
           }
         : { lemma: r.lemma, senseKey: r.senseKey, bankId, questionIds: r.missedQuestionIds.slice(0, MAX_QUESTION_IDS), misses: 1, clears: 0, addedAt: now, lastSeenAt: now };
-      touched.add(r.senseKey);
-    } else if (current && sameBank && r.correct > 0) {
+      touched.add(key);
+    } else if (current && r.correct > 0) {
       current.lastSeenAt = now;
       current.clears++;
       if (current.clears >= REVIEW_GRADUATE_CLEARS) {
-        delete next.items[r.senseKey];
+        delete next.items[key];
         next.graduated++;
         graduated++;
       }
@@ -133,7 +137,7 @@ export function applyRunToNote(note: ReviewNote, results: readonly SenseResult[]
   const keys = Object.keys(next.items);
   if (keys.length > REVIEW_NOTE_MAX) {
     const oldest = keys.map(k => next.items[k]!).sort(byAge).slice(0, keys.length - REVIEW_NOTE_MAX);
-    for (const item of oldest) delete next.items[item.senseKey];
+    for (const item of oldest) delete next.items[reviewNoteItemKey(item.bankId, item.senseKey)];
   }
   return { note: next, delta: { added: [...touched].filter(k => next.items[k]).length, graduated } };
 }
@@ -174,7 +178,7 @@ export function defaultNoteStore(): NoteStore | null {
 export function loadReviewNote(store: NoteStore | null = defaultNoteStore()): ReviewNote {
   if (!store) return emptyReviewNote();
   try {
-    const raw = store.getItem(REVIEW_NOTE_KEY);
+    const raw = store.getItem(REVIEW_NOTE_KEY) ?? store.getItem(LEGACY_REVIEW_NOTE_KEY);
     return raw ? normalizeReviewNote(JSON.parse(raw)) : emptyReviewNote();
   } catch {
     return emptyReviewNote();
@@ -185,17 +189,19 @@ export function saveReviewNote(note: ReviewNote, store: NoteStore | null = defau
   if (!store) return false;
   try {
     store.setItem(REVIEW_NOTE_KEY, JSON.stringify(note));
-    return true;
   } catch {
     return false;
   }
+  // 새 기록을 저장하지 못했을 때는 v1 원본을 남긴다. 삭제만 막혀도 v2 저장은 성공이다.
+  try { store.removeItem(LEGACY_REVIEW_NOTE_KEY); } catch { /* v2를 우선해서 읽는다. */ }
+  return true;
 }
 
 /** 설정의 ‘이 기기 로컬 기록 정리’가 부른다. 저장소가 없거나 막혀 있어도 던지지 않는다. */
 export function clearReviewNote(store: NoteStore | null = defaultNoteStore()): void {
-  try {
-    store?.removeItem(REVIEW_NOTE_KEY);
-  } catch { /* 차단된 저장소 */ }
+  for (const key of [REVIEW_NOTE_KEY, LEGACY_REVIEW_NOTE_KEY]) {
+    try { store?.removeItem(key); } catch { /* 다른 버전의 정리도 시도한다. */ }
+  }
 }
 
 /** 끝난 정규 판을 노트에 담고 결과 화면에 넘길 값을 돌려준다. 저장소를 쓸 수 없으면 아무것도 담지 않고 0을 돌려준다. */

@@ -39,7 +39,7 @@ async function skipFirstQuestion(page: Page) {
 }
 
 const noteStored = (page: Page) => page.evaluate(() => {
-  const raw = localStorage.getItem('vocabulary-td.reviewNote.v1');
+  const raw = localStorage.getItem('vocabulary-td.reviewNote.v2');
   return raw === null ? null : (JSON.parse(raw) as { items: Record<string, { lemma: string }> });
 });
 

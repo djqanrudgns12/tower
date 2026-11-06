@@ -18,6 +18,7 @@ import {
   recordFinishedRun,
   REVIEW_NOTE_KEY,
   REVIEW_NOTE_MAX,
+  reviewNoteItemKey,
   reviewSensesForRun,
   saveReviewNote,
   senseResultsOf,
@@ -51,6 +52,67 @@ const res = (senseKey: string, o: { missed?: number; correct?: number; ids?: str
 
 // ---------------------------------------------------------------------------------------------------------------------
 describe('오답 노트 저장소', () => {
+  it('같은 뜻을 두 학년에서 틀려도 두 기록이 남고 졸업은 해당 은행에만 적용된다', () => {
+    const questions = new Map([['shared-q', { target: { lemma: '공유어', senseKey: 'shared/1' } }]]);
+    const first = applyRunToNote(emptyReviewNote(), [res('shared/1', { missed: 1, ids: ['shared-q'] })], 'g4', NOW(1)).note;
+    let note = applyRunToNote(first, [res('shared/1', { missed: 1, ids: ['shared-q'] })], 'g5', NOW(2)).note;
+    expect(Object.values(note.items)).toHaveLength(2);
+    expect(listReviewNoteItems(note, 'g4', questions)).toEqual(listReviewNoteItems(first, 'g4', questions));
+    note = applyRunToNote(note, [res('shared/1', { correct: 1 })], 'g5', NOW(3)).note;
+    const finished = applyRunToNote(note, [res('shared/1', { correct: 1 })], 'g5', NOW(4));
+    expect(finished.delta).toEqual({ added: 0, graduated: 1 });
+    expect(listReviewNoteItems(finished.note, 'g5', questions)).toEqual([]);
+    expect(listReviewNoteItems(finished.note, 'g4', questions)).toEqual(listReviewNoteItems(first, 'g4', questions));
+  });
+
+  it('v1 기록은 보존해서 읽고 v2 저장 성공 뒤에만 이전 저장값을 지운다', () => {
+    const legacyKey = 'vocabulary-td.reviewNote.v1';
+    const item = { lemma: '공유어', senseKey: 'shared/1', bankId: 'g4', questionIds: ['q4'], misses: 3, clears: 1, addedAt: NOW(1), lastSeenAt: NOW(2) };
+    const legacy = JSON.stringify({ v: 1, graduated: 7, items: { 'shared/1': item } });
+    const store = fakeStorage({ [legacyKey]: legacy });
+    const loaded = loadReviewNote(store);
+    expect(loaded.v).toBe(2);
+    expect(Object.values(loaded.items)).toEqual([item]);
+    expect(loaded.graduated).toBe(7);
+    expect(store.data.get(legacyKey)).toBe(legacy);
+    expect(saveReviewNote(loaded, { ...store, setItem: () => { throw new Error('quota'); } })).toBe(false);
+    expect(store.data.get(legacyKey)).toBe(legacy);
+    expect(saveReviewNote(loaded, store)).toBe(true);
+    expect(store.data.has(legacyKey)).toBe(false);
+    expect(loadReviewNote(store)).toEqual(loaded);
+  });
+
+  it('상한 정리에서 같은 뜻의 다른 은행 기록은 함께 지우지 않는다', () => {
+    let note = applyRunToNote(emptyReviewNote(), [res('same/1', { missed: 1 })], 'g4', NOW(1)).note;
+    note = applyRunToNote(note, [res('same/1', { missed: 1 })], 'g5', NOW(2)).note;
+    const others = Array.from({ length: REVIEW_NOTE_MAX - 1 }, (_, i) => res(`new/${i}`, { missed: 1 }));
+    note = applyRunToNote(note, others, 'g5', NOW(3)).note;
+    expect(Object.values(note.items)).toHaveLength(REVIEW_NOTE_MAX);
+    expect(Object.values(note.items).filter(i => i.senseKey === 'same/1').map(i => i.bankId)).toEqual(['g5']);
+  });
+
+  it('은행·뜻에 구분 문자가 있어도 저장 왕복에서 항목이 합쳐지지 않는다', () => {
+    let note = applyRunToNote(emptyReviewNote(), [res('b:c', { missed: 1 })], 'a', NOW(1)).note;
+    note = applyRunToNote(note, [res('c', { missed: 1 })], 'a:b', NOW(2)).note;
+    const store = fakeStorage();
+    expect(saveReviewNote(note, store)).toBe(true);
+    const loaded = loadReviewNote(store);
+    expect(Object.values(loaded.items).map(i => [i.bankId, i.senseKey])).toEqual([['a', 'b:c'], ['a:b', 'c']]);
+    expect(loaded).toEqual(note);
+  });
+
+  it('남은 v1보다 v2를 우선하고 로컬 정리는 두 버전을 모두 지운다', () => {
+    const legacyKey = 'vocabulary-td.reviewNote.v1';
+    const legacy = JSON.stringify({ v: 1, items: {}, graduated: 7 });
+    const store = fakeStorage({ [legacyKey]: legacy });
+    const current = emptyReviewNote();
+    expect(saveReviewNote(current, { ...store, removeItem: () => { throw new Error('blocked'); } })).toBe(true);
+    expect(loadReviewNote(store)).toEqual(current);
+    expect(store.data.has(legacyKey)).toBe(true);
+    clearReviewNote(store);
+    expect(store.data.size).toBe(0);
+  });
+
   it('틀린 문항과 ‘모르겠어요’를 뜻 단위로 담고, 맞힌 뜻은 담지 않는다', async () => {
     const ctx = contextFor(3, 'Normal');
     const s = createRun(ctx, runInput(ctx, 'rn-1'));
@@ -66,9 +128,9 @@ describe('오답 노트 저장소', () => {
     const delta = recordFinishedRun(s.quiz.history, s.config.bankId, ctx.questions, { store, now: new Date(NOW(1)) });
     expect(delta).toEqual({ added: 2, graduated: 0 });
     const note = loadReviewNote(store);
-    expect(Object.keys(note.items).sort()).toEqual([first.target.senseKey, second.target.senseKey].sort());
-    expect(note.items[third.target.senseKey]).toBeUndefined();
-    expect(note.items[first.target.senseKey]).toEqual({
+    expect(Object.keys(note.items).sort()).toEqual([first.target.senseKey, second.target.senseKey].map(key => reviewNoteItemKey(s.config.bankId, key)).sort());
+    expect(note.items[reviewNoteItemKey(s.config.bankId, third.target.senseKey)]).toBeUndefined();
+    expect(note.items[reviewNoteItemKey(s.config.bankId, first.target.senseKey)]).toEqual({
       lemma: first.target.lemma, senseKey: first.target.senseKey, bankId: s.config.bankId, questionIds: [first.id],
       misses: 1, clears: 0, addedAt: NOW(1), lastSeenAt: NOW(1),
     });
@@ -87,22 +149,22 @@ describe('오답 노트 저장소', () => {
     expect(step(1, res('a/명사/1', { missed: 1 }))).toEqual({ added: 1, graduated: 0 });
     // 같은 판에서 틀린 뒤 맞힌 것은 맞힌 것으로 세지 않는다(다른 판에서 맞혀야 한다).
     expect(step(1, res('b/명사/1', { missed: 1, correct: 1 }))).toEqual({ added: 1, graduated: 0 });
-    expect(note.items['b/명사/1']!.clears).toBe(0);
+    expect(note.items[reviewNoteItemKey('g3', 'b/명사/1')]!.clears).toBe(0);
     // 다른 판에서 한 번 맞힘 → clears 1.
     expect(step(2, res('a/명사/1', { correct: 1 }))).toEqual({ added: 0, graduated: 0 });
-    expect(note.items['a/명사/1']).toMatchObject({ misses: 1, clears: 1, lastSeenAt: NOW(2), addedAt: NOW(1) });
+    expect(note.items[reviewNoteItemKey('g3', 'a/명사/1')]).toMatchObject({ misses: 1, clears: 1, lastSeenAt: NOW(2), addedAt: NOW(1) });
     // 또 틀리면 다시 처음부터: misses 2, clears 0.
     expect(step(3, res('a/명사/1', { missed: 1 }))).toEqual({ added: 1, graduated: 0 });
-    expect(note.items['a/명사/1']).toMatchObject({ misses: 2, clears: 0 });
+    expect(note.items[reviewNoteItemKey('g3', 'a/명사/1')]).toMatchObject({ misses: 2, clears: 0 });
     // 한 판에서 여러 번 맞혀도 판 하나로 센다 → 두 판이 필요하다.
     expect(step(4, res('a/명사/1', { correct: 3 }))).toEqual({ added: 0, graduated: 0 });
-    expect(note.items['a/명사/1']!.clears).toBe(1);
+    expect(note.items[reviewNoteItemKey('g3', 'a/명사/1')]!.clears).toBe(1);
     expect(step(5, res('a/명사/1', { correct: 1 }))).toEqual({ added: 0, graduated: 1 });
-    expect(note.items['a/명사/1']).toBeUndefined();
+    expect(note.items[reviewNoteItemKey('g3', 'a/명사/1')]).toBeUndefined();
     expect(note.graduated).toBe(1);
     // 노트에 없는 뜻을 맞혀도 아무 일 없다.
     expect(step(6, res('z/명사/1', { correct: 2 }))).toEqual({ added: 0, graduated: 0 });
-    expect(note.items['z/명사/1']).toBeUndefined();
+    expect(note.items[reviewNoteItemKey('g3', 'z/명사/1')]).toBeUndefined();
   });
 
   it(`상한 ${REVIEW_NOTE_MAX}개: 넘으면 오래 안 본 것부터 뺀다`, () => {
@@ -116,12 +178,12 @@ describe('오답 노트 저장소', () => {
     const keys = Object.keys(note.items);
     expect(keys).toHaveLength(REVIEW_NOTE_MAX);
     // 첫 판(1일)에 담은 10개가 빠졌다.
-    expect(keys.some(k => Number(k.slice(1).split('/')[0]) < 10)).toBe(false);
+    expect(Object.values(note.items).some(i => Number(i.senseKey.slice(1).split('/')[0]) < 10)).toBe(false);
     // 오래된 항목을 다시 만나면(맞혀도) 최근으로 갱신되어 먼저 빠지지 않는다.
     const refreshed = applyRunToNote(note, [res('w10/명사/1', { correct: 1 })], 'g3', NOW(20)).note;
     const next = applyRunToNote(refreshed, [res('new/명사/1', { missed: 1 })], 'g3', NOW(21)).note;
-    expect(next.items['w10/명사/1']).toBeDefined();
-    expect(next.items['w11/명사/1']).toBeUndefined();
+    expect(next.items[reviewNoteItemKey('g3', 'w10/명사/1')]).toBeDefined();
+    expect(next.items[reviewNoteItemKey('g3', 'w11/명사/1')]).toBeUndefined();
     expect(Object.keys(next.items)).toHaveLength(REVIEW_NOTE_MAX);
   });
 
@@ -131,14 +193,14 @@ describe('오답 노트 저장소', () => {
     const target = (id: string) => ctx.questions.get(id)!.target;
     const note = emptyReviewNote();
     const add = (id: string, misses: number, day: number, bankId = 'g3') => {
-      note.items[target(id).senseKey] = { lemma: target(id).lemma, senseKey: target(id).senseKey, bankId, questionIds: [id], misses, clears: 0, addedAt: NOW(1), lastSeenAt: NOW(day) };
+      note.items[reviewNoteItemKey(bankId, target(id).senseKey)] = { lemma: target(id).lemma, senseKey: target(id).senseKey, bankId, questionIds: [id], misses, clears: 0, addedAt: NOW(1), lastSeenAt: NOW(day) };
     };
     // 14개: misses 1(11개, 날짜 다름) + misses 3 + misses 2 + 다른 은행 1 + 풀에 없는 뜻 1.
     ids.slice(0, 11).forEach((id, i) => add(id, 1, 10 + i));
     add(ids[11]!, 3, 25);
     add(ids[12]!, 2, 26);
     add(ids[13]!, 5, 27, 'g4-other-bank');
-    note.items['철회됨/명사/1'] = { lemma: '철회됨', senseKey: '철회됨/명사/1', bankId: 'g3', questionIds: ['g3-gone-0001'], misses: 9, clears: 0, addedAt: NOW(1), lastSeenAt: NOW(1) };
+    note.items[reviewNoteItemKey('g3', '철회됨/명사/1')] = { lemma: '철회됨', senseKey: '철회됨/명사/1', bankId: 'g3', questionIds: ['g3-gone-0001'], misses: 9, clears: 0, addedAt: NOW(1), lastSeenAt: NOW(1) };
 
     const all = listReviewNoteItems(note, 'g3', ctx.questions);
     expect(all).toHaveLength(13); // 다른 은행·철회된 뜻은 읽을 때 걸러 낸다(노트에서 지우지는 않는다).
@@ -153,18 +215,18 @@ describe('오답 노트 저장소', () => {
     expect(picked.every(p => p.senseKey !== '철회됨/명사/1')).toBe(true);
 
     // 철회돼 풀에 없는 문항 id는 questionIds에서 빠진다(뜻이 풀에 남아 있으면 뜻은 그대로 쓴다).
-    note.items[target(ids[0]!).senseKey]!.questionIds = ['g3-gone-0002', ids[0]!];
+    note.items[reviewNoteItemKey('g3', target(ids[0]!).senseKey)]!.questionIds = ['g3-gone-0002', ids[0]!];
     expect(listReviewNoteItems(note, 'g3', ctx.questions).find(i => i.senseKey === target(ids[0]!).senseKey)!.questionIds).toEqual([ids[0]]);
   });
 
   it('깨진 저장값·다른 버전·막힌 저장소에서도 던지지 않고 빈 노트로 진행한다', () => {
     expect(loadReviewNote(fakeStorage({ [REVIEW_NOTE_KEY]: '{깨짐' }))).toEqual(emptyReviewNote());
-    expect(loadReviewNote(fakeStorage({ [REVIEW_NOTE_KEY]: JSON.stringify({ v: 2, items: {}, graduated: 0 }) }))).toEqual(emptyReviewNote());
+    expect(loadReviewNote(fakeStorage({ [REVIEW_NOTE_KEY]: JSON.stringify({ v: 999, items: {}, graduated: 0 }) }))).toEqual(emptyReviewNote());
     expect(loadReviewNote(null)).toEqual(emptyReviewNote());
     // 항목 하나가 깨져도 나머지는 살린다.
     const good = { lemma: '꼼꼼하다', senseKey: '꼼꼼하다/형용사/1', bankId: 'g3', questionIds: ['q1'], misses: 2, clears: 1, addedAt: NOW(1), lastSeenAt: NOW(2) };
     const note = normalizeReviewNote({ v: 1, graduated: 3, items: { a: { ...good, misses: 0 }, b: 'x', c: good, d: { ...good, questionIds: 'no' } } });
-    expect(Object.keys(note.items)).toEqual(['꼼꼼하다/형용사/1']);
+    expect(Object.keys(note.items)).toEqual([reviewNoteItemKey('g3', '꼼꼼하다/형용사/1')]);
     expect(note.graduated).toBe(3);
 
     const throwing: NoteStore = { getItem: () => { throw new Error('blocked'); }, setItem: () => { throw new Error('blocked'); }, removeItem: () => { throw new Error('blocked'); } };
@@ -227,9 +289,9 @@ describe('오답 노트 지우기·컨트롤러 담기', () => {
 
   it('이번 판 끝내기(quit)는 틀린 낱말을 담고 결과로 새로 담은 수를 넘긴다', async () => {
     const store = fakeStorage();
-    const { controller, wrongQuestion } = await finished({ recordOnFinish: true, end: 'quit', store });
+    const { controller, wrongQuestion, s } = await finished({ recordOnFinish: true, end: 'quit', store });
     await vi.waitFor(() => expect(controller.getView().reviewDelta).toEqual({ added: 1, graduated: 0 }));
-    expect(Object.keys(loadReviewNote(store).items)).toEqual([wrongQuestion.target.senseKey]);
+    expect(Object.keys(loadReviewNote(store).items)).toEqual([reviewNoteItemKey(s.config.bankId, wrongQuestion.target.senseKey)]);
     expect(await listRecords()).toHaveLength(1);
     controller.dispose();
   });
