@@ -245,6 +245,66 @@
       "levelAssessmentHash": "b50c6b016f66eebc0536280deebb5464f1fa16343c1a41a2610b7226c604be18"
     },
     {
+      "questionId": "g6-argon-0054",
+      "revision": 2,
+      "contentHash": "86090fa2cdd736739b3e87bca33d78c6978b627edcc2cf8216a83f1ff8dae79b",
+      "precomputed": {
+        "typeBase": 2,
+        "lengthBump": 2,
+        "t3Base": 0,
+        "readingLoad": 94,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g6-argon-0054",
+          "revision": 2,
+          "contentHash": "86090fa2cdd736739b3e87bca33d78c6978b627edcc2cf8216a83f1ff8dae79b",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 3,
+          "L2": 2,
+          "T1": 1,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "‘논거’는 구어 빈도가 낮은 6학년 논설·토론 격식 문어이며 한자 형태소 결합 논증 개념어다. 글쓰기 의미장 오답(감상·요약·개요)을 배치했고 문장 내 직접 단서가 있어 초등 고학년 문항으로 적합하다."
+        },
+        {
+          "questionId": "g6-argon-0054",
+          "revision": 2,
+          "contentHash": "86090fa2cdd736739b3e87bca33d78c6978b627edcc2cf8216a83f1ff8dae79b",
+          "judge": "codex",
+          "model": "gpt-6-astra",
+          "L1": 3,
+          "L2": 3,
+          "T1": 2,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "curriculum_explicit",
+          "unit": "[6국03-02] 적절한 근거를 사용하고 인용의 출처를 밝히며 주장하는 글을 쓴다.",
+          "reason": "논설에서 쓰는 추상적 근거 개념이며 감상·요약·개요와 구별해야 하지만, 주장에 설문 결과를 제시한 직접 단서가 있다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 6,
+        "T": 5,
+        "V": 17,
+        "ownTier": "advanced",
+        "band": {
+          "min": 6,
+          "max": 6
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "e1b1e4e8f95a2860fd8bdc65572ee7195af2744e25dbf8ff13c51835dc8a3896"
+    },
+    {
       "questionId": "g6-argon-0055",
       "revision": 1,
       "contentHash": "0e9331d6be9f26f62ac26486c705696eb604acf37d0588d68244a04ce7bf79cf",
@@ -425,6 +485,66 @@
         "flags": []
       },
       "levelAssessmentHash": "1998464772b596ba69243439b423c83be4f1bd6b1e80c51e9463599464705e21"
+    },
+    {
+      "questionId": "g6-argon-0057",
+      "revision": 4,
+      "contentHash": "a7585d05c2c522324de4a3892a2003936122cf354bbf913ed9af8b5268c0ab58",
+      "precomputed": {
+        "typeBase": 2,
+        "lengthBump": 2,
+        "t3Base": 0,
+        "readingLoad": 95,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g6-argon-0057",
+          "revision": 4,
+          "contentHash": "a7585d05c2c522324de4a3892a2003936122cf354bbf913ed9af8b5268c0ab58",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 3,
+          "L2": 2,
+          "T1": 2,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "‘주체적’은 구어 노출이 적은 고학년 격식 문어이자 성질·태도 추상 한자어다. 타율적 동작(반의 경계)과 객관적 채점(주관적과의 혼동 경계) 오답이 포함되어 변별 부담이 있고 각 문장에 직접 행동 단서가 제시되어 있다."
+        },
+        {
+          "questionId": "g6-argon-0057",
+          "revision": 4,
+          "contentHash": "a7585d05c2c522324de4a3892a2003936122cf354bbf913ed9af8b5268c0ab58",
+          "judge": "codex",
+          "model": "gpt-6-astra",
+          "L1": 3,
+          "L2": 3,
+          "T1": 1,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "자유롭고 자주적인 실천을 나타내는 추상적 문어이며, 지시에 따르는 태도와 구별하되 궁금한 점을 찾아 실험하는 행동이 직접 단서다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 6,
+        "T": 5,
+        "V": 17,
+        "ownTier": "advanced",
+        "band": {
+          "min": 6,
+          "max": 6
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "e366ceb768c98e512deb769d0ed680f3b0531a3b32deed2063350497bc063591"
     },
     {
       "questionId": "g6-argon-0058",
@@ -919,6 +1039,66 @@
       "levelAssessmentHash": "541f90396653a5cc1a7de84f717432690ec9fd1325be1c625f0da101094ab9e2"
     },
     {
+      "questionId": "g6-argon-0065",
+      "revision": 4,
+      "contentHash": "7702fa6793a135632452c18fdef5f3143b8d92358f24f5f96a6ff05cc2707a45",
+      "precomputed": {
+        "typeBase": 1,
+        "lengthBump": 2,
+        "t3Base": 0,
+        "readingLoad": 94,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g6-argon-0065",
+          "revision": 4,
+          "contentHash": "7702fa6793a135632452c18fdef5f3143b8d92358f24f5f96a6ff05cc2707a45",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 3,
+          "L2": 2,
+          "T1": 1,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "‘주체적’은 구어 저빈도 격식 문어이자 한자 형태소 결합 태도 개념어다. 중심 의미를 직접 묻고 긍정적 태도 의미장 오답(절차 준수·꼼꼼함·협동)을 두었으며 지문에 직접 행동 단서가 제시되어 초등 6학년 수준에 적합하다."
+        },
+        {
+          "questionId": "g6-argon-0065",
+          "revision": 4,
+          "contentHash": "7702fa6793a135632452c18fdef5f3143b8d92358f24f5f96a6ff05cc2707a45",
+          "judge": "codex",
+          "model": "gpt-6-astra",
+          "L1": 3,
+          "L2": 3,
+          "T1": 2,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "자주적 실천이라는 추상 개념을 절차 준수·신중함·협동이라는 인접 태도와 구별하며, 새 분류표를 만들어 붙이는 행동이 직접 단서다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 6,
+        "T": 5,
+        "V": 17,
+        "ownTier": "advanced",
+        "band": {
+          "min": 6,
+          "max": 6
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "eeb73a51e643b8da8c7250e32bfabc4ca0aece25fdb6a68d4be751398cc28e45"
+    },
+    {
       "questionId": "g6-argon-0066",
       "revision": 1,
       "contentHash": "0dd23a2569fc8b176e035cfcad4b5b65467e77e4d0f4913e9c57013112561b81",
@@ -1222,6 +1402,68 @@
         "flags": []
       },
       "levelAssessmentHash": "dc5f2cfd04cf9d400a7c4d8c4bea9958810d709151967c42c276994c6e963332"
+    },
+    {
+      "questionId": "g6-argon-0070",
+      "revision": 2,
+      "contentHash": "06987f998a95e930051513d004ab9e9e9dac9fbc4bd70a51e38cd85f431f41a1",
+      "precomputed": {
+        "typeBase": 2,
+        "lengthBump": 2,
+        "t3Base": 0,
+        "readingLoad": 95,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g6-argon-0070",
+          "revision": 2,
+          "contentHash": "06987f998a95e930051513d004ab9e9e9dac9fbc4bd70a51e38cd85f431f41a1",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 3,
+          "L2": 3,
+          "T1": 2,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "‘왜곡’은 구어 빈도가 낮은 6학년 비평·논설 격식 문어이자 음훈 추론이 필요한 고추상 한자어다. 표절·유출·대립 등 인접 부정 상황과 연어 결합을 활용한 혼동 경계 오답이 있으며 문장 내 직접 단서로 초등 6학년에 알맞다."
+        },
+        {
+          "questionId": "g6-argon-0070",
+          "revision": 2,
+          "contentHash": "06987f998a95e930051513d004ab9e9e9dac9fbc4bd70a51e38cd85f431f41a1",
+          "judge": "codex",
+          "model": "gpt-6-astra",
+          "L1": 2,
+          "L2": 2,
+          "T1": 2,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "사실과 해석의 관계를 나타내는 학습 개념어로 표절·유출·대립과 구별해야 하며, 부축을 밀침으로 바꿔 전한 대조가 직접 단서다."
+        }
+      ],
+      "merged": {
+        "rule": 4,
+        "L": 6,
+        "T": 5,
+        "V": 17,
+        "ownTier": "advanced",
+        "band": {
+          "min": 6,
+          "max": 6
+        },
+        "flags": [
+          "spotCheck"
+        ]
+      },
+      "levelAssessmentHash": "5a0a80f7629cab6b38ea3d2330e4a4d2f3e2137b57d96a52fd85258101b1c7f5"
     },
     {
       "questionId": "g6-argon-0071",
@@ -2199,6 +2441,66 @@
         "flags": []
       },
       "levelAssessmentHash": "a396d74a4e2e20589aa238b243afc669aa88d5a2ea9f604c63c4ab263ba84203"
+    },
+    {
+      "questionId": "g6-argon-0086",
+      "revision": 3,
+      "contentHash": "4ab3cd12a5ca9be7e5a96492987547d944add10bf87770b01984c2010bc86a34",
+      "precomputed": {
+        "typeBase": 2,
+        "lengthBump": 2,
+        "t3Base": 0,
+        "readingLoad": 96,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g6-argon-0086",
+          "revision": 3,
+          "contentHash": "4ab3cd12a5ca9be7e5a96492987547d944add10bf87770b01984c2010bc86a34",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 3,
+          "L2": 2,
+          "T1": 2,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "‘다각적’은 구어 노출이 적은 6학년 논설·보고 격식 문어이며 여러 방면을 뜻하는 한자 형태소 결합 관계 추상어다. 도형 형태소 함정과 단일 응원 반의 경계 오답이 쓰였고 여러 부문이 직접 나열되어 초등 6학년에 적합하다."
+        },
+        {
+          "questionId": "g6-argon-0086",
+          "revision": 3,
+          "contentHash": "4ab3cd12a5ca9be7e5a96492987547d944add10bf87770b01984c2010bc86a34",
+          "judge": "codex",
+          "model": "gpt-6-astra",
+          "L1": 3,
+          "L2": 3,
+          "T1": 1,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "여러 방면에 걸친다는 추상적 격식 문어로 모서리 수를 뜻하는 해석이 혼동을 유발하지만, 식단·조리법·배식 시간의 나열이 직접 단서다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 6,
+        "T": 5,
+        "V": 17,
+        "ownTier": "advanced",
+        "band": {
+          "min": 6,
+          "max": 6
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "69a4b18628cdc1cd273a9da192aab028b954728c04600a41597c220face2c8b2"
     },
     {
       "questionId": "g6-argon-0087",

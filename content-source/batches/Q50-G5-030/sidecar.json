@@ -1,0 +1,1418 @@
+{
+  "batchId": "Q50-G5-030",
+  "jobId": "Q50-G5-030",
+  "publicationPolicy": "codex-argon-v1",
+  "producer": {
+    "model": "Gemini 4 Argon (High)",
+    "tool": "tools/orchestrate/produce.mjs",
+    "date": "2026-11-06"
+  },
+  "items": [
+    {
+      "id": "g5-argon-2055",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "하지만 공책을 펴자마자 자꾸 시계만 보며 딴청을 피워 공부를 미루려는 기색이 희미했다.",
+          "verdict": "does_not_fit",
+          "reason": "시계만 보며 딴청을 피우는 행동에서 미루려는 기색이 분명히 드러나므로 약하다는 뜻의 '희미했다'는 맞지 않는다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "하지만 공책을 펴자마자 자꾸 시계만 보며 딴청을 피워 공부를 미루려는 기색이 농후했다.",
+          "verdict": "fits",
+          "reason": "어떤 경향이나 기색이 뚜렷하다는 뜻이므로 딴청을 피우며 공부를 미루려는 기색이 분명한 상황에 알맞다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "하지만 공책을 펴자마자 자꾸 시계만 보며 딴청을 피워 공부를 미루려는 기색이 신중했다.",
+          "verdict": "does_not_fit",
+          "reason": "'신중했다'는 조심스럽고 꼼꼼하다는 뜻이어서 공부를 미루려는 기색을 설명하는 말로 어울리지 않는다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "하지만 공책을 펴자마자 자꾸 시계만 보며 딴청을 피워 공부를 미루려는 기색이 차분했다.",
+          "verdict": "does_not_fit",
+          "reason": "'차분했다'는 마음이 가라앉아 안정되었다는 뜻이어서 딴청을 피우며 공부를 미루려는 상황과 맞지 않는다."
+        }
+      ],
+      "uniquenessNote": "앞문장의 큰소리와 뒷문장의 딴청 행동을 대조하면 미루려는 기색이 뚜렷함을 알 수 있어 '농후했다'만 성립한다.",
+      "gradeEvidence": "rubric_inferred(L=5,T=4)"
+    },
+    {
+      "id": "g5-argon-2056",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "하지만 비 오는 날의 계획이 빠져 주장에 장점이 보였다.",
+          "verdict": "does_not_fit",
+          "reason": "비 오는 날의 계획이 빠진 것은 부족한 구석인데 잘한 점을 뜻하는 ‘장점’이 보였다고 하면 앞뒤 뜻이 어긋난다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "하지만 비 오는 날의 계획이 빠져 주장에 고집이 보였다.",
+          "verdict": "does_not_fit",
+          "reason": "근거를 차근차근 들었을 뿐 억지로 우긴 일이 없고 계획에 빠진 구석을 가리키는 자리이므로 ‘고집’은 맞지 않는다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "하지만 비 오는 날의 계획이 빠져 주장에 거짓이 보였다.",
+          "verdict": "does_not_fit",
+          "reason": "계획을 미처 챙기지 못해 빠진 것일 뿐 사실과 다르게 꾸며 속인 일이 없으므로 ‘거짓’은 맞지 않는다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "하지만 비 오는 날의 계획이 빠져 주장에 빈틈이 보였다.",
+          "verdict": "fits",
+          "reason": "비 오는 날의 계획이 빠져 미처 살피지 못한 허술한 구석인 ‘빈틈’이 보였다는 뜻이 자연스럽게 통한다."
+        }
+      ],
+      "uniquenessNote": "근거를 차근차근 들었지만 비 오는 날의 계획이 빠졌다는 두 단서로 보아 미처 살피지 못해 허술한 구석을 뜻하는 ‘빈틈’만 맞고, 잘한 점인 ‘장점’, 꾸민 말인 ‘거짓’, 우기는 것인 ‘고집’은 모두 맞지 않는다.",
+      "gradeEvidence": "[6국01-02] 주장을 파악하고 이유나 근거가 타당한지 평가하며 듣는다."
+    },
+    {
+      "id": "g5-argon-2057",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "반대로 끝까지 남아서 교실을 치우며 책임감이 강한 모습을 보였다.",
+          "verdict": "fits",
+          "reason": "감정이나 정신 상태가 부족하거나 약하다는 '희박한'과 정반대로 책임감이 굳세고 크다는 뜻을 나타낸다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "반대로 끝까지 남아서 교실을 치우며 책임감이 약한 모습을 보였다.",
+          "verdict": "does_not_fit",
+          "reason": "'약한'은 '희박한'과 비슷한 방향의 뜻이어서 반대 문맥에 들어갈 수 없다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "반대로 끝까지 남아서 교실을 치우며 책임감이 빽빽한 모습을 보였다.",
+          "verdict": "does_not_fit",
+          "reason": "'빽빽한'은 간격이 좁게 가득 찬 물리적 상태를 나타내므로 책임감 같은 정신 상태와 결합할 수 없다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "반대로 끝까지 남아서 교실을 치우며 책임감이 가벼운 모습을 보였다.",
+          "verdict": "does_not_fit",
+          "reason": "'가벼운'은 정도가 덜하고 약한 쪽을 가리키므로 '희박한'의 반의어가 될 수 없다."
+        }
+      ],
+      "uniquenessNote": "물리적 밀도('빽빽한')와 유의 방향('약한', '가벼운')을 배제하면 정신 상태가 부족하다는 뜻의 반의어로 '강한'만 성립한다.",
+      "gradeEvidence": "rubric_inferred(L=4,T=6)"
+    },
+    {
+      "id": "g5-argon-2058",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "선생님은 이번에도 끼어들지 않고 책장 정리를 함께 나누기로 했다.",
+          "verdict": "does_not_fit",
+          "reason": "지수가 혼자 돌보아 왔고 선생님도 끼어들지 않기로 했으므로 여럿이 일을 쪼개는 ‘함께 나누기로’는 앞뒤가 맞지 않는다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "선생님은 이번에도 끼어들지 않고 책장 정리를 하나씩 시키기로 했다.",
+          "verdict": "does_not_fit",
+          "reason": "끼어들지 않겠다고 하면서 할 일을 일일이 정해 주는 ‘하나씩 시키기로’를 넣으면 앞뒤 말이 서로 부딪친다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "선생님은 이번에도 끼어들지 않고 책장 정리를 모두 맡기기로 했다.",
+          "verdict": "fits",
+          "reason": "혼자 꼼꼼히 돌보던 지수를 믿고 선생님이 끼어들지 않은 채 책장 정리를 ‘모두 맡기기로’ 했다는 뜻이 자연스럽게 통한다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "선생님은 이번에도 끼어들지 않고 책장 정리를 직접 챙기기로 했다.",
+          "verdict": "does_not_fit",
+          "reason": "선생님이 끼어들지 않겠다고 했는데 손수 돌보는 ‘직접 챙기기로’를 넣으면 앞뒤 뜻이 정반대가 된다."
+        }
+      ],
+      "uniquenessNote": "지수가 혼자 꼼꼼히 돌보았고 선생님이 끼어들지 않는다는 두 단서로 보아 일을 통째로 넘기는 ‘모두 맡기다’만 맞고, 일을 쪼개는 ‘함께 나누다’, 일일이 정해 주는 ‘하나씩 시키다’, 손수 돌보는 ‘직접 챙기다’는 모두 맞지 않는다.",
+      "gradeEvidence": "rubric_inferred(L=5,T=4)"
+    },
+    {
+      "id": "g5-argon-2060",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "연주회가 끝나자 피아노를 창고로 조율했다.",
+          "verdict": "does_not_fit",
+          "reason": "피아노가 등장하지만 창고로 운반하는 상황이므로 악기 음을 맞추는 뜻으로도 문제를 조절하는 뜻으로도 성립하지 않는다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "설명서를 보고 장난감 부품을 조율했다.",
+          "verdict": "does_not_fit",
+          "reason": "부품을 맞추어 완성품을 만드는 일은 '조립하다'의 영역이어서 '조율하다'가 맞지 않는다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "학급 회의에서 겹치는 일정 문제를 조율했다.",
+          "verdict": "fits",
+          "reason": "문제를 대상과 상황에 알맞도록 조절한다는 비유적 의미로 정확하고 자연스럽게 쓰였다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "컴퓨터로 내일 날씨를 미리 조율했다.",
+          "verdict": "does_not_fit",
+          "reason": "날씨는 사람이 조절할 수 없고 찾아보는 정보이므로 '조율하다'를 쓸 수 없다."
+        }
+      ],
+      "uniquenessNote": "피아노 운반·부품 조립·날씨 검색은 악기 조율과 비유적 조절 어느 뜻으로도 성립하지 않아 일정 문제를 조절한 d만 성립한다.",
+      "gradeEvidence": "[6국01-06] 토의에 협력적으로 참여하며 서로의 의견을 비교하고 조정한다."
+    },
+    {
+      "id": "g5-argon-2061",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "반대로 신문 만들기가 계획대로 나아가지 않고 이어졌다.",
+          "verdict": "does_not_fit",
+          "reason": "'이어졌다'는 일이 계속 진행됨을 나타내므로 '진척되었다'의 반대말이 될 수 없다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "반대로 신문 만들기가 계획대로 나아가지 않고 멈추었다.",
+          "verdict": "fits",
+          "reason": "목적한 방향대로 진행되어 간다는 '진척되었다'와 정반대로 일의 진행이 그쳤음을 나타낸다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "반대로 신문 만들기가 계획대로 나아가지 않고 줄어들었다.",
+          "verdict": "does_not_fit",
+          "reason": "'줄어들었다'는 수량이나 크기의 감소를 뜻할 뿐 일이 목적한 방향으로 진행되어 가는 것의 반대가 아니다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "반대로 신문 만들기가 계획대로 나아가지 않고 복잡해졌다.",
+          "verdict": "does_not_fit",
+          "reason": "'복잡해졌다'는 상태가 얽혔다는 뜻이지 진행되어 가다의 반의 관계가 아니다."
+        }
+      ],
+      "uniquenessNote": "지속('이어졌다'), 양 감소('줄어들었다'), 상태 변화('복잡해졌다')를 구별하면 목적한 방향의 진행과 정반대인 '멈추었다'만 성립한다.",
+      "gradeEvidence": "rubric_inferred(L=5,T=4)"
+    },
+    {
+      "id": "g5-argon-2062",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "구멍 난 바지 무릎에 천 조각을 첨부했다.",
+          "verdict": "does_not_fit",
+          "reason": "헤진 옷에 천을 덧대어 수선하는 일에는 '첨부하다'를 쓸 수 없다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "싱거운 국에 소금을 조금 더 첨부했다.",
+          "verdict": "does_not_fit",
+          "reason": "음식에 양념을 넣는 일에는 안건·문서를 덧붙이는 '첨부하다'를 쓸 수 없다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "교실 벽에 학급 알림판을 테이프로 첨부했다.",
+          "verdict": "does_not_fit",
+          "reason": "벽면에 물건을 테이프로 고정하는 물리적 부착에는 '첨부하다'를 쓸 수 없다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "발표 계획서를 낼 때 참고 문서를 첨부했다.",
+          "verdict": "fits",
+          "reason": "안건이나 문서 따위를 덧붙인다는 뜻에 맞게 주된 문서에 참고 문서를 덧붙인 올바른 문장이다."
+        }
+      ],
+      "uniquenessNote": "음식 재료 추가, 벽면 부착, 옷감 덧대기는 모두 사물 조작이라 배제되고, 문서에 참고 문서를 덧붙인 a만 유일하게 알맞다.",
+      "gradeEvidence": "[6국01-05] 자료를 선별하여 핵심 정보를 중심으로 내용을 구성하고 매체를 활용하여 발표한다."
+    },
+    {
+      "id": "g5-argon-2063",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "반대로 한 장의 표에 있던 자료들을 모았다.",
+          "verdict": "does_not_fit",
+          "reason": "'모았다'는 한데 합친다는 점에서 '총괄했다'와 같은 방향이므로 반대말이 아니다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "반대로 한 장의 표에 있던 자료들을 나누었다.",
+          "verdict": "fits",
+          "reason": "개별적인 여러 가지를 한데 모아서 묶는다는 '총괄했다'와 정반대로 여럿으로 갈라 떼어 놓는 뜻을 나타낸다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "반대로 한 장의 표에 있던 자료들을 고쳤다.",
+          "verdict": "does_not_fit",
+          "reason": "'고쳤다'는 내용을 수정하는 행위여서 모아서 묶는 것의 반대말이 아니다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "반대로 한 장의 표에 있던 자료들을 줄였다.",
+          "verdict": "does_not_fit",
+          "reason": "'줄였다'는 분량의 감소를 뜻할 뿐 한데 모아 묶다와 반의 관계를 이루지 않는다."
+        }
+      ],
+      "uniquenessNote": "유의어('모았다')와 수정('고쳤다'), 분량 축소('줄였다')를 제외하면 여러 가지를 한데 모아 묶다의 반의어는 '나누었다'뿐이다.",
+      "gradeEvidence": "rubric_inferred(L=5,T=4)"
+    },
+    {
+      "id": "g5-argon-2064",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "한 달 동안 매일 기온을 재어 선으로 이으며 기온의 처음에 잰 기록을 살폈다.",
+          "verdict": "does_not_fit",
+          "reason": "첫날의 수치만 보는 것은 오늘 하루만 보지 않고 한 달 동안 선으로 이었다는 단서와 어긋난다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "한 달 동안 매일 기온을 재어 선으로 이으며 기온의 가장 높은 기록을 살폈다.",
+          "verdict": "does_not_fit",
+          "reason": "한 시점의 최댓값만 가리키므로 시간에 따라 변하여 나가는 '추이'의 뜻을 대신할 수 없다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "한 달 동안 매일 기온을 재어 선으로 이으며 기온의 전체를 더한 값을 살폈다.",
+          "verdict": "does_not_fit",
+          "reason": "합계는 시간의 경과에 따른 변화 흐름과 다르며 선으로 이어 살핀 목적과도 맞지 않는다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "한 달 동안 매일 기온을 재어 선으로 이으며 기온의 변해 가는 흐름을 살폈다.",
+          "verdict": "fits",
+          "reason": "시간의 경과에 따라 변하여 나가는 경향을 뜻하므로 매일 잰 기온을 선으로 이어 살핀 상황과 정확히 일치한다."
+        }
+      ],
+      "uniquenessNote": "하루 기록만 보지 않고 한 달 동안 선으로 이었다는 단서에서 단일 시점 기록과 단순 합계가 배제되어 '변해 가는 흐름'만 성립한다.",
+      "gradeEvidence": "rubric_inferred(L=5,T=4)"
+    },
+    {
+      "id": "g5-argon-2065",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "학교에서 활동이 겹치는 두 동아리를 통합했다.",
+          "verdict": "fits",
+          "reason": "둘 이상의 조직이나 모임을 하나로 합친다는 뜻에 정확히 부합한다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "찢어진 도화지 두 장을 풀로 통합했다.",
+          "verdict": "does_not_fit",
+          "reason": "찢어진 종이를 물리적으로 이어 붙이는 행위에는 '통합하다'가 어울리지 않는다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "노란 물감과 파란 물감을 붓으로 통합했다.",
+          "verdict": "does_not_fit",
+          "reason": "물감 같은 물질을 섞는 일에는 둘 이상의 조직이나 기구를 합치는 '통합하다'를 쓸 수 없다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "기차가 산속의 긴 터널을 빠르게 통합했다.",
+          "verdict": "does_not_fit",
+          "reason": "터널을 지나가는 동작은 '통과하다'의 뜻이며 '통합하다'와 무관하다."
+        }
+      ],
+      "uniquenessNote": "물감 혼합, 종이 접착, 터널 통과는 조직이나 기구를 하나로 합친다는 의미 조건에 맞지 않아 두 동아리를 합친 c만 성립한다.",
+      "gradeEvidence": "[6국01-06] 토의에 협력적으로 참여하며 서로의 의견을 비교하고 조정한다."
+    },
+    {
+      "id": "g5-argon-2066",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "눈이 나빠지고 수업 시간에 조는 이로운 변화가 생겼다.",
+          "verdict": "does_not_fit",
+          "reason": "눈이 나빠지고 수업에 조는 상황은 도움이 되는 좋은 변화와 정반대이다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "눈이 나빠지고 수업 시간에 조는 새로운 기회가 생겼다.",
+          "verdict": "does_not_fit",
+          "reason": "나쁜 습관으로 생긴 피해 상황을 긍정적인 계기인 '새로운 기회'로 바꿀 수 없다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "눈이 나빠지고 수업 시간에 조는 해로운 결과가 생겼다.",
+          "verdict": "fits",
+          "reason": "잘못된 습관이나 폐단으로 생기는 해를 뜻하는 '폐해'의 의미와 문맥에 정확히 들어맞는다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "눈이 나빠지고 수업 시간에 조는 사소한 실수가 생겼다.",
+          "verdict": "does_not_fit",
+          "reason": "오래된 나쁜 습관으로 건강과 학업에 해를 입은 것은 우연한 작은 잘못인 '사소한 실수'와 다르다."
+        }
+      ],
+      "uniquenessNote": "나쁜 습관이 쌓여 눈이 나빠지고 수업에 졸게 되었다는 인과 단서에서 긍정 표현과 우연한 작은 실수가 배제되고 '해로운 결과'만 성립한다.",
+      "gradeEvidence": "rubric_inferred(L=5,T=4)"
+    },
+    {
+      "id": "g5-argon-2069",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "민수는 혼자서 주말 계획을 협의했다.",
+          "verdict": "does_not_fit",
+          "reason": "'둘 이상의 사람'이라는 핵심 의미 요건을 어기고 혼자 계획을 세우는 상황에 잘못 쓰였다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "두 반 대표들이 응원 방법을 함께 협의했다.",
+          "verdict": "fits",
+          "reason": "둘 이상의 사람이 서로 협력하여 공동의 문제를 의논하는 상황에 정확히 부합한다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "우산을 챙겨 가라고 동생에게 협의했다.",
+          "verdict": "does_not_fit",
+          "reason": "한 사람이 상대에게 챙기라고 일러 주는 행위이지 서로 의견을 나누어 의논하는 상황이 아니다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "안내 방송으로 모이는 시각을 협의했다.",
+          "verdict": "does_not_fit",
+          "reason": "방송으로 일방적으로 전달하는 행위여서 서로 협력하여 의논한다는 뜻과 맞지 않는다."
+        }
+      ],
+      "uniquenessNote": "둘 이상의 주체가 서로 협력하여 의논하는 조건을 모두 충족하는 문장은 d뿐이다.",
+      "gradeEvidence": "[6국01-06] 토의에 협력적으로 참여하며 서로의 의견을 비교하고 조정한다."
+    },
+    {
+      "id": "g5-argon-2073",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "안에 넣은 수채화의 부드러운 멋을 뱉었다.",
+          "verdict": "does_not_fit",
+          "reason": "음식물 섭취와 관련된 물리적 행위여서 비유적 의미로 쓰인 '소화했다'의 반의어로 성립하지 않는다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "안에 넣은 수채화의 부드러운 멋을 살렸다.",
+          "verdict": "does_not_fit",
+          "reason": "문맥 속 '소화했다'와 뜻이 비슷한 말이므로 반대되는 말을 고르라는 요구와 어긋난다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "안에 넣은 수채화의 부드러운 멋을 잊었다.",
+          "verdict": "does_not_fit",
+          "reason": "지식 습득 의미와 연결되는 기억 상실 표현이어서 무생물인 액자가 그림의 특성을 살려 주는 문맥의 반의어가 아니다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "안에 넣은 수채화의 부드러운 멋을 해쳤다.",
+          "verdict": "fits",
+          "reason": "고유의 특성으로 다른 것의 특성을 잘 살려 주었다는 문맥의 '소화했다'와 정반대로 좋은 멋을 손상했다는 뜻을 나타낸다."
+        }
+      ],
+      "uniquenessNote": "'소화하다'의 비유적 두 번째 의미(다른 것의 특성을 잘 살려 주다)에 대응하는 반의어는 a('해쳤다')뿐이다.",
+      "gradeEvidence": "krdict:중급"
+    },
+    {
+      "id": "g5-argon-2074",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "목이 터져라 외치는 친구들의 응원이 무척 열렬하다.",
+          "verdict": "fits",
+          "reason": "어떤 것에 대한 애정이나 태도가 매우 뜨겁고 맹렬하다는 뜻이 결승전 응원 상황과 정확히 어울린다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "목이 터져라 외치는 친구들의 응원이 무척 성실하다.",
+          "verdict": "does_not_fit",
+          "reason": "'성실하다'는 일을 꾀부리지 않고 꾸준히 하는 태도이지 맹렬하고 뜨거운 응원 기세를 뜻하지 않는다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "목이 터져라 외치는 친구들의 응원이 무척 다정하다.",
+          "verdict": "does_not_fit",
+          "reason": "'다정하다'는 부드럽고 정겨운 태도여서 목이 터져라 외치는 맹렬한 응원 태도와 맞지 않는다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "목이 터져라 외치는 친구들의 응원이 무척 차분하다.",
+          "verdict": "does_not_fit",
+          "reason": "앞절의 조용한 조회 시간과 대조되는 결승전 상황 및 '목이 터져라 외치는'과 의미가 충돌한다."
+        }
+      ],
+      "uniquenessNote": "차분한 평소 모습과 대조되며 목이 터져라 외치는 맹렬한 응원 태도를 나타내는 형용사는 '열렬하다'뿐이다.",
+      "gradeEvidence": "rubric_inferred(L=4,T=2)"
+    },
+    {
+      "id": "g5-argon-2075",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "먹을 양식이 모자라고 맞설 힘도 없어 형편이 무척 넉넉하다.",
+          "verdict": "does_not_fit",
+          "reason": "양식이 모자라고 힘도 없다는 원인 단서와 '넉넉하다'가 정면으로 모순된다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "먹을 양식이 모자라고 맞설 힘도 없어 형편이 무척 소박하다.",
+          "verdict": "does_not_fit",
+          "reason": "'소박하다'는 사치스럽지 않고 수수하다는 뜻일 뿐 가난하고 힘없는 궁핍한 상태를 뜻하지 않는다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "먹을 양식이 모자라고 맞설 힘도 없어 형편이 무척 빈약하다.",
+          "verdict": "fits",
+          "reason": "양식이 모자라 가난하고 맞설 힘도 없다는 두 단서가 '가난하고 힘이 없다'는 첫 번째 뜻과 정확히 일치한다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "먹을 양식이 모자라고 맞설 힘도 없어 형편이 무척 한가하다.",
+          "verdict": "does_not_fit",
+          "reason": "'한가하다'는 시간적 여유를 나타내므로 재물과 힘의 부족을 설명하는 문맥에 맞지 않는다."
+        }
+      ],
+      "uniquenessNote": "부유하고 강한 큰 고을과 대조하여 가난하고 힘이 없는 상태를 나타내는 말은 '빈약하다'뿐이다.",
+      "gradeEvidence": "rubric_inferred(L=4,T=2)"
+    },
+    {
+      "id": "g5-argon-2076",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "자기 생각도 같다며 함께 돕겠다고 민호의 주장에 동조했다.",
+          "verdict": "fits",
+          "reason": "남의 주장에 자기의 의견을 일치시키고 보조를 맞춘다는 뜻과 격틀('…에 동조하다')이 모두 정확히 들어맞는다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "자기 생각도 같다며 함께 돕겠다고 민호의 주장에 실망했다.",
+          "verdict": "does_not_fit",
+          "reason": "분명한 근거에 설득되어 힘을 보태기로 한 긍정적 동의 상황에 '실망했다'는 어울리지 않는다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "자기 생각도 같다며 함께 돕겠다고 민호의 주장에 반대했다.",
+          "verdict": "does_not_fit",
+          "reason": "'자기 생각도 같다며 함께 돕겠다고'라는 단서와 '반대했다'가 서로 모순된다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "자기 생각도 같다며 함께 돕겠다고 민호의 주장에 흔들렸다.",
+          "verdict": "does_not_fit",
+          "reason": "'흔들렸다'는 아직 결정을 못 내리고 망설이는 상태이므로 이미 의견을 일치시켜 함께 돕겠다고 나선 행동을 설명하지 못한다."
+        }
+      ],
+      "uniquenessNote": "네 보기 모두 부사어 '주장에'와 문법적으로 호응하지만, 의견을 일치시키고 보조를 맞춘 행동을 뜻하는 말은 '동조했다'뿐이다.",
+      "gradeEvidence": "rubric_inferred(L=4,T=2)"
+    },
+    {
+      "id": "g5-argon-2077",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "옆에 딸린 준비실은 두 사람이 나란히 서서 몸을 돌리기도 힘들 만큼 한적하다.",
+          "verdict": "does_not_fit",
+          "reason": "'한적하다'는 인적이 드물어 고요하다는 뜻이어서 물리적 면적이 좁다는 단서와 연결되지 않는다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "옆에 딸린 준비실은 두 사람이 나란히 서서 몸을 돌리기도 힘들 만큼 아늑하다.",
+          "verdict": "does_not_fit",
+          "reason": "몸을 돌리기 힘들다는 불편한 협소함의 단서가 포근하고 편안하다는 '아늑하다'와 맞지 않는다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "옆에 딸린 준비실은 두 사람이 나란히 서서 몸을 돌리기도 힘들 만큼 협소하다.",
+          "verdict": "fits",
+          "reason": "넓은 과학실과 대조되며 두 사람이 몸을 돌리기 힘들 정도로 공간이 좁고 작다는 상황에 정확히 맞는다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "옆에 딸린 준비실은 두 사람이 나란히 서서 몸을 돌리기도 힘들 만큼 널찍하다.",
+          "verdict": "does_not_fit",
+          "reason": "두 사람이 서기도 힘들다는 공간 제약 단서와 꽤 넓다는 뜻의 '널찍하다'가 서로 모순된다."
+        }
+      ],
+      "uniquenessNote": "큰 과학실과 대조되어 두 사람이 몸을 돌리기 힘들 만큼 공간이 좁고 작은 상태를 나타내는 형용사는 '협소하다'뿐이다.",
+      "gradeEvidence": "rubric_inferred(L=4,T=2)"
+    },
+    {
+      "id": "g5-argon-2078",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "언덕 위에서 바라본 초원은 앞을 가리는 것이 하나도 없이 저 멀리 끝까지 펼쳐져 무척 답답하다.",
+          "verdict": "does_not_fit",
+          "reason": "막힌 골목과 달리 가리는 것 없이 끝까지 펼쳐졌다는 개방감 단서와 '답답하다'가 모순된다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "언덕 위에서 바라본 초원은 앞을 가리는 것이 하나도 없이 저 멀리 끝까지 펼쳐져 무척 광활하다.",
+          "verdict": "fits",
+          "reason": "막힌 데가 없이 트이고 넓다는 의미가 앞을 가리는 것 없이 끝까지 펼쳐진 초원의 모습과 정확히 들어맞는다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "언덕 위에서 바라본 초원은 앞을 가리는 것이 하나도 없이 저 멀리 끝까지 펼쳐져 무척 뚜렷하다.",
+          "verdict": "does_not_fit",
+          "reason": "'뚜렷하다'는 윤곽이나 모양의 선명함을 뜻하므로 막힌 골목과 대조되는 공간의 트임과 넓음을 나타내지 못한다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "언덕 위에서 바라본 초원은 앞을 가리는 것이 하나도 없이 저 멀리 끝까지 펼쳐져 무척 아담하다.",
+          "verdict": "does_not_fit",
+          "reason": "'아담하다'는 크기가 작고 아기자기하다는 뜻이어서 저 멀리 끝까지 넓게 펼쳐진 초원과 맞지 않는다."
+        }
+      ],
+      "uniquenessNote": "사방이 막힌 골목과 대조하여 가리는 것 없이 트이고 넓은 공간을 뜻하는 형용사는 '광활하다'뿐이다.",
+      "gradeEvidence": "rubric_inferred(L=4,T=2)"
+    },
+    {
+      "id": "g5-argon-2081",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "아침에는 줄을 설 만큼 잘 팔리던 학급 바자회 물건이 비가 내리자 잔뜩 남았다. 손님 발길이 뚝 끊기면서 오후에는 물건 판매가 무척 활발하다.",
+          "verdict": "does_not_fit",
+          "reason": "손님 발길이 끊기고 물건이 잔뜩 남았다는 단서와 정반대이다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "아침에는 줄을 설 만큼 잘 팔리던 학급 바자회 물건이 비가 내리자 잔뜩 남았다. 손님 발길이 뚝 끊기면서 오후에는 물건 판매가 무척 부진하다.",
+          "verdict": "fits",
+          "reason": "아침과 달리 손님이 끊겨 판매가 이루어지는 기세가 활발하지 못한 상황에 정확히 부합한다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "아침에는 줄을 설 만큼 잘 팔리던 학급 바자회 물건이 비가 내리자 잔뜩 남았다. 손님 발길이 뚝 끊기면서 오후에는 물건 판매가 무척 성급하다.",
+          "verdict": "does_not_fit",
+          "reason": "'성급하다'는 사람의 조급한 태도를 뜻하므로 판매가 이루어지는 기세와 호응하지 않는다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "아침에는 줄을 설 만큼 잘 팔리던 학급 바자회 물건이 비가 내리자 잔뜩 남았다. 손님 발길이 뚝 끊기면서 오후에는 물건 판매가 무척 순조롭다.",
+          "verdict": "does_not_fit",
+          "reason": "비 때문에 물건이 안 팔려 남은 상황을 탈 없이 잘되어 간다고 할 수 없다."
+        }
+      ],
+      "uniquenessNote": "오전에는 잘 팔렸으나 오후 비로 손님이 끊기고 물건이 남았다는 전후 대조를 통해 일이 이루어지는 기세가 활발하지 못함을 뜻하는 '부진하다'만 정답이 된다.",
+      "gradeEvidence": "rubric_inferred(L=4,T=2)"
+    },
+    {
+      "id": "g5-argon-2082",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "낮에는 굴속에 숨어 지내던 햄스터가 밤이 되자 달라졌다. 먹이를 볼 가득 챙기고 쳇바퀴를 쉴 새 없이 돌릴 만큼 활동이 느슨하다.",
+          "verdict": "does_not_fit",
+          "reason": "힘이나 긴장이 풀린 상태라 쳇바퀴를 쉴 새 없이 돌리는 모습과 달라요."
+        },
+        {
+          "optionId": "b",
+          "substituted": "낮에는 굴속에 숨어 지내던 햄스터가 밤이 되자 달라졌다. 먹이를 볼 가득 챙기고 쳇바퀴를 쉴 새 없이 돌릴 만큼 활동이 더디다.",
+          "verdict": "does_not_fit",
+          "reason": "움직임이 느리다는 뜻이라 쳇바퀴를 쉼 없이 돌리는 빠른 움직임과 반대예요."
+        },
+        {
+          "optionId": "c",
+          "substituted": "낮에는 굴속에 숨어 지내던 햄스터가 밤이 되자 달라졌다. 먹이를 볼 가득 챙기고 쳇바퀴를 쉴 새 없이 돌릴 만큼 활동이 잠잠하다.",
+          "verdict": "does_not_fit",
+          "reason": "움직임 없이 조용하다는 뜻이라 밤에 활발해진 모습과 반대예요."
+        },
+        {
+          "optionId": "d",
+          "substituted": "낮에는 굴속에 숨어 지내던 햄스터가 밤이 되자 달라졌다. 먹이를 볼 가득 챙기고 쳇바퀴를 쉴 새 없이 돌릴 만큼 활동이 왕성하다.",
+          "verdict": "fits",
+          "reason": "밤이 되어 먹이를 챙기고 쉼 없이 달릴 만큼 움직임이 한창 힘찬 상태에 꼭 맞아요."
+        }
+      ],
+      "uniquenessNote": "낮에는 숨어 지내다가 밤이 되자 먹이를 챙기고 쳇바퀴를 쉴 새 없이 돌리는 두 단서를 대조해야 기운과 활동이 한창 힘찬 '왕성하다'만 성립한다.",
+      "gradeEvidence": "rubric_inferred(L=4,T=2)"
+    },
+    {
+      "id": "g5-argon-2084",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "섬마을은 큰 태풍이 오면 며칠씩 배가 끊겨 장을 보러 나갈 수 없다. 그래서 주민들은 날씨가 맑을 때 식수와 통조림을 미리 비축한다.",
+          "verdict": "fits",
+          "reason": "배가 끊길 때를 대비해 먹거리를 미리 갖추어 모아 두는 상황에 꼭 맞아요."
+        },
+        {
+          "optionId": "b",
+          "substituted": "섬마을은 큰 태풍이 오면 며칠씩 배가 끊겨 장을 보러 나갈 수 없다. 그래서 주민들은 날씨가 맑을 때 식수와 통조림을 미리 진열한다.",
+          "verdict": "does_not_fit",
+          "reason": "보여 주거나 팔려고 벌여 놓는 일이라 태풍을 대비하는 행동과 달라요."
+        },
+        {
+          "optionId": "c",
+          "substituted": "섬마을은 큰 태풍이 오면 며칠씩 배가 끊겨 장을 보러 나갈 수 없다. 그래서 주민들은 날씨가 맑을 때 식수와 통조림을 미리 소비한다.",
+          "verdict": "does_not_fit",
+          "reason": "먹거리를 미리 써서 없애면 배가 끊겼을 때 먹을 것이 남지 않아요."
+        },
+        {
+          "optionId": "d",
+          "substituted": "섬마을은 큰 태풍이 오면 며칠씩 배가 끊겨 장을 보러 나갈 수 없다. 그래서 주민들은 날씨가 맑을 때 식수와 통조림을 미리 반납한다.",
+          "verdict": "does_not_fit",
+          "reason": "빌린 물건을 돌려준다는 뜻이라 먹거리를 미리 모아 두는 일과 달라요."
+        }
+      ],
+      "uniquenessNote": "태풍으로 배가 끊겨 장을 볼 수 없다는 조건과 맑은 날 미리 먹거리를 챙기는 행동을 연결해야 대비하여 모아 두는 '비축한다'만 성립한다.",
+      "gradeEvidence": "rubric_inferred(L=4,T=2)"
+    },
+    {
+      "id": "g5-argon-2085",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "자기와 상관없는 옆 모둠의 말다툼에 끼어들지 않고 조용히 참견하는 모습을 보였다.",
+          "verdict": "does_not_fit",
+          "reason": "'참견하는'은 끼어들어 간섭하는 유의어이므로 끼어들지 않는 반대 행동 문장에 넣으면 모순된다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "자기와 상관없는 옆 모둠의 말다툼에 끼어들지 않고 조용히 간섭하는 모습을 보였다.",
+          "verdict": "does_not_fit",
+          "reason": "'간섭하는' 역시 남의 일에 부당하게 끼어드는 뜻이라 반대말이 될 수 없다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "자기와 상관없는 옆 모둠의 말다툼에 끼어들지 않고 조용히 지켜보는 모습을 보였다.",
+          "verdict": "fits",
+          "reason": "관계없는 일에 끼어들지 않고 가만히 보아 넘기는 행동으로 '개입하는'과 정반대 뜻을 이룬다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "자기와 상관없는 옆 모둠의 말다툼에 끼어들지 않고 조용히 사과하는 모습을 보였다.",
+          "verdict": "does_not_fit",
+          "reason": "'사과하는'은 자신의 잘못을 비는 행동으로 남의 일에 끼어드는지 여부와 반대 축에 있지 않다."
+        }
+      ],
+      "uniquenessNote": "'참견하는'과 '간섭하는'은 유의 함정이고 '사과하는'은 자기 잘못에 대한 행동이므로, 남의 일에 끼어드는 '개입하는'의 반의어는 '지켜보는'뿐이다.",
+      "gradeEvidence": "rubric_inferred(L=4,T=2)"
+    },
+    {
+      "id": "g5-argon-2086",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "학급 회의에서 아침 독서 시간을 늘리자는 쪽과 오히려 줄이자는 쪽이 팽팽히 맞섰다. 두 주장이 서로 상반되는 탓에 결론이 쉽게 나지 않았다.",
+          "verdict": "fits",
+          "reason": "늘리자는 쪽과 줄이자는 쪽으로 두 주장이 서로 반대되어 결론이 나지 않았다는 인과에 정확히 맞는다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "학급 회의에서 아침 독서 시간을 늘리자는 쪽과 오히려 줄이자는 쪽이 팽팽히 맞섰다. 두 주장이 서로 일치하는 탓에 결론이 쉽게 나지 않았다.",
+          "verdict": "does_not_fit",
+          "reason": "두 주장이 같다면 팽팽히 맞설 일도 없고 결론이 쉽게 나지 않을 이유도 되지 못한다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "학급 회의에서 아침 독서 시간을 늘리자는 쪽과 오히려 줄이자는 쪽이 팽팽히 맞섰다. 두 주장이 서로 이어지는 탓에 결론이 쉽게 나지 않았다.",
+          "verdict": "does_not_fit",
+          "reason": "늘리자와 줄이자는 반대 방향이지 연결되는 내용이 아니며 결론 지연의 원인과도 맞지 않는다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "학급 회의에서 아침 독서 시간을 늘리자는 쪽과 오히려 줄이자는 쪽이 팽팽히 맞섰다. 두 주장이 서로 어울리는 탓에 결론이 쉽게 나지 않았다.",
+          "verdict": "does_not_fit",
+          "reason": "서로 조화가 잘된다는 뜻은 두 주장이 팽팽히 맞서 결론을 못 내는 상황과 충돌한다."
+        }
+      ],
+      "uniquenessNote": "'늘리자'와 '줄이자'의 정반대 대립과 '결론이 쉽게 나지 않음'이라는 결과를 동시에 설명하는 관계 동사는 '상반되는'뿐이다.",
+      "gradeEvidence": "rubric_inferred(L=4,T=2)"
+    },
+    {
+      "id": "g5-argon-2087",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "여러 번 찌그러졌던 도자기 컵을 다시 빚어 구웠더니 금 간 곳 없이 매끈하고 빛깔도 곱다. 흠잡을 데 없이 완성된 컵을 바라보는 마음이 무척 아쉽다.",
+          "verdict": "does_not_fit",
+          "reason": "'흠잡을 데 없이 완성된' 결과와 모자라 서운하다는 '아쉽다'는 서로 모순된다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "여러 번 찌그러졌던 도자기 컵을 다시 빚어 구웠더니 금 간 곳 없이 매끈하고 빛깔도 곱다. 흠잡을 데 없이 완성된 컵을 바라보는 마음이 무척 억울하다.",
+          "verdict": "does_not_fit",
+          "reason": "부당하게 손해 보거나 꾸중을 들은 일이 전혀 없으므로 어울리지 않는다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "여러 번 찌그러졌던 도자기 컵을 다시 빚어 구웠더니 금 간 곳 없이 매끈하고 빛깔도 곱다. 흠잡을 데 없이 완성된 컵을 바라보는 마음이 무척 흡족하다.",
+          "verdict": "fits",
+          "reason": "금 간 곳 없이 매끈하고 빛깔도 고와 모자람 없이 만족스러운 상태를 정확히 나타낸다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "여러 번 찌그러졌던 도자기 컵을 다시 빚어 구웠더니 금 간 곳 없이 매끈하고 빛깔도 곱다. 흠잡을 데 없이 완성된 컵을 바라보는 마음이 무척 초조하다.",
+          "verdict": "does_not_fit",
+          "reason": "굽기 전 기다리는 시점이 아니라 이미 매끈하게 완성된 결과를 보고 있으므로 조마조마할 이유가 없다."
+        }
+      ],
+      "uniquenessNote": "이미 완성된 시점과 흠잡을 데 없는 품질이라는 두 단서가 '초조하다', '아쉽다', '억울하다'를 모두 배제하고 모자람 없는 만족을 뜻하는 '흡족하다'만 남긴다.",
+      "gradeEvidence": "rubric_inferred(L=4,T=2)"
+    },
+    {
+      "id": "g5-argon-2088",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "모둠 발표에 쓸 사진은 알맞게 골라 넣었다. 하지만 자료 출처를 빠뜨리고 설명 연습도 덜 되어 발표 준비가 충분하다.",
+          "verdict": "does_not_fit",
+          "reason": "모자람 없이 넉넉하다는 뜻이라 출처를 빠뜨리고 연습이 덜 된 상태와 반대예요."
+        },
+        {
+          "optionId": "b",
+          "substituted": "모둠 발표에 쓸 사진은 알맞게 골라 넣었다. 하지만 자료 출처를 빠뜨리고 설명 연습도 덜 되어 발표 준비가 미흡하다.",
+          "verdict": "fits",
+          "reason": "사진은 골랐지만 출처를 빠뜨리고 연습도 덜 되어 만족스럽지 못한 상태에 꼭 맞아요."
+        },
+        {
+          "optionId": "c",
+          "substituted": "모둠 발표에 쓸 사진은 알맞게 골라 넣었다. 하지만 자료 출처를 빠뜨리고 설명 연습도 덜 되어 발표 준비가 꼼꼼하다.",
+          "verdict": "does_not_fit",
+          "reason": "빈틈없이 챙긴다는 뜻이라 자료 출처를 빠뜨린 상태와 반대예요."
+        },
+        {
+          "optionId": "d",
+          "substituted": "모둠 발표에 쓸 사진은 알맞게 골라 넣었다. 하지만 자료 출처를 빠뜨리고 설명 연습도 덜 되어 발표 준비가 수월하다.",
+          "verdict": "does_not_fit",
+          "reason": "힘들지 않고 쉽다는 뜻이라 준비가 덜 되어 모자란 상태를 나타내지 못해요."
+        }
+      ],
+      "uniquenessNote": "사진을 골라 넣은 점과 달리 출처를 빠뜨리고 설명 연습도 덜 된 두 단서를 함께 보아야 아직 만족스럽지 못한 상태인 '미흡하다'만 성립한다.",
+      "gradeEvidence": "rubric_inferred(L=4,T=2)"
+    },
+    {
+      "id": "g5-argon-2089",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "새 짝꿍과 바로 옆자리에 앉았지만 인사만 겨우 나눌 뿐 말을 트지 못해 자리 간격이 남아 있었다.",
+          "verdict": "does_not_fit",
+          "reason": "'바로 옆자리에 앉았지만'과 '말을 트지 못해'라는 단서 때문에 물리적인 자리 간격으로 읽으면 문맥이 어긋난다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "새 짝꿍과 바로 옆자리에 앉았지만 인사만 겨우 나눌 뿐 말을 트지 못해 심한 다툼이 남아 있었다.",
+          "verdict": "does_not_fit",
+          "reason": "다툰 것이 아니라 처음 만나 아직 친해지지 못한 상황이므로 사실과 다르다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "새 짝꿍과 바로 옆자리에 앉았지만 인사만 겨우 나눌 뿐 말을 트지 못해 친근한 마음이 남아 있었다.",
+          "verdict": "does_not_fit",
+          "reason": "인사만 겨우 나누고 말을 트지 못했다는 단서와 정반대 감정이다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "새 짝꿍과 바로 옆자리에 앉았지만 인사만 겨우 나눌 뿐 말을 트지 못해 서먹한 느낌이 남아 있었다.",
+          "verdict": "fits",
+          "reason": "친숙하지 않아 서로 마음을 트지 못하는 서먹서먹한 느낌이라는 문맥적 의미와 정확히 일치한다."
+        }
+      ],
+      "uniquenessNote": "'바로 옆자리에 앉았지만'이 다의어의 물리적 거리('자리 간격') 해석을 차단하고, '인사만 겨우 나눌 뿐 말을 트지 못해'가 심리적 어색함인 '서먹한 느낌'을 유일하게 가리킨다.",
+      "gradeEvidence": "[6국02-02] 글에서 생략된 내용이나 함축된 표현을 문맥을 고려하여 추론한다."
+    },
+    {
+      "id": "g5-argon-2090",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "보호대 없이 크게 넘어져 병원에서 치료를 받아야 할 만큼 부상이 가볍다.",
+          "verdict": "does_not_fit",
+          "reason": "'가볍다'는 '경미하다'와 뜻이 비슷한 말이므로 반대 상황 문장에 맞지 않는다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "보호대 없이 크게 넘어져 병원에서 치료를 받아야 할 만큼 부상이 심각하다.",
+          "verdict": "fits",
+          "reason": "살짝 긁혀 가볍고 대수롭지 않은 '경미하다'와 정반대로 부상 정도가 깊고 중대한 상태를 나타낸다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "보호대 없이 크게 넘어져 병원에서 치료를 받아야 할 만큼 부상이 약하다.",
+          "verdict": "does_not_fit",
+          "reason": "'약하다' 역시 정도가 심하지 않다는 방향의 말이라 반대말이 되지 못한다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "보호대 없이 크게 넘어져 병원에서 치료를 받아야 할 만큼 부상이 익숙하다.",
+          "verdict": "does_not_fit",
+          "reason": "서투르지 않다는 뜻은 부상의 정도를 나타내는 말과 호응하지 않는다."
+        }
+      ],
+      "uniquenessNote": "'가볍다'와 '약하다'는 '경미하다'와 같은 방향의 유의 함정이고 '익숙하다'는 숙련도 어휘이므로, 정도가 무겁고 중대함을 뜻하는 반의어는 '심각하다'뿐이다.",
+      "gradeEvidence": "rubric_inferred(L=4,T=5)"
+    },
+    {
+      "id": "g5-argon-2091",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "자기 실력만 믿지 않고 틀린 곳이 없는지 끝까지 자랑하는 태도로 검산했다.",
+          "verdict": "does_not_fit",
+          "reason": "남에게 뽐내는 행동은 지나치게 믿는 태도의 반대말이 아니며 검산하는 문맥에도 맞지 않는다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "자기 실력만 믿지 않고 틀린 곳이 없는지 끝까지 확신하는 태도로 검산했다.",
+          "verdict": "does_not_fit",
+          "reason": "'확신하는'은 굳게 믿는다는 뜻이라 '과신하는'과 같은 믿음 계열이므로 반대말이 될 수 없다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "자기 실력만 믿지 않고 틀린 곳이 없는지 끝까지 다짐하는 태도로 검산했다.",
+          "verdict": "does_not_fit",
+          "reason": "마음을 다잡거나 약속한다는 뜻은 믿다와 반대되는 의미 축이 아니다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "자기 실력만 믿지 않고 틀린 곳이 없는지 끝까지 의심하는 태도로 검산했다.",
+          "verdict": "fits",
+          "reason": "지나치게 믿는 '과신하는'과 정반대로 미덥지 못하게 여겨 꼼꼼히 확인하는 뜻을 나타낸다."
+        }
+      ],
+      "uniquenessNote": "같은 믿음 방향인 '확신하는'과 뽐내는 행위인 '자랑하는', 결심 행위인 '다짐하는'을 제외하면 '지나치게 믿다'와 반대 축을 이루는 말은 '의심하는'뿐이다.",
+      "gradeEvidence": "rubric_inferred(L=4,T=5)"
+    },
+    {
+      "id": "g5-argon-2092",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "학교에서는 억지로 숙제를 내주지 않고 스스로 책을 즐겨 읽도록 아침 독서를 적극 권하고 있다.",
+          "verdict": "fits",
+          "reason": "억지로 강제하지 않으면서 좋은 일을 하도록 권하여 장려한다는 뜻과 문맥에 정확히 들어맞는다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "학교에서는 억지로 숙제를 내주지 않고 스스로 책을 즐겨 읽도록 아침 독서를 못하게 막고 있다.",
+          "verdict": "does_not_fit",
+          "reason": "책을 즐겨 읽도록 돕는 목적과 정반대인 금지 행위이므로 성립하지 않는다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "학교에서는 억지로 숙제를 내주지 않고 스스로 책을 즐겨 읽도록 아침 독서를 강제로 시키고 있다.",
+          "verdict": "does_not_fit",
+          "reason": "앞절의 '억지로 숙제를 내주지 않고 스스로 책을 즐겨 읽도록'이라는 단서와 정면으로 충돌한다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "학교에서는 억지로 숙제를 내주지 않고 스스로 책을 즐겨 읽도록 아침 독서를 뒤로 미루고 있다.",
+          "verdict": "does_not_fit",
+          "reason": "일정을 나중으로 늦춘다는 뜻은 스스로 책을 읽도록 북돋우는 목적과 어울리지 않는다."
+        }
+      ],
+      "uniquenessNote": "'억지로 숙제를 내주지 않고'가 강제성을 배제하고 '스스로 책을 즐겨 읽도록'이 금지와 연기를 배제하여, 권하여 장려한다는 뜻의 '적극 권하고'만 남는다.",
+      "gradeEvidence": "rubric_inferred(L=4,T=5)"
+    },
+    {
+      "id": "g5-argon-2093",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "민서는 손이 많이 가는 뒷정리 차례마다 일을 마지못해 거들었다.",
+          "verdict": "does_not_fit",
+          "reason": "억지로 거드는 것은 일을 싫어하고 꺼리는 태도가 남아 있어 '기피했다'의 정반대 뜻이 되지 않는다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "민서는 손이 많이 가는 뒷정리 차례마다 일을 슬그머니 미루었다.",
+          "verdict": "does_not_fit",
+          "reason": "일을 뒤로 미루는 것은 피하는 행동과 같은 방향이므로 반대 뜻이 되지 않는다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "민서는 손이 많이 가는 뒷정리 차례마다 일을 기꺼이 맡았다.",
+          "verdict": "fits",
+          "reason": "꺼리거나 싫어하여 피하는 '기피했다'와 정반대로 즐거운 마음으로 나서서 일을 맡는 뜻이므로 들어맞는다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "민서는 손이 많이 가는 뒷정리 차례마다 일을 조용히 지켜보았다.",
+          "verdict": "does_not_fit",
+          "reason": "직접 나서지 않고 보고만 있는 것은 일을 피하는 태도의 반대가 될 수 없다."
+        }
+      ],
+      "uniquenessNote": "'기피하다'의 두 의미 요소인 '꺼리는 마음'과 '피하는 행동'을 모두 반대로 뒤집는 것은 '기꺼이 맡았다'(b)뿐이며, 억지 참여(a)·회피(c)·방관(d)은 모두 배제된다.",
+      "gradeEvidence": "rubric_inferred(L=4,T=5)"
+    },
+    {
+      "id": "g5-argon-2094",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "지훈이는 선거에서 표를 얻으려고 지킬 수 없는 약속을 함부로 늘어놓다가 믿음을 잃었다.",
+          "verdict": "fits",
+          "reason": "말이나 약속을 뒷생각 없이 자꾸 함부로 한다는 문맥 의미와 자연스럽게 일치한다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "지훈이는 선거에서 표를 얻으려고 지킬 수 없는 약속을 여러 번 다짐하다가 믿음을 잃었다.",
+          "verdict": "does_not_fit",
+          "reason": "굳게 지키려 마음먹는 '다짐하다'는 지킬 수 없는 약속을 무책임하게 하는 문맥과 어긋난다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "지훈이는 선거에서 표를 얻으려고 지킬 수 없는 약속을 마구 찍어 내다가 믿음을 잃었다.",
+          "verdict": "does_not_fit",
+          "reason": "'찍어 내다'는 화폐나 증명서를 발행하는 '남발하다'의 다른 뜻에 해당하여 '약속을'이라는 목적어와 어울리지 않는다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "지훈이는 선거에서 표를 얻으려고 지킬 수 없는 약속을 자꾸 미루어 두다가 믿음을 잃었다.",
+          "verdict": "does_not_fit",
+          "reason": "표를 얻으려고 새 약속을 자꾸 한 상황이지 기존 일을 미룬 상황이 아니므로 맞지 않는다."
+        }
+      ],
+      "uniquenessNote": "다의어 '남발하다'의 1번 뜻(발행)으로 유인하는 a, 반복성만 공유하고 태도가 반대인 b, 행위 방향이 다른 d를 배제하면 말·약속을 자꾸 함부로 하는 뜻의 c만 성립한다.",
+      "gradeEvidence": "rubric_inferred(L=4,T=6)"
+    },
+    {
+      "id": "g5-argon-2096",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "동생이 장난치다 화분을 깨자 형은 동생을 다독여 달랬다.",
+          "verdict": "does_not_fit",
+          "reason": "위로하여 진정시키는 행동은 편들어 감싸 주는 태도와 반대되지 않는다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "동생이 장난치다 화분을 깨자 형은 동생을 엄하게 나무랐다.",
+          "verdict": "fits",
+          "reason": "허물을 편들어 감싸 주는 '두둔했다'와 정반대로 잘못을 짚어 꾸짖는 뜻이므로 정확히 들어맞는다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "동생이 장난치다 화분을 깨자 형은 동생을 모른 척했다.",
+          "verdict": "does_not_fit",
+          "reason": "관여하지 않고 외면한 중립·방관 태도일 뿐 편들어 감싸는 것의 정반대가 아니다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "동생이 장난치다 화분을 깨자 형은 동생을 끝까지 감쌌다.",
+          "verdict": "does_not_fit",
+          "reason": "'두둔했다'와 뜻이 비슷한 표현이므로 반의 관계가 성립하지 않는다."
+        }
+      ],
+      "uniquenessNote": "편들어 허물을 감싸는 '두둔하다'에 대해 위로(a)·유의 표현(b)·외면(c)은 반의가 될 수 없고, 잘못을 꾸짖는 '엄하게 나무랐다'(d)만 유일한 반의 표현이다.",
+      "gradeEvidence": "rubric_inferred(L=4,T=5)"
+    },
+    {
+      "id": "g5-argon-2097",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "현우는 자기 실수로 모둠 과제가 늦어지자 책임을 뒤늦게 깨달았다.",
+          "verdict": "does_not_fit",
+          "reason": "마음으로 알게 된 것에 그칠 뿐 책임을 실제로 떠안는 행동까지 나타내지 못한다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "현우는 자기 실수로 모둠 과제가 늦어지자 책임을 남에게 넘겼다.",
+          "verdict": "does_not_fit",
+          "reason": "다른 사람에게 책임을 미루어 벗어나는 행동이므로 '모면했다'의 반대 뜻이 되지 않는다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "현우는 자기 실수로 모둠 과제가 늦어지자 책임을 슬그머니 피했다.",
+          "verdict": "does_not_fit",
+          "reason": "'모면했다'와 같은 방향의 유의 표현이므로 반의 관계가 아니다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "현우는 자기 실수로 모둠 과제가 늦어지자 책임을 당당하게 졌다.",
+          "verdict": "fits",
+          "reason": "핑계나 꾀로 책임을 벗어나는 '모면했다'와 정반대로 숨지 않고 책임을 맡는 뜻이므로 들어맞는다."
+        }
+      ],
+      "uniquenessNote": "'꾀를 써서 책임을 벗어나다'에 대해 전가(b)·회피(c)는 같은 방향이고 인지(d)는 이행이 빠지므로, 핑계 없이 책임을 맡는 '당당하게 졌다'(a)만 유일한 정답이다.",
+      "gradeEvidence": "rubric_inferred(L=4,T=5)"
+    },
+    {
+      "id": "g5-argon-2098",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "모둠 토의에서 서준이는 친구의 제안을 가볍게 흘려들었다.",
+          "verdict": "does_not_fit",
+          "reason": "제안을 대수롭지 않게 넘기는 뜻이라 '묵살했다'와 비슷하므로 반대말이 아니다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "모둠 토의에서 서준이는 친구의 제안을 소중히 받아들였다.",
+          "verdict": "fits",
+          "reason": "의견을 듣고도 못 들은 척 무시하는 '묵살했다'와 정반대로 제안을 귀하게 여겨 수용하는 뜻이므로 들어맞는다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "모둠 토의에서 서준이는 친구의 제안을 잠자코 듣기만 했다.",
+          "verdict": "does_not_fit",
+          "reason": "못 들은 척하지는 않았으나 제안을 수용하여 반영한 단계에 이르지 못해 정반대 뜻이 아니다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "모둠 토의에서 서준이는 친구의 제안을 곧바로 반대했다.",
+          "verdict": "does_not_fit",
+          "reason": "반응은 보였지만 제안을 거부해 물리친 결과는 같으므로 반의 표현이 될 수 없다."
+        }
+      ],
+      "uniquenessNote": "의견을 못 들은 척 무시하는 '묵살하다'에 대해 흘려듣기(a)·무반응 청취(b)·거부(d)는 모두 수용이 아니므로 '소중히 받아들였다'(c)만 유일한 반의 표현이다.",
+      "gradeEvidence": "[6국01-06] 토의에 협력적으로 참여하며 서로의 의견을 비교하고 조정한다."
+    },
+    {
+      "id": "g5-argon-2099",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "학예회를 하루 앞두고 강당을 살펴보니 무대 준비가 조금 부족했다.",
+          "verdict": "does_not_fit",
+          "reason": "필요한 것이 덜 채워진 상태라는 점에서 '미비했다'와 뜻이 비슷하여 반대말이 아니다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "학예회를 하루 앞두고 강당을 살펴보니 무대 준비가 전혀 안 되어 있었다.",
+          "verdict": "does_not_fit",
+          "reason": "갖추지 못한 결핍 상태가 더 심해진 것일 뿐 완비된 반대 상태가 아니다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "학예회를 하루 앞두고 강당을 살펴보니 무대 준비가 겉으로만 화려했다.",
+          "verdict": "does_not_fit",
+          "reason": "겉모습만 치장했다는 뜻이므로 필요한 설비를 다 갖추었다는 반대 의미가 되지 않는다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "학예회를 하루 앞두고 강당을 살펴보니 무대 준비가 빠짐없이 갖추어졌다.",
+          "verdict": "fits",
+          "reason": "아직 다 갖추지 못한 상태인 '미비했다'와 정반대로 필요한 것이 모두 준비된 상태를 나타내어 들어맞는다."
+        }
+      ],
+      "uniquenessNote": "다 갖추지 못한 상태인 '미비하다'에 대해 유의 표현(a), 겉치레(c), 결핍 심화(d)는 모두 완비를 뜻하지 않으므로 '빠짐없이 갖추어졌다'(b)만 유일한 정답이다.",
+      "gradeEvidence": "rubric_inferred(L=4,T=5)"
+    },
+    {
+      "id": "g5-argon-2100",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "학급 토의에서 우리는 규칙을 고치는 일을 곧바로 처리했다.",
+          "verdict": "fits",
+          "reason": "당장 처리하지 않고 나중으로 미루어 두는 '보류했다'와 정반대로 즉시 일을 매듭지었다는 뜻이므로 들어맞는다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "학급 토의에서 우리는 규칙을 고치는 일을 다음 주로 미루었다.",
+          "verdict": "does_not_fit",
+          "reason": "나중으로 미루어 두는 '보류했다'와 뜻이 비슷하여 반의 관계가 성립하지 않는다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "학급 토의에서 우리는 규칙을 고치는 일을 대충 넘겼다.",
+          "verdict": "does_not_fit",
+          "reason": "제대로 결정하거나 처리하지 않고 회피한 것이므로 당장 처리했다는 반대 뜻이 아니다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "학급 토의에서 우리는 규칙을 고치는 일을 아예 취소했다.",
+          "verdict": "does_not_fit",
+          "reason": "취소는 일을 없던 것으로 폐기하는 것이지 미루지 않고 당장 처리하는 반대 행위가 아니다."
+        }
+      ],
+      "uniquenessNote": "'보류하다'(당장 처리하지 않고 미루어 두다)와 혼동하기 쉬운 폐기·취소(a), 유의 표현(b), 회피(c)를 모두 배제하면 즉시 실행·해결을 뜻하는 '곧바로 처리했다'(d)만 성립한다.",
+      "gradeEvidence": "[6국01-06] 토의에 협력적으로 참여하며 서로의 의견을 비교하고 조정한다."
+    },
+    {
+      "id": "g5-argon-2101",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "우리 반도 그 좋은 차례를 따라 책을 사기로 했다.",
+          "verdict": "does_not_fit",
+          "reason": "앞 문장은 작년에 선배들이 했던 지난 일이지 돌아오는 순번이 아니므로 '차례'는 맞지 않는다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "우리 반도 그 좋은 목표를 따라 책을 사기로 했다.",
+          "verdict": "does_not_fit",
+          "reason": "작년에 이미 실행된 일을 '그 좋은'으로 받아 가리키므로 미래 지향 명사인 '목표'는 시간 관계상 어긋난다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "우리 반도 그 좋은 선례를 따라 책을 사기로 했다.",
+          "verdict": "fits",
+          "reason": "작년에 선배들이 먼저 실천했던 '이전부터 있었던 사례'를 가리키며 '선례를 따라'의 연어 호응도 자연스럽다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "우리 반도 그 좋은 예고를 따라 책을 사기로 했다.",
+          "verdict": "does_not_fit",
+          "reason": "이미 지나간 선배들의 활동은 앞으로 있을 일을 미리 알리는 '예고'가 될 수 없다."
+        }
+      ],
+      "uniquenessNote": "네 보기 모두 받침 없는 2음절 명사로 조사('를') 단서가 없으며, 앞 문장의 과거 실천 사례('작년에 ~ 채운 적이 있다')를 지시할 수 있는 명사는 '선례'(b)뿐이다.",
+      "gradeEvidence": "rubric_inferred(L=4,T=5)"
+    },
+    {
+      "id": "g5-argon-2102",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "민지는 모둠의 역사 조사 주제를 하나로 합쳤다.",
+          "verdict": "fits",
+          "reason": "여러 갈래로 자세히 나누는 '세분했다'와 정반대로 나뉜 갈래를 한 덩어리로 묶는 뜻이므로 들어맞는다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "민지는 모둠의 역사 조사 주제를 더 잘게 나누었다.",
+          "verdict": "does_not_fit",
+          "reason": "'세분했다'와 같은 방향의 유의 표현이므로 반대말이 되지 않는다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "민지는 모둠의 역사 조사 주제를 차례대로 적었다.",
+          "verdict": "does_not_fit",
+          "reason": "항목의 순서만 배열한 것일 뿐 갈래를 나누거나 합치는 개념과 무관하다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "민지는 모둠의 역사 조사 주제를 절반만 남겼다.",
+          "verdict": "does_not_fit",
+          "reason": "양이나 개수를 덜어 내어 줄인 것일 뿐 여러 갈래를 하나로 통합한 것이 아니다."
+        }
+      ],
+      "uniquenessNote": "여러 갈래로 잘게 나누는 '세분하다'에 대해 세분 심화(b), 순서 정리(c), 수량 감축(d)은 모두 통합을 뜻하지 않으므로 '하나로 합쳤다'(a)만 유일한 반의 표현이다.",
+      "gradeEvidence": "rubric_inferred(L=4,T=5)"
+    },
+    {
+      "id": "g5-argon-2104",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "갑자기 마이크가 꺼져 학예회 무대가 소란스러워지자 사회자인 민지가 침착하게 상황을 주워 담았다.",
+          "verdict": "does_not_fit",
+          "reason": "'주워 담다'는 바닥에 흩어진 물건을 거두는 뜻('수습하다'의 다른 의미)이라 '상황을'과 어울리지 않는다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "갑자기 마이크가 꺼져 학예회 무대가 소란스러워지자 사회자인 민지가 침착하게 상황을 바로잡았다.",
+          "verdict": "fits",
+          "reason": "어수선해진 사태를 거두어 제자리로 돌려놓았다는 문맥 의미와 문법적 호응이 모두 자연스럽다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "갑자기 마이크가 꺼져 학예회 무대가 소란스러워지자 사회자인 민지가 침착하게 상황을 가다듬었다.",
+          "verdict": "does_not_fit",
+          "reason": "'가다듬다'는 마음·정신·숨결을 정돈할 때 쓰며 소란스러운 무대 사태를 해결한다는 목적어 '상황을'과 결합하지 않는다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "갑자기 마이크가 꺼져 학예회 무대가 소란스러워지자 사회자인 민지가 침착하게 상황을 덮어 두었다.",
+          "verdict": "does_not_fit",
+          "reason": "문제를 해결하지 않고 감추거나 넘기는 뜻이므로 침착하게 나서서 소란을 해결한 문맥과 어긋난다."
+        }
+      ],
+      "uniquenessNote": "다의어 '수습하다'의 물건 수거 의미(a)와 마음 정돈 의미(b)는 목적어 '상황을'과 결합할 수 없고, 방치·은폐(d)는 문맥과 반대되므로 사태 해결을 뜻하는 '바로잡았다'(c)만 성립한다.",
+      "gradeEvidence": "rubric_inferred(L=4,T=6)"
+    },
+    {
+      "id": "g5-argon-2067",
+      "revision": 2,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "한 사람이 빌릴 책을 세 권으로 한정했다.",
+          "verdict": "fits",
+          "reason": "빌릴 책의 수량을 세 권으로 제한하여 정한 상황이므로 '한정하다'의 뜻과 문형에 알맞다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "일찍 일어나기로 굳게 마음을 한정했다.",
+          "verdict": "does_not_fit",
+          "reason": "마음을 굳게 정할 때는 수량이나 범위를 제한하는 '한정하다'가 아니라 '다짐하다'를 써야 한다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "흔들리는 책상 다리를 못으로 한정했다.",
+          "verdict": "does_not_fit",
+          "reason": "흔들리는 물건을 움직이지 않게 붙들어 매는 상황에는 '고정하다'를 써야 한다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "누구나 다 들어오도록 자격을 한정했다.",
+          "verdict": "does_not_fit",
+          "reason": "누구나 들어오게 하는 것은 범위나 자격을 제한하여 정하는 '한정하다'의 뜻과 모순된다."
+        }
+      ],
+      "uniquenessNote": "수량을 세 권으로 제한하여 정한 a만 사전 뜻풀이에 맞으며, b·c는 호응 어휘 오류이고 d는 제한의 뜻과 반대되어 정답은 a 하나뿐이다.",
+      "gradeEvidence": "도서관 대출 권수를 제한하는 친숙한 학교생활 맥락을 사용하여 초등 5학년 심화(advanced) 수준에 알맞다."
+    },
+    {
+      "id": "g5-argon-2068",
+      "revision": 2,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "전반전에는 두 팀의 점수 차가 뚜렷했지만",
+          "verdict": "does_not_fit",
+          "reason": "'뚜렷했지만'은 차이가 분명히 드러났다는 뜻이어서 차이가 매우 심한 '현격했지만'의 반대말이 아니다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "전반전에는 두 팀의 점수 차가 엄청났지만",
+          "verdict": "does_not_fit",
+          "reason": "'엄청났지만'은 차이가 매우 컸다는 뜻으로 '현격했지만'과 비슷한 말이지 반대말이 아니다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "전반전에는 두 팀의 점수 차가 작았지만",
+          "verdict": "fits",
+          "reason": "차이가 매우 심하다는 '현격했지만'과 정반대로 점수 차가 작은 상태를 나타내어 반대말로 알맞다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "전반전에는 두 팀의 점수 차가 일정했지만",
+          "verdict": "does_not_fit",
+          "reason": "'일정했지만'은 차이가 변함없이 같았다는 뜻일 뿐 차이가 작다는 반대 뜻이 되지 않는다."
+        }
+      ],
+      "uniquenessNote": "차이가 매우 심하다는 '현격하다'와 반대로 차이가 작음을 나타내는 보기는 c('작았지만') 하나뿐이다.",
+      "gradeEvidence": "운동 경기의 전반전과 후반전 점수 차이라는 구체적 맥락을 제시하여 초등 5학년 도전(challenge) 수준에 알맞다."
+    },
+    {
+      "id": "g5-argon-2080",
+      "revision": 2,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "태풍으로 입은 피해와 복구에 드는 비용이 풍부하다.",
+          "verdict": "does_not_fit",
+          "reason": "'풍부하다'는 쓸모 있는 자원이나 물건이 넉넉할 때 쓰므로 재해 피해와 복구 비용에는 어울리지 않는다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "태풍으로 입은 피해와 복구에 드는 비용이 일정하다.",
+          "verdict": "does_not_fit",
+          "reason": "'일정하다'는 양이나 크기가 늘 변함없이 같다는 뜻이어서 큰 재해 피해 규모를 나타내는 문맥에 맞지 않는다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "태풍으로 입은 피해와 복구에 드는 비용이 사소하다.",
+          "verdict": "does_not_fit",
+          "reason": "마을 시설과 논밭이 모두 망가진 큰 피해 상황이므로 아주 작다는 뜻의 '사소하다'와 반대된다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "태풍으로 입은 피해와 복구에 드는 비용이 막대하다.",
+          "verdict": "fits",
+          "reason": "다리와 비닐하우스가 무너지고 논밭이 모두 잠겨 피해와 복구 비용이 더할 수 없이 크다는 문맥에 정확히 맞는다."
+        }
+      ],
+      "uniquenessNote": "대규모 태풍 재해로 인한 피해와 복구 비용이 더할 수 없이 크다는 문맥에 어울리는 보기는 d('막대하다') 하나뿐이다.",
+      "gradeEvidence": "태풍 피해와 복구 비용이라는 친숙한 생활·사회 맥락을 사용하여 초등 5학년 기본(core) 수준에 알맞다."
+    },
+    {
+      "id": "g5-argon-2103",
+      "revision": 2,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "누구 잘못인지 서둘러 짐작했다",
+          "verdict": "does_not_fit",
+          "reason": "'서둘러 짐작했다'는 신중하지 않게 급히 생각했다는 뜻으로 '속단했다'와 비슷하며 반대말이 아니다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "누구 잘못인지 끝내 정하지 못했다",
+          "verdict": "does_not_fit",
+          "reason": "'끝내 정하지 못했다'는 판단을 내리지 못한 것일 뿐 신중하게 판단했다는 반대 뜻이 되지 않는다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "누구 잘못인지 깊이 살펴 판단했다",
+          "verdict": "fits",
+          "reason": "신중을 기하지 않고 서둘러 판단한다는 '속단했다'와 정반대로 찬찬히 따져 판단했음을 나타내어 반대말로 알맞다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "누구 잘못인지 남의 말만 믿었다",
+          "verdict": "does_not_fit",
+          "reason": "'남의 말만 믿었다'는 스스로 신중하게 따져 본 것이 아니므로 '속단했다'의 반대말이 아니다."
+        }
+      ],
+      "uniquenessNote": "신중하지 않고 서둘러 판단한다는 '속단하다'의 반대 뜻인 신중한 판단을 나타내는 보기는 c('깊이 살펴 판단했다') 하나뿐이다.",
+      "gradeEvidence": "친구들의 다툼에서 양쪽 말을 듣고 판단하는 일상적 학교생활 맥락을 사용하여 초등 5학년 심화(advanced) 수준에 알맞다."
+    }
+  ],
+  "rejected": [
+    {
+      "lemma": "미미하다",
+      "reason": "근거 표제어·품사·뜻 번호 불일치, 누락 또는 동음이의어 모호성"
+    },
+    {
+      "lemma": "소모하다",
+      "reason": "근거 표제어·품사·뜻 번호 불일치, 누락 또는 동음이의어 모호성"
+    },
+    {
+      "lemma": "울림",
+      "reason": "해설은 1~2문장 60자 이내(47자); 뜻 문제 지문에 목표 낱말이 없다; g5-argon-2072: 해설은 1~2문장 60자 이내(47자); g5-argon-2072: 뜻 문제 지문에 목표 낱말이 없다"
+    },
+    {
+      "lemma": "조명하다",
+      "reason": "g5-argon-2059 r1 공동검수 결함으로 제외: 공동검수 수준 합의에서 '조명하다(어떤 대상을 일정한 관점으로 바라보다)'가 초등 5학년 수준에 지나치게 어려운 어휘·의미(too_hard)로 판정되었고, 이미 최고 난도(challenge)이며 대상 낱말과 의미를 변경할 수 없어 폐기한다."
+    },
+    {
+      "lemma": "둥지",
+      "reason": "g5-argon-2070 r1 공동검수 결함으로 제외: 사전 근거(둥지 414741-2)의 뜻풀이가 '→ 둥우리'로 되어 있어 해당 의미에서는 '둥우리'를 쓰라는 규범 참조 항목이므로, 대상 낱말과 사전 근거 변경 없이는 '둥지'의 올바른 쓰임 문항을 성립시킬 수 없어 폐기한다."
+    },
+    {
+      "lemma": "토대",
+      "reason": "g5-argon-2071 r1 공동검수 결함으로 제외: 사전 근거(토대 496366-2)가 표준국어대사전 『건설』 전문어 표지가 붙은 의미항이어서 수준 합의에서 전문어 부적합(stdictSpecialized)으로 판정되었고, 대상 의미항을 변경할 수 없어 폐기한다."
+    },
+    {
+      "lemma": "내포하다",
+      "reason": "g5-argon-2095 r1 공동검수 결함으로 제외: 공동검수 수준 합의에서 '내포하다'가 초등 5학년 수준에 지나치게 어려운 어휘(too_hard)로 판정되었고, 이미 최고 난도(challenge)이며 대상 낱말을 변경할 수 없어 폐기한다."
+    }
+  ]
+}
