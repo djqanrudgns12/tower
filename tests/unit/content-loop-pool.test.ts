@@ -129,6 +129,18 @@ it('실제 review 입력을 50개씩 섞어 배치별 staging으로 분배하고
 });
 
 function write(root: string, file: string, value: unknown) { const dest = path.join(root, file); fs.mkdirSync(path.dirname(dest), { recursive: true }); fs.writeFileSync(dest, JSON.stringify(value)); }
+
+it('검수 목록의 수정판이 입력 은행에 없으면 일부만 호출하지 않고 먼저 거절한다', async () => {
+  const root = rootDir();
+  const batches = ['A', 'B'].map(batchId => ({ batchId, drafts: [draft(batchId, 0)], reviews: {} }));
+  const refs = batches.map((b, i) => ({ batchId: b.batchId, questionId: b.drafts[0]!.id, revision: i + 1 }));
+  const respond = vi.fn(async () => { throw new Error('모델 호출 전에 누락을 찾아야 한다'); });
+  await expect(runQuestions({ ...bank, loadBatches: () => batches }, root, 'claude', refs, () => {}, {
+    config: resolveReviewConfig({}, {}).claude, respond,
+  })).rejects.toThrow('요청한 수정판이 입력 은행에 없다');
+  expect(respond).not.toHaveBeenCalled();
+});
+
 function draft(batchId: string, i: number): d.QuestionDraft {
   return { schemaVersion: '0.2', batchId, id: `g4-pool-${batchId.toLowerCase()}-${String(i).padStart(4, '0')}`, revision: 1, status: 'draft', grade: 4, type: 'cloze', variantTag: 'standard',
     gradeBasis: { reference: '출처', editionYear: 2022, unit: 'stdict:전문어 표지 없음', reviewed: false },

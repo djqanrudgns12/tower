@@ -3,8 +3,13 @@
 작성 2026-11-06 · 작성 Claude Opus 5.5(총괄) · 받는 쪽 Codex(메인 세션)
 같이 읽을 것: [계획서 CONTENT_REVIEW_PLAN.md](CONTENT_REVIEW_PLAN.md)(기준 문서), [AGENTS.md](../AGENTS.md)
 
-### 사용자 지시에 따른 처리량 전환 — 병렬 검수 가동 (Codex, 2026-11-06 19:12 KST)
+### 사용자 지시에 따른 처리량 전환 — 병렬 검수 가동 (Codex, 2026-11-06 19:31 KST)
 
+- **Codex CLI 재개 확인:** 앞선 사용량 대기는 일시적이었다. B의019는18:58, A의 수정판 재검수는19:01, 5학년002는19:02에 실제 완료했다. 현재 앞단은 다시 전진 중이며 계속 사용량 차단 상태라고 보고하지 않는다. 하위 담당의 별도 사용량 제한과 CLI 전체의 영구 중단을 동일시하지 않는다.
+- **일반 S4 입력 누락 수정:** 메인이 넘긴 144/145개 목록을 직접 `review.mjs run --question-list`로 실행했을 때, 이 경로가 추적 초안만 읽어서 **미반영 수정판 8/16개를 누락**했다. 014~016은 실제136검수=129통과·7지적·8미검수, 007~009는 실제129검수=127통과·2지적·16미검수였다. 현재 revision/contentHash·원본 blind/reveal·해설 hash를 직접 대조하고 각 작업 파일12개를 보관했다. `.orchestrate/g4-gate-fast{,-a}.audit.json`은 `verified-partial-followup-required`; 예약 수를 완료 수로 세지 않는다.
+- **복구 실행:** **PID76757** `g4-gate-followup-b` native gate가 014~016 누락 **8/8 통과**를 완료했고 기존7지적을 S5 수정 중이다(현재 공동검수137개). **PID78509** `g4-gate-staged-a`는 새 `review.mjs run --stage-only --question-list`로 007~009의 **누락16개만** 검수한다. 실제 blind 입력6·2·8개·Opus/high를 확인했다. 기존129판정은 보존한다. 원래 앞단 A/B는 이후 cohort를 계속 처리하며 완료된 cohort의 소유권만 넘긴 기록이 각 run 파일에 있다.
+- **19:33 복구16개 완료:** PID78509 정상 종료, **16/16 통과**, 메인이 현재 문항/해설 해시·원본2단계·모델/effort·이전129판정 불변을 확인하고 작업 파일12개를 보관했다. `g4-gate-staged-a.audit.json` 참조. 007~009는 공동검수 **50·45·48=143개**이며 008의 지적2개만 `g4-gate-followup-a.run.json`의 새 native S5 실행으로 넘겼다. 007·009는 추가 모델 호출 없이 반영 대기다. 시범143+일반B137+일반A143=**423개 공동검수 통과·반영 대기**이며 공개51과 구분한다.
+- **새 검수 CLI 계약:** 미반영 수정판의 S4만 실행하려면 반드시 `--stage-only --question-list`를 함께 사용한다. native gate의 경로/해시 검증 overlay를 그대로 사용하고 추적 파일은 쓰지 않는다. 일반 경로도 요청 revision이 입력에 없으면 **모델 호출 전에 거절**하여 일부만 처리하고 성공으로 끝내지 않는다. 수정 전 누락/호출을 재현했고, 구현 후 메인 **관련48시험·범위 ESLint·시험 타입 검사 통과**. S4 지적분은 native gate xhigh로 이어 간다.
 - **Claude 복구·정책 검토 완료:** 19:00:05에 Opus 5.5/xhigh를 실제 호출했고 19:01:18 정상 종료했다. `.orchestrate/policy-review/response.json` 해시 `d5fd845be5adc49c170596d159668ea444103127a39bce76fa32dc8bbfe74289`. 정책만 검토한 결과다. [실용 정책 §4](CR1000_REVIEW_POLICY.md)에 채택/미채택을 기록했다. 수정판 독립 검수 생략·사전 근거 축소는 채택하지 않았다.
 - **시범 모델 관문 완료:** native `pilot-fast` PID71656 정상 종료, 잔여 **7/7 통과**, Claude6호출·Codex/Argon0. 메인이 현재 overlay와 실제 `bankBuild.decide`로 revision/contentHash/rationalesHash·앞단·공개 RULE을 대조했다. **45/50·50/50·48/50 = 143/150 공동검수 통과**, 각 90%·100%·96%, Claude 미검수0. `.orchestrate/pilot-fast.readiness.json`에 확대 허용을 기록했다. **G1 최종 완료·공개 승인은 아직 아니며**, 실제 공개는 3학년51뿐이다.
 - **일반 S4 확대:** **PID72967**, `.orchestrate/g4-gate-fast.{run.json,questions.json,out}`. 014~016 앞단 완료 **144개(48·47·49)**를 `review.mjs run --question-list`의 **Opus 5.5/high**로 검수 중이다. 모델 난이도 배정을 위해 S4만 실행하고, 지적분 후속 native 관문은 xhigh로 한다. B 실행기의 첫 cohort는 `endedAt`·전체 stage 종료·앞단 미검수/결함0을 확인했고 현재 작업은 017 이후뿐이다. 완료된 세 배치의 gate 소유권만 59503→72967로 원자적으로 넘겼다(원래 token/summary 해시는 run 기록 보존). 원래 종료 처리도 token을 대조하므로 새 잠금을 지우지 않는다. 다른 진행 중 배치·프로세스는 건드리지 않았다.

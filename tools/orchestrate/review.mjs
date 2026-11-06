@@ -10,6 +10,7 @@
 //   node tools/orchestrate/review.mjs accept --root <dir> --reviewer claude --batch Q50-G3-004 --phase blind|reveal --file <답장>
 //   node tools/orchestrate/review.mjs ingest --root <dir> --reviewer claude --batch Q50-G3-004
 // 문항 제한: --questions ID@revision,ID@revision (모든 단계에 같은 목록 전달)
+// --question-list와 --stage-only: 검증된 미반영 초안·보고서를 읽어 검수만 진행한다(추적 반영 없음).
 //   node tools/orchestrate/review.mjs run --root <dir> --reviewer claude [--batches A,B | --all] [--parallel 3]
 import fs from 'node:fs';
 import path from 'node:path';
@@ -530,6 +531,12 @@ export async function runPhase(b, root, reviewer, batchId, phase, log, options =
 /** 모든 blind 묶음이 끝난 뒤 reveal. 배치별 기존 보고서는 ingest에서 한 번만 병합한다. */
 export async function runQuestions(b, root, reviewer, questions, log = console.log, options = {}) {
   const refs = questionRefs(questions), ids = [...new Set(refs.map(q => q.batchId))];
+  for (const id of ids) {
+    const batch = await findBatch(b, root, id);
+    const available = new Set(batch.drafts.map(q => `${q.id}@${q.revision}`));
+    const missing = refs.filter(q => q.batchId === id && !available.has(`${q.questionId}@${q.revision}`));
+    if (missing.length) throw new Error(`${id}: 요청한 수정판이 입력 은행에 없다: ${missing.map(q => `${q.questionId}@${q.revision}`).join(', ')}. 미반영 수정판은 stage-only runtime으로 검수해야 한다`);
+  }
   const owner = new Map(refs.map(q => [q.questionId, q.batchId]));
   const opts = id => ({ ...options, questionKeys: refs.filter(q => q.batchId === id).map(q => `${q.questionId}@${q.revision}`) });
   const active = new Set();
@@ -555,12 +562,24 @@ export async function runQuestions(b, root, reviewer, questions, log = console.l
   return results;
 }
 
+/** native gate의 검증된 overlay를 그대로 사용하되 S4만 실행한다. */
+export async function runStagedQuestions(root, reviewer, questions, log = console.log, options = {}, modules) {
+  const refs = questionRefs(questions);
+  const { createGateRuntime } = await import('./content-loop.mjs');
+  const runtime = await createGateRuntime({ ...options, root, all: false, batches: [...new Set(refs.map(q => q.batchId))].join(','), 'stage-only': true, log }, modules);
+  return runtime.reviewQuestions(refs, reviewer, options.onEvent);
+}
+
 async function main() {
   const a = args(process.argv.slice(2));
+  if (a['stage-only'] && !(a._[0] === 'run' && a['question-list'])) throw new Error('--stage-only 검수는 run --question-list와 함께 써야 한다');
   if (a._[0] === 'run' && a['question-list']) {
     const root = path.resolve(a.root ?? path.resolve(import.meta.dirname, '../..'));
     const reviewer = a.reviewer ?? 'claude';
-    console.log(JSON.stringify(await runQuestions(await load(root), root, reviewer, a['question-list'], console.log, { ...a, archiveExisting: a['archive-existing'] === true || a['archive-existing'] === reviewer, config: resolveReviewConfig(a)[reviewer] })));
+    const result = a['stage-only']
+      ? await runStagedQuestions(root, reviewer, a['question-list'], console.log, a)
+      : await runQuestions(await load(root), root, reviewer, a['question-list'], console.log, { ...a, archiveExisting: a['archive-existing'] === true || a['archive-existing'] === reviewer, config: resolveReviewConfig(a)[reviewer] });
+    console.log(JSON.stringify(result));
     return;
   }
   const cmd = a._[0];

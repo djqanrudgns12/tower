@@ -8,7 +8,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 // @ts-expect-error MJS 실행기의 선언 파일 없음
 import { runGate, createGateRuntime } from '../../tools/orchestrate/content-loop.mjs';
 // @ts-expect-error MJS 실행기의 선언 파일 없음
-import { pending, buildPhase, ingest, acceptPhase, resolveReviewConfig, runPhase } from '../../tools/orchestrate/review.mjs';
+import { pending, buildPhase, ingest, acceptPhase, resolveReviewConfig, runPhase, runStagedQuestions } from '../../tools/orchestrate/review.mjs';
 // @ts-expect-error MJS 실행기의 선언 파일 없음
 import { promptFor } from '../../tools/orchestrate/level.mjs';
 
@@ -281,6 +281,15 @@ function stagedFixture() {
 }
 
 describe('staging 전용 gate', () => {
+  it('검수만 실행할 때도 미반영 수정판 전체를 읽고 추적 파일을 보존한다', async () => {
+    const f = stagedFixture(), before = fs.readFileSync(f.reportPath, 'utf8');
+    const refs = f.drafts.map(q => ({ batchId: 'A', questionId: q.id, revision: 2 }));
+    const result = await runStagedQuestions(f.root, 'codex', refs, () => {}, f.options, f.modules);
+    expect(result).toHaveLength(1);
+    expect(result[0]).toMatchObject({ batchId: 'A', merged: 2, flagged: 0 });
+    expect(f.respond.mock.calls.flatMap(([r]) => r.items.map(q => q.revision))).toEqual([2, 2, 2, 2]);
+    expect(fs.readFileSync(f.reportPath, 'utf8')).toBe(before);
+  });
   it('현재 staging 판을 검수하고 apply 없이 재개하며 추적 파일과 기존 요약을 보존한다', async () => {
     const f = stagedFixture();
     const tracked = fs.readFileSync(f.reportPath, 'utf8');
