@@ -63,6 +63,19 @@ function completeJson(text) {
   return null;
 }
 
+// 출력 한도 뒤 새 줄에서 전체 JSON을 다시 쓴 경우다. 괄호나 내용을 고치지 않는다.
+function finalItemsAfterLimit(response, validate) {
+  if (typeof validate !== 'function') return null;
+  const start = [...response.matchAll(/(?:^|\n)[ \t]*(?=\{\s*"items"\s*:)/g)].at(-1);
+  if (!start || start.index === 0) return null;
+  try {
+    const text = response.slice(start.index).trim(), value = JSON.parse(text);
+    if (Object.keys(value).length !== 1 || !Array.isArray(value.items)) return null;
+    validate(text); // 현재 요청의 ID·개수·내용 형식 검사를 통과해야 한다.
+    return JSON.stringify(value);
+  } catch { return null; }
+}
+
 function brainFiles(dir) {
   if (!fs.existsSync(dir) || fs.lstatSync(dir).isSymbolicLink()) return [];
   return fs.readdirSync(dir, { withFileTypes: true }).flatMap(e => e.isDirectory() ? brainFiles(path.join(dir, e.name))
@@ -81,6 +94,10 @@ export function parseAgyOutput(raw, { brain = BRAIN, validate, depth = 0 } = {})
       return parseAgyOutput(complete, { brain, validate, depth: depth + 1 });
     }
     return complete; // 문항별 형식·대상 검사는 기존 호출자의 검사로 남긴다.
+  }
+  if ((envelope.is_error || envelope.status === 'ERROR') && /output token limit/i.test(String(envelope.error))) {
+    const recovered = finalItemsAfterLimit(response, validate);
+    if (recovered) return recovered;
   }
   const incomplete = /```|[[{]|exceeded the output token limit/i.test(response);
   if (!envelope.is_error && envelope.status !== 'ERROR' && response && !incomplete) return response;

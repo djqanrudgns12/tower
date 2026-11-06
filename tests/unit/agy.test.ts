@@ -53,6 +53,31 @@ describe('봉인 폴더만 읽는 agy 직접 호출', () => {
     expect(JSON.parse(parseAgyOutput(output(response)))).toEqual(answer);
   });
 
+  it('출력 한도 뒤 울타리 없이 다시 쓴 완성본은 현재 대상 검사 후 꺼낸다', () => {
+    const brain = temp(), answer = { items: [{ questionId: 'q1' }, { questionId: 'q2' }] };
+    const response = '{"items":[{"questionId":"q1","reason":"미완결\n' + JSON.stringify(answer) + '\n';
+    const validate = vi.fn((text: string) => {
+      if (JSON.stringify(JSON.parse(text)) !== JSON.stringify(answer)) throw new Error('대상 불일치');
+    });
+    const raw = output(response, { status: 'ERROR', error: 'exceeded the output token limit', finished_reason: 'error' });
+    expect(JSON.parse(parseAgyOutput(raw, { brain, validate }))).toEqual(answer);
+    expect(validate).toHaveBeenCalledExactlyOnceWith(JSON.stringify(answer));
+    expect(() => parseAgyOutput(raw, { brain })).toThrow(/잘린|불완전/);
+  });
+
+  it('출력 한도 뒤 완성본도 대상이 다르거나 미완결이면 복구하지 않는다', () => {
+    const brain = temp();
+    const validate = (text: string) => {
+      if (JSON.parse(text).items?.[0]?.questionId !== 'q1') throw new Error('대상 불일치');
+    };
+    const prefix = '{"items":[{"reason":"미완결\n';
+    for (const suffix of ['{"items":[{"questionId":"other"}]}', '{"items":[{"questionId":"q1"']) {
+      expect(() => parseAgyOutput(output(prefix + suffix, {
+        status: 'ERROR', error: 'exceeded the output token limit',
+      }), { brain, validate })).toThrow(/잘린|불완전/);
+    }
+  });
+
   it('잘린 응답은 해당 conversation_id의 전문만 복원하고 검증한다', () => {
     const brain = temp(), id = '12345678-1234-1234-1234-123456789abc';
     fs.mkdirSync(path.join(brain, id));
