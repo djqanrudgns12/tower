@@ -83,6 +83,34 @@ function assertReproducible(root: string, sha: string) {
 }
 
 describe('대기분 반영·잠금·배치 커밋', () => {
+  it('낱말 목록 전용 staging은 같은 학년·라운드 목록만 잠금 커밋한다', async () => {
+    const root = fixture();
+    const file = 'content-source/wordlists/g4-r2.json';
+    const list = { grade: 4, round: 2, items: [{ lemma: '표제어', checked: true, reason: '독립 검수 완료' }] };
+    stage(root, 'wordlist-g4-r2', '01', { [file]: list });
+    const result = await applyStaged({ ...options(root), batch: 'wordlist-g4-r2', coAuthor: 'Codex <noreply@openai.com>' });
+    expect(result.committed).toBe(true);
+    expect(JSON.parse(git(root, 'show', `HEAD:${file}`))).toEqual(list);
+    expect(git(root, 'log', '-1', '--format=%B')).toContain('Co-Authored-By: Codex <noreply@openai.com>');
+    expect(fs.existsSync(path.join(root, '.orchestrate/staging/wordlist-g4-r2/01'))).toBe(false);
+    assertReproducible(root, git(root, 'rev-parse', 'HEAD'));
+  });
+
+  it.each([
+    ['wordlist-g4-r2', 'content-source/wordlists/g5-r2.json'],
+    ['wordlist-g4-r2', 'content-source/wordlists/g4-r3.json'],
+    ['A', 'content-source/wordlists/g4-r2.json'],
+    ['wordlist-g7-r2', 'content-source/wordlists/g7-r2.json'],
+  ])('목록 staging %s의 다른 소유 경로 %s를 거절한다', async (batchId, file) => {
+    const root = fixture();
+    const head = git(root, 'rev-parse', 'HEAD');
+    stage(root, batchId, '01', { [file]: { items: [] } });
+    await expect(applyStaged({ ...options(root), batch: batchId })).rejects.toThrow(/배치 밖 경로/);
+    expect(git(root, 'rev-parse', 'HEAD')).toBe(head);
+    expect(fs.existsSync(path.join(root, file))).toBe(false);
+    expect(git(root, 'status', '--porcelain')).toBe('');
+  });
+
   it('두 배치가 엇갈려 도착해도 각 커밋의 소스만으로 산출물을 재현하며 남의 staged 파일은 남긴다', async () => {
     const root = fixture();
     write(root, 'unrelated.txt', '다른 작업');

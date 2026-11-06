@@ -79,6 +79,9 @@ function destination(root, relative) {
   return current;
 }
 function owns(batchId, file) {
+  // O-C5 목록도 콘텐츠 잠금을 거친다. 전용 작업 ID에는 그 목록 한 파일만 허용한다.
+  const wordlist = /^wordlist-(g[3-6]-r[1-9]\d*[a-z]?)$/.exec(batchId)?.[1];
+  if (wordlist) return file === `content-source/wordlists/${wordlist}.json`;
   return file.startsWith(`content-source/batches/${batchId}/`) || file.startsWith(`content-source/reviews/${batchId}/`)
     || file.startsWith(`content-source/reviews/archive/${batchId}.`) || file === `content-source/approvals/${batchId}.explanation.json`
     || file.startsWith(`content-source/approvals/archive/${batchId}.explanation.`) || file === `content-source/levels/${batchId}.json`
