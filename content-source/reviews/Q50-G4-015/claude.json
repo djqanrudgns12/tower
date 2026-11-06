@@ -1,0 +1,959 @@
+{
+  "reviewId": "QR-AUTO-claude-Q50-G4-015",
+  "jobId": "Q50-G4-015",
+  "reviewer": {
+    "model": "claude-opus-5-5",
+    "tool": "2단계 블라인드 검수(tools/orchestrate/review.mjs)",
+    "freshContext": true,
+    "date": "2026-11-06"
+  },
+  "items": [
+    {
+      "questionId": "g4-argon-0701",
+      "revision": 2,
+      "contentHash": "00f74f6e874dea476d3dd698e78705a4c65d53a599b866c67a3ca65d880377c8",
+      "run": {
+        "id": "20261106T101707653Z-72967-3939dff8-4dca-44e6-a6d6-b2bf2771ed98",
+        "model": "claude-opus-5-5",
+        "effort": "high"
+      },
+      "blindChoice": "d",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": []
+    },
+    {
+      "questionId": "g4-argon-0702",
+      "revision": 1,
+      "contentHash": "3d7c5575bb32f4ce038dfa160b224a33c39db31d532f8e49d75355e733695992",
+      "run": {
+        "id": "20261106T101707653Z-72967-3939dff8-4dca-44e6-a6d6-b2bf2771ed98",
+        "model": "claude-opus-5-5",
+        "effort": "high"
+      },
+      "blindChoice": "a",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": []
+    },
+    {
+      "questionId": "g4-argon-0703",
+      "revision": 1,
+      "contentHash": "108419cf42f727b61062fb02cf277d1a454ecd64f5cac78d745dc2ab0256f7d1",
+      "run": {
+        "id": "20261106T101707653Z-72967-3939dff8-4dca-44e6-a6d6-b2bf2771ed98",
+        "model": "claude-opus-5-5",
+        "effort": "high"
+      },
+      "blindChoice": "c",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": []
+    },
+    {
+      "questionId": "g4-argon-0704",
+      "revision": 1,
+      "contentHash": "d235723a2c8e749caff458c85deb705e3935a5ebec3558f3f1a7cadc4fb2e2a4",
+      "run": {
+        "id": "20261106T101707653Z-72967-3939dff8-4dca-44e6-a6d6-b2bf2771ed98",
+        "model": "claude-opus-5-5",
+        "effort": "high"
+      },
+      "blindChoice": "d",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": []
+    },
+    {
+      "questionId": "g4-argon-0705",
+      "revision": 1,
+      "contentHash": "0ae65d8bcbb1da98e39ab358b8897930ceb286e6c93669ac48d9e53802c86e41",
+      "run": {
+        "id": "20261106T101707653Z-72967-3939dff8-4dca-44e6-a6d6-b2bf2771ed98",
+        "model": "claude-opus-5-5",
+        "effort": "high"
+      },
+      "blindChoice": "c",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": [
+        "[블라인드] [권고] 발문의 '무척'과 보기의 '매우'·'아주'가 겹쳐, 바꾸어 넣으면 '무척 매우 엄하고'가 됨. 발문에서 '무척'을 빼면 자연스러움",
+        "[공개 대조] [권고] 보기 c를 넣으면 '무척 매우 엄하고 철저합니다'처럼 정도 부사가 겹침. 발문에서 '무척'을 빼기"
+      ]
+    },
+    {
+      "questionId": "g4-argon-0706",
+      "revision": 1,
+      "contentHash": "d88d32ec76d70354c8208b991c65b8f14227b8df738f24f147fbfb0875138bec",
+      "run": {
+        "id": "20261106T101707653Z-72967-3939dff8-4dca-44e6-a6d6-b2bf2771ed98",
+        "model": "claude-opus-5-5",
+        "effort": "high"
+      },
+      "blindChoice": "b",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": []
+    },
+    {
+      "questionId": "g4-argon-0707",
+      "revision": 2,
+      "contentHash": "a4d8d8d251ada9b6afc9691fef4f8c81d1f349dbf7f4e1ec8f2be0c98268df1c",
+      "run": {
+        "id": "20261106T102416765Z-76757-0a81ef6e-6e58-45ba-bfb6-5fbb1cc0b3d3",
+        "model": "claude-opus-5-5",
+        "effort": "xhigh"
+      },
+      "blindChoice": "d",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": []
+    },
+    {
+      "questionId": "g4-argon-0708",
+      "revision": 1,
+      "contentHash": "b5c7aee1c5cb89ae768ef20ce119774adeb025ef22ec955640ac5d1c11d972a3",
+      "run": {
+        "id": "20261106T101707653Z-72967-3939dff8-4dca-44e6-a6d6-b2bf2771ed98",
+        "model": "claude-opus-5-5",
+        "effort": "high"
+      },
+      "blindChoice": "b",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": [
+        "[블라인드] [권고] '귀중하게 존중해야'는 뜻이 겹침. '귀중하게'를 빼거나 '소중히 여겨'와 같은 표현으로 바꾸기",
+        "[공개 대조] [권고] '귀중하게 존중해야'는 뜻이 겹침. '귀중하게'를 빼기"
+      ]
+    },
+    {
+      "questionId": "g4-argon-0709",
+      "revision": 1,
+      "contentHash": "119f9687eb1aef4033adc30fe368206800ee26abb5735adebb2ef995ad881d4f",
+      "run": {
+        "id": "20261106T101707653Z-72967-3939dff8-4dca-44e6-a6d6-b2bf2771ed98",
+        "model": "claude-opus-5-5",
+        "effort": "high"
+      },
+      "blindChoice": "c",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": []
+    },
+    {
+      "questionId": "g4-argon-0710",
+      "revision": 1,
+      "contentHash": "b8087448091fdb9b308cf335a5f63a70d3e6c76265f1a33a1cc844dd70b5422f",
+      "run": {
+        "id": "20261106T101707653Z-72967-3939dff8-4dca-44e6-a6d6-b2bf2771ed98",
+        "model": "claude-opus-5-5",
+        "effort": "high"
+      },
+      "blindChoice": "b",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": []
+    },
+    {
+      "questionId": "g4-argon-0711",
+      "revision": 1,
+      "contentHash": "3b137a98dfaa21e63c6c50b027aee1b1cb59ce9071cc48d9a05199591e2674f1",
+      "run": {
+        "id": "20261106T101707653Z-72967-3939dff8-4dca-44e6-a6d6-b2bf2771ed98",
+        "model": "claude-opus-5-5",
+        "effort": "high"
+      },
+      "blindChoice": "a",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": []
+    },
+    {
+      "questionId": "g4-argon-0712",
+      "revision": 2,
+      "contentHash": "acb72477663d51f556d9d77e2706015e12011a293a3e12055f6aee03b4971127",
+      "run": {
+        "id": "20261106T101707653Z-72967-3939dff8-4dca-44e6-a6d6-b2bf2771ed98",
+        "model": "claude-opus-5-5",
+        "effort": "high"
+      },
+      "blindChoice": "b",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": []
+    },
+    {
+      "questionId": "g4-argon-0713",
+      "revision": 2,
+      "contentHash": "f67c378a89a23711b762a846900c3eecc0a957144d064802bff1d824ffe4e03d",
+      "run": {
+        "id": "20261106T102416765Z-76757-0a81ef6e-6e58-45ba-bfb6-5fbb1cc0b3d3",
+        "model": "claude-opus-5-5",
+        "effort": "xhigh"
+      },
+      "blindChoice": "d",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": []
+    },
+    {
+      "questionId": "g4-argon-0714",
+      "revision": 1,
+      "contentHash": "efe63afd072e6c1da3a2d55ef6a9a53e50038f6fda42b7675a8e63da72bc159a",
+      "run": {
+        "id": "20261106T101707653Z-72967-3939dff8-4dca-44e6-a6d6-b2bf2771ed98",
+        "model": "claude-opus-5-5",
+        "effort": "high"
+      },
+      "blindChoice": "a",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": []
+    },
+    {
+      "questionId": "g4-argon-0715",
+      "revision": 1,
+      "contentHash": "b24fed1a40804a52571a7760df2f73287c1908daa29076348f94eaf6452f6af6",
+      "run": {
+        "id": "20261106T101707653Z-72967-3939dff8-4dca-44e6-a6d6-b2bf2771ed98",
+        "model": "claude-opus-5-5",
+        "effort": "high"
+      },
+      "blindChoice": "c",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": []
+    },
+    {
+      "questionId": "g4-argon-0716",
+      "revision": 1,
+      "contentHash": "1b65072334d19bb9d87d95cd3472b9150536c12f2a1d0a271d2e88075f80c14b",
+      "run": {
+        "id": "20261106T101707653Z-72967-3939dff8-4dca-44e6-a6d6-b2bf2771ed98",
+        "model": "claude-opus-5-5",
+        "effort": "high"
+      },
+      "blindChoice": "b",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": []
+    },
+    {
+      "questionId": "g4-argon-0717",
+      "revision": 1,
+      "contentHash": "d264bbc2f0883bcea0a797d80d99050e8a7eccddb88033dfb651e8d96076390a",
+      "run": {
+        "id": "20261106T101707653Z-72967-3939dff8-4dca-44e6-a6d6-b2bf2771ed98",
+        "model": "claude-opus-5-5",
+        "effort": "high"
+      },
+      "blindChoice": "d",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": []
+    },
+    {
+      "questionId": "g4-argon-0718",
+      "revision": 1,
+      "contentHash": "e025a9a4cac498e627a2c8b9b36317e978e0e58b331487cddf73315daa33cd16",
+      "run": {
+        "id": "20261106T101707653Z-72967-3939dff8-4dca-44e6-a6d6-b2bf2771ed98",
+        "model": "claude-opus-5-5",
+        "effort": "high"
+      },
+      "blindChoice": "b",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": []
+    },
+    {
+      "questionId": "g4-argon-0719",
+      "revision": 1,
+      "contentHash": "469daa5767735e463aedac3b4b7ea7078e4eb3ebbfe9754dc82abb0be08044e8",
+      "run": {
+        "id": "20261106T101707653Z-72967-3939dff8-4dca-44e6-a6d6-b2bf2771ed98",
+        "model": "claude-opus-5-5",
+        "effort": "high"
+      },
+      "blindChoice": "c",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": []
+    },
+    {
+      "questionId": "g4-argon-0720",
+      "revision": 1,
+      "contentHash": "e5d4dc3c36fc282426b5cecb76fa7847c27cbfe983b0dc988704cff89536c64f",
+      "run": {
+        "id": "20261106T101707653Z-72967-3939dff8-4dca-44e6-a6d6-b2bf2771ed98",
+        "model": "claude-opus-5-5",
+        "effort": "high"
+      },
+      "blindChoice": "a",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": []
+    },
+    {
+      "questionId": "g4-argon-0721",
+      "revision": 1,
+      "contentHash": "d6e7c463d614977a50d5c293a4186b1d442b52f2688c19d962cd6d484c4dc2dc",
+      "run": {
+        "id": "20261106T101707653Z-72967-3939dff8-4dca-44e6-a6d6-b2bf2771ed98",
+        "model": "claude-opus-5-5",
+        "effort": "high"
+      },
+      "blindChoice": "d",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": []
+    },
+    {
+      "questionId": "g4-argon-0722",
+      "revision": 2,
+      "contentHash": "ded4dcafc25e2d53e4c4a68b5a23bbbc319f3dec3e3d653e8478af435d20357d",
+      "run": {
+        "id": "20261106T102416765Z-76757-0a81ef6e-6e58-45ba-bfb6-5fbb1cc0b3d3",
+        "model": "claude-opus-5-5",
+        "effort": "xhigh"
+      },
+      "blindChoice": "b",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": [
+        "[블라인드] [권고] a·c·d가 모두 ‘물리치다’를 풀어 쓴 같은 뜻이라 서로 다른 하나만 고르면 b가 답이 됩니다. 보기 하나를 ‘적에게 항복하다’처럼 뜻이 다른 말로 바꿔 볼 수 있습니다.",
+        "[공개 대조] [권고] a·c·d가 모두 ‘물리치다’를 풀어 쓴 같은 뜻이라, 셋과 다른 하나를 고르는 방식으로도 b를 찾을 수 있습니다. 오답 하나를 ‘적에게 항복하다’처럼 다른 뜻의 표현으로 바꾸면 이 단서가 줄어듭니다."
+      ]
+    },
+    {
+      "questionId": "g4-argon-0723",
+      "revision": 3,
+      "contentHash": "162f31207d2fb2ec2e06ed951824910f7bfee87c6548b98c65060d909f6f6d7e",
+      "run": {
+        "id": "20261106T102416765Z-76757-0a81ef6e-6e58-45ba-bfb6-5fbb1cc0b3d3",
+        "model": "claude-opus-5-5",
+        "effort": "xhigh"
+      },
+      "blindChoice": "a",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": []
+    },
+    {
+      "questionId": "g4-argon-0724",
+      "revision": 1,
+      "contentHash": "a69aea6e498ca5674aaf8bda4d80e0ea4486837e76cde20034f3b6698c76c1cf",
+      "run": {
+        "id": "20261106T101707653Z-72967-3939dff8-4dca-44e6-a6d6-b2bf2771ed98",
+        "model": "claude-opus-5-5",
+        "effort": "high"
+      },
+      "blindChoice": "d",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": []
+    },
+    {
+      "questionId": "g4-argon-0725",
+      "revision": 1,
+      "contentHash": "7e38d9688541fba7971e74de9c12d6d46b323ef7b4019a0717c54ed638a5fd14",
+      "run": {
+        "id": "20261106T101707653Z-72967-3939dff8-4dca-44e6-a6d6-b2bf2771ed98",
+        "model": "claude-opus-5-5",
+        "effort": "high"
+      },
+      "blindChoice": "c",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": []
+    },
+    {
+      "questionId": "g4-argon-0726",
+      "revision": 1,
+      "contentHash": "39427626d9e61f52ab7bb7d95a940c7fe3fc51b69caa4694e4f7199da72b0486",
+      "run": {
+        "id": "20261106T101707653Z-72967-3939dff8-4dca-44e6-a6d6-b2bf2771ed98",
+        "model": "claude-opus-5-5",
+        "effort": "high"
+      },
+      "blindChoice": "d",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": []
+    },
+    {
+      "questionId": "g4-argon-0727",
+      "revision": 2,
+      "contentHash": "750eeca266e7fbbc78d1456bfc7ab58b63f59adb4326b6bcf103baaa9e83183d",
+      "run": {
+        "id": "20261106T101707653Z-72967-3939dff8-4dca-44e6-a6d6-b2bf2771ed98",
+        "model": "claude-opus-5-5",
+        "effort": "high"
+      },
+      "blindChoice": "c",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": []
+    },
+    {
+      "questionId": "g4-argon-0728",
+      "revision": 2,
+      "contentHash": "5f17c79380394f555941b0391d980910111c9aa1e04101e98a7a2515808f47b1",
+      "run": {
+        "id": "20261106T101707653Z-72967-3939dff8-4dca-44e6-a6d6-b2bf2771ed98",
+        "model": "claude-opus-5-5",
+        "effort": "high"
+      },
+      "blindChoice": "d",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": []
+    },
+    {
+      "questionId": "g4-argon-0729",
+      "revision": 2,
+      "contentHash": "931e75a2bde5b6e27e3db2f7440cb365e14757bfad27d1b811b9db39b7ba978b",
+      "run": {
+        "id": "20261106T101707653Z-72967-3939dff8-4dca-44e6-a6d6-b2bf2771ed98",
+        "model": "claude-opus-5-5",
+        "effort": "high"
+      },
+      "blindChoice": "d",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": []
+    },
+    {
+      "questionId": "g4-argon-0730",
+      "revision": 2,
+      "contentHash": "a00884cb56b40baf6906f515e145957c384a3391d8d893537b429af7471d8ac8",
+      "run": {
+        "id": "20261106T101707653Z-72967-3939dff8-4dca-44e6-a6d6-b2bf2771ed98",
+        "model": "claude-opus-5-5",
+        "effort": "high"
+      },
+      "blindChoice": "b",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": []
+    },
+    {
+      "questionId": "g4-argon-0731",
+      "revision": 1,
+      "contentHash": "4c57fba0a9cf73f239660529106f3bd609e3fb89543244eb4dd21c6e7086992a",
+      "run": {
+        "id": "20261106T101707653Z-72967-3939dff8-4dca-44e6-a6d6-b2bf2771ed98",
+        "model": "claude-opus-5-5",
+        "effort": "high"
+      },
+      "blindChoice": "b",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": []
+    },
+    {
+      "questionId": "g4-argon-0732",
+      "revision": 1,
+      "contentHash": "63a20ba61b4065fd4799dec369e6a7e7db43dcbb27718ef8efc069bb9860de75",
+      "run": {
+        "id": "20261106T101707653Z-72967-3939dff8-4dca-44e6-a6d6-b2bf2771ed98",
+        "model": "claude-opus-5-5",
+        "effort": "high"
+      },
+      "blindChoice": "a",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": []
+    },
+    {
+      "questionId": "g4-argon-0733",
+      "revision": 2,
+      "contentHash": "f7348f44adcac92e9ed0307ad2577b67c1b2338bdf8ac88e9af5310dc2fce3d5",
+      "run": {
+        "id": "20261106T101707653Z-72967-3939dff8-4dca-44e6-a6d6-b2bf2771ed98",
+        "model": "claude-opus-5-5",
+        "effort": "high"
+      },
+      "blindChoice": "d",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": []
+    },
+    {
+      "questionId": "g4-argon-0734",
+      "revision": 1,
+      "contentHash": "c11165f9736d3d73c1945335dbf327971c26387b7fd640cf75466717c5dbf8db",
+      "run": {
+        "id": "20261106T101707653Z-72967-3939dff8-4dca-44e6-a6d6-b2bf2771ed98",
+        "model": "claude-opus-5-5",
+        "effort": "high"
+      },
+      "blindChoice": "a",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": []
+    },
+    {
+      "questionId": "g4-argon-0735",
+      "revision": 1,
+      "contentHash": "2a419a57a3925505e1e5a8ac504f26a1d41e198958c0b9f6e8528a419ef7aa2f",
+      "run": {
+        "id": "20261106T101707653Z-72967-3939dff8-4dca-44e6-a6d6-b2bf2771ed98",
+        "model": "claude-opus-5-5",
+        "effort": "high"
+      },
+      "blindChoice": "b",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": []
+    },
+    {
+      "questionId": "g4-argon-0736",
+      "revision": 2,
+      "contentHash": "96116128818c50646c8c31e9a487294aafe91e21e89e17e347be941ef8999a8a",
+      "run": {
+        "id": "20261106T101707653Z-72967-3939dff8-4dca-44e6-a6d6-b2bf2771ed98",
+        "model": "claude-opus-5-5",
+        "effort": "high"
+      },
+      "blindChoice": "c",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": []
+    },
+    {
+      "questionId": "g4-argon-0737",
+      "revision": 1,
+      "contentHash": "3af253c6aa62ecae5fe909a5bf80c2cffdb3164ca5dd0bbdc0cdf263d7c5146b",
+      "run": {
+        "id": "20261106T101707653Z-72967-3939dff8-4dca-44e6-a6d6-b2bf2771ed98",
+        "model": "claude-opus-5-5",
+        "effort": "high"
+      },
+      "blindChoice": "b",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": []
+    },
+    {
+      "questionId": "g4-argon-0738",
+      "revision": 1,
+      "contentHash": "6e52ed0ce08fada0f633d9d9b6663e7613d2b8a45e547d413620035aac57c372",
+      "run": {
+        "id": "20261106T101707653Z-72967-3939dff8-4dca-44e6-a6d6-b2bf2771ed98",
+        "model": "claude-opus-5-5",
+        "effort": "high"
+      },
+      "blindChoice": "d",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": []
+    },
+    {
+      "questionId": "g4-argon-0739",
+      "revision": 1,
+      "contentHash": "3aa251f9f0e8ea821d8f3ed5e371f45b5ccfde3a7b640996463c4382794d6588",
+      "run": {
+        "id": "20261106T101707653Z-72967-3939dff8-4dca-44e6-a6d6-b2bf2771ed98",
+        "model": "claude-opus-5-5",
+        "effort": "high"
+      },
+      "blindChoice": "b",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": []
+    },
+    {
+      "questionId": "g4-argon-0742",
+      "revision": 1,
+      "contentHash": "1e063b84a243c2f01651d060e45fac99203cdf908956d5626583d62a1b8da347",
+      "run": {
+        "id": "20261106T101707653Z-72967-3939dff8-4dca-44e6-a6d6-b2bf2771ed98",
+        "model": "claude-opus-5-5",
+        "effort": "high"
+      },
+      "blindChoice": "c",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": []
+    },
+    {
+      "questionId": "g4-argon-0743",
+      "revision": 2,
+      "contentHash": "423ff0c4c42310fb3c800a049d609637b1903b9b2d0362b6fd73fa9247f5697e",
+      "run": {
+        "id": "20261106T101707653Z-72967-3939dff8-4dca-44e6-a6d6-b2bf2771ed98",
+        "model": "claude-opus-5-5",
+        "effort": "high"
+      },
+      "blindChoice": "a",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": []
+    },
+    {
+      "questionId": "g4-argon-0744",
+      "revision": 2,
+      "contentHash": "d171a8b72582eb9554a4dcfab13ca81ba5c68658191f898c2d2818187f4eb483",
+      "run": {
+        "id": "20261106T101707653Z-72967-3939dff8-4dca-44e6-a6d6-b2bf2771ed98",
+        "model": "claude-opus-5-5",
+        "effort": "high"
+      },
+      "blindChoice": "a",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "fail",
+        "explanation": "pass"
+      },
+      "findings": [
+        "[공개 대조] '거센 파도가 바위에 세차게 부딪혔다'는 파도가 스스로 힘 있게 와 닿는 장면이라 '부딪치다'(부딪다의 강세어)를 써야 맞음. '부딪히다'(피동)를 가르치는 예문으로는 부적절함. 최소 수정: 당하는 쪽을 주어로 바꾸기. 예: '뛰다가 넘어져 무릎이 책상 모서리에 부딪혔다.'"
+      ]
+    },
+    {
+      "questionId": "g4-argon-0744",
+      "revision": 3,
+      "contentHash": "123b4bebdc4d1c5c2cfe18be03eab3be50883fccf5b7f192b1c9399d9c92b24d",
+      "run": {
+        "id": "20261106T103513067Z-76757-f008ea39-c703-47a0-80b1-22a7a2194b4c",
+        "model": "claude-opus-5-5",
+        "effort": "xhigh"
+      },
+      "blindChoice": "a",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": [
+        "[공개 대조] [권고] d 오답 이유의 ‘조용히 흘러내리는’이 보기 d의 ‘천천히 흐르다’와 다르니 ‘천천히 흐르는’으로 맞추면 좋다."
+      ]
+    },
+    {
+      "questionId": "g4-argon-0746",
+      "revision": 2,
+      "contentHash": "179235edfc10379e92056d54c129e355837dad040d289f3519bb3d55c36d2441",
+      "run": {
+        "id": "20261106T101707653Z-72967-3939dff8-4dca-44e6-a6d6-b2bf2771ed98",
+        "model": "claude-opus-5-5",
+        "effort": "high"
+      },
+      "blindChoice": "a",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": []
+    },
+    {
+      "questionId": "g4-argon-0747",
+      "revision": 2,
+      "contentHash": "ae487b12295db396e3b39915441d30dd5271d351d72657bfc29cea41a337987a",
+      "run": {
+        "id": "20261106T101707653Z-72967-3939dff8-4dca-44e6-a6d6-b2bf2771ed98",
+        "model": "claude-opus-5-5",
+        "effort": "high"
+      },
+      "blindChoice": "c",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": []
+    },
+    {
+      "questionId": "g4-argon-0748",
+      "revision": 2,
+      "contentHash": "32e881782da1d8e432370387048e3ba759f5c729b889bcc7bc6b4e6c5bb41cb2",
+      "run": {
+        "id": "20261106T101707653Z-72967-3939dff8-4dca-44e6-a6d6-b2bf2771ed98",
+        "model": "claude-opus-5-5",
+        "effort": "high"
+      },
+      "blindChoice": "a",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "fail",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "fail"
+      },
+      "findings": [
+        "[블라인드] c '동생이 절대 못 하게 막으려고 일을 맡겼다'는 누구에게 맡겼는지가 빠져 있음. 그래서 다른 사람에게 맡긴 바른 쓰임으로도 읽힘. 최소 수정: '동생이 절대 못 하게 막으려고 동생에게 일을 맡겼다'",
+        "[공개 대조] c '동생이 절대 못 하게 막으려고 일을 맡겼다'에는 누구에게 맡겼는지가 없음. 그래서 동생이 아닌 다른 사람에게 일을 맡겼다는 바른 쓰임으로 읽혀 복수 정답이 됨. c 오답 이유 '못 하게 막으려는 목적에는 맞지 않다'도 이 해석과 맞지 않음. 최소 수정: '동생이 절대 못 하게 막으려고 동생에게 일을 맡겼다.'"
+      ]
+    },
+    {
+      "questionId": "g4-argon-0748",
+      "revision": 3,
+      "contentHash": "27c06a9c1ab819e07f876c393a55a1a214a862248588fe03adb1ae094eafd2cc",
+      "run": {
+        "id": "20261106T103513067Z-76757-f008ea39-c703-47a0-80b1-22a7a2194b4c",
+        "model": "claude-opus-5-5",
+        "effort": "xhigh"
+      },
+      "blindChoice": "a",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": []
+    },
+    {
+      "questionId": "g4-argon-0749",
+      "revision": 2,
+      "contentHash": "2843e7deca2d263071c1d97497c3d35ba9d4f4a5dd4229640edb7343fdce1dc8",
+      "run": {
+        "id": "20261106T101707653Z-72967-3939dff8-4dca-44e6-a6d6-b2bf2771ed98",
+        "model": "claude-opus-5-5",
+        "effort": "high"
+      },
+      "blindChoice": "c",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": []
+    },
+    {
+      "questionId": "g4-argon-0750",
+      "revision": 2,
+      "contentHash": "ab1e1571e6ebe07c6bfa8bd0ed5831c7934282442c11dc949012c34f933e2001",
+      "run": {
+        "id": "20261106T101707653Z-72967-3939dff8-4dca-44e6-a6d6-b2bf2771ed98",
+        "model": "claude-opus-5-5",
+        "effort": "high"
+      },
+      "blindChoice": "b",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": []
+    }
+  ]
+}

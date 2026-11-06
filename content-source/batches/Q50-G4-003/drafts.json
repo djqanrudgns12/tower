@@ -66,7 +66,7 @@
     "schemaVersion": "0.2",
     "batchId": "Q50-G4-003",
     "id": "g4-argon-0102",
-    "revision": 1,
+    "revision": 2,
     "status": "machine_checked",
     "grade": 4,
     "gradeBasis": {
@@ -255,7 +255,7 @@
     "schemaVersion": "0.2",
     "batchId": "Q50-G4-003",
     "id": "g4-argon-0105",
-    "revision": 1,
+    "revision": 2,
     "status": "machine_checked",
     "grade": 4,
     "gradeBasis": {
@@ -271,7 +271,7 @@
     },
     "type": "definition",
     "difficultyTier": "challenge",
-    "variantTag": "standard",
+    "variantTag": "polysemy",
     "stem": "「성품이 담백하다 보니 남의 물건을 탐내지 않는다.」에서 ‘담백하다’의 뜻은?",
     "options": [
       {
@@ -381,7 +381,7 @@
     "schemaVersion": "0.2",
     "batchId": "Q50-G4-003",
     "id": "g4-argon-0107",
-    "revision": 2,
+    "revision": 3,
     "status": "machine_checked",
     "grade": 4,
     "gradeBasis": {
@@ -398,7 +398,7 @@
     "type": "synonym_context",
     "difficultyTier": "core",
     "variantTag": "standard",
-    "stem": "주말에 캠핑을 가기를 손꼽아 ‘기대했습니다’. ‘기대했습니다’와 가까운 말은?",
+    "stem": "주말에는 날씨가 맑아지기를 간절히 ‘기대했습니다’. ‘기대했습니다’와 가까운 말은 무엇일까요?",
     "options": [
       {
         "id": "a",
@@ -422,7 +422,7 @@
     "distractorRationales": {
       "a": "하기 싫어 뒤로 미루는 것은 바라는 마음과 반대예요.",
       "c": "지나간 일을 뉘우치는 것은 앞날을 기다리는 뜻이 아니에요.",
-      "d": "모른 체하고 외면하는 것은 손꼽아 바라는 태도와 달라요."
+      "d": "모른 체하고 외면하는 것은 간절히 바라는 태도와 달라요."
     },
     "source": {
       "provider": "stdict",
@@ -507,7 +507,7 @@
     "schemaVersion": "0.2",
     "batchId": "Q50-G4-003",
     "id": "g4-argon-0109",
-    "revision": 1,
+    "revision": 2,
     "status": "machine_checked",
     "grade": 4,
     "gradeBasis": {
@@ -521,34 +521,34 @@
       "partOfSpeech": "명사",
       "senseKey": "사건/명사/157136-1"
     },
-    "type": "antonym_context",
-    "difficultyTier": "advanced",
+    "type": "cloze",
+    "difficultyTier": "core",
     "variantTag": "standard",
-    "stem": "마을 사람들의 주목을 끌 만큼 뜻밖에 벌어진 큰 ‘사건’과 반대되는 상황은 무엇일까요?",
+    "stem": "전시관에 있던 귀중한 문화재가 밤사이에 감쪽같이 사라지는 큰 (    )이 벌어져 온 사회의 주목을 받았습니다. 빈칸에 알맞은 말은 무엇일까요?",
     "options": [
       {
         "id": "a",
-        "text": "모두가 놀랄 만큼 뜻밖의 일"
+        "text": "계획"
       },
       {
         "id": "b",
-        "text": "신문에 크게 실린 소동"
+        "text": "규칙"
       },
       {
         "id": "c",
-        "text": "갑자기 벌어진 이상한 소문"
+        "text": "사건"
       },
       {
         "id": "d",
-        "text": "별일 없이 늘 평온한 일상"
+        "text": "풍습"
       }
     ],
-    "correctOptionId": "d",
-    "explanation": "주목받을 만한 뜻밖의 일인 ‘사건’의 반대는 별일 없이 평온한 일상이에요.",
+    "correctOptionId": "c",
+    "explanation": "‘사건’은 사회적으로 문제를 일으키거나 주목을 받을 만한 뜻밖의 일을 뜻해요.",
     "distractorRationales": {
-      "a": "뜻밖의 일은 ‘사건’의 본래 뜻과 가까워요.",
-      "b": "신문에 실린 소동은 사건과 비슷한 상황이에요.",
-      "c": "갑작스러운 소문은 평온한 반대 상황이 아니에요."
+      "a": "‘계획’은 앞으로 할 일을 미리 헤아려 세운 내용이라 문맥에 맞지 않아요.",
+      "b": "‘규칙’은 여러 사람이 함께 지키기로 정한 질서라 상황에 어울리지 않아요.",
+      "d": "‘풍습’은 옛날부터 전해 내려오는 생활 모습이라 뜻밖의 일과 달라요."
     },
     "source": {
       "provider": "stdict",
@@ -633,7 +633,7 @@
     "schemaVersion": "0.2",
     "batchId": "Q50-G4-003",
     "id": "g4-argon-0111",
-    "revision": 1,
+    "revision": 2,
     "status": "machine_checked",
     "grade": 4,
     "gradeBasis": {
@@ -662,19 +662,19 @@
       },
       {
         "id": "c",
-        "text": "매달려"
+        "text": "사라져"
       },
       {
         "id": "d",
-        "text": "사라져"
+        "text": "매달려"
       }
     ],
-    "correctOptionId": "c",
+    "correctOptionId": "d",
     "explanation": "‘걸리다’는 물체가 떨어지지 않고 벽이나 못 따위에 매달린다는 뜻이에요.",
     "distractorRationales": {
       "a": "바닥으로 쏟아진 상태는 벽에 붙어 있는 것과 달라요.",
       "b": "조각나 부서졌다는 뜻은 문맥에 맞지 않아요.",
-      "d": "보이지 않게 사라졌다는 뜻과 어울리지 않아요."
+      "c": "보이지 않게 사라졌다는 뜻과 어울리지 않아요."
     },
     "source": {
       "provider": "stdict",
@@ -1137,7 +1137,7 @@
     "schemaVersion": "0.2",
     "batchId": "Q50-G4-003",
     "id": "g4-argon-0119",
-    "revision": 1,
+    "revision": 2,
     "status": "machine_checked",
     "grade": 4,
     "gradeBasis": {
@@ -1166,7 +1166,7 @@
       },
       {
         "id": "c",
-        "text": "물건"
+        "text": "건물"
       },
       {
         "id": "d",
@@ -1177,7 +1177,7 @@
     "explanation": "‘인물’은 생김새나 됨됨이로 본 사람을 뜻해요.",
     "distractorRationales": {
       "a": "봄여름 같은 ‘계절’은 청년을 가리키는 말이 아니에요.",
-      "c": "‘물건’은 사람이 아닌 사물을 이르는 말이에요.",
+      "c": "‘건물’은 사람이 지어 놓은 건축물이라 청년을 가리키지 않아요.",
       "d": "‘풍경’은 자연이나 지역의 경치를 뜻해요."
     },
     "source": {
@@ -1515,7 +1515,7 @@
     "schemaVersion": "0.2",
     "batchId": "Q50-G4-003",
     "id": "g4-argon-0125",
-    "revision": 1,
+    "revision": 2,
     "status": "machine_checked",
     "grade": 4,
     "gradeBasis": {
@@ -1548,7 +1548,7 @@
       },
       {
         "id": "d",
-        "text": "운동화 끈을 단단히 묶어서 남겼다."
+        "text": "물을 한 방울도 없이 다 마셔서 남겼다."
       }
     ],
     "correctOptionId": "b",
@@ -1556,7 +1556,7 @@
     "distractorRationales": {
       "a": "한 톨도 없이 다 비웠다면 나머지가 없으므로 어색해요.",
       "c": "종이비행기를 날리는 동작에는 쓰지 않는 말이에요.",
-      "d": "끈을 단단히 묶는 행동과 의미가 맞지 않아요."
+      "d": "물을 한 방울도 없이 다 마셨다면 남은 것이 없어 어색해요."
     },
     "source": {
       "provider": "stdict",
@@ -1703,71 +1703,8 @@
   {
     "schemaVersion": "0.2",
     "batchId": "Q50-G4-003",
-    "id": "g4-argon-0128",
-    "revision": 1,
-    "status": "machine_checked",
-    "grade": 4,
-    "gradeBasis": {
-      "reference": "2022 개정 국어과 교육과정",
-      "editionYear": 2022,
-      "unit": "stdict:전문어 표지 없음",
-      "reviewed": true
-    },
-    "target": {
-      "lemma": "독특하다",
-      "partOfSpeech": "형용사",
-      "senseKey": "독특하다/형용사/413944-2"
-    },
-    "type": "definition",
-    "difficultyTier": "challenge",
-    "variantTag": "polysemy",
-    "stem": "그 장인의 도자기 빚는 솜씨는 누구도 따라갈 수 없이 독특했습니다. 여기서 ‘독특하다’의 뜻은 무엇일까요?",
-    "options": [
-      {
-        "id": "a",
-        "text": "아무 특징이 없이 아주 평범하다"
-      },
-      {
-        "id": "b",
-        "text": "비교할 대상이 없을 만큼 뛰어나다"
-      },
-      {
-        "id": "c",
-        "text": "서툴러서 실수가 자주 나타나다"
-      },
-      {
-        "id": "d",
-        "text": "크기가 작아서 눈에 잘 안 띄다"
-      }
-    ],
-    "correctOptionId": "b",
-    "explanation": "여기서 ‘독특하다’는 다른 것과 견줄 수 없을 정도로 뛰어나다는 뜻이에요.",
-    "distractorRationales": {
-      "a": "특징 없이 평범하다는 것은 뛰어난 솜씨와 반대예요.",
-      "c": "서툴러 실수가 잦다는 뜻은 장인의 솜씨와 어긋나요.",
-      "d": "크기가 작아 눈에 안 띈다는 뜻으로 쓰이지 않아요."
-    },
-    "source": {
-      "provider": "stdict",
-      "entryId": "413944",
-      "senseId": "38371",
-      "senseOrder": 2,
-      "url": "https://stdict.korean.go.kr/search/searchView.do?word_no=413944&searchKeywordTo=3",
-      "retrievedAt": "2026-10-30T03:35:00.000Z",
-      "license": "국립국어원 표준국어대사전(뜻풀이만 인용, 용례 미복제)",
-      "evidenceHash": "7502e5eb3c850b685350f8077f954dd7cebce8dacb038491fabf3ef3635c72eb",
-      "evidenceArtifactId": "독특하다-413944-2.txt"
-    },
-    "review": {
-      "reviewerId": null,
-      "reviewedAt": null
-    }
-  },
-  {
-    "schemaVersion": "0.2",
-    "batchId": "Q50-G4-003",
     "id": "g4-argon-0129",
-    "revision": 2,
+    "revision": 3,
     "status": "machine_checked",
     "grade": 4,
     "gradeBasis": {
@@ -1796,7 +1733,7 @@
       },
       {
         "id": "c",
-        "text": "필요한 준비물을 잃어버려서 마련했다."
+        "text": "길에서 우연히 마주친 소나기를 마련했다."
       },
       {
         "id": "d",
@@ -1807,7 +1744,7 @@
     "explanation": "‘마련하다’는 필요한 것을 미리 헤아려서 갖춘다는 뜻이에요.",
     "distractorRationales": {
       "a": "물건을 내다 버리는 행동은 갖추어 두는 것과 반대예요.",
-      "c": "준비물을 잃어버리면 필요한 것을 갖춘 상태가 아니에요.",
+      "c": "우연히 마주친 소나기는 미리 헤아려 갖추는 대상이 아니에요.",
       "d": "작품을 실수로 부수는 행동에는 ‘마련하다’를 쓰지 않아요."
     },
     "source": {
@@ -2145,7 +2082,7 @@
     "schemaVersion": "0.2",
     "batchId": "Q50-G4-003",
     "id": "g4-argon-0135",
-    "revision": 2,
+    "revision": 3,
     "status": "machine_checked",
     "grade": 4,
     "gradeBasis": {
@@ -2162,7 +2099,7 @@
     "type": "definition",
     "difficultyTier": "core",
     "variantTag": "standard",
-    "stem": "“어린 단원들의 합창 소리가 참 놀랍다.”에서 ‘놀랍다’의 뜻은?",
+    "stem": "“아름다운 화음을 이룬 어린 단원들의 합창 실력이 참 놀랍다.”에서 ‘놀랍다’의 뜻은?",
     "options": [
       {
         "id": "a",
@@ -2184,7 +2121,7 @@
     "correctOptionId": "a",
     "explanation": "여기서 ‘놀랍다’는 감동을 일으킬 만큼 훌륭하거나 굉장하다는 뜻이에요.",
     "distractorRationales": {
-      "b": "아름다운 합창을 칭찬하는 문맥이라 겁이 난다는 뜻이 아니에요.",
+      "b": "아름다운 화음과 합창 실력을 칭찬하는 문맥이라 겁이 난다는 뜻이 아니에요.",
       "c": "평범하다는 뜻은 굉장하다는 의미와 정반대예요.",
       "d": "소리가 작아 안 들린다는 뜻으로는 쓰이지 않아요."
     },
@@ -2208,7 +2145,7 @@
     "schemaVersion": "0.2",
     "batchId": "Q50-G4-003",
     "id": "g4-argon-0136",
-    "revision": 2,
+    "revision": 3,
     "status": "machine_checked",
     "grade": 4,
     "gradeBasis": {
@@ -2229,7 +2166,7 @@
     "options": [
       {
         "id": "a",
-        "text": "어디서나 볼 만큼 흔하고 같다"
+        "text": "다른 것들과 비슷하고 평범하다"
       },
       {
         "id": "b",
@@ -2247,7 +2184,7 @@
     "correctOptionId": "d",
     "explanation": "‘독특하다’는 다른 것과 견주어 특별하게 다르다는 뜻이에요.",
     "distractorRationales": {
-      "a": "평범하고 흔하다는 뜻이라 ‘독특하다’와 반대예요.",
+      "a": "다른 것들과 비슷하고 평범하다는 뜻이라 ‘독특하다’와 반대예요.",
       "b": "물건이 오래되어 낡은 상태를 뜻해요.",
       "c": "작고 여린 모양을 설명하는 말이라 달라요."
     },
@@ -2844,7 +2781,7 @@
     "schemaVersion": "0.2",
     "batchId": "Q50-G4-003",
     "id": "g4-argon-0146",
-    "revision": 1,
+    "revision": 2,
     "status": "machine_checked",
     "grade": 4,
     "gradeBasis": {
@@ -2886,7 +2823,7 @@
     "distractorRationales": {
       "a": "강아지는 알에서 깨어나지 않는 포유동물이에요.",
       "b": "두꺼비는 솜털이 없고 삐약거리지 않아요.",
-      "c": "다람쥐는 숲속 도토리를 먹는 동물이라 알에서 나오지 않아요."
+      "c": "다람쥐는 알을 낳지 않고 새끼를 낳는 동물이에요."
     },
     "source": {
       "provider": "opendict",

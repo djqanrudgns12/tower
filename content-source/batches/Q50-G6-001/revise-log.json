@@ -121,7 +121,7 @@
     },
     "g6-argon-0039": {
       "front": 1,
-      "gate": 0,
+      "gate": 1,
       "dropped": false,
       "history": [
         {
@@ -131,6 +131,17 @@
           "at": "2026-11-05T18:43:08.501Z",
           "reasons": [
             "codex: language fail"
+          ]
+        },
+        {
+          "phase": "gate",
+          "revisionFrom": 2,
+          "revisionTo": 3,
+          "at": "2026-11-06T07:47:22.306Z",
+          "reasons": [
+            "claude: language uncertain",
+            "claude: explanation fail",
+            "총괄 해설 대조 fail: [공개 대조] 직접 보고 단번에 이해한 상황에는 c만 맞고, 근거 뜻과도 같습니다. 다만 지문은 ‘읽었던’인데 속담은 ‘듣는 것’이라 어긋납니다. ‘선생님께 설명만 여러 번 들었던 유적을’로 고칩니다. / [공개 대조] 오답 이유 d의 ‘내용이 좋으면 겉모양도 좋다’는 뜻을 거꾸로 적었습니다. 이 속담은 겉모양이 좋으면 내용도 좋다, 곧 겉모양을 잘 꾸미는 것도 필요하다는 뜻이므로 그렇게 고칩니다."
           ]
         }
       ]
@@ -165,6 +176,225 @@
             "codex: grade uncertain",
             "codex: language fail",
             "‘나락’은 우리말샘 방언 항목(002)에도 실려 있으나 표준국어대사전에 ‘벼’를 일상적으로 이르는 표준어로 등재되어 있어, 비표준 방언에서 표준어를 찾는 방언 문항으로 출제하면 어문 규범상 오개념을 유발하므로 폐기함."
+          ]
+        }
+      ]
+    },
+    "g6-argon-0002": {
+      "front": 0,
+      "gate": 1,
+      "dropped": false,
+      "history": [
+        {
+          "phase": "gate",
+          "revisionFrom": 1,
+          "revisionTo": 2,
+          "at": "2026-11-06T07:47:22.306Z",
+          "reasons": [
+            "claude: explanation fail",
+            "총괄 해설 대조 fail: [공개 대조] 정답 ‘공평함’은 근거 ‘형평을 이루는 성질’과 뜻이 통하고, ‘한쪽으로 치우치지 않게’라는 단서가 있어 답이 하나만 성립합니다. 다만 근거 뜻풀이가 ‘형평’을 그대로 되풀이하므로 ‘형평(균형이 맞음)’의 뜻을 근거에 보태 두면 좋습니다. / [공개 대조] 해설의 ‘‘공평함’과 통틀어 바꿔 쓸 수 있어요’는 ‘통틀어(있는 대로 모두 합하여)’를 잘못 쓴 문장입니다. ‘‘공평함’으로 바꿔 쓸 수 있어요’로 고칩니다."
+          ]
+        }
+      ]
+    },
+    "g6-argon-0012": {
+      "front": 0,
+      "gate": 1,
+      "dropped": false,
+      "history": [
+        {
+          "phase": "gate",
+          "revisionFrom": 1,
+          "revisionTo": 2,
+          "at": "2026-11-06T07:47:22.306Z",
+          "reasons": [
+            "claude: language fail"
+          ]
+        }
+      ]
+    },
+    "g6-argon-0014": {
+      "front": 0,
+      "gate": 1,
+      "dropped": false,
+      "history": [
+        {
+          "phase": "gate",
+          "revisionFrom": 3,
+          "revisionTo": 4,
+          "at": "2026-11-06T07:47:22.306Z",
+          "reasons": [
+            "claude: language uncertain"
+          ]
+        }
+      ]
+    },
+    "g6-argon-0016": {
+      "front": 0,
+      "gate": 1,
+      "dropped": false,
+      "history": [
+        {
+          "phase": "gate",
+          "revisionFrom": 1,
+          "revisionTo": 2,
+          "at": "2026-11-06T07:47:22.306Z",
+          "reasons": [
+            "claude: language uncertain",
+            "총괄 해설 대조 fail: [공개 대조] 정답 c는 근거 뜻풀이와 글자까지 같아 source는 맞고, 다른 보기는 문맥에 성립하지 않습니다. 다만 c만 짧고 추상적이며, d의 ‘모든 결정을 내리지 않고’는 부정 범위가 모호합니다. d는 ‘결정을 내리지 않고 계속 뒤로 미루는 것’으로 고칩니다. c는 다른 보기와 길이를 맞추도록 ‘국민이 모든 결정의 중심에 서 있는 것’처럼 다듬습니다. / [공개 대조] 해설 ‘국민이 모든 결정의 중심에 있어 뜻을 반영하는 것’은 주어와 서술어가 어긋납니다. ‘국민이 모든 결정의 중심이 되어 국민의 뜻이 반영되는 것을 말해요’로 고칩니다."
+          ]
+        }
+      ]
+    },
+    "g6-argon-0018": {
+      "front": 1,
+      "gate": 1,
+      "dropped": false,
+      "history": [
+        {
+          "phase": "gate",
+          "revisionFrom": 1,
+          "revisionTo": 2,
+          "at": "2026-11-06T07:47:22.306Z",
+          "reasons": [
+            "claude: grade uncertain"
+          ]
+        },
+        {
+          "phase": "front",
+          "revisionFrom": 2,
+          "revisionTo": 3,
+          "at": "2026-11-06T08:30:12.256Z",
+          "reasons": [
+            "codex: explanation fail"
+          ]
+        }
+      ]
+    },
+    "g6-argon-0019": {
+      "front": 0,
+      "gate": 1,
+      "dropped": false,
+      "history": [
+        {
+          "phase": "gate",
+          "revisionFrom": 1,
+          "revisionTo": 2,
+          "at": "2026-11-06T07:47:22.306Z",
+          "reasons": [
+            "claude: language uncertain"
+          ]
+        }
+      ]
+    },
+    "g6-argon-0034": {
+      "front": 0,
+      "gate": 1,
+      "dropped": false,
+      "history": [
+        {
+          "phase": "gate",
+          "revisionFrom": 1,
+          "revisionTo": 2,
+          "at": "2026-11-06T07:47:22.306Z",
+          "reasons": [
+            "claude: language uncertain"
+          ]
+        }
+      ]
+    },
+    "g6-argon-0037": {
+      "front": 0,
+      "gate": 1,
+      "dropped": false,
+      "history": [
+        {
+          "phase": "gate",
+          "revisionFrom": 1,
+          "revisionTo": 2,
+          "at": "2026-11-06T07:47:22.306Z",
+          "reasons": [
+            "claude: language uncertain"
+          ]
+        }
+      ]
+    },
+    "g6-argon-0040": {
+      "front": 0,
+      "gate": 1,
+      "dropped": false,
+      "history": [
+        {
+          "phase": "gate",
+          "revisionFrom": 1,
+          "revisionTo": 2,
+          "at": "2026-11-06T07:47:22.306Z",
+          "reasons": [
+            "총괄 해설 대조 fail: [공개 대조] ‘한참 걸리겠구나’라는 단서로 ‘상당히’만 성립하고, 근거 ‘‘상당히’의 방언(전북)’과 권역도 맞습니다. 할머니의 대사라서 방언 문항 조건을 갖췄습니다. / [공개 대조] 해설 ‘정도가 꽤 만만치 않게 ‘상당히’라는 뜻’은 말이 꼬여 있습니다. ‘‘솔찬히’는 ‘상당히’(꽤 많이)라는 뜻의 전라 지역 방언이에요’로 고칩니다."
+          ]
+        }
+      ]
+    },
+    "g6-argon-0042": {
+      "front": 0,
+      "gate": 1,
+      "dropped": false,
+      "history": [
+        {
+          "phase": "gate",
+          "revisionFrom": 2,
+          "revisionTo": 3,
+          "at": "2026-11-06T07:47:22.306Z",
+          "reasons": [
+            "claude: language uncertain"
+          ]
+        }
+      ]
+    },
+    "g6-argon-0047": {
+      "front": 0,
+      "gate": 1,
+      "dropped": false,
+      "history": [
+        {
+          "phase": "gate",
+          "revisionFrom": 1,
+          "revisionTo": 2,
+          "at": "2026-11-06T07:47:22.306Z",
+          "reasons": [
+            "claude: language uncertain"
+          ]
+        }
+      ]
+    },
+    "g6-argon-0048": {
+      "front": 0,
+      "gate": 1,
+      "dropped": false,
+      "history": [
+        {
+          "phase": "gate",
+          "revisionFrom": 1,
+          "revisionTo": 2,
+          "at": "2026-11-06T07:47:22.306Z",
+          "reasons": [
+            "claude: language uncertain"
+          ]
+        }
+      ]
+    },
+    "g6-argon-0050": {
+      "front": 0,
+      "gate": 1,
+      "dropped": false,
+      "history": [
+        {
+          "phase": "gate",
+          "revisionFrom": 1,
+          "revisionTo": 2,
+          "at": "2026-11-06T07:47:22.306Z",
+          "reasons": [
+            "claude: language fail"
           ]
         }
       ]

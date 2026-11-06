@@ -965,6 +965,68 @@
       "levelAssessmentHash": "032e2c93cfc6d09595806a13f426b6418cd38bafe6651d70bd16eca4badc1108"
     },
     {
+      "questionId": "g4-argon-0466",
+      "revision": 2,
+      "contentHash": "5091d1b2d351279ddc8249c352b792bdd82d8029fc23f9b38c675e955fe41fdd",
+      "precomputed": {
+        "typeBase": 0,
+        "lengthBump": 0,
+        "t3Base": 0,
+        "readingLoad": 33,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g4-argon-0466",
+          "revision": 2,
+          "contentHash": "5091d1b2d351279ddc8249c352b792bdd82d8029fc23f9b38c675e955fe41fdd",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 0,
+          "L2": 1,
+          "T1": 0,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "일상 구어 노출 빈도가 높은 기초 생활 한자어 부사이며, 지문이 사전적 정의를 직접 제시하고 오답이 모두 시간 부사라 의미장이 달라 구별 부담이 낮다."
+        },
+        {
+          "questionId": "g4-argon-0466",
+          "revision": 2,
+          "contentHash": "5091d1b2d351279ddc8249c352b792bdd82d8029fc23f9b38c675e955fe41fdd",
+          "judge": "codex",
+          "model": "gpt-6-astra",
+          "L1": 0,
+          "L2": 1,
+          "T1": 0,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "생활에서 자주 접하는 가정 표현으로 약한 추상성이 있으며, 뜻이 직접 제시되고 오답은 모두 시간 표현이라 구별이 쉽다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 1,
+        "T": 0,
+        "V": 2,
+        "ownTier": "basic",
+        "band": {
+          "min": 4,
+          "max": 4
+        },
+        "flags": [
+          "too_easy"
+        ]
+      },
+      "levelAssessmentHash": "513ff29f7e05007e0fafca343d38a329c287bef4767b96767f47f077de8dc4ed"
+    },
+    {
       "questionId": "g4-argon-0467",
       "revision": 2,
       "contentHash": "103f0a33162da3ec536bb9319b4649782b4392955d7e2c73dec7f8ed97eb7a19",
@@ -1023,6 +1085,66 @@
         "flags": []
       },
       "levelAssessmentHash": "9d48a320af9646a9eaf45e0b5aac1e0ff677f307f9e449a5609a62da0dda9376"
+    },
+    {
+      "questionId": "g4-argon-0467",
+      "revision": 3,
+      "contentHash": "a33b2e74d3561e5c9bb321e40b1ecd53866c669ad02aa8019f5af51bb358810d",
+      "precomputed": {
+        "typeBase": 0,
+        "lengthBump": 0,
+        "t3Base": 0,
+        "readingLoad": 37,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g4-argon-0467",
+          "revision": 3,
+          "contentHash": "a33b2e74d3561e5c9bb321e40b1ecd53866c669ad02aa8019f5af51bb358810d",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 1,
+          "L2": 1,
+          "T1": 0,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "3~4학년 빈출 생활 한자어 ‘열심’의 기본 의미이며, ‘신나게 배우며’라는 직접 단서가 있고 오답이 다른 감정·태도 영역이라 부담이 낮다."
+        },
+        {
+          "questionId": "g4-argon-0467",
+          "revision": 3,
+          "contentHash": "a33b2e74d3561e5c9bb321e40b1ecd53866c669ad02aa8019f5af51bb358810d",
+          "judge": "codex",
+          "model": "gpt-6-astra",
+          "L1": 0,
+          "L2": 1,
+          "T1": 1,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "생활에서 흔한 마음·태도 한자어이며, 신나게 배우는 행동 단서로 부정적 감정·태도 오답을 구별할 수 있다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 2,
+        "T": 1,
+        "V": 5,
+        "ownTier": "basic",
+        "band": {
+          "min": 4,
+          "max": 4
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "26f858b59fb88307aea20af66bcee38d194e4c0f3a17324c7b468a781c3f9e49"
     },
     {
       "questionId": "g4-argon-0468",
@@ -1263,6 +1385,66 @@
         "flags": []
       },
       "levelAssessmentHash": "5384b58f408231462949d746a4befb94687f7e478255c6f753da4aad256cffc7"
+    },
+    {
+      "questionId": "g4-argon-0471",
+      "revision": 3,
+      "contentHash": "243611f32e73e1851b30864042ee0aa26cd0e49050edc9ec9964f7703bbae345",
+      "precomputed": {
+        "typeBase": 1,
+        "lengthBump": 1,
+        "t3Base": 0,
+        "readingLoad": 67,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g4-argon-0471",
+          "revision": 3,
+          "contentHash": "243611f32e73e1851b30864042ee0aa26cd0e49050edc9ec9964f7703bbae345",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 1,
+          "L2": 1,
+          "T1": 1,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "생활 한자어 ‘열심’의 중심 의미를 묻고, ‘깨끗이 치웠다’는 직접 단서가 있으나 오답이 일 처리 태도 영역의 반대 표현들로 구성되었다."
+        },
+        {
+          "questionId": "g4-argon-0471",
+          "revision": 3,
+          "contentHash": "243611f32e73e1851b30864042ee0aa26cd0e49050edc9ec9964f7703bbae345",
+          "judge": "codex",
+          "model": "gpt-6-astra",
+          "L1": 0,
+          "L2": 1,
+          "T1": 2,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "curriculum_explicit",
+          "unit": "[4국04-01] 단어와 단어 간의 의미 관계",
+          "reason": "생활 빈출 한자어의 중심 뜻을 묻고, 일을 대하는 태도라는 같은 의미장에서 세 가지 반대 태도를 구별한다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 2,
+        "T": 4,
+        "V": 8,
+        "ownTier": "core",
+        "band": {
+          "min": 4,
+          "max": 4
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "babf014bc554d22195bdf1ad15cdac2fe48926e3131180e552ecba8fe978892f"
     },
     {
       "questionId": "g4-argon-0472",
@@ -1745,6 +1927,66 @@
       "levelAssessmentHash": "308d5e6ed4a61c080b4b908bfd0631d324e40bf33d5ca0de2e4944c0115c00b0"
     },
     {
+      "questionId": "g4-argon-0479",
+      "revision": 2,
+      "contentHash": "4998f47b5a468e646a7fdc81f5c05a7129dc23d38ae84794091fe6dd654f5cb7",
+      "precomputed": {
+        "typeBase": 0,
+        "lengthBump": 1,
+        "t3Base": 1,
+        "readingLoad": 77,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g4-argon-0479",
+          "revision": 2,
+          "contentHash": "4998f47b5a468e646a7fdc81f5c05a7129dc23d38ae84794091fe6dd654f5cb7",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 1,
+          "L2": 1,
+          "T1": 2,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "파생 동사 ‘이어지다’의 다의적 시간 지속 의미를 물리적 연결·계승 뜻과 구별해야 하며, ‘사흘 동안’이라는 직접 시간 단서가 제시되어 있다."
+        },
+        {
+          "questionId": "g4-argon-0479",
+          "revision": 2,
+          "contentHash": "4998f47b5a468e646a7fdc81f5c05a7129dc23d38ae84794091fe6dd654f5cb7",
+          "judge": "codex",
+          "model": "gpt-6-astra",
+          "L1": 1,
+          "L2": 1,
+          "T1": 2,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:뜻 번호 2",
+          "reason": "시간적으로 계속되는 상태를 나타내는 확장 의미이며, 사흘 동안이라는 직접 단서로 연결·계승·중단과 구별한다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 2,
+        "T": 4,
+        "V": 8,
+        "ownTier": "core",
+        "band": {
+          "min": 4,
+          "max": 5
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "1b4b8376dc9d6e0c62ce23d80bbce928a2e6a830de183cb4e7e29d3986cd713f"
+    },
+    {
       "questionId": "g4-argon-0480",
       "revision": 1,
       "contentHash": "420ad120965d4f9cbab18455133f41d686c9f50b2fd949954e597ea80c9e6f29",
@@ -1803,6 +2045,66 @@
         "flags": []
       },
       "levelAssessmentHash": "ecd10eda35203a4a0221fb5f10ae8299e0c3bd6997df063c59e6f5e787eff750"
+    },
+    {
+      "questionId": "g4-argon-0480",
+      "revision": 2,
+      "contentHash": "f76f10026acf868993eb009c15b2eb7f3f153e9c600217d832f2dbc06f53b446",
+      "precomputed": {
+        "typeBase": 0,
+        "lengthBump": 1,
+        "t3Base": 1,
+        "readingLoad": 83,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g4-argon-0480",
+          "revision": 2,
+          "contentHash": "f76f10026acf868993eb009c15b2eb7f3f153e9c600217d832f2dbc06f53b446",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 1,
+          "L2": 1,
+          "T1": 2,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "‘이끌다’의 다의적 확장 의미(관심을 쏠리게 하다)를 길 안내·단체 운영 뜻과 변별해야 하며, ‘청중의 관심’이라는 직접 단서가 있다."
+        },
+        {
+          "questionId": "g4-argon-0480",
+          "revision": 2,
+          "contentHash": "f76f10026acf868993eb009c15b2eb7f3f153e9c600217d832f2dbc06f53b446",
+          "judge": "codex",
+          "model": "gpt-6-astra",
+          "L1": 1,
+          "L2": 2,
+          "T1": 2,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:뜻 번호 2",
+          "reason": "관심이 쏠리게 하는 추상적 관계를 나타내며, 목적어인 관심을 단서로 안내·통솔의 다른 뜻과 구별한다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 3,
+        "T": 4,
+        "V": 10,
+        "ownTier": "advanced",
+        "band": {
+          "min": 4,
+          "max": 5
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "5e17f3981aa58bd503ca715f2ce13afe600a3eff3ba1adb654125b10d64e1c73"
     },
     {
       "questionId": "g4-argon-0481",
@@ -1985,6 +2287,66 @@
       "levelAssessmentHash": "719a86b6bbd10a79e2eca59a1a6b59d9a3ead4af9ccc48f25ac72f06b51badaf"
     },
     {
+      "questionId": "g4-argon-0483",
+      "revision": 2,
+      "contentHash": "f022b898637ccc8a7b2561202d79a7094c866df90c33a1bde4cb813e1a08a97d",
+      "precomputed": {
+        "typeBase": 2,
+        "lengthBump": 1,
+        "t3Base": 2,
+        "readingLoad": 73,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g4-argon-0483",
+          "revision": 2,
+          "contentHash": "f022b898637ccc8a7b2561202d79a7094c866df90c33a1bde4cb813e1a08a97d",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 0,
+          "L2": 1,
+          "T1": 3,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "기초 학교어 ‘틀리다’의 기본 뜻이나 오답 3개 모두 초등학생이 일상에서 ‘다르다’와 자주 혼동하는 고매력 오용 문장이다."
+        },
+        {
+          "questionId": "g4-argon-0483",
+          "revision": 2,
+          "contentHash": "f022b898637ccc8a7b2561202d79a7094c866df90c33a1bde4cb813e1a08a97d",
+          "judge": "codex",
+          "model": "gpt-6-astra",
+          "L1": 0,
+          "L2": 1,
+          "T1": 3,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "curriculum_explicit",
+          "unit": "[6국04-06] 글과 담화에 쓰인 단어 및 문장, 띄어쓰기를 민감하게 살펴 바르게 고치는 태도를 지닌다.",
+          "reason": "낱말 자체는 기초 생활어지만, 세 오답 모두 일상에서 혼동하기 쉬운 다르다의 자리에 틀리다를 사용하여 의미 구별 부담이 크다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 1,
+        "T": 8,
+        "V": 10,
+        "ownTier": "advanced",
+        "band": {
+          "min": 4,
+          "max": 5
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "f8adbcbc65a73cb89898d26ae7cf1494b5f8c0f6334cd4e1dd8074311137e56f"
+    },
+    {
       "questionId": "g4-argon-0484",
       "revision": 2,
       "contentHash": "3b533f13a1c8489c432a1def6d649d96e28f92a0646d9e839d9e12d812a2b453",
@@ -2165,6 +2527,66 @@
         "flags": []
       },
       "levelAssessmentHash": "c1692b7a5e1bcf7b467a3e6494c5fbefae25437a15d27f987095e17bd1c1e2bf"
+    },
+    {
+      "questionId": "g4-argon-0486",
+      "revision": 2,
+      "contentHash": "1d8c063c4d5a3c2e718e70d78ada227778802047b8989a3716ecce15102487a9",
+      "precomputed": {
+        "typeBase": 0,
+        "lengthBump": 0,
+        "t3Base": 2,
+        "readingLoad": 34,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g4-argon-0486",
+          "revision": 2,
+          "contentHash": "1d8c063c4d5a3c2e718e70d78ada227778802047b8989a3716ecce15102487a9",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 1,
+          "L2": 0,
+          "T1": 1,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "물건을 보내는 구체 동작 고유어로 초등 중학년 학습·생활 맥락에 자주 쓰이며, 지문에 직접 행동 단서가 있으나 동음 혼동 오답(붙였다)이 포함되어 있다."
+        },
+        {
+          "questionId": "g4-argon-0486",
+          "revision": 2,
+          "contentHash": "1d8c063c4d5a3c2e718e70d78ada227778802047b8989a3716ecce15102487a9",
+          "judge": "codex",
+          "model": "gpt-6-astra",
+          "L1": 1,
+          "L2": 0,
+          "T1": 1,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "편지나 물건을 보내는 구체적 동작을 나타내는 학습 빈출 고유어이며, ‘붙였다’가 상자 포장과 관련되어 혼동을 주지만 우체국과 택배가 직접 단서를 제공한다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 1,
+        "T": 3,
+        "V": 5,
+        "ownTier": "core",
+        "band": {
+          "min": 4,
+          "max": 4
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "dbe78fb640867e48c9ecdb9e14b3e028d61d28549e8ec98bc4a2d65725d10343"
     },
     {
       "questionId": "g4-argon-0487",

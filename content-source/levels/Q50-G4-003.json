@@ -123,6 +123,66 @@
       "levelAssessmentHash": "59438fce1743ecfedfba4edb7e932420a96ac67410be74d78e887e42c8767f2f"
     },
     {
+      "questionId": "g4-argon-0102",
+      "revision": 2,
+      "contentHash": "eea22789527aaf8a8e25ec29e63f9857bb36b3dfc21a87e863bdbef7b01f01c4",
+      "precomputed": {
+        "typeBase": 2,
+        "lengthBump": 1,
+        "t3Base": 0,
+        "readingLoad": 75,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g4-argon-0102",
+          "revision": 2,
+          "contentHash": "eea22789527aaf8a8e25ec29e63f9857bb36b3dfc21a87e863bdbef7b01f01c4",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 1,
+          "L2": 2,
+          "T1": 0,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "교과 학습에 자주 쓰이는 문제 처리 개념 한자어이며, 제1의미 연어를 묻고 오답들이 모두 다른 의미장이라 난도가 낮다."
+        },
+        {
+          "questionId": "g4-argon-0102",
+          "revision": 2,
+          "contentHash": "eea22789527aaf8a8e25ec29e63f9857bb36b3dfc21a87e863bdbef7b01f01c4",
+          "judge": "codex",
+          "model": "gpt-6-astra",
+          "L1": 1,
+          "L2": 2,
+          "T1": 0,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "문제를 처리하는 학습 개념어지만, 의논하여 문제를 다루는 문장과 구체적 동작의 오답들이 뚜렷하게 구별된다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 3,
+        "T": 3,
+        "V": 9,
+        "ownTier": "advanced",
+        "band": {
+          "min": 4,
+          "max": 5
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "64eae9dffadcf0245b527ddbf6296a0623b4572cfeef60cc483d31d988301bc9"
+    },
+    {
       "questionId": "g4-argon-0103",
       "revision": 1,
       "contentHash": "3e6150e628bcb64bdd17b65d372af7ca6285d6f2461a3d58ce54698863b5adfa",
@@ -303,6 +363,66 @@
       "levelAssessmentHash": "d7414211f8162f12d694f378d986dba25dc336233ef221da08dc24675f8f940a"
     },
     {
+      "questionId": "g4-argon-0105",
+      "revision": 2,
+      "contentHash": "a1eb8e2da2150a8c051af070c3c3bbf7e607ad8ac846347669b42478baede538",
+      "precomputed": {
+        "typeBase": 0,
+        "lengthBump": 1,
+        "t3Base": 1,
+        "readingLoad": 76,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g4-argon-0105",
+          "revision": 2,
+          "contentHash": "a1eb8e2da2150a8c051af070c3c3bbf7e607ad8ac846347669b42478baede538",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 2,
+          "L2": 2,
+          "T1": 2,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "성품을 나타내는 문어적 한자어 용법으로, 남의 물건을 탐내지 않는다는 직접 단서로 음식 맛 다의 오답과 반의 오답을 구별해야 한다."
+        },
+        {
+          "questionId": "g4-argon-0105",
+          "revision": 2,
+          "contentHash": "a1eb8e2da2150a8c051af070c3c3bbf7e607ad8ac846347669b42478baede538",
+          "judge": "codex",
+          "model": "gpt-6-astra",
+          "L1": 2,
+          "L2": 2,
+          "T1": 2,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "성품에 쓰인 문어적 의미를 음식 맛의 뜻과 구별해야 하며, 남의 물건을 탐내지 않는다는 직접 행동 단서가 있다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 4,
+        "T": 4,
+        "V": 12,
+        "ownTier": "challenge",
+        "band": {
+          "min": 4,
+          "max": 5
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "1e9f1cf90720fb65ee05eb288427819f55eb4fd8503ace80caa691e41e880119"
+    },
+    {
       "questionId": "g4-argon-0106",
       "revision": 1,
       "contentHash": "05259f0d6cda0287530e1570b534785eee5e55bec18e482e5fd84670c9776e12",
@@ -421,6 +541,66 @@
         "flags": []
       },
       "levelAssessmentHash": "9306683eedbb77bf44e4542587f57f8ae0f4b3cf178ab2e6732f141b05383947"
+    },
+    {
+      "questionId": "g4-argon-0107",
+      "revision": 3,
+      "contentHash": "6fef18a2b4330184d701597357597d882dd408ae1f6f5c5f59b7ef45f8659b0d",
+      "precomputed": {
+        "typeBase": 1,
+        "lengthBump": 1,
+        "t3Base": 0,
+        "readingLoad": 75,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g4-argon-0107",
+          "revision": 3,
+          "contentHash": "6fef18a2b4330184d701597357597d882dd408ae1f6f5c5f59b7ef45f8659b0d",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 1,
+          "L2": 1,
+          "T1": 1,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "3~4학년 빈출 생활 한자어로, 날씨가 맑아지기를 간절히 바라는 직접 단서를 통해 중심 뜻을 고르기 쉽다."
+        },
+        {
+          "questionId": "g4-argon-0107",
+          "revision": 3,
+          "contentHash": "6fef18a2b4330184d701597357597d882dd408ae1f6f5c5f59b7ef45f8659b0d",
+          "judge": "codex",
+          "model": "gpt-6-astra",
+          "L1": 1,
+          "L2": 1,
+          "T1": 1,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "curriculum_explicit",
+          "unit": "[4국04-01] 단어와 단어 간의 의미 관계를 파악한다.",
+          "reason": "바라며 기다리는 마음의 유의 표현을 묻고, 맑아지기를 간절히 바라는 문장 구조가 직접 단서가 된다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 2,
+        "T": 3,
+        "V": 7,
+        "ownTier": "core",
+        "band": {
+          "min": 4,
+          "max": 4
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "bbb16c083c5f28f7c115a6d9f85c748dd290249acbab87030d5fcd814d14e998"
     },
     {
       "questionId": "g4-argon-0108",
@@ -543,6 +723,66 @@
       "levelAssessmentHash": "ae89eb5081fa5f0a0623b67fc106a37dd385e6e8d99b7742400736e2a2779e38"
     },
     {
+      "questionId": "g4-argon-0109",
+      "revision": 2,
+      "contentHash": "afbfaba77cd4d0fa58884604860b0857e6ae22590e5c70ecec231788caa2facc",
+      "precomputed": {
+        "typeBase": 0,
+        "lengthBump": 0,
+        "t3Base": 0,
+        "readingLoad": 63,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g4-argon-0109",
+          "revision": 2,
+          "contentHash": "afbfaba77cd4d0fa58884604860b0857e6ae22590e5c70ecec231788caa2facc",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 1,
+          "L2": 2,
+          "T1": 1,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "이야기·사회 글에 자주 나오는 개념 한자어로, 문화재가 사라져 사회의 주목을 받았다는 직접 단서로 다른 사회 어휘 오답과 구별한다."
+        },
+        {
+          "questionId": "g4-argon-0109",
+          "revision": 2,
+          "contentHash": "afbfaba77cd4d0fa58884604860b0857e6ae22590e5c70ecec231788caa2facc",
+          "judge": "codex",
+          "model": "gpt-6-astra",
+          "L1": 1,
+          "L2": 2,
+          "T1": 0,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "사회적으로 주목받는 일을 분류하는 개념어이며, 문화재가 사라져 주목받았다는 직접 설명과 오답의 의미 차이가 분명하다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 3,
+        "T": 1,
+        "V": 7,
+        "ownTier": "core",
+        "band": {
+          "min": 4,
+          "max": 4
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "211265eb554be595313dcc4dd5e7686401fdea966b1b49790a15dcc6ff2b94c5"
+    },
+    {
       "questionId": "g4-argon-0110",
       "revision": 1,
       "contentHash": "598d20ba5dd8a9106ae62b958d23826367956c856fcb706ee142132fd72a5171",
@@ -663,6 +903,68 @@
         ]
       },
       "levelAssessmentHash": "bf7459ecb4d0228a6594cf44d14d42fb9f7d48f9f9a5e88cf0366c534c5baa68"
+    },
+    {
+      "questionId": "g4-argon-0111",
+      "revision": 2,
+      "contentHash": "5feaa3a7008a2bb4d92f04898872b4f1ba82179f97bc56b532ffb45a6289f501",
+      "precomputed": {
+        "typeBase": 1,
+        "lengthBump": 0,
+        "t3Base": 0,
+        "readingLoad": 48,
+        "krdictGrade": "초급",
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g4-argon-0111",
+          "revision": 2,
+          "contentHash": "5feaa3a7008a2bb4d92f04898872b4f1ba82179f97bc56b532ffb45a6289f501",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 0,
+          "L2": 0,
+          "T1": 0,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "corpus_graded",
+          "unit": "krdict:초급",
+          "reason": "기초 생활 고유어 동사의 제1의미를 묻는 문항으로, 벽의 못에 걸렸다는 직접 단서가 분명하고 오답들이 모두 다른 물리 현상이다."
+        },
+        {
+          "questionId": "g4-argon-0111",
+          "revision": 2,
+          "contentHash": "5feaa3a7008a2bb4d92f04898872b4f1ba82179f97bc56b532ffb45a6289f501",
+          "judge": "codex",
+          "model": "gpt-6-astra",
+          "L1": 0,
+          "L2": 0,
+          "T1": 0,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "corpus_graded",
+          "unit": "krdict:초급",
+          "reason": "구체적인 물체의 기본 상태를 나타내는 기초어이며, 벽의 못과 달력이라는 직접 단서로 유의어를 쉽게 찾을 수 있다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 0,
+        "T": 1,
+        "V": 1,
+        "ownTier": "basic",
+        "band": {
+          "min": 4,
+          "max": 4
+        },
+        "flags": [
+          "too_easy"
+        ]
+      },
+      "levelAssessmentHash": "c9ea4df4e39db0dfc73f12f86970e77e34a1b9530956679ac1e09bcaf0646fb4"
     },
     {
       "questionId": "g4-argon-0112",
@@ -1147,6 +1449,66 @@
       "levelAssessmentHash": "213ec13ec725f4a02905fd52ab6945cebb7eb06e0a6e2497d7b52ac46e25c999"
     },
     {
+      "questionId": "g4-argon-0119",
+      "revision": 2,
+      "contentHash": "124565896e3f239468afb2844ca300c7bd1db450041ad80edbc50266e46e01cc",
+      "precomputed": {
+        "typeBase": 1,
+        "lengthBump": 0,
+        "t3Base": 0,
+        "readingLoad": 53,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g4-argon-0119",
+          "revision": 2,
+          "contentHash": "124565896e3f239468afb2844ca300c7bd1db450041ad80edbc50266e46e01cc",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 1,
+          "L2": 1,
+          "T1": 0,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "3~4학년 빈출 한자어의 제1의미를 묻고 오답이 모두 다른 의미장에 속하며 지문에 직접 단서가 있다."
+        },
+        {
+          "questionId": "g4-argon-0119",
+          "revision": 2,
+          "contentHash": "124565896e3f239468afb2844ca300c7bd1db450041ad80edbc50266e46e01cc",
+          "judge": "codex",
+          "model": "gpt-6-astra",
+          "L1": 1,
+          "L2": 1,
+          "T1": 0,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "curriculum_explicit",
+          "unit": "[4국04-01] 단어와 단어 간의 의미 관계를 파악한다.",
+          "reason": "사람을 가리키는 생활 한자어의 제1의미이며, 청년이라는 직접 단서가 있고 오답은 모두 다른 의미장이다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 2,
+        "T": 1,
+        "V": 5,
+        "ownTier": "basic",
+        "band": {
+          "min": 4,
+          "max": 4
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "b75173dd31ef76b61f1eca6f7899e7046ded86c81b789a2fd5b6330f78ee08fc"
+    },
+    {
       "questionId": "g4-argon-0120",
       "revision": 2,
       "contentHash": "df02e733da2d9ee87d6d4c2ba136e8dde3f29e4e321d298b3fbaa0f3eb3eaf43",
@@ -1511,6 +1873,66 @@
       "levelAssessmentHash": "54444a9abc1e510d316581104deb35258ddcb4fe1871f4f5fe78f12263db1bc3"
     },
     {
+      "questionId": "g4-argon-0125",
+      "revision": 2,
+      "contentHash": "5e358fd05fad80fdf99904fcee9d41d980d9a5912ee06670a118b43ccf176f8d",
+      "precomputed": {
+        "typeBase": 2,
+        "lengthBump": 1,
+        "t3Base": 0,
+        "readingLoad": 77,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g4-argon-0125",
+          "revision": 2,
+          "contentHash": "5e358fd05fad80fdf99904fcee9d41d980d9a5912ee06670a118b43ccf176f8d",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 0,
+          "L2": 0,
+          "T1": 1,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "기초 생활 고유어 사동사의 중심 의미를 반의 동작 모순 선택지와 대조해 고르며 문장 내 단서가 직접적이다."
+        },
+        {
+          "questionId": "g4-argon-0125",
+          "revision": 2,
+          "contentHash": "5e358fd05fad80fdf99904fcee9d41d980d9a5912ee06670a118b43ccf176f8d",
+          "judge": "codex",
+          "model": "gpt-6-astra",
+          "L1": 0,
+          "L2": 0,
+          "T1": 1,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "나머지가 있게 하는 기초 생활 동작이며, 두 오답의 전부 소비함과 정답의 일부 보존함이 직접 대비된다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 0,
+        "T": 4,
+        "V": 4,
+        "ownTier": "basic",
+        "band": {
+          "min": 4,
+          "max": 4
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "2c9c9c59cda4a6984faff1d449b909e7ecd28e2a61740501f917714e093527a6"
+    },
+    {
       "questionId": "g4-argon-0126",
       "revision": 1,
       "contentHash": "5f12f942276b52afc581b41048446062f7874cf6c07297b1ddb3a0be6a0b4c8e",
@@ -1749,6 +2171,66 @@
         "flags": []
       },
       "levelAssessmentHash": "f8ff46ea8c25b401b9153368add0236c3f4fce0b0731be0a7d9ff64904328c90"
+    },
+    {
+      "questionId": "g4-argon-0129",
+      "revision": 3,
+      "contentHash": "c5167b3759d636f318dc6aa8bf8b03e57b7272ac67f24483602654a82547e8f2",
+      "precomputed": {
+        "typeBase": 2,
+        "lengthBump": 1,
+        "t3Base": 0,
+        "readingLoad": 74,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g4-argon-0129",
+          "revision": 3,
+          "contentHash": "c5167b3759d636f318dc6aa8bf8b03e57b7272ac67f24483602654a82547e8f2",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 1,
+          "L2": 1,
+          "T1": 1,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "3~4학년 동화와 생활 담화에 자주 쓰이는 어휘로 선택지 내 직접 단서를 통해 반의·부적합 호응을 가려낸다."
+        },
+        {
+          "questionId": "g4-argon-0129",
+          "revision": 3,
+          "contentHash": "c5167b3759d636f318dc6aa8bf8b03e57b7272ac67f24483602654a82547e8f2",
+          "judge": "codex",
+          "model": "gpt-6-astra",
+          "L1": 1,
+          "L2": 1,
+          "T1": 1,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "필요를 헤아려 갖추는 준비 행위이며, 의자를 미리 준비하는 단서와 버리기·부수기의 반대 행동이 명확하다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 2,
+        "T": 4,
+        "V": 8,
+        "ownTier": "core",
+        "band": {
+          "min": 4,
+          "max": 5
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "0dac30083776158fb682315d1361cf874d9d504cbaacc84be865c86eb5c656da"
     },
     {
       "questionId": "g4-argon-0130",
@@ -2111,6 +2593,66 @@
       "levelAssessmentHash": "1059dd866c30cd3f843fc8f826e8cbf3a602e017b712c1ed41e05f5cbbfb337b"
     },
     {
+      "questionId": "g4-argon-0135",
+      "revision": 3,
+      "contentHash": "162adb56aa95c2691965bfd14c1f20106fa89a3453e2b2e33f60a6129460d11e",
+      "precomputed": {
+        "typeBase": 0,
+        "lengthBump": 1,
+        "t3Base": 0,
+        "readingLoad": 83,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g4-argon-0135",
+          "revision": 3,
+          "contentHash": "162adb56aa95c2691965bfd14c1f20106fa89a3453e2b2e33f60a6129460d11e",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 1,
+          "L2": 1,
+          "T1": 1,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "감정·평가 파생 형용사의 중심 의미를 묻고 칭찬 단서가 명시되어 있으나 동사 놀라다 계열 오답을 구별해야 한다."
+        },
+        {
+          "questionId": "g4-argon-0135",
+          "revision": 3,
+          "contentHash": "162adb56aa95c2691965bfd14c1f20106fa89a3453e2b2e33f60a6129460d11e",
+          "judge": "codex",
+          "model": "gpt-6-astra",
+          "L1": 1,
+          "L2": 1,
+          "T1": 2,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:뜻 번호 1",
+          "reason": "감탄을 나타내는 감정 어휘로, 겁이 나는 놀람과 훌륭함에 대한 감탄을 아름다운 화음이라는 단서로 구별한다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 2,
+        "T": 3,
+        "V": 7,
+        "ownTier": "core",
+        "band": {
+          "min": 4,
+          "max": 4
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "e0d53406dd16767b4920cd3ee1e3251108dd12b77098f7beafa491aadcf1b7f8"
+    },
+    {
       "questionId": "g4-argon-0136",
       "revision": 2,
       "contentHash": "65e17d04c22d4e048447e772f82e24c705e8fc468e2b9eb217d90d8de03903b4",
@@ -2169,6 +2711,66 @@
         "flags": []
       },
       "levelAssessmentHash": "b5d1a340cefd9e4a3a9964d50b77f5e72c2652a2e2f20d4a3c2e88fdd5f2b1be"
+    },
+    {
+      "questionId": "g4-argon-0136",
+      "revision": 3,
+      "contentHash": "474504afaeed8062307d705f8c72f1665b473f53f277a6f9c472a11752f309ad",
+      "precomputed": {
+        "typeBase": 0,
+        "lengthBump": 1,
+        "t3Base": 0,
+        "readingLoad": 73,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g4-argon-0136",
+          "revision": 3,
+          "contentHash": "474504afaeed8062307d705f8c72f1665b473f53f277a6f9c472a11752f309ad",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 1,
+          "L2": 1,
+          "T1": 1,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "일상과 학습에서 친숙한 상태 한자어의 중심 의미를 반의 선택지 등과 구별하는 기본 정의 문항이다."
+        },
+        {
+          "questionId": "g4-argon-0136",
+          "revision": 3,
+          "contentHash": "474504afaeed8062307d705f8c72f1665b473f53f277a6f9c472a11752f309ad",
+          "judge": "codex",
+          "model": "gpt-6-astra",
+          "L1": 1,
+          "L2": 1,
+          "T1": 1,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "특별하게 다른 상태를 나타내는 어휘의 중심 뜻을 묻고, 평범하다는 반의 오답 하나가 의미상 가깝다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 2,
+        "T": 2,
+        "V": 6,
+        "ownTier": "core",
+        "band": {
+          "min": 4,
+          "max": 4
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "e19e4171687445f16b397993e9c5f7998250cd03a9f6e19d587323ab76b55431"
     },
     {
       "questionId": "g4-argon-0137",
@@ -2769,6 +3371,66 @@
         "flags": []
       },
       "levelAssessmentHash": "e0da805f778052de28e175d032a74a39fb58f6e20d15271aac5da9a190ee89c0"
+    },
+    {
+      "questionId": "g4-argon-0146",
+      "revision": 2,
+      "contentHash": "d94f2d00c4ff750e07409605ac405e95c0d870f8746f2342b5c67a63fbcede4e",
+      "precomputed": {
+        "typeBase": 0,
+        "lengthBump": 1,
+        "t3Base": 3,
+        "readingLoad": 66,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g4-argon-0146",
+          "revision": 2,
+          "contentHash": "d94f2d00c4ff750e07409605ac405e95c0d870f8746f2342b5c67a63fbcede4e",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 2,
+          "L2": 0,
+          "T1": 0,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "curriculum_explicit",
+          "unit": "[6국04-02] 표준어와 방언의 기능을 파악하고 언어 공동체와 국어생활과의 관계를 이해한다.",
+          "reason": "구체 동물을 가리키는 제주 방언이나 지문에 병아리의 직접 묘사 단서가 있고 오답 동물이 명확히 구별된다."
+        },
+        {
+          "questionId": "g4-argon-0146",
+          "revision": 2,
+          "contentHash": "d94f2d00c4ff750e07409605ac405e95c0d870f8746f2342b5c67a63fbcede4e",
+          "judge": "codex",
+          "model": "gpt-6-astra",
+          "L1": 3,
+          "L2": 0,
+          "T1": 1,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "curriculum_explicit",
+          "unit": "[6국04-02] 표준어와 방언의 기능을 파악하고 언어 공동체와 국어생활과의 관계를 이해한다.",
+          "reason": "지역 밖 노출이 드문 방언이지만 구체적인 동물 이름이며, 달걀·노란 솜털·삐약거림이 표준어 대응을 직접 알려 준다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 3,
+        "T": 5,
+        "V": 11,
+        "ownTier": "challenge",
+        "band": {
+          "min": 4,
+          "max": 5
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "65f680d90d6f0856b071b48d91f4763ff0bd24989ae51b9f634441ac0a8a8d99"
     },
     {
       "questionId": "g4-argon-0147",

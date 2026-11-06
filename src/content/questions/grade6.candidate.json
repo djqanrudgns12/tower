@@ -1,6 +1,6 @@
 {
   "bankId": "g6-candidate",
-  "bankVersion": "cand-9a6850aff9a8",
+  "bankVersion": "cand-ee580e712d02",
   "grade": 6,
   "status": "verified_candidate",
   "note": "공동검수 진행 중인 후보 은행. 같은 revision의 외부 블라인드 검수(codex·claude) 1건 이상과 새 문맥 argon-blind를 통과했다. 3모델 공동검수 승인 전에는 게임에 싣지 않는다(PRD §9.3).",
@@ -47,7 +47,7 @@
     },
     {
       "id": "g6-argon-0002",
-      "revision": 1,
+      "revision": 2,
       "status": "verified_candidate",
       "grade": 6,
       "type": "synonym_context",
@@ -78,7 +78,7 @@
         }
       ],
       "correctOptionId": "d",
-      "explanation": "‘형평성’은 치우침 없이 고르고 공평한 성질을 뜻하므로 ‘공평함’과 통틀어 바꿔 쓸 수 있어요.",
+      "explanation": "‘형평성’은 균형을 이루는 성질을 뜻하므로 이 문장에서는 ‘공평함’으로 바꿔 쓸 수 있어요.",
       "distractorRationales": {
         "a": "‘신속함’은 빠르다는 뜻이라 문맥에 맞지 않아요.",
         "b": "‘화려함’은 겉모습이 고운 성질이라 어울리지 않아요.",
@@ -246,6 +246,46 @@
       }
     },
     {
+      "id": "g6-argon-0007",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 6,
+      "type": "synonym_context",
+      "difficultyTier": "basic",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "성숙하다",
+        "partOfSpeech": "동사",
+        "senseKey": "성숙하다/동사/187493-1"
+      },
+      "stem": "\"어미의 보살핌을 받던 어린 사슴이 시간이 흘러 성숙하여 늠름하게 무리를 이끌었습니다.\" 문장의 ‘성숙하여’와 바꾸어 쓸 수 있는 말은 무엇일까요?",
+      "options": [
+        {
+          "id": "a",
+          "text": "다 자라서"
+        },
+        {
+          "id": "b",
+          "text": "작아져서"
+        },
+        {
+          "id": "c",
+          "text": "약해져서"
+        },
+        {
+          "id": "d",
+          "text": "잠들어서"
+        }
+      ],
+      "correctOptionId": "a",
+      "explanation": "여기서 ‘성숙하다’는 생물의 발육이 완전히 이루어진다는 뜻이므로 ‘다 자라서’와 통해요.",
+      "distractorRationales": {
+        "b": "‘작아져서’는 발육이 이루어진 상태와 뜻이 반대돼요.",
+        "c": "‘약해져서’는 기운이나 힘이 줄어든다는 뜻이라 어색해요.",
+        "d": "‘잠들어서’는 잠에 빠진다는 뜻이라 문맥에 맞지 않아요."
+      }
+    },
+    {
       "id": "g6-argon-0009",
       "revision": 1,
       "status": "verified_candidate",
@@ -367,42 +407,42 @@
     },
     {
       "id": "g6-argon-0012",
-      "revision": 1,
+      "revision": 2,
       "status": "verified_candidate",
       "grade": 6,
-      "type": "synonym_context",
-      "difficultyTier": "basic",
+      "type": "definition",
+      "difficultyTier": "core",
       "variantTag": "standard",
       "target": {
         "lemma": "판단력",
         "partOfSpeech": "명사",
         "senseKey": "판단력/명사/499116-1"
       },
-      "stem": "\"소문이 사실인지 차분히 따져 보는 판단력을 길러야 합니다.\" 문장의 ‘판단력’과 바꾸어 써도 뜻이 가장 자연스러운 것은 무엇일까요?",
+      "stem": "\"소문을 섣불리 믿지 않으려면 바른 판단력을 길러야 합니다.\" 이 문장에서 ‘판단력’의 뜻으로 가장 알맞은 것은 무엇일까요?",
       "options": [
         {
           "id": "a",
-          "text": "오랫동안 지치지 않고 달리는 능력"
+          "text": "오랫동안 지치지 않고 끝까지 달리는 능력"
         },
         {
           "id": "b",
-          "text": "논리나 기준에 따라 판정하는 능력"
+          "text": "논리나 기준에 따라 옳고 그름을 가리는 능력"
         },
         {
           "id": "c",
-          "text": "들었던 이야기를 그대로 외우는 능력"
+          "text": "한 번 들었던 이야기를 그대로 외우는 능력"
         },
         {
           "id": "d",
-          "text": "목소리를 멀리까지 크게 내는 능력"
+          "text": "목소리를 아주 멀리까지 크게 내보내는 능력"
         }
       ],
       "correctOptionId": "b",
-      "explanation": "‘판단력’은 사물을 인식하여 논리나 기준에 따라 판정할 수 있는 능력을 뜻해요.",
+      "explanation": "‘판단력’은 사물을 인식하여 논리나 기준에 따라 옳고 그름을 가려 정하는 능력을 뜻해요.",
       "distractorRationales": {
-        "a": "오래 달리는 능력은 지구력을 뜻해요.",
-        "c": "그대로 외우는 능력은 기억력을 가리켜요.",
-        "d": "소리를 크게 내는 것은 성량과 관련 있어요."
+        "a": "오랫동안 지치지 않고 달리는 능력은 ‘지구력’을 뜻해요.",
+        "c": "들었던 내용을 그대로 외우는 능력은 ‘기억력’을 가리켜요.",
+        "d": "목소리를 멀리까지 크게 내는 것은 ‘성량’과 관련 있어요."
       }
     },
     {
@@ -447,7 +487,7 @@
     },
     {
       "id": "g6-argon-0014",
-      "revision": 3,
+      "revision": 4,
       "status": "verified_candidate",
       "grade": 6,
       "type": "cloze",
@@ -458,7 +498,7 @@
         "partOfSpeech": "관형사",
         "senseKey": "자주적/관형사/277567-2"
       },
-      "stem": "어린이회 임원들은 어른의 간섭을 받지 않고 학급 문제를 스스로 해결하려는 (    ) 태도를 보였다.",
+      "stem": "어린이회 임원들은 어른의 간섭을 받지 않고 학급 문제를 스스로 해결하려는 (    ) 태도를 보였습니다. 빈칸에 알맞은 말은 무엇일까요?",
       "options": [
         {
           "id": "a",
@@ -478,7 +518,7 @@
         }
       ],
       "correctOptionId": "a",
-      "explanation": "남의 간섭을 받지 않고 자기 일을 스스로 처리하는 성질이므로 ‘자주적’이 알맞아요.",
+      "explanation": "남의 간섭을 받지 않고 자기 일을 스스로 처리하는 뜻이므로 ‘자주적’이 알맞아요.",
       "distractorRationales": {
         "b": "남에게 기대어 의지하는 태도라 스스로 해결한다는 말과 반대예요.",
         "c": "남이 시키는 대로만 움직이는 뜻이라 문맥에 맞지 않아요.",
@@ -527,11 +567,11 @@
     },
     {
       "id": "g6-argon-0016",
-      "revision": 1,
+      "revision": 2,
       "status": "verified_candidate",
       "grade": 6,
       "type": "definition",
-      "difficultyTier": "basic",
+      "difficultyTier": "core",
       "variantTag": "standard",
       "target": {
         "lemma": "민주적",
@@ -550,19 +590,19 @@
         },
         {
           "id": "c",
-          "text": "국민이 모든 결정의 중심에 있는 것"
+          "text": "국민이 모든 결정의 중심에 서 있는 것"
         },
         {
           "id": "d",
-          "text": "모든 결정을 내리지 않고 뒤로 미루는 것"
+          "text": "결정을 내리지 않고 계속 뒤로 미루는 것"
         }
       ],
       "correctOptionId": "c",
-      "explanation": "‘민주적’은 국민이 모든 결정의 중심에 있어 뜻을 반영하는 것을 말해요.",
+      "explanation": "‘민주적’은 국민이 모든 결정의 중심이 되어 국민의 뜻이 반영되는 것을 말해요.",
       "distractorRationales": {
         "a": "혼자 마음대로 정하는 것은 독단적인 태도예요.",
-        "b": "옛 관습만 그대로 따르는 것과는 뜻이 달라요.",
-        "d": "결정을 미루기만 하는 태도를 뜻하지 않아요."
+        "b": "옛 관습만 무조건 따르는 것과는 뜻이 달라요.",
+        "d": "결정을 내리지 않고 미루는 태도를 뜻하지 않아요."
       }
     },
     {
@@ -607,7 +647,7 @@
     },
     {
       "id": "g6-argon-0018",
-      "revision": 1,
+      "revision": 3,
       "status": "verified_candidate",
       "grade": 6,
       "type": "usage",
@@ -622,32 +662,32 @@
       "options": [
         {
           "id": "a",
-          "text": "직접 실험해 얻은 결과여서 자료의 신빙성이 높다."
+          "text": "여러 기록으로 사실임이 확인되어 그 주장은 신빙성이 높다."
         },
         {
           "id": "b",
-          "text": "목이 말라 시원한 신빙성을 한 컵 가득 마셨다."
+          "text": "그 친구는 신빙성이 많아 누구에게나 상냥하고 친절하게 대한다."
         },
         {
           "id": "c",
-          "text": "가위로 색종이를 오려 둥근 신빙성을 만들었다."
+          "text": "이 운동복은 옷감의 신빙성이 좋아서 몸을 움직이기 편하다."
         },
         {
           "id": "d",
-          "text": "비에 젖은 우산을 펼쳐 현관에 신빙성을 세웠다."
+          "text": "여름 옷감은 바람이 잘 통하는 신빙성이 있어야 입기 시원하다."
         }
       ],
       "correctOptionId": "a",
       "explanation": "‘신빙성’은 믿어서 근거나 증거로 삼을 수 있는 정도나 성질을 뜻해요.",
       "distractorRationales": {
-        "b": "마실 수 있는 음료나 물이 아니에요.",
-        "c": "색종이를 오려 만드는 모양을 뜻하지 않아요.",
-        "d": "현관에 세워 두는 물건이 아니에요."
+        "b": "‘신빙성’은 믿을 수 있는 정도나 성질이며, 상냥하고 친절한 태도를 뜻하지 않아요.",
+        "c": "옷감이 늘어나 움직이기 편한 성질은 ‘신축성’이지 ‘신빙성’이 아니에요.",
+        "d": "바람이 잘 통하는 성질은 ‘통기성’이라 ‘신빙성’을 쓸 수 없어요."
       }
     },
     {
       "id": "g6-argon-0019",
-      "revision": 1,
+      "revision": 2,
       "status": "verified_candidate",
       "grade": 6,
       "type": "cloze",
@@ -658,7 +698,7 @@
         "partOfSpeech": "형용사",
         "senseKey": "조화롭다/형용사/297571-1"
       },
-      "stem": "여러 가지가 서로 잘 어울려 모순되거나 어긋남이 없는 상태를 뜻하는 말은 ‘(    )’입니다. 빈칸에 알맞은 말은 무엇일까요?",
+      "stem": "여러 가지가 서로 잘 어울려 모순됨이나 어긋남이 없는 상태를 뜻하는 말은 ‘(    )’입니다. 빈칸에 알맞은 말은 무엇일까요?",
       "options": [
         {
           "id": "a",
@@ -678,7 +718,7 @@
         }
       ],
       "correctOptionId": "d",
-      "explanation": "서로 잘 어울려 어긋남이 없는 상태를 ‘조화롭다’라고 해요.",
+      "explanation": "서로 잘 어울려 모순됨이나 어긋남이 없는 상태를 ‘조화롭다’라고 해요.",
       "distractorRationales": {
         "a": "‘날카롭다’는 끝이 뾰족하거나 예리하다는 뜻이에요.",
         "b": "‘수고롭다’는 일하기에 힘겹고 애쓰는 상태예요.",
@@ -763,6 +803,86 @@
         "a": "이익을 남기는 장사 방법과는 관련이 없어요.",
         "c": "기계를 수리하는 기술을 뜻하는 말이 아니에요.",
         "d": "문제를 빨리 푸는 계산 요령이 아니에요."
+      }
+    },
+    {
+      "id": "g6-argon-0022",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 6,
+      "type": "synonym_context",
+      "difficultyTier": "basic",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "절제하다",
+        "partOfSpeech": "동사",
+        "senseKey": "절제하다/동사/481938-1"
+      },
+      "stem": "\"건강을 위해 단 음식을 먹고 싶은 욕구를 스스로 절제했습니다.\" 문장의 ‘절제했습니다’와 바꾸어 쓸 수 있는 말은 무엇일까요?",
+      "options": [
+        {
+          "id": "a",
+          "text": "참지 않고 마음껏 채웠습니다"
+        },
+        {
+          "id": "b",
+          "text": "주변 사람에게 널리 알렸습니다"
+        },
+        {
+          "id": "c",
+          "text": "지나치지 않도록 억눌렀습니다"
+        },
+        {
+          "id": "d",
+          "text": "습관처럼 날마다 떠올렸습니다"
+        }
+      ],
+      "correctOptionId": "c",
+      "explanation": "여기서 ‘절제하다’는 정도에 넘지 않도록 알맞게 조절하여 제한한다는 뜻이에요.",
+      "distractorRationales": {
+        "a": "욕구를 마음껏 채우는 것은 알맞게 제한하는 절제와 반대돼요.",
+        "b": "남에게 널리 알리는 행동은 절제하다의 뜻과 관련이 없어요.",
+        "d": "날마다 떠올리는 것은 정도를 넘지 않게 제한하는 뜻이 아니에요."
+      }
+    },
+    {
+      "id": "g6-argon-0023",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 6,
+      "type": "usage",
+      "difficultyTier": "basic",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "온정",
+        "partOfSpeech": "명사",
+        "senseKey": "온정/명사/246085-1"
+      },
+      "stem": "‘온정’을 ‘따뜻한 사랑이나 인정’이라는 뜻에 맞게 쓴 문장은 무엇일까요?",
+      "options": [
+        {
+          "id": "a",
+          "text": "연필심이 부러져서 필통에서 온정을 꺼내 깎았다."
+        },
+        {
+          "id": "b",
+          "text": "자전거 바퀴에 펌프로 시원한 온정을 가득 넣었다."
+        },
+        {
+          "id": "c",
+          "text": "시험지 맨 윗줄에 학년과 온정을 또박또박 적었다."
+        },
+        {
+          "id": "d",
+          "text": "어려운 이웃을 돕는 마을 주민들의 온정이 모였다."
+        }
+      ],
+      "correctOptionId": "d",
+      "explanation": "여기서 ‘온정’은 남을 생각하는 따뜻한 사랑이나 인정을 뜻해요.",
+      "distractorRationales": {
+        "a": "‘온정’은 필통에서 꺼내 깎는 연필을 뜻하지 않아요.",
+        "b": "‘온정’은 바퀴에 펌프로 넣는 바람이나 공기가 아니에요.",
+        "c": "‘온정’은 시험지에 적는 이름이나 번호가 아니에요."
       }
     },
     {
@@ -1006,6 +1126,46 @@
       }
     },
     {
+      "id": "g6-argon-0030",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 6,
+      "type": "cloze",
+      "difficultyTier": "advanced",
+      "variantTag": "idiom_proverb",
+      "target": {
+        "lemma": "머리를 숙이다",
+        "partOfSpeech": "관용구",
+        "senseKey": "머리를 숙이다/관용구/527508-1"
+      },
+      "stem": "처음에는 자기주장만 내세우며 맞서던 상대도 분명한 증거 앞에서는 잘못을 인정하고 (    ) 순순히 물러섰다. 빈칸에 알맞은 말은 무엇일까요?",
+      "options": [
+        {
+          "id": "a",
+          "text": "큰소리를 치고"
+        },
+        {
+          "id": "b",
+          "text": "머리를 숙이고"
+        },
+        {
+          "id": "c",
+          "text": "기세를 올리고"
+        },
+        {
+          "id": "d",
+          "text": "팔을 걷어붙이고"
+        }
+      ],
+      "correctOptionId": "b",
+      "explanation": "여기서 ‘머리를 숙이다’는 상대에게 굴복하거나 저자세를 보인다는 뜻이에요.",
+      "distractorRationales": {
+        "a": "‘큰소리를 치다’는 기세 좋게 장담하거나 호통치는 태도라 맞지 않아요.",
+        "c": "‘기세를 올리다’는 기운차게 세력을 부리는 모습이라 굴복과 반대돼요.",
+        "d": "‘팔을 걷어붙이다’는 일에 적극 나서는 모습이라 물러서는 상황과 어긋나요."
+      }
+    },
+    {
       "id": "g6-argon-0031",
       "revision": 1,
       "status": "verified_candidate",
@@ -1127,7 +1287,7 @@
     },
     {
       "id": "g6-argon-0034",
-      "revision": 1,
+      "revision": 2,
       "status": "verified_candidate",
       "grade": 6,
       "type": "cloze",
@@ -1138,7 +1298,7 @@
         "partOfSpeech": "속담",
         "senseKey": "티끌 모아 태산/속담/532797-1"
       },
-      "stem": "매일 조금씩 모은 동전이 일 년 뒤 큰 저축액이 된 상황에 어울리는 속담은 ‘(    )’입니다. 빈칸에 알맞은 말은 무엇일까요?",
+      "stem": "매일 저금통에 조금씩 넣은 동전이 일 년 뒤 큰 저축액이 된 상황에 어울리는 속담은 ‘(    )’입니다. 빈칸에 알맞은 말은 무엇일까요?",
       "options": [
         {
           "id": "a",
@@ -1163,6 +1323,46 @@
         "a": "‘하늘의 별 따기’는 이루기 매우 어렵다는 뜻이에요.",
         "b": "‘식은 죽 먹기’는 일이 아주 쉽다는 뜻이에요.",
         "d": "‘밑 빠진 독에 물 붓기’는 애써도 보람이 없다는 뜻이에요."
+      }
+    },
+    {
+      "id": "g6-argon-0035",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 6,
+      "type": "cloze",
+      "difficultyTier": "advanced",
+      "variantTag": "idiom_proverb",
+      "target": {
+        "lemma": "콩 심은 데 콩 나고 팥 심은 데 팥 난다",
+        "partOfSpeech": "속담",
+        "senseKey": "콩 심은 데 콩 나고 팥 심은 데 팥 난다/속담/532418-1"
+      },
+      "stem": "어떤 일을 하느냐에 따라 그에 걸맞은 결과가 나타난다는 뜻으로 쓰는 속담은 ‘(    )’입니다. 빈칸에 알맞은 말은 무엇일까요?",
+      "options": [
+        {
+          "id": "a",
+          "text": "낮말은 새가 듣고 밤말은 쥐가 듣는다"
+        },
+        {
+          "id": "b",
+          "text": "원숭이도 나무에서 떨어질 때가 있다"
+        },
+        {
+          "id": "c",
+          "text": "콩 심은 데 콩 나고 팥 심은 데 팥 난다"
+        },
+        {
+          "id": "d",
+          "text": "사공이 많으면 배가 산으로 간다"
+        }
+      ],
+      "correctOptionId": "c",
+      "explanation": "모든 일은 근본이나 원인에 걸맞은 결과가 나타난다는 뜻의 속담이에요.",
+      "distractorRationales": {
+        "a": "아무도 없는 곳에서도 말조심을 해야 한다는 뜻의 속담이에요.",
+        "b": "아무리 능숙한 사람도 때로는 실수할 수 있다는 뜻의 속담이에요.",
+        "d": "주장하는 사람이 너무 많으면 일이 어긋난다는 뜻의 속담이에요."
       }
     },
     {
@@ -1207,7 +1407,7 @@
     },
     {
       "id": "g6-argon-0037",
-      "revision": 1,
+      "revision": 2,
       "status": "verified_candidate",
       "grade": 6,
       "type": "cloze",
@@ -1218,7 +1418,7 @@
         "partOfSpeech": "속담",
         "senseKey": "고생 끝에 낙이 온다/속담/525427-1"
       },
-      "stem": "힘들고 고된 훈련을 참고 견딘 끝에 마침내 우승의 기쁨을 누렸을 때 어울리는 속담은 ‘(    )’입니다. 빈칸에 알맞은 것은 무엇일까요?",
+      "stem": "힘들고 고된 훈련을 참고 견뎌 낸 뒤 마침내 우승의 기쁨을 누렸을 때 어울리는 속담은 ‘(    )’입니다. 빈칸에 알맞은 것은 무엇일까요?",
       "options": [
         {
           "id": "a",
@@ -1246,8 +1446,88 @@
       }
     },
     {
+      "id": "g6-argon-0038",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 6,
+      "type": "cloze",
+      "difficultyTier": "advanced",
+      "variantTag": "idiom_proverb",
+      "target": {
+        "lemma": "지렁이도 밟으면 꿈틀한다",
+        "partOfSpeech": "속담",
+        "senseKey": "지렁이도 밟으면 꿈틀한다/속담/532017-1"
+      },
+      "stem": "평소 아무리 순하고 착한 사람이라도 자꾸 업신여기고 괴롭히면 가만있지 않는다는 속담은 ‘(    )’입니다. 빈칸에 알맞은 것은 무엇일까요?",
+      "options": [
+        {
+          "id": "a",
+          "text": "개구리 올챙이 적 생각 못 한다"
+        },
+        {
+          "id": "b",
+          "text": "가랑비에 옷 젖는 줄 모른다"
+        },
+        {
+          "id": "c",
+          "text": "지렁이도 밟으면 꿈틀한다"
+        },
+        {
+          "id": "d",
+          "text": "남의 떡이 더 커 보인다"
+        }
+      ],
+      "correctOptionId": "c",
+      "explanation": "아무리 순한 사람이라도 너무 업신여기면 참지 않고 맞선다는 속담이에요.",
+      "distractorRationales": {
+        "a": "형편이 나아진 뒤 어려웠던 지난날을 잊는다는 뜻이에요.",
+        "b": "작은 손해가 조금씩 쌓이는 것을 미처 깨닫지 못한다는 뜻이에요.",
+        "d": "남의 것이 자기 것보다 더 좋아 보인다는 뜻이에요."
+      }
+    },
+    {
+      "id": "g6-argon-0039",
+      "revision": 3,
+      "status": "verified_candidate",
+      "grade": 6,
+      "type": "cloze",
+      "difficultyTier": "advanced",
+      "variantTag": "idiom_proverb",
+      "target": {
+        "lemma": "백 번 듣는 것이 한 번 보는 것만 못하다",
+        "partOfSpeech": "속담",
+        "senseKey": "백 번 듣는 것이 한 번 보는 것만 못하다/속담/528394-1"
+      },
+      "stem": "선생님께 설명만 여러 번 들었던 유적을 현장에 가서 직접 눈으로 확인하니 단번에 이해되었다는 상황에 알맞은 속담은 ‘(    )’입니다. 빈칸에 알맞은 것은 무엇일까요?",
+      "options": [
+        {
+          "id": "a",
+          "text": "서당 개 삼 년이면 풍월을 읊는다"
+        },
+        {
+          "id": "b",
+          "text": "고래 싸움에 새우 등 터진다"
+        },
+        {
+          "id": "c",
+          "text": "백 번 듣는 것이 한 번 보는 것만 못하다"
+        },
+        {
+          "id": "d",
+          "text": "보기 좋은 떡이 먹기도 좋다"
+        }
+      ],
+      "correctOptionId": "c",
+      "explanation": "아무리 여러 번 듣더라도 직접 한 번 눈으로 보는 것이 훨씬 확실하다는 속담이에요.",
+      "distractorRationales": {
+        "a": "오래 곁에서 보고 들으면 자연히 익힌다는 뜻이에요.",
+        "b": "강한 자들 싸움에 약한 자가 해를 입는다는 뜻이에요.",
+        "d": "겉모양이 좋으면 내용도 좋다는 뜻으로, 겉모양을 잘 꾸미는 것도 필요하다는 말이에요."
+      }
+    },
+    {
       "id": "g6-argon-0040",
-      "revision": 1,
+      "revision": 2,
       "status": "verified_candidate",
       "grade": 6,
       "type": "definition",
@@ -1279,16 +1559,57 @@
         }
       ],
       "correctOptionId": "d",
-      "explanation": "전라 지역 방언 ‘솔찬히’는 정도가 꽤 만만치 않게 ‘상당히’라는 뜻이에요.",
+      "explanation": "‘솔찬히’는 ‘상당히’(꽤 많이)라는 뜻의 전라 지역 방언이에요.",
       "distractorRationales": {
         "a": "‘가끔씩’은 시간 간격을 두어 드문드문이라는 뜻이에요.",
         "b": "‘살며시’는 남이 모르게 살짝이라는 뜻이에요.",
-        "c": "길을 쓸기 한참 걸릴 만큼 많이 내렸으므로 반대돼요."
+        "c": "‘조금만’은 적은 정도를 나타내므로 한참 걸린다는 말과 반대돼요."
+      }
+    },
+    {
+      "id": "g6-argon-0041",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 6,
+      "type": "definition",
+      "difficultyTier": "challenge",
+      "variantTag": "dialect",
+      "dialectRegion": "충청",
+      "target": {
+        "lemma": "나숭개",
+        "partOfSpeech": "명사",
+        "senseKey": "나숭개/명사/od-111466-1"
+      },
+      "stem": "이른 봄 들판에서 할머니께서 향긋한 봄나물을 뿌리째 캐시며 \"오늘 저녁엔 나숭개를 넣어 구수한 된장국을 끓이자.\"라고 하셨습니다. ‘나숭개’의 표준어는 무엇일까요?",
+      "options": [
+        {
+          "id": "a",
+          "text": "수박"
+        },
+        {
+          "id": "b",
+          "text": "미역"
+        },
+        {
+          "id": "c",
+          "text": "냉이"
+        },
+        {
+          "id": "d",
+          "text": "버섯"
+        }
+      ],
+      "correctOptionId": "c",
+      "explanation": "‘나숭개’는 이른 봄 들에서 캐어 국이나 무침으로 먹는 ‘냉이’의 방언이에요.",
+      "distractorRationales": {
+        "a": "‘수박’은 여름철에 먹는 크고 둥근 열매채소예요.",
+        "b": "‘미역’은 바다에서 자라는 해조류예요.",
+        "d": "‘버섯’은 그늘진 땅이나 나무에서 자라는 균류예요."
       }
     },
     {
       "id": "g6-argon-0042",
-      "revision": 2,
+      "revision": 3,
       "status": "verified_candidate",
       "grade": 6,
       "type": "definition",
@@ -1300,7 +1621,7 @@
         "partOfSpeech": "명사",
         "senseKey": "강생이/명사/od-486494-1"
       },
-      "stem": "\"제주 할머니께서 마당의 개집을 가리키시며 '지난달에 우리 집 어미 개가 낳은 강생이가 벌써 꼬리를 흔들며 멍멍 잘도 짖는구나.'라고 말씀하셨다.\" 이 대화에서 ‘강생이’의 뜻은 무엇일까요?",
+      "stem": "제주에 사시는 할머니께서 마당을 보시며 \"지난달에 태어난 강생이가 벌써 꼬리를 흔들며 멍멍 잘도 짖는구나.\"라고 말씀하셨습니다. ‘강생이’의 표준어는 무엇일까요?",
       "options": [
         {
           "id": "a",
@@ -1320,11 +1641,11 @@
         }
       ],
       "correctOptionId": "a",
-      "explanation": "어미 개가 낳아 개집에 살며 멍멍 짖는 새끼이므로 ‘강생이’는 ‘강아지’예요.",
+      "explanation": "‘강생이’는 멍멍 짖는 개의 새끼인 ‘강아지’를 뜻하는 제주 지역 방언이에요.",
       "distractorRationales": {
-        "b": "소의 새끼는 어미 개가 낳거나 멍멍 짖지 않아요.",
-        "c": "말의 새끼라 개집에서 어미 개가 낳았다는 단서와 달라요.",
-        "d": "어미 개에게서 태어나 멍멍 짖는 동물이 아니에요."
+        "b": "‘송아지’는 소의 새끼이므로 멍멍 짖는다는 말과 맞지 않아요.",
+        "c": "‘망아지’는 말의 새끼이므로 멍멍 짖는다는 단서와 어울리지 않아요.",
+        "d": "‘고양이’는 멍멍 짖는 동물이 아니라서 문맥에 맞지 않아요."
       }
     },
     {
@@ -1452,7 +1773,7 @@
     },
     {
       "id": "g6-argon-0047",
-      "revision": 1,
+      "revision": 2,
       "status": "verified_candidate",
       "grade": 6,
       "type": "definition",
@@ -1468,15 +1789,15 @@
       "options": [
         {
           "id": "a",
-          "text": "국자"
+          "text": "뒤집개"
         },
         {
           "id": "b",
-          "text": "도마"
+          "text": "밥주걱"
         },
         {
           "id": "c",
-          "text": "냄비"
+          "text": "주전자"
         },
         {
           "id": "d",
@@ -1484,16 +1805,16 @@
         }
       ],
       "correctOptionId": "d",
-      "explanation": "‘저범’은 반찬이나 음식을 집어 먹을 때 쓰는 ‘젓가락’의 방언이에요.",
+      "explanation": "‘저범’은 반찬이나 음식을 집어 먹을 때 쓰는 ‘젓가락’을 뜻하는 충청 방언이에요.",
       "distractorRationales": {
-        "a": "‘국자’는 국물을 크게 퍼 담는 조리 도구예요.",
-        "b": "‘도마’는 식재료를 올려놓고 써는 받침대예요.",
-        "c": "‘냄비’는 음식을 끓이는 데 쓰는 그릇이에요."
+        "a": "‘뒤집개’는 부침개나 전을 뒤집을 때 쓰는 조리 도구예요.",
+        "b": "‘밥주걱’은 밥을 푸거나 섞을 때 쓰는 도구라 반찬을 집지 않아요.",
+        "c": "‘주전자’는 물이나 차를 끓여 따르는 그릇이에요."
       }
     },
     {
       "id": "g6-argon-0048",
-      "revision": 1,
+      "revision": 2,
       "status": "verified_candidate",
       "grade": 6,
       "type": "definition",
@@ -1505,7 +1826,7 @@
         "partOfSpeech": "명사",
         "senseKey": "꼬시래기/명사/od-661899-2"
       },
-      "stem": "가마솥에서 밥을 퍼낸 할머니께서 솥바닥에 노릇하게 눌어붙은 꼬시래기에 따뜻한 물을 부어 구수한 숭늉을 끓여 주셨습니다. ‘꼬시래기’의 표준어는 무엇일까요?",
+      "stem": "가마솥에서 밥을 퍼내신 할머니께서 \"솥바닥에 노릇하게 눌어붙은 꼬시래기에 따뜻한 물을 부어 구수한 숭늉을 끓여 주마.\"라고 말씀하셨습니다. ‘꼬시래기’의 표준어는 무엇일까요?",
       "options": [
         {
           "id": "a",
@@ -1575,7 +1896,7 @@
     },
     {
       "id": "g6-argon-0050",
-      "revision": 1,
+      "revision": 2,
       "status": "verified_candidate",
       "grade": 6,
       "type": "definition",
@@ -1587,7 +1908,7 @@
         "partOfSpeech": "명사",
         "senseKey": "모개/명사/od-149407-4"
       },
-      "stem": "이웃 아주머니께서 노랗고 울퉁불퉁하지만 향기가 진한 열매를 주시며 \"목감기에 좋으니 모개를 얇게 썰어 꿀에 재워 차로 마시렴.\"이라고 하셨습니다. ‘모개’의 표준어는 무엇일까요?",
+      "stem": "이웃 아주머니께서 노랗고 울퉁불퉁하지만 향기가 진한 열매를 주시며 \"목감기에 좋으니 모개를 얇게 썰어 꿀에 재워 차로 마시렴.\"라고 하셨습니다. ‘모개’의 표준어는 무엇일까요?",
       "options": [
         {
           "id": "a",
@@ -1660,7 +1981,7 @@
       "status": "verified_candidate",
       "grade": 6,
       "type": "antonym_context",
-      "difficultyTier": "basic",
+      "difficultyTier": "core",
       "variantTag": "standard",
       "target": {
         "lemma": "비평하다",
@@ -1695,12 +2016,52 @@
       }
     },
     {
+      "id": "g6-argon-0053",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 6,
+      "type": "synonym_context",
+      "difficultyTier": "basic",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "자주적",
+        "partOfSpeech": "관형사",
+        "senseKey": "자주적/관형사/277567-2"
+      },
+      "stem": "다음 문장의 ‘자주적’과 뜻이 가장 비슷한 말은 무엇일까요? \"민서는 자주적 태도로 방학 일과를 정했다.\"",
+      "options": [
+        {
+          "id": "a",
+          "text": "남의 간섭 없이 스스로 처리하는"
+        },
+        {
+          "id": "b",
+          "text": "남이 시키는 대로만 따라 하는"
+        },
+        {
+          "id": "c",
+          "text": "어려운 일을 친구에게 떠넘기는"
+        },
+        {
+          "id": "d",
+          "text": "정해진 약속을 자꾸 어기려 하는"
+        }
+      ],
+      "correctOptionId": "a",
+      "explanation": "‘자주적’은 남의 보호나 간섭 없이 자기 일을 스스로 처리하는 뜻이에요.",
+      "distractorRationales": {
+        "b": "시키는 대로만 따르는 것은 ‘수동적’인 태도예요.",
+        "c": "책임을 남에게 미루는 것은 스스로 처리하는 것과 반대예요.",
+        "d": "규칙이나 약속을 어기는 태도를 뜻하는 말이 아니에요."
+      }
+    },
+    {
       "id": "g6-argon-0054",
       "revision": 1,
       "status": "verified_candidate",
       "grade": 6,
       "type": "synonym_context",
-      "difficultyTier": "basic",
+      "difficultyTier": "core",
       "variantTag": "standard",
       "target": {
         "lemma": "논거",
@@ -1812,6 +2173,46 @@
         "a": "‘우연적인’은 뜻밖에 저절로 된 것을 뜻해요.",
         "c": "‘변덕스러운’은 이랬다저랬다 자주 바뀌는 태도예요.",
         "d": "‘즉흥적인’은 미리 계획하지 않고 그 자리에서 하는 거예요."
+      }
+    },
+    {
+      "id": "g6-argon-0057",
+      "revision": 3,
+      "status": "verified_candidate",
+      "grade": 6,
+      "type": "cloze",
+      "difficultyTier": "core",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "주체적",
+        "partOfSpeech": "관형사",
+        "senseKey": "주체적/관형사/479626-2"
+      },
+      "stem": "모둠 과제를 할 때 남이 시키기만 기다리지 않고 자유롭게 스스로 실천하는 (    ) 자세로 참여했다.",
+      "options": [
+        {
+          "id": "a",
+          "text": "주체적"
+        },
+        {
+          "id": "b",
+          "text": "수동적"
+        },
+        {
+          "id": "c",
+          "text": "소극적"
+        },
+        {
+          "id": "d",
+          "text": "의존적"
+        }
+      ],
+      "correctOptionId": "a",
+      "explanation": "어떤 일을 자유롭고 자주적으로 실천하는 성질을 뜻하므로 ‘주체적’이 알맞아요.",
+      "distractorRationales": {
+        "b": "남이 시켜야만 움직이는 성질이라 앞 내용과 정반대예요.",
+        "c": "나서지 않고 뒤로 물러나는 태도라 문맥에 어울리지 않아요.",
+        "d": "혼자 힘으로 하지 않고 남에게 기대는 자세라 맞지 않아요."
       }
     },
     {
@@ -1980,7 +2381,7 @@
       "status": "verified_candidate",
       "grade": 6,
       "type": "antonym_context",
-      "difficultyTier": "basic",
+      "difficultyTier": "advanced",
       "variantTag": "standard",
       "target": {
         "lemma": "혁신",
@@ -2060,7 +2461,7 @@
       "status": "verified_candidate",
       "grade": 6,
       "type": "usage",
-      "difficultyTier": "core",
+      "difficultyTier": "basic",
       "variantTag": "standard",
       "target": {
         "lemma": "해석하다",
@@ -2095,12 +2496,52 @@
       }
     },
     {
+      "id": "g6-argon-0065",
+      "revision": 3,
+      "status": "verified_candidate",
+      "grade": 6,
+      "type": "synonym_context",
+      "difficultyTier": "core",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "주체적",
+        "partOfSpeech": "관형사",
+        "senseKey": "주체적/관형사/479626-2"
+      },
+      "stem": "“학생들은 마을 환경 정화 활동에 주체적 태도로 참여해 큰 변화를 이끌었다.”에서 ‘주체적’과 뜻이 가장 가까운 말은 무엇일까요?",
+      "options": [
+        {
+          "id": "a",
+          "text": "억지로 끌려가 마지못해 하는"
+        },
+        {
+          "id": "b",
+          "text": "남의 눈치만 보며 망설이는"
+        },
+        {
+          "id": "c",
+          "text": "맡은 책임을 피하려고 하는"
+        },
+        {
+          "id": "d",
+          "text": "자유롭게 스스로 실천하는"
+        }
+      ],
+      "correctOptionId": "d",
+      "explanation": "‘주체적’은 일을 실천하는 데 자유롭고 자주적인 성질이 있다는 뜻이에요.",
+      "distractorRationales": {
+        "a": "마지못해 끌려가는 태도는 자유로운 실천과 정반대예요.",
+        "b": "눈치를 보며 주저하는 모습은 ‘주체적’과 어울리지 않아요.",
+        "c": "맡은 책임을 피하려는 태도와는 뜻이 전혀 달라요."
+      }
+    },
+    {
       "id": "g6-argon-0066",
       "revision": 1,
       "status": "verified_candidate",
       "grade": 6,
       "type": "antonym_context",
-      "difficultyTier": "core",
+      "difficultyTier": "basic",
       "variantTag": "standard",
       "target": {
         "lemma": "반론",
@@ -2140,7 +2581,7 @@
       "status": "verified_candidate",
       "grade": 6,
       "type": "definition",
-      "difficultyTier": "core",
+      "difficultyTier": "basic",
       "variantTag": "standard",
       "target": {
         "lemma": "면담",
@@ -2180,7 +2621,7 @@
       "status": "verified_candidate",
       "grade": 6,
       "type": "synonym_context",
-      "difficultyTier": "core",
+      "difficultyTier": "basic",
       "variantTag": "standard",
       "target": {
         "lemma": "맥락",
@@ -2260,7 +2701,7 @@
       "status": "verified_candidate",
       "grade": 6,
       "type": "cloze",
-      "difficultyTier": "core",
+      "difficultyTier": "basic",
       "variantTag": "standard",
       "target": {
         "lemma": "왜곡",
@@ -2300,7 +2741,7 @@
       "status": "verified_candidate",
       "grade": 6,
       "type": "antonym_context",
-      "difficultyTier": "core",
+      "difficultyTier": "advanced",
       "variantTag": "standard",
       "target": {
         "lemma": "신빙성",
@@ -2335,12 +2776,52 @@
       }
     },
     {
+      "id": "g6-argon-0072",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 6,
+      "type": "cloze",
+      "difficultyTier": "basic",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "민주적",
+        "partOfSpeech": "관형사",
+        "senseKey": "민주적/관형사/126100-2"
+      },
+      "stem": "우리나라는 주권을 가진 국민이 나라의 중요한 결정을 내리는 중심에 서도록 (    ) 제도를 운영하고 있다.",
+      "options": [
+        {
+          "id": "a",
+          "text": "독단적"
+        },
+        {
+          "id": "b",
+          "text": "민주적"
+        },
+        {
+          "id": "c",
+          "text": "강압적"
+        },
+        {
+          "id": "d",
+          "text": "일방적"
+        }
+      ],
+      "correctOptionId": "b",
+      "explanation": "국민이 모든 결정의 중심에 있는 성질을 뜻하는 관형사 ‘민주적’이 알맞아요.",
+      "distractorRationales": {
+        "a": "혼자만의 판단으로 처리하는 뜻이라 국민 중심과 반대예요.",
+        "c": "힘으로 억눌러 따르게 하는 방식이라 문맥에 어긋나요.",
+        "d": "한쪽의 의견만 밀어붙이는 뜻이라 국민 주권과 맞지 않아요."
+      }
+    },
+    {
       "id": "g6-argon-0073",
       "revision": 1,
       "status": "verified_candidate",
       "grade": 6,
       "type": "synonym_context",
-      "difficultyTier": "core",
+      "difficultyTier": "basic",
       "variantTag": "standard",
       "target": {
         "lemma": "전환하다",
@@ -2420,7 +2901,7 @@
       "status": "verified_candidate",
       "grade": 6,
       "type": "cloze",
-      "difficultyTier": "core",
+      "difficultyTier": "basic",
       "variantTag": "standard",
       "target": {
         "lemma": "성원",
@@ -2460,7 +2941,7 @@
       "status": "verified_candidate",
       "grade": 6,
       "type": "antonym_context",
-      "difficultyTier": "core",
+      "difficultyTier": "basic",
       "variantTag": "standard",
       "target": {
         "lemma": "거듭하다",
@@ -2500,7 +2981,7 @@
       "status": "verified_candidate",
       "grade": 6,
       "type": "definition",
-      "difficultyTier": "core",
+      "difficultyTier": "basic",
       "variantTag": "standard",
       "target": {
         "lemma": "겨냥하다",
@@ -2572,6 +3053,446 @@
         "a": "처지가 비슷한 사람끼리 편든다는 뜻이에요.",
         "b": "성급하게 결과만 바란다는 뜻의 속담이에요.",
         "c": "작아야 할 것이 오히려 더 크다는 뜻이에요."
+      }
+    },
+    {
+      "id": "g6-argon-0079",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 6,
+      "type": "synonym_context",
+      "difficultyTier": "basic",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "민주적",
+        "partOfSpeech": "관형사",
+        "senseKey": "민주적/관형사/126100-2"
+      },
+      "stem": "문장의 ‘민주적’과 바꾸어 쓸 수 있는 말은 무엇일까요? \"선거는 시민이 주인이 되는 민주적 정치의 핵심이다.\"",
+      "options": [
+        {
+          "id": "a",
+          "text": "국민이 모든 결정의 중심에 있는"
+        },
+        {
+          "id": "b",
+          "text": "소수의 권력자가 독단으로 결정하는"
+        },
+        {
+          "id": "c",
+          "text": "복잡한 절차를 줄여 속도만 높이는"
+        },
+        {
+          "id": "d",
+          "text": "옛날의 관습을 바꾸지 않고 따르는"
+        }
+      ],
+      "correctOptionId": "a",
+      "explanation": "‘민주적’은 국민이 모든 결정의 중심에 있는 것을 나타내는 말이에요.",
+      "distractorRationales": {
+        "b": "소수가 마음대로 결정하는 것은 ‘독재적’ 방식에 가까워요.",
+        "c": "빠른 처리 속도만을 뜻하는 말은 ‘민주적’이 아니에요.",
+        "d": "옛 관습을 그대로 지키는 ‘전통적·보수적’ 태도와는 달라요."
+      }
+    },
+    {
+      "id": "g6-argon-0080",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 6,
+      "type": "definition",
+      "difficultyTier": "basic",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "자주적",
+        "partOfSpeech": "관형사",
+        "senseKey": "자주적/관형사/277567-2"
+      },
+      "stem": "\"자주적 태도로 과제를 해결했습니다.\" 여기서 관형사 ‘자주적’의 뜻은 무엇일까요?",
+      "options": [
+        {
+          "id": "a",
+          "text": "간섭받지 않고 자기 일을 스스로 처리하는"
+        },
+        {
+          "id": "b",
+          "text": "지시만 기다리며 시키는 대로만 따라가는"
+        },
+        {
+          "id": "c",
+          "text": "모임에서 자기 자랑만 크게 늘어놓는"
+        },
+        {
+          "id": "d",
+          "text": "작은 일에도 쉽게 화내며 다투려고 하는"
+        }
+      ],
+      "correctOptionId": "a",
+      "explanation": "관형사 ‘자주적’은 남의 보호나 간섭 없이 자기 일을 스스로 처리하는 성질을 꾸며 줘요.",
+      "distractorRationales": {
+        "b": "시키는 대로만 따르는 것은 수동적 태도예요.",
+        "c": "자기 자랑만 늘어놓는 태도와는 뜻이 달라요.",
+        "d": "쉽게 화내고 다투는 성질을 뜻하지 않아요."
+      }
+    },
+    {
+      "id": "g6-argon-0081",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 6,
+      "type": "definition",
+      "difficultyTier": "core",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "주체적",
+        "partOfSpeech": "관형사",
+        "senseKey": "주체적/관형사/479626-2"
+      },
+      "stem": "\"주체적 참여가 학교를 바꿉니다.\" 여기서 관형사 ‘주체적’의 뜻은 무엇일까요?",
+      "options": [
+        {
+          "id": "a",
+          "text": "눈치만 보며 억지로 끌려가는 성질이 있는"
+        },
+        {
+          "id": "b",
+          "text": "실천하는 데 자유롭고 자주적인 성질이 있는"
+        },
+        {
+          "id": "c",
+          "text": "규칙을 어기고 혼자 이익을 챙기는 성질이 있는"
+        },
+        {
+          "id": "d",
+          "text": "힘든 일을 만나면 곧바로 포기하는 성질이 있는"
+        }
+      ],
+      "correctOptionId": "b",
+      "explanation": "관형사 ‘주체적’은 어떤 일을 실천할 때 자유롭고 자주적인 성질이 있는 모양을 뜻해요.",
+      "distractorRationales": {
+        "a": "억지로 끌려가는 태도는 반대되는 뜻이에요.",
+        "c": "이기적으로 이익만 챙기는 뜻이 아니에요.",
+        "d": "쉽게 포기하는 나약한 태도와는 관련 없어요."
+      }
+    },
+    {
+      "id": "g6-argon-0082",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 6,
+      "type": "definition",
+      "difficultyTier": "basic",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "민주적",
+        "partOfSpeech": "관형사",
+        "senseKey": "민주적/관형사/126100-2"
+      },
+      "stem": "\"민주적 토론 문화를 가꾸어야 합니다.\" 여기서 관형사 ‘민주적’의 뜻은 무엇일까요?",
+      "options": [
+        {
+          "id": "a",
+          "text": "한 사람이 독단으로 일을 정하는"
+        },
+        {
+          "id": "b",
+          "text": "기준 없이 제비뽑기로만 정하는"
+        },
+        {
+          "id": "c",
+          "text": "국민이 모든 결정의 중심에 있는"
+        },
+        {
+          "id": "d",
+          "text": "반대 의견을 강제로 가로막는"
+        }
+      ],
+      "correctOptionId": "c",
+      "explanation": "관형사 ‘민주적’은 국민이 모든 결정의 중심에 있는 성질을 나타내요.",
+      "distractorRationales": {
+        "a": "한 사람이 독단으로 정하는 것은 비민주적이에요.",
+        "b": "제비뽑기로만 정하는 방식과는 뜻이 달라요.",
+        "d": "반대 의견을 막는 것은 민주적 태도와 반대돼요."
+      }
+    },
+    {
+      "id": "g6-argon-0083",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 6,
+      "type": "usage",
+      "difficultyTier": "basic",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "민주적",
+        "partOfSpeech": "관형사",
+        "senseKey": "민주적/관형사/126100-2"
+      },
+      "stem": "‘민주적’을 바르게 쓴 문장은 무엇일까요?",
+      "options": [
+        {
+          "id": "a",
+          "text": "대표 혼자 남의 말을 무시해 민주적 결정을 내렸다."
+        },
+        {
+          "id": "b",
+          "text": "시민이 투표에 참여해 민주적 절차를 실천했다."
+        },
+        {
+          "id": "c",
+          "text": "참여를 막고 힘으로 누르는 민주적 통치를 폈다."
+        },
+        {
+          "id": "d",
+          "text": "발언권을 빼앗고 억지로 민주적 합의를 강요했다."
+        }
+      ],
+      "correctOptionId": "b",
+      "explanation": "‘민주적’은 구성원이 결정의 중심에 서서 뜻을 모으는 상황에 어울려요.",
+      "distractorRationales": {
+        "a": "남의 말을 무시하고 혼자 정하는 것은 ‘독단적’ 결정이에요.",
+        "c": "참여를 막고 힘으로 누르는 통치는 ‘민주적’과 정반대예요.",
+        "d": "발언권을 빼앗고 억지로 강요하는 것은 합의가 아니에요."
+      }
+    },
+    {
+      "id": "g6-argon-0084",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 6,
+      "type": "definition",
+      "difficultyTier": "core",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "형평성",
+        "partOfSpeech": "명사",
+        "senseKey": "형평성/명사/372219-1"
+      },
+      "stem": "다음에서 ‘형평성’의 뜻으로 알맞은 것은 무엇일까요? 「역할을 나눌 때는 억울한 사람이 없도록 형평성을 고려했다.」",
+      "options": [
+        {
+          "id": "a",
+          "text": "한쪽 편만 유리하도록 특별히 봐주는 성질"
+        },
+        {
+          "id": "b",
+          "text": "일을 누구보다 빠르고 날쌔게 끝내는 성질"
+        },
+        {
+          "id": "c",
+          "text": "오래된 물건을 버리지 않고 모아 두는 성질"
+        },
+        {
+          "id": "d",
+          "text": "치우침 없이 고르고 균형을 이루는 성질"
+        }
+      ],
+      "correctOptionId": "d",
+      "explanation": "‘형평성’은 어느 쪽으로도 치우치지 않고 고른 균형을 이루는 성질이에요.",
+      "distractorRationales": {
+        "a": "한쪽만 봐주는 편파적인 태도와 반대돼요.",
+        "b": "일을 빠르게 처리하는 신속성과는 달라요.",
+        "c": "물건을 모아 두는 습관을 뜻하지 않아요."
+      }
+    },
+    {
+      "id": "g6-argon-0085",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 6,
+      "type": "definition",
+      "difficultyTier": "basic",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "성숙하다",
+        "partOfSpeech": "동사",
+        "senseKey": "성숙하다/동사/187493-1"
+      },
+      "stem": "\"어린 연어는 바다에서 몇 년 동안 자라 몸이 충분히 성숙하면 강으로 돌아온다.\" 여기서 ‘성숙하다’의 뜻은 무엇일까요?",
+      "options": [
+        {
+          "id": "a",
+          "text": "생물이 겨울 동안 깊은 잠에 들다"
+        },
+        {
+          "id": "b",
+          "text": "생물의 발육이 완전히 이루어지다"
+        },
+        {
+          "id": "c",
+          "text": "주변 환경에 맞추어 몸빛을 바꾸다"
+        },
+        {
+          "id": "d",
+          "text": "먹이를 찾아 무리 지어 이동하다"
+        }
+      ],
+      "correctOptionId": "b",
+      "explanation": "동사로 쓰인 ‘성숙하다’는 생물의 발육이 완전히 이루어진다는 뜻이에요.",
+      "distractorRationales": {
+        "a": "추운 계절에 잠을 자는 ‘겨울잠’과는 뜻이 달라요.",
+        "c": "천적을 피하려고 몸 색깔을 바꾸는 현상을 뜻하지 않아요.",
+        "d": "자리를 옮겨 가는 이동 자체가 아니라 몸이 다 자람을 뜻해요."
+      }
+    },
+    {
+      "id": "g6-argon-0086",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 6,
+      "type": "cloze",
+      "difficultyTier": "basic",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "다각적",
+        "partOfSpeech": "관형사",
+        "senseKey": "다각적/관형사/73658-2"
+      },
+      "stem": "교통안전 문제를 해결하려면 도로 구조와 신호 체계, 보행 환경 등 다양한 측면을 두루 살피는 (    ) 분석이 필요하다.",
+      "options": [
+        {
+          "id": "a",
+          "text": "단편적"
+        },
+        {
+          "id": "b",
+          "text": "일시적"
+        },
+        {
+          "id": "c",
+          "text": "다각적"
+        },
+        {
+          "id": "d",
+          "text": "감정적"
+        }
+      ],
+      "correctOptionId": "c",
+      "explanation": "여러 방면이나 부문에 걸쳐 두루 살피는 것을 뜻하므로 ‘다각적’이 알맞아요.",
+      "distractorRationales": {
+        "a": "한 부분에만 국한된 뜻이라 다양한 측면을 살피는 것과 반대예요.",
+        "b": "잠깐 동안에 그치는 성질이라 분석 범위의 넓이와 무관해요.",
+        "d": "기분에 치우치는 태도라 체계적인 원인 분석과 맞지 않아요."
+      }
+    },
+    {
+      "id": "g6-argon-0087",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 6,
+      "type": "definition",
+      "difficultyTier": "core",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "분별력",
+        "partOfSpeech": "명사",
+        "senseKey": "분별력/명사/436141-1"
+      },
+      "stem": "다음에서 ‘분별력’의 뜻으로 알맞은 것은 무엇일까요? 「거짓 정보에 속지 않으려면 참과 거짓을 가리는 분별력이 필요하다.」",
+      "options": [
+        {
+          "id": "a",
+          "text": "무거운 물건을 지치지 않고 멀리 옮기는 능력"
+        },
+        {
+          "id": "b",
+          "text": "서로 다른 일이나 대상을 구별해 가르는 능력"
+        },
+        {
+          "id": "c",
+          "text": "처음 만난 사람과 금세 친하게 어울리는 능력"
+        },
+        {
+          "id": "d",
+          "text": "긴 노래 가사를 틀리지 않고 그대로 외우는 능력"
+        }
+      ],
+      "correctOptionId": "b",
+      "explanation": "‘분별력’은 서로 다른 일이나 사물을 구별하여 가르는 능력을 뜻해요.",
+      "distractorRationales": {
+        "a": "무거운 짐을 옮기는 힘은 체력이나 근력이에요.",
+        "c": "사람과 쉽게 어울리는 능력과는 뜻이 달라요.",
+        "d": "가사를 그대로 외우는 힘은 기억력이에요."
+      }
+    },
+    {
+      "id": "g6-argon-0088",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 6,
+      "type": "definition",
+      "difficultyTier": "core",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "판단력",
+        "partOfSpeech": "명사",
+        "senseKey": "판단력/명사/499116-1"
+      },
+      "stem": "다음에서 ‘판단력’의 뜻으로 알맞은 것은 무엇일까요? 「위급한 순간일수록 침착하게 상황을 살피는 판단력이 중요하다.」",
+      "options": [
+        {
+          "id": "a",
+          "text": "사물을 인식해 기준에 따라 판정하는 능력"
+        },
+        {
+          "id": "b",
+          "text": "빠른 속도로 운동장을 여러 바퀴 도는 능력"
+        },
+        {
+          "id": "c",
+          "text": "작은 글씨를 멀리서도 또렷하게 읽는 능력"
+        },
+        {
+          "id": "d",
+          "text": "여러 가지 악기를 동시에 다루어 연주하는 능력"
+        }
+      ],
+      "correctOptionId": "a",
+      "explanation": "‘판단력’은 사물을 인식하여 논리나 기준에 따라 판정할 수 있는 능력이에요.",
+      "distractorRationales": {
+        "b": "운동장을 빨리 달리는 능력은 주력이에요.",
+        "c": "멀리 있는 글씨를 읽는 힘은 시력이에요.",
+        "d": "악기를 다루는 연주 실력과는 관련이 없어요."
+      }
+    },
+    {
+      "id": "g6-argon-0089",
+      "revision": 3,
+      "status": "verified_candidate",
+      "grade": 6,
+      "type": "synonym_context",
+      "difficultyTier": "core",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "다각적",
+        "partOfSpeech": "관형사",
+        "senseKey": "다각적/관형사/73658-2"
+      },
+      "stem": "문장의 ‘다각적’과 바꾸어 쓸 수 있는 말은 무엇일까요? \"쓰레기를 줄이려고 학교와 가정, 마을이 다각적 노력을 기울였다.\"",
+      "options": [
+        {
+          "id": "a",
+          "text": "오직 한 가지 방법에만 매달린"
+        },
+        {
+          "id": "b",
+          "text": "여러 방면이나 부문에 걸친"
+        },
+        {
+          "id": "c",
+          "text": "겉으로 보이는 형식만 갖춘"
+        },
+        {
+          "id": "d",
+          "text": "잠깐 시도하다가 금세 멈춘"
+        }
+      ],
+      "correctOptionId": "b",
+      "explanation": "‘다각적’은 ‘여러 방면이나 부문에 걸친’이라는 뜻으로 바꾸어 쓸 수 있어요.",
+      "distractorRationales": {
+        "a": "한 가지 방법에만 머무르는 것은 여러 방면에 걸쳐 노력한다는 뜻과 달라요.",
+        "c": "실속 없이 겉모양만 차리는 ‘형식적’ 태도와는 뜻이 달라요.",
+        "d": "오래가지 못하고 곧 그치는 ‘일시적’ 시도와는 의미가 달라요."
       }
     },
     {
@@ -2695,47 +3616,6 @@
         "a": "‘팥’은 알갱이가 굵고 붉은빛을 띠는 곡식이에요.",
         "b": "‘밀’은 빻아서 하얀 밀가루를 만드는 곡식이에요.",
         "c": "‘밤’은 가시 송이 속에 들어 있는 나무 열매예요."
-      }
-    },
-    {
-      "id": "g6-argon-0093",
-      "revision": 1,
-      "status": "verified_candidate",
-      "grade": 6,
-      "type": "definition",
-      "difficultyTier": "challenge",
-      "variantTag": "dialect",
-      "dialectRegion": "전라",
-      "target": {
-        "lemma": "간재미",
-        "partOfSpeech": "명사",
-        "senseKey": "간재미/명사/od-639955-1"
-      },
-      "stem": "어시장에서 이모가 몸이 납작하고 두 눈이 한쪽으로 몰린 흰살생선을 고르며 \"간재미를 굽자.\"라고 하셨습니다. ‘간재미’의 표준어는 무엇일까요?",
-      "options": [
-        {
-          "id": "a",
-          "text": "고등어"
-        },
-        {
-          "id": "b",
-          "text": "오징어"
-        },
-        {
-          "id": "c",
-          "text": "해파리"
-        },
-        {
-          "id": "d",
-          "text": "가자미"
-        }
-      ],
-      "correctOptionId": "d",
-      "explanation": "‘간재미’는 몸이 납작하고 눈이 한쪽으로 몰린 바닷물고기 ‘가자미’의 전남 방언이에요.",
-      "distractorRationales": {
-        "a": "‘고등어’는 몸이 통통하고 등이 푸른 생선이에요.",
-        "b": "‘오징어’는 지느러미와 긴 다리가 있는 연체동물이에요.",
-        "c": "‘해파리’는 몸이 투명하고 우산 모양인 바다 생물이에요."
       }
     },
     {
@@ -3146,6 +4026,86 @@
       }
     },
     {
+      "id": "g6-argon-0104",
+      "revision": 4,
+      "status": "verified_candidate",
+      "grade": 6,
+      "type": "cloze",
+      "difficultyTier": "basic",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "단편적",
+        "partOfSpeech": "관형사",
+        "senseKey": "단편적/관형사/413331-2"
+      },
+      "stem": "사건의 전체 흐름을 보지 않고 겉으로 드러난 한 부분만 떼어 놓은 (    ) 정보만 믿으면 오해하기 쉽다.",
+      "options": [
+        {
+          "id": "a",
+          "text": "종합적"
+        },
+        {
+          "id": "b",
+          "text": "다각적"
+        },
+        {
+          "id": "c",
+          "text": "단편적"
+        },
+        {
+          "id": "d",
+          "text": "체계적"
+        }
+      ],
+      "correctOptionId": "c",
+      "explanation": "전반에 걸치지 않고 한 부분에 국한된 것을 뜻하므로 ‘단편적’이 알맞아요.",
+      "distractorRationales": {
+        "a": "전체를 한데 모아 아우르는 뜻이라 한 부분만 본 상황과 반대예요.",
+        "b": "여러 방면에 걸친다는 뜻이므로 한 부분만 떼어 놓았다는 문맥과 맞지 않아요.",
+        "d": "‘체계적’은 짜임새 있게 정돈되었다는 뜻으로, 한 부분에 국한되었다는 뜻을 나타내지 않아요."
+      }
+    },
+    {
+      "id": "g6-argon-0105",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 6,
+      "type": "definition",
+      "difficultyTier": "basic",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "극대화하다",
+        "partOfSpeech": "동사",
+        "senseKey": "극대화하다/동사/44281-1"
+      },
+      "stem": "\"창문을 넓게 내어 자연 채광을 극대화했더니 교실이 환해졌다.\" 여기서 ‘극대화하다’의 뜻은 무엇일까요?",
+      "options": [
+        {
+          "id": "a",
+          "text": "정도나 효과를 아주 크게 하다"
+        },
+        {
+          "id": "b",
+          "text": "남아 있는 흔적을 모두 없애다"
+        },
+        {
+          "id": "c",
+          "text": "크기를 눈에 안 띄게 줄이다"
+        },
+        {
+          "id": "d",
+          "text": "정해진 순서를 거꾸로 뒤집다"
+        }
+      ],
+      "correctOptionId": "a",
+      "explanation": "‘극대화하다’는 어떤 정도나 효과를 아주 커지게 하거나 크게 한다는 뜻이에요.",
+      "distractorRationales": {
+        "b": "흔적을 지워 없애는 행동과는 뜻이 전혀 달라요.",
+        "c": "크기를 가장 작게 줄이는 것은 ‘극소화하다’예요.",
+        "d": "차례를 반대로 뒤집어 놓는 뜻을 나타내지 않아요."
+      }
+    },
+    {
       "id": "g6-argon-0106",
       "revision": 1,
       "status": "verified_candidate",
@@ -3266,8 +4226,48 @@
       }
     },
     {
+      "id": "g6-argon-0109",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 6,
+      "type": "synonym_context",
+      "difficultyTier": "advanced",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "단편적",
+        "partOfSpeech": "관형사",
+        "senseKey": "단편적/관형사/413331-2"
+      },
+      "stem": "다음 문장의 ‘단편적’과 바꾸어 쓸 수 있는 말은 무엇일까요? \"단편적 사실만 보고 친구의 마음을 섣불리 단정 짓지 말자.\"",
+      "options": [
+        {
+          "id": "a",
+          "text": "처음부터 끝까지 빠짐없이 모은"
+        },
+        {
+          "id": "b",
+          "text": "여러 사람의 의견을 골고루 합친"
+        },
+        {
+          "id": "c",
+          "text": "전체가 아닌 한 부분에 한정된"
+        },
+        {
+          "id": "d",
+          "text": "누구나 인정할 만큼 널리 알려진"
+        }
+      ],
+      "correctOptionId": "c",
+      "explanation": "‘단편적’은 전반에 걸치지 않고 한 부분에 국한된 것을 가리키는 말이에요.",
+      "distractorRationales": {
+        "a": "모든 내용을 빠짐없이 모은 것은 ‘단편적’과 정반대예요.",
+        "b": "여럿의 의견을 고루 합친 것은 ‘종합적’인 성격에 가까워요.",
+        "d": "널리 알려졌다는 뜻은 부분에 한정되었다는 의미와 달라요."
+      }
+    },
+    {
       "id": "g6-argon-0110",
-      "revision": 1,
+      "revision": 2,
       "status": "verified_candidate",
       "grade": 6,
       "type": "definition",
@@ -3301,7 +4301,7 @@
       "explanation": "부사 ‘두루’는 빠짐없이 골고루 미치게 한다는 뜻이에요.",
       "distractorRationales": {
         "b": "한 사람만 몰래 살피는 것은 골고루와 반대돼요.",
-        "c": "시간을 멈추었다가 한다는 뜻은 없어요.",
+        "c": "행동을 잠시 멈추었다가 다시 한다는 뜻은 아니에요.",
         "d": "생각 없이 대충 한다는 뜻이 아니에요."
       }
     },
@@ -3351,7 +4351,7 @@
       "status": "verified_candidate",
       "grade": 6,
       "type": "usage",
-      "difficultyTier": "basic",
+      "difficultyTier": "core",
       "variantTag": "standard",
       "target": {
         "lemma": "모색하다",
@@ -3431,7 +4431,7 @@
       "status": "verified_candidate",
       "grade": 6,
       "type": "synonym_context",
-      "difficultyTier": "core",
+      "difficultyTier": "basic",
       "variantTag": "standard",
       "target": {
         "lemma": "고려하다",
@@ -3511,7 +4511,7 @@
       "status": "verified_candidate",
       "grade": 6,
       "type": "cloze",
-      "difficultyTier": "core",
+      "difficultyTier": "basic",
       "variantTag": "standard",
       "target": {
         "lemma": "너머",
@@ -3587,7 +4587,7 @@
     },
     {
       "id": "g6-argon-0118",
-      "revision": 1,
+      "revision": 2,
       "status": "verified_candidate",
       "grade": 6,
       "type": "definition",
@@ -3620,7 +4620,7 @@
       "correctOptionId": "d",
       "explanation": "‘단편적’은 전반에 걸치지 않고 한 조각이나 한 부분에만 국한된 것을 뜻해요.",
       "distractorRationales": {
-        "a": "빠짐없이 다 갖춘 것은 ‘온전한’이나 ‘전반적’이에요.",
+        "a": "빠짐없이 다 갖춘 것은 온전한 상태를 뜻하므로 ‘단편적’과 반대예요.",
         "b": "폭넓게 아우르는 것은 ‘다각적’이나 ‘포괄적’이에요.",
         "c": "기회를 공평하게 나누는 성질과는 뜻이 달라요."
       }
@@ -3671,7 +4671,7 @@
       "status": "verified_candidate",
       "grade": 6,
       "type": "usage",
-      "difficultyTier": "core",
+      "difficultyTier": "basic",
       "variantTag": "standard",
       "target": {
         "lemma": "동반하다",
@@ -3711,7 +4711,7 @@
       "status": "verified_candidate",
       "grade": 6,
       "type": "cloze",
-      "difficultyTier": "core",
+      "difficultyTier": "basic",
       "variantTag": "standard",
       "target": {
         "lemma": "뒷전",
@@ -3751,7 +4751,7 @@
       "status": "verified_candidate",
       "grade": 6,
       "type": "antonym_context",
-      "difficultyTier": "core",
+      "difficultyTier": "basic",
       "variantTag": "standard",
       "target": {
         "lemma": "매듭짓다",
@@ -3786,12 +4786,52 @@
       }
     },
     {
+      "id": "g6-argon-0123",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 6,
+      "type": "definition",
+      "difficultyTier": "basic",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "반영하다",
+        "partOfSpeech": "동사",
+        "senseKey": "반영하다/동사/426495-2"
+      },
+      "stem": "\"옛 풍속화는 그 시대 사람들의 생활 모습을 생생하게 반영하고 있다.\" 여기서 ‘반영하다’의 뜻은 무엇일까요?",
+      "options": [
+        {
+          "id": "a",
+          "text": "영향을 받아 어떤 현상을 드러내다"
+        },
+        {
+          "id": "b",
+          "text": "물이나 거울에 빛이 반사되어 비치다"
+        },
+        {
+          "id": "c",
+          "text": "실제로 있었던 기록을 모두 지우다"
+        },
+        {
+          "id": "d",
+          "text": "앞날의 일을 마음대로 지어내다"
+        }
+      ],
+      "correctOptionId": "a",
+      "explanation": "여기서 ‘반영하다’는 시대 모습의 영향을 받아 작품에 현상을 나타낸다는 뜻이에요.",
+      "distractorRationales": {
+        "b": "빛이 반사되어 비치는 물리적 현상이 아니라 시대상을 담았다는 뜻이에요.",
+        "c": "있었던 기록을 없애는 것은 모습을 생생히 보여 주는 것과 반대예요.",
+        "d": "미래의 일을 상상으로 꾸며 내는 것과는 의미가 달라요."
+      }
+    },
+    {
       "id": "g6-argon-0124",
       "revision": 1,
       "status": "verified_candidate",
       "grade": 6,
       "type": "synonym_context",
-      "difficultyTier": "core",
+      "difficultyTier": "basic",
       "variantTag": "standard",
       "target": {
         "lemma": "방관하다",
@@ -3866,12 +4906,52 @@
       }
     },
     {
+      "id": "g6-argon-0126",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 6,
+      "type": "usage",
+      "difficultyTier": "advanced",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "단편적",
+        "partOfSpeech": "관형사",
+        "senseKey": "단편적/관형사/413331-2"
+      },
+      "stem": "‘단편적’을 바르게 쓴 문장은 무엇일까요?",
+      "options": [
+        {
+          "id": "a",
+          "text": "처음부터 끝까지 모두 담은 단편적 기록을 남겼다."
+        },
+        {
+          "id": "b",
+          "text": "여러 분야를 폭넓게 통합한 단편적 대책을 세웠다."
+        },
+        {
+          "id": "c",
+          "text": "전반에 걸쳐 빠짐없이 조사한 단편적 결과를 얻었다."
+        },
+        {
+          "id": "d",
+          "text": "전체를 못 보고 단편적 정보만 믿으면 오해하기 쉽다."
+        }
+      ],
+      "correctOptionId": "d",
+      "explanation": "‘단편적’은 전반에 걸치지 않고 한 부분에 국한된 대상을 꾸밀 때 써요.",
+      "distractorRationales": {
+        "a": "처음부터 끝까지 모두 담은 기록은 한 부분에 국한된 게 아니에요.",
+        "b": "여러 분야를 폭넓게 통합한 대책에는 ‘종합적’이 어울려요.",
+        "c": "전반에 걸쳐 빠짐없이 조사한 결과는 ‘단편적’과 정반대예요."
+      }
+    },
+    {
       "id": "g6-argon-0127",
       "revision": 1,
       "status": "verified_candidate",
       "grade": 6,
       "type": "antonym_context",
-      "difficultyTier": "core",
+      "difficultyTier": "basic",
       "variantTag": "standard",
       "target": {
         "lemma": "심화하다",
@@ -3906,12 +4986,52 @@
       }
     },
     {
+      "id": "g6-argon-0128",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 6,
+      "type": "definition",
+      "difficultyTier": "core",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "집중력",
+        "partOfSpeech": "명사",
+        "senseKey": "집중력/명사/319752-1"
+      },
+      "stem": "다음에서 ‘집중력’의 뜻으로 알맞은 것은 무엇일까요? 「주변이 소란스러웠지만 지수는 높은 집중력으로 책을 끝까지 읽었다.」",
+      "options": [
+        {
+          "id": "a",
+          "text": "무거운 역기를 두 팔로 번쩍 들어 올리는 힘"
+        },
+        {
+          "id": "b",
+          "text": "낯선 길에서도 방향을 잃지 않고 찾는 힘"
+        },
+        {
+          "id": "c",
+          "text": "마음이나 주의를 한곳에 모을 수 있는 힘"
+        },
+        {
+          "id": "d",
+          "text": "여러 사람 앞에서 재미있게 말하여 웃기는 힘"
+        }
+      ],
+      "correctOptionId": "c",
+      "explanation": "‘집중력’은 마음이나 주의를 한곳에 집중할 수 있는 힘을 뜻해요.",
+      "distractorRationales": {
+        "a": "무거운 물체를 드는 힘은 근력을 가리켜요.",
+        "b": "방향을 잘 찾는 길눈과는 뜻이 달라요.",
+        "d": "남을 웃기는 재치나 유머 감각이 아니에요."
+      }
+    },
+    {
       "id": "g6-argon-0129",
       "revision": 1,
       "status": "verified_candidate",
       "grade": 6,
       "type": "definition",
-      "difficultyTier": "advanced",
+      "difficultyTier": "core",
       "variantTag": "polysemy",
       "target": {
         "lemma": "분별력",
@@ -3947,18 +5067,18 @@
     },
     {
       "id": "g6-argon-0130",
-      "revision": 1,
+      "revision": 2,
       "status": "verified_candidate",
       "grade": 6,
       "type": "definition",
-      "difficultyTier": "advanced",
+      "difficultyTier": "core",
       "variantTag": "polysemy",
       "target": {
         "lemma": "추진력",
         "partOfSpeech": "명사",
         "senseKey": "추진력/명사/334636-1"
       },
-      "stem": "다음에서 ‘추진력’의 뜻으로 알맞은 것은 무엇일까요? 「우주선은 연료를 내뿜을 때 생기는 강한 추진력으로 솟구친다.」",
+      "stem": "다음에서 ‘추진력’의 뜻으로 알맞은 것은 무엇일까요? 「우주선은 연료가 타면서 생긴 기체를 내뿜을 때 얻는 강한 추진력으로 솟구친다.」",
       "options": [
         {
           "id": "a",
@@ -3991,7 +5111,7 @@
       "status": "verified_candidate",
       "grade": 6,
       "type": "definition",
-      "difficultyTier": "advanced",
+      "difficultyTier": "core",
       "variantTag": "polysemy",
       "target": {
         "lemma": "추진력",
@@ -4026,12 +5146,92 @@
       }
     },
     {
+      "id": "g6-argon-0132",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 6,
+      "type": "cloze",
+      "difficultyTier": "basic",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "창작하다",
+        "partOfSpeech": "동사",
+        "senseKey": "창작하다/동사/322939-2"
+      },
+      "stem": "연극반 학생들은 기존 동화를 그대로 따라 하지 않고 인물과 줄거리를 새롭게 꾸며 독창적인 연극 대본을 직접 (    ).",
+      "options": [
+        {
+          "id": "a",
+          "text": "모방했다"
+        },
+        {
+          "id": "b",
+          "text": "창작했다"
+        },
+        {
+          "id": "c",
+          "text": "필사했다"
+        },
+        {
+          "id": "d",
+          "text": "감상했다"
+        }
+      ],
+      "correctOptionId": "b",
+      "explanation": "예술 작품을 독창적으로 새로 지어냈으므로 ‘창작했다’가 문맥에 알맞아요.",
+      "distractorRationales": {
+        "a": "남의 작품을 본떠 따라 했다는 뜻이라 앞 내용과 정반대예요.",
+        "c": "기존의 글을 그대로 베껴 썼다는 뜻이라 독창적인 대본과 맞지 않아요.",
+        "d": "이미 만들어진 작품을 보고 즐겼다는 뜻이라 직접 지어낸 일과 달라요."
+      }
+    },
+    {
+      "id": "g6-argon-0133",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 6,
+      "type": "definition",
+      "difficultyTier": "basic",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "창작하다",
+        "partOfSpeech": "동사",
+        "senseKey": "창작하다/동사/322939-2"
+      },
+      "stem": "\"시인은 자연을 소재로 동시를 꾸준히 창작하여 첫 시집을 펴냈다.\" 여기서 ‘창작하다’의 뜻은 무엇일까요?",
+      "options": [
+        {
+          "id": "a",
+          "text": "남이 지은 글을 그대로 베껴 쓰다"
+        },
+        {
+          "id": "b",
+          "text": "여러 사람의 글을 모아 책으로 엮다"
+        },
+        {
+          "id": "c",
+          "text": "완성된 작품을 소리 내어 낭송하다"
+        },
+        {
+          "id": "d",
+          "text": "예술 작품을 독창적으로 지어내다"
+        }
+      ],
+      "correctOptionId": "d",
+      "explanation": "여기서 ‘창작하다’는 문학이나 예술 작품을 독창적으로 지어낸다는 뜻이에요.",
+      "distractorRationales": {
+        "a": "남의 글을 그대로 옮겨 적는 것은 ‘필사’에 해당해요.",
+        "b": "여러 글을 모아서 책을 꾸미는 ‘편찬·편집’과는 달라요.",
+        "c": "지어 놓은 시를 읊는 활동이지 새로 짓는 일이 아니에요."
+      }
+    },
+    {
       "id": "g6-argon-0134",
       "revision": 1,
       "status": "verified_candidate",
       "grade": 6,
       "type": "definition",
-      "difficultyTier": "advanced",
+      "difficultyTier": "core",
       "variantTag": "polysemy",
       "target": {
         "lemma": "각색하다",
@@ -4071,7 +5271,7 @@
       "status": "verified_candidate",
       "grade": 6,
       "type": "definition",
-      "difficultyTier": "advanced",
+      "difficultyTier": "core",
       "variantTag": "polysemy",
       "target": {
         "lemma": "비평하다",
@@ -4106,12 +5306,52 @@
       }
     },
     {
+      "id": "g6-argon-0136",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 6,
+      "type": "cloze",
+      "difficultyTier": "basic",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "비판적",
+        "partOfSpeech": "관형사",
+        "senseKey": "비판적/관형사/168209-2"
+      },
+      "stem": "인터넷 기사를 읽을 때는 글쓴이의 주장이 타당한지 옳고 그름을 따져 보며 잘못된 점은 없는지 살피는 (    ) 태도가 필요하다.",
+      "options": [
+        {
+          "id": "a",
+          "text": "맹목적"
+        },
+        {
+          "id": "b",
+          "text": "순종적"
+        },
+        {
+          "id": "c",
+          "text": "비판적"
+        },
+        {
+          "id": "d",
+          "text": "방관적"
+        }
+      ],
+      "correctOptionId": "c",
+      "explanation": "옳고 그름을 판단하여 밝히거나 잘못된 점을 지적하는 ‘비판적’이 알맞아요.",
+      "distractorRationales": {
+        "a": "옳고 그름을 따지지 않고 무조건 믿는 태도라 정반대예요.",
+        "b": "거스르지 않고 그대로 따르기만 하는 성질이라 문맥에 안 맞아요.",
+        "d": "관심을 두지 않고 지켜보기만 하는 자세라 꼼꼼히 따지는 일과 달라요."
+      }
+    },
+    {
       "id": "g6-argon-0137",
       "revision": 1,
       "status": "verified_candidate",
       "grade": 6,
       "type": "definition",
-      "difficultyTier": "advanced",
+      "difficultyTier": "core",
       "variantTag": "polysemy",
       "target": {
         "lemma": "추론하다",
@@ -4143,6 +5383,86 @@
         "b": "근거 없이 찍어 정하는 것과는 반대돼요.",
         "c": "증거를 덮어 두는 행동이 아니에요.",
         "d": "후회하며 우는 감정 표현을 뜻하지 않아요."
+      }
+    },
+    {
+      "id": "g6-argon-0138",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 6,
+      "type": "synonym_context",
+      "difficultyTier": "core",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "비판적",
+        "partOfSpeech": "관형사",
+        "senseKey": "비판적/관형사/168209-2"
+      },
+      "stem": "문장의 ‘비판적’과 바꾸어 쓸 수 있는 말은 무엇일까요? \"토론할 때는 상대 주장의 근거를 비판적 시각으로 살펴야 한다.\"",
+      "options": [
+        {
+          "id": "a",
+          "text": "의심 없이 그대로 받아들이는"
+        },
+        {
+          "id": "b",
+          "text": "상대의 말에 무조건 찬성하는"
+        },
+        {
+          "id": "c",
+          "text": "옳고 그름을 따져 잘못을 짚는"
+        },
+        {
+          "id": "d",
+          "text": "근거도 안 보고 대충 넘겨짚는"
+        }
+      ],
+      "correctOptionId": "c",
+      "explanation": "‘비판적’은 옳고 그름을 판단하여 밝히거나 잘못된 점을 지적하는 뜻이에요.",
+      "distractorRationales": {
+        "a": "의심 없이 그대로 수용하는 것은 ‘무비판적’인 태도예요.",
+        "b": "무조건 찬성만 하면 근거의 오류를 제대로 살필 수 없어요.",
+        "d": "대충 짐작하여 넘겨짚는 것은 옳고 그름을 따지는 것과 달라요."
+      }
+    },
+    {
+      "id": "g6-argon-0139",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 6,
+      "type": "cloze",
+      "difficultyTier": "basic",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "반론",
+        "partOfSpeech": "명사",
+        "senseKey": "반론/명사/426536-1"
+      },
+      "stem": "학급 토론의 (    ) 순서가 되자, 반대 측 토론자는 앞서 발표한 찬성 측 주장의 허점을 조목조목 따지며 잘못된 점을 지적했다.",
+      "options": [
+        {
+          "id": "a",
+          "text": "환영"
+        },
+        {
+          "id": "b",
+          "text": "반론"
+        },
+        {
+          "id": "c",
+          "text": "표결"
+        },
+        {
+          "id": "d",
+          "text": "선서"
+        }
+      ],
+      "correctOptionId": "b",
+      "explanation": "상대편의 논설이나 주장에 대하여 반박하는 순서이므로 ‘반론’이 알맞아요.",
+      "distractorRationales": {
+        "a": "반갑게 맞이하는 인사를 나누는 순서라 반박 상황과 맞지 않아요.",
+        "c": "투표로 찬반 수를 세어 결정하는 단계라 허점을 따지는 발언과 달라요.",
+        "d": "규칙 준수를 다짐하는 절차라 상대 주장을 반박하는 순서가 아니에요."
       }
     },
     {
@@ -4225,6 +5545,47 @@
         "a": "‘수박’은 더운 여름에 익는 큰 열매채소예요.",
         "b": "‘미역’은 바다에서 자라는 해조류예요.",
         "c": "‘연근’은 연못 진흙 속에서 자라는 연꽃의 뿌리줄기예요."
+      }
+    },
+    {
+      "id": "g6-argon-0142",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 6,
+      "type": "cloze",
+      "difficultyTier": "challenge",
+      "variantTag": "dialect",
+      "dialectRegion": "제주",
+      "target": {
+        "lemma": "강생이",
+        "partOfSpeech": "명사",
+        "senseKey": "강생이/명사/od-486494-1"
+      },
+      "stem": "제주에 사시는 외할아버지께서 개집 앞 밥그릇에 사료를 채워 주시며 \"어미 개가 낳은 저 작은 강생이가 사람을 잘 따라서 멍멍 반갑게 짖는단다.\"라고 하셨습니다. 외할아버지께서 먹이를 주신 동물은 (    )입니다.",
+      "options": [
+        {
+          "id": "a",
+          "text": "송아지"
+        },
+        {
+          "id": "b",
+          "text": "강아지"
+        },
+        {
+          "id": "c",
+          "text": "망아지"
+        },
+        {
+          "id": "d",
+          "text": "병아리"
+        }
+      ],
+      "correctOptionId": "b",
+      "explanation": "제주 방언 ‘강생이’는 어미 개가 낳고 멍멍 짖는 새끼 개인 ‘강아지’를 뜻해요.",
+      "distractorRationales": {
+        "a": "소의 새끼는 개집에서 사료를 먹으며 멍멍 짖지 않아요.",
+        "c": "말의 새끼라 어미 개가 낳았다는 대화 단서와 맞지 않아요.",
+        "d": "닭의 새끼는 삐약거리며 울지 멍멍 짖지 않아요."
       }
     },
     {
@@ -4561,7 +5922,7 @@
       "status": "verified_candidate",
       "grade": 6,
       "type": "antonym_context",
-      "difficultyTier": "basic",
+      "difficultyTier": "core",
       "variantTag": "standard",
       "target": {
         "lemma": "배제하다",
@@ -4601,7 +5962,7 @@
       "status": "verified_candidate",
       "grade": 6,
       "type": "usage",
-      "difficultyTier": "basic",
+      "difficultyTier": "core",
       "variantTag": "standard",
       "target": {
         "lemma": "부합하다",
@@ -4633,6 +5994,46 @@
         "a": "음식을 먹는 동작에는 쓸 수 없어요.",
         "c": "우산을 펴 놓는 행동과는 어울리지 않아요.",
         "d": "물을 마시는 상황에 쓰는 낱말이 아니에요."
+      }
+    },
+    {
+      "id": "g6-argon-0153",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 6,
+      "type": "usage",
+      "difficultyTier": "basic",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "비판적",
+        "partOfSpeech": "관형사",
+        "senseKey": "비판적/관형사/168209-2"
+      },
+      "stem": "‘비판적’을 바르게 쓴 문장은 무엇일까요?",
+      "options": [
+        {
+          "id": "a",
+          "text": "주장의 옳고 그름을 따지는 비판적 태도가 필요하다."
+        },
+        {
+          "id": "b",
+          "text": "아무 의심 없이 무조건 믿는 비판적 수용을 했다."
+        },
+        {
+          "id": "c",
+          "text": "남이 시키는 대로만 따르는 비판적 자세를 보였다."
+        },
+        {
+          "id": "d",
+          "text": "잘못을 숨기고 칭찬만 늘어놓는 비판적 글을 썼다."
+        }
+      ],
+      "correctOptionId": "a",
+      "explanation": "‘비판적’은 사물의 옳고 그름을 판단하거나 잘못을 지적하는 말과 어울려요.",
+      "distractorRationales": {
+        "b": "의심 없이 무조건 믿는 것은 ‘맹목적’ 수용에 해당해요.",
+        "c": "시키는 대로만 따르는 ‘수동적’ 자세와는 뜻이 반대예요.",
+        "d": "잘못을 숨기고 칭찬만 하는 글에는 ‘비판적’을 쓸 수 없어요."
       }
     },
     {
@@ -4676,12 +6077,52 @@
       }
     },
     {
+      "id": "g6-argon-0155",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 6,
+      "type": "cloze",
+      "difficultyTier": "basic",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "독보적",
+        "partOfSpeech": "관형사",
+        "senseKey": "독보적/관형사/86632-2"
+      },
+      "stem": "그 선수는 누구도 감히 따라올 수 없을 만큼 월등한 기록을 세우며 세계 대회에서 (    ) 실력을 뽐냈다.",
+      "options": [
+        {
+          "id": "a",
+          "text": "독보적"
+        },
+        {
+          "id": "b",
+          "text": "소극적"
+        },
+        {
+          "id": "c",
+          "text": "의존적"
+        },
+        {
+          "id": "d",
+          "text": "형식적"
+        }
+      ],
+      "correctOptionId": "a",
+      "explanation": "남이 감히 따를 수 없을 정도로 뛰어난 것을 뜻하므로 ‘독보적’이 알맞아요.",
+      "distractorRationales": {
+        "b": "나서지 않고 물러나는 태도라 월등한 실력을 뽐낸 상황과 달라요.",
+        "c": "남에게 기대는 성질이라 홀로 우뚝 선 기록과 어울리지 않아요.",
+        "d": "겉모양만 차리는 뜻이라 뛰어난 경기력을 설명할 수 없어요."
+      }
+    },
+    {
       "id": "g6-argon-0156",
       "revision": 1,
       "status": "verified_candidate",
       "grade": 6,
       "type": "antonym_context",
-      "difficultyTier": "basic",
+      "difficultyTier": "core",
       "variantTag": "standard",
       "target": {
         "lemma": "유발하다",
@@ -4876,6 +6317,46 @@
       }
     },
     {
+      "id": "g6-argon-0161",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 6,
+      "type": "synonym_context",
+      "difficultyTier": "core",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "독보적",
+        "partOfSpeech": "관형사",
+        "senseKey": "독보적/관형사/86632-2"
+      },
+      "stem": "다음 문장의 ‘독보적’과 바꾸어 쓸 수 있는 말은 무엇일까요? \"이 도자기는 섬세한 무늬를 새기는 독보적 기술로 완성되었다.\"",
+      "options": [
+        {
+          "id": "a",
+          "text": "어디서나 흔하게 볼 수 있는"
+        },
+        {
+          "id": "b",
+          "text": "남이 따를 수 없을 만큼 뛰어난"
+        },
+        {
+          "id": "c",
+          "text": "오래되어 쓸모가 없어진 낡은"
+        },
+        {
+          "id": "d",
+          "text": "기초가 부족하여 실수가 잦은"
+        }
+      ],
+      "correctOptionId": "b",
+      "explanation": "‘독보적’은 ‘남이 감히 따를 수 없을 정도로 뛰어난’이라는 뜻을 지녀요.",
+      "distractorRationales": {
+        "a": "어디서나 흔한 기술은 ‘독보적’과 정반대의 의미예요.",
+        "c": "쓸모없이 낡았다는 뜻은 뛰어난 기술과 어울리지 않아요.",
+        "d": "기초가 부족해 실수가 많은 미숙한 상태를 뜻하지 않아요."
+      }
+    },
+    {
       "id": "g6-argon-0162",
       "revision": 1,
       "status": "verified_candidate",
@@ -4953,6 +6434,46 @@
         "a": "남의 실수를 소문내는 행동과는 관련이 없어요.",
         "c": "상자를 함께 옮기는 운반을 뜻하지 않아요.",
         "d": "약속을 잊고 사과하는 일과 뜻이 달라요."
+      }
+    },
+    {
+      "id": "g6-argon-0164",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 6,
+      "type": "cloze",
+      "difficultyTier": "basic",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "엄밀하다",
+        "partOfSpeech": "형용사",
+        "senseKey": "엄밀하다/형용사/228180-2"
+      },
+      "stem": "우주선을 발사하기 전에는 아주 작은 오차나 빈틈도 허용하지 않는 (    ) 안전 점검이 이루어진다.",
+      "options": [
+        {
+          "id": "a",
+          "text": "허술한"
+        },
+        {
+          "id": "b",
+          "text": "엉성한"
+        },
+        {
+          "id": "c",
+          "text": "막연한"
+        },
+        {
+          "id": "d",
+          "text": "엄밀한"
+        }
+      ],
+      "correctOptionId": "d",
+      "explanation": "작은 빈틈이나 잘못도 용납하지 않을 만큼 엄격하고 세밀한 ‘엄밀한’이 맞아요.",
+      "distractorRationales": {
+        "a": "빈틈이 많아 치밀하지 못한 뜻이라 문맥과 정반대예요.",
+        "b": "촘촘하지 못하고 느슨한 상태라 정밀 점검과 어울리지 않아요.",
+        "c": "뚜렷하지 않고 어렴풋한 뜻이라 오차 없는 점검과 맞지 않아요."
       }
     },
     {
@@ -5041,7 +6562,7 @@
       "status": "verified_candidate",
       "grade": 6,
       "type": "cloze",
-      "difficultyTier": "core",
+      "difficultyTier": "basic",
       "variantTag": "standard",
       "target": {
         "lemma": "집약하다",
@@ -5073,6 +6594,46 @@
         "b": "‘분산하다’는 갈라져 흩어지게 한다는 반대 뜻이에요.",
         "c": "‘방치하다’는 돌보지 않고 내버려 둔다는 뜻이에요.",
         "d": "‘낭비하다’는 헛되이 헤프게 쓴다는 뜻이에요."
+      }
+    },
+    {
+      "id": "g6-argon-0168",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 6,
+      "type": "definition",
+      "difficultyTier": "core",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "함축하다",
+        "partOfSpeech": "동사",
+        "senseKey": "함축하다/동사/368319-2"
+      },
+      "stem": "\"짧은 속담 한마디가 인생의 깊은 교훈을 풍부하게 함축하고 있다.\" 여기서 ‘함축하다’의 뜻은 무엇일까요?",
+      "options": [
+        {
+          "id": "a",
+          "text": "복잡한 설명을 길게 늘어놓아 적다"
+        },
+        {
+          "id": "b",
+          "text": "중요한 문장을 실수로 빼먹고 읽다"
+        },
+        {
+          "id": "c",
+          "text": "어려운 낱말을 쉬운 말로 바꾸다"
+        },
+        {
+          "id": "d",
+          "text": "말이나 글이 많은 뜻을 담고 있다"
+        }
+      ],
+      "correctOptionId": "d",
+      "explanation": "여기서 ‘함축하다’는 짧은 말이나 글이 많은 뜻을 속에 담고 있다는 뜻이에요.",
+      "distractorRationales": {
+        "a": "길게 풀어 늘어놓는 것은 짧은 말에 뜻을 담는 것과 반대예요.",
+        "b": "문장을 빠뜨리고 읽는 실수와는 의미가 전혀 달라요.",
+        "c": "쉬운 낱말로 풀어 바꾸는 ‘순화’나 ‘풀이’를 뜻하지 않아요."
       }
     },
     {
@@ -5121,7 +6682,7 @@
       "status": "verified_candidate",
       "grade": 6,
       "type": "synonym_context",
-      "difficultyTier": "core",
+      "difficultyTier": "basic",
       "variantTag": "standard",
       "target": {
         "lemma": "교정하다",
@@ -5153,6 +6714,46 @@
         "a": "내버려두는 것은 고치지 않고 방치하는 일이에요.",
         "b": "더 구부리는 것은 바로잡는 일과 반대돼요.",
         "c": "감추어 두는 행동과는 의미가 달라요."
+      }
+    },
+    {
+      "id": "g6-argon-0171",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 6,
+      "type": "usage",
+      "difficultyTier": "core",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "독보적",
+        "partOfSpeech": "관형사",
+        "senseKey": "독보적/관형사/86632-2"
+      },
+      "stem": "‘독보적’을 바르게 쓴 문장은 무엇일까요?",
+      "options": [
+        {
+          "id": "a",
+          "text": "누구나 하는 평범한 수준으로 독보적 실력을 보였다."
+        },
+        {
+          "id": "b",
+          "text": "대회에서 꼴찌를 기록하며 독보적 우승을 차지했다."
+        },
+        {
+          "id": "c",
+          "text": "남이 따를 수 없는 기량으로 독보적 업적을 남겼다."
+        },
+        {
+          "id": "d",
+          "text": "실수만 계속 반복하면서 독보적 솜씨를 뽐냈다."
+        }
+      ],
+      "correctOptionId": "c",
+      "explanation": "‘독보적’은 남이 감히 따를 수 없을 만큼 뛰어난 대상을 꾸밀 때 써요.",
+      "distractorRationales": {
+        "a": "누구나 하는 평범한 수준은 ‘독보적’과 뜻이 서로 어긋나요.",
+        "b": "꼴찌를 기록하고 우승을 차지했다는 내용은 앞뒤가 모순돼요.",
+        "d": "실수만 반복하는 미숙한 상태에는 ‘독보적’을 쓸 수 없어요."
       }
     },
     {
@@ -5196,52 +6797,12 @@
       }
     },
     {
-      "id": "g6-argon-0173",
-      "revision": 1,
-      "status": "verified_candidate",
-      "grade": 6,
-      "type": "synonym_context",
-      "difficultyTier": "core",
-      "variantTag": "standard",
-      "target": {
-        "lemma": "논설문",
-        "partOfSpeech": "명사",
-        "senseKey": "논설문/명사/68380-1"
-      },
-      "stem": "\"환경을 보호하자는 주제로 논설문을 작성했습니다.\" 문장의 ‘논설문’과 바꾸어 쓸 수 있는 말은 무엇일까요?",
-      "options": [
-        {
-          "id": "a",
-          "text": "주장을 체계적으로 밝혀 쓴 글"
-        },
-        {
-          "id": "b",
-          "text": "하루 동안 겪은 일을 적은 일기"
-        },
-        {
-          "id": "c",
-          "text": "상상 속 인물이 나오는 동화"
-        },
-        {
-          "id": "d",
-          "text": "물건 사용 순서를 적은 설명서"
-        }
-      ],
-      "correctOptionId": "a",
-      "explanation": "‘논설문’은 어떤 주제에 관해 자기 생각이나 주장을 체계적으로 밝혀 쓴 글이에요.",
-      "distractorRationales": {
-        "b": "하루 겪은 일을 개인적으로 적은 글은 일기예요.",
-        "c": "상상으로 꾸며 쓴 이야기는 동화나 소설이에요.",
-        "d": "사용법을 객관적으로 알려 주는 글은 설명문이에요."
-      }
-    },
-    {
       "id": "g6-argon-0174",
-      "revision": 1,
+      "revision": 2,
       "status": "verified_candidate",
       "grade": 6,
       "type": "usage",
-      "difficultyTier": "core",
+      "difficultyTier": "basic",
       "variantTag": "standard",
       "target": {
         "lemma": "본론",
@@ -5272,7 +6833,7 @@
       "distractorRationales": {
         "a": "냄비에서 손으로 잡는 부분은 ‘손잡이’예요.",
         "c": "자전거 부품을 가리키는 낱말이 아니에요.",
-        "d": "바람에 날아가는 민들레 부분은 ‘홀씨’예요."
+        "d": "바람에 날아가는 민들레 씨앗을 뜻하지 않아요."
       }
     },
     {
@@ -5281,7 +6842,7 @@
       "status": "verified_candidate",
       "grade": 6,
       "type": "cloze",
-      "difficultyTier": "core",
+      "difficultyTier": "basic",
       "variantTag": "standard",
       "target": {
         "lemma": "타당성",
@@ -5316,12 +6877,52 @@
       }
     },
     {
+      "id": "g6-argon-0176",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 6,
+      "type": "cloze",
+      "difficultyTier": "basic",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "독립적",
+        "partOfSpeech": "관형사",
+        "senseKey": "독립적/관형사/86200-2"
+      },
+      "stem": "갓 태어난 새끼 동물은 어미의 보살핌을 받지만, 다 자라면 어미에게 기대지 않고 홀로 살아가는 (    ) 생활을 시작한다.",
+      "options": [
+        {
+          "id": "a",
+          "text": "독립적"
+        },
+        {
+          "id": "b",
+          "text": "의존적"
+        },
+        {
+          "id": "c",
+          "text": "수동적"
+        },
+        {
+          "id": "d",
+          "text": "획일적"
+        }
+      ],
+      "correctOptionId": "a",
+      "explanation": "남에게 의존하지 않고 홀로 살아가는 성질을 뜻하므로 ‘독립적’이 알맞아요.",
+      "distractorRationales": {
+        "b": "어미에게 계속 기대어 의지하는 뜻이라 앞 내용과 정반대예요.",
+        "c": "남이 시키는 대로만 움직이는 뜻이라 홀로 사는 생태와 달라요.",
+        "d": "모두 똑같이 하나의 틀에 맞춘 뜻이라 문맥이 통하지 않아요."
+      }
+    },
+    {
       "id": "g6-argon-0177",
       "revision": 1,
       "status": "verified_candidate",
       "grade": 6,
       "type": "definition",
-      "difficultyTier": "core",
+      "difficultyTier": "basic",
       "variantTag": "standard",
       "target": {
         "lemma": "독창성",
@@ -5356,12 +6957,52 @@
       }
     },
     {
+      "id": "g6-argon-0178",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 6,
+      "type": "definition",
+      "difficultyTier": "basic",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "쟁점",
+        "partOfSpeech": "명사",
+        "senseKey": "쟁점/명사/283844-1"
+      },
+      "stem": "다음에서 ‘쟁점’의 뜻으로 알맞은 것은 무엇일까요? 「이번 학급 토론의 핵심 쟁점은 휴대전화 사용 규칙이었다.」",
+      "options": [
+        {
+          "id": "a",
+          "text": "모두가 처음부터 한마음으로 찬성한 일"
+        },
+        {
+          "id": "b",
+          "text": "서로 의견을 맞세워 다투는 중심 문제"
+        },
+        {
+          "id": "c",
+          "text": "경기가 끝난 뒤에 점수를 합산한 표"
+        },
+        {
+          "id": "d",
+          "text": "물건을 사고팔기 위해 차려 놓은 가게"
+        }
+      ],
+      "correctOptionId": "b",
+      "explanation": "‘쟁점’은 서로 다투는 중심이 되는 점이나 문제를 뜻해요.",
+      "distractorRationales": {
+        "a": "모두가 다툼 없이 찬성한 일은 쟁점이 아니에요.",
+        "c": "경기 점수를 합산한 점수표를 뜻하지 않아요.",
+        "d": "물건을 파는 상점과는 관련이 없어요."
+      }
+    },
+    {
       "id": "g6-argon-0179",
       "revision": 1,
       "status": "verified_candidate",
       "grade": 6,
       "type": "definition",
-      "difficultyTier": "advanced",
+      "difficultyTier": "core",
       "variantTag": "polysemy",
       "target": {
         "lemma": "공식적",
@@ -5397,11 +7038,11 @@
     },
     {
       "id": "g6-argon-0180",
-      "revision": 1,
+      "revision": 2,
       "status": "verified_candidate",
       "grade": 6,
       "type": "definition",
-      "difficultyTier": "advanced",
+      "difficultyTier": "core",
       "variantTag": "polysemy",
       "target": {
         "lemma": "맥락",
@@ -5431,8 +7072,88 @@
       "explanation": "여기서 ‘맥락’은 사물이나 문장 따위가 서로 이어져 있는 관계나 연관을 뜻해요.",
       "distractorRationales": {
         "b": "참고 자료 목록은 ‘참고 문헌’이나 ‘부록’이에요.",
-        "c": "글자를 키워 놓은 것은 ‘제목’이에요.",
-        "d": "겉을 감싸는 부분은 ‘표지’예요."
+        "c": "글자를 키운 제목은 글의 앞뒤 문장이 이어지는 관계를 뜻하지 않아요.",
+        "d": "겉을 감싸는 표지는 책을 보호할 뿐 앞뒤 문장이 이어지는 관계를 뜻하지 않아요."
+      }
+    },
+    {
+      "id": "g6-argon-0181",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 6,
+      "type": "synonym_context",
+      "difficultyTier": "basic",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "독립적",
+        "partOfSpeech": "관형사",
+        "senseKey": "독립적/관형사/86200-2"
+      },
+      "stem": "문장의 ‘독립적’과 바꾸어 쓸 수 있는 말은 무엇일까요? \"재판관은 외부 간섭 없이 독립적 지위에서 판결한다.\"",
+      "options": [
+        {
+          "id": "a",
+          "text": "강한 세력에 기대어 지시를 따르는"
+        },
+        {
+          "id": "b",
+          "text": "여럿이 책임을 똑같이 나누어 진"
+        },
+        {
+          "id": "c",
+          "text": "남에게 의존하거나 얽매이지 않은"
+        },
+        {
+          "id": "d",
+          "text": "임시로 잠깐 맡았다가 곧 물러나는"
+        }
+      ],
+      "correctOptionId": "c",
+      "explanation": "‘독립적’은 남에게 의존하거나 예속되지 아니한 상태를 나타내는 말이에요.",
+      "distractorRationales": {
+        "a": "강한 세력의 지시를 따르는 것은 ‘종속적’인 상태예요.",
+        "b": "책임을 함께 나누어 지는 ‘연대적’ 성격과는 뜻이 달라요.",
+        "d": "잠깐 맡고 물러나는 ‘일시적·한시적’ 지위를 뜻하지 않아요."
+      }
+    },
+    {
+      "id": "g6-argon-0182",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 6,
+      "type": "usage",
+      "difficultyTier": "basic",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "독립적",
+        "partOfSpeech": "관형사",
+        "senseKey": "독립적/관형사/86200-2"
+      },
+      "stem": "‘독립적’을 바르게 쓴 문장은 무엇일까요?",
+      "options": [
+        {
+          "id": "a",
+          "text": "매사를 남에게만 기대는 독립적 태도를 보였다."
+        },
+        {
+          "id": "b",
+          "text": "남의 지배 아래 예속된 독립적 상태를 유지했다."
+        },
+        {
+          "id": "c",
+          "text": "혼자 아무 결정도 못 하는 독립적 생활을 했다."
+        },
+        {
+          "id": "d",
+          "text": "외부 간섭을 막고자 기관에 독립적 권한을 주었다."
+        }
+      ],
+      "correctOptionId": "d",
+      "explanation": "‘독립적’은 남에게 의존하거나 예속되지 않은 대상을 수식할 때 자연스러워요.",
+      "distractorRationales": {
+        "a": "남에게 기대어 의지하는 태도는 ‘의존적’이라 뜻이 반대예요.",
+        "b": "남의 지배 아래 예속된 상태는 ‘독립적’과 정반대예요.",
+        "c": "혼자 결정을 못 하는 모습에는 ‘독립적’이 어울리지 않아요."
       }
     },
     {
@@ -5441,7 +7162,7 @@
       "status": "verified_candidate",
       "grade": 6,
       "type": "definition",
-      "difficultyTier": "advanced",
+      "difficultyTier": "core",
       "variantTag": "polysemy",
       "target": {
         "lemma": "공식적",
@@ -5476,12 +7197,92 @@
       }
     },
     {
-      "id": "g6-argon-0186",
-      "revision": 1,
+      "id": "g6-argon-0184",
+      "revision": 2,
       "status": "verified_candidate",
       "grade": 6,
       "type": "definition",
-      "difficultyTier": "advanced",
+      "difficultyTier": "basic",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "발전적",
+        "partOfSpeech": "관형사",
+        "senseKey": "발전적/관형사/140047-2"
+      },
+      "stem": "\"두 모둠은 부족한 점을 보완하며 발전적 관계를 이어 갔다.\" 여기서 ‘발전적’의 뜻은 무엇일까요?",
+      "options": [
+        {
+          "id": "a",
+          "text": "더 좋은 상태나 높은 단계로 나아가는"
+        },
+        {
+          "id": "b",
+          "text": "예전의 낡은 수준으로 다시 되돌아가는"
+        },
+        {
+          "id": "c",
+          "text": "아무 변화 없이 제자리에만 머무르는"
+        },
+        {
+          "id": "d",
+          "text": "상대방의 잘못만 들추어내어 다투는"
+        }
+      ],
+      "correctOptionId": "a",
+      "explanation": "‘발전적’은 더 낫고 좋은 상태나 더 높은 단계로 나아가는 성질을 뜻해요.",
+      "distractorRationales": {
+        "b": "이전 수준으로 뒤처져 돌아가는 ‘퇴보적’ 방향과 반대예요.",
+        "c": "변화 없이 멈추어 있는 ‘정체된’ 상태와는 뜻이 달라요.",
+        "d": "잘못만 들추어 다투는 소모적인 관계를 뜻하지 않아요."
+      }
+    },
+    {
+      "id": "g6-argon-0185",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 6,
+      "type": "definition",
+      "difficultyTier": "basic",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "편견",
+        "partOfSpeech": "명사",
+        "senseKey": "편견/명사/499921-1"
+      },
+      "stem": "다음에서 ‘편견’의 뜻으로 알맞은 것은 무엇일까요? 「겉모습만 보고 사람을 단정하는 것은 옳지 않은 편견이다.」",
+      "options": [
+        {
+          "id": "a",
+          "text": "누구에게나 공평하고 올바르게 대하는 태도"
+        },
+        {
+          "id": "b",
+          "text": "공정하지 못하고 한쪽으로 치우친 생각"
+        },
+        {
+          "id": "c",
+          "text": "여러 자료를 비교하여 신중하게 내린 결론"
+        },
+        {
+          "id": "d",
+          "text": "어려운 처지에 놓인 이웃을 돕는 따뜻한 마음"
+        }
+      ],
+      "correctOptionId": "b",
+      "explanation": "‘편견’은 공정하지 못하고 한쪽으로 치우친 생각을 말해요.",
+      "distractorRationales": {
+        "a": "공평하고 바르게 대하는 태도와는 반대돼요.",
+        "c": "자료를 비교해 내린 신중한 결론이 아니에요.",
+        "d": "이웃을 돕는 따뜻한 온정과는 뜻이 달라요."
+      }
+    },
+    {
+      "id": "g6-argon-0186",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 6,
+      "type": "definition",
+      "difficultyTier": "core",
       "variantTag": "polysemy",
       "target": {
         "lemma": "시대",
@@ -5512,7 +7313,127 @@
       "distractorRationales": {
         "a": "해가 저무는 하루의 시각은 ‘해 질 녘’이에요.",
         "b": "낮이 가장 긴 절기는 ‘하지’예요.",
-        "c": "대기의 평균 상태는 ‘기후’나 ‘날씨’예요."
+        "c": "오랜 기간에 걸친 대기의 평균적인 상태는 ‘기후’예요."
+      }
+    },
+    {
+      "id": "g6-argon-0187",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 6,
+      "type": "cloze",
+      "difficultyTier": "basic",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "발전적",
+        "partOfSpeech": "관형사",
+        "senseKey": "발전적/관형사/140047-2"
+      },
+      "stem": "실패에 좌절해 멈추기보다 오늘의 실수를 교훈으로 삼아 더 나은 단계로 성장하는 (    ) 방향으로 나아가야 한다.",
+      "options": [
+        {
+          "id": "a",
+          "text": "소모적"
+        },
+        {
+          "id": "b",
+          "text": "비관적"
+        },
+        {
+          "id": "c",
+          "text": "발전적"
+        },
+        {
+          "id": "d",
+          "text": "방관적"
+        }
+      ],
+      "correctOptionId": "c",
+      "explanation": "더 낫고 높은 단계로 나아가는 성질을 나타내므로 ‘발전적’이 알맞아요.",
+      "distractorRationales": {
+        "a": "힘이나 시간만 헛되이 써 없애는 뜻이라 성장과 반대예요.",
+        "b": "앞날을 어둡고 절망스럽게만 보는 태도라 문맥에 안 맞아요.",
+        "d": "직접 나서지 않고 구경만 하는 자세라 개선 의지와 어긋나요."
+      }
+    },
+    {
+      "id": "g6-argon-0188",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 6,
+      "type": "synonym_context",
+      "difficultyTier": "basic",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "발전적",
+        "partOfSpeech": "관형사",
+        "senseKey": "발전적/관형사/140047-2"
+      },
+      "stem": "문장의 ‘발전적’과 바꾸어 쓸 수 있는 말은 무엇일까요? \"회의에서 불평 대신 문제를 고칠 발전적 의견을 나누었다.\"",
+      "options": [
+        {
+          "id": "a",
+          "text": "과거의 잘못만 되풀이해 따지는"
+        },
+        {
+          "id": "b",
+          "text": "현재 상태를 조금도 안 바꾸려는"
+        },
+        {
+          "id": "c",
+          "text": "더 낫고 높은 단계로 나아가는"
+        },
+        {
+          "id": "d",
+          "text": "근거 없이 불안감만 크게 키우는"
+        }
+      ],
+      "correctOptionId": "c",
+      "explanation": "‘발전적’은 문제를 개선해 ‘더 낫고 높은 단계로 나아가는’ 뜻과 통해요.",
+      "distractorRationales": {
+        "a": "지난 잘못만 따지는 것은 앞으로 나아가는 대안이 아니에요.",
+        "b": "현상을 그대로 두려는 태도는 문제를 개선할 의견과 반대예요.",
+        "d": "불안감만 키우는 말은 더 좋은 상태로 나아가는 의견이 아니에요."
+      }
+    },
+    {
+      "id": "g6-argon-0189",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 6,
+      "type": "usage",
+      "difficultyTier": "core",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "발전적",
+        "partOfSpeech": "관형사",
+        "senseKey": "발전적/관형사/140047-2"
+      },
+      "stem": "‘발전적’을 알맞게 사용한 문장은 무엇일까요?",
+      "options": [
+        {
+          "id": "a",
+          "text": "서로의 조언을 받아들이며 실력을 키우는 발전적 경쟁을 펼쳤다."
+        },
+        {
+          "id": "b",
+          "text": "예전보다 수준이 훨씬 나빠져 후퇴하는 발전적 퇴보를 겪었다."
+        },
+        {
+          "id": "c",
+          "text": "아무런 노력도 없이 제자리에만 멈춰 선 발전적 정체를 보였다."
+        },
+        {
+          "id": "d",
+          "text": "상대방을 헐뜯으며 시간만 헛되이 낭비하는 발전적 다툼을 벌였다."
+        }
+      ],
+      "correctOptionId": "a",
+      "explanation": "‘발전적’은 더 좋은 상태나 높은 단계로 성장하는 일에 알맞게 써요.",
+      "distractorRationales": {
+        "b": "수준이 나빠져 뒤로 물러나는 ‘퇴보’와는 뜻이 정반대예요.",
+        "c": "제자리에 멈춰 선 ‘정체’는 앞으로 나아가는 뜻과 모순돼요.",
+        "d": "서로 헐뜯고 시간만 낭비하는 다툼은 ‘소모적’인 일이에요."
       }
     },
     {
@@ -5639,6 +7560,47 @@
       }
     },
     {
+      "id": "g6-argon-0193",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 6,
+      "type": "cloze",
+      "difficultyTier": "challenge",
+      "variantTag": "dialect",
+      "dialectRegion": "전라",
+      "target": {
+        "lemma": "강생이",
+        "partOfSpeech": "명사",
+        "senseKey": "강생이/명사/od-863556-2"
+      },
+      "stem": "전라도 시골 큰댁에 갔더니 큰어머니께서 마루 밑을 보시며 \"우리 집 어미 개가 낳은 저 복슬복슬한 강생이가 멍멍 짖으며 네 운동화 냄새를 맡는구나.\"라고 하셨습니다. 여기서 ‘강생이’는 표준어로 ‘(    )’를 뜻합니다.",
+      "options": [
+        {
+          "id": "a",
+          "text": "고양이"
+        },
+        {
+          "id": "b",
+          "text": "송아지"
+        },
+        {
+          "id": "c",
+          "text": "강아지"
+        },
+        {
+          "id": "d",
+          "text": "두꺼비"
+        }
+      ],
+      "correctOptionId": "c",
+      "explanation": "전라 방언 ‘강생이’는 어미 개가 낳아 멍멍 짖는 새끼 개인 ‘강아지’를 뜻해요.",
+      "distractorRationales": {
+        "a": "어미 개에게서 태어나 멍멍 짖는 동물이 아니에요.",
+        "b": "소의 새끼는 음매 하고 울며 마루 밑 개집에 살지 않아요.",
+        "d": "털이 없고 폴짝거리는 양서류라 복슬복슬하다는 말과 달라요."
+      }
+    },
+    {
       "id": "g6-argon-0194",
       "revision": 1,
       "status": "verified_candidate",
@@ -5722,7 +7684,7 @@
     },
     {
       "id": "g6-argon-0196",
-      "revision": 1,
+      "revision": 2,
       "status": "verified_candidate",
       "grade": 6,
       "type": "cloze",
@@ -5734,7 +7696,7 @@
         "partOfSpeech": "명사",
         "senseKey": "조포/명사/od-804293-9"
       },
-      "stem": "경상도 할머니께서 콩물을 끓여 굳힌 하얀 모를 들기름에 노릇하게 부치시며 \"따뜻한 조포 부침을 먹어 보렴.\"이라고 하셨습니다. 이는 표준어로 ‘(    )’입니다.",
+      "stem": "경상도 할머니께서 콩물을 끓여 굳힌 하얀 덩어리를 들기름에 노릇하게 부치시며 \"따뜻한 조포 부침을 먹어 보렴.\"이라고 하셨습니다. 이는 표준어로 ‘(    )’입니다.",
       "options": [
         {
           "id": "a",
@@ -5971,7 +7933,7 @@
       "status": "verified_candidate",
       "grade": 6,
       "type": "usage",
-      "difficultyTier": "basic",
+      "difficultyTier": "core",
       "variantTag": "standard",
       "target": {
         "lemma": "시의성",
@@ -6326,6 +8288,46 @@
       }
     },
     {
+      "id": "g6-argon-0211",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 6,
+      "type": "synonym_context",
+      "difficultyTier": "basic",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "매너",
+        "partOfSpeech": "명사",
+        "senseKey": "매너/명사/420507-2"
+      },
+      "stem": "다음 문장의 ‘매너’와 바꾸어 쓸 수 있는 말은 무엇일까요? \"공공장소에서 다른 사람을 배려하며 기본적인 매너를 지키는 일은 중요하다.\"",
+      "options": [
+        {
+          "id": "a",
+          "text": "순서와 번호"
+        },
+        {
+          "id": "b",
+          "text": "요금과 경비"
+        },
+        {
+          "id": "c",
+          "text": "예의와 절차"
+        },
+        {
+          "id": "d",
+          "text": "속도와 거리"
+        }
+      ],
+      "correctOptionId": "c",
+      "explanation": "여기서 ‘매너’는 일상생활에서 지켜야 할 ‘예의와 절차’라는 뜻으로 쓰였어요.",
+      "distractorRationales": {
+        "a": "차례를 매기는 번호는 남을 배려하는 예절과 뜻이 달라요.",
+        "b": "시설을 이용할 때 내는 돈을 가리키는 말이 아니에요.",
+        "d": "빠르기나 떨어진 간격을 뜻하는 말과는 관계가 없어요."
+      }
+    },
+    {
       "id": "g6-argon-0212",
       "revision": 1,
       "status": "verified_candidate",
@@ -6451,7 +8453,7 @@
       "status": "verified_candidate",
       "grade": 6,
       "type": "usage",
-      "difficultyTier": "core",
+      "difficultyTier": "basic",
       "variantTag": "standard",
       "target": {
         "lemma": "전달력",
@@ -6491,7 +8493,7 @@
       "status": "verified_candidate",
       "grade": 6,
       "type": "cloze",
-      "difficultyTier": "core",
+      "difficultyTier": "basic",
       "variantTag": "standard",
       "target": {
         "lemma": "문해력",
@@ -6531,7 +8533,7 @@
       "status": "verified_candidate",
       "grade": 6,
       "type": "antonym_context",
-      "difficultyTier": "core",
+      "difficultyTier": "basic",
       "variantTag": "standard",
       "target": {
         "lemma": "이해력",
@@ -6571,7 +8573,7 @@
       "status": "verified_candidate",
       "grade": 6,
       "type": "definition",
-      "difficultyTier": "core",
+      "difficultyTier": "basic",
       "variantTag": "standard",
       "target": {
         "lemma": "창의력",
@@ -6611,7 +8613,7 @@
       "status": "verified_candidate",
       "grade": 6,
       "type": "synonym_context",
-      "difficultyTier": "core",
+      "difficultyTier": "basic",
       "variantTag": "standard",
       "target": {
         "lemma": "의사소통",
@@ -6646,12 +8648,52 @@
       }
     },
     {
+      "id": "g6-argon-0220",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 6,
+      "type": "usage",
+      "difficultyTier": "basic",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "복합적",
+        "partOfSpeech": "관형사",
+        "senseKey": "복합적/관형사/149076-2"
+      },
+      "stem": "‘복합적’을 바르게 쓴 문장은 무엇일까요?",
+      "options": [
+        {
+          "id": "a",
+          "text": "가뭄과 폭염이 함께 겹친 복합적 원인을 살폈다."
+        },
+        {
+          "id": "b",
+          "text": "한 가지 성분으로만 된 복합적 물질을 얻었다."
+        },
+        {
+          "id": "c",
+          "text": "다른 요소 없이 단 하나뿐인 복합적 이유를 찾아냈다."
+        },
+        {
+          "id": "d",
+          "text": "아무것도 합치지 않은 채 홀로 떨어진 복합적 형태이다."
+        }
+      ],
+      "correctOptionId": "a",
+      "explanation": "‘복합적’은 두 가지 이상이 합쳐 있는 대상을 꾸밀 때 쓰는 관형사예요.",
+      "distractorRationales": {
+        "b": "한 가지 성분으로만 된 것은 ‘단일’ 물질이지 복합적이 아니에요.",
+        "c": "단 하나뿐인 이유에는 두 가지 이상 합쳐진다는 뜻이 안 맞아요.",
+        "d": "아무것도 합치지 않은 대상에는 ‘복합적’을 쓸 수 없어요."
+      }
+    },
+    {
       "id": "g6-argon-0221",
       "revision": 1,
       "status": "verified_candidate",
       "grade": 6,
       "type": "cloze",
-      "difficultyTier": "core",
+      "difficultyTier": "basic",
       "variantTag": "standard",
       "target": {
         "lemma": "자세",
@@ -6686,52 +8728,12 @@
       }
     },
     {
-      "id": "g6-argon-0222",
-      "revision": 1,
-      "status": "verified_candidate",
-      "grade": 6,
-      "type": "antonym_context",
-      "difficultyTier": "core",
-      "variantTag": "standard",
-      "target": {
-        "lemma": "토론자",
-        "partOfSpeech": "명사",
-        "senseKey": "토론자/명사/347845-1"
-      },
-      "stem": "무대 위에서 직접 의견을 주고받는 ‘토론자’와 반대로, 객석에 앉아 듣기만 하는 사람을 가리키는 말은 무엇일까요?",
-      "options": [
-        {
-          "id": "a",
-          "text": "방청객"
-        },
-        {
-          "id": "b",
-          "text": "발표자"
-        },
-        {
-          "id": "c",
-          "text": "찬성자"
-        },
-        {
-          "id": "d",
-          "text": "반대자"
-        }
-      ],
-      "correctOptionId": "a",
-      "explanation": "‘토론자’는 직접 토론하는 사람이고 ‘방청객’은 듣기만 하는 사람이에요.",
-      "distractorRationales": {
-        "b": "직접 앞에 나와 말하는 사람이라 반대가 아니에요.",
-        "c": "찬성 입장에서 토론에 참여하는 사람이에요.",
-        "d": "반대 입장에서 토론에 참여하는 사람이에요."
-      }
-    },
-    {
       "id": "g6-argon-0223",
       "revision": 1,
       "status": "verified_candidate",
       "grade": 6,
       "type": "definition",
-      "difficultyTier": "core",
+      "difficultyTier": "basic",
       "variantTag": "standard",
       "target": {
         "lemma": "청중",
@@ -6771,7 +8773,7 @@
       "status": "verified_candidate",
       "grade": 6,
       "type": "synonym_context",
-      "difficultyTier": "core",
+      "difficultyTier": "basic",
       "variantTag": "standard",
       "target": {
         "lemma": "반박",
@@ -6806,12 +8808,52 @@
       }
     },
     {
+      "id": "g6-argon-0225",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 6,
+      "type": "cloze",
+      "difficultyTier": "basic",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "복합적",
+        "partOfSpeech": "관형사",
+        "senseKey": "복합적/관형사/149076-2"
+      },
+      "stem": "새로 지은 주민 센터는 도서관과 체육관, 공연장 기능까지 두 가지 이상이 한곳에 합쳐진 (    ) 문화 공간이다.",
+      "options": [
+        {
+          "id": "a",
+          "text": "단편적"
+        },
+        {
+          "id": "b",
+          "text": "일시적"
+        },
+        {
+          "id": "c",
+          "text": "복합적"
+        },
+        {
+          "id": "d",
+          "text": "소극적"
+        }
+      ],
+      "correctOptionId": "c",
+      "explanation": "두 가지 이상의 기능이 하나로 합쳐 있으므로 관형사 ‘복합적’이 알맞아요.",
+      "distractorRationales": {
+        "a": "한 부분에만 국한된 뜻이라 여러 기능이 합쳐진 공간과 반대예요.",
+        "b": "잠깐 동안에 그치는 성질이라 시설의 구성을 설명하지 못해요.",
+        "d": "나서지 않고 물러나는 태도를 뜻하므로 공간의 특징과 무관해요."
+      }
+    },
+    {
       "id": "g6-argon-0226",
       "revision": 1,
       "status": "verified_candidate",
       "grade": 6,
       "type": "cloze",
-      "difficultyTier": "core",
+      "difficultyTier": "basic",
       "variantTag": "standard",
       "target": {
         "lemma": "인용하다",
@@ -6851,7 +8893,7 @@
       "status": "verified_candidate",
       "grade": 6,
       "type": "antonym_context",
-      "difficultyTier": "core",
+      "difficultyTier": "basic",
       "variantTag": "standard",
       "target": {
         "lemma": "표절",
@@ -6886,12 +8928,212 @@
       }
     },
     {
+      "id": "g6-argon-0228",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 6,
+      "type": "cloze",
+      "difficultyTier": "basic",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "갈무리하다",
+        "partOfSpeech": "동사",
+        "senseKey": "갈무리하다/동사/6537-1"
+      },
+      "stem": "농부들은 가을에 거둔 햇곡식을 겨우내 상하지 않도록 서늘한 창고에 넣어 소중히 (    ).",
+      "options": [
+        {
+          "id": "a",
+          "text": "처분하였다"
+        },
+        {
+          "id": "b",
+          "text": "방치하였다"
+        },
+        {
+          "id": "c",
+          "text": "갈무리했다"
+        },
+        {
+          "id": "d",
+          "text": "낭비하였다"
+        }
+      ],
+      "correctOptionId": "c",
+      "explanation": "물건이나 곡식 따위를 잘 정리하거나 간수한다는 뜻인 ‘갈무리했다’가 알맞아요.",
+      "distractorRationales": {
+        "a": "팔거나 치워 없앤다는 뜻이라 겨우내 보관하려는 목적과 어긋나요.",
+        "b": "돌보지 않고 내버려 둔다는 뜻이라 소중히 챙긴 상황과 반대예요.",
+        "d": "헛되이 헤프게 써 버린다는 뜻이라 창고에 간수하는 일과 달라요."
+      }
+    },
+    {
+      "id": "g6-argon-0229",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 6,
+      "type": "synonym_context",
+      "difficultyTier": "basic",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "겨냥하다",
+        "partOfSpeech": "동사",
+        "senseKey": "겨냥하다/동사/391771-1"
+      },
+      "stem": "다음 문장의 ‘겨냥하며’와 바꾸어 쓸 수 있는 말은 무엇일까요? \"양궁 선수는 과녁의 한가운데를 침착하게 겨냥하며 활시위를 당겼다.\"",
+      "options": [
+        {
+          "id": "a",
+          "text": "모른 체 피하며"
+        },
+        {
+          "id": "b",
+          "text": "천으로 가리며"
+        },
+        {
+          "id": "c",
+          "text": "새로 수리하며"
+        },
+        {
+          "id": "d",
+          "text": "목표로 겨누며"
+        }
+      ],
+      "correctOptionId": "d",
+      "explanation": "여기서 ‘겨냥하다’는 과녁 같은 ‘목표물을 겨누다’라는 뜻으로 쓰였어요.",
+      "distractorRationales": {
+        "a": "외면하고 피하는 행동은 과녁 정중앙을 노리는 것과 반대예요.",
+        "b": "과녁을 덮어 안 보이게 가리면 활을 정확히 쏠 수 없어요.",
+        "c": "부서진 곳을 고친다는 뜻은 활시위를 당기는 상황과 맞지 않아요."
+      }
+    },
+    {
+      "id": "g6-argon-0230",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 6,
+      "type": "synonym_context",
+      "difficultyTier": "basic",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "복합적",
+        "partOfSpeech": "관형사",
+        "senseKey": "복합적/관형사/149076-2"
+      },
+      "stem": "환경 오염은 여러 원인이 얽힌 ‘복합적’ 문제이므로 다각도로 살펴야 합니다. ‘복합적’과 바꾸어 쓸 수 있는 말은 무엇일까요?",
+      "options": [
+        {
+          "id": "a",
+          "text": "한 가지로만 이루어진"
+        },
+        {
+          "id": "b",
+          "text": "두 가지 이상이 합쳐진"
+        },
+        {
+          "id": "c",
+          "text": "겉모습만 살짝 바뀐"
+        },
+        {
+          "id": "d",
+          "text": "아무런 까닭이 없는"
+        }
+      ],
+      "correctOptionId": "b",
+      "explanation": "‘복합적’은 두 가지 이상이 합쳐 있는 상태를 꾸미는 말이에요.",
+      "distractorRationales": {
+        "a": "하나만으로 이루어진 것은 반대 뜻이에요.",
+        "c": "겉모습만 바뀐 상태를 뜻하지 않아요.",
+        "d": "원인이 없다는 뜻과는 거리가 멀어요."
+      }
+    },
+    {
+      "id": "g6-argon-0231",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 6,
+      "type": "cloze",
+      "difficultyTier": "basic",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "분석적",
+        "partOfSpeech": "관형사",
+        "senseKey": "분석적/관형사/153864-2"
+      },
+      "stem": "복잡한 실험 결과를 원인별, 단계별로 쪼개어 살피는 (    ) 태도가 문제를 해결하는 데 큰 도움이 되었다. 빈칸에 알맞은 말은 무엇일까요?",
+      "options": [
+        {
+          "id": "a",
+          "text": "감정적"
+        },
+        {
+          "id": "b",
+          "text": "소극적"
+        },
+        {
+          "id": "c",
+          "text": "형식적"
+        },
+        {
+          "id": "d",
+          "text": "분석적"
+        }
+      ],
+      "correctOptionId": "d",
+      "explanation": "‘분석적’은 내용을 구성 요소들로 자세히 나누어 보는 것을 뜻해요.",
+      "distractorRationales": {
+        "a": "감정에 치우치는 태도를 뜻해 문맥과 달라요.",
+        "b": "스스로 나서지 않는 태도라 어울리지 않아요.",
+        "c": "겉틀에만 맞추는 태도라 뜻이 맞지 않아요."
+      }
+    },
+    {
+      "id": "g6-argon-0232",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 6,
+      "type": "synonym_context",
+      "difficultyTier": "basic",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "분석적",
+        "partOfSpeech": "관형사",
+        "senseKey": "분석적/관형사/153864-2"
+      },
+      "stem": "수아는 글의 주장과 근거를 항목마다 떼어 살피는 ‘분석적’ 읽기를 실천했다. 여기서 ‘분석적’과 뜻이 가장 가까운 말은 무엇일까요?",
+      "options": [
+        {
+          "id": "a",
+          "text": "전체를 대충 훑어 넘기는"
+        },
+        {
+          "id": "b",
+          "text": "남의 말을 그대로 믿는"
+        },
+        {
+          "id": "c",
+          "text": "느낌만 짧게 적어 두는"
+        },
+        {
+          "id": "d",
+          "text": "요소별로 자세히 나누어 보는"
+        }
+      ],
+      "correctOptionId": "d",
+      "explanation": "‘분석적’은 내용을 구성 요소들로 자세히 나누어 보는 뜻이에요.",
+      "distractorRationales": {
+        "a": "대충 훑어보는 것은 자세히 나누는 것과 반대예요.",
+        "b": "그대로 믿기만 하는 태도와는 뜻이 달라요.",
+        "c": "감상만 짧게 적는 일과는 관련이 없어요."
+      }
+    },
+    {
       "id": "g6-argon-0233",
       "revision": 1,
       "status": "verified_candidate",
       "grade": 6,
       "type": "definition",
-      "difficultyTier": "advanced",
+      "difficultyTier": "core",
       "variantTag": "polysemy",
       "target": {
         "lemma": "눈길",
@@ -6923,6 +9165,686 @@
         "a": "겨울에 내린 눈이 쌓인 길이 아니에요.",
         "c": "걷는 빠르기를 뜻하는 말이 아니에요.",
         "d": "무게를 재는 저울을 뜻하지 않아요."
+      }
+    },
+    {
+      "id": "g6-argon-0234",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 6,
+      "type": "definition",
+      "difficultyTier": "core",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "다각적",
+        "partOfSpeech": "관형사",
+        "senseKey": "다각적/관형사/73658-2"
+      },
+      "stem": "‘환경 문제를 해결하려고 다각적 노력을 기울였다’에서 ‘다각적’의 뜻은 무엇일까요?",
+      "options": [
+        {
+          "id": "a",
+          "text": "오직 한 가지 방법에만 매달린"
+        },
+        {
+          "id": "b",
+          "text": "여러 방면이나 부문에 걸친"
+        },
+        {
+          "id": "c",
+          "text": "아무 준비 없이 갑자기 벌어진"
+        },
+        {
+          "id": "d",
+          "text": "모서리가 뾰족하게 튀어나온"
+        }
+      ],
+      "correctOptionId": "b",
+      "explanation": "관형사 ‘다각적’은 여러 방면이나 부문에 걸친 것을 뜻해요.",
+      "distractorRationales": {
+        "a": "한 곳에만 머무르는 것은 반대 뜻이에요.",
+        "c": "갑작스럽게 일어난 상태를 뜻하지 않아요.",
+        "d": "도형의 뾰족한 모양을 가리키지 않아요."
+      }
+    },
+    {
+      "id": "g6-argon-0235",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 6,
+      "type": "definition",
+      "difficultyTier": "core",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "단편적",
+        "partOfSpeech": "관형사",
+        "senseKey": "단편적/관형사/413331-2"
+      },
+      "stem": "‘단편적 정보만 보고 사건을 판단하면 안 된다’에서 ‘단편적’의 뜻은 무엇일까요?",
+      "options": [
+        {
+          "id": "a",
+          "text": "전반에 걸치지 않고 한 부분에 그친"
+        },
+        {
+          "id": "b",
+          "text": "처음부터 끝까지 빠짐없이 아우른"
+        },
+        {
+          "id": "c",
+          "text": "누구나 쉽게 알아듣도록 풀어 쓴"
+        },
+        {
+          "id": "d",
+          "text": "오랜 세월 동안 변함없이 이어진"
+        }
+      ],
+      "correctOptionId": "a",
+      "explanation": "‘단편적’은 전반에 걸치지 않고 한 부분에 국한된 것을 뜻해요.",
+      "distractorRationales": {
+        "b": "모두 아우르는 것은 오히려 반대 뜻이에요.",
+        "c": "쉽게 설명한 상태를 뜻하지 않아요.",
+        "d": "오래 이어진 시간적 성질이 아니에요."
+      }
+    },
+    {
+      "id": "g6-argon-0236",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 6,
+      "type": "usage",
+      "difficultyTier": "basic",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "분석적",
+        "partOfSpeech": "관형사",
+        "senseKey": "분석적/관형사/153864-2"
+      },
+      "stem": "‘분석적’이 알맞게 쓰인 문장은 무엇일까요?",
+      "options": [
+        {
+          "id": "a",
+          "text": "근거 없이 무조건 믿기만 하는 분석적 태도를 보였다."
+        },
+        {
+          "id": "b",
+          "text": "내용은 보지도 않고 대충 넘기는 분석적 독서를 했다."
+        },
+        {
+          "id": "c",
+          "text": "원인을 요소별로 나누어 살피며 분석적 탐구를 했다."
+        },
+        {
+          "id": "d",
+          "text": "감정에만 휩쓸려 마구 우기는 분석적 주장을 폈다."
+        }
+      ],
+      "correctOptionId": "c",
+      "explanation": "‘분석적’은 내용을 구성 요소별로 자세히 나누어 보는 뜻이에요.",
+      "distractorRationales": {
+        "a": "무조건 믿는 태도는 나누어 살피는 것과 반대예요.",
+        "b": "대충 넘기는 읽기는 분석적 태도와 어긋나요.",
+        "d": "감정에 치우쳐 억지 부리는 모습에는 쓰지 않아요."
+      }
+    },
+    {
+      "id": "g6-argon-0237",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 6,
+      "type": "cloze",
+      "difficultyTier": "basic",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "사회적",
+        "partOfSpeech": "관형사",
+        "senseKey": "사회적/관형사/162418-2"
+      },
+      "stem": "쓰레기 감량은 개인의 습관을 넘어 공동체 모두가 함께 풀어야 할 (    ) 과제이다. 빈칸에 알맞은 말은 무엇일까요?",
+      "options": [
+        {
+          "id": "a",
+          "text": "사회적"
+        },
+        {
+          "id": "b",
+          "text": "개인적"
+        },
+        {
+          "id": "c",
+          "text": "순간적"
+        },
+        {
+          "id": "d",
+          "text": "독단적"
+        }
+      ],
+      "correctOptionId": "a",
+      "explanation": "‘사회적’은 사회에 관계되거나 사회성을 지닌 것을 뜻해요.",
+      "distractorRationales": {
+        "b": "개인의 습관을 넘어선 공동체 문제라 맞지 않아요.",
+        "c": "잠깐 스쳐 가는 일이라는 뜻이라 문맥과 달라요.",
+        "d": "혼자 마음대로 결정한다는 뜻이라 어울리지 않아요."
+      }
+    },
+    {
+      "id": "g6-argon-0238",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 6,
+      "type": "synonym_context",
+      "difficultyTier": "basic",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "사회적",
+        "partOfSpeech": "관형사",
+        "senseKey": "사회적/관형사/162418-2"
+      },
+      "stem": "교통 약자를 위한 저상 버스 확대는 공동체가 함께 나눌 ‘사회적’ 책임이다. 여기서 ‘사회적’과 뜻이 가장 가까운 말은 무엇일까요?",
+      "options": [
+        {
+          "id": "a",
+          "text": "혼자만의 취향에 그친"
+        },
+        {
+          "id": "b",
+          "text": "우연히 잠깐 나타난"
+        },
+        {
+          "id": "c",
+          "text": "겉모양만 화려하게 꾸민"
+        },
+        {
+          "id": "d",
+          "text": "공동체 생활에 관계된"
+        }
+      ],
+      "correctOptionId": "d",
+      "explanation": "‘사회적’은 사회 공동체에 관계되거나 사회성을 지닌 뜻이에요.",
+      "distractorRationales": {
+        "a": "혼자만의 취향에 머무는 것은 반대되는 뜻이에요.",
+        "b": "우연히 잠깐 생겼다는 뜻과는 관련이 없어요.",
+        "c": "겉모습만 꾸민다는 뜻으로 쓰지 않는 말이에요."
+      }
+    },
+    {
+      "id": "g6-argon-0239",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 6,
+      "type": "definition",
+      "difficultyTier": "basic",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "동반하다",
+        "partOfSpeech": "동사",
+        "senseKey": "동반하다/동사/89585-1"
+      },
+      "stem": "“야간 관람은 보호자를 동반하여 입장해야 합니다.”에서 ‘동반하다’의 뜻은 무엇일까요?",
+      "options": [
+        {
+          "id": "a",
+          "text": "길을 가거나 행동할 때 함께 짝을 하다"
+        },
+        {
+          "id": "b",
+          "text": "약속을 어기고 혼자 먼저 자리를 떠나다"
+        },
+        {
+          "id": "c",
+          "text": "맡은 일을 다른 사람에게 슬그머니 미루다"
+        },
+        {
+          "id": "d",
+          "text": "멀리 떨어진 곳에서 안부를 글로 전하다"
+        }
+      ],
+      "correctOptionId": "a",
+      "explanation": "‘동반하다’는 길을 가거나 일할 때 함께 짝을 한다는 뜻이에요.",
+      "distractorRationales": {
+        "b": "혼자 먼저 떠나는 것은 함께 가는 것과 반대예요.",
+        "c": "맡은 일을 남에게 떠넘긴다는 뜻이 아니에요.",
+        "d": "멀리서 편지로 소식을 전한다는 뜻과 달라요."
+      }
+    },
+    {
+      "id": "g6-argon-0240",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 6,
+      "type": "definition",
+      "difficultyTier": "advanced",
+      "variantTag": "idiom_proverb",
+      "target": {
+        "lemma": "귀에 못이 박히다",
+        "partOfSpeech": "관용구",
+        "senseKey": "귀에 못이 박히다/관용구/525556-1"
+      },
+      "stem": "“우산 챙기란 말을 귀에 못이 박히도록 듣고도 잊었다.”에서 ‘귀에 못이 박히다’의 뜻은 무엇일까요?",
+      "options": [
+        {
+          "id": "a",
+          "text": "같은 말을 아주 여러 번 거듭하여 듣다"
+        },
+        {
+          "id": "b",
+          "text": "달콤한 말에 마음이 흔들려 솔깃해지다"
+        },
+        {
+          "id": "c",
+          "text": "중요한 조언을 건성으로 흘려 넘기다"
+        },
+        {
+          "id": "d",
+          "text": "뜻밖의 좋은 소식에 정신이 번쩍 들다"
+        }
+      ],
+      "correctOptionId": "a",
+      "explanation": "‘귀에 못이 박히다’는 같은 말을 여러 번 거듭 듣는다는 뜻이에요.",
+      "distractorRationales": {
+        "b": "남의 말에 마음이 끌리는 ‘귀가 솔깃하다’의 뜻이에요.",
+        "c": "말을 흘려듣는 ‘귀등으로 듣다’와 뜻이 달라요.",
+        "d": "반가운 말에 놀라는 ‘귀가 번쩍 뜨이다’의 뜻이에요."
+      }
+    },
+    {
+      "id": "g6-argon-0241",
+      "revision": 3,
+      "status": "verified_candidate",
+      "grade": 6,
+      "type": "definition",
+      "difficultyTier": "advanced",
+      "variantTag": "idiom_proverb",
+      "target": {
+        "lemma": "눈에 밟히다",
+        "partOfSpeech": "관용구",
+        "senseKey": "눈에 밟히다/관용구/526531-1"
+      },
+      "stem": "“전학 온 뒤에도 옛 친구 모습이 자꾸 눈에 밟혔다.”에서 ‘눈에 밟히다’의 뜻은 무엇일까요?",
+      "options": [
+        {
+          "id": "a",
+          "text": "기준이 까다로워 웬만한 것은 성에 안 차다"
+        },
+        {
+          "id": "b",
+          "text": "잊히지 아니하고 머릿속에 자꾸 떠오르다"
+        },
+        {
+          "id": "c",
+          "text": "보기에 마땅찮아 마음이 자꾸 불쾌해지다"
+        },
+        {
+          "id": "d",
+          "text": "앞일이 막막하여 어찌할 바를 전혀 모르다"
+        }
+      ],
+      "correctOptionId": "b",
+      "explanation": "‘눈에 밟히다’는 잊히지 않고 자꾸 눈에 떠오른다는 뜻이에요.",
+      "distractorRationales": {
+        "a": "수준이 까다로운 ‘눈이 높다’에 해당하는 뜻이에요.",
+        "c": "보기에 거북한 ‘눈에 거슬리다’를 뜻하는 말이에요.",
+        "d": "막막한 심정을 이르는 ‘눈앞이 캄캄하다’의 뜻이에요."
+      }
+    },
+    {
+      "id": "g6-argon-0242",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 6,
+      "type": "definition",
+      "difficultyTier": "advanced",
+      "variantTag": "idiom_proverb",
+      "target": {
+        "lemma": "발을 끊다",
+        "partOfSpeech": "관용구",
+        "senseKey": "발을 끊다/관용구/521613-1"
+      },
+      "stem": "“단골 식당이었지만 불친절한 태도에 실망해 아예 발을 끊었다.”에서 ‘발을 끊다’의 뜻은 무엇일까요?",
+      "options": [
+        {
+          "id": "a",
+          "text": "피치 못할 사정으로 꼼짝하지 못하다"
+        },
+        {
+          "id": "b",
+          "text": "여러 사람과 두루 사귀어 친분이 넓다"
+        },
+        {
+          "id": "c",
+          "text": "더 이상 오가지 않거나 관계를 끝내다"
+        },
+        {
+          "id": "d",
+          "text": "다른 사람과 보조나 행동을 함께하다"
+        }
+      ],
+      "correctOptionId": "c",
+      "explanation": "‘발을 끊다’는 더 이상 오가지 않거나 관계를 끊는다는 뜻이에요.",
+      "distractorRationales": {
+        "a": "사정 때문에 못 움직이는 ‘발이 묶이다’의 뜻이에요.",
+        "b": "아는 사람이 많은 ‘발이 넓다’를 설명한 말이에요.",
+        "d": "보조를 같이하는 ‘발을 맞추다’에 해당하는 뜻이에요."
+      }
+    },
+    {
+      "id": "g6-argon-0243",
+      "revision": 3,
+      "status": "verified_candidate",
+      "grade": 6,
+      "type": "definition",
+      "difficultyTier": "advanced",
+      "variantTag": "idiom_proverb",
+      "target": {
+        "lemma": "손발이 맞다",
+        "partOfSpeech": "관용구",
+        "senseKey": "손발이 맞다/관용구/529304-1"
+      },
+      "stem": "“첫 활동인데도 두 친구는 손발이 척척 맞았다.”에서 ‘손발이 맞다’의 뜻은 무엇일까요?",
+      "options": [
+        {
+          "id": "a",
+          "text": "씀씀이가 넉넉하고 베푸는 양이 푸짐하다"
+        },
+        {
+          "id": "b",
+          "text": "여러 번 되풀이하여 혼자 하는 일에 능하다"
+        },
+        {
+          "id": "c",
+          "text": "일할 때 마음이나 행동 방식이 잘 통하다"
+        },
+        {
+          "id": "d",
+          "text": "남에게 도움이나 재물을 달라고 요구하다"
+        }
+      ],
+      "correctOptionId": "c",
+      "explanation": "‘손발이 맞다’는 함께 일할 때 마음이나 행동이 잘 맞는 뜻이에요.",
+      "distractorRationales": {
+        "a": "씀씀이가 후한 ‘손이 크다’를 설명한 표현이에요.",
+        "b": "일이 익숙해진 ‘손에 익다’와 관련된 설명이에요.",
+        "d": "도움을 청하는 ‘손을 벌리다’에 해당하는 뜻이에요."
+      }
+    },
+    {
+      "id": "g6-argon-0244",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 6,
+      "type": "definition",
+      "difficultyTier": "advanced",
+      "variantTag": "idiom_proverb",
+      "target": {
+        "lemma": "어깨가 처지다",
+        "partOfSpeech": "관용구",
+        "senseKey": "어깨가 처지다/관용구/530202-1"
+      },
+      "stem": "“결승전에서 아쉽게 패하자 주장의 어깨가 축 처졌다.”에서 ‘어깨가 처지다’의 뜻은 무엇일까요?",
+      "options": [
+        {
+          "id": "a",
+          "text": "낙심하여 풀이 죽고 기운이 꺾이다"
+        },
+        {
+          "id": "b",
+          "text": "맡은 임무가 중하여 책임감이 크다"
+        },
+        {
+          "id": "c",
+          "text": "남에게 자랑하고 싶어 우쭐거리다"
+        },
+        {
+          "id": "d",
+          "text": "실력이 대등하여 수준이 비슷하다"
+        }
+      ],
+      "correctOptionId": "a",
+      "explanation": "‘어깨가 처지다’는 낙심하여 풀이 죽고 기가 꺾인다는 뜻이에요.",
+      "distractorRationales": {
+        "b": "책임감이 큰 ‘어깨가 무겁다’를 뜻하는 말이에요.",
+        "c": "자랑스러워 뽐내는 ‘어깨가 으쓱하다’의 뜻이에요.",
+        "d": "수준이 같은 ‘어깨를 나란히 하다’의 뜻이에요."
+      }
+    },
+    {
+      "id": "g6-argon-0245",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 6,
+      "type": "definition",
+      "difficultyTier": "advanced",
+      "variantTag": "idiom_proverb",
+      "target": {
+        "lemma": "머리를 숙이다",
+        "partOfSpeech": "관용구",
+        "senseKey": "머리를 숙이다/관용구/527508-1"
+      },
+      "stem": "“거만하던 상대도 반격에 끝내 머리를 숙였다.”에서 ‘머리를 숙이다’의 뜻은 무엇일까요?",
+      "options": [
+        {
+          "id": "a",
+          "text": "상대에게 굴복하거나 낮은 태도를 보이다"
+        },
+        {
+          "id": "b",
+          "text": "문제를 풀려고 여럿이 모여 함께 의논하다"
+        },
+        {
+          "id": "c",
+          "text": "복잡한 생각을 잠시 멈추고 마음을 쉬다"
+        },
+        {
+          "id": "d",
+          "text": "미심쩍거나 이상하여 속으로 의심하다"
+        }
+      ],
+      "correctOptionId": "a",
+      "explanation": "여기서 ‘머리를 숙이다’는 굴복하거나 저자세를 보인다는 뜻이에요.",
+      "distractorRationales": {
+        "b": "함께 의논하는 ‘머리를 맞대다’를 뜻하는 말이에요.",
+        "c": "긴장을 푸는 ‘머리를 식히다’에 해당하는 뜻이에요.",
+        "d": "의문을 품는 ‘머리를 갸웃하다’를 설명한 말이에요."
+      }
+    },
+    {
+      "id": "g6-argon-0246",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 6,
+      "type": "definition",
+      "difficultyTier": "advanced",
+      "variantTag": "idiom_proverb",
+      "target": {
+        "lemma": "땀을 흘리다",
+        "partOfSpeech": "관용구",
+        "senseKey": "땀을 흘리다/관용구/521067-1"
+      },
+      "stem": "“축제를 잘 치르려고 모두가 두 달간 땀을 흘렸다.”에서 ‘땀을 흘리다’의 뜻은 무엇일까요?",
+      "options": [
+        {
+          "id": "a",
+          "text": "아슬아슬한 장면을 보며 마음을 졸이다"
+        },
+        {
+          "id": "b",
+          "text": "갑작스러운 위기에 놀라 잔뜩 당황하다"
+        },
+        {
+          "id": "c",
+          "text": "맡은 일에 집중하지 않고 딴생각을 하다"
+        },
+        {
+          "id": "d",
+          "text": "어떤 일에 힘이나 노력을 많이 들이다"
+        }
+      ],
+      "correctOptionId": "d",
+      "explanation": "‘땀을 흘리다’는 어떤 일에 힘이나 노력을 많이 들인다는 뜻이에요.",
+      "distractorRationales": {
+        "a": "마음을 졸이는 ‘손에 땀을 쥐다’를 뜻하는 말이에요.",
+        "b": "무섭거나 당황한 ‘식은땀을 흘리다’와 뜻이 달라요.",
+        "c": "집중하지 못하는 ‘한눈을 팔다’에 해당하는 뜻이에요."
+      }
+    },
+    {
+      "id": "g6-argon-0247",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 6,
+      "type": "definition",
+      "difficultyTier": "advanced",
+      "variantTag": "idiom_proverb",
+      "target": {
+        "lemma": "찬물을 끼얹다",
+        "partOfSpeech": "관용구",
+        "senseKey": "찬물을 끼얹다/관용구/532101-1"
+      },
+      "stem": "“훈훈한 회의 자리에 그의 생트집이 찬물을 끼얹었다.”에서 ‘찬물을 끼얹다’의 뜻은 무엇일까요?",
+      "options": [
+        {
+          "id": "a",
+          "text": "남의 말에 맞장구치며 흥을 북돋우다"
+        },
+        {
+          "id": "b",
+          "text": "잘되는 일에 끼어들어 분위기를 흐리다"
+        },
+        {
+          "id": "c",
+          "text": "잘못을 알고도 시치미 떼며 모른 체하다"
+        },
+        {
+          "id": "d",
+          "text": "긴장한 사람의 마음을 차분히 달래 주다"
+        }
+      ],
+      "correctOptionId": "b",
+      "explanation": "‘찬물을 끼얹다’는 잘되는 일에 끼어들어 분위기를 흐리는 뜻이에요.",
+      "distractorRationales": {
+        "a": "분위기를 띄우며 호응하는 것은 정반대 행동이에요.",
+        "c": "알고도 모른 척 넘어가는 태도와는 뜻이 달라요.",
+        "d": "긴장을 달래어 진정시켜 준다는 뜻으로 쓰지 않아요."
+      }
+    },
+    {
+      "id": "g6-argon-0248",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 6,
+      "type": "definition",
+      "difficultyTier": "advanced",
+      "variantTag": "idiom_proverb",
+      "target": {
+        "lemma": "등골이 오싹하다",
+        "partOfSpeech": "관용구",
+        "senseKey": "등골이 오싹하다/관용구/520962-1"
+      },
+      "stem": "“한밤중 빈집에서 낯선 발소리가 들리자 등골이 오싹했다.”에서 ‘등골이 오싹하다’의 뜻은 무엇일까요?",
+      "options": [
+        {
+          "id": "a",
+          "text": "감당하기 힘들 만큼 일이 몹시 고되다"
+        },
+        {
+          "id": "b",
+          "text": "소름이 끼칠 만큼 매우 놀라거나 두렵다"
+        },
+        {
+          "id": "c",
+          "text": "위기를 무사히 넘기고 마음을 놓다"
+        },
+        {
+          "id": "d",
+          "text": "큰 감동을 받아 마음이 뭉클해지다"
+        }
+      ],
+      "correctOptionId": "b",
+      "explanation": "‘등골이 오싹하다’는 소름이 끼칠 만큼 놀라거나 두렵다는 뜻이에요.",
+      "distractorRationales": {
+        "a": "일이 몹시 고된 ‘등골이 빠지다’와 혼동한 뜻이에요.",
+        "c": "안도감을 느끼는 ‘가슴을 쓸어내리다’의 뜻이에요.",
+        "d": "감동이 차오르는 상태와는 거리가 먼 표현이에요."
+      }
+    },
+    {
+      "id": "g6-argon-0249",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 6,
+      "type": "definition",
+      "difficultyTier": "advanced",
+      "variantTag": "idiom_proverb",
+      "target": {
+        "lemma": "열을 올리다",
+        "partOfSpeech": "관용구",
+        "senseKey": "열을 올리다/관용구/530645-1"
+      },
+      "stem": "“상대가 규칙을 어기고도 우기자 그는 언성을 높이며 열을 올렸다.” 여기서 ‘열을 올리다’의 뜻은 무엇일까요?",
+      "options": [
+        {
+          "id": "a",
+          "text": "취미나 공부에 깊이 빠져 몰두하다"
+        },
+        {
+          "id": "b",
+          "text": "남의 잘못을 너그럽게 감싸 안다"
+        },
+        {
+          "id": "c",
+          "text": "창피한 마음에 슬그머니 물러나다"
+        },
+        {
+          "id": "d",
+          "text": "몹시 흥분하여 거세게 성을 내다"
+        }
+      ],
+      "correctOptionId": "d",
+      "explanation": "이 문장에서 ‘열을 올리다’는 흥분하여 성을 낸다는 뜻이에요.",
+      "distractorRationales": {
+        "a": "일에 몰두한다는 다른 뜻이라 이 문맥과 맞지 않아요.",
+        "b": "잘못을 감싸 주는 태도와는 정반대되는 모습이에요.",
+        "c": "부끄러워 물러난다는 뜻으로는 쓰이지 않아요."
+      }
+    },
+    {
+      "id": "g6-argon-0250",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 6,
+      "type": "definition",
+      "difficultyTier": "advanced",
+      "variantTag": "idiom_proverb",
+      "target": {
+        "lemma": "무릎을 치다",
+        "partOfSpeech": "관용구",
+        "senseKey": "무릎을 치다/관용구/521464-1"
+      },
+      "stem": "“오래 고민하던 문제의 실마리를 찾자 절로 무릎을 쳤다.”에서 ‘무릎을 치다’의 뜻은 무엇일까요?",
+      "options": [
+        {
+          "id": "a",
+          "text": "분하고 억울한 일로 깊이 후회하다"
+        },
+        {
+          "id": "b",
+          "text": "새 사실을 알거나 기억이 나 반가워하다"
+        },
+        {
+          "id": "c",
+          "text": "상대의 기세에 눌려 힘없이 항복하다"
+        },
+        {
+          "id": "d",
+          "text": "상대의 제안을 단호하게 거절하다"
+        }
+      ],
+      "correctOptionId": "b",
+      "explanation": "‘무릎을 치다’는 사실을 새로 알거나 기억이 나 기뻐하는 모습이에요.",
+      "distractorRationales": {
+        "a": "원통해하며 후회하는 ‘가슴을 치다’와 혼동한 뜻이에요.",
+        "c": "상대에게 굴복하는 ‘무릎을 꿇다’에 해당하는 뜻이에요.",
+        "d": "제안을 거부하는 ‘고개를 젓다’를 설명한 말이에요."
       }
     },
     {

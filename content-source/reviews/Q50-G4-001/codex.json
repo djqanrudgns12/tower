@@ -26,6 +26,95 @@
       ]
     },
     {
+      "questionId": "g4-argon-0001",
+      "revision": 2,
+      "contentHash": "f785ee2d20b9ef46c5b5a6f8954b89cee517c189a077524f86882a4188378ec4",
+      "run": {
+        "id": "20261106T045931592Z-9703-9a69e580-474f-438e-acb5-db82735a0e62",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "c",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": [
+        "[블라인드] 선물 받은 시계를 잘 보관한 상황이므로 c만 알맞습니다. 문장과 보기의 길이가 적절하고 4학년이 이해할 수 있습니다.",
+        "[공개 대조] c는 근거의 ‘물건을 잘 간수하여 두다’와 일치하며, 나머지 보기는 보관의 뜻이 아닙니다. 문장과 난도가 4학년에 적절하고 해설과 오답 이유도 타당합니다."
+      ]
+    },
+    {
+      "questionId": "g4-argon-0001",
+      "revision": 3,
+      "contentHash": "0b9934134e1f92152e14b93f0a9e51d22e162023bb3d07e09a91b732b51fda58",
+      "run": {
+        "id": "20261106T064807836Z-37293-bd5b70db-46c0-49e3-99d6-f9b3a423c26a",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "c",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "fail",
+        "explanation": "pass"
+      },
+      "findings": [
+        "[블라인드] 선물 받은 물건을 잘 챙겨 보관한다는 뜻으로 c만 알맞습니다. b의 ‘내다 팔다’는 한 단어인 ‘내다팔다’로 붙여 써야 합니다.",
+        "[공개 대조] c만 물건을 잘 간수하여 둔다는 근거의 뜻과 맞으며, 해설과 오답 이유도 타당합니다.",
+        "[공개 대조] b의 ‘내다 팔다’는 ‘내다팔다’로, 해당 오답 이유의 ‘내다 파는’은 ‘내다파는’으로 붙여 쓰세요."
+      ]
+    },
+    {
+      "questionId": "g4-argon-0001",
+      "revision": 4,
+      "contentHash": "32132a10ad8fb3898a4ae1f8b39cb636e17dea1c788675776e634ee543a17922",
+      "run": {
+        "id": "20261106T080738977Z-47932-6b5b79f8-0fd1-4765-8914-421d3f2f681f",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "c",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": [
+        "[블라인드] 선물 받은 시계를 상자에 보관하는 상황이므로 c만 알맞습니다. 생활 속 사례와 보기의 표현이 4학년 수준에 적절합니다.",
+        "[공개 대조] 시계를 잘 챙겨 보관한다는 c만 문맥과 제시된 동사 뜻에 맞습니다. 학년과 난이도에 적절하며 해설과 오답 이유도 정확합니다."
+      ]
+    },
+    {
+      "questionId": "g4-argon-0001",
+      "revision": 5,
+      "contentHash": "2d754d67f6a08886e8e6ac423a97340869ad4e563ee76e316c66c8cadd9525d6",
+      "run": {
+        "id": "20261106T083924555Z-54436-fe02e026-4ef5-495d-820a-771ea54b7e43",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "c",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": [
+        "[블라인드] 선물 받은 시계를 상자에 보관하는 상황이므로 c만 알맞습니다. 어휘와 문장이 4학년 수준에 적절하고 보기의 형식과 길이도 고릅니다.",
+        "[공개 대조] 정답 c는 제공된 동사 뜻풀이의 잘 간수하여 두는 행위와 일치하며, 빌려주기·팔기·버리기는 해당 뜻을 나타내지 않습니다. 4학년 core 수준에 적절하고 문장과 보기 형식이 자연스러우며, 해설과 오답 이유도 타당합니다."
+      ]
+    },
+    {
       "questionId": "g4-argon-0002",
       "revision": 2,
       "contentHash": "2615a2ca70f5a59f6d21888beef01939ed30ec6ae865a11f08da1e4ac38a1c51",
@@ -40,6 +129,28 @@
       "findings": [
         "[블라인드] 여러 번 시도한 뒤 퍼즐을 완성한 결과를 나타내므로 c가 알맞습니다. 문장과 보기의 표현은 4학년이 이해할 수 있습니다.",
         "[공개 대조] 여러 번 시도한 뒤 완성한 결과를 나타내므로 c만 알맞으며 부사 뜻의 근거와 일치합니다. 해설과 세 오답 이유도 문맥에 맞습니다."
+      ]
+    },
+    {
+      "questionId": "g4-argon-0002",
+      "revision": 3,
+      "contentHash": "95d36f2ee37582b9dcb2b23f98b01d6518f5a9ea4359128078823444f4aec454",
+      "run": {
+        "id": "20261106T064807836Z-37293-bd5b70db-46c0-49e3-99d6-f9b3a423c26a",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "c",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": [
+        "[블라인드] 여러 번 시도한 끝에 완성했다는 문맥에서 ‘마침내’만 바꾸어 쓸 수 있으며, 문장과 어휘가 4학년에 적절합니다.",
+        "[공개 대조] 여러 번 시도한 끝에 퍼즐을 완성했다는 문맥에서는 c만 ‘결국’을 대신할 수 있습니다. 부사 뜻의 근거와 해설이 일치하며, 다른 보기의 시간적 의미나 호응이 맞지 않는다는 설명도 타당합니다."
       ]
     },
     {
@@ -60,6 +171,50 @@
       ]
     },
     {
+      "questionId": "g4-argon-0003",
+      "revision": 2,
+      "contentHash": "0697da7c8eaa80cda3ca1d46a16298689662495c6d0c9e0c23937c3ea91127ce",
+      "run": {
+        "id": "20261106T045931592Z-9703-9a69e580-474f-438e-acb5-db82735a0e62",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "multiple",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "fail",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "fail"
+      },
+      "findings": [
+        "[블라인드] 승리를 기대하며 응원할 수도 있지만, 승리를 포기하고도 선수들이 끝까지 최선을 다하도록 응원할 수 있어 a와 d가 성립합니다. a를 ‘잊어버리며’처럼 해당 응원 상황에 맞지 않는 보기로 바꾸세요.",
+        "[공개 대조] d는 사전 뜻에 맞지만, 승리는 포기했어도 선수들이 끝까지 최선을 다하도록 응원할 수 있으므로 1단계의 복수 답 판단이 유지됩니다. 지문에 ‘아직 이길 수 있다고 믿으며’라는 조건을 넣고, a의 오답 이유도 그 조건과 모순된다는 설명으로 고치세요."
+      ]
+    },
+    {
+      "questionId": "g4-argon-0003",
+      "revision": 3,
+      "contentHash": "4ad1157cf8b63e5c0397f40303cfb3bc99d9c2643f2e633c30521205ae29d723",
+      "run": {
+        "id": "20261106T064807836Z-37293-bd5b70db-46c0-49e3-99d6-f9b3a423c26a",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "d",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": [
+        "[블라인드] 승리할 수 있다고 믿고 응원하는 상황이므로 ‘기대하며’만 자연스럽습니다. 분명한 문맥 단서가 있어 basic 수준에 적절합니다.",
+        "[공개 대조] 이길 수 있다고 믿으며 응원하는 상황에는 d만 맞고, 나머지는 승리를 바라는 태도와 어긋납니다. 정답과 해설이 동사 뜻의 근거에 부합하며 basic 수준과 문장 연결도 적절합니다."
+      ]
+    },
+    {
       "questionId": "g4-argon-0004",
       "revision": 1,
       "contentHash": "ddba6e7193b39bbd9ff22dd698e9a05077116e86bdf37009c62cfb08834312dd",
@@ -74,6 +229,28 @@
       "findings": [
         "[블라인드] 깊이 생각하여 원리를 이해하고 문제를 해결했다는 인과관계에 c만 맞습니다. 활용형과 문장 연결도 자연스럽습니다.",
         "[공개 대조] 깊이 생각하여 원리를 알고 문제를 해결했다는 문맥에는 c만 맞으며 근거와도 일치합니다. a의 이유는 해결 가능성을 지나치게 단정하므로 ‘원리를 이해한 덕분에 해결했다는 문맥과 맞지 않아요’로 고치세요."
+      ]
+    },
+    {
+      "questionId": "g4-argon-0004",
+      "revision": 2,
+      "contentHash": "f22912d7cc1ff8d62d67f3f71dd5e33c34bedeac94e08c325d8f37135090cf4f",
+      "run": {
+        "id": "20261106T045931592Z-9703-9a69e580-474f-438e-acb5-db82735a0e62",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "c",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": [
+        "[블라인드] 깊이 생각한 결과 원리를 이해하여 문제를 해결했다는 흐름에 c만 맞습니다. 활용형과 문장 연결도 자연스럽습니다.",
+        "[공개 대조] 생각한 끝에 원리를 알아 문제를 해결했다는 흐름에는 c만 맞으며, 근거의 동사 뜻과 일치합니다. 문장 연결과 학년·난도가 적절하고 오답 설명도 문맥에 부합합니다."
       ]
     },
     {
@@ -111,6 +288,28 @@
       ]
     },
     {
+      "questionId": "g4-argon-0006",
+      "revision": 2,
+      "contentHash": "988cb328e6b518a6f711da71aabdbb9710bf7f4fe762f02be8a1c23bf0080e57",
+      "run": {
+        "id": "20261106T045931592Z-9703-9a69e580-474f-438e-acb5-db82735a0e62",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "b",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": [
+        "[블라인드] 반듯하게 챙겨 입은 옷매무새를 설명하는 뜻은 b입니다. 다른 보기의 화려함·독특함·넉넉함과 구별됩니다.",
+        "[공개 대조] 반듯한 옷매무새를 나타내는 b만 근거의 형용사 뜻에 해당합니다. 화려함·독특함·넉넉함을 구별한 오답 설명이 타당하고 표현도 자연스럽습니다."
+      ]
+    },
+    {
       "questionId": "g4-argon-0007",
       "revision": 1,
       "contentHash": "61b21bee607d75c17c1f554617dfddd991069eb5a480c83262d0390cc02cca27",
@@ -125,6 +324,28 @@
       "findings": [
         "[블라인드] 남 앞에서도 부끄러움 없이 행동한다는 문맥에 ‘떳떳했습니다’만 대응합니다. 바꾸어 넣었을 때 문장도 자연스럽습니다.",
         "[공개 대조] b만 부끄럼 없이 떳떳한 태도라는 근거와 문맥에 맞습니다. 초조함과 당당함은 반드시 반대가 아니므로 a의 이유를 ‘초조하다는 마음이 불안하고 조마조마하다는 뜻으로, 떳떳한 태도를 나타내지 않아요’로 고치세요."
+      ]
+    },
+    {
+      "questionId": "g4-argon-0007",
+      "revision": 2,
+      "contentHash": "a0679e884a971d4591e55715bfd41cf2c5d7fb2881a99db89513b4e008642e81",
+      "run": {
+        "id": "20261106T045931592Z-9703-9a69e580-474f-438e-acb5-db82735a0e62",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "b",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": [
+        "[블라인드] 남 앞에서 부끄럼 없는 태도라는 문맥에서 ‘떳떳했습니다’가 가장 가깝습니다. 나머지 보기는 같은 뜻으로 바꿔 쓸 수 없습니다.",
+        "[공개 대조] 부끄럼 없는 태도라는 문맥에서 b만 ‘당당했습니다’와 같은 뜻으로 바꿀 수 있고 근거와도 일치합니다. 나머지 감정이나 상태를 구별한 설명이 적절합니다."
       ]
     },
     {
@@ -145,6 +366,51 @@
       ]
     },
     {
+      "questionId": "g4-argon-0008",
+      "revision": 2,
+      "contentHash": "60baa56addac12a3007e14e71c1e827349cc2162820bd3341dd8277c0836154d",
+      "run": {
+        "id": "20261106T045931592Z-9703-9a69e580-474f-438e-acb5-db82735a0e62",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "a",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "uncertain",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": [
+        "[블라인드] 다른 것에 없는 색다른 특징을 나타내는 a만 맞습니다. 오답이 모두 평범함을 직접 설명하므로 advanced보다는 core에 가까우며, 난도를 낮추거나 오답을 가까운 의미의 혼동 사례로 바꾸세요.",
+        "[공개 대조] a만 특별하게 다르다는 사전 뜻에 맞으며 해설과 오답 이유도 타당합니다. 오답 모두 평범함을 직접 명시하여 advanced 수준의 판단을 요구하지 않으므로 difficultyTier를 core로 조정하세요."
+      ]
+    },
+    {
+      "questionId": "g4-argon-0008",
+      "revision": 3,
+      "contentHash": "481a430cbc38ad46597574f17bad2808bf2017e8cb20ee0a0807f16e7391b630",
+      "run": {
+        "id": "20261106T064807836Z-37293-bd5b70db-46c0-49e3-99d6-f9b3a423c26a",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "a",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "uncertain",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": [
+        "[블라인드] 색다른 소리를 설명하는 a만 알맞습니다. 오답이 모두 ‘흔하다·평범하다·똑같다’로 직접 대립하여 advanced 수준으로 보기 어려우므로 core로 낮추거나 오답의 의미 구별을 더 정교하게 구성하세요.",
+        "[공개 대조] a만 특별하게 다르다는 뜻에 맞으며, 제시된 문장 안에서 다른 보기들은 그 뜻과 직접 모순됩니다.",
+        "[공개 대조] 오답이 모두 ‘흔해서·평범해서·똑같은 모양이라’처럼 반대 의미를 명시하므로 advanced 분류는 과도합니다. core로 조정하거나 더 세밀한 의미 구별이 필요한 보기로 바꾸세요."
+      ]
+    },
+    {
       "questionId": "g4-argon-0009",
       "revision": 1,
       "contentHash": "0d95f2c465bb2754a9b4ec25100b0e2ad0a5090da43672f2aef88652f51943b7",
@@ -159,6 +425,50 @@
       "findings": [
         "[블라인드] 비에 대비하여 우산을 준비해 두었다는 뜻이므로 d만 알맞습니다. 목적과 결과가 분명하고 표현도 학년 수준에 맞습니다.",
         "[공개 대조] 비에 대비하여 필요한 우산을 갖추었다는 문맥에는 d만 알맞고 근거와도 일치합니다. 버려두거나 망가뜨린 우산 때문에 반드시 비를 피할 수 없다고 단정하지 말고, a·c의 이유를 ‘비에 대비하여 쓸 우산을 준비했다는 문맥과 맞지 않아요’로 고치세요."
+      ]
+    },
+    {
+      "questionId": "g4-argon-0009",
+      "revision": 2,
+      "contentHash": "a164437223b32d739b690149677740419bc9726cadee1e3cfcfafbc844366130",
+      "run": {
+        "id": "20261106T045931592Z-9703-9a69e580-474f-438e-acb5-db82735a0e62",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "d",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": [
+        "[블라인드] 비에 대비하여 우산을 준비한 덕분에 젖지 않았다는 인과관계에 d만 맞습니다. 일상적인 상황과 어휘여서 basic에 적절합니다.",
+        "[공개 대조] 비에 대비하여 우산을 갖춘 덕분에 젖지 않았다는 인과관계에는 d만 맞으며 사전 뜻과 일치합니다. 일상적인 상황과 표현이 basic에 적절하고 오답 이유도 타당합니다."
+      ]
+    },
+    {
+      "questionId": "g4-argon-0009",
+      "revision": 3,
+      "contentHash": "cd4798c9c8a387d4bf3205087333d1ab1181271a87cc0ed51eb142c1ffbb7e88",
+      "run": {
+        "id": "20261106T064807836Z-37293-bd5b70db-46c0-49e3-99d6-f9b3a423c26a",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "d",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": [
+        "[블라인드] 비에 대비해 우산을 준비한 덕분에 젖지 않았다는 인과관계에 d만 맞습니다. 문장과 보기의 형태도 자연스럽습니다.",
+        "[공개 대조] 우산을 갖춘 덕분에 젖지 않았다는 인과관계에 d만 맞습니다. 정답과 해설은 ‘헤아려서 갖추다’라는 근거에 부합하며 오답 이유와 basic 분류도 적절합니다."
       ]
     },
     {
@@ -213,6 +523,28 @@
       ]
     },
     {
+      "questionId": "g4-argon-0012",
+      "revision": 3,
+      "contentHash": "3442faf91807ccd441ae05b3ef4630ca07252aa03bd7d7883f9dc145d4a0c1e3",
+      "run": {
+        "id": "20261106T064807836Z-37293-bd5b70db-46c0-49e3-99d6-f9b3a423c26a",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "b",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": [
+        "[블라인드] 노력한 결과를 거두어 느끼는 보람은 이 문맥에서 ‘만족감’으로 바꾸어 쓸 수 있습니다. 나머지는 부정적인 감정이므로 구별됩니다.",
+        "[공개 대조] 노력하여 좋은 수확을 얻은 뒤 느끼는 ‘보람’은 이 문맥에서 b로 바꾸어 쓸 수 있으며, 근거에도 만족감이 명시되어 있습니다. 다른 감정들은 ‘보람’의 문맥상 의미를 대신하지 못하고 해설과 오답 이유도 적절합니다."
+      ]
+    },
+    {
       "questionId": "g4-argon-0013",
       "revision": 2,
       "contentHash": "b686ff6c98ba917e90d57bcdd5f9557508ca6d34c8d3ff1c3492f7aa62cf3718",
@@ -227,6 +559,28 @@
       "findings": [
         "[블라인드] b가 가장 자연스럽지만, a도 준비를 망설이다가 본격적인 일을 시작하기 전에 마침내 준비했다는 뜻으로 성립하여 ‘결국’의 오용으로 단정할 수 없습니다. a의 시간 관계를 더 명확히 설계하고, d의 ‘빨갛게 결국 생겼다’는 문법적 소거 단서가 되지 않도록 고치세요.",
         "[공개 대조] b는 근거에 맞지만 a도 망설인 끝에 본격적인 일을 시작하기 전에 준비했다는 뜻으로 성립하여 1단계의 복수 응답 근거가 유지됩니다. a를 명확한 오용으로 교체하고 d의 부자연스러운 문장을 다듬으며, 준비 단계나 생김새를 설명하는 문장에는 ‘결국’을 쓸 수 없다는 오답 이유를 고치세요."
+      ]
+    },
+    {
+      "questionId": "g4-argon-0013",
+      "revision": 3,
+      "contentHash": "dc836fc4fa13ab7c496427e9be91b6f8184c839d7471aff409c96fc772f381a7",
+      "run": {
+        "id": "20261106T045931592Z-9703-9a69e580-474f-438e-acb5-db82735a0e62",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "b",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": [
+        "[블라인드] 노력했지만 경기 종료 때 패배했다는 최종 결과를 나타내므로 b가 맞습니다. 특정한 오늘 경기의 결과여서 ‘항상’도 성립하지 않습니다.",
+        "[공개 대조] 오늘 결승전의 종료와 최종 결과를 연결하는 부사는 b뿐이며 제시된 부사 뜻과 일치합니다. 특정 경기라는 조건이 ‘항상’을 배제하고 해설과 오답 이유도 적절합니다."
       ]
     },
     {
@@ -264,6 +618,28 @@
       ]
     },
     {
+      "questionId": "g4-argon-0015",
+      "revision": 3,
+      "contentHash": "cafdce373decf01cb5aa1cee38f76d6e0ade949acb6d158b512162f5890371d6",
+      "run": {
+        "id": "20261106T064807836Z-37293-bd5b70db-46c0-49e3-99d6-f9b3a423c26a",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "d",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": [
+        "[블라인드] 길을 따라간 끝에 출구를 찾았다는 문맥에서 d만 알맞습니다. 뜻풀이와 문장이 4학년이 이해할 수 있는 수준입니다.",
+        "[공개 대조] 끝까지 길을 따라가 출구를 찾은 결과를 나타내므로 d만 맞습니다. 정답은 제공된 부사 뜻과 일치하며 해설과 세 오답 이유도 문맥에 부합합니다."
+      ]
+    },
+    {
       "questionId": "g4-argon-0016",
       "revision": 1,
       "contentHash": "d75ac8615f8ff46e3a5942424ab412959f16640b3e337dcb63a6b220a0c8d763",
@@ -278,6 +654,28 @@
       "findings": [
         "[블라인드] 뜻으로는 a만 맞지만, 정답 보기에 평가 낱말과 형태가 가까운 ‘기쁨’이 들어 있어 뜻을 몰라도 고를 단서가 됩니다. a를 ‘즐겁고 흐뭇하게 여기다’처럼 바꾸세요.",
         "[공개 대조] a만 근거의 뜻에 맞지만 평가 낱말과 같은 어근인 ‘기쁨’이 정답 보기에 노출되어 형태만으로 고를 단서가 됩니다. a를 ‘즐겁고 흐뭇하게 여기다’로 바꾸세요."
+      ]
+    },
+    {
+      "questionId": "g4-argon-0016",
+      "revision": 2,
+      "contentHash": "8bec392acf1ddcf0e021c1eeded73d659d07ee3a9f185aa2fcc46697178aa8af",
+      "run": {
+        "id": "20261106T045931592Z-9703-9a69e580-474f-438e-acb5-db82735a0e62",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "a",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": [
+        "[블라인드] 토마토가 익은 일을 즐겁고 흐뭇하게 여긴다는 뜻의 a만 맞습니다. 문장과 보기가 쉽고 자연스럽습니다.",
+        "[공개 대조] a는 근거의 ‘마음에 기쁨을 느끼다’를 쉽게 풀어 쓴 뜻으로 유일한 정답입니다. 문장과 보기, 해설이 4학년 basic 수준에 적절합니다."
       ]
     },
     {
@@ -315,6 +713,51 @@
       ]
     },
     {
+      "questionId": "g4-argon-0018",
+      "revision": 2,
+      "contentHash": "b6ba2a06d14ed90d3c48c76b63095f72de45915d9355dd4563a7967429991ee8",
+      "run": {
+        "id": "20261106T045931592Z-9703-9a69e580-474f-438e-acb5-db82735a0e62",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "a",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "uncertain",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": [
+        "[블라인드] 여러 모양이 있음을 설명하는 a만 맞습니다. 나머지는 한 가지이거나 무늬가 없다는 직접적인 반대 설명이므로 advanced보다는 core로 조정하는 것이 적절합니다.",
+        "[공개 대조] 여러 모양이 있는 a만 사전 뜻에 맞고 오답 이유도 정확합니다. 한 가지뿐이거나 무늬가 없다는 직접적인 반대 설명으로 쉽게 풀리므로 difficultyTier를 advanced에서 core로 낮추세요."
+      ]
+    },
+    {
+      "questionId": "g4-argon-0018",
+      "revision": 3,
+      "contentHash": "ab24fd220a9794386498a10352036a2fa06009f3b6dbb1b53e17ed476e85d295",
+      "run": {
+        "id": "20261106T064807836Z-37293-bd5b70db-46c0-49e3-99d6-f9b3a423c26a",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "a",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "uncertain",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": [
+        "[블라인드] 여러 빛깔을 제시한 a만 ‘다양하다’의 뜻에 맞습니다. 오답이 모두 다양성이 없음을 명시하여 advanced 수준에는 지나치게 쉬우므로 basic 또는 core로 조정하세요.",
+        "[공개 대조] 여러 빛깔을 열거한 a만 근거의 뜻과 맞으며, 해설과 오답 이유도 타당합니다.",
+        "[공개 대조] 다른 보기들이 ‘한 가지뿐·아무 장식이 없어·다 똑같은’으로 다양성의 부재를 직접 드러내므로 advanced 분류에 맞지 않습니다. basic 또는 core로 낮추세요."
+      ]
+    },
+    {
       "questionId": "g4-argon-0019",
       "revision": 1,
       "contentHash": "a439eab959e66c3ba35d8af6f586393049215e25b5a868cf7eabfaa78bb83ad7",
@@ -329,6 +772,51 @@
       "findings": [
         "[블라인드] 욕심 없이 맑고 깨끗한 마음을 나타내는 뜻에는 d만 맞습니다. 음식 맛 이외의 추상적인 쓰임을 묻는 점에서 advanced 수준도 적절합니다.",
         "[공개 대조] 욕심 없이 마음이 깨끗하다는 뜻에는 d만 맞으며 제시된 근거의 첫 번째 뜻과 일치합니다. 추상적인 마음의 상태를 묻는 advanced 문항으로 적절하고 해설도 정확합니다."
+      ]
+    },
+    {
+      "questionId": "g4-argon-0019",
+      "revision": 2,
+      "contentHash": "1a66e06be9efae487208f162e22dd2c09cef83ffc9fb4461512dc360b7eb230f",
+      "run": {
+        "id": "20261106T064807836Z-37293-bd5b70db-46c0-49e3-99d6-f9b3a423c26a",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "d",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "uncertain",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": [
+        "[블라인드] 욕심이 없고 마음이 깨끗하다는 앞부분을 받아 설명하는 말은 ‘담백한’입니다. 음식 맛과 다른 성품의 의미를 묻는 구성이므로 variantTag를 polysemy로 조정하는 것이 적절합니다.",
+        "[공개 대조] ‘그런’이 앞의 욕심 없고 깨끗한 마음을 받아 설명하므로 d만 알맞고, 정답과 해설은 제공된 성품 의미에 정확히 대응합니다.",
+        "[공개 대조] 익숙한 음식 맛의 의미에서 벗어나 성품을 나타내는 의미를 묻는 구성이므로 variantTag는 standard보다 polysemy가 적절합니다."
+      ]
+    },
+    {
+      "questionId": "g4-argon-0019",
+      "revision": 3,
+      "contentHash": "5abf0f9e8cd5587b37d7422ab30ca377398f2b14eb48010ee9a07ed448764eda",
+      "run": {
+        "id": "20261106T080738977Z-47932-6b5b79f8-0fd1-4765-8914-421d3f2f681f",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "d",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": [
+        "[블라인드] 욕심이 없고 마음이 깨끗하다는 단서에 맞는 말은 d입니다. 맛 이외의 뜻을 묻는 다의어 문항으로, challenge 수준에 맞고 문장도 자연스럽습니다.",
+        "[공개 대조] 욕심이 없고 마음이 깨끗하다는 성품을 나타내는 d만 맞으며, 근거의 형용사 뜻과 일치합니다. 맛이 아닌 성품을 나타내는 다의어 용법이어서 challenge 분류가 적절하고 오답 설명도 타당합니다."
       ]
     },
     {
@@ -383,6 +871,50 @@
       ]
     },
     {
+      "questionId": "g4-argon-0022",
+      "revision": 2,
+      "contentHash": "6dae5aafb128413bce42e78dca1a7e0b6bf9f759044e975b4807553b4ffedc4e",
+      "run": {
+        "id": "20261106T064807836Z-37293-bd5b70db-46c0-49e3-99d6-f9b3a423c26a",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "b",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": [
+        "[블라인드] 완성한 도자기가 마음에 꼭 들어 느낀 감정이므로 ‘흐뭇해했습니다’만 알맞습니다. 활용형도 지문에 자연스럽게 연결됩니다.",
+        "[공개 대조] 도자기가 마음에 꼭 들어 흡족하게 여긴 상황이므로 b만 바꾸어 쓸 수 있습니다. 근거의 동사 뜻과 해설이 일치하며 활용형과 오답 이유도 자연스럽습니다."
+      ]
+    },
+    {
+      "questionId": "g4-argon-0022",
+      "revision": 3,
+      "contentHash": "7244ef1b1a73efbd30462535ee77ddb3a742e0afac8f6dbd193c9b4281433768",
+      "run": {
+        "id": "20261106T080738977Z-47932-6b5b79f8-0fd1-4765-8914-421d3f2f681f",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "b",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": [
+        "[블라인드] 만든 도자기가 마음에 꼭 든다는 상황에서는 b로 바꾸어 쓸 수 있습니다. 나머지 보기는 만족한 마음을 나타내지 않으며 표현과 난이도도 적절합니다.",
+        "[공개 대조] 도자기를 흡족하게 여긴 상황에서는 b만 바꾸어 쓸 수 있으며 근거와도 맞습니다. 나머지 보기는 만족과 다른 감정을 나타내고 해설과 문장 표현도 적절합니다."
+      ]
+    },
+    {
       "questionId": "g4-argon-0023",
       "revision": 1,
       "contentHash": "aacf891f834ff380416f8e54e9a05e826450004315bbcc3060213c63a43d343f",
@@ -397,6 +929,50 @@
       "findings": [
         "[블라인드] 좋은 습관을 긍정적으로 평가하는 b만 맞지만, c·d는 문장 성분이 호응하지 않는 비문이라 쉽게 제외됩니다. 두 보기를 문법적으로 완결된 오용 문장으로 고친 뒤 advanced 난도를 다시 판단하세요.",
         "[공개 대조] 좋은 습관의 가치를 평가하는 b만 근거에 맞지만 c·d는 문장 성분이 호응하지 않는 비문입니다. 두 보기를 문법적으로 완결된 오용 문장으로 바꾸고, 쉽게 소거되는 현재 구성의 advanced 난도를 재검토하세요."
+      ]
+    },
+    {
+      "questionId": "g4-argon-0023",
+      "revision": 2,
+      "contentHash": "20c00bb9c1ec8f7aa95fa37dbfff74ab18098f86d11de5d0efcfccae9f9bc572",
+      "run": {
+        "id": "20261106T045931592Z-9703-9a69e580-474f-438e-acb5-db82735a0e62",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "b",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "uncertain",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": [
+        "[블라인드] 좋다고 여길 만한 생활 습관을 나타내는 b만 맞습니다. 좋은 행동 하나와 명백한 나쁜 행동 셋을 구분하는 수준이므로 advanced를 core로 낮추거나 의미 판단이 필요한 보기로 고치세요.",
+        "[공개 대조] b만 바랄 만한 가치가 있는 행동이며 근거와 해설이 일치합니다. 좋은 행동 하나와 명백히 나쁜 행동 셋을 구별하는 구성이라 advanced보다 core가 적절합니다."
+      ]
+    },
+    {
+      "questionId": "g4-argon-0023",
+      "revision": 3,
+      "contentHash": "cb1a955495433e2476655b515bd9a1ed399ba4c4dfe11c83d5aac8439b119562",
+      "run": {
+        "id": "20261106T064807836Z-37293-bd5b70db-46c0-49e3-99d6-f9b3a423c26a",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "b",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": [
+        "[블라인드] 권장할 만한 좋은 습관을 나타내는 b만 ‘바람직하다’의 뜻에 맞습니다. 어린이에게 익숙한 생활 상황으로 구성되어 있습니다.",
+        "[공개 대조] 일반적인 학교생활의 가치 판단에서 b만 바랄 만한 가치가 있는 습관입니다. 근거와 해설이 일치하고 다른 보기의 행동을 권장할 수 없다는 설명도 적절합니다."
       ]
     },
     {
@@ -434,6 +1010,50 @@
       ]
     },
     {
+      "questionId": "g4-argon-0025",
+      "revision": 3,
+      "contentHash": "0de3ddae5b0a6f0dc5dcbccc4cea595073900527a9dec0e3180d516f7db61fc2",
+      "run": {
+        "id": "20261106T045931592Z-9703-9a69e580-474f-438e-acb5-db82735a0e62",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "b",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "uncertain",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": [
+        "[블라인드] 정해진 시간에 운동하는 것은 일정한 질서를 따르는 것이므로 b가 맞습니다. 지문이 의미를 직접 제시하고 오답도 뚜렷해 advanced보다는 core에 가까우므로 난도 표기를 조정하세요.",
+        "[공개 대조] b는 제시된 관형사 뜻과 일치하며 운동을 꾸미는 자리에도 자연스럽게 들어갑니다. 지문에 뜻을 직접 풀어 주고 오답도 뚜렷하게 구별하므로 difficultyTier를 advanced에서 core로 조정하세요."
+      ]
+    },
+    {
+      "questionId": "g4-argon-0025",
+      "revision": 4,
+      "contentHash": "ae24999b2191208c19d53338e72ed74e9af5068ee6bc609abeab58fc9a6721ca",
+      "run": {
+        "id": "20261106T064807836Z-37293-bd5b70db-46c0-49e3-99d6-f9b3a423c26a",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "b",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": [
+        "[블라인드] 정해진 시간에 운동한다는 설명은 일정한 질서를 따른다는 b와 연결됩니다. 관형사 ‘규칙적’이 ‘운동’을 꾸미는 구성도 가능합니다.",
+        "[공개 대조] 정해진 시간에 하는 운동은 일정한 질서를 따르는 b에 해당하며, 다른 보기들은 ‘규칙적’의 뜻을 설명하지 못합니다. ‘규칙적’이 ‘운동’을 꾸미므로 제공된 관형사 근거와도 일치합니다."
+      ]
+    },
+    {
       "questionId": "g4-argon-0026",
       "revision": 1,
       "contentHash": "c9b36c2ca1c426eeacccaaf8a9c554c3d1ea7eeb8e445886323ae4c443017f20",
@@ -468,6 +1088,28 @@
       ]
     },
     {
+      "questionId": "g4-argon-0027",
+      "revision": 2,
+      "contentHash": "6dd0a7f46906383d8e7c433187a485ca14d13a1ec6785a6dd1f153dcd66158b8",
+      "run": {
+        "id": "20261106T045931592Z-9703-9a69e580-474f-438e-acb5-db82735a0e62",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "a",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": [
+        "[블라인드] 낯선 친구들 앞에서 인사하기가 수줍은 마음은 ‘부끄러웠습니다’로 바꾸어 표현할 수 있습니다. 전학 첫날이라는 상황도 의미를 자연스럽게 뒷받침합니다.",
+        "[공개 대조] 낯선 친구들 앞에서 인사하기 어려운 마음은 a로 바꿀 수 있으며 제시된 뜻과 일치합니다. 상황과 표현이 자연스럽고 다른 감정과 구별한 해설도 타당합니다."
+      ]
+    },
+    {
       "questionId": "g4-argon-0028",
       "revision": 1,
       "contentHash": "402b7f527d96d8e5cb71c3c59251362af7415bc8143f60362d0e0bec0e65cc09",
@@ -485,6 +1127,28 @@
       ]
     },
     {
+      "questionId": "g4-argon-0028",
+      "revision": 2,
+      "contentHash": "4bc4860f2c6a07fce444814bdccc0c86f3ecf002a44a8c42df9a366504f1237d",
+      "run": {
+        "id": "20261106T064807836Z-37293-bd5b70db-46c0-49e3-99d6-f9b3a423c26a",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "a",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": [
+        "[블라인드] 졸려서 소파에 기대어 잠깐 잔다는 상황에 ‘눈을 붙였다’만 알맞습니다. 관용구 분류와 문장 연결이 적절합니다.",
+        "[공개 대조] 졸려서 소파에 기대어 잠깐 잔다는 문맥에는 a만 알맞습니다. 관용구의 뜻이 근거와 일치하고, 다른 보기의 뜻을 설명한 오답 이유도 타당합니다."
+      ]
+    },
+    {
       "questionId": "g4-argon-0029",
       "revision": 1,
       "contentHash": "95a1295175318ecdf8a6c129cd56e3fd598414a098dbb3857b474d22c0e92623",
@@ -499,6 +1163,28 @@
       "findings": [
         "[블라인드] 반복 연습으로 종이접기가 익숙해졌다는 뜻에 ‘손에 익어’만 맞습니다. 서툴렀던 때와 현재의 대비가 분명합니다.",
         "[공개 대조] 반복 연습으로 일이 익숙해졌다는 문맥에는 b만 맞습니다. 관용구 근거와 정답 해설이 일치하고 다른 보기의 의미 설명도 적절합니다."
+      ]
+    },
+    {
+      "questionId": "g4-argon-0029",
+      "revision": 2,
+      "contentHash": "da6519125b8d449ddaf5dbfc7920ee4c5361b7b7a6a7f76331f6901e1aa214ac",
+      "run": {
+        "id": "20261106T064807836Z-37293-bd5b70db-46c0-49e3-99d6-f9b3a423c26a",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "b",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": [
+        "[블라인드] 반복 연습으로 종이접기에 익숙해진 상황이므로 ‘손에 익어’만 알맞습니다. 4학년에게 친숙한 활동으로 관용적 의미를 추론하게 합니다.",
+        "[공개 대조] 반복 연습으로 종이접기에 익숙해져 빨라졌다는 변화에는 b만 맞습니다. 근거와 해설이 일치하며, 다른 관용구들은 숙련되었다는 의미를 나타내지 못합니다."
       ]
     },
     {
@@ -536,6 +1222,28 @@
       ]
     },
     {
+      "questionId": "g4-argon-0031",
+      "revision": 2,
+      "contentHash": "dfb14abd3eb323c69f4572da5ffab79e6b703d1c4e141a3ce241984cb3322936",
+      "run": {
+        "id": "20261106T045931592Z-9703-9a69e580-474f-438e-acb5-db82735a0e62",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "d",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": [
+        "[블라인드] 지나치게 칭찬하여 추어올리는 뜻의 관용구는 d입니다. 대화 상황과 관용적 의미가 연결되며 idiom_proverb 분류도 적절합니다.",
+        "[공개 대조] 지나치게 칭찬하여 추어올리는 관용구는 d뿐이며 표제어와 뜻이 근거에 부합합니다. 대화가 의미를 뒷받침하고 관용구 분류와 오답 설명도 적절합니다."
+      ]
+    },
+    {
       "questionId": "g4-argon-0032",
       "revision": 1,
       "contentHash": "88dad56c907c499194f4b7ff9be976a5d6738c98f01159308b06c5a1003eefe3",
@@ -550,6 +1258,28 @@
       "findings": [
         "[블라인드] 정직하게 행동했으니 당당하라는 뜻에 ‘가슴을 펴고’만 맞습니다. 관용적 의미를 이해할 수 있는 상황 단서가 충분합니다.",
         "[공개 대조] 당당하게 행동하라는 문맥에는 b가 맞고 근거와도 일치합니다. 시선을 피하는 행동을 곧바로 떳떳하지 못한 태도로 단정하지 말고 c의 이유를 ‘상대의 시선을 피한다는 뜻으로, 여기서 요구하는 당당한 태도를 나타내지 않아요’로 고치세요."
+      ]
+    },
+    {
+      "questionId": "g4-argon-0032",
+      "revision": 2,
+      "contentHash": "b7cf241e11e1a85133bddf30f2cfdea0cc94de1fea48d1a0239d440a41e41f17",
+      "run": {
+        "id": "20261106T045931592Z-9703-9a69e580-474f-438e-acb5-db82735a0e62",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "b",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": [
+        "[블라인드] 정직하게 행동하여 부끄럼 없이 당당하라는 문맥에 ‘가슴을 펴고’가 맞습니다. 관용적 태도와 실제 걸음걸이가 자연스럽게 연결됩니다.",
+        "[공개 대조] 정직하게 행동했으므로 당당하라는 문맥에 b가 맞으며 근거의 관용적 의미와 일치합니다. 나머지 보기는 요구하는 태도를 나타내지 않고 해설도 이를 적절히 설명합니다."
       ]
     },
     {
@@ -570,6 +1300,29 @@
       ]
     },
     {
+      "questionId": "g4-argon-0033",
+      "revision": 2,
+      "contentHash": "2b56918b57d18a48526507cfa739cd136f5f59944020847e0df5c57c8257f973",
+      "run": {
+        "id": "20261106T064807836Z-37293-bd5b70db-46c0-49e3-99d6-f9b3a423c26a",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "a",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": [
+        "[블라인드] 헐떡거리다가 멈추어 호흡을 가다듬는 상황에는 ‘숨을 돌렸다’가 맞습니다. 지문의 ‘뛰어 올라가느라’는 ‘뛰어올라가느라’로 붙여 쓰세요.",
+        "[공개 대조] 헐떡거리다가 멈춰 가쁜 숨을 가라앉히는 상황에는 a만 알맞으며, 정답과 해설은 근거에 부합합니다.",
+        "[공개 대조] ‘뛰어 올라가느라’는 뛰어서 올라가는 동작을 나타내는 구성으로 볼 수 있으므로 1단계의 붙여쓰기 지적은 철회합니다."
+      ]
+    },
+    {
       "questionId": "g4-argon-0034",
       "revision": 1,
       "contentHash": "ecc15b9bece9b9baeedacd2cee895b598733323bc14ef08e04b53068c35bcc89",
@@ -584,6 +1337,28 @@
       "findings": [
         "[블라인드] 자신이 먼저 고운 말을 해야 상대방도 고운 말을 한다는 뜻은 b에만 해당합니다. 다른 속담의 교훈과도 명확히 구별됩니다.",
         "[공개 대조] 자신이 먼저 좋게 말해야 상대방도 좋게 말한다는 뜻은 b에만 해당합니다. 근거의 말과 행동에 관한 교훈을 적절히 적용했으며 해설과 오답 이유도 맞습니다."
+      ]
+    },
+    {
+      "questionId": "g4-argon-0034",
+      "revision": 2,
+      "contentHash": "fe65b926b12b915f4545de96d4daa1e87432ca950cd982949ed110ebcfd8c796",
+      "run": {
+        "id": "20261106T064807836Z-37293-bd5b70db-46c0-49e3-99d6-f9b3a423c26a",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "b",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": [
+        "[블라인드] 자신이 먼저 좋게 말해야 상대방도 좋게 말한다는 뜻에 b만 해당합니다. 속담의 뜻과 표현이 정확하게 대응합니다.",
+        "[공개 대조] 내가 먼저 좋게 말해야 상대방도 좋게 말한다는 뜻에는 b만 해당합니다. 지문은 근거의 말과 행동 가운데 말을 구체화한 것이며, 해설과 다른 속담의 뜻도 적절합니다."
       ]
     },
     {
@@ -604,6 +1379,28 @@
       ]
     },
     {
+      "questionId": "g4-argon-0035",
+      "revision": 2,
+      "contentHash": "011917beb6b773be3685ab79507815597d02e9c4177d75e3ca551a09a9af114e",
+      "run": {
+        "id": "20261106T045931592Z-9703-9a69e580-474f-438e-acb5-db82735a0e62",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "a",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": [
+        "[블라인드] 익숙한 일도 조심하여 확인하라는 뜻에 a만 맞습니다. 다른 속담은 끈기, 의견 충돌, 뒤늦은 대처에 관한 것으로 구별됩니다.",
+        "[공개 대조] 잘 아는 일에도 세심한 주의가 필요하다는 뜻은 a뿐이며 근거와 정확히 대응합니다. 다른 속담의 뜻을 구별한 해설과 학년·유형 설정도 적절합니다."
+      ]
+    },
+    {
       "questionId": "g4-argon-0036",
       "revision": 1,
       "contentHash": "16f05d3e2f79943bbacee205c9b76231c8bcafbbc43fe19f620be1e65a286bff",
@@ -618,6 +1415,28 @@
       "findings": [
         "[블라인드] 아주 쉬운 일을 뜻하는 c만 알맞습니다. 널리 쓰이는 속담의 뜻을 지문에서 직접 제시하고 오답도 쉽게 구별되므로 challenge보다는 core 또는 advanced로 낮추거나 상황 추론을 요구하도록 고치세요.",
         "[공개 대조] c만 아주 쉬운 일을 뜻하며 근거·해설·오답 이유가 모두 맞습니다. 널리 쓰이는 속담의 뜻을 직접 제시하고 오답도 쉽게 구별되므로 challenge를 core 또는 advanced로 낮추거나 상황 추론을 요구하도록 고치세요."
+      ]
+    },
+    {
+      "questionId": "g4-argon-0036",
+      "revision": 2,
+      "contentHash": "9f2a78617b508fa5affb2132477963a6f68fe6273ba93f88076ab96da616064f",
+      "run": {
+        "id": "20261106T045931592Z-9703-9a69e580-474f-438e-acb5-db82735a0e62",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "c",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": [
+        "[블라인드] 익숙하여 아주 쉬운 일을 나타내는 속담은 c입니다. 어린이가 이해하기 쉬운 자전거 타기 상황이며 문장 연결도 자연스럽습니다.",
+        "[공개 대조] 익숙하여 매우 쉬운 일을 나타내는 c만 문맥과 근거에 맞습니다. 자전거 타기 상황이 이해하기 쉽고 다른 속담의 뜻을 설명한 내용도 타당합니다."
       ]
     },
     {
@@ -638,6 +1457,28 @@
       ]
     },
     {
+      "questionId": "g4-argon-0037",
+      "revision": 2,
+      "contentHash": "078377cc66a1dcaebd5dd73cdac6dbc9f89cbb4ee4ffe6161d65434cf63554c6",
+      "run": {
+        "id": "20261106T064807836Z-37293-bd5b70db-46c0-49e3-99d6-f9b3a423c26a",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "d",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": [
+        "[블라인드] d는 이야기하던 사람이 나타나는 상황뿐 아니라, 자리에 없는 사람을 함부로 흉보지 말라는 경계의 뜻으로도 쓰입니다. 다른 속담은 제시된 뜻과 맞지 않습니다.",
+        "[공개 대조] 자리에 없는 사람을 함부로 흉보지 말라는 뜻이 제공된 근거에 명시되어 있으므로 d가 맞습니다. 다른 속담들은 이 경계의 뜻을 나타내지 않으며 해설과 오답 이유도 정확합니다."
+      ]
+    },
+    {
       "questionId": "g4-argon-0038",
       "revision": 1,
       "contentHash": "3b0db7bd6274d884b7daac7d4ec710f2e1069dd2c44af8af75cdd35e4ddd3630",
@@ -652,6 +1493,50 @@
       "findings": [
         "[블라인드] 한 가지 일을 꾸준히 해야 한다는 뜻에는 a만 맞습니다. b·c·d는 통상적인 속담을 풀어 쓰거나 새로 만든 지시문에 가까우므로 ‘급할수록 돌아가라’ 등 실제 속담의 정형적인 표현으로 교체하세요.",
         "[공개 대조] a와 해설은 근거에 맞지만 b·c·d가 정형 속담 대신 풀어 쓴 지시문이어서 표현 형식으로 소거할 단서를 줍니다. ‘급할수록 돌아가라’, ‘소 잃고 외양간 고친다’, ‘빈 수레가 요란하다’ 같은 정형 표현으로 바꾸고 각 오답 이유와 challenge 난도를 재검토하세요."
+      ]
+    },
+    {
+      "questionId": "g4-argon-0038",
+      "revision": 2,
+      "contentHash": "c3b0764007e1e4b927fd7b2524f9cef059ad3990a0d0bc65cc0da0f02e708daf",
+      "run": {
+        "id": "20261106T045931592Z-9703-9a69e580-474f-438e-acb5-db82735a0e62",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "a",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "fail"
+      },
+      "findings": [
+        "[블라인드] 배우는 일을 자주 바꾸려는 상황에서 한 가지 일을 꾸준히 하라는 a가 맞습니다. 상황과 속담의 뜻이 명확히 연결됩니다.",
+        "[공개 대조] a는 한 가지 일을 끝까지 하라는 사전 뜻과 상황에 맞지만, d의 이유에 있는 ‘혼자 한 우물을 파는 비유’는 근거에 없는 조건을 덧붙입니다. d의 이유를 ‘협력을 강조하는 말이며 한 가지 일을 꾸준히 하라는 뜻과는 달라요’로 고치세요."
+      ]
+    },
+    {
+      "questionId": "g4-argon-0038",
+      "revision": 3,
+      "contentHash": "6764a4e863ea43e2a7f8cc7d7ca7ed5f9a4a6e5c1092be359660a198daeb6339",
+      "run": {
+        "id": "20261106T064807836Z-37293-bd5b70db-46c0-49e3-99d6-f9b3a423c26a",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "a",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": [
+        "[블라인드] 배우는 일을 자꾸 바꾸는 상황에서 한 가지 일을 꾸준히 하라는 a만 알맞습니다. 속담의 비유를 이해할 수 있는 상황 단서가 있습니다.",
+        "[공개 대조] 배우는 일을 자꾸 바꾸는 상황에서 한 가지 일을 끝까지 하라는 a만 알맞습니다. 정답과 해설은 제공된 속담의 뜻을 충실히 요약하고 있으며 다른 보기의 뜻과도 구별됩니다."
       ]
     },
     {
@@ -672,6 +1557,50 @@
       ]
     },
     {
+      "questionId": "g4-argon-0039",
+      "revision": 2,
+      "contentHash": "f6f938a777afa8a6486c12d910965eff359851c1743aa47d47ad7e4496ec03ea",
+      "run": {
+        "id": "20261106T045931592Z-9703-9a69e580-474f-438e-acb5-db82735a0e62",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "d",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": [
+        "[블라인드] 어린 동생의 그림에서 장래의 가능성을 알아본 상황이므로 d만 맞습니다. 비유적인 속담을 해석하는 challenge 문항으로 수용할 수 있습니다.",
+        "[공개 대조] 어린 동생의 재능에서 장래성을 알아본 상황에는 d만 맞으며 사전 뜻과 일치합니다. 속담의 비유를 이해하는 문항으로 학년과 분류가 적절하고 오답 이유도 타당합니다."
+      ]
+    },
+    {
+      "questionId": "g4-argon-0039",
+      "revision": 3,
+      "contentHash": "0883bd079e97fdbaea0a5c0aba9a9ddb0a8a976e44593925441e75ab16de74ce",
+      "run": {
+        "id": "20261106T064807836Z-37293-bd5b70db-46c0-49e3-99d6-f9b3a423c26a",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "d",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": [
+        "[블라인드] 어린 동생의 그림 솜씨에서 앞으로의 가능성을 발견했다는 뜻으로 d만 알맞습니다. 속담과 예시 상황이 자연스럽게 연결됩니다.",
+        "[공개 대조] 어린 동생의 그림 솜씨에서 장래성을 발견하여 칭찬하는 상황이므로 d만 맞습니다. 정답과 해설은 근거에 부합하며 실수·버릇·협동을 설명하는 다른 보기들과 명확히 구별됩니다."
+      ]
+    },
+    {
       "questionId": "g4-argon-0040",
       "revision": 1,
       "contentHash": "9b2a2616473555d30f74b73fe55e90b8e7df0a866e34bc5f8e82cf71d8fefa6a",
@@ -686,6 +1615,50 @@
       "findings": [
         "[블라인드] 꿀꿀거리며 먹이를 먹는 동물이라는 단서로 c만 고를 수 있습니다. 제주 방언을 대화와 상황 속에 제시하여 뜻을 추론할 수 있습니다.",
         "[공개 대조] c는 제공된 우리말샘 근거와 일치하며 제주 지역과 대화·상황 단서도 적절합니다. 울음소리만으로 바로 풀리는 구성이라 challenge 난도는 불분명하므로 core 또는 advanced로 조정하세요."
+      ]
+    },
+    {
+      "questionId": "g4-argon-0040",
+      "revision": 2,
+      "contentHash": "53c25f3992abdbb4dad6bef3aedbba4428d7cc917056c499f0702d3776d022b5",
+      "run": {
+        "id": "20261106T045931592Z-9703-9a69e580-474f-438e-acb5-db82735a0e62",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "c",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": [
+        "[블라인드] 납작한 코와 돌돌 말린 꼬리라는 특징이 돼지를 가리킵니다. 제주 할머니의 대화와 동물의 행동이 방언을 이해할 단서를 제공합니다.",
+        "[공개 대조] 제공된 근거는 ‘도새기’를 돼지의 제주 방언으로 명시하며 납작한 코와 말린 꼬리가 c를 뒷받침합니다. 대화·지역·상황 단서가 충분하고 해설도 부합합니다."
+      ]
+    },
+    {
+      "questionId": "g4-argon-0040",
+      "revision": 3,
+      "contentHash": "48193595c3f7cfb886f3bf07633836df54557dfafd8864b5818fdadee4c5364b",
+      "run": {
+        "id": "20261106T064807836Z-37293-bd5b70db-46c0-49e3-99d6-f9b3a423c26a",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "c",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": [
+        "[블라인드] 납작한 코와 돌돌 말린 꼬리라는 특징으로 돼지를 유일하게 고를 수 있습니다. 제주 방언 분류에 맞으며 대화와 관찰 상황이 함께 제시되어 있습니다.",
+        "[공개 대조] 납작한 코와 돌돌 말린 꼬리라는 단서를 함께 만족하는 보기는 c뿐입니다. 제공된 우리말샘 근거가 돼지의 제주 방언임을 명시하며, 지역·대화 문맥·해설도 이에 부합합니다."
       ]
     },
     {
@@ -706,6 +1679,50 @@
       ]
     },
     {
+      "questionId": "g4-argon-0041",
+      "revision": 2,
+      "contentHash": "33cd0b531c7b40a0230fb3a1423afc84d0026d0ebfacdbacaf28d8ae822afb31",
+      "run": {
+        "id": "20261106T045931592Z-9703-9a69e580-474f-438e-acb5-db82735a0e62",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "a",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": [
+        "[블라인드] 긴 뒷다리로 뛰어 물속에 들어가는 동물은 보기 중 개구리뿐입니다. 대화와 생태적 특징이 함께 있어 방언 문항의 상황 단서가 충분합니다.",
+        "[공개 대조] a가 제공된 방언 뜻과 일치하고 충청도 근거의 사용 지역에 포함됩니다. 긴 뒷다리로 뛰어 물에 들어가는 상황과 대화가 충분한 단서를 제공하며 오답 설명도 적절합니다."
+      ]
+    },
+    {
+      "questionId": "g4-argon-0041",
+      "revision": 3,
+      "contentHash": "523a289570627930a49d94964bae330fbe6c88cf8c45adf3de4ffe5c4f3e3507",
+      "run": {
+        "id": "20261106T064807836Z-37293-bd5b70db-46c0-49e3-99d6-f9b3a423c26a",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "a",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": [
+        "[블라인드] 연잎 위에서 긴 뒷다리로 물속에 뛰어드는 동물은 보기 중 개구리뿐입니다. 방언을 이해할 수 있는 상황과 대화가 충분하며 충청 지역 설정과도 어긋나지 않습니다.",
+        "[공개 대조] 연잎 위에 앉았다가 긴 뒷다리로 뛰어드는 동물은 보기 중 a뿐입니다. 근거의 사용 지역에 충청이 포함되며, 상황 단서와 해설도 개구리라는 뜻에 부합합니다."
+      ]
+    },
+    {
       "questionId": "g4-argon-0042",
       "revision": 1,
       "contentHash": "823c9ddf82b8561ed7a7f86d60e0245320292f0a77780b0d9acdaaabac9183b3",
@@ -720,6 +1737,28 @@
       "findings": [
         "[블라인드] 올챙이가 자라 뛰어오른다는 단서로 a만 알맞습니다. ‘올챙이가 뒷다리가 자라더니’는 주격 조사가 연이어 나와 읽기 거슬리므로 ‘올챙이에게 다리가 생기고 몸이 자라더니’처럼 다듬으세요.",
         "[공개 대조] a와 경기 지역 표시는 근거에 맞지만 올챙이라는 직접적인 단서에 비해 challenge 난도는 높게 책정되어 있습니다. 주격이 겹치는 긴 문장을 ‘연못가에서 올챙이에게 앞다리와 뒷다리가 생기고 꼬리가 짧아진 모습을 보고’처럼 다듬고 난도를 낮추세요."
+      ]
+    },
+    {
+      "questionId": "g4-argon-0042",
+      "revision": 2,
+      "contentHash": "6c20a9c133d04448f0c8ac838e3d0814cad179b06535ac7713b8c6645275aeee",
+      "run": {
+        "id": "20261106T045931592Z-9703-9a69e580-474f-438e-acb5-db82735a0e62",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "a",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": [
+        "[블라인드] 긴 혀를 뻗어 벌레를 잡아먹는 연못가 동물이라는 설명에 a가 맞습니다. 방언을 모르는 학생도 상황을 통해 의미를 추론할 수 있습니다.",
+        "[공개 대조] a는 근거의 방언 뜻과 일치하고 경기 지역 표기도 맞습니다. 연못가에서 긴 혀로 벌레를 잡는 행동이 다른 보기와 구별되며 해설도 문맥에 부합합니다."
       ]
     },
     {
@@ -740,6 +1779,50 @@
       ]
     },
     {
+      "questionId": "g4-argon-0043",
+      "revision": 2,
+      "contentHash": "09c742e55fb0da677f21a88355ad4e8c9fcd0103dc0949323c683154aea61e56",
+      "run": {
+        "id": "20261106T045931592Z-9703-9a69e580-474f-438e-acb5-db82735a0e62",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "d",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": [
+        "[블라인드] 대나무를 엮어 만들고 틈으로 물이 빠지는 물건은 바구니입니다. 상추를 씻는 상황과 재료·구조 설명이 다른 보기와 구별됩니다.",
+        "[공개 대조] 대나무를 엮어 만든 물 빠지는 그릇은 보기 중 d이며 제공된 방언 뜻과 지역에도 맞습니다. 생활 상황과 대화가 자연스럽고 재료와 구조에 따른 오답 설명도 타당합니다."
+      ]
+    },
+    {
+      "questionId": "g4-argon-0043",
+      "revision": 3,
+      "contentHash": "c43256b111934693f6e779868b2cf92c7134a996316aa1a5aef1aaf2e8a10719",
+      "run": {
+        "id": "20261106T064807836Z-37293-bd5b70db-46c0-49e3-99d6-f9b3a423c26a",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "d",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": [
+        "[블라인드] 대나무를 엮어 만들고 틈으로 물이 빠진다는 특징은 바구니에 해당합니다. 전라 방언을 생활 속 대화와 물건의 특징으로 추론할 수 있습니다.",
+        "[공개 대조] 대나무를 엮어 만들고 틈으로 물기가 빠지는 그릇이라는 설명에는 d만 맞습니다. 근거에 전라 지역이 포함되어 있고, 해설과 다른 물건의 재료·용도에 관한 오답 이유도 타당합니다."
+      ]
+    },
+    {
       "questionId": "g4-argon-0044",
       "revision": 1,
       "contentHash": "0cd2ead71ce0594c7705d8ca2d15c81d73f92580a66cc701d25be9cbeacc3477",
@@ -754,6 +1837,50 @@
       "findings": [
         "[블라인드] 멸치 육수에 긴 밀가루 면을 말아 먹는 음식이라는 설명으로 b가 유일합니다. 방언의 뜻을 추론할 대화와 상황 단서가 충분합니다.",
         "[공개 대조] b와 경상 지역 표시는 근거에 맞으며 해설과 오답 이유도 적절합니다. 긴 면을 육수에 만다는 직접적인 설명만으로 풀리므로 challenge를 core 또는 advanced로 낮추세요."
+      ]
+    },
+    {
+      "questionId": "g4-argon-0044",
+      "revision": 2,
+      "contentHash": "a0d8ee5c9fef4467eb47b84c285295881ca00e8835330611e15028c121f3c4f3",
+      "run": {
+        "id": "20261106T045931592Z-9703-9a69e580-474f-438e-acb5-db82735a0e62",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "b",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": [
+        "[블라인드] 삶은 가늘고 긴 가닥을 멸치 국물에 담는 음식은 국수입니다. 조리 과정과 대화가 자연스럽고 방언의 뜻을 추론하기에 충분합니다.",
+        "[공개 대조] 삶은 긴 가닥을 멸치 국물에 담는 음식은 b이고 근거에도 국수의 경상 방언으로 제시되어 있습니다. 조리 과정과 대화가 충분한 단서를 주며 해설과 오답 이유도 적절합니다."
+      ]
+    },
+    {
+      "questionId": "g4-argon-0044",
+      "revision": 3,
+      "contentHash": "49eb97d4bfd480120a234ecbbd1fbf683f0f2ce6141e52376b21987836d0e545",
+      "run": {
+        "id": "20261106T064807836Z-37293-bd5b70db-46c0-49e3-99d6-f9b3a423c26a",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "b",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": [
+        "[블라인드] 삶은 가늘고 긴 가닥을 멸치 국물에 담아 먹는다는 설명으로 국수만 성립합니다. 경상 방언 분류와 대화 문맥이 적절합니다.",
+        "[공개 대조] 삶은 가늘고 긴 가닥을 멸치 국물에 담아 먹는 상황에는 b만 맞습니다. 제공된 근거가 국수의 경상 방언임을 뒷받침하며 해설과 다른 음식의 특징도 적절합니다."
       ]
     },
     {
@@ -774,6 +1901,47 @@
       ]
     },
     {
+      "questionId": "g4-argon-0045",
+      "revision": 2,
+      "contentHash": "16521fbc935d1289ea4a92dcfce60b3998a7b50c26d79876bf6cd3121a0fb2a4",
+      "run": {
+        "id": "20261106T045931592Z-9703-9a69e580-474f-438e-acb5-db82735a0e62",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "b",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "uncertain"
+      },
+      "findings": [
+        "[블라인드] 가르랑거리고 앞발로 얼굴을 씻으며 담장에서 뛰어내리는 행동이 고양이를 가리킵니다. 지역과 대화 상황도 제시되어 있습니다.",
+        "[공개 대조] b는 제공된 전라 방언 뜻과 고양이의 행동을 묘사한 문맥에 맞습니다. a의 이유는 강아지의 행동 능력을 ‘뛰어내리지 못해요’로 단정하므로 ‘가르랑거리며 앞발로 얼굴을 씻는 행동은 여기서 고양이를 가리키는 단서예요’처럼 문맥 중심으로 고치세요."
+      ]
+    },
+    {
+      "questionId": "g4-argon-0045",
+      "revision": 3,
+      "contentHash": "99a77ed72f68d468d64e62e37db9d969152d3c95a6d24d0c0d925d4e226aacde",
+      "run": {
+        "id": "20261106T115211515Z-95035-4b708962-8ab1-42c4-8b6f-d424096f6f1d",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "b",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": []
+    },
+    {
       "questionId": "g4-argon-0046",
       "revision": 1,
       "contentHash": "cbc403486569628b77d3eb17644dcc5711dfa002cc557168738280dd1252a4d9",
@@ -791,6 +1959,51 @@
       ]
     },
     {
+      "questionId": "g4-argon-0046",
+      "revision": 2,
+      "contentHash": "baf480366b423abe542d68e2276d528c72bf4bdd0fe38cf7c73d4ea6d40b32ec",
+      "run": {
+        "id": "20261106T045931592Z-9703-9a69e580-474f-438e-acb5-db82735a0e62",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "a",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "fail"
+      },
+      "findings": [
+        "[블라인드] 닭장에서 알을 깨고 나온 지 이틀 된 솜털 난 새끼라는 설명에 병아리만 맞습니다. 제주 방언을 이해할 구체적인 상황이 있습니다.",
+        "[공개 대조] a는 제공된 제주 방언 뜻과 알에서 막 깨어난 닭의 상황에 맞습니다. ‘수탉은 다 자란 수컷 닭’이라는 설명은 성별 명칭에 성장 단계를 잘못 덧붙이므로 ‘수탉은 수컷 닭을 가리키며, 이 문맥은 성별이 아니라 갓 깨어난 새끼라는 점을 나타내요’로 고치세요."
+      ]
+    },
+    {
+      "questionId": "g4-argon-0046",
+      "revision": 3,
+      "contentHash": "3939c7e8c0036269f55ad4aa4a673d0e7db4d8323c8300201e841c292a803277",
+      "run": {
+        "id": "20261106T064807836Z-37293-bd5b70db-46c0-49e3-99d6-f9b3a423c26a",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "a",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "fail"
+      },
+      "findings": [
+        "[블라인드] 닭장에서 갓 부화해 솜털이 나 있는 동물이라는 단서로 병아리만 알맞습니다. 제주 방언을 추론할 수 있는 구체적인 상황이 제시되어 있습니다.",
+        "[공개 대조] 닭장에서 갓 부화하여 솜털이 나 있고 스스로 모이를 쪼는 상황에는 a가 알맞으며, 제주 방언이라는 근거와도 일치합니다.",
+        "[공개 대조] 참새와 제비를 닭장에 있을 수 없다는 식으로 배제하는 이유는 부정확합니다. c와 d의 이유를 ‘갓 부화한 참새나 제비는 스스로 모이를 쪼기보다 어미가 주는 먹이를 받아먹으므로 제시된 모습과 다르다’로 고치세요."
+      ]
+    },
+    {
       "questionId": "g4-argon-0047",
       "revision": 1,
       "contentHash": "5e5ff55e68c4cb36e9c61e7216e0446473e6a62fb6900ab2ba9e9a7d9ed6c1fd",
@@ -805,6 +2018,50 @@
       "findings": [
         "[블라인드] 포장지를 오리고 종이를 자르는 도구는 보기 중 a뿐입니다. 구어체 대화가 자연스럽고 방언의 뜻을 추론할 단서도 충분합니다.",
         "[공개 대조] a는 근거와 일치하고 전라도 사용 지역에 포함되며 종이를 자르는 상황 단서가 충분합니다. 용도 하나만으로 오답을 쉽게 제외할 수 있으므로 challenge를 core 또는 advanced로 조정하세요."
+      ]
+    },
+    {
+      "questionId": "g4-argon-0047",
+      "revision": 2,
+      "contentHash": "705eff24824ee50d7c61a3924293f662466fb34d8beebc8f906b7c8e15659feb",
+      "run": {
+        "id": "20261106T045931592Z-9703-9a69e580-474f-438e-acb5-db82735a0e62",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "c",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "uncertain",
+        "explanation": "pass"
+      },
+      "findings": [
+        "[블라인드] 손잡이 고리와 두 날이라는 특징으로 가위를 고를 수 있습니다. 다만 움직임이 뻑뻑한 것과 날이 잘 들지 않는 것을 섞어 설명하므로 ‘두 날이 무뎌서 두꺼운 도화지가 잘 안 잘리는구나’로 고치세요.",
+        "[공개 대조] c는 제공된 방언 뜻과 손잡이 고리·두 날이라는 단서에 맞고 오답 이유도 타당합니다. 지문은 움직임이 뻑뻑한 것과 날이 잘 들지 않는 것을 혼동하므로 ‘손잡이 고리에 손가락을 끼워 잘라 보니 두 날이 무뎌서 두꺼운 도화지가 잘 안 잘리는구나’로 고치세요."
+      ]
+    },
+    {
+      "questionId": "g4-argon-0047",
+      "revision": 3,
+      "contentHash": "41c8c615ce207ac5db86b6fb16cd0cc89ea27c544a8677457fbb5c21181323d7",
+      "run": {
+        "id": "20261106T064807836Z-37293-bd5b70db-46c0-49e3-99d6-f9b3a423c26a",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "c",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": [
+        "[블라인드] 손가락을 끼우는 고리와 종이를 자르는 두 날을 가진 도구는 가위뿐입니다. 대화가 다소 길지만 문장 구조는 이해하기 쉽고 전라 방언 설정에도 맞습니다.",
+        "[공개 대조] 손가락을 끼우는 고리와 종이를 자르는 두 날이라는 특징을 함께 갖춘 보기는 c뿐입니다. 전라 지역 설정은 근거와 일치하며, 생활 속 대화와 각 도구의 용도를 설명한 오답 이유도 적절합니다."
       ]
     },
     {
@@ -842,6 +2099,28 @@
       ]
     },
     {
+      "questionId": "g4-argon-0049",
+      "revision": 2,
+      "contentHash": "f9eb20d26b04ed844c81662cf07d7a7106fed5d554cc8ce776b5feebf5a1b741",
+      "run": {
+        "id": "20261106T045931592Z-9703-9a69e580-474f-438e-acb5-db82735a0e62",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "d",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": [
+        "[블라인드] 불판에 살점을 얹어 구워 먹는 상황이므로 고기가 맞습니다. 충청도 삼촌의 대화와 조리 행동이 방언의 의미를 뒷받침합니다.",
+        "[공개 대조] 불판에 살점을 얹어 구워 먹는 상황은 d를 가리키며 제공된 방언 뜻과 충청 지역 표기에 맞습니다. 대화가 자연스럽고 각 오답을 배제하는 설명도 타당합니다."
+      ]
+    },
+    {
       "questionId": "g4-argon-0050",
       "revision": 1,
       "contentHash": "3806914d8dee0003ace4dac8469a202e7002e5c3b370e8fafda422077718a51a",
@@ -856,6 +2135,50 @@
       "findings": [
         "[블라인드] 외투 앞섶을 여미며 바늘과 실로 다시 다는 물건은 d뿐입니다. 옷에서 분리되었다는 뜻이므로 ‘옷에 떨어진 당추’를 ‘옷에서 떨어진 당추’로 고치세요.",
         "[공개 대조] d는 근거와 일치하고 경북은 경상에 포함되지만, 앞섶과 바늘·실이라는 직접적인 단서에 비해 challenge 난도는 높으므로 낮추세요. ‘옷에 떨어진 당추’를 ‘옷에서 떨어진 당추’로 고치고 해설의 지역도 근거에 맞춰 ‘경북’으로 구체화하면 더 정확합니다."
+      ]
+    },
+    {
+      "questionId": "g4-argon-0050",
+      "revision": 2,
+      "contentHash": "1a0d3b8c38b3a01ffc7cd6626aad52a98621cdbc6d4f919199fc579b4fe10906",
+      "run": {
+        "id": "20261106T045931592Z-9703-9a69e580-474f-438e-acb5-db82735a0e62",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "d",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": [
+        "[블라인드] 옷에서 떨어져 굴러가고 반대쪽 구멍에 끼워 여미는 물건은 단추입니다. 지역·대화·사용 방법이 모두 제시되어 있습니다.",
+        "[공개 대조] 옷에서 떨어져 굴러가며 구멍에 끼워 여미는 물건은 d이고 근거의 방언 뜻과 일치합니다. 지문이 경북을 명시하여 경상 지역 분류와 부합하고 해설도 적절합니다."
+      ]
+    },
+    {
+      "questionId": "g4-argon-0050",
+      "revision": 3,
+      "contentHash": "98a93dce2911b280534e9545c9c675b8888eec231a175ca6f79e8e27a83e512a",
+      "run": {
+        "id": "20261106T064807836Z-37293-bd5b70db-46c0-49e3-99d6-f9b3a423c26a",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "d",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": [
+        "[블라인드] 셔츠에 다시 달아 구멍에 끼우는 물건이라는 설명으로 단추만 알맞습니다. 경북이라는 지역과 생활 대화가 제시되어 경상 방언 문항의 조건을 충족합니다.",
+        "[공개 대조] 셔츠에 다시 달아 구멍에 끼워 여미는 물건은 d뿐입니다. 근거의 경북은 dialectRegion의 경상에 포함되고 지문도 경북을 명시하며, 해설과 오답 이유가 각 물건의 기능을 정확히 구별합니다."
       ]
     }
   ]

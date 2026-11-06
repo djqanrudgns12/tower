@@ -667,6 +667,126 @@
       "levelAssessmentHash": "92f6dd14e8f11f1737de2fd222ec09e4288d375d11f003440551fe4106348f72"
     },
     {
+      "questionId": "g4-argon-0961",
+      "revision": 2,
+      "contentHash": "dd8c166d3480f7ced0f8350a2d440fabe0bdf14ca9aec32e961ad6a34d1eebe5",
+      "precomputed": {
+        "typeBase": 2,
+        "lengthBump": 1,
+        "t3Base": 0,
+        "readingLoad": 76,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g4-argon-0961",
+          "revision": 2,
+          "contentHash": "dd8c166d3480f7ced0f8350a2d440fabe0bdf14ca9aec32e961ad6a34d1eebe5",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 1,
+          "L2": 1,
+          "T1": 0,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "3~4학년 이야기 글에 자주 쓰이는 고유어 파생 부사이며, 정답 문장에 과정 단서가 직접 제시되고 오답이 모두 다른 의미장이다."
+        },
+        {
+          "questionId": "g4-argon-0961",
+          "revision": 2,
+          "contentHash": "dd8c166d3480f7ced0f8350a2d440fabe0bdf14ca9aec32e961ad6a34d1eebe5",
+          "judge": "codex",
+          "model": "gpt-6-astra",
+          "L1": 1,
+          "L2": 1,
+          "T1": 0,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "이야기에서 자주 접하는 과정·결과의 부사이며, ‘노력한 끝에’가 직접 단서이고 오답의 쓰임은 뚜렷이 어긋난다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 2,
+        "T": 3,
+        "V": 7,
+        "ownTier": "core",
+        "band": {
+          "min": 4,
+          "max": 4
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "228f862b147c8511893ba67966db8725d2fc4f563c088180bad8fdf9595e6b76"
+    },
+    {
+      "questionId": "g4-argon-0961",
+      "revision": 3,
+      "contentHash": "b5d3b56e528296e1810eab87c9c9b75e3bdd00b830c7b15cc918efae8d18f6c3",
+      "precomputed": {
+        "typeBase": 2,
+        "lengthBump": 1,
+        "t3Base": 0,
+        "readingLoad": 76,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g4-argon-0961",
+          "revision": 3,
+          "contentHash": "b5d3b56e528296e1810eab87c9c9b75e3bdd00b830c7b15cc918efae8d18f6c3",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 1,
+          "L2": 1,
+          "T1": 0,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "3~4학년 이야기 글에 자주 쓰이는 고유어 파생 부사이며, 오답 문장들이 모두 과정·결과와 무관한 다른 의미장이고 정답에 직접 단서가 있다."
+        },
+        {
+          "questionId": "g4-argon-0961",
+          "revision": 3,
+          "contentHash": "b5d3b56e528296e1810eab87c9c9b75e3bdd00b830c7b15cc918efae8d18f6c3",
+          "judge": "codex",
+          "model": "gpt-6-astra",
+          "L1": 1,
+          "L2": 1,
+          "T1": 0,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "동화에서 자주 접하는 과정의 끝을 나타내는 말로, ‘노력한 끝에’가 직접 단서이며 오답의 쓰임은 뚜렷이 구별된다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 2,
+        "T": 3,
+        "V": 7,
+        "ownTier": "core",
+        "band": {
+          "min": 4,
+          "max": 4
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "5f7b414b25dbbedbb24ee261cb895083c82c3479a303b10fea307d269f7755ac"
+    },
+    {
       "questionId": "g4-argon-0962",
       "revision": 1,
       "contentHash": "f542d967693921be493747621a5a7d72c3be9288005221f858fe37ee40f53132",
@@ -1327,6 +1447,126 @@
       "levelAssessmentHash": "7c9461fd965f64ecb0a99fb7f5914916905da336da9d9502a7c4942af8b5aa8d"
     },
     {
+      "questionId": "g4-argon-0972",
+      "revision": 3,
+      "contentHash": "df5041318a572901b9dccbfc6b16a805184766d267a1c4f83d543810ccd88313",
+      "precomputed": {
+        "typeBase": 2,
+        "lengthBump": 1,
+        "t3Base": 0,
+        "readingLoad": 80,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g4-argon-0972",
+          "revision": 3,
+          "contentHash": "df5041318a572901b9dccbfc6b16a805184766d267a1c4f83d543810ccd88313",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 0,
+          "L2": 1,
+          "T1": 0,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "저학년부터 친숙한 생활 한자어로 발문과 정답 문장에 직접 단서가 있고 오답이 모두 음식 관련 다른 의미장이다."
+        },
+        {
+          "questionId": "g4-argon-0972",
+          "revision": 3,
+          "contentHash": "df5041318a572901b9dccbfc6b16a805184766d267a1c4f83d543810ccd88313",
+          "judge": "codex",
+          "model": "gpt-6-astra",
+          "L1": 0,
+          "L2": 1,
+          "T1": 0,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "생활에서 익숙한 구체적 자연 현상을 나타내는 한자어이며, 발문에 뜻이 제시되고 음식 관련 오답은 쉽게 배제된다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 1,
+        "T": 3,
+        "V": 5,
+        "ownTier": "basic",
+        "band": {
+          "min": 4,
+          "max": 4
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "be9a47fd58af72701ce02f8eb7bb66cf69595fd83b2e108a5554a32ea6aaa405"
+    },
+    {
+      "questionId": "g4-argon-0972",
+      "revision": 4,
+      "contentHash": "d683f1e9b70f5544207307364c3486e60ee88ea6819ca453a0ba749512912ee3",
+      "precomputed": {
+        "typeBase": 2,
+        "lengthBump": 1,
+        "t3Base": 0,
+        "readingLoad": 80,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g4-argon-0972",
+          "revision": 4,
+          "contentHash": "d683f1e9b70f5544207307364c3486e60ee88ea6819ca453a0ba749512912ee3",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 0,
+          "L2": 1,
+          "T1": 0,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "저학년부터 친숙한 기초 자연 어휘이자 투명한 생활 한자어이며, 발문에 뜻 단서가 제시되고 오답이 모두 음식·음료 의미장이다."
+        },
+        {
+          "questionId": "g4-argon-0972",
+          "revision": 4,
+          "contentHash": "d683f1e9b70f5544207307364c3486e60ee88ea6819ca453a0ba749512912ee3",
+          "judge": "codex",
+          "model": "gpt-6-astra",
+          "L1": 0,
+          "L2": 1,
+          "T1": 0,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "생활에서 익숙한 구체적 자연 현상을 가리키는 한자어로, 발문이 뜻을 직접 제시하고 오답은 음식이나 음료의 쓰임이다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 1,
+        "T": 3,
+        "V": 5,
+        "ownTier": "basic",
+        "band": {
+          "min": 4,
+          "max": 4
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "b989b3f6cdf8db8a1e7cfde09ae0335e47c843ee603fd6633adb79c5a25cc3d1"
+    },
+    {
       "questionId": "g4-argon-0973",
       "revision": 2,
       "contentHash": "b2c1d6a2dcdf560cf07682030147801332fc7bbbf70458be896230248a28e026",
@@ -1625,6 +1865,66 @@
         "flags": []
       },
       "levelAssessmentHash": "b9bc6eec15d3b35c1fd8f477bb476fddff642505ce42e71fc82c43bce60178a9"
+    },
+    {
+      "questionId": "g4-argon-0977",
+      "revision": 3,
+      "contentHash": "8b5c1766e5866aa123cd3d2b9eefffb97d8c007e7610b9bd89754555e3609991",
+      "precomputed": {
+        "typeBase": 2,
+        "lengthBump": 1,
+        "t3Base": 0,
+        "readingLoad": 82,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g4-argon-0977",
+          "revision": 3,
+          "contentHash": "8b5c1766e5866aa123cd3d2b9eefffb97d8c007e7610b9bd89754555e3609991",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 1,
+          "L2": 1,
+          "T1": 1,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "3~4학년 학습에 자주 쓰이는 투명한 생활 한자어이며, 계절 단서가 직접 제시되나 오답 1개가 상태 유지와의 모순을 판별하게 한다."
+        },
+        {
+          "questionId": "g4-argon-0977",
+          "revision": 3,
+          "contentHash": "8b5c1766e5866aa123cd3d2b9eefffb97d8c007e7610b9bd89754555e3609991",
+          "judge": "codex",
+          "model": "gpt-6-astra",
+          "L1": 1,
+          "L2": 2,
+          "T1": 1,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "학습에서 빈번하게 쓰이는 상태 전환의 추상 개념어이며, 달라지지 않았다는 반대 의미의 오답 하나를 구별해야 한다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 3,
+        "T": 4,
+        "V": 10,
+        "ownTier": "advanced",
+        "band": {
+          "min": 4,
+          "max": 5
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "08ccfc5cafa0ea75f1e6b8c5b0add4a78ca6cc79bd5d1f4b080541ca54712dbf"
     },
     {
       "questionId": "g4-argon-0978",

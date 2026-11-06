@@ -1,11 +1,11 @@
 {
-  "reviewId": "Q50-G5-001-codex",
-  "jobId": "QR-Q50-CODEX",
+  "reviewId": "QR-AUTO-codex-Q50-G5-001",
+  "jobId": "Q50-G5-001",
   "reviewer": {
-    "model": "GPT-6 (Codex)",
-    "tool": "Codex",
+    "model": "gpt-6-astra",
+    "tool": "2단계 블라인드 검수(tools/orchestrate/review.mjs)",
     "freshContext": true,
-    "date": "2026-10-30"
+    "date": "2026-11-06"
   },
   "items": [
     {
@@ -17,14 +17,34 @@
         "source": "pass",
         "uniqueness": "pass",
         "grade": "pass",
-        "language": "pass",
-        "explanation": "uncertain"
+        "language": "fail",
+        "explanation": "pass"
       },
       "findings": [
-        "독립 풀이 및 보기별 대입: a 감정·의견에 동의함; b 고집, c 폭로, d 단독 수행은 공감 아님.",
-        "출처 대조: 공감하다 / 동사 / 뜻번호 1 / senseId 92337; 표제어: 공감-하다 | sense_no: 92337 | sense_order: 1 | 품사: 「동사」 | 뜻풀이: 남의 감정, 의견, 주장 따위에 대하여 자기도 그렇다고 느끼다. — 해당 뜻의 핵심 의미와 대조함.",
-        "유형·학년 검토: definition, basic, standard. 제시 맥락과 보기의 의미 차이로 단일 답을 판단할 수 있고 해당 난이도의 5–6학년 어휘 학습에 허용 가능하다. 보기 결합·종결 및 정답 표면·길이 단서를 확인하였다.",
-        "해설과 제작 정답은 비공개이므로 explanation=uncertain."
+        "[블라인드] 뜻에 맞는 보기는 a뿐이지만, ‘친구의 고민을 들으며 깊이’ 뒤에 기본형과 질문을 이어 붙여 문장 구조가 어색합니다. ‘친구의 고민을 듣고 깊이 공감했습니다. 여기서 공감했습니다의 뜻은 무엇일까요?’처럼 고치세요.",
+        "[공개 대조] a만 근거의 뜻과 일치하며 해설과 오답 이유도 타당합니다. 지문의 문맥 조각 뒤에 기본형을 붙인 구조가 부자연스러우므로 ‘친구의 고민을 듣고 깊이 공감했습니다.’라는 완결된 문장을 제시한 뒤 뜻을 물으세요."
+      ]
+    },
+    {
+      "questionId": "g5-argon-0001",
+      "revision": 2,
+      "contentHash": "715a11343fc0db71c9269a5dd3b83ca9a27d6098f9118d2fcbe66de35e9f29db",
+      "run": {
+        "id": "20261106T064807841Z-37293-2b981fc3-8411-4d0a-8807-26bed9c80aa6",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "a",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": [
+        "[블라인드] 친구의 고민을 듣고 그 감정을 함께 느끼는 뜻에 맞는 보기는 a뿐입니다. 어휘와 문장이 5학년에게 적절하고 보기의 표현도 자연스럽습니다.",
+        "[공개 대조] a는 제공된 동사 ‘공감하다’의 뜻과 일치하며, 다른 보기는 친구의 감정이나 의견에 동감한다는 뜻을 나타내지 않습니다. 문장과 보기의 수준이 적절하고 해설과 오답 이유도 타당합니다."
       ]
     },
     {
@@ -36,14 +56,78 @@
         "source": "pass",
         "uniqueness": "pass",
         "grade": "pass",
-        "language": "pass",
-        "explanation": "uncertain"
+        "language": "fail",
+        "explanation": "pass"
       },
       "findings": [
-        "독립 풀이 및 보기별 대입: c 바람이 통함; a 막힘, b 정지, d 감소는 통풍과 다름.",
-        "출처 대조: 소통하다 / 동사 / 뜻번호 1 / senseId 13796; 표제어: 소통-하다 | sense_no: 13796 | sense_order: 1 | 품사: 「동사」 | 뜻풀이: 「1」 막히지 아니하고 잘 통하다. — 해당 뜻의 핵심 의미와 대조함.",
-        "유형·학년 검토: synonym_context, basic, standard. 제시 맥락과 보기의 의미 차이로 단일 답을 판단할 수 있고 해당 난이도의 5–6학년 어휘 학습에 허용 가능하다. 보기 결합·종결 및 정답 표면·길이 단서를 확인하였다.",
-        "해설과 제작 정답은 비공개이므로 explanation=uncertain."
+        "[블라인드] 보기 중 c가 맞지만 ‘교실에 바람이 잘 소통합니다’는 일상적인 한국어 용례로 부자연스럽습니다. ‘친구와 생각을 나누며 소통했습니다’처럼 의사소통 문맥으로 바꾸거나, 물리적으로 막힘없이 통하는 뜻을 유지하려면 자연스러운 교통 문맥과 polysemy 분류를 검토하세요.",
+        "[공개 대조] c는 제시된 ‘막히지 아니하고 잘 통하다’와 일치하고 다른 보기는 그 뜻을 유지하지 못합니다. ‘교실에 바람이 잘 소통합니다’는 부자연스러우므로 ‘도로 공사가 끝나 차량이 원활하게 소통합니다’처럼 자연스러운 용례로 바꾸세요."
+      ]
+    },
+    {
+      "questionId": "g5-argon-0002",
+      "revision": 2,
+      "contentHash": "da752861dd4d41b254bcb712b5e7bc3e91e89da31cc0ec43c072296c219fbb0b",
+      "run": {
+        "id": "20261106T064807841Z-37293-2b981fc3-8411-4d0a-8807-26bed9c80aa6",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "c",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "uncertain",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": [
+        "[블라인드] 차량이 막힘없이 지나간다는 뜻이므로 c가 유일하게 알맞습니다. 의사소통과 구별되는 ‘소통하다’의 다른 뜻을 묻는 구성이므로 variantTag를 standard에서 polysemy로 바꾸는 것이 적절합니다.",
+        "[공개 대조] 차량이 막힘없이 지나가는 문맥에서 같은 뜻으로 바꿀 수 있는 것은 c뿐이며, 제공된 근거와 해설도 일치합니다. 의사소통의 뜻과 구별되는 교통상의 의미를 학습하는 문항이므로 variantTag를 polysemy로 바꾸는 것이 적절합니다."
+      ]
+    },
+    {
+      "questionId": "g5-argon-0002",
+      "revision": 3,
+      "contentHash": "0540a410ec1f5d412a93ad4856bd7351e8ab89fa441a5cd315c4b3fd2230c75e",
+      "run": {
+        "id": "20261106T080738990Z-47932-29bcc9fa-feab-4824-bef9-3f460439a71e",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "c",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": [
+        "[블라인드] 도로 공사가 끝나 차량이 막힘없이 다닌다는 문맥이므로 c가 알맞습니다. 의사 전달이 아닌 교통의 흐름을 다루므로 polysemy 분류도 적절합니다.",
+        "[공개 대조] 차량이 막히지 않고 다닌다는 뜻이므로 c만 대체할 수 있고 제시된 근거와 일치합니다. 교통의 흐름을 나타내는 다의어 용법과 오답 이유가 적절합니다."
+      ]
+    },
+    {
+      "questionId": "g5-argon-0002",
+      "revision": 4,
+      "contentHash": "bd0bee12492eb27c0c052012b84931914bf3c1e080c0729546d3d84042de21eb",
+      "run": {
+        "id": "20261106T083924584Z-54436-cc9f99f3-b0cc-4d78-9711-22a11f2809a7",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "c",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": [
+        "[블라인드] 공사가 끝난 도로에서 차들이 원활하게 통행한다는 뜻이므로 c만 바꾸어 쓸 수 있습니다. 교통의 흐름을 나타내는 쓰임을 묻는 문항으로 polysemy 분류가 적절하고 문장도 자연스럽습니다.",
+        "[공개 대조] 정답 c를 대입한 원활하게 오간다는 표현은 근거의 막히지 않고 잘 통한다는 뜻에 부합하며, 나머지 보기는 통행의 의미를 보존하지 못합니다. 교통 상황의 뜻을 구별하는 polysemy 문항으로 5학년 core 수준에 적절하고, 해설과 오답 이유도 정확합니다."
       ]
     },
     {
@@ -56,13 +140,11 @@
         "uniqueness": "pass",
         "grade": "pass",
         "language": "pass",
-        "explanation": "uncertain"
+        "explanation": "pass"
       },
       "findings": [
-        "독립 풀이 및 보기별 대입: d 장소 검토·협의; a 마심, b 묶음, c 자람에는 토의 불가.",
-        "출처 대조: 토의하다 / 동사 / 뜻번호 1 / senseId 305156; 표제어: 토의-하다 | sense_no: 305156 | sense_order: 1 | 품사: 「동사」 | 뜻풀이: 어떤 문제에 대하여 검토하고 협의하다. — 해당 뜻의 핵심 의미와 대조함.",
-        "유형·학년 검토: usage, basic, standard. 제시 맥락과 보기의 의미 차이로 단일 답을 판단할 수 있고 해당 난이도의 5–6학년 어휘 학습에 허용 가능하다. 보기 결합·종결 및 정답 표면·길이 단서를 확인하였다.",
-        "해설과 제작 정답은 비공개이므로 explanation=uncertain."
+        "[블라인드] 회의에서 함께 의견을 나누는 d만 ‘토의하다’의 쓰임에 맞으며, 학급 회의 상황은 5학년에게 익숙합니다.",
+        "[공개 대조] d만 문제를 함께 검토하고 의논한다는 뜻에 맞으며, 다른 보기는 음용·결속·식물의 성장에 잘못 적용한 용례입니다. 학급 회의 문맥과 해설이 5학년에게 적절합니다."
       ]
     },
     {
@@ -75,32 +157,72 @@
         "uniqueness": "pass",
         "grade": "pass",
         "language": "pass",
-        "explanation": "uncertain"
+        "explanation": "pass"
       },
       "findings": [
-        "독립 풀이 및 보기별 대입: d 힘을 합치면 운반 용이; a 다툼, b 연기, c 외면은 협력 부재.",
-        "출처 대조: 협력하다 / 동사 / 뜻번호 1 / senseId 321943; 표제어: 협력-하다 | sense_no: 321943 | sense_order: 1 | 품사: 「동사」 | 뜻풀이: 힘을 합하여 서로 돕다. — 해당 뜻의 핵심 의미와 대조함.",
-        "유형·학년 검토: cloze, basic, standard. 제시 맥락과 보기의 의미 차이로 단일 답을 판단할 수 있고 해당 난이도의 5–6학년 어휘 학습에 허용 가능하다. 보기 결합·종결 및 정답 표면·길이 단서를 확인하였다.",
-        "해설과 제작 정답은 비공개이므로 explanation=uncertain."
+        "[블라인드] 힘을 합쳐 상자를 옮기는 상황에는 d만 알맞으며, 쉬운 생활 문맥이 basic 수준에 맞습니다.",
+        "[공개 대조] 친구들과 힘을 합쳐 상자를 쉽게 옮기는 상황에는 d만 알맞습니다. 근거·해설이 일치하며 생활 문맥과 보기 수준도 basic에 적절합니다."
       ]
     },
     {
       "questionId": "g5-argon-0005",
       "revision": 1,
       "contentHash": "1bf9bee569d31b190554067ff46b6c03aa3e551607e44ef6529ec4e3170808ab",
+      "blindChoice": "none",
+      "verdicts": {
+        "source": "fail",
+        "uniqueness": "fail",
+        "grade": "uncertain",
+        "language": "fail",
+        "explanation": "fail"
+      },
+      "findings": [
+        "[블라인드] 변두리도 활동의 근거가 될 수 있으므로 a는 ‘근거’의 반의어가 아니며, ‘중심 근거’와 ‘뿌리 자리’도 부자연스럽습니다. 표제어를 ‘중심지’로 바꾸어 반의어를 묻거나, 장소를 뜻하는 ‘근거’의 다의어 문항으로 재구성하고 b·c의 의미 중복을 없애세요.",
+        "[공개 대조] 제시된 근거는 ‘근본이 되는 거점’이지 공간적 중심을 필수로 뜻하지 않으므로 변두리도 근거가 될 수 있으며, a를 반의어로 인정할 수 없어 1단계의 none 판단을 유지합니다. ‘중심 근거’와 ‘뿌리 자리’도 부자연스러우므로 표제어를 ‘중심지’로 바꾸어 반대 관계를 묻고, 문항을 재구성한 뒤 challenge 난도를 다시 판단하세요."
+      ]
+    },
+    {
+      "questionId": "g5-argon-0005",
+      "revision": 2,
+      "contentHash": "84125f6fa7e965deebc8bac78af544a54049f1f3e3716cb2587a01beec1eadb2",
+      "run": {
+        "id": "20261106T064807841Z-37293-2b981fc3-8411-4d0a-8807-26bed9c80aa6",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "a",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "uncertain",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": [
+        "[블라인드] 산 아래 마을에 마련하는 활동의 터전이라는 문맥이므로 a만 성립합니다. ‘주장을 뒷받침하는 이유’와 ‘활동의 거점’이라는 다의 관계를 구별하는 문항이므로 variantTag를 polysemy로 수정하는 것이 적절합니다.",
+        "[공개 대조] 탐험대가 마을에 마련하는 활동의 거점을 뜻하므로 a가 유일하게 알맞고, 제공된 명사 뜻풀이와 해설도 일치합니다. b에 제시된 ‘주장을 뒷받침하는 이유’와 다의 관계를 구별하는 문항이므로 variantTag를 polysemy로 수정해야 합니다."
+      ]
+    },
+    {
+      "questionId": "g5-argon-0005",
+      "revision": 3,
+      "contentHash": "b5fee98c28f14c0ff97178adcd869790af2f9c42e92f03c7ffeb5c60352b3ad0",
+      "run": {
+        "id": "20261106T080738990Z-47932-29bcc9fa-feab-4824-bef9-3f460439a71e",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
       "blindChoice": "a",
       "verdicts": {
         "source": "pass",
         "uniqueness": "pass",
         "grade": "pass",
         "language": "pass",
-        "explanation": "uncertain"
+        "explanation": "pass"
       },
       "findings": [
-        "독립 풀이 및 보기별 대입: a 중심과 변두리 대조; b 중심지, c 본거지, d 뿌리 자리는 동의 방향.",
-        "출처 대조: 근거 / 명사 / 뜻번호 1 / senseId 515253; 표제어: 근거 | sense_no: 515253 | sense_order: 1 | 품사: 「명사」 | 뜻풀이: 「1」 근본이 되는 거점. ≒ 본거 . — 해당 뜻의 핵심 의미와 대조함.",
-        "유형·학년 검토: antonym_context, basic, standard. 제시 맥락과 보기의 의미 차이로 단일 답을 판단할 수 있고 해당 난이도의 5–6학년 어휘 학습에 허용 가능하다. 보기 결합·종결 및 정답 표면·길이 단서를 확인하였다.",
-        "해설과 제작 정답은 비공개이므로 explanation=uncertain."
+        "[블라인드] 산 아래 마을에 탐험 활동의 기반을 마련했다는 뜻이므로 a만 성립합니다. 덜 익숙한 뜻의 근거를 묻는 challenge 다의어 문항으로 적절합니다.",
+        "[공개 대조] 산 아래 마을에 탐험 활동의 거점을 마련했다는 뜻이므로 a만 맞습니다. 근거의 해당 명사 뜻과 일치하며 덜 익숙한 의미를 묻는 challenge 다의어 문항으로 적절합니다."
       ]
     },
     {
@@ -112,14 +234,34 @@
         "source": "pass",
         "uniqueness": "pass",
         "grade": "pass",
-        "language": "pass",
-        "explanation": "uncertain"
+        "language": "fail",
+        "explanation": "pass"
       },
       "findings": [
-        "독립 풀이 및 보기별 대입: c 따르도록 깨우침; a 대화 중단, b 사전 검색, d 반성은 설득 아님.",
-        "출처 대조: 설득하다 / 동사 / 뜻번호 1 / senseId 196504; 표제어: 설득-하다 | sense_no: 196504 | sense_order: 1 | 품사: 「동사」 | 뜻풀이: 상대편이 이쪽 편의 이야기를 따르도록 여러 가지로 깨우쳐 말하다. — 해당 뜻의 핵심 의미와 대조함.",
-        "유형·학년 검토: definition, basic, standard. 제시 맥락과 보기의 의미 차이로 단일 답을 판단할 수 있고 해당 난이도의 5–6학년 어휘 학습에 허용 가능하다. 보기 결합·종결 및 정답 표면·길이 단서를 확인하였다.",
-        "해설과 제작 정답은 비공개이므로 explanation=uncertain."
+        "[블라인드] c만 설득의 뜻에 해당하지만 ‘친구를 차근차근 설득하다의 뜻’은 문맥과 낱말 설명을 어색하게 연결했습니다. ‘친구를 차근차근 설득했습니다. 여기서 설득했습니다의 뜻은 무엇일까요?’로 고치세요.",
+        "[공개 대조] c만 상대가 자신의 이야기를 따르도록 깨우쳐 말한다는 뜻에 해당합니다. ‘친구를 차근차근 설득하다의 뜻’이라는 연결을 ‘친구를 차근차근 설득했습니다.’라는 예문과 별도의 질문으로 고치세요."
+      ]
+    },
+    {
+      "questionId": "g5-argon-0006",
+      "revision": 2,
+      "contentHash": "e57cb0f2ec034fe09dd1911be47c3af6d422d6b5574faf781b475ba29efc9c1a",
+      "run": {
+        "id": "20261106T064807841Z-37293-2b981fc3-8411-4d0a-8807-26bed9c80aa6",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "c",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": [
+        "[블라인드] 상대가 자신의 말을 받아들이도록 설명한다는 뜻의 c만 알맞습니다. 문장과 보기 모두 5학년이 이해할 수 있는 수준입니다.",
+        "[공개 대조] 상대가 이쪽 이야기를 따르도록 깨우쳐 말한다는 c만 ‘설득하다’의 뜻에 해당하며 제공된 근거와 일치합니다. 문장과 보기의 표현이 학년 수준에 적절하고 오답 이유에도 모순이 없습니다."
       ]
     },
     {
@@ -132,51 +274,67 @@
         "uniqueness": "pass",
         "grade": "pass",
         "language": "pass",
-        "explanation": "uncertain"
+        "explanation": "pass"
       },
       "findings": [
-        "독립 풀이 및 보기별 대입: b 깊은 연구; a 대충 넘김, c 외면, d 중단은 탐구 부정.",
-        "출처 대조: 탐구하다 / 동사 / 뜻번호 1 / senseId 547869; 표제어: 탐구-하다 | sense_no: 547869 | sense_order: 1 | 품사: 「동사」 | 뜻풀이: 진리, 학문 따위를 파고들어 깊이 연구하다. — 해당 뜻의 핵심 의미와 대조함.",
-        "유형·학년 검토: synonym_context, basic, standard. 제시 맥락과 보기의 의미 차이로 단일 답을 판단할 수 있고 해당 난이도의 5–6학년 어휘 학습에 허용 가능하다. 보기 결합·종결 및 정답 표면·길이 단서를 확인하였다.",
-        "해설과 제작 정답은 비공개이므로 explanation=uncertain."
+        "[블라인드] 원리를 깊이 알아보는 의미를 유지하는 보기는 b뿐이며, 바꾸어 넣은 문장도 자연스럽습니다.",
+        "[공개 대조] b만 원리를 파고들어 깊이 연구한다는 뜻을 유지하며, 대입한 문장도 자연스럽습니다. 해설과 세 오답 이유가 근거 및 문맥과 일치합니다."
       ]
     },
     {
       "questionId": "g5-argon-0008",
-      "revision": 1,
-      "contentHash": "f671ba472443db80f53b6bb1c5c45d6c58886bd6467bb4c4594cba27ab671ec5",
+      "revision": 2,
+      "contentHash": "f49a5bd4d9d590e82e8d9136a0bd184405e23778f29817514dfd86b73e7f1c92",
       "blindChoice": "a",
       "verdicts": {
         "source": "pass",
         "uniqueness": "pass",
-        "grade": "fail",
+        "grade": "uncertain",
         "language": "pass",
-        "explanation": "uncertain"
+        "explanation": "pass"
       },
       "findings": [
-        "독립 풀이 및 보기별 대입: a 시인의 죽음으로 해석 가능; b 음식 섭취, c 끈 묶음, d 식물 성장에는 조사 불가.",
-        "출처 대조: 조사하다 / 동사 / 뜻번호 1 / senseId null; 표제어: 조사-하다 | sense_no: 없음 | sense_order: 1 | 품사: 「동사」 | 뜻풀이: 「1」 죽어 이 세상을 하직하다. — 해당 뜻의 핵심 의미와 대조함.",
-        "유형·학년 검토: usage, basic, standard. 조사하다의 일반 교과 의미인 살펴 알아봄 대신 희귀한 조사하다04(죽다)를 basic/standard로 출제했다. 교과 조사 의미의 사전 항목과 실제 조사 문장으로 바꿔야 한다.",
-        "해설과 제작 정답은 비공개이므로 explanation=uncertain."
+        "[블라인드] a만 자연스러운 용례이지만, 나머지가 노골적인 의미 모순이나 엉뚱한 결합이라 advanced 수준의 변별력이 부족합니다. core로 낮추거나 창의성과 단순한 변화를 구별해야 하는 현실적인 오답 문장으로 바꾸세요.",
+        "[공개 대조] a는 관형사 ‘창의적’의 뜻과 쓰임에 맞고, 해설도 타당합니다. 오답이 명백한 의미 모순이나 엉뚱한 결합이어서 advanced 수준의 변별력이 부족하므로 core로 조정하거나 단순한 변화와 창의성을 구별하는 현실적인 오답으로 바꾸세요."
+      ]
+    },
+    {
+      "questionId": "g5-argon-0008",
+      "revision": 3,
+      "contentHash": "51aaf2775a15dac9e760850f3f9671d0e4b6da168b5d30b03e82f0db14a341c6",
+      "run": {
+        "id": "20261106T064807841Z-37293-2b981fc3-8411-4d0a-8807-26bed9c80aa6",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "a",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": [
+        "[블라인드] 새로운 생각을 담은 발명품을 나타내는 a가 적절합니다. 나머지는 그대로 베끼거나 정해진 답만 외우는 상황 또는 물의 상태를 가리켜 ‘창의적’의 쓰임에 맞지 않습니다.",
+        "[공개 대조] a의 ‘창의적 발명품’은 창의성을 가진 대상을 꾸미는 관형사 용법으로 근거와 일치합니다. 그대로 베끼기, 단순한 상태 변화, 정해진 답만 외우기는 창의성을 나타내지 않으므로 나머지 보기와 오답 이유가 적절합니다."
       ]
     },
     {
       "questionId": "g5-argon-0009",
-      "revision": 1,
-      "contentHash": "01790b6856c562143123f1f9bdb546f8c3eb4170dc59add1c5e380566abbb84a",
+      "revision": 2,
+      "contentHash": "223652078d52e66744fad2be0f8ee5fb74ec01003a661980618097b060951196",
       "blindChoice": "c",
       "verdicts": {
         "source": "pass",
         "uniqueness": "pass",
         "grade": "pass",
         "language": "pass",
-        "explanation": "uncertain"
+        "explanation": "pass"
       },
       "findings": [
-        "독립 풀이 및 보기별 대입: c 보는 태도·방향; a 시기, b 질량, d 온도는 의견 차이의 관점 아님.",
-        "출처 대조: 관점 / 명사 / 뜻번호 1 / senseId 4899; 표제어: 관점 | sense_no: 4899 | sense_order: 1 | 품사: 「명사」 | 뜻풀이: 사물이나 현상을 관찰할 때, 그 사람이 보고 생각하는 태도나 방향 또는 처지. — 해당 뜻의 핵심 의미와 대조함.",
-        "유형·학년 검토: cloze, basic, standard. 제시 맥락과 보기의 의미 차이로 단일 답을 판단할 수 있고 해당 난이도의 5–6학년 어휘 학습에 허용 가능하다. 보기 결합·종결 및 정답 표면·길이 단서를 확인하였다.",
-        "해설과 제작 정답은 비공개이므로 explanation=uncertain."
+        "[블라인드] 기존의 틀을 벗어난 새로운 생각이라는 설명에 c만 맞으며, 문맥이 충분해 basic 수준으로 풀 수 있습니다.",
+        "[공개 대조] 새로운 방법을 떠올리는 발상의 특성을 직접 나타내는 보기는 c뿐입니다. 관형사 용법과 근거가 일치하며 충분한 설명이 있어 basic 수준으로 풀 수 있습니다."
       ]
     },
     {
@@ -189,13 +347,11 @@
         "uniqueness": "pass",
         "grade": "pass",
         "language": "pass",
-        "explanation": "uncertain"
+        "explanation": "pass"
       },
       "findings": [
-        "독립 풀이 및 보기별 대입: b 악화가 개선의 반대; a 편리화, c 보충, d 좋은 변화는 개선.",
-        "출처 대조: 개선하다 / 동사 / 뜻번호 1 / senseId 79729; 표제어: 개선-하다 | sense_no: 79729 | sense_order: 1 | 품사: 「동사」 | 뜻풀이: 잘못된 것이나 부족한 것, 나쁜 것 따위를 고쳐 더 좋게 만들다. — 해당 뜻의 핵심 의미와 대조함.",
-        "유형·학년 검토: antonym_context, basic, standard. 제시 맥락과 보기의 의미 차이로 단일 답을 판단할 수 있고 해당 난이도의 5–6학년 어휘 학습에 허용 가능하다. 보기 결합·종결 및 정답 표면·길이 단서를 확인하였다.",
-        "해설과 제작 정답은 비공개이므로 explanation=uncertain."
+        "[블라인드] 좋은 방향으로 고친다는 뜻과 반대되는 표현은 b뿐이며, 나머지는 모두 개선과 같은 방향의 의미입니다.",
+        "[공개 대조] 더 좋게 고친다는 근거의 뜻과 반대되는 표현은 b뿐이며, a·c·d는 모두 개선과 같은 방향입니다. 학교생활 문맥과 해설이 적절합니다."
       ]
     },
     {
@@ -207,14 +363,34 @@
         "source": "pass",
         "uniqueness": "pass",
         "grade": "pass",
-        "language": "pass",
-        "explanation": "uncertain"
+        "language": "fail",
+        "explanation": "pass"
       },
       "findings": [
-        "독립 풀이 및 보기별 대입: b 우승자에게 맞섬; a 회피, c 점수 기록, d 축하는 싸움 걸기 아님.",
-        "출처 대조: 도전하다 / 동사 / 뜻번호 1 / senseId 7324; 표제어: 도전-하다 | sense_no: 7324 | sense_order: 1 | 품사: 「동사」 | 뜻풀이: 「1」 【…에게】 정면으로 맞서 싸움을 걸다. — 해당 뜻의 핵심 의미와 대조함.",
-        "유형·학년 검토: definition, basic, standard. 제시 맥락과 보기의 의미 차이로 단일 답을 판단할 수 있고 해당 난이도의 5–6학년 어휘 학습에 허용 가능하다. 보기 결합·종결 및 정답 표면·길이 단서를 확인하였다.",
-        "해설과 제작 정답은 비공개이므로 explanation=uncertain."
+        "[블라인드] 우승자에게 겨루기를 청하는 상황에는 b가 맞지만, 문맥 조각 뒤에 ‘도전하다의 뜻’을 붙인 질문은 부자연스럽습니다. ‘씨름 대회에서 지난해 우승자에게 당당히 도전했습니다’라는 완결된 문장 뒤에서 뜻을 물으세요.",
+        "[공개 대조] b는 상대에게 정면으로 맞서 겨루기를 청하는 뜻으로 근거와 일치합니다. ‘씨름 대회에서 지난해 우승자에게 당당히 도전했습니다.’로 문맥을 완결한 뒤 해당 낱말의 뜻을 물으세요."
+      ]
+    },
+    {
+      "questionId": "g5-argon-0011",
+      "revision": 2,
+      "contentHash": "13dac9ebdb626a8b82f5b5fb97ff6259ccba859e0d7413d877ea9b5a3ce08571",
+      "run": {
+        "id": "20261106T064807841Z-37293-2b981fc3-8411-4d0a-8807-26bed9c80aa6",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "b",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": [
+        "[블라인드] 씨름 우승자에게 맞서 승부를 겨루려는 문맥에 맞는 뜻은 b뿐입니다. 경기 상황이 분명하여 어린이에게 부적절한 싸움을 권하는 내용으로 읽히지 않습니다.",
+        "[공개 대조] 우승자에게 정면으로 맞서 승부를 겨루려는 뜻의 b만 문맥과 제공된 근거에 부합합니다. 씨름 경기라는 상황이 분명해 어린이에게 적절하며 해설과 오답 이유도 타당합니다."
       ]
     },
     {
@@ -227,13 +403,33 @@
         "uniqueness": "pass",
         "grade": "pass",
         "language": "pass",
-        "explanation": "uncertain"
+        "explanation": "pass"
       },
       "findings": [
-        "독립 풀이 및 보기별 대입: c 이루려는 대상; a 과거 실수, b 우연 행운, d 걱정은 목적 대상 아님.",
-        "출처 대조: 목표 / 명사 / 뜻번호 1 / senseId 5693; 표제어: 목표 | sense_no: 5693 | sense_order: 1 | 품사: 「명사」 | 뜻풀이: 「1」 어떤 목적을 이루려고 지향하는 실제적 대상으로 삼음. 또는 그 대상. ≒ 표목 . — 해당 뜻의 핵심 의미와 대조함.",
-        "유형·학년 검토: synonym_context, basic, standard. 제시 맥락과 보기의 의미 차이로 단일 답을 판단할 수 있고 해당 난이도의 5–6학년 어휘 학습에 허용 가능하다. 보기 결합·종결 및 정답 표면·길이 단서를 확인하였다.",
-        "해설과 제작 정답은 비공개이므로 explanation=uncertain."
+        "[블라인드] 앞으로 이루려는 대상으로 정한 일을 뜻하는 c만 맞으며, 줄넘기 목표는 학년과 basic 수준에 적절합니다.",
+        "[공개 대조] 앞으로 이루려고 정한 대상을 나타내는 c만 ‘목표’의 해당 뜻과 일치합니다. 줄넘기라는 익숙한 활동을 사용했으며 해설과 오답 이유도 타당합니다."
+      ]
+    },
+    {
+      "questionId": "g5-argon-0012",
+      "revision": 2,
+      "contentHash": "0aed9e1552cd2ef3fd9acab9717bcfa0baed67df7fb2c9032e72988199c1347d",
+      "run": {
+        "id": "20261106T080738990Z-47932-29bcc9fa-feab-4824-bef9-3f460439a71e",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "c",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": [
+        "[블라인드] 이번 달에 실천하려고 정한 일이므로 c가 알맞습니다. 구체적인 생활 사례를 이용한 basic 문항이며 보기의 길이와 표현도 균형을 이룹니다.",
+        "[공개 대조] 앞으로 이루려고 정한 일을 나타내는 c만 목표의 뜻과 문맥에 맞습니다. 생활 사례와 균형 잡힌 보기 구성이 basic 수준에 적절하며 해설도 근거와 일치합니다."
       ]
     },
     {
@@ -246,13 +442,55 @@
         "uniqueness": "pass",
         "grade": "pass",
         "language": "pass",
-        "explanation": "uncertain"
+        "explanation": "pass"
       },
       "findings": [
-        "독립 풀이 및 보기별 대입: d 지키는 규칙; a 음료, b 구름, c 연필 물체에는 원칙 불가.",
-        "출처 대조: 원칙 / 명사 / 뜻번호 1 / senseId 19266; 표제어: 원칙 | sense_no: 19266 | sense_order: 1 | 품사: 「명사」 | 뜻풀이: 「1」 어떤 행동이나 이론 따위에서 일관되게 지켜야 하는 기본적인 규칙이나 법칙. ≒ 본칙 . — 해당 뜻의 핵심 의미와 대조함.",
-        "유형·학년 검토: usage, basic, standard. 제시 맥락과 보기의 의미 차이로 단일 답을 판단할 수 있고 해당 난이도의 5–6학년 어휘 학습에 허용 가능하다. 보기 결합·종결 및 정답 표면·길이 단서를 확인하였다.",
-        "해설과 제작 정답은 비공개이므로 explanation=uncertain."
+        "[블라인드] 행동할 때 지키는 기준이라는 뜻으로 ‘원칙’을 쓴 d만 맞으며, 모둠 활동 상황도 이해하기 쉽습니다.",
+        "[공개 대조] d만 행동에서 일관되게 지키는 기본 규칙이라는 뜻으로 사용했습니다. 다른 보기는 원칙을 물리적 사물처럼 취급한 오용이며 해설이 이를 바르게 구별합니다."
+      ]
+    },
+    {
+      "questionId": "g5-argon-0013",
+      "revision": 2,
+      "contentHash": "6beba32ebaa49b90d111981bae49038c43e85ae3c608f7a55ac2ba64bfd46802",
+      "run": {
+        "id": "20261106T080738990Z-47932-29bcc9fa-feab-4824-bef9-3f460439a71e",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "d",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "uncertain",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": [
+        "[블라인드] 행동의 기준을 지킨다는 뜻으로 원칙을 사용한 d만 자연스럽습니다. 나머지는 원칙을 물건처럼 사용한 의도적인 오용이며, 학년과 문항 형식에 적절합니다.",
+        "[공개 대조] 일관되게 지키는 규칙이라는 뜻으로 쓴 d만 맞으며 근거와 해설도 정확합니다. 다만 오답 세 개가 모두 원칙을 구체적인 물건으로 취급하여 core에 비해 변별력이 낮으므로 basic으로 조정하거나 규칙·계획·의견을 혼동하는 보기로 바꾸는 것이 좋습니다."
+      ]
+    },
+    {
+      "questionId": "g5-argon-0013",
+      "revision": 3,
+      "contentHash": "7e4d8a9f4a6537ba3e5c0ba216827facf063d190af3ef6265977ed09a2deea25",
+      "run": {
+        "id": "20261106T083924584Z-54436-cc9f99f3-b0cc-4d78-9711-22a11f2809a7",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "d",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": [
+        "[블라인드] 모둠에서 지키기로 한 기본 규칙을 나타내는 d만 적절합니다. 다른 보기에서는 각각 원인·반칙·원료 등이 필요한 자리에 목표 낱말을 넣었으며, 5학년이 용례 차이를 판단할 수 있습니다.",
+        "[공개 대조] 정답 d만 일관되게 지켜야 하는 기본 규칙이라는 명사 뜻에 맞으며, a·b·c에는 각각 원인·반칙·원료가 알맞습니다. 오용을 판별하는 문항으로 보기의 잘못된 쓰임이 평가 목적에 부합하고, 학년·난도와 해설도 적절합니다."
       ]
     },
     {
@@ -265,32 +503,50 @@
         "uniqueness": "pass",
         "grade": "pass",
         "language": "pass",
-        "explanation": "uncertain"
+        "explanation": "pass"
       },
       "findings": [
-        "독립 풀이 및 보기별 대입: b 돌보려는 마음; a 외면, c 겨룸, d 의심은 배려 아님.",
-        "출처 대조: 배려하다 / 동사 / 뜻번호 1 / senseId 165237; 표제어: 배려-하다 | sense_no: 165237 | sense_order: 1 | 품사: 「동사」 | 뜻풀이: 도와주거나 보살펴 주려고 마음을 쓰다. ≒ 배의하다 . — 해당 뜻의 핵심 의미와 대조함.",
-        "유형·학년 검토: cloze, core, standard. 제시 맥락과 보기의 의미 차이로 단일 답을 판단할 수 있고 해당 난이도의 5–6학년 어휘 학습에 허용 가능하다. 보기 결합·종결 및 정답 표면·길이 단서를 확인하였다.",
-        "해설과 제작 정답은 비공개이므로 explanation=uncertain."
+        "[블라인드] 남을 돕거나 보살피려는 마음 씀을 나타내는 말은 b뿐이며, 뜻풀이와 보기의 표현도 자연스럽습니다.",
+        "[공개 대조] 남을 돕거나 보살피려고 마음을 쓴다는 뜻은 b에만 해당합니다. 제시된 근거와 해설이 일치하며 문장과 보기 모두 basic 수준에 적절합니다."
       ]
     },
     {
       "questionId": "g5-argon-0015",
-      "revision": 1,
-      "contentHash": "85d7a08bccd6a671b203095d0c94fd47024cc5ed10225e8dddf864d4de309f62",
+      "revision": 2,
+      "contentHash": "0e7dfdc575abbcdf1fdf1c12b2bcd8426eaedc082075c12b822832818f8733e1",
       "blindChoice": "c",
       "verdicts": {
         "source": "pass",
         "uniqueness": "pass",
-        "grade": "fail",
+        "grade": "pass",
         "language": "pass",
-        "explanation": "uncertain"
+        "explanation": "fail"
       },
       "findings": [
-        "독립 풀이 및 보기별 대입: c 흐리고 칙칙함이 맑음의 반대; a 맑음, b 깨끗함, d 선명함은 같은 방향.",
-        "출처 대조: 경청하다 / 형용사 / 뜻번호 1 / senseId 4031; 표제어: 경청-하다 | sense_no: 4031 | sense_order: 1 | 품사: 「형용사」 | 뜻풀이: 「1」 날씨나 빛깔 따위가 맑고 산뜻하다. — 해당 뜻의 핵심 의미와 대조함.",
-        "유형·학년 검토: antonym_context, core, standard. 경청하다04 형용사(맑고 산뜻하다)는 토의에서 귀 기울여 듣는 경청과 다른 희귀 동음이의어다. core/standard 목표에 부적합하므로 듣기 의미의 동사로 교체.",
-        "해설과 제작 정답은 비공개이므로 explanation=uncertain."
+        "[블라인드] c를 넣으면 ‘새롭고 독창적인 방법’이 되어 원래 의미와 문장 구조를 모두 유지합니다.",
+        "[공개 대조] c만 ‘창의적 방법’의 의미와 문장 구조를 유지합니다. d의 오답 이유는 ‘급하고’의 뜻까지 ‘잠깐 동안’으로 설명하므로 ‘서두르거나 잠시 지속되는 성질은 새롭고 독창적이라는 뜻과 다릅니다’로 고치세요."
+      ]
+    },
+    {
+      "questionId": "g5-argon-0015",
+      "revision": 3,
+      "contentHash": "89ccb6b11122c4b7b622f2e992bb8ecc0cd7e9221d2aaa7156f0c7d06fe4e6fa",
+      "run": {
+        "id": "20261106T064807841Z-37293-2b981fc3-8411-4d0a-8807-26bed9c80aa6",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "c",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": [
+        "[블라인드] ‘새롭고 독창적인 방법’으로 바꾸어야 ‘창의적 방법’의 뜻이 유지됩니다. 보기 길이가 비슷하고 바꾸어 넣은 문장도 자연스럽습니다.",
+        "[공개 대조] c를 넣은 ‘새롭고 독창적인 방법’만 원문의 뜻을 유지하며, 창의성을 띠거나 가졌다는 관형사 뜻풀이와 맞습니다. 다른 보기들은 창의성의 의미를 나타내지 않고 보기 길이와 문장 표현도 적절합니다."
       ]
     },
     {
@@ -302,14 +558,34 @@
         "source": "pass",
         "uniqueness": "pass",
         "grade": "pass",
-        "language": "pass",
-        "explanation": "uncertain"
+        "language": "fail",
+        "explanation": "pass"
       },
       "findings": [
-        "독립 풀이 및 보기별 대입: a 서로 양보해 의논; b 고집, c 지각, d 무단 취득은 타협 아님.",
-        "출처 대조: 타협하다 / 동사 / 뜻번호 1 / senseId 300624; 표제어: 타협-하다 | sense_no: 300624 | sense_order: 1 | 품사: 「동사」 | 뜻풀이: 어떤 일을 서로 양보하여 협의하다. — 해당 뜻의 핵심 의미와 대조함.",
-        "유형·학년 검토: definition, core, standard. 제시 맥락과 보기의 의미 차이로 단일 답을 판단할 수 있고 해당 난이도의 5–6학년 어휘 학습에 허용 가능하다. 보기 결합·종결 및 정답 표면·길이 단서를 확인하였다.",
-        "해설과 제작 정답은 비공개이므로 explanation=uncertain."
+        "[블라인드] 서로 양보하여 의논한다는 a가 맞지만, ‘두 모둠이 … 양보하며 타협하다의 뜻’은 문장이 완결되지 않습니다. ‘두 모둠은 운동장 사용 시간을 정하려고 조금씩 양보하며 타협했습니다’로 문맥을 완성한 뒤 뜻을 물으세요.",
+        "[공개 대조] a만 서로 양보하여 협의한다는 뜻에 해당하며 근거와 해설도 일치합니다. 문맥 조각에 기본형과 질문을 붙이지 말고 ‘두 모둠은 운동장 사용 시간을 정하려고 조금씩 양보하며 타협했습니다.’라는 예문 뒤에서 뜻을 물으세요."
+      ]
+    },
+    {
+      "questionId": "g5-argon-0016",
+      "revision": 2,
+      "contentHash": "4ec17e7f7b47bda377adf0710f537409dc51b9816aafbdf1b64c4614c5b9a7c3",
+      "run": {
+        "id": "20261106T064807841Z-37293-2b981fc3-8411-4d0a-8807-26bed9c80aa6",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "a",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": [
+        "[블라인드] 서로 맞서던 두 모둠이 양보하며 의논한다는 뜻의 a가 유일하게 알맞습니다. 운동장 사용 시간이라는 상황이 학년 수준에 적절합니다.",
+        "[공개 대조] 서로 양보하여 의논한다는 a는 제공된 ‘타협하다’의 뜻과 일치하고 다른 보기들은 이를 나타내지 않습니다. 운동장 사용 문제는 학년 수준에 적절하며 해설과 오답 이유도 정확합니다."
       ]
     },
     {
@@ -321,14 +597,34 @@
         "source": "pass",
         "uniqueness": "pass",
         "grade": "pass",
-        "language": "pass",
-        "explanation": "uncertain"
+        "language": "fail",
+        "explanation": "pass"
       },
       "findings": [
-        "독립 풀이 및 보기별 대입: a 의견 일치; b 엇갈림, c 다툼 증가, d 단절은 합의 아님.",
-        "출처 대조: 합의하다 / 동사 / 뜻번호 1 / senseId 480902; 표제어: 합의-하다 | sense_no: 480902 | sense_order: 1 | 품사: 「동사」 | 뜻풀이: 「1」 서로 의견이 일치하다. — 해당 뜻의 핵심 의미와 대조함.",
-        "유형·학년 검토: synonym_context, core, standard. 제시 맥락과 보기의 의미 차이로 단일 답을 판단할 수 있고 해당 난이도의 5–6학년 어휘 학습에 허용 가능하다. 보기 결합·종결 및 정답 표면·길이 단서를 확인하였다.",
-        "해설과 제작 정답은 비공개이므로 explanation=uncertain."
+        "[블라인드] 의미상 a만 맞지만 그대로 대입하면 ‘학급 임원들이 … 의견이 일치했습니다’가 되어 주어 구성이 어색해집니다. a를 ‘뜻을 모았습니다’로 바꾸면 원문에 자연스럽게 대입할 수 있습니다.",
+        "[공개 대조] 의미상 a만 근거와 일치하지만 그대로 대입한 ‘학급 임원들이 … 의견이 일치했습니다’는 주어 연결이 어색합니다. 지문의 ‘학급 임원들이’를 ‘학급 임원들은’으로 바꾸면 정답 표현을 자연스럽게 대입할 수 있습니다."
+      ]
+    },
+    {
+      "questionId": "g5-argon-0017",
+      "revision": 2,
+      "contentHash": "7085dfe65eae6e14565f4177bb526893035828d9bafe3e6025c62475fbb83bc2",
+      "run": {
+        "id": "20261106T064807841Z-37293-2b981fc3-8411-4d0a-8807-26bed9c80aa6",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "a",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": [
+        "[블라인드] 주제를 정하는 데 서로 뜻이 같아졌다는 의미를 유지하는 보기는 a뿐입니다. 학급 축제 상황과 의견의 일치를 나타내는 표현이 5학년에게 적절합니다.",
+        "[공개 대조] a로 바꾸면 서로 의견이 일치했다는 원문의 뜻이 유지되며 제공된 동사 뜻풀이와도 일치합니다. 나머지는 의견의 불일치나 갈등·대화 중단을 나타내므로 정답이 될 수 없고 표현과 해설도 적절합니다."
       ]
     },
     {
@@ -341,13 +637,11 @@
         "uniqueness": "pass",
         "grade": "pass",
         "language": "pass",
-        "explanation": "uncertain"
+        "explanation": "pass"
       },
       "findings": [
-        "독립 풀이 및 보기별 대입: d 근거와 함께 내세운 의견; a 마심, b 널음, c 깎음은 주장과 결합 불가.",
-        "출처 대조: 주장 / 명사 / 뜻번호 1 / senseId 23362; 표제어: 주장 | sense_no: 23362 | sense_order: 1 | 품사: 「명사」 | 뜻풀이: 「1」 자기의 의견이나 주의를 굳게 내세움. 또는 그런 의견이나 주의. — 해당 뜻의 핵심 의미와 대조함.",
-        "유형·학년 검토: usage, core, standard. 제시 맥락과 보기의 의미 차이로 단일 답을 판단할 수 있고 해당 난이도의 5–6학년 어휘 학습에 허용 가능하다. 보기 결합·종결 및 정답 표면·길이 단서를 확인하였다.",
-        "해설과 제작 정답은 비공개이므로 explanation=uncertain."
+        "[블라인드] 근거를 들어 자신의 의견을 밝히는 d만 ‘주장’의 쓰임에 맞으며, 토론 상황은 5학년에게 적절합니다.",
+        "[공개 대조] d만 자신이 내세우는 의견이라는 명사 ‘주장’의 뜻에 맞습니다. 나머지는 주장을 물건처럼 사용한 오용으로, 해설과 오답 이유가 정답을 뒷받침합니다."
       ]
     },
     {
@@ -360,13 +654,11 @@
         "uniqueness": "pass",
         "grade": "pass",
         "language": "pass",
-        "explanation": "uncertain"
+        "explanation": "pass"
       },
       "findings": [
-        "독립 풀이 및 보기별 대입: b 옳고 그름 판단; a 외면, c 눈감음, d 따라함은 비판 아님.",
-        "출처 대조: 비판하다 / 동사 / 뜻번호 1 / senseId 12506; 표제어: 비판-하다 | sense_no: 12506 | sense_order: 1 | 품사: 「동사」 | 뜻풀이: 「1」 현상이나 사물의 옳고 그름을 판단하여 밝히거나 잘못된 점을 지적하다. — 해당 뜻의 핵심 의미와 대조함.",
-        "유형·학년 검토: cloze, core, standard. 제시 맥락과 보기의 의미 차이로 단일 답을 판단할 수 있고 해당 난이도의 5–6학년 어휘 학습에 허용 가능하다. 보기 결합·종결 및 정답 표면·길이 단서를 확인하였다.",
-        "해설과 제작 정답은 비공개이므로 explanation=uncertain."
+        "[블라인드] 옳고 그름을 따지고 잘못을 짚는다는 설명은 b에만 해당하며, 충분한 뜻풀이가 제공되어 basic 수준으로 풀 수 있습니다.",
+        "[공개 대조] 옳고 그름을 판단하거나 잘못을 지적한다는 설명은 b에만 해당합니다. 충분한 뜻풀이가 제공되어 basic 수준으로 풀 수 있으며 근거와 해설도 일치합니다."
       ]
     },
     {
@@ -379,13 +671,11 @@
         "uniqueness": "pass",
         "grade": "pass",
         "language": "pass",
-        "explanation": "uncertain"
+        "explanation": "pass"
       },
       "findings": [
-        "독립 풀이 및 보기별 대입: d 합쳐 뭉뚱그림이 나눔의 반대; a 쪼갬, b 분류, c 부분 검토는 분석 방향.",
-        "출처 대조: 분석하다 / 동사 / 뜻번호 1 / senseId 11814; 표제어: 분석-하다 | sense_no: 11814 | sense_order: 1 | 품사: 「동사」 | 뜻풀이: 「1」 얽혀 있거나 복잡한 것을 풀어서 개별적인 요소나 성질로 나누다. — 해당 뜻의 핵심 의미와 대조함.",
-        "유형·학년 검토: antonym_context, core, standard. 제시 맥락과 보기의 의미 차이로 단일 답을 판단할 수 있고 해당 난이도의 5–6학년 어휘 학습에 허용 가능하다. 보기 결합·종결 및 정답 표면·길이 단서를 확인하였다.",
-        "해설과 제작 정답은 비공개이므로 explanation=uncertain."
+        "[블라인드] 요소를 나누어 살피는 분석과 반대 방향인 d만 맞으며, a·b·c는 모두 나누어 살피는 행동입니다.",
+        "[공개 대조] 개별 요소로 나눈다는 뜻과 반대 방향인 d만 정답이며, a·b·c는 나누어 살피는 행동을 나타냅니다. 근거와 해설이 이 대조 관계를 바르게 설명합니다."
       ]
     },
     {
@@ -397,14 +687,34 @@
         "source": "pass",
         "uniqueness": "pass",
         "grade": "pass",
-        "language": "pass",
-        "explanation": "uncertain"
+        "language": "fail",
+        "explanation": "pass"
       },
       "findings": [
-        "독립 풀이 및 보기별 대입: b 사실을 남겨 적음; a 지움, c 소문 유포, d 재료 정리는 기록 아님.",
-        "출처 대조: 기록하다 / 동사 / 뜻번호 1 / senseId 6942; 표제어: 기록-하다 | sense_no: 6942 | sense_order: 1 | 품사: 「동사」 | 뜻풀이: 「1」 【…에 …을】【…에 …을 …으로】【…에 …을 -고】 주로 후일에 남길 목적으로 어떤 사실을 적다. ≒ 서록하다 . — 해당 뜻의 핵심 의미와 대조함.",
-        "유형·학년 검토: definition, core, standard. 제시 맥락과 보기의 의미 차이로 단일 답을 판단할 수 있고 해당 난이도의 5–6학년 어휘 학습에 허용 가능하다. 보기 결합·종결 및 정답 표면·길이 단서를 확인하였다.",
-        "해설과 제작 정답은 비공개이므로 explanation=uncertain."
+        "[블라인드] 사실을 남기려고 적는다는 b만 맞지만, 문맥 뒤에 기본형 ‘기록하다’와 질문을 바로 붙여 문장 구조가 어색합니다. ‘관찰 일지에 강낭콩의 변화를 꼼꼼히 기록했습니다’라는 문장을 먼저 제시하세요.",
+        "[공개 대조] b만 후일에 남기려고 사실을 적는다는 근거의 뜻과 일치합니다. 지문을 ‘관찰 일지에 강낭콩의 변화를 꼼꼼히 기록했습니다.’라는 완결된 예문과 뜻을 묻는 질문으로 나누세요."
+      ]
+    },
+    {
+      "questionId": "g5-argon-0021",
+      "revision": 2,
+      "contentHash": "c79b0a8df0374412a05a3af8cc8fed720911c8876e446405708c2bfaac98245f",
+      "run": {
+        "id": "20261106T064807841Z-37293-2b981fc3-8411-4d0a-8807-26bed9c80aa6",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "b",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": [
+        "[블라인드] 관찰한 변화를 나중에도 볼 수 있도록 적는다는 뜻의 b만 알맞습니다. 관찰 일지라는 익숙한 학습 상황과 보기의 표현이 자연스럽습니다.",
+        "[공개 대조] 관찰한 사실을 나중에 남기려고 적는다는 b만 문맥에 맞고 제공된 근거와 일치합니다. 관찰 일지는 익숙한 학습 상황이며 해설과 오답 이유에도 문제가 없습니다."
       ]
     },
     {
@@ -417,13 +727,11 @@
         "uniqueness": "pass",
         "grade": "pass",
         "language": "pass",
-        "explanation": "uncertain"
+        "explanation": "pass"
       },
       "findings": [
-        "독립 풀이 및 보기별 대입: a 자신을 반성·검토; b 자랑, c 망각, d 남 탓은 성찰 부재.",
-        "출처 대조: 성찰하다 / 동사 / 뜻번호 1 / senseId 14377; 표제어: 성찰-하다 | sense_no: 14377 | sense_order: 1 | 품사: 「동사」 | 뜻풀이: 「1」 자기의 마음을 반성하고 살피다. — 해당 뜻의 핵심 의미와 대조함.",
-        "유형·학년 검토: synonym_context, core, standard. 제시 맥락과 보기의 의미 차이로 단일 답을 판단할 수 있고 해당 난이도의 5–6학년 어휘 학습에 허용 가능하다. 보기 결합·종결 및 정답 표면·길이 단서를 확인하였다.",
-        "해설과 제작 정답은 비공개이므로 explanation=uncertain."
+        "[블라인드] 자신의 말과 행동을 돌아보고 살핀다는 의미를 유지하는 보기는 a뿐이며, 추상적인 어휘를 일기 상황으로 설명했습니다.",
+        "[공개 대조] a만 자신을 반성하고 살핀다는 뜻을 유지하며 다른 보기는 자랑·망각·책임 전가를 나타냅니다. 추상적인 어휘를 일기 상황으로 구체화했고 근거와 해설도 일치합니다."
       ]
     },
     {
@@ -436,13 +744,11 @@
         "uniqueness": "pass",
         "grade": "pass",
         "language": "pass",
-        "explanation": "uncertain"
+        "explanation": "pass"
       },
       "findings": [
-        "독립 풀이 및 보기별 대입: d 두려움 이김; a 먹기, b 꽃 피기, c 그림 그리기는 극복 아님.",
-        "출처 대조: 극복하다 / 동사 / 뜻번호 1 / senseId 7120; 표제어: 극복-하다 | sense_no: 7120 | sense_order: 1 | 품사: 「동사」 | 뜻풀이: 「1」 악조건이나 고생 따위를 이겨 내다. — 해당 뜻의 핵심 의미와 대조함.",
-        "유형·학년 검토: usage, core, standard. 제시 맥락과 보기의 의미 차이로 단일 답을 판단할 수 있고 해당 난이도의 5–6학년 어휘 학습에 허용 가능하다. 보기 결합·종결 및 정답 표면·길이 단서를 확인하였다.",
-        "해설과 제작 정답은 비공개이므로 explanation=uncertain."
+        "[블라인드] 어려움이나 두려움을 이겨 낸다는 뜻으로 쓴 d만 맞으며, 연습으로 무대의 두려움을 이기는 상황도 적절합니다.",
+        "[공개 대조] d만 어려운 조건이나 두려움을 이겨 낸다는 뜻으로 자연스럽게 사용했습니다. 나머지 보기는 해당 뜻과 맞지 않으며 해설과 오답 이유도 타당합니다."
       ]
     },
     {
@@ -455,13 +761,11 @@
         "uniqueness": "pass",
         "grade": "pass",
         "language": "pass",
-        "explanation": "uncertain"
+        "explanation": "pass"
       },
       "findings": [
-        "독립 풀이 및 보기별 대입: c 목표 달성; a 포기, b 중단, d 외면은 성취 아님.",
-        "출처 대조: 성취하다 / 동사 / 뜻번호 1 / senseId 499815; 표제어: 성취-하다 | sense_no: 499815 | sense_order: 1 | 품사: 「동사」 | 뜻풀이: 목적한 바를 이루다. — 해당 뜻의 핵심 의미와 대조함.",
-        "유형·학년 검토: cloze, core, standard. 제시 맥락과 보기의 의미 차이로 단일 답을 판단할 수 있고 해당 난이도의 5–6학년 어휘 학습에 허용 가능하다. 보기 결합·종결 및 정답 표면·길이 단서를 확인하였다.",
-        "해설과 제작 정답은 비공개이므로 explanation=uncertain."
+        "[블라인드] 목표를 이루어 낸다는 설명에 c만 해당하며, 나머지는 목표를 이루는 행동과 구별됩니다.",
+        "[공개 대조] 목적한 바를 이루는 행동은 c뿐이며 포기·중단·외면과 분명하게 구별됩니다. 문장과 어휘가 학년에 적절하고 근거 및 해설이 일치합니다."
       ]
     },
     {
@@ -474,32 +778,50 @@
         "uniqueness": "pass",
         "grade": "pass",
         "language": "pass",
-        "explanation": "uncertain"
+        "explanation": "pass"
       },
       "findings": [
-        "독립 풀이 및 보기별 대입: a 즉흥성은 미리 정함과 반대; b 예정, c 설계, d 순서는 계획 방향.",
-        "출처 대조: 계획 / 명사 / 뜻번호 1 / senseId 560871; 표제어: 계획 | sense_no: 560871 | sense_order: 1 | 품사: 「명사」 | 뜻풀이: 앞으로 할 일의 절차, 방법, 규모 따위를 미리 헤아려 작정함. 또는 그 내용. — 해당 뜻의 핵심 의미와 대조함.",
-        "유형·학년 검토: antonym_context, core, standard. 제시 맥락과 보기의 의미 차이로 단일 답을 판단할 수 있고 해당 난이도의 5–6학년 어휘 학습에 허용 가능하다. 보기 결합·종결 및 정답 표면·길이 단서를 확인하였다.",
-        "해설과 제작 정답은 비공개이므로 explanation=uncertain."
+        "[블라인드] 미리 정한다는 계획의 성격과 가장 대조되는 보기는 a이며, ‘미리 정하지 않은’이라는 설명이 즉흥적 행동의 뜻을 보완합니다.",
+        "[공개 대조] 미리 정한다는 계획의 성격과 가장 대조되는 것은 a이며, 다른 보기는 모두 계획의 성격을 설명합니다. ‘미리 정하지 않은’이라는 풀이가 있어 basic 수준에서도 의미를 비교할 수 있습니다."
       ]
     },
     {
       "questionId": "g5-argon-0026",
-      "revision": 1,
-      "contentHash": "e3c347f23bd6dcb48a1acdc61c5ab3ef784787549720d1f096d75f1c11c4782a",
+      "revision": 2,
+      "contentHash": "5ac8b5c8990e65dbf0b97ab457ebeb8bfd97187212a9e448d6f402767aa25c29",
       "blindChoice": "a",
       "verdicts": {
         "source": "pass",
         "uniqueness": "pass",
-        "grade": "fail",
-        "language": "pass",
-        "explanation": "uncertain"
+        "grade": "pass",
+        "language": "fail",
+        "explanation": "fail"
       },
       "findings": [
-        "독립 풀이 및 보기별 대입: a 맡은 일의 분량; b 출발 시각, c 선수 수, d 독서 장소는 문맥 불일치.",
-        "출처 대조: 과정 / 명사 / 뜻번호 1 / senseId null; 표제어: 과정 | sense_no: 없음 | sense_order: 1 | 품사: 「명사」 | 뜻풀이: 「1」 해야 할 일의 정도. — 해당 뜻의 핵심 의미와 대조함.",
-        "유형·학년 검토: definition, core, standard. 과정04(해야 할 일의 정도)는 일반 교과 과정(진행 경로)과 다르다. 희귀 뜻을 core로 가르치므로 진행 과정 의미의 출처·문맥으로 교체.",
-        "해설과 제작 정답은 비공개이므로 explanation=uncertain."
+        "[블라인드] 적은 노력과 시간으로 일을 끝낸다는 의미에는 a만 맞지만, ‘교실 정리를 빠르게 끝내는 진행이 가능했습니다’는 표현이 어색합니다. ‘역할을 알맞게 나누어 적은 노력과 시간으로 교실 정리를 끝냈습니다. 이는 (    ) 일 처리의 예입니다’처럼 고치세요.",
+        "[공개 대조] a는 근거와 일치하지만 ‘교실 정리를 빠르게 끝내는 진행이 가능했습니다’가 어색하므로 ‘적은 노력과 시간으로 교실 정리를 끝냈습니다. 이는 (    ) 일 처리의 예입니다’로 고치세요. d의 ‘남이 시켜야만’은 수동성의 뜻을 지나치게 한정하므로 ‘스스로 나서지 않고 다른 힘에 따라 움직이는 태도’로 수정하세요."
+      ]
+    },
+    {
+      "questionId": "g5-argon-0026",
+      "revision": 3,
+      "contentHash": "4c6c9c19b77a4dd305f2643be690c172752990f6eb8e417cccb21b8ea9332673",
+      "run": {
+        "id": "20261106T064807841Z-37293-2b981fc3-8411-4d0a-8807-26bed9c80aa6",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "a",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": [
+        "[블라인드] 적은 노력과 시간으로 일을 끝냈다는 단서가 ‘효율적’을 분명하게 가리킵니다. 빈칸에 보기를 넣었을 때 문법적으로 자연스럽고 정답도 하나입니다.",
+        "[공개 대조] 역할을 알맞게 나누어 적은 노력과 시간으로 일을 끝냈다는 설명은 a를 뒷받침하며, 들인 노력에 비해 결과가 크다는 근거와 일치합니다. 다른 보기의 성질을 뒷받침하는 단서는 없고 관형사 연결과 해설도 적절합니다."
       ]
     },
     {
@@ -512,13 +834,11 @@
         "uniqueness": "pass",
         "grade": "pass",
         "language": "pass",
-        "explanation": "uncertain"
+        "explanation": "pass"
       },
       "findings": [
-        "독립 풀이 및 보기별 대입: d 성장·성숙; a 약화, b 정지, c 피로는 발달 아님.",
-        "출처 대조: 발달하다 / 동사 / 뜻번호 1 / senseId 1050; 표제어: 발달-하다 | sense_no: 1050 | sense_order: 1 | 품사: 「동사」 | 뜻풀이: 「1」 신체, 정서, 지능 따위가 성장하거나 성숙하다. — 해당 뜻의 핵심 의미와 대조함.",
-        "유형·학년 검토: synonym_context, core, standard. 제시 맥락과 보기의 의미 차이로 단일 답을 판단할 수 있고 해당 난이도의 5–6학년 어휘 학습에 허용 가능하다. 보기 결합·종결 및 정답 표면·길이 단서를 확인하였다.",
-        "해설과 제작 정답은 비공개이므로 explanation=uncertain."
+        "[블라인드] 몸과 마음이 성장한다는 뜻을 유지하는 d만 맞으며, 대입한 문장도 자연스럽습니다.",
+        "[공개 대조] d만 몸과 마음이 성장하거나 성숙한다는 뜻을 유지합니다. 대입한 문장과 해설이 자연스럽고 다른 보기의 배제 이유도 적절합니다."
       ]
     },
     {
@@ -531,70 +851,62 @@
         "uniqueness": "pass",
         "grade": "pass",
         "language": "pass",
-        "explanation": "uncertain"
+        "explanation": "pass"
       },
       "findings": [
-        "독립 풀이 및 보기별 대입: b 매우 귀여움; a 바쁨, c 부끄러움, d 혼잡은 애정 아님.",
-        "출처 대조: 눈에 넣어도 아프지 않다 / 관용구 / 뜻번호 1 / senseId 1383879; 표제어: 눈에 넣어도 아프지 않다 | sense_no: 1383879 | sense_order: 1 | 품사: [관용구] | 뜻풀이: 매우 귀엽다. — 해당 뜻의 핵심 의미와 대조함.",
-        "유형·학년 검토: cloze, advanced, idiom_proverb. 제시 맥락과 보기의 의미 차이로 단일 답을 판단할 수 있고 해당 난이도의 5–6학년 어휘 학습에 허용 가능하다. 보기 결합·종결 및 정답 표면·길이 단서를 확인하였다.",
-        "해설과 제작 정답은 비공개이므로 explanation=uncertain."
+        "[블라인드] 몹시 귀엽고 사랑스럽다는 상황에는 b만 맞으며, 관용적 의미를 판단할 문맥이 충분합니다.",
+        "[공개 대조] 매우 귀여운 동생을 사랑스럽게 바라보는 상황에는 b만 맞습니다. 근거의 관용적 의미와 해설이 일치하고 문자적 의미와 구별할 문맥도 충분합니다."
       ]
     },
     {
       "questionId": "g5-argon-0029",
-      "revision": 1,
-      "contentHash": "ef8628e5cca71f01ea1c450e9a229d4bd2030fc5f4214d473200e654d9841687",
-      "blindChoice": "b",
-      "verdicts": {
-        "source": "pass",
-        "uniqueness": "pass",
-        "grade": "pass",
-        "language": "fail",
-        "explanation": "uncertain"
-      },
-      "findings": [
-        "독립 풀이 및 보기별 대입: b 일에서 물러남; a 인맥, c 쉽게 믿음, d 높은 기준은 퇴임 아님.",
-        "출처 대조: 손을 떼다 / 관용구 / 뜻번호 1 / senseId 1387539; 표제어: 손(을) 떼다 | sense_no: 1387539 | sense_order: 1 | 품사: [관용구] | 뜻풀이: 「1」 하던 일을 그만두다. — 해당 뜻의 핵심 의미와 대조함.",
-        "유형·학년 검토: cloze, advanced, idiom_proverb. 직접 발화 '이제 그 일에서 완전히 손을 떼다'는 서술 시제·종결이 부자연스럽다. 보기 전체를 '손을 뗐다' 등 인용문에 맞는 활용형으로 통일.",
-        "해설과 제작 정답은 비공개이므로 explanation=uncertain."
-      ]
-    },
-    {
-      "questionId": "g5-argon-0030",
-      "revision": 1,
-      "contentHash": "c9abb8aed756a69accec2eb741812e71c0b2bdcbe2f19f0bfc672bb90f55e89c",
-      "blindChoice": "c",
-      "verdicts": {
-        "source": "pass",
-        "uniqueness": "pass",
-        "grade": "pass",
-        "language": "fail",
-        "explanation": "uncertain"
-      },
-      "findings": [
-        "독립 풀이 및 보기별 대입: c 긴장을 가라앉힘; a 걱정, b 우쭐함, d 의아함은 안정 아님.",
-        "출처 대조: 머리를 식히다 / 관용구 / 뜻번호 1 / senseId 1384984; 표제어: 머리(를) 식히다 | sense_no: 1384984 | sense_order: 1 | 품사: [관용구] | 뜻풀이: 흥분되거나 긴장된 마음을 가라앉히다. — 해당 뜻의 핵심 의미와 대조함.",
-        "유형·학년 검토: cloze, advanced, idiom_proverb. 마음을 가라앉히려고 창밖을 보며 '머리를 식히다'라는 표현을 썼다는 서술은 행동과 표현 사용이 섞였다. '창밖을 보며 잠시 ( )'와 활용형 보기로 정리.",
-        "해설과 제작 정답은 비공개이므로 explanation=uncertain."
-      ]
-    },
-    {
-      "questionId": "g5-argon-0031",
-      "revision": 1,
-      "contentHash": "de6a47c77511cd85adac5288e3d18d814b4766d6446158a1de9fe98e79e09bc0",
+      "revision": 2,
+      "contentHash": "98dc7ebaa1aac46ba6d09a12e90225536ad5313ea455bcf9aa3d9f5ee9f3f8dc",
       "blindChoice": "b",
       "verdicts": {
         "source": "pass",
         "uniqueness": "pass",
         "grade": "pass",
         "language": "pass",
-        "explanation": "uncertain"
+        "explanation": "pass"
       },
       "findings": [
-        "독립 풀이 및 보기별 대입: b 시험 낙방; a 추켜세움, c 모른 척, d 잔소리는 낙방 아님.",
-        "출처 대조: 미역국을 먹다 / 관용구 / 뜻번호 1 / senseId 1378233; 표제어: 미역국(을) 먹다 | sense_no: 1378233 | sense_order: 1 | 품사: [관용구] | 뜻풀이: 「1」 (비유적으로) 시험에서 떨어지다. — 해당 뜻의 핵심 의미와 대조함.",
-        "유형·학년 검토: cloze, advanced, idiom_proverb. 제시 맥락과 보기의 의미 차이로 단일 답을 판단할 수 있고 해당 난이도의 5–6학년 어휘 학습에 허용 가능하다. 보기 결합·종결 및 정답 표면·길이 단서를 확인하였다.",
-        "해설과 제작 정답은 비공개이므로 explanation=uncertain."
+        "[블라인드] 맡던 활동을 모두 넘기고 그만두는 상황에는 b만 맞으며, 빈칸 앞뒤의 연결과 인용문도 자연스럽습니다.",
+        "[공개 대조] 맡던 일을 모두 넘기고 그만두는 상황은 b의 관용적 의미와 일치합니다. 다른 보기는 몰두·적극적 참여·시작을 나타내며 빈칸 연결과 해설도 자연스럽습니다."
+      ]
+    },
+    {
+      "questionId": "g5-argon-0030",
+      "revision": 2,
+      "contentHash": "1915a52f0bf48c1236f4aac6577e135c9743f549df145ac87693d643f63d1d50",
+      "blindChoice": "c",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": [
+        "[블라인드] 긴장과 흥분을 가라앉히려는 목적에 c만 맞으며, 다른 보기는 걱정이나 곤란을 나타냅니다.",
+        "[공개 대조] 흥분되거나 긴장된 마음을 가라앉히려는 상황에는 c만 알맞습니다. 나머지 표현은 불안·고민·곤란을 나타내므로 해설과 오답 이유가 타당합니다."
+      ]
+    },
+    {
+      "questionId": "g5-argon-0031",
+      "revision": 2,
+      "contentHash": "6cb88d138c33898d98394585ad392af024e0ca9e741ab1741a07bd742a70c80c",
+      "blindChoice": "b",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": [
+        "[블라인드] 시험에서 떨어졌다는 상황에 해당하는 관용 표현은 b뿐이며, 문자 그대로의 음식 섭취와 구별할 문맥이 있습니다.",
+        "[공개 대조] 시험에서 떨어졌다는 상황은 b의 제시된 관용적 뜻과 정확히 일치합니다. 음식 섭취의 문자적 뜻과 구별할 문맥이 있으며 다른 관용 표현의 설명도 적절합니다."
       ]
     },
     {
@@ -607,32 +919,72 @@
         "uniqueness": "pass",
         "grade": "pass",
         "language": "pass",
-        "explanation": "uncertain"
+        "explanation": "pass"
       },
       "findings": [
-        "독립 풀이 및 보기별 대입: d 남의 성공을 시샘; a 비밀 지킴, b 이동 제약, c 일손 부족은 질투 아님.",
-        "출처 대조: 배가 아프다 / 관용구 / 뜻번호 1 / senseId 1385837; 표제어: 배(가) 아프다 | sense_no: 1385837 | sense_order: 1 | 품사: [관용구] | 뜻풀이: 남이 잘되어 심술이 나다. — 해당 뜻의 핵심 의미와 대조함.",
-        "유형·학년 검토: cloze, advanced, idiom_proverb. 제시 맥락과 보기의 의미 차이로 단일 답을 판단할 수 있고 해당 난이도의 5–6학년 어휘 학습에 허용 가능하다. 보기 결합·종결 및 정답 표면·길이 단서를 확인하였다.",
-        "해설과 제작 정답은 비공개이므로 explanation=uncertain."
+        "[블라인드] 남이 잘된 것을 시기하는 감정에는 d만 맞으며, 실제 복통과 구별되는 상황이 명확합니다.",
+        "[공개 대조] 남이 잘되어 심술이 나는 상황은 d에만 해당합니다. 실제 복통과 구별되는 문맥이 분명하며 근거와 해설, 오답 이유가 일치합니다."
       ]
     },
     {
-      "questionId": "g5-argon-0033",
-      "revision": 1,
-      "contentHash": "ad1c3e8640e5ec45893ff0c64493f75a14d84badaa37a38ad84a017e011d4341",
+      "questionId": "g5-argon-0032",
+      "revision": 2,
+      "contentHash": "6fffaff2b7fb787b173a81e4da82444637e3a3e9e412f407e4d9d5bc6e3cda49",
+      "run": {
+        "id": "20261106T080738990Z-47932-29bcc9fa-feab-4824-bef9-3f460439a71e",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "d",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "fail",
+        "explanation": "pass"
+      },
+      "findings": [
+        "[블라인드] 친구가 잘된 것을 보고 심술이 나는 상황에 맞는 관용구는 d입니다. 지문의 ‘일등을 해 상을 받아 잘된 것을 보고’는 연결이 매끄럽지 않으므로 ‘단짝 친구가 대회에서 일등상을 받자 괜히 심술이 날 때’로 다듬는 것이 좋습니다.",
+        "[공개 대조] 남이 잘되어 심술이 난다는 근거에 맞는 관용구는 d뿐이며 해설과 오답 뜻도 정확합니다. 지문의 ‘일등을 해 상을 받아 잘된 것을 보고’는 연결이 부자연스러우므로 ‘단짝 친구가 대회에서 일등상을 받자 괜히 심술이 날 때’로 고치세요."
+      ]
+    },
+    {
+      "questionId": "g5-argon-0032",
+      "revision": 3,
+      "contentHash": "bd1939d73ae95460bfee31178ffa9538343aaa0ea833c458cfa8c2dbc8f31ba0",
+      "run": {
+        "id": "20261106T083924584Z-54436-cc9f99f3-b0cc-4d78-9711-22a11f2809a7",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
       "blindChoice": "d",
       "verdicts": {
         "source": "pass",
         "uniqueness": "pass",
         "grade": "pass",
         "language": "pass",
-        "explanation": "uncertain"
+        "explanation": "pass"
       },
       "findings": [
-        "독립 풀이 및 보기별 대입: d 행동 없이 말만 함; a 씀씀이 큼, b 잘 들음, c 낮은 기준은 불실천 아님.",
-        "출처 대조: 입만 살다 / 관용구 / 뜻번호 1 / senseId 1389020; 표제어: 입만 살다 | sense_no: 1389020 | sense_order: 1 | 품사: [관용구] | 뜻풀이: 「1」 말에 따르는 행동은 없으면서 말만 그럴듯하게 잘하다. — 해당 뜻의 핵심 의미와 대조함.",
-        "유형·학년 검토: cloze, advanced, idiom_proverb. 제시 맥락과 보기의 의미 차이로 단일 답을 판단할 수 있고 해당 난이도의 5–6학년 어휘 학습에 허용 가능하다. 보기 결합·종결 및 정답 표면·길이 단서를 확인하였다.",
-        "해설과 제작 정답은 비공개이므로 explanation=uncertain."
+        "[블라인드] 친구의 좋은 일을 보고 시샘하는 상황에 해당하는 관용구는 d뿐입니다. 상황 설명과 인용 표현의 연결이 자연스럽고 학년 및 idiom_proverb 분류에도 적절합니다.",
+        "[공개 대조] 친구의 수상을 보고 심술이 나는 상황은 제공된 관용구 뜻과 일치하므로 정답 d만 성립합니다. 인용 구문이 자연스럽고 5학년 advanced 및 idiom_proverb 분류에 적절하며, 해설과 다른 관용구의 뜻 설명도 타당합니다."
+      ]
+    },
+    {
+      "questionId": "g5-argon-0033",
+      "revision": 2,
+      "contentHash": "7a2cad6ae9ebcf37cbe32fa9c062752fb2a34958af5a24a755e55021b75a985f",
+      "blindChoice": "d",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": [
+        "[블라인드] 실천하지 않으면서 말만 그럴듯하게 한다는 설명은 d에만 해당하며, 인용문에 넣었을 때도 자연스럽습니다.",
+        "[공개 대조] 행동하지 않고 말만 그럴듯하게 한다는 설명은 d의 뜻과 일치합니다. 다른 표현은 침묵이나 실제 참여를 나타내어 구별되며 문장과 해설도 적절합니다."
       ]
     },
     {
@@ -645,13 +997,11 @@
         "uniqueness": "pass",
         "grade": "pass",
         "language": "pass",
-        "explanation": "uncertain"
+        "explanation": "pass"
       },
       "findings": [
-        "독립 풀이 및 보기별 대입: c 시작의 어려움 극복; a 편들기, b 습관 지속, d 신중함은 착수의 힘 아님.",
-        "출처 대조: 시작이 반이다 / 속담 / 뜻번호 1 / senseId null; 표제어: 시작이 반이다 | sense_no: 없음 | sense_order: 1 | 품사: [속담] | 뜻풀이: 무슨 일이든지 시작하기가 어렵지 일단 시작하면 일을 끝마치기는 그리 어렵지 아니함을 비유적으로 이르는 말. — 해당 뜻의 핵심 의미와 대조함.",
-        "유형·학년 검토: cloze, advanced, idiom_proverb. 제시 맥락과 보기의 의미 차이로 단일 답을 판단할 수 있고 해당 난이도의 5–6학년 어휘 학습에 허용 가능하다. 보기 결합·종결 및 정답 표면·길이 단서를 확인하였다.",
-        "해설과 제작 정답은 비공개이므로 explanation=uncertain."
+        "[블라인드] 첫걸음을 내디디자 일을 계속할 힘이 생긴 상황에는 c가 가장 알맞으며, 다른 속담을 뒷받침하는 문맥은 없습니다.",
+        "[공개 대조] 시작한 뒤 끝까지 할 용기를 얻었다는 상황은 c의 뜻을 뒷받침합니다. 편들기·습관·신중함을 나타내는 나머지 속담은 문맥에 맞지 않으며 해설도 근거와 일치합니다."
       ]
     },
     {
@@ -664,13 +1014,11 @@
         "uniqueness": "pass",
         "grade": "pass",
         "language": "pass",
-        "explanation": "uncertain"
+        "explanation": "pass"
       },
       "findings": [
-        "독립 풀이 및 보기별 대입: b 가까운 것을 모름; a 원인에 따른 결과, c 뜻밖의 일, d 협력은 탐색 실패 아님.",
-        "출처 대조: 등잔 밑이 어둡다 / 속담 / 뜻번호 1 / senseId null; 표제어: 등잔 밑이 어둡다 | sense_no: 없음 | sense_order: 1 | 품사: [속담] | 뜻풀이: 대상에서 가까이 있는 사람이 도리어 대상에 대하여 잘 알기 어렵다는 말. — 해당 뜻의 핵심 의미와 대조함.",
-        "유형·학년 검토: cloze, advanced, idiom_proverb. 제시 맥락과 보기의 의미 차이로 단일 답을 판단할 수 있고 해당 난이도의 5–6학년 어휘 학습에 허용 가능하다. 보기 결합·종결 및 정답 표면·길이 단서를 확인하였다.",
-        "해설과 제작 정답은 비공개이므로 explanation=uncertain."
+        "[블라인드] 아주 가까이 있는 것을 알아차리지 못한 상황에는 b만 맞으며, 생활 속 사례로 속담의 뜻을 이해할 수 있습니다.",
+        "[공개 대조] 아주 가까이 있는 물건을 알아차리지 못한 상황에는 b가 알맞습니다. 나머지 속담의 핵심 의미를 뒷받침하는 사건은 없으며 근거와 해설도 일치합니다."
       ]
     },
     {
@@ -683,13 +1031,33 @@
         "uniqueness": "pass",
         "grade": "pass",
         "language": "pass",
-        "explanation": "uncertain"
+        "explanation": "pass"
       },
       "findings": [
-        "독립 풀이 및 보기별 대입: c 얻기 매우 어려움; a·b·d는 모두 쉬움을 뜻해 매진 상황과 반대.",
-        "출처 대조: 하늘의 별 따기 / 속담 / 뜻번호 1 / senseId null; 표제어: 하늘의 별 따기 | sense_no: 없음 | sense_order: 1 | 품사: [속담] | 뜻풀이: 무엇을 얻거나 성취하기가 매우 어려운 경우를 비유적으로 이르는 말. — 해당 뜻의 핵심 의미와 대조함.",
-        "유형·학년 검토: cloze, advanced, idiom_proverb. 제시 맥락과 보기의 의미 차이로 단일 답을 판단할 수 있고 해당 난이도의 5–6학년 어휘 학습에 허용 가능하다. 보기 결합·종결 및 정답 표면·길이 단서를 확인하였다.",
-        "해설과 제작 정답은 비공개이므로 explanation=uncertain."
+        "[블라인드] 매우 어려운 일을 나타내는 c만 맞으며, 나머지 세 표현은 모두 쉬운 일을 뜻합니다.",
+        "[공개 대조] 구하기 매우 어렵다는 뜻을 나타내는 보기는 c뿐이며, 다른 세 표현은 모두 일이 쉽다는 뜻입니다. 제시된 근거와 해설 및 오답 이유가 일치합니다."
+      ]
+    },
+    {
+      "questionId": "g5-argon-0036",
+      "revision": 2,
+      "contentHash": "9343d1bfa3ce02d28f8ca3c3b85dfb3193dbc194cfdebf6197d587b06ceee790",
+      "run": {
+        "id": "20261106T080738990Z-47932-29bcc9fa-feab-4824-bef9-3f460439a71e",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "c",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": [
+        "[블라인드] 표가 거의 매진되어 구하기 매우 어렵다는 상황이므로 c가 알맞습니다. 다른 속담은 쉬움이나 이중의 이익, 자신에게 돌아오는 해를 나타내므로 구별됩니다.",
+        "[공개 대조] 거의 매진된 표를 구하기 어렵다는 상황에 맞는 속담은 c뿐입니다. 근거의 의미와 해설이 일치하고 다른 속담의 뜻을 설명한 오답 이유도 적절합니다."
       ]
     },
     {
@@ -700,15 +1068,35 @@
       "verdicts": {
         "source": "pass",
         "uniqueness": "pass",
-        "grade": "pass",
+        "grade": "uncertain",
         "language": "pass",
-        "explanation": "uncertain"
+        "explanation": "pass"
       },
       "findings": [
-        "독립 풀이 및 보기별 대입: a 시련 후 단단해짐; b 사전 확인, c 악행 확대, d 지휘 혼선은 화해 후 성장 아님.",
-        "출처 대조: 비 온 뒤에 땅이 굳어진다 / 속담 / 뜻번호 1 / senseId null; 표제어: 비 온 뒤에 땅이 굳어진다 | sense_no: 없음 | sense_order: 1 | 품사: [속담] | 뜻풀이: 비에 젖어 질척거리던 흙도 마르면서 단단하게 굳어진다는 뜻으로, 어떤 시련을 겪은 뒤에 더 강해짐을 비유적으로 이르는 말. — 해당 뜻의 핵심 의미와 대조함.",
-        "유형·학년 검토: cloze, advanced, idiom_proverb. 제시 맥락과 보기의 의미 차이로 단일 답을 판단할 수 있고 해당 난이도의 5–6학년 어휘 학습에 허용 가능하다. 보기 결합·종결 및 정답 표면·길이 단서를 확인하였다.",
-        "해설과 제작 정답은 비공개이므로 explanation=uncertain."
+        "[블라인드] 어려움을 겪은 뒤 관계가 더 단단해진 상황에는 a만 맞습니다. 다툼·화해·우정의 강화가 직접 제시되고 오답도 뚜렷이 구별되어 challenge보다는 advanced에 가까우므로 난도를 조정하거나 더 간접적인 적용 상황으로 바꾸세요.",
+        "[공개 대조] 다툼을 겪고 우정이 더 깊어진 상황에는 a만 맞으며 근거와 해설도 일치합니다. 시련과 관계의 강화가 직접 제시되고 오답도 뚜렷이 구별되므로 challenge를 advanced로 조정하거나 더 간접적인 적용 상황으로 바꾸세요."
+      ]
+    },
+    {
+      "questionId": "g5-argon-0037",
+      "revision": 2,
+      "contentHash": "70ac67e9ed640b3dfa53aa2df71f3207cb7be3f7f6c163bbfc07885d392b3605",
+      "run": {
+        "id": "20261106T064807841Z-37293-2b981fc3-8411-4d0a-8807-26bed9c80aa6",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "a",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": [
+        "[블라인드] 갈등을 겪고 해결한 뒤 관계가 더 단단해진 상황은 a에만 해당합니다. 우정에 관한 문맥이 속담의 비유를 이해하기에 충분하고 표현도 자연스럽습니다.",
+        "[공개 대조] 갈등을 해결한 뒤 우정이 더 깊어진 상황은 시련 뒤에 더 강해진다는 a의 뜻과 정확히 맞습니다. 나머지 속담의 의미와 구별되며, 제공된 근거·해설·오답 이유와 학년 수준도 적절합니다."
       ]
     },
     {
@@ -721,13 +1109,33 @@
         "uniqueness": "pass",
         "grade": "pass",
         "language": "pass",
-        "explanation": "uncertain"
+        "explanation": "pass"
       },
       "findings": [
-        "독립 풀이 및 보기별 대입: c 작지만 야무짐; a 실속 없이 떠듦, b 성급함, d 우연 오해는 칭찬과 다름.",
-        "출처 대조: 작은 고추가 더 맵다 / 속담 / 뜻번호 1 / senseId null; 표제어: 작은 고추가 더 맵다 | sense_no: 없음 | sense_order: 1 | 품사: [속담] | 뜻풀이: 몸집이 작은 사람이 큰 사람보다 재주가 뛰어나고 야무짐을 비유적으로 이르는 말. ≒ 고추는 작아도 맵다 , 고추보다 후추가 더 맵다 , 대국 고추는 작아도 맵다 , 작아도 후추알[고추알] , 작은 탕관이 이내 뜨거워진다 , 후추는 작아도 맵다 , 후추는 작아도 진상에만 간다 . — 해당 뜻의 핵심 의미와 대조함.",
-        "유형·학년 검토: cloze, advanced, idiom_proverb. 제시 맥락과 보기의 의미 차이로 단일 답을 판단할 수 있고 해당 난이도의 5–6학년 어휘 학습에 허용 가능하다. 보기 결합·종결 및 정답 표면·길이 단서를 확인하였다.",
-        "해설과 제작 정답은 비공개이므로 explanation=uncertain."
+        "[블라인드] 몸집이 작아도 뛰어난 능력을 보이는 상황에는 c만 맞으며, 칭찬의 의도와도 잘 연결됩니다.",
+        "[공개 대조] 몸집이 작은 사람이 뛰어난 능력과 야무진 행동을 보이는 상황은 c의 뜻과 일치합니다. 칭찬의 의도도 분명하며 다른 속담의 배제 이유가 타당합니다."
+      ]
+    },
+    {
+      "questionId": "g5-argon-0038",
+      "revision": 2,
+      "contentHash": "e54379214a8e1679351da7877a47c439de0282fca4ebfa6e5e3f3eb693bfcc5a",
+      "run": {
+        "id": "20261106T080738990Z-47932-29bcc9fa-feab-4824-bef9-3f460439a71e",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "c",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": [
+        "[블라인드] 작은 몸집에도 뛰어난 솜씨를 보인 상황에 맞는 속담은 c입니다. 칭찬이라는 단서까지 있어 다른 보기와 구별되며 어린이에게 익숙한 경기 상황도 적절합니다.",
+        "[공개 대조] 몸집이 가장 작지만 누구보다 뛰어나게 활약했다는 상황은 c의 뜻과 일치합니다. 다른 속담은 해당 칭찬에 어울리지 않으며 학년·표현·해설도 적절합니다."
       ]
     },
     {
@@ -738,15 +1146,57 @@
       "verdicts": {
         "source": "pass",
         "uniqueness": "pass",
-        "grade": "pass",
-        "language": "pass",
-        "explanation": "uncertain"
+        "grade": "uncertain",
+        "language": "fail",
+        "explanation": "pass"
       },
       "findings": [
-        "독립 풀이 및 보기별 대입: b 헛수고; a·c·d는 한 일의 이중 이득이므로 물 새는 화분과 반대.",
-        "출처 대조: 밑 빠진 독에 물 붓기 / 속담 / 뜻번호 1 / senseId null; 표제어: 밑 빠진 독[가마/항아리]에 물 붓기 | sense_no: 없음 | sense_order: 1 | 품사: [속담] | 뜻풀이: 밑 빠진 독에 아무리 물을 부어도 독이 채워질 수 없다는 뜻으로, 아무리 힘이나 밑천을 들여도 보람 없이 헛된 일이 되는 상태를 비유적으로 이르는 말. — 해당 뜻의 핵심 의미와 대조함.",
-        "유형·학년 검토: cloze, advanced, idiom_proverb. 제시 맥락과 보기의 의미 차이로 단일 답을 판단할 수 있고 해당 난이도의 5–6학년 어휘 학습에 허용 가능하다. 보기 결합·종결 및 정답 표면·길이 단서를 확인하였다.",
-        "해설과 제작 정답은 비공개이므로 explanation=uncertain."
+        "[블라인드] b를 고를 수 있지만 화분의 구멍은 정상적인 배수 기능을 하므로 막아야 한다는 전제가 부적절하고, 속담의 물 붓기 장면을 그대로 재현해 advanced 수준의 의미 적용도 약합니다. ‘돈을 모으려 하지만 불필요한 물건을 계속 사서 아무리 저축해도 돈이 남지 않는다’처럼 헛수고가 분명한 다른 상황으로 바꾸세요.",
+        "[공개 대조] 명시된 ‘보람이 없는’이라는 뜻에 맞는 보기는 b뿐이고 해설도 근거와 일치하지만, 화분의 구멍은 정상적인 배수구일 수 있어 이를 막아야 한다는 상황 설정이 부적절합니다. 속담의 물 붓기 장면을 그대로 반복해 정답을 드러내고 advanced 수준의 적용도 약하므로, 불필요한 지출 때문에 저축해도 돈이 남지 않는 상황 등으로 바꾸세요."
+      ]
+    },
+    {
+      "questionId": "g5-argon-0039",
+      "revision": 2,
+      "contentHash": "e76f493b4a4f804ddda4c82d05b2c3358be48fb694bb4010755c27f50760c3fc",
+      "run": {
+        "id": "20261106T064807841Z-37293-2b981fc3-8411-4d0a-8807-26bed9c80aa6",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "b",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": [
+        "[블라인드] 돈을 계속 벌어도 지출 때문에 남는 것이 없다는 상황은 b에 해당합니다. 나머지 보기들은 한 번의 행동으로 여러 이익을 얻는 뜻이어서 구별됩니다.",
+        "[공개 대조] 계속 노력해 돈을 벌어도 불필요한 소비로 남는 돈이 없다는 상황은 b의 뜻과 부합하며 제공된 속담 표제어에도 포함됩니다. 나머지는 한 가지 일로 여러 이익을 얻는 표현이므로 구별되고 해설과 오답 이유도 타당합니다."
+      ]
+    },
+    {
+      "questionId": "g5-argon-0039",
+      "revision": 3,
+      "contentHash": "63c1e06789b429d30dfd5aa84a9c5a8fc199d3867dd5ec76a1cd389a28a2d541",
+      "run": {
+        "id": "20261106T080738990Z-47932-29bcc9fa-feab-4824-bef9-3f460439a71e",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "b",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": [
+        "[블라인드] 계속 돈을 벌어도 지출 때문에 남는 것이 없다는 상황은 b에 해당합니다. 노력의 결과가 쌓이지 않는다는 핵심이 분명하고 문장도 자연스럽습니다.",
+        "[공개 대조] 계속 노력하여 돈을 벌어도 남는 돈이 없다는 상황은 b의 비유적 의미에 맞습니다. 다른 보기는 쉬움·추가 이익·좁은 견문을 나타내므로 구별되며 해설도 근거와 일치합니다."
       ]
     },
     {
@@ -759,13 +1209,11 @@
         "uniqueness": "pass",
         "grade": "pass",
         "language": "pass",
-        "explanation": "uncertain"
+        "explanation": "pass"
       },
       "findings": [
-        "독립 풀이 및 보기별 대입: d 물속 식용 다슬기; a 육상 곤충, b 개구리, c 흙의 지렁이는 돌 밑 채집 국 재료 단서와 다름.",
-        "출처 대조: 올갱이 / 명사 / 뜻번호 1 / senseId 577416; 표제어: 올갱이 | sense_no: 577416 | sense_order: 1 | 품사: 「명사」 | 뜻풀이: ‘다슬기’의 방언(강원, 충북). — 해당 뜻의 핵심 의미와 대조함.",
-        "유형·학년 검토: definition, challenge, dialect. 제시 맥락과 보기의 의미 차이로 단일 답을 판단할 수 있고 해당 난이도의 5–6학년 어휘 학습에 허용 가능하다. 보기 결합·종결 및 정답 표면·길이 단서를 확인하였다.",
-        "해설과 제작 정답은 비공개이므로 explanation=uncertain."
+        "[블라인드] 맑은 시냇물의 돌 밑에서 채집하여 국을 끓이는 대상은 d로 분명하며, 충청 방언과 대화 문맥이 적절합니다.",
+        "[공개 대조] 제시된 근거에서 ‘올갱이’는 명사 ‘다슬기’의 방언이며 충북은 충청 지역에 포함됩니다. 시냇물의 돌 밑에서 채집하여 국을 끓인다는 대화가 d를 뒷받침하고 해설도 일치합니다."
       ]
     },
     {
@@ -778,13 +1226,33 @@
         "uniqueness": "pass",
         "grade": "pass",
         "language": "pass",
-        "explanation": "uncertain"
+        "explanation": "pass"
       },
       "findings": [
-        "독립 풀이 및 보기별 대입: a 솔잎·솔방울 있는 소나무; b 대나무, c 밤나무, d 감나무에는 해당 단서 없음.",
-        "출처 대조: 소낭구 / 명사 / 뜻번호 1 / senseId 763825; 표제어: 소-낭구 | sense_no: 763825 | sense_order: 1 | 품사: 「명사」 | 뜻풀이: ‘소나무’의 방언(강원, 평북, 황해). — 해당 뜻의 핵심 의미와 대조함.",
-        "유형·학년 검토: definition, challenge, dialect. 제시 맥락과 보기의 의미 차이로 단일 답을 판단할 수 있고 해당 난이도의 5–6학년 어휘 학습에 허용 가능하다. 보기 결합·종결 및 정답 표면·길이 단서를 확인하였다.",
-        "해설과 제작 정답은 비공개이므로 explanation=uncertain."
+        "[블라인드] 솔잎과 솔방울이라는 특징으로 a만 성립하며, 강원 방언을 이해할 수 있는 구체적인 대화 단서가 있습니다.",
+        "[공개 대조] 근거에 강원 지역의 ‘소나무’ 방언으로 명시되어 있어 a와 지역 분류가 일치합니다. 솔잎·솔방울이라는 대화 단서가 다른 나무와 구별해 주며 해설도 타당합니다."
+      ]
+    },
+    {
+      "questionId": "g5-argon-0041",
+      "revision": 2,
+      "contentHash": "784410ce8110929ad8772f355ab6b48cb9bab9cc18e7bf511ff5f63cdacfa696",
+      "run": {
+        "id": "20261106T080738990Z-47932-29bcc9fa-feab-4824-bef9-3f460439a71e",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "a",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": [
+        "[블라인드] 겨울에도 푸른 바늘 모양의 잎이라는 단서로 a를 고를 수 있습니다. 강원도 화자의 대화와 나무의 특징이 함께 제시되어 방언 문항의 문맥 조건을 충족합니다.",
+        "[공개 대조] 제시된 근거에서 소낭구는 소나무의 강원 지역 방언이므로 a와 지역 설정이 모두 맞습니다. 겨울에도 푸른 바늘잎이라는 대화 단서로 다른 나무와 구별할 수 있고 해설도 정확합니다."
       ]
     },
     {
@@ -797,13 +1265,11 @@
         "uniqueness": "pass",
         "grade": "pass",
         "language": "pass",
-        "explanation": "uncertain"
+        "explanation": "pass"
       },
       "findings": [
-        "독립 풀이 및 보기별 대입: d 요술 방망이·씨름의 도깨비; a 호랑이, b 산토끼, c 다람쥐는 민담 단서 불일치.",
-        "출처 대조: 도채비 / 명사 / 뜻번호 1 / senseId 127441; 표제어: 도채비 | sense_no: 127441 | sense_order: 1 | 품사: 「명사」 | 뜻풀이: ‘도깨비’의 방언(강원, 경상, 전라, 함북). — 해당 뜻의 핵심 의미와 대조함.",
-        "유형·학년 검토: definition, challenge, dialect. 제시 맥락과 보기의 의미 차이로 단일 답을 판단할 수 있고 해당 난이도의 5–6학년 어휘 학습에 허용 가능하다. 보기 결합·종결 및 정답 표면·길이 단서를 확인하였다.",
-        "해설과 제작 정답은 비공개이므로 explanation=uncertain."
+        "[블라인드] 요술 방망이를 들고 씨름을 거는 옛이야기 속 존재는 d이며, 방언을 해석할 상황 단서가 충분합니다.",
+        "[공개 대조] 근거의 표제어·품사·뜻 및 전라 지역이 모두 문항과 일치합니다. 요술 방망이를 들고 씨름을 거는 옛이야기 속 존재는 d이며 해설과 오답 이유도 적절합니다."
       ]
     },
     {
@@ -816,70 +1282,172 @@
         "uniqueness": "pass",
         "grade": "pass",
         "language": "pass",
-        "explanation": "uncertain"
+        "explanation": "pass"
       },
       "findings": [
-        "독립 풀이 및 보기별 대입: d 발가락이 빠지는 구멍; a 주름, b 단추, c 소매는 기워 막는 구멍 아님.",
-        "출처 대조: 고망 / 명사 / 뜻번호 4 / senseId 626513; 표제어: 고망 | sense_no: 626513 | sense_order: 4 | 품사: 「명사」 | 뜻풀이: ‘구멍’의 방언(강원, 경기, 경북, 전라, 제주, 충청, 평남, 함북, 황해). — 해당 뜻의 핵심 의미와 대조함.",
-        "유형·학년 검토: definition, challenge, dialect. 제시 맥락과 보기의 의미 차이로 단일 답을 판단할 수 있고 해당 난이도의 5–6학년 어휘 학습에 허용 가능하다. 보기 결합·종결 및 정답 표면·길이 단서를 확인하였다.",
-        "해설과 제작 정답은 비공개이므로 explanation=uncertain."
+        "[블라인드] 발가락이 빠져나오고 기워야 하는 양말의 상태는 d로 명확하며, 대화와 생활 상황이 방언의 뜻을 뒷받침합니다.",
+        "[공개 대조] 근거에 ‘구멍’의 경북 방언이 포함되어 있어 d와 경상 지역 분류가 부합합니다. 발가락이 빠져나오고 기워야 한다는 대화가 뜻을 분명하게 뒷받침합니다."
       ]
     },
     {
       "questionId": "g5-argon-0044",
-      "revision": 1,
-      "contentHash": "598810318ab16386a089ff3f08f602cf0751df3fd074b539d3e9d97c3c0210b1",
+      "revision": 2,
+      "contentHash": "95a8cbf62bd1a1f9026fb7c71b6c0b0e9dd5e788a8237592b6da339392a300f3",
       "blindChoice": "b",
       "verdicts": {
         "source": "pass",
-        "uniqueness": "uncertain",
-        "grade": "fail",
+        "uniqueness": "pass",
+        "grade": "pass",
         "language": "pass",
-        "explanation": "uncertain"
+        "explanation": "pass"
       },
       "findings": [
-        "독립 풀이 및 보기별 대입: b 돌배를 예상; a 단감은 재배 열매, c 참외는 밭 열매, d 살구도 작고 단단한 야생 열매일 수 있어 단서 보강 필요.",
-        "출처 대조: 똘배 / 명사 / 뜻번호 2 / senseId 741588; 표제어: 똘-배 | sense_no: 741588 | sense_order: 2 | 품사: 「명사」 | 뜻풀이: ‘돌배’의 방언(강원, 경상, 전라, 충북). — 해당 뜻의 핵심 의미와 대조함.",
-        "유형·학년 검토: definition, challenge, dialect. 작고 단단하며 향기 있는 야생 열매만으로는 살구를 배제할 근거가 약하다. 배 모양·배나무 등 명확한 대화 단서를 추가해야 방언 사전 암기 없이 추론 가능.",
-        "해설과 제작 정답은 비공개이므로 explanation=uncertain."
+        "[블라인드] 멍멍 짖는 어린 동물이라는 단서로 b만 맞으며, 제주라는 지역과 발화 상황이 명시되어 있습니다.",
+        "[공개 대조] 제시된 근거의 ‘강아지’ 뜻과 제주 지역이 모두 일치합니다. 멍멍 짖는 어린 동물이라는 대화 상황으로 b만 성립하며 해설도 타당합니다."
+      ]
+    },
+    {
+      "questionId": "g5-argon-0044",
+      "revision": 3,
+      "contentHash": "02adf007a0847b1b9a6454a8fc48d8879373794a16867fd2559657b463a2bc0c",
+      "run": {
+        "id": "20261106T080738990Z-47932-29bcc9fa-feab-4824-bef9-3f460439a71e",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "b",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": [
+        "[블라인드] 멍멍 짖고 꼬리를 흔드는 어린 동물이므로 b만 알맞습니다. 제주도 할머니의 대화 속에 뜻을 추론할 단서가 있고, 방언과 지역 설정도 적절합니다.",
+        "[공개 대조] 멍멍 짖는 어린 동물이라는 단서와 제시된 방언 뜻 모두 b를 가리킵니다. 근거에 제주·경상 지역이 명시되어 있으며 대화 문맥과 오답 이유도 적절합니다."
+      ]
+    },
+    {
+      "questionId": "g5-argon-0044",
+      "revision": 4,
+      "contentHash": "9b314b56815913dd542499402b915b525da6e8cc60c740406bd720eacf851199",
+      "run": {
+        "id": "20261106T083924584Z-54436-cc9f99f3-b0cc-4d78-9711-22a11f2809a7",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "b",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": [
+        "[블라인드] 꼬리를 흔들며 짖는 어린 동물이라는 단서로 b를 고를 수 있습니다. 제주 지역의 방언을 할머니의 대화와 행동 묘사 속에 제시하여 낯선 어휘도 문맥으로 이해할 수 있습니다.",
+        "[공개 대조] 정답 b와 제주 지역 설정은 제공된 우리말샘의 명사·방언 뜻풀이에 부합하며, 짖는 어린 동물이라는 단서로 다른 보기를 배제할 수 있습니다. 낯선 지역 어휘를 대화와 상황으로 이해하게 하여 학년과 challenge 분류를 수용할 수 있고, 문장·해설·오답 이유에도 판정을 바꿀 오류가 없습니다."
       ]
     },
     {
       "questionId": "g5-argon-0045",
-      "revision": 1,
-      "contentHash": "8f83ec1c622c97aa6eb37a6480573276b973505750e961f513f30442be23dc03",
+      "revision": 2,
+      "contentHash": "5aad4965c880bd0a8ba58ff92b7579fe392172e2973e56549d8e0bf103057de4",
       "blindChoice": "a",
       "verdicts": {
-        "source": "fail",
+        "source": "pass",
         "uniqueness": "pass",
         "grade": "pass",
         "language": "pass",
-        "explanation": "uncertain"
+        "explanation": "pass"
       },
       "findings": [
-        "독립 풀이 및 보기별 대입: a 도움 없이 혼자; b 함께는 반대, c 가끔은 빈도, d 몰래는 은밀함.",
-        "출처 대조: 혼저 / 명사 / 뜻번호 1 / senseId 322252; 표제어: 혼저 | sense_no: 322252 | sense_order: 1 | 품사: 「명·부」 | 뜻풀이: ‘혼자’의 방언(강원, 충남). — evidenceText 품사는 명·부이나 목표 품사는 명사이고 문장에서는 '메고'를 꾸미는 부사 용법이다.",
-        "유형·학년 검토: definition, challenge, dialect. target 품사를 부사(또는 사전 복합 품사 규칙에 맞는 명·부)로 고쳐 실제 문장 용법과 일치시킬 것.",
-        "해설과 제작 정답은 비공개이므로 explanation=uncertain."
+        "[블라인드] 어미 개를 따라가는 새끼라는 설명으로 a만 성립하며, 전라 지역의 대화라는 문맥도 갖추었습니다.",
+        "[공개 대조] 이번 근거는 전라 지역의 ‘강아지’ 방언을 별도 뜻으로 명시하므로 a 및 지역 설정과 일치합니다. 어미 개와 개집이라는 상황 단서가 충분하며 해설도 해당 뜻에 맞습니다."
+      ]
+    },
+    {
+      "questionId": "g5-argon-0045",
+      "revision": 3,
+      "contentHash": "45e8b044ae849518d069e1aa5b2e4f15b72f0ec2469387a69abdfa46bfb526d0",
+      "run": {
+        "id": "20261106T080738990Z-47932-29bcc9fa-feab-4824-bef9-3f460439a71e",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "a",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": [
+        "[블라인드] 반갑게 짖으며 신발 냄새를 맡는 어린 동물이므로 a가 알맞습니다. 전라도 화자의 대화와 행동 단서가 제시되어 방언의 뜻을 문맥으로 판단할 수 있습니다.",
+        "[공개 대조] 제시된 두 번째 뜻은 강아지의 전라 방언이므로 a와 지역 설정이 일치합니다. 짖으며 반기는 어린 동물이라는 단서가 충분하고 해설과 오답 이유도 맞습니다."
+      ]
+    },
+    {
+      "questionId": "g5-argon-0045",
+      "revision": 4,
+      "contentHash": "9e991ce91476cf4a240489dee6ae3e80ce30c79aae3950baf0be9c02ea989fe9",
+      "run": {
+        "id": "20261106T083924584Z-54436-cc9f99f3-b0cc-4d78-9711-22a11f2809a7",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "a",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": [
+        "[블라인드] 반갑게 짖고 신발 냄새를 맡는 어린 동물에 해당하는 보기는 a뿐입니다. 전라 지역의 방언이라는 설정과 대화·상황 단서가 갖추어져 있으며 문장과 보기에도 풀이를 방해하는 문제가 없습니다.",
+        "[공개 대조] 정답 a와 전라 지역 설정은 제공된 우리말샘의 해당 뜻풀이와 일치하며, 짖으며 반기는 어린 동물에 해당하는 보기는 하나뿐입니다. 대화와 행동 단서가 방언 이해를 돕고 5학년 challenge 문항으로 수용 가능하며, 해설과 오답 이유도 문맥에 맞습니다."
       ]
     },
     {
       "questionId": "g5-argon-0046",
-      "revision": 1,
-      "contentHash": "171c28c3509266032abfbb6bd5ea31b1be4413567836af52ea8b8e8d22681d86",
+      "revision": 2,
+      "contentHash": "92e3869ad30f2e69d67d56eaceabf438d776e3c3d7d7d27694d46e551c955fbe",
       "blindChoice": "b",
       "verdicts": {
         "source": "pass",
         "uniqueness": "pass",
         "grade": "pass",
         "language": "pass",
-        "explanation": "uncertain"
+        "explanation": "fail"
       },
       "findings": [
-        "독립 풀이 및 보기별 대입: b 알맞게 따뜻함; a 차가움, c 자극적 얼얼함, d 신맛은 온도 단서와 다름.",
-        "출처 대조: 맨도롱하다 / 형용사 / 뜻번호 1 / senseId 383888; 표제어: 맨도롱-하다 | sense_no: 383888 | sense_order: 1 | 품사: 「형용사」 | 뜻풀이: ‘따스하다’의 방언(제주). — 해당 뜻의 핵심 의미와 대조함.",
-        "유형·학년 검토: definition, challenge, dialect. 제시 맥락과 보기의 의미 차이로 단일 답을 판단할 수 있고 해당 난이도의 5–6학년 어휘 학습에 허용 가능하다. 보기 결합·종결 및 정답 표면·길이 단서를 확인하였다.",
-        "해설과 제작 정답은 비공개이므로 explanation=uncertain."
+        "[블라인드] 먹기 좋게 온기가 있는 국물이라는 상황에는 b만 맞으며, 제주 방언의 뜻을 온도에 관한 대화로 판단할 수 있습니다.",
+        "[공개 대조] b는 근거의 ‘따스하다’ 및 제주 지역과 일치하고 국물의 온도 문맥에도 맞습니다. c의 오답 이유는 얼얼한 감각을 매운맛에만 한정하고 온도와 무관하다고 단정하므로 ‘얼얼한 자극을 뜻하며, 먹기 좋게 따스하다는 뜻과 다릅니다’로 고치세요."
+      ]
+    },
+    {
+      "questionId": "g5-argon-0046",
+      "revision": 3,
+      "contentHash": "b084169a3d4ffcd141b2fe28244d02e0e5a37b01735a5163b0f18805da87c67c",
+      "run": {
+        "id": "20261106T064807841Z-37293-2b981fc3-8411-4d0a-8807-26bed9c80aa6",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "b",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": [
+        "[블라인드] 너무 뜨겁지도 식지도 않은 국물이라는 단서에 맞는 보기는 b뿐입니다. 제주 방언의 뜻과 지역 표기가 적절하며 대화와 온도에 관한 상황 단서도 충분합니다.",
+        "[공개 대조] b는 제공된 우리말샘 근거의 형용사 ‘맨도롱하다’에 대응하는 표준어와 일치하며 제주 지역 표기도 맞습니다. 국물의 온도를 설명하는 대화 단서가 충분해 정답이 하나로 정해지고 해설과 오답 이유도 적절합니다."
       ]
     },
     {
@@ -892,14 +1460,31 @@
         "uniqueness": "pass",
         "grade": "pass",
         "language": "pass",
-        "explanation": "uncertain"
+        "explanation": "pass"
       },
       "findings": [
-        "독립 풀이 및 보기별 대입: c 고운 빛깔·무늬; a 거침, b 젖음, d 어두움은 칭찬 불일치.",
-        "출처 대조: 곱들락하다 / 형용사 / 뜻번호 1 / senseId 745215; 표제어: 곱들락-하다 | sense_no: 745215 | sense_order: 1 | 품사: 「형용사」 | 뜻풀이: ‘곱다랗다’의 방언(제주). 제주 지역에서는 ‘곱들락다’로도 적는다. — 해당 뜻의 핵심 의미와 대조함.",
-        "유형·학년 검토: definition, challenge, dialect. 제시 맥락과 보기의 의미 차이로 단일 답을 판단할 수 있고 해당 난이도의 5–6학년 어휘 학습에 허용 가능하다. 보기 결합·종결 및 정답 표면·길이 단서를 확인하였다.",
-        "해설과 제작 정답은 비공개이므로 explanation=uncertain."
+        "[블라인드] 옷감의 빛깔과 무늬를 칭찬하는 문맥에는 c만 맞으며, 다소 낯선 어휘를 다루는 challenge 수준과도 맞습니다.",
+        "[공개 대조] c는 제시된 근거의 표제어·형용사 뜻·제주 지역과 일치합니다. 빛깔과 무늬를 칭찬하는 상황이 정답을 뒷받침하며 낯선 표준어를 함께 다루는 challenge 수준도 적절합니다."
       ]
+    },
+    {
+      "questionId": "g5-argon-0047",
+      "revision": 2,
+      "contentHash": "8ba6d6ec776a784e259431b8ffea3bb973eea40367b23d509fa9c255d8c3246a",
+      "run": {
+        "id": "20261106T125113766Z-95036-009ea10c-e68d-463e-9429-f9cb1bcc2682",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "c",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": []
     },
     {
       "questionId": "g5-argon-0048",
@@ -911,13 +1496,11 @@
         "uniqueness": "pass",
         "grade": "pass",
         "language": "pass",
-        "explanation": "uncertain"
+        "explanation": "pass"
       },
       "findings": [
-        "독립 풀이 및 보기별 대입: a 뿌리 캐는 호미; b 자르는 가위, c 잠금 빗장, d 꿰매는 바늘은 용도 불일치.",
-        "출처 대조: 호맹이 / 명사 / 뜻번호 2 / senseId 778062; 표제어: 호맹이 | sense_no: 778062 | sense_order: 2 | 품사: 「명사」 | 뜻풀이: ‘호미’의 방언(경북). — 해당 뜻의 핵심 의미와 대조함.",
-        "유형·학년 검토: definition, challenge, dialect. 제시 맥락과 보기의 의미 차이로 단일 답을 판단할 수 있고 해당 난이도의 5–6학년 어휘 학습에 허용 가능하다. 보기 결합·종결 및 정답 표면·길이 단서를 확인하였다.",
-        "해설과 제작 정답은 비공개이므로 explanation=uncertain."
+        "[블라인드] 텃밭에서 잡초 뿌리를 캐는 도구는 보기 중 a뿐이며, 방언을 해석할 행동과 장소 단서가 충분합니다.",
+        "[공개 대조] 제시된 근거에서 ‘호맹이’는 ‘호미’의 경북 방언이므로 a와 경상 지역 분류가 부합합니다. 텃밭에서 잡초 뿌리를 캐는 행동 단서가 충분하며 해설도 일치합니다."
       ]
     },
     {
@@ -930,13 +1513,11 @@
         "uniqueness": "pass",
         "grade": "pass",
         "language": "pass",
-        "explanation": "uncertain"
+        "explanation": "pass"
       },
       "findings": [
-        "독립 풀이 및 보기별 대입: c 비 오기 전 서둘러 걷음; a 느림, b 조용함, d 듬성듬성은 긴급성 불일치.",
-        "출처 대조: 싸게싸게 / 부사 / 뜻번호 1 / senseId 213862; 표제어: 싸게-싸게 | sense_no: 213862 | sense_order: 1 | 품사: 「부사」 | 뜻풀이: ‘빨리빨리’의 방언(전남). — 해당 뜻의 핵심 의미와 대조함.",
-        "유형·학년 검토: definition, challenge, dialect. 제시 맥락과 보기의 의미 차이로 단일 답을 판단할 수 있고 해당 난이도의 5–6학년 어휘 학습에 허용 가능하다. 보기 결합·종결 및 정답 표면·길이 단서를 확인하였다.",
-        "해설과 제작 정답은 비공개이므로 explanation=uncertain."
+        "[블라인드] 비가 오기 전에 서둘러 이불을 걷으라는 상황에 c만 맞으며, 전라 방언의 의미와 자연스럽게 연결됩니다.",
+        "[공개 대조] 근거의 부사 ‘빨리빨리’ 및 전남 지역은 c와 전라 지역 설정에 부합합니다. 비가 오기 전에 이불을 걷으라는 재촉 상황이 뜻을 뒷받침하며 다른 보기는 해당 의미를 유지하지 못합니다."
       ]
     },
     {
@@ -949,13 +1530,11 @@
         "uniqueness": "pass",
         "grade": "pass",
         "language": "pass",
-        "explanation": "uncertain"
+        "explanation": "pass"
       },
       "findings": [
-        "독립 풀이 및 보기별 대입: a 끈을 단단히 고정; b 느슨히는 위험, c 조용히·d 가만히는 매듭 강도와 무관.",
-        "출처 대조: 단디 / 부사 / 뜻번호 1 / senseId 120881; 표제어: 단디 | sense_no: 120881 | sense_order: 1 | 품사: 「부사」 | 뜻풀이: ‘단단히’의 방언(경상). — 해당 뜻의 핵심 의미와 대조함.",
-        "유형·학년 검토: definition, challenge, dialect. 제시 맥락과 보기의 의미 차이로 단일 답을 판단할 수 있고 해당 난이도의 5–6학년 어휘 학습에 허용 가능하다. 보기 결합·종결 및 정답 표면·길이 단서를 확인하였다.",
-        "해설과 제작 정답은 비공개이므로 explanation=uncertain."
+        "[블라인드] 넘어지지 않도록 신발 끈을 묶으라는 문맥에서 ‘단디’는 a로 해석되며, 경상 방언과 생활 속 대화가 적절합니다.",
+        "[공개 대조] 근거의 ‘단단히’라는 뜻과 부사 품사, 경상 지역이 모두 문항과 일치합니다. 넘어지지 않도록 신발 끈을 묶으라는 당부에서 a만 해당 뜻을 나타내며 해설과 오답 이유도 타당합니다."
       ]
     }
   ]

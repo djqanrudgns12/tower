@@ -1,0 +1,134 @@
+{
+  "batchId": "Q50-G4-016",
+  "items": {
+    "g4-argon-0770": {
+      "front": 2,
+      "gate": 0,
+      "dropped": false,
+      "history": [
+        {
+          "phase": "front",
+          "revisionFrom": 2,
+          "revisionTo": 3,
+          "at": "2026-11-06T09:18:19.520Z",
+          "reasons": [
+            "codex: language fail"
+          ]
+        },
+        {
+          "phase": "front",
+          "revisionFrom": 3,
+          "revisionTo": 4,
+          "at": "2026-11-06T09:24:49.594Z",
+          "reasons": [
+            "codex: explanation fail"
+          ]
+        }
+      ]
+    },
+    "g4-argon-0792": {
+      "front": 1,
+      "gate": 0,
+      "dropped": false,
+      "history": [
+        {
+          "phase": "front",
+          "revisionFrom": 2,
+          "revisionTo": 3,
+          "at": "2026-11-06T09:18:19.520Z",
+          "reasons": [
+            "argon-blind: language fail"
+          ]
+        }
+      ]
+    },
+    "g4-argon-0798": {
+      "front": 2,
+      "gate": 0,
+      "dropped": true,
+      "history": [
+        {
+          "phase": "front",
+          "revisionFrom": 2,
+          "revisionTo": 3,
+          "at": "2026-11-06T09:18:19.520Z",
+          "reasons": [
+            "codex: uniqueness fail",
+            "codex: explanation fail"
+          ]
+        },
+        {
+          "phase": "front",
+          "revisionFrom": 3,
+          "revisionTo": 4,
+          "at": "2026-11-06T09:24:49.594Z",
+          "reasons": [
+            "codex: explanation fail"
+          ]
+        },
+        {
+          "phase": "front",
+          "revisionFrom": 4,
+          "revisionTo": null,
+          "at": "2026-11-06T09:28:54.060Z",
+          "reasons": [
+            "codex: 독립 풀이 multiple ≠ 정답",
+            "codex: uniqueness fail",
+            "codex: explanation fail",
+            "front 수정 2회 한도 소진"
+          ]
+        }
+      ]
+    },
+    "g4-argon-0756": {
+      "front": 0,
+      "gate": 1,
+      "dropped": false,
+      "history": [
+        {
+          "phase": "gate",
+          "revisionFrom": 1,
+          "revisionTo": 2,
+          "at": "2026-11-06T10:30:12.660Z",
+          "reasons": [
+            "claude: language fail"
+          ]
+        }
+      ]
+    },
+    "g4-argon-0780": {
+      "front": 0,
+      "gate": 1,
+      "dropped": false,
+      "history": [
+        {
+          "phase": "gate",
+          "revisionFrom": 1,
+          "revisionTo": 2,
+          "at": "2026-11-06T10:30:12.660Z",
+          "reasons": [
+            "claude: explanation fail",
+            "총괄 해설 대조 fail: [공개 대조] 오답 이유 b의 '다른 동형어인 하루 길 거리의 뜻이에요'는 '하루 길 거리'가 어색한 말이고, '동형어'는 4학년에게 낯선 용어다. 또 이 뜻이 다른 동형어라는 말이 사실인지 근거에서 확인되지 않는다. 최소 수정: '하루에 가는 길의 거리를 가리키는 말이라 달력에 적은 여행 계획과 맞지 않아요.'"
+          ]
+        }
+      ]
+    },
+    "g4-argon-0788": {
+      "front": 0,
+      "gate": 1,
+      "dropped": false,
+      "history": [
+        {
+          "phase": "gate",
+          "revisionFrom": 2,
+          "revisionTo": 3,
+          "at": "2026-11-06T10:30:12.660Z",
+          "reasons": [
+            "claude: explanation fail",
+            "총괄 해설 대조 fail: [공개 대조] 해설 '잔치 등을 ‘베풀다’는 일을 ‘차려 벌이다’와 바꾸어 쓸 수 있어요'는 '베풀다는 일을'과 '~와 바꾸어 쓸 수 있어요'의 호응이 맞지 않는 비문이다. 최소 수정: '잔치를 ‘베풀었다’는 ‘차려 벌였다’로 바꾸어 쓸 수 있어요.'"
+          ]
+        }
+      ]
+    }
+  }
+}

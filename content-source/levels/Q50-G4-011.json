@@ -63,6 +63,66 @@
       "levelAssessmentHash": "38688866339c1f229ca25f375fa8fef48852e1be83ba5caf2e6502af6c3b8501"
     },
     {
+      "questionId": "g4-argon-0501",
+      "revision": 2,
+      "contentHash": "429f4a18e0195d5ea0d4271279a4f37928176a9b17b36d016f32d97bed7436d4",
+      "precomputed": {
+        "typeBase": 2,
+        "lengthBump": 1,
+        "t3Base": 0,
+        "readingLoad": 80,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g4-argon-0501",
+          "revision": 2,
+          "contentHash": "429f4a18e0195d5ea0d4271279a4f37928176a9b17b36d016f32d97bed7436d4",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 1,
+          "L2": 1,
+          "T1": 0,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "양보 조건과 호응하는 부사 ‘아무리’의 기본 쓰임으로, 정답에 ‘어려워도’ 표지가 직접 나타나고 오답은 모두 문맥상 성립하지 않는 단순 동작문이다."
+        },
+        {
+          "questionId": "g4-argon-0501",
+          "revision": 2,
+          "contentHash": "429f4a18e0195d5ea0d4271279a4f37928176a9b17b36d016f32d97bed7436d4",
+          "judge": "codex",
+          "model": "gpt-6-astra",
+          "L1": 0,
+          "L2": 1,
+          "T1": 0,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "curriculum_explicit",
+          "unit": "[6국04-04] 문장 성분을 이해하고 호응 관계가 올바른 문장을 구성한다.",
+          "reason": "생활에서 흔한 정도 부사이며, 어려워도라는 양보 표현이 직접 호응하고 나머지는 단순 동작 문장이라 구별이 쉽다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 2,
+        "T": 3,
+        "V": 7,
+        "ownTier": "core",
+        "band": {
+          "min": 4,
+          "max": 4
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "665b3c4220ba02b4680778d1599f267c3f675ea10ed72a17015d5d9a543bb160"
+    },
+    {
       "questionId": "g4-argon-0502",
       "revision": 2,
       "contentHash": "681ec4aee79ca3f9524ebab5b0d90ff4c47b3720132ae2c5e6b6c6c1c3341f9c",
@@ -726,6 +786,66 @@
       "levelAssessmentHash": "db28b2bb85f990c9ff882b7268f447ed4550d749d140d8c127b3a73075b7c394"
     },
     {
+      "questionId": "g4-argon-0512",
+      "revision": 2,
+      "contentHash": "4546fecd94eafe942263c02a9186041ce385e747350c14c71da2b40fe454c8b5",
+      "precomputed": {
+        "typeBase": 0,
+        "lengthBump": 0,
+        "t3Base": 0,
+        "readingLoad": 34,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g4-argon-0512",
+          "revision": 2,
+          "contentHash": "4546fecd94eafe942263c02a9186041ce385e747350c14c71da2b40fe454c8b5",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 1,
+          "L2": 1,
+          "T1": 0,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "생활 한자어 파생 부사 ‘절대로’의 제1의미이며, ‘아무리 급하더라도’와 ‘안 된다’의 직접 호응 단서가 있고 오답은 빈도·평가·국면 등 다른 의미장이다."
+        },
+        {
+          "questionId": "g4-argon-0512",
+          "revision": 2,
+          "contentHash": "4546fecd94eafe942263c02a9186041ce385e747350c14c71da2b40fe454c8b5",
+          "judge": "codex",
+          "model": "gpt-6-astra",
+          "L1": 0,
+          "L2": 1,
+          "T1": 0,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "생활 안전 표현에서 흔한 부사이며, 아무리 급하더라도와 안 된다는 직접 단서가 있고 오답은 빈도·행운·성취를 나타낸다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 2,
+        "T": 0,
+        "V": 4,
+        "ownTier": "basic",
+        "band": {
+          "min": 4,
+          "max": 4
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "bc5be7d6facc1dfbc7891eeef89b8654f71f824b7f877af178ff2ce9900ce487"
+    },
+    {
       "questionId": "g4-argon-0513",
       "revision": 1,
       "contentHash": "036ecf0eb603a7c5cd052e293ccae250a3d587afb57c482815dbe2e9ecb8e734",
@@ -784,6 +904,66 @@
         "flags": []
       },
       "levelAssessmentHash": "850e4a9cb62ee3dd65bbae77f31778d80801efae21b94da685f98914f821c665"
+    },
+    {
+      "questionId": "g4-argon-0513",
+      "revision": 2,
+      "contentHash": "1a85ec38ed13af2affcceae78f5cbcb4822712c09cbaa624908105692e6169b8",
+      "precomputed": {
+        "typeBase": 0,
+        "lengthBump": 0,
+        "t3Base": 0,
+        "readingLoad": 39,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g4-argon-0513",
+          "revision": 2,
+          "contentHash": "1a85ec38ed13af2affcceae78f5cbcb4822712c09cbaa624908105692e6169b8",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 1,
+          "L2": 1,
+          "T1": 0,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "파생 부사 ‘틀림없이’의 제1의미이며, ‘세 번이나 다시 세어 보았으니’라는 직접 원인 표지가 있고 오답은 형태만 비슷할 뿐 의미장이 모두 다르다."
+        },
+        {
+          "questionId": "g4-argon-0513",
+          "revision": 2,
+          "contentHash": "1a85ec38ed13af2affcceae78f5cbcb4822712c09cbaa624908105692e6169b8",
+          "judge": "codex",
+          "model": "gpt-6-astra",
+          "L1": 1,
+          "L2": 1,
+          "T1": 0,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "확실한 상태를 나타내는 파생 부사이며, 반복해서 세었다는 원인 단서가 있고 오답은 다른 태도·상태를 나타낸다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 2,
+        "T": 0,
+        "V": 4,
+        "ownTier": "basic",
+        "band": {
+          "min": 4,
+          "max": 4
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "bad807d1412ddd487adc1f0b226519271b9632e38791608f3fcb9b93e7de282f"
     },
     {
       "questionId": "g4-argon-0514",
@@ -966,6 +1146,66 @@
       "levelAssessmentHash": "f13d26427e7d0bb8da4f5287e922b4352c0268a134abab2488ec4423651bdb94"
     },
     {
+      "questionId": "g4-argon-0516",
+      "revision": 3,
+      "contentHash": "3cdcde0021708d62ecde23ec0afd4744611661c5903e75bb3a7172dc8fb15bfe",
+      "precomputed": {
+        "typeBase": 2,
+        "lengthBump": 2,
+        "t3Base": 0,
+        "readingLoad": 97,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g4-argon-0516",
+          "revision": 3,
+          "contentHash": "3cdcde0021708d62ecde23ec0afd4744611661c5903e75bb3a7172dc8fb15bfe",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 1,
+          "L2": 1,
+          "T1": 1,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "생활 한자어 부사 ‘분명히’의 뜻풀이가 발문에 주어졌고, 오답에 ‘우물쭈물·애매모호하고·어렴풋이’ 같은 모호성 영역 대조 단서가 직접 드러난다."
+        },
+        {
+          "questionId": "g4-argon-0516",
+          "revision": 3,
+          "contentHash": "3cdcde0021708d62ecde23ec0afd4744611661c5903e75bb3a7172dc8fb15bfe",
+          "judge": "codex",
+          "model": "gpt-6-astra",
+          "L1": 1,
+          "L2": 1,
+          "T1": 2,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:뜻 번호 2",
+          "reason": "태도나 목표의 확실함을 나타내는 문맥 의미를 묻지만, 뜻이 직접 제시되고 오답의 망설임·모호함 표현이 대조 단서가 된다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 2,
+        "T": 5,
+        "V": 9,
+        "ownTier": "advanced",
+        "band": {
+          "min": 4,
+          "max": 5
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "7f26efcd5d65c035872f759ba9524c88edd937dfaf3769adeaacbbced448229f"
+    },
+    {
       "questionId": "g4-argon-0517",
       "revision": 1,
       "contentHash": "c0b968225b1bcfccc71c221ff5552ee9654ac24cd4c915c6ebe52791d9ed55aa",
@@ -1084,6 +1324,66 @@
         "flags": []
       },
       "levelAssessmentHash": "971dffbf027ce3aeecffca2ff20c07c95e0349e4abd48c8fa2271d5c19c19a6d"
+    },
+    {
+      "questionId": "g4-argon-0518",
+      "revision": 3,
+      "contentHash": "e76b1f4b15bcc233d12c487f7dfcf208cb70d7940cd42a2305e6810760338ae3",
+      "precomputed": {
+        "typeBase": 0,
+        "lengthBump": 0,
+        "t3Base": 0,
+        "readingLoad": 42,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g4-argon-0518",
+          "revision": 3,
+          "contentHash": "e76b1f4b15bcc233d12c487f7dfcf208cb70d7940cd42a2305e6810760338ae3",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 1,
+          "L2": 1,
+          "T1": 1,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "생활 한자어 파생 형용사 ‘자연스럽다’의 제1의미로, 지문에 ‘억지로 꾸미지 않아’라는 정의 단서가 있고 오답에 같은 의미장의 ‘어색하다·이상하다’가 포함되었다."
+        },
+        {
+          "questionId": "g4-argon-0518",
+          "revision": 3,
+          "contentHash": "e76b1f4b15bcc233d12c487f7dfcf208cb70d7940cd42a2305e6810760338ae3",
+          "judge": "codex",
+          "model": "gpt-6-astra",
+          "L1": 1,
+          "L2": 1,
+          "T1": 1,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "상태를 나타내는 익숙한 파생 형용사이며, 같은 의미장의 어색하다·이상하다를 억지로 꾸미지 않았다는 직접 단서로 구별한다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 2,
+        "T": 1,
+        "V": 5,
+        "ownTier": "basic",
+        "band": {
+          "min": 4,
+          "max": 4
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "674c6a4582cf771a31913bf72e26706bd2ff8c414f7293bcadce69f7ea86a7d2"
     },
     {
       "questionId": "g4-argon-0519",
@@ -1506,6 +1806,68 @@
         "flags": []
       },
       "levelAssessmentHash": "0a2989b1732d43edda2b39b13eb82a4b7dea13155d30fdf998c1defd3ba1bb9a"
+    },
+    {
+      "questionId": "g4-argon-0525",
+      "revision": 2,
+      "contentHash": "8f2df0edcbc6b952bc432bf2be50a05f2bf2a6e07ce2326914c58ba2237ad8a1",
+      "precomputed": {
+        "typeBase": 1,
+        "lengthBump": 0,
+        "t3Base": 0,
+        "readingLoad": 48,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g4-argon-0525",
+          "revision": 2,
+          "contentHash": "8f2df0edcbc6b952bc432bf2be50a05f2bf2a6e07ce2326914c58ba2237ad8a1",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 0,
+          "L2": 1,
+          "T1": 0,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "기초 자연 한자어 ‘파도’의 제1의미이며, ‘바위에 부딪쳤다’는 직접 행동 단서가 있고 오답이 안개·모래·구름 등 다른 자연물 영역이다."
+        },
+        {
+          "questionId": "g4-argon-0525",
+          "revision": 2,
+          "contentHash": "8f2df0edcbc6b952bc432bf2be50a05f2bf2a6e07ce2326914c58ba2237ad8a1",
+          "judge": "codex",
+          "model": "gpt-6-astra",
+          "L1": 0,
+          "L2": 1,
+          "T1": 0,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "corpus_graded",
+          "unit": "krdict:초급",
+          "reason": "구체적인 자연 현상을 가리키는 생활 한자어이며, 바다의 물결과 안개·모래·구름의 차이가 뚜렷하다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 1,
+        "T": 1,
+        "V": 3,
+        "ownTier": "basic",
+        "band": {
+          "min": 4,
+          "max": 4
+        },
+        "flags": [
+          "too_easy"
+        ]
+      },
+      "levelAssessmentHash": "fe0a1a734deb027b02e8a1818f6ec4db24a4602dc0e7bb1b82a456ea170db019"
     },
     {
       "questionId": "g4-argon-0526",
@@ -2596,6 +2958,66 @@
       "levelAssessmentHash": "a6da890e2ef5118728f12b6e76badbd6061e6796f7de43b2f1474afa04b63059"
     },
     {
+      "questionId": "g4-argon-0543",
+      "revision": 3,
+      "contentHash": "9eec128543840fa5d535fc1c7ec5abbbd210b6ed786c1fe6eb804750a7f6c077",
+      "precomputed": {
+        "typeBase": 1,
+        "lengthBump": 0,
+        "t3Base": 0,
+        "readingLoad": 46,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g4-argon-0543",
+          "revision": 3,
+          "contentHash": "9eec128543840fa5d535fc1c7ec5abbbd210b6ed786c1fe6eb804750a7f6c077",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 1,
+          "L2": 2,
+          "T1": 2,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "관계 개념 한자어 ‘참여하다’를 한자 형태소를 공유하는 유의어 ‘동참했다’ 및 반의·대립 경계 오답 ‘불참했다·반대했다’와 구별해야 한다."
+        },
+        {
+          "questionId": "g4-argon-0543",
+          "revision": 3,
+          "contentHash": "9eec128543840fa5d535fc1c7ec5abbbd210b6ed786c1fe6eb804750a7f6c077",
+          "judge": "codex",
+          "model": "gpt-6-astra",
+          "L1": 1,
+          "L2": 1,
+          "T1": 1,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "curriculum_explicit",
+          "unit": "[4국04-01] 단어와 단어 간의 의미 관계",
+          "reason": "학교와 공동체 활동에서 자주 쓰는 한자어이며, 동참이라는 유의어와 불참이라는 반대말을 중심으로 구별한다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 3,
+        "T": 3,
+        "V": 9,
+        "ownTier": "advanced",
+        "band": {
+          "min": 4,
+          "max": 4
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "9baa386206e72c11798067c46084a961aac0b78f51a316a931be45481c1305d1"
+    },
+    {
       "questionId": "g4-argon-0544",
       "revision": 1,
       "contentHash": "01dc0f997444208274c683f9597f3e5cca7db0b43eb02513e934739a715e7c44",
@@ -2957,6 +3379,66 @@
         "flags": []
       },
       "levelAssessmentHash": "ead99eb5e492b1f937ebf059cd917f7eae14b523ce9d1bb16910b0fa4b3f1b1d"
+    },
+    {
+      "questionId": "g4-argon-0549",
+      "revision": 3,
+      "contentHash": "92af87b093e9c3740859c0917c1ab61af66356fd2372739c86f7ce1fa37d004a",
+      "precomputed": {
+        "typeBase": 2,
+        "lengthBump": 1,
+        "t3Base": 0,
+        "readingLoad": 78,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g4-argon-0549",
+          "revision": 3,
+          "contentHash": "92af87b093e9c3740859c0917c1ab61af66356fd2372739c86f7ce1fa37d004a",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 1,
+          "L2": 1,
+          "T1": 1,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "생활 한자어 ‘풍부하다’의 중심 의미를 묻고, 오답들이 ‘다 말라·전혀 안 읽어·다 써 버려’ 같은 직접 원인 표지로 결핍 상황과 대조된다."
+        },
+        {
+          "questionId": "g4-argon-0549",
+          "revision": 3,
+          "contentHash": "92af87b093e9c3740859c0917c1ab61af66356fd2372739c86f7ce1fa37d004a",
+          "judge": "codex",
+          "model": "gpt-6-astra",
+          "L1": 1,
+          "L2": 1,
+          "T1": 1,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "넉넉하고 많은 상태를 나타내는 학습 빈출어이며, 물·지식·재료에 두루 쓰이지만 말랐다·다 썼다는 직접 단서로 오용을 판별한다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 2,
+        "T": 4,
+        "V": 8,
+        "ownTier": "core",
+        "band": {
+          "min": 4,
+          "max": 5
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "6a5488bc52c9352a6796d1e6f730330580afa2221590d41be6e21d077c051312"
     },
     {
       "questionId": "g4-argon-0550",

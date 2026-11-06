@@ -183,6 +183,66 @@
       "levelAssessmentHash": "ee2ba972bb2aac2fcaa87b673a5ca28b2e974b62182e509a976d2e6a37886e32"
     },
     {
+      "questionId": "g4-argon-0553",
+      "revision": 2,
+      "contentHash": "a1b60c4b06a0ad7d5431e73ae74c8ff245952bc3c62b19714f72dfb03ef5837f",
+      "precomputed": {
+        "typeBase": 2,
+        "lengthBump": 1,
+        "t3Base": 0,
+        "readingLoad": 81,
+        "krdictGrade": "초급",
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g4-argon-0553",
+          "revision": 2,
+          "contentHash": "a1b60c4b06a0ad7d5431e73ae74c8ff245952bc3c62b19714f72dfb03ef5837f",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 1,
+          "L2": 1,
+          "T1": 0,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "corpus_graded",
+          "unit": "krdict:초급",
+          "reason": "한국어기초사전 초급 어휘인 생활 한자어 ‘경치’의 제1의미이며, 오답이 음식·신발·글씨 등 전혀 다른 범주로 구성되어 직접 구별된다."
+        },
+        {
+          "questionId": "g4-argon-0553",
+          "revision": 2,
+          "contentHash": "a1b60c4b06a0ad7d5431e73ae74c8ff245952bc3c62b19714f72dfb03ef5837f",
+          "judge": "codex",
+          "model": "gpt-6-astra",
+          "L1": 0,
+          "L2": 1,
+          "T1": 0,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "corpus_graded",
+          "unit": "krdict:초급",
+          "reason": "제공된 초급 등급의 구체적인 생활 한자어이며, 자연의 모습을 음식·신발·글자와 구별하는 부담이 낮다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 2,
+        "T": 3,
+        "V": 7,
+        "ownTier": "core",
+        "band": {
+          "min": 4,
+          "max": 4
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "e126776e3fe3e4ed8c02e4f74ea6f2fa5bb8597d60aaadce3e02032057052415"
+    },
+    {
       "questionId": "g4-argon-0554",
       "revision": 2,
       "contentHash": "9e0a918ae171aee2402052b92d0d8c01f72be902582eb005003f31fb570ec616",
@@ -423,6 +483,68 @@
         ]
       },
       "levelAssessmentHash": "cf3a155d6c126643c5f356b61d6ac662b18957da50e6223058755219edc6bc43"
+    },
+    {
+      "questionId": "g4-argon-0557",
+      "revision": 2,
+      "contentHash": "b116752f07f3ba2975b2b7b2d92f09cf948e2b16672ea2ffba59b269d1ebca9b",
+      "precomputed": {
+        "typeBase": 1,
+        "lengthBump": 1,
+        "t3Base": 0,
+        "readingLoad": 66,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g4-argon-0557",
+          "revision": 2,
+          "contentHash": "b116752f07f3ba2975b2b7b2d92f09cf948e2b16672ea2ffba59b269d1ebca9b",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 0,
+          "L2": 0,
+          "T1": 0,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "기초 자연 고유어 ‘시냇물’의 제1의미이며, ‘징검다리를 건너며 졸졸 흐르는’이라는 직접 단서가 있고 오답은 바닷물·눈·마그마로 의미장이 다르다."
+        },
+        {
+          "questionId": "g4-argon-0557",
+          "revision": 2,
+          "contentHash": "b116752f07f3ba2975b2b7b2d92f09cf948e2b16672ea2ffba59b269d1ebca9b",
+          "judge": "codex",
+          "model": "gpt-6-astra",
+          "L1": 0,
+          "L2": 0,
+          "T1": 1,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "curriculum_explicit",
+          "unit": "[4국04-01] 단어와 단어 간의 의미 관계",
+          "reason": "구체적인 자연물을 나타내는 투명한 고유어 합성어이며, 물을 가리키는 바닷물 오답을 졸졸 흐른다는 직접 단서로 구별한다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 0,
+        "T": 3,
+        "V": 3,
+        "ownTier": "basic",
+        "band": {
+          "min": 4,
+          "max": 4
+        },
+        "flags": [
+          "too_easy"
+        ]
+      },
+      "levelAssessmentHash": "3647e8419d65206dd0a80d3ac137955f6970aefd3d3249c65603b7029b95682f"
     },
     {
       "questionId": "g4-argon-0558",
@@ -1025,6 +1147,66 @@
         "flags": []
       },
       "levelAssessmentHash": "07f2d0aee739c8944692445990dadd4bb57e613ac1410fa6b4c8d2f322dce1cd"
+    },
+    {
+      "questionId": "g4-argon-0567",
+      "revision": 2,
+      "contentHash": "6b524b0ae56c20f62d7b599be5cc45dbc1e2aca3acd5a12fa0174779caecad5d",
+      "precomputed": {
+        "typeBase": 2,
+        "lengthBump": 1,
+        "t3Base": 0,
+        "readingLoad": 75,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g4-argon-0567",
+          "revision": 2,
+          "contentHash": "6b524b0ae56c20f62d7b599be5cc45dbc1e2aca3acd5a12fa0174779caecad5d",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 1,
+          "L2": 1,
+          "T1": 0,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "학교·문화 생활 한자어 ‘전시회’의 제1의미이며, ‘그린 그림으로 열었다’는 직접 단서가 있고 오답은 식재료·모자·글씨 등 무관한 대상이다."
+        },
+        {
+          "questionId": "g4-argon-0567",
+          "revision": 2,
+          "contentHash": "6b524b0ae56c20f62d7b599be5cc45dbc1e2aca3acd5a12fa0174779caecad5d",
+          "judge": "codex",
+          "model": "gpt-6-astra",
+          "L1": 1,
+          "L2": 1,
+          "T1": 0,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "학교 문화 활동에서 접하는 생활 한자어이며, 그림으로 모임을 연다는 단서가 있고 오답은 음식·도구·글씨여서 명확히 구별된다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 2,
+        "T": 3,
+        "V": 7,
+        "ownTier": "core",
+        "band": {
+          "min": 4,
+          "max": 4
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "ac433a87ff0a9bfb68cf2c70599d62bc874064787c2b1c648a63cc78645181ad"
     },
     {
       "questionId": "g4-argon-0568",
@@ -1991,6 +2173,66 @@
       "levelAssessmentHash": "c41912cd9f624b9f163fe7fbd723c23918c0a974374ebcdd9e4a5a132fc4bcf3"
     },
     {
+      "questionId": "g4-argon-0583",
+      "revision": 3,
+      "contentHash": "acc09a6aa19a7e804bffb8e2cbd0bdd1ec624ee7615dc63a20d132b561c2389c",
+      "precomputed": {
+        "typeBase": 1,
+        "lengthBump": 0,
+        "t3Base": 0,
+        "readingLoad": 50,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g4-argon-0583",
+          "revision": 3,
+          "contentHash": "acc09a6aa19a7e804bffb8e2cbd0bdd1ec624ee7615dc63a20d132b561c2389c",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 1,
+          "L2": 1,
+          "T1": 0,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "생활 한자어 ‘확실하다’의 제1의미를 ‘틀림없다’와 연결하는 문항으로, 오답이 감탄·기이함·연민 등 다른 감정·인상 의미장에 속한다."
+        },
+        {
+          "questionId": "g4-argon-0583",
+          "revision": 3,
+          "contentHash": "acc09a6aa19a7e804bffb8e2cbd0bdd1ec624ee7615dc63a20d132b561c2389c",
+          "judge": "codex",
+          "model": "gpt-6-astra",
+          "L1": 1,
+          "L2": 1,
+          "T1": 0,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "curriculum_explicit",
+          "unit": "[4국04-01] 단어와 단어 간의 의미 관계",
+          "reason": "확신을 나타내는 익숙한 상태 한자어이며, 발자국이라는 근거가 직접 제시되고 오답은 놀라움·의아함·안타까움을 나타낸다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 2,
+        "T": 1,
+        "V": 5,
+        "ownTier": "basic",
+        "band": {
+          "min": 4,
+          "max": 4
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "76ba377ad7e77cd7c21a333e2a2f8f8075b874fd995309d479fde54bbda25cb7"
+    },
+    {
       "questionId": "g4-argon-0584",
       "revision": 2,
       "contentHash": "f214cc72d6bab6e5781b2fda60d792c3e67031caec79de85c7727f34e2e4c4b2",
@@ -2289,6 +2531,128 @@
         "flags": []
       },
       "levelAssessmentHash": "0ea67929de81871f15cbd9f101f6ec1e935ed53d88a515ea8b695a87938ce16c"
+    },
+    {
+      "questionId": "g4-argon-0588",
+      "revision": 2,
+      "contentHash": "c7558e427833f8a88b41f3ed5fa0744728a2e5a103b0304a9966bd4e413259dd",
+      "precomputed": {
+        "typeBase": 0,
+        "lengthBump": 1,
+        "t3Base": 1,
+        "readingLoad": 79,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g4-argon-0588",
+          "revision": 2,
+          "contentHash": "c7558e427833f8a88b41f3ed5fa0744728a2e5a103b0304a9966bd4e413259dd",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 0,
+          "L2": 1,
+          "T1": 0,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "기초 학교 한자어 ‘순서’의 일상 중심 의미(차례)를 묻고, 오답이 머리말·측정 도구·정자 등 전혀 다른 의미장이라 변별 부담이 낮다."
+        },
+        {
+          "questionId": "g4-argon-0588",
+          "revision": 2,
+          "contentHash": "c7558e427833f8a88b41f3ed5fa0744728a2e5a103b0304a9966bd4e413259dd",
+          "judge": "codex",
+          "model": "gpt-6-astra",
+          "L1": 0,
+          "L2": 1,
+          "T1": 2,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:뜻 번호 2",
+          "reason": "생활과 학습에서 흔한 한자어지만, 배열에서 일의 진행 차례로 확장된 뜻을 실험이라는 문맥에 맞추어 판단한다."
+        }
+      ],
+      "merged": {
+        "rule": 4,
+        "L": 1,
+        "T": 3,
+        "V": 5,
+        "ownTier": "core",
+        "band": {
+          "min": 4,
+          "max": 4
+        },
+        "flags": [
+          "spotCheck"
+        ]
+      },
+      "levelAssessmentHash": "88462c802a6097bc9d1fd9005e51802c9ca7a3db9cc37c6d56cc41a578bc25a7"
+    },
+    {
+      "questionId": "g4-argon-0588",
+      "revision": 3,
+      "contentHash": "e3fbaf600101054d06684a48b21867327b7635b59907a6d12bec3c5cbd785f72",
+      "precomputed": {
+        "typeBase": 0,
+        "lengthBump": 1,
+        "t3Base": 1,
+        "readingLoad": 81,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g4-argon-0588",
+          "revision": 3,
+          "contentHash": "e3fbaf600101054d06684a48b21867327b7635b59907a6d12bec3c5cbd785f72",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 0,
+          "L2": 1,
+          "T1": 0,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "‘순서’는 1~3학년 학교·일상생활에서 자주 노출되는 투명한 생활 한자어이며, 핵심 뜻(차례)을 모두 다른 의미장의 오답들과 구별하는 직접 단서 문항이다."
+        },
+        {
+          "questionId": "g4-argon-0588",
+          "revision": 3,
+          "contentHash": "e3fbaf600101054d06684a48b21867327b7635b59907a6d12bec3c5cbd785f72",
+          "judge": "codex",
+          "model": "gpt-6-astra",
+          "L1": 0,
+          "L2": 1,
+          "T1": 0,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "‘순서’는 저학년 학교생활에서 자주 접하는 투명한 생활 한자어이며, 실험의 차례라는 중심 의미를 묻고 오답이 모두 다른 의미장이어서 구별 부담이 낮다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 1,
+        "T": 2,
+        "V": 4,
+        "ownTier": "core",
+        "band": {
+          "min": 4,
+          "max": 4
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "eb941e2b7b07c91c99c530cd5d84706b60e3789df854ed109fc3120f1177f057"
     },
     {
       "questionId": "g4-argon-0589",
@@ -2649,6 +3013,66 @@
         "flags": []
       },
       "levelAssessmentHash": "d593a7b048cb9655488e68a1f17dfffbbd71ff14adc06c50e632e7cce4296426"
+    },
+    {
+      "questionId": "g4-argon-0594",
+      "revision": 3,
+      "contentHash": "1db533bbed46692c82efaa23170c5970aad0fe075dbba9c5da5527f7eeda2a60",
+      "precomputed": {
+        "typeBase": 1,
+        "lengthBump": 1,
+        "t3Base": 0,
+        "readingLoad": 68,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g4-argon-0594",
+          "revision": 3,
+          "contentHash": "1db533bbed46692c82efaa23170c5970aad0fe075dbba9c5da5527f7eeda2a60",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 1,
+          "L2": 1,
+          "T1": 1,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "생활 한자어 ‘희망’의 제1의미이며 ‘목표를 꼭 이루고 싶어서’라는 직접 원인 단서가 있고, 오답에 목표 태도 영역의 반대 표현이 일부 포함되었다."
+        },
+        {
+          "questionId": "g4-argon-0594",
+          "revision": 3,
+          "contentHash": "1db533bbed46692c82efaa23170c5970aad0fe075dbba9c5da5527f7eeda2a60",
+          "judge": "codex",
+          "model": "gpt-6-astra",
+          "L1": 1,
+          "L2": 1,
+          "T1": 1,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "curriculum_explicit",
+          "unit": "[4국04-01] 단어와 단어 간의 의미 관계",
+          "reason": "바라는 마음을 나타내는 학습·동화 빈출 한자어이며, 이루고 싶다는 직접 단서로 포기·후회 등 마음 상태와 구별한다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 2,
+        "T": 3,
+        "V": 7,
+        "ownTier": "core",
+        "band": {
+          "min": 4,
+          "max": 4
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "3db729979fbb77f5d821ce45812797f71a8ea28ad0635b2e0e2726f2dfe65381"
     },
     {
       "questionId": "g4-argon-0595",

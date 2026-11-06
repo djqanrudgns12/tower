@@ -1267,6 +1267,66 @@
       "levelAssessmentHash": "e9ba147b8fb744adc6287a7c9d7f39af45d93034cd583a12e20b108612e8881a"
     },
     {
+      "questionId": "g4-argon-0371",
+      "revision": 3,
+      "contentHash": "c01a5c7972c229760733e1952eb86d4ddcd40730e0a3ba168d9386a9edc69b61",
+      "precomputed": {
+        "typeBase": 0,
+        "lengthBump": 0,
+        "t3Base": 0,
+        "readingLoad": 46,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g4-argon-0371",
+          "revision": 3,
+          "contentHash": "c01a5c7972c229760733e1952eb86d4ddcd40730e0a3ba168d9386a9edc69b61",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 1,
+          "L2": 1,
+          "T1": 0,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "3~4학년 빈출 감정 고유어 제1의미이며, 유의 단서가 직접 제시되고 오답이 모두 다른 감정 의미장이라 구별이 쉬움."
+        },
+        {
+          "questionId": "g4-argon-0371",
+          "revision": 3,
+          "contentHash": "c01a5c7972c229760733e1952eb86d4ddcd40730e0a3ba168d9386a9edc69b61",
+          "judge": "codex",
+          "model": "gpt-6-astra",
+          "L1": 1,
+          "L2": 1,
+          "T1": 1,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "타인의 처지에 대한 감정어로 긍정적 감정 오답과 구별해야 하지만 ‘가엾고’가 정답의 직접 단서다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 2,
+        "T": 1,
+        "V": 5,
+        "ownTier": "basic",
+        "band": {
+          "min": 4,
+          "max": 4
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "0d3c165da76abf8a0f529936783de2c999caa3afabad1a88c3765f5d01107ca9"
+    },
+    {
       "questionId": "g4-argon-0372",
       "revision": 1,
       "contentHash": "8e064fbe9d7be878115ab867bd838c0fa5cb5f2be024e3eacfa3b9396489bc7f",
@@ -1745,6 +1805,66 @@
         "flags": []
       },
       "levelAssessmentHash": "b2a2aa7965af9c7fdb923ecc3287368699012f1cd1c3d102502dccb7202b888f"
+    },
+    {
+      "questionId": "g4-argon-0379",
+      "revision": 2,
+      "contentHash": "d3476b4d27fda87fd802b9e90d5059d693cb2e3d1120b7610c55f740b9c7ff9a",
+      "precomputed": {
+        "typeBase": 0,
+        "lengthBump": 1,
+        "t3Base": 1,
+        "readingLoad": 82,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g4-argon-0379",
+          "revision": 2,
+          "contentHash": "d3476b4d27fda87fd802b9e90d5059d693cb2e3d1120b7610c55f740b9c7ff9a",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 0,
+          "L2": 0,
+          "T1": 1,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "기초 이동 동작 고유어의 중심 의미를 묻고 이동 의미장 오답이 일부 포함되며, 지문에 직접 행동·장소 단서가 있어 초등 범위에 적합함."
+        },
+        {
+          "questionId": "g4-argon-0379",
+          "revision": 2,
+          "contentHash": "d3476b4d27fda87fd802b9e90d5059d693cb2e3d1120b7610c55f740b9c7ff9a",
+          "judge": "codex",
+          "model": "gpt-6-astra",
+          "L1": 0,
+          "L2": 0,
+          "T1": 2,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "기초 생활어이자 구체적 이동 동작을 나타내지만, 같은 이동 의미장의 정착·도착과 출발의 차이를 구별해야 하며 기차로 고향을 벗어나는 직접 단서가 있다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 0,
+        "T": 4,
+        "V": 4,
+        "ownTier": "core",
+        "band": {
+          "min": 4,
+          "max": 4
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "87ae753e5ecdf43066f03a031d058b4b4a999a5ec2dad59e01cfb130fe955f11"
     },
     {
       "questionId": "g4-argon-0380",
@@ -2531,6 +2651,66 @@
       "levelAssessmentHash": "65a85de9ab72f91cee2ee9d7cd61b07fa833b363be43f1afe43ee02083f06476"
     },
     {
+      "questionId": "g4-argon-0392",
+      "revision": 2,
+      "contentHash": "b61784677536d36fb29712f3bcd37c1b2177f1efbe3757eadf3c35078c7db61a",
+      "precomputed": {
+        "typeBase": 2,
+        "lengthBump": 2,
+        "t3Base": null,
+        "readingLoad": 103,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g4-argon-0392",
+          "revision": 2,
+          "contentHash": "b61784677536d36fb29712f3bcd37c1b2177f1efbe3757eadf3c35078c7db61a",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 1,
+          "L2": 1,
+          "T1": 0,
+          "inference": 0,
+          "idiomOpacity": 2,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:속담 등재, 전문어 표지 없음",
+          "reason": "3~4학년 대화 예절에서 자주 쓰이는 속담으로 구성 어휘에서 뜻이 투명하게 드러나며, 오답이 모두 다른 의미장이고 직접 행동 단서가 있음."
+        },
+        {
+          "questionId": "g4-argon-0392",
+          "revision": 2,
+          "contentHash": "b61784677536d36fb29712f3bcd37c1b2177f1efbe3757eadf3c35078c7db61a",
+          "judge": "codex",
+          "model": "gpt-6-astra",
+          "L1": 1,
+          "L2": 1,
+          "T1": 0,
+          "inference": 0,
+          "idiomOpacity": 2,
+          "elementaryFit": "pass",
+          "basisType": "curriculum_explicit",
+          "unit": "[4국01-04] 상황과 상대의 입장을 이해하고 예의를 지키며 대화한다.",
+          "reason": "예의 있는 대화에서 자주 접하는 속담으로 말의 상호성을 쉽게 이해할 수 있고, 정답의 ‘상냥히 말해야지’가 직접 단서이며 오답은 모두 다른 생활 행동이다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 2,
+        "T": 5,
+        "V": 9,
+        "ownTier": "advanced",
+        "band": {
+          "min": 4,
+          "max": 5
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "6d45b399634ca1920116c575125640bc0eeecbb1e29542acc254ba42b453cb8a"
+    },
+    {
       "questionId": "g4-argon-0393",
       "revision": 1,
       "contentHash": "8291cfe5474a27fc6566fb6af259a30d881f94a509d00d8691adf01d867175fb",
@@ -3025,6 +3205,68 @@
         "flags": []
       },
       "levelAssessmentHash": "c7dd2c485d0aa9681a6c2cf1a556b810142c62412bd39b8481e89d78eca4120a"
+    },
+    {
+      "questionId": "g4-argon-0400",
+      "revision": 2,
+      "contentHash": "b55a26ae3f0773692a8837951e10c98dbf7dabd438399f7fbba6184ab47ffc23",
+      "precomputed": {
+        "typeBase": 0,
+        "lengthBump": 2,
+        "t3Base": null,
+        "readingLoad": 103,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g4-argon-0400",
+          "revision": 2,
+          "contentHash": "b55a26ae3f0773692a8837951e10c98dbf7dabd438399f7fbba6184ab47ffc23",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 1,
+          "L2": 1,
+          "T1": 1,
+          "inference": 0,
+          "idiomOpacity": 2,
+          "elementaryFit": "pass",
+          "basisType": "curriculum_explicit",
+          "unit": "[6국04-03] 고유어와 관용 표현의 쓰임과 가치",
+          "reason": "일상 조언으로 친숙하고 비유가 쉬운 속담이며, 지문에 악기를 자꾸 바꾼다는 직접 대조 단서가 제시되어 있음."
+        },
+        {
+          "questionId": "g4-argon-0400",
+          "revision": 2,
+          "contentHash": "b55a26ae3f0773692a8837951e10c98dbf7dabd438399f7fbba6184ab47ffc23",
+          "judge": "codex",
+          "model": "gpt-6-astra",
+          "L1": 2,
+          "L2": 1,
+          "T1": 3,
+          "inference": 0,
+          "idiomOpacity": 2,
+          "elementaryFit": "pass",
+          "basisType": "curriculum_explicit",
+          "unit": "[6국04-03] 고유어와 관용 표현의 쓰임과 가치를 이해하고 상황에 맞게 표현한다.",
+          "reason": "한 우물을 계속 파는 행동에서 꾸준함으로 옮기는 비유가 비교적 투명하며 악기를 자꾸 바꾼다는 직접 행동 단서가 있다."
+        }
+      ],
+      "merged": {
+        "rule": 4,
+        "L": 3,
+        "T": 6,
+        "V": 12,
+        "ownTier": "challenge",
+        "band": {
+          "min": 4,
+          "max": 4
+        },
+        "flags": [
+          "spotCheck"
+        ]
+      },
+      "levelAssessmentHash": "178693d11891cc4de1a2cde3b478e42c842e6896b522d2e14787214960bc7429"
     }
   ]
 }

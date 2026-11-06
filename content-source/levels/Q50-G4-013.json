@@ -2849,6 +2849,66 @@
       "levelAssessmentHash": "2007b519ac3b7e0bb047a15d0f88d8fa62eb34e4a379c1c1c5c302b1361ff966"
     },
     {
+      "questionId": "g4-argon-0647",
+      "revision": 3,
+      "contentHash": "b34fef98b3fc819f695dac697071765178fe144726afa1b81713b2c904d2e234",
+      "precomputed": {
+        "typeBase": 1,
+        "lengthBump": 0,
+        "t3Base": 0,
+        "readingLoad": 52,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g4-argon-0647",
+          "revision": 3,
+          "contentHash": "b34fef98b3fc819f695dac697071765178fe144726afa1b81713b2c904d2e234",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 1,
+          "L2": 0,
+          "T1": 1,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "‘나서다’는 동화·이야기글에 자주 쓰이는 구체 동작 고유어이며, 직접 행동 단서가 있는 문장에서 제1의미를 반의 동작 오답(‘물러서자’) 등과 구별하는 과제라 초등 범위에 적합하다."
+        },
+        {
+          "questionId": "g4-argon-0647",
+          "revision": 3,
+          "contentHash": "b34fef98b3fc819f695dac697071765178fe144726afa1b81713b2c904d2e234",
+          "judge": "codex",
+          "model": "gpt-6-astra",
+          "L1": 0,
+          "L2": 0,
+          "T1": 1,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "curriculum_explicit",
+          "unit": "[4국04-01] 단어와 단어 간의 의미 관계",
+          "reason": "기초 생활 동작을 나타내는 구체적 고유어의 첫째 뜻이며, ‘물러서자’가 이동 방향의 혼동을 주지만 ‘대문을 열고 집 밖으로’라는 직접 행동 단서로 유의 표현을 찾을 수 있다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 1,
+        "T": 2,
+        "V": 4,
+        "ownTier": "basic",
+        "band": {
+          "min": 4,
+          "max": 4
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "cbc8f4f7ac7de2860ff0b5ac70f842a9301d57d6aa71fb7a37d865acb074dcb6"
+    },
+    {
       "questionId": "g4-argon-0648",
       "revision": 1,
       "contentHash": "f5bc50d9c05f735a310269b63ee623e9e2b40d75db1e1ea3be3d923db197058e",

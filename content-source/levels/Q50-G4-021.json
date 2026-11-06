@@ -183,6 +183,126 @@
       "levelAssessmentHash": "054f75ae2610a01d82239779057772264b368517aa209d51936018b3b8bd9914"
     },
     {
+      "questionId": "g4-argon-1003",
+      "revision": 3,
+      "contentHash": "c497af04b2de56c1b5029f0a8a085d142e47c0c374f6d24a4675b07c126d8c23",
+      "precomputed": {
+        "typeBase": 2,
+        "lengthBump": 1,
+        "t3Base": 0,
+        "readingLoad": 76,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g4-argon-1003",
+          "revision": 3,
+          "contentHash": "c497af04b2de56c1b5029f0a8a085d142e47c0c374f6d24a4675b07c126d8c23",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 0,
+          "L2": 1,
+          "T1": 0,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "일상 구어 노출이 높은 기초 생활 부사이자 상태 파생어로, 직접 행동 단서가 있고 오답이 모두 수량·모양 등 다른 의미장이다."
+        },
+        {
+          "questionId": "g4-argon-1003",
+          "revision": 3,
+          "contentHash": "c497af04b2de56c1b5029f0a8a085d142e47c0c374f6d24a4675b07c126d8c23",
+          "judge": "codex",
+          "model": "gpt-6-astra",
+          "L1": 0,
+          "L2": 1,
+          "T1": 0,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "일상 놀이 상황에서 익숙한 만족의 정도를 나타내는 말이며, 뛰노는 행동과 수량·모양을 나타내는 오답의 차이가 분명하다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 1,
+        "T": 3,
+        "V": 5,
+        "ownTier": "basic",
+        "band": {
+          "min": 4,
+          "max": 4
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "7e892e45b6e074a81de7ed944c6d6052addced4f16691268f51bd553a1f4a931"
+    },
+    {
+      "questionId": "g4-argon-1003",
+      "revision": 4,
+      "contentHash": "4ebb1a9535bc27390f8b7249bc1d388f83131a29e80daed9d8905351797579bc",
+      "precomputed": {
+        "typeBase": 2,
+        "lengthBump": 1,
+        "t3Base": 0,
+        "readingLoad": 76,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g4-argon-1003",
+          "revision": 4,
+          "contentHash": "4ebb1a9535bc27390f8b7249bc1d388f83131a29e80daed9d8905351797579bc",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 1,
+          "L2": 1,
+          "T1": 0,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "3~4학년 동화·생활문에 빈출하는 만족·태도 파생 고유어 부사이며, 오답이 모두 사물의 상태·수량·모양 서술이라 구별 부담과 추론 요구가 낮다."
+        },
+        {
+          "questionId": "g4-argon-1003",
+          "revision": 4,
+          "contentHash": "4ebb1a9535bc27390f8b7249bc1d388f83131a29e80daed9d8905351797579bc",
+          "judge": "codex",
+          "model": "gpt-6-astra",
+          "L1": 0,
+          "L2": 1,
+          "T1": 0,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "일상에서 익숙한 만족의 정도를 나타내는 말로, 뛰노는 행동과 자연스럽게 연결되며 수량·모양·존재를 나타내는 오답과 쉽게 구별된다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 2,
+        "T": 3,
+        "V": 7,
+        "ownTier": "core",
+        "band": {
+          "min": 4,
+          "max": 4
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "235a0cd0f095ffdbd8eaf253167aa7329998db1dc7e2b9a1d4a37f88f143e2e1"
+    },
+    {
       "questionId": "g4-argon-1004",
       "revision": 1,
       "contentHash": "a7db487ab0b1b0127cf255e2d480a799e11b222b327c0f05cbc086d163fdbfd2",
@@ -481,6 +601,66 @@
         "flags": []
       },
       "levelAssessmentHash": "7eee7970b211ee9e8e848362f8975051152f3df46d06a050ad7744f5be2a593f"
+    },
+    {
+      "questionId": "g4-argon-1008",
+      "revision": 2,
+      "contentHash": "d6602d64051134e80f5cb3d5d816734b16efcb78423a856427a80ee1a4d3c66a",
+      "precomputed": {
+        "typeBase": 2,
+        "lengthBump": 2,
+        "t3Base": 0,
+        "readingLoad": 87,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g4-argon-1008",
+          "revision": 2,
+          "contentHash": "d6602d64051134e80f5cb3d5d816734b16efcb78423a856427a80ee1a4d3c66a",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 1,
+          "L2": 1,
+          "T1": 0,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "‘특히’는 초등 중학년 생활·학습글에 빈출하는 파생 부사이고, 제1의미 단서가 발문에 직접 제시되며 오답 3개가 모두 당연한 사실의 어색한 문장이라 오답 부담이 낮다."
+        },
+        {
+          "questionId": "g4-argon-1008",
+          "revision": 2,
+          "contentHash": "d6602d64051134e80f5cb3d5d816734b16efcb78423a856427a80ee1a4d3c66a",
+          "judge": "codex",
+          "model": "gpt-6-astra",
+          "L1": 1,
+          "L2": 1,
+          "T1": 0,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "생활과 학습에서 자주 접하는 강조 부사이며, 발문에 뜻이 제시되고 오답은 남다름이 없는 일상적 사실이라 구별 부담이 낮다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 2,
+        "T": 3,
+        "V": 7,
+        "ownTier": "core",
+        "band": {
+          "min": 4,
+          "max": 4
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "bd6eb385a4edc01fb93bb93c033b722747847c16dd3f2da8581b898b186c92c6"
     },
     {
       "questionId": "g4-argon-1009",
@@ -965,6 +1145,126 @@
       "levelAssessmentHash": "f1b49d3156274884027bc19b2b4e7a4c954ed205d1642611575ee28ad09c74b6"
     },
     {
+      "questionId": "g4-argon-1016",
+      "revision": 3,
+      "contentHash": "45e5bbdad6d4b2da30bfa5849731680f8ac865f18e7198496333a23142f17fba",
+      "precomputed": {
+        "typeBase": 1,
+        "lengthBump": 1,
+        "t3Base": 0,
+        "readingLoad": 73,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g4-argon-1016",
+          "revision": 3,
+          "contentHash": "45e5bbdad6d4b2da30bfa5849731680f8ac865f18e7198496333a23142f17fba",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 1,
+          "L2": 2,
+          "T1": 0,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "초등 중학년 사회·국어 학습에 나오는 한자 결합 개념어이며, 지문에 직접 단서가 있고 오답이 모두 일상 물품으로 다른 의미장이다."
+        },
+        {
+          "questionId": "g4-argon-1016",
+          "revision": 3,
+          "contentHash": "45e5bbdad6d4b2da30bfa5849731680f8ac865f18e7198496333a23142f17fba",
+          "judge": "codex",
+          "model": "gpt-6-astra",
+          "L1": 1,
+          "L2": 2,
+          "T1": 0,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "curriculum_explicit",
+          "unit": "[4국04-01] 단어와 단어 간의 의미 관계",
+          "reason": "중학년 학습에서 접하는 문화 계승의 복합 개념어이며, 조상의 지혜를 지킨다는 단서로 뜻이 같은 표현을 고르고 무관한 생활용품을 배제한다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 3,
+        "T": 2,
+        "V": 8,
+        "ownTier": "core",
+        "band": {
+          "min": 4,
+          "max": 5
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "ddd665a08e36aacb9523dfc5b0e8483c885f3d0990551b1f8cd9be826e09a939"
+    },
+    {
+      "questionId": "g4-argon-1016",
+      "revision": 4,
+      "contentHash": "f2dfe33129baf2a5d5654dc9068569584029c27b8cd6657be0da0539bff9bde0",
+      "precomputed": {
+        "typeBase": 1,
+        "lengthBump": 1,
+        "t3Base": 0,
+        "readingLoad": 73,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g4-argon-1016",
+          "revision": 4,
+          "contentHash": "f2dfe33129baf2a5d5654dc9068569584029c27b8cd6657be0da0539bff9bde0",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 1,
+          "L2": 2,
+          "T1": 0,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "3~4학년 사회·국어 학습에 자주 나오는 한자 형태소 결합 개념어이며, 발문에 직접 단서가 있고 오답이 모두 일상 생활용품이라 의미장이 다르다."
+        },
+        {
+          "questionId": "g4-argon-1016",
+          "revision": 4,
+          "contentHash": "f2dfe33129baf2a5d5654dc9068569584029c27b8cd6657be0da0539bff9bde0",
+          "judge": "codex",
+          "model": "gpt-6-astra",
+          "L1": 1,
+          "L2": 2,
+          "T1": 0,
+          "inference": 1,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "중학년 학습에서 접하는 문화의 가치와 계승을 묶은 개념어로, 오답 부담은 낮지만 조상의 지혜와 보존이라는 문맥을 물려줄 가치로 연결해야 한다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 3,
+        "T": 3,
+        "V": 9,
+        "ownTier": "advanced",
+        "band": {
+          "min": 4,
+          "max": 5
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "573c692b6075f5c8398f6629739ccb3a94e4a0248b0c8e304e72f3bada193774"
+    },
+    {
       "questionId": "g4-argon-1017",
       "revision": 1,
       "contentHash": "4aa95edba0263464e143b7e8fb045a49511832919d6e225ae8dfad11b4a8b0df",
@@ -1145,6 +1445,66 @@
         "flags": []
       },
       "levelAssessmentHash": "bbcc05ebdc4559b7f56b566f8a3287930c19652b7b0d9900499d65d9f5945a91"
+    },
+    {
+      "questionId": "g4-argon-1019",
+      "revision": 3,
+      "contentHash": "e7ff31c30ce9bf37000419b45586d8e2d7bec4cf33fabcfcf5f6930ede2875da",
+      "precomputed": {
+        "typeBase": 2,
+        "lengthBump": 1,
+        "t3Base": 0,
+        "readingLoad": 81,
+        "krdictGrade": "초급",
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g4-argon-1019",
+          "revision": 3,
+          "contentHash": "e7ff31c30ce9bf37000419b45586d8e2d7bec4cf33fabcfcf5f6930ede2875da",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 1,
+          "L2": 1,
+          "T1": 1,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "corpus_graded",
+          "unit": "krdict:초급",
+          "reason": "한국어기초사전 초급 등급의 친숙한 생활·학습 한자어로, 직접 체험 단서가 있으나 오답 1개가 시간·경험 의미장 내 모순을 묻는다."
+        },
+        {
+          "questionId": "g4-argon-1019",
+          "revision": 3,
+          "contentHash": "e7ff31c30ce9bf37000419b45586d8e2d7bec4cf33fabcfcf5f6930ede2875da",
+          "judge": "codex",
+          "model": "gpt-6-astra",
+          "L1": 1,
+          "L2": 1,
+          "T1": 1,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "corpus_graded",
+          "unit": "krdict:초급",
+          "reason": "생활과 학습에서 자주 쓰는 친숙한 한자어이며, ‘따 본’이 직접 단서이고 아직 겪지 않은 미래를 경험으로 부르는 오답 하나를 구별한다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 2,
+        "T": 4,
+        "V": 8,
+        "ownTier": "core",
+        "band": {
+          "min": 4,
+          "max": 5
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "aa5f696b55ad11e4d32a19d86bf07df57432af68f0760e9e842d3fb0d05d9907"
     },
     {
       "questionId": "g4-argon-1020",
@@ -1933,6 +2293,66 @@
       "levelAssessmentHash": "16d6b412435e5775867638ac137073d71de0cfe5d119b87ba21993bc714f4435"
     },
     {
+      "questionId": "g4-argon-1032",
+      "revision": 3,
+      "contentHash": "e5c43d187fd6754ac58eb239a4e40a41a2f092b9bdd763929c074c92149a4c5e",
+      "precomputed": {
+        "typeBase": 0,
+        "lengthBump": 1,
+        "t3Base": 0,
+        "readingLoad": 80,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g4-argon-1032",
+          "revision": 3,
+          "contentHash": "e5c43d187fd6754ac58eb239a4e40a41a2f092b9bdd763929c074c92149a4c5e",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 1,
+          "L2": 1,
+          "T1": 0,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "‘마음가짐’은 초등 중학년 학습·생활 맥락에 자주 쓰이는 태도 명사이며, 직접적인 수업 태도 단서 속에서 제1의미를 묻고 오답이 의복·운동·일정 등 다른 의미장으로 구성되었다."
+        },
+        {
+          "questionId": "g4-argon-1032",
+          "revision": 3,
+          "contentHash": "e5c43d187fd6754ac58eb239a4e40a41a2f092b9bdd763929c074c92149a4c5e",
+          "judge": "codex",
+          "model": "gpt-6-astra",
+          "L1": 1,
+          "L2": 1,
+          "T1": 0,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "학교생활에서 자주 쓰이는 마음의 태도를 나타내는 말로, 중심 뜻을 묻고 오답이 옷차림·운동 기술·일정으로 분리되어 별도 상황 추론이 필요하지 않다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 2,
+        "T": 1,
+        "V": 5,
+        "ownTier": "basic",
+        "band": {
+          "min": 4,
+          "max": 4
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "1784cb4c8819d841b99a144b8f35b7af3567a88c0c8d435613d12a4019a09557"
+    },
+    {
       "questionId": "g4-argon-1033",
       "revision": 2,
       "contentHash": "2e47a794bbd42a83b3a9f473a50bae3d1dad872720625c867df94ae4820d12cc",
@@ -1991,6 +2411,66 @@
         "flags": []
       },
       "levelAssessmentHash": "ac920dfd53f8e3599c9c7fa0bd09247e8faec1f55e7d8faaddd4a67246e97f01"
+    },
+    {
+      "questionId": "g4-argon-1033",
+      "revision": 3,
+      "contentHash": "b50d0b512abdd9e732529b616dd50a8ef5d0c81d3394f5e0695d55275548021d",
+      "precomputed": {
+        "typeBase": 0,
+        "lengthBump": 1,
+        "t3Base": 0,
+        "readingLoad": 76,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g4-argon-1033",
+          "revision": 3,
+          "contentHash": "b50d0b512abdd9e732529b616dd50a8ef5d0c81d3394f5e0695d55275548021d",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 0,
+          "L2": 1,
+          "T1": 1,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "친숙한 기초 생활 한자어이며 예문에 직접 단서가 제시되고, 오답 중 해안·수류 자연물인 갯벌과 폭포가 같은 의미장에 속한다."
+        },
+        {
+          "questionId": "g4-argon-1033",
+          "revision": 3,
+          "contentHash": "b50d0b512abdd9e732529b616dd50a8ef5d0c81d3394f5e0695d55275548021d",
+          "judge": "codex",
+          "model": "gpt-6-astra",
+          "L1": 0,
+          "L2": 1,
+          "T1": 1,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "익숙한 자연 현상을 나타내는 생활 한자어의 중심 의미를 묻고, 바다와 관련된 갯벌 및 물의 움직임인 폭포를 구별해야 한다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 1,
+        "T": 2,
+        "V": 4,
+        "ownTier": "basic",
+        "band": {
+          "min": 4,
+          "max": 4
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "8d3f28248833325c1d8995ebdb13aa71783277b75069bd52c492d75e6fd63078"
     },
     {
       "questionId": "g4-argon-1034",
@@ -2053,6 +2533,66 @@
       "levelAssessmentHash": "1760b4d079a5e4849e1a1bad68876f9d1c63754a30a70aefdb613085e84ba278"
     },
     {
+      "questionId": "g4-argon-1034",
+      "revision": 3,
+      "contentHash": "49ed2148d79b08e6ef594f11df8d941e4fd5f6b89e1d90b9129ac9f38cf5287b",
+      "precomputed": {
+        "typeBase": 0,
+        "lengthBump": 0,
+        "t3Base": 0,
+        "readingLoad": 50,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g4-argon-1034",
+          "revision": 3,
+          "contentHash": "49ed2148d79b08e6ef594f11df8d941e4fd5f6b89e1d90b9129ac9f38cf5287b",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 1,
+          "L2": 1,
+          "T1": 0,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "중학년 학습·생활에서 자주 쓰이는 태도 관련 합성 명사로, 지문에 대조·태도 단서가 직접 제시되고 오답이 모두 다른 의미장이다."
+        },
+        {
+          "questionId": "g4-argon-1034",
+          "revision": 3,
+          "contentHash": "49ed2148d79b08e6ef594f11df8d941e4fd5f6b89e1d90b9129ac9f38cf5287b",
+          "judge": "codex",
+          "model": "gpt-6-astra",
+          "L1": 1,
+          "L2": 1,
+          "T1": 0,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "중학년 생활 지도와 이야기에서 익숙한 태도 표현이며, 포기하지 않고 끝까지 뛰려는 자세가 직접 제시되고 오답은 다른 의미장에 속한다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 2,
+        "T": 0,
+        "V": 4,
+        "ownTier": "basic",
+        "band": {
+          "min": 4,
+          "max": 4
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "d9b18b6bb2e8a25fef178287342ddf7a7d353666085151fde66616f0f696b16d"
+    },
+    {
       "questionId": "g4-argon-1035",
       "revision": 2,
       "contentHash": "24b03767235cce84ecad6ed786afec822d6bd234cded8a2b8d2e6d2f1bc245ca",
@@ -2111,6 +2651,66 @@
         "flags": []
       },
       "levelAssessmentHash": "4940ccd3dbfab1365613085823a4d4703408e5b5a84e9f4bb8808e5c815b1649"
+    },
+    {
+      "questionId": "g4-argon-1035",
+      "revision": 3,
+      "contentHash": "2b9a669f8d13038261eacbfc50acdedd649036c18a7967947ee4075a7c594bab",
+      "precomputed": {
+        "typeBase": 1,
+        "lengthBump": 0,
+        "t3Base": 0,
+        "readingLoad": 62,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g4-argon-1035",
+          "revision": 3,
+          "contentHash": "2b9a669f8d13038261eacbfc50acdedd649036c18a7967947ee4075a7c594bab",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 1,
+          "L2": 1,
+          "T1": 0,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "‘마음가짐’은 내면 태도를 나타내는 중학년 빈출 고유어 명사이고, 지문의 수식·행동 단서가 직접적이며 오답 3개가 신체·소리·절차 등 다른 의미장에 속한다."
+        },
+        {
+          "questionId": "g4-argon-1035",
+          "revision": 3,
+          "contentHash": "2b9a669f8d13038261eacbfc50acdedd649036c18a7967947ee4075a7c594bab",
+          "judge": "codex",
+          "model": "gpt-6-astra",
+          "L1": 1,
+          "L2": 1,
+          "T1": 0,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "curriculum_explicit",
+          "unit": "[4국04-01] 단어와 단어 간의 의미 관계를 파악한다.",
+          "reason": "익숙한 태도 어휘와 가까운 뜻의 표현을 연결하는 과제로, 오답은 신체·소리·절차를 가리켜 의미 경계의 혼동이나 상황 종합 부담이 낮다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 2,
+        "T": 1,
+        "V": 5,
+        "ownTier": "basic",
+        "band": {
+          "min": 4,
+          "max": 4
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "520094335fffeb97a48855aaf53aab6b88673c4de6384969a8377968e0a7f07f"
     },
     {
       "questionId": "g4-argon-1036",
@@ -2718,6 +3318,128 @@
       "levelAssessmentHash": "03b5a6e2f772c0a09b5aea11c27609955b274c5f32859241459a1bd0f064719d"
     },
     {
+      "questionId": "g4-argon-1045",
+      "revision": 3,
+      "contentHash": "6c4dea35935a8ce75882792b15f706a019f177596fc520e8ee700fc2f26bc508",
+      "precomputed": {
+        "typeBase": 2,
+        "lengthBump": 2,
+        "t3Base": 0,
+        "readingLoad": 98,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g4-argon-1045",
+          "revision": 3,
+          "contentHash": "6c4dea35935a8ce75882792b15f706a019f177596fc520e8ee700fc2f26bc508",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 2,
+          "L2": 2,
+          "T1": 0,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "권리와 의무를 지닌 민주 사회 구성원으로서의 ‘시민’은 사회 교과 개념어이자 한자 결합 추상어이나, 발문과 정답에 핵심 어구가 직접 대응하고 오답 3개가 모두 무생물 비문이라 뜻 구별 부담이 없다."
+        },
+        {
+          "questionId": "g4-argon-1045",
+          "revision": 3,
+          "contentHash": "6c4dea35935a8ce75882792b15f706a019f177596fc520e8ee700fc2f26bc508",
+          "judge": "codex",
+          "model": "gpt-6-astra",
+          "L1": 2,
+          "L2": 2,
+          "T1": 2,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:뜻 번호 2",
+          "reason": "권리와 의무를 가진 사회 구성원이라는 추상적 교과 개념이며, 다의어의 해당 문맥 의미를 묻지만 발문과 정답에 권리·의무가 직접 제시되어 추론 부담은 낮다."
+        }
+      ],
+      "merged": {
+        "rule": 4,
+        "L": 4,
+        "T": 4,
+        "V": 12,
+        "ownTier": "challenge",
+        "band": {
+          "min": 4,
+          "max": 4
+        },
+        "flags": [
+          "spotCheck"
+        ]
+      },
+      "levelAssessmentHash": "fe4793f2e952f138467ac44f215ae45c037ec773576aa765b6f94e94d41d2ac3"
+    },
+    {
+      "questionId": "g4-argon-1045",
+      "revision": 4,
+      "contentHash": "6e1f8d52011b52e2cc912648c820295b0f03a3cf7c48ff4280a8aba7638527e0",
+      "precomputed": {
+        "typeBase": 2,
+        "lengthBump": 2,
+        "t3Base": 0,
+        "readingLoad": 112,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g4-argon-1045",
+          "revision": 4,
+          "contentHash": "6e1f8d52011b52e2cc912648c820295b0f03a3cf7c48ff4280a8aba7638527e0",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 1,
+          "L2": 2,
+          "T1": 1,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "‘시민’은 일상과 중학년 학습에서 자주 접하나(L1=1) 권리·의무 주체를 가리키는 한자 개념어이고(L2=2), 중심 의미 용례에 선거 맥락 오답 1개가 같은 의미장에 걸치며(T1=1) 문장 내 직접 단서가 분명함(추론=0)."
+        },
+        {
+          "questionId": "g4-argon-1045",
+          "revision": 4,
+          "contentHash": "6e1f8d52011b52e2cc912648c820295b0f03a3cf7c48ff4280a8aba7638527e0",
+          "judge": "codex",
+          "model": "gpt-6-astra",
+          "L1": 2,
+          "L2": 2,
+          "T1": 2,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:뜻 번호 2, 전문어 표지 없음",
+          "reason": "권리와 의무의 주체라는 시민은 교과 개념어이자 추상적 사회 관계어이며, 도시 주민이라는 뜻과 구별되는 의미를 묻지만 정답 문장에 권리와 의무가 직접 제시되어 추가 추론은 필요 없다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 4,
+        "T": 5,
+        "V": 13,
+        "ownTier": "challenge",
+        "band": {
+          "min": 4,
+          "max": 5
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "f2d26fca3f67cf4f9f24b5f0060e8b741d4521ddbacfa9b375d6b5e5e5d91d29"
+    },
+    {
       "questionId": "g4-argon-1046",
       "revision": 2,
       "contentHash": "82f79d3e56cbf3e9735004b4c9427c4181f18ebbf15b9df352a0e0ab54dc7925",
@@ -2896,6 +3618,126 @@
         "flags": []
       },
       "levelAssessmentHash": "baa53b83b3d3ef22e8baf3d96600742af39453f36aa72d535e5460a400eb88a0"
+    },
+    {
+      "questionId": "g4-argon-1048",
+      "revision": 3,
+      "contentHash": "97c02096e103bf07fc1ce527df5e4d412d3da4fe4f5bbc4f443a825871281cb2",
+      "precomputed": {
+        "typeBase": 0,
+        "lengthBump": 2,
+        "t3Base": 0,
+        "readingLoad": 94,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g4-argon-1048",
+          "revision": 3,
+          "contentHash": "97c02096e103bf07fc1ce527df5e4d412d3da4fe4f5bbc4f443a825871281cb2",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 1,
+          "L2": 2,
+          "T1": 0,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "초등 중학년 학습에서 접하는 한자 형태소 결합 개념어이며, 지문에 보존·기림의 단서가 직접 제시되고 오답이 모두 다른 의미장이다."
+        },
+        {
+          "questionId": "g4-argon-1048",
+          "revision": 3,
+          "contentHash": "97c02096e103bf07fc1ce527df5e4d412d3da4fe4f5bbc4f443a825871281cb2",
+          "judge": "codex",
+          "model": "gpt-6-astra",
+          "L1": 1,
+          "L2": 2,
+          "T1": 0,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "중학년 지역·역사 학습에서 접하는 말로 물건에 부여된 기념의 목적을 이해해야 하지만, ‘기리는’과 ‘보존’이 직접 단서이고 오답은 무관하다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 3,
+        "T": 2,
+        "V": 8,
+        "ownTier": "core",
+        "band": {
+          "min": 4,
+          "max": 5
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "e3e4d3bf6c87d5e838616101c6b3ed15c024ff4096d58462f9737104aea2837c"
+    },
+    {
+      "questionId": "g4-argon-1048",
+      "revision": 4,
+      "contentHash": "a0253d04ab85d3aae82ba231a2764701dddabecf7ba6e0c691ebc23311462ce4",
+      "precomputed": {
+        "typeBase": 0,
+        "lengthBump": 2,
+        "t3Base": 0,
+        "readingLoad": 94,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g4-argon-1048",
+          "revision": 4,
+          "contentHash": "a0253d04ab85d3aae82ba231a2764701dddabecf7ba6e0c691ebc23311462ce4",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 1,
+          "L2": 2,
+          "T1": 0,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "3~4학년 학습 맥락에서 접하는 한자 결합 개념어이며, 발문에 기림·보존 단서가 직접 드러나고 오답이 모두 무관한 생활 물건이다."
+        },
+        {
+          "questionId": "g4-argon-1048",
+          "revision": 4,
+          "contentHash": "a0253d04ab85d3aae82ba231a2764701dddabecf7ba6e0c691ebc23311462ce4",
+          "judge": "codex",
+          "model": "gpt-6-astra",
+          "L1": 1,
+          "L2": 2,
+          "T1": 0,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "중학년 역사·지역 학습에서 접하는 기념과 보존의 목적을 담은 개념어로, ‘독립운동을 기리는’과 ‘보존’이 직접 단서이며 오답은 일반 생활용품이다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 3,
+        "T": 2,
+        "V": 8,
+        "ownTier": "core",
+        "band": {
+          "min": 4,
+          "max": 5
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "7cefc7de8d715d0ac4c0bf9c0c4322bb55675622fffe7c908edbfc71246a9ab2"
     },
     {
       "questionId": "g4-argon-1049",

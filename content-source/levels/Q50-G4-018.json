@@ -363,6 +363,66 @@
       "levelAssessmentHash": "a6e21abbee06757f647b05fab752d492120f5cfa1233dc59ffda255ef8f76d84"
     },
     {
+      "questionId": "g4-argon-0856",
+      "revision": 3,
+      "contentHash": "6ecd6822fc997455c92df2851d58ffb22728936cc68d20dbd88f69f5ae0e9b30",
+      "precomputed": {
+        "typeBase": 0,
+        "lengthBump": 1,
+        "t3Base": 0,
+        "readingLoad": 73,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g4-argon-0856",
+          "revision": 3,
+          "contentHash": "6ecd6822fc997455c92df2851d58ffb22728936cc68d20dbd88f69f5ae0e9b30",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 1,
+          "L2": 1,
+          "T1": 1,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "초등 중학년 생활문·동화에 빈출하는 친숙한 생활 한자어로 과거를 돌아보는 같은 의미장 오답이 일부 포함되며 직접 단서가 있다."
+        },
+        {
+          "questionId": "g4-argon-0856",
+          "revision": 3,
+          "contentHash": "6ecd6822fc997455c92df2851d58ffb22728936cc68d20dbd88f69f5ae0e9b30",
+          "judge": "codex",
+          "model": "gpt-6-astra",
+          "L1": 1,
+          "L2": 1,
+          "T1": 1,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "지난 경험을 떠올리는 친숙한 심리 어휘로, 사진첩과 지난 소풍이 직접 단서이며 반성과 회상의 구별이 필요하다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 2,
+        "T": 2,
+        "V": 6,
+        "ownTier": "core",
+        "band": {
+          "min": 4,
+          "max": 4
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "ce064248e12da68b65796215d66340ad966e3032f375e612f2796c5ae2847788"
+    },
+    {
       "questionId": "g4-argon-0857",
       "revision": 1,
       "contentHash": "fad53edaabd5f6bb9d037f0e0f2163bc1803fa72ec09d1ce2c3661085db74c4a",
@@ -783,6 +843,66 @@
       "levelAssessmentHash": "503f0b32893ab0fe7aef7dc4878a90fcd7a88524197bcb92ff6ef8485a379949"
     },
     {
+      "questionId": "g4-argon-0863",
+      "revision": 3,
+      "contentHash": "685c61e60ca6a5e0602ab054834055147948c6b017cfb805ad6078c19fc9237c",
+      "precomputed": {
+        "typeBase": 1,
+        "lengthBump": 0,
+        "t3Base": 0,
+        "readingLoad": 61,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g4-argon-0863",
+          "revision": 3,
+          "contentHash": "685c61e60ca6a5e0602ab054834055147948c6b017cfb805ad6078c19fc9237c",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 1,
+          "L2": 0,
+          "T1": 1,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "이야기 글에 빈출하는 구체 동반 이동 고유어로 이동·출입 의미장의 반대 동작 오답이 포함되며 앞장섰다는 직접 행동 단서가 있다."
+        },
+        {
+          "questionId": "g4-argon-0863",
+          "revision": 3,
+          "contentHash": "685c61e60ca6a5e0602ab054834055147948c6b017cfb805ad6078c19fc9237c",
+          "judge": "codex",
+          "model": "gpt-6-astra",
+          "L1": 0,
+          "L2": 0,
+          "T1": 2,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "curriculum_explicit",
+          "unit": "[4국04-01] 단어와 단어 간의 의미 관계",
+          "reason": "함께 가며 따라오게 하는 구체적 동작어로, 앞장선다는 단서가 있고 이동을 돕는 행동과 막는 행동의 의미 관계를 구별한다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 1,
+        "T": 3,
+        "V": 5,
+        "ownTier": "basic",
+        "band": {
+          "min": 4,
+          "max": 4
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "b2109308a6ce416e2d9f8455d86bbee853b5c893128f196a4a8d843fdec395d6"
+    },
+    {
       "questionId": "g4-argon-0864",
       "revision": 2,
       "contentHash": "c6f499b9776ba4b849b24bd1247b7e79aafe0213fc54931554aed5c5b9a9eec8",
@@ -1143,6 +1263,68 @@
         ]
       },
       "levelAssessmentHash": "5c8d38e2cde5debe751a4582d039ce1ceb88f0e8d8c7aa1d9f02a89cf46adaff"
+    },
+    {
+      "questionId": "g4-argon-0869",
+      "revision": 3,
+      "contentHash": "c97414c23596e3d183c27bfda4feddb4506f5701976757b6037937c2ca6fc613",
+      "precomputed": {
+        "typeBase": 0,
+        "lengthBump": 1,
+        "t3Base": 0,
+        "readingLoad": 75,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g4-argon-0869",
+          "revision": 3,
+          "contentHash": "c97414c23596e3d183c27bfda4feddb4506f5701976757b6037937c2ca6fc613",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 0,
+          "L2": 0,
+          "T1": 1,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "일상에서 일찍 접하는 기초 신체 동작 고유어로 자세 변화 의미장의 반대 오답 1개가 포함되며 넘어진 동생을 붙잡았다는 직접 단서가 있다."
+        },
+        {
+          "questionId": "g4-argon-0869",
+          "revision": 3,
+          "contentHash": "c97414c23596e3d183c27bfda4feddb4506f5701976757b6037937c2ca6fc613",
+          "judge": "codex",
+          "model": "gpt-6-astra",
+          "L1": 0,
+          "L2": 0,
+          "T1": 1,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "넘어진 사람을 일어나게 하는 기초 동작의 첫째 뜻이며, 직접 행동 단서와 반대 동작 오답 하나가 있다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 0,
+        "T": 2,
+        "V": 2,
+        "ownTier": "basic",
+        "band": {
+          "min": 4,
+          "max": 4
+        },
+        "flags": [
+          "too_easy"
+        ]
+      },
+      "levelAssessmentHash": "f8707d04efa12922b533b0864c6822e3f01f95fab7d0c043125b2a4ef762bebe"
     },
     {
       "questionId": "g4-argon-0870",
@@ -1507,6 +1689,66 @@
       "levelAssessmentHash": "147514c1e38c3161e3a46ab9e8f174ab52f3bc5c4543404f6c8b28159c43b344"
     },
     {
+      "questionId": "g4-argon-0875",
+      "revision": 3,
+      "contentHash": "73830976ec0273feef50908c21336541c3aa251258cb1d8b00626812c82095bd",
+      "precomputed": {
+        "typeBase": 2,
+        "lengthBump": 1,
+        "t3Base": 0,
+        "readingLoad": 78,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g4-argon-0875",
+          "revision": 3,
+          "contentHash": "73830976ec0273feef50908c21336541c3aa251258cb1d8b00626812c82095bd",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 1,
+          "L2": 1,
+          "T1": 1,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "규칙·다짐 맥락에 빈출하는 확신 양태 부사로 추측·부정 서술어와의 호응을 구별해야 하며 문장 내 호응 표지가 직접 드러나 있다."
+        },
+        {
+          "questionId": "g4-argon-0875",
+          "revision": 3,
+          "contentHash": "73830976ec0273feef50908c21336541c3aa251258cb1d8b00626812c82095bd",
+          "judge": "codex",
+          "model": "gpt-6-astra",
+          "L1": 1,
+          "L2": 1,
+          "T1": 1,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "확실성과 의무를 나타내는 친숙한 부사로, 의무 표현이 직접 단서이며 불확실한 추측 표현과의 구별이 필요하다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 2,
+        "T": 4,
+        "V": 8,
+        "ownTier": "core",
+        "band": {
+          "min": 4,
+          "max": 5
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "ae0ca090e508041d914761b9cb4ae143bb26cf5a02ca10710402803ab7ca8742"
+    },
+    {
       "questionId": "g4-argon-0876",
       "revision": 1,
       "contentHash": "6c90057ae81e043ee9d4d59bf09a703d8a5944994f0d4f0e0aec136d1d46d711",
@@ -1565,6 +1807,66 @@
         "flags": []
       },
       "levelAssessmentHash": "c205953993375ed0513947f108168f4709ed02552b2121a1a9487a2850d935dc"
+    },
+    {
+      "questionId": "g4-argon-0876",
+      "revision": 2,
+      "contentHash": "ebdf4c4909816a65c9bbb8dd508a6f6ab4b85c0ab93dd281d1d4b12069bd1670",
+      "precomputed": {
+        "typeBase": 0,
+        "lengthBump": 0,
+        "t3Base": 0,
+        "readingLoad": 53,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g4-argon-0876",
+          "revision": 2,
+          "contentHash": "ebdf4c4909816a65c9bbb8dd508a6f6ab4b85c0ab93dd281d1d4b12069bd1670",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 1,
+          "L2": 1,
+          "T1": 1,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "동화·인물 표현에 쓰이는 태도 파생 부사로 형태가 유사하고 태도 영역에 인접한 오답이 있으나 재진술 표지로 뜻이 직접 제시되어 있다."
+        },
+        {
+          "questionId": "g4-argon-0876",
+          "revision": 2,
+          "contentHash": "ebdf4c4909816a65c9bbb8dd508a6f6ab4b85c0ab93dd281d1d4b12069bd1670",
+          "judge": "codex",
+          "model": "gpt-6-astra",
+          "L1": 1,
+          "L2": 1,
+          "T1": 0,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "진실한 태도를 나타내는 파생 부사이며, 뜻을 앞 문장에서 직접 풀어 주고 오답은 돌발성·지속·확실성을 나타낸다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 2,
+        "T": 1,
+        "V": 5,
+        "ownTier": "basic",
+        "band": {
+          "min": 4,
+          "max": 4
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "2c3f101dd7f3ea33bc4cc20a569973302a12e950ecec3401adb34a22fc7e9483"
     },
     {
       "questionId": "g4-argon-0877",
@@ -1807,6 +2109,66 @@
       "levelAssessmentHash": "a7744de447a025a8cd79d5a2d6501fc75c392af6d434e76646978ab4d4ca7eb1"
     },
     {
+      "questionId": "g4-argon-0880",
+      "revision": 2,
+      "contentHash": "6b18a3ffce0c4ba824bcf52d2f3754a755df55212397f3aa8c4887c6e5418476",
+      "precomputed": {
+        "typeBase": 0,
+        "lengthBump": 1,
+        "t3Base": 1,
+        "readingLoad": 79,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g4-argon-0880",
+          "revision": 2,
+          "contentHash": "6b18a3ffce0c4ba824bcf52d2f3754a755df55212397f3aa8c4887c6e5418476",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 1,
+          "L2": 1,
+          "T1": 2,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "일상 빈출 생활 한자어이나 신체 불편을 뜻하는 다의어 문맥 의미를 묻고 원인 단서가 직접 제시되어 초등 수준에 적합하다."
+        },
+        {
+          "questionId": "g4-argon-0880",
+          "revision": 2,
+          "contentHash": "6b18a3ffce0c4ba824bcf52d2f3754a755df55212397f3aa8c4887c6e5418476",
+          "judge": "codex",
+          "model": "gpt-6-astra",
+          "L1": 1,
+          "L2": 1,
+          "T1": 2,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "익숙한 상태 표현이지만 심리적 불안이 아닌 신체적 불편을 뜻하는 둘째 뜻을 구별해야 하며, 높은 베개라는 원인 단서가 직접 제시된다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 2,
+        "T": 4,
+        "V": 8,
+        "ownTier": "core",
+        "band": {
+          "min": 4,
+          "max": 5
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "dba12df9e17d2c1baa4b074511db9eade5f300f58f3baad6753153cacd6d8461"
+    },
+    {
       "questionId": "g4-argon-0881",
       "revision": 2,
       "contentHash": "a55d8a0c33dde336dac425d456975c910c4ee385ea4c9f6acb1710e5383c0dd7",
@@ -1925,6 +2287,66 @@
         "flags": []
       },
       "levelAssessmentHash": "d15fa86f90761acd923bf270f01a2c85d263ef5c8017213975d5632580c52f87"
+    },
+    {
+      "questionId": "g4-argon-0882",
+      "revision": 2,
+      "contentHash": "df72b03eed40ba422dbb0813c6553a0a42d1393bddd2fc1922eb33cbace22625",
+      "precomputed": {
+        "typeBase": 0,
+        "lengthBump": 1,
+        "t3Base": 1,
+        "readingLoad": 77,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g4-argon-0882",
+          "revision": 2,
+          "contentHash": "df72b03eed40ba422dbb0813c6553a0a42d1393bddd2fc1922eb33cbace22625",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 0,
+          "L2": 1,
+          "T1": 1,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "일상 노출이 잦은 기초 생활 한자어 부사의 중심 의미를 반의 및 동형어 오답과 구별하는 직접 단서형 초등 적합 문항이다."
+        },
+        {
+          "questionId": "g4-argon-0882",
+          "revision": 2,
+          "contentHash": "df72b03eed40ba422dbb0813c6553a0a42d1393bddd2fc1922eb33cbace22625",
+          "judge": "codex",
+          "model": "gpt-6-astra",
+          "L1": 0,
+          "L2": 1,
+          "T1": 1,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "생활에서 자주 접하는 점진적 변화 표현으로, 중심 의미를 갑작스러운 변화·변화 없음과 구별하며 그림자가 길어지는 직접 단서로 판단할 수 있다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 1,
+        "T": 3,
+        "V": 5,
+        "ownTier": "core",
+        "band": {
+          "min": 4,
+          "max": 4
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "33f8b59ff366e492ecaeca64747f044026cd8da8e1fe78d030d5f9c415911178"
     },
     {
       "questionId": "g4-argon-0883",
@@ -2885,6 +3307,66 @@
         "flags": []
       },
       "levelAssessmentHash": "742b9ceb1a497cc91660dabca0af4da234e2dc5de2aeb8185d8ab850a7fc42a6"
+    },
+    {
+      "questionId": "g4-argon-0898",
+      "revision": 3,
+      "contentHash": "996c1686f4150011eca456aa7d4608afc758d290277e9182667e8baf3b14d5e8",
+      "precomputed": {
+        "typeBase": 2,
+        "lengthBump": 1,
+        "t3Base": 0,
+        "readingLoad": 80,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g4-argon-0898",
+          "revision": 3,
+          "contentHash": "996c1686f4150011eca456aa7d4608afc758d290277e9182667e8baf3b14d5e8",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 1,
+          "L2": 0,
+          "T1": 2,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "학습·생활에 빈출하는 크기 변화 고유어이나 ‘늘이다’·‘널다’와 헷갈리기 쉬운 혼동 경계 오답이 포함되어 있으며 문장 내 직접 단서가 있다."
+        },
+        {
+          "questionId": "g4-argon-0898",
+          "revision": 3,
+          "contentHash": "996c1686f4150011eca456aa7d4608afc758d290277e9182667e8baf3b14d5e8",
+          "judge": "codex",
+          "model": "gpt-6-astra",
+          "L1": 0,
+          "L2": 0,
+          "T1": 1,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "물체의 크기를 키우는 구체적인 생활 동작어로, 넓혔다는 직접 단서가 있으며 늘이다와의 구별 부담이 있다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 1,
+        "T": 5,
+        "V": 7,
+        "ownTier": "core",
+        "band": {
+          "min": 3,
+          "max": 4
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "a485ca1f3b79a242e1ed562cf66e000d434a11b14a4590b617b1f4cacc996468"
     },
     {
       "questionId": "g4-argon-0899",

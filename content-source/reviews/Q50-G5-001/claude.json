@@ -1,0 +1,1418 @@
+{
+  "reviewId": "QR-AUTO-claude-Q50-G5-001",
+  "jobId": "Q50-G5-001",
+  "reviewer": {
+    "model": "claude-opus-5-5",
+    "tool": "2단계 블라인드 검수(tools/orchestrate/review.mjs)",
+    "freshContext": true,
+    "date": "2026-11-06"
+  },
+  "items": [
+    {
+      "questionId": "g5-argon-0001",
+      "revision": 2,
+      "contentHash": "715a11343fc0db71c9269a5dd3b83ca9a27d6098f9118d2fcbe66de35e9f29db",
+      "run": {
+        "id": "20261106T071305278Z-37733-6532a057-048f-416c-95aa-95d3a68f76ad",
+        "model": "claude-opus-5-5",
+        "effort": "xhigh"
+      },
+      "blindChoice": "a",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": [
+        "[블라인드] 사전 뜻과 맞는 보기는 a뿐이고, 나머지는 뜻이 전혀 다릅니다. 보기 길이도 비슷합니다.",
+        "[공개 대조] 정답 a가 근거 ‘공감하다’의 뜻과 거의 그대로 맞고 1단계 답과 같습니다. 나머지 보기는 뜻이 전혀 달라 정답이 하나입니다. 보기 길이가 고르고 해설·오답 이유도 바릅니다."
+      ]
+    },
+    {
+      "questionId": "g5-argon-0002",
+      "revision": 3,
+      "contentHash": "0540a410ec1f5d412a93ad4856bd7351e8ab89fa441a5cd315c4b3fd2230c75e",
+      "run": {
+        "id": "20261106T082106951Z-49069-4b04680d-57c3-4d08-9701-7eb9b6309312",
+        "model": "claude-opus-5-5",
+        "effort": "xhigh"
+      },
+      "blindChoice": "c",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "fail",
+        "explanation": "pass"
+      },
+      "findings": [
+        "[블라인드] 막히지 않고 잘 통한다는 뜻이어서 c가 정답입니다. 막힙니다·멈춥니다는 반대이고 모입니다는 관계가 없어 정답은 하나입니다.",
+        "[블라인드] 정답 ‘통합니다’가 지문의 ‘소통합니다’ 뒷부분과 글자가 같습니다. 그래서 뜻을 몰라도 고를 수 있는 노출 단서가 됩니다. ‘차량이 잘 소통합니다’도 다소 어색합니다. ‘고갯길로 차들이 원활하게 ‘소통합니다’’ 정도로 다듬고, 정답을 ‘오갑니다’처럼 ‘통’이 들어가지 않는 말로 바꾸면 pass입니다.",
+        "[공개 대조] 정답 c는 근거 「1」 ‘막히지 아니하고 잘 통하다’와 맞습니다. 막힙니다·멈춥니다는 반대 뜻이고 모입니다는 다른 뜻이어서 정답은 하나입니다.",
+        "[공개 대조] 정답 ‘통합니다’가 지문 ‘소통합니다’의 뒷부분과 글자가 똑같아 뜻을 몰라도 고를 수 있습니다. 정답을 ‘오갑니다’나 ‘다닙니다’처럼 ‘통’이 들어가지 않는 말로 바꾸고 지문은 ‘고갯길로 차들이 원활하게 ‘소통합니다’’ 정도로, 해설은 바뀐 정답에 맞게 고치면 pass입니다."
+      ]
+    },
+    {
+      "questionId": "g5-argon-0002",
+      "revision": 4,
+      "contentHash": "bd0bee12492eb27c0c052012b84931914bf3c1e080c0729546d3d84042de21eb",
+      "run": {
+        "id": "20261106T100501581Z-71656-17f824f5-9163-4a4a-a8e8-aaf7e2ac2cb1",
+        "model": "claude-opus-5-5",
+        "effort": "xhigh"
+      },
+      "blindChoice": "c",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": []
+    },
+    {
+      "questionId": "g5-argon-0003",
+      "revision": 1,
+      "contentHash": "15d4e0ef3a1089d1799c70bbdee63fba16629be5a8b0c5dfbcd30e20e078d414",
+      "run": {
+        "id": "20261106T071305278Z-37733-6532a057-048f-416c-95aa-95d3a68f76ad",
+        "model": "claude-opus-5-5",
+        "effort": "xhigh"
+      },
+      "blindChoice": "d",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": [
+        "[블라인드] 뜻에 맞게 쓴 문장은 학급 회의 장면인 d뿐입니다. 오답이 모두 엉뚱한 자리에 낱말을 넣은 문장이라 변별력은 낮지만 core 수준으로는 받아들일 만합니다.",
+        "[공개 대조] 정답 d가 근거 ‘토의하다’(검토하고 협의하다)와 맞고 1단계 답과 같습니다. 오답은 마시기·묶기·자라기 자리에 낱말을 넣은 문장이라 정답이 분명합니다. 쉬운 편이지만 core로 받아들일 만합니다."
+      ]
+    },
+    {
+      "questionId": "g5-argon-0004",
+      "revision": 1,
+      "contentHash": "84749b29e88e22531caf00682995d156eca742de38493d03296b260a467bfcf0",
+      "run": {
+        "id": "20261106T071305278Z-37733-6532a057-048f-416c-95aa-95d3a68f76ad",
+        "model": "claude-opus-5-5",
+        "effort": "xhigh"
+      },
+      "blindChoice": "d",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": [
+        "[블라인드] ‘힘을 합쳐’와 ‘쉽게 옮길 수 있다’에 이어지는 말은 ‘협력하면’뿐입니다. 다만 ‘힘을 합쳐 협력하면’은 뜻이 겹치므로 ‘친구들과 서로 (    ) 훨씬 쉽게’처럼 다듬을 수 있습니다.",
+        "[공개 대조] 정답이 근거 ‘협력하다’(힘을 합하여 서로 돕다)와 맞고 1단계 답과 같습니다. 나머지 보기는 쉽게 옮긴다는 결과와 모순되어 정답이 하나입니다.",
+        "[공개 대조] ‘힘을 합쳐 협력하면’은 뜻이 겹치니 ‘친구들과 서로 (    ) 훨씬 쉽게’처럼 다듬기를 권합니다. b 오답 이유의 ‘문제를 해결할 수 없어요’도 상황에 맞게 ‘상자를 옮길 수 없어요’로 바꾸면 좋습니다."
+      ]
+    },
+    {
+      "questionId": "g5-argon-0005",
+      "revision": 3,
+      "contentHash": "b5fee98c28f14c0ff97178adcd869790af2f9c42e92f03c7ffeb5c60352b3ad0",
+      "run": {
+        "id": "20261106T082106951Z-49069-4b04680d-57c3-4d08-9701-7eb9b6309312",
+        "model": "claude-opus-5-5",
+        "effort": "xhigh"
+      },
+      "blindChoice": "a",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": [
+        "[블라인드] ‘산 아래 마을에’ 마련한 것이므로 장소 뜻인 a만 맞습니다. b는 내세운 주장이 없어서 맞지 않습니다.",
+        "[블라인드] ‘거점·근본’은 5학년에게 어렵지만 challenge 등급에서는 허용할 만합니다. ‘근거를 마련하다’는 이유 뜻으로 더 흔히 쓰는 말이므로 ‘마을에 근거를 두고’처럼 바꾸면 장소 뜻이 더 분명해집니다(선택).",
+        "[공개 대조] 정답 a는 근거 「1」 ‘근본이 되는 거점’과 같습니다. ‘산 아래 마을에’라는 장소 단서가 있어 주장의 이유(b)·규칙·기록은 들어갈 수 없습니다. ‘거점’은 어려운 말이지만 challenge·polysemy 표시와 맞습니다.",
+        "[공개 대조] ‘근거를 마련하다’는 이유라는 뜻으로 더 흔히 쓰입니다. ‘산 아래 마을에 근거를 두고 조사를 시작했습니다’처럼 바꾸면 장소라는 뜻이 더 분명해집니다(선택)."
+      ]
+    },
+    {
+      "questionId": "g5-argon-0006",
+      "revision": 2,
+      "contentHash": "e57cb0f2ec034fe09dd1911be47c3af6d422d6b5574faf781b475ba29efc9c1a",
+      "run": {
+        "id": "20261106T071305278Z-37733-6532a057-048f-416c-95aa-95d3a68f76ad",
+        "model": "claude-opus-5-5",
+        "effort": "xhigh"
+      },
+      "blindChoice": "c",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": [
+        "[블라인드] ‘차근차근 설득했다’의 뜻에 맞는 것은 c뿐이고, 사전 뜻풀이와도 일치합니다. 보기 길이가 고릅니다.",
+        "[공개 대조] 정답 c가 근거 ‘설득하다’의 뜻과 맞고 1단계 답과 같습니다. 나머지 보기는 뜻이 전혀 달라 정답이 하나입니다. 보기 길이가 고르고 해설·오답 이유도 바릅니다."
+      ]
+    },
+    {
+      "questionId": "g5-argon-0007",
+      "revision": 1,
+      "contentHash": "5f489f5322eedea07422e6917b5884ece3bb98bd492475dfa125c0131edbedfb",
+      "run": {
+        "id": "20261106T071305278Z-37733-6532a057-048f-416c-95aa-95d3a68f76ad",
+        "model": "claude-opus-5-5",
+        "effort": "xhigh"
+      },
+      "blindChoice": "b",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": [
+        "[블라인드] ‘평생에 걸쳐 탐구했다’ 자리에 바꾸어 넣을 수 있는 말은 ‘깊이 연구했습니다’뿐입니다. 나머지 보기는 모두 반대되는 태도입니다.",
+        "[공개 대조] 정답 b가 근거 ‘탐구하다’(파고들어 깊이 연구하다)와 맞고 1단계 답과 같습니다. ‘평생에 걸쳐’ 뒤에 나머지 보기를 넣으면 뜻이 반대가 되어 정답이 하나입니다. 해설과 오답 이유도 바릅니다."
+      ]
+    },
+    {
+      "questionId": "g5-argon-0008",
+      "revision": 3,
+      "contentHash": "51aaf2775a15dac9e760850f3f9671d0e4b6da168b5d30b03e82f0db14a341c6",
+      "run": {
+        "id": "20261106T071305278Z-37733-6532a057-048f-416c-95aa-95d3a68f76ad",
+        "model": "claude-opus-5-5",
+        "effort": "xhigh"
+      },
+      "blindChoice": "a",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": [
+        "[블라인드] 폐품을 활용한 발명품만 ‘창의적’의 뜻에 맞습니다. 베끼기, 얼음 녹기, 외우기 문장은 뜻과 모순되어 정답이 하나입니다.",
+        "[공개 대조] 근거가 관형사 ‘창의적’(창의성을 띠거나 가진)이고 보기도 모두 관형사 꼴로 써서 품사가 맞으며, 1단계 답과 같습니다. 오답 세 문장은 베끼기·자연 현상·외우기에 낱말을 붙여 뜻과 모순되므로 정답이 하나입니다."
+      ]
+    },
+    {
+      "questionId": "g5-argon-0009",
+      "revision": 2,
+      "contentHash": "223652078d52e66744fad2be0f8ee5fb74ec01003a661980618097b060951196",
+      "run": {
+        "id": "20261106T071305278Z-37733-6532a057-048f-416c-95aa-95d3a68f76ad",
+        "model": "claude-opus-5-5",
+        "effort": "xhigh"
+      },
+      "blindChoice": "c",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": [
+        "[블라인드] ‘틀에서 벗어나 새로운 방법’이라는 단서로 ‘창의적’만 맞습니다. 지문이 뜻풀이에 가깝지만 basic 난도로는 알맞습니다.",
+        "[공개 대조] 정답이 근거인 관형사 ‘창의적’의 뜻과 맞고 1단계 답과 같습니다. ‘틀에서 벗어나 새로운 방법’이 단서라 소극적·일시적·형식적은 들어갈 수 없습니다. 지문이 뜻풀이에 가까운 점은 basic 난도에 맞습니다."
+      ]
+    },
+    {
+      "questionId": "g5-argon-0010",
+      "revision": 1,
+      "contentHash": "75d0c4e39748fc6200d6b8fd52ea6d2302e31780b525d0fef75efa5a36d2feb3",
+      "run": {
+        "id": "20261106T071305278Z-37733-6532a057-048f-416c-95aa-95d3a68f76ad",
+        "model": "claude-opus-5-5",
+        "effort": "xhigh"
+      },
+      "blindChoice": "b",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": [
+        "[블라인드] a·c·d는 개선과 비슷한 말이고 반대말은 ‘더 나쁘게 만들기로’ 하나뿐입니다. 지문 자리에 넣어도 문장이 자연스럽습니다.",
+        "[공개 대조] 근거 ‘개선하다’(고쳐 더 좋게 만들다)의 반대인 ‘더 나쁘게 만들기로’가 정답이고, 1단계 답과 같습니다. a·c·d는 모두 개선과 비슷한 말이라 반대말이 하나뿐입니다. 해설과 오답 이유도 바릅니다."
+      ]
+    },
+    {
+      "questionId": "g5-argon-0011",
+      "revision": 2,
+      "contentHash": "13dac9ebdb626a8b82f5b5fb97ff6259ccba859e0d7413d877ea9b5a3ce08571",
+      "run": {
+        "id": "20261106T071305278Z-37733-6532a057-048f-416c-95aa-95d3a68f76ad",
+        "model": "claude-opus-5-5",
+        "effort": "xhigh"
+      },
+      "blindChoice": "b",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": [
+        "[블라인드] 지난해 우승자에게 당당히 맞선다는 문맥과 사전 뜻에 맞는 것은 b뿐입니다. 문장과 보기 모두 자연스럽습니다.",
+        "[공개 대조] 정답 b가 근거 ‘도전하다’ 「1」(정면으로 맞서 싸움을 걸다)과 맞고 1단계 답과 같습니다. 지난해 우승자에게 당당히 맞선다는 문맥에 다른 보기는 들어갈 수 없습니다. 해설과 오답 이유도 바릅니다."
+      ]
+    },
+    {
+      "questionId": "g5-argon-0012",
+      "revision": 1,
+      "contentHash": "010bf9f0287388321fc4bcc03c089be1f6711ee0016414cb3dcc66a6d8a79b14",
+      "run": {
+        "id": "20261106T071305278Z-37733-6532a057-048f-416c-95aa-95d3a68f76ad",
+        "model": "claude-opus-5-5",
+        "effort": "xhigh"
+      },
+      "blindChoice": "c",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "fail",
+        "explanation": "pass"
+      },
+      "findings": [
+        "[블라인드] 정답은 c 하나로 분명합니다.",
+        "[블라인드] 다만 ‘이루려고 삼은 대상’은 ‘무엇으로’ 삼았는지가 빠져 어색합니다. 또 질문은 ‘비슷한 말’을 묻는데 보기가 뜻풀이 꼴입니다. 보기를 ‘이루려고 정한 일’처럼 다듬거나, 질문을 ‘뜻으로 알맞은 것’으로 바꾸어야 합니다.",
+        "[공개 대조] 정답 c가 근거 ‘목표’ 「1」과 같은 뜻을 가리키고 1단계 답과도 같습니다. 나머지 보기는 지나간 일·우연·걱정이라 정답은 하나입니다.",
+        "[공개 대조] 정답 보기 ‘이루려고 삼은 대상’은 ‘삼다’에 꼭 필요한 ‘…으로’가 빠져 호응이 어긋납니다. 또 질문은 ‘비슷한 말’을 묻는데 보기는 뜻풀이 꼴입니다. 정답 보기를 ‘이루려고 정한 일’로 바꾸고, 질문은 목표의 뜻으로 가장 알맞은 것을 묻는 꼴로 고쳐야 합니다. 해설의 ‘이루려고 삼는 실제 대상’도 같은 문제가 있으니 ‘이루려고 정해 둔 대상’으로 함께 다듬으세요."
+      ]
+    },
+    {
+      "questionId": "g5-argon-0012",
+      "revision": 2,
+      "contentHash": "0aed9e1552cd2ef3fd9acab9717bcfa0baed67df7fb2c9032e72988199c1347d",
+      "run": {
+        "id": "20261106T082106951Z-49069-4b04680d-57c3-4d08-9701-7eb9b6309312",
+        "model": "claude-opus-5-5",
+        "effort": "xhigh"
+      },
+      "blindChoice": "c",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": [
+        "[블라인드] 이루려고 삼은 일이라는 문맥에는 c만 맞고 보기 길이도 고릅니다. 5학년 basic 등급에 알맞습니다.",
+        "[공개 대조] 정답 c는 근거 ‘목적을 이루려고 지향하는 실제적 대상’과 맞고 문맥에도 c만 들어갑니다. 보기 길이가 고르고 5학년 basic 낱말로 알맞으며 오답 이유도 바릅니다."
+      ]
+    },
+    {
+      "questionId": "g5-argon-0013",
+      "revision": 1,
+      "contentHash": "4ba550c5d63f2ad7a45e123ff76b9719010305702016df933cfec3f35a778199",
+      "run": {
+        "id": "20261106T071305278Z-37733-6532a057-048f-416c-95aa-95d3a68f76ad",
+        "model": "claude-opus-5-5",
+        "effort": "xhigh"
+      },
+      "blindChoice": "d",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "uncertain",
+        "explanation": "pass"
+      },
+      "findings": [
+        "[블라인드] ‘원칙’을 뜻에 맞게 쓴 문장은 모둠 활동 장면인 d뿐입니다. 오답은 물·구름·연필 자리에 낱말을 바꿔 넣은 엉뚱한 문장이라 정답이 분명합니다.",
+        "[공개 대조] 정답 d가 근거 ‘원칙’ 「1」과 맞고 1단계 답과 같습니다. 오답은 물·구름·학용품 자리에 낱말을 넣은 문장이라 정답이 하나입니다.",
+        "[공개 대조] c 보기 ‘둥근 원칙을 꺼내 연필로 깎았다’는 낱말 자리 말고도 바탕 문장 자체가 어긋납니다. 꺼낸 물건을 연필로 깎는다는 말이 되기 때문입니다. ‘필통에서 둥근 원칙을 꺼내 칼로 뾰족하게 깎았다’처럼 고치세요. 오답 이유의 ‘손으로 깎는 학용품’도 ‘깎아 쓰는 학용품’으로 다듬어야 합니다."
+      ]
+    },
+    {
+      "questionId": "g5-argon-0013",
+      "revision": 3,
+      "contentHash": "7e4d8a9f4a6537ba3e5c0ba216827facf063d190af3ef6265977ed09a2deea25",
+      "run": {
+        "id": "20261106T100501581Z-71656-17f824f5-9163-4a4a-a8e8-aaf7e2ac2cb1",
+        "model": "claude-opus-5-5",
+        "effort": "xhigh"
+      },
+      "blindChoice": "d",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": []
+    },
+    {
+      "questionId": "g5-argon-0014",
+      "revision": 1,
+      "contentHash": "72ff7d753e0e4b6aaef39456d202d517273a32e5004dc7f28b02bcbcba82d9c6",
+      "run": {
+        "id": "20261106T071305278Z-37733-6532a057-048f-416c-95aa-95d3a68f76ad",
+        "model": "claude-opus-5-5",
+        "effort": "xhigh"
+      },
+      "blindChoice": "b",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": [
+        "[블라인드] 뜻풀이에 맞는 낱말은 ‘배려하다’뿐이고, 나머지는 뜻이 반대이거나 상관이 없습니다. 문장이 자연스럽습니다.",
+        "[공개 대조] 지문의 뜻풀이와 정답이 근거 ‘배려하다’의 뜻과 맞고 1단계 답과 같습니다. 나머지 보기는 뜻이 반대이거나 상관없어 정답이 하나입니다. 해설과 오답 이유도 바릅니다."
+      ]
+    },
+    {
+      "questionId": "g5-argon-0015",
+      "revision": 3,
+      "contentHash": "89ccb6b11122c4b7b622f2e992bb8ecc0cd7e9221d2aaa7156f0c7d06fe4e6fa",
+      "run": {
+        "id": "20261106T071305278Z-37733-6532a057-048f-416c-95aa-95d3a68f76ad",
+        "model": "claude-opus-5-5",
+        "effort": "xhigh"
+      },
+      "blindChoice": "c",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": [
+        "[블라인드] ‘창의적 방법’ 자리에 넣을 수 있는 말은 ‘새롭고 독창적인’뿐입니다. 보기가 모두 ‘-한/-인’ 관형형이라 꼴이 고릅니다.",
+        "[공개 대조] 정답 c가 근거인 관형사 ‘창의적’의 뜻과 맞고 1단계 답과 같습니다. 바꾸어 넣어 자연스러운 것은 ‘새롭고 독창적인’뿐이라 정답이 하나입니다.",
+        "[공개 대조] 정답의 ‘독창적’은 지문 낱말과 ‘창’과 ‘-적’이 같아 소리 단서가 조금 있으니 ‘새롭고 기발한’도 검토할 만합니다. 해설의 ‘창의성을 지닌 뜻이므로’는 ‘창의성을 지녔다는 뜻이므로’로 고쳐야 자연스럽습니다."
+      ]
+    },
+    {
+      "questionId": "g5-argon-0016",
+      "revision": 2,
+      "contentHash": "4ec17e7f7b47bda377adf0710f537409dc51b9816aafbdf1b64c4614c5b9a7c3",
+      "run": {
+        "id": "20261106T071305278Z-37733-6532a057-048f-416c-95aa-95d3a68f76ad",
+        "model": "claude-opus-5-5",
+        "effort": "xhigh"
+      },
+      "blindChoice": "a",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": [
+        "[블라인드] ‘맞서다가 마침내 타협했다’에 맞는 뜻은 서로 양보하여 의논한다는 a뿐입니다. 문맥 단서가 충분합니다.",
+        "[공개 대조] 정답 a가 근거 ‘타협하다’(서로 양보하여 협의하다)와 맞고 1단계 답과 같습니다. ‘맞서다가 마침내’라는 문맥으로 정답이 하나입니다. 보기 길이가 고르고 해설·오답 이유도 바릅니다."
+      ]
+    },
+    {
+      "questionId": "g5-argon-0017",
+      "revision": 2,
+      "contentHash": "7085dfe65eae6e14565f4177bb526893035828d9bafe3e6025c62475fbb83bc2",
+      "run": {
+        "id": "20261106T071305278Z-37733-6532a057-048f-416c-95aa-95d3a68f76ad",
+        "model": "claude-opus-5-5",
+        "effort": "xhigh"
+      },
+      "blindChoice": "a",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": [
+        "[블라인드] ‘하나로 정하는 데 합의했다’ 자리에 바꾸어 넣을 수 있는 말은 ‘의견이 일치했습니다’뿐입니다. 나머지는 모두 반대 상황입니다.",
+        "[공개 대조] 정답 a가 근거 ‘합의하다’ 「1」(서로 의견이 일치하다)과 맞고 1단계 답과 같습니다. ‘생각이 엇갈렸습니다’는 문장으로는 성립하지만 ‘합의했습니다’와 뜻이 반대라 바꾸어 쓸 말이 아닙니다. 따라서 정답은 하나입니다."
+      ]
+    },
+    {
+      "questionId": "g5-argon-0018",
+      "revision": 1,
+      "contentHash": "5d64cc67e17f8c83f84d2e759003097ac31833c1a46bf824a120fc96572f6b9a",
+      "run": {
+        "id": "20261106T071305278Z-37733-6532a057-048f-416c-95aa-95d3a68f76ad",
+        "model": "claude-opus-5-5",
+        "effort": "xhigh"
+      },
+      "blindChoice": "d",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": [
+        "[블라인드] 토론에서 근거를 들어 밝히는 d만 ‘주장’의 뜻에 맞습니다. 오답 문장에는 동음이의어인 ‘주장(팀의 우두머리)’으로도 성립하는 것이 없습니다.",
+        "[공개 대조] 정답 d가 근거 ‘주장’ 「1」과 맞고 1단계 답과 같습니다. 오답 문장은 음료·빨래·연필 자리에 낱말을 넣었고, 동음이의어 ‘주장(우두머리)’으로 읽어도 성립하지 않아 정답이 하나입니다.",
+        "[공개 대조] c 오답 이유의 ‘손으로 깎는 학용품’은 ‘깎아 쓰는 학용품’으로 다듬으면 좋습니다."
+      ]
+    },
+    {
+      "questionId": "g5-argon-0019",
+      "revision": 1,
+      "contentHash": "068d333a748f0b1d15d03ff47733a285f6e3c02b0d1a2bd38fd4eaf9cb810a0d",
+      "run": {
+        "id": "20261106T071305278Z-37733-6532a057-048f-416c-95aa-95d3a68f76ad",
+        "model": "claude-opus-5-5",
+        "effort": "xhigh"
+      },
+      "blindChoice": "b",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": [
+        "[블라인드] 옳고 그름을 따져 잘못을 짚어 낸다는 뜻풀이에 맞는 것은 ‘비판하다’뿐입니다. 오답 ‘묵인하다’는 조금 어렵지만 오답이라 풀이에는 지장이 없습니다.",
+        "[공개 대조] 지문의 뜻풀이와 정답이 근거 ‘비판하다’ 「1」과 맞고 1단계 답과 같습니다. 외면·묵인·모방은 뜻이 달라 정답이 하나입니다. ‘묵인하다’는 어렵지만 오답이라 풀이에는 지장이 없습니다."
+      ]
+    },
+    {
+      "questionId": "g5-argon-0020",
+      "revision": 1,
+      "contentHash": "2c732cc86ab2962c1c19f735e2925fe047b65f5bfaf811835f5f4d54cf14ef6e",
+      "run": {
+        "id": "20261106T071305278Z-37733-6532a057-048f-416c-95aa-95d3a68f76ad",
+        "model": "claude-opus-5-5",
+        "effort": "xhigh"
+      },
+      "blindChoice": "d",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": [
+        "[블라인드] a·b·c는 분석과 비슷한 말이고, 반대 뜻은 ‘하나로 합쳐 뭉뚱그렸습니다’ 하나입니다. 지문 자리에 넣어도 자연스럽습니다.",
+        "[공개 대조] 근거 ‘분석하다’(복잡한 것을 개별 요소나 성질로 나누다)의 반대인 ‘하나로 합쳐 뭉뚱그렸습니다’가 정답이고, 1단계 답과 같습니다. a·b·c는 모두 분석과 같은 뜻이라 반대말은 하나뿐입니다. 해설과 오답 이유도 바릅니다."
+      ]
+    },
+    {
+      "questionId": "g5-argon-0021",
+      "revision": 2,
+      "contentHash": "c79b0a8df0374412a05a3af8cc8fed720911c8876e446405708c2bfaac98245f",
+      "run": {
+        "id": "20261106T071305278Z-37733-6532a057-048f-416c-95aa-95d3a68f76ad",
+        "model": "claude-opus-5-5",
+        "effort": "xhigh"
+      },
+      "blindChoice": "b",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": [
+        "[블라인드] 관찰 일지에 변화를 적는 문맥과 사전 뜻에 맞는 것은 b뿐입니다. 보기 길이가 고릅니다.",
+        "[공개 대조] 정답 b가 근거 ‘기록하다’ 「1」(후일에 남길 목적으로 어떤 사실을 적다)과 맞고 1단계 답과 같습니다. 관찰 일지 문맥에 다른 보기는 들어갈 수 없고, 보기 길이가 고릅니다."
+      ]
+    },
+    {
+      "questionId": "g5-argon-0022",
+      "revision": 1,
+      "contentHash": "735b3e86d19aaf2b5f0f98dcf001a2e76ef29a2bbca04531fe62aee628155541",
+      "run": {
+        "id": "20261106T071305278Z-37733-6532a057-048f-416c-95aa-95d3a68f76ad",
+        "model": "claude-opus-5-5",
+        "effort": "xhigh"
+      },
+      "blindChoice": "a",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": [
+        "[블라인드] 일기를 쓰며 자신을 돌아보는 문맥에는 ‘반성하고 살폈습니다’만 맞습니다. challenge 난도의 낱말을 뜻이 분명한 보기로 풀어 주어 5학년이 풀 수 있습니다.",
+        "[공개 대조] 정답 a가 근거 ‘성찰하다’(자기의 마음을 반성하고 살피다)와 맞고 1단계 답과 같습니다. 일기를 쓰며 자신을 돌아보는 문맥에 다른 보기는 맞지 않습니다. 어려운 낱말을 쉬운 보기로 풀어 주어 5학년 challenge 문항으로 알맞습니다."
+      ]
+    },
+    {
+      "questionId": "g5-argon-0023",
+      "revision": 1,
+      "contentHash": "64de48a46d2294052516139953c63b0cd399a7f251089a259b5fa8754de6a3bc",
+      "run": {
+        "id": "20261106T071305278Z-37733-6532a057-048f-416c-95aa-95d3a68f76ad",
+        "model": "claude-opus-5-5",
+        "effort": "xhigh"
+      },
+      "blindChoice": "d",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": [
+        "[블라인드] 두려움을 이겨 낸다는 d만 ‘극복하다’의 뜻에 맞습니다. 오답은 먹기·피기·그리기 자리에 낱말을 넣은 엉뚱한 문장이라 정답이 분명합니다.",
+        "[공개 대조] 정답 d가 근거 ‘극복하다’ 「1」(악조건이나 고생 따위를 이겨 내다)과 맞고 1단계 답과 같습니다. 오답은 먹기·피기·그리기 자리에 낱말을 넣은 문장이라 정답이 하나입니다. 해설과 오답 이유도 바릅니다."
+      ]
+    },
+    {
+      "questionId": "g5-argon-0024",
+      "revision": 1,
+      "contentHash": "627183b7bb0beead191309f1d9eed3590d89c7a602a9a2200f6347620994ff2c",
+      "run": {
+        "id": "20261106T071305278Z-37733-6532a057-048f-416c-95aa-95d3a68f76ad",
+        "model": "claude-opus-5-5",
+        "effort": "xhigh"
+      },
+      "blindChoice": "c",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": [
+        "[블라인드] 목표를 끝내 이루어 낸다는 뜻풀이에 맞는 것은 ‘성취하다’뿐입니다. 문장이 자연스럽습니다.",
+        "[공개 대조] 지문과 정답이 근거 ‘성취하다’(목적한 바를 이루다)와 맞고 1단계 답과 같습니다. 포기·중단·외면은 반대이거나 상관없는 뜻이라 정답이 하나입니다."
+      ]
+    },
+    {
+      "questionId": "g5-argon-0025",
+      "revision": 1,
+      "contentHash": "1c326e77045c548bf3f27b29dadd9caf336fab1015decce344d69ae8562bbbb3",
+      "run": {
+        "id": "20261106T071305278Z-37733-6532a057-048f-416c-95aa-95d3a68f76ad",
+        "model": "claude-opus-5-5",
+        "effort": "xhigh"
+      },
+      "blindChoice": "a",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": [
+        "[블라인드] b·c·d는 모두 계획의 뜻풀이이고, 반대 개념은 ‘미리 정하지 않은 즉흥적 행동’ 하나입니다. 보기 길이가 고릅니다.",
+        "[공개 대조] 근거 ‘계획’(미리 헤아려 작정함)의 반대인 ‘미리 정하지 않은 즉흥적 행동’이 정답이고, 1단계 답과 같습니다. b·c·d는 모두 계획의 뜻풀이라 반대말이 하나뿐입니다. ‘즉흥적’은 조금 어렵지만 ‘미리 정하지 않은’이 함께 있어 basic 난도로 풀 수 있습니다."
+      ]
+    },
+    {
+      "questionId": "g5-argon-0026",
+      "revision": 3,
+      "contentHash": "4c6c9c19b77a4dd305f2643be690c172752990f6eb8e417cccb21b8ea9332673",
+      "run": {
+        "id": "20261106T071305278Z-37733-6532a057-048f-416c-95aa-95d3a68f76ad",
+        "model": "claude-opus-5-5",
+        "effort": "xhigh"
+      },
+      "blindChoice": "a",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": [
+        "[블라인드] 적은 노력과 시간으로 끝냈다는 단서로 ‘효율적’만 맞습니다. 다만 ‘나누어 적은’을 ‘나누어 쓴’으로 잘못 읽을 수 있으니 ‘역할을 알맞게 나누어, 적은 노력과’처럼 쉼표를 넣기를 권합니다.",
+        "[공개 대조] 정답이 근거인 관형사 ‘효율적’(들인 노력에 비하여 얻는 결과가 큰)과 맞고 1단계 답과 같습니다. ‘적은 노력과 시간으로’가 단서라 정답이 하나입니다.",
+        "[공개 대조] ‘나누어 적은’은 ‘글로 적은’으로 잘못 읽힐 수 있습니다. ‘역할을 알맞게 나누어, 적은 노력과 시간으로’처럼 쉼표를 넣기를 권합니다."
+      ]
+    },
+    {
+      "questionId": "g5-argon-0027",
+      "revision": 1,
+      "contentHash": "22e47df26ab52c0031e2673eaa2ba9e30f90e10e00df8a5be71f90d50ba58902",
+      "run": {
+        "id": "20261106T071305278Z-37733-6532a057-048f-416c-95aa-95d3a68f76ad",
+        "model": "claude-opus-5-5",
+        "effort": "xhigh"
+      },
+      "blindChoice": "d",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": [
+        "[블라인드] ‘몸과 마음이 건강하게’에 이어지는 말은 ‘자라고 성숙합니다’뿐이고, 나머지는 반대 뜻입니다. 바꾸어 넣어도 문장이 자연스럽습니다.",
+        "[공개 대조] 정답 d가 근거 ‘발달하다’ 「1」(신체, 정서, 지능 따위가 성장하거나 성숙하다)과 맞고 1단계 답과 같습니다. ‘몸과 마음이 건강하게’ 뒤에 다른 보기를 넣으면 뜻이 반대라 들어갈 수 없습니다."
+      ]
+    },
+    {
+      "questionId": "g5-argon-0028",
+      "revision": 1,
+      "contentHash": "d723d11c254e7c20497bf8491671b682b51f53cf32e30516f35e2ed40887c713",
+      "run": {
+        "id": "20261106T071305278Z-37733-6532a057-048f-416c-95aa-95d3a68f76ad",
+        "model": "claude-opus-5-5",
+        "effort": "xhigh"
+      },
+      "blindChoice": "b",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": [
+        "[블라인드] 귀여운 동생을 사랑스럽게 바라보는 상황에는 ‘눈에 넣어도 아프지 않다’만 맞습니다. 나머지 관용구는 바쁨, 부끄러움, 붐빔을 나타내 상황과 맞지 않습니다.",
+        "[공개 대조] 정답이 근거 관용구 ‘눈에 넣어도 아프지 않다’(매우 귀엽다)와 맞고 1단계 답과 같습니다. 오답 표현은 바쁨·부끄러움·붐빔을 나타내 귀여운 동생을 바라보는 상황과 맞지 않습니다. 오답 이유도 바릅니다."
+      ]
+    },
+    {
+      "questionId": "g5-argon-0029",
+      "revision": 2,
+      "contentHash": "98dc7ebaa1aac46ba6d09a12e90225536ad5313ea455bcf9aa3d9f5ee9f3f8dc",
+      "run": {
+        "id": "20261106T071305278Z-37733-6532a057-048f-416c-95aa-95d3a68f76ad",
+        "model": "claude-opus-5-5",
+        "effort": "xhigh"
+      },
+      "blindChoice": "b",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": [
+        "[블라인드] 활동을 후배에게 모두 넘긴 상황에는 ‘일에서 손을 뗐다’만 맞습니다. 나머지는 일을 새로 하거나 더 열심히 한다는 뜻이라 반대입니다.",
+        "[공개 대조] 정답 b가 근거 ‘손(을) 떼다’ 「1」(하던 일을 그만두다)과 맞고 1단계 답과 같습니다. 활동을 후배에게 모두 넘긴 상황에서 나머지 표현은 열중이나 시작을 뜻해 반대이므로 정답이 하나입니다. 오답 이유의 뜻풀이도 바릅니다."
+      ]
+    },
+    {
+      "questionId": "g5-argon-0030",
+      "revision": 2,
+      "contentHash": "1915a52f0bf48c1236f4aac6577e135c9743f549df145ac87693d643f63d1d50",
+      "run": {
+        "id": "20261106T071305278Z-37733-6532a057-048f-416c-95aa-95d3a68f76ad",
+        "model": "claude-opus-5-5",
+        "effort": "xhigh"
+      },
+      "blindChoice": "c",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": [
+        "[블라인드] 마음을 가라앉히려고 잠시 한 일로는 ‘머리를 식혔습니다’만 맞습니다. 긴장한 상태를 나타내는 오답과 뚜렷이 구별됩니다.",
+        "[공개 대조] 정답 c가 근거 ‘머리(를) 식히다’(흥분되거나 긴장된 마음을 가라앉히다)와 맞고 1단계 답과 같습니다. 같은 ‘머리’가 들어간 ‘골머리를 앓았습니다’를 오답에 넣어 낱말 단서를 막았습니다. 나머지 보기는 긴장하거나 고민하는 상태라 정답이 하나입니다."
+      ]
+    },
+    {
+      "questionId": "g5-argon-0031",
+      "revision": 2,
+      "contentHash": "6cb88d138c33898d98394585ad392af024e0ca9e741ab1741a07bd742a70c80c",
+      "run": {
+        "id": "20261106T071305278Z-37733-6532a057-048f-416c-95aa-95d3a68f76ad",
+        "model": "claude-opus-5-5",
+        "effort": "xhigh"
+      },
+      "blindChoice": "b",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": [
+        "[블라인드] 시험에 떨어진 상황에는 ‘미역국을 먹었다’만 맞습니다. 다만 ‘아쉽게’와 ‘아쉬워했습니다’가 겹치니 뒤쪽을 ‘속상해했습니다’로 바꾸기를 권합니다.",
+        "[공개 대조] 정답 b가 근거 ‘미역국(을) 먹다’ 「1」(시험에서 떨어지다)과 맞고 1단계 답과 같습니다. 다른 관용구는 칭찬·모르는 체·잔소리를 뜻해 정답이 하나입니다.",
+        "[공개 대조] ‘아쉽게 떨어진 뒤 … 아쉬워했습니다’와 ‘시험에서’가 두 번씩 나오니, 뒤쪽을 ‘속상해했습니다’로 바꾸는 등 다듬기를 권합니다."
+      ]
+    },
+    {
+      "questionId": "g5-argon-0032",
+      "revision": 1,
+      "contentHash": "71b918e02391eea3d693240bfa72e1c042c4f6acbea280fb41d8da4f2a2535fd",
+      "run": {
+        "id": "20261106T071305278Z-37733-6532a057-048f-416c-95aa-95d3a68f76ad",
+        "model": "claude-opus-5-5",
+        "effort": "xhigh"
+      },
+      "blindChoice": "d",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "uncertain",
+        "explanation": "pass"
+      },
+      "findings": [
+        "[블라인드] 남이 잘되어 심술이 나는 상황에는 ‘배가 아프다’만 맞습니다. 시샘이라는 감정을 다루지만 어린이에게 알맞은 내용입니다.",
+        "[공개 대조] 정답 d가 근거 ‘배(가) 아프다’(남이 잘되어 심술이 나다)와 맞고 1단계 답과 같습니다. 다른 관용구는 뜻이 달라 정답이 하나입니다.",
+        "[공개 대조] ‘일등 상’은 사전에 ‘일등상’이 한 낱말로 올라 있다면 붙여 써야 하므로 확인이 필요합니다. 확인되면 ‘일등상’으로 고치고, 확인이 어려우면 ‘대회에서 일등을 해 상을 받아’처럼 바꾸면 안전합니다."
+      ]
+    },
+    {
+      "questionId": "g5-argon-0032",
+      "revision": 3,
+      "contentHash": "bd1939d73ae95460bfee31178ffa9538343aaa0ea833c458cfa8c2dbc8f31ba0",
+      "run": {
+        "id": "20261106T100501581Z-71656-17f824f5-9163-4a4a-a8e8-aaf7e2ac2cb1",
+        "model": "claude-opus-5-5",
+        "effort": "xhigh"
+      },
+      "blindChoice": "d",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": []
+    },
+    {
+      "questionId": "g5-argon-0033",
+      "revision": 2,
+      "contentHash": "7a2cad6ae9ebcf37cbe32fa9c062752fb2a34958af5a24a755e55021b75a985f",
+      "run": {
+        "id": "20261106T071305278Z-37733-6532a057-048f-416c-95aa-95d3a68f76ad",
+        "model": "claude-opus-5-5",
+        "effort": "xhigh"
+      },
+      "blindChoice": "d",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": [
+        "[블라인드] 돕지는 않고 말만 그럴듯하게 하는 친구를 두고 한 말은 ‘입만 살았다’만 맞습니다. 같은 ‘입’이 들어간 ‘입을 다물었다’를 오답에 넣어 낱말이 드러나는 단서도 막았습니다.",
+        "[공개 대조] 정답 d가 근거 ‘입만 살다’ 「1」(행동은 없으면서 말만 그럴듯하게 잘하다)과 맞고 1단계 답과 같습니다. 같은 ‘입’이 든 ‘입을 다물었다’를 오답에 넣어 낱말 단서를 막았습니다. 나머지 표현은 말을 하지 않거나 적극적으로 함께 일한다는 뜻이라 정답이 하나입니다."
+      ]
+    },
+    {
+      "questionId": "g5-argon-0034",
+      "revision": 1,
+      "contentHash": "06d8cebd0be2aaebe61a9e13e413086ef1b93d6148f4b779ca02ce54a2982fc8",
+      "run": {
+        "id": "20261106T071305278Z-37733-6532a057-048f-416c-95aa-95d3a68f76ad",
+        "model": "claude-opus-5-5",
+        "effort": "xhigh"
+      },
+      "blindChoice": "c",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": [
+        "[블라인드] 첫 문장을 쓰고 나니 용기가 났다는 상황에는 ‘시작이 반이다’만 맞습니다. 나머지 속담은 뜻이 서로 달라 헷갈리지 않습니다.",
+        "[공개 대조] 근거 속담 ‘시작이 반이다’의 뜻이 첫 문장을 쓰고 나니 용기가 났다는 상황·정답과 맞고, 1단계 답과 같습니다. 나머지 속담은 뜻이 뚜렷이 달라 정답이 하나이며 오답 이유도 바릅니다."
+      ]
+    },
+    {
+      "questionId": "g5-argon-0035",
+      "revision": 1,
+      "contentHash": "e1d5c70a814800d4371bf950c487c8fbbff45d43857d959356e9f671a8d72471",
+      "run": {
+        "id": "20261106T071305278Z-37733-6532a057-048f-416c-95aa-95d3a68f76ad",
+        "model": "claude-opus-5-5",
+        "effort": "xhigh"
+      },
+      "blindChoice": "b",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": [
+        "[블라인드] 찾던 지우개가 바로 손 옆에 있었다는 상황에는 가까이 있는 것을 오히려 알아보지 못한다는 ‘등잔 밑이 어둡다’만 맞습니다. 나머지 속담은 인과, 공교로운 때, 협동을 뜻해 정답이 하나입니다.",
+        "[블라인드] 지문과 보기 길이가 고르고 속담 형태도 자연스럽습니다. 5학년 advanced 속담 문항으로 알맞습니다.",
+        "[공개 대조] 정답은 근거와 같은 표제어·품사이고 뜻(가까이 있는 사람이 도리어 잘 알기 어려움)도 맞습니다. 나머지 보기 셋은 인과, 공교로운 때, 협력을 뜻해 문맥에 넣으면 모두 어긋나므로 정답이 하나입니다.",
+        "[공개 대조] 지문·보기·해설·오답 이유가 모두 바르고 보기 길이도 고릅니다. 5학년 advanced 속담 문항으로 알맞습니다."
+      ]
+    },
+    {
+      "questionId": "g5-argon-0036",
+      "revision": 1,
+      "contentHash": "7eae55d7b5a276b5f7da6477104cff5d029037ddf0038fb06ab22266e891e8b6",
+      "run": {
+        "id": "20261106T071305278Z-37733-6532a057-048f-416c-95aa-95d3a68f76ad",
+        "model": "claude-opus-5-5",
+        "effort": "xhigh"
+      },
+      "blindChoice": "c",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "fail",
+        "explanation": "pass"
+      },
+      "findings": [
+        "[블라인드] ‘매우 어렵다’는 문맥에는 ‘하늘의 별 따기’만 맞아 정답이 하나입니다.",
+        "[블라인드] 오답 셋(식은 죽 먹기, 누워서 떡 먹기, 땅 짚고 헤엄치기)이 모두 ‘아주 쉽다’는 같은 뜻이라, 혼자 뜻이 다른 보기를 고르면 풀립니다. 지문의 ‘매우 어렵습니다’도 정답의 뜻을 그대로 풀어 줍니다. 오답 둘을 뜻이 다른 속담(예: 소 잃고 외양간 고친다, 빈 수레가 요란하다)으로 바꾸고, ‘처럼 매우 어렵습니다’를 ‘입니다’로 줄이기를 권합니다. 또 ‘매진되어 지금 표를 구하는 일’은 이미 다 팔렸다는 뜻이 되므로 ‘거의 다 팔려 남은 표를 구하는 일’로 고치면 더 매끄럽습니다. 그림의 떡처럼 이 문맥에도 성립할 수 있는 속담은 오답으로 쓰지 않습니다.",
+        "[공개 대조] 정답은 근거의 뜻(얻거나 이루기가 매우 어려움)과 맞고, 해설과 오답 이유도 바릅니다. ‘매우 어렵다’는 문맥에는 ‘하늘의 별 따기’만 들어가 정답이 하나입니다.",
+        "[공개 대조] 오답 셋이 모두 ‘아주 쉽다’는 같은 뜻이라 뜻이 다른 하나를 고르면 풀립니다. 지문의 ‘처럼 매우 어렵습니다’도 정답의 뜻을 그대로 알려 줍니다. 오답 둘을 뜻이 다른 속담(예: 소 잃고 외양간 고친다, 빈 수레가 요란하다)으로 바꾸고, ‘(    )’처럼 매우 어렵습니다’를 ‘(    )’와 같습니다’로 줄이기를 권합니다. 이미 다 팔렸다는 뜻이 되는 ‘매진되어 지금 표를’은 ‘거의 다 팔려 남은 표를’로 고치기를 권합니다."
+      ]
+    },
+    {
+      "questionId": "g5-argon-0036",
+      "revision": 2,
+      "contentHash": "9343d1bfa3ce02d28f8ca3c3b85dfb3193dbc194cfdebf6197d587b06ceee790",
+      "run": {
+        "id": "20261106T082106951Z-49069-4b04680d-57c3-4d08-9701-7eb9b6309312",
+        "model": "claude-opus-5-5",
+        "effort": "xhigh"
+      },
+      "blindChoice": "c",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": [
+        "[블라인드] 표를 구하기가 매우 어려운 상황이므로 ‘하늘의 별 따기’만 맞습니다. 나머지는 아주 쉬움·한 번에 두 가지 이익·자기에게 돌아오는 해를 뜻해 맞지 않습니다. 보기가 모두 모음으로 끝나 ‘와’ 호응도 바릅니다.",
+        "[블라인드] 다른 문항과 달리 ‘빈칸에 알맞은 말은 무엇일까요?’ 같은 묻는 말이 없으니 덧붙여 통일하기를 권합니다.",
+        "[공개 대조] 정답 c는 근거 ‘무엇을 얻거나 성취하기가 매우 어려운 경우’와 맞습니다. 표를 구하기가 매우 어려운 문맥이라 쉬움·두 가지 이익·자기에게 돌아오는 해를 뜻하는 나머지 속담은 맞지 않고, 오답 이유도 각 뜻을 바르게 말합니다.",
+        "[공개 대조] 다른 문항처럼 끝에 ‘빈칸에 알맞은 말은 무엇일까요?’를 덧붙여 형식을 맞추기를 권합니다(선택)."
+      ]
+    },
+    {
+      "questionId": "g5-argon-0037",
+      "revision": 2,
+      "contentHash": "70ac67e9ed640b3dfa53aa2df71f3207cb7be3f7f6c163bbfc07885d392b3605",
+      "run": {
+        "id": "20261106T071305278Z-37733-6532a057-048f-416c-95aa-95d3a68f76ad",
+        "model": "claude-opus-5-5",
+        "effort": "xhigh"
+      },
+      "blindChoice": "a",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": [
+        "[블라인드] 오해를 풀고 나서 우정이 더 깊어진 상황에는 어려움을 겪은 뒤 더 단단해진다는 ‘비 온 뒤에 땅이 굳어진다’만 맞습니다. 나머지 보기는 조심성, 작은 잘못이 커짐, 참견하는 사람이 많음을 뜻해 정답이 하나입니다.",
+        "[블라인드] 문장과 학년 수준이 알맞습니다. 다만 오답 ‘돌다리도 두드려 보고 건넌다’와 ‘바늘 도둑이 소도둑이 된다’는 사전형(‘두들겨 보고 건너라’, ‘소도둑 된다’)과 조금 다르니, 사전형으로 맞추면 더 좋습니다.",
+        "[공개 대조] 정답은 근거의 뜻(시련을 겪은 뒤에 더 강해짐)과 맞습니다. 화해한 뒤 우정이 깊어진 문맥에는 조심성, 작은 잘못이 커짐, 주장하는 사람이 많음을 뜻하는 다른 보기가 맞지 않아 정답이 하나입니다. 해설과 오답 이유도 바릅니다.",
+        "[공개 대조] challenge로 보기에는 익숙한 속담이지만, 지문이 뜻을 직접 풀어 주지 않으므로 받아들일 만합니다. 오답 ‘돌다리도 두드려 보고 건넌다’와 ‘바늘 도둑이 소도둑이 된다’는 사전 표제형(‘돌다리도 두들겨 보고 건너라’, ‘바늘 도둑이 소도둑 된다’)과 다릅니다. 아이들에게 바른 형태를 보이도록 표제형으로 맞추기를 권합니다."
+      ]
+    },
+    {
+      "questionId": "g5-argon-0038",
+      "revision": 1,
+      "contentHash": "3bdeb00c66bd6c2d65b020c72dacc4117b7f5b333170e7df25a0bdf940666a11",
+      "run": {
+        "id": "20261106T071305278Z-37733-6532a057-048f-416c-95aa-95d3a68f76ad",
+        "model": "claude-opus-5-5",
+        "effort": "xhigh"
+      },
+      "blindChoice": "c",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "fail",
+        "explanation": "pass"
+      },
+      "findings": [
+        "[블라인드] 몸집은 작지만 야무지게 활약한 상황에는 ‘작은 고추가 더 맵다’만 맞아 정답이 하나입니다.",
+        "[블라인드] 지문의 ‘제일 작지만’과 정답의 ‘작은’이 겹쳐서, 속담을 몰라도 낱말 맞추기로 고를 수 있습니다. ‘몸집은 반에서 제일 작지만’을 ‘키는 반에서 가장 아담하지만’처럼 ‘작다’를 쓰지 않는 표현으로 바꾸기를 권합니다. 오답 ‘우물에서 숭늉 찾는다’도 사전형 ‘우물에 가 숭늉 찾는다’로 맞추면 좋습니다.",
+        "[공개 대조] 정답은 근거의 뜻(몸집이 작은 사람이 재주가 뛰어나고 야무짐)과 맞습니다. 다른 보기 셋은 떠벌림, 성급함, 공교롭게 받는 의심을 뜻해 문맥에 맞지 않으므로 정답이 하나입니다. 해설과 오답 이유도 바릅니다.",
+        "[공개 대조] 지문의 ‘제일 작지만’과 정답의 ‘작은’이 겹쳐서, 속담을 몰라도 낱말 맞추기로 고를 수 있습니다. ‘몸집은 반에서 제일 작지만’을 ‘몸집은 반에서 가장 아담하지만’처럼 ‘작다’가 없는 표현으로 바꾸기를 권합니다. 오답 ‘우물에서 숭늉 찾는다’도 사전형 ‘우물에 가 숭늉 찾는다’로 맞추기를 권합니다."
+      ]
+    },
+    {
+      "questionId": "g5-argon-0038",
+      "revision": 2,
+      "contentHash": "e54379214a8e1679351da7877a47c439de0282fca4ebfa6e5e3f3eb693bfcc5a",
+      "run": {
+        "id": "20261106T082106951Z-49069-4b04680d-57c3-4d08-9701-7eb9b6309312",
+        "model": "claude-opus-5-5",
+        "effort": "xhigh"
+      },
+      "blindChoice": "c",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": [
+        "[블라인드] 몸집은 작아도 야무지게 활약한 상황이므로 c만 맞습니다. ‘작지만’ 대신 ‘아담하지만’을 써서 정답 낱말 노출을 피한 점은 좋습니다.",
+        "[블라인드] 칭찬한 사람(예: ‘친구들은’)과 묻는 말을 덧붙이면 문장이 더 자연스럽습니다(선택).",
+        "[공개 대조] 정답 c는 근거 ‘몸집이 작은 사람이 큰 사람보다 재주가 뛰어나고 야무짐’과 맞고, 나머지 세 속담은 이 칭찬 상황과 관계가 없습니다. ‘작지만’ 대신 ‘아담하지만’을 써서 정답 낱말이 지문에 드러나지 않게 한 점도 좋습니다.",
+        "[공개 대조] 칭찬한 사람(예: ‘친구들은’)과 묻는 말을 덧붙이면 문장이 더 온전해집니다(선택)."
+      ]
+    },
+    {
+      "questionId": "g5-argon-0039",
+      "revision": 2,
+      "contentHash": "e76f493b4a4f804ddda4c82d05b2c3358be48fb694bb4010755c27f50760c3fc",
+      "run": {
+        "id": "20261106T071305278Z-37733-6532a057-048f-416c-95aa-95d3a68f76ad",
+        "model": "claude-opus-5-5",
+        "effort": "xhigh"
+      },
+      "blindChoice": "b",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "fail",
+        "explanation": "pass"
+      },
+      "findings": [
+        "[블라인드] 번 돈이 남지 않고 계속 빠져나가는 상황에는 ‘밑 빠진 독에 물 붓기’만 맞아 정답이 하나입니다.",
+        "[블라인드] 오답 셋이 모두 ‘한 번에 두 가지 이득’이라는 같은 뜻이라, 혼자 뜻이 다른 보기를 고르면 풀립니다. 또 ‘마당 쓸고 동전 줍기’는 사전형 ‘마당 쓸고 돈 줍기’와 다릅니다. 오답 둘을 뜻이 다른 속담(예: 우물 안 개구리, 가는 날이 장날이다)으로 바꾸고, 남기는 오답은 사전형으로 적기를 권합니다.",
+        "[공개 대조] 정답은 근거의 뜻(아무리 힘이나 밑천을 들여도 보람 없이 헛됨)과 맞습니다. 번 돈이 조금도 남지 않는 문맥에는 ‘두 가지 이득’을 뜻하는 다른 보기가 들어갈 수 없어 정답이 하나입니다. 오답 이유는 각 속담의 뜻을 바르게 말합니다.",
+        "[공개 대조] 오답 셋이 모두 ‘한 번에 두 가지 이득’이라는 같은 뜻이라 뜻이 다른 하나를 고르면 풀립니다. ‘마당 쓸고 동전 줍기’도 사전형 ‘마당 쓸고 돈 줍기’가 아닙니다. 오답 둘을 뜻이 다른 속담(예: 우물 안 개구리, 가는 날이 장날이다)으로 바꾸고, 남기는 오답은 사전형으로 적은 뒤 오답 이유도 함께 고치기를 권합니다."
+      ]
+    },
+    {
+      "questionId": "g5-argon-0039",
+      "revision": 3,
+      "contentHash": "63c1e06789b429d30dfd5aa84a9c5a8fc199d3867dd5ec76a1cd389a28a2d541",
+      "run": {
+        "id": "20261106T082106951Z-49069-4b04680d-57c3-4d08-9701-7eb9b6309312",
+        "model": "claude-opus-5-5",
+        "effort": "xhigh"
+      },
+      "blindChoice": "b",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": [
+        "[블라인드] 아무리 벌어도 돈이 남지 않는 상황이므로 b만 맞습니다. a(아주 쉬움)·c(한 번에 두 가지 이익)·d(보고 들은 것이 좁음)는 맞지 않습니다. ‘와’ 호응도 바릅니다.",
+        "[블라인드] 묻는 말이 없는 점만 다른 문항과 맞추면 좋습니다.",
+        "[공개 대조] 정답 b는 근거 ‘아무리 힘이나 밑천을 들여도 보람 없이 헛된 일이 되는 상태’와 맞습니다. 아무리 벌어도 돈이 남지 않는 문맥에 나머지 보기는 맞지 않습니다.",
+        "[공개 대조] ‘도랑 치고 가재 잡기’에는 사전에 ‘일의 순서가 뒤바뀌어 애쓴 보람이 나타나지 않음’이라는 뜻도 있는 것으로 압니다. 이 지문에는 순서가 뒤바뀌었다는 단서가 없어 답이 둘이 되지는 않습니다. 다만 헷갈리지 않게 c를 뜻이 하나뿐인 속담으로 바꾸고, 묻는 말도 덧붙이기를 권합니다(선택)."
+      ]
+    },
+    {
+      "questionId": "g5-argon-0040",
+      "revision": 1,
+      "contentHash": "976e2e4ff433c3ceb847e002324cfe947a50e4e9328dc3bc9f599e67e4df91a6",
+      "run": {
+        "id": "20261106T071305278Z-37733-6532a057-048f-416c-95aa-95d3a68f76ad",
+        "model": "claude-opus-5-5",
+        "effort": "xhigh"
+      },
+      "blindChoice": "d",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": [
+        "[블라인드] 시냇물 돌 밑에서 주워 된장국을 끓인다는 단서에는 다슬기만 맞습니다. 메뚜기, 개구리, 지렁이는 사는 곳이나 음식으로 쓰는 방식이 맞지 않습니다.",
+        "[블라인드] 할머니 말씀이라는 대화 문맥이 있고, 보기 길이가 같아 풀이 단서가 없습니다. challenge 방언 문항으로 알맞으며, 지문에 충청 지역을 밝히면 더 좋습니다.",
+        "[공개 대조] 근거(‘다슬기’의 방언, 강원·충북)는 정답과 품사·뜻이 맞고, 충북이 들어 있어 dialectRegion 충청과도 맞습니다. 시냇물 돌 밑에서 주워 된장국을 끓인다는 단서에는 메뚜기, 개구리, 지렁이가 맞지 않아 정답이 하나입니다.",
+        "[공개 대조] 할머니 말씀이라는 대화 문맥이 있고 보기 길이가 같으며, 해설과 오답 이유도 바릅니다. 지문에 ‘충청도 할머니께서’처럼 지역을 밝히면 더 좋습니다."
+      ]
+    },
+    {
+      "questionId": "g5-argon-0041",
+      "revision": 1,
+      "contentHash": "7f6898bbe40a7a974789188b42f94b072d54e0a6afc590ac414eca6a913f912e",
+      "run": {
+        "id": "20261106T071305278Z-37733-6532a057-048f-416c-95aa-95d3a68f76ad",
+        "model": "claude-opus-5-5",
+        "effort": "xhigh"
+      },
+      "blindChoice": "a",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "uncertain",
+        "language": "uncertain",
+        "explanation": "pass"
+      },
+      "findings": [
+        "[블라인드] 정답은 소나무 하나입니다.",
+        "[블라인드] 지문의 ‘솔잎’과 ‘솔방울’이 소나무를 직접 가리키는 데다 ‘소낭구’와 ‘소나무’의 첫 음절도 같습니다. 그래서 방언을 몰라도 바로 풀리고, challenge 난이도와 맞지 않습니다. ‘솔잎이 푸르고 솔방울이 달린’을 ‘겨울에도 바늘처럼 가는 잎이 푸르고 줄기가 구불구불한’처럼 바꾸기를 권합니다. 그러면 겨울에도 푸른 대나무와는 잎 모양으로 구별됩니다.",
+        "[공개 대조] 근거(‘소나무’의 방언, 강원·평북·황해)는 정답, dialectRegion과 맞습니다. 해설과 오답 이유도 바르며 정답은 소나무 하나입니다.",
+        "[공개 대조] 지문의 ‘솔잎’과 ‘솔방울’이 소나무를 바로 가리키는 데다, ‘소낭구’와 ‘소나무’는 첫 음절도 같습니다. 그래서 방언을 몰라도 풀리므로 challenge 난이도와 맞지 않습니다. ‘솔잎이 푸르고 솔방울이 달린’을 ‘겨울에도 바늘처럼 가는 잎이 푸르고 줄기가 구불구불한’처럼 바꾸면, 겨울에도 푸른 대나무와도 잎 모양으로 구별됩니다."
+      ]
+    },
+    {
+      "questionId": "g5-argon-0041",
+      "revision": 2,
+      "contentHash": "784410ce8110929ad8772f355ab6b48cb9bab9cc18e7bf511ff5f63cdacfa696",
+      "run": {
+        "id": "20261106T082106951Z-49069-4b04680d-57c3-4d08-9701-7eb9b6309312",
+        "model": "claude-opus-5-5",
+        "effort": "xhigh"
+      },
+      "blindChoice": "a",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": [
+        "[블라인드] 겨울에도 푸른 바늘잎과 구불구불한 줄기라는 단서로 보아 소나무만 맞습니다. 대나무는 늘 푸르지만 바늘잎이 아닙니다. 강원도 할아버지의 말이라는 방언 상황 단서도 있습니다.",
+        "[블라인드] 주어가 할아버지이므로 ‘가리키며’를 ‘가리키시며’로 고치면 높임이 더 고르게 됩니다(선택).",
+        "[공개 대조] 근거(우리말샘) ‘소나무’의 방언(강원·평북·황해)과 정답·dialectRegion이 맞습니다. 겨울에도 푸른 바늘잎과 구불구불한 줄기라는 단서로 소나무만 맞고, 강원도 할아버지의 말이라는 상황 단서도 있습니다.",
+        "[공개 대조] 주어가 할아버지이므로 ‘가리키며’를 ‘가리키시며’로 고치면 높임이 고르게 됩니다(선택)."
+      ]
+    },
+    {
+      "questionId": "g5-argon-0042",
+      "revision": 1,
+      "contentHash": "5bfa82fe730bf6ae3aed7bc518818787b92c01b8b577a9930a3c95d3aab35d62",
+      "run": {
+        "id": "20261106T071305278Z-37733-6532a057-048f-416c-95aa-95d3a68f76ad",
+        "model": "claude-opus-5-5",
+        "effort": "xhigh"
+      },
+      "blindChoice": "d",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": [
+        "[블라인드] 요술 방망이를 들고 밤길에 나타나 씨름을 거는 존재는 도깨비뿐이라 정답이 하나입니다.",
+        "[블라인드] 옛이야기를 들려주는 대화 문맥이 있고 내용도 어린이에게 알맞습니다. 도채비는 제주 방언으로 더 널리 알려져 있으니, 전라 표기의 사전 근거를 한 번 확인해 두면 좋습니다.",
+        "[공개 대조] 근거(‘도깨비’의 방언, 강원·경상·전라·함북)에 전라가 들어 있어 정답, dialectRegion과 맞습니다. 1단계에서 의심한 지역 표기 문제는 풀렸습니다. 요술 방망이를 들고 씨름을 거는 존재는 도깨비뿐이라 정답이 하나이며, 해설과 오답 이유도 바릅니다.",
+        "[공개 대조] 옛이야기를 들려주는 대화 문맥이 있고 내용도 아이들에게 알맞습니다. 다만 오답이 모두 실제 동물이라 상상 속 존재인 정답이 쉽게 드러납니다. 오답 하나를 산신령이나 용왕님처럼 옛이야기 속 인물로 바꾸면 challenge 난이도에 더 맞습니다."
+      ]
+    },
+    {
+      "questionId": "g5-argon-0043",
+      "revision": 1,
+      "contentHash": "3e1e0b70beff85d704a4a4b3784c2a54213c25a339cb463e074789614771a3ce",
+      "run": {
+        "id": "20261106T071305278Z-37733-6532a057-048f-416c-95aa-95d3a68f76ad",
+        "model": "claude-opus-5-5",
+        "effort": "xhigh"
+      },
+      "blindChoice": "d",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": [
+        "[블라인드] 엄지발가락이 빠져나올 만큼 생겼고 기워 신는다는 단서에는 구멍만 맞습니다. 문장과 보기에는 문제가 없습니다.",
+        "[블라인드] ‘고망’은 제주 방언(구멍)으로 널리 알려진 말이라, dialectRegion ‘경상’이 맞는지 의심스럽습니다. 사전이나 지역어 자료로 경상에서 쓰는 근거를 확인하고, 근거가 없으면 dialectRegion을 제주로 바꾸거나 경상에서 실제로 쓰는 형태로 문항을 바꾸기를 권합니다.",
+        "[공개 대조] 근거(‘구멍’의 방언, 경북 등 아홉 지역)는 정답과 맞고, 경북이 들어 있어 dialectRegion 경상도 뒷받침됩니다. 1단계에서 의심한 지역 표기 문제는 풀렸습니다. 발가락이 빠져나올 만큼 생겨 기워 신는다는 단서에는 구멍만 맞아 정답이 하나입니다.",
+        "[공개 대조] 보기 길이가 고르고 해설과 오답 이유도 바릅니다. 근거의 지역이 여러 곳이므로 지문에 ‘경상도 어머니께서’처럼 지역을 밝혀 두면 dialectRegion과 더 분명히 이어집니다."
+      ]
+    },
+    {
+      "questionId": "g5-argon-0044",
+      "revision": 2,
+      "contentHash": "95a8cbf62bd1a1f9026fb7c71b6c0b0e9dd5e788a8237592b6da339392a300f3",
+      "run": {
+        "id": "20261106T071305278Z-37733-6532a057-048f-416c-95aa-95d3a68f76ad",
+        "model": "claude-opus-5-5",
+        "effort": "xhigh"
+      },
+      "blindChoice": "b",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "uncertain"
+      },
+      "findings": [
+        "[블라인드] 멍멍 짖고 꼬리를 흔드는 어린 새끼라는 단서에는 강아지만 맞습니다. 송아지, 망아지, 병아리가 모두 새끼 동물이라 오답 구성도 좋습니다.",
+        "[블라인드] 같은 묶음의 g5-argon-0045도 ‘강생이’를 묻고 있어 문항 풀에서 같은 낱말이 겹칩니다. 둘 중 하나를 다른 방언 낱말로 바꾸는 것을 검토하세요.",
+        "[공개 대조] 근거(‘강아지’의 방언, 경상·제주)는 정답, dialectRegion과 맞습니다. 멍멍 짖고 꼬리를 흔드는 새끼라는 단서에는 송아지, 망아지, 병아리가 맞지 않아 정답이 하나이고, 오답이 모두 새끼 동물이라 구성도 좋습니다.",
+        "[공개 대조] 오답 이유 c의 ‘표준어 낱말이에요’는 네 보기 모두에 해당하므로 틀린 까닭이 되지 못합니다. ‘말의 새끼라 멍멍 짖지 않아요’처럼 고치기를 권합니다. 또 g5-argon-0045도 같은 낱말 ‘강생이’를 물어 문항 풀에서 겹치므로, 둘 중 하나를 다른 방언 낱말로 바꾸기를 검토하세요."
+      ]
+    },
+    {
+      "questionId": "g5-argon-0044",
+      "revision": 3,
+      "contentHash": "02adf007a0847b1b9a6454a8fc48d8879373794a16867fd2559657b463a2bc0c",
+      "run": {
+        "id": "20261106T082106951Z-49069-4b04680d-57c3-4d08-9701-7eb9b6309312",
+        "model": "claude-opus-5-5",
+        "effort": "xhigh"
+      },
+      "blindChoice": "b",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "uncertain",
+        "explanation": "pass"
+      },
+      "findings": [
+        "[블라인드] 멍멍 짖고 꼬리를 흔드는 어린 새끼이므로 강아지만 맞고, 제주 할머니의 말이라는 상황 단서도 있습니다.",
+        "[블라인드] ‘멍멍 짖으며’가 답을 거의 그대로 알려 줍니다. 또 ‘강생이’가 g5-argon-0045·g6-argon-0042와 같은 낱말이라 문항 은행에서 겹칩니다. 한 문항은 다른 제주 방언 낱말로 바꾸는 것을 검토하기 바랍니다.",
+        "[공개 대조] 근거 ‘강아지’의 방언(경상·제주)과 정답·해설이 맞습니다. 멍멍 짖으며 꼬리를 흔드는 어린 새끼이므로 강아지만 맞습니다.",
+        "[공개 대조] ‘제주도 할머니께서 마당에서 멍멍 짖으며’까지 읽으면 할머니가 짖는 것처럼 먼저 읽힙니다. ‘마당에서 꼬리를 흔들며 멍멍 짖는 어린 새끼를 안아 주시며, 제주도에 사시는 할머니께서 ‘우리 강생이 참 귀엽지?’라고 하셨습니다.’처럼 순서를 바꾸면 pass입니다. ‘강생이’는 같은 5학년 g5-argon-0045와 겹치고, 같은 근거 뜻번호를 쓰는 g6-argon-0042와도 겹칩니다. 문항 은행에서 하나만 남기고 나머지는 다른 방언 낱말로 바꾸기 바랍니다."
+      ]
+    },
+    {
+      "questionId": "g5-argon-0044",
+      "revision": 4,
+      "contentHash": "9b314b56815913dd542499402b915b525da6e8cc60c740406bd720eacf851199",
+      "run": {
+        "id": "20261106T100501581Z-71656-17f824f5-9163-4a4a-a8e8-aaf7e2ac2cb1",
+        "model": "claude-opus-5-5",
+        "effort": "xhigh"
+      },
+      "blindChoice": "b",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": []
+    },
+    {
+      "questionId": "g5-argon-0045",
+      "revision": 2,
+      "contentHash": "5aad4965c880bd0a8ba58ff92b7579fe392172e2973e56549d8e0bf103057de4",
+      "run": {
+        "id": "20261106T071305278Z-37733-6532a057-048f-416c-95aa-95d3a68f76ad",
+        "model": "claude-opus-5-5",
+        "effort": "xhigh"
+      },
+      "blindChoice": "a",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "uncertain",
+        "language": "uncertain",
+        "explanation": "pass"
+      },
+      "findings": [
+        "[블라인드] 정답은 강아지 하나입니다.",
+        "[블라인드] ‘어미 개를 따라 걷는 새끼’가 강아지의 뜻(개의 새끼)을 그대로 풀어 줍니다. 오답인 고양이, 조랑말, 산토끼는 새끼 동물도 아니어서 방언을 몰라도 풀리므로 challenge와 맞지 않습니다. ‘어미 개’를 빼고 오답을 송아지, 망아지 같은 새끼 동물로 바꾸기를 권합니다. 다만 g5-argon-0044와 같은 낱말이 겹치므로, 아예 다른 방언 낱말로 교체하는 편이 더 낫습니다.",
+        "[공개 대조] 근거(‘강아지’의 방언, 전라)는 정답, dialectRegion과 맞습니다. 해설과 오답 이유도 바르며 정답은 강아지 하나입니다.",
+        "[공개 대조] 지문의 ‘어미 개를 따라 걷는 새끼’가 강아지의 뜻(개의 새끼)을 그대로 풀어 줍니다. 오답 고양이, 조랑말, 산토끼는 새끼를 이르는 말도 아니어서 방언을 몰라도 풀리므로 challenge 난이도와 맞지 않습니다. g5-argon-0044와 낱말이 겹치므로 다른 방언 낱말로 바꾸는 편이 가장 낫습니다. 이 낱말을 남긴다면 ‘어미 개’를 빼고 오답을 송아지, 망아지 같은 새끼 동물로 바꾸기를 권합니다."
+      ]
+    },
+    {
+      "questionId": "g5-argon-0045",
+      "revision": 3,
+      "contentHash": "45e8b044ae849518d069e1aa5b2e4f15b72f0ec2469387a69abdfa46bfb526d0",
+      "run": {
+        "id": "20261106T082106951Z-49069-4b04680d-57c3-4d08-9701-7eb9b6309312",
+        "model": "claude-opus-5-5",
+        "effort": "xhigh"
+      },
+      "blindChoice": "a",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "fail",
+        "explanation": "pass"
+      },
+      "findings": [
+        "[블라인드] 짖으며 신발 냄새를 맡는 어린 새끼이므로 강아지만 맞습니다.",
+        "[블라인드] ‘큰아버지께서 대문 소리에 달려 나와’까지 읽으면 큰아버지가 달려 나온 것으로 먼저 읽힙니다. 함께 사는 큰아버지가 ‘벌써 많이 자랐구나’라고 하는 것도 어색합니다. ‘대문 소리에 달려 나와 반갑게 짖으며 신발 냄새를 킁킁 맡는 어린 새끼를 보시며, 전라도에 사시는 큰아버지께서 ‘우리 강생이가 벌써 이만큼 자랐단다.’라고 하셨습니다.’처럼 고치면 pass입니다. 같은 학년의 g5-argon-0044와 낱말이 겹치는 점도 정리가 필요합니다.",
+        "[공개 대조] 근거 ‘강아지’의 방언(전라)과 정답·해설·dialectRegion이 맞습니다. 짖으며 신발 냄새를 맡는 어린 새끼이므로 강아지만 맞습니다.",
+        "[공개 대조] ‘큰아버지께서 대문 소리에 달려 나와 반갑게 짖으며’가 큰아버지의 동작으로 먼저 읽히고, ‘보며’에는 높임도 빠졌습니다. ‘대문 소리에 달려 나와 반갑게 짖으며 신발 냄새를 킁킁 맡는 어린 새끼를 보시며, 전라도에 사시는 큰아버지께서 ‘우리 강생이가 벌써 이만큼 자랐단다.’라고 하셨습니다.’처럼 고치면 pass입니다. 같은 학년 g5-argon-0044와 낱말이 겹치는 점도 정리해야 합니다."
+      ]
+    },
+    {
+      "questionId": "g5-argon-0045",
+      "revision": 4,
+      "contentHash": "9e991ce91476cf4a240489dee6ae3e80ce30c79aae3950baf0be9c02ea989fe9",
+      "run": {
+        "id": "20261106T100501581Z-71656-17f824f5-9163-4a4a-a8e8-aaf7e2ac2cb1",
+        "model": "claude-opus-5-5",
+        "effort": "xhigh"
+      },
+      "blindChoice": "a",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": []
+    },
+    {
+      "questionId": "g5-argon-0046",
+      "revision": 3,
+      "contentHash": "b084169a3d4ffcd141b2fe28244d02e0e5a37b01735a5163b0f18805da87c67c",
+      "run": {
+        "id": "20261106T071305278Z-37733-6532a057-048f-416c-95aa-95d3a68f76ad",
+        "model": "claude-opus-5-5",
+        "effort": "xhigh"
+      },
+      "blindChoice": "b",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": [
+        "[블라인드] ‘너무 뜨겁지도 식지도 않고 먹기 좋게’라는 단서에는 따스하다만 맞고, 차갑다, 얼얼하다, 시큼하다는 맞지 않습니다.",
+        "[블라인드] 제주 방언 맨도롱하다의 뜻과 맞고, 할머니 대화 문맥이 있으며, 보기에 풀이 단서가 없습니다.",
+        "[공개 대조] 근거(‘따스하다’의 방언, 제주)는 정답과 품사·뜻이 맞습니다. 너무 뜨겁지도 식지도 않고 먹기 좋다는 단서에는 차갑다, 얼얼하다, 시큼하다가 맞지 않아 정답이 하나입니다. 해설과 오답 이유도 바릅니다.",
+        "[공개 대조] 할머니 말씀이라는 대화 문맥이 있고 보기에 풀이 단서가 없습니다. 지문에 지역 단서가 없으니 ‘제주도 할머니께서’처럼 밝히면 dialectRegion과 더 잘 이어집니다."
+      ]
+    },
+    {
+      "questionId": "g5-argon-0047",
+      "revision": 1,
+      "contentHash": "620f4c450b59d557e680132e136ddb71071cfbfd666ddc6103df8c63f71bb87c",
+      "run": {
+        "id": "20261106T071305278Z-37733-6532a057-048f-416c-95aa-95d3a68f76ad",
+        "model": "claude-opus-5-5",
+        "effort": "xhigh"
+      },
+      "blindChoice": "c",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": [
+        "[블라인드] 새 한복의 빛깔과 무늬를 칭찬하는 말이므로 곱다랗다만 맞습니다. 투박하다, 축축하다, 침침하다는 칭찬하는 문맥에 맞지 않습니다.",
+        "[블라인드] 대화 문맥과 보기 구성이 알맞습니다. 제주어로는 ‘곱닥하다’가 더 널리 알려져 있으니, 표제어 ‘곱들락하다’의 사전 근거를 확인해 두기를 권합니다.",
+        "[공개 대조] 근거(‘곱다랗다’의 방언, 제주)는 정답과 품사·뜻이 맞아, 1단계에서 확인을 권한 표제어 근거가 확인됩니다. 새 한복의 빛깔과 무늬를 칭찬하는 말에는 곱다랗다만 맞아 정답이 하나입니다.",
+        "[공개 대조] 해설과 오답 이유의 뜻은 맞습니다. 다만 b의 ‘물기가 약간 젖어 있다’는 어색하니 ‘물기가 있어 조금 젖은 듯하다’로 다듬기를 권합니다. 지문에 제주 지역을 밝히면 더 좋습니다."
+      ]
+    },
+    {
+      "questionId": "g5-argon-0048",
+      "revision": 1,
+      "contentHash": "802f576e155927d64cdc59c41a5a89ca06f77bb764e5e1e37a0f372f2f287337",
+      "run": {
+        "id": "20261106T071305278Z-37733-6532a057-048f-416c-95aa-95d3a68f76ad",
+        "model": "claude-opus-5-5",
+        "effort": "xhigh"
+      },
+      "blindChoice": "a",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": [
+        "[블라인드] 잡초 뿌리를 캐는 도구는 호미뿐이고, 가위, 빗장, 바늘은 뿌리를 캐는 데 쓰지 않아 정답이 하나입니다.",
+        "[블라인드] 텃밭 대화 문맥이 있고 경상 방언 호맹이와 맞으며, 문장과 보기에도 문제가 없습니다.",
+        "[공개 대조] 근거(‘호미’의 방언, 경북)는 정답, dialectRegion 경상과 맞습니다. 잡초 뿌리를 캐는 도구는 호미뿐이라 정답이 하나입니다.",
+        "[공개 대조] 텃밭 대화 문맥이 있고 보기 길이가 같으며, 해설과 오답 이유도 바릅니다."
+      ]
+    },
+    {
+      "questionId": "g5-argon-0049",
+      "revision": 1,
+      "contentHash": "107b33f2aabac3a326f34ef91c6023a089d3fbc630ceb07668adcd2222aee19c",
+      "run": {
+        "id": "20261106T071305278Z-37733-6532a057-048f-416c-95aa-95d3a68f76ad",
+        "model": "claude-opus-5-5",
+        "effort": "xhigh"
+      },
+      "blindChoice": "c",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": [
+        "[블라인드] 소나기가 오기 전에 이불이 젖지 않게 걷으라는 급한 상황이라 빨리빨리만 맞습니다.",
+        "[블라인드] 전라 방언 싸게싸게의 쓰임과 맞습니다. 보기가 모두 같은 꼴의 첩어 부사라 길이나 형태로 답을 짐작할 단서가 없습니다.",
+        "[공개 대조] 근거(‘빨리빨리’의 방언, 전남)는 정답, dialectRegion 전라와 맞습니다. 소나기가 오기 전에 이불을 걷으라는 급한 상황에는 빨리빨리만 맞아 정답이 하나입니다.",
+        "[공개 대조] 보기가 모두 같은 꼴의 첩어 부사라 형태로 짐작할 단서가 없고, 해설과 오답 이유도 바릅니다."
+      ]
+    },
+    {
+      "questionId": "g5-argon-0050",
+      "revision": 1,
+      "contentHash": "4661938afd2cb25ac3f5642c32f0a8a6591334d947b3bca93e15f4ad477e988c",
+      "run": {
+        "id": "20261106T071305278Z-37733-6532a057-048f-416c-95aa-95d3a68f76ad",
+        "model": "claude-opus-5-5",
+        "effort": "xhigh"
+      },
+      "blindChoice": "a",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": [
+        "[블라인드] 넘어지지 않게 신발 끈을 묶는다는 단서에는 단단히만 맞습니다. 느슨히는 반대 뜻이고, 조용히와 가만히는 문맥에 맞지 않습니다.",
+        "[블라인드] 경상 방언 단디의 쓰임과 맞고 보기 길이가 같아 풀이 단서가 없습니다.",
+        "[공개 대조] 근거(‘단단히’의 방언, 경상)는 정답과 품사·뜻이 맞습니다. 넘어지지 않게 신발 끈을 묶는다는 단서에는 단단히만 맞아 정답이 하나입니다.",
+        "[공개 대조] 등산 전 대화 문맥이 있고 보기 길이가 같으며, 해설과 오답 이유도 바릅니다."
+      ]
+    }
+  ]
+}

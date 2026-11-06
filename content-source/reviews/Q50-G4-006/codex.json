@@ -1,962 +1,1392 @@
 {
-  "reviewId": "Q50-G4-006-codex",
-  "jobId": "QR-Q50-CODEX",
+  "reviewId": "QR-AUTO-codex-Q50-G4-006",
+  "jobId": "Q50-G4-006",
   "reviewer": {
-    "model": "GPT-6 (Codex)",
-    "tool": "Codex",
+    "model": "gpt-6-astra",
+    "tool": "2단계 블라인드 검수(tools/orchestrate/review.mjs)",
     "freshContext": true,
-    "date": "2026-10-30"
+    "date": "2026-11-06"
   },
   "items": [
     {
       "questionId": "g4-argon-0251",
       "revision": 1,
       "contentHash": "4ed25f6cc5c0c7b0da3a63a9a89f36fb97390df84e4ce11d7d80637838fa5368",
+      "run": {
+        "id": "20261106T043441904Z-5882-ff6a98c3-2235-4410-9fb8-989b589461cb",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
       "blindChoice": "b",
       "verdicts": {
         "source": "pass",
         "uniqueness": "pass",
         "grade": "pass",
         "language": "pass",
-        "explanation": "uncertain"
+        "explanation": "pass"
       },
       "findings": [
-        "우표 모음 b; a 세수,c 착용,d 식사는 수집 아님.",
-        "사전 대조: 수집하다 / 동사 / 뜻번호 1 / senseId 206110. 뜻풀이: 취미나 연구를 위하여 여러 가지 물건이나 재료를 찾아 모으다. 문맥·보기와 대조.",
-        "학년 3~4의 일상·학교·자연 맥락 및 basic/standard 적합. 보기의 문법 결합·문장 종결·표면 반복/길이 단서를 점검함.",
-        "해설과 정답키는 블라인드 입력에 없어 explanation=uncertain."
+        "[블라인드] 취미로 옛날 우표를 모으는 b만 ‘수집하다’의 쓰임에 맞으며, 문장과 어휘도 4학년에 적절하다.",
+        "[공개 대조] 취미로 우표를 찾아 모으는 b만 제시된 뜻에 맞는다. 해설과 오답 이유도 각 문맥의 행동을 적절히 구별한다."
       ]
     },
     {
       "questionId": "g4-argon-0252",
       "revision": 1,
       "contentHash": "d235171f5f4aad1be77064b4919f4d1594e06ed4d7d1caa5c82d710ea7fd0e64",
+      "run": {
+        "id": "20261106T043441904Z-5882-ff6a98c3-2235-4410-9fb8-989b589461cb",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
       "blindChoice": "d",
       "verdicts": {
         "source": "pass",
         "uniqueness": "pass",
         "grade": "pass",
         "language": "pass",
-        "explanation": "uncertain"
+        "explanation": "pass"
       },
       "findings": [
-        "재질별 나눔 d; a 구경,b 소풍,c 칭찬은 분리 기준 아님.",
-        "사전 대조: 구분 / 명사 / 뜻번호 1 / senseId 97745. 뜻풀이: 일정한 기준에 따라 전체를 몇 개로 갈라 나눔. 문맥·보기와 대조.",
-        "학년 3~4의 일상·학교·자연 맥락 및 basic/standard 적합. 보기의 문법 결합·문장 종결·표면 반복/길이 단서를 점검함.",
-        "해설과 정답키는 블라인드 입력에 없어 explanation=uncertain."
+        "[블라인드] 재질에 따라 나눈다는 문맥에 맞는 말은 ‘구분’뿐이며, 생활 속 상황으로 뜻을 이해할 수 있다.",
+        "[공개 대조] 재질이라는 기준에 따라 나누는 일을 나타내는 d만 성립하며 사전 근거와 일치한다. 생활 문맥과 해설이 4학년에 적절하다."
       ]
     },
     {
       "questionId": "g4-argon-0253",
       "revision": 1,
       "contentHash": "80ca7c67f2a213a13e21e0f984422c68407f2f6356a1e7234db49a3247409eda",
+      "run": {
+        "id": "20261106T043441904Z-5882-ff6a98c3-2235-4410-9fb8-989b589461cb",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "b",
+      "verdicts": {
+        "source": "fail",
+        "uniqueness": "uncertain",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "fail"
+      },
+      "findings": [
+        "[블라인드] b가 가장 대조적이지만 ‘무질서’는 ‘질서’의 반대말이므로 ‘순서’의 반대말로 단정하기 어렵다. ‘정해진 순서대로 놓은 상태와 반대되는 상태는?’으로 질문을 바꾸고 보기도 상태를 나타내는 표현으로 통일한다.",
+        "[공개 대조] 1단계에서 고른 b가 가장 대조적이지만, 제공된 ‘순서’의 뜻만으로 ‘무질서’를 그 반대말로 확정할 수 없고 해설도 이를 단정한다. ‘정해진 순서대로 놓인 상태와 반대되는 상태’를 묻고 정답을 ‘아무렇게나 뒤섞여 있는 상태’로 바꾸며 해설도 상태의 대조로 설명한다."
+      ]
+    },
+    {
+      "questionId": "g4-argon-0253",
+      "revision": 2,
+      "contentHash": "addb44286cbdb5b435a356b278732dc55b1e16a95b3e3a327319c1b7ccecf1bf",
+      "run": {
+        "id": "20261106T104143792Z-62018-ce451b02-719f-4873-9e72-659baa66f7b3",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
       "blindChoice": "b",
       "verdicts": {
         "source": "pass",
         "uniqueness": "pass",
         "grade": "pass",
         "language": "pass",
-        "explanation": "uncertain"
+        "explanation": "pass"
       },
-      "findings": [
-        "무질서 b; a,c 차례 동의,d 기준은 순서의 토대.",
-        "사전 대조: 순서 / 명사 / 뜻번호 1 / senseId 332337. 뜻풀이: 「1」 정하여진 기준에서 말하는 전후, 좌우, 상하 따위의 차례 관계. ≒ 수순 , 애차 , 윤서 . 문맥·보기와 대조.",
-        "학년 3~4의 일상·학교·자연 맥락 및 basic/standard 적합. 보기의 문법 결합·문장 종결·표면 반복/길이 단서를 점검함.",
-        "해설과 정답키는 블라인드 입력에 없어 explanation=uncertain."
-      ]
+      "findings": []
     },
     {
       "questionId": "g4-argon-0254",
       "revision": 1,
       "contentHash": "3035e068154585dcf8039ec54377ca60e175749ab87d61fa7b3adf748e10a7eb",
+      "run": {
+        "id": "20261106T043441904Z-5882-ff6a98c3-2235-4410-9fb8-989b589461cb",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
       "blindChoice": "a",
       "verdicts": {
         "source": "pass",
         "uniqueness": "pass",
         "grade": "pass",
         "language": "pass",
-        "explanation": "uncertain"
+        "explanation": "pass"
       },
       "findings": [
-        "수단/방식 a; b 잘못,c 지각,d 휴식 욕구는 방법 아님.",
-        "사전 대조: 방법 / 명사 / 뜻번호 1 / senseId 10677. 뜻풀이: 「1」 어떤 일을 해 나가거나 목적을 이루기 위하여 취하는 수단이나 방식. 문맥·보기와 대조.",
-        "학년 3~4의 일상·학교·자연 맥락 및 basic/standard 적합. 보기의 문법 결합·문장 종결·표면 반복/길이 단서를 점검함.",
-        "해설과 정답키는 블라인드 입력에 없어 explanation=uncertain."
+        "[블라인드] 매듭을 푸는 수단이나 방식을 뜻하는 a만 맞으며, 친숙한 상황과 고른 보기 길이가 적절하다.",
+        "[공개 대조] 매듭을 푸는 수단이나 방식이라는 a만 사전 뜻과 문맥에 맞는다. 보기 길이와 표현이 고르고 해설에도 모순이 없다."
       ]
     },
     {
       "questionId": "g4-argon-0255",
       "revision": 1,
       "contentHash": "c9e4b495a20f597a25c0bd016bcb1524aedc0bde6575b821db8a2061ddfcce3b",
+      "run": {
+        "id": "20261106T043441904Z-5882-ff6a98c3-2235-4410-9fb8-989b589461cb",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
       "blindChoice": "b",
       "verdicts": {
         "source": "pass",
         "uniqueness": "pass",
         "grade": "pass",
         "language": "pass",
-        "explanation": "uncertain"
+        "explanation": "pass"
       },
       "findings": [
-        "목표 b; a 실수,c 놀이,d 오해는 목적 아님.",
-        "사전 대조: 목적 / 명사 / 뜻번호 1 / senseId 551857. 뜻풀이: 「1」 실현하려고 하는 일이나 나아가는 방향. 문맥·보기와 대조.",
-        "학년 3~4의 일상·학교·자연 맥락 및 basic/standard 적합. 보기의 문법 결합·문장 종결·표면 반복/길이 단서를 점검함.",
-        "해설과 정답키는 블라인드 입력에 없어 explanation=uncertain."
+        "[블라인드] 운동으로 이루려는 바를 나타내므로 b가 유일하게 가깝고, 문장도 자연스럽다.",
+        "[공개 대조] 건강을 지키기 위해 운동한다는 문맥에서 ‘이루려는 목표’만 목적의 뜻에 가깝다. 근거와 해설 및 오답 이유가 일치한다."
       ]
     },
     {
       "questionId": "g4-argon-0256",
       "revision": 1,
       "contentHash": "246166e858131e1e843322bd17fff3ffa52855bb7c6a2a620c0e3e6778fd3ba2",
+      "run": {
+        "id": "20261106T043441904Z-5882-ff6a98c3-2235-4410-9fb8-989b589461cb",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "multiple",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "fail",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "fail"
+      },
+      "findings": [
+        "[블라인드] c가 전형적인 쓰임이지만 a도 운동화를 세탁기에 넣어 보관했다는 뜻으로 성립할 수 있다. a를 ‘운동화를 솔로 문질러 깨끗하게 간직했다’처럼 보관의 의미로 해석하기 어려운 문장으로 바꾼다.",
+        "[공개 대조] c는 근거와 일치하지만 a도 운동화를 세탁기 안에 넣어 보관했다는 뜻으로 성립하므로 1단계의 복수 정답 판단을 유지한다. a를 ‘운동화의 얼룩을 솔로 문질러 간직했다’처럼 보관으로 해석되지 않는 문장으로 바꾸고, 실제 문장에 없는 세탁 행위를 단정한 오답 이유도 함께 고친다."
+      ]
+    },
+    {
+      "questionId": "g4-argon-0256",
+      "revision": 2,
+      "contentHash": "8910ac565c479c6591cdc97005f51d5f0c5395bf3b8c4c75ceafad2e38b2757d",
+      "run": {
+        "id": "20261106T104143792Z-62018-ce451b02-719f-4873-9e72-659baa66f7b3",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
       "blindChoice": "c",
       "verdicts": {
         "source": "pass",
         "uniqueness": "pass",
         "grade": "pass",
         "language": "pass",
-        "explanation": "uncertain"
+        "explanation": "pass"
       },
-      "findings": [
-        "반지 보관 c; a 세탁기 보관도 특별 상황이면 가능하나 보통 세탁,b 먹기,d 달리기는 보관 아님.",
-        "사전 대조: 간직하다 / 동사 / 뜻번호 1 / senseId 478023. 뜻풀이: 「1」 물건 따위를 어떤 장소에 잘 간수하여 두다. 문맥·보기와 대조.",
-        "학년 3~4의 일상·학교·자연 맥락 및 basic/standard 적합. 보기의 문법 결합·문장 종결·표면 반복/길이 단서를 점검함.",
-        "해설과 정답키는 블라인드 입력에 없어 explanation=uncertain."
-      ]
+      "findings": []
     },
     {
       "questionId": "g4-argon-0257",
       "revision": 1,
       "contentHash": "87bb327c30176dad5e1d3a4ad65bbe30a0c2089abfc7c61b4ca322ef43c5117f",
+      "run": {
+        "id": "20261106T091046375Z-60403-fa81f371-b162-47a1-beff-e5195df4dd17",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
       "blindChoice": "a",
       "verdicts": {
         "source": "pass",
         "uniqueness": "pass",
         "grade": "pass",
         "language": "pass",
-        "explanation": "uncertain"
+        "explanation": "pass"
       },
-      "findings": [
-        "계절 달라짐 a; b 고집,c 사과,d 칭찬은 상태 변화 아님.",
-        "사전 대조: 변화 / 명사 / 뜻번호 1 / senseId 570062. 뜻풀이: 사물의 성질, 모양, 상태 따위가 바뀌어 달라짐. 문맥·보기와 대조.",
-        "학년 3~4의 일상·학교·자연 맥락 및 basic/standard 적합. 보기의 문법 결합·문장 종결·표면 반복/길이 단서를 점검함.",
-        "해설과 정답키는 블라인드 입력에 없어 explanation=uncertain."
-      ]
+      "findings": []
     },
     {
       "questionId": "g4-argon-0258",
       "revision": 1,
       "contentHash": "bb8d3155e5021202a35e66190412dcd10f0748d1ad8d456d95e32f6ca7692eaf",
+      "run": {
+        "id": "20261106T091046375Z-60403-fa81f371-b162-47a1-beff-e5195df4dd17",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
       "blindChoice": "d",
       "verdicts": {
         "source": "pass",
         "uniqueness": "pass",
         "grade": "pass",
         "language": "pass",
-        "explanation": "uncertain"
+        "explanation": "pass"
       },
-      "findings": [
-        "다른 점 d; a,b,c는 공통점.",
-        "사전 대조: 공통점 / 명사 / 뜻번호 1 / senseId 93142. 뜻풀이: 둘 또는 그 이상의 여럿 사이에 두루 통하는 점. 문맥·보기와 대조.",
-        "학년 3~4의 일상·학교·자연 맥락 및 basic/standard 적합. 보기의 문법 결합·문장 종결·표면 반복/길이 단서를 점검함.",
-        "해설과 정답키는 블라인드 입력에 없어 explanation=uncertain."
-      ]
+      "findings": []
     },
     {
       "questionId": "g4-argon-0259",
       "revision": 1,
       "contentHash": "fadbf2c89784b492d586172603749ca2fbcfa7b536db0e2bb0c7868d36aaa2e2",
+      "run": {
+        "id": "20261106T091046375Z-60403-fa81f371-b162-47a1-beff-e5195df4dd17",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "a",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "fail",
+        "explanation": "pass"
+      },
+      "findings": [
+        "[블라인드] 보기 d의 ‘어제 저녁’은 한 단어인 ‘어제저녁’으로 붙여 쓴다.",
+        "[공개 대조] 보기 d의 ‘어제 저녁’은 한 단어인 ‘어제저녁’으로 붙여 씁니다."
+      ]
+    },
+    {
+      "questionId": "g4-argon-0259",
+      "revision": 2,
+      "contentHash": "ae5eaa10ac10599a3d26abb84af1695d5cf21bec1024ad721bf80cdf77ca56e0",
+      "run": {
+        "id": "20261106T104143792Z-62018-ce451b02-719f-4873-9e72-659baa66f7b3",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "a",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "fail",
+        "explanation": "pass"
+      },
+      "findings": [
+        "[공개 대조] 보기 c의 ‘집에서 학교까지 걸리는 거리’는 ‘걸리는’과 ‘거리’의 호응이 어색합니다. ‘집에서 학교까지의 거리’로 고치세요."
+      ]
+    },
+    {
+      "questionId": "g4-argon-0259",
+      "revision": 3,
+      "contentHash": "229996f3b08da169c84ed317258cfb3065bd01b93b8f6b1bc88cfec4079ca92d",
+      "run": {
+        "id": "20261106T105936173Z-62018-335b4fac-22b4-44de-a105-10083e53ea6b",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
       "blindChoice": "a",
       "verdicts": {
         "source": "pass",
         "uniqueness": "pass",
         "grade": "pass",
         "language": "pass",
-        "explanation": "uncertain"
+        "explanation": "pass"
       },
-      "findings": [
-        "마음 바탕 a; b 옷,c 거리,d 반찬 수 무관.",
-        "사전 대조: 성질 / 명사 / 뜻번호 1 / senseId 332291. 뜻풀이: 「1」 사람이 지닌 마음의 본바탕. 문맥·보기와 대조.",
-        "학년 3~4의 일상·학교·자연 맥락 및 basic/standard 적합. 보기의 문법 결합·문장 종결·표면 반복/길이 단서를 점검함.",
-        "해설과 정답키는 블라인드 입력에 없어 explanation=uncertain."
-      ]
+      "findings": []
     },
     {
       "questionId": "g4-argon-0260",
       "revision": 1,
       "contentHash": "6f9fc4122d353195753c4d9ac9798042969aadeb42a121dfc120ee9d32ebc925",
+      "run": {
+        "id": "20261106T043441904Z-5882-ff6a98c3-2235-4410-9fb8-989b589461cb",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "d",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "uncertain",
+        "grade": "pass",
+        "language": "uncertain",
+        "explanation": "pass"
+      },
+      "findings": [
+        "[블라인드] 보기 중에서는 d가 가장 가깝지만 ‘자전거 바퀴의 형편을 살핀다’는 표현은 자연스럽지 않다. ‘바꾸어 쓸 말’ 대신 ‘뜻에 가장 가까운 설명’을 묻고 d를 ‘현재 어떠한지 나타내는 모습이나 형편’으로 바꾼다.",
+        "[공개 대조] d는 사전 뜻풀이에 포함되지만 ‘자전거 바퀴의 형편을 살핀다’는 자연스러운 대체 표현인지 불분명하다. ‘뜻에 가장 가까운 설명’을 묻고 d를 ‘현재 어떠한지 나타내는 모습이나 형편’으로 바꾸며 다른 보기 길이도 맞춘다."
+      ]
+    },
+    {
+      "questionId": "g4-argon-0260",
+      "revision": 2,
+      "contentHash": "18146a8bd7e37bb49b1f7afdcbe2f4f51130fddcdcf4d5b20acc39ecd4ed5607",
+      "run": {
+        "id": "20261106T104143792Z-62018-ce451b02-719f-4873-9e72-659baa66f7b3",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
       "blindChoice": "d",
       "verdicts": {
         "source": "pass",
         "uniqueness": "pass",
         "grade": "pass",
         "language": "pass",
-        "explanation": "uncertain"
+        "explanation": "pass"
       },
-      "findings": [
-        "형편 d; a 이름,b 값,c 소유자는 바퀴 상태 아님.",
-        "사전 대조: 상태 / 명사 / 뜻번호 1 / senseId 13011. 뜻풀이: 「1」 사물·현상이 놓여 있는 모양이나 형편. 문맥·보기와 대조.",
-        "학년 3~4의 일상·학교·자연 맥락 및 basic/standard 적합. 보기의 문법 결합·문장 종결·표면 반복/길이 단서를 점검함.",
-        "해설과 정답키는 블라인드 입력에 없어 explanation=uncertain."
-      ]
+      "findings": []
     },
     {
       "questionId": "g4-argon-0261",
-      "revision": 1,
-      "contentHash": "6af3732e95c52f0f7268a059c47665ae86886fbf9c73010803801c5b1b10c9da",
+      "revision": 2,
+      "contentHash": "3919cc4b5ca33dfa95b26f06a070cd47f53b6224a349b1f354a766d26bf5e154",
+      "run": {
+        "id": "20261106T091046375Z-60403-fa81f371-b162-47a1-beff-e5195df4dd17",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
       "blindChoice": "d",
       "verdicts": {
         "source": "pass",
         "uniqueness": "pass",
-        "grade": "fail",
+        "grade": "pass",
         "language": "pass",
-        "explanation": "uncertain"
+        "explanation": "pass"
       },
-      "findings": [
-        "지구 기체 d; a 필통,b 과일,c 착용은 기체 뜻 불가.",
-        "사전 대조: 분위기 / 명사 / 뜻번호 1 / senseId null. 뜻풀이: 「1」 지구를 둘러싸고 있는 기체. 문맥·보기와 대조.",
-        "분위기=지구를 둘러싼 기체는 드문 뜻. basic/standard 학습어로 부적합. 일반 분위기 의미 또는 사전 활용 polysemy로 재설계.",
-        "해설과 정답키는 블라인드 입력에 없어 explanation=uncertain."
-      ]
+      "findings": []
     },
     {
       "questionId": "g4-argon-0262",
       "revision": 1,
       "contentHash": "b731e8e78254ec552784158cdc866dfe8e07c7062c6be3ccdbd0da401becda7d",
+      "run": {
+        "id": "20261106T091046375Z-60403-fa81f371-b162-47a1-beff-e5195df4dd17",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
       "blindChoice": "a",
       "verdicts": {
         "source": "pass",
         "uniqueness": "pass",
         "grade": "pass",
         "language": "pass",
-        "explanation": "uncertain"
+        "explanation": "pass"
       },
-      "findings": [
-        "필요 요소 a; b 구경,c 칭찬,d 농담은 발아 요소 아님.",
-        "사전 대조: 조건 / 명사 / 뜻번호 1 / senseId 22540. 뜻풀이: 「1」 어떤 일이 이루어지려면 갖추어져야 할 상태나 요소. 문맥·보기와 대조.",
-        "학년 3~4의 일상·학교·자연 맥락 및 basic/standard 적합. 보기의 문법 결합·문장 종결·표면 반복/길이 단서를 점검함.",
-        "해설과 정답키는 블라인드 입력에 없어 explanation=uncertain."
-      ]
+      "findings": []
     },
     {
       "questionId": "g4-argon-0263",
       "revision": 1,
       "contentHash": "5ea04b347a000ea45e31e70d5244a5c1baae4981a536b58a7ba1ae7efcf2105f",
+      "run": {
+        "id": "20261106T091046375Z-60403-fa81f371-b162-47a1-beff-e5195df4dd17",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
       "blindChoice": "a",
       "verdicts": {
         "source": "pass",
         "uniqueness": "pass",
         "grade": "pass",
         "language": "pass",
-        "explanation": "uncertain"
+        "explanation": "pass"
       },
-      "findings": [
-        "상상 a; b 체험,c 실습,d 견학은 실제 경험.",
-        "사전 대조: 경험 / 명사 / 뜻번호 1 / senseId 551646. 뜻풀이: 「1」 자신이 실제로 해 보거나 겪어 봄. 또는 거기서 얻은 지식이나 기능. 문맥·보기와 대조.",
-        "학년 3~4의 일상·학교·자연 맥락 및 basic/standard 적합. 보기의 문법 결합·문장 종결·표면 반복/길이 단서를 점검함.",
-        "해설과 정답키는 블라인드 입력에 없어 explanation=uncertain."
-      ]
+      "findings": []
     },
     {
       "questionId": "g4-argon-0264",
-      "revision": 1,
-      "contentHash": "25e6f83b9d068bce4f28556bd0f16ac126f7ae9515022b7dbc2f4ae1e2c493f7",
+      "revision": 2,
+      "contentHash": "9caeaf070804a883b1689b51e8daff7b68f2d7d6e99b737b7c526ef150a61a9d",
+      "run": {
+        "id": "20261106T091046375Z-60403-fa81f371-b162-47a1-beff-e5195df4dd17",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
       "blindChoice": "c",
       "verdicts": {
         "source": "pass",
         "uniqueness": "pass",
-        "grade": "fail",
+        "grade": "pass",
         "language": "pass",
-        "explanation": "uncertain"
+        "explanation": "pass"
       },
-      "findings": [
-        "열매 맺음 c; a 휴식,b 뿌리,d 낙엽은 결실 아님.",
-        "사전 대조: 결과 / 명사 / 뜻번호 1 / senseId null. 뜻풀이: 「1」 열매를 맺음. 또는 그 열매. ≒ 과 . 문맥·보기와 대조.",
-        "결과=결실은 드문 동음어. core/standard 대신 일상 결과(일의 끝에 생긴 것)로 교체하거나 한자·사전 대조 제공.",
-        "해설과 정답키는 블라인드 입력에 없어 explanation=uncertain."
-      ]
+      "findings": []
     },
     {
       "questionId": "g4-argon-0265",
       "revision": 1,
       "contentHash": "4daebea8ebd7e7d95dd9c2b1f2a6305870fc337c978d24b2b67257c8e94a70d2",
+      "run": {
+        "id": "20261106T043441904Z-5882-ff6a98c3-2235-4410-9fb8-989b589461cb",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
       "blindChoice": "d",
       "verdicts": {
         "source": "pass",
         "uniqueness": "pass",
         "grade": "pass",
         "language": "pass",
-        "explanation": "uncertain"
+        "explanation": "pass"
       },
       "findings": [
-        "다른 점 d; a,b,c는 유사성.",
-        "사전 대조: 차이 / 명사 / 뜻번호 1 / senseId 286111. 뜻풀이: 서로 같지 아니하고 다름. 또는 그런 정도나 상태. 문맥·보기와 대조.",
-        "학년 3~4의 일상·학교·자연 맥락 및 core/standard 적합. 보기의 문법 결합·문장 종결·표면 반복/길이 단서를 점검함.",
-        "해설과 정답키는 블라인드 입력에 없어 explanation=uncertain."
+        "[블라인드] 두 그림에서 서로 다른 부분을 찾는 상황이므로 d만 맞으며, 문맥과 보기의 표현도 이해하기 쉽다.",
+        "[공개 대조] 두 그림에서 같지 않은 부분을 찾는 문맥이므로 d만 뜻을 유지한다. 근거와 해설 및 세 오답 이유가 일치한다."
       ]
     },
     {
       "questionId": "g4-argon-0266",
       "revision": 1,
       "contentHash": "504d486c53c854453735a9a6db0f861eb43ccd65bbe2a74e3b98dbaaf3db2f3e",
+      "run": {
+        "id": "20261106T091046375Z-60403-fa81f371-b162-47a1-beff-e5195df4dd17",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
       "blindChoice": "b",
       "verdicts": {
         "source": "pass",
         "uniqueness": "pass",
         "grade": "pass",
         "language": "pass",
-        "explanation": "uncertain"
+        "explanation": "pass"
       },
-      "findings": [
-        "긴 목 특성 b; a 음료,c 공,d 우산은 특징 오용.",
-        "사전 대조: 특징 / 명사 / 뜻번호 1 / senseId 26937. 뜻풀이: 「1」 다른 것에 비하여 특별히 눈에 뜨이는 점. 문맥·보기와 대조.",
-        "학년 3~4의 일상·학교·자연 맥락 및 core/standard 적합. 보기의 문법 결합·문장 종결·표면 반복/길이 단서를 점검함.",
-        "해설과 정답키는 블라인드 입력에 없어 explanation=uncertain."
-      ]
+      "findings": []
     },
     {
       "questionId": "g4-argon-0267",
       "revision": 1,
       "contentHash": "075fc6312e5eb90e68f43e4e128ce5291ad1f4958dbe26b3f2977bbbc79da080",
+      "run": {
+        "id": "20261106T043441904Z-5882-ff6a98c3-2235-4410-9fb8-989b589461cb",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
       "blindChoice": "c",
       "verdicts": {
         "source": "pass",
         "uniqueness": "pass",
         "grade": "pass",
         "language": "pass",
-        "explanation": "uncertain"
+        "explanation": "pass"
       },
       "findings": [
-        "생김 모습 c; a 약속,b 규칙,d 절약은 외양 아님.",
-        "사전 대조: 모습 / 명사 / 뜻번호 1 / senseId 5754. 뜻풀이: 「1」 사람의 생긴 모양. 문맥·보기와 대조.",
-        "학년 3~4의 일상·학교·자연 맥락 및 core/standard 적합. 보기의 문법 결합·문장 종결·표면 반복/길이 단서를 점검함.",
-        "해설과 정답키는 블라인드 입력에 없어 explanation=uncertain."
+        "[블라인드] 사람의 생긴 모양과 몸차림을 나타내는 말은 ‘모습’뿐이며, basic 수준의 뜻 확인 문항으로 적절하다.",
+        "[공개 대조] 사람의 생긴 모양을 뜻하는 c만 맞으며 제공된 사전 뜻과 일치한다. basic 수준의 뜻 확인 문항으로 적절하고 해설에도 문제가 없다."
       ]
     },
     {
       "questionId": "g4-argon-0268",
-      "revision": 1,
-      "contentHash": "152716aa8a931eb656ff09c70ec8a50e4cb16bee233311216e6eb75e7eeefad9",
+      "revision": 2,
+      "contentHash": "b82869321b43e73fb9d9cbd7835d6d6ba78a53fcef9f12975a90035a9fd4e23d",
+      "run": {
+        "id": "20261106T091046375Z-60403-fa81f371-b162-47a1-beff-e5195df4dd17",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
       "blindChoice": "b",
       "verdicts": {
-        "source": "fail",
-        "uniqueness": "fail",
+        "source": "pass",
+        "uniqueness": "pass",
         "grade": "pass",
         "language": "pass",
-        "explanation": "uncertain"
+        "explanation": "pass"
       },
-      "findings": [
-        "고정 b가 의도된 대비이나 고정 상태 역시 상황이다. a,c,d는 상황 풀이.",
-        "사전 대조: 상황 / 명사 / 뜻번호 1 / senseId 498771. 뜻풀이: 일이 되어 가는 과정이나 형편. 문맥·보기와 대조.",
-        "상황은 변화가 있는 경우뿐 아니라 고정된 형편도 포함하므로 b는 반대 개념 아님. 상황의 반의어를 억지로 만들지 말고 정의/용례 유형으로 바꿀 것.",
-        "해설과 정답키는 블라인드 입력에 없어 explanation=uncertain."
-      ]
+      "findings": []
     },
     {
       "questionId": "g4-argon-0269",
       "revision": 1,
       "contentHash": "0e694a13822752eb80d862fe6f4675a0b33ae866fc9990f7fc6a65e68409918e",
+      "run": {
+        "id": "20261106T043441904Z-5882-ff6a98c3-2235-4410-9fb8-989b589461cb",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
       "blindChoice": "c",
       "verdicts": {
         "source": "pass",
         "uniqueness": "pass",
         "grade": "pass",
         "language": "pass",
-        "explanation": "uncertain"
+        "explanation": "pass"
       },
       "findings": [
-        "자연/상황 c; a 비밀,b 초시계,d 잔돈은 환경 아님.",
-        "사전 대조: 환경 / 명사 / 뜻번호 1 / senseId 333877. 뜻풀이: 「1」 생물에게 직접·간접으로 영향을 주는 자연적 조건이나 사회적 상황. 문맥·보기와 대조.",
-        "학년 3~4의 일상·학교·자연 맥락 및 core/standard 적합. 보기의 문법 결합·문장 종결·표면 반복/길이 단서를 점검함.",
-        "해설과 정답키는 블라인드 입력에 없어 explanation=uncertain."
+        "[블라인드] 동식물의 삶에 영향을 주는 주변 자연이나 상황이라는 c만 맞으며, 학년과 문맥에 적절하다.",
+        "[공개 대조] 동식물에게 영향을 주는 자연이나 상황이라는 c만 근거와 문맥에 맞는다. 학년 수준과 문장 표현이 적절하고 오답 이유도 타당하다."
       ]
     },
     {
       "questionId": "g4-argon-0270",
       "revision": 1,
       "contentHash": "9bd59f6459894430bb7d41de8877ba2df9433aebb85254dadcf923633823e175",
+      "run": {
+        "id": "20261106T043441904Z-5882-ff6a98c3-2235-4410-9fb8-989b589461cb",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
       "blindChoice": "a",
       "verdicts": {
         "source": "pass",
         "uniqueness": "pass",
         "grade": "pass",
         "language": "pass",
-        "explanation": "uncertain"
+        "explanation": "pass"
       },
       "findings": [
-        "알맞은 시기 a; b 잘못,c 오해,d 책임은 기회 아님.",
-        "사전 대조: 기회 / 명사 / 뜻번호 1 / senseId 6652. 뜻풀이: 「1」 어떠한 일을 하는 데 적절한 시기나 경우. 문맥·보기와 대조.",
-        "학년 3~4의 일상·학교·자연 맥락 및 core/standard 적합. 보기의 문법 결합·문장 종결·표면 반복/길이 단서를 점검함.",
-        "해설과 정답키는 블라인드 입력에 없어 explanation=uncertain."
+        "[블라인드] 노래를 부르기에 좋은 때라는 뜻에서 a가 가장 가깝고, 다른 보기는 문맥상 기회의 뜻을 설명하지 못한다.",
+        "[공개 대조] 무대에서 노래할 수 있는 적절한 때라는 a만 기회의 뜻에 가깝다. 해설과 오답 이유가 근거 및 문맥에 맞는다."
       ]
     },
     {
       "questionId": "g4-argon-0271",
       "revision": 1,
       "contentHash": "d6d34d511aee8a76ddbd626d7d6c94c221de261104ec254a55ec0cf6c924b7cf",
+      "run": {
+        "id": "20261106T043441904Z-5882-ff6a98c3-2235-4410-9fb8-989b589461cb",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
       "blindChoice": "b",
       "verdicts": {
         "source": "pass",
         "uniqueness": "pass",
         "grade": "pass",
         "language": "pass",
-        "explanation": "uncertain"
+        "explanation": "pass"
       },
       "findings": [
-        "지난여름 기억 b; a 요리,c 수선,d 널기는 추억 물체 오용.",
-        "사전 대조: 추억 / 명사 / 뜻번호 1 / senseId 292622. 뜻풀이: 지나간 일을 돌이켜 생각함. 또는 그런 생각이나 일. 문맥·보기와 대조.",
-        "학년 3~4의 일상·학교·자연 맥락 및 core/standard 적합. 보기의 문법 결합·문장 종결·표면 반복/길이 단서를 점검함.",
-        "해설과 정답키는 블라인드 입력에 없어 explanation=uncertain."
+        "[블라인드] 사진을 보며 지난 일을 떠올리는 b가 일상적인 쓰임에 맞고, 어린이에게 친숙한 상황이다.",
+        "[공개 대조] 지난 일을 사진으로 떠올리는 b만 일상적인 쓰임에 맞는다. 근거와 해설이 일치하며 다른 보기의 물리적 행동도 적절히 배제한다."
       ]
     },
     {
       "questionId": "g4-argon-0272",
-      "revision": 1,
-      "contentHash": "6b90ffcaeeff2f0f91994f93482a73fae69ecf9530b89d9deba9fab36ddcb96a",
+      "revision": 2,
+      "contentHash": "3f3f8bada35c75033e5caffc04dc18074e5766c9a586fa52f2c6be7cb4e9f754",
+      "run": {
+        "id": "20261106T043441904Z-5882-ff6a98c3-2235-4410-9fb8-989b589461cb",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
       "blindChoice": "a",
       "verdicts": {
         "source": "pass",
         "uniqueness": "pass",
-        "grade": "fail",
+        "grade": "pass",
         "language": "pass",
-        "explanation": "uncertain"
+        "explanation": "pass"
       },
       "findings": [
-        "끌어올림 인상 a; b 산책,c 구경,d 절약은 인양 작업 아님.",
-        "사전 대조: 인상 / 명사 / 뜻번호 1 / senseId null. 뜻풀이: 「1」 물건 따위를 끌어 올림. 문맥·보기와 대조.",
-        "인상=물건 끌어올림은 드문 뜻으로 4학년 core/standard 부적합. 침몰선은 인양을 사용하거나 사전 활용 문항으로 변경.",
-        "해설과 정답키는 블라인드 입력에 없어 explanation=uncertain."
+        "[블라인드] 스스로 쓰레기를 줍는 일을 긍정적으로 평가하는 a만 맞으며, 문장에 대입해도 문법적으로 자연스럽다.",
+        "[공개 대조] a를 넣으면 의미와 문법이 모두 유지되며 제시된 사전 뜻과 정확히 맞는다. 자발적으로 쓰레기를 줍는 행동에 대한 해설과 오답 이유도 타당하다."
       ]
     },
     {
       "questionId": "g4-argon-0273",
       "revision": 1,
       "contentHash": "606bd9a004f4724e60b49e10a8fa23929caed48640313ac31020f8a3c7c8fb7f",
+      "run": {
+        "id": "20261106T091046375Z-60403-fa81f371-b162-47a1-beff-e5195df4dd17",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
       "blindChoice": "b",
       "verdicts": {
         "source": "pass",
         "uniqueness": "pass",
         "grade": "pass",
         "language": "pass",
-        "explanation": "uncertain"
+        "explanation": "pass"
       },
-      "findings": [
-        "헤아림 없음 b; a,c,d는 생각하는 태도.",
-        "사전 대조: 생각 / 명사 / 뜻번호 1 / senseId 516047. 뜻풀이: 「1」 사물을 헤아리고 판단하는 작용. ≒ 의려 , 지려 . 문맥·보기와 대조.",
-        "학년 3~4의 일상·학교·자연 맥락 및 core/standard 적합. 보기의 문법 결합·문장 종결·표면 반복/길이 단서를 점검함.",
-        "해설과 정답키는 블라인드 입력에 없어 explanation=uncertain."
-      ]
+      "findings": []
     },
     {
       "questionId": "g4-argon-0274",
       "revision": 1,
       "contentHash": "c42aba2b797aca2bbccefae57569798ec4c97f211f8da05d28bc34615eaf4d39",
+      "run": {
+        "id": "20261106T091046375Z-60403-fa81f371-b162-47a1-beff-e5195df4dd17",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
       "blindChoice": "c",
       "verdicts": {
         "source": "pass",
         "uniqueness": "pass",
         "grade": "pass",
         "language": "pass",
-        "explanation": "uncertain"
+        "explanation": "pass"
       },
-      "findings": [
-        "동작 모양 c; a 승려 동음,b 가격,d 거리 무관.",
-        "사전 대조: 태도 / 명사 / 뜻번호 1 / senseId 370315. 뜻풀이: 「1」 몸의 동작이나 몸을 가누는 모양새. 문맥·보기와 대조.",
-        "학년 3~4의 일상·학교·자연 맥락 및 core/standard 적합. 보기의 문법 결합·문장 종결·표면 반복/길이 단서를 점검함.",
-        "해설과 정답키는 블라인드 입력에 없어 explanation=uncertain."
-      ]
+      "findings": []
     },
     {
       "questionId": "g4-argon-0275",
       "revision": 1,
       "contentHash": "9c675cbac421a1c5bf7a6b557f9e151502f9312909ea7daa445502110b3e4379",
+      "run": {
+        "id": "20261106T043441904Z-5882-ff6a98c3-2235-4410-9fb8-989b589461cb",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
       "blindChoice": "c",
       "verdicts": {
         "source": "pass",
         "uniqueness": "pass",
         "grade": "pass",
         "language": "pass",
-        "explanation": "uncertain"
+        "explanation": "pass"
       },
       "findings": [
-        "반복 습관 c; a 칭찬,b 선물,d 소원은 버릇 아님.",
-        "사전 대조: 버릇 / 명사 / 뜻번호 1 / senseId 10460. 뜻풀이: 「1」 오랫동안 자꾸 반복하여 몸에 익어 버린 행동. ≒ 습벽 . 문맥·보기와 대조.",
-        "학년 3~4의 일상·학교·자연 맥락 및 core/standard 적합. 보기의 문법 결합·문장 종결·표면 반복/길이 단서를 점검함.",
-        "해설과 정답키는 블라인드 입력에 없어 explanation=uncertain."
+        "[블라인드] 긴장할 때 되풀이하는 행동이라는 문맥에서 ‘습관’만 뜻이 비슷하며, basic 수준에 적절하다.",
+        "[공개 대조] 긴장할 때 반복하는 행동이라는 문맥에서 c만 버릇과 뜻이 비슷하다. 근거와 해설이 맞고 basic 수준에도 적절하다."
       ]
     },
     {
       "questionId": "g4-argon-0276",
       "revision": 1,
       "contentHash": "bb30e0f8f6a844e96e080b4ca3b3beb43754eb7eb497a6b3440c9b8d9637234a",
+      "run": {
+        "id": "20261106T091046375Z-60403-fa81f371-b162-47a1-beff-e5195df4dd17",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
       "blindChoice": "a",
       "verdicts": {
         "source": "pass",
         "uniqueness": "pass",
         "grade": "pass",
         "language": "pass",
-        "explanation": "uncertain"
+        "explanation": "pass"
       },
-      "findings": [
-        "양보하는 배려 a; b 깎기,c 따름,d 쓸기는 마음을 물체로 오용.",
-        "사전 대조: 배려심 / 명사 / 뜻번호 1 / senseId 1396973. 뜻풀이: 도와주거나 보살펴 주려는 마음. 문맥·보기와 대조.",
-        "학년 3~4의 일상·학교·자연 맥락 및 core/standard 적합. 보기의 문법 결합·문장 종결·표면 반복/길이 단서를 점검함.",
-        "해설과 정답키는 블라인드 입력에 없어 explanation=uncertain."
-      ]
+      "findings": []
     },
     {
       "questionId": "g4-argon-0277",
       "revision": 1,
       "contentHash": "ba8f5d452c566f22c508c93af0d29ec801af906b047b5543110f592be604ef7c",
+      "run": {
+        "id": "20261106T043441904Z-5882-ff6a98c3-2235-4410-9fb8-989b589461cb",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
       "blindChoice": "b",
       "verdicts": {
         "source": "pass",
         "uniqueness": "pass",
         "grade": "pass",
         "language": "pass",
-        "explanation": "uncertain"
+        "explanation": "pass"
       },
       "findings": [
-        "알고 싶은 호기 b; a 협력,c 참음,d 배려는 탐구 욕구 아님.",
-        "사전 대조: 호기심 / 명사 / 뜻번호 1 / senseId 321330. 뜻풀이: 새롭고 신기한 것을 좋아하거나 모르는 것을 알고 싶어 하는 마음. 문맥·보기와 대조.",
-        "학년 3~4의 일상·학교·자연 맥락 및 core/standard 적합. 보기의 문법 결합·문장 종결·표면 반복/길이 단서를 점검함.",
-        "해설과 정답키는 블라인드 입력에 없어 explanation=uncertain."
+        "[블라인드] 새롭거나 모르는 것을 알고 싶어 하는 마음은 ‘호기심’이며, 다른 마음을 나타내는 보기들과도 뜻이 분명하게 구별된다.",
+        "[공개 대조] 새롭고 신기하거나 모르는 것을 알고 싶어 하는 마음은 b뿐이다. 다른 마음을 나타내는 보기들과 의미가 구별되며 해설도 근거와 일치한다."
       ]
     },
     {
       "questionId": "g4-argon-0278",
       "revision": 1,
       "contentHash": "b7774bfb6d936c048e934b1d0c378bb2e9eb3bd4f809b25004ec18ba0b222feb",
+      "run": {
+        "id": "20261106T091046375Z-60403-fa81f371-b162-47a1-beff-e5195df4dd17",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
       "blindChoice": "b",
       "verdicts": {
         "source": "pass",
         "uniqueness": "pass",
         "grade": "pass",
         "language": "pass",
-        "explanation": "uncertain"
+        "explanation": "pass"
+      },
+      "findings": []
+    },
+    {
+      "questionId": "g4-argon-0279",
+      "revision": 2,
+      "contentHash": "791f34f0049df0eaa49440c76c33da6d6b7bcdf2309197f02eab5b3c239525a0",
+      "run": {
+        "id": "20261106T043441904Z-5882-ff6a98c3-2235-4410-9fb8-989b589461cb",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "a",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
       },
       "findings": [
-        "개선 b; a 발전 전기 동음,c 퇴보,d 정지는 반대.",
-        "사전 대조: 발전하다 / 동사 / 뜻번호 1 / senseId 514621. 뜻풀이: 「1」 더 낫고 좋은 상태나 더 높은 단계로 나아가다. 문맥·보기와 대조.",
-        "학년 3~4의 일상·학교·자연 맥락 및 advanced/polysemy 적합. 보기의 문법 결합·문장 종결·표면 반복/길이 단서를 점검함.",
-        "해설과 정답키는 블라인드 입력에 없어 explanation=uncertain."
+        "[블라인드] 낯선 사람 앞에서 나서기 부끄러운 상태를 설명하는 a만 맞는다. ‘수줍다’는 형용사이므로 이 예문의 서술형으로 사용할 수 있다.",
+        "[공개 대조] 낯선 사람 앞에서 말이나 행동을 하기 부끄러운 상태라는 a만 맞으며 근거와 해설도 일치한다. ‘수줍다’는 형용사이므로 현재 문장의 서술형으로 쓸 수 있다."
       ]
     },
     {
       "questionId": "g4-argon-0279",
-      "revision": 1,
-      "contentHash": "d178b0ebf009786f15900e101feca5272f28d21dc60e686474fd66495910fe32",
+      "revision": 3,
+      "contentHash": "e92a40fe3999d8b15a4ac7acffaa3bbfda423a971544abaebbe306933259b004",
+      "run": {
+        "id": "20261106T104143792Z-62018-ce451b02-719f-4873-9e72-659baa66f7b3",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
       "blindChoice": "a",
       "verdicts": {
         "source": "pass",
         "uniqueness": "pass",
-        "grade": "uncertain",
+        "grade": "pass",
         "language": "pass",
-        "explanation": "uncertain"
+        "explanation": "pass"
       },
-      "findings": [
-        "극 주위 정경 a; b 작가명,c 돈,d 지우개는 배경 아님.",
-        "사전 대조: 배경 / 명사 / 뜻번호 2 / senseId 42082. 뜻풀이: 「2」 사건이나 환경, 인물 따위를 둘러싼 주위의 정경. 문맥·보기와 대조.",
-        "다른 배경 뜻 대조 없이 상식적 극 장소만 질문. advanced/polysemy 수준을 뒷받침하는 오답 또는 core 조정 필요.",
-        "해설과 정답키는 블라인드 입력에 없어 explanation=uncertain."
-      ]
+      "findings": []
     },
     {
       "questionId": "g4-argon-0280",
-      "revision": 1,
-      "contentHash": "fcbebf669b39fc2ed267871041831b4816058284687021efcc42c814e47f96ec",
+      "revision": 2,
+      "contentHash": "e82fbdf91c3b653c36b4f7b933c46d2f2a8ee39b276066a15cbe62c03a3c540c",
+      "run": {
+        "id": "20261106T091046375Z-60403-fa81f371-b162-47a1-beff-e5195df4dd17",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
       "blindChoice": "a",
       "verdicts": {
         "source": "pass",
         "uniqueness": "pass",
-        "grade": "uncertain",
+        "grade": "pass",
         "language": "pass",
-        "explanation": "uncertain"
+        "explanation": "pass"
       },
-      "findings": [
-        "역할 사람 a; b 깔개,c 기계,d 안내지는 인물 아님.",
-        "사전 대조: 인물 / 명사 / 뜻번호 2 / senseId 51160. 뜻풀이: 「2」 일정한 상황에서 어떤 역할을 하는 사람. 문맥·보기와 대조.",
-        "배역 사람을 물건과만 구별하여 advanced/polysemy 난도를 뒷받침하지 못함. 인물의 다른 의미를 보기로 대조.",
-        "해설과 정답키는 블라인드 입력에 없어 explanation=uncertain."
-      ]
+      "findings": []
     },
     {
       "questionId": "g4-argon-0281",
       "revision": 1,
       "contentHash": "d0edf713f270e8bd2077b41c926bf2a8a63f27305157b14bd5b902665662929f",
+      "run": {
+        "id": "20261106T091046375Z-60403-fa81f371-b162-47a1-beff-e5195df4dd17",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
       "blindChoice": "c",
       "verdicts": {
         "source": "pass",
         "uniqueness": "pass",
         "grade": "pass",
         "language": "pass",
-        "explanation": "uncertain"
+        "explanation": "fail"
       },
       "findings": [
-        "뜻밖 일 c; a 수학 사건 다른 뜻,b 습관,d 가벼운 인사는 주목 사건 아님.",
-        "사전 대조: 사건 / 명사 / 뜻번호 1 / senseId 12589. 뜻풀이: 「1」 사회적으로 문제를 일으키거나 주목을 받을 만한 뜻밖의 일. 문맥·보기와 대조.",
-        "학년 3~4의 일상·학교·자연 맥락 및 advanced/polysemy 적합. 보기의 문법 결합·문장 종결·표면 반복/길이 단서를 점검함.",
-        "해설과 정답키는 블라인드 입력에 없어 explanation=uncertain."
+        "[공개 대조] a의 ‘주사위를 던져 나오는 눈의 수’ 자체는 확률에서 말하는 ‘사건’의 뜻풀이가 아닙니다. 오답 이유를 ‘주사위의 눈 수는 이 문장에서 말하는 주목받을 만한 뜻밖의 일이 아니에요’로 고칩니다."
       ]
+    },
+    {
+      "questionId": "g4-argon-0281",
+      "revision": 2,
+      "contentHash": "e76e82b6f3b458a7c32c0782b3456a9b9ab252a1aa9cab7f8083ee4ab0dd5897",
+      "run": {
+        "id": "20261106T104143792Z-62018-ce451b02-719f-4873-9e72-659baa66f7b3",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "c",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": []
     },
     {
       "questionId": "g4-argon-0282",
       "revision": 1,
       "contentHash": "7f91515e436a81a067881fd3d2a54510d4fffd22dc5db1151d0dfff4a65d9b7f",
+      "run": {
+        "id": "20261106T091046375Z-60403-fa81f371-b162-47a1-beff-e5195df4dd17",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
       "blindChoice": "c",
       "verdicts": {
         "source": "pass",
         "uniqueness": "pass",
         "grade": "pass",
         "language": "pass",
-        "explanation": "uncertain"
+        "explanation": "pass"
       },
-      "findings": [
-        "골자 c; a 가지 다른 뜻,b 포장끈,d 신발끈은 중심내용 아님.",
-        "사전 대조: 줄거리 / 명사 / 뜻번호 2 / senseId 54459. 뜻풀이: 「2」 사물의 군더더기를 다 떼어 버린 나머지의 골자. 문맥·보기와 대조.",
-        "학년 3~4의 일상·학교·자연 맥락 및 advanced/polysemy 적합. 보기의 문법 결합·문장 종결·표면 반복/길이 단서를 점검함.",
-        "해설과 정답키는 블라인드 입력에 없어 explanation=uncertain."
-      ]
+      "findings": []
     },
     {
       "questionId": "g4-argon-0283",
       "revision": 1,
       "contentHash": "100582c1464336044b93223db7f22fd539f3bf22035cb179d80c175f85ac0f83",
+      "run": {
+        "id": "20261106T091046375Z-60403-fa81f371-b162-47a1-beff-e5195df4dd17",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
       "blindChoice": "d",
       "verdicts": {
         "source": "pass",
         "uniqueness": "pass",
         "grade": "pass",
         "language": "pass",
-        "explanation": "uncertain"
+        "explanation": "pass"
       },
-      "findings": [
-        "작가 사상 d; a 처지 동음,b 종이,c 대출횟수는 주제 아님.",
-        "사전 대조: 주제 / 명사 / 뜻번호 2 / senseId 53981. 뜻풀이: 「2」 예술 작품에서 지은이가 나타내고자 하는 기본적인 사상. 문맥·보기와 대조.",
-        "학년 3~4의 일상·학교·자연 맥락 및 advanced/polysemy 적합. 보기의 문법 결합·문장 종결·표면 반복/길이 단서를 점검함.",
-        "해설과 정답키는 블라인드 입력에 없어 explanation=uncertain."
-      ]
+      "findings": []
     },
     {
       "questionId": "g4-argon-0284",
       "revision": 1,
       "contentHash": "272b701b47b064419f3b4c9e8d9c2112eaa27ccc89b7ff638c8d518b6f957fd4",
+      "run": {
+        "id": "20261106T091046375Z-60403-fa81f371-b162-47a1-beff-e5195df4dd17",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
       "blindChoice": "c",
       "verdicts": {
         "source": "pass",
         "uniqueness": "pass",
         "grade": "pass",
         "language": "pass",
-        "explanation": "uncertain"
+        "explanation": "pass"
       },
-      "findings": [
-        "웃음 멈춤 c; a 수확,b 모금,d 양육은 다른 뜻.",
-        "사전 대조: 거두다 / 동사 / 뜻번호 2 / senseId 449114. 뜻풀이: 「2」 하던 일을 멈추거나 끝내다. 문맥·보기와 대조.",
-        "학년 3~4의 일상·학교·자연 맥락 및 advanced/polysemy 적합. 보기의 문법 결합·문장 종결·표면 반복/길이 단서를 점검함.",
-        "해설과 정답키는 블라인드 입력에 없어 explanation=uncertain."
-      ]
+      "findings": []
     },
     {
       "questionId": "g4-argon-0285",
       "revision": 1,
       "contentHash": "4fb2d5079c00c66509bee38dcd9fb5dd6293a4d7a0dac31138b6c482649f130e",
+      "run": {
+        "id": "20261106T091046375Z-60403-fa81f371-b162-47a1-beff-e5195df4dd17",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
       "blindChoice": "d",
       "verdicts": {
         "source": "pass",
         "uniqueness": "pass",
         "grade": "pass",
         "language": "pass",
-        "explanation": "uncertain"
+        "explanation": "pass"
       },
-      "findings": [
-        "잠금 d; a 시간,b 질병,c 매달림은 다른 뜻.",
-        "사전 대조: 걸리다 / 동사 / 뜻번호 2 / senseId 370764. 뜻풀이: 「2」 자물쇠, 문고리가 채워지거나 빗장이 질리다. ‘ 걸다 ’의 피동사. 문맥·보기와 대조.",
-        "학년 3~4의 일상·학교·자연 맥락 및 advanced/polysemy 적합. 보기의 문법 결합·문장 종결·표면 반복/길이 단서를 점검함.",
-        "해설과 정답키는 블라인드 입력에 없어 explanation=uncertain."
-      ]
+      "findings": []
     },
     {
       "questionId": "g4-argon-0286",
       "revision": 1,
       "contentHash": "e93157fda6125e6bb68a9502c5f86ee8cdca177ab9606f6c29fae7eb8cda3419",
+      "run": {
+        "id": "20261106T091046375Z-60403-fa81f371-b162-47a1-beff-e5195df4dd17",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "d",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "fail",
+        "explanation": "pass"
+      },
+      "findings": [
+        "[블라인드] ‘사과 알맹이가 모두 고르다’는 사과의 크기를 나타내는 표현으로 어색하다. ‘사과의 크기가 모두 고르다’로 고친다.",
+        "[공개 대조] ‘사과 알맹이가 모두 고르다’는 상자에 담긴 사과의 크기를 나타내기에 어색합니다. ‘사과의 크기가 모두 고르다’로 고칩니다."
+      ]
+    },
+    {
+      "questionId": "g4-argon-0286",
+      "revision": 2,
+      "contentHash": "8f21875c632b7fce54a8f2c3f2a21d8c7df8796e0fc7c0bf096af0dc1b6687da",
+      "run": {
+        "id": "20261106T104143792Z-62018-ce451b02-719f-4873-9e72-659baa66f7b3",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
       "blindChoice": "d",
       "verdicts": {
         "source": "pass",
         "uniqueness": "pass",
         "grade": "pass",
         "language": "pass",
-        "explanation": "uncertain"
+        "explanation": "pass"
+      },
+      "findings": []
+    },
+    {
+      "questionId": "g4-argon-0287",
+      "revision": 2,
+      "contentHash": "8c37bd7bb9cf6298f96b39dcf8dd6edc2f5090960c59f8f2448f5298ee76d56e",
+      "run": {
+        "id": "20261106T043441904Z-5882-ff6a98c3-2235-4410-9fb8-989b589461cb",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "c",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "uncertain",
+        "language": "pass",
+        "explanation": "pass"
       },
       "findings": [
-        "균일 d; a 선택,b 평탄화,c 목 가다듬기는 다른 고르다.",
-        "사전 대조: 고르다 / 형용사 / 뜻번호 1 / senseId 367855. 뜻풀이: 「1」 여럿이 다 높낮이, 크기, 양 따위의 차이가 없이 한결같다. 문맥·보기와 대조.",
-        "학년 3~4의 일상·학교·자연 맥락 및 advanced/polysemy 적합. 보기의 문법 결합·문장 종결·표면 반복/길이 단서를 점검함.",
-        "해설과 정답키는 블라인드 입력에 없어 explanation=uncertain."
+        "[블라인드] 오래 같은 자세로 앉아 어깨가 뻣뻣해졌다는 c만 맞는다. 물질·결심·몸에 쓰인 ‘굳다’의 여러 뜻을 구별하는 구성이므로 variantTag는 standard보다 polysemy가 적절하다.",
+        "[공개 대조] 어깨의 근육이나 뼈마디가 뻣뻣해졌다는 c만 근거와 문맥에 맞는다. 물질·결심·몸에 쓰인 여러 뜻을 직접 구별하므로 variantTag를 standard에서 polysemy로 고친다."
       ]
     },
     {
       "questionId": "g4-argon-0287",
-      "revision": 1,
-      "contentHash": "7e865edf56c8d0d5ca1cf5cba383cddc77fe828817d9d7b6150900cdcfa66e02",
+      "revision": 3,
+      "contentHash": "152e178e16146d92a9869a680e6ee2680d9604fcdfbe650b9174ec3639dd2965",
+      "run": {
+        "id": "20261106T104143792Z-62018-ce451b02-719f-4873-9e72-659baa66f7b3",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
       "blindChoice": "c",
       "verdicts": {
         "source": "pass",
         "uniqueness": "pass",
         "grade": "pass",
         "language": "pass",
-        "explanation": "uncertain"
+        "explanation": "pass"
       },
-      "findings": [
-        "근육 뻣뻣 c; a 물질,b 결심은 다른 뜻,d 유연은 반대.",
-        "사전 대조: 굳다 / 동사 / 뜻번호 2 / senseId 61133. 뜻풀이: 「2」 근육이나 뼈마디가 뻣뻣하게 되다. 문맥·보기와 대조.",
-        "학년 3~4의 일상·학교·자연 맥락 및 advanced/polysemy 적합. 보기의 문법 결합·문장 종결·표면 반복/길이 단서를 점검함.",
-        "해설과 정답키는 블라인드 입력에 없어 explanation=uncertain."
-      ]
+      "findings": []
     },
     {
       "questionId": "g4-argon-0288",
-      "revision": 1,
-      "contentHash": "32b932e74fa87834e4ccb2bc321f008fc743177aebdca974fb2cabddb3150f17",
+      "revision": 2,
+      "contentHash": "96b5cb8afbf0bc5307979255e3442163a4c985663851d7b25e2cfb93deef67d7",
+      "run": {
+        "id": "20261106T091046375Z-60403-fa81f371-b162-47a1-beff-e5195df4dd17",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
       "blindChoice": "d",
       "verdicts": {
         "source": "pass",
         "uniqueness": "pass",
         "grade": "pass",
         "language": "pass",
-        "explanation": "uncertain"
+        "explanation": "pass"
       },
-      "findings": [
-        "아이 돌봄 d; a 머리,b 식물,c 능력은 다른 뜻.",
-        "사전 대조: 기르다 / 동사 / 뜻번호 2 / senseId 34738. 뜻풀이: 「2」 아이를 보살펴 키우다. 문맥·보기와 대조.",
-        "학년 3~4의 일상·학교·자연 맥락 및 advanced/polysemy 적합. 보기의 문법 결합·문장 종결·표면 반복/길이 단서를 점검함.",
-        "해설과 정답키는 블라인드 입력에 없어 explanation=uncertain."
-      ]
+      "findings": []
     },
     {
       "questionId": "g4-argon-0289",
-      "revision": 1,
-      "contentHash": "d6de32d92ce92ec6c95bb37bf203e69749f6859007e14df12aad27f24bb9bd06",
+      "revision": 2,
+      "contentHash": "12b936349dca541e09fa36464737fb65a0e1f482f5c52f1f34c8d5b63e934f6c",
+      "run": {
+        "id": "20261106T091046375Z-60403-fa81f371-b162-47a1-beff-e5195df4dd17",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
       "blindChoice": "c",
       "verdicts": {
         "source": "pass",
         "uniqueness": "pass",
         "grade": "pass",
         "language": "pass",
-        "explanation": "uncertain"
+        "explanation": "pass"
       },
-      "findings": [
-        "풀 자름 c; a 가격,b 표피,d 체면은 다른 뜻.",
-        "사전 대조: 깎다 / 동사 / 뜻번호 2 / senseId 61542. 뜻풀이: 「2」 풀이나 털 따위를 잘라 내다. 문맥·보기와 대조.",
-        "학년 3~4의 일상·학교·자연 맥락 및 advanced/polysemy 적합. 보기의 문법 결합·문장 종결·표면 반복/길이 단서를 점검함.",
-        "해설과 정답키는 블라인드 입력에 없어 explanation=uncertain."
-      ]
+      "findings": []
     },
     {
       "questionId": "g4-argon-0290",
       "revision": 1,
       "contentHash": "d11a3babed999129743ded4dc1fe940bb60860e0401b72cb3610517f19cb0682",
+      "run": {
+        "id": "20261106T091046375Z-60403-fa81f371-b162-47a1-beff-e5195df4dd17",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
       "blindChoice": "c",
       "verdicts": {
         "source": "pass",
         "uniqueness": "pass",
         "grade": "pass",
         "language": "pass",
-        "explanation": "uncertain"
+        "explanation": "pass"
       },
-      "findings": [
-        "발표 경청 c; a 오리기,b 끈 묶기,d 밥그릇은 말에 주의 아님.",
-        "사전 대조: 귀를 기울이다 / 관용구 / 뜻번호 1 / senseId 1382741. 뜻풀이: 남의 이야기나 의견에 관심을 가지고 주의를 모으다. ≒ 귀를 재다 . 문맥·보기와 대조.",
-        "학년 3~4의 일상·학교·자연 맥락 및 challenge/idiom_proverb 적합. 보기의 문법 결합·문장 종결·표면 반복/길이 단서를 점검함.",
-        "해설과 정답키는 블라인드 입력에 없어 explanation=uncertain."
-      ]
+      "findings": []
     },
     {
       "questionId": "g4-argon-0291",
       "revision": 1,
       "contentHash": "b4bcf05af8306218ebceb4d19a2132e606c229660782b0daaee759ae742cdd45",
+      "run": {
+        "id": "20261106T091046375Z-60403-fa81f371-b162-47a1-beff-e5195df4dd17",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
       "blindChoice": "b",
       "verdicts": {
         "source": "pass",
         "uniqueness": "pass",
         "grade": "pass",
         "language": "pass",
-        "explanation": "uncertain"
+        "explanation": "pass"
       },
-      "findings": [
-        "잠깐 수면 b; a 풀칠,c 물,d 운동화는 잠과 무관.",
-        "사전 대조: 눈을 붙이다 / 관용구 / 뜻번호 1 / senseId 1383846. 뜻풀이: 잠을 자다. 문맥·보기와 대조.",
-        "학년 3~4의 일상·학교·자연 맥락 및 challenge/idiom_proverb 적합. 보기의 문법 결합·문장 종결·표면 반복/길이 단서를 점검함.",
-        "해설과 정답키는 블라인드 입력에 없어 explanation=uncertain."
-      ]
+      "findings": []
     },
     {
       "questionId": "g4-argon-0292",
       "revision": 1,
       "contentHash": "5948141118001e1630601dbdd9a03b41b4e99e0852942ef3ddeaa4f90ad3a951",
+      "run": {
+        "id": "20261106T043441904Z-5882-ff6a98c3-2235-4410-9fb8-989b589461cb",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
       "blindChoice": "b",
       "verdicts": {
         "source": "pass",
         "uniqueness": "pass",
         "grade": "pass",
         "language": "pass",
-        "explanation": "uncertain"
+        "explanation": "pass"
       },
       "findings": [
-        "반복 자랑 b; a 독서,c 걷기,d 꿈은 말 반복 아님.",
-        "사전 대조: 입에 침이 마르다 / 관용구 / 뜻번호 1 / senseId 1389042. 뜻풀이: 다른 사람이나 물건에 대하여 거듭해서 말하다. = 침이 마르다 . 문맥·보기와 대조.",
-        "학년 3~4의 일상·학교·자연 맥락 및 challenge/idiom_proverb 적합. 보기의 문법 결합·문장 종결·표면 반복/길이 단서를 점검함.",
-        "해설과 정답키는 블라인드 입력에 없어 explanation=uncertain."
+        "[블라인드] 손주 자랑을 거듭한다는 b만 관용적 의미에 맞으며, 말하지 않는 다른 상황들과 명확하게 구별된다.",
+        "[공개 대조] 손주에 대해 거듭 자랑하는 b만 제시된 관용적 의미에 맞는다. 해설이 칭찬에만 뜻을 한정하지 않고 반복해서 말하는 의미도 포함하므로 근거와 어긋나지 않는다."
       ]
     },
     {
       "questionId": "g4-argon-0293",
-      "revision": 1,
-      "contentHash": "123b6d13013c1297bceb3d092bc7cf11632be1d9f80e71cd781511bdd33da5f0",
+      "revision": 2,
+      "contentHash": "ae4e90f78483a6744ac86e78696dbd4a33c091618ebd3ba2f18240fa26d757e5",
+      "run": {
+        "id": "20261106T043441904Z-5882-ff6a98c3-2235-4410-9fb8-989b589461cb",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
       "blindChoice": "d",
       "verdicts": {
         "source": "pass",
-        "uniqueness": "uncertain",
-        "grade": "pass",
+        "uniqueness": "pass",
+        "grade": "uncertain",
         "language": "pass",
-        "explanation": "uncertain"
+        "explanation": "pass"
       },
       "findings": [
-        "반복 접기 숙련 d; a 처음 퍼즐도 빠르게 익혔다는 상황 가능,b 미경험은 모순,c 색깔은 숙련 대상 아님.",
-        "사전 대조: 손에 익다 / 관용구 / 뜻번호 1 / senseId 1387525. 뜻풀이: 일이 손에 익숙해지다. ≒ 손에 오르다 . 문맥·보기와 대조.",
-        "a 처음 본 퍼즐이 ‘벌써’ 손에 익었다는 빠른 습득 상황도 가능. ‘아직 한 번도 해 보지 않은 퍼즐’처럼 경험 없음 명시.",
-        "해설과 정답키는 블라인드 입력에 없어 explanation=uncertain."
+        "[블라인드] 반복하여 종이접기가 익숙해졌다는 d만 맞는다. 다른 보기에는 경험이 없거나 서툴다는 직접적인 모순이 있어 challenge보다는 core나 advanced가 적절하다.",
+        "[공개 대조] 반복해서 종이접기가 익숙해졌다는 d만 근거에 맞는다. 오답에 경험 없음이나 서툶이라는 직접적인 모순이 제시되어 challenge보다 쉬우므로 core나 advanced로 조정한다."
       ]
+    },
+    {
+      "questionId": "g4-argon-0293",
+      "revision": 3,
+      "contentHash": "562db4fac17558b7c4c1c653b32df944b5fa348b9e9fb3a4194a1fc674ecd2d9",
+      "run": {
+        "id": "20261106T104143792Z-62018-ce451b02-719f-4873-9e72-659baa66f7b3",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "d",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": []
     },
     {
       "questionId": "g4-argon-0294",
       "revision": 1,
       "contentHash": "0e1af92dc1b50298b061a0b27a72ff60fb0e107e48b0671eab6a6efb615b7aa1",
+      "run": {
+        "id": "20261106T043441904Z-5882-ff6a98c3-2235-4410-9fb8-989b589461cb",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "b",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "uncertain",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "fail"
+      },
+      "findings": [
+        "[블라인드] 책임을 느낀다는 관용적 의미에서는 b가 맞지만, 질문이 이를 명시하지 않아 다른 보기를 실제 어깨의 무거운 느낌으로 읽을 여지가 있다. ‘책임이 크다고 느낀다는 관용적 뜻으로 쓰인 문장은?’처럼 판단할 의미를 한정한다.",
+        "[공개 대조] b는 관용적 의미에 맞지만 d 등은 실제 어깨의 무거운 느낌으로도 읽힐 수 있어 ‘관용적인 뜻으로 쓰인 문장은?’으로 범위를 한정해야 한다. 오답 이유도 ‘숙제를 마치거나 쉬는 상황만으로는 책임에 대한 부담이 드러나지 않아요’처럼 고쳐, 해당 행동이 반드시 홀가분함을 뜻한다고 단정하지 않는다."
+      ]
+    },
+    {
+      "questionId": "g4-argon-0294",
+      "revision": 2,
+      "contentHash": "c1f28fa7c34c941bf94ee240a4181aa6e336198671271443519452fb0c9d5fb2",
+      "run": {
+        "id": "20261106T104143792Z-62018-ce451b02-719f-4873-9e72-659baa66f7b3",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
       "blindChoice": "b",
       "verdicts": {
         "source": "pass",
         "uniqueness": "pass",
         "grade": "pass",
         "language": "pass",
-        "explanation": "uncertain"
+        "explanation": "pass"
       },
-      "findings": [
-        "대표 부담 b; a 숙제 후 놀이,c 빈 통,d 걱정없는 잠은 책임 부담 근거 없음.",
-        "사전 대조: 어깨가 무겁다 / 관용구 / 뜻번호 1 / senseId 1388035. 뜻풀이: 무거운 책임을 져서 마음에 부담이 크다. 문맥·보기와 대조.",
-        "학년 3~4의 일상·학교·자연 맥락 및 challenge/idiom_proverb 적합. 보기의 문법 결합·문장 종결·표면 반복/길이 단서를 점검함.",
-        "해설과 정답키는 블라인드 입력에 없어 explanation=uncertain."
-      ]
+      "findings": []
+    },
+    {
+      "questionId": "g4-argon-0294",
+      "revision": 3,
+      "contentHash": "d53d1fe61cea82e49a8988bde38398fe3ccec2951d583a3eae41832f84165e13",
+      "run": {
+        "id": "20261106T105936173Z-62018-335b4fac-22b4-44de-a105-10083e53ea6b",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "b",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": []
     },
     {
       "questionId": "g4-argon-0295",
       "revision": 1,
       "contentHash": "869cec635ead09a235a1da4796ed0e93785ddbeafb0ecae73f365dc557e1b220",
+      "run": {
+        "id": "20261106T043441904Z-5882-ff6a98c3-2235-4410-9fb8-989b589461cb",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "multiple",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "fail",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "fail"
+      },
+      "findings": [
+        "[블라인드] a뿐 아니라 c도 멀리 떨어진 사람들이 함께 의논했다는 관용적 의미로 성립할 수 있다. c를 ‘친구의 의견은 듣지 않고 혼자 결정하며 머리를 맞대었다’처럼 함께 의논한다는 뜻과 어긋나게 고친다.",
+        "[공개 대조] a뿐 아니라 c도 떨어져 서서 서로 마주 보고 의논하는 뜻으로 성립할 수 있으므로 1단계의 복수 정답 판단을 유지한다. c를 ‘서로의 의견을 듣지 않고 각자 결정하며 머리를 맞대었다’로 바꾸고, 거리 자체가 아니라 함께 의논하지 않았다는 점을 오답 이유로 설명한다."
+      ]
+    },
+    {
+      "questionId": "g4-argon-0295",
+      "revision": 2,
+      "contentHash": "76f96b9103157411fa815113586f78f5990d8569b97cb7c315a75df30d643471",
+      "run": {
+        "id": "20261106T104143792Z-62018-ce451b02-719f-4873-9e72-659baa66f7b3",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
       "blindChoice": "a",
       "verdicts": {
         "source": "pass",
         "uniqueness": "pass",
         "grade": "pass",
         "language": "pass",
-        "explanation": "uncertain"
+        "explanation": "pass"
       },
-      "findings": [
-        "협의 a; b 혼자,c 떨어짐,d 거울은 함께 의논 아님.",
-        "사전 대조: 머리를 맞대다 / 관용구 / 뜻번호 1 / senseId 1384979. 뜻풀이: 어떤 일을 의논하거나 결정하기 위하여 서로 마주 대하다. 문맥·보기와 대조.",
-        "학년 3~4의 일상·학교·자연 맥락 및 challenge/idiom_proverb 적합. 보기의 문법 결합·문장 종결·표면 반복/길이 단서를 점검함.",
-        "해설과 정답키는 블라인드 입력에 없어 explanation=uncertain."
-      ]
+      "findings": []
     },
     {
       "questionId": "g4-argon-0296",
       "revision": 1,
       "contentHash": "4258e20a0618bdb666be35ab8933f26238d32b848e47f601c8b81e43e61015aa",
+      "run": {
+        "id": "20261106T043441904Z-5882-ff6a98c3-2235-4410-9fb8-989b589461cb",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
       "blindChoice": "b",
       "verdicts": {
         "source": "pass",
         "uniqueness": "pass",
         "grade": "pass",
         "language": "pass",
-        "explanation": "uncertain"
+        "explanation": "pass"
       },
       "findings": [
-        "겸손 b; a 으스댐,c 거만,d 우김은 반대.",
-        "사전 대조: 허리를 굽히다 / 관용구 / 뜻번호 1 / senseId 1381907. 뜻풀이: 「1」 남에게 겸손한 태도를 취하다. 문맥·보기와 대조.",
-        "학년 3~4의 일상·학교·자연 맥락 및 challenge/idiom_proverb 적합. 보기의 문법 결합·문장 종결·표면 반복/길이 단서를 점검함.",
-        "해설과 정답키는 블라인드 입력에 없어 explanation=uncertain."
+        "[블라인드] 높은 지위에서도 남에게 겸손한 태도를 보인다는 b가 관용적 의미에 맞으며, 속뜻을 묻는다고 명시하여 실제 동작과 구별했다.",
+        "[공개 대조] 높은 지위에서도 겸손한 태도를 취했다는 b만 근거에 맞는다. 속뜻을 묻는다고 명시하여 실제 허리를 굽히는 동작과 구별되며 오답 이유도 타당하다."
       ]
+    },
+    {
+      "questionId": "g4-argon-0296",
+      "revision": 2,
+      "contentHash": "73868abbc39023e07176d0d50826b8165366eb3df1e91e9512d22edf72859ea0",
+      "run": {
+        "id": "20261106T104143792Z-62018-ce451b02-719f-4873-9e72-659baa66f7b3",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "b",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": []
     },
     {
       "questionId": "g4-argon-0297",
       "revision": 1,
       "contentHash": "13aff4154ed0dbafa45ca6eeef1b3ddfbdbe4a87804cc78f1b84b15ec1cdd08d",
+      "run": {
+        "id": "20261106T043441904Z-5882-ff6a98c3-2235-4410-9fb8-989b589461cb",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
       "blindChoice": "a",
       "verdicts": {
         "source": "pass",
         "uniqueness": "pass",
         "grade": "pass",
         "language": "pass",
-        "explanation": "uncertain"
+        "explanation": "pass"
       },
       "findings": [
-        "심부름 부탁 칭찬 a; b,c 꾸짖음,d 침묵/잠은 칭찬 아님.",
-        "사전 대조: 비행기를 태우다 / 관용구 / 뜻번호 1 / senseId 1386593. 뜻풀이: 「1」 남을 지나치게 칭찬하거나 높이 추어올려 주다. 문맥·보기와 대조.",
-        "학년 3~4의 일상·학교·자연 맥락 및 challenge/idiom_proverb 적합. 보기의 문법 결합·문장 종결·표면 반복/길이 단서를 점검함.",
-        "해설과 정답키는 블라인드 입력에 없어 explanation=uncertain."
+        "[블라인드] 부탁하면서 상대를 한껏 추켜세운다는 a만 관용적 의미로 자연스럽고, 꾸짖거나 말하지 않는 상황과 구별된다.",
+        "[공개 대조] 부탁하면서 형을 지나치게 추켜세웠다는 a만 관용적 의미로 성립한다. 꾸짖거나 말없이 자는 다른 상황에 대한 오답 이유도 근거와 일치한다."
       ]
+    },
+    {
+      "questionId": "g4-argon-0297",
+      "revision": 2,
+      "contentHash": "7181a34898e26b8b5645b6e0a555cec7cfeb7df817c1a202766506cdca8cd69c",
+      "run": {
+        "id": "20261106T104143792Z-62018-ce451b02-719f-4873-9e72-659baa66f7b3",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "a",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": []
     },
     {
       "questionId": "g4-argon-0298",
       "revision": 1,
       "contentHash": "34cd60ecf70b24a00050425de5c223f02febfed5d17191629ff68932e69233a4",
+      "run": {
+        "id": "20261106T043441904Z-5882-ff6a98c3-2235-4410-9fb8-989b589461cb",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "d",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "fail",
+        "explanation": "pass"
+      },
+      "findings": [
+        "[블라인드] 큰소리치다가 패하여 기가 꺾였다는 d만 맞다. a의 ‘일 등’은 ‘일등’으로 붙여 쓰고, 전체 표현도 ‘대회에서 일등을 해 상장을 받고’로 다듬는다.",
+        "[공개 대조] 큰소리치던 선수가 패하여 기가 꺾였다는 d만 근거에 맞는다. a와 그 오답 이유의 ‘일 등’은 ‘일등’으로 붙이고, a는 ‘대회에서 일등을 해 상장을 받고 기뻐서 코가 납작해졌다’로 다듬는다."
+      ]
+    },
+    {
+      "questionId": "g4-argon-0298",
+      "revision": 2,
+      "contentHash": "fdb49b5e60dd91c1d5367e8627fadcc51e4911f3dec52d189e5796aacdd8b70d",
+      "run": {
+        "id": "20261106T104143792Z-62018-ce451b02-719f-4873-9e72-659baa66f7b3",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
       "blindChoice": "d",
       "verdicts": {
         "source": "pass",
         "uniqueness": "pass",
         "grade": "pass",
         "language": "pass",
-        "explanation": "uncertain"
+        "explanation": "pass"
       },
-      "findings": [
-        "패배 무안 d; a 수상,b 칭찬,c 소원 달성은 기죽음 아님.",
-        "사전 대조: 코가 납작해지다 / 관용구 / 뜻번호 1 / senseId 1390639. 뜻풀이: 몹시 무안을 당하거나 기가 죽어 위신이 뚝 떨어지다. 문맥·보기와 대조.",
-        "학년 3~4의 일상·학교·자연 맥락 및 challenge/idiom_proverb 적합. 보기의 문법 결합·문장 종결·표면 반복/길이 단서를 점검함.",
-        "해설과 정답키는 블라인드 입력에 없어 explanation=uncertain."
-      ]
+      "findings": []
     },
     {
       "questionId": "g4-argon-0299",
       "revision": 1,
       "contentHash": "41f5b51f3a0cda41a85751e416ef1466b72f4be449b7c683898b0aa1182d3c76",
+      "run": {
+        "id": "20261106T043441904Z-5882-ff6a98c3-2235-4410-9fb8-989b589461cb",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
       "blindChoice": "d",
       "verdicts": {
         "source": "pass",
         "uniqueness": "pass",
         "grade": "pass",
         "language": "pass",
-        "explanation": "uncertain"
+        "explanation": "pass"
       },
       "findings": [
-        "약속 지켜 당당 d; a 부끄럼,b 미안,c 공포는 반대.",
-        "사전 대조: 가슴을 펴다 / 관용구 / 뜻번호 1 / senseId 1382258. 뜻풀이: 굽힐 것 없이 당당하다. 문맥·보기와 대조.",
-        "학년 3~4의 일상·학교·자연 맥락 및 challenge/idiom_proverb 적합. 보기의 문법 결합·문장 종결·표면 반복/길이 단서를 점검함.",
-        "해설과 정답키는 블라인드 입력에 없어 explanation=uncertain."
+        "[블라인드] 약속을 지켜 사람들 앞에서 떳떳하게 행동한다는 d만 관용적 의미에 맞으며, 속뜻을 묻는다는 조건도 명확하다.",
+        "[공개 대조] 약속을 지켜 모두 앞에서 당당해졌다는 d만 관용적 의미와 일치한다. 속뜻을 묻는 조건이 명확하고 해설과 오답 이유도 적절하다."
       ]
     },
     {
       "questionId": "g4-argon-0300",
       "revision": 1,
       "contentHash": "dad7e0416564ddd99ff9e60780aa07e01e47b52553bb278e9ce75a4e2224a673",
+      "run": {
+        "id": "20261106T043441904Z-5882-ff6a98c3-2235-4410-9fb8-989b589461cb",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
       "blindChoice": "a",
       "verdicts": {
         "source": "pass",
         "uniqueness": "pass",
         "grade": "pass",
         "language": "pass",
-        "explanation": "uncertain"
+        "explanation": "pass"
       },
       "findings": [
-        "발표 전 잠시 기다림 a; b 즉시,c 즉답,d 전력질주는 여유 없음.",
-        "사전 대조: 뜸을 들이다 / 관용구 / 뜻번호 1 / senseId 1384623. 뜻풀이: 일이나 말을 할 때에, 쉬거나 여유를 갖기 위해 서둘지 않고 한동안 가만히 있는 경우를 비유적으로 이르는 말. 문맥·보기와 대조.",
-        "학년 3~4의 일상·학교·자연 맥락 및 challenge/idiom_proverb 적합. 보기의 문법 결합·문장 종결·표면 반복/길이 단서를 점검함.",
-        "해설과 정답키는 블라인드 입력에 없어 explanation=uncertain."
+        "[블라인드] 우승자를 발표하기 전에 잠시 기다리는 a만 문맥과 관용적 의미가 맞으며, 즉시 행동하거나 서두르는 다른 보기와 구별된다.",
+        "[공개 대조] 발표 전에 잠시 멈추어 여유를 둔 a만 제시된 관용적 뜻에 맞는다. 나머지 보기는 즉시 행동하거나 서두르는 상황으로 구별되며 해설도 근거와 일치한다."
       ]
+    },
+    {
+      "questionId": "g4-argon-0300",
+      "revision": 2,
+      "contentHash": "91f67f86b0f2bd8bede8d50a00c3d26657525d64a32e255572a6c3685ca5ca6c",
+      "run": {
+        "id": "20261106T104143792Z-62018-ce451b02-719f-4873-9e72-659baa66f7b3",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "c",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": []
+    },
+    {
+      "questionId": "g4-argon-0300",
+      "revision": 3,
+      "contentHash": "4e796f5910d209b2347be87f73de431151cfd3afae16f2043cdefad0d8d1ed75",
+      "run": {
+        "id": "20261106T105936173Z-62018-335b4fac-22b4-44de-a105-10083e53ea6b",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "c",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": []
     }
   ]
 }

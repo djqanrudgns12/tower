@@ -245,6 +245,66 @@
       "levelAssessmentHash": "2a7843f98f2a72c6f2e2f089173914c4ec96b31dfe2b31f952f39bae190cee9b"
     },
     {
+      "questionId": "g4-argon-0304",
+      "revision": 3,
+      "contentHash": "bee5e202b7774c30c118d51ce9f4d526201149dce092a2032eac6451589382f4",
+      "precomputed": {
+        "typeBase": 0,
+        "lengthBump": 0,
+        "t3Base": 0,
+        "readingLoad": 44,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g4-argon-0304",
+          "revision": 3,
+          "contentHash": "bee5e202b7774c30c118d51ce9f4d526201149dce092a2032eac6451589382f4",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 1,
+          "L2": 1,
+          "T1": 1,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "3~4학년 동화·일상에 자주 쓰이는 감정·태도 고유어 제1의미이며, 반의 태도 등 같은 의미장 오답이 일부 있으나 직접 단서가 명확함."
+        },
+        {
+          "questionId": "g4-argon-0304",
+          "revision": 3,
+          "contentHash": "bee5e202b7774c30c118d51ce9f4d526201149dce092a2032eac6451589382f4",
+          "judge": "codex",
+          "model": "gpt-6-astra",
+          "L1": 1,
+          "L2": 1,
+          "T1": 1,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "생활에서 접하는 감정·태도어이며 반대 태도인 ‘당당하다’가 있지만 얼굴이 빨개진다는 직접 단서가 있다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 2,
+        "T": 1,
+        "V": 5,
+        "ownTier": "basic",
+        "band": {
+          "min": 4,
+          "max": 4
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "5cfe1acc64f268d52fbf951f3e983552980a850291fea3ec46d563c4a8a4efdc"
+    },
+    {
       "questionId": "g4-argon-0305",
       "revision": 1,
       "contentHash": "fc7574a2e604b139942d335e33c38a13d412613b7684e096a501d09b84f86a51",
@@ -663,6 +723,66 @@
         "flags": []
       },
       "levelAssessmentHash": "15880cf26b4dec6df66797613a4e412d0c633f92c11b1621bc72a4488977bf69"
+    },
+    {
+      "questionId": "g4-argon-0311",
+      "revision": 2,
+      "contentHash": "2ae3048b6f36a1eba44395fa5d7193c3d7dabe8970e97a39ff260f24b8906597",
+      "precomputed": {
+        "typeBase": 0,
+        "lengthBump": 1,
+        "t3Base": 0,
+        "readingLoad": 71,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g4-argon-0311",
+          "revision": 2,
+          "contentHash": "2ae3048b6f36a1eba44395fa5d7193c3d7dabe8970e97a39ff260f24b8906597",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 1,
+          "L2": 2,
+          "T1": 1,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "3~4학년 학습 맥락에 자주 쓰이는 한자 결합 개념어 제1의미이며, 직접 행동 단서가 있고 대립 태도 오답 1개가 포함됨."
+        },
+        {
+          "questionId": "g4-argon-0311",
+          "revision": 2,
+          "contentHash": "2ae3048b6f36a1eba44395fa5d7193c3d7dabe8970e97a39ff260f24b8906597",
+          "judge": "codex",
+          "model": "gpt-6-astra",
+          "L1": 1,
+          "L2": 2,
+          "T1": 1,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "어려움을 이겨 내는 추상적 한자어이며 회피 행동이 대조 오답이지만 추위에 대비해 땔감을 모으는 직접 단서가 있다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 3,
+        "T": 2,
+        "V": 8,
+        "ownTier": "core",
+        "band": {
+          "min": 4,
+          "max": 5
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "99cbee760778ba78c6f666636a7a0418ccdf2b9ae4bcfc9e7eb5bf94241dfc22"
     },
     {
       "questionId": "g4-argon-0312",
@@ -1505,6 +1625,66 @@
       "levelAssessmentHash": "404e0d92adab2a205835e2783268817bc8511fecb89b0ce937f20f78d2a77de1"
     },
     {
+      "questionId": "g4-argon-0325",
+      "revision": 2,
+      "contentHash": "0ff57677f2bb5ea6c95d087d8f111fc0dfa29eb83aae8a107d43c0e1dcc653c6",
+      "precomputed": {
+        "typeBase": 0,
+        "lengthBump": 1,
+        "t3Base": 0,
+        "readingLoad": 76,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g4-argon-0325",
+          "revision": 2,
+          "contentHash": "0ff57677f2bb5ea6c95d087d8f111fc0dfa29eb83aae8a107d43c0e1dcc653c6",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 1,
+          "L2": 1,
+          "T1": 1,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "3~4학년 생활·교과에서 자주 접하는 생활 한자어 제1의미이며, 지문에 직접 단서가 있고 절약·소비 의미장 오답 2개가 포함됨."
+        },
+        {
+          "questionId": "g4-argon-0325",
+          "revision": 2,
+          "contentHash": "0ff57677f2bb5ea6c95d087d8f111fc0dfa29eb83aae8a107d43c0e1dcc653c6",
+          "judge": "codex",
+          "model": "gpt-6-astra",
+          "L1": 1,
+          "L2": 1,
+          "T1": 1,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "소비 생활에서 익히는 한자어로 절약·재사용 오답이 같은 의미장에 있으나 ‘헛된 곳에’가 뜻을 직접 알려 준다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 2,
+        "T": 2,
+        "V": 6,
+        "ownTier": "core",
+        "band": {
+          "min": 4,
+          "max": 4
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "8636bc03ea274cd168bd70898a94188cff5ae94ce728eb58a9cb6cbe1b6721b0"
+    },
+    {
       "questionId": "g4-argon-0326",
       "revision": 1,
       "contentHash": "f8938810dd8828eb7e3487e79f532616ce6c0893d5580732b52a729b99354ff1",
@@ -1985,6 +2165,66 @@
         "flags": []
       },
       "levelAssessmentHash": "08e40ba5b2b91e4a0e875c5eeeec55201cba4d7d9c82120d7e7cbf45c1604683"
+    },
+    {
+      "questionId": "g4-argon-0333",
+      "revision": 2,
+      "contentHash": "e8ea7734a40f209ced2a200d11753a60520bb4533fd25b759ad3ac2b82cb734b",
+      "precomputed": {
+        "typeBase": 0,
+        "lengthBump": 1,
+        "t3Base": 1,
+        "readingLoad": 74,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g4-argon-0333",
+          "revision": 2,
+          "contentHash": "e8ea7734a40f209ced2a200d11753a60520bb4533fd25b759ad3ac2b82cb734b",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 1,
+          "L2": 1,
+          "T1": 2,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "친숙한 고유어 동사의 다의 확장 의미를 묻고 기본 물리적 의미 등 다의 오답과 구별해야 하나, 문맥 단서가 직접적임."
+        },
+        {
+          "questionId": "g4-argon-0333",
+          "revision": 2,
+          "contentHash": "e8ea7734a40f209ced2a200d11753a60520bb4533fd25b759ad3ac2b82cb734b",
+          "judge": "codex",
+          "model": "gpt-6-astra",
+          "L1": 1,
+          "L2": 2,
+          "T1": 2,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:뜻 번호 2",
+          "reason": "구체적 동작에서 성취의 상실로 확장된 뜻을 다른 용법과 구별하며 ‘다 잡았던 우승’이 직접 단서가 된다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 3,
+        "T": 4,
+        "V": 10,
+        "ownTier": "advanced",
+        "band": {
+          "min": 4,
+          "max": 5
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "8a72a2dbb08daca819c42b0879c4e5c8e3f70fa3dce309e0dfde757abb0650d2"
     },
     {
       "questionId": "g4-argon-0334",
@@ -2709,6 +2949,66 @@
       "levelAssessmentHash": "802a1798fffd1d80899f3e27dabf5bc46797fbac04a5b536b854dd31929f33ca"
     },
     {
+      "questionId": "g4-argon-0345",
+      "revision": 2,
+      "contentHash": "8e48e98e2ec77fefc967e8f4ae5a0a36f064cd26d5ec72a116cf3de7fd46e216",
+      "precomputed": {
+        "typeBase": 0,
+        "lengthBump": 0,
+        "t3Base": null,
+        "readingLoad": 51,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g4-argon-0345",
+          "revision": 2,
+          "contentHash": "8e48e98e2ec77fefc967e8f4ae5a0a36f064cd26d5ec72a116cf3de7fd46e216",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 2,
+          "L2": 1,
+          "T1": 2,
+          "inference": 0,
+          "idiomOpacity": 3,
+          "elementaryFit": "pass",
+          "basisType": "curriculum_explicit",
+          "unit": "[6국04-03] 고유어와 관용 표현의 쓰임과 가치",
+          "reason": "어원 배경이 불투명한 관용구이고 선택지가 모두 신체 관용구라 비유 의미 변별이 필요하나, 대화의 직접 재촉 단서가 분명함."
+        },
+        {
+          "questionId": "g4-argon-0345",
+          "revision": 2,
+          "contentHash": "8e48e98e2ec77fefc967e8f4ae5a0a36f064cd26d5ec72a116cf3de7fd46e216",
+          "judge": "codex",
+          "model": "gpt-6-astra",
+          "L1": 1,
+          "L2": 1,
+          "T1": 3,
+          "inference": 0,
+          "idiomOpacity": 3,
+          "elementaryFit": "pass",
+          "basisType": "curriculum_explicit",
+          "unit": "[6국04-03] 고유어와 관용 표현의 쓰임과 가치를 이해하고 상황에 맞게 표현한다.",
+          "reason": "일상 대화에서 접하지만 ‘뜸’에서 말의 지연으로 이어지는 비유는 불투명하며 ‘한참’과 ‘어서 말해’가 직접 단서다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 3,
+        "T": 6,
+        "V": 12,
+        "ownTier": "challenge",
+        "band": {
+          "min": 4,
+          "max": 5
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "18c9d5ca433ff66b663a5c01f14b2a4bf477a1188a0782371887e2dc7a6b72d9"
+    },
+    {
       "questionId": "g4-argon-0346",
       "revision": 1,
       "contentHash": "ff94c335e331bf9715b9a695e5098d124f5880e67acddf3c70d0405165236085",
@@ -2767,6 +3067,66 @@
         "flags": []
       },
       "levelAssessmentHash": "58654a58d230461e2ddde49bdd07dad200967857bea83c490f1ce19ca43eb905"
+    },
+    {
+      "questionId": "g4-argon-0346",
+      "revision": 2,
+      "contentHash": "90b0d7693105d19283ccefaf065b704501f466711c340782d346dbb72966c0f4",
+      "precomputed": {
+        "typeBase": 0,
+        "lengthBump": 1,
+        "t3Base": null,
+        "readingLoad": 85,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g4-argon-0346",
+          "revision": 2,
+          "contentHash": "90b0d7693105d19283ccefaf065b704501f466711c340782d346dbb72966c0f4",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 1,
+          "L2": 0,
+          "T1": 1,
+          "inference": 0,
+          "idiomOpacity": 2,
+          "elementaryFit": "pass",
+          "basisType": "curriculum_explicit",
+          "unit": "[6국04-03] 고유어와 관용 표현의 쓰임과 가치를 이해하고 상황에 맞게 표현한다.",
+          "reason": "일상·동화에 자주 쓰이는 순고유어 신체 호흡 관용구의 제1의미를 직접 행동 단서와 함께 묻고 비유가 투명함."
+        },
+        {
+          "questionId": "g4-argon-0346",
+          "revision": 2,
+          "contentHash": "90b0d7693105d19283ccefaf065b704501f466711c340782d346dbb72966c0f4",
+          "judge": "codex",
+          "model": "gpt-6-astra",
+          "L1": 1,
+          "L2": 0,
+          "T1": 1,
+          "inference": 0,
+          "idiomOpacity": 2,
+          "elementaryFit": "pass",
+          "basisType": "curriculum_explicit",
+          "unit": "[6국04-03] 고유어와 관용 표현의 쓰임과 가치를 이해하고 상황에 맞게 표현한다.",
+          "reason": "생활·동화에서 접하는 표현으로 구체적인 호흡 동작을 나타내며 비유가 투명하다. 호흡을 멈춘다는 오답이 같은 의미장에 있고, 뛰어 올라간 뒤 앉았다는 직접 행동 단서가 있다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 1,
+        "T": 4,
+        "V": 6,
+        "ownTier": "advanced",
+        "band": {
+          "min": 4,
+          "max": 4
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "db8b2d4119e16f2ba5d501c30fd46a830fa2b480c3597f9f3017edc38ca87830"
     },
     {
       "questionId": "g4-argon-0347",
@@ -2951,6 +3311,68 @@
         ]
       },
       "levelAssessmentHash": "5323ce70c50ca293acb3a45dd0347d04aaa674e503ad1a2bc3b1582524d34f6d"
+    },
+    {
+      "questionId": "g4-argon-0349",
+      "revision": 2,
+      "contentHash": "1999a351c726e5a10e2f4fcbbfada29c30e5a0ce96d5f138b9291b5eba57d8d7",
+      "precomputed": {
+        "typeBase": 0,
+        "lengthBump": 2,
+        "t3Base": null,
+        "readingLoad": 103,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g4-argon-0349",
+          "revision": 2,
+          "contentHash": "1999a351c726e5a10e2f4fcbbfada29c30e5a0ce96d5f138b9291b5eba57d8d7",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 1,
+          "L2": 1,
+          "T1": 1,
+          "inference": 1,
+          "idiomOpacity": 2,
+          "elementaryFit": "pass",
+          "basisType": "curriculum_explicit",
+          "unit": "[6국04-03] 고유어와 관용 표현의 쓰임과 가치",
+          "reason": "초등 중학년에도 친숙하고 비유가 투명한 속담이나, 지문에 시작 행동 단서 없이 걱정 상황만 제시되어 상황 추론이 필요함."
+        },
+        {
+          "questionId": "g4-argon-0349",
+          "revision": 2,
+          "contentHash": "1999a351c726e5a10e2f4fcbbfada29c30e5a0ce96d5f138b9291b5eba57d8d7",
+          "judge": "codex",
+          "model": "gpt-6-astra",
+          "L1": 1,
+          "L2": 1,
+          "T1": 3,
+          "inference": 1,
+          "idiomOpacity": 2,
+          "elementaryFit": "pass",
+          "basisType": "curriculum_explicit",
+          "unit": "[6국04-03] 고유어와 관용 표현의 쓰임과 가치를 이해하고 상황에 맞게 표현한다.",
+          "reason": "먼 길과 첫걸음의 비유는 투명하지만 책의 분량을 걱정하는 상황에서 시작의 중요성을 종합해 추론해야 한다."
+        }
+      ],
+      "merged": {
+        "rule": 4,
+        "L": 2,
+        "T": 7,
+        "V": 11,
+        "ownTier": "challenge",
+        "band": {
+          "min": 4,
+          "max": 4
+        },
+        "flags": [
+          "spotCheck"
+        ]
+      },
+      "levelAssessmentHash": "4e032fa9a4edcca1c46d53f73b195f3824a0a685d72e69451fe6934459bfb0df"
     },
     {
       "questionId": "g4-argon-0350",

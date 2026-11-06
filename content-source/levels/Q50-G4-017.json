@@ -611,6 +611,66 @@
       "levelAssessmentHash": "40b9f0719f019b70eb6c8ff40babd16496e7df56c28fdefd149844848d3f8b6e"
     },
     {
+      "questionId": "g4-argon-0810",
+      "revision": 3,
+      "contentHash": "5e23a7371c4bb6facdaa84622af921d6eaa371a6c705420208332440be58147c",
+      "precomputed": {
+        "typeBase": 2,
+        "lengthBump": 1,
+        "t3Base": 0,
+        "readingLoad": 78,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g4-argon-0810",
+          "revision": 3,
+          "contentHash": "5e23a7371c4bb6facdaa84622af921d6eaa371a6c705420208332440be58147c",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 1,
+          "L2": 0,
+          "T1": 0,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "동화·과학 학습에 자주 쓰이는 구체 감각·동작 고유어로 제1의미이며 오답이 모두 다른 의미장이고 문장 내 직접 단서가 있다."
+        },
+        {
+          "questionId": "g4-argon-0810",
+          "revision": 3,
+          "contentHash": "5e23a7371c4bb6facdaa84622af921d6eaa371a6c705420208332440be58147c",
+          "judge": "codex",
+          "model": "gpt-6-astra",
+          "L1": 0,
+          "L2": 0,
+          "T1": 0,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "빛으로 밝히는 구체적인 기초 동작어이며, 가로등과 어두운 길이 직접 단서이고 오답은 다른 의미장이다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 1,
+        "T": 3,
+        "V": 5,
+        "ownTier": "basic",
+        "band": {
+          "min": 4,
+          "max": 4
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "e2aa834c1d72b9b6c27cb81e8d7ea3b0ef203c584bd334bac6b28c6fd6b27933"
+    },
+    {
       "questionId": "g4-argon-0811",
       "revision": 2,
       "contentHash": "d6989f17ee9534f9e3a5e286cc7896a0a9193009e24b66d995ad3adc4e7e089a",

@@ -381,7 +381,7 @@
     "schemaVersion": "0.2",
     "batchId": "Q50-G4-015",
     "id": "g4-argon-0707",
-    "revision": 1,
+    "revision": 2,
     "status": "machine_checked",
     "grade": 4,
     "gradeBasis": {
@@ -396,7 +396,7 @@
       "senseKey": "유익하다/형용사/463028-1"
     },
     "type": "usage",
-    "difficultyTier": "challenge",
+    "difficultyTier": "advanced",
     "variantTag": "standard",
     "stem": "‘유익하다’를 바르게 쓴 문장은?",
     "options": [
@@ -422,7 +422,7 @@
     "distractorRationales": {
       "a": "길에 쓰레기를 버리는 일은 해로운 행동이에요.",
       "b": "구름이 흘러가는 자연 현상과 어울리지 않아요.",
-      "c": "지우개의 개수를 세는 문장에 쓸 수 없어요."
+      "c": "지우개가 두 개 있다는 사실만으로는 어떤 도움이 되는지 드러나지 않아요."
     },
     "source": {
       "provider": "stdict",
@@ -759,7 +759,7 @@
     "schemaVersion": "0.2",
     "batchId": "Q50-G4-015",
     "id": "g4-argon-0713",
-    "revision": 1,
+    "revision": 2,
     "status": "machine_checked",
     "grade": 4,
     "gradeBasis": {
@@ -800,7 +800,7 @@
     "distractorRationales": {
       "a": "눈으로 살펴본다는 뜻이라 간추리는 일과 달라요.",
       "b": "남에게 뽐낸다는 뜻이라 문맥에 맞지 않아요.",
-      "c": "예의를 갖추어 인사한다는 뜻이라 어색해요."
+      "c": "만나거나 헤어질 때 예의를 표하는 행동이라 글을 간추리는 일과 달라요."
     },
     "source": {
       "provider": "stdict",
@@ -1326,7 +1326,7 @@
     "schemaVersion": "0.2",
     "batchId": "Q50-G4-015",
     "id": "g4-argon-0722",
-    "revision": 1,
+    "revision": 2,
     "status": "machine_checked",
     "grade": 4,
     "gradeBasis": {
@@ -1341,17 +1341,17 @@
       "senseKey": "물리치다/동사/425187-1"
     },
     "type": "antonym_context",
-    "difficultyTier": "core",
+    "difficultyTier": "advanced",
     "variantTag": "polysemy",
     "stem": "“장군이 적군을 물리쳤다.”에서 ‘물리치다’와 반대되는 말은?",
     "options": [
       {
         "id": "a",
-        "text": "적을 싸워 이겨 뒤로 물러가게 하다"
+        "text": "적과 싸워 이겨 뒤로 물러가게 하다"
       },
       {
         "id": "b",
-        "text": "막아 내지 못하고 안으로 불러들이다"
+        "text": "적의 공격을 막지 못하고 물러나다"
       },
       {
         "id": "c",
@@ -1363,9 +1363,9 @@
       }
     ],
     "correctOptionId": "b",
-    "explanation": "적을 쳐서 물러가게 하는 ‘물리치다’의 반대는 막지 못하고 불러들이는 것이에요.",
+    "explanation": "적을 쳐서 물러가게 하는 ‘물리치다’의 반대는 적의 공격을 막지 못하고 물러나는 것이에요.",
     "distractorRationales": {
-      "a": "‘물리치다’의 사전 뜻풀이와 같은 말이에요.",
+      "a": "적을 쳐서 물러가게 한다는 ‘물리치다’와 같은 뜻이에요.",
       "c": "적을 쳐서 쫓아내는 같은 뜻의 표현이에요.",
       "d": "적을 몰아내는 비슷한 행동을 나타내요."
     },
@@ -1389,7 +1389,7 @@
     "schemaVersion": "0.2",
     "batchId": "Q50-G4-015",
     "id": "g4-argon-0723",
-    "revision": 2,
+    "revision": 3,
     "status": "machine_checked",
     "grade": 4,
     "gradeBasis": {
@@ -1406,7 +1406,7 @@
     "type": "synonym_context",
     "difficultyTier": "basic",
     "variantTag": "standard",
-    "stem": "“쌓였던 눈이 녹자 땅속의 검은 흙이 드러났다.”에서 ‘드러났다’와 바꾸어 쓸 수 있는 말은?",
+    "stem": "“쌓였던 눈이 녹자 눈 아래의 검은 흙이 드러났다.”에서 ‘드러났다’와 바꾸어 쓸 수 있는 말은?",
     "options": [
       {
         "id": "a",
@@ -2459,132 +2459,6 @@
   {
     "schemaVersion": "0.2",
     "batchId": "Q50-G4-015",
-    "id": "g4-argon-0740",
-    "revision": 1,
-    "status": "machine_checked",
-    "grade": 4,
-    "gradeBasis": {
-      "reference": "2022 개정 국어과 교육과정",
-      "editionYear": 2022,
-      "unit": "stdict:전문어 표지 없음",
-      "reviewed": true
-    },
-    "target": {
-      "lemma": "다지다",
-      "partOfSpeech": "동사",
-      "senseKey": "다지다/동사/412627-3"
-    },
-    "type": "definition",
-    "difficultyTier": "challenge",
-    "variantTag": "polysemy",
-    "stem": "“꾸준한 독서로 글쓰기 바탕을 탄탄히 다졌다.”에서 ‘다지다’의 뜻은?",
-    "options": [
-      {
-        "id": "a",
-        "text": "기초나 터전을 굳고 튼튼하게 하다"
-      },
-      {
-        "id": "b",
-        "text": "마늘이나 고기를 칼로 잘게 두드리다"
-      },
-      {
-        "id": "c",
-        "text": "상대에게 다짐을 받으려고 거듭 묻다"
-      },
-      {
-        "id": "d",
-        "text": "무른 흙을 밟지 않고 그대로 내버려 두다"
-      }
-    ],
-    "correctOptionId": "a",
-    "explanation": "여기서 ‘다지다’는 기초나 터전 따위를 굳고 튼튼하게 한다는 뜻이에요.",
-    "distractorRationales": {
-      "b": "식재료를 잘게 썬다는 뜻의 문맥이 아니에요.",
-      "c": "말로 단단히 확인한다는 문맥과 달라요.",
-      "d": "그대로 방치하는 것은 다지는 일과 반대예요."
-    },
-    "source": {
-      "provider": "stdict",
-      "entryId": "412627",
-      "senseId": "374963",
-      "senseOrder": 3,
-      "url": "https://stdict.korean.go.kr/search/searchView.do?word_no=412627&searchKeywordTo=3",
-      "retrievedAt": "2026-10-30T03:35:00.000Z",
-      "license": "국립국어원 표준국어대사전(뜻풀이만 인용, 용례 미복제)",
-      "evidenceHash": "bbeb6266d0ce89eae2b8b0936363f06dcd5ee2943e25d4f5959a34d922b9f354",
-      "evidenceArtifactId": "다지다-412627-3.txt"
-    },
-    "review": {
-      "reviewerId": null,
-      "reviewedAt": null
-    }
-  },
-  {
-    "schemaVersion": "0.2",
-    "batchId": "Q50-G4-015",
-    "id": "g4-argon-0741",
-    "revision": 1,
-    "status": "machine_checked",
-    "grade": 4,
-    "gradeBasis": {
-      "reference": "2022 개정 국어과 교육과정",
-      "editionYear": 2022,
-      "unit": "stdict:전문어 표지 없음",
-      "reviewed": true
-    },
-    "target": {
-      "lemma": "떠나다",
-      "partOfSpeech": "동사",
-      "senseKey": "떠나다/동사/419740-3"
-    },
-    "type": "definition",
-    "difficultyTier": "challenge",
-    "variantTag": "polysemy",
-    "stem": "“이 일은 내 손을 떠나 더 이상 관여하기 어렵다.”에서 ‘떠나다’의 뜻은?",
-    "options": [
-      {
-        "id": "a",
-        "text": "어떤 일과 관계를 끊거나 무관해지다"
-      },
-      {
-        "id": "b",
-        "text": "기차를 타고 다른 도시로 이동해 가다"
-      },
-      {
-        "id": "c",
-        "text": "옷감에 묻은 얼룩이 깨끗하게 지워지다"
-      },
-      {
-        "id": "d",
-        "text": "세상을 살아가던 사람이 목숨을 잃다"
-      }
-    ],
-    "correctOptionId": "a",
-    "explanation": "여기서 ‘떠나다’는 어떤 일이나 사람과 관련이 없는 상태가 된다는 뜻이에요.",
-    "distractorRationales": {
-      "b": "장소를 옮겨 간다는 공간 이동 문맥이 아니에요.",
-      "c": "얼룩이 빠진다는 뜻으로 쓰이지 않았어요.",
-      "d": "세상을 떠난다는 비유적 문맥이 아니에요."
-    },
-    "source": {
-      "provider": "stdict",
-      "entryId": "419740",
-      "senseId": "61761",
-      "senseOrder": 3,
-      "url": "https://stdict.korean.go.kr/search/searchView.do?word_no=419740&searchKeywordTo=3",
-      "retrievedAt": "2026-10-30T03:35:00.000Z",
-      "license": "국립국어원 표준국어대사전(뜻풀이만 인용, 용례 미복제)",
-      "evidenceHash": "084aa97fc7fd573f510a4ba495ad001eee3793886a2ab8fd78d328bfa0f4b34c",
-      "evidenceArtifactId": "떠나다-419740-3.txt"
-    },
-    "review": {
-      "reviewerId": null,
-      "reviewedAt": null
-    }
-  },
-  {
-    "schemaVersion": "0.2",
-    "batchId": "Q50-G4-015",
     "id": "g4-argon-0742",
     "revision": 1,
     "status": "machine_checked",
@@ -2712,7 +2586,7 @@
     "schemaVersion": "0.2",
     "batchId": "Q50-G4-015",
     "id": "g4-argon-0744",
-    "revision": 2,
+    "revision": 3,
     "status": "machine_checked",
     "grade": 4,
     "gradeBasis": {
@@ -2729,7 +2603,7 @@
     "type": "definition",
     "difficultyTier": "basic",
     "variantTag": "standard",
-    "stem": "“거센 파도가 바위에 세차게 부딪혔다.”에서 ‘부딪히다’의 뜻은?",
+    "stem": "“길가에 세워 둔 자전거가 밀려온 손수레에 부딪혔다.”에서 ‘부딪히다’의 뜻은?",
     "options": [
       {
         "id": "a",
@@ -2751,7 +2625,7 @@
     "correctOptionId": "a",
     "explanation": "여기서 ‘부딪히다’는 물체끼리 힘 있게 마주 닿게 된다는 뜻이에요.",
     "distractorRationales": {
-      "b": "파도와 바위가 닿은 문맥이라 난관에 놓인 뜻이 아니에요.",
+      "b": "자전거와 손수레가 닿은 문맥이라 어려운 문제에 놓인 뜻이 아니에요.",
       "c": "피해서 돌아가는 것은 마주 닿는 행동과 반대돼요.",
       "d": "위에서 아래로 조용히 흘러내리는 뜻이 아니에요."
     },
@@ -2765,69 +2639,6 @@
       "license": "국립국어원 표준국어대사전(뜻풀이만 인용, 용례 미복제)",
       "evidenceHash": "10ab3a2c542dda5b10dbf7fb992cde9335bf8ca0ee6aba97405f507197a743a8",
       "evidenceArtifactId": "부딪히다-149939-1.txt"
-    },
-    "review": {
-      "reviewerId": null,
-      "reviewedAt": null
-    }
-  },
-  {
-    "schemaVersion": "0.2",
-    "batchId": "Q50-G4-015",
-    "id": "g4-argon-0745",
-    "revision": 1,
-    "status": "machine_checked",
-    "grade": 4,
-    "gradeBasis": {
-      "reference": "2022 개정 국어과 교육과정",
-      "editionYear": 2022,
-      "unit": "stdict:전문어 표지 없음",
-      "reviewed": true
-    },
-    "target": {
-      "lemma": "뽑다",
-      "partOfSpeech": "동사",
-      "senseKey": "뽑다/동사/440358-3"
-    },
-    "type": "definition",
-    "difficultyTier": "challenge",
-    "variantTag": "polysemy",
-    "stem": "“농사가 잘되어 올해 들인 본전을 모두 뽑았다.”에서 ‘뽑다’의 뜻은?",
-    "options": [
-      {
-        "id": "a",
-        "text": "땅속에 박힌 무나 당근을 잡아당겨 빼다"
-      },
-      {
-        "id": "b",
-        "text": "학급 회의를 이끌어 갈 반장을 선출하다"
-      },
-      {
-        "id": "c",
-        "text": "들인 돈이나 밑천을 도로 거두어들이다"
-      },
-      {
-        "id": "d",
-        "text": "자판기에서 마실 음료수 캔을 꺼내다"
-      }
-    ],
-    "correctOptionId": "c",
-    "explanation": "여기서 ‘뽑다’는 들인 돈이나 밑천 따위를 도로 거두어들인다는 뜻이에요.",
-    "distractorRationales": {
-      "a": "뿌리채소를 캐낸다는 뜻의 문맥이 아니에요.",
-      "b": "대표를 선출한다는 뜻으로 쓰이지 않았어요.",
-      "d": "기계에서 물건을 꺼내는 문맥과 달라요."
-    },
-    "source": {
-      "provider": "stdict",
-      "entryId": "440358",
-      "senseId": "485317",
-      "senseOrder": 3,
-      "url": "https://stdict.korean.go.kr/search/searchView.do?word_no=440358&searchKeywordTo=3",
-      "retrievedAt": "2026-10-30T03:35:00.000Z",
-      "license": "국립국어원 표준국어대사전(뜻풀이만 인용, 용례 미복제)",
-      "evidenceHash": "ddcd874bfbc556d63fba876d1714d25ccff750c14f2c1898849db5ec523a023c",
-      "evidenceArtifactId": "뽑다-440358-3.txt"
     },
     "review": {
       "reviewerId": null,
@@ -2964,7 +2775,7 @@
     "schemaVersion": "0.2",
     "batchId": "Q50-G4-015",
     "id": "g4-argon-0748",
-    "revision": 2,
+    "revision": 3,
     "status": "machine_checked",
     "grade": 4,
     "gradeBasis": {
@@ -2993,7 +2804,7 @@
       },
       {
         "id": "c",
-        "text": "동생이 절대 못 하게 막으려고 일을 맡겼다."
+        "text": "동생이 절대 못 하게 막으려고 동생에게 그 일을 맡겼다."
       },
       {
         "id": "d",
@@ -3004,7 +2815,7 @@
     "explanation": "‘맡기다’는 어떤 일을 책임지고 담당하게 할 때 쓰는 말이에요.",
     "distractorRationales": {
       "b": "혼자 다 하려는 것은 남에게 담당하게 하는 것과 반대돼요.",
-      "c": "일을 못 하게 막으려는 목적에는 ‘맡기다’가 안 맞아요.",
+      "c": "못 하게 막으려는 일을 바로 그 사람에게 맡길 수는 없어요.",
       "d": "아무에게도 시키지 않으면서 역할을 맡길 수는 없어요."
     },
     "source": {

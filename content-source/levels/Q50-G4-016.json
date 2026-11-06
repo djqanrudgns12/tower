@@ -371,6 +371,66 @@
       "levelAssessmentHash": "c55c1e310628e0e14bd2cd8163fb3f559cdbc0376ca2cf0a2f1f98d9332dab34"
     },
     {
+      "questionId": "g4-argon-0756",
+      "revision": 2,
+      "contentHash": "c7bed598241f5d339e89d0952c0e3759e00641e2bd30b2ec434498d9ec20ffaa",
+      "precomputed": {
+        "typeBase": 0,
+        "lengthBump": 1,
+        "t3Base": 0,
+        "readingLoad": 76,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g4-argon-0756",
+          "revision": 2,
+          "contentHash": "c7bed598241f5d339e89d0952c0e3759e00641e2bd30b2ec434498d9ec20ffaa",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 1,
+          "L2": 0,
+          "T1": 0,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "이야기 서술에 자주 쓰이는 구체 이동 동작 고유어이며, 현관문과 마당이라는 직접 공간 단서가 있고 오답이 모두 다른 의미장이다."
+        },
+        {
+          "questionId": "g4-argon-0756",
+          "revision": 2,
+          "contentHash": "c7bed598241f5d339e89d0952c0e3759e00641e2bd30b2ec434498d9ec20ffaa",
+          "judge": "codex",
+          "model": "gpt-6-astra",
+          "L1": 0,
+          "L2": 0,
+          "T1": 1,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "밖으로 나와 서는 구체적인 기초 동작이며, 주저앉는 동작이 관련 오답이나 현관문을 열고 마당으로 이동하는 직접 단서가 있다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 1,
+        "T": 2,
+        "V": 4,
+        "ownTier": "basic",
+        "band": {
+          "min": 4,
+          "max": 4
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "af6b82f12b29e60d2918189b3068eb899e5b7490beb6c4d3fe96ba7c8dc8062c"
+    },
+    {
       "questionId": "g4-argon-0757",
       "revision": 1,
       "contentHash": "2ba96de626fcf80af681d166087e24207c1c47e734929e6e81ecd5263ba5381e",
@@ -1219,6 +1279,126 @@
       "levelAssessmentHash": "6615d43572d4a6bfcfe7229181a0840ecf1a20f1d9b2edd38fe7864fb49e9c66"
     },
     {
+      "questionId": "g4-argon-0770",
+      "revision": 3,
+      "contentHash": "ff5643ed94feadf24495ffb4570f5f5bc4a1c4e6b2b4667f5ef8e15ad71c5451",
+      "precomputed": {
+        "typeBase": 1,
+        "lengthBump": 0,
+        "t3Base": 0,
+        "readingLoad": 63,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g4-argon-0770",
+          "revision": 3,
+          "contentHash": "ff5643ed94feadf24495ffb4570f5f5bc4a1c4e6b2b4667f5ef8e15ad71c5451",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 1,
+          "L2": 1,
+          "T1": 1,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "빈출 파생 동사 ‘물리치다’의 제1의미를 직접 행동 단서가 있는 문장에서 유의어로 바꾸는 문항이며, 이동 방향이 다른 같은 의미장 오답이 일부 포함됨."
+        },
+        {
+          "questionId": "g4-argon-0770",
+          "revision": 3,
+          "contentHash": "ff5643ed94feadf24495ffb4570f5f5bc4a1c4e6b2b4667f5ef8e15ad71c5451",
+          "judge": "codex",
+          "model": "gpt-6-astra",
+          "L1": 1,
+          "L2": 0,
+          "T1": 2,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "curriculum_explicit",
+          "unit": "[4국04-01] 단어와 단어 간의 의미 관계를 파악한다.",
+          "reason": "이야기에서 익숙한 구체적 전투 동작이며, 이동·체류 방향에 관한 유사한 선택지들을 싸웠다는 직접 행동 단서로 구별한다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 2,
+        "T": 3,
+        "V": 7,
+        "ownTier": "core",
+        "band": {
+          "min": 4,
+          "max": 4
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "0b61e0f7d5430795f20a626750d0f0a2739cdb7426dac9d3d5f1529ef3b50b88"
+    },
+    {
+      "questionId": "g4-argon-0770",
+      "revision": 4,
+      "contentHash": "22a2c25eab276774080579fd25af707739b9ec34fa97503806c87f9fcdb65525",
+      "precomputed": {
+        "typeBase": 1,
+        "lengthBump": 0,
+        "t3Base": 0,
+        "readingLoad": 63,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g4-argon-0770",
+          "revision": 4,
+          "contentHash": "22a2c25eab276774080579fd25af707739b9ec34fa97503806c87f9fcdb65525",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 1,
+          "L2": 0,
+          "T1": 1,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "‘물리치다’는 3~4학년 동화·역사 글에 자주 나오는 구체 동작 고유어이며, 직접 행동 단서가 제시된 문장에서 중심 의미를 이동·체류 의미장의 오답들과 구별하는 초등 적합 문항이다."
+        },
+        {
+          "questionId": "g4-argon-0770",
+          "revision": 4,
+          "contentHash": "22a2c25eab276774080579fd25af707739b9ec34fa97503806c87f9fcdb65525",
+          "judge": "codex",
+          "model": "gpt-6-astra",
+          "L1": 1,
+          "L2": 0,
+          "T1": 1,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "curriculum_explicit",
+          "unit": "[4국04-01] 단어와 단어 간의 의미 관계",
+          "reason": "동화와 역사 이야기에서 접하는 구체적 동작어로, 중심 의미를 묻고 일부 오답이 이동·체류 의미장에서 경쟁하지만 싸워 적을 물리쳤다는 직접 행동 단서가 있다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 1,
+        "T": 2,
+        "V": 4,
+        "ownTier": "basic",
+        "band": {
+          "min": 4,
+          "max": 4
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "a4785f9382221691a626fb4bda9203a8dce45b2dbf22bd06b63a5a1f89cc40b0"
+    },
+    {
       "questionId": "g4-argon-0771",
       "revision": 2,
       "contentHash": "f4038412519b2c009cf979125aa174ad0922b730bed07bf3b32d7371560cf558",
@@ -1829,6 +2009,66 @@
       "levelAssessmentHash": "c1d340c041aef0702e92457d2a9e38d36af62f7d81333c61974e1d09c33b94fa"
     },
     {
+      "questionId": "g4-argon-0780",
+      "revision": 2,
+      "contentHash": "9faf4c882d7922569db743c1e7be83101299ba984946ee7ef91e1e788374119e",
+      "precomputed": {
+        "typeBase": 0,
+        "lengthBump": 0,
+        "t3Base": 1,
+        "readingLoad": 64,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g4-argon-0780",
+          "revision": 2,
+          "contentHash": "9faf4c882d7922569db743c1e7be83101299ba984946ee7ef91e1e788374119e",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 1,
+          "L2": 1,
+          "T1": 1,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "학교와 일상 계획에서 자주 접하는 친숙한 생활 한자어이며, 달력에 적었다는 직접 단서가 있고 동형어 뜻 등 혼동 오답이 일부 포함되었다."
+        },
+        {
+          "questionId": "g4-argon-0780",
+          "revision": 2,
+          "contentHash": "9faf4c882d7922569db743c1e7be83101299ba984946ee7ef91e1e788374119e",
+          "judge": "codex",
+          "model": "gpt-6-astra",
+          "L1": 1,
+          "L2": 1,
+          "T1": 1,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "학교생활과 여행에서 접하는 생활 한자어이며, 동형 표현과 이동 거리의 뜻이 혼동을 유도하지만 달력에 적는다는 단서로 계획의 뜻을 고를 수 있다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 2,
+        "T": 2,
+        "V": 6,
+        "ownTier": "core",
+        "band": {
+          "min": 4,
+          "max": 4
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "79ef8f75091ad419542f42892c9428be0e5a150031549631d2d402a2684132b2"
+    },
+    {
       "questionId": "g4-argon-0781",
       "revision": 1,
       "contentHash": "f8871a41ba87baf468999c4611d2626f6e59b850801960bf172097c159dcaa91",
@@ -2309,6 +2549,66 @@
       "levelAssessmentHash": "fe69fd2a170ba51ffea01a9c8ed8d5f97059f1ef51c2e3026e0d8d9644db1e7a"
     },
     {
+      "questionId": "g4-argon-0788",
+      "revision": 3,
+      "contentHash": "376e586bc8806f13d5d2bde7d660df10f1f2318834f1cbc9999c6f5fd0801c75",
+      "precomputed": {
+        "typeBase": 1,
+        "lengthBump": 0,
+        "t3Base": 0,
+        "readingLoad": 59,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g4-argon-0788",
+          "revision": 3,
+          "contentHash": "376e586bc8806f13d5d2bde7d660df10f1f2318834f1cbc9999c6f5fd0801c75",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 1,
+          "L2": 1,
+          "T1": 1,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "동화와 생활 서술에서 잔치와 어울려 자주 쓰이는 사회적 행위 고유어이며, 직접 연어 단서가 있고 같은 행사 의미장의 오답이 일부 포함되었다."
+        },
+        {
+          "questionId": "g4-argon-0788",
+          "revision": 3,
+          "contentHash": "376e586bc8806f13d5d2bde7d660df10f1f2318834f1cbc9999c6f5fd0801c75",
+          "judge": "codex",
+          "model": "gpt-6-astra",
+          "L1": 1,
+          "L2": 1,
+          "T1": 1,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "curriculum_explicit",
+          "unit": "[4국04-01] 단어와 단어 간의 의미 관계",
+          "reason": "동화와 행사 설명에서 접하는 잔치 마련의 뜻이며, 취소·구경 등 행사 관련 행동과 구별하여 직접 제시된 잔치 상황에 맞는 유의 표현을 찾는다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 2,
+        "T": 2,
+        "V": 6,
+        "ownTier": "core",
+        "band": {
+          "min": 4,
+          "max": 4
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "359c4363f716f291819a88c37cc332158780d80044c91f968a5103e006ef9d01"
+    },
+    {
       "questionId": "g4-argon-0789",
       "revision": 2,
       "contentHash": "18ef08a4463460558bd7364e2c7edbc0d58dcac78ca8a52397c3e3bd2af212a8",
@@ -2549,6 +2849,66 @@
         "flags": []
       },
       "levelAssessmentHash": "1c75520fdf36afbf9fccad272482eba8f3db5f2336769fb9fbc092b7f068b059"
+    },
+    {
+      "questionId": "g4-argon-0792",
+      "revision": 3,
+      "contentHash": "34ea161a2d601fa96c4954223446a2761337549748a69f1e0bf10a4410ce040b",
+      "precomputed": {
+        "typeBase": 0,
+        "lengthBump": 0,
+        "t3Base": 2,
+        "readingLoad": 40,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g4-argon-0792",
+          "revision": 3,
+          "contentHash": "34ea161a2d601fa96c4954223446a2761337549748a69f1e0bf10a4410ce040b",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 1,
+          "L2": 1,
+          "T1": 1,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "3~4학년 학습 빈출 상태 파생 부사 ‘반듯이’를 ‘아담하고·말끔해’라는 직접 단서 속에서 동음 혼동 오답 ‘반드시’ 1개와 구별하는 문항임."
+        },
+        {
+          "questionId": "g4-argon-0792",
+          "revision": 3,
+          "contentHash": "34ea161a2d601fa96c4954223446a2761337549748a69f1e0bf10a4410ce040b",
+          "judge": "codex",
+          "model": "gpt-6-astra",
+          "L1": 1,
+          "L2": 1,
+          "T1": 2,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:뜻 번호 2",
+          "reason": "생김새를 평가하는 상태 파생어의 확장 의미를 묻고 ‘반드시’와 혼동할 수 있으나 아담하고 말끔하다는 정의 단서가 있다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 2,
+        "T": 4,
+        "V": 8,
+        "ownTier": "core",
+        "band": {
+          "min": 4,
+          "max": 4
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "fc8cdd7e15b28d6a643729f17ce362af387e8a9603ead95319010a069910ca18"
     },
     {
       "questionId": "g4-argon-0793",
@@ -2909,6 +3269,126 @@
         "flags": []
       },
       "levelAssessmentHash": "0ac875be484dc538615ebef9c979af78c852e0eb2c151ad9dce3145b0156b80d"
+    },
+    {
+      "questionId": "g4-argon-0798",
+      "revision": 3,
+      "contentHash": "6872025ffc4011b56f45a59e0a10d4d7261d1db0e8421d3ebe6cb02a6d840da9",
+      "precomputed": {
+        "typeBase": 2,
+        "lengthBump": 1,
+        "t3Base": 0,
+        "readingLoad": 84,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g4-argon-0798",
+          "revision": 3,
+          "contentHash": "6872025ffc4011b56f45a59e0a10d4d7261d1db0e8421d3ebe6cb02a6d840da9",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 0,
+          "L2": 1,
+          "T1": 1,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "저학년부터 일상에서 쓰는 투명한 생활 한자어 ‘순서’의 쓰임을 묻고, 물리적 측정 범주 오류 오답 2개와 ‘동시 출발’의 논리 모순 오답 1개로 구성됨."
+        },
+        {
+          "questionId": "g4-argon-0798",
+          "revision": 3,
+          "contentHash": "6872025ffc4011b56f45a59e0a10d4d7261d1db0e8421d3ebe6cb02a6d840da9",
+          "judge": "codex",
+          "model": "gpt-6-astra",
+          "L1": 0,
+          "L2": 1,
+          "T1": 1,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "학교생활에서 일찍 접하는 생활 한자어이며, 앞뒤 차례를 언급한 오답이 하나 있지만 키에 따라 줄을 서는 직접 행동 단서가 있다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 1,
+        "T": 4,
+        "V": 6,
+        "ownTier": "core",
+        "band": {
+          "min": 4,
+          "max": 4
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "98eb9dd1548ffab4dca4a52379d39947bfa6c045177c7b639eb7aa0991d7b22a"
+    },
+    {
+      "questionId": "g4-argon-0798",
+      "revision": 4,
+      "contentHash": "6d7139658b938cca27b3c543895c99b31bde491a250c2999a475fa896339ec96",
+      "precomputed": {
+        "typeBase": 2,
+        "lengthBump": 1,
+        "t3Base": 0,
+        "readingLoad": 84,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g4-argon-0798",
+          "revision": 4,
+          "contentHash": "6d7139658b938cca27b3c543895c99b31bde491a250c2999a475fa896339ec96",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 0,
+          "L2": 1,
+          "T1": 1,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "‘순서’는 학교·일상생활에서 일찍부터 자주 쓰이는 투명한 생활 한자어이며, 직접 단서가 드러난 단문에서 중심 의미의 바른 쓰임을 같은 의미장 오답 1개와 범주 오류 오답 2개 사이에서 가려내는 초등 적합 문항이다."
+        },
+        {
+          "questionId": "g4-argon-0798",
+          "revision": 4,
+          "contentHash": "6d7139658b938cca27b3c543895c99b31bde491a250c2999a475fa896339ec96",
+          "judge": "codex",
+          "model": "gpt-6-astra",
+          "L1": 0,
+          "L2": 1,
+          "T1": 1,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "학교생활에서 일찍 접하는 투명한 생활 한자어로, 앞뒤 차례를 언급한 오답 하나가 경쟁하지만 키를 기준으로 줄을 서는 직접 행동 단서로 바른 쓰임을 판단할 수 있다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 1,
+        "T": 4,
+        "V": 6,
+        "ownTier": "core",
+        "band": {
+          "min": 4,
+          "max": 4
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "057cdc57df573a3be91c029ab1654786fe3644dc3f577b63194fdb6c4ff9fb91"
     },
     {
       "questionId": "g4-argon-0799",

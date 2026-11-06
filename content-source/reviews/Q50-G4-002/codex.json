@@ -128,6 +128,28 @@
       ]
     },
     {
+      "questionId": "g4-argon-0057",
+      "revision": 2,
+      "contentHash": "3abf49ceae5f6b6518d15d23edd809aaec423533a62d1f105ff57b6969f6a564",
+      "run": {
+        "id": "20261106T045931601Z-9703-aeffb655-6d2d-4777-96be-116d22cd542c",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "c",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": [
+        "[블라인드] 온 정성을 다하여 힘쓰는 태도와 반대되는 표현은 대충 하며 게으름을 피운다는 c입니다. 반대되는 ‘표현’을 묻고 있어 명사와 설명형 보기의 대응도 적절합니다.",
+        "[공개 대조] c는 근거에 제시된 ‘온 정성을 다하여 힘씀’과 반대되는 표현으로 유일하게 적절합니다. 반대 표현을 묻는 형식이 명확하고 해설과 오답 이유도 맞습니다."
+      ]
+    },
+    {
       "questionId": "g4-argon-0058",
       "revision": 1,
       "contentHash": "d18dcbff87dce4573819919a09aa10503e348a585881df56cdda6d2fa0390e15",
@@ -177,6 +199,25 @@
         "[블라인드] a가 가장 명확하지만 c와 d도 가방이나 신발을 둔 모습이 자연스럽다는 생략 문장으로 읽힐 여지가 있습니다. c와 d를 ‘억지로 웃어 표정이 어색한데 자연스럽다’처럼 뜻의 충돌이 분명한 문장으로 바꾸십시오.",
         "[공개 대조] a는 근거와 일치하지만 c와 d도 물건을 둔 모습이나 행동이 자연스럽다는 생략 문장으로 해석할 수 있어 1단계의 복수 가능성 판단이 해소되지 않습니다. c와 d를 ‘억지로 웃어 표정이 어색한데도 자연스럽다’처럼 의미 충돌이 분명한 문장으로 바꾸고, 오답 이유도 단순한 호응 문제가 아닌 그 충돌을 설명하도록 고치십시오."
       ]
+    },
+    {
+      "questionId": "g4-argon-0060",
+      "revision": 2,
+      "contentHash": "6473f060c571f920009849c5ccf41aab1bcfb712908ff51a272293da448ea392",
+      "run": {
+        "id": "20261106T091046328Z-60403-7af1b236-eba7-4e12-866e-6448629be271",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "a",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": []
     },
     {
       "questionId": "g4-argon-0061",
@@ -247,6 +288,28 @@
       ]
     },
     {
+      "questionId": "g4-argon-0064",
+      "revision": 2,
+      "contentHash": "ff978ed6f4f437dbebc45017120889a2509c3127c6632c86865539cbe87e0c69",
+      "run": {
+        "id": "20261106T045931601Z-9703-aeffb655-6d2d-4777-96be-116d22cd542c",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "a",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": [
+        "[블라인드] 지혜롭게 문제를 해결한 사람을 설명하는 a가 맞습니다. 판단 능력과 무관한 자연물이나 생각 없는 행동을 설명한 보기와 구별됩니다.",
+        "[공개 대조] 지혜롭게 문제를 해결한 민수를 설명하는 a만 제시된 뜻에 맞습니다. 다른 보기에는 지혜로운 판단을 나타내는 내용이 없으며 해설도 문항의 일반적인 용법에 부합합니다."
+      ]
+    },
+    {
       "questionId": "g4-argon-0065",
       "revision": 1,
       "contentHash": "58d041e551e17348ea742b0f818eb6a22061ca47e6219a11549f4a615fb2ede6",
@@ -298,6 +361,47 @@
       ]
     },
     {
+      "questionId": "g4-argon-0067",
+      "revision": 3,
+      "contentHash": "c7c21d4f26837eaa4eb117add58a8f302f58dd7d5cb17ea3142afc1420b550cf",
+      "run": {
+        "id": "20261106T045931601Z-9703-aeffb655-6d2d-4777-96be-116d22cd542c",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "multiple",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "fail",
+        "grade": "uncertain",
+        "language": "pass",
+        "explanation": "fail"
+      },
+      "findings": [
+        "[블라인드] c가 적절하지만, a도 정기적으로 잡힌 약속을 마음대로 변경했다는 뜻으로 해석할 수 있어 ‘규칙적’의 오용이라고 단정하기 어렵습니다. a를 ‘아무런 주기도 없이 생기는 규칙적 진동’처럼 주기성을 명확히 부정하는 표현으로 바꾸고, 단순 용례 구별 수준인 challenge 표기도 재조정하세요.",
+        "[공개 대조] c는 근거에 맞지만 a도 정기적인 약속을 마음대로 바꾸었다는 뜻으로 성립하며, 오답 이유는 원문에 없는 ‘자꾸’를 추가하므로 1단계의 복수 답 판단이 유지됩니다. a를 ‘시간 간격도 순서도 전혀 일정하지 않은 규칙적 움직임이다’처럼 질서를 명시적으로 부정하는 보기로 바꾸고 오답 이유를 맞추며, 단순 용례 구별인 현재 challenge 난도도 낮추세요."
+      ]
+    },
+    {
+      "questionId": "g4-argon-0067",
+      "revision": 4,
+      "contentHash": "6dc4ddbcd5d8428167e875dfb9fad740a77766761fbb9f31b89dab23f95b8e5f",
+      "run": {
+        "id": "20261106T104143360Z-62018-44ed315d-011d-4c3b-99bc-4b9e18476cf2",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "c",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": []
+    },
+    {
       "questionId": "g4-argon-0068",
       "revision": 1,
       "contentHash": "8e5be240a4b5703c97a1dfbe7198a76b606f3c252518e76871ba68f55e415423",
@@ -315,6 +419,25 @@
       ]
     },
     {
+      "questionId": "g4-argon-0068",
+      "revision": 2,
+      "contentHash": "6b056335307991b9857f004a32aaec37d46126580b1eb0bf1d08aae5d10ec178",
+      "run": {
+        "id": "20261106T091046328Z-60403-7af1b236-eba7-4e12-866e-6448629be271",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "b",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": []
+    },
+    {
       "questionId": "g4-argon-0069",
       "revision": 1,
       "contentHash": "ff93ccef5e9bf89161ebc829de34527a1ea4932e77627c6da694b6c0a99e1a0c",
@@ -330,6 +453,25 @@
         "[블라인드] 포근한 봄 날씨를 설명하는 c만 온화한 날씨에 해당합니다. 뜻의 범위를 미리 알려 주고 오답도 쉽게 배제되므로 challenge보다는 core 수준이 적절합니다.",
         "[공개 대조] c만 포근한 날씨를 나타내어 근거 및 해설과 맞습니다. 날씨라는 의미 범위를 미리 제시하고 오답이 뚜렷하게 부적절하므로 challenge보다 core로 조정하는 것이 적절합니다."
       ]
+    },
+    {
+      "questionId": "g4-argon-0069",
+      "revision": 2,
+      "contentHash": "f7190d617c71474f1f441945c86361bc041f1a0289cfa8f2bd6eeeebcff76a62",
+      "run": {
+        "id": "20261106T091046328Z-60403-7af1b236-eba7-4e12-866e-6448629be271",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "c",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": []
     },
     {
       "questionId": "g4-argon-0070",
@@ -417,6 +559,47 @@
       ]
     },
     {
+      "questionId": "g4-argon-0074",
+      "revision": 2,
+      "contentHash": "59895bc79b00d80707c47c2fbc928e545cbd789a6bf7887d918187f8a2b5fe5d",
+      "run": {
+        "id": "20261106T045931601Z-9703-aeffb655-6d2d-4777-96be-116d22cd542c",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "multiple",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "fail",
+        "grade": "uncertain",
+        "language": "pass",
+        "explanation": "fail"
+      },
+      "findings": [
+        "[블라인드] a 외에 c도 기존 규칙을 따를 수 없어서 그 규칙을 없애자는 의견에 찬성했다는 뜻으로 성립합니다. c의 대사를 ‘그 규칙을 없애는 데에는 동의하지 않아요’로 명확히 하고, 기본적인 찬반 구별에 해당하므로 challenge보다 낮은 난도로 조정하세요.",
+        "[공개 대조] a는 사전 뜻에 맞지만 c도 기존 규칙을 따를 수 없어 폐지에 찬성했다는 뜻으로 성립하므로 1단계의 복수 답 판단이 유지되며, c의 오답 이유도 거절 대상을 잘못 단정합니다. c의 대사를 ‘그 규칙을 없애는 데에는 동의하지 않아요’로 고치고 설명을 맞추며, 기본적인 찬반 구별 수준에 맞게 challenge 난도를 낮추세요."
+      ]
+    },
+    {
+      "questionId": "g4-argon-0074",
+      "revision": 3,
+      "contentHash": "8958b2865ba77d013b2165096227cba86ff02e3d7392c87b43d49f045b19e939",
+      "run": {
+        "id": "20261106T104143360Z-62018-44ed315d-011d-4c3b-99bc-4b9e18476cf2",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "a",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": []
+    },
+    {
       "questionId": "g4-argon-0075",
       "revision": 2,
       "contentHash": "9b7119ca838843e5411f683596fe4ced40811a8e2f8a9c8da26f186bb3911bb8",
@@ -483,6 +666,47 @@
         "[블라인드] 능력 밖의 일에 욕심내지 말라는 뜻에 맞는 속담은 c뿐입니다. 다른 보기에 임의로 말을 덧붙였으므로 a는 ‘돌다리도 두들겨 보고 건너라’, b는 ‘우물을 파도 한 우물을 파라’, d는 ‘떡 본 김에 제사 지낸다’처럼 통용되는 형태로 고치십시오.",
         "[공개 대조] c의 뜻은 제공된 속담 근거와 일치하고 다른 속담의 취지와도 구별됩니다. 오답 속담에 임의의 표현이 덧붙어 있으므로 a는 ‘돌다리도 두들겨 보고 건너라’, b는 ‘우물을 파도 한 우물을 파라’, d는 ‘떡 본 김에 제사 지낸다’로 고치십시오."
       ]
+    },
+    {
+      "questionId": "g4-argon-0078",
+      "revision": 2,
+      "contentHash": "a2cac9805809d6812c21d0dfcdaf27cd25158bd1e4b2e300a9a1a49176619a99",
+      "run": {
+        "id": "20261106T045931601Z-9703-aeffb655-6d2d-4777-96be-116d22cd542c",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "c",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": [
+        "[블라인드] 능력 밖의 불가능한 일에 욕심내지 말라는 뜻은 c에 해당합니다. 속담의 뜻을 묻는 형식이며 다른 보기와 의미가 구별됩니다.",
+        "[공개 대조] 능력 밖의 불가능한 일에 욕심내지 말라는 뜻은 c이며 제공된 속담 뜻과 일치합니다. 다른 속담과 의미가 구별되고 해설과 오답 이유도 적절합니다."
+      ]
+    },
+    {
+      "questionId": "g4-argon-0078",
+      "revision": 3,
+      "contentHash": "6dbc106807ffdcb56b791d5e6ea27f52f8bf67641cf6d46c73ef7396a377d937",
+      "run": {
+        "id": "20261106T104143360Z-62018-44ed315d-011d-4c3b-99bc-4b9e18476cf2",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "c",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": []
     },
     {
       "questionId": "g4-argon-0079",
@@ -587,6 +811,28 @@
       ]
     },
     {
+      "questionId": "g4-argon-0084",
+      "revision": 2,
+      "contentHash": "323281fbb573d0f85d3db94fc817e458a9fa889f9600b5e37c0c4f5b3eb916bd",
+      "run": {
+        "id": "20261106T045931601Z-9703-aeffb655-6d2d-4777-96be-116d22cd542c",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "d",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": [
+        "[블라인드] 친구가 우산을 씌워 준 배려에 고마움을 느끼므로 d가 맞습니다. 형용사 용법과 뜻풀이가 자연스럽게 대응합니다.",
+        "[공개 대조] d는 제시된 형용사 뜻인 ‘고마운 마음이 있다’와 일치하며 친구의 배려를 받은 상황에도 맞습니다. 다른 감정과 구별되는 해설이 타당하고 basic 난도도 적절합니다."
+      ]
+    },
+    {
       "questionId": "g4-argon-0085",
       "revision": 1,
       "contentHash": "be71534278a4e4cdb645fc9ce3577860403a9d78a401ae4ab87168ce0e77088d",
@@ -638,6 +884,28 @@
       ]
     },
     {
+      "questionId": "g4-argon-0087",
+      "revision": 3,
+      "contentHash": "c7c7d9162e891997ebc48168ba52cc6a7951d8f3139919a5ad649aacb738c3da",
+      "run": {
+        "id": "20261106T045931601Z-9703-aeffb655-6d2d-4777-96be-116d22cd542c",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "d",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": [
+        "[블라인드] 재물을 탐내지 않는 성품이라는 문맥에서 욕심이 없고 마음이 깨끗하다는 d가 맞습니다. 음식 맛에 관한 의미와 구별하므로 polysemy 분류가 적절합니다.",
+        "[공개 대조] 재물을 탐내지 않는 성품이라는 문맥에 d만 맞으며 제시된 첫 번째 뜻과 일치합니다. 음식 맛과 성품의 의미를 구별하므로 polysemy 분류가 적절하고 해설도 정확합니다."
+      ]
+    },
+    {
       "questionId": "g4-argon-0088",
       "revision": 1,
       "contentHash": "8585802eb2f2418579f56ccb413bc91d48695b2f3e98ce968878d268b4915937",
@@ -672,6 +940,28 @@
       ]
     },
     {
+      "questionId": "g4-argon-0089",
+      "revision": 3,
+      "contentHash": "afa91cc4d899ad4968937962d95e8161bf7cc172f22d52215c0c3b6b87ef7f7a",
+      "run": {
+        "id": "20261106T045931601Z-9703-aeffb655-6d2d-4777-96be-116d22cd542c",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "c",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": [
+        "[블라인드] 싹이 돋기를 설레며 바라는 상황에는 ‘기대했습니다’가 맞습니다. ‘기대었습니다’와의 형태·의미 차이를 묻고 있어 confusable 분류도 적절합니다.",
+        "[공개 대조] 싹이 돋기를 설레며 바라는 상황에는 c만 맞으며 제시된 동사 뜻과 일치합니다. ‘기대다’의 활용형과 구별하는 confusable 분류가 적절하고 오답 설명도 타당합니다."
+      ]
+    },
+    {
       "questionId": "g4-argon-0090",
       "revision": 1,
       "contentHash": "c089eb2fbbaae0569ea2bb669f9ee03ce269aac32a8328ef346a714a0005f8c8",
@@ -686,6 +976,28 @@
       "findings": [
         "[블라인드] 밭에서 따는 빨갛고 새콤달콤한 열매라는 단서가 딸기를 가리킵니다. 강원도 화자의 대화와 구체적인 상황이 함께 제시되어 방언 문항으로 적절합니다.",
         "[공개 대조] b는 제공된 방언 뜻과 일치하고 강원 지역도 근거에 포함되며 대화와 상황 단서가 충분합니다. 포도를 보랏빛으로만 설명하는 d의 오답 이유는 붉거나 초록색인 포도를 배제하므로 ‘포도는 덩굴에 송이로 열리는 과일이며 딸구가 가리키는 딸기와 다릅니다’로 고치십시오."
+      ]
+    },
+    {
+      "questionId": "g4-argon-0090",
+      "revision": 2,
+      "contentHash": "d38987d05a20367f48356bb870f8d42a7dea0b136514cfc08f4da74a646e0296",
+      "run": {
+        "id": "20261106T045931601Z-9703-aeffb655-6d2d-4777-96be-116d22cd542c",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "b",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": [
+        "[블라인드] 밭에서 따는 빨갛고 새콤달콤한 열매라는 상황과 ‘딸구’에 대응하는 보기는 딸기입니다. 강원도 할머니의 대화가 포함되어 방언 문항의 문맥 요건을 충족합니다.",
+        "[공개 대조] 제공된 근거에서 ‘딸구’는 딸기의 방언이므로 b가 맞고 강원 지역 표기도 일치합니다. 빨갛고 새콤달콤한 열매라는 상황과 대화가 뜻을 뒷받침하며 해설도 부합합니다."
       ]
     },
     {
@@ -757,6 +1069,28 @@
       ]
     },
     {
+      "questionId": "g4-argon-0094",
+      "revision": 2,
+      "contentHash": "6970d5dc07727315e880026ebca472bb66abd86b7bb95a1f0160b2f376eb766d",
+      "run": {
+        "id": "20261106T045931601Z-9703-aeffb655-6d2d-4777-96be-116d22cd542c",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "a",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": [
+        "[블라인드] 개구리 알에서 깨어나 꼬리로 헤엄치는 생물은 올챙이입니다. 관찰 상황과 대화가 있어 뜻을 추론할 수 있습니다.",
+        "[공개 대조] 개구리 알에서 깨어나 꼬리로 헤엄치는 생물은 a이며 제공된 전라 방언 뜻과 일치합니다. 관찰 상황과 대화가 충분한 단서를 주고 오답의 생물 분류를 설명한 내용도 적절합니다."
+      ]
+    },
+    {
       "questionId": "g4-argon-0095",
       "revision": 2,
       "contentHash": "6c289cf1cecf7611c330c3caebd7d7a001db489ca7079995ea561a19b2a70ca3",
@@ -788,6 +1122,28 @@
       "findings": [
         "[블라인드] 바지에서 동전을 넣어 두는 부분은 c가 설명하는 주머니입니다. 보기 a의 ‘목 둘레’와 b의 ‘허리 둘레’는 각각 ‘목둘레’와 ‘허리둘레’로 붙여 쓰십시오.",
         "[공개 대조] c는 호주머니를 설명하며 제공된 충남 방언 근거는 충청이라는 지역 분류에 포함됩니다. 보기와 오답 이유의 ‘목 둘레’, ‘허리 둘레’는 각각 ‘목둘레’, ‘허리둘레’로 붙여 쓰십시오."
+      ]
+    },
+    {
+      "questionId": "g4-argon-0096",
+      "revision": 3,
+      "contentHash": "b665454d67861a88b38791631c9b1ec9b2809ab298e4735590d1d0d53d436c94",
+      "run": {
+        "id": "20261106T045931601Z-9703-aeffb655-6d2d-4777-96be-116d22cd542c",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "c",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": [
+        "[블라인드] 바지에 동전을 넣어 두는 부분이므로 소지품을 담는 부분을 설명한 c가 맞습니다. 보기들이 옷의 부분을 비슷한 길이로 설명하고 있어 형식적 단서도 두드러지지 않습니다.",
+        "[공개 대조] c는 근거의 ‘호주머니’를 풀어 쓴 뜻으로 바지에 동전을 넣는 문맥에 맞습니다. 근거의 충남은 충청 지역에 포함되며 보기 길이와 표현이 고르고 해설도 적절합니다."
       ]
     },
     {
@@ -839,6 +1195,28 @@
       "findings": [
         "[블라인드] 방망이로 금은보화를 만들어 내는 옛이야기 속 존재는 도깨비입니다. 이야기와 대화가 방언의 뜻을 충분히 뒷받침합니다.",
         "[공개 대조] a는 제공된 방언 뜻과 일치하며 전라 지역 및 옛이야기 상황도 적절합니다. 산신령에게 뿔과 방망이가 없다고 단정하는 오답 이유는 이야기 속 존재의 모습을 획일화하므로 ‘산신령은 산을 지키는 신령을 뜻하며 도채비가 가리키는 도깨비와 다릅니다’로 고치십시오."
+      ]
+    },
+    {
+      "questionId": "g4-argon-0099",
+      "revision": 2,
+      "contentHash": "08ec648c13667aed517c65218def04191cbe7c26f825d67a460902974b078d13",
+      "run": {
+        "id": "20261106T045931601Z-9703-aeffb655-6d2d-4777-96be-116d22cd542c",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "a",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": [
+        "[블라인드] 방망이로 금은보화를 만들어 내는 옛날이야기 속 존재라는 설명에 도깨비가 맞습니다. 이야기와 대화가 방언의 의미를 이해할 단서를 제공합니다.",
+        "[공개 대조] a는 제공된 방언 뜻과 일치하며 전라도 근거의 사용 지역에 포함됩니다. 옛날이야기와 요술 방망이의 상황이 뜻을 뒷받침하고 해설과 오답 이유도 문맥에 맞습니다."
       ]
     },
     {

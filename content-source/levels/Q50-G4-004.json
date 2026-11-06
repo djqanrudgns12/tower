@@ -63,6 +63,66 @@
       "levelAssessmentHash": "1566dc5027b37d4b0d0f3affdbb87148df4b4c58b682ea09d50f782deb32677f"
     },
     {
+      "questionId": "g4-argon-0151",
+      "revision": 3,
+      "contentHash": "ab2f05be567ed6226d631a1986650870fdcb592f7916c309bfb538f1c12eb285",
+      "precomputed": {
+        "typeBase": 0,
+        "lengthBump": 1,
+        "t3Base": 0,
+        "readingLoad": 73,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g4-argon-0151",
+          "revision": 3,
+          "contentHash": "ab2f05be567ed6226d631a1986650870fdcb592f7916c309bfb538f1c12eb285",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 1,
+          "L2": 1,
+          "T1": 1,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "3~4학년 빈출 동사의 적극적 시작 의미를 묻고 발 벗고 나섰다는 직접 단서로 반의 선택지를 소거할 수 있다."
+        },
+        {
+          "questionId": "g4-argon-0151",
+          "revision": 3,
+          "contentHash": "ab2f05be567ed6226d631a1986650870fdcb592f7916c309bfb538f1c12eb285",
+          "judge": "codex",
+          "model": "gpt-6-astra",
+          "L1": 1,
+          "L2": 1,
+          "T1": 2,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:뜻 번호 2",
+          "reason": "공간 이동이 아닌 적극적인 착수라는 확장 뜻이며, 발 벗고라는 표현이 참여 태도의 직접 단서다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 2,
+        "T": 3,
+        "V": 7,
+        "ownTier": "core",
+        "band": {
+          "min": 4,
+          "max": 4
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "32fe52067034eccdfa63c88cea0adf7acf53aeb8546db80cc77e5f5a97e059ee"
+    },
+    {
       "questionId": "g4-argon-0152",
       "revision": 1,
       "contentHash": "6bd923da582502efdba2c517c74f84aa3c9478b938a0340d74daec1407db8e12",
@@ -673,6 +733,68 @@
       "levelAssessmentHash": "b5cd7ba66bad9fc88b0112633a6af6922636fa21f4ce850263052dc62885b94e"
     },
     {
+      "questionId": "g4-argon-0161",
+      "revision": 3,
+      "contentHash": "bed2e05238cfde526985caf165679755cc3b264c0f8485198f2bf79a7c6b8e10",
+      "precomputed": {
+        "typeBase": 0,
+        "lengthBump": 0,
+        "t3Base": 0,
+        "readingLoad": 65,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g4-argon-0161",
+          "revision": 3,
+          "contentHash": "bed2e05238cfde526985caf165679755cc3b264c0f8485198f2bf79a7c6b8e10",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 1,
+          "L2": 0,
+          "T1": 1,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "구체 감각·동작 고유어 사동사이며 어두워진 뒤 환해졌다는 직접 인과 단서로 반대 동작 오답과 구별된다."
+        },
+        {
+          "questionId": "g4-argon-0161",
+          "revision": 3,
+          "contentHash": "bed2e05238cfde526985caf165679755cc3b264c0f8485198f2bf79a7c6b8e10",
+          "judge": "codex",
+          "model": "gpt-6-astra",
+          "L1": 1,
+          "L2": 0,
+          "T1": 1,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:뜻 번호 2",
+          "reason": "등불에 불을 켜는 구체적 동작으로, 어두워졌다가 환해진다는 결과가 정답을 직접 뒷받침한다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 1,
+        "T": 1,
+        "V": 3,
+        "ownTier": "basic",
+        "band": {
+          "min": 4,
+          "max": 4
+        },
+        "flags": [
+          "too_easy"
+        ]
+      },
+      "levelAssessmentHash": "85a415e5c53d8d541740d53af0700f3d169d102d9ad5b44662e59a1ff3d3c62e"
+    },
+    {
       "questionId": "g4-argon-0162",
       "revision": 1,
       "contentHash": "9836f10bee666760bfd87c67c0f8a5f167b27665893bbb62a8d8e570cb3e0856",
@@ -1101,6 +1223,66 @@
         "flags": []
       },
       "levelAssessmentHash": "41adc26a8aa83175ca475b3b418ae1af875a0183b38654375f34b03168f7fa6c"
+    },
+    {
+      "questionId": "g4-argon-0168",
+      "revision": 3,
+      "contentHash": "6eddb3bfd7e9f5aacb4aad4f25e48e9cfeb6a7a4086451823c7c639e5840f455",
+      "precomputed": {
+        "typeBase": 0,
+        "lengthBump": 1,
+        "t3Base": 0,
+        "readingLoad": 73,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g4-argon-0168",
+          "revision": 3,
+          "contentHash": "6eddb3bfd7e9f5aacb4aad4f25e48e9cfeb6a7a4086451823c7c639e5840f455",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 1,
+          "L2": 1,
+          "T1": 1,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "감정·평가 파생 형용사로 생생하게 그려 낸 솜씨라는 직접 단서가 있고 오답이 부정 평가어로 구성되어 있다."
+        },
+        {
+          "questionId": "g4-argon-0168",
+          "revision": 3,
+          "contentHash": "6eddb3bfd7e9f5aacb4aad4f25e48e9cfeb6a7a4086451823c7c639e5840f455",
+          "judge": "codex",
+          "model": "gpt-6-astra",
+          "L1": 1,
+          "L2": 1,
+          "T1": 2,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:뜻 번호 1",
+          "reason": "솜씨에 대한 감탄을 나타내며, 세 오답은 모두 낮은 평가이고 잎맥까지 생생하게 그렸다는 직접 단서가 있다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 2,
+        "T": 3,
+        "V": 7,
+        "ownTier": "core",
+        "band": {
+          "min": 4,
+          "max": 4
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "9c2e3c8f768fa0655ec4575bef18ea9e1b1487cd36d1bebbd452e121290e9526"
     },
     {
       "questionId": "g4-argon-0169",
@@ -1953,6 +2135,68 @@
         ]
       },
       "levelAssessmentHash": "958f90e7471ee11047cfc664ee014bcd1168300018d8a8e4afce16072e87fc61"
+    },
+    {
+      "questionId": "g4-argon-0182",
+      "revision": 2,
+      "contentHash": "5444c45b0aab151cbf6bbd2a1deec997102434a8547aebbf0d3a372a8500d964",
+      "precomputed": {
+        "typeBase": 0,
+        "lengthBump": 2,
+        "t3Base": 1,
+        "readingLoad": 100,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g4-argon-0182",
+          "revision": 2,
+          "contentHash": "5444c45b0aab151cbf6bbd2a1deec997102434a8547aebbf0d3a372a8500d964",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 2,
+          "L2": 2,
+          "T1": 2,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "문어적 한자 형용사의 다의 확장 의미인 성품을 묻고 날씨 의미 및 반의 오답과 구별해야 하나 직접 단서가 있다."
+        },
+        {
+          "questionId": "g4-argon-0182",
+          "revision": 2,
+          "contentHash": "5444c45b0aab151cbf6bbd2a1deec997102434a8547aebbf0d3a372a8500d964",
+          "judge": "codex",
+          "model": "gpt-6-astra",
+          "L1": 1,
+          "L2": 1,
+          "T1": 2,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:뜻 번호 2",
+          "reason": "성품을 나타내는 상태 어휘로, 날씨의 따뜻함과 성격의 부드러움을 미소로 대하는 행동을 통해 구별한다."
+        }
+      ],
+      "merged": {
+        "rule": 4,
+        "L": 4,
+        "T": 5,
+        "V": 13,
+        "ownTier": "challenge",
+        "band": {
+          "min": 4,
+          "max": 4
+        },
+        "flags": [
+          "spotCheck"
+        ]
+      },
+      "levelAssessmentHash": "006e289d498407ac0478e5885d71f28dcae91f472b415236092ad7dc1751d8d8"
     },
     {
       "questionId": "g4-argon-0183",
