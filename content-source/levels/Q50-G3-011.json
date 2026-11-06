@@ -1,0 +1,3264 @@
+{
+  "batchId": "Q50-G3-011",
+  "rubricVersion": "lv1",
+  "items": [
+    {
+      "questionId": "g3-argon-0451",
+      "revision": 1,
+      "contentHash": "c4f2b525a51d78cd1602780dffc59fbfa6ee0151a6a66a924fbcfe411b27895c",
+      "precomputed": {
+        "typeBase": 0,
+        "lengthBump": 0,
+        "t3Base": 0,
+        "readingLoad": 33,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g3-argon-0451",
+          "revision": 1,
+          "contentHash": "c4f2b525a51d78cd1602780dffc59fbfa6ee0151a6a66a924fbcfe411b27895c",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 0,
+          "L2": 0,
+          "T1": 1,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "기초 위생 동작 고유어의 제1의미를 직접 행동 단서로 묻고 반의 동작 오답 1개를 포함한 문항이다."
+        },
+        {
+          "questionId": "g3-argon-0451",
+          "revision": 1,
+          "contentHash": "c4f2b525a51d78cd1602780dffc59fbfa6ee0151a6a66a924fbcfe411b27895c",
+          "judge": "codex",
+          "model": "gpt-6-astra",
+          "L1": 0,
+          "L2": 0,
+          "T1": 1,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "기초 생활 동작어이며 비누와 때라는 직접 단서가 있고, ‘묻히다’가 반대 방향의 오답이다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 0,
+        "T": 1,
+        "V": 1,
+        "ownTier": "basic",
+        "band": {
+          "min": 3,
+          "max": 3
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "d2d7c63261878d8029e1adea884c802855fcb85feffbc43d9e678be2eb194961"
+    },
+    {
+      "questionId": "g3-argon-0452",
+      "revision": 1,
+      "contentHash": "c43966c35c857dc97153ddb998f2558ca26a49ade406b231610e982cfcfc405c",
+      "precomputed": {
+        "typeBase": 1,
+        "lengthBump": 0,
+        "t3Base": 0,
+        "readingLoad": 55,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g3-argon-0452",
+          "revision": 1,
+          "contentHash": "c43966c35c857dc97153ddb998f2558ca26a49ade406b231610e982cfcfc405c",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 0,
+          "L2": 0,
+          "T1": 2,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "기초 청소 동작 고유어의 반의어를 묻되 오답 3개가 모두 유의·유사 행동으로 구성되어 유의·반의 경계 변별이 필요하다."
+        },
+        {
+          "questionId": "g3-argon-0452",
+          "revision": 1,
+          "contentHash": "c43966c35c857dc97153ddb998f2558ca26a49ade406b231610e982cfcfc405c",
+          "judge": "codex",
+          "model": "gpt-6-astra",
+          "L1": 0,
+          "L2": 0,
+          "T1": 2,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "curriculum_explicit",
+          "unit": "[4국04-01] 단어와 단어 간의 의미 관계",
+          "reason": "익숙한 청소 동작어지만 모으기·밀어 치우기·닦기의 유사 행동과 반대 행동을 구별해야 한다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 0,
+        "T": 3,
+        "V": 3,
+        "ownTier": "core",
+        "band": {
+          "min": 3,
+          "max": 3
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "9f37d49aa6ec8165a71447816a5744c4f85a68a70d8925c8636154c2ebdc06f2"
+    },
+    {
+      "questionId": "g3-argon-0453",
+      "revision": 1,
+      "contentHash": "8ceab974f0c6958f72d269a26c257371aae1eb52d2c0783846b665dfc7371157",
+      "precomputed": {
+        "typeBase": 0,
+        "lengthBump": 1,
+        "t3Base": 0,
+        "readingLoad": 76,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g3-argon-0453",
+          "revision": 1,
+          "contentHash": "8ceab974f0c6958f72d269a26c257371aae1eb52d2c0783846b665dfc7371157",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 0,
+          "L2": 0,
+          "T1": 1,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "기초 미각·후각 고유어의 제1의미를 직접 단서와 함께 묻고 다른 기본 맛 어휘들을 오답으로 두었다."
+        },
+        {
+          "questionId": "g3-argon-0453",
+          "revision": 1,
+          "contentHash": "8ceab974f0c6958f72d269a26c257371aae1eb52d2c0783846b665dfc7371157",
+          "judge": "codex",
+          "model": "gpt-6-astra",
+          "L1": 0,
+          "L2": 0,
+          "T1": 1,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "일상적인 감각 고유어이며 오답도 맛의 의미장에 속하지만 짠맛·신맛·매운맛의 구별은 선명하다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 0,
+        "T": 2,
+        "V": 2,
+        "ownTier": "core",
+        "band": {
+          "min": 3,
+          "max": 3
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "5e1131aee1ddf7728c3cbe55b50764c4cde198901e4673bca450cdf58239d95f"
+    },
+    {
+      "questionId": "g3-argon-0454",
+      "revision": 1,
+      "contentHash": "c7a964e6c92c6e4afca3d3398c548a836ce53dfe1388cc16b778e629be9184ae",
+      "precomputed": {
+        "typeBase": 1,
+        "lengthBump": 0,
+        "t3Base": 0,
+        "readingLoad": 51,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g3-argon-0454",
+          "revision": 1,
+          "contentHash": "c7a964e6c92c6e4afca3d3398c548a836ce53dfe1388cc16b778e629be9184ae",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 0,
+          "L2": 0,
+          "T1": 1,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "기초 동작 고유어의 제1의미 유의어를 직접 단서 문맥에서 묻고 물건 배치 의미장 오답 일부를 포함했다."
+        },
+        {
+          "questionId": "g3-argon-0454",
+          "revision": 1,
+          "contentHash": "c7a964e6c92c6e4afca3d3398c548a836ce53dfe1388cc16b778e629be9184ae",
+          "judge": "codex",
+          "model": "gpt-6-astra",
+          "L1": 0,
+          "L2": 0,
+          "T1": 1,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "curriculum_explicit",
+          "unit": "[4국04-01] 단어와 단어 간의 의미 관계",
+          "reason": "기초 배치 동작어로 놓거나 넣는 행동이 오답에 있지만 못과 ‘떨어지지 않게’가 뜻을 직접 좁힌다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 0,
+        "T": 2,
+        "V": 2,
+        "ownTier": "core",
+        "band": {
+          "min": 3,
+          "max": 3
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "e1a1557ac582e30fbc9f94cac524fc3460c82232fa551509825c05e733bddd67"
+    },
+    {
+      "questionId": "g3-argon-0455",
+      "revision": 1,
+      "contentHash": "0b75a60506902dd430337da51bf30c8b172dcc25f38f624bbd23535c12d82386",
+      "precomputed": {
+        "typeBase": 2,
+        "lengthBump": 0,
+        "t3Base": 0,
+        "readingLoad": 64,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g3-argon-0455",
+          "revision": 1,
+          "contentHash": "0b75a60506902dd430337da51bf30c8b172dcc25f38f624bbd23535c12d82386",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 0,
+          "L2": 0,
+          "T1": 0,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "기초 착탈 동작 고유어의 제1의미 쓰임을 묻고 오답 3개가 모두 무생물 주어의 부적합 문장으로 구성되었다."
+        },
+        {
+          "questionId": "g3-argon-0455",
+          "revision": 1,
+          "contentHash": "0b75a60506902dd430337da51bf30c8b172dcc25f38f624bbd23535c12d82386",
+          "judge": "codex",
+          "model": "gpt-6-astra",
+          "L1": 0,
+          "L2": 0,
+          "T1": 0,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "옷을 벗는 기초 생활어이며 외투라는 직접 단서와 성립하기 어려운 오답으로 뜻 구별 부담이 낮다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 0,
+        "T": 2,
+        "V": 2,
+        "ownTier": "core",
+        "band": {
+          "min": 3,
+          "max": 3
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "41a04a200be0e55dbbcd40efca1211a0e939f6a0229b7aaecad55adbd6101d43"
+    },
+    {
+      "questionId": "g3-argon-0456",
+      "revision": 1,
+      "contentHash": "ac3af22b160e87b04b136d825806680b59f35cd30e4321838017589e287729d6",
+      "precomputed": {
+        "typeBase": 0,
+        "lengthBump": 0,
+        "t3Base": 0,
+        "readingLoad": 27,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g3-argon-0456",
+          "revision": 1,
+          "contentHash": "ac3af22b160e87b04b136d825806680b59f35cd30e4321838017589e287729d6",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 0,
+          "L2": 0,
+          "T1": 0,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "도구 이용을 뜻하는 기초 동작 고유어의 제1의미를 직접 단서로 묻고 다른 의미장 동사들을 오답으로 제시했다."
+        },
+        {
+          "questionId": "g3-argon-0456",
+          "revision": 1,
+          "contentHash": "ac3af22b160e87b04b136d825806680b59f35cd30e4321838017589e287729d6",
+          "judge": "codex",
+          "model": "gpt-6-astra",
+          "L1": 0,
+          "L2": 0,
+          "T1": 0,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "도구를 이용하는 익숙한 기본 뜻이며 가위로 색종이를 오리는 행동이 정답을 직접 알려 준다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 0,
+        "T": 0,
+        "V": 0,
+        "ownTier": "basic",
+        "band": {
+          "min": 3,
+          "max": 3
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "2ac628d250f7273792bd5711707e71c96b052be2b33e407f61db6f1a2ed7ddb9"
+    },
+    {
+      "questionId": "g3-argon-0457",
+      "revision": 1,
+      "contentHash": "563fd508023b700aa0cb1260830b687598f5fc93dd26bdb67debb1fd9d4e3081",
+      "precomputed": {
+        "typeBase": 1,
+        "lengthBump": 0,
+        "t3Base": 0,
+        "readingLoad": 41,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g3-argon-0457",
+          "revision": 1,
+          "contentHash": "563fd508023b700aa0cb1260830b687598f5fc93dd26bdb67debb1fd9d4e3081",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 0,
+          "L2": 0,
+          "T1": 1,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "기초 이동 고유어의 제1의미 반의어를 직접 방향 단서 문맥에서 묻고 유사 방향·빛 관련 오답을 일부 포함했다."
+        },
+        {
+          "questionId": "g3-argon-0457",
+          "revision": 1,
+          "contentHash": "563fd508023b700aa0cb1260830b687598f5fc93dd26bdb67debb1fd9d4e3081",
+          "judge": "codex",
+          "model": "gpt-6-astra",
+          "L1": 0,
+          "L2": 0,
+          "T1": 2,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "curriculum_explicit",
+          "unit": "[4국04-01] 단어와 단어 간의 의미 관계",
+          "reason": "기초 이동어지만 햇살 문맥에서 ‘스미다’와 ‘비치다’의 유사 의미를 배제하고 방향의 반대를 찾아야 한다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 0,
+        "T": 3,
+        "V": 3,
+        "ownTier": "core",
+        "band": {
+          "min": 3,
+          "max": 3
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "7a64d436d786bb171af618680c150428f3fcb0ab51a5ae1b0b6ed96e40ce403b"
+    },
+    {
+      "questionId": "g3-argon-0458",
+      "revision": 1,
+      "contentHash": "298a3160a9277281fa1e600eb827fc26edacfcf982b367f172caf34248b645e2",
+      "precomputed": {
+        "typeBase": 0,
+        "lengthBump": 0,
+        "t3Base": 0,
+        "readingLoad": 53,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g3-argon-0458",
+          "revision": 1,
+          "contentHash": "298a3160a9277281fa1e600eb827fc26edacfcf982b367f172caf34248b645e2",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 0,
+          "L2": 0,
+          "T1": 0,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "기초 신체 동작 고유어의 제1의미를 묻고 서로 다른 의미장의 동작 풀이를 오답으로 구성했다."
+        },
+        {
+          "questionId": "g3-argon-0458",
+          "revision": 1,
+          "contentHash": "298a3160a9277281fa1e600eb827fc26edacfcf982b367f172caf34248b645e2",
+          "judge": "codex",
+          "model": "gpt-6-astra",
+          "L1": 0,
+          "L2": 0,
+          "T1": 1,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "공을 다루는 구체적 기본 동작이며 줍기·껴안기 등 물건을 다루는 행동과 구별한다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 0,
+        "T": 1,
+        "V": 1,
+        "ownTier": "basic",
+        "band": {
+          "min": 3,
+          "max": 3
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "16041e0a0b31254f37d9d3ba549309cdad88b3b092d6ec6214ad1927f69e34a8"
+    },
+    {
+      "questionId": "g3-argon-0459",
+      "revision": 1,
+      "contentHash": "83fc5ee2f15d2f9bc7718f7cd74f7ae7a7ecb462ccd0d0f8a5dea88ff7b0900c",
+      "precomputed": {
+        "typeBase": 1,
+        "lengthBump": 0,
+        "t3Base": 0,
+        "readingLoad": 44,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g3-argon-0459",
+          "revision": 1,
+          "contentHash": "83fc5ee2f15d2f9bc7718f7cd74f7ae7a7ecb462ccd0d0f8a5dea88ff7b0900c",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 0,
+          "L2": 0,
+          "T1": 1,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "공간 충만을 뜻하는 기초 고유어의 유의어를 직접 단서로 묻고 비움·감소 의미장 오답을 포함했다."
+        },
+        {
+          "questionId": "g3-argon-0459",
+          "revision": 1,
+          "contentHash": "83fc5ee2f15d2f9bc7718f7cd74f7ae7a7ecb462ccd0d0f8a5dea88ff7b0900c",
+          "judge": "codex",
+          "model": "gpt-6-astra",
+          "L1": 0,
+          "L2": 0,
+          "T1": 2,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "curriculum_explicit",
+          "unit": "[4국04-01] 단어와 단어 간의 의미 관계",
+          "reason": "공간이 가득한 구체적 상태이며 비워짐·줄어듦이라는 반대 의미와 비교하되 ‘빈자리 없이’가 직접 단서다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 0,
+        "T": 3,
+        "V": 3,
+        "ownTier": "core",
+        "band": {
+          "min": 3,
+          "max": 3
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "7737caf04058d9910b62f293466f635bf3ef5359f178d606720e7d575b621408"
+    },
+    {
+      "questionId": "g3-argon-0460",
+      "revision": 2,
+      "contentHash": "c7f3fe3bceba7377dc62f95658ed3986910020bc2f0759a36c0d5f1576ba76ea",
+      "precomputed": {
+        "typeBase": 1,
+        "lengthBump": 0,
+        "t3Base": 0,
+        "readingLoad": 63,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g3-argon-0460",
+          "revision": 2,
+          "contentHash": "c7f3fe3bceba7377dc62f95658ed3986910020bc2f0759a36c0d5f1576ba76ea",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 0,
+          "L2": 0,
+          "T1": 1,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "기초 위생 상태 고유어의 제1의미 유의어를 직접 행동 단서로 묻고 반대·표면 상태 오답을 일부 포함했다."
+        },
+        {
+          "questionId": "g3-argon-0460",
+          "revision": 2,
+          "contentHash": "c7f3fe3bceba7377dc62f95658ed3986910020bc2f0759a36c0d5f1576ba76ea",
+          "judge": "codex",
+          "model": "gpt-6-astra",
+          "L1": 0,
+          "L2": 0,
+          "T1": 1,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "curriculum_explicit",
+          "unit": "[4국04-01] 단어와 단어 간의 의미 관계",
+          "reason": "익숙한 위생 상태어이며 세수 단서로 청결을 찾고 물기·기름기 같은 표면 상태와 구별한다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 0,
+        "T": 2,
+        "V": 2,
+        "ownTier": "core",
+        "band": {
+          "min": 3,
+          "max": 3
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "6ae2e72886573b62ee3065b150d7559219106078dfd791184c678007b07ae277"
+    },
+    {
+      "questionId": "g3-argon-0460",
+      "revision": 3,
+      "contentHash": "3b9e8ffdc7097da1fac0ca098bf3fa62450acb831293ebbc18e3499965097235",
+      "precomputed": {
+        "typeBase": 1,
+        "lengthBump": 0,
+        "t3Base": 0,
+        "readingLoad": 63,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g3-argon-0460",
+          "revision": 3,
+          "contentHash": "3b9e8ffdc7097da1fac0ca098bf3fa62450acb831293ebbc18e3499965097235",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 0,
+          "L2": 0,
+          "T1": 1,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "기초 상태 고유어 ‘깨끗하다’의 제1의미를 세수 문맥에서 유의 표현과 연결하고 반의·표면 상태 오답과 구별한다."
+        },
+        {
+          "questionId": "g3-argon-0460",
+          "revision": 3,
+          "contentHash": "3b9e8ffdc7097da1fac0ca098bf3fa62450acb831293ebbc18e3499965097235",
+          "judge": "codex",
+          "model": "gpt-6-astra",
+          "L1": 0,
+          "L2": 0,
+          "T1": 1,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "curriculum_explicit",
+          "unit": "[4국04-01] 단어와 단어 간의 의미 관계를 파악한다.",
+          "reason": "감각적인 기초 상태어의 유의 관계를 묻고, 더럽다라는 반대 상태와 구별하며 세수 행동이 단서가 된다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 0,
+        "T": 2,
+        "V": 2,
+        "ownTier": "core",
+        "band": {
+          "min": 3,
+          "max": 3
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "c325c7c5e045823f02dc848b276d25541c9755a2ffa72a92d1227215189abff5"
+    },
+    {
+      "questionId": "g3-argon-0461",
+      "revision": 1,
+      "contentHash": "01b8a407b7c9e6ae68eaf445cb209935c8d7ab26995bf94e53baa67f3929afd0",
+      "precomputed": {
+        "typeBase": 0,
+        "lengthBump": 0,
+        "t3Base": 0,
+        "readingLoad": 35,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g3-argon-0461",
+          "revision": 1,
+          "contentHash": "01b8a407b7c9e6ae68eaf445cb209935c8d7ab26995bf94e53baa67f3929afd0",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 0,
+          "L2": 0,
+          "T1": 1,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "기초 동작 고유어의 제1의미를 직접 정의 단서로 묻고 적재·해체 의미장의 반대 동작 오답을 포함했다."
+        },
+        {
+          "questionId": "g3-argon-0461",
+          "revision": 1,
+          "contentHash": "01b8a407b7c9e6ae68eaf445cb209935c8d7ab26995bf94e53baa67f3929afd0",
+          "judge": "codex",
+          "model": "gpt-6-astra",
+          "L1": 0,
+          "L2": 0,
+          "T1": 2,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "구체적인 기본 동작으로 무너뜨리기·흩뜨리기가 반대 의미에 가깝지만 ‘차곡차곡 포개어’가 뜻을 직접 제시한다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 0,
+        "T": 2,
+        "V": 2,
+        "ownTier": "core",
+        "band": {
+          "min": 3,
+          "max": 3
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "b70db56f3bdda176a0e46677133575011f1a4a45c3a7b349c796853294d0c64b"
+    },
+    {
+      "questionId": "g3-argon-0462",
+      "revision": 1,
+      "contentHash": "f767bd06d72c8e1701e3c50f44777e7c039bb6047d0f24c92b475d01ce10a4e3",
+      "precomputed": {
+        "typeBase": 1,
+        "lengthBump": 0,
+        "t3Base": 0,
+        "readingLoad": 45,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g3-argon-0462",
+          "revision": 1,
+          "contentHash": "f767bd06d72c8e1701e3c50f44777e7c039bb6047d0f24c92b475d01ce10a4e3",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 0,
+          "L2": 0,
+          "T1": 2,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "기초 신체 동작 고유어의 반의어를 묻되 오답 3개가 모두 쓰러짐·기울어짐 유의 경계에 놓여 있다."
+        },
+        {
+          "questionId": "g3-argon-0462",
+          "revision": 1,
+          "contentHash": "f767bd06d72c8e1701e3c50f44777e7c039bb6047d0f24c92b475d01ce10a4e3",
+          "judge": "codex",
+          "model": "gpt-6-astra",
+          "L1": 0,
+          "L2": 0,
+          "T1": 2,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "curriculum_explicit",
+          "unit": "[4국04-01] 단어와 단어 간의 의미 관계",
+          "reason": "기초 신체 동작어이며 쓰러짐·기울어짐·주저앉음의 인접 의미와 반대 동작을 구별한다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 0,
+        "T": 3,
+        "V": 3,
+        "ownTier": "core",
+        "band": {
+          "min": 3,
+          "max": 3
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "0225701e88085f0f2ceac0afdcdf6e2bb94bbc33683ddd2bb7b3ea5681fc6a92"
+    },
+    {
+      "questionId": "g3-argon-0463",
+      "revision": 1,
+      "contentHash": "3e417fb1fa1e7e31906ea9d416bac0d616e76759ea980dd2d284bfe641fb5b86",
+      "precomputed": {
+        "typeBase": 0,
+        "lengthBump": 1,
+        "t3Base": 0,
+        "readingLoad": 66,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g3-argon-0463",
+          "revision": 1,
+          "contentHash": "3e417fb1fa1e7e31906ea9d416bac0d616e76759ea980dd2d284bfe641fb5b86",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 0,
+          "L2": 0,
+          "T1": 1,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "기초 신체 자세 고유어의 제1의미를 묻고 같은 자세 의미장의 기본 동작 풀이를 오답으로 포함했다."
+        },
+        {
+          "questionId": "g3-argon-0463",
+          "revision": 1,
+          "contentHash": "3e417fb1fa1e7e31906ea9d416bac0d616e76759ea980dd2d284bfe641fb5b86",
+          "judge": "codex",
+          "model": "gpt-6-astra",
+          "L1": 0,
+          "L2": 0,
+          "T1": 2,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "기초 자세어로 서기·눕기와 자세의 차이를 구별하며 의자와 엉덩이라는 구체적 단서를 활용한다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 0,
+        "T": 3,
+        "V": 3,
+        "ownTier": "core",
+        "band": {
+          "min": 3,
+          "max": 3
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "c5a99555fec3b2a487df03e15a2a5377b1ddd871bbdc0c84d647fde104bab013"
+    },
+    {
+      "questionId": "g3-argon-0464",
+      "revision": 1,
+      "contentHash": "cbc84350b258f24aaac745dd855b0904496abd59993f7950b2d0a65f64d4e21c",
+      "precomputed": {
+        "typeBase": 0,
+        "lengthBump": 0,
+        "t3Base": 0,
+        "readingLoad": 35,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g3-argon-0464",
+          "revision": 1,
+          "contentHash": "cbc84350b258f24aaac745dd855b0904496abd59993f7950b2d0a65f64d4e21c",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 0,
+          "L2": 0,
+          "T1": 1,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "기초 수수 동작 고유어의 사전적 정의를 직접 제시하고 수수 의미장의 대립 동사를 오답에 포함했다."
+        },
+        {
+          "questionId": "g3-argon-0464",
+          "revision": 1,
+          "contentHash": "cbc84350b258f24aaac745dd855b0904496abd59993f7950b2d0a65f64d4e21c",
+          "judge": "codex",
+          "model": "gpt-6-astra",
+          "L1": 0,
+          "L2": 0,
+          "T1": 2,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "기초 수수 동작어이며 주기·보내기의 반대 방향을 구별하지만 지문에 목표 뜻이 그대로 제시되어 있다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 0,
+        "T": 2,
+        "V": 2,
+        "ownTier": "core",
+        "band": {
+          "min": 3,
+          "max": 3
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "d7724e84af5dbc9c6354006c096295b7113e1849ae0ed53666c73042a595e96a"
+    },
+    {
+      "questionId": "g3-argon-0465",
+      "revision": 1,
+      "contentHash": "0c9f204f9e520857038ead2c3ead7ee8dee06741fa6aa02a48fc668136db0087",
+      "precomputed": {
+        "typeBase": 1,
+        "lengthBump": 0,
+        "t3Base": 0,
+        "readingLoad": 37,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g3-argon-0465",
+          "revision": 1,
+          "contentHash": "0c9f204f9e520857038ead2c3ead7ee8dee06741fa6aa02a48fc668136db0087",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 0,
+          "L2": 0,
+          "T1": 1,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "기초 물리 동작 고유어의 반의어를 직접 단서 문맥에서 묻고 힘·이동 관련 의미장 오답을 일부 포함했다."
+        },
+        {
+          "questionId": "g3-argon-0465",
+          "revision": 1,
+          "contentHash": "0c9f204f9e520857038ead2c3ead7ee8dee06741fa6aa02a48fc668136db0087",
+          "judge": "codex",
+          "model": "gpt-6-astra",
+          "L1": 0,
+          "L2": 0,
+          "T1": 1,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "curriculum_explicit",
+          "unit": "[4국04-01] 단어와 단어 간의 의미 관계",
+          "reason": "기초 힘 동작어이며 ‘누르다’가 인접 의미의 오답이고 뒤에서 수레를 움직이는 직접 단서가 있다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 0,
+        "T": 2,
+        "V": 2,
+        "ownTier": "core",
+        "band": {
+          "min": 3,
+          "max": 3
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "8fef352cf1aab9509a1f6bc3ed302d98842bb097321df43fe95974b4e8c784f8"
+    },
+    {
+      "questionId": "g3-argon-0466",
+      "revision": 1,
+      "contentHash": "9487aaca3f8f07a2885f812cf26da68eb95cd637fe5d9461a259fce7f3a70612",
+      "precomputed": {
+        "typeBase": 0,
+        "lengthBump": 0,
+        "t3Base": 0,
+        "readingLoad": 49,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g3-argon-0466",
+          "revision": 1,
+          "contentHash": "9487aaca3f8f07a2885f812cf26da68eb95cd637fe5d9461a259fce7f3a70612",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 0,
+          "L2": 0,
+          "T1": 0,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "기초 물리 동작 고유어의 제1의미를 묻고 결박·거상·세척 등 다른 의미장의 동작을 오답으로 두었다."
+        },
+        {
+          "questionId": "g3-argon-0466",
+          "revision": 1,
+          "contentHash": "9487aaca3f8f07a2885f812cf26da68eb95cd637fe5d9461a259fce7f3a70612",
+          "judge": "codex",
+          "model": "gpt-6-astra",
+          "L1": 0,
+          "L2": 0,
+          "T1": 1,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "사동형이지만 구체적이고 익숙한 움직임이며 들어 올리기와 회전 이동을 구별한다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 0,
+        "T": 1,
+        "V": 1,
+        "ownTier": "basic",
+        "band": {
+          "min": 3,
+          "max": 3
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "585da7f6cf26915ce8e94cafbca2f5427dfe5e7946ce94234e3ee1db5b73d71c"
+    },
+    {
+      "questionId": "g3-argon-0467",
+      "revision": 2,
+      "contentHash": "8dac2f0da9c0995e07debf29b8552a1c76031f527593abdf1ac1e15f1452268d",
+      "precomputed": {
+        "typeBase": 1,
+        "lengthBump": 0,
+        "t3Base": 0,
+        "readingLoad": 48,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g3-argon-0467",
+          "revision": 2,
+          "contentHash": "8dac2f0da9c0995e07debf29b8552a1c76031f527593abdf1ac1e15f1452268d",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 0,
+          "L2": 0,
+          "T1": 1,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "기초 상태 변화 고유어의 제1의미 유의어를 직접 상황 단서로 묻고 반대 방향 상태 오답을 포함했다."
+        },
+        {
+          "questionId": "g3-argon-0467",
+          "revision": 2,
+          "contentHash": "8dac2f0da9c0995e07debf29b8552a1c76031f527593abdf1ac1e15f1452268d",
+          "judge": "codex",
+          "model": "gpt-6-astra",
+          "L1": 0,
+          "L2": 0,
+          "T1": 2,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "curriculum_explicit",
+          "unit": "[4국04-01] 단어와 단어 간의 의미 관계",
+          "reason": "모래성의 구체적 변화이며 쌓임·높아짐의 반대 방향과 허물어짐의 유의 관계를 구별한다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 0,
+        "T": 3,
+        "V": 3,
+        "ownTier": "core",
+        "band": {
+          "min": 3,
+          "max": 3
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "753622aa545b4aa9b19b429921676807e3b92ac4d426a0634f7f8456bfe6c282"
+    },
+    {
+      "questionId": "g3-argon-0468",
+      "revision": 1,
+      "contentHash": "41b1f0a262890b953903ca0e084e1dbdd2fdfdcb739ffb5729ae4bb0f144f867",
+      "precomputed": {
+        "typeBase": 2,
+        "lengthBump": 1,
+        "t3Base": 0,
+        "readingLoad": 78,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g3-argon-0468",
+          "revision": 1,
+          "contentHash": "41b1f0a262890b953903ca0e084e1dbdd2fdfdcb739ffb5729ae4bb0f144f867",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 0,
+          "L2": 0,
+          "T1": 0,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "기초 일상 동작 고유어의 제1의미 쓰임을 묻고 오답 3개를 모두 무생물 주어의 부적합 문장으로 구성했다."
+        },
+        {
+          "questionId": "g3-argon-0468",
+          "revision": 1,
+          "contentHash": "41b1f0a262890b953903ca0e084e1dbdd2fdfdcb739ffb5729ae4bb0f144f867",
+          "judge": "codex",
+          "model": "gpt-6-astra",
+          "L1": 0,
+          "L2": 0,
+          "T1": 0,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "잠자리에서 몸을 일으키는 기초 동작이며 기지개가 직접 단서이고 오답의 행위 주체가 부자연스럽다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 0,
+        "T": 3,
+        "V": 3,
+        "ownTier": "core",
+        "band": {
+          "min": 3,
+          "max": 3
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "16cb641567b0bb30846ec974d5e0deb4fc47c45ff72ea8d5848774724ac7700f"
+    },
+    {
+      "questionId": "g3-argon-0469",
+      "revision": 1,
+      "contentHash": "1ee4568e2cb57b4d5d9b7bea1c1e9d3bca167629b7c711fcb8363b0372f78084",
+      "precomputed": {
+        "typeBase": 0,
+        "lengthBump": 0,
+        "t3Base": 0,
+        "readingLoad": 34,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g3-argon-0469",
+          "revision": 1,
+          "contentHash": "1ee4568e2cb57b4d5d9b7bea1c1e9d3bca167629b7c711fcb8363b0372f78084",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 0,
+          "L2": 0,
+          "T1": 1,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "기초 신체 자세 고유어의 정의를 직접 제시하고 같은 신체 자세 의미장의 기본 동사들을 오답으로 두었다."
+        },
+        {
+          "questionId": "g3-argon-0469",
+          "revision": 1,
+          "contentHash": "1ee4568e2cb57b4d5d9b7bea1c1e9d3bca167629b7c711fcb8363b0372f78084",
+          "judge": "codex",
+          "model": "gpt-6-astra",
+          "L1": 0,
+          "L2": 0,
+          "T1": 2,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "기초 자세어이며 눕기·앉기와 반대되는 자세를 구별하지만 몸을 곧게 한다는 정의가 직접 주어진다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 0,
+        "T": 2,
+        "V": 2,
+        "ownTier": "core",
+        "band": {
+          "min": 3,
+          "max": 3
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "8008e78d27ca094d6960f5341474a4ef8599695b638c2722611c2d3fe6250b42"
+    },
+    {
+      "questionId": "g3-argon-0470",
+      "revision": 1,
+      "contentHash": "71dc8e26b631a8ed303a8dd9d03e55c576d67e622f9fafe98935a447d87baaeb",
+      "precomputed": {
+        "typeBase": 1,
+        "lengthBump": 1,
+        "t3Base": 0,
+        "readingLoad": 69,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g3-argon-0470",
+          "revision": 1,
+          "contentHash": "71dc8e26b631a8ed303a8dd9d03e55c576d67e622f9fafe98935a447d87baaeb",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 0,
+          "L2": 0,
+          "T1": 2,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "기초 신체 동작 고유어의 반의 행동을 묻되 오답 3개가 모두 목표어의 유의 표현으로 구성되어 유의·반의 구별이 필요하다."
+        },
+        {
+          "questionId": "g3-argon-0470",
+          "revision": 1,
+          "contentHash": "71dc8e26b631a8ed303a8dd9d03e55c576d67e622f9fafe98935a447d87baaeb",
+          "judge": "codex",
+          "model": "gpt-6-astra",
+          "L1": 0,
+          "L2": 0,
+          "T1": 2,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "curriculum_explicit",
+          "unit": "[4국04-01] 단어와 단어 간의 의미 관계",
+          "reason": "구체적인 신체 동작이며 세 오답이 모두 기대는 행동의 유사 표현이어서 반대 행동과 대조해야 한다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 0,
+        "T": 4,
+        "V": 4,
+        "ownTier": "core",
+        "band": {
+          "min": 3,
+          "max": 4
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "da635125068b9f7d53535da8d4d3c2325b297259b4d063657a6cbdb7a6f74d0a"
+    },
+    {
+      "questionId": "g3-argon-0471",
+      "revision": 1,
+      "contentHash": "5e90f1ff9ccb4f4b5561e15591577a0e783d992ee4c9f1938a3325c79b429c8e",
+      "precomputed": {
+        "typeBase": 0,
+        "lengthBump": 0,
+        "t3Base": 0,
+        "readingLoad": 56,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g3-argon-0471",
+          "revision": 1,
+          "contentHash": "5e90f1ff9ccb4f4b5561e15591577a0e783d992ee4c9f1938a3325c79b429c8e",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 0,
+          "L2": 0,
+          "T1": 1,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "기초 탐색 동작 고유어의 제1의미를 직접 맥락 단서로 묻고 은닉의 반대 의미장 오답 1개를 포함했다."
+        },
+        {
+          "questionId": "g3-argon-0471",
+          "revision": 1,
+          "contentHash": "5e90f1ff9ccb4f4b5561e15591577a0e783d992ee4c9f1938a3325c79b429c8e",
+          "judge": "codex",
+          "model": "gpt-6-astra",
+          "L1": 0,
+          "L2": 0,
+          "T1": 1,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "잃은 물건을 찾는 기초 생활어이며 숨기기가 관련 오답이지만 열쇠를 잃었다는 직접 단서가 있다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 0,
+        "T": 1,
+        "V": 1,
+        "ownTier": "basic",
+        "band": {
+          "min": 3,
+          "max": 3
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "f9e2a2f1129353d6ec893c3446ecf6b6f2687b789527221b2feb5e5a48a9f1c1"
+    },
+    {
+      "questionId": "g3-argon-0472",
+      "revision": 1,
+      "contentHash": "861c71256ae3c126c686b6cff941b22b026f519f0c2fdc549b0e839085e4f8c1",
+      "precomputed": {
+        "typeBase": 1,
+        "lengthBump": 0,
+        "t3Base": 0,
+        "readingLoad": 59,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g3-argon-0472",
+          "revision": 1,
+          "contentHash": "861c71256ae3c126c686b6cff941b22b026f519f0c2fdc549b0e839085e4f8c1",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 1,
+          "L2": 0,
+          "T1": 1,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "이야기 문맥에 쓰이는 피동 동작 고유어의 뜻을 직접 단서로 묻고 청각 동음이의어 함정 오답 1개를 포함했다."
+        },
+        {
+          "questionId": "g3-argon-0472",
+          "revision": 1,
+          "contentHash": "861c71256ae3c126c686b6cff941b22b026f519f0c2fdc549b0e839085e4f8c1",
+          "judge": "codex",
+          "model": "gpt-6-astra",
+          "L1": 1,
+          "L2": 0,
+          "T1": 2,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "curriculum_explicit",
+          "unit": "[4국04-01] 단어와 단어 간의 의미 관계",
+          "reason": "손에 물건이 들리는 피동 표현은 기본 능동형보다 덜 익숙하며 청각을 뜻하는 동형어와 문맥상 구별한다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 1,
+        "T": 3,
+        "V": 5,
+        "ownTier": "advanced",
+        "band": {
+          "min": 3,
+          "max": 4
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "47869d175974e8096b8f45e8a9349edc6bf15a9c3779abe98faeaec63f0b5861"
+    },
+    {
+      "questionId": "g3-argon-0473",
+      "revision": 1,
+      "contentHash": "1afa80b3c9059e7ba95504abe3a7416549addba0d62e6209cac94b28b3e11e91",
+      "precomputed": {
+        "typeBase": 2,
+        "lengthBump": 1,
+        "t3Base": 0,
+        "readingLoad": 75,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g3-argon-0473",
+          "revision": 1,
+          "contentHash": "1afa80b3c9059e7ba95504abe3a7416549addba0d62e6209cac94b28b3e11e91",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 0,
+          "L2": 0,
+          "T1": 0,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "기초 미각 동작 고유어의 제1의미 쓰임을 묻고 음식과 무관한 대상에 결합한 부적합 문장들을 오답으로 두었다."
+        },
+        {
+          "questionId": "g3-argon-0473",
+          "revision": 1,
+          "contentHash": "1afa80b3c9059e7ba95504abe3a7416549addba0d62e6209cac94b28b3e11e91",
+          "judge": "codex",
+          "model": "gpt-6-astra",
+          "L1": 0,
+          "L2": 0,
+          "T1": 0,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "음식을 조금 먹어 보는 구체적 감각 동작이며 국물과 한 숟가락이 직접 단서이고 오답은 의미장이 다르다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 0,
+        "T": 3,
+        "V": 3,
+        "ownTier": "core",
+        "band": {
+          "min": 3,
+          "max": 3
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "08798f1b018fcab3f5cecb83f07c7d400bf4012da0a4f046bb746a08d069b369"
+    },
+    {
+      "questionId": "g3-argon-0474",
+      "revision": 1,
+      "contentHash": "f6eec4fece8d9af4bb0ef09fda24882a2d4b295d581728ec6a53721990098444",
+      "precomputed": {
+        "typeBase": 0,
+        "lengthBump": 0,
+        "t3Base": 0,
+        "readingLoad": 39,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g3-argon-0474",
+          "revision": 1,
+          "contentHash": "f6eec4fece8d9af4bb0ef09fda24882a2d4b295d581728ec6a53721990098444",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 0,
+          "L2": 0,
+          "T1": 1,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "기초 표정 동작 고유어의 정의를 직접 제시하고 같은 표정·감정 표현 의미장 동사들을 오답으로 두었다."
+        },
+        {
+          "questionId": "g3-argon-0474",
+          "revision": 1,
+          "contentHash": "f6eec4fece8d9af4bb0ef09fda24882a2d4b295d581728ec6a53721990098444",
+          "judge": "codex",
+          "model": "gpt-6-astra",
+          "L1": 0,
+          "L2": 0,
+          "T1": 2,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "기초 표정 동작어이며 울기·화내기·찡그리기의 대조 관계를 구별하되 지문이 정의를 직접 제공한다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 0,
+        "T": 2,
+        "V": 2,
+        "ownTier": "core",
+        "band": {
+          "min": 3,
+          "max": 3
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "6b6b6ddce5bb9d7ad650e79d5fd88c839a18e35251556c50ecab1cb71be6bb44"
+    },
+    {
+      "questionId": "g3-argon-0475",
+      "revision": 1,
+      "contentHash": "917b48c337b1496fb769534fb1a7c0edbd466f64905f2c9201dac5ed308e3df6",
+      "precomputed": {
+        "typeBase": 1,
+        "lengthBump": 0,
+        "t3Base": 0,
+        "readingLoad": 43,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g3-argon-0475",
+          "revision": 1,
+          "contentHash": "917b48c337b1496fb769534fb1a7c0edbd466f64905f2c9201dac5ed308e3df6",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 0,
+          "L2": 1,
+          "T1": 2,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "기초 감정 어휘의 반의어를 묻되 오답 3개가 모두 긍정 감정 유의어로 구성되어 유의·반의 경계 판별이 필요하다."
+        },
+        {
+          "questionId": "g3-argon-0475",
+          "revision": 1,
+          "contentHash": "917b48c337b1496fb769534fb1a7c0edbd466f64905f2c9201dac5ed308e3df6",
+          "judge": "codex",
+          "model": "gpt-6-astra",
+          "L1": 0,
+          "L2": 1,
+          "T1": 2,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "curriculum_explicit",
+          "unit": "[4국04-01] 단어와 단어 간의 의미 관계",
+          "reason": "생활에서 자주 접하는 감정어이며 즐거움·흐뭇함·반가움의 유사 감정과 반대 감정을 구별한다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 1,
+        "T": 3,
+        "V": 5,
+        "ownTier": "advanced",
+        "band": {
+          "min": 3,
+          "max": 4
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "0da0d472f302d6a9f1acfc8400a53e7de13ede21bc438468127aac0e08a262ff"
+    },
+    {
+      "questionId": "g3-argon-0476",
+      "revision": 1,
+      "contentHash": "737fb650c8abfbeb9564c89bf72c39a612ae3671e1f1eda0d26afb665658289f",
+      "precomputed": {
+        "typeBase": 0,
+        "lengthBump": 0,
+        "t3Base": 0,
+        "readingLoad": 53,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g3-argon-0476",
+          "revision": 1,
+          "contentHash": "737fb650c8abfbeb9564c89bf72c39a612ae3671e1f1eda0d26afb665658289f",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 0,
+          "L2": 1,
+          "T1": 1,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "일상 감정 합성어의 제1의미를 직접 원인 단서로 묻고 반대 감정 의미장 오답 2개를 포함했다."
+        },
+        {
+          "questionId": "g3-argon-0476",
+          "revision": 1,
+          "contentHash": "737fb650c8abfbeb9564c89bf72c39a612ae3671e1f1eda0d26afb665658289f",
+          "judge": "codex",
+          "model": "gpt-6-astra",
+          "L1": 0,
+          "L2": 1,
+          "T1": 2,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "익숙한 감정 상태어이며 편안함·즐거움이라는 대조 감정과 구별하고 그림을 망친 원인 단서를 활용한다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 1,
+        "T": 2,
+        "V": 4,
+        "ownTier": "core",
+        "band": {
+          "min": 3,
+          "max": 3
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "53d3acd930d4e51c8105cd7ceb961923e7fe12deb0f42bcdf78aab021e081e4e"
+    },
+    {
+      "questionId": "g3-argon-0477",
+      "revision": 1,
+      "contentHash": "f223328f5a1f5f6ab360c833dd8442111da8e5ce0373586d9dc23732e384d2cd",
+      "precomputed": {
+        "typeBase": 1,
+        "lengthBump": 0,
+        "t3Base": 0,
+        "readingLoad": 59,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g3-argon-0477",
+          "revision": 1,
+          "contentHash": "f223328f5a1f5f6ab360c833dd8442111da8e5ce0373586d9dc23732e384d2cd",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 0,
+          "L2": 1,
+          "T1": 1,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "기초 심리 반응 어휘의 제1의미 유의 표현을 직접 원인 단서로 묻고 심리 안정의 반대 오답 1개를 포함했다."
+        },
+        {
+          "questionId": "g3-argon-0477",
+          "revision": 1,
+          "contentHash": "f223328f5a1f5f6ab360c833dd8442111da8e5ce0373586d9dc23732e384d2cd",
+          "judge": "codex",
+          "model": "gpt-6-astra",
+          "L1": 0,
+          "L2": 1,
+          "T1": 1,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "curriculum_explicit",
+          "unit": "[4국04-01] 단어와 단어 간의 의미 관계",
+          "reason": "기초 감정 반응어이며 차분해짐이 대조 오답이고 갑작스러운 천둥이라는 원인 단서가 명확하다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 1,
+        "T": 2,
+        "V": 4,
+        "ownTier": "core",
+        "band": {
+          "min": 3,
+          "max": 4
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "7efe6c0ebf1223d3973a69e9bb182295930b5c42eaf8bbebd4b323f71044cf63"
+    },
+    {
+      "questionId": "g3-argon-0478",
+      "revision": 2,
+      "contentHash": "3be964b1b2064c7072858edbc785c9c3c03c07bef7000c74f09b3252e1cfb7dd",
+      "precomputed": {
+        "typeBase": 1,
+        "lengthBump": 0,
+        "t3Base": 0,
+        "readingLoad": 64,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g3-argon-0478",
+          "revision": 2,
+          "contentHash": "3be964b1b2064c7072858edbc785c9c3c03c07bef7000c74f09b3252e1cfb7dd",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 1,
+          "L2": 1,
+          "T1": 1,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "성격·태도를 나타내는 생활 한자어의 유의어를 직접 행동 단서로 묻고 반대 성질의 상태어들을 오답으로 두었다."
+        },
+        {
+          "questionId": "g3-argon-0478",
+          "revision": 2,
+          "contentHash": "3be964b1b2064c7072858edbc785c9c3c03c07bef7000c74f09b3252e1cfb7dd",
+          "judge": "codex",
+          "model": "gpt-6-astra",
+          "L1": 1,
+          "L2": 1,
+          "T1": 2,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "curriculum_explicit",
+          "unit": "[4국04-01] 단어와 단어 간의 의미 관계",
+          "reason": "학습과 생활에서 쓰는 상태 한자어이며 느릿함·나른함·침울함의 대조 상태와 구별하고 뛰노는 행동을 단서로 삼는다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 2,
+        "T": 3,
+        "V": 7,
+        "ownTier": "challenge",
+        "band": {
+          "min": 3,
+          "max": 4
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "f1e2088c5334f9b8b617b6c7a78ed5f6f256e114f8b264f5ac9d6687f8b1187b"
+    },
+    {
+      "questionId": "g3-argon-0479",
+      "revision": 1,
+      "contentHash": "d3ef24da051dbbec2752cec9a8db6f49083ea3ad99a0e5699b57c8a86419c8e5",
+      "precomputed": {
+        "typeBase": 0,
+        "lengthBump": 1,
+        "t3Base": 1,
+        "readingLoad": 70,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g3-argon-0479",
+          "revision": 1,
+          "contentHash": "d3ef24da051dbbec2752cec9a8db6f49083ea3ad99a0e5699b57c8a86419c8e5",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 0,
+          "L2": 1,
+          "T1": 2,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "기초 인지 동사의 다의 제2의미를 문맥 속에서 묻고 형태·의미 혼동어 ‘잃다’의 풀이를 매력적 오답으로 배치했다."
+        },
+        {
+          "questionId": "g3-argon-0479",
+          "revision": 1,
+          "contentHash": "d3ef24da051dbbec2752cec9a8db6f49083ea3ad99a0e5699b57c8a86419c8e5",
+          "judge": "codex",
+          "model": "gpt-6-astra",
+          "L1": 0,
+          "L2": 1,
+          "T1": 2,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:뜻 번호 2",
+          "reason": "익숙한 기억 상태어지만 순간적인 망각의 뜻을 물건을 잃는 의미와 구별하며 ‘깜빡’이 직접 단서다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 1,
+        "T": 4,
+        "V": 6,
+        "ownTier": "advanced",
+        "band": {
+          "min": 3,
+          "max": 4
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "833a8ff6754a3d2c4efd1ccc2b2cd66a131d0e210c613ce799793f225daf0618"
+    },
+    {
+      "questionId": "g3-argon-0480",
+      "revision": 1,
+      "contentHash": "b87a85225468ee0b6451cde122c5be5fdfc14ba5872d6f6d32969b4890d5dd2f",
+      "precomputed": {
+        "typeBase": 0,
+        "lengthBump": 1,
+        "t3Base": 1,
+        "readingLoad": 76,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g3-argon-0480",
+          "revision": 1,
+          "contentHash": "b87a85225468ee0b6451cde122c5be5fdfc14ba5872d6f6d32969b4890d5dd2f",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 1,
+          "L2": 0,
+          "T1": 2,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "사동 동작 고유어의 문맥 의미를 묻고 다른 동형어 ‘맞히다’ 2개와 혼동어 ‘맞추다’의 뜻을 오답으로 구성했다."
+        },
+        {
+          "questionId": "g3-argon-0480",
+          "revision": 1,
+          "contentHash": "b87a85225468ee0b6451cde122c5be5fdfc14ba5872d6f6d32969b4890d5dd2f",
+          "judge": "codex",
+          "model": "gpt-6-astra",
+          "L1": 1,
+          "L2": 0,
+          "T1": 2,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:뜻 번호 1",
+          "reason": "치료받게 하는 구체적 사동 표현이며 정답 맞히기·비 맞히기·조각 맞추기의 혼동을 주사 문맥으로 구별한다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 1,
+        "T": 4,
+        "V": 6,
+        "ownTier": "advanced",
+        "band": {
+          "min": 3,
+          "max": 4
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "bb9461096dd6197e32ef751ecf75672679c8f3dce29968c2ed69fc871062c734"
+    },
+    {
+      "questionId": "g3-argon-0480",
+      "revision": 2,
+      "contentHash": "25a0fc43ed282b5e23cbcc301147c6d3ddb80276706086a8fd81a75e6d5d3d65",
+      "precomputed": {
+        "typeBase": 0,
+        "lengthBump": 1,
+        "t3Base": 1,
+        "readingLoad": 77,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g3-argon-0480",
+          "revision": 2,
+          "contentHash": "25a0fc43ed282b5e23cbcc301147c6d3ddb80276706086a8fd81a75e6d5d3d65",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 1,
+          "L2": 0,
+          "T1": 1,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "사동사 ‘맞히다’의 치료 관련 제1의미를 직접 단서 ‘주사’를 바탕으로 동형어·다의어 및 혼동어 ‘맞추다’의 뜻풀이와 구별한다."
+        },
+        {
+          "questionId": "g3-argon-0480",
+          "revision": 2,
+          "contentHash": "25a0fc43ed282b5e23cbcc301147c6d3ddb80276706086a8fd81a75e6d5d3d65",
+          "judge": "codex",
+          "model": "gpt-6-astra",
+          "L1": 1,
+          "L2": 0,
+          "T1": 2,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:뜻 번호 1",
+          "reason": "치료받게 하는 구체적 사동 의미를 동형어와 맞추다의 의미에서 구별하지만 주사라는 직접 단서가 있다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 1,
+        "T": 4,
+        "V": 6,
+        "ownTier": "advanced",
+        "band": {
+          "min": 3,
+          "max": 4
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "a6720216dd1338ae5256e0df124f9da0c6b4b0d670dc2874c1c24cecbef254ad"
+    },
+    {
+      "questionId": "g3-argon-0481",
+      "revision": 1,
+      "contentHash": "2293886a3c2a1f670b7789bb6d5425df64bc611a0ae6a7b6cbb082ff0415c8ae",
+      "precomputed": {
+        "typeBase": 0,
+        "lengthBump": 1,
+        "t3Base": 1,
+        "readingLoad": 70,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g3-argon-0481",
+          "revision": 1,
+          "contentHash": "2293886a3c2a1f670b7789bb6d5425df64bc611a0ae6a7b6cbb082ff0415c8ae",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 0,
+          "L2": 0,
+          "T1": 2,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "기초 상태 고유어의 시간 소요 다의 확장 의미를 묻고 발음·표기 혼동어 ‘늘이다·늘리다’의 풀이를 오답에 포함했다."
+        },
+        {
+          "questionId": "g3-argon-0481",
+          "revision": 1,
+          "contentHash": "2293886a3c2a1f670b7789bb6d5425df64bc611a0ae6a7b6cbb082ff0415c8ae",
+          "judge": "codex",
+          "model": "gpt-6-astra",
+          "L1": 0,
+          "L2": 1,
+          "T1": 2,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:뜻 번호 2",
+          "reason": "익숙한 속도어를 일의 소요 시간에 적용하며 늘이다·늘리다의 혼동이 있지만 그늘이라는 원인 단서가 있다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 1,
+        "T": 4,
+        "V": 6,
+        "ownTier": "advanced",
+        "band": {
+          "min": 3,
+          "max": 4
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "3d64eccfabea4a364fa1ccae6a396e9d15d1758362e33a66201d0ba2f304d080"
+    },
+    {
+      "questionId": "g3-argon-0482",
+      "revision": 1,
+      "contentHash": "404b72da3c2c47fcddcd4708f5f9495ba583991f57b925023bdd3d911c4a2272",
+      "precomputed": {
+        "typeBase": 2,
+        "lengthBump": 1,
+        "t3Base": 2,
+        "readingLoad": 68,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g3-argon-0482",
+          "revision": 1,
+          "contentHash": "404b72da3c2c47fcddcd4708f5f9495ba583991f57b925023bdd3d911c4a2272",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 0,
+          "L2": 0,
+          "T1": 2,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "기초 크기 고유어의 어법상 쓰임을 묻고 ‘적다’ 등 일상에서 혼동하기 쉬운 양·기록 표현 오답을 포함했다."
+        },
+        {
+          "questionId": "g3-argon-0482",
+          "revision": 1,
+          "contentHash": "404b72da3c2c47fcddcd4708f5f9495ba583991f57b925023bdd3d911c4a2272",
+          "judge": "codex",
+          "model": "gpt-6-astra",
+          "L1": 0,
+          "L2": 0,
+          "T1": 2,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "기초 크기 상태어지만 크기와 수량의 차이에 따라 ‘작다’와 ‘적다’를 구별해야 한다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 0,
+        "T": 7,
+        "V": 7,
+        "ownTier": "challenge",
+        "band": {
+          "min": 3,
+          "max": 4
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "536661f61bacbf30b9042219cb770f9313c9b77c1061cf6753794e4dea5d495e"
+    },
+    {
+      "questionId": "g3-argon-0483",
+      "revision": 2,
+      "contentHash": "1ac8c809e208f2a903a35253347a97cbf4a8094abd393b9aa602c9f9b56fe9f8",
+      "precomputed": {
+        "typeBase": 0,
+        "lengthBump": 1,
+        "t3Base": 0,
+        "readingLoad": 69,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g3-argon-0483",
+          "revision": 2,
+          "contentHash": "1ac8c809e208f2a903a35253347a97cbf4a8094abd393b9aa602c9f9b56fe9f8",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 1,
+          "L2": 1,
+          "T1": 1,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "태도·성품을 나타내는 투명한 생활 한자어의 제1의미를 묻고 반대 태도 오답 1개를 포함했다."
+        },
+        {
+          "questionId": "g3-argon-0483",
+          "revision": 2,
+          "contentHash": "1ac8c809e208f2a903a35253347a97cbf4a8094abd393b9aa602c9f9b56fe9f8",
+          "judge": "codex",
+          "model": "gpt-6-astra",
+          "L1": 1,
+          "L2": 1,
+          "T1": 1,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "동화와 생활에서 접하는 태도어이며 차가운 태도가 반대 오답이고 정답의 ‘정분이 두텁다’가 다소 문어적이다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 2,
+        "T": 2,
+        "V": 6,
+        "ownTier": "advanced",
+        "band": {
+          "min": 3,
+          "max": 4
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "c1b7263f9899ba4e34a0277fa2d189fa96fb0df5d49b07308a436b72aa3b8b51"
+    },
+    {
+      "questionId": "g3-argon-0484",
+      "revision": 1,
+      "contentHash": "124b4982773bde44d35ded53c0766074caa2963881e8f7f11f0d095ba2f697eb",
+      "precomputed": {
+        "typeBase": 2,
+        "lengthBump": 0,
+        "t3Base": 2,
+        "readingLoad": 53,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g3-argon-0484",
+          "revision": 1,
+          "contentHash": "124b4982773bde44d35ded53c0766074caa2963881e8f7f11f0d095ba2f697eb",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 0,
+          "L2": 0,
+          "T1": 3,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "기초 사물 고유어 ‘껍질’을 ‘껍데기’와 구별하는 문항으로 조개·호두·게 등 고매력 혼동 오답 3개로 구성되었다."
+        },
+        {
+          "questionId": "g3-argon-0484",
+          "revision": 1,
+          "contentHash": "124b4982773bde44d35ded53c0766074caa2963881e8f7f11f0d095ba2f697eb",
+          "judge": "codex",
+          "model": "gpt-6-astra",
+          "L1": 0,
+          "L2": 0,
+          "T1": 3,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "익숙한 구체 명사지만 세 오답 모두 일상적으로 혼동하기 쉬운 껍질·껍데기의 경계를 묻고 단단함이 직접 단서다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 0,
+        "T": 7,
+        "V": 7,
+        "ownTier": "challenge",
+        "band": {
+          "min": 3,
+          "max": 4
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "f3a684e3d150b330589efbf1b4a1819d7c1e27887821224ff90654d3410fa3c8"
+    },
+    {
+      "questionId": "g3-argon-0484",
+      "revision": 2,
+      "contentHash": "b400aba29051b940d7b330adbfc1860fdd18c23060021858c92f1084dd3a4b5a",
+      "precomputed": {
+        "typeBase": 2,
+        "lengthBump": 0,
+        "t3Base": 2,
+        "readingLoad": 54,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g3-argon-0484",
+          "revision": 2,
+          "contentHash": "b400aba29051b940d7b330adbfc1860fdd18c23060021858c92f1084dd3a4b5a",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 0,
+          "L2": 0,
+          "T1": 2,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "기초 고유어 ‘껍질’의 ‘단단하지 않은 겉 물질’ 의미를 ‘껍데기·표지’가 쓰여야 할 일상 혼동 문장 세 개와 구별하는 활용 문항이다."
+        },
+        {
+          "questionId": "g3-argon-0484",
+          "revision": 2,
+          "contentHash": "b400aba29051b940d7b330adbfc1860fdd18c23060021858c92f1084dd3a4b5a",
+          "judge": "codex",
+          "model": "gpt-6-astra",
+          "L1": 0,
+          "L2": 0,
+          "T1": 2,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "curriculum_explicit",
+          "unit": "[6국04-06] 글과 담화에 쓰인 단어 및 문장, 띄어쓰기를 민감하게 살펴 바르게 고치는 태도를 지닌다.",
+          "reason": "기초 구체 명사지만 조개와 게의 겉 부분을 가리키는 껍데기와 혼동하기 쉬우며 딱딱함과 얇음이 구별 단서다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 0,
+        "T": 6,
+        "V": 6,
+        "ownTier": "advanced",
+        "band": {
+          "min": 3,
+          "max": 4
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "2f451e022897b604b23447f46d69c6ed77e4b83cc588c47a468d5d754b9c3cb1"
+    },
+    {
+      "questionId": "g3-argon-0485",
+      "revision": 1,
+      "contentHash": "aca57f1fe8c1b667513edd68c95803d9082afbcbeefcd6eaca64b382e3448b72",
+      "precomputed": {
+        "typeBase": 0,
+        "lengthBump": 1,
+        "t3Base": 1,
+        "readingLoad": 70,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g3-argon-0485",
+          "revision": 1,
+          "contentHash": "aca57f1fe8c1b667513edd68c95803d9082afbcbeefcd6eaca64b382e3448b72",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 1,
+          "L2": 0,
+          "T1": 2,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "고유어 명사의 수량 단위 다의 의미를 문맥 속에서 묻고 사물 부위 및 다른 단위 명사 오답을 함께 배치했다."
+        },
+        {
+          "questionId": "g3-argon-0485",
+          "revision": 1,
+          "contentHash": "aca57f1fe8c1b667513edd68c95803d9082afbcbeefcd6eaca64b382e3448b72",
+          "judge": "codex",
+          "model": "gpt-6-astra",
+          "L1": 1,
+          "L2": 0,
+          "T1": 2,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:뜻 번호 2",
+          "reason": "껍질의 층을 세는 고유어 단위 용법이며 ‘두’와 ‘벗겨’라는 직접 단서로 물질 자체의 뜻과 구별한다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 1,
+        "T": 4,
+        "V": 6,
+        "ownTier": "advanced",
+        "band": {
+          "min": 3,
+          "max": 4
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "df9b127a9689ffe68233600562d36d71ae0653a0f954940cb07364bd8c2186eb"
+    },
+    {
+      "questionId": "g3-argon-0486",
+      "revision": 2,
+      "contentHash": "dbb8a8eabc9dcefc4cf6498a7871ee64159a673d642ba734cc3bffdabb51a2e3",
+      "precomputed": {
+        "typeBase": 0,
+        "lengthBump": 1,
+        "t3Base": 0,
+        "readingLoad": 67,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g3-argon-0486",
+          "revision": 2,
+          "contentHash": "dbb8a8eabc9dcefc4cf6498a7871ee64159a673d642ba734cc3bffdabb51a2e3",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 1,
+          "L2": 0,
+          "T1": 1,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "동화·감각 표현에 자주 쓰이는 고유어 부사의 제1의미를 직접 행동 단서로 묻고 다른 표면 상태 오답을 두었다."
+        },
+        {
+          "questionId": "g3-argon-0486",
+          "revision": 2,
+          "contentHash": "dbb8a8eabc9dcefc4cf6498a7871ee64159a673d642ba734cc3bffdabb51a2e3",
+          "judge": "codex",
+          "model": "gpt-6-astra",
+          "L1": 1,
+          "L2": 0,
+          "T1": 1,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "curriculum_explicit",
+          "unit": "[4국05-04] 감각적 표현에 유의하여 작품을 감상하고, 감각적 표현을 활용하여 자신의 생각이나 감정을 표현한다.",
+          "reason": "동화와 묘사에 쓰이는 구체적 감각 표현이며 거침·젖음·뿌연 상태와 윤기 나는 표면을 구별한다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 1,
+        "T": 2,
+        "V": 4,
+        "ownTier": "core",
+        "band": {
+          "min": 3,
+          "max": 4
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "96ab5dbb5e924ccf99258fae09142602d4fc8e71e9148247f5385f8f544f7cc1"
+    },
+    {
+      "questionId": "g3-argon-0486",
+      "revision": 3,
+      "contentHash": "56e3ce8303a0b723bf0a175159761ff73fe9b60b56c21f0cce3ac75179908c73",
+      "precomputed": {
+        "typeBase": 0,
+        "lengthBump": 1,
+        "t3Base": 0,
+        "readingLoad": 67,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g3-argon-0486",
+          "revision": 3,
+          "contentHash": "56e3ce8303a0b723bf0a175159761ff73fe9b60b56c21f0cce3ac75179908c73",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 1,
+          "L2": 0,
+          "T1": 1,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "표면의 윤기를 나타내는 3~4학년 빈출 감각 고유어 ‘반질반질’의 뜻을 걸레질 연상 오답 및 반의 표현과 구별한다."
+        },
+        {
+          "questionId": "g3-argon-0486",
+          "revision": 3,
+          "contentHash": "56e3ce8303a0b723bf0a175159761ff73fe9b60b56c21f0cce3ac75179908c73",
+          "judge": "codex",
+          "model": "gpt-6-astra",
+          "L1": 1,
+          "L2": 0,
+          "T1": 1,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:뜻 번호 「1」",
+          "reason": "동화와 묘사에서 접하는 감각적 모양말이며, 표면 상태를 구별하는 데 걸레로 닦는 행동이 단서가 된다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 1,
+        "T": 2,
+        "V": 4,
+        "ownTier": "core",
+        "band": {
+          "min": 3,
+          "max": 4
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "af745b208ee8982d66ae3744330efce524244ea5a454466d0ee4ce68d50e100c"
+    },
+    {
+      "questionId": "g3-argon-0487",
+      "revision": 2,
+      "contentHash": "849176a2a8cbd838adb430b924b8ec30e476dd6b066346861d361accab512b60",
+      "precomputed": {
+        "typeBase": 0,
+        "lengthBump": 0,
+        "t3Base": 0,
+        "readingLoad": 44,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g3-argon-0487",
+          "revision": 2,
+          "contentHash": "849176a2a8cbd838adb430b924b8ec30e476dd6b066346861d361accab512b60",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 0,
+          "L2": 0,
+          "T1": 1,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "친숙한 촉각 고유어 부사의 제1의미를 직접 정의 단서로 묻고 같은 질감 의미장의 의태어 오답을 포함했다."
+        },
+        {
+          "questionId": "g3-argon-0487",
+          "revision": 2,
+          "contentHash": "849176a2a8cbd838adb430b924b8ec30e476dd6b066346861d361accab512b60",
+          "judge": "codex",
+          "model": "gpt-6-astra",
+          "L1": 0,
+          "L2": 0,
+          "T1": 1,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "curriculum_explicit",
+          "unit": "[4국05-04] 감각적 표현에 유의하여 작품을 감상하고, 감각적 표현을 활용하여 자신의 생각이나 감정을 표현한다.",
+          "reason": "친숙한 촉감 표현이며 다른 촉감·모양 표현과 비교하지만 눌러 무르게 들어간다는 직접 단서가 있다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 0,
+        "T": 1,
+        "V": 1,
+        "ownTier": "basic",
+        "band": {
+          "min": 3,
+          "max": 3
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "aec90e970e1533c8b6e8947d46cb118414db69d61da05e0def44e08fb2611e5c"
+    },
+    {
+      "questionId": "g3-argon-0488",
+      "revision": 1,
+      "contentHash": "58c79b2d77efcfb5ce9b8a141927e00bd062872a4e6b8849334999217754ebbe",
+      "precomputed": {
+        "typeBase": 0,
+        "lengthBump": 0,
+        "t3Base": 1,
+        "readingLoad": 57,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g3-argon-0488",
+          "revision": 1,
+          "contentHash": "58c79b2d77efcfb5ce9b8a141927e00bd062872a4e6b8849334999217754ebbe",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 0,
+          "L2": 0,
+          "T1": 1,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "기초 물성·신체 고유어의 인접 다의 의미를 직접 문맥으로 묻고 반의 성질 오답 1개와 무관한 오답 2개를 두었다."
+        },
+        {
+          "questionId": "g3-argon-0488",
+          "revision": 1,
+          "contentHash": "58c79b2d77efcfb5ce9b8a141927e00bd062872a4e6b8849334999217754ebbe",
+          "judge": "codex",
+          "model": "gpt-6-astra",
+          "L1": 0,
+          "L2": 0,
+          "T1": 2,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:뜻 번호 2",
+          "reason": "익숙한 물성 표현을 팔다리의 튼튼함에 적용하는 확장 뜻이며 부드러움과의 대조가 제시된다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 0,
+        "T": 3,
+        "V": 3,
+        "ownTier": "core",
+        "band": {
+          "min": 3,
+          "max": 3
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "85200c0021e4a403dbf62bb24e8a0843714ae49ff6388301912a7e47e5edc689"
+    },
+    {
+      "questionId": "g3-argon-0489",
+      "revision": 2,
+      "contentHash": "daeb31a21ee77e15044a551147b3b78f8a1e20025e640ae97543e41c5a6bc149",
+      "precomputed": {
+        "typeBase": 0,
+        "lengthBump": 1,
+        "t3Base": 0,
+        "readingLoad": 74,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g3-argon-0489",
+          "revision": 2,
+          "contentHash": "daeb31a21ee77e15044a551147b3b78f8a1e20025e640ae97543e41c5a6bc149",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 0,
+          "L2": 1,
+          "T1": 1,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "일상에서 고빈도로 쓰이는 감정·태도 생활 한자어의 제1의미를 직접 원인 단서로 묻고 긍정 감정 오답을 포함했다."
+        },
+        {
+          "questionId": "g3-argon-0489",
+          "revision": 2,
+          "contentHash": "daeb31a21ee77e15044a551147b3b78f8a1e20025e640ae97543e41c5a6bc149",
+          "judge": "codex",
+          "model": "gpt-6-astra",
+          "L1": 0,
+          "L2": 1,
+          "T1": 1,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "생활에서 익숙한 관계 감정어이며 다른 감정들과 구별하되 약속을 어겼다는 원인이 뜻을 직접 뒷받침한다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 1,
+        "T": 2,
+        "V": 4,
+        "ownTier": "core",
+        "band": {
+          "min": 3,
+          "max": 4
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "13fdbdb6666c1c2485e3138db90ee5425161fcd674cd9a826bfc38fc0bffab77"
+    },
+    {
+      "questionId": "g3-argon-0490",
+      "revision": 2,
+      "contentHash": "50e5a70986ec15a5350af4faaee5953a015bccd59e42f14c2fe87c36e1ea7b3f",
+      "precomputed": {
+        "typeBase": 0,
+        "lengthBump": 0,
+        "t3Base": null,
+        "readingLoad": 53,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g3-argon-0490",
+          "revision": 2,
+          "contentHash": "50e5a70986ec15a5350af4faaee5953a015bccd59e42f14c2fe87c36e1ea7b3f",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 1,
+          "L2": 1,
+          "T1": 2,
+          "inference": 0,
+          "idiomOpacity": 2,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "신체 반응에서 비유가 쉽게 유추되는 관용구를 직접 뜻풀이 단서로 묻고 다른 신체 관용구 3개를 오답으로 두었다."
+        },
+        {
+          "questionId": "g3-argon-0490",
+          "revision": 2,
+          "contentHash": "50e5a70986ec15a5350af4faaee5953a015bccd59e42f14c2fe87c36e1ea7b3f",
+          "judge": "codex",
+          "model": "gpt-6-astra",
+          "L1": 1,
+          "L2": 1,
+          "T1": 2,
+          "inference": 0,
+          "idiomOpacity": 2,
+          "elementaryFit": "pass",
+          "basisType": "curriculum_explicit",
+          "unit": "[6국04-03] 고유어와 관용 표현의 쓰임과 가치를 이해하고 상황에 맞게 표현한다.",
+          "reason": "먹고 싶은 마음을 신체 반응으로 나타내는 투명한 관용구이며 ‘몹시 먹고 싶어서’가 뜻을 직접 제시한다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 2,
+        "T": 4,
+        "V": 8,
+        "ownTier": "challenge",
+        "band": {
+          "min": 3,
+          "max": 4
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "9bcff86a9df7fc13882ea976a9ae3c1c0722e9049522c4126ff5d1e1904c2d50"
+    },
+    {
+      "questionId": "g3-argon-0491",
+      "revision": 2,
+      "contentHash": "cc8e5d691b7b7f73d4fdde25f2e2eb01d30a19556e7a4328c931e32a4b2dc910",
+      "precomputed": {
+        "typeBase": 0,
+        "lengthBump": 1,
+        "t3Base": null,
+        "readingLoad": 68,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g3-argon-0491",
+          "revision": 2,
+          "contentHash": "cc8e5d691b7b7f73d4fdde25f2e2eb01d30a19556e7a4328c931e32a4b2dc910",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 1,
+          "L2": 1,
+          "T1": 2,
+          "inference": 0,
+          "idiomOpacity": 2,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "협동의 비유가 투명한 기초 속담을 직접 행동 단서가 있는 대화에서 묻고 다른 초등 빈출 속담 3개를 오답으로 두었다."
+        },
+        {
+          "questionId": "g3-argon-0491",
+          "revision": 2,
+          "contentHash": "cc8e5d691b7b7f73d4fdde25f2e2eb01d30a19556e7a4328c931e32a4b2dc910",
+          "judge": "codex",
+          "model": "gpt-6-astra",
+          "L1": 1,
+          "L2": 1,
+          "T1": 2,
+          "inference": 0,
+          "idiomOpacity": 2,
+          "elementaryFit": "pass",
+          "basisType": "curriculum_explicit",
+          "unit": "[6국04-03] 고유어와 관용 표현의 쓰임과 가치를 이해하고 상황에 맞게 표현한다.",
+          "reason": "협력의 효과를 함께 드는 행동에 연결하는 쉬운 비유이며 상자를 같이 들자는 직접 행동 단서가 있다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 2,
+        "T": 5,
+        "V": 9,
+        "ownTier": "challenge",
+        "band": {
+          "min": 3,
+          "max": 4
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "ccfa5de8ab4f6a4a8d6f11d421c1cab2cf8c1cea12f44344ec1bb726440d464c"
+    },
+    {
+      "questionId": "g3-argon-0492",
+      "revision": 1,
+      "contentHash": "8f8661e8caf08f842052e602b3057bb1efc57aa8532e7ce1b56aad2b42ad4186",
+      "precomputed": {
+        "typeBase": 2,
+        "lengthBump": 2,
+        "t3Base": null,
+        "readingLoad": 91,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g3-argon-0492",
+          "revision": 1,
+          "contentHash": "8f8661e8caf08f842052e602b3057bb1efc57aa8532e7ce1b56aad2b42ad4186",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 1,
+          "L2": 1,
+          "T1": 2,
+          "inference": 0,
+          "idiomOpacity": 2,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "비유 유추가 쉬운 친숙한 속담의 전이 의미를 적용하되 정답 문장에 핵심 상황 단서가 직접 제시되어 있다."
+        },
+        {
+          "questionId": "g3-argon-0492",
+          "revision": 1,
+          "contentHash": "8f8661e8caf08f842052e602b3057bb1efc57aa8532e7ce1b56aad2b42ad4186",
+          "judge": "codex",
+          "model": "gpt-6-astra",
+          "L1": 1,
+          "L2": 1,
+          "T1": 3,
+          "inference": 0,
+          "idiomOpacity": 2,
+          "elementaryFit": "pass",
+          "basisType": "curriculum_explicit",
+          "unit": "[6국04-03] 고유어와 관용 표현의 쓰임과 가치를 이해하고 상황에 맞게 표현한다.",
+          "reason": "익숙한 동물 행동을 능숙한 사람의 실수로 옮기는 비유이며 ‘일등도 실수’가 적용할 뜻을 직접 제시한다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 2,
+        "T": 8,
+        "V": 12,
+        "ownTier": "challenge",
+        "band": {
+          "min": 3,
+          "max": 4
+        },
+        "flags": [
+          "too_hard"
+        ]
+      },
+      "levelAssessmentHash": "85e605c355d749289891165a03d00d18ae4455e42094beab2c4df6e0d57c76b7"
+    },
+    {
+      "questionId": "g3-argon-0493",
+      "revision": 1,
+      "contentHash": "25d805e4209217d7fb4624dad99b8e7b9873cc68b6c0bbeb34196d8f2d331650",
+      "precomputed": {
+        "typeBase": 2,
+        "lengthBump": 2,
+        "t3Base": null,
+        "readingLoad": 95,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g3-argon-0493",
+          "revision": 1,
+          "contentHash": "25d805e4209217d7fb4624dad99b8e7b9873cc68b6c0bbeb34196d8f2d331650",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 1,
+          "L2": 1,
+          "T1": 2,
+          "inference": 0,
+          "idiomOpacity": 2,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "말조심의 비유가 비교적 투명한 빈출 속담의 상황 쓰임을 묻고 정답 문장에 직접적인 의미 단서가 제시되었다."
+        },
+        {
+          "questionId": "g3-argon-0493",
+          "revision": 1,
+          "contentHash": "25d805e4209217d7fb4624dad99b8e7b9873cc68b6c0bbeb34196d8f2d331650",
+          "judge": "codex",
+          "model": "gpt-6-astra",
+          "L1": 1,
+          "L2": 2,
+          "T1": 3,
+          "inference": 0,
+          "idiomOpacity": 3,
+          "elementaryFit": "pass",
+          "basisType": "curriculum_explicit",
+          "unit": "[6국04-03] 고유어와 관용 표현의 쓰임과 가치를 이해하고 상황에 맞게 표현한다.",
+          "reason": "새와 쥐가 듣는 장면에서 타인의 청취 가능성과 말조심의 교훈으로 전이하지만 정답에 직접 행동 단서가 있다."
+        }
+      ],
+      "merged": {
+        "rule": 2,
+        "L": 3,
+        "T": 9,
+        "V": 15,
+        "ownTier": "challenge",
+        "band": {
+          "min": 3,
+          "max": 3
+        },
+        "flags": [
+          "too_hard"
+        ]
+      },
+      "levelAssessmentHash": "d1e9f25f914897cf05679c1ed55d4416b57cc9e3140fa3f2bb0eebb3da80397e"
+    },
+    {
+      "questionId": "g3-argon-0494",
+      "revision": 1,
+      "contentHash": "7034fb214f7070510f1c521d8ef4586105a18cc1e4e313cfad9cfc08fa9cb682",
+      "precomputed": {
+        "typeBase": 2,
+        "lengthBump": 2,
+        "t3Base": null,
+        "readingLoad": 92,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g3-argon-0494",
+          "revision": 1,
+          "contentHash": "7034fb214f7070510f1c521d8ef4586105a18cc1e4e313cfad9cfc08fa9cb682",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 1,
+          "L2": 1,
+          "T1": 2,
+          "inference": 0,
+          "idiomOpacity": 2,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "강자와 약자의 대비가 직관적인 빈출 속담의 비유 의미를 적용하며 문장 내 직접 원인·결과 단서가 주어졌다."
+        },
+        {
+          "questionId": "g3-argon-0494",
+          "revision": 1,
+          "contentHash": "7034fb214f7070510f1c521d8ef4586105a18cc1e4e313cfad9cfc08fa9cb682",
+          "judge": "codex",
+          "model": "gpt-6-astra",
+          "L1": 1,
+          "L2": 2,
+          "T1": 3,
+          "inference": 0,
+          "idiomOpacity": 2,
+          "elementaryFit": "pass",
+          "basisType": "curriculum_explicit",
+          "unit": "[6국04-03] 고유어와 관용 표현의 쓰임과 가치를 이해하고 상황에 맞게 표현한다.",
+          "reason": "동물의 크기 차이로 강자와 약자의 관계를 비유하며 타인의 다툼으로 손해 본다는 직접 단서가 있다."
+        }
+      ],
+      "merged": {
+        "rule": 2,
+        "L": 3,
+        "T": 8,
+        "V": 14,
+        "ownTier": "challenge",
+        "band": {
+          "min": 3,
+          "max": 3
+        },
+        "flags": [
+          "too_hard"
+        ]
+      },
+      "levelAssessmentHash": "f91d3f78098ea958abb909ab38a86f8387ae78681ee1255a9505be7f6760dafc"
+    },
+    {
+      "questionId": "g3-argon-0495",
+      "revision": 1,
+      "contentHash": "a91e8e04937f425bbe06818294bc49862207e292a249772a9171a760afa0ce5d",
+      "precomputed": {
+        "typeBase": 2,
+        "lengthBump": 2,
+        "t3Base": null,
+        "readingLoad": 94,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g3-argon-0495",
+          "revision": 1,
+          "contentHash": "a91e8e04937f425bbe06818294bc49862207e292a249772a9171a760afa0ce5d",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 1,
+          "L2": 1,
+          "T1": 1,
+          "inference": 0,
+          "idiomOpacity": 2,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "표면 의미에서 뜻이 쉽게 드러나는 속담을 음식 차림의 직결 맥락에 적용했고 부정적 상황 오답들과 대조가 뚜렷하다."
+        },
+        {
+          "questionId": "g3-argon-0495",
+          "revision": 1,
+          "contentHash": "a91e8e04937f425bbe06818294bc49862207e292a249772a9171a760afa0ce5d",
+          "judge": "codex",
+          "model": "gpt-6-astra",
+          "L1": 1,
+          "L2": 1,
+          "T1": 2,
+          "inference": 0,
+          "idiomOpacity": 2,
+          "elementaryFit": "pass",
+          "basisType": "curriculum_explicit",
+          "unit": "[6국04-03] 고유어와 관용 표현의 쓰임과 가치를 이해하고 상황에 맞게 표현한다.",
+          "reason": "겉모양과 내용의 관계를 나타내지만 문항은 음식의 모양과 맛을 직접 연결하여 비유 해석 부담이 낮다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 2,
+        "T": 7,
+        "V": 11,
+        "ownTier": "challenge",
+        "band": {
+          "min": 3,
+          "max": 4
+        },
+        "flags": [
+          "too_hard"
+        ]
+      },
+      "levelAssessmentHash": "206d077d5c3bf1149ecc4ee1575f96553652369bbb1f822cc90eff98c434800b"
+    },
+    {
+      "questionId": "g3-argon-0496",
+      "revision": 1,
+      "contentHash": "11fc92f458977dcf699c30bd4fe952825808241317d95a06dcab6e90f01e95b0",
+      "precomputed": {
+        "typeBase": 2,
+        "lengthBump": 2,
+        "t3Base": null,
+        "readingLoad": 98,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g3-argon-0496",
+          "revision": 1,
+          "contentHash": "11fc92f458977dcf699c30bd4fe952825808241317d95a06dcab6e90f01e95b0",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 1,
+          "L2": 1,
+          "T1": 2,
+          "inference": 0,
+          "idiomOpacity": 3,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "역설적 비유로 표면 의미가 불투명한 속담의 쓰임을 묻고 협동 성공으로 오해하기 쉬운 매력적 오답을 포함했다."
+        },
+        {
+          "questionId": "g3-argon-0496",
+          "revision": 1,
+          "contentHash": "11fc92f458977dcf699c30bd4fe952825808241317d95a06dcab6e90f01e95b0",
+          "judge": "codex",
+          "model": "gpt-6-astra",
+          "L1": 1,
+          "L2": 2,
+          "T1": 3,
+          "inference": 0,
+          "idiomOpacity": 3,
+          "elementaryFit": "pass",
+          "basisType": "curriculum_explicit",
+          "unit": "[6국04-03] 고유어와 관용 표현의 쓰임과 가치를 이해하고 상황에 맞게 표현한다.",
+          "reason": "배가 산으로 간다는 비현실적 장면을 의견 충돌로 인한 실패에 대응시키며 ‘저마다 우겨 망치니’가 직접 단서다."
+        }
+      ],
+      "merged": {
+        "rule": 2,
+        "L": 3,
+        "T": 9,
+        "V": 15,
+        "ownTier": "challenge",
+        "band": {
+          "min": 3,
+          "max": 3
+        },
+        "flags": [
+          "too_hard"
+        ]
+      },
+      "levelAssessmentHash": "ecde3a10fea6ae31633d57fe416bd076d2e9ace67ff6fc09f07867499f635986"
+    },
+    {
+      "questionId": "g3-argon-0497",
+      "revision": 1,
+      "contentHash": "315c0b8265d36d2bfadd2ef223bb306b20c00c581408a36ef1f9507119143342",
+      "precomputed": {
+        "typeBase": 0,
+        "lengthBump": 2,
+        "t3Base": null,
+        "readingLoad": 90,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g3-argon-0497",
+          "revision": 1,
+          "contentHash": "315c0b8265d36d2bfadd2ef223bb306b20c00c581408a36ef1f9507119143342",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 2,
+          "L2": 1,
+          "T1": 2,
+          "inference": 0,
+          "idiomOpacity": 3,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "‘낙숫물·댓돌’ 등 아동에게 낯선 전통 어휘가 쓰인 불투명 속담의 뜻을 직접 단서와 표면 연상 오답 속에서 묻는다."
+        },
+        {
+          "questionId": "g3-argon-0497",
+          "revision": 1,
+          "contentHash": "315c0b8265d36d2bfadd2ef223bb306b20c00c581408a36ef1f9507119143342",
+          "judge": "codex",
+          "model": "gpt-6-astra",
+          "L1": 2,
+          "L2": 2,
+          "T1": 3,
+          "inference": 0,
+          "idiomOpacity": 3,
+          "elementaryFit": "pass",
+          "basisType": "curriculum_explicit",
+          "unit": "[6국04-03] 고유어와 관용 표현의 쓰임과 가치를 이해하고 상황에 맞게 표현한다.",
+          "reason": "낙숫물·댓돌의 낮은 생활 노출과 꾸준한 힘의 누적이라는 추상적 교훈이 부담이지만 매일 노력했다는 직접 단서가 있다."
+        }
+      ],
+      "merged": {
+        "rule": 2,
+        "L": 4,
+        "T": 8,
+        "V": 16,
+        "ownTier": "challenge",
+        "band": {
+          "min": 3,
+          "max": 3
+        },
+        "flags": [
+          "too_hard"
+        ]
+      },
+      "levelAssessmentHash": "dd72881b8f0f33de2cb5d33d87acfcb7375a7382eda1e7fca20029647265a16d"
+    },
+    {
+      "questionId": "g3-argon-0498",
+      "revision": 1,
+      "contentHash": "ae5edff471463f10ff61903a6e9c3ea2248d1a93d4c79de0e4143b862dcb8144",
+      "precomputed": {
+        "typeBase": 0,
+        "lengthBump": 1,
+        "t3Base": null,
+        "readingLoad": 73,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g3-argon-0498",
+          "revision": 1,
+          "contentHash": "ae5edff471463f10ff61903a6e9c3ea2248d1a93d4c79de0e4143b862dcb8144",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 1,
+          "L2": 1,
+          "T1": 1,
+          "inference": 0,
+          "idiomOpacity": 2,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "상호 예절의 뜻이 표면 어휘에서 투명하게 드러나는 빈출 속담의 정의를 다른 의미장의 교훈 오답들과 구별하게 했다."
+        },
+        {
+          "questionId": "g3-argon-0498",
+          "revision": 1,
+          "contentHash": "ae5edff471463f10ff61903a6e9c3ea2248d1a93d4c79de0e4143b862dcb8144",
+          "judge": "codex",
+          "model": "gpt-6-astra",
+          "L1": 1,
+          "L2": 2,
+          "T1": 3,
+          "inference": 1,
+          "idiomOpacity": 2,
+          "elementaryFit": "pass",
+          "basisType": "curriculum_explicit",
+          "unit": "[6국04-03] 고유어와 관용 표현의 쓰임과 가치를 이해하고 상황에 맞게 표현한다.",
+          "reason": "말이 오가는 비유는 비교적 투명하지만 별도 상황 단서 없이 상호적인 말과 행동의 관계를 종합해야 한다."
+        }
+      ],
+      "merged": {
+        "rule": 2,
+        "L": 3,
+        "T": 7,
+        "V": 13,
+        "ownTier": "challenge",
+        "band": {
+          "min": 3,
+          "max": 3
+        },
+        "flags": [
+          "too_hard"
+        ]
+      },
+      "levelAssessmentHash": "c617a3e52fcd7bfa8ffe8c81971d8969e5b0898107aa0a463e40e56a46abe50b"
+    },
+    {
+      "questionId": "g3-argon-0499",
+      "revision": 1,
+      "contentHash": "f4e6d7e3b766de898b83c4a53f78967d438f6745e515ee0c3f36ed4ebb437d73",
+      "precomputed": {
+        "typeBase": 0,
+        "lengthBump": 2,
+        "t3Base": null,
+        "readingLoad": 93,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g3-argon-0499",
+          "revision": 1,
+          "contentHash": "f4e6d7e3b766de898b83c4a53f78967d438f6745e515ee0c3f36ed4ebb437d73",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 1,
+          "L2": 1,
+          "T1": 2,
+          "inference": 0,
+          "idiomOpacity": 3,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "전통 예절 관습에 기대어 표면 표현이 불투명한 속담을 직접 단서와 함께 묻고 ‘물’ 관련 축자적 함정 오답 3개를 두었다."
+        },
+        {
+          "questionId": "g3-argon-0499",
+          "revision": 1,
+          "contentHash": "f4e6d7e3b766de898b83c4a53f78967d438f6745e515ee0c3f36ed4ebb437d73",
+          "judge": "codex",
+          "model": "gpt-6-astra",
+          "L1": 2,
+          "L2": 2,
+          "T1": 3,
+          "inference": 0,
+          "idiomOpacity": 3,
+          "elementaryFit": "pass",
+          "basisType": "curriculum_explicit",
+          "unit": "[6국04-03] 고유어와 관용 표현의 쓰임과 가치를 이해하고 상황에 맞게 표현한다.",
+          "reason": "찬물의 위아래를 사회적 차례와 순서로 옮기는 불투명한 비유지만 ‘할아버지부터’가 직접 단서다."
+        }
+      ],
+      "merged": {
+        "rule": 2,
+        "L": 4,
+        "T": 8,
+        "V": 16,
+        "ownTier": "challenge",
+        "band": {
+          "min": 3,
+          "max": 3
+        },
+        "flags": [
+          "too_hard"
+        ]
+      },
+      "levelAssessmentHash": "bd3317dcbb8511017f674382d68aa0710e1fa80cafe19f8a60162535b4aaf788"
+    },
+    {
+      "questionId": "g3-argon-0500",
+      "revision": 1,
+      "contentHash": "eadef111161ed2bc7ea466d069811ae90e5898a97352d1b6b5388f56aa26cbac",
+      "precomputed": {
+        "typeBase": 0,
+        "lengthBump": 2,
+        "t3Base": null,
+        "readingLoad": 88,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g3-argon-0500",
+          "revision": 1,
+          "contentHash": "eadef111161ed2bc7ea466d069811ae90e5898a97352d1b6b5388f56aa26cbac",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 1,
+          "L2": 1,
+          "T1": 2,
+          "inference": 0,
+          "idiomOpacity": 3,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "농기구 ‘낫’과 한글 자모의 형태 연상에 기반한 불투명 속담의 비유적 뜻을 직접 단서와 표면 연상 오답 속에서 묻는다."
+        },
+        {
+          "questionId": "g3-argon-0500",
+          "revision": 1,
+          "contentHash": "eadef111161ed2bc7ea466d069811ae90e5898a97352d1b6b5388f56aa26cbac",
+          "judge": "codex",
+          "model": "gpt-6-astra",
+          "L1": 2,
+          "L2": 1,
+          "T1": 3,
+          "inference": 0,
+          "idiomOpacity": 3,
+          "elementaryFit": "pass",
+          "basisType": "curriculum_explicit",
+          "unit": "[6국04-03] 고유어와 관용 표현의 쓰임과 가치를 이해하고 상황에 맞게 표현한다.",
+          "reason": "낫의 모양에 관한 배경지식과 글자 모름을 무지 전반으로 넓히는 비유가 필요하지만 공부하지 않았다는 단서가 있다."
+        }
+      ],
+      "merged": {
+        "rule": 2,
+        "L": 3,
+        "T": 8,
+        "V": 14,
+        "ownTier": "challenge",
+        "band": {
+          "min": 3,
+          "max": 3
+        },
+        "flags": [
+          "too_hard"
+        ]
+      },
+      "levelAssessmentHash": "1e062181bb3a1ce3ad879d4f868ed633f0f7c9aef1e163e9210cb8478a38a7e6"
+    }
+  ]
+}
