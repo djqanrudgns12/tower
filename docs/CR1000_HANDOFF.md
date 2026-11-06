@@ -3,6 +3,14 @@
 작성 2026-11-06 · 작성 Claude Opus 5.5(총괄) · 받는 쪽 Codex(메인 세션)
 같이 읽을 것: [계획서 CONTENT_REVIEW_PLAN.md](CONTENT_REVIEW_PLAN.md)(기준 문서), [AGENTS.md](../AGENTS.md)
 
+### 수준 40개 확인·대기 보고서 누락 방지 수정 (Codex, 2026-11-06 15:45 KST)
+
+- PID 24535 정상 종료. **S1 40개, Argon 1회·Codex 2회(전체 1+표본 1)**를 메인이 원본 답장·현 판/revision/hash·사전 표지·합의/assessment hash 재계산·표본 대응으로 확인했다. **미대상 60문항·기존 수준 기록 불변**, 대상도 tier/gradeBasis 외 필드와 본문 해시 불변이다. 결과 basic 2·core 16·advanced 9·challenge 13, `too_hard` 1·`long_basic` 2·`too_easy` 1·표본 1. `.orchestrate/recovery/pilot-relevel/audit.json`(`verified-awaiting-apply`, 수준 산출물 확인이며 앞단 승인이 아님).
+- **5학년의 기존 읽기량 2건은 정상 루브릭 `long_basic`으로 core가 되어 동일 엄격 검사를 통과**했다. 기준·문장을 바꾸지 않았다. 원래 실패 audit은 그대로 두고 `.orchestrate/recovery/g5-pilot-front/after-level.audit.json`에 원본 실패 및 후속 S1 해시를 연결했다. 반영 실행기는 이 S1을 함께 적용할 때만 준비 완료로 인정한다. **4학년은 중복·어휘 2결함이 그대로**이며 자동 해결로 처리하지 않는다.
+- **PID 28705** `.orchestrate/recovery/pilot-recheck/run.mjs`도 종료해 **40개 blind/reveal 완료, Codex 4호출**(배치별 단계)을 남겼다. 현재 `awaiting-ingest`이며 판정 수·결과 누적은 아직 메인 대조 전이다. 상태 `summary.json`, 로그 `run.out`, 기존 작업 파일 **10개** 해시 대조 보관 `codex-before-recheck/`(같은 폴더). 새로운 문항 판정/공개 승인 수로 보고하지 않는다.
+- **이전의 ‘첫 대기 보고서 반영 전 두 번째 ingest 금지’ 원인을 도구에서 수정했다.** `review.mjs`의 ingest가 최신 대기 보고서·Claude 해설·보관 원문을 manifest 순서와 SHA 검증 후 읽는다. 추적 파일은 쓰지 않는다. 후속 회차가 앞선 항목/실행 출처를 보존하고, 대기 파일 변조·다른 모델 무단 병합·대기 보관본 충돌을 거절하며 같은 시각의 run도 순서를 보존한다. **초안 입력은 여전히 추적 로더가 기본**이므로 반영 전 수정판 검수/ingest는 기존의 고정 staging 초안 어댑터를 계속 써야 한다.
+- 새 회귀 사례 **5개가 수정 전 실제 실패**했고, 수정 후 설정/병합 시험 **36개**(34+추가 2), 관련 앞단/풀/잠금 **56개**, 시험 타입 검사·범위 ESLint가 통과했다. 합계 관련 **92개**다. `resource-guard status --profile avatar`가 PID 61118 등 다른 보호 작업과 여유 메모리 5.7GiB로 거절하여 전체 시험·서버 시험·콘텐츠 반영은 **미실행**이다. 이미 통과한 검사를 반복하지 않았다. 005 pending과 타인 변경은 보존한다.
+
 ### 4학년 26개 수정 확인·4/5학년 40개 수준 재판정 시작 (Codex, 2026-11-06 15:22 KST)
 
 - PID 14826이 **06:20:05Z 정상 종료**했다. Argon **4호출, 26수정·버림 0·미해결 0·추가 보기 재배열 0**이다. 메인이 원본 응답 12+12+2와 staging의 정확한 대응, 3파일 manifest/스키마, 고정 필드, 앞단/관문 수정 회차 1회 증가, 미대상 **24문항의 초안·자체 반박·회차 불변**을 직접 확인했다. staging `Q50-G4-001/20261106T062005925Z-14826-f42c3734-ed88-4f3b-a7a3-c82906013929`, audit `.orchestrate/recovery/g4-pilot-next/audit.json`.

@@ -85,6 +85,41 @@ export async function load(root) {
 
 const workDir = (root, reviewer, batch) => path.join(root, '.orchestrate/review', reviewer, batch);
 const readJson = (f, fb = null) => (fs.existsSync(f) ? JSON.parse(fs.readFileSync(f, 'utf8')) : fb);
+
+// 잠금 반영 전 여러 회차가 끝나도 직전 대기 보고서·해설·보관 원문을 이어 읽는다.
+function pendingReviewFiles(root, batchId) {
+  const base = path.join(root, '.orchestrate/staging', batchId);
+  const stages = (fs.existsSync(base) ? fs.readdirSync(base, { withFileTypes: true }) : [])
+    .filter(entry => entry.isDirectory()).map(entry => entry.name).sort().flatMap(runId => {
+      const dir = path.join(base, runId), file = path.join(dir, 'manifest.json');
+      if (!fs.existsSync(file)) return [];
+      const manifest = readJson(file);
+      if (manifest.batchId !== batchId || manifest.runId !== runId || !Array.isArray(manifest.writes)
+        || !Array.isArray(manifest.deletes) || !Number.isFinite(Date.parse(manifest.createdAt))) {
+        throw new Error(`${batchId}: 대기 manifest 식별자·형식 오류`);
+      }
+      return [{ dir, manifest }];
+    });
+  const bytes = relative => {
+    const tracked = path.join(root, relative);
+    let value = fs.existsSync(tracked) ? fs.readFileSync(tracked) : null;
+    for (const { dir, manifest } of stages) {
+      const writes = manifest.writes.filter(write => write.path === relative);
+      if (writes.length > 1) throw new Error(`${batchId}: 대기 경로 중복: ${relative}`);
+      if (writes.length) {
+        value = fs.readFileSync(path.join(dir, 'files', relative));
+        if (createHash('sha256').update(value).digest('hex') !== writes[0].sha256) throw new Error(`대기 해시 불일치: ${relative}`);
+      }
+      if (manifest.deletes.includes(relative)) value = null;
+    }
+    return value;
+  };
+  return {
+    bytes,
+    json: relative => { const value = bytes(relative); return value === null ? null : JSON.parse(value.toString('utf8')); },
+    lastTime: Math.max(0, ...stages.map(({ manifest }) => Date.parse(manifest.createdAt))),
+  };
+}
 const writeJson = (f, v) => { fs.mkdirSync(path.dirname(f), { recursive: true }); fs.writeFileSync(f, `${JSON.stringify(v, null, 2)}\n`); };
 
 /** 이 검수자가 아직 같은 revision·contentHash로 보지 않은 문항. */
@@ -241,7 +276,8 @@ export async function ingest(b, root, reviewer, batchId, options = {}) {
   if (!blind || !reveal) throw new Error(`${batchId}: blind·reveal 결과가 모두 있어야 한다`);
   assertPhaseConfig(blind.config, config, 'blind');
   assertPhaseConfig(reveal.config, config, 'reveal');
-  const createdAt = new Date().toISOString();
+  const prior = pendingReviewFiles(root, batchId);
+  const createdAt = new Date(Math.max(Date.now(), prior.lastTime + 1)).toISOString();
   const runId = `${createdAt.replace(/[-:.]/g, '')}-${process.pid}-${randomUUID()}`;
   const run = { id: runId, model: config.model, effort: config.effort };
   const batch = await findBatch(b, root, batchId);
@@ -256,13 +292,13 @@ export async function ingest(b, root, reviewer, batchId, options = {}) {
   const jsonWrite = (file, value) => writes.set(file, `${JSON.stringify(value, null, 2)}\n`);
   // 보관은 원문 바이트를 그대로 복사한다. 기존 보관본과 충돌하면 덮어쓰지 않는다.
   const archive = (source, target) => {
-    const bytes = fs.readFileSync(path.join(root, source));
-    const existing = path.join(root, target);
-    if (fs.existsSync(existing) && !fs.readFileSync(existing).equals(bytes)) throw new Error(`보관 경로 충돌: ${target}`);
+    const bytes = prior.bytes(source), existing = prior.bytes(target);
+    if (bytes === null) throw new Error(`보관 원문 없음: ${source}`);
+    if (existing !== null && !existing.equals(bytes)) throw new Error(`보관 경로 충돌: ${target}`);
     writes.set(target, bytes);
   };
   const reportPath = `content-source/reviews/${batchId}/${FILE_OF[reviewer]}`;
-  const oldReport = readJson(path.join(root, reportPath));
+  const oldReport = prior.json(reportPath);
   const archivedReport = existingReportArchive(batchId, reviewer, oldReport, config, archiveExisting);
   if (archivedReport) archive(reportPath, archivedReport);
   const report = (archivedReport ? null : oldReport) ?? {
@@ -276,7 +312,7 @@ export async function ingest(b, root, reviewer, batchId, options = {}) {
 
   if (reviewer === 'claude') {
     const expPath = `content-source/approvals/${batchId}.explanation.json`;
-    const old = readJson(path.join(root, expPath));
+    const old = prior.json(expPath);
     if (old && /claude/i.test(old.reviewer.model) && old.reviewer.model !== config.model && !archiveExisting) {
       throw new Error(`${batchId}: 해설 대조 모델이 다르다. --archive-existing 필요`);
     }

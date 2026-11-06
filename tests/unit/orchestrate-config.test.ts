@@ -2,7 +2,7 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { createHash } from 'node:crypto';
-import { afterEach, describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import { blindReviewSchema, explanationReviewSchema } from '../../src/contracts/questionDraft';
 // @ts-expect-error 독립 실행 MJS 도구에는 별도 선언 파일이 없다.
 import { resolveReviewConfig, assertPhaseConfig, existingReportArchive, claudeCliArgs, codexCliArgs, buildPhase, acceptPhase, ingest, pending } from '../../tools/orchestrate/review.mjs';
@@ -95,6 +95,92 @@ function fixture(oldModel?: string) {
 }
 
 describe('모델 호출 없는 단계 통합', () => {
+  async function stageReview(f: ReturnType<typeof fixture>, reviewer: 'claude' | 'codex', questionId: string, config = sonnet, archiveExisting = false) {
+    const options = { config, archiveExisting, questionKeys: [`${questionId}@1`] };
+    for (const phase of ['blind', 'reveal']) {
+      const { items } = await buildPhase(f.bank, f.root, reviewer, 'B', phase, options);
+      const reply = JSON.parse(f.reply(phase));
+      reply.items[0].questionId = questionId;
+      acceptPhase(f.root, reviewer, 'B', phase, JSON.stringify(reply), items, options);
+    }
+    return ingest(f.bank, f.root, reviewer, 'B', options);
+  }
+  it.each(['claude', 'codex'] as const)('대기 보고서: %s 두 회차의 항목과 실행 출처를 반영 전에도 누적한다', async reviewer => {
+    const f = fixture();
+    f.batch.drafts.push({ ...f.batch.drafts[0]!, id: 'q2' });
+    const config = reviewer === 'claude' ? sonnet : astra;
+    const first = await stageReview(f, reviewer, 'q1', config);
+    const reportPath = `content-source/reviews/B/${reviewer}.json`;
+    const firstBytes = fs.readFileSync(path.join(f.root, first.staging, 'files', reportPath));
+    const firstReport = JSON.parse(firstBytes.toString());
+    const second = await stageReview(f, reviewer, 'q2', config);
+    const report = JSON.parse(fs.readFileSync(path.join(f.root, second.staging, 'files', reportPath), 'utf8'));
+    expect(report.items.map((item: { questionId: string }) => item.questionId)).toEqual(['q1', 'q2']);
+    expect(report.items[0]).toEqual(firstReport.items[0]);
+    expect(report.items[1].run.id).not.toBe(firstReport.items[0].run.id);
+    expect(fs.readFileSync(path.join(f.root, first.staging, 'files', reportPath))).toEqual(firstBytes);
+    expect(fs.existsSync(path.join(f.root, reportPath))).toBe(false);
+    const manifests = [first, second].map(row => JSON.parse(fs.readFileSync(path.join(f.root, row.staging, 'manifest.json'), 'utf8')));
+    expect(manifests[1].runId > manifests[0].runId).toBe(true);
+    if (reviewer === 'claude') {
+      const relative = 'content-source/approvals/B.explanation.json';
+      const previous = JSON.parse(fs.readFileSync(path.join(f.root, first.staging, 'files', relative), 'utf8'));
+      const next = JSON.parse(fs.readFileSync(path.join(f.root, second.staging, 'files', relative), 'utf8'));
+      expect(next.items.map((item: { questionId: string }) => item.questionId)).toEqual(['q1', 'q2']);
+      expect(next.items[0]).toEqual(previous.items[0]);
+      expect(next.items[1].run).toEqual(report.items[1].run);
+      expect(fs.existsSync(path.join(f.root, relative))).toBe(false);
+    }
+  });
+  it.each(['content-source/reviews/B/claude.json', 'content-source/approvals/B.explanation.json'])('대기 보고서: %s의 해시가 바뀌면 병합을 거절한다', async relative => {
+    const f = fixture();
+    const first = await stageReview(f, 'claude', 'q1');
+    fs.appendFileSync(path.join(f.root, first.staging, 'files', relative), ' ');
+    await expect(ingest(f.bank, f.root, 'claude', 'B', { config: sonnet })).rejects.toThrow(/해시/);
+  });
+  it('대기 보고서: 모델 전환도 명시적 보관을 요구하고 대기 원문을 보관한다', async () => {
+    const f = fixture();
+    f.batch.drafts.push({ ...f.batch.drafts[0]!, id: 'q2' });
+    const first = await stageReview(f, 'claude', 'q1');
+    const opus = { model: 'claude-opus-5-5', effort: 'xhigh' };
+    await expect(stageReview(f, 'claude', 'q2', opus)).rejects.toThrow(/archive-existing/);
+    const second = await ingest(f.bank, f.root, 'claude', 'B', { config: opus, archiveExisting: true, questionKeys: ['q2@1'] });
+    for (const [source, archive] of [
+      ['content-source/reviews/B/claude.json', 'content-source/reviews/archive/B.claude.claude-sonnet-5-5.json'],
+      ['content-source/approvals/B.explanation.json', 'content-source/approvals/archive/B.explanation.claude-sonnet-5-5.json'],
+    ]) {
+      expect(fs.readFileSync(path.join(f.root, second.staging, 'files', archive!)))
+        .toEqual(fs.readFileSync(path.join(f.root, first.staging, 'files', source!)));
+    }
+  });
+  it('대기 보고서: 같은 시각의 연속 회차도 반영 순서와 전체 항목을 보존한다', async () => {
+    const f = fixture();
+    f.batch.drafts.push({ ...f.batch.drafts[0]!, id: 'q2' }, { ...f.batch.drafts[0]!, id: 'q3' });
+    vi.useFakeTimers({ toFake: ['Date'] });
+    vi.setSystemTime(new Date('2026-11-06T00:00:00Z'));
+    try {
+      const rows = [];
+      for (const id of ['q1', 'q2', 'q3']) rows.push(await stageReview(f, 'claude', id));
+      const manifests = rows.map(row => JSON.parse(fs.readFileSync(path.join(f.root, row.staging, 'manifest.json'), 'utf8')));
+      expect(manifests.map(m => m.createdAt)).toEqual([
+        '2026-11-06T00:00:00.000Z', '2026-11-06T00:00:00.001Z', '2026-11-06T00:00:00.002Z',
+      ]);
+      const report = JSON.parse(fs.readFileSync(path.join(f.root, rows[2]!.staging, 'files/content-source/reviews/B/claude.json'), 'utf8'));
+      expect(report.items.map((item: { questionId: string }) => item.questionId)).toEqual(['q1', 'q2', 'q3']);
+    } finally { vi.useRealTimers(); }
+  });
+  it('대기 보관본 충돌은 추적 반영 전에도 덮어쓰지 않는다', async () => {
+    const f = fixture();
+    f.batch.drafts.push({ ...f.batch.drafts[0]!, id: 'q2' });
+    await stageReview(f, 'claude', 'q1');
+    const opus = { model: 'claude-opus-5-5', effort: 'xhigh' };
+    const second = await stageReview(f, 'claude', 'q2', opus, true);
+    const archived = path.join(f.root, second.staging, 'files/content-source/reviews/archive/B.claude.claude-sonnet-5-5.json');
+    const original = fs.readFileSync(archived);
+    await stageReview(f, 'claude', 'q2', sonnet, true);
+    await expect(stageReview(f, 'claude', 'q1', opus, true)).rejects.toThrow(/보관 경로 충돌/);
+    expect(fs.readFileSync(archived)).toEqual(original);
+  });
   it('새 항목과 해설 대조에 같은 실행 출처를 기록하고 기존 항목은 보존한다', async () => {
     const f = fixture();
     const previousRun = { id: 'previous-run', ...sonnet };
