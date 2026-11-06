@@ -58,6 +58,21 @@ function setup(batches: QuestionDraft[][] = [[question()], [question('B', 2)]]) 
 afterEach(() => { for (const root of roots.splice(0)) fs.rmSync(root, { recursive: true, force: true }); });
 
 describe('S1 수준 판정 실행기', () => {
+  it('아직 반영하지 않은 제작 배치의 사전 근거를 수준 판정에 제공한다', async () => {
+    const f = setup([[question()]]), runId = '0001';
+    const base = path.join(f.root, '.orchestrate/staging/A', runId);
+    const paths = ['content-source/batches/A/drafts.json', 'content-source/batches/A/evidence/word.txt'];
+    const writes = paths.map(relative => {
+      const source = path.join(f.root, relative), bytes = fs.readFileSync(source), target = path.join(base, 'files', relative);
+      fs.mkdirSync(path.dirname(target), { recursive: true }); fs.renameSync(source, target);
+      return { path: relative, sha256: hash(bytes) };
+    });
+    write(base, 'manifest.json', { batchId: 'A', runId, createdAt: new Date().toISOString(), writes, deletes: [] });
+    await runLevels({ ...f.options, all: false, batches: 'A', 'skip-level-spotcheck': true }, f.deps);
+    for (const [r] of f.respond.mock.calls) expect(r.prompt).toContain('뜻풀이: 『법률』 서로 하기로 정한 일.');
+    expect(f.respond).toHaveBeenCalledTimes(2);
+    expect(fs.existsSync(path.join(f.root, paths[0]!))).toBe(false);
+  });
   it.each([
     { items: [{ lemma: '약속', grade: '중급' }] },
     { source: '한국어기초사전', items: { 약속: { grade: '중급', entryUrl: 'https://krdict.korean.go.kr/' } } },

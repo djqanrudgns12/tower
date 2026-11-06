@@ -10,7 +10,7 @@ import { createHash, randomUUID } from 'node:crypto';
 import { spawn } from 'node:child_process';
 import { pathToFileURL } from 'node:url';
 import { runnerImport } from 'vite';
-import { resolveReviewConfig, codexCliArgs, codexCliPath, questionRefs, measuredAgyCall, modelAttempt } from './review.mjs';
+import { resolveReviewConfig, codexCliArgs, codexCliPath, questionRefs, measuredAgyCall, modelAttempt, pendingEvidenceText } from './review.mjs';
 import { AGY_MODEL } from './agy.mjs';
 
 const SOURCE_ROOT = path.resolve(import.meta.dirname, '../..');
@@ -75,10 +75,7 @@ function curriculumCodes(root) {
 }
 
 function inputItem(m, root, batchId, q, reference) {
-  const dir = path.join(root, 'content-source/batches', batchId, 'evidence');
-  const file = path.resolve(dir, q.source.evidenceArtifactId);
-  if (!file.startsWith(`${dir}${path.sep}`)) throw new Error(`${q.id}: 근거 경로가 배치 밖이다`);
-  const evidenceText = fs.existsSync(file) ? fs.readFileSync(file, 'utf8').trim() : '(근거 파일 조회 불가)';
+  const evidenceText = pendingEvidenceText(root, batchId, q, '(근거 파일 조회 불가)');
   const evidence = { krdictGrade: krdictGrade(reference, q.target.lemma), stdictSpecialized: stdictSpecialized(evidenceText) };
   return {
     questionId: q.id, revision: q.revision, contentHash: sha(m.d.contentHashInput(q)), grade: q.grade,

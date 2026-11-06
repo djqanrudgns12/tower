@@ -14,7 +14,7 @@ import { createHash, randomUUID } from 'node:crypto';
 import { spawn } from 'node:child_process';
 import { runnerImport } from 'vite';
 import { AGY_MODEL } from './agy.mjs';
-import { questionRefs, measuredAgyCall, modelAttempt } from './review.mjs';
+import { questionRefs, measuredAgyCall, modelAttempt, pendingEvidenceText } from './review.mjs';
 
 const BRIDGE = process.env.AGENT_BRIDGE ?? path.join(os.homedir(), '.local/bin/agent-bridge');
 const CHUNK = 12;
@@ -113,15 +113,10 @@ export function flagged(m, batch, options = {}) {
   return out;
 }
 
-function evidenceOf(root, batchId, q) {
-  const p = path.join(root, 'content-source/batches', batchId, 'evidence', q.source.evidenceArtifactId);
-  return fs.existsSync(p) ? fs.readFileSync(p, 'utf8').trim() : '(근거 파일 없음)';
-}
-
 export function promptFor(root, batchId, list) {
-  const items = list.map(({ q, phase, rounds, reasons, findings }) => ({ draft: q, phase, revisionRounds: rounds, evidenceText: evidenceOf(root, batchId ?? q.batchId, q), defects: reasons, reviewerFindings: findings }));
+  const items = list.map(({ q, phase, rounds, reasons, findings }) => ({ draft: q, phase, revisionRounds: rounds, evidenceText: pendingEvidenceText(root, batchId ?? q.batchId, q), defects: reasons, reviewerFindings: findings }));
   return [
-    '너는 대한민국 초등학교 3~6학년용 한국어 어휘 문항의 작성자(Argon)다. 총괄은 Claude다. 아래 문항들은 공동검수에서 결함이 지적되어 격리되었다.',
+    '너는 대한민국 초등학교 3~6학년용 한국어 어휘 문항의 작성자(Argon)다. 아래 문항들은 공동검수에서 결함이 지적되어 격리되었다.',
     '입력에 문항과 사전 근거를 모두 제공했으므로 파일을 읽거나 추가 조회하지 말고 입력만으로 답한다. 파일 쓰기·명령 실행도 금지한다. 고친 결과를 답장 JSON으로만 보낸다(총괄의 도구가 검사해 파일에 쓴다).',
     '',
     '문항마다 둘 중 하나로 답한다.',

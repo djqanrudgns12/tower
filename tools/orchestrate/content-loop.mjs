@@ -239,7 +239,10 @@ export async function createGateRuntime(options, modules) {
   const baseBank = modules?.rb ?? await review.load(root);
   const stageOnly = Boolean(options['stage-only']);
   const selected = options.all ? null : new Set(String(options.batches).split(',').map(id => id.trim()));
-  const rb = stageOnly ? { ...baseBank, loadBatches: () => baseBank.loadBatches(root).filter(b => !selected || selected.has(b.batchId)).map(b => overlayBatch(root, b)).filter(Boolean) } : baseBank;
+  const rb = stageOnly ? { ...baseBank, loadBatches: () => {
+    const tracked = baseBank.loadBatches(root);
+    return [...(selected ?? tracked.map(b => b.batchId))].map(id => batchOf(id, tracked)).filter(Boolean);
+  } } : baseBank;
   const baseRevise = modules?.rm ?? await revise.load(root);
   // 기존 수정기의 gate 사유 계약을 유지하면서 Codex 최종 대조 실패도 전달한다.
   // snapshot과 실제 reviseQuestions가 반드시 같은 판정 어댑터를 사용한다.
@@ -260,13 +263,28 @@ export async function createGateRuntime(options, modules) {
   const reviewOptions = (who, questionKeys) => ({ config: configs[who], questionKeys,
     archiveExisting: (who === 'codex' && Boolean(options['recheck-codex']))
       || options['archive-existing'] === true || options['archive-existing'] === who });
-  const batchOf = id => {
-    const raw = baseBank.loadBatches(root).find(b => b.batchId === id);
+  const batchOf = (id, tracked = baseBank.loadBatches(root)) => {
+    const raw = tracked.find(b => b.batchId === id);
     if (!stageOnly) return raw;
     if (raw) return overlayBatch(root, raw);
     validateOverlay(root, id);
     if (revise.pendingJson(root, id, `content-source/batches/${id}/closed.json`)) return null;
-    throw new Error(`${id}: stage-only는 기존 추적 배치만 지원한다. 새 배치는 먼저 apply가 필요하다`);
+    const staged = overlayBatch(root, { batchId: id, drafts: null, sidecar: null, reviews: {} });
+    if (!staged?.drafts || !/(?:^|\/)produce\.mjs(?:$|\b)/.test(staged.sidecar?.producer?.tool ?? '')) {
+      throw new Error(`${id}: 기존 추적 배치만 또는 완성된 produce staging 배치만 검수할 수 있다`);
+    }
+    // 새 제작분은 명시한 배치만 읽는다. 추적 은행과 동일한 계약을 적용한다.
+    const d = baseRevise.d;
+    staged.drafts = d.draftBatchSchema.parse(staged.drafts);
+    staged.sidecar = d.draftSidecarSchema.parse(staged.sidecar);
+    if (staged.sidecar.batchId !== id || staged.drafts.some(q => q.batchId !== id)) throw new Error(`${id}: 새 staging 배치 ID 불일치`);
+    for (const who of ['codex', 'claude']) {
+      if (who === 'claude' && staged.sidecar.publicationPolicy === 'codex-argon-v1') { delete staged.reviews.claude; continue; }
+      if (staged.reviews[who]) staged.reviews[who] = d.blindReviewSchema.parse(staged.reviews[who]);
+    }
+    if (staged.argonBlind) staged.argonBlind = d.blindReviewSchema.parse(staged.argonBlind);
+    if (staged.explanation) staged.explanation = d.explanationReviewSchema.parse(staged.explanation);
+    return staged;
   };
   const log = options.log ?? console.log;
   return {

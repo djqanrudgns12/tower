@@ -148,8 +148,18 @@ function blindItem(b, q) {
   };
 }
 
+/** 제작 직후의 근거도 manifest 해시를 검증한 뒤 읽는다. */
+export function pendingEvidenceText(root, batchId, q, fallback = '(근거 파일 없음)') {
+  const artifact = q.source.evidenceArtifactId;
+  if (!/^[A-Za-z0-9_-]+$/.test(batchId) || typeof artifact !== 'string' || path.isAbsolute(artifact)
+    || artifact.includes('\\') || artifact.includes('\0') || artifact.split('/').some(part => !part || part === '.' || part === '..')) {
+    throw new Error(`${q.id}: 근거 경로가 배치 밖이다`);
+  }
+  const bytes = pendingReviewFiles(root, batchId).bytes(`content-source/batches/${batchId}/evidence/${artifact}`);
+  return bytes === null ? fallback : bytes.toString('utf8').trim();
+}
+
 export function revealItem(b, root, batchId, q, blind) {
-  const evidencePath = path.join(root, 'content-source/batches', batchId, 'evidence', q.source.evidenceArtifactId);
   return {
     ...blindItem(b, q),
     yourBlindChoice: blind.blindChoice,
@@ -158,7 +168,7 @@ export function revealItem(b, root, batchId, q, blind) {
     explanation: q.explanation,
     distractorRationales: q.distractorRationales,
     source: { provider: q.source.provider, url: q.source.url, senseOrder: q.source.senseOrder, senseId: q.source.senseId,
-      evidenceText: fs.existsSync(evidencePath) ? fs.readFileSync(evidencePath, 'utf8').trim() : '(근거 파일 없음)' },
+      evidenceText: pendingEvidenceText(root, batchId, q) },
     gradeBasis: q.gradeBasis,
   };
 }
