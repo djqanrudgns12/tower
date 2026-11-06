@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1",
   "rule": "publicationPolicy=codex-argon-v1: 현재 id·revision의 Argon 자체 반박은 서로 다른 4개 보기에서 정답만 fits, 나머지는 does_not_fit · 현재 revision·contentHash의 Codex 독립 풀이가 정답과 같고 source·uniqueness·grade·language·explanation 모두 pass · freshContext=true 및 항목 run.model=gpt-6-astra, effort=high 또는 xhigh(항목 출처 도입 전에는 gpt-6-astra 2단계 도구 보고서로 독립 풀이 출처 확인; 과거 effort는 추정하지 않음) · 현재 revision·contentHash·rationalesHash의 Codex 해설 대조 pass(reviewer.model과 run.model=gpt-6-astra, effort=high 또는 xhigh) · 현재 argon-blind가 있으면 새 문맥·같은 해시·정답 일치·source/uniqueness/grade/language pass 및 explanation fail 금지 · 게시 형식·의미 검사와 Q50 엄격 배치 검사 통과. Claude는 사용하지 않는다. 정책 없는 legacy: Argon 자체 반박에서 정답만 맞음 · 현재 revision·contentHash의 Codex·Claude 독립 풀이가 정답과 같고 source·uniqueness·grade·language 모두 pass, explanation fail 금지 · 현재 revision·contentHash·rationalesHash의 Claude 총괄 해설 대조 pass · 게시 형식·의미 검사 통과. 각 정책의 조건이 하나라도 어긋나면 그 revision은 격리한다.",
-  "approved": 3022,
+  "approved": 3042,
   "quarantined": 1260,
   "entries": [
     {
@@ -20793,6 +20793,166 @@
       "revision": 1,
       "batchId": "Q50-G4-025",
       "contentHash": "84db6c2e290d86b5d7214ea99c4762ecbc5efa812494b37e77c1966146a2fa95",
+      "decision": "approved",
+      "reasons": []
+    },
+    {
+      "questionId": "g4-argon-1301",
+      "revision": 1,
+      "batchId": "Q50-G4-026",
+      "contentHash": "bcdc464ac77f339a2ea9e31f31a0f1318ef861e6a5aa2c66bb16f1bd06eb21c7",
+      "decision": "approved",
+      "reasons": []
+    },
+    {
+      "questionId": "g4-argon-1302",
+      "revision": 1,
+      "batchId": "Q50-G4-026",
+      "contentHash": "78f5ad8337ab27173885801bbe0c9e6a715efe09d75955a0c3dfbc65789b865a",
+      "decision": "approved",
+      "reasons": []
+    },
+    {
+      "questionId": "g4-argon-1303",
+      "revision": 1,
+      "batchId": "Q50-G4-026",
+      "contentHash": "880e475e9a929a85f516f4fbf41a22a12bba87984e4f58b3b5d45454e1c157c1",
+      "decision": "approved",
+      "reasons": []
+    },
+    {
+      "questionId": "g4-argon-1312",
+      "revision": 1,
+      "batchId": "Q50-G4-026",
+      "contentHash": "8b376328f10b101cda4db92752179164f4060df8b5b0f5425e5306abfc1115fa",
+      "decision": "approved",
+      "reasons": []
+    },
+    {
+      "questionId": "g4-argon-1313",
+      "revision": 1,
+      "batchId": "Q50-G4-026",
+      "contentHash": "a28f65ae8802b948f566c61c4e391c43c3ee22c4b19789e16c9a86e036b3a605",
+      "decision": "approved",
+      "reasons": []
+    },
+    {
+      "questionId": "g4-argon-1314",
+      "revision": 1,
+      "batchId": "Q50-G4-026",
+      "contentHash": "838f808722ae1badae5bb53c88f401c6119cbab75cc36f85223a3ac92d1433b4",
+      "decision": "approved",
+      "reasons": []
+    },
+    {
+      "questionId": "g4-argon-1315",
+      "revision": 1,
+      "batchId": "Q50-G4-026",
+      "contentHash": "66c4a89d01f49c95146262e7650b232ab6f4dc465e840383c7adedb08aab6718",
+      "decision": "approved",
+      "reasons": []
+    },
+    {
+      "questionId": "g4-argon-1316",
+      "revision": 1,
+      "batchId": "Q50-G4-026",
+      "contentHash": "0086c34b9d68606342b75561cfb200afb90fa34e005b8795710f5e3039853609",
+      "decision": "approved",
+      "reasons": []
+    },
+    {
+      "questionId": "g4-argon-1317",
+      "revision": 1,
+      "batchId": "Q50-G4-026",
+      "contentHash": "0a79fd92b5ffd147912095804b23788f124368ed52b963f84668ef687393099d",
+      "decision": "approved",
+      "reasons": []
+    },
+    {
+      "questionId": "g4-argon-1318",
+      "revision": 1,
+      "batchId": "Q50-G4-026",
+      "contentHash": "77afa126a8d8a148ebc2ed119bf07ecfb2064b1f53a96e31fff89db5f2a6a5aa",
+      "decision": "approved",
+      "reasons": []
+    },
+    {
+      "questionId": "g4-argon-1320",
+      "revision": 1,
+      "batchId": "Q50-G4-026",
+      "contentHash": "1dfc07f80c4ac493a687c7ea4a66ad53a2d12b44e34d7fb620a9c51e21c58554",
+      "decision": "approved",
+      "reasons": []
+    },
+    {
+      "questionId": "g4-argon-1323",
+      "revision": 1,
+      "batchId": "Q50-G4-026",
+      "contentHash": "3891148c2ef194ff593ad810268bc701450bd018a3d79ffccd735ce9e4ca4449",
+      "decision": "approved",
+      "reasons": []
+    },
+    {
+      "questionId": "g4-argon-1324",
+      "revision": 1,
+      "batchId": "Q50-G4-026",
+      "contentHash": "3c7e73ba0661587f4478f461c47c5eb09d92e9639e28da13b4dcb416653c1584",
+      "decision": "approved",
+      "reasons": []
+    },
+    {
+      "questionId": "g4-argon-1325",
+      "revision": 1,
+      "batchId": "Q50-G4-026",
+      "contentHash": "21fae766f4bd1ce0aa3bda4f7b3e9e5d9a696539b3f8de422bfc87b30efd5521",
+      "decision": "approved",
+      "reasons": []
+    },
+    {
+      "questionId": "g4-argon-1326",
+      "revision": 1,
+      "batchId": "Q50-G4-026",
+      "contentHash": "ca820306acd2f85895455859073892c903b62b6032185067508a43b5b88cd581",
+      "decision": "approved",
+      "reasons": []
+    },
+    {
+      "questionId": "g4-argon-1330",
+      "revision": 2,
+      "batchId": "Q50-G4-026",
+      "contentHash": "cce103ceac35b8730f6dba6310c025625f9b8c9f2a05a437d5e1219d02a1770f",
+      "decision": "approved",
+      "reasons": []
+    },
+    {
+      "questionId": "g4-argon-1331",
+      "revision": 2,
+      "batchId": "Q50-G4-026",
+      "contentHash": "f9eace13cc3c4afe0b1fbdff68377f80d529d7f72a5e00823e3d444b97679b27",
+      "decision": "approved",
+      "reasons": []
+    },
+    {
+      "questionId": "g4-argon-1333",
+      "revision": 2,
+      "batchId": "Q50-G4-026",
+      "contentHash": "dee6a3b92ad80e20b49af48020f75e4f64edf877cb8d2d7cb300e6dfba2f8e51",
+      "decision": "approved",
+      "reasons": []
+    },
+    {
+      "questionId": "g4-argon-1336",
+      "revision": 3,
+      "batchId": "Q50-G4-026",
+      "contentHash": "c980cb6674068006d4056f22000913cec48465241ad23e984acbe60285d0c6d6",
+      "decision": "approved",
+      "reasons": []
+    },
+    {
+      "questionId": "g4-argon-1337",
+      "revision": 2,
+      "batchId": "Q50-G4-026",
+      "contentHash": "63bceda34d102b640dfc8f0367752cb524c71734e9b24637c22f1c2f079cea96",
       "decision": "approved",
       "reasons": []
     },
