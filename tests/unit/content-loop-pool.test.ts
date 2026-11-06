@@ -130,6 +130,31 @@ it('실제 review 입력을 50개씩 섞어 배치별 staging으로 분배하고
 
 function write(root: string, file: string, value: unknown) { const dest = path.join(root, file); fs.mkdirSync(path.dirname(dest), { recursive: true }); fs.writeFileSync(dest, JSON.stringify(value)); }
 
+it('묶음 검수는 지정 동시 수를 지키고 모든 블라인드 완료 뒤에만 해설을 공개한다', async () => {
+  const root = rootDir();
+  const batches = ['A', 'B'].map(batchId => ({ batchId, reviews: {}, drafts: Array.from({ length: 51 }, (_, i) => draft(batchId, i)) }));
+  const refs = batches.flatMap(b => b.drafts.map(q => ({ batchId: b.batchId, questionId: q.id, revision: q.revision })));
+  let active = 0, maximum = 0, blindCompleted = 0;
+  const revealStarts: number[] = [];
+  const respond = async (r: { phase: string; items: Ref[] }) => {
+    active++; maximum = Math.max(maximum, active);
+    if (r.phase === 'reveal') revealStarts.push(blindCompleted);
+    await new Promise(resolve => setTimeout(resolve, r.items[0]!.questionId === refs[0]!.questionId ? 30 : 5));
+    if (r.phase === 'blind') blindCompleted += r.items.length;
+    active--;
+    return { out: JSON.stringify({ items: r.items.map(q => ({ questionId: q.questionId, revision: q.revision, blindChoice: 'a', verdicts: { uniqueness: 'pass', grade: 'pass', language: 'pass', source: 'pass', explanation: 'pass' }, findings: [] })) }), err: '' };
+  };
+  const result = await runQuestions({ loadBatches: () => batches, contentHash: () => 'hash', rationalesHash: () => 'rh' }, root, 'claude', refs, () => {}, {
+    config: resolveReviewConfig({}, {}).claude, respond, 'review-concurrency': 2,
+  });
+  expect(maximum).toBe(2);
+  expect(revealStarts).toEqual([102, 102, 102]);
+  for (const row of result) {
+    const report = JSON.parse(fs.readFileSync(path.join(root, row.staging, 'files', `content-source/reviews/${row.batchId}/claude.json`), 'utf8'));
+    expect(report.items.map((q: Ref) => q.questionId)).toEqual(refs.filter(q => q.batchId === row.batchId).map(q => q.questionId));
+  }
+});
+
 it('검수 목록의 수정판이 입력 은행에 없으면 일부만 호출하지 않고 먼저 거절한다', async () => {
   const root = rootDir();
   const batches = ['A', 'B'].map(batchId => ({ batchId, drafts: [draft(batchId, 0)], reviews: {} }));
@@ -139,6 +164,33 @@ it('검수 목록의 수정판이 입력 은행에 없으면 일부만 호출하
     config: resolveReviewConfig({}, {}).claude, respond,
   })).rejects.toThrow('요청한 수정판이 입력 은행에 없다');
   expect(respond).not.toHaveBeenCalled();
+});
+
+it('병렬 검수 하나가 실패하면 새 묶음을 열지 않고 진행 중 호출 종료까지 기다린다', async () => {
+  const root = rootDir(), drafts = Array.from({ length: 151 }, (_, i) => draft('A', i));
+  const refs = drafts.map(q => ({ batchId: 'A', questionId: q.id, revision: q.revision }));
+  let secondFinished = false;
+  const respond = vi.fn(async (r: { phase: string; items: Ref[] }) => {
+    if (r.items[0]!.questionId === refs[0]!.questionId) {
+      await new Promise(resolve => setTimeout(resolve, 5));
+      throw Object.assign(new Error('Claude 인증 차단'), { code: 'CLAUDE_AUTH_BLOCKED' });
+    }
+    await new Promise(resolve => setTimeout(resolve, 30));
+    secondFinished = true;
+    return { out: JSON.stringify({ items: r.items.map(q => ({ questionId: q.questionId, revision: q.revision, blindChoice: 'a', verdicts: { uniqueness: 'pass', grade: 'pass', language: 'pass' }, findings: [] })) }), err: '' };
+  });
+  await expect(runQuestions({ loadBatches: () => [{ batchId: 'A', drafts, reviews: {} }], contentHash: () => 'hash' }, root, 'claude', refs, () => {}, {
+    config: resolveReviewConfig({}, {}).claude, respond, 'review-concurrency': 2,
+  })).rejects.toMatchObject({ code: 'CLAUDE_AUTH_BLOCKED' });
+  expect(secondFinished).toBe(true);
+  expect(respond.mock.calls.map(([r]) => [r.phase, r.items.length])).toEqual([['blind', 50], ['blind', 50]]);
+  expect(fs.existsSync(path.join(root, '.orchestrate/staging'))).toBe(false);
+});
+
+it.each([0, 5, 1.5])('잘못된 검수 동시 수 %s는 입력 로드 전에 거절한다', async concurrency => {
+  const loadBatches = vi.fn();
+  await expect(runQuestions({ loadBatches }, rootDir(), 'claude', [], () => {}, { 'review-concurrency': concurrency })).rejects.toThrow('--review-concurrency');
+  expect(loadBatches).not.toHaveBeenCalled();
 });
 
 function draft(batchId: string, i: number): d.QuestionDraft {

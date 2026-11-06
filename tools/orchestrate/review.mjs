@@ -530,6 +530,8 @@ export async function runPhase(b, root, reviewer, batchId, phase, log, options =
 
 /** 모든 blind 묶음이 끝난 뒤 reveal. 배치별 기존 보고서는 ingest에서 한 번만 병합한다. */
 export async function runQuestions(b, root, reviewer, questions, log = console.log, options = {}) {
+  const concurrency = Number(options['review-concurrency'] ?? 1);
+  if (!Number.isSafeInteger(concurrency) || concurrency < 1 || concurrency > 4) throw new Error('--review-concurrency는 1~4의 정수여야 한다');
   const refs = questionRefs(questions), ids = [...new Set(refs.map(q => q.batchId))];
   for (const id of ids) {
     const batch = await findBatch(b, root, id);
@@ -546,12 +548,23 @@ export async function runQuestions(b, root, reviewer, questions, log = console.l
       const { items } = await buildPhase(b, root, reviewer, id, phase, opts(id));
       inputs.push(...items); if (items.length) active.add(id);
     }
-    const results = [];
-    for (let offset = 0; offset < inputs.length; offset += 50) {
-      const items = inputs.slice(offset, offset + 50);
-      results.push(...await reviewChunk(root, reviewer, phase, items, log, options,
-        { batchIds: [...new Set(items.map(q => owner.get(q.questionId)))] }, path.join(root, '.orchestrate/review/pool', randomUUID())));
-    }
+    const chunks = [];
+    for (let offset = 0; offset < inputs.length; offset += 50) chunks.push(inputs.slice(offset, offset + 50));
+    const chunkResults = new Array(chunks.length);
+    let cursor = 0, failed = false;
+    const workers = await Promise.allSettled(Array.from({ length: Math.min(concurrency, chunks.length) }, async () => {
+      while (!failed && cursor < chunks.length) {
+        const index = cursor++, items = chunks[index];
+        try {
+          chunkResults[index] = await reviewChunk(root, reviewer, phase, items, log, options,
+            { batchIds: [...new Set(items.map(q => owner.get(q.questionId)))] }, path.join(root, '.orchestrate/review/pool', randomUUID()));
+        } catch (error) { failed = true; throw error; }
+      }
+    }));
+    // 실패해도 이미 시작한 호출이 끝날 때까지 소유권을 유지한다. 다음 단계는 열지 않는다.
+    const failure = workers.find(result => result.status === 'rejected');
+    if (failure) throw failure.reason;
+    const results = chunkResults.flat();
     for (const id of active) {
       const items = results.filter(q => owner.get(q.questionId) === id);
       writeJson(path.join(workDir(root, reviewer, id), `${phase}.result.json`), { at: new Date().toISOString(), config: reviewOptions(reviewer, options).config, items });
