@@ -62,9 +62,13 @@ export function App() {
     });
   }, []);
 
-  const startNew = (input: { grade: 3 | 4 | 5 | 6; difficulty: DifficultyId; nickname: string }) => {
+  const startNew = async (input: { grade: 3 | 4 | 5 | 6; difficulty: DifficultyId; nickname: string }, signal: AbortSignal) => {
+    const [result, bestWave] = await Promise.all([
+      startNewRun({ ...input, playerId: settings.playerId }, signal),
+      bestWaveFor(input.grade, input.difficulty),
+    ]);
+    if (signal.aborted) { if (result.ok) result.controller.dispose(); return; }
     update({ lastGrade: input.grade, lastDifficulty: input.difficulty, lastNickname: input.nickname });
-    const result = startNewRun({ ...input, playerId: settings.playerId });
     if (!result.ok) {
       setMessage(result.message);
       setScreen({ name: 'home' });
@@ -72,7 +76,7 @@ export function App() {
     }
     setMessage(null);
     // 최고 기록 선(prd-r4 §7.2-F): 같은 학년·난이도의 이 기기 기록 중 최고를 판을 열 때 한 번만 읽는다. 읽지 못하면 기록 없음으로 둔다.
-    void bestWaveFor(input.grade, input.difficulty).then(bestWave => setScreen({ name: 'game', controller: result.controller, bestWave }));
+    setScreen({ name: 'game', controller: result.controller, bestWave });
   };
 
   const startPracticeRun = () => {

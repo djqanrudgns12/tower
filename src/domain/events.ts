@@ -1,5 +1,5 @@
 import type { BossSkillKind, EnemyKind, TowerId } from '../contracts/balance';
-import type { HazardKind, HazardLine, Phase } from './types';
+import type { HazardKind, HazardLine, Phase, RunEndReason } from './types';
 
 /** 장판·덫·굴림체가 사라진 까닭: 지속 끝(time), 횟수를 다 씀·폭발(spent), 굴림 끝(end), 웨이브 끝(wave), 타워 판매(sold). */
 export type HazardEndReason = 'time' | 'spent' | 'end' | 'wave' | 'sold';
@@ -21,7 +21,7 @@ export type DomainEvent =
   | { type: 'kill'; enemyId: number; kind: EnemyKind; elite: boolean; x: number; y: number; gold: number; pt: number }
   | { type: 'leak'; enemyId: number; kind: EnemyKind; damage: number; gateHp: number }
   | { type: 'waveComplete'; wave: number; milestoneGold: number }
-  | { type: 'gameOver'; completedWave: number; endedAtWave: number; reason: 'DEFEAT' | 'QUIT' }
+  | { type: 'gameOver'; completedWave: number; endedAtWave: number; reason: RunEndReason }
   | { type: 'towerBuilt' | 'towerUpgraded' | 'towerSold'; towerId: number; slotId: string; gold: number }
   /** 대장 기믹이 발동했다(방어 태세·겹방패 한 겹·회복·호위 호출). 돌진·북소리는 상시라 알리지 않는다. */
   | { type: 'bossSkill'; enemyId: number; skill: BossSkillKind }

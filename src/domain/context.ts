@@ -28,6 +28,8 @@ export interface GameContext {
   difficultyId: DifficultyId;
   difficulty: DifficultyConfig;
   map: MapConfig;
+  /** 문제은행의 기준 학년. 개발용 맵 미리보기의 표시 학년과는 다를 수 있다. */
+  questionGrade: number;
   path: PathGeometry;
   questions: ReadonlyMap<string, RuntimeQuestion>;
   questionIds: readonly string[];
@@ -50,6 +52,7 @@ export function createContext(input: {
     difficultyId: input.difficulty,
     difficulty: input.balance.difficulties[input.difficulty],
     map: input.map,
+    questionGrade: input.map.grade,
     path: buildPath(input.map),
     questions,
     questionIds: [...questions.keys()].sort(),

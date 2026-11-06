@@ -1,4 +1,4 @@
-import { useId, useState } from 'react';
+import { useEffect, useId, useRef, useState } from 'react';
 import { DIFFICULTY_IDS, type DifficultyId } from '../../contracts/balance';
 import { isGradeAvailable, MAPS } from '../../content';
 import { useGradeContent } from '../useGradeContent';
@@ -19,7 +19,7 @@ interface Props {
   onBack(): void;
   /** '닉네임 바꾸기': 창을 닫고 홈의 닉네임 입력칸에 포커스를 준다(홈이 처리한다). */
   onEditNickname(): void;
-  onStart(input: { grade: Grade; difficulty: DifficultyId; nickname: string }): void;
+  onStart(input: { grade: Grade; difficulty: DifficultyId; nickname: string }, signal: AbortSignal): Promise<void>;
 }
 
 /**
@@ -32,11 +32,26 @@ export function NewGameScreen({ settings, onBack, onEditNickname, onStart }: Pro
     (DIFFICULTY_IDS as readonly string[]).includes(settings.lastDifficulty) ? (settings.lastDifficulty as DifficultyId) : 'Normal',
   );
   const [notice, setNotice] = useState<string | null>(null);
+  const pending = useRef<AbortController | null>(null);
+  const [starting, setStarting] = useState(false);
+  useEffect(() => () => { pending.current?.abort(); }, []);
   const { status, retry } = useGradeContent(grade);
   const problemId = useId();
   const map = MAPS.find(m => m.grade === grade)!;
   const mapName = MAP_NAMES[map.id] ?? map.id;
   const { nickname, problem } = nickProblemOf(settings.lastNickname);
+
+  const start = async () => {
+    if (pending.current || problem !== null || status !== 'ready') return;
+    const request = new AbortController();
+    pending.current = request;
+    setStarting(true);
+    try { await onStart({ grade, difficulty, nickname }, request.signal); }
+    catch { if (!request.signal.aborted) setNotice('시작하지 못했어요. 다시 눌러 주세요.'); }
+    finally {
+      if (!request.signal.aborted) { pending.current = null; setStarting(false); }
+    }
+  };
 
   const gradeOptions: SegmentOption<`${Grade}`>[] = GRADES.map(g => ({
     value: `${g}`,
@@ -47,9 +62,9 @@ export function NewGameScreen({ settings, onBack, onEditNickname, onStart }: Pro
       </>
     ),
     ariaLabel: gradeReady(g) ? `${g}학년` : `${g}학년, 문제 준비 중`,
-    disabled: !gradeReady(g),
+    disabled: starting || !gradeReady(g),
   }));
-  const difficultyOptions: SegmentOption<DifficultyId>[] = DIFFICULTY_IDS.map(id => ({ value: id, label: DIFFICULTY_COPY[id].label }));
+  const difficultyOptions: SegmentOption<DifficultyId>[] = DIFFICULTY_IDS.map(id => ({ value: id, label: DIFFICULTY_COPY[id].label, disabled: starting }));
 
   return (
     <Modal
@@ -112,11 +127,12 @@ export function NewGameScreen({ settings, onBack, onEditNickname, onStart }: Pro
             variant="primary"
             size="lg"
             className={css.startBtn ?? ''}
-            aria-disabled={problem !== null || status !== 'ready' || undefined}
+            aria-disabled={starting || problem !== null || status !== 'ready' || undefined}
+            aria-busy={starting || undefined}
             aria-describedby={problem !== null ? problemId : undefined}
-            onClick={() => { if (problem === null && status === 'ready') onStart({ grade, difficulty, nickname }); }}
+            onClick={() => { void start(); }}
           >
-            {HOME_COPY.start}
+            {starting ? '준비 중…' : HOME_COPY.start}
           </Button>
           {status === 'error' && <Button onClick={retry}>다시 불러오기</Button>}
         </div>

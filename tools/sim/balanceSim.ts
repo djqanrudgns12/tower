@@ -163,7 +163,7 @@ export function simContext(mapId: string, difficulty: DifficultyId, balance: Bal
     const map = MAPS.find(m => m.id === mapId);
     const bank = gradeContent(3).bank;
     if (!map || !bank) throw new Error(`알 수 없는 맵 또는 은행: ${mapId}`);
-    ctx = createContext({ balance, difficulty, map, questions: toRuntime(bank), battleReadingLoadMax: 70 });
+    ctx = { ...createContext({ balance, difficulty, map, questions: toRuntime(bank), battleReadingLoadMax: 70 }), questionGrade: 3 };
     byKey.set(key, ctx);
   }
   return ctx;

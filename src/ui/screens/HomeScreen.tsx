@@ -41,7 +41,7 @@ interface Props {
   /** 설정에서 이 기기 기록을 지웠을 때(오답 노트 개수처럼 홈 밖에서 계산한 값을 다시 읽게 한다). */
   onHistoryCleared?(): void;
   onClearMessage(): void;
-  onStartNew(input: { grade: 3 | 4 | 5 | 6; difficulty: DifficultyId; nickname: string }): void;
+  onStartNew(input: { grade: 3 | 4 | 5 | 6; difficulty: DifficultyId; nickname: string }, signal: AbortSignal): Promise<void>;
   onPractice?(): void;
   onSettings(patch: Partial<Settings>): void;
 }
@@ -236,10 +236,7 @@ export function HomeScreen({
             focusNickAfterClose.current = true;
             setActiveModal(null);
           }}
-          onStart={input => {
-            setActiveModal(null);
-            onStartNew(input);
-          }}
+          onStart={onStartNew}
         />
       )}
 

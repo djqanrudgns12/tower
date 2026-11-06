@@ -9,7 +9,7 @@ import type { Encounter, EncounterPhase, RunState } from '../../src/domain/types
 
 await Promise.all([3, 4, 5, 6].map(loadGradeContent));
 
-function makeSyntheticPool(grade = 4): RuntimeQuestion[] {
+function makeSyntheticPool(grade = 4, scale = 1): RuntimeQuestion[] {
   const specs: Array<{ tier: DifficultyTier; tag: VariantTag; count: number }> = [
     { tier: 'basic', tag: 'standard', count: 25 },
     { tier: 'core', tag: 'standard', count: 25 },
@@ -22,7 +22,7 @@ function makeSyntheticPool(grade = 4): RuntimeQuestion[] {
   const out: RuntimeQuestion[] = [];
   let idx = 1;
   for (const sp of specs) {
-    for (let i = 0; i < sp.count; i++, idx++) {
+    for (let i = 0; i < sp.count * scale; i++, idx++) {
       out.push({
         id: `g${grade}-syn-${String(idx).padStart(4, '0')}`,
         revision: 1,
@@ -99,7 +99,7 @@ describe('난이도 × 심화 단계 출제(PRD §9.1, §9.4)', () => {
   });
 
   it('합성 은행 200회: 쉬움·보통에는 어려움 전용 유형·도전 단계가 0건, 아주 어려움의 도전 비중이 어려움보다 높다', () => {
-    const all = makeSyntheticPool(4);
+    const all = makeSyntheticPool(4, 5); // 200회 동안 같은 문항을 재사용하지 않는 충분한 풀
     const picked = Object.fromEntries(ALL_DIFFICULTIES.map(d => [d, runFor(all.filter(q => isQuestionEligibleForDifficulty(q, d, DIFFICULTY_GATE)), d, 200).picked]));
     for (const d of ['Easy', 'Normal']) {
       expect(picked[d]!.filter(q => q.difficultyTier === 'challenge' || HARD_ONLY_TAGS.includes(q.variantTag ?? 'standard'))).toEqual([]);
@@ -174,7 +174,7 @@ function fresh(ctx: ReturnType<typeof createContext>, difficulty: DifficultyId, 
     bankId: 'syn', bankVersion: '1', contentMode: 'development', availableTowers: [...PILOT_TOWERS], rankingEligibility: 'personal',
     createdAt: '2026-11-04T00:00:00.000Z',
   });
-  Object.assign(s.quiz, { queue: [], cursor: 0, cycle: 0, recentQuestions: [], recentSenses: [], current: null, nextEncounterId });
+  Object.assign(s.quiz, { queue: [], cursor: 0, cycle: 0, presented: [], recentQuestions: [], recentSenses: [], current: null, nextEncounterId });
   s.quiz.history = history.map(k => ({ ...graded(k) }) as Encounter);
   return s;
 }

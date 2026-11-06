@@ -149,7 +149,7 @@ export class RunController {
     if (!result.ok) return result;
     if (cmd.type === 'pause' || cmd.type === 'resume') this.acc = 0;
     this.publish(result.events);
-    if (cmd.type === 'quit') void this.finish();
+    if (result.events.some(e => e.type === 'gameOver')) void this.finish();
     return result;
   }
 

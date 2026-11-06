@@ -182,7 +182,7 @@ export interface ResultHeadline { kind: 'newBest' | 'nearMiss' | 'defeat' | 'end
  * - 성문이 무너졌고 최고 기록과 1~2웨이브 차이면 "아까워요! 최고 기록까지 N웨이브"(N = 차이 = 최고 기록과 같아지려면 더 지킬 웨이브, prd-r4 §7.2-F 문구)
  * - 그 밖에는 기존 줄(무너짐/마침)
  */
-export function resultHeadline(o: { endReason: 'DEFEAT' | 'QUIT' | null; completedWave: number; previousBest: number | null }): ResultHeadline {
+export function resultHeadline(o: { endReason: 'DEFEAT' | 'QUIT' | 'CONTENT_COMPLETE' | null; completedWave: number; previousBest: number | null }): ResultHeadline {
   const { completedWave: done, previousBest: best } = o;
   if (done >= 1 && (best === null || done > best)) return { kind: 'newBest', text: RESULT_COPY.newBest };
   if (o.endReason === 'DEFEAT') {

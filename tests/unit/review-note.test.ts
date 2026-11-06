@@ -325,10 +325,10 @@ function runInput(ctx: GameContext, runId: string, reviewSenses?: readonly Revie
 }
 
 /** q01·q02는 뜻 sA, q03·q04는 뜻 sB, q05는 뜻 sC, 나머지는 문항마다 뜻이 다르다. 36문항. */
-function synthetic() {
+function synthetic(count = 36) {
   const template = contextFor(3, 'Normal').questions.values().next().value!;
   const senseOf = (i: number) => (i <= 2 ? 'sA' : i <= 4 ? 'sB' : i === 5 ? 'sC' : `s${i}`);
-  const questions: RuntimeQuestion[] = Array.from({ length: 36 }, (_, n) => {
+  const questions: RuntimeQuestion[] = Array.from({ length: count }, (_, n) => {
     const i = n + 1;
     const id = `q${String(i).padStart(2, '0')}`;
     return { ...structuredClone(template), id, readingLoad: 50, target: { lemma: `낱말${senseOf(i)}`, partOfSpeech: '명사', senseKey: senseOf(i) } };
@@ -343,7 +343,7 @@ type Syn = ReturnType<typeof synthetic>;
 /** 빈 이력·빈 큐에서 시작하는 판. `answered`개의 준비 문제를 채점한 상태로 만든다(이력만, 문항 내용은 상관없다). */
 function state(syn: Syn, reviewSenses: ReviewSense[], opts: { graded?: Array<boolean> } = {}): RunState {
   const s = createRun(syn.ctx, runInput(syn.ctx, 'rv', reviewSenses));
-  Object.assign(s.quiz, { queue: [], cursor: 0, cycle: 0, recentQuestions: [], recentSenses: [], current: null, reviewUsed: {} });
+  Object.assign(s.quiz, { queue: [], cursor: 0, cycle: 0, presented: [], recentQuestions: [], recentSenses: [], current: null, reviewUsed: {} });
   s.quiz.history = (opts.graded ?? [true]).map(correct => ({ phase: 'prep', answer: { choice: 'a', tick: 0, correct, pt: 0, gold: 0 } }) as unknown as Encounter);
   return s;
 }
@@ -388,15 +388,19 @@ describe('복습 단계 선택(prd-r4 §6.1)', () => {
     expect(['sA', 'sB']).not.toContain(syn.ctx.questions.get(normal.id)!.target.senseKey);
   });
 
-  it('덜 낸 뜻부터, 뜻 하나는 한 판에서 최대 2번까지다', () => {
+  it('아직 내지 않은 뜻부터 고르고 뜻 하나는 복습에서도 한 번만 낸다', () => {
     const syn = synthetic();
     const s = state(syn, [syn.sense('sA', 'q01'), syn.sense('sB', 'q03')]);
     s.quiz.reviewUsed = { sA: 1 };
     expect(pick(syn, s)).toEqual({ id: 'q04', review: true }); // sB가 0번, sA가 1번 → sB 먼저
-    s.quiz.reviewUsed = { sA: 2, sB: 2 };
+    s.quiz.reviewUsed = { sA: 1, sB: 1 };
     expect(pick(syn, s).review).toBe(false);
-    s.quiz.reviewUsed = { sA: 2, sB: 1 };
-    expect(pick(syn, s)).toEqual({ id: 'q04', review: true });
+    // 일반 출제로 이미 나온 뜻도 복습 후보에서 제외한다.
+    s.quiz.reviewUsed = {};
+    s.quiz.presented = ['q01', 'q03'].map(id => ({ questionId: id, senseKey: syn.ctx.questions.get(id)!.target.senseKey, lemma: syn.ctx.questions.get(id)!.target.lemma, shared: false }));
+    const next = pick(syn, s);
+    expect(next.review).toBe(false);
+    expect(['sA', 'sB']).not.toContain(syn.ctx.questions.get(next.id)!.target.senseKey);
   });
 
   it('도움 단계가 -1이면 복습을 쉬고, 전투 문제에서는 하지 않는다', () => {
@@ -432,9 +436,9 @@ describe('복습 단계 선택(prd-r4 §6.1)', () => {
     expect([used.quiz.cursor, used.quiz.queue]).toEqual([2, queue]);
   });
 
-  it('긴 판: 복습은 3번에 1번 차례에만, 뜻당 2번 이하, 앞선 8뜻·30문항과 겹치지 않고, 전투 문제에는 없다', () => {
-    const syn = synthetic();
-    const senses = [syn.sense('sA', 'q01'), syn.sense('sB', 'q03'), syn.sense('sC', 'q05')];
+  it('긴 판: 복습은 3번에 1번 차례에만, 일반 출제와 합쳐 뜻당 한 번, 전투 문제에는 없다', () => {
+    const syn = synthetic(90);
+    const senses = [syn.sense('sA', 'q01'), syn.sense('sB', 'q03'), syn.sense('sC', 'q05'), ...Array.from({ length: 9 }, (_, i) => syn.sense(`s${i + 6}`, `q${String(i + 6).padStart(2, '0')}`))];
     const s = createRun(syn.ctx, runInput(syn.ctx, 'long', senses, 777));
     const seen: Encounter[] = [];
     const grade = (enc: Encounter, correct: boolean) => {
@@ -450,12 +454,13 @@ describe('복습 단계 선택(prd-r4 §6.1)', () => {
     const perSense: Record<string, number> = {};
     for (const { e, k } of reviews) {
       expect(k % 3, `${k}번째`).toBe(1);
-      expect(['sA', 'sB', 'sC']).toContain(sense(e));
+      expect(senses.map(item => item.senseKey)).toContain(sense(e));
       perSense[sense(e)] = (perSense[sense(e)] ?? 0) + 1;
       expect(seen.slice(Math.max(0, k - 8), k).map(sense), `${k}번째의 앞선 8뜻`).not.toContain(sense(e));
       expect(seen.slice(Math.max(0, k - 30), k).map(x => x.questionId), `${k}번째의 앞선 30문항`).not.toContain(e.questionId);
     }
-    expect(Math.max(...Object.values(perSense))).toBeLessThanOrEqual(2);
+    expect(Math.max(...Object.values(perSense))).toBe(1);
+    expect(new Set(seen.map(sense)).size).toBe(seen.length);
     expect(s.quiz.reviewUsed).toEqual(perSense);
     // 일반 문항에서도 복습 단계가 없던 시절의 제한(앞선 30문항 안에서는 반복 없음)이 그대로다.
     for (let k = 0; k < seen.length; k++) {

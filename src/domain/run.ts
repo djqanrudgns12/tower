@@ -7,11 +7,11 @@ import { openDraft, pickDraft, startingOwned } from './draft';
 import { center } from './geometry';
 import { removeTowerHazards, settleHazardsAtWaveEnd } from './hazards';
 import { add, msToTicks, mulDivFloor } from './num';
-import { createEncounter, MAX_REVIEW_SENSES } from './quiz';
+import { createEncounter, MAX_REVIEW_SENSES, QuestionPoolExhaustedError } from './quiz';
 import { openRelicOffer, pickRelic, relicContext } from './relics';
 import { RNG_ALGORITHM, streamSeed } from './rng';
 import { attackIntervalTicks, attacks, buildCost, evolutionChoices, sellRefund, towerStats, upgradeCost } from './towers';
-import { RULES_VERSION, RUN_STATE_VERSION, type PauseReason, type ReviewSense, type RunConfig, type RunState, type Tower } from './types';
+import { RULES_VERSION, RUN_STATE_VERSION, type PauseReason, type ReviewSense, type RunConfig, type RunEndReason, type RunState, type Tower } from './types';
 import { composeWave, isMilestone, spawnIntervalTicks, waveHpBaseMilli } from './waves';
 
 export type Command =
@@ -46,6 +46,7 @@ export type NewRunInput = Omit<RunConfig, 'rngAlgorithm' | 'rulesVersion' | 'bal
    * 생략하면 복습 단계 없이 예전과 같은 출제다. 최대 12뜻, 같은 뜻은 한 번만 쓴다.
    */
   reviewSenses?: readonly ReviewSense[];
+  previousQuestionIds?: readonly string[];
 };
 
 /** 판에 복사할 오답 노트 뜻: 중복 제거, 앞에서부터 12개, 깊은 복사. */
@@ -89,7 +90,7 @@ export function nextCorrectGold(ctx: GameContext, s: Pick<RunState, 'relics' | '
 }
 
 export function createRun(ctx: GameContext, input: NewRunInput): RunState {
-  const { reviewSenses, ...rest } = input;
+  const { reviewSenses, previousQuestionIds, ...rest } = input;
   const config: RunConfig = { ...rest, rngAlgorithm: RNG_ALGORITHM, rulesVersion: RULES_VERSION, balanceVersion: ctx.balance.balanceVersion, mapVersion: ctx.map.mapVersion };
   const seed = config.seed >>> 0;
   const s: RunState = {
@@ -97,7 +98,7 @@ export function createRun(ctx: GameContext, input: NewRunInput): RunState {
     gateHp: ctx.difficulty.gateHp, gateMaxHp: ctx.difficulty.gateHp, gold: ctx.balance.run.startGold, pt: 0, waveKillPtGranted: 0, burningUntilTick: -1,
     rng: { battle: streamSeed(seed, 'battle'), question: streamSeed(seed, 'question'), option: streamSeed(seed, 'option'), draft: streamSeed(seed, 'draft') },
     seq: { command: 0, enemy: 1, tower: 1, projectile: 1, hazard: 1 },
-    quiz: { queue: [], cursor: 0, cycle: 0, recentQuestions: [], recentSenses: [], current: null, feedback: null, prepTarget: 0, prepDone: 0, battleStreak: 0, nextEncounterId: 1, history: [], reviewSenses: copyReviewSenses(reviewSenses), reviewUsed: {} },
+    quiz: { presented: [], previousQuestionIds: [...new Set(previousQuestionIds ?? [])].sort(), queue: [], cursor: 0, cycle: 0, recentQuestions: [], recentSenses: [], current: null, feedback: null, prepTarget: 0, prepDone: 0, battleStreak: 0, nextEncounterId: 1, history: [], reviewSenses: copyReviewSenses(reviewSenses), reviewUsed: {} },
     owned: startingOwned(ctx.balance, config), draft: null,
     towers: [], enemies: [], projectiles: [], hazards: [], battle: null,
     stats: { correct: 0, wrong: 0, skipped: 0, kills: 0, bossKills: 0, bossLeaks: 0, leaks: 0, goldEarned: 0, ptFromQuestions: 0, ptFromKills: 0, activeTicks: 0, battleTicks: 0 },
@@ -107,6 +108,15 @@ export function createRun(ctx: GameContext, input: NewRunInput): RunState {
   return s;
 }
 
+function openQuestion(ctx: GameContext, s: RunState, phase: 'prep' | 'battle', ev: DomainEvent[]): boolean {
+  try { s.quiz.current = createEncounter(ctx, s, phase); return true; }
+  catch (error) {
+    if (!(error instanceof QuestionPoolExhaustedError)) throw error;
+    endRun(s, 'CONTENT_COMPLETE', ev);
+    return false;
+  }
+}
+
 function enterPrep(ctx: GameContext, s: RunState, wave: number, ev: DomainEvent[]) {
   s.phase = 'PREP_QUIZ';
   s.wave = wave;
@@ -114,8 +124,7 @@ function enterPrep(ctx: GameContext, s: RunState, wave: number, ev: DomainEvent[
   s.quiz.prepTarget = wave === 1 ? ctx.balance.run.prepAttempts.firstWave : ctx.balance.run.prepAttempts.laterWaves;
   s.quiz.prepDone = 0;
   s.quiz.feedback = null;
-  s.quiz.current = createEncounter(ctx, s, 'prep');
-  ev.push({ type: 'phase', phase: s.phase, wave }, { type: 'encounter', encounterId: s.quiz.current.id });
+  if (openQuestion(ctx, s, 'prep', ev)) ev.push({ type: 'phase', phase: s.phase, wave }, { type: 'encounter', encounterId: s.quiz.current!.id });
 }
 
 const tradingPhase = (s: RunState) => s.phase === 'BUILD' || s.phase === 'BATTLE';
@@ -228,8 +237,7 @@ function replaceCurrent(ctx: GameContext, s: RunState, ev: DomainEvent[]) {
     enterPrep(ctx, s, s.wave + 1, ev);
     return;
   }
-  s.quiz.current = createEncounter(ctx, s, s.phase === 'PREP_QUIZ' ? 'prep' : 'battle');
-  ev.push({ type: 'encounter', encounterId: s.quiz.current.id });
+  if (openQuestion(ctx, s, s.phase === 'PREP_QUIZ' ? 'prep' : 'battle', ev)) ev.push({ type: 'encounter', encounterId: s.quiz.current!.id });
 }
 
 /** 밖에서 들여온 상태(개발용 QA 장면 로더)에 걸린 미제출 문항이 철회됐으면 바꾼다. 답한 문항은 소급 변경하지 않는다. */
@@ -252,12 +260,10 @@ function advanceQuestion(ctx: GameContext, s: RunState, ev: DomainEvent[]) {
       s.phase = 'BUILD';
       ev.push({ type: 'phase', phase: 'BUILD', wave: s.wave });
     } else {
-      s.quiz.current = createEncounter(ctx, s, 'prep');
-      ev.push({ type: 'encounter', encounterId: s.quiz.current.id });
+      if (openQuestion(ctx, s, 'prep', ev)) ev.push({ type: 'encounter', encounterId: s.quiz.current!.id });
     }
   } else if (s.phase === 'BATTLE') {
-    s.quiz.current = createEncounter(ctx, s, 'battle');
-    ev.push({ type: 'encounter', encounterId: s.quiz.current.id });
+    if (openQuestion(ctx, s, 'battle', ev)) ev.push({ type: 'encounter', encounterId: s.quiz.current!.id });
   } else if (s.phase === 'WAVE_WRAPUP') {
     s.quiz.current = null;
     enterPrep(ctx, s, s.wave + 1, ev);
@@ -368,8 +374,7 @@ function startBattle(ctx: GameContext, s: RunState, ev: DomainEvent[]): CommandE
   }
   s.phase = 'BATTLE';
   if (!b.burning.streakAcrossWaves) s.quiz.battleStreak = 0;
-  s.quiz.current = createEncounter(ctx, s, 'battle');
-  ev.push({ type: 'phase', phase: 'BATTLE', wave: s.wave }, { type: 'encounter', encounterId: s.quiz.current.id });
+  if (openQuestion(ctx, s, 'battle', ev)) ev.push({ type: 'phase', phase: 'BATTLE', wave: s.wave }, { type: 'encounter', encounterId: s.quiz.current!.id });
   return null;
 }
 
@@ -378,7 +383,7 @@ function quit(s: RunState, ev: DomainEvent[]): CommandError | null {
   return null;
 }
 
-function endRun(s: RunState, reason: 'DEFEAT' | 'QUIT', ev: DomainEvent[]) {
+function endRun(s: RunState, reason: RunEndReason, ev: DomainEvent[]) {
   s.phase = 'GAME_OVER';
   s.endReason = reason;
   s.endedAtWave = s.wave;

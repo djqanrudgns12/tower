@@ -6,16 +6,20 @@ import type { OptionId } from '../contracts/questions';
  * 2: 타워 branch → form, 설치 취소 기한(리뉴얼 R2). 3: 적 종족·대장 단계(R2 2단계). 4: 신규 타워 효과 상태(취약·저항 차감·밀치기·공격 주기·다연발). 5: 대장 기믹 상태.
  * 6: 장판·덫·굴림체(RunState.hazards, 투사체 zone, seq.hazard).
  * 7: 오답 노트 복습·도움 단계(R4 L): QuizState.reviewSenses·reviewUsed, Encounter.review.
+ * 8: 판 전체 출제 이력·전역 풀이 ID 복사본·문항 소진 종료(W8).
  * 개발용 QA 장면 로더(application/qaRun.ts)는 버전이 다른 상태를 열지 않는다.
  */
-export const RUN_STATE_VERSION = 7;
+export const RUN_STATE_VERSION = 8;
 /**
  * 0.5-candidate: P2 공격 프로필(즉발·연쇄·부채꼴·화상·깃발 오라, 물리 저항 무시)과 적 화상 상태(PRD §7.1, §20.2~20.3).
  * 0.5.1-candidate: 난이도별 심화 단계 출제 순서와 한 바퀴 뒤 섞기(PRD §9.1, §9.4). 같은 시드의 출제 순서가 바뀐다.
  * 0.5.2-candidate: 판 안 도움 단계(최근 채점 4개로 단계·읽기 부담 이동)와 준비 문제의 오답 노트 복습 단계(R4 L, prd-r4 §6). 출제 순서가 바뀐다.
  * 1.0.0: 첫 출시(2026-11-04). 앱·규칙·밸런스 버전을 1.0.0으로 맞춘다.
+ * 1.1.0: 판 전체 반복 제한·공유 비율·과거 풀이 후순위(W8). 같은 시드의 출제 순서가 바뀐다.
  */
-export const RULES_VERSION = '1.0.0';
+export const RULES_VERSION = '1.1.0';
+
+export type RunEndReason = 'DEFEAT' | 'QUIT' | 'CONTENT_COMPLETE';
 
 export type Phase = 'PREP_QUIZ' | 'BUILD' | 'BATTLE' | 'WAVE_WRAPUP' | 'GAME_OVER';
 export type PauseReason = 'USER' | 'HIDDEN' | 'PERFORMANCE' | 'CONTEXT_LOST' | 'NUMERIC_LIMIT';
@@ -79,6 +83,10 @@ export interface ReviewSense {
 }
 
 export interface QuizState {
+  /** 출제 즉시 기록한다. 제출 전 교체된 문항도 이번 판에서 다시 내지 않는다. */
+  presented: Array<{ questionId: string; senseKey: string; lemma: string; shared: boolean }>;
+  /** 판을 시작할 때 읽은 전역 풀이 이력의 ID 복사본. 판 안에서는 바뀌지 않는다. */
+  previousQuestionIds: string[];
   queue: string[];
   cursor: number;
   cycle: number;
@@ -93,7 +101,7 @@ export interface QuizState {
   history: Encounter[];
   /** 오답 노트 복사본(최대 12뜻, 판이 열릴 때 고정). 비어 있으면 복습 단계는 건너뛴다. */
   reviewSenses: ReviewSense[];
-  /** 뜻(senseKey)별로 이번 판에서 복습 단계로 낸 횟수. 한 뜻은 판당 최대 2번(prd-r4 §6.1). */
+  /** 뜻(senseKey)별로 이번 판에서 복습 단계로 낸 횟수. 일반 출제와 합쳐 한 번만 낸다. */
   reviewUsed: Record<string, number>;
   /**
    * 준비·전투·마무리를 가리지 않고 이어진 정답 수(연속 정답 보너스, balance run.answerStreakBonus가 있을 때만 센다). 오답·'모르겠어요'·패배는 0.
@@ -352,7 +360,7 @@ export interface RunState {
   wave: number;
   completedWave: number;
   endedAtWave: number | null;
-  endReason: null | 'DEFEAT' | 'QUIT';
+  endReason: null | RunEndReason;
   gateHp: number;
   gateMaxHp: number;
   gold: number;
