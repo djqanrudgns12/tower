@@ -1,6 +1,6 @@
 {
   "bankId": "g4-candidate",
-  "bankVersion": "cand-63f0decab1d0",
+  "bankVersion": "cand-aebcb7900a94",
   "grade": 4,
   "status": "verified_candidate",
   "note": "공동검수 진행 중인 후보 은행. 같은 revision의 외부 블라인드 검수(codex·claude) 1건 이상과 새 문맥 argon-blind를 통과했다. 3모델 공동검수 승인 전에는 게임에 싣지 않는다(PRD §9.3).",
@@ -2774,6 +2774,46 @@
       }
     },
     {
+      "id": "g4-argon-0156",
+      "revision": 2,
+      "status": "verified_candidate",
+      "grade": 4,
+      "type": "cloze",
+      "difficultyTier": "core",
+      "variantTag": "standard",
+      "target": {
+        "lemma": "드러나다",
+        "partOfSpeech": "동사",
+        "senseKey": "드러나다/동사/416274-2"
+      },
+      "stem": "오랫동안 몰랐던 사실이 조사 끝에 세상에 널리 (    ) 모두가 진실을 알게 되었습니다. 빈칸에 알맞은 말은 무엇일까요?",
+      "options": [
+        {
+          "id": "a",
+          "text": "사라져서"
+        },
+        {
+          "id": "b",
+          "text": "드러나서"
+        },
+        {
+          "id": "c",
+          "text": "흐려져서"
+        },
+        {
+          "id": "d",
+          "text": "끊어져서"
+        }
+      ],
+      "correctOptionId": "b",
+      "explanation": "알려지지 않았던 사실이 널리 밝혀질 때 ‘드러나다’를 써요.",
+      "distractorRationales": {
+        "a": "사실이 사라지면 사람들이 진실을 알 수 없어요.",
+        "c": "흐려져서 분명하지 않으면 진실이 밝혀지지 않아요.",
+        "d": "중간에 끊어졌다는 말은 널리 밝혀진 문맥과 어긋나요."
+      }
+    },
+    {
       "id": "g4-argon-0157",
       "revision": 1,
       "status": "verified_candidate",
@@ -3091,46 +3131,6 @@
         "a": "움직임을 멈추게 하는 반대 행동이에요.",
         "b": "땅 아래에 넣어 덮는 행동이라 뜻이 달라요.",
         "d": "남의 눈에 띄지 않게 숨기는 일을 뜻해요."
-      }
-    },
-    {
-      "id": "g4-argon-0166",
-      "revision": 1,
-      "status": "verified_candidate",
-      "grade": 4,
-      "type": "usage",
-      "difficultyTier": "core",
-      "variantTag": "standard",
-      "target": {
-        "lemma": "따르다",
-        "partOfSpeech": "동사",
-        "senseKey": "따르다/동사/416758-1"
-      },
-      "stem": "뒤에서 가는 대로 같이 간다는 뜻의 ‘따르다’를 바르게 쓴 문장은 무엇일까요?",
-      "options": [
-        {
-          "id": "a",
-          "text": "책상 서랍 속에 연필 세 자루를 따랐다."
-        },
-        {
-          "id": "b",
-          "text": "강아지가 주인 발걸음 뒤를 졸졸 따랐다."
-        },
-        {
-          "id": "c",
-          "text": "높은 하늘에 하얀 뭉게구름이 둥실 따랐다."
-        },
-        {
-          "id": "d",
-          "text": "차가운 얼음이 뜨거운 햇볕에 녹아 따랐다."
-        }
-      ],
-      "correctOptionId": "b",
-      "explanation": "‘따르다’는 다른 사람이나 동물의 뒤에서 같이 간다는 뜻이에요.",
-      "distractorRationales": {
-        "a": "서랍에 연필을 넣는 동작에는 쓸 수 없어요.",
-        "c": "구름이 떠 있는 모습을 나타내는 말이 아니에요.",
-        "d": "얼음이 녹는 현상에는 어울리지 않아요."
       }
     },
     {
@@ -3494,691 +3494,43 @@
       }
     },
     {
-      "id": "g4-argon-0179",
-      "revision": 1,
+      "id": "g4-argon-0183",
+      "revision": 2,
       "status": "verified_candidate",
       "grade": 4,
       "type": "definition",
-      "difficultyTier": "advanced",
-      "variantTag": "polysemy",
+      "difficultyTier": "basic",
+      "variantTag": "standard",
       "target": {
-        "lemma": "어색하다",
-        "partOfSpeech": "형용사",
-        "senseKey": "어색하다/형용사/458323-1"
+        "lemma": "마련하다",
+        "partOfSpeech": "동사",
+        "senseKey": "마련하다/동사/107985-1"
       },
-      "stem": "다툰 친구와 복도에서 마주치니 분위기가 무척 어색했습니다. 여기서 ‘어색하다’의 뜻은 무엇일까요?",
+      "stem": "「손님을 맞이하려고 따뜻한 다과와 자리를 마련하다.」에서 ‘마련하다’의 뜻은?",
       "options": [
         {
           "id": "a",
-          "text": "불편한 상대와 마주해 자연스럽지 못하다"
+          "text": "멀쩡한 물건을 부수어 버리다"
         },
         {
           "id": "b",
-          "text": "반가운 이를 만나 마음이 들뜨고 기쁘다"
+          "text": "필요한 것을 미리 헤아려 갖추다"
         },
         {
           "id": "c",
-          "text": "조용한 곳에서 쉬어 기분이 편안하다"
+          "text": "약속한 시간을 잊고 늦게 가다"
         },
         {
           "id": "d",
-          "text": "익숙한 일을 맡아 손놀림이 재빠르다"
-        }
-      ],
-      "correctOptionId": "a",
-      "explanation": "형용사 ‘어색하다’는 불편한 사람과 마주 대하여 자연스럽지 못하다는 뜻이에요.",
-      "distractorRationales": {
-        "b": "반가워 기쁜 마음은 다툰 뒤 마주친 문맥과 반대예요.",
-        "c": "혼자 쉬며 편안한 기분을 나타내는 말이 아니에요.",
-        "d": "손놀림이 익숙하고 빠르다는 뜻과 무관해요."
-      }
-    },
-    {
-      "id": "g4-argon-0180",
-      "revision": 1,
-      "status": "verified_candidate",
-      "grade": 4,
-      "type": "definition",
-      "difficultyTier": "challenge",
-      "variantTag": "polysemy",
-      "target": {
-        "lemma": "엄격하다",
-        "partOfSpeech": "형용사",
-        "senseKey": "엄격하다/형용사/457004-1"
-      },
-      "stem": "안전 요원은 물놀이 질서를 지키는 기준이 매우 엄격합니다. 여기서 ‘엄격하다’의 뜻은 무엇일까요?",
-      "options": [
-        {
-          "id": "a",
-          "text": "잘못을 그냥 넘어가며 느슨하고 물렁하다"
-        },
-        {
-          "id": "b",
-          "text": "뜻하지 않은 사이에 갑자기 쳐들어가다"
-        },
-        {
-          "id": "c",
-          "text": "말이나 규칙 따위가 매우 엄하고 철저하다"
-        },
-        {
-          "id": "d",
-          "text": "목소리가 작고 말끝이 흐릿하여 약하다"
-        }
-      ],
-      "correctOptionId": "c",
-      "explanation": "형용사 ‘엄격하다’는 말이나 태도, 규칙 따위가 매우 엄하고 철저하다는 뜻이에요.",
-      "distractorRationales": {
-        "a": "느슨하고 물렁한 태도는 엄격한 기준과 반대예요.",
-        "b": "갑자기 습격한다는 뜻은 동사 ‘엄격하다’예요.",
-        "d": "목소리가 작고 약하다는 뜻으로 쓰이지 않아요."
-      }
-    },
-    {
-      "id": "g4-argon-0181",
-      "revision": 1,
-      "status": "verified_candidate",
-      "grade": 4,
-      "type": "definition",
-      "difficultyTier": "challenge",
-      "variantTag": "polysemy",
-      "target": {
-        "lemma": "여유",
-        "partOfSpeech": "명사",
-        "senseKey": "여유/명사/462085-2"
-      },
-      "stem": "갑작스러운 질문에도 발표자는 당황하지 않고 마음의 여유를 보였습니다. 여기서 ‘여유’의 뜻은 무엇일까요?",
-      "options": [
-        {
-          "id": "a",
-          "text": "창고에 쓰고 남아서 쌓아 둔 물건의 양"
-        },
-        {
-          "id": "b",
-          "text": "겁을 먹고 안절부절못하며 떠는 모습"
-        },
-        {
-          "id": "c",
-          "text": "느긋하고 차분하게 행동하는 마음 상태"
-        },
-        {
-          "id": "d",
-          "text": "약속 시각에 늦어 급하게 뛰는 행동"
-        }
-      ],
-      "correctOptionId": "c",
-      "explanation": "여기서 ‘여유’는 느긋하고 차분하게 생각하거나 행동하는 마음 상태를 뜻해요.",
-      "distractorRationales": {
-        "a": "남은 물건의 양은 당황하지 않는 태도 문맥과 달라요.",
-        "b": "겁을 먹고 떠는 모습은 차분한 상태와 반대예요.",
-        "d": "늦어서 급히 뛰는 행동은 여유와 거리가 멀어요."
-      }
-    },
-    {
-      "id": "g4-argon-0182",
-      "revision": 1,
-      "status": "verified_candidate",
-      "grade": 4,
-      "type": "definition",
-      "difficultyTier": "challenge",
-      "variantTag": "polysemy",
-      "target": {
-        "lemma": "온화하다",
-        "partOfSpeech": "형용사",
-        "senseKey": "온화하다/형용사/240995-2"
-      },
-      "stem": "선생님은 늘 미소 지으시며 대하시는 성품이 온화하십니다. 여기서 ‘온화하다’의 뜻은 무엇일까요?",
-      "options": [
-        {
-          "id": "a",
-          "text": "성격이나 태도가 온순하고 부드럽다"
-        },
-        {
-          "id": "b",
-          "text": "구름 한 점 없이 봄볕이 맑고 따뜻하다"
-        },
-        {
-          "id": "c",
-          "text": "성미가 불같아서 화를 자주 크게 내다"
-        },
-        {
-          "id": "d",
-          "text": "몸이 약해서 추위를 유난히 많이 타다"
-        }
-      ],
-      "correctOptionId": "a",
-      "explanation": "사람의 성품에서 ‘온화하다’는 성격이나 태도가 온순하고 부드럽다는 뜻이에요.",
-      "distractorRationales": {
-        "b": "봄볕이 따뜻하다는 뜻은 날씨를 설명할 때의 의미예요.",
-        "c": "성미가 급해 화를 잘 내는 것은 온화한 성품과 반대예요.",
-        "d": "몸이 약해 추위를 탄다는 뜻과는 관련이 없어요."
-      }
-    },
-    {
-      "id": "g4-argon-0184",
-      "revision": 1,
-      "status": "verified_candidate",
-      "grade": 4,
-      "type": "definition",
-      "difficultyTier": "challenge",
-      "variantTag": "polysemy",
-      "target": {
-        "lemma": "원만하다",
-        "partOfSpeech": "형용사",
-        "senseKey": "원만하다/형용사/465630-2"
-      },
-      "stem": "서로 조금씩 양보한 덕분에 학급 회의 진행이 끝까지 원만했습니다. 여기서 ‘원만하다’의 뜻은 무엇일까요?",
-      "options": [
-        {
-          "id": "a",
-          "text": "의견이 부딪쳐 다툼이 심하다"
-        },
-        {
-          "id": "b",
-          "text": "모양이 찌그러지지 않고 둥글다"
-        },
-        {
-          "id": "c",
-          "text": "거리가 멀어서 가기가 힘들다"
-        },
-        {
-          "id": "d",
-          "text": "일이 탈 없이 매우 순조롭다"
-        }
-      ],
-      "correctOptionId": "d",
-      "explanation": "여기서 ‘원만하다’는 일의 진행이 걸림 없이 순조롭다는 뜻이에요.",
-      "distractorRationales": {
-        "a": "다툼이 심한 상태는 순조로운 진행과 반대예요.",
-        "b": "물건의 둥근 모양을 설명하는 문맥이 아니에요.",
-        "c": "거리가 멀어 힘들다는 뜻과는 관련이 없어요."
-      }
-    },
-    {
-      "id": "g4-argon-0185",
-      "revision": 1,
-      "status": "verified_candidate",
-      "grade": 4,
-      "type": "definition",
-      "difficultyTier": "advanced",
-      "variantTag": "polysemy",
-      "target": {
-        "lemma": "유익하다",
-        "partOfSpeech": "형용사",
-        "senseKey": "유익하다/형용사/463028-1"
-      },
-      "stem": "「박물관 견학은 역사 공부에 참 유익하다.」에서 ‘유익하다’의 뜻은?",
-      "options": [
-        {
-          "id": "a",
-          "text": "이롭거나 도움이 될 만한 점이 있다"
-        },
-        {
-          "id": "b",
-          "text": "몸과 마음에 해롭고 나쁜 점이 많다"
-        },
-        {
-          "id": "c",
-          "text": "재미로 산속에서 짐승을 사냥하다"
-        },
-        {
-          "id": "d",
-          "text": "아무런 소리도 들리지 않고 조용하다"
-        }
-      ],
-      "correctOptionId": "a",
-      "explanation": "‘유익하다’는 이롭거나 도움이 될 만한 것이 있다는 뜻이에요.",
-      "distractorRationales": {
-        "b": "해롭고 손해가 된다는 뜻이라 반대예요.",
-        "c": "재미로 사냥한다는 다른 한자어의 뜻이에요.",
-        "d": "주변이 고요한 상태를 설명하는 말이에요."
-      }
-    },
-    {
-      "id": "g4-argon-0186",
-      "revision": 1,
-      "status": "verified_candidate",
-      "grade": 4,
-      "type": "definition",
-      "difficultyTier": "challenge",
-      "variantTag": "polysemy",
-      "target": {
-        "lemma": "자연스럽다",
-        "partOfSpeech": "형용사",
-        "senseKey": "자연스럽다/형용사/472721-2"
-      },
-      "stem": "꾸준히 연습한 선수가 좋은 기록을 내는 것은 지극히 자연스럽습니다. 여기서 ‘자연스럽다’의 뜻은 무엇일까요?",
-      "options": [
-        {
-          "id": "a",
-          "text": "사람의 손길이 안 닿아 깨끗하다"
-        },
-        {
-          "id": "b",
-          "text": "이치나 순리에 맞고 당연하다"
-        },
-        {
-          "id": "c",
-          "text": "뜻밖이어서 믿기가 무척 어렵다"
-        },
-        {
-          "id": "d",
-          "text": "억지로 꾸며서 보기에 어색하다"
+          "text": "모르는 사실을 남에게 물어보다"
         }
       ],
       "correctOptionId": "b",
-      "explanation": "여기서 ‘자연스럽다’는 순리에 맞고 당연하다는 뜻이에요.",
+      "explanation": "‘마련하다’는 필요한 것을 미리 헤아려서 갖춘다는 뜻이에요.",
       "distractorRationales": {
-        "a": "자연환경이 깨끗하다는 뜻은 이 문맥에 안 맞아요.",
-        "c": "뜻밖이라 믿기 어렵다는 뜻과는 정반대예요.",
-        "d": "억지로 꾸며 어색한 상태와도 반대되는 뜻이에요."
-      }
-    },
-    {
-      "id": "g4-argon-0188",
-      "revision": 1,
-      "status": "verified_candidate",
-      "grade": 4,
-      "type": "definition",
-      "difficultyTier": "core",
-      "variantTag": "polysemy",
-      "target": {
-        "lemma": "중요하다",
-        "partOfSpeech": "형용사",
-        "senseKey": "중요하다/형용사/484241-1"
-      },
-      "stem": "자전거를 탈 때 안전모를 쓰는 일은 생명을 지키는 데 매우 중요합니다. 여기서 형용사 ‘중요하다’의 뜻은 무엇일까요?",
-      "options": [
-        {
-          "id": "a",
-          "text": "있으나 마나 하여 쓸모가 적다"
-        },
-        {
-          "id": "b",
-          "text": "젊은 나이에 일찍 세상을 뜨다"
-        },
-        {
-          "id": "c",
-          "text": "무게가 가벼워 들기가 손쉽다"
-        },
-        {
-          "id": "d",
-          "text": "귀중하고 꼭 필요하여 요긴하다"
-        }
-      ],
-      "correctOptionId": "d",
-      "explanation": "형용사 ‘중요하다’는 귀중하고 요긴하다는 뜻이에요.",
-      "distractorRationales": {
-        "a": "쓸모가 적다는 뜻은 귀중하고 요긴한 것과 반대예요.",
-        "b": "젊어서 죽는다는 뜻은 동사 ‘중요하다’의 풀이예요.",
-        "c": "무게가 가볍다는 뜻과는 관련이 없는 말이에요."
-      }
-    },
-    {
-      "id": "g4-argon-0189",
-      "revision": 1,
-      "status": "verified_candidate",
-      "grade": 4,
-      "type": "definition",
-      "difficultyTier": "advanced",
-      "variantTag": "polysemy",
-      "target": {
-        "lemma": "지혜",
-        "partOfSpeech": "명사",
-        "senseKey": "지혜/명사/488595-1"
-      },
-      "stem": "옛 조상들은 온돌을 만들어 추운 겨울을 따뜻하게 나는 지혜를 발휘했습니다. 여기서 ‘지혜’의 뜻은 무엇일까요?",
-      "options": [
-        {
-          "id": "a",
-          "text": "이치를 깨닫고 일을 잘 처리하는 능력"
-        },
-        {
-          "id": "b",
-          "text": "한지를 꼬아서 정성껏 만든 종이신"
-        },
-        {
-          "id": "c",
-          "text": "무거운 짐을 한 번에 드는 팔의 힘"
-        },
-        {
-          "id": "d",
-          "text": "먼 곳에 있는 물체를 잘 보는 시력"
-        }
-      ],
-      "correctOptionId": "a",
-      "explanation": "여기서 ‘지혜’는 이치를 빨리 깨닫고 정확하게 처리하는 능력을 뜻해요.",
-      "distractorRationales": {
-        "b": "종이로 꼬아 만든 신은 다른 동형어 ‘지혜’예요.",
-        "c": "짐을 드는 근육의 힘과는 뜻이 달라요.",
-        "d": "눈으로 멀리 보는 시력을 뜻하는 말이 아니에요."
-      }
-    },
-    {
-      "id": "g4-argon-0190",
-      "revision": 1,
-      "status": "verified_candidate",
-      "grade": 4,
-      "type": "cloze",
-      "difficultyTier": "challenge",
-      "variantTag": "dialect",
-      "dialectRegion": "강원",
-      "target": {
-        "lemma": "딸구",
-        "partOfSpeech": "명사",
-        "senseKey": "딸구/명사/od-419142-1"
-      },
-      "stem": "봄소풍 도시락에 겉에 작은 씨가 박힌 빨간 과일을 담으시며 할머니께서 “달콤한 딸구 많이 먹어라.”라고 하셨습니다. ‘딸구’는 표준어로 (    )입니다.",
-      "options": [
-        {
-          "id": "a",
-          "text": "자두"
-        },
-        {
-          "id": "b",
-          "text": "멜론"
-        },
-        {
-          "id": "c",
-          "text": "딸기"
-        },
-        {
-          "id": "d",
-          "text": "사과"
-        }
-      ],
-      "correctOptionId": "c",
-      "explanation": "겉에 작은 씨가 박힌 빨갛고 달콤한 ‘딸구’는 ‘딸기’의 방언이에요.",
-      "distractorRationales": {
-        "a": "자두는 겉껍질이 매끈하고 속에 큰 씨가 하나 있어요.",
-        "b": "멜론은 그물 무늬가 있는 둥글고 큰 과일이에요.",
-        "d": "사과는 겉에 작은 씨가 박혀 있지 않은 가을 과일이에요."
-      }
-    },
-    {
-      "id": "g4-argon-0191",
-      "revision": 1,
-      "status": "verified_candidate",
-      "grade": 4,
-      "type": "cloze",
-      "difficultyTier": "challenge",
-      "variantTag": "dialect",
-      "dialectRegion": "경상",
-      "target": {
-        "lemma": "모구",
-        "partOfSpeech": "명사",
-        "senseKey": "모구/명사/od-150070-1"
-      },
-      "stem": "마당 평상에 앉아 있다가 다리가 빨갛게 부어오르고 간지럽자 삼촌이 “모구한테 물렸구나.”라고 하셨습니다. ‘모구’는 표준어로 (    )입니다.",
-      "options": [
-        {
-          "id": "a",
-          "text": "파리"
-        },
-        {
-          "id": "b",
-          "text": "나방"
-        },
-        {
-          "id": "c",
-          "text": "매미"
-        },
-        {
-          "id": "d",
-          "text": "모기"
-        }
-      ],
-      "correctOptionId": "d",
-      "explanation": "피부를 물어 빨갛게 붓고 간지럽게 하는 ‘모구’는 ‘모기’의 방언이에요.",
-      "distractorRationales": {
-        "a": "파리는 음식 주변을 날아다니지만 피를 빨아 물지 않아요.",
-        "b": "나방은 불빛에 모이는 곤충이라 다리를 물지 않아요.",
-        "c": "매미는 나무 수액을 먹고 사는 곤충이에요."
-      }
-    },
-    {
-      "id": "g4-argon-0192",
-      "revision": 1,
-      "status": "verified_candidate",
-      "grade": 4,
-      "type": "cloze",
-      "difficultyTier": "challenge",
-      "variantTag": "dialect",
-      "dialectRegion": "충청",
-      "target": {
-        "lemma": "무수",
-        "partOfSpeech": "명사",
-        "senseKey": "무수/명사/od-494831-1"
-      },
-      "stem": "소고기뭇국에 넣으려고 하얀 뿌리채소를 나박하게 썰던 할머니께서 “가을 무수가 보약이란다.”라고 하셨습니다. ‘무수’는 표준어로 (    )입니다.",
-      "options": [
-        {
-          "id": "a",
-          "text": "무"
-        },
-        {
-          "id": "b",
-          "text": "파"
-        },
-        {
-          "id": "c",
-          "text": "콩"
-        },
-        {
-          "id": "d",
-          "text": "팥"
-        }
-      ],
-      "correctOptionId": "a",
-      "explanation": "뭇국에 넣으려고 나박하게 써는 하얀 뿌리채소인 ‘무수’는 ‘무’의 방언이에요.",
-      "distractorRationales": {
-        "b": "파는 길쭉한 초록 잎줄기 채소라 뿌리채소가 아니에요.",
-        "c": "콩은 작고 둥근 곡식 알갱이라 나박하게 썰지 못해요.",
-        "d": "팥은 붉은 알갱이 곡식이라 하얀 뿌리채소가 아니에요."
-      }
-    },
-    {
-      "id": "g4-argon-0193",
-      "revision": 1,
-      "status": "verified_candidate",
-      "grade": 4,
-      "type": "cloze",
-      "difficultyTier": "challenge",
-      "variantTag": "dialect",
-      "dialectRegion": "강원",
-      "target": {
-        "lemma": "바구미",
-        "partOfSpeech": "명사",
-        "senseKey": "바구미/명사/od-458819-2"
-      },
-      "stem": "밤나무 아래에서 주운 알밤을 모으시던 큰아버지께서 “알밤 담을 바구미를 이리 건네다오.”라고 하셨습니다. ‘바구미’는 표준어로 (    )입니다.",
-      "options": [
-        {
-          "id": "a",
-          "text": "주전자"
-        },
-        {
-          "id": "b",
-          "text": "빗자루"
-        },
-        {
-          "id": "c",
-          "text": "바구니"
-        },
-        {
-          "id": "d",
-          "text": "돋보기"
-        }
-      ],
-      "correctOptionId": "c",
-      "explanation": "주운 알밤을 모아 담는 그릇인 ‘바구미’는 ‘바구니’의 방언이에요.",
-      "distractorRationales": {
-        "a": "주전자는 물을 끓여 따르는 주방 기구예요.",
-        "b": "빗자루는 바닥을 쓸어 청소하는 도구예요.",
-        "d": "돋보기는 작은 물체를 크게 확대해 보는 기구예요."
-      }
-    },
-    {
-      "id": "g4-argon-0194",
-      "revision": 1,
-      "status": "verified_candidate",
-      "grade": 4,
-      "type": "cloze",
-      "difficultyTier": "challenge",
-      "variantTag": "dialect",
-      "dialectRegion": "전라",
-      "target": {
-        "lemma": "복쟁이",
-        "partOfSpeech": "명사",
-        "senseKey": "복쟁이/명사/od-988133-2"
-      },
-      "stem": "논물에 사는 까맣고 머리만 동그란 개구리 새끼를 보며 할머니께서 “복쟁이가 뒷다리가 나오려나 보다.”라고 하셨습니다. ‘복쟁이’는 표준어로 (    )입니다.",
-      "options": [
-        {
-          "id": "a",
-          "text": "올챙이"
-        },
-        {
-          "id": "b",
-          "text": "송사리"
-        },
-        {
-          "id": "c",
-          "text": "다슬기"
-        },
-        {
-          "id": "d",
-          "text": "잠자리"
-        }
-      ],
-      "correctOptionId": "a",
-      "explanation": "뒷다리가 자라나는 개구리 새끼인 ‘복쟁이’는 ‘올챙이’의 전라 방언이에요.",
-      "distractorRationales": {
-        "b": "송사리는 작은 민물고기라 다리가 자라지 않아요.",
-        "c": "다슬기는 단단한 껍데기가 있는 고둥류예요.",
-        "d": "잠자리는 날개가 네 장 달린 하늘을 나는 곤충이에요."
-      }
-    },
-    {
-      "id": "g4-argon-0197",
-      "revision": 1,
-      "status": "verified_candidate",
-      "grade": 4,
-      "type": "cloze",
-      "difficultyTier": "challenge",
-      "variantTag": "dialect",
-      "dialectRegion": "충청",
-      "target": {
-        "lemma": "올갱이",
-        "partOfSpeech": "명사",
-        "senseKey": "올갱이/명사/od-577416-1"
-      },
-      "stem": "된장국에서 초록빛이 도는 작은 고둥 살을 빼 먹으며 이모가 “올갱이 국이 참 시원하지?”라고 하셨습니다. ‘올갱이’는 표준어로 (    )입니다.",
-      "options": [
-        {
-          "id": "a",
-          "text": "피라미"
-        },
-        {
-          "id": "b",
-          "text": "고등어"
-        },
-        {
-          "id": "c",
-          "text": "다슬기"
-        },
-        {
-          "id": "d",
-          "text": "오징어"
-        }
-      ],
-      "correctOptionId": "c",
-      "explanation": "초록빛 살을 빼 먹는 민물 고둥인 ‘올갱이’는 ‘다슬기’의 방언이에요.",
-      "distractorRationales": {
-        "a": "피라미는 껍데기가 없는 작은 민물고기예요.",
-        "b": "고등어는 등 푸른 큰 바닷물고기라 고둥이 아니에요.",
-        "d": "오징어는 껍데기가 없는 연체동물이라 빼 먹지 않아요."
-      }
-    },
-    {
-      "id": "g4-argon-0198",
-      "revision": 1,
-      "status": "verified_candidate",
-      "grade": 4,
-      "type": "cloze",
-      "difficultyTier": "challenge",
-      "variantTag": "dialect",
-      "dialectRegion": "강원",
-      "target": {
-        "lemma": "소낭구",
-        "partOfSpeech": "명사",
-        "senseKey": "소낭구/명사/od-763825-1"
-      },
-      "stem": "산등성이에 뾰족한 바늘잎이 사계절 푸르게 돋아난 나무를 보며 할머니께서 “소낭구 그늘에서 쉬어 가자.”라고 하셨습니다. ‘소낭구’는 표준어로 (    )입니다.",
-      "options": [
-        {
-          "id": "a",
-          "text": "감나무"
-        },
-        {
-          "id": "b",
-          "text": "소나무"
-        },
-        {
-          "id": "c",
-          "text": "밤나무"
-        },
-        {
-          "id": "d",
-          "text": "배나무"
-        }
-      ],
-      "correctOptionId": "b",
-      "explanation": "뾰족한 바늘잎이 사계절 푸른 ‘소낭구’는 ‘소나무’의 강원 방언이에요.",
-      "distractorRationales": {
-        "a": "감나무는 잎이 넓고 가을에 단풍이 들어 떨어져요.",
-        "c": "밤나무는 바늘잎이 아니며 겨울에 잎이 모두 져요.",
-        "d": "배나무는 과수원의 넓은잎 나무라 사계절 푸르지 않아요."
-      }
-    },
-    {
-      "id": "g4-argon-0200",
-      "revision": 1,
-      "status": "verified_candidate",
-      "grade": 4,
-      "type": "cloze",
-      "difficultyTier": "challenge",
-      "variantTag": "dialect",
-      "dialectRegion": "경상",
-      "target": {
-        "lemma": "고망",
-        "partOfSpeech": "명사",
-        "senseKey": "고망/명사/od-626513-4"
-      },
-      "stem": "바늘귀의 작은 틈으로 실을 꿰려던 할머니께서 “눈이 침침해서 바늘 고망이 잘 안 보이는구나.”라고 하셨습니다. ‘고망’은 표준어로 (    )입니다.",
-      "options": [
-        {
-          "id": "a",
-          "text": "매듭"
-        },
-        {
-          "id": "b",
-          "text": "구멍"
-        },
-        {
-          "id": "c",
-          "text": "주름"
-        },
-        {
-          "id": "d",
-          "text": "무늬"
-        }
-      ],
-      "correctOptionId": "b",
-      "explanation": "바늘귀에 실을 꿰는 작은 틈인 ‘고망’은 ‘구멍’의 경상 방언이에요.",
-      "distractorRationales": {
-        "a": "매듭은 실을 묶어 생긴 마디라 바늘귀의 틈이 아니에요.",
-        "c": "주름은 옷감이 접힌 자국이라 실을 꿰지 못해요.",
-        "d": "무늬는 겉면에 꾸며 놓은 모양을 뜻해요."
+        "a": "물건을 망가뜨리는 행동이라 뜻이 반대예요.",
+        "c": "약속 시각을 어기는 일이라 관련이 없어요.",
+        "d": "궁금한 점을 질문하는 행동을 뜻해요."
       }
     },
     {
