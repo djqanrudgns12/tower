@@ -90,7 +90,7 @@ export class TowerBrowserTransport implements ConnectOverCDPTransport {
 }
 
 export const test = process.env.TOWER_HOST_GUARD_TEST_URL ? base.extend({
-  browser: [async ({ playwright, browserName }, use) => {
+  browser: [async ({ playwright, browserName }, provideBrowser) => {
     const { TOWER_BROWSER_SOCKET: path, TOWER_BROWSER_TOKEN: token } = process.env;
     if (browserName !== 'chromium' || !path || !token) throw Error('TOWER_BROWSER_SCOPE_REQUIRED');
     const transport = new TowerBrowserTransport(path, token);
@@ -98,7 +98,7 @@ export const test = process.env.TOWER_HOST_GUARD_TEST_URL ? base.extend({
       await transport.waitReady();
       const browser = await playwright.chromium.connectOverCDP(transport, { isLocal: true, noDefaults: true });
       try {
-        await use(browser);
+        await provideBrowser(browser);
       } finally {
         const connected = browser.isConnected();
         await browser.close();

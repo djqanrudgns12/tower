@@ -1,0 +1,191 @@
+{
+  "sourceCommit": "c34554cf6963cec916fc120bb4a1616a745a05b2",
+  "batchId": "Q50-G4-003",
+  "drafts": [
+    {
+      "schemaVersion": "0.2",
+      "batchId": "Q50-G4-003",
+      "id": "g4-argon-0107",
+      "revision": 2,
+      "status": "machine_checked",
+      "grade": 4,
+      "gradeBasis": {
+        "reference": "2022 개정 국어과 교육과정",
+        "editionYear": 2022,
+        "unit": "stdict:전문어 표지 없음",
+        "reviewed": true
+      },
+      "target": {
+        "lemma": "기대하다",
+        "partOfSpeech": "동사",
+        "senseKey": "기대하다/동사/48632-1"
+      },
+      "type": "synonym_context",
+      "difficultyTier": "core",
+      "variantTag": "standard",
+      "stem": "주말에 캠핑을 가기를 손꼽아 ‘기대했습니다’. ‘기대했습니다’와 가까운 말은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "싫어서 미루었습니다"
+        },
+        {
+          "id": "b",
+          "text": "바라면서 기다렸습니다"
+        },
+        {
+          "id": "c",
+          "text": "지나고 후회했습니다"
+        },
+        {
+          "id": "d",
+          "text": "모른 체 외면했습니다"
+        }
+      ],
+      "correctOptionId": "b",
+      "explanation": "‘기대하다’는 원하는 대로 이루어지기를 바라면서 기다린다는 뜻이에요.",
+      "distractorRationales": {
+        "a": "하기 싫어 뒤로 미루는 것은 바라는 마음과 반대예요.",
+        "c": "지나간 일을 뉘우치는 것은 앞날을 기다리는 뜻이 아니에요.",
+        "d": "모른 체하고 외면하는 것은 손꼽아 바라는 태도와 달라요."
+      },
+      "source": {
+        "provider": "stdict",
+        "entryId": "48632",
+        "senseId": "562981",
+        "senseOrder": 1,
+        "url": "https://stdict.korean.go.kr/search/searchView.do?word_no=48632&searchKeywordTo=3",
+        "retrievedAt": "2026-10-30T03:35:00.000Z",
+        "license": "국립국어원 표준국어대사전(뜻풀이만 인용, 용례 미복제)",
+        "evidenceHash": "2ee93347d80f90e5fff096466ddfc6be2329e802c6a87e23c407f31c2488cf08",
+        "evidenceArtifactId": "기대하다-48632-1.txt"
+      },
+      "review": {
+        "reviewerId": null,
+        "reviewedAt": null
+      }
+    }
+  ],
+  "sidecar": {
+    "batchId": "Q50-G4-003",
+    "jobId": "Q50-G4-003",
+    "producer": {
+      "model": "Gemini 4 Argon (High)",
+      "tool": "Antigravity Author + Deterministic Compiler",
+      "date": "2026-10-30"
+    },
+    "items": [
+      {
+        "id": "g4-argon-0107",
+        "revision": 2,
+        "selfRefutation": [
+          {
+            "optionId": "a",
+            "substituted": "기대하다 → 싫어서 미루었습니다",
+            "verdict": "does_not_fit",
+            "reason": "오답 보기 1: 하기 싫어 뒤로 미루는 것은 바라는 마음과 반대예요."
+          },
+          {
+            "optionId": "b",
+            "substituted": "기대하다 → 바라면서 기다렸습니다",
+            "verdict": "fits",
+            "reason": "‘바라면서 기다렸습니다’만 지문 문맥과 사전 뜻(1번 뜻)에 정확히 들어맞음."
+          },
+          {
+            "optionId": "c",
+            "substituted": "기대하다 → 지나고 후회했습니다",
+            "verdict": "does_not_fit",
+            "reason": "오답 보기 2: 지나간 일을 뉘우치는 것은 앞날을 기다리는 뜻이 아니에요."
+          },
+          {
+            "optionId": "d",
+            "substituted": "기대하다 → 모른 체 외면했습니다",
+            "verdict": "does_not_fit",
+            "reason": "오답 보기 3: 모른 체하고 외면하는 것은 손꼽아 바라는 태도와 달라요."
+          }
+        ],
+        "uniquenessNote": "사전 뜻(1번)과 지문 단서에 부합하는 보기는 b 하나뿐이며 나머지 세 보기는 의미·문맥이 어긋남.",
+        "gradeEvidence": "4학년 교육과정(4-1 생각과 느낌을 비교하며 읽기) 어휘 수준 및 읽기 부담(67음절) 기준 부합."
+      }
+    ],
+    "rejected": []
+  },
+  "reviews": {
+    "codex": {
+      "reviewId": "QR-AUTO-codex-Q50-G4-003",
+      "jobId": "Q50-G4-003",
+      "reviewer": {
+        "model": "gpt-6-astra",
+        "tool": "2단계 블라인드 검수(tools/orchestrate/review.mjs)",
+        "freshContext": true,
+        "date": "2026-11-06"
+      },
+      "items": [
+        {
+          "questionId": "g4-argon-0107",
+          "revision": 2,
+          "contentHash": "878d3548582a6220f15aed669a963d4d527132626356b592dc47d10ec81ea55c",
+          "blindChoice": "b",
+          "verdicts": {
+            "source": "pass",
+            "uniqueness": "pass",
+            "grade": "pass",
+            "language": "pass",
+            "explanation": "pass"
+          },
+          "findings": [
+            "[블라인드] 캠핑을 손꼽아 기대했다는 것은 가기를 바라면서 기다렸다는 뜻입니다. 다른 보기는 기대와 다른 감정이나 행동을 나타냅니다.",
+            "[공개 대조] 캠핑을 가기를 바라면서 기다렸다는 b만 기대의 뜻을 유지합니다. 정답과 해설이 동사 뜻풀이에 부합하며 다른 감정이나 행동을 나타내는 보기와 구별됩니다."
+          ]
+        }
+      ]
+    }
+  },
+  "argonBlind": {
+    "reviewId": "QR-ARGON-BLIND-Q50-G4-003",
+    "jobId": "Q50-G4-003",
+    "reviewer": {
+      "model": "Gemini 4 Argon (High)",
+      "tool": "Antigravity blind-reviewer subagent (isolated fresh context)",
+      "freshContext": true,
+      "date": "2026-10-30"
+    },
+    "items": [
+      {
+        "questionId": "g4-argon-0107",
+        "revision": 2,
+        "contentHash": "878d3548582a6220f15aed669a963d4d527132626356b592dc47d10ec81ea55c",
+        "blindChoice": "b",
+        "verdicts": {
+          "source": "pass",
+          "uniqueness": "pass",
+          "grade": "pass",
+          "language": "fail",
+          "explanation": "uncertain"
+        },
+        "findings": [
+          "정답 키·해설 없이 blind-input만으로 독립 풀이(b) 후 사전 원문 뜻풀이와 대조함.",
+          "‘캠핑을 가기를’에서 목적격 조사가 연달아 겹쳐 어색하며, ‘손꼽아’는 ‘기다리다’와 호응하는 연어이므로 ‘손꼽아 기대했습니다’는 연어 호응이 부자연스러움"
+        ]
+      }
+    ]
+  },
+  "explanation": {
+    "batchId": "Q50-G4-003",
+    "reviewer": {
+      "model": "Gemini 4 Argon (High)",
+      "role": "commander",
+      "date": "2026-10-30"
+    },
+    "items": [
+      {
+        "questionId": "g4-argon-0107",
+        "revision": 2,
+        "contentHash": "878d3548582a6220f15aed669a963d4d527132626356b592dc47d10ec81ea55c",
+        "rationalesHash": "aa5b9b999881a36596ca193fa917e816c74ced7ecb3cdb998c3aa3ce66823869",
+        "explanation": "pass",
+        "findings": []
+      }
+    ]
+  }
+}

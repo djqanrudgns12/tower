@@ -131,7 +131,8 @@ it('여러 배치의 최종 대조도 Codex pool의 동시 수 제한을 지킨�
 
 
 it('runtime은 최종 대조 모듈에 현재 runtime과 staging overlay 은행을 그대로 넘긴다', async () => {
-  const root = rootDir(), rb = { loadBatches: () => [] };
+  const batch = { batchId: 'A', drafts: [], sidecar: { items: [] }, reviews: {}, argonBlind: null, explanation: null };
+  const root = rootDir(), rb = { loadBatches: () => [batch] };
   const runtime = await createGateRuntime({ root, batches: 'A', 'stage-only': true }, { rb, rm: { b: rb }, lm: {} });
   const questions = [{ batchId: 'A', questionId: 'q', revision: 2 }], onEvent = vi.fn();
   const result = [{ batchId: 'A', merged: 1, flagged: 0, reused: 1, staging: 'fixture' }];
@@ -141,5 +142,6 @@ it('runtime은 최종 대조 모듈에 현재 runtime과 staging overlay 은행�
   const [options, deps] = finalizeCodex.mock.calls[0]!;
   expect(options).toEqual({ root, batches: 'A', 'stage-only': true, 'codex-model': 'gpt-6-astra', 'codex-effort': 'high', questions, onEvent });
   expect(deps.runtime).toBe(runtime);
-  expect(deps.bank).not.toBe(rb); expect(deps.bank.loadBatches()).toEqual([]);
+  expect(deps.bank).not.toBe(rb);
+  expect(deps.bank.loadBatches()).toEqual([{ ...batch, reviews: { codex: null, claude: null } }]);
 });

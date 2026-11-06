@@ -2,12 +2,13 @@ import path from 'node:path';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { build, loadConfigFromFile, mergeConfig } from 'vite';
 import { gradeContent, MAPS } from '../../src/content';
+import * as content from '../../src/content';
 import { mapPreviewFromLocation, parseMapPreview, PREVIEW_PARAM, startMapPreview } from '../../src/application/mapPreview';
 import { QA_RUN_KEY } from '../../src/application/qaRun';
 
 // 개발 빌드 전용 맵 미리보기(src/application/mapPreview.ts). 4~6학년 문제은행이 없어도 새 맵의 전투 화면이 열리고, 운영 빌드에는 이 경로가 없다.
 
-afterEach(() => { vi.unstubAllEnvs(); vi.unstubAllGlobals(); });
+afterEach(() => { vi.restoreAllMocks(); vi.unstubAllEnvs(); vi.unstubAllGlobals(); });
 
 describe('주소 읽기', () => {
   it('없는 맵 id·매개변수 없음은 null이고, 맵 id가 맞으면 요청을 만든다', () => {
@@ -29,6 +30,11 @@ describe('미리보기 판', () => {
   const preview = MAPS.filter(m => m.grade >= 4);
 
   it('4~6학년 맵 3개가 공개 문제은행 없이 열리고, 요청한 맵으로 돈다', () => {
+    const realGradeContent = content.gradeContent;
+    vi.spyOn(content, 'gradeContent').mockImplementation(grade => {
+      const data = realGradeContent(grade);
+      return grade >= 4 ? { ...data, bank: null } : data;
+    });
     expect(preview.map(m => m.id)).toEqual(['river_z', 'courtyard', 'snow_step']);
     for (const m of preview) {
       expect(gradeContent(m.grade).bank, `${m.id}: 이 학년 은행`).toBeNull();

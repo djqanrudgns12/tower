@@ -3,6 +3,14 @@
 작성 2026-11-06 · 작성 Claude Opus 5.5(총괄) · 받는 쪽 Codex(메인 세션)
 같이 읽을 것: [계획서 CONTENT_REVIEW_PLAN.md](CONTENT_REVIEW_PLAN.md)(기준 문서), [AGENTS.md](../AGENTS.md)
 
+### 공개 승인 1,842개 반영·종료된 구형 검수기 승계 (Codex, 2026-11-06 22:54 KST)
+
+- **실제 공개 은행:** 4학년 **1,012**, 5학년 **534**, 6학년 **245**, 3학년 **51**. 합계 **1,842**이며 학년별 1,000개까지 남은 수는 **0·466·755·949 = 2,170**이다. 4학년 초과 12개는 다른 학년 목표에 합산하지 않는다. 학년별 목표를 채운 비율은 **1,830/4,000 = 45.8%**다. 4학년 Normal 심화는 **112/120**, 보충 검수를 계속한다.
+- 보호 아바타 PID61118의 실제 종료와 자원 허용을 확인한 뒤, 준비된 **37배치·1,791개**를 `commit-lock apply --batches` 한 번으로 반영했다. 은행·키 재생성, 잠금 안 서버 시험 통과, 커밋 **6cb8e5f2bf3b1bcfdb485cc29165d0e1258e4a15**. Co-author는 Codex다. `.orchestrate/two-model-ready-apply.json`은 committed이며 옛 staging manifest 목록으로 다시 apply하지 않는다. 운영 배포는 하지 않았다.
+- 구형 앞단 PID65193·83511·84105가 새 `publicationPolicy` 필드를 읽지 못하고 실제 종료했다. 기록/응답은 보존했고 최신 native plan으로 남은 단계만 승계했다. **g5-gate-resume-a PID43390(008~011), g5-gate-resume-b PID44425(016~021), g6-gate-resume-a PID43407(006~011)**. 각 `.run.json`에 이전 PID·현재 계획·실행 인자를 남겼다. `--without-claude`, Codex2/Argon1, 기존 자리만 대체하며 S4까지 자동 연결한다. 옛 `g5-final-tail-a/b`, `g6-final-tail-a` 예약은 앞단 미완료로 blocked이며 다시 실행하지 않는다. 실행 중이던 후반 PID16557·보충 PID25440·제작 PID48074는 재시작하지 않았다.
+- **검증:** 타입 검사와 전체 린트 통과. 전체 단위 시험은 **1,395통과·3실패**였고, 실패 원인은 시험의 오래된 입력 가정이었다. 과거 Argon 단독 결함은 기존 커밋의 실제 1문항을 고정 fixture로 보존해 같은 defect 단언을 유지했고, 맵 미리보기는 은행 없음 조건을 명시적으로 주입했으며, overlay 시험은 실제 추적 배치 입력을 제공했다. 변경한 3파일 **80시험 통과**, 범위 ESLint·시험 타입 검사·계획 검사 통과. 이미 통과한 다른 79파일/서버/제품 타입은 재사용, 전체 재실행은 하지 않았다. `.orchestrate/cr1000-publish-verify.json/.log`에 첫 실패와 재검사 기록을 모두 남겼다. Playwright 콜백 `use`는 Hook 오인을 피하도록 `provideBrowser`로만 이름을 바꿨다.
+- `validate:plan`이 생성 보고서의 시간/현 문서 해시를 갱신했다. 기존부터 변경 상태였던 `docs/contracts/prd_v0_5_validation.json`은 이번 커밋에서 제외한다. Argon 상한은 사용자 답이 없어 **40회** 유지, Claude 새 호출 **0**, 배포 **미실행**.
+
 ### 후속 실행 연결 — 6학년 보충 대기·앞단97문항 완료 (Codex, 2026-11-06 22:38 KST)
 
 - **6학년006·007 앞단97개 완료:** PID83511 summary의 두 배치 종료를 확인했고 메인 native `--plan`에서 현재 **47·50개**, 다음S4/who=codex를 직접 확인했다. 최종 승인 수가 아니며 기존 `g6-final-tail-a` 예약 대상에 포함돼 있다. 원래 앞단은008·009로 전진했다.

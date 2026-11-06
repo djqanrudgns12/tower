@@ -127,7 +127,8 @@ describe('앞단 pass·defect·pending', () => {
     expect(result.items[1]!.defects).toEqual([]);
   });
   it('argon-blind 단독 결함의 실측 사례 g4-argon-0107@2를 잡는다', () => {
-    const batch = source.find(b => b.batchId === 'Q50-G4-003')!;
+    // 이후 문항 수정과 독립적으로 당시 결함을 재현한다. sourceCommit은 fixture에 보존한다.
+    const batch: b.BatchInput = JSON.parse(fs.readFileSync(path.join(process.cwd(), 'tests/fixtures/front-gate/argon-blind-language.json'), 'utf8'));
     const item = front.frontGate(batch, null).items.find(i => i.questionId === 'g4-argon-0107')!;
     expect(item).toMatchObject({ revision: 2, status: 'defect' });
     expect(item.defects).toContain('argon-blind: language fail');
