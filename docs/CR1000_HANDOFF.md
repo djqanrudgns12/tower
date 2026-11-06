@@ -3,6 +3,16 @@
 작성 2026-11-06 · 작성 Claude Opus 5.5(총괄) · 받는 쪽 Codex(메인 세션)
 같이 읽을 것: [계획서 CONTENT_REVIEW_PLAN.md](CONTENT_REVIEW_PLAN.md)(기준 문서), [AGENTS.md](../AGENTS.md)
 
+### 최신 사용자 결정 — Claude 제외, Codex·Argon 승인 (2026-11-06)
+
+- 사용자가 “클로드 일단 역할배제하고, 너랑 안티그래비티의 판단에 전적으로 의지”하도록 지시했다. **이 절과 `CR1000_REVIEW_POLICY.md`가 아래 Claude 대기·필수 관문 기록보다 우선한다.** Claude 인증/사용량 회복을 기다리거나 새 Claude 작업을 요청하지 않는다.
+- 대기하던 소유 실행 PID80018·80019·84648을 종료했고 기존 답장과 검수 증거는 보존했다(`.orchestrate/claude-role-excluded.json`). 진행 중인 앞단/제작 실행은 계속 둔다.
+- 기본 native `--gate`는 이제 Codex 최종 대조다. `--without-claude`로 명시할 수 있고 옛 경로는 `--with-claude`로만 선택된다. Argon 자체 반박·Codex 독립 풀이·Codex 해설 대조·현재 판/본문/해설 해시를 검증한다. `codex-argon-v1` sidecar가 있는 배치만 새 공개 기준을 적용하고 기존 완료된 공개 승인51개는 보존한다.
+- `finalize-codex.mjs`는 기존 독립 풀이를 보존하고 실제 현재 해설 대조만 보충한다. 일치하는 기존 Codex 증거를 재사용하며 신규 대조는 gpt-6-astra/high, 50개 묶음·동시2개다. 과거 보고서에 항목별 run이 없으면 지정 모델/도구/freshContext를 확인하고 새 해설 대조를 수행한다. 과거 effort를 꾸며 쓰지 않는다.
+- 메인이 직접 확인한 범위 시험: native gate/pool/두 모델82개, 새 승인45개, bank-build14개, front-gate48개, finalizer7개 통과(겹치는 실행의 재사용 포함). 범위 ESLint·시험 타입 검사 통과. 넓은 검사는 타 보호 작업으로 미실행이다. `revise`는 새 Codex 대조 지적만 받아 수정한다.
+- 최종 대조 준비 대상은 **1,023개: 4학년826·5학년149·6학년48**. 최종 공개 승인과 구분한다. 실제 실행은 `.orchestrate/two-model-final*.run.json`·summary에서 확인한다. 기존 완료 cohort를 대상으로 하며 아직 앞단 writer가 소유한 배치는 겹쳐 잡지 않는다.
+- 005 반영용 자원 대기 PID87950은 새 정책 전환 중 옛 반영을 시작하지 않도록 취소했다(exit143, 반영 미실행). `.orchestrate/commit.pending.json`의 005 미커밋 변경은 보존하며 보호 작업이 끝나면 **005부터** 잠금 안에서 반영한다. 실제 공개는 현재 3학년51/4,000, 나머지3,949이다.
+
 ### 추가 병렬 가동과 검수 묶음 병렬화 (Codex, 2026-11-06 19:58 KST)
 
 - **20:01 KST 변경 — Claude 사용량 대기:** 세 실행 PID80018·80019·84648은 살아 있지만 모델 자식 프로세스 없이 대기 중이다. 해당 sealed 세션의 실제 assistant 응답을 확인하니 19:40·19:41·19:55에 `You've hit your session limit · resets 12am (Asia/Seoul)`였다. `.orchestrate/claude-usage-status.json`에 원본 경로/해시·시각을 보존했다. **345개를 현재 모델 처리 중이라고 보고하지 않는다.** 11월7일00:00 KST 복구 전 새 Claude 요청은 추가하지 않는다. 기존 실행은 20분 간격·3회 상한대로 두고 종료를 확인한다. 017~019·5학년002~003의 블라인드 결과249개는 완료돼 있으나 공개 대조/ingest 미완이다. 재개할 때 완료 결과 보존·재사용 가능성을 먼저 확인한다.
@@ -538,8 +548,8 @@ npx vitest run tests/unit/content-loop-gate.test.ts tests/unit/content-loop-pool
 
 ## 8. 사용자에게 물어야 할 것 (그 외에는 묻지 않고 진행)
 
-- Claude 로그인 재설정(사용자만 가능)과 관문을 돌릴 시점.
-- Sonnet 관문이 너무 너그럽다고 판단될 때 Opus 전환(사용량 2~3배).
+- Claude 관련 질문은 현재 불필요하다. 최신 사용자 결정에 따라 역할에서 제외했다.
+- Claude 모델 전환 요청도 현재 적용하지 않는다.
 - 브리지 시간당 상한(`maxRunsPerHour` 40) 상향 여부 — 일정 병목일 때.
 - 한국어기초사전 공개 API 키 발급(사이트 차단이 계속되면).
 - 배포·운영 서버 seed 적용.

@@ -3,9 +3,10 @@
 //   Claude·Codex 2단계 블라인드 검수 → 결함 문항 Argon 수정(revision+1) → 고친 판을 다시 Claude·Codex 검수 (최대 2회)
 // 각 단계의 대기분을 잠금 안에서 반영·빌드·커밋한다. 모든 단계가 "아직 안 한 것만" 하므로 멈춰도 다시 돌리면 이어 간다.
 //
-// --gate: S1 수준 → S2 앞단 검수 → S3 수정 → S4 Claude → S5 수정. --plan은 다음 단계만 조회.
+// --gate: S1 수준 → S2 앞단 검수 → S3 수정 → S4 Codex 최종 대조 → S5 Argon 수정. --plan은 다음 단계만 조회.
 // --pool-after N: N배치의 첫 판 완료 뒤 전역 회차(수정12·수준/검수50). 생략하면 전체 배치.
-// --until S3: 앞단 수정·재검수까지만 진행하고 Claude 관문은 대기한다.
+// --until S3: 앞단 수정·재검수까지만 진행하고 최종 대조는 대기한다.
+// --with-claude만 옛 Claude S4 사용. 기본값과 --without-claude는 Codex S4 사용.
 // --stage-only --gate: 기존 추적 배치의 staging overlay만 전진, apply/build/test/git 없이 awaitingApply.
 // 별도 실행은 --summary-file <경로>로 기록을 분리한다. 같은 배치의 standalone 도구/apply와 함께 실행하지 않는다.
 // --skip-argon-fresh: 제작 배치의 추가 Argon 새 문맥 호출만 생략(기존 실패 판정은 유지).
@@ -205,7 +206,7 @@ function overlayBatch(root, raw) {
 }
 
 // gate 실행끼리 같은 배치의 review 임시 파일을 덮어쓰지 않는다. standalone 제작/검수/apply는 함께 실행하지 않는다.
-function acquireGateRun(root, id) {
+export function acquireGateRun(root, id) {
   const file = path.join(root, '.orchestrate/gate-locks', `${id}.json`), token = randomUUID();
   fs.mkdirSync(path.dirname(file), { recursive: true });
   const take = () => fs.writeFileSync(file, JSON.stringify({ pid: process.pid, token }), { flag: 'wx' });
@@ -230,13 +231,30 @@ function acquireGateRun(root, id) {
 
 /** 실제 실행기와 가짜 실행기는 같은 상태/실행 계약을 쓴다. 추적 파일 쓰기는 apply만 담당한다. */
 export async function createGateRuntime(options, modules) {
+  if (!options['with-claude']) options = { ...options,
+    'codex-model': options['codex-model'] ?? 'gpt-6-astra',
+    'codex-effort': options['codex-effort'] ?? 'high',
+  };
   const root = options.root;
   const baseBank = modules?.rb ?? await review.load(root);
   const stageOnly = Boolean(options['stage-only']);
   const selected = options.all ? null : new Set(String(options.batches).split(',').map(id => id.trim()));
   const rb = stageOnly ? { ...baseBank, loadBatches: () => baseBank.loadBatches(root).filter(b => !selected || selected.has(b.batchId)).map(b => overlayBatch(root, b)).filter(Boolean) } : baseBank;
   const baseRevise = modules?.rm ?? await revise.load(root);
-  const rm = stageOnly ? { ...baseRevise, b: { ...baseRevise.b, loadBatches: rb.loadBatches } } : baseRevise;
+  // 기존 수정기의 gate 사유 계약을 유지하면서 Codex 최종 대조 실패도 전달한다.
+  // snapshot과 실제 reviseQuestions가 반드시 같은 판정 어댑터를 사용한다.
+  const rm = { ...baseRevise, b: { ...baseRevise.b,
+    ...(stageOnly ? { loadBatches: rb.loadBatches } : {}),
+    decide(batch) {
+      const decisions = baseRevise.b.decide(batch);
+      if (batch.sidecar.publicationPolicy !== 'codex-argon-v1') return decisions;
+      return decisions.map(item => {
+        const explanation = batch.explanation?.items.find(q => q.questionId === item.questionId && q.revision === item.revision);
+        return { ...item, reasons: item.reasons.map(reason => reason.startsWith('Codex 해설 대조 fail')
+          ? `총괄 해설 대조 fail: ${[reason, ...(explanation?.findings ?? [])].join(' / ')}` : reason) };
+      });
+    },
+  } };
   const lm = modules?.lm ?? await level.load();
   const configs = review.resolveReviewConfig(options);
   const reviewOptions = (who, questionKeys) => ({ config: configs[who], questionKeys,
@@ -254,6 +272,7 @@ export async function createGateRuntime(options, modules) {
   return {
     ids: options.all ? baseBank.loadBatches(root).map(b => b.batchId).filter(id => /^Q50-/.test(id)) : String(options.batches).split(',').map(id => id.trim()),
     log,
+    batch: batchOf,
     snapshot(id) {
       const raw = batchOf(id);
       if (!raw) return null;
@@ -267,7 +286,13 @@ export async function createGateRuntime(options, modules) {
         levelPending: batch.drafts.filter(q => !(levels?.items ?? []).some(item => lm.levels.isCurrentLevelAssessment(q, item))).map(keyOf),
         codexPending: review.pending(rb, batch, 'codex', reviewOptions('codex')).map(keyOf),
         argonPending: produced && options['skip-argon-fresh'] !== true ? review.pending(rb, batch, 'antigravity', reviewOptions('antigravity')).filter(q => q.revision === 1).map(keyOf) : [],
-        // 모델 변경 검사는 실제 관문 대상이 있을 때만 한다.
+        codexFinalPending: batch.drafts.filter(q => batch.sidecar.publicationPolicy !== 'codex-argon-v1'
+          || batch.explanation?.reviewer?.model !== 'gpt-6-astra'
+          || !(batch.explanation?.items ?? []).some(item => keyOf(item) === keyOf(q)
+            && item.contentHash === rb.contentHash(q) && item.rationalesHash === rb.rationalesHash(q)
+            && item.run?.model === 'gpt-6-astra' && ['high', 'xhigh'].includes(item.run?.effort)
+            && ['pass', 'fail'].includes(item.explanation))).map(keyOf),
+        // 옛 Claude 경로에서만 소비한다. 모델 변경 검사는 실제 관문 대상이 있을 때만 한다.
         claudePending: batch.drafts.filter(q => !(batch.reviews.claude?.items ?? []).some(i => keyOf(i) === keyOf(q) && i.contentHash === rb.contentHash(q))).map(keyOf),
         front, flagged: revise.flagged(rm, batch, { root, levelFile: levels }),
         awaitingStaging: !stageOnly && fs.existsSync(path.join(root, '.orchestrate/staging', id))
@@ -289,6 +314,10 @@ export async function createGateRuntime(options, modules) {
         const at = key.lastIndexOf('@'); return { batchId: id, questionId: key.slice(0, at), revision: Number(key.slice(at + 1)), phase };
       }), 'antigravity', log, { ...options, batchIds: [id], onEvent }))[0];
     },
+    async finalizeQuestions(refs, onEvent) {
+      const { finalizeCodex } = await import('./finalize-codex.mjs');
+      return finalizeCodex({ ...options, root, questions: refs, onEvent }, { runtime: this, bank: rb });
+    },
     levelQuestions: (questions, onEvent) => level.runLevels({ ...options, questions, all: false, batches: undefined, argon: 1, codex: 1, onEvent }, { modules: lm }),
     reviewQuestions: (questions, who, onEvent) => review.runQuestions(rb, root, who, questions, log, { ...options, ...reviewOptions(who), onEvent }),
     reviseQuestions: (questions, onEvent, batchIds) => revise.reviseQuestions(rm, root, questions, 'antigravity', log, { ...options, batchIds, onEvent }),
@@ -296,7 +325,7 @@ export async function createGateRuntime(options, modules) {
   };
 }
 
-function nextGateAction(state, frontOnly = false) {
+function nextGateAction(state, frontOnly = false, withClaude = false) {
   if (!state || !state.drafts.length) return null;
   for (const [stage, field, who] of [['S1', 'levelPending', null], ['S2-codex', 'codexPending', 'codex'], ['S2-argon', 'argonPending', 'antigravity']]) {
     if (state[field].length) return { stage, keys: state[field], who };
@@ -304,8 +333,8 @@ function nextGateAction(state, frontOnly = false) {
   const front = state.front.items.filter(item => item.status === 'defect').map(keyOf);
   if (front.length || state.front.batchDefects.length) return { stage: 'S3', phase: 'front', keys: front };
   const passed = new Set(state.front.items.filter(item => item.status === 'pass').map(keyOf));
-  const claude = state.claudePending.filter(key => passed.has(key));
-  if (claude.length) return { stage: frontOnly ? 'S4 대기' : 'S4', who: 'claude', keys: claude };
+  const final = state[withClaude ? 'claudePending' : 'codexFinalPending'].filter(key => passed.has(key));
+  if (final.length) return { stage: frontOnly ? 'S4 대기' : 'S4', who: withClaude ? 'claude' : 'codex', keys: final };
   if (frontOnly) return null;
   const gate = state.flagged.filter(item => item.phase === 'gate' && passed.has(keyOf(item.q))).map(item => keyOf(item.q));
   if (gate.length) return { stage: 'S5', phase: 'gate', keys: gate };
@@ -320,6 +349,10 @@ export async function runGate(options = {}, deps = {}) {
 }
 
 async function runGateUnlocked(options, deps, releases) {
+  if (options['with-claude'] && options['without-claude']) throw new Error('--with-claude와 --without-claude를 함께 쓸 수 없다');
+  const withClaude = Boolean(options['with-claude']);
+  const finalField = withClaude ? 'claudePending' : 'codexFinalPending';
+  const finalWho = withClaude ? 'claude' : 'codex';
   const stageOnly = Boolean(options['stage-only']);
   if (stageOnly && (options.commit || options['no-commit'])) throw new Error('--stage-only는 --commit/--no-commit과 함께 쓸 수 없다');
   if (options.until != null && options.until !== 'S3') throw new Error('--until은 S3만 지원한다');
@@ -344,8 +377,8 @@ async function runGateUnlocked(options, deps, releases) {
   if (options.plan) {
     for (const id of ids) {
       const state = await runtime.snapshot(id);
-      const action = nextGateAction(state, frontOnly);
-      summary[id] = { ...(stageOnly ? { awaitingApply: true } : {}), next: state?.awaitingStaging ? { stage: 'applyStaged', target: state.drafts.length } : { stage: action?.stage ?? (stageOnly ? '반영 대기' : '완료/대기'), target: action?.keys.length ?? 0 } };
+      const action = nextGateAction(state, frontOnly, withClaude);
+      summary[id] = { ...(stageOnly ? { awaitingApply: true } : {}), next: state?.awaitingStaging ? { stage: 'applyStaged', target: state.drafts.length } : { stage: action?.stage ?? (stageOnly ? '반영 대기' : '완료/대기'), target: action?.keys.length ?? 0, ...(!withClaude && action?.who ? { who: action.who } : {}) } };
       log(`${id}: 다음 ${summary[id].next.stage} · 대상 ${summary[id].next.target}문항`);
     }
     return summary;
@@ -477,14 +510,16 @@ async function runGateUnlocked(options, deps, releases) {
       await assessFront(id, 0);
       const state = await runtime.snapshot(id);
       const passed = new Set(state?.front.batchDefects.length ? [] : state?.front.items.filter(q => q.status === 'pass').map(keyOf));
-      const keys = state?.claudePending.filter(key => passed.has(key)) ?? [];
-      if (!frontOnly && keys.length && !await execute('S4', refsOf(id, keys), [id], 0, cb => pools.claude(() => startModel(() => runtime.review(id, 'claude', keys, cb))))) return;
+      const keys = state?.[finalField].filter(key => passed.has(key)) ?? [];
+      if (!frontOnly && keys.length && !await execute('S4', refsOf(id, keys), [id], 0, cb => pools[finalWho](() => startModel(() => withClaude
+        ? runtime.review(id, 'claude', keys, cb) : runtime.finalizeQuestions(refsOf(id, keys), cb))))) return;
       summary[id].firstPassComplete = true; save();
     } catch (error) { markError([id], error); }
   };
   const pooled = async (stage, refs, batchIds, round, who) => {
     const invoke = async cb => {
       requireApplyReady();
+      if (stage === 'S4' && !withClaude) return runtime.finalizeQuestions(refs, cb);
       if (stage === 'S1' && runtime.levelQuestions) return runtime.levelQuestions(refs, cb);
       if (who && runtime.reviewQuestions) return runtime.reviewQuestions(refs, who, cb);
       if (!who && stage !== 'S1' && runtime.reviseQuestions) return runtime.reviseQuestions(refs, cb, batchIds);
@@ -502,7 +537,7 @@ async function runGateUnlocked(options, deps, releases) {
       ? pools.codex(() => pools.antigravity(() => invoke(cb))) : pools[who ?? 'antigravity'](() => invoke(cb)));
   };
   const recheck = async (cohort, round) => {
-    for (const [stage, field, who] of [['S1', 'levelPending', null], ['S2-codex', 'codexPending', 'codex'], ['S4', 'claudePending', 'claude']]) {
+    for (const [stage, field, who] of [['S1', 'levelPending', null], ['S2-codex', 'codexPending', 'codex'], ['S4', finalField, finalWho]]) {
       if (frontOnly && stage === 'S4') {
         for (const id of cohort.filter(active)) await assessFront(id, round);
         continue;
@@ -552,7 +587,7 @@ async function runGateUnlocked(options, deps, releases) {
       if (frontOnly) {
         const passed = new Set(state?.front.batchDefects.length ? [] : state?.front.items.filter(q => q.status === 'pass').map(keyOf));
         summary[id].until = 'S3';
-        summary[id].awaitingClaude = state?.claudePending.filter(key => passed.has(key)).length ?? 0;
+        summary[id][withClaude ? 'awaitingClaude' : 'awaitingFinalReview'] = state?.[finalField].filter(key => passed.has(key)).length ?? 0;
       }
       summary[id].endedAt = new Date().toISOString();
     }

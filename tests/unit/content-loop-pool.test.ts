@@ -39,7 +39,7 @@ function fixture(count = 21) {
     levelQuestions: vi.fn(async (refs: Ref[], cb: (e: Event) => void) => { const qs = select(refs); emit(cb, 'argon', qs); emit(cb, 'codex', qs); stage(qs, q => { q.level = true; }); return [...new Set(refs.map(r => r.batchId))].map(batchId => ({ batchId, assessed: qs.filter(q => q.batchId === batchId).length })); }),
     reviewQuestions: vi.fn(async (refs: Ref[], who: string, cb: (e: Event) => void) => { const qs = select(refs); emit(cb, who, qs); stage(qs, q => { if (who === 'codex') q.codex = true; else q.claude = true; }); return [...new Set(refs.map(r => r.batchId))].map(batchId => ({ batchId, merged: qs.filter(q => q.batchId === batchId).length })); }),
   };
-  return { root, deps, events, options: { root, batches: 'A,B,C' } };
+  return { root, deps, events, options: { root, batches: 'A,B,C', 'with-claude': true } };
 }
 
 describe('배치를 넘는 재판정 회차', () => {

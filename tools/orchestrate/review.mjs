@@ -88,7 +88,7 @@ const workDir = (root, reviewer, batch) => path.join(root, '.orchestrate/review'
 const readJson = (f, fb = null) => (fs.existsSync(f) ? JSON.parse(fs.readFileSync(f, 'utf8')) : fb);
 
 // 잠금 반영 전 여러 회차가 끝나도 직전 대기 보고서·해설·보관 원문을 이어 읽는다.
-function pendingReviewFiles(root, batchId) {
+export function pendingReviewFiles(root, batchId) {
   const base = path.join(root, '.orchestrate/staging', batchId);
   const stages = (fs.existsSync(base) ? fs.readdirSync(base, { withFileTypes: true }) : [])
     .filter(entry => entry.isDirectory()).map(entry => entry.name).sort().flatMap(runId => {
@@ -148,7 +148,7 @@ function blindItem(b, q) {
   };
 }
 
-function revealItem(b, root, batchId, q, blind) {
+export function revealItem(b, root, batchId, q, blind) {
   const evidencePath = path.join(root, 'content-source/batches', batchId, 'evidence', q.source.evidenceArtifactId);
   return {
     ...blindItem(b, q),
@@ -493,7 +493,7 @@ export async function modelAttempt(who, invoke, options = {}, context = {}) {
   }
 }
 
-async function reviewChunk(root, reviewer, phase, items, log, options, context, dir) {
+export async function reviewChunk(root, reviewer, phase, items, log, options, context, dir) {
   const config = reviewOptions(reviewer, options).config;
   const sealed = path.join(root, '.orchestrate/review/sealed', randomUUID());
   fs.mkdirSync(sealed, { recursive: true });

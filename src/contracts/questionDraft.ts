@@ -42,6 +42,7 @@ export const draftBatchSchema = z.array(questionDraftSchema).min(1).max(60);
 export const draftSidecarSchema = z.object({
   batchId: z.string().min(1),
   jobId: z.string().min(1),
+  publicationPolicy: z.literal('codex-argon-v1').optional(),
   producer: z.object({ model: z.string().min(1), tool: z.string().min(1), date: z.iso.date() }).strict(),
   items: z.array(z.object({
     id: z.string().min(1),

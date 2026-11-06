@@ -95,13 +95,18 @@ export function flagged(m, batch, options = {}) {
   for (const item of front.items) {
     const q = batch.drafts.find(x => x.id === item.questionId && x.revision === item.revision);
     const gate = decisions.find(d => d.questionId === q.id && d.revision === q.revision).reasons
-      .filter(r => !MISSING.test(r) && (r.startsWith('claude:') || r.startsWith('총괄 해설 대조 fail')));
+      .filter(r => !MISSING.test(r) && (r.startsWith('claude:') || r.startsWith('총괄 해설 대조 fail') || r.startsWith('Codex 해설 대조 fail')));
     const reasons = [...new Set([...item.defects, ...gate])];
     if (!reasons.length) continue;
     const findings = [];
     for (const [who, rep] of [['codex', batch.reviews.codex], ['claude', batch.reviews.claude], ['argon-blind', batch.argonBlind]]) {
+      if (who === 'claude' && batch.sidecar.publicationPolicy === 'codex-argon-v1') continue;
       const it = rep?.items.find(i => i.questionId === q.id && i.revision === q.revision && i.contentHash === item.contentHash);
       if (it) findings.push(...it.findings.map(f => `${who}: ${f}`));
+    }
+    if (batch.sidecar.publicationPolicy === 'codex-argon-v1') {
+      const exp = batch.explanation?.items.find(i => i.questionId === q.id && i.revision === q.revision && i.contentHash === item.contentHash);
+      if (exp?.explanation === 'fail') findings.push(...exp.findings.map(f => `codex-finalize: ${f}`));
     }
     out.push({ q, phase: item.defects.length ? 'front' : 'gate', reasons, findings, rounds: log.items[q.id] ?? emptyRounds() });
   }

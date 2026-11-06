@@ -54,7 +54,7 @@ function fixture(count = 1) {
     apply: vi.fn(async () => { events.push('apply'); const runs = staged ? ['run'] : []; staged?.(); staged = undefined; return { runs }; }),
     log: vi.fn(),
   };
-  return { root, items, deps, events, options: { root, batches: 'A', gate: true } };
+  return { root, items, deps, events, options: { root, batches: 'A', gate: true, 'with-claude': true } };
 }
 
 describe('단계 순서 관문 실행기', () => {
