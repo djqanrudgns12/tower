@@ -1,0 +1,734 @@
+{
+  "grade": 3,
+  "round": 5,
+  "designGoal": "grade-supplement",
+  "source": {
+    "producer": "Gemini 4 Argon (High)",
+    "origin": "다른 학년 후보의 사전 근거·3학년 적합 재검수",
+    "sources": [
+      {
+        "path": ".orchestrate/staging/wordlist-g4-r2/20261106T040732029Z-95753/files/content-source/wordlists/g4-r2.json",
+        "sha256": "163f2eaed85a8a9b3150517fe336e091482851ea6208125299e5472255bfc0a4"
+      }
+    ],
+    "checker": "gpt-6-astra",
+    "effort": "high",
+    "checkedAt": "2026-11-06T21:55:04.813Z"
+  },
+  "items": [
+    {
+      "kind": "word",
+      "lemma": "수선하다",
+      "partOfSpeech": "동사",
+      "sourceEntry": {
+        "provider": "stdict",
+        "entryId": "199207"
+      },
+      "senseOrder": 1,
+      "types": [
+        "cloze",
+        "synonym_context"
+      ],
+      "variantTag": "standard",
+      "expectedL1": 1,
+      "expectedL2": 1,
+      "gradeEvidence": "[4국04-01] 단어와 단어 간의 의미 관계를 파악한다.",
+      "checked": true,
+      "reason": "동사·뜻 1·word가 사전과 일치한다. 낡은 옷이나 물건을 고치는 생활 맥락으로 3학년에게 적합하며 cloze·synonym_context와 예상 L=2도 타당하다. 성취기준은 의미 관계 활동의 근거다."
+    },
+    {
+      "kind": "word",
+      "lemma": "조절하다",
+      "partOfSpeech": "동사",
+      "sourceEntry": {
+        "provider": "stdict",
+        "entryId": "481439"
+      },
+      "senseOrder": 1,
+      "types": [
+        "cloze"
+      ],
+      "variantTag": "standard",
+      "expectedL1": 1,
+      "expectedL2": 1,
+      "gradeEvidence": "stdict:전문어 표지 없음",
+      "checked": true,
+      "reason": "동사·뜻 1·word가 일치한다. 소리 크기 등을 적당하게 맞추는 생활 맥락에서 cloze 구성이 가능하고 예상 L=2도 수용 가능하다. 전문어 표지 없음 자체가 3학년 적합성을 보증하지는 않는다."
+    },
+    {
+      "kind": "word",
+      "lemma": "실행하다",
+      "partOfSpeech": "동사",
+      "sourceEntry": {
+        "provider": "stdict",
+        "entryId": "452307"
+      },
+      "senseOrder": 1,
+      "types": [
+        "cloze",
+        "synonym_context"
+      ],
+      "variantTag": "standard",
+      "expectedL1": 1,
+      "expectedL2": 2,
+      "gradeEvidence": "stdict:전문어 표지 없음",
+      "checked": false,
+      "reason": "Argon 재선정 제외: 3학년은 '실천하다·지키다'를 주로 쓰며, '실행하다'는 문어적 추상 한자어라 억지 교훈·직역투 문장이 되기 쉬움."
+    },
+    {
+      "kind": "word",
+      "lemma": "답사하다",
+      "partOfSpeech": "동사",
+      "sourceEntry": {
+        "provider": "stdict",
+        "entryId": "78714"
+      },
+      "senseOrder": 1,
+      "types": [
+        "cloze",
+        "synonym_context"
+      ],
+      "variantTag": "standard",
+      "expectedL1": 1,
+      "expectedL2": 2,
+      "gradeEvidence": "stdict:전문어 표지 없음",
+      "checked": false,
+      "reason": "Argon 재선정 제외: 4학년 이상 사회과 학습 한자어로 3학년 일상·국어 문맥에서는 '직접 가 보다·견학하다'가 자연스러움."
+    },
+    {
+      "kind": "word",
+      "lemma": "제작하다",
+      "partOfSpeech": "동사",
+      "sourceEntry": {
+        "provider": "stdict",
+        "entryId": "288964"
+      },
+      "senseOrder": 1,
+      "types": [
+        "cloze",
+        "synonym_context"
+      ],
+      "variantTag": "standard",
+      "expectedL1": 1,
+      "expectedL2": 2,
+      "gradeEvidence": "stdict:전문어 표지 없음",
+      "checked": false,
+      "reason": "Argon 재선정 제외: 3학년 수준에서는 '만들다'가 자연스러우며 '제작하다'는 4~5학년 이상의 격식 문어에 가까움."
+    },
+    {
+      "kind": "word",
+      "lemma": "결점",
+      "partOfSpeech": "명사",
+      "sourceEntry": {
+        "provider": "stdict",
+        "entryId": "17647"
+      },
+      "senseOrder": 1,
+      "types": [
+        "synonym_context",
+        "antonym_context"
+      ],
+      "variantTag": "standard",
+      "expectedL1": 1,
+      "expectedL2": 2,
+      "gradeEvidence": "[4국04-01] 단어와 단어 간의 의미 관계를 파악한다.",
+      "checked": false,
+      "reason": "Argon 재선정 제외: 한자 형태소가 불투명한 추상 명사로 3학년에 다소 어렵고 억지 교훈 문맥으로 흐르기 쉬움."
+    },
+    {
+      "kind": "word",
+      "lemma": "두텁다",
+      "partOfSpeech": "형용사",
+      "expectedL1": 1,
+      "expectedL2": 1,
+      "senseOrder": 1,
+      "types": [
+        "cloze",
+        "usage"
+      ],
+      "variantTag": "confusable",
+      "confusableWith": "두껍다",
+      "gradeEvidence": "[4국04-02] 단어를 분류하고 국어사전을 활용하여 능동적인 국어 활동을 한다.",
+      "checked": false,
+      "reason": "Argon 재선정 제외: 신의·인정·우정 등 추상적 관계의 깊이를 뜻하는 문어 표현으로 '두껍다'와의 규범 변별은 3학년에 과도함."
+    },
+    {
+      "kind": "word",
+      "lemma": "바라다",
+      "partOfSpeech": "동사",
+      "expectedL1": 1,
+      "expectedL2": 0,
+      "senseOrder": 1,
+      "types": [
+        "cloze"
+      ],
+      "variantTag": "confusable",
+      "confusableWith": "바래다",
+      "gradeEvidence": "[4국04-02] 단어를 분류하고 국어사전을 활용하여 능동적인 국어 활동을 한다.",
+      "checked": true,
+      "reason": "동사·뜻 1·word가 일치하며 소망을 나타내는 생활어로 적합하다. 바래다와의 혼동 및 cloze가 타당하다. 예상 L=1은 가능하지만 소망은 구체 동작이 아니므로 L1=0·L2=1 배분을 검토할 필요가 있다. 성취기준은 사전 활용과 연결된다."
+    },
+    {
+      "kind": "word",
+      "lemma": "굵다",
+      "partOfSpeech": "형용사",
+      "expectedL1": 0,
+      "expectedL2": 0,
+      "senseOrder": 1,
+      "types": [
+        "cloze",
+        "antonym_context"
+      ],
+      "variantTag": "confusable",
+      "confusableWith": "두껍다",
+      "gradeEvidence": "[4국04-01] 단어와 단어 간의 의미 관계를 파악한다.",
+      "checked": true,
+      "reason": "형용사·뜻 1·word가 일치하고 구체적인 굵기 비교이므로 예상 L=0과 3학년 적합성이 타당하다. 두껍다와의 쓰임 구별 및 가늘다와의 반의 관계로 제안 유형을 구성할 수 있다. 두껍다를 반의어로 취급해서는 안 된다."
+    },
+    {
+      "kind": "word",
+      "lemma": "가늘다",
+      "partOfSpeech": "형용사",
+      "expectedL1": 0,
+      "expectedL2": 0,
+      "senseOrder": 1,
+      "types": [
+        "cloze",
+        "antonym_context"
+      ],
+      "variantTag": "confusable",
+      "confusableWith": "얇다",
+      "gradeEvidence": "[4국04-01] 단어와 단어 간의 의미 관계를 파악한다.",
+      "checked": true,
+      "reason": "형용사·뜻 1·word가 일치하고 구체적인 굵기 비교이므로 예상 L=0이 타당하다. 얇다와의 혼동 구별, 굵다와의 반의 관계 모두 3학년에게 적합하다. antonym_context에서 혼동 짝과 반의어를 구분해야 한다."
+    },
+    {
+      "kind": "word",
+      "lemma": "싸이다",
+      "partOfSpeech": "동사",
+      "sourceEntry": {
+        "provider": "stdict",
+        "entryId": "454438"
+      },
+      "senseOrder": 1,
+      "types": [
+        "cloze",
+        "usage"
+      ],
+      "variantTag": "confusable",
+      "confusableWith": "쌓이다",
+      "expectedL1": 1,
+      "expectedL2": 0,
+      "gradeEvidence": "[4국04-02] 단어를 분류하고 국어사전을 활용하여 능동적인 국어 활동을 한다.",
+      "checked": true,
+      "reason": "동사·뜻 1·word가 일치한다. 물건이 포장지 등에 둘러싸이는 구체적 상황으로 3학년에게 적합하며 쌓이다와의 혼동 및 cloze·usage가 타당하다. 예상 L=1은 수용 가능하고 피동 문법 용어를 요구할 필요는 없다."
+    },
+    {
+      "kind": "word",
+      "lemma": "개최하다",
+      "partOfSpeech": "동사",
+      "expectedL1": 2,
+      "expectedL2": 2,
+      "senseOrder": 1,
+      "types": [
+        "cloze",
+        "usage"
+      ],
+      "variantTag": "confusable",
+      "confusableWith": "주최하다",
+      "gradeEvidence": "rubric_inferred(L=4,T=2)",
+      "checked": false,
+      "reason": "Argon 재선정 제외: 5학년 수준의 격식 한자어로 '주최하다'와의 의미 변별은 3학년에 너무 어려움."
+    },
+    {
+      "kind": "word",
+      "lemma": "나르다",
+      "partOfSpeech": "동사",
+      "sourceEntry": {
+        "provider": "stdict",
+        "entryId": "57521"
+      },
+      "senseOrder": 1,
+      "types": [
+        "cloze",
+        "usage"
+      ],
+      "variantTag": "confusable",
+      "confusableWith": "날다",
+      "expectedL1": 0,
+      "expectedL2": 0,
+      "gradeEvidence": "[4국04-02] 단어를 분류하고 국어사전을 활용하여 능동적인 국어 활동을 한다.",
+      "checked": true,
+      "reason": "동사·뜻 1·word가 일치하고 물건을 옮기는 기초 동작이므로 예상 L=0이 타당하다. 날다와의 형태·쓰임 혼동을 생활 맥락의 cloze·usage로 다룰 수 있다. 성취기준은 사전 활용 활동의 근거로 적절하다."
+    },
+    {
+      "kind": "word",
+      "lemma": "그치다",
+      "partOfSpeech": "동사",
+      "expectedL1": 0,
+      "expectedL2": 0,
+      "senseOrder": 1,
+      "types": [
+        "cloze"
+      ],
+      "variantTag": "confusable",
+      "confusableWith": "걷히다",
+      "gradeEvidence": "[4국04-02] 단어를 분류하고 국어사전을 활용하여 능동적인 국어 활동을 한다.",
+      "checked": true,
+      "reason": "동사·뜻 1·word가 일치한다. 비가 그치는 상황과 안개가 걷히는 상황을 구별하는 cloze는 자연스럽고 3학년에게 적합하다. 기초적인 멈춤의 뜻에서 예상 L=0은 타당하며, 두 낱말을 언제나 교체 가능한 유의어로 다뤄서는 안 된다."
+    },
+    {
+      "kind": "word",
+      "lemma": "한결",
+      "partOfSpeech": "부사",
+      "expectedL1": 1,
+      "expectedL2": 1,
+      "senseOrder": 1,
+      "types": [
+        "cloze",
+        "usage"
+      ],
+      "variantTag": "confusable",
+      "confusableWith": "한껏",
+      "gradeEvidence": "[4국04-02] 단어를 분류하고 국어사전을 활용하여 능동적인 국어 활동을 한다.",
+      "checked": false,
+      "reason": "Argon 재선정 제외: 문어적 정도 부사로 3학년에게 '한껏'과의 서술어 호응·뉘앙스 변별 부담이 크고 경계 모호성 우려가 있음."
+    },
+    {
+      "kind": "word",
+      "lemma": "마침",
+      "partOfSpeech": "부사",
+      "expectedL1": 1,
+      "expectedL2": 0,
+      "senseOrder": 1,
+      "types": [
+        "cloze"
+      ],
+      "variantTag": "confusable",
+      "confusableWith": "마침내",
+      "gradeEvidence": "[4국04-02] 단어를 분류하고 국어사전을 활용하여 능동적인 국어 활동을 한다.",
+      "checked": true,
+      "reason": "부사·뜻 1·word가 일치한다. 기회가 알맞게 맞아떨어짐과 마침내의 최종 결과를 구별하는 cloze는 3학년 생활 맥락으로 가능하다. 다만 시간·상황 관계를 나타내므로 예상 L2=0은 근거가 약해 재평가가 필요하며, 두 표현이 모두 가능한 문맥을 피해야 한다."
+    },
+    {
+      "kind": "word",
+      "lemma": "식별하다",
+      "partOfSpeech": "동사",
+      "expectedL1": 2,
+      "expectedL2": 2,
+      "senseOrder": 1,
+      "types": [
+        "cloze",
+        "usage"
+      ],
+      "variantTag": "confusable",
+      "confusableWith": "선별하다",
+      "gradeEvidence": "rubric_inferred(L=4,T=2)",
+      "checked": false,
+      "reason": "Argon 재선정 제외: 5학년 수준의 추상 한자어로 '선별하다'와의 변별은 3학년 범위를 벗어남."
+    },
+    {
+      "kind": "word",
+      "lemma": "전시하다",
+      "partOfSpeech": "동사",
+      "sourceEntry": {
+        "provider": "stdict",
+        "entryId": "476900"
+      },
+      "senseOrder": 1,
+      "types": [
+        "cloze",
+        "usage"
+      ],
+      "variantTag": "confusable",
+      "confusableWith": "게시하다",
+      "expectedL1": 1,
+      "expectedL2": 1,
+      "gradeEvidence": "[4국04-02] 단어를 분류하고 국어사전을 활용하여 능동적인 국어 활동을 한다.",
+      "checked": false,
+      "reason": "Argon 재선정 제외: 혼동 짝인 '게시하다'가 3학년에게 낯선 행정·문어 한자어여서 두 어휘의 변별 과제는 3학년에 다소 이름."
+    },
+    {
+      "kind": "idiom",
+      "lemma": "목을 축이다",
+      "partOfSpeech": "관용구",
+      "expectedL1": 1,
+      "expectedL2": 0,
+      "senseOrder": 1,
+      "types": [
+        "cloze"
+      ],
+      "variantTag": "idiom_proverb",
+      "gradeEvidence": "rubric_inferred(L=1,T=3)",
+      "checked": false,
+      "reason": "관용구·뜻 1·idiom은 사전과 일치하며 물을 마시는 쉬운 비유로 3학년 cloze 후보 자체는 적합하다. 그러나 관용구 등재 근거가 제공되었는데도 rubric_inferred를 사용한 것은 §3.5의 적용 조건에 맞지 않는다. 예상 L=1은 수용 가능하나 T=3은 문항 없이 확정할 수 없다."
+    },
+    {
+      "kind": "idiom",
+      "lemma": "날개가 돋치다",
+      "partOfSpeech": "관용구",
+      "expectedL1": 1,
+      "expectedL2": 1,
+      "senseOrder": 1,
+      "types": [
+        "cloze"
+      ],
+      "variantTag": "idiom_proverb",
+      "gradeEvidence": "rubric_inferred(L=2,T=3)",
+      "checked": false,
+      "reason": "Argon 재선정 제외: 상품이 시세를 만나 팔려 나간다는 상거래 비유와 관형절 제약('날개 돋친 듯')이 있어 3학년보다는 4학년 이상에 적합함."
+    },
+    {
+      "kind": "proverb",
+      "lemma": "첫술에 배부르랴",
+      "partOfSpeech": "속담",
+      "expectedL1": 2,
+      "expectedL2": 1,
+      "senseOrder": 1,
+      "types": [
+        "cloze"
+      ],
+      "variantTag": "idiom_proverb",
+      "gradeEvidence": "rubric_inferred(L=3,T=3)",
+      "checked": false,
+      "reason": "Argon 재선정 제외: 반어 의문형 어미('-랴')를 포함한 속담으로 3학년 구어 노출이 낮고, 억지 훈계·교훈 문맥으로 흐르기 쉬워 3학년에는 부적합하다."
+    },
+    {
+      "kind": "dialect",
+      "lemma": "바당",
+      "partOfSpeech": "명사",
+      "sourceEntry": {
+        "provider": "opendict",
+        "entryId": "159762"
+      },
+      "senseOrder": 2,
+      "types": [
+        "definition"
+      ],
+      "variantTag": "dialect",
+      "dialectRegion": "제주",
+      "expectedL1": 1,
+      "expectedL2": 0,
+      "gradeEvidence": "rubric_inferred(L=1,T=3)",
+      "checked": true,
+      "reason": "명사·방언·뜻 2가 일치하며 제주도 등재 지역에 포함된다. 익숙한 ‘바다’와 연결하는 definition은 3학년에게 가능하다. 예상 L=1은 추정 범위이며 T=3은 변형 점수만으로 전체 난도를 확정한 근거가 아니다."
+    },
+    {
+      "kind": "dialect",
+      "lemma": "호랭이",
+      "partOfSpeech": "명사",
+      "expectedL1": 1,
+      "expectedL2": 0,
+      "senseOrder": 1,
+      "types": [
+        "cloze"
+      ],
+      "variantTag": "dialect",
+      "dialectRegion": "전라",
+      "gradeEvidence": "rubric_inferred(L=1,T=3)",
+      "checked": false,
+      "reason": "Argon 재선정 제외: 전국 구어에서 흔한 음운 변화형이고 unusedTypes가 cloze뿐이어서 빈칸 정답으로 출제하면 3학년 표준어 철자 학습과 혼동을 빚는다."
+    },
+    {
+      "kind": "word",
+      "lemma": "금세",
+      "partOfSpeech": "부사",
+      "expectedL1": 1,
+      "expectedL2": 1,
+      "senseOrder": 1,
+      "types": [
+        "cloze"
+      ],
+      "variantTag": "confusable",
+      "confusableWith": "금새",
+      "gradeEvidence": "[4국04-02] 단어를 분류하고 국어사전을 활용하여 능동적인 국어 활동을 한다.",
+      "checked": true,
+      "reason": "부사·뜻 1·word가 일치한다. 생활 속 시간 표현으로 cloze와 금새의 표기 혼동 점검이 가능하고 예상 L=2도 수용 가능하다. 성취기준은 사전 활용의 근거이며 개별 낱말의 학년을 보증하지 않는다. 금새 자체를 무조건 없는 말로 처리해서는 안 된다."
+    },
+    {
+      "kind": "word",
+      "lemma": "몫",
+      "partOfSpeech": "명사",
+      "expectedL1": 1,
+      "expectedL2": 1,
+      "senseOrder": 1,
+      "types": [
+        "cloze"
+      ],
+      "variantTag": "confusable",
+      "confusableWith": "목",
+      "gradeEvidence": "[4국04-02] 단어를 분류하고 국어사전을 활용하여 능동적인 국어 활동을 한다.",
+      "checked": true,
+      "reason": "명사·뜻 1·word가 일치한다. 간식 등을 나누는 상황으로 목과의 표기·의미 차이를 자연스럽게 다룰 수 있다. 예상 L1=1은 가능하나 구체적인 나눔의 뜻에서 L2=1은 다소 높게 잡혔을 수 있다. 성취기준은 사전 활용 수준에서 연결된다."
+    },
+    {
+      "kind": "word",
+      "lemma": "바래다",
+      "partOfSpeech": "동사",
+      "sourceEntry": {
+        "provider": "stdict",
+        "entryId": "428753"
+      },
+      "senseOrder": 1,
+      "types": [
+        "cloze",
+        "usage"
+      ],
+      "variantTag": "confusable",
+      "confusableWith": "바라다",
+      "expectedL1": 1,
+      "expectedL2": 1,
+      "gradeEvidence": "[4국04-02] 단어를 분류하고 국어사전을 활용하여 능동적인 국어 활동을 한다.",
+      "checked": false,
+      "reason": "Argon 재선정 제외: '볕이나 습기를 받아 색이 변하다'는 3학년 일상 어휘 빈도가 낮은 문어적 표현이고 '바라다' 오활용 교정은 고학년 어법에 가깝다."
+    },
+    {
+      "kind": "word",
+      "lemma": "주위",
+      "partOfSpeech": "명사",
+      "sourceEntry": {
+        "provider": "stdict",
+        "entryId": "482257"
+      },
+      "senseOrder": 1,
+      "types": [
+        "cloze"
+      ],
+      "variantTag": "confusable",
+      "confusableWith": "주의",
+      "expectedL1": 1,
+      "expectedL2": 1,
+      "gradeEvidence": "[4국04-02] 단어를 분류하고 국어사전을 활용하여 능동적인 국어 활동을 한다.",
+      "checked": true,
+      "reason": "명사·뜻 1·word가 일치한다. 학교나 집의 바깥 둘레를 나타내는 cloze로 주의와 구별할 수 있어 3학년에 적합하다. 예상 L=2는 수용 가능하며 성취기준은 사전 활용의 근거로 타당하다."
+    },
+    {
+      "kind": "word",
+      "lemma": "축이다",
+      "partOfSpeech": "동사",
+      "expectedL1": 1,
+      "expectedL2": 1,
+      "senseOrder": 1,
+      "types": [
+        "cloze"
+      ],
+      "variantTag": "confusable",
+      "confusableWith": "추기다",
+      "gradeEvidence": "[4국04-02] 단어를 분류하고 국어사전을 활용하여 능동적인 국어 활동을 한다.",
+      "checked": false,
+      "reason": "Argon 재선정 제외: 3학년 수준에서는 '적시다'가 자연스럽고 '축이다/추기다' 구별은 소리대로 적기 함정에 가까워 3학년 어휘 학습으로 부적합하다."
+    },
+    {
+      "kind": "word",
+      "lemma": "여우비",
+      "partOfSpeech": "명사",
+      "expectedL1": 1,
+      "expectedL2": 0,
+      "senseOrder": 1,
+      "types": [
+        "cloze"
+      ],
+      "variantTag": "confusable",
+      "confusableWith": "소나기",
+      "gradeEvidence": "[4국04-02] 단어를 분류하고 국어사전을 활용하여 능동적인 국어 활동을 한다.",
+      "checked": false,
+      "reason": "명사·뜻 1·word와 예상 L=1은 타당하지만 소나기와 배타적인 구별을 보장하지 않는다. 볕의 유무와 비의 세기·발생 양상은 서로 다른 기준이므로 짧게 오는 비라는 단서만으로는 혼동 짝 cloze의 정답을 유일하게 정하기 어렵다."
+    },
+    {
+      "kind": "word",
+      "lemma": "감각",
+      "partOfSpeech": "명사",
+      "sourceEntry": {
+        "provider": "stdict",
+        "entryId": "390604"
+      },
+      "senseOrder": 1,
+      "types": [
+        "cloze"
+      ],
+      "variantTag": "confusable",
+      "confusableWith": "감정",
+      "expectedL1": 1,
+      "expectedL2": 2,
+      "gradeEvidence": "[4국05-04] 감각적 표현에 유의하여 작품을 감상하고, 감각적 표현을 활용하여 자신의 생각이나 감정을 표현한다.",
+      "checked": false,
+      "reason": "Argon 재선정 제외: 사전 정의대로 명사 단독 '감각'과 '감정'을 가르는 빈칸 문항은 3학년에게 추상 개념 설명문(직역투)이 되기 쉬워 부적합하다."
+    },
+    {
+      "kind": "word",
+      "lemma": "예보",
+      "partOfSpeech": "명사",
+      "expectedL1": 1,
+      "expectedL2": 1,
+      "senseOrder": 1,
+      "types": [
+        "cloze"
+      ],
+      "variantTag": "confusable",
+      "confusableWith": "예방",
+      "gradeEvidence": "rubric_inferred(L=2,T=2)",
+      "checked": true,
+      "reason": "명사·뜻 1·word가 일치한다. 날씨를 미리 알리는 일과 피해를 미리 막는 일을 구분하면 예방과의 cloze가 자연스럽고 예상 L=2도 가능하다. 다만 rubric_inferred의 T=2는 문항 제작 전 확정할 수 없으며 사전 구조 근거의 우선 적용 여부를 점검해야 한다."
+    },
+    {
+      "kind": "word",
+      "lemma": "가렵다",
+      "partOfSpeech": "형용사",
+      "expectedL1": 0,
+      "expectedL2": 0,
+      "senseOrder": 1,
+      "types": [
+        "cloze"
+      ],
+      "variantTag": "confusable",
+      "confusableWith": "간지럽다",
+      "gradeEvidence": "[4국04-02] 단어를 분류하고 국어사전을 활용하여 능동적인 국어 활동을 한다.",
+      "checked": false,
+      "reason": "형용사·뜻 1·word와 예상 L=0은 타당하다. 그러나 간지럽다와 감각 의미가 겹쳐 긁고 싶은 느낌만으로 두 말을 배타적으로 구별하기 어렵다. 원인에 따라 두 말을 반드시 나누는 규칙을 만들면 실제 쓰임을 과도하게 단순화한다."
+    },
+    {
+      "kind": "word",
+      "lemma": "데다",
+      "partOfSpeech": "동사",
+      "sourceEntry": {
+        "provider": "stdict",
+        "entryId": "83819"
+      },
+      "senseOrder": 1,
+      "types": [
+        "cloze",
+        "usage"
+      ],
+      "variantTag": "confusable",
+      "confusableWith": "대다",
+      "expectedL1": 0,
+      "expectedL2": 0,
+      "gradeEvidence": "[4국04-02] 단어를 분류하고 국어사전을 활용하여 능동적인 국어 활동을 한다.",
+      "checked": true,
+      "reason": "동사·뜻 1·word가 일치한다. 뜨거운 것에 살이 상한 상황과 물체를 대는 동작을 구분하면 대다와의 cloze·usage가 모두 가능하다. 구체적인 생활 동작이므로 예상 L=0과 3학년 적합성이 타당하며 사전 활용 성취기준도 연결된다."
+    },
+    {
+      "kind": "word",
+      "lemma": "배다",
+      "partOfSpeech": "동사",
+      "sourceEntry": {
+        "provider": "stdict",
+        "entryId": "430067"
+      },
+      "senseOrder": 1,
+      "types": [
+        "cloze"
+      ],
+      "variantTag": "confusable",
+      "confusableWith": "베다",
+      "expectedL1": 1,
+      "expectedL2": 0,
+      "gradeEvidence": "[4국04-02] 단어를 분류하고 국어사전을 활용하여 능동적인 국어 활동을 한다.",
+      "checked": true,
+      "reason": "동사·뜻 1·word가 일치한다. 땀이나 물기가 스며드는 구체적 상황에서 베다와 구별하는 cloze가 가능하다. 예상 L=1은 타당하며 습관이 몸에 익는 다른 뜻으로 넘어가지 않아야 한다. 성취기준은 사전 활용의 근거로 적절하다."
+    },
+    {
+      "kind": "word",
+      "lemma": "새우다",
+      "partOfSpeech": "동사",
+      "sourceEntry": {
+        "provider": "stdict",
+        "entryId": "439370"
+      },
+      "senseOrder": 1,
+      "types": [
+        "cloze",
+        "usage"
+      ],
+      "variantTag": "confusable",
+      "confusableWith": "세우다",
+      "expectedL1": 1,
+      "expectedL2": 0,
+      "gradeEvidence": "[4국04-02] 단어를 분류하고 국어사전을 활용하여 능동적인 국어 활동을 한다.",
+      "checked": false,
+      "reason": "Argon 재선정 제외: 한숨도 자지 않고 밤을 지낸다는 상황은 3학년의 자연스러운 생활 경험과 거리가 있고 '새다/새우다/세우다' 어법 부담이 크다."
+    },
+    {
+      "kind": "word",
+      "lemma": "데치다",
+      "partOfSpeech": "동사",
+      "expectedL1": 1,
+      "expectedL2": 0,
+      "senseOrder": 1,
+      "types": [
+        "cloze",
+        "synonym_context"
+      ],
+      "variantTag": "confusable",
+      "confusableWith": "삶다",
+      "gradeEvidence": "[4국04-02] 단어를 분류하고 국어사전을 활용하여 능동적인 국어 활동을 한다.",
+      "checked": false,
+      "reason": "Argon 재선정 제외: 재료를 끓는 물에 살짝 익히는 세부 조리법 어휘는 고학년 실과 영역에 가깝고 3학년 일상 경험과 유의어 문맥 구성이 부자연스럽다."
+    },
+    {
+      "kind": "word",
+      "lemma": "저장하다",
+      "partOfSpeech": "동사",
+      "expectedL1": 1,
+      "expectedL2": 1,
+      "senseOrder": 1,
+      "types": [
+        "cloze"
+      ],
+      "variantTag": "confusable",
+      "confusableWith": "저축하다",
+      "gradeEvidence": "[4국04-02] 단어를 분류하고 국어사전을 활용하여 능동적인 국어 활동을 한다.",
+      "checked": true,
+      "reason": "동사·뜻 1·word가 일치한다. 식량을 모아 간수하는 생활 상황으로 저축하다와 구별할 수 있어 예상 L=2와 3학년 적용이 가능하다. 재화는 두 말의 의미가 겹칠 수 있으므로 돈을 모으는 상황만으로 정답을 가르면 안 된다. 사전 활용 성취기준과 연결된다."
+    },
+    {
+      "kind": "word",
+      "lemma": "교체하다",
+      "partOfSpeech": "동사",
+      "expectedL1": 1,
+      "expectedL2": 1,
+      "senseOrder": 1,
+      "types": [
+        "cloze"
+      ],
+      "variantTag": "confusable",
+      "confusableWith": "교환하다",
+      "gradeEvidence": "[4국04-02] 단어를 분류하고 국어사전을 활용하여 능동적인 국어 활동을 한다.",
+      "checked": false,
+      "reason": "동사·뜻 1·word는 일치하고 낱말 자체와 예상 L=2도 수용 가능하다. 그러나 교환하다와는 낡은 물건이나 부품을 바꾸는 일상 용례에서 의미가 겹친다. ‘새것으로 바꿈’과 ‘서로 바꿈’만을 절대적인 차이로 삼는 cloze는 실제 쓰임을 왜곡할 위험이 있다."
+    },
+    {
+      "kind": "word",
+      "lemma": "검사하다",
+      "partOfSpeech": "동사",
+      "expectedL1": 1,
+      "expectedL2": 1,
+      "senseOrder": 1,
+      "types": [
+        "cloze"
+      ],
+      "variantTag": "confusable",
+      "confusableWith": "검토하다",
+      "gradeEvidence": "[4국04-02] 단어를 분류하고 국어사전을 활용하여 능동적인 국어 활동을 한다.",
+      "checked": true,
+      "reason": "동사·뜻 1·word가 일치한다. 시력이나 물건의 이상 여부를 확인하는 구체적인 상황에서 검토하다와 구별할 수 있어 3학년 후보로 적합하고 예상 L=2도 가능하다. 계획이나 서류를 살피는 상황은 두 말이 겹칠 수 있다. 성취기준은 사전 활용의 근거로만 인정한다."
+    },
+    {
+      "kind": "word",
+      "lemma": "제한하다",
+      "partOfSpeech": "동사",
+      "expectedL1": 1,
+      "expectedL2": 2,
+      "senseOrder": 1,
+      "types": [
+        "cloze",
+        "antonym_context"
+      ],
+      "variantTag": "confusable",
+      "confusableWith": "제안하다",
+      "gradeEvidence": "[4국04-02] 단어를 분류하고 국어사전을 활용하여 능동적인 국어 활동을 한다.",
+      "checked": false,
+      "reason": "Argon 재선정 제외: 일정한 한도를 정해 막는다는 규칙·행정 문어 한자어(L2=2)로 3학년에게 추상도가 높고 억지 훈육·안내문 투가 되기 쉽다."
+    }
+  ]
+}
