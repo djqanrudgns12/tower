@@ -1,0 +1,342 @@
+{
+  "batchId": "Q50-G6-030",
+  "jobId": "Q50-G6-030",
+  "publicationPolicy": "codex-argon-v1",
+  "producer": {
+    "model": "Gemini 4 Argon (High)",
+    "tool": "tools/orchestrate/produce.mjs",
+    "date": "2026-11-06"
+  },
+  "items": [
+    {
+      "id": "g6-argon-2045",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "내일 시합에서 누가 이길지 미리 반추했다.",
+          "verdict": "does_not_fit",
+          "reason": "아직 일어나지 않은 내일 시합 결과를 미리 짐작하는 상황은 지나간 일을 되풀이해 생각하는 '반추하다'와 맞지 않는다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "책을 덮고도 마지막 장면의 뜻을 여러 번 반추했다.",
+          "verdict": "fits",
+          "reason": "읽은 장면의 의미를 되풀이하여 깊이 음미하고 생각하는 상황이므로 '반추하다'의 뜻에 정확히 맞는다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "토론에서 상대편의 틀린 주장을 강하게 반추했다.",
+          "verdict": "does_not_fit",
+          "reason": "상대편 주장의 잘못을 따져 맞서는 행위는 '반박하다'에 해당하며 속으로 음미해 생각하는 '반추하다'와 어긋난다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "아까 한 실수는 더 떠올리지 않고 얼른 반추했다.",
+          "verdict": "does_not_fit",
+          "reason": "'더 떠올리지 않고'라는 조건이 되풀이하여 생각한다는 '반추하다'의 의미와 정면으로 충돌한다."
+        }
+      ],
+      "uniquenessNote": "c만 지나간 경험이나 읽은 내용의 뜻을 되풀이해 음미한다는 비유적 의미(2번 뜻)에 맞고, a·b·d는 미래 추측·상대 주장 반박·기억 회피 문맥이어서 1번 뜻(되새김질)과 2번 뜻 어느 쪽으로도 성립하지 않는다.",
+      "gradeEvidence": "[6국05-06] 작품을 읽고 자신의 삶과 연관 지어 성찰하는 태도를 지닌다."
+    },
+    {
+      "id": "g6-argon-2046",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "찬 바람이 못 들어오게 창문 틈을 단단히 상쇄했다.",
+          "verdict": "does_not_fit",
+          "reason": "창문 틈을 물리적으로 막아 차단하는 행위는 '봉쇄하다'나 '막다'의 영역이지 '상쇄하다'가 아니다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "공책에 잘못 쓴 글자를 지우개로 깨끗이 상쇄했다.",
+          "verdict": "does_not_fit",
+          "reason": "물리적인 글자 흔적을 지우개로 닦아 없애는 일에는 상반되는 힘이나 효과가 맞비긴다는 조건이 없다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "응원 소리에 선수들의 긴장감이 두 배로 상쇄했다.",
+          "verdict": "does_not_fit",
+          "reason": "'두 배로' 늘어났다는 결과는 효과가 사라지게 만든다는 '상쇄하다'의 뜻과 모순된다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "후반전 득점으로 전반전 실점을 모두 상쇄했다.",
+          "verdict": "fits",
+          "reason": "득점과 실점이라는 상반되는 요소가 서로 영향을 주어 앞선 실점의 불리한 효과가 사라졌으므로 정확히 부합한다."
+        }
+      ],
+      "uniquenessNote": "상반되는 두 요소(득점과 실점)가 맞물려 효과가 사라지는 문맥은 a뿐이며, 단순 삭제(b)·배가(c)·틈 차단(d)은 모두 성립하지 않는다.",
+      "gradeEvidence": "rubric_inferred(L=6,T=6)"
+    },
+    {
+      "id": "g6-argon-2047",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "오랫동안 기울인 노력에 상응하는 좋은 결과를 얻었다.",
+          "verdict": "fits",
+          "reason": "기울인 노력의 정도와 얻은 결과의 가치가 서로 걸맞고 어울린다는 뜻으로 자연스럽게 호응한다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "전학 온 지 사흘 만에 낯선 교실에 금방 상응했다.",
+          "verdict": "does_not_fit",
+          "reason": "새로운 환경에 익숙해진다는 문맥이므로 '적응하다'가 들어가야 하며 '상응하다'는 부적절하다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "해가 뜨자 운동장의 기온이 아침보다 크게 상응했다.",
+          "verdict": "does_not_fit",
+          "reason": "온도나 수치가 높아지는 현상은 '상승하다'로 표현해야 하며 서로 어울린다는 '상응하다'와 맞지 않는다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "두 의견이 정반대로 갈라진 채 서로 상응했다.",
+          "verdict": "does_not_fit",
+          "reason": "정반대로 갈라진 채 맞서는 상태는 서로 응하거나 어울린다는 뜻과 정반대이다."
+        }
+      ],
+      "uniquenessNote": "노력과 결과의 수준이 서로 걸맞게 어울리는 b만 정답이며, 환경 적응(a)·수치 상승(c)·의견 대립(d)은 모두 '상응하다'와 호응하지 않는다.",
+      "gradeEvidence": "rubric_inferred(L=6,T=5)"
+    },
+    {
+      "id": "g6-argon-2048",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "종이를 아끼려고 학습지의 양면성에 모두 글씨를 썼다.",
+          "verdict": "does_not_fit",
+          "reason": "글씨를 쓰는 물리적인 앞뒷면은 '양면'이지 추상적 성질을 뜻하는 '양면성'이 아니다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "이 가방은 가볍고 튼튼하다는 좋은 양면성을 지녔다.",
+          "verdict": "does_not_fit",
+          "reason": "가벼움과 튼튼함은 서로 맞서는 성질이 아니라 나란히 어울리는 두 가지 장점이다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "스마트폰은 편리하지만 중독되기 쉬운 양면성이 있다.",
+          "verdict": "fits",
+          "reason": "스마트폰이라는 한 사물 안에 '편리함'과 '중독 위험'이라는 서로 맞서는 두 성질이 함께 있으므로 정확하다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "산책로가 연못 앞에서 두 양면성으로 갈라졌다.",
+          "verdict": "does_not_fit",
+          "reason": "산책로가 두 갈래 길로 나뉘는 공간적 분리는 사물에 속한 상반된 성질을 뜻하지 않는다."
+        }
+      ],
+      "uniquenessNote": "한 대상 안에 상반된 두 성질(편리함과 중독 위험)이 공존하는 d만 성립하며, 물리적 종이 앞뒷면(a)·유사 장점 나열(b)·갈림길(c)은 모두 정의 조건을 어긴다.",
+      "gradeEvidence": "[6국02-04] 문제 상황과 관련된 다양한 관점의 글을 읽고 이를 문제 해결에 활용한다."
+    },
+    {
+      "id": "g6-argon-2049",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "사정을 다 듣기 전에 누가 잘못했는지 예단하지 마라.",
+          "verdict": "fits",
+          "reason": "사정을 다 알기 전에 미리 옳고 그름을 판단하지 말라는 문맥이므로 '예단하다'가 정확히 어울린다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "경기가 다 끝난 뒤 점수판을 보고 승패를 예단했다.",
+          "verdict": "does_not_fit",
+          "reason": "이미 경기가 끝난 뒤 확정된 점수판을 보는 것은 '미리' 판단한다는 시점 조건과 어긋난다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "감기에 안 걸리려고 손을 깨끗이 씻어 예단했다.",
+          "verdict": "does_not_fit",
+          "reason": "질병을 미리 막는 행위는 '예방하다'이며 판단 행위를 뜻하는 '예단하다'가 될 수 없다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "만들기 시간에 색종이를 점선을 따라 예단했다.",
+          "verdict": "does_not_fit",
+          "reason": "종이를 점선을 따라 자르는 물리적 행위는 '재단하다'나 '자르다'이지 '예단하다'가 아니다."
+        }
+      ],
+      "uniquenessNote": "충분한 이야기를 듣기 전에 미리 판단하는 c만 정답이며, 질병 예방(a)·사후 결과 확인(b)·종이 자르기(d)는 모두 성립하지 않는다.",
+      "gradeEvidence": "[6국02-03] 글이나 자료를 읽고 내용의 타당성과 표현의 적절성을 평가한다."
+    },
+    {
+      "id": "g6-argon-2050",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "연습을 전혀 안 했으니 좋은 기록을 내기 어렵다는 사실은 따로 증명할 필요도 없이 유명합니다.",
+          "verdict": "does_not_fit",
+          "reason": "'유명합니다'는 세상에 이름이 널리 알려졌다는 뜻이라 당연한 이치의 명백함을 뜻하는 자리에 맞지 않는다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "연습을 전혀 안 했으니 좋은 기록을 내기 어렵다는 사실은 따로 증명할 필요도 없이 간단합니다.",
+          "verdict": "does_not_fit",
+          "reason": "'간단합니다'는 절차가 단순하다는 뜻이어서 '~라는 사실은 증명할 필요 없이 확실하다'는 문맥과 호응하지 않는다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "연습을 전혀 안 했으니 좋은 기록을 내기 어렵다는 사실은 따로 증명할 필요도 없이 분명합니다.",
+          "verdict": "fits",
+          "reason": "증명하지 않아도 저절로 알 만큼 명백하다는 문맥에서 '분명합니다'가 의미와 문법 모두 자연스럽게 호응한다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "연습을 전혀 안 했으니 좋은 기록을 내기 어렵다는 사실은 따로 증명할 필요도 없이 애매합니다.",
+          "verdict": "does_not_fit",
+          "reason": "'애매합니다'는 알기 어렵고 불확실하다는 뜻이라 앞의 '따로 증명할 필요도 없이'라는 단서와 모순된다."
+        }
+      ],
+      "uniquenessNote": "증명 없이도 저절로 알 만큼 확실하다는 문맥에서 '자명합니다'를 대체할 수 있는 말은 a('분명합니다')뿐이며, 단순함(b)·널리 알려짐(c)·모호함(d)은 대입 시 의미가 어긋난다.",
+      "gradeEvidence": "[6국02-03] 글이나 자료를 읽고 내용의 타당성과 표현의 적절성을 평가한다."
+    },
+    {
+      "id": "g6-argon-2051",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "발표 차례가 다가오자 가슴이 떨리고 마음이 좌초했다.",
+          "verdict": "does_not_fit",
+          "reason": "발표 직전에 가슴이 떨리는 심리 상태는 '초조했다'로 써야 하며 곤경에 빠지다는 '좌초하다'와 어울리지 않는다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "예산이 갑자기 끊기면서 마을 축제 계획이 좌초했다.",
+          "verdict": "fits",
+          "reason": "예산 중단이라는 문제 때문에 추진하던 축제 계획이 비유적으로 큰 곤경에 빠졌으므로 정확히 부합한다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "모둠원이 힘을 합쳐 신문 만들기가 순조롭게 좌초했다.",
+          "verdict": "does_not_fit",
+          "reason": "'순조롭게' 일이 잘 풀리는 상황은 곤경에 빠진다는 '좌초하다'의 의미와 정반대이다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "복도를 뛰다가 신발 끈을 밟아 바닥에 좌초했다.",
+          "verdict": "does_not_fit",
+          "reason": "사람이 복도 바닥에 넘어지는 물리적 동작은 배가 암초에 걸리는 일도, 계획이 곤경에 빠지는 비유도 아니다."
+        }
+      ],
+      "uniquenessNote": "d만 비유적으로 일이 곤경에 빠지다는 2번 뜻에 부합하며, 배의 운항 문맥을 배제하고 심리 긴장(a)·개인의 넘어짐(b)·순조로운 진행(c)으로 구성해 1번 뜻으로도 복수 정답이 생기지 않는다.",
+      "gradeEvidence": "[6국02-02] 글에서 생략된 내용이나 함축된 표현을 문맥을 고려하여 추론한다."
+    },
+    {
+      "id": "g6-argon-2052",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "선생님께서 당번에게 창문을 닦으라고 직시하셨다.",
+          "verdict": "does_not_fit",
+          "reason": "당번에게 할 일을 시키는 행위는 '지시하셨다'가 맞으며 진실을 바로 본다는 '직시하다'는 성립하지 않는다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "주사위를 던지기 전에 어떤 눈이 나올지 미리 직시했다.",
+          "verdict": "does_not_fit",
+          "reason": "던지기 전의 우연한 결과를 미리 추측하는 것은 실제 사실의 진실을 바로 보는 행위가 아니다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "자기 실수를 부끄러워하며 끝까지 모른 척 직시했다.",
+          "verdict": "does_not_fit",
+          "reason": "'끝까지 모른 척' 회피하는 태도는 진실을 바로 본다는 '직시하다'와 모순된다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "우리 팀은 변명 대신 패배한 원인을 냉정하게 직시했다.",
+          "verdict": "fits",
+          "reason": "피하거나 꾸미지 않고 패배 원인이라는 사물의 진실을 똑바로 마주 본 상황이므로 2번 뜻에 정확히 맞는다."
+        }
+      ],
+      "uniquenessNote": "변명 대신 패배 원인의 진실을 바로 본 b만 정답이며, 명령 지시(a)·회피(c)·우연 예측(d)은 눈으로 똑바로 마주 보다(1번 뜻)와 진실을 바로 보다(2번 뜻) 어느 쪽으로도 성립하지 않는다.",
+      "gradeEvidence": "rubric_inferred(L=5,T=7)"
+    },
+    {
+      "id": "g6-argon-2054",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "서로 양보한 덕분에 모둠 회의가 평화롭고 첨예했다.",
+          "verdict": "does_not_fit",
+          "reason": "양보하여 평화로운 분위기는 상황이 날카롭고 격하다는 '첨예하다'와 정반대이다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "설탕을 많이 넣었더니 딸기주스 맛이 달고 첨예했다.",
+          "verdict": "does_not_fit",
+          "reason": "설탕의 단맛은 물체 끝이 뾰족한 성질도 아니고 상황이나 사태가 격한 것도 아니므로 부적절하다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "비상벨에도 놀라지 않고 차분하고 첨예하게 대피했다.",
+          "verdict": "does_not_fit",
+          "reason": "'놀라지 않고 차분하고'라는 태도는 날카롭고 격하다는 '첨예하다'와 나란히 어울릴 수 없다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "찬성과 반대 의견이 팽팽히 맞서 토론이 매우 첨예했다.",
+          "verdict": "fits",
+          "reason": "두 입장이 팽팽히 맞서 토론 상황이나 사태가 날카롭고 격하다는 2번 뜻에 정확히 맞는다."
+        }
+      ],
+      "uniquenessNote": "찬반이 팽팽히 맞서 상황이 날카롭고 격한 c만 성립하며, 평화로운 회의(a)·단맛(b)·차분한 대피(d)는 1번 뜻(끝이 뾰족함)과 2번 뜻 어느 쪽으로도 성립하지 않는다.",
+      "gradeEvidence": "[6국01-07] 절차와 규칙을 지키고 타당한 이유와 근거를 제시하며 토론한다."
+    },
+    {
+      "id": "g6-argon-2053",
+      "revision": 2,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "인부들이 공원의 낡고 위험한 나무 정자를 전에 있던 제도나 규칙 따위를 걷어치워서 없앴다.",
+          "verdict": "does_not_fit",
+          "reason": "나무 정자는 물리적인 시설물이지 제도나 규칙이 아니므로 '철거했다'를 써야 한다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "학생회는 불공평하던 오래된 복장 규칙을 전에 있던 제도나 규칙 따위를 걷어치워서 없앴다.",
+          "verdict": "fits",
+          "reason": "오래된 복장 규칙은 전에 있던 규칙에 해당하며 이를 걷어치워서 없앴다는 뜻과 정확히 맞는다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "운동화에 묻은 진흙을 솔로 깨끗이 전에 있던 제도나 규칙 따위를 걷어치워서 없앴다.",
+          "verdict": "does_not_fit",
+          "reason": "진흙은 구체적인 물질이지 제도나 규칙이 아니므로 '제거했다'나 '닦아 냈다'를 써야 한다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "우리 반이 앞으로 지킬 안전 규칙을 새로 전에 있던 제도나 규칙 따위를 걷어치워서 없앴다.",
+          "verdict": "does_not_fit",
+          "reason": "앞으로 지킬 규칙을 '새로' 정한다는 맥락은 전에 있던 규칙을 없앤다는 뜻과 정면으로 모순된다."
+        }
+      ],
+      "uniquenessNote": "정답 b만 전에 있던 규칙(오래된 복장 규칙)을 없애는 상황이고, a(시설물 철거)·c(물질 제거)는 대상 부류가 맞지 않으며 d(앞으로 지킬 규칙을 새로 제정함)는 행위 방향이 반대여서 정답은 b 하나뿐이다.",
+      "gradeEvidence": "6학년 사회(민주주의와 학생 자치, 제도와 규칙의 변화) 맥락에서 자주 접하는 한자어 동사로, 학교생활 규칙 사례를 통해 초등 6학년 수준에서 명확히 변별할 수 있다."
+    }
+  ],
+  "rejected": [
+    {
+      "lemma": "편협하다",
+      "reason": "초등 수준 초과 어휘: 편협; g6-argon-2056: 초등 수준 초과 어휘: 편협"
+    },
+    {
+      "lemma": "퇴색하다",
+      "reason": "Normal용 advanced 전투 읽기 상한 초과: 105 > 100"
+    }
+  ]
+}
