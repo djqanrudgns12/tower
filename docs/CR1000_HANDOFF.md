@@ -1,6 +1,6 @@
 # CR-1000 현재 인계
 
-갱신: 2026-11-07 12:34 KST · 총괄 Codex · 작업 폴더 `/Users/bodyking/Desktop/Architecture/towerdeffense` · 브랜치 `p1/intake-round1`
+갱신: 2026-11-07 12:38 KST · 총괄 Codex · 작업 폴더 `/Users/bodyking/Desktop/Architecture/towerdeffense` · 브랜치 `p1/intake-round1`
 
 이 문서가 현재 실행 기준이다. 과거 진행 기록과 이전 명령은 [원문 보관](CR1000_HANDOFF_HISTORY_20261107.md)에 **바이트 그대로** 보존했다. 보관본의 Claude 호출·완료된 작업 재실행 지시는 사용하지 않는다. 규칙은 [AGENTS.md](../AGENTS.md), 세부 설계는 [계획서](CONTENT_REVIEW_PLAN.md), 도구 조각은 `.orchestrate/wp/`를 필요한 범위만 읽는다.
 
@@ -90,6 +90,8 @@ PID는 기록값이므로 `ps`로 실제 생존과 실행 파일을 확인한다
 위 상태 경로는 모두 `.orchestrate/` 아래다. 3학년은 **running**이다. 자원 허용 확인과 최신 native 계획 재검사를 거쳐 시작했고, PID72501 실제 생존 및004의 Codex1/Argon1·005의 Codex1 호출을 확인했다. Claude 호출0이다. 5학년 새 낱말120개는 **61통과·59제외**(출처39/내용20), 제작 가능122칸으로 확정했다. 두 묶음의 원본/299사전파일/해시/독립 검사 대응을 메인이 확인했고 `wordlist-g5-r2`를 잠금 반영했다. 목록 검증이며 문항 승인은 아니다. W5 선행 구현 PID60559는 정상 종료했고 그 자리는3학년 예약이 승계한다. 옛 43390/43407 및 front/final-tail 실패 예약은 다시 시작하지 않는다. 원본/실패 기록은 보존했다.
 
 ## 5. 완료한 코드와 검증
+
+- **다음50개 예약:** G3-025회수48개staging을반영한뒤G3-026 native계획50개/새낱말50개/묶음6개를확인했다. 35949(`g3-supplement-expansion-26.run.json`)가종료한025제작자리를이어자원대기중이다. 앞025에서응답을못받은2개가포함되며첫시간초과후한번작성하는것이다. 복구48개와중복없음. `expansion-26/reservation-note.json` 참조. r6원계획을현재selectItems로재확인하니타학년후속제작때문에25칸중12칸이이미사용돼13칸만남았다. 예전r6예약을그대로재시작하면안된다. fresh회수6후보는현재미사용유형5칸/낱말4개이며사전확정과문항승인을구분한다.
 
 - **후속 회수·검수 연결:** r8 원답장10개 중학년근거형식이정본과맞는6개를한글자도바꾸지않고별도회수했다. 4개반려근거와원답장SHA보존. 공식사전조회후nativeprepare가6/6표제어·품사·뜻번호유일일치를확인했으며아직Codex학년적합성미판정이다(`wordlists/grade3-basic/r8/recovered/{recovery,source-audit}.json`). 별도G3-025회수48개는35382예약이resource avatar허용/7GiB뒤원72501종료자리를이어검수한다. `normal-advanced-g3-expansion-25-recovered-gate.run.json` 참조. 완료탐색기는-recovered 요약도인식하도록확장했다. 새Codex호출전복구근거로G6-019의23:25/23:30Z 정상독립검수및G3의00:41Z후속검수완료를확인했다. 지금신규실행장벽은다른아바타보호작업이며살아있는작업은변경하지않는다. 7배치반영session37111은계속대기중,신규259개미반영이다.
 
