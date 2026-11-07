@@ -4,6 +4,17 @@
 
 이 문서가 현재 실행 기준이다. 과거 진행 기록과 이전 명령은 [원문 보관](CR1000_HANDOFF_HISTORY_20261107.md)에 **바이트 그대로** 보존했다. 보관본의 Claude 호출·완료된 작업 재실행 지시는 사용하지 않는다. 규칙은 [AGENTS.md](../AGENTS.md), 세부 설계는 [계획서](CONTENT_REVIEW_PLAN.md), 도구 조각은 `.orchestrate/wp/`를 필요한 범위만 읽는다.
 
+## 긴급 재개 상태 — 2026-11-07 17:44 KST
+
+- 8배치 반영은 **서버 시험 실패로 미커밋**이다. `.orchestrate/commit.pending.json`과 staging·추적 파일 변경을 보존한다. 남의 변경으로 착각해 되돌리지 않는다. 원래 남의 변경은 `docs/contracts/prd_v0_5_validation.json`이다.
+- 대상: G3-019~023 신규229개 + G3-025 회수48개 + G6-031 신규30개 + G6-019 기존50개 개선. 생성된 작업 파일은 G3 **990**, G6 **1,287**, 전체 **4,782**이나 확정 커밋 전이다. 마지막 확정 은행은 아래 §3의4,475개다.
+- 반영 session61373 종료1. 서버 타입 검사와 단위16개 통과, Worker 준비 단계7묶음 시간 초과로54개 미실행. Worker `startServer()`가 끝나지 않으며 `afterAll close` 오류는 그 후속 현상이다. 전체 시험을 그대로 반복하지 않는다.
+- `systematic-debugging`으로 별도20초 `createTestHarness().listen()` 진단(session54278)도 미완료를 확인했다. 외부 요청 관찰0. Wrangler 로그는 `Updating config...`에서 멈추고 workerd 시작 전이다. 원인 미확정이며 esbuild 단독 진단이 다음 단계다. 해당 진단은 자원 잠금 때문에 반환75로 **미실행**이었다. 제한 시간·시험 기대값을 바꾸지 않는다.
+- `.orchestrate/two-model-incremental-apply.json`은failed이므로 완료 탐색/반영 래퍼를 그대로 재시작하면 안 된다. 원인을 해결한 뒤 native `tools/orchestrate/commit-lock.mjs apply --root . --batches Q50-G6-019,Q50-G3-019,Q50-G3-020,Q50-G3-021,Q50-G3-022,Q50-G3-023,Q50-G3-025,Q50-G6-031`을 resource-guard와 `COMMIT_CO_AUTHOR="Codex <noreply@openai.com>"`로 실행해 pending을 이어간다. 실제 성공 후 감사 기록에 재개 커밋을 별도로 기록하고 은행/키21개 관련 시험·push를 한다. 서버 시험 생략 금지.
+- G3-026 예약35949는 제작65616으로 재개했다. 원본 제작 기록을 확인하고 살아 있으면 재시작하지 않는다. G3-025 검수35382는 정상 종료해48개 전부 완료됐다.
+- G6 개선72590/93664는014에서 실패 종료했다. 원응답을 native parser로 대조한 결과4개 형식 통과,0651은 금지 표현 `모든 것`으로 반려됐다. `.orchestrate/normal-advanced/g6/refinement-014/recovery-diagnosis.json`에 원답장/프롬프트 해시와 결과를 보존했다. 회수 staging/독립 검수는 아직 없다. 기존 공개 문항은 보존한다.
+- 생성 은행 coverage(아직 미커밋): G3 Easy451/550·Normal673/750, G5 Normal advanced112/120, G6 Hard/Crazy675/700·Normal advanced57/120. G3 Normal advanced181로 하한을 넘었다. `.orchestrate/cr1000-current-coverage.txt` 참조.
+
 ## 1. 전체 목표
 
 4·5·6학년, 그다음 3학년 **자기 학년 공개 승인 각각 1,000개 이상**. 공유 유입으로 이 하한을 채우지 않는다. 난이도별 출제 바닥·Normal 심화 바닥, 최종 로컬 게임/서버 재채점 확인까지 남아 있다. W5 위로 공유 은행·로더·서버 키, W6 학년별 지연 적재, W8 반복 규칙·전역 풀이 이력 연결은 완료했다. 배포는 별도 사용자 확인 대상이다.
