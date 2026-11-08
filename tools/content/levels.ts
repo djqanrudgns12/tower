@@ -88,7 +88,7 @@ export function merge(q: LevelQuestion, a: LevelJudge, c: LevelJudge, precompute
   const A = levelJudgeSchema.parse(a);
   const C = levelJudgeSchema.parse(c);
   if (A.judge === C.judge || A.questionId !== C.questionId || A.revision !== C.revision || A.contentHash !== C.contentHash) {
-    throw new Error('같은 문항·revision·해시의 Argon·Codex 판정이 각각 필요하다');
+    throw new Error('같은 문항·revision·해시의 서로 다른 두 판정자(Argon과 Codex 또는 Claude) 판정이 각각 필요하다');
   }
   const p = levelPrecomputedSchema.parse(precomputed);
   if (canonicalJSON(p) !== canonicalJSON(precompute(q, p))) throw new Error('사전 계산이 문항과 일치하지 않는다');

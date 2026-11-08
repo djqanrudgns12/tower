@@ -48,6 +48,8 @@ export async function finalizeCodex(options, deps = {}) {
   const run = { id: runId, ...config };
   for (const id of ids) {
     const batch = runtime.batch(id), state = runtime.snapshot(id);
+    // Claude 대체 검수 정책 배치를 Codex 정책으로 되돌려 쓰지 않는다(정책은 배치 단위다).
+    if (batch?.sidecar?.publicationPolicy === 'claude-argon-v1') throw new Error(`${id}: claude-argon-v1 배치는 Codex 최종 대조 대상이 아니다`);
     if (!batch || !state || state.levelPending.length || state.codexPending.length || state.argonPending.length || state.front.batchDefects.length) throw new Error(`${id}: 앞단 미완료`);
     batches.set(id, batch);
     const front = new Set(state.front.items.filter(q => q.status === 'pass').map(key));

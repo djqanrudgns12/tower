@@ -322,6 +322,19 @@ export async function ingest(b, root, reviewer, batchId, options = {}) {
   const keep = report.items.filter(i => !merged.some(m => m.questionId === i.questionId && m.revision === i.revision && m.contentHash === i.contentHash));
   report.items = [...keep, ...merged].sort((x, y) => x.questionId.localeCompare(y.questionId) || x.revision - y.revision);
   jsonWrite(reportPath, report);
+  // Claude 대체 검수 관문(content-loop --primary claude)은 아직 추적하지 않은 새 제작 배치에만 정책을 기록한다.
+  if (options.publicationPolicy != null) {
+    if (reviewer !== 'claude' || options.publicationPolicy !== 'claude-argon-v1') throw new Error('정책 기록은 Claude 검수의 claude-argon-v1만 지원한다');
+    const sidecarPath = `content-source/batches/${batchId}/sidecar.json`;
+    const sidecar = prior.json(sidecarPath);
+    if (!sidecar) throw new Error(`${batchId}: sidecar 없음`);
+    if (sidecar.publicationPolicy !== 'claude-argon-v1') {
+      if (sidecar.publicationPolicy || fs.existsSync(path.join(root, sidecarPath))) {
+        throw new Error(`${batchId}: 추적 중이거나 다른 정책의 배치는 claude-argon-v1로 바꿀 수 없다`);
+      }
+      jsonWrite(sidecarPath, { ...sidecar, publicationPolicy: 'claude-argon-v1' });
+    }
+  }
 
   if (reviewer === 'claude') {
     const expPath = `content-source/approvals/${batchId}.explanation.json`;
@@ -358,7 +371,7 @@ export async function ingest(b, root, reviewer, batchId, options = {}) {
   return { merged: merged.length, flagged: fails.length, staging };
 }
 
-/** Claude 검수는 브리지가 자기 자신에게 보내기를 막으므로 Claude Code CLI를 직접 부른다. 파일·명령·웹 도구를 모두 막아 블라인드를 권한으로 보장한다. */
+/** Claude 검수는 브리지가 자기 자신에게 보내기를 막으므로 Claude Code CLI를 직접 부른다. 내장 도구·MCP·설정 훅을 모두 끄고 세션도 남기지 않아 블라인드를 권한으로 보장한다. */
 function claudeCliPath() {
   if (process.env.CLAUDE_CLI) return process.env.CLAUDE_CLI;
   const base = path.join(os.homedir(), 'Library/Application Support/Claude/claude-code');
@@ -375,7 +388,8 @@ const BLOCKED_TOOLS = ['Bash', 'Read', 'Glob', 'Grep', 'Edit', 'Write', 'Noteboo
 
 export function claudeCliArgs(config) {
   const checked = validateConfig('claude', config);
-  return ['-p', '--output-format', 'json', '--model', checked.model, '--effort', checked.effort, '--disallowedTools', ...BLOCKED_TOOLS];
+  return ['-p', '--output-format', 'json', '--model', checked.model, '--effort', checked.effort,
+    '--tools', '', '--strict-mcp-config', '--setting-sources', '', '--no-session-persistence', '--disallowedTools', ...BLOCKED_TOOLS];
 }
 
 function claudeAuthError(message) {
@@ -383,7 +397,7 @@ function claudeAuthError(message) {
   return Object.assign(new Error('Claude 인증 차단: 사용자 로그인 복구 후 관문을 다시 실행해야 한다'), { code: 'CLAUDE_AUTH_BLOCKED' });
 }
 
-function claudeCli(cwd, body, timeoutSec, config) {
+export function claudeCli(cwd, body, timeoutSec, config) {
   return new Promise((resolve, reject) => {
     const child = spawn(claudeCliPath(), claudeCliArgs(config), { cwd, stdio: ['pipe', 'pipe', 'pipe'] });
     let out = '';

@@ -201,7 +201,7 @@ describe('수준 계약·해시·revision 연결', () => {
     expect(isCurrentLevelAssessment({ ...q, grade: 6 }, item)).toBe(false);
   });
 
-  it.each([{ L1: 4 }, { L2: -1 }, { T1: 1.5 }, { inference: 2 }, { idiomOpacity: 1 }, { judge: 'claude' }])('잘못된 판정자 점수를 거부한다: %j', change => {
+  it.each([{ L1: 4 }, { L2: -1 }, { T1: 1.5 }, { inference: 2 }, { idiomOpacity: 1 }, { judge: 'gemini' }])('잘못된 판정자 점수를 거부한다: %j', change => {
     expect(levelJudgeSchema.safeParse({ ...judge(question()), ...change }).success).toBe(false);
   });
 

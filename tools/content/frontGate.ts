@@ -3,7 +3,7 @@ import path from 'node:path';
 import { lintBatchStrict, lintGradeBasisUnit, lintQuestion } from '../../src/content/lint';
 import type { BlindReview, DraftSidecar, QuestionDraft } from '../../src/contracts/questionDraft';
 import { OPTION_IDS, type OptionId } from '../../src/contracts/questions';
-import { contentHash, toBankQuestion, type BatchInput } from './bankBuild';
+import { contentHash, policyReviewer, toBankQuestion, type BatchInput } from './bankBuild';
 import { isCurrentLevelAssessment } from './levels';
 
 export interface FrontDecision {
@@ -71,9 +71,11 @@ export function frontGate(batch: BatchInput, levelFile: unknown = null, opts: Fr
     const pending: string[] = [];
     const self = batch.sidecar.items.find(i => i.id === q.id && i.revision === q.revision);
     if (!selfRefutationPasses(q, self)) defects.push('Argon 자체 반박에서 정답만 fits여야 한다');
-    const codex = batch.reviews.codex?.items.find(i => i.questionId === q.id && i.revision === q.revision && i.contentHash === hash);
-    if (codex) defects.push(...reviewDefects(q, 'codex', codex));
-    else pending.push('codex: 이 revision·contentHash의 독립 검토 없음');
+    // 앞단 독립 검토는 정책 검토자(claude-argon-v1이면 Claude, 그 밖에는 Codex)가 맡는다.
+    const who = policyReviewer(batch.sidecar) ?? 'codex';
+    const independent = batch.reviews[who]?.items.find(i => i.questionId === q.id && i.revision === q.revision && i.contentHash === hash);
+    if (independent) defects.push(...reviewDefects(q, who, independent));
+    else pending.push(`${who}: 이 revision·contentHash의 독립 검토 없음`);
     const level = levelItems.find(i => isCurrentLevelAssessment(q, i));
     if (!isCurrentLevelAssessment(q, level)) pending.push('이 revision의 수준 합의 없음');
     else {

@@ -37,6 +37,7 @@
 
 ## 2. 최신 사용자 결정
 
+- **2026-11-09: 남은 바닥 부족분은 Claude가 대신 검수한다.** Codex 사용량 소진(11-14 08:13 KST 복구) 동안 새 제작 배치에 `claude-argon-v1` 정책을 붙여 Codex 자리를 Claude Opus가 맡는다([실용 검수 정책 §5](CR1000_REVIEW_POLICY.md)). 아래 11-06 'Claude 역할 제외'는 이 범위에서 대체된다. 기존 `codex-argon-v1` 배치는 그대로다.
 - **Claude 역할 제외. 새 Claude 호출/로그인/모델 전환 질문을 하지 않는다.** 사용자가 이후 명시적으로 바꾸기 전까지 Codex·Argon만 쓴다.
 - 새 공개 정책 `codex-argon-v1`: 현 판 Argon 자체 반박 + 강한 Codex 독립 풀이 + 현 본문/해설 해시의 Codex 대조. 기존 결함·해시·사전 근거·자연스러운 한국어 조건은 유지한다. 어투 취향만으로 반려하거나 중복 과정을 추가하지 않는다. 실제 조건은 `bankBuild.ts`의 `decide`가 결정한다.
 - 무거운 문항 판단은 제한된 `agy`(Argon High), `codex exec`(`gpt-6-astra`, `high`)에 맡긴다. 메인은 문항 본문을 읽어 대신 판정하지 않고, ID/해시/원본 응답 대응/실제 판정 결과를 확인한다.

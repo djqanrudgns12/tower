@@ -44,3 +44,12 @@
 - Codex 구현 담당: 승인 계약과 자동 실행 흐름을 파일별로 나눠 구현. 메인이 diff와 관련 시험을 직접 확인한다.
 - Antigravity: 제작·수정·자체 반박·수준 판정. agy 제한 호출을 사용하고 현재 시간당 상한을 지킨다.
 - Claude: 현재 역할 없음. 이전 정책 검토·문항 검수 기록은 감사 근거로 보존하며 새 승인에는 사용하지 않는다.
+
+## 5. claude-argon-v1 — Claude 대체 검수(2026-11-09 사용자 결정)
+
+Codex 사용량이 2026-11-14 08:13 KST까지 소진되어, 사용자가 남은 난이도 바닥 보충을 **Claude가 대신 검수**하도록 정했다. 위 §1~§3의 판정 기준·AI SLOP 금지·수정 한도·잠금 반영은 그대로 쓰고, 담당만 바꾼다.
+
+- `publicationPolicy: claude-argon-v1` 배치는 Codex 자리(S1 두 번째 수준 판정, S2 독립 풀이, 공개 대조)를 Claude Opus(`claude-opus-5-5`, effort high 이상)가 맡는다. 공개 조건은 `codex-argon-v1`과 같다: Argon 자체 반박, 현재 revision·contentHash의 Claude 독립 풀이 일치와 다섯 판정 pass(항목 run 출처 필수), 현재 contentHash·rationalesHash의 Claude 해설 대조 pass, Argon 블라인드의 실제 지적, 게시 형식·의미·Q50 엄격 검사. Sonnet·Haiku나 낮은 effort 출처는 인정하지 않는다. 실제 조건은 `tools/content/bankBuild.ts`의 `decidePolicy`가 정한다.
+- 정책은 배치 단위다. 아직 추적하지 않은 새 제작 배치에만 붙이며(S2 Claude 검수 반영 때 sidecar에 기록), 기존 `codex-argon-v1`·legacy 배치는 바꾸지 않는다. 그래서 G6-014 개선 회수 4개처럼 기존 Codex 정책 배치의 개선분은 Codex 복구 뒤에 검수한다.
+- 실행: `content-loop --gate --stage-only --primary claude --skip-argon-fresh --skip-level-spotcheck`. Claude 호출은 `claude -p`에 내장 도구·MCP·설정 훅을 모두 끄고(`--tools "" --strict-mcp-config --setting-sources ""`) 세션도 남기지 않는다.
+- 제작·자체 반박·수정은 계속 Argon High가 맡는다. Codex가 복구돼도 이미 `claude-argon-v1`로 승인된 배치를 Codex 정책으로 되돌려 쓰지 않는다(`finalize-codex`가 거부한다).

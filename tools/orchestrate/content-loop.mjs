@@ -7,6 +7,8 @@
 // --pool-after N: N배치의 첫 판 완료 뒤 전역 회차(수정12·수준/검수50). 생략하면 전체 배치.
 // --until S3: 앞단 수정·재검수까지만 진행하고 최종 대조는 대기한다.
 // --with-claude만 옛 Claude S4 사용. 기본값과 --without-claude는 Codex S4 사용.
+// --primary claude: claude-argon-v1(2026-11-09) 관문. S1 두 번째 판정자·S2 앞단 독립 검수·S4 해설 대조를 Claude Opus가 맡는다.
+//   아직 추적하지 않은 새 제작 배치(또는 이미 claude-argon-v1인 배치)만 받는다. 정책은 S2 Claude 검수 반영 때 sidecar에 기록한다.
 // --stage-only --gate: 기존 추적 배치의 staging overlay만 전진, apply/build/test/git 없이 awaitingApply.
 // 별도 실행은 --summary-file <경로>로 기록을 분리한다. 같은 배치의 standalone 도구/apply와 함께 실행하지 않는다.
 // --skip-argon-fresh: 제작 배치의 추가 Argon 새 문맥 호출만 생략(기존 실패 판정은 유지).
@@ -231,6 +233,8 @@ export function acquireGateRun(root, id) {
 
 /** 실제 실행기와 가짜 실행기는 같은 상태/실행 계약을 쓴다. 추적 파일 쓰기는 apply만 담당한다. */
 export async function createGateRuntime(options, modules) {
+  const primary = gatePrimary(options);
+  if (primary === 'claude') options = { ...options, 'level-judge': 'claude' };
   if (!options['with-claude']) options = { ...options,
     'codex-model': options['codex-model'] ?? 'gpt-6-astra',
     'codex-effort': options['codex-effort'] ?? 'high',
@@ -261,6 +265,7 @@ export async function createGateRuntime(options, modules) {
   const lm = modules?.lm ?? await level.load();
   const configs = review.resolveReviewConfig(options);
   const reviewOptions = (who, questionKeys) => ({ config: configs[who], questionKeys,
+    ...(who === 'claude' && primary === 'claude' ? { publicationPolicy: 'claude-argon-v1' } : {}),
     archiveExisting: (who === 'codex' && Boolean(options['recheck-codex']))
       || options['archive-existing'] === true || options['archive-existing'] === who });
   const batchOf = (id, tracked = baseBank.loadBatches(root)) => {
@@ -278,8 +283,9 @@ export async function createGateRuntime(options, modules) {
     staged.drafts = d.draftBatchSchema.parse(staged.drafts);
     staged.sidecar = d.draftSidecarSchema.parse(staged.sidecar);
     if (staged.sidecar.batchId !== id || staged.drafts.some(q => q.batchId !== id)) throw new Error(`${id}: 새 staging 배치 ID 불일치`);
+    const policyWho = baseBank.policyReviewer(staged.sidecar);
     for (const who of ['codex', 'claude']) {
-      if (who === 'claude' && staged.sidecar.publicationPolicy === 'codex-argon-v1') { delete staged.reviews.claude; continue; }
+      if (policyWho && who !== policyWho) { delete staged.reviews[who]; continue; }
       if (staged.reviews[who]) staged.reviews[who] = d.blindReviewSchema.parse(staged.reviews[who]);
     }
     if (staged.argonBlind) staged.argonBlind = d.blindReviewSchema.parse(staged.argonBlind);
@@ -295,6 +301,10 @@ export async function createGateRuntime(options, modules) {
     snapshot(id) {
       const raw = batchOf(id);
       if (!raw) return null;
+      if (primary === 'claude' && raw.sidecar.publicationPolicy !== 'claude-argon-v1'
+        && (raw.sidecar.publicationPolicy || fs.existsSync(path.join(root, `content-source/batches/${id}/drafts.json`)))) {
+        throw new Error(`${id}: --primary claude는 새 제작 배치나 claude-argon-v1 배치만 검수한다(현재 ${raw.sidecar.publicationPolicy ?? 'legacy 추적 배치'})`);
+      }
       const batch = { ...raw, drafts: rm.front.currentDrafts(raw.drafts) };
       const levels = stageOnly ? revise.pendingJson(root, id, `content-source/levels/${id}.json`) : readJson(path.join(root, `content-source/levels/${id}.json`));
       const front = rm.front.frontGate(batch, levels, { root });
@@ -303,7 +313,12 @@ export async function createGateRuntime(options, modules) {
       return {
         drafts: batch.drafts,
         levelPending: batch.drafts.filter(q => !(levels?.items ?? []).some(item => lm.levels.isCurrentLevelAssessment(q, item))).map(keyOf),
-        codexPending: review.pending(rb, batch, 'codex', reviewOptions('codex')).map(keyOf),
+        codexPending: primary === 'claude' ? [] : review.pending(rb, batch, 'codex', reviewOptions('codex')).map(keyOf),
+        claudeFrontPending: primary === 'claude' ? review.pending(rb, batch, 'claude', reviewOptions('claude')).map(keyOf) : [],
+        claudeFinalPending: primary !== 'claude' ? [] : batch.drafts.filter(q => !rb.CLAUDE_REVIEW_MODEL.test(batch.explanation?.reviewer?.model ?? '')
+          || !(batch.explanation?.items ?? []).some(item => keyOf(item) === keyOf(q)
+            && item.contentHash === rb.contentHash(q) && item.rationalesHash === rb.rationalesHash(q)
+            && rb.isStrongReviewRun('claude', item.run) && ['pass', 'fail'].includes(item.explanation))).map(keyOf),
         argonPending: produced && options['skip-argon-fresh'] !== true ? review.pending(rb, batch, 'antigravity', reviewOptions('antigravity')).filter(q => q.revision === 1).map(keyOf) : [],
         codexFinalPending: batch.drafts.filter(q => batch.sidecar.publicationPolicy !== 'codex-argon-v1'
           || batch.explanation?.reviewer?.model !== 'gpt-6-astra'
@@ -319,7 +334,7 @@ export async function createGateRuntime(options, modules) {
       };
     },
     async level(id, questionKeys, onEvent, modelPools) {
-      const results = await level.runLevels({ ...options, all: false, batches: id, argon: 1, codex: 1, onEvent }, { modules: lm, modelPools });
+      const results = await level.runLevels({ ...options, all: false, batches: id, argon: 1, codex: 1, claude: 1, onEvent }, { modules: lm, modelPools });
       return results[0];
     },
     async review(id, who, questionKeys, onEvent) {
@@ -337,23 +352,41 @@ export async function createGateRuntime(options, modules) {
       const { finalizeCodex } = await import('./finalize-codex.mjs');
       return finalizeCodex({ ...options, root, questions: refs, onEvent }, { runtime: this, bank: rb });
     },
-    levelQuestions: (questions, onEvent, modelPools) => level.runLevels({ ...options, questions, all: false, batches: undefined, argon: 1, codex: 1, onEvent }, { modules: lm, modelPools }),
+    levelQuestions: (questions, onEvent, modelPools) => level.runLevels({ ...options, questions, all: false, batches: undefined, argon: 1, codex: 1, claude: 1, onEvent }, { modules: lm, modelPools }),
     reviewQuestions: (questions, who, onEvent) => review.runQuestions(rb, root, who, questions, log, { ...options, ...reviewOptions(who), onEvent }),
     reviseQuestions: (questions, onEvent, batchIds) => revise.reviseQuestions(rm, root, questions, 'antigravity', log, { ...options, batchIds, onEvent }),
     apply: (id, opts) => { if (stageOnly) throw new Error('stage-only에서는 apply를 호출할 수 없다'); return applyStaged({ root, batch: id, ...opts, testServer: guardedServerTest }); },
   };
 }
 
-function nextGateAction(state, frontOnly = false, withClaude = false) {
+/** 관문 주 검토자. 기본은 Codex, --primary claude는 claude-argon-v1 관문이다. */
+export function gatePrimary(options = {}) {
+  const primary = options.primary ?? 'codex';
+  if (!['codex', 'claude'].includes(primary)) throw new Error('--primary는 codex 또는 claude여야 한다');
+  if (primary === 'claude' && options['with-claude']) throw new Error('--primary claude와 --with-claude를 함께 쓸 수 없다');
+  if (primary === 'claude') {
+    // 커밋 모드는 첫 apply가 정책 없는 제작 staging을 추적 파일로 굳혀 claude-argon-v1 기록을 막는다. 반영은 잠금 반영기로 따로 한다.
+    if (!options['stage-only']) throw new Error('--primary claude는 --stage-only로만 실행한다(반영은 commit-lock apply)');
+    // 공개 판정이 인정하지 않는 설정으로 정책만 기록되고 관문이 멈추지 않게 시작 전에 막는다.
+    const config = review.resolveReviewConfig(options).claude;
+    if (!/^claude-opus-/.test(config.model) || !['high', 'xhigh', 'max'].includes(config.effort)) {
+      throw new Error(`--primary claude는 claude-opus-* high 이상만 쓴다(현재 ${config.model}/${config.effort})`);
+    }
+  }
+  return primary;
+}
+const frontStages = primary => [['S1', 'levelPending', null], [`S2-${primary}`, primary === 'claude' ? 'claudeFrontPending' : 'codexPending', primary], ['S2-argon', 'argonPending', 'antigravity']];
+
+function nextGateAction(state, frontOnly = false, withClaude = false, primary = 'codex') {
   if (!state || !state.drafts.length) return null;
-  for (const [stage, field, who] of [['S1', 'levelPending', null], ['S2-codex', 'codexPending', 'codex'], ['S2-argon', 'argonPending', 'antigravity']]) {
-    if (state[field].length) return { stage, keys: state[field], who };
+  for (const [stage, field, who] of frontStages(primary)) {
+    if (state[field]?.length) return { stage, keys: state[field], who };
   }
   const front = state.front.items.filter(item => item.status === 'defect').map(keyOf);
   if (front.length || state.front.batchDefects.length) return { stage: 'S3', phase: 'front', keys: front };
   const passed = new Set(state.front.items.filter(item => item.status === 'pass').map(keyOf));
-  const final = state[withClaude ? 'claudePending' : 'codexFinalPending'].filter(key => passed.has(key));
-  if (final.length) return { stage: frontOnly ? 'S4 대기' : 'S4', who: withClaude ? 'claude' : 'codex', keys: final };
+  const final = state[withClaude ? 'claudePending' : primary === 'claude' ? 'claudeFinalPending' : 'codexFinalPending'].filter(key => passed.has(key));
+  if (final.length) return { stage: frontOnly ? 'S4 대기' : 'S4', who: withClaude || primary === 'claude' ? 'claude' : 'codex', keys: final };
   if (frontOnly) return null;
   const gate = state.flagged.filter(item => item.phase === 'gate' && passed.has(keyOf(item.q))).map(item => keyOf(item.q));
   if (gate.length) return { stage: 'S5', phase: 'gate', keys: gate };
@@ -370,8 +403,10 @@ export async function runGate(options = {}, deps = {}) {
 async function runGateUnlocked(options, deps, releases) {
   if (options['with-claude'] && options['without-claude']) throw new Error('--with-claude와 --without-claude를 함께 쓸 수 없다');
   const withClaude = Boolean(options['with-claude']);
-  const finalField = withClaude ? 'claudePending' : 'codexFinalPending';
-  const finalWho = withClaude ? 'claude' : 'codex';
+  const primary = gatePrimary(options);
+  const finalField = withClaude ? 'claudePending' : primary === 'claude' ? 'claudeFinalPending' : 'codexFinalPending';
+  const finalWho = withClaude || primary === 'claude' ? 'claude' : 'codex';
+  const frontField = primary === 'claude' ? 'claudeFrontPending' : 'codexPending';
   const stageOnly = Boolean(options['stage-only']);
   if (stageOnly && (options.commit || options['no-commit'])) throw new Error('--stage-only는 --commit/--no-commit과 함께 쓸 수 없다');
   if (options.until != null && options.until !== 'S3') throw new Error('--until은 S3만 지원한다');
@@ -396,7 +431,7 @@ async function runGateUnlocked(options, deps, releases) {
   if (options.plan) {
     for (const id of ids) {
       const state = await runtime.snapshot(id);
-      const action = nextGateAction(state, frontOnly, withClaude);
+      const action = nextGateAction(state, frontOnly, withClaude, primary);
       summary[id] = { ...(stageOnly ? { awaitingApply: true } : {}), next: state?.awaitingStaging ? { stage: 'applyStaged', target: state.drafts.length } : { stage: action?.stage ?? (stageOnly ? '반영 대기' : '완료/대기'), target: action?.keys.length ?? 0, ...(!withClaude && action?.who ? { who: action.who } : {}) } };
       log(`${id}: 다음 ${summary[id].next.stage} · 대상 ${summary[id].next.target}문항`);
     }
@@ -426,6 +461,7 @@ async function runGateUnlocked(options, deps, releases) {
   // 느린 Argon 응답·예약 대기가 이미 끝난 Codex 자리까지 붙잡지 않는다.
   const levelPools = {
     codex: fn => pools.codex(() => startModel(fn)),
+    claude: fn => pools.claude(() => startModel(fn)),
     argon: fn => pools.antigravity(() => startModel(fn)),
   };
   const workIds = noCommit ? ids.slice(0, 1) : ids;
@@ -448,7 +484,7 @@ async function runGateUnlocked(options, deps, releases) {
   };
   const assessFront = async (id, round) => {
     const state = await runtime.snapshot(id);
-    if (!state || state.levelPending.length || state.codexPending.length || state.argonPending.length) return;
+    if (!state || state.levelPending.length || state[frontField].length || state.argonPending.length) return;
     const at = new Date().toISOString();
     summary[id].stages.push({ stage: 'S3', action: '판정', round, target: state.front.items.length,
       passed: state.front.items.filter(q => q.status === 'pass').length, defects: state.front.items.filter(q => q.status === 'defect').length,
@@ -524,7 +560,7 @@ async function runGateUnlocked(options, deps, releases) {
       const resumed = await apply(id);
       if (noCommit && resumed.runs.length) { summary[id].awaitingCommit = true; return; }
       if (summary[id].firstPassComplete) return;
-      for (const [stage, field, who] of [['S1', 'levelPending', null], ['S2-codex', 'codexPending', 'codex'], ['S2-argon', 'argonPending', 'antigravity']]) {
+      for (const [stage, field, who] of frontStages(primary)) {
         const state = await runtime.snapshot(id), keys = state?.[field] ?? [];
         if (!keys.length) continue;
         const ok = await execute(stage, refsOf(id, keys), [id], 0, cb => who
@@ -537,7 +573,7 @@ async function runGateUnlocked(options, deps, releases) {
       const state = await runtime.snapshot(id);
       const passed = new Set(state?.front.batchDefects.length ? [] : state?.front.items.filter(q => q.status === 'pass').map(keyOf));
       const keys = state?.[finalField].filter(key => passed.has(key)) ?? [];
-      if (!frontOnly && keys.length && !await execute('S4', refsOf(id, keys), [id], 0, cb => pools[finalWho](() => startModel(() => withClaude
+      if (!frontOnly && keys.length && !await execute('S4', refsOf(id, keys), [id], 0, cb => pools[finalWho](() => startModel(() => finalWho === 'claude'
         ? runtime.review(id, 'claude', keys, cb) : runtime.finalizeQuestions(refsOf(id, keys), cb))))) return;
       summary[id].firstPassComplete = true; save();
     } catch (error) { markError([id], error); }
@@ -545,7 +581,7 @@ async function runGateUnlocked(options, deps, releases) {
   const pooled = async (stage, refs, batchIds, round, who) => {
     const invoke = async cb => {
       requireApplyReady();
-      if (stage === 'S4' && !withClaude) return runtime.finalizeQuestions(refs, cb);
+      if (stage === 'S4' && finalWho === 'codex') return runtime.finalizeQuestions(refs, cb);
       if (stage === 'S1' && runtime.levelQuestions) return runtime.levelQuestions(refs, cb, levelPools);
       if (who && runtime.reviewQuestions) return runtime.reviewQuestions(refs, who, cb);
       if (!who && stage !== 'S1' && runtime.reviseQuestions) return runtime.reviseQuestions(refs, cb, batchIds);
@@ -564,7 +600,7 @@ async function runGateUnlocked(options, deps, releases) {
       : pools[who ?? 'antigravity'](() => invoke(cb)));
   };
   const recheck = async (cohort, round) => {
-    for (const [stage, field, who] of [['S1', 'levelPending', null], ['S2-codex', 'codexPending', 'codex'], ['S4', finalField, finalWho]]) {
+    for (const [stage, field, who] of [frontStages(primary)[0], frontStages(primary)[1], ['S4', finalField, finalWho]]) {
       if (frontOnly && stage === 'S4') {
         for (const id of cohort.filter(active)) await assessFront(id, round);
         continue;

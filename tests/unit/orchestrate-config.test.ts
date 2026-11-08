@@ -47,6 +47,7 @@ describe('검수자 설정 해석', () => {
   it('실제 CLI가 사용하는 인자에 모델·effort와 블라인드 제한을 함께 담는다', () => {
     expect(claudeCliArgs(sonnet)).toEqual([
       '-p', '--output-format', 'json', '--model', sonnet.model, '--effort', 'high',
+      '--tools', '', '--strict-mcp-config', '--setting-sources', '', '--no-session-persistence',
       '--disallowedTools', 'Bash', 'Read', 'Glob', 'Grep', 'Edit', 'Write', 'NotebookEdit',
       'WebFetch', 'WebSearch', 'Agent', 'Task',
     ]);

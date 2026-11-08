@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 // S1 수준 판정. 추적 파일 반영은 W2b 잠금 적용기에 맡긴다.
-// node tools/orchestrate/level.mjs run --root <dir> (--batches A,B | --all) [--argon 2 --codex 2]
+// node tools/orchestrate/level.mjs run --root <dir> (--batches A,B | --all) [--argon 2 --codex 2] [--level-judge codex|claude --claude 2]
+// 두 번째 독립 판정자는 기본 Codex이며, claude-argon-v1 관문은 --level-judge claude로 Claude Opus를 쓴다.
 // dry-run fixture: {responses:{A:{argon:[{items:[...]}],codex:[{items:[...]}],spotcheck:[{items:[...]}]}}}
 // 각 배열은 해당 배치·판정자의 묶음/재요청 순서. 문자열 답장도 허용한다. 실제 호출로 대체하지 않는다.
 import fs from 'node:fs';
@@ -10,7 +11,7 @@ import { createHash, randomUUID } from 'node:crypto';
 import { spawn } from 'node:child_process';
 import { pathToFileURL } from 'node:url';
 import { runnerImport } from 'vite';
-import { resolveReviewConfig, codexCliArgs, codexCliPath, questionRefs, measuredAgyCall, modelAttempt, pendingEvidenceText } from './review.mjs';
+import { resolveReviewConfig, codexCliArgs, codexCliPath, claudeCli, questionRefs, measuredAgyCall, modelAttempt, pendingEvidenceText } from './review.mjs';
 import { AGY_MODEL } from './agy.mjs';
 
 const SOURCE_ROOT = path.resolve(import.meta.dirname, '../..');
@@ -202,6 +203,11 @@ export async function liveRespond(request, deps = {}) {
   if (judge === 'argon') {
     return (await (deps.agyCall ?? measuredAgyCall)({ ...request, model: AGY_MODEL, timeoutSec: 1200 })).out;
   }
+  if (judge === 'claude') {
+    const res = await (deps.claudeCli ?? claudeCli)(cwd, prompt, 1800, config);
+    if (res.code !== 0 || /^실행 실패/.test(res.out)) throw new Error(`판정 실행 실패(${res.code}): ${(res.err || res.out).slice(-1000)}`);
+    return res.out;
+  }
   const cli = codexCliPath();
   const outFile = path.join(cwd, `last-${randomUUID()}.md`);
   try {
@@ -229,7 +235,10 @@ export async function runLevels(options, deps = {}) {
   const respond = deps.respond ?? (dryRun ? fixtureResponder(read(path.resolve(options.fixture))) : request => liveRespond(request, deps));
   const m = deps.modules ?? await load();
   const configs = resolveReviewConfig(options);
-  const pools = deps.modelPools ?? { argon: limit(Number(options.argon ?? 2)), codex: limit(Number(options.codex ?? 2)) };
+  const second = options['level-judge'] ?? options.levelJudge ?? 'codex';
+  if (!['codex', 'claude'].includes(second)) throw new Error('--level-judge는 codex 또는 claude여야 한다');
+  const pools = deps.modelPools ?? { argon: limit(Number(options.argon ?? 2)), codex: limit(Number(options.codex ?? 2)), claude: limit(Number(options.claude ?? 2)) };
+  if (!pools[second]) throw new Error(`${second} 판정 실행 자리 없음`);
   const rubric = rubricText(), codes = curriculumCodes(root);
   const refFile = path.join(root, 'content-source/reference/krdict-grade.json');
   const reference = fs.existsSync(refFile) ? read(refFile) : null;
@@ -270,7 +279,7 @@ export async function runLevels(options, deps = {}) {
     const runId = `${createdAt.replace(/[-:.]/g, '')}-${process.pid}-${randomUUID()}`;
     const work = path.join(root, '.orchestrate/level', refs ? 'pool' : batchIds[0], runId);
     const request = async (judge, items, chunk, phase = 'assess') => {
-      const config = judge === 'argon' ? configs.antigravity : configs.codex;
+      const config = judge === 'argon' ? configs.antigravity : configs[judge];
       const validate = text => parseReply(m, text, items, judge, config.model);
       let error;
       // 첫 요청 + 형식 오류 재요청 최대 3회. 한 판정자의 실패를 다른 판정자에게 보여 주지 않는다.
@@ -295,9 +304,10 @@ export async function runLevels(options, deps = {}) {
       for (let i = 0; i < inputs.length; i += 50) judged.push(...await request(judge, inputs.slice(i, i + 50), i / 50));
       return judged;
     };
-    const judged = await Promise.allSettled([judgeAll('argon'), judgeAll('codex')]);
+    const judged = await Promise.allSettled([judgeAll('argon'), judgeAll(second)]);
     const failed = judged.find(result => result.status === 'rejected');
     if (failed) throw failed.reason;
+    // codex는 두 번째 판정자(Codex 또는 Claude)의 판정 묶음이다.
     const [argon, codex] = judged.map(result => new Map(result.value.map(j => [j.questionId, j])));
     const results = [];
     for (const ctx of contexts) {
@@ -320,11 +330,11 @@ export async function runLevels(options, deps = {}) {
       const checkSpots = options['skip-level-spotcheck'] !== true && spots.length > 0;
       if (checkSpots) {
         const spotInputs = spots.map(item => inputItem(m, root, batchId, latest.get(item.questionId), reference));
-        const items = await request('codex', spotInputs, contexts.indexOf(ctx), 'spotcheck');
-        write(path.join(root, '.orchestrate/level-spotcheck', `${batchId}.json`), { batchId, runId, createdAt, model: configs.codex.model, items });
+        const items = await request(second, spotInputs, contexts.indexOf(ctx), 'spotcheck');
+        write(path.join(root, '.orchestrate/level-spotcheck', `${batchId}.json`), { batchId, runId, createdAt, model: configs[second].model, items });
       }
       const staging = `.orchestrate/staging/${batchId}/${runId}`;
-      const manifest = { batchId, runId, tool: 'level', model: `argon=${configs.antigravity.model};codex=${configs.codex.model}`, createdAt, writes: [], deletes: [] };
+      const manifest = { batchId, runId, tool: 'level', model: `argon=${configs.antigravity.model};${second}=${configs[second].model}`, createdAt, writes: [], deletes: [] };
       for (const [file, value] of [[levelPath, nextLevel], [draftPath, nextDrafts]]) {
         const bytes = json(value), target = path.join(root, staging, 'files', file);
         fs.mkdirSync(path.dirname(target), { recursive: true });

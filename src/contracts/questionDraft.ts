@@ -42,7 +42,8 @@ export const draftBatchSchema = z.array(questionDraftSchema).min(1).max(60);
 export const draftSidecarSchema = z.object({
   batchId: z.string().min(1),
   jobId: z.string().min(1),
-  publicationPolicy: z.literal('codex-argon-v1').optional(),
+  /** 공개 판정 정책. codex-argon-v1은 Codex, claude-argon-v1은 Claude Opus가 독립 풀이·해설 대조를 맡는다(tools/content/bankBuild.ts). */
+  publicationPolicy: z.enum(['codex-argon-v1', 'claude-argon-v1']).optional(),
   producer: z.object({ model: z.string().min(1), tool: z.string().min(1), date: z.iso.date() }).strict(),
   items: z.array(z.object({
     id: z.string().min(1),

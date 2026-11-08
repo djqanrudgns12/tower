@@ -101,6 +101,7 @@ export function flagged(m, batch, options = {}) {
     const findings = [];
     for (const [who, rep] of [['codex', batch.reviews.codex], ['claude', batch.reviews.claude], ['argon-blind', batch.argonBlind]]) {
       if (who === 'claude' && batch.sidecar.publicationPolicy === 'codex-argon-v1') continue;
+      if (who === 'codex' && batch.sidecar.publicationPolicy === 'claude-argon-v1') continue;
       const it = rep?.items.find(i => i.questionId === q.id && i.revision === q.revision && i.contentHash === item.contentHash);
       if (it) findings.push(...it.findings.map(f => `${who}: ${f}`));
     }
@@ -108,6 +109,7 @@ export function flagged(m, batch, options = {}) {
       const exp = batch.explanation?.items.find(i => i.questionId === q.id && i.revision === q.revision && i.contentHash === item.contentHash);
       if (exp?.explanation === 'fail') findings.push(...exp.findings.map(f => `codex-finalize: ${f}`));
     }
+    // claude-argon-v1의 해설 대조 지적은 Claude 공개 대조 findings로 이미 들어 있다(review.mjs reveal).
     out.push({ q, phase: item.defects.length ? 'front' : 'gate', reasons, findings, rounds: log.items[q.id] ?? emptyRounds() });
   }
   return out;
@@ -203,9 +205,16 @@ export function gatePassedKeys(m, batch) {
   return new Set(batch.drafts.filter(q => {
     const hash = m.b.contentHash(q);
     const withoutClaude = batch.sidecar.publicationPolicy === 'codex-argon-v1';
+    const claudePolicy = batch.sidecar.publicationPolicy === 'claude-argon-v1';
     const report = batch.reviews[withoutClaude ? 'codex' : 'claude'];
     const review = report?.items.find(i => i.questionId === q.id && i.revision === q.revision && i.contentHash === hash);
     const exp = batch.explanation?.items.find(i => i.questionId === q.id && i.revision === q.revision && i.contentHash === hash && i.rationalesHash === m.b.rationalesHash(q));
+    if (claudePolicy) {
+      return report?.reviewer.freshContext === true && m.b.isStrongReviewRun('claude', review?.run)
+        && review?.blindChoice === q.correctOptionId
+        && ['source', 'uniqueness', 'grade', 'language', 'explanation'].every(k => review.verdicts[k] === 'pass')
+        && m.b.CLAUDE_REVIEW_MODEL.test(batch.explanation?.reviewer.model ?? '') && m.b.isStrongReviewRun('claude', exp?.run) && exp.explanation === 'pass';
+    }
     if (withoutClaude) {
       const strong = run => run?.model === 'gpt-6-astra' && ['high', 'xhigh'].includes(run.effort);
       const reportProvenance = review && !review.run && report.reviewer.model === 'gpt-6-astra'

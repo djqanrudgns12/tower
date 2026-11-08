@@ -14,7 +14,8 @@ const identity = {
 
 export const levelJudgeSchema = z.object({
   ...identity,
-  judge: z.enum(['argon', 'codex']),
+  /** Argon과 두 번째 독립 판정자(Codex 또는 Claude). */
+  judge: z.enum(['argon', 'codex', 'claude']),
   model: z.string().trim().min(1),
   L1: score,
   L2: score,
@@ -60,7 +61,9 @@ export const levelAssessmentSchema = z.object({
   merged: levelMergedSchema,
   levelAssessmentHash: sha,
 }).strict().superRefine((item, ctx) => {
-  if (new Set(item.judges.map(j => j.judge)).size !== 2) ctx.addIssue({ code: 'custom', message: 'Argon·Codex 판정이 각각 하나여야 한다' });
+  if (new Set(item.judges.map(j => j.judge)).size !== 2 || !item.judges.some(j => j.judge === 'argon')) {
+    ctx.addIssue({ code: 'custom', message: 'Argon 판정과 두 번째 판정자(Codex 또는 Claude) 판정이 각각 하나여야 한다' });
+  }
   for (const judge of item.judges) {
     if (judge.questionId !== item.questionId || judge.revision !== item.revision || judge.contentHash !== item.contentHash) {
       ctx.addIssue({ code: 'custom', message: '판정자는 같은 문항·revision·본문 해시를 보아야 한다' });

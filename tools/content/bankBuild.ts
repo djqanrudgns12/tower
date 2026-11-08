@@ -25,6 +25,24 @@ const LEGACY_RULE = 'Argon 자체 반박에서 정답만 맞음 · Codex·Claude
 const LEGACY_CANDIDATE_RULE = '3모델 공동검수 승인 문항 또는 (Argon 자체 반박에서 정답만 맞음 · 같은 revision·contentHash의 외부 블라인드 검수(codex·claude) 1건 이상이 있고 있는 것은 모두 pass · 새 문맥 argon-blind 독립 풀이가 정답과 같고 source·uniqueness·grade·language 모두 pass · 해설 대조 pass · 게시 형식·의미·엄격 검사 통과). 하나라도 어긋나면 격리한다. 후보 은행은 제작 진척 확인용이며 게임에 싣지 않는다(PRD §9.3).';
 export const RULE = 'publicationPolicy=codex-argon-v1: 현재 id·revision의 Argon 자체 반박은 서로 다른 4개 보기에서 정답만 fits, 나머지는 does_not_fit · 현재 revision·contentHash의 Codex 독립 풀이가 정답과 같고 source·uniqueness·grade·language·explanation 모두 pass · freshContext=true 및 항목 run.model=gpt-6-astra, effort=high 또는 xhigh(항목 출처 도입 전에는 gpt-6-astra 2단계 도구 보고서로 독립 풀이 출처 확인; 과거 effort는 추정하지 않음) · 현재 revision·contentHash·rationalesHash의 Codex 해설 대조 pass(reviewer.model과 run.model=gpt-6-astra, effort=high 또는 xhigh) · 현재 argon-blind가 있으면 새 문맥·같은 해시·정답 일치·source/uniqueness/grade/language pass 및 explanation fail 금지 · 게시 형식·의미 검사와 Q50 엄격 배치 검사 통과. Claude는 사용하지 않는다. 정책 없는 legacy: Argon 자체 반박에서 정답만 맞음 · 현재 revision·contentHash의 Codex·Claude 독립 풀이가 정답과 같고 source·uniqueness·grade·language 모두 pass, explanation fail 금지 · 현재 revision·contentHash·rationalesHash의 Claude 총괄 해설 대조 pass · 게시 형식·의미 검사 통과. 각 정책의 조건이 하나라도 어긋나면 그 revision은 격리한다.';
 export const CANDIDATE_RULE = 'publicationPolicy=codex-argon-v1은 공개 승인과 동일한 판정만 사용한다(Claude나 legacy 후보 경로로 우회 불가). 정책 없는 legacy: 공개 승인 문항 또는 (Argon 자체 반박에서 정답만 맞음 · 같은 revision·contentHash의 외부 블라인드 검수(codex·claude) 1건 이상이 있고 있는 것은 모두 정답 일치, source·uniqueness·grade·language pass, explanation fail 금지 · 새 문맥 argon-blind 독립 풀이가 정답과 같고 source·uniqueness·grade·language 모두 pass, explanation fail 금지 · 현재 revision·contentHash·rationalesHash의 해설 대조 pass · 게시 형식·의미·Q50 엄격 검사 통과). 하나라도 어긋나면 격리한다. 후보 은행은 제작 진척 확인용이며 게임에 싣지 않는다(PRD §9.3).';
+export const CLAUDE_RULE = 'publicationPolicy=claude-argon-v1(2026-11-09 사용자 결정: Codex 사용량 소진 동안 Claude가 대신 검수): codex-argon-v1과 같은 조건을 Codex 대신 Claude가 맡는다 · 현재 revision·contentHash의 Claude 독립 풀이가 정답과 같고 source·uniqueness·grade·language·explanation 모두 pass · freshContext=true 및 항목 run.model=claude-opus-*, effort=high·xhigh·max · 현재 revision·contentHash·rationalesHash의 Claude 해설 대조 pass(reviewer.model과 run.model=claude-opus-*, effort=high 이상) · Argon 자체 반박·argon-blind·게시 형식·의미·Q50 엄격 배치 검사는 codex-argon-v1과 같다. 이 정책 배치는 Codex 보고서를 쓰지 않는다. 하나라도 어긋나면 그 revision은 격리한다.';
+export const CLAUDE_CANDIDATE_RULE = 'publicationPolicy=claude-argon-v1도 공개 승인과 동일한 판정만 사용한다.';
+/** 정책별 독립 풀이·해설 대조 담당. 정책 없는 legacy는 null이다. */
+export function policyReviewer(sidecar: DraftSidecar): 'codex' | 'claude' | null {
+  if (sidecar.publicationPolicy === 'codex-argon-v1') return 'codex';
+  if (sidecar.publicationPolicy === 'claude-argon-v1') return 'claude';
+  return null;
+}
+/** Claude 대체 검수는 Opus 계열만 인정한다. */
+export const CLAUDE_REVIEW_MODEL = /^claude-opus-/;
+/** 정책 검토자의 강한 실행 출처. Codex는 gpt-6-astra high/xhigh, Claude는 claude-opus-* high/xhigh/max. */
+export function isStrongReviewRun(who: 'codex' | 'claude', run: { model: string; effort: string } | undefined): boolean {
+  if (!run) return false;
+  if (who === 'codex') return run.model === 'gpt-6-astra' && (run.effort === 'high' || run.effort === 'xhigh');
+  return CLAUDE_REVIEW_MODEL.test(run.model) && ['high', 'xhigh', 'max'].includes(run.effort);
+}
+const isPolicyReviewerModel = (who: 'codex' | 'claude', model: string | undefined) =>
+  typeof model === 'string' && (who === 'codex' ? model === 'gpt-6-astra' : CLAUDE_REVIEW_MODEL.test(model));
 /** 총괄 해설 대조는 작성 모델(Argon)이 아닌 총괄 Claude가 해야 공동검수로 인정한다(공동검수 절차 §역할, PRD §19). */
 export const isCommanderModel = (model: string) => /claude/i.test(model);
 
@@ -70,9 +88,10 @@ export function loadBatches(root: string): BatchInput[] {
     if (!existsSync(draftsPath) || existsSync(path.join(dir, batchId, 'closed.json'))) return [];
     const sidecar = draftSidecarSchema.parse(read(path.join(dir, batchId, 'sidecar.json')));
     const reviews: BatchInput['reviews'] = {};
+    const policyWho = policyReviewer(sidecar);
     for (const who of BLIND_REVIEWERS) {
-      // 새 정책은 낡거나 잘못된 Claude 보고서의 존재·파싱에도 의존하지 않는다.
-      if (sidecar.publicationPolicy === 'codex-argon-v1' && who === 'claude') continue;
+      // 정책 배치는 그 정책 검토자 외의 낡거나 잘못된 보고서의 존재·파싱에도 의존하지 않는다.
+      if (policyWho && who !== policyWho) continue;
       const p = path.join(root, 'content-source/reviews', batchId, `${who}.json`);
       if (existsSync(p)) reviews[who] = blindReviewSchema.parse(read(p));
     }
@@ -108,11 +127,10 @@ export function toBankQuestion(q: QuestionDraft, status: BankStatus = 'published
   };
 }
 
-const isStrongCodexRun = (run: BlindReview['items'][number]['run']) =>
-  run?.model === 'gpt-6-astra' && (run.effort === 'high' || run.effort === 'xhigh');
-
-/** 명시적으로 전환한 배치만 적용한다. legacy의 승인·후보 판정은 그대로 보존한다. */
-function decideCodexArgon(batch: BatchInput): Decision[] {
+/** 명시적으로 전환한 배치만 적용한다. legacy의 승인·후보 판정은 그대로 보존한다. who는 정책의 독립 풀이·해설 대조 담당이다. */
+function decidePolicy(batch: BatchInput, who: 'codex' | 'claude'): Decision[] {
+  const label = who === 'codex' ? 'Codex' : 'Claude';
+  const strongLabel = who === 'codex' ? 'gpt-6-astra high/xhigh' : 'claude-opus high 이상';
   const strict = batch.batchId.startsWith('Q50-') ? lintBatchStrict(batch.drafts) : [];
   const batchIssues = strict.filter(s => !batch.drafts.some(q => s.startsWith(`${q.id}: `)));
   return batch.drafts.map(q => {
@@ -132,33 +150,35 @@ function decideCodexArgon(batch: BatchInput): Decision[] {
         if (item.verdicts[key] !== 'pass') reasons.push(`${who}: ${key} ${item.verdicts[key]}`);
       }
     };
-    const codex = batch.reviews.codex;
-    const item = codex?.items.find(i => i.questionId === q.id && i.revision === q.revision && i.contentHash === hash);
-    if (!item) reasons.push('codex: 이 revision의 독립 검토 없음');
+    const report = batch.reviews[who];
+    const item = report?.items.find(i => i.questionId === q.id && i.revision === q.revision && i.contentHash === hash);
+    if (!item) reasons.push(`${who}: 이 revision의 독립 검토 없음`);
     else {
-      if (codex?.reviewer.freshContext !== true) reasons.push('codex: freshContext true 필요');
-      const reportProvenance = !item.run && codex?.reviewer.model === 'gpt-6-astra'
-        && codex.reviewer.tool === '2단계 블라인드 검수(tools/orchestrate/review.mjs)';
-      if (!isStrongCodexRun(item.run) && !reportProvenance) reasons.push('codex: gpt-6-astra high/xhigh 실행 출처 필요');
-      checkReview('codex', item);
+      if (report?.reviewer.freshContext !== true) reasons.push(`${who}: freshContext true 필요`);
+      // 항목 출처 도입 전 Codex 보고서만 도구 보고서로 출처를 확인한다. Claude는 항목 출처가 반드시 있어야 한다.
+      const reportProvenance = who === 'codex' && !item.run && report?.reviewer.model === 'gpt-6-astra'
+        && report.reviewer.tool === '2단계 블라인드 검수(tools/orchestrate/review.mjs)';
+      if (!isStrongReviewRun(who, item.run) && !reportProvenance) reasons.push(`${who}: ${strongLabel} 실행 출처 필요`);
+      checkReview(who, item);
     }
     // 현재 revision의 실제 지적과 해시 불일치는 앞단과 같이 유지한다. 이전 revision은 근거가 아니다.
     for (const blind of batch.argonBlind?.items.filter(i => i.questionId === q.id && i.revision === q.revision) ?? []) {
       if (blind.contentHash !== hash) reasons.push('argon-blind: 검수 뒤 본문이 바뀜(같은 revision, 다른 contentHash)');
       else {
         if (batch.argonBlind?.reviewer.freshContext !== true) reasons.push('argon-blind: freshContext true 필요');
-        // Argon blind에는 해설을 주지 않았다. 실제 fail은 유지하고, 미제공에 따른 uncertain은 Codex 해설 대조가 맡는다.
+        // Argon blind에는 해설을 주지 않았다. 실제 fail은 유지하고, 미제공에 따른 uncertain은 정책 검토자의 해설 대조가 맡는다.
         checkReview('argon-blind', blind, false);
       }
     }
 
     const exp = batch.explanation?.items.find(i => i.questionId === q.id && i.revision === q.revision);
-    if (!exp || exp.contentHash !== hash || exp.rationalesHash !== rationalesHash(q)) reasons.push('Codex 해설 대조 없음');
+    if (!exp || exp.contentHash !== hash || exp.rationalesHash !== rationalesHash(q)) reasons.push(`${label} 해설 대조 없음`);
     else {
-      if (batch.explanation?.reviewer.model !== 'gpt-6-astra' || !isStrongCodexRun(exp.run)) {
-        reasons.push('Codex 해설 대조: gpt-6-astra high/xhigh 실행 출처 필요');
+      if (!isPolicyReviewerModel(who, batch.explanation?.reviewer.model) || !isStrongReviewRun(who, exp.run)) {
+        reasons.push(`${label} 해설 대조: ${strongLabel} 실행 출처 필요`);
       }
-      if (exp.explanation !== 'pass') reasons.push('Codex 해설 대조 fail');
+      // Codex 지적은 관문 어댑터(content-loop)가 붙인다. Claude는 legacy처럼 총괄 해설 대조 사유에 지적을 함께 적는다.
+      if (exp.explanation !== 'pass') reasons.push(who === 'codex' ? 'Codex 해설 대조 fail' : `총괄 해설 대조 fail: ${exp.findings.join(' / ')}`);
     }
     const bank = bankQuestionSchema.safeParse(toBankQuestion(q));
     if (!bank.success) reasons.push(`게시 형식: ${bank.error.issues.map(i => i.message).join(', ')}`);
@@ -172,7 +192,8 @@ function decideCodexArgon(batch: BatchInput): Decision[] {
 
 /** 문항 revision마다 정책별 승인·격리를 정한다. 보고서는 같은 contentHash일 때만 그 revision의 근거가 된다. */
 export function decide(batch: BatchInput): Decision[] {
-  if (batch.sidecar.publicationPolicy === 'codex-argon-v1') return decideCodexArgon(batch);
+  const policyWho = policyReviewer(batch.sidecar);
+  if (policyWho) return decidePolicy(batch, policyWho);
   return batch.drafts.map(q => {
     const hash = contentHash(q);
     const reasons: string[] = [];
@@ -201,7 +222,7 @@ export function decide(batch: BatchInput): Decision[] {
 
 /** 외부 블라인드 검수(codex/claude) 및 새 문맥 블라인드 검수(argon-blind.json) 기반 후보 은행 판정. 이미 3모델 승인을 받은 문항은 그대로 통과시킨다. */
 export function decideCandidate(batch: BatchInput): Decision[] {
-  if (batch.sidecar.publicationPolicy === 'codex-argon-v1') return decide(batch);
+  if (policyReviewer(batch.sidecar)) return decide(batch);
   const fullByKey = new Map(decide(batch).map(d => [`${d.questionId}@${d.revision}`, d]));
   const strictIssues = batch.batchId.startsWith('Q50-') ? lintBatchStrict(batch.drafts) : [];
   return batch.drafts.map(q => {
@@ -261,16 +282,23 @@ export function decideCandidate(batch: BatchInput): Decision[] {
   });
 }
 
+/** 레지스트리 규칙 문구. Claude 정책 배치가 없으면 기존 문구를 한 글자도 바꾸지 않는다. */
+function ruleFor(batches: BatchInput[], codexRule: string, legacyRule: string, claudeRule: string): string {
+  const has = (policy: DraftSidecar['publicationPolicy']) => batches.some(b => b.sidecar.publicationPolicy === policy);
+  const base = has('codex-argon-v1') ? codexRule : legacyRule;
+  return has('claude-argon-v1') ? `${base} ${claudeRule}` : base;
+}
+
 export function buildRegistry(batches: BatchInput[]): Registry {
   const entries = batches.flatMap(decide).sort((a, b) => a.questionId.localeCompare(b.questionId) || a.revision - b.revision);
   const approved = entries.filter(e => e.decision === 'approved').length;
-  return { schemaVersion: '1', rule: batches.some(b => b.sidecar.publicationPolicy === 'codex-argon-v1') ? RULE : LEGACY_RULE, approved, quarantined: entries.length - approved, entries };
+  return { schemaVersion: '1', rule: ruleFor(batches, RULE, LEGACY_RULE, CLAUDE_RULE), approved, quarantined: entries.length - approved, entries };
 }
 
 export function buildCandidateRegistry(batches: BatchInput[]): Registry {
   const entries = batches.flatMap(decideCandidate).sort((a, b) => a.questionId.localeCompare(b.questionId) || a.revision - b.revision);
   const approved = entries.filter(e => e.decision === 'approved').length;
-  return { schemaVersion: '1', rule: batches.some(b => b.sidecar.publicationPolicy === 'codex-argon-v1') ? CANDIDATE_RULE : LEGACY_CANDIDATE_RULE, approved, quarantined: entries.length - approved, entries };
+  return { schemaVersion: '1', rule: ruleFor(batches, CANDIDATE_RULE, LEGACY_CANDIDATE_RULE, CLAUDE_CANDIDATE_RULE), approved, quarantined: entries.length - approved, entries };
 }
 
 /**
