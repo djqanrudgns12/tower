@@ -7,8 +7,11 @@ import type { TowerId } from '../../src/contracts/balance';
 import type * as QaStatesModule from '../../tools/qa/states';
 import maps from '../../docs/contracts/maps.candidate.v0.4.json' with { type: 'json' };
 import grade3 from '../../src/content/questions/grade3.json' with { type: 'json' };
-import grade3Candidate from '../../src/content/questions/grade3.candidate.json' with { type: 'json' };
 import grade3Dev from '../../src/content/questions/grade3.dev.json' with { type: 'json' };
+
+// 후보 은행은 검증 후보가 공개분보다 많을 때만 생긴다(tools/build-bank.mjs). 없으면 공개·개발 은행만 쓴다.
+const candidatePath = new URL('../../src/content/questions/grade3.candidate.json', import.meta.url);
+const grade3Candidate: typeof grade3Dev = existsSync(candidatePath) ? JSON.parse(readFileSync(candidatePath, 'utf8')) : { ...grade3Dev, questions: [] };
 
 // 실제 브라우저에서 첫 판 흐름(PRD §18 P1)을 따라간다. 화면 캡처는 test-results/shots에 남긴다.
 const garden = maps.maps.find(m => m.id === 'garden_u')!;

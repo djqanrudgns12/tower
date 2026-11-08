@@ -1,9 +1,13 @@
+import { existsSync, readFileSync } from 'node:fs';
 import AxeBuilder from '@axe-core/playwright';
 import { expect, test, type Page } from './tower-browser';
 import defaults from '../../docs/contracts/product.defaults.v0.5.json' with { type: 'json' };
 import grade3 from '../../src/content/questions/grade3.json' with { type: 'json' };
-import grade3Candidate from '../../src/content/questions/grade3.candidate.json' with { type: 'json' };
 import grade3Dev from '../../src/content/questions/grade3.dev.json' with { type: 'json' };
+
+// 후보 은행은 검증 후보가 공개분보다 많을 때만 생긴다(tools/build-bank.mjs). 없으면 공개·개발 은행만 쓴다.
+const candidatePath = new URL('../../src/content/questions/grade3.candidate.json', import.meta.url);
+const grade3Candidate: typeof grade3Dev = existsSync(candidatePath) ? JSON.parse(readFileSync(candidatePath, 'utf8')) : { ...grade3Dev, questions: [] };
 
 // WP-UI 화면 배치 실측(PRD §12.1·§12.4·§12.5, 시안 1 v3). 계산식을 다시 쓰지 않고 실제 DOM 좌표를 잰다.
 // 전용 포트: E2E_PORT=5182 npx playwright test tests/e2e/layout.spec.ts --workers=1

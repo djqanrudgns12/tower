@@ -40,7 +40,8 @@ test.describe('새 서버 연결 모드', () => {
     expect(calls).not.toContain('POST /v1/device 200');
   });
 
-  for (const grade of [4, 5, 6]) {
+  // 3학년도 자기 학년 공개 1,000개를 넘겨(CR-1000) 같은 재채점 경로를 확인한다.
+  for (const grade of [3, 4, 5, 6]) {
     test(`${grade}학년: 첫 웨이브 완료 → 판 종료 → 실제 서버 재채점과 전역 풀이 이력 저장`, async ({ page }, testInfo) => {
       test.setTimeout(180_000);
       const bank = JSON.parse(readFileSync(new URL(`../../src/content/questions/grade${grade}.json`, import.meta.url), 'utf8')) as {

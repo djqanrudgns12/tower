@@ -62,7 +62,8 @@ function extractStudyExample(
   if (q.type === 'usage') {
     return { sentence: cleanEnd(answerText) };
   }
-  if (q.type === 'cloze') {
+  // 반의어·유의어 문항도 지문 끝에 빈칸 `( )`을 두는 경우가 있다. 빈칸이 있으면 정답을 채워 예문으로 쓴다.
+  if (q.type === 'cloze' || /\(\s*\)/.test(q.stem)) {
     const filled = answerText.trim();
     const withoutLeadPrompt = q.stem
       .trim()
