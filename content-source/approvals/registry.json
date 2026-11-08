@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1",
-  "rule": "publicationPolicy=codex-argon-v1: 현재 id·revision의 Argon 자체 반박은 서로 다른 4개 보기에서 정답만 fits, 나머지는 does_not_fit · 현재 revision·contentHash의 Codex 독립 풀이가 정답과 같고 source·uniqueness·grade·language·explanation 모두 pass · freshContext=true 및 항목 run.model=gpt-6-astra, effort=high 또는 xhigh(항목 출처 도입 전에는 gpt-6-astra 2단계 도구 보고서로 독립 풀이 출처 확인; 과거 effort는 추정하지 않음) · 현재 revision·contentHash·rationalesHash의 Codex 해설 대조 pass(reviewer.model과 run.model=gpt-6-astra, effort=high 또는 xhigh) · 현재 argon-blind가 있으면 새 문맥·같은 해시·정답 일치·source/uniqueness/grade/language pass 및 explanation fail 금지 · 게시 형식·의미 검사와 Q50 엄격 배치 검사 통과. Claude는 사용하지 않는다. 정책 없는 legacy: Argon 자체 반박에서 정답만 맞음 · 현재 revision·contentHash의 Codex·Claude 독립 풀이가 정답과 같고 source·uniqueness·grade·language 모두 pass, explanation fail 금지 · 현재 revision·contentHash·rationalesHash의 Claude 총괄 해설 대조 pass · 게시 형식·의미 검사 통과. 각 정책의 조건이 하나라도 어긋나면 그 revision은 격리한다.",
-  "approved": 4836,
+  "rule": "publicationPolicy=codex-argon-v1: 현재 id·revision의 Argon 자체 반박은 서로 다른 4개 보기에서 정답만 fits, 나머지는 does_not_fit · 현재 revision·contentHash의 Codex 독립 풀이가 정답과 같고 source·uniqueness·grade·language·explanation 모두 pass · freshContext=true 및 항목 run.model=gpt-6-astra, effort=high 또는 xhigh(항목 출처 도입 전에는 gpt-6-astra 2단계 도구 보고서로 독립 풀이 출처 확인; 과거 effort는 추정하지 않음) · 현재 revision·contentHash·rationalesHash의 Codex 해설 대조 pass(reviewer.model과 run.model=gpt-6-astra, effort=high 또는 xhigh) · 현재 argon-blind가 있으면 새 문맥·같은 해시·정답 일치·source/uniqueness/grade/language pass 및 explanation fail 금지 · 게시 형식·의미 검사와 Q50 엄격 배치 검사 통과. Claude는 사용하지 않는다. 정책 없는 legacy: Argon 자체 반박에서 정답만 맞음 · 현재 revision·contentHash의 Codex·Claude 독립 풀이가 정답과 같고 source·uniqueness·grade·language 모두 pass, explanation fail 금지 · 현재 revision·contentHash·rationalesHash의 Claude 총괄 해설 대조 pass · 게시 형식·의미 검사 통과. 각 정책의 조건이 하나라도 어긋나면 그 revision은 격리한다. publicationPolicy=claude-argon-v1(2026-11-09 사용자 결정: Codex 사용량 소진 동안 Claude가 대신 검수): codex-argon-v1과 같은 조건을 Codex 대신 Claude가 맡는다 · 현재 revision·contentHash의 Claude 독립 풀이가 정답과 같고 source·uniqueness·grade·language·explanation 모두 pass · freshContext=true 및 항목 run.model=claude-opus-*, effort=high·xhigh·max · 현재 revision·contentHash·rationalesHash의 Claude 해설 대조 pass(reviewer.model과 run.model=claude-opus-*, effort=high 이상) · Argon 자체 반박·argon-blind·게시 형식·의미·Q50 엄격 배치 검사는 codex-argon-v1과 같다. 이 정책 배치는 Codex 보고서를 쓰지 않는다. 하나라도 어긋나면 그 revision은 격리한다.",
+  "approved": 4862,
   "quarantined": 10,
   "entries": [
     {
@@ -38794,6 +38794,214 @@
       "revision": 1,
       "batchId": "Q50-G6-031",
       "contentHash": "26c6409a1e1cddf1b72c7068edbd85e9719c788df5d03d55b4c269084300f3c6",
+      "decision": "approved",
+      "reasons": []
+    },
+    {
+      "questionId": "g6-argon-2238",
+      "revision": 1,
+      "batchId": "Q50-G6-032",
+      "contentHash": "c32661b050d8cf0a564ef05463b0ab37a6d969d4200add95dc8ab2d0650fbf9c",
+      "decision": "approved",
+      "reasons": []
+    },
+    {
+      "questionId": "g6-argon-2240",
+      "revision": 3,
+      "batchId": "Q50-G6-032",
+      "contentHash": "7f16afa7bcf3a781d4c54daebc6009eca0f6320dba072396ed86ab6ee9c85f11",
+      "decision": "approved",
+      "reasons": []
+    },
+    {
+      "questionId": "g6-argon-2241",
+      "revision": 1,
+      "batchId": "Q50-G6-032",
+      "contentHash": "0dccabaca8b403e56ecbd3d6c124e49c79ddfdd3baf5f646a81c0470d8edbd10",
+      "decision": "approved",
+      "reasons": []
+    },
+    {
+      "questionId": "g6-argon-2242",
+      "revision": 1,
+      "batchId": "Q50-G6-032",
+      "contentHash": "5b2a01de2f25b3e393bb0edfc942022274d1f10d41bbb16a855fd888e2e69f70",
+      "decision": "approved",
+      "reasons": []
+    },
+    {
+      "questionId": "g6-argon-2243",
+      "revision": 1,
+      "batchId": "Q50-G6-032",
+      "contentHash": "22324d36b11fafaf5f9acfa77af44d8357099d6e8131e6c73bd719ed91856e4b",
+      "decision": "approved",
+      "reasons": []
+    },
+    {
+      "questionId": "g6-argon-2244",
+      "revision": 1,
+      "batchId": "Q50-G6-032",
+      "contentHash": "782a0f91b1bae861b21230b614dad0f3f560983b7246129c6749907c1e88e13a",
+      "decision": "approved",
+      "reasons": []
+    },
+    {
+      "questionId": "g6-argon-2245",
+      "revision": 1,
+      "batchId": "Q50-G6-032",
+      "contentHash": "76d714a1565e42387b2d53f3ce7f3ba08da257b6ab5bdd0aaf00d750f6224fb3",
+      "decision": "approved",
+      "reasons": []
+    },
+    {
+      "questionId": "g6-argon-2246",
+      "revision": 1,
+      "batchId": "Q50-G6-032",
+      "contentHash": "79c16300e47e7ec49e09d45177174fd68d8e004caa86c4c688064233cad261ca",
+      "decision": "approved",
+      "reasons": []
+    },
+    {
+      "questionId": "g6-argon-2247",
+      "revision": 1,
+      "batchId": "Q50-G6-032",
+      "contentHash": "e5fcabaab265330531948f2cac859d64150577fc6f5b2361e6756aed86360b72",
+      "decision": "approved",
+      "reasons": []
+    },
+    {
+      "questionId": "g6-argon-2249",
+      "revision": 1,
+      "batchId": "Q50-G6-032",
+      "contentHash": "be126adfcb3546ee13f2ae73e0be8d0c1666a61dcceb8150ebbd72a6dd5df7ca",
+      "decision": "approved",
+      "reasons": []
+    },
+    {
+      "questionId": "g6-argon-2250",
+      "revision": 1,
+      "batchId": "Q50-G6-032",
+      "contentHash": "82e107a71518d206877072bdb7bc67eb6ee6043f7c1b43917d2ed4ba752d8fe4",
+      "decision": "approved",
+      "reasons": []
+    },
+    {
+      "questionId": "g6-argon-2251",
+      "revision": 2,
+      "batchId": "Q50-G6-032",
+      "contentHash": "7833adf9542a6fd70517a6f86fd6653f72bde8cbda0be15e05a6bbdf47d510e6",
+      "decision": "approved",
+      "reasons": []
+    },
+    {
+      "questionId": "g6-argon-2252",
+      "revision": 1,
+      "batchId": "Q50-G6-032",
+      "contentHash": "35d178a4c281828fa16751c38f93cd76fbdd044f1cbed4bf8be0a5084e285770",
+      "decision": "approved",
+      "reasons": []
+    },
+    {
+      "questionId": "g6-argon-2253",
+      "revision": 1,
+      "batchId": "Q50-G6-032",
+      "contentHash": "c94d995f44f42551654309841e165eeab438d7cffbc18a061f5ee7abb7109782",
+      "decision": "approved",
+      "reasons": []
+    },
+    {
+      "questionId": "g6-argon-2254",
+      "revision": 1,
+      "batchId": "Q50-G6-032",
+      "contentHash": "a4b64a9c6edb3eb3649295dd02aef1b2fdfccf8d59f5af2fa994f24b4bcf55a8",
+      "decision": "approved",
+      "reasons": []
+    },
+    {
+      "questionId": "g6-argon-2255",
+      "revision": 1,
+      "batchId": "Q50-G6-032",
+      "contentHash": "d0d95f02fba6dd36b60c970189ccaa3dd0c83ad407b91b28976d38ee695fa8d8",
+      "decision": "approved",
+      "reasons": []
+    },
+    {
+      "questionId": "g6-argon-2256",
+      "revision": 1,
+      "batchId": "Q50-G6-032",
+      "contentHash": "74d9026e8585ccbc4223a467042431cbca1557ba5dd7fbd206a651b25846f4fa",
+      "decision": "approved",
+      "reasons": []
+    },
+    {
+      "questionId": "g6-argon-2257",
+      "revision": 1,
+      "batchId": "Q50-G6-032",
+      "contentHash": "4842e3551a15ec60e82f720fdd06f6ffe39534d8220a77f132e200e841927a99",
+      "decision": "approved",
+      "reasons": []
+    },
+    {
+      "questionId": "g6-argon-2258",
+      "revision": 1,
+      "batchId": "Q50-G6-032",
+      "contentHash": "08dc378a1e540715d874a3e2085e179fd4246c236ecdba194814da74a7f9764c",
+      "decision": "approved",
+      "reasons": []
+    },
+    {
+      "questionId": "g6-argon-2259",
+      "revision": 1,
+      "batchId": "Q50-G6-032",
+      "contentHash": "7c07b8d346a9fd642626b186703d3b1842e3c0bc7f16e6476f670a32203416b4",
+      "decision": "approved",
+      "reasons": []
+    },
+    {
+      "questionId": "g6-argon-2260",
+      "revision": 1,
+      "batchId": "Q50-G6-032",
+      "contentHash": "9f52c36bed50f1a9900e3a838cf1beee9dc5480651e1be85f8361227df422c54",
+      "decision": "approved",
+      "reasons": []
+    },
+    {
+      "questionId": "g6-argon-2261",
+      "revision": 1,
+      "batchId": "Q50-G6-032",
+      "contentHash": "2e180d55a7d6ba5c3002196b4d354c52bd4b4c12b66973b4400af779a19286e8",
+      "decision": "approved",
+      "reasons": []
+    },
+    {
+      "questionId": "g6-argon-2262",
+      "revision": 1,
+      "batchId": "Q50-G6-032",
+      "contentHash": "31b5177a81c1f85fe4aadd2eab7c33f65af8faf9d9ce6c38f1f1aed8fe6dcd0d",
+      "decision": "approved",
+      "reasons": []
+    },
+    {
+      "questionId": "g6-argon-2263",
+      "revision": 1,
+      "batchId": "Q50-G6-032",
+      "contentHash": "6d8b62b9034db53e9c2f1520db3e587b7dc5c4384d02056b85019a9f5d76fd42",
+      "decision": "approved",
+      "reasons": []
+    },
+    {
+      "questionId": "g6-argon-2264",
+      "revision": 1,
+      "batchId": "Q50-G6-032",
+      "contentHash": "9138c3c7450dcc92fc5b5261054e2a5f39e2c0bcc6c248259097340f9458aa0e",
+      "decision": "approved",
+      "reasons": []
+    },
+    {
+      "questionId": "g6-argon-2265",
+      "revision": 1,
+      "batchId": "Q50-G6-032",
+      "contentHash": "bad7d0615e0b717655ce268cfc5057a88cd17f7ac7d68fc7ec08aa3d091ef440",
       "decision": "approved",
       "reasons": []
     }
