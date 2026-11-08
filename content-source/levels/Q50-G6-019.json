@@ -863,6 +863,66 @@
       "levelAssessmentHash": "461d89a7f19370bcebb30683a8a6e929746f3eb449e67b034fdcb7b7ebe55d45"
     },
     {
+      "questionId": "g6-argon-0914",
+      "revision": 2,
+      "contentHash": "1527e079587ac04f65ab368590d9b60e4894ed3151c60aa8c048b4e81ceed08d",
+      "precomputed": {
+        "typeBase": 2,
+        "lengthBump": 2,
+        "t3Base": 1,
+        "readingLoad": 95,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g6-argon-0914",
+          "revision": 2,
+          "contentHash": "1527e079587ac04f65ab368590d9b60e4894ed3151c60aa8c048b4e81ceed08d",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 3,
+          "L2": 2,
+          "T1": 2,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "구어 빈도가 낮은 6학년 격식 문어 한자어이며 차단·보관·생략 등 인접 행위 오답과 구별해야 하나 문장 내 직접 행동 단서가 명확함."
+        },
+        {
+          "questionId": "g6-argon-0914",
+          "revision": 2,
+          "contentHash": "1527e079587ac04f65ab368590d9b60e4894ed3151c60aa8c048b4e81ceed08d",
+          "judge": "codex",
+          "model": "gpt-6-astra",
+          "L1": 3,
+          "L2": 2,
+          "T1": 2,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "격식적인 한자어로 차단·보관과 감추기의 의미 경계를 구별해야 하지만, 얼룩을 화분으로 가리는 직접 행동 단서가 있다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 5,
+        "T": 6,
+        "V": 16,
+        "ownTier": "core",
+        "band": {
+          "min": 5,
+          "max": 6
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "581993ebe14b2819e1435d1eba00d809873050e72af857cda0c00824809259aa"
+    },
+    {
       "questionId": "g6-argon-0915",
       "revision": 1,
       "contentHash": "f66f9113e51805d40ad77ebff11015db47fe5e2d0595f69c704b8519b9f4490c",
@@ -1101,6 +1161,68 @@
         "flags": []
       },
       "levelAssessmentHash": "12cd77a2f1a4c4c321fa3bc59cacd376f8f7cff14a4bae3b0a894f64d073cddd"
+    },
+    {
+      "questionId": "g6-argon-0918",
+      "revision": 2,
+      "contentHash": "556ed9406bf2a99f88f40ceb3e670a73212aa2c2d4a21a62c982e3e06bf5cbba",
+      "precomputed": {
+        "typeBase": 2,
+        "lengthBump": 2,
+        "t3Base": 0,
+        "readingLoad": 93,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g6-argon-0918",
+          "revision": 2,
+          "contentHash": "556ed9406bf2a99f88f40ceb3e670a73212aa2c2d4a21a62c982e3e06bf5cbba",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 3,
+          "L2": 3,
+          "T1": 1,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "부분을 원리에 따라 조직해 전체로 만드는 고추상 학술 문어이나 오답의 의미 거리가 비교적 뚜렷하고 직접 단서가 제시됨."
+        },
+        {
+          "questionId": "g6-argon-0918",
+          "revision": 2,
+          "contentHash": "556ed9406bf2a99f88f40ceb3e670a73212aa2c2d4a21a62c982e3e06bf5cbba",
+          "judge": "codex",
+          "model": "gpt-6-astra",
+          "L1": 2,
+          "L2": 2,
+          "T1": 1,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "부분들을 원리에 따라 조직하는 학습 개념어이며, 먹이 단계별로 기록을 묶는 단서가 있어 요약·기록·교정과 구별할 수 있다."
+        }
+      ],
+      "merged": {
+        "rule": 4,
+        "L": 6,
+        "T": 4,
+        "V": 16,
+        "ownTier": "core",
+        "band": {
+          "min": 6,
+          "max": 6
+        },
+        "flags": [
+          "spotCheck"
+        ]
+      },
+      "levelAssessmentHash": "2ca7f652eba3e62eabf800f97f73bc8b89fc868d5dcc1f20307c2b759730b9ec"
     },
     {
       "questionId": "g6-argon-0919",
@@ -1775,6 +1897,66 @@
       "levelAssessmentHash": "d2b6e4950e2607bba9818515470601dd14364ac7fb9b0b48c33fd050746509a5"
     },
     {
+      "questionId": "g6-argon-0929",
+      "revision": 3,
+      "contentHash": "87314aece9fd72293848bdf974551c7525a265cc6f48bc47a5724e886d9692e1",
+      "precomputed": {
+        "typeBase": 0,
+        "lengthBump": 2,
+        "t3Base": 0,
+        "readingLoad": 94,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g6-argon-0929",
+          "revision": 3,
+          "contentHash": "87314aece9fd72293848bdf974551c7525a265cc6f48bc47a5724e886d9692e1",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 3,
+          "L2": 3,
+          "T1": 2,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "curriculum_explicit",
+          "unit": "[6국01-07] 절차와 규칙을 지키고 타당한 이유와 근거를 제시하며 토론한다.",
+          "reason": "6학년 토론 절차에서 다루는 고추상 격식 한자어로 반론·합의·마무리 등 인접 절차 오답과 구별해야 하나 발문에 순서 단서가 있음."
+        },
+        {
+          "questionId": "g6-argon-0929",
+          "revision": 3,
+          "contentHash": "87314aece9fd72293848bdf974551c7525a265cc6f48bc47a5724e886d9692e1",
+          "judge": "codex",
+          "model": "gpt-6-astra",
+          "L1": 3,
+          "L2": 3,
+          "T1": 2,
+          "inference": 1,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "curriculum_explicit",
+          "unit": "[6국01-07] 절차와 규칙을 지키고 타당한 이유와 근거를 제시하며 토론한다.",
+          "reason": "토론 절차에서 배우는 저빈도 추상 한자어로, 첫 발표라는 상황을 토대로 입론을 반론·절충·마무리와 구별해야 한다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 6,
+        "T": 5,
+        "V": 17,
+        "ownTier": "advanced",
+        "band": {
+          "min": 6,
+          "max": 6
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "d51dff002408d078c53e9437b3d6869e3375c61341d646cd9bca5524aafa925c"
+    },
+    {
       "questionId": "g6-argon-0930",
       "revision": 1,
       "contentHash": "9e812e2ecfc49a688f53b98677a0206f6d05f3921bc312083026705229851c90",
@@ -2139,6 +2321,126 @@
         "flags": []
       },
       "levelAssessmentHash": "dc10979617a7adbc8ac942050fec02cbfda7dc8a71a9ad31e646990b55cf281d"
+    },
+    {
+      "questionId": "g6-argon-0935",
+      "revision": 3,
+      "contentHash": "62a34b562ccb423854c48a2e7d93c493f766cc3a333ac6a16e50c295e184013c",
+      "precomputed": {
+        "typeBase": 2,
+        "lengthBump": 2,
+        "t3Base": 0,
+        "readingLoad": 95,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g6-argon-0935",
+          "revision": 3,
+          "contentHash": "62a34b562ccb423854c48a2e7d93c493f766cc3a333ac6a16e50c295e184013c",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 3,
+          "L2": 3,
+          "T1": 2,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "curriculum_explicit",
+          "unit": "[6국01-07] 절차와 규칙을 지키고 타당한 이유와 근거를 제시하며 토론한다.",
+          "reason": "6학년 토론 절차의 고추상 격식 한자어이며 질의·판정·합의 등 인접 토론 활동 오답과 구별해야 하나 정답 문장에 직접 단서가 있음."
+        },
+        {
+          "questionId": "g6-argon-0935",
+          "revision": 3,
+          "contentHash": "62a34b562ccb423854c48a2e7d93c493f766cc3a333ac6a16e50c295e184013c",
+          "judge": "codex",
+          "model": "gpt-6-astra",
+          "L1": 3,
+          "L2": 3,
+          "T1": 2,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "curriculum_explicit",
+          "unit": "[6국01-07] 절차와 규칙을 지키고 타당한 이유와 근거를 제시하며 토론한다.",
+          "reason": "토론의 추상적 절차 개념을 질의·판정·합의와 구별하는 문항이며, 제안 목적과 말할 차례를 짚는 직접 단서가 있다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 6,
+        "T": 5,
+        "V": 17,
+        "ownTier": "advanced",
+        "band": {
+          "min": 6,
+          "max": 6
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "11254d3c10bbd1997dccda5ddece2211210846f48fcef893fa83a66d047ae53a"
+    },
+    {
+      "questionId": "g6-argon-0935",
+      "revision": 4,
+      "contentHash": "bb30feed32cb2e8e3d96e44006b0f2f825c5ae16f8e5d5ad65cdf713bf6362e0",
+      "precomputed": {
+        "typeBase": 2,
+        "lengthBump": 2,
+        "t3Base": 0,
+        "readingLoad": 95,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g6-argon-0935",
+          "revision": 4,
+          "contentHash": "bb30feed32cb2e8e3d96e44006b0f2f825c5ae16f8e5d5ad65cdf713bf6362e0",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 3,
+          "L2": 3,
+          "T1": 2,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "curriculum_explicit",
+          "unit": "[6국01-07] 절차와 규칙을 지키고 타당한 이유와 근거를 제시하며 토론한다.",
+          "reason": "‘입론’은 구어 빈도가 낮은 6학년 토론 격식 문어(L1=3)이자 ‘세울 입(立)+의논할 론(論)’의 음훈 추론이 필요한 고추상 한자어(L2=3)이며, 질의·판정·합의 등 의논 절차 경계 오답 3개를 구별해야 하나(T1=2) 정답 문장에 직접 단서(‘제안 목적과 말할 차례’)가 있어(추론=0) [6국01-07] 토론 절차 어휘로 초등 범위에 적합하다."
+        },
+        {
+          "questionId": "g6-argon-0935",
+          "revision": 4,
+          "contentHash": "bb30feed32cb2e8e3d96e44006b0f2f825c5ae16f8e5d5ad65cdf713bf6362e0",
+          "judge": "codex",
+          "model": "gpt-6-astra",
+          "L1": 3,
+          "L2": 3,
+          "T1": 2,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "curriculum_explicit",
+          "unit": "[6국01-07] 절차와 규칙을 지키고 타당한 이유와 근거를 제시하며 토론한다.",
+          "reason": "입론은 일상 노출이 적은 추상적 한자어지만 초등 고학년 토론 학습에서 다룰 수 있으며, 각 선택지의 직접 행동 단서로 질의·판정·합의와 기능을 구별한다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 6,
+        "T": 5,
+        "V": 17,
+        "ownTier": "advanced",
+        "band": {
+          "min": 6,
+          "max": 6
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "40a24357aadd8d6db83689ab8889dfaf47dbd1e5c8e5a34d8b0056805f10acf3"
     },
     {
       "questionId": "g6-argon-0936",
@@ -3057,6 +3359,66 @@
         "flags": []
       },
       "levelAssessmentHash": "c3e241cb05ae51fd8d44546d6c7617daaadc158930dd5d1f02138186725007c5"
+    },
+    {
+      "questionId": "g6-argon-0948",
+      "revision": 4,
+      "contentHash": "18a770f0b03e165740b47c883c1c9e24390199334e4aedcb09e1cf06ccfaeb7b",
+      "precomputed": {
+        "typeBase": 1,
+        "lengthBump": 2,
+        "t3Base": 0,
+        "readingLoad": 92,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g6-argon-0948",
+          "revision": 4,
+          "contentHash": "18a770f0b03e165740b47c883c1c9e24390199334e4aedcb09e1cf06ccfaeb7b",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 3,
+          "L2": 2,
+          "T1": 1,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "구어 빈도가 낮은 6학년 격식 문어 한자어이나 발문의 분량 대조·원인 단서가 명확하고 오답과의 의미 구별 부담이 크지 않음."
+        },
+        {
+          "questionId": "g6-argon-0948",
+          "revision": 4,
+          "contentHash": "18a770f0b03e165740b47c883c1c9e24390199334e4aedcb09e1cf06ccfaeb7b",
+          "judge": "codex",
+          "model": "gpt-6-astra",
+          "L1": 3,
+          "L2": 2,
+          "T1": 1,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "curriculum_explicit",
+          "unit": "[6국01-05] 자료를 선별하여 핵심 정보를 중심으로 내용을 구성하고 매체를 활용하여 발표한다.",
+          "reason": "자료에서 필요한 부분을 선택하는 문어 한자어로, 풀이·배열·보충과 뜻이 구별되고 발표 분량 제한이라는 원인 단서가 있다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 5,
+        "T": 4,
+        "V": 14,
+        "ownTier": "core",
+        "band": {
+          "min": 6,
+          "max": 6
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "3c5efdad51dbbc0182bbf3ad95010601aea352d1ceb6dca9c84adee517273302"
     },
     {
       "questionId": "g6-argon-0949",
