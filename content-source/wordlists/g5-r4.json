@@ -1,0 +1,509 @@
+{
+  "grade": 5,
+  "round": 4,
+  "designGoal": "normal-advanced",
+  "source": {
+    "producer": "Gemini 4 Argon (High)",
+    "order": "O-A1",
+    "checker": "claude-opus-5-5",
+    "effort": "high",
+    "policy": "claude-argon-v1",
+    "checkedAt": "2026-11-09T00:20:19.687Z"
+  },
+  "items": [
+    {
+      "kind": "word",
+      "lemma": "축적하다",
+      "partOfSpeech": "동사",
+      "senseOrder": 1,
+      "types": [
+        "synonym_context",
+        "cloze"
+      ],
+      "variantTag": "standard",
+      "expectedL1": 2,
+      "expectedL2": 2,
+      "gradeEvidence": "[6국02-01] 글의 구조를 고려하며 주제나 주장을 파악하고 글 내용을 요약한다.",
+      "checked": true,
+      "reason": "사전 뜻 '지식·경험 따위를 모아서 쌓다'와 동사·뜻 번호 1이 맞고 standard 표시도 맞다. '모아 쌓다'로 쉽게 풀 수 있어 지식·경험을 쌓는 짧은 상황의 cloze·유의 문항이 자연스럽다. 다만 L1은 3에 가까울 수 있다."
+    },
+    {
+      "kind": "word",
+      "lemma": "촉진하다",
+      "partOfSpeech": "동사",
+      "senseOrder": 1,
+      "types": [
+        "antonym_context",
+        "usage"
+      ],
+      "variantTag": "standard",
+      "expectedL1": 2,
+      "expectedL2": 2,
+      "gradeEvidence": "rubric_inferred(L=4,T=5)",
+      "checked": true,
+      "sourceEntry": {
+        "provider": "stdict",
+        "entryId": "332050"
+      },
+      "reason": "의도한 뜻은 '다그쳐 빨리 나아가게 하다'(동형어 1)이고, 동형어 2는 의학 전문어라 제외한다. 성장·변화를 앞당기는 상황에서 '늦추다·막다'와 대조하는 반의 문항과 usage 문항을 만들기 좋다."
+    },
+    {
+      "kind": "word",
+      "lemma": "부각하다",
+      "partOfSpeech": "동사",
+      "senseOrder": 2,
+      "types": [
+        "synonym_context",
+        "usage"
+      ],
+      "variantTag": "polysemy",
+      "expectedL1": 2,
+      "expectedL2": 2,
+      "gradeEvidence": "[6국04-01] 음성 언어 및 문자 언어의 특성을 이해하고 다양한 매체 자료에서 표현 효과를 평가한다.",
+      "checked": false,
+      "reason": "뜻 2는 '【…으로】 주목받는 것으로 나타나다'라는 자동사 용법이다. 실제로는 '부각되다'를 쓰는 자리라 이 뜻으로는 자연스러운 문항을 만들기 어렵다. 후보가 의도했을 '두드러지게 하다'와 뜻 번호도 어긋난다."
+    },
+    {
+      "kind": "word",
+      "lemma": "경직되다",
+      "partOfSpeech": "동사",
+      "senseOrder": 2,
+      "types": [
+        "usage"
+      ],
+      "variantTag": "polysemy",
+      "expectedL1": 2,
+      "expectedL2": 2,
+      "gradeEvidence": "[6국01-06] 토의에 협력적으로 참여하며 서로의 의견을 비교하고 조정한다.",
+      "checked": true,
+      "reason": "뜻 2 '태도·분위기가 융통성 없이 딱딱하게 되다'는 뜻 1(몸이 굳다)에서 넓어진 의미라 polysemy 표시가 맞다. '분위기가 딱딱해지다' 같은 쉬운 말로 회의·교실 상황의 usage 문항을 만들 수 있다."
+    },
+    {
+      "kind": "word",
+      "lemma": "모색하다",
+      "partOfSpeech": "동사",
+      "senseOrder": 1,
+      "types": [
+        "synonym_context"
+      ],
+      "variantTag": "standard",
+      "expectedL1": 2,
+      "expectedL2": 2,
+      "gradeEvidence": "[6국02-04] 문제 상황과 관련된 다양한 관점의 글을 읽고 이를 문제 해결에 활용한다.",
+      "checked": true,
+      "reason": "사전 뜻 '해결 방법이나 실마리를 더듬어 찾다'와 일치하고 standard다. 토의 상황의 '방법을 찾다'로 유의 문항을 만들 수 있다. 격식 문어라 L1이 3일 수 있다."
+    },
+    {
+      "kind": "word",
+      "lemma": "직면하다",
+      "partOfSpeech": "동사",
+      "senseOrder": 1,
+      "types": [
+        "antonym_context",
+        "usage"
+      ],
+      "variantTag": "standard",
+      "expectedL1": 2,
+      "expectedL2": 2,
+      "gradeEvidence": "rubric_inferred(L=4,T=5)",
+      "checked": true,
+      "reason": "'직접 당하거나 접하다'와 일치한다. 어려움에 '맞서다'와 '피하다'를 대조하는 반의 문항이나 usage 문항이 짧은 생활 상황으로 가능하다."
+    },
+    {
+      "kind": "word",
+      "lemma": "만류하다",
+      "partOfSpeech": "동사",
+      "senseOrder": 1,
+      "types": [
+        "antonym_context"
+      ],
+      "variantTag": "standard",
+      "expectedL1": 2,
+      "expectedL2": 2,
+      "gradeEvidence": "[6국05-03] 소설이나 극을 읽고 인물, 사건, 배경을 파악한다.",
+      "checked": true,
+      "reason": "'붙들고 못 하게 말리다'로 쉬운 말 풀이가 분명하다. 이야기 속 인물 행동으로 '부추기다·권하다'와 대조하는 반의 문항에 적합하다."
+    },
+    {
+      "kind": "word",
+      "lemma": "배분하다",
+      "partOfSpeech": "동사",
+      "senseOrder": 1,
+      "types": [
+        "usage",
+        "synonym_context"
+      ],
+      "variantTag": "standard",
+      "expectedL1": 2,
+      "expectedL2": 2,
+      "gradeEvidence": "[6국01-06] 토의에 협력적으로 참여하며 서로의 의견을 비교하고 조정한다.",
+      "checked": true,
+      "reason": "'몫몫이 별러 나누다'와 일치하고 standard다. 역할·간식을 나누는 학급 상황으로 usage·유의 문항을 만들 수 있다. 다만 '나누다'와 거리가 가까워 T1이 낮게 나올 수 있다."
+    },
+    {
+      "kind": "word",
+      "lemma": "유발하다",
+      "partOfSpeech": "동사",
+      "senseOrder": 1,
+      "types": [
+        "antonym_context",
+        "usage"
+      ],
+      "variantTag": "standard",
+      "expectedL1": 2,
+      "expectedL2": 2,
+      "gradeEvidence": "rubric_inferred(L=4,T=5)",
+      "checked": false,
+      "reason": "제작 가능한 미사용 유형 없음"
+    },
+    {
+      "kind": "word",
+      "lemma": "억제하다",
+      "partOfSpeech": "동사",
+      "senseOrder": 1,
+      "types": [
+        "antonym_context",
+        "synonym_context"
+      ],
+      "variantTag": "standard",
+      "expectedL1": 2,
+      "expectedL2": 2,
+      "gradeEvidence": "rubric_inferred(L=4,T=5)",
+      "checked": false,
+      "reason": "제작 가능한 미사용 유형 없음"
+    },
+    {
+      "kind": "word",
+      "lemma": "표출하다",
+      "partOfSpeech": "동사",
+      "senseOrder": 1,
+      "types": [
+        "antonym_context"
+      ],
+      "variantTag": "standard",
+      "expectedL1": 2,
+      "expectedL2": 2,
+      "gradeEvidence": "[6국05-05] 자신의 경험을 시, 소설, 극, 수필 등 적절한 갈래로 표현한다.",
+      "checked": true,
+      "reason": "'겉으로 나타내다'로 풀이가 쉽다. 감정을 드러내는 상황에서 '숨기다·억누르다'와 대조하는 반의 문항이 자연스럽다."
+    },
+    {
+      "kind": "word",
+      "lemma": "치밀하다",
+      "partOfSpeech": "형용사",
+      "senseOrder": 1,
+      "types": [
+        "antonym_context",
+        "synonym_context"
+      ],
+      "variantTag": "standard",
+      "expectedL1": 2,
+      "expectedL2": 2,
+      "gradeEvidence": "rubric_inferred(L=4,T=5)",
+      "checked": true,
+      "reason": "뜻 1 '자세하고 꼼꼼하다'와 일치하고 standard가 맞다. 계획·준비 상황에서 '허술하다'와 대조하는 반의 문항이나 유의 문항을 만들기 좋다."
+    },
+    {
+      "kind": "word",
+      "lemma": "완화하다",
+      "partOfSpeech": "동사",
+      "senseOrder": 1,
+      "types": [
+        "antonym_context"
+      ],
+      "variantTag": "standard",
+      "expectedL1": 2,
+      "expectedL2": 2,
+      "gradeEvidence": "[6국01-06] 토의에 협력적으로 참여하며 서로의 의견을 비교하고 조정한다.",
+      "checked": true,
+      "reason": "뜻 1 '긴장되거나 급박한 것을 느슨하게 하다'와 일치한다. '강화하다·조이다'와 대조하는 반의 문항이 가능하다. 문항은 긴장·갈등을 누그러뜨리는 뜻 1 상황으로 써야 한다."
+    },
+    {
+      "kind": "word",
+      "lemma": "도출하다",
+      "partOfSpeech": "동사",
+      "senseOrder": 1,
+      "types": [
+        "usage",
+        "cloze"
+      ],
+      "variantTag": "standard",
+      "expectedL1": 2,
+      "expectedL2": 2,
+      "gradeEvidence": "[6국01-06] 토의에 협력적으로 참여하며 서로의 의견을 비교하고 조정한다.",
+      "checked": false,
+      "reason": "의도한 항목은 416080 '결론을 이끌어 내다'로 보인다. 하지만 학술·격식 문어라 5학년 말로 자연스러운 상황을 만들기 어렵다. 예상 L 2·2도 과소 추정으로 보여 5학년 Normal 공급용으로 승인하지 않는다."
+    },
+    {
+      "kind": "word",
+      "lemma": "방대하다",
+      "partOfSpeech": "형용사",
+      "senseOrder": 1,
+      "types": [
+        "cloze"
+      ],
+      "variantTag": "standard",
+      "expectedL1": 2,
+      "expectedL2": 2,
+      "gradeEvidence": "[6국01-05] 자료를 선별하여 핵심 정보를 중심으로 내용을 구성하고 매체를 활용하여 발표한다.",
+      "checked": true,
+      "reason": "'규모나 양이 매우 크거나 많다'와 일치한다. 자료·책의 양을 말하는 짧은 cloze 문항이 자연스럽고, '엄청 많다'로 쉽게 풀린다."
+    },
+    {
+      "kind": "word",
+      "lemma": "수렴하다",
+      "partOfSpeech": "동사",
+      "senseOrder": 1,
+      "types": [
+        "cloze",
+        "synonym_context"
+      ],
+      "variantTag": "standard",
+      "expectedL1": 2,
+      "expectedL2": 2,
+      "gradeEvidence": "[6국01-06] 토의에 협력적으로 참여하며 서로의 의견을 비교하고 조정한다.",
+      "checked": false,
+      "reason": "후보 근거(토의에서 의견을 모음)가 의도한 뜻은 '의견을 하나로 모아 정리하다'다. 그러나 제시된 뜻 번호 1 항목은 '돈·물건을 거두어들이다'와 '발을 드리우다'뿐이라 맞는 항목을 고를 수 없다."
+    },
+    {
+      "kind": "word",
+      "lemma": "고수하다",
+      "partOfSpeech": "동사",
+      "senseOrder": 1,
+      "types": [
+        "synonym_context",
+        "antonym_context"
+      ],
+      "variantTag": "standard",
+      "expectedL1": 2,
+      "expectedL2": 2,
+      "gradeEvidence": "[6국01-06] 토의에 협력적으로 참여하며 서로의 의견을 비교하고 조정한다.",
+      "checked": true,
+      "sourceEntry": {
+        "provider": "stdict",
+        "entryId": "393409"
+      },
+      "reason": "의도한 뜻은 '차지한 물건이나 형세를 굳게 지키다'(동형어 2)다. 의견을 굳게 지키는 상황에서 '양보하다·바꾸다'와 대조하는 문항을 만들 수 있다. 격식어라 L2가 3일 수 있다."
+    },
+    {
+      "kind": "word",
+      "lemma": "강구하다",
+      "partOfSpeech": "동사",
+      "senseOrder": 1,
+      "types": [
+        "cloze",
+        "synonym_context"
+      ],
+      "variantTag": "standard",
+      "expectedL1": 2,
+      "expectedL2": 2,
+      "gradeEvidence": "[6국02-04] 문제 상황과 관련된 다양한 관점의 글을 읽고 이를 문제 해결에 활용한다.",
+      "checked": false,
+      "reason": "맞는 항목은 8073 '대책을 궁리하여 찾아내다'다. 하지만 '대책을 강구하다'는 공문·신문 투 격식어라 5학년 상황 문항이 억지스러워진다. 같은 묶음의 모색하다와 뜻도 겹쳐 승인하지 않는다."
+    },
+    {
+      "kind": "word",
+      "lemma": "묵인하다",
+      "partOfSpeech": "동사",
+      "senseOrder": 1,
+      "types": [
+        "usage"
+      ],
+      "variantTag": "standard",
+      "expectedL1": 2,
+      "expectedL2": 2,
+      "gradeEvidence": "[6국02-04] 문제 상황과 관련된 다양한 관점의 글을 읽고 이를 문제 해결에 활용한다.",
+      "checked": true,
+      "reason": "'모르는 체하고 내버려두어 슬며시 인정하다'와 일치한다. '알면서 못 본 척 넘어가다'로 풀어 학급 규칙 상황에서 의도를 판단하는 usage 문항을 만들 수 있다. L은 2·2보다 높을 수 있다."
+    },
+    {
+      "kind": "word",
+      "lemma": "방치하다",
+      "partOfSpeech": "동사",
+      "senseOrder": 1,
+      "types": [
+        "antonym_context",
+        "cloze"
+      ],
+      "variantTag": "standard",
+      "expectedL1": 2,
+      "expectedL2": 2,
+      "gradeEvidence": "[6국02-04] 문제 상황과 관련된 다양한 관점의 글을 읽고 이를 문제 해결에 활용한다.",
+      "checked": false,
+      "reason": "제작 가능한 미사용 유형 없음"
+    },
+    {
+      "kind": "word",
+      "lemma": "재개하다",
+      "partOfSpeech": "동사",
+      "senseOrder": 1,
+      "types": [
+        "antonym_context",
+        "cloze"
+      ],
+      "variantTag": "standard",
+      "expectedL1": 2,
+      "expectedL2": 2,
+      "gradeEvidence": "[6국04-05] 글과 담화에 쓰인 시간 표현을 이해하고 상황에 맞게 표현한다.",
+      "checked": true,
+      "sourceEntry": {
+        "provider": "stdict",
+        "entryId": "287028"
+      },
+      "reason": "의도한 뜻은 '중단했던 활동을 다시 시작하다'(동형어 2)다. 경기·회의 상황에서 '중단하다'와 대조하는 반의 문항과 cloze 문항이 자연스럽다. 근거로 든 시간 표현 성취기준은 연결이 약하다."
+    },
+    {
+      "kind": "word",
+      "lemma": "전가하다",
+      "partOfSpeech": "동사",
+      "senseOrder": 1,
+      "types": [
+        "usage",
+        "antonym_context"
+      ],
+      "variantTag": "standard",
+      "expectedL1": 2,
+      "expectedL2": 2,
+      "gradeEvidence": "rubric_inferred(L=4,T=5)",
+      "checked": true,
+      "sourceEntry": {
+        "provider": "stdict",
+        "entryId": "474790"
+      },
+      "reason": "의도한 뜻은 '잘못이나 책임을 남에게 넘겨씌우다'(동형어 3)이고, 불교 용어와 가업 상속 뜻은 제외한다. '떠넘기다'로 쉽게 풀리고, '책임지다'와 대조하는 문항도 가능하다."
+    },
+    {
+      "kind": "word",
+      "lemma": "지향하다",
+      "partOfSpeech": "동사",
+      "senseOrder": 1,
+      "types": [
+        "cloze",
+        "antonym_context"
+      ],
+      "variantTag": "standard",
+      "expectedL1": 2,
+      "expectedL2": 2,
+      "gradeEvidence": "[6국02-01] 글의 구조를 고려하며 주제나 주장을 파악하고 글 내용을 요약한다.",
+      "checked": true,
+      "sourceEntry": {
+        "provider": "stdict",
+        "entryId": "314519"
+      },
+      "reason": "'어떤 목표로 뜻이 쏠리어 향하다'(동형어 1)가 목표 지향의 뜻에 맞다. 추상도가 높아 L이 5에 가까울 수 있다. 반의 문항에서 6학년 수준의 '지양하다'를 오답으로 끌어오지 않도록 주의해야 한다."
+    },
+    {
+      "kind": "word",
+      "lemma": "간파하다",
+      "partOfSpeech": "동사",
+      "senseOrder": 1,
+      "types": [
+        "antonym_context"
+      ],
+      "variantTag": "standard",
+      "expectedL1": 2,
+      "expectedL2": 2,
+      "gradeEvidence": "[6국02-02] 글에서 생략된 내용이나 함축된 표현을 문맥을 고려하여 추론한다.",
+      "checked": true,
+      "reason": "'속내를 꿰뚫어 알아차리다'와 일치한다. 이야기에서 속셈을 알아차리는 상황과 '속다·눈치채지 못하다'를 대조하는 반의 문항이 가능하다."
+    },
+    {
+      "kind": "word",
+      "lemma": "자각하다",
+      "partOfSpeech": "동사",
+      "senseOrder": 1,
+      "types": [
+        "synonym_context",
+        "usage"
+      ],
+      "variantTag": "standard",
+      "expectedL1": 2,
+      "expectedL2": 2,
+      "gradeEvidence": "[6국05-06] 작품을 읽고 자신의 삶과 연관 지어 성찰하는 태도를 지닌다.",
+      "checked": true,
+      "sourceEntry": {
+        "provider": "stdict",
+        "entryId": "274316"
+      },
+      "reason": "의도한 뜻은 '자기 입장이나 능력을 스스로 깨닫다'(동형어 2)이고, 다른 두 동형어는 맞지 않는다. 짧은 반성 상황에서 '깨닫다'와 비교하는 유의 문항과 usage 문항을 만들 수 있다."
+    },
+    {
+      "kind": "word",
+      "lemma": "강행하다",
+      "partOfSpeech": "동사",
+      "senseOrder": 1,
+      "types": [
+        "antonym_context",
+        "usage"
+      ],
+      "variantTag": "standard",
+      "expectedL1": 2,
+      "expectedL2": 2,
+      "gradeEvidence": "rubric_inferred(L=4,T=5)",
+      "checked": true,
+      "reason": "뜻 1 '어려운 점을 무릅쓰고 행하다'와 일치한다. 비가 와도 행사를 그대로 하는 상황에서 '취소하다·미루다'와 대조하는 문항이 자연스럽다."
+    },
+    {
+      "kind": "word",
+      "lemma": "예견하다",
+      "partOfSpeech": "동사",
+      "senseOrder": 1,
+      "types": [
+        "synonym_context",
+        "cloze"
+      ],
+      "variantTag": "standard",
+      "expectedL1": 2,
+      "expectedL2": 2,
+      "gradeEvidence": "[6국02-02] 글에서 생략된 내용이나 함축된 표현을 문맥을 고려하여 추론한다.",
+      "checked": true,
+      "reason": "'앞으로 일어날 일을 미리 짐작하다'와 일치하고, 쉬운 말로 풀린다. 날씨·결과를 미리 짐작하는 상황으로 유의·cloze 문항을 만들기 좋다."
+    },
+    {
+      "kind": "word",
+      "lemma": "확충하다",
+      "partOfSpeech": "동사",
+      "senseOrder": 1,
+      "types": [
+        "antonym_context",
+        "cloze"
+      ],
+      "variantTag": "standard",
+      "expectedL1": 2,
+      "expectedL2": 2,
+      "gradeEvidence": "[6국01-07] 절차와 규칙을 지키고 타당한 이유와 근거를 제시하며 토론한다.",
+      "checked": false,
+      "reason": "제작 가능한 미사용 유형 없음"
+    },
+    {
+      "kind": "word",
+      "lemma": "판별하다",
+      "partOfSpeech": "동사",
+      "senseOrder": 1,
+      "types": [
+        "synonym_context"
+      ],
+      "variantTag": "standard",
+      "expectedL1": 2,
+      "expectedL2": 2,
+      "gradeEvidence": "[6국06-02] 뉴스 및 각종 정보 매체 자료의 신뢰성을 평가한다.",
+      "checked": true,
+      "reason": "'옳고 그름이나 좋고 나쁨을 판단하여 구별하다'와 일치한다. 정보의 참·거짓을 가리는 짧은 상황의 유의 문항이 성취기준과도 맞는다."
+    },
+    {
+      "kind": "word",
+      "lemma": "반영하다",
+      "partOfSpeech": "동사",
+      "senseOrder": 2,
+      "types": [
+        "usage"
+      ],
+      "variantTag": "polysemy",
+      "expectedL1": 2,
+      "expectedL2": 2,
+      "gradeEvidence": "[6국03-04] 독자와 매체를 고려하여 내용을 생성하고 표현하며 글을 쓴다.",
+      "checked": true,
+      "reason": "사전 「2」 '다른 것에 영향을 받아 어떤 현상을 나타내다'와 동사·뜻 번호가 맞고, 제1의미(빛이 반사하여 비치다)가 아닌 확장 의미라 polysemy 표시가 타당하다. '옛 노래 가사가 그 시대 사람들의 생활을 반영한다'처럼 쉬운 상황으로 90음절 이하 usage 문항을 만들 수 있다. L1·L2=2·2도 과장이 아니다. 다만 성취기준 [6국03-04]와의 연결은 약하고, 제작 시 '의견을 반영하다'(받아들여 적용하다) 쓰임이 오답 보기와 겹치지 않게 해야 한다."
+    }
+  ]
+}
