@@ -15,7 +15,8 @@
 - **사고와 수정:** ① 후보 검사기가 성취기준 code의 대괄호를 이중으로 붙여 첫 묶음을 반려 → 수정 후 저장 답장 재사용. ② Claude 5시간 한도 문구("hit your 5-hour limit")가 사용량 대기 정규식에 안 걸려 관문 4개가 형식 오류로 끝남 → 정규식 수정(`803055bb`), 관문을 순서대로 재실행. 동시 관문은 사용자 Claude 사용량을 빨리 소진하므로 순차 실행을 권한다.
 - **Codex 계정 변경(11-09):** 사용자가 Codex를 djqanrudgns12@gmail.com(Pro Lite)으로 바꿨다. 앞으로 Codex 작업은 이 계정으로 한다.
 - **G6-014 회수 완료(`b9a8388d`):** 11-06 실패 개선 실행의 보존 원답장 중 형식 통과 4개(0652·0679·0670·0684)를 `.orchestrate/claude-fill/recover-014.mjs`로 native 회수(원본·원답장 해시 확인, 모델 호출 0) → 새 계정 Codex 관문(codex-argon-v1) S1~S4 한 번에 4/4 통과 → 4개 모두 advanced. 0651(금지 표현)은 원승인 유지. 6학년 Normal 심화 124 → 128.
-- **남은 일:** 운영 배포·운영 seed는 미실행(사용자 확인 대상). Normal용 advanced 목표치 150은 4·5·6학년 미달(바닥 120은 통과).
+- **운영 배포(2026-11-09 18:10 KST, 사용자 지시):** ① 운영 D1 정답 키 seed(`npm run server:seed:remote`, 6,167행) → 활성 은행 판 4개가 앱 manifest와 일치(키 3학년 1,140·4학년 1,458·5학년 1,704·6학년 1,860, 공유 포함). Worker 코드(`server/src`)는 지난 배포 뒤 변경 없고 원격 마이그레이션도 최신이라 Worker 재배포는 하지 않았다. ② `p1/intake-round1`을 `main`에 빨리 감기 push(`69c815be..459d0f9a`) → Pages 워크플로 검사·빌드·배포 모두 성공(run 42590601030). ③ 실제 주소 확인: `voca.ssamuniverse.com` 200·콘솔 오류 0·배포 6학년 청크가 `pub-g6-ff51eaeee985`와 새 문항 포함, `voca-api.ssamuniverse.com/v1/device` 200. 새 은행이 켜져 이전 은행 기록은 랭킹에서 빠진다(삭제 아님, DEPLOY.md §4.3).
+- **남은 일:** Normal용 advanced 목표치 150(현재 4학년 122·5학년 123·6학년 128, 바닥 120은 통과)을 Codex 정책으로 보충 중.
 
 ## 2026-11-08 Claude 인수 마무리
 
