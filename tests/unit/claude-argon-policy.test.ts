@@ -205,7 +205,8 @@ describe('기존 정책 보존·레지스트리 규칙 문구', () => {
 
   it('Claude 정책 배치가 없으면 규칙 문구가 추적 레지스트리와 같고, 있으면 Claude 규칙만 덧붙는다', () => {
     const stored = readRepo('content-source/approvals/registry.json') as b.Registry;
-    expect(stored.rule).toBe(b.RULE);
+    // 2026-11-09부터 추적 은행에 claude-argon-v1 배치가 있다. 기존 codex 규칙은 바이트 그대로 앞에 두고 Claude 규칙만 덧붙는다.
+    expect(stored.rule).toBe(`${b.RULE} ${b.CLAUDE_RULE}`);
     expect(b.buildRegistry([codexBatch()]).rule).toBe(b.RULE);
     const mixed = b.buildRegistry([codexBatch(), claudeBatch()]);
     expect(mixed.rule).toBe(`${b.RULE} ${b.CLAUDE_RULE}`);
