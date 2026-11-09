@@ -1,0 +1,993 @@
+{
+  "reviewId": "QR-AUTO-codex-Q50-G4-028",
+  "jobId": "Q50-G4-028",
+  "reviewer": {
+    "model": "gpt-6-astra",
+    "tool": "2단계 블라인드 검수(tools/orchestrate/review.mjs)",
+    "freshContext": true,
+    "date": "2026-11-09"
+  },
+  "items": [
+    {
+      "questionId": "g4-argon-2666",
+      "revision": 1,
+      "contentHash": "0508b974e17db9a5c997d97c8d35d7861294b1f493b6b670790c0cb75d69e353",
+      "run": {
+        "id": "20261109T101302479Z-52261-d5eb6f40-74b6-4618-87c0-b95b6eb5ab41",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "b",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": []
+    },
+    {
+      "questionId": "g4-argon-2667",
+      "revision": 1,
+      "contentHash": "49e3c662b3331e63801ca4771c2cbbc124d37f630f94895629fae1828e681844",
+      "run": {
+        "id": "20261109T101302479Z-52261-d5eb6f40-74b6-4618-87c0-b95b6eb5ab41",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "d",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "fail",
+        "explanation": "fail"
+      },
+      "findings": [
+        "[블라인드] ‘마지막 화살이 과녁 밖으로 빠지면서’만으로 이미 얻은 점수가 합격 기준에서 더 멀어지지는 않는다. ‘마지막 화살이 과녁 밖으로 빠져 큰 점수가 감점되면서’로 고친다.",
+        "[공개 대조] ‘마지막 화살이 과녁 밖으로 빠지면서’만으로 이미 얻은 점수가 합격 기준에서 더 멀어지지는 않는다. 해당 구절에 ‘큰 점수가 감점되면서’를 추가한다."
+      ]
+    },
+    {
+      "questionId": "g4-argon-2667",
+      "revision": 2,
+      "contentHash": "b69cbb9449e757beda9f46bb4390e7cc569343451ee9af8e98ab8ced380bb2de",
+      "run": {
+        "id": "20261109T101554595Z-52261-2b6ed3f8-ecc9-4216-828e-3881d475306e",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "d",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": []
+    },
+    {
+      "questionId": "g4-argon-2668",
+      "revision": 1,
+      "contentHash": "1e52c981ccaece46c6c13742566fbfa6a61e35bfcd9bad5bcf34c4f871ec8b7c",
+      "run": {
+        "id": "20261109T101302479Z-52261-d5eb6f40-74b6-4618-87c0-b95b6eb5ab41",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "a",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "fail"
+      },
+      "findings": [
+        "[공개 대조] b의 ‘빨라지다’는 날짜가 앞당겨지는 뜻도 있어 속도만으로 설명하면 부정확하다. ‘발표회 날짜 자체가 앞당겨진 것이 아니라 남은 시간이 줄어든 상황이에요’로 고친다."
+      ]
+    },
+    {
+      "questionId": "g4-argon-2668",
+      "revision": 2,
+      "contentHash": "c16071a3cc9a6cdb139a4c9199a270a867317fdc94e578cdc55b92dd28ac3bcc",
+      "run": {
+        "id": "20261109T101554595Z-52261-2b6ed3f8-ecc9-4216-828e-3881d475306e",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "a",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": []
+    },
+    {
+      "questionId": "g4-argon-2669",
+      "revision": 1,
+      "contentHash": "a367889a8d9e9f07787638934df433ad569bb4e628e9d8daf88d5ada10fc2ce8",
+      "run": {
+        "id": "20261109T101302479Z-52261-d5eb6f40-74b6-4618-87c0-b95b6eb5ab41",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "c",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": []
+    },
+    {
+      "questionId": "g4-argon-2671",
+      "revision": 1,
+      "contentHash": "9b671f981b363ac6754fbf0ac639c996fcdb59af1b3120a26c451b9ab6253d63",
+      "run": {
+        "id": "20261109T101302479Z-52261-d5eb6f40-74b6-4618-87c0-b95b6eb5ab41",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "a",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": []
+    },
+    {
+      "questionId": "g4-argon-2672",
+      "revision": 1,
+      "contentHash": "6817ea4ee7748f3006e417204737dcc0dd39ee9e23f737891331febead3f6136",
+      "run": {
+        "id": "20261109T101302479Z-52261-d5eb6f40-74b6-4618-87c0-b95b6eb5ab41",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "c",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": []
+    },
+    {
+      "questionId": "g4-argon-2673",
+      "revision": 1,
+      "contentHash": "4e2d181056cb01b494b9b67deb97e454f385e69fb54572fc4ba00f2cbc3ef64d",
+      "run": {
+        "id": "20261109T101302479Z-52261-d5eb6f40-74b6-4618-87c0-b95b6eb5ab41",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "b",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": []
+    },
+    {
+      "questionId": "g4-argon-2674",
+      "revision": 1,
+      "contentHash": "909473dc8052880af80790ca340135471fcd630a4c20d0df4a2e2c5edcc1e802",
+      "run": {
+        "id": "20261109T101302479Z-52261-d5eb6f40-74b6-4618-87c0-b95b6eb5ab41",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "d",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": []
+    },
+    {
+      "questionId": "g4-argon-2675",
+      "revision": 1,
+      "contentHash": "0e9142bc47eb6e40ac2f287d1ce828d23afb8cda9523333b54376199861429f4",
+      "run": {
+        "id": "20261109T101302479Z-52261-d5eb6f40-74b6-4618-87c0-b95b6eb5ab41",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "b",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": []
+    },
+    {
+      "questionId": "g4-argon-2676",
+      "revision": 1,
+      "contentHash": "5f6a1845c4d03ea4dbb667438094a300773da9bdd09c6fbe6d0754dbc9099776",
+      "run": {
+        "id": "20261109T101302479Z-52261-d5eb6f40-74b6-4618-87c0-b95b6eb5ab41",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "d",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": []
+    },
+    {
+      "questionId": "g4-argon-2677",
+      "revision": 1,
+      "contentHash": "c78e91b06564669f7042f12dc993c85926e26a880837d8abf8fdaaf9e2813110",
+      "run": {
+        "id": "20261109T101302479Z-52261-d5eb6f40-74b6-4618-87c0-b95b6eb5ab41",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "a",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": []
+    },
+    {
+      "questionId": "g4-argon-2678",
+      "revision": 1,
+      "contentHash": "336fef747d50e0eca956707a181b9560367b52a07cafe62ea3be7fc745399c98",
+      "run": {
+        "id": "20261109T101302479Z-52261-d5eb6f40-74b6-4618-87c0-b95b6eb5ab41",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "c",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": []
+    },
+    {
+      "questionId": "g4-argon-2679",
+      "revision": 1,
+      "contentHash": "6c4ce26e286ff86241bbf719d119f978e4fbd94a2a5b7a7f788f9a85ee65bac6",
+      "run": {
+        "id": "20261109T101302479Z-52261-d5eb6f40-74b6-4618-87c0-b95b6eb5ab41",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "a",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": []
+    },
+    {
+      "questionId": "g4-argon-2680",
+      "revision": 1,
+      "contentHash": "1135c9381b0cf265cae16719877bc4b678046191dee954b5cf65d0536e388e32",
+      "run": {
+        "id": "20261109T101302479Z-52261-d5eb6f40-74b6-4618-87c0-b95b6eb5ab41",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "c",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "fail"
+      },
+      "findings": [
+        "[공개 대조] a의 ‘물처럼 흘렀다’에는 얼음이 물로 변했다는 뜻이 없다. 오답 이유를 ‘물이 흐르는 듯한 모습을 나타내므로 화가 풀리지 않은 마음을 뜻하지 않아요’로 고친다."
+      ]
+    },
+    {
+      "questionId": "g4-argon-2680",
+      "revision": 2,
+      "contentHash": "5464ce86d583e949fb172de2019f879708828efc2005a22ca6eaaaf99447fdd1",
+      "run": {
+        "id": "20261109T101554595Z-52261-2b6ed3f8-ecc9-4216-828e-3881d475306e",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "c",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": []
+    },
+    {
+      "questionId": "g4-argon-2681",
+      "revision": 1,
+      "contentHash": "4ded2bfb2c1256aade250213e85769836bb0603b93faacb0f3e7be7607ecdcad",
+      "run": {
+        "id": "20261109T101302479Z-52261-d5eb6f40-74b6-4618-87c0-b95b6eb5ab41",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "b",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": []
+    },
+    {
+      "questionId": "g4-argon-2682",
+      "revision": 1,
+      "contentHash": "5e1961ec6c9a96c3b04d051cad1f188da064c403f4cc3e844e63a479a3e5d435",
+      "run": {
+        "id": "20261109T101302479Z-52261-d5eb6f40-74b6-4618-87c0-b95b6eb5ab41",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "d",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": []
+    },
+    {
+      "questionId": "g4-argon-2683",
+      "revision": 1,
+      "contentHash": "3e084ab9a851e3c8f97831edeff591a9f263ba02b0da43b0f901b35b5aa47f99",
+      "run": {
+        "id": "20261109T101302479Z-52261-d5eb6f40-74b6-4618-87c0-b95b6eb5ab41",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "b",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": []
+    },
+    {
+      "questionId": "g4-argon-2684",
+      "revision": 1,
+      "contentHash": "91528c3fa687b881b76227c2897b0d9dee6ae7ea28ef9b2815d563e852e0924d",
+      "run": {
+        "id": "20261109T101302479Z-52261-d5eb6f40-74b6-4618-87c0-b95b6eb5ab41",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "d",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": []
+    },
+    {
+      "questionId": "g4-argon-2685",
+      "revision": 1,
+      "contentHash": "b1b53889d4c3449750b645b411d592c13fa181f81b1259ad3a655b072649f6cd",
+      "run": {
+        "id": "20261109T101302479Z-52261-d5eb6f40-74b6-4618-87c0-b95b6eb5ab41",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "a",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": []
+    },
+    {
+      "questionId": "g4-argon-2686",
+      "revision": 1,
+      "contentHash": "926be7601296379bd32bfca53771ca94c9f01c5a8fe8ffb8c4e37c2f1b022cf4",
+      "run": {
+        "id": "20261109T101302479Z-52261-d5eb6f40-74b6-4618-87c0-b95b6eb5ab41",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "c",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": []
+    },
+    {
+      "questionId": "g4-argon-2687",
+      "revision": 1,
+      "contentHash": "a13da7c379410613c989b37ffe8e9844f8e473d3b84869498a92c73df1d2c1ad",
+      "run": {
+        "id": "20261109T101302479Z-52261-d5eb6f40-74b6-4618-87c0-b95b6eb5ab41",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "a",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": []
+    },
+    {
+      "questionId": "g4-argon-2688",
+      "revision": 1,
+      "contentHash": "12f424d4033164f8df0407029bc180a7948ba2392f22667a438a7da3fec76b59",
+      "run": {
+        "id": "20261109T101302479Z-52261-d5eb6f40-74b6-4618-87c0-b95b6eb5ab41",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "c",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": []
+    },
+    {
+      "questionId": "g4-argon-2689",
+      "revision": 1,
+      "contentHash": "5aeafd02bab3627ffb1f4c5b6e642e334bad054e357e4933474f04cf4cf64ef5",
+      "run": {
+        "id": "20261109T101302479Z-52261-d5eb6f40-74b6-4618-87c0-b95b6eb5ab41",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "b",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": []
+    },
+    {
+      "questionId": "g4-argon-2690",
+      "revision": 1,
+      "contentHash": "b9eed9c8507baf6adcbef8c4a564043fd5708777f2cc46d8e8c30d8bd044f608",
+      "run": {
+        "id": "20261109T101302479Z-52261-d5eb6f40-74b6-4618-87c0-b95b6eb5ab41",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "d",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": []
+    },
+    {
+      "questionId": "g4-argon-2691",
+      "revision": 1,
+      "contentHash": "af8faf5c9bdcf9233d829dfa2992b56539f623b3b0b9d10b0a2ce2c764e277cc",
+      "run": {
+        "id": "20261109T101302479Z-52261-d5eb6f40-74b6-4618-87c0-b95b6eb5ab41",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "b",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "fail",
+        "explanation": "pass"
+      },
+      "findings": [
+        "[블라인드] ‘뒷걸음질 친다’는 한 단어인 ‘뒷걸음질친다’로 붙여 쓴다.",
+        "[공개 대조] ‘뒷걸음질 친다’는 한 단어인 ‘뒷걸음질친다’로 붙여 쓴다."
+      ]
+    },
+    {
+      "questionId": "g4-argon-2691",
+      "revision": 2,
+      "contentHash": "8195884ae87ca679f8e4888a9a300adbdd2d207cdb634b8bf8533bf62cca872c",
+      "run": {
+        "id": "20261109T101554595Z-52261-2b6ed3f8-ecc9-4216-828e-3881d475306e",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "b",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": []
+    },
+    {
+      "questionId": "g4-argon-2692",
+      "revision": 1,
+      "contentHash": "74d7500a057a18aa0c78c78325f85980b0f22fa2e023421286b107f23b342703",
+      "run": {
+        "id": "20261109T101302479Z-52261-d5eb6f40-74b6-4618-87c0-b95b6eb5ab41",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "d",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": []
+    },
+    {
+      "questionId": "g4-argon-2693",
+      "revision": 1,
+      "contentHash": "98a3b2f73ab79bbc24146ef71e8c21f406323cbd1910d4c09fa281dfcfdc12da",
+      "run": {
+        "id": "20261109T101302479Z-52261-d5eb6f40-74b6-4618-87c0-b95b6eb5ab41",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "a",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": []
+    },
+    {
+      "questionId": "g4-argon-2694",
+      "revision": 1,
+      "contentHash": "fd88608130ccfcccde3a2ff95872c889ddca89daff86ced8ac5acf83d38ad02d",
+      "run": {
+        "id": "20261109T101302479Z-52261-d5eb6f40-74b6-4618-87c0-b95b6eb5ab41",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "c",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": []
+    },
+    {
+      "questionId": "g4-argon-2695",
+      "revision": 1,
+      "contentHash": "589f9902258552af909abd2d4f9e2d3d0ea066a0097e0ce47154146530bf8db9",
+      "run": {
+        "id": "20261109T101302479Z-52261-d5eb6f40-74b6-4618-87c0-b95b6eb5ab41",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "a",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": []
+    },
+    {
+      "questionId": "g4-argon-2696",
+      "revision": 1,
+      "contentHash": "04719b4b76ba307fdcdd84f468ec2e09046f00a5bad68b6ed9e8befb5ca68268",
+      "run": {
+        "id": "20261109T101302479Z-52261-d5eb6f40-74b6-4618-87c0-b95b6eb5ab41",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "c",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": []
+    },
+    {
+      "questionId": "g4-argon-2697",
+      "revision": 1,
+      "contentHash": "8b92e80fa080c74ab54f82798c3a817b5f25986730fe16ca67f59446528d52e1",
+      "run": {
+        "id": "20261109T101302479Z-52261-d5eb6f40-74b6-4618-87c0-b95b6eb5ab41",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "b",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": []
+    },
+    {
+      "questionId": "g4-argon-2698",
+      "revision": 1,
+      "contentHash": "eba3b22f5058809deff16dacd9b561c17812fbc6e7b85b190a3a74e07974995a",
+      "run": {
+        "id": "20261109T101302479Z-52261-d5eb6f40-74b6-4618-87c0-b95b6eb5ab41",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "d",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "fail",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "fail"
+      },
+      "findings": [
+        "[공개 대조] b의 ‘가볍다’에도 가치나 비중이 적다는 뜻이 있어 ‘중요하지 않다’에 해당하며, 무게만 뜻한다는 오답 이유도 부정확하다. b를 ‘얇다’로 바꾸고 오답 이유를 두께에 관한 설명으로 맞춘다."
+      ]
+    },
+    {
+      "questionId": "g4-argon-2698",
+      "revision": 2,
+      "contentHash": "1dbda8f63ab6e7c73246f79ae40b2d25e8b6276476ae56fc7895753ddb7dc39f",
+      "run": {
+        "id": "20261109T101554595Z-52261-2b6ed3f8-ecc9-4216-828e-3881d475306e",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "d",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": []
+    },
+    {
+      "questionId": "g4-argon-2699",
+      "revision": 1,
+      "contentHash": "f788881d9d06cbd1bbab35c8749b96431d638ceb9c9a9266dc1978ad3d2db4c7",
+      "run": {
+        "id": "20261109T101302479Z-52261-d5eb6f40-74b6-4618-87c0-b95b6eb5ab41",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "b",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": []
+    },
+    {
+      "questionId": "g4-argon-2700",
+      "revision": 1,
+      "contentHash": "fd9bdba52aab927219444d1374ce601f2a3a3cd5db0d897acb613226ae68acd8",
+      "run": {
+        "id": "20261109T101302479Z-52261-d5eb6f40-74b6-4618-87c0-b95b6eb5ab41",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "d",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": []
+    },
+    {
+      "questionId": "g4-argon-2701",
+      "revision": 1,
+      "contentHash": "5ec8a9184b813e5f57ead1915af7fc9773a13df2dd6b343f0b6c61ddcb2f5722",
+      "run": {
+        "id": "20261109T101302479Z-52261-d5eb6f40-74b6-4618-87c0-b95b6eb5ab41",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "a",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": []
+    },
+    {
+      "questionId": "g4-argon-2703",
+      "revision": 1,
+      "contentHash": "e7151b6cd3bff0d5b07188e802687d25a96b059d810865ef42a4cf2ad84d610e",
+      "run": {
+        "id": "20261109T101302479Z-52261-d5eb6f40-74b6-4618-87c0-b95b6eb5ab41",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "c",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": []
+    },
+    {
+      "questionId": "g4-argon-2705",
+      "revision": 1,
+      "contentHash": "b89d67773891491b59feae964d2cb61d768ab5e338d1fbd73c9d17faea3edb2f",
+      "run": {
+        "id": "20261109T101302479Z-52261-d5eb6f40-74b6-4618-87c0-b95b6eb5ab41",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "a",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": []
+    },
+    {
+      "questionId": "g4-argon-2706",
+      "revision": 1,
+      "contentHash": "046d3df366d40c4d7e15eef20edea754087a706eb7f7403bcfc0bde1b9bf86fa",
+      "run": {
+        "id": "20261109T101302479Z-52261-d5eb6f40-74b6-4618-87c0-b95b6eb5ab41",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "c",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": []
+    },
+    {
+      "questionId": "g4-argon-2707",
+      "revision": 1,
+      "contentHash": "8465fa649c0ee000e0e6bb3a581b1e487496d82e168bd753f8e2c58c4d872364",
+      "run": {
+        "id": "20261109T101302479Z-52261-d5eb6f40-74b6-4618-87c0-b95b6eb5ab41",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "b",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": []
+    },
+    {
+      "questionId": "g4-argon-2709",
+      "revision": 1,
+      "contentHash": "9c1b25adc5aedbadd3dfe1e66b0467202b5ca1fb0d223766ff93b39d895200be",
+      "run": {
+        "id": "20261109T101302479Z-52261-d5eb6f40-74b6-4618-87c0-b95b6eb5ab41",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "d",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": []
+    },
+    {
+      "questionId": "g4-argon-2710",
+      "revision": 1,
+      "contentHash": "6b7bf5b34c7bfe3d7c4aabe08f51f5581195a484499de263b0c85b98e82ae829",
+      "run": {
+        "id": "20261109T101302479Z-52261-d5eb6f40-74b6-4618-87c0-b95b6eb5ab41",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "b",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": []
+    },
+    {
+      "questionId": "g4-argon-2711",
+      "revision": 1,
+      "contentHash": "a5ce4bbd327a2acfdcac1689c63ecfb1fcd24e0fe3baba26798f9c6cc421eb7b",
+      "run": {
+        "id": "20261109T101302479Z-52261-d5eb6f40-74b6-4618-87c0-b95b6eb5ab41",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "d",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": []
+    },
+    {
+      "questionId": "g4-argon-2712",
+      "revision": 1,
+      "contentHash": "ad39fce5372f119ce9579f246c2c7614ee5f65d60b42d79f84d6c9da82c1ccc3",
+      "run": {
+        "id": "20261109T101302479Z-52261-d5eb6f40-74b6-4618-87c0-b95b6eb5ab41",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "a",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": []
+    },
+    {
+      "questionId": "g4-argon-2713",
+      "revision": 1,
+      "contentHash": "a07e5c5ab4b7a51e36028afd718fbc666388fdbebb0f9882dac8a72445f7143e",
+      "run": {
+        "id": "20261109T101302479Z-52261-d5eb6f40-74b6-4618-87c0-b95b6eb5ab41",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "c",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": []
+    },
+    {
+      "questionId": "g4-argon-2714",
+      "revision": 1,
+      "contentHash": "63d2b982fa8af7ffa9cb680b53acc95ebe6a48f370c930b803714ad57a2d0fa1",
+      "run": {
+        "id": "20261109T101302479Z-52261-d5eb6f40-74b6-4618-87c0-b95b6eb5ab41",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "a",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": []
+    },
+    {
+      "questionId": "g4-argon-2715",
+      "revision": 1,
+      "contentHash": "31a63be7302c794a6a39759053bf6c22e5f6d1b9a8230b6c44e84f846e504719",
+      "run": {
+        "id": "20261109T101302479Z-52261-d5eb6f40-74b6-4618-87c0-b95b6eb5ab41",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "c",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": []
+    }
+  ]
+}
