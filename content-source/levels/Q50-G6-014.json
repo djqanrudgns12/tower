@@ -123,6 +123,66 @@
       "levelAssessmentHash": "567b75e5bb74046628098c5f7134aa55f90f6a361147beff9f02c731c3226d82"
     },
     {
+      "questionId": "g6-argon-0652",
+      "revision": 2,
+      "contentHash": "4e359c0c493f99eddc9a6a1d88463f71c2acb09c748f0e9ee92f8d175b4cdfed",
+      "precomputed": {
+        "typeBase": 2,
+        "lengthBump": 2,
+        "t3Base": 0,
+        "readingLoad": 93,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g6-argon-0652",
+          "revision": 2,
+          "contentHash": "4e359c0c493f99eddc9a6a1d88463f71c2acb09c748f0e9ee92f8d175b4cdfed",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 3,
+          "L2": 2,
+          "T1": 2,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "‘본질’은 구어 빈도가 낮은 6학년 설명·논설 문어 개념어(L1=3, L2=2)이며, ‘원본·본보기·본분’ 등 형태 유사 혼동 오답을 구별해야 하고(T1=2) 각 문장에 직접 단서가 제시되어 있다(inference=0)."
+        },
+        {
+          "questionId": "g6-argon-0652",
+          "revision": 2,
+          "contentHash": "4e359c0c493f99eddc9a6a1d88463f71c2acb09c748f0e9ee92f8d175b4cdfed",
+          "judge": "codex",
+          "model": "gpt-6-astra",
+          "L1": 3,
+          "L2": 3,
+          "T1": 1,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "본디 지닌 성질을 가리키는 추상 문어로, 원본과의 의미 혼동은 있으나 확대해도 성질이 그대로라는 직접 단서가 있다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 6,
+        "T": 5,
+        "V": 17,
+        "ownTier": "advanced",
+        "band": {
+          "min": 6,
+          "max": 6
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "69a03489fce18ad95850ffbfe21fc4c3978db9afc9f82c1fe8b103577595c3d9"
+    },
+    {
       "questionId": "g6-argon-0653",
       "revision": 1,
       "contentHash": "29a5acae8c21f11b88cc019c26b51a8266708eed94bb07bde61d700aa1980624",
@@ -1292,6 +1352,68 @@
       "levelAssessmentHash": "fbca2769d1fa2f0782657168a2b1ed244ef083b716d9d0b078cd9497dd91497f"
     },
     {
+      "questionId": "g6-argon-0670",
+      "revision": 2,
+      "contentHash": "f9219c7331db8db90209cfcf0ab738f11c8cf833bca56d1a27a121e00585e460",
+      "precomputed": {
+        "typeBase": 1,
+        "lengthBump": 2,
+        "t3Base": 0,
+        "readingLoad": 94,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g6-argon-0670",
+          "revision": 2,
+          "contentHash": "f9219c7331db8db90209cfcf0ab738f11c8cf833bca56d1a27a121e00585e460",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 2,
+          "L2": 2,
+          "T1": 2,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "‘심층적’은 고학년 탐구·설명 문어에 쓰이는 한자 결합 개념어(L1=2, L2=2)이고, ‘구체적·주관적’ 등 인접 의미장 오답 사이에서 반의어 ‘표면적’을 고르며(T1=2) 취재 행동 단서가 지문에 직접 제시되어 있다(inference=0)."
+        },
+        {
+          "questionId": "g6-argon-0670",
+          "revision": 2,
+          "contentHash": "f9219c7331db8db90209cfcf0ab738f11c8cf833bca56d1a27a121e00585e460",
+          "judge": "codex",
+          "model": "gpt-6-astra",
+          "L1": 3,
+          "L2": 3,
+          "T1": 1,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "탐구의 깊이를 추상적으로 나타내는 문어이며, 구체적·주관적이 탐구 방식의 의미장에서 경쟁하지만 기록과 상세한 질문이 직접 행동 단서다."
+        }
+      ],
+      "merged": {
+        "rule": 4,
+        "L": 6,
+        "T": 5,
+        "V": 17,
+        "ownTier": "advanced",
+        "band": {
+          "min": 6,
+          "max": 6
+        },
+        "flags": [
+          "spotCheck"
+        ]
+      },
+      "levelAssessmentHash": "5397234b0f7418035ac617ad613bb5d3842a6cab044ba58b2bebad0cab5036e2"
+    },
+    {
       "questionId": "g6-argon-0671",
       "revision": 1,
       "contentHash": "665e7e026e7ec93cc84d84dbe59fd131ead9e12553d5c610da63b2b6086bcbdb",
@@ -1964,6 +2086,66 @@
       "levelAssessmentHash": "46923072b4cd1e4b46d582d49998e7ea91aab6734547b70f460bf8fd2211e95a"
     },
     {
+      "questionId": "g6-argon-0679",
+      "revision": 3,
+      "contentHash": "eb05bc9d7ac75d4a28edd365271220d56b241fb925b29705b912054d565f7667",
+      "precomputed": {
+        "typeBase": 1,
+        "lengthBump": 2,
+        "t3Base": 0,
+        "readingLoad": 90,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g6-argon-0679",
+          "revision": 3,
+          "contentHash": "eb05bc9d7ac75d4a28edd365271220d56b241fb925b29705b912054d565f7667",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 3,
+          "L2": 2,
+          "T1": 2,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "‘독보적’은 6학년 비평·기사 문어에 주로 쓰이는 한자 파생어(L1=3, L2=2)이며, ‘독특한·고유한·기발한’ 등 유의·형태 인접 오답과 구별해야 하고(T1=2) 줄넘기 개수 대조 단서가 명시되어 있다(inference=0)."
+        },
+        {
+          "questionId": "g6-argon-0679",
+          "revision": 3,
+          "contentHash": "eb05bc9d7ac75d4a28edd365271220d56b241fb925b29705b912054d565f7667",
+          "judge": "codex",
+          "model": "gpt-6-astra",
+          "L1": 3,
+          "L2": 3,
+          "T1": 2,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "남이 따르기 어려운 우월성을 뜻하는 추상 문어로, 독특한·고유한과 의미 경계를 구별해야 하지만 기록의 수치 대조가 직접 단서다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 6,
+        "T": 5,
+        "V": 17,
+        "ownTier": "advanced",
+        "band": {
+          "min": 6,
+          "max": 6
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "a49efd0cb508581306aa432360b70a8038173d4e902ac946aec905f05886481d"
+    },
+    {
       "questionId": "g6-argon-0680",
       "revision": 2,
       "contentHash": "f9f57b4b2c93a4fe686f00dd8922da38e55be2ceda05f475a7192c19eaee154b",
@@ -2264,6 +2446,66 @@
         "flags": []
       },
       "levelAssessmentHash": "469a9386aecc6216c1e16a57ace17a17fc35f71ad9b635a8f354b1ce68b43d66"
+    },
+    {
+      "questionId": "g6-argon-0684",
+      "revision": 3,
+      "contentHash": "8ff2e1cfa422cdd7bebe68c503cdc2114fc7fdaa040c747a424ccc1538bf1975",
+      "precomputed": {
+        "typeBase": 2,
+        "lengthBump": 2,
+        "t3Base": 0,
+        "readingLoad": 95,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g6-argon-0684",
+          "revision": 3,
+          "contentHash": "8ff2e1cfa422cdd7bebe68c503cdc2114fc7fdaa040c747a424ccc1538bf1975",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 3,
+          "L2": 3,
+          "T1": 2,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "‘규명하다’는 구어 저빈도의 6학년 격식 문어이자 음훈 추론이 필요한 고추상 한자어(L1=3, L2=3)이며, 단순 ‘밝히다·정하다’ 맥락의 오답과 쓰임을 구별해야 하고(T1=2) 문장 내 호응 단서가 직접 드러나 있다(inference=0)."
+        },
+        {
+          "questionId": "g6-argon-0684",
+          "revision": 3,
+          "contentHash": "8ff2e1cfa422cdd7bebe68c503cdc2114fc7fdaa040c747a424ccc1538bf1975",
+          "judge": "codex",
+          "model": "gpt-6-astra",
+          "L1": 3,
+          "L2": 3,
+          "T1": 2,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "사실을 따져 밝히는 격식 문어로, 포부나 신원을 단순히 밝히는 쓰임과 구별해야 하며 기록 비교와 원인 확인이 직접 단서다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 6,
+        "T": 5,
+        "V": 17,
+        "ownTier": "advanced",
+        "band": {
+          "min": 6,
+          "max": 6
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "432101a74430fc6288b9d5350a2ec3b22b40429fade8724f65bb539e3491c1c4"
     },
     {
       "questionId": "g6-argon-0685",
