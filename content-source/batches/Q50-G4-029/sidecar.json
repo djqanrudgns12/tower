@@ -1,0 +1,1293 @@
+{
+  "batchId": "Q50-G4-029",
+  "jobId": "Q50-G4-029",
+  "publicationPolicy": "codex-argon-v1",
+  "producer": {
+    "model": "Gemini 4 Argon (High)",
+    "tool": "tools/orchestrate/produce.mjs",
+    "date": "2026-11-09"
+  },
+  "items": [
+    {
+      "id": "g4-argon-2815",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "과자를 더 먹고 싶었지만 건강을 위해 알맞게 줄여 참았다.",
+          "verdict": "does_not_fit",
+          "reason": "'절제하다'의 원래 뜻과 가까워 반대되는 뜻을 묻는 질문에 맞지 않는다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "과자를 더 먹고 싶을 때 건강을 생각하지 않고 참지 않고 마구 했다.",
+          "verdict": "fits",
+          "reason": "정도에 넘지 않도록 조절하여 제한하는 '절제하다'와 정반대되는 행동이므로 정답으로 알맞다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "과자를 더 먹고 싶었지만 건강을 위해 미리 순서를 짰다.",
+          "verdict": "does_not_fit",
+          "reason": "차례를 계획하는 뜻이므로 정도를 조절해 제한하는 것과 반대 관계가 아니다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "과자를 더 먹고 싶었지만 건강을 위해 남에게 나눠 주었다.",
+          "verdict": "does_not_fit",
+          "reason": "다른 사람에게 나누어 주는 행동일 뿐 정도에 넘지 않게 조절하는 것의 반대말이 아니다."
+        }
+      ],
+      "uniquenessNote": "먹고 싶은 마음을 건강을 위해 조절한 단서를 통해 '절제하다'의 뜻을 파악하고, 유의 표현(b)과 무관한 행동(c, d)을 배제하여 반의 표현인 a만 정답이 된다.",
+      "gradeEvidence": "[4국04-01] 단어와 단어 간의 의미 관계를 파악한다."
+    },
+    {
+      "id": "g4-argon-2816",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "빠진 준비물이 없도록 소풍 계획을 빠르고 급하게 세웠다.",
+          "verdict": "does_not_fit",
+          "reason": "급하게 세우면 오히려 준비물을 빠뜨리기 쉬우므로 '치밀하다'의 뜻과 맞지 않는다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "빠진 준비물이 없도록 소풍 계획을 조용하고 얌전하게 세웠다.",
+          "verdict": "does_not_fit",
+          "reason": "소리를 내지 않는 태도를 뜻할 뿐 계획의 자세하고 꼼꼼한 정도를 나타내지 못한다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "빠진 준비물이 없도록 소풍 계획을 마음이 넓고 크게 세웠다.",
+          "verdict": "does_not_fit",
+          "reason": "사람의 너그러운 마음씨를 나타내는 말이라 계획을 자세하게 세우는 문맥에 어울리지 않는다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "빠진 준비물이 없도록 소풍 계획을 빈틈없이 꼼꼼하게 세웠다.",
+          "verdict": "fits",
+          "reason": "'치밀하다'의 사전적 의미인 '자세하고 꼼꼼하다'와 뜻이 통하며 지문 단서와도 자연스럽게 어울린다."
+        }
+      ],
+      "uniquenessNote": "'빠진 준비물이 없도록'이라는 단서가 자세하고 꼼꼼함을 뜻하는 b와만 호응하며, 속도(a)·성품(c)·정숙함(d)은 문맥과 맞지 않는다.",
+      "gradeEvidence": "[4국04-01] 단어와 단어 간의 의미 관계를 파악한다."
+    },
+    {
+      "id": "g4-argon-2817",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "첫 단서로 문제의 실마리를 찾았다.",
+          "verdict": "fits",
+          "reason": "일이나 사건을 풀어 나갈 수 있는 첫머리를 찾았다는 뜻으로 자연스럽게 쓰였다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "실수를 숨기려 거짓 실마리를 댔다.",
+          "verdict": "does_not_fit",
+          "reason": "'핑계'가 들어갈 자리에 '실마리'를 넣어 호응하지 않는다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "시합에서 이겨 일등 실마리를 탔다.",
+          "verdict": "does_not_fit",
+          "reason": "'실마리'는 사건이나 일을 풀어 나갈 첫머리인데 대회의 최종 상처럼 잘못 썼다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "양보 없이 끝까지 실마리를 부렸다.",
+          "verdict": "does_not_fit",
+          "reason": "'고집'이나 '떼'가 들어갈 자리에 '실마리'를 써서 문장이 성립하지 않는다."
+        }
+      ],
+      "uniquenessNote": "사건이나 문제를 풀어 나갈 첫머리라는 의미에 맞게 쓰인 문장은 c뿐이며, a(상)·b(핑계)·d(고집)는 다른 명사와 혼동한 오용이다.",
+      "gradeEvidence": "[4국04-01] 단어와 단어 간의 의미 관계를 파악한다."
+    },
+    {
+      "id": "g4-argon-2818",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "어른께 두 손으로 물건을 드리고 겸손하고 예의 바르게 인사했다.",
+          "verdict": "does_not_fit",
+          "reason": "'공손하다'의 뜻풀이 자체이므로 반대되는 태도를 묻는 조건에 맞지 않는다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "어른께 인사할 때 부끄럼을 타서 조용하다.",
+          "verdict": "does_not_fit",
+          "reason": "수줍음을 타는 성격일 뿐 예의 바른 태도의 반대말이 아니다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "어른께 물건을 드릴 때 예의가 없고 버릇없다.",
+          "verdict": "fits",
+          "reason": "말이나 행동이 겸손하고 예의 바른 '공손하다'와 정반대되는 태도이므로 정답이다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "어른께 인사할 때 목소리가 크고 씩씩하다.",
+          "verdict": "does_not_fit",
+          "reason": "씩씩하게 인사하는 것도 예의 바른 행동이 될 수 있어 '공손하다'의 반대가 아니다."
+        }
+      ],
+      "uniquenessNote": "'두 손으로 물건을 드리고 인사했다'는 예의 바른 단서와 정반대되는 태도는 d뿐이며, 유의어(a)와 성격·목소리 특성(b, c)은 배제된다.",
+      "gradeEvidence": "[4국01-04] 상황과 상대의 입장을 이해하고 예의를 지키며 대화한다."
+    },
+    {
+      "id": "g4-argon-2819",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "회의 때 규칙을 바꾸자고 주장했다.",
+          "verdict": "fits",
+          "reason": "'[-고] 자기의 의견이나 주의를 굳게 내세우다'라는 사전 문형과 의미에 정확히 부합한다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "잘못을 빌며 미안하다고 주장했다.",
+          "verdict": "does_not_fit",
+          "reason": "잘못을 비는 사과 표현이지 자기의 의견을 굳게 내세우는 상황이 아니다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "선생님께 숙제가 몇 쪽인지 주장했다.",
+          "verdict": "does_not_fit",
+          "reason": "궁금한 사실을 묻는 질문 상황이므로 의견을 내세우는 '주장하다'와 맞지 않는다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "어릴 때 살던 고향 모습을 주장했다.",
+          "verdict": "does_not_fit",
+          "reason": "과거의 모습을 회상하는 맥락이므로 '-고 주장하다'의 문형과 의미에 어긋난다."
+        }
+      ],
+      "uniquenessNote": "자기의 의견을 굳게 내세우는 상황과 '[-고]' 문형을 모두 충족하는 것은 a뿐이며, 사과(b)·질문(c)·회상(d) 맥락은 모두 부적절하다.",
+      "gradeEvidence": "[4국03-03] 대상에 대한 자신의 의견과 그렇게 생각한 이유가 드러나게 글을 쓴다."
+    },
+    {
+      "id": "g4-argon-2820",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "무거운 화분을 옮길 때 친구와 힘을 모아 함께 도왔다.",
+          "verdict": "does_not_fit",
+          "reason": "'협력하다'와 같은 뜻이므로 반대되는 행동을 묻는 발문에 맞지 않는다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "무거운 화분을 옮길 때 차례를 지켜 기다렸다.",
+          "verdict": "does_not_fit",
+          "reason": "질서를 지키는 행동일 뿐 힘을 합하여 돕는 것의 반대가 아니다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "무거운 화분을 옮길 때 서로 미루며 돕지 않았다.",
+          "verdict": "fits",
+          "reason": "힘을 합하여 서로 돕는 '협력하다'와 정반대되는 행동이므로 정답으로 알맞다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "무거운 화분을 옮길 때 맡은 일을 먼저 끝냈다.",
+          "verdict": "does_not_fit",
+          "reason": "자기 몫의 일을 빨리 마친 것이므로 서로 돕는 것과 반대되지 않는다."
+        }
+      ],
+      "uniquenessNote": "'혼자 들기 힘들어서 친구와 함께 옮겼다'는 협력 단서와 정반대되는 행동은 c뿐이며, 동의 표현(a)과 무관한 행동(b, d)은 오답이다.",
+      "gradeEvidence": "[4국04-01] 단어와 단어 간의 의미 관계를 파악한다."
+    },
+    {
+      "id": "g4-argon-2822",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "선생님은 소풍을 가기 전에 안전 규칙을 꼭 지키라고 잘못을 크게 꾸짖으셨다.",
+          "verdict": "does_not_fit",
+          "reason": "소풍을 떠나기 전에 미리 일러 두는 상황이므로 잘못을 꾸짖는다는 말과 맞지 않는다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "선생님은 소풍을 가기 전에 안전 규칙을 꼭 지키라고 질문에 바로 답하셨다.",
+          "verdict": "does_not_fit",
+          "reason": "누군가의 물음에 답하는 상황이 아니므로 문맥에 어울리지 않는다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "선생님은 소풍을 가기 전에 안전 규칙을 꼭 지키라고 약속을 슬쩍 어기셨다.",
+          "verdict": "does_not_fit",
+          "reason": "규칙을 지키라고 말하면서 약속을 어겼다는 것은 뜻이 서로 어긋난다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "선생님은 소풍을 가기 전에 안전 규칙을 꼭 지키라고 말로 단단히 부탁하셨다.",
+          "verdict": "fits",
+          "reason": "'당부하다'의 사전적 의미인 '말로 단단히 부탁하다'와 정확히 일치하며 문맥에도 자연스럽다."
+        }
+      ],
+      "uniquenessNote": "소풍 전에 안전 규칙을 꼭 지키라고 미리 일러 주는 상황 단서와 부합하는 것은 d뿐이며, 꾸중(a)·대답(b)·위반(c)은 문맥과 충돌한다.",
+      "gradeEvidence": "[4국01-04] 상황과 상대의 입장을 이해하고 예의를 지키며 대화한다."
+    },
+    {
+      "id": "g4-argon-2823",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "친구가 놀자고 했지만 숙제가 남아서 미안하다며 부탁을 기쁘게 들어주었다.",
+          "verdict": "does_not_fit",
+          "reason": "'했지만'과 '미안하다며'라는 단서와 반대로 이어져 문장이 어색하다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "친구가 놀자고 했지만 숙제가 남아서 미안하다며 제안을 받아들이지 않았다.",
+          "verdict": "fits",
+          "reason": "상대편의 제안을 받아들이지 않고 물리친다는 '거절하다'의 뜻과 일치한다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "친구가 놀자고 했지만 숙제가 남아서 미안하다며 약속 시간을 다시 물었다.",
+          "verdict": "does_not_fit",
+          "reason": "제안을 받아들이지 않는 뜻이 아니라 시간을 묻는 행동이므로 '거절하다'와 뜻이 다르다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "친구가 놀자고 했지만 숙제가 남아서 미안하다며 어려운 일을 함께 도왔다.",
+          "verdict": "does_not_fit",
+          "reason": "내 숙제가 남아 미안하다고 한 상황과 어울리지 않으며 '거절하다'의 뜻도 아니다."
+        }
+      ],
+      "uniquenessNote": "숙제가 남아서 미안하다고 말한 대조 단서를 통해 친구의 제안을 받아들이지 않은 a만 정답이 되며, 반의 표현(b)과 무관한 행동(c, d)은 배제된다.",
+      "gradeEvidence": "[4국01-04] 상황과 상대의 입장을 이해하고 예의를 지키며 대화한다."
+    },
+    {
+      "id": "g4-argon-2824",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "색연필을 빌려 달라고 부탁하자 짝꿍이 부탁한 것을 들어주었다.",
+          "verdict": "does_not_fit",
+          "reason": "'승낙하다'의 원래 뜻과 같으므로 반대되는 뜻을 찾는 질문에 맞지 않는다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "색연필을 빌려 달라고 부탁하자 짝꿍이 필요한 것을 빌려주었다.",
+          "verdict": "does_not_fit",
+          "reason": "승낙한 뒤에 이어지는 긍정적인 행동이므로 반대되는 뜻이 아니다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "색연필을 빌려 달라고 부탁하자 짝꿍이 고마운 마음을 전했다.",
+          "verdict": "does_not_fit",
+          "reason": "감사를 표하는 행동일 뿐 부탁을 들어주는 것의 반대말이 아니다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "색연필을 빌려 달라고 부탁하자 짝꿍이 부탁을 들어주지 않았다.",
+          "verdict": "fits",
+          "reason": "청하는 바를 들어주는 '승낙하다'와 정반대되는 뜻이므로 정답으로 알맞다."
+        }
+      ],
+      "uniquenessNote": "색연필을 빌려 달라는 부탁을 기쁘게 들어준 '승낙하다'의 반대 의미는 c뿐이며, 같은 방향의 행동(a, b)과 감사 표현(d)은 오답이다.",
+      "gradeEvidence": "[4국01-04] 상황과 상대의 입장을 이해하고 예의를 지키며 대화한다."
+    },
+    {
+      "id": "g4-argon-2825",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "나는 더 다칠까 봐 친구를 말렸습니다.",
+          "verdict": "fits",
+          "reason": "다친 친구가 더 다치지 않도록 시합에 나가지 못하게 붙잡는 문맥에 자연스럽게 어울립니다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "나는 더 다칠까 봐 친구를 재촉했습니다.",
+          "verdict": "does_not_fit",
+          "reason": "더 다칠까 봐 걱정하면서 오히려 빨리 시합에 나가라고 몰아붙이는 것은 앞뒤가 맞지 않습니다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "나는 더 다칠까 봐 친구를 허락했습니다.",
+          "verdict": "does_not_fit",
+          "reason": "친구가 더 다칠까 봐 걱정하는 이유와 시합에 나가도록 들어주었다는 행동이 서로 어긋납니다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "나는 더 다칠까 봐 친구를 응원했습니다.",
+          "verdict": "does_not_fit",
+          "reason": "다친 친구가 시합에 나가는 것을 걱정하는 상황에서 힘을 북돋아 주었다는 뜻은 어울리지 않습니다."
+        }
+      ],
+      "uniquenessNote": "'더 다칠까 봐'라는 걱정 단서와 '우겼습니다'에 맞서는 행동 단서가 결합되어, 행동을 못 하게 막는 '말렸습니다'만 유일하게 성립합니다.",
+      "gradeEvidence": "[4국04-01] 단어와 단어 간의 의미 관계를 파악한다."
+    },
+    {
+      "id": "g4-argon-2826",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "반면에 지수는 실망하여 다음에 이기겠다고 다짐했습니다.",
+          "verdict": "does_not_fit",
+          "reason": "'실망하여'는 마음이 상한 상태이므로 '낙담하여'의 유의어일 뿐 반대말이 아닙니다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "반면에 지수는 속상해하여 다음에 이기겠다고 다짐했습니다.",
+          "verdict": "does_not_fit",
+          "reason": "마음이 상해 괴로워하는 뜻이므로 고개를 숙인 민수의 상태와 반대되지 않습니다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "반면에 지수는 기운을 내어 다음에 이기겠다고 다짐했습니다.",
+          "verdict": "fits",
+          "reason": "져서 마음이 상한 민수와 반대로 다시 힘을 차리고 다음 승리를 다짐하는 문맥에 정확히 맞습니다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "반면에 지수는 포기하여 다음에 이기겠다고 다짐했습니다.",
+          "verdict": "does_not_fit",
+          "reason": "이기를 그만두었다는 뜻은 다음에 이기겠다고 다짐하는 행동과 서로 모순됩니다."
+        }
+      ],
+      "uniquenessNote": "보기의 a, c, d는 모두 마음이 상하거나 그만두는 방향의 말이고, b만 마음을 다잡고 힘을 내는 반대 의미라 유일한 정답입니다.",
+      "gradeEvidence": "[4국05-01] 인물과 이야기의 흐름을 중심으로 작품을 감상한다."
+    },
+    {
+      "id": "g4-argon-2828",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "언니는 화분의 작은 잎까지 성급하게 살피며 물을 주었습니다.",
+          "verdict": "does_not_fit",
+          "reason": "서둘러 급하게 행동하는 것은 작은 잎까지 빈틈없이 돌보는 태도와 어울리지 않습니다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "언니는 화분의 작은 잎까지 대충대충 살피며 물을 주었습니다.",
+          "verdict": "does_not_fit",
+          "reason": "대충 살폈는데 작은 시든 잎을 바로 찾아냈다는 것은 원인과 결과가 맞지 않습니다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "언니는 화분의 작은 잎까지 꼼꼼하게 살피며 물을 주었습니다.",
+          "verdict": "fits",
+          "reason": "작은 일에도 주의를 기울여 빈틈없이 살핀 덕분에 시든 잎을 바로 찾아냈다는 문맥에 자연스럽게 들어맞습니다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "언니는 화분의 작은 잎까지 느긋하게 살피며 물을 주었습니다.",
+          "verdict": "does_not_fit",
+          "reason": "마음에 여유가 있다는 뜻만으로는 작은 잎까지 빠짐없이 주의를 기울였다는 뜻을 나타내지 못합니다."
+        }
+      ],
+      "uniquenessNote": "작은 잎까지 살피고 시든 잎을 바로 찾아냈다는 단서를 통해 빈틈없이 주의를 기울이는 '꼼꼼하게'만 정답이 됩니다.",
+      "gradeEvidence": "[4국04-01] 단어와 단어 간의 의미 관계를 파악한다."
+    },
+    {
+      "id": "g4-argon-2829",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "반면에 동생은 준비물을 빈틈없게 챙겨서 빠뜨렸습니다.",
+          "verdict": "does_not_fit",
+          "reason": "'빈틈없게'는 '철저하게'와 뜻이 같아서 준비물을 빠뜨린 동생의 상황과 모순됩니다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "반면에 동생은 준비물을 허술하게 챙겨서 빠뜨렸습니다.",
+          "verdict": "fits",
+          "reason": "빠진 것이 없게 챙긴 누나와 반대로, 빈틈이 많게 챙겨 준비물을 빠뜨렸다는 문맥에 정확히 맞습니다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "반면에 동생은 준비물을 부지런히 챙겨서 빠뜨렸습니다.",
+          "verdict": "does_not_fit",
+          "reason": "열심히 챙기는 태도는 확인도 하지 않고 빠뜨리는 모습의 반대말이 아닙니다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "반면에 동생은 준비물을 정확하게 챙겨서 빠뜨렸습니다.",
+          "verdict": "does_not_fit",
+          "reason": "바르고 확실하게 챙겼다면 준비물을 빠뜨리지 않았을 것이므로 문맥에 맞지 않습니다."
+        }
+      ],
+      "uniquenessNote": "빠진 것이 없는 상태('철저하게')와 확인도 안 해 빠뜨린 상태('허술하게')가 선명하게 대조되어 d만 정답으로 성립합니다.",
+      "gradeEvidence": "[4국03-02] 절차와 결과가 드러나게 정확한 표현으로 보고하는 글을 쓴다."
+    },
+    {
+      "id": "g4-argon-2830",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "반면에 동생은 거절하지 못하고 당당하게 눈치만 보았습니다.",
+          "verdict": "does_not_fit",
+          "reason": "자신 있고 떳떳한 태도는 거절하지 못해 눈치를 보는 행동과 어울리지 않습니다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "반면에 동생은 거절하지 못하고 분명하게 눈치만 보았습니다.",
+          "verdict": "does_not_fit",
+          "reason": "입장을 확실하게 밝히는 뜻이므로 민호의 태도와 가깝고 동생의 태도와는 반대됩니다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "반면에 동생은 거절하지 못하고 엄격하게 눈치만 보았습니다.",
+          "verdict": "does_not_fit",
+          "reason": "'엄격하게'는 '단호하게'의 뜻풀이에 들어가는 비슷한 말이라 반대 상황이 되지 않습니다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "반면에 동생은 거절하지 못하고 망설이며 눈치만 보았습니다.",
+          "verdict": "fits",
+          "reason": "딱 잘라 거절한 민호와 반대로, 결정을 내리지 못하고 머뭇거리며 눈치를 보는 상황에 잘 맞습니다."
+        }
+      ],
+      "uniquenessNote": "딱 잘라 거절하는 태도(a, c, d)와 결심을 못 정하고 머뭇거리는 태도(b)가 대조되어 b만 유일한 반의 표현입니다.",
+      "gradeEvidence": "[4국01-06] 주제에 적절한 의견과 이유를 제시하고 서로의 생각을 교환하며 토의한다."
+    },
+    {
+      "id": "g4-argon-2831",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "책상에 두었던 필통이 사라져서 당연한 생각이 들었습니다.",
+          "verdict": "does_not_fit",
+          "reason": "교실에 아무도 오지 않았는데 물건이 사라진 일을 마땅하다고 여기는 것은 이유와 맞지 않습니다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "책상에 두었던 필통이 사라져서 이상한 생각이 들었습니다.",
+          "verdict": "fits",
+          "reason": "아무도 들어오지 않은 교실에서 필통이 사라져 의심스럽고 어리둥절한 상황에 자연스럽게 어울립니다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "책상에 두었던 필통이 사라져서 반가운 생각이 들었습니다.",
+          "verdict": "does_not_fit",
+          "reason": "쓰던 필통이 갑자기 없어졌는데 기쁘고 반가워하는 것은 상황에 맞지 않습니다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "책상에 두었던 필통이 사라져서 미안한 생각이 들었습니다.",
+          "verdict": "does_not_fit",
+          "reason": "내 물건이 사라진 이유를 몰라 궁금해하는 상황이지 남에게 잘못을 한 상황이 아닙니다."
+        }
+      ],
+      "uniquenessNote": "'교실에 아무도 오지 않았는데 필통이 사라졌다'는 원인 단서와 결합해 의심스럽다는 뜻의 '이상한'만 성립합니다.",
+      "gradeEvidence": "[4국02-03] 질문을 활용하여 글을 예측하며 읽고 자신의 읽기 과정을 점검한다."
+    },
+    {
+      "id": "g4-argon-2832",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "출발할 영향을 시계로 보았습니다.",
+          "verdict": "does_not_fit",
+          "reason": "시계로 보는 대상은 시간이나 시각이지 다른 것에 작용을 미치는 일이 아닙니다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "연극에서 맡을 영향을 정했습니다.",
+          "verdict": "does_not_fit",
+          "reason": "연극에서 각자 맡는 몫은 배역이나 역할이므로 '영향'이라는 낱말과 호응하지 않습니다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "종이에 동그란 영향을 그렸습니다.",
+          "verdict": "does_not_fit",
+          "reason": "'영향'은 눈에 보이는 도형이나 사물이 아니므로 종이에 그릴 수 없습니다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "태풍의 영향으로 거센 비가 내렸습니다.",
+          "verdict": "fits",
+          "reason": "태풍의 힘과 작용이 날씨에 미쳐서 거센 비가 내렸다는 원인과 결과 문맥에 정확히 맞습니다."
+        }
+      ],
+      "uniquenessNote": "어떤 현상의 작용이 다른 결과로 이어지는 원인과 결과 문맥은 c뿐이며, 나머지는 시각·역할·모양 자리에 잘못 쓰였습니다.",
+      "gradeEvidence": "[4국01-02] 원인과 결과의 관계를 고려하여 내용을 예측하며 듣고 말한다."
+    },
+    {
+      "id": "g4-argon-2834",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "밭에 호박 씨앗을 심었습니다.",
+          "verdict": "does_not_fit",
+          "reason": "흙에 심는 식물의 실제 씨를 뜻하므로 비유적인 바탕의 의미가 아닙니다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "수박에서 씨앗을 골라냈습니다.",
+          "verdict": "does_not_fit",
+          "reason": "과일 과육 속에 들어 있는 실제 씨를 뜻하므로 제시된 의미와 다릅니다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "배려가 우정의 씨앗이 되었습니다.",
+          "verdict": "fits",
+          "reason": "작은 배려가 근원이 되어 앞으로 깊은 우정으로 커진다는 비유적 뜻으로 알맞게 쓰였습니다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "새가 땅의 씨앗을 먹었습니다.",
+          "verdict": "does_not_fit",
+          "reason": "새의 먹이가 되는 실제 식물의 씨를 가리키므로 비유적 의미로 쓰이지 않았습니다."
+        }
+      ],
+      "uniquenessNote": "a, b, c는 모두 식물의 실제 씨(중심 의미)로 쓰였고, d만 앞으로 커질 일의 근원(비유적 다의)으로 쓰여 정답이 유일합니다.",
+      "gradeEvidence": "[4국04-02] 단어를 분류하고 국어사전을 활용하여 능동적인 국어 활동을 한다."
+    },
+    {
+      "id": "g4-argon-2836",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "갑자기 비가 와서 운동장 수업을 못 하게 되자, 우리는 처음 정한 규칙으로 강당 놀이를 골랐습니다.",
+          "verdict": "does_not_fit",
+          "reason": "비가 와서 원래 수업을 못 하게 되어 새로 고른 놀이이므로 처음 정한 규칙이라는 말과 앞뒤가 맞지 않는다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "갑자기 비가 와서 운동장 수업을 못 하게 되자, 우리는 반대한 이유로 강당 놀이를 골랐습니다.",
+          "verdict": "does_not_fit",
+          "reason": "날씨 때문에 다른 놀이를 선택한 상황이지 누군가 반대한 까닭을 고른 것이 아니므로 어색하다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "갑자기 비가 와서 운동장 수업을 못 하게 되자, 우리는 대신할 방법으로 강당 놀이를 골랐습니다.",
+          "verdict": "fits",
+          "reason": "원래 계획인 운동장 수업을 대신하는 안으로 강당 놀이를 골랐다는 문맥이 자연스럽게 통한다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "갑자기 비가 와서 운동장 수업을 못 하게 되자, 우리는 마지막 순서로 강당 놀이를 골랐습니다.",
+          "verdict": "does_not_fit",
+          "reason": "원래 수업을 못 하게 되어 다른 안으로 바꾼 것이지 차례의 맨 끝을 뜻하는 것이 아니므로 맞지 않는다."
+        }
+      ],
+      "uniquenessNote": "원래 계획(운동장 수업)이 무산되어 이를 대신하는 안(강당 놀이)을 선택한 대조 단서가 명확하여 b만 성립한다.",
+      "gradeEvidence": "[4국01-06] 주제에 적절한 의견과 이유를 제시하고 서로의 생각을 교환하며 토의한다."
+    },
+    {
+      "id": "g4-argon-2837",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "아직 비는 오지 않았지만 먹구름이 잔뜩 몰려왔습니다. 곧 큰비가 내릴 결과가 보입니다.",
+          "verdict": "does_not_fit",
+          "reason": "아직 비가 오지 않은 상태에서 앞으로 내릴 일을 두고 이미 끝난 상태인 '결과'라고 할 수 없다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "아직 비는 오지 않았지만 먹구름이 잔뜩 몰려왔습니다. 곧 큰비가 내릴 기미가 보입니다.",
+          "verdict": "fits",
+          "reason": "먹구름을 보고 앞으로 큰비가 내릴 듯한 기미가 보인다는 뜻이 사전 뜻풀이와 정확히 일치한다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "아직 비는 오지 않았지만 먹구름이 잔뜩 몰려왔습니다. 곧 큰비가 내릴 흔적이 보입니다.",
+          "verdict": "does_not_fit",
+          "reason": "'흔적'은 일이 지나간 뒤에 남는 자국이므로 곧 내릴 비를 예고하는 문맥과 맞지 않는다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "아직 비는 오지 않았지만 먹구름이 잔뜩 몰려왔습니다. 곧 큰비가 내릴 이유가 보입니다.",
+          "verdict": "does_not_fit",
+          "reason": "먹구름이 몰려온 현상을 보고 비가 올 낌새를 느낀 것이지 까닭이 눈에 보인다는 뜻이 아니다."
+        }
+      ],
+      "uniquenessNote": "'아직 비는 오지 않았지만'과 '곧 큰비가 내릴'이라는 시간 단서로 사후 개념(결과·흔적) 및 인과 개념(이유)이 배제되고 c만 성립한다.",
+      "gradeEvidence": "[4국01-02] 원인과 결과의 관계를 고려하여 내용을 예측하며 듣고 말한다."
+    },
+    {
+      "id": "g4-argon-2838",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "삼촌은 내가 실수로 꽃병을 깨뜨렸는데도 화내지 않고 꼼꼼하게 용서해 주셨습니다.",
+          "verdict": "does_not_fit",
+          "reason": "'꼼꼼하게'는 빈틈없이 살핀다는 뜻이라 실수를 감싸 안으며 용서하는 태도와 어울리지 않는다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "삼촌은 내가 실수로 꽃병을 깨뜨렸는데도 화내지 않고 엄격하게 용서해 주셨습니다.",
+          "verdict": "does_not_fit",
+          "reason": "화내지 않고 용서해 주었다는 앞뒤 단서와 매섭게 따지는 '엄격하게'는 서로 충돌한다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "삼촌은 내가 실수로 꽃병을 깨뜨렸는데도 화내지 않고 솔직하게 용서해 주셨습니다.",
+          "verdict": "does_not_fit",
+          "reason": "거짓 없이 사실대로 말한다는 뜻인 '솔직하게'는 남의 잘못을 받아 주는 태도를 꾸미기에 어색하다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "삼촌은 내가 실수로 꽃병을 깨뜨렸는데도 화내지 않고 너그럽게 용서해 주셨습니다.",
+          "verdict": "fits",
+          "reason": "마음이 넓고 크다는 뜻인 '너그럽게'가 화내지 않고 용서해 준 문맥에 자연스럽게 들어맞는다."
+        }
+      ],
+      "uniquenessNote": "실수를 화내지 않고 용서했다는 단서로 인해 태도 형용사 중 마음이 넓고 크다는 뜻의 d만 문맥에 부합한다.",
+      "gradeEvidence": "[4국04-01] 단어와 단어 간의 의미 관계를 파악한다."
+    },
+    {
+      "id": "g4-argon-2839",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "기차 출발 시각이 다가오자 꾸물거리지 않고 발걸음을 미루어 바로 뛰었습니다.",
+          "verdict": "does_not_fit",
+          "reason": "'미루다'는 때를 늦추는 것이므로 바로 뛰었다는 행동과 뜻이 충돌한다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "기차 출발 시각이 다가오자 꾸물거리지 않고 발걸음을 서둘러 바로 뛰었습니다.",
+          "verdict": "fits",
+          "reason": "시간을 늦추거나 끌지 않고 재촉하여 빨리 움직였다는 반대 상황 문맥에 정확히 들어맞는다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "기차 출발 시각이 다가오자 꾸물거리지 않고 발걸음을 망설여 바로 뛰었습니다.",
+          "verdict": "does_not_fit",
+          "reason": "'망설이다'는 머뭇거리는 것이므로 꾸물거리지 않고 바로 뛰었다는 문맥과 반대된다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "기차 출발 시각이 다가오자 꾸물거리지 않고 발걸음을 기다려 바로 뛰었습니다.",
+          "verdict": "does_not_fit",
+          "reason": "'기다리다'는 움직이지 않고 때를 보내는 것이므로 급히 뛰어간 상황과 어울리지 않는다."
+        }
+      ],
+      "uniquenessNote": "'꾸물거리며 시간을 지체하지 않고 바로 뛰었습니다'의 대조 단서로 유의·인접어(미루다·망설이다·기다리다)가 모두 배제되고 a만 반대말로 성립한다.",
+      "gradeEvidence": "[4국04-01] 단어와 단어 간의 의미 관계를 파악한다."
+    },
+    {
+      "id": "g4-argon-2840",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "소나기가 쏟아져서 축구 경기를 중간에 중단했지만, 비가 그치자 경기를 끝까지 포기했습니다.",
+          "verdict": "does_not_fit",
+          "reason": "비가 그친 뒤 끝까지 경기를 이어 갔다는 대조 문맥에 그만두는 뜻인 '포기했습니다'는 맞지 않는다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "소나기가 쏟아져서 축구 경기를 중간에 중단했지만, 비가 그치자 경기를 끝까지 구경했습니다.",
+          "verdict": "does_not_fit",
+          "reason": "'구경했습니다'는 옆에서 지켜보는 행동이라 경기를 멈추었다가 다시 이어 하는 것과 대조를 이루지 못한다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "소나기가 쏟아져서 축구 경기를 중간에 중단했지만, 비가 그치자 경기를 끝까지 취소했습니다.",
+          "verdict": "does_not_fit",
+          "reason": "'취소했습니다'는 예정된 일을 없던 것으로 하는 것이라 비가 그친 뒤 경기를 이어 간 상황과 충돌한다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "소나기가 쏟아져서 축구 경기를 중간에 중단했지만, 비가 그치자 경기를 끝까지 계속했습니다.",
+          "verdict": "fits",
+          "reason": "중간에 끊었던 경기를 비가 그친 뒤 끊지 않고 끝까지 이어 갔다는 반대 문맥에 자연스럽게 들어맞는다."
+        }
+      ],
+      "uniquenessNote": "중간에 끊은 상태(중단)와 비가 그친 뒤 끝까지 이어 간 상태의 대조가 명확하여 b만 반대말로 성립한다.",
+      "gradeEvidence": "[4국04-01] 단어와 단어 간의 의미 관계를 파악한다."
+    },
+    {
+      "id": "g4-argon-2841",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "회의에서 민수는 내 의견에 반대하며 반박했지만, 지수는 좋은 생각이라며 내 의견에 찬성했습니다.",
+          "verdict": "fits",
+          "reason": "의견에 반대하여 말한 민수와 달리 지수가 좋은 생각이라며 동의했다는 반대 맥락에 정확히 맞는다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "회의에서 민수는 내 의견에 반대하며 반박했지만, 지수는 좋은 생각이라며 내 의견을 거절했습니다.",
+          "verdict": "does_not_fit",
+          "reason": "좋은 생각이라고 인정한 상황에서 제안을 물리치는 '거절했습니다'를 쓸 수 없다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "회의에서 민수는 내 의견에 반대하며 반박했지만, 지수는 좋은 생각이라며 내 의견을 의심했습니다.",
+          "verdict": "does_not_fit",
+          "reason": "좋은 생각이라며 뜻을 같이했다는 단서와 믿지 못하는 '의심했습니다'는 서로 어긋난다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "회의에서 민수는 내 의견에 반대하며 반박했지만, 지수는 좋은 생각이라며 내 의견에 질문했습니다.",
+          "verdict": "does_not_fit",
+          "reason": "궁금한 것을 물어보는 '질문했습니다'는 의견에 반대하여 말하는 것의 반대말이 아니다."
+        }
+      ],
+      "uniquenessNote": "의견에 반대하여 말한 행동과 좋은 생각이라며 뜻을 같이한 행동이 직접 대조되어 c만 정답이 된다.",
+      "gradeEvidence": "[4국02-04] 글에 나타난 사실과 의견을 구분하고 필자와 자신의 의견을 비교한다."
+    },
+    {
+      "id": "g4-argon-2842",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "부러진 연필을 새 연필로 대처했다.",
+          "verdict": "does_not_fit",
+          "reason": "쓰던 물건을 새것으로 바꾸는 상황에는 사건에 알맞게 행동한다는 뜻인 '대처하다'가 어울리지 않는다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "친구와 운동장에서 달리기로 대처했다.",
+          "verdict": "does_not_fit",
+          "reason": "친구와 달리기로 승부를 겨루는 상황에는 사건에 알맞게 행동하는 '대처하다'가 어울리지 않는다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "불이 났을 때 침착하게 대처해야 한다.",
+          "verdict": "fits",
+          "reason": "불이 난 갑작스러운 사건에 대하여 침착하고 알맞은 방법으로 행동해야 한다는 뜻이 자연스럽게 통한다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "놀러 온 친구에게 간식을 대처했다.",
+          "verdict": "does_not_fit",
+          "reason": "찾아온 친구에게 먹을 것을 내어 주는 상황에는 '대처하다'가 아니라 '대접하다'가 알맞다."
+        }
+      ],
+      "uniquenessNote": "갑작스러운 사건이나 상황에 알맞은 조치를 취하는 b만 '대처하다'의 뜻에 맞고, 물건 교체(a), 경기 겨루기(c), 손님 대접(d)에는 쓸 수 없어 정답이 유일하다.",
+      "gradeEvidence": "[4국01-02] 원인과 결과의 관계를 고려하여 내용을 예측하며 듣고 말한다."
+    },
+    {
+      "id": "g4-argon-2843",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "우리는 학급 회의에서 불편했던 자리 바꾸기 규칙을 모두를 위해 고쳐 좋게 했습니다.",
+          "verdict": "fits",
+          "reason": "불편하고 부족했던 규칙을 고쳐서 더 좋게 만들었다는 사전 뜻풀이와 정확히 통한다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "우리는 학급 회의에서 불편했던 자리 바꾸기 규칙을 모두를 위해 널리 알렸습니다.",
+          "verdict": "does_not_fit",
+          "reason": "불편한 규칙을 고치지 않고 알리기만 했다는 뜻이 되어 모두를 위해 나아지게 한 문맥과 맞지 않는다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "우리는 학급 회의에서 불편했던 자리 바꾸기 규칙을 모두를 위해 그대로 두었습니다.",
+          "verdict": "does_not_fit",
+          "reason": "불편했던 규칙을 모두를 위해 학급 회의에서 바꾸지 않고 방치했다는 뜻이 되어 문맥과 어긋난다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "우리는 학급 회의에서 불편했던 자리 바꾸기 규칙을 모두를 위해 처음부터 막았습니다.",
+          "verdict": "does_not_fit",
+          "reason": "이미 있던 불편한 규칙을 더 좋은 방향으로 고친 것이지 아예 시작을 금지한 것이 아니다."
+        }
+      ],
+      "uniquenessNote": "'불편했던 규칙'을 '모두를 위해' 더 나은 방향으로 바꾼 상황 단서를 통해 c만 성립한다.",
+      "gradeEvidence": "[4국01-06] 주제에 적절한 의견과 이유를 제시하고 서로의 생각을 교환하며 토의한다."
+    },
+    {
+      "id": "g4-argon-2844",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "형은 매일 운동하겠다는 다짐이 확고해서 끝까지 지켰지만, 나는 다짐이 굳세어서 금방 무너졌습니다.",
+          "verdict": "does_not_fit",
+          "reason": "다짐이 튼튼하고 강하다는 '굳세어서'는 금방 무너졌다는 결과와 정반대라 어색하다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "형은 매일 운동하겠다는 다짐이 확고해서 끝까지 지켰지만, 나는 다짐이 분명해서 금방 무너졌습니다.",
+          "verdict": "does_not_fit",
+          "reason": "다짐이 확실하다는 '분명해서'는 금방 무너졌다는 뒤 문장과 인과 관계가 맞지 않는다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "형은 매일 운동하겠다는 다짐이 확고해서 끝까지 지켰지만, 나는 다짐이 약해서 금방 무너졌습니다.",
+          "verdict": "fits",
+          "reason": "튼튼하고 굳은 형의 다짐과 반대로 내 다짐이 굳지 못하고 약해서 금방 무너졌다는 문맥에 자연스럽게 들어맞는다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "형은 매일 운동하겠다는 다짐이 확고해서 끝까지 지켰지만, 나는 다짐이 차분해서 금방 무너졌습니다.",
+          "verdict": "does_not_fit",
+          "reason": "마음이 가라앉아 조용하다는 '차분해서'는 다짐이 금방 무너진 이유로 어울리지 않는다."
+        }
+      ],
+      "uniquenessNote": "끝까지 지킨 형의 튼튼한 다짐(확고하다)과 금방 무너진 나의 다짐이 대조되어 유의어(굳세다·분명하다)와 무관어(차분하다)가 배제되고 d만 성립한다.",
+      "gradeEvidence": "[4국04-01] 단어와 단어 간의 의미 관계를 파악한다."
+    },
+    {
+      "id": "g4-argon-2845",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "처음에는 힘들다며 손사래를 치던 민수가 친구들의 거듭된 부탁을 거절하여 함께 무대에 올랐습니다.",
+          "verdict": "does_not_fit",
+          "reason": "부탁을 거절했는데 함께 무대에 올랐다는 결과가 서로 어긋납니다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "처음에는 힘들다며 손사래를 치던 민수가 친구들의 거듭된 부탁을 받아들여 함께 무대에 올랐습니다.",
+          "verdict": "fits",
+          "reason": "거듭된 부탁을 받아들여 함께 무대에 올랐다는 흐름이 자연스럽습니다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "처음에는 힘들다며 손사래를 치던 민수가 친구들의 거듭된 부탁을 미루어 함께 무대에 올랐습니다.",
+          "verdict": "does_not_fit",
+          "reason": "부탁을 뒤로 미루었다는 말은 함께 무대에 오른 행동과 이어지지 않습니다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "처음에는 힘들다며 손사래를 치던 민수가 친구들의 거듭된 부탁을 전하여 함께 무대에 올랐습니다.",
+          "verdict": "does_not_fit",
+          "reason": "부탁을 남에게 전했다는 뜻이 되어 자신이 무대에 오른 까닭이 되지 못합니다."
+        }
+      ],
+      "uniquenessNote": "처음에 망설이다가 거듭된 부탁을 듣고 함께 무대에 오른 상황이므로 요구를 받아들인다는 뜻인 '받아들여'만 정답이 됩니다.",
+      "gradeEvidence": "[4국04-01] 단어와 단어 간의 의미 관계를 파악한다."
+    },
+    {
+      "id": "g4-argon-2846",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "언니는 칼질이 능숙해 재료를 빠르게 썰었지만, 처음 요리하는 동생은 손놀림이 조용해 시간이 오래 걸렸습니다.",
+          "verdict": "does_not_fit",
+          "reason": "소리가 조용한 것은 요리 솜씨의 익숙함과 반대되지 않습니다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "언니는 칼질이 능숙해 재료를 빠르게 썰었지만, 처음 요리하는 동생은 손놀림이 익숙해 시간이 오래 걸렸습니다.",
+          "verdict": "does_not_fit",
+          "reason": "손놀림이 익숙한데 시간이 오래 걸렸다는 말은 앞뒤가 맞지 않습니다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "언니는 칼질이 능숙해 재료를 빠르게 썰었지만, 처음 요리하는 동생은 손놀림이 재빨라 시간이 오래 걸렸습니다.",
+          "verdict": "does_not_fit",
+          "reason": "손놀림이 재빠르면 시간이 적게 걸려야 하므로 뒷부분과 모순됩니다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "언니는 칼질이 능숙해 재료를 빠르게 썰었지만, 처음 요리하는 동생은 손놀림이 서툴러 시간이 오래 걸렸습니다.",
+          "verdict": "fits",
+          "reason": "능숙한 언니와 대비되어 손놀림이 서툴러 시간이 오래 걸렸다는 문맥이 자연스럽습니다."
+        }
+      ],
+      "uniquenessNote": "능숙해서 빠르게 썬 언니와 대조되며 처음이라 시간이 오래 걸린 까닭을 나타내는 반대말은 '서툴러'뿐입니다.",
+      "gradeEvidence": "[4국04-01] 단어와 단어 간의 의미 관계를 파악한다."
+    },
+    {
+      "id": "g4-argon-2847",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "비 오는 날 현관 바닥이 미끄러운 까닭을 먼저 알아본 뒤, 앞으로 친구들이 넘어지지 않게 할 원인을 다 함께 의논했다.",
+          "verdict": "does_not_fit",
+          "reason": "앞절에서 이미 미끄러운 까닭을 알아봤으며, 앞으로 넘어지지 않게 대처할 수단을 가리키는 말로 ‘원인’은 알맞지 않다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "비 오는 날 현관 바닥이 미끄러운 까닭을 먼저 알아본 뒤, 앞으로 친구들이 넘어지지 않게 할 계획을 다 함께 의논했다.",
+          "verdict": "fits",
+          "reason": "앞으로 일어날 수 있는 사고에 대처할 계획이나 수단을 뜻하므로 ‘계획’이 자연스럽게 들어맞는다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "비 오는 날 현관 바닥이 미끄러운 까닭을 먼저 알아본 뒤, 앞으로 친구들이 넘어지지 않게 할 책임을 다 함께 의논했다.",
+          "verdict": "does_not_fit",
+          "reason": "‘책임’은 맡은 임무나 잘못에 대한 부담이므로 사고에 대처할 수단이나 계획이라는 뜻과 맞지 않는다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "비 오는 날 현관 바닥이 미끄러운 까닭을 먼저 알아본 뒤, 앞으로 친구들이 넘어지지 않게 할 소감을 다 함께 의논했다.",
+          "verdict": "does_not_fit",
+          "reason": "‘소감’은 일을 겪은 뒤의 느낌이므로 앞으로 사고를 막을 수단이 될 수 없다."
+        }
+      ],
+      "uniquenessNote": "이미 알아본 ‘까닭(원인)’과 앞으로 사고를 막기 위해 세우는 ‘대책(계획)’의 선후 단계를 대조하여 네 보기 모두 조사 ‘을’과 호응하되 ‘계획’만 정답이 되게 했다.",
+      "gradeEvidence": "[4국01-02] 원인과 결과의 관계를 고려하여 내용을 예측하며 듣고 말한다."
+    },
+    {
+      "id": "g4-argon-2848",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "지우는 준비물을 깜빡하던 습관을 고치려고 선생님 말씀을 몰래 감춘 뒤 알림장을 꼼꼼히 챙겼습니다.",
+          "verdict": "does_not_fit",
+          "reason": "말씀은 물건처럼 몰래 감추는 대상이 아니며 문맥과도 맞지 않습니다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "지우는 준비물을 깜빡하던 습관을 고치려고 선생님 말씀을 금방 잊은 뒤 알림장을 꼼꼼히 챙겼습니다.",
+          "verdict": "does_not_fit",
+          "reason": "말씀을 금방 잊었는데 습관을 고치려고 알림장을 챙겼다는 흐름이 어색합니다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "지우는 준비물을 깜빡하던 습관을 고치려고 선생님 말씀을 크게 외친 뒤 알림장을 꼼꼼히 챙겼습니다.",
+          "verdict": "does_not_fit",
+          "reason": "습관을 고치려고 말씀을 기억하는 상황에 소리쳐 외쳤다는 말은 어울리지 않습니다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "지우는 준비물을 깜빡하던 습관을 고치려고 선생님 말씀을 깊이 새긴 뒤 알림장을 꼼꼼히 챙겼습니다.",
+          "verdict": "fits",
+          "reason": "선생님 말씀을 마음에 깊이 새기고 알림장을 챙겼다는 문맥이 자연스럽습니다."
+        }
+      ],
+      "uniquenessNote": "깜빡하던 습관을 고치려고 말씀을 잊지 않고 기억해 알림장을 챙긴 상황이므로 '깊이 새긴'만 정답이 됩니다.",
+      "gradeEvidence": "[4국04-01] 단어와 단어 간의 의미 관계를 파악한다."
+    },
+    {
+      "id": "g4-argon-2849",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "같이 어지럽힌 교실을 혼자만 치우게 하는 일은 부당합니다. 모두 함께 나누어 치우는 것이 올바른 일입니다.",
+          "verdict": "fits",
+          "reason": "혼자만 치우는 부당한 일과 반대로 모두 함께 치우는 것이 올바른 일이라는 대조가 자연스럽습니다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "같이 어지럽힌 교실을 혼자만 치우게 하는 일은 부당합니다. 모두 함께 나누어 치우는 것이 부족한 일입니다.",
+          "verdict": "does_not_fit",
+          "reason": "모두 함께 치우는 공평한 행동을 모자란 일이라고 할 수 없습니다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "같이 어지럽힌 교실을 혼자만 치우게 하는 일은 부당합니다. 모두 함께 나누어 치우는 것이 억울한 일입니다.",
+          "verdict": "does_not_fit",
+          "reason": "함께 어지럽힌 곳을 나누어 치우는 것은 억울한 일이 아닙니다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "같이 어지럽힌 교실을 혼자만 치우게 하는 일은 부당합니다. 모두 함께 나누어 치우는 것이 위험한 일입니다.",
+          "verdict": "does_not_fit",
+          "reason": "교실을 나누어 청소하는 것은 안전 문제나 부당함의 반대와 관련이 없습니다."
+        }
+      ],
+      "uniquenessNote": "이치에 맞지 않아 부당한 일과 대조되는 공평한 행동을 설명하므로 이치에 맞고 바르다는 뜻인 '올바른'만 성립합니다.",
+      "gradeEvidence": "[4국04-01] 단어와 단어 간의 의미 관계를 파악한다."
+    },
+    {
+      "id": "g4-argon-2850",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "찢어진 종이를 풀로 붙여 분석했다.",
+          "verdict": "does_not_fit",
+          "reason": "종이를 풀로 붙이는 행동은 요소로 나누는 '분석하다'의 뜻과 맞지 않습니다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "먹을 사과를 칼로 반씩 분석했다.",
+          "verdict": "does_not_fit",
+          "reason": "음식을 물리적으로 칼로 자르는 데에는 '분석하다'를 쓰지 않습니다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "실패한 까닭을 하나씩 나누어 분석했다.",
+          "verdict": "fits",
+          "reason": "얽혀 있는 실패 원인을 개별 요소로 나누어 살핀다는 뜻에 자연스럽게 맞습니다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "더러운 방바닥을 빗자루로 분석했다.",
+          "verdict": "does_not_fit",
+          "reason": "방바닥을 빗자루로 청소하는 행동에는 '분석하다'를 쓸 수 없습니다."
+        }
+      ],
+      "uniquenessNote": "복잡한 일이나 현상을 개별 요소로 나누어 살피는 대상은 '실패한 까닭'뿐이므로 a만 자연스럽게 성립합니다.",
+      "gradeEvidence": "[4국03-02] 절차와 결과가 드러나게 정확한 표현으로 보고하는 글을 쓴다."
+    },
+    {
+      "id": "g4-argon-2851",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "줄넘기를 끝까지 연습한 수아는 목표를 성취했지만, 중간에 그만둔 태호는 도전에 실패하고 말았습니다.",
+          "verdict": "fits",
+          "reason": "끝까지 연습해 목표를 성취한 것과 반대로 중간에 그만두어 실패했다는 대조가 자연스럽습니다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "줄넘기를 끝까지 연습한 수아는 목표를 성취했지만, 중간에 그만둔 태호는 도전에 약속하고 말았습니다.",
+          "verdict": "does_not_fit",
+          "reason": "'도전에 약속하고 말았습니다'는 조사 호응도 어색하고 성취의 반대 결과도 아닙니다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "줄넘기를 끝까지 연습한 수아는 목표를 성취했지만, 중간에 그만둔 태호는 도전에 성공하고 말았습니다.",
+          "verdict": "does_not_fit",
+          "reason": "중간에 연습을 그만두었는데 도전에 성공했다는 것은 앞뒤가 맞지 않습니다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "줄넘기를 끝까지 연습한 수아는 목표를 성취했지만, 중간에 그만둔 태호는 도전에 칭찬하고 말았습니다.",
+          "verdict": "does_not_fit",
+          "reason": "중간에 그만둔 결과로 '도전에 칭찬하고'라는 표현은 문법과 의미 모두 맞지 않습니다."
+        }
+      ],
+      "uniquenessNote": "끝까지 연습해 목표를 이룬 수아와 대조되며 중간에 그만두어 이루지 못한 결과를 나타내는 반대말은 '실패하고'뿐입니다.",
+      "gradeEvidence": "[4국04-01] 단어와 단어 간의 의미 관계를 파악한다."
+    },
+    {
+      "id": "g4-argon-2852",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "낮에는 활짝 피었던 나팔꽃이 왜 밤에는 오므라드는지 해답이 생겨 과학책을 찾아보았습니다.",
+          "verdict": "does_not_fit",
+          "reason": "이미 해답이 생겼다면 까닭을 몰라 과학책을 찾아볼 필요가 없습니다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "낮에는 활짝 피었던 나팔꽃이 왜 밤에는 오므라드는지 자신감이 생겨 과학책을 찾아보았습니다.",
+          "verdict": "does_not_fit",
+          "reason": "까닭을 모르는 질문 뒤에 자신감이 생겼다는 말은 이어지지 않습니다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "낮에는 활짝 피었던 나팔꽃이 왜 밤에는 오므라드는지 궁금증이 생겨 과학책을 찾아보았습니다.",
+          "verdict": "fits",
+          "reason": "왜 오므라드는지 궁금한 문제가 생겨 책을 찾아보았다는 흐름이 자연스럽습니다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "낮에는 활짝 피었던 나팔꽃이 왜 밤에는 오므라드는지 기억력이 생겨 과학책을 찾아보았습니다.",
+          "verdict": "does_not_fit",
+          "reason": "'왜 오므라드는지 기억력이 생겨'는 문맥과 조사 호응이 맞지 않습니다."
+        }
+      ],
+      "uniquenessNote": "왜 밤에 꽃이 오므라드는지 몰라 과학책을 찾아보게 만든 마음이므로 '궁금증'만 문맥에 자연스럽게 어울립니다.",
+      "gradeEvidence": "[4국02-03] 질문을 활용하여 글을 예측하며 읽고 자신의 읽기 과정을 점검한다."
+    },
+    {
+      "id": "g4-argon-2853",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "바닥이 평평한 운동장은 달리기 연습에 적합하지만, 돌멩이가 많은 언덕길은 달리기에 알맞은 장소입니다.",
+          "verdict": "does_not_fit",
+          "reason": "돌멩이가 많은 언덕길은 넘어지기 쉬워 달리기에 알맞은 장소가 아닙니다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "바닥이 평평한 운동장은 달리기 연습에 적합하지만, 돌멩이가 많은 언덕길은 달리기에 맞지 않는 장소입니다.",
+          "verdict": "fits",
+          "reason": "평평해 달리기에 적합한 운동장과 달리 돌이 많아 달리기에 맞지 않는다는 대조가 자연스럽습니다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "바닥이 평평한 운동장은 달리기 연습에 적합하지만, 돌멩이가 많은 언덕길은 달리기에 유명한 장소입니다.",
+          "verdict": "does_not_fit",
+          "reason": "돌멩이가 많아 달리기 어려운 조건이 유명한 것과 이어지지 않습니다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "바닥이 평평한 운동장은 달리기 연습에 적합하지만, 돌멩이가 많은 언덕길은 달리기에 비슷한 장소입니다.",
+          "verdict": "does_not_fit",
+          "reason": "'달리기에 비슷한 장소'는 문법적으로도 어색하고 운동장과 반대되는 조건도 나타내지 못합니다."
+        }
+      ],
+      "uniquenessNote": "평평한 운동장과 대조되며 돌멩이가 많아 달리기 조건에 어긋나는 장소를 설명하므로 '맞지 않는'만 정답이 됩니다.",
+      "gradeEvidence": "[4국06-01] 인터넷에서 학습에 필요한 다양한 자료를 탐색하고 목적에 맞게 자료를 선택한다."
+    },
+    {
+      "id": "g4-argon-2854",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "박자를 맞춘 합창단 목소리는 조화로웠지만, 혼자만 너무 크게 부른 소리는 반주와 어울려 듣기 불편했습니다.",
+          "verdict": "does_not_fit",
+          "reason": "소리가 반주와 잘 어울렸다면 듣기 불편했다는 결과가 나올 수 없습니다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "박자를 맞춘 합창단 목소리는 조화로웠지만, 혼자만 너무 크게 부른 소리는 반주와 닮아서 듣기 불편했습니다.",
+          "verdict": "does_not_fit",
+          "reason": "혼자 너무 크게 부른 소리가 반주와 닮았다는 말은 어색하고 문맥에도 맞지 않습니다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "박자를 맞춘 합창단 목소리는 조화로웠지만, 혼자만 너무 크게 부른 소리는 반주와 이어져 듣기 불편했습니다.",
+          "verdict": "does_not_fit",
+          "reason": "소리가 이어진다는 것은 조화로움의 반대가 아니며 불편한 이유도 되지 않습니다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "박자를 맞춘 합창단 목소리는 조화로웠지만, 혼자만 너무 크게 부른 소리는 반주와 어긋나 듣기 불편했습니다.",
+          "verdict": "fits",
+          "reason": "잘 어울려 조화로운 합창과 반대로 반주와 어긋나 듣기 불편했다는 대조가 자연스럽습니다."
+        }
+      ],
+      "uniquenessNote": "서로 잘 맞춘 합창단 목소리와 대조되며 혼자 크게 불러 듣기 불편했던 까닭을 나타내므로 '어긋나'만 정답이 됩니다.",
+      "gradeEvidence": "[4국04-01] 단어와 단어 간의 의미 관계를 파악한다."
+    },
+    {
+      "id": "g4-argon-2821",
+      "revision": 2,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "비가 그치지 않자 밖에서 축구하려던 생각을 끝까지 밀고 나갔다.",
+          "verdict": "does_not_fit",
+          "reason": "생각을 끊어 버리는 '단념하다'와 반대로 포기하지 않고 계속하는 뜻입니다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "비가 그치지 않자 밖에서 축구하려던 생각을 그만두었다.",
+          "verdict": "fits",
+          "reason": "품었던 생각을 아주 끊어 버린다는 '단념하다'의 사전 뜻풀이와 일치합니다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "비가 그치지 않자 밖에서 축구하려던 생각 대신 새로운 계획을 세웠다.",
+          "verdict": "does_not_fit",
+          "reason": "원래 품었던 생각을 끊어 버리는 뜻이 아니라 앞으로 할 일을 새로 짜는 뜻입니다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "비가 그치지 않자 밖에서 축구하려던 생각을 친구에게 자세히 말했다.",
+          "verdict": "does_not_fit",
+          "reason": "마음을 접는 뜻이 아니라 생각을 다른 사람에게 알리는 행동입니다."
+        }
+      ],
+      "uniquenessNote": "표준국어대사전의 '품었던 생각을 아주 끊어 버리다'라는 뜻에 부합하는 보기는 b뿐이며, a는 반대 뜻이고 c와 d는 무관한 행동입니다.",
+      "gradeEvidence": "4학년에게 친숙한 비 오는 날의 축구 상황을 제시하고 쉬운 일상어로 보기를 구성했습니다."
+    },
+    {
+      "id": "g4-argon-2827",
+      "revision": 2,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "반면에 동생은 어렵다며 금세 포기하여 책을 덮었습니다.",
+          "verdict": "fits",
+          "reason": "마음과 힘을 다해 일어서는 '분발하여'와 반대로 어렵다며 일을 도중에 그만두는 뜻입니다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "시험 결과가 아쉬웠던 수진이는 더 힘을 내어 공부했습니다.",
+          "verdict": "does_not_fit",
+          "reason": "기운을 차려 열심히 하는 뜻으로 '분발하여'와 가까워 반대말이 아닙니다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "시험 결과가 아쉬웠던 수진이는 더 노력하여 공부했습니다.",
+          "verdict": "does_not_fit",
+          "reason": "목적을 이루려고 힘을 쓰는 뜻으로 '분발하여'와 비슷해 반대말이 아닙니다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "시험 결과가 아쉬웠던 수진이는 더 집중하여 공부했습니다.",
+          "verdict": "does_not_fit",
+          "reason": "한 가지 일에 마음을 쏟는 뜻으로 도중에 그만두는 반대 태도가 아닙니다."
+        }
+      ],
+      "uniquenessNote": "'마음과 힘을 다하여 떨쳐 일어나다'라는 '분발하다'의 뜻과 반대되는 보기는 '포기하여'(a) 하나뿐이며, 나머지는 모두 적극적으로 힘쓰는 태도입니다.",
+      "gradeEvidence": "4학년 학생이 일상에서 겪는 시험과 공부 상황을 통해 어휘의 반의 관계를 쉽게 파악할 수 있습니다."
+    },
+    {
+      "id": "g4-argon-2833",
+      "revision": 2,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "청소할 때 내 몫을 남에게 넘기면 짝꿍이 대신하느라 힘들어집니다.",
+          "verdict": "fits",
+          "reason": "'짝꿍에게 미루면'의 문맥에서 일을 다른 사람에게 떠넘긴다는 사전 뜻풀이와 정확히 맞습니다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "청소할 때 내 몫을 짝꿍에게 뒤로 늦추면 짝꿍이 대신하느라 힘들어집니다.",
+          "verdict": "does_not_fit",
+          "reason": "시간을 나중으로 연기하는 뜻이라 '짝꿍에게'와 호응하지 않고 일을 떠넘기는 문맥과 다릅니다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "청소할 때 내 몫을 짝꿍에게 미리 짐작하면 짝꿍이 대신하느라 힘들어집니다.",
+          "verdict": "does_not_fit",
+          "reason": "사정을 어림잡아 헤아리는 뜻이라 청소 역할을 떠넘기는 문맥에 맞지 않습니다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "청소할 때 내 몫을 짝꿍에게 스스로 맡으면 짝꿍이 대신하느라 힘들어집니다.",
+          "verdict": "does_not_fit",
+          "reason": "자기 일을 직접 챙기는 뜻이라 짝꿍이 대신하느라 힘들어진다는 문맥과 반대됩니다."
+        }
+      ],
+      "uniquenessNote": "본문에 '짝꿍에게 미루면'으로 대상을 명시하여 '시간을 늦추다'(b) 해석을 배제하고, '일을 남에게 넘기다'(a)만 유일한 정답이 되도록 했습니다.",
+      "gradeEvidence": "4학년 교실의 당번 청소 상황을 소재로 다의어 '미루다'의 문맥적 의미를 구별하게 했습니다."
+    },
+    {
+      "id": "g4-argon-2835",
+      "revision": 2,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "몸이 아파 먼저 간다고 양해를 구했다.",
+          "verdict": "fits",
+          "reason": "남의 사정을 잘 헤아려 너그러이 받아들이기를 바란다는 뜻으로 자연스럽게 쓰였습니다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "시합에서 일등을 해서 양해를 받았다.",
+          "verdict": "does_not_fit",
+          "reason": "시합에서 일등을 한 것은 사정을 봐주는 '양해'가 아니라 축하를 받을 일입니다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "모르는 낱말의 뜻을 찾아 양해를 했다.",
+          "verdict": "does_not_fit",
+          "reason": "낱말의 뜻을 찾아 알게 되는 것은 남의 사정을 헤아리는 '양해'와 맞지 않습니다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "내일 만나기로 친구와 양해를 했다.",
+          "verdict": "does_not_fit",
+          "reason": "만날 일을 미리 정하는 것은 '약속'이며 남의 사정을 너그러이 봐주는 '양해'가 아닙니다."
+        }
+      ],
+      "uniquenessNote": "'남의 사정을 잘 헤아려 너그러이 받아들임'이라는 뜻에 맞게 '양해를 구했다'로 쓰인 문장은 a뿐입니다.",
+      "gradeEvidence": "4학년이 학교생활에서 자주 접하는 조퇴·연락 상황과 친숙한 문장 구조로 구성했습니다."
+    }
+  ],
+  "rejected": []
+}
