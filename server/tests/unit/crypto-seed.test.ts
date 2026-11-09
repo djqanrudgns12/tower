@@ -1,4 +1,7 @@
 import { spawnSync } from 'node:child_process';
+
+// 공개 은행이 커져 seed가 1MiB(spawnSync 기본 maxBuffer)를 넘었다(2026-11-09 1,054,324바이트). 넘치면 자식이 죽어 status가 null이 된다.
+const SEED_MAX_BUFFER = 64 * 1024 * 1024;
 import { readFile } from 'node:fs/promises';
 import { describe, expect, it } from 'vitest';
 import { deriveKeys, ipHash, isUsableSalt, KEY_LABELS, playerHash, signDeviceToken, verifyDeviceToken } from '../../src/crypto';
@@ -45,7 +48,7 @@ describe('D1 정답 키 seed(tools/build-question-keys.mjs)', () => {
       let input=''; for await (const chunk of process.stdin) input+=chunk;
       const { banks, retractions } = JSON.parse(input);
       process.stdout.write(buildQuestionKeySeed({ banks, retractions, balance: await j('docs/contracts/balance.candidate.v0.4.json'), maps: await j('docs/contracts/maps.candidate.v0.4.json') }));`;
-    return spawnSync(process.execPath, ['--input-type=module', '-e', script], { cwd: REPO_DIR, input: JSON.stringify({ banks, retractions }), encoding: 'utf8' });
+    return spawnSync(process.execPath, ['--input-type=module', '-e', script], { cwd: REPO_DIR, input: JSON.stringify({ banks, retractions }), encoding: 'utf8', maxBuffer: SEED_MAX_BUFFER });
   }
 
   it('SQLite 문법: 스키마 접두어·트랜잭션 문·jsonb 캐스트가 없고 active는 0/1이다', async () => {
@@ -66,7 +69,7 @@ describe('D1 정답 키 seed(tools/build-question-keys.mjs)', () => {
       const banks = [];
       for (const g of [3, 4, 5, 6]) { try { banks.push(await j('src/content/questions/grade' + g + '.json')); } catch (e) { if (e.code !== 'ENOENT') throw e; } }
       process.stdout.write(buildSharedQuestionKeySeed({ banks, balance: await j('docs/contracts/balance.candidate.v0.4.json'), maps: await j('docs/contracts/maps.candidate.v0.4.json'), retractions: await j('src/content/retractions.json') }));`;
-    const result = spawnSync(process.execPath, ['--input-type=module', '-e', script], { cwd: REPO_DIR, encoding: 'utf8' });
+    const result = spawnSync(process.execPath, ['--input-type=module', '-e', script], { cwd: REPO_DIR, encoding: 'utf8', maxBuffer: SEED_MAX_BUFFER });
     expect(result.status, result.stderr).toBe(0);
     expect(await readFile(`${REPO_DIR}server/seed/question_keys.sql`, 'utf8')).toBe(result.stdout);
   });
