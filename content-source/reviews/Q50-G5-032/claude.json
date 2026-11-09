@@ -1,0 +1,466 @@
+{
+  "reviewId": "QR-AUTO-claude-Q50-G5-032",
+  "jobId": "Q50-G5-032",
+  "reviewer": {
+    "model": "claude-opus-5-5",
+    "tool": "2단계 블라인드 검수(tools/orchestrate/review.mjs)",
+    "freshContext": true,
+    "date": "2026-11-09"
+  },
+  "items": [
+    {
+      "questionId": "g5-argon-2506",
+      "revision": 1,
+      "contentHash": "9b01663856c2aecdbc7fb8f0cf65c97de41cf7f494844514e27fe95a8d5f4eb4",
+      "run": {
+        "id": "20261109T034614128Z-86903-2196129e-5200-4376-8897-91c2b6e25536",
+        "model": "claude-opus-5-5",
+        "effort": "high"
+      },
+      "blindChoice": "b",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": []
+    },
+    {
+      "questionId": "g5-argon-2507",
+      "revision": 1,
+      "contentHash": "9cbe8fceb9823f60a1968d3652873a005511f67f74ea73297c19edaff55238c1",
+      "run": {
+        "id": "20261109T034614128Z-86903-2196129e-5200-4376-8897-91c2b6e25536",
+        "model": "claude-opus-5-5",
+        "effort": "high"
+      },
+      "blindChoice": "d",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": []
+    },
+    {
+      "questionId": "g5-argon-2508",
+      "revision": 1,
+      "contentHash": "1231f87b8f1b609b1932e4668097c3eb37bc726964debed87ad34ded747d9300",
+      "run": {
+        "id": "20261109T034614128Z-86903-2196129e-5200-4376-8897-91c2b6e25536",
+        "model": "claude-opus-5-5",
+        "effort": "high"
+      },
+      "blindChoice": "a",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "fail",
+        "explanation": "pass"
+      },
+      "findings": [
+        "[블라인드] 보기 b의 ‘시계바늘’은 사이시옷 표기 오류이므로 ‘시곗바늘’로 고친다.",
+        "[블라인드] [권고] 보기 a는 단정적인 효과 주장이므로 ‘키가 크는 것을 촉진할 수 있다’처럼 조금 누그러뜨릴 수 있다.",
+        "[공개 대조] 보기 b ‘시계바늘’은 사이시옷 표기 오류이므로 ‘시곗바늘’로 고친다."
+      ]
+    },
+    {
+      "questionId": "g5-argon-2508",
+      "revision": 2,
+      "contentHash": "9f53d4652c780abb926b69cd5ec3921672ffc73643065776eb94ff0f04db2c20",
+      "run": {
+        "id": "20261109T034848928Z-86903-187f6d7f-3c2c-4dcb-823b-1c56be2de88e",
+        "model": "claude-opus-5-5",
+        "effort": "high"
+      },
+      "blindChoice": "a",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": []
+    },
+    {
+      "questionId": "g5-argon-2509",
+      "revision": 1,
+      "contentHash": "71c478b51426496668c54c586dfca8d08a96ebef774b60f527e67f18ad2eb962",
+      "run": {
+        "id": "20261109T034614128Z-86903-2196129e-5200-4376-8897-91c2b6e25536",
+        "model": "claude-opus-5-5",
+        "effort": "high"
+      },
+      "blindChoice": "c",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": []
+    },
+    {
+      "questionId": "g5-argon-2510",
+      "revision": 1,
+      "contentHash": "eb1b09d0cbd06a42677c4e91b52f2b4bc5a957132c1dedbd095ac9400ab0a0bd",
+      "run": {
+        "id": "20261109T034614128Z-86903-2196129e-5200-4376-8897-91c2b6e25536",
+        "model": "claude-opus-5-5",
+        "effort": "high"
+      },
+      "blindChoice": "a",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": []
+    },
+    {
+      "questionId": "g5-argon-2511",
+      "revision": 1,
+      "contentHash": "cb442353bca38b2a4aa6d52a84354bb053cc984931ff40011e6033c3e6c249c1",
+      "run": {
+        "id": "20261109T034614128Z-86903-2196129e-5200-4376-8897-91c2b6e25536",
+        "model": "claude-opus-5-5",
+        "effort": "high"
+      },
+      "blindChoice": "c",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "fail",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "fail"
+      },
+      "findings": [
+        "[블라인드] [권고] 보기 a ‘문제를 피해 도망치며 위기에 직면했다’는 ‘도망치다가 위기에 직면했다’처럼 읽혀 어느 정도 성립한다. ‘문제를 피해 도망치며 위기에 직면하지 않았다’처럼 모순이 분명한 문장으로 바꾸는 것을 고려한다.",
+        "[공개 대조] 보기 a ‘문제를 피해 도망치며 위기에 직면했다’는 피하다가 결국 위기를 맞닥뜨렸다는 뜻으로 자연스럽게 성립해 복수 정답이 된다. 오답 이유 a도 목적어가 ‘위기’인데 ‘직면과 반대되는 행동’이라고 설명해 맞지 않는다. 최소 수정: a를 ‘문제를 끝까지 피해 그 문제에 직면했다’처럼 앞뒤가 모순되는 문장으로 바꾸고 오답 이유를 맞춘다."
+      ]
+    },
+    {
+      "questionId": "g5-argon-2511",
+      "revision": 2,
+      "contentHash": "4d1650de262f863061cdf26279a841f33b2ec2f5c85f45a36f49f06a16693682",
+      "run": {
+        "id": "20261109T034848928Z-86903-187f6d7f-3c2c-4dcb-823b-1c56be2de88e",
+        "model": "claude-opus-5-5",
+        "effort": "high"
+      },
+      "blindChoice": "c",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": [
+        "[공개 대조] [권고] 해설이 뜻만 말하고 c와의 연결은 생략했어요. 끝에 ‘큰비로 소풍 취소 위기를 맞닥뜨린 c가 알맞아요’ 정도를 덧붙일 수 있어요."
+      ]
+    },
+    {
+      "questionId": "g5-argon-2512",
+      "revision": 1,
+      "contentHash": "e91f51b757b457718cfc227582e4365ac8fc9f0988a2c07dffd7328fd19940dd",
+      "run": {
+        "id": "20261109T034614128Z-86903-2196129e-5200-4376-8897-91c2b6e25536",
+        "model": "claude-opus-5-5",
+        "effort": "high"
+      },
+      "blindChoice": "b",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": []
+    },
+    {
+      "questionId": "g5-argon-2513",
+      "revision": 1,
+      "contentHash": "31577bf209f6fd18c9b3c794b16fa3807034a2112a55293a0a4f1d7dfa4f93d7",
+      "run": {
+        "id": "20261109T034614128Z-86903-2196129e-5200-4376-8897-91c2b6e25536",
+        "model": "claude-opus-5-5",
+        "effort": "high"
+      },
+      "blindChoice": "d",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": []
+    },
+    {
+      "questionId": "g5-argon-2514",
+      "revision": 1,
+      "contentHash": "a2c4546d30362e908a246efea3d62ae7121f543d7424bbe55db56fd802b4ea28",
+      "run": {
+        "id": "20261109T034614128Z-86903-2196129e-5200-4376-8897-91c2b6e25536",
+        "model": "claude-opus-5-5",
+        "effort": "high"
+      },
+      "blindChoice": "b",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": []
+    },
+    {
+      "questionId": "g5-argon-2515",
+      "revision": 1,
+      "contentHash": "812ada6484d975b6cb5e92799b674cf9e67f5a3e6be477666d1cc33647b207c6",
+      "run": {
+        "id": "20261109T034614128Z-86903-2196129e-5200-4376-8897-91c2b6e25536",
+        "model": "claude-opus-5-5",
+        "effort": "high"
+      },
+      "blindChoice": "d",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": [
+        "[공개 대조] [권고] 오답 이유 b ‘꼼꼼하지 못한 것과 반대말이 아니에요’는 논리가 엇갈려 읽힌다. ‘엉성하다는 뜻이 아니라서 반대말이 아니에요’처럼 고칠 수 있다."
+      ]
+    },
+    {
+      "questionId": "g5-argon-2516",
+      "revision": 1,
+      "contentHash": "e8b34409a2c73852ca0094d781f4e7e70ec91b49a9ec833225392d180ae8390b",
+      "run": {
+        "id": "20261109T034614128Z-86903-2196129e-5200-4376-8897-91c2b6e25536",
+        "model": "claude-opus-5-5",
+        "effort": "high"
+      },
+      "blindChoice": "a",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": []
+    },
+    {
+      "questionId": "g5-argon-2517",
+      "revision": 1,
+      "contentHash": "8f81f6ea6b461cd22cffbf0f9a528868bb9fc68fa987545acc283e8d4031b16c",
+      "run": {
+        "id": "20261109T034614128Z-86903-2196129e-5200-4376-8897-91c2b6e25536",
+        "model": "claude-opus-5-5",
+        "effort": "high"
+      },
+      "blindChoice": "c",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": []
+    },
+    {
+      "questionId": "g5-argon-2518",
+      "revision": 1,
+      "contentHash": "fdd34a2124b934c6234684977381f5cee10d06e05ad221fea49997229842c27e",
+      "run": {
+        "id": "20261109T034614128Z-86903-2196129e-5200-4376-8897-91c2b6e25536",
+        "model": "claude-opus-5-5",
+        "effort": "high"
+      },
+      "blindChoice": "a",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": []
+    },
+    {
+      "questionId": "g5-argon-2519",
+      "revision": 1,
+      "contentHash": "707c41fdc4db7f0447d8a9528bf24260939c3347008c1f6feb9f3f486d6f2e92",
+      "run": {
+        "id": "20261109T034614128Z-86903-2196129e-5200-4376-8897-91c2b6e25536",
+        "model": "claude-opus-5-5",
+        "effort": "high"
+      },
+      "blindChoice": "c",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": []
+    },
+    {
+      "questionId": "g5-argon-2520",
+      "revision": 1,
+      "contentHash": "267b4344bbd5769d550b3fe58f06895fcb7d748c0442022b28184301111e2594",
+      "run": {
+        "id": "20261109T034614128Z-86903-2196129e-5200-4376-8897-91c2b6e25536",
+        "model": "claude-opus-5-5",
+        "effort": "high"
+      },
+      "blindChoice": "b",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": []
+    },
+    {
+      "questionId": "g5-argon-2521",
+      "revision": 1,
+      "contentHash": "d06dac52c741acb22fd7f24d42816d5216aaae4c5b9bec367172502b27b82d9c",
+      "run": {
+        "id": "20261109T034614128Z-86903-2196129e-5200-4376-8897-91c2b6e25536",
+        "model": "claude-opus-5-5",
+        "effort": "high"
+      },
+      "blindChoice": "d",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": [
+        "[블라인드] [권고] ‘화음이 깨진다는 부족한 점을’은 조금 무겁게 읽힌다. ‘화음이 깨진다는 점을’으로 줄일 수 있다."
+      ]
+    },
+    {
+      "questionId": "g5-argon-2522",
+      "revision": 1,
+      "contentHash": "6c85aae61af35ceec9d34e8843e8d5d29cb4a236c461745a7b610c3e7328960d",
+      "run": {
+        "id": "20261109T034614128Z-86903-2196129e-5200-4376-8897-91c2b6e25536",
+        "model": "claude-opus-5-5",
+        "effort": "high"
+      },
+      "blindChoice": "b",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": []
+    },
+    {
+      "questionId": "g5-argon-2523",
+      "revision": 1,
+      "contentHash": "ca397b36e1de636024562890d617872dab08f85a9efc03c542fa091a5e91c554",
+      "run": {
+        "id": "20261109T034614128Z-86903-2196129e-5200-4376-8897-91c2b6e25536",
+        "model": "claude-opus-5-5",
+        "effort": "high"
+      },
+      "blindChoice": "d",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": []
+    },
+    {
+      "questionId": "g5-argon-2524",
+      "revision": 1,
+      "contentHash": "0b8f38877d7cece4542d9afb30a1d596b5b6aea00fd592f89a8a1b71fbd4e745",
+      "run": {
+        "id": "20261109T034614128Z-86903-2196129e-5200-4376-8897-91c2b6e25536",
+        "model": "claude-opus-5-5",
+        "effort": "high"
+      },
+      "blindChoice": "a",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": [
+        "[블라인드] [권고] 정답 ‘판단하여 가려내야’가 목표어와 ‘판’ 글자를 공유한다. 다만 다른 보기가 명백히 틀려 실질적인 영향은 작다."
+      ]
+    },
+    {
+      "questionId": "g5-argon-2525",
+      "revision": 1,
+      "contentHash": "0ad3da536d690809c65178a6122619e0bdcf88a77871d481ae59d88f5036ab54",
+      "run": {
+        "id": "20261109T034614128Z-86903-2196129e-5200-4376-8897-91c2b6e25536",
+        "model": "claude-opus-5-5",
+        "effort": "high"
+      },
+      "blindChoice": "c",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "fail"
+      },
+      "findings": [
+        "[공개 대조] 해설이 ‘쓰인 것은 d예요’라고 해 정답 키 c와 모순된다. 최소 수정: ‘d예요’를 ‘c예요’로 고친다."
+      ]
+    },
+    {
+      "questionId": "g5-argon-2525",
+      "revision": 2,
+      "contentHash": "04d89ae7cf3bfda707ebe3b050b4976af3b995d12b1118f6a538ac2c7502e34f",
+      "run": {
+        "id": "20261109T034848928Z-86903-187f6d7f-3c2c-4dcb-823b-1c56be2de88e",
+        "model": "claude-opus-5-5",
+        "effort": "high"
+      },
+      "blindChoice": "c",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": []
+    }
+  ]
+}
