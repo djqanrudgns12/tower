@@ -1,0 +1,2788 @@
+{
+  "batchId": "Q50-G6-037",
+  "rubricVersion": "lv1",
+  "items": [
+    {
+      "questionId": "g6-argon-2627",
+      "revision": 1,
+      "contentHash": "5bf823b446db8b1ad42e9dfbd87e936a23ac56a0440d1b055f0e6406ddbc1cab",
+      "precomputed": {
+        "typeBase": 0,
+        "lengthBump": 1,
+        "t3Base": 0,
+        "readingLoad": 68,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g6-argon-2627",
+          "revision": 1,
+          "contentHash": "5bf823b446db8b1ad42e9dfbd87e936a23ac56a0440d1b055f0e6406ddbc1cab",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 2,
+          "L2": 2,
+          "T1": 2,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "‘저조하다(가락이 낮다)’는 설명·감상 문어에 쓰이는 한자 개념어(L1=2, L2=2)이며, ‘단조롭다·완만하다’ 등 인접 의미장 오답과의 구별이 필요하나(T1=2) 지문에 직접 단서가 있다(inference=0)."
+        },
+        {
+          "questionId": "g6-argon-2627",
+          "revision": 1,
+          "contentHash": "5bf823b446db8b1ad42e9dfbd87e936a23ac56a0440d1b055f0e6406ddbc1cab",
+          "judge": "claude",
+          "model": "claude-opus-5-5",
+          "L1": 3,
+          "L2": 3,
+          "T1": 2,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "too_high",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "'가락이 낮다'는 뜻은 생활에서 거의 쓰지 않는 저빈도 문어이고, '단조롭다'가 매력적인 오답이다. 단서는 '낮은음만'으로 직접 주어진다."
+        }
+      ],
+      "merged": {
+        "rule": 1,
+        "L": 6,
+        "T": 3,
+        "V": 15,
+        "ownTier": "core",
+        "band": {
+          "min": 6,
+          "max": 6
+        },
+        "flags": [
+          "elementaryFit"
+        ]
+      },
+      "levelAssessmentHash": "3c3498e20523e0cbbdfe8460fdc8e2a47823366a5fce697dd13c7d42cff09b25"
+    },
+    {
+      "questionId": "g6-argon-2628",
+      "revision": 1,
+      "contentHash": "7a766c88c30003d6cc3d5e782eb2cc74873e21f87ee6cd1485b47584e20924cf",
+      "precomputed": {
+        "typeBase": 1,
+        "lengthBump": 1,
+        "t3Base": 0,
+        "readingLoad": 76,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g6-argon-2628",
+          "revision": 1,
+          "contentHash": "7a766c88c30003d6cc3d5e782eb2cc74873e21f87ee6cd1485b47584e20924cf",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 2,
+          "L2": 2,
+          "T1": 2,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "‘동조하다’는 토의·논설 문어 빈출 한자 개념어(L1=2, L2=2)이고, ‘수용하다·양보하다·타협하다’ 등 회의 태도 의미장 오답과 반의 관계를 변별해야 하나(T1=2) 문맥 단서가 직접적이다(inference=0)."
+        },
+        {
+          "questionId": "g6-argon-2628",
+          "revision": 1,
+          "contentHash": "7a766c88c30003d6cc3d5e782eb2cc74873e21f87ee6cd1485b47584e20924cf",
+          "judge": "claude",
+          "model": "claude-opus-5-5",
+          "L1": 3,
+          "L2": 2,
+          "T1": 2,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "토의 문어인 한자 개념어이고, 오답 수용·양보·타협이 같은 의미장이다. 지문에 '생각도 같다'는 직접 단서가 있다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 5,
+        "T": 4,
+        "V": 14,
+        "ownTier": "core",
+        "band": {
+          "min": 6,
+          "max": 6
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "48ddd59402c00b19258453a46315a49d0a29d82ac8f124f7f717f82665466d61"
+    },
+    {
+      "questionId": "g6-argon-2629",
+      "revision": 1,
+      "contentHash": "d93629e62f3207a9cb3ff66f5aa3633bdd9cf09fbc51110f76c9304ee3016c35",
+      "precomputed": {
+        "typeBase": 1,
+        "lengthBump": 1,
+        "t3Base": 0,
+        "readingLoad": 78,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g6-argon-2629",
+          "revision": 1,
+          "contentHash": "d93629e62f3207a9cb3ff66f5aa3633bdd9cf09fbc51110f76c9304ee3016c35",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 2,
+          "L2": 2,
+          "T1": 2,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "‘상반되다’는 의견 비교에 쓰이는 한자 관계 추상어(L1=2, L2=2)이며, 유의어 ‘대립하다’ 등 같은 의미장 오답이 포함되어 있으나(T1=2) 지문에 대조 단서가 명시되어 있다(inference=0)."
+        },
+        {
+          "questionId": "g6-argon-2629",
+          "revision": 1,
+          "contentHash": "d93629e62f3207a9cb3ff66f5aa3633bdd9cf09fbc51110f76c9304ee3016c35",
+          "judge": "claude",
+          "model": "claude-opus-5-5",
+          "L1": 2,
+          "L2": 2,
+          "T1": 2,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "5~6학년 토의에서 쓰는 관계 추상어이고, '대립하다'가 유의어 경계에 있는 고매력 오답이다. '늘리자/줄이자'라는 대조 표지가 있다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 4,
+        "T": 4,
+        "V": 12,
+        "ownTier": "basic",
+        "band": {
+          "min": 6,
+          "max": 6
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "7668f27b5af3bdd6b7d0c1695db217ad5c502cd4cb226484aa28bd70413bb419"
+    },
+    {
+      "questionId": "g6-argon-2630",
+      "revision": 1,
+      "contentHash": "6ab179f40c5eccc7b889381f36c57ff987b3906fba454c60c590825fd0947bfe",
+      "precomputed": {
+        "typeBase": 1,
+        "lengthBump": 1,
+        "t3Base": 1,
+        "readingLoad": 73,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g6-argon-2630",
+          "revision": 1,
+          "contentHash": "6ab179f40c5eccc7b889381f36c57ff987b3906fba454c60c590825fd0947bfe",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 2,
+          "L2": 2,
+          "T1": 2,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "‘외면하다’의 다의적 확장 의미(사실을 도외시하다)를 묻는 문항으로(L1=2, L2=2), ‘무시하다·회피하다·거부하다’ 등 유의 경계 오답과 반의어를 구별해야 하며(T1=2) 직접 단서가 있다(inference=0)."
+        },
+        {
+          "questionId": "g6-argon-2630",
+          "revision": 1,
+          "contentHash": "6ab179f40c5eccc7b889381f36c57ff987b3906fba454c60c590825fd0947bfe",
+          "judge": "claude",
+          "model": "claude-opus-5-5",
+          "L1": 2,
+          "L2": 2,
+          "T1": 2,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:뜻 번호 2, 전문어 표지 없음",
+          "reason": "'고개를 돌리다'에서 '사실을 인정하지 않다'로 넓어진 의미다. 오답 3개(무시·회피·거부)가 모두 유의 경계에 있다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 4,
+        "T": 5,
+        "V": 13,
+        "ownTier": "core",
+        "band": {
+          "min": 6,
+          "max": 6
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "77b02d95246a6ed3edf62b4b1f4cc7739a7d772f13fde0330f7ac3c206640843"
+    },
+    {
+      "questionId": "g6-argon-2631",
+      "revision": 1,
+      "contentHash": "98f92ba20fbc3555a3deb986423daeee18f7f0871ce2cac83239d4d3c78fba18",
+      "precomputed": {
+        "typeBase": 2,
+        "lengthBump": 2,
+        "t3Base": 1,
+        "readingLoad": 99,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g6-argon-2631",
+          "revision": 1,
+          "contentHash": "98f92ba20fbc3555a3deb986423daeee18f7f0871ce2cac83239d4d3c78fba18",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 2,
+          "L2": 2,
+          "T1": 2,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "‘과열되다’의 비유적 확장 의미(경쟁·분위기가 지나치게 활기를 띠다)와 물리적 가열 의미를 구별하는 다의어 활용 문항이며(L1=2, L2=2, T1=2), 주어 호응 단서가 직접적이다(inference=0)."
+        },
+        {
+          "questionId": "g6-argon-2631",
+          "revision": 1,
+          "contentHash": "98f92ba20fbc3555a3deb986423daeee18f7f0871ce2cac83239d4d3c78fba18",
+          "judge": "claude",
+          "model": "claude-opus-5-5",
+          "L1": 2,
+          "L2": 2,
+          "T1": 2,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:뜻 번호 2, 전문어 표지 없음",
+          "reason": "물리적 과열과 분위기 과열이라는 다의 확장을 구별하는 과제다. 오답 3개는 모두 같은 단어의 본뜻 용례다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 4,
+        "T": 6,
+        "V": 14,
+        "ownTier": "core",
+        "band": {
+          "min": 6,
+          "max": 6
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "e00c7130266b34680a8ce2581b447c504abcfa507db3205babce943d90c5e2ee"
+    },
+    {
+      "questionId": "g6-argon-2632",
+      "revision": 1,
+      "contentHash": "9b8546a5f10a8f1b2c1abd0b194b9f86aafe2195c63db3b723e1e80a088fa595",
+      "precomputed": {
+        "typeBase": 2,
+        "lengthBump": 2,
+        "t3Base": 1,
+        "readingLoad": 87,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g6-argon-2632",
+          "revision": 1,
+          "contentHash": "9b8546a5f10a8f1b2c1abd0b194b9f86aafe2195c63db3b723e1e80a088fa595",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 2,
+          "L2": 2,
+          "T1": 3,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "교과 개념어 ‘전개하다’(L1=2, L2=2)의 여러 다의·동형 의미(도형·사건·운동·군사 전개)가 오답으로 모두 제시되어 의미 변별 부담이 높으나(T1=3) 발문에 뜻풀이가 직접 주어졌다(inference=0)."
+        },
+        {
+          "questionId": "g6-argon-2632",
+          "revision": 1,
+          "contentHash": "9b8546a5f10a8f1b2c1abd0b194b9f86aafe2195c63db3b723e1e80a088fa595",
+          "judge": "claude",
+          "model": "claude-opus-5-5",
+          "L1": 3,
+          "L2": 2,
+          "T1": 3,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:뜻 번호 2「1」, 전문어 표지 없음",
+          "reason": "전개의 네 가지 뜻(평면·사건·활동·군사)을 구별해야 하는 고매력 혼동 과제다. 해설의 정답 기호가 a로 잘못 적혀 있다(정답 c)."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 5,
+        "T": 7,
+        "V": 17,
+        "ownTier": "advanced",
+        "band": {
+          "min": 5,
+          "max": 6
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "608ecfb2dd3241bf8eac96650715003c1e52b68753f653c62f293d9df07d3cfe"
+    },
+    {
+      "questionId": "g6-argon-2632",
+      "revision": 2,
+      "contentHash": "56f1a8c60a9f8bdf5f49d3b6691998b971aba57fda0a9e9dba665e21594aa1b4",
+      "precomputed": {
+        "typeBase": 2,
+        "lengthBump": 2,
+        "t3Base": 1,
+        "readingLoad": 87,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g6-argon-2632",
+          "revision": 2,
+          "contentHash": "56f1a8c60a9f8bdf5f49d3b6691998b971aba57fda0a9e9dba665e21594aa1b4",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 2,
+          "L2": 2,
+          "T1": 2,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "'전개하다'는 초등 고학년 교과에 자주 쓰이는 한자어 개념어로, 여러 다의·동형 용법 중 '활동을 시작하여 벌이다'의 문맥적 의미를 구별해야 하므로 6학년 수준에 알맞다."
+        },
+        {
+          "questionId": "g6-argon-2632",
+          "revision": 2,
+          "contentHash": "56f1a8c60a9f8bdf5f49d3b6691998b971aba57fda0a9e9dba665e21594aa1b4",
+          "judge": "claude",
+          "model": "claude-opus-5-5",
+          "L1": 2,
+          "L2": 2,
+          "T1": 3,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음, 동형어 2 뜻 번호 2「1」",
+          "reason": "이야기·운동을 전개하다는 5~6학년 교과 공통 한자어이고, 오답 셋이 모두 실제 쓰이는 다른 뜻(펼침·이야기 진행·배치)이라 혼동 부담이 크다. 다만 발문에 뜻이 직접 주어져 추론은 0이다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 4,
+        "T": 7,
+        "V": 15,
+        "ownTier": "core",
+        "band": {
+          "min": 6,
+          "max": 6
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "a93a2cf0d091fdbfc039c419a55d62712b6bba024b372f431eabc15490c54fb3"
+    },
+    {
+      "questionId": "g6-argon-2633",
+      "revision": 1,
+      "contentHash": "0e2c6f3b7d3609997175e18ac002d6b46dda0c09ffa86deb4de687b511e640e9",
+      "precomputed": {
+        "typeBase": 2,
+        "lengthBump": 2,
+        "t3Base": 1,
+        "readingLoad": 88,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g6-argon-2633",
+          "revision": 1,
+          "contentHash": "0e2c6f3b7d3609997175e18ac002d6b46dda0c09ffa86deb4de687b511e640e9",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 2,
+          "L2": 2,
+          "T1": 2,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "‘마비되다’의 비유적 확장 의미(기능 정지)를 신체 마비 의미와 구별하는 문항으로(L1=2, L2=2, T1=2), 발문과 선택지에 직접 단서가 제시되어 있다(inference=0)."
+        },
+        {
+          "questionId": "g6-argon-2633",
+          "revision": 1,
+          "contentHash": "0e2c6f3b7d3609997175e18ac002d6b46dda0c09ffa86deb4de687b511e640e9",
+          "judge": "claude",
+          "model": "claude-opus-5-5",
+          "L1": 2,
+          "L2": 2,
+          "T1": 2,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:뜻 번호 2 (비유적으로) 표지",
+          "reason": "신체 마비와 기능 정지라는 비유 확장을 구별하는 과제다. 해설의 정답 기호가 a로 잘못 적혀 있다(정답 b)."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 4,
+        "T": 6,
+        "V": 14,
+        "ownTier": "core",
+        "band": {
+          "min": 6,
+          "max": 6
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "b9377c5c0a23d89b3b7a875326b0124f1f2efd0ada2f7ba9478467b601565c3e"
+    },
+    {
+      "questionId": "g6-argon-2633",
+      "revision": 2,
+      "contentHash": "a81a94059460d7cb6675cc82a4ab60a211569d814b9d5e5a7dd63aa8a2ea98ea",
+      "precomputed": {
+        "typeBase": 2,
+        "lengthBump": 2,
+        "t3Base": 1,
+        "readingLoad": 88,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g6-argon-2633",
+          "revision": 2,
+          "contentHash": "a81a94059460d7cb6675cc82a4ab60a211569d814b9d5e5a7dd63aa8a2ea98ea",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 2,
+          "L2": 2,
+          "T1": 2,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "'마비되다'는 설명 문어에 쓰이는 한자어로, 신체적 본래 의미와 '기능이 정지되다'라는 비유적 확장 의미를 구별하는 과제이므로 초등 고학년 수준에 적합하다."
+        },
+        {
+          "questionId": "g6-argon-2633",
+          "revision": 2,
+          "contentHash": "a81a94059460d7cb6675cc82a4ab60a211569d814b9d5e5a7dd63aa8a2ea98ea",
+          "judge": "claude",
+          "model": "claude-opus-5-5",
+          "L1": 2,
+          "L2": 2,
+          "T1": 2,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음, 뜻 번호 「2」 (비유적으로)",
+          "reason": "교통이 마비되다는 뉴스·사회 교과에 흔한 비유 전이 의미다. 오답 둘은 같은 낱말의 신체 뜻이고 하나는 상황이 맞지 않는다. 발문의 '몸이 아니라'가 직접 단서여서 T1은 2로 둔다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 4,
+        "T": 6,
+        "V": 14,
+        "ownTier": "core",
+        "band": {
+          "min": 6,
+          "max": 6
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "567f808e3cbcf3ad494436583ef3a4a4acd338912770171e9b7bea56ec373928"
+    },
+    {
+      "questionId": "g6-argon-2634",
+      "revision": 1,
+      "contentHash": "0acfafb274ddd84ec94767f5feec05cb2e1ef9d3eb0987aa22c95d9cc963620f",
+      "precomputed": {
+        "typeBase": 1,
+        "lengthBump": 1,
+        "t3Base": 0,
+        "readingLoad": 72,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g6-argon-2634",
+          "revision": 1,
+          "contentHash": "0acfafb274ddd84ec94767f5feec05cb2e1ef9d3eb0987aa22c95d9cc963620f",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 3,
+          "L2": 2,
+          "T1": 2,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "‘사사롭다’는 구어 빈도가 낮은 격식 문어 파생 형용사(L1=3, L2=2)이며, 유의어 ‘사적인’과 형태 유사어 ‘사소한’이 오답으로 배치되어 있으나(T1=2) 행동 단서가 직접적이다(inference=0)."
+        },
+        {
+          "questionId": "g6-argon-2634",
+          "revision": 1,
+          "contentHash": "0acfafb274ddd84ec94767f5feec05cb2e1ef9d3eb0987aa22c95d9cc963620f",
+          "judge": "claude",
+          "model": "claude-opus-5-5",
+          "L1": 3,
+          "L2": 2,
+          "T1": 2,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "격식 문어 형용사이고, '사적인'·'사소한'이 형태와 뜻 모두에서 혼동을 부른다. '친한 친구만'이라는 단서가 직접 주어진다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 5,
+        "T": 4,
+        "V": 14,
+        "ownTier": "core",
+        "band": {
+          "min": 6,
+          "max": 6
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "81d00037c2ba3c1fa58ece1da0b454b3060aa6eeb68625d4b71966022927e053"
+    },
+    {
+      "questionId": "g6-argon-2635",
+      "revision": 1,
+      "contentHash": "6eaaed7f6b94d3eb88b15d8b4b515b843d0819cfa382ef647c3f55f1a46a6be7",
+      "precomputed": {
+        "typeBase": 1,
+        "lengthBump": 1,
+        "t3Base": 0,
+        "readingLoad": 76,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g6-argon-2635",
+          "revision": 1,
+          "contentHash": "6eaaed7f6b94d3eb88b15d8b4b515b843d0819cfa382ef647c3f55f1a46a6be7",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 2,
+          "L2": 2,
+          "T1": 1,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "‘집착하다’는 심리·태도를 나타내는 한자 개념어(L1=2, L2=2)로 중심 의미의 유의어(‘매달리다’)를 고르는 과제이며(T1=1), 지문에 대조 및 행동 단서가 명시되어 있다(inference=0)."
+        },
+        {
+          "questionId": "g6-argon-2635",
+          "revision": 1,
+          "contentHash": "6eaaed7f6b94d3eb88b15d8b4b515b843d0819cfa382ef647c3f55f1a46a6be7",
+          "judge": "claude",
+          "model": "claude-opus-5-5",
+          "L1": 2,
+          "L2": 2,
+          "T1": 1,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "동화와 생활에서 자주 보는 태도 한자어다. 오답은 대체로 다른 의미장이고, '체념하다'만 같은 의미장에 걸친다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 4,
+        "T": 3,
+        "V": 11,
+        "ownTier": "basic",
+        "band": {
+          "min": 6,
+          "max": 6
+        },
+        "flags": [
+          "too_easy"
+        ]
+      },
+      "levelAssessmentHash": "ba3d97a1d5870cba03d937d1bdd709937fc5d2b1df0186a97284c5411c61b51e"
+    },
+    {
+      "questionId": "g6-argon-2637",
+      "revision": 1,
+      "contentHash": "e1db617015ed266bef52988b62bf2c9d91f5c629e13434b5c45273b45d73687e",
+      "precomputed": {
+        "typeBase": 1,
+        "lengthBump": 1,
+        "t3Base": 0,
+        "readingLoad": 69,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g6-argon-2637",
+          "revision": 1,
+          "contentHash": "e1db617015ed266bef52988b62bf2c9d91f5c629e13434b5c45273b45d73687e",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 2,
+          "L2": 2,
+          "T1": 2,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "‘저조하다(가락이 낮다)’(L1=2, L2=2)의 반의어를 찾는 과제로 ‘잔잔하다·단조롭다’ 등 음악·상태 묘사 오답과의 의미 구별이 필요하나(T1=2) 직접 단서가 제시되어 있다(inference=0)."
+        },
+        {
+          "questionId": "g6-argon-2637",
+          "revision": 1,
+          "contentHash": "e1db617015ed266bef52988b62bf2c9d91f5c629e13434b5c45273b45d73687e",
+          "judge": "claude",
+          "model": "claude-opus-5-5",
+          "L1": 3,
+          "L2": 3,
+          "T1": 2,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "too_high",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "'가락이 낮다'는 뜻은 저빈도 음악 문어다. 오답 잔잔하다·단조롭다가 소리 의미장에 함께 있다."
+        }
+      ],
+      "merged": {
+        "rule": 1,
+        "L": 6,
+        "T": 4,
+        "V": 16,
+        "ownTier": "core",
+        "band": {
+          "min": 6,
+          "max": 6
+        },
+        "flags": [
+          "elementaryFit"
+        ]
+      },
+      "levelAssessmentHash": "695385436909667663a361e575e2252d93e78cde2a2a1205a2dcdbf99ff73b14"
+    },
+    {
+      "questionId": "g6-argon-2638",
+      "revision": 1,
+      "contentHash": "524fb91db5e6d68a1328078b2d87a5796fbecdd26b4b233b40dbf84fb2f4e3f1",
+      "precomputed": {
+        "typeBase": 2,
+        "lengthBump": 2,
+        "t3Base": 0,
+        "readingLoad": 88,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g6-argon-2638",
+          "revision": 1,
+          "contentHash": "524fb91db5e6d68a1328078b2d87a5796fbecdd26b4b233b40dbf84fb2f4e3f1",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 2,
+          "L2": 2,
+          "T1": 1,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "토의 문어인 ‘동조하다’(L1=2, L2=2)의 중심 의미를 문장 호응으로 확인하는 활용 문항이며(T1=1), 각 선택지에 직접적인 태도 단서가 있다(inference=0)."
+        },
+        {
+          "questionId": "g6-argon-2638",
+          "revision": 1,
+          "contentHash": "524fb91db5e6d68a1328078b2d87a5796fbecdd26b4b233b40dbf84fb2f4e3f1",
+          "judge": "claude",
+          "model": "claude-opus-5-5",
+          "L1": 3,
+          "L2": 2,
+          "T1": 1,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "토의 문어다. 오답 문장은 문맥이 모순되는 오용이라 가려내기 쉽다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 5,
+        "T": 4,
+        "V": 14,
+        "ownTier": "core",
+        "band": {
+          "min": 6,
+          "max": 6
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "5172b7dffda379ea7738918e65c636b7bdb42ff02d440a75286b95a8483beb7b"
+    },
+    {
+      "questionId": "g6-argon-2639",
+      "revision": 1,
+      "contentHash": "141c5321888be3493bc4e1508897e8049422f9a0483927b05f4b6734801ea481",
+      "precomputed": {
+        "typeBase": 2,
+        "lengthBump": 1,
+        "t3Base": 0,
+        "readingLoad": 85,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g6-argon-2639",
+          "revision": 1,
+          "contentHash": "141c5321888be3493bc4e1508897e8049422f9a0483927b05f4b6734801ea481",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 2,
+          "L2": 2,
+          "T1": 1,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "관계 개념어 ‘상반되다’(L1=2, L2=2)의 기본 쓰임을 묻는 문항으로 오답 문장들의 모순이 뚜렷하며(T1=1), ‘찬성과 반대’라는 직접 단서가 있다(inference=0)."
+        },
+        {
+          "questionId": "g6-argon-2639",
+          "revision": 1,
+          "contentHash": "141c5321888be3493bc4e1508897e8049422f9a0483927b05f4b6734801ea481",
+          "judge": "claude",
+          "model": "claude-opus-5-5",
+          "L1": 2,
+          "L2": 2,
+          "T1": 1,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "관계 추상어다. 오답은 '생각이 똑같아서', '한마음으로'처럼 모순이 명백한 문장이다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 4,
+        "T": 4,
+        "V": 12,
+        "ownTier": "basic",
+        "band": {
+          "min": 6,
+          "max": 6
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "10d97374caf18e606e62b4cb08e9b78219b92e0e4ef8daa71596f635fee624a8"
+    },
+    {
+      "questionId": "g6-argon-2640",
+      "revision": 1,
+      "contentHash": "a6513120dd9259ec8caf4495e52c4456fb9d9b9554e7308ca2415c53773ed98e",
+      "precomputed": {
+        "typeBase": 2,
+        "lengthBump": 2,
+        "t3Base": 1,
+        "readingLoad": 96,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g6-argon-2640",
+          "revision": 1,
+          "contentHash": "a6513120dd9259ec8caf4495e52c4456fb9d9b9554e7308ca2415c53773ed98e",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 2,
+          "L2": 2,
+          "T1": 2,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "‘외면하다’의 확장 의미(현실·사실을 도외시하다)에 맞는 문맥을 고르는 다의어 활용 문항이며(L1=2, L2=2, T1=2), 선택지 내 호응 단서가 분명하다(inference=0)."
+        },
+        {
+          "questionId": "g6-argon-2640",
+          "revision": 1,
+          "contentHash": "a6513120dd9259ec8caf4495e52c4456fb9d9b9554e7308ca2415c53773ed98e",
+          "judge": "claude",
+          "model": "claude-opus-5-5",
+          "L1": 2,
+          "L2": 2,
+          "T1": 2,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:뜻 번호 2, 전문어 표지 없음",
+          "reason": "'현실을 인정하지 않다'라는 확장 의미의 용례를 고르는 과제다. 오답은 '인정하며'처럼 모순 문맥이다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 4,
+        "T": 6,
+        "V": 14,
+        "ownTier": "core",
+        "band": {
+          "min": 6,
+          "max": 6
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "012fc9aba39fbf82afee6a0373b4d73c293501293303d2967edc7baac27c258d"
+    },
+    {
+      "questionId": "g6-argon-2641",
+      "revision": 1,
+      "contentHash": "d73c49dd71da98ec88a65a577b0538ee138ee9e54037ba8e1823edb45d128990",
+      "precomputed": {
+        "typeBase": 1,
+        "lengthBump": 2,
+        "t3Base": 1,
+        "readingLoad": 88,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g6-argon-2641",
+          "revision": 1,
+          "contentHash": "d73c49dd71da98ec88a65a577b0538ee138ee9e54037ba8e1823edb45d128990",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 2,
+          "L2": 2,
+          "T1": 2,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "‘과열되다’의 비유적 확장 의미를 묻고 ‘안정되다·약화되다’ 등 상태 변화 의미장 오답과 구별하게 하였으며(L1=2, L2=2, T1=2), 대조 표지와 행동 단서가 직접적이다(inference=0)."
+        },
+        {
+          "questionId": "g6-argon-2641",
+          "revision": 1,
+          "contentHash": "d73c49dd71da98ec88a65a577b0538ee138ee9e54037ba8e1823edb45d128990",
+          "judge": "claude",
+          "model": "claude-opus-5-5",
+          "L1": 2,
+          "L2": 2,
+          "T1": 2,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:뜻 번호 2, 전문어 표지 없음",
+          "reason": "분위기에 쓰인 확장 의미다. '처음과 반대로'라는 대조 표지가 있다. 유형은 antonym이지만 실제 형식은 빈칸 채우기다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 4,
+        "T": 6,
+        "V": 14,
+        "ownTier": "core",
+        "band": {
+          "min": 6,
+          "max": 6
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "1a49673e09451f5772d84e21d773c450f2425dc4dae96e9592d42c7920e0e2ea"
+    },
+    {
+      "questionId": "g6-argon-2642",
+      "revision": 1,
+      "contentHash": "124fe9d2756a8891c3a5e834bcc2bbcbf056e2ec8221ab432460138480e47443",
+      "precomputed": {
+        "typeBase": 0,
+        "lengthBump": 2,
+        "t3Base": 1,
+        "readingLoad": 88,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g6-argon-2642",
+          "revision": 1,
+          "contentHash": "124fe9d2756a8891c3a5e834bcc2bbcbf056e2ec8221ab432460138480e47443",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 2,
+          "L2": 2,
+          "T1": 2,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "‘전개하다(운동을 시작하여 벌이다)’의 다의적 문맥 의미를 묻고 ‘연기하다·종료하다·축소하다’ 등 인접 의미장 오답을 배치했으며(L1=2, L2=2, T1=2), 전후 대조 단서가 명확하다(inference=0)."
+        },
+        {
+          "questionId": "g6-argon-2642",
+          "revision": 1,
+          "contentHash": "124fe9d2756a8891c3a5e834bcc2bbcbf056e2ec8221ab432460138480e47443",
+          "judge": "claude",
+          "model": "claude-opus-5-5",
+          "L1": 3,
+          "L2": 2,
+          "T1": 2,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:뜻 번호 2「1」, 전문어 표지 없음",
+          "reason": "'운동을 전개하다'는 문어 연어다. 오답 연기·종료·축소가 모두 활동 진행 의미장에 있다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 5,
+        "T": 5,
+        "V": 15,
+        "ownTier": "core",
+        "band": {
+          "min": 5,
+          "max": 6
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "b77722d6bf300b4e987b90371274314c0c77220215e3e2fc52fbc1fa3f920f14"
+    },
+    {
+      "questionId": "g6-argon-2643",
+      "revision": 1,
+      "contentHash": "755fc426c50b132b6fe48464e3bc8af72153366634ac5083297511444c9e5980",
+      "precomputed": {
+        "typeBase": 0,
+        "lengthBump": 2,
+        "t3Base": 1,
+        "readingLoad": 88,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g6-argon-2643",
+          "revision": 1,
+          "contentHash": "755fc426c50b132b6fe48464e3bc8af72153366634ac5083297511444c9e5980",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 2,
+          "L2": 2,
+          "T1": 2,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "‘마비되다’의 비유적 의미(기능 정지)를 문맥 속에서 파악하는 과제로(L1=2, L2=2, T1=2), 폭설로 차들이 꼼짝 못 한다는 직접 원인 단서가 제시되어 있다(inference=0)."
+        },
+        {
+          "questionId": "g6-argon-2643",
+          "revision": 1,
+          "contentHash": "755fc426c50b132b6fe48464e3bc8af72153366634ac5083297511444c9e5980",
+          "judge": "claude",
+          "model": "claude-opus-5-5",
+          "L1": 2,
+          "L2": 2,
+          "T1": 2,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:뜻 번호 2 (비유적으로) 표지",
+          "reason": "'교통 마비'는 뉴스에 자주 노출되는 비유 의미다. 오답 회복·개선·연장이 상태 변화 의미장에 있다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 4,
+        "T": 5,
+        "V": 13,
+        "ownTier": "core",
+        "band": {
+          "min": 6,
+          "max": 6
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "d9a4abc20344a0488f7e54ec877b6a76f49e9fae438881641c98fd01ee2e4b21"
+    },
+    {
+      "questionId": "g6-argon-2644",
+      "revision": 1,
+      "contentHash": "a57238ad2191df07d023aba280c87f9bcdcbe06d0ccb9f39ba2e75c712f2e33c",
+      "precomputed": {
+        "typeBase": 2,
+        "lengthBump": 2,
+        "t3Base": 0,
+        "readingLoad": 100,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g6-argon-2644",
+          "revision": 1,
+          "contentHash": "a57238ad2191df07d023aba280c87f9bcdcbe06d0ccb9f39ba2e75c712f2e33c",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 3,
+          "L2": 2,
+          "T1": 1,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "격식 문어 형용사 ‘사사롭다’(L1=3, L2=2)의 중심 의미를 공적 상황과 대비해 판별하는 문항으로(T1=1), 선택지 내 맥락 단서가 직접적이다(inference=0)."
+        },
+        {
+          "questionId": "g6-argon-2644",
+          "revision": 1,
+          "contentHash": "a57238ad2191df07d023aba280c87f9bcdcbe06d0ccb9f39ba2e75c712f2e33c",
+          "judge": "claude",
+          "model": "claude-opus-5-5",
+          "L1": 3,
+          "L2": 2,
+          "T1": 1,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "격식 문어다. 오답은 공적인 대상에 쓴 모순 문장이라 구별이 비교적 쉽다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 5,
+        "T": 4,
+        "V": 14,
+        "ownTier": "core",
+        "band": {
+          "min": 6,
+          "max": 6
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "714c5d5a8448bdca96c0057d8a4dcb6e69596f7ba823e3314e1dbc1472105ab0"
+    },
+    {
+      "questionId": "g6-argon-2645",
+      "revision": 1,
+      "contentHash": "1fbbb1151f3fb3f03a0858855742a778336dc56267101526542ea99de44fe1f8",
+      "precomputed": {
+        "typeBase": 2,
+        "lengthBump": 2,
+        "t3Base": 0,
+        "readingLoad": 98,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g6-argon-2645",
+          "revision": 1,
+          "contentHash": "1fbbb1151f3fb3f03a0858855742a778336dc56267101526542ea99de44fe1f8",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 2,
+          "L2": 2,
+          "T1": 1,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "한자 심리 개념어 ‘집착하다’(L1=2, L2=2)의 중심 의미 쓰임을 묻는 문항으로(T1=1), 선택지에 ‘잊지 못해’라는 직접 단서가 명시되어 있다(inference=0)."
+        },
+        {
+          "questionId": "g6-argon-2645",
+          "revision": 1,
+          "contentHash": "1fbbb1151f3fb3f03a0858855742a778336dc56267101526542ea99de44fe1f8",
+          "judge": "claude",
+          "model": "claude-opus-5-5",
+          "L1": 2,
+          "L2": 2,
+          "T1": 1,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "익숙한 태도어다. 오답은 '관심 없이', '미련을 버리고'처럼 모순이 명백한 문장이다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 4,
+        "T": 4,
+        "V": 12,
+        "ownTier": "basic",
+        "band": {
+          "min": 6,
+          "max": 6
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "a3faa910523ef731280b9db6cb48fc61fc71a4e4dc1c5c6bd6836d7dcfd5cb4a"
+    },
+    {
+      "questionId": "g6-argon-2646",
+      "revision": 1,
+      "contentHash": "221815c35de941bf52fff218a1e00902b62e80e4fb52d068351bfe7e968d464a",
+      "precomputed": {
+        "typeBase": 1,
+        "lengthBump": 1,
+        "t3Base": 0,
+        "readingLoad": 69,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g6-argon-2646",
+          "revision": 1,
+          "contentHash": "221815c35de941bf52fff218a1e00902b62e80e4fb52d068351bfe7e968d464a",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 2,
+          "L2": 2,
+          "T1": 2,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "발표·평가 문어인 ‘미흡하다’(L1=2, L2=2)의 반의 문맥을 묻고 ‘부족했다·모자랐다·허술했다’ 등 유의 경계 오답 3개를 배치했으나(T1=2), 보완 뒤 만족스럽다는 직접 단서가 있다(inference=0)."
+        },
+        {
+          "questionId": "g6-argon-2646",
+          "revision": 1,
+          "contentHash": "221815c35de941bf52fff218a1e00902b62e80e4fb52d068351bfe7e968d464a",
+          "judge": "claude",
+          "model": "claude-opus-5-5",
+          "L1": 2,
+          "L2": 2,
+          "T1": 2,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "평가 문어다. 오답 3개(부족·모자라다·허술)가 목표어의 유의 경계에 있고, '보완한 뒤' 대조 단서가 있다. 정답이 목표어가 아닌 반의어다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 4,
+        "T": 4,
+        "V": 12,
+        "ownTier": "basic",
+        "band": {
+          "min": 6,
+          "max": 6
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "8b505144e4bc02cc6fd50fb912fc9f1da6c77ce6a7093c8d389e1740be21fcd4"
+    },
+    {
+      "questionId": "g6-argon-2647",
+      "revision": 1,
+      "contentHash": "7d16ec63e3db9536262b749af3c874c284dcf2c10d9f21241ed52cae30b3774b",
+      "precomputed": {
+        "typeBase": 0,
+        "lengthBump": 1,
+        "t3Base": 0,
+        "readingLoad": 69,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g6-argon-2647",
+          "revision": 1,
+          "contentHash": "7d16ec63e3db9536262b749af3c874c284dcf2c10d9f21241ed52cae30b3774b",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 3,
+          "L2": 3,
+          "T1": 2,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "‘간주하다’는 규칙·논설에 쓰이는 고추상 격식 한자어(L1=3, L2=3)이며, ‘착각한다·오해한다’ 등 인식 동사 오답과 구별해야 하나(T1=2) 표결 규칙 단서가 직접 제시되어 있다(inference=0)."
+        },
+        {
+          "questionId": "g6-argon-2647",
+          "revision": 1,
+          "contentHash": "7d16ec63e3db9536262b749af3c874c284dcf2c10d9f21241ed52cae30b3774b",
+          "judge": "claude",
+          "model": "claude-opus-5-5",
+          "L1": 3,
+          "L2": 3,
+          "T1": 2,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "규칙·격식 문어다. '착각한다'와 '오해한다'가 '여기다' 계열의 고매력 오답이다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 6,
+        "T": 3,
+        "V": 15,
+        "ownTier": "core",
+        "band": {
+          "min": 6,
+          "max": 6
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "c01ddeb96c72512ab8df98f9aac4aa2baa493baa6dc64803a93386a352eb7132"
+    },
+    {
+      "questionId": "g6-argon-2648",
+      "revision": 1,
+      "contentHash": "d272f7b1336d26b96251eefbaeadc46144f6da03438a1ea06b6d9d044a3f068b",
+      "precomputed": {
+        "typeBase": 0,
+        "lengthBump": 1,
+        "t3Base": 0,
+        "readingLoad": 83,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g6-argon-2648",
+          "revision": 1,
+          "contentHash": "d272f7b1336d26b96251eefbaeadc46144f6da03438a1ea06b6d9d044a3f068b",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 3,
+          "L2": 3,
+          "T1": 2,
+          "inference": 1,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "‘이해관계’는 음훈 추론(이익과 손해)이 필요한 고추상 격식 한자어(L1=3, L2=3)로 ‘-관계’ 형태의 혼동 오답들이 제시되었고(T1=2), 두 동아리의 득실 상황을 종합해 추론해야 한다(inference=1)."
+        },
+        {
+          "questionId": "g6-argon-2648",
+          "revision": 1,
+          "contentHash": "d272f7b1336d26b96251eefbaeadc46144f6da03438a1ea06b6d9d044a3f068b",
+          "judge": "claude",
+          "model": "claude-opus-5-5",
+          "L1": 3,
+          "L2": 3,
+          "T1": 2,
+          "inference": 1,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "利害는 '이해(理解)'와 형태가 같아 음훈 추론이 필요하다. 오답이 모두 '-관계' 복합어이고, 반김/걱정을 종합해 이익·손해를 추론해야 한다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 6,
+        "T": 4,
+        "V": 16,
+        "ownTier": "core",
+        "band": {
+          "min": 6,
+          "max": 6
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "38bbc3c96102e15b100126dee23608d8b24bf8bdaaf32b80782e47df27007743"
+    },
+    {
+      "questionId": "g6-argon-2649",
+      "revision": 1,
+      "contentHash": "2dc0286c5bd02427ebb2b11c666faea36df8b8fdb2d41641121cbb5e5472414f",
+      "precomputed": {
+        "typeBase": 0,
+        "lengthBump": 2,
+        "t3Base": 0,
+        "readingLoad": 88,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g6-argon-2649",
+          "revision": 1,
+          "contentHash": "2dc0286c5bd02427ebb2b11c666faea36df8b8fdb2d41641121cbb5e5472414f",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 3,
+          "L2": 3,
+          "T1": 1,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "‘추이’는 보고서·통계 문어에 쓰이는 고추상 한자어(L1=3, L2=3)이나, 오답과의 의미 거리가 멀고(T1=1) 지문에 ‘시간이 지나면서 어떻게 변해 가는지’라는 정의 단서가 직접 주어졌다(inference=0)."
+        },
+        {
+          "questionId": "g6-argon-2649",
+          "revision": 1,
+          "contentHash": "2dc0286c5bd02427ebb2b11c666faea36df8b8fdb2d41641121cbb5e5472414f",
+          "judge": "claude",
+          "model": "claude-opus-5-5",
+          "L1": 3,
+          "L2": 3,
+          "T1": 1,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "자료 해석에 쓰는 격식 문어다. '어떻게 변해 가는지'라는 정의 단서가 직접 있고, '순서'만 약하게 혼동된다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 6,
+        "T": 3,
+        "V": 15,
+        "ownTier": "core",
+        "band": {
+          "min": 6,
+          "max": 6
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "cd991bc4a1e94c9f77ed95491f00d8e3d38cafd85805f2b9eb693180f8feb2ac"
+    },
+    {
+      "questionId": "g6-argon-2650",
+      "revision": 1,
+      "contentHash": "26a2016d6fbf726d40fd0c69ff7c29d41e5fece338f5f280fdf8fcf4147692a3",
+      "precomputed": {
+        "typeBase": 1,
+        "lengthBump": 1,
+        "t3Base": 0,
+        "readingLoad": 69,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g6-argon-2650",
+          "revision": 1,
+          "contentHash": "26a2016d6fbf726d40fd0c69ff7c29d41e5fece338f5f280fdf8fcf4147692a3",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 3,
+          "L2": 3,
+          "T1": 2,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "‘미봉책’은 비평·논설에 쓰이는 고추상 한자어(L1=3, L2=3)이며 ‘해결책·예방책·개선책’ 등 같은 의미장 오답이 배치되었으나(T1=2), ‘당장 물이 새는 곳만 잠시 가려 넘기는’이라는 직접 단서가 있다(inference=0)."
+        },
+        {
+          "questionId": "g6-argon-2650",
+          "revision": 1,
+          "contentHash": "26a2016d6fbf726d40fd0c69ff7c29d41e5fece338f5f280fdf8fcf4147692a3",
+          "judge": "claude",
+          "model": "claude-opus-5-5",
+          "L1": 3,
+          "L2": 3,
+          "T1": 2,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "too_high",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "彌縫은 음훈으로 풀기 어려운 비평 문어로, 초등 노출이 드물다. 오답 3개가 모두 '-책' 복합어다."
+        }
+      ],
+      "merged": {
+        "rule": 1,
+        "L": 6,
+        "T": 4,
+        "V": 16,
+        "ownTier": "core",
+        "band": {
+          "min": 6,
+          "max": 6
+        },
+        "flags": [
+          "elementaryFit"
+        ]
+      },
+      "levelAssessmentHash": "abf33cfaca16c82769bac7b1a9f65fc5eaf454fc667bf8f39cf9b1aebe1b7427"
+    },
+    {
+      "questionId": "g6-argon-2651",
+      "revision": 1,
+      "contentHash": "6fde4c76349d360825073a8b4b2a9bab2fe495e5283dc98e159849b29aec4ae4",
+      "precomputed": {
+        "typeBase": 1,
+        "lengthBump": 2,
+        "t3Base": 1,
+        "readingLoad": 94,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g6-argon-2651",
+          "revision": 1,
+          "contentHash": "6fde4c76349d360825073a8b4b2a9bab2fe495e5283dc98e159849b29aec4ae4",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 3,
+          "L2": 3,
+          "T1": 2,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "‘반추하다’는 구어 빈도가 낮은 고추상 한자어(L1=3, L2=3)의 비유적 확장 의미(되풀이해 음미·생각하다)를 묻는 문항이며(T1=2), ‘떠올리며·여러 번’이라는 직접 단서가 있다(inference=0)."
+        },
+        {
+          "questionId": "g6-argon-2651",
+          "revision": 1,
+          "contentHash": "6fde4c76349d360825073a8b4b2a9bab2fe495e5283dc98e159849b29aec4ae4",
+          "judge": "claude",
+          "model": "claude-opus-5-5",
+          "L1": 3,
+          "L2": 3,
+          "T1": 2,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "too_high",
+          "basisType": "stdict_structural",
+          "unit": "stdict:뜻 번호 2, 전문어 표지 없음",
+          "reason": "'되새김질'에서 '음미하다'로 전이된 의미이고 초등 저빈도 문어다. 오답 구절은 의미장이 서로 멀다."
+        }
+      ],
+      "merged": {
+        "rule": 1,
+        "L": 6,
+        "T": 6,
+        "V": 18,
+        "ownTier": "advanced",
+        "band": {
+          "min": 6,
+          "max": 6
+        },
+        "flags": [
+          "elementaryFit"
+        ]
+      },
+      "levelAssessmentHash": "98974d43e7deffe7b5813d33ba909c02db19e3e3e4e5535ccae4dd83117950a6"
+    },
+    {
+      "questionId": "g6-argon-2652",
+      "revision": 1,
+      "contentHash": "772fe18934c7b5ad06b0084d7c244d5a191ed77870e73423d663b014408c2f0f",
+      "precomputed": {
+        "typeBase": 1,
+        "lengthBump": 2,
+        "t3Base": 0,
+        "readingLoad": 92,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g6-argon-2652",
+          "revision": 1,
+          "contentHash": "772fe18934c7b5ad06b0084d7c244d5a191ed77870e73423d663b014408c2f0f",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 3,
+          "L2": 3,
+          "T1": 1,
+          "inference": 1,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "‘상쇄하다’는 음훈 추론이 필요한 고추상 격식 한자어(L1=3, L2=3)이며, 선지 간 의미 거리는 뚜렷하나(T1=1) 감점과 득점이 맞물려 손해가 없어진 상황을 종합해 추론해야 한다(inference=1)."
+        },
+        {
+          "questionId": "g6-argon-2652",
+          "revision": 1,
+          "contentHash": "772fe18934c7b5ad06b0084d7c244d5a191ed77870e73423d663b014408c2f0f",
+          "judge": "claude",
+          "model": "claude-opus-5-5",
+          "L1": 3,
+          "L2": 3,
+          "T1": 1,
+          "inference": 1,
+          "idiomOpacity": null,
+          "elementaryFit": "too_high",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "相殺는 고추상 한자어로 중등 이후에 주로 쓴다. 감점과 득점을 종합해야 뜻을 잡을 수 있고, 오답 구절은 의미장이 멀다."
+        }
+      ],
+      "merged": {
+        "rule": 1,
+        "L": 6,
+        "T": 4,
+        "V": 16,
+        "ownTier": "core",
+        "band": {
+          "min": 6,
+          "max": 6
+        },
+        "flags": [
+          "elementaryFit"
+        ]
+      },
+      "levelAssessmentHash": "b8469b599fc75d5596b249a12ebe2ec172e602eafc1e14ce8840456bff113327"
+    },
+    {
+      "questionId": "g6-argon-2653",
+      "revision": 1,
+      "contentHash": "4f18c9bbfa07d167072837e81c9cb9b50e7037f9d6ce26cb25da6e5efadc31eb",
+      "precomputed": {
+        "typeBase": 1,
+        "lengthBump": 2,
+        "t3Base": 0,
+        "readingLoad": 96,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g6-argon-2653",
+          "revision": 1,
+          "contentHash": "4f18c9bbfa07d167072837e81c9cb9b50e7037f9d6ce26cb25da6e5efadc31eb",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 3,
+          "L2": 3,
+          "T1": 1,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "‘예단하다’는 논설·비평 문어에 쓰이는 고추상 한자어(L1=3, L2=3)이나, 중심 의미를 풀어쓴 선지와 오답들의 의미장이 다르고(T1=1) ‘실험이 끝날 때까지 성급하게’라는 단서가 직접적이다(inference=0)."
+        },
+        {
+          "questionId": "g6-argon-2653",
+          "revision": 1,
+          "contentHash": "4f18c9bbfa07d167072837e81c9cb9b50e7037f9d6ce26cb25da6e5efadc31eb",
+          "judge": "claude",
+          "model": "claude-opus-5-5",
+          "L1": 3,
+          "L2": 3,
+          "T1": 1,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "too_high",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "예단은 구어 저빈도 격식어다. '끝날 때까지', '성급하게'라는 직접 단서가 있고, 오답은 의미장이 다르다."
+        }
+      ],
+      "merged": {
+        "rule": 1,
+        "L": 6,
+        "T": 4,
+        "V": 16,
+        "ownTier": "core",
+        "band": {
+          "min": 6,
+          "max": 6
+        },
+        "flags": [
+          "elementaryFit"
+        ]
+      },
+      "levelAssessmentHash": "229b0a031878226dfde1a9a493aaf9bf226104fa17c04623a6a6b9e4788c1f35"
+    },
+    {
+      "questionId": "g6-argon-2654",
+      "revision": 1,
+      "contentHash": "2e0af4686aff356909222480594a61d07672a07f2ac9947d18225ea4e8a30e81",
+      "precomputed": {
+        "typeBase": 1,
+        "lengthBump": 2,
+        "t3Base": 0,
+        "readingLoad": 94,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g6-argon-2654",
+          "revision": 1,
+          "contentHash": "2e0af4686aff356909222480594a61d07672a07f2ac9947d18225ea4e8a30e81",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 3,
+          "L2": 3,
+          "T1": 2,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "‘자명하다’는 논설 문어에 쓰이는 고추상 한자어(L1=3, L2=3)이며, 유의 표현(‘누구나 잘 아는’) 오답과 반의 표현을 구별해야 하나(T1=2) ‘설명할 필요도 없이’ 등 직접 단서가 명시되어 있다(inference=0)."
+        },
+        {
+          "questionId": "g6-argon-2654",
+          "revision": 1,
+          "contentHash": "2e0af4686aff356909222480594a61d07672a07f2ac9947d18225ea4e8a30e81",
+          "judge": "claude",
+          "model": "claude-opus-5-5",
+          "L1": 3,
+          "L2": 3,
+          "T1": 1,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "논설 문어로 초등 범위의 상단이다. '설명할 필요도 없이'라는 정의 단서가 있고, 오답 중 '누구나 잘 아는'만 유의어다. 둘째 문장 '그와 반대다'가 어색하다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 6,
+        "T": 5,
+        "V": 17,
+        "ownTier": "advanced",
+        "band": {
+          "min": 6,
+          "max": 6
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "86943054a7096388bc97053d4f4daa8af4acd36847da04c693f1c01b89b25c58"
+    },
+    {
+      "questionId": "g6-argon-2654",
+      "revision": 2,
+      "contentHash": "bdfa17add921047817536abe330bcaf1ad373162fd1f8253adba67720a82cd85",
+      "precomputed": {
+        "typeBase": 1,
+        "lengthBump": 2,
+        "t3Base": 0,
+        "readingLoad": 94,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g6-argon-2654",
+          "revision": 2,
+          "contentHash": "bdfa17add921047817536abe330bcaf1ad373162fd1f8253adba67720a82cd85",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 3,
+          "L2": 3,
+          "T1": 2,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "'자명하다'는 6학년 논설·격식 문어에 쓰이는 고추상 한자어이며, 지문의 대조 단서를 바탕으로 유의어 오답과 구별해 반의 표현을 찾는 문항이므로 6학년 수준에 알맞다."
+        },
+        {
+          "questionId": "g6-argon-2654",
+          "revision": 2,
+          "contentHash": "bdfa17add921047817536abe330bcaf1ad373162fd1f8253adba67720a82cd85",
+          "judge": "claude",
+          "model": "claude-opus-5-5",
+          "L1": 3,
+          "L2": 3,
+          "T1": 1,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "자명하다는 구어 빈도가 낮은 격식 문어이고 음훈 추론이 필요한 고추상 한자어다. 매력적인 오답은 유의 표현 d 하나다. 지문의 '설명할 필요도 없이'와 '반면에'가 정의·대조 표지라 추론은 0이다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 6,
+        "T": 5,
+        "V": 17,
+        "ownTier": "advanced",
+        "band": {
+          "min": 6,
+          "max": 6
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "5ef7ad1c60e90a42584bf1ddaf712bfa970165d2d569e057e21779efd0cc4fb9"
+    },
+    {
+      "questionId": "g6-argon-2655",
+      "revision": 1,
+      "contentHash": "f864bb2e0a777ecb958c9f7b0f88e61debdbb0903b46492a13835b31680011bc",
+      "precomputed": {
+        "typeBase": 1,
+        "lengthBump": 2,
+        "t3Base": 1,
+        "readingLoad": 95,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g6-argon-2655",
+          "revision": 1,
+          "contentHash": "f864bb2e0a777ecb958c9f7b0f88e61debdbb0903b46492a13835b31680011bc",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 3,
+          "L2": 3,
+          "T1": 2,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "‘좌초하다’는 고추상 한자어(L1=3, L2=3)의 비유적 확장 의미(곤경에 빠지다)를 묻는 문항이며(T1=2), 폭우로 천막을 세울 수 없게 된 위기라는 직접 단서가 제시되어 있다(inference=0)."
+        },
+        {
+          "questionId": "g6-argon-2655",
+          "revision": 1,
+          "contentHash": "f864bb2e0a777ecb958c9f7b0f88e61debdbb0903b46492a13835b31680011bc",
+          "judge": "claude",
+          "model": "claude-opus-5-5",
+          "L1": 3,
+          "L2": 3,
+          "T1": 3,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "too_high",
+          "basisType": "stdict_structural",
+          "unit": "stdict:뜻 번호 2 (비유적으로) 표지",
+          "reason": "'암초에 걸리다'에서 '곤경에 빠지다'로 전이된 비유 의미이고 초등 저빈도어다. '위기에 놓였다'가 단서로 주어진다."
+        }
+      ],
+      "merged": {
+        "rule": 1,
+        "L": 6,
+        "T": 7,
+        "V": 19,
+        "ownTier": "challenge",
+        "band": {
+          "min": 6,
+          "max": 6
+        },
+        "flags": [
+          "elementaryFit"
+        ]
+      },
+      "levelAssessmentHash": "3eed90240dc74e2f2bde31741ddb0c625a0132d85649572529fa4149866f28ef"
+    },
+    {
+      "questionId": "g6-argon-2656",
+      "revision": 1,
+      "contentHash": "d396e98c7ccce88c5d809b5c88789a922999ef0023fc1d284c8867433756e9e7",
+      "precomputed": {
+        "typeBase": 1,
+        "lengthBump": 2,
+        "t3Base": 0,
+        "readingLoad": 98,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g6-argon-2656",
+          "revision": 1,
+          "contentHash": "d396e98c7ccce88c5d809b5c88789a922999ef0023fc1d284c8867433756e9e7",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 3,
+          "L2": 3,
+          "T1": 1,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "‘철폐하다’는 제도·규칙 논의에 쓰이는 고추상 격식 한자어(L1=3, L2=3)이고, 중심 의미를 풀어쓴 선지를 고르는 과제로(T1=1) ‘조금만 고치는 대신 아예’라는 대조 단서가 직접적이다(inference=0)."
+        },
+        {
+          "questionId": "g6-argon-2656",
+          "revision": 1,
+          "contentHash": "d396e98c7ccce88c5d809b5c88789a922999ef0023fc1d284c8867433756e9e7",
+          "judge": "claude",
+          "model": "claude-opus-5-5",
+          "L1": 3,
+          "L2": 3,
+          "T1": 1,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "제도 관련 격식 문어로 사회 교과에서 노출된다. '조금만 고치는 대신 아예'라는 대조 단서가 있고, 오답은 의미장이 멀다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 6,
+        "T": 4,
+        "V": 16,
+        "ownTier": "core",
+        "band": {
+          "min": 6,
+          "max": 6
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "7a372307a26700a5ebfff58141a2be7afd00247a6c4c21df366971dcad3bbfbc"
+    },
+    {
+      "questionId": "g6-argon-2657",
+      "revision": 1,
+      "contentHash": "a008099005de75b66f9b36713263514112721823de5653fe4ebd442c577e2719",
+      "precomputed": {
+        "typeBase": 1,
+        "lengthBump": 2,
+        "t3Base": 1,
+        "readingLoad": 90,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g6-argon-2657",
+          "revision": 1,
+          "contentHash": "a008099005de75b66f9b36713263514112721823de5653fe4ebd442c577e2719",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 3,
+          "L2": 3,
+          "T1": 2,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "‘첨예하다’는 토론·비평 문어에 쓰이는 고추상 한자어(L1=3, L2=3)의 확장 의미에 대한 반의어를 묻고 유의 경계 오답(‘날카로웠다·긴장되었다’)을 포함했으나(T1=2), 대조 단서가 직접 제시되었다(inference=0)."
+        },
+        {
+          "questionId": "g6-argon-2657",
+          "revision": 1,
+          "contentHash": "a008099005de75b66f9b36713263514112721823de5653fe4ebd442c577e2719",
+          "judge": "claude",
+          "model": "claude-opus-5-5",
+          "L1": 3,
+          "L2": 3,
+          "T1": 3,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "too_high",
+          "basisType": "stdict_structural",
+          "unit": "stdict:뜻 번호 2, 전문어 표지 없음",
+          "reason": "'뾰족하다'에서 '사태가 격하다'로 전이된 고추상 의미다. 오답 날카롭다·긴장되다·어수선하다가 모두 분위기 의미장에 있어 혼동도가 높다."
+        }
+      ],
+      "merged": {
+        "rule": 1,
+        "L": 6,
+        "T": 7,
+        "V": 19,
+        "ownTier": "challenge",
+        "band": {
+          "min": 6,
+          "max": 6
+        },
+        "flags": [
+          "elementaryFit"
+        ]
+      },
+      "levelAssessmentHash": "8f3cf18c6b64823fd779b1964c49aa0637f9b98d07005573e6e4b8ac381eea04"
+    },
+    {
+      "questionId": "g6-argon-2658",
+      "revision": 1,
+      "contentHash": "8912f6fc6b3d4b06ad0d4987cb483ee9befd1aae4dc7c463a9690c9cba42416b",
+      "precomputed": {
+        "typeBase": 2,
+        "lengthBump": 2,
+        "t3Base": 0,
+        "readingLoad": 94,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g6-argon-2658",
+          "revision": 1,
+          "contentHash": "8912f6fc6b3d4b06ad0d4987cb483ee9befd1aae4dc7c463a9690c9cba42416b",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 3,
+          "L2": 3,
+          "T1": 2,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "‘부연하다’는 음훈 추론이 어려운 고추상 격식 한자어(L1=3, L2=3)이며, 요약·수정 등 담화 표현 오답들과 쓰임을 변별해야 하나(T1=2) ‘쉬운 예를 덧붙여’라는 직접 단서가 있다(inference=0)."
+        },
+        {
+          "questionId": "g6-argon-2658",
+          "revision": 1,
+          "contentHash": "8912f6fc6b3d4b06ad0d4987cb483ee9befd1aae4dc7c463a9690c9cba42416b",
+          "judge": "claude",
+          "model": "claude-opus-5-5",
+          "L1": 3,
+          "L2": 3,
+          "T1": 1,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "설명 문어다. 오답은 요약·수정·침묵 상황이라 구별이 쉽다. 해설의 정답 기호가 a로 잘못 적혀 있다(정답 b)."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 6,
+        "T": 5,
+        "V": 17,
+        "ownTier": "advanced",
+        "band": {
+          "min": 6,
+          "max": 6
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "4a129560ae95b1832d8e063da2e9d5669e5e29ba58f02e3ddeffe8b055645566"
+    },
+    {
+      "questionId": "g6-argon-2658",
+      "revision": 2,
+      "contentHash": "ff59263ad89e21da170831cc1363b7405f5cc58dc8074ebdfc79d5ae7dbec8cd",
+      "precomputed": {
+        "typeBase": 2,
+        "lengthBump": 2,
+        "t3Base": 0,
+        "readingLoad": 94,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g6-argon-2658",
+          "revision": 2,
+          "contentHash": "ff59263ad89e21da170831cc1363b7405f5cc58dc8074ebdfc79d5ae7dbec8cd",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 3,
+          "L2": 3,
+          "T1": 2,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "'부연하다'는 구어 빈도가 낮은 6학년 격식 문어 한자어로, 요약·수정 등 인접 담화 행위 오답과 구별하여 올바른 용례를 판단해야 하므로 6학년 수준에 적합하다."
+        },
+        {
+          "questionId": "g6-argon-2658",
+          "revision": 2,
+          "contentHash": "ff59263ad89e21da170831cc1363b7405f5cc58dc8074ebdfc79d5ae7dbec8cd",
+          "judge": "claude",
+          "model": "claude-opus-5-5",
+          "L1": 3,
+          "L2": 3,
+          "T1": 1,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "부연하다는 설명문 격식어로, 敷衍의 음훈만으로 뜻을 짐작하기 어렵다. 오답은 요약·수정·침묵으로 같은 말하기 영역이지만 구별이 쉽고, 정답에 '덧붙여'라는 직접 단서가 있다. 초등 상단 경계어다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 6,
+        "T": 5,
+        "V": 17,
+        "ownTier": "advanced",
+        "band": {
+          "min": 6,
+          "max": 6
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "64213538ef63d372c7ab1c28d40e0ea3f62c97f8a00654a079403c6e3358fc5f"
+    },
+    {
+      "questionId": "g6-argon-2659",
+      "revision": 1,
+      "contentHash": "6b51918c062a8946039742802c4ff6ab40a809c77a4bccd19f17841e4ce15d87",
+      "precomputed": {
+        "typeBase": 2,
+        "lengthBump": 2,
+        "t3Base": 0,
+        "readingLoad": 97,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g6-argon-2659",
+          "revision": 1,
+          "contentHash": "6b51918c062a8946039742802c4ff6ab40a809c77a4bccd19f17841e4ce15d87",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 3,
+          "L2": 3,
+          "T1": 2,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "‘상충하다’는 토의·논설 격식 문어에 쓰이는 고추상 한자어(L1=3, L2=3)이며, 일치·양보 등 관계 서술 오답들과 구별해야 하나(T1=2) 반대되는 두 의견이 문장에 직접 제시되어 있다(inference=0)."
+        },
+        {
+          "questionId": "g6-argon-2659",
+          "revision": 1,
+          "contentHash": "6b51918c062a8946039742802c4ff6ab40a809c77a4bccd19f17841e4ce15d87",
+          "judge": "claude",
+          "model": "claude-opus-5-5",
+          "L1": 3,
+          "L2": 3,
+          "T1": 1,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "토론 문어로 초등 범위의 상단이다. 오답은 일치·협력 상황이라 모순이 분명하다. 해설의 정답 기호가 b로 잘못 적혀 있다(정답 d)."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 6,
+        "T": 5,
+        "V": 17,
+        "ownTier": "advanced",
+        "band": {
+          "min": 6,
+          "max": 6
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "dd3e58552b9ffd625a7e16663e3a123e500c538b159b36e45a98f6ed5e46bd68"
+    },
+    {
+      "questionId": "g6-argon-2659",
+      "revision": 2,
+      "contentHash": "f2682613734670c5726cce644b949b4632e29b1305f58c0a474ac97d4d26aa25",
+      "precomputed": {
+        "typeBase": 2,
+        "lengthBump": 2,
+        "t3Base": 0,
+        "readingLoad": 97,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g6-argon-2659",
+          "revision": 2,
+          "contentHash": "f2682613734670c5726cce644b949b4632e29b1305f58c0a474ac97d4d26aa25",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 3,
+          "L2": 3,
+          "T1": 2,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "'상충하다'는 토의·논설 맥락에서 쓰이는 6학년 고추상 관계 한자어로, 일치·타협 등 반대되는 관계 맥락과 구별해야 하므로 6학년 수준에 알맞다."
+        },
+        {
+          "questionId": "g6-argon-2659",
+          "revision": 2,
+          "contentHash": "f2682613734670c5726cce644b949b4632e29b1305f58c0a474ac97d4d26aa25",
+          "judge": "claude",
+          "model": "claude-opus-5-5",
+          "L1": 3,
+          "L2": 3,
+          "T1": 2,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "상충하다는 논설 격식 문어이고 관계를 나타내는 고추상 한자어다. 오답 셋(일치·타협·협력)이 반의 경계에 놓여 있다. 정답 문장 안의 '조용히'와 '크게 응원' 대조가 직접 단서다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 6,
+        "T": 5,
+        "V": 17,
+        "ownTier": "advanced",
+        "band": {
+          "min": 6,
+          "max": 6
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "df3b610d7c6523fa7da4bbd997f88c8587bd520222b9487a9d4829a0b1855104"
+    },
+    {
+      "questionId": "g6-argon-2660",
+      "revision": 1,
+      "contentHash": "192e693b732996e2796928f825890a46e4104d6bf1025df18ff8082e5227777b",
+      "precomputed": {
+        "typeBase": 1,
+        "lengthBump": 1,
+        "t3Base": 0,
+        "readingLoad": 70,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g6-argon-2660",
+          "revision": 1,
+          "contentHash": "192e693b732996e2796928f825890a46e4104d6bf1025df18ff8082e5227777b",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 3,
+          "L2": 3,
+          "T1": 2,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "‘수긍하다’는 음훈 추론이 필요한 고추상 격식 한자어(L1=3, L2=3)이고 ‘거절하다·의심하다·주장하다’ 등 담화 태도 오답과 구별해야 하나(T1=2), ‘그 의견이 옳다고 인정하며’라는 직접 정의 단서가 있다(inference=0)."
+        },
+        {
+          "questionId": "g6-argon-2660",
+          "revision": 1,
+          "contentHash": "192e693b732996e2796928f825890a46e4104d6bf1025df18ff8082e5227777b",
+          "judge": "claude",
+          "model": "claude-opus-5-5",
+          "L1": 2,
+          "L2": 2,
+          "T1": 1,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "토의 상황어다. '옳다고 인정하며'가 정의 단서로 직접 들어 있고, 오답은 대체로 반대 태도다. 유형은 antonym이지만 실제 형식은 빈칸 채우기다."
+        }
+      ],
+      "merged": {
+        "rule": 4,
+        "L": 6,
+        "T": 4,
+        "V": 16,
+        "ownTier": "core",
+        "band": {
+          "min": 6,
+          "max": 6
+        },
+        "flags": [
+          "spotCheck"
+        ]
+      },
+      "levelAssessmentHash": "07aa81dc96e8166cd9090813f1a7b14ec4c8a887e2561b2e0b29dbdab0911198"
+    },
+    {
+      "questionId": "g6-argon-2661",
+      "revision": 1,
+      "contentHash": "18a58815c2c400565a3e484780e7c93953a2e9b62bb226c1010415d77d283d20",
+      "precomputed": {
+        "typeBase": 2,
+        "lengthBump": 2,
+        "t3Base": 0,
+        "readingLoad": 94,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g6-argon-2661",
+          "revision": 1,
+          "contentHash": "18a58815c2c400565a3e484780e7c93953a2e9b62bb226c1010415d77d283d20",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 3,
+          "L2": 3,
+          "T1": 1,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "‘토로하다’는 문학·비평 문어에 쓰이는 고추상 한자어(L1=3, L2=3)이며, 중심 의미에 맞는 문장을 고르는 과제로(T1=1) ‘고민을 친구에게 솔직하게 다’라는 직접 단서가 제시되어 있다(inference=0)."
+        },
+        {
+          "questionId": "g6-argon-2661",
+          "revision": 1,
+          "contentHash": "18a58815c2c400565a3e484780e7c93953a2e9b62bb226c1010415d77d283d20",
+          "judge": "claude",
+          "model": "claude-opus-5-5",
+          "L1": 3,
+          "L2": 3,
+          "T1": 1,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "격식 문어로 구어 빈도가 낮다. 오답은 감춤·베낌 상황이라 쉽게 가려진다. 해설의 정답 기호가 c로 잘못 적혀 있다(정답 d)."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 6,
+        "T": 4,
+        "V": 16,
+        "ownTier": "core",
+        "band": {
+          "min": 6,
+          "max": 6
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "ea4ae2ea5ec3ee2f2782ebb9027d3ca2ff24e94172262815477684436e179c6d"
+    },
+    {
+      "questionId": "g6-argon-2661",
+      "revision": 2,
+      "contentHash": "60f9272c7ac3643ddea466dda1246ff7a5aaf20c375d819d2126bdcd90b2f43c",
+      "precomputed": {
+        "typeBase": 2,
+        "lengthBump": 2,
+        "t3Base": 0,
+        "readingLoad": 94,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g6-argon-2661",
+          "revision": 2,
+          "contentHash": "60f9272c7ac3643ddea466dda1246ff7a5aaf20c375d819d2126bdcd90b2f43c",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 3,
+          "L2": 3,
+          "T1": 1,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "'토로하다'는 6학년 문어에 등장하는 추상 한자어로, 속마음을 드러내어 말한다는 중심 의미를 바탕으로 올바른 쓰임을 고르는 6학년 수준 문항이다."
+        },
+        {
+          "questionId": "g6-argon-2661",
+          "revision": 2,
+          "contentHash": "60f9272c7ac3643ddea466dda1246ff7a5aaf20c375d819d2126bdcd90b2f43c",
+          "judge": "claude",
+          "model": "claude-opus-5-5",
+          "L1": 3,
+          "L2": 2,
+          "T1": 1,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "토로하다는 구어 빈도가 낮은 문어지만, 뜻은 '털어놓다'로 비교적 구체적이다. 오답은 감춤·짐작·베낌으로 쉽게 구별되고, 정답에 '솔직하게 다'라는 직접 단서가 있다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 6,
+        "T": 4,
+        "V": 16,
+        "ownTier": "core",
+        "band": {
+          "min": 6,
+          "max": 6
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "4d7aa4e3e7ffc0a26bae5d647894996bbb2077d91d8561ab854cb93bfdbfd829"
+    },
+    {
+      "questionId": "g6-argon-2662",
+      "revision": 1,
+      "contentHash": "c63a0526d2505a30feeaabd8738926d9b605e82acfd29bbc78acad9731f9e8fa",
+      "precomputed": {
+        "typeBase": 1,
+        "lengthBump": 2,
+        "t3Base": 0,
+        "readingLoad": 86,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g6-argon-2662",
+          "revision": 1,
+          "contentHash": "c63a0526d2505a30feeaabd8738926d9b605e82acfd29bbc78acad9731f9e8fa",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 3,
+          "L2": 3,
+          "T1": 2,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "‘감안하다’는 격식 문어에 쓰이는 고추상 한자어(L1=3, L2=3)이며, ‘외면하여·짐작하여’ 등 사고·태도 동사 오답들과 구별해야 하나(T1=2) 여러 사정을 두루 참고한 맥락 단서가 직접적이다(inference=0)."
+        },
+        {
+          "questionId": "g6-argon-2662",
+          "revision": 1,
+          "contentHash": "c63a0526d2505a30feeaabd8738926d9b605e82acfd29bbc78acad9731f9e8fa",
+          "judge": "claude",
+          "model": "claude-opus-5-5",
+          "L1": 3,
+          "L2": 3,
+          "T1": 2,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "격식 문어다. '짐작하여'가 사고 동사 의미장의 매력적인 오답이고, '사정과 안전을 두루'라는 단서가 있다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 6,
+        "T": 5,
+        "V": 17,
+        "ownTier": "advanced",
+        "band": {
+          "min": 6,
+          "max": 6
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "3a7e5b93e7e612b24167d75cd543d1f1364968aa4ad57b0a62522390d3979f7a"
+    },
+    {
+      "questionId": "g6-argon-2663",
+      "revision": 1,
+      "contentHash": "0f42e1afbb22b940da312a9a0e962acdcb9f2f3d2cf20e88c499adb7ae3c88a2",
+      "precomputed": {
+        "typeBase": 2,
+        "lengthBump": 2,
+        "t3Base": 0,
+        "readingLoad": 97,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g6-argon-2663",
+          "revision": 1,
+          "contentHash": "0f42e1afbb22b940da312a9a0e962acdcb9f2f3d2cf20e88c499adb7ae3c88a2",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 3,
+          "L2": 3,
+          "T1": 2,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "‘관망하다’는 비평·논설 문어의 고추상 한자어(L1=3, L2=3)이며 주도·외면·개입 상황의 오답과 변별해야 하나(T1=2), ‘나서지 않고 흘러가는 모습을 조용히’라는 직접 단서가 있다(inference=0)."
+        },
+        {
+          "questionId": "g6-argon-2663",
+          "revision": 1,
+          "contentHash": "0f42e1afbb22b940da312a9a0e962acdcb9f2f3d2cf20e88c499adb7ae3c88a2",
+          "judge": "claude",
+          "model": "claude-opus-5-5",
+          "L1": 3,
+          "L2": 3,
+          "T1": 1,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "격식 문어다. 오답은 주도·외면·개입 상황이라 구별된다. 해설의 정답 기호가 d로 잘못 적혀 있다(정답 c)."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 6,
+        "T": 5,
+        "V": 17,
+        "ownTier": "advanced",
+        "band": {
+          "min": 6,
+          "max": 6
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "920ab70cbb329c452351ed555b7fd20fec0aef3d265e860f95151546c86c06cf"
+    },
+    {
+      "questionId": "g6-argon-2663",
+      "revision": 2,
+      "contentHash": "95c0bfc2345cea29dad5e4788a54ea8790cd9e52894f8bd5cc556b7af4017395",
+      "precomputed": {
+        "typeBase": 2,
+        "lengthBump": 2,
+        "t3Base": 0,
+        "readingLoad": 97,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g6-argon-2663",
+          "revision": 2,
+          "contentHash": "95c0bfc2345cea29dad5e4788a54ea8790cd9e52894f8bd5cc556b7af4017395",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 3,
+          "L2": 3,
+          "T1": 2,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "'관망하다'는 6학년 격식 문어에 쓰이는 추상 한자어로, 직접 개입하거나 아예 외면하는 상황과 구별해 '물러나 지켜보다'의 의미를 판단하는 6학년 수준 문항이다."
+        },
+        {
+          "questionId": "g6-argon-2663",
+          "revision": 2,
+          "contentHash": "95c0bfc2345cea29dad5e4788a54ea8790cd9e52894f8bd5cc556b7af4017395",
+          "judge": "claude",
+          "model": "claude-opus-5-5",
+          "L1": 3,
+          "L2": 2,
+          "T1": 2,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "관망하다는 격식 문어이나 觀·望의 '보다'는 짐작할 수 있다. 오답 중 주도(a)와 개입(d)은 '물러나 지켜봄'의 반의 경계라 매력이 있다. 정답에 '나서지 않고 조용히'라는 직접 단서가 있다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 6,
+        "T": 5,
+        "V": 17,
+        "ownTier": "advanced",
+        "band": {
+          "min": 6,
+          "max": 6
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "b1f64be8c7f722f8db883efbd4a710da76d3cd90d66654263e02a0299b1ffa8a"
+    },
+    {
+      "questionId": "g6-argon-2664",
+      "revision": 1,
+      "contentHash": "424c327864c55fd6a0849d62ed0e90c2f36c639c55535afdba5f8fd13724b483",
+      "precomputed": {
+        "typeBase": 1,
+        "lengthBump": 1,
+        "t3Base": 0,
+        "readingLoad": 71,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g6-argon-2664",
+          "revision": 1,
+          "contentHash": "424c327864c55fd6a0849d62ed0e90c2f36c639c55535afdba5f8fd13724b483",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 3,
+          "L2": 3,
+          "T1": 2,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "‘쇄신하다’는 사회·논설 문어에 쓰이는 고추상 한자어(L1=3, L2=3)로 ‘보존하다·유지하다’ 등 반의 경계 오답과 구별해야 하나(T1=2), ‘나쁜 습관과 낡은 방식을 과감히 버리고’라는 직접 단서가 있다(inference=0)."
+        },
+        {
+          "questionId": "g6-argon-2664",
+          "revision": 1,
+          "contentHash": "424c327864c55fd6a0849d62ed0e90c2f36c639c55535afdba5f8fd13724b483",
+          "judge": "claude",
+          "model": "claude-opus-5-5",
+          "L1": 3,
+          "L2": 3,
+          "T1": 1,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "too_high",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "刷新은 음훈 추론이 어려운 보도·격식어다. '낡은 방식을 버리고'가 직접 단서이고, 오답 보존·유지는 반대 방향이다."
+        }
+      ],
+      "merged": {
+        "rule": 1,
+        "L": 6,
+        "T": 4,
+        "V": 16,
+        "ownTier": "core",
+        "band": {
+          "min": 6,
+          "max": 6
+        },
+        "flags": [
+          "elementaryFit"
+        ]
+      },
+      "levelAssessmentHash": "47b4e14ce5bef86f3f42e04f20f86933c3d0cf05d08adc92e5d4ec8828a16a9f"
+    },
+    {
+      "questionId": "g6-argon-2665",
+      "revision": 1,
+      "contentHash": "d909f0ff0580879650b47c60ba0370b8a22f9e359f3e2e8280430d797e05004d",
+      "precomputed": {
+        "typeBase": 2,
+        "lengthBump": 2,
+        "t3Base": 0,
+        "readingLoad": 94,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g6-argon-2665",
+          "revision": 1,
+          "contentHash": "d909f0ff0580879650b47c60ba0370b8a22f9e359f3e2e8280430d797e05004d",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 3,
+          "L2": 3,
+          "T1": 2,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "‘양립하다’는 논설·토론 문어에 쓰이는 고추상 한자 개념어(L1=3, L2=3)이며 ‘자립하다’ 혼동 유도 오답 등이 포함되었으나(T1=2), 두 가치가 나란히 함께 선다는 직접 단서가 제시되어 있다(inference=0)."
+        },
+        {
+          "questionId": "g6-argon-2665",
+          "revision": 1,
+          "contentHash": "d909f0ff0580879650b47c60ba0370b8a22f9e359f3e2e8280430d797e05004d",
+          "judge": "claude",
+          "model": "claude-opus-5-5",
+          "L1": 3,
+          "L2": 3,
+          "T1": 1,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "논설 문어로 초등 범위의 상단이다. 오답은 순차·단일·자립 상황이라 구별된다. 해설의 정답 기호가 a로 잘못 적혀 있다(정답 c)."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 6,
+        "T": 5,
+        "V": 17,
+        "ownTier": "advanced",
+        "band": {
+          "min": 6,
+          "max": 6
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "f7219a3afb394dd04b0728482b9ab08b4573d913cc8d3b8e27e7c139eb795073"
+    },
+    {
+      "questionId": "g6-argon-2665",
+      "revision": 2,
+      "contentHash": "9dd8da0d049aff043f52a02f2f11052dce81f28c17b32fc43997c942c6661553",
+      "precomputed": {
+        "typeBase": 2,
+        "lengthBump": 2,
+        "t3Base": 0,
+        "readingLoad": 94,
+        "krdictGrade": null,
+        "stdictSpecialized": false
+      },
+      "judges": [
+        {
+          "questionId": "g6-argon-2665",
+          "revision": 2,
+          "contentHash": "9dd8da0d049aff043f52a02f2f11052dce81f28c17b32fc43997c942c6661553",
+          "judge": "argon",
+          "model": "Gemini 4 Argon (High)",
+          "L1": 3,
+          "L2": 3,
+          "T1": 2,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "'양립하다'는 논설·토론 문어에 쓰이는 고추상 한자어로, '자립하다' 등 유사 어휘 및 단독·순차 상황 오답과 구별해야 하므로 6학년 수준에 적합하다."
+        },
+        {
+          "questionId": "g6-argon-2665",
+          "revision": 2,
+          "contentHash": "9dd8da0d049aff043f52a02f2f11052dce81f28c17b32fc43997c942c6661553",
+          "judge": "claude",
+          "model": "claude-opus-5-5",
+          "L1": 3,
+          "L2": 3,
+          "T1": 1,
+          "inference": 0,
+          "idiomOpacity": null,
+          "elementaryFit": "pass",
+          "basisType": "stdict_structural",
+          "unit": "stdict:전문어 표지 없음",
+          "reason": "양립하다는 논설·비평 문어이고 관계를 나타내는 고추상 한자어다. 오답은 순차·단일·자립으로, 소리가 비슷한 '자립' 정도만 혼동을 준다. 정답의 '나란히'가 직접 단서다."
+        }
+      ],
+      "merged": {
+        "rule": 3,
+        "L": 6,
+        "T": 5,
+        "V": 17,
+        "ownTier": "advanced",
+        "band": {
+          "min": 6,
+          "max": 6
+        },
+        "flags": []
+      },
+      "levelAssessmentHash": "3edb1d9983f4c9fcbe70b7445e0bd10dbf89c60bb0b95039cfc9171d7f5df2c4"
+    }
+  ]
+}
