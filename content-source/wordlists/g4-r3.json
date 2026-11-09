@@ -1,0 +1,1672 @@
+{
+  "grade": 4,
+  "round": 3,
+  "designGoal": "normal-advanced",
+  "source": {
+    "producer": "Gemini 4 Argon (High)",
+    "order": "O-A1",
+    "checker": "claude-opus-5-5",
+    "effort": "high",
+    "policy": "claude-argon-v1",
+    "checkedAt": "2026-11-09T09:26:10.085Z"
+  },
+  "items": [
+    {
+      "kind": "word",
+      "lemma": "근거",
+      "partOfSpeech": "명사",
+      "senseOrder": 1,
+      "types": [
+        "synonym_context",
+        "cloze"
+      ],
+      "variantTag": "standard",
+      "expectedL1": 1,
+      "expectedL2": 2,
+      "gradeEvidence": "[4국01-06] 주제에 적절한 의견과 이유를 제시하고 서로의 생각을 교환하며 토의한다.",
+      "checked": false,
+      "reason": "제작 가능한 미사용 유형 없음"
+    },
+    {
+      "kind": "word",
+      "lemma": "예측하다",
+      "partOfSpeech": "동사",
+      "senseOrder": 1,
+      "types": [
+        "synonym_context",
+        "cloze"
+      ],
+      "variantTag": "standard",
+      "expectedL1": 1,
+      "expectedL2": 2,
+      "gradeEvidence": "[4국01-02] 원인과 결과의 관계를 고려하여 내용을 예측하며 듣고 말한다.",
+      "checked": false,
+      "reason": "제작 가능한 미사용 유형 없음"
+    },
+    {
+      "kind": "word",
+      "lemma": "신뢰",
+      "partOfSpeech": "명사",
+      "senseOrder": 1,
+      "types": [
+        "synonym_context",
+        "antonym_context"
+      ],
+      "variantTag": "standard",
+      "expectedL1": 1,
+      "expectedL2": 2,
+      "gradeEvidence": "[4국02-05] 글이나 자료의 출처가 믿을 만한지 판단한다.",
+      "checked": true,
+      "sourceEntry": {
+        "provider": "stdict",
+        "entryId": "206809"
+      },
+      "reason": "'굳게 믿고 의지함' 항목(206809)이 후보가 의도한 뜻이고, 206808(맹렬한 우레)은 목적에 맞지 않는다. 믿음·의심 같은 쉬운 말로 유의·반의 문맥을 짤 수 있어 L1=1·L2=2(관계 추상어) 근거가 맞다."
+    },
+    {
+      "kind": "word",
+      "lemma": "설득하다",
+      "partOfSpeech": "동사",
+      "senseOrder": 1,
+      "types": [
+        "cloze",
+        "usage"
+      ],
+      "variantTag": "standard",
+      "expectedL1": 1,
+      "expectedL2": 2,
+      "gradeEvidence": "[4국03-03] 대상에 대한 자신의 의견과 그렇게 생각한 이유가 드러나게 글을 쓴다.",
+      "checked": false,
+      "reason": "제작 가능한 미사용 유형 없음"
+    },
+    {
+      "kind": "word",
+      "lemma": "납득하다",
+      "partOfSpeech": "동사",
+      "senseOrder": 1,
+      "types": [
+        "synonym_context",
+        "cloze"
+      ],
+      "variantTag": "standard",
+      "expectedL1": 1,
+      "expectedL2": 2,
+      "gradeEvidence": "[4국01-06] 주제에 적절한 의견과 이유를 제시하고 서로의 생각을 교환하며 토의한다.",
+      "checked": true,
+      "reason": "사전 뜻 1과 표준 표시가 맞고, '이해하고 받아들이다'라는 쉬운 풀이로 짧은 토의 상황을 만들 수 있다. 다만 구어 빈도가 낮아 L1은 1보다 2에 가까울 수 있어 낮게 잡은 쪽이다."
+    },
+    {
+      "kind": "word",
+      "lemma": "보완하다",
+      "partOfSpeech": "동사",
+      "senseOrder": 1,
+      "types": [
+        "cloze",
+        "synonym_context"
+      ],
+      "variantTag": "standard",
+      "expectedL1": 1,
+      "expectedL2": 2,
+      "gradeEvidence": "[4국03-01] 중심 문장과 뒷받침 문장을 갖추어 문단을 쓰고, 문장과 문단을 중심으로 고쳐 쓴다.",
+      "checked": false,
+      "reason": "제작 가능한 미사용 유형 없음"
+    },
+    {
+      "kind": "word",
+      "lemma": "대조하다",
+      "partOfSpeech": "동사",
+      "senseOrder": 1,
+      "types": [
+        "synonym_context",
+        "cloze"
+      ],
+      "variantTag": "standard",
+      "expectedL1": 1,
+      "expectedL2": 2,
+      "gradeEvidence": "[4국02-04] 글에 나타난 사실과 의견을 구분하고 필자와 자신의 의견을 비교한다.",
+      "checked": true,
+      "sourceEntry": {
+        "provider": "stdict",
+        "entryId": "82364"
+      },
+      "reason": "'맞대어 같고 다름을 검토하다' 항목(82364)이 의도한 뜻이고 나머지 둘은 역사 전문어다. 비교하다·맞추어 보다 같은 주변 말로 cloze·유의 문항을 만들 수 있다."
+    },
+    {
+      "kind": "word",
+      "lemma": "명확하다",
+      "partOfSpeech": "형용사",
+      "senseOrder": 1,
+      "types": [
+        "cloze"
+      ],
+      "variantTag": "standard",
+      "expectedL1": 1,
+      "expectedL2": 2,
+      "gradeEvidence": "[4국03-02] 절차와 결과가 드러나게 정확한 표현으로 보고하는 글을 쓴다.",
+      "checked": true,
+      "reason": "사전 뜻과 품사가 맞고, 보고하는 글 맥락에서 '분명하고 확실하다'로 쉽게 설명된다. 가능한 유형이 cloze뿐이지만 막연하다·애매하다 같은 경계 오답으로 T1을 올릴 수 있다."
+    },
+    {
+      "kind": "word",
+      "lemma": "신속하다",
+      "partOfSpeech": "형용사",
+      "senseOrder": 1,
+      "types": [
+        "synonym_context"
+      ],
+      "variantTag": "standard",
+      "expectedL1": 1,
+      "expectedL2": 2,
+      "gradeEvidence": "[4국04-01] 단어와 단어 간의 의미 관계를 파악한다.",
+      "checked": true,
+      "sourceEntry": {
+        "provider": "stdict",
+        "entryId": "453505"
+      },
+      "reason": "일상에서 쓰는 '매우 날쌔고 빠르다' 항목(453505)이 의도한 뜻이고, 208239(神速)는 드문 말이다. 빠르다·재빠르다와 유의 문맥을 짓기 쉽고 L 근거도 무리가 없다."
+    },
+    {
+      "kind": "word",
+      "lemma": "겸손하다",
+      "partOfSpeech": "형용사",
+      "senseOrder": 1,
+      "types": [
+        "antonym_context"
+      ],
+      "variantTag": "standard",
+      "expectedL1": 1,
+      "expectedL2": 2,
+      "gradeEvidence": "[4국01-04] 상황과 상대의 입장을 이해하고 예의를 지키며 대화한다.",
+      "checked": true,
+      "reason": "사전 뜻이 맞고, 거만하다·잘난 체하다와 반의 문맥을 자연스럽게 만들 수 있다. 배려 수준의 태도 추상어라 L2=2를 받아들일 수 있다."
+    },
+    {
+      "kind": "word",
+      "lemma": "축소하다",
+      "partOfSpeech": "동사",
+      "senseOrder": 1,
+      "types": [
+        "synonym_context"
+      ],
+      "variantTag": "standard",
+      "expectedL1": 1,
+      "expectedL2": 2,
+      "gradeEvidence": "[4국04-01] 단어와 단어 간의 의미 관계를 파악한다.",
+      "checked": true,
+      "reason": "'규모를 줄여서 작게 하다'라는 뜻이 맞고, 줄이다로 쉽게 설명되는 한자어다. 유의 문맥이 자연스럽고 L 근거가 적정하다."
+    },
+    {
+      "kind": "word",
+      "lemma": "지속하다",
+      "partOfSpeech": "동사",
+      "senseOrder": 1,
+      "types": [
+        "antonym_context"
+      ],
+      "variantTag": "standard",
+      "expectedL1": 1,
+      "expectedL2": 2,
+      "gradeEvidence": "[4국04-01] 단어와 단어 간의 의미 관계를 파악한다.",
+      "checked": true,
+      "reason": "'어떤 상태를 오래 계속하다'라는 뜻이 맞고, 멈추다·중단하다와 반의 문맥이 깔끔하다. 4학년에게 어렵지만 계속하다로 풀이할 수 있다."
+    },
+    {
+      "kind": "word",
+      "lemma": "절제하다",
+      "partOfSpeech": "동사",
+      "senseOrder": 1,
+      "types": [
+        "antonym_context",
+        "cloze"
+      ],
+      "variantTag": "standard",
+      "expectedL1": 2,
+      "expectedL2": 2,
+      "gradeEvidence": "[4국04-01] 단어와 단어 간의 의미 관계를 파악한다.",
+      "checked": true,
+      "sourceEntry": {
+        "provider": "stdict",
+        "entryId": "481938"
+      },
+      "reason": "'알맞게 조절하여 제한하다' 항목(481938)이 의도한 뜻이고, 288326(잘라 내다)은 의료 맥락이라 제외한다. 간식·게임 시간 같은 생활 상황으로 설명되며 L=4도 근거가 있다."
+    },
+    {
+      "kind": "word",
+      "lemma": "치밀하다",
+      "partOfSpeech": "형용사",
+      "senseOrder": 1,
+      "types": [
+        "synonym_context"
+      ],
+      "variantTag": "standard",
+      "expectedL1": 2,
+      "expectedL2": 2,
+      "gradeEvidence": "[4국04-01] 단어와 단어 간의 의미 관계를 파악한다.",
+      "checked": true,
+      "reason": "뜻 1 '자세하고 꼼꼼하다'와 표준 표시가 맞고, 꼼꼼하다로 쉽게 풀이되는 유의 문항을 만들 수 있다. 4학년에게는 경계에 있는 말이라 L1=2·L2=2가 정직한 평가다."
+    },
+    {
+      "kind": "word",
+      "lemma": "타당하다",
+      "partOfSpeech": "형용사",
+      "senseOrder": 1,
+      "types": [
+        "cloze",
+        "usage"
+      ],
+      "variantTag": "standard",
+      "expectedL1": 2,
+      "expectedL2": 2,
+      "gradeEvidence": "[4국01-06] 주제에 적절한 의견과 이유를 제시하고 서로의 생각을 교환하며 토의한다.",
+      "checked": false,
+      "reason": "루브릭이 '타당성'을 L2=3 예로 들 만큼 추상도가 높고, 근거의 타당성은 고학년 논설 맥락의 말이라 L2=2는 낮게 잡은 값이다. 가능한 유형이 usage뿐이라 4학년 Normal advanced보다 challenge 이상으로 튈 가능성이 크다."
+    },
+    {
+      "kind": "word",
+      "lemma": "실마리",
+      "partOfSpeech": "명사",
+      "senseOrder": 2,
+      "types": [
+        "usage"
+      ],
+      "variantTag": "polysemy",
+      "expectedL1": 1,
+      "expectedL2": 1,
+      "gradeEvidence": "[4국04-01] 단어와 단어 간의 의미 관계를 파악한다.",
+      "checked": true,
+      "reason": "뜻 2 '일을 풀어 나갈 첫머리'는 실 끝이라는 중심 뜻에서 확장된 뜻이라 polysemy 표시가 맞다. usage에 polysemy·확장 뜻이 더해져 L=2로도 R 5 근처에 닿는다."
+    },
+    {
+      "kind": "word",
+      "lemma": "헤아리다",
+      "partOfSpeech": "동사",
+      "senseOrder": 2,
+      "types": [
+        "usage",
+        "synonym_context"
+      ],
+      "variantTag": "polysemy",
+      "expectedL1": 1,
+      "expectedL2": 1,
+      "gradeEvidence": "[4국01-04] 상황과 상대의 입장을 이해하고 예의를 지키며 대화한다.",
+      "checked": false,
+      "reason": "제작 가능한 미사용 유형 없음"
+    },
+    {
+      "kind": "word",
+      "lemma": "가다듬다",
+      "partOfSpeech": "동사",
+      "senseOrder": 2,
+      "types": [
+        "usage",
+        "synonym_context"
+      ],
+      "variantTag": "polysemy",
+      "expectedL1": 1,
+      "expectedL2": 1,
+      "gradeEvidence": "[4국05-01] 인물과 이야기의 흐름을 중심으로 작품을 감상한다.",
+      "checked": false,
+      "reason": "제작 가능한 미사용 유형 없음"
+    },
+    {
+      "kind": "word",
+      "lemma": "부풀다",
+      "partOfSpeech": "동사",
+      "senseOrder": 2,
+      "types": [
+        "usage",
+        "cloze"
+      ],
+      "variantTag": "polysemy",
+      "expectedL1": 1,
+      "expectedL2": 1,
+      "gradeEvidence": "[4국05-04] 감각적 표현에 유의하여 작품을 감상하고, 감각적 표현을 활용하여 자신의 생각이나 감정을 표현한다.",
+      "checked": false,
+      "reason": "조회된 뜻 2는 '살가죽이 붓거나 부르터 오르다'인데, 근거로 든 감각·감정 표현은 기대에 부푸는 뜻을 노린 것으로 보여 뜻 번호가 어긋난다. 뜻 1(부피가 커지다)과도 usage로 깔끔하게 가르기 어렵다."
+    },
+    {
+      "kind": "word",
+      "lemma": "되새기다",
+      "partOfSpeech": "동사",
+      "senseOrder": 2,
+      "types": [
+        "usage",
+        "synonym_context"
+      ],
+      "variantTag": "polysemy",
+      "expectedL1": 1,
+      "expectedL2": 1,
+      "gradeEvidence": "[4국02-01] 글의 의미를 파악하며 유창하게 글을 읽는다.",
+      "checked": false,
+      "reason": "조회된 뜻 2는 '소·양이 먹은 것을 되내어 씹다'(되새김질)인데, 근거로 든 글 읽기 맥락은 '지난 일을 다시 떠올려 생각하다' 뜻을 노린 것이라 뜻 번호가 맞지 않는다."
+    },
+    {
+      "kind": "word",
+      "lemma": "제시하다",
+      "partOfSpeech": "동사",
+      "senseOrder": 1,
+      "types": [
+        "cloze",
+        "usage"
+      ],
+      "variantTag": "standard",
+      "expectedL1": 1,
+      "expectedL2": 2,
+      "gradeEvidence": "[4국01-06] 주제에 적절한 의견과 이유를 제시하고 서로의 생각을 교환하며 토의한다.",
+      "checked": false,
+      "reason": "제작 가능한 미사용 유형 없음"
+    },
+    {
+      "kind": "word",
+      "lemma": "경청하다",
+      "partOfSpeech": "동사",
+      "senseOrder": 1,
+      "types": [
+        "cloze"
+      ],
+      "variantTag": "standard",
+      "expectedL1": 1,
+      "expectedL2": 2,
+      "gradeEvidence": "[4국01-01] 중요한 내용과 주제를 파악하며 듣고 그 내용을 요약한다.",
+      "checked": true,
+      "sourceEntry": {
+        "provider": "stdict",
+        "entryId": "20286"
+      },
+      "reason": "'귀를 기울여 듣다' 항목(20286)이 듣기 단원에서 쓰는 뜻이다. 20288·20289는 드문 동음이의어다. 귀 기울이다로 쉽게 풀이되고, cloze에서 흘려듣다 같은 경계 오답을 쓸 수 있다."
+    },
+    {
+      "kind": "word",
+      "lemma": "인정하다",
+      "partOfSpeech": "동사",
+      "senseOrder": 1,
+      "types": [
+        "cloze",
+        "antonym_context"
+      ],
+      "variantTag": "standard",
+      "expectedL1": 1,
+      "expectedL2": 2,
+      "gradeEvidence": "[4국01-04] 상황과 상대의 입장을 이해하고 예의를 지키며 대화한다.",
+      "checked": false,
+      "reason": "4학년에게 이미 익숙한 생활어이고 '인정'은 투명한 한자어라 L2=2는 부풀린 값이다. 가능한 유형이 cloze뿐이라 R 5~6에 닿으려면 억지 오답이 필요하다."
+    },
+    {
+      "kind": "word",
+      "lemma": "분류하다",
+      "partOfSpeech": "동사",
+      "senseOrder": 1,
+      "types": [
+        "cloze",
+        "usage"
+      ],
+      "variantTag": "standard",
+      "expectedL1": 1,
+      "expectedL2": 2,
+      "gradeEvidence": "[4국04-02] 단어를 분류하고 국어사전을 활용하여 능동적인 국어 활동을 한다.",
+      "checked": false,
+      "reason": "3~4학년 국어·과학에서 자주 다루는 '종류에 따라 가르다'라는 구체 동작어라 L2를 1로 보는 게 정직하다. 그러면 L이 2쯤이어서 Normal advanced보다 core에 가깝다."
+    },
+    {
+      "kind": "word",
+      "lemma": "토의하다",
+      "partOfSpeech": "동사",
+      "senseOrder": 1,
+      "types": [
+        "cloze",
+        "usage"
+      ],
+      "variantTag": "standard",
+      "expectedL1": 1,
+      "expectedL2": 2,
+      "gradeEvidence": "[4국01-06] 주제에 적절한 의견과 이유를 제시하고 서로의 생각을 교환하며 토의한다.",
+      "checked": false,
+      "reason": "제작 가능한 미사용 유형 없음"
+    },
+    {
+      "kind": "word",
+      "lemma": "보충하다",
+      "partOfSpeech": "동사",
+      "senseOrder": 1,
+      "types": [
+        "antonym_context",
+        "synonym_context"
+      ],
+      "variantTag": "standard",
+      "expectedL1": 1,
+      "expectedL2": 2,
+      "gradeEvidence": "[4국04-01] 단어와 단어 간의 의미 관계를 파악한다.",
+      "checked": false,
+      "reason": "뜻은 맞지만 가능한 유형이 antonym뿐인데 '보충하다'에는 깔끔한 반의어가 없어(덜다·빼다는 어색함) 억지 문맥이 될 위험이 크다."
+    },
+    {
+      "kind": "word",
+      "lemma": "공손하다",
+      "partOfSpeech": "형용사",
+      "senseOrder": 1,
+      "types": [
+        "antonym_context"
+      ],
+      "variantTag": "standard",
+      "expectedL1": 1,
+      "expectedL2": 2,
+      "gradeEvidence": "[4국01-04] 상황과 상대의 입장을 이해하고 예의를 지키며 대화한다.",
+      "checked": true,
+      "reason": "뜻이 맞고 무례하다·버릇없다와 반의 문맥이 자연스럽다. 겸손하다와 의미가 가까워, 같은 판에 함께 낼 때 오답으로 겹치지 않게 조심해야 한다."
+    },
+    {
+      "kind": "word",
+      "lemma": "관찰하다",
+      "partOfSpeech": "동사",
+      "senseOrder": 1,
+      "types": [
+        "cloze",
+        "usage"
+      ],
+      "variantTag": "standard",
+      "expectedL1": 1,
+      "expectedL2": 2,
+      "gradeEvidence": "[4국03-02] 절차와 결과가 드러나게 정확한 표현으로 보고하는 글을 쓴다.",
+      "checked": false,
+      "reason": "3학년 과학부터 매번 쓰는 기초 학습어라 L1은 0~1이고, 가능한 유형도 cloze뿐이다. advanced로 만들려면 문항을 억지로 어렵게 해야 한다."
+    },
+    {
+      "kind": "word",
+      "lemma": "주장하다",
+      "partOfSpeech": "동사",
+      "senseOrder": 1,
+      "types": [
+        "usage"
+      ],
+      "variantTag": "standard",
+      "expectedL1": 1,
+      "expectedL2": 2,
+      "gradeEvidence": "[4국03-03] 대상에 대한 자신의 의견과 그렇게 생각한 이유가 드러나게 글을 쓴다.",
+      "checked": true,
+      "sourceEntry": {
+        "provider": "stdict",
+        "entryId": "485439"
+      },
+      "reason": "'자기 의견을 굳게 내세우다' 항목(485439)이 의도한 뜻이고, 나머지는 드물거나 옛말이다. 주장과 근거는 4학년 핵심 개념이라 L 근거가 맞고, usage로 '물건을 주장하다' 같은 잘못된 쓰임을 오답으로 둘 수 있다."
+    },
+    {
+      "kind": "word",
+      "lemma": "유사하다",
+      "partOfSpeech": "형용사",
+      "senseOrder": 1,
+      "types": [
+        "synonym_context",
+        "antonym_context"
+      ],
+      "variantTag": "standard",
+      "expectedL1": 2,
+      "expectedL2": 1,
+      "gradeEvidence": "[4국04-01] 단어와 단어 간의 의미 관계를 파악한다.",
+      "checked": true,
+      "sourceEntry": {
+        "provider": "stdict",
+        "entryId": "465143"
+      },
+      "reason": "'서로 비슷하다' 항목(465143)이 의도한 뜻이고, 252872(사변이 있다)는 드문 말이다. 비슷하다·다르다로 유의·반의 문맥을 쉽게 짤 수 있다. 類似는 L2=2에 가깝지만 L 합계 3은 적정하다."
+    },
+    {
+      "kind": "word",
+      "lemma": "파악하다",
+      "partOfSpeech": "동사",
+      "senseOrder": 1,
+      "types": [
+        "cloze",
+        "synonym_context"
+      ],
+      "variantTag": "standard",
+      "expectedL1": 1,
+      "expectedL2": 2,
+      "gradeEvidence": "[4국02-02] 문단과 글에서 중심 생각을 파악하고 내용을 간추린다.",
+      "checked": false,
+      "reason": "조회된 뜻 1은 '손으로 잡아 쥐다'(sense_no 없음)이고, 후보가 노린 '내용을 확실히 이해하다'는 다른 뜻 번호다. 뜻 번호와 표준 표시가 의도와 맞지 않는다."
+    },
+    {
+      "kind": "word",
+      "lemma": "협력하다",
+      "partOfSpeech": "동사",
+      "senseOrder": 1,
+      "types": [
+        "antonym_context"
+      ],
+      "variantTag": "standard",
+      "expectedL1": 1,
+      "expectedL2": 2,
+      "gradeEvidence": "[4국04-01] 단어와 단어 간의 의미 관계를 파악한다.",
+      "checked": true,
+      "reason": "'힘을 합하여 서로 돕다'라는 뜻이 맞고, 모둠 활동에서 '서로 방해하다·따로 하다'를 문맥 반의로 짤 수 있다. L1=1·L2=2 근거가 적정하다."
+    },
+    {
+      "kind": "word",
+      "lemma": "성실하다",
+      "partOfSpeech": "형용사",
+      "senseOrder": 1,
+      "types": [
+        "antonym_context",
+        "usage"
+      ],
+      "variantTag": "standard",
+      "expectedL1": 1,
+      "expectedL2": 2,
+      "gradeEvidence": "[4국04-01] 단어와 단어 간의 의미 관계를 파악한다.",
+      "checked": false,
+      "reason": "저학년 생활 평가어로 매우 익숙해 L1은 0에 가깝다. antonym(게으르다)도 쉬워서, advanced로 만들려면 억지로 어렵게 해야 한다."
+    },
+    {
+      "kind": "word",
+      "lemma": "적절하다",
+      "partOfSpeech": "형용사",
+      "senseOrder": 1,
+      "types": [
+        "synonym_context",
+        "cloze"
+      ],
+      "variantTag": "standard",
+      "expectedL1": 1,
+      "expectedL2": 2,
+      "gradeEvidence": "[4국01-06] 주제에 적절한 의견과 이유를 제시하고 서로의 생각을 교환하며 토의한다.",
+      "checked": false,
+      "reason": "제작 가능한 미사용 유형 없음"
+    },
+    {
+      "kind": "word",
+      "lemma": "요청하다",
+      "partOfSpeech": "동사",
+      "senseOrder": 1,
+      "types": [
+        "cloze",
+        "synonym_context"
+      ],
+      "variantTag": "standard",
+      "expectedL1": 2,
+      "expectedL2": 1,
+      "gradeEvidence": "[4국01-04] 상황과 상대의 입장을 이해하고 예의를 지키며 대화한다.",
+      "checked": false,
+      "reason": "사전 뜻과 품사는 맞습니다. 다만 '부탁하다'로 바로 풀리는 쉬운 생활어여서 L1=2는 부풀린 값으로 봅니다. cloze·synonym으로는 4학년 advanced(R 5~6)까지 올리기 어렵습니다."
+    },
+    {
+      "kind": "word",
+      "lemma": "구별하다",
+      "partOfSpeech": "동사",
+      "senseOrder": 1,
+      "types": [
+        "antonym_context",
+        "cloze"
+      ],
+      "variantTag": "standard",
+      "expectedL1": 1,
+      "expectedL2": 2,
+      "gradeEvidence": "[4국02-04] 글에 나타난 사실과 의견을 구분하고 필자와 자신의 의견을 비교한다.",
+      "checked": false,
+      "reason": "사전 뜻은 맞습니다. 하지만 3~4학년 수업에서 흔히 쓰는 말이고, 쓸 수 있는 유형은 antonym_context뿐입니다. 뚜렷한 반의어가 없어 억지 문맥이 될 위험이 큽니다."
+    },
+    {
+      "kind": "word",
+      "lemma": "검토하다",
+      "partOfSpeech": "동사",
+      "senseOrder": 1,
+      "types": [
+        "cloze"
+      ],
+      "variantTag": "standard",
+      "expectedL1": 1,
+      "expectedL2": 2,
+      "gradeEvidence": "[4국02-05] 글이나 자료의 출처가 믿을 만한지 판단한다.",
+      "checked": true,
+      "reason": "뜻 1 '분석하여 따지다'와 일치하고 '꼼꼼히 다시 살펴보다'로 쉽게 풀 수 있습니다. 격식 문어여서 L1은 오히려 2에 가까울 수 있으며, cloze만으로도 advanced가 가능합니다."
+    },
+    {
+      "kind": "word",
+      "lemma": "고려하다",
+      "partOfSpeech": "동사",
+      "senseOrder": 1,
+      "types": [
+        "cloze"
+      ],
+      "variantTag": "standard",
+      "expectedL1": 1,
+      "expectedL2": 2,
+      "gradeEvidence": "[4국01-02] 원인과 결과의 관계를 고려하여 내용을 예측하며 듣고 말한다.",
+      "checked": true,
+      "sourceEntry": {
+        "provider": "stdict",
+        "entryId": "23373"
+      },
+      "reason": "의도한 뜻은 동형어 1 '생각하고 헤아려 보다'입니다. 성취기준 문장에도 나오는 추상어여서 cloze로 의미 차이를 판단하는 문항을 만들기 좋습니다."
+    },
+    {
+      "kind": "word",
+      "lemma": "발휘하다",
+      "partOfSpeech": "동사",
+      "senseOrder": 1,
+      "types": [
+        "cloze",
+        "usage"
+      ],
+      "variantTag": "standard",
+      "expectedL1": 1,
+      "expectedL2": 2,
+      "gradeEvidence": "[4국05-01] 인물과 이야기의 흐름을 중심으로 작품을 감상한다.",
+      "checked": false,
+      "reason": "제작 가능한 미사용 유형 없음"
+    },
+    {
+      "kind": "word",
+      "lemma": "표현하다",
+      "partOfSpeech": "동사",
+      "senseOrder": 1,
+      "types": [
+        "antonym_context",
+        "cloze"
+      ],
+      "variantTag": "standard",
+      "expectedL1": 1,
+      "expectedL2": 2,
+      "gradeEvidence": "[4국05-04] 감각적 표현에 유의하여 작품을 감상하고, 감각적 표현을 활용하여 자신의 생각이나 감정을 표현한다.",
+      "checked": false,
+      "reason": "3~4학년 국어 수업에서 매우 자주 쓰는 기초 학습어여서 L2=2와 advanced 목표가 과합니다. antonym_context(숨기다)만으로는 쉬운 말을 억지로 어렵게 만드는 문항이 됩니다."
+    },
+    {
+      "kind": "word",
+      "lemma": "단념하다",
+      "partOfSpeech": "동사",
+      "senseOrder": 1,
+      "types": [
+        "synonym_context"
+      ],
+      "variantTag": "standard",
+      "expectedL1": 1,
+      "expectedL2": 2,
+      "gradeEvidence": "[4국04-01] 단어와 단어 간의 의미 관계를 파악한다.",
+      "checked": true,
+      "reason": "뜻 1 '생각을 아주 끊어 버리다'와 맞고, '포기하다'와 견주는 synonym_context에 적합합니다. 4학년에게 어렵지만 짧은 상황으로 배울 수 있는 말입니다."
+    },
+    {
+      "kind": "word",
+      "lemma": "당부하다",
+      "partOfSpeech": "동사",
+      "senseOrder": 1,
+      "types": [
+        "synonym_context",
+        "cloze"
+      ],
+      "variantTag": "standard",
+      "expectedL1": 1,
+      "expectedL2": 2,
+      "gradeEvidence": "[4국01-04] 상황과 상대의 입장을 이해하고 예의를 지키며 대화한다.",
+      "checked": true,
+      "reason": "'말로 단단히 부탁하다'라는 뜻이 맞습니다. '부탁하다'와 정도 차이를 판단하게 하기 좋아 advanced 공급에 알맞습니다."
+    },
+    {
+      "kind": "word",
+      "lemma": "거절하다",
+      "partOfSpeech": "동사",
+      "senseOrder": 1,
+      "types": [
+        "synonym_context"
+      ],
+      "variantTag": "standard",
+      "expectedL1": 1,
+      "expectedL2": 2,
+      "gradeEvidence": "[4국01-04] 상황과 상대의 입장을 이해하고 예의를 지키며 대화한다.",
+      "checked": true,
+      "sourceEntry": {
+        "provider": "stdict",
+        "entryId": "13623"
+      },
+      "reason": "동형어 1 '요구·부탁을 물리치다'가 의도한 뜻입니다. 생활어에 가깝지만 '사양하다'·'미루다' 같은 오답과 의도 차이를 묻는 synonym_context라면 R 5 근처까지 갈 수 있습니다."
+    },
+    {
+      "kind": "word",
+      "lemma": "승낙하다",
+      "partOfSpeech": "동사",
+      "senseOrder": 1,
+      "types": [
+        "antonym_context",
+        "cloze"
+      ],
+      "variantTag": "standard",
+      "expectedL1": 1,
+      "expectedL2": 2,
+      "gradeEvidence": "[4국01-04] 상황과 상대의 입장을 이해하고 예의를 지키며 대화한다.",
+      "checked": true,
+      "reason": "'청하는 바를 들어주다'라는 뜻이 맞습니다. '거절하다'와 짝지어 antonym_context를 만들기 자연스럽고, 부족한 반의 유형 보충에도 맞습니다."
+    },
+    {
+      "kind": "word",
+      "lemma": "만류하다",
+      "partOfSpeech": "동사",
+      "senseOrder": 1,
+      "types": [
+        "synonym_context"
+      ],
+      "variantTag": "standard",
+      "expectedL1": 1,
+      "expectedL2": 2,
+      "gradeEvidence": "[4국04-01] 단어와 단어 간의 의미 관계를 파악한다.",
+      "checked": true,
+      "reason": "'붙들고 못 하게 말리다'라는 뜻이 맞고, '말리다'라는 쉬운 주변 말로 설명됩니다. 4학년에게는 저빈도여서 L1을 1보다 높게 볼 여지도 있습니다."
+    },
+    {
+      "kind": "word",
+      "lemma": "주저하다",
+      "partOfSpeech": "동사",
+      "senseOrder": 1,
+      "types": [
+        "synonym_context",
+        "antonym_context"
+      ],
+      "variantTag": "standard",
+      "expectedL1": 1,
+      "expectedL2": 2,
+      "gradeEvidence": "[4국05-01] 인물과 이야기의 흐름을 중심으로 작품을 감상한다.",
+      "checked": true,
+      "sourceEntry": {
+        "provider": "stdict",
+        "entryId": "302722"
+      },
+      "reason": "의도한 뜻은 동형어 2 '머뭇거리며 망설이다'입니다. 인물의 망설임 상황으로 synonym·antonym 문항을 만들기 좋습니다."
+    },
+    {
+      "kind": "word",
+      "lemma": "낙담하다",
+      "partOfSpeech": "동사",
+      "senseOrder": 1,
+      "types": [
+        "antonym_context",
+        "cloze"
+      ],
+      "variantTag": "standard",
+      "expectedL1": 1,
+      "expectedL2": 2,
+      "gradeEvidence": "[4국05-01] 인물과 이야기의 흐름을 중심으로 작품을 감상한다.",
+      "checked": true,
+      "reason": "뜻 1이 맞습니다. 감정 분화어로 '실망하다'·'속상하다'와 정도 차이를 묻거나 antonym_context를 만들기 적합합니다."
+    },
+    {
+      "kind": "word",
+      "lemma": "분발하다",
+      "partOfSpeech": "동사",
+      "senseOrder": 1,
+      "types": [
+        "antonym_context",
+        "cloze"
+      ],
+      "variantTag": "standard",
+      "expectedL1": 1,
+      "expectedL2": 2,
+      "gradeEvidence": "[4국05-01] 인물과 이야기의 흐름을 중심으로 작품을 감상한다.",
+      "checked": true,
+      "sourceEntry": {
+        "provider": "stdict",
+        "entryId": "433013"
+      },
+      "reason": "의도한 뜻은 동형어 3 '마음과 힘을 다하여 떨쳐 일어나다'입니다. 다른 동형어는 역사 전문어이거나 무관합니다. 이야기 상황 cloze·antonym에 적합합니다."
+    },
+    {
+      "kind": "word",
+      "lemma": "해명하다",
+      "partOfSpeech": "동사",
+      "senseOrder": 1,
+      "types": [
+        "cloze",
+        "usage"
+      ],
+      "variantTag": "standard",
+      "expectedL1": 1,
+      "expectedL2": 2,
+      "gradeEvidence": "[4국01-04] 상황과 상대의 입장을 이해하고 예의를 지키며 대화한다.",
+      "checked": false,
+      "reason": "제작 가능한 미사용 유형 없음"
+    },
+    {
+      "kind": "word",
+      "lemma": "존경하다",
+      "partOfSpeech": "동사",
+      "senseOrder": 1,
+      "types": [
+        "synonym_context",
+        "cloze"
+      ],
+      "variantTag": "standard",
+      "expectedL1": 1,
+      "expectedL2": 2,
+      "gradeEvidence": "[4국04-01] 단어와 단어 간의 의미 관계를 파악한다.",
+      "checked": false,
+      "reason": "3~4학년에 흔한 기초어여서 L2=2는 과합니다. 쓸 수 있는 유형도 cloze뿐이라 4학년 advanced에 이르기 어렵습니다."
+    },
+    {
+      "kind": "word",
+      "lemma": "세심하다",
+      "partOfSpeech": "형용사",
+      "senseOrder": 1,
+      "types": [
+        "synonym_context"
+      ],
+      "variantTag": "standard",
+      "expectedL1": 1,
+      "expectedL2": 2,
+      "gradeEvidence": "[4국04-01] 단어와 단어 간의 의미 관계를 파악한다.",
+      "checked": true,
+      "reason": "동형어 2 '꼼꼼하게 주의를 기울여 빈틈이 없다'와 맞습니다. '꼼꼼하다'와 견주는 synonym_context에 알맞습니다."
+    },
+    {
+      "kind": "word",
+      "lemma": "철저하다",
+      "partOfSpeech": "형용사",
+      "senseOrder": 1,
+      "types": [
+        "antonym_context",
+        "cloze"
+      ],
+      "variantTag": "standard",
+      "expectedL1": 1,
+      "expectedL2": 2,
+      "gradeEvidence": "[4국03-02] 절차와 결과가 드러나게 정확한 표현으로 보고하는 글을 쓴다.",
+      "checked": true,
+      "reason": "뜻이 맞습니다. '대충하다'와 대비하는 antonym_context나 정도를 묻는 cloze를 만들기 좋은 4학년 심화어입니다."
+    },
+    {
+      "kind": "word",
+      "lemma": "단호하다",
+      "partOfSpeech": "형용사",
+      "senseOrder": 1,
+      "types": [
+        "antonym_context"
+      ],
+      "variantTag": "standard",
+      "expectedL1": 1,
+      "expectedL2": 2,
+      "gradeEvidence": "[4국01-06] 주제에 적절한 의견과 이유를 제시하고 서로의 생각을 교환하며 토의한다.",
+      "checked": true,
+      "reason": "뜻이 맞습니다. '머뭇거리다'·'우물쭈물하다'와 대비해 태도를 판단하는 antonym_context에 적합합니다."
+    },
+    {
+      "kind": "word",
+      "lemma": "의아하다",
+      "partOfSpeech": "형용사",
+      "senseOrder": 1,
+      "types": [
+        "synonym_context",
+        "cloze"
+      ],
+      "variantTag": "standard",
+      "expectedL1": 1,
+      "expectedL2": 2,
+      "gradeEvidence": "[4국02-03] 질문을 활용하여 글을 예측하며 읽고 자신의 읽기 과정을 점검한다.",
+      "checked": true,
+      "reason": "'의심스럽고 이상하다'라는 뜻이 맞습니다. '어리둥절하다'·'궁금하다'와 의미 차이를 판단하는 문항으로 만들기 좋습니다."
+    },
+    {
+      "kind": "word",
+      "lemma": "유심히",
+      "partOfSpeech": "부사",
+      "senseOrder": 1,
+      "types": [
+        "antonym_context",
+        "synonym_context"
+      ],
+      "variantTag": "standard",
+      "expectedL1": 1,
+      "expectedL2": 2,
+      "gradeEvidence": "[4국04-01] 단어와 단어 간의 의미 관계를 파악한다.",
+      "checked": false,
+      "reason": "조회된 뜻 1은 '속뜻이 있게'입니다. 4학년 문항에서 쓰는 '주의 깊게'(유심히 보다)는 다른 뜻 번호여서 표제어·뜻 번호가 의도와 맞지 않습니다."
+    },
+    {
+      "kind": "word",
+      "lemma": "영향",
+      "partOfSpeech": "명사",
+      "senseOrder": 1,
+      "types": [
+        "cloze",
+        "usage"
+      ],
+      "variantTag": "standard",
+      "expectedL1": 1,
+      "expectedL2": 2,
+      "gradeEvidence": "[4국01-02] 원인과 결과의 관계를 고려하여 내용을 예측하며 듣고 말한다.",
+      "checked": true,
+      "sourceEntry": {
+        "provider": "stdict",
+        "entryId": "463354"
+      },
+      "reason": "의도한 뜻은 동형어 4 '효과나 작용이 다른 것에 미치는 일'입니다. 원인·결과 개념어로 usage 문항을 만들면 advanced 범위가 됩니다."
+    },
+    {
+      "kind": "word",
+      "lemma": "미루다",
+      "partOfSpeech": "동사",
+      "senseOrder": 2,
+      "types": [
+        "synonym_context"
+      ],
+      "variantTag": "polysemy",
+      "expectedL1": 1,
+      "expectedL2": 1,
+      "gradeEvidence": "[4국04-02] 단어를 분류하고 국어사전을 활용하여 능동적인 국어 활동을 한다.",
+      "checked": true,
+      "reason": "뜻 2 '일을 남에게 넘기다'는 뜻 1 '나중으로 넘기다'와 구별되는 다의 확장이어서 polysemy 표시가 맞습니다. 다만 L은 1+1로 낮은 편이라 추론형 synonym_context여야 R 5에 이릅니다."
+    },
+    {
+      "kind": "word",
+      "lemma": "나침반",
+      "partOfSpeech": "명사",
+      "senseOrder": 2,
+      "types": [
+        "cloze",
+        "synonym_context"
+      ],
+      "variantTag": "polysemy",
+      "expectedL1": 1,
+      "expectedL2": 2,
+      "gradeEvidence": "[4국05-04] 감각적 표현에 유의하여 작품을 감상하고, 감각적 표현을 활용하여 자신의 생각이나 감정을 표현한다.",
+      "checked": false,
+      "reason": "사전 대조 실패: 근거 표제어·품사·뜻 번호 불일치, 누락 또는 동음이의어 모호성"
+    },
+    {
+      "kind": "word",
+      "lemma": "밑거름",
+      "partOfSpeech": "명사",
+      "senseOrder": 2,
+      "types": [
+        "usage",
+        "cloze"
+      ],
+      "variantTag": "polysemy",
+      "expectedL1": 1,
+      "expectedL2": 1,
+      "gradeEvidence": "[4국04-02] 단어를 분류하고 국어사전을 활용하여 능동적인 국어 활동을 한다.",
+      "checked": false,
+      "reason": "조회된 뜻 2는 『농업』 표지가 붙은 문자 그대로의 거름입니다. 의도했을 법한 비유 뜻(기초가 되는 것)이 아니어서 polysemy 표시와 뜻 번호가 맞지 않고, 전문어 표지도 있습니다."
+    },
+    {
+      "kind": "word",
+      "lemma": "씨앗",
+      "partOfSpeech": "명사",
+      "senseOrder": 2,
+      "types": [
+        "usage"
+      ],
+      "variantTag": "polysemy",
+      "expectedL1": 1,
+      "expectedL2": 1,
+      "gradeEvidence": "[4국04-02] 단어를 분류하고 국어사전을 활용하여 능동적인 국어 활동을 한다.",
+      "checked": true,
+      "reason": "뜻 2 '앞으로 커질 수 있는 근원의 비유'로 polysemy가 맞습니다. 쉬운 기본 뜻과 비유 뜻을 가르는 usage 문항으로 advanced를 만들기 좋습니다."
+    },
+    {
+      "kind": "word",
+      "lemma": "양해",
+      "partOfSpeech": "명사",
+      "senseOrder": 1,
+      "types": [
+        "usage"
+      ],
+      "variantTag": "standard",
+      "expectedL1": 1,
+      "expectedL2": 2,
+      "gradeEvidence": "[4국01-04] 상황과 상대의 입장을 이해하고 예의를 지키며 대화한다.",
+      "checked": true,
+      "sourceEntry": {
+        "provider": "stdict",
+        "entryId": "226663"
+      },
+      "reason": "의도한 뜻은 동형어 3 '남의 사정을 헤아려 너그러이 받아들임'입니다. 다른 동형어는 민속·인명입니다. '양해를 구하다' 같은 예절 상황 usage에 적합합니다."
+    },
+    {
+      "kind": "word",
+      "lemma": "대안",
+      "partOfSpeech": "명사",
+      "senseOrder": 1,
+      "types": [
+        "cloze",
+        "synonym_context"
+      ],
+      "variantTag": "standard",
+      "expectedL1": 1,
+      "expectedL2": 2,
+      "gradeEvidence": "[4국01-06] 주제에 적절한 의견과 이유를 제시하고 서로의 생각을 교환하며 토의한다.",
+      "checked": true,
+      "sourceEntry": {
+        "provider": "stdict",
+        "entryId": "408921"
+      },
+      "reason": "토의 맥락의 '어떤 안을 대신하는 안'(동형어 3)이 의도에 가장 가깝습니다. 4학년에게는 상한에 가까운 개념어여서 L1이 2로 판정될 수 있지만, 초등 범위 안입니다."
+    },
+    {
+      "kind": "word",
+      "lemma": "조짐",
+      "partOfSpeech": "명사",
+      "senseOrder": 1,
+      "types": [
+        "synonym_context",
+        "cloze"
+      ],
+      "variantTag": "standard",
+      "expectedL1": 1,
+      "expectedL2": 2,
+      "gradeEvidence": "[4국01-02] 원인과 결과의 관계를 고려하여 내용을 예측하며 듣고 말한다.",
+      "checked": true,
+      "reason": "사전 1뜻 '일이 생길 기미가 보이는 현상'과 일치합니다. '날씨가 바뀔 조짐'처럼 쉬운 상황에서 예측과 결과를 판단하는 문항을 만들 수 있고, L1·L2=1·2도 타당합니다."
+    },
+    {
+      "kind": "word",
+      "lemma": "관대하다",
+      "partOfSpeech": "형용사",
+      "senseOrder": 1,
+      "types": [
+        "synonym_context"
+      ],
+      "variantTag": "standard",
+      "expectedL1": 1,
+      "expectedL2": 2,
+      "gradeEvidence": "[4국04-01] 단어와 단어 간의 의미 관계를 파악한다.",
+      "checked": true,
+      "reason": "'마음이 너그럽고 크다'와 일치하고, 쉬운 유의어 '너그럽다'로 설명됩니다. 친구의 실수를 대하는 태도처럼 정도 차이를 묻는 synonym_context에 적합합니다."
+    },
+    {
+      "kind": "word",
+      "lemma": "주도하다",
+      "partOfSpeech": "동사",
+      "senseOrder": 1,
+      "types": [
+        "cloze",
+        "antonym_context"
+      ],
+      "variantTag": "standard",
+      "expectedL1": 1,
+      "expectedL2": 2,
+      "gradeEvidence": "[4국01-06] 주제에 적절한 의견과 이유를 제시하고 서로의 생각을 교환하며 토의한다.",
+      "checked": true,
+      "reason": "'앞장서서 무리를 이끌다'와 일치합니다. 모둠 토의 상황에서 '따르다'와 대비하는 문항이 자연스럽습니다. 다만 L1은 2에 가까울 수 있습니다."
+    },
+    {
+      "kind": "word",
+      "lemma": "만회하다",
+      "partOfSpeech": "동사",
+      "senseOrder": 1,
+      "types": [
+        "cloze",
+        "usage"
+      ],
+      "variantTag": "standard",
+      "expectedL1": 1,
+      "expectedL2": 2,
+      "gradeEvidence": "[4국01-02] 원인과 결과의 관계를 고려하여 내용을 예측하며 듣고 말한다.",
+      "checked": false,
+      "reason": "제작 가능한 미사용 유형 없음"
+    },
+    {
+      "kind": "word",
+      "lemma": "지체하다",
+      "partOfSpeech": "동사",
+      "senseOrder": 1,
+      "types": [
+        "antonym_context",
+        "cloze"
+      ],
+      "variantTag": "standard",
+      "expectedL1": 1,
+      "expectedL2": 2,
+      "gradeEvidence": "[4국04-01] 단어와 단어 간의 의미 관계를 파악한다.",
+      "checked": true,
+      "reason": "'때를 늦추거나 질질 끌다'와 일치합니다. '서두르다'와 대비하는 antonym·cloze를 쉬운 등굣길 상황으로 만들 수 있습니다."
+    },
+    {
+      "kind": "word",
+      "lemma": "분담하다",
+      "partOfSpeech": "동사",
+      "senseOrder": 1,
+      "types": [
+        "cloze",
+        "antonym_context"
+      ],
+      "variantTag": "standard",
+      "expectedL1": 1,
+      "expectedL2": 2,
+      "gradeEvidence": "[4국01-06] 주제에 적절한 의견과 이유를 제시하고 서로의 생각을 교환하며 토의한다.",
+      "checked": false,
+      "reason": "제작 가능한 미사용 유형 없음"
+    },
+    {
+      "kind": "word",
+      "lemma": "중단하다",
+      "partOfSpeech": "동사",
+      "senseOrder": 1,
+      "types": [
+        "antonym_context",
+        "cloze"
+      ],
+      "variantTag": "standard",
+      "expectedL1": 1,
+      "expectedL2": 2,
+      "gradeEvidence": "[4국04-01] 단어와 단어 간의 의미 관계를 파악한다.",
+      "checked": true,
+      "reason": "'중도에서 끊다'와 일치하고 초등 범위입니다. 다만 노출이 잦은 말이라 '계속하다'와의 대비만으로는 core에 머물 수 있어, 오답을 '멈칫하다·미루다'처럼 경계 의미로 짜야 advanced가 됩니다."
+    },
+    {
+      "kind": "word",
+      "lemma": "전념하다",
+      "partOfSpeech": "동사",
+      "senseOrder": 1,
+      "types": [
+        "synonym_context",
+        "cloze"
+      ],
+      "variantTag": "standard",
+      "expectedL1": 1,
+      "expectedL2": 2,
+      "gradeEvidence": "[4국04-01] 단어와 단어 간의 의미 관계를 파악한다.",
+      "checked": false,
+      "reason": "제작 가능한 미사용 유형 없음"
+    },
+    {
+      "kind": "word",
+      "lemma": "반박하다",
+      "partOfSpeech": "동사",
+      "senseOrder": 1,
+      "types": [
+        "antonym_context",
+        "cloze"
+      ],
+      "variantTag": "standard",
+      "expectedL1": 1,
+      "expectedL2": 2,
+      "gradeEvidence": "[4국02-04] 글에 나타난 사실과 의견을 구분하고 필자와 자신의 의견을 비교한다.",
+      "checked": true,
+      "sourceEntry": {
+        "provider": "stdict",
+        "entryId": "131702"
+      },
+      "reason": "동형어 1의 '의견·주장에 반대하여 말하다'가 의도한 뜻이고, 토의 상황에서 '동의하다'와 대비하기 좋습니다. 4학년에는 경계어라 L1을 2로 볼 여지가 있습니다."
+    },
+    {
+      "kind": "word",
+      "lemma": "대처하다",
+      "partOfSpeech": "동사",
+      "senseOrder": 1,
+      "types": [
+        "cloze",
+        "usage"
+      ],
+      "variantTag": "standard",
+      "expectedL1": 1,
+      "expectedL2": 2,
+      "gradeEvidence": "[4국01-02] 원인과 결과의 관계를 고려하여 내용을 예측하며 듣고 말한다.",
+      "checked": true,
+      "sourceEntry": {
+        "provider": "stdict",
+        "entryId": "80552"
+      },
+      "reason": "동형어 2의 '사건에 알맞은 조치를 취하다'가 목적에 맞습니다. 비가 올 때 우산 준비처럼 원인과 결과가 있는 쉬운 상황으로 cloze·usage를 만들 수 있습니다."
+    },
+    {
+      "kind": "word",
+      "lemma": "개선하다",
+      "partOfSpeech": "동사",
+      "senseOrder": 1,
+      "types": [
+        "cloze",
+        "synonym_context"
+      ],
+      "variantTag": "standard",
+      "expectedL1": 1,
+      "expectedL2": 2,
+      "gradeEvidence": "[4국01-06] 주제에 적절한 의견과 이유를 제시하고 서로의 생각을 교환하며 토의한다.",
+      "checked": true,
+      "sourceEntry": {
+        "provider": "stdict",
+        "entryId": "394617"
+      },
+      "reason": "동형어 1의 '부족한 것을 고쳐 더 좋게 만들다'가 의도한 뜻이며 학급 규칙 개선 같은 토의 맥락에 맞습니다. 쉬운 유의어 '고치다'와 정도 차이를 묻기 좋습니다."
+    },
+    {
+      "kind": "word",
+      "lemma": "확고하다",
+      "partOfSpeech": "형용사",
+      "senseOrder": 1,
+      "types": [
+        "antonym_context"
+      ],
+      "variantTag": "standard",
+      "expectedL1": 1,
+      "expectedL2": 2,
+      "gradeEvidence": "[4국04-01] 단어와 단어 간의 의미 관계를 파악한다.",
+      "checked": true,
+      "reason": "'태도가 튼튼하고 굳다'와 일치합니다. '마음이 흔들리다'와 대비하는 antonym 문항이 가능합니다. 다만 4학년에는 다소 문어적이라 지문을 쉬운 말로 감싸야 합니다."
+    },
+    {
+      "kind": "word",
+      "lemma": "채택하다",
+      "partOfSpeech": "동사",
+      "senseOrder": 1,
+      "types": [
+        "cloze",
+        "synonym_context"
+      ],
+      "variantTag": "standard",
+      "expectedL1": 1,
+      "expectedL2": 2,
+      "gradeEvidence": "[4국01-06] 주제에 적절한 의견과 이유를 제시하고 서로의 생각을 교환하며 토의한다.",
+      "checked": false,
+      "reason": "제작 가능한 미사용 유형 없음"
+    },
+    {
+      "kind": "word",
+      "lemma": "방치하다",
+      "partOfSpeech": "동사",
+      "senseOrder": 1,
+      "types": [
+        "antonym_context",
+        "cloze"
+      ],
+      "variantTag": "standard",
+      "expectedL1": 1,
+      "expectedL2": 2,
+      "gradeEvidence": "[4국04-01] 단어와 단어 간의 의미 관계를 파악한다.",
+      "checked": false,
+      "reason": "제작 가능한 미사용 유형 없음"
+    },
+    {
+      "kind": "word",
+      "lemma": "급격하다",
+      "partOfSpeech": "형용사",
+      "senseOrder": 1,
+      "types": [
+        "antonym_context",
+        "cloze"
+      ],
+      "variantTag": "standard",
+      "expectedL1": 1,
+      "expectedL2": 2,
+      "gradeEvidence": "[4국04-01] 단어와 단어 간의 의미 관계를 파악한다.",
+      "checked": false,
+      "reason": "제작 가능한 미사용 유형 없음"
+    },
+    {
+      "kind": "word",
+      "lemma": "수락하다",
+      "partOfSpeech": "동사",
+      "senseOrder": 1,
+      "types": [
+        "synonym_context"
+      ],
+      "variantTag": "standard",
+      "expectedL1": 1,
+      "expectedL2": 2,
+      "gradeEvidence": "[4국04-01] 단어와 단어 간의 의미 관계를 파악한다.",
+      "checked": true,
+      "reason": "'요구를 받아들이다'와 일치합니다. 쉬운 유의어 '받아들이다'와 거절의 대비로 의도를 판단하는 문항을 만들 수 있습니다."
+    },
+    {
+      "kind": "word",
+      "lemma": "다독이다",
+      "partOfSpeech": "동사",
+      "senseOrder": 2,
+      "types": [
+        "usage",
+        "synonym_context"
+      ],
+      "variantTag": "polysemy",
+      "expectedL1": 1,
+      "expectedL2": 1,
+      "gradeEvidence": "[4국04-01] 단어와 단어 간의 의미 관계를 파악한다.",
+      "checked": false,
+      "reason": "뜻 「2」는 아기를 가만가만 두드리는 구체 동작이라 L2는 0, L은 1 정도입니다. advanced로 만들려면 억지 usage 맥락이 필요합니다. 추상 전이 뜻(마음을 달래 감싸다)이었다면 적합했을 것입니다."
+    },
+    {
+      "kind": "word",
+      "lemma": "북돋우다",
+      "partOfSpeech": "동사",
+      "senseOrder": 2,
+      "types": [
+        "usage",
+        "cloze"
+      ],
+      "variantTag": "polysemy",
+      "expectedL1": 1,
+      "expectedL2": 1,
+      "gradeEvidence": "[4국04-01] 단어와 단어 간의 의미 관계를 파악한다.",
+      "checked": false,
+      "reason": "제작 가능한 미사용 유형 없음"
+    },
+    {
+      "kind": "word",
+      "lemma": "강조하다",
+      "partOfSpeech": "동사",
+      "senseOrder": 1,
+      "types": [
+        "cloze",
+        "synonym_context"
+      ],
+      "variantTag": "standard",
+      "expectedL1": 1,
+      "expectedL2": 2,
+      "gradeEvidence": "[4국01-01] 중요한 내용과 주제를 파악하며 듣고 그 내용을 요약한다.",
+      "checked": false,
+      "reason": "제작 가능한 미사용 유형 없음"
+    },
+    {
+      "kind": "word",
+      "lemma": "능숙하다",
+      "partOfSpeech": "형용사",
+      "senseOrder": 1,
+      "types": [
+        "antonym_context",
+        "cloze"
+      ],
+      "variantTag": "standard",
+      "expectedL1": 1,
+      "expectedL2": 2,
+      "gradeEvidence": "[4국04-01] 단어와 단어 간의 의미 관계를 파악한다.",
+      "checked": true,
+      "reason": "'능하고 익숙하다'와 일치합니다. '서투르다'와의 대비나 '익숙하다'와의 정도 차이를 쉬운 상황으로 물을 수 있습니다."
+    },
+    {
+      "kind": "word",
+      "lemma": "단축하다",
+      "partOfSpeech": "동사",
+      "senseOrder": 1,
+      "types": [
+        "antonym_context",
+        "cloze"
+      ],
+      "variantTag": "standard",
+      "expectedL1": 2,
+      "expectedL2": 2,
+      "gradeEvidence": "[4국04-01] 단어와 단어 간의 의미 관계를 파악한다.",
+      "checked": false,
+      "reason": "제작 가능한 미사용 유형 없음"
+    },
+    {
+      "kind": "word",
+      "lemma": "대책",
+      "partOfSpeech": "명사",
+      "senseOrder": 1,
+      "types": [
+        "cloze",
+        "synonym_context"
+      ],
+      "variantTag": "standard",
+      "expectedL1": 1,
+      "expectedL2": 2,
+      "gradeEvidence": "[4국01-02] 원인과 결과의 관계를 고려하여 내용을 예측하며 듣고 말한다.",
+      "checked": true,
+      "sourceEntry": {
+        "provider": "stdict",
+        "entryId": "409320"
+      },
+      "reason": "동형어 3의 '어떤 일에 대처할 계획이나 수단'이 의도한 뜻입니다. 문제 상황과 해결 방법을 잇는 cloze·synonym에 적합합니다."
+    },
+    {
+      "kind": "word",
+      "lemma": "메마르다",
+      "partOfSpeech": "형용사",
+      "senseOrder": 2,
+      "types": [
+        "usage",
+        "antonym_context"
+      ],
+      "variantTag": "polysemy",
+      "expectedL1": 2,
+      "expectedL2": 1,
+      "gradeEvidence": "[4국05-04] 감각적 표현에 유의하여 작품을 감상하고, 감각적 표현을 활용하여 자신의 생각이나 감정을 표현한다.",
+      "checked": false,
+      "reason": "뜻 「2」는 살결이 까슬까슬하다는 구체 감각 뜻이라 예상 L1=2는 부풀려졌고, advanced 근거가 약합니다. 마음·정서가 메마른 전이 뜻이 목적에 더 맞습니다."
+    },
+    {
+      "kind": "word",
+      "lemma": "명심하다",
+      "partOfSpeech": "동사",
+      "senseOrder": 1,
+      "types": [
+        "synonym_context",
+        "cloze"
+      ],
+      "variantTag": "standard",
+      "expectedL1": 1,
+      "expectedL2": 2,
+      "gradeEvidence": "[4국04-01] 단어와 단어 간의 의미 관계를 파악한다.",
+      "checked": true,
+      "reason": "'잊지 않도록 마음에 깊이 새겨 두다'와 일치합니다. '기억하다'와 정도 차이를 묻는 synonym·cloze를 쉬운 말로 만들 수 있습니다."
+    },
+    {
+      "kind": "word",
+      "lemma": "부당하다",
+      "partOfSpeech": "형용사",
+      "senseOrder": 1,
+      "types": [
+        "antonym_context",
+        "usage"
+      ],
+      "variantTag": "standard",
+      "expectedL1": 2,
+      "expectedL2": 2,
+      "gradeEvidence": "[4국04-01] 단어와 단어 간의 의미 관계를 파악한다.",
+      "checked": true,
+      "reason": "'이치에 맞지 아니하다'와 일치하고 초등 범위입니다. 그런데 L=4라 usage를 쓰면 challenge로 넘기 쉬우므로, Normal advanced용으로는 antonym을 짧은 공정·불공정 상황으로 만드는 편이 맞습니다."
+    },
+    {
+      "kind": "word",
+      "lemma": "분석하다",
+      "partOfSpeech": "동사",
+      "senseOrder": 1,
+      "types": [
+        "cloze",
+        "usage"
+      ],
+      "variantTag": "standard",
+      "expectedL1": 2,
+      "expectedL2": 2,
+      "gradeEvidence": "[4국03-02] 절차와 결과가 드러나게 정확한 표현으로 보고하는 글을 쓴다.",
+      "checked": true,
+      "sourceEntry": {
+        "provider": "stdict",
+        "entryId": "153865"
+      },
+      "reason": "동형어 2의 '복잡한 것을 풀어 요소로 나누다'가 의도한 뜻이고, 동형어 1은 역사 전문어라 제외했습니다. L=4라 cloze처럼 T가 낮은 유형으로 써야 R 5~6에 맞습니다."
+    },
+    {
+      "kind": "word",
+      "lemma": "생생하다",
+      "partOfSpeech": "형용사",
+      "senseOrder": 2,
+      "types": [
+        "usage",
+        "synonym_context"
+      ],
+      "variantTag": "polysemy",
+      "expectedL1": 1,
+      "expectedL2": 2,
+      "gradeEvidence": "[4국05-04] 감각적 표현에 유의하여 작품을 감상하고, 감각적 표현을 활용하여 자신의 생각이나 감정을 표현한다.",
+      "checked": false,
+      "reason": "제작 가능한 미사용 유형 없음"
+    },
+    {
+      "kind": "word",
+      "lemma": "성취하다",
+      "partOfSpeech": "동사",
+      "senseOrder": 1,
+      "types": [
+        "antonym_context"
+      ],
+      "variantTag": "standard",
+      "expectedL1": 2,
+      "expectedL2": 2,
+      "gradeEvidence": "[4국04-01] 단어와 단어 간의 의미 관계를 파악한다.",
+      "checked": true,
+      "sourceEntry": {
+        "provider": "stdict",
+        "entryId": "444813"
+      },
+      "reason": "동형어 2의 '목적한 바를 이루다'가 의도한 뜻입니다. 깔끔한 반의어가 없어 antonym은 '포기하다·이루지 못하다'로 대비해야 하며, L1 2는 약간 높게 잡혔을 수 있습니다."
+    },
+    {
+      "kind": "word",
+      "lemma": "수긍하다",
+      "partOfSpeech": "동사",
+      "senseOrder": 1,
+      "types": [
+        "antonym_context",
+        "cloze"
+      ],
+      "variantTag": "standard",
+      "expectedL1": 2,
+      "expectedL2": 2,
+      "gradeEvidence": "[4국01-06] 주제에 적절한 의견과 이유를 제시하고 서로의 생각을 교환하며 토의한다.",
+      "checked": false,
+      "reason": "제작 가능한 미사용 유형 없음"
+    },
+    {
+      "kind": "word",
+      "lemma": "외면하다",
+      "partOfSpeech": "동사",
+      "senseOrder": 2,
+      "types": [
+        "usage",
+        "antonym_context"
+      ],
+      "variantTag": "polysemy",
+      "expectedL1": 2,
+      "expectedL2": 2,
+      "gradeEvidence": "[4국01-04] 상황과 상대의 입장을 이해하고 예의를 지키며 대화한다.",
+      "checked": false,
+      "reason": "제작 가능한 미사용 유형 없음"
+    },
+    {
+      "kind": "word",
+      "lemma": "유지하다",
+      "partOfSpeech": "동사",
+      "senseOrder": 1,
+      "types": [
+        "cloze"
+      ],
+      "variantTag": "standard",
+      "expectedL1": 1,
+      "expectedL2": 2,
+      "gradeEvidence": "[4국03-02] 절차와 결과가 드러나게 정확한 표현으로 보고하는 글을 쓴다.",
+      "checked": true,
+      "reason": "'상태를 변함없이 계속하여 지탱하다'와 일치합니다. 줄 간격이나 온도를 그대로 지키는 쉬운 상황의 cloze에 적합합니다."
+    },
+    {
+      "kind": "word",
+      "lemma": "의문",
+      "partOfSpeech": "명사",
+      "senseOrder": 1,
+      "types": [
+        "cloze",
+        "synonym_context"
+      ],
+      "variantTag": "standard",
+      "expectedL1": 1,
+      "expectedL2": 2,
+      "gradeEvidence": "[4국02-03] 질문을 활용하여 글을 예측하며 읽고 자신의 읽기 과정을 점검한다.",
+      "checked": true,
+      "sourceEntry": {
+        "provider": "stdict",
+        "entryId": "469385"
+      },
+      "reason": "동형어 2의 '의심스럽게 생각함, 그런 문제'가 의도한 뜻입니다. 다만 익숙한 말이라 오답을 '궁금증·걱정' 같은 경계 의미로 짜지 않으면 core에 머뭅니다."
+    },
+    {
+      "kind": "word",
+      "lemma": "인용하다",
+      "partOfSpeech": "동사",
+      "senseOrder": 1,
+      "types": [
+        "cloze",
+        "usage"
+      ],
+      "variantTag": "standard",
+      "expectedL1": 2,
+      "expectedL2": 2,
+      "gradeEvidence": "[4국02-05] 글이나 자료의 출처가 믿을 만한지 판단한다.",
+      "checked": false,
+      "reason": "제작 가능한 미사용 유형 없음"
+    },
+    {
+      "kind": "word",
+      "lemma": "일깨우다",
+      "partOfSpeech": "동사",
+      "senseOrder": 2,
+      "types": [
+        "usage",
+        "cloze"
+      ],
+      "variantTag": "polysemy",
+      "expectedL1": 2,
+      "expectedL2": 1,
+      "gradeEvidence": "[4국05-01] 인물과 이야기의 흐름을 중심으로 작품을 감상한다.",
+      "checked": false,
+      "reason": "사전 대조 실패: 근거 표제어·품사·뜻 번호 불일치, 누락 또는 동음이의어 모호성"
+    },
+    {
+      "kind": "word",
+      "lemma": "적합하다",
+      "partOfSpeech": "형용사",
+      "senseOrder": 1,
+      "types": [
+        "antonym_context",
+        "synonym_context"
+      ],
+      "variantTag": "standard",
+      "expectedL1": 1,
+      "expectedL2": 2,
+      "gradeEvidence": "[4국06-01] 인터넷에서 학습에 필요한 다양한 자료를 탐색하고 목적에 맞게 자료를 선택한다.",
+      "checked": true,
+      "reason": "'일이나 조건에 꼭 알맞다'와 일치합니다. 자료 고르기 상황에서 '알맞다'와 정도 차이를 묻거나 '맞지 않다'와 대비하는 문항이 자연스럽습니다."
+    },
+    {
+      "kind": "word",
+      "lemma": "조화롭다",
+      "partOfSpeech": "형용사",
+      "senseOrder": 1,
+      "types": [
+        "antonym_context"
+      ],
+      "variantTag": "standard",
+      "expectedL1": 1,
+      "expectedL2": 2,
+      "gradeEvidence": "[4국04-01] 단어와 단어 간의 의미 관계를 파악한다.",
+      "checked": true,
+      "reason": "'서로 잘 어울려 어긋남이 없다'와 일치합니다. 합창이나 색칠처럼 쉬운 상황에서 '어긋나다'와 대비하는 antonym을 만들 수 있습니다."
+    },
+    {
+      "kind": "word",
+      "lemma": "참고하다",
+      "partOfSpeech": "동사",
+      "senseOrder": 1,
+      "types": [
+        "cloze",
+        "usage"
+      ],
+      "variantTag": "standard",
+      "expectedL1": 1,
+      "expectedL2": 2,
+      "gradeEvidence": "[4국06-01] 인터넷에서 학습에 필요한 다양한 자료를 탐색하고 목적에 맞게 자료를 선택한다.",
+      "checked": true,
+      "reason": "뜻 「1」 '살펴서 생각하다'와 일치하고, 자료 찾기 학습 맥락과 맞습니다. '베끼다'와의 의도 차이를 묻는 usage가 좋습니다."
+    },
+    {
+      "kind": "word",
+      "lemma": "투명하다",
+      "partOfSpeech": "형용사",
+      "senseOrder": 2,
+      "types": [
+        "usage",
+        "synonym_context"
+      ],
+      "variantTag": "polysemy",
+      "expectedL1": 1,
+      "expectedL2": 2,
+      "gradeEvidence": "[4국04-01] 단어와 단어 간의 의미 관계를 파악한다.",
+      "checked": false,
+      "reason": "뜻 「2」(말·태도·상황이 분명하다)는 주로 운영·행정 같은 어른 맥락에서 쓰여, 4학년 생활 상황으로 80음절 안에 자연스럽게 담기 어렵습니다. 그래서 예상 L1 1은 과소합니다."
+    }
+  ]
+}
