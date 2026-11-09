@@ -504,7 +504,8 @@ export async function modelAttempt(who, invoke, options = {}, context = {}) {
     const authError = who === 'claude' && (error?.code === 'CLAUDE_AUTH_BLOCKED' ? error : claudeAuthError(message));
     if (authError) throw authError;
     const hourly = /시간당 실행 상한/.test(message);
-    const usage = /session limit|usage limit|rate[_ ]limit|\b429\b|hit your limit/i.test(message) && !/```/.test(message);
+    // Claude 한도 문구는 "You've hit your 5-hour limit"처럼 기간이 끼어 있다.
+    const usage = /session limit|usage limit|rate[_ ]limit|\b429\b|hit your (?:[\w-]+ )?limit/i.test(message) && !/```/.test(message);
     if (!hourly && !usage) { if (error) throw error; return result; }
     if (usage && !hourly && ++usageFailures >= 3) {
       throw Object.assign(new Error(`${who} 사용량 차단: 3회 연속 한도 응답. 사용량 복구 확인 후 다시 실행해야 한다`),
