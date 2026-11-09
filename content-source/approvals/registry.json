@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1",
   "rule": "publicationPolicy=codex-argon-v1: 현재 id·revision의 Argon 자체 반박은 서로 다른 4개 보기에서 정답만 fits, 나머지는 does_not_fit · 현재 revision·contentHash의 Codex 독립 풀이가 정답과 같고 source·uniqueness·grade·language·explanation 모두 pass · freshContext=true 및 항목 run.model=gpt-6-astra, effort=high 또는 xhigh(항목 출처 도입 전에는 gpt-6-astra 2단계 도구 보고서로 독립 풀이 출처 확인; 과거 effort는 추정하지 않음) · 현재 revision·contentHash·rationalesHash의 Codex 해설 대조 pass(reviewer.model과 run.model=gpt-6-astra, effort=high 또는 xhigh) · 현재 argon-blind가 있으면 새 문맥·같은 해시·정답 일치·source/uniqueness/grade/language pass 및 explanation fail 금지 · 게시 형식·의미 검사와 Q50 엄격 배치 검사 통과. Claude는 사용하지 않는다. 정책 없는 legacy: Argon 자체 반박에서 정답만 맞음 · 현재 revision·contentHash의 Codex·Claude 독립 풀이가 정답과 같고 source·uniqueness·grade·language 모두 pass, explanation fail 금지 · 현재 revision·contentHash·rationalesHash의 Claude 총괄 해설 대조 pass · 게시 형식·의미 검사 통과. 각 정책의 조건이 하나라도 어긋나면 그 revision은 격리한다. publicationPolicy=claude-argon-v1(2026-11-09 사용자 결정: Codex 사용량 소진 동안 Claude가 대신 검수): codex-argon-v1과 같은 조건을 Codex 대신 Claude가 맡는다 · 현재 revision·contentHash의 Claude 독립 풀이가 정답과 같고 source·uniqueness·grade·language·explanation 모두 pass · freshContext=true 및 항목 run.model=claude-opus-*, effort=high·xhigh·max · 현재 revision·contentHash·rationalesHash의 Claude 해설 대조 pass(reviewer.model과 run.model=claude-opus-*, effort=high 이상) · Argon 자체 반박·argon-blind·게시 형식·의미·Q50 엄격 배치 검사는 codex-argon-v1과 같다. 이 정책 배치는 Codex 보고서를 쓰지 않는다. 하나라도 어긋나면 그 revision은 격리한다.",
-  "approved": 5541,
+  "approved": 5551,
   "quarantined": 10,
   "entries": [
     {
@@ -44434,6 +44434,86 @@
       "revision": 1,
       "batchId": "Q50-G6-039",
       "contentHash": "a8d01955e8487f4c65c08751f690b0fcf80b9037ee9093aa7580fc0e12f53bf3",
+      "decision": "approved",
+      "reasons": []
+    },
+    {
+      "questionId": "g6-argon-2991",
+      "revision": 1,
+      "batchId": "Q50-G6-040",
+      "contentHash": "660be935745ed8589c15fb8cc759a54e26e7051ac5f47732af94bedc0d176c11",
+      "decision": "approved",
+      "reasons": []
+    },
+    {
+      "questionId": "g6-argon-2992",
+      "revision": 2,
+      "batchId": "Q50-G6-040",
+      "contentHash": "66d227b00513d027634de266e9475bf757d3d060ecf9fe099810d712d8bb96c8",
+      "decision": "approved",
+      "reasons": []
+    },
+    {
+      "questionId": "g6-argon-2993",
+      "revision": 1,
+      "batchId": "Q50-G6-040",
+      "contentHash": "8e22e354050288ea768c836ba4d3b201850cc283d587664ba5e6cdc22bd48084",
+      "decision": "approved",
+      "reasons": []
+    },
+    {
+      "questionId": "g6-argon-2994",
+      "revision": 2,
+      "batchId": "Q50-G6-040",
+      "contentHash": "f9d010022f71d6ac48cdd1f0399f8af7f589e0fcd7cbb9121f7fa90382e12eac",
+      "decision": "approved",
+      "reasons": []
+    },
+    {
+      "questionId": "g6-argon-2995",
+      "revision": 1,
+      "batchId": "Q50-G6-040",
+      "contentHash": "c2e3d31adf26475f754d0921587206d5ac353f1ff9c6b2f034e296486eadbce5",
+      "decision": "approved",
+      "reasons": []
+    },
+    {
+      "questionId": "g6-argon-2996",
+      "revision": 1,
+      "batchId": "Q50-G6-040",
+      "contentHash": "fc2ca18761bbac8b2157624e2d847073e89d8ca9da5e206ac00349b1d037543e",
+      "decision": "approved",
+      "reasons": []
+    },
+    {
+      "questionId": "g6-argon-2997",
+      "revision": 2,
+      "batchId": "Q50-G6-040",
+      "contentHash": "5f8e48543770e11bf715d5147abc9decdde4de1ea01d2061acdb0c69d6d98f73",
+      "decision": "approved",
+      "reasons": []
+    },
+    {
+      "questionId": "g6-argon-2998",
+      "revision": 1,
+      "batchId": "Q50-G6-040",
+      "contentHash": "92140f6b269ae9abc01d4ac3569434dc0c026fe3530666c748c5817adc7143c9",
+      "decision": "approved",
+      "reasons": []
+    },
+    {
+      "questionId": "g6-argon-2999",
+      "revision": 2,
+      "batchId": "Q50-G6-040",
+      "contentHash": "3c246b7017ab9fa3c1fdb5383c7a1f19c3e345b86f1131d770737d84055f9790",
+      "decision": "approved",
+      "reasons": []
+    },
+    {
+      "questionId": "g6-argon-3000",
+      "revision": 1,
+      "batchId": "Q50-G6-040",
+      "contentHash": "1c1cd700abf6c007fc8d1a22562f6c324d66fd6c64539fd4fec1c47fa4f033fd",
       "decision": "approved",
       "reasons": []
     }

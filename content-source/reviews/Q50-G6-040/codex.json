@@ -1,0 +1,287 @@
+{
+  "reviewId": "QR-AUTO-codex-Q50-G6-040",
+  "jobId": "Q50-G6-040",
+  "reviewer": {
+    "model": "gpt-6-astra",
+    "tool": "2단계 블라인드 검수(tools/orchestrate/review.mjs)",
+    "freshContext": true,
+    "date": "2026-11-09"
+  },
+  "items": [
+    {
+      "questionId": "g6-argon-2991",
+      "revision": 1,
+      "contentHash": "660be935745ed8589c15fb8cc759a54e26e7051ac5f47732af94bedc0d176c11",
+      "run": {
+        "id": "20261109T134501695Z-99024-334574c0-bc69-4f45-9d47-4d2b64a1be32",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "b",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": []
+    },
+    {
+      "questionId": "g6-argon-2992",
+      "revision": 1,
+      "contentHash": "b695c715a57c1eebe11fd00c3cb5f68b2015705957a5af00fabf9ea0425dad82",
+      "run": {
+        "id": "20261109T134501695Z-99024-334574c0-bc69-4f45-9d47-4d2b64a1be32",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "d",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "fail"
+      },
+      "findings": [
+        "[공개 대조] a의 오답 이유에서 짧게 적으면 출처가 정확히 드러나지 않는다고 단정할 수 없다. ‘줄여 적는 것은 내용을 간추리는 것이므로 분명히 밝혀 적는다는 뜻과 다르다’로 수정한다."
+      ]
+    },
+    {
+      "questionId": "g6-argon-2992",
+      "revision": 2,
+      "contentHash": "66d227b00513d027634de266e9475bf757d3d060ecf9fe099810d712d8bb96c8",
+      "run": {
+        "id": "20261109T134825216Z-99024-02597638-f696-48ed-a634-4614c548d347",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "d",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": []
+    },
+    {
+      "questionId": "g6-argon-2993",
+      "revision": 1,
+      "contentHash": "8e22e354050288ea768c836ba4d3b201850cc283d587664ba5e6cdc22bd48084",
+      "run": {
+        "id": "20261109T134501695Z-99024-334574c0-bc69-4f45-9d47-4d2b64a1be32",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "a",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": []
+    },
+    {
+      "questionId": "g6-argon-2994",
+      "revision": 1,
+      "contentHash": "63adfe610425dec9e1468d066509dd4363c2c6ca036a891237b1dd6311a873c8",
+      "run": {
+        "id": "20261109T134501695Z-99024-334574c0-bc69-4f45-9d47-4d2b64a1be32",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "c",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "fail"
+      },
+      "findings": [
+        "[공개 대조] ‘속설’의 사전 뜻에 ‘검증 안 된’이라는 조건은 없다. 해설을 ‘이 문장에서는 과학적 근거 없이 전해진 말을 뜻하므로 근거가 입증된 사실과 대비된다’로 수정한다."
+      ]
+    },
+    {
+      "questionId": "g6-argon-2994",
+      "revision": 2,
+      "contentHash": "f9d010022f71d6ac48cdd1f0399f8af7f589e0fcd7cbb9121f7fa90382e12eac",
+      "run": {
+        "id": "20261109T134825216Z-99024-02597638-f696-48ed-a634-4614c548d347",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "c",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": []
+    },
+    {
+      "questionId": "g6-argon-2995",
+      "revision": 1,
+      "contentHash": "c2e3d31adf26475f754d0921587206d5ac353f1ff9c6b2f034e296486eadbce5",
+      "run": {
+        "id": "20261109T134501695Z-99024-334574c0-bc69-4f45-9d47-4d2b64a1be32",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "a",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": []
+    },
+    {
+      "questionId": "g6-argon-2996",
+      "revision": 1,
+      "contentHash": "fc2ca18761bbac8b2157624e2d847073e89d8ca9da5e206ac00349b1d037543e",
+      "run": {
+        "id": "20261109T134501695Z-99024-334574c0-bc69-4f45-9d47-4d2b64a1be32",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "c",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": []
+    },
+    {
+      "questionId": "g6-argon-2997",
+      "revision": 1,
+      "contentHash": "4ab7061d0900cb31a73a8b55e24b8c9f214e742edd200df9cccb3840b877b0df",
+      "run": {
+        "id": "20261109T134501695Z-99024-334574c0-bc69-4f45-9d47-4d2b64a1be32",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "b",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "fail",
+        "explanation": "pass"
+      },
+      "findings": [
+        "[공개 대조] d의 ‘한 번도 고민 없이’는 부사어 호응이 어색하다. ‘한 번도 고민하지 않고’로 수정한다."
+      ]
+    },
+    {
+      "questionId": "g6-argon-2997",
+      "revision": 2,
+      "contentHash": "5f8e48543770e11bf715d5147abc9decdde4de1ea01d2061acdb0c69d6d98f73",
+      "run": {
+        "id": "20261109T134825216Z-99024-02597638-f696-48ed-a634-4614c548d347",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "b",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": []
+    },
+    {
+      "questionId": "g6-argon-2998",
+      "revision": 1,
+      "contentHash": "92140f6b269ae9abc01d4ac3569434dc0c026fe3530666c748c5817adc7143c9",
+      "run": {
+        "id": "20261109T134501695Z-99024-334574c0-bc69-4f45-9d47-4d2b64a1be32",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "d",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": []
+    },
+    {
+      "questionId": "g6-argon-2999",
+      "revision": 1,
+      "contentHash": "eaf5f763c3f890a94085f9fa31274a90ac7c9c98152152907461074201f9dbcb",
+      "run": {
+        "id": "20261109T134501695Z-99024-334574c0-bc69-4f45-9d47-4d2b64a1be32",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "b",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "fail",
+        "explanation": "fail"
+      },
+      "findings": [
+        "[공개 대조] c와 그 오답 이유의 ‘키와 몸무게를 저울로’는 저울로 키도 잰다는 잘못된 상황이다. 두 곳에서 ‘키와’를 삭제한다.",
+        "[공개 대조] d의 오답 이유에서 경기를 ‘미루는 것’을 ‘취소하다’에 대응시켰다. ‘취소하다’를 ‘연기하다’로 수정한다."
+      ]
+    },
+    {
+      "questionId": "g6-argon-2999",
+      "revision": 2,
+      "contentHash": "3c246b7017ab9fa3c1fdb5383c7a1f19c3e345b86f1131d770737d84055f9790",
+      "run": {
+        "id": "20261109T134825216Z-99024-02597638-f696-48ed-a634-4614c548d347",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "b",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": []
+    },
+    {
+      "questionId": "g6-argon-3000",
+      "revision": 1,
+      "contentHash": "1c1cd700abf6c007fc8d1a22562f6c324d66fd6c64539fd4fec1c47fa4f033fd",
+      "run": {
+        "id": "20261109T134501695Z-99024-334574c0-bc69-4f45-9d47-4d2b64a1be32",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "blindChoice": "d",
+      "verdicts": {
+        "source": "pass",
+        "uniqueness": "pass",
+        "grade": "pass",
+        "language": "pass",
+        "explanation": "pass"
+      },
+      "findings": []
+    }
+  ]
+}
