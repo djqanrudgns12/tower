@@ -1,0 +1,1613 @@
+{
+  "batchId": "Q50-G3-027",
+  "jobId": "Q50-G3-027",
+  "producer": {
+    "model": "Gemini 4 Argon (High)",
+    "tool": "tools/orchestrate/produce.mjs",
+    "date": "2026-11-09"
+  },
+  "items": [
+    {
+      "id": "g3-argon-2306",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "상자 안에 든 선물이 밖에서 보인다. 그래서 넓은 천으로 상자 위를 주웠다.",
+          "verdict": "does_not_fit",
+          "reason": "바닥에 떨어진 물건을 집어 드는 뜻이라 천으로 상자 위를 가리는 상황에 맞지 않는다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "상자 안에 든 선물이 밖에서 보인다. 그래서 넓은 천으로 상자 위를 덮었다.",
+          "verdict": "fits",
+          "reason": "선물이 보이지 않도록 넓은 천을 얹어 씌우는 상황이므로 자연스럽게 어울린다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "상자 안에 든 선물이 밖에서 보인다. 그래서 넓은 천으로 상자 위를 깎았다.",
+          "verdict": "does_not_fit",
+          "reason": "물건의 겉을 얇게 잘라 내는 뜻이라 천을 얹어 씌우는 상황에 맞지 않는다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "상자 안에 든 선물이 밖에서 보인다. 그래서 넓은 천으로 상자 위를 신었다.",
+          "verdict": "does_not_fit",
+          "reason": "발에 신발이나 양말을 끼우는 뜻이라 상자 위를 가리는 상황에 맞지 않는다."
+        }
+      ],
+      "uniquenessNote": "물건이 보이지 않도록 넓은 천을 얹어 씌우는 동작은 '덮다'뿐이며 나머지 세 동사는 동작의 대상과 방식이 전혀 다르다. [model=Gemini 4 Argon (High), date=2026-11-09, batchId=Q50-G3-027, 생성=10, 수정=0, 근거누락=0, 중복의심=0]",
+      "gradeEvidence": "[4국04-01] 단어와 단어 간의 의미 관계를 파악한다."
+    },
+    {
+      "id": "g3-argon-2307",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "욕실 바닥에 비눗물이 묻어 발이 스르르 밀린다. 바닥이 무척 고소하다.",
+          "verdict": "does_not_fit",
+          "reason": "맛이나 냄새를 나타내는 말이라 발이 밀리는 바닥의 상태에 맞지 않는다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "욕실 바닥에 비눗물이 묻어 발이 스르르 밀린다. 바닥이 무척 배부르다.",
+          "verdict": "does_not_fit",
+          "reason": "음식을 먹어 배가 찬 상태를 뜻하므로 욕실 바닥의 상태에 맞지 않는다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "욕실 바닥에 비눗물이 묻어 발이 스르르 밀린다. 바닥이 무척 시끄럽다.",
+          "verdict": "does_not_fit",
+          "reason": "소리가 크고 어지러운 상태를 뜻하므로 비눗물이 묻은 바닥에 맞지 않는다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "욕실 바닥에 비눗물이 묻어 발이 스르르 밀린다. 바닥이 무척 미끄럽다.",
+          "verdict": "fits",
+          "reason": "비눗물 때문에 발이 거침없이 밀려 나가는 바닥의 상태를 정확히 나타낸다."
+        }
+      ],
+      "uniquenessNote": "발이 저절로 밀려 나가는 바닥의 촉각적 상태는 '미끄럽다'만 나타낼 수 있다.",
+      "gradeEvidence": "[4국05-04] 감각적 표현에 유의하여 작품을 감상하고, 감각적 표현을 활용하여 자신의 생각이나 감정을 표현한다."
+    },
+    {
+      "id": "g3-argon-2308",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "오래된 나무 기둥을 손으로 만져 보았다. 껍질 결이 곱지 않고 까칠까칠해서 거칠다.",
+          "verdict": "fits",
+          "reason": "나무껍질의 결이 곱지 않고 험한 상태를 자연스럽게 나타낸다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "오래된 나무 기둥을 손으로 만져 보았다. 껍질 결이 곱지 않고 까칠까칠해서 어둡다.",
+          "verdict": "does_not_fit",
+          "reason": "빛이 없어 깜깜한 상태를 뜻하므로 손으로 만진 나무껍질의 결과 맞지 않는다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "오래된 나무 기둥을 손으로 만져 보았다. 껍질 결이 곱지 않고 까칠까칠해서 동그랗다.",
+          "verdict": "does_not_fit",
+          "reason": "모가 나지 않은 모양을 뜻하므로 결이 곱지 않고 험한 촉감과 맞지 않는다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "오래된 나무 기둥을 손으로 만져 보았다. 껍질 결이 곱지 않고 까칠까칠해서 가깝다.",
+          "verdict": "does_not_fit",
+          "reason": "거리가 멀지 않다는 뜻이므로 손으로 만진 나무껍질의 느낌과 맞지 않는다."
+        }
+      ],
+      "uniquenessNote": "만졌을 때 결이 곱지 않고 험한 상태를 나타내는 형용사는 '거칠다'뿐이다.",
+      "gradeEvidence": "[4국04-01] 단어와 단어 간의 의미 관계를 파악한다."
+    },
+    {
+      "id": "g3-argon-2309",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "이 밧줄은 힘껏 잡아당겨도 쉽게 끊어지지 않는다. 무거운 짐을 묶어도 잘 버틸 만큼 좁다.",
+          "verdict": "does_not_fit",
+          "reason": "폭이나 넓이가 작다는 뜻이라 끊어지지 않고 버티는 힘과 맞지 않는다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "이 밧줄은 힘껏 잡아당겨도 쉽게 끊어지지 않는다. 무거운 짐을 묶어도 잘 버틸 만큼 얕다.",
+          "verdict": "does_not_fit",
+          "reason": "깊이가 깊지 않다는 뜻이라 밧줄이 끊어지지 않고 견디는 힘과 맞지 않는다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "이 밧줄은 힘껏 잡아당겨도 쉽게 끊어지지 않는다. 무거운 짐을 묶어도 잘 버틸 만큼 질기다.",
+          "verdict": "fits",
+          "reason": "쉽게 끊어지지 않고 견디는 힘이 센 상태를 정확히 나타낸다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "이 밧줄은 힘껏 잡아당겨도 쉽게 끊어지지 않는다. 무거운 짐을 묶어도 잘 버틸 만큼 환하다.",
+          "verdict": "does_not_fit",
+          "reason": "빛이 밝다는 뜻이라 무거운 짐을 버티는 밧줄의 성질과 맞지 않는다."
+        }
+      ],
+      "uniquenessNote": "물건이 쉽게 끊어지지 않고 견디는 힘이 센 뜻은 '질기다'만 해당한다.",
+      "gradeEvidence": "[4국04-01] 단어와 단어 간의 의미 관계를 파악한다."
+    },
+    {
+      "id": "g3-argon-2310",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "내 바구니는 텅 비었는데, 동생 바구니에는 밤이 끝까지 꽉 차서 가득하다.",
+          "verdict": "fits",
+          "reason": "텅 빈 상태와 반대로 바구니 안에 밤이 꽉 찬 상태를 자연스럽게 나타낸다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "내 바구니는 텅 비었는데, 동생 바구니에는 밤이 끝까지 꽉 차서 조용하다.",
+          "verdict": "does_not_fit",
+          "reason": "소리가 나지 않는 상태를 뜻하므로 바구니에 밤이 꽉 찬 상황과 맞지 않는다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "내 바구니는 텅 비었는데, 동생 바구니에는 밤이 끝까지 꽉 차서 시원하다.",
+          "verdict": "does_not_fit",
+          "reason": "날씨나 느낌이 선선하다는 뜻이므로 물건이 꽉 찬 상태와 맞지 않는다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "내 바구니는 텅 비었는데, 동생 바구니에는 밤이 끝까지 꽉 차서 비슷하다.",
+          "verdict": "does_not_fit",
+          "reason": "두 바구니의 상태가 서로 반대이므로 거의 같다는 뜻의 말은 맞지 않는다."
+        }
+      ],
+      "uniquenessNote": "'텅 비다'와 반대되는 문맥에서 분량이 꽉 찬 상태를 나타내는 말은 '가득하다'뿐이다.",
+      "gradeEvidence": "[4국04-01] 단어와 단어 간의 의미 관계를 파악한다."
+    },
+    {
+      "id": "g3-argon-2311",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "언니가 끓인 국은 소금을 많이 넣어 짠데, 내가 끓인 국은 소금을 너무 적게 넣어 맛이 달콤하다.",
+          "verdict": "does_not_fit",
+          "reason": "소금을 적게 넣었을 때 단맛이 나는 것이 아니므로 맞지 않는다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "언니가 끓인 국은 소금을 많이 넣어 짠데, 내가 끓인 국은 소금을 너무 적게 넣어 맛이 매콤하다.",
+          "verdict": "does_not_fit",
+          "reason": "고추처럼 매운맛을 뜻하므로 소금을 적게 넣은 국맛과 맞지 않는다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "언니가 끓인 국은 소금을 많이 넣어 짠데, 내가 끓인 국은 소금을 너무 적게 넣어 맛이 싱겁다.",
+          "verdict": "fits",
+          "reason": "소금을 많이 넣어 짠 것과 반대로 간이 약한 상태를 정확히 나타낸다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "언니가 끓인 국은 소금을 많이 넣어 짠데, 내가 끓인 국은 소금을 너무 적게 넣어 맛이 새콤하다.",
+          "verdict": "does_not_fit",
+          "reason": "식초처럼 신맛을 뜻하므로 소금을 적게 넣어 간이 약한 국맛과 맞지 않는다."
+        }
+      ],
+      "uniquenessNote": "'짜다'와 대조되어 음식의 간이 약한 맛을 나타내는 말은 '싱겁다'뿐이다.",
+      "gradeEvidence": "[4국04-01] 단어와 단어 간의 의미 관계를 파악한다."
+    },
+    {
+      "id": "g3-argon-2312",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "어항 물 위에 마른 나뭇잎이 떠 있었다. 나는 작은 그물로 나뭇잎을 물 밖으로 심었다.",
+          "verdict": "does_not_fit",
+          "reason": "땅에 식물을 묻는 뜻이라 물에 떠 있는 나뭇잎을 빼내는 상황에 맞지 않는다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "어항 물 위에 마른 나뭇잎이 떠 있었다. 나는 작은 그물로 나뭇잎을 물 밖으로 건졌다.",
+          "verdict": "fits",
+          "reason": "물에 떠 있는 나뭇잎을 그물로 집어내어 물 밖으로 끌어내는 상황에 꼭 맞는다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "어항 물 위에 마른 나뭇잎이 떠 있었다. 나는 작은 그물로 나뭇잎을 물 밖으로 접었다.",
+          "verdict": "does_not_fit",
+          "reason": "종이나 천을 꺾어 포개는 뜻이라 물 밖으로 끌어내는 상황에 맞지 않는다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "어항 물 위에 마른 나뭇잎이 떠 있었다. 나는 작은 그물로 나뭇잎을 물 밖으로 구웠다.",
+          "verdict": "does_not_fit",
+          "reason": "불에 익히는 뜻이라 어항 물에서 나뭇잎을 끌어내는 상황에 맞지 않는다."
+        }
+      ],
+      "uniquenessNote": "물속이나 물 위에 떠 있는 것을 집어내거나 끌어내는 동작은 '건지다'뿐이다.",
+      "gradeEvidence": "rubric_inferred(L=0,T=0)"
+    },
+    {
+      "id": "g3-argon-2313",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "도화지에 예쁜 꽃 그림을 털었다.",
+          "verdict": "does_not_fit",
+          "reason": "그림은 그리는 것이지 붙어 있는 것을 떨어뜨리는 것이 아니므로 어울리지 않는다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "찢어진 종이를 풀로 잘 털었다.",
+          "verdict": "does_not_fit",
+          "reason": "풀로는 종이를 붙이는 것이지 흔들거나 쳐서 떼어 내는 것이 아니므로 어울리지 않는다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "공책에 내 이름을 크게 털었다.",
+          "verdict": "does_not_fit",
+          "reason": "이름은 쓰는 것이지 붙은 것을 떨어지게 하는 것이 아니므로 어울리지 않는다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "옷에 붙은 먼지를 손으로 털었다.",
+          "verdict": "fits",
+          "reason": "옷에 붙어 있는 먼지가 떨어지게 손으로 치는 상황이므로 자연스럽게 어울린다."
+        }
+      ],
+      "uniquenessNote": "붙어 있는 것이 떨어지게 흔들거나 치는 뜻으로 자연스럽게 쓰인 문장은 d뿐이다.",
+      "gradeEvidence": "rubric_inferred(L=0,T=0)"
+    },
+    {
+      "id": "g3-argon-2314",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "좁은 길에서 자전거가 다가왔다. 나는 자전거를 피하려고 길 옆으로 조금 잠갔다.",
+          "verdict": "does_not_fit",
+          "reason": "문이나 수도꼭지를 여닫지 못하게 채우는 뜻이라 자리를 옮기는 상황에 맞지 않는다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "좁은 길에서 자전거가 다가왔다. 나는 자전거를 피하려고 길 옆으로 조금 비켰다.",
+          "verdict": "fits",
+          "reason": "다가오는 자전거를 피하여 있던 곳에서 한쪽으로 자리를 옮기는 상황에 꼭 맞는다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "좁은 길에서 자전거가 다가왔다. 나는 자전거를 피하려고 길 옆으로 조금 마셨다.",
+          "verdict": "does_not_fit",
+          "reason": "액체를 목으로 넘기는 뜻이라 길 옆으로 물러나는 상황에 맞지 않는다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "좁은 길에서 자전거가 다가왔다. 나는 자전거를 피하려고 길 옆으로 조금 외쳤다.",
+          "verdict": "does_not_fit",
+          "reason": "큰 소리로 부르짖는 뜻이라 자전거를 피해 자리를 옮기는 상황에 맞지 않는다."
+        }
+      ],
+      "uniquenessNote": "무엇을 피하여 한쪽으로 자리를 조금 옮기는 동작은 '비키다'만 해당한다.",
+      "gradeEvidence": "rubric_inferred(L=0,T=0)"
+    },
+    {
+      "id": "g3-argon-2315",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "가방 안에 필통이 들어 있었다. 나는 공부를 하려고 가방 속에서 필통을 손으로 신었다.",
+          "verdict": "does_not_fit",
+          "reason": "발에 신발이나 양말을 끼우는 뜻이라 가방 속 물건을 밖으로 나오게 하는 상황에 맞지 않는다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "가방 안에 필통이 들어 있었다. 나는 공부를 하려고 가방 속에서 필통을 손으로 감았다.",
+          "verdict": "does_not_fit",
+          "reason": "눈을 덮거나 머리를 씻는 뜻이라 가방 속 물건을 밖으로 나오게 하는 상황에 맞지 않는다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "가방 안에 필통이 들어 있었다. 나는 공부를 하려고 가방 속에서 필통을 손으로 삶았다.",
+          "verdict": "does_not_fit",
+          "reason": "음식을 물에 넣고 끓이는 뜻이라 가방에서 필통을 빼내는 상황에 맞지 않는다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "가방 안에 필통이 들어 있었다. 나는 공부를 하려고 가방 속에서 필통을 손으로 꺼냈다.",
+          "verdict": "fits",
+          "reason": "가방 안에 들어 있는 필통을 손으로 밖으로 나오게 하는 상황에 자연스럽게 어울린다."
+        }
+      ],
+      "uniquenessNote": "속이나 안에 들어 있는 물건을 밖으로 나오게 하는 뜻은 '꺼내다'뿐이다.",
+      "gradeEvidence": "[4국04-01] 단어와 단어 간의 의미 관계를 파악한다."
+    },
+    {
+      "id": "g3-argon-2316",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "강아지가 반가워서 꼬리를 흔들었어요.",
+          "verdict": "fits",
+          "reason": "동물이 반가움을 나타내려고 몸의 일부인 꼬리를 좌우로 자꾸 움직이는 자연스러운 상황이다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "목이 말라서 시원한 물을 흔들었어요.",
+          "verdict": "does_not_fit",
+          "reason": "갈증을 풀려면 물을 마셔야 하므로 물을 좌우로 움직였다는 서술은 앞 상황과 맞지 않는다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "공책에 연필로 내 이름을 흔들었어요.",
+          "verdict": "does_not_fit",
+          "reason": "이름은 글자로 쓰는 대상이지 손이나 몸처럼 흔들어 움직이는 대상이 아니다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "배가 고파서 따뜻한 밥을 흔들었어요.",
+          "verdict": "does_not_fit",
+          "reason": "배가 고플 때는 밥을 먹어야 하므로 밥을 흔들었다는 동작은 상황에 어긋난다."
+        }
+      ],
+      "uniquenessNote": "몸의 일부나 손에 잡은 물체를 자꾸 움직이게 한다는 뜻에 맞게 쓰인 문장은 a뿐이다.",
+      "gradeEvidence": "rubric_inferred(L=0,T=0)"
+    },
+    {
+      "id": "g3-argon-2317",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "친구와 놀이터에서 신나게 놀았어요. 어느새 두 시간이 말라 저녁이 되었어요.",
+          "verdict": "does_not_fit",
+          "reason": "시간은 물기가 없어지는 대상이 아니므로 '말라'를 넣으면 뜻이 통하지 않습니다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "친구와 놀이터에서 신나게 놀았어요. 어느새 두 시간이 식어 저녁이 되었어요.",
+          "verdict": "does_not_fit",
+          "reason": "시간은 뜨겁거나 차가워지는 대상이 아니므로 '식어'를 넣으면 말이 되지 않습니다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "친구와 놀이터에서 신나게 놀았어요. 어느새 두 시간이 흘러 저녁이 되었어요.",
+          "verdict": "fits",
+          "reason": "두 시간이 지나가 저녁이 되었다는 뜻이 자연스럽게 통합니다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "친구와 놀이터에서 신나게 놀았어요. 어느새 두 시간이 굽어 저녁이 되었어요.",
+          "verdict": "does_not_fit",
+          "reason": "시간은 모양이 휘어지는 대상이 아니므로 '굽어'를 넣으면 자연스럽지 않습니다."
+        }
+      ],
+      "uniquenessNote": "빈칸 앞의 '두 시간이'와 뒤의 '저녁이 되었어요'를 이어 주려면 시간이 지나간다는 뜻의 낱말이 필요하므로 정답은 '흘러'뿐입니다.",
+      "gradeEvidence": "rubric_inferred(L=0,T=0)"
+    },
+    {
+      "id": "g3-argon-2318",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "도화지에 떨어진 물감이 옆으로 넓게 번졌어요.",
+          "verdict": "fits",
+          "reason": "물감이라는 액체가 도화지에 묻어 차차 넓게 젖어 퍼지는 자연스러운 상황이다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "선생님 말씀이 잘 들리도록 귀를 번졌어요.",
+          "verdict": "does_not_fit",
+          "reason": "소리에 집중할 때는 '귀를 기울이다'를 써야 하며 '번지다'는 쓰일 수 없다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "책상 위에 있던 연필이 바닥으로 번졌어요.",
+          "verdict": "does_not_fit",
+          "reason": "연필은 고체이므로 액체가 스며들어 퍼진다는 뜻의 '번지다'와 결합할 수 없다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "아침에 일어나서 이불을 네모나게 번졌어요.",
+          "verdict": "does_not_fit",
+          "reason": "이불을 정돈하는 동작은 '개다'나 '접다'이며 액체가 퍼지는 '번지다'는 맞지 않는다."
+        }
+      ],
+      "uniquenessNote": "액체가 묻어 넓게 젖어 퍼진다는 사전적 의미에 부합하는 문장은 c뿐이다.",
+      "gradeEvidence": "rubric_inferred(L=0,T=0)"
+    },
+    {
+      "id": "g3-argon-2319",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "신발장에 운동화를 줄 맞추어 가만히 놓았어요.",
+          "verdict": "does_not_fit",
+          "reason": "'가만히'는 움직이지 않는 태도를 뜻하므로 줄지어 가지런한 모양을 대신할 수 없다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "신발장에 운동화를 줄 맞추어 천천히 놓았어요.",
+          "verdict": "does_not_fit",
+          "reason": "'천천히'는 동작의 빠르기가 느린 것을 뜻하므로 늘어선 모양이 가지런하다는 뜻과 다르다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "신발장에 운동화를 줄 맞추어 나란히 놓았어요.",
+          "verdict": "fits",
+          "reason": "운동화 여러 짝을 줄지어 가지런한 상태로 놓았다는 뜻이 그대로 유지된다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "신발장에 운동화를 줄 맞추어 조용히 놓았어요.",
+          "verdict": "does_not_fit",
+          "reason": "'조용히'는 소리가 없는 상태를 뜻하므로 줄 맞추어 늘어선 모양과 의미가 통하지 않는다."
+        }
+      ],
+      "uniquenessNote": "줄을 맞추어 가지런히 늘어선 상태를 뜻하는 유의어는 d('나란히')뿐이다.",
+      "gradeEvidence": "[4국04-01] 단어와 단어 간의 의미 관계를 파악한다."
+    },
+    {
+      "id": "g3-argon-2320",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "비가 와서 시간을 끌지 않고 가끔 우산을 썼어요.",
+          "verdict": "does_not_fit",
+          "reason": "'가끔'은 빈도를 나타내는 부사라 '시간을 끌지 않고'라는 조건과 모순된다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "비가 와서 시간을 끌지 않고 얼른 우산을 썼어요.",
+          "verdict": "fits",
+          "reason": "시간을 지체하지 않고 곧바로 우산을 썼다는 뜻으로 자연스럽게 바꾸어 쓸 수 있다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "비가 와서 시간을 끌지 않고 아직 우산을 썼어요.",
+          "verdict": "does_not_fit",
+          "reason": "'아직'은 동작이나 상태가 지속되거나 미완료임을 나타내므로 문장이 어색해진다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "비가 와서 시간을 끌지 않고 설마 우산을 썼어요.",
+          "verdict": "does_not_fit",
+          "reason": "'설마'는 추측이나 부정의 의심을 나타내므로 평서문에서 '바로'를 대신할 수 없다."
+        }
+      ],
+      "uniquenessNote": "시간을 끌지 않고 즉시 행동함을 뜻하는 부사는 a('얼른')뿐이다.",
+      "gradeEvidence": "[4국04-01] 단어와 단어 간의 의미 관계를 파악한다."
+    },
+    {
+      "id": "g3-argon-2321",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "버스가 종점에 도착하기 한 시간 전에 정류장에서 인사했어요.",
+          "verdict": "does_not_fit",
+          "reason": "버스가 주어로 쓰인 이동 문맥에 맞지 않으며 '도착하다'의 반의어도 아니다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "버스가 종점에 도착하기 한 시간 전에 정류장에서 청소했어요.",
+          "verdict": "does_not_fit",
+          "reason": "청소는 깨끗이 치우는 일이라 목적지로 나아가는 '출발하다'를 대신할 수 없다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "버스가 종점에 도착하기 한 시간 전에 정류장에서 구경했어요.",
+          "verdict": "does_not_fit",
+          "reason": "구경하는 행위는 이동의 시작을 뜻하지 않으므로 '도착하다'와 반대 뜻이 되지 않는다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "버스가 종점에 도착하기 한 시간 전에 정류장에서 출발했어요.",
+          "verdict": "fits",
+          "reason": "정류장에서 목적지인 종점을 향해 떠났다는 뜻으로 '도착하다'와 정확한 반의 관계를 이룬다."
+        }
+      ],
+      "uniquenessNote": "목적지에 닿는 '도착하다'와 반대되는 이동 시작 동사는 b('출발했어요')뿐이다.",
+      "gradeEvidence": "[4국04-01] 단어와 단어 간의 의미 관계를 파악한다."
+    },
+    {
+      "id": "g3-argon-2322",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "내일 발표할 동시를 잊어버리지 않으려고 여러 번 읽으며 신었다.",
+          "verdict": "does_not_fit",
+          "reason": "'동시'는 글이므로 신발처럼 발에 신을 수 없다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "내일 발표할 동시를 잊어버리지 않으려고 여러 번 읽으며 외웠다.",
+          "verdict": "fits",
+          "reason": "발표할 글을 잊지 않고 머릿속에 기억해 두었다는 뜻으로 문맥에 정확히 들어맞는다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "내일 발표할 동시를 잊어버리지 않으려고 여러 번 읽으며 씻었다.",
+          "verdict": "does_not_fit",
+          "reason": "글을 읽으며 기억하는 상황에 물로 씻는다는 동사는 어울리지 않는다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "내일 발표할 동시를 잊어버리지 않으려고 여러 번 읽으며 입었다.",
+          "verdict": "does_not_fit",
+          "reason": "'입다'는 옷을 몸에 걸치는 동작이라 '동시를'이라는 목적어와 결합할 수 없다."
+        }
+      ],
+      "uniquenessNote": "말이나 글을 잊지 않고 기억해 둔다는 뜻의 동사는 c('외웠다')뿐이다.",
+      "gradeEvidence": "[4국04-01] 단어와 단어 간의 의미 관계를 파악한다."
+    },
+    {
+      "id": "g3-argon-2323",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "입에 넣은 알약을 시원한 물과 함께 목구멍으로 꿀꺽 그렸다.",
+          "verdict": "does_not_fit",
+          "reason": "목구멍으로 넘기는 동작에 그림을 그린다는 말은 쓸 수 없다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "입에 넣은 알약을 시원한 물과 함께 목구멍으로 꿀꺽 접었다.",
+          "verdict": "does_not_fit",
+          "reason": "알약을 물과 함께 목구멍으로 넘기는 상황에 '접었다'는 맞지 않는다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "입에 넣은 알약을 시원한 물과 함께 목구멍으로 꿀꺽 묶었다.",
+          "verdict": "does_not_fit",
+          "reason": "끈으로 매는 동작인 '묶었다'는 입에 넣은 약을 넘기는 상황과 무관하다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "입에 넣은 알약을 시원한 물과 함께 목구멍으로 꿀꺽 삼켰다.",
+          "verdict": "fits",
+          "reason": "입에 넣은 알약을 물과 함께 목구멍으로 넘겼다는 뜻으로 자연스럽다."
+        }
+      ],
+      "uniquenessNote": "입에 넣은 것을 목구멍으로 넘긴다는 뜻을 가진 보기는 d('삼켰다')뿐이다.",
+      "gradeEvidence": "rubric_inferred(L=0,T=0)"
+    },
+    {
+      "id": "g3-argon-2324",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "사과 한 조각을 입에 넣고 앞니와 어금니로 아삭아삭 잘게 씹었다.",
+          "verdict": "fits",
+          "reason": "입에 넣은 사과를 윗니와 아랫니를 움직여 잘게 잘랐다는 뜻으로 문맥에 꼭 맞는다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "사과 한 조각을 입에 넣고 앞니와 어금니로 아삭아삭 잘게 읽었다.",
+          "verdict": "does_not_fit",
+          "reason": "사과는 먹는 음식이지 눈이나 소리로 읽는 글이 아니다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "사과 한 조각을 입에 넣고 앞니와 어금니로 아삭아삭 잘게 닫았다.",
+          "verdict": "does_not_fit",
+          "reason": "문이나 뚜껑을 막는 '닫았다'는 이로 음식을 잘게 자르는 동작과 맞지 않는다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "사과 한 조각을 입에 넣고 앞니와 어금니로 아삭아삭 잘게 덮었다.",
+          "verdict": "does_not_fit",
+          "reason": "무엇을 위에 씌우는 '덮었다'는 어금니로 사과를 먹는 상황과 어울리지 않는다."
+        }
+      ],
+      "uniquenessNote": "음식을 입에 넣고 이로 잘게 자르거나 가는 동작을 나타내는 보기는 a('씹었다')뿐이다.",
+      "gradeEvidence": "rubric_inferred(L=0,T=0)"
+    },
+    {
+      "id": "g3-argon-2325",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "익은 감은 부드럽지만 안 익은 감은 돌처럼 굳어서 시원해요.",
+          "verdict": "does_not_fit",
+          "reason": "온도가 선선하다는 뜻의 '시원해요'는 돌처럼 굳은 촉감을 나타내지 못한다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "익은 감은 부드럽지만 안 익은 감은 돌처럼 굳어서 깨끗해요.",
+          "verdict": "does_not_fit",
+          "reason": "더럽지 않다는 뜻의 '깨끗해요'는 단단하고 굳은 정도와 관련이 없다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "익은 감은 부드럽지만 안 익은 감은 돌처럼 굳어서 딱딱해요.",
+          "verdict": "fits",
+          "reason": "돌처럼 굳고 단단한 상태를 나타내며 앞절의 '부드럽다'와 명확한 반의 관계를 이룬다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "익은 감은 부드럽지만 안 익은 감은 돌처럼 굳어서 조용해요.",
+          "verdict": "does_not_fit",
+          "reason": "소리가 없는 상태인 '조용해요'는 과일의 단단한 촉감을 설명할 수 없다."
+        }
+      ],
+      "uniquenessNote": "돌처럼 굳고 단단하다는 뜻으로 '부드럽다'와 반의 관계를 이루는 말은 b('딱딱해요')뿐이다.",
+      "gradeEvidence": "[4국04-01] 단어와 단어 간의 의미 관계를 파악한다."
+    },
+    {
+      "id": "g3-argon-2326",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "비를 맞으며 걸었더니 양말에 물기가 배어 축축하다.",
+          "verdict": "fits",
+          "reason": "물기가 있어 젖은 듯하다는 뜻이 비에 젖은 양말의 상태와 자연스럽게 어울린다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "비를 맞으며 걸었더니 양말에 물기가 배어 딱딱하다.",
+          "verdict": "does_not_fit",
+          "reason": "물기가 밴 양말이 돌처럼 단단해진다는 것은 상황에 맞지 않는다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "비를 맞으며 걸었더니 양말에 물기가 배어 뾰족하다.",
+          "verdict": "does_not_fit",
+          "reason": "끝이 날카롭다는 모양을 나타내는 말은 물기에 젖은 상태와 어울리지 않는다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "비를 맞으며 걸었더니 양말에 물기가 배어 바삭하다.",
+          "verdict": "does_not_fit",
+          "reason": "물기가 배었는데 물기 없이 마른 상태가 된다는 것은 앞뒤가 맞지 않는다."
+        }
+      ],
+      "uniquenessNote": "비 때문에 양말에 물기가 배어 젖은 듯한 촉각 상태를 나타내는 말은 '축축하다'뿐이다.",
+      "gradeEvidence": "[4국05-04] 감각적 표현에 유의하여 작품을 감상하고, 감각적 표현을 활용하여 자신의 생각이나 감정을 표현한다."
+    },
+    {
+      "id": "g3-argon-2327",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "햇볕에 잘 말린 수건을 만져 보니 물기가 없고 부드러워서 미끌미끌하다.",
+          "verdict": "does_not_fit",
+          "reason": "물기가 없이 잘 마르고 부드러운 수건이 기름이나 비누처럼 미끄럽다는 것은 어색하다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "햇볕에 잘 말린 수건을 만져 보니 물기가 없고 부드러워서 울퉁불퉁하다.",
+          "verdict": "does_not_fit",
+          "reason": "부드러운 수건을 만진 느낌을 고르지 않고 거친 모양으로 설명할 수 없다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "햇볕에 잘 말린 수건을 만져 보니 물기가 없고 부드러워서 보송보송하다.",
+          "verdict": "fits",
+          "reason": "잘 말라서 물기가 없고 보드랍다는 뜻이 햇볕에 말린 수건의 상태와 정확히 맞는다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "햇볕에 잘 말린 수건을 만져 보니 물기가 없고 부드러워서 끈적끈적하다.",
+          "verdict": "does_not_fit",
+          "reason": "물기 없이 잘 마른 수건이 손에 달라붙는다는 것은 상황과 맞지 않는다."
+        }
+      ],
+      "uniquenessNote": "햇볕에 잘 말라 물기가 없고 보드라운 감각을 뜻하는 보기는 '보송보송하다' 하나뿐이다.",
+      "gradeEvidence": "[4국05-04] 감각적 표현에 유의하여 작품을 감상하고, 감각적 표현을 활용하여 자신의 생각이나 감정을 표현한다."
+    },
+    {
+      "id": "g3-argon-2328",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "비가 많이 와서 오늘 운동회를 열 수 없다. 그래서 다음 주에 하기로 운동회 날짜를 지켰다.",
+          "verdict": "does_not_fit",
+          "reason": "오늘 열지 못하고 다음 주로 넘겼으므로 원래 정한 날짜를 지켰다고 할 수 없다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "비가 많이 와서 오늘 운동회를 열 수 없다. 그래서 다음 주에 하기로 운동회 날짜를 미루었다.",
+          "verdict": "fits",
+          "reason": "정한 시간이나 기일을 나중으로 넘긴다는 뜻이 운동회를 다음 주로 넘긴 상황과 꼭 맞는다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "비가 많이 와서 오늘 운동회를 열 수 없다. 그래서 다음 주에 하기로 운동회 날짜를 세었다.",
+          "verdict": "does_not_fit",
+          "reason": "다음 주에 하기로 일정을 넘기는 상황에서 날짜의 수를 헤아렸다는 것은 문맥에 맞지 않는다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "비가 많이 와서 오늘 운동회를 열 수 없다. 그래서 다음 주에 하기로 운동회 날짜를 잊었다.",
+          "verdict": "does_not_fit",
+          "reason": "비 때문에 일정을 다음 주로 옮긴 것이지 날짜를 기억하지 못한 것이 아니다."
+        }
+      ],
+      "uniquenessNote": "네 보기 모두 목적어 '날짜를'과 결합하지만, 정한 날을 나중으로 넘기는 뜻은 '미루다'만 가진다.",
+      "gradeEvidence": "rubric_inferred(L=0,T=0)"
+    },
+    {
+      "id": "g3-argon-2329",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "우리 집 앞에는 넓은 길이 있다. 길을 사이에 두고 마주 보이는 저쪽인 꼭대기에 빵집이 생겼다.",
+          "verdict": "does_not_fit",
+          "reason": "길을 사이에 두고 마주 보는 위치는 맨 위쪽을 뜻하는 꼭대기와 다르다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "우리 집 앞에는 넓은 길이 있다. 길을 사이에 두고 마주 보이는 저쪽인 가운데에 빵집이 생겼다.",
+          "verdict": "does_not_fit",
+          "reason": "길을 사이에 두고 마주 보이는 저쪽은 길의 중심인 가운데가 아니다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "우리 집 앞에는 넓은 길이 있다. 길을 사이에 두고 마주 보이는 저쪽인 안쪽에 빵집이 생겼다.",
+          "verdict": "does_not_fit",
+          "reason": "마주 대하고 있는 바깥 저편을 속 부분인 안쪽이라고 할 수 없다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "우리 집 앞에는 넓은 길이 있다. 길을 사이에 두고 마주 보이는 저쪽인 건너편에 빵집이 생겼다.",
+          "verdict": "fits",
+          "reason": "마주 대하고 있는 저편이라는 뜻이 길을 사이에 두고 마주 보이는 위치와 일치한다."
+        }
+      ],
+      "uniquenessNote": "길을 사이에 두고 마주 대하고 있는 저편을 가리키는 낱말은 '건너편'뿐이다.",
+      "gradeEvidence": "[4국04-01] 단어와 단어 간의 의미 관계를 파악한다."
+    },
+    {
+      "id": "g3-argon-2330",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "식탁에 앉아 동생과 얼굴을 마주 보았다. 내가 앉은 곳과 마주 바라보이는 바닥 자리에 동생이 있다.",
+          "verdict": "does_not_fit",
+          "reason": "식탁에 앉아 서로 마주 바라보이는 자리를 바닥 자리라고 하지 않는다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "식탁에 앉아 동생과 얼굴을 마주 보았다. 내가 앉은 곳과 마주 바라보이는 맞은편 자리에 동생이 있다.",
+          "verdict": "fits",
+          "reason": "서로 마주 바라보이는 편이라는 뜻이 동생과 마주 앉은 자리 상황과 잘 맞는다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "식탁에 앉아 동생과 얼굴을 마주 보았다. 내가 앉은 곳과 마주 바라보이는 옆쪽 자리에 동생이 있다.",
+          "verdict": "does_not_fit",
+          "reason": "옆쪽은 나란히 앉는 방향이므로 마주 바라보이는 쪽과 뜻이 다르다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "식탁에 앉아 동생과 얼굴을 마주 보았다. 내가 앉은 곳과 마주 바라보이는 아래쪽 자리에 동생이 있다.",
+          "verdict": "does_not_fit",
+          "reason": "아래쪽은 낮은 방향을 가리키므로 식탁에서 마주 보는 방향과 맞지 않는다."
+        }
+      ],
+      "uniquenessNote": "서로 마주 바라보이는 편을 뜻하는 낱말은 '맞은편'만 해당한다.",
+      "gradeEvidence": "[4국04-01] 단어와 단어 간의 의미 관계를 파악한다."
+    },
+    {
+      "id": "g3-argon-2331",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "언니와 나는 평소에는 사이좋게 지낸다. 하지만 오늘은 하고 싶은 놀이가 달라서 서로 따지며 웃었다.",
+          "verdict": "does_not_fit",
+          "reason": "사이좋게 지내던 평소와 반대로 생각이 달라 서로 따지는 상황에서 웃었다는 것은 어색하다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "언니와 나는 평소에는 사이좋게 지낸다. 하지만 오늘은 하고 싶은 놀이가 달라서 서로 따지며 쉬었다.",
+          "verdict": "does_not_fit",
+          "reason": "서로 따지는 갈등 상황과 편히 쉬었다는 행동은 어울리지 않는다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "언니와 나는 평소에는 사이좋게 지낸다. 하지만 오늘은 하고 싶은 놀이가 달라서 서로 따지며 도왔다.",
+          "verdict": "does_not_fit",
+          "reason": "하고 싶은 놀이가 달라 서로 따지면서 도왔다는 것은 문맥에 맞지 않는다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "언니와 나는 평소에는 사이좋게 지낸다. 하지만 오늘은 하고 싶은 놀이가 달라서 서로 따지며 다투었다.",
+          "verdict": "fits",
+          "reason": "의견이 달라 서로 따지며 싸운다는 뜻이 사이좋게 지내다 맞서게 된 대조 상황과 맞는다."
+        }
+      ],
+      "uniquenessNote": "사이좋게 지내는 것과 반대되며 의견 대립으로 서로 따지며 싸운다는 뜻은 '다투다'뿐이다.",
+      "gradeEvidence": "[4국04-01] 단어와 단어 간의 의미 관계를 파악한다."
+    },
+    {
+      "id": "g3-argon-2332",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "무릎에 난 상처에 꾸준히 약을 발랐다. 며칠이 지나자 상처가 다 나아 살갗이 잘 아물었다.",
+          "verdict": "fits",
+          "reason": "상처가 다 나아 살갗이 맞붙는다는 뜻이 약을 발라 상처가 나은 결과와 정확히 일치한다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "무릎에 난 상처에 꾸준히 약을 발랐다. 며칠이 지나자 상처가 다 나아 살갗이 잘 텄다.",
+          "verdict": "does_not_fit",
+          "reason": "살갗이 갈라진다는 뜻의 '트다'는 상처가 다 나은 상태와 어울리지 않는다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "무릎에 난 상처에 꾸준히 약을 발랐다. 며칠이 지나자 상처가 다 나아 살갗이 잘 탔다.",
+          "verdict": "does_not_fit",
+          "reason": "약을 발라 상처가 나은 것과 살갗이 햇볕이나 불에 그을리는 것은 관련이 없다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "무릎에 난 상처에 꾸준히 약을 발랐다. 며칠이 지나자 상처가 다 나아 살갗이 잘 부었다.",
+          "verdict": "does_not_fit",
+          "reason": "상처가 다 나았는데 살갗이 부풀어 올랐다는 것은 앞뒤가 맞지 않는다."
+        }
+      ],
+      "uniquenessNote": "네 보기 모두 주어 '살갗이'와 결합할 수 있으나, 상처가 다 나아 살갗이 맞붙는 뜻은 '아물다'뿐이다.",
+      "gradeEvidence": "rubric_inferred(L=1,T=0)"
+    },
+    {
+      "id": "g3-argon-2333",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "봄이 되니 바람이 차갑지 않고 포근하다. 덥지 않을 만큼 온도가 알맞게 높아 날씨가 참 어둡다.",
+          "verdict": "does_not_fit",
+          "reason": "온도가 알맞게 높은 것은 밝고 어두운 정도와 상관이 없다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "봄이 되니 바람이 차갑지 않고 포근하다. 덥지 않을 만큼 온도가 알맞게 높아 날씨가 참 차갑다.",
+          "verdict": "does_not_fit",
+          "reason": "바람이 차갑지 않고 온도가 알맞게 높다고 했는데 날씨가 차갑다는 것은 모순된다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "봄이 되니 바람이 차갑지 않고 포근하다. 덥지 않을 만큼 온도가 알맞게 높아 날씨가 참 따뜻하다.",
+          "verdict": "fits",
+          "reason": "덥지 않을 정도로 온도가 알맞게 높다는 뜻이 포근한 봄 날씨 설명과 자연스럽게 이어진다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "봄이 되니 바람이 차갑지 않고 포근하다. 덥지 않을 만큼 온도가 알맞게 높아 날씨가 참 시끄럽다.",
+          "verdict": "does_not_fit",
+          "reason": "소리가 크다는 뜻의 '시끄럽다'는 기온을 설명하는 문맥에 맞지 않는다."
+        }
+      ],
+      "uniquenessNote": "온도가 알맞게 높아 포근한 날씨를 나타내는 말은 '따뜻하다' 하나뿐이다.",
+      "gradeEvidence": "[4국04-01] 단어와 단어 간의 의미 관계를 파악한다."
+    },
+    {
+      "id": "g3-argon-2334",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "가을 아침에 창문을 열자 찬 바람이 불어왔다. 더위가 가시고 공기가 꽤 찬 느낌이 들어 서늘하다.",
+          "verdict": "fits",
+          "reason": "물체의 온도나 기온이 꽤 찬 느낌이 있다는 뜻이 가을 아침 바람의 느낌과 잘 맞는다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "가을 아침에 창문을 열자 찬 바람이 불어왔다. 더위가 가시고 공기가 꽤 찬 느낌이 들어 뜨겁다.",
+          "verdict": "does_not_fit",
+          "reason": "더위가 가시고 찬 바람이 부는데 뜨겁다고 하는 것은 정반대여서 맞지 않는다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "가을 아침에 창문을 열자 찬 바람이 불어왔다. 더위가 가시고 공기가 꽤 찬 느낌이 들어 무겁다.",
+          "verdict": "does_not_fit",
+          "reason": "공기가 꽤 찬 느낌이 드는 기온 상태를 무게가 많이 나간다고 표현하는 것은 어색하다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "가을 아침에 창문을 열자 찬 바람이 불어왔다. 더위가 가시고 공기가 꽤 찬 느낌이 들어 달콤하다.",
+          "verdict": "does_not_fit",
+          "reason": "단맛을 나타내는 '달콤하다'는 기온이 찬 느낌을 설명할 수 없다."
+        }
+      ],
+      "uniquenessNote": "기온이 꽤 찬 느낌이 있는 상태를 뜻하는 보기는 '서늘하다'뿐이다.",
+      "gradeEvidence": "[4국05-04] 감각적 표현에 유의하여 작품을 감상하고, 감각적 표현을 활용하여 자신의 생각이나 감정을 표현한다."
+    },
+    {
+      "id": "g3-argon-2335",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "오후에 수업이 끝나면 학교에서 집으로 돌아온다. 반대로 아침이 되면 수업을 들으러 일찍 이사한다.",
+          "verdict": "does_not_fit",
+          "reason": "아침마다 수업을 들으러 살던 집을 옮긴다는 것은 상황에 맞지 않는다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "오후에 수업이 끝나면 학교에서 집으로 돌아온다. 반대로 아침이 되면 수업을 들으러 일찍 구경한다.",
+          "verdict": "does_not_fit",
+          "reason": "학생이 아침에 수업하러 학교에 가는 것을 구경한다고 하지 않는다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "오후에 수업이 끝나면 학교에서 집으로 돌아온다. 반대로 아침이 되면 수업을 들으러 일찍 등교한다.",
+          "verdict": "fits",
+          "reason": "학생이 학교에 간다는 뜻이 오후에 집으로 돌아오는 것과 대조되는 아침 상황과 정확히 맞는다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "오후에 수업이 끝나면 학교에서 집으로 돌아온다. 반대로 아침이 되면 수업을 들으러 일찍 청소한다.",
+          "verdict": "does_not_fit",
+          "reason": "학교에서 집으로 돌아오는 것과 반대되는 이동 행동으로 '청소하다'는 어울리지 않는다."
+        }
+      ],
+      "uniquenessNote": "학교에서 집으로 돌아오는 것과 반대로 학생이 아침에 학교에 가는 것을 뜻하는 말은 '등교하다'뿐이다.",
+      "gradeEvidence": "[4국04-01] 단어와 단어 간의 의미 관계를 파악한다."
+    },
+    {
+      "id": "g3-argon-2336",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "구름 뒤에 숨어 달이 보이지 않았어요. 구름이 걷히자 달이 환하게 사라졌어요.",
+          "verdict": "does_not_fit",
+          "reason": "이미 보이지 않던 달이 구름이 걷혔는데 환하게 사라졌다는 것은 앞뒤가 맞지 않는다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "구름 뒤에 숨어 달이 보이지 않았어요. 구름이 걷히자 달이 환하게 나타났어요.",
+          "verdict": "fits",
+          "reason": "구름 뒤에 숨어 보이지 않던 달의 모습이 드러난 상황과 자연스럽게 어울린다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "구름 뒤에 숨어 달이 보이지 않았어요. 구름이 걷히자 달이 환하게 식었어요.",
+          "verdict": "does_not_fit",
+          "reason": "'식다'는 온도가 낮아지는 것이므로 달의 모습이 보이는 상황과 어울리지 않는다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "구름 뒤에 숨어 달이 보이지 않았어요. 구름이 걷히자 달이 환하게 얼었어요.",
+          "verdict": "does_not_fit",
+          "reason": "'얼다'는 액체나 물체가 차가워져 굳는 것이므로 달이 드러나는 문맥에 맞지 않는다."
+        }
+      ],
+      "uniquenessNote": "보이지 않던 대상의 모습이 드러나는 뜻은 '나타났어요'뿐이며, 반대말인 '사라졌어요'와 상태 변화 동사 '식었어요', '얼었어요'는 문맥상 성립하지 않는다.",
+      "gradeEvidence": "[4국04-01] 단어와 단어 간의 의미 관계를 파악한다."
+    },
+    {
+      "id": "g3-argon-2337",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "길가에 고양이 한 마리가 나타났어요. 내가 다가가자 고양이가 담장 뒤로 숨어 자랐어요.",
+          "verdict": "does_not_fit",
+          "reason": "다가가는 순간 담장 뒤로 숨어 몸이 자랐다는 것은 상황에 맞지 않는다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "길가에 고양이 한 마리가 나타났어요. 내가 다가가자 고양이가 담장 뒤로 숨어 늘어났어요.",
+          "verdict": "does_not_fit",
+          "reason": "고양이 한 마리가 숨는 상황에서 수가 늘어났다는 것은 이어지지 않는다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "길가에 고양이 한 마리가 나타났어요. 내가 다가가자 고양이가 담장 뒤로 숨어 드러났어요.",
+          "verdict": "does_not_fit",
+          "reason": "담장 뒤로 숨었는데 모습이 드러났다는 것은 서로 반대되어 어색하다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "길가에 고양이 한 마리가 나타났어요. 내가 다가가자 고양이가 담장 뒤로 숨어 사라졌어요.",
+          "verdict": "fits",
+          "reason": "길가에 나타났던 고양이가 담장 뒤로 숨어 눈앞에서 없어진 상황에 자연스럽게 들어맞는다."
+        }
+      ],
+      "uniquenessNote": "'나타났어요'와 대조되어 담장 뒤로 숨어 자취가 없어졌음을 뜻하는 말은 '사라졌어요'뿐이다.",
+      "gradeEvidence": "[4국04-01] 단어와 단어 간의 의미 관계를 파악한다."
+    },
+    {
+      "id": "g3-argon-2338",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "동생은 멀리 들리게 큰 소리로 속삭였다.",
+          "verdict": "does_not_fit",
+          "reason": "나지막한 목소리로 말한다는 뜻이므로 멀리 들리게 큰 소리로 말한다는 내용과 어울리지 않는다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "나는 친구 귀에 비밀을 작게 속삭였다.",
+          "verdict": "fits",
+          "reason": "남이 알아듣지 못하도록 나지막한 목소리로 가만가만 이야기하는 상황에 알맞다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "언니는 도화지에 물감으로 꽃을 속삭였다.",
+          "verdict": "does_not_fit",
+          "reason": "물감으로 그림을 그리는 동작에는 말하기를 뜻하는 '속삭이다'를 쓸 수 없다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "형은 무거운 상자를 두 손으로 속삭였다.",
+          "verdict": "does_not_fit",
+          "reason": "손으로 물건을 들어 올리는 동작에는 '속삭이다'를 쓸 수 없다."
+        }
+      ],
+      "uniquenessNote": "작은 목소리로 비밀을 이야기하는 a만 '속삭이다'의 뜻에 맞고, 큰 소리로 말하거나(b) 그림을 그리거나(c) 물건을 드는(d) 상황에는 쓸 수 없어 정답이 하나뿐이다.",
+      "gradeEvidence": "[4국05-01] 인물과 이야기의 흐름을 중심으로 작품을 감상한다."
+    },
+    {
+      "id": "g3-argon-2339",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "이층에서 동생은 일층으로 내려갔어요. 나는 이층에서 삼층으로 내려갔어요.",
+          "verdict": "does_not_fit",
+          "reason": "이층보다 높은 삼층으로 가면서 '내려갔어요'라고 쓸 수 없다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "이층에서 동생은 일층으로 내려갔어요. 나는 이층에서 삼층으로 쓰러졌어요.",
+          "verdict": "does_not_fit",
+          "reason": "'이층에서 삼층으로'라는 층간 이동 경로와 '쓰러졌어요'는 결합할 수 없다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "이층에서 동생은 일층으로 내려갔어요. 나는 이층에서 삼층으로 주저앉았어요.",
+          "verdict": "does_not_fit",
+          "reason": "제자리에 앉는 동작인 '주저앉았어요'는 다른 층으로 가는 문맥에 맞지 않는다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "이층에서 동생은 일층으로 내려갔어요. 나는 이층에서 삼층으로 올라갔어요.",
+          "verdict": "fits",
+          "reason": "아래층인 이층에서 위층인 삼층으로 이동한 상황에 알맞다."
+        }
+      ],
+      "uniquenessNote": "일층으로 '내려갔어요'와 대조되어 이층에서 더 높은 삼층으로 이동함을 나타내는 보기는 '올라갔어요'뿐이다.",
+      "gradeEvidence": "[4국04-01] 단어와 단어 간의 의미 관계를 파악한다."
+    },
+    {
+      "id": "g3-argon-2340",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "친구들은 놀려고 교실 밖으로 나갔어요. 나는 복도에서 교실 안으로 들어갔어요.",
+          "verdict": "fits",
+          "reason": "교실 밖 복도에서 교실 안으로 향하여 간 상황과 정확히 일치한다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "친구들은 놀려고 교실 밖으로 나갔어요. 나는 복도에서 교실 안으로 나갔어요.",
+          "verdict": "does_not_fit",
+          "reason": "밖인 복도에서 교실 안으로 향하면서 '나갔어요'라고 할 수 없다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "친구들은 놀려고 교실 밖으로 나갔어요. 나는 복도에서 교실 안으로 비켰어요.",
+          "verdict": "does_not_fit",
+          "reason": "'비키다'는 자리를 옮겨 길을 터 주는 동작이라 '복도에서 교실 안으로'와 자연스럽게 어울리지 않는다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "친구들은 놀려고 교실 밖으로 나갔어요. 나는 복도에서 교실 안으로 멈췄어요.",
+          "verdict": "does_not_fit",
+          "reason": "'멈추다'는 이동을 그치는 것이므로 '교실 안으로'라는 방향 성분과 호응하지 않는다."
+        }
+      ],
+      "uniquenessNote": "'교실 밖으로 나갔어요'와 대조되어 밖에서 안으로 향하여 가는 뜻을 가진 보기는 '들어갔어요'뿐이다.",
+      "gradeEvidence": "[4국04-01] 단어와 단어 간의 의미 관계를 파악한다."
+    },
+    {
+      "id": "g3-argon-2341",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "가방에서 어제 읽은 동화책을 꺼냈어요. 그리고 오늘 쓸 공책을 가방 속에 찢었어요.",
+          "verdict": "does_not_fit",
+          "reason": "오늘 쓸 공책을 '가방 속에 찢었어요'라고 하는 것은 문법과 의미 모두 어색하다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "가방에서 어제 읽은 동화책을 꺼냈어요. 그리고 오늘 쓸 공책을 가방 속에 꺼냈어요.",
+          "verdict": "does_not_fit",
+          "reason": "'가방 속에'라는 방향과 밖으로 빼내는 '꺼냈어요'는 호응하지 않는다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "가방에서 어제 읽은 동화책을 꺼냈어요. 그리고 오늘 쓸 공책을 가방 속에 넣었어요.",
+          "verdict": "fits",
+          "reason": "동화책을 꺼낸 뒤 오늘 쓸 공책을 가방 안 공간으로 들게 한 상황에 자연스럽다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "가방에서 어제 읽은 동화책을 꺼냈어요. 그리고 오늘 쓸 공책을 가방 속에 읽었어요.",
+          "verdict": "does_not_fit",
+          "reason": "'가방 속에 읽었어요'는 조사와 서술어가 맞지 않는다."
+        }
+      ],
+      "uniquenessNote": "'가방 속에'와 호응하며 물건을 공간 안으로 들게 하는 뜻을 가진 보기는 '넣었어요'뿐이다.",
+      "gradeEvidence": "[4국04-01] 단어와 단어 간의 의미 관계를 파악한다."
+    },
+    {
+      "id": "g3-argon-2342",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "아침 청소를 다 끝내고 자리에 앉았어요. 이제 교과서를 펴고 일교시 수업을 새로 시작했어요.",
+          "verdict": "fits",
+          "reason": "청소를 끝낸 뒤 교과서를 펴고 일교시 수업의 첫 단계를 여는 상황에 알맞다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "아침 청소를 다 끝내고 자리에 앉았어요. 이제 교과서를 펴고 일교시 수업을 새로 마쳤어요.",
+          "verdict": "does_not_fit",
+          "reason": "교과서를 펴고 수업을 '새로 마쳤어요'라고 하는 것은 뜻이 어긋난다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "아침 청소를 다 끝내고 자리에 앉았어요. 이제 교과서를 펴고 일교시 수업을 새로 고쳤어요.",
+          "verdict": "does_not_fit",
+          "reason": "교과서를 펴고 수업을 '새로 고쳤어요'는 수업 진행 상황과 맞지 않는다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "아침 청소를 다 끝내고 자리에 앉았어요. 이제 교과서를 펴고 일교시 수업을 새로 숨겼어요.",
+          "verdict": "does_not_fit",
+          "reason": "수업은 감추는 물건이 아니므로 '수업을 새로 숨겼어요'는 성립하지 않는다."
+        }
+      ],
+      "uniquenessNote": "청소를 '끝내고'와 대조되어 교과서를 펴고 일교시 수업의 처음 단계를 이루는 말은 '시작했어요'뿐이다.",
+      "gradeEvidence": "[4국04-01] 단어와 단어 간의 의미 관계를 파악한다."
+    },
+    {
+      "id": "g3-argon-2343",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "아침에 시작된 운동회의 모든 경기를 마쳤어요. 이제 오늘 운동회가 모두 남았어요.",
+          "verdict": "does_not_fit",
+          "reason": "모든 경기를 다 마쳤는데 운동회가 모두 남았다는 것은 앞 문장과 반대된다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "아침에 시작된 운동회의 모든 경기를 마쳤어요. 이제 오늘 운동회가 모두 생겼어요.",
+          "verdict": "does_not_fit",
+          "reason": "이미 아침에 시작해 경기를 다 마친 운동회가 새로 생겼다는 것은 어색하다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "아침에 시작된 운동회의 모든 경기를 마쳤어요. 이제 오늘 운동회가 모두 끝났어요.",
+          "verdict": "fits",
+          "reason": "아침에 시작된 운동회의 모든 순서가 다 이루어진 상황에 알맞다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "아침에 시작된 운동회의 모든 경기를 마쳤어요. 이제 오늘 운동회가 모두 밀렸어요.",
+          "verdict": "does_not_fit",
+          "reason": "모든 경기를 이미 마쳤으므로 뒤로 미루어졌다는 '밀렸어요'는 맞지 않는다."
+        }
+      ],
+      "uniquenessNote": "'시작된' 및 '모든 경기를 마쳤어요'와 이어져 일이 다 이루어졌음을 뜻하는 보기는 '끝났어요'뿐이다.",
+      "gradeEvidence": "[4국04-01] 단어와 단어 간의 의미 관계를 파악한다."
+    },
+    {
+      "id": "g3-argon-2344",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "과학 시간에 선생님이 식물이 자라는 법을 가르쳐 주셨어요. 나는 오늘 몰랐던 내용을 새로 잊었어요.",
+          "verdict": "does_not_fit",
+          "reason": "원래 몰랐던 내용을 '새로 잊었어요'라고 하는 것은 뜻이 통하지 않는다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "과학 시간에 선생님이 식물이 자라는 법을 가르쳐 주셨어요. 나는 오늘 몰랐던 내용을 새로 배웠어요.",
+          "verdict": "fits",
+          "reason": "선생님이 가르쳐 주신 설명을 듣고 새로운 지식을 얻은 상황에 정확히 들어맞는다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "과학 시간에 선생님이 식물이 자라는 법을 가르쳐 주셨어요. 나는 오늘 몰랐던 내용을 새로 만들었어요.",
+          "verdict": "does_not_fit",
+          "reason": "선생님께 들은 과학 지식을 내가 새로 만들었다는 것은 문맥에 맞지 않는다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "과학 시간에 선생님이 식물이 자라는 법을 가르쳐 주셨어요. 나는 오늘 몰랐던 내용을 새로 가르쳤어요.",
+          "verdict": "does_not_fit",
+          "reason": "선생님이 가르쳐 주신 상황에서 내가 몰랐던 내용을 새로 가르쳤다는 것은 어색하다."
+        }
+      ],
+      "uniquenessNote": "선생님이 '가르쳐 주셨어요'와 대조되어 학생이 새로운 지식을 얻었음을 나타내는 보기는 '배웠어요'뿐이다.",
+      "gradeEvidence": "[4국04-01] 단어와 단어 간의 의미 관계를 파악한다."
+    },
+    {
+      "id": "g3-argon-2345",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "어제 맞춘 퍼즐은 조각이 많아서 어려웠어요. 오늘 퍼즐은 조각이 다섯 개뿐이라 맞추기가 어두워요.",
+          "verdict": "does_not_fit",
+          "reason": "빛의 밝기를 뜻하는 '어두워요'는 '맞추기가'와 어울리지 않는다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "어제 맞춘 퍼즐은 조각이 많아서 어려웠어요. 오늘 퍼즐은 조각이 다섯 개뿐이라 맞추기가 어려워요.",
+          "verdict": "does_not_fit",
+          "reason": "'조각이 다섯 개뿐이라'라는 이유와 '맞추기가 어려워요'는 서로 어울리지 않는다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "어제 맞춘 퍼즐은 조각이 많아서 어려웠어요. 오늘 퍼즐은 조각이 다섯 개뿐이라 맞추기가 무거워요.",
+          "verdict": "does_not_fit",
+          "reason": "'맞추기가 무거워요'는 호응하지 않으며 조각이 다섯 개뿐이라는 조건과도 맞지 않는다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "어제 맞춘 퍼즐은 조각이 많아서 어려웠어요. 오늘 퍼즐은 조각이 다섯 개뿐이라 맞추기가 쉬워요.",
+          "verdict": "fits",
+          "reason": "조각이 많아 어려웠던 어제 퍼즐과 달리 조각이 다섯 개뿐이라 맞추기 힘들지 않은 상황에 알맞다."
+        }
+      ],
+      "uniquenessNote": "조각이 많아 '어려웠어요'와 대조되어 조각이 다섯 개뿐이라 맞추기 힘들지 않음을 나타내는 보기는 '쉬워요'뿐이다.",
+      "gradeEvidence": "[4국04-01] 단어와 단어 간의 의미 관계를 파악한다."
+    },
+    {
+      "id": "g3-argon-2346",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "1번 문제는 금방 풀 만큼 쉬웠다. 하지만 2번 문제는 혼자 풀기 힘들 만큼 가볍다.",
+          "verdict": "does_not_fit",
+          "reason": "'가볍다'는 무게를 나타내므로 문제 풀기가 힘든 뜻과 맞지 않는다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "1번 문제는 금방 풀 만큼 쉬웠다. 하지만 2번 문제는 혼자 풀기 힘들 만큼 어렵다.",
+          "verdict": "fits",
+          "reason": "'쉽다'의 반대말로, 혼자 풀기 힘에 겹다는 뜻이 자연스럽게 통한다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "1번 문제는 금방 풀 만큼 쉬웠다. 하지만 2번 문제는 혼자 풀기 힘들 만큼 반갑다.",
+          "verdict": "does_not_fit",
+          "reason": "'반갑다'는 만나서 기쁜 마음을 나타내므로 어색하다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "1번 문제는 금방 풀 만큼 쉬웠다. 하지만 2번 문제는 혼자 풀기 힘들 만큼 가깝다.",
+          "verdict": "does_not_fit",
+          "reason": "'가깝다'는 거리가 짧은 것을 뜻하므로 문제의 난이도와 맞지 않는다."
+        }
+      ],
+      "uniquenessNote": "문제 풀이 상황에서 '쉽다'와의 반의 관계 및 '혼자 풀기 힘들 만큼'이라는 단서로 '어렵다'만 정답이 된다.",
+      "gradeEvidence": "[4국04-01] 단어와 단어 간의 의미 관계를 파악한다."
+    },
+    {
+      "id": "g3-argon-2347",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "아침에는 찬 바람이 불어 추웠다. 그러다 낮이 되자 땀이 날 만큼 날씨가 좁다.",
+          "verdict": "does_not_fit",
+          "reason": "'좁다'는 공간의 넓이를 뜻하므로 날씨와 어울리지 않는다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "아침에는 찬 바람이 불어 추웠다. 그러다 낮이 되자 땀이 날 만큼 날씨가 맑다.",
+          "verdict": "does_not_fit",
+          "reason": "'맑다'는 하늘 상태를 뜻하므로 땀이 날 만큼 뜨거운 뜻이 아니다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "아침에는 찬 바람이 불어 추웠다. 그러다 낮이 되자 땀이 날 만큼 날씨가 밝다.",
+          "verdict": "does_not_fit",
+          "reason": "'밝다'는 빛의 양을 뜻하므로 '추웠다'와 반대가 되지 않는다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "아침에는 찬 바람이 불어 추웠다. 그러다 낮이 되자 땀이 날 만큼 날씨가 덥다.",
+          "verdict": "fits",
+          "reason": "'춥다'의 반대말로 날씨가 뜨거워 땀이 나는 뜻이 자연스럽다."
+        }
+      ],
+      "uniquenessNote": "아침과 낮의 날씨 대비에서 '추웠다'의 반대말이자 땀이 나는 날씨를 뜻하는 '덥다'만 성립한다.",
+      "gradeEvidence": "[4국04-01] 단어와 단어 간의 의미 관계를 파악한다."
+    },
+    {
+      "id": "g3-argon-2348",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "여름에는 날씨가 더워서 반소매 옷을 입었다. 반대로 겨울에는 손끝이 시릴 만큼 날씨가 춥다.",
+          "verdict": "fits",
+          "reason": "'덥다'와 반대되면서 손끝이 시린 겨울 날씨를 정확히 나타낸다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "여름에는 날씨가 더워서 반소매 옷을 입었다. 반대로 겨울에는 손끝이 시릴 만큼 날씨가 높다.",
+          "verdict": "does_not_fit",
+          "reason": "'높다'는 높이를 나타내므로 '날씨가 높다'는 부자연스럽다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "여름에는 날씨가 더워서 반소매 옷을 입었다. 반대로 겨울에는 손끝이 시릴 만큼 날씨가 짧다.",
+          "verdict": "does_not_fit",
+          "reason": "'짧다'는 길이를 나타내므로 날씨를 꾸밀 수 없다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "여름에는 날씨가 더워서 반소매 옷을 입었다. 반대로 겨울에는 손끝이 시릴 만큼 날씨가 곱다.",
+          "verdict": "does_not_fit",
+          "reason": "'곱다'는 모양이나 결이 예쁜 것을 뜻하므로 겨울 추위와 맞지 않는다."
+        }
+      ],
+      "uniquenessNote": "여름과 겨울의 계절 옷차림 대비를 통해 2347번과 장면을 달리했으며, '덥다'의 반대말인 '춥다'만 정답이 된다.",
+      "gradeEvidence": "[4국04-01] 단어와 단어 간의 의미 관계를 파악한다."
+    },
+    {
+      "id": "g3-argon-2349",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "어른 수영장은 물이 깊다. 하지만 어린이 수영장은 발목만 잠길 만큼 물이 넓다.",
+          "verdict": "does_not_fit",
+          "reason": "'넓다'는 면적을 뜻하므로 '물이 넓다'나 '발목만 잠길 만큼'과 어울리지 않는다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "어른 수영장은 물이 깊다. 하지만 어린이 수영장은 발목만 잠길 만큼 물이 맑다.",
+          "verdict": "does_not_fit",
+          "reason": "'맑다'는 깨끗한 정도를 뜻하므로 '깊다'와 반대 관계가 되지 않는다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "어른 수영장은 물이 깊다. 하지만 어린이 수영장은 발목만 잠길 만큼 물이 얕다.",
+          "verdict": "fits",
+          "reason": "'깊다'의 반대말로, 바닥에서 물 위까지의 길이가 짧아 발목만 잠긴다는 뜻과 꼭 맞는다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "어른 수영장은 물이 깊다. 하지만 어린이 수영장은 발목만 잠길 만큼 물이 차다.",
+          "verdict": "does_not_fit",
+          "reason": "'차다'는 물의 차가운 정도를 뜻하므로 발목만 잠긴다는 단서와 맞지 않는다."
+        }
+      ],
+      "uniquenessNote": "'깊다'와의 반의 관계 및 '발목만 잠길 만큼'이라는 깊이 단서로 '얕다'만 정답이 된다.",
+      "gradeEvidence": "[4국04-01] 단어와 단어 간의 의미 관계를 파악한다."
+    },
+    {
+      "id": "g3-argon-2350",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "아기 강아지가 꼬리를 흔들며 애교를 부린다. 그 모습이 참 사랑스럽고 귀엽다.",
+          "verdict": "fits",
+          "reason": "애교가 있어 사랑스럽다는 뜻이 '사랑스럽고'와 나란히 자연스럽게 이어진다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "아기 강아지가 꼬리를 흔들며 애교를 부린다. 그 모습이 참 사랑스럽고 무섭다.",
+          "verdict": "does_not_fit",
+          "reason": "'무섭다'는 겁이 난다는 뜻이므로 '사랑스럽고'와 함께 쓸 수 없다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "아기 강아지가 꼬리를 흔들며 애교를 부린다. 그 모습이 참 사랑스럽고 어둡다.",
+          "verdict": "does_not_fit",
+          "reason": "'어둡다'는 빛이 없는 상태를 뜻하므로 애교 부리는 모습과 맞지 않는다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "아기 강아지가 꼬리를 흔들며 애교를 부린다. 그 모습이 참 사랑스럽고 무겁다.",
+          "verdict": "does_not_fit",
+          "reason": "'무겁다'는 무게를 뜻하므로 모습을 칭찬하는 흐름에 맞지 않는다."
+        }
+      ],
+      "uniquenessNote": "'애교를 부린다'는 단서와 '사랑스럽고'의 유의 흐름을 모두 만족하는 말은 '귀엽다'뿐이다.",
+      "gradeEvidence": "[4국05-04] 감각적 표현에 유의하여 작품을 감상하고, 감각적 표현을 활용하여 자신의 생각이나 감정을 표현한다."
+    },
+    {
+      "id": "g3-argon-2351",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "합창단 친구들의 노랫소리가 고르게 잘 어우러진다. 귀가 즐거울 만큼 소리가 참 곱고 시끄럽다.",
+          "verdict": "does_not_fit",
+          "reason": "'시끄럽다'는 듣기 싫게 큰 소리이므로 '귀가 즐거울 만큼 곱고'와 모순된다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "합창단 친구들의 노랫소리가 고르게 잘 어우러진다. 귀가 즐거울 만큼 소리가 참 곱고 부끄럽다.",
+          "verdict": "does_not_fit",
+          "reason": "'부끄럽다'는 사람의 감정을 나타내므로 소리의 아름다움을 나타낼 수 없다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "합창단 친구들의 노랫소리가 고르게 잘 어우러진다. 귀가 즐거울 만큼 소리가 참 곱고 아름답다.",
+          "verdict": "fits",
+          "reason": "소리가 어우러져 귀를 즐겁게 한다는 뜻이 '곱고'와 자연스럽게 어울린다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "합창단 친구들의 노랫소리가 고르게 잘 어우러진다. 귀가 즐거울 만큼 소리가 참 곱고 미끄럽다.",
+          "verdict": "does_not_fit",
+          "reason": "'미끄럽다'는 표면의 감촉을 뜻하므로 노랫소리에 쓸 수 없다."
+        }
+      ],
+      "uniquenessNote": "소리가 어우러져 귀가 즐겁다는 단서와 '곱고'의 유의 관계로 '아름답다'만 정답이 된다.",
+      "gradeEvidence": "[4국05-04] 감각적 표현에 유의하여 작품을 감상하고, 감각적 표현을 활용하여 자신의 생각이나 감정을 표현한다."
+    },
+    {
+      "id": "g3-argon-2352",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "이쪽으로 건너왔던 누나가 손을 흔들었다. 그러더니 다시 개울 저쪽 맞은편으로 돌아왔다.",
+          "verdict": "does_not_fit",
+          "reason": "'돌아왔다'는 말하는 사람이 있는 이쪽으로 오는 것이므로 '저쪽 맞은편으로'와 맞지 않는다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "이쪽으로 건너왔던 누나가 손을 흔들었다. 그러더니 다시 개울 저쪽 맞은편으로 건너갔다.",
+          "verdict": "fits",
+          "reason": "'건너오다'의 반대말로, 개울을 사이에 두고 이쪽에서 저쪽 맞은편으로 간다는 뜻이 정확히 맞는다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "이쪽으로 건너왔던 누나가 손을 흔들었다. 그러더니 다시 개울 저쪽 맞은편으로 다가왔다.",
+          "verdict": "does_not_fit",
+          "reason": "'다가왔다'는 이쪽으로 가까워지는 움직임이므로 저쪽으로 가는 상황과 어긋난다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "이쪽으로 건너왔던 누나가 손을 흔들었다. 그러더니 다시 개울 저쪽 맞은편으로 올라왔다.",
+          "verdict": "does_not_fit",
+          "reason": "'올라왔다'는 아래에서 위로 오는 움직임이므로 개울 맞은편으로 가는 맥락과 다르다."
+        }
+      ],
+      "uniquenessNote": "'이쪽으로 건너왔던'과의 반의 관계 및 '개울 저쪽 맞은편으로'라는 방향 단서로 '건너가다'만 성립한다.",
+      "gradeEvidence": "[4국04-01] 단어와 단어 간의 의미 관계를 파악한다."
+    },
+    {
+      "id": "g3-argon-2355",
+      "revision": 1,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "할머니가 시장 골목으로 먼저 걸어갔다. 강아지도 할머니 뒤에서 발걸음에 맞춰 졸졸 비켜갔다.",
+          "verdict": "does_not_fit",
+          "reason": "'비켜갔다'는 옆으로 피해 가는 뜻이므로 '뒤에서 발걸음에 맞춰 졸졸'과 어울리지 않는다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "할머니가 시장 골목으로 먼저 걸어갔다. 강아지도 할머니 뒤에서 발걸음에 맞춰 졸졸 헤어졌다.",
+          "verdict": "does_not_fit",
+          "reason": "'헤어졌다'는 서로 떨어지는 뜻이므로 발걸음에 맞춰 뒤를 가는 맥락과 반대다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "할머니가 시장 골목으로 먼저 걸어갔다. 강아지도 할머니 뒤에서 발걸음에 맞춰 졸졸 마주쳤다.",
+          "verdict": "does_not_fit",
+          "reason": "'마주쳤다'는 마주 보며 만나는 뜻이므로 뒤에서 졸졸 걷는 상황과 맞지 않는다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "할머니가 시장 골목으로 먼저 걸어갔다. 강아지도 할머니 뒤에서 발걸음에 맞춰 졸졸 따라갔다.",
+          "verdict": "fits",
+          "reason": "다른 사람의 뒤에서 그가 가는 대로 간다는 뜻이 문맥과 자연스럽게 들어맞는다."
+        }
+      ],
+      "uniquenessNote": "'할머니 뒤에서 발걸음에 맞춰 졸졸'이라는 단서로 뒤를 쫓아 가는 뜻인 '따라가다'만 정답이 된다.",
+      "gradeEvidence": "[4국04-02] 단어를 분류하고 국어사전을 활용하여 능동적인 국어 활동을 한다."
+    },
+    {
+      "id": "g3-argon-2353",
+      "revision": 2,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "계단 꼭대기로 올라갔던 동생이 나를 불렀다. 그러고는 내가 서 있는 1층으로 다시 올라가다.",
+          "verdict": "does_not_fit",
+          "reason": "이미 계단 꼭대기에 있는 동생이 아래쪽인 1층으로 오는 상황이므로 높은 곳으로 간다는 뜻의 '올라가다'는 방향이 반대이다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "계단 꼭대기로 올라갔던 동생이 나를 불렀다. 그러고는 내가 서 있는 1층으로 다시 넘어가다.",
+          "verdict": "does_not_fit",
+          "reason": "'넘어가다'는 담이나 고개 같은 경계를 거쳐 저쪽으로 간다는 뜻이어서 계단 위에서 1층으로 오는 맥락에 맞지 않는다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "계단 꼭대기로 올라갔던 동생이 나를 불렀다. 그러고는 내가 서 있는 1층으로 다시 비켜가다.",
+          "verdict": "does_not_fit",
+          "reason": "'비켜가다'는 부딪치지 않게 옆으로 피해 간다는 뜻이어서 위에서 아래로 이동하는 상황과 맞지 않는다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "계단 꼭대기로 올라갔던 동생이 나를 불렀다. 그러고는 내가 서 있는 1층으로 다시 내려오다.",
+          "verdict": "fits",
+          "reason": "높은 곳인 계단 꼭대기에서 낮은 곳인 1층으로 오는 뜻이므로 표준국어대사전 뜻풀이와 정확히 맞는다."
+        }
+      ],
+      "uniquenessNote": "계단 꼭대기로 '올라갔던' 것과 반대로 낮은 곳인 1층으로 오는 이동 동사는 '내려오다'뿐이다.",
+      "gradeEvidence": "초등 3학년 기초 이동 동사이며 일상적인 계단 오르내리기 상황을 소재로 삼았다."
+    },
+    {
+      "id": "g3-argon-2354",
+      "revision": 2,
+      "selfRefutation": [
+        {
+          "optionId": "a",
+          "substituted": "쉬는 시간에 운동장으로 나갔던 친구들이 보였다. 수업 종이 울리자 모두 교실 안으로 나아가다.",
+          "verdict": "does_not_fit",
+          "reason": "'나아가다'는 앞쪽을 향해 간다는 뜻이어서 밖에서 교실이라는 공간 안으로 이동하는 뜻이 아니다."
+        },
+        {
+          "optionId": "b",
+          "substituted": "쉬는 시간에 운동장으로 나갔던 친구들이 보였다. 수업 종이 울리자 모두 교실 안으로 들어오다.",
+          "verdict": "fits",
+          "reason": "운동장이라는 밖에서 교실이라는 일정한 공간 안으로 이동하는 뜻이므로 표준국어대사전 뜻풀이와 정확히 맞는다."
+        },
+        {
+          "optionId": "c",
+          "substituted": "쉬는 시간에 운동장으로 나갔던 친구들이 보였다. 수업 종이 울리자 모두 교실 안으로 지나가다.",
+          "verdict": "does_not_fit",
+          "reason": "'지나가다'는 멈추지 않고 스쳐 간다는 뜻이어서 수업을 들으러 교실 안으로 오는 상황과 맞지 않는다."
+        },
+        {
+          "optionId": "d",
+          "substituted": "쉬는 시간에 운동장으로 나갔던 친구들이 보였다. 수업 종이 울리자 모두 교실 안으로 물러가다.",
+          "verdict": "does_not_fit",
+          "reason": "'물러가다'는 뒤쪽으로 비켜 간다는 뜻이어서 교실 안으로 이동하는 방향과 맞지 않는다."
+        }
+      ],
+      "uniquenessNote": "운동장으로 '나갔던' 것과 반대로 밖에서 교실 안으로 이동하는 뜻을 가진 보기는 '들어오다'뿐이다.",
+      "gradeEvidence": "초등 3학년 기초 동사이며 학교 쉬는 시간과 수업 시간의 교실 출입 상황을 소재로 삼았다."
+    }
+  ],
+  "rejected": [],
+  "publicationPolicy": "claude-argon-v1"
+}
