@@ -9,7 +9,6 @@ import css from './home.module.css';
 interface Props {
   savedNickname: string;
   savedSchoolName: string;
-  savedSchoolCode: string;
   message: string | null;
   /** 처음 온 학생에게는 ‘처음이라면 연습부터’, 해 본 학생에게는 ‘연습하기’. */
   practiceLabel?: string;
@@ -23,7 +22,6 @@ interface Props {
 export function LaunchDeck({
   savedNickname,
   savedSchoolName,
-  savedSchoolCode,
   message,
   practiceLabel = '연습하기',
   inputRef,
@@ -44,6 +42,11 @@ export function LaunchDeck({
   const [isSearchingSchool, setIsSearchingSchool] = useState(false);
   const [schoolModalOpen, setSchoolModalOpen] = useState(false);
   const [schoolStatusMsg, setSchoolStatusMsg] = useState<string | null>(null);
+  const schoolSearchAbortRef = useRef<AbortController | null>(null);
+
+  useEffect(() => () => {
+    schoolSearchAbortRef.current?.abort();
+  }, []);
 
   useEffect(() => {
     commitRef.current = onCommitNickname;
@@ -63,9 +66,7 @@ export function LaunchDeck({
   const [prevSavedSchool, setPrevSavedSchool] = useState(savedSchoolName);
   if (savedSchoolName !== prevSavedSchool) {
     setPrevSavedSchool(savedSchoolName);
-    if (savedSchoolName && schoolDraft === '') {
-      setSchoolDraft(savedSchoolName);
-    }
+    setSchoolDraft(savedSchoolName);
   }
 
   // 유효한 닉네임을 입력하면 자동으로 저장·순위표와 연동
@@ -127,7 +128,7 @@ export function LaunchDeck({
 
     const trimmedSchool = schoolDraft.trim();
     if (trimmedSchool !== savedSchoolName) {
-      onCommitSchool?.(trimmedSchool, savedSchoolCode);
+      onCommitSchool?.(trimmedSchool, '');
     }
 
     onOpenNewGame(cleaned.value);
@@ -138,16 +139,21 @@ export function LaunchDeck({
     setSchoolModalOpen(true);
     const query = schoolDraft.trim();
     if (query.length < 2) {
+      schoolSearchAbortRef.current?.abort();
       setSchoolResults([]);
       setSchoolStatusMsg('학교명을 2자 이상 입력해 주세요.');
       return;
     }
 
+    schoolSearchAbortRef.current?.abort();
+    const ctrl = new AbortController();
+    schoolSearchAbortRef.current = ctrl;
     setIsSearchingSchool(true);
     setSchoolStatusMsg('NEIS에서 학교를 찾는 중...');
 
     try {
-      const results = await searchNeisSchools(query);
+      const results = await searchNeisSchools(query, { signal: ctrl.signal });
+      if (ctrl.signal.aborted) return;
       setSchoolResults(results);
       if (results.length > 0) {
         setSchoolStatusMsg(`검색 결과 ${results.length}건`);
@@ -155,14 +161,18 @@ export function LaunchDeck({
         setSchoolStatusMsg('검색된 학교가 없습니다. 직접 입력하실 수 있어요.');
       }
     } catch {
+      if (ctrl.signal.aborted) return;
       setSchoolResults([]);
       setSchoolStatusMsg('학교 검색 중 오류가 발생했습니다.');
     } finally {
-      setIsSearchingSchool(false);
+      if (schoolSearchAbortRef.current === ctrl) {
+        setIsSearchingSchool(false);
+      }
     }
   };
 
   const handleSelectSchool = (school: NeisSchool) => {
+    schoolSearchAbortRef.current?.abort();
     setSchoolDraft(school.schoolName);
     setSchoolModalOpen(false);
     setSchoolStatusMsg(`${school.schoolName} (${school.schoolKind})`);
@@ -172,7 +182,7 @@ export function LaunchDeck({
   const handleSchoolBlur = () => {
     const trimmed = schoolDraft.trim();
     if (trimmed !== savedSchoolName) {
-      onCommitSchool?.(trimmed, savedSchoolCode);
+      onCommitSchool?.(trimmed, '');
     }
   };
 

@@ -101,12 +101,7 @@ export const fmtDamage = (milli: number) => {
   const v = milli / 1000;
   return Number.isInteger(v) ? String(v) : v.toFixed(1);
 };
-export const fmtSeconds = (ticks: number) => {
-  const v = ticks / 30;
-  return `${Number.isInteger(v) ? v : Number(v.toFixed(2))}초마다`;
-};
 export const fmtCells = (milli: number) => `${(milli / 1000).toFixed(milli % 1000 === 0 ? 0 : 1)}칸`;
-export const fmtSigned = (n: number) => (n > 0 ? `+${n}` : n < 0 ? `−${Math.abs(n)}` : '0');
 export const fmtNumber = (n: number) => (n < 0 ? `−${Math.abs(n).toLocaleString('ko-KR')}` : n.toLocaleString('ko-KR'));
 
 /** 홈 별명 입력과 공개 제출은 같은 규칙을 쓴다: NFC·NFKC, 제어문자 제거, 2~12글자, 전화번호·이메일·주소 차단(PRD §2.1). */
@@ -114,14 +109,6 @@ export function cleanNickname(raw: string): { value: string; error: string | nul
   const r = cleanPublicNickname(raw);
   // 공개 계약의 오류 문구는 '별명'이라고 말한다. 화면에는 용어 규정(ui-rules-v3 §4)대로 '닉네임'으로 보인다.
   return { value: r.value, error: r.error === null ? null : r.error.replace('별명', '닉네임') };
-}
-
-/** 받침에 따라 ‘로/으로’(ㄹ 받침은 ‘로’). */
-export function withRo(word: string): string {
-  const code = word.charCodeAt(word.length - 1) - 0xac00;
-  if (code < 0 || code > 11171) return `${word}(으)로`;
-  const jong = code % 28;
-  return `${word}${jong === 0 || jong === 8 ? '로' : '으로'}`;
 }
 
 /** 결과 화면 문구(R4 U3, ui-rules-v4 용어: 랭킹 점수·연속 정답 보너스). 상시 문장은 2개 이하라 한 줄씩만 둔다. */
@@ -146,7 +133,7 @@ export const RESULT_COPY = {
 } as const;
 
 /** 상태 카드의 최고 기록 문구(prd-r4 §7.2-F). 웨이브 옆에 작게 붙는다. */
-export const HUD_COPY = {
+const HUD_COPY = {
   best: (n: number) => `최고 ${n}`,
   chase: (n: number) => `최고 기록까지 ${n}`,
   /** 폭이 좁은 상태 카드(휴대폰·낮은 화면 압축 레일)용 짧은 말. */
@@ -155,7 +142,7 @@ export const HUD_COPY = {
 } as const;
 
 /** 최고 기록 2웨이브 전부터 '최고 기록까지'를 보인다(prd-r4 §7.2-F). 아까운 패배의 1~2웨이브 차이와 같은 폭이다. */
-export const CHASE_WAVES = 2;
+const CHASE_WAVES = 2;
 
 export interface BestLine { kind: 'best' | 'chase' | 'new'; text: string }
 

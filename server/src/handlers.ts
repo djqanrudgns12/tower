@@ -2,14 +2,14 @@
  * 엔드포인트 판단. 검사 순서는 Postgres 함수(docs/archive/supabase/migrations 네 번째 판)와 같다:
  * 속도 제한 → 입력 검사 → 승인 조건 → 중복 → 시작 기록 → 시간 → 재채점 → 점수 → 기록.
  */
-import { computeHonorPoints, matchesRegradedRun, regradeRunAnswers } from '../../src/contracts/lobby';
+import { cleanPublicSchoolName, computeHonorPoints, matchesRegradedRun, regradeRunAnswers } from '../../src/contracts/lobby';
 import { sha256Hex, signDeviceToken, type ServerKeys } from './crypto';
 import { isConstraintError, type SqlDatabase, type SqlRow, type SqlStatement } from './db';
 import { BODY_LIMIT_SMALL, BODY_LIMIT_SUBMIT, HttpError, json, readJsonObject } from './http';
 import { cleanServerNickname } from './nickname';
 import { minimumDurationMs, parseVerificationRules } from './rules';
 import { rankStandings, type RankedPlayer, type StandingRow } from './ranking';
-import type { RankingCache } from './ranking-cache';
+import type { CacheLike, RankingCache } from './ranking-cache';
 import {
   existingRunStatement, insertCompletedRunStatement, leaderboardRowsStatement, myHonorRunIdsStatement,
   DEVICE_RATE_LIMITS, IP_RATE_LIMITS, rateLimitState, rateLimitStatement, startStatements, submitLookupStatements, VERIFIED_LEVEL,
@@ -33,6 +33,10 @@ export interface Context {
   now: number;
   /** 랭킹 응답 캐시. workers.dev·로컬 Node·RANKING_CACHE_SECONDS=0이면 null. */
   rankingCache: RankingCache | null;
+  /** 거점 공용 캐시(학교 명부 검색 24시간 캐시 겸용). */
+  edgeCache: CacheLike | null;
+  /** 선택적 NEIS 인증키. 없어도 공개 기본 한도로 조회한다. */
+  neisApiKey?: string | undefined;
 }
 
 /** 본문을 크기 제한 안에서 읽고, 다 받은 시각을 이 요청의 시각으로 삼는다. */
@@ -48,10 +52,14 @@ interface Bucket {
   limit: RateLimit;
 }
 
-/** 기기 칸(Postgres allow_lobby_rpc)과 IP 칸. 기기 발급은 IP 칸만 본다. */
-function buckets(ctx: Context, hash: string | null, action: RateAction | 'device'): Bucket[] {
+type LimitAction = RateAction | 'device' | 'schools';
+
+/** 기기 칸(Postgres allow_lobby_rpc)과 IP 칸. 기기 발급·학교 검색은 IP 칸만 본다. */
+function buckets(ctx: Context, hash: string | null, action: LimitAction): Bucket[] {
   const list: Bucket[] = [{ subject: ctx.ipSubject, action, limit: IP_RATE_LIMITS[action] }];
-  if (hash !== null && action !== 'device') list.unshift({ subject: hash, action, limit: DEVICE_RATE_LIMITS[action] });
+  if (hash !== null && action !== 'device' && action !== 'schools') {
+    list.unshift({ subject: hash, action, limit: DEVICE_RATE_LIMITS[action] });
+  }
   return list;
 }
 
@@ -67,7 +75,7 @@ async function rateLimitedError(ctx: Context, list: Bucket[]): Promise<HttpError
  * 기기 칸·IP 칸 증가와 나머지 문장을 한 batch로 보낸다. 어느 칸이든 한도를 넘으면 전부 되돌아가고 429가 된다.
  * 기기 칸은 Postgres allow_lobby_rpc와 같고, IP 칸은 기기를 여러 개 받아 우회하는 것을 막는다.
  */
-async function limited(ctx: Context, hash: string | null, action: RateAction | 'device', statements: SqlStatement[] = []): Promise<SqlRow[][]> {
+async function limited(ctx: Context, hash: string | null, action: LimitAction, statements: SqlStatement[] = []): Promise<SqlRow[][]> {
   const list = buckets(ctx, hash, action);
   const checks = list.map(b => rateLimitStatement(b.subject, b.action, b.limit, ctx.now));
   try {
@@ -78,7 +86,122 @@ async function limited(ctx: Context, hash: string | null, action: RateAction | '
   }
 }
 
-/** POST /v1/device: 기기 ID와 서명 토큰. 학교 IP 하나에 한 반이 몰려도 막히지 않을 만큼 IP 한도를 넉넉히 둔다. */
+/** GET /v1/health: D1을 건드리지 않고 Worker·비밀값 준비 상태를 확인한다. */
+export async function healthCheck(): Promise<Response> {
+  return json({ ok: true });
+}
+
+interface SchoolDirectoryItem {
+  schoolCode: string;
+  schoolName: string;
+  officeCode: string;
+  officeName: string;
+  locationName: string;
+  schoolKind: string;
+  roadAddress: string;
+}
+
+const SCHOOLS_CACHE_PATH = '/__schools-cache/v1';
+const SCHOOLS_CACHE_TTL_SECONDS = 86_400;
+
+/**
+ * GET /v1/schools?q=...: 학교 와이파이 방화벽이 open.neis.go.kr 직접 접근을 막아도
+ * 같은 API 도메인으로 학교 목록을 조회할 수 있게 하는 캐시 프록시.
+ * 거점 캐시에 있으면 속도 제한 D1 쓰기도 생략한다.
+ */
+export async function searchSchools(ctx: Context): Promise<Response> {
+  const rawQuery = (ctx.url.searchParams.get('q') ?? '').trim();
+  if (rawQuery.length < 2) {
+    return json({ schools: [] });
+  }
+  const query = cleanPublicSchoolName(rawQuery);
+  if (!query) {
+    await limited(ctx, null, 'schools');
+    throw new HttpError(422, 'INVALID_QUERY');
+  }
+
+  const cacheReq = new Request(`${ctx.url.origin}${SCHOOLS_CACHE_PATH}/${encodeURIComponent(query)}`);
+  if (ctx.edgeCache) {
+    try {
+      const hit = await ctx.edgeCache.match(cacheReq);
+      if (hit) {
+        const cached = (await hit.json()) as { schools?: unknown };
+        if (Array.isArray(cached?.schools)) {
+          return json({ schools: cached.schools }, 200, { 'Cache-Control': `public, max-age=${SCHOOLS_CACHE_TTL_SECONDS}` });
+        }
+      }
+    } catch {
+      // 캐시 읽기 실패는 무시하고 원본 조회로 간다.
+    }
+  }
+
+  await limited(ctx, null, 'schools');
+
+  const params = new URLSearchParams({
+    Type: 'json',
+    pIndex: '1',
+    pSize: '15',
+    SCHUL_NM: query,
+  });
+  if (ctx.neisApiKey) params.set('KEY', ctx.neisApiKey);
+
+  let upstream: Response;
+  try {
+    upstream = await fetch(`https://open.neis.go.kr/hub/schoolInfo?${params.toString()}`, {
+      signal: AbortSignal.timeout(4500),
+    });
+  } catch {
+    throw new HttpError(502, 'UPSTREAM_UNAVAILABLE');
+  }
+  if (!upstream.ok) throw new HttpError(502, 'UPSTREAM_UNAVAILABLE');
+
+  let data: {
+    schoolInfo?: [{ head?: unknown[] }, { row?: Array<Record<string, unknown>> }];
+    RESULT?: { CODE?: string };
+  };
+  try {
+    data = (await upstream.json()) as typeof data;
+  } catch {
+    throw new HttpError(502, 'UPSTREAM_UNAVAILABLE');
+  }
+
+  const seen = new Set<string>();
+  const schools: SchoolDirectoryItem[] = [];
+  if (data.RESULT?.CODE !== 'INFO-200') {
+    const rows = data.schoolInfo?.[1]?.row;
+    if (!Array.isArray(rows)) throw new HttpError(502, 'UPSTREAM_UNAVAILABLE');
+    for (const r of rows) {
+      const schoolCode = String(r.SD_SCHUL_CODE ?? '').trim();
+      const schoolName = String(r.SCHUL_NM ?? '').trim();
+      if (!schoolCode || !schoolName || seen.has(schoolCode)) continue;
+      seen.add(schoolCode);
+      schools.push({
+        schoolCode,
+        schoolName,
+        officeCode: String(r.ATPT_OFCDC_SC_CODE ?? '').trim(),
+        officeName: String(r.ATPT_OFCDC_SC_NM ?? '').trim(),
+        locationName: String(r.LCTN_SC_NM ?? '').trim(),
+        schoolKind: String(r.SCHUL_KND_SC_NM ?? '').trim(),
+        roadAddress: String(r.ORG_RDNMA ?? '').trim(),
+      });
+    }
+    schools.sort((a, b) => {
+      const aElem = a.schoolKind.includes('초등학교') ? 0 : 1;
+      const bElem = b.schoolKind.includes('초등학교') ? 0 : 1;
+      return aElem - bElem;
+    });
+  }
+
+  const payload = { schools };
+  if (ctx.edgeCache) {
+    await ctx.edgeCache.put(cacheReq, new Response(JSON.stringify(payload), {
+      headers: { 'Content-Type': 'application/json', 'Cache-Control': `max-age=${SCHOOLS_CACHE_TTL_SECONDS}` },
+    })).catch(() => undefined);
+  }
+  return json(payload, 200, { 'Cache-Control': `public, max-age=${SCHOOLS_CACHE_TTL_SECONDS}` });
+}
+
+/** POST /v1/device: 기기 ID와 서명 토큰. 학교 IP 하나에 한 학년이 몰려도 막히지 않을 만큼 IP 한도를 넉넉히 둔다. */
 export async function issueDevice(ctx: Context): Promise<Response> {
   await readBody(ctx, BODY_LIMIT_SMALL);
   await limited(ctx, null, 'device');
@@ -178,6 +301,7 @@ export async function submitCompletedRun(ctx: Context, hash: string): Promise<Re
     balanceVersion: claim.balanceVersion, bankVersion: claim.bankVersion, mapId: claim.mapId,
     weekKey: kstIsoWeekKey(new Date(endedAt)), kstDate: kstDateKey(new Date(endedAt)),
     localEndedAt: claim.endedAtMs, endedAt, receivedAt: ctx.now, payloadHash,
+    schoolCode: claim.schoolCode, schoolName: claim.schoolName,
   };
   try {
     await ctx.db.batch([insertCompletedRunStatement(row)]);
@@ -190,7 +314,13 @@ export async function submitCompletedRun(ctx: Context, hash: string): Promise<Re
     throw error;
   }
   // 새 기록이 바꾸는 랭킹 범위를 이 거점 캐시에서 지운다(제출한 학생이 홈으로 돌아가 바로 보게).
-  await ctx.rankingCache?.purgeForRun({ grade: row.grade, difficulty: row.difficulty, weekKey: row.weekKey });
+  await ctx.rankingCache?.purgeForRun({
+    grade: row.grade,
+    difficulty: row.difficulty,
+    weekKey: row.weekKey,
+    ...(row.schoolCode ? { schoolCode: row.schoolCode } : {}),
+    ...(row.schoolName ? { schoolName: row.schoolName } : {}),
+  });
   return json({ ok: true, status: 'recorded', verificationLevel: VERIFIED_LEVEL });
 }
 
@@ -208,7 +338,13 @@ export async function getLeaderboard(ctx: Context, hash: string): Promise<Respon
     throw new HttpError(422, 'INVALID_QUERY');
   }
   const weekKey = params.period === 'weekly' ? kstIsoWeekKey(new Date(ctx.now)) : null;
-  const scope: LeaderboardScope = { tab: params.tab, period: weekKey ? `week:${weekKey}` : 'all', grade: params.grade, difficulty: params.difficulty };
+  const scope: LeaderboardScope = {
+    tab: params.tab,
+    period: weekKey ? `week:${weekKey}` : 'all',
+    grade: params.grade,
+    difficulty: params.difficulty,
+    ...(params.schoolCode ? { schoolCode: params.schoolCode } : params.schoolName ? { schoolName: params.schoolName } : {}),
+  };
   // 캐시 적중이면 속도 제한 칸을 쓰지 않는다: 적중은 D1 행을 쓰지 않으므로 아낄 것이 없고, 칸을 세면 그것만으로 쓰기 2행이 든다.
   let ranked = await ctx.rankingCache?.get(scope) ?? null;
   let myRunRows: SqlRow[] = [];
@@ -238,6 +374,7 @@ export async function getLeaderboard(ctx: Context, hash: string): Promise<Respon
       primaryValue: p.val,
       secondaryLabel: secondaryLabel(params.tab, p.secondary),
       achievedAtIso: new Date(p.achievedAt).toISOString(),
+      ...(p.schoolName ? { schoolName: p.schoolName } : {}),
     };
   };
   const mine = ranked.find(p => p.hash === hash);

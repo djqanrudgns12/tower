@@ -9,5 +9,7 @@ export function buildRunRecord(s: RunState, endedAt: Date = new Date()): RunReco
     runId: s.config.runId, nickname: s.config.nickname, grade: s.config.grade, difficulty: s.config.difficulty, mapId: s.config.mapId,
     pt: s.pt, completedWave: s.completedWave, endedAtWave: s.endedAtWave ?? s.wave, correct: s.stats.correct, wrong: s.stats.wrong, skipped: s.stats.skipped,
     endedAt: endedAt.toISOString(), endReason: s.endReason ?? 'QUIT', contentMode: s.config.contentMode, balanceVersion: s.config.balanceVersion, bankVersion: s.config.bankVersion,
+    ...(s.config.schoolName ? { schoolName: s.config.schoolName } : {}),
+    ...(s.config.schoolCode ? { schoolCode: s.config.schoolCode } : {}),
   };
 }

@@ -43,6 +43,8 @@ export interface RunConfig {
   availableTowers: TowerId[];
   rankingEligibility: 'personal';
   createdAt: string;
+  schoolName?: string;
+  schoolCode?: string;
 }
 
 export interface Encounter {

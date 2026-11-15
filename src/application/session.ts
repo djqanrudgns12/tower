@@ -1,4 +1,5 @@
 import type { DifficultyId } from '../contracts/balance';
+import { cleanPublicSchoolCode, cleanPublicSchoolName } from '../contracts/lobby';
 import { ContentUnavailableError, contextFor, gradeContent, gradeLoadState, PILOT_TOWERS, PRACTICE, PRACTICE_BANK, practiceContext, reviewQuestions } from '../content';
 import type { GameContext } from '../domain/context';
 import { createRun } from '../domain/run';
@@ -38,7 +39,10 @@ function tryContext(grade: number, difficulty: DifficultyId): GameContext | null
 }
 
 /** 새 정규 판. 판은 메모리에만 있고(이어하기 없음, PRD §14), 끝내기·패배 때만 기록에 남는다. */
-export async function startNewRun(input: { grade: number; difficulty: DifficultyId; nickname: string; playerId: string }, signal?: AbortSignal): Promise<StartResult> {
+export async function startNewRun(
+  input: { grade: number; difficulty: DifficultyId; nickname: string; playerId: string; schoolName?: string; schoolCode?: string },
+  signal?: AbortSignal,
+): Promise<StartResult> {
   signal?.throwIfAborted();
   const { map, bank } = gradeContent(input.grade);
   if (!bank && gradeLoadState(input.grade) !== 'unavailable') return { ok: false, message: '문제를 불러온 뒤 다시 시작해 주세요.' };
@@ -50,10 +54,14 @@ export async function startNewRun(input: { grade: number; difficulty: Difficulty
   const ctx = tryContext(input.grade, input.difficulty);
   if (!ctx) return { ok: false, message: NO_QUESTIONS };
   const seed = crypto.getRandomValues(new Uint32Array(1))[0]!;
+  const schoolName = cleanPublicSchoolName(input.schoolName);
+  const schoolCode = schoolName ? cleanPublicSchoolCode(input.schoolCode) : '';
   const state = createRun(ctx, {
     runId: crypto.randomUUID(), playerId: input.playerId, nickname: input.nickname, grade: input.grade, difficulty: input.difficulty, mapId: map.id, seed,
     bankId: bank.bankId, bankVersion: bank.bankVersion, contentMode: bank.status === 'published' ? 'published' : 'development',
     availableTowers: [...PILOT_TOWERS], rankingEligibility: 'personal', createdAt: new Date().toISOString(),
+    ...(schoolName ? { schoolName } : {}),
+    ...(schoolCode ? { schoolCode } : {}),
     // 판 밖 자료는 여기서 한 번만 읽어 RunState에 복사한다. 판 안의 출제는 이 복사본만 본다(결정성, A18).
     previousQuestionIds,
     reviewSenses: reviewSensesForRun(loadReviewNote(), bank.bankId, ctx.questions),

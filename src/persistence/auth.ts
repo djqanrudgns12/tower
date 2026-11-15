@@ -103,10 +103,11 @@ export async function getAccessToken(env: ApiEnv): Promise<string | null> {
     try {
       if (!isRecordSharingEnabled()) return null;
       const response = await fetch(`${env.base}/v1/device`, {
-        method: 'POST', headers: { 'Content-Type': 'application/json' }, body: '{}', signal: AbortSignal.timeout(4500),
+        method: 'POST', headers: { 'Content-Type': 'application/json' }, body: '{}', signal: AbortSignal.timeout(8000),
       });
-      // 429·5xx·연결 실패는 다음 기회에 다시 받는다. 그동안 게임은 이 기기 기록으로 돈다.
+      // 429·5xx·캡티브 포털 HTML·연결 실패는 다음 기회에 다시 받는다. 그동안 게임은 이 기기 기록으로 돈다.
       if (!response.ok) return null;
+      if (response.headers?.get?.('Content-Type')?.toLowerCase().includes('text/html')) return null;
       const raw: unknown = await response.json();
       if (!isDeviceSession(raw)) return null;
       const session = { deviceId: raw.deviceId, token: raw.token };

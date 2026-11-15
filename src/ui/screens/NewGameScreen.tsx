@@ -1,5 +1,6 @@
 import { useEffect, useId, useRef, useState } from 'react';
 import { DIFFICULTY_IDS, type DifficultyId } from '../../contracts/balance';
+import { cleanPublicSchoolName } from '../../contracts/lobby';
 import { isGradeAvailable, MAPS } from '../../content';
 import { useGradeContent } from '../useGradeContent';
 import type { Settings } from '../../application/session';
@@ -40,6 +41,7 @@ export function NewGameScreen({ settings, onBack, onEditNickname, onStart }: Pro
   const map = MAPS.find(m => m.grade === grade)!;
   const mapName = MAP_NAMES[map.id] ?? map.id;
   const { nickname, problem } = nickProblemOf(settings.lastNickname);
+  const schoolName = cleanPublicSchoolName(settings.lastSchoolName);
 
   const start = async () => {
     if (pending.current || problem !== null || status !== 'ready') return;
@@ -120,6 +122,7 @@ export function NewGameScreen({ settings, onBack, onEditNickname, onStart }: Pro
           <div className={css.nickLine}>
             <span className={css.nickLabel}>{N.nickname}</span>
             {nickname !== '' && <strong className={css.nickName}>{nickname}</strong>}
+            {schoolName !== '' && <span className={css.schoolTag}>{schoolName}</span>}
             <Button size="md" aria-label={N.changeLabel} onClick={onEditNickname}>{N.change}</Button>
             {problem !== null && <p id={problemId} className={css.nickProblem}>{problem}</p>}
           </div>

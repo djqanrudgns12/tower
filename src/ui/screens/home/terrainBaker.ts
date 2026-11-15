@@ -216,26 +216,35 @@ export function bakeThreeToneGrass(
   }
 
   // 1) 숲 그늘 마스크 + ShadePools (multiply)
+  const invMw = 1 / (mw - 1);
+  const invMh = 1 / (mh - 1);
+  const shadeInvRx = shadePools.map(p => 1 / p.rx);
+  const shadeInvRy = shadePools.map(p => 1 / p.ry);
+  const lightInvRx = lightPools.map(p => 1 / p.rx);
+  const lightInvRy = lightPools.map(p => 1 / p.ry);
+
   const shadeData = mctx.createImageData(mw, mh);
+  const sBuf = shadeData.data;
+  sBuf.fill(255);
   for (let py = 0; py < mh; py++) {
-    const v = py / (mh - 1);
+    const v = py * invMh;
+    const wy = v * h;
+    const rowOff = py * mw;
     for (let px = 0; px < mw; px++) {
-      const u = px / (mw - 1);
+      const u = px * invMw;
+      const wx = u * w;
       const val = lowFreqNoise(u, v, 4.2, 3.4, salt) * 0.68 + lowFreqNoise(u, v, 8.5, 6.8, salt + 7) * 0.32;
       let poolBoost = 0;
       for (let i = 0; i < shadePools.length; i++) {
         const p = shadePools[i]!;
-        const dx = (u * w - p.x) / p.rx;
-        const dy = (v * h - p.y) / p.ry;
+        const dx = (wx - p.x) * shadeInvRx[i]!;
+        if (dx <= -1.79 || dx >= 1.79) continue;
+        const dy = (wy - p.y) * shadeInvRy[i]!;
         const d2 = dx * dx + dy * dy;
         if (d2 < 3.2) poolBoost += p.str * Math.exp(-d2 * 1.15);
       }
       const a = Math.max(0, Math.min(1, (val - 0.36) * 1.25 + poolBoost));
-      const idx = (py * mw + px) * 4;
-      shadeData.data[idx] = 255;
-      shadeData.data[idx + 1] = 255;
-      shadeData.data[idx + 2] = 255;
-      shadeData.data[idx + 3] = Math.round(a * 235);
+      sBuf[(rowOff + px) * 4 + 3] = Math.round(a * 235);
     }
   }
   mctx.putImageData(shadeData, 0, 0);
@@ -261,25 +270,27 @@ export function bakeThreeToneGrass(
 
   // 2) 햇살 언덕 마스크 + LightPools
   const lightData = mctx.createImageData(mw, mh);
+  const lBuf = lightData.data;
+  lBuf.fill(255);
   for (let py = 0; py < mh; py++) {
-    const v = py / (mh - 1);
+    const v = py * invMh;
+    const wy = v * h;
+    const rowOff = py * mw;
     for (let px = 0; px < mw; px++) {
-      const u = px / (mw - 1);
+      const u = px * invMw;
+      const wx = u * w;
       const val = lowFreqNoise(u, v, 3.6, 2.8, salt + 31);
       let sunBoost = 0;
       for (let i = 0; i < lightPools.length; i++) {
         const p = lightPools[i]!;
-        const dx = (u * w - p.x) / p.rx;
-        const dy = (v * h - p.y) / p.ry;
+        const dx = (wx - p.x) * lightInvRx[i]!;
+        if (dx <= -1.74 || dx >= 1.74) continue;
+        const dy = (wy - p.y) * lightInvRy[i]!;
         const d2 = dx * dx + dy * dy;
         if (d2 < 3.0) sunBoost += p.str * Math.exp(-d2);
       }
       const a = Math.max(0, Math.min(1, (val - 0.42) * 1.3 + sunBoost));
-      const idx = (py * mw + px) * 4;
-      lightData.data[idx] = 255;
-      lightData.data[idx + 1] = 255;
-      lightData.data[idx + 2] = 255;
-      lightData.data[idx + 3] = Math.round(a * 220);
+      lBuf[(rowOff + px) * 4 + 3] = Math.round(a * 220);
     }
   }
   mctx.putImageData(lightData, 0, 0);

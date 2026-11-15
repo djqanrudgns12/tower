@@ -1,6 +1,6 @@
 /**
  * 어휘력 타워 디펜스 기록·랭킹 서버(Cloudflare Workers + D1).
- * 엔드포인트: POST /v1/device, POST /v1/lobby-visit, POST /v1/runs/start, POST /v1/runs/submit, GET /v1/leaderboard
+ * 엔드포인트: GET /v1/health, GET /v1/schools, POST /v1/device, POST /v1/lobby-visit, POST /v1/runs/start, POST /v1/runs/submit, GET /v1/leaderboard
  */
 import { handleRequest, runScheduledCleanup, type Env } from './app';
 import type { CacheLike } from './ranking-cache';

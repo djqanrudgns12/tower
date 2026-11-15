@@ -4,7 +4,7 @@ type: project
 title: 프로젝트 계보 및 현행 코드 실체 판정
 status: active
 updated: 2026-11-16
-verified: { commit: e22ff57f, date: 2026-11-16 }
+verified: { commit: b9b024bd, date: 2026-11-16 }
 sources:
   - path: package.json
     sha256: a30c5cbd4a9e080a26987cc63f28b2a5dc928c404a7f96f392bc94209d441fe6
@@ -15,7 +15,7 @@ sources:
   - path: docs/DEPLOY.md
     sha256: "4697485dc76d7c4e3b7ba2b00bedd31373fd3d13892905314a0bc294db9d43d1"
   - path: docs/HOSTING_IMPL_PLAN.md
-    sha256: fedb202fc04bc7c0e31497678fdbcabfc2cec34b2d8a3aa2cd5f841e9d825836
+    sha256: "131f441e1eb67c37389ac5ae8a19af7ab95ae6bc5c3a68e71578b2938cff7239"
   - path: docs/CR1000_HANDOFF.md
     sha256: c3c01581eceead622afc236790d68ce0c3f6f600317b819d9f549176dbb1707c
   - path: docs/balance/r4-final.md

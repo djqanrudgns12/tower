@@ -4,7 +4,7 @@ type: hub
 title: 전투·타워 20종·밸런스 시스템
 status: active
 updated: 2026-11-16
-verified: { commit: e22ff57f, date: 2026-11-16 }
+verified: { commit: b9b024bd, date: 2026-11-16 }
 sources:
   - path: docs/contracts/balance.candidate.v0.4.json
     sha256: e58e062f13209b1c955a5a6f46a5f4d6b861bc915ad3f8c6cee3904d9c76e486

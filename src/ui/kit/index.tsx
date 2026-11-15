@@ -12,7 +12,7 @@ export { nextSegment, type SegmentOption };
 
 const cx = (...names: Array<string | false | null | undefined>) => names.filter(Boolean).join(' ');
 
-export type ButtonVariant = 'primary' | 'accent' | 'danger' | 'secondary' | 'ghost';
+type ButtonVariant = 'primary' | 'accent' | 'danger' | 'secondary' | 'ghost';
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: ButtonVariant;
@@ -190,11 +190,6 @@ export function ArtIcon({ name, size = 24, label, className }: { name: ArtIconNa
       className={cx(css.artIcon, className)}
     />
   );
-}
-
-/** 개수 배지. 놋쇠(기본) 또는 밀랍(경고: 보스 웨이브·대응 공백). 글 흐름 안에 선다. */
-export function Badge({ count, tone = 'brass' }: { count: number; tone?: 'brass' | 'wax' }) {
-  return count > 0 ? <span className={cx(css.badge, css.badgeInline, tone === 'wax' && css.badgeWax)}>{count > 99 ? '99+' : count}</span> : null;
 }
 
 export interface ModalTabOption<T extends string = string> extends SegmentOption<T> {

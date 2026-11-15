@@ -4,7 +4,7 @@ type: hub
 title: 로컬 저장(IndexedDB) 및 기록·랭킹 서버(Workers/D1)
 status: active
 updated: 2026-11-16
-verified: { commit: e22ff57f, date: 2026-11-16 }
+verified: { commit: b9b024bd, date: 2026-11-16 }
 sources:
   - path: src/persistence/reviewNote.ts
     sha256: "729abb95daffa0b758340070f97fd326647b7e00f7d23f1e0eb34734e6fcad41"
@@ -15,7 +15,7 @@ sources:
   - path: docs/DEPLOY.md
     sha256: "4697485dc76d7c4e3b7ba2b00bedd31373fd3d13892905314a0bc294db9d43d1"
   - path: docs/HOSTING_IMPL_PLAN.md
-    sha256: fedb202fc04bc7c0e31497678fdbcabfc2cec34b2d8a3aa2cd5f841e9d825836
+    sha256: "131f441e1eb67c37389ac5ae8a19af7ab95ae6bc5c3a68e71578b2938cff7239"
 ---
 
 # 로컬 저장(IndexedDB) 및 기록·랭킹 서버 (`persistence-and-ranking-server`)

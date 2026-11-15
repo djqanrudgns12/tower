@@ -1,10 +1,17 @@
 import { useEffect, useRef, useState, type KeyboardEvent, type RefObject } from 'react';
 import { DIFFICULTY_IDS, type DifficultyId } from '../../../contracts/balance';
-import { RANKING_TAB_IDS, type RankingPeriod, type RankingResponse, type RankingTabId } from '../../../contracts/lobby';
+import {
+  cleanPublicSchoolCode,
+  cleanPublicSchoolName,
+  RANKING_TAB_IDS,
+  type RankingPeriod,
+  type RankingResponse,
+  type RankingTabId,
+} from '../../../contracts/lobby';
 import { isGradeAvailable } from '../../../content';
 import { fetchRanking } from '../../../application/lobby';
 import { DIFFICULTY_COPY, fmtNumber } from '../../copy';
-import { HomeUiArt } from './HomeIcons';
+import { HomeUiArt, QrCodeIcon } from './HomeIcons';
 import { RANKING_EXTRA } from './homeCopy';
 import css from './home.module.css';
 
@@ -38,15 +45,19 @@ interface Props {
   onTabChange(next: RankingTabId): void;
   playerId: string;
   currentNickname: string;
+  schoolName: string;
+  schoolCode: string;
   defaultGrade: 3 | 4 | 5 | 6;
   defaultDifficulty: DifficultyId;
   refreshTick: number;
   boardRef: RefObject<HTMLElement | null>;
+  onOpenQrModal(): void;
   onOpenDetailModal(initial: {
     tab: RankingTabId;
     grade: 3 | 4 | 5 | 6 | 'all';
     difficulty: DifficultyId;
     period: RankingPeriod;
+    schoolOnly: boolean;
   }): void;
 }
 
@@ -55,20 +66,28 @@ export function RankingBoard({
   onTabChange,
   playerId,
   currentNickname,
+  schoolName,
+  schoolCode,
   defaultGrade,
   defaultDifficulty,
   refreshTick,
   boardRef,
+  onOpenQrModal,
   onOpenDetailModal,
 }: Props) {
   const [grade, setGrade] = useState<3 | 4 | 5 | 6 | 'all'>(defaultGrade);
   const [difficulty, setDifficulty] = useState<DifficultyId>(defaultDifficulty);
   const [period, setPeriod] = useState<RankingPeriod>('all_time');
+  const [schoolOnly, setSchoolOnly] = useState(false);
   const [data, setData] = useState<RankingResponse | null>(null);
   const tabRefs = useRef<(HTMLButtonElement | null)[]>([]);
   const gradeRefs = useRef<(HTMLButtonElement | null)[]>([]);
   const diffRefs = useRef<(HTMLButtonElement | null)[]>([]);
   const periodRefs = useRef<(HTMLButtonElement | null)[]>([]);
+
+  const cleanSchool = cleanPublicSchoolName(schoolName);
+  const cleanCode = cleanSchool ? cleanPublicSchoolCode(schoolCode) : '';
+  const activeSchoolOnly = schoolOnly && cleanSchool !== '';
 
   const showAllGrade = tab === 'honor_points' || tab === 'local_device';
   const effectiveGrade: 3 | 4 | 5 | 6 | 'all' =
@@ -85,7 +104,20 @@ export function RankingBoard({
   useEffect(() => {
     let active = true;
     void fetchRanking(
-      { tab, grade: effectiveGrade, difficulty, period, limit: 8, offset: 0 },
+      {
+        tab,
+        grade: effectiveGrade,
+        difficulty,
+        period,
+        limit: 8,
+        offset: 0,
+        ...(activeSchoolOnly
+          ? {
+              schoolName: cleanSchool,
+              ...(cleanCode ? { schoolCode: cleanCode } : {}),
+            }
+          : {}),
+      },
       playerId,
       currentNickname,
     ).then(res => {
@@ -94,7 +126,7 @@ export function RankingBoard({
     return () => {
       active = false;
     };
-  }, [tab, effectiveGrade, difficulty, period, playerId, currentNickname, refreshTick]);
+  }, [tab, effectiveGrade, difficulty, period, activeSchoolOnly, cleanSchool, cleanCode, playerId, currentNickname, refreshTick]);
 
   const moveRoving = <T,>(
     e: KeyboardEvent,
@@ -142,14 +174,44 @@ export function RankingBoard({
             {syncLabel}
           </span>
         </div>
-        <button
-          id="openRankingModalBtn"
-          type="button"
-          className={css.keyBtnSm}
-          onClick={() => onOpenDetailModal({ tab, grade: effectiveGrade, difficulty, period })}
-        >
-          전체 보기
-        </button>
+        <div className={css.rankHeaderActions}>
+          {cleanSchool !== '' && (
+            <button
+              type="button"
+              className={css.keyBtnSm}
+              data-active={activeSchoolOnly ? 'true' : undefined}
+              aria-pressed={activeSchoolOnly}
+              onClick={() => setSchoolOnly(v => !v)}
+            >
+              우리 학교
+            </button>
+          )}
+          <button
+            id="openQrModalBtn"
+            type="button"
+            className={css.keyBtnSm}
+            onClick={onOpenQrModal}
+          >
+            <QrCodeIcon className={css.btnIconSvg} />
+            교실 QR
+          </button>
+          <button
+            id="openRankingModalBtn"
+            type="button"
+            className={css.keyBtnSm}
+            onClick={() =>
+              onOpenDetailModal({
+                tab,
+                grade: effectiveGrade,
+                difficulty,
+                period,
+                schoolOnly: activeSchoolOnly,
+              })
+            }
+          >
+            전체 보기
+          </button>
+        </div>
       </div>
 
       <div className={css.ledgerWrap}>
@@ -347,7 +409,10 @@ export function RankingBoard({
                           <span className={css.rankNick}>{entry.nickname}</span>
                           {entry.isMe && <span className={css.meTag}>나</span>}
                         </span>
-                        <span className={css.rankSub}>{entry.secondaryLabel}</span>
+                        <span className={css.rankSub}>
+                          {entry.secondaryLabel}
+                          {!activeSchoolOnly && entry.schoolName ? ` · ${entry.schoolName}` : ''}
+                        </span>
                       </div>
                       <strong className={css.rankScore}>
                         {formatPrimaryMetric(tab, entry.primaryValue)}

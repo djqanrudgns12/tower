@@ -15,6 +15,8 @@ export interface StandingRow {
   correct: number;
   achieved_at: number;
   run_id: string | null;
+  school_code?: string;
+  school_name?: string;
 }
 
 export interface RankedPlayer {
@@ -28,6 +30,7 @@ export interface RankedPlayer {
   correct: number;
   achievedAt: number;
   runId: string | null;
+  schoolName?: string;
 }
 
 const compareHash = (a: string, b: string) => (a < b ? -1 : a > b ? 1 : 0);
@@ -57,12 +60,16 @@ export function rankStandings(rows: readonly StandingRow[], tab: RankingTab): Ra
         grade = Math.max(grade, row.grade);
         if (row.achieved_at > latest.achieved_at) latest = row;
       }
-      players.push({ hash, nickname: latest.nickname, grade, difficulty: 'Normal', val, secondary, correct: 0, achievedAt: latest.achieved_at, runId: null });
+      players.push({
+        hash, nickname: latest.nickname, grade, difficulty: 'Normal', val, secondary, correct: 0, achievedAt: latest.achieved_at, runId: null,
+        ...(latest.school_name ? { schoolName: latest.school_name } : {}),
+      });
     } else {
       const best = list.reduce((a, b) => (betterRun(a, b) <= 0 ? a : b));
       players.push({
         hash, nickname: best.nickname, grade: best.grade, difficulty: best.difficulty, val: best.val, secondary: best.secondary,
         correct: best.correct, achievedAt: best.achieved_at, runId: best.run_id,
+        ...(best.school_name ? { schoolName: best.school_name } : {}),
       });
     }
   }

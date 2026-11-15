@@ -4,7 +4,7 @@ type: entity
 title: 어휘력 타워 디펜스 제품 정의
 status: active
 updated: 2026-11-16
-verified: { commit: e22ff57f, date: 2026-11-16 }
+verified: { commit: b9b024bd, date: 2026-11-16 }
 sources:
   - path: package.json
     sha256: a30c5cbd4a9e080a26987cc63f28b2a5dc928c404a7f96f392bc94209d441fe6

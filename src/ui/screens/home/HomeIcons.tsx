@@ -32,29 +32,6 @@ export function GearIcon({ className }: SvgProps = {}) {
   );
 }
 
-export function BookIcon({ className }: SvgProps = {}) {
-  return (
-    <svg width="16" height="16" viewBox="0 0 20 20" aria-hidden="true" className={className}>
-      <path
-        d="M3 4.5C3 3.7 3.7 3 4.5 3H9c.6 0 1 .4 1 1v12.5c-.6-.4-1.3-.5-2-.5H4.5C3.7 16 3 15.3 3 14.5v-10zm14 0c0-.8-.7-1.5-1.5-1.5H11c-.6 0-1 .4-1 1v12.5c.6-.4 1.3-.5 2-.5h3.5c.8 0 1.5-.7 1.5-1.5v-10z"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.7"
-        strokeLinejoin="round"
-      />
-    </svg>
-  );
-}
-
-export function RecordIcon({ className }: SvgProps = {}) {
-  return (
-    <svg width="16" height="16" viewBox="0 0 20 20" aria-hidden="true" className={className}>
-      <rect x="4" y="3" width="12" height="14" rx="2" fill="none" stroke="currentColor" strokeWidth="1.8" />
-      <path d="M7 7.5h6M7 10.5h6M7 13.5h4" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
-    </svg>
-  );
-}
-
 export function NoteIcon({ className }: SvgProps = {}) {
   return (
     <svg width="16" height="16" viewBox="0 0 20 20" aria-hidden="true" className={className}>
@@ -65,33 +42,16 @@ export function NoteIcon({ className }: SvgProps = {}) {
   );
 }
 
-export function TrophyIcon({ className }: SvgProps = {}) {
+export function QrCodeIcon({ className }: SvgProps = {}) {
   return (
-    <svg width="18" height="18" viewBox="0 0 20 20" aria-hidden="true" className={className}>
-      <path
-        d="M6 3.5h8v4.2a4 4 0 0 1-8 0V3.5zm0 1.5H3.8v1.5a2.6 2.6 0 0 0 2.2 2.5m8-4h2.2v1.5A2.6 2.6 0 0 1 14 9m-4 2.8v3.2m-3 1.5h6"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.8"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
-  );
-}
-
-export function ChevronLeftIcon({ className }: SvgProps = {}) {
-  return (
-    <svg width="14" height="14" viewBox="0 0 16 16" aria-hidden="true" className={className}>
-      <path d="M10 3.5L5.5 8 10 12.5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  );
-}
-
-export function ChevronRightIcon({ className }: SvgProps = {}) {
-  return (
-    <svg width="14" height="14" viewBox="0 0 16 16" aria-hidden="true" className={className}>
-      <path d="M6 3.5L10.5 8 6 12.5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+    <svg width="16" height="16" viewBox="0 0 20 20" aria-hidden="true" className={className}>
+      <rect x="3" y="3" width="5.5" height="5.5" rx="1" fill="none" stroke="currentColor" strokeWidth="1.7" />
+      <rect x="11.5" y="3" width="5.5" height="5.5" rx="1" fill="none" stroke="currentColor" strokeWidth="1.7" />
+      <rect x="3" y="11.5" width="5.5" height="5.5" rx="1" fill="none" stroke="currentColor" strokeWidth="1.7" />
+      <rect x="5" y="5" width="1.5" height="1.5" fill="currentColor" />
+      <rect x="13.5" y="5" width="1.5" height="1.5" fill="currentColor" />
+      <rect x="5" y="13.5" width="1.5" height="1.5" fill="currentColor" />
+      <path d="M11.5 11.5h2v2h-2zM15 11.5h2v2h-2zM13.2 13.8h2v3.2h-2zM11.5 15.2h1.6v1.8h-1.6zM15.4 15.2H17V17h-1.6z" fill="currentColor" />
     </svg>
   );
 }

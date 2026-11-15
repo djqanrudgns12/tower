@@ -275,11 +275,6 @@ function loadRawStudyPool(): Promise<readonly StudyQuestionLike[]> {
   return rawStudyPoolPromise;
 }
 
-/** 이미 메모리에 적재된 전체 서버 낱말 풀이 있으면 동기 반환한다. */
-export function getCachedAllStudyCards(): readonly SteleCardItem[] | null {
-  return cachedDefaultAllStudyCards;
-}
-
 /**
  * 공개 은행(3~6학년)에 수록된 낱말만 로드하여
  * 철회 문항을 배제한 뒤 학년·낱말 뜻 단위로 정제된 학습 카드 풀을 반환한다(미검수 초안 배제).
@@ -657,20 +652,33 @@ export function createLobbyTelemetryStore(): LobbyTelemetryStore {
     refreshCounts,
     start(playerId: string) {
       let active = true;
+      let lastRefreshAt = Date.now();
       void flushPendingRunSyncs();
       void refreshCounts(playerId);
 
       const onOnline = () => {
         if (!active) return;
+        lastRefreshAt = Date.now();
         void flushPendingRunSyncs();
         void refreshCounts(playerId);
       };
+      const onVisibility = () => {
+        if (!active || typeof document === 'undefined' || document.visibilityState !== 'visible') return;
+        void flushPendingRunSyncs();
+        const now = Date.now();
+        if (now - lastRefreshAt >= 15_000) {
+          lastRefreshAt = now;
+          void refreshCounts(playerId);
+        }
+      };
       window.addEventListener('online', onOnline);
+      if (typeof document !== 'undefined') document.addEventListener('visibilitychange', onVisibility);
 
       return () => {
         active = false;
         refreshSequence++;
         window.removeEventListener('online', onOnline);
+        if (typeof document !== 'undefined') document.removeEventListener('visibilitychange', onVisibility);
       };
     },
   };

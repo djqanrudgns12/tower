@@ -34,8 +34,9 @@ export const IP_RATE_LIMITS = {
   start: { minute: 300, day: 4000 },
   submit: { minute: 300, day: 4000 },
   ranking: { minute: 1200, day: 20000 },
-  device: { minute: 120, day: 2000 },
-} as const satisfies Record<RateAction | 'device', RateLimit>;
+  device: { minute: 300, day: 4000 },
+  schools: { minute: 120, day: 3000 },
+} as const satisfies Record<RateAction | 'device' | 'schools', RateLimit>;
 
 /**
  * 한도를 넘으면 CHECK(rate_limited)가 실패해 같은 batch의 다른 문장도 모두 되돌아간다.
@@ -160,6 +161,8 @@ export interface CompletedRunRow {
   endedAt: number;
   receivedAt: number;
   payloadHash: string;
+  schoolCode: string;
+  schoolName: string;
 }
 
 /** 완주 기록을 넣는다. 랭킹 집계표는 트리거(completed_runs_standings)가 같은 트랜잭션에서 고친다. */
@@ -167,11 +170,11 @@ export function insertCompletedRunStatement(r: CompletedRunRow): SqlStatement {
   return sql(
     `INSERT INTO completed_runs (run_id, player_hash, public_tag, nickname, grade, difficulty, pt, honor_pt, completed_wave,
        correct, wrong, skipped, content_mode, balance_version, bank_version, map_id, season_id, week_key, kst_date,
-       local_ended_at, ended_at, received_at, verification_level, payload_hash)
-     VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12, 'published', ?13, ?14, ?15, 'season1', ?16, ?17, ?18, ?19, ?20, ?21, ?22)`,
+       local_ended_at, ended_at, received_at, verification_level, payload_hash, school_code, school_name)
+     VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12, 'published', ?13, ?14, ?15, 'season1', ?16, ?17, ?18, ?19, ?20, ?21, ?22, ?23, ?24)`,
     r.runId, r.hash, r.hash.slice(0, 16), r.nickname, r.grade, r.difficulty, r.pt, r.honorPt, r.completedWave,
     r.correct, r.wrong, r.skipped, r.balanceVersion, r.bankVersion, r.mapId, r.weekKey, r.kstDate,
-    r.localEndedAt, r.endedAt, r.receivedAt, VERIFIED_LEVEL, r.payloadHash,
+    r.localEndedAt, r.endedAt, r.receivedAt, VERIFIED_LEVEL, r.payloadHash, r.schoolCode, r.schoolName,
   );
 }
 
@@ -183,6 +186,8 @@ export interface LeaderboardScope {
   period: string; // 'all' 또는 'week:YYYY-Www'
   grade: number; // 0이면 모든 학년
   difficulty: string;
+  schoolCode?: string | undefined;
+  schoolName?: string | undefined;
 }
 
 /** 학년 0(전체)이면 조건을 빼서, 특정 학년이면 집계표 기본 키 앞부분(kind, period, grade, difficulty)을 그대로 타게 한다. */
@@ -193,10 +198,25 @@ const gradeClause = (grade: number) => (grade === 0 ? '' : `AND grade = ${Math.t
  * 순위(best/grouped → ranked)는 ranking.ts가 매긴다. 승인 조건 IN은 임시 색인을 한 번 만들 뿐이라 읽기가 거의 늘지 않는다.
  */
 export function leaderboardRowsStatement(s: LeaderboardScope): SqlStatement {
+  const diff = s.tab === 'honor_points' ? '*' : s.difficulty;
+  if (s.schoolCode) {
+    return sql(
+      `SELECT player_hash, nickname, grade, difficulty, val, secondary, correct, achieved_at, run_id, school_code, school_name FROM standings
+        WHERE kind = ?1 AND period = ?2 ${gradeClause(s.grade)} AND difficulty = ?3 AND ${ACTIVE_CONDITION} AND school_code = ?4`,
+      s.tab, s.period, diff, s.schoolCode,
+    );
+  }
+  if (s.schoolName) {
+    return sql(
+      `SELECT player_hash, nickname, grade, difficulty, val, secondary, correct, achieved_at, run_id, school_code, school_name FROM standings
+        WHERE kind = ?1 AND period = ?2 ${gradeClause(s.grade)} AND difficulty = ?3 AND ${ACTIVE_CONDITION} AND school_name = ?4`,
+      s.tab, s.period, diff, s.schoolName,
+    );
+  }
   return sql(
-    `SELECT player_hash, nickname, grade, difficulty, val, secondary, correct, achieved_at, run_id FROM standings
+    `SELECT player_hash, nickname, grade, difficulty, val, secondary, correct, achieved_at, run_id, school_code, school_name FROM standings
       WHERE kind = ?1 AND period = ?2 ${gradeClause(s.grade)} AND difficulty = ?3 AND ${ACTIVE_CONDITION}`,
-    s.tab, s.period, s.tab === 'honor_points' ? '*' : s.difficulty,
+    s.tab, s.period, diff,
   );
 }
 

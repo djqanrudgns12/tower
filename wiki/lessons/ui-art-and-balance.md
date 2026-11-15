@@ -4,12 +4,12 @@ type: lessons
 title: UI·아트·밸런스 교훈 원장
 status: active
 updated: 2026-11-16
-verified: { commit: e22ff57f, date: 2026-11-16 }
+verified: { commit: b9b024bd, date: 2026-11-16 }
 sources:
   - path: AGENTS.md
     sha256: f22902d65d0a4e1a65acb94dcd3e46101332e9685f9ef2fb7d6213198e7d9534
   - path: docs/HOSTING_IMPL_PLAN.md
-    sha256: fedb202fc04bc7c0e31497678fdbcabfc2cec34b2d8a3aa2cd5f841e9d825836
+    sha256: "131f441e1eb67c37389ac5ae8a19af7ab95ae6bc5c3a68e71578b2938cff7239"
   - path: docs/balance/r4-final.md
     sha256: "3ce50ccc026b07b67ea0cb9d8702a8f43a353d656da97d6fabfc0774da752716"
   - path: src/game/layoutGround.ts

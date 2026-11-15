@@ -330,21 +330,32 @@ export function WorldBackdropCanvas({ motionMode, className }: Props) {
     let height = 0;
     let dpr = 1;
     let raf = 0;
+    let resizeRaf = 0;
     let lastDraw = -Infinity;
     const animate = motionMode === 'full';
 
     const syncSize = () => {
-      dpr = Math.min(2, window.devicePixelRatio || 1);
-      width = Math.max(1, window.innerWidth);
-      height = Math.max(1, window.innerHeight);
+      resizeRaf = 0;
+      const nextDpr = Math.min(2, window.devicePixelRatio || 1);
+      const nextW = Math.max(1, window.innerWidth);
+      const nextH = Math.max(1, window.innerHeight);
+      if (nextW === width && nextH === height && nextDpr === dpr) return;
+      dpr = nextDpr;
+      width = nextW;
+      height = nextH;
       canvas.width = Math.round(width * dpr);
       canvas.height = Math.round(height * dpr);
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       drawBackdropFrame(ctx, cacheRef, width, height, dpr, sprites, animate ? performance.now() : STATIC_TIME_MS, animate);
     };
 
+    const scheduleResize = () => {
+      if (resizeRaf) return;
+      resizeRaf = requestAnimationFrame(syncSize);
+    };
+
     syncSize();
-    window.addEventListener('resize', syncSize);
+    window.addEventListener('resize', scheduleResize);
 
     const onVisibility = () => {
       if (document.visibilityState === 'visible') {
@@ -366,7 +377,8 @@ export function WorldBackdropCanvas({ motionMode, className }: Props) {
 
     return () => {
       cancelAnimationFrame(raf);
-      window.removeEventListener('resize', syncSize);
+      if (resizeRaf) cancelAnimationFrame(resizeRaf);
+      window.removeEventListener('resize', scheduleResize);
       document.removeEventListener('visibilitychange', onVisibility);
     };
   }, [motionMode, sprites]);

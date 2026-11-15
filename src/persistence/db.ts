@@ -21,6 +21,8 @@ export interface RunRecord {
   bankVersion: string;
   answers?: RunAnswer[];
   activeTicks?: number;
+  schoolName?: string;
+  schoolCode?: string;
 }
 
 export interface RunAnswer {
@@ -79,39 +81,53 @@ async function rememberAnswers(store: QuestionHistoryWriter, record: RunRecord):
   }
 }
 
+const DB_OPEN_TIMEOUT_MS = 4500;
+
 export function db(): Promise<IDBPDatabase<TowerDb>> {
-  dbPromise ??= openDB<TowerDb>(DB_NAME, DB_VERSION, {
-    blocked() {
-      if (typeof window !== 'undefined') window.dispatchEvent(new CustomEvent('vocabulary-td.storageBlocked', { detail: '다른 탭을 닫고 다시 시도해 주세요.' }));
-    },
-    blocking() {
-      void resetDbConnection();
-    },
-    terminated() { dbPromise = null; },
-    upgrade(database, oldVersion, _newVersion, transaction) {
-      if (oldVersion < 1) database.createObjectStore('records', { keyPath: 'runId' }).createIndex('endedAt', 'endedAt');
-      if (oldVersion < 2 && !database.objectStoreNames.contains('syncQueue')) {
-        database.createObjectStore('syncQueue', { keyPath: 'runId' });
-      }
-      // 이 기기에 남은 옛 진행 중 판(스냅샷)을 정리한다. 기록·대기 큐는 그대로 둔다.
-      const legacy = database as unknown as IDBPDatabase;
-      if (legacy.objectStoreNames.contains(RETIRED_RUN_STORE)) legacy.deleteObjectStore(RETIRED_RUN_STORE);
-      if (oldVersion < 4) {
-        const history = database.createObjectStore('questionHistory', { keyPath: 'questionId' });
-        // IndexedDB 요청만 기다려 업그레이드 트랜잭션 안에서 기존 answers까지 함께 이관한다.
-        void (async () => {
-          const records = await transaction.objectStore('records').getAll();
-          for (const record of records) await rememberAnswers(history, record);
-        })().catch(() => {
-          try { transaction.abort(); } catch { /* 이미 중단된 업그레이드는 openDB가 실패로 돌려준다. */ }
-        });
-      }
-    },
-  }).catch(error => {
-    // 실패한 open promise를 고정하면 다음 기록 읽기·쓰기도 영원히 실패한다.
-    dbPromise = null;
-    throw error;
-  });
+  if (typeof indexedDB === 'undefined') {
+    return Promise.reject(new Error('IndexedDB를 사용할 수 없는 환경입니다'));
+  }
+  if (!dbPromise) {
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    const opening = openDB<TowerDb>(DB_NAME, DB_VERSION, {
+      blocked() {
+        if (typeof window !== 'undefined') window.dispatchEvent(new CustomEvent('vocabulary-td.storageBlocked', { detail: '다른 탭을 닫고 다시 시도해 주세요.' }));
+      },
+      blocking() {
+        void resetDbConnection();
+      },
+      terminated() { dbPromise = null; },
+      upgrade(database, oldVersion, _newVersion, transaction) {
+        if (oldVersion < 1) database.createObjectStore('records', { keyPath: 'runId' }).createIndex('endedAt', 'endedAt');
+        if (oldVersion < 2 && !database.objectStoreNames.contains('syncQueue')) {
+          database.createObjectStore('syncQueue', { keyPath: 'runId' });
+        }
+        // 이 기기에 남은 옛 진행 중 판(스냅샷)을 정리한다. 기록·대기 큐는 그대로 둔다.
+        const legacy = database as unknown as IDBPDatabase;
+        if (legacy.objectStoreNames.contains(RETIRED_RUN_STORE)) legacy.deleteObjectStore(RETIRED_RUN_STORE);
+        if (oldVersion < 4) {
+          const history = database.createObjectStore('questionHistory', { keyPath: 'questionId' });
+          // IndexedDB 요청만 기다려 업그레이드 트랜잭션 안에서 기존 answers까지 함께 이관한다.
+          void (async () => {
+            const records = await transaction.objectStore('records').getAll();
+            for (const record of records) await rememberAnswers(history, record);
+          })().catch(() => {
+            try { transaction.abort(); } catch { /* 이미 중단된 업그레이드는 openDB가 실패로 돌려준다. */ }
+          });
+        }
+      },
+    });
+    const timeout = new Promise<never>((_, reject) => {
+      timer = setTimeout(() => reject(new Error('IndexedDB 열기 시간 초과')), DB_OPEN_TIMEOUT_MS);
+    });
+    dbPromise = Promise.race([opening, timeout]).finally(() => {
+      if (timer !== undefined) clearTimeout(timer);
+    }).catch(error => {
+      // 실패한 open promise를 고정하면 다음 기록 읽기·쓰기도 영원히 실패한다.
+      dbPromise = null;
+      throw error;
+    });
+  }
   return dbPromise;
 }
 
@@ -186,17 +202,6 @@ export async function getPendingRunSync(runId: string): Promise<PendingRunSync |
 export async function removePendingRunSync(runId: string): Promise<void> {
   const database = await db();
   await database.delete('syncQueue', runId);
-}
-
-export async function bumpPendingRunSyncAttempt(runId: string, maxAttempts = 5): Promise<void> {
-  const database = await db();
-  const tx = database.transaction('syncQueue', 'readwrite');
-  const item = await tx.store.get(runId);
-  if (item) {
-    if (item.attempts + 1 >= maxAttempts) await tx.store.delete(runId);
-    else await tx.store.put({ ...item, attempts: item.attempts + 1 });
-  }
-  await tx.done;
 }
 
 /** 일시 장애는 포기 횟수를 늘리지 않고 다음 접속 시 재시도한다. */

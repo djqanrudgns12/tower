@@ -25,6 +25,8 @@ export interface RankingQuery {
   period: RankingPeriod;
   limit: 8 | 50;
   offset: number;
+  schoolCode?: string | undefined;
+  schoolName?: string | undefined;
 }
 
 export const rankingEntrySchema = z.object({
@@ -39,6 +41,7 @@ export const rankingEntrySchema = z.object({
   primaryValue: z.number().int(),
   secondaryLabel: z.string(),
   achievedAtIso: z.string(),
+  schoolName: z.string().max(120).optional(),
 });
 
 export type RankingEntry = z.infer<typeof rankingEntrySchema>;
@@ -123,13 +126,36 @@ export function kstIsoWeekKey(date: Date = new Date()): string {
   return `${target.getUTCFullYear()}-W${String(weekNo).padStart(2, '0')}`;
 }
 
+const koGraphemeSegmenter = new Intl.Segmenter('ko', { granularity: 'grapheme' });
+const textEncoder = new TextEncoder();
+const CONTACT_OR_URL_PATTERN = /[0-9]{6,}|0[0-9]{1,2}[-.\s]?[0-9]{3,4}[-.\s]?[0-9]{4}|@|https?:\/\/|www\.|[^\s@/]+\.[a-z]{2,}(?:\/|$)/iu;
+
 /** 공개 별명은 서버 clean_public_nickname과 같은 정규화·차단 규칙을 쓴다. */
 export function cleanPublicNickname(raw: string): { value: string; error: string | null } {
   const value = raw.normalize('NFC').normalize('NFKC').replace(/\p{Cc}/gu, '').trim();
-  const count = [...new Intl.Segmenter('ko', { granularity: 'grapheme' }).segment(value)].length;
-  if (new TextEncoder().encode(raw).length > 4096 || new TextEncoder().encode(value).length > 4096 || count < 2 || count > 12) return { value, error: '별명은 2~12글자로 써요' };
-  if (/[0-9]{6,}|0[0-9]{1,2}[-.\s]?[0-9]{3,4}[-.\s]?[0-9]{4}|@|https?:\/\/|www\.|[^\s@/]+\.[a-z]{2,}(?:\/|$)/iu.test(value)) return { value, error: '전화번호, 이메일, 인터넷 주소 대신 별명을 써요' };
+  const count = [...koGraphemeSegmenter.segment(value)].length;
+  if (textEncoder.encode(raw).length > 4096 || textEncoder.encode(value).length > 4096 || count < 2 || count > 12) return { value, error: '별명은 2~12글자로 써요' };
+  if (CONTACT_OR_URL_PATTERN.test(value)) return { value, error: '전화번호, 이메일, 인터넷 주소 대신 별명을 써요' };
   return { value, error: null };
+}
+
+/** 공개 학교명 정규화(선택 값). 규칙에 맞지 않으면 빈 문자열로 비운다. */
+export function cleanPublicSchoolName(raw: unknown): string {
+  if (typeof raw !== 'string') return '';
+  if (textEncoder.encode(raw).length > 240) return '';
+  const value = raw.normalize('NFC').normalize('NFKC').replace(/\p{Cc}/gu, '').replace(/\s+/g, ' ').trim();
+  if (!value || textEncoder.encode(value).length > 240) return '';
+  const count = [...koGraphemeSegmenter.segment(value)].length;
+  if (count < 2 || count > 30) return '';
+  if (CONTACT_OR_URL_PATTERN.test(value)) return '';
+  return value;
+}
+
+/** NEIS 표준학교코드 정규화(7~12자 영문 대문자·숫자, 아니면 빈 문자열). */
+export function cleanPublicSchoolCode(raw: unknown): string {
+  if (typeof raw !== 'string') return '';
+  const value = raw.trim().toUpperCase();
+  return /^[A-Z0-9]{7,12}$/.test(value) ? value : '';
 }
 
 export interface SubmittedAnswer {

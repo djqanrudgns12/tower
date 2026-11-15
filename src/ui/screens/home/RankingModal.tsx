@@ -1,6 +1,13 @@
 import { useEffect, useState } from 'react';
 import { DIFFICULTY_IDS, type DifficultyId } from '../../../contracts/balance';
-import { RANKING_TAB_IDS, type RankingPeriod, type RankingResponse, type RankingTabId } from '../../../contracts/lobby';
+import {
+  cleanPublicSchoolCode,
+  cleanPublicSchoolName,
+  RANKING_TAB_IDS,
+  type RankingPeriod,
+  type RankingResponse,
+  type RankingTabId,
+} from '../../../contracts/lobby';
 import { fetchRanking } from '../../../application/lobby';
 import { DIFFICULTY_COPY } from '../../copy';
 import { Card, Modal, ModalTabPanel, ModalTabs, ModalTabShell, Segmented, type ModalTabOption, type SegmentOption } from '../../kit';
@@ -13,8 +20,11 @@ interface Props {
   initialGrade: 3 | 4 | 5 | 6 | 'all';
   initialDifficulty: DifficultyId;
   initialPeriod: RankingPeriod;
+  initialSchoolOnly?: boolean;
   playerId: string;
   currentNickname: string;
+  schoolName: string;
+  schoolCode: string;
   onClose(): void;
 }
 
@@ -23,15 +33,23 @@ export function RankingModal({
   initialGrade,
   initialDifficulty,
   initialPeriod,
+  initialSchoolOnly = false,
   playerId,
   currentNickname,
+  schoolName,
+  schoolCode,
   onClose,
 }: Props) {
   const [tab, setTab] = useState<RankingTabId>(initialTab);
   const [grade, setGrade] = useState<3 | 4 | 5 | 6 | 'all'>(initialGrade);
   const [difficulty, setDifficulty] = useState<DifficultyId>(initialDifficulty);
   const [period, setPeriod] = useState<RankingPeriod>(initialPeriod);
+  const [schoolOnly, setSchoolOnly] = useState(initialSchoolOnly);
   const [data, setData] = useState<RankingResponse | null>(null);
+
+  const cleanSchool = cleanPublicSchoolName(schoolName);
+  const cleanCode = cleanSchool ? cleanPublicSchoolCode(schoolCode) : '';
+  const activeSchoolOnly = schoolOnly && cleanSchool !== '';
 
   const effectiveGrade: 3 | 4 | 5 | 6 | 'all' =
     (tab === 'single_score' || tab === 'best_wave') && grade === 'all' ? 3 : grade;
@@ -39,14 +57,27 @@ export function RankingModal({
   useEffect(() => {
     let active = true;
     void fetchRanking(
-      { tab, grade: effectiveGrade, difficulty, period, limit: 50, offset: 0 },
+      {
+        tab,
+        grade: effectiveGrade,
+        difficulty,
+        period,
+        limit: 50,
+        offset: 0,
+        ...(activeSchoolOnly
+          ? {
+              schoolName: cleanSchool,
+              ...(cleanCode ? { schoolCode: cleanCode } : {}),
+            }
+          : {}),
+      },
       playerId,
       currentNickname,
     ).then(res => {
       if (active) setData(res);
     });
     return () => { active = false; };
-  }, [tab, effectiveGrade, difficulty, period, playerId, currentNickname]);
+  }, [tab, effectiveGrade, difficulty, period, activeSchoolOnly, cleanSchool, cleanCode, playerId, currentNickname]);
 
   // 상단 분류는 책갈피형 ModalTabs, 본문 안 학년·난이도·기간은 값 선택기(Segmented radiogroup)로 위계를 나눈다.
   const tabOptions: ModalTabOption<RankingTabId>[] = RANKING_TAB_IDS.map(id => ({
@@ -103,6 +134,17 @@ export function RankingModal({
               />
             )}
             {tab === 'local_device' && <span className={css.filterMeta}>{RANKING_EXTRA.localShort}</span>}
+            {cleanSchool !== '' && (
+              <button
+                type="button"
+                className={css.keyBtnSm}
+                data-active={activeSchoolOnly ? 'true' : undefined}
+                aria-pressed={activeSchoolOnly}
+                onClick={() => setSchoolOnly(v => !v)}
+              >
+                우리 학교
+              </button>
+            )}
           </div>
 
           {!data || data.entries.length === 0 ? (
@@ -120,7 +162,10 @@ export function RankingModal({
                     </span>
                     <div className={css.rankInfo}>
                       <span className={css.rankNick}>{entry.nickname}</span>
-                      <span className={css.rankSub}>{entry.secondaryLabel}</span>
+                      <span className={css.rankSub}>
+                        {entry.secondaryLabel}
+                        {!activeSchoolOnly && entry.schoolName ? ` · ${entry.schoolName}` : ''}
+                      </span>
                     </div>
                     <strong className={css.rankScore}>{formatPrimaryMetric(tab, entry.primaryValue)}</strong>
                   </li>

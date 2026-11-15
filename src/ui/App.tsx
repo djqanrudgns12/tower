@@ -1,4 +1,5 @@
-import { useCallback, useEffect, useState } from 'react';
+import { lazy, Suspense, useCallback, useEffect, useState } from 'react';
+import { consumeEntryUrlPatch } from '../application/entryUrl';
 import { mapPreviewFromLocation } from '../application/mapPreview';
 import { qaRunFromLocation } from '../application/qaRun';
 import type { RunController } from '../application/RunController';
@@ -18,11 +19,13 @@ import type { DifficultyId } from '../contracts/balance';
 import { PILOT_TOWERS, reviewQuestions } from '../content';
 import type { RunState } from '../domain/types';
 import { cleanNickname } from './copy';
-import { GameScreen } from './game/GameScreen';
 import { HomeScreen } from './screens/HomeScreen';
-import { buildNoteEntries, NoteScreen } from './screens/NoteScreen';
-import { ResultScreen } from './screens/ResultScreen';
+import { buildNoteEntries } from './screens/noteModel';
 import { useGradeContent } from './useGradeContent';
+
+const GameScreen = lazy(() => import('./game/GameScreen').then(m => ({ default: m.GameScreen })));
+const ResultScreen = lazy(() => import('./screens/ResultScreen').then(m => ({ default: m.ResultScreen })));
+const NoteScreen = lazy(() => import('./screens/NoteScreen').then(m => ({ default: m.NoteScreen })));
 
 type Screen =
   | { name: 'home'; initialModal?: 'new' | null; focusNickname?: boolean }
@@ -31,8 +34,17 @@ type Screen =
   | { name: 'result'; state: RunState; reviewDelta: ReviewDelta | null; previousBest: number | null }
   | { name: 'note'; back: Exclude<Screen, { name: 'note' | 'game' }> };
 
+function loadInitialSettings(): Settings {
+  const base = loadSettings();
+  const patch = consumeEntryUrlPatch();
+  if (!patch) return base;
+  const next = normalizeSettings(base, patch);
+  saveSettings(next);
+  return next;
+}
+
 export function App() {
-  const [settings, setSettings] = useState<Settings>(loadSettings);
+  const [settings, setSettings] = useState<Settings>(loadInitialSettings);
   // 개발 빌드에서만 `?previewMap=<맵 id>`(R3 P3 맵 미리보기)나 `?qaRun=1`(화면 점검 장면)로 전투 화면을 바로 연다.
   // 운영 빌드에서는 이 분기가 통째로 빠진다.
   const [screen, setScreen] = useState<Screen>({ name: 'home' });
@@ -47,6 +59,16 @@ export function App() {
     }).catch(() => { if (!cancelled) setMessage('점검 장면을 불러오지 못했어요.'); });
     return () => { cancelled = true; };
   }, [settings.playerId]);
+
+  // 홈 첫 화면이 안정된 뒤 백그라운드에서 전투 화면·Phaser 청크를 미리 데워 두어 교실 와이파이 지연이나 순간 끊김에도 즉시 시작되게 한다.
+  useEffect(() => {
+    if (screen.name !== 'home') return;
+    const timer = setTimeout(() => {
+      void import('./game/GameScreen').catch(() => undefined);
+    }, 900);
+    return () => clearTimeout(timer);
+  }, [screen.name]);
+
   // 기록 지우기 뒤 오답 노트 개수를 다시 읽게 App을 다시 그린다(noteItems는 렌더 때 저장소에서 읽는다).
   const [, setNoteTick] = useState(0);
 
@@ -64,7 +86,15 @@ export function App() {
 
   const startNew = async (input: { grade: 3 | 4 | 5 | 6; difficulty: DifficultyId; nickname: string }, signal: AbortSignal) => {
     const [result, bestWave] = await Promise.all([
-      startNewRun({ ...input, playerId: settings.playerId }, signal),
+      startNewRun(
+        {
+          ...input,
+          playerId: settings.playerId,
+          schoolName: settings.lastSchoolName,
+          schoolCode: settings.lastSchoolCode,
+        },
+        signal,
+      ),
       bestWaveFor(input.grade, input.difficulty),
     ]);
     if (signal.aborted) { if (result.ok) result.controller.dispose(); return; }
@@ -135,36 +165,50 @@ export function App() {
       );
     case 'game':
       return (
-        <GameScreen
-          key={screen.controller.state.config.runId}
-          controller={screen.controller}
-          towers={PILOT_TOWERS}
-          fontScale={settings.fontScale}
-          reducedMotion={settings.reducedMotion}
-          soundOn={settings.soundOn}
-          bgmVolume={settings.bgmVolume}
-          sfxVolume={settings.sfxVolume}
-          highContrastMap={settings.highContrastMap}
-          showKeyHints={settings.showKeyHints}
-          bestWave={screen.bestWave ?? null}
-          onFont={(f: FontScale) => update({ fontScale: f })}
-          onSound={(on: boolean) => update({ soundOn: on })}
-          onExit={reason => (screen.practice ? finishPractice(screen.controller, 'home') : exitGame(screen.controller, reason, screen.bestWave ?? null))}
-          {...(screen.practice ? { practice: { onFinish: (next: 'new' | 'again' | 'home') => finishPractice(screen.controller, next) } } : {})}
-        />
+        <Suspense fallback={null}>
+          <GameScreen
+            key={screen.controller.state.config.runId}
+            controller={screen.controller}
+            towers={PILOT_TOWERS}
+            fontScale={settings.fontScale}
+            reducedMotion={settings.reducedMotion}
+            soundOn={settings.soundOn}
+            bgmVolume={settings.bgmVolume}
+            sfxVolume={settings.sfxVolume}
+            highContrastMap={settings.highContrastMap}
+            showKeyHints={settings.showKeyHints}
+            bestWave={screen.bestWave ?? null}
+            onFont={(f: FontScale) => update({ fontScale: f })}
+            onSound={(on: boolean) => update({ soundOn: on })}
+            onExit={reason => (screen.practice ? finishPractice(screen.controller, 'home') : exitGame(screen.controller, reason, screen.bestWave ?? null))}
+            {...(screen.practice ? { practice: { onFinish: (next: 'new' | 'again' | 'home') => finishPractice(screen.controller, next) } } : {})}
+          />
+        </Suspense>
       );
     case 'result':
       return (
-        <ResultScreen
-          state={screen.state}
-          reviewDelta={screen.reviewDelta}
-          previousBest={screen.previousBest}
-          onOpenNote={() => setScreen({ name: 'note', back: screen })}
-          onAgain={() => setScreen({ name: 'home', initialModal: 'new' })}
-          onHome={() => setScreen({ name: 'home' })}
-        />
+        <Suspense fallback={null}>
+          <ResultScreen
+            state={screen.state}
+            reviewDelta={screen.reviewDelta}
+            previousBest={screen.previousBest}
+            onOpenNote={() => setScreen({ name: 'note', back: screen })}
+            onAgain={() => setScreen({ name: 'home', initialModal: 'new' })}
+            onHome={() => setScreen({ name: 'home' })}
+          />
+        </Suspense>
       );
     case 'note':
-      return <NoteScreen entries={buildNoteEntries(noteItems, reviewQuestions(noteGrade))} loading={noteContent.status === 'loading' || noteContent.status === 'unloaded'} loadError={noteContent.status === 'error'} onRetry={noteContent.retry} onBack={() => setScreen(screen.back)} />;
+      return (
+        <Suspense fallback={null}>
+          <NoteScreen
+            entries={buildNoteEntries(noteItems, reviewQuestions(noteGrade))}
+            loading={noteContent.status === 'loading' || noteContent.status === 'unloaded'}
+            loadError={noteContent.status === 'error'}
+            onRetry={noteContent.retry}
+            onBack={() => setScreen(screen.back)}
+          />
+        </Suspense>
+      );
   }
 }

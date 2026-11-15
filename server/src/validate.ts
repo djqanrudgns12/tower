@@ -1,4 +1,4 @@
-import type { SubmittedAnswer } from '../../src/contracts/lobby';
+import { cleanPublicSchoolCode, cleanPublicSchoolName, type SubmittedAnswer } from '../../src/contracts/lobby';
 import { UUID_PATTERN } from './crypto';
 
 /**
@@ -52,6 +52,8 @@ export interface SubmitClaim {
   bankVersion: string | null;
   mapId: string | null;
   answers: unknown;
+  schoolCode: string;
+  schoolName: string;
 }
 
 /** Postgres PLAUSIBILITY_REJECTED 조건(빈 값·범위·웨이브 관계). 통과하지 못하면 null. */
@@ -77,6 +79,8 @@ export function parseSubmitClaim(body: Record<string, unknown>): SubmitClaim | n
     bankVersion: asText(body.p_bank_version),
     mapId: asText(body.p_map_id),
     answers: body.p_answers ?? null,
+    schoolCode: cleanPublicSchoolCode(body.p_school_code),
+    schoolName: cleanPublicSchoolName(body.p_school_name),
   };
 }
 
@@ -136,6 +140,8 @@ export interface RankingParams {
   period: 'weekly' | 'season1' | 'all_time';
   limit: number;
   offset: number;
+  schoolCode?: string;
+  schoolName?: string;
 }
 
 function queryInt(params: URLSearchParams, name: string, fallback: number): number | null {
@@ -156,5 +162,23 @@ export function parseRankingParams(params: URLSearchParams): RankingParams | nul
   const grade = /^\d$/.test(gradeText) ? Number(gradeText) : NaN;
   if (!(RANKING_TABS as readonly string[]).includes(tab) || !GRADES.includes(grade) || !DIFFICULTIES.includes(difficulty)
     || !PERIODS.includes(period) || limit < 1 || limit > 50 || offset < 0 || offset > 10000) return null;
-  return { tab: tab as RankingTab, grade, difficulty, period: period as RankingParams['period'], limit, offset };
+
+  const rawSchoolCode = params.get('p_school_code');
+  const schoolCode = rawSchoolCode ? cleanPublicSchoolCode(rawSchoolCode) : '';
+  if (rawSchoolCode && !schoolCode) return null;
+
+  const rawSchoolName = params.get('p_school_name');
+  const schoolName = rawSchoolName ? cleanPublicSchoolName(rawSchoolName) : '';
+  if (rawSchoolName && !schoolName) return null;
+
+  return {
+    tab: tab as RankingTab,
+    grade,
+    difficulty,
+    period: period as RankingParams['period'],
+    limit,
+    offset,
+    ...(schoolCode ? { schoolCode } : {}),
+    ...(schoolName ? { schoolName } : {}),
+  };
 }

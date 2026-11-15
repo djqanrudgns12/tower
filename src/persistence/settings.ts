@@ -115,6 +115,22 @@ export function normalizeSettings(base: Settings, raw: Partial<Settings>): Setti
   };
 }
 
+let fallbackEntry: { storage: unknown; value: Settings } | null = null;
+
+function currentStorageRef(): unknown {
+  try { return typeof localStorage !== 'undefined' ? localStorage : null; } catch { return null; }
+}
+
+function readFallback(): Settings | null {
+  if (!fallbackEntry) return null;
+  const ref = currentStorageRef();
+  if (ref !== null && fallbackEntry.storage !== null && ref !== fallbackEntry.storage) {
+    fallbackEntry = null;
+    return null;
+  }
+  return fallbackEntry.value;
+}
+
 export function loadSettings(): Settings {
   const base = defaults();
   try {
@@ -123,17 +139,34 @@ export function loadSettings(): Settings {
       const parsed = JSON.parse(raw) as Partial<Settings>;
       return normalizeSettings(base, parsed);
     }
-  } catch { /* 저장소 차단 시 기본값으로 진행한다 */ }
+  } catch {
+    const mem = readFallback();
+    if (mem) return normalizeSettings(base, mem);
+  }
+  const mem = readFallback();
+  if (mem) return normalizeSettings(base, mem);
   saveSettings(base);
   return base;
 }
 
 export function saveSettings(settings: Settings): void {
-  try { localStorage.setItem(KEY, JSON.stringify(settings)); } catch { /* 차단된 저장소 */ }
+  const ref = currentStorageRef();
+  try {
+    localStorage.setItem(KEY, JSON.stringify(settings));
+    fallbackEntry = null;
+  } catch {
+    fallbackEntry = { storage: ref, value: settings };
+  }
   if (typeof window !== 'undefined') queueMicrotask(() => window.dispatchEvent(new Event(SETTINGS_CHANGED_EVENT)));
 }
 
-/** 저장소 접근 실패도 동의 없음으로 취급한다. 인증·RPC·Presence의 공통 입구다. */
+/** 저장소 접근 실패 시 현재 탭 메모리에 저장된 동의를 확인한다. 인증·RPC·Presence의 공통 입구다. */
 export function isRecordSharingEnabled(): boolean {
-  try { return (JSON.parse(localStorage.getItem(KEY) ?? '{}') as Partial<Settings>).shareRecords === true; } catch { return false; }
+  try {
+    const raw = localStorage.getItem(KEY);
+    if (raw !== null) return (JSON.parse(raw) as Partial<Settings>).shareRecords === true;
+    return readFallback()?.shareRecords === true;
+  } catch {
+    return readFallback()?.shareRecords === true;
+  }
 }

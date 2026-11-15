@@ -474,6 +474,91 @@
   box-shadow: none;
 }
 
+.keyBtnSm[data-active='true'] {
+  background: var(--walnut-3);
+  border-color: var(--walnut-4);
+  box-shadow: 0 2px 0 var(--walnut-4);
+  color: var(--on-dark);
+}
+
+@media (hover: hover) {
+  .keyBtnSm[data-active='true']:hover:not(:disabled) {
+    background: var(--walnut-4);
+  }
+}
+
+.rankHeaderActions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.rankHeaderActions .keyBtnSm {
+  padding: 0 10px;
+}
+
+/* 교실 QR · 주소 모달 보조 스타일 (그라데이션·블러 없음) */
+.qrModalStack {
+  display: grid;
+  gap: var(--s3);
+}
+
+.qrFrameWrap {
+  display: grid;
+  justify-items: center;
+  gap: var(--s2);
+}
+
+.qrCanvasBox {
+  width: 196px;
+  height: 196px;
+  padding: 6px;
+  border-radius: var(--r-md);
+  border: 2px solid var(--walnut-3);
+  background: #ffffff;
+  box-shadow: 0 2px 0 var(--walnut-3);
+  display: grid;
+  place-items: center;
+}
+
+.qrSvg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.qrGuideText {
+  margin: 0;
+  font-size: var(--fs-1);
+  font-weight: 700;
+  color: var(--ink-2);
+  text-align: center;
+}
+
+.qrUrlBox {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--s2);
+}
+
+.qrUrlText {
+  font-size: var(--fs-1);
+  font-weight: 700;
+  color: var(--ink);
+  overflow-wrap: anywhere;
+  line-height: 1.35;
+}
+
+.qrWebviewHint {
+  margin: 0;
+  font-size: var(--fs-1);
+  font-weight: 700;
+  color: var(--ink);
+  line-height: 1.4;
+}
+
 /* ── 2B. 오늘의 낱말 (1:1 음각 액자 몬스터 일상 원화 + 46px 라벨 수직선 칼정렬 어휘 노트) ── */
 .wordStudyBody {
   display: grid;

@@ -58,6 +58,20 @@
 .nickLine { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s2) var(--s3); min-width: 0; }
 .nickLabel { font-size: var(--fs-2); font-weight: 700; color: var(--ink-2); }
 .nickName { font-size: var(--fs-3); font-weight: 800; overflow-wrap: anywhere; }
+.schoolTag {
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
+  padding: 2px 8px;
+  border-radius: var(--r-sm);
+  background: var(--paper-2);
+  box-shadow: inset 0 0 0 1.5px var(--line);
+  font-size: var(--fs-1);
+  font-weight: 700;
+  color: var(--ink-2);
+  max-width: 100%;
+  overflow-wrap: anywhere;
+}
 /* 닉네임이 비거나 규칙에 맞지 않을 때 시작이 막힌 이유(한 줄 전체). */
 .nickProblem { flex: 1 1 100%; margin: 0; font-size: var(--fs-2); font-weight: 700; color: var(--red); }
 .startBtn { width: 100%; }

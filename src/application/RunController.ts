@@ -4,7 +4,7 @@ import { NumericLimitError } from '../domain/num';
 import { advanceTick, applyCommand, type Command, type CommandResult } from '../domain/run';
 import type { PauseReason, RunState } from '../domain/types';
 import { addRecord } from '../persistence/db';
-import { queueAndFlushCompletedRun } from '../persistence/lobbyClient';
+import { cancelRunStartRetry, queueAndFlushCompletedRun } from '../persistence/lobbyClient';
 import { recordFinishedRun, type ReviewDelta } from '../persistence/reviewNote';
 import { buildRunRecord } from './runRecord';
 import { selectView, viewKey, type ControllerView, type Notice } from './view';
@@ -84,6 +84,9 @@ export class RunController {
   /** 화면을 떠날 때. 끝나지 않은 판은 기록 없이 버려진다(이어하기 없음). */
   dispose() {
     this.stop();
+    if (this.s.phase !== 'GAME_OVER') {
+      cancelRunStartRetry(this.s.config.runId);
+    }
     this.listeners.clear();
     this.eventListeners.clear();
   }
@@ -250,6 +253,7 @@ export class RunController {
   /** 끝난 판(끝내기·패배): 오답 노트 → 개인 기록 → 공개 제출 큐 순서로 남긴다. 연습·미리보기 판은 남기지 않는다. */
   private async finish() {
     this.stop();
+    cancelRunStartRetry(this.s.config.runId);
     if (!this.recordOnFinish) return;
     const s = this.s;
     // 틀린 낱말을 오답 노트에 담는다(prd-r4 §6.1). 끝내지 않고 창을 닫은 판은 여기를 거치지 않아 담지 않는다.

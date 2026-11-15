@@ -1,9 +1,9 @@
-import { useEffect, useRef, useState } from 'react';
+import { lazy, Suspense, useEffect, useRef, useState } from 'react';
 import { DIFFICULTY_IDS, type DifficultyId } from '../../contracts/balance';
 import type { RankingPeriod, RankingTabId } from '../../contracts/lobby';
 import type { Settings } from '../../application/session';
-import { GuideScreen } from './GuideScreen';
 import { useLobbySprites } from './home/canvasAssets';
+import { ClassroomQrModal } from './home/ClassroomQrModal';
 import { GearIcon, HomeUiArt } from './home/HomeIcons';
 import { LaunchDeck } from './home/LaunchDeck';
 import { MiniStageCanvas } from './home/MiniStageCanvas';
@@ -16,17 +16,21 @@ import css from './home/home.module.css';
 import { NewGameScreen } from './NewGameScreen';
 import { SettingsModal } from './SettingsModal';
 
+const GuideScreen = lazy(() => import('./GuideScreen').then(m => ({ default: m.GuideScreen })));
+
 type ModalState =
   | null
   | 'new'
   | 'settings'
   | 'guide'
+  | 'qr'
   | {
       kind: 'ranking';
       tab: RankingTabId;
       grade: 3 | 4 | 5 | 6 | 'all';
       difficulty: DifficultyId;
       period: RankingPeriod;
+      schoolOnly: boolean;
     };
 
 interface Props {
@@ -196,7 +200,6 @@ export function HomeScreen({
             <LaunchDeck
               savedNickname={settings.lastNickname}
               savedSchoolName={settings.lastSchoolName}
-              savedSchoolCode={settings.lastSchoolCode}
               message={message}
               practiceLabel={settings.practiceSeen ? '연습하기' : '처음이라면 연습부터'}
               onPractice={() => {
@@ -219,10 +222,13 @@ export function HomeScreen({
             onTabChange={setRankingTab}
             playerId={settings.playerId}
             currentNickname={settings.lastNickname}
+            schoolName={settings.lastSchoolName}
+            schoolCode={settings.lastSchoolCode}
             defaultGrade={settings.lastGrade}
             defaultDifficulty={defaultDiff}
             refreshTick={refreshTick}
             boardRef={rankingBoardRef}
+            onOpenQrModal={() => setActiveModal('qr')}
             onOpenDetailModal={initial => setActiveModal({ kind: 'ranking', ...initial })}
           />
         </main>
@@ -253,12 +259,26 @@ export function HomeScreen({
       )}
 
       {activeModal === 'guide' && (
-        <GuideScreen
-          motionMode={settings.motionMode}
-          highContrastMap={settings.highContrastMap}
-          onBack={() => {
+        <Suspense fallback={null}>
+          <GuideScreen
+            motionMode={settings.motionMode}
+            highContrastMap={settings.highContrastMap}
+            onBack={() => {
+              setActiveModal(null);
+              requestAnimationFrame(() => document.getElementById('guideBtn')?.focus());
+            }}
+          />
+        </Suspense>
+      )}
+
+      {activeModal === 'qr' && (
+        <ClassroomQrModal
+          defaultGrade={settings.lastGrade}
+          schoolName={settings.lastSchoolName}
+          schoolCode={settings.lastSchoolCode}
+          onClose={() => {
             setActiveModal(null);
-            requestAnimationFrame(() => document.getElementById('guideBtn')?.focus());
+            requestAnimationFrame(() => document.getElementById('openQrModalBtn')?.focus());
           }}
         />
       )}
@@ -269,8 +289,11 @@ export function HomeScreen({
           initialGrade={activeModal.grade}
           initialDifficulty={activeModal.difficulty}
           initialPeriod={activeModal.period}
+          initialSchoolOnly={activeModal.schoolOnly}
           playerId={settings.playerId}
           currentNickname={settings.lastNickname}
+          schoolName={settings.lastSchoolName}
+          schoolCode={settings.lastSchoolCode}
           onClose={() => setActiveModal(null)}
         />
       )}

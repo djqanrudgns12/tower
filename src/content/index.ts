@@ -54,16 +54,49 @@ export async function loadGradeContent(grade: number): Promise<GradeContent> {
   return gradeContent(grade);
 }
 
+interface RuntimeBankCacheEntry {
+  list: RuntimeQuestion[];
+  map: ReadonlyMap<string, RuntimeQuestion>;
+}
+
+const runtimeBankCache = new WeakMap<BankFile, WeakMap<RetractionList, RuntimeBankCacheEntry>>();
+const EMPTY_REVIEW_MAP: ReadonlyMap<string, RuntimeQuestion> = new Map();
+
+function getRuntimeEntry(bank: BankFile, retractions: RetractionList): RuntimeBankCacheEntry {
+  let byRetraction = runtimeBankCache.get(bank);
+  if (!byRetraction) {
+    byRetraction = new WeakMap();
+    runtimeBankCache.set(bank, byRetraction);
+  }
+  const hit = byRetraction.get(retractions);
+  if (hit) return hit;
+
+  const retracted = retractions.entries.length > 0
+    ? new Set(retractions.entries.map(e => `${e.questionId}@${e.revision}`))
+    : null;
+  const list: RuntimeQuestion[] = [];
+  const map = new Map<string, RuntimeQuestion>();
+  for (let i = 0; i < bank.questions.length; i++) {
+    const q = bank.questions[i]!;
+    if (retracted && retracted.has(`${q.id}@${q.revision}`)) continue;
+    const rq: RuntimeQuestion = { ...q, readingLoad: readingLoad(q) };
+    list.push(rq);
+    map.set(rq.id, rq);
+  }
+  const built: RuntimeBankCacheEntry = { list, map };
+  byRetraction.set(retractions, built);
+  return built;
+}
+
 /** 철회 목록을 겹친 뒤 남은 문항. 같은 ID라도 철회된 revision만 뺀다(PRD §9.5, A26). */
 export function toRuntime(bank: BankFile, retractions: RetractionList = RETRACTIONS): RuntimeQuestion[] {
-  const retracted = new Set(retractions.entries.map(e => `${e.questionId}@${e.revision}`));
-  return bank.questions.filter(q => !retracted.has(`${q.id}@${q.revision}`)).map(q => ({ ...q, readingLoad: readingLoad(q) }));
+  return getRuntimeEntry(bank, retractions).list.slice();
 }
 
 /** 복습 화면용 조회. 철회된 문항은 해설을 다시 보여 주지 않는다. 문항이 하나도 없어도 던지지 않는다. */
 export function reviewQuestions(grade: number): ReadonlyMap<string, RuntimeQuestion> {
   const { bank } = gradeContent(grade);
-  return new Map(bank ? toRuntime(bank).map(q => [q.id, q] as const) : []);
+  return bank ? getRuntimeEntry(bank, RETRACTIONS).map : EMPTY_REVIEW_MAP;
 }
 
 /**

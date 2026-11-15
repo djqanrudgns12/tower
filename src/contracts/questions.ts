@@ -48,14 +48,33 @@ export const bankQuestionSchema = z.object({
   explanation: z.string().min(1).max(120),
   distractorRationales: z.partialRecord(z.enum(OPTION_IDS), z.string().min(1).max(80)),
 }).strict().superRefine((q, ctx) => {
-  const ids = q.options.map(o => o.id);
-  const texts = q.options.map(o => o.text.normalize('NFC').trim());
-  if (new Set(ids).size !== 4) ctx.addIssue({ code: 'custom', message: `${q.id}: 보기 ID 중복` });
-  if (new Set(texts).size !== 4) ctx.addIssue({ code: 'custom', message: `${q.id}: 보기 글 중복` });
-  if (!ids.includes(q.correctOptionId)) ctx.addIssue({ code: 'custom', message: `${q.id}: 정답 ID가 보기에 없음` });
-  const wrong = ids.filter(id => id !== q.correctOptionId).sort();
-  const keys = Object.keys(q.distractorRationales).sort();
-  if (JSON.stringify(wrong) !== JSON.stringify(keys)) ctx.addIssue({ code: 'custom', message: `${q.id}: 오답 이유는 오답 3개에 정확히 하나씩` });
+  const o0 = q.options[0]!, o1 = q.options[1]!, o2 = q.options[2]!, o3 = q.options[3]!;
+  const id0 = o0.id, id1 = o1.id, id2 = o2.id, id3 = o3.id;
+  const uniqueIds = id0 !== id1 && id0 !== id2 && id0 !== id3 && id1 !== id2 && id1 !== id3 && id2 !== id3;
+  if (!uniqueIds) ctx.addIssue({ code: 'custom', message: `${q.id}: 보기 ID 중복` });
+  const t0 = o0.text.normalize('NFC').trim();
+  const t1 = o1.text.normalize('NFC').trim();
+  const t2 = o2.text.normalize('NFC').trim();
+  const t3 = o3.text.normalize('NFC').trim();
+  if (t0 === t1 || t0 === t2 || t0 === t3 || t1 === t2 || t1 === t3 || t2 === t3) {
+    ctx.addIssue({ code: 'custom', message: `${q.id}: 보기 글 중복` });
+  }
+  const c = q.correctOptionId;
+  if (id0 !== c && id1 !== c && id2 !== c && id3 !== c) {
+    ctx.addIssue({ code: 'custom', message: `${q.id}: 정답 ID가 보기에 없음` });
+  }
+  const rKeys = Object.keys(q.distractorRationales);
+  if (uniqueIds) {
+    if (rKeys.length !== 3 || Object.prototype.hasOwnProperty.call(q.distractorRationales, c)) {
+      ctx.addIssue({ code: 'custom', message: `${q.id}: 오답 이유는 오답 3개에 정확히 하나씩` });
+    }
+  } else {
+    const wrong = [id0, id1, id2, id3].filter(id => id !== c).sort();
+    rKeys.sort();
+    if (JSON.stringify(wrong) !== JSON.stringify(rKeys)) {
+      ctx.addIssue({ code: 'custom', message: `${q.id}: 오답 이유는 오답 3개에 정확히 하나씩` });
+    }
+  }
   if (!q.id.startsWith(`g${q.grade}-`)) ctx.addIssue({ code: 'custom', message: `${q.id}: 학년과 ID 불일치` });
   if (q.variantTag === 'dialect' && !q.dialectRegion) ctx.addIssue({ code: 'custom', message: `${q.id}: 방언 문항은 dialectRegion 필수` });
   if (q.variantTag === 'dialect' && q.difficultyTier !== 'challenge') ctx.addIssue({ code: 'custom', message: `${q.id}: 방언 문항은 difficultyTier=challenge 필수` });
@@ -70,7 +89,13 @@ export const bankFileSchema = z.object({
   note: z.string().optional(),
   questions: z.array(bankQuestionSchema).min(1),
 }).strict().superRefine((b, ctx) => {
-  if (new Set(b.questions.map(q => q.id)).size !== b.questions.length) ctx.addIssue({ code: 'custom', message: '문항 ID 중복' });
+  const seen = new Set<string>();
+  let dup = false;
+  for (const q of b.questions) {
+    if (seen.has(q.id)) dup = true;
+    else seen.add(q.id);
+  }
+  if (dup) ctx.addIssue({ code: 'custom', message: '문항 ID 중복' });
   for (const q of b.questions) if (q.grade !== b.grade || q.status !== b.status) ctx.addIssue({ code: 'custom', message: `${q.id}: 은행의 학년·상태와 다름` });
 });
 
@@ -88,14 +113,22 @@ export const sharedBankFileSchema = z.object({
   ...bankFileSchema.shape,
   questions: z.array(sharedBankQuestionSchema).min(1),
 }).strict().superRefine((bank, ctx) => {
-  if (new Set(bank.questions.map(q => q.id)).size !== bank.questions.length) ctx.addIssue({ code: 'custom', message: '문항 ID 중복' });
-  const shared = bank.questions.filter(q => q.grade !== bank.grade);
+  const seen = new Set<string>();
+  const shared: z.infer<typeof sharedBankQuestionSchema>[] = [];
+  let dup = false;
+  let own = 0;
+  for (const q of bank.questions) {
+    if (seen.has(q.id)) dup = true;
+    else seen.add(q.id);
+    if (q.grade !== bank.grade) shared.push(q);
+    else if (!/^g[3-6]-practice-/.test(q.id)) own++;
+  }
+  if (dup) ctx.addIssue({ code: 'custom', message: '문항 ID 중복' });
   for (const q of bank.questions) if (q.status !== bank.status) ctx.addIssue({ code: 'custom', message: `${q.id}: 은행의 상태와 다름` });
   if (!shared.length) return;
   if (bank.status !== 'published' || bank.bankId !== `g${bank.grade}`) {
     ctx.addIssue({ code: 'custom', message: '공유 문항은 공개 학년 은행에만 수록한다' });
   }
-  const own = bank.questions.filter(q => q.grade === bank.grade && !/^g[3-6]-practice-/.test(q.id)).length;
   if (own < 1000) ctx.addIssue({ code: 'custom', message: '공유 전에 자기 학년 승인 1000문항이 필요하다' });
   if (shared.length > Math.floor(own * 24 / 100)) ctx.addIssue({ code: 'custom', message: '위로 공유 상한 24%를 넘었다' });
   for (const q of shared) {
@@ -149,6 +182,13 @@ export type BankManifest = z.infer<typeof bankManifestSchema>;
 
 /** 지문+보기 4개의 한글 음절 수(PRD §9.2 readingLoad). */
 export function readingLoad(q: Pick<BankQuestion, 'stem' | 'options'>): number {
-  const text = q.stem + q.options.map(o => o.text).join('');
-  return (text.normalize('NFC').match(/[가-힣]/g) ?? []).length;
+  let text = q.stem;
+  for (let i = 0; i < q.options.length; i++) text += q.options[i]!.text;
+  const s = text.normalize('NFC');
+  let count = 0;
+  for (let i = 0; i < s.length; i++) {
+    const code = s.charCodeAt(i);
+    if (code >= 0xac00 && code <= 0xd7a3) count++;
+  }
+  return count;
 }

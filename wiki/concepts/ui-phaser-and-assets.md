@@ -4,7 +4,7 @@ type: hub
 title: 화면(React)·전장(Phaser)·원화 에셋
 status: active
 updated: 2026-11-16
-verified: { commit: e22ff57f, date: 2026-11-16 }
+verified: { commit: b9b024bd, date: 2026-11-16 }
 sources:
   - path: src/game/bridge.ts
     sha256: dfcd4ce7f82ee8543aaa73de8b0e080d6c215f58d2c0b1edaa0a000c2e577896
@@ -19,7 +19,7 @@ sources:
   - path: docs/ui_ux_refinement_p1_v3_prd.md
     sha256: "6d39f346d5c078716ad390ad02ab96ac7a1e78067a9388c84a34ba737354c299"
   - path: docs/HOSTING_IMPL_PLAN.md
-    sha256: fedb202fc04bc7c0e31497678fdbcabfc2cec34b2d8a3aa2cd5f841e9d825836
+    sha256: "131f441e1eb67c37389ac5ae8a19af7ab95ae6bc5c3a68e71578b2938cff7239"
 ---
 
 # 화면(React)·전장(Phaser)·원화 에셋 (`ui-phaser-and-assets`)

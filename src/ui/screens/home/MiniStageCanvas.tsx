@@ -638,15 +638,24 @@ export function MiniStageCanvas({ motionMode, highContrastMap, paused, className
     let width = 480;
     let height = 162;
     let pxScale = 1;
+    let lastCssW = 0;
+    let lastCssH = 0;
+    let lastDpr = 0;
     let raf = 0;
+    let resizeRaf = 0;
     let lastDraw = -Infinity;
     const animateCombat = motionMode === 'full' && !paused;
 
     const syncSize = () => {
+      resizeRaf = 0;
       const rect = canvas.getBoundingClientRect();
       const dpr = Math.min(2, window.devicePixelRatio || 1);
       const cssW = Math.max(180, Math.round(rect.width || 480));
       const cssH = Math.max(60, Math.round(rect.height || 162));
+      if (cssW === lastCssW && cssH === lastCssH && dpr === lastDpr) return;
+      lastCssW = cssW;
+      lastCssH = cssH;
+      lastDpr = dpr;
       const k =
         cssH < MIN_DESIGN_H
           ? cssH / MIN_DESIGN_H
@@ -670,8 +679,13 @@ export function MiniStageCanvas({ motionMode, highContrastMap, paused, className
       );
     };
 
+    const scheduleResize = () => {
+      if (resizeRaf) return;
+      resizeRaf = requestAnimationFrame(syncSize);
+    };
+
     syncSize();
-    const ro = typeof ResizeObserver !== 'undefined' ? new ResizeObserver(syncSize) : null;
+    const ro = typeof ResizeObserver !== 'undefined' ? new ResizeObserver(scheduleResize) : null;
     ro?.observe(canvas);
 
     const onVisibility = () => {
@@ -694,6 +708,7 @@ export function MiniStageCanvas({ motionMode, highContrastMap, paused, className
 
     return () => {
       cancelAnimationFrame(raf);
+      if (resizeRaf) cancelAnimationFrame(resizeRaf);
       ro?.disconnect();
       document.removeEventListener('visibilitychange', onVisibility);
     };

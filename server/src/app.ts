@@ -1,6 +1,6 @@
 import { deriveKeys, ipHash, isUsableSalt, playerHash, verifyDeviceToken } from './crypto';
 import { d1Database, type D1DatabaseLike, type SqlStats } from './db';
-import { getLeaderboard, issueDevice, recordLobbyVisit, recordRunStart, submitCompletedRun, type Context } from './handlers';
+import { getLeaderboard, healthCheck, issueDevice, recordLobbyVisit, recordRunStart, searchSchools, submitCompletedRun, type Context } from './handlers';
 import { bearerToken, errorResponse, HttpError, parseAllowedOrigins, preflight, withCors } from './http';
 import { cacheSeconds, RankingCache, type CacheLike } from './ranking-cache';
 import { cleanupStatements } from './store';
@@ -13,11 +13,13 @@ export interface Env {
   ALLOWED_ORIGINS?: string;
   /** 랭킹 응답 캐시 초(0이면 끔). wrangler.toml 기본 60. */
   RANKING_CACHE_SECONDS?: string;
+  /** 선택적 NEIS 오픈 API 인증키. */
+  NEIS_API_KEY?: string;
 }
 
 export interface Deps {
   now(): number;
-  /** Workers Cache API(caches.default). 없으면 랭킹 캐시를 쓰지 않는다. */
+  /** Workers Cache API(caches.default). 없으면 랭킹·학교 캐시를 쓰지 않는다. */
   cache?: CacheLike | null;
   /** 시험에서 D1 읽기·쓰기 행 수를 잴 때만 쓴다. */
   stats?: SqlStats;
@@ -27,6 +29,8 @@ type Handler = (ctx: Context, hash: string) => Promise<Response>;
 interface Route { method: 'GET' | 'POST'; auth: boolean; handler: Handler }
 
 const ROUTES: Record<string, Route> = {
+  '/v1/health': { method: 'GET', auth: false, handler: () => healthCheck() },
+  '/v1/schools': { method: 'GET', auth: false, handler: ctx => searchSchools(ctx) },
   '/v1/device': { method: 'POST', auth: false, handler: ctx => issueDevice(ctx) },
   '/v1/lobby-visit': { method: 'POST', auth: true, handler: recordLobbyVisit },
   '/v1/runs/start': { method: 'POST', auth: true, handler: recordRunStart },
@@ -41,13 +45,21 @@ async function route(request: Request, env: Env, deps: Deps): Promise<Response> 
   if (request.method !== target.method) throw new HttpError(405, 'METHOD_NOT_ALLOWED');
   // Postgres private_player_hash가 PT503으로 막던 경우. 토큰 서명 키도 이 값에서 나오므로 가장 먼저 본다.
   if (!isUsableSalt(env.PLAYER_SALT)) throw new HttpError(503, 'PLAYER_SALT_REQUIRED');
+  if (url.pathname === '/v1/health') return healthCheck();
   const keys = await deriveKeys(env.PLAYER_SALT);
   const ip = request.headers.get('CF-Connecting-IP') ?? 'unknown';
   const ttl = cacheSeconds(env.RANKING_CACHE_SECONDS);
   const ctx: Context = {
-    request, url, db: d1Database(env.DB, deps.stats), keys, ipSubject: `ip:${await ipHash(keys, ip)}`,
-    clock: () => deps.now(), now: deps.now(),
+    request,
+    url,
+    db: d1Database(env.DB, deps.stats),
+    keys,
+    ipSubject: `ip:${await ipHash(keys, ip)}`,
+    clock: () => deps.now(),
+    now: deps.now(),
     rankingCache: deps.cache && ttl > 0 ? new RankingCache(deps.cache, url.origin, ttl) : null,
+    edgeCache: deps.cache ?? null,
+    neisApiKey: env.NEIS_API_KEY?.trim() || undefined,
   };
   let hash = '';
   if (target.auth) {
