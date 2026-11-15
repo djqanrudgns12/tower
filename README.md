@@ -1,7 +1,15 @@
 # tower — 어휘력 타워 디펜스
 
-초등 3~6학년이 한국어 어휘 문제를 풀어 골드를 모으고, 타워로 성문을 지키는 웹게임입니다.
-**현재 기준은 PRD v0.5이고, P1 첫 구현(3학년·정원 맵·타워 3종)과 2차 작업 패키지 수합까지 끝났습니다.** 타워 3종·고블린(보행·피격)·대장·성문·나무·비석·바위와 지면(풀·흙길·설치 받침·작은 장식)은 인수된 원화(`public/assets/`)이고, P2 적·투사체·표식은 아직 같은 규격의 임시 그림입니다. 지면은 맵 데이터로 원화 재료를 조립합니다. 3학년 게임 문항은 Argon·Codex·Claude 공동검수를 통과한 **공개 은행 51문항**(`src/content/questions/grade3.json`)입니다. 공개 은행은 `npm run build:bank`가 승인 문항으로만 만들며, 없을 때는 개발용 은행으로 돕니다.
+초등 3~6학년이 한국어 어휘 문제를 풀어 골드를 모으고, 20종의 타워를 설치·진화시켜 성문을 지키는 웹게임입니다.
+현재 운영 버전(`v1.0.0`)은 리뉴얼(R1~R5), WebP 원화 전환, GitHub Pages 정적 호스팅(`https://voca.ssamuniverse.com`)과 Cloudflare Workers + D1 기록·랭킹 서버(`https://voca-api.ssamuniverse.com`), 그리고 3~6학년 CR-1000 공동검수 공개 문제은행까지 개통된 상태입니다. 에이전트와 기여자는 **[LLM Wiki 색인](wiki/index.md)** · **[문서 허브](docs/README.md)** · **[llms.txt](llms.txt)**에서 최신 구조와 실시간 계약을 바로 확인할 수 있습니다.
+
+<!-- WIKI-AUTO:START:repo-stats -->
+- **제품·밸런스 판**: `v1.0.0` (30Hz 고정 틱 · 화풍 `design-41-kingdom-expedition` · WebP 원화 `378`장)
+- **게임 규모**: 학년별 맵 `4`종(3~6학년, 15×9 격자·슬롯 20칸) · 타워 `20`종(Lv4/Lv7 3단 진화) · 적 역할 `10`종 × 종족 `8`종 · 원정 보물 `3`종
+- **공개 문제은행**: 3~6학년 자기 학년 승인 **5,547문항** · 공유 포함 총 출제 풀 **6,583문항** (3학년 1140 · 4학년 1563 · 5학년 1869 · 6학년 2011)
+- **서버·인프라**: 정적 게임 `https://voca.ssamuniverse.com` (GitHub Pages) · 기록/랭킹 API `https://voca-api.ssamuniverse.com` (Cloudflare Workers 라우트 `6`종 + D1 테이블 `11`종)
+- **지식 베이스**: 전체 마크다운 `184`개 · 핵심 의사결정 `10`건 · 루트 npm 명령 `35`개
+<!-- WIKI-AUTO:END:repo-stats -->
 
 ## 실행
 

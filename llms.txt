@@ -1,0 +1,49 @@
+# vocabulary-tower-defense (어휘력 타워 디펜스)
+
+> 초등 3~6학년 한국어 어휘 학습 웹 타워 디펜스 게임(`https://voca.ssamuniverse.com`) 및 기록·랭킹 에지 서버(`https://voca-api.ssamuniverse.com`) 저장소입니다. 에이전트는 원천 문서를 통째로 읽지 말고 [wiki/index.md](wiki/index.md)와 `npm run wiki:query`로 필요한 지식만 점진적으로 발췌하세요.
+
+## 실시간 저장소 지표 (`WIKI-AUTO`)
+
+<!-- WIKI-AUTO:START:repo-stats -->
+- **제품·밸런스 판**: `v1.0.0` (30Hz 고정 틱 · 화풍 `design-41-kingdom-expedition` · WebP 원화 `378`장)
+- **게임 규모**: 학년별 맵 `4`종(3~6학년, 15×9 격자·슬롯 20칸) · 타워 `20`종(Lv4/Lv7 3단 진화) · 적 역할 `10`종 × 종족 `8`종 · 원정 보물 `3`종
+- **공개 문제은행**: 3~6학년 자기 학년 승인 **5,547문항** · 공유 포함 총 출제 풀 **6,583문항** (3학년 1140 · 4학년 1563 · 5학년 1869 · 6학년 2011)
+- **서버·인프라**: 정적 게임 `https://voca.ssamuniverse.com` (GitHub Pages) · 기록/랭킹 API `https://voca-api.ssamuniverse.com` (Cloudflare Workers 라우트 `6`종 + D1 테이블 `11`종)
+- **지식 베이스**: 전체 마크다운 `184`개 · 핵심 의사결정 `10`건 · 루트 npm 명령 `35`개
+<!-- WIKI-AUTO:END:repo-stats -->
+
+## 필수 진입점 · 작업 규약 (Hot Context)
+
+- [AGENTS.md](AGENTS.md): 단일 폴더 작업·부분 커밋(`git commit --only`)·WebP·서버 시험·`commit-lock` 최상위 규칙
+- [wiki/index.md](wiki/index.md): 에이전트용 1홉 LLM Wiki 라우터
+- [wiki/SCHEMA.md](wiki/SCHEMA.md): 문서 권위 사슬·페이지 예산·자동 갱신 및 교훈 원장 규약
+- [docs/README.md](docs/README.md): 전체 문서 생애주기 및 Diataxis 분류 네비게이션 허브
+- [.agents/skills/wiki-maintain/SKILL.md](.agents/skills/wiki-maintain/SKILL.md): 위키 조회(`wiki:query`)·동기화(`wiki:sync`)·교훈 제출(`wiki:delta`) 절차
+
+## 컴파일된 지식 허브 (Warm Context — `wiki/`)
+
+- [제품 정의](wiki/entities/vocabulary-td.md): 핵심 플레이 루프·운영 도메인·로컬 포트·오프라인 폴백
+- [기술스택](wiki/entities/tech-stack.md): React 19 · Phaser 4 · Workers/D1 · 고정 의존성 버전표
+- [아키텍처·계층 경계](wiki/concepts/architecture-and-layers.md): `src/` 7계층 단방향 구조, `RunController` 30Hz, 시드 PRNG
+- [전투·타워·밸런스](wiki/concepts/combat-towers-and-balance.md): 타워 20종 Lv4/Lv7 진화, 적 10역할×8종족, 징집·보물, 시뮬레이터
+- [화면·전장·원화 에셋](wiki/concepts/ui-phaser-and-assets.md): React↔Phaser 브리지, R/S 모드, 41번 화풍 잠금, WebP 알파 보존
+- [문제은행·CR-1000](wiki/concepts/question-bank-and-cr1000.md): 3~6학년 공개 은행, 학년 띠 공유, 블라인드 공동검수, `commit-lock`
+- [로컬 저장·랭킹 서버](wiki/concepts/persistence-and-ranking-server.md): IndexedDB·오답 노트 ↔ Cloudflare Workers/D1 재채점·`standings`
+- [배포·검증·운영](wiki/concepts/deploy-and-verification.md): GitHub Pages(회색 구름 DNS), D1 배포 순서, 보존 잠금, `resource-guard`
+- [로드맵·현행 실체 상태](wiki/projects/roadmap-and-status.md): P1 → 리뉴얼 → 1.0.0 출시 → CR-1000 계보와 코드 기준 완료 판정
+
+## 자동 생성 레지스트리 (`npm run wiki:sync`)
+
+- [wiki/contracts.md](wiki/contracts.md): 문제은행·난이도·타워 20종·적 10종·맵 4종·서버 API 6종·D1 테이블 11종 실시간 계약
+- [wiki/codemap.md](wiki/codemap.md): `src/` · `server/` · `tools/` 모듈 지도 및 ESLint 금지 의존성
+- [wiki/commands.md](wiki/commands.md): 전체 `npm run` 스크립트 · 독립 CLI · `resource-guard` 프로필
+- [wiki/decisions-index.md](wiki/decisions-index.md): 분산된 확정 설계·운영 결정(`DEC-01`~`DEC-10`)과 원본 줄 번호
+- [wiki/docs-catalog.md](wiki/docs-catalog.md): 저장소 전체 마크다운 생애주기 및 보존 잠금 목록
+
+## 교훈 원장 및 현행 권위 원천 (Optional / Cold Context)
+
+- [엔지니어링·콘텐츠 교훈](wiki/lessons/engineering-and-content.md) · [UI·아트·밸런스 교훈](wiki/lessons/ui-art-and-balance.md) · [운영·워크플로 교훈](wiki/lessons/ops-and-workflow.md) · [용어 사전](wiki/glossary.md)
+- [docs/renewal/README.md](docs/renewal/README.md): 타워 20종·진화·몬스터·UI 완화 현행 최우선 명세
+- [docs/DEPLOY.md](docs/DEPLOY.md) · [docs/HOSTING_IMPL_PLAN.md](docs/HOSTING_IMPL_PLAN.md): 운영 호스팅·배포·WebP 기준
+- [docs/CR1000_HANDOFF.md](docs/CR1000_HANDOFF.md) · [docs/CR1000_REVIEW_POLICY.md](docs/CR1000_REVIEW_POLICY.md): 3~6학년 문제은행 공동검수 기준
+- [vocabulary_td_prd_v0_5.md](vocabulary_td_prd_v0_5.md): 기본 제품 명세 (`npm run wiki:query -- --section vocabulary_td_prd_v0_5.md <절>`로 발췌 권장)
