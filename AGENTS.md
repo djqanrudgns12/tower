@@ -2,6 +2,8 @@
 
 Claude·Codex·Antigravity와 그 서브에이전트가 이 저장소에서 일할 때 따른다. 사용자에게 보이는 출력은 한국어로 쓴다.
 
+전역 작업 방식(`~/.agents/policy/work-policy.ko.md`, 2026-11-15)이 이 문서의 옛 절차 규칙보다 우선한다.
+
 ## 단일 폴더(2026-11-04 사용자 결정)
 
 - 작업 폴더는 이 저장소 `/Users/bodyking/Desktop/Architecture/towerdeffense` 한 곳뿐이다.
@@ -14,7 +16,7 @@ Claude·Codex·Antigravity와 그 서브에이전트가 이 저장소에서 일�
 - 고칠 파일 범위를 나눠 맡는다. 같은 파일을 두 에이전트가 동시에 고치지 않는다.
 - 남의 미커밋 변경을 되돌리거나 덮어쓰지 않는다. `git checkout -- .`, `git restore .`, `git reset --hard`, `git stash`, `git clean`을 쓰지 않는다.
 - 커밋은 자기 파일만 경로를 지정해 한다(`git commit --only -- <경로>`). `git add -A`·`git add .`·`git commit -a`를 쓰지 않는다.
-- 시작할 때 `git status`로 남의 미커밋 변경이 있는지 보고, 겹치는 파일이면 그 작업이 커밋될 때까지 기다리거나 사용자에게 묻는다.
+- 시작할 때 `git status`로 남의 미커밋 변경이 있는지 본다. 겹치는 파일은 건드리지 않고 내 조각부터 끝내며, 그 파일이 꼭 필요한 조각만 막힘으로 보고한다(2026-11-15, 옛 "기다리거나 사용자에게 묻기"를 대체).
 
 ## 그림 파일은 WebP로 (2026-11-05 사용자 결정)
 
@@ -29,7 +31,7 @@ Claude·Codex·Antigravity와 그 서브에이전트가 이 저장소에서 일�
 
 ## 문제은행 1,000+ 공동검수(CR-1000, 2026-11-06~)
 
-- 진행 중인 작업이다. 메인 세션은 2026-11-06부터 Codex가 맡는다. 시작 전에 [인수인계](docs/CR1000_HANDOFF.md)와 [계획서](docs/CONTENT_REVIEW_PLAN.md)를 읽는다.
+- 진행 중인 작업이다. 2026-11-06 인계 때 메인 세션은 Codex가 맡았다. 이 분담은 권장이며 맡길 대상은 전역 작업 방식 3절을 따른다. 시작 전에 [인수인계](docs/CR1000_HANDOFF.md)와 [계획서](docs/CONTENT_REVIEW_PLAN.md)를 읽는다.
 - `content-source/**`, `src/content/questions/**`, `server/seed/question_keys.sql`은 루프의 잠금(`tools/orchestrate/commit-lock.mjs`) 안에서만 쓴다.
 
 ## 지우기 전에 확인
