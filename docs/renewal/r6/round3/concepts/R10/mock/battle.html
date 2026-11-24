@@ -1,0 +1,29 @@
+<main class="battle">
+  <header class="hud">
+    <div class="map-name"><span class="route-mark">{{routeMark}}</span><h1>정원 길</h1></div>
+    <dl class="scores">
+      <div><dt>성문 체력</dt><dd><span class="health">18</span><small> / 20</small></dd></div>
+      <div><dt>골드</dt><dd>65</dd></div>
+      <div><dt>웨이브</dt><dd>3<small> / 10</small></dd></div>
+      <div><dt>남은 적</dt><dd class="hostile">12</dd></div>
+    </dl>
+    <button class="pause" aria-label="일시 정지"><span aria-hidden="true">Ⅱ</span> 일시 정지</button>
+  </header>
+  <div class="stage">
+    <section class="board" aria-label="정원 길 전장">{{map}}<div class="map-width">{{mapWidth}}칸</div><div class="map-height">{{mapHeight}}칸</div></section>
+    <aside class="shop">
+      <h2>타워 목록</h2>
+      <div class="shop-columns"><span>설치할 타워</span><span>골드</span></div>
+      <ul>{{shop}}</ul>
+      <p class="shop-hint">타워를 고른 뒤 설치 칸을 누르세요.</p>
+    </aside>
+  </div>
+  <section class="quiz" aria-labelledby="quiz-title">
+    <div class="prompt">
+      <p>어휘 문제</p>
+      <h2 id="quiz-title">{{question}}</h2>
+      <button class="skip">모르겠어요 <span aria-hidden="true">↗</span></button>
+    </div>
+    <div class="answers">{{answers}}</div>
+  </section>
+</main>
