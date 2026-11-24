@@ -8,15 +8,15 @@ import { kit } from './models.js';
 export const themes = {
   R06: {
     sky: '#cedbd8', ground: '#7f9690', stone: '#e5dcc4', iron: '#2d4145', enemy: '#647379', accent: '#a95b43',
-    camera: [-2.8, 16, 13], light: 2.15, ambient: 1.75, name: '바람섬',
+    camera: [-0.86, 7.13, 10], light: 2.30, ambient: 1.30, name: '바람섬',
   },
   R07: {
     sky: '#241e1a', ground: '#666d52', stone: '#d9c7a5', iron: '#35342b', enemy: '#62574b', accent: '#a56f52',
-    camera: [3.4, 15, 13], light: 2.7, ambient: 1.5, name: '작업대',
+    camera: [1.12, 7.7, 10], light: 2.75, ambient: 1.28, name: '작업대',
   },
   R08: {
     sky: '#d4dcce', ground: '#d9b285', stone: '#f3e4c6', iron: '#262823', enemy: '#575b51', accent: '#9b4531',
-    camera: [3.1, 15, 13], light: 2.05, ambient: 1.37, name: '모래 협곡',
+    camera: [1.0, 7.7, 10], light: 2.10, ambient: 0.92, name: '모래 협곡',
   },
 };
 
@@ -28,45 +28,117 @@ function materialsFor(id) {
     wall: color('stone').lerp(color('ground'), 0.28), metal: color('iron').lerp(color('stone'), 0.28),
     earth: color('ground').lerp(color('enemy'), 0.48), rim: color('ground').lerp(color('stone'), 0.41),
     slot: color('ground').lerp(color('iron'), 0.38), enemy: color('enemy'), accent: color('accent'),
-    void: color('iron').multiplyScalar(0.4),
+    void: color('iron').multiplyScalar(0.3),
+    timber: new THREE.Color(id === 'R06' ? '#4d5243' : '#513d2d'),
+    warmWood: new THREE.Color(id === 'R06' ? '#9d7d56' : '#a87848'),
+    roof: new THREE.Color({ R06: '#70483b', R07: '#6d4933', R08: '#954b36' }[id]),
+    gem: new THREE.Color({ R06: '#438d81', R07: '#518277', R08: '#4d7b73' }[id]),
+    gemDusk: new THREE.Color({ R06: '#3c6a65', R07: '#3e665d', R08: '#335a56' }[id]),
+    leaves: new THREE.Color({ R06: '#37584d', R07: '#3f4e2f', R08: '#727b55' }[id]),
+    tips: new THREE.Color({ R06: '#627b5c', R07: '#737e4d', R08: '#929970' }[id]),
+    fur: new THREE.Color({ R06: '#5f696d', R07: '#675a4a', R08: '#6c6861' }[id]),
+    shell: new THREE.Color({ R06: '#536f68', R07: '#596447', R08: '#6e7658' }[id]),
   };
-  const levels = new THREE.DataTexture(new Uint8Array([80, 160, 244]), 3, 1, THREE.RedFormat);
+  const levels = new THREE.DataTexture(new Uint8Array([42, 133, 244]), 3, 1, THREE.RedFormat);
   levels.minFilter = THREE.NearestFilter;
   levels.magFilter = THREE.NearestFilter;
   levels.needsUpdate = true;
 
+  const paint = id === 'R07' ? paintTexture() : null;
   return Object.fromEntries(Object.entries(palette).map(([name, color]) => {
     const material = id === 'R08'
       ? new THREE.MeshToonMaterial({ color, gradientMap: levels })
-      : new THREE.MeshStandardMaterial({ color, roughness: 0.94, flatShading: true });
+      : new THREE.MeshStandardMaterial({
+        color, roughness: id === 'R07' && ['iron', 'metal', 'gem'].includes(name) ? 0.79 : 0.93,
+        flatShading: id !== 'R07', bumpMap: paint, bumpScale: paint ? 0.013 : 0,
+      });
     return [name, material];
   }));
+}
+
+function paintTexture() {
+  const size = 96;
+  const pixels = new Uint8Array(size * size);
+  let seed = 3201;
+  for (let y = 0; y < size; y++) {
+    for (let x = 0; x < size; x++) {
+      seed = (Math.imul(seed, 1664525) + 1013904223) >>> 0;
+      const brush = Math.sin(x * 0.3 + y * 0.11) * Math.cos(y * 0.43);
+      pixels[y * size + x] = 128 + brush * 22 + (seed >>> 27) - 16;
+    }
+  }
+  const paint = new THREE.DataTexture(pixels, size, size, THREE.RedFormat);
+  paint.magFilter = THREE.LinearFilter;
+  paint.minFilter = THREE.LinearMipmapLinearFilter;
+  paint.generateMipmaps = true;
+  paint.needsUpdate = true;
+  return paint;
+}
+
+function inkMaterial(color) {
+  return new THREE.ShaderMaterial({
+    side: THREE.BackSide,
+    depthWrite: false,
+    uniforms: {
+      ...THREE.UniformsUtils.clone(THREE.UniformsLib.fog),
+      inkColor: { value: new THREE.Color(color) },
+      resolution: { value: new THREE.Vector2() },
+      stroke: { value: 2.0 },
+    },
+    fog: true,
+    vertexShader: `
+      uniform vec2 resolution;
+      uniform float stroke;
+      #include <fog_pars_vertex>
+      void main() {
+        vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
+        vec4 clip = projectionMatrix * mvPosition;
+        vec4 direction = projectionMatrix * vec4(normalize(normalMatrix * normal), 0.0);
+        vec2 screenNormal = (direction.xy * clip.w - clip.xy * direction.w) * resolution;
+        float line = max(length(screenNormal), 0.0001);
+        clip.xy += screenNormal / line * (2.0 * stroke / resolution) * clip.w;
+        gl_Position = clip;
+        #include <fog_vertex>
+      }
+    `,
+    fragmentShader: `
+      uniform vec3 inkColor;
+      #include <fog_pars_fragment>
+      void main() {
+        gl_FragColor = vec4(inkColor, 1.0);
+        #include <tonemapping_fragment>
+        #include <colorspace_fragment>
+        #include <fog_fragment>
+      }
+    `,
+  });
 }
 
 export function makeWorld(id) {
   const theme = themes[id];
   const materials = materialsFor(id);
-  const ink = id === 'R08'
-    ? new THREE.LineBasicMaterial({ color: theme.iron, transparent: true, opacity: 0.82 })
-    : null;
-  const k = kit(materials, ink);
+  const ink = id === 'R08' ? inkMaterial('#181814') : null;
+  const k = kit(materials, ink, id === 'R07');
   const light = (scene, span) => {
     scene.add(new THREE.HemisphereLight('#fff8e7', theme.ground, theme.ambient));
     const key = new THREE.DirectionalLight(id === 'R07' ? '#ffe8ce' : '#fff5e8', theme.light);
-    key.position.set(-span * 0.78, span * 1.22, span * 0.62);
-    if (id === 'R07') {
-      key.castShadow = true;
-      key.shadow.mapSize.set(1024, 1024);
-      Object.assign(key.shadow.camera, { left: -span, right: span, top: span, bottom: -span, far: span * 4 });
-      key.shadow.bias = -0.00025;
-      key.shadow.normalBias = 0.065;
-    }
+    key.position.set(-span * 0.81, span * 1.20, span * 0.58);
+    key.castShadow = true;
+    key.shadow.mapSize.set(1024, 1024);
+    Object.assign(key.shadow.camera, { left: -span, right: span, top: span, bottom: -span, far: span * 4 });
+    key.shadow.bias = -0.00018;
+    key.shadow.normalBias = 0.027;
     scene.add(key);
   };
-  return { id, theme, materials, ink, k, light };
+  const setInkSize = (width, height, stroke = 2) => {
+    if (!ink) return;
+    ink.uniforms.resolution.value.set(width, height);
+    ink.uniforms.stroke.value = stroke;
+  };
+  return { id, theme, materials, k, light, setInkSize };
 }
 
-export function cameraFor(width, height, bounds, direction, margin, perspective = false) {
+export function cameraFor(width, height, bounds, direction, margin, perspective = false, fitPoints) {
   const target = bounds.getCenter(new THREE.Vector3());
   const size = bounds.getSize(new THREE.Vector3());
   const aspect = width / height;
@@ -79,29 +151,31 @@ export function cameraFor(width, height, bounds, direction, margin, perspective 
     camera.lookAt(target);
     camera.updateMatrixWorld();
   };
-  const corners = [];
-  for (const x of [-1, 1]) {
-    for (const y of [-1, 1]) {
-      for (const z of [-1, 1]) {
-        corners.push(target.clone().add(new THREE.Vector3(x * size.x / 2, y * size.y / 2, z * size.z / 2)));
+  const corners = fitPoints ?? [];
+  if (!fitPoints) {
+    for (const x of [bounds.min.x, bounds.max.x]) {
+      for (const y of [bounds.min.y, bounds.max.y]) {
+        for (const z of [bounds.min.z, bounds.max.z]) corners.push(new THREE.Vector3(x, y, z));
       }
     }
   }
+  const projectedExtent = () => Math.max(...corners.map((point) => {
+    const projection = point.clone().project(camera);
+    return Math.max(Math.abs(projection.x), Math.abs(projection.y));
+  }));
   if (perspective) {
-    let distance = size.length() * 1.05;
-    for (let i = 0; i < 16; i++) {
+    let min = size.length() / 2;
+    let max = size.length() * 5;
+    for (let i = 0; i < 18; i++) {
+      const distance = (min + max) / 2;
       orient(distance);
-      const extent = Math.max(...corners.map((p) => {
-        const q = p.clone().project(camera);
-        return Math.max(Math.abs(q.x), Math.abs(q.y));
-      }));
-      if (extent <= margin) break;
-      distance *= 1.065;
+      if (projectedExtent() <= margin) max = distance;
+      else min = distance;
     }
+    orient(max);
   } else {
     orient(size.length() * 1.55);
-    const projected = corners.map((p) => p.clone().project(camera));
-    const extent = Math.max(...projected.map((p) => Math.max(Math.abs(p.x), Math.abs(p.y)))) / margin;
+    const extent = projectedExtent() / margin;
     Object.assign(camera, {
       left: -extent * aspect, right: extent * aspect, top: extent, bottom: -extent,
     });
@@ -110,11 +184,11 @@ export function cameraFor(width, height, bounds, direction, margin, perspective 
   return camera;
 }
 
-export function makeRenderer(world) {
+export function makeRenderer() {
   const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: 'low-power' });
   renderer.setPixelRatio(1);
   renderer.setClearColor(0, 0);
-  renderer.shadowMap.enabled = world.id === 'R07';
+  renderer.shadowMap.enabled = true;
   renderer.shadowMap.type = THREE.PCFSoftShadowMap;
   return renderer;
 }
@@ -139,7 +213,7 @@ export function makeTiltShift(renderer, scene, camera, width, height) {
       varying vec2 uvOnScreen;
       void main() {
         float distanceFromFocus = abs(uvOnScreen.y - 0.54 - (uvOnScreen.x - 0.5) * 0.11);
-        float radius = 3.9 * smoothstep(0.26, 0.53, distanceFromFocus);
+        float radius = 2.6 * smoothstep(0.36, 0.61, distanceFromFocus);
         vec4 sampleSum = vec4(0.0);
         for (int y = -1; y <= 1; ++y) {
           for (int x = -1; x <= 1; ++x) {
@@ -198,14 +272,20 @@ export function modelPreview(renderer, world, model, canvas, { pad = true, turn 
   bounds.min.y = Math.min(bounds.min.y, 0);
   if (pad) {
     const radius = Math.max(actual.max.x - actual.min.x, actual.max.z - actual.min.z) * 0.62;
-    k.drum(scene, [radius * 0.94, radius, 0.10, 8], [0, -0.055, 0], id === 'R07' ? 'iron' : 'rim');
+    k.drum(scene, [radius * 0.94, radius, 0.10, 8], [0, -0.055, 0], id === 'R07' ? 'earth' : 'rim');
     contactShadow(scene, theme.iron, [0, 0.008, 0], radius * 1.8, 0.45);
     bounds.min.y = -0.12;
   }
   light(scene, 3);
+  if (id === 'R07') {
+    const fill = new THREE.DirectionalLight('#e1e4d8', 0.82);
+    fill.position.set(3.1, 2.8, 1.4);
+    scene.add(fill);
+  }
   const width = canvas.width;
   const height = canvas.height;
   const camera = cameraFor(width, height, bounds, [4, 4.2, 7.4], margin);
+  world.setInkSize(width, height, pad ? 2.6 : 0.90);
   renderer.setSize(width, height, false);
   renderer.render(scene, camera);
   canvas.getContext('2d').drawImage(renderer.domElement, 0, 0);
@@ -219,17 +299,17 @@ export function woodTexture(color) {
   ctx.fillStyle = color;
   ctx.fillRect(0, 0, canvas.width, canvas.height);
   for (let y = 0; y < 520; y += 2) {
-    const knot = Math.sin(y * 0.31) * Math.cos(y * 0.019);
-    ctx.strokeStyle = knot > 0 ? 'rgba(245,225,190,0.065)' : 'rgba(0,0,0,0.14)';
+    const knot = Math.sin(y * 0.21) * Math.cos(y * 0.033);
+    ctx.strokeStyle = knot > 0 ? 'rgba(245,225,190,0.047)' : 'rgba(0,0,0,0.072)';
     ctx.beginPath();
     for (let x = 0; x <= 768; x += 8) {
-      const offset = 1.0 * Math.sin(x * 0.018 + y * 0.064) + 2.4 * knot * Math.sin(x * 0.005 + y * 0.018);
+      const offset = 1.6 * Math.sin(x * 0.018 + y * 0.064) + 4.0 * knot * Math.sin(x * 0.005 + y * 0.018);
       ctx.lineTo(x, y + offset);
     }
     ctx.stroke();
   }
   for (const y of [82, 208, 354, 456]) {
-    ctx.fillStyle = 'rgba(0,0,0,0.3)';
+    ctx.fillStyle = 'rgba(0,0,0,0.22)';
     ctx.fillRect(0, y, 768, 2);
     ctx.fillStyle = 'rgba(245,225,190,0.10)';
     ctx.fillRect(0, y + 2, 768, 1);

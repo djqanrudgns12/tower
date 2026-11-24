@@ -86,7 +86,7 @@ async function battle() {
       </aside>
     </div>
     ${quiz()}`;
-  const renderer = makeRenderer(world);
+  const renderer = makeRenderer();
   const stage = app.querySelector('.stage');
   const buttons = [...app.querySelectorAll('.tower')];
   for (const button of buttons) {
@@ -119,7 +119,7 @@ async function battle() {
   }
 }
 
-const towerEvolutions = ['개방형 석궁 받침', '측면 버팀벽과 넓어진 석궁', '덮개와 보조 장전 구조'];
+const towerEvolutions = ['목재 틀과 회전대', '석재 버팀과 넓어진 활 팔', '지붕과 상부 석재 보강'];
 
 function sheet(kind) {
   const isTower = kind === 'towers';
@@ -148,20 +148,23 @@ function sheet(kind) {
       </div>`
     : `${banner('적 형태', '일반 4종 · 보스 1종')}
       <div class="enemy-sheet">${items.map(figure).join('')}</div>`;
-  const renderer = makeRenderer(world);
+  const renderer = makeRenderer();
   const modelFor = (item) => isTower ? makeTower(world.k, item.id, item.level) : makeEnemy(world.k, item.id);
   const turn = isTower ? -0.16 : 0.13;
+  const angleFor = (item) => ({ cannon: -0.62, hound: -0.79 })[item.id] ?? turn;
   const archerFrame = isTower ? modelBounds(modelFor(upgrades.at(-1)), turn) : null;
   const frameFor = (index) => index < upgrades.length ? archerFrame : null;
   [...app.querySelectorAll('.figure canvas')].forEach((canvas, index) => {
     canvas.width = canvas.clientWidth;
     canvas.height = canvas.clientHeight;
     modelPreview(renderer, world, modelFor(items[index]), canvas, {
-      turn, margin: isTower ? 0.90 : 0.92, frame: frameFor(index),
+      turn: angleFor(items[index]), margin: isTower ? 0.90 : 0.92, frame: frameFor(index),
     });
   });
   [...app.querySelectorAll('.scale-item canvas')].forEach((canvas, index) => {
-    modelPreview(renderer, world, modelFor(items[index]), canvas, { pad: false, turn, frame: frameFor(index) });
+    modelPreview(renderer, world, modelFor(items[index]), canvas, {
+      pad: false, turn: angleFor(items[index]), frame: frameFor(index),
+    });
   });
   renderer.dispose();
   renderer.forceContextLoss();
