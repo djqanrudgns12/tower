@@ -1,9 +1,10 @@
+import { R6_TOWERS } from '../contracts/balanceV2';
 import { TOWER_IDS, type Balance, type RelicConfig, type RelicEffect } from '../contracts/balance';
 import type { GameContext } from './context';
-import type { DomainEvent } from './events';
+import type { DomainEvent } from './engineTypes';
 import { add, bpFloor } from './num';
 import { streamSeed, shuffle } from './rng';
-import type { RunState } from './types';
+import type { RunState } from './engineTypes';
 
 // 원정 보물(prd-r4 §7.2-F, R4 B3). W10부터 대장 웨이브(10·15·20…)를 지키면 갖지 않은 보물 3개 가운데 하나를 고른다.
 // 효과는 그 판에서만 있고, 고른 보물 목록으로 만든 밸런스 사본(relicBalance)을 엔진·화면이 함께 읽는다. 그래서 화면의 값(강화비·판매 환급·
@@ -37,7 +38,7 @@ function applyEffect(d: Balance, e: RelicEffect) {
       for (const f of forms) if (f.auraRadiusMilli !== undefined) f.auraRadiusMilli += e.auraRangeAddMilli;
     }
   }
-  for (const type of TOWER_IDS) {
+  for (const type of d.r6 ? [] : TOWER_IDS) {
     const t = d.towers[type];
     if (t.damageType === 'none') continue;
     const forms = Object.values(d.forms[type]);
@@ -67,7 +68,7 @@ function applyEffect(d: Balance, e: RelicEffect) {
   if (e.sellRatioBP !== undefined) d.run.sellRatioBP = Math.max(d.run.sellRatioBP, e.sellRatioBP);
   if (e.evolveCostBP !== undefined) {
     const table = [...d.levels.upgradeCostOfBaseBP];
-    for (const at of d.levels.evolveAt) if (table[at - 2] !== undefined) table[at - 2] = Math.max(1, scale(table[at - 2]!, e.evolveCostBP));
+    for (const at of d.r6 ? d.r6.rules.levels.weaponAt.slice(1) : d.levels.evolveAt) if (table[at - 2] !== undefined) table[at - 2] = Math.max(1, scale(table[at - 2]!, e.evolveCostBP));
     d.levels.upgradeCostOfBaseBP = table;
   }
 }
@@ -87,7 +88,28 @@ export function relicBalance(b: Balance, relics: readonly string[] | undefined):
   let derived = byKey.get(key);
   if (!derived) {
     derived = structuredClone(b);
-    for (const id of [...ids].sort()) applyEffect(derived, b.relics!.items[id]!.effect);
+    for (const id of [...ids].sort()) {
+      const e = b.relics!.items[id]!.effect;
+      applyEffect(derived,e);
+      if (derived.r6) {
+        for (const type of R6_TOWERS) {
+          const t = derived.r6.base[type];
+          const rows = derived.r6.profiles[type];
+          const effect = Object.entries(derived.r6.rules.relics.effects).find(([key]) => key === id)?.[1];
+          if (effect?.towers?.includes(type)) {
+            if (e.rangeBP) t.rangeMilli = scale(t.rangeMilli,e.rangeBP);
+            if (e.damageBP) t.damageBP = scale(t.damageBP ?? 10000,e.damageBP);
+            if (e.intervalBP) t.intervalMs = scale(t.intervalMs,e.intervalBP);
+            if (e.auraRangeAddMilli) for (const row of rows) if (row.auraRadiusMilli) row.auraRadiusMilli += e.auraRangeAddMilli;
+          }
+          for (const row of rows) {
+            if (e.slowMsBP && row.slowMs) row.slowMs = scale(row.slowMs,e.slowMsBP);
+            if (e.flyerDamageBP) row.flyerDamageBP = scale(row.flyerDamageBP ?? 10000,e.flyerDamageBP);
+            if (e.eliteBossDamageBP) row.eliteBossDamageBP = scale(row.eliteBossDamageBP ?? 10000,e.eliteBossDamageBP);
+          }
+        }
+      }
+    }
     byKey.set(key, derived);
   }
   return derived;

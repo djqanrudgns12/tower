@@ -1,9 +1,9 @@
 import { TOWER_IDS, type Balance, type RegularKind, type TowerId } from '../contracts/balance';
-import type { DomainEvent } from './events';
+import type { DomainEvent, EngineTowerId, RunState } from './engineTypes';
 import { waveRoleWeights } from './factions';
 import { shuffle } from './rng';
 import { countersOf } from './towers';
-import type { DraftOffer, RunConfig, RunState } from './types';
+import type { DraftOffer, RunConfig } from './types';
 
 // 판 안 징집(docs/renewal/catalog/towers.md §0-2·§5 안 1). 기본 4종으로 시작하고 정한 웨이브를 지킬 때마다 새 타워 하나를 고른다.
 // 후보는 징집 전용 난수 흐름으로 뽑아 전투 편성·출제 순서를 바꾸지 않는다.
@@ -13,10 +13,10 @@ export const startingOwned = (b: Balance, config: Pick<RunConfig, 'availableTowe
   b.draft.startTowers.filter(t => config.availableTowers.includes(t));
 
 /** 장착함(화면의 타워 버튼 줄). */
-export const ownedTowers = (s: Pick<RunState, 'owned'>): readonly TowerId[] => s.owned;
+export const ownedTowers = (s: Pick<import('./types').RunState, 'owned'>): readonly TowerId[] => s.owned;
 
 /** 고르기를 기다리는 징집 후보, 없으면 null. */
-export const draftOffer = (s: Pick<RunState, 'draft'>): DraftOffer | null => s.draft;
+export const draftOffer = (s: Pick<import('./types').RunState, 'draft'>): DraftOffer | null => s.draft;
 
 /** 아직 징집으로 얻을 수 있는 타워(그 판이 쓸 수 있고 장착함에 없는 것, TOWER_IDS 순서). */
 export const draftPool = (s: Pick<RunState, 'owned' | 'config'>): TowerId[] =>
@@ -29,7 +29,7 @@ export function nextDraftWave(b: Balance, s: Pick<RunState, 'owned' | 'config' |
 }
 
 /** 장착함에 넣고 후보를 닫는다. */
-export function pickDraft(s: RunState, tower: TowerId, auto: boolean, ev: DomainEvent[]) {
+export function pickDraft(s: RunState, tower: EngineTowerId, auto: boolean, ev: DomainEvent[]) {
   s.owned.push(tower);
   s.draft = null;
   ev.push({ type: 'draftPicked', tower, auto });
@@ -40,7 +40,7 @@ export function pickDraft(s: RunState, tower: TowerId, auto: boolean, ev: Domain
  * 그 역할의 강점 타워(기본형 strongVs에 그 역할을 적은 타워, prd-r4 §7.2 D)가 하나도 없는 첫 역할(웨이브 순, 같으면 REGULAR_KINDS 순)과
  * 그 강점 타워 목록. 강점 타워가 하나도 정해지지 않은 역할은 건너뛴다. 없으면 null. 순수 함수다(편성 표와 타워 표만 본다).
  */
-export function uncoveredNewRole(b: Balance, mapId: string, wave: number, owned: readonly TowerId[]): { role: RegularKind; wave: number; towers: TowerId[] } | null {
+export function uncoveredNewRole(b: Balance, mapId: string, wave: number, owned: readonly EngineTowerId[]): { role: RegularKind; wave: number; towers: TowerId[] } | null {
   const lookahead = b.draft.counterLookahead ?? 0;
   if (lookahead <= 0 || !b.campaigns[mapId]) return null;
   const seen = new Set<RegularKind>();
@@ -61,6 +61,14 @@ export function uncoveredNewRole(b: Balance, mapId: string, wave: number, owned:
  * (화면이 징집 카드를 띄우지 못해도 판이 멈추거나 징집을 잃지 않는다).
  */
 export function openDraft(b: Balance, s: RunState, ev: DomainEvent[]) {
+  if (b.r6) {
+    const unlock = Object.entries(b.r6.rules.unlocks.afterCompletedWave).find(([wave]) => Number(wave) === s.completedWave)?.[1];
+    if (unlock && s.config.availableTowers.includes(unlock) && !s.owned.includes(unlock)) {
+      s.owned.push(unlock);
+      ev.push({type:'towerUnlocked',tower:unlock,wave:s.completedWave});
+    }
+    return;
+  }
   if (!b.draft.afterWaves.includes(s.wave)) return;
   if (s.draft) pickDraft(s, s.draft.offers[0]!, true, ev);
   if (s.owned.length >= b.draft.maxOwned) return;

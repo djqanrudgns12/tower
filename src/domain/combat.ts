@@ -1,5 +1,6 @@
 import type { GameContext } from './context';
-import type { DomainEvent, HazardEndReason } from './events';
+import type { HazardEndReason } from './events';
+import type { DomainEvent, FieldHazard, HazardStrike, Projectile, RollerHazard, RunState, Tower, TrapHazard, ZoneHazard } from './engineTypes';
 import { bossDef, burstMarching, campaignOf, enemyArtId } from './factions';
 import { dist2, positionAt } from './geometry';
 import { hazardExpiredEvent, trapSpot } from './hazards';
@@ -10,7 +11,7 @@ import {
 } from './towers';
 import { burrowed, clayReductionMilli, enemyTrait } from './traits';
 import type {
-  Enemy, FieldHazard, HazardStrike, HitFx, Projectile, RollerHazard, RunState, SpawnEntry, SplashHit, Tower, TrapHazard, ZoneHazard, ZoneSpec,
+  Enemy, HitFx, SpawnEntry, SplashHit, ZoneSpec,
 } from './types';
 import { airborne, difficultyHpBP, enemyMaxHp, enemyResists, enemySpeedBP, leakDamageOf, waveHpBaseMilli } from './waves';
 
@@ -199,7 +200,8 @@ function fire(ctx: GameContext, s: RunState, tower: Tower, ev: DomainEvent[]) {
   // 시차 다연발(§4-4): 다음 발 틱이면 다시 조준해 쏜다. 표적이 없으면 남은 발은 버린다.
   if (tower.burst && t >= tower.burst.nextTick) {
     const burst = tower.burst;
-    const shot = shoot(ctx, s, tower, towerStats(b, tower.type, tower.level, tower.form), burst.damageBP, 0, ev);
+    const stats = burst.snapshot?.stats ?? towerStats(b,tower.type,tower.level,tower.form);
+    const shot = shoot(ctx,s,tower,stats,burst.damageBP,0,ev,undefined,burst.snapshot);
     burst.left = shot ? burst.left - 1 : 0;
     burst.nextTick = t + burst.gapTicks;
     if (burst.left <= 0) tower.burst = null;
@@ -216,7 +218,7 @@ function fire(ctx: GameContext, s: RunState, tower: Tower, ev: DomainEvent[]) {
   const cycle = stats.fx.cycle && tower.attacks % stats.fx.cycle.every === 0 ? stats.fx.cycle : null;
   shoot(ctx, s, tower, stats, 10000, cycle?.stunMs ? msToTicks(cycle.stunMs) : 0, ev, targets);
   const burst = cycle?.burst ?? stats.fx.burst;
-  if (burst) tower.burst = { left: burst.count - 1, nextTick: t + burst.gapTicks, gapTicks: burst.gapTicks, damageBP: burst.followDamageBP ?? 10000 };
+  if (burst) tower.burst = { ...(stats.weapon && {snapshot:{stats,bonus:auraDamageBonusBP(b,s.towers,tower),elite:stats.eliteBossDamageBP,assigned:[targets[0]!.id]}}), left: burst.count - 1, nextTick: t + burst.gapTicks, gapTicks: burst.gapTicks, damageBP: burst.followDamageBP ?? 10000 };
   // 공격 주기의 회전 공격(창병 A2): 타워 중심 반경 안을 진행도↓로 최대 수.
   if (cycle?.ring) {
     const r2 = cycle.ring.radiusMilli * cycle.ring.radiusMilli;
@@ -253,9 +255,13 @@ function commitAttack(ctx: GameContext, s: RunState, tower: Tower, stats: TowerS
  * 공격 한 번(주 공격·다연발 한 발): 서로 다른 표적 volley명에게 즉발 또는 투사체로 친다. 표적이 없으면 false.
  * 피해 = 레벨·형태 피해 × damageBP(뒤따르는 발) × 같은 적 연속(마법 A1) × 성문 분노(수호기사 A2).
  */
-function shoot(ctx: GameContext, s: RunState, tower: Tower, stats: TowerStats, damageBP: number, extraStunTicks: number, ev: DomainEvent[], found?: Enemy[]): boolean {
+function shoot(ctx: GameContext, s: RunState, tower: Tower, stats: TowerStats, damageBP: number, extraStunTicks: number, ev: DomainEvent[], found?: Enemy[], snapshot?: NonNullable<Tower['burst']>['snapshot']): boolean {
   const b = ctx.balance;
-  const targets = (found ?? candidates(ctx, s, tower.x, tower.y, stats, stats.range + auraRangeBonusMilli(b, s.towers, tower, burningNow(s)))).slice(0, stats.volley);
+  const pool = found ?? candidates(ctx,s,tower.x,tower.y,stats,stats.range+auraRangeBonusMilli(b,s.towers,tower,burningNow(s)));
+  if (stats.weapon?.distribute && snapshot) pool.sort((a,b) =>
+    Number(airborne(b,s.tick))-Number(airborne(a,s.tick)) || Number(snapshot.assigned.includes(a.id))-Number(snapshot.assigned.includes(b.id)));
+  const targets = pool.slice(0,stats.volley);
+  if (snapshot && targets[0]) snapshot.assigned.push(targets[0].id);
   if (targets.length === 0) return false;
   let damage = damageBP === 10000 ? stats.damage : bpFloor(stats.damage, damageBP, 'damage.follow');
   const rage = gateRageBP(s, stats.fx.gateRage, 'damage');
@@ -267,9 +273,10 @@ function shoot(ctx: GameContext, s: RunState, tower: Tower, stats: TowerStats, d
     tower.focus = { targetId: first.id, stacks };
     if (stacks > 0) damage = bpFloor(damage, 10000 + focus * stacks, 'damage.focus');
   }
-  const bonus = auraDamageBonusBP(b, s.towers, tower);
-  const elite = stats.eliteBossDamageBP + auraEliteBossBonusBP(b, s.towers, tower, burningNow(s));
+  const bonus = snapshot?.bonus ?? auraDamageBonusBP(b, s.towers, tower);
+  const elite = snapshot?.elite ?? stats.eliteBossDamageBP + auraEliteBossBonusBP(b, s.towers, tower, burningNow(s));
   const fx = hitFxOf(stats, extraStunTicks);
+  if (stats.weapon?.flatMagicIgnore) fx.flatMagicIgnore = stats.weapon.flatMagicIgnore;
   for (const target of targets) {
     // 굴림체(§4-7 roller): 즉발 대신 표적 자리에 놓여 다음 틱부터 입구 쪽으로 굴러간다.
     if (stats.fx.roller) { launchRoller(ctx, s, tower, stats, target, strikeOf(tower, stats, damage, bonus, elite, fx), ev); continue; }
@@ -291,7 +298,11 @@ function shoot(ctx: GameContext, s: RunState, tower: Tower, stats: TowerStats, d
       ...(stats.fx.pull && stats.splashRadius > 0 ? { pull: { radius: stats.fx.pull.radiusMilli, maxTargets: stats.fx.pull.maxTargets, milli: stats.fx.pull.milli } } : {}),
       ...(zone && stats.splashRadius > 0 ? { zone: zoneSpec(stats, zone, target.progress) } : {}),
     };
-    launch(s, tower, tower, stats, stats.splashRadius > 0 ? null : target, at(ctx, target), { ...a, ...extra }, ev);
+    const impacts = [];
+    if (stats.weapon?.aftershock) impacts.push({delayTicks:msToTicks(stats.weapon.aftershock.delayMs),damageBP:stats.weapon.aftershock.damageBP});
+    const pulses = stats.weapon?.pulses;
+    if (pulses) for (let n=1;n<=pulses.count;n++) impacts.push({delayTicks:n*msToTicks(pulses.periodMs),damageBP:pulses.damageBP});
+    launch(s, tower, tower, stats, stats.splashRadius > 0 ? null : target, at(ctx, target), { ...a, ...extra, ...(impacts.length && {impacts}) }, ev);
     // 관통(석궁 A 등): 첫 대상 뒤 일직선 적에게 따로 날아가는 화살(발사 때 ID 고정, PRD §20.3).
     if (stats.pierceDamageBP > 0) {
       const pierce = strikeOf(tower, stats, bpFloor(damage, stats.pierceDamageBP, 'damage.pierce'), bonus, elite, fx);
@@ -301,7 +312,7 @@ function shoot(ctx: GameContext, s: RunState, tower: Tower, stats: TowerStats, d
   return true;
 }
 
-function launch(s: RunState, tower: Tower, from: { x: number; y: number }, stats: Pick<TowerStats, 'projectileSpeed' | 'splashRadius' | 'maxTargets'>, target: Enemy | null, to: { x: number; y: number }, a: Strike & Partial<Pick<Projectile, 'splash' | 'ricochet' | 'pull' | 'zone'>>, ev: DomainEvent[]) {
+function launch(s: RunState, tower: Tower, from: { x: number; y: number }, stats: Pick<TowerStats, 'projectileSpeed' | 'splashRadius' | 'maxTargets'>, target: Enemy | null, to: { x: number; y: number }, a: Strike & Partial<Pick<Projectile, 'splash' | 'ricochet' | 'pull' | 'zone' | 'impacts'>>, ev: DomainEvent[]) {
   const flight = Math.max(1, flightTicks(dist2(to.x, to.y, from.x, from.y), stats.projectileSpeed));
   const projectile: Projectile = {
     ...a, id: s.seq.projectile++, fromX: from.x, fromY: from.y, targetId: target?.id ?? null, toX: to.x, toY: to.y,
@@ -344,7 +355,8 @@ function pierceTargets(ctx: GameContext, s: RunState, tower: Tower, first: Enemy
  * 모양 우선순위: 연쇄(번개) → 직선(창병 A·노포·바람 B1) → 부채꼴(화염·바람) → 고리(종각·서리 B1) → 첫 대상 둘레(수호기사 B) → 하나.
  */
 function strike(ctx: GameContext, s: RunState, tower: Tower, stats: TowerStats, first: Enemy, damage: number, bonus: number, elite: number, fx: HitFx, ev: DomainEvent[]) {
-  const targets = stats.chainRadius > 0 ? chainTargets(ctx, s, first, stats)
+  const targets = stats.weapon && stats.pierceDamageBP > 0 ? [first,...pierceTargets(ctx,s,tower,first,stats)]
+    : stats.chainRadius > 0 ? chainTargets(ctx, s, first, stats)
     : stats.lineWidth > 0 ? lineTargets(ctx, s, tower, first, stats)
     : stats.cone ? coneTargets(ctx, s, tower, first, stats)
     : stats.fx.ring ? ringTargets(ctx, s, tower, stats)
@@ -355,7 +367,11 @@ function strike(ctx: GameContext, s: RunState, tower: Tower, stats: TowerStats, 
 
 /** 즉발 대상 목록을 순서대로 맞힌다(k번째는 감쇠비^k). 첫 대상 기절, 마지막 대상 둘레 2차 피해. */
 function hitAll(ctx: GameContext, s: RunState, tower: Tower, stats: TowerStats, targets: Enemy[], damage: number, bonus: number, elite: number, ev: DomainEvent[], fx: HitFx = hitFxOf(stats, 0)) {
-  const hits = targets.map((e, k) => ({ e, at: at(ctx, e), damage: chainDamage(damage, stats.chainFalloffBP, k) }));
+  let previous = damage;
+  const hits = targets.map((e,k) => {
+    if (k>0 && stats.weapon) previous = bpFloor(previous,stats.pierceDamageBP || stats.chainFalloffBP,'damage.chain');
+    return {e,at:at(ctx,e),damage:stats.weapon ? previous : chainDamage(damage,stats.chainFalloffBP,k)};
+  });
   ev.push({ type: 'strike', towerId: tower.id, towerType: tower.type, fromX: tower.x, fromY: tower.y, targets: hits.map(h => ({ enemyId: h.e.id, x: h.at.x, y: h.at.y })) });
   for (const h of hits) applyHit(ctx, s, strikeOf(tower, stats, h.damage, bonus, elite, fx), h.e, ev);
   // 충격(번개 B 등): 첫 대상 기절. 한 적의 평생 기절 시간 상한을 넘기지 않는다(PRD §7.3, statusCaps).
@@ -383,23 +399,24 @@ function aroundTargets(ctx: GameContext, s: RunState, first: Enemy, stats: Tower
 }
 
 /** 점 c 둘레 반경 안을 거리↑ → 진행도↓ → 생성순↑로 최대 수. */
-function nearby(ctx: GameContext, s: RunState, c: { x: number; y: number }, radius: number, max: number, ok: (e: Enemy) => boolean): Enemy[] {
+function nearby(ctx: GameContext, s: RunState, c: { x: number; y: number }, radius: number, max: number, ok: (e: Enemy) => boolean, tieById = false): Enemy[] {
   const r2 = radius * radius;
   return s.enemies
     .filter(ok)
     .map(e => { const p = at(ctx, e); return { e, d: dist2(p.x, p.y, c.x, c.y) }; })
     .filter(h => h.d <= r2)
-    .sort((a, b) => a.d - b.d || b.e.progress - a.e.progress || a.e.id - b.e.id)
+    .sort((a, b) => a.d - b.d || (tieById ? 0 : b.e.progress - a.e.progress) || a.e.id - b.e.id)
     .slice(0, max)
     .map(h => h.e);
 }
 
 /** 고리(종각·서리 B1): 타워 중심 사거리 안 전방위, 진행도↓ → 생성순↑로 최대 수. */
 function ringTargets(ctx: GameContext, s: RunState, tower: Tower, stats: TowerStats): Enemy[] {
+  const slowEnd = (e: Enemy) => e.slows.reduce((end,x) => Math.max(end,x.untilTick),s.tick);
   const r2 = stats.range * stats.range;
   return s.enemies
     .filter(e => aimable(ctx, stats.canHitFlyer, e, s.tick) && (p => dist2(p.x, p.y, tower.x, tower.y) <= r2)(at(ctx, e)))
-    .sort((a, b) => b.progress - a.progress || a.id - b.id)
+    .sort((a, b) => (stats.weapon?.slowPriority ? slowEnd(a)-slowEnd(b) : 0) || b.progress - a.progress || a.id - b.id)
     .slice(0, stats.maxTargets);
 }
 
@@ -414,7 +431,7 @@ function chainTargets(ctx: GameContext, s: RunState, first: Enemy, stats: TowerS
   const chosen = [first];
   while (chosen.length < stats.maxTargets) {
     const last = at(ctx, chosen[chosen.length - 1]!);
-    const next = nearby(ctx, s, last, stats.chainRadius, 1, e => aimable(ctx, stats.canHitFlyer, e, s.tick) && !chosen.includes(e))[0];
+    const next = nearby(ctx, s, last, stats.chainRadius, 1, e => aimable(ctx, stats.canHitFlyer, e, s.tick) && !chosen.includes(e), !!stats.weapon)[0];
     if (!next) break;
     chosen.push(next);
   }
@@ -497,6 +514,11 @@ function resolve(ctx: GameContext, s: RunState, p: Projectile, ev: DomainEvent[]
     if (p.splash) splashAround(ctx, s, { ...p, damage: p.splash.damage, fx: NO_FX }, target, point, p.splash, ev);
     if (p.ricochet && p.ricochet.left > 0) ricochet(ctx, s, p, point, ev);
     return;
+  }
+  if (p.impacts) {
+    const {impacts,...shell} = p;
+    for (const impact of impacts) s.projectiles.push({...shell,id:s.seq.projectile++,arrivalTick:s.tick+impact.delayTicks,
+      damage:bpFloor(p.damage,impact.damageBP,'damage.impact')});
   }
   const hits = nearby(ctx, s, { x: p.toX, y: p.toY }, p.splashRadius, p.maxTargets, e => reachable(p.canHitFlyer, e, s.tick));
   for (const e of hits) applyHit(ctx, s, p, e, ev);
@@ -664,7 +686,7 @@ function applyHit(ctx: GameContext, s: RunState, p: Strike, e: Enemy, ev: Domain
     const vuln = Math.min(b.statusCaps.vulnMaxBP, strongest(e.vulns, s.tick));
     if (vuln > 0) damage = bpFloor(damage, 10000 + vuln, 'damage.vuln');
     const resist = effectiveResistBP(e, p.damageType, p.physicalResistIgnoreBP, fx.magicResistIgnoreBP, s.tick, b.statusCaps.shredMaxBP, b.statusCaps.bossResistMaxBP);
-    let dealt = Math.min(e.hp, clayCut(b, p, e, mitigated(damage, resist)));
+    let dealt = Math.min(e.hp, clayCut(b, p, e, mitigated(damage, Math.max(0,resist-(fx.flatMagicIgnore ?? 0)))));
     // 겹방패(monsters.md §2.0): 한 번 맞을 때마다 최대 체력의 capBP까지만 받고 한 겹 벗긴다.
     if (e.boss && e.boss.wardLeft > 0) {
       const skill = bossDef(b, e)?.skill;

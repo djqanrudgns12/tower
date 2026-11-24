@@ -1,7 +1,9 @@
 import { EFFECT_KEYS, TOWER_IDS, TRAIT_TAG, type Balance, type BranchId, type FoeTag, type FormConfig, type FormId, type TowerConfig, type TowerId } from '../contracts/balance';
 import { dist2 } from './geometry';
 import { bpFloor, ceilDiv, msToTicks, mulDivFloor, round5Bp } from './num';
-import type { Enemy, Tower } from './types';
+import type { Enemy } from './types';
+import type { EngineTowerId, Tower } from './engineTypes';
+import { evolutionAt, isR6Tower, towerDefinition, type WeaponProfile } from './r6Towers';
 
 export type { FormId } from '../contracts/balance';
 
@@ -49,6 +51,7 @@ export interface TowerStats {
   pierceCount: number;
   /** 타워·형태에서 모은 나머지 공격 효과 설정(ms·BP 원값, 해석은 combat.ts). */
   fx: Effects;
+  weapon?: WeaponProfile;
 }
 
 /** 공격 효과 설정: 타워 기본값 위에 형태(2차형은 1차형을 물려받은 뒤) 값을 덮는다. */
@@ -72,8 +75,9 @@ export function formTier(form: FormId): 0 | 1 | 2 {
 export const formBranch = (form: FormId): BranchId | null => (form === 'base' ? null : (form[0] as BranchId));
 
 /** 2차형은 1차형 값을 물려받고 적은 필드만 덮어쓴다. 기본형은 null. */
-export function formConfig(b: Balance, type: TowerId, form: FormId): FormConfig | null {
-  if (form === 'base') return null;
+export function formConfig(b: Balance, type: EngineTowerId, form: FormId): FormConfig | null {
+  if (form === 'base' || (b.r6 && isR6Tower(type))) return null;
+  if (isR6Tower(type) && type !== 'mortar') throw new Error('잘못된 판의 형태입니다');
   const forms = b.forms[type];
   if (form === 'A' || form === 'B') return forms[form];
   const own = forms[form];
@@ -117,7 +121,7 @@ function levelCostBP(b: Balance, level: number, base: number): number | null {
 const statsCache = new WeakMap<Balance, Map<string, TowerStats>>();
 const fxCache = new WeakMap<Balance, Map<string, Effects>>();
 
-export function towerStats(b: Balance, type: TowerId, level: number, form: FormId): TowerStats {
+export function towerStats(b: Balance, type: EngineTowerId, level: number, form: FormId): TowerStats {
   let byKey = statsCache.get(b);
   if (!byKey) { byKey = new Map(); statsCache.set(b, byKey); }
   const key = `${type}/${level}/${form}`;
@@ -126,9 +130,10 @@ export function towerStats(b: Balance, type: TowerId, level: number, form: FormI
   return stats;
 }
 
-function computeStats(b: Balance, type: TowerId, level: number, form: FormId): TowerStats {
-  const t = b.towers[type];
-  const f = formConfig(b, type, form);
+function computeStats(b: Balance, type: EngineTowerId, level: number, form: FormId): TowerStats {
+  const t = towerDefinition(b,type);
+  const weapon = b.r6 && isR6Tower(type) ? b.r6.profiles[type][evolutionAt(level).weapon] : undefined;
+  const f = weapon ?? formConfig(b, type, form);
   const levelBP = levelDamageBP(b, level);
   let damage = bpFloor(t.damage * 1000, levelBP, 'damage.level');
   // 기본 피해 배율(원정 보물 광역 피해 +, 계약 파일에는 없다).
@@ -140,6 +145,7 @@ function computeStats(b: Balance, type: TowerId, level: number, form: FormId): T
   const fx = effectsOf(t, f);
   return {
     damage,
+    ...(weapon && {weapon}),
     damageType: t.damageType,
     baseIntervalTicks: msToTicks(t.intervalMs),
     intervalBP: f?.intervalBP ?? 10000,
@@ -173,14 +179,14 @@ function computeStats(b: Balance, type: TowerId, level: number, form: FormId): T
 }
 
 /** 부채꼴 판정식(2·dot² ≥ 거리²·축길이²)은 총각 90도 전용이다(PRD §20.3). 다른 각도는 새 판정식이 필요하다. */
-function coneOf(type: TowerId, degrees: number | undefined): boolean {
+function coneOf(type: EngineTowerId, degrees: number | undefined): boolean {
   if (degrees === undefined) return false;
   if (degrees !== 90) throw new Error(`${type}: 부채꼴은 90도만 지원한다(${degrees})`);
   return true;
 }
 
 /** 타워·형태의 상성(prd-r4 §7.2 D): 잘 잡는 적·약한 적 표지. 화면 아이콘과 피해 배율이 같은 목록을 쓴다. */
-export function matchupOf(b: Balance, type: TowerId, form: FormId): { strongVs: readonly FoeTag[]; weakVs: readonly FoeTag[] } {
+export function matchupOf(b: Balance, type: EngineTowerId, form: FormId): { strongVs: readonly FoeTag[]; weakVs: readonly FoeTag[] } {
   const fx = effectsFor(b, type, form);
   return { strongVs: fx.strongVs ?? [], weakVs: fx.weakVs ?? [] };
 }
@@ -201,7 +207,7 @@ export function foeTags(e: Pick<Enemy, 'kind' | 'elite'> & Partial<Pick<Enemy, '
  * 직접 타격의 상성 배율(BP): 적의 표지가 strongVs에 있으면 matchup.strongBP, weakVs에 있으면 matchup.weakBP를 표지마다 한 번씩 곱한다(내림).
  * matchup이 없거나 맞는 표지가 없으면 10000.
  */
-export function matchupBP(b: Balance, type: TowerId, form: FormId, e: Pick<Enemy, 'kind' | 'elite'> & Partial<Pick<Enemy, 'trait'>>): number {
+export function matchupBP(b: Balance, type: EngineTowerId, form: FormId, e: Pick<Enemy, 'kind' | 'elite'> & Partial<Pick<Enemy, 'trait'>>): number {
   const rule = b.matchup;
   if (!rule) return 10000;
   const { strongVs, weakVs } = matchupOf(b, type, form);
@@ -218,39 +224,40 @@ export function matchupBP(b: Balance, type: TowerId, form: FormId, e: Pick<Enemy
 export const countersOf = (b: Balance, tag: FoeTag): TowerId[] => TOWER_IDS.filter(t => matchupOf(b, t, 'base').strongVs.includes(tag));
 
 /** 직접 공격하는 타워인가(깃발은 공격하지 않는다). */
-export const attacks = (b: Balance, type: TowerId) => b.towers[type].damageType !== 'none';
+export const attacks = (b: Balance, type: EngineTowerId) => towerDefinition(b,type).damageType !== 'none';
 
 /** 형태까지 모은 공격 효과 설정(깃발처럼 공격하지 않는 타워도 쓴다). */
-export function effectsFor(b: Balance, type: TowerId, form: FormId): Effects {
+export function effectsFor(b: Balance, type: EngineTowerId, form: FormId): Effects {
   let byKey = fxCache.get(b);
   if (!byKey) { byKey = new Map(); fxCache.set(b, byKey); }
   const key = `${type}/${form}`;
   let fx = byKey.get(key);
-  if (!fx) { fx = effectsOf(b.towers[type], formConfig(b, type, form)); byKey.set(key, fx); }
+  if (!fx) { fx = effectsOf(towerDefinition(b,type), formConfig(b, type, form)); byKey.set(key, fx); }
   return fx;
 }
 
 /** 오라를 주는 타워인가: 깃발(레벨별 오라 표)이거나 형태가 사거리·속도·정예 배율·처치 골드 오라를 준다(종각 B 계열 등). */
 export function isAuraGiver(b: Balance, t: Pick<Tower, 'type' | 'form'>): boolean {
-  if (b.towers[t.type].auraDamageBPByLevel) return true;
+  if (b.r6) return t.type === 'bastion';
+  if (towerDefinition(b,t.type).auraDamageBPByLevel) return true;
   const fx = effectsFor(b, t.type, t.form);
   return fx.auraRangeMilli !== undefined || fx.auraSpeedBP !== undefined || fx.auraEliteBossBP !== undefined || fx.auraKillGold !== undefined;
 }
 
 /** 오라 반경: 형태의 auraRadiusMilli, 없으면 기본 반경 + 형태 사거리 보정. 버닝 중이면 깃발 B1처럼 더 넓어질 수 있다. */
-function auraRange(b: Balance, type: TowerId, form: FormId, burning = false): number {
+function auraRange(b: Balance, type: EngineTowerId, form: FormId, burning = false): number {
   const fx = effectsFor(b, type, form);
-  const base = fx.auraRadiusMilli ?? b.towers[type].rangeMilli + (formConfig(b, type, form)?.rangeAddMilli ?? 0);
+  const base = fx.auraRadiusMilli ?? towerDefinition(b,type).rangeMilli + (formConfig(b, type, form)?.rangeAddMilli ?? 0);
   return base + (burning ? fx.auraBurning?.rangeAddMilli ?? 0 : 0);
 }
 
 /** 화면의 범위 원: 공격 타워는 사거리, 깃발은 오라 반경(PRD §12.4). */
-export const reachMilli = (b: Balance, type: TowerId, level: number, form: FormId) =>
+export const reachMilli = (b: Balance, type: EngineTowerId, level: number, form: FormId) =>
   attacks(b, type) ? towerStats(b, type, level, form).range : auraRange(b, type, form);
 
 /** 오라가 대상 타워에 닿는가. 버프 범위는 타워 바닥 중심 간 거리로 판정한다(PRD §7.3). */
-export function auraReaches(b: Balance, giver: Pick<Tower, 'type' | 'form' | 'x' | 'y'>, target: Pick<Tower, 'x' | 'y'>, burning = false): boolean {
-  const r = auraRange(b, giver.type, giver.form, burning);
+export function auraReaches(b: Balance, giver: Pick<Tower, 'type' | 'form' | 'x' | 'y'> & Partial<Pick<Tower,'level'>>, target: Pick<Tower, 'x' | 'y'>, burning = false): boolean {
+  const r = b.r6 && giver.type === 'bastion' ? towerStats(b,giver.type,giver.level ?? 1,giver.form).fx.auraRadiusMilli! : auraRange(b, giver.type, giver.form, burning);
   return dist2(giver.x, giver.y, target.x, target.y) <= r * r;
 }
 
@@ -276,6 +283,11 @@ export const auraEliteBossBonusBP = (b: Balance, towers: readonly Tower[], targe
  * A 계열(용기)은 피해 보너스를 대체하고, B 계열(신속)은 피해 보너스를 없애고 속도 보너스를 준다(PRD §7.3).
  */
 export function bannerAura(b: Balance, banner: Pick<Tower, 'type' | 'level' | 'form'>): { damageBP: number; speedBP: number } {
+  if (b.r6 && banner.type === 'bastion') {
+    const w = towerStats(b,banner.type,banner.level,banner.form).weapon!;
+    return {damageBP:w.auraDamageBPByLevel![0]!,speedBP:w.auraSpeedBP ?? 0};
+  }
+  if (isR6Tower(banner.type) && banner.type !== 'mortar') return {damageBP:0,speedBP:0};
   const byLevel = b.towers[banner.type].auraDamageBPByLevel;
   if (!byLevel) return { damageBP: 0, speedBP: 0 };
   const f = formConfig(b, banner.type, banner.form);
@@ -319,12 +331,12 @@ export function attackIntervalTicks(b: Balance, stats: TowerStats, speedBonusBP:
   return Math.max(msToTicks(b.externalCaps.minAttackIntervalMs), ticks);
 }
 
-export const buildCost = (b: Balance, type: TowerId) => b.towers[type].cost;
+export const buildCost = (b: Balance, type: EngineTowerId) => towerDefinition(b,type).cost;
 
 /** level → level+1 비용. 설정 상한(levels.max)이거나 비용이 안전 정수를 넘는 레벨이면 null. */
-export function upgradeCost(b: Balance, type: TowerId, level: number): number | null {
+export function upgradeCost(b: Balance, type: EngineTowerId, level: number): number | null {
   if (b.levels.max !== null && level >= b.levels.max) return null;
-  const base = b.towers[type].cost;
+  const base = towerDefinition(b,type).cost;
   const costBP = levelCostBP(b, level, base);
   return costBP === null ? null : round5Bp(base, costBP);
 }
@@ -334,7 +346,7 @@ export function upgradeCost(b: Balance, type: TowerId, level: number): number | 
  * Lv3→4는 A·B, Lv6→7은 지금 길의 두 갈래(A→A1·A2, B→B1·B2)다(progression.md §1·§5).
  */
 export function evolutionChoices(b: Balance, tower: Pick<Tower, 'type' | 'level' | 'form'>): FormId[] | null {
-  if (upgradeCost(b, tower.type, tower.level) === null) return null;
+  if (b.r6 || upgradeCost(b, tower.type, tower.level) === null) return null;
   const next = tower.level + 1;
   if (next === b.levels.evolveAt[0] && tower.form === 'base') return ['A', 'B'];
   if (next === b.levels.evolveAt[1] && tower.form === 'A') return ['A1', 'A2'];

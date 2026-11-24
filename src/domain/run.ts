@@ -2,8 +2,11 @@ import type { FormId, TowerId } from '../contracts/balance';
 import type { OptionId } from '../contracts/questions';
 import { battleTick, towerSpeedBonusBP } from './combat';
 import type { GameContext } from './context';
-import type { DomainEvent } from './events';
-import { openDraft, pickDraft, startingOwned } from './draft';
+import type { DomainEvent, EngineTowerId, RunState, Tower, WithTowerIds } from './engineTypes';
+import { evolutionAt, towerDefinition } from './r6Towers';
+import type { R6TowerId } from '../contracts/balanceV2';
+import type { RunState as LegacyState } from './types';
+import { openDraft, pickDraft } from './draft';
 import { center } from './geometry';
 import { removeTowerHazards, settleHazardsAtWaveEnd } from './hazards';
 import { add, msToTicks, mulDivFloor } from './num';
@@ -11,7 +14,7 @@ import { createEncounter, MAX_REVIEW_SENSES, QuestionPoolExhaustedError } from '
 import { openRelicOffer, pickRelic, relicContext } from './relics';
 import { RNG_ALGORITHM, streamSeed } from './rng';
 import { attackIntervalTicks, attacks, buildCost, evolutionChoices, sellRefund, towerStats, upgradeCost } from './towers';
-import { RULES_VERSION, RUN_STATE_VERSION, type PauseReason, type ReviewSense, type RunConfig, type RunEndReason, type RunState, type Tower } from './types';
+import { RULES_VERSION, RUN_STATE_VERSION, type PauseReason, type ReviewSense, type RunConfig, type RunEndReason } from './types';
 import { composeWave, isMilestone, spawnIntervalTicks, waveHpBaseMilli } from './waves';
 
 export type Command =
@@ -38,7 +41,7 @@ export type CommandError =
   | 'SLOT_TAKEN' | 'UNKNOWN_SLOT' | 'UNKNOWN_TOWER' | 'MAX_LEVEL' | 'FORM_REQUIRED' | 'INVALID_FORM' | 'UNDO_EXPIRED' | 'TOWER_LIMIT'
   | 'GAME_OVER' | 'NOT_AVAILABLE' | 'NOT_OWNED' | 'NO_DRAFT' | 'INVALID_DRAFT' | 'NO_RELIC_OFFER' | 'INVALID_RELIC' | 'NUMERIC_LIMIT';
 
-export type CommandResult = { ok: true; events: DomainEvent[] } | { ok: false; error: CommandError };
+export type CommandResult = { ok: true; events: import('./events').DomainEvent[] } | { ok: false; error: CommandError };
 
 export type NewRunInput = Omit<RunConfig, 'rngAlgorithm' | 'rulesVersion' | 'balanceVersion' | 'mapVersion'> & {
   /**
@@ -89,9 +92,11 @@ export function nextCorrectGold(ctx: GameContext, s: Pick<RunState, 'relics' | '
   return add(correctGoldAt(c.difficulty, Math.max(1, s.wave)), streakBonusGold(c.balance, (s.quiz.answerStreak ?? 0) + 1), 'correctGold');
 }
 
-export function createRun(ctx: GameContext, input: NewRunInput): RunState {
+export function createRun(ctx: GameContext, input: NewRunInput): LegacyState;
+export function createRun(ctx: GameContext, input: WithTowerIds<NewRunInput,R6TowerId>): WithTowerIds<LegacyState,R6TowerId>;
+export function createRun(ctx: GameContext, input: WithTowerIds<NewRunInput,EngineTowerId>): RunState {
   const { reviewSenses, previousQuestionIds, ...rest } = input;
-  const config: RunConfig = { ...rest, rngAlgorithm: RNG_ALGORITHM, rulesVersion: RULES_VERSION, balanceVersion: ctx.balance.balanceVersion, mapVersion: ctx.map.mapVersion };
+  const config: RunState['config'] = { ...rest, rngAlgorithm: RNG_ALGORITHM, rulesVersion: RULES_VERSION, balanceVersion: ctx.balance.balanceVersion, mapVersion: ctx.map.mapVersion };
   const seed = config.seed >>> 0;
   const s: RunState = {
     v: RUN_STATE_VERSION, config, phase: 'PREP_QUIZ', pause: [], tick: 0, wave: 0, completedWave: 0, endedAtWave: null, endReason: null,
@@ -99,7 +104,7 @@ export function createRun(ctx: GameContext, input: NewRunInput): RunState {
     rng: { battle: streamSeed(seed, 'battle'), question: streamSeed(seed, 'question'), option: streamSeed(seed, 'option'), draft: streamSeed(seed, 'draft') },
     seq: { command: 0, enemy: 1, tower: 1, projectile: 1, hazard: 1 },
     quiz: { presented: [], previousQuestionIds: [...new Set(previousQuestionIds ?? [])].sort(), queue: [], cursor: 0, cycle: 0, recentQuestions: [], recentSenses: [], current: null, feedback: null, prepTarget: 0, prepDone: 0, battleStreak: 0, nextEncounterId: 1, history: [], reviewSenses: copyReviewSenses(reviewSenses), reviewUsed: {} },
-    owned: startingOwned(ctx.balance, config), draft: null,
+    owned: (ctx.balance.r6?.rules.unlocks.initial ?? ctx.balance.draft.startTowers).filter(id => config.availableTowers.includes(id)), draft: null,
     towers: [], enemies: [], projectiles: [], hazards: [], battle: null,
     stats: { correct: 0, wrong: 0, skipped: 0, kills: 0, bossKills: 0, bossLeaks: 0, leaks: 0, goldEarned: 0, ptFromQuestions: 0, ptFromKills: 0, activeTicks: 0, battleTicks: 0 },
     milestoneRewardedWaves: [],
@@ -129,7 +134,9 @@ function enterPrep(ctx: GameContext, s: RunState, wave: number, ev: DomainEvent[
 
 const tradingPhase = (s: RunState) => s.phase === 'BUILD' || s.phase === 'BATTLE';
 
-export function applyCommand(ctx: GameContext, s: RunState, cmd: Command): CommandResult {
+export function applyCommand(ctx: GameContext, s: LegacyState, cmd: Command): CommandResult;
+export function applyCommand(ctx: GameContext, s: WithTowerIds<LegacyState,R6TowerId>, cmd: WithTowerIds<Command,R6TowerId>): WithTowerIds<CommandResult,R6TowerId>;
+export function applyCommand(ctx: GameContext, s: RunState, cmd: WithTowerIds<Command,EngineTowerId>): WithTowerIds<CommandResult,EngineTowerId> {
   if (s.phase === 'GAME_OVER' && cmd.type !== 'pause' && cmd.type !== 'resume') return { ok: false, error: 'GAME_OVER' };
   if (cmd.type === 'pause') {
     if (!s.pause.includes(cmd.reason)) s.pause.push(cmd.reason);
@@ -241,6 +248,8 @@ function replaceCurrent(ctx: GameContext, s: RunState, ev: DomainEvent[]) {
 }
 
 /** 밖에서 들여온 상태(개발용 QA 장면 로더)에 걸린 미제출 문항이 철회됐으면 바꾼다. 답한 문항은 소급 변경하지 않는다. */
+export function replaceUnavailableQuestion(ctx: GameContext, s: LegacyState): import('./events').DomainEvent[];
+export function replaceUnavailableQuestion(ctx: GameContext, s: WithTowerIds<LegacyState,R6TowerId>): WithTowerIds<import('./events').DomainEvent,R6TowerId>[];
 export function replaceUnavailableQuestion(ctx: GameContext, s: RunState): DomainEvent[] {
   const enc = s.quiz.current;
   if (!enc || enc.answer || s.phase === 'GAME_OVER') return [];
@@ -270,14 +279,14 @@ function advanceQuestion(ctx: GameContext, s: RunState, ev: DomainEvent[]) {
   }
 }
 
-function build(ctx: GameContext, s: RunState, slotId: string, type: TowerId, ev: DomainEvent[]): CommandError | null {
+function build(ctx: GameContext, s: RunState, slotId: string, type: EngineTowerId, ev: DomainEvent[]): CommandError | null {
   if (!tradingPhase(s)) return 'WRONG_PHASE';
   const slot = ctx.map.slots.find(x => x.id === slotId);
   if (!slot) return 'UNKNOWN_SLOT';
   if (s.towers.some(t => t.slotId === slotId)) return 'SLOT_TAKEN';
-  const cfg = ctx.balance.towers[type];
   if (!s.config.availableTowers.includes(type)) return 'NOT_AVAILABLE';
   if (!s.owned.includes(type)) return 'NOT_OWNED';
+  const cfg = towerDefinition(ctx.balance,type);
   if (cfg.maxOnField && s.towers.filter(t => t.type === type).length >= cfg.maxOnField) return 'TOWER_LIMIT';
   const cost = buildCost(ctx.balance, type);
   if (s.gold < cost) return 'NOT_ENOUGH_GOLD';
@@ -308,6 +317,10 @@ function upgrade(ctx: GameContext, s: RunState, towerId: number, form: FormId | 
   s.gold -= cost;
   tower.invested = invested;
   tower.level++;
+  if (ctx.balance.r6 && tower.level % 2 === 0) {
+    const {stage,weapon} = evolutionAt(tower.level);
+    ev.push({type:'towerStage',towerId,stage,weapon:weapon+1,tick:s.tick});
+  }
   if (form !== undefined) tower.form = form;
   tower.undoUntilTick = null;
   // 이미 예약된 다음 공격 시각은 바꾸지 않는다(PRD §7.2).
@@ -345,7 +358,7 @@ function undoBuild(s: RunState, towerId: number, ev: DomainEvent[]): CommandErro
   return null;
 }
 
-function draftPick(s: RunState, tower: TowerId, ev: DomainEvent[]): CommandError | null {
+function draftPick(s: RunState, tower: EngineTowerId, ev: DomainEvent[]): CommandError | null {
   if (!s.draft) return 'NO_DRAFT';
   if (!s.draft.offers.includes(tower)) return 'INVALID_DRAFT';
   pickDraft(s, tower, false, ev);
@@ -433,6 +446,8 @@ function completeWave(ctx: GameContext, s: RunState, ev: DomainEvent[]) {
 }
 
 /** 논리 틱 하나. 정지 중에는 아무것도 하지 않는다. */
+export function advanceTick(ctx: GameContext, s: LegacyState): import('./events').DomainEvent[];
+export function advanceTick(ctx: GameContext, s: WithTowerIds<LegacyState,R6TowerId>): WithTowerIds<import('./events').DomainEvent,R6TowerId>[];
 export function advanceTick(ctx: GameContext, s: RunState): DomainEvent[] {
   if (s.pause.length > 0 || s.phase === 'GAME_OVER') return [];
   ctx = relicContext(ctx, s);

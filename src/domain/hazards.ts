@@ -1,9 +1,9 @@
 import type { GameContext } from './context';
-import type { DomainEvent, HazardEndReason } from './events';
+import type { HazardEndReason } from './events';
 import type { PathGeometry } from './geometry';
 import { isqrt, safe } from './num';
 import { effectsFor } from './towers';
-import type { FieldHazard, RunState } from './types';
+import type { DomainEvent, FieldHazard, RunState } from './engineTypes';
 
 // 장판·덫·굴림체(towers.md §4-7 fieldHazards)의 자리 계산과 웨이브 경계 정리. 타격 판정은 combat.ts updateHazards가 한다.
 

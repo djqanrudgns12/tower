@@ -1,8 +1,9 @@
+import type { RunState } from './engineTypes';
 import type { DifficultyId } from '../contracts/balance';
 import type { DifficultyTier, OptionId } from '../contracts/questions';
 import type { GameContext } from './context';
 import { shuffle, type Rng } from './rng';
-import type { Encounter, EncounterPhase, QuizState, RunState } from './types';
+import type { Encounter, EncounterPhase, QuizState } from './types';
 
 export const RECENT_QUESTIONS = 30;
 export const RECENT_SENSES = 8;

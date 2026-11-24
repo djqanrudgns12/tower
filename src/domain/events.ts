@@ -6,6 +6,8 @@ export type HazardEndReason = 'time' | 'spent' | 'end' | 'wave' | 'sold';
 
 // 화면·렌더러로 보내는 사건. 보상은 이미 상태에 반영된 뒤 알린다(애니메이션이 보상을 만들지 않는다, PRD §10.3).
 export type DomainEvent =
+  | { type: 'towerUnlocked'; tower: TowerId; wave: number }
+  | { type:'towerStage'; towerId:number; stage:number; weapon:number; tick:number }
   | { type: 'phase'; phase: Phase; wave: number }
   | { type: 'encounter'; encounterId: number }
   | { type: 'answered'; encounterId: number; result: 'correct' | 'wrong' | 'skipped'; pt: number; gold: number }

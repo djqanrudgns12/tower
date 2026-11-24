@@ -177,7 +177,9 @@ export interface BossState {
 }
 
 /** 시차 다연발 예약(towers.md §4-4): 남은 발 수, 다음 발 틱, 간격, 뒤따르는 발의 피해 배율. */
-export interface BurstState { left: number; nextTick: number; gapTicks: number; damageBP: number }
+export interface BurstState { left: number; nextTick: number; gapTicks: number; damageBP: number;
+  snapshot?: {stats:import('./towers').TowerStats; bonus:number; elite:number; assigned:number[]};
+}
 
 export interface Tower {
   id: number;
@@ -203,6 +205,9 @@ export interface Tower {
 }
 
 export interface Projectile {
+  /** 곡사포의 첫 착탄에서 예약할 추가 타격. */
+  impacts?: Array<{delayTicks:number; damageBP:number}>;
+
   id: number;
   towerId: number;
   towerType: TowerId;
@@ -310,7 +315,7 @@ export type FieldHazard = ZoneHazard | TrapHazard | RollerHazard;
 
 /** 한 번의 적중이 싣는 추가 효과(틱·BP, 0이면 없음). 발사 순간의 스냅샷이다. */
 export interface HitFx {
-  burnTotal: number; burnTicks: number; magicResistIgnoreBP: number;
+  burnTotal: number; burnTicks: number; magicResistIgnoreBP: number; flatMagicIgnore?:number;
   stunTicks: number; eliteStunTicks: number; eliteSlowBP: number; eliteSlowTicks: number; bossSlowBP: number; bossSlowTicks: number;
   knockback: number; knockbackFlyer: number; knockbackBoss: number; groundTicks: number;
   vulnBP: number; vulnTicks: number; shredPhysicalBP: number; shredMagicBP: number; shredTicks: number;

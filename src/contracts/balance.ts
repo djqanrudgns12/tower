@@ -533,7 +533,7 @@ export const balanceSchema = z.object({
   }
 });
 
-export type Balance = z.infer<typeof balanceSchema>;
+export type Balance = z.infer<typeof balanceSchema> & { r6?: import('../domain/r6Balance').R6Runtime };
 export type DifficultyConfig = Balance['difficulties'][DifficultyId];
 export type TowerConfig = Balance['towers'][TowerId];
 export type FormConfig = z.infer<typeof form>;
