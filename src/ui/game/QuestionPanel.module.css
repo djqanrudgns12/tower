@@ -171,6 +171,7 @@
 /* 답안 키캡(보조 변형, 56px). 번호는 작은 숫자로만 둔다(알약 없음).
    여러 줄 문장 키라 키 원화를 끄고(Button art={false}) 양피지 볼록 면 + 안쪽 2px 호두나무 테 + 바닥으로 그린다(R5 P2 눈 관문). */
 .panel .option {
+  min-height: var(--quiz-option-min, 56px);
   justify-content: flex-start;
   gap: var(--s3);
   min-width: 0;

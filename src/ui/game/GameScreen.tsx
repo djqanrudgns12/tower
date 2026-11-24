@@ -744,6 +744,7 @@ export function GameScreen({
     ? ({
         padding: layout.pad,
         '--map-w': `${layout.mapW}px`,
+        '--map-h': `${layout.mapH}px`,
         '--rail-w': `${layout.railW}px`,
         '--q-h': `${layout.q}px`,
       } as CSSProperties)
@@ -774,7 +775,7 @@ export function GameScreen({
           <>
             {r6 && <div className={css.hudRow}>{hud}</div>}
             {field}
-            <Card as="aside" material="board" pad="none" className={css.rail} style={r6 ? { maxHeight: layout.mapH + layout.q + 8 } : { height: layout.mapH }} aria-label="타워 관리">
+            <Card as="aside" material="board" pad="none" className={css.rail} style={r6 ? undefined : { height: layout.mapH }} aria-label="타워 관리">
               {!r6 && hud}
               {!practiceDone && (
                 <div className={css.sockets}>

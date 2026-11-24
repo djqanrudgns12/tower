@@ -66,7 +66,7 @@ export function Hud({ view, burning: rule, mode, compactRail = false, goldRef, r
     </div>
   );
   // 넓은 화면의 상태 카드는 레일 안이라 누름도 자리를 옮기지 않는다(바닥만 0, v4 §7.4).
-  const pause = <IconButton label="일시정지" icon={<LineIcon name="hud/pause" />} variant="secondary" still={!phone} className={css.pause} onClick={onPause} />;
+  const pause = <IconButton label="일시정지" icon={<LineIcon name="hud/pause" />} showLabel={r6 && !phone} variant="secondary" still={!phone} className={css.pause} onClick={onPause} />;
   const gold = (
     <span className={css.gold} role="img" aria-label={`골드 ${view.gold}`} title="골드">
       <BattleIcon name="coin" size={big ? 28 : 22} />

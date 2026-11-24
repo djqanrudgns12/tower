@@ -350,6 +350,19 @@
 .modeR[data-r6] .context[data-forecast] { order: -1; }
 .modeR[data-r6] .rail:has(details[open]) .slotDock > details[open] { min-height: 100px; }
 .modeS[data-r6] .contextS { margin: 0; }
-.modeR[data-r6] .bottom { grid-column: 1; --rail-w: 176px; }
-.modeR[data-r6] .rail { grid-column: 2; grid-row: 2 / span 2; min-height: 0; }
+.modeR[data-r6] { --desktop-quiz-height: 150px; }
+.modeR[data-r6] .bottom {
+  grid-column: 1;
+  --rail-w: 176px;
+  --q-h: var(--desktop-quiz-height);
+  --quiz-option-min: var(--touch);
+}
+.modeR[data-r6] .rail {
+  grid-column: 2;
+  grid-row: 2 / span 2;
+  align-self: stretch;
+  min-height: 0;
+  max-height: calc(var(--map-h) + var(--desktop-quiz-height) + var(--sp-2));
+}
+.modeS[data-r6] { grid-template-columns: minmax(0, 1fr); }
 .modeR[data-r6] .rail:has(.context:not([data-forecast])) .context { order: -1; }
