@@ -4,7 +4,7 @@ type: hub
 title: 배포·보존 잠금·검증 예산 운영
 status: active
 updated: 2026-11-16
-verified: { commit: b9b024bd, date: 2026-11-16 }
+verified: { commit: a402d63f, date: 2026-11-24 }
 sources:
   - path: AGENTS.md
     sha256: f22902d65d0a4e1a65acb94dcd3e46101332e9685f9ef2fb7d6213198e7d9534
@@ -13,7 +13,7 @@ sources:
   - path: .github/workflows/pages.yml
     sha256: "3d661834606ab2b66da309cbf8d8968032333e6ae8d6a708848c18bf3182459e"
   - path: docs/DEPLOY.md
-    sha256: "4697485dc76d7c4e3b7ba2b00bedd31373fd3d13892905314a0bc294db9d43d1"
+    sha256: ddaf762fa130c340599cddb9a93d3d32e40f81ff5e4a76f96ebe4cec54bfc66f
   - path: tools/validate-plan.mjs
     sha256: "9335404b1bac48dccf79827a06dfcbf61ee4ba9b00824559507710b93ea192d9"
 ---

@@ -7,7 +7,7 @@ import type { RunState } from '../domain/types';
 import { RunController } from './RunController';
 
 // 개발 빌드 전용 맵 미리보기(R3 P3, docs/renewal/prd-r3-phases.md §5.4).
-// 4~6학년 문제은행이 아직 후보뿐이라 학생 경로로는 강가·궁궐 뜰·설원에 들어갈 수 없다. 개발 서버에서 `/?previewMap=<맵 id>`로 그 맵의 전투 화면을 바로 연다.
+// 학생은 3~6학년 맵 4종을 모두 이용할 수 있다. 개발 서버에서는 `/?previewMap=<맵 id>`로 각 맵의 전투 화면을 바로 점검한다.
 // 문제는 3학년 개발용 은행으로 대신하고, 기록을 남기지 않는 판이다(연습 판과 같다).
 // 호출하는 쪽(ui/App.tsx)이 `import.meta.env.DEV`로 감싸므로 운영 빌드에서는 이 모듈과 주소 이름이 번들에서 통째로 빠진다(tests/unit/map-preview.test.ts가 확인한다).
 // 원하는 웨이브·형태의 정규 맵 장면은 같은 방식의 QA 장면 로더(application/qaRun.ts, `?qaRun=1`)로 연다.

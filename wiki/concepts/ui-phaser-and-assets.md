@@ -4,7 +4,7 @@ type: hub
 title: 화면(React)·전장(Phaser)·원화 에셋
 status: active
 updated: 2026-11-16
-verified: { commit: b9b024bd, date: 2026-11-16 }
+verified: { commit: a402d63f, date: 2026-11-24 }
 sources:
   - path: src/game/bridge.ts
     sha256: dfcd4ce7f82ee8543aaa73de8b0e080d6c215f58d2c0b1edaa0a000c2e577896
@@ -19,7 +19,7 @@ sources:
   - path: docs/ui_ux_refinement_p1_v3_prd.md
     sha256: "6d39f346d5c078716ad390ad02ab96ac7a1e78067a9388c84a34ba737354c299"
   - path: docs/HOSTING_IMPL_PLAN.md
-    sha256: "131f441e1eb67c37389ac5ae8a19af7ab95ae6bc5c3a68e71578b2938cff7239"
+    sha256: "79f1f85a62652e420cf36b3a1a0f058656fb8685fb5f179d825f5570caed6701"
 ---
 
 # 화면(React)·전장(Phaser)·원화 에셋 (`ui-phaser-and-assets`)
@@ -45,7 +45,7 @@ sources:
    - 기준 원화 `docs/assets/design-41-kingdom-expedition.png`는 SHA-256 해시가 고정되어 있다([style-lock-v1.md](../../docs/style-lock-v1.md)). 32/48/64px 축소 가독성과 외곽선 일관성을 해치는 이질적 AI 화풍을 금지한다.
 2. **인게임 에셋 전면 WebP 규칙** ([to-webp.mjs](../../tools/assets/to-webp.mjs)):
    - `public/assets/**` 등록 에셋(현행 WebP 378장, [manifest.json](../../public/assets/manifest.json))은 `cwebp -q 85 -alpha_q 100 -m 6`(투명도 무손실)으로 변환한다.
-   - 뭉개짐 발생 시 `q92` → 무손실 WebP 순으로 올리고, 예외 PNG는 `tools/assets/webp-exceptions.json`에 사유를 기록한다. 생성 원본(`asset-source/**`)과 QA 기준 캡처는 PNG 그대로 보존한다.
+   - 뭉개짐 발생 시 `q92` → 무손실 WebP 순으로 올리고, 예외 PNG는 `tools/assets/webp-exceptions.json`에 사유를 기록한다. 생성 원본(`asset-source/**`)과 해시를 고정한 기준 그림은 PNG로 보존한다. 문서용 QA 캡처는 WebP로 싣는다.
 3. **알파 경계 상자 보존 필수 (`L-TD-102`)**:
    - [layoutGround.ts](../../src/game/layoutGround.ts)와 타워·장식 정렬은 원본 텍스처의 투명 여백을 포함한 캔버스 규격과 알파 경계를 기준으로 삼는다. 변환 과정에서 임의로 여백을 잘라내면(`trim`) 전장 좌표가 어긋난다.
 

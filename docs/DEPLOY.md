@@ -50,7 +50,7 @@
 | 새 서버(Workers + D1) | `npm run test:server` 70건 통과. 회귀 시험 3종을 옮겼고, 랭킹은 Postgres 질의와 162조합을 대조했다. `wrangler dev --local`과 curl로 가입 → 시작 → 제출(재채점) → 랭킹 확인(2026-11-05) |
 | 앱 ↔ 새 서버 | 서버 없는 모드 e2e, 로컬 `wrangler dev` 연결 모드 e2e(`tests/e2e/api-connected.spec.ts`) 통과(2026-11-05) |
 | 성능 | 운영 빌드, CPU 4·6배 감속에서 60fps |
-| 정답 키 seed | `server/seed/question_keys.sql`(공개 정답 키 51개, 난이도별 검증 규칙 4개) |
+| 정답 키 seed | `server/seed/question_keys.sql`에 현행 공개 은행 4개 판의 정답 키 6,583행과 난이도별 검증 규칙 4개 |
 | 운영 빌드 | `npm run build` 성공. 개발 전용 장면 로더(`?qaRun`·`?previewMap`)와 이어하기 문구 0건 |
 
 ---
@@ -64,7 +64,7 @@
 | 1 | [총괄] | 작업 브랜치를 `main`에 합치기 전, 로컬에서 `npm run verify`·`npm run test:server`·`npm run build` | 모두 통과 |
 | 2 | [사용자] B | Claude가 `npx wrangler login`을 실행하면 열리는 브라우저에서, 롤린썬더·쌤유니버스에 쓰는 Cloudflare 계정으로 로그인하고 **Allow** | 터미널에 "Successfully logged in" |
 | 3 | [총괄] | `npx wrangler d1 create vocabulary-td --location apac` → 나온 `database_id`를 `server/wrangler.toml`에 넣고 커밋 | `npx wrangler d1 list`에 보임 |
-| 4 | [총괄] | `npm run server:db:remote`(표 만들기) → `npm run server:seed:remote`(정답 키) | 마이그레이션 `0001_init.sql` ✅, 키 51개 |
+| 4 | [총괄] | `npm run server:db:remote`(표 만들기) → `npm run server:seed:remote`(정답 키) | 마이그레이션 대기 없음, 현행 은행 판별 정답 키 합계 6,583행 |
 | 5 | [총괄] | `npm run server:deploy`. `voca-api.ssamuniverse.com` DNS와 인증서가 저절로 생긴다 | 배포 끝 메시지. 이 순간 서버는 `503 PLAYER_SALT_REQUIRED`(6번 전이라 정상) |
 | 6 | [사용자] C | 터미널에서 `openssl rand -base64 48` → 값을 비밀번호 관리자에 저장 → 저장소 폴더에서 `npx wrangler secret put PLAYER_SALT --config server/wrangler.toml` 실행 후 붙여 넣기 | "Success! Uploaded secret PLAYER_SALT" |
 | 7 | [총괄] | `curl -X POST https://voca-api.ssamuniverse.com/v1/device -d '{}'` | `{"deviceId":…,"token":…}` |
@@ -76,6 +76,7 @@
 | 13 | [사용자] F | 학생 주소에서 한 판 → **설정 → 공개 기록 나누기** 켜기 → 한 판 더 → 홈 랭킹에 별명이 뜨는지 | 뜨면 끝. 안 뜨면 화면 문구를 Claude에게 |
 
 - 3번의 `--location apac`은 D1 본체를 아시아에 둔다. 한 번 정하면 옮길 수 없다.
+- 2026-11-24 운영 확인 기록에서 `0002_school_meta.sql`까지 적용됐고 `wrangler d1 migrations list --remote`는 `No migrations to apply`를 반환했다. 운영 `question_keys`는 여러 은행 판이 누적되어 11,656행이며, 현행 4개 판(`3학년 1,140 · 4학년 1,563 · 5학년 1,869 · 6학년 2,011`)의 합계는 6,583행이다.
 - 6번의 소금값은 **한 번 정하면 바꾸지 않는다**(§8).
 - 10번에서 `deploy`가 "Pages가 켜져 있지 않다"로 실패하면 8번이 덜 된 것이다. 8번을 마치고 Actions에서 다시 돌린다.
 
@@ -120,13 +121,14 @@ Worker 안에도 기기·IP별 한도가 있지만, 그 판단도 D1 쓰기 행�
 | 칸 | 값 |
 |---|---|
 | Rule name | `voca-api 몰아치기` |
-| If incoming requests match | Custom expression: `(http.request.uri.path in {"/v1/device" "/v1/lobby-visit" "/v1/runs/start" "/v1/runs/submit" "/v1/leaderboard"})` |
+| If incoming requests match | Custom expression: `(http.request.uri.path in {"/v1/device" "/v1/lobby-visit" "/v1/runs/start" "/v1/runs/submit" "/v1/leaderboard" "/v1/schools"})` |
 | With the same characteristics | IP |
 | When rate exceeds | **600** requests per **10 seconds** |
 | Then take action | Block |
 | Duration | 10 seconds(무료 플랜 고정) |
 
-- **경로만 쓰는 까닭:** 무료 플랜 규칙식은 경로(Path)와 Verified Bot 필드만 쓸 수 있고 주소(Host)는 못 쓴다([Cloudflare 문서](https://developers.cloudflare.com/waf/rate-limiting-rules/#availability), 2026-11-05 확인). 규칙은 `ssamuniverse.com` 전체에 걸리므로 쌤유니버스 경로와 겹치지 않게 이 서버의 경로 5개만 정확히 적는다(쌤유니버스 서버에는 `/v1/` 경로가 없음을 확인). 서버에 경로를 더하면 이 목록에도 더한다.
+- **학교 검색 프록시 반영 필요.** 운영 WAF 규칙을 만들거나 갱신할 때 `GET /v1/schools`가 제한 대상에 들도록 `/v1/schools`를 추가한다.
+- **경로를 쓰는 이유.** `ssamuniverse.com` 전체에 적용되는 무료 플랜 규칙에서 이 API의 경로 6개를 정확히 적는다. 가용 필드는 2026-11-05 기준으로 확인했다. [Cloudflare 문서](https://developers.cloudflare.com/waf/rate-limiting-rules/#availability)
 - **600/10초인 까닭:** 학교 IP 하나 뒤의 학생 1,000명 가운데 300명이 같은 분에 홈·랭킹·시작을 누르는 정도를 막지 않으려는 값이다. 브라우저 사전 요청(OPTIONS)까지 치면 10초에 약 400번이다. Worker 안의 IP 한도는 분당 ranking 1,200·visit 600·start/submit 300이다.
 - **한계:** 이 규칙은 순간 몰아치기만 끊는다. 초당 60번 아래로 꾸준히 보내면 Workers 무료 한도(하루 10만 요청)는 여전히 바닥날 수 있다. 그런 일이 보이면 한동안 값을 `100`으로 낮추고 Claude에게 알린다.
 - 여러 IP를 쓰는 공격은 무료 플랜에서 막을 수 없다. 그날은 랭킹만 멈추고 게임은 이 기기 기록 모드로 돈다. D1 무료 한도는 매일 **오전 9시(한국)**에 다시 찬다.
@@ -183,6 +185,7 @@ Worker 안에도 기기·IP별 한도가 있지만, 그 판단도 D1 쓰기 행�
 - 오답 노트는 이 기기(localStorage)에만 있다. 설정의 "이 기기 기록 지우기"로 함께 지워진다.
 - 홈의 "최근 접속"은 최근 5분 안에 홈을 연 기기 수다(실시간 연결이 아니다).
 - 랭킹은 서버 거점마다 최대 60초 늦을 수 있다(`RANKING_CACHE_SECONDS`). 자기 제출은 바로 보인다.
+- 3~6학년 문제은행이 모두 공개되어 정원·강가·궁궐 뜰·설원 맵을 학생이 선택할 수 있다.
 
 ---
 
@@ -190,4 +193,3 @@ Worker 안에도 기기·IP별 한도가 있지만, 그 판단도 D1 쓰기 행�
 
 - Cloudflare 로그인 허락, 소금값 만들고 넣기, GitHub Pages·DNS 설정, 속도 제한 규칙 걸기(§3·§5)
 - 크롬북·iPad 실기기와 학교 망 확인(학급에서 한 판씩, [계획서 §6 G](HOSTING_PLAN.md))
-- 4~6학년 문제은행 공개(콘텐츠 공동검수 뒤). 공개되면 강가·궁궐 뜰·설원 맵이 학생에게 열린다.

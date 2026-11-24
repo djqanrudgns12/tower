@@ -4,7 +4,7 @@ type: hub
 title: 로컬 저장(IndexedDB) 및 기록·랭킹 서버(Workers/D1)
 status: active
 updated: 2026-11-16
-verified: { commit: b9b024bd, date: 2026-11-16 }
+verified: { commit: a402d63f, date: 2026-11-24 }
 sources:
   - path: src/persistence/reviewNote.ts
     sha256: "729abb95daffa0b758340070f97fd326647b7e00f7d23f1e0eb34734e6fcad41"
@@ -13,14 +13,14 @@ sources:
   - path: server/migrations/0001_init.sql
     sha256: "071a8e211e35bc76c762b12986cf7b0e8f1c5a4fb9411e2830125bf50e881cc2"
   - path: docs/DEPLOY.md
-    sha256: "4697485dc76d7c4e3b7ba2b00bedd31373fd3d13892905314a0bc294db9d43d1"
+    sha256: ddaf762fa130c340599cddb9a93d3d32e40f81ff5e4a76f96ebe4cec54bfc66f
   - path: docs/HOSTING_IMPL_PLAN.md
-    sha256: "131f441e1eb67c37389ac5ae8a19af7ab95ae6bc5c3a68e71578b2938cff7239"
+    sha256: "79f1f85a62652e420cf36b3a1a0f058656fb8685fb5f179d825f5570caed6701"
 ---
 
 # 로컬 저장(IndexedDB) 및 기록·랭킹 서버 (`persistence-and-ranking-server`)
 
-학습 이력과 완주 기록은 **로컬 우선(Local-First) IndexedDB**에 즉시 보존되고, 온라인 환경에서는 **Cloudflare Workers + D1 에지 서버**가 서버 측 재채점을 거쳐 전국 통합 수호 랭킹을 집계한다. 서버 라우트 6종과 D1 테이블 11종 명세는 [contracts.md](../contracts.md)에 자동 추출된다.
+학습 이력과 완주 기록은 **로컬 우선(Local-First) IndexedDB**에 즉시 보존되고, 온라인 환경에서는 **Cloudflare Workers + D1 에지 서버**가 서버 측 재채점을 거쳐 전국 통합 수호 랭킹을 집계한다. 서버 라우트 7종과 D1 테이블 11종 명세는 [contracts.md](../contracts.md)에 자동 추출된다.
 
 ## 1. 클라이언트 영속 계층 (`src/persistence/`)
 
@@ -33,13 +33,14 @@ sources:
 - **단일 도메인 및 비밀값 분리** ([wrangler.toml](../../server/wrangler.toml)):
   - 운영 주소는 `https://voca-api.ssamuniverse.com` 하나뿐이며, WAF·거점 캐시 우회를 막기 위해 `workers_dev = false`로 고정한다(`L-TD-202`).
   - 유일한 비밀값 `PLAYER_SALT`는 기기 토큰 HMAC 서명에만 쓰며 저장소·대화·시험 코드에 절대 적지 않는다(로컬은 `server/.dev.vars` 사용).
-- **HTTP 엔드포인트 6종** ([app.ts](../../server/src/app.ts)):
-  1. `GET /v1/schools`: 학교명 검색 (NEIS 기반 메타 조회, 무인증)
-  2. `POST /v1/device`: 익명 기기 ID 및 `Bearer` 서명 토큰 발급
-  3. `POST /v1/lobby-visit`: 로비 방문 및 활성 기기 카운트 기록
-  4. `POST /v1/runs/start`: 판 시작 티켓(`runToken`) 발급
-  5. `POST /v1/runs/submit`: 판 종료 제출 — D1의 `question_keys`와 대조해 **서버 재채점(`question_regraded_combat_bounded`)** 수행
-  6. `GET /v1/leaderboard`: 학년·통합 수호 랭킹 조회 (`RANKING_CACHE_SECONDS = 60` 에지 캐시)
+- **HTTP 엔드포인트 7종**. [app.ts](../../server/src/app.ts)
+  1. `GET /v1/health`로 서버 상태를 확인한다(무인증).
+  2. `GET /v1/schools`로 NEIS 학교 정보를 조회한다(무인증).
+  3. `POST /v1/device`로 익명 기기 ID와 `Bearer` 서명 토큰을 발급한다.
+  4. `POST /v1/lobby-visit`으로 로비 방문과 활성 기기 수를 기록한다.
+  5. `POST /v1/runs/start`로 판 시작 티켓(`runToken`)을 발급한다.
+  6. `POST /v1/runs/submit`으로 판 종료 기록을 제출하고 `question_keys`와 대조해 **서버 재채점(`question_regraded_combat_bounded`)**을 수행한다.
+  7. `GET /v1/leaderboard`로 학년·통합 수호 랭킹을 조회한다. 학교 필터를 지원하며 거점 캐시는 60초다.
 - **D1 SQLite 스키마 및 사전 집계** ([0001_init.sql](../../server/migrations/0001_init.sql)):
   - `completed_runs`, `standings`, `question_keys`, `rate_limits` 등 11개 테이블과 3개 활성 트리거로 구성된다.
   - 리더보드 조회 시 전체 `runs`를 스캔하지 않고 기기·부문별 최고점 사전 집계표인 `standings`만 읽어 D1 읽기 행 비용을 최소화한다. 매일 `19:00 UTC`(한국 새벽 4시) Cron이 만료 티켓·속도 제한 행을 정리한다.

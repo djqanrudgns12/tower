@@ -33,7 +33,7 @@ generated_by: tools/wiki/gen.mjs
 | `server/src` | 14 | 1,596 | Cloudflare Workers + D1 기기 발급·판 재채점·통합 랭킹·일일 정리 서버 |
 | `tools/content & orchestrate` | 20 | 4,973 | 공개 은행 컴파일러·학년 띠 공유·CR-1000 다중 모델 공동검수 및 commit-lock |
 | `tools/sim, qa & assets` | 14 | 3,542 | 밸런스 봇 시뮬레이터·관문 평가기·성능/장면 QA·WebP 알파 보존 변환기 |
-| `tests/unit & e2e` | 108 | 19,074 | Vitest 단위/속성 시험 및 Playwright 실브라우저·로컬 서버 연결 시험 |
+| `tests/unit & e2e` | 111 | 19,201 | Vitest 단위/속성 시험 및 Playwright 실브라우저·로컬 서버 연결 시험 |
 
 ## 3. 영역별 대표 진입 모듈
 

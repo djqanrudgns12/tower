@@ -1,4 +1,5 @@
 import { execFileSync } from 'node:child_process';
+import { existsSync } from 'node:fs';
 import path from 'node:path';
 import {
   charCount,
@@ -12,15 +13,14 @@ import {
 import { extractHeadings } from './markdown.mjs';
 
 function getTrackedFilter(root) {
-  if (!exists(root, '.git')) return () => true;
+  if (!existsSync(path.join(root, '.git'))) return () => true;
   try {
-    const out = execFileSync('git', ['ls-files'], { cwd: root, encoding: 'utf8' });
-    const tracked = new Set(
-      out
-        .split('\n')
-        .map((s) => s.trim())
-        .filter(Boolean),
-    );
+    const out = execFileSync('git', ['ls-files', '-z'], {
+      cwd: root,
+      encoding: 'utf8',
+      maxBuffer: 16 * 1024 * 1024,
+    });
+    const tracked = new Set(out.split('\0').filter(Boolean));
     return (rel) =>
       tracked.has(rel) ||
       rel.startsWith('wiki/') ||
@@ -376,9 +376,7 @@ export function extractContracts(root) {
         label: f?.label ?? f?.name ?? id,
       }));
 
-  const relicList = Array.isArray(balance.relics)
-    ? balance.relics
-    : Object.values(balance.relics ?? {});
+  const relicCount = Object.keys(balance.relics?.items ?? {}).length;
 
   const maps = (mapsData.maps ?? []).map((m) => ({
     id: m.id,
@@ -398,7 +396,7 @@ export function extractContracts(root) {
     for (let i = 0; i < appLines.length; i++) {
       const line = appLines[i] ?? '';
       const m = line.match(
-        /^\s*'(\/[^']+)':\s*\{\s*method:\s*'(GET|POST|PUT|DELETE|PATCH)',\s*auth:\s*(true|false),\s*handler:\s*(?:ctx\s*=>\s*)?([A-Za-z0-9_]+)/,
+        /^\s*'(\/[^']+)':\s*\{\s*method:\s*'(GET|POST|PUT|DELETE|PATCH)',\s*auth:\s*(true|false),\s*handler:\s*(?:(?:\([^)]*\)|\w+)\s*=>\s*)?(\w+)/,
       );
       if (m) {
         serverRoutes.push({
@@ -414,7 +412,7 @@ export function extractContracts(root) {
   }
 
   const isAllowedFile = getTrackedFilter(root);
-  const dbTables = [];
+  const dbTables = new Map();
   const dbTriggers = [];
   const migrationFiles = walkFiles(
     root,
@@ -425,7 +423,7 @@ export function extractContracts(root) {
     const sqlLines = readText(root, migRel).replace(/\r\n/g, '\n').split('\n');
     for (let i = 0; i < sqlLines.length; i++) {
       const line = sqlLines[i] ?? '';
-      const tMatch = line.match(/^CREATE\s+TABLE\s+([A-Za-z0-9_]+)\s*\(/i);
+      const tMatch = line.match(/^\s*CREATE\s+TABLE\s+(\w+)\s*\(/i);
       if (tMatch) {
         const name = tMatch[1] ?? '';
         let comment = '';
@@ -453,7 +451,7 @@ export function extractContracts(root) {
             colCount++;
           }
         }
-        dbTables.push({
+        dbTables.set(name, {
           name,
           columns: colCount,
           withoutRowid,
@@ -462,6 +460,22 @@ export function extractContracts(root) {
           line: i + 1,
         });
       }
+      const addColumn = line.match(/^\s*ALTER\s+TABLE\s+(\w+)\s+ADD\s+(?:COLUMN\s+)?\w+/i);
+      if (addColumn) {
+        const table = dbTables.get(addColumn[1]);
+        if (table) table.columns++;
+      }
+      const renameTable = line.match(/^\s*ALTER\s+TABLE\s+(\w+)\s+RENAME\s+TO\s+(\w+)/i);
+      if (renameTable) {
+        const [, oldName, name] = renameTable;
+        const table = dbTables.get(oldName);
+        if (table) {
+          dbTables.delete(oldName);
+          dbTables.set(name, { ...table, name });
+        }
+      }
+      const dropTable = line.match(/^\s*DROP\s+TABLE\s+(?:IF\s+EXISTS\s+)?(\w+)/i);
+      if (dropTable) dbTables.delete(dropTable[1]);
       const dropTrMatch = line.match(/^DROP\s+TRIGGER\s+(?:IF\s+EXISTS\s+)?([A-Za-z0-9_]+)/i);
       if (dropTrMatch) {
         const dropName = dropTrMatch[1] ?? '';
@@ -523,14 +537,14 @@ export function extractContracts(root) {
     towers,
     enemies,
     factions: factionList,
-    relicCount: relicList.length,
+    relicCount,
     draft: balance.draft ?? {},
     waves: balance.waves ?? {},
     maps,
     layout: defaults.layout ?? {},
     moods: defaults.mood?.entries ?? [],
     serverRoutes,
-    dbTables,
+    dbTables: [...dbTables.values()],
     dbTriggers,
     wrangler,
     assetCount,

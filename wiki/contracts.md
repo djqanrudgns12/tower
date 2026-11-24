@@ -49,7 +49,7 @@ generated_by: tools/wiki/gen.mjs
 
 ## 5. 타워 20종 기본 스펙 (`balance.candidate.v0.4.json`)
 
-- 판 안 징집(`draft`): 시작 기본 `4`종(`archer, cannon, frost, mage`), 웨이브 `3·6·9·12` 직후 `3`종 중 택1, 장착함 최대 `8`칸 · 원정 보물 `3`종.
+- 판 안 징집(`draft`): 시작 기본 `4`종(`archer, cannon, frost, mage`), 웨이브 `3·6·9·12` 직후 `3`종 중 택1, 장착함 최대 `8`칸 · 원정 보물 `12`종.
 
 | 타워 ID | 이름 | 비용 | 속성 | 기본 피해 | 공격 간격 | 사거리(칸) | 동시 표적 | 대공 | 진화 형태 수 |
 | --- | --- | ---: | --- | ---: | ---: | ---: | ---: | :---: | ---: |
@@ -99,6 +99,7 @@ generated_by: tools/wiki/gen.mjs
 
 | 메서드 | 경로 | 기기 토큰 인증 | 핸들러 | 위치 |
 | --- | --- | :---: | --- | --- |
+| `GET` | `/v1/health` | 불필요 | `healthCheck` | [server/src/app.ts#L32](../server/src/app.ts#L32) |
 | `GET` | `/v1/schools` | 불필요 | `searchSchools` | [server/src/app.ts#L33](../server/src/app.ts#L33) |
 | `POST` | `/v1/device` | 불필요 | `issueDevice` | [server/src/app.ts#L34](../server/src/app.ts#L34) |
 | `POST` | `/v1/lobby-visit` | 필수(`Bearer`) | `recordLobbyVisit` | [server/src/app.ts#L35](../server/src/app.ts#L35) |
@@ -118,8 +119,8 @@ generated_by: tools/wiki/gen.mjs
 | `question_keys` | 5 | O | 공개 은행 정답 키·검증 규칙·승인 조건(server/seed/question_keys.sql로 채운다). | [server/migrations/0001_init.sql#L64](../server/migrations/0001_init.sql#L64) |
 | `run_verification_rules` | 3 | O | - | [server/migrations/0001_init.sql#L73](../server/migrations/0001_init.sql#L73) |
 | `approved_run_conditions` | 5 | O | - | [server/migrations/0001_init.sql#L80](../server/migrations/0001_init.sql#L80) |
-| `completed_runs` | 24 | O | 기기가 보낸 종료 시각 원본(local_ended_at)을 따로 둔다. | [server/migrations/0001_init.sql#L91](../server/migrations/0001_init.sql#L91) |
-| `standings` | 14 | O | 손으로 completed_runs를 고치거나 지웠으면 server/sql/rebuild-standings.sql로 다시 만든다. | [server/migrations/0001_init.sql#L130](../server/migrations/0001_init.sql#L130) |
+| `completed_runs` | 26 | O | 기기가 보낸 종료 시각 원본(local_ended_at)을 따로 둔다. | [server/migrations/0001_init.sql#L91](../server/migrations/0001_init.sql#L91) |
+| `standings` | 16 | O | 손으로 completed_runs를 고치거나 지웠으면 server/sql/rebuild-standings.sql로 다시 만든다. | [server/migrations/0001_init.sql#L130](../server/migrations/0001_init.sql#L130) |
 | `rate_limits` | 8 | O | 한도를 넘는 증가는 CHECK가 막아 batch 전체가 되돌아간다(거부된 호출은 세지 않는다는 Postgres allow_lobby_rpc와 같다). | [server/migrations/0001_init.sql#L200](../server/migrations/0001_init.sql#L200) |
 
 ### 7.3 SQLite 트리거

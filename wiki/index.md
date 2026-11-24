@@ -20,10 +20,10 @@ sources:
 
 <!-- WIKI-AUTO:START:repo-stats -->
 - **제품·밸런스 판**: `v1.0.0` (30Hz 고정 틱 · 화풍 `design-41-kingdom-expedition` · WebP 원화 `378`장)
-- **게임 규모**: 학년별 맵 `4`종(3~6학년, 15×9 격자·슬롯 20칸) · 타워 `20`종(Lv4/Lv7 3단 진화) · 적 역할 `10`종 × 종족 `8`종 · 원정 보물 `3`종
+- **게임 규모**: 학년별 맵 `4`종(3~6학년, 15×9 격자·슬롯 20칸) · 타워 `20`종(Lv4/Lv7 3단 진화) · 적 역할 `10`종 × 종족 `8`종 · 원정 보물 `12`종
 - **공개 문제은행**: 3~6학년 자기 학년 승인 **5,547문항** · 공유 포함 총 출제 풀 **6,583문항** (3학년 1140 · 4학년 1563 · 5학년 1869 · 6학년 2011)
-- **서버·인프라**: 정적 게임 `https://voca.ssamuniverse.com` (GitHub Pages) · 기록/랭킹 API `https://voca-api.ssamuniverse.com` (Cloudflare Workers 라우트 `6`종 + D1 테이블 `11`종)
-- **지식 베이스**: 전체 마크다운 `184`개 · 핵심 의사결정 `10`건 · 루트 npm 명령 `35`개
+- **서버·인프라**: 정적 게임 `https://voca.ssamuniverse.com` (GitHub Pages) · 기록/랭킹 API `https://voca-api.ssamuniverse.com` (Cloudflare Workers 라우트 `7`종 + D1 테이블 `11`종)
+- **지식 베이스**: 전체 마크다운 `192`개 · 핵심 의사결정 `10`건 · 루트 npm 명령 `35`개
 <!-- WIKI-AUTO:END:repo-stats -->
 
 ## 2. 작업별 1홉 바로가기
