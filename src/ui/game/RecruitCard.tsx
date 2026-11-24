@@ -1,6 +1,8 @@
+import { battleTowerName } from './r6Display';
+import { BattleTowerPortrait } from './BattleTowerPortrait';
 import type { Balance, TowerId } from '../../contracts/balance';
 import { TOWER_COPY } from '../copy';
-import { TowerShieldPortrait } from '../icons/GameIcons';
+
 import { Modal } from '../kit';
 import { ChoiceCard, ChoiceList } from './ChoiceCard';
 import { CounterIcons } from './CounterIcons';
@@ -26,12 +28,12 @@ export function RecruitCard({ balance, choices, icons, compact = false, onPick }
     <Modal titleId="recruit-title" title="새 타워" size={compact ? 'sm' : 'lg'} dismissable={false} onClose={() => {}}>
       <ChoiceList columns={3} row={compact}>
         {choices.map(type => {
-          const label = balance.towers[type].label;
+          const label = battleTowerName(balance, type);
           return (
             <ChoiceCard
               key={type}
               row={compact}
-              art={<TowerShieldPortrait type={type} icons={icons} size="fill" bare />}
+              art={<BattleTowerPortrait type={type} icons={icons} size="fill" />}
               name={label}
               desc={TOWER_COPY[type].role}
               counters={<CounterIcons balance={balance} type={type} form="base" icons={icons} size={compact ? 18 : 20} />}

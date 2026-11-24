@@ -1,5 +1,9 @@
+import { evolutionAt, isR6Tower } from '../../domain/r6Towers';
+import { Badge, ProgressSteps } from '../kit';
+import { LineIcon, type LineIconName } from '../icons/LineIcon';
+import { battleTheme, battleTowerName, battleTowerRole, WEAPON_RANKS } from './r6Display';
+import { BattleTowerPortrait } from './BattleTowerPortrait';
 import type { Balance, TowerId } from '../../contracts/balance';
-import { StatPowerIcon, StatRangeIcon, StatSpeedIcon, TowerShieldPortrait } from '../icons/GameIcons';
 import { CounterIcons } from './CounterIcons';
 import { formInfo, type FormId } from './evolution';
 import { SEGMENTS, statBars, type StatBar, type StatKey } from './statBars';
@@ -21,7 +25,7 @@ interface Props {
   compact?: boolean;
 }
 
-const ICON: Record<StatKey, typeof StatPowerIcon> = { power: StatPowerIcon, speed: StatSpeedIcon, range: StatRangeIcon };
+const ICON: Record<StatKey, LineIconName> = { power: 'hud/stat-power', speed: 'hud/stat-speed', range: 'hud/stat-range' };
 
 /**
  * 능력치 막대 줄(아이콘·이름·칸 5개·숫자). 늘어날 칸은 호박색이다(R4 PRD §9.2). 상황 카드와 새 타워·진화 카드가 같이 쓴다.
@@ -31,11 +35,11 @@ export function StatRows({ bars, values = true, labels = true }: { bars: readonl
   return (
     <dl className={css.bars}>
       {bars.map(bar => {
-        const Icon = ICON[bar.key];
+
         const up = bar.next !== null && bar.next > bar.filled;
         return (
           <div key={bar.key} className={css.row}>
-            <dt className={css.label} title={bar.label}><Icon size={16} /><span className={labels ? undefined : 'sr-only'}>{bar.label}</span></dt>
+            <dt className={css.label} title={bar.label}><LineIcon name={ICON[bar.key]} size={16} /><span className={labels ? undefined : 'sr-only'}>{bar.label}</span></dt>
             <dd className={css.value}>
               <span className={css.track} role="img" aria-label={`${bar.label} ${bar.filled}/${SEGMENTS}${up ? `, 바뀌면 ${bar.next}/${SEGMENTS}` : ''}`}>
                 {Array.from({ length: SEGMENTS }, (_, i) => (
@@ -54,13 +58,59 @@ export function StatRows({ bars, values = true, labels = true }: { bars: readonl
 /** 고른 타워(또는 골라 둔 종류)의 초상화·이름·레벨·능력치 막대. 문장 없이 아이콘·막대·숫자만 보인다. */
 export function TowerDetail({ balance, type, level, form, icons, next = null, compact = false }: Props) {
   const bars = statBars(balance, type, level, form, next);
+  const rules = balance.r6?.rules;
+  if (rules && isR6Tower(type)) {
+    const { max, formAt, weaponAt } = rules.levels;
+    const { weapon } = evolutionAt(level);
+    const nextStage = formAt.find(at => at > level);
+    const theme = battleTheme(rules);
+    const currentWeapon = theme.weapon(type, WEAPON_RANKS[weapon]!);
+    const evolvedWeapon = nextStage ? evolutionAt(nextStage).weapon : weapon;
+    const nextWeapon = theme.weapon(type, WEAPON_RANKS[evolvedWeapon]!);
+    return (
+      <section className={css.detail} aria-label={`${battleTowerName(balance, type)} 능력치`}>
+        <div className={css.head}>
+          <BattleTowerPortrait type={type} level={level} icons={icons} size={52} />
+          <div className={css.title}>
+            <h2 className={css.name}>{battleTowerName(balance, type)}</h2>
+            <span className={css.tags}>{battleTowerRole(balance, type)}</span>
+            <Badge tone="teal">Lv{level} / {max}</Badge>
+          </div>
+        </div>
+        <StatRows bars={bars} />
+        <ProgressSteps steps={max} completed={level} milestones={formAt} markCurrent label={`레벨 진행 ${level}/${max}`} />
+        <section aria-label="무기 단계 I ~ IV" className={css.weapons}>
+          <h3>무기 단계 I ~ IV</h3>
+          <ol className={css.weaponList}>
+            {weaponAt.map((at, rank) => (
+              <li key={at} aria-current={rank === weapon ? 'step' : undefined}>
+                <strong>{WEAPON_RANKS[rank]}</strong><span>Lv{at}</span>
+              </li>
+            ))}
+          </ol>
+          <p>{currentWeapon.name} · {currentWeapon.summary}</p>
+        </section>
+        {nextStage && (
+          <section className={css.preview} aria-label="다음 진화 미리보기">
+            <h3>다음 진화 · Lv{nextStage}</h3>
+            <div className={css.previewArt}>
+              <BattleTowerPortrait type={type} level={level} icons={icons} size={48} />
+              <span aria-hidden="true">→</span>
+              <BattleTowerPortrait type={type} level={nextStage} icons={icons} size={48} />
+            </div>
+            <p>{weapon === evolvedWeapon ? '외형이 바뀌어요.' : `무기 ${WEAPON_RANKS[evolvedWeapon]} · ${nextWeapon.name} · ${nextWeapon.summary}`}</p>
+          </section>
+        )}
+      </section>
+    );
+  }
   const info = formInfo(balance, type, form);
   return (
-    <section className={css.detail} data-compact={compact || undefined} aria-label={`${balance.towers[type].label} 능력치`}>
+    <section className={css.detail} data-compact={compact || undefined} aria-label={`${battleTowerName(balance, type)} 능력치`}>
       <div className={css.head}>
-        <TowerShieldPortrait type={type} icons={icons} size={compact ? 36 : 52} bare />
+        <BattleTowerPortrait type={type} icons={icons} size={compact ? 36 : 52} />
         <div className={css.title}>
-          <span className={css.name}>{balance.towers[type].label}</span>
+          <span className={css.name}>{battleTowerName(balance, type)}</span>
           <span className={css.tags}>
             <span>레벨 {level}</span>
             {info.tier > 0 && <span className={css.form}>{info.label}</span>}
@@ -72,11 +122,11 @@ export function TowerDetail({ balance, type, level, form, icons, next = null, co
       {compact ? (
         <ul className={css.chips}>
           {bars.map(bar => {
-            const Icon = ICON[bar.key];
+
             const up = bar.next !== null && bar.next > bar.filled;
             return (
               <li key={bar.key} className={css.chip} data-up={up || undefined} aria-label={`${bar.label} ${bar.value}${up ? ', 강화하면 오름' : ''}`} title={bar.label}>
-                <Icon size={16} />
+                <LineIcon name={ICON[bar.key]} size={16} />
                 <span aria-hidden="true">{bar.value}</span>
               </li>
             );

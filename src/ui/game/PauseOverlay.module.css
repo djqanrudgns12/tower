@@ -1,13 +1,11 @@
-/* 정지 창(R5 B15): kit Modal(호두나무 테 + 양피지 면, ui-rules-v4 §4.7)이 그린다. 창 뒤 막(--scrim)은 반투명이라 그 아래에
-   불투명 --bg 층을 깐다: 정지 동안 전장·문제가 보이지 않는다(PRD §3.6 [확정] 불투명 가림). 층이 쌓임 맥락을 만들어 창도 그 안에서 맨 위(100)에 뜬다. */
-.cover { position: fixed; inset: 0; z-index: 100; background: var(--bg); }
+.cover { position: fixed; inset: 0; z-index: 100; background: var(--bg-canvas); }
 .line { font-size: var(--fs-2); color: var(--ink-2); }
 .stack { display: grid; gap: var(--s3); }
 .setting { display: grid; gap: var(--s1); }
 .label { font-size: var(--fs-1); font-weight: 700; color: var(--ink-2); }
 .toggle { justify-self: start; }
 .quitSlot {
-  min-height: 124px;
+  min-height: 44px;
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
@@ -24,6 +22,6 @@
 :global(:root[data-font='xlarge']) .quitSlot,
 :global(:root[data-font='large']) .confirm,
 :global(:root[data-font='xlarge']) .confirm {
-  min-height: 136px;
+  min-height: 56px;
 }
 .row { display: flex; flex-wrap: wrap; gap: var(--s2); }

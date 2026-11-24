@@ -1,14 +1,12 @@
 import { useEffect, useEffectEvent, useRef, useState, type ButtonHTMLAttributes, type HTMLAttributes, type KeyboardEvent, type ReactNode, type Ref } from 'react';
 import css from './ui.module.css';
-import { CloseIcon } from '../icons/ControlIcons';
+import { LineIcon } from '../icons/LineIcon';
 import { nextSegment, type SegmentOption } from './segments';
 
 export { nextSegment, type SegmentOption };
 
-/**
- * 공용 부품(R4 구조 + R5 참나무 옷, ui-rules-v4 §4). 화면은 버튼·카드·고르기 줄·켜기 끄기·창을 이것으로만 만든다.
- * 모든 조작 요소는 44px 이상, 포커스 링 3px --ring, 비활성은 aria-disabled로 이유를 읽을 수 있게 둔다.
- */
+const surface = 'r04-surface';
+const panelColors = 'r04-panel-colors';
 
 const cx = (...names: Array<string | false | null | undefined>) => names.filter(Boolean).join(' ');
 
@@ -18,22 +16,23 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: ButtonVariant;
   size?: 'md' | 'lg';
   block?: boolean;
-  /** 짙은 바탕(--bg) 위의 ghost 버튼. */
+    /** 이전 화면 호출과의 호환 인자. */
   onDark?: boolean;
-  /** 글자를 왼쪽에 붙인다(답안 키캡처럼 긴 글). */
   align?: 'center' | 'start';
-  /** 눌러도 자리를 옮기지 않는다(바닥만 0). 위치가 잠긴 문제판 안의 키(v4 §7.4). 묶음 전체는 조상에 --btn-press-y: 0px을 줘도 된다. */
   still?: boolean;
-  /** 키 원화(알약)를 그린다(기본). false면 양피지 볼록 면 + 2px 호두나무 테 + 바닥으로 그린다: 여러 줄 문장 키(답안 보기)·정사각 아이콘 키. */
   art?: boolean;
   ref?: Ref<HTMLButtonElement>;
 }
 
-export function Button({ variant = 'secondary', size = 'md', block = false, onDark = false, align = 'center', still = false, art = true, className, type = 'button', ...rest }: ButtonProps) {
+export function Button({ variant = 'secondary', size = 'md', block = false, onDark, align = 'center', still, art, className, type = 'button', ...rest }: ButtonProps) {
+  // 이전 화면의 호출 인자를 DOM으로 전달하지 않는다.
+  void onDark;
+  void still;
+  void art;
   return (
     <button
       type={type}
-      className={cx(css.btn, css[variant], size === 'lg' && css.lg, block && css.block, onDark && css.onDark, align === 'start' && css.alignStart, still && css.still, !art && css.noArt, className)}
+      className={cx(surface, css.btn, css[variant], size === 'lg' && css.lg, block && css.block, align === 'start' && css.alignStart, className)}
       {...rest}
     />
   );
@@ -49,38 +48,64 @@ interface IconButtonProps extends Omit<ButtonProps, 'children' | 'block'> {
   showLabel?: boolean;
 }
 
-/** 아이콘 키. 라벨 없는 정사각 키는 알약 원화가 동그란 메달로 찌그러지므로 원화를 끈 사각 양피지 키로 그린다. */
+/** 화면 읽기 이름을 갖는 아이콘 버튼. */
 export function IconButton({ label, icon, count = 0, showLabel = false, art = true, variant = 'secondary', size = 'md', className, ...rest }: IconButtonProps) {
   return (
     <Button variant={variant} size={size} art={showLabel && art} aria-label={count > 0 ? `${label} ${count}개` : label} title={label} className={cx(css.iconBtn, showLabel && css.showLabel, className)} {...rest}>
       {icon}
       {showLabel && <span aria-hidden="true">{label}</span>}
-      {count > 0 && <span className={css.badge} aria-hidden="true">{count > 99 ? '99+' : count}</span>}
+      {count > 0 && <Badge tone="teal" aria-hidden="true">{count > 99 ? '99+' : count}</Badge>}
     </Button>
   );
 }
 
 interface CardProps extends HTMLAttributes<HTMLElement> {
   as?: 'div' | 'section' | 'aside' | 'article';
-  /** 바탕 위에 떠 있는 카드(바닥 그림자 --float). */
+  /** 이전 화면 호출과의 호환 인자. */
   float?: boolean;
-  /** 카드 안의 한 단 낮은 면(음각 홈, --paper-2). 카드 안에 테두리 상자를 다시 넣지 않을 때 쓴다. */
+  /** 카드 안에 한 단계 낮은 면을 쓴다. */
   sunk?: boolean;
-  /** 재질: 양피지 면(기본), 참나무 판(옆판·문제판 바탕·탭 줄, 글은 --ink만), 머리판(짙은 호두나무, 머리판·HUD). v4 §4.3. */
+  /** 카드와 주 패널의 면 단계. */
   material?: 'parch' | 'board' | 'plaque';
   /** 안쪽 여백: md 16px(기본), sm 12px, none 0. */
   pad?: 'none' | 'sm' | 'md';
 }
 
 export function Card({ as: Tag = 'div', float = false, sunk = false, material = 'parch', pad = 'md', className, ...rest }: CardProps) {
+  void float;
   return (
     <Tag
-      className={cx(css.card, float && css.cardFloat, sunk && css.cardSunk, material === 'board' && css.cardBoard, material === 'plaque' && css.cardPlaque, pad === 'sm' && css.padSm, pad === 'none' && css.padNone, className)}
+      className={cx(surface, css.card, sunk && css.cardSunk, material === 'board' && css.cardBoard, material === 'plaque' && css.cardPlaque, pad === 'sm' && css.padSm, pad === 'none' && css.padNone, className)}
       {...rest}
     />
   );
 }
 
+
+/** 제목이나 접근 가능한 이름으로 구분하는 주 패널. */
+export function Panel(props: CardProps) {
+  return <Card as="section" material="board" {...props} />;
+}
+
+export function Badge({ tone, className, ...rest }: HTMLAttributes<HTMLSpanElement> & { tone?: 'teal' | 'amber' | undefined }) {
+  return <span className={cx(css.badge, className)} data-tone={tone} {...rest} />;
+}
+
+export function ProgressSteps({ steps, completed, label, milestones = [], markCurrent = false }: {
+  steps: number;
+  completed: number;
+  label: string;
+  milestones?: readonly number[];
+  markCurrent?: boolean;
+}) {
+  return (
+    <span className={css.steps} role="img" aria-label={label}>
+      {Array.from({ length: steps }, (_, i) => (
+        <span key={i} data-milestone={milestones.includes(i + 1) || undefined} data-done={i < completed || undefined} data-current={(markCurrent && i === completed) || undefined} />
+      ))}
+    </span>
+  );
+}
 
 interface SegmentedProps<T extends string> {
   label: string;
@@ -163,7 +188,7 @@ interface StatProps {
 
 export function Stat({ icon, value, label, srLabel, size = 'md', className }: StatProps) {
   return (
-    <span className={cx(css.stat, size === 'lg' ? css.statLg : css.statMd, className)}>
+    <span className={cx(css.stat, size === 'lg' && css.statLg, className)}>
       {icon}
       {srLabel && <span className="sr-only">{srLabel}</span>}
       <span>{value}</span>
@@ -289,11 +314,13 @@ interface WindowProps extends HTMLAttributes<HTMLElement> {
   fixed?: boolean | undefined;
 }
 
-/** 화면에 서는 나무 창(결과·오답 노트): Modal과 같은 틀 한 벌(호두나무 테 + 안쪽 몰딩 + 양피지 면). 배치는 화면 CSS가 정한다. */
+/** 화면 안에 배치하는 창. Modal과 같은 패널 형태를 쓴다. */
 export function Window({ as: Tag = 'div', size, fixed = false, className, ...rest }: WindowProps) {
   return (
     <Tag
       className={cx(
+        surface,
+        panelColors,
         css.window,
         size === 'sm' && css.dialogSm,
         size === 'md' && css.dialogMd,
@@ -306,7 +333,7 @@ export function Window({ as: Tag = 'div', size, fixed = false, className, ...res
   );
 }
 
-/** 창 머리줄 아래 놋쇠 구분선(rule 원화). 꾸밈이라 읽지 않는다. */
+/** 창 머리줄 아래 구분선. */
 export function Rule({ className }: { className?: string | undefined }) {
   return <span className={cx(css.rule, className)} aria-hidden="true" />;
 }
@@ -337,7 +364,7 @@ interface ModalProps {
   children: ReactNode;
 }
 
-/** 막(--scrim) 위에 뜬 나무 창(호두나무 테 + 양피지 면). 포커스를 가두고 Esc로 닫으며, 닫히면 연 버튼으로 포커스를 돌린다. */
+/** 모달을 닫으면 연 버튼으로 포커스를 돌린다. 겹친 창에서는 맨 위 창이 키 입력을 받는다. */
 export function Modal({ titleId, title, onClose, size = 'md', fixed = false, footer, dismissable = true, initialFocus = 'content', onDialogKeyDown, children }: ModalProps) {
   const boxRef = useRef<HTMLDivElement>(null);
   const [opener] = useState<HTMLElement | null>(() => (typeof document === 'undefined' ? null : (document.activeElement as HTMLElement | null)));
@@ -380,12 +407,12 @@ export function Modal({ titleId, title, onClose, size = 'md', fixed = false, foo
         role="dialog"
         aria-modal="true"
         aria-labelledby={titleId}
-        className={cx(css.dialog, size === 'sm' ? css.dialogSm : size === 'lg' ? css.dialogLg : css.dialogMd, fixed && css.frameFixed)}
+        className={cx(surface, panelColors, css.dialog, size === 'sm' ? css.dialogSm : size === 'lg' ? css.dialogLg : css.dialogMd, fixed && css.frameFixed)}
         onKeyDown={onDialogKeyDown}
       >
         <div className={css.dialogHead} data-dialog-head>
           <h2 id={titleId} className={css.dialogTitle}>{title}</h2>
-          {dismissable && <IconButton label="닫기" icon={<CloseIcon />} variant="secondary" onClick={onClose} />}
+          {dismissable && <IconButton label="닫기" icon={<LineIcon name="hud/close" />} variant="secondary" onClick={onClose} />}
         </div>
         {children}
         {footer && <div className={css.dialogFoot}>{footer}</div>}

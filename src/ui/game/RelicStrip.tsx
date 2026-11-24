@@ -1,5 +1,6 @@
+import { LineIcon, isLineIcon } from '../icons/LineIcon';
+import { BattleIcon } from './BattleIcon';
 import type { Balance } from '../../contracts/balance';
-import { ArtIcon } from '../kit';
 import { RelicArt, relicLine } from './RelicCard';
 import css from './Hud.module.css';
 
@@ -28,7 +29,7 @@ export function RelicStrip({ balance, relics, icons, variant, size = 20, max = 4
   if (variant === 'count') {
     return (
       <span className={css.relics} role="img" aria-label={said} title={lines.join('\n')}>
-        <ArtIcon name="chest" size={size} />
+        <BattleIcon name="chest" size={size} />
         <span className={css.relicMore}>{relics.length}</span>
       </span>
     );
@@ -36,11 +37,14 @@ export function RelicStrip({ balance, relics, icons, variant, size = 20, max = 4
   return (
     <span className={css.relics} role="img" aria-label={said}>
       {labeled && <span className={css.relicLabel} aria-hidden="true">보물</span>}
-      {relics.slice(0, max).map((id, i) => (
-        <span key={id} className={css.relic} style={{ width: size, height: size }} title={lines[i]}>
-          <RelicArt icon={balance.relics?.items[id]?.icon ?? 'chest'} icons={icons} size={size} />
-        </span>
-      ))}
+      {relics.slice(0, max).map((id, i) => {
+        const glyph = `relics/${id}`;
+        return (
+          <span key={id} className={css.relic} style={{ width: size, height: size }} title={lines[i]}>
+            {balance.r6 && isLineIcon(glyph) ? <LineIcon name={glyph} size={size} /> : <RelicArt icon={balance.relics?.items[id]?.icon ?? 'chest'} icons={icons} size={size} />}
+          </span>
+        );
+      })}
       {relics.length > max && <span className={css.relicMore}>+{relics.length - max}</span>}
     </span>
   );

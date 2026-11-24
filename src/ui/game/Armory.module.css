@@ -1,6 +1,3 @@
-/* 타워 칸(R4 PRD §9.1): 양피지 키(v4 §4.1 secondary 옷: 면 --parch-1 + 안쪽 2px --walnut-3 테 + 바닥 4px --walnut-3).
-   넓은 화면은 레일의 참나무 판 위에, 휴대폰은 짙은 바탕 위에 바로 놓인다(§4.9). 고른 칸은 링, 막 살 수 있게 된 칸은 호박색 링이 한 번 켜진다.
-   링 색은 바탕에 맞춘다: 판 위 --blue, 짙은 바탕 위 --focus-on-dark(§2.6 규칙 5). */
 .rail {
   --ring: var(--blue);
   display: grid;
@@ -13,7 +10,7 @@
 .strip {
   --ring: var(--focus-on-dark);
   display: grid;
-  grid-template-columns: repeat(8, minmax(44px, 64px));
+  grid-template-columns: repeat(auto-fit, minmax(44px, 1fr));
   column-gap: 3px;
 }
 
@@ -21,7 +18,7 @@
 .locked {
   min-width: var(--touch);
   min-height: var(--touch);
-  border-radius: var(--r-sm);
+
 }
 
 .socket {
@@ -33,28 +30,19 @@
   gap: 2px;
   padding: var(--s1) 2px;
   border: 0;
-  background: var(--parch-1);
-  color: var(--ink);
-  box-shadow: inset 0 0 0 2px var(--walnut-3), 0 4px 0 var(--walnut-3);
+  background: transparent;
+  color: var(--text-strong);
   touch-action: none;
   user-select: none;
-  transition: transform 80ms var(--ease-out), box-shadow 80ms var(--ease-out);
+
 }
 
-.socket:active { transform: translateY(4px); box-shadow: inset 0 0 0 2px var(--walnut-3), 0 0 0 var(--walnut-3); }
-/* 넓은 화면 레일 안은 누름도 자리를 옮기지 않는다(바닥만 0, v4 §7.4). 휴대폰 줄은 레일 밖이라 R4 그대로. */
-.rail .socket:active { transform: none; }
-/* 움직임 줄이기: OS 설정과 게임 설정 '움직임 최소'(<html data-motion="minimal">) 둘 다에서 휴대폰 줄 누름도 자리를 옮기지 않는다(v4 §7.3). */
-@media (prefers-reduced-motion: reduce) {
-  .socket:active { transform: none; }
-}
-:global(:root[data-motion='minimal']) .socket:active { transform: none; }
-.socket:focus-visible { outline: 3px solid var(--ring); outline-offset: 2px; }
-.socket[aria-selected='true'] { outline: 3px solid var(--ring); outline-offset: 2px; background: var(--paper); }
-
-/* 호버: 키 공통 밝기(v4 §4.0). */
+.socket:active { --surface-color: var(--bg-pressed); }
+.socket:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: -2px; }
+.socket[aria-selected='true'] { --edge-color: var(--accent-teal); --surface-color: var(--accent-teal-dim); }
+.socket[aria-selected='true'] .art { outline: 1px solid var(--accent-teal); }
 @media (hover: hover) {
-  .socket:hover:not([data-short]) { filter: brightness(1.06); }
+  .socket:hover:not([data-short], [aria-selected='true']) { --surface-color: var(--bg-elevated); }
 }
 
 .art {
@@ -91,8 +79,8 @@
 /* 잠긴 칸 하나(R5 B12): 음각 홈(--parch-3 + 안쪽 2px --oak-2, 바닥 0)에 흐린 자물쇠 + 풀리는 웨이브 숫자 배지.
    타워 칸과 같은 두 단(그림·가격 줄 자리)이다. 배지는 흐리지 않는다(칸 전체 대신 자물쇠만 흐린다). 안내 문장은 호버(title)와 화면 읽기로 읽힌다. */
 .locked {
-  background: var(--parch-3);
-  box-shadow: inset 0 0 0 2px var(--oak-2);
+  --surface-color: var(--bg-pressed);
+  color: var(--text-muted);
   display: grid;
   grid-template-rows: 1fr auto;
   justify-items: center;
@@ -112,12 +100,31 @@
   gap: 2px;
   min-height: 18px;
   padding: 0 var(--s1);
-  border-radius: var(--r-sm);
+
   background: var(--parch-1);
   box-shadow: inset 0 0 0 1px var(--walnut-3);
-  color: var(--ink);
-  font-size: var(--fs-1);
+  color: var(--text-muted);
+  font-size: var(--fs-caption);
   font-weight: 800;
   line-height: 1.1;
   font-variant-numeric: tabular-nums;
 }
+
+.dock { display: grid; gap: var(--sp-1); min-width: 0; }
+.title { font: 700 var(--fs-body)/1.4 var(--font-display); }
+.rail[data-r6] { grid-template-columns: 1fr; gap: var(--sp-1); }
+.rail[data-r6] :is(.socket, .locked) {
+  grid-template: auto / 36px minmax(0, 1fr) auto;
+  justify-items: start;
+  padding: var(--sp-1) var(--sp-2);
+  text-align: start;
+}
+.rail[data-r6] .art { width: 36px; height: 36px; }
+.identity { display: grid; min-width: 0; font-size: var(--fs-caption); line-height: 1.35; }
+.identity strong { font-size: var(--fs-body); }
+.identity > span { color: var(--text-muted); }
+.price { color: var(--accent-amber); font-family: var(--font-display); }
+.strip[data-r6] { display: flex; flex-wrap: wrap; gap: var(--sp-1); }
+.strip[data-r6] :is(.socket, .locked) { flex: 1; min-width: 56px; padding-inline: 2px; }
+.strip[data-r6] .identity > span { display: none; }
+.strip[data-r6] .identity strong { font-size: var(--fs-caption); }

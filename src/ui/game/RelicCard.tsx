@@ -1,3 +1,8 @@
+import { RELICS } from '../../contracts/balanceV2';
+import { LineIcon, isLineIcon } from '../icons/LineIcon';
+import { Badge, Button, nextSegment } from '../kit';
+import { battleTheme, relicEffectText } from './r6Display';
+import dialogCss from './BattleDialogs.module.css';
 import { useState } from 'react';
 import { TOWER_IDS, type Balance, type TowerId } from '../../contracts/balance';
 import { relicDef } from '../../domain/relics';
@@ -14,6 +19,7 @@ interface Props {
   icons: Record<string, string>;
   /** 휴대폰: 카드를 가로 한 줄 짜임으로 세로로 쌓는다. */
   compact?: boolean;
+  wave?: number | undefined;
   onPick(relic: string): void;
 }
 
@@ -53,6 +59,11 @@ export function RelicArt({ icon, icons, size }: { icon: string; icons: Record<st
 
 /** 보물 이름·한 줄 규칙(화면 읽기·호버 안내). 모르는 id면 id 그대로. */
 export function relicLine(b: Balance, id: string): string {
+  const r6 = b.r6 && RELICS.find(key => key === id);
+  if (r6 && b.r6) {
+    const row = battleTheme(b.r6.rules).relics[r6];
+    return `${row.name} · ${row.summaryTemplate}`;
+  }
   const r = relicDef(b, id);
   return r ? `${r.label} · ${r.summary}` : id;
 }
@@ -61,7 +72,8 @@ export function relicLine(b: Balance, id: string): string {
  * 원정 보물 고르기 창(prd-r4 §7.2-F·§9.2): 대장 웨이브를 지키면 막이 전장과 문제 카드까지 덮고, 보물 카드 3장 중 하나를 눌러 바로 고른다.
  * 새 타워·진화와 같은 카드 부품(ChoiceCard)이고 꼭 골라야 하는 창이라 닫기가 없다(kit Modal dismissable=false). 효과는 그 판에서만 있다.
  */
-export function RelicCard({ balance, choices, icons, compact = false, onPick }: Props) {
+export function RelicCard({ balance, choices, icons, compact = false, wave, onPick }: Props) {
+  if (balance.r6) return <R6RelicCard balance={balance.r6.rules} choices={choices} wave={wave} onPick={onPick} />;
   return (
     <Modal
       titleId="relic-title"
@@ -88,6 +100,66 @@ export function RelicCard({ balance, choices, icons, compact = false, onPick }: 
           );
         })}
       </ChoiceList>
+    </Modal>
+  );
+}
+
+function R6RelicCard({ balance, choices, wave, onPick }: {
+  balance: NonNullable<Balance['r6']>['rules'];
+  choices: readonly string[];
+  wave: number | undefined;
+  onPick(id: string): void;
+}) {
+  const theme = battleTheme(balance);
+  const options = choices.flatMap(value => {
+    const id = RELICS.find(key => key === value);
+    return id ? [{ value: id, label: theme.relics[id].name }] : [];
+  });
+  const [selected, setSelected] = useState(options[0]?.value);
+  const current = options.findIndex(o => o.value === selected);
+  return (
+    <Modal
+      titleId="r6-relic-title"
+      title={<span className={css.titleRow}><LineIcon name="hud/chest" />보물 선택</span>}
+      dismissable={false}
+      onClose={() => {}}
+    >
+      <div className={dialogCss.relicIntro}>
+        {wave !== undefined && <Badge tone="amber">{wave}웨이브 보상</Badge>}
+        <span>이번 판에만 적용돼요</span>
+      </div>
+      <div className={dialogCss.relicChoices} role="radiogroup" aria-label="고를 보물" onKeyDown={e => {
+        const next = nextSegment(options, current, e.key);
+        if (next >= 0 && next !== current) {
+          e.preventDefault();
+          setSelected(options[next]!.value);
+          e.currentTarget.querySelectorAll('button')[next]?.focus();
+        } else if (e.key === 'Enter' && selected) {
+          e.preventDefault();
+          onPick(selected);
+        }
+      }}>
+        {options.map(({ value, label }, index) => {
+          const icon = `relics/${value}`;
+          const effect = balance.relics.effects[value];
+          const description = theme.relics[value].summaryTemplate;
+          return (
+            <button type="button" key={value} role="radio" aria-checked={index === current} tabIndex={index === current ? 0 : -1}
+              className={`r04-surface ${dialogCss.relicChoice}`} onClick={() => setSelected(value)}>
+              <LineIcon name={isLineIcon(icon) ? icon : 'hud/chest'} size={28} />
+              <strong>{label}{index === current && <LineIcon name="hud/check" size={14} />}</strong>
+              <span className={dialogCss.relicEffect}>{relicEffectText(effect)}</span>
+              <span>{description}</span>
+              {effect.towers && <small>{effect.towers.map(type => theme.towers[type].name).join(' · ')}</small>}
+            </button>
+          );
+        })}
+      </div>
+      <div className={dialogCss.actions}>
+        <Button variant="primary" disabled={!selected} onClick={() => { if (selected) onPick(selected); }}>
+          <LineIcon name="hud/check" size={18} />{selected ? `${theme.relics[selected].name} 선택` : '선택'}
+        </Button>
+      </div>
     </Modal>
   );
 }

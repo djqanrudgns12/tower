@@ -1,8 +1,9 @@
-/* 전투 화면(R4 PRD §9, ui-rules-v4): 짙은 호두나무 바탕 위에 전장(주인공)·옆판·문제판.
-   R 모드는 [전장 | 옆판] 위, 아래 문제판. 셋을 호두나무 틀 하나로 묶는다(B1, 옛 한 판 구성). 문제판 오른쪽 열은 옆판과 수직선을 맞춘다(PRD §12.1). */
 .screen {
   /* 계약 layout.frameMaxPx를 useLayout이 :root 변수로 넣는다. */
   max-width: var(--frame-max);
+  color: var(--text-strong);
+  min-height: 100dvh;
+  align-content: start;
   margin: 0 auto;
 }
 
@@ -16,18 +17,6 @@
   row-gap: var(--s2);
   justify-content: center;
   align-items: start;
-}
-
-/* 화면 바깥 호두나무 틀(B1): 바깥 여백(계약 outerPaddingPx 16px) 안에 그린다 — 배치·계약은 그대로다.
-   표시 두께 12px < 24px이라 frame.lg 대신 frame.sm 원화(v4 결정 11). 가상 요소라 겹으로 세지 않는다(v4 §7.2). */
-.modeR::before {
-  content: '';
-  position: absolute;
-  inset: 2px;
-  border: 12px solid var(--walnut-2);
-  border-image: var(--art-frame-sm) 33 / 12px stretch;
-  border-radius: var(--r-md);
-  pointer-events: none;
 }
 
 .modeS {
@@ -44,11 +33,9 @@
 /* 전장: 둥근 모서리 + 안쪽 호두나무 테(B1, frame.sm 원화 6px). 테는 캔버스 위에 겹쳐 그려 전장 크기·좌표가 그대로다.
    휴대폰은 화면 폭 끝까지 붙인다(R4 풀블리드, 테 없음). */
 .field {
-  --field-frame: 6px;
+  --field-frame: 1px;
   position: relative;
-  border-radius: var(--r-md);
   overflow: hidden;
-  box-shadow: var(--float);
   justify-self: center;
 }
 
@@ -58,8 +45,6 @@
   inset: 0;
   z-index: 1;
   border: var(--field-frame) solid var(--walnut-2);
-  border-image: var(--art-frame-sm) 33 / var(--field-frame) stretch;
-  border-radius: inherit;
   pointer-events: none;
 }
 
@@ -126,6 +111,15 @@
   flex-direction: column;
 }
 
+/* Chromium은 summary 아래 내용을 별도 상자에 담는다. 그 상자도 남은 높이로 제한한다. */
+.slotDock > details[open]::details-content {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  min-height: 0;
+  overflow: hidden;
+}
+
 .slotDock > details[open] ol {
   flex: 1 1 auto;
   min-height: 0;
@@ -187,50 +181,27 @@
   gap: var(--s1);
   min-height: 40px;
   padding: 2px var(--s3) 2px 2px;
-  border-radius: var(--r-md);
+
   background: var(--parch-1);
-  box-shadow: inset 0 0 0 2px var(--line);
+  box-shadow: inset 0 0 0 1px var(--line);
   color: var(--ink);
   font-size: var(--fs-2);
   font-weight: 800;
   font-variant-numeric: tabular-nums;
 }
 
-.foeChip[data-boss] { box-shadow: inset 0 0 0 2px var(--red); color: var(--red); }
+.foeChip[data-boss] { box-shadow: inset 0 0 0 1px var(--red); color: var(--red); }
 
 .foeArt {
   width: 36px;
   height: 36px;
   display: grid;
   place-items: center;
-  border-radius: var(--r-sm);
+
   background: var(--walnut-4);
 }
 
 .foeArt img { width: 32px; height: 32px; object-fit: contain; }
-
-/* 놋쇠 전투 시작의 은은한 대기 움직임(B5): 키 둘레 밝은 놋쇠 테가 천천히 나타났다 사라진다(위치 이동 없음). 화면당 무한 반복 1개.
-   움직임 줄이기(OS·설정 '움직임 최소')에서는 멈춘다(v4 §7.3). */
-.startCue::after {
-  content: '';
-  position: absolute;
-  inset: -5px;
-  border: 2px solid var(--brass-1);
-  border-radius: 999px;
-  opacity: 0;
-  pointer-events: none;
-  animation: cue 2400ms ease-in-out infinite;
-}
-
-@keyframes cue {
-  0%, 100% { opacity: 0; }
-  50% { opacity: 1; }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .startCue::after { animation: none; }
-}
-:global(:root[data-motion='minimal']) .startCue::after { animation: none; }
 
 .build.stack {
   grid-template-columns: 1fr;
@@ -248,16 +219,16 @@
   display: inline-flex;
   align-items: center;
   gap: var(--s2);
-  font-size: var(--fs-4);
+  font-size: var(--fs-heading);
   font-weight: 800;
   line-height: 1.2;
 }
 
 .bossTag {
   padding: 1px var(--s2);
-  border-radius: var(--r-sm);
-  background: var(--red);
-  color: var(--on-dark);
+
+  background: var(--status-danger-bg);
+  color: var(--status-danger);
   font-size: var(--fs-1);
   font-weight: 800;
   line-height: 1.5;
@@ -312,7 +283,7 @@
 .coach {
   margin: 0;
   padding: var(--s2) var(--s3);
-  border-radius: var(--r-sm);
+
   background: var(--paper);
   color: var(--ink);
   font-size: var(--fs-2);
@@ -372,3 +343,13 @@
   translate: -50% -50%;
   opacity: 0.92;
 }
+
+.hudRow { grid-column: 1 / -1; }
+.modeR[data-r6] .rail { overflow: auto; scrollbar-width: thin; }
+.modeR[data-r6] .rail .context { flex: none; }
+.modeR[data-r6] .context[data-forecast] { order: -1; }
+.modeR[data-r6] .rail:has(details[open]) .slotDock > details[open] { min-height: 100px; }
+.modeS[data-r6] .contextS { margin: 0; }
+.modeR[data-r6] .bottom { grid-column: 1; --rail-w: 176px; }
+.modeR[data-r6] .rail { grid-column: 2; grid-row: 2 / span 2; min-height: 0; }
+.modeR[data-r6] .rail:has(.context:not([data-forecast])) .context { order: -1; }

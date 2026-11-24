@@ -1,9 +1,10 @@
+import { BattleIcon } from './BattleIcon';
 import { useState, type Ref } from 'react';
 import type { Balance } from '../../contracts/balance';
 import type { GameView } from '../../application/view';
 import { bestLine, fmtNumber } from '../copy';
-import { PauseIcon } from '../icons/ControlIcons';
-import { ArtIcon, Card, IconButton } from '../kit';
+import { LineIcon } from '../icons/LineIcon';
+import { Card, IconButton } from '../kit';
 import css from './Hud.module.css';
 import { RelicStrip } from './RelicStrip';
 import { RollingNumber } from './RollingNumber';
@@ -22,6 +23,8 @@ interface Props {
   relicInfo?: Balance;
   /** 보물 아이콘(타워 초상화)용 전장 텍스처 그림. */
   icons?: Record<string, string>;
+  r6?: boolean;
+  remaining?: number;
   onPause(): void;
 }
 
@@ -40,7 +43,7 @@ export function streakGems(view: Pick<GameView, 'burningSecondsLeft' | 'battleSt
  * - R 압축(낮은 화면): 두 줄 — 성문·일시정지 / 골드·웨이브·점수·불꽃.
  * - S(휴대폰): 한 줄 — 성문·골드·웨이브·불꽃·일시정지(점수는 결과에서 본다).
  */
-export function Hud({ view, burning: rule, mode, compactRail = false, goldRef, reducedMotion = false, bestWave = null, relicInfo, icons = {}, onPause }: Props) {
+export function Hud({ view, burning: rule, mode, compactRail = false, goldRef, reducedMotion = false, bestWave = null, relicInfo, icons = {}, r6 = false, remaining = 0, onPause }: Props) {
   const ratio = view.gateMaxHp ? view.gateHp / view.gateMaxHp : 0;
   const waveNo = Math.max(1, view.wave);
   const { burning, lit } = streakGems(view, rule);
@@ -53,7 +56,8 @@ export function Hud({ view, burning: rule, mode, compactRail = false, goldRef, r
 
   const gateMeter = (
     <div className={css.gate} role="meter" aria-label="성문" aria-valuemin={0} aria-valuemax={view.gateMaxHp} aria-valuenow={view.gateHp} title="성문">
-      <ArtIcon name="gate" size={phone ? 20 : 24} />
+      <BattleIcon name="gate" size={phone ? 20 : 24} />
+      {r6 && !phone && <span className={css.metricLabel} aria-hidden="true">성문</span>}
       <span className={css.track}>
         <span className={css.fill} data-low={ratio <= 0.34 || undefined} style={{ transform: `scaleX(${Math.max(0, Math.min(1, ratio))})` }} />
         {gate.hits > 0 && <span key={gate.hits} className={css.hit} />}
@@ -62,10 +66,11 @@ export function Hud({ view, burning: rule, mode, compactRail = false, goldRef, r
     </div>
   );
   // 넓은 화면의 상태 카드는 레일 안이라 누름도 자리를 옮기지 않는다(바닥만 0, v4 §7.4).
-  const pause = <IconButton label="일시정지" icon={<PauseIcon />} variant="secondary" still={!phone} className={css.pause} onClick={onPause} />;
+  const pause = <IconButton label="일시정지" icon={<LineIcon name="hud/pause" />} variant="secondary" still={!phone} className={css.pause} onClick={onPause} />;
   const gold = (
     <span className={css.gold} role="img" aria-label={`골드 ${view.gold}`} title="골드">
-      <ArtIcon name="coin" size={big ? 28 : 22} />
+      <BattleIcon name="coin" size={big ? 28 : 22} />
+      {r6 && !phone && <span className={css.metricLabel} aria-hidden="true">골드</span>}
       <RollingNumber ref={goldRef} value={view.gold} className={big ? css.goldBig : css.goldNum} reducedMotion={reducedMotion} />
     </span>
   );
@@ -74,8 +79,9 @@ export function Hud({ view, burning: rule, mode, compactRail = false, goldRef, r
   const wave = (
     <span className={css.waveCell}>
       <span className={css.stat} data-boss={view.milestoneWave || undefined} role="img" aria-label={`웨이브 ${waveNo}${view.milestoneWave ? ', 보스 웨이브' : ''}`} title="웨이브">
-        <ArtIcon name="wave" size={phone ? 18 : 22} />
-        <strong>{waveNo}</strong>
+        <BattleIcon name="wave" size={phone ? 18 : 22} />
+        {r6 && !phone && <span className={css.metricLabel} aria-hidden="true">웨이브</span>}
+        <strong>{waveNo}{r6 && waveNo <= 20 ? ' / 20' : ''}</strong>
       </span>
       {best && <span className={css.best} data-kind={best.kind} data-calm={reducedMotion || undefined}>{best.text}</span>}
     </span>
@@ -87,7 +93,7 @@ export function Hud({ view, burning: rule, mode, compactRail = false, goldRef, r
       aria-label={`점수 ${view.pt}점, 문제 ${view.stats.ptFromQuestions} · 처치 ${view.stats.ptFromKills}`}
       title={`점수 · 문제 ${fmtNumber(view.stats.ptFromQuestions)} · 처치 ${fmtNumber(view.stats.ptFromKills)}`}
     >
-      <ArtIcon name="star" size={18} />
+      <BattleIcon name="star" size={18} />
       <span>{fmtNumber(view.pt)}</span>
     </span>
   );
@@ -104,12 +110,12 @@ export function Hud({ view, burning: rule, mode, compactRail = false, goldRef, r
       title={burning ? `연속 정답 보너스 · ${speed}` : `연속 정답 · 다 모으면 보너스(${speed})`}
     >
       <span className={css.gems}>
-        {Array.from({ length: rule.streak }, (_, i) => (
-          <ArtIcon key={i} name="flame" size={flameSize} className={(i < lit ? css.lit : css.unlit) ?? ''} />
+        {r6 ? <><LineIcon name="hud/streak" size={flameSize} /><strong>{lit}/{rule.streak}</strong></> : Array.from({ length: rule.streak }, (_, i) => (
+          <BattleIcon key={i} name="flame" size={flameSize} className={(i < lit ? css.lit : css.unlit) ?? ''} />
         ))}
       </span>
       <span className={css.burn}>
-        <ArtIcon name="flame" size={flameSize} />
+        <BattleIcon name="flame" size={flameSize} />
         <span className={css.burnNum}>{view.burningSecondsLeft}초</span>
       </span>
     </span>
@@ -118,6 +124,20 @@ export function Hud({ view, burning: rule, mode, compactRail = false, goldRef, r
   // 원정 보물(prd-r4 §7.2-F): 넓은 레일은 아이콘을 하나씩, 압축 레일은 보물 상자 + 개수 하나. 휴대폰 한 줄은 자리가 없어 그리지 않는다.
   const relics = relicInfo && !phone ? <RelicStrip balance={relicInfo} relics={view.relics} icons={icons} variant={big ? 'icons' : 'count'} /> : null;
 
+  if (r6) {
+    return (
+      <Card as="section" material="plaque" className={`${css.hud} ${css.tactical}`} aria-label="전투 상태">
+        {gateMeter}
+        {gold}
+        {wave}
+        {!phone && <span className={css.stat} role="img" aria-label={`남은 적 ${remaining}마리`} title="남은 적"><LineIcon name="hud/enemies" size={18} /><span className={css.metricLabel} aria-hidden="true">남은 적</span>{fmtNumber(remaining)}</span>}
+        {flames}
+        {!phone && relics}
+        {!phone && score}
+        {pause}
+      </Card>
+    );
+  }
   if (phone) {
     return (
       <Card material="plaque" className={`${css.hud} ${css.bar}`}>

@@ -81,7 +81,7 @@
 .of {
   font-size: var(--fs-1);
   font-weight: 700;
-  color: var(--on-dark-2);
+  color: var(--text-muted);
 }
 
 .pause { flex: none; }
@@ -116,10 +116,7 @@
 
 /* 보스 웨이브 번호: 밀랍(붉은 칠) 면 + 밝은 글(6.30). 면은 배경 + 같은 색 펼침이라 상자 크기가 평시와 같다(v4 §3.5). */
 .stat[data-boss] strong {
-  border-radius: 2px;
-  background: var(--red);
-  box-shadow: 0 0 0 3px var(--red);
-  color: var(--on-dark);
+  color: var(--status-danger);
 }
 
 /* 웨이브 칸: 웨이브 번호 + 오른쪽에 작은 최고 기록 한 줄(prd-r4 §7.2-F). 좁으면 기록 줄이 먼저 줄어든다. */
@@ -139,7 +136,7 @@
   font-size: var(--fs-1);
   font-weight: 700;
   line-height: 1.2;
-  color: var(--on-dark-2);
+  color: var(--text-muted);
 }
 
 /* 휴대폰: 웨이브 번호 아래에 쌓는다. 한 줄 높이(일시정지 44px) 안이고, 폭은 짧은 말만 쓴다.
@@ -195,7 +192,7 @@
 
 .score {
   font-weight: 700;
-  color: var(--on-dark-2);
+  color: var(--text-muted);
 }
 
 /* 연속 정답 칸 묶음(R5 B6). 불꽃 칸 겹(.gems)과 보너스 겹(.burn)을 한 칸에 겹쳐 두고 보이는 겹만 바꾼다:
@@ -231,9 +228,8 @@
 
 /* 켜짐: 호박 면(--brass-2) + --ink 글(6.48). 짙은 판과의 경계 5.80. */
 .flames[data-burning] {
-  background: var(--brass-2);
-  box-shadow: 0 0 0 2px var(--brass-2);
-  color: var(--ink);
+  background: var(--accent-amber-dim);
+  color: var(--accent-amber);
   animation: ignite 520ms var(--ease-out) 1;
 }
 
@@ -281,7 +277,7 @@
 }
 
 /* 상태 카드(짙은 판) 안의 보물 개수. 휴대폰 상황 카드(양피지)에 놓인 보물 줄은 위 --ink-2 그대로다. */
-.hud .relicMore { color: var(--on-dark-2); }
+.hud .relicMore { color: var(--text-muted); }
 
 .relicLabel {
   margin-right: var(--s1);
@@ -289,3 +285,29 @@
   font-weight: 700;
   color: var(--ink-2);
 }
+
+.hud { font-family: var(--font-display); }
+.tactical {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-2) var(--sp-3);
+  padding: var(--sp-1) var(--sp-3);
+  font-size: var(--fs-body);
+}
+.tactical .gate { flex: 0 1 148px; min-width: 66px; color: var(--accent-teal); }
+.tactical .gold { color: var(--accent-amber); }
+.tactical .goldBig, .tactical .goldNum, .tactical .gateNum { font-size: var(--fs-body); }
+.tactical .flames { border: 1px solid var(--border-hairline); padding-inline: var(--sp-1); }
+.tactical .pause { margin-inline-start: auto; }
+@media (max-width: 560px) {
+  .tactical { gap: var(--sp-1); padding-inline: var(--sp-2); justify-content: space-between; }
+  .tactical .gate { flex-basis: auto; }
+  .tactical .track, .tactical .best { display: none; }
+  .tactical .pause { margin-inline-start: 0; }
+  .tactical .gold > svg, .tactical .stat > svg { width: 16px; }
+}
+
+.metricLabel { font: 400 var(--fs-caption)/1.2 var(--font-body); color: var(--text-muted); white-space: nowrap; }
+.tactical .gate { flex-basis: 182px; }
+@media (max-width: 560px) { .tactical .gate { flex-basis: auto; } }

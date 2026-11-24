@@ -1,0 +1,42 @@
+.unlock { display: grid; gap: var(--sp-2); --card-edge: var(--accent-teal); }
+.identity, .actions, .relicIntro { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: var(--sp-2); }
+.identity h3 { font: 700 var(--fs-heading)/1.25 var(--font-display); }
+.unlock p, .relicIntro { color: var(--text-body); font-size: var(--fs-body); }
+.unlockGrid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: var(--sp-3); }
+.unlockGrid h3, .relicChoice strong { font: 700 var(--fs-body)/1.4 var(--font-display); }
+.blueprint { border: 1px solid var(--border-hairline); background: var(--bg-pressed); padding: var(--sp-2); }
+.blueprint > svg { display: block; margin: auto; color: var(--accent-teal); }
+.roadmap, .roster { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--sp-1); }
+.roadmap { margin-top: var(--sp-2); }
+.roadmap li, .roster li { padding: var(--sp-1); border: 1px solid var(--border-hairline); background: var(--bg-card); font-size: var(--fs-caption); }
+.roadmap li:first-child, .roster li[data-new] { border-color: var(--accent-teal); }
+.roster { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+.roster li { display: grid; gap: 2px; padding: var(--sp-2); }
+.roster small { display: inline-flex; align-items: center; gap: 2px; color: var(--text-muted); font-size: inherit; }
+.roster [data-new] small { color: var(--accent-teal); }
+.actions { justify-content: flex-end; }
+.relicChoices { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--sp-2); }
+.relicChoice {
+  display: grid;
+  justify-items: start;
+  align-content: start;
+  gap: var(--sp-2);
+  min-height: var(--touch);
+  padding: var(--sp-3);
+  border: 0;
+  background: transparent;
+  color: var(--text-strong);
+  text-align: start;
+  font-size: var(--fs-body);
+}
+.relicChoice[aria-checked='true'] { --edge-color: var(--accent-teal); --surface-color: var(--accent-teal-dim); }
+.relicChoice strong { display: inline-flex; align-items: center; gap: var(--sp-1); }
+.relicChoice svg { color: var(--accent-teal); }
+.relicChoice small { font-size: var(--fs-caption); color: var(--text-muted); }
+.relicEffect { color: var(--accent-amber); font-weight: 700; }
+@media (max-width: 560px) {
+  .roster { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .unlockGrid, .relicChoices { grid-template-columns: 1fr; }
+  .relicChoice { grid-template-columns: auto 1fr; align-items: center; }
+  .relicChoice > :nth-child(n+3) { grid-column: 2; }
+}

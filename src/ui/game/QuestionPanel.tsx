@@ -1,9 +1,10 @@
+import { BattleIcon } from './BattleIcon';
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import type { OptionId } from '../../contracts/questions';
 import type { QuestionView } from '../../application/view';
 import { DEFAULTS } from '../../content';
-import { CheckIcon, CrossIcon } from '../icons/ControlIcons';
-import { ArtIcon, Button, Card } from '../kit';
+import { LineIcon } from '../icons/LineIcon';
+import { Button, Card } from '../kit';
 import { useLayout } from '../useLayout';
 import { answerLine, EARNED_LABEL, readLock, REVIEW_BADGE, REVIEW_BADGE_LABEL, STAKES_LABEL, stakesGold } from './gameCopy';
 import css from './QuestionPanel.module.css';
@@ -133,7 +134,7 @@ export function QuestionPanel({
         <p className="sr-only">{answerLine(fb.correctText)}</p>
         {fb.chosenRationale && (
           <p className={css.why} data-why>
-            <CrossIcon size={16} />
+            <LineIcon name="hud/cross" size={16} />
             <span>{fb.chosenRationale}</span>
           </p>
         )}
@@ -150,7 +151,7 @@ export function QuestionPanel({
     <p className={css.stake}>
       <span className={css.stakeLabel}>{STAKES_LABEL}</span>
       <span className={css.stakeValue}>
-        <ArtIcon name="coin" size={22} />
+        <BattleIcon name="coin" size={22} />
         {stakesGold(stakeGold)}
       </span>
     </p>
@@ -172,7 +173,7 @@ export function QuestionPanel({
           )}
           {question.isReview && (
             <span className={css.review} title={REVIEW_BADGE_LABEL}>
-              <ArtIcon name="note" size={16} />
+              <BattleIcon name="note" size={16} />
               {REVIEW_BADGE}
             </span>
           )}
@@ -182,7 +183,7 @@ export function QuestionPanel({
             // 채점 뒤에는 받은 골드를 보인다. 두 값을 같은 칸에 겹쳐 두어 칩 너비가 그대로라 문제 줄이 다시 흐르지 않는다(제출 흔들림 0).
             <span className={css.stakeTag} data-stake data-missed={earned === 0 || undefined}>
               <span className="sr-only">{earned === null ? `${STAKES_LABEL} ${stakesGold(stakeGold)}` : `${EARNED_LABEL} ${stakesGold(earned)}`}</span>
-              <ArtIcon name="coin" size={14} />
+              <BattleIcon name="coin" size={14} />
               <span className={css.stakeNums} aria-hidden="true">
                 <span data-shown={earned === null || undefined}>+{stakeGold}</span>
                 <span data-shown={earned !== null || undefined}>+{earned ?? 0}</span>
@@ -216,8 +217,8 @@ export function QuestionPanel({
                 {showKeyHints && <span className={css.num} aria-hidden="true">{i + 1}</span>}
                 <span data-option-text className={css.optionText}>{o.text}</span>
                 <span className={css.seal}>
-                  {state === 'correct' && <CheckIcon size={24} />}
-                  {state === 'wrong' && <CrossIcon size={24} />}
+                  {state === 'correct' && <LineIcon name="hud/check" size={24} />}
+                  {state === 'wrong' && <LineIcon name="hud/cross" size={24} />}
                   {state === 'correct' && <span className="sr-only">정답</span>}
                   {state === 'wrong' && <span className="sr-only">고른 답</span>}
                 </span>
@@ -232,13 +233,13 @@ export function QuestionPanel({
           {fb?.result === 'correct' && (
             <>
               <p className={css.good}>
-                <CheckIcon size={narrow ? 22 : 28} />
+                <LineIcon name="hud/check" size={narrow ? 22 : 28} />
                 <span>정답!</span>
               </p>
               {!narrow && question.reward && question.reward.gold > 0 && (
                 <p className={css.stakeValue} data-earned>
                   <span className="sr-only">{EARNED_LABEL}</span>
-                  <ArtIcon name="coin" size={22} />
+                  <BattleIcon name="coin" size={22} />
                   {stakesGold(question.reward.gold)}
                 </p>
               )}

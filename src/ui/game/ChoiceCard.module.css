@@ -1,6 +1,3 @@
-/* 새 타워·보물·진화 공용 카드(R4 PRD §9.2): 카드 전체가 하나의 키캡 버튼이다.
-   R5 옷(ui-rules-v4 §4.8, 옛 징집 카드 2db26f4 RecruitCard.module.css): 양피지 볼록 면 + 호두나무 테 2px + 바닥 4px, 짙은 그림 칸.
-   여백은 R4 12px에서 테 2px를 뺀 10px라 내용 상자 자리가 그대로다. */
 .card {
   position: relative;
   display: flex;
@@ -8,24 +5,14 @@
   gap: var(--s3);
   min-width: 0;
   padding: 10px;
-  border: 2px solid var(--walnut-3);
-  border-radius: var(--r-md);
-  background: var(--parch-1);
-  color: var(--ink);
-  /* 능력치 막대의 빈 칸이 카드 면(--parch-1)에 묻히지 않게. */
-  --seg-off: var(--line);
-  box-shadow: 0 4px 0 var(--walnut-3);
-  transition: transform 80ms var(--ease-out), box-shadow 80ms var(--ease-out);
+  color: var(--text-strong);
+  --seg-off: var(--border-hairline);
 }
-
-/* 호버·포커스: 2px 떠오르고 바닥이 6px. 누름: 바닥까지 가라앉는다(창 안이라 transform 허용, v4 §4.8). */
 @media (hover: hover) {
-  .card:hover:not([data-blocked]) { transform: translateY(-2px); box-shadow: 0 6px 0 var(--walnut-3); }
+  .card:hover:not([data-blocked]) { --surface-color: var(--bg-elevated); }
 }
-.card:has(.hit:focus-visible):not([data-blocked]) { transform: translateY(-2px); box-shadow: 0 6px 0 var(--walnut-3); }
-/* 누름은 포커스 호버보다 우선(:has가 특이도를 올리므로 .card를 겹쳐 같은 특이도에서 순서로 이긴다). */
-.card.card:active:not([data-blocked]) { transform: translateY(4px); box-shadow: 0 0 0 var(--walnut-3); }
-.card[data-blocked] { box-shadow: none; opacity: 0.6; }
+.card:active:not([data-blocked]) { --surface-color: var(--bg-pressed); }
+.card[data-blocked] { --surface-color: var(--bg-pressed); }
 
 /* 카드를 덮는 투명 단추 하나. 3px --blue 포커스 링이 카드 둘레에 그려진다. */
 .hit {
@@ -51,7 +38,7 @@
   display: grid;
   place-items: center;
   aspect-ratio: 4 / 3;
-  border-radius: var(--r-sm);
+
   background: var(--walnut-4);
 }
 
@@ -124,8 +111,8 @@
 
 .delta {
   padding: 3px var(--s2);
-  border-radius: var(--r-sm);
-  box-shadow: inset 0 0 0 2px var(--oak-2);
+
+  box-shadow: inset 0 0 0 1px var(--oak-2);
   font-size: var(--fs-1);
   font-weight: 700;
   line-height: 1.4;
@@ -133,7 +120,7 @@
 }
 
 .delta[data-down] {
-  box-shadow: inset 0 0 0 2px var(--red);
+  box-shadow: inset 0 0 0 1px var(--red);
   font-weight: 800;
   color: var(--red);
 }
@@ -196,13 +183,3 @@
 }
 
 /* 움직임 줄이기: OS 설정과 게임 설정 '움직임 최소'(<html data-motion="minimal">) 둘 다 위치 이동 없이 바닥 두께만 바뀐다. */
-@media (prefers-reduced-motion: reduce) {
-  .card { transition: none; }
-  .card:hover:not([data-blocked]),
-  .card:has(.hit:focus-visible):not([data-blocked]),
-  .card.card:active:not([data-blocked]) { transform: none; }
-}
-:global(:root[data-motion='minimal']) .card { transition: none; }
-:global(:root[data-motion='minimal']) .card:hover:not([data-blocked]),
-:global(:root[data-motion='minimal']) .card:has(.hit:focus-visible):not([data-blocked]),
-:global(:root[data-motion='minimal']) .card.card:active:not([data-blocked]) { transform: none; }

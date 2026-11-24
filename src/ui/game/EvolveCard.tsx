@@ -1,9 +1,10 @@
+import { BattleIcon } from './BattleIcon';
 import type { Balance } from '../../contracts/balance';
 import type { TowerView } from '../../application/view';
 import { fmtNumber } from '../copy';
 import { useLobbySprites } from '../screens/home/canvasAssets';
 import { BranchMarkIcon, TowerShieldPortrait } from '../icons/GameIcons';
-import { ArtIcon, Modal, Stat } from '../kit';
+import { Modal, Stat } from '../kit';
 import { ChoiceCard, ChoiceList } from './ChoiceCard';
 import { CounterIcons } from './CounterIcons';
 import css from './ChoiceCard.module.css';
@@ -69,7 +70,7 @@ export function EvolveCard({ balance, tower, gold, icons, lock, compact = false,
               deltas={formDeltas(balance, tower.type, tower.level, from, tower.level + 1, form)}
               price={
                 <span className={css.price} data-short={short || undefined}>
-                  <Stat icon={<ArtIcon name="coin" size={24} />} value={cost !== null ? fmtNumber(cost) : '-'} srLabel="골드" size="lg" />
+                  <Stat icon={<BattleIcon name="coin" size={24} />} value={cost !== null ? fmtNumber(cost) : '-'} srLabel="골드" size="lg" />
                 </span>
               }
               actionLabel={`${info.label} 고르기 ${cost ?? 0} 골드`}

@@ -1,3 +1,6 @@
+import { battleTowerName } from './r6Display';
+import { BattleIcon } from './BattleIcon';
+import { BattleTowerPortrait } from './BattleTowerPortrait';
 import { useLayoutEffect, useRef, useState, type ReactNode } from 'react';
 import type { Balance, TowerId } from '../../contracts/balance';
 import type { MapConfig } from '../../contracts/maps';
@@ -5,8 +8,9 @@ import type { TowerView } from '../../application/view';
 import { buildCost, sellRefund } from '../../domain/towers';
 import type { FieldView } from '../../game/bridge';
 import { fmtNumber } from '../copy';
-import { EvolveIcon, SellIcon, TowerShieldPortrait, UndoArrowIcon, UpgradeArrowIcon } from '../icons/GameIcons';
-import { ArtIcon, Button } from '../kit';
+import { EvolveIcon, UndoArrowIcon } from '../icons/GameIcons';
+import { LineIcon } from '../icons/LineIcon';
+import { Button } from '../kit';
 import { evolutionChoices, upgradeCost } from './evolution';
 import { cellRect, type CellRect } from './fieldGeometry';
 import css from './FieldOverlay.module.css';
@@ -49,7 +53,7 @@ interface Props {
 
 /** 키캡 안의 값(골드). 살 수 없으면 kit 비활성 모양(aria-disabled)이 알린다. */
 const Cost = ({ value, plus = false }: { value: number; plus?: boolean }) => (
-  <span className={css.cost}>{plus ? `+${fmtNumber(value)}` : <><ArtIcon name="coin" size={14} />{fmtNumber(value)}</>}</span>
+  <span className={css.cost}>{plus ? `+${fmtNumber(value)}` : <><BattleIcon name="coin" size={14} />{fmtNumber(value)}</>}</span>
 );
 
 /**
@@ -102,15 +106,15 @@ export function FieldOverlay(p: Props) {
                   type="button"
                   className={css.pick}
                   data-short={short || undefined}
-                  aria-label={`${p.balance.towers[type].label} ${price} 골드${short ? `, ${price - p.gold} 부족` : ''}`}
-                  title={p.balance.towers[type].label}
+                  aria-label={`${battleTowerName(p.balance, type)} ${price} 골드${short ? `, ${price - p.gold} 부족` : ''}`}
+                  title={battleTowerName(p.balance, type)}
                   onPointerEnter={() => p.onPreview(type)}
                   onPointerLeave={() => p.onPreview(null)}
                   onFocus={() => p.onPreview(type)}
                   onBlur={() => p.onPreview(null)}
                   onClick={() => p.onBuild(p.slotId!, type)}
                 >
-                  <span className={css.pickArt}><TowerShieldPortrait type={type} icons={p.icons} size="fill" bare /></span>
+                  <span className={css.pickArt}><BattleTowerPortrait type={type} icons={p.icons} size="fill" /></span>
                   <Cost value={price} />
                 </button>
               );
@@ -170,15 +174,18 @@ export function FieldOverlay(p: Props) {
 }
 
 /** 설치된 타워 옆 도구 묶음: 진화(호박색)·강화(초록)·판매(빨강) 키캡. 설치 직후에는 판매 자리가 되돌리기다. */
-function TowerTools(p: Props & { tower: TowerView }) {
+export function TowerTools(p: Pick<Props, 'balance' | 'gold' | 'onUpgrade' | 'onEvolve' | 'onSell' | 'onUndo'> & {
+  tower: TowerView;
+  dock?: boolean;
+}) {
   const t = p.tower;
   const [confirmSell, setConfirmSell] = useState(false);
-  const label = p.balance.towers[t.type].label;
+  const label = battleTowerName(p.balance, t.type);
   const choices = evolutionChoices(p.balance, t);
   const next = upgradeCost(p.balance, t.type, t.level);
   const refund = sellRefund(p.balance, t);
   return (
-    <div className={css.tools} role="group" aria-label={`${label} 레벨 ${t.level}`}>
+    <div className={p.dock ? css.dockTools : css.tools} data-tower-tools role="group" aria-label={`${label} 레벨 ${t.level}`}>
       {next !== null && (choices ? (
         <Button variant="accent" className={css.tool} aria-disabled={p.gold < next || undefined} aria-label={`진화 ${next} 골드`} onClick={p.onEvolve}>
           <EvolveIcon size={18} />
@@ -187,7 +194,7 @@ function TowerTools(p: Props & { tower: TowerView }) {
         </Button>
       ) : (
         <Button variant="primary" className={css.tool} aria-disabled={p.gold < next || undefined} aria-label={`강화 ${next} 골드`} onClick={p.onUpgrade}>
-          <UpgradeArrowIcon size={18} />
+          <LineIcon name="hud/upgrade" size={18} />
           <span>강화</span>{' '}
           <Cost value={next} />
         </Button>
@@ -207,7 +214,7 @@ function TowerTools(p: Props & { tower: TowerView }) {
           onClick={() => (confirmSell ? p.onSell() : setConfirmSell(true))}
           onBlur={() => setConfirmSell(false)}
         >
-          <SellIcon size={18} />
+          <LineIcon name="hud/sell" size={18} />
           <span>{confirmSell ? '확인' : '판매'}</span>{' '}
           <Cost value={refund} plus />
         </Button>

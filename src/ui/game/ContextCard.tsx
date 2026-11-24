@@ -1,6 +1,9 @@
+import { Badge } from '../kit';
+import { LineIcon, type LineIconName } from '../icons/LineIcon';
+import type { r6Forecast } from './r6Forecast';
+import { BattleIcon } from './BattleIcon';
 import type { Balance } from '../../contracts/balance';
 import { FORECAST_WARNING } from '../copy';
-import { ArtIcon } from '../kit';
 import css from './ContextCard.module.css';
 import { ENEMY_NAME, foeIconUrl, ROLE_TRAIT, TRAIT_ICON, type ForecastWarning, type PreviewFoe, type WavePreview } from './wavePreview';
 
@@ -30,7 +33,7 @@ export function WaveForecast({ balance, preview, urlOf, icons, warning, compact 
         다음 적 <span className={css.total}>{preview.total}</span>
         {traits.length > 0 && (
           <span className={css.traits}>
-            {traits.map(t => <span key={t.icon} className={css.trait} title={t.label}><ArtIcon name={t.icon} size={compact ? 20 : 24} /></span>)}
+            {traits.map(t => <span key={t.icon} className={css.trait} title={t.label}><BattleIcon name={t.icon} size={compact ? 20 : 24} /></span>)}
           </span>
         )}
       </h2>
@@ -42,14 +45,14 @@ export function WaveForecast({ balance, preview, urlOf, icons, warning, compact 
             <li key={f.kind} className={css.foe} data-boss={f.kind === 'boss' || undefined} title={trait ? `${ENEMY_NAME[f.kind]} · ${trait.label}` : ENEMY_NAME[f.kind]}>
               <span className={css.portrait}>{src && <img src={src} alt="" draggable={false} />}</span>
               <span className={css.count}>×{f.count}</span>
-              {trait && <ArtIcon name={trait.icon} size={compact ? 20 : 24} />}
+              {trait && <BattleIcon name={trait.icon} size={compact ? 20 : 24} />}
             </li>
           );
         })}
       </ul>
       {warning && (
         <p className={css.warn} role="status">
-          <ArtIcon name={warning === 'air' ? 'trait.flying' : TRAIT_ICON[warning].icon} size={20} />
+          <BattleIcon name={warning === 'air' ? 'trait.flying' : TRAIT_ICON[warning].icon} size={20} />
           {FORECAST_WARNING[warning]}
         </p>
       )}
@@ -64,5 +67,26 @@ export function Remaining({ count }: { count: number }) {
       <span className={css.remainLabel} aria-hidden="true">남은 적</span>
       <strong className={css.remainNum} aria-hidden="true">{count}</strong>
     </div>
+  );
+}
+
+const TRAIT_NAMES: Partial<Record<LineIconName, string>> = {
+  'traits/armor': '장갑', 'traits/ward': '마법 저항', 'traits/fast': '신속',
+  'traits/flying': '비행', 'traits/split': '분열', 'traits/regen': '재생', 'traits/siege': '공성',
+};
+
+export function R6WaveForecast({ preview, airGap }: { preview: ReturnType<typeof r6Forecast>; airGap: boolean }) {
+  return (
+    <section className={css.forecast} aria-label="웨이브 미리보기">
+      <h2 className={css.title}>웨이브 예고 <Badge tone="teal">다음 적 {preview.total}</Badge></h2>
+      <ul className={css.species}>
+        {preview.species.map(({ id, count, name }) => <li key={id}>{name} {count}마리</li>)}
+      </ul>
+      <div className={css.traits}>
+        {preview.boss && <Badge tone="amber">보스</Badge>}
+        {preview.traits.map(icon => <Badge key={icon}><LineIcon name={icon} size={14} />{TRAIT_NAMES[icon]}</Badge>)}
+      </div>
+      {airGap && <p className={css.warn} role="status"><LineIcon name="traits/flying" />날아오는 적이 있어요. 공중 공격 타워를 준비해요.</p>}
+    </section>
   );
 }

@@ -100,3 +100,8 @@
   line-height: 1;
   font-variant-numeric: tabular-nums;
 }
+
+.species { display: flex; flex-wrap: wrap; gap: var(--sp-1) var(--sp-3); list-style: none; margin: 0; padding: 0; color: var(--text-body); font-size: var(--fs-caption); }
+.forecast .traits { flex-wrap: wrap; }
+.forecast .title { font: 700 var(--fs-body)/1.4 var(--font-display); }
+.forecast .warn { color: var(--accent-amber); border: 1px solid currentColor; background: var(--accent-amber-dim); border-radius: 0; }

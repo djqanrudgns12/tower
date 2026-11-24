@@ -1,12 +1,38 @@
-/* 문제 카드(R4 PRD §9.1, ui-rules-v4): 양피지 카드 + 키캡 답안. 제출 흔들림 0 — 채점 뒤에는 면 색·바닥 두께·투명도만 바뀐다. */
 .panel {
   position: relative;
   display: grid;
   min-width: 0;
-  /* 보기 글자 크기: 넓은 화면 20px, 휴대폰 16px. 글자 크기 단계(크게·아주 크게)는 한 단계 키운다. */
-  --opt-font: var(--fs-3);
-  /* 문제판 안은 transform 금지(v4 §7.4): kit 키의 누름 이동을 끄고 바닥만 0으로 내린다. */
-  --btn-press-y: 0px;
+  --card-face: var(--quiz-bg);
+  --card-edge: var(--quiz-border);
+  --bg-card: var(--quiz-card);
+  --bg-pressed: var(--quiz-card-sunk);
+  --bg-elevated: var(--quiz-card-sunk);
+  --text-strong: var(--quiz-ink);
+  --text-body: var(--quiz-ink);
+  --text-muted: var(--quiz-ink-muted);
+  --border-hairline: var(--quiz-border);
+  --border-strong: var(--quiz-border);
+  --focus-ring: var(--quiz-teal);
+  --accent-teal: var(--quiz-teal);
+  --accent-amber: var(--quiz-amber);
+  --accent-amber-pressed: #784500;
+  --on-accent: #fff;
+  --ink: var(--quiz-ink);
+  --ink-2: var(--quiz-ink-muted);
+  --paper: var(--quiz-bg);
+  --paper-2: var(--quiz-card-sunk);
+  --parch-1: var(--quiz-card);
+  --parch-3: var(--quiz-card-sunk);
+  --brass-1: var(--quiz-amber-bg);
+  --brass-3: var(--quiz-amber);
+  --red: var(--quiz-danger);
+  --blue: var(--quiz-teal);
+  --green: var(--quiz-teal);
+  --amber: var(--quiz-teal-bg);
+  --on-dark: #fff;
+  --line: var(--quiz-border);
+  --opt-font: max(var(--fs-body), 16px);
+
 }
 
 :global(:root[data-font='large']) .panel,
@@ -34,7 +60,7 @@
 
 /* 휴대폰: 문제 | 모르겠어요 / 보기 2×2. 해설은 카드 위 말풍선이라 카드 높이가 그대로다(240px 이하 목표). */
 .panel.narrow {
-  --opt-font: var(--fs-2);
+  --opt-font: max(var(--fs-body), 16px);
   grid-template-columns: minmax(0, 1fr) 112px;
   grid-template-areas: 'stem side' 'opts opts';
   gap: var(--s2);
@@ -75,16 +101,16 @@
   display: inline-block;
   margin-right: var(--s2);
   padding: 1px var(--s2);
-  border-radius: var(--r-sm);
+
   font-size: var(--fs-1);
   font-weight: 800;
   line-height: 1.5;
   vertical-align: 0.15em;
 }
 
-.tag[data-tone='prep'] { background: var(--green); color: var(--on-dark); }
-.tag[data-tone='battle'] { background: var(--amber); color: var(--ink); }
-.tag[data-tone='boss'] { background: var(--red); color: var(--on-dark); }
+.tag[data-tone='prep'] { background: var(--quiz-teal-bg); color: var(--quiz-teal); }
+.tag[data-tone='battle'] { background: var(--quiz-teal-bg); color: var(--quiz-teal); }
+.tag[data-tone='boss'] { background: var(--quiz-danger-bg); color: var(--quiz-danger); }
 
 .badge { background: var(--paper-2); color: var(--ink-2); }
 
@@ -96,7 +122,7 @@
   margin-right: var(--s2);
   padding: 0 var(--s2) 0 var(--s1);
   border: 1px solid var(--brass-3);
-  border-radius: var(--r-sm);
+
   background: var(--brass-1);
   color: var(--ink);
   font-size: var(--fs-1);
@@ -150,6 +176,7 @@
   min-width: 0;
   padding: var(--s1) var(--s3) var(--s1) var(--s4);
   text-align: left;
+  font-family: var(--font-body);
   font-size: var(--opt-font);
   font-weight: 700;
   line-height: 1.25;
@@ -160,7 +187,11 @@
 
 .num {
   flex: none;
-  font-size: var(--fs-1);
+  width: 24px;
+  text-align: center;
+  border: 1px solid currentColor;
+  background: var(--quiz-card-sunk);
+  font-size: var(--fs-caption);
   font-weight: 800;
   color: var(--ink-2);
 }
@@ -182,36 +213,20 @@
 
 .narrow .seal { position: absolute; right: 2px; top: 50%; translate: 0 -50%; width: 20px; }
 
-/* 채점 뒤: 위치·크기는 그대로, 면 색·바닥 두께·투명도만(B10, v4 §3.4 바닥 0·4·6px). kit의 비활성 회색을 덮는다. */
-.panel .option:disabled {
-  --face: var(--paper-2);
-  --text: var(--ink);
-  opacity: 1;
-  box-shadow: inset 0 0 0 2px var(--walnut-3), 0 4px 0 var(--line);
-  cursor: default;
-}
-
-/* 고른 키는 채점이 올 때까지 눌린 채(바닥 0)로 둔다. */
-.panel .option[data-state='chosen']:disabled { --face: var(--paper); outline: 3px solid var(--blue); outline-offset: 2px; box-shadow: inset 0 0 0 2px var(--walnut-3); }
-.panel .option[data-state='dim']:disabled { opacity: 0.45; }
-
-/* 정답 키는 떠오른다: 바닥 6px(뜬 상태). 자리는 그대로라 수직선 잠금이 유지된다. */
+.panel .option:disabled { --face: var(--quiz-card-sunk); --text: var(--quiz-ink-muted); cursor: default; }
+.panel .option[data-state='chosen']:disabled { --face: var(--quiz-card); --button-edge: var(--quiz-teal); }
 .panel .option[data-state='correct']:disabled {
-  --face: var(--green);
-  --text: var(--on-dark);
-  box-shadow: inset 0 0 0 2px var(--walnut-3), 0 6px 0 var(--green-base);
+  --face: var(--quiz-teal-bg);
+  --text: var(--quiz-teal);
+  --button-edge: var(--quiz-teal);
 }
-
-/* 오답 키는 눌린 채: 바닥 0. */
 .panel .option[data-state='wrong']:disabled {
-  --face: var(--red);
-  --text: var(--on-dark);
-  box-shadow: inset 0 0 0 2px var(--walnut-3);
-  opacity: 0.55;
+  --face: var(--quiz-danger-bg);
+  --text: var(--quiz-danger);
+  --button-edge: var(--quiz-danger);
 }
-
 .option[data-state='correct'] .num,
-.option[data-state='wrong'] .num { color: var(--on-dark); }
+.option[data-state='wrong'] .num { color: inherit; background: transparent; }
 
 /* 오른쪽 열(휴대폰은 오른쪽 위 칸): 위 보상 미리보기 · 가운데 결과(정답!·받은 골드 또는 오답 이유·해설·다음 문제) · 아래 모르겠어요. */
 .side {
@@ -237,7 +252,7 @@
   padding: var(--s3);
   border-radius: var(--r-md);
   background: var(--paper-2);
-  box-shadow: inset 0 0 0 2px var(--line);
+  box-shadow: inset 0 0 0 1px var(--line);
 }
 
 .seam .result,
@@ -288,7 +303,7 @@
   margin-right: var(--s2);
   padding: 0 var(--s1);
   border: 1px solid var(--brass-3);
-  border-radius: var(--r-sm);
+
   background: var(--brass-1);
   color: var(--ink);
   font-size: var(--fs-1);
@@ -372,7 +387,7 @@
   gap: 6px;
   border-radius: var(--r-md);
   background: var(--paper);
-  box-shadow: var(--float);
+  border: 1px solid var(--quiz-border);
   animation: rise var(--t-ui) var(--ease-out) 1;
 }
 

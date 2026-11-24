@@ -1,0 +1,129 @@
+/* ==========================================================================
+   R04 전술 지도 + 전술 UI — 디자인 토큰 (R6 P2c)
+   기준: docs/renewal/r6/PRD-r6.md §7·§2, round3/concepts/R04/concept.md
+   원칙: 무광 6색 + 명도 변형, 1px 헤어라인, 45° 모따기, 고정폭 숫자, WCAG AA ≥ 4.5:1
+   ========================================================================== */
+
+:root {
+  /* 1. R04 기본 6색 팔레트 */
+  --r04-carbon: #12161B;
+  --r04-slate: #1D242C;
+  --r04-line: #4A5563;
+  --r04-silver: #B8C0C8;
+  --r04-amber: #E69F24;
+  --r04-teal: #2FB5A3;
+
+  /* 2. 시맨틱 색 토큰 — 기본 어두운 전술 테마 */
+  --bg-canvas: #0E1216;
+  --bg-panel: #12161B;
+  --bg-card: #1D242C;
+  --bg-elevated: #26303B;
+  --bg-pressed: #161B22;
+  --border-hairline: #4A5563;
+  --border-strong: #6B7787;
+
+  --text-strong: #E6ECF2;   /* #1D242C 대비 12.7:1 */
+  --text-body: #B8C0C8;     /* #1D242C 대비 8.2:1 */
+  --text-muted: #939EAB;    /* #1D242C 대비 5.8:1 (AA ≥ 4.5:1) */
+
+  --accent-amber: #E69F24;
+  --accent-amber-dim: rgba(230, 159, 36, 0.14);
+  --accent-amber-pressed: #CC8A1A;
+
+  --accent-teal: #2FB5A3;
+  --accent-teal-dim: rgba(47, 181, 163, 0.14);
+  --accent-teal-pressed: #249687;
+
+  --status-danger: #F68D84; /* #1D242C 및 danger-bg 합성 위 ≥ 5.1:1 (AA ≥ 4.5:1) */
+  --status-danger-bg: rgba(240, 113, 103, 0.14);
+  --status-success: #2FB5A3;
+  --status-warning: #E69F24;
+
+  --on-accent: #12161B;     /* 앰버/틸 위 텍스트 대비 ≥ 7.4:1 */
+  --on-danger: #12161B;
+  --focus-ring: var(--accent-teal);
+  --overlay: rgb(14 18 22 / 72%);
+
+  /* 3. 문제 패널 전용 밝은 고대비 면 (교실 프로젝터 대응 — 기본/밝은 화면 공통) */
+  --quiz-bg: #F2F4F7;
+  --quiz-card: #FFFFFF;
+  --quiz-card-sunk: #E7ECF1;
+  --quiz-border: #4A5563;
+  --quiz-ink: #12161B;       /* #FFFFFF 대비 17.8:1 */
+  --quiz-ink-muted: #3D4754; /* #FFFFFF 대비 9.2:1 */
+  --quiz-amber: #9A5B00;     /* #FFFFFF 대비 5.3:1 */
+  --quiz-amber-bg: #FDF3DF;
+  --quiz-teal: #0E6E62;      /* #FFFFFF 대비 6.0:1 */
+  --quiz-teal-bg: #E4F5F2;
+  --quiz-danger: #B83227;    /* #FFFFFF 대비 5.8:1 */
+  --quiz-danger-bg: #FDECEB;
+
+  /* 4. 형태·선·모따기 */
+  --border-width: 1px;
+  --chamfer-sm: 6px;
+  --chamfer-md: 10px;
+  --chamfer-lg: 14px;
+
+  /* 5. 타이포그래피 */
+  --font-display: 'IBM Plex Sans KR', 'SUIT Variable', 'SUIT', -apple-system, sans-serif;
+  --font-body: 'SUIT Variable', 'SUIT', 'IBM Plex Sans KR', -apple-system, sans-serif;
+  --font-scale: 1;
+  --fs-caption: calc(12px * var(--font-scale));
+  --fs-body: calc(14px * var(--font-scale));
+  --fs-heading: calc(18px * var(--font-scale));
+  --fs-display: calc(28px * var(--font-scale));
+
+  /* 6. 간격 (4px 격자) */
+  --sp-1: 4px;
+  --sp-2: 8px;
+  --sp-3: 12px;
+  --sp-4: 16px;
+  --sp-5: 20px;
+  --sp-6: 24px;
+  --sp-8: 32px;
+
+  /* 7. 아이콘 선 규칙 */
+  --icon-stroke: 1.75;
+  --icon-sm: 16px;
+  --icon-md: 20px;
+  --icon-lg: 24px;
+}
+
+/* 글자 크기 설정 단계 */
+:root[data-font-scale="base"] { --font-scale: 1; }
+:root[data-font="large"],
+:root[data-font-scale="large"] { --font-scale: 1.12; }
+:root[data-font="xlarge"],
+:root[data-font-scale="xlarge"] { --font-scale: 1.25; }
+
+/* "밝은 화면" 설정 대체 토큰 (교실 프로젝터 · 밝은 교실 환경용) */
+:root[data-theme="light"] {
+  --bg-canvas: #E6EBF0;
+  --bg-panel: #F4F6F8;
+  --bg-card: #FFFFFF;
+  --bg-elevated: #EBF0F5;
+  --bg-pressed: #DCE3EB;
+  --border-hairline: #4A5563;
+  --border-strong: #1D242C;
+
+  --text-strong: #12161B;   /* #FFFFFF 대비 17.8:1 */
+  --text-body: #242D37;     /* #FFFFFF 대비 13.5:1 */
+  --text-muted: #4A5563;    /* #F4F6F8 대비 6.9:1 */
+
+  --accent-amber: #9A5B00;  /* #FFFFFF 대비 5.3:1 */
+  --accent-amber-dim: #FDF3DF;
+  --accent-amber-pressed: #7C4800;
+
+  --accent-teal: #0E6E62;   /* #FFFFFF 대비 6.0:1 */
+  --accent-teal-dim: #E4F5F2;
+  --accent-teal-pressed: #0A544A;
+
+  --status-danger: #B83227; /* #FFFFFF 대비 5.8:1 */
+  --status-danger-bg: #FDECEB;
+  --status-success: #0E6E62;
+  --status-warning: #9A5B00;
+
+  --on-accent: #FFFFFF;
+  --on-danger: #FFFFFF;
+  --overlay: rgb(29 36 44 / 56%);
+}

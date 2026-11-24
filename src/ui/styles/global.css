@@ -1,3 +1,45 @@
+@import './tokens.css';
+
+@font-face {
+  font-family: 'IBM Plex Sans KR';
+  src: url('/fonts/IBMPlexSansKR-Bold.woff2') format('woff2');
+  font-weight: 700;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'SUIT Variable';
+  src: url('/fonts/SUIT-Variable.woff2') format('woff2');
+  font-weight: 100 900;
+  font-display: swap;
+}
+
+/* R04 모따기 표면. 외곽과 안쪽 면만 자르므로 포커스와 넘치는 내용은 그대로 보인다. */
+.r04-surface {
+  --cut-inner: calc(var(--cut, var(--chamfer-sm)) - 0.6px);
+  position: relative;
+  isolation: isolate;
+}
+.r04-surface::before,
+.r04-surface::after {
+  content: '';
+  position: absolute;
+  pointer-events: none;
+  z-index: -1;
+}
+.r04-surface::before {
+  inset: 0;
+  background: var(--edge-color, var(--border-hairline));
+  clip-path: polygon(var(--cut, var(--chamfer-sm)) 0, 100% 0, 100% calc(100% - var(--cut, var(--chamfer-sm))), calc(100% - var(--cut, var(--chamfer-sm))) 100%, 0 100%, 0 var(--cut, var(--chamfer-sm)));
+}
+.r04-surface::after {
+  inset: 1px;
+  background: var(--surface-color, var(--bg-card));
+  clip-path: polygon(var(--cut-inner) 0, 100% 0, 100% calc(100% - var(--cut-inner)), calc(100% - var(--cut-inner)) 100%, 0 100%, 0 var(--cut-inner));
+}
+.r04-surface:focus-visible { outline-color: var(--focus-ring); }
+.num { font-variant-numeric: tabular-nums; }
+
 /* 색·간격·반경 토큰: R5 「참나무 작전실 v2」 v4 한 벌(docs/renewal/ui-rules-v4.md §2). 모든 색은 여기서 나온다. 이 밖의 색·그라데이션·블러를 쓰지 않는다. */
 :root {
   /* ── 재질 팔레트(v4 §2.1): 숫자가 클수록 짙다 ── */
@@ -47,25 +89,6 @@
   --frame-lg: 12px;
   --frame-sm: 8px;
 
-  /* ── 재질 원화(ART-OAK1, v4 §3.2). slice·표시 폭은 asset-source/renewal/ART-OAK1/manifest.json 값이다.
-     none으로 두면 부품이 대체 단색(테·면 토큰)으로 그린다. 키는 원화가 둥근 끝·테·바닥 입술까지 그리므로 원화가 켜진 동안
-     --art-clip(면 색을 내용 상자에만)·--art-shadow(테·바닥 그림자 없음)를 쓴다.
-     키 원화를 모두 끄려면 --art-key-* 를 none으로, 이 두 값을 initial로 함께 바꾼다. ── */
-  --art-frame-lg: url('/assets/ui/oak/frame.lg.webp');
-  --art-frame-sm: url('/assets/ui/oak/frame.sm.webp');
-  --art-board: url('/assets/ui/oak/board.webp');
-  --art-parch: url('/assets/ui/oak/parch.webp');
-  --art-groove: url('/assets/ui/oak/groove.webp');
-  --art-key-brass: url('/assets/ui/oak/key.brass.webp');
-  --art-key-green: url('/assets/ui/oak/key.green.webp');
-  --art-key-parch: url('/assets/ui/oak/key.parch.webp');
-  --art-key-red: url('/assets/ui/oak/key.red.webp');
-  --art-badge-brass: url('/assets/ui/oak/badge.brass.webp');
-  --art-ribbon: url('/assets/ui/oak/ribbon.webp');
-  --art-rule: url('/assets/ui/oak/rule.webp');
-  --art-clip: content-box;
-  --art-shadow: none;
-
   --fs-1: 13px; --fs-2: 16px; --fs-3: 20px; --fs-4: 24px; --fs-5: 32px; --fs-6: 44px;
   --s1: 4px; --s2: 8px; --s3: 12px; --s4: 16px; --s5: 24px; --s6: 32px; --s7: 40px; --s8: 48px;
   --touch: 44px;
@@ -75,7 +98,7 @@
   --q-font: 18px;
   --read-step: 0px;
   --read-font: calc(var(--fs-2) + var(--read-step));
-  --font: 'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Noto Sans KR', 'Malgun Gothic', sans-serif;
+  --font: var(--font-body);
 
   /* ── 옛 홈(.lobbyRoot) 토큰 별칭(v4 §2.4). 홈 CSS만 쓴다. 새 코드는 위 이름만 쓴다 ── */
   --edge: var(--walnut-3);
@@ -142,5 +165,47 @@ h1, h2, h3, p { margin: 0; }
   animation-duration: 0ms !important;
 }
 
-/* 전투 화면 바탕: 짙은 호두나무 단색(v4 §2.2). 전장과 양피지 카드가 그 위에 뜬다. */
-body[data-screen='battle'] { background: var(--bg); }
+body[data-screen='battle'] { background: var(--bg-canvas); color: var(--text-body); }
+
+/* 홈 전환 중 쓰는 장식. */
+:root {
+  --art-frame-sm: url('/assets/ui/oak/frame.sm.webp');
+  --art-board: url('/assets/ui/oak/board.webp');
+  --art-parch: url('/assets/ui/oak/parch.webp');
+  --art-groove: url('/assets/ui/oak/groove.webp');
+  --art-key-parch: url('/assets/ui/oak/key.parch.webp');
+}
+
+/* R04 표면 위에서도 기존 화면의 색상 별칭이 글자 대비를 유지한다. */
+.r04-panel-colors {
+  --bg: var(--bg-canvas);
+  --paper: var(--bg-panel);
+  --paper-2: var(--bg-pressed);
+  --parch-1: var(--bg-card);
+  --parch-2: var(--bg-panel);
+  --parch-3: var(--bg-pressed);
+  --line: var(--border-hairline);
+  --ink: var(--text-strong);
+  --ink-2: var(--text-muted);
+  --on-dark: var(--text-strong);
+  --on-dark-2: var(--text-muted);
+  --brass-1: var(--accent-amber);
+  --brass-2: var(--accent-amber);
+  --brass-3: var(--accent-amber);
+  --green: var(--accent-teal);
+  --green-base: var(--accent-teal-pressed);
+  --amber: var(--accent-amber);
+  --amber-base: var(--accent-amber);
+  --red: var(--status-danger);
+  --red-base: var(--status-danger-bg);
+  --ring: var(--focus-ring);
+  --blue: var(--focus-ring);
+  --focus-on-dark: var(--focus-ring);
+  --walnut-1: var(--border-strong);
+  --walnut-2: var(--border-hairline);
+  --walnut-3: var(--border-hairline);
+  --walnut-4: var(--bg-canvas);
+  --oak-1: var(--bg-card);
+  --oak-2: var(--border-hairline);
+  --float: none;
+}

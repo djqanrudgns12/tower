@@ -1,424 +1,185 @@
-/* R5 공용 부품 참나무 옷(ui-rules-v4 §4). 크기·포커스·키보드는 R4 그대로, 면·테·바닥·원화만 v4 토큰으로 바꾼다.
-   상자 크기 불변(v4 §3.5): 화면 CSS가 여백을 덮어쓰는 부품(카드·키)은 테를 안쪽 그림자·뒤 가상 요소로 그리고, 부품이 여백을 정하는 곳(창·고르기 줄·배지)은 테만큼 여백을 줄인다. */
-
-/* ── 키캡 버튼: 변형마다 면(--face)·바닥(--base)·글자(--text)·원화(--key)만 바꾼다 ──
-   원화 키(ART-OAK1 key.*)는 버튼 뒤에 깐 가상 요소(::before)에 그린다. 버튼 자신은 테두리가 없어 상자·여백이 R4 그대로다
-   (화면이 여백을 덮어쓰는 답안 키도 글 폭이 줄지 않는다, v4 §3.5). 원본 높이 96의 좌우 끝 38px를 남기고 늘리며,
-   표시 끝 폭(--cap)은 높이에 비례한다(md 44px → 17px, lg 56px → 22px).
-   원화가 켜진 동안(global.css --art-clip·--art-shadow) 면 색은 내용 상자에만 깔고(원화의 둥근 끝 바깥으로 새지 않고, 글자 바탕은 실제 면 색이라
-   대비 검사가 맞게 읽는다) 테·바닥 그림자는 원화가 그린다. 원화를 끄려면 Button art={false}(.noArt): 양피지 볼록 면 + 안쪽 2px
-   호두나무 테 + 바닥으로 그린다(여러 줄 문장 키인 답안 보기, 라벨 없는 정사각 아이콘 키). */
 .btn {
-  --face: var(--parch-1);
-  --base: var(--walnut-3);
-  --text: var(--ink);
-  --key: var(--art-key-parch);
-  --cap: 17px;
-  position: relative;
-  isolation: isolate;
-  min-height: var(--touch);
-  padding: 0 var(--s4);
-  border: 0;
-  border-radius: var(--r-sm);
-  background: var(--face);
-  background-clip: var(--art-clip, border-box);
-  color: var(--text);
-  /* 대체 단색: 안쪽 테 2px --walnut-3(그림자라 상자 크기가 그대로) + 바닥 4px. */
-  box-shadow: var(--art-shadow, inset 0 0 0 2px var(--walnut-3), 0 4px 0 var(--base));
-  font-size: var(--fs-2);
-  font-weight: 700;
-  line-height: 1.2;
+  --surface-color: var(--face, var(--bg-card));
+  --edge-color: var(--button-edge, var(--border-hairline));
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: var(--s2);
-  transition: transform 80ms var(--ease-out), box-shadow 80ms var(--ease-out), filter 120ms;
+  gap: var(--sp-2);
+  min-height: var(--touch);
+  padding: 0 var(--sp-4);
+  border: 0;
+  background: transparent;
+  color: var(--text, var(--text-strong));
+  font: 700 var(--fs-body)/1.25 var(--font-display);
   touch-action: manipulation;
-  user-select: none;
 }
-.btn::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  border: 0 solid transparent;
-  border-width: 0 var(--cap);
-  border-image: var(--key) 0 38 fill / 0 var(--cap) stretch;
-  pointer-events: none;
-}
-/* 원화가 켜진 키는 내용이 끝(캡)·리벳 안쪽으로 들어오지 않게 좌우 여백을 캡 폭 + 8px로 잡는다. 화면이 여백을 덮어써도 이것이 이긴다
-   (P2 눈 관문 반려 1: 리벳이 번호·아이콘·글자에 붙었다). 원화를 끈 키는 화면·kit 여백을 그대로 쓴다. */
-.btn:not(.ghost):not(.noArt):not(.iconBtn), .iconBtn.showLabel:not(.noArt) { padding-inline: calc(var(--cap) + var(--s2)); }
-/* 누름: 바닥 두께만큼 내려앉는다. 문제판처럼 위치가 잠긴 곳은 조상에 --btn-press-y: 0px을 주거나 still로 끈다(v4 §7.4). */
-/* 기본 누름은 :where()로 특이도를 (0,2,0)에 묶어, 아래 덮어쓰기(still·ghost·움직임 줄이기)와 화면 규칙이 의도대로 이긴다. */
-.btn:active:where(:not(:disabled):not([aria-disabled='true'])) { transform: translateY(var(--btn-press-y, 4px)); box-shadow: var(--art-shadow, inset 0 0 0 2px var(--walnut-3)); }
-.btn.still:active { transform: none; }
-.btn:focus-visible { outline: 3px solid var(--ring); outline-offset: 3px; }
+.primary, .accent { --face: var(--accent-amber); --button-edge: var(--accent-amber); --text: var(--on-accent); }
+.danger { --face: var(--status-danger-bg); --button-edge: var(--status-danger); --text: var(--status-danger); }
+.ghost { --face: transparent; --button-edge: transparent; color: var(--text-body); }
 @media (hover: hover) {
-  .btn:hover:not(:disabled):not([aria-disabled='true']) { filter: brightness(1.06); }
+  .btn:hover:not(:disabled, [aria-disabled='true']) { --button-edge: var(--border-strong); --face: var(--bg-elevated); }
+  .btn:is(.primary, .accent):hover:not(:disabled, [aria-disabled='true']) { --face: var(--accent-amber-pressed); }
+  .btn.danger:hover:not(:disabled, [aria-disabled='true']) { --face: var(--status-danger-bg); }
 }
-.primary { --face: var(--green); --base: var(--green-base); --text: var(--on-dark); --key: var(--art-key-green); }
-/* 화면당 하나인 "지금 누를 것"(primary lg)은 놋쇠로 그린다(v4 §4.1). */
-.primary.lg, .accent { --face: var(--brass-2); --base: var(--brass-3); --text: var(--ink); --key: var(--art-key-brass); }
-.danger { --face: var(--red); --base: var(--red-base); --text: var(--on-dark); --key: var(--art-key-red); }
-.secondary { --face: var(--parch-1); --base: var(--walnut-3); --text: var(--ink); --key: var(--art-key-parch); }
-/* 원화를 끈 키: 변형 규칙(primary lg 포함)보다 뒤·높은 특이도로 둔다. */
-.btn.noArt { --key: none; --art-clip: initial; --art-shadow: initial; }
-.ghost { --key: none; background: transparent; background-clip: border-box; box-shadow: none; color: var(--ink); }
-.ghost:active:not(:disabled) { transform: none; box-shadow: none; }
-@media (hover: hover) {
-  .ghost:hover:not(:disabled) { filter: none; background: var(--parch-3); }
-}
-/* 짙은 바탕(머리판·전투 바탕) 위: 글자는 밝게, 포커스 링은 --focus-on-dark(v4 §2.6 규칙 5). */
-.onDark { --ring: var(--focus-on-dark); }
-.onDark.ghost { color: var(--on-dark); }
-@media (hover: hover) {
-  .onDark.ghost:hover:not(:disabled) { background: var(--walnut-3); }
-}
-/* 비활성: 원화를 끄고 양피지 홈 면 + 가는 참나무 테(v4 §4.0). */
-.btn:disabled, .btn[aria-disabled='true'] { --face: var(--parch-3); --text: var(--ink-2); --key: none; background: var(--face); background-clip: border-box; box-shadow: inset 0 0 0 2px var(--oak-2); opacity: 0.6; cursor: not-allowed; }
-.ghost:disabled, .ghost[aria-disabled='true'] { background: transparent; box-shadow: none; }
-.lg { --cap: 22px; min-height: 56px; padding: 0 var(--s5); font-size: var(--fs-3); font-weight: 800; }
+.btn:active:not(:disabled, [aria-disabled='true']) { --face: var(--bg-pressed); }
+.btn:is(.primary, .accent):active:not(:disabled, [aria-disabled='true']) { --face: var(--accent-amber-pressed); }
+.btn:is(:disabled, [aria-disabled='true']) { --face: var(--bg-pressed); --text: var(--text-muted); cursor: not-allowed; }
+.btn[aria-pressed='true'] { --face: var(--accent-teal-dim); --button-edge: var(--accent-teal); }
+.btn:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 2px; }
+.lg { min-height: 56px; font-size: var(--fs-heading); }
 .block { width: 100%; }
 .alignStart { justify-content: flex-start; text-align: left; }
-
-/* ── 아이콘 버튼(옛 머리판 단추: 양피지 키 + 아이콘) ── */
-/* 라벨 없는 정사각 아이콘 키는 알약 원화가 동그란 메달처럼 찌그러져 원화를 끄고 사각 양피지 키로 그린다(IconButton이 art={false}를 준다). */
-.iconBtn { position: relative; width: var(--touch); padding: 0; }
-.iconBtn.lg { width: 56px; padding: 0; }
-/* 글자를 함께 보이는 머리판 단추(v4 §4.2): 너비는 글자를 따르고 44px보다 좁아지지 않는다. */
-.iconBtn.showLabel, .iconBtn.lg.showLabel { width: auto; min-width: var(--touch); padding: 0 var(--s3); gap: var(--s1); }
-
-/* ── 개수 배지(놋쇠, 999px은 배지·칩에만) ── */
+.iconBtn { width: var(--touch); padding: 0; }
+.iconBtn.lg { width: 56px; }
+.iconBtn.showLabel { width: auto; padding: 0 var(--sp-3); }
 .badge {
-  --face: var(--brass-1);
-  position: absolute;
-  top: -6px;
-  right: -6px;
-  min-width: 20px;
-  height: 20px;
-  padding: 0 5px;
-  border: 1px solid var(--brass-3);
-  border-image: var(--art-badge-brass) 0 23 fill / 0 10px stretch;
-  border-radius: 999px;
-  background: var(--face) padding-box;
-  color: var(--ink);
-  font-size: var(--fs-1);
-  font-weight: 800;
-  line-height: 18px;
-  text-align: center;
-  font-variant-numeric: tabular-nums;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+  padding: 1px var(--sp-2);
+  border: 1px solid var(--border-hairline);
+  color: var(--text-body);
+  background: var(--bg-card);
+  font-size: var(--fs-caption);
+  font-weight: 700;
+  line-height: 1.5;
 }
+.badge[data-tone='teal'] { color: var(--accent-teal); border-color: currentColor; background: var(--accent-teal-dim); }
+.badge[data-tone='amber'] { color: var(--accent-amber); border-color: currentColor; background: var(--accent-amber-dim); }
+.iconBtn > .badge { position: absolute; right: -4px; top: -4px; }
+.steps {
+  display: grid;
+  grid-auto-columns: minmax(0, 1fr);
+  grid-auto-flow: column;
+  gap: 2px;
+  align-items: center;
+}
+.steps > span { height: 6px; background: var(--border-hairline); }
+.steps > [data-milestone] { height: 10px; }
+.steps > [data-done] { background: var(--accent-teal); }
+.steps > [data-current] { outline: 1px solid var(--accent-amber); outline-offset: -1px; }
 
-/* ── 카드: 양피지 면 + 참나무 가는 테. 테는 안쪽 그림자라 화면이 정한 여백·크기가 그대로다 ── */
-.card { background: var(--paper); color: var(--ink); border-radius: var(--r-md); padding: var(--s4); box-shadow: inset 0 0 0 2px var(--line); }
-.cardFloat { box-shadow: var(--shadow-board), inset 0 0 0 2px var(--line); }
-.cardSunk { position: relative; background: var(--paper-2); }
-/* 음각 홈 테(groove 원화): 카드 위에 겹쳐 그리는 가상 요소라 상자·여백이 그대로다(안쪽 그림자와 같은 원칙). 원화가 없으면 안쪽 그림자 테만 남는다. */
-.cardSunk::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border: 4px solid transparent;
-  border-image: var(--art-groove) 47 / 4px stretch;
-  border-radius: inherit;
-  pointer-events: none;
+.card {
+  --cut: var(--chamfer-md);
+  --surface-color: var(--card-face, var(--bg-card));
+  --edge-color: var(--card-edge, var(--border-hairline));
+  color: var(--text-strong);
+  padding: var(--sp-4);
 }
-/* 판 재질(옆판·문제판 바탕·탭 줄): 참나무 판 원화 타일, 글은 --ink만(v4 §2.6 규칙 1). */
-.cardBoard { background: var(--oak-1) var(--art-board) 0 0 / 128px 128px repeat; box-shadow: inset 0 0 0 2px var(--walnut-2); }
-/* 머리판 재질(머리판·HUD): 짙은 호두나무 면 + 몰딩 선. 짙은 면이라 글자·링을 밝게 바꾼다. */
-.cardPlaque { --ring: var(--focus-on-dark); --stat-label: var(--on-dark-2); background: var(--walnut-3); color: var(--on-dark); box-shadow: var(--shadow-board), inset 0 0 0 2px var(--walnut-1); }
-.padSm { padding: var(--s3); }
+.cardSunk { --card-face: var(--bg-pressed); }
+.cardBoard, .cardPlaque { --card-face: var(--bg-panel); }
+.padSm { padding: var(--sp-3); }
 .padNone { padding: 0; }
 
-/* ── 고르기 줄(라디오 묶음): 참나무 홈 + 양피지 볼록 칸 ── */
-.segmented {
-  display: grid;
-  grid-auto-flow: column;
-  grid-auto-columns: 1fr;
-  gap: var(--s1);
-  padding: 2px;
-  border: 2px solid var(--oak-2);
-  border-image: var(--art-groove) 47 / 4px stretch;
-  border-radius: var(--r-sm);
-  background: var(--paper-2);
-}
-.segment {
+.segmented, .modalTabList { display: flex; align-items: stretch; gap: var(--sp-1); min-width: 0; }
+.segment, .modalTab {
+  flex: 1;
   min-height: var(--touch);
-  padding: 0 10px;
-  border: 2px solid transparent;
-  border-radius: var(--r-sm);
-  background: transparent;
-  color: var(--ink-2);
-  font-size: var(--fs-2);
+  padding: var(--sp-1) var(--sp-2);
+  border: 1px solid var(--border-hairline);
+  background: var(--bg-card);
+  color: var(--text-body);
+  font-size: var(--fs-body);
   font-weight: 700;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--s1);
-  transition: background-color var(--t-ui), color var(--t-ui);
+  overflow-wrap: anywhere;
 }
-.segment[aria-checked='true'], .segment[aria-selected='true'] { background: var(--parch-1); color: var(--ink); border-color: var(--walnut-3); box-shadow: 0 2px 0 var(--walnut-3); }
-.segment:focus-visible { outline: 3px solid var(--ring); outline-offset: 1px; }
-.segment[aria-disabled='true'] { opacity: 0.55; cursor: not-allowed; }
-@media (hover: hover) {
-  .segment:hover:not([aria-checked='true']):not([aria-disabled='true']) { color: var(--ink); }
+.segment[aria-checked='true'], .segment[aria-selected='true'], .modalTab[aria-selected='true'] {
+  border-color: var(--accent-teal);
+  background: var(--accent-teal-dim);
+  color: var(--text-strong);
+  box-shadow: inset 0 -2px var(--accent-teal);
 }
-
-/* ── 책갈피형 색인 탭(ModalTabs + ModalTabPanel): 음각 레일 + 양피지 일체형 본문 시트 ── */
-.modalTabShell {
-  display: flex;
-  flex-direction: column;
-  flex: 1 1 auto;
-  min-height: 0;
+.segment:focus-visible, .modalTab:focus-visible, .toggle:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: -2px;
 }
-.modalTabRail {
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: var(--s2);
-  padding: var(--s1) var(--s2) 0;
-  border: 2px solid var(--walnut-2);
-  border-bottom: 0;
-  border-radius: var(--r-md) var(--r-md) 0 0;
-  background: var(--parch-3);
+.segment[aria-disabled='true'], .modalTab[aria-disabled='true'] {
+  color: var(--text-muted);
+  background: var(--bg-pressed);
+  cursor: not-allowed;
 }
-.modalTabList {
-  display: flex;
-  align-items: flex-end;
-  gap: var(--s1);
-  min-width: 0;
-  flex: 1 1 auto;
-}
-.modalTab {
-  position: relative;
-  min-width: var(--touch);
-  min-height: var(--touch);
-  padding: 0 var(--s3);
-  border: 2px solid transparent;
-  border-bottom: 0;
-  border-radius: var(--r-sm) var(--r-sm) 0 0;
-  background: transparent;
-  color: var(--ink-2);
-  font-size: var(--fs-2);
-  font-weight: 700;
-  line-height: 1.2;
-  white-space: nowrap;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  transition: background-color var(--t-ui), color var(--t-ui);
-}
-.modalTab[aria-selected='true'] {
-  z-index: 1;
-  margin-bottom: -2px;
-  padding-bottom: 2px;
-  border-color: var(--walnut-3);
-  background: var(--parch-2);
-  color: var(--ink);
-  font-weight: 800;
-  box-shadow: inset 0 4px 0 var(--green);
-}
-.modalTab:focus-visible { outline: 3px solid var(--ring); outline-offset: -3px; }
-.modalTab[aria-disabled='true'] { opacity: 0.55; cursor: not-allowed; }
-@media (hover: hover) {
-  .modalTab:hover:not([aria-selected='true']):not([aria-disabled='true']) {
-    background: var(--parch-1);
-    color: var(--ink);
-  }
-}
-.modalTabCount {
-  min-width: 20px;
-  height: 20px;
-  padding: 0 5px;
-  border: 1px solid var(--brass-3);
-  border-radius: var(--r-sm);
-  background: var(--brass-1);
-  color: var(--ink);
-  font-size: var(--fs-1);
-  font-weight: 800;
-  line-height: 18px;
-  text-align: center;
-  font-variant-numeric: tabular-nums;
-}
-.modalTabAside {
-  flex: none;
-  align-self: center;
-  padding: 0 var(--s1) var(--s1);
-  font-size: var(--fs-1);
-  font-weight: 700;
-  color: var(--ink-2);
-  white-space: nowrap;
-}
+.modalTabShell { display: flex; flex: 1; flex-direction: column; min-height: 0; min-width: 0; }
+.modalTabRail { display: flex; align-items: center; gap: var(--sp-2); }
+.modalTabList { flex: 1; }
+.modalTab { display: inline-flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: var(--sp-1); }
+.modalTabCount { color: var(--accent-teal); font-size: var(--fs-caption); }
+.modalTabAside { color: var(--text-muted); font-size: var(--fs-caption); }
 .modalTabPanel {
-  flex: 1 1 auto;
+  flex: 1;
+  min-width: 0;
   min-height: 0;
-  overflow-y: auto;
-  display: flex;
-  flex-direction: column;
-  padding: var(--s4);
-  border: 2px solid var(--walnut-2);
-  border-radius: 0 0 var(--r-md) var(--r-md);
-  background: var(--parch-2);
+  overflow: auto;
+  border: 1px solid var(--border-hairline);
+  border-top: 0;
+  padding: var(--sp-4);
+  background: var(--bg-card);
 }
-.modalTabPanel.padSm { padding: var(--s3); }
+.modalTabPanel.padSm { padding: var(--sp-3); }
 .modalTabPanel.padNone { padding: 0; }
-@media (max-width: 679px) {
-  .modalTabRail {
-    flex-direction: column;
-    align-items: stretch;
-    padding: var(--s1);
-    gap: var(--s1);
-  }
-  .modalTabList {
-    flex-wrap: wrap;
-    align-items: stretch;
-  }
-  .modalTab {
-    flex: 1 1 auto;
-    padding: 0 var(--s2);
-    border: 2px solid transparent;
-    border-radius: var(--r-sm);
-  }
-  .modalTab[aria-selected='true'] {
-    margin-bottom: 0;
-    padding-bottom: 0;
-    background: var(--parch-1);
-  }
-  .modalTabAside {
-    align-self: flex-start;
-    white-space: normal;
-    padding: 0 var(--s1);
-  }
+@media (max-width: 520px) {
+  .modalTabRail { flex-wrap: wrap; }
+  .modalTabAside { width: 100%; }
 }
 
-/* ── 켜기·끄기: 꺼짐은 양피지 홈, 켜짐은 숲색. 이름 뒤에 상태 글자 ── */
 .toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
   min-height: var(--touch);
-  padding: 0;
+  padding: 0 var(--sp-2);
   border: 0;
   background: transparent;
-  color: var(--ink);
-  font-size: var(--fs-2);
-  font-weight: 700;
-  display: inline-flex;
-  align-items: center;
-  gap: var(--s3);
+  font-size: var(--fs-body);
+  color: var(--text-strong);
 }
-.toggle:focus-visible { outline: 3px solid var(--ring); outline-offset: 3px; border-radius: var(--r-sm); }
-.track {
-  position: relative;
-  flex: none;
-  width: 52px;
-  height: 30px;
-  border: 2px solid var(--walnut-2);
-  border-radius: var(--r-sm);
-  background: var(--parch-3);
-  transition: background-color var(--t-ui), border-color var(--t-ui);
-}
-.knob {
-  position: absolute;
-  top: 1px;
-  left: 1px;
-  width: 22px;
-  height: 22px;
-  border: 2px solid var(--walnut-3);
-  border-radius: var(--r-sm);
-  background: var(--parch-1);
-  box-shadow: 0 2px 0 var(--walnut-3);
-  transition: transform var(--t-ui) var(--ease-out);
-}
-.toggle[aria-checked='true'] .track { background: var(--green); border-color: var(--walnut-3); }
-.toggle[aria-checked='true'] .knob { transform: translateX(24px); }
-.toggleState { margin-left: var(--s2); font-size: var(--fs-1); font-weight: 700; color: var(--ink-2); }
+.track { display: inline-flex; width: 40px; padding: 3px; border: 1px solid var(--border-strong); background: var(--bg-card); }
+.knob { width: 12px; height: 12px; background: var(--text-muted); transition: transform var(--t-ui); }
+.toggle[aria-checked='true'] .track { border-color: var(--accent-teal); background: var(--accent-teal-dim); }
+.toggle[aria-checked='true'] .knob { transform: translateX(20px); background: var(--accent-teal); }
+.toggleState { margin-left: var(--sp-2); font-size: var(--fs-caption); color: var(--text-muted); }
 
-/* ── 아이콘 + 숫자 ── */
-.stat { display: inline-flex; align-items: center; gap: 6px; font-weight: 800; font-variant-numeric: tabular-nums; line-height: 1; }
-.statMd { font-size: var(--fs-2); }
-.statLg { font-size: var(--fs-4); }
-.statLabel { font-size: var(--fs-1); font-weight: 700; color: var(--stat-label, var(--ink-2)); }
-
-/* ── 창: 호두나무 테(frame.sm 원화) + 안쪽 몰딩 + 양피지 면, 제목 줄 아래 놋쇠 구분선(v4 §4.7) ──
-   틀 한 벌을 막 위의 창(Modal .dialog)과 화면에 서는 창(Window .window: 결과·오답 노트)이 함께 쓴다. */
+.stat { display: inline-flex; align-items: center; gap: 6px; font: 700 var(--fs-body)/1 var(--font-display); }
+.statLg { font-size: var(--fs-display); }
+.statLabel { font-size: var(--fs-caption); color: var(--text-muted); }
 .scrim {
   position: fixed;
   inset: 0;
-  z-index: 50;
+  z-index: 100;
   display: grid;
   place-items: center;
-  padding: var(--s4);
-  background: var(--scrim);
+  padding: var(--sp-3);
+  background: var(--overlay);
 }
 .dialog, .window {
-  --ring: var(--blue);
-  /* 테 8px + 여백 16px = R4 여백 24px. */
-  padding: var(--s4);
-  border: var(--frame-sm) solid var(--walnut-2);
-  border-image: var(--art-frame-sm) 33 / var(--frame-sm) stretch;
-  border-radius: var(--r-md);
-  background: var(--paper) padding-box;
-  color: var(--ink);
-  box-shadow: inset 0 0 0 2px var(--oak-1), var(--shadow-board);
+  --cut: var(--chamfer-md);
+  --surface-color: var(--bg-panel);
+  width: 100%;
+  min-width: 0;
+  color: var(--text-strong);
 }
 .dialog {
-  width: 100%;
-  max-height: calc(100dvh - 2 * var(--s4));
-  overflow: auto;
+  max-height: 100%;
   display: flex;
   flex-direction: column;
-  gap: var(--s4);
+  gap: var(--sp-3);
+  padding: var(--sp-4);
+  overflow: auto;
 }
 .dialogSm { max-width: 420px; }
 .dialogMd { max-width: 680px; }
 .dialogLg { max-width: 860px; }
 @media (min-width: 720px) and (min-height: 620px) {
-  .frameFixed.dialogMd { width: 100%; height: 540px; }
-  .frameFixed.dialogLg { width: 100%; height: 580px; }
+  .dialogMd.frameFixed { height: 540px; }
+  .dialogLg.frameFixed { height: 580px; }
 }
-/* 머리줄 아래 12px 칸에 구분선(rule 원화, 대체 2px --oak-1 선)을 그리고, 구분선 아래는 --s2만 띄운다. */
-.dialogHead { position: relative; display: flex; align-items: center; justify-content: space-between; gap: var(--s3); padding-bottom: 12px; margin-bottom: calc(var(--s2) - var(--s4)); }
-.dialogHead::after {
-  content: '';
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-}
-/* 구분선(rule 원화 12px 칸, 대체 2px --oak-1 선): 창 머리줄 아래(Modal은 위 ::after, 화면 창은 Rule). */
-.dialogHead::after, .rule {
-  height: 12px;
-  border: 0 solid transparent;
-  border-width: 5px 10px;
-  border-image: var(--art-rule) 0 20 fill / 0 10px stretch;
-  background: var(--oak-1) content-box;
-}
-.rule { display: block; width: 100%; flex: none; }
-.dialogTitle { font-size: var(--fs-4); font-weight: 800; line-height: 1.25; color: var(--ink); }
-.dialogFoot { display: flex; justify-content: flex-end; gap: var(--s3); flex-wrap: wrap; }
+.dialogHead { display: flex; align-items: center; justify-content: space-between; gap: var(--sp-3); padding-bottom: var(--sp-2); border-bottom: 1px solid var(--border-hairline); }
+.dialogTitle { font: 700 var(--fs-heading)/1.25 var(--font-display); }
+.rule { display: block; width: 100%; height: 1px; flex: none; background: var(--border-hairline); }
+.dialogFoot { display: flex; justify-content: flex-end; gap: var(--sp-3); flex-wrap: wrap; }
+.artIcon { display: inline-block; flex: none; vertical-align: middle; object-fit: contain; }
 
-.artIcon { display: inline-block; flex: none; vertical-align: middle; object-fit: contain; image-rendering: auto; }
-
-/* 인쇄·강제 색(고대비)에서는 원화 대신 토큰 단색으로 그린다(v4 §3). */
-@media print, (forced-colors: active) {
-  /* 키는 원화 대신 대체 단색: 면 색을 키 전체에, 안쪽 2px 호두나무 테 + 바닥 그림자를 되살린다. */
-  .btn { --art-clip: initial; --art-shadow: initial; }
-  .btn::before, .badge { border-image: none; }
-  .segmented, .dialog, .window, .cardSunk::after { border-image: none; }
-  .dialogHead::after, .rule { border-image: none; }
-}
-/* 강제 색(고대비)은 그림자를 지운다: 그림자로 그리던 키·카드 경계를 안쪽 윤곽선으로 다시 그린다(상자 크기 그대로). */
 @media (forced-colors: active) {
-  .btn:not(.ghost) { outline: 2px solid ButtonText; outline-offset: -2px; }
-  .card { outline: 2px solid CanvasText; outline-offset: -2px; }
-  .modalTab[aria-selected='true'] { outline: 2px solid Highlight; outline-offset: -2px; }
-  .btn:focus-visible { outline: 3px solid Highlight; outline-offset: 3px; }
+  .btn, .card, .dialog, .window { border: 1px solid CanvasText; }
+  .segment[aria-checked='true'], .modalTab[aria-selected='true'] { outline: 2px solid Highlight; outline-offset: -2px; }
+  .track, .knob { border: 1px solid ButtonText; }
 }
-
-/* 움직임 줄이기: OS 설정과 게임 설정 '움직임 최소'(<html data-motion="minimal">) 둘 다에서 위치 이동을 끈다(v4 §7.3). */
-@media (prefers-reduced-motion: reduce) {
-  .btn:active:not(:disabled) { transform: none; }
-  .knob { transition: none; }
-}
-:global(:root[data-motion='minimal']) .btn:active:not(:disabled) { transform: none; }
-:global(:root[data-motion='minimal']) .knob { transition: none; }

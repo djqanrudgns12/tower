@@ -2,7 +2,7 @@ import type { Balance, TowerId } from '../../contracts/balance';
 import type { GameView } from '../../application/view';
 import type { Command } from '../../domain/run';
 import { attacks, towerStats } from '../../domain/towers';
-import { TOWER_COPY } from '../copy';
+import { battleTowerRole } from './r6Display';
 
 /**
  * R1↔R2 징집 어댑터(docs/renewal/catalog/towers.md §0-2, 엔진 src/domain/draft.ts).
@@ -36,5 +36,5 @@ export const recruitCommand = (type: TowerId): Command => ({ type: 'draftPick', 
 
 /** 징집 카드 한 장의 글: 역할 한 줄과 비행 적 공격 가능 여부(공격하지 않는 타워는 null). */
 export function recruitCardInfo(b: Balance, type: TowerId): { role: string; air: boolean | null } {
-  return { role: TOWER_COPY[type].role, air: attacks(b, type) ? towerStats(b, type, 1, 'base').canHitFlyer : null };
+  return { role: battleTowerRole(b, type), air: attacks(b, type) ? towerStats(b, type, 1, 'base').canHitFlyer : null };
 }

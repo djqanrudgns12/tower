@@ -1,3 +1,4 @@
+import { battleTowerName } from './r6Display';
 import type { TowerId } from '../../contracts/balance';
 import type { MapConfig } from '../../contracts/maps';
 import type { GameView } from '../../application/view';
@@ -35,7 +36,7 @@ export function slotDescription(ctx: GameContext, view: GameView, slotId: string
   const slot = ctx.map.slots[index];
   if (!slot) return '';
   const tower = view.towers.find(t => t.slotId === slotId);
-  const state = tower ? `${ctx.balance.towers[tower.type].label} 레벨 ${tower.level}` : '비어 있음';
+  const state = tower ? `${battleTowerName(ctx.balance, tower.type)} 레벨 ${tower.level}` : '비어 있음';
   return `자리 ${index + 1} · 가로 ${slot.x + 1}, 세로 ${slot.y + 1} · ${state}`;
 }
 
@@ -50,7 +51,7 @@ interface Props {
 export function SlotList({ ctx, view, towers, selectedSlotId, onPick }: Props) {
   const empty = ctx.map.slots.filter(s => !view.towers.some(t => t.slotId === s.id)).length;
   const built = view.towers.length;
-  const prices = towers.map(t => `${ctx.balance.towers[t].label} ${buildCost(ctx.balance, t)}골드`).join(' · ');
+  const prices = towers.map(t => `${battleTowerName(ctx.balance, t)} ${buildCost(ctx.balance, t)}골드`).join(' · ');
   return (
     <details className={css.slotList}>
       <summary className={css.slotSummary}>

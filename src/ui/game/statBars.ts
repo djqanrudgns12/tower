@@ -1,3 +1,5 @@
+import { towerDefinition } from '../../domain/r6Towers';
+import { R6_TOWERS, type R6TowerId } from '../../contracts/balanceV2';
 import { TOWER_IDS, type Balance, type TowerId } from '../../contracts/balance';
 import { attackIntervalTicks, attacks, bannerAura } from '../../domain/towers';
 import { fmtCells, fmtDamage } from '../copy';
@@ -20,11 +22,11 @@ function refs(b: Balance): Refs {
   let r = refCache.get(b);
   if (r) return r;
   r = { power: 1, speed: 1, range: 1 };
-  for (const id of TOWER_IDS) {
-    if (!b.towers[id]) continue;
-    r.range = Math.max(r.range, b.towers[id].rangeMilli);
+  for (const id of b.r6 ? R6_TOWERS : TOWER_IDS) {
+    const def = towerDefinition(b, id);
+    r.range = Math.max(r.range, def.rangeMilli);
     if (!attacks(b, id)) continue;
-    const s = towerStats(b, id, Math.min(REFERENCE_LEVEL, b.levels.max ?? REFERENCE_LEVEL), 'base');
+    const s = towerStats(b, id, b.r6?.rules.levels.max ?? Math.min(REFERENCE_LEVEL, b.levels.max ?? REFERENCE_LEVEL), 'base');
     r.power = Math.max(r.power, s.damage);
     r.speed = Math.max(r.speed, 30 / attackIntervalTicks(b, s, 0));
   }
@@ -36,17 +38,18 @@ const seg = (value: number, ref: number) => Math.max(1, Math.min(SEGMENTS, Math.
 const seconds = (ticks: number) => `${Number((ticks / 30).toFixed(2))}초`;
 
 /** 타워 종류·레벨·형태의 막대 3개. next가 있으면 다음 단계 막대 칸 수도 함께 준다. */
-export function statBars(b: Balance, type: TowerId, level: number, form: FormId, next?: { level: number; form: FormId } | null): StatBar[] {
+export function statBars(b: Balance, type: TowerId | R6TowerId, level: number, form: FormId, next?: { level: number; form: FormId } | null): StatBar[] {
   const r = refs(b);
   if (!attacks(b, type)) {
-    const aura = (lv: number, f: FormId) => bannerAura(b, { type, level: lv, form: f });
+    const { rangeMilli } = towerDefinition(b, type);
+    const aura = (lv: number, f: FormId) => bannerAura(b, { type: type as TowerId, level: lv, form: f });
     const cur = aura(level, form);
     const nx = next ? aura(next.level, next.form) : null;
     const bp = (a: { damageBP: number; speedBP: number }) => Math.max(a.damageBP, a.speedBP);
     const auraLabel = cur.speedBP > 0 ? '주변 속도' : '주변 힘';
     return [
       { key: 'power', label: auraLabel, value: `+${bp(cur) / 100}%`, filled: seg(bp(cur), 3000), next: nx ? seg(bp(nx), 3000) : null },
-      { key: 'range', label: '사거리', value: fmtCells(b.towers[type].rangeMilli), filled: seg(b.towers[type].rangeMilli, r.range), next: null },
+      { key: 'range', label: '사거리', value: fmtCells(rangeMilli), filled: seg(rangeMilli, r.range), next: null },
     ];
   }
   const s = towerStats(b, type, level, form);

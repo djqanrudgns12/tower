@@ -43,7 +43,7 @@ export function ChoiceCard({ art, name, desc, bars = [], deltas = [], note, coun
   const deltasId = useId();
   const describe = [deltas.length > 0 ? deltasId : null, blocked ? describedBy : null].filter(Boolean).join(' ') || undefined;
   return (
-    <article className={css.card} data-row={row || undefined} data-icon={icon || undefined} data-priced={price ? true : undefined} data-blocked={blocked || undefined} onPointerEnter={() => onPreview?.(true)} onPointerLeave={() => onPreview?.(false)}>
+    <article className={`r04-surface ${css.card}`} data-row={row || undefined} data-icon={icon || undefined} data-priced={price ? true : undefined} data-blocked={blocked || undefined} onPointerEnter={() => onPreview?.(true)} onPointerLeave={() => onPreview?.(false)}>
       <div className={css.stage} aria-hidden="true">
         <svg className={css.ground} viewBox="0 0 100 20" preserveAspectRatio="none"><ellipse cx="50" cy="10" rx="50" ry="10" /></svg>
         <span className={css.art}>{art}</span>

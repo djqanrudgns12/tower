@@ -1,5 +1,5 @@
+import { BattleIcon } from './BattleIcon';
 import type { Balance, FoeTag, FormId, TowerId } from '../../contracts/balance';
-import { ArtIcon } from '../kit';
 import { counterTags, counterText, FOE_LABEL, FOE_PORTRAIT, FOE_TRAIT_ICON } from './counters';
 import css from './CounterIcons.module.css';
 
@@ -16,7 +16,7 @@ interface Props {
 /** 표지 하나: 원화 특성 아이콘 → 적 초상화 → 글자(13px) 순. */
 function FoeMark({ tag, icons, size }: { tag: FoeTag; icons: Record<string, string>; size: number }) {
   const trait = FOE_TRAIT_ICON[tag];
-  if (trait) return <ArtIcon name={trait} size={size} />;
+  if (trait) return <BattleIcon name={trait} size={size} />;
   const portrait = FOE_PORTRAIT[tag] ? icons[FOE_PORTRAIT[tag]] : undefined;
   if (portrait) return <img className={css.portrait} src={portrait} width={size} height={size} alt="" aria-hidden="true" draggable={false} />;
   return <span className={css.word} aria-hidden="true">{FOE_LABEL[tag]}</span>;

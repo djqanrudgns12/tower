@@ -1,3 +1,7 @@
+import { isR6Tower } from '../../domain/r6Towers';
+import type { R6TowerId } from '../../contracts/balanceV2';
+import { BattleIcon } from './BattleIcon';
+import { BattlePortraits, BattleTowerPortrait, useBattlePortraits } from './BattleTowerPortrait';
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, useSyncExternalStore, type CSSProperties, type ReactNode } from 'react';
 import type { TowerId } from '../../contracts/balance';
 import type { OptionId } from '../../contracts/questions';
@@ -11,17 +15,17 @@ import type { FontScale } from '../../application/session';
 import { DEFAULTS } from '../../content';
 import { SoundDirector } from '../audio/sound';
 import { commandErrorText } from '../copy';
-import { PlayIcon } from '../icons/ControlIcons';
-import { TowerShieldPortrait } from '../icons/GameIcons';
-import { ArtIcon, Button, Card } from '../kit';
+import { LineIcon } from '../icons/LineIcon';
+
+import { Button, Card } from '../kit';
 import { useLobbySprites } from '../screens/home/canvasAssets';
 import { useLayout } from '../useLayout';
 import { Armory } from './Armory';
 import { CoinFlight, coinsFor, type Flight } from './CoinFlight';
-import { Remaining, WaveForecast } from './ContextCard';
+import { R6WaveForecast, Remaining, WaveForecast } from './ContextCard';
 import { EvolveCard } from './EvolveCard';
 import { evolutionChoices, previewForm, previewMarker, towerForm, undoBuildCommand, upgradeCommand, upgradeCost, type FormId } from './evolution';
-import { FieldOverlay, type FieldFlash } from './FieldOverlay';
+import { FieldOverlay, TowerTools, type FieldFlash } from './FieldOverlay';
 import { FULL_VIEW, WORLD_CELL } from './fieldGeometry';
 import { COACH_TEXT, currentCoach, markCoachDone, readCoachDone } from './firstRunCoach';
 import { NEXT_FOES } from './gameCopy';
@@ -39,6 +43,9 @@ import { TowerDetail } from './TowerDetail';
 import { useTowerDrag } from './useTowerDrag';
 import { ENEMY_NAME, foeIconUrl, forecastWarning, wavePreview, type PreviewFoe } from './wavePreview';
 import { WaveBand } from './WaveBand';
+import { TowerUnlockModal } from './TowerUnlockModal';
+import { nextTowerUnlock } from './r6Display';
+import { r6Forecast } from './r6Forecast';
 
 interface Props {
   controller: RunController;
@@ -92,6 +99,11 @@ export function GameScreen({
   const relicKey = view.relics.join('|');
   const b = useMemo(() => relicBalance(controller.ctx.balance, relicKey ? relicKey.split('|') : []), [controller.ctx.balance, relicKey]);
   const map = controller.ctx.map;
+  const r6Runtime = controller.ctx.balance.r6;
+  const r6 = r6Runtime !== undefined;
+  const manifest = useBattlePortraits(r6);
+  const portraits = useMemo(() => ({ r6, manifest }), [r6, manifest]);
+  const [unlocked, setUnlocked] = useState<{ tower: R6TowerId; wave: number } | null>(null);
   // 연출(ui-rules-v3 §2 움직임): 보상 금화 비행, 웨이브 띠, 진화 빛기둥. 보상은 이미 상태에 반영된 뒤의 그림이다.
   const goldRef = useRef<HTMLElement>(null);
   const answerFrom = useRef<{ x: number; y: number } | null>(null);
@@ -138,6 +150,7 @@ export function GameScreen({
         // 처치 좌표는 길 위 1/1000칸 단위(game/layers/shared toWorld와 같은 셈)다.
         if (e.type === 'kill' && e.kind === 'boss' && e.gold > 0) fly(fieldPoint((e.x * WORLD_CELL) / 1000, (e.y * WORLD_CELL) / 1000), e.gold);
         if (e.type === 'waveComplete' && e.milestoneGold > 0) fly(fieldPoint((gateCell[0] + 0.5) * WORLD_CELL, (gateCell[1] + 0.5) * WORLD_CELL), e.milestoneGold);
+        if (e.type === 'towerUnlocked' && isR6Tower(e.tower)) setUnlocked({ tower: e.tower, wave: e.wave });
         if (e.type === 'phase' && e.phase === 'BATTLE') {
           fxSeq.current += 1;
           setBand({ id: fxSeq.current, wave: e.wave, boss: e.wave % controller.ctx.balance.waves.bossEveryWaves === 0 });
@@ -181,8 +194,8 @@ export function GameScreen({
   // 새 타워 고르기 창(징집): 웨이브 사이에 막으로 전장과 문제 카드까지 덮는다. 열리면 떠 있던 메뉴·도구 묶음·진화 창을 먼저 닫는다.
   const recruitChoices = showRecruit(view) ? recruitOffer(view) : null;
   // 원정 보물 창(prd-r4 §7.2-F): 새 타워 창과 같은 규칙으로 웨이브 사이에 띄운다. 둘 다 있으면 새 타워가 먼저다.
-  const relicChoices = showRelic(view) ? view.relicOffer!.offers : null;
-  const recruitOpen = recruitChoices !== null || relicChoices !== null;
+  const relicChoices = !unlocked && showRelic(view) ? view.relicOffer!.offers : null;
+  const recruitOpen = recruitChoices !== null || relicChoices !== null || unlocked !== null;
   const [recruitSeen, setRecruitSeen] = useState(recruitOpen);
   if (recruitSeen !== recruitOpen) {
     setRecruitSeen(recruitOpen);
@@ -338,7 +351,9 @@ export function GameScreen({
 
   /** 키보드·목록으로 고른 뒤 전장 옆 메뉴의 첫 단추로 포커스를 옮긴다(PRD §12.4). */
   const focusOverlay = () => requestAnimationFrame(() => {
-    fieldRef.current?.querySelector<HTMLElement>('[data-overlay] button:not([disabled])')?.focus();
+    const control = fieldRef.current?.querySelector<HTMLElement>('[data-overlay] button:not([disabled])')
+      ?? document.querySelector<HTMLElement>('[data-tower-tools] button:not([disabled])');
+    control?.focus();
   });
 
   const pickSlot = useCallback((slotId: string) => {
@@ -490,19 +505,28 @@ export function GameScreen({
     <TowerDetail balance={b} type={selection.previewType} level={1} form="base" icons={icons} compact={compact} />
   ) : null;
   const between = view.phase === 'PREP_QUIZ' || view.phase === 'BUILD' || view.phase === 'WAVE_WRAPUP';
-  const nextWave = view.phase === 'WAVE_WRAPUP' ? view.wave + 1 : Math.max(1, view.wave);
-  const forecast = useMemo(() => wavePreview(b, map.id, nextWave), [b, map.id, nextWave]);
-  const warning = forecastWarning(b, forecast, t => recruitCardInfo(b, t).air === true, towers, view.towers);
+  const nextWave = Math.max(1, view.wave + (view.phase === 'WAVE_WRAPUP' || (r6 && view.phase === 'BATTLE') ? 1 : 0));
   const st = controller.state;
+  const seed = st.config.seed;
+  const r6Preview = useMemo(() => r6Runtime ? r6Forecast(r6Runtime, map.id, seed, nextWave) : null, [r6Runtime, map.id, seed, nextWave]);
+  const forecast = useMemo(() => b.r6 ? null : wavePreview(b, map.id, nextWave), [b, map.id, nextWave]);
+  const canHitAir = (type: TowerId) => recruitCardInfo(b, type).air === true;
+  const warning = forecast ? forecastWarning(b, forecast, canHitAir, towers, view.towers) : null;
   const remaining = view.phase === 'BATTLE' ? st.enemies.length + (st.battle ? Math.max(0, st.battle.spawnList.length - st.battle.spawnIndex) : 0) : 0;
-  const contextBody: ReactNode = detail ?? (between
-    ? <WaveForecast balance={b} preview={forecast} urlOf={urlOf} icons={icons} warning={warning} compact={compact || layout.mode === 'S'} />
-    : view.phase === 'BATTLE' ? <Remaining count={remaining} /> : null);
+  const tools = r6 && selectedTower && !evolveOpen ? (
+    <TowerTools key={selectedTower.id} tower={selectedTower} balance={b} gold={view.gold} dock
+      onUpgrade={onUpgrade} onEvolve={onEvolve} onSell={onSell} onUndo={onUndo} />
+  ) : null;
+  const contextBody: ReactNode = detail ? <>{detail}{tools}</> : (r6Preview
+    ? <R6WaveForecast preview={r6Preview} airGap={r6Preview.traits.includes('traits/flying') && !towers.some(canHitAir)} />
+    : between && forecast
+      ? <WaveForecast balance={b} preview={forecast} urlOf={urlOf} icons={icons} warning={warning} compact={compact || layout.mode === 'S'} />
+      : view.phase === 'BATTLE' ? <Remaining count={remaining} /> : null);
 
-  // 잠긴 칸 하나: 다음 새 타워를 받는 웨이브. 더 받을 타워가 없거나 칸이 다 찼으면 없다.
-  const nextDraft = b.draft.afterWaves.find(w => w > view.completedWave);
+  const nextUnlock = nextTowerUnlock(b, view.completedWave, st.config.availableTowers, towers);
+  const nextDraft = nextUnlock?.wave ?? b.draft.afterWaves.find(w => w > view.completedWave);
   const canGrow = towers.length < b.draft.maxOwned && st.config.availableTowers.some(t => !towers.includes(t));
-  const locked = canGrow && nextDraft !== undefined && !view.draft ? `${nextDraft}웨이브를 지키면 새 타워` : null;
+  const locked = canGrow && nextDraft !== undefined && !view.draft ? `${nextDraft}웨이브를 마치면 새 타워` : null;
 
   const armory = (variant: 'rail' | 'strip') => (
     <Armory
@@ -516,6 +540,7 @@ export function GameScreen({
       fresh={goldSeen.fresh}
       locked={locked}
       lockedWave={locked ? nextDraft ?? null : null}
+      lockedType={nextUnlock?.type ?? null}
       onArm={onArm}
       onPress={beginDrag}
       takeClick={takeClick}
@@ -549,7 +574,7 @@ export function GameScreen({
     ? (coach?.at === 'start' ? coach.text : null)
     : mark === 'place' ? null : mark ? COACH_TEXT[mark] : view.wave <= HINT_WAVES ? (view.towers.length === 0 ? COACH_TEXT.place : READY_HINT) : null;
   // 준비 바의 다음 적 칩(B5): 초상화 × 수, 보스는 맨 앞(상황 카드와 같은 미리보기).
-  const nextFoes: PreviewFoe[] = [...(forecast.bossFoe ? [forecast.bossFoe] : []), ...forecast.kinds];
+  const nextFoes: PreviewFoe[] = forecast ? [...(forecast.bossFoe ? [forecast.bossFoe] : []), ...forecast.kinds] : [];
 
   const bottom = practiceDone ? (
     <Card as="section" float className={`${css.build} ${seam}`} aria-label="연습 끝">
@@ -566,11 +591,11 @@ export function GameScreen({
     <Card as="section" float className={`${css.build} ${seam}`} aria-label="전투 준비">
       <div className={css.buildMain}>
         <h2 className={css.buildTitle}>
-          <ArtIcon name="wave" size={32} />
+          <BattleIcon name="wave" size={32} />
           {view.wave}웨이브
           {view.milestoneWave && <span className={css.bossTag}>보스</span>}
         </h2>
-        {nextFoes.length > 0 && (
+        {forecast && nextFoes.length > 0 && (
           <div className={css.foeRow} role="img" aria-label={`${NEXT_FOES} ${forecast.total}마리: ${nextFoes.map(f => `${ENEMY_NAME[f.kind]} ${f.count}`).join(', ')}`}>
             <span className={css.foeLabel} aria-hidden="true">{NEXT_FOES}</span>
             {nextFoes.map(f => {
@@ -602,9 +627,8 @@ export function GameScreen({
             </div>
           </div>
         ) : (
-          // 타워를 하나 이상 놓았으면 은은한 대기 움직임(B5): 이 화면의 무한 반복 하나. 움직임 줄이기면 CSS가 멈춘다.
-          <Button variant="primary" size="lg" block className={view.towers.length > 0 && !reducedMotion ? css.startCue : undefined} onClick={onStart}>
-            <PlayIcon size={20} />
+          <Button variant="primary" size="lg" block onClick={onStart}>
+            <LineIcon name="hud/play" size={20} />
             전투 시작
           </Button>
         )}
@@ -641,7 +665,7 @@ export function GameScreen({
     if (!r.ok) showFlash(commandErrorText(r.error));
   };
 
-  const bossArt = band?.boss ? (() => {
+  const bossArt = !r6 && band?.boss ? (() => {
     const foe = wavePreview(b, map.id, band.wave).bossFoe;
     return foe ? foeIconUrl(b, foe, urlOf, icons['enemy.boss.0']) : icons['enemy.boss.0'];
   })() : undefined;
@@ -677,7 +701,7 @@ export function GameScreen({
           camera={camera}
           slotId={trading || selection.slotId === null ? selection.slotId : null}
           // 진화 창이 열리면 도구 묶음은 닫는다(창 뒤에 겹쳐 보이지 않게).
-          tower={evolveOpen ? null : selectedTower}
+          tower={evolveOpen || r6 ? null : selectedTower}
           flash={flash}
           pillar={pillar}
           onPillarDone={id => setPillar(p => (p?.id === id ? null : p))}
@@ -688,7 +712,7 @@ export function GameScreen({
           onUpgrade={onUpgrade}
           onEvolve={onEvolve}
           onSell={onSell}
-          undo={lastBuilt !== null ? view.towers.find(t => t.id === lastBuilt) ?? null : null}
+          undo={lastBuilt !== null && (!r6 || !selectedTower) ? view.towers.find(t => t.id === lastBuilt) ?? null : null}
           onUndo={onUndo}
           onClose={() => {
             clear();
@@ -725,20 +749,33 @@ export function GameScreen({
       } as CSSProperties)
     : { padding: layout.pad };
 
+  const hud = (
+    <Hud view={view} burning={b.burning} relicInfo={b} icons={icons} mode={layout.mode} compactRail={compact}
+      goldRef={goldRef} reducedMotion={reducedMotion} bestWave={bestWave}
+      r6={r6} remaining={remaining} onPause={() => controller.pause('USER')} />
+  );
+  const mobileContext = !practiceDone && contextBody && (r6 || view.phase !== 'BATTLE') && (
+    <Card className={css.contextS} data-covered={(!r6 && !layout.wideQuestion && !!view.question?.feedback && view.question.feedback.result !== 'correct') || undefined}>
+      {contextBody}
+      {!r6 && <RelicStrip balance={b} relics={view.relics} icons={icons} variant="icons" size={20} max={6} labeled />}
+    </Card>
+  );
+
   return (
-    <>
+    <BattlePortraits.Provider value={portraits}>
       <main
-        className={`${css.screen} ${layout.mode === 'R' ? css.modeR : css.modeS}`}
+        className={`r04-panel-colors ${css.screen} ${layout.mode === 'R' ? css.modeR : css.modeS}`}
         style={mainStyle}
+        data-r6={r6 || undefined}
         inert={paused || evolveOpen || recruitOpen}
       >
         <h1 className="sr-only">어휘력 타워 디펜스 · {Math.max(1, view.wave)}웨이브</h1>
         {layout.mode === 'R' ? (
           <>
+            {r6 && <div className={css.hudRow}>{hud}</div>}
             {field}
-            {/* 옆판(B1, v4 §3.1): 참나무 판 하나 위에 머리판(HUD)·타워 칸 키·상황 카드. 타워 칸은 판 위에 바로 놓아 겹을 3으로 둔다(v4 §7.1). */}
-            <Card as="aside" material="board" pad="none" className={css.rail} style={{ height: layout.mapH }} aria-label="타워 관리">
-              <Hud view={view} burning={b.burning} relicInfo={b} icons={icons} mode="R" compactRail={compact} goldRef={goldRef} reducedMotion={reducedMotion} bestWave={bestWave} onPause={() => controller.pause('USER')} />
+            <Card as="aside" material="board" pad="none" className={css.rail} style={r6 ? { maxHeight: layout.mapH + layout.q + 8 } : { height: layout.mapH }} aria-label="타워 관리">
+              {!r6 && hud}
               {!practiceDone && (
                 <div className={css.sockets}>
                   {armory('rail')}
@@ -746,7 +783,7 @@ export function GameScreen({
                 </div>
               )}
               {!practiceDone && <div className={css.slotDock}>{slotList}</div>}
-              <Card className={css.context} data-context>
+              <Card className={css.context} data-context data-forecast={r6 && !detail || undefined}>
                 {skip}
                 {practiceDone ? null : contextBody}
               </Card>
@@ -755,7 +792,7 @@ export function GameScreen({
           </>
         ) : (
           <>
-            <Hud view={view} burning={b.burning} relicInfo={b} icons={icons} mode="S" goldRef={goldRef} reducedMotion={reducedMotion} bestWave={bestWave} onPause={() => controller.pause('USER')} />
+            {hud}
             {layout.portraitHint && <p className={css.hint}>세로로 돌리면 더 편해요.</p>}
             {field}
             {!practiceDone && (
@@ -764,17 +801,9 @@ export function GameScreen({
                 {coachLine('panel')}
               </div>
             )}
+            {r6 && mobileContext}
             {bottom}
-            {!practiceDone && contextBody && view.phase !== 'BATTLE' && (
-              <Card
-                className={css.contextS}
-                data-covered={(!layout.wideQuestion && !!view.question?.feedback && view.question.feedback.result !== 'correct') || undefined}
-              >
-                {contextBody}
-                {/* 휴대폰은 상태 카드 한 줄에 자리가 없어 가진 원정 보물을 상황 카드 아래에 작게 보인다(prd-r4 §7.2-F). */}
-                <RelicStrip balance={b} relics={view.relics} icons={icons} variant="icons" size={20} max={6} labeled />
-              </Card>
-            )}
+            {!r6 && mobileContext}
             {!practiceDone && (
               <div className={css.phoneExtras}>
                 {skip}
@@ -787,14 +816,18 @@ export function GameScreen({
       {flights.length > 0 && <CoinFlight flights={flights} onDone={id => setFlights(f => f.filter(x => x.id !== id))} />}
       {ghostType && (
         <div ref={ghostRef} className={css.ghost} aria-hidden="true">
-          <TowerShieldPortrait type={ghostType} icons={icons} size={Math.max(44, Math.round(layout.cell * 1.1))} bare />
+          <BattleTowerPortrait type={ghostType} icons={icons} size={Math.max(44, Math.round(layout.cell * 1.1))} />
         </div>
+      )}
+      {unlocked && !paused && (
+        <TowerUnlockModal balance={b} tower={unlocked.tower} wave={unlocked.wave} owned={towers} icons={icons}
+          onClose={() => { setUnlocked(null); refocusField(); }} />
       )}
       {recruitChoices && (
         <RecruitCard balance={b} choices={recruitChoices} icons={icons} compact={layout.mode === 'S' && !layout.wideQuestion} onPick={onRecruit} />
       )}
       {relicChoices && (
-        <RelicCard balance={b} choices={relicChoices} icons={icons} compact={layout.mode === 'S' && !layout.wideQuestion} onPick={onRelic} />
+        <RelicCard key={view.relicOffer?.wave} wave={view.relicOffer?.wave} balance={b} choices={relicChoices} icons={icons} compact={layout.mode === 'S' && !layout.wideQuestion} onPick={onRelic} />
       )}
       {evolveOpen && selectedTower && evolutionChoices(b, selectedTower) && (
         <EvolveCard
@@ -831,6 +864,6 @@ export function GameScreen({
           restoreFocus={() => document.querySelector<HTMLElement>('main button[aria-label="일시정지"]')?.focus()}
         />
       )}
-    </>
+    </BattlePortraits.Provider>
   );
 }

@@ -1,3 +1,4 @@
+import { LineIcon } from '../icons/LineIcon';
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import type { PauseReason } from '../../domain/types';
 import type { FontScale } from '../../application/session';
@@ -55,7 +56,7 @@ export function PauseOverlay(p: Props) {
 
   return (
     <div className={css.cover}>
-      <Modal titleId="pause-title" title={blocked ? '잠깐만요' : '일시정지'} size="sm" dismissable={false} onClose={stay}>
+      <Modal titleId="pause-title" title={blocked ? '잠깐만요' : <><LineIcon name="hud/pause" size={18} aria-hidden="true" /> 일시정지</>} size="sm" dismissable={false} onClose={stay}>
         <p className={css.line}>{line}</p>
         {blocked ? (
           <div className={css.stack}>
@@ -63,7 +64,7 @@ export function PauseOverlay(p: Props) {
           </div>
         ) : (
           <div className={css.stack}>
-            <Button ref={first} variant="primary" size="lg" block aria-disabled={p.renderLost || undefined} onClick={() => { if (!p.renderLost) p.onResume(); }}>계속하기</Button>
+            <Button ref={first} variant="primary" size="lg" block aria-disabled={p.renderLost || undefined} onClick={() => { if (!p.renderLost) p.onResume(); }}><LineIcon name="hud/play" size={20} />계속하기</Button>
             <div className={css.setting}>
               <span className={css.label} id="pause-font">글자 크기</span>
               <Segmented

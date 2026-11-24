@@ -1,5 +1,5 @@
+import { BattleIcon } from './BattleIcon';
 import type { CSSProperties } from 'react';
-import { ArtIcon } from '../kit';
 import css from './CoinFlight.module.css';
 
 export interface Flight { id: number; from: { x: number; y: number }; to: { x: number; y: number }; coins: number }
@@ -33,7 +33,7 @@ export function CoinFlight({ flights, onDone }: { flights: readonly Flight[]; on
               onAnimationEnd={i === f.coins - 1 ? () => onDone(f.id) : undefined}
             >
               <span className={css.y} style={{ animationDelay: `${i * 40}ms` }}>
-                <ArtIcon name="coin" size={20} />
+                <BattleIcon name="coin" size={20} />
               </span>
             </span>
           );
