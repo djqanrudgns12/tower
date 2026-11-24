@@ -7,23 +7,23 @@ import time
 import bpy
 from mathutils import Matrix, Vector
 
-from mortar_kit import Part, SLOTS, build_kit
+from mortar_kit import Part, SLOTS, YAW_HEIGHTS, build_kit
 
 
 TILE = 384
-VIEW = 7.2
-CENTER_HEIGHT = 1.25
-CAMERA_RAY = Vector((6.1, -8.2, 7.0)).normalized()
-YAW_HEIGHT = 1.265
-ELEVATION_HEIGHT = .66
+VIEW = 6.75
+CENTER_HEIGHT = 1.67
+CAMERA_RAY = Vector((6.1, -8.2, 6.05)).normalized()
 DIRECTIONS = 16
-REVIEW_DIRECTION = 7
+REVIEW_DIRECTION = 8
 DIR_ANGLE = math.tau / DIRECTIONS
-PITCHES = (45, 50, 57, 62, 58, 52, 47, 45)
+IDLE_PITCHES = (31, 43, 11, 8)
+FIRE_PITCH = (0, .29, .71, 1, .76, .41, .12, 0)
+ELEVATION_HEIGHTS = (.66, .66, .90, 1.03)
 KICK = (0, 0, 0, 1.0, .65, .36, .12, 0)
 SURFACES = {"steel": "line", "alloy": "line", "ceramic": "silver", "gold-trim": "line"}
-MUZZLES = (((0, 1.42, 0),), ((0, 1.47, 0),), ((-.57, 1.35, -.045), (.57, 1.35, -.045)),
-           tuple((x, 1.18, z) for x in (-.64, .64) for z in (-.399, .399)))
+MUZZLES = (((0, 1.44, 0),), ((0, 1.73, 0),), ((-.66, 1.49, .02), (.66, 1.49, .02)),
+           tuple((x, 1.28, z) for x in (-.71, .71) for z in (-.38, .45)))
 
 
 def toon_materials(palette, linear):
@@ -45,6 +45,17 @@ def toon_materials(palette, linear):
         dot.operation = "DOT_PRODUCT"
         dot.inputs[1].default_value = light
         links.new(nodes.new("ShaderNodeNewGeometry").outputs["Normal"], dot.inputs[0])
+        occlusion = nodes.new("ShaderNodeAmbientOcclusion")
+        occlusion.inputs["Distance"].default_value = .37
+        exposure = nodes.new("ShaderNodeMath")
+        exposure.operation = "MULTIPLY_ADD"
+        exposure.inputs[1].default_value = .88
+        exposure.inputs[2].default_value = -.88
+        links.new(occlusion.outputs["AO"], exposure.inputs[0])
+        lighting = nodes.new("ShaderNodeMath")
+        lighting.operation = "ADD"
+        links.new(dot.outputs["Value"], lighting.inputs[0])
+        links.new(exposure.outputs[0], lighting.inputs[1])
         tone = nodes.new("ShaderNodeValToRGB")
         ramp = tone.color_ramp
         ramp.interpolation = "CONSTANT"
@@ -52,7 +63,7 @@ def toon_materials(palette, linear):
         ramp.elements[0].color = shade(rgb, .74)
         for threshold, band in ((.13, .88), (.49, 1.0), (.79, 1.12)):
             ramp.elements.new(threshold).color = shade(rgb, band)
-        links.new(dot.outputs["Value"], tone.inputs["Fac"])
+        links.new(lighting.outputs[0], tone.inputs["Fac"])
         matte = nodes.new("ShaderNodeEmission")
         links.new(tone.outputs["Color"], matte.inputs["Color"])
         links.new(matte.outputs[0], nodes.new("ShaderNodeOutputMaterial").inputs["Surface"])
@@ -128,16 +139,21 @@ def is_in_layer(part, layer):
 
 
 def assemble(kit, materials, stage, group, tile, direction=0, layer="form", frame=0):
+    weapon = stage["weaponStage"] - 1
+    idle = IDLE_PITCHES[weapon]
     kick = KICK[frame]
-    pitch = math.radians(PITCHES[frame])
+    raise_fraction = FIRE_PITCH[frame]
+    pitch = math.radians(idle + (62 - idle) * raise_fraction)
     world_pos = Matrix.Translation(tile)
     # 포상의 지면 접점은 유지하고 상부만 발사 순간 192px 기준 4px 내린다.
     up_z = math.sqrt(1 - CAMERA_RAY.z ** 2)
     sink = -4 * VIEW / (TILE / 2 * up_z) * kick
     press = Matrix.Translation((0, 0, sink))
     yaw = Matrix.Rotation(direction * DIR_ANGLE, 4, "Z")
-    head = press @ Matrix.Translation((0, 0, YAW_HEIGHT)) @ yaw
-    elevation = head @ Matrix.Translation((0, 0, ELEVATION_HEIGHT)) @ Matrix.Rotation(pitch, 4, "X")
+    mount_height = CENTER_HEIGHT if layer == "head" else YAW_HEIGHTS[stage["materialStage"]]
+    head = press @ Matrix.Translation((0, 0, mount_height)) @ yaw
+    lift = .40 * raise_fraction if weapon >= 2 else 0
+    elevation = head @ Matrix.Translation((0, 0, ELEVATION_HEIGHTS[weapon] + lift)) @ Matrix.Rotation(pitch, 4, "X")
     recoil = elevation @ Matrix.Translation((0, -stage["attack"]["recoil"] * kick, 0))
     mounts = {"yaw": head, "elevation": elevation, "recoil": recoil}
     finish = SURFACES[stage["materialStage"]]
@@ -150,8 +166,8 @@ def assemble(kit, materials, stage, group, tile, direction=0, layer="form", fram
                 transform = Matrix.Identity(4)
             elif name == "hydraulic-legs":
                 # 발판을 지면에 고정하고 피스톤 윗부분만 포상과 함께 눌린다.
-                foot = Matrix.Translation((0, 0, .61))
-                transform = foot @ Matrix.Diagonal((1, 1, 1 + sink / .71, 1)) @ foot.inverted()
+                foot = Matrix.Translation((0, 0, .49))
+                transform = foot @ Matrix.Diagonal((1, 1, 1 + sink / 1.11, 1)) @ foot.inverted()
             else:
                 transform = mounts.get(part["mount"], press)
             for source in part.objects:
@@ -167,7 +183,7 @@ def assemble(kit, materials, stage, group, tile, direction=0, layer="form", fram
     if frame in (3, 4):
         p = Part(group)
         radius = (.27 if stage["weaponStage"] > 2 else .48) + .13 * (frame - 3)
-        for muzzle in MUZZLES[stage["weaponStage"] - 1]:
+        for muzzle in MUZZLES[weapon]:
             obj = p.lathe("발사 폭압 고리", muzzle,
                           [(.08, radius), (.115, radius + .02), (.130, radius - .025),
                            (.115, radius - .047)], "amber", steps=12, closed=True, forward=True)
@@ -201,7 +217,7 @@ def validate_kit(kit, stages):
                 part = kit.collection.children[slot].children.get(f"mortar/{name}")
                 if not part or not any(obj.type == "MESH" for obj in part.objects):
                     raise ValueError(f'Lv{stage["level"]} {slot} 슬롯에 {name} 메시가 없습니다.')
-    if any(stage["attack"]["frames"] != len(PITCHES) for stage in stages):
+    if any(stage["attack"]["frames"] != len(FIRE_PITCH) for stage in stages):
         raise ValueError("레시피의 발사 프레임 수와 곡사 포대 키프레임 수가 다릅니다.")
 
 
@@ -221,17 +237,23 @@ def render(recipe_file, out, kit_file, palette, linear):
         up_z = math.sqrt(1 - CAMERA_RAY.z ** 2)
         return [TILE // 2, round(TILE * (.5 - (z - CENTER_HEIGHT) * up_z / VIEW))]
 
+    # 384px 셀을 사용해도 시트의 가로·세로가 4096px 안에 들어간다.
+    head_groups = {"heads": [stage for stage in stages if stage["weaponStage"] <= 2],
+                   "heads-armored": [stage for stage in stages if stage["weaponStage"] >= 3]}
     specs = {
         "bodies": ([(stage, 0, "body", 0) for stage in stages], 6),
-        "heads": ([(stage, direction, "head", 0) for stage in tiers for direction in range(DIRECTIONS)], 8),
+        **{name: ([(stage, direction, "head", 0) for stage in group for direction in range(DIRECTIONS)], 10)
+           for name, group in head_groups.items()},
         "attack": ([(stage, REVIEW_DIRECTION, "form", frame)
-                    for stage in tiers for frame in range(stage["attack"]["frames"])], len(PITCHES)),
+                    for stage in tiers for frame in range(stage["attack"]["frames"])], len(FIRE_PITCH)),
         "forms": ([(stage, REVIEW_DIRECTION, "form", 0) for stage in stages], 6),
     }
     layout = {
         "towerId": "mortar",
         "tile": TILE, "levels": [stage["level"] for stage in stages],
-        "bodyPivot": project(0), "headPivot": project(YAW_HEIGHT),
+        "bodyPivot": project(0), "headPivot": project(CENTER_HEIGHT),
+        "headAnchors": [project(YAW_HEIGHTS[stage["materialStage"]]) for stage in stages],
+        "headSheets": {name: [stage["level"] for stage in group] for name, group in head_groups.items()},
         "directions": DIRECTIONS, "reviewDirection": REVIEW_DIRECTION,
         "weapons": [{"stage": stage["weaponStage"], "level": stage["level"], "attack": stage["attack"]}
                     for stage in tiers],

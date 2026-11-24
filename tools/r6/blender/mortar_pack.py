@@ -4,19 +4,22 @@ import hashlib
 import json
 from pathlib import Path
 
-from PIL import Image, ImageDraw, ImageFont
+from PIL import Image, ImageChops, ImageDraw, ImageFont
 
 from pack import finish_cell, pack_grid
-from check import R04, manifest_errors, palette_violations, read_image, scene_difference
+from check import (
+    R04, manifest_errors, mask_at_48, palette_violations, read_image, scene_difference, silhouette_iou,
+)
 
 
 LABELS = {
     1: "사각 포상과 단포신", 2: "보강 띠와 앵커", 4: "방패와 적재 상자",
     6: "중장갑 포신과 회전판", 8: "스커트와 공급 슈트", 10: "경고 띠와 완충기",
     12: "세라믹 포상과 쌍포", 14: "고정발과 장갑 덮개", 16: "장전 암과 압력 게이지",
-    18: "금테 포상과 4연장", 20: "이중 방벽과 탄도 돔",
+    18: "금테 포상과 4연장", 20: "4방향 스커트와 탄도 돔",
 }
 REFERENCE_LEVELS = (1, 6, 12, 18, 20)
+ADJACENT_IOU_LIMIT = .92
 DEFAULT_FONT = Path("/System/Library/Fonts/AppleSDGothicNeo.ttc")
 
 
@@ -83,22 +86,37 @@ def make_strip(out, forms, levels, font_path):
     strip = Image.new("RGBA", (782, 90), R04[1])
     draw = ImageDraw.Draw(strip)
     font = ImageFont.truetype(str(font_path), 14)
-    thumbnails = []
     for index, (level, form) in enumerate(zip(levels, forms)):
         x = index * 70 + 16
         sprite = form.resize((48, 48), Image.Resampling.BOX)
-        thumbnails.append(sprite)
         draw.rectangle((x, 10, x + 47, 57), fill=R04[0], outline=R04[2])
         strip.alpha_composite(sprite, (x, 10))
         draw.text((x + 24, 79), f"Lv{level}", fill=R04[3], font=font, anchor="ms")
     strip.save(out / "mortar-48px.webp", format="WEBP", lossless=True, method=6)
-    return [scene_difference(first, second)["changedPixels"] for first, second in zip(thumbnails, thumbnails[1:])]
+
+
+def check_evolution(forms, levels, pivot):
+    overlaps, failures = {}, []
+    for previous_level, level, previous, form in zip(levels, levels[1:], forms, forms[1:]):
+        pair = f"Lv{previous_level}→{level}"
+        overlap = silhouette_iou((previous, pivot), (form, pivot))
+        overlaps[pair] = round(overlap, 4)
+        if overlap >= ADJACENT_IOU_LIMIT:
+            failures.append(f"{pair} ({overlap:.4f})")
+        old_mask, _ = mask_at_48(previous, pivot)
+        new_mask, _ = mask_at_48(form, pivot)
+        if not ImageChops.subtract(new_mask, old_mask).getbbox():
+            failures.append(f"{pair} (밖으로 나온 윤곽이 없습니다)")
+    return overlaps, failures
 
 
 def pack_mortar(source, out, reference, font=DEFAULT_FONT):
     layout = json.loads((source / "layout.json").read_text())
     levels, raw_size = layout["levels"], layout["tile"]
-    assets, forms = [], {}
+    head_sheets = layout["headSheets"]
+    if [level for group in head_sheets.values() for level in group] != levels:
+        raise ValueError("포두 시트에 레벨이 빠졌거나 순서가 다릅니다.")
+    assets, forms = [], []
     out.mkdir(parents=True, exist_ok=False)
     for name, grid in layout["grids"].items():
         raw = read_cells(source, name, layout)
@@ -109,9 +127,12 @@ def pack_mortar(source, out, reference, font=DEFAULT_FONT):
             if name == "forms":
                 if len({tile.tobytes() for tile in tiles}) != len(levels):
                     raise ValueError(f"{size}px에서 같은 그림으로 렌더된 진화 단계가 있습니다.")
-                forms[size] = tiles
-            if name == "heads":
+                if density == 1:
+                    forms = tiles
+            if name in head_sheets:
                 directions = layout["directions"]
+                if len(tiles) != len(head_sheets[name]) * directions:
+                    raise ValueError(f"{name}의 포두 프레임 수가 레벨·방향 수와 다릅니다.")
                 for begin in range(0, len(tiles), directions):
                     if len({tile.tobytes() for tile in tiles[begin:begin + directions]}) != directions:
                         raise ValueError(f"{size}px에서 포두 회전 방향이 중복됩니다.")
@@ -127,7 +148,7 @@ def pack_mortar(source, out, reference, font=DEFAULT_FONT):
             sheet.save(path, lossless=True, method=6)
             if palette_violations(read_image(path)):
                 raise ValueError(f"{path.name}에 R04 팔레트 위반이 있습니다.")
-            pivot = layout["headPivot" if name == "heads" else "bodyPivot"]
+            pivot = layout["headPivot" if name in head_sheets else "bodyPivot"]
             assets.append({
                 "id": asset_id, "file": path.name, "width": sheet.width, "height": sheet.height,
                 "artifactHash": hashlib.sha256(path.read_bytes()).hexdigest(),
@@ -137,14 +158,19 @@ def pack_mortar(source, out, reference, font=DEFAULT_FONT):
 
     manifest = {
         "assets": assets, "levels": levels, "directions": layout["directions"],
+        "headSheets": [{"asset": f"mortar-{name}", "asset2x": f"mortar-{name}-2x", "levels": group}
+                       for name, group in head_sheets.items()],
+        "headAnchors2x": layout["headAnchors"],
         "reviewDirection": layout["reviewDirection"], "weapons": layout["weapons"],
     }
     errors = manifest_errors(manifest, out)
     if errors:
         raise ValueError("\n".join(errors))
     (out / "manifest.json").write_text(json.dumps(manifest, ensure_ascii=False, indent=2) + "\n")
-    make_review(out, read_image(reference), forms[192], levels, font)
-    changed = make_strip(out, forms[192], levels, font)
-    if min(changed) == 0:
-        raise ValueError("48px 축소에서 구분되지 않는 연속 단계가 있습니다.")
-    print(json.dumps({"시트": len(assets), "48px 인접 단계 변경 화소": changed}, ensure_ascii=False))
+    make_review(out, read_image(reference), forms, levels, font)
+    make_strip(out, forms, levels, font)
+    pivot = [round(coord / 2) for coord in layout["bodyPivot"]]
+    overlaps, failures = check_evolution(forms, levels, pivot)
+    print(json.dumps({"시트": len(assets), "48px 인접 단계 IoU": overlaps}, ensure_ascii=False))
+    if failures:
+        raise ValueError(f"48px 진화 윤곽 기준 미달 (IoU < {ADJACENT_IOU_LIMIT}): {', '.join(failures)}")

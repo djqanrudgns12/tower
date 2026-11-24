@@ -48,7 +48,7 @@
       "materialStage": "alloy",
       "weaponStage": 2,
       "slots": {
-        "base": ["platform", "corner-anchors"],
+        "base": ["platform"],
         "body": ["steel-core", "hydraulic-legs"],
         "armor": ["earth-shield"],
         "head": ["alloy-turntable", "heavy-yoke"],
@@ -63,7 +63,7 @@
       "materialStage": "alloy",
       "weaponStage": 2,
       "slots": {
-        "base": ["platform", "corner-anchors"],
+        "base": ["platform"],
         "body": ["steel-core", "hydraulic-legs"],
         "armor": ["earth-shield", "side-skirt"],
         "head": ["alloy-turntable", "heavy-yoke"],
@@ -78,7 +78,7 @@
       "materialStage": "alloy",
       "weaponStage": 2,
       "slots": {
-        "base": ["platform", "corner-anchors"],
+        "base": ["platform"],
         "body": ["steel-core", "hydraulic-legs", "rear-dampers"],
         "armor": ["earth-shield", "side-skirt"],
         "head": ["alloy-turntable", "heavy-yoke"],
@@ -94,12 +94,11 @@
       "materialStage": "ceramic",
       "weaponStage": 3,
       "slots": {
-        "base": ["platform", "corner-anchors"],
-        "body": ["ceramic-core", "hydraulic-legs", "rear-dampers"],
-        "armor": ["earth-shield", "side-skirt"],
+        "base": ["platform"],
+        "body": ["ceramic-core"],
+        "armor": ["housing-braces"],
         "head": ["alloy-turntable", "twin-yoke"],
         "weapon": ["twin-barrels"],
-        "detail": ["ammo-crate", "feed-chutes"],
         "marking": ["ceramic-stripes"]
       },
       "attack": {"mode": "lob", "fps": 20, "frames": 8, "targetCount": 5, "burstCount": 1, "pierceCount": 0, "recoil": 0.19}
@@ -110,12 +109,11 @@
       "materialStage": "ceramic",
       "weaponStage": 3,
       "slots": {
-        "base": ["platform", "corner-anchors", "anchor-feet"],
-        "body": ["ceramic-core", "hydraulic-legs", "rear-dampers"],
-        "armor": ["earth-shield", "side-skirt", "turret-cover"],
+        "base": ["platform", "anchor-feet"],
+        "body": ["ceramic-core"],
+        "armor": ["housing-braces", "turret-cover"],
         "head": ["alloy-turntable", "twin-yoke"],
         "weapon": ["twin-barrels"],
-        "detail": ["ammo-crate", "feed-chutes"],
         "marking": ["ceramic-stripes"]
       },
       "attack": {"mode": "lob", "fps": 20, "frames": 8, "targetCount": 5, "burstCount": 1, "pierceCount": 0, "recoil": 0.19}
@@ -126,12 +124,12 @@
       "materialStage": "ceramic",
       "weaponStage": 3,
       "slots": {
-        "base": ["platform", "corner-anchors", "anchor-feet"],
-        "body": ["ceramic-core", "hydraulic-legs", "rear-dampers"],
-        "armor": ["earth-shield", "side-skirt", "turret-cover"],
+        "base": ["platform", "anchor-feet"],
+        "body": ["ceramic-core"],
+        "armor": ["housing-braces", "turret-cover"],
         "head": ["alloy-turntable", "twin-yoke"],
         "weapon": ["twin-barrels"],
-        "detail": ["ammo-crate", "feed-chutes", "loader-arm"],
+        "detail": ["loader-arm"],
         "marking": ["ceramic-stripes", "pressure-gauge"]
       },
       "attack": {"mode": "lob", "fps": 20, "frames": 8, "targetCount": 5, "burstCount": 1, "pierceCount": 0, "recoil": 0.19}
@@ -142,13 +140,11 @@
       "materialStage": "gold-trim",
       "weaponStage": 4,
       "slots": {
-        "base": ["platform", "corner-anchors", "anchor-feet"],
-        "body": ["fortress-core", "hydraulic-legs", "rear-dampers"],
-        "armor": ["earth-shield", "side-skirt"],
+        "base": ["platform"],
+        "body": ["fortress-core"],
         "head": ["fortress-turntable", "quad-yoke"],
         "weapon": ["quad-box"],
-        "detail": ["ammo-crate", "feed-chutes", "loader-arm"],
-        "marking": ["fortress-trim", "pressure-gauge"]
+        "marking": ["fortress-trim"]
       },
       "attack": {"mode": "lob", "fps": 20, "frames": 8, "targetCount": 6, "burstCount": 1, "pierceCount": 0, "recoil": 0.22}
     },
@@ -158,13 +154,12 @@
       "materialStage": "gold-trim",
       "weaponStage": 4,
       "slots": {
-        "base": ["platform", "corner-anchors", "anchor-feet"],
-        "body": ["fortress-core", "hydraulic-legs", "rear-dampers"],
-        "armor": ["earth-shield", "side-skirt", "bunker-lips"],
+        "base": ["platform"],
+        "body": ["bunker-core"],
+        "armor": ["bunker-lips"],
         "head": ["fortress-turntable", "quad-yoke"],
         "weapon": ["quad-box", "gilded-muzzles"],
-        "detail": ["ammo-crate", "feed-chutes", "loader-arm", "ballistics-dome"],
-        "marking": ["fortress-trim", "pressure-gauge"]
+        "detail": ["ballistics-dome"]
       },
       "attack": {"mode": "lob", "fps": 20, "frames": 8, "targetCount": 6, "burstCount": 1, "pierceCount": 0, "recoil": 0.22}
     }
