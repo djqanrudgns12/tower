@@ -31,7 +31,7 @@ type Screen =
   | { name: 'home'; initialModal?: 'new' | null; focusNickname?: boolean }
   // bestWave: 판을 열 때 읽은 이 기기의 최고 기록(그 판 전까지, 판 안에서 바뀌지 않는다). 연습·기록 없음은 null.
   | { name: 'game'; controller: RunController; practice?: boolean; bestWave?: number | null }
-  | { name: 'result'; state: RunState; reviewDelta: ReviewDelta | null; previousBest: number | null }
+  | { name: 'result'; state: RunState; controller: RunController; reviewDelta: ReviewDelta | null; previousBest: number | null }
   | { name: 'note'; back: Exclude<Screen, { name: 'note' | 'game' }> };
 
 function loadInitialSettings(): Settings {
@@ -136,10 +136,10 @@ export function App() {
 
   const exitGame = (controller: RunController, reason: 'over' | 'abandon', previousBest: number | null) => {
     const final = structuredClone(controller.state) as RunState;
-    // 판이 끝날 때 오답 노트에 담은 수(prd-r4 §6.1). 기록 쓰기가 아직 안 끝났으면 null이라 결과의 노트 줄을 숨긴다.
+    // 오답 노트 집계는 판 종료 시점에 만들고, 기록 저장 상태는 결과 화면에서 이어서 구독한다.
     const reviewDelta = controller.getView().reviewDelta;
     controller.dispose();
-    setScreen(reason === 'over' ? { name: 'result', state: final, reviewDelta, previousBest } : { name: 'home' });
+    setScreen(reason === 'over' ? { name: 'result', state: final, controller, reviewDelta, previousBest } : { name: 'home' });
   };
 
   const noteGrade = screen.name === 'result' ? screen.state.config.grade : settings.lastGrade;
@@ -190,6 +190,7 @@ export function App() {
         <Suspense fallback={null}>
           <ResultScreen
             state={screen.state}
+            controller={screen.controller}
             reviewDelta={screen.reviewDelta}
             previousBest={screen.previousBest}
             onOpenNote={() => setScreen({ name: 'note', back: screen })}

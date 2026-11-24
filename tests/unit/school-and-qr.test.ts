@@ -1,4 +1,6 @@
 import 'fake-indexeddb/auto';
+import { createElement } from 'react';
+import { renderToStaticMarkup } from 'react-dom/server';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { buildClassroomShareUrl, detectInAppBrowser, parseEntrySearchParams } from '../../src/application/entryUrl';
 import { searchNeisSchools } from '../../src/application/neis';
@@ -6,7 +8,8 @@ import { cleanPublicSchoolCode, cleanPublicSchoolName } from '../../src/contract
 import { addRecord, clearLocalHistory, listPendingRunSyncs, resetDbConnection, type RunRecord } from '../../src/persistence/db';
 import { buildLocalRanking, fetchRanking, queueAndFlushCompletedRun } from '../../src/persistence/lobbyClient';
 import { loadSettings, saveSettings } from '../../src/persistence/settings';
-import { encodeQrMatrix, qrMatrixToSvgPath } from '../../src/ui/utils/qr';
+import { ClassroomQrModal } from '../../src/ui/screens/home/ClassroomQrModal';
+import { canEncodeQr, encodeQrMatrix, qrMatrixToSvgPath } from '../../src/ui/utils/qr';
 
 const API = 'https://api.example';
 const DEVICE = '459d7cbc-0b34-4e94-82a5-26fe45038796';
@@ -89,6 +92,41 @@ describe('교실 QR·공유 URL·학교 와이파이 내성 단위 검증', () =
     expect(detectInAppBrowser('Mozilla/5.0 ... Classting/8.2')).toBe('클래스팅');
     expect(detectInAppBrowser('Mozilla/5.0 ... NAVER(inapp; search; 1000)')).toBe('네이버 앱');
     expect(detectInAppBrowser('Mozilla/5.0 (Macintosh; Intel Mac OS X 14_0) AppleWebKit/537.36 Chrome/130.0')).toBeNull();
+  });
+
+  it.each(['7010057', ''])('30자 한글 학교 이름(학교 코드=%j)이 길어도 전체 입장 주소와 복사 버튼을 그린다', schoolCode => {
+    const schoolName = '가'.repeat(30);
+    const url = buildClassroomShareUrl({ grade: 3, schoolName, schoolCode });
+    expect(canEncodeQr(url)).toBe(false);
+    const html = renderToStaticMarkup(createElement(ClassroomQrModal, { defaultGrade: 3, schoolName, schoolCode, onClose: vi.fn() }));
+    expect(html).toContain(url.replaceAll('&', '&amp;'));
+    expect(html).toContain('주소 복사');
+    expect(html).toContain('주소가 길어 QR을 만들 수 없어요.');
+    expect(html).not.toContain('aria-label="교실 입장 QR 코드"');
+  });
+
+  it('짧은 학교 이름과 코드로 입장 QR과 복사 버튼을 함께 그린다', () => {
+    const url = buildClassroomShareUrl({ grade: 3, schoolName: '가락초등학교', schoolCode: '7010057' });
+    expect(canEncodeQr(url)).toBe(true);
+    const html = renderToStaticMarkup(createElement(ClassroomQrModal, {
+      defaultGrade: 3, schoolName: '가락초등학교', schoolCode: '7010057', onClose: vi.fn(),
+    }));
+    expect(html).toContain('aria-label="교실 입장 QR 코드"');
+    expect(html).toContain('주소 복사');
+  });
+
+  it('QR은 UTF-8 데이터 213바이트까지 담는다', () => {
+    expect(canEncodeQr('가'.repeat(71))).toBe(true);
+    expect(canEncodeQr(`${'가'.repeat(71)}a`)).toBe(false);
+  });
+
+  it('QR을 생성할 수 없는 환경에서도 주소 복사 버튼을 그린다', () => {
+    vi.stubGlobal('TextEncoder', undefined);
+    const html = renderToStaticMarkup(createElement(ClassroomQrModal, {
+      defaultGrade: 3, schoolName: '가락초등학교', schoolCode: '7010057', onClose: vi.fn(),
+    }));
+    expect(html).toContain('QR을 만들 수 없어요. 주소를 복사해 나눠 주세요.');
+    expect(html).toContain('주소 복사');
   });
 
   it('순수 QR 생성기가 한글 학교 URL에서도 정방 행렬·탐지 패턴·유효 BCH 포맷 비트를 생성한다', () => {
@@ -197,7 +235,9 @@ describe('교실 QR·공유 URL·학교 와이파이 내성 단위 검증', () =
       });
     });
     vi.stubGlobal('fetch', okFetch);
-    await queueAndFlushCompletedRun({ ...record, runId: '22222222-3333-4444-8555-666666666666' }, 'player-1');
+    const nextRecord = { ...record, runId: '22222222-3333-4444-8555-666666666666' };
+    await addRecord(nextRecord);
+    await queueAndFlushCompletedRun(nextRecord, 'player-1');
 
     const submitCall = okFetch.mock.calls.find(([u]) => String(u).endsWith('/v1/runs/submit'));
     expect(submitCall).toBeDefined();

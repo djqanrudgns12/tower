@@ -179,14 +179,23 @@ export async function clearLocalHistory(): Promise<void> {
   await tx.done;
 }
 
-export async function enqueueRunSync(record: RunRecord, playerId: string): Promise<void> {
+/** 완료 판의 큐 등록은 기록 정리와 겹쳐도 삭제된 판을 다시 등록하지 않는다. */
+export async function enqueueRunSync(record: RunRecord, playerId: string, requireLocalRecord = false): Promise<boolean> {
   const database = await db();
-  const tx = database.transaction('syncQueue', 'readwrite');
-  const existing = await tx.store.get(record.runId);
-  if (!existing) {
-    await tx.store.put({ runId: record.runId, record, playerId, attempts: 0, queuedAt: new Date().toISOString() });
+  const tx = database.transaction(requireLocalRecord ? ['records', 'syncQueue'] : ['syncQueue'], 'readwrite', { durability: 'strict' });
+  try {
+    const canQueue = !requireLocalRecord || (await tx.objectStore('records').getKey(record.runId)) !== undefined;
+    const queue = tx.objectStore('syncQueue');
+    if (canQueue && !(await queue.get(record.runId))) {
+      await queue.put({ runId: record.runId, record, playerId, attempts: 0, queuedAt: new Date().toISOString() });
+    }
+    await tx.done;
+    return canQueue;
+  } catch (error) {
+    try { tx.abort(); } catch { /* 이미 중단된 트랜잭션의 원래 오류를 보존한다. */ }
+    await tx.done.catch(() => undefined);
+    throw error;
   }
-  await tx.done;
 }
 
 export async function listPendingRunSyncs(): Promise<PendingRunSync[]> {

@@ -3,7 +3,7 @@ import type { DomainEvent } from '../domain/events';
 import { NumericLimitError } from '../domain/num';
 import { advanceTick, applyCommand, type Command, type CommandResult } from '../domain/run';
 import type { PauseReason, RunState } from '../domain/types';
-import { addRecord } from '../persistence/db';
+import { addRecord, type RunRecord } from '../persistence/db';
 import { cancelRunStartRetry, queueAndFlushCompletedRun } from '../persistence/lobbyClient';
 import { recordFinishedRun, type ReviewDelta } from '../persistence/reviewNote';
 import { buildRunRecord } from './runRecord';
@@ -19,6 +19,8 @@ export interface RunControllerOptions {
   /** 끝난 판을 개인 기록·오답 노트·공개 제출 큐에 남길지. 연습·맵 미리보기 판은 false. */
   recordOnFinish: boolean;
 }
+
+export type RunSaveStatus = 'untracked' | 'saving' | 'saved' | 'failed' | 'pending';
 
 /**
  * 도메인 상태의 유일한 작성자(PRD §14). 고정 30Hz 틱, 명령 순번, 종료 기록, 화면·렌더러 알림을 맡는다.
@@ -38,6 +40,8 @@ export class RunController {
   private eventListeners = new Set<(events: DomainEvent[]) => void>();
   /** 끝난 판이 오답 노트에 담고 졸업시킨 낱말 수. 결과 화면이 읽는다. 끝나기 전·연습 판은 null. */
   private reviewDelta: ReviewDelta | null = null;
+  private completedRecord: { record: RunRecord; localSaved: boolean } | null = null;
+  private saveStatus: RunSaveStatus = 'untracked';
   private noticeSeq = 1;
   private hitches: number[] = [];
   /** 다음 논리 틱 시작에 반영할 답안·거래(PRD §3.4(2)). */
@@ -63,6 +67,10 @@ export class RunController {
   // React useSyncExternalStore 연결.
   subscribe = (listener: () => void) => { this.listeners.add(listener); return () => { this.listeners.delete(listener); }; };
   getView = () => this.view;
+  getSaveStatus = () => this.saveStatus;
+  retrySave = async () => {
+    if (this.saveStatus === 'failed') await this.persistCompletedRecord();
+  };
   onEvents(listener: (events: DomainEvent[]) => void) { this.eventListeners.add(listener); return () => { this.eventListeners.delete(listener); }; }
 
   start() {
@@ -152,7 +160,7 @@ export class RunController {
     if (!result.ok) return result;
     if (cmd.type === 'pause' || cmd.type === 'resume') this.acc = 0;
     this.publish(result.events);
-    if (result.events.some(e => e.type === 'gameOver')) void this.finish();
+    if (result.events.some(e => e.type === 'gameOver')) this.finish();
     return result;
   }
 
@@ -214,7 +222,7 @@ export class RunController {
       throw error;
     }
     this.publish(events);
-    if (events.some(e => e.type === 'gameOver')) { void this.finish(); return false; }
+    if (events.some(e => e.type === 'gameOver')) { this.finish(); return false; }
     return true;
   }
 
@@ -251,7 +259,7 @@ export class RunController {
   }
 
   /** 끝난 판(끝내기·패배): 오답 노트 → 개인 기록 → 공개 제출 큐 순서로 남긴다. 연습·미리보기 판은 남기지 않는다. */
-  private async finish() {
+  private finish() {
     this.stop();
     cancelRunStartRetry(this.s.config.runId);
     if (!this.recordOnFinish) return;
@@ -259,14 +267,34 @@ export class RunController {
     // 틀린 낱말을 오답 노트에 담는다(prd-r4 §6.1). 끝내지 않고 창을 닫은 판은 여기를 거치지 않아 담지 않는다.
     // 동기 localStorage 쓰기라 기록 저장보다 먼저 해도 화면 전환을 막지 않고, 저장소가 막혀도 던지지 않는다.
     this.reviewDelta = recordFinishedRun(s.quiz.history, s.config.bankId, this.ctx.questions);
-    const record = buildRunRecord(s);
-    try {
-      await addRecord(record);
-      void queueAndFlushCompletedRun(record, s.config.playerId).catch(() => undefined);
-    } catch {
-      // 기록을 쓰지 못해도(저장소 차단) 결과 화면은 메모리의 끝난 상태로 보인다.
-    }
+    this.completedRecord = { record: buildRunRecord(s), localSaved: false };
     this.publish([]);
+    void this.persistCompletedRecord();
+  }
+
+  private setSaveStatus(status: RunSaveStatus) {
+    if (this.saveStatus === status) return;
+    this.saveStatus = status;
+    for (const listener of this.listeners) listener();
+  }
+
+  private async persistCompletedRecord() {
+    const completed = this.completedRecord;
+    if (!completed) return;
+    this.setSaveStatus('saving');
+    try {
+      if (!completed.localSaved) {
+        await addRecord(completed.record);
+        completed.localSaved = true;
+      }
+      this.setSaveStatus('saved');
+      const queue = await queueAndFlushCompletedRun(completed.record, this.s.config.playerId);
+      if (queue === 'pending') this.setSaveStatus('pending');
+      if (queue === 'deleted') this.setSaveStatus('untracked');
+      this.completedRecord = null;
+    } catch {
+      this.setSaveStatus('failed');
+    }
   }
 
   private onVisibility = () => {

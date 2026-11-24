@@ -4,7 +4,7 @@ import { cleanPublicSchoolCode, cleanPublicSchoolName } from '../../../contracts
 import { isGradeAvailable } from '../../../content';
 import { HOME_COPY } from '../../copy';
 import { ArtIcon, Button, Card, Modal, Segmented, Toggle, type SegmentOption } from '../../kit';
-import { encodeQrMatrix, qrMatrixToSvgPath } from '../../utils/qr';
+import { canEncodeQr, encodeQrMatrix, qrMatrixToSvgPath } from '../../utils/qr';
 import css from './home.module.css';
 
 const GRADES = [3, 4, 5, 6] as const;
@@ -63,7 +63,16 @@ export function ClassroomQrModal({ defaultGrade, schoolName, schoolCode, onClose
     [grade, includeSchool, cleanSchool, cleanCode],
   );
 
-  const qrSvg = useMemo(() => qrMatrixToSvgPath(encodeQrMatrix(shareUrl), 4), [shareUrl]);
+  const qr = useMemo(() => {
+    try {
+      if (!canEncodeQr(shareUrl)) {
+        return { hint: '주소가 길어 QR을 만들 수 없어요. 주소를 복사해 나눠 주세요.' };
+      }
+      return { svg: qrMatrixToSvgPath(encodeQrMatrix(shareUrl), 4) };
+    } catch {
+      return { hint: 'QR을 만들 수 없어요. 주소를 복사해 나눠 주세요.' };
+    }
+  }, [shareUrl]);
   const inAppName = useMemo(() => detectInAppBrowser(), []);
 
   const gradeOptions: SegmentOption<`${Grade}`>[] = GRADES.map(g => ({
@@ -108,23 +117,27 @@ export function ClassroomQrModal({ defaultGrade, schoolName, schoolCode, onClose
           />
         )}
 
-        <div className={css.qrFrameWrap}>
-          <div className={css.qrCanvasBox}>
-            <svg
-              viewBox={`0 0 ${qrSvg.viewBoxSize} ${qrSvg.viewBoxSize}`}
-              role="img"
-              aria-label="교실 입장 QR 코드"
-              shapeRendering="crispEdges"
-              className={css.qrSvg}
-            >
-              <rect width={qrSvg.viewBoxSize} height={qrSvg.viewBoxSize} fill="#ffffff" />
-              <path d={qrSvg.path} fill="#111111" />
-            </svg>
+        {qr.svg ? (
+          <div className={css.qrFrameWrap}>
+            <div className={css.qrCanvasBox}>
+              <svg
+                viewBox={`0 0 ${qr.svg.viewBoxSize} ${qr.svg.viewBoxSize}`}
+                role="img"
+                aria-label="교실 입장 QR 코드"
+                shapeRendering="crispEdges"
+                className={css.qrSvg}
+              >
+                <rect width={qr.svg.viewBoxSize} height={qr.svg.viewBoxSize} fill="#ffffff" />
+                <path d={qr.svg.path} fill="#111111" />
+              </svg>
+            </div>
+            <p className={css.qrGuideText}>
+              태블릿·휴대전화 카메라로 비추면 선택한 학년으로 바로 열려요.
+            </p>
           </div>
-          <p className={css.qrGuideText}>
-            태블릿·휴대전화 카메라로 비추면 선택한 학년으로 바로 열려요.
-          </p>
-        </div>
+        ) : (
+          <p className={css.qrGuideText} role="status">{qr.hint}</p>
+        )}
 
         <Card sunk pad="sm" className={css.qrUrlBox}>
           <span className={css.qrUrlText}>{shareUrl}</span>

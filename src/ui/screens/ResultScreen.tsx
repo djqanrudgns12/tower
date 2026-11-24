@@ -1,4 +1,6 @@
-import { useEffect, useId, useState } from 'react';
+import { useEffect, useId, useState, useSyncExternalStore } from 'react';
+import type { RunController, RunSaveStatus } from '../../application/RunController';
+import { isRecordSharingEnabled, subscribeRecordSharing } from '../../application/lobby';
 import { reviewQuestions } from '../../content';
 import { computeHonorPoints } from '../../contracts/lobby';
 import type { RunState } from '../../domain/types';
@@ -14,6 +16,7 @@ export interface ResultReviewDelta { added: number; graduated: number }
 
 interface Props {
   state: RunState;
+  controller: Pick<RunController, 'getSaveStatus' | 'subscribe' | 'retrySave'>;
   /** 이 판이 노트에 담은 값. null이면 노트 줄을 보이지 않는다. */
   reviewDelta?: ResultReviewDelta | null;
   /** 이 판 전까지 이 기기의 같은 학년·난이도 최고 기록(지킨 웨이브). 없으면 null. 첫 줄의 '새 최고 기록'·'아까워요'를 가른다. */
@@ -25,6 +28,26 @@ interface Props {
 }
 
 interface ReviewItem { id: number; lemma: string; answer: string; stem: string; explanation: string }
+
+const SAVE_STATUS_COPY: Record<Exclude<RunSaveStatus, 'untracked'>, string> = {
+  saving: '기록을 저장하는 중이에요.',
+  saved: '기록 저장됨',
+  failed: '기록을 저장하지 못했어요.',
+  pending: '랭킹 전송 대기 중',
+};
+
+function ResultSaveStatus({ controller }: Pick<Props, 'controller'>) {
+  const saveStatus = useSyncExternalStore(controller.subscribe, controller.getSaveStatus, controller.getSaveStatus);
+  const sharing = useSyncExternalStore(subscribeRecordSharing, isRecordSharingEnabled, isRecordSharingEnabled);
+  const status = saveStatus === 'pending' && !sharing ? 'saved' : saveStatus;
+  if (status === 'untracked') return null;
+  return (
+    <div className={css.saveStatus}>
+      <p role="status">{SAVE_STATUS_COPY[status]}</p>
+      {status === 'failed' && <Button onClick={() => void controller.retrySave()}>다시 시도</Button>}
+    </div>
+  );
+}
 
 /** 움직임 줄이기(기기 설정 또는 게임 설정 '정지')인가. 켜져 있으면 숫자 올라가기·팝 대신 투명도만 쓴다(v4 §7.3). */
 function prefersStill(): boolean {
@@ -56,7 +79,7 @@ function useCountUp(target: number, still: boolean, ms = 420): number {
  * 틀리거나 넘긴 낱말이 있을 때만 옆에 ‘틀린 낱말’ 창이 선다(없으면 빈 창을 그리지 않고 결과 창이 가운데에 선다).
  * 복습 재풀이는 보상이 없으므로(PRD §2.2) 여기서는 낱말 카드를 눌러 해설만 펼쳐 보인다.
  */
-export function ResultScreen({ state, reviewDelta = null, previousBest = null, onOpenNote, onAgain, onHome }: Props) {
+export function ResultScreen({ state, controller, reviewDelta = null, previousBest = null, onOpenNote, onAgain, onHome }: Props) {
   const questions = reviewQuestions(state.config.grade);
   const answers = state.quiz.history;
   const total = answers.length;
@@ -135,6 +158,7 @@ export function ResultScreen({ state, reviewDelta = null, previousBest = null, o
                 </dl>
               </div>
 
+              <ResultSaveStatus controller={controller} />
               {state.config.contentMode === 'development' && <p className={css.dev}>{T.dev}</p>}
               {/* 주 버튼은 짙은 바탕이 아니라 결과 창 안에 둔다(ui-rules-v3 §2 버튼 바탕). */}
               <div className={css.actions}>

@@ -424,16 +424,15 @@ export async function reportRunStarted(runId: string, playerId: string): Promise
   }
 }
 
-/** 정규 판 종료 시 동기화 큐에 적재하고 가능한 즉시 서버에 전송한다. */
-export async function queueAndFlushCompletedRun(record: RunRecord, playerId: string): Promise<void> {
+/** 정규 판 종료 시 큐에 적재하고 즉시 전송을 시도한다. 큐 쓰기 실패는 재시도할 수 있게 호출자에게 돌려준다. */
+export async function queueAndFlushCompletedRun(record: RunRecord, playerId: string): Promise<'pending' | 'deleted' | undefined> {
   cancelRunStartRetry(record.runId);
-  if (!isRecordSharingEnabled() || record.contentMode !== 'published' || record.completedWave < 1) return;
-  try {
-    await enqueueRunSync(record, playerId);
-  } catch {
-    return;
-  }
+  if (!isRecordSharingEnabled() || record.contentMode !== 'published' || record.completedWave < 1) return undefined;
+  if (!await enqueueRunSync(record, playerId, true)) return 'deleted';
   await flushPendingRunSyncs();
+  // 이미 등록을 마쳤으므로 상태 조회 실패로 다시 등록하지 않는다.
+  const pending = await getPendingRunSync(record.runId).catch(() => undefined);
+  return pending && isRecordSharingEnabled() ? 'pending' : undefined;
 }
 
 function reportSubmissionRejection(runId: string, reason?: string): void {

@@ -78,13 +78,17 @@ function totalDataCodewords(spec: VersionSpec): number {
   return spec.group1Blocks * spec.group1DataCodewords + spec.group2Blocks * spec.group2DataCodewords;
 }
 
-function chooseVersion(byteLen: number): VersionSpec {
-  for (const spec of VERSION_SPECS) {
+function findVersion(byteLen: number): VersionSpec | undefined {
+  return VERSION_SPECS.find(spec => {
     const countBits = spec.version <= 9 ? 8 : 16;
     const capacityBits = totalDataCodewords(spec) * 8;
-    if (4 + countBits + byteLen * 8 <= capacityBits) return spec;
-  }
-  throw new RangeError(`QR payload too long (${byteLen} bytes)`);
+    return 4 + countBits + byteLen * 8 <= capacityBits;
+  });
+}
+
+/** 이 생성기의 QR 버전과 오류 복원 수준으로 UTF-8 문자열을 담을 수 있는지 확인한다. */
+export function canEncodeQr(text: string): boolean {
+  return findVersion(new TextEncoder().encode(text).length) !== undefined;
 }
 
 function buildCodewords(payload: Uint8Array, spec: VersionSpec): Uint8Array {
@@ -354,7 +358,8 @@ function finderPenaltyTerminate(
  */
 export function encodeQrMatrix(text: string): boolean[][] {
   const payload = new TextEncoder().encode(text);
-  const spec = chooseVersion(payload.length);
+  const spec = findVersion(payload.length);
+  if (!spec) throw new RangeError(`QR payload too long (${payload.length} bytes)`);
   const size = spec.version * 4 + 17;
   const modules: boolean[][] = Array.from({ length: size }, () => Array<boolean>(size).fill(false));
   const isFunction: boolean[][] = Array.from({ length: size }, () => Array<boolean>(size).fill(false));
