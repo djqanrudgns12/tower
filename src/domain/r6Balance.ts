@@ -1,9 +1,11 @@
+import { expandEntities } from './r6Enemies';
 import type { Balance, TowerConfig } from '../contracts/balance';
 import { DIFFICULTY_IDS } from '../contracts/balance';
 import type { BalanceV2, R6TowerId } from '../contracts/balanceV2';
 import { r6Tables, type WeaponProfile } from './r6Towers';
 
 export interface R6Runtime {
+  entities: ReturnType<typeof expandEntities>;
   rules: BalanceV2;
   base: Record<R6TowerId,TowerConfig>;
   profiles: Record<R6TowerId,WeaponProfile[]>;
@@ -12,7 +14,7 @@ export interface R6Runtime {
 /** 공통 문제·경제·틱 엔진의 입력. 새 판이 쓰는 값은 모두 v2에서 가져온다. */
 export function compileR6Balance(legacy: Balance, rules: BalanceV2): Balance {
   const b = structuredClone(legacy);
-  b.r6 = { rules,...r6Tables(rules) };
+  b.r6 = { rules,entities:expandEntities(rules),...r6Tables(rules) };
   Object.assign(b,{balanceVersion:rules.balanceVersion,run:rules.run,burning:rules.burning,externalCaps:rules.externalCaps,statusCaps:rules.statusCaps,
     leakDamage:rules.leakDamage,elites:rules.elites});
   Object.assign(b.waves,rules.waves);

@@ -62,3 +62,15 @@
 | G3 수직 단면 | 로딩 타이밍에 따른 편성 오차, 예고와 실제 편성 불일치 | rail·mortar 및 한 종족 팩으로 지연/실패/장면 종료를 재현한다. 나머지 종족은 대체 그림을 써도 같은 시드의 스폰 ID와 게임 결과가 동일해야 한다. |
 | G4 전체 | 봇의 예전 타워 ID와 Lv4·7 갈래 선호가 새 시스템을 왜곡 | `tools/sim/{balanceSim,bots,gateJobs,gate,towerEfficiency}.ts`, `tools/{balance-sim,sim-gate}.mjs`의 후보·가치·측정 행을 바꾼다. 해금은 고정이므로 선택률 대신 해금 후 설치율, 갈래 선택률 대신 Lv6·12·18 도달과 6종 단일/혼합 성과를 보고한다. |
 | G5 통합 | R4도 미달한 최적화형 지표와 느린 기기 | R4 목표 그대로 초보 60% 10~12, 균형 80% 14~17, 최적 95% 22~26, 초보↔최적 ≥12를 측정한다. 보통 대비 쉬움 +4~6, 어려움 −3~5, 아주 어려움 −6~8, 평균 웨이브 ≤1.4분과 정답 골드 ≥55%도 확인한다. garden_u 결과와 과거 4개 맵 측정은 표본 범위를 함께 적는다. 정식 관문·서버 시험·실기기 결과와 사용자 확인을 거쳐 운영에 반영한다. |
+
+## P2a 로컬 전장 연결과 그림 키
+
+`src/application/balanceSession.ts`의 `localBalanceSession(version, grade, difficulty, input)`이 학년별 문제은행을 사용한다. `2.0.0`은 초원 고원 지도, `1.0.0`은 학년별 기존 지도를 연다. 호출자는 학년 은행을 먼저 불러온다. 전투 시작 명령과 같은 예고를 얻으려면 `previewR6Wave(rules, mapId, seed, wave)`를 쓴다.
+
+| 대상 | 임시 그림 키 | 범위 |
+|---|---|---|
+| 타워 | `r6.tower.{id}.s{stage}` | rail·mortar·cryo·prism·hangar·bastion, 형태 0~10. `towerArtKey(id, level)`로 조회 |
+| 일반 적·보스·호위 | `r6.enemy.{entityId}` | 한국어 테마의 100개 정규 ID. 호위는 같은 종족의 보병 T1을 사용 |
+| 분열 조각 | `r6.enemy.{entityId}.fragment` | machine·insect 특수 계통 T1~T4의 8개 키 |
+
+발사·즉발·착탄 사건과 타워 단계 변경을 틱 순서대로 읽는다. 그림 완성과 이 키를 실제 아틀라스 프레임에 연결하는 작업은 전장 단계에서 진행한다.

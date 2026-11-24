@@ -65,18 +65,19 @@ export function difficultyHpBP(d: DifficultyConfig, wave: number): number {
  * 난이도→종류→정예→대장 기믹 보정 순서로 한 단계씩 올림(PRD §8.2, monsters.md §0-4). difficultyBP는 그 웨이브의 난이도 배율
  * (difficultyHpBP)이고, 생략하면 d.enemyHpBP다.
  */
-export function enemyMaxHp(b: Balance, d: DifficultyConfig, baseMilli: number, kind: EnemyKind, elite: EliteId | null, bossScaleBP = 10000, difficultyBP = d.enemyHpBP): number {
+export function enemyMaxHp(b: Balance, d: DifficultyConfig, baseMilli: number, kind: EnemyKind, elite: EliteId | null, bossScaleBP = 10000, difficultyBP = d.enemyHpBP, kindHpBP = b.enemies[kind].hpBP): number {
   let hp = bpCeil(baseMilli, difficultyBP, 'hp.difficulty');
-  hp = bpCeil(hp, b.enemies[kind].hpBP, 'hp.kind');
+  hp = bpCeil(hp, kindHpBP, 'hp.kind');
   if (elite) hp = bpCeil(hp, b.elites[elite].hpBP, 'hp.elite');
   if (bossScaleBP !== 10000) hp = bpCeil(hp, bossScaleBP, 'hp.bossScale');
   return hp;
 }
 
 /** 성문 누출 피해: 대장·정예는 leakDamage 표, 일반은 역할의 leakDamage(없으면 표의 regular). R4 B2.5에서 비행은 2다. */
-export function leakDamageOf(b: Balance, e: Pick<Enemy, 'kind' | 'elite'>): number {
+export function leakDamageOf(b: Balance, e: Pick<Enemy, 'kind' | 'elite' | 'entityId'>): number {
   if (e.kind === 'boss') return b.leakDamage.boss;
   if (e.elite) return b.leakDamage.elite;
+  if (b.r6 && e.entityId) return e.kind==='splitling'?1:b.r6.entities[e.entityId].leakDamage;
   return b.enemies[e.kind].leakDamage ?? b.leakDamage.regular;
 }
 
@@ -84,8 +85,7 @@ export function enemySpeedBP(b: Balance, kind: EnemyKind, elite: EliteId | null)
   return elite ? mulDivFloor(b.enemies[kind].speedBP, b.elites[elite].speedBP, 10000, 'speed') : b.enemies[kind].speedBP;
 }
 
-export function enemyResists(b: Balance, kind: EnemyKind, elite: EliteId | null) {
-  const k = b.enemies[kind];
+export function enemyResists(b: Balance, kind: EnemyKind, elite: EliteId | null, k: Pick<Enemy,'physicalResistBP'|'magicResistBP'> = b.enemies[kind]) {
   const add = elite ? b.elites[elite].addPhysicalResistBP : 0;
   return { physical: Math.min(b.elites.physicalResistCapBP, k.physicalResistBP + add), magic: k.magicResistBP };
 }

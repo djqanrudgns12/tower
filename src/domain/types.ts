@@ -1,3 +1,4 @@
+import type { EntityId } from '../contracts/balanceV2';
 import type { BossTier, DifficultyId, EliteId, EnemyKind, FormId, TowerId, TraitKind } from '../contracts/balance';
 import type { OptionId } from '../contracts/questions';
 
@@ -121,6 +122,8 @@ export interface ShredMark { source: number; physicalBP: number; magicBP: number
 export interface BurnSource { source: number; total: number; expiresTick: number }
 
 export interface Enemy {
+  entityId?: EntityId;
+  regen?: { nextTick:number; remaining:number };
   id: number;
   /** 역할. 수치·규칙은 역할이 정한다. */
   kind: EnemyKind;
@@ -326,7 +329,7 @@ export interface HitFx {
 export interface SplashHit { radius: number; maxTargets: number; damage: number; vulnBP: number; vulnTicks: number; slowBP: number; slowTicks: number; flyersOnly: boolean }
 
 /** 생성 예약. faction이 없으면 맵의 주력 종족, 대장의 bossTier가 없으면 1단이다(시험·연습용 줄). */
-export interface SpawnEntry { kind: EnemyKind; elite: EliteId | null; faction?: string; bossTier?: BossTier | null }
+export interface SpawnEntry { entityId?:EntityId; kind: EnemyKind; elite: EliteId | null; faction?: string; bossTier?: BossTier | null }
 
 export interface BattleState {
   spawnList: SpawnEntry[];
@@ -397,5 +400,6 @@ export interface RunState {
   hazards: FieldHazard[];
   battle: BattleState | null;
   stats: RunStats;
+  discovered?:EntityId[];
   milestoneRewardedWaves: number[];
 }

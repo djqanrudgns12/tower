@@ -1,3 +1,4 @@
+import { entityId } from '../contracts/balanceV2';
 import type { GameContext } from './context';
 import type { HazardEndReason } from './events';
 import type { DomainEvent, FieldHazard, HazardStrike, Projectile, RollerHazard, RunState, Tower, TrapHazard, ZoneHazard } from './engineTypes';
@@ -44,7 +45,16 @@ export function battleTick(ctx: GameContext, s: RunState, ev: DomainEvent[]): vo
 
   for (const e of s.enemies) if (e.alive && e.burnNextTick !== null && t >= e.burnNextTick) burnTick(ctx, s, e, ev);
   updateHazards(ctx, s, ev);
-  for (const e of s.enemies) if (e.alive && e.boss) bossMend(ctx, s, e, ev);
+  for (const e of s.enemies) {
+    if (!e.alive) continue;
+    if (e.boss) bossMend(ctx,s,e,ev);
+    if (e.regen && e.regen.remaining>0 && t>=e.regen.nextTick && e.entityId) {
+      const regen = ctx.balance.r6!.entities[e.entityId].regen!;
+      e.hp = Math.min(e.maxHp,e.hp+bpFloor(e.maxHp,regen.healBP,'regen'));
+      e.regen.nextTick += msToTicks(regen.periodMs);
+      e.regen.remaining--;
+    }
+  }
 
   for (const tower of s.towers) slowAura(ctx, s, tower);
   for (const tower of s.towers) fire(ctx, s, tower, ev);
@@ -70,17 +80,23 @@ function addEnemy(ctx: GameContext, s: RunState, entry: SpawnEntry, hpBase: numb
   const faction = entry.faction ?? campaignOf(b, ctx.map.id).primary;
   const bossTier = entry.kind === 'boss' ? (entry.bossTier ?? 1) : null;
   // 대장 기믹과 체력 보정(monsters.md §0-4·§2.0): 생존형(겹방패·회복)은 체력을 낮춰 시작한다.
-  const def = bossDef(b, { kind: entry.kind, faction, bossTier });
-  const hp = enemyMaxHp(b, ctx.difficulty, hpBase, entry.kind, entry.elite, def?.hpScaleBP ?? 10000, difficultyHpBP(ctx.difficulty, s.wave));
-  const res = enemyResists(b, entry.kind, entry.elite);
+  const entity = entry.entityId && b.r6?.entities[entry.entityId];
+  const child = entry.kind==='splitling';
+  const def = bossDef(b, { ...entry,faction,bossTier });
+  const spec = entity ?? b.enemies[entry.kind];
+  const hpBP = child && entity?.split ? bpFloor(entity.hpBP,entity.split.childHpBP,'split.hp') : spec.hpBP;
+  const hp = enemyMaxHp(b, ctx.difficulty, hpBase, entry.kind, entry.elite, def?.hpScaleBP ?? 10000, difficultyHpBP(ctx.difficulty, s.wave),hpBP);
+  const res = enemyResists(b, entry.kind, entry.elite,spec);
   // 종족 특성(prd-r4 §7.2 E): 침입 종족의 일반 적. 등껍질은 물리 저항을 더하되 정예와 합쳐 상한을 지킨다.
   const trait = enemyTrait(b, faction, entry.kind, s.wave);
   if (trait?.kind === 'shell') res.physical = Math.min(b.elites.physicalResistCapBP, res.physical + trait.physicalResistAddBP);
   const skill = def?.skill;
   const enemy: Enemy = {
-    id: s.seq.enemy++, kind: entry.kind, faction, bossTier, derived, flying: b.enemies[entry.kind].flying ?? false, groundedUntilTick: 0,
+    ...(entry.entityId && {entityId:entry.entityId}),
+    ...(entity?.regen && !child && {regen:{nextTick:s.tick+msToTicks(entity.regen.periodMs),remaining:entity.regen.times}}),
+    id: s.seq.enemy++, kind: entry.kind, faction, bossTier, derived, flying: spec.flying ?? false, groundedUntilTick: 0,
     elite: entry.elite, hp, maxHp: hp, progress, moveRem: 0,
-    speedBP: enemySpeedBP(b, entry.kind, entry.elite), physicalResistBP: res.physical, magicResistBP: res.magic,
+    speedBP: entity ? bpFloor(spec.speedBP,entry.elite ? b.elites[entry.elite].speedBP:10000,'speed') : enemySpeedBP(b, entry.kind, entry.elite), physicalResistBP: res.physical, magicResistBP: res.magic,
     slows: [], stunUntilTick: 0, stunTicksUsed: 0, burns: [], burnNextTick: null, burnRemainder: 0, vulns: [], shreds: [], knockbackUsed: 0,
     boss: skill ? {
       bornTick: s.tick, stanceUsed: false, stance: null, wardLeft: skill.kind === 'ward_layers' ? skill.layers : 0,
@@ -93,7 +109,11 @@ function addEnemy(ctx: GameContext, s: RunState, entry: SpawnEntry, hpBase: numb
     if (trait.kind === 'clay') enemy.clayMilli = clayReductionMilli(b, trait, s.wave);
   }
   s.enemies.push(enemy);
-  ev.push({ type: 'spawn', enemyId: enemy.id, kind: enemy.kind, faction: enemy.faction, art: enemyArtId(b, enemy) });
+  if (entry.entityId && !child) {
+    s.discovered ??= [];
+    if (!s.discovered.includes(entry.entityId)) s.discovered.push(entry.entityId);
+  }
+  ev.push({ type: 'spawn', ...(entry.entityId && {entityId:entry.entityId,derived}), enemyId: enemy.id, kind: enemy.kind, faction: enemy.faction, art: enemyArtId(b, enemy) });
   return enemy;
 }
 
@@ -611,7 +631,8 @@ function bossThresholds(ctx: GameContext, s: RunState, e: Enemy, ev: DomainEvent
       const n = skill.escorts.length;
       skill.escorts.forEach((kind, i) => {
         const offset = n === 1 ? skill.spreadMilli : -skill.spreadMilli + Math.floor((2 * skill.spreadMilli * i) / (n - 1));
-        addEnemy(ctx, s, { kind, elite: null, faction: e.faction }, hpBase, Math.min(ctx.path.length - 1, Math.max(0, e.progress + offset)), true, ev);
+        const parent = e.entityId && ctx.balance.r6?.entities[e.entityId];
+        addEnemy(ctx, s, { kind, elite: null, faction: e.faction, ...(parent && {entityId:entityId(parent.species,'infantry',1)}) }, hpBase, Math.min(ctx.path.length - 1, Math.max(0, e.progress + offset)), true, ev);
       });
     }
   }
@@ -811,13 +832,14 @@ function killGoldAura(ctx: GameContext, s: RunState, killer: number, ev: DomainE
  * 같은 틱 뒤 타워의 표적이 될 수 있고, 처치 유발 효과(towers.md §4-8)는 이 뒤에 온다.
  */
 function split(ctx: GameContext, s: RunState, e: Enemy, ev: DomainEvent[]) {
-  const rule = ctx.balance.enemies[e.kind].split;
+  const entity = e.entityId && ctx.balance.r6?.entities[e.entityId];
+  const rule = entity ? e.kind !== 'splitling' && entity.split && {...entity.split,kind:'splitling' as const} : ctx.balance.enemies[e.kind].split;
   if (!rule) return;
   const hpBase = s.battle?.hpBaseMilli ?? waveHpBaseMilli(ctx.balance, s.wave);
   for (let i = 0; i < rule.count; i++) {
     const offset = rule.count === 1 ? 0 : -rule.spreadMilli + Math.floor((2 * rule.spreadMilli * i) / (rule.count - 1));
     const progress = Math.min(ctx.path.length - 1, Math.max(0, e.progress + offset));
-    addEnemy(ctx, s, { kind: rule.kind, elite: null, faction: e.faction }, hpBase, progress, true, ev);
+    addEnemy(ctx, s, { kind: rule.kind, elite: null, faction: e.faction,...(e.entityId && {entityId:e.entityId}) }, hpBase, progress, true, ev);
   }
 }
 

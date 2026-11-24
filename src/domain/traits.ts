@@ -15,7 +15,7 @@ export function factionTrait(b: Balance, faction: string, wave: number): Faction
 
 /** 적 하나에 붙는 특성: 대장은 붙지 않는다(대장 기믹 6종은 그대로). 비행 적은 땅굴을 파지 않는다. */
 export function enemyTrait(b: Balance, faction: string, kind: EnemyKind, wave: number): FactionTrait | null {
-  if (kind === 'boss') return null;
+  if (b.r6 || kind === 'boss') return null;
   const t = factionTrait(b, faction, wave);
   if (!t) return null;
   if (t.kind === 'burrow' && b.enemies[kind].flying) return null;

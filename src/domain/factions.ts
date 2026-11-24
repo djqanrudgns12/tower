@@ -28,7 +28,8 @@ export function artRoleOf(b: Balance, e: Pick<Enemy, 'kind' | 'bossTier'>): ArtR
  * 렌더러가 쓸 그림 id: `<종족 artPrefix>.<역할 또는 boss5~boss20>`(예: acorn.runner, river.boss10).
  * 종족 팩의 artAlias가 있으면 그 id를 대신 쓴다(예: 정원 보병 acorn.walker → 기존 enemy.walker).
  */
-export function enemyArtId(b: Balance, e: Pick<Enemy, 'kind' | 'faction' | 'bossTier'>): string {
+export function enemyArtId(b: Balance, e: Pick<Enemy, 'kind' | 'faction' | 'bossTier' | 'entityId'>): string {
+  if (e.entityId && b.r6) return `r6.enemy.${e.entityId}${e.kind==='splitling'?'.fragment':''}`;
   const f = b.factions[e.faction];
   if (!f) throw new Error(`없는 종족: ${e.faction}`);
   const role = artRoleOf(b, e);
@@ -36,8 +37,9 @@ export function enemyArtId(b: Balance, e: Pick<Enemy, 'kind' | 'faction' | 'boss
 }
 
 /** 대장의 기믹과 체력 보정(종족 팩 bosses). 대장이 아니거나 정의가 없으면 null. */
-export function bossDef(b: Balance, e: Pick<Enemy, 'kind' | 'faction' | 'bossTier'>): { skill: BossSkill; hpScaleBP: number } | null {
+export function bossDef(b: Balance, e: Pick<Enemy, 'kind' | 'faction' | 'bossTier' | 'entityId'>): { skill: BossSkill; hpScaleBP: number } | null {
   if (e.kind !== 'boss') return null;
+  if (e.entityId && b.r6) return b.r6.entities[e.entityId].boss ?? null;
   const def = b.factions[e.faction]?.bosses?.[bossRank(e.bossTier ?? 1)];
   return def ? { skill: def.skill, hpScaleBP: def.hpScaleBP ?? 10000 } : null;
 }
@@ -49,7 +51,7 @@ export function burstMarching(skill: { periodMs: number; durationMs: number }, b
 }
 
 /** 화면용 이름(도감·대장 등장 알림). 종족 표에 이름이 없으면 null(비행·분열 개체는 그림 생산 때 이름을 더한다). */
-export function enemyName(b: Balance, e: Pick<Enemy, 'kind' | 'faction' | 'bossTier'>): string | null {
+export function enemyName(b: Balance, e: Pick<Enemy, 'kind' | 'faction' | 'bossTier' | 'entityId'>): string | null {
   return b.factions[e.faction]?.names?.[artRoleOf(b, e)] ?? null;
 }
 

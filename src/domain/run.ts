@@ -1,3 +1,4 @@
+import { previewR6Wave } from './r6Mixer';
 import type { FormId, TowerId } from '../contracts/balance';
 import type { OptionId } from '../contracts/questions';
 import { battleTick, towerSpeedBonusBP } from './combat';
@@ -376,7 +377,10 @@ function startBattle(ctx: GameContext, s: RunState, ev: DomainEvent[]): CommandE
   if (s.phase !== 'BUILD') return 'WRONG_PHASE';
   const b = ctx.balance;
   const rng = { s: s.rng.battle };
-  const spawnList = composeWave(b, ctx.map.id, s.wave, rng);
+  const r6 = b.r6;
+  const spawnList = r6 ? previewR6Wave(r6.rules,ctx.map.id,s.config.seed,s.wave).map(e => ({
+    kind:r6.entities[e.id].kind,entityId:e.id,faction:e.species,elite:e.elite,bossTier:e.lineage==='boss'?e.tier:null,
+  })) : composeWave(b,ctx.map.id,s.wave,rng);
   s.rng.battle = rng.s;
   s.battle = { spawnList, spawnIndex: 0, nextSpawnTick: s.tick + 1, intervalTicks: spawnIntervalTicks(b, s.wave), hpBaseMilli: waveHpBaseMilli(b, s.wave), startedTick: s.tick };
   // 시작 때 버닝은 없고(0), 깃발 B의 속도 보너스는 바로 적용한다.
