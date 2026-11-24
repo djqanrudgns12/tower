@@ -42,6 +42,15 @@ function isSafeDocumentResponse(response) {
   return contentType.includes('text/html');
 }
 
+async function cacheResponse(request, response) {
+  try {
+    const cache = await caches.open(CACHE_NAME);
+    await cache.put(request, response.clone());
+  } catch {
+    // 저장 공간이 부족하거나 캐시에 접근할 수 없어도 네트워크 응답을 돌려준다.
+  }
+}
+
 async function fetchWithTimeout(request, timeoutMs) {
   const ctrl = new AbortController();
   const timer = setTimeout(() => ctrl.abort(), timeoutMs);
@@ -64,15 +73,14 @@ self.addEventListener('fetch', event => {
     const shellUrl = new URL('./', self.registration.scope).href;
     event.respondWith(
       (async () => {
-        const cache = await caches.open(CACHE_NAME);
         try {
           const fresh = await fetchWithTimeout(request, NAV_TIMEOUT_MS);
           if (isSafeDocumentResponse(fresh)) {
-            await cache.put(shellUrl, fresh.clone());
+            await cacheResponse(shellUrl, fresh);
           }
           return fresh;
         } catch {
-          const cached = await cache.match(shellUrl);
+          const cached = await caches.match(shellUrl, { cacheName: CACHE_NAME }).catch(() => undefined);
           if (cached) return cached;
           return fetch(request);
         }
@@ -87,12 +95,11 @@ self.addEventListener('fetch', event => {
 
   event.respondWith(
     (async () => {
-      const cache = await caches.open(CACHE_NAME);
-      const cached = await cache.match(request);
+      const cached = await caches.match(request, { cacheName: CACHE_NAME }).catch(() => undefined);
       if (cached) return cached;
       const fresh = await fetch(request);
       if (isSafeStaticResponse(fresh)) {
-        await cache.put(request, fresh.clone());
+        await cacheResponse(request, fresh);
       }
       return fresh;
     })(),

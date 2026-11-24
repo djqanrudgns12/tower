@@ -24,25 +24,28 @@ const hostGuardIdentity: Plugin = {
 const stampServiceWorker: Plugin = {
   name: 'tower-stamp-service-worker',
   apply: 'build',
-  closeBundle() {
-    const distDir = path.resolve(process.cwd(), 'dist');
-    const swPath = path.join(distDir, 'sw.js');
+  writeBundle({ dir }) {
+    if (!dir) return;
+    const swPath = path.join(dir, 'sw.js');
     if (!existsSync(swPath)) return;
     const hash = createHash('sha256');
-    const assetsDir = path.join(distDir, 'assets');
+    const hashFile = (file: string) => {
+      const digest = createHash('sha256').update(readFileSync(file)).digest('hex');
+      hash.update(JSON.stringify([path.relative(dir, file), digest]));
+    };
+    const assetsDir = path.join(dir, 'assets');
     if (existsSync(assetsDir)) {
       const walk = (dir: string) => {
         for (const entry of readdirSync(dir).sort()) {
           const full = path.join(dir, entry);
-          const st = statSync(full);
-          if (st.isDirectory()) walk(full);
-          else hash.update(`${path.relative(distDir, full)}:${st.size}\n`);
+          if (statSync(full).isDirectory()) walk(full);
+          else hashFile(full);
         }
       };
       walk(assetsDir);
     }
-    const indexHtml = path.join(distDir, 'index.html');
-    if (existsSync(indexHtml)) hash.update(readFileSync(indexHtml));
+    const indexHtml = path.join(dir, 'index.html');
+    if (existsSync(indexHtml)) hashFile(indexHtml);
     const stamp = hash.digest('hex').slice(0, 12);
     const swSource = readFileSync(swPath, 'utf8');
     writeFileSync(swPath, swSource.replace('__VOCA_SW_BUILD__', stamp), 'utf8');
