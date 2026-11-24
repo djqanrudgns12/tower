@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>R05 전투 화면 · 고대 석조 유적</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@600;700;900&display=swap" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/gh/sun-typeface/SUIT@2/fonts/variable/woff2/SUIT-Variable.css" rel="stylesheet" />
+  <style>
+    :root {
+      --sand: #D6B892;
+      --terracotta: #A66A4C;
+      --umber: #4A3731;
+      --twilight: #24232B;
+      --turquoise: #3E8E8E;
+      --twilight-panel: rgba(36, 35, 43, 0.94);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body {
+      width: 1280px;
+      height: 720px;
+      overflow: hidden;
+      background: var(--twilight);
+      color: var(--sand);
+      font-family: 'SUIT Variable', 'SUIT', 'Apple SD Gothic Neo', sans-serif;
+    }
+
+    /* Proportional Stone Frame Layout */
+    .frame {
+      position: relative;
+      width: 1280px;
+      height: 720px;
+      padding: 12px 14px;
+      display: grid;
+      grid-template-rows: 46px 1fr 152px;
+      grid-template-columns: 1fr 224px;
+      gap: 10px;
+      background: var(--twilight);
+    }
+
+    /* Subtle carved border ornament utility */
+    .stone-panel {
+      background: var(--twilight);
+      border: 1.5px solid var(--umber);
+      box-shadow: inset 0 0 0 1px rgba(214, 184, 146, 0.12);
+    }
+
+    /* Top HUD */
+    .hud-top {
+      grid-column: 1 / -1;
+      grid-row: 1;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+    .hud-left {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .hud-pill {
+      height: 46px;
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      padding: 0 14px;
+      background: var(--twilight);
+      border: 1.5px solid var(--umber);
+      box-shadow: inset 0 1px 0 rgba(214, 184, 146, 0.16);
+    }
+    .hud-pill.gate {
+      border-color: var(--turquoise);
+      box-shadow: inset 0 0 0 1px rgba(62, 142, 142, 0.25);
+    }
+    .hud-label {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--terracotta);
+      letter-spacing: 0.02em;
+    }
+    .hud-pill.gate .hud-label {
+      color: var(--sand);
+    }
+    .hud-val {
+      font-size: 18px;
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+      color: var(--sand);
+      line-height: 1;
+    }
+    .hud-val.turquoise {
+      color: var(--turquoise);
+    }
+    .gate-bar {
+      width: 60px;
+      height: 8px;
+      background: var(--umber);
+      border: 1px solid rgba(214, 184, 146, 0.35);
+      padding: 1px;
+    }
+    .gate-fill {
+      width: 100%;
+      height: 100%;
+      background: var(--turquoise);
+    }
+
+    .hud-right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .pause-btn {
+      height: 46px;
+      padding: 0 18px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--umber);
+      color: var(--sand);
+      border: 1.5px solid var(--terracotta);
+      font-family: 'SUIT Variable', 'SUIT', sans-serif;
+      font-size: 13.5px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    /* Battlefield Viewport */
+    .stage-wrap {
+      grid-column: 1;
+      grid-row: 2;
+      position: relative;
+      border: 1.5px solid var(--umber);
+      background: var(--twilight);
+      overflow: hidden;
+    }
+    .stage-wrap::after {
+      content: "";
+      position: absolute;
+      inset: 6px;
+      border: 1px solid rgba(214, 184, 146, 0.16);
+      pointer-events: none;
+    }
+    .stage-img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      object-position: center center;
+      display: block;
+    }
+
+    /* Right Tower Dock */
+    .tower-dock {
+      grid-column: 2;
+      grid-row: 2;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .dock-header {
+      height: 32px;
+      background: var(--umber);
+      border: 1.5px solid var(--terracotta);
+      padding: 0 11px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-family: 'Noto Serif KR', serif;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--sand);
+    }
+    .dock-sub {
+      font-family: 'SUIT Variable', 'SUIT', sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--turquoise);
+      background: var(--twilight);
+      padding: 2px 7px;
+      border: 1px solid var(--turquoise);
+    }
+    .tower-list {
+      flex: 1;
+      display: grid;
+      grid-template-rows: repeat(4, 1fr);
+      gap: 8px;
+    }
+    .tower-card {
+      background: var(--twilight);
+      border: 1.5px solid var(--umber);
+      padding: 8px 10px;
+      display: grid;
+      grid-template-columns: 44px 1fr;
+      gap: 9px;
+      align-items: center;
+    }
+    .tower-card.selected {
+      border-color: var(--turquoise);
+      border-left: 5px solid var(--turquoise);
+      background: #292933;
+    }
+    .tower-thumb-wrap {
+      width: 44px;
+      height: 44px;
+      border: 1px solid var(--umber);
+      background: var(--twilight);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .tower-card.selected .tower-thumb-wrap {
+      border-color: var(--turquoise);
+    }
+    canvas.tower-mini {
+      width: 40px;
+      height: 40px;
+      display: block;
+    }
+    .tower-info {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 5px;
+      min-width: 0;
+    }
+    .tower-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 4px;
+    }
+    .tower-name {
+      font-family: 'Noto Serif KR', serif;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--sand);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .tower-cost {
+      padding: 2px 6px;
+      background: var(--umber);
+      color: var(--sand);
+      font-size: 11px;
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+      flex-shrink: 0;
+    }
+    .tower-card.selected .tower-cost {
+      background: var(--turquoise);
+      color: var(--twilight);
+    }
+    .tower-bottom {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--terracotta);
+    }
+    .tower-key {
+      width: 18px;
+      height: 18px;
+      border: 1px solid var(--umber);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10.5px;
+      font-weight: 700;
+      color: var(--sand);
+    }
+
+    /* Bottom Quiz Panel */
+    .quiz-panel {
+      grid-column: 1 / -1;
+      grid-row: 3;
+      background: var(--twilight);
+      border: 1.5px solid var(--umber);
+      box-shadow: inset 0 0 0 1px rgba(214, 184, 146, 0.14);
+      padding: 12px 16px;
+      display: grid;
+      grid-template-columns: 430px 1fr;
+      gap: 18px;
+      align-items: center;
+    }
+    .quiz-left {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      border-right: 1.5px solid var(--umber);
+      padding-right: 18px;
+    }
+    .quiz-meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .quiz-tag {
+      padding: 2px 9px;
+      background: var(--turquoise);
+      color: var(--twilight);
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.03em;
+    }
+    .quiz-reward {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--terracotta);
+    }
+    .quiz-question {
+      font-family: 'Noto Serif KR', serif;
+      font-size: 21px;
+      font-weight: 700;
+      line-height: 1.35;
+      color: var(--sand);
+    }
+    .quiz-question .word-emph {
+      color: var(--sand);
+      border-bottom: 2px solid var(--turquoise);
+      padding-bottom: 1px;
+    }
+    .quiz-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .quiz-hint {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--terracotta);
+    }
+    .skip-btn {
+      padding: 5px 13px;
+      background: var(--umber);
+      color: var(--sand);
+      border: 1px solid var(--terracotta);
+      font-family: 'SUIT Variable', 'SUIT', sans-serif;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .quiz-choices {
+      height: 100%;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: 1fr 1fr;
+      gap: 10px;
+    }
+    .choice-btn {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      padding: 0 14px;
+      background: #2B2A34;
+      border: 1.5px solid var(--umber);
+      box-shadow: inset 0 1px 0 rgba(214, 184, 146, 0.10);
+      font-family: 'SUIT Variable', 'SUIT', sans-serif;
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--sand);
+    }
+    .choice-num {
+      width: 26px;
+      height: 26px;
+      flex-shrink: 0;
+      background: var(--umber);
+      border: 1px solid var(--terracotta);
+      color: var(--sand);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+    }
+  </style>
+</head>
+<body>
+  <div class="frame">
+    <!-- Top HUD -->
+    <header class="hud-top">
+      <div class="hud-left">
+        <div class="hud-pill gate">
+          <svg width="16" height="16" viewBox="0 0 20 20" fill="none">
+            <path d="M3 18V7L10 2L17 7V18H13V11.5H7V18H3Z" fill="#D6B892"/>
+            <rect x="8.5" y="5.5" width="3" height="3" transform="rotate(45 10 7)" fill="#3E8E8E"/>
+          </svg>
+          <span class="hud-label">성문</span>
+          <span class="hud-val">20/20</span>
+          <div class="gate-bar"><div class="gate-fill"></div></div>
+        </div>
+
+        <div class="hud-pill">
+          <svg width="16" height="16" viewBox="0 0 20 20" fill="none">
+            <polygon points="10,2 18,10 10,18 2,10" fill="#A66A4C" stroke="#D6B892" stroke-width="1.3"/>
+            <polygon points="10,6 14,10 10,14 6,10" fill="#3E8E8E"/>
+          </svg>
+          <span class="hud-label">골드</span>
+          <span class="hud-val turquoise">240</span>
+        </div>
+
+        <div class="hud-pill">
+          <span class="hud-label">웨이브</span>
+          <span class="hud-val">3/10</span>
+        </div>
+
+        <div class="hud-pill">
+          <span class="hud-label">남은 적</span>
+          <span class="hud-val">12</span>
+        </div>
+      </div>
+
+      <div class="hud-right">
+        <button class="pause-btn" type="button">
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+            <rect x="1.5" y="1" width="3" height="10" fill="#D6B892"/>
+            <rect x="7.5" y="1" width="3" height="10" fill="#D6B892"/>
+          </svg>
+          <span>일시정지</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Battlefield Viewport -->
+    <main class="stage-wrap">
+      <img class="stage-img" src="assets/battle.webp" alt="고대 석조 유적 전장" />
+    </main>
+
+    <!-- Right Tower Dock -->
+    <aside class="tower-dock">
+      <div class="dock-header">
+        <span>타워 설치</span>
+        <span class="dock-sub">4종</span>
+      </div>
+      <div class="tower-list">
+        <div class="tower-card selected">
+          <div class="tower-thumb-wrap">
+            <canvas class="tower-mini" width="40" height="40" data-cell="0,0"></canvas>
+          </div>
+          <div class="tower-info">
+            <div class="tower-top">
+              <span class="tower-name">사암 자동 쇠뇌탑</span>
+              <span class="tower-cost">60G</span>
+            </div>
+            <div class="tower-bottom">
+              <span>단일 빠른 사격</span>
+              <span class="tower-key">1</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="tower-card">
+          <div class="tower-thumb-wrap">
+            <canvas class="tower-mini" width="40" height="40" data-cell="1,0"></canvas>
+          </div>
+          <div class="tower-info">
+            <div class="tower-top">
+              <span class="tower-name">해시계 투석 제단</span>
+              <span class="tower-cost">90G</span>
+            </div>
+            <div class="tower-bottom">
+              <span>넓은 범위 타격</span>
+              <span class="tower-key">2</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="tower-card">
+          <div class="tower-thumb-wrap">
+            <canvas class="tower-mini" width="40" height="40" data-cell="1,1"></canvas>
+          </div>
+          <div class="tower-info">
+            <div class="tower-top">
+              <span class="tower-name">청록 공명비</span>
+              <span class="tower-cost">80G</span>
+            </div>
+            <div class="tower-bottom">
+              <span>주변 적 감속</span>
+              <span class="tower-key">3</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="tower-card">
+          <div class="tower-thumb-wrap">
+            <canvas class="tower-mini" width="40" height="40" data-cell="1,2"></canvas>
+          </div>
+          <div class="tower-info">
+            <div class="tower-top">
+              <span class="tower-name">모래시계 석주</span>
+              <span class="tower-cost">110G</span>
+            </div>
+            <div class="tower-bottom">
+              <span>이동 지연 · 지속</span>
+              <span class="tower-key">4</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Bottom Quiz Panel -->
+    <section class="quiz-panel">
+      <div class="quiz-left">
+        <div class="quiz-meta">
+          <span class="quiz-tag">어휘 문제</span>
+          <span class="quiz-reward">정답 시 +45 골드</span>
+        </div>
+        <div class="quiz-question">
+          ‘<span class="word-emph">의젓하다</span>’의 뜻으로 알맞은 것은?
+        </div>
+        <div class="quiz-footer">
+          <span class="quiz-hint">뜻을 고르면 바로 골드를 얻습니다</span>
+          <button class="skip-btn" type="button">모르겠어요</button>
+        </div>
+      </div>
+
+      <div class="quiz-choices">
+        <div class="choice-btn">
+          <span class="choice-num">1</span>
+          <span>장난이 심하고 철이 없다</span>
+        </div>
+        <div class="choice-btn">
+          <span class="choice-num">2</span>
+          <span>몸집이 작고 가볍다</span>
+        </div>
+        <div class="choice-btn">
+          <span class="choice-num">3</span>
+          <span>말과 행동이 점잖고 믿음직하다</span>
+        </div>
+        <div class="choice-btn">
+          <span class="choice-num">4</span>
+          <span>목소리가 가늘고 높다</span>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    window.__MOCK_READY__ = (async () => {
+      const stageImg = document.querySelector('.stage-img');
+      if (stageImg && !stageImg.complete) {
+        await new Promise((res, rej) => { stageImg.onload = res; stageImg.onerror = rej; });
+      }
+      if (stageImg) {
+        const bgCanvas = document.createElement('canvas');
+        bgCanvas.width = 16;
+        bgCanvas.height = 16;
+        const bctx = bgCanvas.getContext('2d');
+        bctx.drawImage(stageImg, 0, 0, 16, 16, 0, 0, 16, 16);
+        const px = bctx.getImageData(8, 8, 1, 1).data;
+        document.querySelector('.stage-wrap').style.background = `rgb(${px[0]},${px[1]},${px[2]})`;
+      }
+
+      const img = new Image();
+      img.src = 'assets/towers.webp';
+      await new Promise((res, rej) => { img.onload = res; img.onerror = rej; });
+      const off = document.createElement('canvas');
+      off.width = img.naturalWidth;
+      off.height = img.naturalHeight;
+      const octx = off.getContext('2d');
+      octx.drawImage(img, 0, 0);
+      const full = octx.getImageData(0, 0, off.width, off.height);
+      const bgR = full.data[10 * 4], bgG = full.data[10 * 4 + 1], bgB = full.data[10 * 4 + 2];
+
+      const rowBoxes = [
+        [0, Math.floor(off.height * 0.50)],
+        [Math.floor(off.height * 0.50), off.height]
+      ];
+      const colBoxes = [
+        [0, Math.floor(off.width * 0.34)],
+        [Math.floor(off.width * 0.34), Math.floor(off.width * 0.66)],
+        [Math.floor(off.width * 0.66), off.width]
+      ];
+
+      for (const canvas of document.querySelectorAll('canvas.tower-mini')) {
+        const [r, c] = canvas.dataset.cell.split(',').map(Number);
+        const [y0, y1] = rowBoxes[r];
+        const [x0, x1] = colBoxes[c];
+        let minX = x1, minY = y1, maxX = x0, maxY = y0;
+        for (let y = y0; y < y1; y++) {
+          for (let x = x0; x < x1; x++) {
+            const idx = (y * off.width + x) * 4;
+            const diff = Math.abs(full.data[idx] - bgR) + Math.abs(full.data[idx + 1] - bgG) + Math.abs(full.data[idx + 2] - bgB);
+            if (diff > 32) {
+              if (x < minX) minX = x;
+              if (x > maxX) maxX = x;
+              if (y < minY) minY = y;
+              if (y > maxY) maxY = y;
+            }
+          }
+        }
+        const bw = Math.max(1, maxX - minX + 1);
+        const bh = Math.max(1, maxY - minY + 1);
+        const ctx = canvas.getContext('2d');
+        ctx.fillStyle = '#24232B';
+        ctx.fillRect(0, 0, 40, 40);
+        const scale = Math.min(34 / bw, 34 / bh);
+        const dw = bw * scale;
+        const dh = bh * scale;
+        ctx.drawImage(img, minX, minY, bw, bh, (40 - dw) / 2, (40 - dh) / 2, dw, dh);
+      }
+    })();
+  </script>
+</body>
+</html>

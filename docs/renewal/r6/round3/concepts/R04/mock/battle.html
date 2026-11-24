@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=1280, initial-scale=1.0" />
+  <title>R04 · 전술 지도 + 전술 UI — 전투 화면</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/gh/sun-typeface/SUIT@2/fonts/variable/woff2/SUIT-Variable.css" rel="stylesheet" />
+  <style>
+    :root {
+      --carbon: #12161B;
+      --slate: #1D242C;
+      --grid: #4A5563;
+      --silver: #B8C0C8;
+      --amber: #E69F24;
+      --teal: #2FB5A3;
+      --font-plex: 'IBM Plex Sans KR', sans-serif;
+      --font-suit: 'SUIT Variable', 'SUIT', sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      width: 1280px;
+      height: 720px;
+      overflow: hidden;
+      background: var(--carbon);
+      color: var(--silver);
+      font-family: var(--font-suit);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .stage {
+      position: relative;
+      width: 1280px;
+      height: 720px;
+      overflow: hidden;
+      background: var(--carbon);
+    }
+
+    .battle-bg {
+      position: absolute;
+      inset: 0;
+      width: 1280px;
+      height: 720px;
+      object-fit: cover;
+      object-position: center center;
+      display: block;
+    }
+
+    /* Subtle edge matte gradient only behind HUD edges for crisp legibility */
+    .edge-shade {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background:
+        linear-gradient(180deg, rgba(18, 22, 27, 0.55) 0%, rgba(18, 22, 27, 0) 14%),
+        linear-gradient(0deg, rgba(18, 22, 27, 0.72) 0%, rgba(18, 22, 27, 0) 28%);
+    }
+
+    /* 1px hairline chamfered panel system */
+    .chamfer-box {
+      position: relative;
+      background: var(--grid);
+      padding: 1px;
+      clip-path: polygon(
+        10px 0, 100% 0, 100% calc(100% - 10px),
+        calc(100% - 10px) 100%, 0 100%, 0 10px
+      );
+    }
+
+    .chamfer-inner {
+      background: rgba(18, 22, 27, 0.92);
+      clip-path: polygon(
+        9.5px 0, 100% 0, 100% calc(100% - 9.5px),
+        calc(100% - 9.5px) 100%, 0 100%, 0 9.5px
+      );
+      width: 100%;
+      height: 100%;
+    }
+
+    .chamfer-sm {
+      background: var(--grid);
+      padding: 1px;
+      clip-path: polygon(
+        6px 0, 100% 0, 100% calc(100% - 6px),
+        calc(100% - 6px) 100%, 0 100%, 0 6px
+      );
+    }
+
+    .chamfer-sm-inner {
+      background: rgba(29, 36, 44, 0.94);
+      clip-path: polygon(
+        5.5px 0, 100% 0, 100% calc(100% - 5.5px),
+        calc(100% - 5.5px) 100%, 0 100%, 0 5.5px
+      );
+      width: 100%;
+      height: 100%;
+    }
+
+    /* Top-left tactical status HUD */
+    .top-hud {
+      position: absolute;
+      top: 16px;
+      left: 16px;
+      height: 46px;
+      z-index: 10;
+    }
+
+    .status-strip {
+      display: flex;
+      align-items: center;
+      height: 44px;
+      padding: 0 6px;
+    }
+
+    .stat-cell {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      padding: 0 16px;
+      height: 28px;
+      border-right: 1px solid var(--grid);
+    }
+
+    .stat-cell:last-child {
+      border-right: none;
+    }
+
+    .stat-marker {
+      width: 7px;
+      height: 7px;
+      flex-shrink: 0;
+    }
+
+    .marker-teal { background: var(--teal); }
+    .marker-amber { background: var(--amber); transform: rotate(45deg); }
+    .marker-grid { border: 1px solid var(--silver); }
+
+    .stat-label {
+      font-family: var(--font-suit);
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      color: var(--silver);
+      opacity: 0.78;
+    }
+
+    .stat-value {
+      font-family: var(--font-plex);
+      font-size: 17px;
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+      letter-spacing: -0.02em;
+      color: var(--silver);
+    }
+
+    .val-teal { color: var(--teal); }
+    .val-amber { color: var(--amber); }
+
+    /* Top-right single pause control (NO speed button) */
+    .top-right-ctrl {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      z-index: 10;
+    }
+
+    .pause-btn {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 0 16px;
+      height: 44px;
+      font-family: var(--font-suit);
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--silver);
+      letter-spacing: 0.02em;
+    }
+
+    .pause-glyph {
+      display: flex;
+      gap: 3px;
+      align-items: center;
+    }
+
+    .pause-glyph span {
+      display: block;
+      width: 3px;
+      height: 11px;
+      background: var(--silver);
+    }
+
+    /* Right side tower installation dock */
+    .tower-dock {
+      position: absolute;
+      top: 74px;
+      right: 16px;
+      width: 232px;
+      z-index: 10;
+    }
+
+    .dock-inner {
+      padding: 12px;
+      position: relative;
+    }
+
+    .dock-inner::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 16px;
+      width: 48px;
+      height: 2px;
+      background: var(--teal);
+    }
+
+    .dock-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--grid);
+    }
+
+    .dock-title {
+      font-family: var(--font-plex);
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--silver);
+      letter-spacing: 0.02em;
+    }
+
+    .dock-sub {
+      font-family: var(--font-plex);
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--teal);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .tower-list {
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+    }
+
+    .tower-card-wrap {
+      background: var(--grid);
+      padding: 1px;
+      clip-path: polygon(
+        6px 0, 100% 0, 100% calc(100% - 6px),
+        calc(100% - 6px) 100%, 0 100%, 0 6px
+      );
+    }
+
+    .tower-card-wrap.active {
+      background: var(--teal);
+    }
+
+    .tower-card {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 7px 9px;
+      background: var(--slate);
+      clip-path: polygon(
+        5.5px 0, 100% 0, 100% calc(100% - 5.5px),
+        calc(100% - 5.5px) 100%, 0 100%, 0 5.5px
+      );
+    }
+
+    .tower-card-wrap.active .tower-card {
+      background: rgba(29, 36, 44, 0.98);
+    }
+
+    .tower-thumb-box {
+      width: 44px;
+      height: 44px;
+      flex-shrink: 0;
+      background: var(--carbon);
+      border: 1px solid var(--grid);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .tower-thumb-box canvas {
+      width: 40px;
+      height: 40px;
+      display: block;
+    }
+
+    .tower-meta {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .tower-name {
+      font-family: var(--font-suit);
+      font-size: 12.5px;
+      font-weight: 700;
+      color: var(--silver);
+      line-height: 1.25;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .tower-row-sub {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 4px;
+    }
+
+    .tower-role {
+      font-family: var(--font-suit);
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--silver);
+      opacity: 0.7;
+    }
+
+    .tower-cost {
+      font-family: var(--font-plex);
+      font-size: 13px;
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+      color: var(--amber);
+    }
+
+    /* Bottom vocabulary quiz panel */
+    .quiz-dock {
+      position: absolute;
+      left: 16px;
+      bottom: 16px;
+      width: 996px;
+      z-index: 10;
+    }
+
+    .quiz-inner {
+      padding: 13px 16px 14px;
+      position: relative;
+    }
+
+    .quiz-inner::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 20px;
+      width: 68px;
+      height: 2px;
+      background: var(--amber);
+    }
+
+    .quiz-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+
+    .quiz-prompt-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .quiz-tag {
+      font-family: var(--font-plex);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      color: var(--carbon);
+      background: var(--amber);
+      padding: 3px 9px;
+      clip-path: polygon(4px 0, 100% 0, calc(100% - 4px) 100%, 0 100%);
+    }
+
+    .quiz-question {
+      font-family: var(--font-plex);
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--silver);
+      letter-spacing: -0.01em;
+    }
+
+    .quiz-question .hl {
+      color: var(--amber);
+    }
+
+    .skip-wrap {
+      flex-shrink: 0;
+    }
+
+    .skip-btn {
+      padding: 6px 14px;
+      font-family: var(--font-suit);
+      font-size: 12.5px;
+      font-weight: 600;
+      color: var(--silver);
+      background: rgba(29, 36, 44, 0.88);
+    }
+
+    .choices-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px 10px;
+    }
+
+    .choice-wrap {
+      background: var(--grid);
+      padding: 1px;
+      clip-path: polygon(
+        6px 0, 100% 0, 100% calc(100% - 6px),
+        calc(100% - 6px) 100%, 0 100%, 0 6px
+      );
+    }
+
+    .choice-card {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      padding: 8px 12px;
+      background: rgba(29, 36, 44, 0.94);
+      clip-path: polygon(
+        5.5px 0, 100% 0, 100% calc(100% - 5.5px),
+        calc(100% - 5.5px) 100%, 0 100%, 0 5.5px
+      );
+    }
+
+    .choice-num {
+      width: 22px;
+      height: 22px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid var(--grid);
+      background: var(--carbon);
+      font-family: var(--font-plex);
+      font-size: 12px;
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+      color: var(--teal);
+    }
+
+    .choice-text {
+      font-family: var(--font-suit);
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--silver);
+    }
+  </style>
+</head>
+<body>
+  <div class="stage">
+    <img class="battle-bg" src="assets/battle.webp" alt="전술 지형도 전장" />
+    <div class="edge-shade"></div>
+
+    <!-- Top-left tactical HUD -->
+    <div class="top-hud chamfer-box">
+      <div class="chamfer-inner status-strip">
+        <div class="stat-cell">
+          <div class="stat-marker marker-teal"></div>
+          <span class="stat-label">성문</span>
+          <span class="stat-value val-teal">20 / 20</span>
+        </div>
+        <div class="stat-cell">
+          <div class="stat-marker marker-amber"></div>
+          <span class="stat-label">골드</span>
+          <span class="stat-value val-amber">240</span>
+        </div>
+        <div class="stat-cell">
+          <div class="stat-marker marker-grid"></div>
+          <span class="stat-label">웨이브</span>
+          <span class="stat-value">3 / 10</span>
+        </div>
+        <div class="stat-cell">
+          <div class="stat-marker marker-grid"></div>
+          <span class="stat-label">남은 적</span>
+          <span class="stat-value">12</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Top-right pause button -->
+    <div class="top-right-ctrl chamfer-box">
+      <div class="chamfer-inner pause-btn">
+        <div class="pause-glyph"><span></span><span></span></div>
+        <span>일시정지</span>
+      </div>
+    </div>
+
+    <!-- Right tower deployment list -->
+    <div class="tower-dock chamfer-box">
+      <div class="chamfer-inner dock-inner">
+        <div class="dock-header">
+          <span class="dock-title">타워 설치</span>
+          <span class="dock-sub">LV.1 · 4종</span>
+        </div>
+        <div class="tower-list">
+          <div class="tower-card-wrap active">
+            <div class="tower-card">
+              <div class="tower-thumb-box"><canvas id="t-rail" width="40" height="40"></canvas></div>
+              <div class="tower-meta">
+                <div class="tower-name">경량 자동 레일포탑</div>
+                <div class="tower-row-sub">
+                  <span class="tower-role">단일 사격</span>
+                  <span class="tower-cost">60 G</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="tower-card-wrap">
+            <div class="tower-card">
+              <div class="tower-thumb-box"><canvas id="t-mortar" width="40" height="40"></canvas></div>
+              <div class="tower-meta">
+                <div class="tower-name">곡사 박격포대</div>
+                <div class="tower-row-sub">
+                  <span class="tower-role">범위 포격</span>
+                  <span class="tower-cost">85 G</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="tower-card-wrap">
+            <div class="tower-card">
+              <div class="tower-thumb-box"><canvas id="t-pulse" width="40" height="40"></canvas></div>
+              <div class="tower-meta">
+                <div class="tower-name">파동 감속 중계탑</div>
+                <div class="tower-row-sub">
+                  <span class="tower-role">이동 감속</span>
+                  <span class="tower-cost">75 G</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="tower-card-wrap">
+            <div class="tower-card">
+              <div class="tower-thumb-box"><canvas id="t-prism" width="40" height="40"></canvas></div>
+              <div class="tower-meta">
+                <div class="tower-name">프리즘 레이저탑</div>
+                <div class="tower-row-sub">
+                  <span class="tower-role">지속 집중</span>
+                  <span class="tower-cost">100 G</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom vocabulary question panel -->
+    <div class="quiz-dock chamfer-box">
+      <div class="chamfer-inner quiz-inner">
+        <div class="quiz-header">
+          <div class="quiz-prompt-row">
+            <span class="quiz-tag">어휘 문항</span>
+            <div class="quiz-question"><span class="hl">‘짐작하다’</span>의 뜻으로 알맞은 것은?</div>
+          </div>
+          <div class="chamfer-sm skip-wrap">
+            <div class="chamfer-sm-inner skip-btn">모르겠어요</div>
+          </div>
+        </div>
+        <div class="choices-grid">
+          <div class="choice-wrap">
+            <div class="choice-card">
+              <span class="choice-num">1</span>
+              <span class="choice-text">큰 소리로 노래를 부르다</span>
+            </div>
+          </div>
+          <div class="choice-wrap">
+            <div class="choice-card">
+              <span class="choice-num">2</span>
+              <span class="choice-text">어떤 일을 어림잡아 생각하다</span>
+            </div>
+          </div>
+          <div class="choice-wrap">
+            <div class="choice-card">
+              <span class="choice-num">3</span>
+              <span class="choice-text">친구와 함께 길을 걷다</span>
+            </div>
+          </div>
+          <div class="choice-wrap">
+            <div class="choice-card">
+              <span class="choice-num">4</span>
+              <span class="choice-text">물건을 상자에 담아 두다</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    window.__cropsReady = new Promise((resolve) => {
+      const img = new Image();
+      img.onload = () => {
+        const w = img.naturalWidth;
+        const h = img.naturalHeight;
+        const off = document.createElement('canvas');
+        off.width = w;
+        off.height = h;
+        const ctx = off.getContext('2d');
+        ctx.drawImage(img, 0, 0);
+        const data = ctx.getImageData(0, 0, w, h).data;
+        const bgR = data[0], bgG = data[1], bgB = data[2];
+
+        const slots = [
+          { id: 't-rail',   rx0: 0.00, rx1: 0.33, ry0: 0.00, ry1: 0.50 },
+          { id: 't-mortar', rx0: 0.00, rx1: 0.33, ry0: 0.50, ry1: 1.00 },
+          { id: 't-pulse',  rx0: 0.33, rx1: 0.67, ry0: 0.50, ry1: 1.00 },
+          { id: 't-prism',  rx0: 0.67, rx1: 1.00, ry0: 0.50, ry1: 1.00 },
+        ];
+
+        for (const s of slots) {
+          const x0 = Math.floor(s.rx0 * w);
+          const x1 = Math.floor(s.rx1 * w);
+          const y0 = Math.floor(s.ry0 * h);
+          const y1 = Math.floor(s.ry1 * h);
+          let minX = x1, maxX = x0, minY = y1, maxY = y0;
+          for (let y = y0; y < y1; y++) {
+            for (let x = x0; x < x1; x++) {
+              const i = (y * w + x) * 4;
+              const diff = Math.abs(data[i] - bgR) + Math.abs(data[i + 1] - bgG) + Math.abs(data[i + 2] - bgB);
+              if (diff > 24) {
+                if (x < minX) minX = x;
+                if (x > maxX) maxX = x;
+                if (y < minY) minY = y;
+                if (y > maxY) maxY = y;
+              }
+            }
+          }
+          const sw = Math.max(1, maxX - minX + 1);
+          const sh = Math.max(1, maxY - minY + 1);
+          const c = document.getElementById(s.id);
+          const cctx = c.getContext('2d');
+          cctx.fillStyle = '#12161B';
+          cctx.fillRect(0, 0, c.width, c.height);
+          const pad = 3;
+          const scale = Math.min((c.width - pad * 2) / sw, (c.height - pad * 2) / sh);
+          const dw = sw * scale;
+          const dh = sh * scale;
+          cctx.drawImage(off, minX, minY, sw, sh, (c.width - dw) / 2, (c.height - dh) / 2, dw, dh);
+        }
+        resolve();
+      };
+      img.onerror = resolve;
+      img.src = 'assets/towers.webp';
+    });
+  </script>
+</body>
+</html>

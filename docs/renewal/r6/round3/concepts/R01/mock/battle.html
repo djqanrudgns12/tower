@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>R01 전투 화면 · 성숙한 회화풍 요새</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@600;700;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body {
+      width: 1280px;
+      height: 720px;
+      overflow: hidden;
+      background: #1E2228;
+      font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif;
+      color: #C8BEA6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .stage {
+      position: relative;
+      width: 1280px;
+      height: 720px;
+      overflow: hidden;
+    }
+
+    .battle-bg {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center center;
+      display: block;
+    }
+
+    /* 상단 절제된 무광 석재 HUD */
+    .top-hud {
+      position: absolute;
+      top: 14px;
+      left: 16px;
+      right: 16px;
+      height: 46px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 14px;
+      background: rgba(30, 34, 40, 0.90);
+      border: 1px solid #6C7178;
+      border-radius: 4px;
+    }
+
+    .hud-metrics {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+    }
+
+    .metric {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .metric-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 2px;
+      flex-shrink: 0;
+    }
+    .dot-gate { background: #B35435; }
+    .dot-gold { background: #C8BEA6; }
+    .dot-wave { background: #4A8B7C; }
+    .dot-left { background: #6C7178; }
+
+    .metric-label {
+      font-size: 13px;
+      font-weight: 500;
+      color: #9DA3AB;
+      letter-spacing: 0.01em;
+    }
+
+    .metric-value {
+      font-size: 16px;
+      font-weight: 700;
+      color: #C8BEA6;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .gate-bar {
+      width: 56px;
+      height: 6px;
+      background: #14171B;
+      border: 1px solid #6C7178;
+      border-radius: 2px;
+      overflow: hidden;
+    }
+    .gate-bar-fill {
+      width: 100%;
+      height: 100%;
+      background: #B35435;
+    }
+
+    .hud-divider {
+      width: 1px;
+      height: 18px;
+      background: #6C7178;
+      opacity: 0.45;
+    }
+
+    .pause-btn {
+      padding: 6px 14px;
+      background: #272C33;
+      border: 1px solid #6C7178;
+      border-radius: 3px;
+      color: #C8BEA6;
+      font-family: 'Pretendard', sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      cursor: pointer;
+    }
+
+    /* 우측 컴팩트 타워 설치 패널 (우하단 성문 가리지 않음) */
+    .tower-dock {
+      position: absolute;
+      top: 74px;
+      right: 16px;
+      width: 214px;
+      background: rgba(30, 34, 40, 0.91);
+      border: 1px solid #6C7178;
+      border-radius: 4px;
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+    }
+
+    .dock-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-bottom: 6px;
+      border-bottom: 1px solid rgba(108, 113, 120, 0.45);
+    }
+
+    .dock-title {
+      font-family: 'Noto Serif KR', serif;
+      font-size: 13px;
+      font-weight: 700;
+      color: #C8BEA6;
+    }
+
+    .dock-hint {
+      font-size: 11px;
+      color: #9DA3AB;
+    }
+
+    .tower-card {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      padding: 6px 8px;
+      background: rgba(24, 28, 33, 0.92);
+      border: 1px solid #4A5058;
+      border-radius: 3px;
+    }
+
+    .tower-card.active {
+      border-color: #4A8B7C;
+      background: rgba(74, 139, 124, 0.16);
+    }
+
+    .tower-thumb {
+      width: 38px;
+      height: 38px;
+      border: 1px solid #4A5058;
+      border-radius: 2px;
+      background: #1E2228;
+      flex-shrink: 0;
+      display: block;
+    }
+    .tower-card.active .tower-thumb {
+      border-color: #4A8B7C;
+    }
+
+    .tower-info {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .tower-name {
+      font-size: 13px;
+      font-weight: 600;
+      color: #E3DCCB;
+      line-height: 1.2;
+      white-space: nowrap;
+    }
+
+    .tower-cost {
+      font-size: 12px;
+      font-weight: 600;
+      color: #C8BEA6;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .hotkey {
+      width: 20px;
+      height: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid #6C7178;
+      border-radius: 2px;
+      font-size: 11px;
+      font-weight: 700;
+      color: #C8BEA6;
+      background: #1E2228;
+      flex-shrink: 0;
+    }
+    .tower-card.active .hotkey {
+      border-color: #4A8B7C;
+      color: #D7EFE9;
+      background: rgba(74, 139, 124, 0.35);
+    }
+
+    /* 하단 좌측~중앙 어휘 문제 패널 (길과 적을 가리지 않는 잔디 여백 위) */
+    .quiz-panel {
+      position: absolute;
+      left: 16px;
+      bottom: 16px;
+      width: 600px;
+      background: rgba(30, 34, 40, 0.93);
+      border: 1px solid #6C7178;
+      border-radius: 4px;
+      padding: 14px 16px 13px;
+      display: flex;
+      flex-direction: column;
+      gap: 11px;
+    }
+
+    .quiz-top {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 12px;
+      border-bottom: 1px solid rgba(108, 113, 120, 0.42);
+      padding-bottom: 8px;
+    }
+
+    .quiz-question {
+      font-family: 'Noto Serif KR', serif;
+      font-size: 20px;
+      font-weight: 700;
+      color: #F0E9D8;
+      letter-spacing: -0.01em;
+      line-height: 1.3;
+    }
+
+    .quiz-tag {
+      font-size: 11px;
+      font-weight: 600;
+      color: #4A8B7C;
+      border: 1px solid #4A8B7C;
+      padding: 2px 7px;
+      border-radius: 2px;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .choices-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .choice-btn {
+      display: flex;
+      align-items: center;
+      padding: 10px 12px;
+      background: #252A31;
+      border: 1px solid #6C7178;
+      border-radius: 3px;
+      color: #EAE3D2;
+      font-family: 'Pretendard', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      text-align: left;
+      line-height: 1.25;
+    }
+
+    .quiz-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-top: 2px;
+    }
+
+    .quiz-sub {
+      font-size: 12px;
+      color: #9DA3AB;
+    }
+
+    .skip-btn {
+      padding: 5px 12px;
+      background: transparent;
+      border: 1px solid #6C7178;
+      border-radius: 3px;
+      color: #C8BEA6;
+      font-family: 'Pretendard', sans-serif;
+      font-size: 12px;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+  <div class="stage">
+    <img class="battle-bg" src="assets/battle.webp" alt="R01 성숙한 회화풍 요새 전장" />
+
+    <!-- 상단 절제된 무광 석재 HUD -->
+    <header class="top-hud">
+      <div class="hud-metrics">
+        <div class="metric">
+          <span class="metric-dot dot-gate"></span>
+          <span class="metric-label">성문</span>
+          <span class="metric-value">20/20</span>
+          <div class="gate-bar"><div class="gate-bar-fill"></div></div>
+        </div>
+        <div class="hud-divider"></div>
+        <div class="metric">
+          <span class="metric-dot dot-gold"></span>
+          <span class="metric-label">골드</span>
+          <span class="metric-value">240</span>
+        </div>
+        <div class="hud-divider"></div>
+        <div class="metric">
+          <span class="metric-dot dot-wave"></span>
+          <span class="metric-label">웨이브</span>
+          <span class="metric-value">3/10</span>
+        </div>
+        <div class="hud-divider"></div>
+        <div class="metric">
+          <span class="metric-dot dot-left"></span>
+          <span class="metric-label">남은 적</span>
+          <span class="metric-value">12</span>
+        </div>
+      </div>
+      <button class="pause-btn" type="button">일시정지</button>
+    </header>
+
+    <!-- 우측 컴팩트 타워 설치 패널 -->
+    <aside class="tower-dock">
+      <div class="dock-header">
+        <span class="dock-title">타워 설치</span>
+        <span class="dock-hint">단축키 1–4</span>
+      </div>
+      <div class="tower-card active">
+        <canvas class="tower-thumb" width="76" height="76" data-crop="110,42,210,340"></canvas>
+        <div class="tower-info">
+          <span class="tower-name">쇠뇌 망루</span>
+          <span class="tower-cost">60 골드</span>
+        </div>
+        <span class="hotkey">1</span>
+      </div>
+      <div class="tower-card">
+        <canvas class="tower-thumb" width="76" height="76" data-crop="68,436,332,298"></canvas>
+        <div class="tower-info">
+          <span class="tower-name">투석기</span>
+          <span class="tower-cost">90 골드</span>
+        </div>
+        <span class="hotkey">2</span>
+      </div>
+      <div class="tower-card">
+        <canvas class="tower-thumb" width="76" height="76" data-crop="560,414,235,320"></canvas>
+        <div class="tower-info">
+          <span class="tower-name">룬 오벨리스크</span>
+          <span class="tower-cost">110 골드</span>
+        </div>
+        <span class="hotkey">3</span>
+      </div>
+      <div class="tower-card">
+        <canvas class="tower-thumb" width="76" height="76" data-crop="1015,380,236,348"></canvas>
+        <div class="tower-info">
+          <span class="tower-name">화로 포탑</span>
+          <span class="tower-cost">80 골드</span>
+        </div>
+        <span class="hotkey">4</span>
+      </div>
+    </aside>
+
+    <!-- 하단 좌~중앙 어휘 문항 패널 -->
+    <section class="quiz-panel">
+      <div class="quiz-top">
+        <h1 class="quiz-question">‘신중하다’의 뜻으로 알맞은 것은?</h1>
+        <span class="quiz-tag">어휘 확인</span>
+      </div>
+      <div class="choices-grid">
+        <button class="choice-btn" type="button">1. 매우 조심스럽다</button>
+        <button class="choice-btn" type="button">2. 몹시 서두르다</button>
+        <button class="choice-btn" type="button">3. 힘이 아주 세다</button>
+        <button class="choice-btn" type="button">4. 소리가 아주 크다</button>
+      </div>
+      <div class="quiz-footer">
+        <span class="quiz-sub">정답을 맞히면 골드 40을 얻습니다</span>
+        <button class="skip-btn" type="button">모르겠어요</button>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    window.__R01_READY = new Promise((resolve) => {
+      const sheet = new Image();
+      sheet.onload = () => {
+        document.querySelectorAll('canvas[data-crop]').forEach((cv) => {
+          const [sx, sy, sw, sh] = cv.dataset.crop.split(',').map(Number);
+          const ctx = cv.getContext('2d');
+          ctx.fillStyle = '#1E2228';
+          ctx.fillRect(0, 0, cv.width, cv.height);
+          const scale = Math.min((cv.width - 8) / sw, (cv.height - 8) / sh);
+          const dw = sw * scale;
+          const dh = sh * scale;
+          const dx = (cv.width - dw) / 2;
+          const dy = (cv.height - dh) / 2;
+          ctx.drawImage(sheet, sx, sy, sw, sh, dx, dy, dw, dh);
+        });
+        resolve();
+      };
+      sheet.src = 'assets/towers.webp';
+    });
+  </script>
+</body>
+</html>

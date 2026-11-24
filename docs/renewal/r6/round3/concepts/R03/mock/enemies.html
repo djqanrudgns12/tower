@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>R03 적군 도감 · 2도 목판화 그래픽</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@500;600;700&family=Noto+Serif+KR:wght@700;900&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --ink: #141414;
+      --paper: #ECE5D5;
+      --slate: #4A4945;
+      --red: #C43E2F;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body {
+      width: 1280px;
+      height: 720px;
+      overflow: hidden;
+      background: var(--paper);
+      color: var(--ink);
+      font-family: 'IBM Plex Sans KR', 'Apple SD Gothic Neo', sans-serif;
+    }
+    .page {
+      width: 1280px;
+      height: 720px;
+      padding: 12px 14px;
+      display: grid;
+      grid-template-rows: 48px 1fr 102px;
+      gap: 10px;
+      background: var(--paper);
+    }
+
+    /* Header */
+    .header {
+      border: 2px solid var(--ink);
+      box-shadow: 3px 3px 0 var(--ink);
+      background: var(--ink);
+      color: var(--paper);
+      padding: 0 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .header-left {
+      display: flex;
+      align-items: baseline;
+      gap: 12px;
+    }
+    .header-title {
+      font-family: 'Noto Serif KR', serif;
+      font-size: 20px;
+      font-weight: 900;
+    }
+    .header-sub {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--paper);
+      opacity: 0.85;
+    }
+    .header-tag {
+      padding: 3px 10px;
+      background: var(--red);
+      color: var(--paper);
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    /* Sheet Area */
+    .sheet-box {
+      position: relative;
+      border: 2px solid var(--ink);
+      box-shadow: 3px 3px 0 var(--ink);
+      background: #ECE6D6;
+      overflow: hidden;
+    }
+    .sheet-img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      object-position: center 40%;
+    }
+    .enemy-plate {
+      position: absolute;
+      transform: translateX(-50%);
+      background: var(--paper);
+      border: 2px solid var(--ink);
+      box-shadow: 2px 2px 0 var(--ink);
+      padding: 4px 10px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      white-space: nowrap;
+    }
+    .enemy-badge {
+      padding: 1px 6px;
+      background: var(--ink);
+      color: var(--paper);
+      font-size: 11px;
+      font-weight: 700;
+    }
+    .enemy-badge.boss {
+      background: var(--red);
+    }
+    .enemy-name {
+      font-family: 'Noto Serif KR', serif;
+      font-size: 14px;
+      font-weight: 900;
+    }
+    .enemy-trait {
+      font-size: 11.5px;
+      font-weight: 600;
+      color: var(--slate);
+    }
+
+    /* 32x32 Readability Strip */
+    .strip-box {
+      border: 2px solid var(--ink);
+      box-shadow: 3px 3px 0 var(--ink);
+      background: var(--paper);
+      padding: 8px 16px;
+      display: grid;
+      grid-template-columns: 264px 1fr;
+      align-items: center;
+      gap: 16px;
+    }
+    .strip-info {
+      border-right: 2px solid var(--ink);
+      padding-right: 14px;
+    }
+    .strip-title {
+      font-family: 'Noto Serif KR', serif;
+      font-size: 14.5px;
+      font-weight: 900;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      white-space: nowrap;
+    }
+    .strip-badge {
+      padding: 2px 6px;
+      background: var(--red);
+      color: var(--paper);
+      font-family: 'IBM Plex Sans KR', sans-serif;
+      font-size: 10.5px;
+      font-weight: 700;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .strip-desc {
+      margin-top: 3px;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--slate);
+      line-height: 1.35;
+    }
+    .strip-items {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 12px;
+      align-items: center;
+    }
+    .mini-item {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+    .mini-canvas-wrap {
+      width: 38px;
+      height: 38px;
+      border: 2px solid var(--ink);
+      background: #ECE6D6;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .mini-canvas-wrap.boss {
+      border-color: var(--red);
+    }
+    canvas.thumb32 {
+      width: 32px;
+      height: 32px;
+      display: block;
+    }
+    .mini-text {
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+    }
+    .mini-name {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--ink);
+    }
+    .mini-sub {
+      font-size: 10.5px;
+      font-weight: 600;
+      color: var(--slate);
+    }
+    .mini-sub.boss {
+      color: var(--red);
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header class="header">
+      <div class="header-left">
+        <h1 class="header-title">R03 · 2도 목판화 적군 도감</h1>
+        <span class="header-sub">먹검정 실루엣 덩어리 + 주홍 시선 · 일반 4종 + 보스 1종</span>
+      </div>
+      <span class="header-tag">치비·밈·공포 배제</span>
+    </header>
+
+    <section class="sheet-box">
+      <img id="enemySheet" class="sheet-img" src="assets/enemies.webp" alt="목판화 적군 5종" />
+
+      <div class="enemy-plate" style="left: 26%; top: 214px;">
+        <span class="enemy-badge">일반</span>
+        <span class="enemy-name">먹빛 그림자 늑대</span>
+        <span class="enemy-trait">빠른 이동</span>
+      </div>
+
+      <div class="enemy-plate" style="left: 47.5%; top: 214px;">
+        <span class="enemy-badge">일반</span>
+        <span class="enemy-name">갑각 거대 딱정벌레</span>
+        <span class="enemy-trait">단단한 방어</span>
+      </div>
+
+      <div class="enemy-plate" style="left: 25.5%; top: 492px;">
+        <span class="enemy-badge">일반</span>
+        <span class="enemy-name">바위 골렘</span>
+        <span class="enemy-trait">높은 체력</span>
+      </div>
+
+      <div class="enemy-plate" style="left: 47.5%; top: 492px;">
+        <span class="enemy-badge">일반</span>
+        <span class="enemy-name">목각 가면 구조체</span>
+        <span class="enemy-trait">감속 저항</span>
+      </div>
+
+      <div class="enemy-plate" style="left: 71.5%; top: 494px;">
+        <span class="enemy-badge boss">보스</span>
+        <span class="enemy-name">성문 파쇄수</span>
+        <span class="enemy-trait">거대 흑목판 공성수</span>
+      </div>
+    </section>
+
+    <footer class="strip-box">
+      <div class="strip-info">
+        <div class="strip-title">
+          <span>32×32px 축소 판독 띠</span>
+          <span class="strip-badge">실제 축소</span>
+        </div>
+        <p class="strip-desc">행군 열에서도 먹검정 실루엣과 주홍 시선점으로 5종이 즉각 구분됩니다.</p>
+      </div>
+
+      <div class="strip-items">
+        <div class="mini-item">
+          <div class="mini-canvas-wrap"><canvas class="thumb32" width="32" height="32" data-region="wolf"></canvas></div>
+          <div class="mini-text">
+            <span class="mini-name">그림자 늑대</span>
+            <span class="mini-sub">고속 선봉</span>
+          </div>
+        </div>
+        <div class="mini-item">
+          <div class="mini-canvas-wrap"><canvas class="thumb32" width="32" height="32" data-region="beetle"></canvas></div>
+          <div class="mini-text">
+            <span class="mini-name">거대 딱정벌레</span>
+            <span class="mini-sub">중갑 방어</span>
+          </div>
+        </div>
+        <div class="mini-item">
+          <div class="mini-canvas-wrap"><canvas class="thumb32" width="32" height="32" data-region="golem"></canvas></div>
+          <div class="mini-text">
+            <span class="mini-name">바위 골렘</span>
+            <span class="mini-sub">고체력 거구</span>
+          </div>
+        </div>
+        <div class="mini-item">
+          <div class="mini-canvas-wrap"><canvas class="thumb32" width="32" height="32" data-region="mask"></canvas></div>
+          <div class="mini-text">
+            <span class="mini-name">목각 가면체</span>
+            <span class="mini-sub">주술 구조체</span>
+          </div>
+        </div>
+        <div class="mini-item">
+          <div class="mini-canvas-wrap boss"><canvas class="thumb32" width="32" height="32" data-region="boss"></canvas></div>
+          <div class="mini-text">
+            <span class="mini-name">성문 파쇄수</span>
+            <span class="mini-sub boss">대형 보스</span>
+          </div>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <script>
+    window.__MOCK_READY__ = (async () => {
+      const img = document.getElementById('enemySheet');
+      if (!img.complete) {
+        await new Promise((res, rej) => { img.onload = res; img.onerror = rej; });
+      }
+      const off = document.createElement('canvas');
+      off.width = img.naturalWidth;
+      off.height = img.naturalHeight;
+      const octx = off.getContext('2d');
+      octx.drawImage(img, 0, 0);
+      const full = octx.getImageData(0, 0, off.width, off.height);
+      const bgR = full.data[10 * 4], bgG = full.data[10 * 4 + 1], bgB = full.data[10 * 4 + 2];
+      document.querySelector('.sheet-box').style.background = `rgb(${bgR},${bgG},${bgB})`;
+
+      const W = off.width, H = off.height;
+      const regions = {
+        wolf:   [0, Math.floor(W * 0.34), 0, Math.floor(H * 0.46)],
+        beetle: [Math.floor(W * 0.32), Math.floor(W * 0.59), 0, Math.floor(H * 0.48)],
+        golem:  [0, Math.floor(W * 0.32), Math.floor(H * 0.48), H],
+        mask:   [Math.floor(W * 0.33), Math.floor(W * 0.58), Math.floor(H * 0.48), H],
+        boss:   [Math.floor(W * 0.58), W, 0, H],
+      };
+
+      for (const canvas of document.querySelectorAll('canvas.thumb32')) {
+        const [x0, x1, y0, y1] = regions[canvas.dataset.region];
+        let minX = x1, minY = y1, maxX = x0, maxY = y0;
+        for (let y = y0; y < y1; y++) {
+          for (let x = x0; x < x1; x++) {
+            const idx = (y * W + x) * 4;
+            const diff = Math.abs(full.data[idx] - bgR) + Math.abs(full.data[idx + 1] - bgG) + Math.abs(full.data[idx + 2] - bgB);
+            if (diff > 36) {
+              if (x < minX) minX = x;
+              if (x > maxX) maxX = x;
+              if (y < minY) minY = y;
+              if (y > maxY) maxY = y;
+            }
+          }
+        }
+        const bw = Math.max(1, maxX - minX + 1);
+        const bh = Math.max(1, maxY - minY + 1);
+        const ctx = canvas.getContext('2d');
+        ctx.fillStyle = `rgb(${bgR},${bgG},${bgB})`;
+        ctx.fillRect(0, 0, 32, 32);
+        const scale = Math.min(28 / bw, 28 / bh);
+        const dw = bw * scale;
+        const dh = bh * scale;
+        ctx.drawImage(img, minX, minY, bw, bh, (32 - dw) / 2, (32 - dh) / 2, dw, dh);
+      }
+    })();
+  </script>
+</body>
+</html>

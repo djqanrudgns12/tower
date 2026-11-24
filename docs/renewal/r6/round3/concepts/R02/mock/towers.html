@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>R02 · 타워 도감 시안 (아이소메트릭 픽셀 아트)</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/galmuri/dist/galmuri.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" />
+  <style>
+    :root {
+      --bg: #161B2E;
+      --surface: #2B3654;
+      --frame: #7E8FA6;
+      --ink: #D4DDE8;
+      --amber: #E09F3E;
+      --cyan: #4EA8DE;
+      --shadow: #0B0E18;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      width: 1280px;
+      height: 720px;
+      overflow: hidden;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: 'Galmuri11', monospace;
+      -webkit-font-smoothing: none;
+    }
+
+    .page {
+      width: 1280px;
+      height: 720px;
+      padding: 16px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      background: var(--bg);
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 16px;
+      background: var(--surface);
+      border: 2px solid var(--frame);
+      box-shadow: 4px 4px 0 var(--shadow);
+    }
+
+    .header-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--amber);
+    }
+
+    .header-sub {
+      font-size: 13px;
+      color: var(--ink);
+    }
+
+    .sheet-stage {
+      position: relative;
+      flex: 1;
+      border: 2px solid var(--frame);
+      background: var(--bg);
+      box-shadow: 4px 4px 0 var(--shadow);
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .sheet-wrap {
+      position: relative;
+      width: 896px;
+      height: 500px;
+      margin-top: -12px;
+    }
+
+    .sheet-img {
+      width: 896px;
+      height: 500px;
+      display: block;
+      image-rendering: pixelated;
+    }
+
+    .row-tag {
+      position: absolute;
+      left: -172px;
+      width: 158px;
+      padding: 6px 8px;
+      background: var(--surface);
+      border: 2px solid var(--frame);
+      font-size: 12px;
+      line-height: 1.4;
+      color: var(--ink);
+      box-shadow: 3px 3px 0 var(--shadow);
+    }
+
+    .row-tag.top { top: 82px; border-color: var(--amber); }
+    .row-tag.bottom { top: 326px; border-color: var(--cyan); }
+
+    .row-tag strong {
+      display: block;
+      color: var(--amber);
+      font-size: 13px;
+      margin-bottom: 2px;
+    }
+
+    .row-tag.bottom strong {
+      color: var(--cyan);
+    }
+
+    /* 2x3 스프라이트 위치에 정확히 맞춘 한글 명칭 라벨 */
+    .sprite-label {
+      position: absolute;
+      transform: translateX(-50%);
+      text-align: center;
+      background: rgba(22, 27, 46, 0.94);
+      border: 2px solid var(--frame);
+      padding: 4px 10px;
+      box-shadow: 2px 2px 0 var(--shadow);
+      white-space: nowrap;
+    }
+
+    .sprite-label .lv {
+      font-size: 11px;
+      color: var(--amber);
+      font-weight: 700;
+      margin-right: 4px;
+    }
+
+    .sprite-label.single .lv {
+      color: var(--cyan);
+    }
+
+    .sprite-label .name {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--ink);
+    }
+
+    .sprite-label .role {
+      display: block;
+      font-family: 'Pretendard', 'Galmuri11', sans-serif;
+      -webkit-font-smoothing: antialiased;
+      font-size: 12px;
+      color: var(--ink);
+      opacity: 0.82;
+      margin-top: 2px;
+    }
+
+    .evo-arrow {
+      position: absolute;
+      top: 108px;
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--amber);
+      transform: translateX(-50%);
+    }
+
+    /* 하단 48x48px 축소 판독 띠 */
+    .scale-strip {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 10px 14px;
+      background: var(--surface);
+      border: 2px solid var(--frame);
+      box-shadow: 4px 4px 0 var(--shadow);
+    }
+
+    .strip-head {
+      width: 146px;
+      flex-shrink: 0;
+      border-right: 2px solid var(--frame);
+      padding-right: 12px;
+    }
+
+    .strip-head strong {
+      display: block;
+      font-size: 13px;
+      color: var(--cyan);
+      margin-bottom: 3px;
+    }
+
+    .strip-head span {
+      font-family: 'Pretendard', 'Galmuri11', sans-serif;
+      -webkit-font-smoothing: antialiased;
+      font-size: 12px;
+      color: var(--ink);
+    }
+
+    .strip-items {
+      flex: 1;
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 10px;
+    }
+
+    .mini-card {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--bg);
+      border: 2px solid var(--frame);
+      padding: 5px 8px;
+    }
+
+    .mini-48 {
+      width: 48px;
+      height: 48px;
+      image-rendering: pixelated;
+      border: 1px solid var(--surface);
+      background: var(--bg);
+      flex-shrink: 0;
+    }
+
+    .mini-info {
+      min-width: 0;
+      font-size: 11px;
+      line-height: 1.35;
+    }
+
+    .mini-info .m-lv { color: var(--amber); font-weight: 700; display: block; }
+    .mini-info .m-nm { color: var(--ink); font-weight: 700; display: block; }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header class="header">
+      <div class="header-title">R02 · 타워 도감 &amp; 진화 계통</div>
+      <div class="header-sub">무인 기계 · 건축 구조물 전용 (Galmuri11 + 6색 제한 팔레트)</div>
+    </header>
+
+    <main class="sheet-stage">
+      <div class="sheet-wrap">
+        <img class="sheet-img" src="assets/towers.webp" alt="타워 6종 픽셀 스프라이트 시트" />
+
+        <div class="row-tag top">
+          <strong>궁수 계열 진화</strong>
+          단일 자동 쇠뇌에서<br/>3연발 요새로 증축
+        </div>
+        <div class="row-tag bottom">
+          <strong>기능 타워 3종</strong>
+          포격 · 광선 · 감속<br/>실루엣 즉시 구분
+        </div>
+
+        <span class="evo-arrow" style="left: 33%;">→</span>
+        <span class="evo-arrow" style="left: 66%;">→</span>
+
+        <!-- 상단 행 명칭 (원본 222~275px gap 사이 배치) -->
+        <div class="sprite-label" style="left: 16.5%; top: 222px;">
+          <span class="lv">Lv1</span><span class="name">목조 자동 쇠뇌탑</span>
+          <span class="role">단일 속사 · 기본 목조 골조</span>
+        </div>
+        <div class="sprite-label" style="left: 50%; top: 222px;">
+          <span class="lv">Lv4</span><span class="name">철제 복층 발리스타탑</span>
+          <span class="role">2단 연사 · 석조 철갑 보강</span>
+        </div>
+        <div class="sprite-label" style="left: 83.5%; top: 222px;">
+          <span class="lv">Lv7</span><span class="name">청동기어 3연발 요새탑</span>
+          <span class="role">3방향 동시 사격 · 요새화</span>
+        </div>
+
+        <!-- 하단 행 명칭 -->
+        <div class="sprite-label single" style="left: 16.5%; top: 468px;">
+          <span class="lv">Lv1</span><span class="name">석조 박격포</span>
+          <span class="role">범위 포격 · 중장갑 파쇄</span>
+        </div>
+        <div class="sprite-label single" style="left: 50%; top: 468px;">
+          <span class="lv">Lv1</span><span class="name">수정 등대탑</span>
+          <span class="role">장거리 냉기 광선 · 고정 조준</span>
+        </div>
+        <div class="sprite-label single" style="left: 83.5%; top: 468px;">
+          <span class="lv">Lv1</span><span class="name">톱니 서리탑</span>
+          <span class="role">주변 감속 파동 · 얼음 기어</span>
+        </div>
+      </div>
+    </main>
+
+    <!-- 하단 48x48px 축소 판독 띠 -->
+    <section class="scale-strip">
+      <div class="strip-head">
+        <strong>48×48px 판독 띠</strong>
+        <span>실제 전장 타일 크기 축소 검증</span>
+      </div>
+      <div class="strip-items">
+        <div class="mini-card">
+          <canvas class="mini-48" width="48" height="48" data-box="117,67,215,266"></canvas>
+          <div class="mini-info"><span class="m-lv">Lv1</span><span class="m-nm">자동 쇠뇌</span></div>
+        </div>
+        <div class="mini-card">
+          <canvas class="mini-48" width="48" height="48" data-box="533,25,309,322"></canvas>
+          <div class="mini-info"><span class="m-lv">Lv4</span><span class="m-nm">복층 발리스타</span></div>
+        </div>
+        <div class="mini-card">
+          <canvas class="mini-48" width="48" height="48" data-box="986,51,321,290"></canvas>
+          <div class="mini-info"><span class="m-lv">Lv7</span><span class="m-nm">청동 요새</span></div>
+        </div>
+        <div class="mini-card">
+          <canvas class="mini-48" width="48" height="48" data-box="106,436,238,275"></canvas>
+          <div class="mini-info"><span class="m-lv">Lv1</span><span class="m-nm">석조 박격포</span></div>
+        </div>
+        <div class="mini-card">
+          <canvas class="mini-48" width="48" height="48" data-box="559,424,258,293"></canvas>
+          <div class="mini-info"><span class="m-lv">Lv1</span><span class="m-nm">수정 등대</span></div>
+        </div>
+        <div class="mini-card">
+          <canvas class="mini-48" width="48" height="48" data-box="1010,439,274,271"></canvas>
+          <div class="mini-info"><span class="m-lv">Lv1</span><span class="m-nm">톱니 서리</span></div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    window.__renderReady = (async () => {
+      const sheet = new Image();
+      sheet.src = 'assets/towers.webp';
+      await sheet.decode();
+      document.querySelectorAll('canvas.mini-48').forEach((canvas) => {
+        const [sx, sy, sw, sh] = canvas.dataset.box.split(',').map(Number);
+        const ctx = canvas.getContext('2d');
+        ctx.imageSmoothingEnabled = false;
+        ctx.fillStyle = '#161B2E';
+        ctx.fillRect(0, 0, 48, 48);
+        const pad = 2;
+        const avail = 48 - pad * 2;
+        const scale = Math.min(avail / sw, avail / sh);
+        const dw = Math.round(sw * scale);
+        const dh = Math.round(sh * scale);
+        const dx = Math.round((48 - dw) / 2);
+        const dy = Math.round((48 - dh) / 2);
+        ctx.drawImage(sheet, sx, sy, sw, sh, dx, dy, dw, dh);
+      });
+    })();
+  </script>
+</body>
+</html>

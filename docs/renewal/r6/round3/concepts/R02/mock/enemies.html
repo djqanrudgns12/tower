@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>R02 · 적군 도감 시안 (아이소메트릭 픽셀 아트)</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/galmuri/dist/galmuri.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" />
+  <style>
+    :root {
+      --bg: #161B2E;
+      --surface: #2B3654;
+      --frame: #7E8FA6;
+      --ink: #D4DDE8;
+      --amber: #E09F3E;
+      --cyan: #4EA8DE;
+      --shadow: #0B0E18;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      width: 1280px;
+      height: 720px;
+      overflow: hidden;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: 'Galmuri11', monospace;
+      -webkit-font-smoothing: none;
+    }
+
+    .page {
+      width: 1280px;
+      height: 720px;
+      padding: 16px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      background: var(--bg);
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 16px;
+      background: var(--surface);
+      border: 2px solid var(--frame);
+      box-shadow: 4px 4px 0 var(--shadow);
+    }
+
+    .header-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--amber);
+    }
+
+    .header-sub {
+      font-size: 13px;
+      color: var(--ink);
+    }
+
+    .enemy-stage {
+      flex: 1;
+      border: 2px solid var(--frame);
+      background: var(--bg);
+      box-shadow: 4px 4px 0 var(--shadow);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 14px 18px 16px;
+      overflow: hidden;
+    }
+
+    .lineup-wrap {
+      position: relative;
+      width: 100%;
+      height: 360px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .lineup-img {
+      width: 1140px;
+      height: 636px;
+      object-fit: cover;
+      object-position: center 46%;
+      image-rendering: pixelated;
+      display: block;
+    }
+
+    .enemy-cards {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 12px;
+    }
+
+    .enemy-card {
+      background: var(--surface);
+      border: 2px solid var(--frame);
+      padding: 10px 11px;
+      box-shadow: 3px 3px 0 var(--shadow);
+    }
+
+    .enemy-card.boss {
+      border-color: var(--amber);
+      background: #232D48;
+    }
+
+    .e-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 5px;
+    }
+
+    .e-tier {
+      font-size: 11px;
+      font-weight: 700;
+      padding: 2px 6px;
+      border: 1px solid var(--cyan);
+      color: var(--cyan);
+      background: var(--bg);
+    }
+
+    .enemy-card.boss .e-tier {
+      border-color: var(--amber);
+      color: var(--amber);
+    }
+
+    .e-spd {
+      font-size: 11px;
+      color: var(--frame);
+    }
+
+    .e-name {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--ink);
+      margin-bottom: 4px;
+    }
+
+    .e-desc {
+      font-family: 'Pretendard', 'Galmuri11', sans-serif;
+      -webkit-font-smoothing: antialiased;
+      font-size: 13px;
+      line-height: 1.45;
+      color: var(--ink);
+      word-break: keep-all;
+    }
+
+    /* 하단 32x32px 축소 판독 띠 */
+    .scale-strip {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 10px 14px;
+      background: var(--surface);
+      border: 2px solid var(--frame);
+      box-shadow: 4px 4px 0 var(--shadow);
+    }
+
+    .strip-head {
+      width: 170px;
+      flex-shrink: 0;
+      border-right: 2px solid var(--frame);
+      padding-right: 12px;
+    }
+
+    .strip-head strong {
+      display: block;
+      font-size: 13px;
+      color: var(--cyan);
+      margin-bottom: 3px;
+    }
+
+    .strip-head span {
+      font-family: 'Pretendard', 'Galmuri11', sans-serif;
+      -webkit-font-smoothing: antialiased;
+      font-size: 12px;
+      color: var(--ink);
+    }
+
+    .strip-items {
+      flex: 1;
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 12px;
+    }
+
+    .mini-card {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--bg);
+      border: 2px solid var(--frame);
+      padding: 6px 10px;
+    }
+
+    .mini-card.boss {
+      border-color: var(--amber);
+    }
+
+    .mini-32 {
+      width: 32px;
+      height: 32px;
+      image-rendering: pixelated;
+      border: 1px solid var(--frame);
+      background: #62748D;
+      flex-shrink: 0;
+    }
+
+    .mini-nm {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--ink);
+    }
+
+    .mini-card.boss .mini-nm {
+      color: var(--amber);
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header class="header">
+      <div class="header-title">R02 · 침공 적군 도감</div>
+      <div class="header-sub">강한 실루엣 대비 · 일반 4종 + 보스 1종 (치비·음식·밈 배제)</div>
+    </header>
+
+    <main class="enemy-stage">
+      <div class="lineup-wrap">
+        <img class="lineup-img" src="assets/enemies.webp" alt="적군 5종 픽셀 라인업" />
+      </div>
+
+      <div class="enemy-cards">
+        <div class="enemy-card">
+          <div class="e-top"><span class="e-tier">일반 01</span><span class="e-spd">보통</span></div>
+          <div class="e-name">흑요석 갑충</div>
+          <p class="e-desc">단단한 등갑으로 전열 돌파. 물리 저항 보유.</p>
+        </div>
+        <div class="enemy-card">
+          <div class="e-top"><span class="e-tier">일반 02</span><span class="e-spd">빠름</span></div>
+          <div class="e-name">밤그림자 늑대</div>
+          <p class="e-desc">낮은 자세로 빠르게 질주하는 정찰·돌파형.</p>
+        </div>
+        <div class="enemy-card">
+          <div class="e-top"><span class="e-tier">일반 03</span><span class="e-spd">보통</span></div>
+          <div class="e-name">파편 수정체</div>
+          <p class="e-desc">공중 부유 결정체. 서리 감속에 취약.</p>
+        </div>
+        <div class="enemy-card">
+          <div class="e-top"><span class="e-tier">일반 04</span><span class="e-spd">느림</span></div>
+          <div class="e-name">톱니 보행기</div>
+          <p class="e-desc">청동 기어로 구동되는 4족 장갑 보행기.</p>
+        </div>
+        <div class="enemy-card boss">
+          <div class="e-top"><span class="e-tier">보스</span><span class="e-spd">중량</span></div>
+          <div class="e-name">달빛 갑주 골렘</div>
+          <p class="e-desc">웨이브 최후의 거대 석조 수장. 높은 체력.</p>
+        </div>
+      </div>
+    </main>
+
+    <!-- 하단 32x32px 축소 판독 띠 -->
+    <section class="scale-strip">
+      <div class="strip-head">
+        <strong>32×32px 판독 띠</strong>
+        <span>전장 이동 유닛 축척 실루엣 검증</span>
+      </div>
+      <div class="strip-items">
+        <div class="mini-card">
+          <canvas class="mini-32" width="32" height="32" data-box="40,329,233,176"></canvas>
+          <span class="mini-nm">흑요석 갑충</span>
+        </div>
+        <div class="mini-card">
+          <canvas class="mini-32" width="32" height="32" data-box="304,315,246,187"></canvas>
+          <span class="mini-nm">밤그림자 늑대</span>
+        </div>
+        <div class="mini-card">
+          <canvas class="mini-32" width="32" height="32" data-box="550,235,275,269"></canvas>
+          <span class="mini-nm">파편 수정체</span>
+        </div>
+        <div class="mini-card">
+          <canvas class="mini-32" width="32" height="32" data-box="825,277,275,247"></canvas>
+          <span class="mini-nm">톱니 보행기</span>
+        </div>
+        <div class="mini-card boss">
+          <canvas class="mini-32" width="32" height="32" data-box="1100,186,236,341"></canvas>
+          <span class="mini-nm">달빛 갑주 골렘</span>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    window.__renderReady = (async () => {
+      const sheet = new Image();
+      sheet.src = 'assets/enemies.webp';
+      await sheet.decode();
+      document.querySelectorAll('canvas.mini-32').forEach((canvas) => {
+        const [sx, sy, sw, sh] = canvas.dataset.box.split(',').map(Number);
+        const ctx = canvas.getContext('2d');
+        ctx.imageSmoothingEnabled = false;
+        ctx.fillStyle = '#62748D';
+        ctx.fillRect(0, 0, 32, 32);
+        const pad = 2;
+        const avail = 32 - pad * 2;
+        const scale = Math.min(avail / sw, avail / sh);
+        const dw = Math.round(sw * scale);
+        const dh = Math.round(sh * scale);
+        const dx = Math.round((32 - dw) / 2);
+        const dy = Math.round((32 - dh) / 2);
+        ctx.drawImage(sheet, sx, sy, sw, sh, dx, dy, dw, dh);
+      });
+    })();
+  </script>
+</body>
+</html>

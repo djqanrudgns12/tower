@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>R05 타워 도감 · 고대 석조 유적</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@600;700;900&display=swap" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/gh/sun-typeface/SUIT@2/fonts/variable/woff2/SUIT-Variable.css" rel="stylesheet" />
+  <style>
+    :root {
+      --sand: #D6B892;
+      --terracotta: #A66A4C;
+      --umber: #4A3731;
+      --twilight: #24232B;
+      --turquoise: #3E8E8E;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body {
+      width: 1280px;
+      height: 720px;
+      overflow: hidden;
+      background: var(--twilight);
+      color: var(--sand);
+      font-family: 'SUIT Variable', 'SUIT', 'Apple SD Gothic Neo', sans-serif;
+    }
+    .page {
+      width: 1280px;
+      height: 720px;
+      padding: 12px 14px;
+      display: grid;
+      grid-template-rows: 48px 1fr 112px;
+      gap: 10px;
+      background: var(--twilight);
+    }
+
+    /* Header */
+    .header {
+      border: 1.5px solid var(--umber);
+      box-shadow: inset 0 1px 0 rgba(214, 184, 146, 0.15);
+      background: #2A2831;
+      padding: 0 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .header-left {
+      display: flex;
+      align-items: baseline;
+      gap: 12px;
+    }
+    .header-title {
+      font-family: 'Noto Serif KR', serif;
+      font-size: 19px;
+      font-weight: 900;
+      color: var(--sand);
+    }
+    .header-sub {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--terracotta);
+    }
+    .header-tag {
+      padding: 4px 10px;
+      background: var(--turquoise);
+      color: var(--twilight);
+      font-size: 11.5px;
+      font-weight: 800;
+    }
+
+    /* Sheet Area */
+    .sheet-box {
+      position: relative;
+      border: 1.5px solid var(--umber);
+      background: var(--twilight);
+      overflow: hidden;
+    }
+    .sheet-box::after {
+      content: "";
+      position: absolute;
+      inset: 6px;
+      border: 1px solid rgba(214, 184, 146, 0.14);
+      pointer-events: none;
+    }
+    .sheet-img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      object-position: center 44%;
+    }
+    .row-pill {
+      position: absolute;
+      left: 14px;
+      padding: 3px 10px;
+      background: var(--umber);
+      border: 1px solid var(--terracotta);
+      color: var(--sand);
+      font-size: 11px;
+      font-weight: 700;
+    }
+    .row-pill.top { top: 12px; }
+    .row-pill.bottom { top: 270px; border-color: var(--turquoise); }
+
+    .label-grid {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+    }
+    .tower-plate {
+      position: absolute;
+      transform: translateX(-50%);
+      background: rgba(36, 35, 43, 0.94);
+      border: 1.5px solid var(--umber);
+      box-shadow: inset 0 1px 0 rgba(214, 184, 146, 0.15);
+      padding: 4px 10px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      white-space: nowrap;
+    }
+    .plate-lv {
+      padding: 1px 6px;
+      background: var(--umber);
+      color: var(--sand);
+      font-size: 11px;
+      font-weight: 700;
+    }
+    .plate-lv.accent {
+      background: var(--turquoise);
+      color: var(--twilight);
+      font-weight: 800;
+    }
+    .plate-name {
+      font-family: 'Noto Serif KR', serif;
+      font-size: 13.5px;
+      font-weight: 700;
+      color: var(--sand);
+    }
+    .plate-role {
+      font-size: 11.5px;
+      font-weight: 600;
+      color: var(--terracotta);
+    }
+
+    /* 48x48 Readability Strip */
+    .strip-box {
+      border: 1.5px solid var(--umber);
+      background: #2A2831;
+      padding: 10px 16px;
+      display: grid;
+      grid-template-columns: 274px 1fr;
+      align-items: center;
+      gap: 16px;
+    }
+    .strip-info {
+      border-right: 1.5px solid var(--umber);
+      padding-right: 14px;
+    }
+    .strip-title {
+      font-family: 'Noto Serif KR', serif;
+      font-size: 14.5px;
+      font-weight: 700;
+      color: var(--sand);
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      white-space: nowrap;
+    }
+    .strip-badge {
+      padding: 2px 6px;
+      background: var(--turquoise);
+      color: var(--twilight);
+      font-family: 'SUIT Variable', 'SUIT', sans-serif;
+      font-size: 10.5px;
+      font-weight: 800;
+    }
+    .strip-desc {
+      margin-top: 4px;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--terracotta);
+      line-height: 1.35;
+    }
+    .strip-items {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 10px;
+      align-items: center;
+    }
+    .mini-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 5px;
+    }
+    .mini-canvas-wrap {
+      width: 52px;
+      height: 52px;
+      border: 1.5px solid var(--umber);
+      background: var(--twilight);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .mini-canvas-wrap.accent {
+      border-color: var(--turquoise);
+    }
+    canvas.thumb48 {
+      width: 48px;
+      height: 48px;
+      display: block;
+    }
+    .mini-name {
+      font-size: 11.5px;
+      font-weight: 700;
+      color: var(--sand);
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header class="header">
+      <div class="header-left">
+        <h1 class="header-title">R05 · 고대 석조 유적 타워 도감</h1>
+        <span class="header-sub">기하 석조 건축물 전용 · 사암·테라코타 무광 + 청록 공명석 강조</span>
+      </div>
+      <span class="header-tag">사람·동물 0 · 진화 3단</span>
+    </header>
+
+    <section class="sheet-box">
+      <img id="towerSheet" class="sheet-img" src="assets/towers.webp" alt="고대 석조 타워 6종" />
+      <span class="row-pill top">쇠뇌 계열 3단 진화 (Lv1 → Lv4 → Lv7)</span>
+      <span class="row-pill bottom">특수 타워 3종 (Lv1)</span>
+
+      <div class="label-grid">
+        <!-- Top Row Labels -->
+        <div class="tower-plate" style="left: 22.8%; top: 230px;">
+          <span class="plate-lv">Lv1</span>
+          <span class="plate-name">사암 자동 쇠뇌탑</span>
+          <span class="plate-role">단일 사격</span>
+        </div>
+        <div class="tower-plate" style="left: 50%; top: 230px;">
+          <span class="plate-lv">Lv4</span>
+          <span class="plate-name">쌍발 발리스타 석탑</span>
+          <span class="plate-role">다연발 성루</span>
+        </div>
+        <div class="tower-plate" style="left: 77.2%; top: 230px;">
+          <span class="plate-lv accent">Lv7</span>
+          <span class="plate-name">3층 공명 요새 석탑</span>
+          <span class="plate-role">정점 요새</span>
+        </div>
+
+        <!-- Bottom Row Labels -->
+        <div class="tower-plate" style="left: 22.8%; top: 478px;">
+          <span class="plate-lv">Lv1</span>
+          <span class="plate-name">해시계 투석 제단</span>
+          <span class="plate-role">범위 투석</span>
+        </div>
+        <div class="tower-plate" style="left: 50%; top: 478px;">
+          <span class="plate-lv accent">Lv1</span>
+          <span class="plate-name">청록 공명비</span>
+          <span class="plate-role">광역 감속</span>
+        </div>
+        <div class="tower-plate" style="left: 77.2%; top: 478px;">
+          <span class="plate-lv">Lv1</span>
+          <span class="plate-name">모래시계 석주</span>
+          <span class="plate-role">이동 지연</span>
+        </div>
+      </div>
+    </section>
+
+    <footer class="strip-box">
+      <div class="strip-info">
+        <div class="strip-title">
+          <span>48×48px 축소 판독 띠</span>
+          <span class="strip-badge">실제 축소</span>
+        </div>
+        <p class="strip-desc">타일 축척에서도 석조 실루엣과 청록 공명점만으로 진화·계열이 즉시 구별됩니다.</p>
+      </div>
+
+      <div class="strip-items">
+        <div class="mini-item">
+          <div class="mini-canvas-wrap"><canvas class="thumb48" width="48" height="48" data-cell="0,0"></canvas></div>
+          <span class="mini-name">Lv1 사암 자동 쇠뇌탑</span>
+        </div>
+        <div class="mini-item">
+          <div class="mini-canvas-wrap"><canvas class="thumb48" width="48" height="48" data-cell="0,1"></canvas></div>
+          <span class="mini-name">Lv4 쌍발 발리스타 석탑</span>
+        </div>
+        <div class="mini-item">
+          <div class="mini-canvas-wrap accent"><canvas class="thumb48" width="48" height="48" data-cell="0,2"></canvas></div>
+          <span class="mini-name">Lv7 3층 공명 요새 석탑</span>
+        </div>
+        <div class="mini-item">
+          <div class="mini-canvas-wrap"><canvas class="thumb48" width="48" height="48" data-cell="1,0"></canvas></div>
+          <span class="mini-name">해시계 투석 제단</span>
+        </div>
+        <div class="mini-item">
+          <div class="mini-canvas-wrap accent"><canvas class="thumb48" width="48" height="48" data-cell="1,1"></canvas></div>
+          <span class="mini-name">청록 공명비</span>
+        </div>
+        <div class="mini-item">
+          <div class="mini-canvas-wrap"><canvas class="thumb48" width="48" height="48" data-cell="1,2"></canvas></div>
+          <span class="mini-name">모래시계 석주</span>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <script>
+    window.__MOCK_READY__ = (async () => {
+      const img = document.getElementById('towerSheet');
+      if (!img.complete) {
+        await new Promise((res, rej) => { img.onload = res; img.onerror = rej; });
+      }
+      const off = document.createElement('canvas');
+      off.width = img.naturalWidth;
+      off.height = img.naturalHeight;
+      const octx = off.getContext('2d');
+      octx.drawImage(img, 0, 0);
+      const full = octx.getImageData(0, 0, off.width, off.height);
+      const bgR = full.data[10 * 4], bgG = full.data[10 * 4 + 1], bgB = full.data[10 * 4 + 2];
+      document.querySelector('.sheet-box').style.background = `rgb(${bgR},${bgG},${bgB})`;
+
+      const rowBoxes = [
+        [0, Math.floor(off.height * 0.50)],
+        [Math.floor(off.height * 0.50), off.height]
+      ];
+      const colBoxes = [
+        [0, Math.floor(off.width * 0.34)],
+        [Math.floor(off.width * 0.34), Math.floor(off.width * 0.66)],
+        [Math.floor(off.width * 0.66), off.width]
+      ];
+
+      for (const canvas of document.querySelectorAll('canvas.thumb48')) {
+        const [r, c] = canvas.dataset.cell.split(',').map(Number);
+        const [y0, y1] = rowBoxes[r];
+        const [x0, x1] = colBoxes[c];
+        let minX = x1, minY = y1, maxX = x0, maxY = y0;
+        for (let y = y0; y < y1; y++) {
+          for (let x = x0; x < x1; x++) {
+            const idx = (y * off.width + x) * 4;
+            const diff = Math.abs(full.data[idx] - bgR) + Math.abs(full.data[idx + 1] - bgG) + Math.abs(full.data[idx + 2] - bgB);
+            if (diff > 32) {
+              if (x < minX) minX = x;
+              if (x > maxX) maxX = x;
+              if (y < minY) minY = y;
+              if (y > maxY) maxY = y;
+            }
+          }
+        }
+        const bw = Math.max(1, maxX - minX + 1);
+        const bh = Math.max(1, maxY - minY + 1);
+        const ctx = canvas.getContext('2d');
+        ctx.fillStyle = `rgb(${bgR},${bgG},${bgB})`;
+        ctx.fillRect(0, 0, 48, 48);
+        const scale = Math.min(42 / bw, 42 / bh);
+        const dw = bw * scale;
+        const dh = bh * scale;
+        ctx.drawImage(img, minX, minY, bw, bh, (48 - dw) / 2, (48 - dh) / 2, dw, dh);
+      }
+    })();
+  </script>
+</body>
+</html>

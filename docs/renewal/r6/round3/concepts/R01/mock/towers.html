@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>R01 타워 시트 · 성숙한 회화풍 요새</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@600;700;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body {
+      width: 1280px;
+      height: 720px;
+      overflow: hidden;
+      background: #1E2228;
+      font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif;
+      color: #C8BEA6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .page {
+      width: 1280px;
+      height: 720px;
+      padding: 16px 22px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    /* 상단 헤더 */
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-bottom: 8px;
+      border-bottom: 1px solid #4A5058;
+      flex-shrink: 0;
+    }
+
+    .title-group {
+      display: flex;
+      align-items: baseline;
+      gap: 12px;
+    }
+
+    .title {
+      font-family: 'Noto Serif KR', serif;
+      font-size: 20px;
+      font-weight: 700;
+      color: #F0E9D8;
+      letter-spacing: -0.01em;
+    }
+
+    .subtitle {
+      font-size: 13px;
+      color: #9DA3AB;
+    }
+
+    .palette-strip {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .swatch {
+      width: 16px;
+      height: 16px;
+      border-radius: 2px;
+      border: 1px solid #6C7178;
+    }
+    .palette-label {
+      font-size: 11px;
+      color: #9DA3AB;
+      margin-right: 4px;
+    }
+
+    /* 상단 메인 타워 원화 영역 (2행 분리로 가림 없이 assets/towers.webp 전량 노출) */
+    .main-sheet {
+      flex: 1;
+      min-height: 0;
+      background: #23272F;
+      border: 1px solid #6C7178;
+      border-radius: 4px;
+      padding: 10px 14px 10px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 6px;
+    }
+
+    .row-block {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .row-tag {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 11px;
+      font-weight: 600;
+      color: #4A8B7C;
+      letter-spacing: 0.02em;
+    }
+    .row-tag::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: rgba(108, 113, 120, 0.35);
+    }
+
+    .row-strip {
+      position: relative;
+      width: 100%;
+      height: 178px;
+      background: #22262C;
+      border: 1px solid rgba(108, 113, 120, 0.35);
+      border-radius: 3px;
+      overflow: hidden;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      padding: 6px 10px;
+    }
+
+    .tower-stage-cell {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    .captions-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+
+    .caption-item {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      padding: 3px 10px;
+      background: rgba(30, 34, 40, 0.85);
+      border-left: 2px solid #6C7178;
+    }
+    .caption-item.evo { border-left-color: #4A8B7C; }
+    .caption-item.arch { border-left-color: #B35435; }
+
+    .cap-name {
+      font-family: 'Noto Serif KR', serif;
+      font-size: 14px;
+      font-weight: 700;
+      color: #F0E9D8;
+    }
+    .cap-lv {
+      font-family: 'Pretendard', sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      color: #4A8B7C;
+      margin-right: 6px;
+    }
+    .caption-item.arch .cap-lv {
+      color: #B35435;
+    }
+
+    .cap-role {
+      font-size: 12px;
+      color: #9DA3AB;
+    }
+
+    /* 하단 48x48px 실제 축소 판독 띠 */
+    .readability-strip {
+      height: 92px;
+      flex-shrink: 0;
+      background: #23272F;
+      border: 1px solid #6C7178;
+      border-radius: 4px;
+      padding: 10px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+    }
+
+    .strip-meta {
+      width: 164px;
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+
+    .strip-title {
+      font-family: 'Noto Serif KR', serif;
+      font-size: 14px;
+      font-weight: 700;
+      color: #F0E9D8;
+    }
+
+    .strip-desc {
+      font-size: 11px;
+      color: #9DA3AB;
+      line-height: 1.35;
+    }
+
+    .thumbs-row {
+      flex: 1;
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 10px;
+    }
+
+    .thumb-cell {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      padding: 6px 8px;
+      background: #1E2228;
+      border: 1px solid #4A5058;
+      border-radius: 3px;
+    }
+
+    .thumb-48 {
+      width: 48px;
+      height: 48px;
+      flex-shrink: 0;
+      border: 1px solid #6C7178;
+      border-radius: 2px;
+      background: #1E2228;
+      display: block;
+    }
+
+    .thumb-text {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      min-width: 0;
+    }
+    .thumb-lv {
+      font-size: 10px;
+      font-weight: 700;
+      color: #4A8B7C;
+    }
+    .thumb-name {
+      font-size: 12px;
+      font-weight: 600;
+      color: #E3DCCB;
+      line-height: 1.2;
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header class="header">
+      <div class="title-group">
+        <h1 class="title">R01 · 성숙한 회화풍 요새 — 타워 구조물 시트</h1>
+        <span class="subtitle">인물·동물형 배제 · 과슈·유화 무광 · 좌상단 단일 광원</span>
+      </div>
+      <div class="palette-strip">
+        <span class="palette-label">6색 팔레트</span>
+        <span class="swatch" style="background:#1E2228" title="#1E2228"></span>
+        <span class="swatch" style="background:#4B5B43" title="#4B5B43"></span>
+        <span class="swatch" style="background:#C8BEA6" title="#C8BEA6"></span>
+        <span class="swatch" style="background:#6C7178" title="#6C7178"></span>
+        <span class="swatch" style="background:#B35435" title="#B35435"></span>
+        <span class="swatch" style="background:#4A8B7C" title="#4A8B7C"></span>
+      </div>
+    </header>
+
+    <main class="main-sheet">
+      <!-- 상단 행: 궁수 계열 기계식 쇠뇌/발리스타 진화 -->
+      <div class="row-block">
+        <div class="row-tag">궁수 계열 진화 · 기계식 쇠뇌·발리스타 건축물 증축 (Lv1 → Lv4 → Lv7)</div>
+        <div class="row-strip">
+          <canvas class="tower-stage-cell" width="386" height="166" data-stage="110,36,215,346"></canvas>
+          <canvas class="tower-stage-cell" width="386" height="166" data-stage="495,22,325,360"></canvas>
+          <canvas class="tower-stage-cell" width="386" height="166" data-stage="960,4,342,379"></canvas>
+        </div>
+        <div class="captions-row">
+          <div class="caption-item evo">
+            <div><span class="cap-lv">Lv1</span><span class="cap-name">자동 쇠뇌 망루</span></div>
+            <span class="cap-role">단일 사격 · 목석 초소</span>
+          </div>
+          <div class="caption-item evo">
+            <div><span class="cap-lv">Lv4</span><span class="cap-name">쌍발 발리스타 성탑</span></div>
+            <span class="cap-role">2연장 사격 · 화강암 누각</span>
+          </div>
+          <div class="caption-item evo">
+            <div><span class="cap-lv">Lv7</span><span class="cap-name">3층 연발 발리스타 요새</span></div>
+            <span class="cap-role">연발 제압 · 3층 석조 성채</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 하단 행: 다른 3종 타워 Lv1 -->
+      <div class="row-block">
+        <div class="row-tag">특수 공성·방어 타워 3종 (Lv1 기본형)</div>
+        <div class="row-strip">
+          <canvas class="tower-stage-cell" width="386" height="166" data-stage="62,430,348,306"></canvas>
+          <canvas class="tower-stage-cell" width="386" height="166" data-stage="550,408,255,330"></canvas>
+          <canvas class="tower-stage-cell" width="386" height="166" data-stage="1010,392,246,340"></canvas>
+        </div>
+        <div class="captions-row">
+          <div class="caption-item arch">
+            <div><span class="cap-lv">Lv1</span><span class="cap-name">석조 투석기</span></div>
+            <span class="cap-role">광역 포격 · 장갑 파쇄</span>
+          </div>
+          <div class="caption-item arch">
+            <div><span class="cap-lv">Lv1</span><span class="cap-name">고대 룬 오벨리스크</span></div>
+            <span class="cap-role">청록 룬 파동 · 이동 둔화</span>
+          </div>
+          <div class="caption-item arch">
+            <div><span class="cap-lv">Lv1</span><span class="cap-name">철제 화로 포탑</span></div>
+            <span class="cap-role">근접 화염 · 지속 피해</span>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- 하단 48x48px 축소 판독 띠 -->
+    <section class="readability-strip">
+      <div class="strip-meta">
+        <span class="strip-title">48×48px 축소 판독 띠</span>
+        <span class="strip-desc">실제 타일 크기(48px)에서 실루엣과 지붕·포대 구분 확인</span>
+      </div>
+      <div class="thumbs-row">
+        <div class="thumb-cell">
+          <canvas class="thumb-48" width="48" height="48" data-crop="115,44,200,336"></canvas>
+          <div class="thumb-text"><span class="thumb-lv">Lv1</span><span class="thumb-name">자동 쇠뇌 망루</span></div>
+        </div>
+        <div class="thumb-cell">
+          <canvas class="thumb-48" width="48" height="48" data-crop="504,28,306,354"></canvas>
+          <div class="thumb-text"><span class="thumb-lv">Lv4</span><span class="thumb-name">쌍발 발리스타</span></div>
+        </div>
+        <div class="thumb-cell">
+          <canvas class="thumb-48" width="48" height="48" data-crop="966,6,330,377"></canvas>
+          <div class="thumb-text"><span class="thumb-lv">Lv7</span><span class="thumb-name">3층 연발 요새</span></div>
+        </div>
+        <div class="thumb-cell">
+          <canvas class="thumb-48" width="48" height="48" data-crop="68,436,332,298"></canvas>
+          <div class="thumb-text"><span class="thumb-lv">Lv1</span><span class="thumb-name">석조 투석기</span></div>
+        </div>
+        <div class="thumb-cell">
+          <canvas class="thumb-48" width="48" height="48" data-crop="560,414,235,320"></canvas>
+          <div class="thumb-text"><span class="thumb-lv">Lv1</span><span class="thumb-name">룬 오벨리스크</span></div>
+        </div>
+        <div class="thumb-cell">
+          <canvas class="thumb-48" width="48" height="48" data-crop="1015,382,236,346"></canvas>
+          <div class="thumb-text"><span class="thumb-lv">Lv1</span><span class="thumb-name">철제 화로 포탑</span></div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    window.__R01_READY = new Promise((resolve) => {
+      const sheet = new Image();
+      sheet.onload = () => {
+        const sampleBg = (x, y) => {
+          const p = document.createElement('canvas');
+          p.width = 1; p.height = 1;
+          const pc = p.getContext('2d');
+          pc.drawImage(sheet, x, y, 1, 1, 0, 0, 1, 1);
+          const [rr, gg, bb] = pc.getImageData(0, 0, 1, 1).data;
+          return `rgb(${rr}, ${gg}, ${bb})`;
+        };
+
+        const stripBg = sampleBg(10, 10);
+        document.querySelectorAll('.row-strip').forEach((el) => {
+          el.style.background = stripBg;
+        });
+
+        document.querySelectorAll('canvas[data-stage]').forEach((cv) => {
+          const [sx, sy, sw, sh] = cv.dataset.stage.split(',').map(Number);
+          const ctx = cv.getContext('2d');
+          ctx.fillStyle = sampleBg(sx + 2, sy + 2);
+          ctx.fillRect(0, 0, cv.width, cv.height);
+          const scale = Math.min((cv.width - 12) / sw, (cv.height - 6) / sh);
+          const dw = sw * scale;
+          const dh = sh * scale;
+          ctx.drawImage(sheet, sx, sy, sw, sh, (cv.width - dw) / 2, (cv.height - dh) / 2, dw, dh);
+        });
+
+        // 하단 48x48px 썸네일 렌더
+        document.querySelectorAll('canvas[data-crop]').forEach((cv) => {
+          const [sx, sy, sw, sh] = cv.dataset.crop.split(',').map(Number);
+          const ctx = cv.getContext('2d');
+          ctx.fillStyle = sampleBg(sx + 2, sy + 2);
+          ctx.fillRect(0, 0, 48, 48);
+          const scale = Math.min(44 / sw, 44 / sh);
+          const dw = sw * scale;
+          const dh = sh * scale;
+          ctx.drawImage(sheet, sx, sy, sw, sh, (48 - dw) / 2, (48 - dh) / 2, dw, dh);
+        });
+        resolve();
+      };
+      sheet.src = 'assets/towers.webp';
+    });
+  </script>
+</body>
+</html>

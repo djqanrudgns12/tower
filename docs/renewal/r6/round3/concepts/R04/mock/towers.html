@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=1280, initial-scale=1.0" />
+  <title>R04 · 타워 원화 시트 — 기계식 포대·감시탑 6종</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/gh/sun-typeface/SUIT@2/fonts/variable/woff2/SUIT-Variable.css" rel="stylesheet" />
+  <style>
+    :root {
+      --carbon: #12161B;
+      --slate: #1D242C;
+      --grid: #4A5563;
+      --silver: #B8C0C8;
+      --amber: #E69F24;
+      --teal: #2FB5A3;
+      --font-plex: 'IBM Plex Sans KR', sans-serif;
+      --font-suit: 'SUIT Variable', 'SUIT', sans-serif;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      width: 1280px;
+      height: 720px;
+      overflow: hidden;
+      background: var(--carbon);
+      color: var(--silver);
+      font-family: var(--font-suit);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .sheet {
+      width: 1280px;
+      height: 720px;
+      padding: 20px 24px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      background:
+        radial-gradient(circle at 1px 1px, rgba(74, 85, 99, 0.25) 1px, transparent 0) 0 0 / 32px 32px,
+        var(--carbon);
+    }
+
+    /* Header */
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--grid);
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .code-badge {
+      font-family: var(--font-plex);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      color: var(--carbon);
+      background: var(--teal);
+      padding: 4px 10px;
+      clip-path: polygon(5px 0, 100% 0, calc(100% - 5px) 100%, 0 100%);
+    }
+
+    .header-title {
+      font-family: var(--font-plex);
+      font-size: 19px;
+      font-weight: 700;
+      color: var(--silver);
+      letter-spacing: -0.01em;
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-family: var(--font-suit);
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--silver);
+      opacity: 0.85;
+    }
+
+    .swatch-row {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .swatch {
+      width: 10px;
+      height: 10px;
+      border: 1px solid var(--grid);
+    }
+
+    /* Main 2x3 Tower Grid */
+    .showcase-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      grid-template-rows: repeat(2, 1fr);
+      gap: 12px 16px;
+      flex: 1;
+      margin: 14px 0;
+    }
+
+    .unit-frame {
+      background: var(--grid);
+      padding: 1px;
+      clip-path: polygon(
+        10px 0, 100% 0, 100% calc(100% - 10px),
+        calc(100% - 10px) 100%, 0 100%, 0 10px
+      );
+    }
+
+    .unit-card {
+      width: 100%;
+      height: 100%;
+      background: var(--carbon);
+      clip-path: polygon(
+        9.5px 0, 100% 0, 100% calc(100% - 9.5px),
+        calc(100% - 9.5px) 100%, 0 100%, 0 9.5px
+      );
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 10px 14px 11px;
+      position: relative;
+    }
+
+    .unit-card.evo::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 16px;
+      width: 44px;
+      height: 2px;
+      background: var(--amber);
+    }
+
+    .unit-card.base::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 16px;
+      width: 44px;
+      height: 2px;
+      background: var(--teal);
+    }
+
+    .unit-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .lv-tag {
+      font-family: var(--font-plex);
+      font-size: 11px;
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+      letter-spacing: 0.04em;
+      padding: 2px 7px;
+      border: 1px solid var(--grid);
+      background: var(--slate);
+    }
+
+    .lv-tag.amber { color: var(--amber); border-color: rgba(230, 159, 36, 0.55); }
+    .lv-tag.teal { color: var(--teal); border-color: rgba(47, 181, 163, 0.55); }
+
+    .unit-cat {
+      font-family: var(--font-suit);
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--silver);
+      opacity: 0.72;
+    }
+
+    .unit-canvas-wrap {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 0;
+    }
+
+    .unit-canvas-wrap canvas {
+      display: block;
+      max-height: 152px;
+      max-width: 240px;
+    }
+
+    .unit-footer {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      padding-top: 7px;
+      border-top: 1px solid rgba(74, 85, 99, 0.55);
+    }
+
+    .unit-name {
+      font-family: var(--font-suit);
+      font-size: 14.5px;
+      font-weight: 700;
+      color: var(--silver);
+    }
+
+    .unit-spec {
+      font-family: var(--font-suit);
+      font-size: 11.5px;
+      font-weight: 500;
+      color: var(--silver);
+      opacity: 0.72;
+    }
+
+    /* Bottom 48x48 readability strip */
+    .strip-frame {
+      background: var(--grid);
+      padding: 1px;
+      clip-path: polygon(
+        8px 0, 100% 0, 100% calc(100% - 8px),
+        calc(100% - 8px) 100%, 0 100%, 0 8px
+      );
+    }
+
+    .strip-inner {
+      background: var(--slate);
+      clip-path: polygon(
+        7.5px 0, 100% 0, 100% calc(100% - 7.5px),
+        calc(100% - 7.5px) 100%, 0 100%, 0 7.5px
+      );
+      padding: 10px 16px;
+      display: flex;
+      align-items: center;
+      gap: 18px;
+    }
+
+    .strip-label-col {
+      width: 126px;
+      flex-shrink: 0;
+      border-right: 1px solid var(--grid);
+      padding-right: 14px;
+    }
+
+    .strip-title {
+      font-family: var(--font-plex);
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--amber);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .strip-desc {
+      font-family: var(--font-suit);
+      font-size: 11px;
+      color: var(--silver);
+      opacity: 0.78;
+      margin-top: 2px;
+    }
+
+    .mini-row {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 10px;
+      flex: 1;
+    }
+
+    .mini-item {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      padding: 5px 8px;
+      background: var(--carbon);
+      border: 1px solid rgba(74, 85, 99, 0.7);
+    }
+
+    .mini-box-48 {
+      width: 48px;
+      height: 48px;
+      flex-shrink: 0;
+      border: 1px solid var(--grid);
+      background: var(--carbon);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .mini-box-48 canvas {
+      width: 48px;
+      height: 48px;
+      display: block;
+    }
+
+    .mini-meta {
+      min-width: 0;
+    }
+
+    .mini-lv {
+      font-family: var(--font-plex);
+      font-size: 10.5px;
+      font-weight: 700;
+      color: var(--teal);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .mini-name {
+      font-family: var(--font-suit);
+      font-size: 11.5px;
+      font-weight: 600;
+      color: var(--silver);
+      line-height: 1.25;
+      margin-top: 1px;
+    }
+  </style>
+</head>
+<body>
+  <div class="sheet">
+    <div class="header">
+      <div class="header-left">
+        <span class="code-badge">R04 · TOWERS</span>
+        <span class="header-title">기계식 포대·감시탑 6종 원화 시트</span>
+      </div>
+      <div class="header-right">
+        <span>사람·동물형 배제 · 무광 6색 · 좌상단 단일 광원</span>
+        <div class="swatch-row">
+          <span class="swatch" style="background:#12161B"></span>
+          <span class="swatch" style="background:#1D242C"></span>
+          <span class="swatch" style="background:#4A5563"></span>
+          <span class="swatch" style="background:#B8C0C8"></span>
+          <span class="swatch" style="background:#E69F24"></span>
+          <span class="swatch" style="background:#2FB5A3"></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="showcase-grid">
+      <div class="unit-frame">
+        <div class="unit-card evo">
+          <div class="unit-top">
+            <span class="lv-tag amber">LV.1</span>
+            <span class="unit-cat">궁수 계열 · 기본</span>
+          </div>
+          <div class="unit-canvas-wrap"><canvas id="hero-0" width="220" height="150"></canvas></div>
+          <div class="unit-footer">
+            <span class="unit-name">경량 자동 레일포탑</span>
+            <span class="unit-spec">단일 직사 · 틸 조준기</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="unit-frame">
+        <div class="unit-card evo">
+          <div class="unit-top">
+            <span class="lv-tag amber">LV.4</span>
+            <span class="unit-cat">궁수 계열 · 1차 증축</span>
+          </div>
+          <div class="unit-canvas-wrap"><canvas id="hero-1" width="220" height="150"></canvas></div>
+          <div class="unit-footer">
+            <span class="unit-name">2연장 장갑 포대</span>
+            <span class="unit-spec">쌍열 포신 · 장갑 기단</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="unit-frame">
+        <div class="unit-card evo">
+          <div class="unit-top">
+            <span class="lv-tag amber">LV.7</span>
+            <span class="unit-cat">궁수 계열 · 최종 증축</span>
+          </div>
+          <div class="unit-canvas-wrap"><canvas id="hero-2" width="220" height="150"></canvas></div>
+          <div class="unit-footer">
+            <span class="unit-name">4연장 레이더 감시포탑</span>
+            <span class="unit-spec">4연장 화력 · 탐지 레이더</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="unit-frame">
+        <div class="unit-card base">
+          <div class="unit-top">
+            <span class="lv-tag teal">LV.1</span>
+            <span class="unit-cat">포격 계열 · 기본</span>
+          </div>
+          <div class="unit-canvas-wrap"><canvas id="hero-3" width="220" height="150"></canvas></div>
+          <div class="unit-footer">
+            <span class="unit-name">곡사 박격포대</span>
+            <span class="unit-spec">유압 지지각 · 범위 폭격</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="unit-frame">
+        <div class="unit-card base">
+          <div class="unit-top">
+            <span class="lv-tag teal">LV.1</span>
+            <span class="unit-cat">감속 계열 · 기본</span>
+          </div>
+          <div class="unit-canvas-wrap"><canvas id="hero-4" width="220" height="150"></canvas></div>
+          <div class="unit-footer">
+            <span class="unit-name">파동 감속 중계탑</span>
+            <span class="unit-spec">3중 틸 공명 링</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="unit-frame">
+        <div class="unit-card base">
+          <div class="unit-top">
+            <span class="lv-tag teal">LV.1</span>
+            <span class="unit-cat">레이저 계열 · 기본</span>
+          </div>
+          <div class="unit-canvas-wrap"><canvas id="hero-5" width="220" height="150"></canvas></div>
+          <div class="unit-footer">
+            <span class="unit-name">프리즘 레이저탑</span>
+            <span class="unit-spec">삼각 프레임 · 수정 집속</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="strip-frame">
+      <div class="strip-inner">
+        <div class="strip-label-col">
+          <div class="strip-title">48×48px 축소 판독</div>
+          <div class="strip-desc">타일 설치 크기 시인성</div>
+        </div>
+        <div class="mini-row">
+          <div class="mini-item">
+            <div class="mini-box-48"><canvas id="mini-0" width="48" height="48"></canvas></div>
+            <div class="mini-meta"><div class="mini-lv">LV.1</div><div class="mini-name">경량 자동<br/>레일포탑</div></div>
+          </div>
+          <div class="mini-item">
+            <div class="mini-box-48"><canvas id="mini-1" width="48" height="48"></canvas></div>
+            <div class="mini-meta"><div class="mini-lv">LV.4</div><div class="mini-name">2연장 장갑<br/>포대</div></div>
+          </div>
+          <div class="mini-item">
+            <div class="mini-box-48"><canvas id="mini-2" width="48" height="48"></canvas></div>
+            <div class="mini-meta"><div class="mini-lv">LV.7</div><div class="mini-name">4연장 레이더<br/>감시포탑</div></div>
+          </div>
+          <div class="mini-item">
+            <div class="mini-box-48"><canvas id="mini-3" width="48" height="48"></canvas></div>
+            <div class="mini-meta"><div class="mini-lv">LV.1</div><div class="mini-name">곡사<br/>박격포대</div></div>
+          </div>
+          <div class="mini-item">
+            <div class="mini-box-48"><canvas id="mini-4" width="48" height="48"></canvas></div>
+            <div class="mini-meta"><div class="mini-lv">LV.1</div><div class="mini-name">파동 감속<br/>중계탑</div></div>
+          </div>
+          <div class="mini-item">
+            <div class="mini-box-48"><canvas id="mini-5" width="48" height="48"></canvas></div>
+            <div class="mini-meta"><div class="mini-lv">LV.1</div><div class="mini-name">프리즘<br/>레이저탑</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    window.__cropsReady = new Promise((resolve) => {
+      const img = new Image();
+      img.onload = () => {
+        const w = img.naturalWidth;
+        const h = img.naturalHeight;
+        const off = document.createElement('canvas');
+        off.width = w;
+        off.height = h;
+        const ctx = off.getContext('2d');
+        ctx.drawImage(img, 0, 0);
+        const data = ctx.getImageData(0, 0, w, h).data;
+        const bgR = data[0], bgG = data[1], bgB = data[2];
+
+        const slots = [
+          { idx: 0, rx0: 0.00, rx1: 0.33, ry0: 0.00, ry1: 0.50 },
+          { idx: 1, rx0: 0.33, rx1: 0.67, ry0: 0.00, ry1: 0.50 },
+          { idx: 2, rx0: 0.67, rx1: 1.00, ry0: 0.00, ry1: 0.50 },
+          { idx: 3, rx0: 0.00, rx1: 0.33, ry0: 0.50, ry1: 1.00 },
+          { idx: 4, rx0: 0.33, rx1: 0.67, ry0: 0.50, ry1: 1.00 },
+          { idx: 5, rx0: 0.67, rx1: 1.00, ry0: 0.50, ry1: 1.00 },
+        ];
+
+        for (const s of slots) {
+          const x0 = Math.floor(s.rx0 * w);
+          const x1 = Math.floor(s.rx1 * w);
+          const y0 = Math.floor(s.ry0 * h);
+          const y1 = Math.floor(s.ry1 * h);
+          let minX = x1, maxX = x0, minY = y1, maxY = y0;
+          for (let y = y0; y < y1; y++) {
+            for (let x = x0; x < x1; x++) {
+              const i = (y * w + x) * 4;
+              const diff = Math.abs(data[i] - bgR) + Math.abs(data[i + 1] - bgG) + Math.abs(data[i + 2] - bgB);
+              if (diff > 24) {
+                if (x < minX) minX = x;
+                if (x > maxX) maxX = x;
+                if (y < minY) minY = y;
+                if (y > maxY) maxY = y;
+              }
+            }
+          }
+          const sw = Math.max(1, maxX - minX + 1);
+          const sh = Math.max(1, maxY - minY + 1);
+
+          for (const [prefix, pad] of [['hero-', 4], ['mini-', 2]]) {
+            const c = document.getElementById(prefix + s.idx);
+            const cctx = c.getContext('2d');
+            cctx.fillStyle = '#12161B';
+            cctx.fillRect(0, 0, c.width, c.height);
+            const scale = Math.min((c.width - pad * 2) / sw, (c.height - pad * 2) / sh);
+            const dw = sw * scale;
+            const dh = sh * scale;
+            cctx.drawImage(off, minX, minY, sw, sh, (c.width - dw) / 2, (c.height - dh) / 2, dw, dh);
+          }
+        }
+        resolve();
+      };
+      img.onerror = resolve;
+      img.src = 'assets/towers.webp';
+    });
+  </script>
+</body>
+</html>

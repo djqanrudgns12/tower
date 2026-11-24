@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>R03 전투 화면 · 2도 목판화 그래픽</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@500;600;700&family=Noto+Serif+KR:wght@700;900&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --ink: #141414;
+      --paper: #ECE5D5;
+      --slate: #4A4945;
+      --red: #C43E2F;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body {
+      width: 1280px;
+      height: 720px;
+      overflow: hidden;
+      background: var(--paper);
+      color: var(--ink);
+      font-family: 'IBM Plex Sans KR', 'Apple SD Gothic Neo', sans-serif;
+    }
+    .frame {
+      position: relative;
+      width: 1280px;
+      height: 720px;
+      padding: 12px;
+      display: grid;
+      grid-template-rows: 44px 1fr 154px;
+      grid-template-columns: 1fr 196px;
+      gap: 10px;
+      background: var(--paper);
+    }
+
+    /* Top HUD */
+    .hud-top {
+      grid-column: 1 / -1;
+      grid-row: 1;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+    .hud-left {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .hud-box {
+      height: 44px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 0 12px;
+      background: var(--paper);
+      border: 2px solid var(--ink);
+      box-shadow: 3px 3px 0 var(--ink);
+    }
+    .hud-box.accent-gate {
+      background: var(--ink);
+      color: var(--paper);
+    }
+    .hud-label {
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      color: var(--slate);
+    }
+    .hud-box.accent-gate .hud-label {
+      color: var(--paper);
+      opacity: 0.85;
+    }
+    .hud-val {
+      font-size: 18px;
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+      line-height: 1;
+    }
+    .hud-val.red { color: var(--red); }
+    .gate-bar {
+      width: 56px;
+      height: 10px;
+      border: 2px solid var(--paper);
+      background: var(--slate);
+      padding: 1px;
+    }
+    .gate-fill {
+      width: 100%;
+      height: 100%;
+      background: var(--red);
+    }
+    .pause-btn {
+      height: 44px;
+      padding: 0 16px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--paper);
+      color: var(--ink);
+      border: 2px solid var(--ink);
+      box-shadow: 3px 3px 0 var(--ink);
+      font-family: 'IBM Plex Sans KR', sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    /* Battlefield Viewport */
+    .stage-wrap {
+      grid-column: 1;
+      grid-row: 2;
+      position: relative;
+      border: 2px solid var(--ink);
+      box-shadow: 3px 3px 0 var(--ink);
+      background: var(--ink);
+      overflow: hidden;
+    }
+    .stage-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center 48%;
+      display: block;
+    }
+    .stage-badge {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      padding: 4px 10px;
+      background: var(--paper);
+      border: 2px solid var(--ink);
+      font-size: 12px;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .stage-dot {
+      width: 8px;
+      height: 8px;
+      background: var(--red);
+      display: inline-block;
+    }
+
+    /* Right Tower Dock */
+    .tower-dock {
+      grid-column: 2;
+      grid-row: 2;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .dock-header {
+      height: 30px;
+      background: var(--ink);
+      color: var(--paper);
+      border: 2px solid var(--ink);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 10px;
+      font-family: 'Noto Serif KR', serif;
+      font-size: 13px;
+      font-weight: 700;
+    }
+    .dock-sub {
+      font-family: 'IBM Plex Sans KR', sans-serif;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--red);
+    }
+    .tower-list {
+      flex: 1;
+      display: grid;
+      grid-template-rows: repeat(4, 1fr);
+      gap: 8px;
+    }
+    .tower-card {
+      position: relative;
+      background: var(--paper);
+      border: 2px solid var(--ink);
+      box-shadow: 3px 3px 0 var(--ink);
+      padding: 8px 10px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .tower-card.selected {
+      border-left: 8px solid var(--red);
+    }
+    .tower-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 6px;
+    }
+    .tower-name {
+      font-family: 'Noto Serif KR', serif;
+      font-size: 14px;
+      font-weight: 900;
+      line-height: 1.2;
+      color: var(--ink);
+    }
+    .tower-cost {
+      flex-shrink: 0;
+      padding: 2px 6px;
+      background: var(--ink);
+      color: var(--paper);
+      font-size: 12px;
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+    }
+    .tower-card.selected .tower-cost {
+      background: var(--red);
+      color: var(--paper);
+    }
+    .tower-bottom {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 11.5px;
+      font-weight: 600;
+      color: var(--slate);
+    }
+    .tower-key {
+      width: 18px;
+      height: 18px;
+      border: 1.5px solid var(--ink);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--ink);
+    }
+
+    /* Bottom Quiz Panel */
+    .quiz-panel {
+      grid-column: 1 / -1;
+      grid-row: 3;
+      background: var(--paper);
+      border: 2px solid var(--ink);
+      box-shadow: 3px 3px 0 var(--ink);
+      padding: 12px 14px;
+      display: grid;
+      grid-template-columns: 420px 1fr;
+      gap: 16px;
+      align-items: center;
+    }
+    .quiz-left {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      border-right: 2px solid var(--ink);
+      padding-right: 16px;
+    }
+    .quiz-meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+    .quiz-tag {
+      display: inline-block;
+      padding: 2px 8px;
+      background: var(--red);
+      color: var(--paper);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+    }
+    .quiz-reward {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--slate);
+    }
+    .quiz-question {
+      font-family: 'Noto Serif KR', serif;
+      font-size: 22px;
+      font-weight: 900;
+      line-height: 1.3;
+      color: var(--ink);
+    }
+    .quiz-question .word-emph {
+      color: var(--red);
+      text-decoration: underline;
+      text-underline-offset: 4px;
+      text-decoration-thickness: 2px;
+    }
+    .quiz-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .quiz-hint {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--slate);
+    }
+    .skip-btn {
+      padding: 4px 12px;
+      background: var(--paper);
+      color: var(--ink);
+      border: 2px solid var(--ink);
+      box-shadow: 2px 2px 0 var(--ink);
+      font-family: 'IBM Plex Sans KR', sans-serif;
+      font-size: 12.5px;
+      font-weight: 700;
+    }
+
+    .quiz-choices {
+      height: 100%;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: 1fr 1fr;
+      gap: 10px;
+    }
+    .choice-btn {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 0 14px;
+      background: var(--paper);
+      border: 2px solid var(--ink);
+      box-shadow: 3px 3px 0 var(--ink);
+      font-family: 'IBM Plex Sans KR', sans-serif;
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--ink);
+    }
+    .choice-num {
+      width: 26px;
+      height: 26px;
+      flex-shrink: 0;
+      background: var(--ink);
+      color: var(--paper);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: 700;
+    }
+  </style>
+</head>
+<body>
+  <div class="frame">
+    <!-- Top HUD -->
+    <header class="hud-top">
+      <div class="hud-left">
+        <div class="hud-box accent-gate">
+          <svg width="18" height="18" viewBox="0 0 20 20" fill="none">
+            <path d="M3 18V7L10 2L17 7V18H12.5V12H7.5V18H3Z" fill="#ECE5D5" stroke="#ECE5D5" stroke-width="1.5"/>
+          </svg>
+          <span class="hud-label">성문</span>
+          <span class="hud-val">20/20</span>
+          <div class="gate-bar"><div class="gate-fill"></div></div>
+        </div>
+
+        <div class="hud-box">
+          <svg width="18" height="18" viewBox="0 0 20 20" fill="none">
+            <circle cx="10" cy="10" r="8" fill="#C43E2F" stroke="#141414" stroke-width="2"/>
+            <rect x="7" y="7" width="6" height="6" fill="#ECE5D5" stroke="#141414" stroke-width="1.5"/>
+          </svg>
+          <span class="hud-label">골드</span>
+          <span class="hud-val red">240</span>
+        </div>
+
+        <div class="hud-box">
+          <span class="hud-label">웨이브</span>
+          <span class="hud-val">3/10</span>
+        </div>
+
+        <div class="hud-box">
+          <span class="hud-label">남은 적</span>
+          <span class="hud-val">12</span>
+        </div>
+      </div>
+
+      <button class="pause-btn" type="button">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+          <rect x="2" y="1" width="3.5" height="12" fill="#141414"/>
+          <rect x="8.5" y="1" width="3.5" height="12" fill="#141414"/>
+        </svg>
+        <span>일시정지</span>
+      </button>
+    </header>
+
+    <!-- Battlefield -->
+    <main class="stage-wrap">
+      <img class="stage-img" src="assets/battle.webp" alt="2도 목판화 전장" />
+      <div class="stage-badge">
+        <span class="stage-dot"></span>
+        <span>고개 4단 구불길 · 4색 목판 판화</span>
+      </div>
+    </main>
+
+    <!-- Right Tower Dock -->
+    <aside class="tower-dock">
+      <div class="dock-header">
+        <span>타워 설치</span>
+        <span class="dock-sub">4종</span>
+      </div>
+      <div class="tower-list">
+        <div class="tower-card selected">
+          <div class="tower-top">
+            <span class="tower-name">목판 화살 망루</span>
+            <span class="tower-cost">60G</span>
+          </div>
+          <div class="tower-bottom">
+            <span>단일 빠른 사격</span>
+            <span class="tower-key">1</span>
+          </div>
+        </div>
+
+        <div class="tower-card">
+          <div class="tower-top">
+            <span class="tower-name">목판 투석기</span>
+            <span class="tower-cost">90G</span>
+          </div>
+          <div class="tower-bottom">
+            <span>넓은 범위 타격</span>
+            <span class="tower-key">2</span>
+          </div>
+        </div>
+
+        <div class="tower-card">
+          <div class="tower-top">
+            <span class="tower-name">진동 종루</span>
+            <span class="tower-cost">80G</span>
+          </div>
+          <div class="tower-bottom">
+            <span>주변 적 감속</span>
+            <span class="tower-key">3</span>
+          </div>
+        </div>
+
+        <div class="tower-card">
+          <div class="tower-top">
+            <span class="tower-name">철제 화로탑</span>
+            <span class="tower-cost">110G</span>
+          </div>
+          <div class="tower-bottom">
+            <span>지속 화상 피해</span>
+            <span class="tower-key">4</span>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Bottom Quiz Panel -->
+    <section class="quiz-panel">
+      <div class="quiz-left">
+        <div class="quiz-meta">
+          <span class="quiz-tag">어휘 문제</span>
+          <span class="quiz-reward">정답 시 +45 골드</span>
+        </div>
+        <div class="quiz-question">
+          ‘<span class="word-emph">정성</span>’의 뜻으로 알맞은 것은?
+        </div>
+        <div class="quiz-footer">
+          <span class="quiz-hint">뜻을 고르면 바로 골드를 얻습니다</span>
+          <button class="skip-btn" type="button">모르겠어요</button>
+        </div>
+      </div>
+
+      <div class="quiz-choices">
+        <div class="choice-btn">
+          <span class="choice-num">1</span>
+          <span>금방 사라지는 작은 소리</span>
+        </div>
+        <div class="choice-btn">
+          <span class="choice-num">2</span>
+          <span>물건을 살 때 내는 돈</span>
+        </div>
+        <div class="choice-btn">
+          <span class="choice-num">3</span>
+          <span>온 힘을 다하는 참된 마음</span>
+        </div>
+        <div class="choice-btn">
+          <span class="choice-num">4</span>
+          <span>놀이에서 정한 순서</span>
+        </div>
+      </div>
+    </section>
+  </div>
+</body>
+</html>

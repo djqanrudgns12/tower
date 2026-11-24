@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>R05 적군 도감 · 고대 석조 유적</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@600;700;900&display=swap" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/gh/sun-typeface/SUIT@2/fonts/variable/woff2/SUIT-Variable.css" rel="stylesheet" />
+  <style>
+    :root {
+      --sand: #D6B892;
+      --terracotta: #A66A4C;
+      --umber: #4A3731;
+      --twilight: #24232B;
+      --turquoise: #3E8E8E;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body {
+      width: 1280px;
+      height: 720px;
+      overflow: hidden;
+      background: var(--twilight);
+      color: var(--sand);
+      font-family: 'SUIT Variable', 'SUIT', 'Apple SD Gothic Neo', sans-serif;
+    }
+    .page {
+      width: 1280px;
+      height: 720px;
+      padding: 12px 14px;
+      display: grid;
+      grid-template-rows: 48px 1fr 104px;
+      gap: 10px;
+      background: var(--twilight);
+    }
+
+    /* Header */
+    .header {
+      border: 1.5px solid var(--umber);
+      box-shadow: inset 0 1px 0 rgba(214, 184, 146, 0.15);
+      background: #2A2831;
+      padding: 0 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .header-left {
+      display: flex;
+      align-items: baseline;
+      gap: 12px;
+    }
+    .header-title {
+      font-family: 'Noto Serif KR', serif;
+      font-size: 19px;
+      font-weight: 900;
+      color: var(--sand);
+    }
+    .header-sub {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--terracotta);
+    }
+    .header-tag {
+      padding: 4px 10px;
+      background: var(--turquoise);
+      color: var(--twilight);
+      font-size: 11.5px;
+      font-weight: 800;
+    }
+
+    /* Sheet Area */
+    .sheet-box {
+      position: relative;
+      border: 1.5px solid var(--umber);
+      background: var(--twilight);
+      overflow: hidden;
+    }
+    .sheet-box::after {
+      content: "";
+      position: absolute;
+      inset: 6px;
+      border: 1px solid rgba(214, 184, 146, 0.14);
+      pointer-events: none;
+    }
+    .sheet-img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      object-position: center 42%;
+    }
+    .row-pill {
+      position: absolute;
+      top: 12px;
+      left: 14px;
+      padding: 3px 10px;
+      background: var(--umber);
+      border: 1px solid var(--terracotta);
+      color: var(--sand);
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .enemy-plate {
+      position: absolute;
+      transform: translateX(-50%);
+      background: rgba(36, 35, 43, 0.94);
+      border: 1.5px solid var(--umber);
+      box-shadow: inset 0 1px 0 rgba(214, 184, 146, 0.15);
+      padding: 5px 10px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      white-space: nowrap;
+    }
+    .enemy-plate.boss {
+      border-color: var(--turquoise);
+    }
+    .plate-top {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .enemy-badge {
+      padding: 1px 6px;
+      background: var(--umber);
+      color: var(--sand);
+      font-size: 10.5px;
+      font-weight: 700;
+    }
+    .enemy-badge.boss {
+      background: var(--turquoise);
+      color: var(--twilight);
+      font-weight: 800;
+    }
+    .enemy-name {
+      font-family: 'Noto Serif KR', serif;
+      font-size: 13.5px;
+      font-weight: 700;
+      color: var(--sand);
+    }
+    .enemy-trait {
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--terracotta);
+    }
+
+    /* 32x32 Readability Strip */
+    .strip-box {
+      border: 1.5px solid var(--umber);
+      background: #2A2831;
+      padding: 8px 16px;
+      display: grid;
+      grid-template-columns: 274px 1fr;
+      align-items: center;
+      gap: 16px;
+    }
+    .strip-info {
+      border-right: 1.5px solid var(--umber);
+      padding-right: 14px;
+    }
+    .strip-title {
+      font-family: 'Noto Serif KR', serif;
+      font-size: 14.5px;
+      font-weight: 700;
+      color: var(--sand);
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      white-space: nowrap;
+    }
+    .strip-badge {
+      padding: 2px 6px;
+      background: var(--turquoise);
+      color: var(--twilight);
+      font-family: 'SUIT Variable', 'SUIT', sans-serif;
+      font-size: 10.5px;
+      font-weight: 800;
+    }
+    .strip-desc {
+      margin-top: 4px;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--terracotta);
+      line-height: 1.35;
+    }
+    .strip-items {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 10px;
+      align-items: center;
+    }
+    .mini-item {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 9px;
+    }
+    .mini-canvas-wrap {
+      width: 38px;
+      height: 38px;
+      border: 1.5px solid var(--umber);
+      background: var(--twilight);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .mini-canvas-wrap.boss {
+      border-color: var(--turquoise);
+    }
+    canvas.thumb32 {
+      width: 32px;
+      height: 32px;
+      display: block;
+    }
+    .mini-text {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .mini-name {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--sand);
+      white-space: nowrap;
+    }
+    .mini-sub {
+      font-size: 10.5px;
+      font-weight: 600;
+      color: var(--terracotta);
+      white-space: nowrap;
+    }
+    .mini-sub.boss {
+      color: var(--turquoise);
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header class="header">
+      <div class="header-left">
+        <h1 class="header-title">R05 · 고대 석조 유적 적군 도감</h1>
+        <span class="header-sub">기하·석조·사막 생물 실루엣 · 일반 4종 + 보스 1종</span>
+      </div>
+      <span class="header-tag">치비·음식·밈·공포 배제</span>
+    </header>
+
+    <section class="sheet-box">
+      <img id="enemySheet" class="sheet-img" src="assets/enemies.webp" alt="고대 석조 유적 적군 5종" />
+      <span class="row-pill">행군 적군 실루엣 5종 (좌→우: 일반 4종 · 보스 1종)</span>
+
+      <div class="enemy-plate" style="left: 16.5%; top: 438px;">
+        <div class="plate-top">
+          <span class="enemy-badge">일반</span>
+          <span class="enemy-name">사암 조각 골렘</span>
+        </div>
+        <span class="enemy-trait">높은 체력 · 느린 이동</span>
+      </div>
+
+      <div class="enemy-plate" style="left: 33.5%; top: 438px;">
+        <div class="plate-top">
+          <span class="enemy-badge">일반</span>
+          <span class="enemy-name">청동 스카라브</span>
+        </div>
+        <span class="enemy-trait">단단한 방어 · 무리 행군</span>
+      </div>
+
+      <div class="enemy-plate" style="left: 49.5%; top: 438px;">
+        <div class="plate-top">
+          <span class="enemy-badge">일반</span>
+          <span class="enemy-name">황혼 모래 늑대</span>
+        </div>
+        <span class="enemy-trait">빠른 돌진 · 민첩</span>
+      </div>
+
+      <div class="enemy-plate" style="left: 65.5%; top: 438px;">
+        <div class="plate-top">
+          <span class="enemy-badge">일반</span>
+          <span class="enemy-name">부유 기하 석판체</span>
+        </div>
+        <span class="enemy-trait">감속 저항 · 원거리 내성</span>
+      </div>
+
+      <div class="enemy-plate boss" style="left: 84.5%; top: 468px;">
+        <div class="plate-top">
+          <span class="enemy-badge boss">보스</span>
+          <span class="enemy-name">거대 고대 문지기 석상</span>
+        </div>
+        <span class="enemy-trait">초고체력 · 성문 파괴 특화</span>
+      </div>
+    </section>
+
+    <footer class="strip-box">
+      <div class="strip-info">
+        <div class="strip-title">
+          <span>32×32px 축소 판독 띠</span>
+          <span class="strip-badge">실제 축소</span>
+        </div>
+        <p class="strip-desc">타일 행군 중에도 기하 윤곽과 청록 공명핵으로 5종이 즉각 구분됩니다.</p>
+      </div>
+
+      <div class="strip-items">
+        <div class="mini-item">
+          <div class="mini-canvas-wrap"><canvas class="thumb32" width="32" height="32" data-region="golem"></canvas></div>
+          <div class="mini-text">
+            <span class="mini-name">사암 조각 골렘</span>
+            <span class="mini-sub">고체력 중장</span>
+          </div>
+        </div>
+        <div class="mini-item">
+          <div class="mini-canvas-wrap"><canvas class="thumb32" width="32" height="32" data-region="scarab"></canvas></div>
+          <div class="mini-text">
+            <span class="mini-name">청동 스카라브</span>
+            <span class="mini-sub">갑각 방어</span>
+          </div>
+        </div>
+        <div class="mini-item">
+          <div class="mini-canvas-wrap"><canvas class="thumb32" width="32" height="32" data-region="wolf"></canvas></div>
+          <div class="mini-text">
+            <span class="mini-name">황혼 모래 늑대</span>
+            <span class="mini-sub">고속 선봉</span>
+          </div>
+        </div>
+        <div class="mini-item">
+          <div class="mini-canvas-wrap"><canvas class="thumb32" width="32" height="32" data-region="monolith"></canvas></div>
+          <div class="mini-text">
+            <span class="mini-name">부유 기하 석판체</span>
+            <span class="mini-sub">감속 저항</span>
+          </div>
+        </div>
+        <div class="mini-item">
+          <div class="mini-canvas-wrap boss"><canvas class="thumb32" width="32" height="32" data-region="boss"></canvas></div>
+          <div class="mini-text">
+            <span class="mini-name">고대 문지기 석상</span>
+            <span class="mini-sub boss">대형 보스</span>
+          </div>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <script>
+    window.__MOCK_READY__ = (async () => {
+      const img = document.getElementById('enemySheet');
+      if (!img.complete) {
+        await new Promise((res, rej) => { img.onload = res; img.onerror = rej; });
+      }
+      const off = document.createElement('canvas');
+      off.width = img.naturalWidth;
+      off.height = img.naturalHeight;
+      const octx = off.getContext('2d');
+      octx.drawImage(img, 0, 0);
+      const full = octx.getImageData(0, 0, off.width, off.height);
+      const bgR = full.data[10 * 4], bgG = full.data[10 * 4 + 1], bgB = full.data[10 * 4 + 2];
+      document.querySelector('.sheet-box').style.background = `rgb(${bgR},${bgG},${bgB})`;
+
+      const W = off.width, H = off.height;
+      const regions = {
+        golem:    [0, Math.floor(W * 0.21), 0, H],
+        scarab:   [Math.floor(W * 0.21), Math.floor(W * 0.39), 0, H],
+        wolf:     [Math.floor(W * 0.39), Math.floor(W * 0.57), 0, H],
+        monolith: [Math.floor(W * 0.57), Math.floor(W * 0.72), 0, H],
+        boss:     [Math.floor(W * 0.72), W, 0, H],
+      };
+
+      for (const canvas of document.querySelectorAll('canvas.thumb32')) {
+        const [x0, x1, y0, y1] = regions[canvas.dataset.region];
+        let minX = x1, minY = y1, maxX = x0, maxY = y0;
+        for (let y = y0; y < y1; y++) {
+          for (let x = x0; x < x1; x++) {
+            const idx = (y * W + x) * 4;
+            const diff = Math.abs(full.data[idx] - bgR) + Math.abs(full.data[idx + 1] - bgG) + Math.abs(full.data[idx + 2] - bgB);
+            if (diff > 32) {
+              if (x < minX) minX = x;
+              if (x > maxX) maxX = x;
+              if (y < minY) minY = y;
+              if (y > maxY) maxY = y;
+            }
+          }
+        }
+        const bw = Math.max(1, maxX - minX + 1);
+        const bh = Math.max(1, maxY - minY + 1);
+        const ctx = canvas.getContext('2d');
+        ctx.fillStyle = `rgb(${bgR},${bgG},${bgB})`;
+        ctx.fillRect(0, 0, 32, 32);
+        const scale = Math.min(28 / bw, 28 / bh);
+        const dw = bw * scale;
+        const dh = bh * scale;
+        ctx.drawImage(img, minX, minY, bw, bh, (32 - dw) / 2, (32 - dh) / 2, dw, dh);
+      }
+    })();
+  </script>
+</body>
+</html>
