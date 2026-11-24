@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>새 타워 해금 — 어휘력 타워 디펜스 R6</title>
+  <link rel="stylesheet" href="../tokens.css" />
+  <link rel="stylesheet" href="../shared.css" />
+  <script defer src="./hydrate-icons.js"></script>
+  <style>
+    .unlock-root {
+      position: relative;
+      min-height: 100vh;
+      overflow-x: hidden;
+      background: var(--bg-canvas);
+    }
+    .battle-bg {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+    }
+    .battle-bg img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .unlock-body {
+      padding: var(--sp-4);
+      background: var(--bg-panel);
+      display: flex;
+      flex-direction: column;
+      gap: var(--sp-3);
+    }
+
+    /* 중심 카드: 프리즘 탑 */
+    .prism-card-inner {
+      padding: var(--sp-3);
+      display: flex;
+      flex-direction: column;
+      gap: var(--sp-3);
+    }
+    .prism-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: var(--sp-2);
+      padding-bottom: var(--sp-2);
+      border-bottom: 1px solid var(--border-hairline);
+    }
+    .prism-name-row {
+      display: flex;
+      align-items: center;
+      gap: var(--sp-2);
+      flex-wrap: wrap;
+    }
+    .prism-name {
+      font-family: var(--font-display);
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--text-strong);
+    }
+    .prism-cost {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 2px 8px;
+      border: 1px solid var(--accent-amber);
+      background: var(--accent-amber-dim);
+      color: var(--accent-amber);
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 13px;
+      font-variant-numeric: tabular-nums;
+    }
+    .prism-tags {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .prism-grid {
+      display: grid;
+      grid-template-columns: 220px 1fr;
+      gap: var(--sp-3);
+      align-items: stretch;
+    }
+
+    /* 좌측 SVG 도면 + 기본 수치 */
+    .blueprint-box {
+      border: 1px solid var(--border-hairline);
+      background: var(--bg-panel);
+      padding: var(--sp-3);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--sp-2);
+    }
+    .blueprint-stage {
+      width: 100%;
+      height: 138px;
+      border: 1px solid var(--border-hairline);
+      background-color: var(--bg-canvas);
+      background-image:
+        linear-gradient(to right, rgba(74, 85, 99, 0.16) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(74, 85, 99, 0.16) 1px, transparent 1px);
+      background-size: 16px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .base-stats-row {
+      width: 100%;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 4px;
+    }
+    .base-stat-cell {
+      border: 1px solid var(--border-hairline);
+      background: var(--bg-card);
+      padding: 5px 4px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+      text-align: center;
+    }
+    .base-stat-k {
+      font-size: 10px;
+      color: var(--text-muted);
+      display: inline-flex;
+      align-items: center;
+      gap: 2px;
+    }
+    .base-stat-v {
+      font-family: var(--font-display);
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-strong);
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* 우측 무기 I~IV 성장 로드맵 + 상성 */
+    .prism-detail-col {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: var(--sp-2);
+    }
+    .roadmap-title {
+      font-family: var(--font-display);
+      font-size: var(--fs-caption);
+      font-weight: 700;
+      color: var(--text-strong);
+      margin-bottom: 6px;
+    }
+    .roadmap-list {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+    .roadmap-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 8px;
+      border: 1px solid var(--border-hairline);
+      background: var(--bg-panel);
+      font-size: 13px;
+      color: var(--text-body);
+    }
+    .roadmap-item.is-peak {
+      border-color: var(--accent-amber);
+      background: var(--accent-amber-dim);
+      color: var(--text-strong);
+    }
+    .roadmap-badge {
+      width: 24px;
+      height: 20px;
+      flex: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid var(--accent-teal);
+      background: var(--accent-teal-dim);
+      color: var(--accent-teal);
+      font-family: var(--font-display);
+      font-size: 11px;
+      font-weight: 700;
+    }
+    .roadmap-item.is-peak .roadmap-badge {
+      border-color: var(--accent-amber);
+      background: var(--accent-amber);
+      color: var(--on-accent);
+    }
+
+    .matchup-box {
+      border: 1px solid var(--border-hairline);
+      background: var(--bg-panel);
+      padding: 8px 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--sp-2);
+      flex-wrap: wrap;
+    }
+    .matchup-group {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    .matchup-k {
+      font-size: 11px;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+    .matchup-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 2px 7px;
+      border: 1px solid var(--border-hairline);
+      background: var(--bg-card);
+      font-size: 12px;
+      font-weight: 600;
+    }
+    .matchup-chip.is-good { border-color: var(--accent-teal); color: var(--accent-teal); }
+    .matchup-chip.is-weak { border-color: var(--status-danger); color: var(--status-danger); }
+
+    /* 하단 타워 6종 해금 현황 스트립 */
+    .roster-box {
+      border: 1px solid var(--border-hairline);
+      background: var(--bg-card);
+      padding: var(--sp-2) var(--sp-3);
+    }
+    .roster-title {
+      font-family: var(--font-display);
+      font-size: var(--fs-caption);
+      font-weight: 700;
+      color: var(--text-strong);
+      margin-bottom: 6px;
+    }
+    .roster-strip {
+      display: grid;
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      gap: 6px;
+    }
+    .roster-cell {
+      border: 1px solid var(--border-hairline);
+      background: var(--bg-panel);
+      padding: 6px 4px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      text-align: center;
+    }
+    .roster-cell.is-new {
+      border-color: var(--accent-teal);
+      background: var(--accent-teal-dim);
+    }
+    .roster-cell.is-locked {
+      opacity: 0.7;
+    }
+    .roster-name {
+      font-family: var(--font-display);
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-strong);
+      white-space: nowrap;
+    }
+    .roster-state {
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--text-muted);
+      display: inline-flex;
+      align-items: center;
+      gap: 2px;
+      font-variant-numeric: tabular-nums;
+    }
+    .roster-cell.is-owned .roster-state { color: var(--text-body); }
+    .roster-cell.is-new .roster-state { color: var(--accent-teal); font-weight: 700; }
+
+    .unlock-cta-row {
+      display: flex;
+      justify-content: flex-end;
+    }
+    .unlock-cta-row .btn {
+      min-width: 220px;
+    }
+
+    @media (max-width: 600px) {
+      .unlock-body { padding: var(--sp-2) var(--sp-3); gap: var(--sp-2); }
+      .prism-card-inner { padding: var(--sp-2); gap: var(--sp-2); }
+      .prism-grid { grid-template-columns: 1fr; gap: var(--sp-2); }
+      .blueprint-box { padding: var(--sp-2); gap: 6px; }
+      .blueprint-stage { height: 102px; }
+      .roadmap-item { padding: 4px 8px; font-size: 12px; }
+      .roster-box { padding: 6px var(--sp-2); }
+      .roster-strip { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 4px; }
+      .roster-cell { padding: 4px 3px; }
+      .unlock-cta-row .btn { width: 100%; min-height: 40px; }
+    }
+  </style>
+</head>
+<body class="unlock-root">
+  <div class="battle-bg" aria-hidden="true">
+    <img src="../assets/battle-map.webp" alt="" />
+  </div>
+  <div class="modal-backdrop" aria-hidden="true"></div>
+
+  <div class="modal-stage">
+    <main class="modal-shell size-md">
+      <div class="c-panel">
+        <div class="c-inner">
+          <header class="modal-header">
+            <h1 class="modal-title">새 타워 해금</h1>
+            <span class="tag tag-amber">3웨이브 완료</span>
+          </header>
+
+          <div class="unlock-body">
+            <!-- 중심 카드: 프리즘 탑 -->
+            <section class="c-card is-selected" aria-label="해금 타워 정보">
+              <div class="c-inner prism-card-inner">
+                <div class="prism-head">
+                  <div class="prism-name-row">
+                    <h2 class="prism-name">프리즘 탑</h2>
+                    <span class="prism-cost num"><i data-icon="hud/gold" data-size="14"></i>95G</span>
+                  </div>
+                  <div class="prism-tags">
+                    <span class="tag tag-teal">연쇄·관통</span>
+                    <span class="tag">마법 피해</span>
+                    <span class="tag">공중 공격 가능</span>
+                  </div>
+                </div>
+
+                <div class="prism-grid">
+                  <!-- 좌측: R04 프리즘 탑 도면 SVG + 기본 수치 -->
+                  <div class="blueprint-box">
+                    <div class="blueprint-stage" aria-label="프리즘 탑 기하학 도면">
+                      <svg width="160" height="120" viewBox="0 0 160 120" fill="none">
+                        <!-- 삼각 기단 -->
+                        <polygon points="80,88 124,104 36,104" fill="#1D242C" stroke="#4A5563" stroke-width="1.5"/>
+                        <polygon points="80,92 114,102 46,102" fill="#12161B" stroke="#2FB5A3" stroke-width="1"/>
+                        <!-- 속이 빈 3축 A프레임 금속 지지대 (45° 각진 선화) -->
+                        <polyline points="42,102 80,22 118,102" stroke="#B8C0C8" stroke-width="2.5"/>
+                        <line x1="80" y1="22" x2="80" y2="96" stroke="#4A5563" stroke-width="1.5"/>
+                        <line x1="56" y1="74" x2="104" y2="74" stroke="#B8C0C8" stroke-width="1.5"/>
+                        <!-- 상단 결속 링 -->
+                        <polygon points="72,22 80,14 88,22 80,30" fill="#1D242C" stroke="#B8C0C8" stroke-width="1.5"/>
+                        <!-- 중앙 부유 틸 다면체 수정 -->
+                        <polygon points="80,38 96,56 80,76 64,56" fill="#12161B" stroke="#2FB5A3" stroke-width="2"/>
+                        <polygon points="80,38 96,56 80,58 64,56" fill="rgba(47, 181, 163, 0.25)"/>
+                        <line x1="80" y1="38" x2="80" y2="76" stroke="#2FB5A3" stroke-width="1.2"/>
+                        <line x1="64" y1="56" x2="96" y2="56" stroke="#2FB5A3" stroke-width="1.2"/>
+                        <!-- 연쇄 굴절 보조선 -->
+                        <polyline points="96,56 128,44 142,60" stroke="#2FB5A3" stroke-width="1.4" stroke-dasharray="3 3"/>
+                      </svg>
+                    </div>
+                    <div class="base-stats-row">
+                      <div class="base-stat-cell">
+                        <span class="base-stat-k"><i data-icon="hud/stat-power" data-size="12"></i>공격력</span>
+                        <span class="base-stat-v num">13</span>
+                      </div>
+                      <div class="base-stat-cell">
+                        <span class="base-stat-k"><i data-icon="hud/stat-speed" data-size="12"></i>속도</span>
+                        <span class="base-stat-v num">1.4초</span>
+                      </div>
+                      <div class="base-stat-cell">
+                        <span class="base-stat-k"><i data-icon="hud/stat-range" data-size="12"></i>사거리</span>
+                        <span class="base-stat-v num">2.4칸</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- 우측: 무기 I~IV 성장 로드맵 + 상성 -->
+                  <div class="prism-detail-col">
+                    <div>
+                      <h3 class="roadmap-title">무기 I ~ IV 성장 로드맵</h3>
+                      <div class="roadmap-list">
+                        <div class="roadmap-item" style="border-color: var(--accent-teal); background: var(--accent-teal-dim); color: var(--text-strong);">
+                          <span class="roadmap-badge" style="background: var(--accent-teal); color: var(--on-accent);">I</span>
+                          <span class="num">2기 연쇄 (기본 시작)</span>
+                        </div>
+                        <div class="roadmap-item">
+                          <span class="roadmap-badge">II</span>
+                          <span class="num">3기 연쇄 (Lv6)</span>
+                        </div>
+                        <div class="roadmap-item">
+                          <span class="roadmap-badge">III</span>
+                          <span class="num">4기 연쇄 (Lv12)</span>
+                        </div>
+                        <div class="roadmap-item is-peak">
+                          <span class="roadmap-badge">IV</span>
+                          <span class="num">5기 연쇄 · 마법저항 15% 관통 (최종 Lv18)</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="matchup-box">
+                      <div class="matchup-group">
+                        <span class="matchup-k">잘 잡는 적</span>
+                        <span class="matchup-chip is-good"><i data-icon="traits/armor" data-size="14"></i>물리 저항</span>
+                        <span class="matchup-chip is-good"><i data-icon="traits/swarm" data-size="14"></i>떼</span>
+                      </div>
+                      <div class="matchup-group">
+                        <span class="matchup-k">약한 적</span>
+                        <span class="matchup-chip is-weak"><i data-icon="traits/ward" data-size="14"></i>마법 저항</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <!-- 하단 타워 6종 해금 현황 스트립 -->
+            <section class="roster-box" aria-label="타워 6종 해금 현황">
+              <h3 class="roster-title">타워 6종 해금 현황</h3>
+              <div class="roster-strip">
+                <div class="roster-cell is-owned">
+                  <span class="roster-name">레일 포탑</span>
+                  <span class="roster-state">보유</span>
+                </div>
+                <div class="roster-cell is-owned">
+                  <span class="roster-name">곡사 포대</span>
+                  <span class="roster-state">보유</span>
+                </div>
+                <div class="roster-cell is-owned">
+                  <span class="roster-name">냉각 중계탑</span>
+                  <span class="roster-state">보유</span>
+                </div>
+                <div class="roster-cell is-new">
+                  <span class="roster-name">프리즘 탑</span>
+                  <span class="roster-state">새 해금!</span>
+                </div>
+                <div class="roster-cell is-locked">
+                  <span class="roster-name">드론 격납고</span>
+                  <span class="roster-state"><i data-icon="hud/lock" data-size="11"></i>6웨이브</span>
+                </div>
+                <div class="roster-cell is-locked">
+                  <span class="roster-name">방벽 기지</span>
+                  <span class="roster-state"><i data-icon="hud/lock" data-size="11"></i>9웨이브</span>
+                </div>
+              </div>
+            </section>
+
+            <div class="unlock-cta-row">
+              <button type="button" class="btn btn-primary btn-lg">
+                <i data-icon="hud/check" data-size="18"></i>설치 목록에 추가
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+</body>
+</html>

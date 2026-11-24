@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>오답 노트 — 어휘 타워 디펜스 R04</title>
+  <link rel="stylesheet" href="../tokens.css" />
+  <link rel="stylesheet" href="../shared.css" />
+  <script defer src="./hydrate-icons.js"></script>
+  <style>
+    .note-header-left {
+      display: flex;
+      align-items: center;
+      gap: var(--sp-3);
+      min-width: 0;
+    }
+
+    .note-subbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--sp-3);
+      background: var(--bg-panel);
+      border-bottom: 1px solid var(--border-hairline);
+      padding-right: var(--sp-4);
+      flex-wrap: wrap;
+    }
+
+    .note-subbar .tab-rail {
+      border-bottom: 0;
+    }
+
+    .note-hint {
+      font-size: var(--fs-caption);
+      color: var(--text-muted);
+      padding: var(--sp-2) 0;
+    }
+
+    .note-body {
+      padding: var(--sp-4);
+    }
+
+    .note-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: var(--sp-3);
+    }
+
+    .word-card-inner {
+      padding: var(--sp-3);
+      display: flex;
+      flex-direction: column;
+      gap: var(--sp-2);
+    }
+
+    .word-card-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--sp-2);
+    }
+
+    .word-title-group {
+      display: flex;
+      align-items: center;
+      gap: var(--sp-2);
+      min-width: 0;
+      flex-wrap: wrap;
+    }
+
+    .word-headword {
+      font-family: var(--font-display);
+      font-size: var(--fs-heading);
+      font-weight: 700;
+      color: var(--text-strong);
+    }
+
+    /* 졸업 진행 점 2칸: 색 + 채움/빈 윤곽 이중 부호화 */
+    .progress-dots {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      flex: none;
+    }
+
+    .progress-dot {
+      width: 12px;
+      height: 12px;
+      border: 1.5px solid var(--border-strong);
+      background: transparent;
+      display: inline-block;
+    }
+
+    .progress-dot.is-filled {
+      background: var(--accent-teal);
+      border-color: var(--accent-teal);
+    }
+
+    .progress-text {
+      font-size: var(--fs-caption);
+      color: var(--text-muted);
+      margin-left: 2px;
+    }
+
+    .word-meaning {
+      font-size: var(--fs-body);
+      color: var(--text-strong);
+      font-weight: 500;
+      line-height: 1.45;
+    }
+
+    .word-example-box {
+      padding: var(--sp-2) var(--sp-3);
+      background: var(--quiz-bg);
+      border: 1px solid var(--quiz-border);
+      color: var(--quiz-ink);
+      font-size: var(--fs-body);
+      line-height: 1.45;
+    }
+
+    .word-example-tag {
+      font-family: var(--font-display);
+      font-size: var(--fs-caption);
+      font-weight: 700;
+      color: var(--quiz-ink-muted);
+      margin-right: var(--sp-1);
+    }
+
+    .c-card[hidden] {
+      display: none;
+    }
+
+    @media (max-width: 600px) {
+      .note-subbar {
+        padding-right: 0;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0;
+      }
+      .note-subbar .tab-rail {
+        width: 100%;
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+      .note-subbar .tab-btn {
+        justify-content: center;
+        padding: 8px 6px;
+      }
+      .note-hint {
+        padding: var(--sp-2) var(--sp-3);
+        border-top: 1px solid var(--border-hairline);
+        background: var(--bg-card);
+      }
+      .note-body {
+        padding: var(--sp-3);
+      }
+      .note-grid {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+  </style>
+</head>
+<body class="tac-grid-bg">
+  <main class="modal-stage">
+    <section class="modal-shell" role="dialog" aria-modal="true" aria-labelledby="wrong-note-title">
+      <div class="c-panel">
+        <div class="c-inner">
+          <header class="modal-header">
+            <div class="note-header-left">
+              <button type="button" class="btn btn-sm">
+                <i data-icon="hud/back" data-size="16"></i>
+                <span>뒤로</span>
+              </button>
+              <h1 class="modal-title" id="wrong-note-title">
+                <i data-icon="hud/note" data-size="20"></i>
+                <span>오답 노트</span>
+              </h1>
+            </div>
+            <span class="tag num">낱말 6개</span>
+          </header>
+
+          <div class="note-subbar">
+            <div class="tab-rail" role="tablist" aria-label="오답 노트 필터">
+              <button type="button" class="tab-btn is-active" role="tab" aria-selected="true" data-filter="all">
+                <span>전체</span>
+                <span class="tab-count">6</span>
+              </button>
+              <button type="button" class="tab-btn" role="tab" aria-selected="false" data-filter="focus">
+                <span>집중 복습</span>
+                <span class="tab-count">4</span>
+              </button>
+              <button type="button" class="tab-btn" role="tab" aria-selected="false" data-filter="near">
+                <span>졸업 임박</span>
+                <span class="tab-count">2</span>
+              </button>
+            </div>
+            <p class="note-hint">다른 판에서 2번 맞히면 졸업해요</p>
+          </div>
+
+          <div class="note-body">
+            <div class="note-grid">
+              <!-- 1. 꼼꼼하다 (졸업 임박: 1/2) -->
+              <article class="c-card is-selected" data-group="near">
+                <div class="c-inner word-card-inner">
+                  <div class="word-card-top">
+                    <div class="word-title-group">
+                      <h2 class="word-headword">꼼꼼하다</h2>
+                      <span class="tag">형용사</span>
+                    </div>
+                    <div class="progress-dots" aria-label="졸업 진행 2칸 중 1칸 완료">
+                      <span class="progress-dot is-filled" title="완료"></span>
+                      <span class="progress-dot" title="남음"></span>
+                      <span class="num progress-text">1/2</span>
+                    </div>
+                  </div>
+                  <p class="word-meaning">빈틈없이 자세하고 차분하다.</p>
+                  <div class="word-example-box">
+                    <span class="word-example-tag">예문</span>
+                    <span>준호는 준비물을 빠뜨리지 않을 만큼 꼼꼼하다.</span>
+                  </div>
+                </div>
+              </article>
+
+              <!-- 2. 다정하다 (졸업 임박: 1/2) -->
+              <article class="c-card is-selected" data-group="near">
+                <div class="c-inner word-card-inner">
+                  <div class="word-card-top">
+                    <div class="word-title-group">
+                      <h2 class="word-headword">다정하다</h2>
+                      <span class="tag">형용사</span>
+                    </div>
+                    <div class="progress-dots" aria-label="졸업 진행 2칸 중 1칸 완료">
+                      <span class="progress-dot is-filled" title="완료"></span>
+                      <span class="progress-dot" title="남음"></span>
+                      <span class="num progress-text">1/2</span>
+                    </div>
+                  </div>
+                  <p class="word-meaning">정이 많고 마음이 따뜻하다.</p>
+                  <div class="word-example-box">
+                    <span class="word-example-tag">예문</span>
+                    <span>누나는 동생에게 늘 다정하게 말을 건넨다.</span>
+                  </div>
+                </div>
+              </article>
+
+              <!-- 3. 담백하다 (집중 복습: 0/2) -->
+              <article class="c-card" data-group="focus">
+                <div class="c-inner word-card-inner">
+                  <div class="word-card-top">
+                    <div class="word-title-group">
+                      <h2 class="word-headword">담백하다</h2>
+                      <span class="tag">형용사</span>
+                    </div>
+                    <div class="progress-dots" aria-label="졸업 진행 2칸 중 0칸 완료">
+                      <span class="progress-dot" title="남음"></span>
+                      <span class="progress-dot" title="남음"></span>
+                      <span class="num progress-text">0/2</span>
+                    </div>
+                  </div>
+                  <p class="word-meaning">욕심이 없고 마음이 깨끗하다.</p>
+                  <div class="word-example-box">
+                    <span class="word-example-tag">예문</span>
+                    <span>사람들은 할아버지의 담백한 성품을 존경했다.</span>
+                  </div>
+                </div>
+              </article>
+
+              <!-- 4. 소통하다 (집중 복습: 0/2) -->
+              <article class="c-card" data-group="focus">
+                <div class="c-inner word-card-inner">
+                  <div class="word-card-top">
+                    <div class="word-title-group">
+                      <h2 class="word-headword">소통하다</h2>
+                      <span class="tag">동사</span>
+                    </div>
+                    <div class="progress-dots" aria-label="졸업 진행 2칸 중 0칸 완료">
+                      <span class="progress-dot" title="남음"></span>
+                      <span class="progress-dot" title="남음"></span>
+                      <span class="num progress-text">0/2</span>
+                    </div>
+                  </div>
+                  <p class="word-meaning">뜻이 서로 통하여 오가다.</p>
+                  <div class="word-example-box">
+                    <span class="word-example-tag">예문</span>
+                    <span>모둠 친구들과 의견을 나누며 서로 소통했다.</span>
+                  </div>
+                </div>
+              </article>
+
+              <!-- 5. 짐작하다 (집중 복습: 0/2) -->
+              <article class="c-card" data-group="focus">
+                <div class="c-inner word-card-inner">
+                  <div class="word-card-top">
+                    <div class="word-title-group">
+                      <h2 class="word-headword">짐작하다</h2>
+                      <span class="tag">동사</span>
+                    </div>
+                    <div class="progress-dots" aria-label="졸업 진행 2칸 중 0칸 완료">
+                      <span class="progress-dot" title="남음"></span>
+                      <span class="progress-dot" title="남음"></span>
+                      <span class="num progress-text">0/2</span>
+                    </div>
+                  </div>
+                  <p class="word-meaning">어떤 일을 어림잡아 헤아려 생각하다.</p>
+                  <div class="word-example-box">
+                    <span class="word-example-tag">예문</span>
+                    <span>친구 표정만 보고도 기분을 금방 짐작했다.</span>
+                  </div>
+                </div>
+              </article>
+
+              <!-- 6. 넉넉하다 (집중 복습: 0/2) -->
+              <article class="c-card" data-group="focus">
+                <div class="c-inner word-card-inner">
+                  <div class="word-card-top">
+                    <div class="word-title-group">
+                      <h2 class="word-headword">넉넉하다</h2>
+                      <span class="tag">형용사</span>
+                    </div>
+                    <div class="progress-dots" aria-label="졸업 진행 2칸 중 0칸 완료">
+                      <span class="progress-dot" title="남음"></span>
+                      <span class="progress-dot" title="남음"></span>
+                      <span class="num progress-text">0/2</span>
+                    </div>
+                  </div>
+                  <p class="word-meaning">모자람이 없이 충분하고 여유가 있다.</p>
+                  <div class="word-example-box">
+                    <span class="word-example-tag">예문</span>
+                    <span>모두 나누어 먹을 만큼 간식이 넉넉하다.</span>
+                  </div>
+                </div>
+              </article>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    (function () {
+      var tabs = document.querySelectorAll('[data-filter]');
+      var cards = document.querySelectorAll('[data-group]');
+      tabs.forEach(function (tab) {
+        tab.addEventListener('click', function () {
+          var filter = tab.getAttribute('data-filter');
+          tabs.forEach(function (t) {
+            t.classList.remove('is-active');
+            t.setAttribute('aria-selected', 'false');
+          });
+          tab.classList.add('is-active');
+          tab.setAttribute('aria-selected', 'true');
+          cards.forEach(function (card) {
+            card.hidden = filter !== 'all' && card.getAttribute('data-group') !== filter;
+          });
+        });
+      });
+    })();
+  </script>
+</body>
+</html>

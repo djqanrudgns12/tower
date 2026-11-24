@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>타워 상세 · 강화 — 어휘력 타워 디펜스 R6</title>
+  <link rel="stylesheet" href="../tokens.css" />
+  <link rel="stylesheet" href="../shared.css" />
+  <script defer src="./hydrate-icons.js"></script>
+  <style>
+    .detail-root {
+      position: relative;
+      width: 100%;
+      height: 100vh;
+      overflow: hidden;
+      background: var(--bg-canvas);
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      padding: var(--sp-4);
+    }
+
+    .battlefield-bg {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      overflow: hidden;
+    }
+    .battlefield-bg img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+      display: block;
+    }
+    .battlefield-svg {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+    }
+    .map-scrim {
+      position: absolute;
+      inset: 0;
+      z-index: 2;
+      background: rgba(12, 15, 19, 0.25);
+      pointer-events: none;
+    }
+
+    /* 데스크톱 440px 우측 상세 패널 */
+    .detail-shell {
+      position: relative;
+      z-index: 5;
+      width: 440px;
+      max-width: 100%;
+    }
+    .detail-inner {
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* 헤더 */
+    .detail-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--sp-2);
+      padding: var(--sp-3) var(--sp-4);
+      border-bottom: 1px solid var(--border-hairline);
+      background: var(--bg-panel);
+    }
+    .detail-title-group {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      min-width: 0;
+    }
+    .detail-title-row {
+      display: flex;
+      align-items: center;
+      gap: var(--sp-2);
+      flex-wrap: wrap;
+    }
+    .detail-title {
+      font-family: var(--font-display);
+      font-size: var(--fs-heading);
+      font-weight: 700;
+      color: var(--text-strong);
+    }
+    .detail-sub-row {
+      display: flex;
+      align-items: center;
+      gap: var(--sp-2);
+      font-size: var(--fs-caption);
+      color: var(--text-muted);
+    }
+    .lv-now {
+      font-family: var(--font-display);
+      font-weight: 700;
+      color: var(--text-strong);
+      font-variant-numeric: tabular-nums;
+    }
+    .lv-next {
+      font-family: var(--font-display);
+      font-weight: 700;
+      color: var(--accent-amber);
+      font-variant-numeric: tabular-nums;
+    }
+    .mat-badge {
+      padding: 1px 6px;
+      border: 1px solid var(--border-hairline);
+      background: var(--bg-card);
+      color: var(--text-body);
+      font-size: 11px;
+      font-weight: 600;
+    }
+    .mat-badge strong {
+      color: var(--accent-amber);
+      font-weight: 700;
+    }
+
+    .detail-body {
+      padding: var(--sp-3) var(--sp-4);
+      display: flex;
+      flex-direction: column;
+      gap: var(--sp-3);
+      background: var(--bg-panel);
+    }
+
+    .sec-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--sp-2);
+      margin-bottom: 6px;
+    }
+    .sec-title {
+      font-family: var(--font-display);
+      font-size: var(--fs-caption);
+      font-weight: 700;
+      color: var(--text-strong);
+    }
+    .sec-hint {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    /* Lv1~20 진화 진행 바 */
+    .evo-track-box {
+      padding: var(--sp-2) var(--sp-3);
+      border: 1px solid var(--border-hairline);
+      background: var(--bg-card);
+    }
+    .evo-ticks {
+      display: grid;
+      grid-template-columns: repeat(20, minmax(0, 1fr));
+      gap: 2px;
+      align-items: end;
+      height: 18px;
+    }
+    .evo-tick {
+      height: 8px;
+      border: 1px solid var(--border-hairline);
+      background: var(--bg-panel);
+      position: relative;
+    }
+    .evo-tick.is-morph {
+      height: 13px;
+    }
+    .evo-tick.is-done {
+      background: var(--accent-teal);
+      border-color: var(--accent-teal);
+    }
+    .evo-tick.is-next {
+      background: var(--accent-amber);
+      border-color: var(--accent-amber);
+      height: 16px;
+    }
+    .evo-milestones {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 5px;
+      font-family: var(--font-display);
+      font-size: 10px;
+      color: var(--text-muted);
+      font-variant-numeric: tabular-nums;
+    }
+    .evo-milestones .is-next-ms {
+      color: var(--accent-amber);
+      font-weight: 700;
+    }
+
+    /* 무기 단계 I~IV 스트립 */
+    .tier-strip {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 6px;
+    }
+    .tier-pill {
+      padding: 6px 6px;
+      border: 1px solid var(--border-hairline);
+      background: var(--bg-card);
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .tier-pill.is-current {
+      border-color: var(--accent-teal);
+      background: var(--accent-teal-dim);
+    }
+    .tier-pill.is-next-tier {
+      border-color: var(--accent-amber);
+      background: var(--accent-amber-dim);
+    }
+    .tier-roman {
+      font-family: var(--font-display);
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-strong);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 2px;
+    }
+    .tier-pill.is-current .tier-roman { color: var(--accent-teal); }
+    .tier-pill.is-next-tier .tier-roman { color: var(--accent-amber); }
+    .tier-sub {
+      font-size: 10px;
+      color: var(--text-muted);
+      font-variant-numeric: tabular-nums;
+      white-space: nowrap;
+    }
+    .tier-pill.is-next-tier .tier-sub {
+      color: var(--accent-amber);
+      font-weight: 700;
+    }
+
+    /* 다음 진화 미리보기 박스 */
+    .preview-box {
+      border: 1px solid var(--accent-amber);
+      background: var(--bg-card);
+      padding: var(--sp-2) var(--sp-3);
+      display: flex;
+      flex-direction: column;
+      gap: var(--sp-2);
+    }
+    .preview-compare {
+      display: grid;
+      grid-template-columns: 1fr 22px 1fr;
+      align-items: center;
+      gap: var(--sp-2);
+    }
+    .preview-pane {
+      border: 1px solid var(--border-hairline);
+      background: var(--bg-panel);
+      padding: 6px 8px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+    }
+    .preview-pane.is-next {
+      border-color: var(--accent-amber);
+      background: var(--bg-elevated);
+    }
+    .preview-label {
+      font-family: var(--font-display);
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-body);
+      text-align: center;
+    }
+    .preview-pane.is-next .preview-label {
+      color: var(--accent-amber);
+    }
+    .preview-arrow {
+      text-align: center;
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 16px;
+      color: var(--accent-amber);
+    }
+    .preview-summary {
+      padding: 5px 8px;
+      background: var(--accent-amber-dim);
+      border-left: 2px solid var(--accent-amber);
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-strong);
+    }
+
+    /* 능력치 5칸 막대 + 상성 */
+    .stats-box {
+      border: 1px solid var(--border-hairline);
+      background: var(--bg-card);
+      padding: var(--sp-2) var(--sp-3);
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+    }
+    .stat-row {
+      display: grid;
+      grid-template-columns: 92px 1fr auto;
+      align-items: center;
+      gap: var(--sp-2);
+    }
+    .stat-name {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: var(--fs-caption);
+      color: var(--text-body);
+      font-weight: 600;
+    }
+    .stat-val {
+      font-family: var(--font-display);
+      font-size: var(--fs-caption);
+      font-weight: 700;
+      color: var(--text-strong);
+      font-variant-numeric: tabular-nums;
+      white-space: nowrap;
+    }
+    .stat-val .is-amber { color: var(--accent-amber); }
+
+    .matchup-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--sp-2);
+      padding-top: 6px;
+      border-top: 1px solid var(--border-hairline);
+    }
+    .matchup-group {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      flex-wrap: wrap;
+    }
+    .matchup-label {
+      font-size: 11px;
+      color: var(--text-muted);
+      font-weight: 600;
+      margin-right: 2px;
+    }
+    .matchup-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      padding: 1px 6px;
+      border: 1px solid var(--border-hairline);
+      background: var(--bg-panel);
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-body);
+    }
+    .matchup-chip.is-good { border-color: var(--accent-teal); color: var(--accent-teal); }
+    .matchup-chip.is-weak { border-color: var(--status-danger); color: var(--status-danger); }
+
+    /* 하단 버튼 */
+    .detail-actions {
+      display: grid;
+      grid-template-columns: 1.4fr 1fr;
+      gap: var(--sp-2);
+    }
+    .detail-actions .btn {
+      min-height: 42px;
+      width: 100%;
+    }
+
+    @media (max-width: 600px) {
+      .detail-root {
+        height: auto;
+        min-height: 100vh;
+        overflow-x: hidden;
+        overflow-y: auto;
+        flex-direction: column;
+        justify-content: flex-start;
+        padding: 0;
+      }
+      .battlefield-bg {
+        position: relative;
+        inset: auto;
+        width: 100%;
+        height: 170px;
+        flex: none;
+        border-bottom: 1px solid var(--border-hairline);
+      }
+      .map-scrim { display: none; }
+      .detail-shell {
+        width: 100%;
+        padding: var(--sp-2);
+      }
+      .detail-header { padding: var(--sp-2) var(--sp-3); }
+      .detail-body { padding: var(--sp-2) var(--sp-3); gap: var(--sp-2); }
+      .tier-strip { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .stat-row { grid-template-columns: 84px 1fr auto; }
+      .matchup-row { grid-template-columns: 1fr; gap: 4px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="detail-root">
+    <!-- 전장 배경 + 선택된 레일 포탑 사거리 원 -->
+    <div class="battlefield-bg" aria-hidden="true">
+      <img src="../assets/battle-map.webp" alt="" />
+      <svg class="battlefield-svg" viewBox="0 0 1376 768" preserveAspectRatio="xMidYMid slice">
+        <ellipse cx="704" cy="188" rx="196" ry="122"
+          fill="rgba(47, 181, 163, 0.08)"
+          stroke="#2FB5A3" stroke-width="2" stroke-dasharray="8 6" />
+        <ellipse cx="704" cy="188" rx="44" ry="28"
+          fill="none" stroke="#2FB5A3" stroke-width="2" />
+      </svg>
+    </div>
+    <div class="map-scrim" aria-hidden="true"></div>
+
+    <!-- 타워 상세·강화 패널 -->
+    <main class="detail-shell">
+      <div class="c-panel">
+        <div class="c-inner detail-inner">
+          <!-- 헤더 -->
+          <header class="detail-header">
+            <div class="detail-title-group">
+              <div class="detail-title-row">
+                <h1 class="detail-title">레일 포탑</h1>
+                <span class="tag tag-teal">단일 고속</span>
+              </div>
+              <div class="detail-sub-row">
+                <span class="lv-now">Lv.5</span>
+                <span>→</span>
+                <span class="lv-next">Lv.6</span>
+                <span class="mat-badge">재질: 강철 → <strong>합금</strong></span>
+              </div>
+            </div>
+            <button type="button" class="icon-close-btn" aria-label="닫기">
+              <i data-icon="hud/close" data-size="18"></i>
+            </button>
+          </header>
+
+          <div class="detail-body">
+            <!-- Lv1~20 진화 진행 바 -->
+            <section aria-label="레벨 1부터 20까지 진화 진행">
+              <div class="sec-head">
+                <h2 class="sec-title">Lv1~20 진화 진행</h2>
+                <span class="sec-hint">2레벨마다 형태 진화 (2·4·6…20)</span>
+              </div>
+              <div class="evo-track-box">
+                <div class="evo-ticks" aria-hidden="true">
+                  <span class="evo-tick is-morph is-done" title="Lv1 (I)"></span>
+                  <span class="evo-tick is-morph is-done" title="Lv2"></span>
+                  <span class="evo-tick is-done" title="Lv3"></span>
+                  <span class="evo-tick is-morph is-done" title="Lv4"></span>
+                  <span class="evo-tick is-done" title="Lv5 (현재)"></span>
+                  <span class="evo-tick is-morph is-next" title="Lv6 (II)"></span>
+                  <span class="evo-tick" title="Lv7"></span>
+                  <span class="evo-tick is-morph" title="Lv8"></span>
+                  <span class="evo-tick" title="Lv9"></span>
+                  <span class="evo-tick is-morph" title="Lv10"></span>
+                  <span class="evo-tick" title="Lv11"></span>
+                  <span class="evo-tick is-morph" title="Lv12 (III)"></span>
+                  <span class="evo-tick" title="Lv13"></span>
+                  <span class="evo-tick is-morph" title="Lv14"></span>
+                  <span class="evo-tick" title="Lv15"></span>
+                  <span class="evo-tick is-morph" title="Lv16"></span>
+                  <span class="evo-tick" title="Lv17"></span>
+                  <span class="evo-tick is-morph" title="Lv18 (IV)"></span>
+                  <span class="evo-tick" title="Lv19"></span>
+                  <span class="evo-tick is-morph" title="Lv20"></span>
+                </div>
+                <div class="evo-milestones">
+                  <span>Lv1(I)</span>
+                  <span class="is-next-ms">Lv6(II)</span>
+                  <span>Lv12(III)</span>
+                  <span>Lv18(IV)</span>
+                  <span>Lv20</span>
+                </div>
+              </div>
+            </section>
+
+            <!-- 무기 단계 I~IV 스트립 -->
+            <section aria-label="무기 단계 1에서 4">
+              <div class="sec-head">
+                <h2 class="sec-title">무기 단계 I ~ IV</h2>
+                <span class="sec-hint">현재 I · 다음 강화 II</span>
+              </div>
+              <div class="tier-strip">
+                <div class="tier-pill is-current">
+                  <div class="tier-roman"><span>I 단포신</span></div>
+                  <div class="tier-sub">Lv1~5 · 현재</div>
+                </div>
+                <div class="tier-pill is-next-tier">
+                  <div class="tier-roman"><span>II 쌍포신</span></div>
+                  <div class="tier-sub">다음 강화 시 전환!</div>
+                </div>
+                <div class="tier-pill">
+                  <div class="tier-roman"><span>III 삼연장</span></div>
+                  <div class="tier-sub">Lv12~17</div>
+                </div>
+                <div class="tier-pill">
+                  <div class="tier-roman"><span>IV 가속 4열</span></div>
+                  <div class="tier-sub">Lv18~20</div>
+                </div>
+              </div>
+            </section>
+
+            <!-- 다음 진화 미리보기 박스 -->
+            <section class="preview-box" aria-label="다음 진화 미리보기">
+              <div class="preview-compare">
+                <div class="preview-pane">
+                  <svg width="78" height="58" viewBox="0 0 78 58" fill="none" aria-hidden="true">
+                    <polygon points="22,38 56,38 66,46 56,54 22,54 12,46" fill="#1D242C" stroke="#4A5563" stroke-width="1.2"/>
+                    <rect x="33" y="25" width="12" height="16" fill="#4A5563" stroke="#B8C0C8" stroke-width="1"/>
+                    <polygon points="28,18 48,18 52,26 26,26" fill="#4A5563" stroke="#B8C0C8" stroke-width="1"/>
+                    <rect x="8" y="19" width="28" height="5" fill="#B8C0C8" stroke="#12161B" stroke-width="1"/>
+                    <line x1="12" y1="21.5" x2="26" y2="21.5" stroke="#2FB5A3" stroke-width="1.5"/>
+                  </svg>
+                  <span class="preview-label">현재 Lv5 · 강철 단포신</span>
+                </div>
+
+                <div class="preview-arrow" aria-hidden="true">→</div>
+
+                <div class="preview-pane is-next">
+                  <svg width="78" height="58" viewBox="0 0 78 58" fill="none" aria-hidden="true">
+                    <polygon points="20,38 58,38 68,46 58,54 20,54 10,46" fill="#12161B" stroke="#E69F24" stroke-width="1.2"/>
+                    <rect x="32" y="25" width="14" height="16" fill="#1D242C" stroke="#B8C0C8" stroke-width="1"/>
+                    <polygon points="26,17 50,17 55,26 24,26" fill="#1D242C" stroke="#B8C0C8" stroke-width="1"/>
+                    <!-- 쌍포신 -->
+                    <rect x="6" y="16" width="30" height="4" fill="#B8C0C8" stroke="#12161B" stroke-width="0.9"/>
+                    <rect x="6" y="22" width="30" height="4" fill="#B8C0C8" stroke="#12161B" stroke-width="0.9"/>
+                    <!-- 상부 광학 조준기 -->
+                    <rect x="34" y="11" width="10" height="6" fill="#26303B" stroke="#E69F24" stroke-width="1"/>
+                    <circle cx="36" cy="14" r="1.5" fill="#2FB5A3"/>
+                  </svg>
+                  <span class="preview-label">다음 Lv6 · 합금 쌍포신</span>
+                </div>
+              </div>
+              <p class="preview-summary">무기 II 전환: 2발을 연달아 쏴요 · 상부 광학 조준기 추가</p>
+            </section>
+
+            <!-- 능력치 5칸 막대 + 상성 -->
+            <section class="stats-box" aria-label="능력치와 상성">
+              <div class="stat-row">
+                <span class="stat-name"><i data-icon="hud/stat-power" data-size="15"></i>공격력</span>
+                <div class="stat-segments" aria-hidden="true">
+                  <span class="stat-seg is-on"></span>
+                  <span class="stat-seg is-on"></span>
+                  <span class="stat-seg is-on"></span>
+                  <span class="stat-seg is-next"></span>
+                  <span class="stat-seg"></span>
+                </div>
+                <span class="stat-val num">19 → <span class="is-amber">21</span></span>
+              </div>
+
+              <div class="stat-row">
+                <span class="stat-name"><i data-icon="hud/stat-speed" data-size="15"></i>공격 속도</span>
+                <div class="stat-segments" aria-hidden="true">
+                  <span class="stat-seg is-on"></span>
+                  <span class="stat-seg is-on"></span>
+                  <span class="stat-seg is-on"></span>
+                  <span class="stat-seg is-next"></span>
+                  <span class="stat-seg"></span>
+                </div>
+                <span class="stat-val num">1.0초 → <span class="is-amber">2연사</span></span>
+              </div>
+
+              <div class="stat-row">
+                <span class="stat-name"><i data-icon="hud/stat-range" data-size="15"></i>사거리</span>
+                <div class="stat-segments" aria-hidden="true">
+                  <span class="stat-seg is-on"></span>
+                  <span class="stat-seg is-on"></span>
+                  <span class="stat-seg is-on"></span>
+                  <span class="stat-seg is-on"></span>
+                  <span class="stat-seg"></span>
+                </div>
+                <span class="stat-val num">2.5칸</span>
+              </div>
+
+              <div class="matchup-row">
+                <div class="matchup-group">
+                  <span class="matchup-label">잘 잡는 적</span>
+                  <span class="matchup-chip is-good"><i data-icon="traits/flying" data-size="13"></i>비행</span>
+                  <span class="matchup-chip is-good"><i data-icon="traits/fast" data-size="13"></i>빠름</span>
+                </div>
+                <div class="matchup-group">
+                  <span class="matchup-label">약한 적</span>
+                  <span class="matchup-chip is-weak"><i data-icon="traits/armor" data-size="13"></i>장갑</span>
+                </div>
+              </div>
+            </section>
+
+            <!-- 하단 버튼 -->
+            <div class="detail-actions">
+              <button type="button" class="btn btn-primary num">
+                <i data-icon="hud/upgrade" data-size="18"></i>강화 · 66G
+              </button>
+              <button type="button" class="btn num">
+                <i data-icon="hud/sell" data-size="18"></i>판매 · +84G
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+</body>
+</html>

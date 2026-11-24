@@ -1,0 +1,896 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>전투 HUD — 어휘력 타워 디펜스 R6</title>
+  <link rel="stylesheet" href="../tokens.css" />
+  <link rel="stylesheet" href="../shared.css" />
+  <script defer src="./hydrate-icons.js"></script>
+  <style>
+    .battle-root {
+      position: relative;
+      width: 100%;
+      height: 100vh;
+      overflow: hidden;
+      background: var(--bg-canvas);
+    }
+
+    /* 전장 배경 및 SVG 오버레이 (데스크톱 전체 캔버스, 모바일 210px 슬롯) */
+    .battlefield-stage {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      overflow: hidden;
+      background: #10151b;
+    }
+    .battlefield-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+      display: block;
+    }
+    .battlefield-svg {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+    }
+
+    /* 데스크톱 UI 그리드 (1280×720 내 스크롤/넘침 0) */
+    .hud-layer {
+      position: relative;
+      z-index: 5;
+      width: 100%;
+      height: 100%;
+      padding: var(--sp-3);
+      display: grid;
+      grid-template-columns: 1fr 264px;
+      grid-template-rows: auto 1fr auto;
+      grid-template-areas:
+        "top top"
+        "map dock"
+        "quiz dock";
+      gap: var(--sp-3);
+      pointer-events: none;
+    }
+    .hud-layer > * { pointer-events: auto; }
+
+    /* 상단 바 */
+    .top-bar {
+      grid-area: top;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--sp-3);
+      pointer-events: none;
+    }
+    .top-bar > * { pointer-events: auto; }
+
+    .hud-strip-inner {
+      display: flex;
+      align-items: center;
+      gap: var(--sp-3);
+      padding: 6px var(--sp-3);
+      flex-wrap: nowrap;
+    }
+    .hud-stat {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding-right: var(--sp-3);
+      border-right: 1px solid var(--border-hairline);
+      white-space: nowrap;
+    }
+    .hud-stat:last-child {
+      padding-right: 0;
+      border-right: none;
+    }
+    .hud-label {
+      font-size: var(--fs-caption);
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+    .hud-val {
+      font-family: var(--font-display);
+      font-variant-numeric: tabular-nums;
+      font-size: var(--fs-body);
+      font-weight: 700;
+      color: var(--text-strong);
+    }
+    .hud-sub {
+      font-size: 11px;
+      color: var(--text-muted);
+      font-variant-numeric: tabular-nums;
+    }
+    .icon-teal { color: var(--accent-teal); }
+    .icon-amber { color: var(--accent-amber); }
+    .icon-body { color: var(--text-body); }
+
+    .gate-meter {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .gate-track {
+      width: 44px;
+      height: 6px;
+      border: 1px solid var(--border-hairline);
+      background: var(--bg-card);
+      overflow: hidden;
+    }
+    .gate-fill {
+      width: 100%;
+      height: 100%;
+      background: var(--accent-teal);
+    }
+
+    .streak-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 2px 7px;
+      border: 1px solid var(--accent-amber);
+      background: var(--accent-amber-dim);
+      color: var(--accent-amber);
+      font-family: var(--font-display);
+      font-size: var(--fs-caption);
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .hud-relics {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .relic-chip {
+      width: 26px;
+      height: 26px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid var(--border-hairline);
+      background: var(--bg-card);
+      color: var(--accent-teal);
+    }
+
+    .pause-btn {
+      min-height: 38px;
+      padding: 0 var(--sp-4);
+    }
+
+    /* 우측 도크 (264px) */
+    .right-dock {
+      grid-area: dock;
+      display: flex;
+      flex-direction: column;
+      gap: var(--sp-3);
+      min-height: 0;
+    }
+
+    .wave-preview-inner {
+      padding: var(--sp-3);
+      display: flex;
+      flex-direction: column;
+      gap: var(--sp-2);
+    }
+    .dock-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--sp-2);
+    }
+    .dock-title {
+      font-family: var(--font-display);
+      font-size: var(--fs-body);
+      font-weight: 700;
+      color: var(--text-strong);
+    }
+    .trait-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    .trait-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 2px 7px;
+      border: 1px solid var(--border-hairline);
+      background: var(--bg-card);
+      color: var(--text-body);
+      font-size: 11px;
+      font-weight: 600;
+    }
+    .wave-warn {
+      display: flex;
+      align-items: flex-start;
+      gap: 6px;
+      padding: 6px 8px;
+      border: 1px solid var(--accent-amber);
+      background: var(--accent-amber-dim);
+      color: var(--text-strong);
+      font-size: var(--fs-caption);
+      line-height: 1.35;
+    }
+    .wave-warn-mark {
+      flex: none;
+      width: 16px;
+      height: 16px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--accent-amber);
+      color: var(--on-accent);
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 11px;
+      margin-top: 1px;
+    }
+
+    .tower-dock-panel {
+      flex: 1;
+      min-height: 0;
+    }
+    .tower-dock-inner {
+      padding: var(--sp-3);
+      display: flex;
+      flex-direction: column;
+      gap: var(--sp-2);
+      height: 100%;
+    }
+    .tower-list {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .tower-slot-inner {
+      display: grid;
+      grid-template-columns: 44px 1fr auto;
+      align-items: center;
+      gap: var(--sp-2);
+      padding: 6px 8px;
+      text-align: left;
+    }
+    .c-card.is-selected > .tower-slot-inner {
+      background: var(--bg-elevated);
+      box-shadow: inset 2px 0 0 var(--accent-teal);
+    }
+    .tower-slot-btn {
+      width: 100%;
+      display: block;
+    }
+    .tower-slot-btn.is-locked {
+      opacity: 0.65;
+      cursor: not-allowed;
+    }
+    .tower-thumb {
+      width: 44px;
+      height: 44px;
+      border: 1px solid var(--border-hairline);
+      background: var(--bg-panel);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex: none;
+    }
+    .c-card.is-selected .tower-thumb {
+      border-color: var(--accent-teal);
+    }
+    .tower-meta {
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .tower-name {
+      font-family: var(--font-display);
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-strong);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .tower-role {
+      font-size: 11px;
+      color: var(--text-muted);
+      white-space: nowrap;
+    }
+    .tower-cost {
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      font-family: var(--font-display);
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--accent-amber);
+      font-variant-numeric: tabular-nums;
+      white-space: nowrap;
+    }
+    .tower-lock-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      padding: 2px 6px;
+      border: 1px solid var(--border-hairline);
+      background: var(--bg-panel);
+      color: var(--text-muted);
+      font-family: var(--font-display);
+      font-size: 11px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    /* 하단 어휘 문제 패널 (항상 밝은 고대비 면) */
+    .quiz-dock {
+      grid-area: quiz;
+      align-self: end;
+    }
+    .quiz-layout {
+      display: grid;
+      grid-template-columns: 1fr 148px;
+      gap: var(--sp-4);
+      align-items: stretch;
+    }
+    .quiz-main {
+      display: flex;
+      flex-direction: column;
+      gap: var(--sp-2);
+    }
+    .quiz-q-head {
+      display: flex;
+      align-items: center;
+      gap: var(--sp-2);
+    }
+    .quiz-phase-tag {
+      display: inline-flex;
+      align-items: center;
+      padding: 2px 8px;
+      border: 1px solid var(--quiz-teal);
+      background: var(--quiz-teal-bg);
+      color: var(--quiz-teal);
+      font-family: var(--font-display);
+      font-size: var(--fs-caption);
+      font-weight: 700;
+      white-space: nowrap;
+    }
+    .quiz-question {
+      font-family: var(--font-display);
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--quiz-ink);
+      line-height: 1.35;
+    }
+    .quiz-options {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 6px;
+    }
+    .quiz-opt {
+      min-height: 40px;
+      padding: 7px 10px;
+      font-size: 13px;
+      line-height: 1.3;
+    }
+
+    .quiz-side {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: stretch;
+      padding-left: var(--sp-3);
+      border-left: 1px solid var(--quiz-border);
+      gap: var(--sp-2);
+    }
+    .quiz-reward-box {
+      background: var(--quiz-card);
+      border: 1px solid var(--quiz-border);
+      padding: 8px 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+    .quiz-reward-label {
+      font-size: var(--fs-caption);
+      color: var(--quiz-ink-muted);
+      font-weight: 600;
+    }
+    .quiz-reward-val {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-family: var(--font-display);
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--quiz-amber);
+      font-variant-numeric: tabular-nums;
+    }
+    .quiz-skip-btn {
+      width: 100%;
+      min-height: 38px;
+      background: transparent;
+      color: var(--quiz-ink-muted);
+      border: 1px solid rgba(61, 71, 84, 0.45);
+      font-weight: 600;
+    }
+    .quiz-skip-btn:hover {
+      background: var(--quiz-card-sunk);
+      border-color: var(--quiz-border);
+      color: var(--quiz-ink);
+    }
+
+    /* 데스크톱에서는 모바일 전용 1줄 요약 숨김 */
+    .mob-only { display: none; }
+
+    /* 모바일 (390×844): 세로 스택, 가로 넘침 0px */
+    @media (max-width: 600px) {
+      .battle-root {
+        height: auto;
+        min-height: 100vh;
+        overflow-x: hidden;
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+      }
+      .battlefield-stage {
+        position: relative;
+        inset: auto;
+        order: 2;
+        width: 100%;
+        height: 224px;
+        flex: none;
+        border-top: 1px solid var(--border-hairline);
+        border-bottom: 1px solid var(--border-hairline);
+      }
+      .hud-layer {
+        display: contents;
+      }
+
+      /* 1. 상단 1줄 압축 HUD */
+      .top-bar {
+        order: 1;
+        padding: 6px 8px;
+        gap: 6px;
+        background: var(--bg-panel);
+      }
+      .hud-panel {
+        flex: 1;
+        min-width: 0;
+      }
+      .hud-strip-inner {
+        padding: 5px 8px;
+        gap: 8px;
+        justify-content: space-between;
+      }
+      .hud-stat {
+        padding-right: 6px;
+        gap: 4px;
+      }
+      .desk-only { display: none; }
+      .mob-only { display: inline; }
+      .gate-track { display: none; }
+      .hud-label { display: none; }
+      .hud-val { font-size: 13px; }
+      .streak-pill { padding: 2px 5px; font-size: 11px; }
+      .pause-btn {
+        min-height: 34px;
+        padding: 0 10px;
+        font-size: 12px;
+        flex: none;
+      }
+      .pause-text { display: none; }
+
+      /* 3. 가로 타워 띠(5칸) + 4. 웨이브 예고 1줄 */
+      .right-dock {
+        order: 3;
+        padding: 8px;
+        gap: 6px;
+      }
+      .tower-dock-panel {
+        order: 1;
+        flex: none;
+      }
+      .tower-dock-inner {
+        padding: 6px;
+        gap: 4px;
+      }
+      .tower-dock-inner .dock-head { display: none; }
+      .tower-list {
+        display: grid;
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+        gap: 4px;
+      }
+      .tower-slot-inner {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 5px 2px;
+        gap: 3px;
+        text-align: center;
+      }
+      .tower-thumb {
+        width: 34px;
+        height: 34px;
+      }
+      .tower-thumb svg {
+        width: 28px;
+        height: 28px;
+      }
+      .tower-name {
+        font-size: 10px;
+        max-width: 100%;
+      }
+      .tower-role { display: none; }
+      .tower-cost { font-size: 11px; }
+      .tower-lock-badge {
+        font-size: 10px;
+        padding: 1px 4px;
+      }
+
+      .wave-preview-panel {
+        order: 2;
+      }
+      .wave-preview-inner {
+        padding: 6px 8px;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        gap: 6px;
+        flex-wrap: wrap;
+      }
+      .wave-preview-inner .dock-head {
+        flex: none;
+        gap: 6px;
+      }
+      .wave-preview-inner .dock-title { font-size: 12px; }
+      .wave-preview-inner .tag { font-size: 11px; padding: 1px 6px; }
+      .trait-row { flex: none; gap: 4px; }
+      .trait-chip { padding: 2px 5px; }
+      .trait-chip span { display: inline; font-size: 10px; }
+      .wave-warn {
+        flex: 1 0 100%;
+        min-width: 0;
+        padding: 4px 8px;
+        font-size: 11px;
+        align-items: center;
+      }
+      .wave-warn-text {
+        white-space: normal;
+        overflow: visible;
+      }
+
+      /* 5. 하단 밝은 문제 패널 */
+      .quiz-dock {
+        order: 4;
+        padding: 0 8px 8px;
+        width: 100%;
+      }
+      .quiz-panel-inner {
+        padding: 10px;
+      }
+      .quiz-layout {
+        grid-template-columns: 1fr;
+        gap: 8px;
+      }
+      .quiz-question {
+        font-size: 15px;
+      }
+      .quiz-options {
+        grid-template-columns: 1fr;
+        gap: 5px;
+      }
+      .quiz-opt {
+        min-height: 36px;
+        padding: 6px 8px;
+        font-size: 13px;
+      }
+      .quiz-side {
+        flex-direction: row;
+        align-items: center;
+        border-left: none;
+        border-top: 1px solid var(--quiz-border);
+        padding-left: 0;
+        padding-top: 8px;
+      }
+      .quiz-reward-box {
+        flex-direction: row;
+        align-items: center;
+        gap: 6px;
+        padding: 5px 8px;
+        flex: 1;
+      }
+      .quiz-reward-val { font-size: 14px; }
+      .quiz-skip-btn {
+        width: auto;
+        min-height: 34px;
+        padding: 0 12px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="battle-root">
+    <!-- 전장 캔버스 + SVG 전술 오버레이 -->
+    <div class="battlefield-stage" aria-label="전투 전장 지도">
+      <img class="battlefield-img" src="../assets/battle-map.webp" alt="전투 전장 지도" />
+      <svg class="battlefield-svg" viewBox="0 0 1376 768" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+        <!-- 선택된 레일 포탑(704, 188) 사거리 원 (틸 점선) -->
+        <ellipse cx="704" cy="188" rx="196" ry="122"
+          fill="rgba(47, 181, 163, 0.07)"
+          stroke="#2FB5A3" stroke-width="2" stroke-dasharray="8 6" />
+        <ellipse cx="704" cy="188" rx="44" ry="28"
+          fill="none" stroke="#2FB5A3" stroke-width="2" />
+        <!-- 선택 포탑 중심 표식 -->
+        <line x1="696" y1="188" x2="712" y2="188" stroke="#2FB5A3" stroke-width="1.5" />
+        <line x1="704" y1="180" x2="704" y2="196" stroke="#2FB5A3" stroke-width="1.5" />
+
+        <!-- 설치 가능한 빈 팔각 칸 3곳 1px 하이라이트 -->
+        <!-- 1) 중앙 상단 좌측 빈 칸 (647, 236) -->
+        <polygon points="632,221 662,221 677,232 677,245 662,255 632,255 617,245 617,232"
+          fill="rgba(47, 181, 163, 0.12)" stroke="#2FB5A3" stroke-width="1.25" />
+        <line x1="642" y1="238" x2="652" y2="238" stroke="#2FB5A3" stroke-width="1.25" />
+        <line x1="647" y1="233" x2="647" y2="243" stroke="#2FB5A3" stroke-width="1.25" />
+
+        <!-- 2) 중앙 중단 좌측 빈 칸 (605, 279) -->
+        <polygon points="590,264 620,264 635,275 635,288 620,298 590,298 575,288 575,275"
+          fill="rgba(47, 181, 163, 0.08)" stroke="#B8C0C8" stroke-width="1" stroke-dasharray="4 3" />
+        <line x1="600" y1="281" x2="610" y2="281" stroke="#B8C0C8" stroke-width="1" />
+        <line x1="605" y1="276" x2="605" y2="286" stroke="#B8C0C8" stroke-width="1" />
+
+        <!-- 3) 중앙 하단 루프 빈 칸 (790, 398) -->
+        <polygon points="774,382 806,382 821,393 821,406 806,416 774,416 759,406 759,393"
+          fill="rgba(47, 181, 163, 0.08)" stroke="#B8C0C8" stroke-width="1" stroke-dasharray="4 3" />
+        <line x1="785" y1="399" x2="795" y2="399" stroke="#B8C0C8" stroke-width="1" />
+        <line x1="790" y1="394" x2="790" y2="404" stroke="#B8C0C8" stroke-width="1" />
+      </svg>
+    </div>
+
+    <!-- HUD + 도크 + 어휘 문제 레이어 -->
+    <div class="hud-layer">
+      <!-- 상단 바 -->
+      <header class="top-bar">
+        <div class="c-panel hud-panel">
+          <div class="c-inner hud-strip-inner">
+            <div class="hud-stat">
+              <i class="icon-teal" data-icon="hud/gate" data-size="18"></i>
+              <span class="hud-label">성문</span>
+              <span class="gate-meter">
+                <span class="gate-track" aria-hidden="true"><span class="gate-fill"></span></span>
+                <span class="hud-val num">15 / 15</span>
+              </span>
+            </div>
+
+            <div class="hud-stat">
+              <i class="icon-amber" data-icon="hud/gold" data-size="18"></i>
+              <span class="hud-label">골드</span>
+              <span class="hud-val num">240</span>
+            </div>
+
+            <div class="hud-stat">
+              <i class="icon-body" data-icon="hud/wave" data-size="18"></i>
+              <span class="hud-label">웨이브</span>
+              <span class="hud-val num">4 / 20</span>
+              <span class="hud-sub desk-only">최고 18</span>
+            </div>
+
+            <div class="hud-stat desk-only">
+              <i class="icon-body" data-icon="hud/enemies" data-size="18"></i>
+              <span class="hud-label">남은 적</span>
+              <span class="hud-val num">14</span>
+            </div>
+
+            <div class="hud-stat">
+              <span class="streak-pill" title="연속 정답 보너스">
+                <i data-icon="hud/streak" data-size="14"></i>
+                <span class="desk-only">연속</span>
+                <span class="num">2/3</span>
+              </span>
+            </div>
+
+            <div class="hud-stat desk-only" aria-label="보유 보물">
+              <span class="hud-label">보물</span>
+              <div class="hud-relics">
+                <span class="relic-chip" title="정밀 조준경 (사거리 +15%)"><i data-icon="relics/arrow_range" data-size="16"></i></span>
+                <span class="relic-chip" title="어휘 교본 (정답 골드 +3)"><i data-icon="relics/wise_book" data-size="16"></i></span>
+              </div>
+            </div>
+
+            <div class="hud-stat desk-only">
+              <i class="icon-body" data-icon="hud/score" data-size="18"></i>
+              <span class="hud-val num">1,480</span>
+            </div>
+          </div>
+        </div>
+
+        <button type="button" class="btn pause-btn" aria-label="일시정지">
+          <i data-icon="hud/pause" data-size="18"></i>
+          <span class="pause-text">일시정지</span>
+        </button>
+      </header>
+
+      <!-- 우측 도크 (웨이브 예고 + 타워 설치) -->
+      <aside class="right-dock">
+        <section class="c-panel wave-preview-panel" aria-label="웨이브 예고">
+          <div class="c-inner wave-preview-inner">
+            <div class="dock-head">
+              <h2 class="dock-title">웨이브 예고</h2>
+              <span class="tag tag-teal num">다음 적 26</span>
+            </div>
+            <div class="trait-row" aria-label="등장 적 특성">
+              <span class="trait-chip" title="비행"><i class="icon-teal" data-icon="traits/flying" data-size="14"></i><span>비행</span></span>
+              <span class="trait-chip" title="장갑"><i class="icon-body" data-icon="traits/armor" data-size="14"></i><span>장갑</span></span>
+              <span class="trait-chip" title="분열"><i class="icon-amber" data-icon="traits/split" data-size="14"></i><span>분열</span></span>
+            </div>
+            <div class="wave-warn">
+              <span class="wave-warn-mark" aria-hidden="true">!</span>
+              <span class="wave-warn-text">날아오는 적이 많아요 — 하늘을 쏘는 타워를 준비해요</span>
+            </div>
+          </div>
+        </section>
+
+        <section class="c-panel tower-dock-panel" aria-label="타워 설치 목록">
+          <div class="c-inner tower-dock-inner">
+            <div class="dock-head">
+              <h2 class="dock-title">타워 설치</h2>
+              <span class="tag num">1~4 선택</span>
+            </div>
+
+            <div class="tower-list">
+              <!-- 1. 레일 포탑 (선택됨) -->
+              <button type="button" class="tower-slot-btn" aria-pressed="true">
+                <div class="c-card is-selected">
+                  <div class="c-inner tower-slot-inner">
+                    <div class="tower-thumb" aria-hidden="true">
+                      <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
+                        <polygon points="11,5 25,5 31,11 31,25 25,31 11,31 5,25 5,11" fill="#12161B" stroke="#4A5563" stroke-width="1.2"/>
+                        <circle cx="18" cy="18" r="6" fill="#1D242C" stroke="#B8C0C8" stroke-width="1.2"/>
+                        <rect x="16" y="3" width="4" height="15" fill="#B8C0C8" stroke="#12161B" stroke-width="0.8"/>
+                        <line x1="18" y1="5" x2="18" y2="14" stroke="#2FB5A3" stroke-width="1.5"/>
+                      </svg>
+                    </div>
+                    <div class="tower-meta">
+                      <span class="tower-name">레일 포탑</span>
+                      <span class="tower-role">단일 고속 · 공중</span>
+                    </div>
+                    <span class="tower-cost num"><i data-icon="hud/gold" data-size="13"></i>60G</span>
+                  </div>
+                </div>
+              </button>
+
+              <!-- 2. 곡사 포대 -->
+              <button type="button" class="tower-slot-btn">
+                <div class="c-card">
+                  <div class="c-inner tower-slot-inner">
+                    <div class="tower-thumb" aria-hidden="true">
+                      <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
+                        <rect x="6" y="6" width="24" height="24" fill="#12161B" stroke="#4A5563" stroke-width="1.2"/>
+                        <rect x="10" y="10" width="16" height="16" fill="#1D242C" stroke="#B8C0C8" stroke-width="1"/>
+                        <rect x="14" y="5" width="8" height="14" fill="#B8C0C8" stroke="#12161B" stroke-width="0.8"/>
+                        <rect x="15" y="5" width="6" height="2" fill="#E69F24"/>
+                      </svg>
+                    </div>
+                    <div class="tower-meta">
+                      <span class="tower-name">곡사 포대</span>
+                      <span class="tower-role">범위 폭발 · 지상</span>
+                    </div>
+                    <span class="tower-cost num"><i data-icon="hud/gold" data-size="13"></i>100G</span>
+                  </div>
+                </div>
+              </button>
+
+              <!-- 3. 냉각 중계탑 -->
+              <button type="button" class="tower-slot-btn">
+                <div class="c-card">
+                  <div class="c-inner tower-slot-inner">
+                    <div class="tower-thumb" aria-hidden="true">
+                      <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
+                        <polygon points="12,6 24,6 30,12 30,24 24,30 12,30 6,24 6,12" fill="#12161B" stroke="#4A5563" stroke-width="1.2"/>
+                        <circle cx="18" cy="18" r="10" stroke="#2FB5A3" stroke-width="1.4"/>
+                        <circle cx="18" cy="18" r="6" stroke="#2FB5A3" stroke-width="1.4"/>
+                        <circle cx="18" cy="18" r="2.5" fill="#B8C0C8"/>
+                      </svg>
+                    </div>
+                    <div class="tower-meta">
+                      <span class="tower-name">냉각 중계탑</span>
+                      <span class="tower-role">광역 감속 · 공중</span>
+                    </div>
+                    <span class="tower-cost num"><i data-icon="hud/gold" data-size="13"></i>60G</span>
+                  </div>
+                </div>
+              </button>
+
+              <!-- 4. 프리즘 탑 -->
+              <button type="button" class="tower-slot-btn">
+                <div class="c-card">
+                  <div class="c-inner tower-slot-inner">
+                    <div class="tower-thumb" aria-hidden="true">
+                      <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
+                        <polygon points="18,5 30,28 6,28" fill="#12161B" stroke="#B8C0C8" stroke-width="1.3"/>
+                        <polygon points="18,12 24,24 12,24" fill="none" stroke="#4A5563" stroke-width="1"/>
+                        <polygon points="18,13 22,19 18,25 14,19" fill="#2FB5A3"/>
+                      </svg>
+                    </div>
+                    <div class="tower-meta">
+                      <span class="tower-name">프리즘 탑</span>
+                      <span class="tower-role">연쇄 마법 · 공중</span>
+                    </div>
+                    <span class="tower-cost num"><i data-icon="hud/gold" data-size="13"></i>95G</span>
+                  </div>
+                </div>
+              </button>
+
+              <!-- 5. 드론 격납고 (잠김) -->
+              <button type="button" class="tower-slot-btn is-locked" disabled aria-disabled="true">
+                <div class="c-card">
+                  <div class="c-inner tower-slot-inner">
+                    <div class="tower-thumb" aria-hidden="true">
+                      <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
+                        <polygon points="10,7 26,7 31,18 26,29 10,29 5,18" fill="#12161B" stroke="#4A5563" stroke-width="1.2"/>
+                        <polygon points="18,12 23,18 18,24 13,18" stroke="#939EAB" stroke-width="1.2"/>
+                        <line x1="25" y1="11" x2="25" y2="23" stroke="#939EAB" stroke-width="1.5"/>
+                      </svg>
+                    </div>
+                    <div class="tower-meta">
+                      <span class="tower-name">드론 격납고</span>
+                      <span class="tower-role">대공 추적 · 공중</span>
+                    </div>
+                    <span class="tower-lock-badge num"><i data-icon="hud/lock" data-size="12"></i>6웨이브</span>
+                  </div>
+                </div>
+              </button>
+            </div>
+          </div>
+        </section>
+      </aside>
+
+      <!-- 하단 밝은 고대비 어휘 문제 패널 -->
+      <section class="quiz-dock" aria-label="어휘 문제">
+        <div class="quiz-panel">
+          <div class="quiz-panel-inner quiz-layout">
+            <div class="quiz-main">
+              <div class="quiz-q-head">
+                <span class="quiz-phase-tag">전투</span>
+                <h2 class="quiz-question">‘다정하다’를 바르게 쓴 문장은 무엇일까요?</h2>
+              </div>
+              <div class="quiz-options">
+                <button type="button" class="quiz-opt">
+                  <span class="quiz-opt-num">1</span>
+                  <span>언니가 내 손을 다정하게 잡았다.</span>
+                </button>
+                <button type="button" class="quiz-opt">
+                  <span class="quiz-opt-num">2</span>
+                  <span>책상이 창가로 다정하게 굴렀다.</span>
+                </button>
+                <button type="button" class="quiz-opt">
+                  <span class="quiz-opt-num">3</span>
+                  <span>소나기가 종일 다정하게 퍼부었다.</span>
+                </button>
+                <button type="button" class="quiz-opt">
+                  <span class="quiz-opt-num">4</span>
+                  <span>시계가 벽에서 다정하게 멈추었다.</span>
+                </button>
+              </div>
+            </div>
+
+            <div class="quiz-side">
+              <div class="quiz-reward-box">
+                <span class="quiz-reward-label">정답이면</span>
+                <span class="quiz-reward-val num">
+                  <i data-icon="hud/gold" data-size="17"></i>+19 골드
+                </span>
+              </div>
+              <button type="button" class="btn btn-ghost quiz-skip-btn">모르겠어요</button>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+</body>
+</html>

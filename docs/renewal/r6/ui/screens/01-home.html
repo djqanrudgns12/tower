@@ -1,0 +1,1023 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>어휘력 타워 디펜스 — 홈</title>
+  <link rel="stylesheet" href="../tokens.css" />
+  <link rel="stylesheet" href="../shared.css" />
+  <script defer src="./hydrate-icons.js"></script>
+  <style>
+    .home-shell {
+      max-width: 1248px;
+      margin: 0 auto;
+      padding: var(--sp-3) var(--sp-4);
+      display: flex;
+      flex-direction: column;
+      gap: var(--sp-3);
+      min-height: 100vh;
+    }
+
+    /* 상단 헤더 바 */
+    .top-bar-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--sp-4);
+      padding: 10px var(--sp-4);
+    }
+
+    .brand-box {
+      display: flex;
+      align-items: center;
+      gap: var(--sp-3);
+      min-width: 0;
+    }
+
+    .brand-emblem {
+      width: 38px;
+      height: 38px;
+      flex: none;
+      display: grid;
+      place-items: center;
+      background: var(--bg-card);
+      border: 1px solid var(--accent-teal);
+      color: var(--accent-teal);
+      clip-path: polygon(
+        var(--chamfer-sm) 0, 100% 0,
+        100% calc(100% - var(--chamfer-sm)), calc(100% - var(--chamfer-sm)) 100%,
+        0 100%, 0 var(--chamfer-sm)
+      );
+    }
+
+    .brand-title {
+      font-family: var(--font-display);
+      font-size: var(--fs-heading);
+      font-weight: 700;
+      color: var(--text-strong);
+      line-height: 1.2;
+    }
+
+    .brand-sub {
+      font-size: var(--fs-caption);
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    .live-metrics {
+      display: grid;
+      grid-template-columns: repeat(4, auto);
+      gap: var(--sp-2);
+    }
+
+    .metric-cell {
+      display: flex;
+      flex-direction: column;
+      padding: 4px 10px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-hairline);
+    }
+
+    .metric-label {
+      font-size: 11px;
+      color: var(--text-muted);
+      line-height: 1.2;
+    }
+
+    .metric-val {
+      font-size: var(--fs-body);
+      font-weight: 700;
+      color: var(--text-strong);
+      line-height: 1.3;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: var(--sp-2);
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .badge-count {
+      font-family: var(--font-display);
+      font-variant-numeric: tabular-nums;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 1px 5px;
+      background: var(--accent-amber);
+      color: var(--on-accent);
+    }
+
+    /* 2열 메인 보드 */
+    .home-grid {
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: var(--sp-3);
+      flex: 1;
+      align-items: stretch;
+    }
+
+    .left-col {
+      display: flex;
+      flex-direction: column;
+      gap: var(--sp-3);
+      min-width: 0;
+    }
+
+    /* 전장 미리보기 프레임 */
+    .hero-frame {
+      position: relative;
+      background: var(--border-hairline);
+      padding: 1px;
+      clip-path: polygon(
+        var(--chamfer-lg) 0, 100% 0,
+        100% calc(100% - var(--chamfer-lg)), calc(100% - var(--chamfer-lg)) 100%,
+        0 100%, 0 var(--chamfer-lg)
+      );
+    }
+
+    .hero-frame-inner {
+      position: relative;
+      height: 186px;
+      overflow: hidden;
+      background: var(--bg-panel);
+      clip-path: polygon(
+        calc(var(--chamfer-lg) - 0.5px) 0, 100% 0,
+        100% calc(100% - var(--chamfer-lg) + 0.5px), calc(100% - var(--chamfer-lg) + 0.5px) 100%,
+        0 100%, 0 calc(var(--chamfer-lg) - 0.5px)
+      );
+    }
+
+    .hero-frame-inner img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+      display: block;
+    }
+
+    .hero-badge-tl {
+      position: absolute;
+      top: 10px;
+      left: 12px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      background: var(--bg-panel);
+      border: 1px solid var(--border-strong);
+      color: var(--text-strong);
+      font-family: var(--font-display);
+      font-size: var(--fs-caption);
+      font-weight: 600;
+    }
+
+    .hero-badge-tr {
+      position: absolute;
+      top: 10px;
+      right: 12px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      background: var(--bg-panel);
+      border: 1px solid var(--accent-amber);
+      color: var(--accent-amber);
+      font-family: var(--font-display);
+      font-size: var(--fs-caption);
+      font-weight: 700;
+    }
+
+    /* 오늘의 낱말 (고대비 .quiz-panel) */
+    .word-card-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--sp-2);
+      padding-bottom: var(--sp-2);
+      border-bottom: 1px solid var(--quiz-border);
+    }
+
+    .word-head-left {
+      display: flex;
+      align-items: center;
+      gap: var(--sp-2);
+      flex-wrap: wrap;
+    }
+
+    .word-kicker {
+      font-family: var(--font-display);
+      font-size: var(--fs-caption);
+      font-weight: 700;
+      color: var(--quiz-ink);
+    }
+
+    .quiz-tag-teal {
+      display: inline-flex;
+      align-items: center;
+      padding: 2px 8px;
+      font-family: var(--font-display);
+      font-size: var(--fs-caption);
+      font-weight: 600;
+      background: var(--quiz-teal-bg);
+      border: 1px solid var(--quiz-teal);
+      color: var(--quiz-teal);
+    }
+
+    .quiz-tag-amber {
+      display: inline-flex;
+      align-items: center;
+      padding: 2px 7px;
+      font-family: var(--font-display);
+      font-size: var(--fs-caption);
+      font-weight: 700;
+      background: var(--quiz-amber-bg);
+      border: 1px solid var(--quiz-amber);
+      color: var(--quiz-amber);
+    }
+
+    .quiz-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      min-height: 30px;
+      padding: 0 10px;
+      background: var(--quiz-card);
+      border: 1px solid var(--quiz-border);
+      color: var(--quiz-ink);
+      font-family: var(--font-display);
+      font-size: var(--fs-caption);
+      font-weight: 600;
+      clip-path: polygon(
+        var(--chamfer-sm) 0, 100% 0,
+        100% calc(100% - var(--chamfer-sm)), calc(100% - var(--chamfer-sm)) 100%,
+        0 100%, 0 var(--chamfer-sm)
+      );
+    }
+
+    .quiz-btn:hover {
+      background: var(--quiz-card-sunk);
+    }
+
+    .word-main-row {
+      display: flex;
+      align-items: baseline;
+      gap: var(--sp-2);
+      margin-top: var(--sp-2);
+      flex-wrap: wrap;
+    }
+
+    .word-term {
+      font-family: var(--font-display);
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--quiz-ink);
+    }
+
+    .word-meta-list {
+      margin-top: var(--sp-2);
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .word-meta-row {
+      display: grid;
+      grid-template-columns: 48px 1fr;
+      gap: var(--sp-2);
+      align-items: baseline;
+      font-size: var(--fs-body);
+      color: var(--quiz-ink);
+    }
+
+    .word-meta-label {
+      font-family: var(--font-display);
+      font-size: var(--fs-caption);
+      font-weight: 700;
+      color: var(--quiz-ink-muted);
+    }
+
+    .word-highlight {
+      font-weight: 700;
+      color: var(--quiz-teal);
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+
+    /* 새 게임 준비 카드 */
+    .prep-inner {
+      padding: var(--sp-3) var(--sp-4);
+      display: flex;
+      flex-direction: column;
+      gap: var(--sp-3);
+      flex: 1;
+    }
+
+    .section-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--sp-2);
+      flex-wrap: wrap;
+    }
+
+    .section-title {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--sp-2);
+      font-family: var(--font-display);
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text-strong);
+    }
+
+    .prep-fields {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--sp-3);
+    }
+
+    .field-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      min-width: 0;
+    }
+
+    .field-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-family: var(--font-display);
+      font-size: var(--fs-caption);
+      font-weight: 600;
+      color: var(--text-body);
+    }
+
+    .field-step {
+      display: inline-grid;
+      place-items: center;
+      width: 18px;
+      height: 18px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-hairline);
+      color: var(--text-strong);
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .input-with-btn {
+      display: flex;
+      gap: 6px;
+      min-width: 0;
+    }
+
+    .tac-input {
+      flex: 1;
+      min-width: 0;
+      height: 36px;
+      padding: 0 10px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-hairline);
+      color: var(--text-strong);
+      font-size: var(--fs-body);
+    }
+
+    .tac-input:focus {
+      outline: none;
+      border-color: var(--accent-teal);
+    }
+
+    .prep-cta-row {
+      display: flex;
+      align-items: center;
+      gap: var(--sp-2);
+      padding-top: var(--sp-1);
+    }
+
+    .prep-cta-row .btn-primary {
+      flex: 1;
+    }
+
+    /* 우측 랭킹 보드 */
+    .rank-panel {
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+    }
+
+    .rank-panel > .c-inner {
+      display: flex;
+      flex-direction: column;
+      padding: var(--sp-3) var(--sp-4);
+      gap: var(--sp-3);
+    }
+
+    .rank-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--sp-2);
+      flex-wrap: wrap;
+    }
+
+    .rank-title-wrap {
+      display: flex;
+      align-items: center;
+      gap: var(--sp-2);
+    }
+
+    .live-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: var(--fs-caption);
+      font-weight: 600;
+      color: var(--accent-teal);
+    }
+
+    .live-square {
+      width: 7px;
+      height: 7px;
+      background: var(--accent-teal);
+      display: inline-block;
+    }
+
+    .rank-quick-btns {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .rank-tabs {
+      border: 1px solid var(--border-hairline);
+      border-bottom-width: 1px;
+    }
+
+    .rank-tabs .tab-btn {
+      flex: 1;
+      justify-content: center;
+      padding: 8px 6px;
+      font-size: var(--fs-caption);
+    }
+
+    .filter-stack {
+      display: flex;
+      flex-direction: column;
+      gap: var(--sp-2);
+    }
+
+    .filter-row {
+      display: flex;
+      align-items: center;
+      gap: var(--sp-2);
+    }
+
+    .filter-label {
+      width: 44px;
+      flex: none;
+      font-family: var(--font-display);
+      font-size: var(--fs-caption);
+      font-weight: 600;
+      color: var(--text-muted);
+    }
+
+    .filter-row .seg-group {
+      flex: 1;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+    }
+
+    .filter-row .seg-btn {
+      min-height: 30px;
+      padding: 2px 4px;
+      font-size: var(--fs-caption);
+      white-space: nowrap;
+    }
+
+    .rank-list {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      flex: 1;
+    }
+
+    .rank-row {
+      display: flex;
+      align-items: center;
+      gap: var(--sp-3);
+      padding: 8px 10px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-hairline);
+    }
+
+    .rank-row.is-me {
+      border-color: var(--accent-teal);
+      border-left: 3px solid var(--accent-teal);
+      background: var(--accent-teal-dim);
+    }
+
+    .rank-num {
+      width: 28px;
+      height: 28px;
+      flex: none;
+      display: grid;
+      place-items: center;
+      font-family: var(--font-display);
+      font-variant-numeric: tabular-nums;
+      font-size: var(--fs-caption);
+      font-weight: 700;
+      background: var(--bg-panel);
+      border: 1px solid var(--border-hairline);
+      color: var(--text-strong);
+      clip-path: polygon(4px 0, 100% 0, 100% calc(100% - 4px), calc(100% - 4px) 100%, 0 100%, 0 4px);
+    }
+
+    .rank-num.rank-1 { background: #E69F24; border-color: #E69F24; color: #12161B; }
+    .rank-num.rank-2 { background: #B8C0C8; border-color: #B8C0C8; color: #12161B; }
+    .rank-num.rank-3 { background: #D4845A; border-color: #D4845A; color: #12161B; }
+    .rank-row.is-me .rank-num {
+      background: var(--accent-teal);
+      border-color: var(--accent-teal);
+      color: var(--on-accent);
+    }
+
+    .rank-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .rank-name-line {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .rank-name {
+      font-family: var(--font-display);
+      font-size: var(--fs-body);
+      font-weight: 700;
+      color: var(--text-strong);
+    }
+
+    .rank-sub {
+      font-size: var(--fs-caption);
+      color: var(--text-muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .rank-row.is-me .rank-sub {
+      color: var(--text-body);
+    }
+
+    .rank-score {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text-strong);
+      white-space: nowrap;
+    }
+
+    .rank-row.is-me .rank-score {
+      color: var(--accent-teal);
+    }
+
+    .my-rank-dock {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--sp-2);
+      padding: 10px 12px;
+      background: var(--bg-card);
+      border: 1px solid var(--accent-teal);
+      margin-top: auto;
+    }
+
+    .my-rank-label {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--sp-2);
+      font-family: var(--font-display);
+      font-size: var(--fs-body);
+      font-weight: 700;
+      color: var(--text-strong);
+    }
+
+    .my-rank-val {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--accent-teal);
+    }
+
+    /* 모바일 390×844 대응 */
+    @media (max-width: 600px) {
+      .home-shell {
+        padding: var(--sp-2);
+        gap: var(--sp-2);
+      }
+
+      .top-bar-inner {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 6px;
+        padding: 8px 10px;
+      }
+
+      .live-metrics {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 4px;
+      }
+
+      .metric-cell {
+        padding: 3px 6px;
+      }
+
+      .metric-label {
+        font-size: 10px;
+      }
+
+      .metric-val {
+        font-size: 12px;
+      }
+
+      .header-actions {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 4px;
+      }
+
+      .header-actions .btn {
+        width: 100%;
+        padding: 0 4px;
+        min-height: 30px;
+        font-size: 11px;
+        gap: 4px;
+      }
+
+      .home-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-frame-inner {
+        height: 118px;
+      }
+
+      .prep-fields {
+        grid-template-columns: 1fr;
+      }
+
+      .prep-cta-row {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .rank-panel > .c-inner {
+        padding: var(--sp-3);
+      }
+
+      .rank-tabs {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .filter-row {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 4px;
+      }
+
+      .filter-label {
+        width: auto;
+      }
+    }
+  </style>
+</head>
+<body class="tac-grid-bg">
+  <div class="home-shell">
+    <!-- 상단 헤더 바 -->
+    <header class="c-panel">
+      <div class="c-inner top-bar-inner">
+        <div class="brand-box">
+          <div class="brand-emblem">
+            <i data-icon="hud/gate" data-size="22"></i>
+          </div>
+          <div>
+            <h1 class="brand-title">어휘력 타워 디펜스</h1>
+            <p class="brand-sub">낱말 문제를 풀고 타워로 성문을 지켜요</p>
+          </div>
+        </div>
+
+        <div class="live-metrics" aria-label="접속 현황">
+          <div class="metric-cell">
+            <span class="metric-label">최근 접속</span>
+            <span class="metric-val num">18명</span>
+          </div>
+          <div class="metric-cell">
+            <span class="metric-label">오늘 플레이</span>
+            <span class="metric-val num">142판</span>
+          </div>
+          <div class="metric-cell">
+            <span class="metric-label">누적 접속</span>
+            <span class="metric-val num">1,240명</span>
+          </div>
+          <div class="metric-cell">
+            <span class="metric-label">누적 플레이</span>
+            <span class="metric-val num">8,920판</span>
+          </div>
+        </div>
+
+        <nav class="header-actions" aria-label="보조 메뉴">
+          <a class="btn btn-sm" href="./10-guide.html">
+            <i data-icon="hud/guide" data-size="16"></i>
+            <span>사용 설명서</span>
+          </a>
+          <a class="btn btn-sm" href="./12-ranking.html">
+            <i data-icon="hud/score" data-size="16"></i>
+            <span>내 기록</span>
+          </a>
+          <a class="btn btn-sm" href="./09-wrong-note.html">
+            <i data-icon="hud/note" data-size="16"></i>
+            <span>오답 노트</span>
+            <span class="badge-count num">6</span>
+          </a>
+          <a class="btn btn-sm" href="./11-settings.html">
+            <i data-icon="hud/settings" data-size="16"></i>
+            <span>설정</span>
+          </a>
+        </nav>
+      </div>
+    </header>
+
+    <!-- 2열 메인 그리드 -->
+    <main class="home-grid">
+      <!-- 좌측 보드 -->
+      <section class="left-col" aria-label="전장 및 게임 준비">
+        <!-- a) 전장 미리보기 프레임 -->
+        <div class="hero-frame">
+          <div class="hero-frame-inner">
+            <img src="../assets/home-hero.webp" alt="초원 고원 전장 미리보기" />
+            <span class="hero-badge-tl">
+              <i data-icon="hud/gate" data-size="14"></i>
+              <span>초원 고원 · 전장 미리보기</span>
+            </span>
+            <span class="hero-badge-tr">
+              <i data-icon="hud/wave" data-size="14"></i>
+              <span>5웨이브 보스</span>
+            </span>
+          </div>
+        </div>
+
+        <!-- b) 오늘의 낱말 카드 (.quiz-panel 고대비) -->
+        <article class="quiz-panel" aria-label="오늘의 낱말">
+          <div class="quiz-panel-inner">
+            <div class="word-card-head">
+              <div class="word-head-left">
+                <span class="word-kicker">오늘의 낱말</span>
+                <span class="quiz-tag-teal">4학년 · 기본</span>
+              </div>
+              <button type="button" class="quiz-btn" id="btn-random-word">
+                <i data-icon="hud/shuffle" data-size="14"></i>
+                <span>랜덤</span>
+              </button>
+            </div>
+            <div class="word-main-row">
+              <strong class="word-term">꼼꼼하다</strong>
+              <span class="quiz-tag-amber">[형용사]</span>
+            </div>
+            <div class="word-meta-list">
+              <div class="word-meta-row">
+                <span class="word-meta-label">뜻풀이</span>
+                <span>빈틈이 없이 차분하고 조심스럽다</span>
+              </div>
+              <div class="word-meta-row">
+                <span class="word-meta-label">예문</span>
+                <span>‘준비물을 잘 챙길 만큼 <strong class="word-highlight">꼼꼼하다</strong>’</span>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <!-- c) 새 게임 준비 카드 -->
+        <section class="c-panel" aria-label="새 게임 준비">
+          <div class="c-inner prep-inner">
+            <div class="section-head">
+              <h2 class="section-title">
+                <i data-icon="hud/play" data-size="18"></i>
+                <span>새 게임 준비</span>
+              </h2>
+              <span class="tag tag-teal">
+                <i data-icon="hud/check" data-size="14"></i>
+                <span>준비 완료 · 순위 연동</span>
+              </span>
+            </div>
+
+            <div class="prep-fields">
+              <div class="field-group">
+                <label class="field-label" for="input-nickname">
+                  <span class="field-step num">1</span>
+                  <span>닉네임</span>
+                </label>
+                <div class="input-with-btn">
+                  <input id="input-nickname" class="tac-input" type="text" value="민서" />
+                  <button type="button" class="btn btn-sm" id="btn-random-nick">
+                    <i data-icon="hud/shuffle" data-size="14"></i>
+                    <span>랜덤 추천</span>
+                  </button>
+                </div>
+              </div>
+
+              <div class="field-group">
+                <label class="field-label" for="input-school">
+                  <span class="field-step num">2</span>
+                  <span>학교 이름 (선택)</span>
+                </label>
+                <div class="input-with-btn">
+                  <input id="input-school" class="tac-input" type="text" value="서울하늘초등학교" />
+                  <button type="button" class="btn btn-sm">
+                    <i data-icon="hud/school" data-size="14"></i>
+                    <span>학교 검색</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <div class="prep-cta-row">
+              <a class="btn btn-primary btn-lg" href="./02-new-game.html">
+                <i data-icon="hud/play" data-size="18"></i>
+                <span>새 게임</span>
+              </a>
+              <button type="button" class="btn btn-lg">
+                <i data-icon="hud/guide" data-size="18"></i>
+                <span>연습하기</span>
+              </button>
+            </div>
+          </div>
+        </section>
+      </section>
+
+      <!-- 우측 보드 (랭킹) -->
+      <aside class="c-panel rank-panel" aria-label="랭킹">
+        <div class="c-inner">
+          <div class="rank-header">
+            <div class="rank-title-wrap">
+              <h2 class="section-title">
+                <i data-icon="hud/score" data-size="18"></i>
+                <span>랭킹</span>
+              </h2>
+              <span class="live-pill">
+                <span class="live-square" aria-hidden="true"></span>
+                <span>실시간 순위</span>
+              </span>
+            </div>
+            <div class="rank-quick-btns">
+              <button type="button" class="btn btn-sm" id="btn-my-school">
+                <i data-icon="hud/school" data-size="14"></i>
+                <span>우리 학교</span>
+              </button>
+              <a class="btn btn-sm" href="./13-classroom-qr.html">
+                <i data-icon="hud/qr" data-size="14"></i>
+                <span>교실 QR</span>
+              </a>
+              <a class="btn btn-sm" href="./12-ranking.html">
+                <span>전체 보기</span>
+              </a>
+            </div>
+          </div>
+
+          <div class="tab-rail rank-tabs" role="tablist" aria-label="랭킹 기준">
+            <button type="button" class="tab-btn is-active" role="tab" aria-selected="true">최고 점수</button>
+            <button type="button" class="tab-btn" role="tab" aria-selected="false">랭킹 점수</button>
+            <button type="button" class="tab-btn" role="tab" aria-selected="false">최고 웨이브</button>
+            <button type="button" class="tab-btn" role="tab" aria-selected="false">내 기록</button>
+          </div>
+
+          <div class="filter-stack">
+            <div class="filter-row">
+              <span class="filter-label">학년</span>
+              <div class="seg-group" role="radiogroup" aria-label="학년 선택">
+                <button type="button" class="seg-btn" role="radio" aria-checked="false">3학년</button>
+                <button type="button" class="seg-btn is-active" role="radio" aria-checked="true">4학년</button>
+                <button type="button" class="seg-btn" role="radio" aria-checked="false">5학년</button>
+                <button type="button" class="seg-btn" role="radio" aria-checked="false">6학년</button>
+              </div>
+            </div>
+            <div class="filter-row">
+              <span class="filter-label">난이도</span>
+              <div class="seg-group" role="radiogroup" aria-label="난이도 선택">
+                <button type="button" class="seg-btn" role="radio" aria-checked="false">쉬움</button>
+                <button type="button" class="seg-btn is-active" role="radio" aria-checked="true">보통</button>
+                <button type="button" class="seg-btn" role="radio" aria-checked="false">어려움</button>
+                <button type="button" class="seg-btn" role="radio" aria-checked="false">아주 어려움</button>
+              </div>
+            </div>
+          </div>
+
+          <ol class="rank-list" aria-label="상위 순위 목록">
+            <li class="rank-row">
+              <span class="rank-num rank-1 num">1</span>
+              <div class="rank-info">
+                <div class="rank-name-line">
+                  <strong class="rank-name">지훈</strong>
+                </div>
+                <div class="rank-sub">서울하늘초등학교 · 15웨이브</div>
+              </div>
+              <span class="rank-score num">5,410점</span>
+            </li>
+            <li class="rank-row">
+              <span class="rank-num rank-2 num">2</span>
+              <div class="rank-info">
+                <div class="rank-name-line">
+                  <strong class="rank-name">서연</strong>
+                </div>
+                <div class="rank-sub">부산해운초등학교 · 15웨이브</div>
+              </div>
+              <span class="rank-score num">5,180점</span>
+            </li>
+            <li class="rank-row">
+              <span class="rank-num rank-3 num">3</span>
+              <div class="rank-info">
+                <div class="rank-name-line">
+                  <strong class="rank-name">도윤</strong>
+                </div>
+                <div class="rank-sub">대전둔산초등학교 · 14웨이브</div>
+              </div>
+              <span class="rank-score num">4,950점</span>
+            </li>
+            <li class="rank-row is-me">
+              <span class="rank-num num">4</span>
+              <div class="rank-info">
+                <div class="rank-name-line">
+                  <strong class="rank-name">민서</strong>
+                  <span class="tag tag-teal">나</span>
+                </div>
+                <div class="rank-sub">서울하늘초등학교 · 14웨이브</div>
+              </div>
+              <span class="rank-score num">4,820점</span>
+            </li>
+            <li class="rank-row">
+              <span class="rank-num num">5</span>
+              <div class="rank-info">
+                <div class="rank-name-line">
+                  <strong class="rank-name">하은</strong>
+                </div>
+                <div class="rank-sub">대구범어초등학교 · 13웨이브</div>
+              </div>
+              <span class="rank-score num">4,610점</span>
+            </li>
+          </ol>
+
+          <div class="my-rank-dock">
+            <span class="my-rank-label">
+              <i data-icon="hud/streak" data-size="16"></i>
+              <span>내 순위 · 민서</span>
+            </span>
+            <span class="my-rank-val num">4위 · 4,820점</span>
+          </div>
+        </div>
+      </aside>
+    </main>
+  </div>
+
+  <script>
+    (function () {
+      document.querySelectorAll('.tab-rail').forEach(function (rail) {
+        rail.addEventListener('click', function (e) {
+          var btn = e.target.closest('.tab-btn');
+          if (!btn) return;
+          rail.querySelectorAll('.tab-btn').forEach(function (b) {
+            b.classList.remove('is-active');
+            b.setAttribute('aria-selected', 'false');
+          });
+          btn.classList.add('is-active');
+          btn.setAttribute('aria-selected', 'true');
+        });
+      });
+
+      document.querySelectorAll('.seg-group').forEach(function (group) {
+        group.addEventListener('click', function (e) {
+          var btn = e.target.closest('.seg-btn');
+          if (!btn) return;
+          group.querySelectorAll('.seg-btn').forEach(function (b) {
+            b.classList.remove('is-active');
+            b.setAttribute('aria-checked', 'false');
+          });
+          btn.classList.add('is-active');
+          btn.setAttribute('aria-checked', 'true');
+        });
+      });
+
+      var nicks = ['민서', '수빈', '지우', '현우', '예준'];
+      var idx = 0;
+      var nickBtn = document.getElementById('btn-random-nick');
+      if (nickBtn) {
+        nickBtn.addEventListener('click', function () {
+          idx = (idx + 1) % nicks.length;
+          document.getElementById('input-nickname').value = nicks[idx];
+        });
+      }
+    })();
+  </script>
+</body>
+</html>

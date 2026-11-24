@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>R6 UI/UX 전 화면 시안 — R04 전술 지도 + 전술 UI</title>
+  <link rel="stylesheet" href="./tokens.css" />
+  <link rel="stylesheet" href="./shared.css" />
+  <style>
+    .wrap { max-width: 1240px; margin: 0 auto; padding: 24px 20px 48px; }
+    .hero { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 16px; padding-bottom: 16px; border-bottom: 1px solid var(--border-hairline); margin-bottom: 24px; }
+    .hero h1 { font-family: var(--font-display); font-size: 24px; color: var(--text-strong); }
+    .hero p { font-size: 13px; color: var(--text-muted); margin-top: 4px; }
+    .doc-links { display: flex; flex-wrap: wrap; gap: 8px; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(360px, 1fr)); gap: 16px; }
+    .card-body { padding: 12px; display: flex; flex-direction: column; gap: 10px; }
+    .card-head { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+    .card-head h2 { font-family: var(--font-display); font-size: 15px; color: var(--text-strong); }
+    .shot-pair { display: grid; grid-template-columns: 1fr 94px; gap: 8px; align-items: stretch; }
+    .shot-pair img { width: 100%; height: 150px; object-fit: cover; object-position: top center; border: 1px solid var(--border-hairline); display: block; background: var(--bg-panel); }
+    .card-foot { display: flex; gap: 8px; flex-wrap: wrap; }
+  </style>
+</head>
+<body class="tac-grid-bg">
+  <div class="wrap">
+    <header class="hero">
+      <div>
+        <span class="tag tag-teal">R6 P2c · R04 전술 UI</span>
+        <h1>어휘력 타워 디펜스 — 전 화면 13종 시안 갤러리</h1>
+        <p>무광 6색 · 1px 헤어라인 · 45° 모따기 · 고정폭 숫자 · 교실 프로젝터 고대비 문제 패널</p>
+      </div>
+      <nav class="doc-links">
+        <a class="btn btn-sm" href="./system.md">디자인 시스템 (system.md)</a>
+        <a class="btn btn-sm" href="./icons/index.html">선 아이콘 54종 시트</a>
+        <a class="btn btn-sm" href="./review.md">검수 리포트 (review.md)</a>
+        <a class="btn btn-sm btn-teal" href="./screens/03-battle-hud.html?theme=light">전투 밝은 화면</a>
+        <a class="btn btn-sm btn-teal" href="./screens/11-settings.html?theme=light">설정 밝은 화면</a>
+      </nav>
+    </header>
+
+    <main class="grid">
+      <article class="c-card"><div class="c-inner card-body"><div class="card-head"><h2>01. 홈</h2><span class="tag">로비</span></div><div class="shot-pair"><img src="./captures/desktop/01-home.webp" alt="홈 데스크톱" /><img src="./captures/mobile/01-home.webp" alt="홈 모바일" /></div><div class="card-foot"><a class="btn btn-sm" href="./screens/01-home.html">HTML 열기</a><a class="btn btn-sm" href="./screens/01-home.html?theme=light">밝은 화면</a></div></div></article>
+      <article class="c-card"><div class="c-inner card-body"><div class="card-head"><h2>02. 새 게임</h2><span class="tag">모달</span></div><div class="shot-pair"><img src="./captures/desktop/02-new-game.webp" alt="새 게임 데스크톱" /><img src="./captures/mobile/02-new-game.webp" alt="새 게임 모바일" /></div><div class="card-foot"><a class="btn btn-sm" href="./screens/02-new-game.html">HTML 열기</a></div></div></article>
+      <article class="c-card is-selected"><div class="c-inner card-body"><div class="card-head"><h2>03. 전투 HUD</h2><span class="tag tag-teal">전투</span></div><div class="shot-pair"><img src="./captures/desktop/03-battle-hud.webp" alt="전투 HUD 데스크톱" /><img src="./captures/mobile/03-battle-hud.webp" alt="전투 HUD 모바일" /></div><div class="card-foot"><a class="btn btn-sm" href="./screens/03-battle-hud.html">HTML 열기</a><a class="btn btn-sm" href="./screens/03-battle-hud.html?theme=light">밝은 화면</a></div></div></article>
+      <article class="c-card is-amber"><div class="c-inner card-body"><div class="card-head"><h2>04. 타워 상세·강화 (Lv1~20)</h2><span class="tag tag-amber">R6 핵심</span></div><div class="shot-pair"><img src="./captures/desktop/04-tower-detail.webp" alt="타워 상세 데스크톱" /><img src="./captures/mobile/04-tower-detail.webp" alt="타워 상세 모바일" /></div><div class="card-foot"><a class="btn btn-sm" href="./screens/04-tower-detail.html">HTML 열기</a></div></div></article>
+      <article class="c-card"><div class="c-inner card-body"><div class="card-head"><h2>05. 새 타워 해금</h2><span class="tag">선택</span></div><div class="shot-pair"><img src="./captures/desktop/05-tower-unlock.webp" alt="새 타워 해금 데스크톱" /><img src="./captures/mobile/05-tower-unlock.webp" alt="새 타워 해금 모바일" /></div><div class="card-foot"><a class="btn btn-sm" href="./screens/05-tower-unlock.html">HTML 열기</a></div></div></article>
+      <article class="c-card"><div class="c-inner card-body"><div class="card-head"><h2>06. 보물 선택</h2><span class="tag">선택</span></div><div class="shot-pair"><img src="./captures/desktop/06-relic-select.webp" alt="보물 선택 데스크톱" /><img src="./captures/mobile/06-relic-select.webp" alt="보물 선택 모바일" /></div><div class="card-foot"><a class="btn btn-sm" href="./screens/06-relic-select.html">HTML 열기</a></div></div></article>
+      <article class="c-card"><div class="c-inner card-body"><div class="card-head"><h2>07. 일시정지</h2><span class="tag">전투</span></div><div class="shot-pair"><img src="./captures/desktop/07-pause.webp" alt="일시정지 데스크톱" /><img src="./captures/mobile/07-pause.webp" alt="일시정지 모바일" /></div><div class="card-foot"><a class="btn btn-sm" href="./screens/07-pause.html">HTML 열기</a></div></div></article>
+      <article class="c-card"><div class="c-inner card-body"><div class="card-head"><h2>08. 결과</h2><span class="tag">복습</span></div><div class="shot-pair"><img src="./captures/desktop/08-result.webp" alt="결과 데스크톱" /><img src="./captures/mobile/08-result.webp" alt="결과 모바일" /></div><div class="card-foot"><a class="btn btn-sm" href="./screens/08-result.html">HTML 열기</a></div></div></article>
+      <article class="c-card"><div class="c-inner card-body"><div class="card-head"><h2>09. 오답 노트</h2><span class="tag">복습</span></div><div class="shot-pair"><img src="./captures/desktop/09-wrong-note.webp" alt="오답 노트 데스크톱" /><img src="./captures/mobile/09-wrong-note.webp" alt="오답 노트 모바일" /></div><div class="card-foot"><a class="btn btn-sm" href="./screens/09-wrong-note.html">HTML 열기</a></div></div></article>
+      <article class="c-card"><div class="c-inner card-body"><div class="card-head"><h2>10. 사용 설명서</h2><span class="tag">안내</span></div><div class="shot-pair"><img src="./captures/desktop/10-guide.webp" alt="설명서 데스크톱" /><img src="./captures/mobile/10-guide.webp" alt="설명서 모바일" /></div><div class="card-foot"><a class="btn btn-sm" href="./screens/10-guide.html">HTML 열기</a></div></div></article>
+      <article class="c-card"><div class="c-inner card-body"><div class="card-head"><h2>11. 환경설정</h2><span class="tag">설정</span></div><div class="shot-pair"><img src="./captures/desktop/11-settings.webp" alt="설정 데스크톱" /><img src="./captures/mobile/11-settings.webp" alt="설정 모바일" /></div><div class="card-foot"><a class="btn btn-sm" href="./screens/11-settings.html">HTML 열기</a><a class="btn btn-sm" href="./screens/11-settings.html?theme=light">밝은 화면</a></div></div></article>
+      <article class="c-card"><div class="c-inner card-body"><div class="card-head"><h2>12. 랭킹</h2><span class="tag">순위</span></div><div class="shot-pair"><img src="./captures/desktop/12-ranking.webp" alt="랭킹 데스크톱" /><img src="./captures/mobile/12-ranking.webp" alt="랭킹 모바일" /></div><div class="card-foot"><a class="btn btn-sm" href="./screens/12-ranking.html">HTML 열기</a></div></div></article>
+      <article class="c-card"><div class="c-inner card-body"><div class="card-head"><h2>13. 교실 QR</h2><span class="tag">공유</span></div><div class="shot-pair"><img src="./captures/desktop/13-classroom-qr.webp" alt="교실 QR 데스크톱" /><img src="./captures/mobile/13-classroom-qr.webp" alt="교실 QR 모바일" /></div><div class="card-foot"><a class="btn btn-sm" href="./screens/13-classroom-qr.html">HTML 열기</a></div></div></article>
+    </main>
+  </div>
+</body>
+</html>

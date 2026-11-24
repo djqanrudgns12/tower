@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>교실 입장 QR · 주소 — 어휘력 타워 디펜스</title>
+  <link rel="stylesheet" href="../tokens.css" />
+  <link rel="stylesheet" href="../shared.css" />
+  <script defer src="./hydrate-icons.js"></script>
+  <style>
+    .qr-body {
+      padding: var(--sp-4);
+      background: var(--bg-panel);
+      display: flex;
+      flex-direction: column;
+      gap: var(--sp-3);
+    }
+
+    .qr-control-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .qr-label {
+      font-family: var(--font-display);
+      font-size: var(--fs-caption);
+      font-weight: 700;
+      color: var(--text-body);
+    }
+
+    .seg-grid-4 {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      width: 100%;
+    }
+
+    .seg-grid-4 .seg-btn {
+      min-height: 32px;
+      padding: 4px;
+      font-size: var(--fs-caption);
+    }
+
+    .school-share-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--sp-2);
+      padding: 8px 12px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-hairline);
+    }
+
+    .school-share-text {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: var(--fs-body);
+      font-weight: 500;
+      color: var(--text-strong);
+      min-width: 0;
+    }
+
+    .qr-stage-inner {
+      padding: var(--sp-3);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: var(--sp-3);
+      text-align: center;
+    }
+
+    .qr-white-box {
+      background: #FFFFFF;
+      border: 1px solid var(--border-strong);
+      padding: 12px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .qr-svg {
+      width: 175px;
+      height: 175px;
+      display: block;
+      shape-rendering: crispEdges;
+    }
+
+    .qr-caption {
+      font-size: var(--fs-caption);
+      color: var(--text-body);
+      line-height: 1.45;
+    }
+
+    .url-card {
+      display: flex;
+      align-items: center;
+      gap: var(--sp-2);
+      padding: 8px 10px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-hairline);
+    }
+
+    .url-text {
+      flex: 1;
+      min-width: 0;
+      font-family: var(--font-display);
+      font-size: var(--fs-caption);
+      font-weight: 600;
+      color: var(--text-strong);
+      overflow-wrap: anywhere;
+    }
+
+    .copy-status-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--sp-2);
+      flex-wrap: wrap;
+      font-size: var(--fs-caption);
+      color: var(--text-muted);
+    }
+
+    @media (max-width: 600px) {
+      .qr-body {
+        padding: var(--sp-3);
+      }
+
+      .school-share-row {
+        padding: 8px 10px;
+      }
+
+      .school-share-text {
+        font-size: var(--fs-caption);
+      }
+
+      .url-card {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .url-card .btn {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body class="tac-grid-bg">
+  <div class="modal-backdrop" aria-hidden="true"></div>
+
+  <div class="modal-stage">
+    <section class="modal-shell size-sm c-panel" role="dialog" aria-modal="true" aria-labelledby="qr-title">
+      <div class="c-inner">
+        <header class="modal-header">
+          <h1 id="qr-title" class="modal-title">
+            <i data-icon="hud/qr" data-size="20"></i>
+            <span>교실 입장 QR · 주소</span>
+          </h1>
+          <a class="icon-close-btn" href="./01-home.html" aria-label="닫기">
+            <i data-icon="hud/close" data-size="18"></i>
+          </a>
+        </header>
+
+        <div class="qr-body">
+          <div class="qr-control-group">
+            <span class="qr-label">입장 학년</span>
+            <div class="seg-group seg-grid-4" role="radiogroup" aria-label="입장 학년 선택" id="qr-grade-group">
+              <button type="button" class="seg-btn" role="radio" aria-checked="false" data-grade="3">3학년</button>
+              <button type="button" class="seg-btn is-active" role="radio" aria-checked="true" data-grade="4">4학년</button>
+              <button type="button" class="seg-btn" role="radio" aria-checked="false" data-grade="5">5학년</button>
+              <button type="button" class="seg-btn" role="radio" aria-checked="false" data-grade="6">6학년</button>
+            </div>
+          </div>
+
+          <button type="button" class="toggle-btn school-share-row" role="switch" aria-checked="true" id="btn-qr-school">
+            <span class="school-share-text">
+              <i data-icon="hud/school" data-size="16"></i>
+              <span>학교 이름 함께 전달 (서울하늘초등학교)</span>
+            </span>
+            <span class="toggle-track" aria-hidden="true">
+              <span class="toggle-thumb"></span>
+            </span>
+          </button>
+
+          <div class="c-card">
+            <div class="c-inner qr-stage-inner">
+              <div class="qr-white-box">
+                <!-- 25x25 Version 2 QR SVG (#12161B 모듈 / #FFFFFF 배경) -->
+                <svg class="qr-svg" viewBox="0 0 25 25" role="img" aria-label="4학년 교실 입장 QR 코드">
+                  <rect width="25" height="25" fill="#FFFFFF" />
+                  <path fill="#12161B" d="
+                    M0,0 h7 v7 h-7 z M1,1 v5 h5 v-5 z M2,2 h3 v3 h-3 z
+                    M18,0 h7 v7 h-7 z M19,1 v5 h5 v-5 z M20,2 h3 v3 h-3 z
+                    M0,18 h7 v7 h-7 z M1,19 v5 h5 v-5 z M2,20 h3 v3 h-3 z
+                    M16,16 h5 v5 h-5 z M17,17 v3 h3 v-3 z M18,18 h1 v1 h-1 z
+                    M8,6 h1 v1 h-1 z M10,6 h1 v1 h-1 z M12,6 h1 v1 h-1 z M14,6 h1 v1 h-1 z M16,6 h1 v1 h-1 z
+                    M6,8 h1 v1 h-1 z M6,10 h1 v1 h-1 z M6,12 h1 v1 h-1 z M6,14 h1 v1 h-1 z M6,16 h1 v1 h-1 z
+                    M8,17 h1 v1 h-1 z
+                    M9,0 h2 v1 h-2 z M13,0 h1 v2 h-1 z M15,0 h2 v1 h-2 z
+                    M8,1 h1 v2 h-1 z M10,1 h2 v1 h-2 z M15,2 h2 v2 h-2 z
+                    M9,3 h3 v1 h-3 z M13,3 h1 v2 h-1 z
+                    M8,4 h1 v1 h-1 z M11,4 h2 v1 h-2 z M15,4 h1 v1 h-1 z
+                    M10,5 h2 v1 h-2 z M14,5 h1 v1 h-1 z
+                    M0,8 h2 v1 h-2 z M3,8 h2 v1 h-2 z M8,8 h2 v1 h-2 z M11,8 h1 v2 h-1 z M14,8 h3 v1 h-3 z M18,8 h2 v1 h-2 z M21,8 h2 v1 h-2 z M24,8 h1 v2 h-1 z
+                    M1,9 h2 v1 h-2 z M4,9 h1 v2 h-1 z M9,9 h1 v2 h-1 z M13,9 h1 v2 h-1 z M16,9 h2 v1 h-2 z M19,9 h2 v2 h-2 z M22,9 h2 v1 h-2 z
+                    M0,10 h1 v2 h-1 z M2,10 h2 v1 h-2 z M7,10 h2 v1 h-2 z M10,10 h2 v1 h-2 z M14,10 h2 v2 h-2 z M17,10 h1 v2 h-1 z M23,10 h1 v2 h-1 z
+                    M1,11 h2 v1 h-2 z M5,11 h1 v2 h-1 z M8,11 h1 v2 h-1 z M12,11 h2 v1 h-2 z M18,11 h2 v1 h-2 z M21,11 h2 v1 h-2 z
+                    M0,12 h2 v1 h-2 z M3,12 h2 v2 h-2 z M7,12 h1 v2 h-1 z M10,12 h2 v2 h-2 z M13,12 h1 v2 h-1 z M16,12 h1 v2 h-1 z M19,12 h3 v1 h-3 z M24,12 h1 v2 h-1 z
+                    M1,13 h1 v2 h-1 z M8,13 h2 v1 h-2 z M14,13 h2 v1 h-2 z M17,13 h2 v2 h-2 z M20,13 h1 v2 h-1 z M22,13 h2 v1 h-2 z
+                    M0,14 h1 v1 h-1 z M2,14 h1 v2 h-1 z M4,14 h2 v1 h-2 z M7,14 h3 v1 h-3 z M11,14 h2 v2 h-2 z M15,14 h2 v1 h-2 z M18,14 h1 v1 h-1 z M21,14 h2 v2 h-2 z M24,14 h1 v1 h-1 z
+                    M1,15 h1 v2 h-1 z M3,15 h2 v1 h-2 z M8,15 h2 v1 h-2 z M13,15 h2 v2 h-2 z M16,15 h3 v1 h-3 z M23,15 h2 v1 h-2 z
+                    M0,16 h2 v1 h-2 z M4,16 h1 v1 h-1 z M7,16 h2 v1 h-2 z M10,16 h2 v1 h-2 z M14,16 h1 v1 h-1 z M22,16 h2 v1 h-2 z
+                    M9,17 h2 v2 h-2 z M12,17 h2 v1 h-2 z M15,17 h1 v2 h-1 z M22,17 h1 v2 h-1 z M24,17 h1 v1 h-1 z
+                    M8,18 h1 v2 h-1 z M11,18 h2 v1 h-2 z M14,18 h1 v1 h-1 z M21,18 h1 v2 h-1 z M23,18 h2 v2 h-2 z
+                    M9,19 h2 v1 h-2 z M13,19 h2 v2 h-2 z M22,19 h1 v1 h-1 z
+                    M8,20 h2 v2 h-2 z M11,20 h2 v1 h-2 z M15,20 h1 v2 h-1 z M21,20 h2 v1 h-2 z M24,20 h1 v2 h-1 z
+                    M10,21 h1 v2 h-1 z M12,21 h2 v1 h-2 z M16,21 h2 v2 h-2 z M19,21 h2 v1 h-2 z M22,21 h2 v2 h-2 z
+                    M8,22 h2 v1 h-2 z M11,22 h1 v2 h-1 z M13,22 h3 v1 h-3 z M18,22 h1 v2 h-1 z M20,22 h2 v1 h-2 z M24,22 h1 v1 h-1 z
+                    M9,23 h2 v2 h-2 z M12,23 h2 v1 h-2 z M15,23 h2 v1 h-2 z M19,23 h3 v2 h-3 z M23,23 h2 v2 h-2 z
+                    M8,24 h1 v1 h-1 z M11,24 h2 v1 h-2 z M14,24 h1 v1 h-1 z M17,24 h2 v1 h-2 z
+                  " />
+                </svg>
+              </div>
+              <p class="qr-caption">태블릿·휴대전화 카메라로 비추면 선택한 학년으로 바로 열려요.</p>
+            </div>
+          </div>
+
+          <div class="url-card">
+            <span class="url-text num" id="qr-url-text">https://vocab-td.example/?g=4&amp;school=서울하늘초</span>
+            <button type="button" class="btn btn-primary btn-sm" id="btn-copy-url">
+              <i data-icon="hud/check" data-size="14"></i>
+              <span>주소 복사</span>
+            </button>
+          </div>
+
+          <div class="copy-status-row">
+            <span class="tag tag-teal" id="copy-badge">
+              <i data-icon="hud/check" data-size="14"></i>
+              <span>복사 완료</span>
+            </span>
+            <span>앱 내장 화면에서는 외부 브라우저로 열기를 눌러 주세요.</span>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    (function () {
+      var grade = '4';
+      var includeSchool = true;
+
+      function updateUrl() {
+        var url = 'https://vocab-td.example/?g=' + grade + (includeSchool ? '&school=서울하늘초' : '');
+        document.getElementById('qr-url-text').textContent = url;
+      }
+
+      document.getElementById('qr-grade-group').addEventListener('click', function (e) {
+        var btn = e.target.closest('.seg-btn');
+        if (!btn) return;
+        this.querySelectorAll('.seg-btn').forEach(function (b) {
+          b.classList.remove('is-active');
+          b.setAttribute('aria-checked', 'false');
+        });
+        btn.classList.add('is-active');
+        btn.setAttribute('aria-checked', 'true');
+        grade = btn.getAttribute('data-grade') || '4';
+        updateUrl();
+      });
+
+      var schoolToggle = document.getElementById('btn-qr-school');
+      schoolToggle.addEventListener('click', function () {
+        includeSchool = schoolToggle.getAttribute('aria-checked') !== 'true';
+        schoolToggle.setAttribute('aria-checked', includeSchool ? 'true' : 'false');
+        updateUrl();
+      });
+
+      document.getElementById('btn-copy-url').addEventListener('click', function () {
+        var text = document.getElementById('qr-url-text').textContent;
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text).catch(function () {});
+        }
+        document.getElementById('copy-badge').style.visibility = 'visible';
+      });
+    })();
+  </script>
+</body>
+</html>

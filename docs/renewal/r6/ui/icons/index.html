@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>R04 전술 선 아이콘 54종 전시 시트</title>
+  <link rel="stylesheet" href="../tokens.css" />
+  <link rel="stylesheet" href="../shared.css" />
+  <style>
+    body {
+      padding: 8px 14px 10px;
+    }
+    .sheet-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 6px 12px;
+      margin-bottom: 6px;
+      background: var(--bg-panel);
+      border: 1px solid var(--border-hairline);
+      clip-path: polygon(
+        var(--chamfer-sm) 0, 100% 0,
+        100% calc(100% - var(--chamfer-sm)), calc(100% - var(--chamfer-sm)) 100%,
+        0 100%, 0 var(--chamfer-sm)
+      );
+    }
+    .sheet-title {
+      font-family: var(--font-display);
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text-strong);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .sheet-meta {
+      font-size: 11px;
+      color: var(--text-muted);
+      font-family: var(--font-display);
+      font-variant-numeric: tabular-nums;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .section-block {
+      margin-bottom: 6px;
+    }
+    .section-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 4px;
+      padding-bottom: 2px;
+      border-bottom: 1px solid var(--border-hairline);
+    }
+    .section-title {
+      font-family: var(--font-display);
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--accent-teal);
+      letter-spacing: 0.02em;
+    }
+    .section-count {
+      font-family: var(--font-display);
+      font-size: 11px;
+      color: var(--text-muted);
+      font-variant-numeric: tabular-nums;
+    }
+    .icon-grid {
+      display: grid;
+      grid-template-columns: repeat(9, minmax(0, 1fr));
+      gap: 5px;
+    }
+    .icon-cell {
+      background: var(--bg-card);
+      border: 1px solid var(--border-hairline);
+      padding: 4px 6px;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      clip-path: polygon(
+        5px 0, 100% 0,
+        100% calc(100% - 5px), calc(100% - 5px) 100%,
+        0 100%, 0 5px
+      );
+    }
+    .icon-samples {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+    }
+    .sample-dark {
+      width: 34px;
+      height: 30px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--bg-panel);
+      border: 1px solid var(--border-hairline);
+      color: var(--text-strong);
+    }
+    .sample-light {
+      width: 26px;
+      height: 24px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--quiz-card);
+      border: 1px solid var(--quiz-border);
+      color: var(--quiz-ink);
+    }
+    .sample-accent {
+      width: 24px;
+      height: 24px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-hairline);
+      color: var(--accent-amber);
+    }
+    .icon-cell[data-cat="traits"] .sample-accent {
+      color: var(--status-danger);
+    }
+    .icon-cell[data-cat="relics"] .sample-accent {
+      color: var(--accent-teal);
+    }
+    .icon-label-kr {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-strong);
+      line-height: 1.2;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .icon-file {
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 10px;
+      color: var(--text-muted);
+      line-height: 1.1;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+  </style>
+</head>
+<body class="tac-grid-bg">
+  <header class="sheet-header">
+    <div class="sheet-title">
+      <span class="tag tag-teal">R04 TACTICAL ICONS</span>
+      <span>전술 UI 기하학 선 아이콘 전시 시트 (54종)</span>
+    </div>
+    <div class="sheet-meta">
+      <span>24×24 · stroke 1.75 · square/miter</span>
+      <span class="tag">좌: 24px 다크</span>
+      <span class="tag tag-amber">중: 16px 밝은면</span>
+      <span class="tag">우: 16px 강조색</span>
+    </div>
+  </header>
+
+  <main id="sheet-root"></main>
+
+  <script>
+    (function () {
+      var SECTIONS = [
+        {
+          id: 'status',
+          title: '1. 상태 효과 (status/)',
+          items: [
+            ['slow', '감속'],
+            ['stun', '기절'],
+            ['burn', '화상'],
+            ['vuln', '취약'],
+            ['shred', '방어 약화'],
+            ['knockback', '밀치기'],
+            ['haste', '가속'],
+            ['ward', '방어막']
+          ]
+        },
+        {
+          id: 'traits',
+          title: '2. 몬스터 특성 (traits/)',
+          items: [
+            ['armor', '물리 저항'],
+            ['ward', '마법 저항'],
+            ['flying', '비행'],
+            ['swarm', '떼'],
+            ['fast', '신속'],
+            ['split', '분열'],
+            ['regen', '재생'],
+            ['siege', '공성']
+          ]
+        },
+        {
+          id: 'relics',
+          title: '3. 보물 12종 (relics/)',
+          items: [
+            ['arrow_range', '정밀 조준경'],
+            ['sky_net', '대공 포획망'],
+            ['big_blast', '고폭 탄두'],
+            ['frost_bead', '냉각 코어'],
+            ['hero_blade', '정예 타격 모듈'],
+            ['ember_charm', '연속 부스터'],
+            ['wise_book', '어휘 교본'],
+            ['lucky_pouch', '전술 보급낭'],
+            ['trade_seal', '교역 인장'],
+            ['evolve_stone', '진화 코어'],
+            ['quick_spring', '가속 태엽'],
+            ['tall_pole', '광역 중계탑']
+          ]
+        },
+        {
+          id: 'hud',
+          title: '4. HUD 및 조작 (hud/)',
+          items: [
+            ['gate', '성문'],
+            ['gold', '골드'],
+            ['wave', '웨이브'],
+            ['enemies', '남은 적'],
+            ['streak', '연속 정답'],
+            ['score', '점수'],
+            ['pause', '일시정지'],
+            ['play', '계속/시작'],
+            ['settings', '설정'],
+            ['note', '오답 노트'],
+            ['guide', '설명서'],
+            ['qr', '교실 QR'],
+            ['upgrade', '강화'],
+            ['sell', '판매/환급'],
+            ['lock', '잠금'],
+            ['chest', '보물 상자'],
+            ['stat-power', '공격력'],
+            ['stat-speed', '공격 속도'],
+            ['stat-range', '사거리'],
+            ['back', '뒤로'],
+            ['close', '닫기'],
+            ['check', '확인/정답'],
+            ['cross', '오답/취소'],
+            ['shuffle', '랜덤'],
+            ['school', '학교'],
+            ['edit', '수정']
+          ]
+        }
+      ];
+
+      var root = document.getElementById('sheet-root');
+      SECTIONS.forEach(function (sec) {
+        var block = document.createElement('section');
+        block.className = 'section-block';
+
+        var head = document.createElement('div');
+        head.className = 'section-head';
+        head.innerHTML =
+          '<h2 class="section-title">' + sec.title + '</h2>' +
+          '<span class="section-count num">' + sec.items.length + '개</span>';
+        block.appendChild(head);
+
+        var grid = document.createElement('div');
+        grid.className = 'icon-grid';
+
+        sec.items.forEach(function (pair) {
+          var id = pair[0];
+          var label = pair[1];
+          var cell = document.createElement('article');
+          cell.className = 'icon-cell';
+          cell.dataset.cat = sec.id;
+          cell.innerHTML =
+            '<div class="icon-samples">' +
+              '<span class="sample-dark" title="24px 어두운 면"><span data-icon="' + sec.id + '/' + id + '" data-icon-base="./" data-size="24"></span></span>' +
+              '<span class="sample-light" title="16px 밝은 면"><span data-icon="' + sec.id + '/' + id + '" data-icon-base="./" data-size="16"></span></span>' +
+              '<span class="sample-accent" title="16px 강조색"><span data-icon="' + sec.id + '/' + id + '" data-icon-base="./" data-size="16"></span></span>' +
+            '</div>' +
+            '<div>' +
+              '<div class="icon-label-kr">' + label + '</div>' +
+              '<div class="icon-file">' + id + '.svg</div>' +
+            '</div>';
+          grid.appendChild(cell);
+        });
+
+        block.appendChild(grid);
+        root.appendChild(block);
+      });
+    })();
+  </script>
+  <script src="../screens/hydrate-icons.js"></script>
+</body>
+</html>

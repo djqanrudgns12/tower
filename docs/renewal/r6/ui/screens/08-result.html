@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>결과 — 어휘 타워 디펜스 R04</title>
+  <link rel="stylesheet" href="../tokens.css" />
+  <link rel="stylesheet" href="../shared.css" />
+  <script defer src="./hydrate-icons.js"></script>
+  <style>
+    .result-stage {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: var(--sp-4);
+    }
+
+    .result-grid {
+      width: 100%;
+      max-width: 1080px;
+      display: grid;
+      grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+      gap: var(--sp-4);
+      align-items: start;
+    }
+
+    .panel-inner-pad {
+      padding: var(--sp-4);
+      display: flex;
+      flex-direction: column;
+      gap: var(--sp-4);
+    }
+
+    .player-meta-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--sp-2);
+      flex-wrap: wrap;
+      padding-bottom: var(--sp-3);
+      border-bottom: 1px solid var(--border-hairline);
+    }
+
+    .player-meta-text {
+      font-family: var(--font-display);
+      font-weight: 600;
+      color: var(--text-strong);
+      font-size: var(--fs-body);
+    }
+
+    .wave-hero {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--sp-3);
+      flex-wrap: wrap;
+    }
+
+    .wave-hero-left {
+      display: flex;
+      align-items: center;
+      gap: var(--sp-3);
+    }
+
+    .wave-gate-badge {
+      width: 44px;
+      height: 44px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid var(--accent-teal);
+      background: var(--accent-teal-dim);
+      color: var(--accent-teal);
+      flex: none;
+    }
+
+    .wave-number {
+      font-size: calc(32px * var(--font-scale));
+      font-weight: 700;
+      line-height: 1.1;
+      color: var(--text-strong);
+    }
+
+    .stats-3col {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: var(--sp-2);
+    }
+
+    .stat-tile-inner {
+      padding: var(--sp-3);
+      display: flex;
+      flex-direction: column;
+      gap: var(--sp-1);
+    }
+
+    .stat-tile-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: var(--fs-caption);
+      color: var(--text-muted);
+    }
+
+    .stat-tile-val {
+      font-size: var(--fs-heading);
+      font-weight: 700;
+      color: var(--text-strong);
+    }
+
+    .summary-strip {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--sp-2);
+      padding: var(--sp-2) var(--sp-3);
+      background: var(--bg-card);
+      border: 1px solid var(--border-hairline);
+      flex-wrap: wrap;
+    }
+
+    .summary-strip-label {
+      font-size: var(--fs-body);
+      color: var(--text-body);
+    }
+
+    .rank-delta {
+      font-size: var(--fs-heading);
+      font-weight: 700;
+      color: var(--accent-teal);
+    }
+
+    .record-details {
+      border: 1px solid var(--border-hairline);
+      background: var(--bg-card);
+    }
+
+    .record-summary {
+      list-style: none;
+      cursor: pointer;
+      padding: var(--sp-2) var(--sp-3);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-family: var(--font-display);
+      font-weight: 600;
+      font-size: var(--fs-body);
+      color: var(--text-strong);
+      border-bottom: 1px solid var(--border-hairline);
+    }
+    .record-summary::-webkit-details-marker { display: none; }
+    .record-details:not([open]) .record-summary { border-bottom: 0; }
+
+    .record-list {
+      padding: var(--sp-3);
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: var(--sp-2);
+    }
+
+    .record-item {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      padding: var(--sp-2);
+      background: var(--bg-panel);
+      border: 1px solid var(--border-hairline);
+    }
+
+    .record-item-label {
+      font-size: var(--fs-caption);
+      color: var(--text-muted);
+    }
+
+    .record-item-val {
+      font-size: var(--fs-body);
+      font-weight: 700;
+      color: var(--text-strong);
+    }
+
+    .result-actions {
+      display: grid;
+      grid-template-columns: 1.4fr 1fr;
+      gap: var(--sp-2);
+    }
+
+    /* 우측 틀린 낱말 창 */
+    .wrong-list {
+      display: flex;
+      flex-direction: column;
+      gap: var(--sp-3);
+    }
+
+    .wrong-card-inner {
+      padding: var(--sp-3);
+      display: flex;
+      flex-direction: column;
+      gap: var(--sp-2);
+    }
+
+    .wrong-card-toggle {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--sp-2);
+      text-align: left;
+    }
+
+    .wrong-word-line {
+      display: flex;
+      align-items: baseline;
+      gap: var(--sp-2);
+      flex-wrap: wrap;
+      min-width: 0;
+    }
+
+    .wrong-word {
+      font-family: var(--font-display);
+      font-size: var(--fs-heading);
+      font-weight: 700;
+      color: var(--text-strong);
+    }
+
+    .wrong-answer {
+      font-size: var(--fs-body);
+      color: var(--accent-teal);
+      font-weight: 600;
+    }
+
+    .wrong-chevron {
+      font-family: var(--font-display);
+      font-size: var(--fs-caption);
+      color: var(--text-muted);
+      border: 1px solid var(--border-hairline);
+      padding: 2px 8px;
+      flex: none;
+    }
+
+    .wrong-detail[hidden] {
+      display: none;
+    }
+
+    .quiz-stem {
+      color: var(--quiz-ink);
+      font-size: var(--fs-body);
+      font-weight: 500;
+      line-height: 1.55;
+      margin-bottom: var(--sp-2);
+    }
+
+    .quiz-explain {
+      padding: var(--sp-2) var(--sp-3);
+      background: var(--quiz-teal-bg);
+      border: 1px solid var(--quiz-teal);
+      color: var(--quiz-ink);
+      font-size: var(--fs-body);
+      line-height: 1.5;
+    }
+
+    .quiz-explain-label {
+      font-family: var(--font-display);
+      font-weight: 700;
+      color: var(--quiz-teal);
+      margin-right: var(--sp-1);
+    }
+
+    @media (max-width: 600px) {
+      .result-stage {
+        padding: var(--sp-3);
+        align-items: flex-start;
+      }
+      .result-grid {
+        grid-template-columns: minmax(0, 1fr);
+        gap: var(--sp-3);
+      }
+      .panel-inner-pad {
+        padding: var(--sp-3);
+        gap: var(--sp-3);
+      }
+      .wave-number {
+        font-size: calc(26px * var(--font-scale));
+      }
+      .record-list {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+      .result-actions {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body class="tac-grid-bg">
+  <main class="result-stage">
+    <div class="result-grid">
+      <!-- 좌측: 결과 요약 창 -->
+      <section class="c-panel" aria-labelledby="result-summary-heading">
+        <div class="c-inner">
+          <div class="panel-inner-pad">
+            <div class="player-meta-row">
+              <span class="player-meta-text" id="result-summary-heading">민서 · 4학년 · 보통</span>
+              <span class="tag tag-teal">
+                <i data-icon="hud/check" data-size="14"></i>
+                <span>기록 저장됨</span>
+              </span>
+            </div>
+
+            <div class="wave-hero">
+              <div class="wave-hero-left">
+                <span class="wave-gate-badge">
+                  <i data-icon="hud/gate" data-size="24"></i>
+                </span>
+                <div class="display num wave-number">14웨이브</div>
+              </div>
+              <span class="tag tag-amber">
+                <i data-icon="hud/score" data-size="14"></i>
+                <span>새 최고 기록이에요!</span>
+              </span>
+            </div>
+
+            <div class="stats-3col">
+              <div class="c-card">
+                <div class="c-inner stat-tile-inner">
+                  <span class="stat-tile-label">
+                    <i data-icon="hud/check" data-size="14"></i>
+                    <span>정답</span>
+                  </span>
+                  <span class="num stat-tile-val">28/32</span>
+                </div>
+              </div>
+              <div class="c-card">
+                <div class="c-inner stat-tile-inner">
+                  <span class="stat-tile-label">
+                    <i data-icon="hud/enemies" data-size="14"></i>
+                    <span>처치</span>
+                  </span>
+                  <span class="num stat-tile-val">342</span>
+                </div>
+              </div>
+              <div class="c-card">
+                <div class="c-inner stat-tile-inner">
+                  <span class="stat-tile-label">
+                    <i data-icon="hud/score" data-size="14"></i>
+                    <span>점수</span>
+                  </span>
+                  <span class="num stat-tile-val">4,820</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="summary-strip">
+              <span class="summary-strip-label">랭킹 점수</span>
+              <span class="num rank-delta">+640</span>
+            </div>
+
+            <div class="summary-strip">
+              <span class="summary-strip-label">새로 담은 낱말 3 · 외운 낱말 2</span>
+              <button type="button" class="btn btn-sm">
+                <i data-icon="hud/note" data-size="16"></i>
+                <span>노트 보기</span>
+              </button>
+            </div>
+
+            <details class="record-details" open>
+              <summary class="record-summary">
+                <span>이번 판 기록</span>
+                <span class="num" style="font-size: var(--fs-caption); color: var(--accent-teal);">펼치기 · 접기</span>
+              </summary>
+              <div class="record-list">
+                <div class="record-item">
+                  <span class="record-item-label">푼 문제</span>
+                  <span class="num record-item-val">32개</span>
+                </div>
+                <div class="record-item">
+                  <span class="record-item-label">모르겠어요</span>
+                  <span class="num record-item-val">2개</span>
+                </div>
+                <div class="record-item">
+                  <span class="record-item-label">만난 낱말</span>
+                  <span class="num record-item-val">29개</span>
+                </div>
+              </div>
+            </details>
+
+            <div class="result-actions">
+              <button type="button" class="btn btn-primary btn-lg">
+                <i data-icon="hud/play" data-size="20"></i>
+                <span>다시 하기</span>
+              </button>
+              <button type="button" class="btn btn-lg">
+                <i data-icon="hud/back" data-size="20"></i>
+                <span>홈</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 우측: 틀린 낱말 창 -->
+      <section class="c-panel" aria-labelledby="wrong-words-heading">
+        <div class="c-inner">
+          <header class="modal-header">
+            <h2 class="modal-title" id="wrong-words-heading">
+              <i data-icon="hud/note" data-size="20"></i>
+              <span>틀린 낱말</span>
+            </h2>
+            <span class="tag num">3개</span>
+          </header>
+
+          <div class="panel-inner-pad">
+            <div class="wrong-list">
+              <!-- 1) 담백하다 [펼쳐진 상태] -->
+              <article class="c-card is-selected">
+                <div class="c-inner wrong-card-inner">
+                  <button type="button" class="wrong-card-toggle" aria-expanded="true" data-target="detail-1">
+                    <span class="wrong-word-line">
+                      <span class="wrong-word">담백하다</span>
+                      <span class="wrong-answer">정답 · 욕심이 없고 마음이 깨끗하다</span>
+                    </span>
+                    <span class="wrong-chevron">접기</span>
+                  </button>
+                  <div class="wrong-detail" id="detail-1">
+                    <div class="quiz-panel">
+                      <div class="quiz-panel-inner">
+                        <p class="quiz-stem">할아버지는 욕심을 부리지 않고 마음이 깨끗한 분이어서, 사람들은 할아버지의 그런 (  ) 성품을 존경했습니다.</p>
+                        <div class="quiz-explain">
+                          <span class="quiz-explain-label">해설</span>
+                          <span>‘담백하다’는 욕심이 없고 마음이 깨끗하다는 뜻이에요.</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </article>
+
+              <!-- 2) 소통하다 [접힘] -->
+              <article class="c-card">
+                <div class="c-inner wrong-card-inner">
+                  <button type="button" class="wrong-card-toggle" aria-expanded="false" data-target="detail-2">
+                    <span class="wrong-word-line">
+                      <span class="wrong-word">소통하다</span>
+                      <span class="wrong-answer">정답 · 오갑니다</span>
+                    </span>
+                    <span class="wrong-chevron">펼치기</span>
+                  </button>
+                  <div class="wrong-detail" id="detail-2" hidden>
+                    <div class="quiz-panel">
+                      <div class="quiz-panel-inner">
+                        <p class="quiz-stem">서로 마음을 열고 이야기를 나누면 생각이 잘 (  ).</p>
+                        <div class="quiz-explain">
+                          <span class="quiz-explain-label">해설</span>
+                          <span>‘소통하다’는 막히지 않고 뜻이 서로 통하여 오간다는 뜻이에요.</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </article>
+
+              <!-- 3) 짐작하다 [접힘] -->
+              <article class="c-card">
+                <div class="c-inner wrong-card-inner">
+                  <button type="button" class="wrong-card-toggle" aria-expanded="false" data-target="detail-3">
+                    <span class="wrong-word-line">
+                      <span class="wrong-word">짐작하다</span>
+                      <span class="wrong-answer">정답 · 어떤 일을 어림잡아 생각하다</span>
+                    </span>
+                    <span class="wrong-chevron">펼치기</span>
+                  </button>
+                  <div class="wrong-detail" id="detail-3" hidden>
+                    <div class="quiz-panel">
+                      <div class="quiz-panel-inner">
+                        <p class="quiz-stem">친구의 표정만 보고도 무슨 일이 있었는지 (  ) 수 있어요.</p>
+                        <div class="quiz-explain">
+                          <span class="quiz-explain-label">해설</span>
+                          <span>‘짐작하다’는 사정이나 형편을 어림잡아 헤아려 생각한다는 뜻이에요.</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </article>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <script>
+    (function () {
+      document.querySelectorAll('.wrong-card-toggle').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var targetId = btn.getAttribute('data-target');
+          var detail = document.getElementById(targetId);
+          var card = btn.closest('.c-card');
+          var label = btn.querySelector('.wrong-chevron');
+          var expanded = btn.getAttribute('aria-expanded') === 'true';
+          btn.setAttribute('aria-expanded', String(!expanded));
+          if (detail) detail.hidden = expanded;
+          if (card) card.classList.toggle('is-selected', !expanded);
+          if (label) label.textContent = expanded ? '펼치기' : '접기';
+        });
+      });
+    })();
+  </script>
+</body>
+</html>

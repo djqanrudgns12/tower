@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>환경설정 — 어휘 타워 디펜스 R04</title>
+  <link rel="stylesheet" href="../tokens.css" />
+  <link rel="stylesheet" href="../shared.css" />
+  <script defer src="./hydrate-icons.js"></script>
+  <style>
+    .settings-body {
+      padding: var(--sp-4);
+      display: flex;
+      flex-direction: column;
+      gap: var(--sp-3);
+    }
+
+    .setting-card-inner {
+      padding: var(--sp-3);
+      display: flex;
+      flex-direction: column;
+      gap: var(--sp-3);
+    }
+
+    .setting-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--sp-3);
+      flex-wrap: nowrap;
+    }
+
+    .setting-row-seg {
+      flex-wrap: wrap;
+    }
+
+    .toggle-btn {
+      flex: none;
+    }
+
+    .setting-text {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      min-width: 0;
+      flex: 1 1 220px;
+    }
+
+    .setting-title {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: var(--fs-body);
+      color: var(--text-strong);
+    }
+
+    .setting-desc {
+      font-size: var(--fs-caption);
+      color: var(--text-muted);
+      line-height: 1.45;
+    }
+
+    .preview-label {
+      font-family: var(--font-display);
+      font-size: var(--fs-caption);
+      font-weight: 700;
+      color: var(--quiz-ink-muted);
+      margin-bottom: var(--sp-1);
+    }
+
+    .preview-question {
+      font-size: var(--fs-heading);
+      font-weight: 600;
+      color: var(--quiz-ink);
+      line-height: 1.5;
+    }
+
+    .tab-panel[hidden] {
+      display: none;
+    }
+
+    @media (max-width: 600px) {
+      .settings-body {
+        padding: var(--sp-3);
+      }
+      .setting-row-seg {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .setting-text {
+        flex: none;
+      }
+      .setting-row-seg .seg-group {
+        width: 100%;
+        display: flex;
+        flex-wrap: wrap;
+      }
+      .setting-row-seg .seg-btn {
+        flex: 1 1 0;
+        min-width: 0;
+        padding: 6px 8px;
+        font-size: var(--fs-caption);
+      }
+    }
+  </style>
+</head>
+<body class="tac-grid-bg">
+  <div class="modal-backdrop" aria-hidden="true"></div>
+
+  <main class="modal-stage">
+    <section class="modal-shell size-md" role="dialog" aria-modal="true" aria-labelledby="settings-title">
+      <div class="c-panel">
+        <div class="c-inner">
+          <header class="modal-header">
+            <h1 class="modal-title" id="settings-title">
+              <i data-icon="hud/settings" data-size="20"></i>
+              <span>환경설정</span>
+            </h1>
+            <button type="button" class="icon-close-btn" aria-label="닫기">
+              <i data-icon="hud/close" data-size="18"></i>
+            </button>
+          </header>
+
+          <div class="tab-rail" role="tablist" aria-label="환경설정 분류">
+            <button type="button" class="tab-btn" role="tab" aria-selected="false" data-tab="sound">소리</button>
+            <button type="button" class="tab-btn is-active" role="tab" aria-selected="true" data-tab="display">화면·조작</button>
+            <button type="button" class="tab-btn" role="tab" aria-selected="false" data-tab="records">기록 관리</button>
+          </div>
+
+          <!-- 1) 소리 탭 (비활성 기본) -->
+          <div class="settings-body tab-panel" id="panel-sound" hidden>
+            <div class="c-card">
+              <div class="c-inner setting-card-inner">
+                <div class="setting-row">
+                  <div class="setting-text">
+                    <span class="setting-title">전체 소리</span>
+                    <span class="setting-desc">효과음과 문제 알림음을 켜거나 꺼요.</span>
+                  </div>
+                  <button type="button" class="toggle-btn" role="switch" aria-checked="true" aria-label="전체 소리">
+                    <span class="toggle-track"><span class="toggle-thumb"></span></span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 2) 화면·조작 탭 (기본 선택) -->
+          <div class="settings-body tab-panel" id="panel-display">
+            <!-- 글자 크기 + 고대비 미리보기 카드 -->
+            <div class="c-card">
+              <div class="c-inner setting-card-inner">
+                <div class="setting-row setting-row-seg">
+                  <div class="setting-text">
+                    <span class="setting-title">글자 크기</span>
+                    <span class="setting-desc">문제 문장과 안내 글자 크기를 조절해요.</span>
+                  </div>
+                  <div class="seg-group" role="radiogroup" aria-label="글자 크기">
+                    <button type="button" class="seg-btn is-active" role="radio" aria-checked="true" data-font="base">보통 (기본)</button>
+                    <button type="button" class="seg-btn" role="radio" aria-checked="false" data-font="large">크게</button>
+                    <button type="button" class="seg-btn" role="radio" aria-checked="false" data-font="xlarge">아주 크게</button>
+                  </div>
+                </div>
+
+                <div class="quiz-panel" aria-label="글자 크기 미리보기">
+                  <div class="quiz-panel-inner">
+                    <div class="preview-label">미리보기</div>
+                    <p class="preview-question">‘준비물을 잘 챙길 만큼 꼼꼼하다’에서 ‘꼼꼼하다’의 뜻은?</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 화면 테마 (교실 프로젝터) -->
+            <div class="c-card">
+              <div class="c-inner setting-card-inner">
+                <div class="setting-row setting-row-seg">
+                  <div class="setting-text">
+                    <span class="setting-title">화면 테마 (교실 프로젝터)</span>
+                    <span class="setting-desc">교실 프로젝터가 밝을 때 켜면 모든 화면이 밝아져요.</span>
+                  </div>
+                  <div class="seg-group" role="radiogroup" aria-label="화면 테마">
+                    <button type="button" class="seg-btn is-active" role="radio" aria-checked="true" data-theme-choice="dark">어두운 화면 (기본)</button>
+                    <button type="button" class="seg-btn" role="radio" aria-checked="false" data-theme-choice="light">밝은 화면</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 배경 움직임 단계 -->
+            <div class="c-card">
+              <div class="c-inner setting-card-inner">
+                <div class="setting-row setting-row-seg">
+                  <div class="setting-text">
+                    <span class="setting-title">배경 움직임 단계</span>
+                    <span class="setting-desc">전장 배경과 효과의 움직임 정도를 고를 수 있어요.</span>
+                  </div>
+                  <div class="seg-group" role="radiogroup" aria-label="배경 움직임 단계">
+                    <button type="button" class="seg-btn is-active" role="radio" aria-checked="true" data-motion="full">전체 (기본)</button>
+                    <button type="button" class="seg-btn" role="radio" aria-checked="false" data-motion="reduced">단순</button>
+                    <button type="button" class="seg-btn" role="radio" aria-checked="false" data-motion="off">정지</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 전장 길·받침 고대비 윤곽선 & 단축키 번호 배지 표시 -->
+            <div class="c-card">
+              <div class="c-inner setting-card-inner">
+                <div class="setting-row">
+                  <div class="setting-text">
+                    <span class="setting-title">전장 길·받침 고대비 윤곽선</span>
+                    <span class="setting-desc">적 이동 길과 타워 설치 칸 테두리를 더 또렷하게 보여줘요.</span>
+                  </div>
+                  <button type="button" class="toggle-btn" role="switch" aria-checked="true" aria-label="전장 길·받침 고대비 윤곽선">
+                    <span class="toggle-track"><span class="toggle-thumb"></span></span>
+                  </button>
+                </div>
+
+                <hr style="height: 1px; background: var(--border-hairline); border: 0;" />
+
+                <div class="setting-row">
+                  <div class="setting-text">
+                    <span class="setting-title">단축키 번호 배지 표시</span>
+                    <span class="setting-desc">타워 카드와 문제 보기에 숫자 키 번호를 표시해요.</span>
+                  </div>
+                  <button type="button" class="toggle-btn" role="switch" aria-checked="true" aria-label="단축키 번호 배지 표시">
+                    <span class="toggle-track"><span class="toggle-thumb"></span></span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 3) 기록 관리 탭 (비활성 기본) -->
+          <div class="settings-body tab-panel" id="panel-records" hidden>
+            <div class="c-card">
+              <div class="c-inner setting-card-inner">
+                <div class="setting-row">
+                  <div class="setting-text">
+                    <span class="setting-title">저장된 학습 기록</span>
+                    <span class="setting-desc">현재 기기에 저장된 최고 기록과 오답 노트를 관리해요.</span>
+                  </div>
+                  <button type="button" class="btn btn-danger btn-sm">기록 비우기</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    (function () {
+      document.querySelectorAll('[data-tab]').forEach(function (tab) {
+        tab.addEventListener('click', function () {
+          var key = tab.getAttribute('data-tab');
+          document.querySelectorAll('[data-tab]').forEach(function (t) {
+            t.classList.remove('is-active');
+            t.setAttribute('aria-selected', 'false');
+          });
+          tab.classList.add('is-active');
+          tab.setAttribute('aria-selected', 'true');
+          document.querySelectorAll('.tab-panel').forEach(function (p) {
+            p.hidden = p.id !== 'panel-' + key;
+          });
+        });
+      });
+
+      function bindRadioGroup(selector, onSelect) {
+        var btns = document.querySelectorAll(selector);
+        btns.forEach(function (btn) {
+          btn.addEventListener('click', function () {
+            btns.forEach(function (b) {
+              b.classList.remove('is-active');
+              b.setAttribute('aria-checked', 'false');
+            });
+            btn.classList.add('is-active');
+            btn.setAttribute('aria-checked', 'true');
+            if (onSelect) onSelect(btn);
+          });
+        });
+      }
+
+      bindRadioGroup('[data-font]', function (btn) {
+        document.documentElement.dataset.fontScale = btn.getAttribute('data-font');
+      });
+      bindRadioGroup('[data-theme-choice]', function (btn) {
+        document.documentElement.dataset.theme = btn.getAttribute('data-theme-choice');
+      });
+      bindRadioGroup('[data-motion]');
+
+      document.querySelectorAll('.toggle-btn').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var next = btn.getAttribute('aria-checked') !== 'true';
+          btn.setAttribute('aria-checked', String(next));
+        });
+      });
+
+      var curTheme = new URLSearchParams(window.location.search).get('theme') || document.documentElement.dataset.theme;
+      if (curTheme === 'light' || curTheme === 'dark') {
+        document.documentElement.dataset.theme = curTheme;
+        document.querySelectorAll('[data-theme-choice]').forEach(function (b) {
+          var active = b.getAttribute('data-theme-choice') === curTheme;
+          b.classList.toggle('is-active', active);
+          b.setAttribute('aria-checked', String(active));
+        });
+      }
+    })();
+  </script>
+</body>
+</html>

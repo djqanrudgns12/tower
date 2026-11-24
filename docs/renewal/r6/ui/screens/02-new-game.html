@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>새 게임 — 어휘력 타워 디펜스</title>
+  <link rel="stylesheet" href="../tokens.css" />
+  <link rel="stylesheet" href="../shared.css" />
+  <script defer src="./hydrate-icons.js"></script>
+  <style>
+    .bg-hero-layer {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+      pointer-events: none;
+    }
+
+    .modal-body-grid {
+      display: grid;
+      grid-template-columns: 1.2fr 0.9fr;
+      gap: var(--sp-4);
+      padding: var(--sp-4);
+      background: var(--bg-panel);
+    }
+
+    .config-col {
+      display: flex;
+      flex-direction: column;
+      gap: var(--sp-4);
+      min-width: 0;
+    }
+
+    .control-block {
+      display: flex;
+      flex-direction: column;
+      gap: var(--sp-2);
+    }
+
+    .control-label {
+      font-family: var(--font-display);
+      font-size: var(--fs-caption);
+      font-weight: 700;
+      color: var(--text-body);
+    }
+
+    .seg-grid-4 {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      width: 100%;
+    }
+
+    .seg-grid-4 .seg-btn {
+      padding: 6px 4px;
+      white-space: nowrap;
+    }
+
+    .diff-card-inner {
+      padding: var(--sp-3);
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .diff-card-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--sp-2);
+      flex-wrap: wrap;
+    }
+
+    .diff-title {
+      font-family: var(--font-display);
+      font-size: var(--fs-body);
+      font-weight: 700;
+      color: var(--text-strong);
+    }
+
+    .diff-spec {
+      font-size: var(--fs-body);
+      color: var(--text-body);
+    }
+
+    .map-col {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .map-card-inner {
+      padding: var(--sp-3);
+      display: flex;
+      flex-direction: column;
+      gap: var(--sp-3);
+      height: 100%;
+    }
+
+    .map-thumb-box {
+      border: 1px solid var(--border-hairline);
+      background: var(--bg-panel);
+      overflow: hidden;
+    }
+
+    .map-thumb-box img {
+      width: 100%;
+      aspect-ratio: 16 / 10;
+      object-fit: cover;
+      display: block;
+    }
+
+    .map-meta {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .map-title-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--sp-2);
+    }
+
+    .map-name {
+      font-family: var(--font-display);
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text-strong);
+    }
+
+    .map-spec {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: var(--fs-caption);
+      color: var(--text-muted);
+    }
+
+    .modal-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--sp-3);
+      padding: var(--sp-3) var(--sp-4);
+      border-top: 1px solid var(--border-hairline);
+      background: var(--bg-panel);
+    }
+
+    .player-summary {
+      display: flex;
+      align-items: center;
+      gap: var(--sp-2);
+      flex-wrap: wrap;
+      min-width: 0;
+    }
+
+    .player-label {
+      font-family: var(--font-display);
+      font-size: var(--fs-body);
+      font-weight: 600;
+      color: var(--text-strong);
+    }
+
+    .start-cta {
+      min-width: 148px;
+    }
+
+    @media (max-width: 600px) {
+      .modal-body-grid {
+        grid-template-columns: 1fr;
+        padding: var(--sp-3);
+        gap: var(--sp-3);
+      }
+
+      .seg-grid-4 .seg-btn {
+        font-size: var(--fs-caption);
+        padding: 4px 2px;
+      }
+
+      .modal-footer {
+        flex-direction: column;
+        align-items: stretch;
+        padding: var(--sp-3);
+      }
+
+      .player-summary {
+        justify-content: space-between;
+      }
+
+      .start-cta {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body class="tac-grid-bg">
+  <img class="bg-hero-layer" src="../assets/home-hero.webp" alt="" aria-hidden="true" />
+  <div class="modal-backdrop" aria-hidden="true"></div>
+
+  <div class="modal-stage">
+    <section class="modal-shell size-md c-panel" role="dialog" aria-modal="true" aria-labelledby="new-game-title">
+      <div class="c-inner">
+        <header class="modal-header">
+          <h1 id="new-game-title" class="modal-title">
+            <i data-icon="hud/play" data-size="20"></i>
+            <span>새 게임</span>
+          </h1>
+          <a class="icon-close-btn" href="./01-home.html" aria-label="닫기">
+            <i data-icon="hud/close" data-size="18"></i>
+          </a>
+        </header>
+
+        <div class="modal-body-grid">
+          <!-- 좌측 설정 -->
+          <div class="config-col">
+            <div class="control-block">
+              <span class="control-label">학년</span>
+              <div class="seg-group seg-grid-4" role="radiogroup" aria-label="학년 선택">
+                <button type="button" class="seg-btn" role="radio" aria-checked="false">3학년</button>
+                <button type="button" class="seg-btn is-active" role="radio" aria-checked="true">4학년</button>
+                <button type="button" class="seg-btn" role="radio" aria-checked="false">5학년</button>
+                <button type="button" class="seg-btn" role="radio" aria-checked="false">6학년</button>
+              </div>
+            </div>
+
+            <div class="control-block">
+              <span class="control-label">난이도</span>
+              <div class="seg-group seg-grid-4" role="radiogroup" aria-label="난이도 선택" id="diff-group">
+                <button type="button" class="seg-btn" role="radio" aria-checked="false" data-diff="easy">쉬움</button>
+                <button type="button" class="seg-btn is-active" role="radio" aria-checked="true" data-diff="normal">보통</button>
+                <button type="button" class="seg-btn" role="radio" aria-checked="false" data-diff="hard">어려움</button>
+                <button type="button" class="seg-btn" role="radio" aria-checked="false" data-diff="expert">아주 어려움</button>
+              </div>
+            </div>
+
+            <div class="c-card is-selected" aria-live="polite">
+              <div class="c-inner diff-card-inner">
+                <div class="diff-card-head">
+                  <strong class="diff-title" id="diff-headline">처음이라면 추천해요</strong>
+                  <span class="tag tag-teal" id="diff-badge">보통</span>
+                </div>
+                <p class="diff-spec num" id="diff-spec">성문 15 · 첫 정답 +19 골드 · 기본·심화 낱말</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- 우측 지도 -->
+          <div class="map-col">
+            <div class="c-card">
+              <div class="c-inner map-card-inner">
+                <div class="map-thumb-box">
+                  <img src="../assets/battle-map.webp" alt="초원 고원 전장 지도" />
+                </div>
+                <div class="map-meta">
+                  <div class="map-title-row">
+                    <strong class="map-name">초원 고원</strong>
+                    <span class="tag">전장</span>
+                  </div>
+                  <div class="map-spec num">
+                    <i data-icon="hud/gate" data-size="15"></i>
+                    <span>15×9 · 설치 칸 20</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <footer class="modal-footer">
+          <div class="player-summary">
+            <span class="player-label">닉네임 민서 · 서울하늘초등학교</span>
+            <a class="btn btn-sm" href="./01-home.html">
+              <i data-icon="hud/edit" data-size="14"></i>
+              <span>바꾸기</span>
+            </a>
+          </div>
+          <a class="btn btn-primary btn-lg start-cta" href="./03-battle-hud.html">
+            <i data-icon="hud/play" data-size="18"></i>
+            <span>시작</span>
+          </a>
+        </footer>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    (function () {
+      var diffData = {
+        easy: { badge: '쉬움', headline: '기초 어휘부터 차근차근 풀어요', spec: '성문 20 · 첫 정답 +22 골드 · 기본 낱말 중심' },
+        normal: { badge: '보통', headline: '처음이라면 추천해요', spec: '성문 15 · 첫 정답 +19 골드 · 기본·심화 낱말' },
+        hard: { badge: '어려움', headline: '빠른 웨이브와 심화 어휘에 도전해요', spec: '성문 12 · 첫 정답 +17 골드 · 심화 낱말 비중 확대' },
+        expert: { badge: '아주 어려움', headline: '고난도 어휘와 정밀한 배치가 필요해요', spec: '성문 10 · 첫 정답 +15 골드 · 전 범위 심화 낱말' }
+      };
+
+      document.querySelectorAll('.seg-group').forEach(function (group) {
+        group.addEventListener('click', function (e) {
+          var btn = e.target.closest('.seg-btn');
+          if (!btn) return;
+          group.querySelectorAll('.seg-btn').forEach(function (b) {
+            b.classList.remove('is-active');
+            b.setAttribute('aria-checked', 'false');
+          });
+          btn.classList.add('is-active');
+          btn.setAttribute('aria-checked', 'true');
+
+          var d = btn.getAttribute('data-diff');
+          if (d && diffData[d]) {
+            document.getElementById('diff-badge').textContent = diffData[d].badge;
+            document.getElementById('diff-headline').textContent = diffData[d].headline;
+            document.getElementById('diff-spec').textContent = diffData[d].spec;
+          }
+        });
+      });
+    })();
+  </script>
+</body>
+</html>

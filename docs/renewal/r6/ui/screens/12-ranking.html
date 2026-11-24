@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>전체 랭킹 — 어휘력 타워 디펜스</title>
+  <link rel="stylesheet" href="../tokens.css" />
+  <link rel="stylesheet" href="../shared.css" />
+  <script defer src="./hydrate-icons.js"></script>
+  <style>
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: var(--sp-2);
+    }
+
+    .modal-tabs .tab-btn {
+      flex: 1;
+      justify-content: center;
+      padding: 8px;
+      font-size: var(--fs-body);
+    }
+
+    .filter-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--sp-2);
+      padding: var(--sp-2) var(--sp-4);
+      background: var(--bg-panel);
+      border-bottom: 1px solid var(--border-hairline);
+      flex-wrap: wrap;
+    }
+
+    .filter-groups {
+      display: flex;
+      align-items: center;
+      gap: var(--sp-2);
+      flex-wrap: wrap;
+      flex: 1;
+      min-width: 0;
+    }
+
+    .filter-groups .seg-btn {
+      min-height: 30px;
+      padding: 3px 9px;
+      font-size: var(--fs-caption);
+    }
+
+    .school-toggle {
+      padding: 4px 10px;
+      border: 1px solid var(--border-hairline);
+      background: var(--bg-card);
+      font-family: var(--font-display);
+      font-size: var(--fs-caption);
+      font-weight: 600;
+      color: var(--text-body);
+    }
+
+    .school-toggle[aria-checked="true"] {
+      border-color: var(--accent-teal);
+      color: var(--text-strong);
+    }
+
+    .rank-table-wrap {
+      padding: var(--sp-2) var(--sp-4);
+      background: var(--bg-panel);
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .rank-row {
+      display: flex;
+      align-items: center;
+      gap: var(--sp-3);
+      padding: 6px 12px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-hairline);
+    }
+
+    .rank-row.is-me {
+      border-color: var(--accent-teal);
+      border-left: 3px solid var(--accent-teal);
+      background: var(--accent-teal-dim);
+    }
+
+    .rank-badge {
+      width: 28px;
+      height: 28px;
+      flex: none;
+      display: grid;
+      place-items: center;
+      font-family: var(--font-display);
+      font-variant-numeric: tabular-nums;
+      font-size: var(--fs-caption);
+      font-weight: 700;
+      background: var(--bg-panel);
+      border: 1px solid var(--border-hairline);
+      color: var(--text-strong);
+      clip-path: polygon(4px 0, 100% 0, 100% calc(100% - 4px), calc(100% - 4px) 100%, 0 100%, 0 4px);
+    }
+
+    .rank-badge.medal-1 { background: #E69F24; border-color: #E69F24; color: #12161B; }
+    .rank-badge.medal-2 { background: #B8C0C8; border-color: #B8C0C8; color: #12161B; }
+    .rank-badge.medal-3 { background: #D4845A; border-color: #D4845A; color: #12161B; }
+    .rank-row.is-me .rank-badge {
+      background: var(--accent-teal);
+      border-color: var(--accent-teal);
+      color: var(--on-accent);
+    }
+
+    .rank-main {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .rank-player-line {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .rank-player {
+      font-family: var(--font-display);
+      font-size: var(--fs-body);
+      font-weight: 700;
+      color: var(--text-strong);
+    }
+
+    .rank-detail {
+      font-size: var(--fs-caption);
+      color: var(--text-muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .rank-row.is-me .rank-detail {
+      color: var(--text-body);
+    }
+
+    .rank-points {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text-strong);
+      white-space: nowrap;
+    }
+
+    .rank-row.is-me .rank-points {
+      color: var(--accent-teal);
+    }
+
+    .modal-footer-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--sp-2);
+      padding: var(--sp-3) var(--sp-4);
+      background: var(--bg-card);
+      border-top: 1px solid var(--accent-teal);
+    }
+
+    .footer-me-label {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--sp-2);
+      font-family: var(--font-display);
+      font-size: var(--fs-body);
+      font-weight: 700;
+      color: var(--text-strong);
+    }
+
+    .footer-me-score {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--accent-teal);
+    }
+
+    @media (max-width: 600px) {
+      .modal-header {
+        padding: var(--sp-3);
+      }
+
+      .modal-title {
+        font-size: 16px;
+      }
+
+      .modal-tabs {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .modal-tabs .tab-btn {
+        font-size: var(--fs-caption);
+        padding: 8px 6px;
+      }
+
+      .filter-toolbar {
+        padding: var(--sp-2) var(--sp-3);
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .filter-groups {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .filter-groups .seg-group {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        width: 100%;
+      }
+
+      .filter-groups .seg-btn {
+        padding: 4px 2px;
+      }
+
+      .school-toggle {
+        justify-content: space-between;
+      }
+
+      .rank-table-wrap {
+        padding: var(--sp-2) var(--sp-3);
+      }
+
+      .rank-row {
+        padding: 8px 10px;
+        gap: var(--sp-2);
+      }
+
+      .modal-footer-bar {
+        padding: var(--sp-3);
+      }
+    }
+  </style>
+</head>
+<body class="tac-grid-bg">
+  <div class="modal-backdrop" aria-hidden="true"></div>
+
+  <div class="modal-stage">
+    <section class="modal-shell size-md c-panel" role="dialog" aria-modal="true" aria-labelledby="ranking-title">
+      <div class="c-inner">
+        <header class="modal-header">
+          <h1 id="ranking-title" class="modal-title">
+            <i data-icon="hud/score" data-size="20"></i>
+            <span>전체 랭킹 (상위 50위)</span>
+          </h1>
+          <div class="header-right">
+            <span class="tag tag-amber">시즌 2</span>
+            <a class="icon-close-btn" href="./01-home.html" aria-label="닫기">
+              <i data-icon="hud/close" data-size="18"></i>
+            </a>
+          </div>
+        </header>
+
+        <div class="tab-rail modal-tabs" role="tablist" aria-label="랭킹 분류">
+          <button type="button" class="tab-btn is-active" role="tab" aria-selected="true">최고 점수</button>
+          <button type="button" class="tab-btn" role="tab" aria-selected="false">랭킹 점수</button>
+          <button type="button" class="tab-btn" role="tab" aria-selected="false">최고 웨이브</button>
+          <button type="button" class="tab-btn" role="tab" aria-selected="false">내 기록</button>
+        </div>
+
+        <div class="filter-toolbar">
+          <div class="filter-groups">
+            <div class="seg-group" role="radiogroup" aria-label="학년 필터">
+              <button type="button" class="seg-btn" role="radio" aria-checked="false">3학년</button>
+              <button type="button" class="seg-btn is-active" role="radio" aria-checked="true">4학년</button>
+              <button type="button" class="seg-btn" role="radio" aria-checked="false">5학년</button>
+              <button type="button" class="seg-btn" role="radio" aria-checked="false">6학년</button>
+            </div>
+            <div class="seg-group" role="radiogroup" aria-label="난이도 필터">
+              <button type="button" class="seg-btn" role="radio" aria-checked="false">쉬움</button>
+              <button type="button" class="seg-btn is-active" role="radio" aria-checked="true">보통</button>
+              <button type="button" class="seg-btn" role="radio" aria-checked="false">어려움</button>
+              <button type="button" class="seg-btn" role="radio" aria-checked="false">아주 어려움</button>
+            </div>
+          </div>
+
+          <button type="button" class="toggle-btn school-toggle" role="switch" aria-checked="false" id="btn-school-filter">
+            <i data-icon="hud/school" data-size="14"></i>
+            <span>우리 학교</span>
+            <span class="toggle-track" aria-hidden="true">
+              <span class="toggle-thumb"></span>
+            </span>
+          </button>
+        </div>
+
+        <ol class="rank-table-wrap" aria-label="상위 순위표">
+          <li class="rank-row">
+            <span class="rank-badge medal-1 num">1</span>
+            <div class="rank-main">
+              <div class="rank-player-line"><strong class="rank-player">지훈</strong></div>
+              <div class="rank-detail num">15웨이브 · 정답 32 · 서울하늘초등학교</div>
+            </div>
+            <span class="rank-points num">5,410점</span>
+          </li>
+          <li class="rank-row">
+            <span class="rank-badge medal-2 num">2</span>
+            <div class="rank-main">
+              <div class="rank-player-line"><strong class="rank-player">서연</strong></div>
+              <div class="rank-detail num">15웨이브 · 정답 30 · 부산해운초등학교</div>
+            </div>
+            <span class="rank-points num">5,180점</span>
+          </li>
+          <li class="rank-row">
+            <span class="rank-badge medal-3 num">3</span>
+            <div class="rank-main">
+              <div class="rank-player-line"><strong class="rank-player">도윤</strong></div>
+              <div class="rank-detail num">14웨이브 · 정답 29 · 대전둔산초등학교</div>
+            </div>
+            <span class="rank-points num">4,950점</span>
+          </li>
+          <li class="rank-row is-me">
+            <span class="rank-badge num">4</span>
+            <div class="rank-main">
+              <div class="rank-player-line">
+                <strong class="rank-player">민서</strong>
+                <span class="tag tag-teal">나</span>
+              </div>
+              <div class="rank-detail num">14웨이브 · 정답 28 · 서울하늘초등학교</div>
+            </div>
+            <span class="rank-points num">4,820점</span>
+          </li>
+          <li class="rank-row">
+            <span class="rank-badge num">5</span>
+            <div class="rank-main">
+              <div class="rank-player-line"><strong class="rank-player">하은</strong></div>
+              <div class="rank-detail num">13웨이브 · 정답 26 · 대구범어초등학교</div>
+            </div>
+            <span class="rank-points num">4,610점</span>
+          </li>
+          <li class="rank-row">
+            <span class="rank-badge num">6</span>
+            <div class="rank-main">
+              <div class="rank-player-line"><strong class="rank-player">준서</strong></div>
+              <div class="rank-detail num">13웨이브 · 정답 25 · 광주상무초등학교</div>
+            </div>
+            <span class="rank-points num">4,480점</span>
+          </li>
+          <li class="rank-row">
+            <span class="rank-badge num">7</span>
+            <div class="rank-main">
+              <div class="rank-player-line"><strong class="rank-player">예진</strong></div>
+              <div class="rank-detail num">12웨이브 · 정답 24 · 인천송도초등학교</div>
+            </div>
+            <span class="rank-points num">4,320점</span>
+          </li>
+          <li class="rank-row">
+            <span class="rank-badge num">8</span>
+            <div class="rank-main">
+              <div class="rank-player-line"><strong class="rank-player">현우</strong></div>
+              <div class="rank-detail num">12웨이브 · 정답 22 · 서울하늘초등학교</div>
+            </div>
+            <span class="rank-points num">4,190점</span>
+          </li>
+        </ol>
+
+        <footer class="modal-footer-bar">
+          <span class="footer-me-label">
+            <i data-icon="hud/streak" data-size="16"></i>
+            <span>내 순위 · 민서</span>
+          </span>
+          <span class="footer-me-score num">4위 · 4,820점</span>
+        </footer>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    (function () {
+      document.querySelectorAll('.tab-rail').forEach(function (rail) {
+        rail.addEventListener('click', function (e) {
+          var btn = e.target.closest('.tab-btn');
+          if (!btn) return;
+          rail.querySelectorAll('.tab-btn').forEach(function (b) {
+            b.classList.remove('is-active');
+            b.setAttribute('aria-selected', 'false');
+          });
+          btn.classList.add('is-active');
+          btn.setAttribute('aria-selected', 'true');
+        });
+      });
+
+      document.querySelectorAll('.seg-group').forEach(function (group) {
+        group.addEventListener('click', function (e) {
+          var btn = e.target.closest('.seg-btn');
+          if (!btn) return;
+          group.querySelectorAll('.seg-btn').forEach(function (b) {
+            b.classList.remove('is-active');
+            b.setAttribute('aria-checked', 'false');
+          });
+          btn.classList.add('is-active');
+          btn.setAttribute('aria-checked', 'true');
+        });
+      });
+
+      var schoolBtn = document.getElementById('btn-school-filter');
+      if (schoolBtn) {
+        schoolBtn.addEventListener('click', function () {
+          var checked = schoolBtn.getAttribute('aria-checked') === 'true';
+          schoolBtn.setAttribute('aria-checked', checked ? 'false' : 'true');
+        });
+      }
+    })();
+  </script>
+</body>
+</html>
