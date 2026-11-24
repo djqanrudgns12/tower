@@ -1,0 +1,107 @@
+{
+  "towerId": "mortar",
+  "tile": 384,
+  "levels": [
+    1,
+    2,
+    4,
+    6,
+    8,
+    10,
+    12,
+    14,
+    16,
+    18,
+    20
+  ],
+  "bodyPivot": [
+    192,
+    247
+  ],
+  "headPivot": [
+    192,
+    191
+  ],
+  "directions": 16,
+  "reviewDirection": 7,
+  "weapons": [
+    {
+      "stage": 1,
+      "level": 1,
+      "attack": {
+        "mode": "lob",
+        "fps": 20,
+        "frames": 8,
+        "targetCount": 4,
+        "burstCount": 1,
+        "pierceCount": 0,
+        "recoil": 0.19
+      }
+    },
+    {
+      "stage": 2,
+      "level": 6,
+      "attack": {
+        "mode": "lob",
+        "fps": 20,
+        "frames": 8,
+        "targetCount": 5,
+        "burstCount": 1,
+        "pierceCount": 0,
+        "recoil": 0.24
+      }
+    },
+    {
+      "stage": 3,
+      "level": 12,
+      "attack": {
+        "mode": "lob",
+        "fps": 20,
+        "frames": 8,
+        "targetCount": 5,
+        "burstCount": 1,
+        "pierceCount": 0,
+        "recoil": 0.19
+      }
+    },
+    {
+      "stage": 4,
+      "level": 18,
+      "attack": {
+        "mode": "lob",
+        "fps": 20,
+        "frames": 8,
+        "targetCount": 6,
+        "burstCount": 1,
+        "pierceCount": 0,
+        "recoil": 0.22
+      }
+    }
+  ],
+  "grids": {
+    "bodies": {
+      "columns": 6,
+      "rows": 2,
+      "frames": 11,
+      "seconds": 0.993
+    },
+    "heads": {
+      "columns": 8,
+      "rows": 8,
+      "frames": 64,
+      "seconds": 2.689
+    },
+    "attack": {
+      "columns": 8,
+      "rows": 4,
+      "frames": 32,
+      "seconds": 2.982
+    },
+    "forms": {
+      "columns": 6,
+      "rows": 2,
+      "frames": 11,
+      "seconds": 1.059
+    }
+  }
+}

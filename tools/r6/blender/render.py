@@ -183,5 +183,15 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("recipe", type=Path)
     parser.add_argument("out", type=Path)
+    parser.add_argument("--kit", type=Path, help="곡사 포대의 편집된 Blender 부품 키트")
     args = parser.parse_args(sys.argv[sys.argv.index("--") + 1:])
-    render(json.loads(args.recipe.read_text()), args.out.resolve())
+    recipe = json.loads(args.recipe.read_text())
+    if recipe["towerId"] == "mortar":
+        sys.path.insert(0, str(Path(__file__).resolve().parent))
+        from mortar_render import render as render_mortar
+
+        render_mortar(args.recipe, args.out.resolve(), args.kit.resolve() if args.kit else None, PALETTE, linear)
+    else:
+        if args.kit:
+            parser.error("--kit 옵션은 곡사 포대에만 적용됩니다.")
+        render(recipe, args.out.resolve())

@@ -20,13 +20,13 @@ def snap_color(rgb):
     return min(ALLOWED_COLORS, key=lambda color: sum((a - b) ** 2 for a, b in zip(rgb, color)))
 
 
-def finish_cell(cell):
+def finish_cell(cell, outline_px=1):
     alpha = cell.getchannel("A")
     bounds = alpha.getbbox()
-    if not bounds or any(v <= 1 for v in bounds[:2]) or max(bounds[2:]) >= cell.width - 1:
+    if not bounds or min(bounds[:2]) <= outline_px or max(bounds[2:]) >= cell.width - outline_px:
         raise ValueError("비어 있거나, 외곽선을 그릴 여백이 없는 칸이 있습니다.")
     outline = Image.new("RGBA", cell.size, R04[0])
-    outline.putalpha(alpha.filter(ImageFilter.MaxFilter(3)))
+    outline.putalpha(alpha.filter(ImageFilter.MaxFilter(2 * outline_px + 1)))
     finished = Image.alpha_composite(outline, cell)
     # 면과 외곽선을 합성하면서 생긴 중간색을 팔레트에 맞추고 알파는 유지한다.
     colors = {rgba: (*snap_color(rgba[:3]), rgba[3])
@@ -113,5 +113,17 @@ def pack(out):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("out", type=Path, help="Blender 출력 폴더")
-    pack(parser.parse_args().out.resolve())
+    parser.add_argument("source", type=Path, help="Blender 출력 폴더")
+    parser.add_argument("--out", type=Path, help="곡사 포대 WebP 출력 폴더")
+    parser.add_argument("--reference", type=Path, help="곡사 포대 바이블 원화")
+    parser.add_argument("--font", type=Path, help="곡사 포대 비교판의 한글 글꼴")
+    args = parser.parse_args()
+    if args.out and args.reference:
+        from mortar_pack import DEFAULT_FONT, pack_mortar
+
+        pack_mortar(args.source.resolve(), args.out.resolve(),
+                    args.reference.resolve(), args.font or DEFAULT_FONT)
+    elif args.out or args.reference or args.font:
+        parser.error("곡사 포대 패킹에는 --out과 --reference가 모두 필요합니다.")
+    else:
+        pack(args.source.resolve())
