@@ -1,3 +1,4 @@
+import type { R6Runtime } from '../domain/r6Balance';
 import { z } from 'zod';
 
 // docs/contracts/balance.candidate.v0.4.json(스키마 0.4, 리뉴얼 성장·진화)의 런타임 계약. 단위는 정수 ms·BP(10000=1.0)·milli.
@@ -533,7 +534,7 @@ export const balanceSchema = z.object({
   }
 });
 
-export type Balance = z.infer<typeof balanceSchema> & { r6?: import('../domain/r6Balance').R6Runtime };
+export type Balance = z.infer<typeof balanceSchema> & { r6?: R6Runtime };
 export type DifficultyConfig = Balance['difficulties'][DifficultyId];
 export type TowerConfig = Balance['towers'][TowerId];
 export type FormConfig = z.infer<typeof form>;

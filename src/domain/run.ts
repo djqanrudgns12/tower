@@ -1,10 +1,11 @@
+import type { DomainEvent as LegacyEvent } from './events';
 import { previewR6Wave } from './r6Mixer';
-import type { FormId, TowerId } from '../contracts/balance';
+import { TOWER_IDS, type FormId, type TowerId } from '../contracts/balance';
 import type { OptionId } from '../contracts/questions';
 import { battleTick, towerSpeedBonusBP } from './combat';
 import type { GameContext } from './context';
 import type { DomainEvent, EngineTowerId, RunState, Tower, WithTowerIds } from './engineTypes';
-import { evolutionAt, towerDefinition } from './r6Towers';
+import { evolutionAt, isR6Tower, towerDefinition } from './r6Towers';
 import type { R6TowerId } from '../contracts/balanceV2';
 import type { RunState as LegacyState } from './types';
 import { openDraft, pickDraft } from './draft';
@@ -42,7 +43,7 @@ export type CommandError =
   | 'SLOT_TAKEN' | 'UNKNOWN_SLOT' | 'UNKNOWN_TOWER' | 'MAX_LEVEL' | 'FORM_REQUIRED' | 'INVALID_FORM' | 'UNDO_EXPIRED' | 'TOWER_LIMIT'
   | 'GAME_OVER' | 'NOT_AVAILABLE' | 'NOT_OWNED' | 'NO_DRAFT' | 'INVALID_DRAFT' | 'NO_RELIC_OFFER' | 'INVALID_RELIC' | 'NUMERIC_LIMIT';
 
-export type CommandResult = { ok: true; events: import('./events').DomainEvent[] } | { ok: false; error: CommandError };
+export type CommandResult = { ok: true; events: LegacyEvent[] } | { ok: false; error: CommandError };
 
 export type NewRunInput = Omit<RunConfig, 'rngAlgorithm' | 'rulesVersion' | 'balanceVersion' | 'mapVersion'> & {
   /**
@@ -98,6 +99,8 @@ export function createRun(ctx: GameContext, input: WithTowerIds<NewRunInput,R6To
 export function createRun(ctx: GameContext, input: WithTowerIds<NewRunInput,EngineTowerId>): RunState {
   const { reviewSenses, previousQuestionIds, ...rest } = input;
   const config: RunState['config'] = { ...rest, rngAlgorithm: RNG_ALGORITHM, rulesVersion: RULES_VERSION, balanceVersion: ctx.balance.balanceVersion, mapVersion: ctx.map.mapVersion };
+  if (ctx.balance.r6 && (config.mapId !== ctx.map.id || config.mapId !== ctx.balance.r6.rules.prototypeMap)) throw new Error('밸런스 판과 지도가 다릅니다');
+  if (!config.availableTowers.every(id => ctx.balance.r6 ? isR6Tower(id) : TOWER_IDS.some(t => t===id))) throw new Error('다른 판의 타워가 포함되었습니다');
   const seed = config.seed >>> 0;
   const s: RunState = {
     v: RUN_STATE_VERSION, config, phase: 'PREP_QUIZ', pause: [], tick: 0, wave: 0, completedWave: 0, endedAtWave: null, endReason: null,
@@ -249,8 +252,8 @@ function replaceCurrent(ctx: GameContext, s: RunState, ev: DomainEvent[]) {
 }
 
 /** 밖에서 들여온 상태(개발용 QA 장면 로더)에 걸린 미제출 문항이 철회됐으면 바꾼다. 답한 문항은 소급 변경하지 않는다. */
-export function replaceUnavailableQuestion(ctx: GameContext, s: LegacyState): import('./events').DomainEvent[];
-export function replaceUnavailableQuestion(ctx: GameContext, s: WithTowerIds<LegacyState,R6TowerId>): WithTowerIds<import('./events').DomainEvent,R6TowerId>[];
+export function replaceUnavailableQuestion(ctx: GameContext, s: LegacyState): LegacyEvent[];
+export function replaceUnavailableQuestion(ctx: GameContext, s: WithTowerIds<LegacyState,R6TowerId>): WithTowerIds<LegacyEvent,R6TowerId>[];
 export function replaceUnavailableQuestion(ctx: GameContext, s: RunState): DomainEvent[] {
   const enc = s.quiz.current;
   if (!enc || enc.answer || s.phase === 'GAME_OVER') return [];
@@ -403,6 +406,7 @@ function quit(s: RunState, ev: DomainEvent[]): CommandError | null {
 function endRun(s: RunState, reason: RunEndReason, ev: DomainEvent[]) {
   s.phase = 'GAME_OVER';
   s.endReason = reason;
+  if (s.config.balanceVersion==='2.0.0') for (const tower of s.towers) tower.burst=null;
   s.endedAtWave = s.wave;
   // 미제출 문항은 무보상·무벌점으로 취소한다(PRD §2.2, §3.5).
   if (s.quiz.current && !s.quiz.current.answer) s.quiz.current = null;
@@ -450,8 +454,8 @@ function completeWave(ctx: GameContext, s: RunState, ev: DomainEvent[]) {
 }
 
 /** 논리 틱 하나. 정지 중에는 아무것도 하지 않는다. */
-export function advanceTick(ctx: GameContext, s: LegacyState): import('./events').DomainEvent[];
-export function advanceTick(ctx: GameContext, s: WithTowerIds<LegacyState,R6TowerId>): WithTowerIds<import('./events').DomainEvent,R6TowerId>[];
+export function advanceTick(ctx: GameContext, s: LegacyState): LegacyEvent[];
+export function advanceTick(ctx: GameContext, s: WithTowerIds<LegacyState,R6TowerId>): WithTowerIds<LegacyEvent,R6TowerId>[];
 export function advanceTick(ctx: GameContext, s: RunState): DomainEvent[] {
   if (s.pause.length > 0 || s.phase === 'GAME_OVER') return [];
   ctx = relicContext(ctx, s);

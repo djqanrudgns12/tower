@@ -4,7 +4,7 @@ export function createWaveSequence(balance, mapId, seed, { shuffle, intBelow, ap
   const rng = (wave, name) => {
     const input = JSON.stringify([mixer.algorithm, balance.balanceVersion, mapId, seed >>> 0, wave, name]);
     let hash = 2166136261;
-    for (const byte of new TextEncoder().encode(input)) hash = Math.imul(hash ^ byte, 16777619);
+    for (const byte of new globalThis.TextEncoder().encode(input)) hash = Math.imul(hash ^ byte, 16777619);
     return { s: hash >>> 0 || 0x6d2b79f5 };
   };
   const order = shuffle(rng(0, 'order'), [...enemies.factionOrder]);

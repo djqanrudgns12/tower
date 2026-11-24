@@ -1,3 +1,4 @@
+import type { RunState as LegacyState } from './types';
 import { TOWER_IDS, type Balance, type RegularKind, type TowerId } from '../contracts/balance';
 import type { DomainEvent, EngineTowerId, RunState } from './engineTypes';
 import { waveRoleWeights } from './factions';
@@ -13,10 +14,10 @@ export const startingOwned = (b: Balance, config: Pick<RunConfig, 'availableTowe
   b.draft.startTowers.filter(t => config.availableTowers.includes(t));
 
 /** 장착함(화면의 타워 버튼 줄). */
-export const ownedTowers = (s: Pick<import('./types').RunState, 'owned'>): readonly TowerId[] => s.owned;
+export const ownedTowers = (s: Pick<LegacyState, 'owned'>): readonly TowerId[] => s.owned;
 
 /** 고르기를 기다리는 징집 후보, 없으면 null. */
-export const draftOffer = (s: Pick<import('./types').RunState, 'draft'>): DraftOffer | null => s.draft;
+export const draftOffer = (s: Pick<LegacyState, 'draft'>): DraftOffer | null => s.draft;
 
 /** 아직 징집으로 얻을 수 있는 타워(그 판이 쓸 수 있고 장착함에 없는 것, TOWER_IDS 순서). */
 export const draftPool = (s: Pick<RunState, 'owned' | 'config'>): TowerId[] =>

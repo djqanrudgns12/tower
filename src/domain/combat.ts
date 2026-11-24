@@ -280,6 +280,10 @@ function shoot(ctx: GameContext, s: RunState, tower: Tower, stats: TowerStats, d
   const pool = found ?? candidates(ctx,s,tower.x,tower.y,stats,stats.range+auraRangeBonusMilli(b,s.towers,tower,burningNow(s)));
   if (stats.weapon?.distribute && snapshot) pool.sort((a,b) =>
     Number(airborne(b,s.tick))-Number(airborne(a,s.tick)) || Number(snapshot.assigned.includes(a.id))-Number(snapshot.assigned.includes(b.id)));
+  if (tower.type==='rail' && snapshot) {
+    const i = pool.findIndex(e=>e.id===snapshot.assigned.at(-1));
+    if (i>0) pool.unshift(...pool.splice(i,1));
+  }
   const targets = pool.slice(0,stats.volley);
   if (snapshot && targets[0]) snapshot.assigned.push(targets[0].id);
   if (targets.length === 0) return false;
@@ -318,11 +322,11 @@ function shoot(ctx: GameContext, s: RunState, tower: Tower, stats: TowerStats, d
       ...(stats.fx.pull && stats.splashRadius > 0 ? { pull: { radius: stats.fx.pull.radiusMilli, maxTargets: stats.fx.pull.maxTargets, milli: stats.fx.pull.milli } } : {}),
       ...(zone && stats.splashRadius > 0 ? { zone: zoneSpec(stats, zone, target.progress) } : {}),
     };
-    const impacts = [];
-    if (stats.weapon?.aftershock) impacts.push({delayTicks:msToTicks(stats.weapon.aftershock.delayMs),damageBP:stats.weapon.aftershock.damageBP});
+    const impacts: NonNullable<Projectile['impacts']> = [];
+    if (stats.weapon?.aftershock) impacts.push({part:'aftershock',delayTicks:msToTicks(stats.weapon.aftershock.delayMs),damageBP:stats.weapon.aftershock.damageBP});
     const pulses = stats.weapon?.pulses;
-    if (pulses) for (let n=1;n<=pulses.count;n++) impacts.push({delayTicks:n*msToTicks(pulses.periodMs),damageBP:pulses.damageBP});
-    launch(s, tower, tower, stats, stats.splashRadius > 0 ? null : target, at(ctx, target), { ...a, ...extra, ...(impacts.length && {impacts}) }, ev);
+    if (pulses) for (let n=1;n<=pulses.count;n++) impacts.push({part:'zone',delayTicks:n*msToTicks(pulses.periodMs),damageBP:pulses.damageBP});
+    launch(s, tower, tower, stats, stats.splashRadius > 0 ? null : target, at(ctx, target), { ...a, ...extra, ...(stats.weapon && stats.splashRadius>0 && {part:'shell' as const}), ...(impacts.length && {impacts}) }, ev);
     // 관통(석궁 A 등): 첫 대상 뒤 일직선 적에게 따로 날아가는 화살(발사 때 ID 고정, PRD §20.3).
     if (stats.pierceDamageBP > 0) {
       const pierce = strikeOf(tower, stats, bpFloor(damage, stats.pierceDamageBP, 'damage.pierce'), bonus, elite, fx);
@@ -332,14 +336,14 @@ function shoot(ctx: GameContext, s: RunState, tower: Tower, stats: TowerStats, d
   return true;
 }
 
-function launch(s: RunState, tower: Tower, from: { x: number; y: number }, stats: Pick<TowerStats, 'projectileSpeed' | 'splashRadius' | 'maxTargets'>, target: Enemy | null, to: { x: number; y: number }, a: Strike & Partial<Pick<Projectile, 'splash' | 'ricochet' | 'pull' | 'zone' | 'impacts'>>, ev: DomainEvent[]) {
+function launch(s: RunState, tower: Tower, from: { x: number; y: number }, stats: Pick<TowerStats, 'projectileSpeed' | 'splashRadius' | 'maxTargets'>, target: Enemy | null, to: { x: number; y: number }, a: Strike & Partial<Pick<Projectile, 'splash' | 'ricochet' | 'pull' | 'zone' | 'impacts' | 'part'>>, ev: DomainEvent[]) {
   const flight = Math.max(1, flightTicks(dist2(to.x, to.y, from.x, from.y), stats.projectileSpeed));
   const projectile: Projectile = {
     ...a, id: s.seq.projectile++, fromX: from.x, fromY: from.y, targetId: target?.id ?? null, toX: to.x, toY: to.y,
     firedTick: s.tick, arrivalTick: s.tick + flight, splashRadius: target ? 0 : stats.splashRadius, maxTargets: stats.maxTargets,
   };
   s.projectiles.push(projectile);
-  ev.push({ type: 'fire', projectileId: projectile.id, towerId: tower.id, towerType: tower.type });
+  ev.push({ type: 'fire', ...(s.config.balanceVersion==='2.0.0' && {tick:s.tick}), projectileId: projectile.id, towerId: tower.id, towerType: tower.type });
 }
 
 /** 정수 선분 판정: 타워→기준점 방향 d로, 전방 거리 0..length·폭 width 안이면 전방 내적, 아니면 null. */
@@ -392,7 +396,7 @@ function hitAll(ctx: GameContext, s: RunState, tower: Tower, stats: TowerStats, 
     if (k>0 && stats.weapon) previous = bpFloor(previous,stats.pierceDamageBP || stats.chainFalloffBP,'damage.chain');
     return {e,at:at(ctx,e),damage:stats.weapon ? previous : chainDamage(damage,stats.chainFalloffBP,k)};
   });
-  ev.push({ type: 'strike', towerId: tower.id, towerType: tower.type, fromX: tower.x, fromY: tower.y, targets: hits.map(h => ({ enemyId: h.e.id, x: h.at.x, y: h.at.y })) });
+  ev.push({ type: 'strike', ...(stats.weapon && {tick:s.tick}), towerId: tower.id, towerType: tower.type, fromX: tower.x, fromY: tower.y, targets: hits.map(h => ({ enemyId: h.e.id, x: h.at.x, y: h.at.y })) });
   for (const h of hits) applyHit(ctx, s, strikeOf(tower, stats, h.damage, bonus, elite, fx), h.e, ev);
   // 충격(번개 B 등): 첫 대상 기절. 한 적의 평생 기절 시간 상한을 넘기지 않는다(PRD §7.3, statusCaps).
   const first = targets[0];
@@ -535,9 +539,10 @@ function resolve(ctx: GameContext, s: RunState, p: Projectile, ev: DomainEvent[]
     if (p.ricochet && p.ricochet.left > 0) ricochet(ctx, s, p, point, ev);
     return;
   }
+  if (p.part) ev.push({type:'areaImpact',tick:s.tick,projectileId:p.id,towerId:p.towerId,x:p.toX,y:p.toY,part:p.part});
   if (p.impacts) {
     const {impacts,...shell} = p;
-    for (const impact of impacts) s.projectiles.push({...shell,id:s.seq.projectile++,arrivalTick:s.tick+impact.delayTicks,
+    for (const impact of impacts) s.projectiles.push({...shell,part:impact.part,id:s.seq.projectile++,arrivalTick:s.tick+impact.delayTicks,
       damage:bpFloor(p.damage,impact.damageBP,'damage.impact')});
   }
   const hits = nearby(ctx, s, { x: p.toX, y: p.toY }, p.splashRadius, p.maxTargets, e => reachable(p.canHitFlyer, e, s.tick));
@@ -719,7 +724,7 @@ function applyHit(ctx: GameContext, s: RunState, p: Strike, e: Enemy, ev: Domain
     }
     e.hp = safe(e.hp - dealt, 'hp');
     const point = at(ctx, e);
-    ev.push({ type: 'hit', enemyId: e.id, x: point.x, y: point.y, damage: dealt, towerType: p.towerType });
+    ev.push({ type: 'hit', ...(b.r6 && {tick:s.tick}), enemyId: e.id, x: point.x, y: point.y, damage: dealt, towerType: p.towerType });
     if (e.hp === 0) {
       kill(ctx, s, e, point, ev, p.towerId, depth);
       return;
@@ -770,7 +775,7 @@ function kill(ctx: GameContext, s: RunState, e: Enemy, point: { x: number; y: nu
   s.stats.kills++;
   s.stats.goldEarned = add(s.stats.goldEarned, gold);
   s.stats.ptFromKills = add(s.stats.ptFromKills, pt);
-  ev.push({ type: 'kill', enemyId: e.id, kind: e.kind, elite: e.elite !== null, x: point.x, y: point.y, gold, pt });
+  ev.push({ type: 'kill', ...(e.entityId && {entityId:e.entityId}), enemyId: e.id, kind: e.kind, elite: e.elite !== null, x: point.x, y: point.y, gold, pt });
   split(ctx, s, e, ev);
   if (depth === 0) onKill(ctx, s, e, point, ev);
   if (killer !== null && !e.derived) killGoldAura(ctx, s, killer, ev);
@@ -876,7 +881,7 @@ function leak(ctx: GameContext, s: RunState, e: Enemy, ev: DomainEvent[]) {
   s.gateHp -= damage;
   s.stats.leaks++;
   if (e.kind === 'boss') s.stats.bossLeaks++;
-  ev.push({ type: 'leak', enemyId: e.id, kind: e.kind, damage, gateHp: s.gateHp });
+  ev.push({ type: 'leak', ...(e.entityId && {entityId:e.entityId}), enemyId: e.id, kind: e.kind, damage, gateHp: s.gateHp });
 }
 
 // ── 장판·덫·굴림체(towers.md §4-7 fieldHazards) ──────────────────────────────────────────────

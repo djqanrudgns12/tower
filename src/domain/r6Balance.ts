@@ -7,26 +7,35 @@ import { r6Tables, type WeaponProfile } from './r6Towers';
 export interface R6Runtime {
   entities: ReturnType<typeof expandEntities>;
   rules: BalanceV2;
-  base: Record<R6TowerId,TowerConfig>;
-  profiles: Record<R6TowerId,WeaponProfile[]>;
+  base: Record<R6TowerId, TowerConfig>;
+  profiles: Record<R6TowerId, WeaponProfile[]>;
 }
 
 /** 공통 문제·경제·틱 엔진의 입력. 새 판이 쓰는 값은 모두 v2에서 가져온다. */
 export function compileR6Balance(legacy: Balance, rules: BalanceV2): Balance {
   const b = structuredClone(legacy);
-  b.r6 = { rules,entities:expandEntities(rules),...r6Tables(rules) };
-  Object.assign(b,{balanceVersion:rules.balanceVersion,run:rules.run,burning:rules.burning,externalCaps:rules.externalCaps,statusCaps:rules.statusCaps,
-    leakDamage:rules.leakDamage,elites:rules.elites});
-  Object.assign(b.waves,rules.waves);
-  Object.assign(b.levels,rules.levels,{evolveAt:[6,12]});
-  Object.assign(b.towers,b.r6.base);
-  for (const id of DIFFICULTY_IDS) b.difficulties[id] = {...rules.difficulties[id],label:id};
-  b.draft = {startTowers:[],afterWaves:[],offerCount:1,maxOwned:6};
+  b.r6 = { rules, entities: expandEntities(rules), ...r6Tables(rules) };
+  Object.assign(b, {
+    balanceVersion: rules.balanceVersion,
+    run: rules.run,
+    burning: rules.burning,
+    externalCaps: rules.externalCaps,
+    statusCaps: rules.statusCaps,
+    leakDamage: rules.leakDamage,
+    elites: rules.elites,
+  });
+  Object.assign(b.waves, rules.waves);
+  Object.assign(b.levels, rules.levels, { evolveAt: [6, 12] });
+  Object.assign(b.towers, b.r6.base);
+  for (const id of DIFFICULTY_IDS) b.difficulties[id] = { ...rules.difficulties[id], label: id };
+  b.draft = { startTowers: [], afterWaves: [], offerCount: 1, maxOwned: 6 };
   delete b.matchup;
-  b.relics = {fromWave:rules.relics.fromWave,offerCount:rules.relics.offerCount,items:{}};
-  for (const [id,rule] of Object.entries(rules.relics.effects)) {
-    const {towers: _targets,...effect} = rule;
-    b.relics.items[id] = {label:id,summary:id,icon:'relic.'+id,effect};
+  b.relics = { fromWave: rules.relics.fromWave, offerCount: rules.relics.offerCount, items: {} };
+  for (const [id, rule] of Object.entries(rules.relics.effects)) {
+    const { towers, ...effect } = rule;
+    // 대상 타워는 r6.rules의 정규 ID로 조회한다. 공통 효과는 기존 보물 처리기를 사용한다.
+    void towers;
+    b.relics.items[id] = { label: id, summary: id, icon: 'relic.' + id, effect };
   }
   return b;
 }

@@ -1,4 +1,5 @@
 import type { BossSkillKind, EnemyKind, TowerId } from '../contracts/balance';
+import type { EntityId } from '../contracts/balanceV2';
 import type { HazardKind, HazardLine, Phase, RunEndReason } from './types';
 
 /** 장판·덫·굴림체가 사라진 까닭: 지속 끝(time), 횟수를 다 씀·폭발(spent), 굴림 끝(end), 웨이브 끝(wave), 타워 판매(sold). */
@@ -13,15 +14,16 @@ export type DomainEvent =
   | { type: 'answered'; encounterId: number; result: 'correct' | 'wrong' | 'skipped'; pt: number; gold: number }
   | { type: 'burning'; untilTick: number }
   /** art는 렌더러가 쓸 그림 id(`<종족 접두어>.<역할|boss5~boss20>`, domain/factions.ts enemyArtId). */
-  | { type: 'spawn'; entityId?:import('../contracts/balanceV2').EntityId; derived?:boolean; enemyId: number; kind: EnemyKind; faction: string; art: string }
-  | { type: 'fire'; projectileId: number; towerId: number; towerType: TowerId }
+  | { type: 'spawn'; entityId?: EntityId; derived?: boolean; enemyId: number; kind: EnemyKind; faction: string; art: string }
+  | { type:'areaImpact';tick:number;projectileId:number;towerId:number;x:number;y:number;part:'shell'|'aftershock'|'zone' }
+  | { type: 'fire';tick?:number; projectileId: number; towerId: number; towerType: TowerId }
   /** 즉발 공격(번개·화염·근접). 비행 지연 없이 같은 틱에 맞힌다(PRD §11.4, §20.3). targets는 맞힌 순서다. */
-  | { type: 'strike'; towerId: number; towerType: TowerId; fromX: number; fromY: number; targets: Array<{ enemyId: number; x: number; y: number }> }
+  | { type: 'strike';tick?:number; towerId: number; towerType: TowerId; fromX: number; fromY: number; targets: Array<{ enemyId: number; x: number; y: number }> }
   /** 화상 피해 한 번(적마다 0.5초 시계). */
   | { type: 'burn'; enemyId: number; damage: number }
-  | { type: 'hit'; enemyId: number; x: number; y: number; damage: number; towerType: TowerId }
-  | { type: 'kill'; enemyId: number; kind: EnemyKind; elite: boolean; x: number; y: number; gold: number; pt: number }
-  | { type: 'leak'; enemyId: number; kind: EnemyKind; damage: number; gateHp: number }
+  | { type: 'hit';tick?:number; enemyId: number; x: number; y: number; damage: number; towerType: TowerId }
+  | { type: 'kill'; entityId?: EntityId; enemyId: number; kind: EnemyKind; elite: boolean; x: number; y: number; gold: number; pt: number }
+  | { type: 'leak'; entityId?: EntityId; enemyId: number; kind: EnemyKind; damage: number; gateHp: number }
   | { type: 'waveComplete'; wave: number; milestoneGold: number }
   | { type: 'gameOver'; completedWave: number; endedAtWave: number; reason: RunEndReason }
   | { type: 'towerBuilt' | 'towerUpgraded' | 'towerSold'; towerId: number; slotId: string; gold: number }

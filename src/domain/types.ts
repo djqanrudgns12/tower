@@ -1,3 +1,4 @@
+import type { TowerStats } from './towers';
 import type { EntityId } from '../contracts/balanceV2';
 import type { BossTier, DifficultyId, EliteId, EnemyKind, FormId, TowerId, TraitKind } from '../contracts/balance';
 import type { OptionId } from '../contracts/questions';
@@ -181,7 +182,7 @@ export interface BossState {
 
 /** 시차 다연발 예약(towers.md §4-4): 남은 발 수, 다음 발 틱, 간격, 뒤따르는 발의 피해 배율. */
 export interface BurstState { left: number; nextTick: number; gapTicks: number; damageBP: number;
-  snapshot?: {stats:import('./towers').TowerStats; bonus:number; elite:number; assigned:number[]};
+  snapshot?: {stats:TowerStats; bonus:number; elite:number; assigned:number[]};
 }
 
 export interface Tower {
@@ -209,7 +210,8 @@ export interface Tower {
 
 export interface Projectile {
   /** 곡사포의 첫 착탄에서 예약할 추가 타격. */
-  impacts?: Array<{delayTicks:number; damageBP:number}>;
+  impacts?: Array<{delayTicks:number; damageBP:number; part:'aftershock'|'zone'}>;
+  part?: 'shell'|'aftershock'|'zone';
 
   id: number;
   towerId: number;

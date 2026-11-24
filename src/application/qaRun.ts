@@ -23,6 +23,7 @@ export async function startQaRun(json: string): Promise<RunController> {
   if (state.v !== RUN_STATE_VERSION) throw new Error(`QA 장면 상태 버전이 다르다: ${state.v} (지금 ${RUN_STATE_VERSION})`);
   await loadGradeContent(state.config.grade);
   const ctx = contextFor(state.config.grade, state.config.difficulty);
+  if (state.config.balanceVersion === '2.0.0' && !ctx.balance.r6) throw new Error('QA 장면과 전장의 밸런스 판이 다릅니다');
   // 장면을 만든 뒤 철회된 미제출 문항이 걸려 있으면 바꾼다(PRD §9.5).
   replaceUnavailableQuestion(ctx, state);
   state.pause = [...state.pause.filter(r => r === 'NUMERIC_LIMIT'), 'USER'];
