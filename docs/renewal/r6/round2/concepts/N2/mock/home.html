@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>N2 Home - 어휘 펫 수호대</title>
+<link rel="stylesheet" href="n2-theme.css">
+<style>
+  .top-bar {
+    position: absolute; top: 14px; left: 20px; right: 20px;
+    display: flex; align-items: center; justify-content: space-between;
+    z-index: 10;
+  }
+  .trainer-pill {
+    display: flex; align-items: center; gap: 10px;
+    padding: 6px 16px 6px 8px;
+  }
+  .avatar-badge {
+    width: 38px; height: 38px; border-radius: 50%;
+    border: 2.5px solid var(--ink); overflow: hidden; background: #FFE033;
+  }
+  .avatar-badge img { width: 100%; height: 100%; object-fit: cover; }
+  .grade-tabs {
+    display: flex; gap: 6px; padding: 5px;
+    border-radius: 999px; background: rgba(255,255,255,0.88);
+    border: 3px solid var(--ink); box-shadow: 0 4px 0 var(--ink);
+  }
+  .grade-chip {
+    padding: 5px 13px; border-radius: 999px;
+    font-family: 'Cafe24Ssurround', sans-serif; font-size: 14px;
+    color: var(--ink-soft);
+  }
+  .grade-chip.active {
+    background: linear-gradient(180deg, #FFD633, #FF8A00);
+    color: #FFF; border: 2px solid var(--ink);
+    paint-order: stroke fill; -webkit-text-stroke: 2.5px var(--ink);
+  }
+
+  /* 중앙 상단 타이틀 로고 (무지개 하늘 여백에 배치) */
+  .hero-logo {
+    position: absolute; top: 68px; left: 50%; transform: translateX(-50%);
+    text-align: center; z-index: 8; pointer-events: none;
+  }
+  .hero-title {
+    font-size: 52px; color: #FFE033; line-height: 1.05;
+    -webkit-text-stroke: 8px var(--ink);
+    filter: drop-shadow(0 6px 0 var(--ink)) drop-shadow(0 0 24px rgba(255,255,255,0.9));
+  }
+  .hero-sub {
+    display: inline-block; margin-top: 6px;
+    padding: 4px 18px; border-radius: 999px;
+    background: var(--holo-grad); border: 3px solid var(--ink);
+    font-family: 'Cafe24Ssurround', sans-serif; font-size: 16px; color: #FFF;
+    paint-order: stroke fill; -webkit-text-stroke: 3px var(--ink);
+    box-shadow: 0 4px 0 var(--ink);
+  }
+
+  /* 하단 가로 빛나는 덱 카드 바 + 중앙 거대 무지개 보석 모험 시작! 오브 */
+  .home-bottom {
+    position: absolute; left: 22px; right: 22px; bottom: 16px;
+    display: flex; align-items: flex-end; justify-content: space-between; gap: 18px;
+    z-index: 12;
+  }
+  .my-deck-bar {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 14px; border-radius: 24px;
+    background: rgba(255, 255, 255, 0.9);
+    border: 3.5px solid var(--ink);
+    box-shadow: 0 7px 0 var(--ink);
+  }
+  .mini-card {
+    width: 98px; height: 114px;
+  }
+  .mini-card .tcg-inner { padding: 3px; justify-content: space-between; }
+  .mini-card .art {
+    width: 100%; height: 68px; border-radius: 7px; border: 2px solid var(--ink); overflow: hidden;
+  }
+  .mini-card .art img { width: 100%; height: 100%; object-fit: cover; }
+  .mini-card .nm {
+    font-family: 'Cafe24Ssurround', sans-serif; font-size: 9.5px; letter-spacing: -0.04em; white-space: nowrap; text-align: center; color: var(--ink);
+  }
+
+  .play-orb-wrap {
+    display: flex; flex-direction: column; align-items: center; gap: 6px;
+    margin-bottom: 2px;
+  }
+  .play-orb {
+    width: 264px; height: 92px; border-radius: 46px;
+    border: 4px solid var(--ink);
+    background: linear-gradient(125deg, #FF4D8D 0%, #FFB800 32%, #10B981 64%, #3B82F6 100%);
+    box-shadow:
+      inset 0 6px 0 rgba(255,255,255,0.68),
+      inset 0 -6px 0 rgba(19,27,66,0.28),
+      0 9px 0 var(--ink),
+      0 0 36px rgba(255, 224, 51, 0.95);
+    display: flex; align-items: center; justify-content: center; gap: 10px;
+    font-family: 'Cafe24Ssurround', sans-serif; font-size: 32px; color: #FFF;
+    paint-order: stroke fill; -webkit-text-stroke: 6px var(--ink);
+    position: relative;
+  }
+  .play-orb > * { position: relative; z-index: 2; }
+  .play-orb::before {
+    content: ''; position: absolute; z-index: 1; top: 7px; left: 26px; right: 26px; height: 22px;
+    border-radius: 999px; background: rgba(255,255,255,0.45);
+  }
+  .stage-badge {
+    padding: 4px 14px; border-radius: 999px; background: #FFFFFF;
+    border: 2.5px solid var(--ink); font-size: 13px; color: var(--ink);
+    box-shadow: 0 3px 0 var(--ink);
+  }
+
+  .right-actions {
+    display: flex; flex-direction: column; gap: 8px; align-items: flex-end;
+  }
+  .pack-btn {
+    padding: 12px 20px; font-size: 19px; border-radius: 22px;
+  }
+  .sub-btns { display: flex; gap: 8px; }
+  .sub-btn { padding: 9px 16px; font-size: 15px; border-radius: 16px; }
+</style>
+</head>
+<body>
+<div class="stage">
+  <img class="bg-art" src="assets/b-home-bg.webp" alt="홈 히어로 배경">
+
+  <header class="top-bar">
+    <div style="display:flex;align-items:center;gap:10px;">
+      <div class="gem-capsule trainer-pill">
+        <div class="avatar-badge"><img src="assets/pet-chick.webp" alt="트레이너"></div>
+        <div>
+          <div style="font-family:'Cafe24Ssurround',sans-serif;font-size:15px;">Lv.12 수호대장</div>
+          <div style="font-size:12px;color:#2563EB;">★ 별빛 배지 48개</div>
+        </div>
+      </div>
+      <div class="grade-tabs">
+        <span class="grade-chip">3학년</span>
+        <span class="grade-chip">4학년</span>
+        <span class="grade-chip active">5학년</span>
+        <span class="grade-chip">6학년</span>
+      </div>
+    </div>
+
+    <div style="display:flex;align-items:center;gap:10px;">
+      <div class="gem-capsule">
+        <svg width="22" height="22" viewBox="0 0 28 28"><circle cx="14" cy="14" r="11" fill="#FFE033" stroke="#131B42" stroke-width="2.5"/></svg>
+        <span style="font-family:'Cafe24Ssurround',sans-serif;font-size:17px;">1,240</span>
+      </div>
+      <div class="gem-capsule">
+        <svg width="22" height="22" viewBox="0 0 28 28"><rect x="4" y="3" width="20" height="22" rx="4" fill="#C084FC" stroke="#131B42" stroke-width="2.5"/><polygon points="14,7 16,12 21,12 17,15 18.5,20 14,17 9.5,20 11,15 7,12 12,12" fill="#FFE033"/></svg>
+        <span style="font-family:'Cafe24Ssurround',sans-serif;font-size:17px;">도감 28/32</span>
+      </div>
+    </div>
+  </header>
+
+  <div class="hero-logo">
+    <h1 class="title-stroke hero-title">어휘 펫 수호대</h1>
+    <div class="hero-sub">✨ 크리처 진화 카드 배틀 · 5학년 모험 섬 ✨</div>
+  </div>
+
+  <section class="home-bottom">
+    <div class="my-deck-bar">
+      <div style="writing-mode:horizontal-tb;font-family:'Cafe24Ssurround',sans-serif;font-size:13px;color:var(--ink);padding-right:4px;">
+        내 출격 덱<br><span style="color:#E11D62;">4 / 4</span>
+      </div>
+      <div class="tcg-card rarity-rare mini-card">
+        <div class="tcg-inner"><div class="art"><img src="assets/pet-chick.webp"></div><div class="nm">햇살병아리</div></div>
+      </div>
+      <div class="tcg-card rarity-epic mini-card">
+        <div class="tcg-inner"><div class="art"><img src="assets/pet-turtle.webp"></div><div class="nm">베리거북</div></div>
+      </div>
+      <div class="tcg-card rarity-rare mini-card">
+        <div class="tcg-inner"><div class="art"><img src="assets/pet-narwhal.webp"></div><div class="nm">서리일각고래</div></div>
+      </div>
+      <div class="tcg-card rarity-legend mini-card">
+        <div class="tcg-inner"><div class="art"><img src="assets/pet-axolotl.webp"></div><div class="nm">은하아홀로틀</div></div>
+      </div>
+    </div>
+
+    <div class="play-orb-wrap">
+      <div class="stage-badge">🏝 스테이지 4 · 무지개 초원 섬</div>
+      <button class="play-orb">
+        <svg width="26" height="28" viewBox="0 0 26 28"><polygon points="4,2 24,14 4,26" fill="#FFE033" stroke="#131B42" stroke-width="3.5" stroke-linejoin="round"/></svg>
+        <span>모험 시작!</span>
+      </button>
+    </div>
+
+    <div class="right-actions">
+      <button class="jelly-btn jelly-berry pack-btn">
+        <svg width="22" height="22" viewBox="0 0 40 40"><path d="M8,6 L14,10 L20,6 L26,10 L32,6 L30,34 L10,34 Z" fill="#C084FC" stroke="#131B42" stroke-width="3"/><polygon points="20,13 22,19 28,19 23,23 25,29 20,25 15,29 17,23 12,19 18,19" fill="#FFE033" stroke="#131B42" stroke-width="2"/></svg>
+        <span>홀로 카드팩 열기 (3)</span>
+      </button>
+      <div class="sub-btns">
+        <button class="jelly-btn jelly-frost sub-btn"><span>📘 진화 도감</span></button>
+        <button class="jelly-btn jelly-sun sub-btn"><span>👾 적군 수첩</span></button>
+      </div>
+    </div>
+  </section>
+</div>
+</body>
+</html>

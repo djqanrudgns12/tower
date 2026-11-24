@@ -1,0 +1,1181 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=1280, initial-scale=1.0" />
+<title>N5 · 네온 페인트 스플래시 팝 UI 키트</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Do+Hyeon&display=swap" rel="stylesheet" />
+<style>
+  @font-face {
+    font-family: 'SBAggroB';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2108@1.1/SBAggroB.woff') format('woff');
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+  }
+
+  :root {
+    --bg-obsidian: #121324;
+    --bg-panel: #191B33;
+    --bg-card: #1E213D;
+    --ink-stroke: #090A14;
+    --neon-lime: #C8FF00;
+    --electric-cyan: #00E5FF;
+    --hot-magenta: #FF2A85;
+    --solar-yellow: #FFE600;
+    --electric-purple: #9D4EDD;
+    --steel-gray: #8B93B3;
+    --text-white: #F8FAFC;
+    --text-muted: #9EA6C7;
+  }
+
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  html, body {
+    width: 1280px;
+    height: 720px;
+    overflow: hidden;
+    background: var(--bg-obsidian);
+    color: var(--text-white);
+    font-family: 'Do Hyeon', sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .canvas {
+    position: relative;
+    width: 1280px;
+    height: 720px;
+    padding: 14px 20px;
+    background:
+      radial-gradient(circle at 10% 14%, rgba(200, 255, 0, 0.16) 0%, transparent 30%),
+      radial-gradient(circle at 90% 12%, rgba(0, 229, 255, 0.18) 0%, transparent 32%),
+      radial-gradient(circle at 82% 88%, rgba(255, 42, 133, 0.18) 0%, transparent 34%),
+      radial-gradient(circle at 18% 86%, rgba(255, 230, 0, 0.12) 0%, transparent 28%),
+      linear-gradient(135deg, #101122 0%, #151730 50%, #0E1020 100%);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  /* 다크 그래피티 하프톤 & 스프레이 텍스처 오버레이 */
+  .bg-graffiti {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    background-image:
+      radial-gradient(rgba(255, 255, 255, 0.045) 1px, transparent 1px),
+      repeating-linear-gradient(-16deg, rgba(200, 255, 0, 0.025) 0 2px, transparent 2px 32px);
+    background-size: 16px 16px, 100% 100%;
+  }
+
+  .bg-splash-svg {
+    position: absolute;
+    inset: 0;
+    width: 1280px;
+    height: 720px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .stroke-text {
+    paint-order: stroke fill;
+    -webkit-text-stroke: 4px var(--ink-stroke);
+    text-shadow: 3px 3px 0 var(--ink-stroke);
+  }
+
+  .stroke-text-sm {
+    paint-order: stroke fill;
+    -webkit-text-stroke: 2.5px var(--ink-stroke);
+    text-shadow: 2px 2px 0 var(--ink-stroke);
+  }
+
+  /* ── 상단 헤더 ── */
+  .header {
+    position: relative;
+    z-index: 2;
+    height: 54px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 14px;
+    background: linear-gradient(90deg, rgba(25, 27, 51, 0.96), rgba(30, 33, 61, 0.92));
+    border: 3px solid var(--ink-stroke);
+    border-radius: 12px;
+    box-shadow: 0 5px 0 var(--ink-stroke), 0 0 20px rgba(0, 229, 255, 0.16);
+  }
+
+  .header-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .n5-badge {
+    transform: skewX(-8deg);
+    background: linear-gradient(135deg, var(--neon-lime), #8CE600);
+    color: #090A14;
+    font-family: 'SBAggroB', 'Black Han Sans', sans-serif;
+    font-size: 14px;
+    padding: 5px 12px;
+    border: 3px solid var(--ink-stroke);
+    border-radius: 6px;
+    box-shadow: 3px 3px 0 var(--ink-stroke);
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+    position: relative;
+  }
+
+  .n5-badge::after {
+    content: '';
+    position: absolute;
+    top: 2px;
+    left: 4px;
+    right: 4px;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.55);
+    border-radius: 2px;
+  }
+
+  .title-main {
+    font-family: 'Black Han Sans', sans-serif;
+    font-size: 25px;
+    letter-spacing: 0.4px;
+    white-space: nowrap;
+    transform: skewX(-6deg);
+    background: linear-gradient(180deg, #FFFFFF 20%, #00E5FF 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    filter: drop-shadow(2px 3px 0 #090A14);
+  }
+
+  .title-sub {
+    font-family: 'SBAggroB', sans-serif;
+    font-size: 11.5px;
+    color: var(--neon-lime);
+    background: rgba(9, 10, 20, 0.72);
+    border: 2px solid var(--neon-lime);
+    border-radius: 6px;
+    padding: 4px 10px;
+    white-space: nowrap;
+    transform: skewX(-8deg);
+  }
+
+  .header-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  /* 학년 스트리트 태그 3G~6G */
+  .grade-tags {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .grade-tag {
+    transform: skewX(-8deg);
+    font-family: 'SBAggroB', sans-serif;
+    font-size: 13px;
+    padding: 5px 10px;
+    border: 2.5px solid var(--ink-stroke);
+    border-radius: 6px;
+    background: #262A4C;
+    color: #B4BCE0;
+    box-shadow: 2px 2px 0 var(--ink-stroke);
+  }
+
+  .grade-tag.active {
+    background: linear-gradient(135deg, var(--hot-magenta), #FF5CA8);
+    color: #FFFFFF;
+    box-shadow: 3px 3px 0 var(--ink-stroke), 0 0 12px rgba(255, 42, 133, 0.65);
+  }
+
+  .grade-tag.six {
+    background: linear-gradient(135deg, var(--electric-cyan), #00A8FF);
+    color: #090A14;
+  }
+
+  /* 상단 자원 알약 */
+  .hud-pill {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    transform: skewX(-8deg);
+    background: #0E1022;
+    border: 2.5px solid var(--ink-stroke);
+    border-radius: 8px;
+    padding: 4px 12px;
+    box-shadow: 3px 3px 0 var(--ink-stroke);
+  }
+
+  .hud-pill > * {
+    transform: skewX(8deg);
+  }
+
+  .hud-val {
+    font-family: 'SBAggroB', sans-serif;
+    font-size: 16px;
+  }
+
+  .hud-val.gold { color: var(--solar-yellow); }
+  .hud-val.cyan { color: var(--electric-cyan); }
+
+  /* ── 메인 2열 그리드 ── */
+  .grid-main {
+    position: relative;
+    z-index: 2;
+    flex: 1;
+    display: grid;
+    grid-template-columns: 584px 1fr;
+    gap: 12px;
+    min-height: 0;
+  }
+
+  .col {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    min-height: 0;
+  }
+
+  .panel {
+    position: relative;
+    background: linear-gradient(165deg, rgba(26, 29, 56, 0.96), rgba(18, 19, 36, 0.98));
+    border: 3px solid var(--ink-stroke);
+    border-radius: 14px;
+    padding: 10px 13px;
+    box-shadow: 0 5px 0 var(--ink-stroke);
+    overflow: hidden;
+  }
+
+  .panel-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 8px;
+  }
+
+  .panel-title {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    font-family: 'SBAggroB', sans-serif;
+    font-size: 13.5px;
+    color: #090A14;
+    background: var(--electric-cyan);
+    padding: 3px 11px;
+    border: 2.5px solid var(--ink-stroke);
+    border-radius: 6px;
+    transform: skewX(-8deg);
+    box-shadow: 2px 2px 0 var(--ink-stroke);
+  }
+
+  .panel-title.lime { background: var(--neon-lime); }
+  .panel-title.magenta { background: var(--hot-magenta); color: #FFF; }
+  .panel-title.yellow { background: var(--solar-yellow); }
+
+  .panel-note {
+    font-family: 'Do Hyeon', sans-serif;
+    font-size: 12.5px;
+    color: var(--text-muted);
+  }
+
+  /* ── 1. 스플래시 평행사변형 버튼 & 퀴즈 도크 ── */
+  .btn-showcase-row {
+    display: grid;
+    grid-template-columns: 1.25fr 1fr 0.85fr;
+    gap: 10px;
+    align-items: center;
+    margin-bottom: 9px;
+  }
+
+  .splash-btn {
+    position: relative;
+    transform: skewX(-8deg);
+    border: 3px solid var(--ink-stroke);
+    border-radius: 10px;
+    padding: 9px 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    overflow: hidden;
+  }
+
+  .splash-btn > * {
+    transform: skewX(8deg);
+  }
+
+  /* 글로시 물감 하이라이트 */
+  .splash-btn::before {
+    content: '';
+    position: absolute;
+    top: 3px;
+    left: 6px;
+    right: 6px;
+    height: 7px;
+    background: rgba(255, 255, 255, 0.48);
+    border-radius: 4px;
+    pointer-events: none;
+  }
+
+  .splash-btn.primary {
+    background: linear-gradient(135deg, #D4FF00 0%, #7CFF00 45%, #00E5FF 100%);
+    box-shadow: 0 6px 0 var(--ink-stroke), 0 0 18px rgba(200, 255, 0, 0.45);
+  }
+
+  .splash-btn.pressed {
+    background: linear-gradient(135deg, #00B8D4 0%, #0077FF 100%);
+    transform: skewX(-8deg) translateY(4px);
+    box-shadow: 0 2px 0 var(--ink-stroke), inset 0 3px 6px rgba(9, 10, 20, 0.45);
+  }
+
+  .splash-btn.disabled {
+    background: linear-gradient(135deg, #323656, #252842);
+    box-shadow: 0 4px 0 var(--ink-stroke);
+    opacity: 0.85;
+  }
+
+  .btn-main-txt {
+    font-family: 'SBAggroB', sans-serif;
+    font-size: 19px;
+    color: #FFFFFF;
+    paint-order: stroke fill;
+    -webkit-text-stroke: 4px var(--ink-stroke);
+    text-shadow: 2px 2px 0 var(--ink-stroke);
+    line-height: 1.15;
+  }
+
+  .btn-sub-txt {
+    font-family: 'Do Hyeon', sans-serif;
+    font-size: 11px;
+    color: #090A14;
+    background: rgba(255, 255, 255, 0.78);
+    padding: 1px 7px;
+    border-radius: 4px;
+    margin-top: 2px;
+  }
+
+  .splash-btn.pressed .btn-sub-txt {
+    background: rgba(9, 10, 20, 0.55);
+    color: var(--electric-cyan);
+  }
+
+  .splash-btn.disabled .btn-main-txt {
+    color: #8B93B3;
+    font-size: 16px;
+  }
+
+  .splash-btn.disabled .btn-sub-txt {
+    background: #17192D;
+    color: #7D85A8;
+  }
+
+  /* 4지선다 + 모르겠어요 스트리트 태그 바 */
+  .quiz-demo-box {
+    background: rgba(9, 10, 20, 0.6);
+    border: 2.5px solid #2C3159;
+    border-radius: 10px;
+    padding: 9px 10px;
+  }
+
+  .quiz-q-line {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 8px;
+  }
+
+  .quiz-word {
+    font-family: 'SBAggroB', sans-serif;
+    font-size: 14px;
+    color: var(--solar-yellow);
+  }
+
+  .quiz-rule-pill {
+    font-size: 11.5px;
+    color: var(--electric-cyan);
+    background: rgba(0, 229, 255, 0.12);
+    border: 1.5px solid rgba(0, 229, 255, 0.45);
+    padding: 1px 8px;
+    border-radius: 99px;
+  }
+
+  .quiz-options {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr) 1.15fr;
+    gap: 7px;
+  }
+
+  .q-tag {
+    transform: skewX(-8deg);
+    background: #232747;
+    border: 2.5px solid var(--ink-stroke);
+    border-radius: 7px;
+    padding: 6px 6px;
+    text-align: center;
+    box-shadow: 0 3px 0 var(--ink-stroke);
+    position: relative;
+  }
+
+  .q-tag > span {
+    display: inline-block;
+    transform: skewX(8deg);
+    font-family: 'Do Hyeon', sans-serif;
+    font-size: 14px;
+    color: #F8FAFC;
+  }
+
+  .q-tag.correct {
+    background: linear-gradient(135deg, var(--neon-lime), #5BFF3B);
+    box-shadow: 0 3px 0 var(--ink-stroke), 0 0 12px rgba(200, 255, 0, 0.55);
+  }
+
+  .q-tag.correct > span {
+    color: #090A14;
+    font-weight: 700;
+  }
+
+  .q-tag.idk {
+    background: linear-gradient(135deg, #FF2A85, #D91B6B);
+    box-shadow: 0 3px 0 var(--ink-stroke), 0 0 10px rgba(255, 42, 133, 0.4);
+  }
+
+  .q-tag.idk > span {
+    color: #FFFFFF;
+    paint-order: stroke fill;
+    -webkit-text-stroke: 2px var(--ink-stroke);
+  }
+
+  /* ── 2. 액체 물감 게이지 & 자원 숫자 ── */
+  .gauge-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .fever-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 3px;
+  }
+
+  .fever-label {
+    font-family: 'SBAggroB', sans-serif;
+    font-size: 15px;
+    color: var(--solar-yellow);
+    transform: skewX(-6deg);
+    paint-order: stroke fill;
+    -webkit-text-stroke: 3.5px var(--ink-stroke);
+    text-shadow: 2px 2px 0 var(--ink-stroke);
+  }
+
+  .fever-pct {
+    font-family: 'SBAggroB', sans-serif;
+    font-size: 13px;
+    color: var(--neon-lime);
+  }
+
+  .liquid-track {
+    position: relative;
+    height: 21px;
+    transform: skewX(-8deg);
+    background: #0A0B17;
+    border: 3px solid var(--ink-stroke);
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: inset 0 3px 6px rgba(0, 0, 0, 0.7), 0 3px 0 var(--ink-stroke);
+  }
+
+  .liquid-fill {
+    position: relative;
+    width: 84%;
+    height: 100%;
+    background: linear-gradient(90deg, #FF2A85 0%, #FFE600 48%, #C8FF00 100%);
+    border-right: 3px solid #FFFFFF;
+    box-shadow: 0 0 14px rgba(200, 255, 0, 0.7);
+  }
+
+  .liquid-fill::before {
+    content: '';
+    position: absolute;
+    top: 3px;
+    left: 6px;
+    right: 6px;
+    height: 5px;
+    background: rgba(255, 255, 255, 0.55);
+    border-radius: 4px;
+  }
+
+  .liquid-bubbles {
+    position: absolute;
+    inset: 0;
+    background-image:
+      radial-gradient(circle at 18% 60%, rgba(255, 255, 255, 0.55) 2px, transparent 3px),
+      radial-gradient(circle at 42% 35%, rgba(255, 255, 255, 0.45) 3px, transparent 4px),
+      radial-gradient(circle at 69% 65%, rgba(255, 255, 255, 0.6) 2.5px, transparent 3.5px),
+      radial-gradient(circle at 88% 45%, rgba(255, 255, 255, 0.5) 2px, transparent 3px);
+  }
+
+  .res-meters {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  .res-card {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: #121428;
+    border: 2.5px solid var(--ink-stroke);
+    border-radius: 9px;
+    padding: 7px 10px;
+    box-shadow: 0 3px 0 var(--ink-stroke);
+  }
+
+  .res-info {
+    flex: 1;
+  }
+
+  .res-name {
+    font-size: 11.5px;
+    color: var(--text-muted);
+  }
+
+  .res-num {
+    font-family: 'SBAggroB', sans-serif;
+    font-size: 18px;
+    paint-order: stroke fill;
+    -webkit-text-stroke: 3px var(--ink-stroke);
+  }
+
+  .res-bar-mini {
+    height: 7px;
+    background: #090A14;
+    border-radius: 4px;
+    margin-top: 3px;
+    overflow: hidden;
+  }
+
+  .res-bar-mini > div {
+    height: 100%;
+    border-radius: 4px;
+  }
+
+  /* ── 3. 한글 게임 타이포 견본 ── */
+  .typo-list {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+
+  .typo-row {
+    display: grid;
+    grid-template-columns: 185px 1fr;
+    align-items: center;
+    gap: 10px;
+    background: #121428;
+    border: 2px solid #2A2F54;
+    border-radius: 8px;
+    padding: 5px 10px;
+  }
+
+  .typo-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+  }
+
+  .typo-name {
+    font-family: 'SBAggroB', sans-serif;
+    font-size: 12px;
+    color: var(--electric-cyan);
+  }
+
+  .typo-lic {
+    font-size: 10.5px;
+    color: var(--neon-lime);
+  }
+
+  .typo-sample-bhs {
+    font-family: 'Black Han Sans', sans-serif;
+    font-size: 19px;
+    color: var(--solar-yellow);
+    transform: skewX(-6deg);
+    paint-order: stroke fill;
+    -webkit-text-stroke: 3.5px var(--ink-stroke);
+    text-shadow: 2px 2px 0 var(--ink-stroke);
+  }
+
+  .typo-sample-sb {
+    font-family: 'SBAggroB', sans-serif;
+    font-size: 16px;
+    color: #FFFFFF;
+    transform: skewX(-6deg);
+    paint-order: stroke fill;
+    -webkit-text-stroke: 3px var(--ink-stroke);
+    text-shadow: 2px 2px 0 var(--ink-stroke);
+  }
+
+  .typo-sample-dh {
+    font-family: 'Do Hyeon', sans-serif;
+    font-size: 14.5px;
+    color: #E2E8F0;
+  }
+
+  /* ── 4. 크로매틱 홀로그램 희귀도 4단계 카드 ── */
+  .rarity-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+  }
+
+  .r-card {
+    position: relative;
+    border: 3px solid var(--ink-stroke);
+    border-radius: 12px;
+    padding: 12px 8px 13px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 5px 0 var(--ink-stroke);
+    overflow: hidden;
+  }
+
+  .r-card::before {
+    content: '';
+    position: absolute;
+    top: -18px;
+    left: -20px;
+    width: 140%;
+    height: 36px;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.28), transparent);
+    transform: rotate(-8deg);
+    pointer-events: none;
+  }
+
+  .r-card.common {
+    background: linear-gradient(165deg, #4B5373 0%, #262B42 100%);
+  }
+
+  .r-card.rare {
+    background: linear-gradient(165deg, #00E5FF 0%, #0066CC 65%, #162447 100%);
+    box-shadow: 0 5px 0 var(--ink-stroke), 0 0 14px rgba(0, 229, 255, 0.45);
+  }
+
+  .r-card.epic {
+    background: linear-gradient(165deg, #C77DFF 0%, #7B2CBF 60%, #240046 100%);
+    box-shadow: 0 5px 0 var(--ink-stroke), 0 0 14px rgba(157, 78, 221, 0.55);
+  }
+
+  .r-card.legend {
+    background: linear-gradient(135deg, #FF2A85 0%, #FFE600 32%, #C8FF00 62%, #00E5FF 100%);
+    box-shadow: 0 5px 0 var(--ink-stroke), 0 0 20px rgba(255, 230, 0, 0.65);
+  }
+
+  .r-card.legend .r-inner-plate {
+    background: rgba(18, 19, 36, 0.88);
+    border-radius: 9px;
+    padding: 6px 6px 8px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    border: 2px solid var(--ink-stroke);
+  }
+
+  .r-tier-pill {
+    transform: skewX(-8deg);
+    font-family: 'SBAggroB', sans-serif;
+    font-size: 11px;
+    padding: 2px 9px;
+    border: 2px solid var(--ink-stroke);
+    border-radius: 5px;
+    color: #090A14;
+    background: #CBD5E1;
+    box-shadow: 2px 2px 0 var(--ink-stroke);
+  }
+
+  .r-card.rare .r-tier-pill { background: var(--electric-cyan); }
+  .r-card.epic .r-tier-pill { background: #E0AAFF; }
+  .r-card.legend .r-tier-pill { background: var(--solar-yellow); }
+
+  .r-symbol-box {
+    width: 84px;
+    height: 84px;
+    border-radius: 10px;
+    background: rgba(9, 10, 20, 0.55);
+    border: 2px solid rgba(255, 255, 255, 0.22);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .r-name {
+    font-family: 'SBAggroB', sans-serif;
+    font-size: 12.5px;
+    color: #FFFFFF;
+    text-align: center;
+    paint-order: stroke fill;
+    -webkit-text-stroke: 2.5px var(--ink-stroke);
+  }
+
+  .r-stat {
+    font-size: 11px;
+    color: #E2E8F0;
+    background: rgba(9, 10, 20, 0.6);
+    padding: 2px 8px;
+    border-radius: 99px;
+  }
+
+  /* ── 5. 입체 컬러 네온 SVG 게임 아이콘 8종 ── */
+  .icon-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+  }
+
+  .icon-cell {
+    background: linear-gradient(160deg, #161933, #0F1124);
+    border: 2.5px solid var(--ink-stroke);
+    border-radius: 11px;
+    padding: 13px 6px 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 7px;
+    box-shadow: 0 4px 0 var(--ink-stroke);
+    position: relative;
+  }
+
+  .icon-cell::after {
+    content: '';
+    position: absolute;
+    top: 5px;
+    right: 6px;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--neon-lime);
+    box-shadow: 0 0 8px var(--neon-lime);
+  }
+
+  .icon-cell:nth-child(even)::after {
+    background: var(--electric-cyan);
+    box-shadow: 0 0 8px var(--electric-cyan);
+  }
+
+  .icon-cell:nth-child(3)::after,
+  .icon-cell:nth-child(7)::after {
+    background: var(--hot-magenta);
+    box-shadow: 0 0 8px var(--hot-magenta);
+  }
+
+  .icon-label {
+    font-family: 'SBAggroB', sans-serif;
+    font-size: 12px;
+    color: #F8FAFC;
+    paint-order: stroke fill;
+    -webkit-text-stroke: 2.5px var(--ink-stroke);
+  }
+</style>
+</head>
+<body>
+<div class="canvas">
+  <div class="bg-graffiti"></div>
+
+  <!-- 배경 물감 스플래시 레이어 -->
+  <svg class="bg-splash-svg" viewBox="0 0 1280 720" fill="none">
+    <!-- 좌상단 라임 페인트 스플래터 -->
+    <path d="M-20 40 C35 12, 85 52, 118 28 C132 16, 152 38, 134 62 C110 92, 54 88, 12 122 C-15 142, -30 85, -20 40Z" fill="#C8FF00" opacity="0.24"/>
+    <circle cx="162" cy="48" r="7" fill="#C8FF00" opacity="0.45"/>
+    <circle cx="144" cy="84" r="4" fill="#C8FF00" opacity="0.45"/>
+    <!-- 우상단 시안 스플래터 -->
+    <path d="M1140 -10 C1195 15, 1245 -5, 1295 35 L1295 135 C1240 112, 1190 128, 1160 88 C1135 55, 1110 22, 1140 -10Z" fill="#00E5FF" opacity="0.2"/>
+    <circle cx="1115" cy="65" r="6" fill="#00E5FF" opacity="0.4"/>
+    <!-- 우하단 핫 마젠타 스플래터 -->
+    <path d="M1120 695 C1155 645, 1215 660, 1255 612 C1275 588, 1295 620, 1295 730 L1085 730 C1095 712, 1106 710, 1120 695Z" fill="#FF2A85" opacity="0.24"/>
+    <circle cx="1072" cy="676" r="8" fill="#FF2A85" opacity="0.4"/>
+    <circle cx="1102" cy="648" r="4.5" fill="#FFE600" opacity="0.5"/>
+  </svg>
+
+  <!-- 상단 헤더 -->
+  <header class="header">
+    <div class="header-left">
+      <div class="n5-badge">N5 · STREET POP</div>
+      <div class="title-main">네온 페인트 스플래시 팝 · UI 키트</div>
+      <div class="title-sub">4지선다 + 모르겠어요</div>
+    </div>
+
+    <div class="header-right">
+      <div class="grade-tags">
+        <div class="grade-tag">3G</div>
+        <div class="grade-tag">4G</div>
+        <div class="grade-tag active">5G</div>
+        <div class="grade-tag six">6G</div>
+      </div>
+
+      <div class="hud-pill">
+        <svg width="20" height="20" viewBox="0 0 24 24">
+          <circle cx="12" cy="12" r="10" fill="#FFE600" stroke="#090A14" stroke-width="2.5"/>
+          <path d="M12 5 L14 9.5 L19 10 L15.3 13.4 L16.3 18.5 L12 16 L7.7 18.5 L8.7 13.4 L5 10 L10 9.5 Z" fill="#FFF7AE" stroke="#090A14" stroke-width="1.3"/>
+        </svg>
+        <span class="hud-val gold stroke-text-sm">340G</span>
+      </div>
+
+      <div class="hud-pill">
+        <svg width="20" height="20" viewBox="0 0 24 24">
+          <path d="M12 2 L20 5.5 V12 C20 17 16.5 20.5 12 22 C7.5 20.5 4 17 4 12 V5.5 Z" fill="#00E5FF" stroke="#090A14" stroke-width="2.5"/>
+          <path d="M12 5.5 L17 7.8 V12 C17 15.2 14.8 17.8 12 19 C9.2 17.8 7 15.2 7 12 V7.8 Z" fill="#A5F3FC"/>
+        </svg>
+        <span class="hud-val cyan stroke-text-sm">15/15</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- 메인 2열 -->
+  <main class="grid-main">
+    <!-- 좌측 칼럼 -->
+    <div class="col">
+      <!-- 1. 스플래시 평행사변형 버튼 & 퀴즈 도크 -->
+      <section class="panel">
+        <div class="panel-head">
+          <div class="panel-title lime">01 · 스플래시 평행사변형 버튼 &amp; 퀴즈 태그</div>
+          <span class="panel-note">skewX(-8deg) · stroke fill · 글로시 하이라이트</span>
+        </div>
+
+        <div class="btn-showcase-row">
+          <div class="splash-btn primary">
+            <div class="btn-main-txt">배틀 스타트!</div>
+            <div class="btn-sub-txt">기본 CTA · Hover Glow</div>
+          </div>
+          <div class="splash-btn pressed">
+            <div class="btn-main-txt">잉크 충전중</div>
+            <div class="btn-sub-txt">눌림 · +4px 스퀴시</div>
+          </div>
+          <div class="splash-btn disabled">
+            <div class="btn-main-txt">잠금</div>
+            <div class="btn-sub-txt">비활성 · Lv4 필요</div>
+          </div>
+        </div>
+
+        <div class="quiz-demo-box">
+          <div class="quiz-q-line">
+            <span class="quiz-word">Q. 「용기」와 뜻이 비슷한 낱말은?</span>
+            <span class="quiz-rule-pill">고정 하단 퀴즈 · 4지선다 + 모르겠어요</span>
+          </div>
+          <div class="quiz-options">
+            <div class="q-tag"><span>① 두려움</span></div>
+            <div class="q-tag correct"><span>② 담력</span></div>
+            <div class="q-tag"><span>③ 망설임</span></div>
+            <div class="q-tag"><span>④ 포기</span></div>
+            <div class="q-tag idk"><span>모르겠어요</span></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 2. 액체 물감 게이지 & 자원 숫자 -->
+      <section class="panel">
+        <div class="panel-head">
+          <div class="panel-title magenta">02 · 액체 물감 게이지 &amp; 자원 HUD</div>
+          <span class="panel-note">젖은 페인트 웨이브 · 고대비 수치</span>
+        </div>
+
+        <div class="gauge-grid">
+          <div>
+            <div class="fever-row">
+              <span class="fever-label">피버 스플래시 5콤보!</span>
+              <span class="fever-pct">OVERDRIVE 84%</span>
+            </div>
+            <div class="liquid-track">
+              <div class="liquid-fill">
+                <div class="liquid-bubbles"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="res-meters">
+            <div class="res-card">
+              <svg width="30" height="30" viewBox="0 0 28 28">
+                <circle cx="14" cy="14" r="11.5" fill="#FFE600" stroke="#090A14" stroke-width="2.5"/>
+                <path d="M14 6 L16.3 11 L21.5 11.7 L17.7 15.3 L18.7 20.5 L14 18 L9.3 20.5 L10.3 15.3 L6.5 11.7 L11.7 11 Z" fill="#FFFBEB" stroke="#090A14" stroke-width="1.3"/>
+              </svg>
+              <div class="res-info">
+                <div class="res-name">잉크 코인 (골드 자원)</div>
+                <div class="res-num" style="color:#FFE600;">340G</div>
+                <div class="res-bar-mini"><div style="width:74%; background:linear-gradient(90deg,#FFB703,#FFE600);"></div></div>
+              </div>
+            </div>
+
+            <div class="res-card">
+              <svg width="30" height="30" viewBox="0 0 28 28">
+                <path d="M14 2.5 L23.5 6.5 V14 C23.5 19.8 19.2 23.8 14 25.5 C8.8 23.8 4.5 19.8 4.5 14 V6.5 Z" fill="#00E5FF" stroke="#090A14" stroke-width="2.5"/>
+                <path d="M14 7 L19.5 9.5 V14 C19.5 17.5 17 20.3 14 21.5 C11 20.3 8.5 17.5 8.5 14 V9.5 Z" fill="#E0FCFF"/>
+              </svg>
+              <div class="res-info">
+                <div class="res-name">성문 실드 (방어 체력)</div>
+                <div class="res-num" style="color:#00E5FF;">15/15</div>
+                <div class="res-bar-mini"><div style="width:100%; background:linear-gradient(90deg,#00B4D8,#00E5FF);"></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 3. 한글 게임 타이포 견본 + 상업 무료 라이선스 -->
+      <section class="panel" style="flex:1;">
+        <div class="panel-head">
+          <div class="panel-title yellow">03 · 한글 게임 타이포 &amp; 상업 무료 라이선스</div>
+          <span class="panel-note">전체 상업적 웹·게임 임베드 무료</span>
+        </div>
+
+        <div class="typo-list">
+          <div class="typo-row">
+            <div class="typo-meta">
+              <span class="typo-name">Black Han Sans</span>
+              <span class="typo-lic">SIL OFL 1.1 · 상업 무료</span>
+            </div>
+            <div class="typo-sample-bhs">네온 페인트 5콤보!</div>
+          </div>
+          <div class="typo-row">
+            <div class="typo-meta">
+              <span class="typo-name">SBAggroB (어그로체 B)</span>
+              <span class="typo-lic">샌드박스 무료 폰트 · 상업 무료</span>
+            </div>
+            <div class="typo-sample-sb">배틀 스타트! · 전설 Lv7</div>
+          </div>
+          <div class="typo-row">
+            <div class="typo-meta">
+              <span class="typo-name">Do Hyeon (도현체)</span>
+              <span class="typo-lic">SIL OFL 1.1 · 상업 무료</span>
+            </div>
+            <div class="typo-sample-dh">뜻풀이: 어려운 일에 맞서는 굳센 마음 (4지선다 본문)</div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- 우측 칼럼 -->
+    <div class="col">
+      <!-- 4. 크로매틱 홀로그램 희귀도 4단계 카드 -->
+      <section class="panel">
+        <div class="panel-head">
+          <div class="panel-title">04 · 크로매틱 홀로그램 희귀도 4단계 카드</div>
+          <span class="panel-note">스트리트 그래피티 배지 심볼 내장</span>
+        </div>
+
+        <div class="rarity-grid">
+          <!-- 일반 -->
+          <div class="r-card common">
+            <div class="r-tier-pill">일반</div>
+            <div class="r-symbol-box">
+              <svg width="56" height="56" viewBox="0 0 64 64">
+                <polygon points="32,6 54,19 54,45 32,58 10,45 10,19" fill="#64748B" stroke="#090A14" stroke-width="3.5"/>
+                <polygon points="32,14 46,22 46,42 32,50 18,42 18,22" fill="#94A3B8" stroke="#090A14" stroke-width="2.5"/>
+                <circle cx="32" cy="32" r="7" fill="#1E293B" stroke="#E2E8F0" stroke-width="2"/>
+              </svg>
+            </div>
+            <div class="r-name">스틸 노즐</div>
+            <div class="r-stat">스틸 그레이 · Lv1</div>
+          </div>
+
+          <!-- 희귀 -->
+          <div class="r-card rare">
+            <div class="r-tier-pill">희귀</div>
+            <div class="r-symbol-box">
+              <svg width="56" height="56" viewBox="0 0 64 64">
+                <path d="M12 44 C18 28, 30 22, 48 16 L40 8 L58 14 L46 30 L42 22 C30 28, 22 36, 18 52 Z" fill="#00E5FF" stroke="#090A14" stroke-width="3.2" stroke-linejoin="round"/>
+                <circle cx="16" cy="20" r="5" fill="#7DF9FF" stroke="#090A14" stroke-width="2"/>
+                <circle cx="48" cy="46" r="6" fill="#00E5FF" stroke="#090A14" stroke-width="2"/>
+                <circle cx="26" cy="14" r="3" fill="#FFFFFF"/>
+              </svg>
+            </div>
+            <div class="r-name">시안 스플래터</div>
+            <div class="r-stat">네온 시안 · Lv3</div>
+          </div>
+
+          <!-- 영웅 -->
+          <div class="r-card epic">
+            <div class="r-tier-pill">영웅</div>
+            <div class="r-symbol-box">
+              <svg width="56" height="56" viewBox="0 0 64 64">
+                <path d="M36 6 L16 34 H31 L25 58 L48 27 H33 Z" fill="#E0AAFF" stroke="#090A14" stroke-width="3.5" stroke-linejoin="round"/>
+                <path d="M35 12 L22 31 H34 L29 48 L43 30 H32 Z" fill="#FFFFFF" opacity="0.65"/>
+                <circle cx="15" cy="18" r="4" fill="#FF2A85" stroke="#090A14" stroke-width="2"/>
+                <circle cx="50" cy="46" r="4.5" fill="#00E5FF" stroke="#090A14" stroke-width="2"/>
+              </svg>
+            </div>
+            <div class="r-name">퍼플 볼트</div>
+            <div class="r-stat">일렉트릭 퍼플 · Lv5</div>
+          </div>
+
+          <!-- 전설 -->
+          <div class="r-card legend">
+            <div class="r-inner-plate">
+              <div class="r-tier-pill">전설 ★</div>
+              <div class="r-symbol-box" style="height:68px; border-color:#FFE600;">
+                <svg width="56" height="56" viewBox="0 0 64 64">
+                  <defs>
+                    <linearGradient id="legGrad" x1="0" y1="0" x2="1" y2="1">
+                      <stop offset="0%" stop-color="#FF2A85"/>
+                      <stop offset="50%" stop-color="#FFE600"/>
+                      <stop offset="100%" stop-color="#00E5FF"/>
+                    </linearGradient>
+                  </defs>
+                  <path d="M8 46 L14 18 L26 30 L32 10 L38 30 L50 18 L56 46 Z" fill="url(#legGrad)" stroke="#090A14" stroke-width="3.5" stroke-linejoin="round"/>
+                  <rect x="10" y="46" width="44" height="8" rx="3" fill="#FFE600" stroke="#090A14" stroke-width="3"/>
+                  <circle cx="32" cy="36" r="4.5" fill="#FFFFFF" stroke="#090A14" stroke-width="2"/>
+                </svg>
+              </div>
+              <div class="r-name" style="color:#FFE600;">크로마 크라운</div>
+              <div class="r-stat" style="color:#C8FF00;">홀로 무지개 · Lv7</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 5. 입체 컬러 네온 SVG 게임 아이콘 8종 -->
+      <section class="panel" style="flex:1;">
+        <div class="panel-head">
+          <div class="panel-title lime">05 · 입체 컬러 네온 SVG 게임 아이콘 8종</div>
+          <span class="panel-note">초경량 벡터 · 4px #090A14 외곽선 · 글로시 하이라이트</span>
+        </div>
+
+        <div class="icon-grid">
+          <!-- 1. 스프레이캔 -->
+          <div class="icon-cell">
+            <svg width="64" height="64" viewBox="0 0 64 64">
+              <defs>
+                <linearGradient id="canG" x1="0" y1="0" x2="1" y2="1">
+                  <stop offset="0%" stop-color="#FF2A85"/>
+                  <stop offset="100%" stop-color="#9D4EDD"/>
+                </linearGradient>
+              </defs>
+              <rect x="26" y="7" width="12" height="7" rx="2" fill="#FFFFFF" stroke="#090A14" stroke-width="2.8"/>
+              <circle cx="44" cy="9" r="3" fill="#00E5FF"/>
+              <circle cx="51" cy="6" r="2" fill="#C8FF00"/>
+              <circle cx="51" cy="14" r="2.2" fill="#FFE600"/>
+              <path d="M21 18 C21 14, 43 14, 43 18 L45 22 H19 Z" fill="#CBD5E1" stroke="#090A14" stroke-width="3"/>
+              <rect x="18" y="22" width="28" height="34" rx="5" fill="url(#canG)" stroke="#090A14" stroke-width="3.2"/>
+              <rect x="21" y="26" width="5" height="24" rx="2.5" fill="rgba(255,255,255,0.42)"/>
+              <path d="M26 37 L32 30 L38 37 L32 45 Z" fill="#C8FF00" stroke="#090A14" stroke-width="2.2"/>
+            </svg>
+            <span class="icon-label">스프레이캔</span>
+          </div>
+
+          <!-- 2. 페인트활 -->
+          <div class="icon-cell">
+            <svg width="64" height="64" viewBox="0 0 64 64">
+              <path d="M18 12 C42 14, 48 26, 48 32 C48 38, 42 50, 18 52" fill="none" stroke="#090A14" stroke-width="8" stroke-linecap="round"/>
+              <path d="M18 12 C42 14, 48 26, 48 32 C48 38, 42 50, 18 52" fill="none" stroke="#00E5FF" stroke-width="4.2" stroke-linecap="round"/>
+              <line x1="18" y1="13" x2="18" y2="51" stroke="#E2E8F0" stroke-width="2.2"/>
+              <line x1="14" y1="32" x2="54" y2="32" stroke="#090A14" stroke-width="6" stroke-linecap="round"/>
+              <line x1="14" y1="32" x2="52" y2="32" stroke="#C8FF00" stroke-width="3" stroke-linecap="round"/>
+              <polygon points="57,32 45,24 47,32 45,40" fill="#FF2A85" stroke="#090A14" stroke-width="2.5" stroke-linejoin="round"/>
+            </svg>
+            <span class="icon-label">페인트활</span>
+          </div>
+
+          <!-- 3. 물감폭탄 -->
+          <div class="icon-cell">
+            <svg width="64" height="64" viewBox="0 0 64 64">
+              <path d="M36 16 C38 10, 44 8, 49 11" fill="none" stroke="#FFE600" stroke-width="3.5" stroke-linecap="round"/>
+              <polygon points="51,6 53,10 58,10 54,13 56,17 51,15 47,17 48,13 45,10 49,10" fill="#FF2A85" stroke="#090A14" stroke-width="1.6"/>
+              <rect x="27" y="15" width="10" height="7" rx="2" fill="#94A3B8" stroke="#090A14" stroke-width="2.8"/>
+              <circle cx="32" cy="38" r="18" fill="#1E293B" stroke="#090A14" stroke-width="3.4"/>
+              <path d="M18 32 C24 25, 39 27, 47 34 C48 45, 41 53, 32 54 C21 54, 15 44, 18 32Z" fill="#C8FF00" opacity="0.9"/>
+              <ellipse cx="25" cy="30" rx="5" ry="3" transform="rotate(-25 25 30)" fill="#FFFFFF" opacity="0.7"/>
+              <circle cx="34" cy="40" r="4" fill="#FF2A85" stroke="#090A14" stroke-width="2"/>
+            </svg>
+            <span class="icon-label">물감폭탄</span>
+          </div>
+
+          <!-- 4. DJ헤드셋 -->
+          <div class="icon-cell">
+            <svg width="64" height="64" viewBox="0 0 64 64">
+              <path d="M14 36 V28 C14 17, 22 10, 32 10 C42 10, 50 17, 50 28 V36" fill="none" stroke="#090A14" stroke-width="9" stroke-linecap="round"/>
+              <path d="M14 36 V28 C14 17, 22 10, 32 10 C42 10, 50 17, 50 28 V36" fill="none" stroke="#00E5FF" stroke-width="4.5" stroke-linecap="round"/>
+              <rect x="9" y="30" width="11" height="20" rx="5" fill="#FF2A85" stroke="#090A14" stroke-width="3"/>
+              <rect x="44" y="30" width="11" height="20" rx="5" fill="#FF2A85" stroke="#090A14" stroke-width="3"/>
+              <circle cx="14.5" cy="40" r="3" fill="#FFE600"/>
+              <circle cx="49.5" cy="40" r="3" fill="#FFE600"/>
+            </svg>
+            <span class="icon-label">DJ헤드셋</span>
+          </div>
+
+          <!-- 5. 왕관 -->
+          <div class="icon-cell">
+            <svg width="64" height="64" viewBox="0 0 64 64">
+              <defs>
+                <linearGradient id="crG" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="#FFF56B"/>
+                  <stop offset="100%" stop-color="#FFB703"/>
+                </linearGradient>
+              </defs>
+              <path d="M10 44 L14 18 L26 29 L32 12 L38 29 L50 18 L54 44 Z" fill="url(#crG)" stroke="#090A14" stroke-width="3.2" stroke-linejoin="round"/>
+              <rect x="11" y="44" width="42" height="9" rx="3" fill="#FF9F1C" stroke="#090A14" stroke-width="3"/>
+              <circle cx="32" cy="34" r="4" fill="#00E5FF" stroke="#090A14" stroke-width="2"/>
+              <circle cx="20" cy="37" r="3" fill="#FF2A85" stroke="#090A14" stroke-width="1.8"/>
+              <circle cx="44" cy="37" r="3" fill="#C8FF00" stroke="#090A14" stroke-width="1.8"/>
+            </svg>
+            <span class="icon-label">왕관</span>
+          </div>
+
+          <!-- 6. 번개콤보 -->
+          <div class="icon-cell">
+            <svg width="64" height="64" viewBox="0 0 64 64">
+              <path d="M36 7 L14 35 H30 L24 57 L50 26 H34 Z" fill="#FFE600" stroke="#090A14" stroke-width="3.4" stroke-linejoin="round"/>
+              <path d="M34 13 L21 32 H33 L29 47 L43 29 H32 Z" fill="#FFFFFF" opacity="0.65"/>
+              <circle cx="16" cy="18" r="4" fill="#C8FF00" stroke="#090A14" stroke-width="2"/>
+              <circle cx="48" cy="46" r="4.5" fill="#FF2A85" stroke="#090A14" stroke-width="2"/>
+            </svg>
+            <span class="icon-label">번개콤보</span>
+          </div>
+
+          <!-- 7. 네온실드 -->
+          <div class="icon-cell">
+            <svg width="64" height="64" viewBox="0 0 64 64">
+              <defs>
+                <linearGradient id="shG" x1="0" y1="0" x2="1" y2="1">
+                  <stop offset="0%" stop-color="#00E5FF"/>
+                  <stop offset="100%" stop-color="#3B82F6"/>
+                </linearGradient>
+              </defs>
+              <path d="M32 7 L52 15 V30 C52 43 43 52 32 57 C21 52 12 43 12 30 V15 Z" fill="url(#shG)" stroke="#090A14" stroke-width="3.4" stroke-linejoin="round"/>
+              <path d="M32 13 L46 19 V30 C46 39 39.5 46 32 50 C24.5 46 18 39 18 30 V19 Z" fill="#90E0EF"/>
+              <path d="M25 31 L30 36 L40 24" fill="none" stroke="#090A14" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M25 31 L30 36 L40 24" fill="none" stroke="#C8FF00" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <span class="icon-label">네온실드</span>
+          </div>
+
+          <!-- 8. 스타코인 -->
+          <div class="icon-cell">
+            <svg width="64" height="64" viewBox="0 0 64 64">
+              <circle cx="32" cy="34" r="20" fill="#D97706" stroke="#090A14" stroke-width="3.2"/>
+              <circle cx="32" cy="30" r="20" fill="#FFE600" stroke="#090A14" stroke-width="3.2"/>
+              <circle cx="32" cy="30" r="14.5" fill="#FDE047" stroke="#B45309" stroke-width="2"/>
+              <path d="M32 18 L35.5 25.5 L43.5 26.5 L37.7 32 L39 40 L32 36.2 L25 40 L26.3 32 L20.5 26.5 L28.5 25.5 Z" fill="#FFFBEB" stroke="#090A14" stroke-width="2.2" stroke-linejoin="round"/>
+            </svg>
+            <span class="icon-label">스타코인</span>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+</div>
+</body>
+</html>

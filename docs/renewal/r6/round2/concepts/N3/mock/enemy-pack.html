@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>N3 · 브레인롯 네모 밈 몬스터 도감</title>
+  <link rel="stylesheet" href="./n3-theme.css" />
+  <style>
+    .enemy-stage {
+      width: 1280px;
+      height: 720px;
+      background:
+        radial-gradient(circle at 20% 15%, rgba(255,255,255,0.65), transparent 36%),
+        linear-gradient(180deg, #7DD3FC 0%, #BAE6FD 52%, #86EFAC 100%);
+      padding: 20px 26px;
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      gap: 14px;
+    }
+
+    .enemy-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #1E293B;
+      border: 3px solid var(--n3-ink);
+      border-radius: 10px;
+      padding: 10px 18px;
+      box-shadow: 4px 5px 0 var(--n3-ink);
+    }
+
+    .enemy-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr) 1.25fr;
+      gap: 12px;
+      min-height: 0;
+    }
+
+    .mob-card {
+      background: #FFFDF5;
+      border: 3px solid var(--n3-ink);
+      border-radius: 12px;
+      box-shadow: 0 6px 0 #CBD5E1, 4px 7px 0 var(--n3-ink);
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+    }
+
+    .mob-card.boss {
+      background: linear-gradient(180deg, #FEF9C3 0%, #FDE047 100%);
+      box-shadow: 0 6px 0 #D97706, 5px 8px 0 var(--n3-ink);
+    }
+
+    .mob-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .mob-no {
+      font-family: var(--font-display);
+      font-size: 12px;
+      background: #E2E8F0;
+      border: 2px solid var(--n3-ink);
+      border-radius: 5px;
+      padding: 2px 7px;
+    }
+
+    .boss-crown-badge {
+      background: #FB4F5A;
+      color: #FFFFFF;
+      border: 2px solid var(--n3-ink);
+      border-radius: 6px;
+      padding: 2px 8px;
+      font-family: var(--font-display);
+      font-size: 12px;
+      box-shadow: 2px 2px 0 var(--n3-ink);
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .mob-art {
+      height: 192px;
+      background: linear-gradient(180deg, #E0F2FE 0%, #F0FDF4 80%, #86EFAC 100%);
+      border: 3px solid var(--n3-ink);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+
+    .mob-card.boss .mob-art {
+      background: radial-gradient(circle at 50% 35%, #FEF08A 0%, #FDBA74 55%, #F97316 100%);
+    }
+
+    .mob-name {
+      font-family: var(--font-display);
+      font-size: 18px;
+      color: var(--n3-ink);
+      line-height: 1.15;
+    }
+
+    .mob-role {
+      display: inline-block;
+      align-self: flex-start;
+      font-size: 11px;
+      padding: 2px 7px;
+      border: 2px solid var(--n3-ink);
+      border-radius: 5px;
+      background: #DBEAFE;
+      font-family: var(--font-display);
+    }
+
+    .mob-memo {
+      background: #F8FAFC;
+      border: 2px dashed #64748B;
+      border-radius: 8px;
+      padding: 9px 10px;
+      font-size: 14.5px;
+      line-height: 1.46;
+      color: #1E293B;
+      margin-top: auto;
+      flex: 1;
+      display: block;
+    }
+
+    .mob-card.boss .mob-memo {
+      background: rgba(255, 255, 255, 0.82);
+      border-color: #9A3412;
+    }
+
+    .mob-stats {
+      display: flex;
+      justify-content: space-between;
+      font-family: var(--font-display);
+      font-size: 12px;
+      color: #475569;
+      padding-top: 2px;
+    }
+
+    .enemy-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #FFFDF5;
+      border: 3px solid var(--n3-ink);
+      border-radius: 10px;
+      padding: 9px 16px;
+      box-shadow: 4px 5px 0 var(--n3-ink);
+    }
+  </style>
+</head>
+<body>
+  <div class="enemy-stage stud-bg-pattern">
+    <header class="enemy-header">
+      <div style="display:flex; align-items:center; gap:12px;">
+        <span style="background:#FB4F5A; color:#fff; border:2.5px solid #181826; border-radius:6px; padding:4px 10px; font-family:var(--font-display); font-size:14px;">MONSTER DEX · 5종</span>
+        <h1 class="txt-outline" style="font-size:24px;">브레인롯 네모 밈 몬스터 도감</h1>
+      </div>
+      <span style="background:#FACC15; border:2.5px solid #181826; border-radius:6px; padding:4px 12px; font-family:var(--font-display); font-size:13px;">처치 시 낱말 코인 드롭!</span>
+    </header>
+
+    <main class="enemy-grid">
+      <!-- 1. 목긴 멍청닭 -->
+      <article class="mob-card">
+        <div class="mob-top">
+          <span class="mob-no">#01 일반</span>
+          <span class="mob-role" style="background:#FEF3C7;">돌격형</span>
+        </div>
+        <div class="mob-art" style="padding:0; background:#F1F5F9;">
+          <img src="./assets/mob-chicken.webp" alt="목긴 멍청닭" style="width:100%; height:100%; object-fit:cover; object-position:center;" />
+        </div>
+        <div class="mob-name">목긴 멍청닭</div>
+        <div class="mob-stats"><span>체력 80</span><span>속도 보통</span></div>
+        <div class="mob-memo">
+          <b>도감 메모:</b> 목이 블록 4칸이나 길어서 성문 너머가 다 보인다는데… 정작 눈이 사시라서 발밑 화살을 못 본다!
+        </div>
+      </article>
+
+      <!-- 2. 다리달린 네모물고기 -->
+      <article class="mob-card">
+        <div class="mob-top">
+          <span class="mob-no">#02 고속</span>
+          <span class="mob-role" style="background:#BAE6FD;">질주형</span>
+        </div>
+        <div class="mob-art" style="padding:0; background:#F1F5F9;">
+          <img src="./assets/mob-fish.webp" alt="다리달린 네모물고기" style="width:100%; height:100%; object-fit:cover; object-position:center;" />
+        </div>
+        <div class="mob-name">다리달린 네모물고기</div>
+        <div class="mob-stats"><span>체력 65</span><span>속도 빠름!</span></div>
+        <div class="mob-memo">
+          <b>도감 메모:</b> 어항 헬멧만 쓰면 육지도 내 세상! 숏다리로 타다다닥 뛰어오니 얼음예티로 속도를 줄이자.
+        </div>
+      </article>
+
+      <!-- 3. 출렁 젤리큐브 -->
+      <article class="mob-card">
+        <div class="mob-top">
+          <span class="mob-no">#03 보너스</span>
+          <span class="mob-role" style="background:#A7F3D0;">탱커 · 코인</span>
+        </div>
+        <div class="mob-art" style="padding:0; background:#F1F5F9;">
+          <img src="./assets/mob-jelly.webp" alt="출렁 젤리큐브" style="width:100%; height:100%; object-fit:cover; object-position:center;" />
+        </div>
+        <div class="mob-name">출렁 젤리큐브</div>
+        <div class="mob-stats"><span>체력 160</span><span>보상 2배!</span></div>
+        <div class="mob-memo">
+          <b>도감 메모:</b> 뱃속에 반짝이는 황금 코인을 3개나 삼킨 쫄깃한 민트 푸딩! 터트리면 골드블록이 와르르!
+        </div>
+      </article>
+
+      <!-- 4. 롤러스케이트 좀비뉴비 -->
+      <article class="mob-card">
+        <div class="mob-top">
+          <span class="mob-no">#04 돌진</span>
+          <span class="mob-role" style="background:#DDD6FE;">스케이터</span>
+        </div>
+        <div class="mob-art" style="padding:0; background:#F1F5F9;">
+          <img src="./assets/mob-zombie.webp" alt="롤러스케이트 좀비뉴비" style="width:100%; height:100%; object-fit:cover; object-position:center;" />
+        </div>
+        <div class="mob-name">롤러스케이트 좀비뉴비</div>
+        <div class="mob-stats"><span>체력 110</span><span>속도 매우빠름</span></div>
+        <div class="mob-memo">
+          <b>도감 메모:</b> 음악을 너무 크게 틀어서 타워 포격 소리가 안 들린다! 브레이크 없는 스케이트로 돌진!
+        </div>
+      </article>
+
+      <!-- 5. 보스: 황금 러버덕 왕좌 메카골렘 -->
+      <article class="mob-card boss">
+        <div class="mob-top">
+          <span class="boss-crown-badge">
+            <svg width="14" height="12" viewBox="0 0 20 16" style="display:block;">
+              <polygon points="2,14 2,4 7,8 10,2 13,8 18,4 18,14" fill="#FDE047" stroke="#181826" stroke-width="2" stroke-linejoin="round"/>
+            </svg>
+            WAVE 10 BOSS
+          </span>
+          <span class="mob-role" style="background:#181826; color:#FDE047;">거대 조종 로봇</span>
+        </div>
+        <div class="mob-art" style="background:radial-gradient(circle at 50% 42%, #F59E0B 0%, #7C2D12 58%, #181826 100%); flex-direction:column; gap:6px; padding:10px;">
+          <!-- N3 복셀 스타일 SVG 황금 왕관 & 실루엣 물음표 블록 -->
+          <svg width="170" height="110" viewBox="0 0 170 110" style="filter:drop-shadow(4px 4px 0 #181826); overflow:visible;">
+            <!-- 뒤쪽 부유 미니 복셀 파편 -->
+            <rect x="18" y="28" width="12" height="12" rx="2" fill="#FDE047" stroke="#181826" stroke-width="2.5" transform="rotate(-14 24 34)"/>
+            <rect x="140" y="24" width="12" height="12" rx="2" fill="#FB4F5A" stroke="#181826" stroke-width="2.5" transform="rotate(18 146 30)"/>
+
+            <!-- 하단 실루엣 물음표 3D 큐브 블록 -->
+            <g transform="translate(85, 72)">
+              <!-- 윗면 -->
+              <polygon points="0,-24 38,-7 0,10 -38,-7" fill="#334155" stroke="#181826" stroke-width="3.5" stroke-linejoin="round"/>
+              <!-- 윗면 스터드 4개 -->
+              <ellipse cx="0" cy="-14" rx="7" ry="3.5" fill="#475569" stroke="#181826" stroke-width="2"/>
+              <ellipse cx="-16" cy="-7" rx="7" ry="3.5" fill="#475569" stroke="#181826" stroke-width="2"/>
+              <ellipse cx="16" cy="-7" rx="7" ry="3.5" fill="#475569" stroke="#181826" stroke-width="2"/>
+              <ellipse cx="0" cy="0" rx="7" ry="3.5" fill="#475569" stroke="#181826" stroke-width="2"/>
+              <!-- 좌측 앞면 -->
+              <polygon points="-38,-7 0,10 0,36 -38,19" fill="#1E293B" stroke="#181826" stroke-width="3.5" stroke-linejoin="round"/>
+              <!-- 우측 앞면 -->
+              <polygon points="38,-7 0,10 0,36 38,19" fill="#0F172A" stroke="#181826" stroke-width="3.5" stroke-linejoin="round"/>
+              <!-- 중앙 정면 물음표 블록 플레이트 -->
+              <rect x="-15" y="-4" width="30" height="32" rx="5" fill="#181826" stroke="#FACC15" stroke-width="3"/>
+              <!-- 복셀 물음표 ? -->
+              <path d="M-6,6 L-6,2 L6,2 L6,10 L0,12 L0,17" fill="none" stroke="#FDE047" stroke-width="4.5" stroke-linecap="square" stroke-linejoin="miter"/>
+              <rect x="-2.5" y="21" width="5" height="5" fill="#FDE047"/>
+            </g>
+
+            <!-- 상단 부유 3D 복셀 황금 왕관 -->
+            <g transform="translate(85, 22)">
+              <!-- 왕관 본체 -->
+              <polygon points="-28,12 -32,-10 -14,2 0,-16 14,2 32,-10 28,12" fill="#FACC15" stroke="#181826" stroke-width="3.5" stroke-linejoin="round"/>
+              <!-- 왕관 입체 하단 띠 -->
+              <rect x="-28" y="8" width="56" height="10" rx="2" fill="#D97706" stroke="#181826" stroke-width="3"/>
+              <!-- 왕관 꼭지 복셀 블록 3개 -->
+              <rect x="-34" y="-14" width="8" height="8" rx="1.5" fill="#FEF08A" stroke="#181826" stroke-width="2.5"/>
+              <rect x="-4" y="-21" width="9" height="9" rx="1.5" fill="#FEF08A" stroke="#181826" stroke-width="2.5"/>
+              <rect x="26" y="-14" width="8" height="8" rx="1.5" fill="#FEF08A" stroke="#181826" stroke-width="2.5"/>
+              <!-- 중앙 루비 블록 보석 -->
+              <rect x="-5" y="9" width="10" height="8" rx="1.5" fill="#FB4F5A" stroke="#181826" stroke-width="2"/>
+            </g>
+          </svg>
+          <div class="txt-outline" style="font-size:20px; color:#FDE047; text-align:center; line-height:1.1;">WANTED · BOSS LOCKED</div>
+          <div style="background:rgba(24,24,38,0.88); color:#FEF08A; border:2px solid #FACC15; border-radius:7px; padding:3px 10px; font-size:12px; text-align:center; line-height:1.25;">
+            WAVE 10 도달 시 실루엣 봉인 해제!
+          </div>
+        </div>
+        <div class="mob-name" style="font-size:19px;">황금 러버덕 왕좌 메카골렘</div>
+        <div class="mob-stats" style="color:#78350F;"><span>체력 2,400</span><span>약점: 콤보 피버!</span></div>
+        <div class="mob-memo">
+          <b>보스 메모:</b> 겉보기엔 무서운 강철 메카골렘… 하지만 진짜 보스는 어깨 왕좌에 앉아 폼 잡는 선글라스 고무오리다! 꽥!
+        </div>
+      </article>
+    </main>
+
+    <footer class="enemy-footer">
+      <div style="font-size:14px;">
+        <b style="font-family:var(--font-display);">도감 보너스:</b> 모든 밈 몬스터를 한 번씩 잡으면 <b>'러버덕 모자'</b> 아바타 아이템이 해금됩니다!
+      </div>
+      <div style="display:flex; gap:10px;">
+        <span class="toy-btn toy-btn-blue" style="padding:7px 16px; font-size:14px;">← 로비로</span>
+        <span class="toy-btn toy-btn-red" style="padding:7px 18px; font-size:14px;">보스전 도전! ▶</span>
+      </div>
+    </footer>
+  </div>
+</body>
+</html>

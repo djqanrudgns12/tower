@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>N3 · 타워 3단 진화</title>
+  <link rel="stylesheet" href="./n3-theme.css" />
+  <style>
+    .evo-stage {
+      width: 1280px;
+      height: 720px;
+      background:
+        radial-gradient(circle at 80% 10%, rgba(250, 204, 21, 0.3), transparent 40%),
+        linear-gradient(180deg, #BAE6FD 0%, #E0F2FE 55%, #F0FDF4 100%);
+      padding: 20px 26px;
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      gap: 14px;
+    }
+
+    .evo-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #1E293B;
+      border: 3px solid var(--n3-ink);
+      border-radius: 10px;
+      padding: 10px 18px;
+      box-shadow: 4px 5px 0 var(--n3-ink);
+    }
+
+    .evo-cards-row {
+      display: grid;
+      grid-template-columns: 1fr 42px 1fr 42px 1fr;
+      align-items: stretch;
+      gap: 8px;
+      min-height: 0;
+    }
+
+    .evo-arrow {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .evo-arrow-chip {
+      width: 38px;
+      height: 38px;
+      background: #FACC15;
+      border: 3px solid var(--n3-ink);
+      border-radius: 8px;
+      box-shadow: 3px 3px 0 var(--n3-ink);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-display);
+      font-size: 20px;
+    }
+
+    .evo-card {
+      background: #FFFDF5;
+      border: 3px solid var(--n3-ink);
+      border-radius: 12px;
+      box-shadow: 0 6px 0 #CBD5E1, 5px 7px 0 var(--n3-ink);
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      min-height: 0;
+    }
+
+    .evo-card.tier-wood {
+      background: linear-gradient(180deg, #FFFBEB 0%, #FEF3C7 100%);
+      box-shadow: 0 6px 0 #D97706, 5px 7px 0 var(--n3-ink);
+    }
+
+    .evo-card.tier-dia {
+      background: linear-gradient(180deg, #ECFEFF 0%, #BAE6FD 100%);
+      box-shadow: 0 6px 0 #0284C7, 5px 7px 0 var(--n3-ink);
+    }
+
+    .evo-card-legend-wrap {
+      background: linear-gradient(135deg, #FDE047 0%, #FB7185 35%, #38BDF8 70%, #4ADE80 100%);
+      padding: 4px;
+      border: 3px solid var(--n3-ink);
+      border-radius: 14px;
+      box-shadow: 5px 8px 0 var(--n3-ink);
+      display: flex;
+    }
+
+    .evo-card-legend {
+      flex: 1;
+      background: linear-gradient(180deg, #FEFCE8 0%, #FEF08A 100%);
+      border: 2.5px solid var(--n3-ink);
+      border-radius: 10px;
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .evo-top-meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .tier-badge {
+      font-family: var(--font-display);
+      font-size: 13px;
+      padding: 3px 10px;
+      border: 2.5px solid var(--n3-ink);
+      border-radius: 6px;
+      box-shadow: 2px 2px 0 var(--n3-ink);
+    }
+
+    .evo-art-window {
+      position: relative;
+      height: 290px;
+      border: 3px solid var(--n3-ink);
+      border-radius: 10px;
+      overflow: hidden;
+      background: #BAE6FD;
+      box-shadow: inset 0 3px 0 rgba(255,255,255,0.6);
+    }
+
+    .evo-art-img {
+      position: absolute;
+      top: 0;
+      width: 300%;
+      height: 100%;
+      object-fit: cover;
+      max-width: none;
+    }
+
+    .art-left { left: 0%; }
+    .art-center { left: -100%; }
+    .art-right { left: -200%; }
+
+    .evo-name {
+      font-family: var(--font-display);
+      font-size: 20px;
+      color: var(--n3-ink);
+    }
+
+    .evo-desc {
+      font-size: 13px;
+      color: #334155;
+      line-height: 1.35;
+    }
+
+    /* 스탯 블록 바 */
+    .stat-bars {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-top: auto;
+      background: rgba(255, 255, 255, 0.75);
+      border: 2.5px solid var(--n3-ink);
+      border-radius: 8px;
+      padding: 8px 10px;
+    }
+
+    .stat-row {
+      display: grid;
+      grid-template-columns: 52px 1fr 44px;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+      font-family: var(--font-display);
+    }
+
+    .block-meter {
+      display: grid;
+      grid-template-columns: repeat(8, 1fr);
+      gap: 3px;
+    }
+
+    .bm-pip {
+      height: 11px;
+      background: #E2E8F0;
+      border: 1.8px solid var(--n3-ink);
+      border-radius: 2px;
+    }
+
+    .bm-pip.on-wood { background: #F59E0B; }
+    .bm-pip.on-dia { background: #0EA5E9; }
+    .bm-pip.on-gold { background: linear-gradient(180deg, #FDE047, #FB7185); }
+
+    .evo-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #FFFDF5;
+      border: 3px solid var(--n3-ink);
+      border-radius: 10px;
+      padding: 9px 16px;
+      box-shadow: 4px 5px 0 var(--n3-ink);
+    }
+  </style>
+</head>
+<body>
+  <div class="evo-stage stud-bg-pattern">
+    <header class="evo-header">
+      <div style="display:flex; align-items:center; gap:12px;">
+        <span style="background:#4ADE80; border:2.5px solid #181826; border-radius:6px; padding:4px 10px; font-family:var(--font-display); font-size:14px;">TOWER 01 · 원거리</span>
+        <h1 class="txt-outline" style="font-size:24px;">깃털후드 블록궁수 · 3단계 블록 진화</h1>
+      </div>
+      <div style="display:flex; gap:8px;">
+        <span style="background:#38BDF8; border:2.5px solid #181826; border-radius:6px; padding:4px 11px; font-family:var(--font-display); font-size:13px;">우드 → 다이아 → 황금/무지개</span>
+      </div>
+    </header>
+
+    <main class="evo-cards-row">
+      <!-- Lv 1 -->
+      <article class="evo-card tier-wood">
+        <div class="evo-top-meta">
+          <span class="tier-badge" style="background:#F59E0B; color:#fff;">LV.1 · 우드 등급</span>
+          <span style="font-family:var(--font-display); font-size:14px; color:#92400E;">배치 40G</span>
+        </div>
+        <div class="evo-art-window">
+          <img class="evo-art-img art-left" src="./assets/c-tower-evo.webp" alt="Lv1 깃털후드 풋내기 궁수" />
+        </div>
+        <div>
+          <div class="evo-name">나무활 풋내기 블록궁수</div>
+          <div class="evo-desc">나뭇잎 후드에 통통한 나무활! 기본 속도로 단일 적을 콕콕 맞힌다.</div>
+        </div>
+        <div class="stat-bars">
+          <div class="stat-row">
+            <span>공격력</span>
+            <div class="block-meter">
+              <div class="bm-pip on-wood"></div><div class="bm-pip on-wood"></div><div class="bm-pip"></div><div class="bm-pip"></div><div class="bm-pip"></div><div class="bm-pip"></div><div class="bm-pip"></div><div class="bm-pip"></div>
+            </div>
+            <span style="text-align:right;">24</span>
+          </div>
+          <div class="stat-row">
+            <span>연사속</span>
+            <div class="block-meter">
+              <div class="bm-pip on-wood"></div><div class="bm-pip on-wood"></div><div class="bm-pip on-wood"></div><div class="bm-pip"></div><div class="bm-pip"></div><div class="bm-pip"></div><div class="bm-pip"></div><div class="bm-pip"></div>
+            </div>
+            <span style="text-align:right;">1.2/s</span>
+          </div>
+          <div class="stat-row">
+            <span>사거리</span>
+            <div class="block-meter">
+              <div class="bm-pip on-wood"></div><div class="bm-pip on-wood"></div><div class="bm-pip on-wood"></div><div class="bm-pip on-wood"></div><div class="bm-pip"></div><div class="bm-pip"></div><div class="bm-pip"></div><div class="bm-pip"></div>
+            </div>
+            <span style="text-align:right;">4칸</span>
+          </div>
+        </div>
+      </article>
+
+      <div class="evo-arrow"><div class="evo-arrow-chip">▶</div></div>
+
+      <!-- Lv 4 -->
+      <article class="evo-card tier-dia">
+        <div class="evo-top-meta">
+          <span class="tier-badge" style="background:#0EA5E9; color:#fff;">LV.4 · 다이아 등급</span>
+          <span style="font-family:var(--font-display); font-size:14px; color:#0369A1;">진화 +90G</span>
+        </div>
+        <div class="evo-art-window">
+          <img class="evo-art-img art-center" src="./assets/c-tower-evo.webp" alt="Lv4 다이아몬드 연발 석궁수" />
+        </div>
+        <div>
+          <div class="evo-name">다이아몬드 연발 석궁수</div>
+          <div class="evo-desc">하늘빛 다이아 갑옷 + 쌍발 크리스탈 석궁! 화살 2발을 연속 발사한다.</div>
+        </div>
+        <div class="stat-bars">
+          <div class="stat-row">
+            <span>공격력</span>
+            <div class="block-meter">
+              <div class="bm-pip on-dia"></div><div class="bm-pip on-dia"></div><div class="bm-pip on-dia"></div><div class="bm-pip on-dia"></div><div class="bm-pip on-dia"></div><div class="bm-pip"></div><div class="bm-pip"></div><div class="bm-pip"></div>
+            </div>
+            <span style="text-align:right;">68</span>
+          </div>
+          <div class="stat-row">
+            <span>연사속</span>
+            <div class="block-meter">
+              <div class="bm-pip on-dia"></div><div class="bm-pip on-dia"></div><div class="bm-pip on-dia"></div><div class="bm-pip on-dia"></div><div class="bm-pip on-dia"></div><div class="bm-pip on-dia"></div><div class="bm-pip"></div><div class="bm-pip"></div>
+            </div>
+            <span style="text-align:right;">2.4/s</span>
+          </div>
+          <div class="stat-row">
+            <span>사거리</span>
+            <div class="block-meter">
+              <div class="bm-pip on-dia"></div><div class="bm-pip on-dia"></div><div class="bm-pip on-dia"></div><div class="bm-pip on-dia"></div><div class="bm-pip on-dia"></div><div class="bm-pip on-dia"></div><div class="bm-pip"></div><div class="bm-pip"></div>
+            </div>
+            <span style="text-align:right;">6칸</span>
+          </div>
+        </div>
+      </article>
+
+      <div class="evo-arrow"><div class="evo-arrow-chip">▶</div></div>
+
+      <!-- Lv 7 -->
+      <div class="evo-card-legend-wrap">
+        <article class="evo-card-legend">
+          <div class="evo-top-meta">
+            <span class="tier-badge" style="background:#181826; color:#FDE047;">★ LV.7 · 전설 무지개</span>
+            <span style="font-family:var(--font-display); font-size:14px; color:#9A3412;">각성 +180G</span>
+          </div>
+          <div class="evo-art-window" style="height:284px;">
+            <img class="evo-art-img art-right" src="./assets/c-tower-evo.webp" alt="Lv7 황금 홀로그램 큐브 챔피언" />
+          </div>
+          <div>
+            <div class="evo-name">날개 갑옷 큐브 챔피언</div>
+            <div class="evo-desc">황금 날개와 무지개 홀로그램 레이저활! 경로 위 적 3마리를 한 번에 관통!</div>
+          </div>
+          <div class="stat-bars">
+            <div class="stat-row">
+              <span>공격력</span>
+              <div class="block-meter">
+                <div class="bm-pip on-gold"></div><div class="bm-pip on-gold"></div><div class="bm-pip on-gold"></div><div class="bm-pip on-gold"></div><div class="bm-pip on-gold"></div><div class="bm-pip on-gold"></div><div class="bm-pip on-gold"></div><div class="bm-pip on-gold"></div>
+              </div>
+              <span style="text-align:right;">165</span>
+            </div>
+            <div class="stat-row">
+              <span>연사속</span>
+              <div class="block-meter">
+                <div class="bm-pip on-gold"></div><div class="bm-pip on-gold"></div><div class="bm-pip on-gold"></div><div class="bm-pip on-gold"></div><div class="bm-pip on-gold"></div><div class="bm-pip on-gold"></div><div class="bm-pip on-gold"></div><div class="bm-pip on-gold"></div>
+              </div>
+              <span style="text-align:right;">3.6/s</span>
+            </div>
+            <div class="stat-row">
+              <span>사거리</span>
+              <div class="block-meter">
+                <div class="bm-pip on-gold"></div><div class="bm-pip on-gold"></div><div class="bm-pip on-gold"></div><div class="bm-pip on-gold"></div><div class="bm-pip on-gold"></div><div class="bm-pip on-gold"></div><div class="bm-pip on-gold"></div><div class="bm-pip on-gold"></div>
+              </div>
+              <span style="text-align:right;">8칸</span>
+            </div>
+          </div>
+        </article>
+      </div>
+    </main>
+
+    <footer class="evo-footer">
+      <div style="font-size:14px;">
+        <b style="font-family:var(--font-display);">진화 규칙:</b> 낱말 퀴즈 정답으로 모은 골드블록을 쓰면 외형·무기·발사 이펙트가 즉시 3단 변신합니다!
+      </div>
+      <div style="display:flex; gap:10px;">
+        <span class="toy-btn toy-btn-blue" style="padding:7px 16px; font-size:14px;">← 로비로</span>
+        <span class="toy-btn toy-btn-green" style="padding:7px 18px; font-size:14px;">전장에서 써보기 ▶</span>
+      </div>
+    </footer>
+  </div>
+</body>
+</html>

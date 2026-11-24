@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>N2 Tower Evolution - 펫 3단 진화 도감</title>
+<link rel="stylesheet" href="n2-theme.css">
+<style>
+  .evo-header {
+    position: absolute; top: 16px; left: 22px; right: 22px;
+    display: flex; align-items: center; justify-content: space-between; z-index: 10;
+  }
+  .attr-tabs { display: flex; gap: 8px; }
+  .attr-tab {
+    padding: 8px 16px; border-radius: 16px; border: 3px solid var(--ink);
+    background: rgba(255,255,255,0.92); font-family: 'Cafe24Ssurround', sans-serif; font-size: 15px;
+    box-shadow: 0 4px 0 var(--ink);
+  }
+  .attr-tab.active {
+    background: linear-gradient(180deg, #FFD633, #FF8A00); color: #FFF;
+    paint-order: stroke fill; -webkit-text-stroke: 2.5px var(--ink);
+  }
+
+  /* 3단 진화 하단 스탯 카드 3장 (배경의 3마리 진화 원화 바로 아래 배치) */
+  .evo-cards-row {
+    position: absolute; left: 32px; right: 32px; bottom: 20px;
+    display: grid; grid-template-columns: 1fr 36px 1fr 36px 1fr; align-items: center; gap: 8px;
+    z-index: 12;
+  }
+  .evo-arrow {
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    font-family: 'Cafe24Ssurround', sans-serif; font-size: 24px; color: #FFE033;
+    paint-order: stroke fill; -webkit-text-stroke: 4px var(--ink);
+    filter: drop-shadow(0 3px 0 var(--ink));
+  }
+  .evo-card .tcg-inner { padding: 12px 14px; gap: 8px; background: rgba(255,253,248,0.96); }
+  .evo-head { display: flex; align-items: center; justify-content: space-between; }
+  .lv-badge {
+    padding: 3px 10px; border-radius: 999px; border: 2px solid var(--ink);
+    font-family: 'Cafe24Ssurround', sans-serif; font-size: 12px; color: #FFF;
+    paint-order: stroke fill; -webkit-text-stroke: 2.5px var(--ink);
+  }
+  .evo-name {
+    font-family: 'Cafe24Ssurround', sans-serif; font-size: 20px; color: var(--ink);
+  }
+  .evo-desc { font-size: 14px; color: #475569; }
+  .stat-row { display: flex; align-items: center; gap: 8px; font-size: 13px; }
+  .stat-lbl { width: 52px; color: var(--ink); }
+  .stat-track {
+    flex: 1; height: 11px; border-radius: 999px; background: #E2E8F0;
+    border: 2px solid var(--ink); overflow: hidden;
+  }
+  .stat-fill { height: 100%; border-radius: 999px; }
+
+  /* 상단 원화 위 레벨 플로팅 뱃지 */
+  .stage-float {
+    position: absolute; top: 88px;
+    padding: 5px 14px; border-radius: 999px; border: 3px solid var(--ink);
+    background: #FFF; font-family: 'Cafe24Ssurround', sans-serif; font-size: 15px;
+    box-shadow: 0 4px 0 var(--ink); z-index: 9;
+  }
+</style>
+</head>
+<body>
+<div class="stage">
+  <img class="bg-art" src="assets/c-tower-evo.webp" alt="3단 진화 라인업" style="object-position: center 22%;">
+
+  <header class="evo-header">
+    <div style="display:flex;align-items:center;gap:12px;">
+      <h1 class="title-stroke" style="font-size:32px;color:#FFE033;">✨ 펫 3단 진화 도감</h1>
+      <span class="type-pill type-sun" style="font-size:14px;padding:4px 12px;">☀ 태양 / 빛 속성 계보</span>
+    </div>
+    <div class="attr-tabs">
+      <div class="attr-tab active">☀ 햇살병아리</div>
+      <div class="attr-tab">🍓 베리거북</div>
+      <div class="attr-tab">❄ 서리일각고래</div>
+      <div class="attr-tab">🌌 은하아홀로틀</div>
+    </div>
+  </header>
+
+  <div class="stage-float" style="left:115px;top:96px;">STEP 1 · 기본형</div>
+  <div class="stage-float" style="left:555px;top:76px;background:#FEF08A;">STEP 2 · 1차 진화!</div>
+  <div class="stage-float" style="right:42px;top:418px;background:var(--holo-grad);color:#FFF;paint-order:stroke fill;-webkit-text-stroke:3px var(--ink);">STEP 3 · 전설 각성!</div>
+
+  <section class="evo-cards-row">
+    <!-- Lv1 -->
+    <div class="tcg-card rarity-common evo-card">
+      <div class="tcg-inner">
+        <div class="evo-head">
+          <span class="lv-badge" style="background:#64748B;">Lv.1 일반 ★</span>
+          <span class="type-pill type-sun">빛 화살</span>
+        </div>
+        <div class="evo-name">아기 햇살병아리</div>
+        <div class="evo-desc">빛 깃털 화살 1발을 씩씩하게 쏘는 꼬마 궁수 펫!</div>
+        <div class="stat-row"><span class="stat-lbl">공격력</span><div class="stat-track"><div class="stat-fill" style="width:32%;background:#FFB800;"></div></div><span>45</span></div>
+        <div class="stat-row"><span class="stat-lbl">사거리</span><div class="stat-track"><div class="stat-fill" style="width:45%;background:#38BDF8;"></div></div><span>보통</span></div>
+      </div>
+    </div>
+
+    <div class="evo-arrow">▶</div>
+
+    <!-- Lv4 -->
+    <div class="tcg-card rarity-epic evo-card">
+      <div class="tcg-inner">
+        <div class="evo-head">
+          <span class="lv-badge" style="background:#EC4899;">Lv.4 영웅 ★★★</span>
+          <span class="type-pill type-sun">쌍빛 연사</span>
+        </div>
+        <div class="evo-name">폭풍매 사수</div>
+        <div class="evo-desc">멋진 붉은 스카프와 쌍빛날개로 빠른 2연발 빛화살!</div>
+        <div class="stat-row"><span class="stat-lbl">공격력</span><div class="stat-track"><div class="stat-fill" style="width:65%;background:#FF8A00;"></div></div><span>115</span></div>
+        <div class="stat-row"><span class="stat-lbl">사거리</span><div class="stat-track"><div class="stat-fill" style="width:72%;background:#38BDF8;"></div></div><span>넓음</span></div>
+      </div>
+    </div>
+
+    <div class="evo-arrow">▶</div>
+
+    <!-- Lv7 -->
+    <div class="tcg-card rarity-legend evo-card">
+      <div class="tcg-inner">
+        <div class="evo-head">
+          <span class="lv-badge" style="background:linear-gradient(90deg,#FF4D8D,#FFB800);">Lv.7 전설 ★★★★</span>
+          <span class="type-pill type-sun">태양 유성우</span>
+        </div>
+        <div class="evo-name">태양불사조 수호신</div>
+        <div class="evo-desc">황금-크림슨 불꽃 날개와 왕관 오라로 전장을 휩쓴다!</div>
+        <div class="stat-row"><span class="stat-lbl">공격력</span><div class="stat-track"><div class="stat-fill" style="width:96%;background:var(--holo-grad);"></div></div><span>290</span></div>
+        <div class="stat-row"><span class="stat-lbl">사거리</span><div class="stat-track"><div class="stat-fill" style="width:95%;background:#2CE6A8;"></div></div><span>초광역</span></div>
+      </div>
+    </div>
+  </section>
+</div>
+</body>
+</html>

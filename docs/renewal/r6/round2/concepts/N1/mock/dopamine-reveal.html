@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>N1 전설 진화 해금 · 툰 3D 브롤 아레나</title>
+  <link rel="stylesheet" href="n1-shared.css" />
+  <style>
+    .reveal-top {
+      position: absolute;
+      top: 16px;
+      left: 50%;
+      transform: translateX(-50%);
+      text-align: center;
+      z-index: 25;
+      width: 960px;
+    }
+    .legend-rainbow-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 22px;
+      background: linear-gradient(135deg, #FF4D8D, #FFD60A, #22C55E, #00E5FF, #A855F7);
+      border: 3.5px solid #FFFBEB;
+      outline: 3.5px solid #070B1E;
+      border-radius: 99px;
+      transform: skewX(-8deg);
+      box-shadow: 0 5px 0 #070B1E, 0 0 24px rgba(255, 214, 10, 0.75);
+      margin-bottom: 6px;
+    }
+    .reveal-title {
+      font-family: 'Black Han Sans', sans-serif;
+      font-size: 54px;
+      line-height: 1.05;
+      color: #FFE44D;
+    }
+
+    /* Enlarged Side Perk Cards */
+    .perk-card {
+      position: absolute;
+      top: 266px;
+      width: 312px;
+      padding: 18px 22px;
+      border-radius: 18px;
+      outline: 4px solid #070B1E;
+      box-shadow:
+        inset 0 3px 0 rgba(255, 255, 255, 0.35),
+        0 8px 0 #070B1E,
+        0 0 26px rgba(192, 132, 252, 0.58);
+      z-index: 25;
+    }
+    .perk-left {
+      left: 24px;
+      transform: skewX(-6deg) rotate(-2deg);
+    }
+    .perk-right {
+      right: 24px;
+      transform: skewX(-6deg) rotate(2deg);
+    }
+    .perk-label {
+      font-family: 'SBAggroB', sans-serif;
+      font-size: 16px;
+      margin-bottom: 4px;
+    }
+    .atk-boost-num {
+      font-family: 'Black Han Sans', sans-serif;
+      font-size: 42px;
+      line-height: 1.08;
+      margin: 4px 0 6px;
+      color: #09102A;
+      paint-order: stroke fill;
+      -webkit-text-stroke: 8px #FFD60A;
+      filter: drop-shadow(0 4px 0 #070B1E) drop-shadow(0 0 12px rgba(255, 214, 10, 0.75));
+    }
+    .skill-name {
+      font-family: 'Black Han Sans', sans-serif;
+      font-size: 38px;
+      line-height: 1.08;
+      margin: 4px 0 6px;
+      color: #FFFFFF;
+      paint-order: stroke fill;
+      -webkit-text-stroke: 6px #070B1E;
+      text-shadow: 0 5px 0 #070B1E;
+    }
+    .perk-desc {
+      font-family: 'Jua', sans-serif;
+      font-size: 16px;
+      color: #F8FAFC;
+    }
+
+    /* 3D Arcade Pedestal + Ribbon Banner Overlay (completely replaces flat 2D purple box) */
+    .pedestal-ribbon-overlay {
+      position: absolute;
+      left: 50%;
+      top: 416px;
+      transform: translateX(-50%);
+      width: 560px;
+      height: 215px;
+      z-index: 20;
+      pointer-events: none;
+    }
+
+    /* Giant Claim Button */
+    .claim-wrap {
+      position: absolute;
+      bottom: 18px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 25;
+    }
+    .claim-btn {
+      width: 344px;
+      height: 76px;
+      border-radius: 20px;
+      transform: skewX(-6deg);
+      background: linear-gradient(180deg, #FFE866 0%, #FFB800 50%, #F97316 100%);
+      border: 4px solid #FFFBEB;
+      outline: 4px solid #070B1E;
+      box-shadow:
+        inset 0 4px 0 rgba(255, 255, 255, 0.75),
+        0 8px 0 #9A3412,
+        0 12px 0 #070B1E,
+        0 0 30px rgba(255, 214, 10, 0.75);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .claim-text {
+      font-family: 'Black Han Sans', sans-serif;
+      font-size: 42px;
+      color: #FFFFFF;
+    }
+  </style>
+</head>
+<body>
+  <div class="stage">
+    <img class="bg-art" src="assets/f2-reveal.webp" alt="전설 진화 해금 연출" />
+
+    <header class="reveal-top">
+      <div class="legend-rainbow-pill">
+        <svg class="unskew" width="22" height="22" viewBox="0 0 36 36">
+          <path d="M5 27 L8 11 L18 18 L28 11 L31 27 Z" fill="#FFF" stroke="#070B1E" stroke-width="2.5"/>
+        </svg>
+        <span class="unskew font-aggro stroke-sm" style="font-size:18px;">전설 진화 해금!! · LEGENDARY</span>
+      </div>
+      <div class="reveal-title stroke-xl">Lv.7 별빛 아케이드 대영웅</div>
+    </header>
+
+    <aside class="perk-card rarity-legendary perk-left">
+      <div class="unskew">
+        <div class="perk-label stroke-sm" style="color:#FFE44D;">진화 보너스</div>
+        <div class="atk-boost-num">공격력 +240%</div>
+        <div class="perk-desc stroke-sm">무지개 날개 + 천상 번개 활 장착!</div>
+      </div>
+    </aside>
+
+    <aside class="perk-card rarity-legendary perk-right">
+      <div class="unskew">
+        <div class="perk-label stroke-sm" style="color:#7DD3FC;">궁극 스킬 개방</div>
+        <div class="skill-name">별빛 유성우</div>
+        <div class="perk-desc stroke-sm">정답마다 화면 전체 별화살 비!</div>
+      </div>
+    </aside>
+
+    <!-- 3D Gold/Navy Arcade Pedestal + Ribbon Banner replacing flat 2D purple chest -->
+    <div class="pedestal-ribbon-overlay" style="top:396px; width:580px; height:235px;">
+      <svg width="580" height="235" viewBox="0 0 580 235">
+        <defs>
+          <linearGradient id="pedTop" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#38BDF8"/>
+            <stop offset="45%" stop-color="#1D4ED8"/>
+            <stop offset="100%" stop-color="#0E173B"/>
+          </linearGradient>
+          <linearGradient id="pedGold" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#FFFBEB"/>
+            <stop offset="35%" stop-color="#FFD60A"/>
+            <stop offset="100%" stop-color="#D97706"/>
+          </linearGradient>
+          <linearGradient id="pedNavy" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#1E327B"/>
+            <stop offset="60%" stop-color="#0E173B"/>
+            <stop offset="100%" stop-color="#070B1E"/>
+          </linearGradient>
+          <linearGradient id="ribbonTail" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#FFD60A"/>
+            <stop offset="55%" stop-color="#F59E0B"/>
+            <stop offset="100%" stop-color="#92400E"/>
+          </linearGradient>
+          <radialGradient id="pedGlow" cx="50%" cy="52%" r="50%">
+            <stop offset="0%" stop-color="#FFD60A" stop-opacity="0.72"/>
+            <stop offset="58%" stop-color="#00E5FF" stop-opacity="0.32"/>
+            <stop offset="100%" stop-color="#09102A" stop-opacity="0"/>
+          </radialGradient>
+        </defs>
+
+        <!-- Ambient Pedestal Glow -->
+        <ellipse cx="290" cy="144" rx="270" ry="78" fill="url(#pedGlow)"/>
+
+        <!-- Left & Right Elevated 3D Ribbon Wings (fully covers both angled 2D purple chest flaps) -->
+        <path d="M188 74 L56 14 L82 78 L46 124 L172 148 Z" fill="url(#ribbonTail)" stroke="#070B1E" stroke-width="5.5" stroke-linejoin="round"/>
+        <path d="M392 74 L524 14 L498 78 L534 124 L408 148 Z" fill="url(#ribbonTail)" stroke="#070B1E" stroke-width="5.5" stroke-linejoin="round"/>
+        <!-- Inner Navy + Gold Accent on Wings -->
+        <path d="M174 82 L76 34 L96 80 L68 116 L160 134 Z" fill="#1E327B" stroke="#FFD60A" stroke-width="2.5" stroke-linejoin="round"/>
+        <path d="M406 82 L504 34 L484 80 L512 116 L420 134 Z" fill="#1E327B" stroke="#FFD60A" stroke-width="2.5" stroke-linejoin="round"/>
+
+        <!-- 3D Extruded Pedestal Base Body -->
+        <path d="M108 130 L472 130 L446 208 C446 218, 134 218, 134 208 Z" fill="url(#pedNavy)" stroke="#070B1E" stroke-width="5.5" stroke-linejoin="round"/>
+        <!-- Gold Lower Trim Band -->
+        <path d="M124 186 Q290 206 456 186 L446 208 Q290 226 134 208 Z" fill="url(#pedGold)" stroke="#070B1E" stroke-width="4.5" stroke-linejoin="round"/>
+
+        <!-- Pedestal Upper Glowing Platform Rim -->
+        <ellipse cx="290" cy="130" rx="194" ry="46" fill="url(#pedGold)" stroke="#070B1E" stroke-width="5.5"/>
+        <ellipse cx="290" cy="124" rx="174" ry="34" fill="url(#pedTop)" stroke="#070B1E" stroke-width="3.5"/>
+        <ellipse cx="290" cy="123" rx="146" ry="24" fill="none" stroke="#7DD3FC" stroke-width="2.5" opacity="0.85"/>
+
+        <!-- Front Curved 3D Navy & Gold Arcade Ribbon Banner -->
+        <path d="M90 118 Q290 150 490 118 L474 176 Q290 206 106 176 Z" fill="url(#pedNavy)" stroke="#070B1E" stroke-width="5.5" stroke-linejoin="round"/>
+        <!-- Gold Top & Bottom Bevel Borders on Front Ribbon -->
+        <path d="M94 122 Q290 154 486 122" fill="none" stroke="#FFD60A" stroke-width="5" stroke-linecap="round"/>
+        <path d="M108 172 Q290 202 472 172" fill="none" stroke="#FFD60A" stroke-width="4.5" stroke-linecap="round"/>
+
+        <!-- Side Arcade Rivets / Cyan Gems -->
+        <circle cx="142" cy="149" r="8.5" fill="#00E5FF" stroke="#070B1E" stroke-width="3"/>
+        <circle cx="140" cy="147" r="2.6" fill="#FFFFFF"/>
+        <circle cx="438" cy="149" r="8.5" fill="#00E5FF" stroke="#070B1E" stroke-width="3"/>
+        <circle cx="436" cy="147" r="2.6" fill="#FFFFFF"/>
+
+        <!-- Center 3D Gold Medallion Badge -->
+        <circle cx="290" cy="154" r="32" fill="url(#pedGold)" stroke="#070B1E" stroke-width="5"/>
+        <circle cx="290" cy="154" r="24" fill="#1D4ED8" stroke="#FFFBEB" stroke-width="2.5"/>
+        <path d="M290 135 L295.5 147 L308 148.5 L299 157.5 L301.5 170 L290 163.5 L278.5 170 L281 157.5 L272 148.5 L284.5 147 Z" fill="#FFE44D" stroke="#070B1E" stroke-width="2.5" stroke-linejoin="round"/>
+
+        <!-- Left & Right Banner Labels -->
+        <text x="202" y="159" text-anchor="middle" font-family="'SBAggroB', sans-serif" font-size="14.5" fill="#FFE44D" stroke="#070B1E" stroke-width="4" paint-order="stroke fill">MYTHIC</text>
+        <text x="378" y="159" text-anchor="middle" font-family="'SBAggroB', sans-serif" font-size="14.5" fill="#7DD3FC" stroke="#070B1E" stroke-width="4" paint-order="stroke fill">AWAKENED</text>
+      </svg>
+    </div>
+
+    <div class="claim-wrap">
+      <button class="claim-btn">
+        <span class="unskew" style="display:flex;align-items:center;gap:12px;">
+          <svg width="34" height="34" viewBox="0 0 36 36">
+            <path d="M18 4 L22 13 L32 14 L24.5 21 L26.5 31 L18 26 L9.5 31 L11.5 21 L4 14 L14 13 Z" fill="#FFF" stroke="#070B1E" stroke-width="2.5" stroke-linejoin="round"/>
+          </svg>
+          <span class="claim-text stroke-lg">받기!</span>
+        </span>
+      </button>
+    </div>
+  </div>
+</body>
+</html>

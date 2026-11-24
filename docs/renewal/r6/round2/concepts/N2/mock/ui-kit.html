@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>N2 UI Kit - 홀로그램 카드 & 크리스털 HUD 키트</title>
+<link rel="stylesheet" href="n2-theme.css">
+<style>
+  .kit-bg {
+    background:
+      radial-gradient(circle at 12% 15%, rgba(56,189,248,0.28), transparent 40%),
+      radial-gradient(circle at 88% 85%, rgba(236,72,153,0.22), transparent 42%),
+      linear-gradient(135deg, #EFF8FF 0%, #F5F3FF 50%, #FFFBEB 100%);
+    padding: 18px 24px;
+    display: flex; flex-direction: column; gap: 14px;
+  }
+  .kit-header {
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .kit-grid {
+    flex: 1;
+    display: grid; grid-template-columns: 1.05fr 1.2fr; grid-template-rows: 1fr 1fr; gap: 14px;
+  }
+  .panel {
+    background: rgba(255,255,255,0.92);
+    border: 3.5px solid var(--ink);
+    border-radius: 22px;
+    box-shadow: 0 6px 0 var(--ink);
+    padding: 12px 16px;
+    display: flex; flex-direction: column; justify-content: space-between;
+  }
+  .panel-title {
+    font-family: 'Cafe24Ssurround', sans-serif; font-size: 16px; color: var(--ink);
+    display: flex; align-items: center; gap: 8px;
+  }
+  .panel-title::before {
+    content: ''; width: 10px; height: 10px; border-radius: 50%;
+    background: #FF4D8D; border: 2px solid var(--ink);
+  }
+  .btn-row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+  .kit-btn { padding: 9px 16px; font-size: 15px; border-radius: 16px; }
+  .kit-btn.pressed {
+    transform: translateY(4px);
+    box-shadow: inset 0 3px 0 rgba(0,0,0,0.25), 0 2px 0 var(--ink);
+  }
+  .kit-btn.disabled {
+    background: #E2E8F0; color: #64748B; -webkit-text-stroke: 0;
+    box-shadow: 0 3px 0 #94A3B8; border-color: #64748B;
+  }
+
+  .rarity-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+  .r-card { height: 194px; }
+  .r-card .tcg-inner { padding: 5px; justify-content: space-between; }
+  .r-art { height: 104px; border-radius: 8px; border: 2px solid var(--ink); overflow: hidden; }
+  .r-art img { width: 100%; height: 100%; object-fit: cover; }
+
+  .svg-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+  .svg-cell {
+    display: flex; flex-direction: column; align-items: center; gap: 4px;
+    padding: 7px 4px; border-radius: 14px; background: #F8FAFC; border: 2px solid #CBD5E1;
+    font-size: 12px; color: var(--ink);
+  }
+  .typo-box {
+    display: flex; flex-direction: column; gap: 6px;
+  }
+  .license-bar {
+    font-size: 11px; color: #475569; background: #F1F5F9; padding: 6px 10px; border-radius: 10px;
+    border: 1.5px solid #CBD5E1;
+  }
+</style>
+</head>
+<body>
+<div class="stage kit-bg">
+  <header class="kit-header">
+    <div style="display:flex;align-items:center;gap:12px;">
+      <h1 class="title-stroke" style="font-size:30px;color:#38BDF8;">🃏 N2 UI 키트 · 크리처 펫 진화 대전</h1>
+      <span class="type-pill type-galaxy" style="font-size:13px;">홀로 포일 & 크리스털 HUD</span>
+    </div>
+    <div style="display:flex;gap:8px;">
+      <div class="gem-capsule"><span style="font-family:'Cafe24Ssurround',sans-serif;">HP 18/20</span></div>
+      <div class="gem-capsule"><span style="font-family:'Cafe24Ssurround',sans-serif;">⭐ 1,240G</span></div>
+      <div class="gem-capsule"><span style="font-family:'Cafe24Ssurround',sans-serif;">🔥 5연속</span></div>
+    </div>
+  </header>
+
+  <main class="kit-grid">
+    <!-- 1. 크리스털 젤리 버튼 상태 -->
+    <section class="panel">
+      <div class="panel-title">크리스털 젤리 버튼 (기본 · 눌림 · 비활성)</div>
+      <div class="btn-row">
+        <button class="jelly-btn jelly-sun kit-btn"><span>출격 (기본)</span></button>
+        <button class="jelly-btn jelly-berry kit-btn"><span>카드팩 열기</span></button>
+        <button class="jelly-btn jelly-frost kit-btn"><span>힌트 보기</span></button>
+        <button class="jelly-btn jelly-holo kit-btn"><span>전설 각성!</span></button>
+      </div>
+      <div class="btn-row">
+        <button class="jelly-btn jelly-mint kit-btn pressed"><span>눌림 상태 (Pressed)</span></button>
+        <button class="jelly-btn kit-btn disabled"><span>비활성 (골드 부족)</span></button>
+        <span class="type-pill type-sun">☀ 태양</span>
+        <span class="type-pill type-berry">🍓 베리</span>
+        <span class="type-pill type-frost">❄ 서리</span>
+        <span class="type-pill type-galaxy">🌌 은하</span>
+      </div>
+    </section>
+
+    <!-- 2. 홀로그램 포일 희귀도 4단계 카드 -->
+    <section class="panel">
+      <div class="panel-title">홀로그램 트레이딩 카드 4단계 희귀도</div>
+      <div class="rarity-row">
+        <div class="tcg-card rarity-common r-card">
+          <div class="tcg-inner">
+            <div style="font-size:11px;display:flex;justify-content:space-between;"><b>일반</b><span>★</span></div>
+            <div class="r-art"><img src="assets/pet-chick.webp"></div>
+            <div style="font-family:'Cafe24Ssurround',sans-serif;font-size:12px;text-align:center;">햇살병아리</div>
+          </div>
+        </div>
+        <div class="tcg-card rarity-rare r-card">
+          <div class="tcg-inner">
+            <div style="font-size:11px;display:flex;justify-content:space-between;color:#0284C7;"><b>희귀</b><span>★★</span></div>
+            <div class="r-art"><img src="assets/pet-narwhal.webp"></div>
+            <div style="font-family:'Cafe24Ssurround',sans-serif;font-size:12px;text-align:center;">서리일각고래</div>
+          </div>
+        </div>
+        <div class="tcg-card rarity-epic r-card">
+          <div class="tcg-inner">
+            <div style="font-size:11px;display:flex;justify-content:space-between;color:#DB2777;"><b>영웅</b><span>★★★</span></div>
+            <div class="r-art"><img src="assets/pet-turtle.webp"></div>
+            <div style="font-family:'Cafe24Ssurround',sans-serif;font-size:12px;text-align:center;">베리거북</div>
+          </div>
+        </div>
+        <div class="tcg-card rarity-legend r-card">
+          <div class="tcg-inner">
+            <div style="font-size:11px;display:flex;justify-content:space-between;color:#7C3AED;"><b>전설</b><span>★★★★</span></div>
+            <div class="r-art"><img src="assets/phoenix-reveal.webp" style="object-position:center top;"></div>
+            <div style="font-family:'Cafe24Ssurround',sans-serif;font-size:12px;text-align:center;">태양불사조</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. 직접 그린 컬러 SVG 아이콘 8종 -->
+    <section class="panel">
+      <div class="panel-title">전용 컬러 SVG 아이콘 8종 (N2 오리지널)</div>
+      <div class="svg-grid">
+        <div class="svg-cell">
+          <svg width="36" height="36" viewBox="0 0 40 40"><path d="M8,6 L14,10 L20,6 L26,10 L32,6 L30,34 L10,34 Z" fill="#C084FC" stroke="#131B42" stroke-width="2.5"/><polygon points="20,13 22,19 28,19 23,23 25,29 20,25 15,29 17,23 12,19 18,19" fill="#FFE033" stroke="#131B42" stroke-width="1.8"/></svg>
+          <span>부스터팩</span>
+        </div>
+        <div class="svg-cell">
+          <svg width="36" height="36" viewBox="0 0 40 40"><path d="M20,35 L7,21 C3,16 4,8 11,7 C15,6 18.5,9 20,12 C21.5,9 25,6 29,7 C36,8 37,16 33,21 Z" fill="#FF4D8D" stroke="#131B42" stroke-width="2.5"/><path d="M11,12 C13,10 15,11 15,14" stroke="#FFF" stroke-width="2.5" stroke-linecap="round" fill="none"/></svg>
+          <span>하트젬</span>
+        </div>
+        <div class="svg-cell">
+          <svg width="36" height="36" viewBox="0 0 40 40"><circle cx="20" cy="20" r="15" fill="#FFE033" stroke="#131B42" stroke-width="2.5"/><polygon points="20,9 23,16 30,17 25,22 26,29 20,25 14,29 15,22 10,17 17,16" fill="#FFF7AE" stroke="#131B42" stroke-width="1.8"/></svg>
+          <span>별코인</span>
+        </div>
+        <div class="svg-cell">
+          <svg width="36" height="36" viewBox="0 0 40 40"><path d="M21,4 C26,11 32,16 30,25 C29,31 25,36 20,36 C13,36 9,30 10,23 C11,18 14,15 16,12 C16,16 18,18 20,18 C19,13 20,8 21,4 Z" fill="#FF7A00" stroke="#131B42" stroke-width="2.5"/><path d="M20,21 C23,23 24,27 23,31 C22,33 18,33 17,31 C16,28 17,24 20,21 Z" fill="#FFE033"/></svg>
+          <span>불꽃</span>
+        </div>
+        <div class="svg-cell">
+          <svg width="36" height="36" viewBox="0 0 40 40"><polygon points="20,4 25,15 36,20 25,25 20,36 15,25 4,20 15,15" fill="#38BDF8" stroke="#131B42" stroke-width="2.5"/><circle cx="20" cy="20" r="5" fill="#E0F2FE" stroke="#131B42" stroke-width="2"/></svg>
+          <span>서리</span>
+        </div>
+        <div class="svg-cell">
+          <svg width="36" height="36" viewBox="0 0 40 40"><ellipse cx="20" cy="20" rx="16" ry="8" transform="rotate(-24 20 20)" fill="none" stroke="#A855F7" stroke-width="4"/><circle cx="20" cy="20" r="8" fill="#7C3AED" stroke="#131B42" stroke-width="2.5"/><circle cx="17" cy="17" r="2.5" fill="#FFF"/></svg>
+          <span>은하</span>
+        </div>
+        <div class="svg-cell">
+          <svg width="36" height="36" viewBox="0 0 40 40"><path d="M6,30 L4,12 L14,20 L20,8 L26,20 L36,12 L34,30 Z" fill="#FFE033" stroke="#131B42" stroke-width="2.5" stroke-linejoin="round"/><circle cx="20" cy="23" r="3.5" fill="#FF4D8D" stroke="#131B42" stroke-width="1.8"/></svg>
+          <span>왕관</span>
+        </div>
+        <div class="svg-cell">
+          <svg width="36" height="36" viewBox="0 0 40 40"><polygon points="20,4 24.5,14.5 36,15.5 27,23 30,34.5 20,28.5 10,34.5 13,23 4,15.5 15.5,14.5" fill="#FFE033" stroke="#131B42" stroke-width="2.5" stroke-linejoin="round"/></svg>
+          <span>별</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. 외곽선 한글 타이포 & 폰트 라이선스 -->
+    <section class="panel">
+      <div class="panel-title">외곽선 한글 타이포 견본 & 폰트 라이선스</div>
+      <div class="typo-box">
+        <div class="title-stroke" style="font-size:30px;color:#FFE033;">Cafe24Ssurround · 태양불사조 획득!</div>
+        <div style="font-family:'Black Han Sans',sans-serif;font-size:26px;color:#FF4D8D;paint-order:stroke fill;-webkit-text-stroke:5px #131B42;">Black Han Sans · 5연속 하모니 +45G</div>
+        <div style="font-family:'Jua',sans-serif;font-size:21px;color:#131B42;">Jua 본문 · 빈칸에 알맞은 낱말을 골라 펫을 진화시키세요!</div>
+      </div>
+      <div class="license-bar">
+        <b>폰트 라이선스:</b> Cafe24Ssurround (카페24 무료 배포, 상업·임베딩 허용) · Jua / Black Han Sans (Google Fonts OFL 1.1)
+      </div>
+    </section>
+  </main>
+</div>
+</body>
+</html>

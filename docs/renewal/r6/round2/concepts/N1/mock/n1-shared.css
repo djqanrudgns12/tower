@@ -1,0 +1,228 @@
+@import url('https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Jua&display=swap');
+
+@font-face {
+  font-family: 'SBAggroB';
+  src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2108@1.1/SBAggroB.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  --n1-navy-deep: #09102A;
+  --n1-navy: #111D4A;
+  --n1-navy-light: #1C2E70;
+  --n1-cobalt: #1D4ED8;
+  --n1-gold: #FFD60A;
+  --n1-gold-dark: #D97706;
+  --n1-cyan: #00E5FF;
+  --n1-cyan-dark: #0284C7;
+  --n1-coral: #FF4757;
+  --n1-coral-dark: #B91C1C;
+  --n1-emerald: #22C55E;
+  --n1-emerald-dark: #15803D;
+  --n1-violet: #A855F7;
+  --n1-violet-dark: #6B21A8;
+  --n1-ink: #070B1E;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  user-select: none;
+}
+
+html, body {
+  width: 1280px;
+  height: 720px;
+  overflow: hidden;
+  background: var(--n1-navy-deep);
+  font-family: 'Jua', 'Apple SD Gothic Neo', sans-serif;
+  color: #FFFFFF;
+}
+
+.stage {
+  position: relative;
+  width: 1280px;
+  height: 720px;
+  overflow: hidden;
+  background: var(--n1-navy-deep);
+}
+
+.bg-art {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  pointer-events: none;
+}
+
+/* N1 Signature Thick-Outlined Arcade Typography */
+.font-title {
+  font-family: 'Black Han Sans', 'SBAggroB', sans-serif;
+  letter-spacing: -0.01em;
+}
+
+.font-aggro {
+  font-family: 'SBAggroB', 'Black Han Sans', sans-serif;
+}
+
+.font-jua {
+  font-family: 'Jua', sans-serif;
+}
+
+.stroke-sm {
+  paint-order: stroke fill;
+  -webkit-text-stroke: 3.5px var(--n1-ink);
+  text-shadow: 0 3px 0 var(--n1-ink);
+}
+
+.stroke-md {
+  paint-order: stroke fill;
+  -webkit-text-stroke: 5px var(--n1-ink);
+  text-shadow: 0 4px 0 var(--n1-ink);
+}
+
+.stroke-lg {
+  paint-order: stroke fill;
+  -webkit-text-stroke: 7px var(--n1-ink);
+  text-shadow: 0 6px 0 var(--n1-ink);
+}
+
+.stroke-xl {
+  paint-order: stroke fill;
+  -webkit-text-stroke: 10px var(--n1-ink);
+  text-shadow: 0 8px 0 var(--n1-ink);
+}
+
+/* Skewed Arcade Panel (-6deg) */
+.skew-box {
+  transform: skewX(-6deg);
+}
+.unskew {
+  transform: skewX(6deg);
+}
+
+.arcade-panel {
+  background: linear-gradient(180deg, #1A2B6D 0%, #0E173B 100%);
+  border: 3px solid var(--n1-ink);
+  box-shadow:
+    inset 0 2px 0 rgba(255, 255, 255, 0.25),
+    inset 0 -3px 0 rgba(0, 0, 0, 0.35),
+    0 5px 0 var(--n1-ink);
+  border-radius: 14px;
+}
+
+.arcade-panel-gold {
+  background: linear-gradient(180deg, #1E327B 0%, #0E173B 100%);
+  border: 3.5px solid #FFD60A;
+  outline: 3px solid var(--n1-ink);
+  box-shadow:
+    inset 0 2px 0 rgba(255, 255, 255, 0.28),
+    0 6px 0 var(--n1-ink);
+  border-radius: 16px;
+}
+
+/* 3D Bevel Extruded Arcade Buttons */
+.btn-3d {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: 3.5px solid var(--n1-ink);
+  border-radius: 14px;
+  font-family: 'SBAggroB', 'Jua', sans-serif;
+  cursor: pointer;
+  position: relative;
+  transition: transform 0.08s ease;
+}
+
+.btn-gold {
+  background: linear-gradient(180deg, #FFE866 0%, #FFD60A 55%, #F59E0B 100%);
+  color: #FFFFFF;
+  box-shadow:
+    inset 0 3px 0 rgba(255, 255, 255, 0.72),
+    inset 0 -3px 0 rgba(180, 83, 9, 0.45),
+    0 6px 0 #92400E,
+    0 9px 0 var(--n1-ink);
+}
+
+.btn-cyan {
+  background: linear-gradient(180deg, #67E8F9 0%, #00C8FF 55%, #0284C7 100%);
+  color: #FFFFFF;
+  box-shadow:
+    inset 0 3px 0 rgba(255, 255, 255, 0.65),
+    inset 0 -3px 0 rgba(7, 89, 133, 0.45),
+    0 6px 0 #075985,
+    0 9px 0 var(--n1-ink);
+}
+
+.btn-coral {
+  background: linear-gradient(180deg, #FF7B89 0%, #FF4757 55%, #DC2626 100%);
+  color: #FFFFFF;
+  box-shadow:
+    inset 0 3px 0 rgba(255, 255, 255, 0.6),
+    inset 0 -3px 0 rgba(153, 27, 27, 0.45),
+    0 6px 0 #991B1B,
+    0 9px 0 var(--n1-ink);
+}
+
+.btn-emerald {
+  background: linear-gradient(180deg, #6EE7B7 0%, #22C55E 55%, #16A34A 100%);
+  color: #FFFFFF;
+  box-shadow:
+    inset 0 3px 0 rgba(255, 255, 255, 0.65),
+    inset 0 -3px 0 rgba(21, 128, 61, 0.45),
+    0 6px 0 #15803D,
+    0 9px 0 var(--n1-ink);
+}
+
+.btn-navy {
+  background: linear-gradient(180deg, #334894 0%, #1E2E6E 60%, #15204D 100%);
+  color: #E2E8F0;
+  box-shadow:
+    inset 0 2px 0 rgba(255, 255, 255, 0.3),
+    0 5px 0 #0B112B,
+    0 8px 0 var(--n1-ink);
+}
+
+.btn-pressed {
+  transform: translateY(4px);
+  box-shadow:
+    inset 0 2px 4px rgba(0, 0, 0, 0.35),
+    0 2px 0 #92400E,
+    0 4px 0 var(--n1-ink) !important;
+}
+
+.btn-disabled {
+  background: linear-gradient(180deg, #64748B 0%, #475569 100%);
+  color: #CBD5E1;
+  opacity: 0.72;
+  box-shadow:
+    inset 0 2px 0 rgba(255, 255, 255, 0.2),
+    0 4px 0 #1E293B,
+    0 7px 0 var(--n1-ink);
+}
+
+/* Rarity Borders */
+.rarity-common {
+  background: linear-gradient(180deg, #475569 0%, #1E293B 100%);
+  border: 3px solid #94A3B8;
+}
+.rarity-rare {
+  background: linear-gradient(180deg, #0284C7 0%, #0C2D5E 100%);
+  border: 3px solid #38BDF8;
+}
+.rarity-epic {
+  background: linear-gradient(180deg, #9333EA 0%, #3B0764 100%);
+  border: 3px solid #D8B4FE;
+}
+.rarity-legendary {
+  background:
+    linear-gradient(180deg, rgba(255, 214, 10, 0.25) 0%, rgba(49, 16, 86, 0.92) 100%),
+    linear-gradient(135deg, #FF4D8D, #FFD60A, #22C55E, #00E5FF, #A855F7);
+  border: 3.5px solid #FFD60A;
+  box-shadow: 0 0 18px rgba(255, 214, 10, 0.55), 0 5px 0 var(--n1-ink);
+}

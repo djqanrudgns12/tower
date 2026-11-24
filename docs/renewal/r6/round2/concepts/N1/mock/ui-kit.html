@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>N1 UI 키트 · 툰 3D 브롤 아레나</title>
+  <link rel="stylesheet" href="n1-shared.css" />
+  <style>
+    .kit-stage {
+      padding: 18px 24px;
+      background:
+        radial-gradient(circle at 20% 20%, rgba(29, 78, 216, 0.45), transparent 50%),
+        radial-gradient(circle at 82% 75%, rgba(168, 85, 247, 0.3), transparent 50%),
+        repeating-linear-gradient(0deg, rgba(255,255,255,0.03) 0 1px, transparent 1px 32px),
+        repeating-linear-gradient(90deg, rgba(255,255,255,0.03) 0 1px, transparent 1px 32px),
+        #09102A;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    .kit-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+    }
+    .kit-title {
+      font-family: 'Black Han Sans', sans-serif;
+      font-size: 31px;
+      color: #FFE44D;
+      white-space: nowrap;
+    }
+    .kit-swatches {
+      display: flex;
+      gap: 7px;
+      align-items: center;
+      flex-shrink: 0;
+    }
+    .swatch {
+      padding: 5px 10px;
+      border-radius: 9px;
+      border: 2.5px solid #070B1E;
+      font-family: 'SBAggroB', sans-serif;
+      font-size: 11px;
+      white-space: nowrap;
+      transform: skewX(-6deg);
+      box-shadow: 0 3px 0 #070B1E;
+    }
+
+    .kit-grid {
+      display: grid;
+      grid-template-columns: 1.05fr 1fr;
+      grid-template-rows: 1fr 1fr;
+      gap: 14px;
+      flex: 1;
+      min-height: 0;
+    }
+    .kit-box {
+      padding: 13px 16px;
+      background: linear-gradient(180deg, rgba(24, 41, 108, 0.92) 0%, rgba(12, 20, 54, 0.96) 100%);
+      border: 3px solid #38BDF8;
+      outline: 3px solid #070B1E;
+      border-radius: 16px;
+      box-shadow: 0 6px 0 #070B1E;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      gap: 10px;
+      min-height: 0;
+    }
+    .kit-box.gold-border { border-color: #FFD60A; }
+    .box-label {
+      display: inline-block;
+      align-self: flex-start;
+      padding: 4px 12px;
+      background: #070B1E;
+      border: 2px solid #00E5FF;
+      border-radius: 8px;
+      font-family: 'SBAggroB', sans-serif;
+      font-size: 13px;
+      color: #7DD3FC;
+      flex-shrink: 0;
+    }
+    .box-label.gold { border-color: #FFD60A; color: #FFE44D; }
+
+    /* Buttons showcase */
+    .btn-showcase-body {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-evenly;
+      gap: 8px;
+    }
+    .btn-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      align-items: center;
+    }
+    .demo-btn {
+      height: 54px;
+      font-size: 18px;
+      transform: skewX(-6deg);
+    }
+    .state-cap {
+      font-size: 12px;
+      color: #94A3B8;
+      text-align: center;
+      margin-top: 8px;
+    }
+
+    /* Rarity Cards */
+    .rarity-body {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 10px;
+    }
+    .rarity-row {
+      flex: 1;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+    }
+    .r-card {
+      padding: 12px 8px;
+      border-radius: 14px;
+      outline: 3px solid #070B1E;
+      box-shadow: 0 5px 0 #070B1E;
+      text-align: center;
+      transform: skewX(-3deg);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+    }
+    .r-card-tier {
+      font-family: 'SBAggroB', sans-serif;
+      font-size: 16px;
+    }
+    .r-card-sub {
+      font-size: 11.5px;
+      color: #E2E8F0;
+    }
+
+    /* 8 Custom Glossy 3D SVG Icons */
+    .icon-grid {
+      flex: 1;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      grid-template-rows: repeat(2, 1fr);
+      gap: 10px;
+      min-height: 0;
+    }
+    .icon-tile {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      padding: 8px 6px;
+      background: linear-gradient(180deg, #132054 0%, #09102A 100%);
+      border: 2.5px solid #2A3F8F;
+      border-radius: 13px;
+      box-shadow:
+        inset 0 2px 0 rgba(255, 255, 255, 0.14),
+        0 4px 0 #070B1E;
+    }
+    .icon-name {
+      font-family: 'SBAggroB', sans-serif;
+      font-size: 12px;
+      color: #E2E8F0;
+    }
+
+    /* Typography + Resource Counters */
+    .typo-list {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 9px;
+      min-height: 0;
+    }
+    .typo-row {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 14px;
+      background: linear-gradient(180deg, #111D4A 0%, #09102A 100%);
+      border: 2.5px solid #263A82;
+      border-radius: 12px;
+      box-shadow: inset 0 2px 0 rgba(255,255,255,0.08), 0 3px 0 #070B1E;
+    }
+    .lic-badge {
+      display: inline-block;
+      margin-top: 3px;
+      padding: 3px 9px;
+      border-radius: 99px;
+      background: #14532D;
+      border: 2px solid #22C55E;
+      font-size: 11px;
+      color: #BBF7D0;
+    }
+    .counter-row {
+      display: flex;
+      gap: 10px;
+    }
+    .counter-pill {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      padding: 8px 10px;
+      background: #09102A;
+      border: 2.5px solid #FFD60A;
+      border-radius: 10px;
+      transform: skewX(-6deg);
+      box-shadow: 0 3px 0 #070B1E;
+    }
+  </style>
+</head>
+<body>
+  <div class="stage kit-stage">
+    <header class="kit-header">
+      <div class="kit-title stroke-lg">N1 UI 키트 · 툰 3D 브롤 아레나</div>
+      <div class="kit-swatches">
+        <div class="swatch" style="background:#0E173B;color:#FFF;">#0E173B 딥네이비</div>
+        <div class="swatch" style="background:#1D4ED8;color:#FFF;">#1D4ED8 코발트</div>
+        <div class="swatch" style="background:#FFD60A;color:#070B1E;">#FFD60A 골드</div>
+        <div class="swatch" style="background:#00E5FF;color:#070B1E;">#00E5FF 시안</div>
+        <div class="swatch" style="background:#FF4757;color:#FFF;">#FF4757 코랄</div>
+        <div class="swatch" style="background:#22C55E;color:#FFF;">#22C55E 에메랄드</div>
+      </div>
+    </header>
+
+    <div class="kit-grid">
+      <!-- 1. 3D Extruded Button States -->
+      <section class="kit-box gold-border">
+        <div class="box-label gold">3D 베벨 압출 버튼 (기본 / 눌림 / 비활성)</div>
+        <div class="btn-showcase-body">
+          <div class="btn-row">
+            <div>
+              <button class="btn-3d btn-gold demo-btn" style="width:100%;"><span class="unskew stroke-sm">출격! (기본)</span></button>
+              <div class="state-cap">Default · 6px 압출</div>
+            </div>
+            <div>
+              <button class="btn-3d btn-gold btn-pressed demo-btn" style="width:100%;"><span class="unskew stroke-sm">출격! (눌림)</span></button>
+              <div class="state-cap">Pressed · 4px 눌림</div>
+            </div>
+            <div>
+              <button class="btn-3d btn-disabled demo-btn" style="width:100%;"><span class="unskew stroke-sm">골드 부족</span></button>
+              <div class="state-cap">Disabled · 잠금</div>
+            </div>
+          </div>
+          <div class="btn-row">
+            <button class="btn-3d btn-cyan demo-btn"><span class="unskew stroke-sm">선택지 1</span></button>
+            <button class="btn-3d btn-emerald demo-btn"><span class="unskew stroke-sm">정답 보너스</span></button>
+            <button class="btn-3d btn-coral demo-btn"><span class="unskew stroke-sm">보스 경보</span></button>
+          </div>
+        </div>
+      </section>
+
+      <!-- 2. 4 Rarity Cards -->
+      <section class="kit-box">
+        <div class="box-label">4단계 희귀도 카드 (일반 → 희귀 → 영웅 → 전설 무지개)</div>
+        <div class="rarity-body">
+          <div class="rarity-row">
+            <div class="r-card rarity-common">
+              <svg width="44" height="44" viewBox="0 0 40 40">
+                <circle cx="20" cy="20" r="14" fill="#94A3B8" stroke="#070B1E" stroke-width="3"/>
+                <path d="M12 14 A9 9 0 0 1 26 11" fill="none" stroke="#FFF" stroke-width="2.2" stroke-linecap="round" opacity="0.7"/>
+                <path d="M20 11 L22.5 17 L29 17.5 L24 22 L25.5 28 L20 24.5 L14.5 28 L16 22 L11 17.5 L17.5 17 Z" fill="#F8FAFC" stroke="#070B1E" stroke-width="1.8"/>
+              </svg>
+              <div class="r-card-tier stroke-sm">일반</div>
+              <div class="r-card-sub">슬레이트 · Lv.1</div>
+            </div>
+            <div class="r-card rarity-rare">
+              <svg width="44" height="44" viewBox="0 0 40 40">
+                <circle cx="20" cy="20" r="14" fill="#38BDF8" stroke="#070B1E" stroke-width="3"/>
+                <path d="M12 14 A9 9 0 0 1 26 11" fill="none" stroke="#FFF" stroke-width="2.2" stroke-linecap="round" opacity="0.75"/>
+                <path d="M20 11 L22.5 17 L29 17.5 L24 22 L25.5 28 L20 24.5 L14.5 28 L16 22 L11 17.5 L17.5 17 Z" fill="#FFF" stroke="#070B1E" stroke-width="1.8"/>
+              </svg>
+              <div class="r-card-tier stroke-sm" style="color:#BAE6FD;">희귀</div>
+              <div class="r-card-sub">스카이 · Lv.2~3</div>
+            </div>
+            <div class="r-card rarity-epic">
+              <svg width="44" height="44" viewBox="0 0 40 40">
+                <circle cx="20" cy="20" r="14" fill="#C084FC" stroke="#070B1E" stroke-width="3"/>
+                <path d="M12 14 A9 9 0 0 1 26 11" fill="none" stroke="#FFF" stroke-width="2.2" stroke-linecap="round" opacity="0.75"/>
+                <path d="M20 11 L22.5 17 L29 17.5 L24 22 L25.5 28 L20 24.5 L14.5 28 L16 22 L11 17.5 L17.5 17 Z" fill="#FFE44D" stroke="#070B1E" stroke-width="1.8"/>
+              </svg>
+              <div class="r-card-tier stroke-sm" style="color:#E9D5FF;">영웅</div>
+              <div class="r-card-sub">바이올렛 · Lv.4~6</div>
+            </div>
+            <div class="r-card rarity-legendary">
+              <svg width="44" height="44" viewBox="0 0 40 40">
+                <circle cx="20" cy="20" r="14" fill="#FFD60A" stroke="#070B1E" stroke-width="3"/>
+                <path d="M12 14 A9 9 0 0 1 26 11" fill="none" stroke="#FFF" stroke-width="2.4" stroke-linecap="round" opacity="0.85"/>
+                <path d="M20 10 L23 16.5 L30 17 L24.5 22 L26 29 L20 25 L14 29 L15.5 22 L10 17 L17 16.5 Z" fill="#FFF" stroke="#070B1E" stroke-width="1.8"/>
+              </svg>
+              <div class="r-card-tier stroke-sm" style="color:#FFE44D;">전설</div>
+              <div class="r-card-sub">무지개 홀로 · Lv.7</div>
+            </div>
+          </div>
+          <div class="counter-row">
+            <div class="counter-pill">
+              <span class="unskew font-aggro stroke-sm" style="color:#FFE44D;font-size:17px;">2,480 G</span>
+            </div>
+            <div class="counter-pill" style="border-color:#C084FC;">
+              <span class="unskew font-aggro stroke-sm" style="color:#E9D5FF;font-size:17px;">85 보석</span>
+            </div>
+            <div class="counter-pill" style="border-color:#22C55E;">
+              <span class="unskew font-aggro stroke-sm" style="color:#6EE7B7;font-size:17px;">5연속 콤보!</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 3. 8 Custom Glossy 3D SVG Icons (44x44, 3px #070B1E outline, top-left white gloss) -->
+      <section class="kit-box">
+        <div class="box-label">직접 제작 입체 컬러 SVG 아이콘 8종</div>
+        <div class="icon-grid">
+          <!-- 1. 왕관 -->
+          <div class="icon-tile">
+            <svg width="44" height="44" viewBox="0 0 40 40">
+              <defs>
+                <linearGradient id="gCrown" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="#FFFBEB"/>
+                  <stop offset="35%" stop-color="#FFD60A"/>
+                  <stop offset="100%" stop-color="#D97706"/>
+                </linearGradient>
+              </defs>
+              <path d="M5 29 L8 10 L19 18 L32 10 L35 29 Z" fill="#92400E" stroke="#070B1E" stroke-width="3" stroke-linejoin="round" transform="translate(0,2)"/>
+              <path d="M5 28 L8 9 L20 18 L32 9 L35 28 Z" fill="url(#gCrown)" stroke="#070B1E" stroke-width="3" stroke-linejoin="round"/>
+              <rect x="6" y="26" width="28" height="6" rx="2.5" fill="#F59E0B" stroke="#070B1E" stroke-width="3"/>
+              <!-- Glossy highlights -->
+              <path d="M9.5 13 L12.5 22" stroke="#FFFFFF" stroke-width="2.6" stroke-linecap="round" opacity="0.8"/>
+              <circle cx="8" cy="8.5" r="2.5" fill="#FFFBEB" stroke="#070B1E" stroke-width="2"/>
+              <circle cx="20" cy="14" r="2.6" fill="#FF4757" stroke="#070B1E" stroke-width="2"/>
+              <circle cx="32" cy="8.5" r="2.5" fill="#FFFBEB" stroke="#070B1E" stroke-width="2"/>
+            </svg>
+            <span class="icon-name">왕관</span>
+          </div>
+
+          <!-- 2. 성문 -->
+          <div class="icon-tile">
+            <svg width="44" height="44" viewBox="0 0 40 40">
+              <defs>
+                <linearGradient id="gGate" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="#E2E8F0"/>
+                  <stop offset="55%" stop-color="#94A3B8"/>
+                  <stop offset="100%" stop-color="#475569"/>
+                </linearGradient>
+              </defs>
+              <path d="M5 10 H12 V15 H16 V10 H24 V15 H28 V10 H35 V34 H5 Z" fill="#334155" stroke="#070B1E" stroke-width="3" stroke-linejoin="round" transform="translate(0,2)"/>
+              <path d="M5 9 H12 V14 H16 V9 H24 V14 H28 V9 H35 V33 H5 Z" fill="url(#gGate)" stroke="#070B1E" stroke-width="3" stroke-linejoin="round"/>
+              <path d="M13 33 V22 C13 18 27 18 27 22 V33 Z" fill="#B45309" stroke="#070B1E" stroke-width="3"/>
+              <!-- Glossy highlight top-left -->
+              <line x1="8" y1="12" x2="10.5" y2="12" stroke="#FFFFFF" stroke-width="2.4" stroke-linecap="round"/>
+              <line x1="8" y1="17" x2="8" y2="27" stroke="#FFFFFF" stroke-width="2.2" stroke-linecap="round" opacity="0.75"/>
+              <path d="M16 22 C17 20 20 20 22 20.5" fill="none" stroke="#FDE68A" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+            <span class="icon-name">성문</span>
+          </div>
+
+          <!-- 3. 황금코인 -->
+          <div class="icon-tile">
+            <svg width="44" height="44" viewBox="0 0 40 40">
+              <defs>
+                <linearGradient id="gCoin" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="#FFFBEB"/>
+                  <stop offset="40%" stop-color="#FFD60A"/>
+                  <stop offset="100%" stop-color="#F59E0B"/>
+                </linearGradient>
+              </defs>
+              <circle cx="21" cy="22" r="14" fill="#92400E" stroke="#070B1E" stroke-width="3"/>
+              <circle cx="19" cy="19" r="14" fill="url(#gCoin)" stroke="#070B1E" stroke-width="3"/>
+              <circle cx="19" cy="19" r="9.5" fill="#F59E0B" stroke="#FFFBEB" stroke-width="2"/>
+              <rect x="17" y="13" width="4" height="12" rx="2" fill="#92400E" stroke="#070B1E" stroke-width="1.6"/>
+              <!-- Glossy top-left arc -->
+              <path d="M9.5 14.5 A11 11 0 0 1 22 8" fill="none" stroke="#FFFFFF" stroke-width="2.6" stroke-linecap="round" opacity="0.9"/>
+            </svg>
+            <span class="icon-name">황금코인</span>
+          </div>
+
+          <!-- 4. 번개콤보 -->
+          <div class="icon-tile">
+            <svg width="44" height="44" viewBox="0 0 40 40">
+              <defs>
+                <linearGradient id="gBolt" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="#E0F2FE"/>
+                  <stop offset="45%" stop-color="#00E5FF"/>
+                  <stop offset="100%" stop-color="#0284C7"/>
+                </linearGradient>
+              </defs>
+              <path d="M22 4 L9 22 H18 L16 36 L31 16 H21 Z" fill="#075985" stroke="#070B1E" stroke-width="3" stroke-linejoin="round" transform="translate(1,2)"/>
+              <path d="M22 4 L9 22 H18 L16 36 L31 16 H21 Z" fill="url(#gBolt)" stroke="#070B1E" stroke-width="3" stroke-linejoin="round"/>
+              <!-- Top-left white gloss -->
+              <path d="M19.5 9 L13 19.5 H17.5" fill="none" stroke="#FFFFFF" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <span class="icon-name">번개콤보</span>
+          </div>
+
+          <!-- 5. 별 -->
+          <div class="icon-tile">
+            <svg width="44" height="44" viewBox="0 0 40 40">
+              <defs>
+                <linearGradient id="gStar" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="#FFFBEB"/>
+                  <stop offset="45%" stop-color="#FFE44D"/>
+                  <stop offset="100%" stop-color="#F59E0B"/>
+                </linearGradient>
+              </defs>
+              <path d="M20 4 L24.5 13.5 L35 15 L27 22.5 L29 34 L20 28.5 L11 34 L13 22.5 L5 15 L15.5 13.5 Z" fill="#92400E" stroke="#070B1E" stroke-width="3" stroke-linejoin="round" transform="translate(0,2)"/>
+              <path d="M20 4 L24.5 13.5 L35 15 L27 22.5 L29 34 L20 28.5 L11 34 L13 22.5 L5 15 L15.5 13.5 Z" fill="url(#gStar)" stroke="#070B1E" stroke-width="3" stroke-linejoin="round"/>
+              <!-- Top-left gloss -->
+              <path d="M19.5 8.5 L16.5 15 L9.5 16" fill="none" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round" opacity="0.9"/>
+            </svg>
+            <span class="icon-name">별</span>
+          </div>
+
+          <!-- 6. 활 -->
+          <div class="icon-tile">
+            <svg width="44" height="44" viewBox="0 0 40 40">
+              <path d="M12 6 C27 11 27 29 12 34" fill="none" stroke="#070B1E" stroke-width="9" stroke-linecap="round"/>
+              <path d="M12 6 C27 11 27 29 12 34" fill="none" stroke="#F59E0B" stroke-width="4.5" stroke-linecap="round"/>
+              <path d="M13 8.5 C19 11.5 21 15 21.5 17" fill="none" stroke="#FFFBEB" stroke-width="2" stroke-linecap="round"/>
+              <line x1="12" y1="6" x2="12" y2="34" stroke="#E2E8F0" stroke-width="2.2"/>
+              <line x1="6" y1="20" x2="31" y2="20" stroke="#070B1E" stroke-width="6" stroke-linecap="round"/>
+              <line x1="6" y1="20" x2="31" y2="20" stroke="#00E5FF" stroke-width="3" stroke-linecap="round"/>
+              <polygon points="28,14 36,20 28,26" fill="#FFD60A" stroke="#070B1E" stroke-width="2.8" stroke-linejoin="round"/>
+              <line x1="29.5" y1="16.5" x2="33" y2="19" stroke="#FFFFFF" stroke-width="1.8" stroke-linecap="round"/>
+            </svg>
+            <span class="icon-name">활</span>
+          </div>
+
+          <!-- 7. 방패 -->
+          <div class="icon-tile">
+            <svg width="44" height="44" viewBox="0 0 40 40">
+              <defs>
+                <linearGradient id="gShield" x1="0" y1="0" x2="1" y2="1">
+                  <stop offset="0%" stop-color="#60A5FA"/>
+                  <stop offset="50%" stop-color="#2563EB"/>
+                  <stop offset="100%" stop-color="#1E3A8A"/>
+                </linearGradient>
+              </defs>
+              <path d="M7 8 L20 4 L33 8 V19 C33 27 20 35 20 35 C20 35 7 27 7 19 Z" fill="#0F172A" stroke="#070B1E" stroke-width="3" stroke-linejoin="round" transform="translate(0,2)"/>
+              <path d="M7 8 L20 4 L33 8 V19 C33 27 20 35 20 35 C20 35 7 27 7 19 Z" fill="url(#gShield)" stroke="#070B1E" stroke-width="3" stroke-linejoin="round"/>
+              <!-- Left Gloss -->
+              <path d="M10.5 11 L18 8.5 V27 C14 24 10.5 20 10.5 17 Z" fill="#93C5FD" opacity="0.45"/>
+              <path d="M11 11.5 L17 9.5" stroke="#FFFFFF" stroke-width="2.4" stroke-linecap="round"/>
+              <circle cx="20" cy="19" r="5" fill="#FFD60A" stroke="#070B1E" stroke-width="2.6"/>
+              <circle cx="18.5" cy="17.5" r="1.4" fill="#FFFFFF"/>
+            </svg>
+            <span class="icon-name">방패</span>
+          </div>
+
+          <!-- 8. 보석 -->
+          <div class="icon-tile">
+            <svg width="44" height="44" viewBox="0 0 40 40">
+              <defs>
+                <linearGradient id="gGem" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="#F3E8FF"/>
+                  <stop offset="45%" stop-color="#C084FC"/>
+                  <stop offset="100%" stop-color="#7E22CE"/>
+                </linearGradient>
+              </defs>
+              <polygon points="20,4 35,14 29,34 11,34 5,14" fill="#4C1D95" stroke="#070B1E" stroke-width="3" stroke-linejoin="round" transform="translate(0,2)"/>
+              <polygon points="20,4 35,14 29,34 11,34 5,14" fill="url(#gGem)" stroke="#070B1E" stroke-width="3" stroke-linejoin="round"/>
+              <polygon points="20,4 27,14 20,34 13,14" fill="#E9D5FF" opacity="0.5"/>
+              <line x1="6" y1="14" x2="34" y2="14" stroke="#FFFFFF" stroke-width="2" opacity="0.75"/>
+              <!-- Top-left gloss -->
+              <path d="M9.5 12.5 L17 7.5" stroke="#FFFFFF" stroke-width="2.6" stroke-linecap="round"/>
+            </svg>
+            <span class="icon-name">보석</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- 4. Outlined Korean Typography & Commercial-Free Licenses -->
+      <section class="kit-box gold-border">
+        <div class="box-label gold">외곽선 한글 타이포그래피 & 상업용 무료 라이선스</div>
+        <div class="typo-list">
+          <div class="typo-row">
+            <span class="font-title stroke-md" style="font-size:30px;color:#FFE44D;">어휘 브롤 디펜스!</span>
+            <div style="text-align:right;">
+              <div style="font-size:12px;color:#E2E8F0;">Black Han Sans</div>
+              <span class="lic-badge">SIL OFL 1.1 · 상업 무료</span>
+            </div>
+          </div>
+          <div class="typo-row">
+            <span class="font-aggro stroke-sm" style="font-size:23px;color:#00E5FF;">5연속 정답 대폭발 +50G</span>
+            <div style="text-align:right;">
+              <div style="font-size:12px;color:#E2E8F0;">SBAggroB (어그로체)</div>
+              <span class="lic-badge">샌드박스 무료폰트 · 상업 무료</span>
+            </div>
+          </div>
+          <div class="typo-row">
+            <span class="font-jua stroke-sm" style="font-size:21px;color:#FFFFFF;">‘부지런하다’의 반대말은 무엇일까요?</span>
+            <div style="text-align:right;">
+              <div style="font-size:12px;color:#E2E8F0;">Jua (배민 주아체)</div>
+              <span class="lic-badge">SIL OFL 1.1 · 상업 무료</span>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+</body>
+</html>

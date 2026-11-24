@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>N3 · 전투 화면 목업</title>
+  <link rel="stylesheet" href="./n3-theme.css" />
+  <style>
+    .battle-root {
+      position: relative;
+      width: 1280px;
+      height: 720px;
+      background: #7BD83C url('./assets/a-battle-bg.webp') center/cover no-repeat;
+    }
+
+    /* 상단 좌측 HUD 블록 바 */
+    .top-hud-left {
+      position: absolute;
+      top: 14px;
+      left: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      z-index: 10;
+    }
+
+    .hud-chip {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      height: 44px;
+      padding: 0 12px;
+      background: #FFFDF5;
+      border: 3px solid var(--n3-ink);
+      border-radius: 8px;
+      box-shadow: 0 4px 0 #CBD5E1, 4px 5px 0 var(--n3-ink);
+      font-family: var(--font-display);
+      font-size: 16px;
+      color: var(--n3-ink);
+    }
+
+    .hud-chip-dark {
+      background: #1E293B;
+      color: #FFFFFF;
+      box-shadow: 0 4px 0 #0F172A, 4px 5px 0 var(--n3-ink);
+    }
+
+    .pause-btn {
+      width: 44px;
+      height: 44px;
+      padding: 0;
+      justify-content: center;
+      background: #FDE047;
+      box-shadow: 0 4px 0 #D97706, 4px 5px 0 var(--n3-ink);
+      font-size: 18px;
+    }
+
+    /* 상단 우측 핫바 스타일 1~4 타워 인벤토리 */
+    .top-hotbar {
+      position: absolute;
+      top: 14px;
+      right: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 8px;
+      background: rgba(15, 23, 42, 0.92);
+      border: 3px solid var(--n3-ink);
+      border-radius: 10px;
+      box-shadow: 4px 5px 0 var(--n3-ink);
+      z-index: 10;
+    }
+
+    .inv-slot {
+      width: 90px;
+      height: 54px;
+      background: #1E293B;
+      border: 2.5px solid #475569;
+      border-radius: 7px;
+      padding: 4px 6px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+      color: #FFFFFF;
+    }
+
+    .inv-slot.selected {
+      background: #14532D;
+      border-color: #FACC15;
+      box-shadow: inset 0 0 10px rgba(250, 204, 21, 0.45), 0 0 0 2px #181826;
+    }
+
+    .inv-slot-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .inv-key {
+      font-family: var(--font-display);
+      font-size: 11px;
+      background: #334155;
+      color: #FDE047;
+      padding: 0 5px;
+      border-radius: 4px;
+      border: 1.5px solid #0F172A;
+    }
+
+    .inv-slot.selected .inv-key {
+      background: #FACC15;
+      color: #181826;
+    }
+
+    .inv-cost {
+      font-family: var(--font-display);
+      font-size: 12px;
+      color: #FDE047;
+    }
+
+    .inv-name {
+      font-family: var(--font-display);
+      font-size: 13px;
+      text-align: center;
+      color: #F8FAFC;
+      letter-spacing: -0.3px;
+      line-height: 1.1;
+    }
+
+    /* 성문 위 아바타 버프 미니 배지 (전장 방해 최소화) */
+    .gate-buff-pill {
+      position: absolute;
+      right: 18px;
+      top: 84px;
+      background: #FEF9C3;
+      border: 2.5px solid var(--n3-ink);
+      border-radius: 8px;
+      padding: 4px 10px;
+      box-shadow: 3px 3px 0 var(--n3-ink);
+      font-size: 12px;
+      font-family: var(--font-display);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      z-index: 9;
+    }
+
+    /* 하단 영역: 아바타 리액션 미니창 + 블록 퀴즈 키패드 */
+    .bottom-dock {
+      position: absolute;
+      left: 16px;
+      right: 16px;
+      bottom: 10px;
+      display: grid;
+      grid-template-columns: 224px 1fr;
+      gap: 12px;
+      align-items: end;
+      z-index: 12;
+    }
+
+    .avatar-mini-card {
+      background: linear-gradient(180deg, #E0F2FE 0%, #BAE6FD 100%);
+      border: 3px solid var(--n3-ink);
+      border-radius: 10px;
+      box-shadow: 0 5px 0 #0284C7, 4px 6px 0 var(--n3-ink);
+      padding: 8px 10px;
+      display: flex;
+      align-items: center;
+      gap: 9px;
+    }
+
+    .avatar-portrait {
+      width: 56px;
+      height: 56px;
+      flex-shrink: 0;
+      background: #FFFBEB;
+      border: 3px solid var(--n3-ink);
+      border-radius: 8px;
+      box-shadow: 2px 3px 0 var(--n3-ink);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .avatar-speech {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .avatar-tag {
+      display: inline-block;
+      align-self: flex-start;
+      background: #FACC15;
+      border: 2px solid var(--n3-ink);
+      border-radius: 4px;
+      padding: 1px 6px;
+      font-family: var(--font-display);
+      font-size: 11px;
+    }
+
+    .avatar-line {
+      font-size: 13px;
+      line-height: 1.3;
+      color: #0F172A;
+    }
+
+    /* 블록 퀴즈 패널 */
+    .quiz-panel {
+      background: #FFFDF5;
+      border: 3px solid var(--n3-ink);
+      border-radius: 12px;
+      box-shadow: 0 5px 0 #CBD5E1, 5px 7px 0 var(--n3-ink);
+      padding: 8px 14px 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+    }
+
+    .quiz-top-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .quiz-q-wrap {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .quiz-grade-pill {
+      background: #38BDF8;
+      color: #FFFFFF;
+      border: 2.5px solid var(--n3-ink);
+      border-radius: 6px;
+      padding: 3px 9px;
+      font-family: var(--font-display);
+      font-size: 13px;
+      text-shadow: 1px 1px 0 var(--n3-ink);
+      white-space: nowrap;
+    }
+
+    .quiz-question {
+      font-family: var(--font-display);
+      font-size: 20px;
+      color: var(--n3-ink);
+      letter-spacing: -0.2px;
+    }
+
+    .streak-badge {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: linear-gradient(180deg, #FDE047 0%, #F59E0B 100%);
+      border: 2.5px solid var(--n3-ink);
+      border-radius: 8px;
+      padding: 4px 11px;
+      box-shadow: 2px 3px 0 var(--n3-ink);
+      font-family: var(--font-display);
+      font-size: 15px;
+      color: #181826;
+      white-space: nowrap;
+    }
+
+    .quiz-choices-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr) 128px;
+      gap: 9px;
+    }
+
+    .choice-block {
+      height: 46px;
+      background: #FFFFFF;
+      border: 3px solid var(--n3-ink);
+      border-radius: 8px;
+      box-shadow: 0 4px 0 #94A3B8, 3px 5px 0 var(--n3-ink);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 0 10px;
+      font-family: var(--font-ui);
+      font-size: 16px;
+      color: var(--n3-ink);
+    }
+
+    .choice-block.highlight {
+      background: #DCFCE7;
+      box-shadow: 0 4px 0 #22C55E, 3px 5px 0 var(--n3-ink);
+    }
+
+    .choice-num {
+      width: 24px;
+      height: 24px;
+      border-radius: 5px;
+      background: #1E293B;
+      color: #FDE047;
+      font-family: var(--font-display);
+      font-size: 13px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .dont-know-btn {
+      height: 46px;
+      background: #E2E8F0;
+      border: 3px solid var(--n3-ink);
+      border-radius: 8px;
+      box-shadow: 0 4px 0 #94A3B8, 3px 5px 0 var(--n3-ink);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-display);
+      font-size: 15px;
+      color: #334155;
+    }
+  </style>
+</head>
+<body>
+  <div class="battle-root">
+    <!-- 상단 좌측 블록 상태 바 (배속 UI 절대 없음) -->
+    <div class="top-hud-left">
+      <div class="hud-chip" style="background:#FFF1F2;">
+        <svg width="22" height="22" viewBox="0 0 40 40">
+          <polygon points="8,10 16,6 20,11 24,6 32,10 34,18 20,34 6,18" fill="#FB4F5A" stroke="#181826" stroke-width="3"/>
+        </svg>
+        <span>20 / 20</span>
+      </div>
+      <div class="hud-chip" style="background:#FEFCE8;">
+        <svg width="22" height="22" viewBox="0 0 40 40">
+          <polygon points="20,4 34,11 20,18 6,11" fill="#FEF08A" stroke="#181826" stroke-width="3"/>
+          <polygon points="6,11 20,18 20,34 6,27" fill="#FACC15" stroke="#181826" stroke-width="3"/>
+          <polygon points="34,11 20,18 20,34 34,27" fill="#D97706" stroke="#181826" stroke-width="3"/>
+        </svg>
+        <span>320 G</span>
+      </div>
+      <div class="hud-chip hud-chip-dark">
+        <span style="color:#4ADE80;">WAVE</span>
+        <span>4 / 10</span>
+      </div>
+      <div class="hud-chip">
+        <span style="color:#E11D48;">남은 적</span>
+        <span>12</span>
+      </div>
+      <div class="hud-chip pause-btn" title="일시정지">⏸</div>
+    </div>
+
+    <!-- 상단 우측 핫바 1~4 타워 슬롯 -->
+    <div class="top-hotbar">
+      <div class="inv-slot selected">
+        <div class="inv-slot-top">
+          <span class="inv-key">1</span>
+          <span class="inv-cost">40G</span>
+        </div>
+        <div class="inv-name">깃털궁수</div>
+      </div>
+      <div class="inv-slot">
+        <div class="inv-slot-top">
+          <span class="inv-key">2</span>
+          <span class="inv-cost">75G</span>
+        </div>
+        <div class="inv-name">콘페티TNT</div>
+      </div>
+      <div class="inv-slot">
+        <div class="inv-slot-top">
+          <span class="inv-key">3</span>
+          <span class="inv-cost">85G</span>
+        </div>
+        <div class="inv-name">얼음예티</div>
+      </div>
+      <div class="inv-slot">
+        <div class="inv-slot-top">
+          <span class="inv-key">4</span>
+          <span class="inv-cost">120G</span>
+        </div>
+        <div class="inv-name">마법술사</div>
+      </div>
+    </div>
+
+    <div class="gate-buff-pill">
+      <span>👑 내 아바타 응원:</span>
+      <span style="color:#15803D;">공격속도 +15%</span>
+    </div>
+
+    <!-- 하단: 아바타 리액션 + 4지선다 퀴즈 키패드 -->
+    <div class="bottom-dock">
+      <div class="avatar-mini-card">
+        <div class="avatar-portrait">
+          <!-- 왕관 쓴 큐브 아바타 SVG -->
+          <svg width="52" height="52" viewBox="0 0 52 52">
+            <polygon points="14,14 14,6 21,10 26,4 31,10 38,6 38,14" fill="#FACC15" stroke="#181826" stroke-width="2.5" stroke-linejoin="round"/>
+            <rect x="12" y="14" width="28" height="24" rx="3" fill="#FDBA74" stroke="#181826" stroke-width="2.5"/>
+            <rect x="18" y="22" width="4" height="5" rx="1" fill="#181826"/>
+            <rect x="30" y="22" width="4" height="5" rx="1" fill="#181826"/>
+            <path d="M21 31 Q26 35 31 31" fill="none" stroke="#181826" stroke-width="2.5" stroke-linecap="round"/>
+            <rect x="14" y="38" width="24" height="10" rx="2" fill="#38BDF8" stroke="#181826" stroke-width="2.5"/>
+          </svg>
+        </div>
+        <div class="avatar-speech">
+          <span class="avatar-tag">블록대장 민준</span>
+          <div class="avatar-line"><b>"지금이야!"</b><br/>정답 맞히면 즉시 코인+콤보 발동!</div>
+        </div>
+      </div>
+
+      <div class="quiz-panel">
+        <div class="quiz-top-row">
+          <div class="quiz-q-wrap">
+            <span class="quiz-grade-pill">5학년 어휘 · #18</span>
+            <div class="quiz-question">다음 중 <b>‘생각을 깊이 더듬어 되새기다’</b>라는 뜻을 가진 낱말은?</div>
+          </div>
+          <div class="streak-badge">⚡ 4연승 · +40%</div>
+        </div>
+        <div class="quiz-choices-row">
+          <div class="choice-block">
+            <span class="choice-num">1</span>
+            <span>추측하다</span>
+          </div>
+          <div class="choice-block highlight">
+            <span class="choice-num" style="background:#15803D;">2</span>
+            <span><b>음미하다</b></span>
+          </div>
+          <div class="choice-block">
+            <span class="choice-num">3</span>
+            <span>포기하다</span>
+          </div>
+          <div class="choice-block">
+            <span class="choice-num">4</span>
+            <span>방해하다</span>
+          </div>
+          <div class="dont-know-btn">모르겠어요</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

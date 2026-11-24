@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>N1 도파민 콤보 폭발 · 툰 3D 브롤 아레나</title>
+  <link rel="stylesheet" href="n1-shared.css" />
+  <style>
+    .combo-stage {
+      background:
+        radial-gradient(circle at 50% 53%, rgba(255, 214, 10, 0.48) 0%, rgba(29, 78, 216, 0.55) 38%, #09102A 78%),
+        #070B1E;
+    }
+
+    /* Fullscreen SVG Speed Lines + Radial Gold Glow */
+    .fx-layer {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 2;
+    }
+
+    /* Central Arcade Holo Spotlight Cutout Frame */
+    .hero-spotlight-wrap {
+      position: absolute;
+      left: 50%;
+      top: 54%;
+      transform: translate(-50%, -50%);
+      width: 390px;
+      height: 390px;
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .holo-outer-ring {
+      position: absolute;
+      inset: -20px;
+      border-radius: 50%;
+      background: conic-gradient(from 0deg, #FFD60A, #00E5FF, #FF4D8D, #22C55E, #FFD60A);
+      padding: 6px;
+      box-shadow:
+        0 0 55px rgba(255, 214, 10, 0.85),
+        0 0 95px rgba(0, 229, 255, 0.55),
+        0 10px 0 #070B1E;
+      outline: 5px solid #070B1E;
+    }
+    .holo-inner-ring {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      background: #09102A;
+      border: 4px solid #FFFBEB;
+      outline: 4px solid #070B1E;
+      overflow: hidden;
+      position: relative;
+      box-shadow: inset 0 0 40px rgba(0, 229, 255, 0.55);
+    }
+    /* Exact crop of Lv.7 Starlight Hero from c-tower-evo.webp (right side) */
+    .lv7-hero-crop {
+      position: absolute;
+      width: 1020px;
+      height: 574px;
+      left: -620px;
+      top: -22px;
+      max-width: none;
+      pointer-events: none;
+    }
+    .spotlight-badge {
+      position: absolute;
+      bottom: -16px;
+      left: 50%;
+      transform: translateX(-50%) skewX(-8deg);
+      padding: 5px 18px;
+      background: linear-gradient(135deg, #FF4D8D, #FFD60A);
+      border: 3px solid #FFFBEB;
+      outline: 3.5px solid #070B1E;
+      border-radius: 99px;
+      font-family: 'SBAggroB', sans-serif;
+      font-size: 14px;
+      white-space: nowrap;
+      box-shadow: 0 4px 0 #070B1E;
+      z-index: 15;
+    }
+
+    /* Dynamic Coins Layer */
+    .coins-layer {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 18;
+    }
+    .coin-item {
+      position: absolute;
+      filter: drop-shadow(0 5px 0 rgba(7, 11, 30, 0.9)) drop-shadow(0 0 12px rgba(255, 214, 10, 0.65));
+    }
+
+    .combo-banner-wrap {
+      position: absolute;
+      top: 14px;
+      left: 50%;
+      transform: translateX(-50%) rotate(-3deg);
+      text-align: center;
+      z-index: 25;
+      width: 980px;
+    }
+    .combo-main-title {
+      font-family: 'Black Han Sans', sans-serif;
+      font-size: 74px;
+      line-height: 1;
+      color: #FFE44D;
+      paint-order: stroke fill;
+      -webkit-text-stroke: 10px #070B1E;
+      text-shadow: 0 8px 0 #070B1E;
+      filter: drop-shadow(0 0 28px rgba(255, 214, 10, 0.85));
+    }
+    .fever-bar-wrap {
+      margin: 8px auto 0;
+      width: 520px;
+      padding: 6px 10px;
+      background: #09102A;
+      border: 3.5px solid #FFD60A;
+      outline: 3.5px solid #070B1E;
+      border-radius: 99px;
+      transform: skewX(-6deg);
+      box-shadow: 0 5px 0 #070B1E;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .fever-track {
+      flex: 1;
+      height: 22px;
+      background: #172554;
+      border-radius: 99px;
+      border: 2px solid #070B1E;
+      overflow: hidden;
+      position: relative;
+    }
+    .fever-fill {
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, #10B981, #34D399, #FFD60A);
+      box-shadow: inset 0 3px 0 rgba(255,255,255,0.6);
+    }
+
+    /* Floating Battle Critical Banners */
+    .crit-chip {
+      position: absolute;
+      padding: 11px 22px;
+      border-radius: 16px;
+      outline: 3.5px solid #070B1E;
+      box-shadow: 0 6px 0 #070B1E, 0 0 20px rgba(255, 214, 10, 0.35);
+      z-index: 25;
+    }
+    .crit-left {
+      left: 38px;
+      bottom: 84px;
+      background: linear-gradient(180deg, #34D399 0%, #059669 100%);
+      border: 3.5px solid #D1FAE5;
+      transform: skewX(-8deg) rotate(-5deg);
+    }
+    .crit-right {
+      right: 38px;
+      bottom: 84px;
+      background: linear-gradient(180deg, #FFE44D 0%, #F59E0B 100%);
+      border: 3.5px solid #FFFBEB;
+      transform: skewX(-8deg) rotate(4deg);
+    }
+    .bottom-toast {
+      position: absolute;
+      bottom: 16px;
+      left: 50%;
+      transform: translateX(-50%) skewX(-6deg);
+      padding: 9px 28px;
+      background: linear-gradient(90deg, #0E173B, #1D4ED8, #0E173B);
+      border: 3px solid #00E5FF;
+      outline: 3px solid #070B1E;
+      border-radius: 99px;
+      box-shadow: 0 5px 0 #070B1E;
+      font-family: 'SBAggroB', sans-serif;
+      font-size: 19px;
+      z-index: 25;
+      white-space: nowrap;
+    }
+  </style>
+</head>
+<body>
+  <div class="stage combo-stage">
+    <!-- SVG Manga Speed Lines + Intense Gold Radial Glow + Lightning Rays -->
+    <svg class="fx-layer" viewBox="0 0 1280 720" preserveAspectRatio="none">
+      <defs>
+        <radialGradient id="goldCore" cx="50%" cy="54%" r="52%">
+          <stop offset="0%" stop-color="#FFFBEB" stop-opacity="0.95"/>
+          <stop offset="22%" stop-color="#FFD60A" stop-opacity="0.72"/>
+          <stop offset="48%" stop-color="#F59E0B" stop-opacity="0.32"/>
+          <stop offset="78%" stop-color="#1D4ED8" stop-opacity="0.12"/>
+          <stop offset="100%" stop-color="#070B1E" stop-opacity="0"/>
+        </radialGradient>
+        <radialGradient id="cyanRingGlow" cx="50%" cy="54%" r="42%">
+          <stop offset="42%" stop-color="#00E5FF" stop-opacity="0"/>
+          <stop offset="56%" stop-color="#00E5FF" stop-opacity="0.45"/>
+          <stop offset="72%" stop-color="#00E5FF" stop-opacity="0"/>
+        </radialGradient>
+      </defs>
+
+      <!-- Radial Gold Explosion Backdrop -->
+      <rect width="1280" height="720" fill="url(#goldCore)"/>
+      <rect width="1280" height="720" fill="url(#cyanRingGlow)"/>
+
+      <!-- Comic Speed Lines (wedges radiating from center 640,388) -->
+      <g id="speed-lines" transform="translate(640,388)">
+        <!-- Alternating thick & thin golden/cyan/white speed wedges -->
+        <polygon points="0,0 -820,-340 -740,-440" fill="#FFD60A" opacity="0.22"/>
+        <polygon points="0,0 -660,-480 -560,-540" fill="#FFFBEB" opacity="0.28"/>
+        <polygon points="0,0 -440,-560 -360,-590" fill="#00E5FF" opacity="0.22"/>
+        <polygon points="0,0 -250,-600 -180,-610" fill="#FFD60A" opacity="0.25"/>
+        <polygon points="0,0 -70,-610 10,-610" fill="#FFFBEB" opacity="0.22"/>
+        <polygon points="0,0 130,-600 210,-590" fill="#FFD60A" opacity="0.26"/>
+        <polygon points="0,0 320,-570 410,-540" fill="#00E5FF" opacity="0.24"/>
+        <polygon points="0,0 530,-480 620,-420" fill="#FFFBEB" opacity="0.28"/>
+        <polygon points="0,0 710,-350 790,-260" fill="#FFD60A" opacity="0.24"/>
+        <polygon points="0,0 820,-150 840,-60" fill="#FFFBEB" opacity="0.25"/>
+        <polygon points="0,0 840,50 820,140" fill="#FFD60A" opacity="0.26"/>
+        <polygon points="0,0 780,250 710,340" fill="#00E5FF" opacity="0.22"/>
+        <polygon points="0,0 620,410 520,470" fill="#FFD60A" opacity="0.24"/>
+        <polygon points="0,0 390,530 290,560" fill="#FFFBEB" opacity="0.25"/>
+        <polygon points="0,0 170,580 90,590" fill="#00E5FF" opacity="0.20"/>
+        <polygon points="0,0 -50,590 -140,580" fill="#FFD60A" opacity="0.24"/>
+        <polygon points="0,0 -270,560 -360,530" fill="#FFFBEB" opacity="0.26"/>
+        <polygon points="0,0 -500,480 -590,420" fill="#FFD60A" opacity="0.25"/>
+        <polygon points="0,0 -700,340 -770,250" fill="#00E5FF" opacity="0.24"/>
+        <polygon points="0,0 -820,140 -840,50" fill="#FFFBEB" opacity="0.26"/>
+        <polygon points="0,0 -840,-70 -820,-160" fill="#FFD60A" opacity="0.25"/>
+
+        <!-- Sharp white/gold/cyan manga speed streaks -->
+        <line x1="-220" y1="-120" x2="-640" y2="-350" stroke="#FFFBEB" stroke-width="5" stroke-linecap="round" opacity="0.7"/>
+        <line x1="-250" y1="-30" x2="-690" y2="-85" stroke="#00E5FF" stroke-width="4" stroke-linecap="round" opacity="0.75"/>
+        <line x1="-230" y1="85" x2="-650" y2="240" stroke="#FFD60A" stroke-width="6" stroke-linecap="round" opacity="0.8"/>
+        <line x1="-150" y1="190" x2="-410" y2="510" stroke="#FFFBEB" stroke-width="4" stroke-linecap="round" opacity="0.65"/>
+        <line x1="220" y1="-130" x2="630" y2="-365" stroke="#FFD60A" stroke-width="6" stroke-linecap="round" opacity="0.85"/>
+        <line x1="250" y1="-20" x2="680" y2="-65" stroke="#FFFBEB" stroke-width="4.5" stroke-linecap="round" opacity="0.7"/>
+        <line x1="230" y1="90" x2="640" y2="255" stroke="#00E5FF" stroke-width="5" stroke-linecap="round" opacity="0.8"/>
+        <line x1="160" y1="190" x2="430" y2="500" stroke="#FFD60A" stroke-width="5" stroke-linecap="round" opacity="0.7"/>
+        <line x1="10" y1="-230" x2="25" y2="-510" stroke="#FFFBEB" stroke-width="4" stroke-linecap="round" opacity="0.6"/>
+        <line x1="-140" y1="-195" x2="-350" y2="-480" stroke="#FFD60A" stroke-width="5" stroke-linecap="round" opacity="0.75"/>
+        <line x1="145" y1="-190" x2="365" y2="-470" stroke="#00E5FF" stroke-width="4" stroke-linecap="round" opacity="0.75"/>
+      </g>
+
+      <!-- Concentric Shockwave Rings -->
+      <circle cx="640" cy="388" r="245" fill="none" stroke="#FFD60A" stroke-width="4" stroke-dasharray="18 10" opacity="0.85"/>
+      <circle cx="640" cy="388" r="305" fill="none" stroke="#00E5FF" stroke-width="3" opacity="0.6"/>
+      <circle cx="640" cy="388" r="375" fill="none" stroke="#FFE44D" stroke-width="2" stroke-dasharray="8 12" opacity="0.45"/>
+
+      <!-- Electric Zigzag Bolts -->
+      <polyline points="435,285 330,225 280,255 170,185" fill="none" stroke="#00E5FF" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" opacity="0.9"/>
+      <polyline points="845,275 955,215 1005,245 1120,175" fill="none" stroke="#FFD60A" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" opacity="0.95"/>
+      <polyline points="420,445 310,490 255,465 140,510" fill="none" stroke="#34D399" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" opacity="0.9"/>
+      <polyline points="860,440 970,485 1025,460 1140,505" fill="none" stroke="#FF4D8D" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" opacity="0.9"/>
+    </svg>
+
+    <!-- Central Lv.7 Hero inside Clean Arcade Holo Spotlight Frame (0% green artifacts) -->
+    <div class="hero-spotlight-wrap">
+      <div class="holo-outer-ring">
+        <div class="holo-inner-ring">
+          <img class="lv7-hero-crop" src="assets/c-tower-evo.webp" alt="Lv.7 별빛 대영웅" />
+        </div>
+      </div>
+      <div class="spotlight-badge stroke-sm">Lv.7 별빛 대영웅 피버 각성!</div>
+    </div>
+
+    <!-- Bursting 3D Gold Coins with Varied Scale (0.6 ~ 1.3) & Rotation + Sparkles -->
+    <div class="coins-layer" id="coins-layer">
+      <!-- Reusable SVG Coin Template embedded cleanly per coin for varied scale/rotation -->
+      <!-- Left cluster -->
+      <svg class="coin-item" style="left:110px; top:165px; transform:rotate(-24deg) scale(1.25);" width="56" height="56" viewBox="0 0 40 40">
+        <circle cx="22" cy="22" r="14" fill="#92400E" stroke="#070B1E" stroke-width="3"/>
+        <circle cx="19" cy="19" r="14" fill="#FFD60A" stroke="#070B1E" stroke-width="3"/>
+        <circle cx="19" cy="19" r="9.5" fill="#F59E0B" stroke="#FFFBEB" stroke-width="2"/>
+        <path d="M19 13 L21 17 L25 17.5 L22 20.5 L22.5 24.5 L19 22.5 L15.5 24.5 L16 20.5 L13 17.5 L17 17 Z" fill="#FFFBEB"/>
+        <path d="M9.5 14 A11 11 0 0 1 22 8" fill="none" stroke="#FFF" stroke-width="2.5" stroke-linecap="round"/>
+      </svg>
+
+      <svg class="coin-item" style="left:230px; top:275px; transform:rotate(18deg) scale(0.82);" width="56" height="56" viewBox="0 0 40 40">
+        <circle cx="22" cy="22" r="14" fill="#92400E" stroke="#070B1E" stroke-width="3"/>
+        <circle cx="19" cy="19" r="14" fill="#FFD60A" stroke="#070B1E" stroke-width="3"/>
+        <circle cx="19" cy="19" r="9.5" fill="#F59E0B" stroke="#FFFBEB" stroke-width="2"/>
+        <path d="M19 13 L21 17 L25 17.5 L22 20.5 L22.5 24.5 L19 22.5 L15.5 24.5 L16 20.5 L13 17.5 L17 17 Z" fill="#FFFBEB"/>
+      </svg>
+
+      <svg class="coin-item" style="left:345px; top:195px; transform:rotate(-15deg) scale(0.65);" width="56" height="56" viewBox="0 0 40 40">
+        <circle cx="22" cy="22" r="14" fill="#92400E" stroke="#070B1E" stroke-width="3"/>
+        <circle cx="19" cy="19" r="14" fill="#FFD60A" stroke="#070B1E" stroke-width="3"/>
+        <circle cx="19" cy="19" r="9.5" fill="#F59E0B" stroke="#FFFBEB" stroke-width="2"/>
+        <path d="M19 13 L21 17 L25 17.5 L22 20.5 L22.5 24.5 L19 22.5 L15.5 24.5 L16 20.5 L13 17.5 L17 17 Z" fill="#FFFBEB"/>
+      </svg>
+
+      <svg class="coin-item" style="left:165px; top:415px; transform:rotate(28deg) scale(1.3);" width="56" height="56" viewBox="0 0 40 40">
+        <circle cx="22" cy="22" r="14" fill="#92400E" stroke="#070B1E" stroke-width="3"/>
+        <circle cx="19" cy="19" r="14" fill="#FFD60A" stroke="#070B1E" stroke-width="3"/>
+        <circle cx="19" cy="19" r="9.5" fill="#F59E0B" stroke="#FFFBEB" stroke-width="2"/>
+        <path d="M19 13 L21 17 L25 17.5 L22 20.5 L22.5 24.5 L19 22.5 L15.5 24.5 L16 20.5 L13 17.5 L17 17 Z" fill="#FFFBEB"/>
+        <path d="M9.5 14 A11 11 0 0 1 22 8" fill="none" stroke="#FFF" stroke-width="2.5" stroke-linecap="round"/>
+      </svg>
+
+      <svg class="coin-item" style="left:325px; top:480px; transform:rotate(-20deg) scale(0.92);" width="56" height="56" viewBox="0 0 40 40">
+        <circle cx="22" cy="22" r="14" fill="#92400E" stroke="#070B1E" stroke-width="3"/>
+        <circle cx="19" cy="19" r="14" fill="#FFD60A" stroke="#070B1E" stroke-width="3"/>
+        <circle cx="19" cy="19" r="9.5" fill="#F59E0B" stroke="#FFFBEB" stroke-width="2"/>
+        <path d="M19 13 L21 17 L25 17.5 L22 20.5 L22.5 24.5 L19 22.5 L15.5 24.5 L16 20.5 L13 17.5 L17 17 Z" fill="#FFFBEB"/>
+      </svg>
+
+      <svg class="coin-item" style="left:65px; top:320px; transform:rotate(12deg) scale(0.72);" width="56" height="56" viewBox="0 0 40 40">
+        <circle cx="22" cy="22" r="14" fill="#92400E" stroke="#070B1E" stroke-width="3"/>
+        <circle cx="19" cy="19" r="14" fill="#FFD60A" stroke="#070B1E" stroke-width="3"/>
+        <circle cx="19" cy="19" r="9.5" fill="#F59E0B" stroke="#FFFBEB" stroke-width="2"/>
+        <path d="M19 13 L21 17 L25 17.5 L22 20.5 L22.5 24.5 L19 22.5 L15.5 24.5 L16 20.5 L13 17.5 L17 17 Z" fill="#FFFBEB"/>
+      </svg>
+
+      <!-- Right cluster -->
+      <svg class="coin-item" style="right:115px; top:160px; transform:rotate(25deg) scale(1.28);" width="56" height="56" viewBox="0 0 40 40">
+        <circle cx="22" cy="22" r="14" fill="#92400E" stroke="#070B1E" stroke-width="3"/>
+        <circle cx="19" cy="19" r="14" fill="#FFD60A" stroke="#070B1E" stroke-width="3"/>
+        <circle cx="19" cy="19" r="9.5" fill="#F59E0B" stroke="#FFFBEB" stroke-width="2"/>
+        <path d="M19 13 L21 17 L25 17.5 L22 20.5 L22.5 24.5 L19 22.5 L15.5 24.5 L16 20.5 L13 17.5 L17 17 Z" fill="#FFFBEB"/>
+        <path d="M9.5 14 A11 11 0 0 1 22 8" fill="none" stroke="#FFF" stroke-width="2.5" stroke-linecap="round"/>
+      </svg>
+
+      <svg class="coin-item" style="right:245px; top:265px; transform:rotate(-16deg) scale(0.78);" width="56" height="56" viewBox="0 0 40 40">
+        <circle cx="22" cy="22" r="14" fill="#92400E" stroke="#070B1E" stroke-width="3"/>
+        <circle cx="19" cy="19" r="14" fill="#FFD60A" stroke="#070B1E" stroke-width="3"/>
+        <circle cx="19" cy="19" r="9.5" fill="#F59E0B" stroke="#FFFBEB" stroke-width="2"/>
+        <path d="M19 13 L21 17 L25 17.5 L22 20.5 L22.5 24.5 L19 22.5 L15.5 24.5 L16 20.5 L13 17.5 L17 17 Z" fill="#FFFBEB"/>
+      </svg>
+
+      <svg class="coin-item" style="right:348px; top:190px; transform:rotate(14deg) scale(0.62);" width="56" height="56" viewBox="0 0 40 40">
+        <circle cx="22" cy="22" r="14" fill="#92400E" stroke="#070B1E" stroke-width="3"/>
+        <circle cx="19" cy="19" r="14" fill="#FFD60A" stroke="#070B1E" stroke-width="3"/>
+        <circle cx="19" cy="19" r="9.5" fill="#F59E0B" stroke="#FFFBEB" stroke-width="2"/>
+        <path d="M19 13 L21 17 L25 17.5 L22 20.5 L22.5 24.5 L19 22.5 L15.5 24.5 L16 20.5 L13 17.5 L17 17 Z" fill="#FFFBEB"/>
+      </svg>
+
+      <svg class="coin-item" style="right:155px; top:410px; transform:rotate(-26deg) scale(1.22);" width="56" height="56" viewBox="0 0 40 40">
+        <circle cx="22" cy="22" r="14" fill="#92400E" stroke="#070B1E" stroke-width="3"/>
+        <circle cx="19" cy="19" r="14" fill="#FFD60A" stroke="#070B1E" stroke-width="3"/>
+        <circle cx="19" cy="19" r="9.5" fill="#F59E0B" stroke="#FFFBEB" stroke-width="2"/>
+        <path d="M19 13 L21 17 L25 17.5 L22 20.5 L22.5 24.5 L19 22.5 L15.5 24.5 L16 20.5 L13 17.5 L17 17 Z" fill="#FFFBEB"/>
+        <path d="M9.5 14 A11 11 0 0 1 22 8" fill="none" stroke="#FFF" stroke-width="2.5" stroke-linecap="round"/>
+      </svg>
+
+      <svg class="coin-item" style="right:320px; top:475px; transform:rotate(22deg) scale(0.88);" width="56" height="56" viewBox="0 0 40 40">
+        <circle cx="22" cy="22" r="14" fill="#92400E" stroke="#070B1E" stroke-width="3"/>
+        <circle cx="19" cy="19" r="14" fill="#FFD60A" stroke="#070B1E" stroke-width="3"/>
+        <circle cx="19" cy="19" r="9.5" fill="#F59E0B" stroke="#FFFBEB" stroke-width="2"/>
+        <path d="M19 13 L21 17 L25 17.5 L22 20.5 L22.5 24.5 L19 22.5 L15.5 24.5 L16 20.5 L13 17.5 L17 17 Z" fill="#FFFBEB"/>
+      </svg>
+
+      <svg class="coin-item" style="right:68px; top:315px; transform:rotate(-10deg) scale(0.70);" width="56" height="56" viewBox="0 0 40 40">
+        <circle cx="22" cy="22" r="14" fill="#92400E" stroke="#070B1E" stroke-width="3"/>
+        <circle cx="19" cy="19" r="14" fill="#FFD60A" stroke="#070B1E" stroke-width="3"/>
+        <circle cx="19" cy="19" r="9.5" fill="#F59E0B" stroke="#FFFBEB" stroke-width="2"/>
+        <path d="M19 13 L21 17 L25 17.5 L22 20.5 L22.5 24.5 L19 22.5 L15.5 24.5 L16 20.5 L13 17.5 L17 17 Z" fill="#FFFBEB"/>
+      </svg>
+
+      <!-- Comic Sparkle Stars -->
+      <svg class="coin-item" style="left:285px; top:148px; transform:scale(0.95);" width="36" height="36" viewBox="0 0 36 36">
+        <path d="M18 2 L22 14 L34 18 L22 22 L18 34 L14 22 L2 18 L14 14 Z" fill="#FFFBEB" stroke="#070B1E" stroke-width="2.5"/>
+      </svg>
+      <svg class="coin-item" style="right:285px; top:148px; transform:scale(1.05);" width="36" height="36" viewBox="0 0 36 36">
+        <path d="M18 2 L22 14 L34 18 L22 22 L18 34 L14 22 L2 18 L14 14 Z" fill="#00E5FF" stroke="#070B1E" stroke-width="2.5"/>
+      </svg>
+      <svg class="coin-item" style="left:395px; top:350px; transform:scale(0.8);" width="36" height="36" viewBox="0 0 36 36">
+        <path d="M18 2 L22 14 L34 18 L22 22 L18 34 L14 22 L2 18 L14 14 Z" fill="#FFE44D" stroke="#070B1E" stroke-width="2.5"/>
+      </svg>
+      <svg class="coin-item" style="right:395px; top:350px; transform:scale(0.85);" width="36" height="36" viewBox="0 0 36 36">
+        <path d="M18 2 L22 14 L34 18 L22 22 L18 34 L14 22 L2 18 L14 14 Z" fill="#FF4D8D" stroke="#070B1E" stroke-width="2.5"/>
+      </svg>
+    </div>
+
+    <!-- Top Tilted Outline Combo Banner + Fever Gauge -->
+    <div class="combo-banner-wrap">
+      <div class="combo-main-title">5연속 대폭발!! +50G</div>
+      <div class="fever-bar-wrap">
+        <div class="unskew" style="display:flex;align-items:center;gap:6px;padding-left:6px;">
+          <svg width="24" height="24" viewBox="0 0 24 24">
+            <path d="M13 2 L4 14 H11 L10 22 L20 10 H13 Z" fill="#FFD60A" stroke="#070B1E" stroke-width="2" stroke-linejoin="round"/>
+          </svg>
+          <span class="font-aggro stroke-sm" style="font-size:15px;color:#FFE44D;">FEVER 100%</span>
+        </div>
+        <div class="fever-track"><div class="fever-fill"></div></div>
+      </div>
+    </div>
+
+    <!-- Side Critical & Coin Popups -->
+    <div class="crit-chip crit-left">
+      <div class="unskew" style="display:flex;align-items:center;gap:10px;">
+        <svg width="36" height="36" viewBox="0 0 36 36">
+          <path d="M20 4 L9 20 H17 L15 32 L27 15 H19 Z" fill="#FFD60A" stroke="#070B1E" stroke-width="2.8" stroke-linejoin="round"/>
+        </svg>
+        <div>
+          <div class="font-title stroke-md" style="font-size:30px;line-height:1;">전 타워 크리티컬!</div>
+          <div class="font-jua stroke-sm" style="font-size:15px;color:#ECFDF5;">공격력 2배 · 8초 발동</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="crit-chip crit-right">
+      <div class="unskew" style="display:flex;align-items:center;gap:10px;">
+        <svg width="38" height="38" viewBox="0 0 36 36">
+          <circle cx="19" cy="19" r="12" fill="#B45309" stroke="#070B1E" stroke-width="2.8"/>
+          <circle cx="17" cy="16" r="12" fill="#FFD60A" stroke="#070B1E" stroke-width="2.8"/>
+          <circle cx="17" cy="16" r="8" fill="none" stroke="#FFFBEB" stroke-width="1.8"/>
+        </svg>
+        <div>
+          <div class="font-title stroke-md" style="font-size:30px;line-height:1;color:#FFFFFF;">+50G 보너스!</div>
+          <div class="font-jua stroke-sm" style="font-size:15px;color:#FFFBEB;">바로 영웅 진화 가능!</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="bottom-toast">
+      <span class="unskew stroke-sm" style="display:block;">정답 스트릭! ‘부지런하다 ↔ 게으르다’ 어휘 마스터!</span>
+    </div>
+  </div>
+</body>
+</html>

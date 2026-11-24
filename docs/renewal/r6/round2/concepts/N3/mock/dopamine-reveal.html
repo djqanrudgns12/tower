@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>N3 · 도파민 전설 미스터리 큐브 오픈</title>
+  <link rel="stylesheet" href="./n3-theme.css" />
+  <style>
+    .reveal-root {
+      position: relative;
+      width: 1280px;
+      height: 720px;
+      background: #0F172A;
+      overflow: hidden;
+    }
+
+    .reveal-bg-blur {
+      position: absolute;
+      inset: -12px;
+      background: url('./assets/b-home-bg.webp') center/cover no-repeat;
+      filter: blur(5px) brightness(0.45) saturate(1.2);
+      z-index: 0;
+    }
+
+    .reveal-vignette {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 50% 48%, rgba(254, 240, 138, 0.28) 0%, rgba(126, 34, 206, 0.52) 55%, rgba(15, 23, 42, 0.88) 100%);
+      z-index: 1;
+    }
+
+    .prism-rays {
+      position: absolute;
+      left: 50%;
+      top: 56%;
+      width: 1700px;
+      height: 1700px;
+      transform: translate(-50%, -50%);
+      background: repeating-conic-gradient(
+        from 6deg,
+        rgba(253, 224, 71, 0.36) 0deg 9deg,
+        rgba(251, 113, 133, 0.28) 9deg 18deg,
+        rgba(56, 189, 248, 0.30) 18deg 27deg,
+        rgba(74, 222, 128, 0.26) 27deg 36deg,
+        rgba(192, 132, 252, 0.28) 36deg 45deg
+      );
+      pointer-events: none;
+      z-index: 2;
+    }
+
+    .holo-beam {
+      position: absolute;
+      left: 50%;
+      bottom: 85px;
+      width: 720px;
+      height: 520px;
+      transform: translateX(-50%);
+      background: conic-gradient(
+        from 152deg at 50% 95%,
+        transparent 0deg,
+        rgba(253, 224, 71, 0.55) 14deg,
+        rgba(56, 189, 248, 0.52) 26deg,
+        rgba(251, 113, 133, 0.50) 38deg,
+        rgba(74, 222, 128, 0.50) 48deg,
+        transparent 60deg
+      );
+      filter: blur(2px);
+      pointer-events: none;
+      z-index: 3;
+    }
+
+    /* 상단 전설 오픈 배지 & 타이틀 */
+    .reveal-header {
+      position: absolute;
+      top: 22px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      z-index: 12;
+      width: 900px;
+    }
+
+    .legend-pill {
+      background: linear-gradient(90deg, #FDE047 0%, #FB7185 50%, #38BDF8 100%);
+      border: 3px solid #FFFFFF;
+      border-radius: 10px;
+      padding: 4px 20px;
+      font-family: var(--font-display);
+      font-size: 15px;
+      color: #181826;
+      box-shadow: 4px 4px 0 #181826;
+    }
+
+    /* 중앙 45도 아이소메트릭 미스터리 큐브 상자 + 팝아웃 전설 카드 */
+    .reveal-center {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -48%);
+      width: 1080px;
+      height: 460px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 10;
+    }
+
+    .legend-showcase-card {
+      width: 680px;
+      margin-top: -54px;
+      background: linear-gradient(135deg, #FDE047 0%, #FB7185 33%, #38BDF8 66%, #4ADE80 100%);
+      padding: 5px;
+      border: 4px solid #181826;
+      border-radius: 20px;
+      box-shadow: 0 14px 42px rgba(250, 204, 21, 0.6), 9px 11px 0 #181826;
+      position: relative;
+      z-index: 8;
+    }
+
+    .legend-showcase-inner {
+      background: radial-gradient(circle at 50% 35%, #FEF9C3 0%, #FDE047 50%, #F59E0B 100%);
+      border: 3px solid #181826;
+      border-radius: 15px;
+      padding: 16px 20px 16px 268px;
+      min-height: 272px;
+      display: flex;
+      align-items: center;
+      position: relative;
+    }
+
+    /* 좌측 Lv.7 챔피언 카드가 앞으로 팝아웃 */
+    .champion-popout {
+      position: absolute;
+      left: -18px;
+      top: -22px;
+      width: 266px;
+      height: 312px;
+      border: 5px solid #181826;
+      border-radius: 16px;
+      overflow: hidden;
+      background: linear-gradient(180deg, #E0F2FE 0%, #BAE6FD 100%);
+      box-shadow:
+        0 0 0 4px #FDE047,
+        0 14px 28px rgba(24, 24, 38, 0.55),
+        10px 12px 0 #181826;
+      transform: rotate(-2.5deg);
+      z-index: 12;
+    }
+
+    .champion-popout img {
+      position: absolute;
+      top: 0;
+      left: -200%;
+      width: 300%;
+      height: 100%;
+      object-fit: cover;
+      max-width: none;
+    }
+
+    .reveal-info {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      width: 100%;
+    }
+
+    .buff-badge {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: #FFFDF5;
+      border: 3px solid #181826;
+      border-radius: 12px;
+      padding: 10px 14px;
+      box-shadow: 0 4px 0 #CBD5E1, 4px 5px 0 #181826;
+    }
+
+    .buff-icon-box {
+      width: 50px;
+      height: 50px;
+      flex-shrink: 0;
+      border: 3px solid #181826;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 2px 3px 0 #181826;
+    }
+
+    .buff-title {
+      font-family: var(--font-display);
+      font-size: 20px;
+      color: #181826;
+      line-height: 1.15;
+    }
+
+    .buff-sub {
+      font-size: 13.5px;
+      color: #475569;
+      margin-top: 2px;
+    }
+
+    /* 하단 장착 버튼 */
+    .reveal-footer {
+      position: absolute;
+      left: 50%;
+      bottom: 20px;
+      transform: translateX(-50%);
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      z-index: 14;
+    }
+  </style>
+</head>
+<body>
+  <div class="reveal-root">
+    <div class="reveal-bg-blur"></div>
+    <div class="reveal-vignette"></div>
+    <div class="prism-rays"></div>
+    <div class="holo-beam"></div>
+
+    <!-- 상단 배너 -->
+    <header class="reveal-header">
+      <div class="legend-pill">✨ MYSTERY CUBE UNBOXING · LEGENDARY DROP ✨</div>
+      <div class="txt-outline-lg" style="font-size:40px; text-align:center;">
+        [전설 ★] 황금 날개 큐브 챔피언!
+      </div>
+    </header>
+
+    <!-- 중앙: 45도 아이소메트릭 미스터리 큐브 상자(뚜껑 날아감) + 팝아웃 Lv7 챔피언 카드 -->
+    <main class="reveal-center">
+      <!-- 뒤/하단에 배치되는 45도 아이소메트릭 미스터리 큐브 상자 & 무지개 홀로그램 광선 SVG -->
+      <svg width="1080" height="470" viewBox="0 0 1080 470" style="position:absolute; inset:0; pointer-events:none; z-index:4;">
+        <!-- 카드 뒤에서 뿜어져 나오는 무지개 홀로그램 광선 부채꼴 -->
+        <polygon points="540,398 110,12 265,6" fill="#FDE047" opacity="0.34"/>
+        <polygon points="540,398 290,6 450,2" fill="#FB7185" opacity="0.30"/>
+        <polygon points="540,398 475,2 620,2" fill="#38BDF8" opacity="0.32"/>
+        <polygon points="540,398 645,2 805,8" fill="#4ADE80" opacity="0.30"/>
+        <polygon points="540,398 830,10 970,24" fill="#C084FC" opacity="0.32"/>
+
+        <!-- 하단 중앙 45도 아이소메트릭 미스터리 큐브 본체 (열린 상자) -->
+        <g transform="translate(555, 392) scale(1.12)">
+          <!-- 바닥 하드 섀도 -->
+          <polygon points="0,58 -116,4 0,-42 116,4" fill="#181826" opacity="0.78"/>
+          <!-- 상자 안쪽 어두운 속 + 무지개 빛 코어 -->
+          <polygon points="0,-58 96,-14 0,30 -96,-14" fill="#1E1B4B" stroke="#181826" stroke-width="4" stroke-linejoin="round"/>
+          <polygon points="0,-48 74,-14 0,20 -74,-14" fill="#FEF08A" opacity="0.95"/>
+          <!-- 왼쪽 앞면 (시안/블루) -->
+          <polygon points="-96,-14 0,30 0,76 -96,32" fill="#38BDF8" stroke="#181826" stroke-width="4" stroke-linejoin="round"/>
+          <!-- 앞면 무지개 띠 -->
+          <polygon points="-78,2 -18,30 -18,52 -78,24" fill="#FDE047" stroke="#181826" stroke-width="3" stroke-linejoin="round"/>
+          <!-- 오른쪽 앞면 (퍼플/마젠타) -->
+          <polygon points="96,-14 0,30 0,76 96,32" fill="#A855F7" stroke="#181826" stroke-width="4" stroke-linejoin="round"/>
+          <polygon points="78,2 18,30 18,52 78,24" fill="#FB7185" stroke="#181826" stroke-width="3" stroke-linejoin="round"/>
+          <!-- 상자 테두리 스터드 돌기 -->
+          <rect x="-56" y="-28" width="16" height="9" rx="3" fill="#FDE047" stroke="#181826" stroke-width="2.5"/>
+          <rect x="40" y="-28" width="16" height="9" rx="3" fill="#FDE047" stroke="#181826" stroke-width="2.5"/>
+        </g>
+
+        <!-- 오른쪽 위로 날아가는 45도 아이소메트릭 미스터리 큐브 뚜껑 -->
+        <g transform="translate(972, 92) rotate(18)">
+          <!-- 날아가는 스피드 라인 -->
+          <line x1="-102" y1="78" x2="-46" y2="38" stroke="#FEF08A" stroke-width="5.5" stroke-linecap="round"/>
+          <line x1="-84" y1="98" x2="-30" y2="62" stroke="#38BDF8" stroke-width="5.5" stroke-linecap="round"/>
+          <!-- 뚜껑 옆면 -->
+          <polygon points="-68,-8 0,24 68,-8 68,14 0,46 -68,14" fill="#D97706" stroke="#181826" stroke-width="4" stroke-linejoin="round"/>
+          <!-- 뚜껑 윗면 (황금) -->
+          <polygon points="0,-40 68,-8 0,24 -68,-8" fill="#FDE047" stroke="#181826" stroke-width="4" stroke-linejoin="round"/>
+          <!-- 뚜껑 4개 스터드 -->
+          <ellipse cx="0" cy="-22" rx="12" ry="6" fill="#FEF9C3" stroke="#181826" stroke-width="2.5"/>
+          <ellipse cx="-26" cy="-9" rx="12" ry="6" fill="#FEF9C3" stroke="#181826" stroke-width="2.5"/>
+          <ellipse cx="26" cy="-9" rx="12" ry="6" fill="#FEF9C3" stroke="#181826" stroke-width="2.5"/>
+          <ellipse cx="0" cy="4" rx="12" ry="6" fill="#FEF9C3" stroke="#181826" stroke-width="2.5"/>
+        </g>
+
+        <!-- 주변 흩날리는 복셀 반짝 블록 & 별 -->
+        <polygon points="104,76 112,96 132,96 116,109 122,129 104,117 86,129 92,109 76,96 96,96" fill="#FDE047" stroke="#181826" stroke-width="3"/>
+        <polygon points="978,278 986,296 1004,296 990,308 996,326 978,314 960,326 966,308 952,296 970,296" fill="#4ADE80" stroke="#181826" stroke-width="3"/>
+        <rect x="115" y="295" width="26" height="26" rx="5" fill="#38BDF8" stroke="#181826" stroke-width="3.5" transform="rotate(-18 128 308)"/>
+        <rect x="895" y="348" width="24" height="24" rx="5" fill="#FB7185" stroke="#181826" stroke-width="3.5" transform="rotate(20 907 360)"/>
+      </svg>
+
+      <div class="legend-showcase-card">
+        <div class="legend-showcase-inner">
+          <!-- 앞으로 팝아웃되는 Lv.7 챔피언 카드 -->
+          <div class="champion-popout">
+            <img src="./assets/c-tower-evo.webp" alt="전설 Lv7 큐브 챔피언" />
+            <div style="position:absolute; top:10px; left:10px; background:#181826; color:#FDE047; border:2.5px solid #FFFFFF; border-radius:8px; padding:3px 10px; font-family:var(--font-display); font-size:13px; box-shadow:2px 2px 0 #181826;">
+              ★ 전설 등급
+            </div>
+            <div style="position:absolute; bottom:10px; left:10px; right:10px; background:linear-gradient(180deg, #FEF08A, #FACC15); color:#181826; border:2.5px solid #181826; border-radius:8px; padding:4px 8px; font-family:var(--font-display); font-size:15px; text-align:center; box-shadow:2px 3px 0 #181826;">
+              Lv.7 큐브 챔피언
+            </div>
+          </div>
+
+          <!-- 우측 핵심 버프 2개 대형 배지 -->
+          <div class="reveal-info">
+            <div style="font-family:var(--font-display); font-size:25px; color:#181826; line-height:1.15;">
+              황금 날개 스킨 해금!
+            </div>
+
+            <div class="buff-badge" style="background:#FEFCE8;">
+              <div class="buff-icon-box" style="background:linear-gradient(180deg,#FDE047,#F59E0B);">
+                <!-- 황금 날개 + 코인 블록 SVG -->
+                <svg width="34" height="34" viewBox="0 0 36 36">
+                  <polygon points="4,12 14,16 14,26 6,24" fill="#FFFFFF" stroke="#181826" stroke-width="2.5" stroke-linejoin="round"/>
+                  <polygon points="32,12 22,16 22,26 30,24" fill="#FFFFFF" stroke="#181826" stroke-width="2.5" stroke-linejoin="round"/>
+                  <polygon points="18,6 26,11 18,16 10,11" fill="#FEF08A" stroke="#181826" stroke-width="2.5" stroke-linejoin="round"/>
+                  <polygon points="10,11 18,16 18,28 10,23" fill="#FACC15" stroke="#181826" stroke-width="2.5" stroke-linejoin="round"/>
+                  <polygon points="26,11 18,16 18,28 26,23" fill="#D97706" stroke="#181826" stroke-width="2.5" stroke-linejoin="round"/>
+                </svg>
+              </div>
+              <div>
+                <div class="buff-title">아바타 황금 날개 <span style="color:#B45309;">+60G</span></div>
+                <div class="buff-sub">전투 시작 시 골드블록 즉시 지급</div>
+              </div>
+            </div>
+
+            <div class="buff-badge" style="background:#F0F9FF;">
+              <div class="buff-icon-box" style="background:linear-gradient(135deg,#38BDF8,#FB7185);">
+                <!-- 무지개 레이저 3관통 화살 SVG -->
+                <svg width="34" height="34" viewBox="0 0 36 36">
+                  <line x1="5" y1="26" x2="29" y2="10" stroke="#FEF08A" stroke-width="6" stroke-linecap="round"/>
+                  <line x1="5" y1="26" x2="29" y2="10" stroke="#181826" stroke-width="2.5" stroke-linecap="round"/>
+                  <polygon points="32,8 22,8 27,18" fill="#4ADE80" stroke="#181826" stroke-width="2.5" stroke-linejoin="round"/>
+                  <rect x="6" y="6" width="8" height="8" rx="2" fill="#FB7185" stroke="#181826" stroke-width="2"/>
+                </svg>
+              </div>
+              <div>
+                <div class="buff-title">무지개 레이저 <span style="color:#0284C7;">3관통</span></div>
+                <div class="buff-sub">깃털궁수 전설 스킨 · 광역 3연타</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- 하단 장착 버튼 -->
+    <footer class="reveal-footer">
+      <div class="toy-btn toy-btn-blue" style="padding:13px 26px; font-size:19px;">보관함에 넣기</div>
+      <div class="toy-btn toy-btn-green" style="padding:14px 48px; font-size:25px;">
+        <span class="txt-outline" style="font-size:25px;">장착하기! ★</span>
+      </div>
+    </footer>
+  </div>
+</body>
+</html>

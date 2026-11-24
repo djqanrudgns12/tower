@@ -1,0 +1,200 @@
+@import url('https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Do+Hyeon&display=swap');
+
+@font-face {
+  font-family: 'MaplestoryOTFBold';
+  src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_20-04@2.1/MaplestoryOTFBold.woff') format('woff');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  /* N3 큐브 아바타 블록월드 핵심 팔레트 */
+  --n3-sky-top: #38BDF8;
+  --n3-sky-mid: #7DD3FC;
+  --n3-sun-gold: #FACC15;
+  --n3-sun-amber: #F59E0B;
+  --n3-grass-lime: #65D636;
+  --n3-grass-dark: #2E8B1A;
+  --n3-sand-light: #FDE68A;
+  --n3-sand-edge: #D97706;
+
+  /* UI 블록 & 45도 모따기/스터드 표면 */
+  --n3-ink: #181826;
+  --n3-ink-soft: #2B2D42;
+  --n3-panel: #FFFDF5;
+  --n3-panel-2: #F1F5F9;
+  --n3-slate-block: #334155;
+  --n3-wood-top: #D97706;
+  --n3-wood-face: #92400E;
+  --n3-diamond-top: #38BDF8;
+  --n3-diamond-face: #0284C7;
+  --n3-epic-top: #C084FC;
+  --n3-epic-face: #7E22CE;
+  --n3-legend-gold: #FDE047;
+  --n3-coral-red: #FB4F5A;
+  --n3-coral-dark: #B91C1C;
+  --n3-neon-green: #4ADE80;
+  --n3-neon-green-face: #15803D;
+
+  /* 폰트 */
+  --font-display: 'MaplestoryOTFBold', 'Black Han Sans', sans-serif;
+  --font-ui: 'Do Hyeon', 'MaplestoryOTFBold', sans-serif;
+
+  /* 하드 블록 섀도 */
+  --shadow-block-sm: 3px 3px 0px var(--n3-ink);
+  --shadow-block-md: 4px 4px 0px var(--n3-ink);
+  --shadow-block-lg: 6px 6px 0px var(--n3-ink);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  user-select: none;
+}
+
+html, body {
+  width: 1280px;
+  height: 720px;
+  overflow: hidden;
+  font-family: var(--font-ui);
+  color: var(--n3-ink);
+  background: #0f172a;
+}
+
+.stage-1280 {
+  position: relative;
+  width: 1280px;
+  height: 720px;
+  overflow: hidden;
+}
+
+/* 두꺼운 블록 외곽선 타이포 */
+.txt-outline {
+  font-family: var(--font-display);
+  color: #FFFFFF;
+  -webkit-text-stroke: 2px var(--n3-ink);
+  paint-order: stroke fill;
+  text-shadow:
+    3px 3px 0 var(--n3-ink),
+    -1px -1px 0 var(--n3-ink),
+    1px -1px 0 var(--n3-ink),
+    -1px 1px 0 var(--n3-ink);
+}
+
+.txt-outline-lg {
+  font-family: var(--font-display);
+  color: #FFFFFF;
+  -webkit-text-stroke: 4px var(--n3-ink);
+  paint-order: stroke fill;
+  text-shadow:
+    4px 5px 0 var(--n3-ink),
+    -2px -2px 0 var(--n3-ink),
+    2px -2px 0 var(--n3-ink),
+    -2px 2px 0 var(--n3-ink);
+}
+
+/* 45도 모따기 토이 블록 프레임 */
+.chamfer-box {
+  position: relative;
+  border: 3px solid var(--n3-ink);
+  clip-path: polygon(
+    10px 0%, calc(100% - 10px) 0%,
+    100% 10px, 100% calc(100% - 10px),
+    calc(100% - 10px) 100%, 10px 100%,
+    0% calc(100% - 10px), 0% 10px
+  );
+}
+
+/* 블록 4px 하드 섀도 카드 (3D 스터드 상단 베벨) */
+.toy-card {
+  position: relative;
+  background: var(--n3-panel);
+  border: 3px solid var(--n3-ink);
+  border-radius: 8px;
+  box-shadow: 0 5px 0 #CBD5E1, 4px 6px 0 var(--n3-ink);
+}
+
+.toy-card-dark {
+  position: relative;
+  background: #1E293B;
+  border: 3px solid var(--n3-ink);
+  border-radius: 8px;
+  box-shadow: 0 5px 0 #0F172A, 4px 6px 0 var(--n3-ink);
+  color: #FFFFFF;
+}
+
+/* 스터드(레고/블록 돌기) 윗면 패턴 */
+.stud-strip {
+  height: 10px;
+  background-image: radial-gradient(circle at 12px 5px, rgba(255,255,255,0.55) 4px, transparent 4.5px);
+  background-size: 24px 10px;
+}
+
+.stud-bg-pattern {
+  background-image:
+    radial-gradient(rgba(255,255,255,0.28) 22%, transparent 23%),
+    radial-gradient(rgba(24,24,38,0.08) 22%, transparent 23%);
+  background-size: 22px 22px;
+  background-position: 0 0, 1px 2px;
+}
+
+/* 입체 토이 블록 버튼 */
+.toy-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-family: var(--font-display);
+  border: 3px solid var(--n3-ink);
+  border-radius: 8px;
+  cursor: pointer;
+  position: relative;
+  transition: transform 60ms ease;
+}
+
+.toy-btn-green {
+  background: linear-gradient(180deg, #6EE748 0%, #38C924 100%);
+  color: #FFFFFF;
+  box-shadow: inset 0 4px 0 rgba(255,255,255,0.45), 0 6px 0 #15803D, 4px 8px 0 var(--n3-ink);
+}
+
+.toy-btn-gold {
+  background: linear-gradient(180deg, #FDE047 0%, #F59E0B 100%);
+  color: var(--n3-ink);
+  box-shadow: inset 0 4px 0 rgba(255,255,255,0.55), 0 6px 0 #B45309, 4px 8px 0 var(--n3-ink);
+}
+
+.toy-btn-blue {
+  background: linear-gradient(180deg, #38BDF8 0%, #0284C7 100%);
+  color: #FFFFFF;
+  box-shadow: inset 0 4px 0 rgba(255,255,255,0.45), 0 6px 0 #075985, 4px 8px 0 var(--n3-ink);
+}
+
+.toy-btn-red {
+  background: linear-gradient(180deg, #FB7185 0%, #E11D48 100%);
+  color: #FFFFFF;
+  box-shadow: inset 0 4px 0 rgba(255,255,255,0.4), 0 6px 0 #9F1239, 4px 8px 0 var(--n3-ink);
+}
+
+.toy-btn-pressed {
+  transform: translateY(4px);
+  box-shadow: inset 0 2px 0 rgba(0,0,0,0.2), 0 2px 0 #15803D, 2px 3px 0 var(--n3-ink);
+}
+
+.toy-btn-disabled {
+  background: #CBD5E1;
+  color: #64748B;
+  box-shadow: inset 0 3px 0 rgba(255,255,255,0.4), 0 4px 0 #94A3B8, 3px 5px 0 #475569;
+  opacity: 0.85;
+}
+
+/* 전설 무지개 글리치 테두리 */
+.legend-rainbow-frame {
+  background: linear-gradient(135deg, #FDE047 0%, #FB7185 33%, #38BDF8 66%, #4ADE80 100%);
+  padding: 4px;
+  border: 3px solid var(--n3-ink);
+  border-radius: 10px;
+  box-shadow: 4px 6px 0 var(--n3-ink);
+}

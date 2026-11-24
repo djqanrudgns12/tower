@@ -1,0 +1,226 @@
+@import url('https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Jua&display=swap');
+
+@font-face {
+  font-family: 'Cafe24Ssurround';
+  src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2105_2@1.0/Cafe24Ssurround.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+:root {
+  --ink: #131B42;
+  --ink-soft: #26346E;
+  --sun: #FFB800;
+  --sun-deep: #FF6B00;
+  --berry: #FF4D8D;
+  --berry-deep: #E11D62;
+  --frost: #00D2FF;
+  --frost-deep: #2563EB;
+  --galaxy: #A855F7;
+  --galaxy-deep: #6D28D9;
+  --mint: #2CE6A8;
+  --mint-deep: #059669;
+  --gold: #FFE033;
+  --cream: #FFFDF7;
+  --holo-grad: linear-gradient(125deg, #FF6482 0%, #FFE047 20%, #4FF2A1 40%, #3AE2FF 62%, #A66BFF 82%, #FF6BE8 100%);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  width: 1280px;
+  height: 720px;
+  overflow: hidden;
+  font-family: 'Jua', sans-serif;
+  color: var(--ink);
+  -webkit-font-smoothing: antialiased;
+  user-select: none;
+}
+
+.stage {
+  position: relative;
+  width: 1280px;
+  height: 720px;
+  overflow: hidden;
+  background: #0F172A;
+}
+
+.bg-art {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  pointer-events: none;
+}
+
+/* 굵은 외곽선 타이틀 타이포 */
+.title-stroke {
+  font-family: 'Cafe24Ssurround', 'Black Han Sans', sans-serif;
+  paint-order: stroke fill;
+  -webkit-text-stroke: 6px var(--ink);
+  filter: drop-shadow(0 4px 0 var(--ink));
+  letter-spacing: -0.02em;
+}
+
+.title-stroke-sm {
+  font-family: 'Cafe24Ssurround', 'Black Han Sans', sans-serif;
+  paint-order: stroke fill;
+  -webkit-text-stroke: 4px var(--ink);
+  filter: drop-shadow(0 2px 0 var(--ink));
+}
+
+.num-stroke {
+  font-family: 'Cafe24Ssurround', sans-serif;
+  paint-order: stroke fill;
+  -webkit-text-stroke: 4px var(--ink);
+  color: #FFFFFF;
+}
+
+/* 크리스털 보석 캡슐 HUD */
+.gem-capsule {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 15px 6px 8px;
+  border-radius: 999px;
+  background: linear-gradient(180deg, #FFFFFF 0%, #EAF6FF 100%);
+  border: 3px solid var(--ink);
+  box-shadow:
+    inset 0 3px 0 rgba(255, 255, 255, 0.95),
+    inset 0 -3px 0 rgba(125, 211, 252, 0.55),
+    0 5px 0 var(--ink);
+  position: relative;
+}
+
+.gem-capsule::after {
+  content: '';
+  position: absolute;
+  top: 4px;
+  left: 14px;
+  right: 14px;
+  height: 6px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.72);
+  pointer-events: none;
+}
+
+/* 크리스털 젤리 버튼 */
+.jelly-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: 3px solid var(--ink);
+  border-radius: 20px;
+  font-family: 'Cafe24Ssurround', sans-serif;
+  color: #FFFFFF;
+  paint-order: stroke fill;
+  -webkit-text-stroke: 3.5px var(--ink);
+  cursor: pointer;
+  box-shadow:
+    inset 0 4px 0 rgba(255, 255, 255, 0.55),
+    inset 0 -4px 0 rgba(0, 0, 0, 0.18),
+    0 6px 0 var(--ink);
+}
+
+.jelly-btn > * {
+  position: relative;
+  z-index: 2;
+}
+
+.jelly-btn::before {
+  content: '';
+  position: absolute;
+  z-index: 1;
+  top: 4px;
+  left: 10%;
+  right: 10%;
+  height: 36%;
+  border-radius: 999px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.55) 0%, rgba(255,255,255,0) 100%);
+  pointer-events: none;
+}
+
+.jelly-sun { background: linear-gradient(180deg, #FFD633 0%, #FF8A00 100%); }
+.jelly-berry { background: linear-gradient(180deg, #FF73A8 0%, #E11D62 100%); }
+.jelly-frost { background: linear-gradient(180deg, #5CE1FF 0%, #2563EB 100%); }
+.jelly-mint { background: linear-gradient(180deg, #57F2B5 0%, #059669 100%); }
+.jelly-galaxy { background: linear-gradient(180deg, #C084FC 0%, #6D28D9 100%); }
+.jelly-holo {
+  background: linear-gradient(125deg, #FF4D8D 0%, #FF9F1C 25%, #10B981 52%, #2563EB 76%, #7C3AED 100%);
+  box-shadow:
+    inset 0 4px 0 rgba(255, 255, 255, 0.7),
+    0 6px 0 var(--ink),
+    0 0 24px rgba(255, 214, 51, 0.85);
+}
+
+/* 홀로그램 트레이딩 카드 4단계 프레임 */
+.tcg-card {
+  position: relative;
+  border-radius: 18px;
+  border: 3px solid var(--ink);
+  padding: 6px;
+  background: #E2E8F0;
+  box-shadow: 0 6px 0 var(--ink), 0 10px 20px rgba(19, 27, 66, 0.35);
+  overflow: hidden;
+}
+
+.tcg-card.rarity-common {
+  background: linear-gradient(145deg, #F1F5F9 0%, #CBD5E1 50%, #94A3B8 100%);
+}
+.tcg-card.rarity-rare {
+  background: linear-gradient(145deg, #BAE6FD 0%, #38BDF8 50%, #6366F1 100%);
+}
+.tcg-card.rarity-epic {
+  background: linear-gradient(145deg, #FDE047 0%, #EC4899 52%, #7C3AED 100%);
+}
+.tcg-card.rarity-legend {
+  background: linear-gradient(125deg, #FF5E7E 0%, #FFE033 22%, #4EF09D 44%, #3AE2FF 66%, #A855F7 84%, #FF6BE8 100%);
+}
+
+.tcg-card::after {
+  content: '';
+  position: absolute;
+  inset: -40%;
+  background: linear-gradient(115deg, transparent 36%, rgba(255, 255, 255, 0.55) 48%, rgba(255, 255, 255, 0.15) 54%, transparent 64%);
+  transform: rotate(8deg);
+  pointer-events: none;
+}
+
+.tcg-inner {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  border-radius: 12px;
+  background: #FFFDF8;
+  border: 2px solid rgba(19, 27, 66, 0.85);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* 속성 타입 배지 */
+.type-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  border: 2px solid var(--ink);
+  font-size: 11px;
+  font-family: 'Cafe24Ssurround', sans-serif;
+  color: #FFFFFF;
+  paint-order: stroke fill;
+  -webkit-text-stroke: 2.5px var(--ink);
+}
+.type-sun { background: linear-gradient(180deg, #FFC82C, #FF7A00); }
+.type-berry { background: linear-gradient(180deg, #FF6BA5, #E11D62); }
+.type-frost { background: linear-gradient(180deg, #38BDF8, #2563EB); }
+.type-galaxy { background: linear-gradient(180deg, #C084FC, #7C3AED); }

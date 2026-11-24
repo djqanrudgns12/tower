@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>N2 Dopamine Reveal - 전설 태양불사조 카드 획득!</title>
+<link rel="stylesheet" href="n2-theme.css">
+<style>
+  .reveal-top {
+    position: absolute; top: 20px; left: 50%; transform: translateX(-50%);
+    display: flex; align-items: center; gap: 12px; z-index: 12;
+  }
+  .new-sticker {
+    padding: 6px 16px; border-radius: 999px; border: 3px solid var(--ink);
+    background: linear-gradient(180deg, #FF4D8D, #E11D62);
+    font-family: 'Cafe24Ssurround', sans-serif; font-size: 18px; color: #FFF;
+    paint-order: stroke fill; -webkit-text-stroke: 3px var(--ink);
+    box-shadow: 0 4px 0 var(--ink);
+    transform: rotate(-4deg);
+  }
+  .reveal-headline {
+    font-size: 38px; color: #FFE033;
+    -webkit-text-stroke: 7px var(--ink);
+  }
+
+  /* 중앙-우측 무지개 홀로그램 전설 카드 프레임 */
+  .reveal-stage {
+    position: absolute; inset: 0;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 40px 115px 0 115px; z-index: 10;
+  }
+  .legend-card {
+    width: 318px; height: 452px; padding: 11px; border-radius: 26px;
+    box-shadow:
+      0 12px 0 var(--ink),
+      0 0 60px rgba(255, 224, 51, 0.9),
+      0 0 95px rgba(236, 72, 153, 0.75);
+    transform: rotate(-3deg);
+  }
+  .legend-card .tcg-inner {
+    border-radius: 18px; padding: 12px; justify-content: space-between;
+    background: linear-gradient(180deg, #FFFDF5 0%, #FEF3C7 100%);
+  }
+  .card-top-row {
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .legend-art {
+    height: 245px; border-radius: 14px; border: 3px solid var(--ink);
+    overflow: hidden; position: relative; background: #BAE6FD;
+  }
+  .legend-art img { width: 100%; height: 100%; object-fit: cover; object-position: center top; }
+  .holo-sparkle {
+    position: absolute; inset: 0;
+    background: linear-gradient(125deg, transparent 25%, rgba(255,255,255,0.5) 42%, rgba(255,224,51,0.28) 50%, transparent 65%);
+    pointer-events: none;
+  }
+
+  .reveal-info-box {
+    width: 380px;
+    background: rgba(255, 255, 255, 0.95);
+    border: 4px solid var(--ink); border-radius: 28px;
+    box-shadow: 0 9px 0 var(--ink), 0 0 36px rgba(56,189,248,0.65);
+    padding: 20px 22px;
+    display: flex; flex-direction: column; gap: 14px;
+  }
+  .skill-box {
+    background: #FFFBEB; border: 2.5px solid #F59E0B; border-radius: 16px;
+    padding: 10px 14px; font-size: 16px; line-height: 1.35;
+  }
+  .equip-btn {
+    width: 100%; padding: 15px 20px; font-size: 26px; border-radius: 22px;
+  }
+</style>
+</head>
+<body>
+<div class="stage">
+  <img class="bg-art" src="assets/f2-reveal.webp" alt="홀로그램 카드팩 개봉">
+
+  <div class="reveal-top">
+    <span class="new-sticker">NEW! 대박</span>
+    <h1 class="title-stroke reveal-headline">무지개 홀로 카드 팩 개봉!</h1>
+  </div>
+
+  <div class="reveal-stage">
+    <div class="tcg-card rarity-legend legend-card">
+      <div class="tcg-inner">
+        <div class="card-top-row">
+          <span class="type-pill type-sun" style="font-size:13px;padding:3px 10px;">전설 ★★★★</span>
+          <span style="font-family:'Cafe24Ssurround',sans-serif;font-size:15px;color:#EA580C;">Lv.7 수호신</span>
+        </div>
+
+        <div class="legend-art">
+          <img src="assets/phoenix-reveal.webp" alt="태양불사조">
+          <div class="holo-sparkle"></div>
+        </div>
+
+        <div style="text-align:center;">
+          <div style="font-family:'Cafe24Ssurround',sans-serif;font-size:24px;color:var(--ink);">태양불사조</div>
+          <div style="font-size:14px;color:#475569;margin-top:2px;">황금빛 불꽃 왕관을 쓴 최종 진화 펫!</div>
+        </div>
+
+        <div style="display:flex;justify-content:space-between;background:#FFFFFF;border:2px solid var(--ink);border-radius:10px;padding:5px 10px;font-size:13px;">
+          <span>⚔ 공격 <b>290</b></span>
+          <span>🎯 사거리 <b>초광역</b></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="reveal-info-box">
+      <div style="display:flex;align-items:center;justify-content:space-between;">
+        <span class="type-pill type-sun" style="font-size:14px;padding:4px 12px;">☀ 태양 속성 · 3단 최종</span>
+        <span style="font-size:14px;color:#7C3AED;"><b>도감 29 / 32 등록!</b></span>
+      </div>
+      <div style="font-family:'Cafe24Ssurround',sans-serif;font-size:26px;color:var(--ink);">
+        [전설 ★★★★] 태양불사조
+      </div>
+      <div class="skill-box">
+        <b>🔥 특수기 · 태양 깃털 유성우</b><br>
+        어휘 퀴즈를 연속 3번 맞히면 화면 전체에 황금 불꽃 깃털을 내려 적 무리를 한꺼번에 정화해요!
+      </div>
+      <button class="jelly-btn jelly-holo equip-btn"><span>✨ 덱에 넣기!</span></button>
+      <div style="text-align:center;font-size:13px;color:#64748B;">보상 보너스: 별빛 배지 +3개 · 홀로 프레임 잠금 해제!</div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

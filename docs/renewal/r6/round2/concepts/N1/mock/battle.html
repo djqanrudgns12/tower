@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>N1 전투 화면 · 툰 3D 브롤 아레나</title>
+  <link rel="stylesheet" href="n1-shared.css" />
+  <style>
+    .hud-top {
+      position: absolute;
+      top: 10px;
+      left: 14px;
+      right: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      z-index: 20;
+    }
+    .hud-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .hud-pill {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 14px 6px 10px;
+      background: linear-gradient(180deg, #1E3178 0%, #0E173B 100%);
+      border: 3px solid #FFD60A;
+      outline: 3px solid #070B1E;
+      border-radius: 12px;
+      transform: skewX(-6deg);
+      box-shadow: 0 4px 0 #070B1E;
+    }
+    .hud-pill.cyan-ring {
+      border-color: #00E5FF;
+    }
+    .hud-pill.coral-ring {
+      border-color: #FF5C77;
+    }
+    .hud-pill-inner {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      transform: skewX(6deg);
+    }
+    .hud-label {
+      font-size: 12px;
+      color: #93C5FD;
+      letter-spacing: 0.02em;
+      line-height: 1;
+    }
+    .hud-val {
+      font-family: 'SBAggroB', 'Black Han Sans', sans-serif;
+      font-size: 20px;
+      line-height: 1;
+      color: #FFFFFF;
+    }
+    .hud-val.gold { color: #FFE44D; }
+    .hud-val.coral { color: #FF8DA1; }
+    .hp-bar-mini {
+      width: 58px;
+      height: 10px;
+      background: #09102A;
+      border: 2px solid #070B1E;
+      border-radius: 99px;
+      overflow: hidden;
+    }
+    .hp-bar-fill {
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, #FF4757, #FF7B89);
+    }
+
+    .hud-center-combo {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 18px;
+      background: linear-gradient(180deg, #10B981 0%, #047857 100%);
+      border: 3px solid #A7F3D0;
+      outline: 3px solid #070B1E;
+      border-radius: 12px;
+      transform: skewX(-6deg);
+      box-shadow: 0 4px 0 #070B1E, 0 0 16px rgba(52, 211, 153, 0.55);
+    }
+    .hud-center-combo .unskew {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-family: 'SBAggroB', sans-serif;
+      font-size: 16px;
+    }
+
+    .pause-btn {
+      width: 48px;
+      height: 46px;
+      border-radius: 12px;
+      transform: skewX(-6deg);
+      padding: 0;
+    }
+
+    /* Right Vertical Tower Card Dock */
+    .tower-dock {
+      position: absolute;
+      right: 12px;
+      top: 82px;
+      width: 112px;
+      display: flex;
+      flex-direction: column;
+      gap: 9px;
+      z-index: 20;
+    }
+    .tower-card {
+      position: relative;
+      padding: 7px 8px 8px;
+      border-radius: 14px;
+      outline: 3px solid #070B1E;
+      box-shadow: 0 5px 0 #070B1E;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      transform: skewX(-4deg);
+    }
+    .tower-card.selected {
+      box-shadow: 0 0 0 3px #FFE44D, 0 5px 0 #070B1E, 0 0 18px rgba(255, 214, 10, 0.7);
+      transform: skewX(-4deg) translateX(-4px);
+    }
+    .tower-card-inner {
+      transform: skewX(4deg);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+    }
+    .tower-name {
+      font-family: 'Jua', sans-serif;
+      font-size: 13px;
+      color: #FFFFFF;
+      line-height: 1.1;
+      text-align: center;
+    }
+    .tower-cost {
+      margin-top: 2px;
+      padding: 2px 9px;
+      background: #09102A;
+      border: 2px solid #FFD60A;
+      border-radius: 99px;
+      font-family: 'SBAggroB', sans-serif;
+      font-size: 12px;
+      color: #FFE44D;
+    }
+    .rarity-tag {
+      position: absolute;
+      top: -7px;
+      left: 8px;
+      font-size: 10px;
+      padding: 1px 6px;
+      border-radius: 6px;
+      border: 2px solid #070B1E;
+      font-family: 'SBAggroB', sans-serif;
+      color: #FFF;
+    }
+    .tag-rare { background: #0284C7; }
+    .tag-epic { background: #9333EA; }
+    .tag-legend { background: linear-gradient(90deg, #F59E0B, #EC4899); }
+
+    /* Bottom 3D Arcade Quiz Panel */
+    .quiz-dock {
+      position: absolute;
+      bottom: 12px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 1060px;
+      padding: 16px 20px 14px;
+      background: linear-gradient(180deg, #1B2D74 0%, #0C1436 100%);
+      border: 4px solid #FFD60A;
+      outline: 4px solid #070B1E;
+      border-radius: 20px;
+      box-shadow:
+        inset 0 3px 0 rgba(255, 255, 255, 0.24),
+        0 8px 0 #070B1E;
+      z-index: 25;
+    }
+    .quiz-header-badges {
+      position: absolute;
+      top: -17px;
+      left: 20px;
+      right: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      pointer-events: none;
+    }
+    .quiz-tag-left {
+      padding: 4px 16px;
+      background: linear-gradient(180deg, #38BDF8, #0284C7);
+      border: 3px solid #070B1E;
+      border-radius: 10px;
+      transform: skewX(-6deg);
+      font-family: 'SBAggroB', sans-serif;
+      font-size: 14px;
+      box-shadow: 0 3px 0 #070B1E;
+    }
+    .quiz-tag-right {
+      padding: 4px 16px;
+      background: linear-gradient(180deg, #FFE44D, #F59E0B);
+      border: 3px solid #070B1E;
+      border-radius: 10px;
+      transform: skewX(-6deg);
+      font-family: 'SBAggroB', sans-serif;
+      font-size: 14px;
+      box-shadow: 0 3px 0 #070B1E;
+    }
+    .quiz-question {
+      font-family: 'SBAggroB', 'Jua', sans-serif;
+      font-size: 24px;
+      text-align: center;
+      margin-bottom: 12px;
+      color: #FFFFFF;
+    }
+    .quiz-question em {
+      font-style: normal;
+      color: #FFE44D;
+    }
+    .quiz-answers {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr) 154px;
+      gap: 11px;
+      align-items: center;
+    }
+    .ans-btn {
+      height: 52px;
+      border-radius: 14px;
+      font-size: 20px;
+      font-family: 'Jua', sans-serif;
+      transform: skewX(-4deg);
+    }
+    .ans-btn .unskew {
+      transform: skewX(4deg);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .ans-num {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 26px;
+      height: 26px;
+      border-radius: 8px;
+      background: #09102A;
+      border: 2px solid #7DD3FC;
+      font-family: 'SBAggroB', sans-serif;
+      font-size: 14px;
+      color: #7DD3FC;
+    }
+    .dont-know-btn {
+      height: 52px;
+      border-radius: 14px;
+      font-size: 17px;
+      font-family: 'Jua', sans-serif;
+      transform: skewX(-4deg);
+    }
+  </style>
+</head>
+<body>
+  <div class="stage">
+    <img class="bg-art" src="assets/a-battle-bg.webp" alt="툰 3D 브롤 아레나 전장" />
+
+    <!-- Top Skewed HUD (NO speed-up button!) -->
+    <header class="hud-top">
+      <div class="hud-left">
+        <!-- 성문 -->
+        <div class="hud-pill coral-ring">
+          <div class="hud-pill-inner">
+            <svg width="26" height="26" viewBox="0 0 32 32">
+              <path d="M5 7 L16 3 L27 7 V16 C27 23 16 29 16 29 C16 29 5 23 5 16 Z" fill="#FF4757" stroke="#070B1E" stroke-width="2.5"/>
+              <path d="M9 10 L16 7 L23 10 V15 C23 20 16 24 16 24 C16 24 9 20 9 15 Z" fill="#FF8DA1" opacity="0.45"/>
+              <path d="M12 15 H20 M16 11 V20" stroke="#FFF" stroke-width="2.5" stroke-linecap="round"/>
+            </svg>
+            <div>
+              <div class="hud-label">성문</div>
+              <div class="hud-val coral stroke-sm">15/15</div>
+            </div>
+            <div class="hp-bar-mini"><div class="hp-bar-fill"></div></div>
+          </div>
+        </div>
+
+        <!-- 골드 -->
+        <div class="hud-pill">
+          <div class="hud-pill-inner">
+            <svg width="26" height="26" viewBox="0 0 32 32">
+              <circle cx="16" cy="17" r="12" fill="#B45309" stroke="#070B1E" stroke-width="2.5"/>
+              <circle cx="16" cy="14" r="12" fill="#FFD60A" stroke="#070B1E" stroke-width="2.5"/>
+              <circle cx="16" cy="14" r="8.5" fill="none" stroke="#FFF8C9" stroke-width="1.8"/>
+              <path d="M16 8.5 L17.8 12.2 L21.8 12.7 L18.8 15.5 L19.6 19.5 L16 17.5 L12.4 19.5 L13.2 15.5 L10.2 12.7 L14.2 12.2 Z" fill="#D97706"/>
+            </svg>
+            <div>
+              <div class="hud-label">보유 골드</div>
+              <div class="hud-val gold stroke-sm">240G</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 웨이브 -->
+        <div class="hud-pill cyan-ring">
+          <div class="hud-pill-inner">
+            <svg width="24" height="24" viewBox="0 0 32 32">
+              <rect x="6" y="4" width="4" height="25" rx="2" fill="#E2E8F0" stroke="#070B1E" stroke-width="2"/>
+              <path d="M10 6 H27 L23 12 L27 18 H10 Z" fill="#00E5FF" stroke="#070B1E" stroke-width="2.5" stroke-linejoin="round"/>
+            </svg>
+            <div>
+              <div class="hud-label">웨이브</div>
+              <div class="hud-val stroke-sm">4/15</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 남은 적 -->
+        <div class="hud-pill cyan-ring">
+          <div class="hud-pill-inner">
+            <svg width="24" height="24" viewBox="0 0 32 32">
+              <path d="M6 23 C6 12 11 7 16 7 C21 7 26 12 26 23 C22 26 10 26 6 23 Z" fill="#84CC16" stroke="#070B1E" stroke-width="2.5"/>
+              <circle cx="13" cy="16" r="2.2" fill="#070B1E"/>
+              <circle cx="19" cy="16" r="2.2" fill="#070B1E"/>
+              <circle cx="24" cy="19" r="4" fill="#A7F3D0" stroke="#070B1E" stroke-width="1.8"/>
+            </svg>
+            <div>
+              <div class="hud-label">남은 적</div>
+              <div class="hud-val stroke-sm">12</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Center Combo Status -->
+      <div class="hud-center-combo">
+        <div class="unskew">
+          <svg width="20" height="20" viewBox="0 0 24 24">
+            <path d="M13 2 L4 14 H11 L10 22 L20 10 H13 Z" fill="#FFD60A" stroke="#070B1E" stroke-width="2" stroke-linejoin="round"/>
+          </svg>
+          <span class="stroke-sm">3연속 정답 +40G!</span>
+        </div>
+      </div>
+
+      <!-- Right: Pause ONLY (No Speed-up UI) -->
+      <button class="btn-3d btn-navy pause-btn" aria-label="일시정지">
+        <span class="unskew" style="display:flex;gap:5px;">
+          <span style="width:6px;height:18px;background:#FFF;border-radius:3px;border:1.5px solid #070B1E;"></span>
+          <span style="width:6px;height:18px;background:#FFF;border-radius:3px;border:1.5px solid #070B1E;"></span>
+        </span>
+      </button>
+    </header>
+
+    <!-- Right Vertical Arcade Tower Card Dock -->
+    <aside class="tower-dock">
+      <!-- 1. 별활 꼬마 -->
+      <div class="tower-card rarity-rare selected">
+        <span class="rarity-tag tag-rare">희귀</span>
+        <div class="tower-card-inner">
+          <svg width="40" height="40" viewBox="0 0 40 40">
+            <path d="M12 6 C24 10 24 30 12 34" fill="none" stroke="#F59E0B" stroke-width="4.5" stroke-linecap="round"/>
+            <line x1="12" y1="6" x2="12" y2="34" stroke="#E2E8F0" stroke-width="1.8"/>
+            <line x1="8" y1="20" x2="31" y2="20" stroke="#7DD3FC" stroke-width="3" stroke-linecap="round"/>
+            <polygon points="31,14 33,18 37,18 34,21 35,25 31,23 27,25 28,21 25,18 29,18" fill="#FFD60A" stroke="#070B1E" stroke-width="1.5"/>
+          </svg>
+          <div class="tower-name stroke-sm">별활 꼬마</div>
+          <div class="tower-cost">50G</div>
+        </div>
+      </div>
+
+      <!-- 2. 팝콘 곰 -->
+      <div class="tower-card rarity-epic">
+        <span class="rarity-tag tag-epic">영웅</span>
+        <div class="tower-card-inner">
+          <svg width="40" height="40" viewBox="0 0 40 40">
+            <rect x="8" y="15" width="22" height="14" rx="5" transform="rotate(-18 19 22)" fill="#EF4444" stroke="#070B1E" stroke-width="2.5"/>
+            <rect x="14" y="14" width="6" height="14" transform="rotate(-18 17 21)" fill="#FFFFFF"/>
+            <circle cx="32" cy="13" r="4" fill="#FEF08A" stroke="#070B1E" stroke-width="1.5"/>
+            <circle cx="28" cy="9" r="3" fill="#FACC15" stroke="#070B1E" stroke-width="1.2"/>
+            <circle cx="15" cy="30" r="5" fill="#475569" stroke="#070B1E" stroke-width="2"/>
+          </svg>
+          <div class="tower-name stroke-sm">팝콘 대포 곰</div>
+          <div class="tower-cost">80G</div>
+        </div>
+      </div>
+
+      <!-- 3. 젤라또 펭귄 -->
+      <div class="tower-card rarity-rare">
+        <span class="rarity-tag tag-rare">희귀</span>
+        <div class="tower-card-inner">
+          <svg width="40" height="40" viewBox="0 0 40 40">
+            <polygon points="16,22 24,22 20,36" fill="#F59E0B" stroke="#070B1E" stroke-width="2.2"/>
+            <circle cx="20" cy="18" r="6" fill="#5EEAD4" stroke="#070B1E" stroke-width="2"/>
+            <circle cx="20" cy="11" r="5" fill="#F472B6" stroke="#070B1E" stroke-width="2"/>
+            <circle cx="20" cy="5.5" r="2.5" fill="#EF4444" stroke="#070B1E" stroke-width="1.2"/>
+          </svg>
+          <div class="tower-name stroke-sm">젤라또 펭귄</div>
+          <div class="tower-cost">90G</div>
+        </div>
+      </div>
+
+      <!-- 4. 번개주사위 -->
+      <div class="tower-card rarity-legendary">
+        <span class="rarity-tag tag-legend">전설</span>
+        <div class="tower-card-inner">
+          <svg width="40" height="40" viewBox="0 0 40 40">
+            <rect x="9" y="10" width="22" height="22" rx="6" fill="#00E5FF" stroke="#070B1E" stroke-width="2.5"/>
+            <circle cx="15" cy="16" r="2.2" fill="#FFF"/>
+            <circle cx="25" cy="16" r="2.2" fill="#FFF"/>
+            <circle cx="20" cy="21" r="2.2" fill="#FFD60A"/>
+            <circle cx="15" cy="26" r="2.2" fill="#FFF"/>
+            <circle cx="25" cy="26" r="2.2" fill="#FFF"/>
+            <path d="M30 4 L25 12 H29 L26 19 L34 10 H29 Z" fill="#FFD60A" stroke="#070B1E" stroke-width="1.5"/>
+          </svg>
+          <div class="tower-name stroke-sm">번개주사위</div>
+          <div class="tower-cost">120G</div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Bottom 3D Arcade Quiz Panel (4 choices + 모르겠어요) -->
+    <section class="quiz-dock">
+      <div class="quiz-header-badges">
+        <div class="quiz-tag-left"><span class="unskew stroke-sm" style="display:block;">3학년 어휘</span></div>
+        <div class="quiz-tag-right"><span class="unskew stroke-sm" style="display:block;">3연속 정답 보너스 +40G</span></div>
+      </div>
+
+      <div class="quiz-question stroke-md">
+        ‘<em>부지런하다</em>’와 뜻이 반대인 낱말은 무엇일까요?
+      </div>
+
+      <div class="quiz-answers">
+        <button class="btn-3d btn-cyan ans-btn">
+          <span class="unskew"><span class="ans-num">1</span><span class="stroke-sm">게으르다</span></span>
+        </button>
+        <button class="btn-3d btn-cyan ans-btn">
+          <span class="unskew"><span class="ans-num">2</span><span class="stroke-sm">부럽다</span></span>
+        </button>
+        <button class="btn-3d btn-cyan ans-btn">
+          <span class="unskew"><span class="ans-num">3</span><span class="stroke-sm">재빠르다</span></span>
+        </button>
+        <button class="btn-3d btn-cyan ans-btn">
+          <span class="unskew"><span class="ans-num">4</span><span class="stroke-sm">씩씩하다</span></span>
+        </button>
+        <button class="btn-3d btn-navy dont-know-btn">
+          <span class="unskew stroke-sm">모르겠어요</span>
+        </button>
+      </div>
+    </section>
+  </div>
+</body>
+</html>

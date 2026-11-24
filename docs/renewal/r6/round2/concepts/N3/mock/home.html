@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>N3 · 홈 로비 (아바타 드레스룸)</title>
+  <link rel="stylesheet" href="./n3-theme.css" />
+  <style>
+    .home-root {
+      position: relative;
+      width: 1280px;
+      height: 720px;
+      background: #38BDF8 url('./assets/b-home-bg.webp') center/cover no-repeat;
+    }
+
+    /* 상단 타이틀 & 보유 재화 */
+    .home-topbar {
+      position: absolute;
+      top: 18px;
+      left: 24px;
+      right: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      z-index: 10;
+    }
+
+    .logo-block {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: #1E293B;
+      border: 3px solid var(--n3-ink);
+      border-radius: 12px;
+      padding: 8px 18px;
+      box-shadow: 0 5px 0 #0F172A, 5px 7px 0 var(--n3-ink);
+    }
+
+    .logo-cube {
+      width: 34px;
+      height: 34px;
+      background: linear-gradient(135deg, #4ADE80 0%, #38BDF8 100%);
+      border: 2.5px solid #FFFFFF;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-display);
+      font-size: 18px;
+      color: #181826;
+    }
+
+    .top-resources {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .res-badge {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      background: #FFFDF5;
+      border: 3px solid var(--n3-ink);
+      border-radius: 8px;
+      padding: 7px 14px;
+      box-shadow: 0 4px 0 #CBD5E1, 4px 5px 0 var(--n3-ink);
+      font-family: var(--font-display);
+      font-size: 17px;
+    }
+
+    /* 좌측 적층형 학년 블록 + 꾸미기 버튼 영역 */
+    .left-column {
+      position: absolute;
+      top: 96px;
+      left: 24px;
+      width: 405px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      z-index: 10;
+    }
+
+    .panel-header-chip {
+      align-self: flex-start;
+      background: #FACC15;
+      border: 3px solid var(--n3-ink);
+      border-radius: 8px;
+      padding: 4px 12px;
+      font-family: var(--font-display);
+      font-size: 14px;
+      box-shadow: 3px 4px 0 var(--n3-ink);
+    }
+
+    .grade-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 9px;
+    }
+
+    .grade-block {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 15px;
+      border: 3px solid var(--n3-ink);
+      border-radius: 10px;
+      box-shadow: 0 5px 0 #94A3B8, 4px 6px 0 var(--n3-ink);
+      background: #FFFDF5;
+    }
+
+    .grade-block.active {
+      background: linear-gradient(180deg, #FEF08A 0%, #FACC15 100%);
+      box-shadow: 0 5px 0 #D97706, 5px 7px 0 var(--n3-ink);
+      transform: translateX(8px);
+    }
+
+    .grade-left {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+    }
+
+    .grade-cube-num {
+      width: 36px;
+      height: 36px;
+      border: 2.5px solid var(--n3-ink);
+      border-radius: 7px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-display);
+      font-size: 18px;
+      color: #FFFFFF;
+      text-shadow: 1.5px 1.5px 0 var(--n3-ink);
+    }
+
+    .grade-title {
+      font-family: var(--font-display);
+      font-size: 18px;
+    }
+
+    .grade-sub {
+      font-size: 12px;
+      color: #475569;
+    }
+
+    .grade-pill {
+      font-family: var(--font-display);
+      font-size: 12px;
+      padding: 3px 9px;
+      border: 2px solid var(--n3-ink);
+      border-radius: 6px;
+      background: #FFFFFF;
+    }
+
+    /* 아바타 꾸미기 3종 아이콘 버튼 */
+    .dressup-box {
+      background: rgba(255, 253, 245, 0.96);
+      border: 3px solid var(--n3-ink);
+      border-radius: 10px;
+      padding: 10px 12px;
+      box-shadow: 0 5px 0 #CBD5E1, 4px 6px 0 var(--n3-ink);
+    }
+
+    .dressup-title {
+      font-family: var(--font-display);
+      font-size: 14px;
+      margin-bottom: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .dressup-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+    }
+
+    .dressup-btn {
+      background: #E0F2FE;
+      border: 2.5px solid var(--n3-ink);
+      border-radius: 8px;
+      padding: 8px 6px;
+      box-shadow: 0 3px 0 #38BDF8, 2px 4px 0 var(--n3-ink);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      font-family: var(--font-display);
+      font-size: 13px;
+    }
+
+    .dressup-btn.equipped {
+      background: #F3E8FF;
+      box-shadow: 0 3px 0 #A855F7, 2px 4px 0 var(--n3-ink);
+    }
+
+    /* 우측 아바타 이름표 (단상 방해 X) */
+    .avatar-nameplate {
+      position: absolute;
+      top: 96px;
+      right: 36px;
+      background: #FFFDF5;
+      border: 3px solid var(--n3-ink);
+      border-radius: 10px;
+      padding: 8px 14px;
+      box-shadow: 4px 5px 0 var(--n3-ink);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      z-index: 9;
+    }
+
+    /* 하단 플레이 CTA 바 */
+    .home-bottom-cta {
+      position: absolute;
+      left: 24px;
+      right: 24px;
+      bottom: 20px;
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      z-index: 10;
+    }
+
+    .quick-nav-btns {
+      display: flex;
+      gap: 10px;
+    }
+
+    .play-cta-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .play-studs {
+      display: flex;
+      gap: 28px;
+      margin-bottom: -4px;
+      z-index: 2;
+    }
+
+    .play-stud {
+      width: 36px;
+      height: 10px;
+      background: #86EFAC;
+      border: 3px solid var(--n3-ink);
+      border-bottom: none;
+      border-radius: 4px 4px 0 0;
+    }
+
+    .play-btn-huge {
+      width: 310px;
+      height: 68px;
+      font-size: 30px;
+      letter-spacing: 1px;
+    }
+  </style>
+</head>
+<body>
+  <div class="home-root">
+    <!-- 상단 바 -->
+    <header class="home-topbar">
+      <div class="logo-block">
+        <div class="logo-cube">N3</div>
+        <div>
+          <div class="txt-outline" style="font-size:22px; line-height:1;">큐브 아바타 디펜스</div>
+          <div style="font-size:11px; color:#94A3B8;">BLOCK WORLD · WORD TOWER DEFENSE</div>
+        </div>
+      </div>
+
+      <div class="top-resources">
+        <div class="res-badge" style="background:#FEFCE8;">
+          <span style="color:#D97706;">■</span> <span>1,480 코인</span>
+        </div>
+        <div class="res-badge" style="background:#ECFEFF;">
+          <span style="color:#0284C7;">◆</span> <span>65 다이아</span>
+        </div>
+        <div class="res-badge" style="background:#F3E8FF;">
+          <span style="color:#7E22CE;">★</span> <span>Lv.12 블록대장</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- 좌측 학년 블록 타일 + 아바타 꾸미기 -->
+    <aside class="left-column">
+      <div class="panel-header-chip">1단계 · 도전할 학년 블록 고르기</div>
+
+      <div class="grade-stack">
+        <div class="grade-block">
+          <div class="grade-left">
+            <div class="grade-cube-num" style="background:#4ADE80;">3</div>
+            <div>
+              <div class="grade-title">3학년 · 풀밭 스타터</div>
+              <div class="grade-sub">기초 낱말 · 클리어 18/20</div>
+            </div>
+          </div>
+          <span class="grade-pill">완료 ★3</span>
+        </div>
+
+        <div class="grade-block">
+          <div class="grade-left">
+            <div class="grade-cube-num" style="background:#38BDF8;">4</div>
+            <div>
+              <div class="grade-title">4학년 · 하늘 블록섬</div>
+              <div class="grade-sub">교과 어휘 · 클리어 14/20</div>
+            </div>
+          </div>
+          <span class="grade-pill">도전 가능</span>
+        </div>
+
+        <div class="grade-block active">
+          <div class="grade-left">
+            <div class="grade-cube-num" style="background:#FB4F5A;">5</div>
+            <div>
+              <div class="grade-title">5학년 · 무지개 성문</div>
+              <div class="grade-sub">핵심 한자어·관용어 · 보스 출현!</div>
+            </div>
+          </div>
+          <span class="grade-pill" style="background:#181826; color:#FDE047;">선택됨 ▶</span>
+        </div>
+
+        <div class="grade-block">
+          <div class="grade-left">
+            <div class="grade-cube-num" style="background:#A855F7;">6</div>
+            <div>
+              <div class="grade-title">6학년 · 전설의 왕좌</div>
+              <div class="grade-sub">고급 어휘 · 5학년 클리어 후 추천</div>
+            </div>
+          </div>
+          <span class="grade-pill">열림</span>
+        </div>
+      </div>
+
+      <div class="dressup-box">
+        <div class="dressup-title">
+          <span>내 아바타 꾸미기 (전장에 함께 출격!)</span>
+          <span style="font-size:11px; color:#7E22CE;">3/3 장착중</span>
+        </div>
+        <div class="dressup-grid">
+          <div class="dressup-btn equipped">
+            <span style="font-size:20px;">🎩</span>
+            <span>모자 · 별빛</span>
+          </div>
+          <div class="dressup-btn equipped">
+            <span style="font-size:20px;">🪽</span>
+            <span>망토 · 날개</span>
+          </div>
+          <div class="dressup-btn equipped">
+            <span style="font-size:20px;">🐶</span>
+            <span>펫 · 멍큐브</span>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- 우측 상단 아바타 명찰 -->
+    <div class="avatar-nameplate">
+      <div style="width:12px; height:12px; background:#4ADE80; border:2px solid #181826; border-radius:3px;"></div>
+      <div>
+        <div style="font-family:var(--font-display); font-size:15px;">민준이의 블록 아바타</div>
+        <div style="font-size:11.5px; color:#475569;">장착 버프: 시작 코인 +40G · 멍큐브 공속 +10%</div>
+      </div>
+    </div>
+
+    <!-- 하단 빠른 이동 + 거대 스터드 플레이 버튼 -->
+    <footer class="home-bottom-cta">
+      <div class="quick-nav-btns">
+        <div class="toy-btn toy-btn-blue" style="padding:11px 18px; font-size:16px;">🏹 타워 진화</div>
+        <div class="toy-btn toy-btn-gold" style="padding:11px 18px; font-size:16px;">👾 밈 몬스터 도감</div>
+      </div>
+
+      <div class="play-cta-wrap">
+        <div class="play-studs">
+          <div class="play-stud"></div>
+          <div class="play-stud"></div>
+          <div class="play-stud"></div>
+          <div class="play-stud"></div>
+        </div>
+        <div class="toy-btn toy-btn-green play-btn-huge">
+          <span class="txt-outline" style="font-size:30px;">플레이! ▶</span>
+        </div>
+      </div>
+    </footer>
+  </div>
+</body>
+</html>

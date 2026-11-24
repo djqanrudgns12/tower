@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>N3 · 도파민 콤보 피버</title>
+  <link rel="stylesheet" href="./n3-theme.css" />
+  <style>
+    .combo-root {
+      position: relative;
+      width: 1280px;
+      height: 720px;
+      background:
+        radial-gradient(circle at 50% 54%, rgba(254, 240, 138, 0.96) 0%, rgba(34, 211, 238, 0.90) 48%, rgba(2, 132, 199, 0.98) 100%),
+        url('./assets/a-battle-bg.webp') center/cover no-repeat;
+      background-blend-mode: hard-light;
+      overflow: hidden;
+    }
+
+    /* 고채도 골드-시안 방사형 스트라이프 */
+    .sunburst {
+      position: absolute;
+      left: 50%;
+      top: 55%;
+      width: 1700px;
+      height: 1700px;
+      transform: translate(-50%, -50%);
+      background: repeating-conic-gradient(
+        from 0deg,
+        rgba(250, 204, 21, 0.56) 0deg 10deg,
+        rgba(34, 211, 238, 0.42) 10deg 20deg,
+        rgba(255, 255, 255, 0.34) 20deg 26deg,
+        rgba(14, 165, 233, 0.35) 26deg 36deg
+      );
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .sunburst-core {
+      position: absolute;
+      left: 50%;
+      top: 56%;
+      width: 760px;
+      height: 460px;
+      transform: translate(-50%, -50%);
+      background: radial-gradient(circle, rgba(254, 249, 195, 0.92) 0%, rgba(250, 204, 21, 0.45) 45%, transparent 74%);
+      pointer-events: none;
+      z-index: 2;
+    }
+
+    .voxel-debris-layer {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 4;
+    }
+
+    /* 상단 중앙 거대 블록 아웃라인 배너 */
+    .fever-banner-wrap {
+      position: absolute;
+      top: 18px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 7px;
+      z-index: 10;
+      width: 900px;
+    }
+
+    .fever-tag {
+      background: #181826;
+      color: #FDE047;
+      border: 3px solid #FFFFFF;
+      border-radius: 8px;
+      padding: 4px 16px;
+      font-family: var(--font-display);
+      font-size: 15px;
+      box-shadow: 4px 4px 0 #181826;
+      letter-spacing: 1px;
+    }
+
+    .fever-banner {
+      background: linear-gradient(180deg, #FEF08A 0%, #FACC15 55%, #F59E0B 100%);
+      border: 4px solid var(--n3-ink);
+      border-radius: 16px;
+      padding: 10px 42px;
+      box-shadow: 0 7px 0 #B45309, 7px 10px 0 var(--n3-ink);
+      text-align: center;
+    }
+
+    .fever-sub {
+      background: #4ADE80;
+      border: 3px solid var(--n3-ink);
+      border-radius: 999px;
+      padding: 5px 22px;
+      box-shadow: 4px 4px 0 var(--n3-ink);
+      font-family: var(--font-display);
+      font-size: 18px;
+      color: #181826;
+    }
+
+    /* 중앙 아바타 & 타워 스포트라이트 콤보 카드 씬 */
+    .highfive-stage {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 18px;
+      padding-top: 204px;
+      padding-bottom: 94px;
+      z-index: 6;
+    }
+
+    .combo-side-card {
+      width: 235px;
+      height: 235px;
+      border-radius: 20px;
+      border: 5px solid #181826;
+      overflow: hidden;
+      background: #FFFFFF;
+      position: relative;
+      z-index: 6;
+    }
+
+    .combo-side-left {
+      transform: translateY(14px) rotate(-9deg);
+      box-shadow: 0 10px 0 #0F172A, 6px 12px 0 #181826, 0 0 38px rgba(74, 222, 128, 0.9);
+    }
+
+    .combo-side-right {
+      transform: translateY(14px) rotate(9deg);
+      box-shadow: 0 10px 0 #0F172A, 6px 12px 0 #181826, 0 0 38px rgba(251, 79, 90, 0.9);
+    }
+
+    .combo-center-card {
+      width: 300px;
+      height: 300px;
+      transform: scale(1.16) translateY(-4px);
+      border-radius: 26px;
+      border: 6px solid #FACC15;
+      outline: 4px solid #181826;
+      overflow: hidden;
+      box-shadow: 0 14px 0 #181826, 0 0 60px rgba(250, 204, 21, 0.98);
+      background: #FFFFFF;
+      position: relative;
+      z-index: 8;
+    }
+
+    /* 하단 보상 요약 바 */
+    .combo-reward-bar {
+      position: absolute;
+      left: 50%;
+      bottom: 16px;
+      transform: translateX(-50%);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: rgba(24, 24, 38, 0.95);
+      border: 3px solid #FFFFFF;
+      border-radius: 16px;
+      padding: 10px 16px;
+      box-shadow: 6px 8px 0 var(--n3-ink);
+      z-index: 12;
+      white-space: nowrap;
+    }
+
+    .reward-chip {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: #FFFDF5;
+      border: 2.5px solid var(--n3-ink);
+      border-radius: 9px;
+      padding: 8px 14px;
+      font-family: var(--font-display);
+      font-size: 16px;
+      box-shadow: 3px 3px 0 #0F172A;
+      white-space: nowrap;
+    }
+
+    .combo-cta-btn {
+      padding: 12px 34px 12px 30px;
+      font-size: 24px;
+      border: 4px solid #181826;
+      border-radius: 12px;
+      background: linear-gradient(180deg, #74F250 0%, #22C55E 65%, #16A34A 100%);
+      box-shadow:
+        inset 0 6px 0 rgba(255, 255, 255, 0.55),
+        0 7px 0 #14532D,
+        5px 10px 0 #181826;
+      position: relative;
+      overflow: hidden;
+      white-space: nowrap;
+    }
+
+    .combo-cta-studs {
+      position: absolute;
+      top: 2px;
+      left: 12px;
+      right: 12px;
+      height: 7px;
+      background-image: radial-gradient(circle at 12px 3.5px, rgba(255,255,255,0.6) 3.5px, transparent 4px);
+      background-size: 24px 7px;
+      pointer-events: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="combo-root">
+    <div class="sunburst"></div>
+    <div class="sunburst-core"></div>
+
+    <!-- 화면 사방으로 흩날리는 3D 복셀 블록 파편 & 코인 (SVG 정육면체 14개+) -->
+    <svg class="voxel-debris-layer" width="1280" height="720" viewBox="0 0 1280 720">
+      <defs>
+        <!-- 골드 3D 큐브 코인 -->
+        <g id="vx-gold">
+          <polygon points="0,-18 16,-9 0,0 -16,-9" fill="#FEF08A" stroke="#181826" stroke-width="3" stroke-linejoin="round"/>
+          <polygon points="-16,-9 0,0 0,18 -16,9" fill="#FACC15" stroke="#181826" stroke-width="3" stroke-linejoin="round"/>
+          <polygon points="16,-9 0,0 0,18 16,9" fill="#D97706" stroke="#181826" stroke-width="3" stroke-linejoin="round"/>
+          <ellipse cx="0" cy="-9" rx="6" ry="3.2" fill="#FDE047" stroke="#181826" stroke-width="2"/>
+        </g>
+        <!-- 시안 다이아 큐브 -->
+        <g id="vx-cyan">
+          <polygon points="0,-16 14,-8 0,0 -14,-8" fill="#BAE6FD" stroke="#181826" stroke-width="3" stroke-linejoin="round"/>
+          <polygon points="-14,-8 0,0 0,16 -14,8" fill="#38BDF8" stroke="#181826" stroke-width="3" stroke-linejoin="round"/>
+          <polygon points="14,-8 0,0 0,16 14,8" fill="#0284C7" stroke="#181826" stroke-width="3" stroke-linejoin="round"/>
+        </g>
+        <!-- 네온 그린 블록 -->
+        <g id="vx-green">
+          <polygon points="0,-15 13,-7.5 0,0 -13,-7.5" fill="#BBF7D0" stroke="#181826" stroke-width="3" stroke-linejoin="round"/>
+          <polygon points="-13,-7.5 0,0 0,15 -13,7.5" fill="#4ADE80" stroke="#181826" stroke-width="3" stroke-linejoin="round"/>
+          <polygon points="13,-7.5 0,0 0,15 13,7.5" fill="#16A34A" stroke="#181826" stroke-width="3" stroke-linejoin="round"/>
+        </g>
+        <!-- 코랄 레드 TNT 블록 -->
+        <g id="vx-red">
+          <polygon points="0,-15 13,-7.5 0,0 -13,-7.5" fill="#FECDD3" stroke="#181826" stroke-width="3" stroke-linejoin="round"/>
+          <polygon points="-13,-7.5 0,0 0,15 -13,7.5" fill="#FB4F5A" stroke="#181826" stroke-width="3" stroke-linejoin="round"/>
+          <polygon points="13,-7.5 0,0 0,15 13,7.5" fill="#B91C1C" stroke="#181826" stroke-width="3" stroke-linejoin="round"/>
+        </g>
+        <!-- 퍼플 에픽 블록 -->
+        <g id="vx-purple">
+          <polygon points="0,-14 12,-7 0,0 -12,-7" fill="#E9D5FF" stroke="#181826" stroke-width="2.8" stroke-linejoin="round"/>
+          <polygon points="-12,-7 0,0 0,14 -12,7" fill="#C084FC" stroke="#181826" stroke-width="2.8" stroke-linejoin="round"/>
+          <polygon points="12,-7 0,0 0,14 12,7" fill="#7E22CE" stroke="#181826" stroke-width="2.8" stroke-linejoin="round"/>
+        </g>
+      </defs>
+
+      <!-- 속도선(스피드 라인) -->
+      <line x1="120" y1="110" x2="290" y2="230" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round" opacity="0.7"/>
+      <line x1="1160" y1="120" x2="990" y2="235" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round" opacity="0.7"/>
+      <line x1="70" y1="440" x2="210" y2="415" stroke="#FEF08A" stroke-width="5" stroke-linecap="round" opacity="0.8"/>
+      <line x1="1210" y1="450" x2="1070" y2="420" stroke="#FEF08A" stroke-width="5" stroke-linecap="round" opacity="0.8"/>
+
+      <!-- 14개+ 3D 복셀 정육면체 & 코인 파편 배치 -->
+      <use href="#vx-gold" transform="translate(88, 92) scale(1.45) rotate(-14)" />
+      <use href="#vx-cyan" transform="translate(175, 195) scale(1.15) rotate(18)" />
+      <use href="#vx-red" transform="translate(76, 305) scale(1.3) rotate(-22)" />
+      <use href="#vx-gold" transform="translate(142, 465) scale(1.55) rotate(12)" />
+      <use href="#vx-green" transform="translate(70, 585) scale(1.25) rotate(-18)" />
+      <use href="#vx-purple" transform="translate(235, 598) scale(1.1) rotate(26)" />
+      <use href="#vx-gold" transform="translate(320, 145) scale(1.1) rotate(-8)" />
+
+      <use href="#vx-gold" transform="translate(1190, 96) scale(1.5) rotate(16)" />
+      <use href="#vx-red" transform="translate(1105, 198) scale(1.2) rotate(-16)" />
+      <use href="#vx-cyan" transform="translate(1208, 315) scale(1.35) rotate(22)" />
+      <use href="#vx-gold" transform="translate(1145, 472) scale(1.5) rotate(-12)" />
+      <use href="#vx-purple" transform="translate(1212, 588) scale(1.25) rotate(18)" />
+      <use href="#vx-green" transform="translate(1045, 595) scale(1.15) rotate(-24)" />
+      <use href="#vx-cyan" transform="translate(965, 148) scale(1.12) rotate(10)" />
+
+      <!-- 추가 중앙 주변 작은 블록 스파크 -->
+      <use href="#vx-gold" transform="translate(392, 278) scale(0.95) rotate(-25)" />
+      <use href="#vx-gold" transform="translate(888, 278) scale(0.95) rotate(25)" />
+
+      <!-- 반짝 별 파티클 -->
+      <polygon points="222,88 228,104 244,104 231,114 236,130 222,120 208,130 213,114 200,104 216,104" fill="#FDE047" stroke="#181826" stroke-width="3"/>
+      <polygon points="1055,86 1061,102 1077,102 1064,112 1069,128 1055,118 1041,128 1046,112 1033,102 1049,102" fill="#4ADE80" stroke="#181826" stroke-width="3"/>
+    </svg>
+
+    <!-- 상단 중앙 거대 블록 아웃라인 배너 -->
+    <div class="fever-banner-wrap">
+      <div class="fever-tag">⚡ STREAK x5 · BLOCK FEVER ACTIVATED ⚡</div>
+      <div class="fever-banner">
+        <div class="txt-outline-lg" style="font-size:48px; color:#FFFFFF; line-height:1.08;">
+          5콤보 블록 피버! +60코인
+        </div>
+      </div>
+      <div class="fever-sub">내 아바타 &amp; 모든 블록 타워 공격속도 +50% (10초간)!</div>
+    </div>
+
+    <!-- 실제 AI 복셀 원화 스포트라이트 콤보 카드 씬 -->
+    <div class="highfive-stage">
+      <div class="combo-side-card combo-side-left">
+        <img src="./assets/hero-archer.webp" style="width:100%; height:100%; object-fit:cover;" />
+        <div style="position:absolute; bottom:8px; left:8px; right:8px; background:#22C55E; color:#fff; border:2.5px solid #181826; border-radius:8px; text-align:center; padding:4px; font-family:var(--font-display); font-size:14px;">깃털후드 궁수 · 크리티컬!</div>
+      </div>
+      <div class="combo-center-card">
+        <img src="./assets/b-home-bg.webp" style="width:100%; height:100%; object-fit:cover; object-position:72% 45%;" />
+        <div style="position:absolute; top:10px; left:50%; transform:translateX(-50%); background:#FB4F5A; color:#fff; border:2.5px solid #181826; border-radius:999px; padding:4px 14px; font-family:var(--font-display); font-size:13.5px; white-space:nowrap; box-shadow:2px 2px 0 #181826;">⚡ 아바타 피버 응원! ⚡</div>
+        <div style="position:absolute; bottom:10px; left:12px; right:12px; background:linear-gradient(180deg,#FEF08A,#FACC15); color:#181826; border:3px solid #181826; border-radius:10px; text-align:center; padding:6px; font-family:var(--font-display); font-size:16.5px; box-shadow:2px 3px 0 #181826;">전원 공격속도 +50%!</div>
+      </div>
+      <div class="combo-side-card combo-side-right">
+        <img src="./assets/hero-tnt.webp" style="width:100%; height:100%; object-fit:cover;" />
+        <div style="position:absolute; bottom:8px; left:8px; right:8px; background:#FB4F5A; color:#fff; border:2.5px solid #181826; border-radius:8px; text-align:center; padding:4px; font-family:var(--font-display); font-size:14px;">콘페티 TNT봇 · 광역 폭죽!</div>
+      </div>
+    </div>
+
+    <!-- 하단 보상 요약 -->
+    <div class="combo-reward-bar">
+      <div class="reward-chip" style="background:#FEF08A;">
+        <svg width="22" height="22" viewBox="0 0 36 36">
+          <polygon points="18,3 32,10 18,17 4,10" fill="#FEF08A" stroke="#181826" stroke-width="3" stroke-linejoin="round"/>
+          <polygon points="4,10 18,17 18,33 4,26" fill="#FACC15" stroke="#181826" stroke-width="3" stroke-linejoin="round"/>
+          <polygon points="32,10 18,17 18,33 32,26" fill="#D97706" stroke="#181826" stroke-width="3" stroke-linejoin="round"/>
+        </svg>
+        <span>골드블록</span> <span style="color:#B45309;">+60 G</span>
+      </div>
+      <div class="reward-chip" style="background:#E0F2FE;">
+        <svg width="22" height="22" viewBox="0 0 36 36">
+          <polygon points="18,3 23,13 33,18 23,23 18,33 13,23 3,18 13,13" fill="#38BDF8" stroke="#181826" stroke-width="3" stroke-linejoin="round"/>
+        </svg>
+        <span>경험치 큐브</span> <span style="color:#0369A1;">+120 EXP</span>
+      </div>
+      <div class="reward-chip" style="background:#DCFCE7;">
+        <svg width="22" height="22" viewBox="0 0 36 36">
+          <polygon points="20,3 8,20 17,20 15,33 28,15 19,15" fill="#FACC15" stroke="#181826" stroke-width="3" stroke-linejoin="round"/>
+        </svg>
+        <span>콤보 게이지</span> <span style="color:#15803D;">MAX 피버!</span>
+      </div>
+      <div class="toy-btn combo-cta-btn">
+        <div class="combo-cta-studs"></div>
+        <span class="txt-outline" style="font-size:24px;">계속 싸우기 ▶</span>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

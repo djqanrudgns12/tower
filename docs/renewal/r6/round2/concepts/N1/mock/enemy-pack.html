@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>N1 웃긴 적군 5종 · 툰 3D 브롤 아레나</title>
+  <link rel="stylesheet" href="n1-shared.css" />
+  <style>
+    .enemy-stage {
+      background:
+        radial-gradient(circle at 50% 18%, rgba(56, 189, 248, 0.25), transparent 55%),
+        radial-gradient(circle at 86% 55%, rgba(255, 77, 141, 0.22), transparent 45%),
+        radial-gradient(circle at 18% 65%, rgba(34, 197, 94, 0.16), transparent 45%),
+        repeating-linear-gradient(0deg, rgba(255,255,255,0.035) 0 1px, transparent 1px 36px),
+        repeating-linear-gradient(90deg, rgba(255,255,255,0.035) 0 1px, transparent 1px 36px),
+        linear-gradient(180deg, #0E1B4D 0%, #09102A 68%, #060B1E 100%);
+    }
+
+    /* Arcade spotlight rays */
+    .stage-rays {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      opacity: 0.45;
+    }
+
+    .enemy-header {
+      position: absolute;
+      top: 18px;
+      left: 26px;
+      right: 26px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 20;
+    }
+    .enemy-title {
+      font-family: 'Black Han Sans', sans-serif;
+      font-size: 40px;
+      color: #FFE44D;
+    }
+    .no-goblin-pill {
+      padding: 8px 20px;
+      background: linear-gradient(180deg, #FF5E6C 0%, #DC2626 100%);
+      border: 3px solid #FFE4E6;
+      outline: 3.5px solid #070B1E;
+      border-radius: 99px;
+      transform: skewX(-6deg);
+      font-family: 'SBAggroB', sans-serif;
+      font-size: 15px;
+      box-shadow: inset 0 2px 0 rgba(255,255,255,0.45), 0 5px 0 #070B1E;
+    }
+
+    /* 5-Card Arcade Lineup */
+    .cards-row {
+      position: absolute;
+      top: 92px;
+      left: 28px;
+      right: 28px;
+      bottom: 24px;
+      display: flex;
+      gap: 16px;
+      align-items: stretch;
+      z-index: 15;
+    }
+
+    .enemy-card {
+      flex: 1;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 12px 12px 14px;
+      background: linear-gradient(180deg, #1E327B 0%, #101A45 62%, #09102A 100%);
+      border: 3.5px solid #FFD60A;
+      outline: 4px solid #070B1E;
+      border-radius: 20px;
+      transform: skewX(-6deg);
+      box-shadow:
+        inset 0 3px 0 rgba(255, 255, 255, 0.28),
+        inset 0 -4px 0 rgba(0, 0, 0, 0.4),
+        0 8px 0 #070B1E,
+        0 14px 24px rgba(0, 0, 0, 0.45);
+    }
+
+    .enemy-card.boss {
+      flex: 1.24;
+      background: linear-gradient(180deg, #4C1D95 0%, #1E1B4B 58%, #0D0B24 100%);
+      border: 4px solid #FFD60A;
+      box-shadow:
+        inset 0 3px 0 rgba(255, 230, 120, 0.45),
+        0 8px 0 #070B1E,
+        0 0 30px rgba(255, 214, 10, 0.42);
+    }
+
+    /* Top Tag Pill */
+    .card-top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+    .mob-num {
+      padding: 2px 9px;
+      background: #070B1E;
+      border: 2px solid #00E5FF;
+      border-radius: 8px;
+      font-family: 'SBAggroB', sans-serif;
+      font-size: 12px;
+      color: #7DD3FC;
+    }
+    .enemy-card.boss .mob-num {
+      border-color: #FFD60A;
+      color: #FFE44D;
+      background: linear-gradient(90deg, #9A3412, #7C2D12);
+    }
+    .mob-role-tag {
+      padding: 2px 9px;
+      background: rgba(7, 11, 30, 0.85);
+      border: 2px solid #FFD60A;
+      border-radius: 8px;
+      font-family: 'SBAggroB', sans-serif;
+      font-size: 11px;
+      color: #FFE44D;
+    }
+
+    /* Speech Bubble inside top of card */
+    .speech-bubble {
+      position: relative;
+      background: #FFFFFF;
+      color: #0F172A;
+      border: 3px solid #070B1E;
+      border-radius: 14px;
+      padding: 7px 8px;
+      font-family: 'Jua', sans-serif;
+      font-size: 14px;
+      line-height: 1.24;
+      text-align: center;
+      box-shadow: 0 4px 0 #070B1E;
+      margin-bottom: 12px;
+      z-index: 5;
+    }
+    .speech-bubble::after {
+      content: '';
+      position: absolute;
+      bottom: -11px;
+      left: 50%;
+      transform: translateX(-50%);
+      border-width: 10px 8px 0 8px;
+      border-style: solid;
+      border-color: #070B1E transparent transparent transparent;
+    }
+    .speech-bubble::before {
+      content: '';
+      position: absolute;
+      bottom: -7px;
+      left: 50%;
+      transform: translateX(-50%);
+      border-width: 8px 6px 0 6px;
+      border-style: solid;
+      border-color: #FFFFFF transparent transparent transparent;
+      z-index: 2;
+    }
+    .enemy-card.boss .speech-bubble {
+      background: #FFFBEB;
+      border-color: #070B1E;
+    }
+    .enemy-card.boss .speech-bubble::before {
+      border-color: #FFFBEB transparent transparent transparent;
+    }
+
+    /* 3D Character Portrait Frame */
+    .portrait-frame {
+      position: relative;
+      flex: 1;
+      min-height: 0;
+      border-radius: 22px;
+      background: radial-gradient(circle at 50% 42%, #2563EB 0%, #0E173B 78%);
+      border: 3.5px solid #38BDF8;
+      outline: 3.5px solid #070B1E;
+      box-shadow:
+        inset 0 4px 14px rgba(0, 229, 255, 0.35),
+        inset 0 -8px 18px rgba(7, 11, 30, 0.7),
+        0 5px 0 #070B1E;
+      overflow: hidden;
+      margin-bottom: 12px;
+    }
+    .portrait-frame::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 18px;
+      box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.22);
+      pointer-events: none;
+    }
+    .portrait-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    /* Boss Locked Mystery Portrait */
+    .boss-locked-frame {
+      position: relative;
+      flex: 1;
+      min-height: 0;
+      border-radius: 22px;
+      background:
+        radial-gradient(circle at 50% 44%, rgba(255, 214, 10, 0.28) 0%, rgba(168, 85, 247, 0.32) 38%, #09061C 82%);
+      border: 3.5px solid #FFD60A;
+      outline: 3.5px solid #070B1E;
+      box-shadow:
+        inset 0 0 28px rgba(255, 214, 10, 0.35),
+        0 5px 0 #070B1E;
+      overflow: hidden;
+      margin-bottom: 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 10px 10px;
+    }
+    .wanted-stamp {
+      padding: 3px 12px;
+      background: linear-gradient(135deg, #FFD60A, #FF4D8D);
+      border: 2.5px solid #FFFBEB;
+      outline: 2.5px solid #070B1E;
+      border-radius: 99px;
+      font-family: 'SBAggroB', sans-serif;
+      font-size: 12px;
+      letter-spacing: 0.04em;
+      color: #FFFFFF;
+      box-shadow: 0 3px 0 #070B1E;
+      z-index: 4;
+    }
+    .boss-silhouette-wrap {
+      position: relative;
+      width: 100%;
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .boss-lock-note {
+      width: 100%;
+      padding: 6px 8px;
+      background: rgba(7, 11, 30, 0.88);
+      border: 2px solid #FFD60A;
+      border-radius: 10px;
+      font-family: 'Jua', sans-serif;
+      font-size: 12.5px;
+      line-height: 1.25;
+      color: #FEF08A;
+      text-align: center;
+      z-index: 4;
+    }
+
+    /* Bottom Nameplate inside Card */
+    .nameplate-box {
+      padding: 9px 8px 10px;
+      background: linear-gradient(180deg, #0D1538 0%, #070B1E 100%);
+      border: 2.5px solid #38BDF8;
+      border-radius: 13px;
+      text-align: center;
+      box-shadow: inset 0 2px 0 rgba(255,255,255,0.12);
+    }
+    .enemy-card.boss .nameplate-box {
+      background: linear-gradient(180deg, #7C2D12 0%, #3B0764 100%);
+      border: 2.5px solid #FFD60A;
+    }
+    .enemy-name {
+      font-family: 'SBAggroB', sans-serif;
+      font-size: 16.5px;
+      color: #FFFFFF;
+      line-height: 1.2;
+    }
+    .enemy-card.boss .enemy-name {
+      font-size: 18px;
+      color: #FFE44D;
+    }
+    .enemy-trait {
+      margin-top: 5px;
+      display: inline-block;
+      padding: 2px 10px;
+      background: #09102A;
+      border: 2px solid #00E5FF;
+      border-radius: 99px;
+      font-size: 12px;
+      color: #7DD3FC;
+    }
+    .enemy-card.boss .enemy-trait {
+      border-color: #FFD60A;
+      color: #FFE44D;
+    }
+  </style>
+</head>
+<body>
+  <div class="stage enemy-stage">
+    <!-- Subtle Arcade Beams -->
+    <svg class="stage-rays" viewBox="0 0 1280 720" preserveAspectRatio="none">
+      <defs>
+        <linearGradient id="beam" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#38BDF8" stop-opacity="0.35"/>
+          <stop offset="100%" stop-color="#09102A" stop-opacity="0"/>
+        </linearGradient>
+        <linearGradient id="bossBeam" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#FFD60A" stop-opacity="0.38"/>
+          <stop offset="100%" stop-color="#09102A" stop-opacity="0"/>
+        </linearGradient>
+      </defs>
+      <polygon points="150,0 240,0 320,720 60,720" fill="url(#beam)"/>
+      <polygon points="390,0 470,0 560,720 310,720" fill="url(#beam)"/>
+      <polygon points="620,0 700,0 780,720 530,720" fill="url(#beam)"/>
+      <polygon points="990,0 1120,0 1240,720 880,720" fill="url(#bossBeam)"/>
+    </svg>
+
+    <header class="enemy-header">
+      <div class="enemy-title stroke-lg">웃긴 적군 5종 · 엉뚱 악당 도감</div>
+      <div class="no-goblin-pill"><span class="unskew stroke-sm" style="display:block;">흔한 고블린 OUT! 개그 밈 군단</span></div>
+    </header>
+
+    <main class="cards-row">
+      <!-- 1. Slime -->
+      <article class="enemy-card">
+        <div class="card-top-bar unskew">
+          <span class="mob-num">NO.01</span>
+          <span class="mob-role-tag">기본형</span>
+        </div>
+        <div class="speech-bubble unskew">
+          “흐읍… 콧물 방울<br>터지면 큰일난다!”
+        </div>
+        <div class="portrait-frame">
+          <img
+            class="portrait-img"
+            src="assets/mob-slime.webp"
+            alt="콧물방울 슬라임"
+            style="object-position: 60% 56%; transform: skewX(6deg) scale(1.13);"
+          />
+        </div>
+        <div class="nameplate-box unskew">
+          <div class="enemy-name stroke-sm">콧물방울 슬라임</div>
+          <div class="enemy-trait">비눗방울 방패</div>
+        </div>
+      </article>
+
+      <!-- 2. Pig -->
+      <article class="enemy-card">
+        <div class="card-top-bar unskew">
+          <span class="mob-num">NO.02</span>
+          <span class="mob-role-tag" style="border-color:#FF7B89;color:#FECDD3;">쾌속형</span>
+        </div>
+        <div class="speech-bubble unskew">
+          “내 팬티 망토 멋지지?<br>돌진한다 꾸엑~!”
+        </div>
+        <div class="portrait-frame" style="border-color:#FF7B89;">
+          <img
+            class="portrait-img"
+            src="assets/mob-pig.webp"
+            alt="팬티망토 아기돼지"
+            style="object-position: 58% 48%; transform: skewX(6deg) scale(1.15);"
+          />
+        </div>
+        <div class="nameplate-box unskew" style="border-color:#FF7B89;">
+          <div class="enemy-name stroke-sm">팬티망토 아기돼지</div>
+          <div class="enemy-trait" style="border-color:#FF7B89;color:#FECDD3;">허당 돌진 러시</div>
+        </div>
+      </article>
+
+      <!-- 3. Bucket -->
+      <article class="enemy-card">
+        <div class="card-top-bar unskew">
+          <span class="mob-num">NO.03</span>
+          <span class="mob-role-tag" style="border-color:#38BDF8;color:#BAE6FD;">맷집형</span>
+        </div>
+        <div class="speech-bubble unskew">
+          “어라? 양동이 땜에<br>길이 안 보여~ 빙글!”
+        </div>
+        <div class="portrait-frame" style="border-color:#60A5FA;">
+          <img
+            class="portrait-img"
+            src="assets/mob-bucket.webp"
+            alt="양동이 어지럼 멍충이"
+            style="object-position: 47% 49%; transform: skewX(6deg) scale(1.18);"
+          />
+        </div>
+        <div class="nameplate-box unskew">
+          <div class="enemy-name stroke-sm">양동이 멍충이</div>
+          <div class="enemy-trait">비틀비틀 회피 탱커</div>
+        </div>
+      </article>
+
+      <!-- 4. Clock -->
+      <article class="enemy-card">
+        <div class="card-top-bar unskew">
+          <span class="mob-num">NO.04</span>
+          <span class="mob-role-tag" style="border-color:#C084FC;color:#E9D5FF;">버프형</span>
+        </div>
+        <div class="speech-bubble unskew">
+          “따르릉!! 지각이다!<br>빨리 달려어엇!”
+        </div>
+        <div class="portrait-frame" style="border-color:#C084FC;">
+          <img
+            class="portrait-img"
+            src="assets/mob-clock.webp"
+            alt="알람시계 그렘린"
+            style="object-position: 50% 45%; transform: skewX(6deg) scale(1.20);"
+          />
+        </div>
+        <div class="nameplate-box unskew" style="border-color:#C084FC;">
+          <div class="enemy-name stroke-sm">알람시계 그렘린</div>
+          <div class="enemy-trait" style="border-color:#C084FC;color:#E9D5FF;">따르릉 이속 버프</div>
+        </div>
+      </article>
+
+      <!-- 5. Boss Card: WANTED · BOSS LOCKED -->
+      <article class="enemy-card boss">
+        <div class="card-top-bar unskew">
+          <span class="mob-num" style="display:inline-flex;align-items:center;gap:5px;">
+            <svg width="15" height="15" viewBox="0 0 32 32">
+              <path d="M4 25 L7 10 L16 17 L25 10 L28 25 Z" fill="#FFE44D" stroke="#070B1E" stroke-width="2.5"/>
+            </svg>
+            FINAL BOSS
+          </span>
+          <span class="mob-role-tag" style="background:#7C2D12;border-color:#FFD60A;color:#FFE44D;">초대형 탱커</span>
+        </div>
+
+        <div class="speech-bubble unskew">
+          “움직이기 귀찮아…<br>내 황금 소파가 최고야!”
+        </div>
+
+        <div class="boss-locked-frame">
+          <div class="wanted-stamp unskew stroke-sm">WANTED · BOSS LOCKED</div>
+
+          <div class="boss-silhouette-wrap unskew">
+            <svg width="196" height="196" viewBox="0 0 200 200">
+              <defs>
+                <radialGradient id="bossAura" cx="50%" cy="50%" r="50%">
+                  <stop offset="0%" stop-color="#FFD60A" stop-opacity="0.65"/>
+                  <stop offset="55%" stop-color="#A855F7" stop-opacity="0.35"/>
+                  <stop offset="100%" stop-color="#09061C" stop-opacity="0"/>
+                </radialGradient>
+                <linearGradient id="crownGold" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="#FFFBEB"/>
+                  <stop offset="45%" stop-color="#FFD60A"/>
+                  <stop offset="100%" stop-color="#D97706"/>
+                </linearGradient>
+                <linearGradient id="silBody" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="#1E1B4B"/>
+                  <stop offset="100%" stop-color="#070B1E"/>
+                </linearGradient>
+                <filter id="goldGlow" x="-30%" y="-30%" width="160%" height="160%">
+                  <feGaussianBlur stdDeviation="5" result="blur"/>
+                  <feMerge>
+                    <feMergeNode in="blur"/>
+                    <feMergeNode in="SourceGraphic"/>
+                  </feMerge>
+                </filter>
+              </defs>
+
+              <!-- Outer Glow Aura -->
+              <circle cx="100" cy="106" r="84" fill="url(#bossAura)"/>
+              <circle cx="100" cy="106" r="68" fill="none" stroke="#FFD60A" stroke-width="2" stroke-dasharray="6 5" opacity="0.6"/>
+
+              <!-- Sofa & Potato Boss Dark Silhouette with Rim Glow -->
+              <g filter="url(#goldGlow)">
+                <!-- Sofa Backrest & Cushion -->
+                <path d="M36 120 C36 96, 164 96, 164 120 L172 156 C172 168, 158 174, 146 174 L54 174 C42 174, 28 168, 28 156 Z" fill="url(#silBody)" stroke="#FFD60A" stroke-width="3"/>
+                <!-- Boss Chubby Body Silhouette -->
+                <ellipse cx="100" cy="108" rx="44" ry="50" fill="url(#silBody)" stroke="#C084FC" stroke-width="3"/>
+                <!-- Arms -->
+                <ellipse cx="48" cy="128" rx="16" ry="12" fill="url(#silBody)" stroke="#FFD60A" stroke-width="2.5"/>
+                <ellipse cx="152" cy="128" rx="16" ry="12" fill="url(#silBody)" stroke="#FFD60A" stroke-width="2.5"/>
+              </g>
+
+              <!-- Glowing Golden Crown -->
+              <g transform="translate(0,-6)">
+                <path d="M68 62 L73 30 L88 46 L100 22 L112 46 L127 30 L132 62 Z" fill="url(#crownGold)" stroke="#070B1E" stroke-width="4" stroke-linejoin="round"/>
+                <rect x="66" y="59" width="68" height="11" rx="4" fill="#F59E0B" stroke="#070B1E" stroke-width="3.5"/>
+                <circle cx="100" cy="49" r="5" fill="#FF4757" stroke="#070B1E" stroke-width="2"/>
+                <circle cx="80" cy="52" r="3.5" fill="#00E5FF" stroke="#070B1E" stroke-width="1.8"/>
+                <circle cx="120" cy="52" r="3.5" fill="#00E5FF" stroke="#070B1E" stroke-width="1.8"/>
+              </g>
+
+              <!-- Glowing '?' Lock Emblem -->
+              <text x="100" y="132" text-anchor="middle" font-family="'Black Han Sans', sans-serif" font-size="56" fill="#FFD60A" stroke="#070B1E" stroke-width="6" paint-order="stroke fill">?</text>
+            </svg>
+          </div>
+
+          <div class="boss-lock-note unskew">
+            WAVE 15 도달 시<br>보스 실루엣 봉인 해제!
+          </div>
+        </div>
+
+        <div class="nameplate-box unskew">
+          <div class="enemy-name stroke-sm">왕관 쓴 소파감자 대왕</div>
+          <div class="enemy-trait">미니 쿠션 보스 · 초대형 탱커</div>
+        </div>
+      </article>
+    </main>
+  </div>
+</body>
+</html>
