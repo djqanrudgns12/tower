@@ -6,11 +6,22 @@
 ---
 
 ## 0. 현재 제작 상태
-- **상태**: **`막힘(image-generator HTTP 429, 약 4시간 20분 후 리셋으로 원화 6종 미생성. e-ui-kit.webp와 기획서·프롬프트 먼저 완성)`**
-- 완료 산출물:
-  - [`e-ui-kit.webp`](e-ui-kit.webp) (소스: [`mock/ui-kit.html`](mock/ui-kit.html))
-  - [`concept.md`](concept.md) (본 문서 + 할당량 리셋 즉시 실행용 `6종 × 4안` 24개 원화 프롬프트 완비)
-- 미생성 산출물 (리셋 후 생성 예정): `a-battle-bg.webp`, `b-home-bg.webp`, `c-tower-evo.webp`, `d-enemy-pack.webp`, `f1-combo.webp`, `f2-reveal.webp`
+
+- **상태** · **완성**. Codex 내장 `image_generation`으로 원화 6종에 각각 3안씩 총 18안을 생성했다. 6안을 채택하고 12안을 탈락시켰다.
+- **화면** · 1280×720 Chromium 캡처를 WebP 품질 90으로 저장했다. 한글 화면 문구는 HTML로 얹었다.
+- **전장** · 구불길 양옆에 바닥의 15×9 격자, 점유 칸 4개와 빈 설치 칸 16개를 표시했다. 원화의 받침과 CSS로 그린 설치 칸 4개를 함께 사용했다. 하단 문제판에는 뜻을 고르는 보기 4개와 `모르겠어요`를 두었다.
+
+| 화면 | HTML 목업 | 채택·탈락 | 채택 근거 |
+|---|---|---|---|
+| [전투](a-battle.webp) | [battle.html](mock/battle.html) | 2번 채택 · 2장 탈락 | 축제 조명이 좌측 위에서 들어온다. 길의 시안 윤곽, 오리·문어·라바콘, 네 타워가 겹치지 않고 HUD를 둘 자리도 남는다. |
+| [홈](b-home.webp) | [home.html](mock/home.html) | 1번 채택 · 2장 탈락 | 활을 든 주인공과 동료가 대각선으로 솟는 장면이다. 좌상단 제목과 우하단 시작 버튼에 여백이 있다. |
+| [타워 진화](c-tower-evolution.webp) | [tower-evo.html](mock/tower-evo.html) | 1번 채택 · 2장 탈락 | 같은 시안 바이저를 유지하면서 활, 쌍분사기, 용 머리 발사기와 날개 망토 순으로 실루엣이 커진다. |
+| [적군 도감](d-enemy-pack.webp) | [enemy-pack.html](mock/enemy-pack.html) | 3번 채택 · 2장 탈락 | 오리의 능청스러운 미소와 라바콘의 당황한 표정이 대비되고, 고릴라봇이 크기로 보스임을 드러낸다. |
+| [피버 콤보](f1-dopamine-combo.webp) | [dopamine-combo.html](mock/dopamine-combo.html) | 3번 채택 · 2장 탈락 | 왼쪽 영웅의 하이파이브와 오른쪽 적군의 코믹한 반응이 위쪽 물감 폭발을 감싸고, 중앙에 콤보 숫자를 놓을 수 있다. |
+| [전설 타워 해금](f2-dopamine-reveal.webp) | [dopamine-reveal.html](mock/dopamine-reveal.html) | 2번 채택 · 2장 탈락 | 홀로그램 카드 안에서 시안 바이저와 용 머리 발사기가 보이고, 카드 바깥 빛이 보상에 시선을 모은다. |
+| [UI 키트](e-ui-kit.webp) | [ui-kit.html](mock/ui-kit.html) | 기존 | 검은 외곽선, 기울어진 형광 버튼, 액체 게이지의 기준이다. |
+
+채택 원화 6장은 [목업 원화 폴더](mock/assets/)에 WebP로 담았다. 원본 후보 PNG 18장은 저장소 밖 Codex 생성 폴더에 보관했다. 전투의 문어푸딩은 노란 몸체, 적군 도감에서는 시안 몸체로 나와 작은 크기에서 색만으로 연결하기 어렵다. 초등 5학년 반응 및 크롬북 성능 검증은 미실행이다.
 
 ---
 
@@ -114,9 +125,9 @@
 
 ---
 
-## 6. 할당량 리셋 시 즉시 실행 가능한 원화 프롬프트 (`6종 × 4안 = 24안`)
+## 6. 원화 비교용 프롬프트 초안 (`6종 × 4안 = 24안`)
 
-> 아래 프롬프트는 `image-generator` HTTP 429 할당량 리셋 직후 바로 호출해 v1~v4를 비교 선별할 수 있도록 구성했다. 모든 프롬프트에 **텍스트 금지, 기존 타사 IP 캐릭터 복제 금지, N5 네온 페인트 스플래시 팝 스타일 통일**이 반영되어 있다.
+> 이번 생성에는 아래 초안을 바탕으로 종별 비교 프롬프트 3개씩을 사용했다. 공통 조건은 오리지널 스트리트 아케이드, 다크 옵시디언 바탕, 광택 있는 2.5D 셀 셰이딩, 굵은 잉크 외곽선, 좌상단 광원, 라임·시안·마젠타 물감이다. 화면에 글자·가짜 문자·숫자·로고·기존 게임 캐릭터·UI를 그리지 않도록 요청하고, 전투에는 상하단과 좌우 HUD 자리를, 홈에는 좌상단과 우하단 여백을 지정했다.
 
 ### 6-1. `a-battle-bg` (1280×720 전장 아레나 배경 + 타워/적군 배치)
 - **v1 (옥상 스케이트 아레나 기본형)**: `Top-down 3/4 isometric stylized 2.5D cel-shaded game battleground on a dark obsidian rooftop skatepark arena (#121324), clean wide S-curved asphalt lane bordered with glowing electric cyan (#00E5FF) neon tape, 20 glowing circular stencil tower pads along the roadside, neon graffiti murals on perimeter walls, vibrant lime (#C8FF00) and hot magenta (#FF2A85) wet paint splashes on the path, zero text, zero UI buttons, clear upper and lower margin for HUD, crisp bold black ink outlines`

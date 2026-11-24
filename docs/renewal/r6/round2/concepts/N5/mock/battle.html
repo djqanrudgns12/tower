@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=1280">
+  <title>네온 페인트 수호대 · 전투</title>
+  <link rel="stylesheet" href="n5-theme.css">
+</head>
+<body>
+<main class="stage battle">
+  <img class="art" src="assets/a-battle-bg.webp" alt="구불구불한 옥상 길에 붐박스 오리, 문어푸딩, 라바콘이 나타났다. 길 양옆에서 네 타워가 막고 있다.">
+  <div class="shade"></div>
+  <header class="battle-top">
+    <h1 class="tag lime"><span>옥상 스케이트 파크</span></h1>
+    <span class="tag pink"><span>웨이브 3 / 8</span></span>
+    <a class="tag dark" href="home.html"><span>로비</span></a>
+  </header>
+  <aside class="battle-readouts" aria-label="전투 자원">
+    <div class="panel readout"><span class="pip coin" aria-hidden="true">★</span><span>잉크 코인<strong>340G</strong></span></div>
+    <div class="panel readout"><span class="pip" aria-hidden="true">◆</span><span>성문 실드<strong>15 / 15</strong></span></div>
+    <a class="tag gold" href="dopamine-combo.html"><span>연속 정답 4</span></a>
+  </aside>
+  <div class="arena" role="img" aria-label="15×9 전장, 타워가 놓인 설치 칸 4개와 빈 설치 칸 16개">
+    <div class="arena-grid"></div>
+    <div class="slot-markers" aria-hidden="true">
+      <span class="slot" style="--x:279px; --y:235px"></span>
+      <span class="slot" style="--x:467px; --y:265px"></span>
+      <span class="slot" style="--x:566px; --y:204px"></span>
+      <span class="slot" style="--x:709px; --y:206px"></span>
+      <span class="slot" style="--x:804px; --y:272px"></span>
+      <span class="slot" style="--x:1019px; --y:252px"></span>
+      <span class="slot" style="--x:275px; --y:381px"></span>
+      <span class="slot" style="--x:469px; --y:410px"></span>
+      <span class="slot" style="--x:583px; --y:383px"></span>
+      <span class="slot" style="--x:685px; --y:350px"></span>
+      <span class="slot" style="--x:911px; --y:410px"></span>
+      <span class="slot" style="--x:1033px; --y:388px"></span>
+      <span class="slot slot-painted" style="--x:245px; --y:486px"></span>
+      <span class="slot slot-painted" style="--x:938px; --y:172px"></span>
+      <span class="slot slot-painted" style="--x:491px; --y:467px"></span>
+      <span class="slot slot-painted" style="--x:977px; --y:464px"></span>
+    </div>
+  </div>
+  <aside class="battle-deck" aria-label="타워">
+    <a class="tower-card rare" href="tower-evo.html"><span class="pip" aria-hidden="true">➶</span><span><strong>페인트활</strong><small>90G</small></span></a>
+    <div class="tower-card common"><span class="pip" aria-hidden="true">✹</span><span><strong>트윈노즐</strong><small>110G</small></span></div>
+    <div class="tower-card epic"><span class="pip" aria-hidden="true">◉</span><span><strong>슬러시 DJ</strong><small>130G</small></span></div>
+    <div class="tower-card legendary"><span class="pip" aria-hidden="true">✦</span><span><strong>드론</strong><small>150G</small></span></div>
+  </aside>
+  <section class="quiz panel" aria-labelledby="question">
+    <div class="quiz-question">
+      <span class="tag gold"><span>어휘 문제</span></span>
+      <h2 id="question"><small>친구들은 발표를 맡은 하린을 격려했다.</small><span>‘<strong>격려하다</strong>’의 뜻은 무엇일까요?</span></h2>
+    </div>
+    <div class="answers">
+      <button type="button" class="answer" data-choice="correct"><span><kbd>①</kbd>힘을 내도록 북돋우다</span></button>
+      <button type="button" class="answer" data-choice="incorrect"><span><kbd>②</kbd>맡은 일을 나누다</span></button>
+      <button type="button" class="answer" data-choice="incorrect"><span><kbd>③</kbd>잘못한 일을 나무라다</span></button>
+      <button type="button" class="answer" data-choice="incorrect"><span><kbd>④</kbd>마음을 불편하게 하다</span></button>
+      <button type="button" class="answer idk" data-choice="skip"><span>모르겠어요</span></button>
+    </div>
+    <p class="quiz-feedback" role="status">알맞은 뜻을 고르면 잉크 코인을 얻어요.</p>
+  </section>
+</main>
+<script>
+  const answers = document.querySelector('.answers');
+  const feedback = document.querySelector('.quiz-feedback');
+  const correct = answers.querySelector('[data-choice="correct"]');
+
+  answers.addEventListener('click', (event) => {
+    const answer = event.target.closest('button');
+    if (!answer) return;
+    answers.querySelector('.missed')?.classList.remove('missed');
+    if (answer.dataset.choice === 'incorrect') answer.classList.add('missed');
+    correct.classList.add('chosen');
+    feedback.dataset.correct = String(answer === correct);
+    feedback.textContent = answer === correct
+      ? '정답! 잉크 코인 20개를 얻었어요.'
+      : '격려하다: 말이나 행동으로 힘을 내도록 북돋우다.';
+  });
+</script>
+</body>
+</html>
