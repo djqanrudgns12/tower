@@ -23,7 +23,7 @@ export interface CacheScope {
   schoolName?: string | undefined;
 }
 
-const CACHE_PATH = '/__ranking-cache/v1';
+const CACHE_PATH = '/__ranking-cache/v2';
 
 function schoolSegment(scope: CacheScope): string {
   if (scope.schoolCode) return `/${encodeURIComponent(`sc:${scope.schoolCode}`)}`;

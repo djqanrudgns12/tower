@@ -176,4 +176,33 @@ describe('학교별 랭킹 필터 및 standings 재구축 정합성', () => {
     );
     expect(garakAfterRebuild.body).toEqual(garakByCode.body);
   });
+
+  it('전학·직접 입력·학교 해제 후에도 명예점과 내 판 ID는 제출 당시 학교에 남는다', async () => {
+    const device = await t.newDevice();
+    const submit = (pt: number, code: string, name: string) =>
+      playSchoolRun(device, { p_pt: pt, p_school_code: code, p_school_name: name });
+    const a1 = await submit(50, '7010100', '가람초');
+    const a2 = await submit(51, '7010100', '새가람초');
+    const b = await submit(52, '7010200', '나루초');
+    const cache = memoryCache();
+    async function check(filter: Record<string, string>, points: number, ids: string[], period = 'all_time') {
+      const query = new URLSearchParams({ p_tab: 'honor_points', p_grade: '3', p_difficulty: 'Normal', p_period: period, ...filter });
+      const result = await t.direct('/v1/leaderboard?' + query, { token: device.token, now: Date.now(), cache });
+      expect(result.status).toBe(200);
+      expect(result.body.myEntry).toMatchObject({
+        primaryValue: points, secondaryLabel: `완주 ${ids.length}판`, runIds: ids,
+      });
+    }
+    await check({ p_school_code: '7010100' }, 143, [a1, a2]);
+    await check({ p_school_code: '7010200' }, 73, [b]);
+    await check({}, 216, [a1, a2, b]);
+    const named = await submit(53, '', '  가람초 ');
+    const cleared = await submit(54, '', '');
+
+    // 이름만 조회하면 그 이름으로 제출했던 판을 모은다. 코드 조회는 이름 변경과 무관하다.
+    await check({ p_school_name: '가람초' }, 145, [a1, named]);
+    await check({ p_school_code: '7010100' }, 143, [a1, a2]); // 캐시 적중 시에도 같은 범위의 내 판만 반환
+    await check({ p_school_code: '7010200' }, 73, [b], 'weekly');
+    await check({}, 365, [a1, a2, b, named, cleared], 'weekly');
+  });
 });

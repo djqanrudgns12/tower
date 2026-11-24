@@ -350,11 +350,11 @@ export async function getLeaderboard(ctx: Context, hash: string): Promise<Respon
   let myRunRows: SqlRow[] = [];
   if (ranked) {
     if (params.tab === 'honor_points' && ranked.some(p => p.hash === hash)) {
-      [myRunRows = []] = await ctx.db.batch([myHonorRunIdsStatement(hash, params.grade, weekKey)]);
+      [myRunRows = []] = await ctx.db.batch([myHonorRunIdsStatement(hash, scope, weekKey)]);
     }
   } else {
     const statements = [leaderboardRowsStatement(scope)];
-    if (params.tab === 'honor_points') statements.push(myHonorRunIdsStatement(hash, params.grade, weekKey));
+    if (params.tab === 'honor_points') statements.push(myHonorRunIdsStatement(hash, scope, weekKey));
     const [standingRows = [], mine = []] = await limited(ctx, hash, 'ranking', statements);
     ranked = rankStandings(standingRows as unknown as StandingRow[], params.tab);
     myRunRows = mine;

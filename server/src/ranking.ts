@@ -58,7 +58,8 @@ export function rankStandings(rows: readonly StandingRow[], tab: RankingTab): Ra
         val += row.val;
         secondary += row.secondary;
         grade = Math.max(grade, row.grade);
-        if (row.achieved_at > latest.achieved_at) latest = row;
+        if (row.achieved_at > latest.achieved_at
+          || (row.achieved_at === latest.achieved_at && (row.run_id ?? '') > (latest.run_id ?? ''))) latest = row;
       }
       players.push({
         hash, nickname: latest.nickname, grade, difficulty: 'Normal', val, secondary, correct: 0, achievedAt: latest.achieved_at, runId: null,

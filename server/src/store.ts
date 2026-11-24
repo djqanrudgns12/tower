@@ -193,41 +193,36 @@ export interface LeaderboardScope {
 /** 학년 0(전체)이면 조건을 빼서, 특정 학년이면 집계표 기본 키 앞부분(kind, period, grade, difficulty)을 그대로 타게 한다. */
 const gradeClause = (grade: number) => (grade === 0 ? '' : `AND grade = ${Math.trunc(grade)}`);
 
+// 클라이언트와 같은 우선순위로 집계 행과 내 원본 판에 동일한 학교 조건을 붙인다.
+function schoolFilter(scope: LeaderboardScope, binding: '?3' | '?4') {
+  if (scope.schoolCode) return { clause: `AND school_code = ${binding}`, params: [scope.schoolCode] };
+  if (scope.schoolName) return { clause: `AND school_name = ${binding}`, params: [scope.schoolName] };
+  return { clause: '', params: [] };
+}
+
 /**
  * Postgres get_leaderboard_slice의 eligible 단계: 승인 조건이 켜진 집계 행만 기본 키 범위로 한 번 읽는다.
  * 순위(best/grouped → ranked)는 ranking.ts가 매긴다. 승인 조건 IN은 임시 색인을 한 번 만들 뿐이라 읽기가 거의 늘지 않는다.
  */
 export function leaderboardRowsStatement(s: LeaderboardScope): SqlStatement {
   const diff = s.tab === 'honor_points' ? '*' : s.difficulty;
-  if (s.schoolCode) {
-    return sql(
-      `SELECT player_hash, nickname, grade, difficulty, val, secondary, correct, achieved_at, run_id, school_code, school_name FROM standings
-        WHERE kind = ?1 AND period = ?2 ${gradeClause(s.grade)} AND difficulty = ?3 AND ${ACTIVE_CONDITION} AND school_code = ?4`,
-      s.tab, s.period, diff, s.schoolCode,
-    );
-  }
-  if (s.schoolName) {
-    return sql(
-      `SELECT player_hash, nickname, grade, difficulty, val, secondary, correct, achieved_at, run_id, school_code, school_name FROM standings
-        WHERE kind = ?1 AND period = ?2 ${gradeClause(s.grade)} AND difficulty = ?3 AND ${ACTIVE_CONDITION} AND school_name = ?4`,
-      s.tab, s.period, diff, s.schoolName,
-    );
-  }
+  const school = schoolFilter(s, '?4');
   return sql(
     `SELECT player_hash, nickname, grade, difficulty, val, secondary, correct, achieved_at, run_id, school_code, school_name FROM standings
-      WHERE kind = ?1 AND period = ?2 ${gradeClause(s.grade)} AND difficulty = ?3 AND ${ACTIVE_CONDITION}`,
-    s.tab, s.period, diff,
+      WHERE kind = ?1 AND period = ?2 ${gradeClause(s.grade)} AND difficulty = ?3 AND ${ACTIVE_CONDITION} ${school.clause}`,
+    s.tab, s.period, diff, ...school.params,
   );
 }
 
-/** 명예점 탭에서 내 항목의 runIds(범위 안 모든 내 기록). Postgres array_agg(run_id)와 같은 집합이다. */
-export function myHonorRunIdsStatement(me: string, grade: number, weekKey: string | null): SqlStatement {
+/** 명예점과 같은 학교·학년·기간·승인 조건을 만족한 내 판만 반환한다. */
+export function myHonorRunIdsStatement(me: string, scope: LeaderboardScope, weekKey: string | null): SqlStatement {
+  const school = schoolFilter(scope, '?3');
   return sql(
     `SELECT run_id FROM completed_runs
       WHERE player_hash = ?1 AND verification_level = '${VERIFIED_LEVEL}' AND completed_wave >= 1
-        ${gradeClause(grade)} AND (?2 IS NULL OR week_key = ?2) AND ${ACTIVE_CONDITION}
-      ORDER BY received_at`,
-    me, weekKey,
+        ${gradeClause(scope.grade)} AND (?2 IS NULL OR week_key = ?2) AND ${ACTIVE_CONDITION} ${school.clause}
+      ORDER BY received_at, run_id`,
+    me, weekKey, ...school.params,
   );
 }
 

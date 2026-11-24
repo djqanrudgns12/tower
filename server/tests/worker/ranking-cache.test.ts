@@ -89,11 +89,11 @@ describe('적중 때 D1 행 수(같은 처리기, 메모리 캐시)', () => {
     const honorHit = await measure(HONOR);
     expect(honorHit).toMatchObject({ batches: 1, rowsWritten: 0 });
     expect(honorHit.rowsRead).toBeLessThan(10);
-    expect(cache.keys().every(k => k.includes('/__ranking-cache/v1/'))).toBe(true);
+    expect(cache.keys().every(k => k.includes('/__ranking-cache/v2/'))).toBe(true);
   });
 
   it('캐시 열쇠 경로는 Worker가 응답하지 않는다(밖에서 꺼낼 수 없다)', async () => {
-    const r = await t.call('/__ranking-cache/v1/single_score/all/3/Normal');
+    const r = await t.call('/__ranking-cache/v2/single_score/all/3/Normal');
     expect(r.status).toBe(404);
   });
 });
