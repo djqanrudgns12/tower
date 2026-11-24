@@ -4,12 +4,12 @@ type: hub
 title: 아키텍처 및 7계층 경계
 status: active
 updated: 2026-11-16
-verified: { commit: b9b024bd, date: 2026-11-16 }
+verified: { commit: "3d725d36", date: 2026-11-24 }
 sources:
   - path: eslint.config.js
     sha256: "3cb849e76e6f4df521f96362db3c371fb788638f4381a8ddcc62668a09f96179"
   - path: src/application/RunController.ts
-    sha256: ec54afecc7c1b3bbbfaf043a04aa37c14e1bc0d8d931578d0303c6e8bf0a4e0c
+    sha256: a94b51ea433aa6f4d4b7a9080c5004f40633a5c6117c234deb99689093d959a3
   - path: src/domain/rng.ts
     sha256: "1baa7ac4eef91939d99c1002e55c417eb648ace55854898729293ab4547d120e"
   - path: src/domain/num.ts

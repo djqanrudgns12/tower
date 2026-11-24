@@ -10,15 +10,15 @@ generated_by: tools/wiki/gen.mjs
 
 > 이 파일은 `npm run wiki:sync` (`tools/wiki/gen.mjs`)가 코드·계약 JSON·SQL에서 결정적으로 자동 생성합니다. 직접 수정하지 마세요.
 
-- 스캔된 마크다운 총계: **192개 파일** · **1,580,405자** · 추정 **약 1,027,352 토큰**
+- 스캔된 마크다운 총계: **200개 파일** · **1,656,741자** · 추정 **약 1,076,976 토큰**
 - **경고**: `해시 고정(validate-plan)` 문서는 1바이트도 수정·이동하면 안 되며, `링크·참조 검사(validate-plan)` 및 `코드·시험 경로 참조` 문서도 기존 경로를 그대로 유지해야 합니다.
 
 ## 분류별 요약
 
 | 분류 | 파일 수 | 글자 수 | 추정 토큰 |
 | --- | ---: | ---: | ---: |
-| 01. 진입·규약 및 LLM Wiki | 31 | 143,638 | 93,379 |
-| 02. 리뉴얼 현행 기준 (PRD보다 우선) | 27 | 255,674 | 166,200 |
+| 01. 진입·규약 및 LLM Wiki | 31 | 144,752 | 94,104 |
+| 02. 리뉴얼 현행 기준 (PRD보다 우선) | 35 | 330,896 | 215,099 |
 | 03. 호스팅·배포·운영 기준 | 3 | 36,412 | 23,669 |
 | 04. 문제은행 CR-1000 공동검수 | 6 | 201,954 | 131,272 |
 | 05. 제작 PRD v0.5 및 계약 기준 | 6 | 143,424 | 93,229 |
@@ -38,7 +38,7 @@ generated_by: tools/wiki/gen.mjs
 | [docs/WIKI_PLAN.md](../docs/WIKI_PLAN.md) | 현행 활성 | Reference / Navigation | - | 8 | 11,851 |
 | [docs/WIKI_PRD.md](../docs/WIKI_PRD.md) | 현행 활성 | Reference / Navigation | - | 11 | 9,115 |
 | [README.md](../README.md) | 현행 활성 | Reference / Navigation | 링크·참조 검사(validate-plan) | 5 | 2,917 |
-| [wiki/codemap.md](../wiki/codemap.md) | 현행 활성 | Reference / Navigation | - | 15 | 13,910 |
+| [wiki/codemap.md](../wiki/codemap.md) | 현행 활성 | Reference / Navigation | - | 15 | 13,942 |
 | [wiki/commands.md](../wiki/commands.md) | 현행 활성 | Reference / Navigation | - | 3 | 6,130 |
 | [wiki/concepts/architecture-and-layers.md](../wiki/concepts/architecture-and-layers.md) | 현행 활성 | Explanation | - | 4 | 3,218 |
 | [wiki/concepts/combat-towers-and-balance.md](../wiki/concepts/combat-towers-and-balance.md) | 현행 활성 | Explanation | - | 5 | 3,254 |
@@ -46,9 +46,9 @@ generated_by: tools/wiki/gen.mjs
 | [wiki/concepts/persistence-and-ranking-server.md](../wiki/concepts/persistence-and-ranking-server.md) | 현행 활성 | Explanation | - | 4 | 2,958 |
 | [wiki/concepts/question-bank-and-cr1000.md](../wiki/concepts/question-bank-and-cr1000.md) | 현행 활성 | Explanation | - | 5 | 3,514 |
 | [wiki/concepts/ui-phaser-and-assets.md](../wiki/concepts/ui-phaser-and-assets.md) | 현행 활성 | Explanation | - | 5 | 3,126 |
-| [wiki/contracts.md](../wiki/contracts.md) | 현행 활성 | Reference / Navigation | - | 11 | 8,026 |
+| [wiki/contracts.md](../wiki/contracts.md) | 현행 활성 | Reference / Navigation | - | 11 | 7,970 |
 | [wiki/decisions-index.md](../wiki/decisions-index.md) | 현행 활성 | Reference / Navigation | - | 1 | 2,901 |
-| [wiki/docs-catalog.md](../wiki/docs-catalog.md) | 현행 활성 | Reference / Navigation | - | 10 | 25,581 |
+| [wiki/docs-catalog.md](../wiki/docs-catalog.md) | 현행 활성 | Reference / Navigation | - | 10 | 26,719 |
 | [wiki/entities/tech-stack.md](../wiki/entities/tech-stack.md) | 현행 활성 | Reference / Navigation | - | 4 | 3,147 |
 | [wiki/entities/vocabulary-td.md](../wiki/entities/vocabulary-td.md) | 현행 활성 | Reference / Navigation | - | 5 | 2,679 |
 | [wiki/glossary.md](../wiki/glossary.md) | 현행 활성 | Reference / Navigation | - | 1 | 4,124 |
@@ -88,7 +88,15 @@ generated_by: tools/wiki/gen.mjs
 | [docs/renewal/r6/concepts/C5/concept.md](../docs/renewal/r6/concepts/C5/concept.md) | 현행 우선 기준 | Explanation / Spec | - | 9 | 5,277 |
 | [docs/renewal/r6/README.md](../docs/renewal/r6/README.md) | 현행 우선 기준 | Explanation / Spec | - | 9 | 4,398 |
 | [docs/renewal/r6/research.md](../docs/renewal/r6/research.md) | 현행 우선 기준 | Explanation / Spec | - | 8 | 4,924 |
-| [docs/renewal/r6-direction.md](../docs/renewal/r6-direction.md) | 현행 우선 기준 | Explanation / Spec | - | 6 | 3,077 |
+| [docs/renewal/r6/round2/concepts/N1/concept.md](../docs/renewal/r6/round2/concepts/N1/concept.md) | 현행 우선 기준 | Explanation / Spec | - | 13 | 5,937 |
+| [docs/renewal/r6/round2/concepts/N2/concept.md](../docs/renewal/r6/round2/concepts/N2/concept.md) | 현행 우선 기준 | Explanation / Spec | - | 10 | 4,852 |
+| [docs/renewal/r6/round2/concepts/N3/concept.md](../docs/renewal/r6/round2/concepts/N3/concept.md) | 현행 우선 기준 | Explanation / Spec | - | 12 | 5,376 |
+| [docs/renewal/r6/round2/concepts/N4/concept.md](../docs/renewal/r6/round2/concepts/N4/concept.md) | 현행 우선 기준 | Explanation / Spec | - | 24 | 17,771 |
+| [docs/renewal/r6/round2/concepts/N5/concept.md](../docs/renewal/r6/round2/concepts/N5/concept.md) | 현행 우선 기준 | Explanation / Spec | - | 25 | 17,041 |
+| [docs/renewal/r6/round2/README.md](../docs/renewal/r6/round2/README.md) | 현행 우선 기준 | Explanation / Spec | - | 13 | 7,470 |
+| [docs/renewal/r6/round2/research.md](../docs/renewal/r6/round2/research.md) | 현행 우선 기준 | Explanation / Spec | - | 6 | 7,468 |
+| [docs/renewal/r6-baseline/README.md](../docs/renewal/r6-baseline/README.md) | 현행 우선 기준 | Explanation / Spec | - | 9 | 8,773 |
+| [docs/renewal/r6-direction.md](../docs/renewal/r6-direction.md) | 현행 우선 기준 | Explanation / Spec | - | 7 | 3,611 |
 | [docs/renewal/README.md](../docs/renewal/README.md) | 현행 우선 기준 | Explanation / Spec | 코드·시험 경로 참조 | 6 | 3,098 |
 | [docs/renewal/ui-rules-v2.md](../docs/renewal/ui-rules-v2.md) | 현행 우선 기준 | Explanation / Spec | - | 6 | 3,189 |
 | [docs/renewal/ui-rules-v3.md](../docs/renewal/ui-rules-v3.md) | 현행 우선 기준 | Explanation / Spec | - | 6 | 3,523 |

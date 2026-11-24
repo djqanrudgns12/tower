@@ -120,8 +120,8 @@ generated_by: tools/wiki/gen.mjs
 | `run_verification_rules` | 3 | O | - | [server/migrations/0001_init.sql#L73](../server/migrations/0001_init.sql#L73) |
 | `approved_run_conditions` | 5 | O | - | [server/migrations/0001_init.sql#L80](../server/migrations/0001_init.sql#L80) |
 | `completed_runs` | 26 | O | 기기가 보낸 종료 시각 원본(local_ended_at)을 따로 둔다. | [server/migrations/0001_init.sql#L91](../server/migrations/0001_init.sql#L91) |
-| `standings` | 16 | O | 손으로 completed_runs를 고치거나 지웠으면 server/sql/rebuild-standings.sql로 다시 만든다. | [server/migrations/0001_init.sql#L130](../server/migrations/0001_init.sql#L130) |
 | `rate_limits` | 8 | O | 한도를 넘는 증가는 CHECK가 막아 batch 전체가 되돌아간다(거부된 호출은 세지 않는다는 Postgres allow_lobby_rpc와 같다). | [server/migrations/0001_init.sql#L200](../server/migrations/0001_init.sql#L200) |
+| `standings` | 17 | O | - | [server/migrations/0003_school_honor.sql#L5](../server/migrations/0003_school_honor.sql#L5) |
 
 ### 7.3 SQLite 트리거
 
@@ -129,4 +129,4 @@ generated_by: tools/wiki/gen.mjs
 | --- | --- | --- |
 | `daily_visitor_hashes_counted` | `AFTER INSERT ON daily_visitor_hashes` | [server/migrations/0001_init.sql#L33](../server/migrations/0001_init.sql#L33) |
 | `run_start_dedup_counted` | `AFTER INSERT ON run_start_dedup` | [server/migrations/0001_init.sql#L56](../server/migrations/0001_init.sql#L56) |
-| `completed_runs_standings` | `AFTER INSERT ON completed_runs` | [server/migrations/0002_school_meta.sql#L10](../server/migrations/0002_school_meta.sql#L10) |
+| `completed_runs_standings` | `AFTER INSERT ON completed_runs` | [server/migrations/0003_school_honor.sql#L56](../server/migrations/0003_school_honor.sql#L56) |
