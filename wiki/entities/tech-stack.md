@@ -38,6 +38,7 @@ sources:
 | 패키지 / 런타임 | 고정 버전 | 구분 |
 | --- | --- | --- |
 | `node (engines)` | `>=24.0.0` | 런타임 |
+| `@esotericsoftware/spine-phaser-v4` | `4.3.13` | 앱 의존성 |
 | `idb` | `8.0.4` | 앱 의존성 |
 | `phaser` | `4.2.1` | 앱 의존성 |
 | `pretendard` | `1.3.9` | 앱 의존성 |

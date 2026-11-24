@@ -4,10 +4,10 @@ type: project
 title: 프로젝트 계보 및 현행 코드 실체 판정
 status: active
 updated: 2026-11-24
-verified: { commit: a402d63f, date: 2026-11-24 }
+verified: { commit: eb87c5ed, date: 2026-11-25 }
 sources:
   - path: package.json
-    sha256: a30c5cbd4a9e080a26987cc63f28b2a5dc928c404a7f96f392bc94209d441fe6
+    sha256: "868d9aefb60ec389e8fc0436fc69266c84e34ff3858f61f62766a8c88c92a90a"
   - path: AGENTS.md
     sha256: f22902d65d0a4e1a65acb94dcd3e46101332e9685f9ef2fb7d6213198e7d9534
   - path: docs/renewal/README.md

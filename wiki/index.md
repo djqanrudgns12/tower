@@ -4,12 +4,12 @@ type: index
 title: 어휘력 타워 디펜스 에이전트 위키 색인
 status: active
 updated: 2026-11-16
-verified: { commit: b9b024bd, date: 2026-11-16 }
+verified: { commit: eb87c5ed, date: 2026-11-25 }
 sources:
   - path: AGENTS.md
     sha256: f22902d65d0a4e1a65acb94dcd3e46101332e9685f9ef2fb7d6213198e7d9534
   - path: package.json
-    sha256: a30c5cbd4a9e080a26987cc63f28b2a5dc928c404a7f96f392bc94209d441fe6
+    sha256: "868d9aefb60ec389e8fc0436fc69266c84e34ff3858f61f62766a8c88c92a90a"
 ---
 
 # 어휘력 타워 디펜스 LLM Wiki (`index`)
@@ -23,7 +23,7 @@ sources:
 - **게임 규모**: 학년별 맵 `4`종(3~6학년, 15×9 격자·슬롯 20칸) · 타워 `20`종(Lv4/Lv7 3단 진화) · 적 역할 `10`종 × 종족 `8`종 · 원정 보물 `12`종
 - **공개 문제은행**: 3~6학년 자기 학년 승인 **5,547문항** · 공유 포함 총 출제 풀 **6,583문항** (3학년 1140 · 4학년 1563 · 5학년 1869 · 6학년 2011)
 - **서버·인프라**: 정적 게임 `https://voca.ssamuniverse.com` (GitHub Pages) · 기록/랭킹 API `https://voca-api.ssamuniverse.com` (Cloudflare Workers 라우트 `7`종 + D1 테이블 `11`종)
-- **지식 베이스**: 전체 마크다운 `200`개 · 핵심 의사결정 `10`건 · 루트 npm 명령 `35`개
+- **지식 베이스**: 전체 마크다운 `225`개 · 핵심 의사결정 `10`건 · 루트 npm 명령 `35`개
 <!-- WIKI-AUTO:END:repo-stats -->
 
 ## 2. 작업별 1홉 바로가기
