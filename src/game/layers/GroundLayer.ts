@@ -7,6 +7,7 @@ import { composeLayoutGround, padSprites, type PadSprite } from '../layoutGround
 import { claimedDecorations, layoutFor, resolvePlacements, steleOriginY, type MapLayout, type PlacedArt } from '../layouts';
 import { PAD_FADE_MS, isPlacing, padAlpha } from './cues';
 import { selectedCell } from './InputLayer';
+import { R6_GROUND_KEY } from '../r6/BattleAssets';
 import { DEPTH, type LayerContext } from './shared';
 
 /** deco.stele.r1 원화에서 비석 면 가운데의 세로 위치(원화 높이 대비, 면은 약 28~130/192px). */
@@ -15,7 +16,7 @@ const STELE_FACE_Y = 0.41;
 /** 지면 층: 바닥 그림, 설치 받침(따로 세워 투명도를 바꾼다), 나무·바위·비석·성문 원화, 웨이브 무드 색층. */
 export class GroundLayer {
   private readonly c: LayerContext;
-  private mood!: Phaser.GameObjects.Rectangle;
+  private mood?: Phaser.GameObjects.Rectangle;
   private moodWave = -1;
   private has = { gate: false, tree: false, stele: false, rock: false };
   /** 이번 지면을 배치표로 조립했으면 그 배치표. 없으면 기존 지면(되돌림 경로). */
@@ -35,7 +36,7 @@ export class GroundLayer {
     const map = this.c.bridge.controller.ctx.map;
     const t = scene.textures;
     this.has = { gate: t.exists('map.gate'), tree: t.exists('deco.tree'), stele: t.exists('deco.stele'), rock: t.exists('deco.rock') };
-    if (t.exists(ASSETS.ground.key)) return;
+    if (t.exists(R6_GROUND_KEY) || t.exists(ASSETS.ground.key)) return;
     const layout = layoutFor(map.id);
     if (layout && composeLayoutGround(scene, map, layout)) { this.layout = layout; this.padList = padSprites(scene, map); return; }
     if (composeGroundArt(scene, map)) this.padList = slotBaseSprites(scene, map);
@@ -45,6 +46,10 @@ export class GroundLayer {
   build() {
     const { scene } = this.c;
     const map = this.c.bridge.controller.ctx.map;
+    if (scene.textures.exists(R6_GROUND_KEY)) {
+      scene.add.image(0, 0, R6_GROUND_KEY).setOrigin(0).setDisplaySize(WORLD_W, WORLD_H).setDepth(DEPTH.ground);
+      return;
+    }
     scene.add.image(0, 0, ASSETS.ground.key).setOrigin(0).setScale(1 / TEX).setDepth(DEPTH.ground);
     // 설치 받침은 지면 바로 위(웨이브 무드 색층 아래)에 따로 세운다. 처음에는 평소 투명도(흐리게)다.
     for (const p of this.padList) this.pads.set(p.slotId, scene.add.image(p.x, p.y, p.key).setOrigin(p.originX, p.originY).setScale(p.scale).setDepth(DEPTH.ground + 0.5).setAlpha(padAlpha({ occupied: false, placing: false, focused: false, highContrast: false })));
@@ -107,13 +112,15 @@ export class GroundLayer {
   /** 웨이브 무드: 지면 위 약한 색층만 바꾼다(PRD §11.5). */
   applyMood(immediate: boolean) {
     const { scene, bridge } = this.c;
+    const mood = this.mood;
+    if (!mood) return;
     const wave = Math.max(1, bridge.controller.state.wave);
     if (wave === this.moodWave) return;
     this.moodWave = wave;
     const entry = DEFAULTS.mood.entries[(wave - 1) % 5]!;
     const color = entry.tint ? Number.parseInt(entry.tint.slice(1), 16) : 0xffffff;
-    scene.tweens.killTweensOf(this.mood);
-    if (immediate || bridge.reducedMotion) { this.mood.setFillStyle(color, entry.alpha); return; }
-    scene.tweens.add({ targets: this.mood, fillAlpha: 0, duration: 300, onComplete: () => { this.mood.setFillStyle(color, 0); scene.tweens.add({ targets: this.mood, fillAlpha: entry.alpha, duration: 300 }); } });
+    scene.tweens.killTweensOf(mood);
+    if (immediate || bridge.reducedMotion) { mood.setFillStyle(color, entry.alpha); return; }
+    scene.tweens.add({ targets: mood, fillAlpha: 0, duration: 300, onComplete: () => { mood.setFillStyle(color, 0); scene.tweens.add({ targets: mood, fillAlpha: entry.alpha, duration: 300 }); } });
   }
 }

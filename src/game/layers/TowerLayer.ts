@@ -5,6 +5,8 @@ import { formBranch, type FormId } from '../../domain/towers';
 import type { RunState } from '../../domain/types';
 import { PALETTE } from '../art';
 import { ASSETS, CELL_PX, towerBodyArt, weaponMountOffset, type AssetSpec } from '../assets';
+import type { R6BattleAssets } from '../r6/BattleAssets';
+import { R6TowerPlayback } from '../r6/TowerPlayback';
 import { topFit, WIND_SPIN, windSpinStep } from './cues';
 import { DEPTH, FIXED_WEAPON, toWorld, type LayerContext } from './shared';
 
@@ -28,14 +30,23 @@ export class TowerLayer {
   /** 본체 그림 키 → 기본형 대비 무기 올림(월드 px). 형태별로 한 번 계산해 둔다. */
   private lifts = new Map<string, number>();
 
-  constructor(c: LayerContext) { this.c = c; }
+  private readonly r6: R6TowerPlayback | null;
+
+  constructor(c: LayerContext, assets: R6BattleAssets | null = null) {
+    this.c = c;
+    this.r6 = assets ? new R6TowerPlayback(c, assets) : null;
+  }
 
   /** 발사체·즉발 효과의 시작점도 무기와 같이 올린다(EffectLayer가 읽는다). */
-  weaponLift(towerId: number): number { return this.towers.get(towerId)?.shotLift ?? 0; }
+  weaponLift(towerId: number): number { return this.r6?.weaponLift(towerId) ?? this.towers.get(towerId)?.shotLift ?? 0; }
 
   onFire(e: Extract<DomainEvent, { type: 'fire' }>) {
     const t = this.towers.get(e.towerId);
     const shot = this.c.bridge.controller.state.projectiles.find(p => p.id === e.projectileId);
+    if (this.r6) {
+      if (shot) this.r6.attack(e.towerId, shot.toX - shot.fromX, shot.toY - shot.fromY);
+      return;
+    }
     if (t && shot) { t.angle = Math.atan2(shot.toY - shot.fromY, shot.toX - shot.fromX); t.recoilUntil = this.c.scene.time.now + 120; }
   }
 
@@ -44,6 +55,10 @@ export class TowerLayer {
     const t = this.towers.get(e.towerId);
     const first = e.targets[0];
     if (!first) return;
+    if (this.r6) {
+      this.r6.attack(e.towerId, first.x - e.fromX, first.y - e.fromY);
+      return;
+    }
     const fx = toWorld(e.fromX), fy = toWorld(e.fromY) - CELL_PX * 0.32 - (t?.shotLift ?? 0);
     if (t && e.towerType === 'wind') this.kickSpin(t);
     if (t && !FIXED_WEAPON.has(e.towerType)) { t.angle = Math.atan2(toWorld(first.y) - fy, toWorld(first.x) - fx); t.recoilUntil = this.c.scene.time.now + 120; }
@@ -58,6 +73,7 @@ export class TowerLayer {
   }
 
   sync(s: RunState, time: number) {
+    if (this.r6) { this.r6.sync(s, time); return; }
     const { scene, bridge } = this.c;
     const seen = new Set<number>();
     for (const t of s.towers) {

@@ -1,4 +1,7 @@
 import Phaser from 'phaser';
+import type { SpineGameObject } from '@esotericsoftware/spine-phaser-v4';
+import type { R6BattleAssets } from '../r6/BattleAssets';
+import { R6_COLORS } from '../r6/manifest';
 import { positionAt } from '../../domain/geometry';
 import { enemyArtId } from '../../domain/factions';
 import { burrowed } from '../../domain/traits';
@@ -10,7 +13,7 @@ import { bossStatus, flyerLift, introFrame, wardDotOffsets, type BossStatus, typ
 import { DEPTH, toWorld, type LayerContext } from './shared';
 
 interface EnemyView {
-  sprite: Phaser.GameObjects.Image; badge: Phaser.GameObjects.Image | null;
+  sprite: Phaser.GameObjects.Image | null; spine: EnemySpine | null; spineRevision: number; badge: Phaser.GameObjects.Image | null;
   /** 종족 특성 배지(prd-r4 §7.2 E): 원화 특성 아이콘. 특성이 없거나 그림을 못 실었으면 null. */
   trait: Phaser.GameObjects.Image | null;
   art: EnemyArt; prev: number; cur: number; phase: number; flashUntil: number; flashAt: number; hitAt: number | null; facing: 1 | -1;
@@ -18,6 +21,13 @@ interface EnemyView {
   x: number; y: number; lift: number;
   /** 분열·호위 등장 연출(시작 시각 ms). */
   intro: (SpawnIntro & { start: number }) | null;
+}
+
+interface EnemySpine {
+  object: SpineGameObject;
+  scale: number;
+  hit: string | undefined;
+  fall: string | undefined;
 }
 
 /** 피격 점멸: 원화에 더하는 밝기(ADD, 약 25%)와 같은 적의 점멸 최소 간격(R4 PRD §9.2: 300ms에 한 번). */
@@ -54,7 +64,7 @@ export class EnemyLayer {
   /** 땅에 붙은 표시: 비행 그림자, 방패 고리, 먼지 줄, 북소리 원. 적 그림보다 아래다. */
   private readonly ground: Phaser.GameObjects.Graphics;
 
-  constructor(c: LayerContext) {
+  constructor(c: LayerContext, private readonly assets: R6BattleAssets | null = null) {
     this.c = c;
     this.hpBars = c.scene.add.graphics().setDepth(DEPTH.ui);
     this.ground = c.scene.add.graphics().setDepth(DEPTH.overlay + 1);
@@ -63,9 +73,9 @@ export class EnemyLayer {
   /** 새 틱이 오면 보간 구간을 한 칸 민다. */
   advance(s: RunState) {
     if (s.tick === this.lastTick) return;
-    for (const [id, v] of this.enemies) {
-      const e = s.enemies.find(x => x.id === id);
-      if (e) { v.prev = v.cur; v.cur = e.progress; }
+    for (const e of s.enemies) {
+      const v = this.enemies.get(e.id);
+      if (v) { v.prev = v.cur; v.cur = e.progress; }
     }
     this.lastTick = s.tick;
   }
@@ -76,8 +86,30 @@ export class EnemyLayer {
     const now = this.c.scene.time.now;
     if (!v || !acceptsHit(v.hitAt, now)) return;
     v.hitAt = now;
+    const spine = v.spine;
+    if (spine?.hit && !this.c.bridge.reducedMotion) {
+      spine.object.animationState.setAnimation(1, spine.hit, false);
+      spine.object.animationState.addEmptyAnimation(1, 0.08, 0);
+    }
     // 밝게 섞는 점멸은 같은 적에 300ms에 한 번만: 계속 맞는 대장이 하얀 실루엣으로 깨져 보이지 않게 한다.
     if (now - v.flashAt >= FLASH_GAP_MS) { v.flashAt = now; v.flashUntil = now + HIT_MS; }
+  }
+
+  onKill(enemyId: number) {
+    const v = this.enemies.get(enemyId);
+    const spine = v?.spine;
+    if (!v || !spine?.fall || this.c.bridge.reducedMotion) return;
+    const { object, fall } = spine;
+    object.setName(`r6:fallen:${enemyId}`);
+    object.animationState.clearTracks();
+    object.skeleton.setupPose();
+    object.animationState.timeScale = 1;
+    object.animationState.setAnimation(0, fall, false);
+    v.badge?.destroy();
+    v.trait?.destroy();
+    this.enemies.delete(enemyId);
+    const ms = object.skeleton.data.findAnimation(fall)!.duration * 1000;
+    this.c.scene.tweens.add({ targets: object, alpha: 0, delay: ms * 0.7, duration: ms * 0.3, onComplete: () => object.destroy() });
   }
 
   /** 분열 파생체·호위병의 등장 연출을 예약한다. 그 적을 처음 그릴 때 시작한다. */
@@ -88,7 +120,7 @@ export class EnemyLayer {
   /** 지금 그려진 적 그림의 위치(화상 연기 등). 없으면 null. */
   spriteAt(enemyId: number): { x: number; y: number } | null {
     const v = this.enemies.get(enemyId);
-    return v ? { x: v.sprite.x, y: v.sprite.y } : null;
+    return v?.spine?.object ?? v?.sprite ?? null;
   }
 
   /** 지금 그린 길 위 위치(월드 px). 아직 그리지 않은 적이면 null. */
@@ -131,9 +163,13 @@ export class EnemyLayer {
         const intro = this.pendingIntros.get(e.id);
         this.pendingIntros.delete(e.id);
         // 개체마다 보행 위상을 다르게 둔다(PRD §11.3).
-        v = { sprite, badge, trait, art, prev: e.progress, cur: e.progress, phase: (e.id * 0.618034) % 1, flashUntil: 0, flashAt: -Infinity, hitAt: null, facing: 1,
+        v = { sprite, spine: null, spineRevision: -1, badge, trait, art, prev: e.progress, cur: e.progress, phase: (e.id * 0.618034) % 1, flashUntil: 0, flashAt: -Infinity, hitAt: null, facing: 1,
           x: 0, y: 0, lift: flyerLift(e, s.tick) * CELL_PX, intro: intro ? { ...intro, start: time } : null };
         this.enemies.set(e.id, v);
+      }
+      if (!v.spine && this.assets && v.spineRevision !== this.assets.revision) {
+        v.spineRevision = this.assets.revision;
+        this.addSpine(v, e);
       }
       const progress = v.prev + (v.cur - v.prev) * alpha;
       const p = positionAt(path, progress);
@@ -159,18 +195,28 @@ export class EnemyLayer {
       }
       if (under) alphaK *= BURROW_ALPHA;
       v.x = x; v.y = y;
-      // 걸음은 보간된 진행 거리로 맞춰 감속·맵 길이와 상관없이 발이 미끄러지지 않게 한다(RIG-001).
-      // 한 장짜리 종족 그림은 frames 1이라 pose가 디딤 눌림·떠오름으로 걸음을 보여 준다.
       const { art } = v;
-      const pose = enemyPose({ kind: e.kind, phase: v.phase, time: time / 1000, speedBP: e.speedBP, moving, frames: art.frames, reducedMotion: reduced,
-        distance: toWorld(progress), ...(v.hitAt === null ? {} : { hitAge: (time - v.hitAt) / 1000 }) });
-      const hitKey = `${art.base}.hit`;
-      const hitArt = pose.hit && scene.textures.exists(hitKey);
-      const size = CELL_PX * art.displayCells * scaleK;
       if (e.flying) this.flyerShadow(x, y + FOOT, art.displayCells * scaleK, v.lift);
-      v.sprite.setTexture(hitArt ? hitKey : art.framed ? `${art.base}.${pose.frame}` : art.base).setPosition(x, y + FOOT - pose.bob - v.lift - hop).setFlipX(v.facing < 0).setDepth(DEPTH.units + y + 0.5)
-        .setDisplaySize(size, size * pose.squashY).setAlpha(alphaK);
-      this.tint(v, e, time, hitArt);
+      const depth = DEPTH.units + y + 0.5;
+      if (v.spine) {
+        const { object, scale } = v.spine;
+        object.setPosition(x, y + FOOT - v.lift - hop).setDepth(depth)
+          .setScale(v.facing * scale * scaleK, scale * scaleK).setAlpha(alphaK);
+        object.animationState.timeScale = reduced || s.pause.length ? 0 : 1;
+        const walk = object.animationState.getTrack(0);
+        if (walk) walk.timeScale = moving ? e.speedBP / 10000 : 0;
+      } else {
+        // 그림 시트의 걸음은 보간된 진행 거리에 맞춘다.
+        const pose = enemyPose({ kind: e.kind, phase: v.phase, time: time / 1000, speedBP: e.speedBP, moving, frames: art.frames, reducedMotion: reduced,
+          distance: toWorld(progress), ...(v.hitAt === null ? {} : { hitAge: (time - v.hitAt) / 1000 }) });
+        const hitKey = `${art.base}.hit`;
+        const hitArt = pose.hit && scene.textures.exists(hitKey);
+        const size = CELL_PX * art.displayCells * scaleK;
+        v.sprite!.setTexture(hitArt ? hitKey : art.framed ? `${art.base}.${pose.frame}` : art.base)
+          .setPosition(x, y + FOOT - pose.bob - v.lift - hop).setFlipX(v.facing < 0).setDepth(depth)
+          .setDisplaySize(size, size * pose.squashY).setAlpha(alphaK);
+        this.tint(v, e, time, hitArt);
+      }
       const top = y - v.lift - hop;
       if (v.badge) v.badge.setPosition(x, top - CELL_PX * (e.kind === 'boss' ? 0.86 : 0.5)).setDepth(DEPTH.units + y + 0.6).setAlpha(alphaK);
       // 특성 배지: 체력 막대(폭 28px) 왼쪽 옆, 막대 높이. 대장에게는 붙지 않는다.
@@ -180,12 +226,37 @@ export class EnemyLayer {
       if (e.hp < e.maxHp) {
         const w = e.kind === 'boss' ? 44 : 28, bx = x - w / 2, by = top - CELL_PX * (e.kind === 'boss' ? 0.78 : 0.44);
         const k = under ? BURROW_ALPHA : 1;
-        this.hpBars.fillStyle(PALETTE.outline, 0.9 * k).fillRect(bx - 1, by - 1, w + 2, 6).fillStyle(0xd94f3d, k).fillRect(bx, by, Math.max(1, (w * e.hp) / e.maxHp), 4);
+        this.hpBars.fillStyle(PALETTE.outline, 0.9 * k).fillRect(bx - 1, by - 1, w + 2, 6).fillStyle(this.assets ? R6_COLORS.amber : 0xd94f3d, k).fillRect(bx, by, Math.max(1, (w * e.hp) / e.maxHp), 4);
       }
     }
-    for (const [id, v] of this.enemies) if (!seen.has(id)) { v.sprite.destroy(); v.badge?.destroy(); v.trait?.destroy(); this.enemies.delete(id); }
+    for (const [id, v] of this.enemies) if (!seen.has(id)) { v.sprite?.destroy(); v.spine?.object.destroy(); v.badge?.destroy(); v.trait?.destroy(); this.enemies.delete(id); }
     // 그려지기 전에 사라진 적(같은 틱 처치 등)의 예약은 버린다.
     for (const id of this.pendingIntros.keys()) if (!s.enemies.some(e => e.id === id)) this.pendingIntros.delete(id);
+  }
+
+  private addSpine(v: EnemyView, enemy: Enemy) {
+    const art = this.assets?.enemyArt(enemy);
+    if (!art) return;
+    const { scene, bridge } = this.c;
+    let object: SpineGameObject | undefined;
+    try {
+      const data = scene.spine.getSkeletonData(art.data, art.atlas);
+      if (!data.findSkin(art.skin) || !data.findAnimation(art.rig.walk)) return;
+      object = scene.add.spine(0, 0, art.data, art.atlas, { renderer: 'phaser' }).setName(`r6:enemy:${enemy.id}`);
+      object.skeleton.setSkin(art.skin);
+      object.skeleton.setupPoseSlots();
+      object.animationState.setAnimation(0, art.rig.walk, true).trackTime = bridge.reducedMotion ? 0 : v.phase;
+      v.spine = {
+        object,
+        scale: art.rig.scale * (enemy.kind === 'boss' ? 1.5 : enemy.derived ? 0.8 : 1),
+        hit: art.rig.hit && data.findAnimation(art.rig.hit) ? art.rig.hit : undefined,
+        fall: art.rig.fall && data.findAnimation(art.rig.fall) ? art.rig.fall : undefined,
+      };
+      v.sprite?.destroy();
+      v.sprite = null;
+    } catch {
+      object?.destroy();
+    }
   }
 
   /** 비행 적의 땅 그림자: 몸이 높을수록 조금 작고 옅다. 몸은 그 위에 떠 있다. */
@@ -243,9 +314,9 @@ export class EnemyLayer {
 
   /** 피격 점멸은 흰색 채움 대신 밝기만 더한다. 피격 원화가 있으면 그 그림이 피격을 보여 주므로 덮지 않는다. */
   private tint(v: EnemyView, e: Enemy, time: number, hitArt: boolean) {
-    if (time < v.flashUntil && !hitArt) { v.sprite.setTint(FLASH_TINT).setTintMode(Phaser.TintModes.ADD); return; }
-    v.sprite.setTintMode(Phaser.TintModes.MULTIPLY);
-    if (e.slows.some(x => x.untilTick > this.c.bridge.controller.state.tick)) v.sprite.setTint(0xb9e2ff);
-    else v.sprite.clearTint();
+    if (time < v.flashUntil && !hitArt) { v.sprite!.setTint(FLASH_TINT).setTintMode(Phaser.TintModes.ADD); return; }
+    v.sprite!.setTintMode(Phaser.TintModes.MULTIPLY);
+    if (e.slows.some(x => x.untilTick > this.c.bridge.controller.state.tick)) v.sprite!.setTint(0xb9e2ff);
+    else v.sprite!.clearTint();
   }
 }

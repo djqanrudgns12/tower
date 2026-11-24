@@ -1,7 +1,7 @@
-import Phaser from 'phaser';
+import type Phaser from 'phaser';
 import { useEffect, useRef, type FocusEventHandler, type KeyboardEventHandler } from 'react';
-import { WORLD_H, WORLD_W } from './assets';
-import { BattleScene } from './BattleScene';
+import type { BattleScene } from './BattleScene';
+import { startBattlefield } from './battlefieldGame';
 import type { FieldBridge } from './bridge';
 
 interface Props {
@@ -22,32 +22,11 @@ export function PhaserBattlefield({ bridge, width, height, label, onKeyDown, onF
   useEffect(() => {
     if (!host.current) return;
     size.current = '';
-    const dpr = Math.min(2, window.devicePixelRatio || 1);
-    const instance = new Phaser.Game({
-      type: Phaser.WEBGL,
-      parent: host.current,
-      width: Math.max(1, Math.round(WORLD_W * dpr)),
-      height: Math.max(1, Math.round(WORLD_H * dpr)),
-      backgroundColor: '#7cbc4c',
-      banner: false,
-      audio: { noAudio: true },
-      render: { antialias: true, powerPreference: 'default' },
-      scale: { mode: Phaser.Scale.NONE, zoom: 1 / dpr },
-      input: { touch: { capture: false }, mouse: { preventDefaultWheel: false } },
-      scene: [],
-    });
-    instance.scene.add('battle', BattleScene, true, { bridge });
-    // 문맥 손실·복구(PRD §12.7). Phaser가 텍스처를 되살린 뒤 RESTORE_WEBGL을 보낸다. 임시 그림도 캔버스 원본이라 함께 돌아온다.
-    const watchRenderer = () => {
-      const renderer = instance.renderer;
-      renderer.on(Phaser.Renderer.Events.LOSE_WEBGL, () => bridge.controller.rendererLost());
-      renderer.on(Phaser.Renderer.Events.RESTORE_WEBGL, () => bridge.controller.rendererRestored());
-    };
-    if (instance.isBooted) watchRenderer();
-    else instance.events.once(Phaser.Core.Events.BOOT, watchRenderer);
-    game.current = instance;
+    const lifetime = new AbortController();
+    startBattlefield(host.current, bridge, lifetime.signal, instance => { game.current = instance; });
     return () => {
-      instance.destroy(true);
+      lifetime.abort();
+      game.current?.destroy(true);
       game.current = null;
     };
     // 브리지는 판 하나 동안 같은 객체다.

@@ -5,6 +5,7 @@ import type { FieldHazard, HazardKind, RunState } from '../../domain/types';
 import { PALETTE } from '../art';
 import { ASSETS, CELL_PX, WORLD_W } from '../assets';
 import { BLAST_BURST_MS, blastCharge, blastLook, formBlastRadius, fusePuffCount, hazardBlastRadius, hazardEndCue, hazardLook, ROLLER_LENGTH_CELLS, ROLLER_THICK_CELLS, rollerHeading, trapCloseCue, wardDotOffsets, ZONE_ALPHA, ZONE_FLATTEN, type BlastLook, type BossCue, type HazardLook } from './cues';
+import { R6_COLORS } from '../r6/manifest';
 import { DEPTH, toWorld, type LayerContext } from './shared';
 
 /** 처치 보상 표찰의 화면 최소 글자 크기(CSS px, v3 §1-2 13px 하한). */
@@ -30,13 +31,19 @@ export class EffectLayer {
   /** 처치 보상 표찰. 미니맵 카메라에서는 감춘다. */
   readonly callouts: Phaser.GameObjects.Container;
 
-  constructor(c: LayerContext) {
+  constructor(c: LayerContext, private readonly r6 = false) {
     this.c = c;
     this.callouts = c.scene.add.container(0, 0).setDepth(DEPTH.fx + 5);
   }
 
   /** lift는 떠 있는 비행 적의 몸 높이(EnemyLayer.liftOf)다. 맞은 자리를 몸에 맞춘다. */
   onHit(e: Extract<DomainEvent, { type: 'hit' }>, lift = 0) {
+    if (this.r6) {
+      const g = this.c.scene.add.graphics().setDepth(DEPTH.fx).setPosition(toWorld(e.x), toWorld(e.y) - 14 - lift);
+      g.lineStyle(2, R6_COLORS.silver, 0.85).lineBetween(-4, 2, 4, -2);
+      this.fadeR6(g, 100);
+      return;
+    }
     this.fx(e.towerType === 'cannon' ? ASSETS.projectile.puff : e.towerType === 'frost' ? ASSETS.projectile.shard : ASSETS.projectile.spark, toWorld(e.x), toWorld(e.y) - 14 - lift, e.towerType === 'cannon' ? 0.9 : 0.55);
   }
 
@@ -68,6 +75,18 @@ export class EffectLayer {
     const first = e.targets[0];
     if (!first) return;
     const fx = toWorld(e.fromX), fy = toWorld(e.fromY) - CELL_PX * 0.32 - lift;
+    if (this.r6) {
+      const g = scene.add.graphics().setDepth(DEPTH.fx);
+      g.lineStyle(2, R6_COLORS.teal, 0.85);
+      let x = fx, y = fy;
+      for (const target of e.targets) {
+        const tx = toWorld(target.x), ty = toWorld(target.y) - 10 - enemyLift(target.enemyId);
+        g.lineBetween(x, y, tx, ty);
+        if (String(e.towerType) === 'prism') { x = tx; y = ty; }
+      }
+      this.fadeR6(g, 100);
+      return;
+    }
     if (e.towerType === 'lightning') {
       const g = scene.add.graphics().setDepth(DEPTH.fx);
       const pts = [{ x: fx, y: fy - CELL_PX * 0.1 }, ...e.targets.map(p => ({ x: toWorld(p.x), y: toWorld(p.y) - 10 - enemyLift(p.enemyId) }))];
@@ -83,6 +102,10 @@ export class EffectLayer {
       if (e.towerType === 'flame') this.fx(ASSETS.projectile.puff, toWorld(p.x), py, 0.7, 0xf08a3c);
       else this.fx(ASSETS.projectile.spark, toWorld(p.x), py, 0.5);
     }
+  }
+
+  private fadeR6(g: Phaser.GameObjects.Graphics, duration: number) {
+    this.c.scene.tweens.add({ targets: g, alpha: 0, duration, onComplete: () => g.destroy() });
   }
 
   /**
@@ -203,8 +226,9 @@ export class EffectLayer {
     for (const p of s.projectiles) {
       seen.add(p.id);
       let img = this.shots.get(p.id);
+      const lofted = this.r6 ? p.towerType === 'mortar' : p.towerType === 'cannon';
       if (!img) {
-        const key = p.towerType === 'cannon' ? ASSETS.projectile.ball : p.towerType === 'frost' ? ASSETS.projectile.shard : ASSETS.projectile.arrow;
+        const key = lofted ? ASSETS.projectile.ball : p.towerType === 'frost' ? ASSETS.projectile.shard : ASSETS.projectile.arrow;
         img = scene.add.image(0, 0, key).setDepth(DEPTH.projectiles).setScale(p.towerType === 'archer' ? 0.5 : 0.6);
         this.shots.set(p.id, img);
       }
@@ -212,7 +236,7 @@ export class EffectLayer {
       const target = p.targetId !== null ? s.enemies.find(e => e.id === p.targetId) : null;
       const to = target ? positionAt(path, progressOf(target.id, alpha) ?? target.progress) : { x: p.toX, y: p.toY };
       const fx = toWorld(p.fromX), fy = toWorld(p.fromY) - CELL_PX * 0.32 - liftOf(p.towerId), tx = toWorld(to.x), ty = toWorld(to.y) - CELL_PX * 0.08 - (target ? enemyLift(target.id) : 0);
-      const arc = p.towerType === 'cannon' ? Math.sin(f * Math.PI) * CELL_PX * 0.55 : 0;
+      const arc = lofted ? Math.sin(f * Math.PI) * CELL_PX * 0.55 : 0;
       img.setPosition(fx + (tx - fx) * f, fy + (ty - fy) * f - arc);
       if (p.towerType === 'archer') img.setRotation(Math.atan2(ty - fy, tx - fx));
     }

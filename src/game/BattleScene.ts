@@ -15,6 +15,8 @@ import { InputLayer, selectedCell } from './layers/InputLayer';
 import { bossCue, spawnIntros, SPLIT_LABEL_RAISE_CELLS } from './layers/cues';
 import { DEPTH, toWorld } from './layers/shared';
 import { TowerLayer } from './layers/TowerLayer';
+import { R6BattleAssets } from './r6/BattleAssets';
+import { isR6Battlefield } from './r6/manifest';
 
 /**
  * 전장 장면: 층(지면·타워·적·효과·입력/선택 표시)을 만들고 카메라·미니맵과 사건 전달만 맡는다.
@@ -24,7 +26,8 @@ export class BattleScene extends Phaser.Scene {
   private bridge!: FieldBridge;
   private ground!: GroundLayer;
   private towerLayer!: TowerLayer;
-  private ambient!: AmbientLayer;
+  private ambient: AmbientLayer | null = null;
+  private r6Assets: R6BattleAssets | null = null;
   private enemyLayer!: EnemyLayer;
   private effects!: EffectLayer;
   private inputLayer!: InputLayer;
@@ -43,7 +46,13 @@ export class BattleScene extends Phaser.Scene {
    * 지금 맵의 재료와 공용 그림만 받고 다른 맵 재료는 받지 않는다(맵 id는 전투 제어기의 판 정보, `?previewMap`·`?qaRun`도 같다).
    */
   preload() {
-    const mapId = this.bridge.controller.ctx.map.id;
+    const { ctx } = this.bridge.controller;
+    const mapId = ctx.map.id;
+    if (isR6Battlefield(ctx)) {
+      this.r6Assets = new R6BattleAssets(this);
+      this.r6Assets.preload(mapId);
+      return;
+    }
     this.load.json('asset-manifest', 'assets/manifest.json');
     this.load.once('filecomplete-json-asset-manifest', (_key: string, _type: string, data: unknown) => {
       const parsed = assetManifestSchema.safeParse(data);
@@ -64,13 +73,15 @@ export class BattleScene extends Phaser.Scene {
     for (const id of TOWER_IDS) for (const key of [`tower.${id}`, `tower.${id}.weapon`]) if (this.textures.exists(key)) icons[key] = this.textures.getBase64(key);
     // 준비판의 다음 웨이브 미리보기·웨이브 띠의 대장 초상화도 전장과 같은 그림을 쓴다.
     for (const kind of ENEMY_KINDS) { const key = `enemy.${kind}.0`; if (this.textures.exists(key)) icons[key] = this.textures.getBase64(key); }
+    this.r6Assets?.addTowerIcons(icons);
     this.bridge.onIcons?.(icons);
     this.ground.build();
     this.inputLayer = new InputLayer(c, p => Boolean(this.miniCam?.visible && p.x >= this.miniCam.x && p.y <= this.miniCam.y + this.miniCam.height));
-    this.enemyLayer = new EnemyLayer(c);
-    this.effects = new EffectLayer(c);
-    this.towerLayer = new TowerLayer(c);
-    this.ambient = new AmbientLayer(c);
+    this.enemyLayer = new EnemyLayer(c, this.r6Assets);
+    this.effects = new EffectLayer(c, Boolean(this.r6Assets));
+    this.towerLayer = new TowerLayer(c, this.r6Assets);
+    if (!this.r6Assets) this.ambient = new AmbientLayer(c);
+    this.r6Assets?.prepareWave(this.bridge.controller.ctx, this.bridge.controller.state);
     this.miniFrame = this.add.graphics().setDepth(DEPTH.ui + 1);
     this.cameras.main.setBounds(0, 0, WORLD_W, WORLD_H).setRoundPixels(false);
     this.cameras.main.ignore(this.miniFrame);
@@ -129,6 +140,7 @@ export class BattleScene extends Phaser.Scene {
         this.enemyLayer.onHit(e.enemyId);
         this.effects.onHit(e, enemyLift(e.enemyId));
       } else if (e.type === 'kill') {
+        this.enemyLayer.onKill(e.enemyId);
         const splits = Boolean(balance.enemies[e.kind].split);
         this.effects.onKill(e, splits ? CELL_PX * SPLIT_LABEL_RAISE_CELLS : 0);
         if (splits) this.effects.onSplit(e.x, e.y);
@@ -158,7 +170,10 @@ export class BattleScene extends Phaser.Scene {
         if (at) this.effects.onBurn(at);
       } else if (e.type === 'leak') {
         this.effects.onLeak();
-      } else if (e.type === 'phase' && e.phase === 'PREP_QUIZ') this.ground.applyMood(false);
+      } else if (e.type === 'phase') {
+        if (e.phase === 'PREP_QUIZ') this.ground.applyMood(false);
+        if (e.phase === 'PREP_QUIZ' || e.phase === 'BATTLE') this.r6Assets?.prepareWave(this.bridge.controller.ctx, state);
+      }
     }
   };
 
@@ -168,7 +183,7 @@ export class BattleScene extends Phaser.Scene {
     this.enemyLayer.advance(s);
     this.towerLayer.sync(s, time);
     this.ground.syncPads(s, delta);
-    this.ambient.update(delta);
+    this.ambient?.update(delta);
     this.enemyLayer.sync(s, time, alpha);
     this.effects.syncHazards(s, alpha);
     this.effects.syncShots(s, alpha, (id, a) => this.enemyLayer.progressOf(id, a), id => this.towerLayer.weaponLift(id), id => this.enemyLayer.liftOf(id));

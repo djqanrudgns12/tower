@@ -42,3 +42,16 @@
 python -B tools/r6/map/bake.py
 python -B -m unittest discover -s tools/r6/map
 ```
+
+## 전장 에셋 연결
+
+Phaser는 밸런스 `2.0.0`에서 `public/assets/r6/manifest-v2.json`을 읽고 맵 ID에 맞춰 배경을 고른다. R6의 종족별 아틀라스는 첫 웨이브 준비 때부터 현재 편성에 들어간 종족만 요청한다. 이미 받은 에셋은 판이 끝나면 Phaser와 함께 정리한다.
+
+- `sheets`는 WebP 셀의 너비·높이·수·피벗을 기록한다. `towers`에 타워별 11형태의 몸체 프레임, 포두 시트, 몸체 위 장착점, 배율, 공격 시퀀스를 같은 단계 순서로 적는다. 포두는 16프레임이다. `projection`은 방향 0의 화면 기준각과 카메라의 세로 단축률을 정한다.
+- 공격 시트는 각도·몸체 단계가 일치할 때 바로 재생한다. 그 외에는 방향별 포두 정지 프레임에 같은 박자의 반동 좌표를 적용한다. G2 레일 포탑에는 Lv20 방향 0의 8프레임 시트가 들어 있다.
+- `species`는 종족별 `atlases` 키와 리그·스킨을 연결한다. 개체별 리그·스킨은 `entities`에서 지정하며 분열·호위 개체도 같은 종족 아틀라스를 쓴다. `rigs`는 Spine JSON과 걷기·피격·쓰러짐 동작을 지정한다. 현재 다섯 종족에 G2 보행체 리그 한 벌을 공유하며 T1~T4 스킨으로 단계를 표시한다.
+- `@esotericsoftware/spine-phaser-v4@4.3.13`은 R6 전장에서 불러온다. Phaser 4.2.1 WebGL에서 기본 Mesh2D 백엔드로 재생한다. [Spine Phaser 런타임 문서](https://esotericsoftware.com/spine-phaser)
+
+## 프로토타입 측정
+
+배경은 **19,394B**다. Chromium 156.0.8078.4, ANGLE SwiftShader, 960 × 576 전장에서 CPU 4배 감속으로 레일 포탑 한 기와 첫 웨이브를 5초간 그렸다. Phaser 렌더 완료 간격 301개에서 **평균 60.00 FPS**, **p95 간격 16.7ms**가 나왔다. [전장 시험](../../../tests/e2e/r6-battlefield.spec.ts)은 설치·Lv2 몸체 전환·포두 방향 변경·Spine 이동·비등장 종족 요청 여부와 이전 전장을 확인한다. 실기기 크롬북과 양산 에셋을 사용하는 전장은 미측정이다.
