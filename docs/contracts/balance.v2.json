@@ -1,0 +1,422 @@
+{
+  "schemaVersion": "2.0",
+  "balanceVersion": "2.0.0",
+  "prototypeMap": "garden_u",
+  "units": {"tickHz": 30, "bpPerUnit": 10000, "milliPerHp": 1000, "milliPerCell": 1000},
+  "run": {
+    "startGold": 120,
+    "prepAttempts": {"firstWave": 5, "laterWaves": 2},
+    "correctFeedbackMs": 1000,
+    "wrongFeedbackMinMs": 4000,
+    "sellRatioBP": 6000,
+    "undoBuildMs": 3000,
+    "answerStreakBonus": {"goldPerStreak": 3, "maxGold": 24}
+  },
+  "burning": {
+    "streak": 3,
+    "durationMs": 12000,
+    "attackSpeedBP": 2500,
+    "tier2": {"streak": 6, "attackSpeedBP": 4000},
+    "streakAcrossWaves": true,
+    "killGoldBP": 20000
+  },
+  "statusCaps": {
+    "regularSlowMaxBP": 6000,
+    "bossSlowMaxBP": 3000,
+    "stunLifetimeMaxMs": 3000,
+    "vulnMaxBP": 3500,
+    "shredMaxBP": 3500,
+    "knockbackLifetimeMaxMilli": 3000,
+    "bossResistMaxBP": 6500,
+    "rallySpeedMaxBP": 15000
+  },
+  "externalCaps": {"damageBP": 4000, "attackSpeedBP": 5000, "minAttackIntervalMs": 150},
+  "leakDamage": {"regular": 1, "elite": 2, "boss": 3},
+  "difficulties": {
+    "Easy": {
+      "gateHp": 20,
+      "enemyHpBP": 6000,
+      "correctPt": 10,
+      "wrongPt": -5,
+      "skipPt": 0,
+      "correctGold": 17,
+      "correctGoldPerWaveBP": 7500,
+      "killGold": {"regular": 1, "elite": 3, "boss": 60},
+      "killPt": {"regular": 1, "elite": 3, "boss": 10},
+      "waveKillPtCap": 20,
+      "milestoneSurvivalGold": 30
+    },
+    "Normal": {
+      "gateHp": 15,
+      "enemyHpBP": 10000,
+      "correctPt": 15,
+      "wrongPt": -8,
+      "skipPt": 0,
+      "correctGold": 19,
+      "correctGoldPerWaveBP": 7500,
+      "killGold": {"regular": 1, "elite": 4, "boss": 75},
+      "killPt": {"regular": 2, "elite": 6, "boss": 20},
+      "waveKillPtCap": 30,
+      "milestoneSurvivalGold": 40
+    },
+    "Hard": {
+      "gateHp": 10,
+      "enemyHpBP": 19000,
+      "enemyHpRamp": {"fromBP": 10000, "waves": 5},
+      "correctPt": 20,
+      "wrongPt": -10,
+      "skipPt": 0,
+      "correctGold": 22,
+      "correctGoldPerWaveBP": 7500,
+      "killGold": {"regular": 2, "elite": 6, "boss": 90},
+      "killPt": {"regular": 3, "elite": 9, "boss": 30},
+      "waveKillPtCap": 40,
+      "milestoneSurvivalGold": 50
+    },
+    "Crazy": {
+      "gateHp": 7,
+      "enemyHpBP": 36000,
+      "enemyHpRamp": {"fromBP": 10000, "waves": 5},
+      "correctPt": 30,
+      "wrongPt": -15,
+      "skipPt": 0,
+      "correctGold": 25,
+      "correctGoldPerWaveBP": 7500,
+      "killGold": {"regular": 3, "elite": 8, "boss": 105},
+      "killPt": {"regular": 4, "elite": 12, "boss": 40},
+      "waveKillPtCap": 60,
+      "milestoneSurvivalGold": 60
+    }
+  },
+  "waves": {
+    "baseHpMilli": 44000,
+    "hpGrowthPercent": 115,
+    "count": {"base": 24, "step": 1, "stepEveryWaves": 3, "max": 64, "hpReference": {"step": 2, "stepEveryWaves": 3}},
+    "earlyHpBP": [4364, 4582, 4800, 5018, 5236, 5455, 5650, 5900, 6250, 6700, 7300, 8150, 9269],
+    "spawnIntervalMs": {"overrides": {"1": 1450, "2": 1300, "3": 1150}, "base": 950, "perWave": -15, "min": 650},
+    "baseTravelTicks": 720,
+    "bossEveryWaves": 5,
+    "bossIndexPercent": 70,
+    "eliteRate": {"fromWave": 6, "baseBP": 500, "perWaveBP": 175, "maxBP": 2500},
+    "endlessEliteRate": {"fromWave": 21, "baseBP": 2600, "perWaveBP": 100, "maxBP": 4000}
+  },
+  "elites": {
+    "armored": {"hpBP": 20000, "speedBP": 10000, "addPhysicalResistBP": 2000},
+    "swift": {"hpBP": 20000, "speedBP": 12000, "addPhysicalResistBP": 0},
+    "physicalResistCapBP": 5000
+  },
+  "levels": {
+    "max": 20,
+    "formAt": [1, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20],
+    "weaponAt": [1, 6, 12, 18],
+    "damageMultiplierBP": [
+      10000,
+      13200,
+      16400,
+      20200,
+      23800,
+      26000,
+      28600,
+      31200,
+      34000,
+      37000,
+      40200,
+      43000,
+      46200,
+      49600,
+      53300,
+      57200,
+      61400,
+      65000,
+      69600,
+      74500
+    ],
+    "upgradeCostOfBaseBP": [
+      4000,
+      5500,
+      7500,
+      9000,
+      11000,
+      11500,
+      13000,
+      14500,
+      16000,
+      18000,
+      20000,
+      22000,
+      24000,
+      26500,
+      29000,
+      32000,
+      35000,
+      38500,
+      42000
+    ]
+  },
+  "towers": {
+    "rail": {
+      "cost": 60,
+      "damage": 8,
+      "intervalMs": 1000,
+      "rangeMilli": 2500,
+      "damageType": "physical",
+      "canHitFlyer": true,
+      "weapons": [
+        {"shots": 1, "gapTicks": 0, "followDamageBP": 0, "lineTargets": 1, "lineWidthMilli": 0, "lineFalloffBP": 10000},
+        {
+          "shots": 2,
+          "gapTicks": 4,
+          "followDamageBP": 4500,
+          "lineTargets": 1,
+          "lineWidthMilli": 0,
+          "lineFalloffBP": 10000
+        },
+        {
+          "shots": 3,
+          "gapTicks": 4,
+          "followDamageBP": 4500,
+          "lineTargets": 1,
+          "lineWidthMilli": 0,
+          "lineFalloffBP": 10000
+        },
+        {
+          "shots": 1,
+          "gapTicks": 0,
+          "followDamageBP": 0,
+          "shotDamageBP": 20000,
+          "lineTargets": 2,
+          "lineWidthMilli": 220,
+          "lineFalloffBP": 6500
+        }
+      ]
+    },
+    "mortar": {
+      "projectileSpeedMilliPerSec": 8000,
+      "cost": 100,
+      "damage": 18,
+      "intervalMs": 2000,
+      "rangeMilli": 2400,
+      "damageType": "physical",
+      "canHitFlyer": false,
+      "weapons": [
+        {
+          "maxTargets": 4,
+          "radiusMilli": 750,
+          "aftershockDelayMs": 0,
+          "aftershockBP": 0,
+          "zonePeriodMs": 0,
+          "zonePulses": 0,
+          "zoneDamageBP": 0
+        },
+        {
+          "maxTargets": 5,
+          "radiusMilli": 850,
+          "aftershockDelayMs": 0,
+          "aftershockBP": 0,
+          "zonePeriodMs": 0,
+          "zonePulses": 0,
+          "zoneDamageBP": 0
+        },
+        {
+          "maxTargets": 5,
+          "radiusMilli": 850,
+          "aftershockDelayMs": 400,
+          "aftershockBP": 3500,
+          "zonePeriodMs": 0,
+          "zonePulses": 0,
+          "zoneDamageBP": 0
+        },
+        {
+          "maxTargets": 6,
+          "radiusMilli": 950,
+          "aftershockDelayMs": 400,
+          "aftershockBP": 3500,
+          "zonePeriodMs": 600,
+          "zonePulses": 2,
+          "zoneDamageBP": 2000
+        }
+      ]
+    },
+    "cryo": {
+      "cost": 60,
+      "damage": 5,
+      "intervalMs": 900,
+      "rangeMilli": 2000,
+      "damageType": "magic",
+      "canHitFlyer": true,
+      "weapons": [
+        {"pulseTargets": 1, "slowBP": 3000, "slowMs": 1800, "echoDelayMs": 0, "echoDamageBP": 0},
+        {"pulseTargets": 2, "slowBP": 3200, "slowMs": 1800, "echoDelayMs": 0, "echoDamageBP": 0},
+        {"pulseTargets": 3, "slowBP": 3500, "slowMs": 2000, "echoDelayMs": 0, "echoDamageBP": 0},
+        {"pulseTargets": 4, "slowBP": 3800, "slowMs": 2000, "echoDelayMs": 300, "echoDamageBP": 3000}
+      ]
+    },
+    "prism": {
+      "cost": 95,
+      "damage": 13,
+      "intervalMs": 1400,
+      "rangeMilli": 2400,
+      "damageType": "magic",
+      "canHitFlyer": true,
+      "weapons": [
+        {"chainTargets": 2, "chainRadiusMilli": 850, "chainFalloffBP": 6500, "magicResistIgnoreBP": 0},
+        {"chainTargets": 3, "chainRadiusMilli": 950, "chainFalloffBP": 6700, "magicResistIgnoreBP": 0},
+        {"chainTargets": 4, "chainRadiusMilli": 1050, "chainFalloffBP": 6900, "magicResistIgnoreBP": 0},
+        {"chainTargets": 5, "chainRadiusMilli": 1150, "chainFalloffBP": 7000, "magicResistIgnoreBP": 1500}
+      ]
+    },
+    "hangar": {
+      "cost": 100,
+      "damage": 14,
+      "intervalMs": 1400,
+      "rangeMilli": 3300,
+      "damageType": "physical",
+      "canHitFlyer": true,
+      "weapons": [
+        {"drones": 1, "launchGapTicks": 0, "followDamageBP": 0, "flyerDamageBP": 12000},
+        {"drones": 2, "launchGapTicks": 3, "followDamageBP": 5000, "flyerDamageBP": 12500},
+        {"drones": 3, "launchGapTicks": 3, "followDamageBP": 5000, "flyerDamageBP": 13000},
+        {"drones": 4, "launchGapTicks": 3, "followDamageBP": 5500, "flyerDamageBP": 14000}
+      ]
+    },
+    "bastion": {
+      "cost": 85,
+      "damage": 4,
+      "intervalMs": 1700,
+      "rangeMilli": 1600,
+      "damageType": "physical",
+      "canHitFlyer": false,
+      "weapons": [
+        {"pushTargets": 1, "pushMilli": 160, "auraRadiusMilli": 2200, "auraDamageAddBP": 1000, "auraSpeedAddBP": 0},
+        {"pushTargets": 2, "pushMilli": 230, "auraRadiusMilli": 2350, "auraDamageAddBP": 1400, "auraSpeedAddBP": 0},
+        {"pushTargets": 3, "pushMilli": 300, "auraRadiusMilli": 2500, "auraDamageAddBP": 1700, "auraSpeedAddBP": 500},
+        {"pushTargets": 4, "pushMilli": 380, "auraRadiusMilli": 2700, "auraDamageAddBP": 2000, "auraSpeedAddBP": 900}
+      ]
+    }
+  },
+  "unlocks": {"initial": ["rail", "mortar", "cryo"], "afterCompletedWave": {"3": "prism", "6": "hangar", "9": "bastion"}},
+  "enemies": {
+    "idPattern": "{species}-{lineage}-t{tier}",
+    "familyOrder": ["infantry", "runner", "armored", "special"],
+    "families": {
+      "infantry": {"hpBP": 10000, "speedBP": 10000, "physicalResistBP": 0, "magicResistBP": 0},
+      "runner": {"hpBP": 7000, "speedBP": 13500, "physicalResistBP": 0, "magicResistBP": 0},
+      "armored": {"hpBP": 12200, "speedBP": 8200, "physicalResistBP": 2300, "magicResistBP": 0},
+      "special": {"hpBP": 9800, "speedBP": 10000, "physicalResistBP": 0, "magicResistBP": 0},
+      "boss": {"hpBP": 21000, "speedBP": 6500, "physicalResistBP": 0, "magicResistBP": 0}
+    },
+    "tier": [
+      {"hpBP": 9500, "speedBP": 9800, "resistAddBP": 0},
+      {"hpBP": 10000, "speedBP": 10000, "resistAddBP": 200},
+      {"hpBP": 10500, "speedBP": 10200, "resistAddBP": 400},
+      {"hpBP": 11000, "speedBP": 10400, "resistAddBP": 600}
+    ],
+    "bossTierHpBP": [10000, 10500, 11000, 11500],
+    "resistCapBP": 5000,
+    "factionOrder": ["elf", "human", "machine", "insect", "stone"],
+    "factions": {
+      "elf": {"hpBP": 9300, "speedBP": 10800, "physicalResistBP": 0, "magicResistBP": 1500},
+      "human": {"hpBP": 10300, "speedBP": 9800, "physicalResistBP": 1400, "magicResistBP": 0},
+      "machine": {"hpBP": 10000, "speedBP": 10000, "physicalResistBP": 1000, "magicResistBP": 500},
+      "insect": {"hpBP": 8800, "speedBP": 11000, "physicalResistBP": 300, "magicResistBP": 0},
+      "stone": {"hpBP": 11800, "speedBP": 8400, "physicalResistBP": 1200, "magicResistBP": 800}
+    },
+    "specialByFaction": {
+      "elf": {"flying": true, "leakDamage": 2},
+      "human": {"hpBP": 12500, "speedBP": 8500, "leakDamage": 2},
+      "machine": {"splitCount": 1, "childHpBP": 2500, "spreadMilli": 120},
+      "insect": {"splitCount": 2, "childHpBP": 1800, "spreadMilli": 120},
+      "stone": {"regenPeriodMs": 3000, "regenMaxHpBP": 300, "regenMaxTimes": 3}
+    },
+    "bossSkills": {
+      "iron_stance": {"triggerBP": 5000, "durationMs": 3000, "physicalBP": 3500, "hpScaleBP": 10000},
+      "burst_march": {"periodMs": 4000, "durationMs": 1200, "speedBP": 11500, "hpScaleBP": 10000},
+      "call_escort": {
+        "thresholdsBP": [5000],
+        "escortFamily": "infantry",
+        "escortTier": 1,
+        "escortCount": 2,
+        "spreadMilli": 250,
+        "hpScaleBP": 10000
+      },
+      "rally_haste": {"radiusMilli": 1800, "speedAddBP": 1800, "hpScaleBP": 10000},
+      "ward_layers": {"layers": 4, "capBP": 1200, "hpScaleBP": 8500},
+      "snack_mend": {"periodMs": 3000, "healBP": 600, "maxTimes": 4, "hpScaleBP": 8500}
+    },
+    "bossSkillOverrides": {"stone-boss-t3": {"layers": 5}},
+    "bossByFaction": {
+      "elf": ["rally_haste", "iron_stance", "ward_layers", "call_escort"],
+      "human": ["iron_stance", "burst_march", "call_escort", "rally_haste"],
+      "machine": ["ward_layers", "burst_march", "call_escort", "iron_stance"],
+      "insect": ["burst_march", "iron_stance", "call_escort", "rally_haste"],
+      "stone": ["iron_stance", "snack_mend", "ward_layers", "snack_mend"]
+    }
+  },
+  "mixer": {
+    "algorithm": "r6-mix-1",
+    "bands": [
+      {
+        "fromWave": 1,
+        "factions": 2,
+        "primaryWeight": 1,
+        "tierWeights": [100, 0, 0, 0],
+        "familyWeights": [55, 30, 15, 0]
+      },
+      {
+        "fromWave": 4,
+        "factions": 3,
+        "primaryWeight": 2,
+        "tierWeights": [55, 45, 0, 0],
+        "familyWeights": [42, 25, 20, 13]
+      },
+      {
+        "fromWave": 7,
+        "factions": 4,
+        "primaryWeight": 2,
+        "tierWeights": [0, 85, 15, 0],
+        "familyWeights": [37, 25, 23, 15]
+      },
+      {
+        "fromWave": 11,
+        "factions": 5,
+        "primaryWeight": 3,
+        "tierWeights": [0, 55, 45, 0],
+        "familyWeights": [34, 24, 24, 18]
+      },
+      {
+        "fromWave": 16,
+        "factions": 5,
+        "primaryWeight": 2,
+        "tierWeights": [0, 0, 60, 40],
+        "familyWeights": [30, 24, 24, 22]
+      },
+      {
+        "fromWave": 21,
+        "factions": 5,
+        "primaryWeight": 2,
+        "tierWeights": [0, 0, 0, 100],
+        "familyWeights": [28, 24, 24, 24]
+      }
+    ],
+    "firstSeenEvery": 3,
+    "bossTierCycle": [1, 2, 3, 4]
+  },
+  "relics": {
+    "fromWave": 10,
+    "offerCount": 3,
+    "effects": {
+      "arrow_range": {"towers": ["rail", "hangar"], "rangeBP": 11500},
+      "sky_net": {"flyerDamageBP": 12500},
+      "big_blast": {"towers": ["mortar", "prism"], "damageBP": 11500},
+      "frost_bead": {"slowMsBP": 14000},
+      "hero_blade": {"eliteBossDamageBP": 12000},
+      "ember_charm": {"burningAddMs": 3000},
+      "wise_book": {"correctGoldAdd": 3},
+      "lucky_pouch": {"killGoldAdd": 1},
+      "trade_seal": {"sellRatioBP": 8000, "goldNow": 100},
+      "evolve_stone": {"evolveCostBP": 8000},
+      "quick_spring": {"towers": ["cryo", "hangar"], "intervalBP": 7500},
+      "tall_pole": {"towers": ["bastion"], "auraRangeAddMilli": 1000}
+    }
+  }
+}

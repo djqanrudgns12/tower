@@ -1,0 +1,571 @@
+{
+  "locale": "ko",
+  "themeId": "r6.ko",
+  "towers": {
+    "rail": {
+      "name": "레일 포탑"
+    },
+    "mortar": {
+      "name": "곡사 포대"
+    },
+    "cryo": {
+      "name": "냉각 중계탑"
+    },
+    "prism": {
+      "name": "프리즘 탑"
+    },
+    "hangar": {
+      "name": "드론 격납고"
+    },
+    "bastion": {
+      "name": "방벽 기지"
+    }
+  },
+  "weapons": {
+    "rail": {
+      "I": {
+        "name": "단포신",
+        "summaryTemplate": "{shots}발을 쏴요"
+      },
+      "II": {
+        "name": "쌍포신",
+        "summaryTemplate": "{shots}발을 쏴요"
+      },
+      "III": {
+        "name": "삼연장",
+        "summaryTemplate": "{shots}발을 쏴요"
+      },
+      "IV": {
+        "name": "가속 고리 4열 레일",
+        "summaryTemplate": "{shots}발을 쏴요"
+      }
+    },
+    "mortar": {
+      "I": {
+        "name": "단일 단포",
+        "summaryTemplate": "최대 {maxTargets}기를 범위 공격해요"
+      },
+      "II": {
+        "name": "중장갑 포상",
+        "summaryTemplate": "최대 {maxTargets}기를 범위 공격해요"
+      },
+      "III": {
+        "name": "복열 쌍포",
+        "summaryTemplate": "최대 {maxTargets}기를 범위 공격해요"
+      },
+      "IV": {
+        "name": "다연장 포열",
+        "summaryTemplate": "최대 {maxTargets}기를 범위 공격해요"
+      }
+    },
+    "cryo": {
+      "I": {
+        "name": "3중 링",
+        "summaryTemplate": "최대 {pulseTargets}기를 느리게 해요"
+      },
+      "II": {
+        "name": "4중 확장 링",
+        "summaryTemplate": "최대 {pulseTargets}기를 느리게 해요"
+      },
+      "III": {
+        "name": "다중 핀 공명탑",
+        "summaryTemplate": "최대 {pulseTargets}기를 느리게 해요"
+      },
+      "IV": {
+        "name": "5단 분사 고리",
+        "summaryTemplate": "최대 {pulseTargets}기를 느리게 해요"
+      }
+    },
+    "prism": {
+      "I": {
+        "name": "삼각 1수정",
+        "summaryTemplate": "최대 {chainTargets}기를 이어서 공격해요"
+      },
+      "II": {
+        "name": "역삼각 보조",
+        "summaryTemplate": "최대 {chainTargets}기를 이어서 공격해요"
+      },
+      "III": {
+        "name": "3갈래 프레임",
+        "summaryTemplate": "최대 {chainTargets}기를 이어서 공격해요"
+      },
+      "IV": {
+        "name": "부유 대수정+방사선",
+        "summaryTemplate": "최대 {chainTargets}기를 이어서 공격해요"
+      }
+    },
+    "hangar": {
+      "I": {
+        "name": "1드론 이착륙대",
+        "summaryTemplate": "드론 {drones}기가 사격해요"
+      },
+      "II": {
+        "name": "쌍갑판 2드론",
+        "summaryTemplate": "드론 {drones}기가 사격해요"
+      },
+      "III": {
+        "name": "격납고+3드론",
+        "summaryTemplate": "드론 {drones}기가 사격해요"
+      },
+      "IV": {
+        "name": "사령 안테나+4편대",
+        "summaryTemplate": "드론 {drones}기가 사격해요"
+      }
+    },
+    "bastion": {
+      "I": {
+        "name": "단판 방벽",
+        "summaryTemplate": "최대 {pushTargets}기를 밀어내요"
+      },
+      "II": {
+        "name": "2단 방벽+중계기",
+        "summaryTemplate": "최대 {pushTargets}기를 밀어내요"
+      },
+      "III": {
+        "name": "호형 요새벽+접시",
+        "summaryTemplate": "최대 {pushTargets}기를 밀어내요"
+      },
+      "IV": {
+        "name": "전방위 방벽+대형 접시",
+        "summaryTemplate": "최대 {pushTargets}기를 밀어내요"
+      }
+    }
+  },
+  "species": {
+    "elf": {
+      "name": "숲 엘프"
+    },
+    "human": {
+      "name": "철갑 인간"
+    },
+    "machine": {
+      "name": "기계 군단"
+    },
+    "insect": {
+      "name": "군체 벌레"
+    },
+    "stone": {
+      "name": "바위 거인"
+    }
+  },
+  "lineages": {
+    "infantry": {
+      "name": "보병"
+    },
+    "runner": {
+      "name": "질주"
+    },
+    "armored": {
+      "name": "중장갑"
+    },
+    "special": {
+      "name": "특수"
+    },
+    "boss": {
+      "name": "보스"
+    }
+  },
+  "entities": {
+    "elf-infantry-t1": {
+      "name": "덩굴 정찰병"
+    },
+    "elf-infantry-t2": {
+      "name": "잎날 검병"
+    },
+    "elf-infantry-t3": {
+      "name": "참나무 창병"
+    },
+    "elf-infantry-t4": {
+      "name": "고목 근위병"
+    },
+    "elf-runner-t1": {
+      "name": "숲여우 추적자"
+    },
+    "elf-runner-t2": {
+      "name": "가시 살쾡이"
+    },
+    "elf-runner-t3": {
+      "name": "뿔사슴 질주수"
+    },
+    "elf-runner-t4": {
+      "name": "바람표범 맹수"
+    },
+    "elf-armored-t1": {
+      "name": "나무껍질 방패병"
+    },
+    "elf-armored-t2": {
+      "name": "옹이 장갑병"
+    },
+    "elf-armored-t3": {
+      "name": "뿌리 중장병"
+    },
+    "elf-armored-t4": {
+      "name": "천년목 중갑사"
+    },
+    "elf-special-t1": {
+      "name": "솔방울 비행정령"
+    },
+    "elf-special-t2": {
+      "name": "이슬 날개정령"
+    },
+    "elf-special-t3": {
+      "name": "고리 바람정령"
+    },
+    "elf-special-t4": {
+      "name": "숲핵 대정령"
+    },
+    "elf-boss-t1": {
+      "name": "뿔투구 지휘관"
+    },
+    "elf-boss-t2": {
+      "name": "거목 뿌리거인"
+    },
+    "elf-boss-t3": {
+      "name": "바람날개 대정령"
+    },
+    "elf-boss-t4": {
+      "name": "고대숲 대군주"
+    },
+    "human-infantry-t1": {
+      "name": "철모 경보병"
+    },
+    "human-infantry-t2": {
+      "name": "창병대원"
+    },
+    "human-infantry-t3": {
+      "name": "미늘창 장교"
+    },
+    "human-infantry-t4": {
+      "name": "왕실 근위기사"
+    },
+    "human-runner-t1": {
+      "name": "전령 기마척후"
+    },
+    "human-runner-t2": {
+      "name": "사슬 갑옷 기수"
+    },
+    "human-runner-t3": {
+      "name": "창기병 돌격수"
+    },
+    "human-runner-t4": {
+      "name": "중기병 돌격대장"
+    },
+    "human-armored-t1": {
+      "name": "원형 방패병"
+    },
+    "human-armored-t2": {
+      "name": "장방패 중보병"
+    },
+    "human-armored-t3": {
+      "name": "강철 성벽병"
+    },
+    "human-armored-t4": {
+      "name": "철갑 중전차병"
+    },
+    "human-special-t1": {
+      "name": "2륜 공성 손수레"
+    },
+    "human-special-t2": {
+      "name": "방패 공성 수레"
+    },
+    "human-special-t3": {
+      "name": "쇠뇌 공성 포차"
+    },
+    "human-special-t4": {
+      "name": "철갑 공성 전차"
+    },
+    "human-boss-t1": {
+      "name": "강철 대장군"
+    },
+    "human-boss-t2": {
+      "name": "철갑 전차 대장"
+    },
+    "human-boss-t3": {
+      "name": "공성 탑거인차"
+    },
+    "human-boss-t4": {
+      "name": "왕국 총사령관"
+    },
+    "machine-infantry-t1": {
+      "name": "이족 정찰 보행기"
+    },
+    "machine-infantry-t2": {
+      "name": "경장갑 전투 보행기"
+    },
+    "machine-infantry-t3": {
+      "name": "복열 센서 보행기"
+    },
+    "machine-infantry-t4": {
+      "name": "중무장 지휘 보행기"
+    },
+    "machine-runner-t1": {
+      "name": "4족 정찰 드론"
+    },
+    "machine-runner-t2": {
+      "name": "예각 스텔스 추적기"
+    },
+    "machine-runner-t3": {
+      "name": "고속 블레이드 하운드"
+    },
+    "machine-runner-t4": {
+      "name": "중무장 인터셉터"
+    },
+    "machine-armored-t1": {
+      "name": "방패 4족 기계체"
+    },
+    "machine-armored-t2": {
+      "name": "장갑 갑충 드론"
+    },
+    "machine-armored-t3": {
+      "name": "중장갑 벙커 보행기"
+    },
+    "machine-armored-t4": {
+      "name": "공성 실드 워커"
+    },
+    "machine-special-t1": {
+      "name": "소형 프로펠러 캐리어"
+    },
+    "machine-special-t2": {
+      "name": "쌍열 드론 수송기"
+    },
+    "machine-special-t3": {
+      "name": "4로터 드론 모함"
+    },
+    "machine-special-t4": {
+      "name": "대형 분열 공중모함"
+    },
+    "machine-boss-t1": {
+      "name": "3족 결정 포행기"
+    },
+    "machine-boss-t2": {
+      "name": "고속 스텔스 파괴자"
+    },
+    "machine-boss-t3": {
+      "name": "항공 드론 기함"
+    },
+    "machine-boss-t4": {
+      "name": "다족 공성 거대기체"
+    },
+    "insect-infantry-t1": {
+      "name": "일개미 보행충"
+    },
+    "insect-infantry-t2": {
+      "name": "병정 낫벌레"
+    },
+    "insect-infantry-t3": {
+      "name": "창뿔 갑충병"
+    },
+    "insect-infantry-t4": {
+      "name": "쌍집게 군단충"
+    },
+    "insect-runner-t1": {
+      "name": "날개 사마귀충"
+    },
+    "insect-runner-t2": {
+      "name": "매미 질주충"
+    },
+    "insect-runner-t3": {
+      "name": "말벌 추적자"
+    },
+    "insect-runner-t4": {
+      "name": "잠자리 강습충"
+    },
+    "insect-armored-t1": {
+      "name": "둥근 갑충"
+    },
+    "insect-armored-t2": {
+      "name": "가시 딱정벌레"
+    },
+    "insect-armored-t3": {
+      "name": "쇠뿔 장수풍뎅이"
+    },
+    "insect-armored-t4": {
+      "name": "성벽 코뿔소갑충"
+    },
+    "insect-special-t1": {
+      "name": "마디 유충"
+    },
+    "insect-special-t2": {
+      "name": "쌍둥이 유충무리"
+    },
+    "insect-special-t3": {
+      "name": "포자 주머니충"
+    },
+    "insect-special-t4": {
+      "name": "군체 고치 모충"
+    },
+    "insect-boss-t1": {
+      "name": "질주 여왕말벌"
+    },
+    "insect-boss-t2": {
+      "name": "거대 장수대왕"
+    },
+    "insect-boss-t3": {
+      "name": "군체 부화 모체"
+    },
+    "insect-boss-t4": {
+      "name": "군단 거대 지네왕"
+    },
+    "stone-infantry-t1": {
+      "name": "자갈 보행골렘"
+    },
+    "stone-infantry-t2": {
+      "name": "현무암 파수골렘"
+    },
+    "stone-infantry-t3": {
+      "name": "철광석 전사골렘"
+    },
+    "stone-infantry-t4": {
+      "name": "용암핵 거신병"
+    },
+    "stone-runner-t1": {
+      "name": "구르는 돌덩이"
+    },
+    "stone-runner-t2": {
+      "name": "쐐기 바위사냥개"
+    },
+    "stone-runner-t3": {
+      "name": "쇄석 돌진수"
+    },
+    "stone-runner-t4": {
+      "name": "유성 파쇄거수"
+    },
+    "stone-armored-t1": {
+      "name": "판석 방패골렘"
+    },
+    "stone-armored-t2": {
+      "name": "기둥 성벽골렘"
+    },
+    "stone-armored-t3": {
+      "name": "암반 요새골렘"
+    },
+    "stone-armored-t4": {
+      "name": "고대 석조거신"
+    },
+    "stone-special-t1": {
+      "name": "수정 조각정령"
+    },
+    "stone-special-t2": {
+      "name": "공명 수정부유체"
+    },
+    "stone-special-t3": {
+      "name": "맥동 재생핵"
+    },
+    "stone-special-t4": {
+      "name": "대지 재생수정탑"
+    },
+    "stone-boss-t1": {
+      "name": "쇄석 철퇴거인"
+    },
+    "stone-boss-t2": {
+      "name": "수정 갑옷정령왕"
+    },
+    "stone-boss-t3": {
+      "name": "용암 균열거인"
+    },
+    "stone-boss-t4": {
+      "name": "산맥 대거신"
+    }
+  },
+  "bossSkills": {
+    "iron_stance": {
+      "name": "방어 태세"
+    },
+    "burst_march": {
+      "name": "돌진"
+    },
+    "call_escort": {
+      "name": "호위 호출"
+    },
+    "rally_haste": {
+      "name": "무리 가속"
+    },
+    "ward_layers": {
+      "name": "겹방패"
+    },
+    "snack_mend": {
+      "name": "회복"
+    }
+  },
+  "elites": {
+    "armored": {
+      "name": "장갑"
+    },
+    "swift": {
+      "name": "신속"
+    }
+  },
+  "maps": {
+    "garden_u": {
+      "name": "초원 고원"
+    }
+  },
+  "difficulties": {
+    "Easy": {
+      "name": "쉬움",
+      "hint": "적의 체력이 낮아요"
+    },
+    "Normal": {
+      "name": "보통",
+      "hint": "기본 난이도예요"
+    },
+    "Hard": {
+      "name": "어려움",
+      "hint": "튼튼한 적이 나와요"
+    },
+    "Crazy": {
+      "name": "아주 어려움",
+      "hint": "성문 체력이 낮고 적이 강해요"
+    }
+  },
+  "relics": {
+    "arrow_range": {
+      "name": "독수리 깃털",
+      "summaryTemplate": "레일 포탑과 드론 격납고의 사거리가 늘어요"
+    },
+    "sky_net": {
+      "name": "하늘 그물",
+      "summaryTemplate": "비행 적에게 주는 피해가 늘어요"
+    },
+    "big_blast": {
+      "name": "천둥 화약",
+      "summaryTemplate": "곡사 포대와 프리즘 탑의 피해가 늘어요"
+    },
+    "frost_bead": {
+      "name": "서리 구슬",
+      "summaryTemplate": "감속이 오래가요"
+    },
+    "hero_blade": {
+      "name": "용사의 칼",
+      "summaryTemplate": "정예와 보스에게 주는 피해가 늘어요"
+    },
+    "ember_charm": {
+      "name": "불씨 부적",
+      "summaryTemplate": "연속 정답 효과가 오래가요"
+    },
+    "wise_book": {
+      "name": "지혜의 책",
+      "summaryTemplate": "정답 골드가 늘어요"
+    },
+    "lucky_pouch": {
+      "name": "행운 주머니",
+      "summaryTemplate": "적 처치 골드가 늘어요"
+    },
+    "trade_seal": {
+      "name": "상인 도장",
+      "summaryTemplate": "골드를 받고 판매 환급률이 올라요"
+    },
+    "evolve_stone": {
+      "name": "진화의 돌",
+      "summaryTemplate": "무기 단계가 오르는 강화가 저렴해져요"
+    },
+    "quick_spring": {
+      "name": "태엽 용수철",
+      "summaryTemplate": "냉각 중계탑과 드론 격납고가 더 자주 공격해요"
+    },
+    "tall_pole": {
+      "name": "큰 깃대",
+      "summaryTemplate": "방벽 기지의 지원 범위가 넓어져요"
+    }
+  }
+}

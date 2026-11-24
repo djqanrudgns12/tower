@@ -544,3 +544,7 @@ export type RelicEffect = z.infer<typeof relicEffect>;
 export type BossSkill = z.infer<typeof bossSkill>;
 export type BossSkillKind = (typeof BOSS_SKILL_KINDS)[number];
 export type CampaignConfig = z.infer<typeof campaign>;
+
+// 두 계약에서 같은 단위와 범위를 사용하는 필드.
+export const difficultyRulesSchema = difficulty.omit({ label: true }).strict();
+export const relicEffectSchema = relicEffect;
