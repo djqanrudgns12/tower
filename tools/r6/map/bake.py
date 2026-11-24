@@ -3,9 +3,10 @@
 import argparse
 import json
 import math
+from io import BytesIO
 from pathlib import Path
 
-from PIL import Image, ImageDraw, ImageColor
+from PIL import Image, ImageColor, ImageDraw
 
 ROOT = Path(__file__).resolve().parents[3]
 CARBON, SLATE, LINE, SILVER, AMBER, TEAL = map(
@@ -13,8 +14,16 @@ CARBON, SLATE, LINE, SILVER, AMBER, TEAL = map(
 )
 CELL = 64
 STEP = 16
-CONTOUR_INTERVAL = 12
+CONTOUR_INTERVAL = 8
+INDEX_INTERVAL = 24
 MAX_BYTES = 150_000
+# 중심 칸과 바위 조각의 상대 좌표(x, y), 반폭, 높이, 좌우 방향.
+EDGE_CLUSTERS = {
+    (5, 0): [(-21, -9, 10, 7, -1), (-5, -11, 17, 12, -1), (12, -7, 12, 9, 1), (21, 1, 6, 4, 1)],
+    (14, 5): [(14, -22, 10, 11, -1), (10, -3, 15, 17, 1), (23, 13, 8, 10, -1), (3, 21, 6, 5, 1)],
+    (4, 8): [(-21, 9, 8, 5, -1), (-7, 13, 14, 8, 1), (9, 12, 16, 11, -1), (22, 20, 8, 5, -1)],
+    (0, 6): [(-14, -19, 9, 7, 1), (-11, -2, 16, 14, -1), (-14, 16, 12, 10, 1), (3, 22, 6, 4, 1)],
+}
 
 
 def blend(a, b, fraction):
@@ -39,12 +48,13 @@ def terrain(image, height_grid):
     # 북서 방향으로 두 샘플의 명암 차를 비교하고, 고도 단을 약하게 칠한다.
     source = values.load()
     image.putdata([
-        blend(SLATE, LINE, max(0.01, min(0.28, 0.035 + (z // 12) * 0.02 + slope * 0.007)))
+        blend(CARBON, SLATE, max(0.14, min(1, 0.27 + (z // CONTOUR_INTERVAL) * 0.055 + slope * 0.035)))
         for y in range(height) for x in range(width)
         for z in (source[x, y],)
         for slope in (z - source[min(x + STEP, width - 1), min(y + STEP, height - 1)],)
     ])
-    draw = ImageDraw.Draw(image)
+    contours = Image.new("RGBA", (width * 2, height * 2))
+    draw = ImageDraw.Draw(contours)
     for y, (upper, lower) in enumerate(zip(height_grid, height_grid[1:])):
         for x in range(len(upper) - 1):
             a = (x * STEP, y * STEP, upper[x])
@@ -59,37 +69,69 @@ def terrain(image, height_grid):
                     for (px, py, pz), (qx, qy, qz) in zip(triangle, (*triangle[1:], triangle[0])):
                         if min(pz, qz) < level <= max(pz, qz):
                             t = (level - pz) / (qz - pz)
-                            points.append((round(px + (qx - px) * t), round(py + (qy - py) * t)))
-                    color = blend(SLATE, LINE, 0.65 if level % 24 == 0 else 0.42)
-                    draw.line(points, fill=color, width=1)
+                            points.append((round(2 * (px + (qx - px) * t)), round(2 * (py + (qy - py) * t))))
+                    index_line = level % INDEX_INTERVAL == 0
+                    if index_line:
+                        draw.line([(px, py + 3) for px, py in points], fill=CARBON, width=4)
+                    color = blend(SLATE, LINE, 0.55 if index_line else 0.34)
+                    draw.line(points, fill=color, width=3 if index_line else 2)
+    layer = contours.resize(image.size, Image.Resampling.BOX)
+    image.paste(layer, (0, 0), layer)
+    draw = ImageDraw.Draw(image)
     for x in range(CELL, width, CELL):
         for y in range(CELL, height, CELL):
-            color = blend(SLATE, LINE, 0.62)
-            draw.line((x - 3, y, x + 3, y), fill=color)
-            draw.line((x, y - 3, x, y + 3), fill=color)
+            color = blend(SLATE, LINE, 0.25)
+            draw.line((x - 2, y, x + 2, y), fill=color)
+            draw.line((x, y - 2, x, y + 2), fill=color)
 
 
 def center(cell):
     return tuple(c * CELL + CELL // 2 for c in cell)
 
 
+def rounded_route(points):
+    """격자 모서리에서만 길 면을 둥글린다. 적 이동 좌표는 계약을 따른다."""
+    route = [points[0]]
+    for before, (x, y), after in zip(points, points[1:], points[2:]):
+        if (before[0] == x == after[0]) or (before[1] == y == after[1]):
+            continue
+        radius = min(40, math.dist(before, (x, y)) / 2, math.dist(after, (x, y)) / 2)
+        ax, ay = (max(-1, min(1, v)) for v in (before[0] - x, before[1] - y))
+        bx, by = (max(-1, min(1, v)) for v in (after[0] - x, after[1] - y))
+        for step in range(17):
+            t = step / 16
+            u = 1 - t
+            route.append((round(x + radius * (ax * u * u + bx * t * t)),
+                          round(y + radius * (ay * u * u + by * t * t))))
+    return [*route, points[-1]]
+
+
 def path(draw, map_config, width):
     points = [(0, center(map_config["entryCell"])[1]), *map(center, map_config["waypoints"]),
               (width, center(map_config["exitCell"])[1])]
-    for thickness, color in ((47, CARBON), (43, blend(SLATE, LINE, 0.84)),
-                             (39, SLATE), (34, blend(CARBON, SLATE, 0.42))):
-        draw.line(points, fill=color, width=thickness, joint="curve")
-    # 직선 구간에만 돌턱 이음매를 넣어 모퉁이가 깨끗하게 이어지게 한다.
-    seam = blend(SLATE, LINE, 0.52)
+    route = rounded_route(points)
+    draw.line([(x, y + 4) for x, y in route], fill=CARBON, width=55, joint="curve")
+    for thickness, color in (
+        (55, CARBON),
+        (51, blend(SLATE, LINE, 0.69)),
+        (49, blend(SLATE, LINE, 0.92)),
+        (45, blend(LINE, SILVER, 0.63)),
+        (43, blend(LINE, SILVER, 0.17)),
+        (37, blend(SLATE, LINE, 0.85)),
+        (33, blend(LINE, SILVER, 0.10)),
+    ):
+        draw.line(route, fill=color, width=thickness, joint="curve")
+    # 턱의 돌 이음매는 직선부만 표시하고 밝은 연속선은 남긴다.
+    seam = blend(SLATE, LINE, 0.54)
     for (x, y), (nx, ny) in zip(points, points[1:]):
         if y == ny:
-            for sx in range(min(x, nx) + 25, max(x, nx) - 20, 18):
+            for sx in range(min(x, nx) + 34, max(x, nx) - 32, 27):
                 for side in (-1, 1):
-                    draw.line((sx, y + side * 20, sx, y + side * 23), fill=seam)
+                    draw.line((sx, y + side * 23, sx, y + side * 25), fill=seam)
         else:
-            for sy in range(min(y, ny) + 25, max(y, ny) - 20, 18):
+            for sy in range(min(y, ny) + 34, max(y, ny) - 32, 27):
                 for side in (-1, 1):
-                    draw.line((x + side * 20, sy, x + side * 23, sy), fill=seam)
+                    draw.line((x + side * 23, sy, x + side * 25, sy), fill=seam)
 
 
 def chamfer(draw, x, y, w, h, cut, color, outline):
@@ -102,43 +144,86 @@ def chamfer(draw, x, y, w, h, cut, color, outline):
 def pads(draw, slots):
     for slot in slots:
         x, y = center((slot["x"], slot["y"]))
-        chamfer(draw, x, y + 3, 23, 20, 7, CARBON, SLATE)
-        chamfer(draw, x, y, 23, 20, 7, SLATE, LINE)
-        draw.line((x - 5, y, x + 5, y), fill=LINE)
-        draw.line((x, y - 5, x, y + 5), fill=LINE)
-        draw.line((x - 12, y + 16, x + 12, y + 16), fill=blend(LINE, SILVER, 0.26))
+        chamfer(draw, x, y + 2, 21, 18, 7, CARBON, CARBON)
+        line = blend(SLATE, LINE, 0.27)
+        chamfer(draw, x, y, 21, 18, 7, blend(CARBON, SLATE, 0.8), line)
+        cross = blend(SLATE, LINE, 0.08)
+        draw.line((x - 4, y, x + 4, y), fill=cross)
+        draw.line((x, y - 4, x, y + 4), fill=cross)
+
+
+def rock(draw, x, y, width, height, side):
+    def points(vertices):
+        return [(x + round(px * width * side), y + round(py * height)) for px, py in vertices]
+
+    outline = [(-1, 0.5), (-0.64, -0.46), (-0.19, -1), (0.57, -0.87),
+               (0.84, -0.34), (1, 0.55), (0.44, 0.87), (-0.57, 0.82)]
+    draw.polygon([(px + 3, py + 3) for px, py in points(outline)], fill=CARBON)
+    draw.polygon(points(outline), fill=blend(SLATE, LINE, 0.38), outline=CARBON)
+    draw.polygon(points([(-0.64, -0.46), (-0.19, -1), (0.57, -0.87), (0.3, -0.31), (-0.34, 0.14)]),
+                 fill=blend(SLATE, LINE, 0.84))
+    draw.polygon(points([(-1, 0.5), (-0.64, -0.46), (-0.34, 0.14), (0.3, -0.31), (0.44, 0.45), (-0.57, 0.82)]),
+                 fill=blend(SLATE, LINE, 0.58))
+    draw.line(points([(-0.57, 0.55), (-0.1, 0.38), (0.48, -0.11), (0.84, -0.34)]), fill=blend(SLATE, LINE, 0.33))
 
 
 def props(draw, map_config):
-    # 각 무리의 중심은 가장자리 여유 칸에만 둔다. 길·설치 칸은 같은 계약 좌표를 검사한다.
     blocked = {tuple(p) for p in map_config["pathCells"]} | {(s["x"], s["y"]) for s in map_config["slots"]}
-    for cell in ((1, 0), (13, 0), (0, 6), (4, 8), (8, 8), (14, 5)):
-        if cell in blocked:
-            raise ValueError(f"소품 무리가 길 또는 설치 칸에 있습니다. {cell}")
+    for cell, rocks in EDGE_CLUSTERS.items():
+        x, y = cell
+        edge = {x, map_config["gridWidth"] - 1 - x, y, map_config["gridHeight"] - 1 - y}
+        if 0 not in edge or cell in blocked:
+            raise ValueError(f"소품 무리는 길과 설치 칸을 비운 가장자리에 둡니다. {cell}")
         x, y = center(cell)
-        for dx, dy, size in ((-13, 6, 11), (0, 1, 15), (14, 9, 8)):
-            px, py = x + dx, y + dy
-            draw.polygon([(px - size, py + 5), (px - size // 2, py - size),
-                          (px + size // 3, py - size - 3), (px + size, py + 3),
-                          (px + size // 2, py + 8), (px - 5, py + 9)], fill=LINE, outline=CARBON)
-            draw.polygon([(px - size // 2, py - size), (px + size // 3, py - size - 3),
-                          (px + size // 4, py), (px - size, py + 5)], fill=blend(LINE, SILVER, 0.22))
+        for dx, dy, width, height, side in rocks:
+            rock(draw, x + dx, y + dy, width, height, side)
 
-    x, y = center(map_config["entryCell"])
-    for dy in (-24, 24):
-        chamfer(draw, x - 11, y + dy, 14, 7, 4, CARBON, LINE)
-        draw.line((x - 19, y + dy, x - 3, y + dy), fill=AMBER, width=3)
-    for dx in (-16, -5, 6):
-        draw.line([(x + dx - 4, y - 6), (x + dx + 2, y), (x + dx - 4, y + 6)], fill=AMBER, width=2)
 
-    x, y = center(map_config["exitCell"])
-    for dy in (-23, 23):
-        chamfer(draw, x, y + dy, 17, 11, 6, LINE, CARBON)
-        draw.line((x - 10, y + dy - 6, x + 10, y + dy - 6), fill=TEAL, width=2)
-    draw.rectangle((x - 13, y - 13, x + 14, y - 7), fill=LINE, outline=CARBON)
-    draw.line((x + 14, y - 12, x + 14, y + 12), fill=TEAL, width=2)
-    for dx in (-29, -20):
-        draw.line([(x + dx - 3, y - 5), (x + dx + 2, y), (x + dx - 3, y + 5)], fill=TEAL, width=2)
+def chevrons(draw, x, y, offsets, color):
+    for dx in offsets:
+        px = x + dx
+        draw.polygon([(px - 4, y - 7), (px, y - 7), (px + 7, y), (px, y + 7),
+                      (px - 4, y + 7), (px + 2, y)], fill=color)
+
+
+def entry_marker(draw, cell):
+    x, y = center(cell)
+    for side in (-1, 1):
+        py = y + side * 28
+        chamfer(draw, x - 11, py + 3, 20, 10, 5, CARBON, CARBON)
+        chamfer(draw, x - 11, py, 20, 9, 5, blend(SLATE, LINE, 0.74), CARBON)
+        draw.line((x - 22, py - 4, x - 4, py - 4), fill=blend(LINE, SILVER, 0.32))
+        draw.line((x - 19, py + 2, x - 7, py + 2), fill=AMBER, width=2)
+    chevrons(draw, x, y, (-22, -9, 4), AMBER)
+
+
+def gate(draw, cell):
+    x, y = center(cell)
+
+    def panel(vertices, color):
+        draw.polygon([(x + dx, y + dy) for dx, dy in vertices], fill=color, outline=CARBON)
+
+    # 바닥의 모따기 기단 위에 양쪽 장갑판을 올린다. 적이 지나는 가운데는 비운다.
+    for side in (-1, 1):
+        def face(vertices, color):
+            panel([(dx, side * dy) for dx, dy in vertices], color)
+
+        face([(-80, 24), (-69, 48), (-34, 48), (-27, 43), (22, 43), (30, 35), (30, 22), (-61, 22)], CARBON)
+        face([(-77, 25), (-60, 45), (-36, 45), (-29, 40), (20, 40), (29, 34), (29, 22), (-62, 22)], SLATE)
+        face([(-63, 30), (-53, 43), (-40, 43), (-34, 39), (12, 39), (20, 36), (18, 29)], LINE)
+        face([(-58, 29), (-50, 40), (7, 40), (14, 34), (12, 26)], blend(LINE, SILVER, 0.12))
+        face([(5, 18), (25, 18), (29, 25), (29, 36), (20, 43), (9, 38), (5, 30)], blend(SLATE, LINE, 0.66))
+        face([(6, 18), (22, 18), (26, 23), (26, 32), (20, 36), (9, 32), (6, 26)], LINE)
+        for dx in (-44, -36, -28, -20):
+            draw.line((x + dx, y + side * 33, x + dx + 3, y + side * 38), fill=CARBON, width=2)
+        draw.line((x + 9, y + side * 20, x + 22, y + side * 20), fill=TEAL, width=2)
+        draw.line((x - 60, y + side * 25, x - 6, y + side * 25), fill=blend(LINE, SILVER, 0.36))
+
+    # 통과면의 이음매와 틸 표시는 적 뒤로 지나간다.
+    draw.rectangle((x + 12, y - 17, x + 26, y + 17), fill=blend(SLATE, LINE, 0.81), outline=CARBON)
+    for py in range(y - 12, y + 13, 6):
+        draw.line((x + 16, py, x + 22, py), fill=LINE)
+    chevrons(draw, x, y, (-37, -24, -11), TEAL)
 
 
 def bake(out):
@@ -151,8 +236,9 @@ def bake(out):
     path(draw, garden, width)
     pads(draw, garden["slots"])
     props(draw, garden)
+    entry_marker(draw, garden["entryCell"])
+    gate(draw, garden["exitCell"])
     # 메모리에서 용량을 검사하고 통과한 결과만 파일에 쓴다.
-    from io import BytesIO
     encoded = BytesIO()
     image.save(encoded, format="WEBP", lossless=True, method=6)
     if encoded.tell() > MAX_BYTES:

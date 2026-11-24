@@ -6,6 +6,7 @@ import type { RunState } from '../../domain/types';
 import { PALETTE } from '../art';
 import { CELL_PX } from '../assets';
 import type { FieldBridge } from '../bridge';
+import { R6_GROUND_KEY } from '../r6/BattleAssets';
 import { isPlacing } from './cues';
 import { DEPTH, toWorld, type LayerContext } from './shared';
 
@@ -20,14 +21,17 @@ export function selectedCell(bridge: FieldBridge) {
 export class InputLayer {
   private readonly c: LayerContext;
   private readonly overlay: Phaser.GameObjects.Graphics;
+  private readonly r6: boolean;
   private overlayKey = '';
   private down: { x: number; y: number } | null = null;
+  private hovered: ReturnType<typeof selectedCell> = null;
   /** 미니맵 위 탭인지. 미니맵은 위치 안내용이라 탭을 무시한다(PRD §12.4). */
   private readonly overMinimap: (p: Phaser.Input.Pointer) => boolean;
 
   constructor(c: LayerContext, overMinimap: (p: Phaser.Input.Pointer) => boolean) {
     this.c = c;
     this.overMinimap = overMinimap;
+    this.r6 = c.scene.textures.exists(R6_GROUND_KEY);
     this.overlay = c.scene.add.graphics().setDepth(DEPTH.overlay);
   }
 
@@ -36,6 +40,16 @@ export class InputLayer {
     const input = this.c.scene.input;
     input.on('pointerdown', (p: Phaser.Input.Pointer) => { this.down = { x: p.x, y: p.y }; });
     input.on('pointerup', (p: Phaser.Input.Pointer) => this.onPointerUp(p));
+    if (this.r6) {
+      input.on('pointermove', (p: Phaser.Input.Pointer) => {
+        this.hovered = null;
+        if (p.wasTouch || this.overMinimap(p)) return;
+        const world = this.c.scene.cameras.main.getWorldPoint(p.x, p.y);
+        const x = Math.floor(world.x / CELL_PX), y = Math.floor(world.y / CELL_PX);
+        this.hovered = this.c.bridge.controller.ctx.map.slots.find(slot => slot.x === x && slot.y === y) ?? null;
+      });
+      input.on('gameout', () => { this.hovered = null; });
+    }
   }
 
   private onPointerUp(p: Phaser.Input.Pointer) {
@@ -81,7 +95,9 @@ export class InputLayer {
     const tower = sel.towerId !== null ? s.towers.find(t => t.id === sel.towerId) ?? null : null;
     const highContrast = Boolean((bridge as { highContrastMap?: boolean }).highContrastMap);
     const drag = bridge.drag;
-    const key = `${sel.slotId}|${sel.towerId}|${sel.previewType}|${sel.previewBranch}|${tower?.level}|${tower?.form}|${s.phase}|${s.towers.length}|${bridge.magnify}|${bridge.keyboardSlotId}|${highContrast}|${drag?.type}:${drag?.slotId}|${(s.relics ?? []).join(',')}`;
+    const hovered = this.hovered && !drag && s.pause.length === 0 && (s.phase === 'BUILD' || s.phase === 'BATTLE')
+      && !s.towers.some(t => t.slotId === this.hovered?.id) ? this.hovered : null;
+    const key = `${sel.slotId}|${sel.towerId}|${sel.previewType}|${sel.previewBranch}|${tower?.level}|${tower?.form}|${s.phase}|${s.towers.length}|${bridge.magnify}|${bridge.keyboardSlotId}|${highContrast}|${drag?.type}:${drag?.slotId}|${hovered?.id}|${(s.relics ?? []).join(',')}`;
     if (key === this.overlayKey) return;
     this.overlayKey = key;
     const g = this.overlay.clear();
@@ -104,12 +120,13 @@ export class InputLayer {
         }
       }
     }
-    // 타워를 먼저 골랐거나 끌고 있으면 놓을 수 있는 빈 자리를 모두 밝힌다.
-    if (isPlacing(s.phase, sel, Boolean(drag))) {
+    // 이전 전장은 타워를 고르거나 끄는 동안 빈 자리를 모두 표시한다.
+    if (!this.r6 && isPlacing(s.phase, sel, Boolean(drag))) {
       for (const slot of map.slots) if (!s.towers.some(t => t.slotId === slot.id)) g.lineStyle(3, 0xf5ebd4, 0.9).strokeRoundedRect(slot.x * CELL_PX + 5, slot.y * CELL_PX + 5, CELL_PX - 10, CELL_PX - 10, 8);
     }
     const dragCell = drag?.slotId ? map.slots.find(slot => slot.id === drag.slotId) ?? null : null;
     const cell = drag ? dragCell : selectedCell(bridge);
+    if (hovered && hovered.id !== cell?.id) this.strokePad(hovered, 0xb8c0c8, 1.5);
     if (cell) {
       let range = 0;
       // 끌고 있으면 끄는 종류의 Lv1 사거리를 그린다.
@@ -127,14 +144,32 @@ export class InputLayer {
           if ((px - cx) ** 2 + (py - cy) ** 2 <= range * range) g.fillStyle(0xfff6d8, 0.42).fillRoundedRect(px - CELL_PX * 0.3, py - CELL_PX * 0.3, CELL_PX * 0.6, CELL_PX * 0.6, 8);
         }
       }
-      g.lineStyle(4, PALETTE.outline, 1).strokeRoundedRect(cell.x * CELL_PX + 2, cell.y * CELL_PX + 2, CELL_PX - 4, CELL_PX - 4, 10);
-      g.lineStyle(3, 0xf4d35e, 1).strokeRoundedRect(cell.x * CELL_PX + 3, cell.y * CELL_PX + 3, CELL_PX - 6, CELL_PX - 6, 9);
+      if (this.r6) this.strokePad(cell, 0xe69f24, 2);
+      else {
+        g.lineStyle(4, PALETTE.outline, 1).strokeRoundedRect(cell.x * CELL_PX + 2, cell.y * CELL_PX + 2, CELL_PX - 4, CELL_PX - 4, 10);
+        g.lineStyle(3, 0xf4d35e, 1).strokeRoundedRect(cell.x * CELL_PX + 3, cell.y * CELL_PX + 3, CELL_PX - 6, CELL_PX - 6, 9);
+      }
     }
     // 키보드 커서: 선택(금색)과 구별되는 파란 이중 테두리. 포커스가 전장에 있을 때만 보인다.
     const cursor = bridge.keyboardSlotId ? map.slots.find(slot => slot.id === bridge.keyboardSlotId) : null;
     if (cursor) {
-      g.lineStyle(5, 0xf5ebd4, 1).strokeRoundedRect(cursor.x * CELL_PX - 1, cursor.y * CELL_PX - 1, CELL_PX + 2, CELL_PX + 2, 12);
-      g.lineStyle(3, 0x245b88, 1).strokeRoundedRect(cursor.x * CELL_PX - 1, cursor.y * CELL_PX - 1, CELL_PX + 2, CELL_PX + 2, 12);
+      if (this.r6) this.strokePad(cursor, 0x2fb5a3, 2, 4);
+      else {
+        g.lineStyle(5, 0xf5ebd4, 1).strokeRoundedRect(cursor.x * CELL_PX - 1, cursor.y * CELL_PX - 1, CELL_PX + 2, CELL_PX + 2, 12);
+        g.lineStyle(3, 0x245b88, 1).strokeRoundedRect(cursor.x * CELL_PX - 1, cursor.y * CELL_PX - 1, CELL_PX + 2, CELL_PX + 2, 12);
+      }
+    }
+  }
+
+  private strokePad(cell: { x: number; y: number }, color: number, width: number, offset = 0) {
+    const x = (cell.x + 0.5) * CELL_PX, y = (cell.y + 0.5) * CELL_PX;
+    const w = 21 + offset, h = 18 + offset, cut = 7;
+    const points = [[w - cut, -h], [w, -h + cut], [w, h - cut], [w - cut, h],
+      [-w + cut, h], [-w, h - cut], [-w, -h + cut]] as const;
+    for (const [weight, ink] of [[width + 2, 0x12161b], [width, color]] as const) {
+      this.overlay.lineStyle(weight, ink).beginPath().moveTo(x - w + cut, y - h);
+      for (const [dx, dy] of points) this.overlay.lineTo(x + dx, y + dy);
+      this.overlay.closePath().strokePath();
     }
   }
 }

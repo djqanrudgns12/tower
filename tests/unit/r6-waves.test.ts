@@ -9,6 +9,19 @@ import { applyCommand, advanceTick } from '../../src/domain/run';
 import { newRun } from './helpers';
 
 const v = balanceV2Schema.parse(raw);
+it('다른 시드의 호출을 사이에 넣어도 같은 시드의 편성을 같은 순서로 만든다', () => {
+  const first = createWaveSequence(v, 'garden_u', 27);
+  const second = createWaveSequence(v, 'garden_u', 27);
+  const other = createWaveSequence(v, 'garden_u', 28);
+  let different = false;
+  for (let wave = 1; wave <= 21; wave++) {
+    const expected = first();
+    const comparison = other();
+    different ||= expected.some((enemy, i) => enemy.id !== comparison[i]?.id);
+    expect(second()).toEqual(expected);
+  }
+  expect(different).toBe(true);
+});
 it('개체별 체력·속도·저항을 순서대로 계산하고 종족별 보스 기술을 고른다', () => {
   const e = expandEntities(v);
   expect(Object.keys(e)).toHaveLength(100);
