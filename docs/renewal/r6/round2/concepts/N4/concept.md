@@ -7,11 +7,21 @@
 
 ## 현재 상태
 
-- **상태**: **막힘** (`image-generator` HTTP 429 할당량 소진, 약 4시간 20분 후 리셋으로 원화 6종(`a-battle-bg`, `b-home-bg`, `c-tower-evo`, `d-enemy-pack`, `f1-combo`, `f2-reveal`) 미생성. `e-ui-kit.webp`와 기획서·6종×4안 원화 프롬프트 먼저 완성)
-- **완료 산출물**:
-  - [e-ui-kit.webp](e-ui-kit.webp) (1280×720, `137.3 KB` — 잘림·겹침·글자 깨짐 0건 검수 완료)
-  - [mock/ui-kit.html](mock/ui-kit.html) (에나멜 핀·아크릴 굿즈 UI 키트 원본 HTML/SVG)
-  - [concept.md](concept.md) (본 기획서 및 6종×4안 즉시 실행 원화 프롬프트)
+- **상태** · **완성**. Codex 내장 `image_generation`으로 원화 6종에 각각 3안씩 총 18안을 생성했다. 6안을 채택하고 12안을 탈락시켰다.
+- **화면** · 1280×720 Chromium 캡처, WebP 품질 90. 한글 문구는 HTML에 배치했다.
+- **전장** · 15×9 격자에 타워가 놓인 자리 4개와 빈 설치 칸 16개를 표시했다. 타워 받침과 빈 칸 일부는 원화에 있으며, 나머지 설치 칸과 전술 격자는 HTML·CSS로 배치했다.
+
+| 화면 | 목업 | 채택 / 탈락 | 채택 이유 |
+|---|---|---|---|
+| [전투](a-battle.webp) | [HTML](mock/battle.html) | 3안 중 3번 / 2장 | 구불길에서 적과 아군을 구별하기 쉽고 하단이 비어 있다. |
+| [홈](b-home.webp) | [HTML](mock/home.html) | 3안 중 1번 / 2장 | 열린 필통과 출격하는 네 영웅의 얼굴이 읽히고 오른쪽에 시작 버튼이 들어간다. |
+| [타워 진화](c-tower-evolution.webp) | [HTML](mock/tower-evo.html) | 3안 중 1번 / 2장 | 활을 유지하면서 목재, 은빛 펜촉, 금촉과 무지개 먹물로 실루엣이 커진다. |
+| [적군 도감](d-enemy-pack.webp) | [HTML](mock/enemy-pack.html) | 3안 중 3번 / 2장 | 다섯 표정이 뚜렷하고 안경 쓴 숙제드래곤이 가장 크다. |
+| [백점 콤보](f1-dopamine-combo.webp) | [HTML](mock/dopamine-combo.html) | 3안 중 1번 / 2장 | 별도장 아래 하이파이브로 네 영웅이 함께 환호한다. |
+| [전설 영웅 공개](f2-dopamine-reveal.webp) | [HTML](mock/dopamine-reveal.html) | 3안 중 1번 / 2장 | 금박 필통과 보라 배경이 영웅 한 명에게 시선을 모은다. |
+| [UI 키트](e-ui-kit.webp) | [HTML](mock/ui-kit.html) | 기존 | 딸기 버튼, 흰 칼선, 에나멜 베벨과 마스킹테이프의 기준이다. |
+
+채택 원화 6장은 [목업 원화 폴더](mock/assets/)에 WebP로 담았다. 생성 후보 PNG는 저장소 밖 Codex 생성 폴더에 보관했다. 전설 공개 컷은 진화 도감의 마지막 단계보다 사람 얼굴에 가까워 두 장면을 잇는 캐릭터 형태가 덜 일관적이다. 초등 5학년 대상 반응 검수는 미실행이다.
 
 ---
 
@@ -123,9 +133,9 @@
 
 ---
 
-## 6. 할당량 리셋 시 즉시 실행 가능한 원화 6종 × 4안 프롬프트
+## 6. 원화 6종의 생성 프롬프트
 
-> `image-generator` 할당량(HTTP 429) 리셋 즉시 아래 24개(6종 × 4안) 프롬프트로 각 4안을 생성하고, **텍스트·한자 깨짐 없음 / 좌우 여백 및 4지선다 하단 패널 공간 확보 / 캐릭터 중복 없음** 기준으로 1안씩 선별해 `mock/*.html` 배경·오브젝트를 교체한다.
+아래는 제작에 사용한 6종의 프롬프트 설계안이다. Codex 내장 `image_generation`에서 화면별 구도와 소재를 조합해 각각 3안을 생성했다. 공통 접두어에 좌상단 채광과 화면별 UI 여백을 추가했으며, 전투 후보에는 타워 네 기와 길 위의 적을 함께 요청했다. 표정, 실루엣, 광원, 글자 유무와 UI 주변 여백을 기준으로 선별했다.
 
 ### 공통 스타일 접두어 (모든 프롬프트 앞에 동일 결합)
 `2D mobile game illustration in the style of glossy acrylic charms and enamel pins, thick clean dark-purple-navy (#2C1E3E) ink outlines, crisp white die-cut sticker rim glow, vibrant pastel mint cream and strawberry coral palette, playful squishy chibi proportions, high clarity, NO text, NO letters, NO numbers, NO watermarks.`

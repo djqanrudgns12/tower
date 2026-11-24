@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=1280, initial-scale=1">
+  <title>모눈 책상 방어전 · 문방구 히어로즈</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Jua&display=swap">
+  <link rel="stylesheet" href="./n4-theme.css">
+</head>
+<body>
+  <main class="scene battle-scene">
+    <img class="scene-art" src="./assets/a-battle-bg.webp" alt="문구 영웅 네 기가 구불구불한 테이프 길에서 오타 군단을 막는 모눈 책상 전장">
+    <div class="board-grid" aria-hidden="true">
+      <span class="pad pad--tower" style="--x: 5; --y: 4"></span>
+      <span class="pad pad--tower" style="--x: 10; --y: 4"></span>
+      <span class="pad pad--tower" style="--x: 7; --y: 9"></span>
+      <span class="pad pad--tower" style="--x: 12; --y: 9"></span>
+      <span class="pad pad--painted" style="--x: 7; --y: 2; --dx: 22px; --dy: -8px">+</span>
+      <span class="pad pad--painted" style="--x: 13; --y: 2; --dx: -21px; --dy: -9px">+</span>
+      <span class="pad pad--painted" style="--x: 5; --y: 8; --dx: 26px; --dy: 15px">+</span>
+      <span class="pad pad--painted" style="--x: 14; --y: 8; --dx: -30px">+</span>
+      <span class="pad" style="--x: 3; --y: 2">+</span>
+      <span class="pad" style="--x: 8; --y: 2">+</span>
+      <span class="pad" style="--x: 15; --y: 1">+</span>
+      <span class="pad" style="--x: 14; --y: 1">+</span>
+      <span class="pad" style="--x: 7; --y: 3">+</span>
+      <span class="pad" style="--x: 6; --y: 7">+</span>
+      <span class="pad" style="--x: 9; --y: 7">+</span>
+      <span class="pad" style="--x: 2; --y: 9">+</span>
+      <span class="pad" style="--x: 4; --y: 9">+</span>
+      <span class="pad" style="--x: 10; --y: 8">+</span>
+      <span class="pad" style="--x: 11; --y: 9">+</span>
+      <span class="pad" style="--x: 15; --y: 6">+</span>
+    </div>
+    <header class="hud">
+      <a class="sticker compact" href="./home.html">← 본부</a>
+      <h1 class="sticker sticker--grape compact">모눈 책상 방어전</h1>
+      <span class="sticker sticker--berry compact" aria-label="성문 체력 12 / 15"><span class="heart" aria-hidden="true">♥</span> 12/15</span>
+      <span class="sticker sticker--sky compact push">3 / 8 웨이브</span>
+      <span class="sticker sticker--gold compact" aria-label="황금 클립 280개"><i class="paperclip" aria-hidden="true"></i> 280G</span>
+    </header>
+    <section class="quiz" aria-label="어휘 문제">
+      <fieldset>
+        <legend>우리는 해결 방법을 찾으려고 오래 <strong>숙고했다.</strong> ‘숙고하다’의 뜻은?</legend>
+        <span class="quiz-caption">5학년 · 낱말의 뜻</span>
+        <div class="answers">
+          <button class="sticker answer" type="button" aria-pressed="false"><span class="answer-number">1</span> 소리 내어 읽다</button>
+          <button class="sticker answer" type="button" aria-pressed="false"><span class="answer-number">2</span> 자세히 살펴보다</button>
+          <button class="sticker answer" type="button" aria-pressed="false" data-correct="true"><span class="answer-number">3</span> 곰곰이 생각하다</button>
+          <button class="sticker answer" type="button" aria-pressed="false"><span class="answer-number">4</span> 서둘러 결정하다</button>
+          <button class="sticker sticker--gold answer hint" type="button" aria-pressed="false">모르겠어요</button>
+        </div>
+        <p class="quiz-feedback" aria-live="polite"></p>
+      </fieldset>
+    </section>
+  </main>
+  <script>
+    const answers = document.querySelector('.answers');
+    const feedback = document.querySelector('.quiz-feedback');
+
+    answers.addEventListener('click', (event) => {
+      const choice = event.target.closest('button');
+      if (!choice) return;
+
+      answers.querySelector('[aria-pressed="true"]')?.setAttribute('aria-pressed', 'false');
+      choice.setAttribute('aria-pressed', 'true');
+      if (choice.dataset.correct) {
+        const link = document.createElement('a');
+        link.href = './dopamine-combo.html';
+        link.textContent = '콤보 보기 →';
+        feedback.replaceChildren('정답! 숙고하다는 깊이 생각한다는 뜻이에요. ', link);
+      } else if (choice.classList.contains('hint')) {
+        feedback.textContent = '힌트 · 쉽게 결정을 내리지 않고 머릿속에서 여러 번 생각했어요.';
+      } else {
+        feedback.textContent = '문장에서 해결 방법을 찾기 위해 무엇을 했는지 다시 읽어 보세요.';
+      }
+    });
+  </script>
+</body>
+</html>
