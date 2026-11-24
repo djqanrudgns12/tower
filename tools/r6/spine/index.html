@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<link rel="icon" href="data:,">
+<title>R6 몬스터 재생 시험</title>
+<style>
+  body { background: #12161b; color: #b8c0c8; font: 15px system-ui; margin: 16px; }
+  a { color: #2fb5a3; }
+  button { color: inherit; background: #1d242c; border: 1px solid #4a5563; padding: .4rem .75rem; }
+  nav { display: flex; gap: 12px; align-items: center; margin-bottom: 12px; }
+  #stage { position: relative; width: 768px; height: 624px; }
+  .overlay { position: absolute; inset: 0; pointer-events: none; }
+</style>
+</head>
+<body>
+<nav aria-label="재생 방식">
+  <a href="?mode=phaser">공식 플러그인</a>
+  <a href="?mode=webgl">직접 WebGL</a>
+  <a href="?mode=baked">프레임 시트</a>
+</nav>
+<nav aria-label="동작">
+  <button type="button">걷기</button>
+  <button type="button">피격</button>
+  <button type="button">쓰러짐</button>
+  <span id="status">불러오는 중</span>
+</nav>
+<div id="stage"></div>
+<script type="module">
+  const mode = new URLSearchParams(location.search).get('mode') || 'phaser';
+  if (!['phaser', 'webgl', 'baked'].includes(mode)) throw Error('지원하는 재생 방식을 선택하세요.');
+  await import('./' + mode + '.js');
+</script>
+</body>
+</html>

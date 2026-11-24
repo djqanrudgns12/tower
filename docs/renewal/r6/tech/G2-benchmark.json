@@ -1,0 +1,89 @@
+{
+  "bundles": {
+    "phaser": {
+      "minified": 1929258,
+      "gzip": 448622
+    },
+    "webgl": {
+      "minified": 1885989,
+      "gzip": 436319
+    },
+    "baked": {
+      "minified": 1687726,
+      "gzip": 379664
+    }
+  },
+  "transfer": {
+    "spine": {
+      "walker.json": 3234,
+      "walker.atlas": 758,
+      "walker.webp": 332
+    },
+    "baked": {
+      "frames.json": 893,
+      "walker.webp": 6810
+    }
+  },
+  "chromium": "156.0.8078.4",
+  "host": [
+    "darwin",
+    "27.2.0",
+    "Apple M6"
+  ],
+  "results": {
+    "phaser": {
+      "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (LLVM 10.0.0) (0x0000C0DE)), SwiftShader driver)",
+      "heapUsedBytes": 9373884,
+      "cpu1x": {
+        "frames": 358,
+        "fps": 59.5,
+        "p95Ms": 16.7,
+        "cpuP95Ms": 1.6,
+        "over20Ms": 2
+      },
+      "cpu4x": {
+        "frames": 351,
+        "fps": 58.34,
+        "p95Ms": 16.8,
+        "cpuP95Ms": 6,
+        "over20Ms": 7
+      }
+    },
+    "webgl": {
+      "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (LLVM 10.0.0) (0x0000C0DE)), SwiftShader driver)",
+      "heapUsedBytes": 6926948,
+      "cpu1x": {
+        "frames": 360,
+        "fps": 59.84,
+        "p95Ms": 16.7,
+        "cpuP95Ms": 1.6,
+        "over20Ms": 1
+      },
+      "cpu4x": {
+        "frames": 360,
+        "fps": 59.84,
+        "p95Ms": 16.8,
+        "cpuP95Ms": 4.9,
+        "over20Ms": 1
+      }
+    },
+    "baked": {
+      "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (LLVM 10.0.0) (0x0000C0DE)), SwiftShader driver)",
+      "heapUsedBytes": 6502056,
+      "cpu1x": {
+        "frames": 361,
+        "fps": 60,
+        "p95Ms": 16.7,
+        "cpuP95Ms": 1.3,
+        "over20Ms": 0
+      },
+      "cpu4x": {
+        "frames": 358,
+        "fps": 59.5,
+        "p95Ms": 16.8,
+        "cpuP95Ms": 4.3,
+        "over20Ms": 2
+      }
+    }
+  }
+}
