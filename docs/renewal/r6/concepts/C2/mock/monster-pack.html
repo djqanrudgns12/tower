@@ -1,0 +1,122 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="utf-8"><style>
+  @import url('https://cdn.jsdelivr.net/gh/sun-typeface/SUIT@2/fonts/static/woff2/SUIT.css');
+@import url('https://fonts.googleapis.com/css2?family=Black+Han+Sans&display=swap');
+  :root {
+    --bg: #FAF6EE;
+    --surface: #FAF6EE;
+    --surface-solid: #FAF6EE;
+    --surface-muted: #EDE5D5;
+    --ink: #192231;
+    --ink-soft: #49566B;
+    --primary: #FF595E;
+    --primary-dark: #192231;
+    --primary-text: #FFFFFF;
+    --secondary: #3A86FF;
+    --secondary-dark: #192231;
+    --accent: #FFCA3A;
+    --accent-dark: #192231;
+    --green: #2EC4B6;
+    --green-dark: #192231;
+    --border: 3px solid #192231;
+    --radius: 10px;
+    --radius-sm: 8px;
+    --shadow: 5px 5px 0 #192231;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    width: 1280px; height: 720px; overflow: hidden;
+    font-family: 'SUIT', 'Apple SD Gothic Neo', sans-serif;
+    color: var(--ink);
+    background: var(--bg);
+    -webkit-font-smoothing: antialiased;
+  }
+  .title-font { font-family: 'Black Han Sans', 'SUIT', sans-serif; letter-spacing: -0.02em; }
+  .panel-card {
+    background: var(--surface);
+    border: var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+  }
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    font-family: 'SUIT', 'Apple SD Gothic Neo', sans-serif; font-weight: 800; cursor: pointer;
+    border-radius: var(--radius-sm);
+    border: 3px solid #192231; box-shadow: 4px 4px 0 #192231;
+    transition: transform 0.08s ease;
+  }
+  .btn-primary { --btn-edge: var(--primary-dark); background: var(--primary); color: var(--primary-text); }
+  .btn-green { --btn-edge: var(--green-dark); background: var(--green); color: #fff; }
+  .btn-accent { --btn-edge: var(--accent-dark); background: var(--accent); color: #192231; }
+  .btn-surface { --btn-edge: rgba(0,0,0,0.22); background: var(--surface-solid); color: var(--ink); }
+  .btn-pressed { transform: translateY(3px); box-shadow: 0 1px 0 var(--btn-edge) !important; }
+  .btn-disabled { opacity: 0.45; filter: grayscale(0.4); box-shadow: none !important; }
+  .panel-card { box-shadow: 5px 5px 0 #192231; } .home-hero-scrim { background: none !important; }
+  .wrap { position: relative; width: 1280px; height: 720px; background: var(--bg); }
+  .art { position: absolute; left: 20px; right: 20px; top: 62px; bottom: 102px; background: url('assets/d-monsters-bg.webp') center/contain no-repeat; }
+  .header {
+    position: absolute; top: 16px; left: 24px; right: 24px; z-index: 2;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .h-badge {
+    padding: 7px 16px; background: var(--surface); border: var(--border);
+    border-radius: 999px; box-shadow: 0 4px 0 rgba(0,0,0,0.14);
+    display: flex; align-items: center; gap: 10px;
+  }
+  .h-title { font-size: 20px; font-family: 'Black Han Sans', 'SUIT', sans-serif; }
+  .h-sub { font-size: 13px; font-weight: 700; color: var(--ink-soft); }
+  .grid-5 {
+    position: absolute; left: 24px; right: 24px; bottom: 16px; z-index: 2;
+    display: grid; grid-template-columns: 1fr 1fr 1.15fr 1fr 1.35fr; gap: 12px;
+  }
+  .m-card { padding: 10px 12px; display: flex; flex-direction: column; gap: 3px; }
+  .m-role {
+    align-self: flex-start; padding: 2px 8px; border-radius: 999px;
+    font-size: 11px; font-weight: 900; border: 1.5px solid var(--ink);
+  }
+  .m-name { font-size: 16px; font-family: 'Black Han Sans', 'SUIT', sans-serif; }
+  .m-stat { font-size: 12px; font-weight: 700; color: var(--ink-soft); }
+  </style></head><body>
+  <div class="wrap">
+    <div class="art"></div>
+    <div class="header">
+      <div class="h-badge">
+        <span class="h-title">C2 · 들숲 새참 도적단(acorn_goblin) 5종</span>
+        <span class="h-sub">네오 포스터 아케이드</span>
+      </div>
+      <div class="h-badge"><span class="h-sub">일반 4종 + 5웨이브 보스 1종 · 실루엣/표정 통일</span></div>
+    </div>
+    <div class="grid-5">
+      
+        <div class="panel-card m-card">
+          <span class="m-role" style="background:var(--surface-muted);">일반 · walker</span>
+          <div class="m-name">도토리 보초병</div>
+          <div class="m-stat">HP ×1.0 · 속도 ×1.0</div>
+        </div>
+      
+        <div class="panel-card m-card">
+          <span class="m-role" style="background:var(--secondary);color:#fff">질주 · runner</span>
+          <div class="m-name">새참 날치기꾼</div>
+          <div class="m-stat">HP ×0.7 · 속도 ×1.35</div>
+        </div>
+      
+        <div class="panel-card m-card">
+          <span class="m-role" style="background:var(--green);color:#fff">거구 · brute</span>
+          <div class="m-name">통나무 덩치오우거</div>
+          <div class="m-stat">HP ×1.8 · 속도 ×0.75</div>
+        </div>
+      
+        <div class="panel-card m-card">
+          <span class="m-role" style="background:var(--accent);">갑각 · shell</span>
+          <div class="m-name">냄비뚜껑 갑옷병</div>
+          <div class="m-stat">물리 저항 35%</div>
+        </div>
+      
+        <div class="panel-card m-card">
+          <span class="m-role" style="background:var(--primary);color:#fff">5웨이브 보스</span>
+          <div class="m-name">국자대장 달그락</div>
+          <div class="m-stat">HP ×2.1 · 철갑 태세</div>
+        </div>
+      
+    </div>
+  </div>
+  </body></html>

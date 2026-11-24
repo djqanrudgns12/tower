@@ -1,0 +1,85 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="utf-8"><style>
+  @import url('https://cdn.jsdelivr.net/gh/sun-typeface/SUIT@2/fonts/static/woff2/SUIT.css');
+@font-face { font-family: 'GmarketSans'; src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/GmarketSansBold.woff') format('woff'); font-weight: 700; font-display: swap; }
+  :root {
+    --bg: #F4EFE6;
+    --surface: rgba(249, 246, 239, 0.96);
+    --surface-solid: #F9F6EF;
+    --surface-muted: #E7DFD1;
+    --ink: #2A3342;
+    --ink-soft: #5A6577;
+    --primary: #E76F51;
+    --primary-dark: #B3482E;
+    --primary-text: #FFFFFF;
+    --secondary: #4EA8DE;
+    --secondary-dark: #2678A8;
+    --accent: #F4C95D;
+    --accent-dark: #C49825;
+    --green: #58A474;
+    --green-dark: #35734C;
+    --border: 2px solid #FFFDF9;
+    --radius: 14px;
+    --radius-sm: 10px;
+    --shadow: 4px 6px 0 rgba(42,51,66,0.18), 0 10px 22px rgba(42,51,66,0.14);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    width: 1280px; height: 720px; overflow: hidden;
+    font-family: 'SUIT', 'Apple SD Gothic Neo', sans-serif;
+    color: var(--ink);
+    background: var(--bg);
+    -webkit-font-smoothing: antialiased;
+  }
+  .title-font { font-family: 'GmarketSans', 'SUIT', sans-serif; letter-spacing: -0.02em; }
+  .panel-card {
+    background: var(--surface);
+    border: var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+  }
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    font-family: 'SUIT', 'Apple SD Gothic Neo', sans-serif; font-weight: 800; cursor: pointer;
+    border-radius: var(--radius-sm);
+    border: 2px solid #FFFDF9; box-shadow: 0 5px 0 var(--btn-edge), 4px 8px 14px rgba(42,51,66,0.22);
+    transition: transform 0.08s ease;
+  }
+  .btn-primary { --btn-edge: var(--primary-dark); background: var(--primary); color: var(--primary-text); }
+  .btn-green { --btn-edge: var(--green-dark); background: var(--green); color: #fff; }
+  .btn-accent { --btn-edge: var(--accent-dark); background: var(--accent); color: #192231; }
+  .btn-surface { --btn-edge: rgba(0,0,0,0.22); background: var(--surface-solid); color: var(--ink); }
+  .btn-pressed { transform: translateY(3px); box-shadow: 0 1px 0 var(--btn-edge) !important; }
+  .btn-disabled { opacity: 0.45; filter: grayscale(0.4); box-shadow: none !important; }
+  .panel-card { outline: 1px solid rgba(42,51,66,0.14); }
+  .wrap { position: relative; width: 1280px; height: 720px; background: url('assets/f-dopamine-bg.webp') center/cover no-repeat; }
+  .banner {
+    position: absolute; top: 24px; left: 50%; transform: translateX(-50%);
+    padding: 14px 28px; display: flex; flex-direction: column; align-items: center; gap: 6px;
+    min-width: 520px; text-align: center;
+  }
+  .b-chip {
+    padding: 4px 14px; border-radius: 999px; background: var(--accent); color: #192231;
+    border: 2px solid var(--ink); font-size: 13px; font-weight: 900;
+  }
+  .b-title { font-size: 32px; font-family: 'GmarketSans', 'SUIT', sans-serif; color: var(--ink); }
+  .b-sub { font-size: 15px; font-weight: 800; color: var(--ink-soft); }
+  .reward-bar {
+    position: absolute; bottom: 24px; left: 50%; transform: translateX(-50%);
+    padding: 10px 22px; display: flex; align-items: center; gap: 18px;
+  }
+  .rw-item { display: flex; align-items: center; gap: 6px; font-size: 16px; font-weight: 900; }
+  .rw-item svg { width: 20px; height: 20px; }
+  </style></head><body>
+  <div class="wrap">
+    <div class="panel-card banner">
+      <span class="b-chip">웨이브 클리어</span>
+      <div class="b-title">웨이브 5 승리! 팝업 성문 지킴</div>
+      <div class="b-sub">보너스 75G · 다음 웨이브까지 3초</div>
+    </div>
+    <div class="panel-card reward-bar">
+      <div class="rw-item"><svg viewBox="0 0 32 32" fill="none"><circle cx="16" cy="16" r="11" fill="#FFB830" stroke="currentColor" stroke-width="2.5"/><circle cx="16" cy="16" r="6" stroke="currentColor" stroke-width="2" opacity="0.6"/></svg><span>+50G 보너스</span></div>
+      <div class="rw-item" style="color:var(--primary)"><svg viewBox="0 0 32 32" fill="none"><path d="M16 3L20 11.5L29 12.8L22.5 19L24 28L16 23.6L8 28L9.5 19L3 12.8L12 11.5L16 3Z" fill="currentColor"/></svg><span>연출 650ms · 타격감 3프레임 정지</span></div>
+      <button class="btn btn-primary" style="padding:8px 18px;font-size:15px">계속하기</button>
+    </div>
+  </div>
+  </body></html>

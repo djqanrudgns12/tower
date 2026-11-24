@@ -1,0 +1,179 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="utf-8"><style>
+  @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css');
+@import url('https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@700&display=swap');
+  :root {
+    --bg: #F7F2E4;
+    --surface: rgba(247, 242, 228, 0.95);
+    --surface-solid: #F7F2E4;
+    --surface-muted: #EAE0C8;
+    --ink: #1E2430;
+    --ink-soft: #4E5663;
+    --primary: #E84A38;
+    --primary-dark: #A82E20;
+    --primary-text: #FFFDF8;
+    --secondary: #244B7A;
+    --secondary-dark: #173254;
+    --accent: #F2B705;
+    --accent-dark: #B38300;
+    --green: #2F9E8F;
+    --green-dark: #1E6E63;
+    --border: 2px solid #1E2430;
+    --radius: 8px;
+    --radius-sm: 6px;
+    --shadow: 0 4px 0 #1E2430;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    width: 1280px; height: 720px; overflow: hidden;
+    font-family: 'Pretendard', 'Apple SD Gothic Neo', sans-serif;
+    color: var(--ink);
+    background: var(--bg);
+    -webkit-font-smoothing: antialiased;
+  }
+  .title-font { font-family: 'Gowun Batang', 'Pretendard', serif; letter-spacing: -0.02em; }
+  .panel-card {
+    background: var(--surface);
+    border: var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+  }
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    font-family: 'Pretendard', 'Apple SD Gothic Neo', sans-serif; font-weight: 800; cursor: pointer;
+    border-radius: var(--radius-sm);
+    border: 2px solid #1E2430; box-shadow: inset 0 0 0 2px rgba(255,253,248,0.28), 0 4px 0 #1E2430;
+    transition: transform 0.08s ease;
+  }
+  .btn-primary { --btn-edge: var(--primary-dark); background: var(--primary); color: var(--primary-text); }
+  .btn-green { --btn-edge: var(--green-dark); background: var(--green); color: #fff; }
+  .btn-accent { --btn-edge: var(--accent-dark); background: var(--accent); color: #192231; }
+  .btn-surface { --btn-edge: rgba(0,0,0,0.22); background: var(--surface-solid); color: var(--ink); }
+  .btn-pressed { transform: translateY(3px); box-shadow: 0 1px 0 var(--btn-edge) !important; }
+  .btn-disabled { opacity: 0.45; filter: grayscale(0.4); box-shadow: none !important; }
+  .panel-card { box-shadow: inset 0 0 0 2px rgba(242,183,5,0.28), 0 4px 0 #1E2430; }
+  .stage { position: relative; width: 1280px; height: 720px; background: url('assets/a-battle-bg.webp') center/cover no-repeat; }
+  .hud-top { position: absolute; top: 14px; left: 16px; right: 16px; display: flex; align-items: center; justify-content: space-between; pointer-events: none; }
+  .hud-pills { display: flex; gap: 10px; align-items: center; }
+  .stat-pill {
+    display: flex; align-items: center; gap: 8px; padding: 8px 14px;
+    background: var(--surface); border: var(--border); border-radius: 999px;
+    box-shadow: 0 4px 0 rgba(0,0,0,0.18); font-weight: 800; font-size: 16px;
+  }
+  .stat-pill svg { width: 20px; height: 20px; }
+  .stat-val { font-family: 'Gowun Batang', 'Pretendard', serif; font-size: 19px; }
+  .hp-bar { width: 76px; height: 10px; background: var(--surface-muted); border-radius: 99px; overflow: hidden; border: 1.5px solid var(--ink); }
+  .hp-fill { width: 100%; height: 100%; background: var(--green); }
+  .ctrl-group { display: flex; gap: 8px; }
+  .ctrl-btn { padding: 8px 14px; font-size: 14px; border-radius: 999px; }
+
+  .tower-dock {
+    position: absolute; top: 72px; right: 16px; width: 148px;
+    padding: 10px; display: flex; flex-direction: column; gap: 8px;
+  }
+  .dock-title { font-size: 12px; font-weight: 800; color: var(--ink-soft); text-align: center; }
+  .tower-slot {
+    display: flex; align-items: center; gap: 8px; padding: 7px 9px;
+    background: var(--surface-solid); border: 2px solid var(--ink); border-radius: 10px;
+    box-shadow: 0 3px 0 rgba(0,0,0,0.16);
+  }
+  .tower-slot.active { background: var(--accent); }
+  .tower-ico { width: 28px; height: 28px; display: grid; place-items: center; border-radius: 8px; color: #fff; flex-shrink: 0; }
+  .tower-ico svg { width: 18px; height: 18px; }
+  .tower-meta { display: flex; flex-direction: column; line-height: 1.15; }
+  .tower-name { font-size: 13px; font-weight: 800; }
+  .tower-cost { font-size: 12px; font-weight: 700; color: var(--ink-soft); }
+  .tower-slot.active .tower-cost { color: #192231; }
+
+  .quiz-bar {
+    position: absolute; left: 16px; right: 180px; bottom: 14px;
+    padding: 12px 16px; display: flex; flex-direction: column; gap: 10px;
+  }
+  .quiz-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+  .quiz-q-wrap { display: flex; align-items: center; gap: 10px; }
+  .q-tag {
+    padding: 4px 10px; border-radius: 999px; background: var(--secondary); color: #fff;
+    font-size: 12px; font-weight: 800; border: 2px solid var(--ink); flex-shrink: 0;
+  }
+  .q-text { font-size: 19px; font-weight: 800; }
+  .q-text em { font-style: normal; color: var(--primary); text-decoration: underline; text-underline-offset: 4px; }
+  .combo-chip {
+    padding: 5px 12px; border-radius: 999px; background: var(--accent); color: #192231;
+    border: 2px solid var(--ink); font-size: 13px; font-weight: 900; white-space: nowrap;
+  }
+  .quiz-grid { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr auto; gap: 8px; align-items: stretch; }
+  .ans-btn {
+    padding: 11px 12px; font-size: 15px; justify-content: flex-start; text-align: left;
+  }
+  .ans-num {
+    width: 24px; height: 24px; border-radius: 50%; background: var(--surface-muted); border: 1.5px solid var(--ink);
+    display: grid; place-items: center; font-size: 13px; font-weight: 900; flex-shrink: 0;
+  }
+  .skip-btn { padding: 11px 14px; font-size: 13px; color: var(--ink-soft); }
+  </style></head><body>
+  <div class="stage">
+    <div class="hud-top">
+      <div class="hud-pills">
+        <div class="stat-pill" style="color:var(--green-dark)">
+          <svg viewBox="0 0 32 32" fill="none"><path d="M6 27V11H10V14H14V11H18V14H22V11H26V27H6Z" fill="currentColor"/><path d="M13 27V20C13 18.3 14.3 17 16 17C17.7 17 19 18.3 19 20V27" fill="#fff" opacity="0.85"/></svg>
+          <span>성문</span>
+          <div class="hp-bar"><div class="hp-fill"></div></div>
+          <span class="stat-val">15/15</span>
+        </div>
+        <div class="stat-pill">
+          <svg viewBox="0 0 32 32" fill="none"><circle cx="16" cy="16" r="11" fill="#FFB830" stroke="currentColor" stroke-width="2.5"/><circle cx="16" cy="16" r="6" stroke="currentColor" stroke-width="2" opacity="0.6"/></svg>
+          <span class="stat-val">185G</span>
+        </div>
+        <div class="stat-pill" style="color:var(--primary)">
+          <svg viewBox="0 0 32 32" fill="none"><path d="M8 5V27" stroke="currentColor" stroke-width="3" stroke-linecap="round"/><path d="M9 7H25L21 13L25 19H9V7Z" fill="currentColor"/></svg>
+          <span>웨이브</span>
+          <span class="stat-val">4 / 15</span>
+        </div>
+        <div class="stat-pill">
+          <span>남은 적</span>
+          <span class="stat-val" style="color:var(--primary)">12</span>
+        </div>
+      </div>
+      <div class="ctrl-group">
+        <button class="btn btn-accent ctrl-btn">2배속</button>
+        <button class="btn btn-surface ctrl-btn">일시정지</button>
+      </div>
+    </div>
+
+    <div class="panel-card tower-dock">
+      <div class="dock-title">새 타워 설치</div>
+      <div class="tower-slot active">
+        <div class="tower-ico" style="background:var(--primary)"><svg viewBox="0 0 32 32" fill="none"><path d="M9 24C16 23 22 17 23 9" stroke="currentColor" stroke-width="3" stroke-linecap="round"/><path d="M9 24L22 10M22 10H16M22 10V16" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><line x1="9" y1="24" x2="23" y2="9" stroke="currentColor" stroke-width="1.5" stroke-dasharray="2 2"/></svg></div>
+        <div class="tower-meta"><span class="tower-name">궁수탑</span><span class="tower-cost">60G</span></div>
+      </div>
+      <div class="tower-slot">
+        <div class="tower-ico" style="background:var(--ink)"><svg viewBox="0 0 32 32" fill="none"><rect x="6" y="13" width="16" height="9" rx="4" transform="rotate(-15 6 13)" fill="currentColor"/><circle cx="11" cy="23" r="4.5" stroke="currentColor" stroke-width="2.5" fill="#fff"/><circle cx="24" cy="9" r="2.5" fill="currentColor"/></svg></div>
+        <div class="tower-meta"><span class="tower-name">포탑</span><span class="tower-cost">100G</span></div>
+      </div>
+      <div class="tower-slot">
+        <div class="tower-ico" style="background:var(--secondary)"><svg viewBox="0 0 32 32" fill="none"><path d="M16 4V28M5.6 10L26.4 22M26.4 10L5.6 22" stroke="currentColor" stroke-width="2.8" stroke-linecap="round"/><path d="M13 7L16 10L19 7M13 25L16 22L19 25" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg></div>
+        <div class="tower-meta"><span class="tower-name">서리탑</span><span class="tower-cost">60G</span></div>
+      </div>
+      <div class="tower-slot">
+        <div class="tower-ico" style="background:#7C4DFF"><svg viewBox="0 0 32 32" fill="none"><path d="M16 4L19 12L27 14L20 19L22 27L16 22L10 27L12 19L5 14L13 12L16 4Z" fill="currentColor"/></svg></div>
+        <div class="tower-meta"><span class="tower-name">마법탑</span><span class="tower-cost">95G</span></div>
+      </div>
+    </div>
+
+    <div class="panel-card quiz-bar">
+      <div class="quiz-head">
+        <div class="quiz-q-wrap">
+          <span class="q-tag">3학년 어휘</span>
+          <div class="q-text">‘<em>부지런하다</em>’와 뜻이 반대인 낱말은 무엇일까요?</div>
+        </div>
+        <span class="combo-chip">3연속 정답 +34G</span>
+      </div>
+      <div class="quiz-grid">
+        <button class="btn btn-surface ans-btn"><span class="ans-num">1</span>성실하다</button>
+        <button class="btn btn-green ans-btn"><span class="ans-num" style="background:#fff;color:var(--green-dark)">2</span>게으르다</button>
+        <button class="btn btn-surface ans-btn"><span class="ans-num">3</span>씩씩하다</button>
+        <button class="btn btn-surface ans-btn"><span class="ans-num">4</span>얌전하다</button>
+        <button class="btn btn-surface skip-btn">모르겠어요</button>
+      </div>
+    </div>
+  </div>
+  </body></html>

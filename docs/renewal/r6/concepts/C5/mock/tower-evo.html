@@ -1,0 +1,124 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="utf-8"><style>
+  @import url('https://cdn.jsdelivr.net/gh/sun-typeface/SUIT@2/fonts/static/woff2/SUIT.css');
+@font-face { font-family: 'GmarketSans'; src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/GmarketSansBold.woff') format('woff'); font-weight: 700; font-display: swap; }
+  :root {
+    --bg: #F4EFE6;
+    --surface: rgba(249, 246, 239, 0.96);
+    --surface-solid: #F9F6EF;
+    --surface-muted: #E7DFD1;
+    --ink: #2A3342;
+    --ink-soft: #5A6577;
+    --primary: #E76F51;
+    --primary-dark: #B3482E;
+    --primary-text: #FFFFFF;
+    --secondary: #4EA8DE;
+    --secondary-dark: #2678A8;
+    --accent: #F4C95D;
+    --accent-dark: #C49825;
+    --green: #58A474;
+    --green-dark: #35734C;
+    --border: 2px solid #FFFDF9;
+    --radius: 14px;
+    --radius-sm: 10px;
+    --shadow: 4px 6px 0 rgba(42,51,66,0.18), 0 10px 22px rgba(42,51,66,0.14);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    width: 1280px; height: 720px; overflow: hidden;
+    font-family: 'SUIT', 'Apple SD Gothic Neo', sans-serif;
+    color: var(--ink);
+    background: var(--bg);
+    -webkit-font-smoothing: antialiased;
+  }
+  .title-font { font-family: 'GmarketSans', 'SUIT', sans-serif; letter-spacing: -0.02em; }
+  .panel-card {
+    background: var(--surface);
+    border: var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+  }
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    font-family: 'SUIT', 'Apple SD Gothic Neo', sans-serif; font-weight: 800; cursor: pointer;
+    border-radius: var(--radius-sm);
+    border: 2px solid #FFFDF9; box-shadow: 0 5px 0 var(--btn-edge), 4px 8px 14px rgba(42,51,66,0.22);
+    transition: transform 0.08s ease;
+  }
+  .btn-primary { --btn-edge: var(--primary-dark); background: var(--primary); color: var(--primary-text); }
+  .btn-green { --btn-edge: var(--green-dark); background: var(--green); color: #fff; }
+  .btn-accent { --btn-edge: var(--accent-dark); background: var(--accent); color: #192231; }
+  .btn-surface { --btn-edge: rgba(0,0,0,0.22); background: var(--surface-solid); color: var(--ink); }
+  .btn-pressed { transform: translateY(3px); box-shadow: 0 1px 0 var(--btn-edge) !important; }
+  .btn-disabled { opacity: 0.45; filter: grayscale(0.4); box-shadow: none !important; }
+  .panel-card { outline: 1px solid rgba(42,51,66,0.14); }
+  .wrap { position: relative; width: 1280px; height: 720px; overflow: hidden; background: var(--bg); }
+  .header {
+    position: absolute; top: 16px; left: 24px; right: 24px; z-index: 2;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .h-badge {
+    padding: 7px 16px; background: var(--surface); border: var(--border);
+    border-radius: 999px; box-shadow: 0 4px 0 rgba(0,0,0,0.14);
+    display: flex; align-items: center; gap: 10px;
+  }
+  .h-title { font-size: 20px; font-family: 'GmarketSans', 'SUIT', sans-serif; }
+  .h-sub { font-size: 13px; font-weight: 700; color: var(--ink-soft); }
+  .labels-row {
+    position: absolute; left: 40px; right: 40px; bottom: 88px; z-index: 2;
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px;
+  }
+  .stage-card { padding: 10px 14px; display: flex; flex-direction: column; gap: 3px; }
+  .stage-top { display: flex; align-items: center; justify-content: space-between; }
+  .lv-pill { padding: 2px 9px; border-radius: 999px; font-size: 11px; font-weight: 900; border: 1.5px solid var(--ink); }
+  .stage-name { font-size: 17px; font-family: 'GmarketSans', 'SUIT', sans-serif; }
+  .stage-desc { font-size: 12px; font-weight: 700; color: var(--ink-soft); }
+
+  .verify-bar {
+    position: absolute; left: 24px; right: 24px; bottom: 14px; z-index: 2;
+    padding: 8px 16px; display: flex; align-items: center; justify-content: space-between;
+  }
+  .verify-left { display: flex; align-items: center; gap: 12px; }
+  .mini-48 {
+    width: 48px; height: 48px; border-radius: 10px; border: 2px solid var(--ink);
+    background-color: var(--bg); flex-shrink: 0;
+  }
+  .verify-txt { font-size: 13px; font-weight: 800; color: var(--ink-soft); }
+  </style></head><body>
+  <div class="wrap">
+    <div style="position:absolute;left:40px;right:40px;top:64px;bottom:192px;background:url('assets/c-tower-evo-bg.webp') center/contain no-repeat;"></div>
+    <div class="header">
+      <div class="h-badge">
+        <span class="h-title">C5 · 궁수탑(archer) 3단계 진화 시트</span>
+        <span class="h-sub">팝업 종이 극장</span>
+      </div>
+      <div class="h-badge"><span class="h-sub">광원: 좌상단 통일 · 48px 실루엣 판독 검증</span></div>
+    </div>
+
+    <div class="labels-row">
+      <div class="panel-card stage-card">
+        <div class="stage-top"><span class="lv-pill" style="background:var(--surface-muted)">Lv1 기본형</span><span class="h-sub">60G</span></div>
+        <div class="stage-name">궁수탑</div>
+        <div class="stage-desc">기본 사거리 2.5칸 · 대공 가능</div>
+      </div>
+      <div class="panel-card stage-card">
+        <div class="stage-top"><span class="lv-pill" style="background:var(--secondary);color:#fff">Lv4 진화 A</span><span class="h-sub">공격 간격 ×0.7</span></div>
+        <div class="stage-name">속사 궁수탑</div>
+        <div class="stage-desc">화살을 더 빠르게 쏘는 1차 진화</div>
+      </div>
+      <div class="panel-card stage-card">
+        <div class="stage-top"><span class="lv-pill" style="background:var(--accent)">Lv7 진화 A1</span><span class="h-sub">3타마다 2연발</span></div>
+        <div class="stage-name">연속 사격 요새</div>
+        <div class="stage-desc">쌍발 연사 기구 + 고유 깃발 추가</div>
+      </div>
+    </div>
+
+    <div class="panel-card verify-bar">
+      <div class="verify-left">
+        <span style="font-weight:900;font-size:14px">48×48px 실루엣 축소 대조</span>
+        <div class="mini-48" style="background:url('assets/c-tower-evo-bg.webp') 16% 54% / 260% auto no-repeat;"></div><div class="mini-48" style="background:url('assets/c-tower-evo-bg.webp') 50% 54% / 260% auto no-repeat;"></div><div class="mini-48" style="background:url('assets/c-tower-evo-bg.webp') 84% 54% / 260% auto no-repeat;"></div>
+        <span class="verify-txt">3단계 모두 작은 전장 크기(48px)에서 지붕·깃발·쌍발 무장 실루엣이 즉시 구분됨</span>
+      </div>
+      <span class="verify-txt">계약 원본: docs/contracts/balance.candidate.v0.4.json</span>
+    </div>
+  </div>
+  </body></html>
