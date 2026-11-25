@@ -1,8 +1,8 @@
 # 철갑 인간 (`human`) 분해 시트 진행 현황
 
 - 기준: `docs/renewal/r6/PRD-r6.md` §4, `docs/renewal/r6/tech/monster-pipeline.md`, `docs/renewal/r6/bible/monsters.md`, `docs/renewal/r6/bible/sheets/monsters-human.webp`
-- 진행률: **13 / 20 완료** (`cut_parts.py` 절단 검증 통과 13개 · `REDO.md` 조립 재요청 2건 반영 완료)
-- 한도 중단: 이미지 생성 할당량 소진 (`HTTP 429 RESOURCE_EXHAUSTED`, 2026-11-25 21:41 KST 확인 기준 남은 시간 4시간 9분 → 리셋 예정: **2026-11-26 01:51 KST** 전후)
+- 진행률: **13 / 20 완료** (`cut_parts.py` 절단 검증 통과 13개 · 3회차 `REDO.md` 2건(`infantry/T3`·`runner/T2`) 보정 반영 완료)
+- 중단 사유: 이미지 생성 서버 용량 부족 (`HTTP 503 UNAVAILABLE: No capacity available for model gemini-3.1-flash-image`, 2026-11-26 02:02~02:09 KST 3회 연속 실패로 신규 생성 중단)
 
 ## 완료 목록 (13개체)
 
@@ -10,10 +10,10 @@
 |---|---|---:|---:|---|---|
 | `infantry/T1` | `infantry-biped.json` | 0.95 | 13 | 없음(기본 · **REDO 반영: assembly 하단 사각 배경 투명 제거**) | 통과 (`ready=true`, `issues=0`, 기본 IoU 0.633 / placement 0.517) |
 | `infantry/T2` | `infantry-biped.json` | 1.05 | 11 (`+gear`) | `arm-hand-near`, `leg-*`, `leg-foot-*` ← `T1` | 통과 (`issues=0`, IoU 0.424) |
-| `infantry/T3` | `infantry-biped.json` | 1.15 | 11 (`+gear`) | 없음(판금·미늘창·근접다리 신규, 원거리 다리/부츠 armored T1 규격) | 통과 (`issues=0`, IoU 0.524) |
+| `infantry/T3` | `infantry-biped.json` | 1.15 | 11 (`+gear`) | 없음(3회차 **REDO 반영: `arm-near`/`arm-hand-near` 손 분리·speck/흰 얼룩 제거·미늘창 조립 정합**, 모의 `fit_parts` IoU 0.729/0.795) | 통과 (`issues=0`) |
 | `infantry/T4` | `infantry-biped.json` | 1.28 | 11 (`+gear`) | 없음(금테 판금·깃털투구·대검 신규, 원거리 다리/부츠 armored T1 규격) | 통과 (`issues=0`, IoU 0.523) |
 | `runner/T1` | `runner-quadruped.json` | 0.85 | 13 | 없음(기본 · **REDO 반영: `body` 기수 머리 목 위까지 완전 복원**) | 통과 (`ready=true`, 기본 IoU 0.448 / placement 0.722) |
-| `runner/T2` | `runner-quadruped.json` | 0.95 | 12 (`+armor`, `+gear`) | `leg-*-*` 8슬롯 ← `T1` | 통과 (`issues=0`, IoU 0.472) |
+| `runner/T2` | `runner-quadruped.json` | 0.95 | 12 (`+armor`, `+gear`) | `leg-*-*` 8슬롯 ← `T1` (**3회차 REDO 반영: speck 64건/흰 점 제거·T1 관절 기준 목/다리/창 조립 정합**, 모의 `fit_fresh` IoU 0.773; 기존 `fixedTargets` 해제 필요) | 통과 (`issues=0`) |
 | `runner/T3` | `runner-quadruped.json` | 1.05 | 12 (`+armor`, `+gear`) | `leg-*-*` 8슬롯 ← `T1` | 통과 (`issues=0`, IoU 0.354) |
 | `runner/T4` | `runner-quadruped.json` | 1.18 | 12 (`+armor`, `+gear`) | `leg-*-*` 8슬롯 ← `T1` | 통과 (`issues=0`, IoU 0.446) |
 | `armored/T1` | `armored-biped.json` | 1.10 | 13 | 없음(기본) | 통과 (`ready=true`, 비차단 `speck` 1건, IoU 0.594) |

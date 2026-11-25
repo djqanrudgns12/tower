@@ -2,7 +2,7 @@
 
 - 기준: `docs/renewal/r6/PRD-r6.md` §4, `docs/renewal/r6/tech/monster-pipeline.md`, `docs/renewal/r6/bible/monsters.md`, `docs/renewal/r6/bible/sheets/monsters-elf.webp`
 - 진행률: **5 / 20 완료** (`parts/` T1 원본을 `<계통>/<단계>/`로 복사 통일, `cut_parts.py` 절단 검증 통과 5개)
-- 한도 중단: 이미지 생성 할당량 소진 (`HTTP 429 RESOURCE_EXHAUSTED`, 2026-11-25 21:41 KST 확인 기준 남은 시간 4시간 9분 → 리셋 예정: **2026-11-26 01:51 KST** 전후)
+- 중단 사유: 이미지 생성 서버 용량 부족 (`HTTP 503 UNAVAILABLE: No capacity available for model gemini-3.1-flash-image`, 2026-11-26 02:02~02:09 KST 3회 연속 실패로 `boss-t1/T1` 좌측 가장자리 재작화 및 남은 15개체 생성 대기)
 
 ## 완료 목록 (5개체)
 
