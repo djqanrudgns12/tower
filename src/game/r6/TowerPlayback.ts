@@ -5,7 +5,7 @@ import type { RunState } from '../../domain/types';
 import { CELL_PX } from '../assets';
 import { topFit } from '../layers/cues';
 import { DEPTH, fieldPosition, type LayerContext } from '../layers/shared';
-import { sheetKey, type R6BattleAssets } from './BattleAssets';
+import type { R6BattleAssets } from './BattleAssets';
 import { projectFieldDelta } from './mapProjection';
 import { headDirection, R6_COLORS, type R6Manifest, type TowerFormArt } from './manifest';
 
@@ -65,12 +65,14 @@ export class R6TowerPlayback {
         continue;
       }
       this.wantForm(sheets, form, bridge.reducedMotion);
+      const bodyTexture = this.assets.towerTexture(form.body, sheets);
+      const headTexture = this.assets.towerTexture(form.head, sheets);
       let view = this.views.get(tower.id);
-      if (!scene.textures.exists(sheetKey(form.body)) || !scene.textures.exists(sheetKey(form.head))) {
+      if (!bodyTexture || !headTexture) {
         if (view) {
           const previous = forms[view.stage]!;
           this.wantForm(sheets, previous, bridge.reducedMotion);
-          this.draw(view, manifest, previous, x, y, time, bridge.reducedMotion);
+          this.draw(view, manifest, previous, x, y, time, sheets);
         } else this.placeholder(tower.id, x, y, type);
         continue;
       }
@@ -78,8 +80,8 @@ export class R6TowerPlayback {
       this.placeholders.delete(tower.id);
       if (!view) {
         view = {
-          body: scene.add.image(x, y, sheetKey(form.body), form.bodyFrame).setName(`r6:tower:${tower.id}:body`),
-          head: scene.add.image(x, y, sheetKey(form.head), 0).setName(`r6:tower:${tower.id}:head`),
+          body: scene.add.image(x, y, bodyTexture, form.bodyFrame).setName(`r6:tower:${tower.id}:body`),
+          head: scene.add.image(x, y, headTexture, 0).setName(`r6:tower:${tower.id}:head`),
           stage, weaponStage: weapon, direction: headDirection(0, -1, manifest.projection),
           attackAt: -Infinity, attachAt: -Infinity, attachMs: 600, shotLift: 0,
         };
@@ -91,21 +93,21 @@ export class R6TowerPlayback {
         view.attackAt = -Infinity;
         view.stage = stage;
       }
-      this.draw(view, manifest, form, x, y, time, bridge.reducedMotion);
+      this.draw(view, manifest, form, x, y, time, sheets);
     }
     for (const id of this.views.keys()) if (!present.has(id)) this.removeView(id);
     for (const [id, shape] of this.placeholders) if (!present.has(id)) { shape.destroy(); this.placeholders.delete(id); }
-    this.assets.keepTowerSheets(sheets);
+    return sheets;
   }
 
   private wantForm(sheets: Set<string>, form: TowerFormArt, reduced: boolean) {
-    sheets.add(form.body).add(form.head);
     if (reduced) return;
-    if ('sheets' in form.attack) for (const id of form.attack.sheets) sheets.add(id);
-    else if (form.attack.clip) sheets.add(form.attack.clip.sheet);
+    if ('sheets' in form.attack) for (const id of form.attack.sheets) this.assets.towerTexture(id, sheets);
+    else if (form.attack.clip) this.assets.towerTexture(form.attack.clip.sheet, sheets);
   }
 
-  private draw(v: TowerView, manifest: R6Manifest, form: TowerFormArt, x: number, y: number, time: number, reduced: boolean) {
+  private draw(v: TowerView, manifest: R6Manifest, form: TowerFormArt, x: number, y: number, time: number, sheets: Set<string>) {
+    const { reducedMotion: reduced, controller } = this.c.bridge;
     const body = manifest.sheets[form.body]!;
     const head = manifest.sheets[form.head]!;
     const [bx, by] = body.pivot;
@@ -119,7 +121,7 @@ export class R6TowerPlayback {
     const depth = DEPTH.units + y;
     v.shotLift = y - CELL_PX * 0.32 - headY;
 
-    const bodyTexture = sheetKey(form.body);
+    const bodyTexture = this.assets.towerTexture(form.body, sheets)!;
     if (v.body.texture.key !== bodyTexture || Number(v.body.frame.name) !== form.bodyFrame) v.body.setTexture(bodyTexture, form.bodyFrame);
     v.body.setOrigin(bx / body.width, by / body.height).setPosition(x, footY)
       .setDisplaySize(body.width * scale, body.height * scale).setDepth(depth);
@@ -130,20 +132,21 @@ export class R6TowerPlayback {
     const clip = directional ? {
       sheet: attack.sheets[v.direction < 8 ? 0 : 1], first: (v.direction % 8) * attack.frames, count: attack.frames,
     } : attack.clip?.direction === v.direction ? attack.clip : undefined;
-    const useClip = clip && attackFrame >= 0 && attackFrame < clip.count && this.c.scene.textures.exists(sheetKey(clip.sheet));
+    const clipTexture = clip && attackFrame >= 0 && attackFrame < clip.count ? this.assets.towerTexture(clip.sheet, sheets) : undefined;
+    const useClip = clip && clipTexture;
     const headArt = useClip ? manifest.sheets[clip.sheet]! : head;
     const recoil = directional || useClip ? 0 : (attack.recoilPixels[attackFrame] ?? 0) * scale;
     const theta = (manifest.projection.zeroBearingDeg / 180 - v.direction / 8) * Math.PI;
     const attach = reduced ? 1 : Math.max(0, Math.min(1, (time - v.attachAt) / v.attachMs));
     const settle = (1 - attach) ** 2 * scale * 18;
-    const headTexture = sheetKey(useClip ? clip.sheet : form.head);
+    const headTexture = clipTexture ?? this.assets.towerTexture(form.head, sheets)!;
     const headFrame = useClip ? clip.first + attackFrame : v.direction;
     if (v.head.texture.key !== headTexture || Number(v.head.frame.name) !== headFrame) v.head.setTexture(headTexture, headFrame);
     v.head.setOrigin(headArt.pivot[0] / headArt.width, headArt.pivot[1] / headArt.height)
       .setPosition(x + (mx - bx) * scale - Math.sin(theta) * recoil,
         headY - settle + Math.cos(theta) * recoil * manifest.projection.squashY)
       .setDisplaySize(headArt.width * scale, headArt.height * scale).setDepth(depth + 1);
-    this.drawDust(v, attach, x, footY, depth);
+    this.drawDust(v, controller.renderQuality.current > 0 ? 1 : attach, x, footY, depth);
   }
 
   private drawDust(v: TowerView, progress: number, x: number, y: number, depth: number) {

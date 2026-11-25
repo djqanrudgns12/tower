@@ -85,6 +85,10 @@ export interface ControllerView extends GameView {
 const secondsLeft = (until: number | null, tick: number) => (until === null ? 0 : Math.max(0, Math.ceil((until - tick) / 30)));
 const undoable = (t: Pick<Tower, 'undoUntilTick'>, tick: number) => t.undoUntilTick !== null && tick < t.undoUntilTick;
 
+export function remainingEnemies(s: Readonly<RunState>): number {
+  return s.phase === 'BATTLE' ? s.enemies.length + (s.battle ? Math.max(0, s.battle.spawnList.length - s.battle.spawnIndex) : 0) : 0;
+}
+
 export function selectView(ctx: GameContext, s: RunState): GameView {
   const enc = s.quiz.current;
   let question: QuestionView | null = null;
@@ -143,7 +147,8 @@ export function selectView(ctx: GameContext, s: RunState): GameView {
 export function viewKey(s: RunState): string {
   const fb = s.quiz.feedback;
   return [
-    s.phase, s.wave, s.gateHp, s.gold, s.pt, s.pause.join(','), s.quiz.current?.id ?? 0, s.quiz.current?.answer ? 1 : 0, s.quiz.current?.wrapup ? 1 : 0,
+    s.phase, s.wave, s.completedWave, remainingEnemies(s), s.gateHp, s.gold, s.pt,
+    s.pause.join(','), s.quiz.current?.id ?? 0, s.quiz.current?.answer ? 1 : 0, s.quiz.current?.wrapup ? 1 : 0,
     fb ? `${fb.result}:${secondsLeft(fb.nextEnabledTick, s.tick)}` : '-', secondsLeft(s.burningUntilTick, s.tick),
     s.towers.map(t => `${t.id}.${t.level}.${t.form}.${undoable(t, s.tick) ? 1 : 0}`).join('|'), s.quiz.prepDone, s.quiz.battleStreak, s.stats.ptFromKills,
     s.owned.join(','), s.draft ? `${s.draft.wave}:${s.draft.offers.join(',')}` : '-',

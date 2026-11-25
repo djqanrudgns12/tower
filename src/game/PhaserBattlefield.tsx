@@ -17,11 +17,9 @@ interface Props {
 export function PhaserBattlefield({ bridge, width, height, label, onKeyDown, onFocus, onBlur, hintId }: Props) {
   const host = useRef<HTMLDivElement>(null);
   const game = useRef<Phaser.Game | null>(null);
-  const size = useRef('');
 
   useEffect(() => {
     if (!host.current) return;
-    size.current = '';
     const lifetime = new AbortController();
     startBattlefield(host.current, bridge, lifetime.signal, instance => { game.current = instance; });
     return () => {
@@ -35,16 +33,9 @@ export function PhaserBattlefield({ bridge, width, height, label, onKeyDown, onF
   useEffect(() => {
     const g = game.current;
     if (!g || width <= 0 || height <= 0) return;
-    const dpr = Math.min(2, window.devicePixelRatio || 1);
-    const key = `${width}x${height}@${dpr}`;
-    if (size.current !== key) {
-      size.current = key;
-      g.scale.resize(Math.round(width * dpr), Math.round(height * dpr));
-      g.scale.setZoom(1 / dpr);
-    }
     // 선택·확대가 바뀌는 렌더마다 카메라만 다시 맞춘다.
     const scene = g.scene.getScene('battle') as BattleScene | null;
-    if (scene?.sys.isActive()) scene.layout();
+    if (scene?.sys.isActive()) scene.resizeToHost(width, height);
   });
 
   // data-keyscope: 전장에 포커스가 있을 때 문항의 1~4 단축키가 답을 내지 않게 구분한다.

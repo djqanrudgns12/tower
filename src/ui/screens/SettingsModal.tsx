@@ -188,6 +188,7 @@ export function SettingsModal({ settings, onUpdate, onHistoryCleared, onClose }:
               <Card sunk pad="sm" className={css.preview} aria-label="글자 크기 미리보기" data-content>{T.fontPreview}</Card>
 
               <SwitchRow label="밝은 화면" checked={settings.lightTheme === true} onChange={lightTheme => onUpdate({ lightTheme })} />
+              <SwitchRow label="가벼운 화면" checked={settings.lightGraphics === true} onChange={lightGraphics => onUpdate({ lightGraphics })} />
 
               <Row name={T.motion} hint={S.motionHint}>
                 <Segmented

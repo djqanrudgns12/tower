@@ -120,7 +120,7 @@ export class GroundLayer {
     const occupied = new Set(s.towers.map(t => t.slotId));
     const focus = new Set([selectedCell(bridge)?.id, bridge.keyboardSlotId, bridge.drag?.slotId]);
     const highContrast = Boolean((bridge as { highContrastMap?: boolean }).highContrastMap);
-    const step = bridge.reducedMotion ? 1 : Math.min(1, deltaMs / PAD_FADE_MS);
+    const step = bridge.reducedMotion || bridge.controller.renderQuality.current >= 2 ? 1 : Math.min(1, deltaMs / PAD_FADE_MS);
     for (const [slotId, img] of this.pads) {
       const target = padAlpha({ occupied: occupied.has(slotId), placing, focused: focus.has(slotId), highContrast });
       const d = target - img.alpha;
@@ -139,7 +139,7 @@ export class GroundLayer {
     const entry = DEFAULTS.mood.entries[(wave - 1) % 5]!;
     const color = entry.tint ? Number.parseInt(entry.tint.slice(1), 16) : 0xffffff;
     scene.tweens.killTweensOf(mood);
-    if (immediate || bridge.reducedMotion) { mood.setFillStyle(color, entry.alpha); return; }
+    if (immediate || bridge.reducedMotion || bridge.controller.renderQuality.current >= 2) { mood.setFillStyle(color, entry.alpha); return; }
     scene.tweens.add({ targets: mood, fillAlpha: 0, duration: 300, onComplete: () => { mood.setFillStyle(color, 0); scene.tweens.add({ targets: mood, fillAlpha: entry.alpha, duration: 300 }); } });
   }
 }

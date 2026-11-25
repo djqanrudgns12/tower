@@ -6,7 +6,7 @@ import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, use
 import type { TowerId } from '../../contracts/balance';
 import type { OptionId } from '../../contracts/questions';
 import type { RunController } from '../../application/RunController';
-import type { Notice } from '../../application/view';
+import { remainingEnemies, type Notice } from '../../application/view';
 import { relicBalance } from '../../domain/relics';
 import { buildCost } from '../../domain/towers';
 import { FieldBridgeHandle, type FieldDrag, type FieldSelection, type FieldTap, type FieldView } from '../../game/bridge';
@@ -54,6 +54,7 @@ interface Props {
   towers: readonly TowerId[];
   fontScale: FontScale;
   reducedMotion: boolean;
+  lightGraphics?: boolean;
   soundOn: boolean;
   bgmVolume?: number;
   sfxVolume?: number;
@@ -84,6 +85,7 @@ export function GameScreen({
   controller,
   fontScale,
   reducedMotion,
+  lightGraphics = false,
   soundOn,
   bgmVolume,
   sfxVolume,
@@ -323,6 +325,7 @@ export function GameScreen({
 
   // 브리지는 판 하나 동안 같은 객체. Phaser는 매 프레임 selection·magnify를 읽는다.
   const [bridge] = useState(() => new FieldBridgeHandle(controller));
+  useLayoutEffect(() => { controller.renderQuality.setLight(lightGraphics); }, [controller, lightGraphics]);
   const keyboardSlotId = fieldFocused ? cursor : null;
   const onCamera = useCallback((v: FieldView) => {
     cameraRef.current = v;
@@ -539,7 +542,7 @@ export function GameScreen({
   const forecast = useMemo(() => b.r6 ? null : wavePreview(b, map.id, nextWave), [b, map.id, nextWave]);
   const canHitAir = (type: TowerId) => recruitCardInfo(b, type).air === true;
   const warning = forecast ? forecastWarning(b, forecast, canHitAir, towers, view.towers) : null;
-  const remaining = view.phase === 'BATTLE' ? st.enemies.length + (st.battle ? Math.max(0, st.battle.spawnList.length - st.battle.spawnIndex) : 0) : 0;
+  const remaining = remainingEnemies(st);
   const tools = r6 && !camera.projected && selectedTower && !evolveOpen ? (
     <TowerTools key={selectedTower.id} tower={selectedTower} balance={b} gold={view.gold} dock
       onUpgrade={onUpgrade} onEvolve={onEvolve} onSell={onSell} onUndo={onUndo} />

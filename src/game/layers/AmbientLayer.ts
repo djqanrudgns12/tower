@@ -247,9 +247,9 @@ export class AmbientLayer {
   }
 
   /** 매 프레임. 일시정지 중에는 구름·나비·잔물결·꽃잎·눈송이가 멈춘다(색조는 웨이브에 따라서만 바뀐다). */
-  update(deltaMs: number) {
+  update(deltaMs: number, light = false) {
     const { bridge } = this.c;
-    const reduced = bridge.reducedMotion;
+    const reduced = bridge.reducedMotion || light;
     const paused = bridge.controller.state.pause.length > 0;
     const dt = paused ? 0 : Math.min(100, Math.max(0, deltaMs));
     this.clockMs += dt;

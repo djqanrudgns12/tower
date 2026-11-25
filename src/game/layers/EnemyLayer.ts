@@ -28,6 +28,7 @@ interface EnemySpine {
   scale: number;
   hit: string | undefined;
   fall: string | undefined;
+  poseMs: number;
 }
 
 /** 피격 점멸: 원화에 더하는 밝기(ADD, 약 25%)와 같은 적의 점멸 최소 간격(R4 PRD §9.2: 300ms에 한 번). */
@@ -105,6 +106,7 @@ export class EnemyLayer {
     object.skeleton.setupPose();
     object.animationState.timeScale = 1;
     object.animationState.setAnimation(0, fall, false);
+    object.addToUpdateList();
     v.badge?.destroy();
     v.trait?.destroy();
     this.enemies.delete(enemyId);
@@ -140,10 +142,11 @@ export class EnemyLayer {
     return v ? v.prev + (v.cur - v.prev) * alpha : null;
   }
 
-  sync(s: RunState, time: number, alpha: number) {
+  sync(s: RunState, time: number, alpha: number, delta: number) {
     const { scene, bridge } = this.c;
     const { path, balance } = bridge.controller.ctx;
     const reduced = bridge.reducedMotion;
+    const quality = bridge.controller.renderQuality.current;
     const dt = this.lastTime === null ? 0 : Math.max(0, time - this.lastTime);
     this.lastTime = time;
     const seen = new Set<number>();
@@ -199,7 +202,7 @@ export class EnemyLayer {
       if (under) alphaK *= BURROW_ALPHA;
       v.x = x; v.y = y;
       const { art } = v;
-      if (e.flying) this.flyerShadow(x, y + foot, art.displayCells * scaleK, v.lift);
+      if (e.flying && (quality === 0 || e.kind === 'boss')) this.flyerShadow(x, y + foot, art.displayCells * scaleK, v.lift);
       const depth = DEPTH.units + y + 0.5;
       if (v.spine) {
         const { object, scale } = v.spine;
@@ -208,6 +211,14 @@ export class EnemyLayer {
         object.animationState.timeScale = reduced || s.pause.length ? 0 : 1;
         const walk = object.animationState.getTrack(0);
         if (walk) walk.timeScale = moving ? e.speedBP / 10000 : 0;
+        const far = path.length - progress > 6000;
+        const interval = quality < 2 || e.kind === 'boss' ? 0 : far ? 100 : 50;
+        v.spine.poseMs += delta;
+        if (v.spine.poseMs >= interval) {
+          // 갱신을 건너뛴 시간만큼 자세를 전진시킨다. 길 위 위치는 매 프레임 위에서 따로 보간한다.
+          object.updatePose(v.spine.poseMs);
+          v.spine.poseMs = 0;
+        }
       } else {
         // 그림 시트의 걸음은 보간된 진행 거리에 맞춘다.
         const pose = enemyPose({ kind: e.kind, phase: v.phase, time: time / 1000, speedBP: e.speedBP, moving, frames: art.frames, reducedMotion: reduced,
@@ -246,14 +257,17 @@ export class EnemyLayer {
       const data = scene.spine.getSkeletonData(art.data, art.atlas);
       if (!data.findSkin(art.skin) || !data.findAnimation(art.rig.walk)) return;
       object = scene.add.spine(0, 0, art.data, art.atlas, { renderer: 'phaser' }).setName(`r6:enemy:${enemy.id}`);
+      object.removeFromUpdateList();
       object.skeleton.setSkin(art.skin);
       object.skeleton.setupPoseSlots();
       object.animationState.setAnimation(0, art.rig.walk, true).trackTime = bridge.reducedMotion ? 0 : v.phase;
+      object.updatePose(0);
       v.spine = {
         object,
         scale: art.rig.scale * (enemy.kind === 'boss' ? 1.5 : enemy.derived ? 0.8 : 1),
         hit: art.rig.hit && data.findAnimation(art.rig.hit) ? art.rig.hit : undefined,
         fall: art.rig.fall && data.findAnimation(art.rig.fall) ? art.rig.fall : undefined,
+        poseMs: 0,
       };
       v.sprite?.destroy();
       v.sprite = null;

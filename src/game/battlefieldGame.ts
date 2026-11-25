@@ -4,12 +4,13 @@ import { WORLD_H, WORLD_W } from './assets';
 import { BattleScene } from './BattleScene';
 import type { FieldBridge } from './bridge';
 import { isR6Battlefield } from './r6/manifest';
+import { battlefieldDensity } from './quality';
 
 export function startBattlefield(parent: HTMLElement, bridge: FieldBridge, signal: AbortSignal, ready: (game: Phaser.Game) => void) {
   const r6 = isR6Battlefield(bridge.controller.ctx);
   const start = (plugin?: typeof SpinePlugin) => {
     if (signal.aborted) return;
-    const dpr = Math.min(2, window.devicePixelRatio || 1);
+    const dpr = battlefieldDensity(bridge.controller.renderQuality.current);
     const game = new Phaser.Game({
       type: Phaser.WEBGL,
       parent,

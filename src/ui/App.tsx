@@ -182,6 +182,7 @@ export function App() {
             towers={PILOT_TOWERS}
             fontScale={settings.fontScale}
             reducedMotion={settings.reducedMotion}
+            lightGraphics={settings.lightGraphics === true}
             soundOn={settings.soundOn}
             bgmVolume={settings.bgmVolume}
             sfxVolume={settings.sfxVolume}

@@ -16,6 +16,7 @@ import { InputLayer, selectedCell } from './layers/InputLayer';
 import { bossCue, spawnIntros, SPLIT_LABEL_RAISE_CELLS } from './layers/cues';
 import { DEPTH, fieldPosition, type LayerContext } from './layers/shared';
 import { TowerLayer } from './layers/TowerLayer';
+import { battlefieldDensity } from './quality';
 import { R6BattleAssets, R6_GROUND_KEY } from './r6/BattleAssets';
 import { isR6Battlefield } from './r6/manifest';
 import { projectField, r6Overview, R6_MAP_SCALE } from './r6/mapProjection';
@@ -39,6 +40,7 @@ export class BattleScene extends Phaser.Scene {
   private offEvents: (() => void) | null = null;
   private cssCell = 0;
   private cameraKey = '';
+  private layoutKey = '';
 
   constructor() { super('battle'); }
 
@@ -52,7 +54,7 @@ export class BattleScene extends Phaser.Scene {
     const { ctx } = this.bridge.controller;
     const mapId = ctx.map.id;
     if (isR6Battlefield(ctx)) {
-      this.r6Assets = new R6BattleAssets(this);
+      this.r6Assets = new R6BattleAssets(this, () => this.bridge.controller.renderQuality.current === 0 && window.devicePixelRatio > 4 / 3);
       this.r6Assets.preload(mapId, this.bridge.controller.state.owned);
       return;
     }
@@ -91,7 +93,7 @@ export class BattleScene extends Phaser.Scene {
     this.offEvents = this.bridge.controller.onEvents(this.onEvents);
     this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => this.offEvents?.());
     this.events.once(Phaser.Scenes.Events.DESTROY, () => this.offEvents?.());
-    this.layout();
+    this.resizeToHost();
     this.ground.applyMood(true);
   }
 
@@ -104,16 +106,33 @@ export class BattleScene extends Phaser.Scene {
     this.bridge.onIcons?.(icons);
   }
 
-  /** 캔버스 크기가 바뀌면 React 쪽에서 호출한다. */
+  /** 표시 크기는 유지하고 캔버스 내부 픽셀과 카메라를 함께 맞춘다. */
+  resizeToHost(cssWidth?: number, cssHeight?: number) {
+    const host = this.game.canvas.parentElement;
+    const w = cssWidth ?? host?.clientWidth;
+    const h = cssHeight ?? host?.clientHeight;
+    const zoom = 1 / battlefieldDensity(this.bridge.controller.renderQuality.current);
+    if (w && h) {
+      const width = Math.max(1, Math.round(w / zoom));
+      const height = Math.max(1, Math.round(h / zoom));
+      if (this.scale.width !== width || this.scale.height !== height) this.scale.resize(width, height);
+      if (this.scale.zoom !== zoom) this.scale.setZoom(zoom);
+    }
+    this.layout();
+  }
+
   layout() {
     const cam = this.cameras.main;
     const w = this.scale.width, h = this.scale.height;
+    const sel = this.bridge.magnify ? selectedCell(this.bridge) : null;
+    const key = `${w}:${h}:${this.scale.zoom}:${sel?.id ?? ''}`;
+    if (this.layoutKey === key) return;
+    this.layoutKey = key;
     cam.setViewport(0, 0, w, h);
     const frame = this.layerContext.projected ? r6Overview : { x: 0, y: 0, width: WORLD_W, height: WORLD_H };
     const fit = Math.min(w / frame.width, h / frame.height);
-    this.cssCell = (fit * CELL_PX * (this.layerContext.projected ? R6_MAP_SCALE : 1)) / Math.max(1, window.devicePixelRatio || 1);
-    const sel = selectedCell(this.bridge);
-    if (this.bridge.magnify && sel) {
+    this.cssCell = fit * CELL_PX * (this.layerContext.projected ? R6_MAP_SCALE : 1) * this.scale.zoom;
+    if (sel) {
       const factor = Math.max(1, 48 / Math.max(1, this.cssCell));
       cam.setZoom(fit * factor);
       const x = (sel.x + 0.5) * CELL_PX, y = (sel.y + 0.5) * CELL_PX;
@@ -128,7 +147,7 @@ export class BattleScene extends Phaser.Scene {
   }
 
   private showMini(canvasW: number, frame: { x: number; y: number; width: number; height: number }) {
-    const dpr = Math.max(1, window.devicePixelRatio || 1);
+    const dpr = 1 / this.scale.zoom;
     const mw = Math.round(90 * dpr), mh = Math.round(54 * dpr), pad = Math.round(6 * dpr);
     if (!this.miniCam) {
       this.miniCam = this.cameras.add(canvasW - mw - pad, pad, mw, mh).setBounds(0, 0, WORLD_W, WORLD_H);
@@ -196,13 +215,15 @@ export class BattleScene extends Phaser.Scene {
   };
 
   override update(time: number, delta: number) {
-    const s = this.bridge.controller.state;
-    const alpha = this.bridge.controller.alpha;
+    const { controller } = this.bridge;
+    if (this.scale.zoom !== 1 / battlefieldDensity(controller.renderQuality.current)) this.resizeToHost();
+    const s = controller.state;
+    const alpha = controller.alpha;
     this.enemyLayer.advance(s);
     this.towerLayer.sync(s, time);
     this.ground.syncPads(s, delta);
-    this.ambient?.update(delta);
-    this.enemyLayer.sync(s, time, alpha);
+    this.ambient?.update(delta, controller.renderQuality.current >= 2);
+    this.enemyLayer.sync(s, time, alpha, delta);
     this.effects.syncHazards(s, alpha);
     this.effects.syncShots(s, alpha, (id, a) => this.enemyLayer.progressOf(id, a), id => this.towerLayer.weaponLift(id), id => this.enemyLayer.liftOf(id));
     this.inputLayer.draw(s);

@@ -52,7 +52,7 @@ export const TOWER_COPY: Record<TowerId, { role: string; good: string }> = {
 export const PAUSE_COPY: Record<PauseReason, string> = {
   USER: '잠시 멈췄어요.',
   HIDDEN: '화면을 떠나서 멈췄어요.',
-  PERFORMANCE: '기기가 잠시 느려져서 멈췄어요.',
+  PERFORMANCE: '기기가 느려서 잠시 멈췄어요. 계속하기를 누르세요.',
   CONTEXT_LOST: '화면이 잠시 꺼졌다가 돌아왔어요. 준비되면 계속을 눌러 주세요.',
   NUMERIC_LIMIT: '이 판은 숫자가 너무 커져 더 진행할 수 없어요. 홈에서 새 게임을 시작해 주세요.',
 };

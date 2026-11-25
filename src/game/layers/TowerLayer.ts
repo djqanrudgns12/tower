@@ -7,7 +7,7 @@ import { formBranch, type FormId } from '../../domain/towers';
 import type { RunState } from '../../domain/types';
 import { PALETTE } from '../art';
 import { ASSETS, CELL_PX, towerBodyArt, weaponMountOffset, type AssetSpec } from '../assets';
-import { HANGAR_FLIGHT, sheetKey, type R6BattleAssets } from '../r6/BattleAssets';
+import { HANGAR_FLIGHT, type R6BattleAssets } from '../r6/BattleAssets';
 import { headDirection, R6_COLORS } from '../r6/manifest';
 import { R6TowerPlayback } from '../r6/TowerPlayback';
 import { topFit, WIND_SPIN, windSpinStep } from './cues';
@@ -86,8 +86,8 @@ export class TowerLayer {
     if (bridge.reducedMotion) return false;
     const manifest = this.assets?.manifest;
     const art = manifest?.sheets[HANGAR_FLIGHT];
-    const key = sheetKey(HANGAR_FLIGHT);
-    if (!art || !scene.textures.exists(key)) return false;
+    const key = this.assets?.towerTexture(HANGAR_FLIGHT);
+    if (!art || !key) return false;
     const active = this.flights.get(e.towerId);
     const target = fieldPosition(this.c, first.x, first.y);
     if (active) {
@@ -113,11 +113,12 @@ export class TowerLayer {
   }
 
   private syncR6(s: RunState, time: number) {
-    this.r6?.sync(s, time);
+    const sheets = this.r6!.sync(s, time);
     const projection = this.assets?.manifest?.projection;
     if (!projection) return;
     const { bridge } = this.c;
-    if (!bridge.reducedMotion && s.towers.some(tower => String(tower.type) === 'hangar')) this.assets?.prepareHangarFlight();
+    const flightTexture = !bridge.reducedMotion && s.towers.some(tower => String(tower.type) === 'hangar')
+      ? this.assets?.towerTexture(HANGAR_FLIGHT, sheets) : undefined;
     for (const [id, flight] of this.flights) {
       const { image, shots } = flight;
       const tower = s.towers.find(value => value.id === id);
@@ -128,6 +129,11 @@ export class TowerLayer {
         this.flights.delete(id);
         continue;
       }
+      if (flightTexture && image.texture.key !== flightTexture) {
+        const { displayWidth, displayHeight } = image;
+        image.setTexture(flightTexture, image.frame.name).setDisplaySize(displayWidth, displayHeight);
+      }
+      sheets.add(image.texture.key);
       if (frame < 1.9) continue;
       const enemy = s.enemies.find(value => value.id === flight.targetId);
       if (enemy) {
@@ -157,6 +163,7 @@ export class TowerLayer {
           Phaser.Math.Linear(x, targetX, .83), Phaser.Math.Linear(y, targetY, .83));
       }
     }
+    this.assets?.keepTowerSheets(sheets);
   }
 
   /** 바람개비탑이 돌풍을 날렸다: 날개가 순간 빨라진다. 움직임 줄이기면 돌지 않고 날개 투명도만 한 번 깜빡인다. */

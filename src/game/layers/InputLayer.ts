@@ -56,7 +56,7 @@ export class InputLayer {
     const { scene, bridge } = this.c;
     const down = this.down;
     this.down = null;
-    if (!down || Math.hypot(p.x - down.x, p.y - down.y) > 14 * (window.devicePixelRatio || 1)) return;
+    if (!down || Math.hypot(p.x - down.x, p.y - down.y) * scene.scale.zoom > 14) return;
     if (this.overMinimap(p)) return;
     const world = scene.cameras.main.getWorldPoint(p.x, p.y);
     const state = bridge.controller.state;

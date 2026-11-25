@@ -7,6 +7,7 @@ import { addRecord, type RunRecord } from '../persistence/db';
 import { cancelRunStartRetry, queueAndFlushCompletedRun } from '../persistence/lobbyClient';
 import { recordFinishedRun, type ReviewDelta } from '../persistence/reviewNote';
 import { buildRunRecord } from './runRecord';
+import { RenderQuality } from './renderQuality';
 import { selectView, viewKey, type ControllerView, type Notice } from './view';
 
 export const TICK_MS = 1000 / 30;
@@ -44,6 +45,8 @@ export class RunController {
   private saveStatus: RunSaveStatus = 'untracked';
   private noticeSeq = 1;
   private hitches: number[] = [];
+  readonly renderQuality = new RenderQuality();
+  private readonly adaptiveRender: boolean;
   /** 다음 논리 틱 시작에 반영할 답안·거래(PRD §3.4(2)). */
   private queue: Command[] = [];
   /** 대기 명령을 미리 적용해 본 사본. 화면이 거부 이유를 바로 받도록 하되 실제 상태는 틱 경계에서만 바꾼다. */
@@ -55,6 +58,7 @@ export class RunController {
   constructor(ctx: GameContext, state: RunState, opts: RunControllerOptions) {
     this.ctx = ctx;
     this.s = state;
+    this.adaptiveRender = ctx.balance.balanceVersion === '2.0.0';
     this.recordOnFinish = opts.recordOnFinish;
     this.view = { ...selectView(ctx, state), notices: [], renderLost: false, reviewDelta: null };
     this.key = viewKey(state);
@@ -78,6 +82,7 @@ export class RunController {
     this.running = true;
     this.last = performance.now();
     this.acc = 0;
+    this.renderQuality.resetSample();
     this.raf = requestAnimationFrame(this.frame);
     document.addEventListener('visibilitychange', this.onVisibility);
   }
@@ -129,6 +134,7 @@ export class RunController {
     }
     this.acc = 0;
     this.last = performance.now();
+    this.renderQuality.resetSample();
     this.publish([]);
   }
 
@@ -158,7 +164,10 @@ export class RunController {
       return { ok: false, error: 'NUMERIC_LIMIT' };
     }
     if (!result.ok) return result;
-    if (cmd.type === 'pause' || cmd.type === 'resume') this.acc = 0;
+    if (cmd.type === 'pause' || cmd.type === 'resume') {
+      this.acc = 0;
+      this.renderQuality.resetSample();
+    }
     this.publish(result.events);
     if (result.events.some(e => e.type === 'gameOver')) this.finish();
     return result;
@@ -188,13 +197,16 @@ export class RunController {
     const dt = now - this.last;
     this.last = now;
     if (this.s.pause.length > 0 || this.s.phase === 'GAME_OVER') { this.acc = 0; return; }
-    // 한 번의 긴 끊김(텍스처 생성·GC·탭 전환 직후)은 따라잡지 않고 그 시간을 버린다. 게임 안에서는 세상이 멈춘 것과 같고
-    // 결과(틱별 판정)는 바뀌지 않는다. 5초 안에 세 번 반복되면 기기가 따라오지 못하는 것으로 보고 정지한다(PRD §13.3, §14).
+    const adaptive = this.adaptiveRender;
+    if (adaptive && this.renderQuality.sample(dt)) { this.pause('PERFORMANCE'); return; }
+    // 긴 끊김의 벽시계 시간은 따라잡지 않는다. R6는 이 구간도 품질 측정에 포함한다.
     if (dt > PERFORMANCE_PAUSE_MS) {
       this.acc = 0;
-      this.hitches = this.hitches.filter(t => now - t < 5000);
-      this.hitches.push(now);
-      if (this.hitches.length >= 3) { this.hitches = []; this.pause('PERFORMANCE'); }
+      if (!adaptive) {
+        this.hitches = this.hitches.filter(t => now - t < 5000);
+        this.hitches.push(now);
+        if (this.hitches.length >= 3) { this.hitches = []; this.pause('PERFORMANCE'); }
+      }
       return;
     }
     this.acc += dt;
@@ -204,8 +216,8 @@ export class RunController {
       n++;
       if (!this.step()) return;
     }
-    // 처리할 틱을 버려 게임 속도를 기기마다 다르게 만들지 않는다. 밀리면 정지시키고 수동 재개를 받는다(PRD §13.3).
-    if (this.acc > PERFORMANCE_PAUSE_MS) { this.acc = 0; this.pause('PERFORMANCE'); }
+    // R6는 품질 조절로 따라잡을 동안 프레임당 틱 상한을 유지하고 밀린 틱을 보관한다.
+    if (!adaptive && this.acc > PERFORMANCE_PAUSE_MS) { this.acc = 0; this.pause('PERFORMANCE'); }
   };
 
   private step(): boolean {
@@ -221,12 +233,13 @@ export class RunController {
       }
       throw error;
     }
-    this.publish(events);
+    // R6는 질문·남은 적 등 표시값이 바뀐 틱에만 React를 깨운다.
+    this.publish(events, !this.adaptiveRender && events.length === 0);
     if (events.some(e => e.type === 'gameOver')) { this.finish(); return false; }
     return true;
   }
 
-  private publish(events: DomainEvent[]) {
+  private publish(events: DomainEvent[], forceSnapshot = events.length === 0) {
     for (const e of events) {
       if (e.type === 'waveComplete') this.notify(e.milestoneGold > 0 ? `${e.wave}웨이브 생존 +${e.milestoneGold}골드` : `${e.wave}웨이브를 지켰어요. 성문이 다시 튼튼해졌어요.`, e.milestoneGold > 0 ? 'reward' : 'info');
       if (e.type === 'burning') this.notify(`연속 정답 보너스: 타워가 더 빨리 공격해요 · ${this.ctx.balance.burning.durationMs / 1000}초`, 'reward');
@@ -234,7 +247,7 @@ export class RunController {
     }
     if (events.length) for (const l of this.eventListeners) l(events);
     const key = viewKey(this.s);
-    if (key !== this.key || events.length === 0) {
+    if (key !== this.key || forceSnapshot) {
       this.key = key;
       this.refresh();
     }

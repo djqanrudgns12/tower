@@ -10,7 +10,7 @@ const BASE = 'assets/r6/';
 const MANIFEST_KEY = 'r6.manifest';
 export const R6_GROUND_KEY = 'r6.ground';
 export const R6_PAD_KEY = 'r6.map.pad';
-export const sheetKey = (id: string) => `r6.sheet.${id}`;
+const sheetKey = (id: string, high = false) => `r6.sheet.${id}${high ? '.2x' : ''}`;
 const atlasKey = (id: string) => `r6.atlas.${id}`;
 const rigKey = (id: string) => `r6.rig.${id}`;
 export const HANGAR_FLIGHT = 'hangar-flight';
@@ -24,8 +24,15 @@ export class R6BattleAssets {
   private readonly requested = new Set<string>();
   private readonly baseTowerSheets = new Set<string>();
   private readonly stagedTowerSheets = new Set<string>();
+  private readonly failedTowerSheets = new Set<string>();
 
-  constructor(private readonly scene: Phaser.Scene) {}
+  constructor(private readonly scene: Phaser.Scene, private readonly useHighSheets: () => boolean) {
+    scene.load.on('loaderror', (file: Phaser.Loader.File) => {
+      if (!file.key.startsWith('r6.sheet.')) return;
+      this.stagedTowerSheets.delete(file.key);
+      this.failedTowerSheets.add(file.key);
+    });
+  }
 
   preload(mapId: string, owned: readonly string[]) {
     const { load } = this.scene;
@@ -52,16 +59,6 @@ export class R6BattleAssets {
     if (!load.isLoading()) load.start();
   }
 
-  prepareHangarFlight() {
-    const spec = this.manifest?.sheets[HANGAR_FLIGHT];
-    if (!spec) return;
-    const { load } = this.scene;
-    this.queue(sheetKey(HANGAR_FLIGHT), () => {
-      this.loadTowerSheet(HANGAR_FLIGHT, spec);
-      if (!load.isLoading()) load.start();
-    });
-  }
-
   private queueTowerIcon(id: R6TowerId) {
     const { manifest, scene: { load } } = this;
     if (!manifest) return false;
@@ -79,32 +76,49 @@ export class R6BattleAssets {
       });
       return true;
     }
-    if (this.baseTowerSheets.has(first.body)) return false;
+    if (this.baseTowerSheets.has(sheetKey(first.body))) return false;
     for (const sheet of [first.body, first.head]) {
-      this.baseTowerSheets.add(sheet);
-      if (!this.stagedTowerSheets.delete(sheet)) this.loadTowerSheet(sheet, manifest.sheets[sheet]!);
+      const key = sheetKey(sheet);
+      this.baseTowerSheets.add(key);
+      if (!this.stagedTowerSheets.delete(key)) this.loadTowerSheet(key, manifest.sheets[sheet]!, false);
     }
     return true;
   }
 
-  /** 전장에 쓰는 형태만 적재한다. 사용할 그림을 적용한 뒤 이전 프레임의 텍스처를 정리한다. */
-  keepTowerSheets(ids: ReadonlySet<string>) {
-    if (!this.manifest) return;
+  /** 새 해상도가 로드될 때까지 기존 시트를 계속 쓴다. 실제 프레임 크기는 이 키에만 영향을 준다. */
+  towerTexture(id: string, keep?: Set<string>): string | undefined {
+    const spec = this.manifest?.sheets[id];
+    if (!spec) return undefined;
+    const large = sheetKey(id, true);
+    const high = Boolean(spec.file2x && this.useHighSheets() && !this.failedTowerSheets.has(large));
+    const wanted = sheetKey(id, high);
+    keep?.add(wanted);
+    const { textures } = this.scene;
+    const alternative = sheetKey(id, !high);
+    const ready = textures.exists(wanted) ? wanted : textures.exists(alternative) ? alternative : undefined;
+    if (ready) keep?.add(ready);
+    return ready;
+  }
+
+  /** 전장에 쓰는 해상도만 적재한다. 그림을 교체한 뒤 사용하지 않는 GPU 텍스처를 정리한다. */
+  keepTowerSheets(keys: ReadonlySet<string>) {
+    const { manifest } = this;
+    if (!manifest) return;
     const { load, textures } = this.scene;
     let added = false;
-    for (const id of ids) {
-      if (this.baseTowerSheets.has(id) || this.stagedTowerSheets.has(id)) continue;
-      const spec = this.manifest.sheets[id];
+    for (const key of keys) {
+      if (this.baseTowerSheets.has(key) || this.stagedTowerSheets.has(key) || this.failedTowerSheets.has(key)) continue;
+      const [, , id, density] = key.split('.');
+      const spec = id && manifest.sheets[id];
       if (!spec) continue;
-      this.stagedTowerSheets.add(id);
-      this.loadTowerSheet(id, spec);
+      this.stagedTowerSheets.add(key);
+      this.loadTowerSheet(key, spec, density === '2x');
       added = true;
     }
-    for (const id of this.stagedTowerSheets) {
-      const key = sheetKey(id);
-      if (ids.has(id) || !textures.exists(key)) continue;
+    for (const key of this.stagedTowerSheets) {
+      if (keys.has(key) || !textures.exists(key)) continue;
       textures.remove(key);
-      this.stagedTowerSheets.delete(id);
+      this.stagedTowerSheets.delete(key);
     }
     if (added && !load.isLoading()) load.start();
   }
@@ -165,10 +179,9 @@ export class R6BattleAssets {
     return { rig, skin: tierSkins?.[tier] ?? skin };
   }
 
-  private loadTowerSheet(id: string, spec: R6Sheet) {
-    const high = this.scene.scale.zoom < .75 ? spec.file2x : undefined;
+  private loadTowerSheet(key: string, spec: R6Sheet, high: boolean) {
     const density = high ? 2 : 1;
-    this.scene.load.spritesheet(sheetKey(id), BASE + (high ?? spec.file), {
+    this.scene.load.spritesheet(key, BASE + (high ? spec.file2x! : spec.file), {
       frameWidth: spec.width * density, frameHeight: spec.height * density, endFrame: spec.count - 1,
     });
   }

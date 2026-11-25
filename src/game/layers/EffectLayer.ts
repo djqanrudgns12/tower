@@ -50,7 +50,9 @@ export class EffectLayer {
 
   /** labelRaise(월드 px)만큼 보상 표찰을 올린다(분열: 튀어나오는 파생체를 가리지 않게). */
   onKill(e: Extract<DomainEvent, { type: 'kill' }>, labelRaise = 0) {
-    for (let i = 0; i < 3; i++) this.fx(ASSETS.projectile.puff, toWorld(e.x) + (i - 1) * 9, toWorld(e.y) - 10 - (i % 2) * 6, 0.6);
+    if (this.c.bridge.controller.renderQuality.current === 0) {
+      for (let i = 0; i < 3; i++) this.fx(ASSETS.projectile.puff, toWorld(e.x) + (i - 1) * 9, toWorld(e.y) - 10 - (i % 2) * 6, 0.6);
+    }
     this.spawnKillCallout(e.x, e.y, e.gold, e.pt, labelRaise);
   }
 
@@ -172,6 +174,7 @@ export class EffectLayer {
    */
   private cloud(x: number, y: number, r: number, fill: number, duration: number) {
     const { scene, bridge } = this.c;
+    if (bridge.controller.renderQuality.current > 0) return;
     const reduced = bridge.reducedMotion;
     const blobs = [[-0.6, 0.12, 0.62], [0.6, 0.12, 0.62], [0, -0.28, 0.8]] as const;
     const g = scene.add.graphics().setDepth(DEPTH.fx).setPosition(x, y);
@@ -194,7 +197,7 @@ export class EffectLayer {
 
   private fx(key: string, x: number, y: number, scale: number, tint?: number) {
     const { scene, bridge } = this.c;
-    if (bridge.reducedMotion && key === ASSETS.projectile.puff) return;
+    if ((bridge.reducedMotion || bridge.controller.renderQuality.current > 0) && key === ASSETS.projectile.puff) return;
     const img = scene.add.image(x, y, key).setDepth(DEPTH.fx).setScale(scale * 0.5).setAlpha(0.95);
     if (tint !== undefined) img.setTint(tint);
     scene.tweens.add({ targets: img, scale: scale, alpha: 0, duration: bridge.reducedMotion ? 80 : 180, onComplete: () => img.destroy() });
