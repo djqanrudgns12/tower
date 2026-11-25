@@ -123,7 +123,8 @@ def process_actor(folder, canonical, first_targets):
     report = read_json(work / "report.json")
     if white_key:
         report["whiteKey"] = white_key
-        publish(REVIEW / "white-key" / (actor_id(meta) + ".webp"), (clean_sheet.parent / "review.webp").read_bytes())
+        if white_key["applied"]:
+            publish(REVIEW / "white-key" / (actor_id(meta) + ".webp"), (clean_sheet.parent / "review.webp").read_bytes())
     missing = set(report["parts"]) ^ set(meta["slots"])
     if missing:
         report["issues"].append({"code": "slot_manifest_mismatch", "slots": sorted(missing)})
@@ -206,7 +207,7 @@ def pack_species(species, items, *, sync_source=True):
                 rig = read_json(path)
                 animate_swarm(rig)
                 write_json(path, rig)
-            export(work, "spine-cli", rig_cache=CACHE / species / "rigs")
+            export(work, "spine-cli", rig_cache=CACHE / species / "rigs", atlas_budget=ATLAS_BUDGET)
             subprocess.run(["node", HERE / "check-runtime.mjs", work], check=True)
             shutil.copyfile(source / "species.json", work / "species.json")
             work.rename(cache)
@@ -282,15 +283,12 @@ def batch_signature():
     return digest([(str(p.relative_to(ROOT)), digest(p)) for p in sorted(files)])
 
 
-def published_preview(row):
+def published_work(row):
     species, entry, skin = (row[k] for k in ("species", "entry", "skin"))
     folder = SOURCE / species / entry / skin
     placement = folder / "placement.json"
     work = CACHE / species / entry / skin / read_json(placement)["fitKey"]
-    preview = work / "assembly-preview.webp"
-    if not preview.exists():
-        preview = CACHE / "review" / species / entry / skin / work.name / preview.name
-    if not preview.exists():
+    if not (work / "report.json").exists():
         # 다른 제작자가 원본을 교체하는 중이면 지난 판의 캐시에 새 원화를 섞지 않는다.
         guide = SOURCE / "_guides" / read_json(folder / "parts.json")["guide"]
         saved = read_json(folder / "report.json")
@@ -301,18 +299,24 @@ def published_preview(row):
             result = read_json(rebuilt / "report.json")
             if any(saved[k] != result[k] for k in ("parts", "pivots", "silhouetteIoU", "issues")):
                 raise ValueError(f"{species}/{entry}/{skin} 원본이 바뀌었습니다. 해당 종족을 포함해 실행하세요.")
-            # 절단 캐시와 별개로 판독용 복원본만 저장한다.
-            publish(preview, (rebuilt / preview.name).read_bytes())
-    return preview
+            work.parent.mkdir(parents=True, exist_ok=True)
+            rebuilt.rename(work)
+    return work
 
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--species", nargs="+", choices=SPECIES, default=SPECIES,
                         help="지정한 종족만 갱신하고 다른 종족의 게시 결과는 비교에 재사용한다.")
+    parser.add_argument("--actor", nargs=3, metavar=("SPECIES", "ENTRY", "SKIN"), action="append",
+                        help="지정한 개체만 다시 조립하고 나머지는 이전 검수 결과를 사용한다.")
     parser.add_argument("--runtime-only", action="store_true", help="원화 폴더의 종족 편집 명세는 제작자가 관리한다.")
     args = parser.parse_args()
-    selected = set(args.species)
+    actors = {tuple(actor) for actor in args.actor or []}
+    for species, entry, skin in actors:
+        if species not in args.species or skin not in ACTORS.get(entry, ()):
+            parser.error(f"개체를 확인하세요 · {species}/{entry}/{skin}")
+    selected = {species for species, _, _ in actors} if actors else set(args.species)
     receipt = CACHE / "batch-state.json"
     if receipt.exists() and read_json(receipt) == batch_signature():
         print("몬스터 원본·리그·아틀라스·검수 결과가 최신입니다.")
@@ -323,6 +327,7 @@ def main():
                         sys.executable, "-B", str(Path(__file__).resolve()), *sys.argv[1:]])
     CACHE.mkdir(parents=True, exist_ok=True)
     previous = read_json(REVIEW / "batch.json") if (REVIEW / "batch.json").exists() else {}
+    previous_rows = {(r["species"], r["entry"], r["skin"]): r for r in previous.get("actors", [])}
     rows, images, redos = [], {}, {}
     atlases = {s: stats for s, stats in previous.get("atlases", {}).items() if s not in selected}
     for species in sorted(SPECIES, key=lambda s: (s not in ("machine", "stone"), s)):
@@ -331,20 +336,31 @@ def main():
                 if row["species"] != species:
                     continue
                 rows.append(row)
-                images.setdefault(species, {})[actor_id(row)] = published_preview(row)
+                images.setdefault(species, {})[actor_id(row)] = published_work(row) / "assembly-preview.webp"
             continue
         items, redo = [], []
         species_images = {}
         for entry, skins in ACTORS.items():
             canonical, first_targets = {}, {}
             for skin in skins:
-                folder = SOURCE / species / entry / skin
-                if not all((folder / f).is_file() for f in ("sheet.png", "assembly.png", "parts.json")):
-                    continue
-                if skin != skins[0] and not canonical:
-                    print(f"{species}/{entry}/{skin} · T1 관절이 준비되면 처리합니다.")
-                    continue
-                meta, report, work = process_actor(folder, canonical, first_targets)
+                key = species, entry, skin
+                folder = SOURCE.joinpath(*key)
+                old = previous_rows.get(key)
+                if actors and key not in actors:
+                    if not old:
+                        continue
+                    meta = read_json(folder / "parts.json")
+                    report = read_json(folder / "report.json")
+                    work = published_work(old)
+                else:
+                    if not all((folder / f).is_file() for f in ("sheet.png", "assembly.png", "parts.json")):
+                        if key in actors:
+                            raise ValueError(f"{folder} · 시트·조립 그림·슬롯 명세가 필요합니다.")
+                        continue
+                    if skin != skins[0] and not canonical:
+                        print(f"{species}/{entry}/{skin} · T1 관절이 준비되면 처리합니다.")
+                        continue
+                    meta, report, work = process_actor(folder, canonical, first_targets)
                 if not canonical:
                     canonical = report["pivots"]
                     first_targets = {k: v["targetBox"] for k, v in report["parts"].items()}
@@ -380,18 +396,23 @@ def main():
                                  f"가장 비슷한 쌍은 `{worst['first']}`와 `{worst['second']}` (IoU {worst['iou']:.3f}).")
         if path.exists():
             history = path.read_text().split("## 도구로 해결", 1)
+            accepted = {f"`{r['entry']}/{r['skin']}`": r for r in rows if r['species'] == species and r['accepted']}
+            entries = []
             if len(history) == 2:
-                accepted = {f"`{r['entry']}/{r['skin']}`" for r in rows if r['species'] == species and r['accepted']}
                 entries = [line for line in history[1].split("\n## ", 1)[0].splitlines()
                            if line.startswith("- ") and line.split()[1] in accepted]
-                if entries:
-                    lines.extend(["", "## 도구로 해결", "", *entries])
+            pending = history[0].split("## 조립\n", 1)[-1].split("\n## ", 1)[0]
+            for line in pending.splitlines():
+                if line.startswith("- ") and (key := line.split()[1]) in accepted:
+                    entries.append(f"- {key} 재작화 반영 · 조립 IoU {accepted[key]['iou']:.3f}")
+            if entries:
+                lines.extend(["", "## 도구로 해결", "", *entries])
             _, marker, notes = path.read_text().partition("\n## 32px 외곽선")
             if marker:
                 lines.append("\n## 32px 외곽선 · 이전 검수 기록" + notes.removeprefix(" · 이전 검수 기록").rstrip())
         publish(path, ("\n".join(lines) + "\n").encode())
     write_summary(rows, atlases, comparisons)
-    if selected == set(SPECIES) and not args.runtime_only:
+    if selected == set(SPECIES) and not args.runtime_only and not actors:
         save(receipt, batch_signature())
 
 

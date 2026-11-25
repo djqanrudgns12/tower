@@ -7,7 +7,7 @@
   "guide": "special-crystal.json",
   "placement": "placement.json",
   "ready": true,
-  "silhouetteIoU": 0.46,
+  "silhouetteIoU": 0.776,
   "parts": {
     "crystal-far": {
       "sourceBox": [
@@ -17,16 +17,16 @@
         240
       ],
       "targetBox": [
-        56,
-        84,
-        124,
-        153
+        54,
+        77,
+        122,
+        186
       ],
       "placedBox": [
-        63,
-        84,
-        116,
-        153
+        54,
+        87,
+        122,
+        175
       ]
     },
     "body": {
@@ -37,16 +37,16 @@
         240
       ],
       "targetBox": [
-        87,
-        31,
-        181,
-        234
+        32,
+        62,
+        236,
+        191
       ],
       "placedBox": [
-        87,
+        91,
         62,
-        181,
-        203
+        177,
+        191
       ]
     },
     "crystal-near": {
@@ -57,16 +57,16 @@
         480
       ],
       "targetBox": [
-        137,
-        136,
-        180,
-        183
+        161,
+        112,
+        213,
+        195
       ],
       "placedBox": [
-        139,
-        136,
-        178,
-        183
+        161,
+        122,
+        213,
+        184
       ]
     }
   },
@@ -93,10 +93,20 @@
     ]
   },
   "issues": [],
+  "whiteKey": {
+    "applied": false,
+    "removedPixels": 0,
+    "sheet": {
+      "removedPixels": 0,
+      "fringePixels": 0
+    },
+    "assembly": {
+      "removedPixels": 0,
+      "fringePixels": 0
+    }
+  },
   "fitScores": [
-    0.408,
-    0.46
+    0.776
   ],
-  "accepted": false,
-  "redo": "body, crystal-far, crystal-near 부위를 같은 자세·비율로 다시 분리해 주세요. 두 차례 정렬 후 IoU 0.460."
+  "accepted": true
 }

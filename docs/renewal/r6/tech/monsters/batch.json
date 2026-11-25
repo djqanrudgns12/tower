@@ -22,7 +22,8 @@
       "skin": "T3",
       "iou": 0.84,
       "slots": 11,
-      "accepted": true
+      "accepted": false,
+      "artRedo": "어깨 장갑 안쪽의 흰 면을 제거하니 장갑 중앙과 낮게 놓인 머리 사이로 전장 바닥이 보입니다. 목과 장갑이 겹치도록 머리·몸통·장갑을 다시 맞춰 주세요."
     },
     {
       "species": "machine",
@@ -52,9 +53,9 @@
       "species": "machine",
       "entry": "runner",
       "skin": "T3",
-      "iou": 0.689,
+      "iou": 0.837,
       "slots": 12,
-      "accepted": false
+      "accepted": true
     },
     {
       "species": "machine",
@@ -108,25 +109,25 @@
       "species": "machine",
       "entry": "special",
       "skin": "T2",
-      "iou": 0.422,
+      "iou": 0.886,
       "slots": 3,
-      "accepted": false
+      "accepted": true
     },
     {
       "species": "machine",
       "entry": "special",
       "skin": "T3",
-      "iou": 0.487,
+      "iou": 0.82,
       "slots": 3,
-      "accepted": false
+      "accepted": true
     },
     {
       "species": "machine",
       "entry": "special",
       "skin": "T4",
-      "iou": 0.565,
+      "iou": 0.913,
       "slots": 4,
-      "accepted": false
+      "accepted": true
     },
     {
       "species": "machine",
@@ -140,9 +141,9 @@
       "species": "machine",
       "entry": "boss-t2",
       "skin": "T2",
-      "iou": 0.694,
+      "iou": 0.829,
       "slots": 12,
-      "accepted": false
+      "accepted": true
     },
     {
       "species": "machine",
@@ -150,15 +151,16 @@
       "skin": "T3",
       "iou": 0.705,
       "slots": 12,
-      "accepted": true
+      "accepted": false,
+      "artRedo": "몸통 아래 흰 삼각형은 원화의 부품 사이 배경입니다. 전장 걷기에서 몸통과 앞·뒷다리의 접합부가 크게 열리고 발이 떨어져 보입니다. 몸통 아래 관절과 발의 겹침을 다시 맞춰 주세요."
     },
     {
       "species": "machine",
       "entry": "boss-t4",
       "skin": "T4",
-      "iou": 0.689,
+      "iou": 0.815,
       "slots": 12,
-      "accepted": false
+      "accepted": true
     },
     {
       "species": "stone",
@@ -268,25 +270,25 @@
       "species": "stone",
       "entry": "special",
       "skin": "T2",
-      "iou": 0.46,
+      "iou": 0.776,
       "slots": 3,
-      "accepted": false
+      "accepted": true
     },
     {
       "species": "stone",
       "entry": "special",
       "skin": "T3",
-      "iou": 0.537,
+      "iou": 0.821,
       "slots": 3,
-      "accepted": false
+      "accepted": true
     },
     {
       "species": "stone",
       "entry": "special",
       "skin": "T4",
-      "iou": 0.59,
+      "iou": 0.823,
       "slots": 3,
-      "accepted": false
+      "accepted": true
     },
     {
       "species": "stone",
@@ -300,17 +302,17 @@
       "species": "stone",
       "entry": "boss-t2",
       "skin": "T2",
-      "iou": 0.665,
+      "iou": 0.803,
       "slots": 11,
-      "accepted": false
+      "accepted": true
     },
     {
       "species": "stone",
       "entry": "boss-t3",
       "skin": "T3",
-      "iou": 0.643,
+      "iou": 0.749,
       "slots": 10,
-      "accepted": false
+      "accepted": true
     },
     {
       "species": "stone",
@@ -381,9 +383,9 @@
       "species": "human",
       "entry": "infantry",
       "skin": "T3",
-      "iou": 0.674,
+      "iou": 0.795,
       "slots": 11,
-      "accepted": false
+      "accepted": true
     },
     {
       "species": "human",
@@ -405,9 +407,9 @@
       "species": "human",
       "entry": "runner",
       "skin": "T2",
-      "iou": 0.688,
+      "iou": 0.773,
       "slots": 12,
-      "accepted": false
+      "accepted": true
     },
     {
       "species": "human",
@@ -469,10 +471,9 @@
       "species": "insect",
       "entry": "infantry",
       "skin": "T1",
-      "iou": 0.812,
+      "iou": 0.818,
       "slots": 13,
-      "accepted": false,
-      "artRedo": "조립 기준의 왼쪽 팔과 몸통이 화면 가장자리에서 잘렸습니다. 양쪽 팔다리가 보이는 전신 기준으로 다시 맞춰 주세요."
+      "accepted": true
     },
     {
       "species": "insect",
@@ -503,26 +504,25 @@
       "species": "insect",
       "entry": "boss-t1",
       "skin": "T1",
-      "iou": 0.778,
+      "iou": 0.78,
       "slots": 13,
-      "accepted": false,
-      "artRedo": "등날개(armor)의 불투명한 사각 배경을 제거하고 양쪽 다리와 발목을 맞물리는 길이로 분리해 주세요."
+      "accepted": true
     }
   ],
   "atlases": {
     "machine": {
-      "width": 920,
-      "height": 523,
-      "bytes": 584332,
-      "rgbaBytes": 1924640,
-      "sha256": "871a2ec78078e108a3a98d673b87412886783b1ac9d76ca74b6e0731cd17c965"
+      "width": 1937,
+      "height": 316,
+      "bytes": 745472,
+      "rgbaBytes": 2448368,
+      "sha256": "3d1f313f5db93bc7bebf4d3d4ffd80cbf0234f7973de3d43e760c55aec555962"
     },
     "stone": {
-      "width": 1222,
-      "height": 525,
-      "bytes": 776326,
-      "rgbaBytes": 2566200,
-      "sha256": "1904fe31387c491ea123c7c99e785bca2e7211b20eb48a85fc0deffac83e64c9"
+      "width": 1985,
+      "height": 398,
+      "bytes": 385836,
+      "rgbaBytes": 3160120,
+      "sha256": "978b7374ce3fe2a98b2dc5f762176dac89e3c3a33757787dfa84230da5dd1088"
     },
     "elf": {
       "width": 691,
@@ -532,21 +532,21 @@
       "sha256": "5f607d9fa78d5895e170110031ca5ebf85cac264a88d3e1aa8bc730c7a62eefc"
     },
     "human": {
-      "width": 1238,
-      "height": 269,
-      "bytes": 439898,
-      "rgbaBytes": 1332088,
-      "sha256": "0031b10a2281ab2dbc2642df5b732765c5ef6f2675a1527a119a1d12876c7642"
+      "width": 745,
+      "height": 523,
+      "bytes": 512974,
+      "rgbaBytes": 1558540,
+      "sha256": "b5bc0c9f28cf3cb9eeffe8ca5464509db228826ff0ff07d55cb9a2e0009653c7"
     },
     "insect": {
-      "width": 581,
-      "height": 142,
-      "bytes": 87470,
-      "rgbaBytes": 330008,
-      "sha256": "82f40c81098d92c66c990df7b622febe0dade1f65cd13543b50521006924ccca"
+      "width": 1046,
+      "height": 126,
+      "bytes": 151908,
+      "rgbaBytes": 527184,
+      "sha256": "78c975287fca1e7c7d7649b7be19608c95d64c8d00174be766953db6f2db019a"
     }
   },
-  "assemblyPassed": 50,
-  "publishedActors": 46,
-  "silhouettePairFailures": 244
+  "assemblyPassed": 63,
+  "publishedActors": 59,
+  "silhouettePairFailures": 258
 }

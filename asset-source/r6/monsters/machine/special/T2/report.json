@@ -7,7 +7,7 @@
   "guide": "special-swarm.json",
   "placement": "placement.json",
   "ready": true,
-  "silhouetteIoU": 0.422,
+  "silhouetteIoU": 0.886,
   "parts": {
     "body": {
       "sourceBox": [
@@ -17,16 +17,16 @@
         471
       ],
       "targetBox": [
-        30,
-        52,
-        221,
-        169
+        29,
+        40,
+        216,
+        184
       ],
       "placedBox": [
+        29,
         44,
-        52,
-        207,
-        169
+        216,
+        179
       ]
     },
     "swarm-1": {
@@ -37,15 +37,15 @@
         716
       ],
       "targetBox": [
-        91,
-        167,
-        136,
-        201
+        83,
+        165,
+        125,
+        205
       ],
       "placedBox": [
-        91,
-        167,
-        136,
+        83,
+        169,
+        125,
         201
       ]
     },
@@ -57,16 +57,16 @@
         956
       ],
       "targetBox": [
-        99,
-        192,
-        144,
-        233
+        120,
+        195,
+        166,
+        239
       ],
       "placedBox": [
-        99,
-        195,
-        144,
-        229
+        120,
+        199,
+        166,
+        234
       ]
     }
   },
@@ -120,84 +120,21 @@
       189.85
     ]
   },
-  "issues": [
-    {
-      "code": "speck",
-      "box": [
-        1097,
-        569,
-        1098,
-        570
-      ]
+  "issues": [],
+  "whiteKey": {
+    "applied": false,
+    "removedPixels": 0,
+    "sheet": {
+      "removedPixels": 0,
+      "fringePixels": 0
     },
-    {
-      "code": "speck",
-      "box": [
-        925,
-        700,
-        926,
-        701
-      ]
-    },
-    {
-      "code": "speck",
-      "box": [
-        275,
-        834,
-        276,
-        835
-      ]
-    },
-    {
-      "code": "speck",
-      "box": [
-        275,
-        859,
-        276,
-        860
-      ]
-    },
-    {
-      "code": "speck",
-      "box": [
-        80,
-        865,
-        81,
-        866
-      ]
-    },
-    {
-      "code": "speck",
-      "box": [
-        87,
-        872,
-        88,
-        873
-      ]
-    },
-    {
-      "code": "speck",
-      "box": [
-        81,
-        877,
-        82,
-        878
-      ]
-    },
-    {
-      "code": "speck",
-      "box": [
-        125,
-        920,
-        126,
-        921
-      ]
+    "assembly": {
+      "removedPixels": 0,
+      "fringePixels": 0
     }
-  ],
+  },
   "fitScores": [
-    0.361,
-    0.422
+    0.886
   ],
-  "accepted": false,
-  "redo": "body, swarm-2, swarm-1 부위를 같은 자세·비율로 다시 분리해 주세요. 두 차례 정렬 후 IoU 0.422."
+  "accepted": true
 }

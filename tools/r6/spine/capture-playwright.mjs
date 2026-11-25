@@ -6,18 +6,24 @@ import { basename, resolve } from 'node:path';
 import { chromium } from 'playwright';
 import { createServer } from 'vite';
 
-const [work, shots, waveArg] = process.argv.slice(2);
+const [work, shots, ...args] = process.argv.slice(2);
 if (!work || !shots) throw new Error('사용법 · node tools/r6/spine/capture-playwright.mjs <작업 폴더> <캡처 폴더>');
 const readJson = async file => JSON.parse(await readFile(file, 'utf8'));
-const published = work === '--published';
-const waveNumber = Number(waveArg ?? 20);
-if (published && ![15, 20].includes(waveNumber)) throw new Error('혼합 전장 캡처는 15 또는 20웨이브를 지정하세요.');
-const shotName = published && waveNumber === 15 ? 'battle-w15' : 'battle';
+const inspect = work === '--inspect';
+const mixed = work === '--published';
+const published = mixed || inspect;
+const waveNumber = mixed ? Number(args[0] ?? 20) : 1;
+if (mixed && ![15, 20].includes(waveNumber)) throw new Error('혼합 전장 캡처는 15 또는 20웨이브를 지정하세요.');
+const shotName = inspect ? 'battle-detail' : waveNumber === 15 ? 'battle-w15' : 'battle';
 const fragment = published ? null : await readJson(resolve(work, 'manifest-fragment.json'));
 const species = fragment && Object.keys(fragment.species)[0];
 const catalog = published ? Object.assign({}, ...await Promise.all(['machine', 'stone', 'elf', 'human', 'insect'].map(async s =>
   (await readJson(`src/game/r6/monsters/${s}.json`)).entities))) : fragment.species[species].entities;
 let actors = Object.entries(catalog);
+if (inspect) {
+  if (args.length === 0 || args.some(id => !catalog[id])) throw new Error('게시된 개체 ID를 지정하세요.');
+  actors = args.map(id => [id, catalog[id]]);
+}
 const allowedFiles = new Set(fragment ? [
   ...Object.values(fragment.rigs).map(({ file }) => basename(file)),
   `${species}.atlas`, `${species}.webp`,
@@ -63,10 +69,10 @@ try {
     body: `<!doctype html><html lang="ko"><meta charset="utf-8"><title>적 동작 확인</title>
 <style>body{margin:0;background:#12161b;color:#b8c0c8;font:16px system-ui}main{padding:16px}
 h1{font-size:19px;margin:0 0 12px}#field{width:1408px;height:834px}</style>
-<main><h1>${published ? `혼합 웨이브 · W${waveNumber}` : `R6 전장 · ${actors.length}개체`}</h1><div id="field"></div></main></html>`,
+<main><h1>${mixed ? `혼합 웨이브 · W${waveNumber}` : `R6 전장 · ${actors.length}개체`}</h1><div id="field"></div></main></html>`,
   }));
   await page.goto(new URL('r6-monster-fixture', server.resolvedUrls.local[0]).href);
-  const selection = await page.evaluate(async ({ published, ids, waveNumber }) => {
+  const selection = await page.evaluate(async ({ mixed, ids, waveNumber }) => {
     const paths = ['/src/content/index.ts', '/src/application/balanceSession.ts', '/src/application/RunController.ts',
       '/src/game/bridge.ts', '/src/game/battlefieldGame.ts'];
     const [{ loadGradeContent }, { localBalanceSession }, { RunController }, { FieldBridgeHandle },
@@ -79,7 +85,7 @@ h1{font-size:19px;margin:0 0 12px}#field{width:1408px;height:834px}</style>
     state.phase = 'BUILD';
     state.wave = 1;
     let seed = state.config.seed;
-    if (published) {
+    if (mixed) {
       const mixerUrl = '/src/domain/r6Mixer.ts';
       const { previewR6Wave } = await import(mixerUrl);
       state.wave = waveNumber;
@@ -130,7 +136,7 @@ h1{font-size:19px;margin:0 0 12px}#field{width:1408px;height:834px}</style>
       window.qaMonsters = { state, game };
     });
     return { ids, seed, wave: state.wave };
-  }, { published, waveNumber, ids: actors.map(([id]) => id) });
+  }, { mixed, waveNumber, ids: actors.map(([id]) => id) });
   actors = selection.ids.map(id => [id, catalog[id] ?? { skin: 'T' + id.at(-1), rig: 'g2-walker' }]);
   try {
     await page.waitForFunction(() => {
@@ -173,13 +179,14 @@ h1{font-size:19px;margin:0 0 12px}#field{width:1408px;height:834px}</style>
       window.qaMonsters.start = start;
     });
   });
-  const rendered = await page.evaluate(() => window.qaMonsters.units.map((unit, i) => ({
+  const rendered = await page.evaluate(inspect => window.qaMonsters.units.map((unit, i) => ({
     attachment: unit.skeleton.slots.find(slot => slot.pose.attachment).pose.attachment.path,
     skin: unit.skeleton.skin.name, renderer: unit.rendererType,
     track: unit.animationState.getTrack(0).animation.name,
     moved: unit.animationState.getTrack(0).trackTime > window.qaMonsters.start[i],
     slots: unit.skeleton.slots.filter(slot => slot.pose.attachment).length,
-  })));
+    ...(inspect ? { displayHeight: Number((unit.skeleton.getBoundsRect().height * unit.scaleY).toFixed(1)) } : {}),
+  })), inspect);
   assert.deepEqual(rendered.map(({ skin }) => skin), actors.map(([, actor]) => actor.skin));
   assert.ok(rendered.every(unit => unit.renderer === 'phaser' && unit.track === 'walk' && unit.moved && unit.slots > 0),
     'Mesh2D 재생 또는 파츠 확인에 실패했습니다.');
@@ -215,8 +222,8 @@ h1{font-size:19px;margin:0 0 12px}#field{width:1408px;height:834px}</style>
     const fall = units[fallIndex].animationState.getTrack(0)?.animation.name;
     return { hit, fall, skill };
   }, {
-    hitIndex: published ? actors.findIndex(([id]) => catalog[id] && id.startsWith('machine-')) : 0,
-    fallIndex: published ? actors.findIndex(([id]) => catalog[id] && id.startsWith('stone-')) : Math.min(1, actors.length - 1),
+    hitIndex: mixed ? actors.findIndex(([id]) => catalog[id] && id.startsWith('machine-')) : 0,
+    fallIndex: mixed ? actors.findIndex(([id]) => catalog[id] && id.startsWith('stone-')) : Math.min(1, actors.length - 1),
     bossIndices: actors.flatMap(([id, actor], i) => id.includes('-boss-') && actor.rig !== 'g2-walker' ? [i] : []),
   });
   assert.deepEqual(events, {

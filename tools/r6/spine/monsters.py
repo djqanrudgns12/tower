@@ -10,7 +10,7 @@ import subprocess
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
-from PIL import Image
+from PIL import Image, ImageChops
 
 from parts import extract, load_part, suggest_pivot
 from pilot import SKINS, write_json
@@ -184,7 +184,7 @@ def prepare(source, out, actor=None, *, available=None):
     print(f"{species} · 뼈대 {len(specs)}개 · 개체 {len(links)}개 준비 완료")
 
 
-def export(work, cli, *, rig_cache=None):
+def export(work, cli, *, rig_cache=None, atlas_budget=None):
     fragment = read_json(work / "manifest-fragment.json")
     species, = fragment["species"]
     names = tuple(fragment["rigs"])
@@ -237,12 +237,12 @@ def export(work, cli, *, rig_cache=None):
             with new_directory(cached) as fresh:
                 for folder, ext in ((projects, ".spine"), (runtime, ".json")):
                     shutil.copyfile(folder / (name + ext), fresh / (name + ext))
-        stats = finish_atlas(runtime, species)
+        stats = finish_atlas(runtime, species, atlas_budget)
         write_json(stage / "atlas-report.json", stats)
     print(f"{species} · Spine 프로젝트 {len(names)}개 · WebP {stats['width']}×{stats['height']} · {stats['bytes']}바이트")
 
 
-def finish_atlas(runtime, species):
+def finish_atlas(runtime, species, budget=None):
     atlas = runtime / f"{species}.atlas"
     text = atlas.read_text(encoding="utf-8")
     png = runtime / f"{species}.png"
@@ -254,7 +254,17 @@ def finish_atlas(runtime, species):
         width, height = image.size
         if max(width, height) > LIMIT:
             raise ValueError(f"아틀라스 크기 초과 · {width}×{height}")
-        image.convert("RGBA").save(webp, lossless=True, method=6, exact=True)
+        rgba = image.convert("RGBA")
+        rgba.save(webp, lossless=True, method=6, exact=True)
+    if budget is not None and webp.stat().st_size > budget:
+        # 전송 예산을 넘긴 경우 RGB만 압축하고 부품의 투명 경계는 원본을 유지한다.
+        subprocess.run(["cwebp", "-quiet", "-q", "92", "-alpha_q", "100", "-m", "6", "-exact",
+                        "-o", webp, "--", png], check=True)
+        with Image.open(webp) as packed:
+            if ImageChops.difference(packed.getchannel("A"), rgba.getchannel("A")).getbbox():
+                raise ValueError(f"{species} · WebP 변환 후 알파가 바뀌었습니다.")
+        if webp.stat().st_size > budget:
+            raise ValueError(f"{species} · 아틀라스 전송 예산 초과 {webp.stat().st_size}")
     png.unlink()
     atlas.write_text(text.replace(png.name + "\n", webp.name + "\n", 1), encoding="utf-8")
     return {"width": width, "height": height, "bytes": webp.stat().st_size,

@@ -2,28 +2,28 @@
 
 ## 조립
 
-- `runner/T3` head, body, armor 부위를 같은 자세·비율로 다시 분리해 주세요. 두 차례 정렬 후 IoU 0.689.
-- `special/T2` body, swarm-2, swarm-1 부위를 같은 자세·비율로 다시 분리해 주세요. 두 차례 정렬 후 IoU 0.422.
-- `special/T3` body, swarm-2, swarm-1 부위를 같은 자세·비율로 다시 분리해 주세요. 두 차례 정렬 후 IoU 0.487.
-- `special/T4` body, swarm-3, swarm-2 부위를 같은 자세·비율로 다시 분리해 주세요. 두 차례 정렬 후 IoU 0.565.
-- `boss-t2/T2` body, armor, gear 부위를 같은 자세·비율로 다시 분리해 주세요. 두 차례 정렬 후 IoU 0.694.
-- `boss-t4/T4` body, leg-fore-far, leg-hind-far 부위를 같은 자세·비율로 다시 분리해 주세요. 두 차례 정렬 후 IoU 0.689.
+- `infantry/T3` 어깨 장갑 안쪽의 흰 면을 제거하니 장갑 중앙과 낮게 놓인 머리 사이로 전장 바닥이 보입니다. 목과 장갑이 겹치도록 머리·몸통·장갑을 다시 맞춰 주세요.
+- `boss-t3/T3` 몸통 아래 흰 삼각형은 원화의 부품 사이 배경입니다. 전장 걷기에서 몸통과 앞·뒷다리의 접합부가 크게 열리고 발이 떨어져 보입니다. 몸통 아래 관절과 발의 겹침을 다시 맞춰 주세요.
 
 ## 32px 비교
 
-- stone 비교 400쌍 중 80쌍 미달. 가장 비슷한 쌍은 `machine-armored-t2`와 `stone-infantry-t3` (IoU 0.693).
-- elf 비교 100쌍 중 6쌍 미달. 가장 비슷한 쌍은 `machine-infantry-t4`와 `elf-armored-t1` (IoU 0.600).
-- human 비교 260쌍 중 56쌍 미달. 가장 비슷한 쌍은 `machine-armored-t2`와 `human-armored-t3` (IoU 0.693).
-- insect 비교 100쌍 중 10쌍 미달. 가장 비슷한 쌍은 `machine-armored-t2`와 `insect-armored-t1` (IoU 0.634).
+- stone 비교 400쌍 중 77쌍 미달. 가장 비슷한 쌍은 `machine-armored-t2`와 `stone-infantry-t3` (IoU 0.693).
+- elf 비교 100쌍 중 7쌍 미달. 가장 비슷한 쌍은 `machine-infantry-t4`와 `elf-armored-t1` (IoU 0.600).
+- human 비교 260쌍 중 59쌍 미달. 가장 비슷한 쌍은 `machine-armored-t2`와 `human-armored-t3` (IoU 0.693).
+- insect 비교 100쌍 중 13쌍 미달. 가장 비슷한 쌍은 `machine-armored-t2`와 `insect-armored-t1` (IoU 0.634).
 
 ## 도구로 해결
 
 - `armored/T1` 도구로 해결 (`5d5e8b0a`) · 조립 IoU 0.903
-- `boss-t3/T3` 도구로 해결 (`5d5e8b0a`) · 조립 IoU 0.705
 - `infantry/T2` 도구로 해결 (`5d5e8b0a`) · 조립 IoU 0.809
-- `infantry/T3` 도구로 해결 (`5d5e8b0a`) · 조립 IoU 0.840
 - `runner/T1` 도구로 해결 (`5d5e8b0a`) · 조립 IoU 0.758
 - `special/T1` 도구로 해결 (`5d5e8b0a`) · 조립 IoU 0.900
+- `runner/T3` 재작화 반영 · 조립 IoU 0.837
+- `special/T2` 재작화 반영 · 조립 IoU 0.886
+- `special/T3` 재작화 반영 · 조립 IoU 0.820
+- `special/T4` 재작화 반영 · 조립 IoU 0.913
+- `boss-t2/T2` 재작화 반영 · 조립 IoU 0.829
+- `boss-t4/T4` 재작화 반영 · 조립 IoU 0.815
 
 ## 32px 외곽선 · 이전 검수 기록
 
