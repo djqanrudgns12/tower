@@ -19,12 +19,43 @@ from review import review
 from rigs import VARIANTS, layout
 from sample import generate
 from swarm import animate_swarm
+from white_key import clean
 
 
 FIXTURE = Path(__file__).resolve().parents[3] / "asset-source/r6/monsters/_pipeline-test/species.json"
 
 
 class MonsterPipelineTest(unittest.TestCase):
+    def test_white_key_edge_and_matted_pixel(self):
+        image = Image.new("RGBA", (20, 20), "white")
+        draw = ImageDraw.Draw(image)
+        draw.rectangle((3, 3, 15, 15), fill=(80, 100, 120, 255))
+        image.putpixel((3, 8), (168, 178, 188, 128))
+        cleaned, mask, stats = clean(image)
+        self.assertEqual(stats["removedPixels"], 400 - 13**2)
+        self.assertEqual(mask.getpixel((0, 0)), 255)
+        self.assertEqual(cleaned.getpixel((0, 0))[3], 0)
+        self.assertEqual(cleaned.getpixel((3, 8)), (82, 102, 122, 128))
+        self.assertEqual(image.getpixel((0, 0))[3], 255)
+
+    def test_white_key_closed_gap(self):
+        image = Image.new("RGBA", (18, 18), "#4A5563")
+        ImageDraw.Draw(image).rectangle((4, 6, 9, 10), fill=(241, 242, 240, 255))
+        cleaned, _, stats = clean(image)
+        self.assertEqual(stats["removedPixels"], 30)
+        self.assertEqual(cleaned.getpixel((8, 10))[3], 0)
+        self.assertEqual(cleaned.getpixel((3, 6)), image.getpixel((3, 6)))
+
+    def test_white_key_keeps_marks(self):
+        image = Image.new("RGBA", (32, 32), "#1D242C")
+        draw = ImageDraw.Draw(image)
+        for box in ((2, 2, 4, 4), (2, 8, 28, 8), (8, 12, 16, 20)):
+            draw.rectangle(box, fill="white")
+        draw.rectangle((2, 24, 24, 28), fill="#B8C0C8")
+        cleaned, _, stats = clean(image, [(8, 12, 17, 21)])
+        self.assertEqual(stats["removedPixels"], 0)
+        self.assertEqual(cleaned.tobytes(), image.tobytes())
+
     def test_white_patch_requires_opaque_connected_near_white_pixels(self):
         image = Image.new("RGBA", (24, 16), (255, 255, 255, 0))
         draw = ImageDraw.Draw(image)

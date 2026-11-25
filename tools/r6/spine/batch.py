@@ -12,12 +12,13 @@ from tempfile import TemporaryDirectory
 
 import numpy as np
 
-from cut_parts import components, cut, normalize_reference, open_rgba, orient_parts, read_guide
+from cut_parts import assemble, components, cut, normalize_reference, open_rgba, orient_parts, read_guide
 from fit_parts import fit
 from monsters import ACTORS, SPECIES, export, prepare, read_json
 from pilot import write_json
 from review import review_images
 from swarm import animate_swarm
+from white_key import preprocess
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[2]
@@ -62,6 +63,17 @@ def white_patches(image):
     return [{"pixels": c.area, "box": list(c.box)} for c in components(mask) if c.area >= 24]
 
 
+def actor_inputs(folder, placement):
+    sheet, assembly = folder / "sheet.png", folder / "assembly.png"
+    setting = placement.get("whiteKey", {})
+    if not setting or setting["sourceHash"] != digest(sheet, assembly):
+        return sheet, assembly, None
+    key = digest(setting, HERE / "white_key.py", HERE / "cut_parts.py")
+    cache = CACHE / folder.relative_to(SOURCE) / "white-key" / key
+    stats = preprocess(folder, cache, setting.get("protect", {}))
+    return cache / sheet.name, cache / assembly.name, stats
+
+
 def process_actor(folder, canonical, first_targets):
     meta = read_json(folder / "parts.json")
     species, entry, skin = folder.relative_to(SOURCE).parts
@@ -74,17 +86,32 @@ def process_actor(folder, canonical, first_targets):
     if first_targets and "targets" not in placement:
         placement["targets"] = {name: box for name, box in first_targets.items() if name in meta["slots"]}
     placement.update(scale=meta["scale"], armless=meta.get("armless", False))
+    clean_sheet, clean_assembly, white_key = actor_inputs(folder, placement)
     inputs = digest(folder / "parts.json", sheet, assembly, guide, canonical, HERE / "fit_parts.py",
                     HERE / "cut_parts.py", HERE / "part_guides.py", HERE / "parts.py")
+    if white_key:
+        inputs = digest(inputs, clean_sheet.parent.name)
     config = {k: v for k, v in placement.items() if k not in ("fitKey", "fitScores", "artReview", "whiteMark")}
     if placement.get("fitKey") != digest(inputs, config):
         template = read_json(guide)
         issues = []
-        pieces = read_guide(open_rgba(sheet), template, issues)
+        pieces = read_guide(open_rgba(clean_sheet), template, issues)
         if not any(i.get("blocking") for i in issues) and set(pieces) == set(meta["slots"]):
             orient_parts(pieces, placement.get("rotations", {}))
-            placement["fitScores"] = fit(pieces, template, normalize_reference(open_rgba(assembly), {}),
-                                         placement, canonical)
+            reference = normalize_reference(open_rgba(clean_assembly), {})
+            if white_key and placement.get("targets"):
+                # 배경만 달라지면 기존 좌표를 먼저 평가한다. T1의 회전축도 유지한다.
+                prior_iou = assemble(pieces, template, reference, placement, [])[-1]
+                if prior_iou >= .70:
+                    placement["fitScores"] = [prior_iou]
+                else:
+                    previous = dict(placement)
+                    scores = fit(pieces, template, reference, placement, canonical or placement["pivots"])
+                    if prior_iou > max(scores):
+                        placement.update(previous)
+                    placement["fitScores"] = [prior_iou, *scores]
+            else:
+                placement["fitScores"] = fit(pieces, template, reference, placement, canonical)
         else:
             placement["fitScores"] = []
         config = {k: v for k, v in placement.items() if k not in ("fitKey", "fitScores", "artReview", "whiteMark")}
@@ -92,8 +119,11 @@ def process_actor(folder, canonical, first_targets):
         save(placement_path, placement)
     work = CACHE / species / entry / skin / placement["fitKey"]
     if not (work / "report.json").exists():
-        cut(sheet, assembly, guide, work, species, entry, skin, placement_path)
+        cut(clean_sheet, clean_assembly, guide, work, species, entry, skin, placement_path)
     report = read_json(work / "report.json")
+    if white_key:
+        report["whiteKey"] = white_key
+        publish(REVIEW / "white-key" / (actor_id(meta) + ".webp"), (clean_sheet.parent / "review.webp").read_bytes())
     missing = set(report["parts"]) ^ set(meta["slots"])
     if missing:
         report["issues"].append({"code": "slot_manifest_mismatch", "slots": sorted(missing)})
@@ -266,7 +296,8 @@ def published_preview(row):
         saved = read_json(folder / "report.json")
         with TemporaryDirectory(dir=CACHE) as tmp:
             rebuilt = Path(tmp) / "cut"
-            cut(folder / "sheet.png", folder / "assembly.png", guide, rebuilt, species, entry, skin, placement)
+            sheet, assembly, _ = actor_inputs(folder, read_json(placement))
+            cut(sheet, assembly, guide, rebuilt, species, entry, skin, placement)
             result = read_json(rebuilt / "report.json")
             if any(saved[k] != result[k] for k in ("parts", "pivots", "silhouetteIoU", "issues")):
                 raise ValueError(f"{species}/{entry}/{skin} 원본이 바뀌었습니다. 해당 종족을 포함해 실행하세요.")
@@ -348,6 +379,13 @@ def main():
                     lines.append(f"- {other} 비교 {group['comparisons']}쌍 중 {len(group['failures'])}쌍 미달. "
                                  f"가장 비슷한 쌍은 `{worst['first']}`와 `{worst['second']}` (IoU {worst['iou']:.3f}).")
         if path.exists():
+            history = path.read_text().split("## 도구로 해결", 1)
+            if len(history) == 2:
+                accepted = {f"`{r['entry']}/{r['skin']}`" for r in rows if r['species'] == species and r['accepted']}
+                entries = [line for line in history[1].split("\n## ", 1)[0].splitlines()
+                           if line.startswith("- ") and line.split()[1] in accepted]
+                if entries:
+                    lines.extend(["", "## 도구로 해결", "", *entries])
             _, marker, notes = path.read_text().partition("\n## 32px 외곽선")
             if marker:
                 lines.append("\n## 32px 외곽선 · 이전 검수 기록" + notes.removeprefix(" · 이전 검수 기록").rstrip())
