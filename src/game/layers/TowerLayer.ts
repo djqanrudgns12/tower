@@ -10,7 +10,7 @@ import { ASSETS, CELL_PX, towerBodyArt, weaponMountOffset, type AssetSpec } from
 import { HANGAR_FLIGHT, type R6BattleAssets } from '../r6/BattleAssets';
 import { headDirection, R6_COLORS } from '../r6/manifest';
 import { R6TowerPlayback } from '../r6/TowerPlayback';
-import { topFit, WIND_SPIN, windSpinStep } from './cues';
+import { flyerLift, topFit, WIND_SPIN, windSpinStep } from './cues';
 import { DEPTH, fieldPosition, FIXED_WEAPON, toWorld, type LayerContext } from './shared';
 
 /**
@@ -29,6 +29,8 @@ interface DroneFlight {
   weapon: number;
   targetId: number;
   target: { x: number; y: number };
+  facing: number;
+  goal: { x: number; y: number };
 }
 
 /** 알파 경계 상자를 잴 때 이보다 옅은 픽셀(가장자리 잔여 알파)은 무시한다. */
@@ -83,17 +85,26 @@ export class TowerLayer {
 
   private flyDrone(e: Strike, first: Strike['targets'][number]): boolean {
     const { scene, bridge } = this.c;
-    if (bridge.reducedMotion) return false;
     const manifest = this.assets?.manifest;
     const art = manifest?.sheets[HANGAR_FLIGHT];
     const key = this.assets?.towerTexture(HANGAR_FLIGHT);
-    if (!art || !key) return false;
+    if (!art || !key || bridge.reducedMotion) {
+      // 비행 그림을 불러오는 중이나 움직임을 줄인 화면에서는 짧은 연사만 표시한다.
+      const from = fieldPosition(this.c, e.fromX, e.fromY);
+      const to = fieldPosition(this.c, first.x, first.y);
+      const g = scene.add.graphics().setDepth(DEPTH.projectiles).setName('r6:vfx:drone-burst');
+      this.droneBurst(g, from.x, from.y - CELL_PX * .32 - this.weaponLift(e.towerId), to.x, to.y - 12);
+      scene.tweens.add({ targets: g, alpha: 0, duration: 100, onComplete: () => g.destroy() });
+      return false;
+    }
     const active = this.flights.get(e.towerId);
     const target = fieldPosition(this.c, first.x, first.y);
+    const enemy = bridge.controller.state.enemies.find(value => value.id === first.enemyId);
+    target.y -= enemy ? flyerLift(enemy, bridge.controller.state.tick) * CELL_PX : 0;
     if (active) {
       // 후속 공격도 같은 발진에서 처리해 도킹 동작을 끝까지 보여 준다.
       active.targetId = first.enemyId;
-      active.target = target;
+      active.goal = target;
       return true;
     }
     const tower = bridge.controller.state.towers.find(value => value.id === e.towerId);
@@ -108,7 +119,7 @@ export class TowerLayer {
       .setDisplaySize(art.width * size, art.height * size).setVisible(false);
     const shots = scene.add.graphics().setDepth(DEPTH.projectiles - 1).setName(name + ':shots');
     this.flights.set(e.towerId, { image, shots, start: scene.time.now, fps: form.attack.fps,
-      weapon, targetId: first.enemyId, target });
+      weapon, targetId: first.enemyId, target: { ...target }, goal: target, facing: 0 });
     return false;
   }
 
@@ -135,17 +146,23 @@ export class TowerLayer {
       }
       sheets.add(image.texture.key);
       if (frame < 1.9) continue;
-      const enemy = s.enemies.find(value => value.id === flight.targetId);
+      const progress = Phaser.Math.Clamp((frame - 1.9) / 5.1, 0, 1);
+      const enemy = progress < .72 ? s.enemies.find(value => value.id === flight.targetId) : undefined;
       if (enemy) {
         const point = positionAt(bridge.controller.ctx.path, enemy.progress);
-        flight.target = fieldPosition(this.c, point.x, point.y);
+        const target = fieldPosition(this.c, point.x, point.y);
+        target.y -= flyerLift(enemy, s.tick) * CELL_PX;
+        flight.goal = target;
+      }
+      if (progress < .72) {
+        flight.target.x = Phaser.Math.Linear(flight.target.x, flight.goal.x, .28);
+        flight.target.y = Phaser.Math.Linear(flight.target.y, flight.goal.y, .28);
       }
       const foot = fieldPosition(this.c, tower.x, tower.y);
       const fromX = foot.x - 4;
       const fromY = foot.y - CELL_PX * .32 - this.weaponLift(id) + 9;
       const { x: targetX, y: groundY } = flight.target;
       const targetY = groundY - 12;
-      const progress = Phaser.Math.Clamp((frame - 1.9) / 5.1, 0, 1);
       const reach = Math.min(1, progress / .30, (1 - progress) / .29);
       const spread = reach ** 2 * (3 - 2 * reach);
       const orbit = Phaser.Math.Clamp((progress - .30) / .41, 0, 1) * Math.PI * 2;
@@ -153,17 +170,21 @@ export class TowerLayer {
       const y = Phaser.Math.Linear(fromY, targetY - 14, spread) - (12 + Math.cos(orbit) * 7 * spread) * Math.sin(progress * Math.PI);
       const dx = image.visible ? x - image.x : targetX - fromX;
       const dy = image.visible ? y - image.y : targetY - fromY;
-      const aim = headDirection(dx, dy, projection);
-      image.setPosition(x, y).setFrame(flight.weapon * 8 + Math.round(aim / 2) % 8).setVisible(true);
+      if (Math.hypot(dx, dy) >= .25) flight.facing = Math.round(headDirection(dx, dy, projection) / 2) % 8;
+      image.setPosition(x, y).setFrame(flight.weapon * 8 + flight.facing).setVisible(true);
       shots.clear();
       const volley = (progress - .33) * 8;
-      if (volley >= 0 && volley < 3 && volley % 1 < .48) {
-        shots.lineStyle(1.5, R6_COLORS.amber).lineBetween(
-          Phaser.Math.Linear(x, targetX, .30), Phaser.Math.Linear(y, targetY, .30),
-          Phaser.Math.Linear(x, targetX, .83), Phaser.Math.Linear(y, targetY, .83));
-      }
+      if (volley >= 0 && volley < 3 && volley % 1 < .48) this.droneBurst(shots, x, y, targetX, targetY);
     }
     this.assets?.keepTowerSheets(sheets);
+  }
+
+  private droneBurst(g: Phaser.GameObjects.Graphics, x: number, y: number, tx: number, ty: number) {
+    g.lineStyle(1.5, R6_COLORS.amber, .91);
+    for (const start of [.22, .65]) {
+      g.lineBetween(Phaser.Math.Linear(x, tx, start), Phaser.Math.Linear(y, ty, start),
+        Phaser.Math.Linear(x, tx, start + .22), Phaser.Math.Linear(y, ty, start + .22));
+    }
   }
 
   /** 바람개비탑이 돌풍을 날렸다: 날개가 순간 빨라진다. 움직임 줄이기면 돌지 않고 날개 투명도만 한 번 깜빡인다. */

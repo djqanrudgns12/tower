@@ -163,6 +163,7 @@ export function QuestionPanel({
 
   return (
     <Card as="section" float className={`${css.panel} ${panelClass}`} aria-label="어휘 문제">
+      {fb?.result === 'correct' && <span key={question.encounterId} className={css.correctPulse} aria-hidden="true" />}
       <div className={css.main} data-content>
         <p className={css.stem}>
           <span className={css.tag} data-tone={phase.tone}>{phase.text}</span>

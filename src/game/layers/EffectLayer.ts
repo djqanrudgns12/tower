@@ -5,7 +5,9 @@ import type { FieldHazard, HazardKind, RunState } from '../../domain/types';
 import { PALETTE } from '../art';
 import { ASSETS, CELL_PX, WORLD_W } from '../assets';
 import { BLAST_BURST_MS, blastCharge, blastLook, formBlastRadius, fusePuffCount, hazardBlastRadius, hazardEndCue, hazardLook, ROLLER_LENGTH_CELLS, ROLLER_THICK_CELLS, rollerHeading, trapCloseCue, wardDotOffsets, ZONE_ALPHA, ZONE_FLATTEN, type BlastLook, type BossCue, type HazardLook } from './cues';
+import { R6CombatVfx } from '../r6/CombatVfx';
 import { R6_COLORS } from '../r6/manifest';
+import { R6_REWARD_MS } from '../r6/vfxTiming';
 import { DEPTH, fieldPosition, toWorld, type LayerContext } from './shared';
 
 /** 처치 보상 표찰의 화면 최소 글자 크기(CSS px, v3 §1-2 13px 하한). */
@@ -23,6 +25,7 @@ interface BlastSpot { look: BlastLook; x: number; y: number }
 /** 효과 층: 날아가는 투사체, 피격·처치·화상 효과, 즉발 공격 효과, 성문 피해 섬광, 처치 보상 표찰, 대장 기믹·분열 순간 연출. */
 export class EffectLayer {
   private readonly c: LayerContext;
+  private readonly r6Vfx: R6CombatVfx | null;
   private shots = new Map<number, Phaser.GameObjects.Image>();
   private hazards = new Map<number, HazardView>();
   private blasts = new Map<number, BlastSpot>();
@@ -33,16 +36,14 @@ export class EffectLayer {
 
   constructor(c: LayerContext, private readonly r6 = false) {
     this.c = c;
+    this.r6Vfx = r6 ? new R6CombatVfx(c) : null;
     this.callouts = c.scene.add.container(0, 0).setDepth(DEPTH.fx + 5);
   }
 
   /** lift는 떠 있는 비행 적의 몸 높이(EnemyLayer.liftOf)다. 맞은 자리를 몸에 맞춘다. */
   onHit(e: Extract<DomainEvent, { type: 'hit' }>, lift = 0) {
-    if (this.r6) {
-      const { x, y } = fieldPosition(this.c, e.x, e.y);
-      const g = this.c.scene.add.graphics().setDepth(DEPTH.fx).setPosition(x, y - 14 - lift);
-      g.lineStyle(2, R6_COLORS.silver, 0.85).lineBetween(-4, 2, 4, -2);
-      this.fadeR6(g, 100);
+    if (this.r6Vfx) {
+      this.r6Vfx.onHit(e, lift);
       return;
     }
     this.fx(e.towerType === 'cannon' ? ASSETS.projectile.puff : e.towerType === 'frost' ? ASSETS.projectile.shard : ASSETS.projectile.spark, toWorld(e.x), toWorld(e.y) - 14 - lift, e.towerType === 'cannon' ? 0.9 : 0.55);
@@ -50,7 +51,8 @@ export class EffectLayer {
 
   /** labelRaise(월드 px)만큼 보상 표찰을 올린다(분열: 튀어나오는 파생체를 가리지 않게). */
   onKill(e: Extract<DomainEvent, { type: 'kill' }>, labelRaise = 0) {
-    if (this.c.bridge.controller.renderQuality.current === 0) {
+    if (this.r6Vfx) this.r6Vfx.onKill(e);
+    else if (this.c.bridge.controller.renderQuality.current === 0) {
       for (let i = 0; i < 3; i++) this.fx(ASSETS.projectile.puff, toWorld(e.x) + (i - 1) * 9, toWorld(e.y) - 10 - (i % 2) * 6, 0.6);
     }
     this.spawnKillCallout(e.x, e.y, e.gold, e.pt, labelRaise);
@@ -78,41 +80,14 @@ export class EffectLayer {
    * `lift`는 진화형 본체에 맞춰 올라간 무기 높이(TowerLayer.weaponLift)다.
    */
   onStrike(e: Extract<DomainEvent, { type: 'strike' }>, lift = 0, enemyLift: (enemyId: number) => number = () => 0, mountX = 0) {
-    const { scene, bridge } = this.c;
-    const first = e.targets[0];
-    if (!first) return;
-    const from = fieldPosition(this.c, e.fromX, e.fromY);
-    const fx = from.x, fy = from.y - CELL_PX * 0.32 - lift;
-    if (this.r6) {
-      const type: string = e.towerType;
-      if (!bridge.reducedMotion && (type === 'hangar' || type === 'bastion')) return;
-      if (type === 'prism') {
-        let previous = { x: fx + mountX, y: fy };
-        e.targets.forEach((target, index) => {
-          const point = fieldPosition(this.c, target.x, target.y);
-          const next = { x: point.x, y: point.y - 10 - enemyLift(target.enemyId) };
-          const start = previous;
-          previous = next;
-          const draw = () => {
-            const beam = scene.add.graphics().setDepth(DEPTH.fx);
-            beam.lineStyle(1.8, R6_COLORS.amber).lineBetween(start.x, start.y, next.x, next.y);
-            this.fadeR6(beam, 150);
-          };
-          if (bridge.reducedMotion) draw();
-          else scene.time.delayedCall(140 + index * 47, draw);
-        });
-        return;
-      }
-      const g = scene.add.graphics().setDepth(DEPTH.fx);
-      g.lineStyle(2, R6_COLORS.teal, 0.85);
-      for (const target of e.targets) {
-        const { x: tx, y: targetY } = fieldPosition(this.c, target.x, target.y);
-        const ty = targetY - 10 - enemyLift(target.enemyId);
-        g.lineBetween(fx, fy, tx, ty);
-      }
-      this.fadeR6(g, 100);
+    if (this.r6Vfx) {
+      this.r6Vfx.strike(e, lift, enemyLift, mountX);
       return;
     }
+    const { scene, bridge } = this.c;
+    if (!e.targets.length) return;
+    const from = fieldPosition(this.c, e.fromX, e.fromY);
+    const fx = from.x, fy = from.y - CELL_PX * 0.32 - lift;
     if (e.towerType === 'lightning') {
       const g = scene.add.graphics().setDepth(DEPTH.fx);
       const pts = [{ x: fx, y: fy - CELL_PX * 0.1 }, ...e.targets.map(p => ({ x: toWorld(p.x), y: toWorld(p.y) - 10 - enemyLift(p.enemyId) }))];
@@ -128,10 +103,6 @@ export class EffectLayer {
       if (e.towerType === 'flame') this.fx(ASSETS.projectile.puff, toWorld(p.x), py, 0.7, 0xf08a3c);
       else this.fx(ASSETS.projectile.spark, toWorld(p.x), py, 0.5);
     }
-  }
-
-  private fadeR6(g: Phaser.GameObjects.Graphics, duration: number) {
-    this.c.scene.tweens.add({ targets: g, alpha: 0, duration, onComplete: () => g.destroy() });
   }
 
   /**
@@ -212,11 +183,11 @@ export class EffectLayer {
   private spawnKillCallout(milliX: number, milliY: number, gold: number, pt: number, raise = 0) {
     if (gold <= 0 && pt <= 0) return;
     const { x, y } = fieldPosition(this.c, milliX, milliY);
-    this.floatLabel(x, y - 24 - raise, pt > 0 ? `+${gold}골드 · +${pt}점` : `+${gold}골드`, '#ffd859');
+    this.floatLabel(x, y - 24 - raise, pt > 0 ? `+${gold}골드 · +${pt}점` : `+${gold}골드`, this.r6 ? '#e69f24' : '#ffd859', this.r6 ? R6_REWARD_MS : undefined);
   }
 
   /** 떠오르는 표찰(처치 보상·대장 회복). worldX·worldY는 표찰 가운데의 월드 위치이고, 전장 밖으로 잘리지 않게 막는다. */
-  private floatLabel(worldX: number, worldY: number, text: string, color: string) {
+  private floatLabel(worldX: number, worldY: number, text: string, color: string, rewardMs?: number) {
     const { scene, bridge } = this.c;
     const cssPerWorld = scene.cameras.main.zoom * scene.scale.zoom;
     const fontPx = Math.max(CALLOUT_MIN_CSS_PX, Math.ceil(CALLOUT_MIN_CSS_PX / Math.max(0.01, cssPerWorld)));
@@ -227,9 +198,9 @@ export class EffectLayer {
       fontSize: `${fontPx}px`,
       fontStyle: '700',
       color,
-      backgroundColor: '#2e1b10',
+      backgroundColor: rewardMs ? '#12161b' : '#2e1b10',
       padding: { x: Math.round(6 * k), y: Math.round(3 * k) },
-      stroke: '#362419',
+      stroke: rewardMs ? '#12161b' : '#362419',
       strokeThickness: Math.max(2, Math.round(2 * k)),
       resolution: 2,
     }).setOrigin(0.5);
@@ -239,7 +210,10 @@ export class EffectLayer {
     const wy = Math.max(halfH + rise, worldY);
     label.setPosition(wx, wy);
     this.callouts.add(label);
-    if (bridge.reducedMotion) {
+    if (rewardMs) {
+      scene.tweens.add({ targets: label, y: wy - rise, alpha: { from: 1, to: 0 }, delay: 60, duration: rewardMs - 60,
+        ease: 'Quad.easeIn', onComplete: () => label.destroy() });
+    } else if (bridge.reducedMotion) {
       // 움직임 줄이기: 제자리에서 보였다가 같은 시간(680ms) 뒤 투명도만 낮춰 사라진다. 위로 떠오르지 않는다.
       scene.tweens.add({ targets: label, alpha: 0, delay: 440, duration: 240, onComplete: () => label.destroy() });
     } else {
@@ -249,13 +223,17 @@ export class EffectLayer {
 
   /** 단일 대상은 대상의 현재 위치를 향해 그리지만 도착 틱은 바꾸지 않는다(PRD §20.3). */
   syncShots(s: RunState, alpha: number, progressOf: (enemyId: number, alpha: number) => number | null, liftOf: (towerId: number) => number = () => 0, enemyLift: (enemyId: number) => number = () => 0) {
+    if (this.r6Vfx) {
+      this.r6Vfx.sync(s, alpha, liftOf);
+      return;
+    }
     const { scene, bridge } = this.c;
     const seen = new Set<number>();
     const path = bridge.controller.ctx.path;
     for (const p of s.projectiles) {
       seen.add(p.id);
       let img = this.shots.get(p.id);
-      const lofted = this.r6 ? p.towerType === 'mortar' : p.towerType === 'cannon';
+      const lofted = p.towerType === 'cannon';
       if (!img) {
         const key = lofted ? ASSETS.projectile.ball : p.towerType === 'frost' ? ASSETS.projectile.shard : ASSETS.projectile.arrow;
         img = scene.add.image(0, 0, key).setDepth(DEPTH.projectiles).setScale(p.towerType === 'archer' ? 0.5 : 0.6);

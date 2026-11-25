@@ -35,6 +35,24 @@
 
 }
 
+.correctPulse { display: none; }
+
+:global([data-r6]) .correctPulse {
+  display: block;
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  border: 2px solid var(--r04-amber);
+  border-radius: inherit;
+  pointer-events: none;
+  animation: correctPulse 300ms ease-out both;
+}
+
+@keyframes correctPulse {
+  0% { opacity: .95; }
+  100% { opacity: 0; }
+}
+
 :global(:root[data-font='large']) .panel,
 :global(:root[data-font='xlarge']) .panel { --opt-font: var(--fs-4); }
 

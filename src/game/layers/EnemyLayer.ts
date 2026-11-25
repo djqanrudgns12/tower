@@ -2,6 +2,7 @@ import Phaser from 'phaser';
 import type { SpineGameObject } from '@esotericsoftware/spine-phaser-v4';
 import type { R6BattleAssets } from '../r6/BattleAssets';
 import { R6_COLORS } from '../r6/manifest';
+import { R6_HIT_MS } from '../r6/vfxTiming';
 import { positionAt } from '../../domain/geometry';
 import { enemyArtId } from '../../domain/factions';
 import { burrowed } from '../../domain/traits';
@@ -16,7 +17,7 @@ interface EnemyView {
   sprite: Phaser.GameObjects.Image | null; spine: EnemySpine | null; spineRevision: number; badge: Phaser.GameObjects.Image | null;
   /** 종족 특성 배지(prd-r4 §7.2 E): 원화 특성 아이콘. 특성이 없거나 그림을 못 실었으면 null. */
   trait: Phaser.GameObjects.Image | null;
-  art: EnemyArt; prev: number; cur: number; phase: number; flashUntil: number; flashAt: number; hitAt: number | null; facing: 1 | -1;
+  kind: Enemy['kind']; art: EnemyArt; prev: number; cur: number; phase: number; flashUntil: number; flashAt: number; hitAt: number | null; facing: 1 | -1;
   /** 지금 그린 길 위 위치(월드 px, 등장 연출 포함)와 비행 몸 높이(px). 효과 층이 맞힌 자리·기믹 위치를 맞출 때 쓴다. */
   x: number; y: number; lift: number;
   /** 분열·호위 등장 연출(시작 시각 ms). */
@@ -85,6 +86,14 @@ export class EnemyLayer {
   onHit(enemyId: number) {
     const v = this.enemies.get(enemyId);
     const now = this.c.scene.time.now;
+    if (this.assets && (v?.kind === 'boss' || (!v && this.c.bridge.controller.state.enemies.some(e => e.id === enemyId && e.kind === 'boss')))) {
+      if (!this.c.bridge.reducedMotion && (!v || now - v.flashAt >= FLASH_GAP_MS)) {
+        const { scene } = this.c;
+        const camera = scene.cameras.main;
+        const px = 1.35 / Math.max(.01, camera.zoom * scene.scale.zoom);
+        camera.shake(75, new Phaser.Math.Vector2(px / camera.width, px / camera.height));
+      }
+    }
     if (!v || !acceptsHit(v.hitAt, now)) return;
     v.hitAt = now;
     const spine = v.spine;
@@ -93,7 +102,7 @@ export class EnemyLayer {
       spine.object.animationState.addEmptyAnimation(1, 0.08, 0);
     }
     // 밝게 섞는 점멸은 같은 적에 300ms에 한 번만: 계속 맞는 대장이 하얀 실루엣으로 깨져 보이지 않게 한다.
-    if (now - v.flashAt >= FLASH_GAP_MS) { v.flashAt = now; v.flashUntil = now + HIT_MS; }
+    if (now - v.flashAt >= FLASH_GAP_MS) { v.flashAt = now; v.flashUntil = now + (this.assets ? R6_HIT_MS : HIT_MS); }
   }
 
   onKill(enemyId: number) {
@@ -146,6 +155,7 @@ export class EnemyLayer {
     const { scene, bridge } = this.c;
     const { path, balance } = bridge.controller.ctx;
     const reduced = bridge.reducedMotion;
+    if (this.assets && reduced && scene.cameras.main.shakeEffect.isRunning) scene.cameras.main.shakeEffect.reset();
     const quality = bridge.controller.renderQuality.current;
     const dt = this.lastTime === null ? 0 : Math.max(0, time - this.lastTime);
     this.lastTime = time;
@@ -166,7 +176,7 @@ export class EnemyLayer {
         const intro = this.pendingIntros.get(e.id);
         this.pendingIntros.delete(e.id);
         // 개체마다 보행 위상을 다르게 둔다(PRD §11.3).
-        v = { sprite, spine: null, spineRevision: -1, badge, trait, art, prev: e.progress, cur: e.progress, phase: (e.id * 0.618034) % 1, flashUntil: 0, flashAt: -Infinity, hitAt: null, facing: 1,
+        v = { sprite, spine: null, spineRevision: -1, badge, trait, kind: e.kind, art, prev: e.progress, cur: e.progress, phase: (e.id * 0.618034) % 1, flashUntil: 0, flashAt: -Infinity, hitAt: null, facing: 1,
           x: 0, y: 0, lift: flyerLift(e, s.tick) * CELL_PX, intro: intro ? { ...intro, start: time } : null };
         this.enemies.set(e.id, v);
       }
@@ -229,9 +239,15 @@ export class EnemyLayer {
         v.sprite!.setTexture(hitArt ? hitKey : art.framed ? `${art.base}.${pose.frame}` : art.base)
           .setPosition(x, y + foot - pose.bob - v.lift - hop).setFlipX(v.facing < 0).setDepth(depth)
           .setDisplaySize(size, size * pose.squashY).setAlpha(alphaK);
-        this.tint(v, e, time, hitArt);
+        if (!this.assets) this.tint(v, e, time, hitArt);
       }
       const top = y - v.lift - hop;
+      if (this.assets) {
+        const flash = scene.time.now < v.flashUntil;
+        // v2 전투에서 감속은 냉각 중계탑의 타격에서만 적용된다. 타워 판매 뒤에도 대상의 만료 틱을 따른다.
+        const frost = e.slows.some(slow => slow.untilTick > s.tick);
+        if (flash || frost) this.r6Marks(x, top, e.kind === 'boss', flash, frost, alphaK);
+      }
       if (v.badge) v.badge.setPosition(x, top - CELL_PX * (e.kind === 'boss' ? 0.86 : 0.5)).setDepth(DEPTH.units + y + 0.6).setAlpha(alphaK);
       // 특성 배지: 체력 막대(폭 28px) 왼쪽 옆, 막대 높이. 대장에게는 붙지 않는다.
       if (v.trait) v.trait.setPosition(x - 14 - TRAIT_BADGE_PX / 2 - 2, top - CELL_PX * 0.44 + 2).setDepth(DEPTH.ui).setAlpha(alphaK);
@@ -246,6 +262,29 @@ export class EnemyLayer {
     for (const [id, v] of this.enemies) if (!seen.has(id)) { v.sprite?.destroy(); v.spine?.object.destroy(); v.badge?.destroy(); v.trait?.destroy(); this.enemies.delete(id); }
     // 그려지기 전에 사라진 적(같은 틱 처치 등)의 예약은 버린다.
     for (const id of this.pendingIntros.keys()) if (!s.enemies.some(e => e.id === id)) this.pendingIntros.delete(id);
+  }
+
+  /** 흰 외곽선과 냉기 결정을 그린다. 면을 덮지 않아 Spine과 대역 그림에 같은 표시를 쓴다. */
+  private r6Marks(x: number, footY: number, boss: boolean, flash: boolean, frost: boolean, alpha: number) {
+    const half = boss ? 25 : 15;
+    const bottom = footY + 1;
+    const top = footY - (boss ? 42 : 26);
+    const g = this.hpBars;
+    if (flash) {
+      g.lineStyle(1.5, 0xffffff, alpha);
+      for (const side of [-1, 1]) {
+        const edge = x + half * side;
+        const inner = edge - 5 * side;
+        g.beginPath().moveTo(inner, top).lineTo(edge, top + 4).lineTo(edge, top + 8).strokePath();
+        g.beginPath().moveTo(edge, bottom - 7).lineTo(edge, bottom - 3).lineTo(inner, bottom).strokePath();
+      }
+    }
+    if (frost) {
+      const cx = x + half * .78, cy = top + 4;
+      g.fillStyle(R6_COLORS.teal, alpha).fillTriangle(cx, cy - 6, cx + 4, cy, cx, cy + 6)
+        .fillTriangle(cx, cy - 6, cx - 4, cy, cx, cy + 6);
+      g.lineStyle(1, R6_COLORS.silver, alpha).lineBetween(cx - 2, cy + 1, cx, cy - 3);
+    }
   }
 
   private addSpine(v: EnemyView, enemy: Enemy) {
