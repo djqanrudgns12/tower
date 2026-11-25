@@ -10,7 +10,7 @@ generated_by: tools/wiki/gen.mjs
 
 > 이 파일은 `npm run wiki:sync` (`tools/wiki/gen.mjs`)가 코드·계약 JSON·SQL에서 결정적으로 자동 생성합니다. 직접 수정하지 마세요.
 
-- 스캔된 마크다운 총계: **248개 파일** · **1,899,113자** · 추정 **약 1,234,538 토큰**
+- 스캔된 마크다운 총계: **248개 파일** · **1,899,529자** · 추정 **약 1,234,809 토큰**
 - **경고**: `해시 고정(validate-plan)` 문서는 1바이트도 수정·이동하면 안 되며, `링크·참조 검사(validate-plan)` 및 `코드·시험 경로 참조` 문서도 기존 경로를 그대로 유지해야 합니다.
 
 ## 분류별 요약
@@ -18,7 +18,7 @@ generated_by: tools/wiki/gen.mjs
 | 분류 | 파일 수 | 글자 수 | 추정 토큰 |
 | --- | ---: | ---: | ---: |
 | 01. 진입·규약 및 LLM Wiki | 34 | 167,598 | 108,954 |
-| 02. 리뉴얼 현행 기준 (PRD보다 우선) | 76 | 544,942 | 354,248 |
+| 02. 리뉴얼 현행 기준 (PRD보다 우선) | 76 | 545,358 | 354,519 |
 | 03. 호스팅·배포·운영 기준 | 3 | 36,412 | 23,669 |
 | 04. 문제은행 CR-1000 공동검수 | 6 | 201,954 | 131,272 |
 | 05. 제작 PRD v0.5 및 계약 기준 | 6 | 143,424 | 93,229 |
@@ -70,7 +70,7 @@ generated_by: tools/wiki/gen.mjs
 | 경로 | 생애주기 | Diataxis | 보호 잠금 | 절 수 | 글자 수 |
 | --- | --- | --- | --- | ---: | ---: |
 | [docs/renewal/art-bible-v2.md](../docs/renewal/art-bible-v2.md) | 현행 우선 기준 | Explanation / Spec | - | 7 | 3,232 |
-| [docs/renewal/BACKLOG.md](../docs/renewal/BACKLOG.md) | 현행 우선 기준 | Explanation / Spec | - | 4 | 6,492 |
+| [docs/renewal/BACKLOG.md](../docs/renewal/BACKLOG.md) | 현행 우선 기준 | Explanation / Spec | - | 4 | 6,908 |
 | [docs/renewal/catalog/monsters.md](../docs/renewal/catalog/monsters.md) | 현행 우선 기준 | Reference | 링크·참조 검사(validate-plan) | 23 | 30,922 |
 | [docs/renewal/catalog/towers.md](../docs/renewal/catalog/towers.md) | 현행 우선 기준 | Reference | 링크·참조 검사(validate-plan) | 34 | 46,450 |
 | [docs/renewal/prd-r3-phases.md](../docs/renewal/prd-r3-phases.md) | 현행 우선 기준 | Explanation / Spec | 코드·시험 경로 참조 | 20 | 6,779 |
