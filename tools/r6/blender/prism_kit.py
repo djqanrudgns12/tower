@@ -2,15 +2,13 @@
 
 import math
 
-import bpy
-
 from mathutils import Vector
 
 from mortar_kit import Kit
-from support_mesh import beam, polygon, radial, regular
+from support_mesh import beam, octahedron, polygon, radial, regular
 
 
-ANGLES = tuple(math.radians(a) for a in (114, 234, 354))
+ANGLES = tuple(math.radians(a) for a in (127, 247, 7))
 FRAME_LEAN = 0.0
 
 
@@ -18,27 +16,11 @@ def mount_point(height):
     return Vector((FRAME_LEAN * height, 0, height))
 
 
-def crystal(p, name, center, radius, height, phase=0):
-    # 끝이 하나의 꼭짓점인 8면체. 겹치는 윤곽 메시를 쓰지 않는다.
-    points = [(*radial(radius, phase + i * math.pi / 2).xy, 0) for i in range(4)]
-    points.extend(((0, 0, -height / 2), (0, 0, height / 2)))
-    faces = [(i, (i + 1) % 4, 5) for i in range(4)]
-    faces += [((i + 1) % 4, i, 4) for i in range(4)]
-    mesh = bpy.data.meshes.new(name)
-    mesh.from_pydata(points, [], faces)
-    mesh.update()
-    obj = bpy.data.objects.new(name, mesh)
-    p.collection.objects.link(obj)
-    obj.location = center
-    obj["color"] = "amber"
-    return obj
-
-
 def frame(kit, tier, spread, height):
     triangle = regular(spread, 3, ANGLES[0])
     trim = "silver"
     with kit.part("base", f"triangle-{tier}") as p:
-        polygon(p, "집속 기단 하부", regular(spread * .91, 6, ANGLES[0]),
+        polygon(p, "집속 기단 하부", regular(spread * .76, 6, ANGLES[0]),
                 [(0, .94), (.13, 1.02), (.33, 1), (.51, .73)], "slate")
         for i, (a, b) in enumerate(zip(triangle, triangle[1:] + triangle[:1])):
             beam(p, "기단 연결대", (*a, .17), (*b, .17), .27 + tier * .035, .30, "slate")
@@ -74,15 +56,15 @@ def frame(kit, tier, spread, height):
                 "silver", steps=6, closed=True, forward=True)
         p.plate("비대칭 방위 표식", (-.19, .03, -.35), (.13, .32, .12), "line")
     with kit.part("weapon", f"crystal-{tier}", "charge") as p:
-        crystal(p, "단일 앰버 주수정", (0, 0, .10), (.30 + tier * .044) * 1.65,
-                (.94 + tier * .101) * 1.35, phase=.10)
+        octahedron(p, "단일 앰버 주수정", (0, 0, .10), (.30 + tier * .044) * 1.65,
+                   (.94 + tier * .101) * 1.35, "amber", phase=.10)
     if tier > 1:
         with kit.part("weapon", f"satellites-{tier}", "orbit") as p:
             count = (0, 2, 3, 4)[tier - 1]
             for i in range(count):
                 a = i * math.tau / count + .50
                 q = radial(1.43 + .102 * (tier - 1), a, -.43 if i % 2 else .27)
-                crystal(p, "외곽 위성 수정", q, .134 + tier * .022, .35 + tier * .062, phase=.24 + a)
+                octahedron(p, "외곽 위성 수정", q, .134 + tier * .022, .35 + tier * .062, "amber", phase=.24 + a)
 
 
 def build_kit():
@@ -115,11 +97,12 @@ def build_kit():
                 if name == "gold-outriggers":
                     beam(p, "버팀목의 얇은 은회 가장자리", outer + Vector((0, 0, .13)),
                          inner + Vector((0, 0, .13)), .066, .068, "silver")
-            if name in ("corner-bolts", "alloy-shoes", "triangle-circuit", "apex-bracket", "gold-outriggers"):
-                height = top + {"corner-bolts": .21, "alloy-shoes": .34, "triangle-circuit": .65,
-                                "apex-bracket": .57, "gold-outriggers": .58}[name]
-                r = {"triangle-circuit": .77, "apex-bracket": .69, "gold-outriggers": .90}.get(name, .50)
-                p.lathe("부유 광학 고리", (0, 0, height),
-                        [(0, r - .03), (.05, r), (.13, r - .03), (.13, r - .13), (0, r - .13)],
-                        "silver", steps=12, closed=True)
+    for tier, (_, top) in enumerate(frames, 1):
+        if tier < 2:
+            continue
+        with kit.part("detail", f"optical-ring-{tier}") as p:
+            r = (.77, .81, .90)[tier - 2]
+            p.lathe("부유 광학 고리", (0, 0, top + .34),
+                    [(0, r - .03), (.05, r), (.13, r - .03), (.13, r - .13), (0, r - .13)],
+                    "silver", steps=12, closed=True)
     return kit.scene

@@ -2,6 +2,7 @@
 
 import math
 
+import bpy
 from mathutils import Vector
 
 
@@ -31,3 +32,17 @@ def arc(p, name, center, start, end, profile, color, segments=18):
     rings = [[tuple(radial(r, start + (end - start) * i / segments, z)) for z, r in reversed(profile)]
              for i in range(segments + 1)]
     return p.mesh(name, rings, color, center)
+
+
+def octahedron(p, name, center, radius, height, color, phase=0):
+    points = [(*radial(radius, phase + i * math.pi / 2).xy, 0) for i in range(4)]
+    points.extend(((0, 0, -height / 2), (0, 0, height / 2)))
+    faces = [(i, (i + 1) % 4, 5) for i in range(4)]
+    faces += [((i + 1) % 4, i, 4) for i in range(4)]
+    mesh = bpy.data.meshes.new(name)
+    mesh.from_pydata(points, [], faces)
+    mesh.update()
+    obj = bpy.data.objects.new(name, mesh)
+    p.collection.objects.link(obj)
+    obj.location = center
+    obj["color"] = color

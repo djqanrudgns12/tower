@@ -15,10 +15,13 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "qa"))
 from check import ALLOWED_COLORS, R04, manifest_errors, palette_violations, read_image
 
 
+# 무광 앰버는 기존 검수 팔레트의 1.12배 색으로 올라가지 않게 한다.
+SPRITE_COLORS = tuple(color for color in ALLOWED_COLORS if color != (255, 178, 40))
+
+
 @lru_cache(maxsize=32768)
 def snap_color(rgb):
-    # 무광 앰버는 기존 검수 팔레트의 1.12배 색으로 올라가지 않게 한다.
-    return min((color for color in ALLOWED_COLORS if color != (255, 178, 40)),
+    return min(SPRITE_COLORS,
                key=lambda color: sum((a - b) ** 2 for a, b in zip(rgb, color)))
 
 

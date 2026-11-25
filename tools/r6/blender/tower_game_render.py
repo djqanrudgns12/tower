@@ -37,8 +37,7 @@ def render(tower, kit_file, recipe_file, out):
         kit = bpy.data.scenes[f"{tower_render.TITLES[tower]} · 부품"]
         assemble = partial(tower_render.assemble, tower)
         head_height = tower_render.HEAD_HEIGHT
-    # 냉기 파동이 아래쪽 프레임과 겹치지 않도록 카메라 중심을 내린다.
-    center = mortar_render.CENTER_HEIGHT - (.25 if tower == "cryo" else 0)
+    center = tower_render.HEAD_CENTERS.get(tower, mortar_render.CENTER_HEIGHT)
     for stage in stages:
         level = stage["level"]
         if level not in (1, 6, 12, 18):

@@ -15,10 +15,24 @@ from mortar_render import CAMERA_RAY, CENTER_HEIGHT, DIRECTIONS, SURFACES, TILE,
 
 
 KITS = {
-    "prism": (prism_kit.build_kit, "프리즘 탑", 9, 2.20),
-    "hangar": (hangar_kit.build_kit, "드론 격납고", 8, 1.54),
-    "bastion": (bastion_kit.build_kit, "방벽 기지", 8, 1.67),
+    "prism": (prism_kit.build_kit, "프리즘 탑", 9, 2.67),
+    "hangar": (hangar_kit.build_kit, "드론 격납고", 8, 1.91),
+    "bastion": (bastion_kit.build_kit, "방벽 기지", 8, 1.59),
 }
+# 상층 장비를 포함한 11형태의 폭과 높이. 광학탑은 수직 여백을 남기고,
+# 격납고는 갑판 위 공간을 넓히며, 방벽의 증축은 주로 수평으로 진행한다.
+PROPORTIONS = {
+    "prism": ((.82, .91), (.84, .96), (.89, 1.00), (.89, 1.00), (.94, 1.03),
+              (.98, 1.06), (.98, 1.06), (1.04, 1.10), (1.09, 1.11), (1.09, 1.11), (1.15, 1.14)),
+    "hangar": ((.76, .91), (.81, .96), (.83, .98), (.84, 1.03), (.89, 1.08),
+               (.91, 1.11), (.91, 1.12), (.96, 1.16), (.99, 1.23), (.99, 1.25), (1.04, 1.32)),
+    "bastion": ((.79, .51), (.84, .55), (.87, .59), (.88, .60), (.93, .66),
+                (.96, .71), (.97, .72), (1.02, .75), (1.06, .83), (1.06, .84), (1.10, .90)),
+}
+# 지도 설치점은 고정하고, 비대칭 갑판과 호형 외벽이 같은 칸 안에서 차지하는 위치를 조절한다.
+CHASSIS_OFFSET = {"prism": (-.29, -.22, 0), "hangar": (-.81, -.62, 0), "bastion": (.53, .40, 0)}
+CHASSIS_WIDTH = {"prism": .95, "hangar": .91, "bastion": .88}
+CHASSIS_HEIGHT = {"prism": 1.02, "hangar": 1.0, "bastion": .91}
 PRISM_HEIGHTS = (1.69, 1.87, 2.00, 2.30)
 CHARGE = (0, .04, .15, .25, .21, .14, .06, 0)
 ORBIT = (0, .21, .61, 1.13, 1.76, 2.28, 2.62, 0)
@@ -50,7 +64,7 @@ def mounts_for(tower, tier, frame, yaw, layer):
                            @ yaw @ drone_scale]
         if 2 <= frame <= 6:
             mounts["fleet"] = []
-        mounts["wingman"] = [down @ Matrix.Translation((x, y, height + index * .095)) @ yaw @ drone_scale
+        mounts["wingman"] = [down @ Matrix.Translation((x, y, height + index * .23)) @ yaw @ drone_scale
                              for index, (x, y) in enumerate(spots[1:])]
         mounts["guide"] = [down]
     else:
@@ -78,6 +92,19 @@ def copy_part(part, group, materials, finish, world, transforms, accent=None):
             obj.material_slots[0].material = materials[material]
 
 
+def proportions(tower, level):
+    width, height = PROPORTIONS[tower][level // 2]
+    width *= CHASSIS_WIDTH[tower]
+    height *= CHASSIS_HEIGHT[tower]
+    return Matrix.Diagonal((width, width, height, 1))
+
+
+def mount_point(tower, stage):
+    if tower == "prism":
+        return prism_kit.mount_point(PRISM_HEIGHTS[stage["weaponStage"] - 1])
+    return Vector((0, 0, KITS[tower][3]))
+
+
 def assemble(tower, kit, materials, stage, group, tile, direction=0, layer="form", frame=0):
     tier = stage["weaponStage"]
     world = Matrix.Translation(tile)
@@ -88,6 +115,13 @@ def assemble(tower, kit, materials, stage, group, tile, direction=0, layer="form
         transform = Matrix.Translation((0, 0, CENTER_HEIGHT)) @ Matrix.Diagonal((2.6, 2.6, 2.6, 1)) @ yaw
         copy_part(part, group, materials, finish, world, [transform])
         return
+    sizing = proportions(tower, stage["level"])
+    if layer == "head":
+        pivot = Matrix.Translation((0, 0, CENTER_HEIGHT))
+        sizing = pivot @ sizing @ pivot.inverted()
+    if layer != "head":
+        sizing = Matrix.Translation(CHASSIS_OFFSET[tower]) @ sizing
+    world = world @ sizing
     mounts = mounts_for(tower, tier, frame, yaw, layer)
     for slot in SLOTS:
         for name in stage["slots"].get(slot, []):
@@ -166,10 +200,8 @@ def render(tower, stages, out, kit_file, palette, linear, forms_only=False):
             specs["drone"] = ([(stage, direction, "drone", 0) for stage in tiers
                                for direction in range(0, DIRECTIONS, 2)], 8, CENTER_HEIGHT)
     pivot = [TILE // 2, TILE // 2]
-    anchors = [pivot] * len(stages)
-    if tower == "prism":
-        anchors = [project(prism_kit.mount_point(PRISM_HEIGHTS[stage["weaponStage"] - 1]), center)
-                   for stage in stages]
+    anchors = [project(Vector(CHASSIS_OFFSET[tower]) + proportions(tower, stage["level"]) @ mount_point(tower, stage), center)
+               for stage in stages]
     layout = {
         "towerId": tower, "tile": TILE, "levels": [stage["level"] for stage in stages],
         "bodyPivot": project((0, 0, 0), center), "headPivot": pivot, "headAnchors": anchors,

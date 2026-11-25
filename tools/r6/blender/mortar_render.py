@@ -11,8 +11,9 @@ from mortar_kit import Part, SLOTS, YAW_HEIGHTS, build_kit
 
 
 TILE = 384
-VIEW = 6.75
+VIEW = 7.04
 CENTER_HEIGHT = 1.67
+MORTAR_CENTER = 1.94
 CAMERA_RAY = Vector((6.1, -8.2, 6.05)).normalized()
 DIRECTIONS = 16
 REVIEW_DIRECTION = 8
@@ -23,6 +24,9 @@ ELEVATION_HEIGHTS = (.66, .66, .90, 1.03)
 KICK = (0, 0, 0, 1.0, .65, .36, .12, 0)
 SURFACES = {"steel": "slate", "alloy": "line", "ceramic": "silver", "gold-trim": "silver"}
 BANDS = (.74, .88, 1.0, 1.12)
+# 기단과 포상이 같은 비율로 커져 기존 고정발·완충기의 연결을 유지한다.
+CHASSIS_SCALE = (.75, .78, .81, .85, .88, .90, .94, .98, 1.02, 1.06, 1.09)
+CHASSIS_HEIGHT = .73
 AMBER_BANDS = (.58, .74, .88, .98)
 MUZZLES = (((0, 1.68, 0),), ((0, 2.01, 0),), ((-.66, 1.49, .02), (.66, 1.49, .02)),
            tuple((x, 1.28, z) for x in (-.71, .71) for z in (-.38, .45)))
@@ -129,6 +133,7 @@ def lay_out_kit(stage, out, recipe, palette, linear):
     scene = bpy.context.scene
     scene.name = "곡사 포대 · Lv20 조립"
     configure(scene)
+    scene.camera.location.z += MORTAR_CENTER - CENTER_HEIGHT
     assemble(kit, materials, stage, scene.collection, Vector(), REVIEW_DIRECTION)
     scene["recipe"] = recipe.name
     for area in (bpy.context.screen.areas if bpy.context.screen else ()):
@@ -148,7 +153,12 @@ def assemble(kit, materials, stage, group, tile, direction=0, layer="form", fram
     kick = KICK[frame]
     raise_fraction = FIRE_PITCH[frame]
     pitch = math.radians(idle + 15 * raise_fraction)
-    world_pos = Matrix.Translation(tile)
+    size = CHASSIS_SCALE[stage["level"] // 2]
+    sizing = Matrix.Diagonal((.95 * size, .95 * size, CHASSIS_HEIGHT * size, 1))
+    if layer == "head":
+        pivot = Matrix.Translation((0, 0, CENTER_HEIGHT))
+        sizing = pivot @ sizing @ pivot.inverted()
+    world_pos = Matrix.Translation(tile) @ sizing
     # 접지점을 고정하고 포상의 회전축을 발사 순간 9% 내린다.
     sink = -.09 * YAW_HEIGHTS[stage["materialStage"]] * kick
     press = Matrix.Translation((0, 0, sink))
@@ -237,9 +247,9 @@ def render(recipe_file, out, kit_file, palette, linear, forms_only=False):
     materials = {name: bpy.data.materials[f"R04 · {name}"] for name in palette}
     validate_kit(kit, stages)
 
-    def project(z):
+    def project(z, center):
         up_z = math.sqrt(1 - CAMERA_RAY.z ** 2)
-        return [TILE // 2, round(TILE * (.5 - (z - CENTER_HEIGHT) * up_z / VIEW))]
+        return [TILE // 2, round(TILE * (.5 - (z - center) * up_z / VIEW))]
 
     # 384px 셀을 사용해도 시트의 가로·세로가 4096px 안에 들어간다.
     head_groups = {"heads": [stage for stage in stages if stage["weaponStage"] <= 2],
@@ -257,13 +267,15 @@ def render(recipe_file, out, kit_file, palette, linear, forms_only=False):
     layout = {
         "towerId": "mortar",
         "tile": TILE, "levels": [stage["level"] for stage in stages],
-        "bodyPivot": project(0), "headPivot": project(CENTER_HEIGHT),
-        "headAnchors": [project(YAW_HEIGHTS[stage["materialStage"]]) for stage in stages],
+        "bodyPivot": project(0, MORTAR_CENTER), "headPivot": project(CENTER_HEIGHT, CENTER_HEIGHT),
+        "headAnchors": [project(YAW_HEIGHTS[stage["materialStage"]] * CHASSIS_HEIGHT * CHASSIS_SCALE[stage["level"] // 2], MORTAR_CENTER)
+                        for stage in stages],
         "headSheets": {name: [stage["level"] for stage in group] for name, group in head_groups.items()},
         "directions": DIRECTIONS, "reviewDirection": REVIEW_DIRECTION,
         "weapons": [{"stage": stage["weaponStage"], "level": stage["level"], "attack": stage["attack"]}
                     for stage in tiers],
-        "grids": {name: batch(kit, materials, out / f"{name}.png", cells, cols)
+        "grids": {name: batch(kit, materials, out / f"{name}.png", cells, cols,
+                              center_height=CENTER_HEIGHT if name in head_groups else MORTAR_CENTER)
                   for name, (cells, cols) in specs.items()},
     }
     (out / "layout.json").write_text(json.dumps(layout, ensure_ascii=False, indent=2) + "\n")

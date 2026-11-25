@@ -6,31 +6,35 @@ from itertools import combinations
 import json
 from pathlib import Path
 
-from PIL import Image, ImageDraw, ImageFont
+from PIL import Image, ImageChops, ImageDraw, ImageFont
 
 from mortar_pack import DEFAULT_FONT, REFERENCE_LEVELS, check_evolution, read_cells
 from pack import finish_cell, pack_grid
-from check import R04, manifest_errors, mask_at_48, palette_violations, read_image, silhouette_iou
+from check import ALLOWED_COLORS, R04, manifest_errors, mask_at_48, palette_violations, read_image, silhouette_iou
+from tower_game_pack import SCALE
 
 
 LABELS = {
     "rail": ("레일 포탑", ("원기둥 목과 단포신", "잠금 날개와 슬라이더", "옆 장갑과 균형추", "합금 목과 쌍포신", "유압 고정발",
                          "후방 방열판", "장갑 기둥과 삼연장", "가속 고리와 옆 갑판", "옆 장갑과 안테나",
-                         "경사 기둥과 4열 포신", "4번째 가속 고리와 금테 기단")),
+                         "장포신과 얇은 가속 고리", "4번째 가속 고리와 금테 기단")),
     "cryo": ("냉각 중계탑", ("3중 공명 고리", "냉매 회수관과 보호 캡", "중간 클램프와 벤트", "4중 공명 고리",
-                          "하부 방열판", "고리 분할판", "분리한 두 고리 묶음", "냉매 탱크와 확장판",
-                          "상단 분사 노즐", "5단 냉각 고리", "냉각 결정과 금테 노즐")),
-    "prism": ("프리즘 탑", ("삼각 기단과 단결정", "모서리 고정대", "외곽 가새", "보조 수정 세 개",
-                              "합금 외피", "삼각 회로와 고리", "세라믹 틀과 이중 결정", "반사판",
-                              "집속 고리와 상단 보강", "대형 결정과 위성 네 개", "금테 버팀목과 광학 고리")),
-    "hangar": ("드론 격납고", ("육각 갑판과 정찰 드론", "유도등 지지대", "진입로와 방풍벽", "로터 두 기와 격자 마스트",
+                          "하부 방열판", "공명 고리 곡면 클립", "분리한 두 고리 묶음", "냉매 탱크와 확장판",
+                          "상단 분사 노즐", "5단 냉각 고리", "부유 결정과 하단 노즐")),
+    "prism": ("프리즘 탑", ("삼각 기단과 단결정", "모서리 고정대", "외곽 가새", "외곽 위성 수정 두 개",
+                              "합금 외피", "부유 광학 고리", "굽은 세라믹 장갑과 단결정", "반사판",
+                              "집속 고리와 상단 보강", "대형 결정과 위성 네 개", "장갑 버팀목과 광학 고리")),
+    "hangar": ("드론 격납고", ("2단 육각 갑판과 정찰 드론", "유도등 지지대", "격납 아치와 방풍벽", "로터 두 기와 격자 마스트",
                                "보조 안테나", "충전 도크", "쌍발 레일과 고정익 세 기", "갑판 외곽 지지발",
                                "격자 증축과 탄약 랙", "고정익 네 기와 금테", "육각 유도선과 지휘 드론")),
-    "bastion": ("방벽 기지", ("호형 기초와 단판", "방벽 쐐기", "붐 보조 센서", "이어진 2단 방벽",
+    "bastion": ("방벽 기지", ("지원 벙커와 전면 방벽", "방벽 쐐기", "붐 보조 센서", "이어진 2단 방벽",
                                "충격 흡수부", "후방 송출 장치", "3단 세라믹 방벽과 접시", "기단 고정발",
-                               "보조 센서 받침", "금테 접시와 4단 방벽", "금테 방벽 보강")),
+                               "보조 센서 받침", "금테 접시와 4단 방벽", "지원 코어와 방벽 고정발")),
 }
 CROSS_IOU_LIMIT = .55
+PALETTE_NAMES = ("카본", "슬레이트", "선", "은회", "앰버", "틸")
+COLOR_FAMILY = dict(zip(ALLOWED_COLORS, (name for name in PALETTE_NAMES for _ in range(4))))
+
 
 
 def make_review(out, tower, reference, forms, levels, font_path):
@@ -157,18 +161,22 @@ def pack_tower(source, out, reference, font=DEFAULT_FONT):
         raise ValueError("48px 인접 실루엣 기준 미달: " + ", ".join(failures))
 
 
-def published_forms(folder):
-    manifest = json.loads((folder / "manifest.json").read_text())
-    sprite = next(asset for asset in manifest["assets"] if asset["id"].endswith("-forms"))
+def published_cells(folder, manifest, sheet):
+    sprite = next(asset for asset in manifest["assets"] if asset["id"].endswith(f"-{sheet}"))
     atlas = read_image(folder / sprite["file"])
     spec = sprite["sprite"]
-    w, h = spec["frameWidth"], spec["frameHeight"]
-    columns = atlas.width // w
-    cells = {}
-    for index, level in enumerate(manifest["levels"]):
-        x, y = index % columns * w, index // columns * h
-        cells[level] = (atlas.crop((x, y, x + w, y + h)), spec["pivot"])
+    width, height = spec["frameWidth"], spec["frameHeight"]
+    columns = atlas.width // width
+    cells = []
+    for index in range(spec["frameCount"]):
+        x, y = index % columns * width, index // columns * height
+        cells.append((atlas.crop((x, y, x + width, y + height)), spec["pivot"]))
     return cells
+
+
+def published_forms(folder):
+    manifest = json.loads((folder / "manifest.json").read_text())
+    return dict(zip(manifest["levels"], published_cells(folder, manifest, "forms")))
 
 
 def comparison_board(path, towers, font_path):
@@ -188,6 +196,97 @@ def comparison_board(path, towers, font_path):
     board.save(path, lossless=True, method=6)
 
 
+def color_shares(form):
+    color_pixels = dict.fromkeys(PALETTE_NAMES, 0)
+    swatches = form.getcolors(form.width * form.height)
+    for frequency, (*rgb, alpha) in swatches:
+        if alpha >= 128:
+            color_pixels[COLOR_FAMILY[tuple(rgb)]] += frequency
+    total = sum(color_pixels.values())
+    return {name: round(count * 100 / total, 2) for name, count in color_pixels.items()}
+
+
+def attack_change(previous, frame):
+    # 투명 여백을 분모에서 빼고 채널 중 하나라도 12 이상 바뀐 화소를 센다.
+    union = ImageChops.lighter(previous.getchannel("A"), frame.getchannel("A")).point(
+        lambda alpha: 255 if alpha >= 128 else 0)
+    difference = ImageChops.difference(previous, frame).split()
+    peak = ImageChops.lighter(ImageChops.lighter(difference[0], difference[1]),
+                             ImageChops.lighter(difference[2], difference[3]))
+    visible = ImageChops.darker(union, peak.point(lambda delta: 255 if delta >= 12 else 0))
+    return visible.histogram()[255] / union.histogram()[255]
+
+
+def placed_sprite(image, pivot):
+    canvas = Image.new("RGBA", (192, 192))
+    canvas.alpha_composite(image, (96 - pivot[0], 128 - pivot[1]))
+    return canvas, (96, 128)
+
+
+def visible_luma(image):
+    bins = image.convert("L").histogram(mask=image.getchannel("A").point(
+        lambda alpha: 255 if alpha >= 128 else 0))
+    return sum(value * count for value, count in enumerate(bins)) / sum(bins)
+
+
+def compare_to_pad(file, towers, pad_inputs):
+    image, projection = pad_inputs
+    config = json.loads(projection.read_text())
+    pad = read_image(image).crop((0, 0, *config["padSize"]))
+    pad_entry = placed_sprite(pad, config["padPivot"])
+    pad_luma = visible_luma(pad)
+    file.write("\n## 빈 설치 칸과 Lv1\n\n"
+               "빈 칸의 첫 프레임과 게임 배율로 줄인 타워를 지면 피벗에 맞췄다. "
+               "명도는 알파 128 이상 화소의 평균이다.\n\n"
+               "| 타워 | 48px IoU | 타워 명도 | 빈 칸 명도 |\n"
+               "| --- | ---: | ---: | ---: |\n")
+    size = round(192 * SCALE)
+    for tower, levels in towers.items():
+        form, pivot = levels[1]
+        sprite = form.resize((size, size), Image.Resampling.BOX)
+        model_entry = placed_sprite(sprite, tuple(round(value * SCALE) for value in pivot))
+        iou = silhouette_iou(model_entry, pad_entry)
+        file.write(f"| {tower} | {iou:.4f} | {visible_luma(sprite):.1f} | {pad_luma:.1f} |\n")
+
+
+def evidence_table(path, towers, folders, pad_inputs):
+    with path.open("w") as file:
+        file.write("# R6 타워 진화와 색 비중\n\n")
+        file.write("192px 완성 형태에서 알파 128 이상인 화소를 색 계열별로 셌다. "
+                   "프리즘 앰버는 주수정과 위성 수정 표면이다. 나머지 다섯 종은 앰버 표식을 전부 금테로 셌다.\n\n")
+        file.write("| 타워 | 레벨 | " + " | ".join(PALETTE_NAMES) + " | 48px 면적 | 이전 단계 IoU |\n")
+        file.write("| --- | ---: | " + " | ".join("---:" for _ in range(8)) + " |\n")
+        for tower, levels in towers.items():
+            previous = None
+            for level, entry in levels.items():
+                form, _ = entry
+                shares = color_shares(form)
+                area = mask_at_48(*entry)[0].histogram()[255]
+                overlap = "—" if previous is None else f"{silhouette_iou(previous, entry):.4f}"
+                values = " | ".join(f"{share:.2f}%" for share in shares.values())
+                file.write(f"| {tower} | {level} | {values} | {area} | {overlap} |\n")
+                previous = entry
+
+        file.write("\n## 공격 견본\n\n"
+                   "192px 견본의 첫 프레임과 공격 중 프레임을 비교했다. "
+                   "가시 영역에서 RGBA 중 하나가 12 이상 바뀐 비율의 최댓값이다.\n\n"
+                   "| 타워 | Lv1 | Lv6 | Lv12 | Lv18 |\n"
+                   "| --- | ---: | ---: | ---: | ---: |\n")
+        for folder in folders:
+            manifest = json.loads((folder / "manifest.json").read_text())
+            frames = published_cells(folder, manifest, "attack")
+            offset, peaks = 0, []
+            for weapon in manifest["weapons"]:
+                count = weapon["attack"]["frames"]
+                idle = frames[offset][0]
+                peak = max(attack_change(idle, image) for image, _ in frames[offset + 1:offset + count])
+                peaks.append(f"{peak:.1%}")
+                offset += count
+            file.write(f"| {folder.name} | " + " | ".join(peaks) + " |\n")
+        if pad_inputs:
+            compare_to_pad(file, towers, pad_inputs)
+
+
 def comparison_table(path, results, levels):
     with path.open("w") as file:
         file.write("# R6 타워 6종 48px 실루엣 IoU\n\n")
@@ -200,7 +299,7 @@ def comparison_table(path, results, levels):
             file.write(f"| {pair} | " + " | ".join(cells) + " |\n")
 
 
-def compare_towers(folders, board=None, table=None, font=DEFAULT_FONT):
+def compare_towers(folders, board=None, table=None, font=DEFAULT_FONT, evidence=None, pad_inputs=None):
     towers = {folder.name: published_forms(folder) for folder in folders}
     levels = next(iter(towers.values())).keys()
     if any(forms.keys() != levels for forms in towers.values()):
@@ -229,6 +328,8 @@ def compare_towers(folders, board=None, table=None, font=DEFAULT_FONT):
         comparison_board(board, towers, font)
     if table:
         comparison_table(table, results, levels)
+    if evidence:
+        evidence_table(evidence, towers, folders, pad_inputs)
     if failures:
         raise SystemExit("48px 타워 간 실루엣 기준 미달: " + ", ".join(failures))
 
@@ -239,5 +340,8 @@ if __name__ == "__main__":
     parser.add_argument("--board", type=Path)
     parser.add_argument("--table", type=Path)
     parser.add_argument("--font", type=Path, default=DEFAULT_FONT)
+    parser.add_argument("--evidence", type=Path, help="레벨별 색 비중·면적·인접 IoU 표")
+    parser.add_argument("--pad", type=Path, nargs=2, metavar=("WEBP", "PROJECTION"),
+                        help="설치 칸 비교에 사용할 시트와 피벗 JSON")
     args = parser.parse_args()
-    compare_towers(args.folders, args.board, args.table, args.font)
+    compare_towers(args.folders, args.board, args.table, args.font, args.evidence, args.pad)

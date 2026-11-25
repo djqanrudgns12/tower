@@ -13,8 +13,11 @@ from tower_kit import CRYO_BANKS, CRYO_HEIGHT, RAIL_HEIGHTS, RAIL_PITCH, RAIL_PO
 
 
 HEAD_HEIGHT = .62
-RAIL_CENTER_HEIGHT = 2.99
-RAIL_MAST_SHIFT = .71
+RAIL_CENTER_HEIGHT = 2.88
+CRYO_CENTER_HEIGHT = 2.46
+HEAD_CENTERS = {"rail": CENTER_HEIGHT, "cryo": 2.29}
+RAIL_MAST_SHIFT = .79
+PROPORTIONS = {"rail": (1.0, .91), "cryo": (.89, .94)}
 CAMERA_RIGHT = Vector((0, 0, 1)).cross(CAMERA_RAY).normalized()
 REVIEW_DIRECTIONS = {"rail": 6, "cryo": 8}
 RAIL_KICK = (
@@ -23,11 +26,11 @@ RAIL_KICK = (
     (0, .22, .83, .52, .96, .64, 1, 0),
     (0, .25, 1, .78, .54, .32, .13, 0),
 )
-RAIL_FLASHES = ({1: 0}, {1: 0, 3: 1}, {1: 0, 3: 1, 5: 2}, {1: 0})
+RAIL_FLASHES = ({1: 0, 2: 0}, {1: 0, 2: 0, 3: 1, 4: 1},
+                {1: 0, 2: 0, 3: 1, 4: 1, 5: 2, 6: 2}, {1: 1, 2: 1})
 RAIL_DIP = (0, 11, 8, 5, 3, 1, 0, 0)
 CRYO_SPIN = (0, .15, .44, .96, 1.59, 2.10, 2.46, 0)
-CRYO_COMPRESSION = (0, .06, .19, .24, .16, .08, .03, 0)
-PULSE_RADII = {3: (.97, .66), 4: (1.58, 1.10), 5: (2.15, 1.66), 6: (2.78, 2.20)}
+CRYO_COMPRESSION = (0, .13, .29, .40, -.10, -.18, -.08, 0)
 
 
 def mount_height(tower, stage):
@@ -50,7 +53,7 @@ def cryo_action(stage, frame, head):
         compression = CRYO_COMPRESSION[frame]
         squeeze = Matrix.Translation((0, 0, (center - z) * compression))
         spin = Matrix.Rotation(CRYO_SPIN[frame] * (-1 if index % 2 else 1), 4, "Z")
-        diameter = 1.15 if stage["level"] == 20 else 1
+        diameter = {10: 1.085, 20: 1.15}.get(stage["level"], 1)
         scale = diameter * (1 - .47 * compression)
         mounts[index] = head @ squeeze @ spin @ Matrix.Diagonal((scale, scale, 1, 1))
     return mounts
@@ -61,42 +64,23 @@ def rail_effect(group, materials, stage, recoil, frame):
     flash = RAIL_FLASHES[tier].get(frame)
     if flash is None:
         return
-    ports = RAIL_PORTS[tier]
-    x, tip, z = ports[flash]
-    # 동시 관통 단계에서는 4개 포신의 예광을 한 줄로 모은다.
-    if tier == 3:
-        x, tip, z = 0, max(port[1] for port in ports), .20
+    x, tip, z = RAIL_PORTS[tier][flash]
     p = Part(group)
-    for start, end, color in ((.05, .58, "teal"), (.56, .82, "silver")):
-        obj = p.rod("가는 예광선", (x, tip + start, z), (x, tip + end, z), .023, color, steps=6)
+    flare = .24 if frame % 2 else .15
+    for dx, dz, color in ((flare, 0, "teal"), (0, flare, "silver")):
+        obj = p.rod("포구 십자 섬광", (x - dx, tip + .078, z - dz), (x + dx, tip + .078, z + dz),
+                    .046, color, steps=4)
         obj.data.materials.append(materials[color])
         obj.matrix_world = recoil @ obj.matrix_basis
 
 
-def cryo_effect(group, materials, stage, world, frame):
-    if frame not in PULSE_RADII:
-        return
-    p = Part(group)
-    outer, inner = PULSE_RADII[frame]
-    scale = (.86, .91, .95, 1.0)[stage["weaponStage"] - 1]
-    for radius in (outer * scale, inner * scale):
-        ring = p.lathe("냉기 파동 선", (0, 0, .24), [(0, radius), (.038, radius),
-                       (.038, radius - .043), (0, radius - .043)],
-                       "teal", steps=40, closed=True)
-        ring.data.materials.append(materials["teal"])
-        ring.matrix_world = world @ ring.matrix_basis
-    for index in range(8):
-        angle = index * math.tau / 8 + frame * .18
-        x, y = math.cos(angle), math.sin(angle)
-        radius = outer * scale
-        shard = p.rod("서리 파편", ((radius-.18)*x, (radius-.18)*y, .24),
-                      ((radius+.12)*x, (radius+.12)*y, .36), .028, "silver", steps=4)
-        shard.data.materials.append(materials["silver"])
-        shard.matrix_world = world @ shard.matrix_basis
-
-
 def assemble(tower, kit, materials, stage, group, tile, direction=0, layer="form", frame=0):
-    world = Matrix.Translation(tile)
+    width, vertical = PROPORTIONS[tower]
+    sizing = Matrix.Diagonal((width, width, vertical, 1))
+    if layer == "head":
+        pivot = Matrix.Translation((0, 0, HEAD_HEIGHT))
+        sizing = pivot @ sizing @ pivot.inverted()
+    world = Matrix.Translation(tile) @ sizing
     height = HEAD_HEIGHT if layer == "head" else mount_height(tower, stage)
     shift = CAMERA_RIGHT * RAIL_MAST_SHIFT if tower == "rail" and layer != "head" else Vector()
     mast = Matrix.Translation(shift)
@@ -130,9 +114,7 @@ def assemble(tower, kit, materials, stage, group, tile, direction=0, layer="form
                 obj.material_slots[0].material = materials[SURFACES[stage["materialStage"]] if color == "surface" else color]
     if tower == "rail":
         rail_effect(group, materials, stage, world @ mounts["recoil"], frame)
-    else:
-        effect_origin = world @ Matrix.Translation((0, 0, height - mount_height(tower, stage)))
-        cryo_effect(group, materials, stage, effect_origin, frame)
+
 
 
 def save_kit(tower, stage, path, palette, linear):
@@ -143,8 +125,8 @@ def save_kit(tower, stage, path, palette, linear):
     scene = bpy.context.scene
     scene.name = f"{TITLES[tower]} · Lv20 조립"
     configure(scene)
-    if tower == "rail":
-        scene.camera.location.z += RAIL_CENTER_HEIGHT - CENTER_HEIGHT
+    ground_center = RAIL_CENTER_HEIGHT if tower == "rail" else CRYO_CENTER_HEIGHT
+    scene.camera.location.z += ground_center - CENTER_HEIGHT
     assemble(tower, kit, materials, stage, scene.collection, Vector(), REVIEW_DIRECTIONS[tower])
     scene["recipe"] = f"{tower}.json"
     for area in (bpy.context.screen.areas if bpy.context.screen else ()):
@@ -182,8 +164,10 @@ def render(tower, stages, out, kit_file, palette, linear, forms_only=False):
         up_z = math.sqrt(1 - CAMERA_RAY.z ** 2)
         return [round(TILE * (.5 + offset / VIEW)), round(TILE * (.5 - (z - center) * up_z / VIEW))]
 
-    ground_center = RAIL_CENTER_HEIGHT if tower == "rail" else CENTER_HEIGHT
-    mount_offset = RAIL_MAST_SHIFT if tower == "rail" else 0
+    ground_center = RAIL_CENTER_HEIGHT if tower == "rail" else CRYO_CENTER_HEIGHT
+    head_center = HEAD_CENTERS[tower]
+    width, vertical = PROPORTIONS[tower]
+    mount_offset = RAIL_MAST_SHIFT * width if tower == "rail" else 0
     tiers = [stage for stage in stages if stage["level"] in (1, 6, 12, 18)]
     head_groups = {"heads": stages[:6], "heads-armored": stages[6:]}
     specs = {"forms": ([(stage, review, "form", 0) for stage in stages], 6)}
@@ -197,14 +181,14 @@ def render(tower, stages, out, kit_file, palette, linear, forms_only=False):
         })
     layout = {
         "towerId": tower, "tile": TILE, "levels": [stage["level"] for stage in stages],
-        "bodyPivot": project(0, ground_center), "headPivot": project(HEAD_HEIGHT, CENTER_HEIGHT),
-        "headAnchors": [project(mount_height(tower, stage), ground_center, mount_offset) for stage in stages],
+        "bodyPivot": project(0, ground_center), "headPivot": project(HEAD_HEIGHT, head_center),
+        "headAnchors": [project(vertical * mount_height(tower, stage), ground_center, mount_offset) for stage in stages],
         "headSheets": {name: [stage["level"] for stage in group] for name, group in head_groups.items()},
         "directions": DIRECTIONS, "reviewDirection": review,
         "weapons": [{"stage": stage["weaponStage"], "level": stage["level"], "attack": stage["attack"]}
                     for stage in tiers],
         "grids": {name: batch(kit, materials, out / f"{name}.png", cells, cols, partial(assemble, tower),
-                              CENTER_HEIGHT if name in head_groups else ground_center)
+                              head_center if name in head_groups else ground_center)
                   for name, (cells, cols) in specs.items()},
     }
     (out / "layout.json").write_text(json.dumps(layout, ensure_ascii=False, indent=2) + "\n")
