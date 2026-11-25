@@ -1,0 +1,337 @@
+{
+  "species": "human",
+  "entry": "infantry",
+  "skin": "T4",
+  "sheet": "sheet.png",
+  "reference": "assembly.png",
+  "guide": "infantry-biped.json",
+  "placement": "placement.json",
+  "ready": true,
+  "silhouetteIoU": 0.785,
+  "parts": {
+    "leg-far": {
+      "sourceBox": [
+        402,
+        56,
+        502,
+        240
+      ],
+      "targetBox": [
+        119,
+        114,
+        154,
+        204
+      ],
+      "placedBox": [
+        119,
+        127,
+        154,
+        191
+      ]
+    },
+    "leg-foot-far": {
+      "sourceBox": [
+        665,
+        56,
+        815,
+        240
+      ],
+      "targetBox": [
+        131,
+        168,
+        167,
+        206
+      ],
+      "placedBox": [
+        133,
+        168,
+        164,
+        206
+      ]
+    },
+    "arm-far": {
+      "sourceBox": [
+        966,
+        56,
+        1089,
+        240
+      ],
+      "targetBox": [
+        129,
+        66,
+        164,
+        122
+      ],
+      "placedBox": [
+        129,
+        68,
+        164,
+        120
+      ]
+    },
+    "arm-hand-far": {
+      "sourceBox": [
+        72,
+        296,
+        255,
+        480
+      ],
+      "targetBox": [
+        155,
+        119,
+        172,
+        141
+      ],
+      "placedBox": [
+        155,
+        121,
+        172,
+        138
+      ]
+    },
+    "body": {
+      "sourceBox": [
+        390,
+        296,
+        513,
+        480
+      ],
+      "targetBox": [
+        75,
+        48,
+        166,
+        148
+      ],
+      "placedBox": [
+        87,
+        48,
+        154,
+        148
+      ]
+    },
+    "head": {
+      "sourceBox": [
+        668,
+        296,
+        811,
+        480
+      ],
+      "targetBox": [
+        91,
+        30,
+        155,
+        96
+      ],
+      "placedBox": [
+        97,
+        30,
+        148,
+        96
+      ]
+    },
+    "leg-near": {
+      "sourceBox": [
+        418,
+        536,
+        485,
+        720
+      ],
+      "targetBox": [
+        82,
+        98,
+        122,
+        203
+      ],
+      "placedBox": [
+        83,
+        98,
+        121,
+        203
+      ]
+    },
+    "leg-foot-near": {
+      "sourceBox": [
+        665,
+        536,
+        815,
+        720
+      ],
+      "targetBox": [
+        93,
+        193,
+        113,
+        217
+      ],
+      "placedBox": [
+        93,
+        193,
+        113,
+        217
+      ]
+    },
+    "arm-near": {
+      "sourceBox": [
+        969,
+        536,
+        1086,
+        720
+      ],
+      "targetBox": [
+        79,
+        53,
+        128,
+        136
+      ],
+      "placedBox": [
+        79,
+        56,
+        128,
+        133
+      ]
+    },
+    "arm-hand-near": {
+      "sourceBox": [
+        73,
+        776,
+        255,
+        960
+      ],
+      "targetBox": [
+        89,
+        125,
+        104,
+        144
+      ],
+      "placedBox": [
+        89,
+        127,
+        104,
+        142
+      ]
+    },
+    "gear": {
+      "sourceBox": [
+        366,
+        776,
+        537,
+        960
+      ],
+      "targetBox": [
+        88,
+        111,
+        141,
+        184
+      ],
+      "placedBox": [
+        88,
+        119,
+        141,
+        176
+      ]
+    }
+  },
+  "pivots": {
+    "body": [
+      127,
+      142
+    ],
+    "head": [
+      133,
+      93
+    ],
+    "skill": [
+      163.74,
+      114.66
+    ],
+    "leg-far": [
+      140,
+      154
+    ],
+    "leg-foot-far": [
+      146,
+      186
+    ],
+    "arm-far": [
+      150,
+      106
+    ],
+    "arm-hand-far": [
+      161,
+      136
+    ],
+    "leg-near": [
+      114,
+      152
+    ],
+    "leg-foot-near": [
+      105,
+      194
+    ],
+    "arm-near": [
+      102,
+      106
+    ],
+    "arm-hand-near": [
+      96,
+      138
+    ]
+  },
+  "issues": [
+    {
+      "code": "speck",
+      "box": [
+        691,
+        89,
+        692,
+        90
+      ]
+    },
+    {
+      "code": "speck",
+      "box": [
+        759,
+        664,
+        760,
+        665
+      ]
+    },
+    {
+      "code": "speck",
+      "box": [
+        678,
+        712,
+        679,
+        713
+      ]
+    },
+    {
+      "code": "speck",
+      "box": [
+        244,
+        807,
+        245,
+        808
+      ]
+    }
+  ],
+  "fitScores": [
+    0.743,
+    0.785
+  ],
+  "accepted": false,
+  "whitePatches": {
+    "reference": [
+      {
+        "pixels": 125,
+        "box": [
+          96,
+          92,
+          104,
+          120
+        ]
+      }
+    ]
+  },
+  "artRedo": "흰 얼룩 · 원화 [96, 92, 104, 120]에서 125px. 부품 사이에 남은 흰 면을 확인해 주세요.",
+  "redo": "흰 얼룩 · 원화 [96, 92, 104, 120]에서 125px. 부품 사이에 남은 흰 면을 확인해 주세요."
+}

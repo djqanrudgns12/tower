@@ -1,0 +1,306 @@
+{
+  "species": "machine",
+  "entry": "boss-t4",
+  "skin": "T4",
+  "sheet": "sheet.png",
+  "reference": "assembly.png",
+  "guide": "boss-quadruped.json",
+  "placement": "placement.json",
+  "ready": true,
+  "silhouetteIoU": 0.689,
+  "parts": {
+    "leg-hind-far": {
+      "sourceBox": [
+        408,
+        56,
+        495,
+        240
+      ],
+      "targetBox": [
+        48,
+        74,
+        106,
+        207
+      ],
+      "placedBox": [
+        48,
+        79,
+        106,
+        202
+      ]
+    },
+    "leg-fore-far": {
+      "sourceBox": [
+        985,
+        56,
+        1070,
+        240
+      ],
+      "targetBox": [
+        182,
+        85,
+        235,
+        207
+      ],
+      "placedBox": [
+        182,
+        88,
+        235,
+        203
+      ]
+    },
+    "leg-hind-foot-far": {
+      "sourceBox": [
+        624,
+        65,
+        856,
+        231
+      ],
+      "targetBox": [
+        62,
+        175,
+        95,
+        202
+      ],
+      "placedBox": [
+        62,
+        176,
+        95,
+        200
+      ]
+    },
+    "body": {
+      "sourceBox": [
+        336,
+        296,
+        568,
+        479
+      ],
+      "targetBox": [
+        26,
+        31,
+        232,
+        143
+      ],
+      "placedBox": [
+        58,
+        31,
+        200,
+        143
+      ]
+    },
+    "head": {
+      "sourceBox": [
+        645,
+        296,
+        835,
+        480
+      ],
+      "targetBox": [
+        152,
+        39,
+        205,
+        83
+      ],
+      "placedBox": [
+        156,
+        39,
+        201,
+        83
+      ]
+    },
+    "armor": {
+      "sourceBox": [
+        967,
+        296,
+        1089,
+        480
+      ],
+      "targetBox": [
+        70,
+        17,
+        181,
+        86
+      ],
+      "placedBox": [
+        102,
+        17,
+        148,
+        86
+      ]
+    },
+    "leg-fore-foot-far": {
+      "sourceBox": [
+        48,
+        299,
+        280,
+        477
+      ],
+      "targetBox": [
+        198,
+        177,
+        227,
+        200
+      ],
+      "placedBox": [
+        198,
+        177,
+        227,
+        199
+      ]
+    },
+    "leg-hind-near": {
+      "sourceBox": [
+        414,
+        536,
+        490,
+        720
+      ],
+      "targetBox": [
+        17,
+        97,
+        54,
+        183
+      ],
+      "placedBox": [
+        17,
+        97,
+        53,
+        183
+      ]
+    },
+    "leg-hind-foot-near": {
+      "sourceBox": [
+        644,
+        536,
+        835,
+        720
+      ],
+      "targetBox": [
+        55,
+        171,
+        84,
+        194
+      ],
+      "placedBox": [
+        57,
+        171,
+        81,
+        194
+      ]
+    },
+    "leg-fore-near": {
+      "sourceBox": [
+        986,
+        536,
+        1070,
+        720
+      ],
+      "targetBox": [
+        154,
+        105,
+        203,
+        218
+      ],
+      "placedBox": [
+        154,
+        108,
+        203,
+        215
+      ]
+    },
+    "leg-fore-foot-near": {
+      "sourceBox": [
+        67,
+        776,
+        261,
+        960
+      ],
+      "targetBox": [
+        168,
+        189,
+        197,
+        212
+      ],
+      "placedBox": [
+        170,
+        189,
+        194,
+        212
+      ]
+    },
+    "gear": {
+      "sourceBox": [
+        336,
+        802,
+        568,
+        933
+      ],
+      "targetBox": [
+        74,
+        43,
+        184,
+        158
+      ],
+      "placedBox": [
+        74,
+        69,
+        184,
+        131
+      ]
+    }
+  },
+  "pivots": {
+    "body": [
+      129,
+      118
+    ],
+    "head": [
+      178,
+      73
+    ],
+    "skill": [
+      202.2,
+      67.33
+    ],
+    "leg-hind-far": [
+      77,
+      99
+    ],
+    "leg-hind-foot-far": [
+      78,
+      180
+    ],
+    "leg-fore-far": [
+      198,
+      100
+    ],
+    "leg-fore-foot-far": [
+      212,
+      181
+    ],
+    "leg-hind-near": [
+      35,
+      111
+    ],
+    "leg-hind-foot-near": [
+      69,
+      175
+    ],
+    "leg-fore-near": [
+      177,
+      125
+    ],
+    "leg-fore-foot-near": [
+      182,
+      193
+    ]
+  },
+  "issues": [],
+  "fitScores": [
+    0.646,
+    0.689
+  ],
+  "accepted": false,
+  "redo": "body, leg-fore-far, leg-hind-far 부위를 같은 자세·비율로 다시 분리해 주세요. 두 차례 정렬 후 IoU 0.689."
+}

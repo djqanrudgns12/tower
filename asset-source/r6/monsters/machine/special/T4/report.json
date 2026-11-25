@@ -1,0 +1,250 @@
+{
+  "species": "machine",
+  "entry": "special",
+  "skin": "T4",
+  "sheet": "sheet.png",
+  "reference": "assembly.png",
+  "guide": "special-swarm.json",
+  "placement": "placement.json",
+  "ready": true,
+  "silhouetteIoU": 0.565,
+  "parts": {
+    "body": {
+      "sourceBox": [
+        48,
+        303,
+        280,
+        473
+      ],
+      "targetBox": [
+        37,
+        53,
+        214,
+        161
+      ],
+      "placedBox": [
+        52,
+        53,
+        199,
+        161
+      ]
+    },
+    "swarm-1": {
+      "sourceBox": [
+        912,
+        540,
+        1144,
+        716
+      ],
+      "targetBox": [
+        104,
+        175,
+        135,
+        199
+      ],
+      "placedBox": [
+        104,
+        175,
+        135,
+        199
+      ]
+    },
+    "swarm-3": {
+      "sourceBox": [
+        336,
+        779,
+        568,
+        956
+      ],
+      "targetBox": [
+        186,
+        161,
+        231,
+        196
+      ],
+      "placedBox": [
+        186,
+        161,
+        231,
+        195
+      ]
+    },
+    "swarm-2": {
+      "sourceBox": [
+        48,
+        785,
+        280,
+        950
+      ],
+      "targetBox": [
+        112,
+        200,
+        157,
+        235
+      ],
+      "placedBox": [
+        112,
+        201,
+        157,
+        233
+      ]
+    }
+  },
+  "pivots": {
+    "body": [
+      128,
+      155
+    ],
+    "head": [
+      164.67,
+      82.89
+    ],
+    "skill": [
+      214.17,
+      132.8
+    ],
+    "swarm-leg-1-far": [
+      104.17,
+      204.11
+    ],
+    "swarm-leg-2-far": [
+      148.17,
+      204.11
+    ],
+    "swarm-leg-3-far": [
+      192.17,
+      204.11
+    ],
+    "swarm-leg-1-near": [
+      82.17,
+      204.11
+    ],
+    "swarm-leg-2-near": [
+      126.17,
+      204.11
+    ],
+    "swarm-leg-3-near": [
+      170.17,
+      204.11
+    ],
+    "swarm-1": [
+      113,
+      193
+    ],
+    "swarm-2": [
+      137.17,
+      225.51
+    ],
+    "swarm-3": [
+      208.67,
+      189.85
+    ]
+  },
+  "issues": [
+    {
+      "code": "speck",
+      "box": [
+        1140,
+        594,
+        1141,
+        595
+      ]
+    },
+    {
+      "code": "speck",
+      "box": [
+        946,
+        628,
+        947,
+        629
+      ]
+    },
+    {
+      "code": "speck",
+      "box": [
+        117,
+        803,
+        118,
+        804
+      ]
+    },
+    {
+      "code": "speck",
+      "box": [
+        53,
+        831,
+        54,
+        832
+      ]
+    },
+    {
+      "code": "speck",
+      "box": [
+        226,
+        851,
+        227,
+        852
+      ]
+    },
+    {
+      "code": "speck",
+      "box": [
+        561,
+        855,
+        562,
+        856
+      ]
+    },
+    {
+      "code": "speck",
+      "box": [
+        567,
+        866,
+        568,
+        867
+      ]
+    },
+    {
+      "code": "speck",
+      "box": [
+        372,
+        869,
+        373,
+        870
+      ]
+    },
+    {
+      "code": "speck",
+      "box": [
+        278,
+        879,
+        279,
+        880
+      ]
+    },
+    {
+      "code": "speck",
+      "box": [
+        336,
+        893,
+        337,
+        894
+      ]
+    },
+    {
+      "code": "speck",
+      "box": [
+        561,
+        938,
+        562,
+        939
+      ]
+    }
+  ],
+  "fitScores": [
+    0.415,
+    0.565
+  ],
+  "accepted": false,
+  "redo": "body, swarm-3, swarm-2 부위를 같은 자세·비율로 다시 분리해 주세요. 두 차례 정렬 후 IoU 0.565."
+}

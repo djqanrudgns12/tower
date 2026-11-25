@@ -1,0 +1,266 @@
+{
+  "species": "stone",
+  "entry": "boss-t3",
+  "skin": "T3",
+  "sheet": "sheet.png",
+  "reference": "assembly.png",
+  "guide": "boss-biped.json",
+  "placement": "placement.json",
+  "ready": true,
+  "silhouetteIoU": 0.643,
+  "parts": {
+    "leg-far": {
+      "sourceBox": [
+        397,
+        56,
+        507,
+        240
+      ],
+      "targetBox": [
+        113,
+        104,
+        189,
+        209
+      ],
+      "placedBox": [
+        119,
+        104,
+        182,
+        209
+      ]
+    },
+    "leg-foot-far": {
+      "sourceBox": [
+        631,
+        56,
+        849,
+        240
+      ],
+      "targetBox": [
+        133,
+        175,
+        201,
+        208
+      ],
+      "placedBox": [
+        147,
+        175,
+        186,
+        208
+      ]
+    },
+    "arm-far": {
+      "sourceBox": [
+        956,
+        56,
+        1099,
+        240
+      ],
+      "targetBox": [
+        149,
+        59,
+        239,
+        129
+      ],
+      "placedBox": [
+        167,
+        59,
+        221,
+        129
+      ]
+    },
+    "arm-hand-far": {
+      "sourceBox": [
+        100,
+        296,
+        227,
+        480
+      ],
+      "targetBox": [
+        172,
+        111,
+        234,
+        149
+      ],
+      "placedBox": [
+        190,
+        111,
+        216,
+        149
+      ]
+    },
+    "body": {
+      "sourceBox": [
+        379,
+        296,
+        525,
+        480
+      ],
+      "targetBox": [
+        0,
+        28,
+        185,
+        123
+      ],
+      "placedBox": [
+        55,
+        28,
+        130,
+        123
+      ]
+    },
+    "head": {
+      "sourceBox": [
+        661,
+        296,
+        819,
+        480
+      ],
+      "targetBox": [
+        86,
+        25,
+        216,
+        89
+      ],
+      "placedBox": [
+        123,
+        25,
+        178,
+        89
+      ]
+    },
+    "leg-near": {
+      "sourceBox": [
+        382,
+        536,
+        522,
+        720
+      ],
+      "targetBox": [
+        31,
+        89,
+        107,
+        194
+      ],
+      "placedBox": [
+        31,
+        91,
+        107,
+        191
+      ]
+    },
+    "arm-near": {
+      "sourceBox": [
+        959,
+        536,
+        1097,
+        720
+      ],
+      "targetBox": [
+        74,
+        38,
+        164,
+        108
+      ],
+      "placedBox": [
+        93,
+        38,
+        145,
+        108
+      ]
+    },
+    "leg-foot-near": {
+      "sourceBox": [
+        624,
+        571,
+        856,
+        684
+      ],
+      "targetBox": [
+        79,
+        186,
+        127,
+        209
+      ],
+      "placedBox": [
+        79,
+        186,
+        126,
+        209
+      ]
+    },
+    "arm-hand-near": {
+      "sourceBox": [
+        97,
+        776,
+        231,
+        960
+      ],
+      "targetBox": [
+        79,
+        111,
+        141,
+        149
+      ],
+      "placedBox": [
+        96,
+        111,
+        124,
+        149
+      ]
+    }
+  },
+  "pivots": {
+    "body": [
+      92,
+      102
+    ],
+    "head": [
+      128,
+      64
+    ],
+    "skill": [
+      211.21,
+      80.41
+    ],
+    "leg-far": [
+      150,
+      121
+    ],
+    "leg-foot-far": [
+      166,
+      180
+    ],
+    "arm-far": [
+      194,
+      70
+    ],
+    "arm-hand-far": [
+      203,
+      117
+    ],
+    "leg-near": [
+      71,
+      104
+    ],
+    "leg-foot-near": [
+      102,
+      190
+    ],
+    "arm-near": [
+      119,
+      49
+    ],
+    "arm-hand-near": [
+      110,
+      117
+    ]
+  },
+  "issues": [],
+  "fitScores": [
+    0.566,
+    0.643
+  ],
+  "accepted": false,
+  "redo": "leg-near, body, leg-far 부위를 같은 자세·비율로 다시 분리해 주세요. 두 차례 정렬 후 IoU 0.643."
+}

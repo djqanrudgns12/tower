@@ -1,0 +1,286 @@
+{
+  "species": "stone",
+  "entry": "boss-t2",
+  "skin": "T2",
+  "sheet": "sheet.png",
+  "reference": "assembly.png",
+  "guide": "boss-biped.json",
+  "placement": "placement.json",
+  "ready": true,
+  "silhouetteIoU": 0.665,
+  "parts": {
+    "leg-far": {
+      "sourceBox": [
+        372,
+        56,
+        532,
+        240
+      ],
+      "targetBox": [
+        114,
+        95,
+        176,
+        200
+      ],
+      "placedBox": [
+        114,
+        112,
+        176,
+        183
+      ]
+    },
+    "leg-foot-far": {
+      "sourceBox": [
+        631,
+        56,
+        849,
+        240
+      ],
+      "targetBox": [
+        134,
+        175,
+        189,
+        208
+      ],
+      "placedBox": [
+        142,
+        175,
+        181,
+        208
+      ]
+    },
+    "arm-far": {
+      "sourceBox": [
+        945,
+        56,
+        1111,
+        240
+      ],
+      "targetBox": [
+        142,
+        47,
+        214,
+        117
+      ],
+      "placedBox": [
+        146,
+        47,
+        209,
+        117
+      ]
+    },
+    "body": {
+      "sourceBox": [
+        382,
+        296,
+        521,
+        480
+      ],
+      "targetBox": [
+        48,
+        40,
+        198,
+        135
+      ],
+      "placedBox": [
+        87,
+        40,
+        159,
+        135
+      ]
+    },
+    "head": {
+      "sourceBox": [
+        677,
+        296,
+        803,
+        480
+      ],
+      "targetBox": [
+        98,
+        18,
+        188,
+        72
+      ],
+      "placedBox": [
+        124,
+        18,
+        161,
+        72
+      ]
+    },
+    "arm-hand-far": {
+      "sourceBox": [
+        48,
+        321,
+        280,
+        455
+      ],
+      "targetBox": [
+        161,
+        108,
+        211,
+        146
+      ],
+      "placedBox": [
+        161,
+        112,
+        211,
+        141
+      ]
+    },
+    "armor": {
+      "sourceBox": [
+        912,
+        329,
+        1144,
+        447
+      ],
+      "targetBox": [
+        48,
+        46,
+        204,
+        118
+      ],
+      "placedBox": [
+        55,
+        46,
+        197,
+        118
+      ]
+    },
+    "leg-near": {
+      "sourceBox": [
+        401,
+        536,
+        502,
+        720
+      ],
+      "targetBox": [
+        63,
+        113,
+        123,
+        218
+      ],
+      "placedBox": [
+        64,
+        113,
+        122,
+        218
+      ]
+    },
+    "arm-near": {
+      "sourceBox": [
+        979,
+        536,
+        1077,
+        720
+      ],
+      "targetBox": [
+        59,
+        35,
+        131,
+        105
+      ],
+      "placedBox": [
+        76,
+        35,
+        113,
+        105
+      ]
+    },
+    "leg-foot-near": {
+      "sourceBox": [
+        624,
+        571,
+        856,
+        684
+      ],
+      "targetBox": [
+        81,
+        197,
+        114,
+        216
+      ],
+      "placedBox": [
+        81,
+        198,
+        114,
+        214
+      ]
+    },
+    "arm-hand-near": {
+      "sourceBox": [
+        48,
+        787,
+        280,
+        949
+      ],
+      "targetBox": [
+        111,
+        75,
+        162,
+        113
+      ],
+      "placedBox": [
+        111,
+        76,
+        162,
+        112
+      ]
+    }
+  },
+  "pivots": {
+    "body": [
+      123,
+      114
+    ],
+    "head": [
+      142,
+      60
+    ],
+    "skill": [
+      202.72,
+      80.41
+    ],
+    "leg-far": [
+      140,
+      121
+    ],
+    "leg-foot-far": [
+      161,
+      180
+    ],
+    "arm-far": [
+      155,
+      61
+    ],
+    "arm-hand-far": [
+      186,
+      117
+    ],
+    "leg-near": [
+      93,
+      130
+    ],
+    "leg-foot-near": [
+      97,
+      201
+    ],
+    "arm-near": [
+      95,
+      47
+    ],
+    "arm-hand-near": [
+      136,
+      82
+    ]
+  },
+  "issues": [],
+  "fitScores": [
+    0.636,
+    0.665
+  ],
+  "accepted": false,
+  "redo": "leg-near, armor, leg-far 부위를 같은 자세·비율로 다시 분리해 주세요. 두 차례 정렬 후 IoU 0.665."
+}

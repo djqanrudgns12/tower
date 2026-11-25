@@ -1,5 +1,9 @@
+import { createHash } from 'node:crypto';
+import { readFileSync } from 'node:fs';
 import type Phaser from 'phaser';
 import { expect, it, vi } from 'vitest';
+import batch from '../../docs/renewal/r6/tech/monsters/batch.json';
+import { entityId, SPECIES, type Lineage, type Tier } from '../../src/contracts/balanceV2';
 import manifest from '../../public/assets/r6/manifest-v2.json';
 import { R6BattleAssets } from '../../src/game/r6/BattleAssets';
 import { r6ManifestSchema } from '../../src/game/r6/manifest';
@@ -36,4 +40,25 @@ it.each(['elf', 'human', 'insect'] as const)('%s 특수 T1은 해당 종족의 �
   assets.manifest = r6ManifestSchema.parse(manifest);
   const unit = enemy({ faction, entityId: `${faction}-special-t1` });
   expect(assets.enemyArt(unit)).toMatchObject({ data: 'r6.rig.' + faction + '-special', atlas, skin: 'T1' });
+});
+
+it.each(SPECIES)('%s 아틀라스와 전장 스킨이 검수 결과와 일치한다', faction => {
+  const image = readFileSync(`public/assets/r6/monsters/${faction}/${faction}.webp`);
+  expect(image.byteLength).toBeLessThanOrEqual(768 * 1024);
+  expect(createHash('sha256').update(image).digest('hex')).toBe(batch.atlases[faction].sha256);
+  const available = { exists: () => true };
+  const scene = {
+    load: { on: vi.fn(), isLoading: () => false },
+    cache: { json: available, text: available }, textures: available,
+  } as unknown as Phaser.Scene;
+  const assets = new R6BattleAssets(scene, () => false);
+  assets.manifest = r6ManifestSchema.parse(manifest);
+  for (const row of batch.actors.filter(row => row.species === faction)) {
+    const family = row.entry.startsWith('boss-') ? 'boss' : row.entry as Lineage;
+    const id = entityId(faction, family, Number(row.skin.slice(1)) as Tier);
+    const art = assets.enemyArt(enemy({ faction, entityId: id }));
+    expect(art, id).toMatchObject({
+      atlas: 'r6.atlas.' + (row.accepted ? faction : 'g2-walker'), skin: row.skin,
+    });
+  }
 });

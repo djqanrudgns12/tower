@@ -1,0 +1,102 @@
+{
+  "species": "stone",
+  "entry": "special",
+  "skin": "T2",
+  "sheet": "sheet.png",
+  "reference": "assembly.png",
+  "guide": "special-crystal.json",
+  "placement": "placement.json",
+  "ready": true,
+  "silhouetteIoU": 0.46,
+  "parts": {
+    "crystal-far": {
+      "sourceBox": [
+        381,
+        56,
+        523,
+        240
+      ],
+      "targetBox": [
+        56,
+        84,
+        124,
+        153
+      ],
+      "placedBox": [
+        63,
+        84,
+        116,
+        153
+      ]
+    },
+    "body": {
+      "sourceBox": [
+        678,
+        56,
+        801,
+        240
+      ],
+      "targetBox": [
+        87,
+        31,
+        181,
+        234
+      ],
+      "placedBox": [
+        87,
+        62,
+        181,
+        203
+      ]
+    },
+    "crystal-near": {
+      "sourceBox": [
+        663,
+        296,
+        817,
+        480
+      ],
+      "targetBox": [
+        137,
+        136,
+        180,
+        183
+      ],
+      "placedBox": [
+        139,
+        136,
+        178,
+        183
+      ]
+    }
+  },
+  "pivots": {
+    "body": [
+      134,
+      176
+    ],
+    "head": [
+      153.9,
+      62.65
+    ],
+    "skill": [
+      199.61,
+      107.38
+    ],
+    "crystal-far": [
+      99,
+      119
+    ],
+    "crystal-near": [
+      168,
+      153
+    ]
+  },
+  "issues": [],
+  "fitScores": [
+    0.408,
+    0.46
+  ],
+  "accepted": false,
+  "redo": "body, crystal-far, crystal-near 부위를 같은 자세·비율로 다시 분리해 주세요. 두 차례 정렬 후 IoU 0.460."
+}
