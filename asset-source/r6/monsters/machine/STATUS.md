@@ -1,7 +1,7 @@
 # 기계 군단 (`machine`) 분해 시트 진행 현황
 
 - 기준: `docs/renewal/r6/PRD-r6.md` §4, `docs/renewal/r6/tech/monster-pipeline.md`, `docs/renewal/r6/bible/monsters.md`
-- 진행률: **20 / 20 완료** (`cut_parts.py` 절단 검증 통과 20개 · `REDO.md` 조립 재요청 2건 반영 완료)
+- 진행률: **20 / 20 완료** (`cut_parts.py` 절단 검증 통과 20개 · `REDO.md` 2·3·4회차 조립 재요청 전부 반영 완료)
 
 ## 완료 목록 (20개체)
 
@@ -34,4 +34,6 @@
 - `runner/T3/sheet.png`, `assembly.png`: 다량 `speck` 57건 제거 및 T1 관절·시트 파츠 비율에 맞춘 조립 정합 보정 (`cut_parts` `issues=0`, 모의 `fit_parts` IoU 0.845).
 - `special/T2~T4/sheet.png`, `assembly.png`: 미세 `speck` 제거 및 T1 `swarm-*` 관절 위치·시트 파츠 비율에 맞춘 조립 정합 보정 (`issues=0`, 모의 `fit_parts` IoU 0.816~0.955).
 - `boss-t2/T2/assembly.png`, `boss-t4/T4/sheet.png`, `assembly.png`: `boss-t4` 흰 잔여 점 122px/`speck` 제거 및 시트 파츠 비율·자세 기준 조립 정합 보정 (`issues=0`, 모의 `fit_parts` IoU 0.807~0.815).
+- `infantry/T3/sheet.png`, `assembly.png` (4차 REDO 반영): `armor` 중앙 목 아치 내부의 밝은 회색 구멍을 어두운 슬레이트 장갑(`#1D242C`)으로 채우고 흰 픽셀(1,301px → 0px) 톤다운 정리, T1 관절 기준 재조립(`cut_parts` `issues=0`, 모의 `fit_parts` IoU 0.879).
+- `boss-t3/T3/sheet.png`, `assembly.png` (4차 REDO 반영): 4족 다리 상·하단 관절 소켓 두께 보강 및 `body` 하단·발 소켓 겹침 깊게 재조립(`cut_parts` `issues=0`, 모의 `fit_parts` IoU 0.823).
 - `armored/T4`, `boss-t2~t4`: 32px 외곽선 차별화를 위해 넓은 상자형 몸통을 피하고 다리 사이 빈 공간과 V형 방패·2연장 포탑·스텔스 날개 돌출을 적용함.
