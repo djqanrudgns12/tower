@@ -1,0 +1,238 @@
+{
+  "species": "machine",
+  "entry": "infantry",
+  "skin": "T1",
+  "sheet": "monsters-mech-parts.webp",
+  "reference": "monsters-mech.webp",
+  "guide": "infantry-biped.json",
+  "placement": "placement.json",
+  "ready": true,
+  "silhouetteIoU": 0.715,
+  "parts": {
+    "head": {
+      "sourceBox": [
+        957,
+        157,
+        1041,
+        234
+      ],
+      "targetBox": [
+        90,
+        58,
+        159,
+        116
+      ],
+      "placedBox": [
+        93,
+        58,
+        156,
+        116
+      ]
+    },
+    "body": {
+      "sourceBox": [
+        951,
+        406,
+        1049,
+        490
+      ],
+      "targetBox": [
+        107,
+        103,
+        152,
+        134
+      ],
+      "placedBox": [
+        111,
+        103,
+        147,
+        134
+      ]
+    },
+    "leg-near": {
+      "sourceBox": [
+        837,
+        487,
+        944,
+        600
+      ],
+      "targetBox": [
+        84,
+        111,
+        123,
+        164
+      ],
+      "placedBox": [
+        84,
+        117,
+        123,
+        158
+      ]
+    },
+    "leg-foot-near": {
+      "sourceBox": [
+        831,
+        594,
+        936,
+        725
+      ],
+      "targetBox": [
+        79,
+        153,
+        125,
+        216
+      ],
+      "placedBox": [
+        79,
+        156,
+        125,
+        213
+      ]
+    },
+    "leg-far": {
+      "sourceBox": [
+        1008,
+        491,
+        1122,
+        599
+      ],
+      "targetBox": [
+        124,
+        110,
+        157,
+        156
+      ],
+      "placedBox": [
+        124,
+        117,
+        157,
+        148
+      ]
+    },
+    "leg-foot-far": {
+      "sourceBox": [
+        1011,
+        593,
+        1112,
+        720
+      ],
+      "targetBox": [
+        128,
+        145,
+        172,
+        199
+      ],
+      "placedBox": [
+        128,
+        145,
+        171,
+        199
+      ]
+    }
+  },
+  "pivots": {
+    "body": [
+      127,
+      122
+    ],
+    "head": [
+      128,
+      110
+    ],
+    "skill": [
+      183.41,
+      114.66
+    ],
+    "leg-far": [
+      145,
+      123
+    ],
+    "leg-foot-far": [
+      142,
+      152
+    ],
+    "arm-far": [
+      162.02,
+      107.82
+    ],
+    "arm-hand-far": [
+      174.85,
+      135.15
+    ],
+    "leg-near": [
+      108,
+      125
+    ],
+    "leg-foot-near": [
+      100,
+      158
+    ],
+    "arm-near": [
+      119.23,
+      107.82
+    ],
+    "arm-hand-near": [
+      132.07,
+      135.15
+    ]
+  },
+  "issues": [
+    {
+      "code": "legacy_trim",
+      "box": [
+        837,
+        487,
+        944,
+        600
+      ],
+      "slot": "leg-near",
+      "edges": [
+        "bottom"
+      ],
+      "blocking": false
+    },
+    {
+      "code": "legacy_trim",
+      "box": [
+        831,
+        594,
+        936,
+        725
+      ],
+      "slot": "leg-foot-near",
+      "edges": [
+        "top"
+      ],
+      "blocking": false
+    },
+    {
+      "code": "legacy_trim",
+      "box": [
+        1008,
+        491,
+        1122,
+        599
+      ],
+      "slot": "leg-far",
+      "edges": [
+        "bottom",
+        "top"
+      ],
+      "blocking": false
+    },
+    {
+      "code": "legacy_trim",
+      "box": [
+        1011,
+        593,
+        1112,
+        720
+      ],
+      "slot": "leg-foot-far",
+      "edges": [
+        "top"
+      ],
+      "blocking": false
+    }
+  ]
+}

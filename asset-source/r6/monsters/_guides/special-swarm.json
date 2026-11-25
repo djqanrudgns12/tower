@@ -1,0 +1,328 @@
+{
+  "family": "special",
+  "variant": "swarm",
+  "sheet": [
+    1536,
+    1024
+  ],
+  "canvas": [
+    256,
+    256
+  ],
+  "root": [
+    128,
+    216
+  ],
+  "pixelsPerUnit": 3,
+  "pivots": {
+    "root": [
+      128,
+      216
+    ],
+    "body": [
+      128,
+      144
+    ],
+    "head": [
+      143,
+      114
+    ],
+    "skill": [
+      170,
+      135
+    ],
+    "swarm-leg-1-far": [
+      110,
+      165
+    ],
+    "swarm-leg-2-far": [
+      134,
+      165
+    ],
+    "swarm-leg-3-far": [
+      158,
+      165
+    ],
+    "swarm-leg-1-near": [
+      98,
+      165
+    ],
+    "swarm-leg-2-near": [
+      122,
+      165
+    ],
+    "swarm-leg-3-near": [
+      146,
+      165
+    ],
+    "swarm-1": [
+      89,
+      159
+    ],
+    "swarm-2": [
+      128,
+      174
+    ],
+    "swarm-3": [
+      167,
+      159
+    ]
+  },
+  "slots": {
+    "shadow": {
+      "box": [
+        32,
+        40,
+        296,
+        256
+      ],
+      "target": [
+        84,
+        207,
+        172,
+        224
+      ],
+      "bone": "root",
+      "required": false
+    },
+    "swarm-leg-1-far": {
+      "box": [
+        320,
+        40,
+        584,
+        256
+      ],
+      "target": [
+        99,
+        148,
+        121,
+        182
+      ],
+      "bone": "swarm-leg-1-far",
+      "required": false
+    },
+    "swarm-leg-2-far": {
+      "box": [
+        608,
+        40,
+        872,
+        256
+      ],
+      "target": [
+        123,
+        148,
+        145,
+        182
+      ],
+      "bone": "swarm-leg-2-far",
+      "required": false
+    },
+    "swarm-leg-3-far": {
+      "box": [
+        896,
+        40,
+        1160,
+        256
+      ],
+      "target": [
+        147,
+        148,
+        169,
+        182
+      ],
+      "bone": "swarm-leg-3-far",
+      "required": false
+    },
+    "body": {
+      "box": [
+        32,
+        280,
+        296,
+        496
+      ],
+      "target": [
+        85,
+        109,
+        171,
+        163
+      ],
+      "bone": "body",
+      "required": true
+    },
+    "head": {
+      "box": [
+        320,
+        280,
+        584,
+        496
+      ],
+      "target": [
+        124,
+        87,
+        162,
+        123
+      ],
+      "bone": "head",
+      "required": false
+    },
+    "armor": {
+      "box": [
+        608,
+        280,
+        872,
+        496
+      ],
+      "target": [
+        95,
+        112,
+        161,
+        160
+      ],
+      "bone": "body",
+      "required": false
+    },
+    "mark": {
+      "box": [
+        896,
+        280,
+        1160,
+        496
+      ],
+      "target": [
+        114,
+        124,
+        142,
+        148
+      ],
+      "bone": "body",
+      "required": false
+    },
+    "swarm-leg-1-near": {
+      "box": [
+        32,
+        520,
+        296,
+        736
+      ],
+      "target": [
+        87,
+        148,
+        109,
+        182
+      ],
+      "bone": "swarm-leg-1-near",
+      "required": false
+    },
+    "swarm-leg-2-near": {
+      "box": [
+        320,
+        520,
+        584,
+        736
+      ],
+      "target": [
+        111,
+        148,
+        133,
+        182
+      ],
+      "bone": "swarm-leg-2-near",
+      "required": false
+    },
+    "swarm-leg-3-near": {
+      "box": [
+        608,
+        520,
+        872,
+        736
+      ],
+      "target": [
+        135,
+        148,
+        157,
+        182
+      ],
+      "bone": "swarm-leg-3-near",
+      "required": false
+    },
+    "swarm-1": {
+      "box": [
+        896,
+        520,
+        1160,
+        736
+      ],
+      "target": [
+        75,
+        148,
+        103,
+        170
+      ],
+      "bone": "swarm-1",
+      "required": true
+    },
+    "swarm-2": {
+      "box": [
+        32,
+        760,
+        296,
+        976
+      ],
+      "target": [
+        114,
+        163,
+        142,
+        185
+      ],
+      "bone": "swarm-2",
+      "required": false
+    },
+    "swarm-3": {
+      "box": [
+        320,
+        760,
+        584,
+        976
+      ],
+      "target": [
+        153,
+        148,
+        181,
+        170
+      ],
+      "bone": "swarm-3",
+      "required": false
+    },
+    "gear": {
+      "box": [
+        608,
+        760,
+        872,
+        976
+      ],
+      "target": [
+        101,
+        111,
+        155,
+        177
+      ],
+      "bone": "body",
+      "required": false
+    }
+  },
+  "parents": {
+    "root": null,
+    "body": "root",
+    "head": "body",
+    "skill": "body",
+    "swarm-leg-1-far": "body",
+    "swarm-leg-2-far": "body",
+    "swarm-leg-3-far": "body",
+    "swarm-leg-1-near": "body",
+    "swarm-leg-2-near": "body",
+    "swarm-leg-3-near": "body",
+    "swarm-1": "body",
+    "swarm-2": "body",
+    "swarm-3": "body"
+  }
+}

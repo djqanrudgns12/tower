@@ -8,7 +8,9 @@ import unittest
 
 from PIL import Image, ImageDraw
 
+from cut_parts import cut
 from monsters import ACTORS, compose_rig, prepare, read_json
+from part_guides import CANVAS, SHEET, guide_data
 from parts import extract, suggest_pivot
 from pilot import write_json
 from review import review
@@ -20,6 +22,42 @@ FIXTURE = Path(__file__).resolve().parents[3] / "asset-source/r6/monsters/_pipel
 
 
 class MonsterPipelineTest(unittest.TestCase):
+    def test_guide_cut_reports_crossings_and_disconnected_pieces(self):
+        with TemporaryDirectory() as tmp, redirect_stdout(StringIO()):
+            root = Path(tmp)
+            guide = guide_data("infantry", "biped")
+            write_json(root / "guide.json", guide)
+            reference = Image.new("RGBA", CANVAS)
+            ImageDraw.Draw(reference).ellipse((81, 60, 175, 215), fill=(100, 150, 180, 255))
+            reference.save(root / "reference.png")
+            sheet = Image.new("RGBA", SHEET)
+            draw = ImageDraw.Draw(sheet)
+            required = {name for name, slot in guide["slots"].items() if slot["required"]}
+            for name in required:
+                x, y, _, _ = guide["slots"][name]["box"]
+                draw.ellipse((x + 35, y + 20, x + 68, y + 74), fill=(100, 150, 180, 220))
+            sheet.save(root / "sheet.png")
+            args = (root / "sheet.png", root / "reference.png", root / "guide.json")
+            identity = ("machine", "infantry", "T1")
+            self.assertTrue(cut(*args, root / "ready", *identity))
+            self.assertEqual({p.stem for p in (root / "ready/infantry/T1").glob("*.png")}, required)
+            with Image.open(root / "ready/infantry/T1/head.png") as part:
+                self.assertEqual((part.mode, part.size), ("RGBA", CANVAS))
+                self.assertGreater(part.getchannel("A").getextrema()[1], 0)
+            prepare(root / "ready", root / "work", ("infantry", "T1"))
+            pack = read_json(root / "work/manifest-fragment.json")["species"]["machine"]
+            self.assertEqual(set(pack["entities"]), {"machine-infantry-t1"})
+            self.assertNotIn("tierSkins", pack["fallback"])
+            x, y, right, _ = guide["slots"]["body"]["box"]
+            draw.rectangle((x + 80, y + 30, x + 104, y + 60), fill=(100, 150, 180, 255))
+            draw.rectangle((right - 4, y + 80, right + 31, y + 90), fill=(100, 150, 180, 255))
+            sheet.save(root / "sheet.png")
+            self.assertFalse(cut(*args, root / "rejected", *identity))
+            issues = read_json(root / "rejected/report.json")["issues"]
+            self.assertIn("crossing_cells", {issue["code"] for issue in issues})
+            self.assertIn("multiple_components", {issue["code"] for issue in issues})
+            self.assertFalse((root / "rejected/species.json").exists())
+
     def test_templates_have_motion_and_unique_slot_bindings(self):
         for family, variants in VARIANTS.items():
             for variant in variants:

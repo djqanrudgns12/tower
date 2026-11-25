@@ -1,0 +1,307 @@
+{
+  "family": "infantry",
+  "variant": "biped",
+  "sheet": [
+    1536,
+    1024
+  ],
+  "canvas": [
+    256,
+    256
+  ],
+  "root": [
+    128,
+    216
+  ],
+  "pixelsPerUnit": 3,
+  "pivots": {
+    "root": [
+      128,
+      216
+    ],
+    "body": [
+      128,
+      138
+    ],
+    "head": [
+      143,
+      108
+    ],
+    "skill": [
+      170,
+      129
+    ],
+    "leg-far": [
+      140,
+      159
+    ],
+    "leg-foot-far": [
+      143,
+      203.46
+    ],
+    "arm-far": [
+      155,
+      123
+    ],
+    "arm-hand-far": [
+      164,
+      147
+    ],
+    "leg-near": [
+      116,
+      159
+    ],
+    "leg-foot-near": [
+      119,
+      203.46
+    ],
+    "arm-near": [
+      125,
+      123
+    ],
+    "arm-hand-near": [
+      134,
+      147
+    ]
+  },
+  "slots": {
+    "shadow": {
+      "box": [
+        32,
+        40,
+        296,
+        256
+      ],
+      "target": [
+        84,
+        207,
+        172,
+        224
+      ],
+      "bone": "root",
+      "required": false
+    },
+    "leg-far": {
+      "box": [
+        320,
+        40,
+        584,
+        256
+      ],
+      "target": [
+        128,
+        150,
+        154,
+        212
+      ],
+      "bone": "leg-far",
+      "required": true
+    },
+    "leg-foot-far": {
+      "box": [
+        608,
+        40,
+        872,
+        256
+      ],
+      "target": [
+        137,
+        199,
+        157,
+        218
+      ],
+      "bone": "leg-foot-far",
+      "required": true
+    },
+    "arm-far": {
+      "box": [
+        896,
+        40,
+        1160,
+        256
+      ],
+      "target": [
+        146,
+        114,
+        172,
+        156
+      ],
+      "bone": "arm-far",
+      "required": true
+    },
+    "arm-hand-far": {
+      "box": [
+        32,
+        280,
+        296,
+        496
+      ],
+      "target": [
+        159,
+        142,
+        177,
+        162
+      ],
+      "bone": "arm-hand-far",
+      "required": true
+    },
+    "body": {
+      "box": [
+        320,
+        280,
+        584,
+        496
+      ],
+      "target": [
+        101,
+        103,
+        155,
+        157
+      ],
+      "bone": "body",
+      "required": true
+    },
+    "head": {
+      "box": [
+        608,
+        280,
+        872,
+        496
+      ],
+      "target": [
+        124,
+        81,
+        162,
+        117
+      ],
+      "bone": "head",
+      "required": true
+    },
+    "armor": {
+      "box": [
+        896,
+        280,
+        1160,
+        496
+      ],
+      "target": [
+        95,
+        106,
+        161,
+        154
+      ],
+      "bone": "body",
+      "required": false
+    },
+    "mark": {
+      "box": [
+        32,
+        520,
+        296,
+        736
+      ],
+      "target": [
+        114,
+        118,
+        142,
+        142
+      ],
+      "bone": "body",
+      "required": false
+    },
+    "leg-near": {
+      "box": [
+        320,
+        520,
+        584,
+        736
+      ],
+      "target": [
+        104,
+        150,
+        130,
+        212
+      ],
+      "bone": "leg-near",
+      "required": true
+    },
+    "leg-foot-near": {
+      "box": [
+        608,
+        520,
+        872,
+        736
+      ],
+      "target": [
+        113,
+        199,
+        133,
+        218
+      ],
+      "bone": "leg-foot-near",
+      "required": true
+    },
+    "arm-near": {
+      "box": [
+        896,
+        520,
+        1160,
+        736
+      ],
+      "target": [
+        116,
+        114,
+        142,
+        156
+      ],
+      "bone": "arm-near",
+      "required": true
+    },
+    "arm-hand-near": {
+      "box": [
+        32,
+        760,
+        296,
+        976
+      ],
+      "target": [
+        129,
+        142,
+        147,
+        162
+      ],
+      "bone": "arm-hand-near",
+      "required": true
+    },
+    "gear": {
+      "box": [
+        320,
+        760,
+        584,
+        976
+      ],
+      "target": [
+        107,
+        114,
+        161,
+        180
+      ],
+      "bone": "arm-hand-near",
+      "required": false
+    }
+  },
+  "parents": {
+    "root": null,
+    "body": "root",
+    "head": "body",
+    "skill": "body",
+    "leg-far": "body",
+    "leg-foot-far": "leg-far",
+    "arm-far": "body",
+    "arm-hand-far": "arm-far",
+    "leg-near": "body",
+    "leg-foot-near": "leg-near",
+    "arm-near": "body",
+    "arm-hand-near": "arm-near"
+  }
+}

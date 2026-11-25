@@ -46,7 +46,7 @@ try {
     body: `<!doctype html><html lang="ko"><meta charset="utf-8"><title>적 동작 확인</title>
 <style>body{margin:0;background:#12161b;color:#b8c0c8;font:16px system-ui}main{padding:16px}
 h1{font-size:19px;margin:0 0 12px}#field{width:1408px;height:834px}</style>
-<main><h1>R6 전장 · 임시 파츠 20개체</h1><div id="field"></div></main></html>`,
+<main><h1>R6 전장 · 파츠 ${actors.length}개체 확인</h1><div id="field"></div></main></html>`,
   }));
   await page.goto(new URL('r6-monster-fixture', server.resolvedUrls.local[0]).href);
   await page.evaluate(async ({ species, ids }) => {
@@ -71,7 +71,8 @@ h1{font-size:19px;margin:0 0 12px}#field{width:1408px;height:834px}</style>
         id: index + 1, entityId, faction: species, alive: true, derived: false,
         kind: boss ? 'boss' : 'walker', bossTier: boss ? Number(entityId.at(-1)) : null, boss: null,
         flying: spec.flying ?? false, groundedUntilTick: 0, elite: null,
-        progress: Math.round(550 + index * (ctx.path.length - 1600) / (ids.length - 1)),
+        progress: ids.length === 1 ? Math.round(ctx.path.length / 2)
+          : Math.round(550 + index * (ctx.path.length - 1600) / (ids.length - 1)),
         hp: 100, maxHp: 100, moveRem: 0, speedBP: spec.speedBP,
         physicalResistBP: spec.physicalResistBP, magicResistBP: spec.magicResistBP,
         slows: [], stunUntilTick: 0, stunTicksUsed: 0, burns: [], burnNextTick: null,
@@ -147,21 +148,26 @@ h1{font-size:19px;margin:0 0 12px}#field{width:1408px;height:834px}</style>
   const events = await page.evaluate(() => {
     const { game, state, units } = window.qaMonsters;
     const { enemyLayer } = game.scene.getScene('battle');
-    enemyLayer.onHit(1);
+    const hitId = state.enemies[0].id;
+    enemyLayer.onHit(hitId);
     const hit = units[0].animationState.getTrack(1)?.animation.name;
-    state.enemies[1].alive = false;
-    enemyLayer.onKill(2);
-    const fall = units[1].animationState.getTrack(0)?.animation.name;
-    const bosses = units.slice(-4);
-    const skill = bosses.map(unit => unit.animationState.setAnimation(0, 'boss-skill', false).animation.name);
+    const fallIndex = units.length === 1 ? 0 : 1;
+    const falling = state.enemies[fallIndex];
+    falling.alive = false;
+    enemyLayer.onKill(falling.id);
+    const fall = units[fallIndex].animationState.getTrack(0)?.animation.name;
+    const skill = state.enemies.flatMap((enemy, i) => enemy.kind === 'boss'
+      ? [units[i].animationState.setAnimation(0, 'boss-skill', false).animation.name] : []);
     return { hit, fall, skill };
   });
-  assert.deepEqual(events, { hit: 'hit', fall: 'fall', skill: Array(4).fill('boss-skill') });
+  assert.deepEqual(events, {
+    hit: 'hit', fall: 'fall', skill: actors.filter(([id]) => id.includes('-boss-')).map(() => 'boss-skill'),
+  });
   assert.deepEqual(errors, []);
   await writeFile(resolve(shots, 'battle-report.json'), JSON.stringify({
     chromium: browser.version(), rendered: actors.map(([entity], i) => ({ entity, ...rendered[i] })), events,
   }, null, 2) + '\n');
-  console.log('게임 전장 · Mesh2D 20개체 · 걷기 진행·피격·쓰러짐·보스 기술 등록 확인');
+  console.log(`게임 전장 · Mesh2D ${actors.length}개체 · 걷기 진행·피격·쓰러짐 확인 · 보스 기술 ${events.skill.length}개`);
 } finally {
   try {
     await browser?.close();

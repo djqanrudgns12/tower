@@ -1,0 +1,181 @@
+{
+  "family": "special",
+  "variant": "wheeled",
+  "sheet": [
+    1536,
+    1024
+  ],
+  "canvas": [
+    256,
+    256
+  ],
+  "root": [
+    128,
+    216
+  ],
+  "pixelsPerUnit": 3,
+  "pivots": {
+    "root": [
+      128,
+      216
+    ],
+    "body": [
+      128,
+      174
+    ],
+    "head": [
+      143,
+      144
+    ],
+    "skill": [
+      170,
+      165
+    ],
+    "wheel-1": [
+      95,
+      198
+    ],
+    "wheel-2": [
+      161,
+      198
+    ]
+  },
+  "slots": {
+    "shadow": {
+      "box": [
+        32,
+        40,
+        296,
+        256
+      ],
+      "target": [
+        84,
+        207,
+        172,
+        224
+      ],
+      "bone": "root",
+      "required": false
+    },
+    "body": {
+      "box": [
+        320,
+        40,
+        584,
+        256
+      ],
+      "target": [
+        85,
+        139,
+        171,
+        193
+      ],
+      "bone": "body",
+      "required": true
+    },
+    "head": {
+      "box": [
+        608,
+        40,
+        872,
+        256
+      ],
+      "target": [
+        124,
+        117,
+        162,
+        153
+      ],
+      "bone": "head",
+      "required": false
+    },
+    "armor": {
+      "box": [
+        896,
+        40,
+        1160,
+        256
+      ],
+      "target": [
+        95,
+        142,
+        161,
+        190
+      ],
+      "bone": "body",
+      "required": false
+    },
+    "mark": {
+      "box": [
+        32,
+        280,
+        296,
+        496
+      ],
+      "target": [
+        114,
+        154,
+        142,
+        178
+      ],
+      "bone": "body",
+      "required": false
+    },
+    "wheel-1": {
+      "box": [
+        320,
+        280,
+        584,
+        496
+      ],
+      "target": [
+        80,
+        183,
+        110,
+        213
+      ],
+      "bone": "wheel-1",
+      "required": true
+    },
+    "wheel-2": {
+      "box": [
+        608,
+        280,
+        872,
+        496
+      ],
+      "target": [
+        146,
+        183,
+        176,
+        213
+      ],
+      "bone": "wheel-2",
+      "required": true
+    },
+    "gear": {
+      "box": [
+        896,
+        280,
+        1160,
+        496
+      ],
+      "target": [
+        101,
+        141,
+        155,
+        207
+      ],
+      "bone": "body",
+      "required": false
+    }
+  },
+  "parents": {
+    "root": null,
+    "body": "root",
+    "head": "body",
+    "skill": "body",
+    "wheel-1": "body",
+    "wheel-2": "body"
+  }
+}

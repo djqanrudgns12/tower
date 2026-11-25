@@ -1,0 +1,307 @@
+{
+  "family": "armored",
+  "variant": "quadruped",
+  "sheet": [
+    1536,
+    1024
+  ],
+  "canvas": [
+    256,
+    256
+  ],
+  "root": [
+    128,
+    216
+  ],
+  "pixelsPerUnit": 3,
+  "pivots": {
+    "root": [
+      128,
+      216
+    ],
+    "body": [
+      128,
+      159
+    ],
+    "head": [
+      167,
+      144
+    ],
+    "skill": [
+      170,
+      150
+    ],
+    "leg-hind-far": [
+      107,
+      174
+    ],
+    "leg-hind-foot-far": [
+      110,
+      206.49
+    ],
+    "leg-fore-far": [
+      173,
+      174
+    ],
+    "leg-fore-foot-far": [
+      176,
+      206.49
+    ],
+    "leg-hind-near": [
+      83,
+      174
+    ],
+    "leg-hind-foot-near": [
+      86,
+      206.49
+    ],
+    "leg-fore-near": [
+      149,
+      174
+    ],
+    "leg-fore-foot-near": [
+      152,
+      206.49
+    ]
+  },
+  "slots": {
+    "shadow": {
+      "box": [
+        32,
+        40,
+        296,
+        256
+      ],
+      "target": [
+        84,
+        207,
+        172,
+        224
+      ],
+      "bone": "root",
+      "required": false
+    },
+    "leg-hind-far": {
+      "box": [
+        320,
+        40,
+        584,
+        256
+      ],
+      "target": [
+        96,
+        166,
+        122,
+        215
+      ],
+      "bone": "leg-hind-far",
+      "required": true
+    },
+    "leg-hind-foot-far": {
+      "box": [
+        608,
+        40,
+        872,
+        256
+      ],
+      "target": [
+        104,
+        202,
+        124,
+        221
+      ],
+      "bone": "leg-hind-foot-far",
+      "required": true
+    },
+    "leg-fore-far": {
+      "box": [
+        896,
+        40,
+        1160,
+        256
+      ],
+      "target": [
+        162,
+        166,
+        188,
+        215
+      ],
+      "bone": "leg-fore-far",
+      "required": true
+    },
+    "leg-fore-foot-far": {
+      "box": [
+        32,
+        280,
+        296,
+        496
+      ],
+      "target": [
+        170,
+        202,
+        190,
+        221
+      ],
+      "bone": "leg-fore-foot-far",
+      "required": true
+    },
+    "body": {
+      "box": [
+        320,
+        280,
+        584,
+        496
+      ],
+      "target": [
+        85,
+        124,
+        171,
+        178
+      ],
+      "bone": "body",
+      "required": true
+    },
+    "head": {
+      "box": [
+        608,
+        280,
+        872,
+        496
+      ],
+      "target": [
+        148,
+        117,
+        186,
+        153
+      ],
+      "bone": "head",
+      "required": true
+    },
+    "armor": {
+      "box": [
+        896,
+        280,
+        1160,
+        496
+      ],
+      "target": [
+        95,
+        127,
+        161,
+        175
+      ],
+      "bone": "body",
+      "required": false
+    },
+    "mark": {
+      "box": [
+        32,
+        520,
+        296,
+        736
+      ],
+      "target": [
+        114,
+        139,
+        142,
+        163
+      ],
+      "bone": "body",
+      "required": false
+    },
+    "leg-hind-near": {
+      "box": [
+        320,
+        520,
+        584,
+        736
+      ],
+      "target": [
+        72,
+        166,
+        98,
+        215
+      ],
+      "bone": "leg-hind-near",
+      "required": true
+    },
+    "leg-hind-foot-near": {
+      "box": [
+        608,
+        520,
+        872,
+        736
+      ],
+      "target": [
+        80,
+        202,
+        100,
+        221
+      ],
+      "bone": "leg-hind-foot-near",
+      "required": true
+    },
+    "leg-fore-near": {
+      "box": [
+        896,
+        520,
+        1160,
+        736
+      ],
+      "target": [
+        138,
+        166,
+        164,
+        215
+      ],
+      "bone": "leg-fore-near",
+      "required": true
+    },
+    "leg-fore-foot-near": {
+      "box": [
+        32,
+        760,
+        296,
+        976
+      ],
+      "target": [
+        146,
+        202,
+        166,
+        221
+      ],
+      "bone": "leg-fore-foot-near",
+      "required": true
+    },
+    "gear": {
+      "box": [
+        320,
+        760,
+        584,
+        976
+      ],
+      "target": [
+        101,
+        126,
+        155,
+        192
+      ],
+      "bone": "body",
+      "required": false
+    }
+  },
+  "parents": {
+    "root": null,
+    "body": "root",
+    "head": "body",
+    "skill": "body",
+    "leg-hind-far": "body",
+    "leg-hind-foot-far": "leg-hind-far",
+    "leg-fore-far": "body",
+    "leg-fore-foot-far": "leg-fore-far",
+    "leg-hind-near": "body",
+    "leg-hind-foot-near": "leg-hind-near",
+    "leg-fore-near": "body",
+    "leg-fore-foot-near": "leg-fore-near"
+  }
+}

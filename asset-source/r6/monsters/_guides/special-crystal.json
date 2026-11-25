@@ -1,0 +1,181 @@
+{
+  "family": "special",
+  "variant": "crystal",
+  "sheet": [
+    1536,
+    1024
+  ],
+  "canvas": [
+    256,
+    256
+  ],
+  "root": [
+    128,
+    216
+  ],
+  "pixelsPerUnit": 3,
+  "pivots": {
+    "root": [
+      128,
+      216
+    ],
+    "body": [
+      128,
+      144
+    ],
+    "head": [
+      143,
+      114
+    ],
+    "skill": [
+      170,
+      135
+    ],
+    "crystal-far": [
+      101,
+      159
+    ],
+    "crystal-near": [
+      155,
+      159
+    ]
+  },
+  "slots": {
+    "shadow": {
+      "box": [
+        32,
+        40,
+        296,
+        256
+      ],
+      "target": [
+        84,
+        207,
+        172,
+        224
+      ],
+      "bone": "root",
+      "required": false
+    },
+    "crystal-far": {
+      "box": [
+        320,
+        40,
+        584,
+        256
+      ],
+      "target": [
+        84,
+        132,
+        118,
+        186
+      ],
+      "bone": "crystal-far",
+      "required": true
+    },
+    "body": {
+      "box": [
+        608,
+        40,
+        872,
+        256
+      ],
+      "target": [
+        85,
+        109,
+        171,
+        163
+      ],
+      "bone": "body",
+      "required": true
+    },
+    "head": {
+      "box": [
+        896,
+        40,
+        1160,
+        256
+      ],
+      "target": [
+        124,
+        87,
+        162,
+        123
+      ],
+      "bone": "head",
+      "required": false
+    },
+    "armor": {
+      "box": [
+        32,
+        280,
+        296,
+        496
+      ],
+      "target": [
+        95,
+        112,
+        161,
+        160
+      ],
+      "bone": "body",
+      "required": false
+    },
+    "mark": {
+      "box": [
+        320,
+        280,
+        584,
+        496
+      ],
+      "target": [
+        114,
+        124,
+        142,
+        148
+      ],
+      "bone": "body",
+      "required": false
+    },
+    "crystal-near": {
+      "box": [
+        608,
+        280,
+        872,
+        496
+      ],
+      "target": [
+        138,
+        132,
+        172,
+        186
+      ],
+      "bone": "crystal-near",
+      "required": true
+    },
+    "gear": {
+      "box": [
+        896,
+        280,
+        1160,
+        496
+      ],
+      "target": [
+        101,
+        111,
+        155,
+        177
+      ],
+      "bone": "body",
+      "required": false
+    }
+  },
+  "parents": {
+    "root": null,
+    "body": "root",
+    "head": "body",
+    "skill": "body",
+    "crystal-far": "body",
+    "crystal-near": "body"
+  }
+}

@@ -74,6 +74,12 @@ def base_rig(family, profile, canvas, root, ppu):
     return variant, bones, slots, animations, positions
 
 
+def slots_for_skin(slots, profile, skin):
+    if skin in profile.get("armlessSkins", []):
+        return [slot for slot in slots if not slot.name.startswith("arm-")]
+    return slots
+
+
 def load_skin(folder, slots, canvas):
     parts = {path.stem: path for path in folder.glob("*.png")}
     missing = {slot.name for slot in slots if slot.required} - parts.keys()
@@ -85,7 +91,7 @@ def load_skin(folder, slots, canvas):
 
 def compose_rig(source, textures, canvas, root, ppu, rig_id, family, entry, skins, profile):
     variant, bones, slots, animations, points = base_rig(family, profile, canvas, root, ppu)
-    layers = {skin: load_skin(source / entry / skin, slots, canvas) for skin in skins}
+    layers = {skin: load_skin(source / entry / skin, slots_for_skin(slots, profile, skin), canvas) for skin in skins}
     reference = layers[skins[0]]
     for slot in slots:
         if slot.name == slot.bone and slot.name in reference and slot.bone not in profile.get("pivots", {}):
@@ -130,18 +136,28 @@ def compose_rig(source, textures, canvas, root, ppu, rig_id, family, entry, skin
     return rig, previews, {"variant": variant, "pivots": points, "root": root}
 
 
-def prepare(source, out):
+def prepare(source, out, actor=None):
     species, canvas, root, ppu, profiles = load_config(source)
+    actors = ACTORS
+    if actor:
+        entry, skin = actor
+        if skin not in ACTORS.get(entry, ()):
+            raise ValueError(f"계통과 단계 조합을 확인하세요 · {entry}/{skin}")
+        actors = {entry: (skin,)}
     specs, links, bindings = {}, {}, {}
     with new_directory(out) as stage:
         for directory in ("parts", "rigs", "silhouettes"):
             (stage / directory).mkdir()
-        for entry, skins in ACTORS.items():
+        for entry, skins in actors.items():
             family = "boss" if entry.startswith("boss-") else entry
             rig_id = f"{species}-{entry}"
             profile = profiles.get(entry, {})
-            if not isinstance(profile, dict) or set(profile) - {"variant", "proportions", "pivots", "scale"}:
+            if not isinstance(profile, dict) or set(profile) - {"variant", "proportions", "pivots", "scale", "armlessSkins"}:
                 raise ValueError(f"{entry} · 틀, 비례, 피벗 또는 표시 배율을 확인하세요.")
+            armless = profile.get("armlessSkins", [])
+            if (not isinstance(armless, list) or any(skin not in ACTORS[entry] for skin in armless)
+                    or (armless and profile.get("variant", VARIANTS[family][0]) != "biped")):
+                raise ValueError(f"{entry} · armlessSkins는 이족 계통의 단계 목록이어야 합니다.")
             scale = profile.get("scale", 1)
             if type(scale) not in (int, float) or not 0 < scale <= 8:
                 raise ValueError(f"{entry} · 게임 표시 배율은 0 초과 8 이하여야 합니다.")
@@ -155,7 +171,9 @@ def prepare(source, out):
                 actor = rig_id if family == "boss" else f"{rig_id}-{skin.lower()}"
                 links[actor] = {"rig": rig_id, "skin": skin}
                 img.save(stage / "silhouettes" / f"{actor}.png")
-        fallback = {**links[f"{species}-infantry-t1"], "tierSkins": list(SKINS)}
+        fallback = next(iter(links.values())).copy()
+        if actor is None:
+            fallback["tierSkins"] = list(SKINS)
         write_json(stage / "manifest-fragment.json", {
             "atlases": {species: f"{species}/{species}.atlas"}, "rigs": specs,
             "species": {species: {"atlas": species, "fallback": fallback, "entities": links}},
@@ -239,6 +257,7 @@ def main():
     build = commands.add_parser("prepare", help="공통 캔버스 PNG를 읽어 저작 JSON을 만든다.")
     build.add_argument("source", type=Path)
     build.add_argument("out", type=Path)
+    build.add_argument("--actor", nargs=2, metavar=("계통", "단계"), help="한 개체만 시범용으로 준비한다.")
     pack = commands.add_parser("export", help="Spine CLI로 왕복하고 종족 아틀라스 한 장을 출력한다.")
     pack.add_argument("work", type=Path)
     pack.add_argument("--cli", default="spine-cli")
@@ -252,7 +271,7 @@ def main():
     args = parser.parse_args()
     try:
         if args.command == "prepare":
-            prepare(args.source.resolve(), args.out.resolve())
+            prepare(args.source.resolve(), args.out.resolve(), args.actor)
         elif args.command == "export":
             export(args.work.resolve(), args.cli)
         elif args.command == "template":
