@@ -1,7 +1,7 @@
 import 'fake-indexeddb/auto';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { getPublicRecordNotice, setPublicRecordNotice } from '../../../src/persistence/auth';
-import { clearLocalHistory, resetDbConnection } from '../../../src/persistence/db';
+import { addRecord, clearLocalHistory, resetDbConnection, type RunRecord } from '../../../src/persistence/db';
 import { fetchInitialTelemetry, fetchRanking, reportRunStarted } from '../../../src/persistence/lobbyClient';
 
 /** 단계 5: 앱이 새 서버(server/, Workers + D1)의 경로·헤더·응답 모양을 쓰는지. */
@@ -71,10 +71,24 @@ describe('새 서버 연결(VITE_API_BASE)', () => {
     expect(init.body).toBeUndefined();
   });
 
-  it('랭킹 요청이 429·실패면 이 기기 기록 랭킹으로 바로 바꾼다', async () => {
-    vi.stubGlobal('fetch', vi.fn(async () => new Response('{"error":"RATE_LIMITED"}', { status: 429, headers: { 'Retry-After': '30' } })));
-    const result = await fetchRanking({ tab: 'single_score', grade: 3, difficulty: 'Normal', period: 'all_time', limit: 8, offset: 0 }, 'local', '솔방울');
+  it('랭킹 요청이 429면 요청한 시즌의 이 기기 기록을 반환한다', async () => {
+    const oldRecord: RunRecord = {
+      runId: 'season-one', nickname: '솔방울', grade: 3, difficulty: 'Normal', mapId: 'garden_u',
+      pt: 1000, completedWave: 8, endedAtWave: 9, correct: 20, wrong: 2, skipped: 1,
+      endedAt: '2026-10-30T01:00:00Z', endReason: 'DEFEAT', contentMode: 'published',
+      balanceVersion: '1.0.0', bankVersion: 'pub-test',
+    };
+    await addRecord(oldRecord);
+    await addRecord({ ...oldRecord, runId: 'season-two', pt: 500, balanceVersion: '2.0.0' });
+    const fetchSpy = vi.fn(async (url: string) => {
+      void url;
+      return new Response('{"error":"RATE_LIMITED"}', { status: 429, headers: { 'Retry-After': '30' } });
+    });
+    vi.stubGlobal('fetch', fetchSpy);
+    const result = await fetchRanking({ tab: 'single_score', grade: 3, difficulty: 'Normal', period: 'season1', limit: 8, offset: 0 }, 'local', '솔방울');
     expect(result.source).toBe('local_fallback');
+    expect(result.entries.map(entry => entry.primaryValue)).toEqual([1000]);
+    expect(new URL(fetchSpy.mock.calls[0]![0]).searchParams.get('p_period')).toBe('season1');
   });
 
   it('토큰을 거부(401)당하면 저장한 토큰을 버리고 다음 요청에서 기기를 새로 받는다', async () => {

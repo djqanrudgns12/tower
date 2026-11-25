@@ -41,7 +41,7 @@ const sampleRecord = (overrides: Partial<RunRecord>): RunRecord => ({
   endedAt: '2026-10-30T03:00:00.000Z',
   endReason: 'DEFEAT',
   contentMode: 'published',
-  balanceVersion: '0.4.0',
+  balanceVersion: '2.0.0',
   bankVersion: 'pub-test',
   ...overrides,
 });
@@ -303,5 +303,31 @@ describe('랜딩 로비 · 설정 v2 · 비석 학습 · 세분화 랭킹 단위
     await clearLocalHistory();
     expect(await listRecords()).toHaveLength(0);
     expect(await listPendingRunSyncs()).toHaveLength(0);
+  });
+
+  it.each([
+    ['local_device', [850, 450], [450], [1700]],
+    ['single_score', [850], [450], [1700]],
+    ['best_wave', [8], [4], [16]],
+    ['honor_points', [1536], [538], [1968]],
+  ] as const)('%s의 누적·주간·지난 시즌은 밸런스 판과 KST 주간에 맞는 기록만 집계한다', async (tab, season2, weekly, season1) => {
+    const nickname = '하늘바람';
+    const oldSeason = sampleRecord({ balanceVersion: '1.0.0', pt: 1700, completedWave: 16, endedAt: '2026-10-30T01:00:00.000Z' });
+    const recent = sampleRecord({ pt: 450, completedWave: 4, endedAt: '2026-10-30T02:00:00.000Z' });
+    const previousWeek = sampleRecord({ pt: 850, completedWave: 8, endedAt: '2026-10-25T14:59:59.000Z' });
+    for (const record of [oldSeason, recent, previousWeek]) await addRecord(record);
+
+    const now = new Date('2026-10-30T04:00:00.000Z');
+    const query = { tab, grade: 3, difficulty: 'Normal', limit: 8, offset: 0 } as const;
+    for (const [period, values] of [['all_time', season2], ['weekly', weekly], ['season1', season1]] as const) {
+      const result = await buildLocalRanking({ ...query, period }, nickname, now);
+      expect(result.entries.map(entry => entry.primaryValue)).toEqual(values);
+      expect(result.myEntry?.primaryValue).toBe(values[0]);
+      expect(result.totalCount).toBe(values.length);
+    }
+
+    expect((await listRecords()).map(record => [record.runId, record.balanceVersion])).toEqual([
+      [recent.runId, '2.0.0'], [oldSeason.runId, '1.0.0'], [previousWeek.runId, '2.0.0'],
+    ]);
   });
 });

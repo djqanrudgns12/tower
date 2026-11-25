@@ -2,18 +2,18 @@ import AxeBuilder from '@axe-core/playwright';
 import { expect, test, type Locator, type Page } from './tower-browser';
 
 /** 서로 다른 닉네임 count개의 3학년·보통 기록을 이 기기 IndexedDB에 심는다(로컬 랭킹은 닉네임마다 한 줄이라 줄 수 = 닉네임 수). */
-async function seedRecords(page: Page, count: number) {
-  await page.evaluate(async n => {
+async function seedRecords(page: Page, count: number, season: 1 | 2 = 2) {
+  await page.evaluate(async ({ count, season }) => {
     const req = indexedDB.open('vocabulary-td');
     await new Promise<void>((resolve, reject) => {
       req.onsuccess = () => {
         const db = req.result;
         const tx = db.transaction('records', 'readwrite');
         const store = tx.objectStore('records');
-        for (let i = 0; i < n; i++) {
+        for (let i = 0; i < count; i++) {
           store.put({
-            runId: `00000000-0000-4000-8000-${String(100 + i).padStart(12, '0')}`,
-            nickname: `기록시험${String(i + 1).padStart(2, '0')}`,
+            runId: `00000000-0000-4000-8000-${String(season * 100 + i).padStart(12, '0')}`,
+            nickname: `시즌${season}기록${String(i + 1).padStart(2, '0')}`,
             grade: 3,
             difficulty: 'Normal',
             mapId: 'garden_u',
@@ -26,7 +26,7 @@ async function seedRecords(page: Page, count: number) {
             endedAt: new Date(Date.now() - i * 3600_000).toISOString(),
             endReason: 'DEFEAT',
             contentMode: 'published',
-            balanceVersion: '0.4.0',
+            balanceVersion: `${season}.0.0`,
             bankVersion: 'pub-test',
           });
         }
@@ -35,7 +35,7 @@ async function seedRecords(page: Page, count: number) {
       };
       req.onerror = () => reject(req.error);
     });
-  }, count);
+  }, { count, season });
 }
 
 // 홈은 옛 랜딩(방향 2-A: 왕국 참나무 작전실)이다. R4 U1 타이틀 화면(3426df8)을 되돌린 것이며, 이어하기(저장)는 앱에서 제거됐다.
@@ -297,6 +297,47 @@ test.describe('홈 화면 통합 검증', () => {
     await expect(firstOption.locator('[aria-hidden="true"]')).toHaveCount(0);
   });
 
+  test('오프라인 홈 랭킹 시즌 전환이 내 기록과 상세 창에도 이어진다', async ({ page }) => {
+    await page.addInitScript(() => localStorage.setItem('vocabulary-td.settings', JSON.stringify({ shareRecords: false })));
+    await page.goto('/');
+    await seedRecords(page, 2, 1);
+    await seedRecords(page, 1, 2);
+    await page.reload();
+
+    const board = page.getByRole('complementary', { name: '랭킹', exact: true });
+    const boardList = board.getByRole('region', { name: '랭킹 목록' });
+    const season1 = board.getByRole('radio', { name: '시즌 1', exact: true });
+    const season2 = board.getByRole('radio', { name: '시즌 2', exact: true });
+    await expect(board).toContainText('오프라인 · 기기 기록');
+    await expect(season2).toBeChecked();
+    await expect(boardList.getByRole('listitem')).toHaveCount(1);
+    await expect(boardList).toContainText('시즌2기록01');
+
+    await season1.click();
+    await expect(season1).toBeChecked();
+    await expect(boardList.getByRole('listitem')).toHaveCount(2);
+    await expect(boardList).toContainText('시즌1기록02');
+    await expect(boardList).not.toContainText('시즌2기록01');
+
+    await board.getByRole('tab', { name: '내 기록', exact: true }).click();
+    await expect(season1).toBeChecked();
+    await expect(boardList.getByRole('listitem')).toHaveCount(2);
+    await expect(boardList).toContainText('시즌1기록02');
+    await board.getByRole('button', { name: '전체 보기' }).click();
+
+    const dialog = page.getByRole('dialog', { name: /전체 랭킹/ });
+    const detailList = dialog.getByRole('region', { name: '랭킹 목록' });
+    const detailSeason2 = dialog.getByRole('radio', { name: '시즌 2', exact: true });
+    await expect(dialog.getByRole('tab', { name: '내 기록', exact: true })).toHaveAttribute('aria-selected', 'true');
+    await expect(dialog.getByRole('radio', { name: '시즌 1', exact: true })).toBeChecked();
+    await expect(detailList).toContainText('시즌1기록02');
+    await detailSeason2.click();
+    await expect(detailSeason2).toBeChecked();
+    await expect(detailList.getByRole('listitem')).toHaveCount(1);
+    await expect(detailList).toContainText('시즌2기록01');
+    await expect(detailList).not.toContainText('시즌1기록02');
+  });
+
   test('H1·접근성: 랭킹 목록은 안에서 스크롤해도 Tab으로 닿고 방향키로 스크롤된다(전체 랭킹 창·저높이 홈 판)', async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 900 });
     await page.goto('/');
@@ -436,7 +477,7 @@ test.describe('홈 화면 통합 검증', () => {
               endedAt: new Date(Date.now() - i * 3600_000).toISOString(),
               endReason: 'DEFEAT',
               contentMode: 'published',
-              balanceVersion: '0.4.0',
+              balanceVersion: '2.0.0',
               bankVersion: 'pub-test',
             });
           });

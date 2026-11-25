@@ -22,20 +22,13 @@ export const TAB_LABELS: Record<RankingTabId, string> = {
   local_device: '내 기록',
 };
 
-export const PERIOD_LABELS: Record<RankingPeriod, string> = {
+// all_time은 현재 시즌의 누적 순위다. 이전 클라이언트와 같은 기간 키를 쓴다.
+export const PERIOD_LABELS = {
+  all_time: '시즌 2',
   weekly: '이번 주',
   season1: '시즌 1',
-  all_time: '시즌 2',
-};
-
-// all_time은 현재 시즌의 누적 순위다. 이전 클라이언트와 같은 기간 키를 쓴다.
-export function rankingPeriods(offline: boolean): readonly RankingPeriod[] {
-  return offline ? ['all_time', 'weekly'] : ['all_time', 'weekly', 'season1'];
-}
-
-export function periodLabel(period: RankingPeriod, offline: boolean) {
-  return offline && period === 'all_time' ? '누적' : PERIOD_LABELS[period];
-}
+} satisfies Record<RankingPeriod, string>;
+export const RANKING_PERIOD_OPTIONS = Object.keys(PERIOD_LABELS) as RankingPeriod[];
 
 export function formatPrimaryMetric(tab: RankingTabId, value: number): string {
   if (tab === 'best_wave') return `${fmtNumber(value)}웨이브`;
@@ -82,7 +75,7 @@ export function RankingBoard({
   const [difficulty, setDifficulty] = useState<DifficultyId>(defaultDifficulty);
   const [period, setPeriod] = useState<RankingPeriod>('all_time');
   const [schoolOnly, setSchoolOnly] = useState(false);
-  const [data, setData] = useState<RankingResponse | null>(null);
+  const [result, setResult] = useState<{ tab: RankingTabId; period: RankingPeriod; data: RankingResponse } | null>(null);
   const tabRefs = useRef<(HTMLButtonElement | null)[]>([]);
   const gradeRefs = useRef<(HTMLButtonElement | null)[]>([]);
   const diffRefs = useRef<(HTMLButtonElement | null)[]>([]);
@@ -123,7 +116,7 @@ export function RankingBoard({
       playerId,
       currentNickname,
     ).then(res => {
-      if (active) setData(res);
+      if (active) setResult({ tab, period, data: res });
     });
     return () => {
       active = false;
@@ -150,10 +143,9 @@ export function RankingBoard({
   };
 
   const displayName = currentNickname.trim() || '닉네임 미설정';
+  const data = result?.tab === tab && result.period === period ? result.data : null;
   const myEntry = data?.myEntry ?? null;
-  const isFallback = tab !== 'local_device' && data?.source === 'local_fallback';
-  const periodList = rankingPeriods(isFallback);
-  const shownPeriod = isFallback && period === 'season1' ? 'all_time' : period;
+  const isFallback = tab !== 'local_device' && result?.tab === tab && result.data.source === 'local_fallback';
   const syncLabel =
     tab === 'local_device'
       ? '기기 저장'
@@ -307,41 +299,33 @@ export function RankingBoard({
               </div>
             )}
 
-            {(tab === 'honor_points' || (tab !== 'local_device' && !isFallback)) && (
-              <div
-                className={css.segmentedTrack}
-                data-cols={periodList.length}
-                role="radiogroup"
-                aria-label="집계 기간"
-              >
-                {periodList.map((p, pi) => {
-                  const checked = shownPeriod === p;
-                  return (
-                    <button
-                      key={p}
-                      ref={el => {
-                        periodRefs.current[pi] = el;
-                      }}
-                      type="button"
-                      role="radio"
-                      aria-checked={checked}
-                      tabIndex={checked ? 0 : -1}
-                      className={css.segItem}
-                      onClick={() => setPeriod(p)}
-                      onKeyDown={e => moveRoving(e, periodList, pi, periodRefs.current, setPeriod)}
-                    >
-                      {periodLabel(p, isFallback)}
-                    </button>
-                  );
-                })}
-              </div>
-            )}
-
-            {tab === 'local_device' && (
-              <div className={css.fixedFilterInfoBar}>
-                <span>{RANKING_EXTRA.localShort}</span>
-              </div>
-            )}
+            <div
+              className={css.segmentedTrack}
+              data-cols={RANKING_PERIOD_OPTIONS.length}
+              role="radiogroup"
+              aria-label="집계 기간"
+            >
+              {RANKING_PERIOD_OPTIONS.map((p, pi) => {
+                const checked = period === p;
+                return (
+                  <button
+                    key={p}
+                    ref={el => {
+                      periodRefs.current[pi] = el;
+                    }}
+                    type="button"
+                    role="radio"
+                    aria-checked={checked}
+                    tabIndex={checked ? 0 : -1}
+                    className={css.segItem}
+                    onClick={() => setPeriod(p)}
+                    onKeyDown={e => moveRoving(e, RANKING_PERIOD_OPTIONS, pi, periodRefs.current, setPeriod)}
+                  >
+                    {PERIOD_LABELS[p]}
+                  </button>
+                );
+              })}
+            </div>
           </div>
 
           <div className={css.rankBodyBox}>
@@ -350,7 +334,9 @@ export function RankingBoard({
                 <strong>{effectiveGrade}학년 문제은행 준비 중</strong>
                 <p>문제가 공개되면 이 학년 순위표가 열려요.</p>
               </div>
-            ) : !data || data.entries.length === 0 ? (
+            ) : !data ? (
+              <div className={css.emptyShowcase} role="status">기록을 불러오는 중이에요.</div>
+            ) : data.entries.length === 0 ? (
               <div className={css.emptyShowcase}>
                 <LineIcon name="hud/score" size={32} />
                 <strong>{tab === 'local_device' ? '아직 기록이 없어요' : '아직 이 부문 기록이 없어요'}</strong>
@@ -398,7 +384,7 @@ export function RankingBoard({
             <span className={css.myRankValue} data-has-entry={myEntry ? 'true' : undefined}>
               {myEntry
                 ? `${myEntry.rank}위 · ${formatPrimaryMetric(tab, myEntry.primaryValue)}`
-                : '기록 없음'}
+                : data ? '기록 없음' : '불러오는 중'}
             </span>
           </div>
         </div>

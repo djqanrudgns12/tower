@@ -106,8 +106,9 @@ describe('공개 동의·저장 회귀', () => {
   });
 
   it('현재 별명의 기록이 없어도 다른 별명의 최고 기록을 내 기록으로 대체하지 않는다', async () => {
-    await addRecord(record('local-run'));
+    await addRecord({ ...record('local-run'), balanceVersion: '2.0.0' });
     const ranking = await buildLocalRanking({ tab: 'local_device', grade: 3, difficulty: 'Normal', period: 'all_time', limit: 8, offset: 0 }, '새별명');
+    expect(ranking.entries.map(entry => entry.nickname)).toEqual(['솔방울']);
     expect(ranking.myEntry).toBeNull();
   });
 });

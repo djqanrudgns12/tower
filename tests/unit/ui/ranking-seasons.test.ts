@@ -4,7 +4,7 @@ import { expect, it } from 'vitest';
 import { RankingBoard } from '../../../src/ui/screens/home/RankingBoard';
 import { RankingModal } from '../../../src/ui/screens/home/RankingModal';
 
-it.each(['single_score', 'best_wave', 'honor_points'] as const)('%s 홈은 시즌 2로 시작하고 상세 창은 선택한 지난 시즌을 유지한다', tab => {
+it.each(['single_score', 'best_wave', 'honor_points', 'local_device'] as const)('%s 홈은 시즌 2로 시작하고 상세 창은 선택한 지난 시즌을 유지한다', tab => {
   const common = { playerId: '', currentNickname: '', schoolName: '', schoolCode: '' };
   const noop = () => {};
   const board = renderToStaticMarkup(createElement(RankingBoard, {

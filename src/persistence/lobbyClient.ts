@@ -109,15 +109,14 @@ export async function buildLocalRanking(
   currentNickname: string,
   now: Date = new Date(),
 ): Promise<RankingResponse> {
-  let records: RunRecord[];
-  try {
-    records = await listRecords();
-  } catch {
-    records = [];
-  }
-
+  // 서버와 같은 기간 규칙: 시즌 1은 1.0.0, 누적·주간은 현재 시즌(2.0.0)이다.
+  const balanceVersion = query.period === 'season1' ? '1.0.0' : '2.0.0';
+  const week = query.period === 'weekly' ? kstIsoWeekKey(now) : null;
+  const records = (await listRecords().catch(() => [])).filter(record =>
+    record.balanceVersion === balanceVersion &&
+    (week === null || kstIsoWeekKey(new Date(record.endedAt)) === week),
+  );
   const cleanNick = currentNickname.trim();
-  const curWeek = kstIsoWeekKey(now);
   const filterCode = cleanPublicSchoolCode(query.schoolCode);
   const filterName = filterCode ? '' : cleanPublicSchoolName(query.schoolName);
 
@@ -163,15 +162,10 @@ export async function buildLocalRanking(
   }
 
   if (query.tab === 'honor_points') {
-    const periodFiltered = records.filter(r => {
-      if (r.completedWave < 1) return false;
-      if (query.grade !== 'all' && r.grade !== query.grade) return false;
-      if (!matchesSchoolFilter(r, filterCode, filterName)) return false;
-      if (query.period === 'weekly') return kstIsoWeekKey(new Date(r.endedAt)) === curWeek;
-      return true;
-    });
     const byNick = new Map<string, { nickname: string; grade: 3 | 4 | 5 | 6; sum: number; count: number; lastAt: string; schoolName: string }>();
-    for (const r of periodFiltered) {
+    for (const r of records) {
+      if (query.grade !== 'all' && r.grade !== query.grade) continue;
+      if (!matchesSchoolFilter(r, filterCode, filterName)) continue;
       const pts = computeHonorPoints(r);
       if (pts <= 0) continue;
       const key = r.nickname || '익명 대원';

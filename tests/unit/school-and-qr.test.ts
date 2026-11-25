@@ -213,14 +213,14 @@ describe('교실 QR·공유 URL·학교 와이파이 내성 단위 검증', () =
 
     // 로컬 폴백 랭킹에서도 학교 필터가 동작한다
     const localSchoolRank = await buildLocalRanking(
-      { tab: 'single_score', grade: 3, difficulty: 'Normal', period: 'all_time', limit: 8, offset: 0, schoolCode: '7010057' },
+      { tab: 'single_score', grade: 3, difficulty: 'Normal', period: 'season1', limit: 8, offset: 0, schoolCode: '7010057' },
       '참나무파수꾼',
     );
     expect(localSchoolRank.entries).toHaveLength(1);
     expect(localSchoolRank.entries[0]!.schoolName).toBe('서울가락초등학교');
 
     const otherSchoolRank = await buildLocalRanking(
-      { tab: 'single_score', grade: 3, difficulty: 'Normal', period: 'all_time', limit: 8, offset: 0, schoolCode: '9999999' },
+      { tab: 'single_score', grade: 3, difficulty: 'Normal', period: 'season1', limit: 8, offset: 0, schoolCode: '9999999' },
       '참나무파수꾼',
     );
     expect(otherSchoolRank.entries).toHaveLength(0);

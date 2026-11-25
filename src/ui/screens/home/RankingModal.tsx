@@ -12,8 +12,10 @@ import { fetchRanking } from '../../../application/lobby';
 import { DIFFICULTY_COPY } from '../../copy';
 import { Card, Modal, ModalTabPanel, ModalTabs, ModalTabShell, Segmented, type ModalTabOption, type SegmentOption } from '../../kit';
 import { RANKING_EXTRA } from './homeCopy';
-import { formatPrimaryMetric, rankingPeriods, periodLabel, TAB_LABELS } from './RankingBoard';
+import { formatPrimaryMetric, PERIOD_LABELS, RANKING_PERIOD_OPTIONS, TAB_LABELS } from './RankingBoard';
 import css from './home.module.css';
+
+const periodOptions: SegmentOption<RankingPeriod>[] = RANKING_PERIOD_OPTIONS.map(period => ({ value: period, label: PERIOD_LABELS[period] }));
 
 interface Props {
   initialTab: RankingTabId;
@@ -45,7 +47,7 @@ export function RankingModal({
   const [difficulty, setDifficulty] = useState<DifficultyId>(initialDifficulty);
   const [period, setPeriod] = useState<RankingPeriod>(initialPeriod);
   const [schoolOnly, setSchoolOnly] = useState(initialSchoolOnly);
-  const [data, setData] = useState<RankingResponse | null>(null);
+  const [result, setResult] = useState<{ tab: RankingTabId; period: RankingPeriod; data: RankingResponse } | null>(null);
 
   const cleanSchool = cleanPublicSchoolName(schoolName);
   const cleanCode = cleanSchool ? cleanPublicSchoolCode(schoolCode) : '';
@@ -74,7 +76,7 @@ export function RankingModal({
       playerId,
       currentNickname,
     ).then(res => {
-      if (active) setData(res);
+      if (active) setResult({ tab, period, data: res });
     });
     return () => { active = false; };
   }, [tab, effectiveGrade, difficulty, period, activeSchoolOnly, cleanSchool, cleanCode, playerId, currentNickname]);
@@ -92,8 +94,8 @@ export function RankingModal({
     ...([3, 4, 5, 6] as const).map(g => ({ value: String(g), label: `${g}학년` })),
   ];
   const difficultyOptions: SegmentOption<DifficultyId>[] = DIFFICULTY_IDS.map(d => ({ value: d, label: DIFFICULTY_COPY[d].label }));
-  const offline = data?.source === 'local_fallback';
-  const periodOptions: SegmentOption<RankingPeriod>[] = rankingPeriods(offline).map(p => ({ value: p, label: periodLabel(p, offline) }));
+  const data = result?.tab === tab && result.period === period ? result.data : null;
+  const offline = result?.tab === tab && result.data.source === 'local_fallback';
 
   return (
     // 읽고 둘러보는 창이라 첫 포커스는 닫기다(탭 줄은 Tab 한 번으로 들어간다). md 680×540 고정 프레임으로 4탭 모두 크기가 같다.
@@ -125,16 +127,14 @@ export function RankingModal({
                 onChange={setDifficulty}
               />
             )}
-            {(tab === 'honor_points' || (tab !== 'local_device' && !offline)) && (
-              <Segmented<RankingPeriod>
-                className={css.compactSeg}
-                label="상세 집계 기간"
-                options={periodOptions}
-                value={offline && period === 'season1' ? 'all_time' : period}
-                onChange={setPeriod}
-              />
-            )}
-            {tab !== 'local_device' && data?.source === 'local_fallback' && <span className={css.filterMeta}>오프라인 · 기기 기록</span>}
+            <Segmented<RankingPeriod>
+              className={css.compactSeg}
+              label="상세 집계 기간"
+              options={periodOptions}
+              value={period}
+              onChange={setPeriod}
+            />
+            {tab !== 'local_device' && offline && <span className={css.filterMeta}>오프라인 · 기기 기록</span>}
             {tab === 'local_device' && <span className={css.filterMeta}>{RANKING_EXTRA.localShort}</span>}
             {cleanSchool !== '' && (
               <button
@@ -149,7 +149,9 @@ export function RankingModal({
             )}
           </div>
 
-          {!data || data.entries.length === 0 ? (
+          {!data ? (
+            <Card sunk className={css.modalEmptyRank}><span role="status">기록을 불러오는 중이에요.</span></Card>
+          ) : data.entries.length === 0 ? (
             <Card sunk className={css.modalEmptyRank}>
               <strong>{tab === 'local_device' ? '아직 기록이 없어요.' : '표시할 순위 기록이 아직 없어요.'}</strong>
             </Card>
