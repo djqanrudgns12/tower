@@ -10,7 +10,7 @@ import { acceptsHit, enemyPose, HIT_MS } from '../animation/pose';
 import { PALETTE } from '../art';
 import { ASSETS, CELL_PX, enemyArt, type EnemyArt } from '../assets';
 import { bossStatus, flyerLift, introFrame, wardDotOffsets, type BossStatus, type SpawnIntro } from './cues';
-import { DEPTH, toWorld, type LayerContext } from './shared';
+import { DEPTH, fieldPosition, toWorld, type LayerContext } from './shared';
 
 interface EnemyView {
   sprite: Phaser.GameObjects.Image | null; spine: EnemySpine | null; spineRevision: number; badge: Phaser.GameObjects.Image | null;
@@ -174,8 +174,11 @@ export class EnemyLayer {
       const progress = v.prev + (v.cur - v.prev) * alpha;
       const p = positionAt(path, progress);
       const ahead = positionAt(path, Math.min(path.length, progress + 200));
-      if (ahead.x !== p.x) v.facing = ahead.x > p.x ? 1 : -1;
-      let x = toWorld(p.x), y = toWorld(p.y);
+      const point = fieldPosition(this.c, p.x, p.y);
+      const aheadX = fieldPosition(this.c, ahead.x, ahead.y).x;
+      if (aheadX !== point.x) v.facing = aheadX > point.x ? 1 : -1;
+      let { x, y } = point;
+      const foot = this.c.projected ? 0 : FOOT;
       const moving = v.cur !== v.prev && s.pause.length === 0;
       // 비행 몸 높이: 끌어내려지면 내려앉고 다시 떠오른다. 움직임 줄이기면 바로 바뀐다.
       const liftTarget = flyerLift(e, s.tick) * CELL_PX;
@@ -187,7 +190,7 @@ export class EnemyLayer {
       // 땅굴 속이면 흐리게(표적이 안 되는 동안). 엔진 판정과 같은 함수를 쓴다.
       const under = e.trait === 'burrow' && burrowed(balance, path, e);
       if (intro && v.intro) {
-        if (v.intro.from) { const fx = toWorld(v.intro.from.x), fy = toWorld(v.intro.from.y); x = fx + (x - fx) * intro.t; y = fy + (y - fy) * intro.t; }
+        if (v.intro.from) { const { x: fx, y: fy } = fieldPosition(this.c, v.intro.from.x, v.intro.from.y); x = fx + (x - fx) * intro.t; y = fy + (y - fy) * intro.t; }
         x += intro.sway * CELL_PX;
         hop = intro.lift * CELL_PX;
         scaleK = intro.scale;
@@ -196,11 +199,11 @@ export class EnemyLayer {
       if (under) alphaK *= BURROW_ALPHA;
       v.x = x; v.y = y;
       const { art } = v;
-      if (e.flying) this.flyerShadow(x, y + FOOT, art.displayCells * scaleK, v.lift);
+      if (e.flying) this.flyerShadow(x, y + foot, art.displayCells * scaleK, v.lift);
       const depth = DEPTH.units + y + 0.5;
       if (v.spine) {
         const { object, scale } = v.spine;
-        object.setPosition(x, y + FOOT - v.lift - hop).setDepth(depth)
+        object.setPosition(x, y + foot - v.lift - hop).setDepth(depth)
           .setScale(v.facing * scale * scaleK, scale * scaleK).setAlpha(alphaK);
         object.animationState.timeScale = reduced || s.pause.length ? 0 : 1;
         const walk = object.animationState.getTrack(0);
@@ -213,7 +216,7 @@ export class EnemyLayer {
         const hitArt = pose.hit && scene.textures.exists(hitKey);
         const size = CELL_PX * art.displayCells * scaleK;
         v.sprite!.setTexture(hitArt ? hitKey : art.framed ? `${art.base}.${pose.frame}` : art.base)
-          .setPosition(x, y + FOOT - pose.bob - v.lift - hop).setFlipX(v.facing < 0).setDepth(depth)
+          .setPosition(x, y + foot - pose.bob - v.lift - hop).setFlipX(v.facing < 0).setDepth(depth)
           .setDisplaySize(size, size * pose.squashY).setAlpha(alphaK);
         this.tint(v, e, time, hitArt);
       }
@@ -279,7 +282,8 @@ export class EnemyLayer {
       for (let i = 0; i < 3; i++) {
         const back = positionAt(path, Math.max(0, progress - 520 - (i + drift) * 230));
         const r = CELL_PX * (0.17 - i * 0.025), a = (1 - i * 0.25) * (1 - 0.4 * drift);
-        const bx = toWorld(back.x), by = toWorld(back.y) + FOOT - r * 0.4;
+        const backPoint = fieldPosition(this.c, back.x, back.y);
+        const bx = backPoint.x, by = backPoint.y + (this.c.projected ? 0 : FOOT) - r * 0.4;
         g.fillStyle(PALETTE.outline, 0.8 * a).fillEllipse(bx, by, r * 2 + 5, r * 1.3 + 5);
         g.fillStyle(DUST, a).fillEllipse(bx, by, r * 2, r * 1.3);
       }

@@ -3,11 +3,13 @@ import type { Enemy, RunState } from '../../domain/types';
 import { R6_TOWERS, SPECIES, type EntityId, type Species } from '../../contracts/balanceV2';
 import type { GameContext } from '../../domain/context';
 import { previewR6Wave } from '../../domain/r6Mixer';
+import { r6Pad } from './mapProjection';
 import { r6ManifestSchema, type R6Manifest } from './manifest';
 
 const BASE = 'assets/r6/';
 const MANIFEST_KEY = 'r6.manifest';
 export const R6_GROUND_KEY = 'r6.ground';
+export const R6_PAD_KEY = 'r6.map.pad';
 export const sheetKey = (id: string) => `r6.sheet.${id}`;
 const atlasKey = (id: string) => `r6.atlas.${id}`;
 const rigKey = (id: string) => `r6.rig.${id}`;
@@ -29,7 +31,12 @@ export class R6BattleAssets {
       if (!result.success) return;
       this.manifest = result.data;
       const map = this.manifest.maps[mapId];
-      if (map) load.image(R6_GROUND_KEY, BASE + map);
+      if (mapId === 'garden_u' && map) {
+        load.image(R6_GROUND_KEY, BASE + 'map/meadow-plateau.webp');
+        load.spritesheet(R6_PAD_KEY, BASE + 'map/meadow-pads.webp', {
+          frameWidth: r6Pad.size[0]!, frameHeight: r6Pad.size[1]!,
+        });
+      } else if (map) load.image(R6_GROUND_KEY, BASE + map);
       for (const [id, spec] of Object.entries(this.manifest.sheets)) {
         load.spritesheet(sheetKey(id), BASE + spec.file, { frameWidth: spec.width, frameHeight: spec.height, endFrame: spec.count - 1 });
       }

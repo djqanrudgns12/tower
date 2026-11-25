@@ -4,8 +4,9 @@ import { evolutionAt, isR6Tower } from '../../domain/r6Towers';
 import type { RunState } from '../../domain/types';
 import { CELL_PX } from '../assets';
 import { topFit } from '../layers/cues';
-import { DEPTH, toWorld, type LayerContext } from '../layers/shared';
+import { DEPTH, fieldPosition, type LayerContext } from '../layers/shared';
 import { sheetKey, type R6BattleAssets } from './BattleAssets';
+import { projectFieldDelta } from './mapProjection';
 import { headDirection, R6_COLORS, type R6Manifest, type TowerFormArt } from './manifest';
 
 interface TowerView {
@@ -32,7 +33,10 @@ export class R6TowerPlayback {
     const view = this.views.get(towerId);
     const projection = this.assets.manifest?.projection;
     if (!view || !projection) return;
-    if (dx || dy) view.direction = headDirection(dx, dy, projection);
+    if (dx || dy) {
+      const p = this.c.projected ? projectFieldDelta(dx, dy) : { x: dx, y: dy };
+      view.direction = headDirection(p.x, p.y, projection);
+    }
     view.attackAt = this.c.scene.time.now;
   }
 
@@ -46,7 +50,7 @@ export class R6TowerPlayback {
       const type = isR6Tower(id) ? id : undefined;
       const { stage, weapon } = evolutionAt(tower.level);
       const form = manifest && type ? manifest.towers[type]?.[stage] : undefined;
-      const x = toWorld(tower.x), y = toWorld(tower.y);
+      const { x, y } = fieldPosition(this.c, tower.x, tower.y);
       if (!manifest || !form || !scene.textures.exists(sheetKey(form.body)) || !scene.textures.exists(sheetKey(form.head))) {
         this.removeView(tower.id);
         this.placeholder(tower.id, x, y, type);
@@ -81,9 +85,9 @@ export class R6TowerPlayback {
     const head = manifest.sheets[form.head]!;
     const [bx, by] = body.pivot;
     const [mx, my] = form.mount;
-    const foot = y + CELL_PX * 0.32;
+    const foot = this.c.projected ? y : y + CELL_PX * 0.32;
     const above = Math.max(by, by - my + head.pivot[1]) * form.scale;
-    const fit = topFit(foot, above, CELL_PX);
+    const fit = this.c.projected ? { scale: Math.min(1, (foot - 2) / above), drop: 0 } : topFit(foot, above, CELL_PX);
     const scale = fit.scale * form.scale;
     const footY = foot + fit.drop;
     const headY = footY + (my - by) * scale;
@@ -115,6 +119,7 @@ export class R6TowerPlayback {
     if (this.placeholders.has(id)) return;
     const index = type ? R6_TOWERS.indexOf(type) : 0;
     const shape = this.c.scene.add.rectangle(x, y, 33 + index * 3, 34 - index * 2, R6_COLORS.line)
+      .setOrigin(0.5, this.c.projected ? 1 : 0.5)
       .setStrokeStyle(2, R6_COLORS.teal).setDepth(DEPTH.units + y).setName(`r6:tower:${id}:placeholder`);
     this.placeholders.set(id, shape);
   }

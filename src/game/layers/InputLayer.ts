@@ -7,6 +7,7 @@ import { PALETTE } from '../art';
 import { CELL_PX } from '../assets';
 import type { FieldBridge } from '../bridge';
 import { R6_GROUND_KEY } from '../r6/BattleAssets';
+import { projectField, unprojectField, r6Pad, R6_MAP_SCALE, R6_MAP_SQUASH } from '../r6/mapProjection';
 import { isPlacing } from './cues';
 import { DEPTH, toWorld, type LayerContext } from './shared';
 
@@ -45,8 +46,7 @@ export class InputLayer {
         this.hovered = null;
         if (p.wasTouch || this.overMinimap(p)) return;
         const world = this.c.scene.cameras.main.getWorldPoint(p.x, p.y);
-        const x = Math.floor(world.x / CELL_PX), y = Math.floor(world.y / CELL_PX);
-        this.hovered = this.c.bridge.controller.ctx.map.slots.find(slot => slot.x === x && slot.y === y) ?? null;
+        this.hovered = this.exactSlot(world.x, world.y) ?? null;
       });
       input.on('gameout', () => { this.hovered = null; });
     }
@@ -73,19 +73,30 @@ export class InputLayer {
   private slotNear(wx: number, wy: number) {
     const { scene, bridge } = this.c;
     const slots = bridge.controller.ctx.map.slots;
-    const x = Math.floor(wx / CELL_PX), y = Math.floor(wy / CELL_PX);
-    const exact = slots.find(s => s.x === x && s.y === y);
+    const exact = this.exactSlot(wx, wy);
     if (exact) return exact;
     const cssPerCanvas = scene.game.canvas.getBoundingClientRect().width / Math.max(1, scene.scale.width);
     const cssCell = scene.cameras.main.zoom * CELL_PX * cssPerCanvas;
-    const reach = Math.max(0.5, 22 / Math.max(1, cssCell)) * CELL_PX;
+    const radius = this.c.projected ? r6Pad.radius * R6_MAP_SQUASH : CELL_PX * 0.5;
+    const reach = Math.max(radius, 22 * CELL_PX / Math.max(1, cssCell));
     let best: (typeof slots)[number] | null = null;
     let bestD = reach * reach;
     for (const s of slots) {
-      const d = ((s.x + 0.5) * CELL_PX - wx) ** 2 + ((s.y + 0.5) * CELL_PX - wy) ** 2;
+      const point = this.cellCenter(s);
+      const d = (point.x - wx) ** 2 + (point.y - wy) ** 2;
       if (d <= bestD) { best = s; bestD = d; }
     }
     return best;
+  }
+
+  private exactSlot(wx: number, wy: number) {
+    const { x, y } = this.c.projected ? unprojectField(wx, wy) : { x: wx, y: wy };
+    return this.c.bridge.controller.ctx.map.slots.find(slot => slot.x === Math.floor(x / CELL_PX) && slot.y === Math.floor(y / CELL_PX));
+  }
+
+  private cellCenter(cell: { x: number; y: number }) {
+    const x = (cell.x + 0.5) * CELL_PX, y = (cell.y + 0.5) * CELL_PX;
+    return this.c.projected ? projectField(x, y) : { x, y };
   }
 
   /** 선택 칸·사거리 원·원 안의 길. 선택이 바뀔 때만 다시 그린다(PRD §12.4). */
@@ -104,7 +115,18 @@ export class InputLayer {
     const map = bridge.controller.ctx.map;
     // 원정 보물(사거리·깃발 오라 범위)을 적용한 밸런스로 사거리 원을 그린다(엔진 판정과 같은 값).
     const b = relicBalance(bridge.controller.ctx.balance, s.relics);
-    if (highContrast) {
+    if (highContrast && this.c.projected) {
+      for (const [weight, color] of [[5, 0x12161b], [2, 0xb8c0c8]] as const) {
+        g.lineStyle(weight, color).beginPath();
+        for (const [i, [x, y]] of map.pathCells.entries()) {
+          const p = this.cellCenter({ x, y });
+          if (i === 0) g.moveTo(p.x, p.y);
+          else g.lineTo(p.x, p.y);
+        }
+        g.strokePath();
+      }
+      for (const slot of map.slots) if (!s.towers.some(t => t.slotId === slot.id)) this.strokePad(slot, 0xb8c0c8, 2);
+    } else if (highContrast) {
       const pathSet = new Set(map.pathCells.map(([px, py]) => `${px},${py}`));
       for (const [px, py] of map.pathCells) {
         const x0 = px * CELL_PX, y0 = py * CELL_PX;
@@ -121,6 +143,9 @@ export class InputLayer {
       }
     }
     // 이전 전장은 타워를 고르거나 끄는 동안 빈 자리를 모두 표시한다.
+    if (this.c.projected && isPlacing(s.phase, sel, Boolean(drag))) {
+      for (const slot of map.slots) if (!s.towers.some(t => t.slotId === slot.id)) this.strokePad(slot, 0xb8c0c8, 1);
+    }
     if (!this.r6 && isPlacing(s.phase, sel, Boolean(drag))) {
       for (const slot of map.slots) if (!s.towers.some(t => t.slotId === slot.id)) g.lineStyle(3, 0xf5ebd4, 0.9).strokeRoundedRect(slot.x * CELL_PX + 5, slot.y * CELL_PX + 5, CELL_PX - 10, CELL_PX - 10, 8);
     }
@@ -137,7 +162,18 @@ export class InputLayer {
       const preview = choices ? choices[sel.previewBranch === 'A' ? 0 : 1]! : null;
       if (type) range = toWorld(reachMilli(b, type, built ? (preview ? built.level + 1 : built.level) : 1, built ? (preview ?? built.form) : 'base'));
       const cx = (cell.x + 0.5) * CELL_PX, cy = (cell.y + 0.5) * CELL_PX;
-      if (range > 0) {
+      if (range > 0 && this.c.projected) {
+        const p = this.cellCenter(cell);
+        const rx = range * R6_MAP_SCALE, ry = rx * R6_MAP_SQUASH;
+        g.fillStyle(0x2fb5a3, 0.12).fillEllipse(p.x, p.y, rx * 2, ry * 2);
+        g.lineStyle(1.5, 0x2fb5a3, 0.95).strokeEllipse(p.x, p.y, rx * 2, ry * 2, 48);
+        for (const [x, y] of map.pathCells) {
+          const dx = (x - cell.x) * CELL_PX, dy = (y - cell.y) * CELL_PX;
+          if (dx ** 2 + dy ** 2 > range ** 2) continue;
+          const p = this.cellCenter({ x, y });
+          g.fillStyle(0x2fb5a3, 0.42).fillEllipse(p.x, p.y, 13, 7);
+        }
+      } else if (range > 0) {
         g.fillStyle(0xf5ebd4, 0.16).fillCircle(cx, cy, range).lineStyle(2.5, 0xf5ebd4, 0.95).strokeCircle(cx, cy, range);
         for (const [x, y] of map.pathCells) {
           const px = (x + 0.5) * CELL_PX, py = (y + 0.5) * CELL_PX;
@@ -162,7 +198,19 @@ export class InputLayer {
   }
 
   private strokePad(cell: { x: number; y: number }, color: number, width: number, offset = 0) {
-    const x = (cell.x + 0.5) * CELL_PX, y = (cell.y + 0.5) * CELL_PX;
+    const { x, y } = this.cellCenter(cell);
+    if (this.c.projected) {
+      const radius = r6Pad.radius * 0.85 + offset;
+      for (const [weight, ink] of [[width + 2, 0x12161b], [width, color]] as const) {
+        this.overlay.lineStyle(weight, ink).beginPath().moveTo(x + radius, y);
+        for (let i = 1; i < 6; i++) {
+          const angle = i * Math.PI / 3;
+          this.overlay.lineTo(x + radius * Math.cos(angle), y + radius * R6_MAP_SQUASH * Math.sin(angle));
+        }
+        this.overlay.closePath().strokePath();
+      }
+      return;
+    }
     const w = 21 + offset, h = 18 + offset, cut = 7;
     const points = [[w - cut, -h], [w, -h + cut], [w, h - cut], [w - cut, h],
       [-w + cut, h], [-w, h - cut], [-w, -h + cut]] as const;

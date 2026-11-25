@@ -6,7 +6,7 @@ import { PALETTE } from '../art';
 import { ASSETS, CELL_PX, WORLD_W } from '../assets';
 import { BLAST_BURST_MS, blastCharge, blastLook, formBlastRadius, fusePuffCount, hazardBlastRadius, hazardEndCue, hazardLook, ROLLER_LENGTH_CELLS, ROLLER_THICK_CELLS, rollerHeading, trapCloseCue, wardDotOffsets, ZONE_ALPHA, ZONE_FLATTEN, type BlastLook, type BossCue, type HazardLook } from './cues';
 import { R6_COLORS } from '../r6/manifest';
-import { DEPTH, toWorld, type LayerContext } from './shared';
+import { DEPTH, fieldPosition, toWorld, type LayerContext } from './shared';
 
 /** 처치 보상 표찰의 화면 최소 글자 크기(CSS px, v3 §1-2 13px 하한). */
 const CALLOUT_MIN_CSS_PX = 13;
@@ -39,7 +39,8 @@ export class EffectLayer {
   /** lift는 떠 있는 비행 적의 몸 높이(EnemyLayer.liftOf)다. 맞은 자리를 몸에 맞춘다. */
   onHit(e: Extract<DomainEvent, { type: 'hit' }>, lift = 0) {
     if (this.r6) {
-      const g = this.c.scene.add.graphics().setDepth(DEPTH.fx).setPosition(toWorld(e.x), toWorld(e.y) - 14 - lift);
+      const { x, y } = fieldPosition(this.c, e.x, e.y);
+      const g = this.c.scene.add.graphics().setDepth(DEPTH.fx).setPosition(x, y - 14 - lift);
       g.lineStyle(2, R6_COLORS.silver, 0.85).lineBetween(-4, 2, 4, -2);
       this.fadeR6(g, 100);
       return;
@@ -61,7 +62,11 @@ export class EffectLayer {
   onLeak() {
     const { scene } = this.c;
     const [gx, gy] = this.c.bridge.controller.ctx.map.exitCell;
-    const flash = scene.add.rectangle((gx + 0.5) * CELL_PX, (gy + 0.5) * CELL_PX, CELL_PX * 1.3, CELL_PX * 1.3, 0xa3352b, 0.35).setDepth(DEPTH.fx);
+    const { x, y } = fieldPosition(this.c, (gx + 0.5) * 1000, (gy + 0.5) * 1000);
+    const flash = this.c.projected
+      ? scene.add.ellipse(x, y, 46, 24, R6_COLORS.amber, 0.32)
+      : scene.add.rectangle(x, y, CELL_PX * 1.3, CELL_PX * 1.3, 0xa3352b, 0.35);
+    flash.setDepth(DEPTH.fx);
     scene.tweens.add({ targets: flash, alpha: 0, duration: 300, onComplete: () => flash.destroy() });
   }
 
@@ -74,13 +79,15 @@ export class EffectLayer {
     const { scene, bridge } = this.c;
     const first = e.targets[0];
     if (!first) return;
-    const fx = toWorld(e.fromX), fy = toWorld(e.fromY) - CELL_PX * 0.32 - lift;
+    const from = fieldPosition(this.c, e.fromX, e.fromY);
+    const fx = from.x, fy = from.y - CELL_PX * 0.32 - lift;
     if (this.r6) {
       const g = scene.add.graphics().setDepth(DEPTH.fx);
       g.lineStyle(2, R6_COLORS.teal, 0.85);
       let x = fx, y = fy;
       for (const target of e.targets) {
-        const tx = toWorld(target.x), ty = toWorld(target.y) - 10 - enemyLift(target.enemyId);
+        const { x: tx, y: targetY } = fieldPosition(this.c, target.x, target.y);
+        const ty = targetY - 10 - enemyLift(target.enemyId);
         g.lineBetween(x, y, tx, ty);
         if (String(e.towerType) === 'prism') { x = tx; y = ty; }
       }
@@ -138,7 +145,8 @@ export class EffectLayer {
 
   /** 분열: 쓰러진 자리에서 작은 회색 연기가 피고, 파생체 둘이 그 속에서 튀어나온다(EnemyLayer 등장 연출, 300ms). */
   onSplit(milliX: number, milliY: number) {
-    this.cloud(toWorld(milliX), toWorld(milliY) + FOOT - 8, CELL_PX * 0.22, PALETTE.stoneLight, 320);
+    const { x, y } = fieldPosition(this.c, milliX, milliY);
+    this.cloud(x, y + (this.c.projected ? 0 : FOOT) - 8, CELL_PX * 0.22, PALETTE.stoneLight, 320);
   }
 
   /**
@@ -183,7 +191,8 @@ export class EffectLayer {
    */
   private spawnKillCallout(milliX: number, milliY: number, gold: number, pt: number, raise = 0) {
     if (gold <= 0 && pt <= 0) return;
-    this.floatLabel(toWorld(milliX), toWorld(milliY) - 24 - raise, pt > 0 ? `+${gold}골드 · +${pt}점` : `+${gold}골드`, '#ffd859');
+    const { x, y } = fieldPosition(this.c, milliX, milliY);
+    this.floatLabel(x, y - 24 - raise, pt > 0 ? `+${gold}골드 · +${pt}점` : `+${gold}골드`, '#ffd859');
   }
 
   /** 떠오르는 표찰(처치 보상·대장 회복). worldX·worldY는 표찰 가운데의 월드 위치이고, 전장 밖으로 잘리지 않게 막는다. */
@@ -235,7 +244,10 @@ export class EffectLayer {
       const f = Phaser.Math.Clamp((s.tick + alpha - p.firedTick) / Math.max(1, p.arrivalTick - p.firedTick), 0, 1);
       const target = p.targetId !== null ? s.enemies.find(e => e.id === p.targetId) : null;
       const to = target ? positionAt(path, progressOf(target.id, alpha) ?? target.progress) : { x: p.toX, y: p.toY };
-      const fx = toWorld(p.fromX), fy = toWorld(p.fromY) - CELL_PX * 0.32 - liftOf(p.towerId), tx = toWorld(to.x), ty = toWorld(to.y) - CELL_PX * 0.08 - (target ? enemyLift(target.id) : 0);
+      const from = fieldPosition(this.c, p.fromX, p.fromY);
+      const dest = fieldPosition(this.c, to.x, to.y);
+      const fx = from.x, fy = from.y - CELL_PX * 0.32 - liftOf(p.towerId);
+      const tx = dest.x, ty = dest.y - CELL_PX * 0.08 - (target ? enemyLift(target.id) : 0);
       const arc = lofted ? Math.sin(f * Math.PI) * CELL_PX * 0.55 : 0;
       img.setPosition(fx + (tx - fx) * f, fy + (ty - fy) * f - arc);
       if (p.towerType === 'archer') img.setRotation(Math.atan2(ty - fy, tx - fx));
@@ -397,7 +409,8 @@ export class EffectLayer {
       const v = this.hazards.get(e.hazardId);
       if (v) { this.c.scene.tweens.killTweensOf(v.g); v.g.destroy(); this.hazards.delete(e.hazardId); }
     }
-    this.burstRing(toWorld(e.x), toWorld(e.y) + FOOT, radius);
+    const { x, y } = fieldPosition(this.c, e.x, e.y);
+    this.burstRing(x, y + (this.c.projected ? 0 : FOOT), radius);
   }
 
   /** 폭발 고리: 반경 radiusCells칸의 눌린 타원(ZONE_FLATTEN)이 퍼지며 사라지고 가운데 연기가 핀다. 움직임 줄이기면 같은 크기로 투명도만 낮춘다. */

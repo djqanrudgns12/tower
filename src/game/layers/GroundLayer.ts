@@ -7,7 +7,8 @@ import { composeLayoutGround, padSprites, type PadSprite } from '../layoutGround
 import { claimedDecorations, layoutFor, resolvePlacements, steleOriginY, type MapLayout, type PlacedArt } from '../layouts';
 import { PAD_FADE_MS, isPlacing, padAlpha } from './cues';
 import { selectedCell } from './InputLayer';
-import { R6_GROUND_KEY } from '../r6/BattleAssets';
+import { R6_GROUND_KEY, R6_PAD_KEY } from '../r6/BattleAssets';
+import { projectField, r6Pad } from '../r6/mapProjection';
 import { DEPTH, type LayerContext } from './shared';
 
 /** deco.stele.r1 원화에서 비석 면 가운데의 세로 위치(원화 높이 대비, 면은 약 28~130/192px). */
@@ -24,6 +25,7 @@ export class GroundLayer {
   /** 지면에 굽지 않고 따로 세운 설치 받침(자리 id → 그림). 받침이 구운 지면에 섞인 경로(인수 지면·임시 그림)에서는 비어 있다. */
   private pads = new Map<string, Phaser.GameObjects.Image>();
   private padList: PadSprite[] = [];
+  private activePad: string | null = null;
 
   constructor(c: LayerContext) { this.c = c; }
 
@@ -48,6 +50,15 @@ export class GroundLayer {
     const map = this.c.bridge.controller.ctx.map;
     if (scene.textures.exists(R6_GROUND_KEY)) {
       scene.add.image(0, 0, R6_GROUND_KEY).setOrigin(0).setDisplaySize(WORLD_W, WORLD_H).setDepth(DEPTH.ground);
+      if (this.c.projected && scene.textures.exists(R6_PAD_KEY)) {
+        for (const slot of map.slots) {
+          const p = projectField((slot.x + 0.5) * CELL_PX, (slot.y + 0.5) * CELL_PX);
+          const pad = scene.add.image(p.x, p.y, R6_PAD_KEY, 0)
+            .setOrigin(r6Pad.pivot[0]! / r6Pad.size[0]!, r6Pad.pivot[1]! / r6Pad.size[1]!)
+            .setDepth(DEPTH.ground + 0.5).setName(`r6:pad:${slot.id}`);
+          this.pads.set(slot.id, pad);
+        }
+      }
       return;
     }
     scene.add.image(0, 0, ASSETS.ground.key).setOrigin(0).setScale(1 / TEX).setDepth(DEPTH.ground);
@@ -97,6 +108,14 @@ export class GroundLayer {
   syncPads(s: RunState, deltaMs: number) {
     if (this.pads.size === 0) return;
     const { bridge } = this.c;
+    if (this.c.projected) {
+      const id = bridge.drag ? bridge.drag.slotId : selectedCell(bridge)?.id ?? null;
+      if (id === this.activePad) return;
+      if (this.activePad) this.pads.get(this.activePad)?.setFrame(0);
+      if (id) this.pads.get(id)?.setFrame(1);
+      this.activePad = id;
+      return;
+    }
     const placing = isPlacing(s.phase, bridge.selection, Boolean(bridge.drag));
     const occupied = new Set(s.towers.map(t => t.slotId));
     const focus = new Set([selectedCell(bridge)?.id, bridge.keyboardSlotId, bridge.drag?.slotId]);

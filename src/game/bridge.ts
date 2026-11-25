@@ -15,7 +15,14 @@ export type FieldTap = { kind: 'slot'; slotId: string } | { kind: 'tower'; tower
 export interface FieldDrag { type: TowerId; slotId: string | null }
 
 /** 지금 화면에 보이는 세계 영역(세계 px). DOM 겹층이 칸 위치를 맞출 때 쓴다. */
-export interface FieldView { x: number; y: number; width: number; height: number }
+export interface FieldView {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  /** 표시 좌표를 기준으로 한 카메라. true일 때 격자와 표시 좌표 사이에 mapProjection을 적용한다. */
+  projected?: boolean;
+}
 
 export interface FieldBridge {
   controller: RunController;

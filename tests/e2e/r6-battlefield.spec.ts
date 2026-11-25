@@ -11,6 +11,7 @@ import type * as Controller from '../../src/application/RunController';
 import type * as Bridge from '../../src/game/bridge';
 import type * as QaGold from '../../src/application/qaGold';
 import type { RunState } from '../../src/domain/types';
+import { projectField } from '../../src/game/r6/mapProjection';
 import type { R6Manifest } from '../../src/game/r6/manifest';
 import { expect, test, type Page } from './tower-browser';
 
@@ -20,6 +21,7 @@ declare global {
       game: Phaser.Game;
       controller: RunController;
       activeSpecies: string[];
+      selectSlot: (id: string | null) => void;
       readyNextWave: () => void;
       showWavePreview: () => Record<string, number>;
     };
@@ -91,6 +93,7 @@ async function openField(page: Page, r6: boolean, progression = false) {
     await new Promise<void>(resolve => battle.startBattlefield(document.getElementById('field')!, bridge, new AbortController().signal, game => {
       window.r6Field = {
         game, controller, activeSpecies,
+        selectSlot: id => bridge.update({ selection: { ...bridge.selection, slotId: id } }),
         // 전투 상태를 덮어쓰지 않고 브라우저에서 엔진의 실제 논리 틱을 돌린다.
         readyNextWave: () => advanceToBuild(5000),
         showWavePreview() {
@@ -145,13 +148,52 @@ test('초원 고원에서 설치·진화·포두 발사·Spine 보행을 재생�
   expect(requests.some(url => url.includes('/inactive/'))).toBe(false);
   expect(requests.some(url => url.endsWith('/assets/manifest.json'))).toBe(false);
 
-  await canvas.click({ position: { x: 32, y: 32 } });
+  const firstPad = projectField(32, 32);
+  await canvas.click({ position: firstPad });
   await expect.poll(() => railBody(page)).toEqual({ slot: 'garden_u-s01', level: 1, sheet: 'r6.sheet.rail-bodies', frame: 0 });
   expect(await page.evaluate(() => {
     const { controller } = window.r6Field;
     return controller.dispatch({ type: 'upgrade', towerId: controller.state.towers[0]!.id }).ok;
   })).toBe(true);
   await expect.poll(() => railBody(page)).toMatchObject({ level: 2, frame: 1 });
+
+  const placement = await page.evaluate(async () => {
+    const { game, controller } = window.r6Field;
+    const scene = game.scene.getScene('battle');
+    const pad = (id: string) => scene.children.getByName(`r6:pad:${id}`) as Phaser.GameObjects.Image;
+    const tower = scene.children.getByName(`r6:tower:${controller.state.towers[0]!.id}:body`) as Phaser.GameObjects.Image;
+    const first = pad('garden_u-s01');
+
+    // 양산 연결을 기다리는 곡사 포대 원본을 검수 장면에서 실제 설치대 피벗에 합성한다.
+    const key = 'r6.qa.mortar';
+    await new Promise<void>((resolve, reject) => {
+      scene.load.once(`filecomplete-spritesheet-${key}`, () => resolve());
+      scene.load.once('loaderror', () => reject(new Error('곡사 포대 검수 시트를 읽지 못했습니다')));
+      scene.load.spritesheet(key, '/docs/renewal/r6/tech/towers/mortar/mortar-forms.webp',
+        { frameWidth: 192, frameHeight: 192, endFrame: 10 });
+      scene.load.start();
+    });
+    for (const [id, frame] of [['garden_u-s07', 0], ['garden_u-s12', 3], ['garden_u-s18', 8]] as const) {
+      const at = pad(id);
+      scene.add.image(at.x, at.y, key, frame).setOrigin(96 / 192, 137 / 192).setScale(0.32).setDepth(10 + at.y);
+    }
+    return {
+      pads: scene.children.getAll().filter(obj => obj.name.startsWith('r6:pad:')).length,
+      foot: { x: tower.x, y: tower.y },
+      first: { x: first.x, y: first.y, frame: Number(first.frame.name) },
+    };
+  });
+  expect(placement.pads).toBe(20);
+  expect(placement.first).toEqual({ ...firstPad, frame: 0 });
+  expect(placement.foot).toEqual(firstPad);
+  const selectedFrame = () => page.evaluate(() => {
+    const pad = window.r6Field.game.scene.getScene('battle').children.getByName('r6:pad:garden_u-s12') as Phaser.GameObjects.Image;
+    return Number(pad.frame.name);
+  });
+  await page.evaluate(() => window.r6Field.selectSlot('garden_u-s12'));
+  await expect.poll(selectedFrame).toBe(1);
+  await page.evaluate(() => window.r6Field.selectSlot(null));
+  await expect.poll(selectedFrame).toBe(0);
 
   const headFrame = () => page.evaluate(() => {
     const { controller, game } = window.r6Field;
@@ -238,13 +280,13 @@ test('R6 새 판에서 레일 포탑 11형태, 웨이브 해금 순서와 종족
   });
   const owned = ['rail', 'mortar', 'cryo'];
   expect(await readRun()).toEqual({ owned, version: '2.0.0', wave: 1, completed: 0 });
-  const position = { x: 5.5 * 64, y: 4.5 * 64 };
+  const position = projectField(5.5 * 64, 4.5 * 64);
   const padEdge = () => page.evaluate(({ x, y }) => new Promise<number>(resolve => {
     const { game } = window.r6Field;
     game.events.once('postrender', () => {
       const { gl } = game.renderer as Phaser.Renderer.WebGL.WebGLRenderer;
       const rgba = new Uint8Array(4);
-      gl.readPixels(x, game.canvas.height - 1 - (y - 18), 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, rgba);
+      gl.readPixels(Math.round(x), game.canvas.height - 1 - Math.round(y - 8.5), 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, rgba);
       resolve(rgba[0]! + rgba[1]! + rgba[2]!);
     });
   }), position);

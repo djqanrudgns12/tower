@@ -13,10 +13,11 @@ import { EnemyLayer } from './layers/EnemyLayer';
 import { GroundLayer } from './layers/GroundLayer';
 import { InputLayer, selectedCell } from './layers/InputLayer';
 import { bossCue, spawnIntros, SPLIT_LABEL_RAISE_CELLS } from './layers/cues';
-import { DEPTH, toWorld } from './layers/shared';
+import { DEPTH, fieldPosition, type LayerContext } from './layers/shared';
 import { TowerLayer } from './layers/TowerLayer';
-import { R6BattleAssets } from './r6/BattleAssets';
+import { R6BattleAssets, R6_GROUND_KEY } from './r6/BattleAssets';
 import { isR6Battlefield } from './r6/manifest';
+import { projectField, R6_MAP_SCALE } from './r6/mapProjection';
 
 /**
  * 전장 장면: 층(지면·타워·적·효과·입력/선택 표시)을 만들고 카메라·미니맵과 사건 전달만 맡는다.
@@ -24,6 +25,7 @@ import { isR6Battlefield } from './r6/manifest';
  */
 export class BattleScene extends Phaser.Scene {
   private bridge!: FieldBridge;
+  private layerContext!: LayerContext;
   private ground!: GroundLayer;
   private towerLayer!: TowerLayer;
   private ambient: AmbientLayer | null = null;
@@ -65,7 +67,11 @@ export class BattleScene extends Phaser.Scene {
   }
 
   create() {
-    const c = { scene: this as Phaser.Scene, bridge: this.bridge };
+    const c: LayerContext = {
+      scene: this, bridge: this.bridge,
+      projected: Boolean(this.r6Assets && this.bridge.controller.ctx.map.id === 'garden_u' && this.textures.exists(R6_GROUND_KEY)),
+    };
+    this.layerContext = c;
     this.ground = new GroundLayer(c);
     this.ground.bake();
     drawSprites(this);
@@ -99,12 +105,14 @@ export class BattleScene extends Phaser.Scene {
     const w = this.scale.width, h = this.scale.height;
     cam.setViewport(0, 0, w, h);
     const fit = Math.min(w / WORLD_W, h / WORLD_H);
-    this.cssCell = (fit * CELL_PX) / Math.max(1, window.devicePixelRatio || 1);
+    this.cssCell = (fit * CELL_PX * (this.layerContext.projected ? R6_MAP_SCALE : 1)) / Math.max(1, window.devicePixelRatio || 1);
     const sel = selectedCell(this.bridge);
     if (this.bridge.magnify && sel) {
       const factor = Math.max(1, 48 / Math.max(1, this.cssCell));
       cam.setZoom(fit * factor);
-      cam.centerOn((sel.x + 0.5) * CELL_PX, (sel.y + 0.5) * CELL_PX);
+      const x = (sel.x + 0.5) * CELL_PX, y = (sel.y + 0.5) * CELL_PX;
+      const point = this.layerContext.projected ? projectField(x, y) : { x, y };
+      cam.centerOn(point.x, point.y);
       this.showMini(w);
     } else {
       cam.setZoom(fit);
@@ -148,7 +156,7 @@ export class BattleScene extends Phaser.Scene {
         const boss = state.enemies.find(x => x.id === e.enemyId);
         const cue = bossCue(balance, boss, e.skill);
         if (cue && boss) {
-          const world = (progress: number) => { const p = positionAt(path, progress); return { x: toWorld(p.x), y: toWorld(p.y) }; };
+          const world = (progress: number) => { const p = positionAt(path, progress); return fieldPosition(this.layerContext, p.x, p.y); };
           // 호위병이 나타날 자리(같은 묶음에서 생긴 파생체). 대장 옆 먼지 구름을 그 자리에 피운다.
           const spots = cue.kind === 'dust' ? intros.flatMap(i => {
             const escort = i.style === 'escort' ? state.enemies.find(x => x.id === i.enemyId) : undefined;
@@ -194,7 +202,7 @@ export class BattleScene extends Phaser.Scene {
     const cameraKey = `${v.x.toFixed(1)},${v.y.toFixed(1)},${v.width.toFixed(1)},${v.height.toFixed(1)}`;
     if (cameraKey !== this.cameraKey && v.width > 0) {
       this.cameraKey = cameraKey;
-      this.bridge.onCamera?.({ x: v.x, y: v.y, width: v.width, height: v.height });
+      this.bridge.onCamera?.({ x: v.x, y: v.y, width: v.width, height: v.height, ...(this.layerContext.projected ? { projected: true } : {}) });
     }
   }
 }
