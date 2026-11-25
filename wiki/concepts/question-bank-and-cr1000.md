@@ -3,8 +3,8 @@ id: hub-question-bank-and-cr1000
 type: hub
 title: "3~6학년 문제은행 및 CR-1000 공동검수"
 status: active
-updated: 2026-11-16
-verified: { commit: b9b024bd, date: 2026-11-16 }
+updated: 2026-11-25
+verified: { commit: "7d3ef54a", date: 2026-11-25 }
 sources:
   - path: src/content/questions/manifest.json
     sha256: a450a6db9097bba40c7c11c6ee806700816c4d7526564c1cffd837905bfbcfe0
@@ -13,7 +13,7 @@ sources:
   - path: tools/build-bank.mjs
     sha256: "2d93c6ccc2c6de30eb4d90a9d64c22d6574618cc01e4b2d584916fde3d61e5fb"
   - path: tools/build-question-keys.mjs
-    sha256: "6cf5d19fe99c61555644b704fc16879134465ae4ea64f1f546e7e1e9990e5e80"
+    sha256: d660b1311678ce9b376c72143a6dbb42801e7849360523d719ea261dd23b784f
   - path: tools/content/gradeSharing.ts
     sha256: "41e7a7accbb709f6ca5722eef56db6b10910818ff0d8dea1d0031bf8ab49f37e"
   - path: tools/orchestrate/commit-lock.mjs
@@ -26,7 +26,7 @@ sources:
 
 # 3~6학년 문제은행 및 CR-1000 공동검수 (`question-bank-and-cr1000`)
 
-출제 문항은 어휘 정확성·교육과정 적합성·복수 정답 방지를 위해 **다중 모델 블라인드 공동검수(CR-1000)**를 통과한 승인 문항만 공개 은행(`src/content/questions/grade<N>.json`)에 수록된다. 실시간 학년별 문항 수와 판(`bankVersion`)은 [contracts.md](../contracts.md) 및 `npm run wiki:query -- --bank`로 확인한다.
+출제 문항은 어휘 정확성·교육과정 적합성·복수 정답 방지를 위해 **다중 모델 블라인드 공동검수(CR-1000)**를 통과한 승인 문항만 공개 은행(`src/content/questions/grade<N>.json`)에 수록된다. R6 대개편에서도 **문제은행·문항 흐름·정답 보상 구조는 그대로 유지**하며, 3~6학년 각각 자기 학년 공개 은행을 초원 고원(`garden_u`) 맵과 조합해 사용한다. 실시간 학년별 문항 수와 판(`bankVersion`)은 [contracts.md](../contracts.md) 및 `npm run wiki:query -- --bank`로 확인한다.
 
 ## 1. 공개 문제은행 구조와 학년 띠 공유
 
@@ -45,14 +45,15 @@ sources:
   3. 해설·정답 일치 및 의미 린트([lint.ts](../../src/content/lint.ts)) 통과분에 한해 `content-source/approvals/registry.json`에 해시 고정 등록
 - **주요 품질 규칙**: 반의어·유의어 문항이라도 비석 예문 빈칸에는 지문 끝 낱말이 아닌 **실제 정답 선택지**가 자연스럽게 들어가야 한다(`L-TD-004`).
 
-## 3. `commit-lock` 원자적 반영 불변식 (`L-TD-001` · `L-TD-002`)
+## 3. `commit-lock` 원자적 반영 및 v1·v2 공용 정답 키 시드 (`L-TD-001` · `L-TD-002`)
 
 1. **잠금 밖 수동 편집 절대 금지**:
    - `content-source/**`, `src/content/questions/**`, `server/seed/question_keys.sql`은 반드시 [commit-lock.mjs](../../tools/orchestrate/commit-lock.mjs) 잠금 안에서만 갱신한다.
    - 잠금 밖에서 일부 파일만 고치면 초안·검토 보고서·`registry.json` 해시가 어긋나 `bank-build.test`가 깨진다(과거 `wp/WP-CORE` 격리 보관 사유).
-2. **은행 빌드와 서버 정답 키 동기화**:
-   - `npm run build:bank`([build-bank.mjs](../../tools/build-bank.mjs))가 공개 은행 JSON을 다시 만들면, [build-question-keys.mjs](../../tools/build-question-keys.mjs)가 서버 재채점용 `server/seed/question_keys.sql`을 함께 생성한다.
-   - 운영 반영 시에는 정적 은행 배포 전에 원격 D1에 `npm run server:seed:remote`를 먼저 적용해야 신규 문항 판이 서버 재채점에서 거부되지 않는다.
+2. **은행 빌드와 시즌별 서버 정답 키·승인 조건 생성**:
+   - `npm run build:bank`([build-bank.mjs](../../tools/build-bank.mjs))가 공개 은행 JSON을 다시 만들면, [build-question-keys.mjs](../../tools/build-question-keys.mjs)가 서버 재채점용 `server/seed/question_keys.sql`을 생성한다.
+   - R6 대응으로 `build-question-keys.mjs`는 **v1(`balance.candidate.v0.4.json`, `1.0.0` × 학년별 맵 4종)과 v2(`balance.v2.json`, `2.0.0` × 전 학년 `prototypeMap: garden_u`)를 함께 읽어** `approved_run_conditions` 8행(시즌별 4학년)과 `run_verification_rules` 8행(시즌별 4난이도)을 출력한다. 같은 판 번호에 다른 규칙을 덮어쓰려 하면 `NOT NULL` 제약으로 시드를 중단해 규칙 변조를 막는다.
+   - 운영 반영 시에는 정적 은행 배포 전에 원격 D1에 시드를 적용한다(시즌 2 최초 반영은 [G5-server.md](../../docs/renewal/r6/tech/G5-server.md) 절차 따름, 현재 운영 미반영).
 
 ## 4. 자주 쓰는 조회 · 검증 명령
 

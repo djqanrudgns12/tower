@@ -21,7 +21,7 @@ generated_by: tools/wiki/gen.mjs
 | `npm run lint` | 검증·정적검사 | - | `eslint .` | ESLint 실행 (PRD §13.2 계층 경계 및 Math.random 금지 포함) |
 | `npm run test` | 단위·통합·E2E 시험 | `--profile test` | `vitest run tests/unit` | Vitest 단위·속성 시험 실행 (resource-guard --profile test -- --maxWorkers=1 권장) |
 | `npm run test:e2e` | 단위·통합·E2E 시험 | `--profile test` | `playwright test` | Playwright 브라우저 종단 시험 (E2E_PORT로 포트 분리 가능) |
-| `npm run test:r6-perf` | 단위·통합·E2E 시험 | - | `TOWER_R6_PERF_RUN=1 playwright test tests/e2e/r6-perf.spec.ts --workers=1 --retries=0` | - |
+| `npm run test:r6-perf` | 단위·통합·E2E 시험 | - | `TOWER_R6_PERF_RUN=1 playwright test tests/e2e/r6-perf.spec.ts --workers=1 --retries=0` | R6 저사양 전장 W1~W10 CPU 6배/1배 자동 화질·FPS 검증 (resource-guard --profile test 권장) |
 | `npm run test:api-connected` | 단위·통합·E2E 시험 | `--profile test` | `node tools/qa/api-connected.mjs` | 로컬 wrangler dev + 앱 연결 재채점 검증 (3~6학년) |
 | `npm run test:server` | 단위·통합·E2E 시험 | `--profile test` | `tsc -p server/tsconfig.json && tsc -p server/tsconfig.test.json && vitest run --config server/vitest.config.ts` | server/**, src/persistence/**, src/contracts/lobby.ts 수정 시 커밋 전 필수 |
 | `npm run server:dev` | 기록·랭킹 서버(Workers/D1) | - | `wrangler dev --config server/wrangler.toml --local` | 로컬 Cloudflare Workers + D1 실행 (http://127.0.0.1:8787) |
@@ -55,7 +55,7 @@ generated_by: tools/wiki/gen.mjs
 
 | 경로 | 줄 수 | 역할 요약 |
 | --- | ---: | --- |
-| [tools/build-question-keys.mjs](../tools/build-question-keys.mjs) | 86 | 내부 실행 도구 |
+| [tools/build-question-keys.mjs](../tools/build-question-keys.mjs) | 99 | 내부 실행 도구 |
 | [tools/assets/to-webp.mjs](../tools/assets/to-webp.mjs) | 171 | PNG → WebP 변환 도구 (docs/HOSTING_IMPL_PLAN.md §2). |
 | [tools/assets/webp-compare.mjs](../tools/assets/webp-compare.mjs) | 174 | PNG\|WebP 비교판(접촉판)과 화질 수치를 만든다 |
 | [tools/content/coverage-report.mjs](../tools/content/coverage-report.mjs) | 76 | 내부 실행 도구 |

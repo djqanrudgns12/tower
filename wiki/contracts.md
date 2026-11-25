@@ -122,6 +122,7 @@ generated_by: tools/wiki/gen.mjs
 | `completed_runs` | 26 | O | 기기가 보낸 종료 시각 원본(local_ended_at)을 따로 둔다. | [server/migrations/0001_init.sql#L91](../server/migrations/0001_init.sql#L91) |
 | `rate_limits` | 8 | O | 한도를 넘는 증가는 CHECK가 막아 batch 전체가 되돌아간다(거부된 호출은 세지 않는다는 Postgres allow_lobby_rpc와 같다). | [server/migrations/0001_init.sql#L200](../server/migrations/0001_init.sql#L200) |
 | `standings` | 17 | O | - | [server/migrations/0003_school_honor.sql#L5](../server/migrations/0003_school_honor.sql#L5) |
+| `ranking_seasons` | 3 | O | 은행·지도 조합의 승인과 별도로 시즌 제출을 닫아도 과거 순위는 계속 조회한다. | [server/migrations/0004_ranking_seasons.sql#L2](../server/migrations/0004_ranking_seasons.sql#L2) |
 
 ### 7.3 SQLite 트리거
 

@@ -26,14 +26,14 @@ generated_by: tools/wiki/gen.mjs
 | `src/domain` | 21 | 3,960 | 30Hz 고정 틱 전투·경제·징집·보물·퀴즈·시드 PRNG 순수 도메인 |
 | `src/contracts` | 8 | 1,487 | 밸런스·맵·문제은행·초안·로비·원화 manifest Zod 런타임 계약 |
 | `src/content` | 4 | 479 | 학년별 문제은행 지연 로더·의미 검사·철회 목록 적용 |
-| `src/application` | 11 | 1,801 | RunController(유일한 상태 작성자)·세션·로비·NEIS·QA 장면 상태 |
-| `src/persistence` | 5 | 1,243 | IndexedDB 로컬 기록·오답 노트·기기 인증·서버 동기화 큐 |
-| `src/game` | 23 | 3,969 | Phaser 4 전장 렌더러·레이어 6종·보행/자세 애니메이션·맵 지면 조립 |
-| `src/ui` | 70 | 11,659 | React 19 화면(홈·새 게임·전투 HUD/카드·오답 노트·설명서·결과) 및 오디오 |
-| `server/src` | 14 | 1,592 | Cloudflare Workers + D1 기기 발급·판 재채점·통합 랭킹·일일 정리 서버 |
+| `src/application` | 12 | 1,892 | RunController(유일한 상태 작성자)·세션·로비·NEIS·QA 장면 상태 |
+| `src/persistence` | 5 | 1,244 | IndexedDB 로컬 기록·오답 노트·기기 인증·서버 동기화 큐 |
+| `src/game` | 27 | 4,732 | Phaser 4 전장 렌더러·레이어 6종·보행/자세 애니메이션·맵 지면 조립 |
+| `src/ui` | 72 | 11,858 | React 19 화면(홈·새 게임·전투 HUD/카드·오답 노트·설명서·결과) 및 오디오 |
+| `server/src` | 14 | 1,603 | Cloudflare Workers + D1 기기 발급·판 재채점·통합 랭킹·일일 정리 서버 |
 | `tools/content & orchestrate` | 20 | 4,973 | 공개 은행 컴파일러·학년 띠 공유·CR-1000 다중 모델 공동검수 및 commit-lock |
 | `tools/sim, qa & assets` | 14 | 3,542 | 밸런스 봇 시뮬레이터·관문 평가기·성능/장면 QA·WebP 알파 보존 변환기 |
-| `tests/unit & e2e` | 118 | 20,160 | Vitest 단위/속성 시험 및 Playwright 실브라우저·로컬 서버 연결 시험 |
+| `tests/unit & e2e` | 127 | 22,091 | Vitest 단위/속성 시험 및 Playwright 실브라우저·로컬 서버 연결 시험 |
 
 ## 3. 영역별 대표 진입 모듈
 
@@ -77,58 +77,58 @@ generated_by: tools/wiki/gen.mjs
 | 파일 | 줄 수 | 주요 `export` | 상단 설명 |
 | --- | ---: | --- | --- |
 | [src/application/lobby.ts](../src/application/lobby.ts) | 687 | `subscribeRecordSharing`, `fnv1a32`, `loadAllStudyCards`, `pickRandomInitialStudyIndex`, `selectDailySteleCards` | - |
-| [src/application/RunController.ts](../src/application/RunController.ts) | 308 | `TICK_MS`, `USER_CLEARABLE`, `RunControllerOptions`, `RunSaveStatus`, `RunController` | - |
+| [src/application/RunController.ts](../src/application/RunController.ts) | 321 | `TICK_MS`, `USER_CLEARABLE`, `RunControllerOptions`, `RunSaveStatus`, `RunController` | - |
 | [src/application/neis.ts](../src/application/neis.ts) | 182 | `NeisSchool`, `SearchOptions`, `searchNeisSchools` | NEIS(교육부 나이스) 오픈 API 학교 정보 연동 서비스. |
-| [src/application/view.ts](../src/application/view.ts) | 152 | `QuestionView`, `TowerView`, `QuestionStakesView`, `GameView`, `Notice` | - |
+| [src/application/view.ts](../src/application/view.ts) | 157 | `QuestionView`, `TowerView`, `QuestionStakesView`, `GameView`, `Notice` | - |
 | [src/application/entryUrl.ts](../src/application/entryUrl.ts) | 132 | `ParsedEntryUrl`, `parseEntrySearchParams`, `consumeEntryUrlPatch`, `buildClassroomShareUrl`, `detectInAppBrowser` | - |
 | [src/application/mapPreview.ts](../src/application/mapPreview.ts) | 111 | `PREVIEW_PARAM`, `SAMPLE_TOWERS`, `MapPreviewRequest`, `parseMapPreview`, `startMapPreview` | - |
-| [src/application/session.ts](../src/application/session.ts) | 109 | `StartResult`, `startNewRun`, `bestWaveOf`, `bestWaveFor`, `reviewNoteItems` | - |
-| [src/application/balanceSession.ts](../src/application/balanceSession.ts) | 48 | `localBalanceSession` | - |
+| [src/application/session.ts](../src/application/session.ts) | 111 | `StartResult`, `startNewRun`, `bestWaveOf`, `bestWaveFor`, `reviewNoteItems` | - |
+| [src/application/balanceSession.ts](../src/application/balanceSession.ts) | 64 | `LocalBalanceVersion`, `getR6Battle`, `localBalanceContext`, `localBalanceSession` | - |
 
 ### src/persistence
 
 | 파일 | 줄 수 | 주요 `export` | 상단 설명 |
 | --- | ---: | --- | --- |
-| [src/persistence/lobbyClient.ts](../src/persistence/lobbyClient.ts) | 507 | `buildLocalRanking`, `fetchRanking`, `computeLocalPlayCounts`, `fetchInitialTelemetry`, `cancelRunStartRetry` | - |
+| [src/persistence/lobbyClient.ts](../src/persistence/lobbyClient.ts) | 501 | `buildLocalRanking`, `fetchRanking`, `computeLocalPlayCounts`, `fetchInitialTelemetry`, `cancelRunStartRetry` | - |
 | [src/persistence/db.ts](../src/persistence/db.ts) | 226 | `RunRecord`, `RunAnswer`, `PendingRunSync`, `QuestionHistory`, `db` | - |
 | [src/persistence/reviewNote.ts](../src/persistence/reviewNote.ts) | 218 | `REVIEW_NOTE_KEY`, `REVIEW_NOTE_MAX`, `REVIEW_GRADUATE_CLEARS`, `ReviewNoteItem`, `ReviewNote` | - |
-| [src/persistence/settings.ts](../src/persistence/settings.ts) | 172 | `FontScale`, `MotionMode`, `VolumeStepBgm`, `VolumeStepSfx`, `BGM_STEPS` | 환경설정은 기기에 따로 저장하며 전투 판정에 영향을 주지 않는다(PRD §2, §17.1). |
+| [src/persistence/settings.ts](../src/persistence/settings.ts) | 179 | `FontScale`, `MotionMode`, `VolumeStepBgm`, `VolumeStepSfx`, `BGM_STEPS` | 환경설정은 기기에 따로 저장하며 전투 판정에 영향을 주지 않는다(PRD §2, §17.1). |
 | [src/persistence/auth.ts](../src/persistence/auth.ts) | 120 | `ApiEnv`, `PublicRecordNotice`, `getPublicRecordNotice`, `subscribePublicRecordNotice`, `setPublicRecordNotice` | - |
 
 ### src/game
 
 | 파일 | 줄 수 | 주요 `export` | 상단 설명 |
 | --- | ---: | --- | --- |
-| [src/game/layers/EffectLayer.ts](../src/game/layers/EffectLayer.ts) | 451 | `EffectLayer` | - |
+| [src/game/layers/EffectLayer.ts](../src/game/layers/EffectLayer.ts) | 462 | `EffectLayer` | - |
 | [src/game/art.ts](../src/game/art.ts) | 448 | `PALETTE`, `rand01`, `isTreeCell`, `GroundSkip`, `GROUND_ART` | - |
-| [src/game/layers/EnemyLayer.ts](../src/game/layers/EnemyLayer.ts) | 322 | `EnemyLayer` | - |
+| [src/game/layers/EnemyLayer.ts](../src/game/layers/EnemyLayer.ts) | 379 | `EnemyLayer` | - |
+| [src/game/layers/TowerLayer.ts](../src/game/layers/TowerLayer.ts) | 369 | `TowerLayer` | - |
 | [src/game/layers/cues.ts](../src/game/layers/cues.ts) | 271 | `FLYER_LIFT_CELLS`, `INTRO_MS`, `SPLIT_HOP_CELLS`, `SPLIT_LABEL_RAISE_CELLS`, `BossStatus` | - |
 | [src/game/layouts/index.ts](../src/game/layouts/index.ts) | 266 | `PLACEMENT_KINDS`, `PlacementKind`, `mapLayoutSchema`, `MapLayout`, `LayoutPlacement` | - |
 | [src/game/layers/AmbientLayer.ts](../src/game/layers/AmbientLayer.ts) | 259 | `AmbientLayer` | - |
-| [src/game/layers/TowerLayer.ts](../src/game/layers/TowerLayer.ts) | 246 | `TowerLayer` | - |
 | [src/game/ambient.ts](../src/game/ambient.ts) | 242 | `rng`, `ambientSeed`, `Tint`, `TintTable`, `DAY_WAVES` | - |
 
 ### src/ui
 
 | 파일 | 줄 수 | 주요 `export` | 상단 설명 |
 | --- | ---: | --- | --- |
-| [src/ui/game/GameScreen.tsx](../src/ui/game/GameScreen.tsx) | 869 | `GameScreen` | - |
+| [src/ui/game/GameScreen.tsx](../src/ui/game/GameScreen.tsx) | 903 | `GameScreen` | - |
 | [src/ui/screens/home/MiniStageCanvas.tsx](../src/ui/screens/home/MiniStageCanvas.tsx) | 718 | `DemoEnemy`, `DemoProjectile`, `StageDemoSnapshot`, `sampleStageDemo`, `MiniStageCanvas` | - |
-| [src/ui/screens/guide/guideModel.ts](../src/ui/screens/guide/guideModel.ts) | 553 | `GUIDE_CHAPTER_IDS`, `GuideChapterId`, `GuideRowIconId`, `GuideSummaryRow`, `GuideChapterSpec` | - |
+| [src/ui/screens/guide/guideModel.ts](../src/ui/screens/guide/guideModel.ts) | 560 | `GUIDE_CHAPTER_IDS`, `GuideChapterId`, `GuideRowIconId`, `GuideSummaryRow`, `GuideChapterSpec` | - |
 | [src/ui/screens/home/terrainBaker.ts](../src/ui/screens/home/terrainBaker.ts) | 501 | `TonePool`, `SplineSample`, `ArcSample`, `hash2d`, `lowFreqNoise` | - |
 | [src/ui/utils/qr.ts](../src/ui/utils/qr.ts) | 452 | `canEncodeQr`, `encodeQrMatrix`, `qrMatrixToSvgPath` | 외부 의존성 없는 순수 TypeScript ISO/IEC 18004 QR 코드 행렬 생성기 (Byte 모드 · 오류 복원 수준 M · 버전 1~10). |
-| [src/ui/screens/home/RankingBoard.tsx](../src/ui/screens/home/RankingBoard.tsx) | 442 | `TAB_LABELS`, `PERIOD_LABELS`, `formatPrimaryMetric`, `RankingBoard` | - |
-| [src/ui/screens/home/LaunchDeck.tsx](../src/ui/screens/home/LaunchDeck.tsx) | 435 | `LaunchDeck` | - |
+| [src/ui/screens/home/LaunchDeck.tsx](../src/ui/screens/home/LaunchDeck.tsx) | 433 | `LaunchDeck` | - |
 | [src/ui/kit/index.tsx](../src/ui/kit/index.tsx) | 422 | `Button`, `IconButton`, `Card`, `Panel`, `Badge` | - |
+| [src/ui/screens/home/RankingBoard.tsx](../src/ui/screens/home/RankingBoard.tsx) | 394 | `TAB_LABELS`, `PERIOD_LABELS`, `RANKING_PERIOD_OPTIONS`, `formatPrimaryMetric`, `RankingBoard` | - |
 
 ### server/src
 
 | 파일 | 줄 수 | 주요 `export` | 상단 설명 |
 | --- | ---: | --- | --- |
-| [server/src/handlers.ts](../server/src/handlers.ts) | 386 | `Context`, `healthCheck`, `searchSchools`, `issueDevice`, `recordLobbyVisit` | 엔드포인트 판단. |
-| [server/src/store.ts](../server/src/store.ts) | 239 | `VERIFIED_LEVEL`, `RateLimit`, `DEVICE_RATE_LIMITS`, `RateAction`, `IP_RATE_LIMITS` | 요청마다 |
+| [server/src/handlers.ts](../server/src/handlers.ts) | 390 | `Context`, `healthCheck`, `searchSchools`, `issueDevice`, `recordLobbyVisit` | 엔드포인트 판단. |
+| [server/src/store.ts](../server/src/store.ts) | 245 | `VERIFIED_LEVEL`, `RateLimit`, `DEVICE_RATE_LIMITS`, `RateAction`, `IP_RATE_LIMITS` | 요청마다 |
 | [server/src/validate.ts](../server/src/validate.ts) | 184 | `MAX_ANSWERS_JSON_BYTES`, `MAX_ANSWERS`, `parseRunId`, `parseTimestamp`, `SubmitClaim` | - |
-| [server/src/ranking-cache.ts](../server/src/ranking-cache.ts) | 118 | `CacheLike`, `CacheScope`, `RankingCache`, `cacheSeconds` | 랭킹 응답 캐시(Workers Cache API, 거점별). |
+| [server/src/ranking-cache.ts](../server/src/ranking-cache.ts) | 119 | `CacheLike`, `CacheScope`, `RankingCache`, `cacheSeconds` | 랭킹 응답 캐시(Workers Cache API, 거점별). |
 | [server/src/http.ts](../server/src/http.ts) | 100 | `BODY_LIMIT_SMALL`, `BODY_LIMIT_SUBMIT`, `PREFLIGHT_MAX_AGE_SECONDS`, `HttpError`, `parseAllowedOrigins` | 응답 모양·CORS·요청 본문 크기 제한. |
 | [server/src/app.ts](../server/src/app.ts) | 99 | `Env`, `Deps`, `handleRequest`, `runScheduledCleanup` | - |
 | [server/src/graphemes.ts](../server/src/graphemes.ts) | 99 | `countGraphemes` | 사용자 인식 문자 수(UAX #29, Unicode 17.0). |

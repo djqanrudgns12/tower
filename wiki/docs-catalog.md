@@ -10,15 +10,15 @@ generated_by: tools/wiki/gen.mjs
 
 > 이 파일은 `npm run wiki:sync` (`tools/wiki/gen.mjs`)가 코드·계약 JSON·SQL에서 결정적으로 자동 생성합니다. 직접 수정하지 마세요.
 
-- 스캔된 마크다운 총계: **225개 파일** · **1,790,132자** · 추정 **약 1,163,691 토큰**
+- 스캔된 마크다운 총계: **244개 파일** · **1,884,760자** · 추정 **약 1,225,208 토큰**
 - **경고**: `해시 고정(validate-plan)` 문서는 1바이트도 수정·이동하면 안 되며, `링크·참조 검사(validate-plan)` 및 `코드·시험 경로 참조` 문서도 기존 경로를 그대로 유지해야 합니다.
 
 ## 분류별 요약
 
 | 분류 | 파일 수 | 글자 수 | 추정 토큰 |
 | --- | ---: | ---: | ---: |
-| 01. 진입·규약 및 LLM Wiki | 31 | 148,398 | 96,473 |
-| 02. 리뉴얼 현행 기준 (PRD보다 우선) | 60 | 460,641 | 299,445 |
+| 01. 진입·규약 및 LLM Wiki | 34 | 167,025 | 108,582 |
+| 02. 리뉴얼 현행 기준 (PRD보다 우선) | 76 | 536,642 | 348,853 |
 | 03. 호스팅·배포·운영 기준 | 3 | 36,412 | 23,669 |
 | 04. 문제은행 CR-1000 공동검수 | 6 | 201,954 | 131,272 |
 | 05. 제작 PRD v0.5 및 계약 기준 | 6 | 143,424 | 93,229 |
@@ -34,31 +34,34 @@ generated_by: tools/wiki/gen.mjs
 | [AGENTS.md](../AGENTS.md) | 현행 활성 | Reference / Navigation | - | 9 | 3,939 |
 | [CLAUDE.md](../CLAUDE.md) | 현행 활성 | Reference / Navigation | - | 1 | 211 |
 | [docs/READ_FIRST.md](../docs/READ_FIRST.md) | 현행 활성 | Reference / Navigation | 링크·참조 검사(validate-plan) | 1 | 1,275 |
-| [docs/README.md](../docs/README.md) | 현행 활성 | Reference / Navigation | - | 9 | 4,530 |
+| [docs/README.md](../docs/README.md) | 현행 활성 | Reference / Navigation | - | 9 | 4,531 |
 | [docs/WIKI_PLAN.md](../docs/WIKI_PLAN.md) | 현행 활성 | Reference / Navigation | - | 8 | 11,851 |
 | [docs/WIKI_PRD.md](../docs/WIKI_PRD.md) | 현행 활성 | Reference / Navigation | - | 11 | 9,115 |
 | [README.md](../README.md) | 현행 활성 | Reference / Navigation | 링크·참조 검사(validate-plan) | 5 | 2,917 |
-| [wiki/codemap.md](../wiki/codemap.md) | 현행 활성 | Reference / Navigation | - | 15 | 14,124 |
-| [wiki/commands.md](../wiki/commands.md) | 현행 활성 | Reference / Navigation | - | 3 | 6,130 |
-| [wiki/concepts/architecture-and-layers.md](../wiki/concepts/architecture-and-layers.md) | 현행 활성 | Explanation | - | 4 | 3,220 |
-| [wiki/concepts/combat-towers-and-balance.md](../wiki/concepts/combat-towers-and-balance.md) | 현행 활성 | Explanation | - | 5 | 3,254 |
-| [wiki/concepts/deploy-and-verification.md](../wiki/concepts/deploy-and-verification.md) | 현행 활성 | Explanation | - | 4 | 2,722 |
-| [wiki/concepts/persistence-and-ranking-server.md](../wiki/concepts/persistence-and-ranking-server.md) | 현행 활성 | Explanation | - | 4 | 2,958 |
-| [wiki/concepts/question-bank-and-cr1000.md](../wiki/concepts/question-bank-and-cr1000.md) | 현행 활성 | Explanation | - | 5 | 3,514 |
-| [wiki/concepts/ui-phaser-and-assets.md](../wiki/concepts/ui-phaser-and-assets.md) | 현행 활성 | Explanation | - | 5 | 3,126 |
-| [wiki/contracts.md](../wiki/contracts.md) | 현행 활성 | Reference / Navigation | - | 11 | 7,970 |
+| [wiki/_inbox/2026-11-25-antigravity-ai-생성-그림은-콘셉트파츠-원화까지-양산은-blender-cab085.md](../wiki/_inbox/2026-11-25-antigravity-ai-생성-그림은-콘셉트파츠-원화까지-양산은-blender-cab085.md) | 현행 활성 | Reference / Navigation | - | 1 | 788 |
+| [wiki/_inbox/2026-11-25-antigravity-브라우저-fps저사양-계측은-일반-우선순위접속-0명-조건--8f2258.md](../wiki/_inbox/2026-11-25-antigravity-브라우저-fps저사양-계측은-일반-우선순위접속-0명-조건--8f2258.md) | 현행 활성 | Reference / Navigation | - | 1 | 769 |
+| [wiki/_inbox/2026-11-25-antigravity-이미지-생성-한도429-대비-예약-및-작업-전환-e14595.md](../wiki/_inbox/2026-11-25-antigravity-이미지-생성-한도429-대비-예약-및-작업-전환-e14595.md) | 현행 활성 | Reference / Navigation | - | 1 | 717 |
+| [wiki/codemap.md](../wiki/codemap.md) | 현행 활성 | Reference / Navigation | - | 15 | 14,211 |
+| [wiki/commands.md](../wiki/commands.md) | 현행 활성 | Reference / Navigation | - | 3 | 6,343 |
+| [wiki/concepts/architecture-and-layers.md](../wiki/concepts/architecture-and-layers.md) | 현행 활성 | Explanation | - | 5 | 4,482 |
+| [wiki/concepts/combat-towers-and-balance.md](../wiki/concepts/combat-towers-and-balance.md) | 현행 활성 | Explanation | - | 6 | 4,447 |
+| [wiki/concepts/deploy-and-verification.md](../wiki/concepts/deploy-and-verification.md) | 현행 활성 | Explanation | - | 4 | 3,844 |
+| [wiki/concepts/persistence-and-ranking-server.md](../wiki/concepts/persistence-and-ranking-server.md) | 현행 활성 | Explanation | - | 5 | 3,892 |
+| [wiki/concepts/question-bank-and-cr1000.md](../wiki/concepts/question-bank-and-cr1000.md) | 현행 활성 | Explanation | - | 5 | 3,976 |
+| [wiki/concepts/ui-phaser-and-assets.md](../wiki/concepts/ui-phaser-and-assets.md) | 현행 활성 | Explanation | - | 6 | 4,820 |
+| [wiki/contracts.md](../wiki/contracts.md) | 현행 활성 | Reference / Navigation | - | 11 | 8,147 |
 | [wiki/decisions-index.md](../wiki/decisions-index.md) | 현행 활성 | Reference / Navigation | - | 1 | 2,901 |
-| [wiki/docs-catalog.md](../wiki/docs-catalog.md) | 현행 활성 | Reference / Navigation | - | 10 | 30,122 |
-| [wiki/entities/tech-stack.md](../wiki/entities/tech-stack.md) | 현행 활성 | Reference / Navigation | - | 4 | 3,206 |
-| [wiki/entities/vocabulary-td.md](../wiki/entities/vocabulary-td.md) | 현행 활성 | Reference / Navigation | - | 5 | 2,679 |
-| [wiki/glossary.md](../wiki/glossary.md) | 현행 활성 | Reference / Navigation | - | 1 | 4,124 |
-| [wiki/index.md](../wiki/index.md) | 현행 활성 | Reference / Navigation | - | 5 | 3,278 |
+| [wiki/docs-catalog.md](../wiki/docs-catalog.md) | 현행 활성 | Reference / Navigation | - | 10 | 33,054 |
+| [wiki/entities/tech-stack.md](../wiki/entities/tech-stack.md) | 현행 활성 | Reference / Navigation | - | 4 | 3,796 |
+| [wiki/entities/vocabulary-td.md](../wiki/entities/vocabulary-td.md) | 현행 활성 | Reference / Navigation | - | 5 | 3,349 |
+| [wiki/glossary.md](../wiki/glossary.md) | 현행 활성 | Reference / Navigation | - | 1 | 5,322 |
+| [wiki/index.md](../wiki/index.md) | 현행 활성 | Reference / Navigation | - | 5 | 3,604 |
 | [wiki/lessons/engineering-and-content.md](../wiki/lessons/engineering-and-content.md) | 현행 활성 | Reference / Navigation | - | 6 | 2,946 |
 | [wiki/lessons/ops-and-workflow.md](../wiki/lessons/ops-and-workflow.md) | 현행 활성 | Reference / Navigation | - | 5 | 2,623 |
 | [wiki/lessons/ui-art-and-balance.md](../wiki/lessons/ui-art-and-balance.md) | 현행 활성 | Reference / Navigation | - | 5 | 2,483 |
-| [wiki/log.md](../wiki/log.md) | 현행 활성 | Reference / Navigation | - | 2 | 1,067 |
-| [wiki/projects/roadmap-and-status.md](../wiki/projects/roadmap-and-status.md) | 현행 활성 | Reference / Navigation | - | 4 | 2,865 |
-| [wiki/SCHEMA.md](../wiki/SCHEMA.md) | 현행 활성 | Reference / Navigation | - | 6 | 4,847 |
+| [wiki/log.md](../wiki/log.md) | 현행 활성 | Reference / Navigation | - | 3 | 2,012 |
+| [wiki/projects/roadmap-and-status.md](../wiki/projects/roadmap-and-status.md) | 현행 활성 | Reference / Navigation | - | 4 | 4,810 |
+| [wiki/SCHEMA.md](../wiki/SCHEMA.md) | 현행 활성 | Reference / Navigation | - | 6 | 5,449 |
 | [wiki/templates/hub.md](../wiki/templates/hub.md) | 현행 활성 | Reference / Navigation | - | 5 | 666 |
 | [wiki/templates/lesson.md](../wiki/templates/lesson.md) | 현행 활성 | Reference / Navigation | - | 2 | 957 |
 
@@ -81,19 +84,24 @@ generated_by: tools/wiki/gen.mjs
 | [docs/renewal/r5-briefs/B.md](../docs/renewal/r5-briefs/B.md) | 현행 우선 기준 | Explanation / Spec | - | 9 | 4,459 |
 | [docs/renewal/r5-briefs/C.md](../docs/renewal/r5-briefs/C.md) | 현행 우선 기준 | Explanation / Spec | - | 9 | 5,046 |
 | [docs/renewal/r5-briefs/K.md](../docs/renewal/r5-briefs/K.md) | 현행 우선 기준 | Explanation / Spec | - | 8 | 4,524 |
+| [docs/renewal/r6/bible/G1-review-monsters.md](../docs/renewal/r6/bible/G1-review-monsters.md) | 현행 우선 기준 | Explanation / Spec | - | 14 | 10,572 |
+| [docs/renewal/r6/bible/G1-review-towers2.md](../docs/renewal/r6/bible/G1-review-towers2.md) | 현행 우선 기준 | Explanation / Spec | - | 8 | 6,194 |
 | [docs/renewal/r6/bible/G1-review.md](../docs/renewal/r6/bible/G1-review.md) | 현행 우선 기준 | Explanation / Spec | - | 11 | 5,108 |
-| [docs/renewal/r6/bible/monsters.md](../docs/renewal/r6/bible/monsters.md) | 현행 우선 기준 | Explanation / Spec | - | 8 | 11,733 |
-| [docs/renewal/r6/bible/towers.md](../docs/renewal/r6/bible/towers.md) | 현행 우선 기준 | Explanation / Spec | - | 10 | 10,753 |
+| [docs/renewal/r6/bible/monsters.md](../docs/renewal/r6/bible/monsters.md) | 현행 우선 기준 | Explanation / Spec | - | 8 | 13,394 |
+| [docs/renewal/r6/bible/portrait-spec.md](../docs/renewal/r6/bible/portrait-spec.md) | 현행 우선 기준 | Explanation / Spec | - | 8 | 5,096 |
+| [docs/renewal/r6/bible/towers.md](../docs/renewal/r6/bible/towers.md) | 현행 우선 기준 | Explanation / Spec | - | 10 | 11,470 |
 | [docs/renewal/r6/bible/world.md](../docs/renewal/r6/bible/world.md) | 현행 우선 기준 | Explanation / Spec | - | 13 | 4,207 |
 | [docs/renewal/r6/concepts/C1/concept.md](../docs/renewal/r6/concepts/C1/concept.md) | 현행 우선 기준 | Explanation / Spec | - | 9 | 5,541 |
 | [docs/renewal/r6/concepts/C2/concept.md](../docs/renewal/r6/concepts/C2/concept.md) | 현행 우선 기준 | Explanation / Spec | - | 9 | 5,121 |
 | [docs/renewal/r6/concepts/C3/concept.md](../docs/renewal/r6/concepts/C3/concept.md) | 현행 우선 기준 | Explanation / Spec | - | 9 | 5,127 |
 | [docs/renewal/r6/concepts/C4/concept.md](../docs/renewal/r6/concepts/C4/concept.md) | 현행 우선 기준 | Explanation / Spec | - | 9 | 5,256 |
 | [docs/renewal/r6/concepts/C5/concept.md](../docs/renewal/r6/concepts/C5/concept.md) | 현행 우선 기준 | Explanation / Spec | - | 9 | 5,277 |
-| [docs/renewal/r6/map-spec.md](../docs/renewal/r6/map-spec.md) | 현행 우선 기준 | Explanation / Spec | - | 6 | 3,268 |
+| [docs/renewal/r6/map-spec.md](../docs/renewal/r6/map-spec.md) | 현행 우선 기준 | Explanation / Spec | - | 7 | 3,940 |
 | [docs/renewal/r6/PRD-r6.md](../docs/renewal/r6/PRD-r6.md) | 현행 우선 기준 | Explanation / Spec | - | 21 | 9,770 |
 | [docs/renewal/r6/README.md](../docs/renewal/r6/README.md) | 현행 우선 기준 | Explanation / Spec | - | 9 | 4,398 |
 | [docs/renewal/r6/research.md](../docs/renewal/r6/research.md) | 현행 우선 기준 | Explanation / Spec | - | 8 | 4,924 |
+| [docs/renewal/r6/review/G4-towers-critique.md](../docs/renewal/r6/review/G4-towers-critique.md) | 현행 우선 기준 | Explanation / Spec | - | 18 | 15,743 |
+| [docs/renewal/r6/review/G4-towers-fix.md](../docs/renewal/r6/review/G4-towers-fix.md) | 현행 우선 기준 | Explanation / Spec | - | 2 | 2,317 |
 | [docs/renewal/r6/round2/concepts/N1/concept.md](../docs/renewal/r6/round2/concepts/N1/concept.md) | 현행 우선 기준 | Explanation / Spec | - | 13 | 5,937 |
 | [docs/renewal/r6/round2/concepts/N2/concept.md](../docs/renewal/r6/round2/concepts/N2/concept.md) | 현행 우선 기준 | Explanation / Spec | - | 10 | 4,852 |
 | [docs/renewal/r6/round2/concepts/N3/concept.md](../docs/renewal/r6/round2/concepts/N3/concept.md) | 현행 우선 기준 | Explanation / Spec | - | 12 | 5,376 |
@@ -117,7 +125,18 @@ generated_by: tools/wiki/gen.mjs
 | [docs/renewal/r6/spec/theme-split.md](../docs/renewal/r6/spec/theme-split.md) | 현행 우선 기준 | Explanation / Spec | - | 4 | 2,958 |
 | [docs/renewal/r6/spec/wave-mixer.md](../docs/renewal/r6/spec/wave-mixer.md) | 현행 우선 기준 | Explanation / Spec | - | 5 | 4,636 |
 | [docs/renewal/r6/tech/G2-spike.md](../docs/renewal/r6/tech/G2-spike.md) | 현행 우선 기준 | Explanation / Spec | - | 8 | 7,793 |
-| [docs/renewal/r6/tech/towers/mortar/review.md](../docs/renewal/r6/tech/towers/mortar/review.md) | 현행 우선 기준 | Explanation / Spec | - | 4 | 3,627 |
+| [docs/renewal/r6/tech/G3-precheck.md](../docs/renewal/r6/tech/G3-precheck.md) | 현행 우선 기준 | Explanation / Spec | - | 6 | 3,351 |
+| [docs/renewal/r6/tech/G5-perf.md](../docs/renewal/r6/tech/G5-perf.md) | 현행 우선 기준 | Explanation / Spec | - | 4 | 2,675 |
+| [docs/renewal/r6/tech/G5-server.md](../docs/renewal/r6/tech/G5-server.md) | 현행 우선 기준 | Explanation / Spec | - | 7 | 5,503 |
+| [docs/renewal/r6/tech/monster-pipeline.md](../docs/renewal/r6/tech/monster-pipeline.md) | 현행 우선 기준 | Explanation / Spec | - | 8 | 7,743 |
+| [docs/renewal/r6/tech/towers/bastion/review.md](../docs/renewal/r6/tech/towers/bastion/review.md) | 현행 우선 기준 | Explanation / Spec | - | 3 | 1,037 |
+| [docs/renewal/r6/tech/towers/bastion/six-towers-evidence.md](../docs/renewal/r6/tech/towers/bastion/six-towers-evidence.md) | 현행 우선 기준 | Explanation / Spec | - | 3 | 6,317 |
+| [docs/renewal/r6/tech/towers/bastion/six-towers-iou.md](../docs/renewal/r6/tech/towers/bastion/six-towers-iou.md) | 현행 우선 기준 | Explanation / Spec | - | 1 | 1,989 |
+| [docs/renewal/r6/tech/towers/cryo/review.md](../docs/renewal/r6/tech/towers/cryo/review.md) | 현행 우선 기준 | Explanation / Spec | - | 3 | 1,089 |
+| [docs/renewal/r6/tech/towers/hangar/review.md](../docs/renewal/r6/tech/towers/hangar/review.md) | 현행 우선 기준 | Explanation / Spec | - | 1 | 733 |
+| [docs/renewal/r6/tech/towers/mortar/review.md](../docs/renewal/r6/tech/towers/mortar/review.md) | 현행 우선 기준 | Explanation / Spec | - | 4 | 2,638 |
+| [docs/renewal/r6/tech/towers/prism/review.md](../docs/renewal/r6/tech/towers/prism/review.md) | 현행 우선 기준 | Explanation / Spec | - | 1 | 654 |
+| [docs/renewal/r6/tech/towers/rail/review.md](../docs/renewal/r6/tech/towers/rail/review.md) | 현행 우선 기준 | Explanation / Spec | - | 5 | 2,927 |
 | [docs/renewal/r6/ui/review.md](../docs/renewal/r6/ui/review.md) | 현행 우선 기준 | Explanation / Spec | - | 5 | 4,047 |
 | [docs/renewal/r6/ui/system.md](../docs/renewal/r6/ui/system.md) | 현행 우선 기준 | Explanation / Spec | - | 10 | 5,112 |
 | [docs/renewal/r6-baseline/README.md](../docs/renewal/r6-baseline/README.md) | 현행 우선 기준 | Explanation / Spec | - | 9 | 8,773 |

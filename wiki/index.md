@@ -3,18 +3,20 @@ id: wiki-index
 type: index
 title: 어휘력 타워 디펜스 에이전트 위키 색인
 status: active
-updated: 2026-11-16
-verified: { commit: eb87c5ed, date: 2026-11-25 }
+updated: 2026-11-25
+verified: { commit: "7d3ef54a", date: 2026-11-25 }
 sources:
   - path: AGENTS.md
     sha256: f22902d65d0a4e1a65acb94dcd3e46101332e9685f9ef2fb7d6213198e7d9534
   - path: package.json
-    sha256: "868d9aefb60ec389e8fc0436fc69266c84e34ff3858f61f62766a8c88c92a90a"
+    sha256: "438e5fc906d190ae6ff3e75af936f686e94d883375aff3ab996bcf06cd749d08"
+  - path: docs/renewal/r6/PRD-r6.md
+    sha256: a4bae91b43a1c2adb3a549c47b6f4250a1d6d1f45010b3facc530fdd3a7d9175
 ---
 
 # 어휘력 타워 디펜스 LLM Wiki (`index`)
 
-> 에이전트가 최소 토큰으로 현행 규칙·살아있는 계약·원본 절을 찾는 **1홉 라우터**입니다. 규약과 권위 순서는 [SCHEMA.md](SCHEMA.md), 문서 전체 지도는 [docs/README.md](../docs/README.md), 머신 리더블 사이트맵은 [llms.txt](../llms.txt)를 참조하세요.
+> 에이전트가 최소 토큰으로 현행 규칙·살아있는 계약·원본 절을 찾는 **1홉 라우터**입니다. 규약과 권위 순서는 [SCHEMA.md](SCHEMA.md), R6 단일 기준은 [PRD-r6.md](../docs/renewal/r6/PRD-r6.md), 문서 전체 지도는 [docs/README.md](../docs/README.md), 사이트맵은 [llms.txt](../llms.txt)를 참조하세요.
 
 ## 1. 실시간 저장소 지표 (`WIKI-AUTO`)
 
@@ -22,30 +24,32 @@ sources:
 - **제품·밸런스 판**: `v1.0.0` (30Hz 고정 틱 · 화풍 `design-41-kingdom-expedition` · WebP 원화 `378`장)
 - **게임 규모**: 학년별 맵 `4`종(3~6학년, 15×9 격자·슬롯 20칸) · 타워 `20`종(Lv4/Lv7 3단 진화) · 적 역할 `10`종 × 종족 `8`종 · 원정 보물 `12`종
 - **공개 문제은행**: 3~6학년 자기 학년 승인 **5,547문항** · 공유 포함 총 출제 풀 **6,583문항** (3학년 1140 · 4학년 1563 · 5학년 1869 · 6학년 2011)
-- **서버·인프라**: 정적 게임 `https://voca.ssamuniverse.com` (GitHub Pages) · 기록/랭킹 API `https://voca-api.ssamuniverse.com` (Cloudflare Workers 라우트 `7`종 + D1 테이블 `11`종)
-- **지식 베이스**: 전체 마크다운 `225`개 · 핵심 의사결정 `10`건 · 루트 npm 명령 `35`개
+- **서버·인프라**: 정적 게임 `https://voca.ssamuniverse.com` (GitHub Pages) · 기록/랭킹 API `https://voca-api.ssamuniverse.com` (Cloudflare Workers 라우트 `7`종 + D1 테이블 `12`종)
+- **지식 베이스**: 전체 마크다운 `244`개 · 핵심 의사결정 `10`건 · 루트 npm 명령 `36`개
 <!-- WIKI-AUTO:END:repo-stats -->
+
+> 위 지표는 운영 중인 v1(`1.0.0`) 계약 기준 자동 집계다. 코드 기본값은 R6(`balanceVersion: 2.0.0` · 타워 6종 Lv20 · 몬스터 5종족×20 · 초원 고원 · R04 UI)이며, 개발 중 `?balance=v1`으로 이전 판을 연다. R6 운영 반영은 아직 미실행이다.
 
 ## 2. 작업별 1홉 바로가기
 
 | 하려는 작업 | 먼저 읽을 위키 허브 | 자동 레지스트리 / 정밀 조회 |
 | --- | --- | --- |
-| **계층 규칙·RunController·코드 위치 파악** | [아키텍처·계층 경계](concepts/architecture-and-layers.md) | [codemap.md](codemap.md) |
-| **타워 20종·진화·몬스터·밸런스 조정** | [전투·타워·밸런스](concepts/combat-towers-and-balance.md) | [contracts.md](contracts.md) · `npm run wiki:query -- --tower` |
-| **React 화면·Phaser 전장·41번 화풍·WebP** | [화면·전장·원화 에셋](concepts/ui-phaser-and-assets.md) | `npm run wiki:query -- --map` |
+| **계층 규칙·RunController·계약 선택·자동 화질** | [아키텍처·계층 경계](concepts/architecture-and-layers.md) | [codemap.md](codemap.md) |
+| **R6 타워 6종(Lv20)·몬스터 100·밸런스 v2** | [전투·타워·밸런스](concepts/combat-towers-and-balance.md) | [contracts.md](contracts.md) · `npm run wiki:query -- --tower` |
+| **R04 UI·초원 고원·Blender/Spine 제작 공정** | [화면·전장·제작 공정](concepts/ui-phaser-and-assets.md) | `npm run wiki:query -- --map` |
 | **3~6학년 문제은행·CR-1000·commit-lock** | [문제은행·공동검수](concepts/question-bank-and-cr1000.md) | `npm run wiki:query -- --bank` |
-| **IndexedDB·오답 노트·Workers+D1 랭킹 서버** | [로컬 저장·랭킹 서버](concepts/persistence-and-ranking-server.md) | `npm run wiki:query -- --route` · `--table` |
-| **GitHub Pages·D1 배포·보존 잠금·검증 예산** | [배포·검증·운영](concepts/deploy-and-verification.md) | [commands.md](commands.md) |
-| **현재 어디까지 완료됐고 무엇이 남았나** | [로드맵·현행 실체 상태](projects/roadmap-and-status.md) | [decisions-index.md](decisions-index.md) |
+| **IndexedDB·오답 노트·시즌 2 랭킹 서버** | [로컬 저장·랭킹 서버](concepts/persistence-and-ranking-server.md) | `npm run wiki:query -- --route` · `--table` |
+| **배포·시즌 전환·보존 잠금·검증 예산** | [배포·검증·운영](concepts/deploy-and-verification.md) | [commands.md](commands.md) |
+| **R6 단계·관문 현황과 남은 작업** | [로드맵·현행 실체 상태](projects/roadmap-and-status.md) | [decisions-index.md](decisions-index.md) |
 | **제품 정의·도메인·기술스택 고정 버전** | [제품 개요](entities/vocabulary-td.md) · [기술스택](entities/tech-stack.md) | [docs-catalog.md](docs-catalog.md) |
 
 ## 3. 자동 생성 레지스트리 5종 (`npm run wiki:sync`)
 
-- [commands.md](commands.md): 전체 `npm run` 스크립트 · `tools/` CLI · `resource-guard` 프로필
+- [commands.md](commands.md): 전체 `npm run` 스크립트(`test:r6-perf` 포함) · `tools/` CLI · `resource-guard`
 - [codemap.md](codemap.md): `src/` 7계층 · `server/` · `tools/` · ESLint 금지 의존성 지도
-- [contracts.md](contracts.md): 공개 은행 · 난이도 · 타워 20종 · 적 10역할 · 맵 4종 · 서버 API · D1 테이블
-- [decisions-index.md](decisions-index.md): 분산된 확정 설계·운영 결정(`DEC-01`~`DEC-10`)과 원본 줄 번호
-- [docs-catalog.md](docs-catalog.md): 전체 마크다운 생애주기 · Diataxis 분류 · `validate-plan` 보호 잠금
+- [contracts.md](contracts.md): 공개 은행 · v1 계약 요약 · 서버 API 7종 · D1 테이블 12종
+- [decisions-index.md](decisions-index.md): 분산된 확정 결정(`DEC-01`~`DEC-10`)과 원본 줄 번호
+- [docs-catalog.md](docs-catalog.md): 전체 마크다운 생애주기 · Diataxis 분류 · `validate-plan` 잠금
 
 ## 4. 교훈 원장 · 용어 · 운영 도구
 

@@ -3,8 +3,8 @@ id: wiki-schema
 type: schema
 title: LLM Wiki 최고 규약
 status: active
-updated: 2026-11-16
-verified: { commit: b9b024bd, date: 2026-11-16 }
+updated: 2026-11-25
+verified: { commit: "7d3ef54a", date: 2026-11-25 }
 sources:
   - path: AGENTS.md
     sha256: f22902d65d0a4e1a65acb94dcd3e46101332e9685f9ef2fb7d6213198e7d9534
@@ -12,6 +12,8 @@ sources:
     sha256: "1a7374c37a8fb46415551acedecca46276cbb84d618ebf223e42a03d934d9cc5"
   - path: docs/WIKI_PLAN.md
     sha256: "6cd1a4f2766b60ec3b05a18e3ed01c3c161d8f0869be27198860b1d17aa6776b"
+  - path: docs/renewal/r6/PRD-r6.md
+    sha256: a4bae91b43a1c2adb3a549c47b6f4250a1d6d1f45010b3facc530fdd3a7d9175
 ---
 
 # LLM Wiki 최고 규약 (`SCHEMA`)
@@ -25,10 +27,10 @@ sources:
 1. **사용자의 최신 직접 지시** 및 전역 작업 방식
 2. **[AGENTS.md](../AGENTS.md)** — 단일 폴더·부분 커밋·WebP·서버 시험·잠금 규칙
 3. **영역별 현행 우선 문서**
-   - 게임 디자인·타워 20종·진화·몬스터·UI 완화: **[docs/renewal/README.md](../docs/renewal/README.md)** 및 하위 문서 (`vocabulary_td_prd_v0_5.md`보다 우선)
-   - 호스팅·배포·운영: **[docs/DEPLOY.md](../docs/DEPLOY.md)** · **[docs/HOSTING_IMPL_PLAN.md](../docs/HOSTING_IMPL_PLAN.md)**
+   - **R6 대개편 단일 기준**: **[docs/renewal/r6/PRD-r6.md](../docs/renewal/r6/PRD-r6.md)** 및 하위 문서(`docs/renewal/r6/**` · 화풍 기준 `round3/concepts/R04/`). 타워 6종(Lv20)·몬스터 5종족×20·초원 고원 맵·R04 전술 UI·Blender/Spine 제작 공정의 최우선 기준이다. (이전 판 v1 리뉴얼 기준은 [docs/renewal/README.md](../docs/renewal/README.md)에 보존)
+   - 호스팅·배포·운영: **[docs/DEPLOY.md](../docs/DEPLOY.md)** · **[docs/HOSTING_IMPL_PLAN.md](../docs/HOSTING_IMPL_PLAN.md)** · 시즌 2 반영 절차 **[docs/renewal/r6/tech/G5-server.md](../docs/renewal/r6/tech/G5-server.md)**
    - 문제은행 1,000+ 공동검수: **[docs/CR1000_HANDOFF.md](../docs/CR1000_HANDOFF.md)** · **[docs/CR1000_REVIEW_POLICY.md](../docs/CR1000_REVIEW_POLICY.md)**
-4. **런타임 데이터 계약**: `docs/contracts/{balance.candidate.v0.4,maps.candidate.v0.4,product.defaults.v0.5}.json`
+4. **런타임 데이터 계약**: 현행 R6 [balance.v2.json](../docs/contracts/balance.v2.json)(`2.0.0`) · 맵 [maps.candidate.v0.4.json](../docs/contracts/maps.candidate.v0.4.json) · 제품 기본값 [product.defaults.v0.5.json](../docs/contracts/product.defaults.v0.5.json) · 이전 판(v1) [balance.candidate.v0.4.json](../docs/contracts/balance.candidate.v0.4.json)(`1.0.0`)
 5. **기본 제품 명세**: **[vocabulary_td_prd_v0_5.md](../vocabulary_td_prd_v0_5.md)**
 6. **컴파일 지식 계층 (`wiki/**`)**: 위 원본들을 압축·연결한 네비게이터 (원본과 어긋나면 위키를 고친다)
 7. **보관·이력 (`docs/archive/**`, `vocabulary_td_prd_v0_1~0_4.md`, `docs/work-packages/**`)**: 참조 전용, 현재 절차로 쓰지 않음

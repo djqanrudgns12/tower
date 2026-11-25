@@ -6,6 +6,7 @@
   "lint": "ESLint 실행 (PRD §13.2 계층 경계 및 Math.random 금지 포함)",
   "test": "Vitest 단위·속성 시험 실행 (resource-guard --profile test -- --maxWorkers=1 권장)",
   "test:e2e": "Playwright 브라우저 종단 시험 (E2E_PORT로 포트 분리 가능)",
+  "test:r6-perf": "R6 저사양 전장 W1~W10 CPU 6배/1배 자동 화질·FPS 검증 (resource-guard --profile test 권장)",
   "test:api-connected": "로컬 wrangler dev + 앱 연결 재채점 검증 (3~6학년)",
   "test:server": "server/**, src/persistence/**, src/contracts/lobby.ts 수정 시 커밋 전 필수",
   "server:dev": "로컬 Cloudflare Workers + D1 실행 (http://127.0.0.1:8787)",

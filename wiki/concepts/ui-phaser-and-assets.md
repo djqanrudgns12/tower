@@ -1,55 +1,64 @@
 ---
 id: hub-ui-phaser-and-assets
 type: hub
-title: 화면(React)·전장(Phaser)·원화 에셋
+title: 화면(R04 UI)·전장(Phaser/Spine)·제작 공정
 status: active
-updated: 2026-11-16
-verified: { commit: a402d63f, date: 2026-11-24 }
+updated: 2026-11-25
+verified: { commit: "7d3ef54a", date: 2026-11-25 }
 sources:
   - path: src/game/bridge.ts
-    sha256: dfcd4ce7f82ee8543aaa73de8b0e080d6c215f58d2c0b1edaa0a000c2e577896
-  - path: src/game/layoutGround.ts
-    sha256: "49abf04cbf479f9c81fbe39e666ed74b2906709851468ad8616d5e911064a9a6"
+    sha256: d174fb7ea5c85ad93424afe0eb92a90508cb3488d66537edda17251254c868f8
+  - path: src/game/r6/manifest.ts
+    sha256: e0e56fec4ca9705daee5627247953b9b5a7293920e8cfaa1c05300859f8b2b82
+  - path: docs/renewal/r6/map-spec.md
+    sha256: "6d3c6ced8eb2a555ed6376d562ce3fd37d7d2e6c98e7e450ae726dcb08b5e594"
+  - path: docs/renewal/r6/tech/G2-spike.md
+    sha256: "741013a9c3f010dafe49b23789095f6f36116d69412428d6ef1b4048aa76ef01"
+  - path: docs/renewal/r6/tech/monster-pipeline.md
+    sha256: "07e7ca95fed356919c8471d6d67fca89ab02b788e35bee8c82f56c9a56c08789"
+  - path: docs/renewal/r6/tech/G5-perf.md
+    sha256: f53b47482ca494b4723d1b72f04b485b4d69cdf3520ad2a0a8cf46433305b455
+  - path: docs/renewal/r6/ui/system.md
+    sha256: ec6f8ab15b65cf07cb475170c52201b190ba9c4d10258ce19191324ef0e4d7ab
   - path: public/assets/manifest.json
     sha256: "8fde19024d32e38c3463cbec763a7a7b2c1d8bf45ba758a6772d0acf243924ef"
   - path: tools/assets/to-webp.mjs
     sha256: "1b1bd3cc65918039f813a88a414d05dd5186d03fe41583bcd49d8c3f0a6480f0"
-  - path: docs/style-lock-v1.md
-    sha256: "9cef3809c446c28e77316ca8c4ac3b2fc3f2f09e14f1c82539e7dfe604471ceb"
-  - path: docs/ui_ux_refinement_p1_v3_prd.md
-    sha256: "6d39f346d5c078716ad390ad02ab96ac7a1e78067a9388c84a34ba737354c299"
-  - path: docs/HOSTING_IMPL_PLAN.md
-    sha256: "79f1f85a62652e420cf36b3a1a0f058656fb8685fb5f179d825f5570caed6701"
 ---
 
-# 화면(React)·전장(Phaser)·원화 에셋 (`ui-phaser-and-assets`)
+# 화면(R04 UI)·전장(Phaser/Spine)·제작 공정 (`ui-phaser-and-assets`)
 
-플레이어 경험은 **React 19 오버레이·화면 계층(`src/ui/`)**과 **Phaser 4 전장 캔버스(`src/game/`)**의 이중 구조로 이루어진다. 두 계층은 직접 참조하지 않고 [bridge.ts](../../src/game/bridge.ts)와 `RunController` 스냅샷만으로 통신한다.
+플레이어 화면은 **React 19 UI(`src/ui/`)**와 **Phaser 4 전장(`src/game/`)**으로 분리되며 [bridge.ts](../../src/game/bridge.ts)(`FieldView.projected` 포함)와 `RunController` 스냅샷으로만 통신한다. R6의 시각 기준은 **3차 R04 "전술 지도 + 전술 UI"**(`docs/renewal/r6/round3/concepts/R04/`)다.
 
-## 1. 화면 구조와 UI 보존 원칙
+## 1. R6 UI/UX (R04 토큰 · 선 아이콘 54종 · 밝은 화면)
 
-- **반응형 R / S 레이아웃**: 데스크톱·크롬북 가로형(`R` 모드)과 모바일·좁은 뷰포트(`S` 모드) 규칙은 [ui_ux_refinement_p1_v3_prd.md](../../docs/ui_ux_refinement_p1_v3_prd.md) 및 [ui-rules-v4.md](../../docs/renewal/ui-rules-v4.md)를 따른다.
-- **바로 설치 UX**: 슬롯 클릭 시 불필요한 중간 단계를 줄이고 설치·강화·진화(Lv4/Lv7) 패널로 즉시 진입한다.
-- **화면 용어 계약**: 학생 노출 문구는 한국어 표시 규칙(`쉬움/보통/어려움/아주 어려움`, 내부 개발 용어 노출 금지)을 따르며 `tests/unit/terms.test.ts`가 검증한다.
-- **사용자 다듬은 화면 보존 (`DEC-10` · `L-TD-101`)**: 홈 랜딩의 **통합 수호 랭킹** 등 사용자가 직접 다듬은 화면·기능을 통째로 교체하거나 걷어낼 때는 반드시 사용자 확인을 먼저 거친다.
+- **토큰과 형태** ([system.md](../../docs/renewal/r6/ui/system.md)):
+  - 무광 6색: `#12161B`(카본), `#1D242C`(슬레이트), `#4A5563`(선), `#B8C0C8`(은회), `#E69F24`(앰버), `#2FB5A3`(틸). 반짝이·무지개·광택·빛 번짐 금지.
+  - 1px 헤어라인, 45° 모따기(`clip-path`), 고정폭 숫자(`tabular-nums`), 글꼴 IBM Plex Sans KR + SUIT(자체 호스팅 전제). 나무 9-slice 틀은 CSS로 대체했다.
+- **선 아이콘 SVG 54종**: `status` 8 · `traits` 8 · `relics` 12 · `hud` 26종(`24×24`, `stroke-width="1.75"`, 각진 선화)을 전 화면 13종(홈·새 게임·전투 HUD·타워 상세·해금·보물·일시정지·결과·오답 노트·설명서·설정·랭킹·교실 QR)에 적용했다.
+- **교실 대비 · 설정**: 전투 화면이 어두운 테마여도 **문제 패널은 항상 밝은 고대비 면**을 유지한다. 환경설정에서 **밝은 화면(`lightTheme`, `data-theme="light"`)**과 **가벼운 화면(`lightGraphics`, 즉시 화질 3단계)**을 켤 수 있다. 말투는 평이한 한국어만 쓴다.
 
-## 2. Phaser 4 전장 렌더링 (`src/game/`)
+## 2. R6 전장 (초원 고원 3/4 · 16방향 포두 · Spine Mesh2D · 자동 화질)
 
-- **6겹 레이어 조립**: 지면(`layoutGround.ts`) → 경로·장식 → 설치 슬롯·타워 → 몬스터·보행 자세 → 투사체·효과 → 선택 표식·미니맵 순으로 정렬한다.
-- **데이터 기반 지면 합성**: 맵 통째 배경 그림 대신 [maps.candidate.v0.4.json](../../docs/contracts/maps.candidate.v0.4.json)의 경로·장식 좌표를 읽어 풀·흙길·받침·바위·비석 타일을 조립한다.
-- **선택 맵 지연 적재**: 첫 전투 진입 전 전송량을 약 3MB 안팎으로 유지하기 위해 선택된 학년 맵과 등장 종족 에셋만 우선 적재한다([HOSTING_IMPL_PLAN.md](../../docs/HOSTING_IMPL_PLAN.md)).
+- **첫 맵 "초원 고원"과 맵 규격** ([map-spec.md](../../docs/renewal/r6/map-spec.md)):
+  - 기존 `garden_u` 좌표(15×9 격자, 길 41칸, 설치대 20개)를 재사용하고 3/4 직교 카메라 `(6.1, −8.2, 6.05)` 등고선 지형으로 굽는다(`src/game/r6/mapProjection.json`). React 오버레이와 드래그 입력은 `projectField` / `unprojectField`로 변환한다.
+  - 배경 `meadow-plateau.webp` **26,052B**(예산 ≤150KB), 육각 설치대 시트 `meadow-pads.webp` **2,610B**.
+- **타워 렌더·전투 효과**: [manifest.ts](../../src/game/r6/manifest.ts)(`public/assets/r6/manifest-v2.json`)가 타워 6종 11형태의 고정 몸체 + **16방향 포두** + 8프레임 공격 시트(기본 192px / 고해상도 384px)를 관리하며, `src/game/r6/CombatVfx.ts`가 타워별 예광선·포탄·냉기 파동·연쇄 광선·드론 비행·방벽 파동을 그린다.
+- **몬스터 Spine Mesh2D 및 종족 지연 적재**: `@esotericsoftware/spine-phaser-v4@4.3.13` 공식 Mesh2D 백엔드(Phaser 4.2.1 WebGL)로 재생한다. 첫 준비 화면부터 현재·다음 웨이브에 등장하는 종족 아틀라스만 지연 적재해 메모리를 아낀다(현재 전장은 G2 보행체 리그+T1~T4 스킨 공유 중).
+- **자동 화질 3단계** ([G5-perf.md](../../docs/renewal/r6/tech/G5-perf.md)): 5초 평균 30fps 미만 시 단계 하향, 20초 연속 45fps 이상 시 상향.
+  - `0단계`: 기본(고해상도 384px) → `1단계`: 192px 시트·연기/비행 그림자 생략 → `2단계`: 원거리 100ms/근거리 50ms Spine 자세 갱신(보스·이동은 매 프레임)·배경 움직임 생략 → `3단계`: 캔버스 내부 해상도 0.75배.
 
-## 3. 41번 화풍 잠금과 WebP 파이프라인 (`DEC-03` · `DEC-06`)
+## 3. R6 제작 공정 (Blender 헤드리스 · 레시피 · Spine 양산)
 
-1. **41번 「왕국 원정대」 화풍 잠금**:
-   - 기준 원화 `docs/assets/design-41-kingdom-expedition.png`는 SHA-256 해시가 고정되어 있다([style-lock-v1.md](../../docs/style-lock-v1.md)). 32/48/64px 축소 가독성과 외곽선 일관성을 해치는 이질적 AI 화풍을 금지한다.
-2. **인게임 에셋 전면 WebP 규칙** ([to-webp.mjs](../../tools/assets/to-webp.mjs)):
-   - `public/assets/**` 등록 에셋(현행 WebP 378장, [manifest.json](../../public/assets/manifest.json))은 `cwebp -q 85 -alpha_q 100 -m 6`(투명도 무손실)으로 변환한다.
-   - 뭉개짐 발생 시 `q92` → 무손실 WebP 순으로 올리고, 예외 PNG는 `tools/assets/webp-exceptions.json`에 사유를 기록한다. 생성 원본(`asset-source/**`)과 해시를 고정한 기준 그림은 PNG로 보존한다. 문서용 QA 캡처는 WebP로 싣는다.
-3. **알파 경계 상자 보존 필수 (`L-TD-102`)**:
-   - [layoutGround.ts](../../src/game/layoutGround.ts)와 타워·장식 정렬은 원본 텍스처의 투명 여백을 포함한 캔버스 규격과 알파 경계를 기준으로 삼는다. 변환 과정에서 임의로 여백을 잘라내면(`trim`) 전장 좌표가 어긋난다.
+- **타워 공정** ([G2-spike.md](../../docs/renewal/r6/tech/G2-spike.md)): AI 생성은 콘셉트 시트까지만 쓰고, 양산은 **Blender 5.2 LTS 헤드리스 파이썬**(`tools/r6/blender/`, `.blend` 부품 키트) + 진화 레시피 6종(`tools/r6/recipes/*.json`)으로 자동 조립·렌더한다(three.js는 제작 미사용). `tools/r6/qa/check.py`가 48px 실루엣 겹침(타 계열 IoU < 0.55), R04 팔레트, WebP 매니페스트 해시를 검사한다. **6종 66형태 전장 교체 완료**(165쌍 최대 IoU `0.5488`).
+- **몬스터 공정** ([monster-pipeline.md](../../docs/renewal/r6/tech/monster-pipeline.md)): 3/4 우향 분해 시트(`1536×1024`)와 조립 그림 한 쌍을 계통별 **파츠 안내판**(`asset-source/r6/monsters/_guides/*.{png,json}`) 규격으로 제작 → `tools/r6/spine/cut_parts.py` 자동 절단 → `monsters.py` + Spine Pro 4.3 CLI(종족당 일반 4뼈대×T1~T4 스킨 + 보스 4뼈대, 총 40뼈대·100개체) → `check-runtime.mjs`·`review.py`(인접 IoU < 0.92, 종족 간 < 0.55)·`capture-playwright.mjs` 검수.
+- **WebP 규칙 (`DEC-06`)**: `public/assets/**`는 WebP(기본 `cwebp -q 85 -alpha_q 100 -m 6`, 무손실 필요 시 상향)로 싣고 탈락 시안·생성 원본 PNG는 커밋하지 않는다.
 
-## 4. 관련 검증 명령
+## 4. 이전 판(v1) 보존 요약
 
-- 에셋 매니페스트 및 해시 정합성 검사: `npm run validate:assets`
-- 실브라우저 화면·접근성 점검: `npm run test:e2e` (포트 충돌 시 `E2E_PORT=5175`)
+- 41번 「왕국 원정대」 화풍(`docs/assets/design-41-kingdom-expedition.png` 해시 고정, `W09`), `public/assets/manifest.json` WebP 378장(알파 경계 상자 보존 `L-TD-102`, [to-webp.mjs](../../tools/assets/to-webp.mjs)), 학년별 맵 4종 타일 조립(`layoutGround.ts`)과 반응형 R/S 규칙은 `?balance=v1` 및 보존 기준선으로 유지한다.
+
+## 5. 관련 검증 명령
+
+- 매니페스트 검사: `npm run validate:assets`
+- R6 전장·VFX·성능 E2E: `npm run test:e2e -- tests/e2e/r6-battlefield.spec.ts tests/e2e/r6-vfx.spec.ts` · `npm run test:r6-perf`
