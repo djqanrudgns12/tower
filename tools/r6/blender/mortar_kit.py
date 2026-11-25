@@ -168,7 +168,7 @@ def core(kit):
 
     for name, material, width, depth, trim in (
         ("ceramic-core", "ceramic", 3.17, 2.96, "line"),
-        ("fortress-core", "gold-trim", 3.32, 3.09, "amber"),
+        ("fortress-core", "gold-trim", 3.32, 3.09, "slate"),
     ):
         with kit.part("body", name) as p:
             top = YAW_HEIGHTS[material]
@@ -181,13 +181,18 @@ def core(kit):
             p.plates("상단 장갑 테두리", (0, 0, 0),
                      [(top - .24, width - .48, depth - .44, .26),
                       (top - .13, width - .49, depth - .45, .26)], trim, .019)
+            for sign in (-1, 1):
+                p.plate("포상 장갑 패널 홈", (0, sign * (depth / 2 - .045), .76),
+                        (width * .56, .035, .031), "carbon", .012)
+                p.plate("측면 장갑 패널 홈", (sign * (width / 2 - .048), 0, .76),
+                        (.035, depth * .58, .031), "carbon", .012)
             p.plates("회전판 아래 그늘", (0, 0, 0),
                      [(top - .051, 2.42, 2.27, .23), (top + .028, 2.42, 2.27, .23)], "carbon", .014)
 
     with kit.part("body", "bunker-core") as p:
         top = YAW_HEIGHTS["gold-trim"]
         p.plates("벙커 장갑 하우징", (0, 0, 0), [(.25, 3.18, 2.99, .37), (.46, 3.19, 3.00, .37),
-                 (1.44, 2.93, 2.78, .34), (top, 2.60, 2.51, .30)], "line", .04)
+                 (1.44, 2.93, 2.78, .34), (top, 2.60, 2.51, .30)], "silver", .04)
         p.plates("벙커 밑단 이음선", (0, 0, 0), [(.35, 3.23, 3.04, .38),
                  (.47, 3.23, 3.04, .38)], "slate", .02)
         p.plates("벙커 회전판 아래 그늘", (0, 0, 0), [(top - .06, 2.63, 2.54, .30),
@@ -241,10 +246,19 @@ def armor(kit):
             rings = [[(x, y - offset, z) for x, y in corners(w, d, cut)]
                      for z, w, d, cut, offset in ((.25, 1.26, 1.28, .16, 2.02),
                      (.43, 1.20, 1.24, .15, 1.93), (1.32, .85, .65, .13, 1.46))]
-            skirt = p.mesh("벙커 스커트 경사 장갑", rings, "line", bevel=.034)
+            skirt = p.mesh("벙커 스커트 경사 장갑", rings, "slate", bevel=.034)
             skirt.rotation_euler.z = angle
             tread = p.plate("스커트 밑단 테두리", (*toe.xy, .30), (1.25, 1.12, .08), "line", .16)
             tread.rotation_euler.z = angle
+            lateral = Vector((math.cos(angle), math.sin(angle), 0))
+            for shift in (-.34, .34):
+                foot = outward * 2.61 + lateral * shift
+                crown = outward * 1.73 + lateral * shift * .7
+                p.rod("스커트 수직 보강 리브", (*foot.xy, .39), (*crown.xy, 1.28),
+                      .087, "silver", steps=4)
+            edge = p.plate("스커트 하단 금테", (*((outward * 2.63).xy), .32),
+                           (1.04, .047, .044), "amber", .012)
+            edge.rotation_euler.z = angle
             seam = outward * 1.61
             join = p.plate("스커트 상단 이음선", (*seam.xy, 1.30), (.91, .52, .12), "slate", .09)
             join.rotation_euler.z = angle
@@ -276,16 +290,18 @@ def supports(kit):
 def armament(kit):
     with kit.part("weapon", "single-barrel", "recoil") as p:
         p.lathe("단포신", (0, 0, 0), [(-.93, .41), (-.76, .55), (-.20, .55), (.25, .46),
-                (1.07, .43), (1.19, .49)], "line", forward=True, steps=10)
+                (1.27, .43), (1.41, .49)], "line", forward=True, steps=10)
         p.lathe("포미 장착판", (0, -.64, 0), [(0, .48), (.12, .51), (.20, .47)],
                 "slate", forward=True, steps=10)
-        p.muzzle((0, 1.13, 0), .61, "line", "silver", .29, 10)
+        p.muzzle((0, 1.35, 0), .61, "line", "line", .29, 10)
+        p.lathe("포구 안쪽 은회 마감", (0, 1.66, 0), [(0, .485), (.018, .485), (.018, .445), (0, .445)],
+                "silver", steps=10, closed=True, forward=True)
     with kit.part("weapon", "steel-band", "recoil") as p:
         p.lathe("강철 보강 띠", (0, .62, 0), [(0, .46), (.07, .67), (.28, .67), (.36, .46)],
                 "silver", forward=True, steps=10)
     with kit.part("weapon", "heavy-barrel", "recoil") as p:
         p.lathe("중장갑 단포신", (0, 0, 0), [(-1.12, .41), (-.96, .70), (-.30, .72),
-                (-.07, .61), (.62, .59), (1.17, .58), (1.45, .62)], "slate", forward=True)
+                (-.07, .61), (.62, .59), (1.42, .58), (1.71, .62)], "slate", forward=True)
         for y, radius in ((-.65, .765), (.43, .67)):
             p.lathe("포신 장갑 고리", (0, y, 0), [(0, radius * .93), (.09, radius),
                     (.19, radius), (.23, radius * .93)], "line", forward=True)
@@ -293,7 +309,9 @@ def armament(kit):
             p.rod("두꺼운 유압 완충기", (x, -.90, -.19), (x, .23, -.19), .169, "slate")
             p.rod("유압 완충기 피스톤", (x, .19, -.19), (x, .62, -.19), .095, "silver")
             p.plate("유압 완충기 안장", (x, -.28, -.13), (.43, .34, .41), "line", .06, .027)
-        p.muzzle((0, 1.39, 0), .83, "line", "silver", .32)
+        p.muzzle((0, 1.65, 0), .83, "line", "line", .32)
+        p.lathe("포구 안쪽 은회 마감", (0, 1.99, 0), [(0, .655), (.018, .655), (.018, .596), (0, .596)],
+                "silver", closed=True, forward=True)
     with kit.part("weapon", "twin-barrels", "recoil") as p:
         for x in (-.66, .66):
             p.plates("세라믹 포신 하우징", (x, -.26, 0), [(-.66, 1.06, 1.58, .20),
@@ -313,12 +331,14 @@ def armament(kit):
         for x in (-.71, .71):
             p.plates("다연장 박스 장갑", (x, -.24, 0), [(-.84, 1.08, 1.93, .15),
                      (-.64, 1.34, 2.24, .15), (.74, 1.34, 2.24, .16), (.94, 1.04, 2.01, .17)],
-                     "line", .043)
+                     "silver", .043)
             for y in (-1.20, .75):
-                frame = p.plate("박스 금테 모따기", (x, y, .035), (1.38, 1.76, .25),
-                                "amber", .19, .045)
+                frame = p.plate("박스 외곽 장갑", (x, y, .035), (1.38, 1.76, .12),
+                                "slate", .19, .035)
                 frame.rotation_euler.x = -math.pi / 2
-            inset = p.plate("박스 포구판", (x, .884, .035), (1.115, 1.48, .10), "slate", .156, .025)
+            rim = p.plate("박스 안쪽 금테", (x, .824, .035), (1.205, 1.573, .06), "amber", .167)
+            rim.rotation_euler.x = -math.pi / 2
+            inset = p.plate("박스 포구판", (x, .868, .035), (1.128, 1.496, .10), "line", .156, .025)
             inset.rotation_euler.x = -math.pi / 2
             p.plate("박스 냉각 패널", (x, -.30, .951), (.71, 1.13, .063), "slate", .11, .015)
             p.plate("박스 냉각 패널 안쪽", (x, -.30, .980), (.55, .94, .039), "line", .08, .010)

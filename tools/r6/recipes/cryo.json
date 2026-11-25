@@ -46,8 +46,8 @@
       "materialStage": "alloy",
       "weaponStage": 2,
       "slots": {
-        "base": ["octagonal-deck"],
-        "body": ["pressure-foot"],
+        "base": ["octagonal-deck", "ice-louvers"],
+        "body": ["pressure-foot", "return-lines"],
         "head": ["alloy-coils-stem"],
         "weapon": ["alloy-coils"]
       },
@@ -59,8 +59,8 @@
       "materialStage": "alloy",
       "weaponStage": 2,
       "slots": {
-        "base": ["octagonal-deck"],
-        "body": ["pressure-foot"],
+        "base": ["octagonal-deck", "ice-louvers"],
+        "body": ["pressure-foot", "return-lines"],
         "armor": ["radiator-fins"],
         "head": ["alloy-coils-stem"],
         "weapon": ["alloy-coils"]
@@ -73,8 +73,8 @@
       "materialStage": "alloy",
       "weaponStage": 2,
       "slots": {
-        "base": ["octagonal-deck"],
-        "body": ["pressure-foot"],
+        "base": ["octagonal-deck", "ice-louvers"],
+        "body": ["pressure-foot", "return-lines"],
         "armor": ["radiator-fins"],
         "head": ["alloy-coils-stem"],
         "weapon": ["alloy-coils", "ring-sectors"]
@@ -87,10 +87,11 @@
       "materialStage": "ceramic",
       "weaponStage": 3,
       "slots": {
-        "base": ["octagonal-deck"],
-        "body": ["iron-stem"],
+        "base": ["octagonal-deck", "ice-louvers"],
+        "body": ["iron-stem", "return-lines"],
         "head": ["split-coils-stem"],
-        "weapon": ["split-coils"]
+        "weapon": ["split-coils"],
+        "armor": ["radiator-fins"]
       },
       "attack": {"mode": "pulse", "fps": 9, "frames": 8, "targetCount": 3, "burstCount": 1, "pierceCount": 0, "recoil": 0}
     },
@@ -100,9 +101,9 @@
       "materialStage": "ceramic",
       "weaponStage": 3,
       "slots": {
-        "base": ["octagonal-deck", "extended-deck"],
-        "body": ["iron-stem"],
-        "armor": ["refrigerant-cans"],
+        "base": ["octagonal-deck", "extended-deck", "ice-louvers"],
+        "body": ["iron-stem", "return-lines"],
+        "armor": ["refrigerant-cans", "radiator-fins"],
         "head": ["split-coils-stem"],
         "weapon": ["split-coils"]
       },
@@ -114,9 +115,9 @@
       "materialStage": "ceramic",
       "weaponStage": 3,
       "slots": {
-        "base": ["octagonal-deck", "extended-deck"],
-        "body": ["iron-stem"],
-        "armor": ["refrigerant-cans"],
+        "base": ["octagonal-deck", "extended-deck", "ice-louvers"],
+        "body": ["iron-stem", "return-lines"],
+        "armor": ["refrigerant-cans", "radiator-fins"],
         "head": ["split-coils-stem"],
         "weapon": ["split-coils"],
         "detail": ["weather-nozzles"]
@@ -129,11 +130,13 @@
       "materialStage": "gold-trim",
       "weaponStage": 4,
       "slots": {
-        "base": ["octagonal-deck"],
-        "body": ["pressure-foot"],
+        "base": ["octagonal-deck", "ice-louvers", "extended-deck"],
+        "body": ["pressure-foot", "return-lines"],
         "head": ["five-stage-coils-stem"],
         "weapon": ["five-stage-coils"],
-        "marking": ["gilded-pods"]
+        "marking": ["gilded-pods"],
+        "armor": ["radiator-fins", "refrigerant-cans"],
+        "detail": ["weather-nozzles"]
       },
       "attack": {"mode": "pulse", "fps": 9, "frames": 8, "targetCount": 4, "burstCount": 1, "pierceCount": 0, "recoil": 0}
     },
@@ -143,11 +146,13 @@
       "materialStage": "gold-trim",
       "weaponStage": 4,
       "slots": {
-        "base": ["octagonal-deck", "nozzle-deck"],
-        "body": ["pressure-foot"],
+        "base": ["octagonal-deck", "nozzle-deck", "ice-louvers", "extended-deck"],
+        "body": ["pressure-foot", "return-lines"],
         "head": ["five-stage-coils-stem"],
         "weapon": ["five-stage-coils", "crown-nozzles"],
-        "marking": ["gilded-pods", "frost-crystal"]
+        "marking": ["gilded-pods", "frost-crystal"],
+        "armor": ["radiator-fins", "refrigerant-cans"],
+        "detail": ["weather-nozzles"]
       },
       "attack": {"mode": "pulse", "fps": 9, "frames": 8, "targetCount": 4, "burstCount": 1, "pierceCount": 0, "recoil": 0}
     }

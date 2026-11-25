@@ -21,8 +21,10 @@ IDLE_PITCHES = (31, 43, 11, 8)
 FIRE_PITCH = (0, .29, .71, 1, .76, .41, .12, 0)
 ELEVATION_HEIGHTS = (.66, .66, .90, 1.03)
 KICK = (0, 0, 0, 1.0, .65, .36, .12, 0)
-SURFACES = {"steel": "line", "alloy": "line", "ceramic": "silver", "gold-trim": "line"}
-MUZZLES = (((0, 1.44, 0),), ((0, 1.73, 0),), ((-.66, 1.49, .02), (.66, 1.49, .02)),
+SURFACES = {"steel": "slate", "alloy": "line", "ceramic": "silver", "gold-trim": "silver"}
+BANDS = (.74, .88, 1.0, 1.12)
+AMBER_BANDS = (.58, .74, .88, .98)
+MUZZLES = (((0, 1.68, 0),), ((0, 2.01, 0),), ((-.66, 1.49, .02), (.66, 1.49, .02)),
            tuple((x, 1.28, z) for x in (-.71, .71) for z in (-.38, .45)))
 
 
@@ -60,8 +62,9 @@ def toon_materials(palette, linear):
         ramp = tone.color_ramp
         ramp.interpolation = "CONSTANT"
         ramp.elements.remove(ramp.elements[1])
-        ramp.elements[0].color = shade(rgb, .74)
-        for threshold, band in ((.13, .88), (.49, 1.0), (.79, 1.12)):
+        bands = AMBER_BANDS if name == "amber" else BANDS
+        ramp.elements[0].color = shade(rgb, bands[0])
+        for threshold, band in zip((.13, .49, .79), bands[1:]):
             ramp.elements.new(threshold).color = shade(rgb, band)
         links.new(lighting.outputs[0], tone.inputs["Fac"])
         matte = nodes.new("ShaderNodeEmission")
@@ -86,10 +89,11 @@ def configure(scene, cols=1, rows=1):
     line = settings.linesets[0] if settings.linesets else settings.linesets.new("R04 윤곽")
     line.select_silhouette = True
     line.select_border = False
-    line.select_crease = False
+    line.select_crease = True
+    settings.crease_angle = math.radians(52)
     line.linestyle = bpy.data.linestyles.new("R04 카본선")
     line.linestyle.color = (.006, .008, .011)
-    line.linestyle.thickness = 1.2
+    line.linestyle.thickness = .80
     scene.render.resolution_x = TILE * cols
     scene.render.resolution_y = TILE * rows
     scene.render.resolution_percentage = 100
@@ -143,11 +147,10 @@ def assemble(kit, materials, stage, group, tile, direction=0, layer="form", fram
     idle = IDLE_PITCHES[weapon]
     kick = KICK[frame]
     raise_fraction = FIRE_PITCH[frame]
-    pitch = math.radians(idle + (62 - idle) * raise_fraction)
+    pitch = math.radians(idle + 15 * raise_fraction)
     world_pos = Matrix.Translation(tile)
-    # 포상의 지면 접점은 유지하고 상부만 발사 순간 192px 기준 4px 내린다.
-    up_z = math.sqrt(1 - CAMERA_RAY.z ** 2)
-    sink = -4 * VIEW / (TILE / 2 * up_z) * kick
+    # 접지점을 고정하고 포상의 회전축을 발사 순간 9% 내린다.
+    sink = -.09 * YAW_HEIGHTS[stage["materialStage"]] * kick
     press = Matrix.Translation((0, 0, sink))
     yaw = Matrix.Rotation(direction * DIR_ANGLE, 4, "Z")
     mount_height = CENTER_HEIGHT if layer == "head" else YAW_HEIGHTS[stage["materialStage"]]
@@ -186,8 +189,8 @@ def assemble(kit, materials, stage, group, tile, direction=0, layer="form", fram
         for muzzle in MUZZLES[weapon]:
             obj = p.lathe("발사 폭압 고리", muzzle,
                           [(.08, radius), (.115, radius + .02), (.130, radius - .025),
-                           (.115, radius - .047)], "amber", steps=12, closed=True, forward=True)
-            obj.data.materials.append(materials["amber"])
+                           (.115, radius - .047)], "line", steps=12, closed=True, forward=True)
+            obj.data.materials.append(materials["line"])
             obj.matrix_world = world_pos @ recoil @ obj.matrix_basis
 
 
@@ -222,7 +225,7 @@ def validate_kit(kit, stages):
         raise ValueError("레시피의 발사 프레임 수와 곡사 포대 키프레임 수가 다릅니다.")
 
 
-def render(recipe_file, out, kit_file, palette, linear):
+def render(recipe_file, out, kit_file, palette, linear, forms_only=False):
     stages = json.loads(recipe_file.read_text())["stages"]
     tiers = [next(stage for stage in stages if stage["weaponStage"] == tier) for tier in range(1, 5)]
     out.mkdir(parents=True, exist_ok=False)
@@ -249,6 +252,8 @@ def render(recipe_file, out, kit_file, palette, linear):
                     for stage in tiers for frame in range(stage["attack"]["frames"])], len(FIRE_PITCH)),
         "forms": ([(stage, REVIEW_DIRECTION, "form", 0) for stage in stages], 6),
     }
+    if forms_only:
+        specs = {"forms": specs["forms"]}
     layout = {
         "towerId": "mortar",
         "tile": TILE, "levels": [stage["level"] for stage in stages],

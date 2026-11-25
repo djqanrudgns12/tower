@@ -48,7 +48,7 @@
       "materialStage": "alloy",
       "weaponStage": 2,
       "slots": {
-        "base": ["platform"],
+        "base": ["platform", "corner-anchors"],
         "body": ["steel-core", "hydraulic-legs"],
         "armor": ["earth-shield"],
         "head": ["alloy-turntable", "heavy-yoke"],
@@ -63,7 +63,7 @@
       "materialStage": "alloy",
       "weaponStage": 2,
       "slots": {
-        "base": ["platform"],
+        "base": ["platform", "corner-anchors"],
         "body": ["steel-core", "hydraulic-legs"],
         "armor": ["earth-shield", "side-skirt"],
         "head": ["alloy-turntable", "heavy-yoke"],
@@ -78,7 +78,7 @@
       "materialStage": "alloy",
       "weaponStage": 2,
       "slots": {
-        "base": ["platform"],
+        "base": ["platform", "corner-anchors"],
         "body": ["steel-core", "hydraulic-legs", "rear-dampers"],
         "armor": ["earth-shield", "side-skirt"],
         "head": ["alloy-turntable", "heavy-yoke"],
@@ -94,12 +94,13 @@
       "materialStage": "ceramic",
       "weaponStage": 3,
       "slots": {
-        "base": ["platform"],
-        "body": ["ceramic-core"],
-        "armor": ["housing-braces"],
+        "base": ["platform", "corner-anchors"],
+        "body": ["ceramic-core", "rear-dampers"],
+        "armor": ["housing-braces", "side-skirt"],
         "head": ["alloy-turntable", "twin-yoke"],
         "weapon": ["twin-barrels"],
-        "marking": ["ceramic-stripes"]
+        "marking": ["ceramic-stripes"],
+        "detail": ["ammo-crate", "feed-chutes"]
       },
       "attack": {"mode": "lob", "fps": 20, "frames": 8, "targetCount": 5, "burstCount": 1, "pierceCount": 0, "recoil": 0.19}
     },
@@ -110,11 +111,12 @@
       "weaponStage": 3,
       "slots": {
         "base": ["platform", "anchor-feet"],
-        "body": ["ceramic-core"],
-        "armor": ["housing-braces", "turret-cover"],
+        "body": ["ceramic-core", "rear-dampers"],
+        "armor": ["housing-braces", "turret-cover", "side-skirt"],
         "head": ["alloy-turntable", "twin-yoke"],
         "weapon": ["twin-barrels"],
-        "marking": ["ceramic-stripes"]
+        "marking": ["ceramic-stripes"],
+        "detail": ["ammo-crate", "feed-chutes"]
       },
       "attack": {"mode": "lob", "fps": 20, "frames": 8, "targetCount": 5, "burstCount": 1, "pierceCount": 0, "recoil": 0.19}
     },
@@ -125,11 +127,11 @@
       "weaponStage": 3,
       "slots": {
         "base": ["platform", "anchor-feet"],
-        "body": ["ceramic-core"],
-        "armor": ["housing-braces", "turret-cover"],
+        "body": ["ceramic-core", "rear-dampers"],
+        "armor": ["housing-braces", "turret-cover", "side-skirt"],
         "head": ["alloy-turntable", "twin-yoke"],
         "weapon": ["twin-barrels"],
-        "detail": ["loader-arm"],
+        "detail": ["loader-arm", "ammo-crate", "feed-chutes"],
         "marking": ["ceramic-stripes", "pressure-gauge"]
       },
       "attack": {"mode": "lob", "fps": 20, "frames": 8, "targetCount": 5, "burstCount": 1, "pierceCount": 0, "recoil": 0.19}
@@ -140,11 +142,13 @@
       "materialStage": "gold-trim",
       "weaponStage": 4,
       "slots": {
-        "base": ["platform"],
-        "body": ["fortress-core"],
+        "base": ["platform", "anchor-feet"],
+        "body": ["fortress-core", "rear-dampers"],
         "head": ["fortress-turntable", "quad-yoke"],
         "weapon": ["quad-box"],
-        "marking": ["fortress-trim"]
+        "marking": ["fortress-trim", "pressure-gauge"],
+        "detail": ["ammo-crate", "feed-chutes", "loader-arm"],
+        "armor": ["side-skirt"]
       },
       "attack": {"mode": "lob", "fps": 20, "frames": 8, "targetCount": 6, "burstCount": 1, "pierceCount": 0, "recoil": 0.22}
     },
@@ -154,12 +158,13 @@
       "materialStage": "gold-trim",
       "weaponStage": 4,
       "slots": {
-        "base": ["platform"],
-        "body": ["bunker-core"],
+        "base": ["platform", "anchor-feet"],
+        "body": ["bunker-core", "rear-dampers"],
         "armor": ["bunker-lips"],
         "head": ["fortress-turntable", "quad-yoke"],
         "weapon": ["quad-box", "gilded-muzzles"],
-        "detail": ["ballistics-dome"]
+        "detail": ["ballistics-dome", "ammo-crate", "feed-chutes", "loader-arm"],
+        "marking": ["pressure-gauge", "fortress-trim"]
       },
       "attack": {"mode": "lob", "fps": 20, "frames": 8, "targetCount": 6, "burstCount": 1, "pierceCount": 0, "recoil": 0.22}
     }

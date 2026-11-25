@@ -185,17 +185,16 @@ if __name__ == "__main__":
     parser.add_argument("recipe", type=Path)
     parser.add_argument("out", type=Path)
     parser.add_argument("--kit", type=Path, help="편집한 Blender 부품 키트")
-    parser.add_argument("--forms-only", action="store_true", help="곡사 포대 외 타워의 형태만 미리 렌더")
+    parser.add_argument("--forms-only", action="store_true", help="11형태만 미리 렌더")
     args = parser.parse_args(sys.argv[sys.argv.index("--") + 1:])
     recipe = json.loads(args.recipe.read_text())
     tower = recipe["towerId"]
-    if args.forms_only and tower == "mortar":
-        parser.error("곡사 포대는 --forms-only를 지원하지 않습니다.")
     if tower == "mortar":
         sys.path.insert(0, str(Path(__file__).resolve().parent))
         from mortar_render import render as render_mortar
 
-        render_mortar(args.recipe, args.out.resolve(), args.kit.resolve() if args.kit else None, PALETTE, linear)
+        render_mortar(args.recipe, args.out.resolve(), args.kit.resolve() if args.kit else None,
+                      PALETTE, linear, args.forms_only)
     elif tower in ("rail", "cryo"):
         sys.path.insert(0, str(Path(__file__).resolve().parent))
         from tower_render import render as render_tower
