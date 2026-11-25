@@ -125,3 +125,60 @@
    - `human`: `W10`을 설정(`중장갑 전투마 + 대형 창`)에 맞춰 기병 돌격 대장으로 교정 + `W5` 은회·앰버 조화 + `W15` 바퀴 강화 + `중장갑 T2` 방패 팔 통일.
 3. **파츠 분해도 1차 반려 3종 보정**:
    - `elf-parts`(허벅지·상하 관절 분절·양날 미늘창), `human-parts`(`pelvis`/`far-cloak`·관절 분절·라인업 T4 통일), `insect-parts`(배판 파츠 추가).
+
+---
+
+## 6. 재생성 2차 (`2026-11-25 16:00~16:17 KST`)
+
+- 기준: 합격한 기계 군단 라인업([monsters-mech.webp](file:///Users/bodyking/Desktop/Architecture/towerdeffense/docs/renewal/r6/bible/sheets/monsters-mech.webp), `8.1/10`) 및 기계 초상([monsters-portrait-mech.webp](file:///Users/bodyking/Desktop/Architecture/towerdeffense/docs/renewal/r6/bible/sheets/monsters-portrait-mech.webp), `9.3/10`).
+- 분해도 규격: `docs/renewal/r6/tech/monster-pipeline.md` 및 `asset-source/r6/monsters/_guides/*.json` 안내판 배치 준수 (`1536×1024` 투명 RGBA `sheet.png`, `256×256` 발밑 원점 `[128,216]` 조립 기준판 `assembly.png`, 계통별 T1 4종 + 보스 W5 1종 = 종족당 5개체, 총 15개체).
+
+### 6.1 1차 반려 지적 대비 수정 내역 및 자체 비평 점수
+
+| 대상 | 1차 지적 대비 수정 내용 | 자체 비평 점수 (기계 대비) | 남은 약점 |
+|---|---|---|---|
+| **철갑 인간 (`human`) 라인업** | 어두운 `#12161B` 전장에 묻히던 회색 비중을 줄이고 **은회(`#B8C0C8`)·앰버(`#E69F24`) 대비** 보강. `중장갑 T1~T4` 우향 앞방패 통일, `W5` 은회+앰버 조화, `W10` 수레 제거 후 중갑 기병 대장 재작화, `W15` 굵은 4바퀴 보강. 연결 컴포넌트 분리로 5×4=20개체 정격자화. | **8.7 / 10** *(라인업)* | `32px` 축소 시 보병 T1·질주 T1 가죽 부위가 타 단계보다 어둡고, 행 간 평균 32px IoU `0.386` (최대 `0.656`). |
+| **군체 벌레 (`insect`) 라인업** | 유일한 좌향 → **전 개체 3/4 우향 통일**. 알주머니·애벌레·점액·지네형 완전 제거 → **무광 갑충·딱정벌레·잠자리·육각 캡슐·황제 헤라클레스갑충**으로 순화. 카본 몸체에 앰버 경고 띠·은회 집게·틸 겹눈 보강. | **8.6 / 10** *(라인업)* | `중장갑 T2`·`특수 T1`의 카본 비중이 커 `minPeakLumDelta`가 `0.261`로 낮음(앰버 테두리로 윤곽 유지). |
+| **숲 엘프 (`elf`) 라인업** | `질주 T3(사슴)`을 제거해 **T1~T4 전부 4족 맹수(여우·살쾡이·뿔관 표범·바람표범) 뼈대**로 통일. 보병/중장갑/특수/보스에 앰버(`#E69F24`) 지휘 표식 보강 및 `질주 T4` 은회 갈기·틸 문양 대비 강화. | **8.5 / 10** *(라인업)* | `보병 T4`·`질주 T2` 상단 밝기가 낮아 `minPeakLumDelta` `0.254`로 전장 배경과 대비 여유가 적음. |
+| **분해도 15개체 (`*-parts`)** | 인간·벌레·엘프 각 계통 T1 4종 + 보스 W5 1종을 `cut_parts.py` 안내판 틀에 맞춰 다리·발, 팔·손을 완전 분리 제작. `shadow` 비움, 조립 `256×256` 발밑 `[128,216]` 정렬 완료. | **8.4 / 10** *(15종 전원 PASS)* | 일부 사족/이족 개체(`runner` `0.353~0.445`, `insect/infantry` `0.362`)는 Spine 리깅 단계에서 피벗·`target` 좌표 미세 조정 필요. |
+| **전용 초상 4종 (`human`·`insect`·`elf`·`golem`)** | `monsters-portrait-mech.webp` 기준 `1024×1024` 흉상 + R04 슬레이트(`#1D242C`)·저대비 등고선(`#2C3540`) 배경으로 전면 재촬영 후 `256×256` 불투명 WebP(`≤18 KB`) 변환. | **8.6 / 10** *(평균)* | `human`·`insect`·`elf`·`golem` 모두 좌우 어깨 여백이 `mech` 기준처럼 `80~90%` 수준으로 타이트하며(`12%` 좌우 여백 미달), `elf` 상단 뿔·`golem` 어깨 메카닉 잔여감 보정을 위한 2차 편집 시도 중 **HTTP 429 (`RESOURCE_EXHAUSTED`)** 발생으로 1차 생성 채택본 유지. |
+
+### 6.2 `cut_parts.py` 자동 절단·조립 검증 실측 (15개체 전원 `ready: true`)
+
+| 종족 | 계통/단계 | 안내판 틀 | 추출 슬롯 | `cutExitCode` | `ready` | `silhouetteIoU` | 비치명 이슈(`speck`) |
+|---|---|---|---|---|---|---|---|
+| `human` | `infantry/T1` | `infantry-biped.json` | 13개 (다리·발, 팔·손 분리) | `0` | `true` | `0.463` | 0건 |
+| `human` | `runner/T1` | `runner-quadruped.json` | 13개 (4다리·4발굽 분리) | `0` | `true` | `0.445` | 2건 |
+| `human` | `armored/T1` | `armored-biped.json` | 13개 (다리·발, 팔·손 분리) | `0` | `true` | `0.594` | 1건 |
+| `human` | `special/T1` | `special-wheeled.json` | 7개 (`wheel-1,2` 분리) | `0` | `true` | `0.497` | 2건 |
+| `human` | `boss-t1/T1` | `boss-biped.json` | 13개 (다리·발, 팔·손 분리) | `0` | `true` | `0.526` | 1건 |
+| `insect` | `infantry/T1` | `infantry-biped.json` | 13개 (다리·발, 팔·집게 분리) | `0` | `true` | `0.362` | 0건 |
+| `insect` | `runner/T1` | `runner-quadruped.json` | 13개 (4다리·4발 분리) | `0` | `true` | `0.362` | 1건 |
+| `insect` | `armored/T1` | `armored-quadruped.json` | 13개 (4다리·4발 분리) | `0` | `true` | `0.508` | 0건 |
+| `insect` | `special/T1` | `special-swarm.json` | 14개 (`swarm-1..3`, 6족) | `0` | `true` | `0.549` | 0건 |
+| `insect` | `boss-t1/T1` | `boss-biped.json` | 13개 (다리·발, 팔·집게 분리) | `0` | `true` | `0.495` | 0건 |
+| `elf` | `infantry/T1` | `infantry-biped.json` | 13개 (다리·발, 팔·손 분리) | `0` | `true` | `0.520` | 2건 |
+| `elf` | `runner/T1` | `runner-quadruped.json` | 13개 (4다리·4발 분리) | `0` | `true` | `0.353` | 0건 |
+| `elf` | `armored/T1` | `armored-biped.json` | 13개 (다리·발, 팔·손 분리) | `0` | `true` | `0.647` | 0건 |
+| `elf` | `special/T1` | `special-flying.json` | 7개 (`wing-far/near` 분리) | `0` | `true` | `0.486` | 0건 |
+| `elf` | `boss-t1/T1` | `boss-biped.json` | 13개 (다리·발, 팔·손 분리) | `0` | `true` | `0.505` | 0건 |
+
+### 6.3 2차 재생성 시트 · 32px 판독 · 전용 초상 4종 정량 실측
+
+| 파일 | 해상도 | 용량 | 비팔레트 고채도 (`v>0.22, s>0.35, d>55`) | 평균 팔레트 거리 | 32px 전경/최소·평균 `ΔL` |
+|---|---|---|---|---|---|
+| `monsters-human.webp` | `1920×1080` | `127,638 B` (124.6 KB) | `0.3441%` | `3.25` | 점유 `26.5%` · `0.442 / 0.612` |
+| `monsters-human-parts.webp` | `1920×1080` | `92,356 B` (90.2 KB) | `0.1780%` | `2.40` | — |
+| `monsters-insect.webp` | `1920×1080` | `118,016 B` (115.3 KB) | `0.1628%` | `2.81` | 점유 `19.0%` · `0.261 / 0.429` |
+| `monsters-insect-parts.webp` | `1920×1080` | `87,874 B` (85.8 KB) | `0.1443%` | `2.27` | — |
+| `monsters-elf.webp` | `1920×1080` | `123,956 B` (121.1 KB) | `0.1221%` | `2.91` | 점유 `23.2%` · `0.254 / 0.431` |
+| `monsters-elf-parts.webp` | `1920×1080` | `84,958 B` (83.0 KB) | `0.1073%` | `2.28` | — |
+| `monsters-portrait-human.webp` | `256×256` | `12,770 B` (12.5 KB) | `1.3199%` | `9.08` | **PASS** (≤18 KB) |
+| `monsters-portrait-insect.webp` | `256×256` | `12,962 B` (12.7 KB) | `0.8041%` | `8.20` | **PASS** (≤18 KB) |
+| `monsters-portrait-elf.webp` | `256×256` | `17,140 B` (16.7 KB) | `0.6699%` | `11.27` | **PASS** (≤18 KB) |
+| `monsters-portrait-golem.webp` | `256×256` | `11,520 B` (11.3 KB) | `0.1831%` | `7.15` | **PASS** (≤18 KB) |
+
+### 6.4 429 한도 도달 내역 및 후속
+- **발생 시각**: `2026-11-25 16:12:50 KST` (전용 초상 4종 1차 생성 직후, 여백 12% 보정용 2차 재생성 중 `HTTP 429 RESOURCE_EXHAUSTED` 발생 — 리셋 대기 약 `4h 38m`, **`~20:51 KST` 해제 예상**).
+- **완료 범위**: 요청된 인간·벌레·엘프 라인업 3종 + 분해도 15개체(`T1×4 + 보스 W5`) + 전용 초상 4종 전부 1차 이상 생성·후처리·정량 검증·시트 갱신까지 완료.
+- **후속 필요 시**: 초상 4종의 12% 여백 축소 재촬영 및 전 계통 T2~T4/보스 W10~W20 나머지 45개체 분해도 양산은 `20:51 KST` 이후 별도 진행.
