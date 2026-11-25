@@ -16,6 +16,7 @@ export interface CacheLike {
 
 export interface CacheScope {
   tab: RankingTab;
+  season: string;
   period: string;
   grade: number;
   difficulty: string;
@@ -23,7 +24,7 @@ export interface CacheScope {
   schoolName?: string | undefined;
 }
 
-const CACHE_PATH = '/__ranking-cache/v2';
+const CACHE_PATH = '/__ranking-cache/v3';
 
 function schoolSegment(scope: CacheScope): string {
   if (scope.schoolCode) return `/${encodeURIComponent(`sc:${scope.schoolCode}`)}`;
@@ -34,7 +35,7 @@ function schoolSegment(scope: CacheScope): string {
 /** 공용 범위의 열쇠. 같은 Worker 주소 아래 Worker가 응답하지 않는 경로라 밖에서 꺼낼 수 없다. */
 function keyOf(origin: string, scope: CacheScope): Request {
   const difficulty = scope.tab === 'honor_points' ? '*' : scope.difficulty;
-  return new Request(`${origin}${CACHE_PATH}/${scope.tab}/${encodeURIComponent(scope.period)}/${scope.grade}/${encodeURIComponent(difficulty)}${schoolSegment(scope)}`);
+  return new Request(`${origin}${CACHE_PATH}/${encodeURIComponent(scope.season)}/${scope.tab}/${encodeURIComponent(scope.period)}/${scope.grade}/${encodeURIComponent(difficulty)}${schoolSegment(scope)}`);
 }
 
 type Packed = [
@@ -92,7 +93,7 @@ export class RankingCache {
   }
 
   /** 새 기록 하나가 바꾸는 범위: 점수·웨이브(그 학년·전체 학년, 그 난이도), 명예점(그 학년·전체 학년), 각각 전체·그 주·해당 학교 필터. */
-  async purgeForRun(run: { grade: number; difficulty: string; weekKey: string; schoolCode?: string; schoolName?: string }): Promise<void> {
+  async purgeForRun(run: { season: string; grade: number; difficulty: string; weekKey: string; schoolCode?: string; schoolName?: string }): Promise<void> {
     const scopes: CacheScope[] = [];
     const schoolVariants: Array<{ schoolCode?: string; schoolName?: string }> = [{}];
     if (run.schoolCode) schoolVariants.push({ schoolCode: run.schoolCode });
@@ -101,9 +102,9 @@ export class RankingCache {
     for (const period of ['all', `week:${run.weekKey}`]) {
       for (const grade of [run.grade, 0]) {
         for (const sf of schoolVariants) {
-          scopes.push({ tab: 'single_score', period, grade, difficulty: run.difficulty, ...sf });
-          scopes.push({ tab: 'best_wave', period, grade, difficulty: run.difficulty, ...sf });
-          scopes.push({ tab: 'honor_points', period, grade, difficulty: '*', ...sf });
+          scopes.push({ season: run.season, tab: 'single_score', period, grade, difficulty: run.difficulty, ...sf });
+          scopes.push({ season: run.season, tab: 'best_wave', period, grade, difficulty: run.difficulty, ...sf });
+          scopes.push({ season: run.season, tab: 'honor_points', period, grade, difficulty: '*', ...sf });
         }
       }
     }

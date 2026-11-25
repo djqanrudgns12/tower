@@ -123,7 +123,8 @@ export interface SubmitLookupInput {
 export function submitLookupStatements(input: SubmitLookupInput): SqlStatement[] {
   return [
     sql(
-      'SELECT 1 AS ok FROM approved_run_conditions WHERE bank_version = ?1 AND grade = ?2 AND balance_version = ?3 AND map_id = ?4 AND active = 1',
+      `SELECT season_id, submissions_open FROM approved_run_conditions JOIN ranking_seasons USING (balance_version)
+        WHERE bank_version = ?1 AND grade = ?2 AND balance_version = ?3 AND map_id = ?4 AND active = 1`,
       input.bankVersion, input.grade, input.balanceVersion, input.mapId,
     ),
     sql('SELECT rules FROM run_verification_rules WHERE balance_version = ?1 AND difficulty = ?2', input.balanceVersion, input.difficulty),
@@ -153,6 +154,7 @@ export interface CompletedRunRow {
   wrong: number;
   skipped: number;
   balanceVersion: string;
+  seasonId: string;
   bankVersion: string;
   mapId: string;
   weekKey: string;
@@ -171,18 +173,19 @@ export function insertCompletedRunStatement(r: CompletedRunRow): SqlStatement {
     `INSERT INTO completed_runs (run_id, player_hash, public_tag, nickname, grade, difficulty, pt, honor_pt, completed_wave,
        correct, wrong, skipped, content_mode, balance_version, bank_version, map_id, season_id, week_key, kst_date,
        local_ended_at, ended_at, received_at, verification_level, payload_hash, school_code, school_name)
-     VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12, 'published', ?13, ?14, ?15, 'season1', ?16, ?17, ?18, ?19, ?20, ?21, ?22, ?23, ?24)`,
+     VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12, 'published', ?13, ?14, ?15, ?25, ?16, ?17, ?18, ?19, ?20, ?21, ?22, ?23, ?24)`,
     r.runId, r.hash, r.hash.slice(0, 16), r.nickname, r.grade, r.difficulty, r.pt, r.honorPt, r.completedWave,
     r.correct, r.wrong, r.skipped, r.balanceVersion, r.bankVersion, r.mapId, r.weekKey, r.kstDate,
-    r.localEndedAt, r.endedAt, r.receivedAt, VERIFIED_LEVEL, r.payloadHash, r.schoolCode, r.schoolName,
+    r.localEndedAt, r.endedAt, r.receivedAt, VERIFIED_LEVEL, r.payloadHash, r.schoolCode, r.schoolName, r.seasonId,
   );
 }
 
-const ACTIVE_CONDITION = `(bank_version, grade, balance_version, map_id) IN
-  (SELECT bank_version, grade, balance_version, map_id FROM approved_run_conditions WHERE active = 1)`;
+const RANKED_CONDITION = `(bank_version, grade, balance_version, map_id) IN
+  (SELECT bank_version, grade, balance_version, map_id FROM approved_run_conditions JOIN ranking_seasons USING (balance_version) WHERE active = 1 AND season_id = ?4)`;
 
 export interface LeaderboardScope {
   tab: 'single_score' | 'best_wave' | 'honor_points';
+  season: string;
   period: string; // 'all' 또는 'week:YYYY-Www'
   grade: number; // 0이면 모든 학년
   difficulty: string;
@@ -194,7 +197,7 @@ export interface LeaderboardScope {
 const gradeClause = (grade: number) => (grade === 0 ? '' : `AND grade = ${Math.trunc(grade)}`);
 
 // 클라이언트와 같은 우선순위로 집계 행과 내 원본 판에 동일한 학교 조건을 붙인다.
-function schoolFilter(scope: LeaderboardScope, binding: '?3' | '?4') {
+function schoolFilter(scope: LeaderboardScope, binding: '?4' | '?5') {
   if (scope.schoolCode) return { clause: `AND school_code = ${binding}`, params: [scope.schoolCode] };
   if (scope.schoolName) return { clause: `AND school_name = ${binding}`, params: [scope.schoolName] };
   return { clause: '', params: [] };
@@ -206,23 +209,26 @@ function schoolFilter(scope: LeaderboardScope, binding: '?3' | '?4') {
  */
 export function leaderboardRowsStatement(s: LeaderboardScope): SqlStatement {
   const diff = s.tab === 'honor_points' ? '*' : s.difficulty;
-  const school = schoolFilter(s, '?4');
+  const school = schoolFilter(s, '?5');
   return sql(
     `SELECT player_hash, nickname, grade, difficulty, val, secondary, correct, achieved_at, run_id, school_code, school_name FROM standings
-      WHERE kind = ?1 AND period = ?2 ${gradeClause(s.grade)} AND difficulty = ?3 AND ${ACTIVE_CONDITION} ${school.clause}`,
-    s.tab, s.period, diff, ...school.params,
+      WHERE kind = ?1 AND period = ?2 ${gradeClause(s.grade)} AND difficulty = ?3 AND ${RANKED_CONDITION} ${school.clause}`,
+    s.tab, s.period, diff, s.season, ...school.params,
   );
 }
 
 /** 명예점과 같은 학교·학년·기간·승인 조건을 만족한 내 판만 반환한다. */
 export function myHonorRunIdsStatement(me: string, scope: LeaderboardScope, weekKey: string | null): SqlStatement {
-  const school = schoolFilter(scope, '?3');
+  const school = schoolFilter(scope, '?4');
   return sql(
-    `SELECT run_id FROM completed_runs
+    `SELECT run_id FROM completed_runs r
       WHERE player_hash = ?1 AND verification_level = '${VERIFIED_LEVEL}' AND completed_wave >= 1
-        ${gradeClause(scope.grade)} AND (?2 IS NULL OR week_key = ?2) AND ${ACTIVE_CONDITION} ${school.clause}
+        ${gradeClause(scope.grade)} AND (?2 IS NULL OR week_key = ?2) AND balance_version = (SELECT balance_version FROM ranking_seasons WHERE season_id = ?3)
+        AND EXISTS (SELECT 1 FROM approved_run_conditions c
+          WHERE c.bank_version=r.bank_version AND c.grade=r.grade AND c.balance_version=r.balance_version AND c.map_id=r.map_id AND c.active=1)
+        ${school.clause}
       ORDER BY received_at, run_id`,
-    me, weekKey, ...school.params,
+    me, weekKey, scope.season, ...school.params,
   );
 }
 

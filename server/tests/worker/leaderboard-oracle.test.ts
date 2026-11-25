@@ -34,6 +34,7 @@ const devices: { device: Device; hash: string }[] = [];
 function oracle(runs: Run[], active: Set<string>, q: { tab: string; grade: number; difficulty: string; period: string; limit: number; offset: number }, me: string) {
   const currentWeek = kstIsoWeekKey(new Date(NOW));
   const eligible = runs.filter(r => r.verification_level === VERIFIED && r.completed_wave >= 1
+    && r.balance_version === (q.period === 'season1' ? '1.0.0' : '2.0.0')
     && active.has(`${r.bank_version}|${r.grade}|${r.balance_version}|${r.map_id}`)
     && (q.grade === 0 || r.grade === q.grade) && (q.tab === 'honor_points' || r.difficulty === q.difficulty)
     && (q.period !== 'weekly' || r.week_key === currentWeek));
@@ -92,9 +93,9 @@ async function insertRandomRuns(count: number) {
     statements.push(t.db.prepare(
       `INSERT INTO completed_runs (run_id, player_hash, public_tag, nickname, grade, difficulty, pt, honor_pt, completed_wave, correct, wrong, skipped,
          content_mode, balance_version, bank_version, map_id, week_key, kst_date, local_ended_at, ended_at, received_at, verification_level, payload_hash)
-       VALUES (?1, ?2, substr(?2, 1, 16), ?3, ?4, ?5, ?6, ?7, ?8, ?9, 0, 0, 'published', 'test-balance', ?10, 'garden_u', ?11, '2026-11-01', ?12, ?12, ?12, ?13, 'x')`,
+       VALUES (?1, ?2, substr(?2, 1, 16), ?3, ?4, ?5, ?6, ?7, ?8, ?9, 0, 0, 'published', ?14, ?10, 'garden_u', ?11, '2026-11-01', ?12, ?12, ?12, ?13, 'x')`,
     ).bind(crypto.randomUUID(), pick(players), pick(['솔방울', '도토리', '은행잎', '다람쥐']), grade, difficulty, pt, honor, completedWave, correct,
-      bank, pick(weeks), received, verification));
+      bank, pick(weeks), received, verification, pick(['1.0.0', '2.0.0'])));
   }
   for (let i = 0; i < statements.length; i += 40) await t.db.batch(statements.slice(i, i + 40));
 }
@@ -106,7 +107,9 @@ beforeAll(async () => {
     const device = await t.newDevice();
     devices.push({ device, hash: await playerHash(keys, device.deviceId) });
   }
-  await exec(t.db, "INSERT INTO approved_run_conditions (bank_version, grade, balance_version, map_id, active) VALUES ('old-bank', 3, 'test-balance', 'garden_u', 0)");
+  await exec(t.db, "INSERT INTO approved_run_conditions (bank_version, grade, balance_version, map_id, active) VALUES ('old-bank', 3, '2.0.0', 'garden_u', 0)");
+  await exec(t.db, `INSERT INTO approved_run_conditions SELECT bank_version, grade, '1.0.0', map_id, active
+    FROM approved_run_conditions WHERE bank_version IN ('test-bank', 'test-bank-4', 'old-bank')`);
   await insertRandomRuns(260);
 }, 120_000);
 afterAll(() => t.close());
@@ -123,7 +126,7 @@ async function compareAll() {
   for (const tab of ['single_score', 'best_wave', 'honor_points']) {
     for (const grade of [0, 3, 4]) {
       for (const difficulty of ['Normal', 'Hard']) {
-        for (const period of ['weekly', 'season1', 'all_time']) {
+        for (const period of ['weekly', 'season1', 'season2', 'all_time']) {
           for (const [limit, offset] of [[8, 0], [5, 3], [50, 0]] as const) {
             const { device, hash } = devices[compared % devices.length]!;
             const query = `p_tab=${tab}&p_grade=${grade}&p_difficulty=${difficulty}&p_period=${period}&p_limit=${limit}&p_offset=${offset}`;
@@ -146,13 +149,13 @@ async function compareAll() {
 
 describe('랭킹 집계표 = Postgres 질의', () => {
   it('모든 분류·학년·난이도·기간·쪽 조합에서 기준 구현과 같다', async () => {
-    expect(await compareAll()).toBe(162);
+    expect(await compareAll()).toBe(216);
   }, 120_000);
 
   it('승인 조건이 바뀌어도(이전 은행 다시 켜기) 같다', async () => {
     await exec(t.db, "UPDATE approved_run_conditions SET active = 1 WHERE bank_version = 'old-bank'");
     await exec(t.db, "UPDATE approved_run_conditions SET active = 0 WHERE bank_version = 'test-bank-4'");
-    expect(await compareAll()).toBe(162);
+    expect(await compareAll()).toBe(216);
   }, 120_000);
 
   it('rebuild-standings.sql로 다시 만든 집계표가 트리거로 쌓은 집계표와 같다', async () => {

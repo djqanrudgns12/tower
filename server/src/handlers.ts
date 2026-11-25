@@ -262,8 +262,9 @@ export async function submitCompletedRun(ctx: Context, hash: string): Promise<Re
 
   const [conditions = [], ruleRows = [], existingRows = [], startRows = [], keyRows = []] = await limited(ctx, hash, 'submit',
     submitLookupStatements({ ...claim, hash, questionIds: questionIdsOf(claim.answers) }));
+  const seasonId = conditions[0]?.season_id;
   const ruleText = ruleRows[0]?.rules;
-  if (conditions.length === 0 || claim.balanceVersion === null || claim.bankVersion === null || claim.mapId === null || typeof ruleText !== 'string') {
+  if (typeof seasonId !== 'string' || claim.balanceVersion === null || claim.bankVersion === null || claim.mapId === null || typeof ruleText !== 'string') {
     throw new HttpError(422, 'VERSION_REJECTED');
   }
   const rules = parseVerificationRules(ruleText);
@@ -274,6 +275,7 @@ export async function submitCompletedRun(ctx: Context, hash: string): Promise<Re
   ]));
   if (existingRows[0]) return duplicateOutcome(existingRows[0], hash, payloadHash);
 
+  if (conditions[0]?.submissions_open !== 1) throw new HttpError(503, 'SEASON_PAUSED');
   const startedAt = startRows[0]?.started_at;
   if (typeof startedAt !== 'number') throw new HttpError(422, 'START_REQUIRED');
   const elapsedMs = ctx.now - startedAt;
@@ -298,7 +300,7 @@ export async function submitCompletedRun(ctx: Context, hash: string): Promise<Re
     runId: claim.runId, hash, nickname, grade: claim.grade, difficulty: claim.difficulty, pt: claim.pt,
     honorPt: computeHonorPoints({ pt: claim.pt, difficulty: claim.difficulty, completedWave: claim.completedWave, correct: claim.correct }),
     completedWave: claim.completedWave, correct: claim.correct, wrong: claim.wrong, skipped: claim.skipped,
-    balanceVersion: claim.balanceVersion, bankVersion: claim.bankVersion, mapId: claim.mapId,
+    seasonId, balanceVersion: claim.balanceVersion, bankVersion: claim.bankVersion, mapId: claim.mapId,
     weekKey: kstIsoWeekKey(new Date(endedAt)), kstDate: kstDateKey(new Date(endedAt)),
     localEndedAt: claim.endedAtMs, endedAt, receivedAt: ctx.now, payloadHash,
     schoolCode: claim.schoolCode, schoolName: claim.schoolName,
@@ -315,6 +317,7 @@ export async function submitCompletedRun(ctx: Context, hash: string): Promise<Re
   }
   // 새 기록이 바꾸는 랭킹 범위를 이 거점 캐시에서 지운다(제출한 학생이 홈으로 돌아가 바로 보게).
   await ctx.rankingCache?.purgeForRun({
+    season: seasonId,
     grade: row.grade,
     difficulty: row.difficulty,
     weekKey: row.weekKey,
@@ -340,6 +343,7 @@ export async function getLeaderboard(ctx: Context, hash: string): Promise<Respon
   const weekKey = params.period === 'weekly' ? kstIsoWeekKey(new Date(ctx.now)) : null;
   const scope: LeaderboardScope = {
     tab: params.tab,
+    season: params.period === 'season1' ? 'season1' : 'season2',
     period: weekKey ? `week:${weekKey}` : 'all',
     grade: params.grade,
     difficulty: params.difficulty,

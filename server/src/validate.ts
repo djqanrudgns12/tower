@@ -131,13 +131,13 @@ export const RANKING_TABS = ['single_score', 'best_wave', 'honor_points'] as con
 export type RankingTab = (typeof RANKING_TABS)[number];
 const GRADES = [0, 3, 4, 5, 6];
 const DIFFICULTIES = ['Easy', 'Normal', 'Hard', 'Crazy'];
-const PERIODS = ['weekly', 'season1', 'all_time'];
+const PERIODS = ['weekly', 'season1', 'season2', 'all_time'];
 
 export interface RankingParams {
   tab: RankingTab;
   grade: number;
   difficulty: string;
-  period: 'weekly' | 'season1' | 'all_time';
+  period: 'weekly' | 'season1' | 'season2' | 'all_time';
   limit: number;
   offset: number;
   schoolCode?: string;

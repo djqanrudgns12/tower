@@ -135,9 +135,9 @@ describe('422 입력 오류', () => {
     expect((await submit({ ...plausible, p_completed_wave: 40000 })).body.error).toBe('PLAUSIBILITY_REJECTED');
     await exec(t.db, 'DELETE FROM rate_limits');
     expect((await submit({ ...plausible, p_ended_at: 'yesterday' })).body.error).toBe('PLAUSIBILITY_REJECTED');
-    const version = await submit({ ...plausible, p_bank_version: 'test-bank', p_balance_version: 'test-balance', p_map_id: 'other_map' });
+    const version = await submit({ ...plausible, p_bank_version: 'test-bank', p_balance_version: '2.0.0', p_map_id: 'other_map' });
     expect([version.status, version.body.error]).toEqual([422, 'VERSION_REJECTED']);
-    const difficulty = await submit({ ...plausible, p_difficulty: 'Ultra', p_bank_version: 'test-bank', p_balance_version: 'test-balance', p_map_id: 'garden_u' });
+    const difficulty = await submit({ ...plausible, p_difficulty: 'Ultra', p_bank_version: 'test-bank', p_balance_version: '2.0.0', p_map_id: 'garden_u' });
     expect(difficulty.body.error).toBe('VERSION_REJECTED');
   });
 });

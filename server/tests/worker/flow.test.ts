@@ -84,7 +84,7 @@ describe('제출 → 랭킹', () => {
     expect(single.body).toMatchObject({ totalCount: 1, entries: [expectedEntry], myEntry: expectedEntry });
     expect((single.body.myEntry as { achievedAtIso: string }).achievedAtIso).toMatch(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/);
 
-    const wave = await ranking(alice, 'p_tab=best_wave&p_grade=3&p_difficulty=Normal&p_period=season1');
+    const wave = await ranking(alice, 'p_tab=best_wave&p_grade=3&p_difficulty=Normal&p_period=season2');
     expect(wave.body.myEntry).toMatchObject({ primaryValue: 1, secondaryLabel: '67점', runIds: [runId] });
 
     const honor = await ranking(alice, 'p_tab=honor_points&p_grade=0&p_difficulty=Easy&p_period=weekly');

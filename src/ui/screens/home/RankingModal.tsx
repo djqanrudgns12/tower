@@ -12,7 +12,7 @@ import { fetchRanking } from '../../../application/lobby';
 import { DIFFICULTY_COPY } from '../../copy';
 import { Card, Modal, ModalTabPanel, ModalTabs, ModalTabShell, Segmented, type ModalTabOption, type SegmentOption } from '../../kit';
 import { RANKING_EXTRA } from './homeCopy';
-import { formatPrimaryMetric, PERIOD_LABELS, TAB_LABELS } from './RankingBoard';
+import { formatPrimaryMetric, rankingPeriods, periodLabel, TAB_LABELS } from './RankingBoard';
 import css from './home.module.css';
 
 interface Props {
@@ -92,7 +92,8 @@ export function RankingModal({
     ...([3, 4, 5, 6] as const).map(g => ({ value: String(g), label: `${g}학년` })),
   ];
   const difficultyOptions: SegmentOption<DifficultyId>[] = DIFFICULTY_IDS.map(d => ({ value: d, label: DIFFICULTY_COPY[d].label }));
-  const periodOptions: SegmentOption<RankingPeriod>[] = (['weekly', 'season1', 'all_time'] as const).map(p => ({ value: p, label: PERIOD_LABELS[p] }));
+  const offline = data?.source === 'local_fallback';
+  const periodOptions: SegmentOption<RankingPeriod>[] = rankingPeriods(offline).map(p => ({ value: p, label: periodLabel(p, offline) }));
 
   return (
     // 읽고 둘러보는 창이라 첫 포커스는 닫기다(탭 줄은 Tab 한 번으로 들어간다). md 680×540 고정 프레임으로 4탭 모두 크기가 같다.
@@ -124,15 +125,16 @@ export function RankingModal({
                 onChange={setDifficulty}
               />
             )}
-            {tab === 'honor_points' && (
+            {(tab === 'honor_points' || (tab !== 'local_device' && !offline)) && (
               <Segmented<RankingPeriod>
                 className={css.compactSeg}
                 label="상세 집계 기간"
                 options={periodOptions}
-                value={period}
+                value={offline && period === 'season1' ? 'all_time' : period}
                 onChange={setPeriod}
               />
             )}
+            {tab !== 'local_device' && data?.source === 'local_fallback' && <span className={css.filterMeta}>오프라인 · 기기 기록</span>}
             {tab === 'local_device' && <span className={css.filterMeta}>{RANKING_EXTRA.localShort}</span>}
             {cleanSchool !== '' && (
               <button

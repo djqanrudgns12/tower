@@ -51,7 +51,7 @@ describe('요청당 D1 행 수', () => {
       statements.push(t.db.prepare(
         `INSERT INTO completed_runs (run_id, player_hash, public_tag, nickname, grade, difficulty, pt, honor_pt, completed_wave, correct, wrong, skipped,
            content_mode, balance_version, bank_version, map_id, week_key, kst_date, local_ended_at, ended_at, received_at, verification_level, payload_hash)
-         SELECT ?1, ?2, substr(?2, 1, 16), '다람쥐', 3, 'Normal', ?3, 100, 1, 3, 0, 0, 'published', 'test-balance', 'test-bank', 'garden_u',
+         SELECT ?1, ?2, substr(?2, 1, 16), '다람쥐', 3, 'Normal', ?3, 100, 1, 3, 0, 0, 'published', '2.0.0', 'test-bank', 'garden_u',
                 week_key, kst_date, ?4, ?4, ?4, 'question_regraded_combat_bounded', 'x' FROM completed_runs LIMIT 1`,
       ).bind(crypto.randomUUID(), hash, 40 + (i % 50), now + i));
     }

@@ -23,10 +23,19 @@ export const TAB_LABELS: Record<RankingTabId, string> = {
 };
 
 export const PERIOD_LABELS: Record<RankingPeriod, string> = {
-  weekly: '주간',
+  weekly: '이번 주',
   season1: '시즌 1',
-  all_time: '누적',
+  all_time: '시즌 2',
 };
+
+// all_time은 현재 시즌의 누적 순위다. 이전 클라이언트와 같은 기간 키를 쓴다.
+export function rankingPeriods(offline: boolean): readonly RankingPeriod[] {
+  return offline ? ['all_time', 'weekly'] : ['all_time', 'weekly', 'season1'];
+}
+
+export function periodLabel(period: RankingPeriod, offline: boolean) {
+  return offline && period === 'all_time' ? '누적' : PERIOD_LABELS[period];
+}
 
 export function formatPrimaryMetric(tab: RankingTabId, value: number): string {
   if (tab === 'best_wave') return `${fmtNumber(value)}웨이브`;
@@ -90,7 +99,6 @@ export function RankingBoard({
   const gradeList: readonly (3 | 4 | 5 | 6 | 'all')[] = showAllGrade
     ? ['all', 3, 4, 5, 6]
     : [3, 4, 5, 6];
-  const periodList: readonly RankingPeriod[] = ['weekly', 'season1', 'all_time'];
 
   const bankMissing =
     effectiveGrade !== 'all' && tab !== 'local_device' && !isGradeAvailable(effectiveGrade);
@@ -144,11 +152,13 @@ export function RankingBoard({
   const displayName = currentNickname.trim() || '닉네임 미설정';
   const myEntry = data?.myEntry ?? null;
   const isFallback = tab !== 'local_device' && data?.source === 'local_fallback';
+  const periodList = rankingPeriods(isFallback);
+  const shownPeriod = isFallback && period === 'season1' ? 'all_time' : period;
   const syncLabel =
     tab === 'local_device'
       ? '기기 저장'
       : isFallback
-        ? '오프라인 · 내 기록'
+        ? '오프라인 · 기기 기록'
         : '실시간 순위';
 
   return (
@@ -297,15 +307,15 @@ export function RankingBoard({
               </div>
             )}
 
-            {tab === 'honor_points' && (
+            {(tab === 'honor_points' || (tab !== 'local_device' && !isFallback)) && (
               <div
                 className={css.segmentedTrack}
-                data-cols={3}
+                data-cols={periodList.length}
                 role="radiogroup"
                 aria-label="집계 기간"
               >
                 {periodList.map((p, pi) => {
-                  const checked = period === p;
+                  const checked = shownPeriod === p;
                   return (
                     <button
                       key={p}
@@ -320,7 +330,7 @@ export function RankingBoard({
                       onClick={() => setPeriod(p)}
                       onKeyDown={e => moveRoving(e, periodList, pi, periodRefs.current, setPeriod)}
                     >
-                      {PERIOD_LABELS[p]}
+                      {periodLabel(p, isFallback)}
                     </button>
                   );
                 })}

@@ -59,9 +59,8 @@ export async function seedFixtures(db: TestD1): Promise<void> {
     db.prepare("INSERT INTO question_keys VALUES ('test-bank', 'q-a', 1, 'a', 3)"),
     db.prepare("INSERT INTO question_keys VALUES ('test-bank', 'q-b', 2, 'c', 3)"),
     db.prepare("INSERT INTO question_keys VALUES ('test-bank-4', 'q-a', 1, 'b', 4)"),
-    db.prepare("INSERT INTO approved_run_conditions (bank_version, grade, balance_version, map_id) VALUES ('test-bank', 3, 'test-balance', 'garden_u')"),
-    db.prepare("INSERT INTO approved_run_conditions (bank_version, grade, balance_version, map_id) VALUES ('test-bank-4', 4, 'test-balance', 'garden_u')"),
-    db.prepare("INSERT INTO run_verification_rules SELECT 'test-balance', difficulty, rules FROM run_verification_rules WHERE balance_version = '1.0.0'"),
+    db.prepare("INSERT INTO approved_run_conditions (bank_version, grade, balance_version, map_id) VALUES ('test-bank', 3, '2.0.0', 'garden_u')"),
+    db.prepare("INSERT INTO approved_run_conditions (bank_version, grade, balance_version, map_id) VALUES ('test-bank-4', 4, '2.0.0', 'garden_u')"),
   ]);
 }
 
@@ -172,7 +171,7 @@ export function submitBody(runId: string, overrides: Record<string, unknown> = {
     p_wrong: 1,
     p_skipped: 1,
     p_content_mode: 'published',
-    p_balance_version: 'test-balance',
+    p_balance_version: '2.0.0',
     p_bank_version: 'test-bank',
     p_map_id: 'garden_u',
     p_ended_at: new Date(Date.now() - 8 * DAY).toISOString(),

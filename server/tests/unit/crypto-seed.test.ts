@@ -57,7 +57,7 @@ describe('D1 정답 키 seed(tools/build-question-keys.mjs)', () => {
     const result = generate([{ ...published, questions: published.questions.slice(0, 2) }], { entries: [{ questionId: first.id, revision: first.revision }] });
     expect(result.status, result.stderr).toBe(0);
     expect(result.stdout).not.toMatch(/public\.|^begin;|^commit;|::jsonb|active=(true|false)/m);
-    expect(result.stdout).toContain('update approved_run_conditions set active=0 where grade in (3,4,5,6);');
+    expect(result.stdout).toContain("update approved_run_conditions set active=0 where grade in (3,4,5,6) and balance_version in ('1.0.0');");
     expect(result.stdout).toContain(`delete from question_keys where question_id='${first.id}' and revision=${first.revision};`);
     expect(result.stdout).toMatch(/do update set active=1;/);
   });
@@ -68,7 +68,7 @@ describe('D1 정답 키 seed(tools/build-question-keys.mjs)', () => {
       const j = async p => JSON.parse(await readFile(p, 'utf8'));
       const banks = [];
       for (const g of [3, 4, 5, 6]) { try { banks.push(await j('src/content/questions/grade' + g + '.json')); } catch (e) { if (e.code !== 'ENOENT') throw e; } }
-      process.stdout.write(buildSharedQuestionKeySeed({ banks, balance: await j('docs/contracts/balance.candidate.v0.4.json'), maps: await j('docs/contracts/maps.candidate.v0.4.json'), retractions: await j('src/content/retractions.json') }));`;
+      process.stdout.write(buildSharedQuestionKeySeed({ banks, balanceV2: await j('docs/contracts/balance.v2.json'), balance: await j('docs/contracts/balance.candidate.v0.4.json'), maps: await j('docs/contracts/maps.candidate.v0.4.json'), retractions: await j('src/content/retractions.json') }));`;
     const result = spawnSync(process.execPath, ['--input-type=module', '-e', script], { cwd: REPO_DIR, encoding: 'utf8', maxBuffer: SEED_MAX_BUFFER });
     expect(result.status, result.stderr).toBe(0);
     expect(await readFile(`${REPO_DIR}server/seed/question_keys.sql`, 'utf8')).toBe(result.stdout);
