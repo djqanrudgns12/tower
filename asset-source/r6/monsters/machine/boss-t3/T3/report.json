@@ -7,7 +7,7 @@
   "guide": "boss-quadruped.json",
   "placement": "placement.json",
   "ready": true,
-  "silhouetteIoU": 0.714,
+  "silhouetteIoU": 0.705,
   "parts": {
     "leg-hind-far": {
       "sourceBox": [
@@ -297,33 +297,20 @@
     ]
   },
   "issues": [],
-  "fitScores": [
-    0.659,
-    0.714
-  ],
-  "accepted": false,
-  "whitePatches": {
-    "reference": [
-      {
-        "pixels": 147,
-        "box": [
-          185,
-          121,
-          203,
-          137
-        ]
-      },
-      {
-        "pixels": 61,
-        "box": [
-          88,
-          136,
-          102,
-          145
-        ]
-      }
-    ]
+  "whiteKey": {
+    "applied": true,
+    "removedPixels": 208,
+    "sheet": {
+      "removedPixels": 0,
+      "fringePixels": 0
+    },
+    "assembly": {
+      "removedPixels": 208,
+      "fringePixels": 18
+    }
   },
-  "artRedo": "흰 얼룩 · 원화 [185, 121, 203, 137]에서 147px. 부품 사이에 남은 흰 면을 확인해 주세요.",
-  "redo": "흰 얼룩 · 원화 [185, 121, 203, 137]에서 147px. 부품 사이에 남은 흰 면을 확인해 주세요."
+  "fitScores": [
+    0.705
+  ],
+  "accepted": true
 }

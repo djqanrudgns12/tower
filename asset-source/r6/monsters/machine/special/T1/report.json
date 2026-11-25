@@ -7,7 +7,7 @@
   "guide": "special-swarm.json",
   "placement": "placement.json",
   "ready": true,
-  "silhouetteIoU": 0.921,
+  "silhouetteIoU": 0.9,
   "parts": {
     "body": {
       "sourceBox": [
@@ -101,89 +101,20 @@
     ]
   },
   "issues": [],
-  "fitScores": [
-    0.921,
-    0.921
-  ],
-  "accepted": false,
-  "whitePatches": {
-    "reference": [
-      {
-        "pixels": 116,
-        "box": [
-          154,
-          88,
-          173,
-          99
-        ]
-      },
-      {
-        "pixels": 136,
-        "box": [
-          187,
-          88,
-          206,
-          100
-        ]
-      },
-      {
-        "pixels": 151,
-        "box": [
-          50,
-          141,
-          69,
-          154
-        ]
-      },
-      {
-        "pixels": 105,
-        "box": [
-          84,
-          142,
-          102,
-          153
-        ]
-      }
-    ],
-    "preview": [
-      {
-        "pixels": 119,
-        "box": [
-          155,
-          87,
-          173,
-          99
-        ]
-      },
-      {
-        "pixels": 111,
-        "box": [
-          188,
-          88,
-          206,
-          100
-        ]
-      },
-      {
-        "pixels": 137,
-        "box": [
-          50,
-          140,
-          68,
-          152
-        ]
-      },
-      {
-        "pixels": 101,
-        "box": [
-          83,
-          141,
-          101,
-          151
-        ]
-      }
-    ]
+  "whiteKey": {
+    "applied": true,
+    "removedPixels": 1418,
+    "sheet": {
+      "removedPixels": 910,
+      "fringePixels": 64
+    },
+    "assembly": {
+      "removedPixels": 508,
+      "fringePixels": 35
+    }
   },
-  "artRedo": "흰 얼룩 · 원화 [50, 141, 69, 154]에서 151px, 조립 [50, 140, 68, 152]에서 137px. 부품 사이에 남은 흰 면을 확인해 주세요.",
-  "redo": "흰 얼룩 · 원화 [50, 141, 69, 154]에서 151px, 조립 [50, 140, 68, 152]에서 137px. 부품 사이에 남은 흰 면을 확인해 주세요."
+  "fitScores": [
+    0.9
+  ],
+  "accepted": true
 }

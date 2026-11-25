@@ -7,7 +7,7 @@
   "guide": "boss-biped.json",
   "placement": "placement.json",
   "ready": true,
-  "silhouetteIoU": 0.758,
+  "silhouetteIoU": 0.725,
   "parts": {
     "leg-far": {
       "sourceBox": [
@@ -277,24 +277,20 @@
     ]
   },
   "issues": [],
-  "fitScores": [
-    0.725,
-    0.758
-  ],
-  "accepted": false,
-  "whitePatches": {
-    "reference": [
-      {
-        "pixels": 748,
-        "box": [
-          86,
-          95,
-          110,
-          158
-        ]
-      }
-    ]
+  "whiteKey": {
+    "applied": true,
+    "removedPixels": 748,
+    "sheet": {
+      "removedPixels": 0,
+      "fringePixels": 0
+    },
+    "assembly": {
+      "removedPixels": 748,
+      "fringePixels": 34
+    }
   },
-  "artRedo": "흰 얼룩 · 원화 [86, 95, 110, 158]에서 748px. 부품 사이에 남은 흰 면을 확인해 주세요.",
-  "redo": "흰 얼룩 · 원화 [86, 95, 110, 158]에서 748px. 부품 사이에 남은 흰 면을 확인해 주세요."
+  "fitScores": [
+    0.725
+  ],
+  "accepted": true
 }

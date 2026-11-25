@@ -7,7 +7,7 @@
   "guide": "armored-biped.json",
   "placement": "placement.json",
   "ready": true,
-  "silhouetteIoU": 0.886,
+  "silhouetteIoU": 0.883,
   "parts": {
     "leg-far": {
       "sourceBox": [
@@ -277,24 +277,20 @@
     ]
   },
   "issues": [],
-  "fitScores": [
-    0.822,
-    0.886
-  ],
-  "accepted": false,
-  "whitePatches": {
-    "reference": [
-      {
-        "pixels": 89,
-        "box": [
-          148,
-          112,
-          159,
-          133
-        ]
-      }
-    ]
+  "whiteKey": {
+    "applied": true,
+    "removedPixels": 89,
+    "sheet": {
+      "removedPixels": 0,
+      "fringePixels": 0
+    },
+    "assembly": {
+      "removedPixels": 89,
+      "fringePixels": 8
+    }
   },
-  "artRedo": "흰 얼룩 · 원화 [148, 112, 159, 133]에서 89px. 부품 사이에 남은 흰 면을 확인해 주세요.",
-  "redo": "흰 얼룩 · 원화 [148, 112, 159, 133]에서 89px. 부품 사이에 남은 흰 면을 확인해 주세요."
+  "fitScores": [
+    0.883
+  ],
+  "accepted": true
 }

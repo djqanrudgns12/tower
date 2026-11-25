@@ -95,32 +95,34 @@ Chromium 156에서 실제 전장 길 위에 20개체를 배치했다. 개체마�
 - 32px 비교는 조립을 시도한 모든 개체의 그림자를 빼고 수행한다. 인접 단계와 다른 종족의 유사 쌍은 아트 검수에 남긴다. [기계 판독 띠](monsters/machine-32px.webp) · [바위 판독 띠](monsters/stone-32px.webp) · [엘프 판독 띠](monsters/elf-32px.webp) · [인간 판독 띠](monsters/human-32px.webp) · [벌레 판독 띠](monsters/insect-32px.webp) · [쌍별 판정](monsters/silhouettes.json)
 - 3차에서는 기계 9건, 바위 15건, 인간 10건을 처리했다. 원화 폴더를 다른 제작자가 쓰는 동안에는 `batch.py --species machine stone human --runtime-only`로 실행한다. 이 옵션은 종족 편집 명세를 저작 캐시에 보관한다. 재작화한 네 개체는 이전 시트의 수동 고정이나 반려 메모를 풀고 새 입력으로 다시 정렬했다.
 - 흰 얼룩은 256×256 조립 원화와 파츠 조립 결과 양쪽에서 찾는다. 알파 255이고 RGB가 모두 240 이상인 화소가 가로·세로·대각선으로 24개 이상 이어지면 위치와 면적을 `report.json`에 남긴다. 의도한 표식은 눈으로 확인한 뒤 `placement.json`의 `whiteMark.reason`과 `reviewKey`(두 원본과 검출 목록의 `digest`)에 근거를 남긴다. 이번 16개체에서는 흰 면이 팔다리·방패·고삐·회전날 사이 또는 조준 구멍에 남아 있었다. 표식으로 통과시킨 개체는 없다.
-- 이번 세 종족은 통과한 스킨의 부품만 기존 Spine 패커로 묶고 원래 해상도의 무손실 WebP 한 장씩을 전송한다. 가장 큰 바위 아틀라스는 580,550바이트로 768KiB 예산의 74%다. 엘프와 벌레는 지난 아틀라스를 재사용했다.
-- `resource-guard run --profile test --wait-seconds 900 -- node tools/r6/spine/capture-playwright.mjs --published docs/renewal/r6/tech/monsters 15`로 W15를, 마지막 인수를 `20`으로 바꿔 W20을 확인한다. 실제 혼합표에서 W15는 T2·T3, W20은 T3·T4를 사용한다. 각 캡처는 해당 웨이브의 전체 편성을 길 위에 배치한 결과다. W15는 28개 중 11개(8종), W20은 30개 중 11개(7종)가 전용 스킨을 사용했다. 두 편성 모두 걷기·피격·쓰러짐을 확인했다. 해당 보스는 기본 보행체여서 이번 전장 캡처에서 전용 보스 기술은 재생하지 않았다. [W15 전장](monsters/battle-w15-walk.webp) · [W15 재생 결과](monsters/battle-w15-report.json) · [W20 전장](monsters/battle-walk.webp) · [W20 재생 결과](monsters/battle-report.json)
+- 흰 배경을 확인한 원화는 `placement.json`의 `whiteKey.sourceHash`에 시트·조립 그림의 `digest`를 기록한다. 같은 원본으로 배치를 실행하면 `white_key.py`가 원래 해상도에서 RGB 세 채널이 240 이상인 연결 영역을 찾는다. 가장자리에 닿은 영역은 제거하고, 닫힌 영역은 24px 이상, 가로·세로 3px 이상, 내부 2×2 면이 있을 때 제거한다. 작은 점·가는 선·은회색은 보존한다. 큰 밝은 표식은 `whiteKey.protect.sheet` 또는 `assembly`의 원본 좌표 사각형 목록으로 보호할 수 있다. 경계 한 줄은 흰 매트와 혼합된 색을 분리한다.
+- 캐시의 `white-key/<해시>/`에는 정리한 두 PNG와 원본 크기의 삭제 마스크가 남는다. 각 개체의 `report.json`에는 적용 여부, 삭제 화소 수, 경계 색을 보정한 화소 수가 있다. 판독 그림은 위가 분해 시트, 아래가 조립 원화다. 각 줄에서 원본, 삭제한 영역(앰버), 정리 결과 순으로 읽는다. [16개체 판독 그림](monsters/white-key)
+- 흰 얼룩 16건이 모두 해소됐다. 기계 6건, 바위 3건, 인간 6건이 조립 기준을 통과해 다시 연결됐고, 인간 보병 T3는 IoU 0.674로 남았다. 되돌렸던 기계 보병 T2·T3, 중장갑 T1, 특수 T1도 다시 전용 스킨을 쓴다. 세 종족 아틀라스를 무손실 WebP로 다시 묶었다. 최대 용량은 바위의 776,326바이트다.
+- `resource-guard run --profile test --wait-seconds 900 -- node tools/r6/spine/capture-playwright.mjs --published docs/renewal/r6/tech/monsters 15`로 W15를, 마지막 인수를 `20`으로 바꿔 W20을 확인한다. W15는 28개 중 17개(13종), W20은 30개 중 16개(10종)가 전용 스킨을 사용했다. 두 편성에서 걷기·피격·쓰러짐과 W15 기계 보스 T3·W20 바위 보스 T4의 기술을 확인했다. [W15 전장](monsters/battle-w15-walk.webp) · [W15 재생 결과](monsters/battle-w15-report.json) · [W20 전장](monsters/battle-walk.webp) · [W20 재생 결과](monsters/battle-report.json)
 
 <!-- monster-batch:begin -->
 
 | 종족 | 개체 | 조립 IoU | 슬롯 | 내보낸 동작 |
 | --- | --- | ---: | ---: | --- |
 | machine | infantry/T1 | 0.873 | 6 | 걷기·피격·쓰러짐 |
-| machine | infantry/T2 | 0.823 | 11 | 원화 재요청 |
-| machine | infantry/T3 | 0.859 | 11 | 원화 재요청 |
+| machine | infantry/T2 | 0.809 | 11 | 걷기·피격·쓰러짐 |
+| machine | infantry/T3 | 0.840 | 11 | 걷기·피격·쓰러짐 |
 | machine | infantry/T4 | 0.868 | 11 | 걷기·피격·쓰러짐 |
-| machine | runner/T1 | 0.762 | 10 | 원화 재요청 |
+| machine | runner/T1 | 0.758 | 10 | 걷기·피격·쓰러짐 |
 | machine | runner/T2 | 0.731 | 11 | 걷기·피격·쓰러짐 |
 | machine | runner/T3 | 0.689 | 12 | 조립 재요청 |
 | machine | runner/T4 | 0.731 | 12 | 걷기·피격·쓰러짐 |
-| machine | armored/T1 | 0.903 | 11 | 원화 재요청 |
+| machine | armored/T1 | 0.903 | 11 | 걷기·피격·쓰러짐 |
 | machine | armored/T2 | 0.872 | 11 | 걷기·피격·쓰러짐 |
 | machine | armored/T3 | 0.901 | 12 | 걷기·피격·쓰러짐 |
 | machine | armored/T4 | 0.886 | 12 | 걷기·피격·쓰러짐 |
-| machine | special/T1 | 0.921 | 2 | 원화 재요청 |
+| machine | special/T1 | 0.900 | 2 | 걷기·피격·쓰러짐 |
 | machine | special/T2 | 0.422 | 3 | 조립 재요청 |
 | machine | special/T3 | 0.487 | 3 | 조립 재요청 |
 | machine | special/T4 | 0.565 | 4 | 조립 재요청 |
 | machine | boss-t1/T1 | 0.839 | 11 | 걷기·피격·쓰러짐·기술 |
 | machine | boss-t2/T2 | 0.694 | 12 | 조립 재요청 |
-| machine | boss-t3/T3 | 0.714 | 12 | 원화 재요청 |
+| machine | boss-t3/T3 | 0.705 | 12 | 걷기·피격·쓰러짐·기술 |
 | machine | boss-t4/T4 | 0.689 | 12 | 조립 재요청 |
 | stone | infantry/T1 | 0.909 | 10 | 걷기·피격·쓰러짐 |
 | stone | infantry/T2 | 0.822 | 10 | 걷기·피격·쓰러짐 |
@@ -131,9 +133,9 @@ Chromium 156에서 실제 전장 길 위에 20개체를 배치했다. 개체마�
 | stone | runner/T3 | 0.743 | 11 | 걷기·피격·쓰러짐 |
 | stone | runner/T4 | 0.905 | 11 | 걷기·피격·쓰러짐 |
 | stone | armored/T1 | 0.933 | 11 | 걷기·피격·쓰러짐 |
-| stone | armored/T2 | 0.886 | 11 | 원화 재요청 |
+| stone | armored/T2 | 0.883 | 11 | 걷기·피격·쓰러짐 |
 | stone | armored/T3 | 0.839 | 12 | 걷기·피격·쓰러짐 |
-| stone | armored/T4 | 0.785 | 11 | 원화 재요청 |
+| stone | armored/T4 | 0.778 | 11 | 걷기·피격·쓰러짐 |
 | stone | special/T1 | 0.947 | 3 | 걷기·피격·쓰러짐 |
 | stone | special/T2 | 0.460 | 3 | 조립 재요청 |
 | stone | special/T3 | 0.537 | 3 | 조립 재요청 |
@@ -141,23 +143,23 @@ Chromium 156에서 실제 전장 길 위에 20개체를 배치했다. 개체마�
 | stone | boss-t1/T1 | 0.827 | 11 | 걷기·피격·쓰러짐·기술 |
 | stone | boss-t2/T2 | 0.665 | 11 | 조립 재요청 |
 | stone | boss-t3/T3 | 0.643 | 10 | 조립 재요청 |
-| stone | boss-t4/T4 | 0.758 | 11 | 원화 재요청 |
+| stone | boss-t4/T4 | 0.725 | 11 | 걷기·피격·쓰러짐·기술 |
 | elf | infantry/T1 | 0.876 | 13 | 걷기·피격·쓰러짐 |
 | elf | runner/T1 | 0.879 | 13 | 걷기·피격·쓰러짐 |
 | elf | armored/T1 | 0.925 | 13 | 걷기·피격·쓰러짐 |
 | elf | special/T1 | 0.762 | 7 | 걷기·피격·쓰러짐 |
 | elf | boss-t1/T1 | 0.787 | 13 | 원화 재요청 |
 | human | infantry/T1 | 0.778 | 13 | 걷기·피격·쓰러짐 |
-| human | infantry/T2 | 0.770 | 11 | 원화 재요청 |
-| human | infantry/T3 | 0.674 | 11 | 원화 재요청 |
-| human | infantry/T4 | 0.785 | 11 | 원화 재요청 |
+| human | infantry/T2 | 0.764 | 11 | 걷기·피격·쓰러짐 |
+| human | infantry/T3 | 0.674 | 11 | 조립 재요청 |
+| human | infantry/T4 | 0.773 | 11 | 걷기·피격·쓰러짐 |
 | human | runner/T1 | 0.772 | 13 | 걷기·피격·쓰러짐 |
 | human | runner/T2 | 0.688 | 12 | 조립 재요청 |
-| human | runner/T3 | 0.750 | 12 | 원화 재요청 |
-| human | runner/T4 | 0.778 | 12 | 원화 재요청 |
+| human | runner/T3 | 0.744 | 12 | 걷기·피격·쓰러짐 |
+| human | runner/T4 | 0.775 | 12 | 걷기·피격·쓰러짐 |
 | human | armored/T1 | 0.922 | 13 | 걷기·피격·쓰러짐 |
-| human | armored/T2 | 0.760 | 11 | 원화 재요청 |
-| human | armored/T3 | 0.817 | 11 | 원화 재요청 |
+| human | armored/T2 | 0.752 | 11 | 걷기·피격·쓰러짐 |
+| human | armored/T3 | 0.813 | 11 | 걷기·피격·쓰러짐 |
 | human | special/T1 | 0.956 | 7 | 걷기·피격·쓰러짐 |
 | human | boss-t1/T1 | 0.760 | 13 | 걷기·피격·쓰러짐·기술 |
 | insect | infantry/T1 | 0.812 | 13 | 원화 재요청 |
@@ -166,12 +168,12 @@ Chromium 156에서 실제 전장 길 위에 20개체를 배치했다. 개체마�
 | insect | special/T1 | 0.844 | 14 | 걷기·피격·쓰러짐 |
 | insect | boss-t1/T1 | 0.778 | 13 | 원화 재요청 |
 
-- 조립 IoU 0.70 이상 50/63개체, 전장 연결 31/63개체.
-- `machine` 아틀라스 1012×269, WebP 335,442바이트, RGBA8 1,088,912바이트.
-- `stone` 아틀라스 922×525, WebP 580,550바이트, RGBA8 1,936,200바이트.
+- 조립 IoU 0.70 이상 50/63개체, 전장 연결 46/63개체.
+- `machine` 아틀라스 920×523, WebP 584,332바이트, RGBA8 1,924,640바이트.
+- `stone` 아틀라스 1222×525, WebP 776,326바이트, RGBA8 2,566,200바이트.
 - `elf` 아틀라스 691×110, WebP 107,032바이트, RGBA8 304,040바이트.
-- `human` 아틀라스 253×523, WebP 170,486바이트, RGBA8 529,276바이트.
+- `human` 아틀라스 1238×269, WebP 439,898바이트, RGBA8 1,332,088바이트.
 - `insect` 아틀라스 581×142, WebP 87,470바이트, RGBA8 330,008바이트.
-- 인접 단계 38쌍 중 0쌍, 종족 간 1475쌍 중 250쌍이 32px 구분 기준에 미달했다.
+- 인접 단계 38쌍 중 0쌍, 종족 간 1475쌍 중 244쌍이 32px 구분 기준에 미달했다.
 
 <!-- monster-batch:end -->

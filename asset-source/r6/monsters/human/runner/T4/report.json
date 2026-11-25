@@ -7,7 +7,7 @@
   "guide": "runner-quadruped.json",
   "placement": "placement.json",
   "ready": true,
-  "silhouetteIoU": 0.778,
+  "silhouetteIoU": 0.775,
   "parts": {
     "leg-hind-far": {
       "sourceBox": [
@@ -874,24 +874,20 @@
       ]
     }
   ],
-  "fitScores": [
-    0.746,
-    0.778
-  ],
-  "accepted": false,
-  "whitePatches": {
-    "reference": [
-      {
-        "pixels": 55,
-        "box": [
-          192,
-          106,
-          203,
-          114
-        ]
-      }
-    ]
+  "whiteKey": {
+    "applied": true,
+    "removedPixels": 481,
+    "sheet": {
+      "removedPixels": 426,
+      "fringePixels": 36
+    },
+    "assembly": {
+      "removedPixels": 55,
+      "fringePixels": 3
+    }
   },
-  "artRedo": "흰 얼룩 · 원화 [192, 106, 203, 114]에서 55px. 부품 사이에 남은 흰 면을 확인해 주세요.",
-  "redo": "흰 얼룩 · 원화 [192, 106, 203, 114]에서 55px. 부품 사이에 남은 흰 면을 확인해 주세요."
+  "fitScores": [
+    0.775
+  ],
+  "accepted": true
 }

@@ -7,7 +7,7 @@
   "guide": "infantry-biped.json",
   "placement": "placement.json",
   "ready": true,
-  "silhouetteIoU": 0.823,
+  "silhouetteIoU": 0.809,
   "parts": {
     "leg-far": {
       "sourceBox": [
@@ -277,24 +277,20 @@
     ]
   },
   "issues": [],
-  "fitScores": [
-    0.795,
-    0.823
-  ],
-  "accepted": false,
-  "whitePatches": {
-    "reference": [
-      {
-        "pixels": 121,
-        "box": [
-          95,
-          106,
-          109,
-          123
-        ]
-      }
-    ]
+  "whiteKey": {
+    "applied": true,
+    "removedPixels": 121,
+    "sheet": {
+      "removedPixels": 0,
+      "fringePixels": 0
+    },
+    "assembly": {
+      "removedPixels": 121,
+      "fringePixels": 6
+    }
   },
-  "artRedo": "흰 얼룩 · 원화 [95, 106, 109, 123]에서 121px. 부품 사이에 남은 흰 면을 확인해 주세요.",
-  "redo": "흰 얼룩 · 원화 [95, 106, 109, 123]에서 121px. 부품 사이에 남은 흰 면을 확인해 주세요."
+  "fitScores": [
+    0.809
+  ],
+  "accepted": true
 }

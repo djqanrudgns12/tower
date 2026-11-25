@@ -15,13 +15,13 @@
     },
     {
       "entity": "human-armored-t2",
-      "rig": "g2-walker",
-      "attachment": "18cffadc70bdd21153c414affd03260612ef16c93ccf2e57bf410776a72a001c",
+      "rig": "human-armored",
+      "attachment": "human-armored-t2-leg-far",
       "skin": "T2",
       "renderer": "phaser",
       "track": "walk",
       "moved": true,
-      "slots": 7
+      "slots": 11
     },
     {
       "entity": "insect-infantry-t3",
@@ -55,13 +55,13 @@
     },
     {
       "entity": "human-armored-t3",
-      "rig": "g2-walker",
-      "attachment": "18cffadc70bdd21153c414affd03260612ef16c93ccf2e57bf410776a72a001c",
+      "rig": "human-armored",
+      "attachment": "human-armored-t3-leg-far",
       "skin": "T3",
       "renderer": "phaser",
       "track": "walk",
       "moved": true,
-      "slots": 7
+      "slots": 11
     },
     {
       "entity": "stone-runner-t3",
@@ -165,13 +165,13 @@
     },
     {
       "entity": "human-infantry-t2",
-      "rig": "g2-walker",
-      "attachment": "18cffadc70bdd21153c414affd03260612ef16c93ccf2e57bf410776a72a001c",
+      "rig": "human-infantry",
+      "attachment": "human-infantry-t2-leg-far",
       "skin": "T2",
       "renderer": "phaser",
       "track": "walk",
       "moved": true,
-      "slots": 7
+      "slots": 11
     },
     {
       "entity": "elf-infantry-t2",
@@ -185,13 +185,13 @@
     },
     {
       "entity": "machine-boss-t3",
-      "rig": "g2-walker",
-      "attachment": "18cffadc70bdd21153c414affd03260612ef16c93ccf2e57bf410776a72a001c",
+      "rig": "machine-boss-t3",
+      "attachment": "machine-boss-t3-t3-leg-hind-far",
       "skin": "T3",
       "renderer": "phaser",
       "track": "walk",
       "moved": true,
-      "slots": 7
+      "slots": 12
     },
     {
       "entity": "insect-infantry-t2",
@@ -225,23 +225,23 @@
     },
     {
       "entity": "human-infantry-t2",
-      "rig": "g2-walker",
-      "attachment": "18cffadc70bdd21153c414affd03260612ef16c93ccf2e57bf410776a72a001c",
+      "rig": "human-infantry",
+      "attachment": "human-infantry-t2-leg-far",
       "skin": "T2",
       "renderer": "phaser",
       "track": "walk",
       "moved": true,
-      "slots": 7
+      "slots": 11
     },
     {
       "entity": "stone-armored-t2",
-      "rig": "g2-walker",
-      "attachment": "18cffadc70bdd21153c414affd03260612ef16c93ccf2e57bf410776a72a001c",
+      "rig": "stone-armored",
+      "attachment": "stone-armored-t2-leg-far",
       "skin": "T2",
       "renderer": "phaser",
       "track": "walk",
       "moved": true,
-      "slots": 7
+      "slots": 11
     },
     {
       "entity": "insect-special-t2",
@@ -287,6 +287,8 @@
   "events": {
     "hit": "hit",
     "fall": "fall",
-    "skill": []
+    "skill": [
+      "boss-skill"
+    ]
   }
 }
