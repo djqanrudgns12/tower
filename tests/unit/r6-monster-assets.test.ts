@@ -3,7 +3,7 @@ import { readFileSync } from 'node:fs';
 import type Phaser from 'phaser';
 import { expect, it, vi } from 'vitest';
 import batch from '../../docs/renewal/r6/tech/monsters/batch.json';
-import { entityId, SPECIES, type Lineage, type Tier } from '../../src/contracts/balanceV2';
+import { ENTITY_IDS, entityId, SPECIES, type Lineage, type Tier } from '../../src/contracts/balanceV2';
 import manifest from '../../public/assets/r6/manifest-v2.json';
 import { R6BattleAssets } from '../../src/game/r6/BattleAssets';
 import { r6ManifestSchema } from '../../src/game/r6/manifest';
@@ -25,8 +25,6 @@ it('기계 스킨은 종족 텍스처까지 준비되면 사용하고, 전송이
   expect(assets.enemyArt(unit)).toMatchObject({ atlas: 'r6.atlas.g2-walker', skin: 'T1' });
   textures.add('r6.atlas.machine!machine.webp');
   expect(assets.enemyArt(unit)).toMatchObject({ data: 'r6.rig.machine-infantry', skin: 'T1', scale: .95 });
-  const legacy = enemy({ faction: 'elf', entityId: 'elf-runner-t3' });
-  expect(assets.enemyArt(legacy)).toMatchObject({ atlas: 'r6.atlas.g2-walker', skin: 'T3' });
 });
 
 it.each(['elf', 'human', 'insect'] as const)('%s 특수 T1은 해당 종족의 아틀라스와 리그로 그린다', faction => {
@@ -53,12 +51,15 @@ it.each(SPECIES)('%s 아틀라스와 전장 스킨이 검수 결과와 일치한
   } as unknown as Phaser.Scene;
   const assets = new R6BattleAssets(scene, () => false);
   assets.manifest = r6ManifestSchema.parse(manifest);
-  for (const row of batch.actors.filter(row => row.species === faction)) {
+  const published = new Map(batch.actors.filter(row => row.species === faction).map(row => {
     const family = row.entry.startsWith('boss-') ? 'boss' : row.entry as Lineage;
     const id = entityId(faction, family, Number(row.skin.slice(1)) as Tier);
+    return [id, row.accepted] as const;
+  }));
+  for (const id of ENTITY_IDS.filter(id => id.startsWith(faction + '-'))) {
     const art = assets.enemyArt(enemy({ faction, entityId: id }));
     expect(art, id).toMatchObject({
-      atlas: 'r6.atlas.' + (row.accepted ? faction : 'g2-walker'), skin: row.skin,
+      atlas: 'r6.atlas.' + (published.get(id) ? faction : 'g2-walker'), skin: 'T' + id.at(-1),
     });
   }
 });
