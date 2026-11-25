@@ -1,0 +1,25 @@
+{
+  "species": "insect",
+  "entry": "infantry",
+  "skin": "T2",
+  "guide": "infantry-biped.json",
+  "scale": 1.05,
+  "armless": false,
+  "reusedFrom": [
+    "T1"
+  ],
+  "slots": {
+    "body": "new",
+    "head": "new",
+    "armor": "new",
+    "arm-near": "new",
+    "arm-hand-near": "new",
+    "arm-far": "new",
+    "arm-hand-far": "reuse:T1:arm-hand-far",
+    "leg-near": "reuse:T1:leg-near",
+    "leg-foot-near": "reuse:T1:leg-foot-near",
+    "leg-far": "reuse:T1:leg-far",
+    "leg-foot-far": "reuse:T1:leg-foot-far"
+  },
+  "notes": "군체 벌레 보병 T2 (낫팔 사마귀갑충). T1 다리·발·원거리 손 재사용, 낫팔·등줄 갑각 신규."
+}
