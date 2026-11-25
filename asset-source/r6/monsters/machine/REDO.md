@@ -2,15 +2,14 @@
 
 ## 조립
 
-- `infantry/T3` 어깨 장갑 안쪽의 흰 면을 제거하니 장갑 중앙과 낮게 놓인 머리 사이로 전장 바닥이 보입니다. 목과 장갑이 겹치도록 머리·몸통·장갑을 다시 맞춰 주세요.
-- `boss-t3/T3` 몸통 아래 흰 삼각형은 원화의 부품 사이 배경입니다. 전장 걷기에서 몸통과 앞·뒷다리의 접합부가 크게 열리고 발이 떨어져 보입니다. 몸통 아래 관절과 발의 겹침을 다시 맞춰 주세요.
+조립 기준 미달 개체 없음.
 
 ## 32px 비교
 
-- stone 비교 400쌍 중 77쌍 미달. 가장 비슷한 쌍은 `machine-armored-t2`와 `stone-infantry-t3` (IoU 0.693).
+- stone 비교 400쌍 중 78쌍 미달. 가장 비슷한 쌍은 `machine-armored-t2`와 `stone-infantry-t3` (IoU 0.693).
 - elf 비교 100쌍 중 7쌍 미달. 가장 비슷한 쌍은 `machine-infantry-t4`와 `elf-armored-t1` (IoU 0.600).
-- human 비교 260쌍 중 59쌍 미달. 가장 비슷한 쌍은 `machine-armored-t2`와 `human-armored-t3` (IoU 0.693).
-- insect 비교 100쌍 중 13쌍 미달. 가장 비슷한 쌍은 `machine-armored-t2`와 `insect-armored-t1` (IoU 0.634).
+- human 비교 260쌍 중 57쌍 미달. 가장 비슷한 쌍은 `machine-armored-t2`와 `human-armored-t3` (IoU 0.693).
+- insect 비교 100쌍 중 12쌍 미달. 가장 비슷한 쌍은 `machine-armored-t2`와 `insect-armored-t1` (IoU 0.634).
 
 ## 도구로 해결
 
@@ -24,6 +23,8 @@
 - `special/T4` 재작화 반영 · 조립 IoU 0.913
 - `boss-t2/T2` 재작화 반영 · 조립 IoU 0.829
 - `boss-t4/T4` 재작화 반영 · 조립 IoU 0.815
+- `infantry/T3` 재작화 반영 · 조립 IoU 0.917
+- `boss-t3/T3` 재작화 반영 · 조립 IoU 0.825
 
 ## 32px 외곽선 · 이전 검수 기록
 

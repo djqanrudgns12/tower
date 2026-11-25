@@ -115,13 +115,17 @@ Chromium 156에서 실제 전장 길 위에 20개체를 배치했다. 개체마�
 인간 보병 T1~T4의 같은 전장 캡처에서 무기를 포함한 표시 높이는 각각 **49.3·57.3·63.0·79.5** 게임 좌표 단위였다. 단계가 올라갈수록 높이가 커져 기존 배율을 유지했다.
 `resource-guard run --profile test --wait-seconds 900 -- node tools/r6/spine/capture-playwright.mjs --published docs/renewal/r6/tech/monsters 15`로 W15를, 마지막 인수를 `20`으로 바꿔 W20을 확인한다. W15는 28개 중 20개(15종), W20은 30개 중 18개(14종)가 전용 스킨을 사용했다. 두 편성에서 걷기·피격·쓰러짐과 W15 바위 보스 T3·W20 기계 보스 T4의 기술을 확인했다. [W15 전장](monsters/battle-w15-walk.webp) · [W15 재생 결과](monsters/battle-w15-report.json) · [W20 전장](monsters/battle-walk.webp) · [W20 재생 결과](monsters/battle-report.json).
 
+### 5차 전장 연결
+
+기계 보병 T3과 보스 T3은 새 시트로 다시 조립해 각각 IoU 0.917, 0.825를 기록했다. 전장 걷기 캡처에서 보병의 목 장갑과 보스의 몸통·다리 접합을 확인했다. 기계 20개체를 2014×348 한 장에 묶었다. WebP q92와 원본 알파로 370,686바이트를 기록했다.
+
 <!-- monster-batch:begin -->
 
 | 종족 | 개체 | 조립 IoU | 슬롯 | 내보낸 동작 |
 | --- | --- | ---: | ---: | --- |
 | machine | infantry/T1 | 0.873 | 6 | 걷기·피격·쓰러짐 |
 | machine | infantry/T2 | 0.809 | 11 | 걷기·피격·쓰러짐 |
-| machine | infantry/T3 | 0.840 | 11 | 원화 재요청 |
+| machine | infantry/T3 | 0.917 | 11 | 걷기·피격·쓰러짐 |
 | machine | infantry/T4 | 0.868 | 11 | 걷기·피격·쓰러짐 |
 | machine | runner/T1 | 0.758 | 10 | 걷기·피격·쓰러짐 |
 | machine | runner/T2 | 0.731 | 11 | 걷기·피격·쓰러짐 |
@@ -137,7 +141,7 @@ Chromium 156에서 실제 전장 길 위에 20개체를 배치했다. 개체마�
 | machine | special/T4 | 0.913 | 4 | 걷기·피격·쓰러짐 |
 | machine | boss-t1/T1 | 0.839 | 11 | 걷기·피격·쓰러짐·기술 |
 | machine | boss-t2/T2 | 0.829 | 12 | 걷기·피격·쓰러짐·기술 |
-| machine | boss-t3/T3 | 0.705 | 12 | 원화 재요청 |
+| machine | boss-t3/T3 | 0.825 | 12 | 걷기·피격·쓰러짐·기술 |
 | machine | boss-t4/T4 | 0.815 | 12 | 걷기·피격·쓰러짐·기술 |
 | stone | infantry/T1 | 0.909 | 10 | 걷기·피격·쓰러짐 |
 | stone | infantry/T2 | 0.822 | 10 | 걷기·피격·쓰러짐 |
@@ -183,12 +187,12 @@ Chromium 156에서 실제 전장 길 위에 20개체를 배치했다. 개체마�
 | insect | special/T1 | 0.844 | 14 | 걷기·피격·쓰러짐 |
 | insect | boss-t1/T1 | 0.780 | 13 | 걷기·피격·쓰러짐·기술 |
 
-- 조립 IoU 0.70 이상 63/63개체, 전장 연결 59/63개체.
-- `machine` 아틀라스 1937×316, WebP 745,472바이트, RGBA8 2,448,368바이트.
+- 조립 IoU 0.70 이상 63/63개체, 전장 연결 61/63개체.
+- `machine` 아틀라스 2014×348, WebP 370,686바이트, RGBA8 2,803,488바이트.
 - `stone` 아틀라스 1985×398, WebP 385,836바이트, RGBA8 3,160,120바이트.
 - `elf` 아틀라스 691×110, WebP 107,032바이트, RGBA8 304,040바이트.
 - `human` 아틀라스 745×523, WebP 512,974바이트, RGBA8 1,558,540바이트.
 - `insect` 아틀라스 1046×126, WebP 151,908바이트, RGBA8 527,184바이트.
-- 인접 단계 38쌍 중 0쌍, 종족 간 1475쌍 중 258쌍이 32px 구분 기준에 미달했다.
+- 인접 단계 38쌍 중 0쌍, 종족 간 1475쌍 중 256쌍이 32px 구분 기준에 미달했다.
 
 <!-- monster-batch:end -->
