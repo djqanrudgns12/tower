@@ -2,7 +2,7 @@
 
 - 기준: `docs/renewal/r6/PRD-r6.md` §4, `docs/renewal/r6/tech/monster-pipeline.md`, `docs/renewal/r6/bible/monsters.md`
 - 진행률: **5 / 20 완료** (`cut_parts.py` 절단 검증 통과 5개)
-- 한도 중단: 이미지 생성 할당량 소진 (`HTTP 429 RESOURCE_EXHAUSTED`, 리셋 예정: **2026-11-25 20:51 KST** 전후, 약 4시간 37분 후)
+- 한도 중단: 이미지 생성 할당량 소진 유지 (`HTTP 429 RESOURCE_EXHAUSTED`, 2026-11-25 20:08 KST 재확인 기준 남은 시간 42분 → 리셋 예정: **2026-11-25 20:51 KST** 전후)
 
 ## 완료 목록 (5개체)
 

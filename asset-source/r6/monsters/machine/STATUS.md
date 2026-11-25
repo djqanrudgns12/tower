@@ -1,8 +1,8 @@
 # 기계 군단 (`machine`) 분해 시트 진행 현황
 
 - 기준: `docs/renewal/r6/PRD-r6.md` §4, `docs/renewal/r6/tech/monster-pipeline.md`, `docs/renewal/r6/bible/monsters.md`
-- 진행률: **13 / 20 완료** (`cut_parts.py` 절단 검증 통과 13개)
-- 한도 중단: 이미지 생성 할당량 소진 (`HTTP 429 RESOURCE_EXHAUSTED`, 리셋 예정: **2026-11-25 20:51 KST** 전후, 약 4시간 37분 후)
+- 진행률: **13 / 20 완료** (`cut_parts.py` 절단 검증 통과 13개 · Codex 리깅 재요청 2건 대기)
+- 한도 중단: 이미지 생성 할당량 소진 유지 (`HTTP 429 RESOURCE_EXHAUSTED`, 2026-11-25 20:08 KST 재확인 기준 남은 시간 42분 → 리셋 예정: **2026-11-25 20:51 KST** 전후)
 
 ## 완료 목록 (13개체)
 
@@ -31,3 +31,9 @@
 - `boss-t2/T2` (`boss-quadruped.json`, scale 1.80)
 - `boss-t3/T3` (`boss-quadruped.json`, scale 2.00)
 - `boss-t4/T4` (`boss-quadruped.json`, scale 2.20)
+
+## 재요청 및 32px 외곽선 기준 (`REDO.md`, 2회차 우선 처리)
+
+- `runner/T1/sheet.png`: 앞·뒷발(`leg-fore-foot-*`, `leg-hind-foot-*`) 4부위를 조립 원화와 같은 긴 바늘형 발끝으로 재작화 (현재 조립 IoU 0.655). `placement.json`·`report.json` 유지.
+- `runner/T3/sheet.png`: T2에서 재사용한 앞·뒷다리·발 8부위를 T3 원화의 보폭과 발목 각도·몸통 옆 위치에 맞춰 신규 작화 (현재 조립 IoU 0.639). `placement.json`·`report.json` 유지.
+- 32px 외곽선 차별화: 새로 그리는 기계 개체는 넓은 상자형 몸통을 피하고, 다리 사이 빈 공간과 장비·방패·로터 돌출로 바위 개체와 차이를 둔다. `armored/T4`는 사족 조립 기준을 준수한다.
