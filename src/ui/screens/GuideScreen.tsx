@@ -1,5 +1,6 @@
 import { useMemo, useRef, useState, type KeyboardEvent } from 'react';
 import type { MotionMode } from '../../application/session';
+import { getR6Battle, type LocalBalanceVersion } from '../../application/balanceSession';
 import { GUIDE_COPY as T } from '../copy';
 import { Card, Modal, ModalTabPanel, ModalTabs, ModalTabShell, type ModalTabOption } from '../kit';
 import css from './GuideScreen.module.css';
@@ -37,6 +38,7 @@ const ARROW_KEY_WIDGETS = [
 const LAST_CHAPTER = GUIDE_CHAPTER_IDS[GUIDE_CHAPTER_IDS.length - 1]!;
 
 interface Props {
+  balanceVersion: LocalBalanceVersion;
   /** 설정의 배경 움직임 단계. '전체'일 때만 1장 수비 순환·2장 결과 순환이 돈다(OS 동작 줄이기도 멈춘다). */
   motionMode?: MotionMode | undefined;
   /** 시연 캔버스의 길·받침 고대비 윤곽선. */
@@ -49,8 +51,9 @@ interface Props {
  * 목차 왕복이나 하단 쪽 넘김 없이 상단 책갈피 탭으로 1~5장을 즉시 오가며,
  * 시연 무대(왼쪽)와 핵심 3단계 요약 카드(오른쪽)를 한눈에 본다.
  */
-export function GuideScreen({ motionMode = 'full', highContrastMap = false, onBack }: Props) {
-  const chapters = useMemo(() => buildGuideChapters(), []);
+export function GuideScreen({ balanceVersion, motionMode = 'full', highContrastMap = false, onBack }: Props) {
+  const balance = balanceVersion === '2.0.0' ? getR6Battle().balance : undefined;
+  const chapters = useMemo(() => buildGuideChapters(balance), [balance]);
   const [chapterId, setChapterId] = useState<GuideChapterId>(1);
   const osReduce = usePrefersReducedMotion();
   const animate = motionMode === 'full' && !osReduce;
@@ -95,7 +98,7 @@ export function GuideScreen({ motionMode = 'full', highContrastMap = false, onBa
           className={css.guideTabs}
         />
         <ModalTabPanel id="guide-tabpanel" labelledBy={`guide-tab-${chapter.id}`} pad="sm" className={css.guidePanel}>
-          <section className={css.chapter} aria-labelledby="guideChapterTitle" data-chapter={chapter.id}>
+          <section className={css.chapter} aria-labelledby="guideChapterTitle" data-chapter={chapter.id} data-r6={Boolean(balance?.r6) || undefined}>
             <header className={css.head}>
               <h3 id="guideChapterTitle" ref={headRef} tabIndex={-1} className={css.chapterTitle}>
                 {chapterLabel(chapter)}
@@ -106,7 +109,7 @@ export function GuideScreen({ motionMode = 'full', highContrastMap = false, onBa
 
             <div className={css.chapterBody}>
               <Card sunk pad="sm" className={css.stageCol}>
-                <GuideVisualStage chapter={chapter} animate={animate} highContrastMap={highContrastMap} />
+                <GuideVisualStage chapter={chapter} balance={balance} animate={animate} highContrastMap={highContrastMap} />
               </Card>
 
               <ol className={css.rows} aria-label={`${chapter.title} 요약`}>

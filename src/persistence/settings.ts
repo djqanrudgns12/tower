@@ -34,6 +34,8 @@ export interface Settings {
   motionCustomized?: boolean;
   /** 전장 길·돌 받침 고대비 보조 윤곽선 표시. */
   highContrastMap: boolean;
+  /** 밝은 화면 색상. 예전 저장본은 어두운 화면으로 연다. */
+  lightTheme?: boolean;
   /** 문제 보기(1~4) 단축키 번호 배지 표시. */
   showKeyHints: boolean;
   /** 학교 이름 (선택/NEIS 연동용). */
@@ -78,6 +80,7 @@ const defaults = (): Settings => ({
   motionMode: typeof matchMedia === 'function' && matchMedia('(prefers-reduced-motion: reduce)').matches ? 'minimal' : 'full',
   motionCustomized: false,
   highContrastMap: false,
+  lightTheme: false,
   showKeyHints: true,
   lastSchoolName: '',
   lastSchoolCode: '',
@@ -109,6 +112,7 @@ export function normalizeSettings(base: Settings, raw: Partial<Settings>): Setti
     motionMode,
     motionCustomized,
     highContrastMap: typeof raw.highContrastMap === 'boolean' ? raw.highContrastMap : base.highContrastMap,
+    lightTheme: typeof raw.lightTheme === 'boolean' ? raw.lightTheme : (base.lightTheme ?? false),
     showKeyHints: typeof raw.showKeyHints === 'boolean' ? raw.showKeyHints : base.showKeyHints,
     lastSchoolName: typeof raw.lastSchoolName === 'string' ? raw.lastSchoolName : (base.lastSchoolName ?? ''),
     lastSchoolCode: typeof raw.lastSchoolCode === 'string' ? raw.lastSchoolCode : (base.lastSchoolCode ?? ''),

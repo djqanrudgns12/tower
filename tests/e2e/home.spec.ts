@@ -40,7 +40,7 @@ async function seedRecords(page: Page, count: number) {
 
 // 홈은 옛 랜딩(방향 2-A: 왕국 참나무 작전실)이다. R4 U1 타이틀 화면(3426df8)을 되돌린 것이며, 이어하기(저장)는 앱에서 제거됐다.
 // 새 게임 창·환경설정·사용 설명서는 R4 판 그대로라서 그 창 안의 단언은 R4 기준이고, 홈에서 여는 단추 이름만 랜딩 기준이다.
-test.describe('랜딩 페이지(방향 2-A: 왕국 참나무 작전실) 통합 검증', () => {
+test.describe('홈 화면 통합 검증', () => {
   test('L01·L04·L06·L07·L08: 처음 온 학생에게 연습 권유, 적용됨 버튼 제거, 직결 닉네임 데크·랜덤 추천·자동 연동·새 게임 무마찰 승계', async ({ page }) => {
     const errors: string[] = [];
     page.on('pageerror', e => errors.push(String(e)));
@@ -313,6 +313,7 @@ test.describe('랜딩 페이지(방향 2-A: 왕국 참나무 작전실) 통합 �
     const dialog = page.getByRole('dialog', { name: /전체 랭킹/ });
     const modalList = dialog.getByRole('region', { name: '랭킹 목록' });
     await expect(modalList.getByRole('listitem')).toHaveCount(30);
+    await page.screenshot({ path: 'test-results/shots/r6-12-ranking-desktop.png' });
     await expect(modalList).toHaveAttribute('tabindex', '0');
     expect(await scrollGap(modalList), '창 목록이 스크롤된다').toBeGreaterThan(0);
     await expect(dialog.getByRole('button', { name: '닫기' })).toBeFocused();
@@ -323,6 +324,9 @@ test.describe('랜딩 페이지(방향 2-A: 왕국 참나무 작전실) 통합 �
     await page.keyboard.press('PageDown');
     await expect.poll(() => scrollTop(modalList), '방향키로 목록이 내려간다').toBeGreaterThan(before);
     expect((await new AxeBuilder({ page }).analyze()).violations.map(v => `${v.id}: ${v.nodes.length}`)).toEqual([]);
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.screenshot({ path: 'test-results/shots/r6-12-ranking-mobile.png' });
+    await page.setViewportSize({ width: 1366, height: 650 });
     await page.keyboard.press('Escape');
     await expect(dialog).toHaveCount(0);
 
@@ -445,16 +449,17 @@ test.describe('랜딩 페이지(방향 2-A: 왕국 참나무 작전실) 통합 �
     await page.getByRole('textbox', { name: '닉네임' }).fill('참나무수호대');
     await expect(page.getByRole('complementary', { name: '랭킹', exact: true })).toContainText('별빛파수꾼');
     await expect(page.getByLabel('내 순위 요약')).toContainText('4위 · 10,420점');
+    const mapPreview = page.getByRole('img', { name: '초원 고원 전장 미리보기' });
+    await expect.poll(() => mapPreview.evaluate((image: HTMLImageElement) => image.naturalWidth)).toBe(960);
 
     const homeAxe = await new AxeBuilder({ page }).analyze();
-    expect(homeAxe.violations.map(v => `${v.id}: ${v.nodes.length}`)).toEqual([]);
-    await page.screenshot({ path: 'test-results/shots/home-2a-desktop.png' });
+    expect(homeAxe.violations.flatMap(v => v.nodes.map(node => `${v.id}: ${node.target.join(' ')}`))).toEqual([]);
+    await page.screenshot({ path: 'test-results/shots/r6-01-home-desktop.png' });
 
     // 설정 모달 axe 검사
     await page.getByRole('button', { name: '설정' }).click();
     const settingsAxe = await new AxeBuilder({ page }).analyze();
     expect(settingsAxe.violations.map(v => `${v.id}: ${v.nodes.length}`)).toEqual([]);
-    await page.screenshot({ path: 'test-results/shots/home-2a-settings.png' });
     await page.keyboard.press('Escape');
 
     // 새 게임 모달 캡처 및 axe 검사
@@ -463,7 +468,10 @@ test.describe('랜딩 페이지(방향 2-A: 왕국 참나무 작전실) 통합 �
     await expect(page.getByRole('dialog', { name: '새 게임' })).toBeVisible();
     const newGameAxe = await new AxeBuilder({ page }).analyze();
     expect(newGameAxe.violations.map(v => `${v.id}: ${v.nodes.length}`)).toEqual([]);
-    await page.screenshot({ path: 'test-results/shots/home-2a-newgame.png' });
+    await page.screenshot({ path: 'test-results/shots/r6-02-new-game-desktop.png' });
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.screenshot({ path: 'test-results/shots/r6-02-new-game-mobile.png' });
+    await page.setViewportSize({ width: 1440, height: 900 });
     await page.keyboard.press('Escape');
 
     // PRD §12.8 스타일 검사: linear/radial gradient 0건, backdrop-filter 0건, 다중 그림자 0건
@@ -500,7 +508,57 @@ test.describe('랜딩 페이지(방향 2-A: 왕국 참나무 작전실) 통합 �
       await page.setViewportSize({ width: w, height: h });
       const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
       expect(overflow, `${w}x${h} overflow`).toBeLessThanOrEqual(0);
-      if (w === 390) await page.screenshot({ path: 'test-results/shots/home-2a-mobile.png' });
+      if (w === 390) await page.screenshot({ path: 'test-results/shots/r6-01-home-mobile.png', fullPage: true });
     }
   });
+});
+
+test('밝은 화면 설정은 색상을 즉시 바꾸고 다시 열어도 유지된다', async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto('/');
+  const root = page.locator('html');
+  await expect(root).toHaveAttribute('data-theme', 'dark');
+  const canvasColor = () => root.evaluate(el => getComputedStyle(el).getPropertyValue('--bg-canvas').trim());
+  const dark = await canvasColor();
+  await page.getByRole('button', { name: '설정' }).click();
+  const dialog = page.getByRole('dialog', { name: '환경설정' });
+  await dialog.getByRole('tab', { name: '화면·조작' }).click();
+  const theme = dialog.getByRole('switch', { name: '밝은 화면' });
+  await expect(theme).not.toBeChecked();
+  await page.screenshot({ path: 'test-results/shots/r6-11-settings-desktop.png' });
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.screenshot({ path: 'test-results/shots/r6-11-settings-mobile.png' });
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await theme.click();
+  await expect(theme).toBeChecked();
+  await expect(root).toHaveAttribute('data-theme', 'light');
+  expect(await canvasColor()).not.toBe(dark);
+  expect((await new AxeBuilder({ page }).analyze()).violations.map(v => v.id)).toEqual([]);
+  await page.screenshot({ path: 'test-results/shots/r6-11-settings-light-desktop.png' });
+  await page.reload();
+  await expect(root).toHaveAttribute('data-theme', 'light');
+  await page.getByRole('button', { name: '설정' }).click();
+  await dialog.getByRole('tab', { name: '화면·조작' }).click();
+  await expect(theme).toBeChecked();
+  await theme.click();
+  await expect(root).toHaveAttribute('data-theme', 'dark');
+});
+
+test('교실 QR 창에서 학년과 학교 포함 여부가 입장 주소에 반영된다', async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto('/?school=서울초등학교&sc=7010057');
+  await expect(page.getByRole('img', { name: '초원 고원 전장 미리보기' })).toBeVisible();
+  await page.getByRole('button', { name: '교실 QR', exact: true }).click();
+  const dialog = page.getByRole('dialog', { name: '교실 입장 QR · 주소' });
+  await expect(dialog.getByRole('img', { name: '교실 입장 QR 코드' })).toBeVisible();
+  await dialog.getByRole('radio', { name: '4학년', exact: true }).click();
+  const school = dialog.getByRole('switch', { name: /학교 이름 함께 전달/ });
+  if (!await school.isChecked()) await school.click();
+  await expect(dialog).toContainText(/grade=4.*school=.*sc=7010057/);
+  await page.screenshot({ path: 'test-results/shots/r6-13-classroom-qr-desktop.png' });
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.screenshot({ path: 'test-results/shots/r6-13-classroom-qr-mobile.png' });
+  await school.click();
+  await expect(dialog).toContainText('grade=4');
+  await expect(dialog).not.toContainText('sc=7010057');
 });

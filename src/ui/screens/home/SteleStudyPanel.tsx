@@ -4,7 +4,7 @@ import {
   pickRandomStudyIndex,
   selectDailySteleCards,
 } from '../../../application/lobby';
-import { HomeUiArt, ShuffleIcon } from './HomeIcons';
+import { LineIcon } from '../../icons/LineIcon';
 import { useGradeContent } from '../../useGradeContent';
 import css from './home.module.css';
 
@@ -90,11 +90,11 @@ export function SteleStudyPanel({ preferredGrade }: Props) {
 
   if (cards.length === 0) {
     return (
-      <section className={css.subCard} aria-label="오늘의 낱말">
+      <section className={`${css.subCard} ${css.studyCard}`} aria-label="오늘의 낱말">
         <div className={css.cardHeaderRow}>
           <div className={css.cardTitleWrap}>
             <span className={css.sectionIconBadge} aria-hidden="true">
-              <HomeUiArt file="relic.lucky_pouch.webp" className={css.sectionIcon} />
+              <LineIcon name="hud/guide" size={18} />
             </span>
             <h2 className={css.sectionTitle}>오늘의 낱말</h2>
           </div>
@@ -131,11 +131,11 @@ export function SteleStudyPanel({ preferredGrade }: Props) {
   };
 
   return (
-    <section className={css.subCard} aria-label="오늘의 낱말">
+    <section className={`${css.subCard} ${css.studyCard}`} aria-label="오늘의 낱말">
       <div className={css.cardHeaderRow}>
         <div className={css.cardTitleWrap}>
           <span className={css.sectionIconBadge} aria-hidden="true">
-            <HomeUiArt file="relic.lucky_pouch.webp" className={css.sectionIcon} />
+            <LineIcon name="hud/guide" size={18} />
           </span>
           <h2 className={css.sectionTitle}>오늘의 낱말</h2>
           <span className={css.metaTag}>
@@ -147,7 +147,7 @@ export function SteleStudyPanel({ preferredGrade }: Props) {
           className={css.keyBtnSm}
           onClick={handleRandom}
         >
-          <ShuffleIcon className={css.btnIconSvg} />
+          <LineIcon name="hud/shuffle" size={16} />
           랜덤
         </button>
       </div>

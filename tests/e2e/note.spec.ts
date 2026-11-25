@@ -18,6 +18,7 @@ async function startRun(page: Page, nickname: string) {
   await page.getByRole('textbox', { name: '닉네임' }).fill(nickname);
   await page.getByRole('button', { name: '새 게임', exact: true }).click();
   await page.getByRole('dialog', { name: '새 게임' }).getByRole('button', { name: '시작', exact: true }).click();
+  await expect(page.locator('main[data-r6="true"]')).toBeVisible();
   await expect(page.getByRole('img', { name: '준비 1/5' })).toBeVisible();
 }
 
@@ -66,8 +67,8 @@ test('오답 노트가 비어 있으면: 홈 단추에 개수가 없고, 화면�
   expect(axe.violations.map(v => `${v.id}: ${v.nodes.length}`)).toEqual([]);
   await page.screenshot({ path: 'test-results/shots/note-empty.png' });
 
-  // O1: 양피지 공책이 lg(860×580) 고정 규격으로 바탕 한가운데에 정돈되어 놓인다.
-  await expect(page.locator('img[src*="note.empty"]')).toBeVisible();
+  // 선 아이콘과 안내가 가운데에 있는 큰 창이다.
+  await expect(page.locator('svg[width="64"][height="64"]')).toBeVisible();
   const book = (await page.locator('main > div').first().boundingBox())!;
   expect(Math.round(book.width), '공책 대형 고정 폭').toBe(860);
   expect(Math.round(book.height), '공책 대형 고정 높이').toBe(580);
@@ -113,7 +114,13 @@ test('한 판 끝내기 → 결과의 노트 줄과 노트 보기 → 오답 노
   await wordBtn.click();
   const resultAxe = await new AxeBuilder({ page }).analyze();
   expect(resultAxe.violations.map(v => `${v.id}: ${v.nodes.length}`)).toEqual([]);
-  await page.screenshot({ path: 'test-results/shots/result-with-note.png' });
+  await wordBtn.click();
+  await page.screenshot({ path: 'test-results/shots/r6-08-result-desktop.png' });
+  await page.setViewportSize({ width: 390, height: 844 });
+  expect(await page.evaluate(() => document.documentElement.scrollWidth - innerWidth)).toBeLessThanOrEqual(0);
+  await page.screenshot({ path: 'test-results/shots/r6-08-result-mobile.png' });
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await wordBtn.click();
 
   // R1: '이번 판 기록'은 접혀 있다가 누르면 푼 문제·모르겠어요·만난 낱말이 나온다(첫 문제를 넘겼으니 0·1·1개). 퍼센트·숙련도는 어디에도 없다.
   const log = page.getByRole('button', { name: '이번 판 기록' });
@@ -167,12 +174,13 @@ test('한 판 끝내기 → 결과의 노트 줄과 노트 보기 → 오답 노
 
   const noteAxe = await new AxeBuilder({ page }).analyze();
   expect(noteAxe.violations.map(v => `${v.id}: ${v.nodes.length}`)).toEqual([]);
-  await page.screenshot({ path: 'test-results/shots/note-with-word.png' });
+  await page.screenshot({ path: 'test-results/shots/r6-09-wrong-note-desktop.png' });
 
   // 가로 넘침 0: 결과·노트 모두 휴대폰·초소형 화면에서도 옆으로 밀리지 않는다.
   for (const [w, h] of [[390, 844], [320, 568], [1366, 650]] as const) {
     await page.setViewportSize({ width: w, height: h });
     expect(await page.evaluate(() => document.documentElement.scrollWidth - innerWidth), `${w}x${h} 노트 가로 넘침`).toBeLessThanOrEqual(0);
+    if (w === 390) await page.screenshot({ path: 'test-results/shots/r6-09-wrong-note-mobile.png' });
   }
   await page.setViewportSize({ width: 1440, height: 900 });
 

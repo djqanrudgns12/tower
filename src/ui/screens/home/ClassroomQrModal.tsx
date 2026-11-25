@@ -3,7 +3,8 @@ import { buildClassroomShareUrl, detectInAppBrowser } from '../../../application
 import { cleanPublicSchoolCode, cleanPublicSchoolName } from '../../../contracts/lobby';
 import { isGradeAvailable } from '../../../content';
 import { HOME_COPY } from '../../copy';
-import { ArtIcon, Button, Card, Modal, Segmented, Toggle, type SegmentOption } from '../../kit';
+import { Button, Card, Modal, Segmented, Toggle, type SegmentOption } from '../../kit';
+import { LineIcon } from '../../icons/LineIcon';
 import { canEncodeQr, encodeQrMatrix, qrMatrixToSvgPath } from '../../utils/qr';
 import css from './home.module.css';
 
@@ -79,7 +80,7 @@ export function ClassroomQrModal({ defaultGrade, schoolName, schoolCode, onClose
     value: `${g}`,
     label: (
       <>
-        {!isGradeAvailable(g) && <ArtIcon name="lock" size={15} />}
+        {!isGradeAvailable(g) && <LineIcon name="hud/lock" size={15} />}
         <span>{g}학년</span>
       </>
     ),

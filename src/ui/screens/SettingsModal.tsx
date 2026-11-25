@@ -39,7 +39,7 @@ const fontOptions = (): SegmentOption<FontScale>[] => [
 /** 움직임의 기본값은 기기의 '움직임 줄이기' 설정을 따른다(persistence/settings.ts defaults와 같은 규칙). */
 const motionOptions = (base: MotionMode): SegmentOption<MotionMode>[] => [
   { value: 'full', label: withMark('전체', base === 'full'), ariaLabel: `전체 연출${baseSr(base === 'full')}` },
-  { value: 'simple', label: withMark('바람·낙엽', base === 'simple'), ariaLabel: `바람·낙엽만${baseSr(base === 'simple')}` },
+  { value: 'simple', label: withMark('간단', base === 'simple'), ariaLabel: `간단한 연출${baseSr(base === 'simple')}` },
   { value: 'minimal', label: withMark('정지', base === 'minimal'), ariaLabel: `정지${baseSr(base === 'minimal')}` },
 ];
 
@@ -186,6 +186,8 @@ export function SettingsModal({ settings, onUpdate, onHistoryCleared, onClose }:
                 <Segmented label={T.font} options={fontChoices} value={settings.fontScale} onChange={fontScale => onUpdate({ fontScale })} />
               </Row>
               <Card sunk pad="sm" className={css.preview} aria-label="글자 크기 미리보기" data-content>{T.fontPreview}</Card>
+
+              <SwitchRow label="밝은 화면" checked={settings.lightTheme === true} onChange={lightTheme => onUpdate({ lightTheme })} />
 
               <Row name={T.motion} hint={S.motionHint}>
                 <Segmented

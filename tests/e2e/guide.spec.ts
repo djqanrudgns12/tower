@@ -22,10 +22,10 @@ async function openChapter(dialog: Locator, n: number) {
   await expect(chapterHead(dialog, n)).toBeVisible();
 }
 
-/** 그라데이션·블러 0, 허용 반경만(ui-rules-v4 총괄 결정 2: 0/4/8/999px). */
+/** 그라데이션·블러 0, R04 모따기 토큰과 기존 조작 칸 반경만. */
 function styleIssues(dialog: Locator) {
   return dialog.evaluate(root => {
-    const allowedRadii = new Set(['0px', '4px', '8px', '999px']);
+    const allowedRadii = new Set(['0px', '4px', '6px', '8px', '10px', '999px']);
     const issues: string[] = [];
     for (const el of [root, ...root.querySelectorAll('*')]) {
       const cs = getComputedStyle(el);
@@ -71,7 +71,7 @@ test.describe('사용 설명서', () => {
     const errors: string[] = [];
     page.on('pageerror', e => errors.push(String(e)));
     await page.setViewportSize({ width: 1440, height: 900 });
-    await page.goto('/');
+    await page.goto('/?balance=v1');
     const guideTrigger = page.getByRole('button', { name: '사용 설명서', exact: true });
     const dialog = await openGuide(page);
 
@@ -151,7 +151,7 @@ test.describe('사용 설명서', () => {
     const errors: string[] = [];
     page.on('pageerror', e => errors.push(String(e)));
     await page.setViewportSize({ width: 1440, height: 900 });
-    await page.goto('/');
+    await page.goto('/?balance=v1');
     const dialog = await openGuide(page);
 
     // G2: 1장 — 그림 수비 캔버스(움직임 '전체'에서 돈다), 4박 고정 칸, 정답 +N골드 배지.
@@ -247,7 +247,7 @@ test.describe('사용 설명서', () => {
 
   test('G12: 크롬북 1366×650 — 5장 탭 화면이 글자 크기 3단계 모두 스크롤·크기 흔들림 없이 들어가고, 13px·44px 하한을 지킨다', async ({ page }) => {
     await page.setViewportSize({ width: 1366, height: 650 });
-    await page.goto('/');
+    await page.goto('/?balance=v1');
     for (const font of ['base', 'large', 'xlarge'] as const) {
       await page.evaluate(f => { document.documentElement.dataset.font = f; }, font);
       const dialog = await openGuide(page);
@@ -271,7 +271,7 @@ test.describe('사용 설명서', () => {
   });
 
   test('G13: 휴대폰 390×844·초소형 320×568 글자 아주 크게 — 5장 모두 가로 넘침 0', async ({ page }) => {
-    await page.goto('/');
+    await page.goto('/?balance=v1');
     await page.evaluate(() => { document.documentElement.dataset.font = 'xlarge'; });
     for (const [w, h] of [[390, 844], [320, 568]] as const) {
       await page.setViewportSize({ width: w, height: h });
@@ -293,7 +293,7 @@ test.describe('사용 설명서', () => {
   test('G10·G11: 움직임 줄이기(OS·설정 정지)에서 시연이 멈추고, 고대비 윤곽선 설정이 캔버스에 닿는다', async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 900 });
     await page.emulateMedia({ reducedMotion: 'reduce' });
-    await page.goto('/');
+    await page.goto('/?balance=v1');
     let dialog = await openGuide(page);
     await openChapter(dialog, 1);
     await expect(dialog.locator('canvas')).toHaveAttribute('data-animate', 'false');
@@ -321,4 +321,37 @@ test.describe('사용 설명서', () => {
     await openChapter(dialog, 3);
     await expect(dialog.locator('canvas')).toHaveAttribute('data-contrast', 'true');
   });
+});
+
+test('기본 설명서에서 R6 지도, 타워 6종과 무기 단계, 적 5종족을 확인한다', async ({ page }) => {
+  await page.setViewportSize({ width: 1366, height: 650 });
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await page.goto('/');
+  const dialog = await openGuide(page);
+  await expect(dialog.getByRole('img', { name: '초원 고원 지도' })).toBeVisible();
+  await dialog.getByRole('radio', { name: '2. 설치' }).click();
+  await expect(dialog).toContainText(/빈 받침에 타워를 놓아요.*레일 포탑/);
+
+  await dialog.getByRole('tab', { name: '3. 타워 놓기와 진화' }).click();
+  const towers = dialog.getByRole('radiogroup', { name: '타워 종류' });
+  await expect(towers.getByRole('radio')).toHaveText(['레일 포탑', '곡사 포대', '냉각 중계탑', '프리즘 탑', '드론 격납고', '방벽 기지']);
+  await expect(dialog).toContainText('최대 Lv20');
+  const weapons = dialog.getByRole('list', { name: '무기 단계' });
+  await expect(weapons).toBeInViewport({ ratio: 1 });
+  await expect(weapons.getByRole('listitem')).toHaveText([
+    /Lv1 · I.*단포신/, /Lv6 · II.*쌍포신/, /Lv12 · III.*삼연장/, /Lv18 · IV.*가속 고리/,
+  ]);
+  await page.screenshot({ path: 'test-results/shots/r6-10-guide-desktop.png' });
+  await towers.getByRole('radio', { name: '곡사 포대' }).click();
+  await expect(dialog.getByRole('list', { name: '무기 단계' })).toContainText('최대');
+
+  await page.setViewportSize({ width: 390, height: 844 });
+  expect((await fitAudit(dialog)).hOverflow).toBe(0);
+  await page.screenshot({ path: 'test-results/shots/r6-10-guide-mobile.png' });
+  await dialog.getByRole('tab', { name: '5. 적 종류와 보상' }).click();
+  const species = dialog.getByRole('radiogroup', { name: '적 종류' });
+  await expect(species.getByRole('radio')).toHaveText(['숲 엘프', '철갑 인간', '기계 군단', '군체 벌레', '바위 거인']);
+  await species.getByRole('radio', { name: '바위 거인' }).click();
+  await expect(dialog).toContainText('바위 거인 · 20개체');
+  await expect(dialog).toContainText('체력을 회복해요');
 });

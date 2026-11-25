@@ -1,4 +1,5 @@
-import { lazy, Suspense, useCallback, useEffect, useState } from 'react';
+import { lazy, Suspense, useCallback, useEffect, useLayoutEffect, useState } from 'react';
+import type { LocalBalanceVersion } from '../application/balanceSession';
 import { consumeEntryUrlPatch } from '../application/entryUrl';
 import { mapPreviewFromLocation } from '../application/mapPreview';
 import { qaRunFromLocation } from '../application/qaRun';
@@ -45,6 +46,9 @@ function loadInitialSettings(): Settings {
 
 export function App() {
   const [settings, setSettings] = useState<Settings>(loadInitialSettings);
+  const [balanceVersion] = useState<LocalBalanceVersion>(() =>
+    import.meta.env.DEV && new URLSearchParams(window.location.search).get('balance') === 'v1' ? '1.0.0' : '2.0.0',
+  );
   // 개발 빌드에서만 `?previewMap=<맵 id>`(R3 P3 맵 미리보기)나 `?qaRun=1`(화면 점검 장면)로 전투 화면을 바로 연다.
   // 운영 빌드에서는 이 분기가 통째로 빠진다.
   const [screen, setScreen] = useState<Screen>({ name: 'home' });
@@ -73,6 +77,9 @@ export function App() {
   const [, setNoteTick] = useState(0);
 
   useEffect(() => { document.documentElement.dataset.font = settings.fontScale; }, [settings.fontScale]);
+  useLayoutEffect(() => {
+    document.documentElement.dataset.theme = settings.lightTheme ? 'light' : 'dark';
+  }, [settings.lightTheme]);
   // 움직임 단계(full·simple·minimal). CSS는 'minimal'에서 반복·위치 움직임을 멈춘다(ui-rules-v4 §7.3, global.css·kit).
   useEffect(() => { document.documentElement.dataset.motion = settings.motionMode; }, [settings.motionMode]);
 
@@ -89,13 +96,14 @@ export function App() {
       startNewRun(
         {
           ...input,
+          balanceVersion,
           playerId: settings.playerId,
           schoolName: settings.lastSchoolName,
           schoolCode: settings.lastSchoolCode,
         },
         signal,
       ),
-      bestWaveFor(input.grade, input.difficulty),
+      bestWaveFor(input.grade, input.difficulty, balanceVersion),
     ]);
     if (signal.aborted) { if (result.ok) result.controller.dispose(); return; }
     update({ lastGrade: input.grade, lastDifficulty: input.difficulty, lastNickname: input.nickname });
@@ -142,7 +150,8 @@ export function App() {
     setScreen(reason === 'over' ? { name: 'result', state: final, controller, reviewDelta, previousBest } : { name: 'home' });
   };
 
-  const noteGrade = screen.name === 'result' ? screen.state.config.grade : settings.lastGrade;
+  const noteSource = screen.name === 'note' ? screen.back : screen;
+  const noteGrade = noteSource.name === 'result' ? noteSource.state.config.grade : settings.lastGrade;
   const noteContent = useGradeContent(noteGrade);
   const noteItems = screen.name === 'home' || screen.name === 'note' ? reviewNoteItems(noteGrade) : [];
 
@@ -150,6 +159,7 @@ export function App() {
     case 'home':
       return (
         <HomeScreen
+          balanceVersion={balanceVersion}
           message={message}
           settings={settings}
           initialModal={screen.initialModal ?? null}

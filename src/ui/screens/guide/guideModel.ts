@@ -1,5 +1,6 @@
 import { BALANCE } from '../../../content';
 import { TOWER_IDS, type Balance, type FoeTag, type TowerId } from '../../../contracts/balance';
+import { R6_TOWERS } from '../../../contracts/balanceV2';
 import { correctGoldAt, streakBonusGold } from '../../../domain/run';
 import { matchupOf } from '../../../domain/towers';
 import { BRANCH_MARK, fmtCells } from '../../copy';
@@ -60,6 +61,8 @@ export function buildGuideChapters(balance: Balance = BALANCE): readonly GuideCh
   const tier2 = burning.tier2 ? ` ${burning.tier2.streak}연속이면 ${pctText(burning.tier2.attackSpeedBP)}예요.` : '';
   const advancedFrom = (['Easy', 'Normal', 'Hard', 'Crazy'] as const).map(id => difficultyReadout(id, balance)).find(r => r.advanced);
   const draftWaves = draft.afterWaves.join('·');
+  const r6 = balance.r6?.rules;
+  const unlockWaves = r6 ? Object.keys(r6.unlocks.afterCompletedWave).join('·') : draftWaves;
 
   return [
     {
@@ -122,20 +125,24 @@ export function buildGuideChapters(balance: Balance = BALANCE): readonly GuideCh
       id: 3,
       title: '타워 놓기와 진화',
       sentence: '타워를 놓고 키워서 진화시켜요',
-      headline: `밝은 흙길이 많이 닿는 길목에 놓고, 레벨 ${evolveA}에서 진화 길을 골라요`,
+      headline: r6 ? '길목에 타워를 놓고 강화해요' : `밝은 흙길이 많이 닿는 길목에 놓고, 레벨 ${evolveA}에서 진화 길을 골라요`,
       illustrationUrl: 'assets/guide/guide.ch3.tower_evolution.webp',
       illustrationAlt: '굽은 흙길 위 밝은 사거리 원과 두 갈래 진화 문장, 판매 환급 상자 그림',
       rows: [
         {
           badge: '사거리',
-          title: '사거리 원과 밝은 흙길',
-          body: '받침이나 타워를 고르면 원 안의 밝은 흙길이 공격 범위로 보여요. 굽은 길목일수록 오래 맞혀요.',
+          title: r6 ? '사거리 확인' : '사거리 원과 밝은 흙길',
+          body: r6
+            ? '받침이나 타워를 고르면 공격 범위가 원으로 보여요. 원 안에 길이 많이 들어오는 자리를 찾아보세요.'
+            : '받침이나 타워를 고르면 원 안의 밝은 흙길이 공격 범위로 보여요. 굽은 길목일수록 오래 맞혀요.',
           icon: 'range',
         },
         {
           badge: '진화',
-          title: `레벨 ${evolveA}·${evolveB} 진화`,
-          body: `${startNames}으로 시작해요. 레벨 ${evolveA}에서 두 갈래 중 하나를 고르고, 고른 길은 바꿀 수 없어요.`,
+          title: r6 ? `최대 Lv${r6.levels.max}` : `레벨 ${evolveA}·${evolveB} 진화`,
+          body: r6
+            ? `타워는 ${R6_TOWERS.length}종이에요. 짝수 레벨마다 모양이 바뀌고 Lv${r6.levels.weaponAt.slice(1).join('·')}에서 무기가 바뀌어요.`
+            : `${startNames}으로 시작해요. 레벨 ${evolveA}에서 두 갈래 중 하나를 고르고, 고른 길은 바꿀 수 없어요.`,
           icon: 'branch',
         },
         {
@@ -150,14 +157,14 @@ export function buildGuideChapters(balance: Balance = BALANCE): readonly GuideCh
       id: 4,
       title: '시작과 끝내기',
       sentence: '학년·난이도를 고르고, 끝나면 기록돼요',
-      headline: '학년은 낱말과 지도를, 난이도는 성문 체력과 문제 범위를 정해요',
+      headline: r6 ? '학년은 낱말을, 난이도는 성문 체력과 문제 범위를 정해요' : '학년은 낱말과 지도를, 난이도는 성문 체력과 문제 범위를 정해요',
       illustrationUrl: 'assets/guide/guide.ch4.expedition_command.webp',
       illustrationAlt: '돌 표지석과 4단계 난이도 방패, 나무 방향·숫자 키와 정지 등불 그림',
       rows: [
         {
           badge: '시작',
           title: '학년과 난이도',
-          body: `학년(3~6학년)은 교과 낱말과 지도를 정해요.${advancedFrom ? ` ${advancedFrom.label}부터는 속담·관용구·방언도 나와요.` : ''}`,
+          body: `학년(3~6학년)은 교과 낱말${r6 ? '을' : '과 지도를'} 정해요.${advancedFrom ? ` ${advancedFrom.label}부터는 속담·관용구·방언도 나와요.` : ''}`,
           icon: 'gate',
         },
         {
@@ -178,17 +185,17 @@ export function buildGuideChapters(balance: Balance = BALANCE): readonly GuideCh
     },
     {
       id: 5,
-      title: '새 타워와 적 특성',
+      title: r6 ? '적 종류와 보상' : '새 타워와 적 특성',
       sentence: '새 타워·보물을 고르고 적 특성을 살펴요',
-      headline: relics ? `${draftWaves}웨이브를 지키면 새 타워를, ${relics.fromWave}웨이브부터는 보물을 골라요` : `${draftWaves}웨이브를 지키면 새 타워를 골라요`,
+      headline: r6 ? '웨이브가 높아질수록 더 다양하고 강한 적이 나와요' : relics ? `${draftWaves}웨이브를 지키면 새 타워를, ${relics.fromWave}웨이브부터는 보물을 골라요` : `${draftWaves}웨이브를 지키면 새 타워를 골라요`,
       // ART-OAK2(11bf25e): 다른 장보다 납작한 띠 그림(680×124, 2배 밀도). 장 화면은 그림 비율대로 칸을 잡는다.
       illustrationUrl: 'assets/guide/guide.ch5.new_features.webp',
       illustrationAlt: '새 타워 카드 세 장, 보물 상자, 최고 기록 트로피, 펼친 오답 노트, 손으로 끌어 놓는 타워와 되돌리기 화살표 그림',
       rows: [
         {
-          badge: `${draftWaves}웨이브`,
+          badge: `${unlockWaves}웨이브`,
           title: '새 타워와 보물',
-          body: `없는 타워 ${draft.offerCount}종 중 1종을 골라요(최대 ${draft.maxOwned}칸).${relics ? ` ${relics.fromWave}웨이브부터 보스를 막으면 보물 ${relics.offerCount}개 중 1개를 골라요.` : ''}`,
+          body: `${r6 ? '해당 웨이브를 막으면 타워가 한 종류씩 열려요.' : `없는 타워 ${draft.offerCount}종 중 1종을 골라요(최대 ${draft.maxOwned}칸).`}${relics ? ` ${relics.fromWave}웨이브부터 보스를 막으면 보물 ${relics.offerCount}개 중 1개를 골라요.` : ''}`,
           icon: 'chest',
         },
         {

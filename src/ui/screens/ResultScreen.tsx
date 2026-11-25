@@ -5,8 +5,8 @@ import { reviewQuestions } from '../../content';
 import { computeHonorPoints } from '../../contracts/lobby';
 import type { RunState } from '../../domain/types';
 import { DIFFICULTY_COPY, fmtNumber, RESULT_COPY as T, resultHeadline } from '../copy';
-import { BackIcon, RetryIcon } from '../icons/ControlIcons';
-import { ArtIcon, Button, Card, Rule, Stat, Window } from '../kit';
+import { LineIcon } from '../icons/LineIcon';
+import { Button, Card, Rule, Stat, Window } from '../kit';
 import { RESULT_EXTRA as X } from './home/homeCopy';
 import css from './ResultScreen.module.css';
 import { countUpAt, runLog } from './resultModel';
@@ -120,15 +120,20 @@ export function ResultScreen({ state, controller, reviewDelta = null, previousBe
           {/* 결과 창과 그 바로 아래 단추 두 개가 한 칸이다. 틀린 낱말이 없으면 이 칸만 가운데에 선다. */}
           <div className={css.resultCol}>
             <Window as="section" className={css.summary} aria-labelledby="resultWave">
-              <p className={css.meta}>{state.config.nickname} · {state.config.grade}학년 · {DIFFICULTY_COPY[state.config.difficulty].label}</p>
+              <div className={css.resultHead}>
+                <p className={css.meta}>{state.config.nickname} · {state.config.grade}학년 · {DIFFICULTY_COPY[state.config.difficulty].label}</p>
+                <ResultSaveStatus controller={controller} />
+              </div>
               <Rule />
-              <ArtIcon name="gate" size={72} />
               {/* 화면 읽기에는 처음부터 끝 값을 읽히고, 눈에 보이는 숫자만 올라간다. 움직임 줄이기면 올라가지 않고 투명도로만 나타난다. */}
-              <h1 id="resultWave" className={css.wave}>
-                <span className="sr-only">{T.waveSr} {state.completedWave}{T.wave}</span>
-                <span aria-hidden="true" className={css.waveNum} data-still={still || undefined}>{wave}{T.wave}</span>
-              </h1>
-              <p className={css.line} data-kind={headline.kind} data-pop={headline.kind === 'newBest' || undefined}>{headline.text}</p>
+              <div className={css.waveRow}>
+                <LineIcon name="hud/wave" size={32} />
+                <h1 id="resultWave" className={css.wave}>
+                  <span className="sr-only">{T.waveSr} {state.completedWave}{T.wave}</span>
+                  <span aria-hidden="true" className={css.waveNum} data-still={still || undefined}>{wave}{T.wave}</span>
+                </h1>
+                <p className={css.line} data-kind={headline.kind} data-pop={headline.kind === 'newBest' || undefined}>{headline.text}</p>
+              </div>
               {log.perfect && <p className={css.praise}>{X.perfect}</p>}
 
               <div className={css.stats}>
@@ -149,7 +154,7 @@ export function ResultScreen({ state, controller, reviewDelta = null, previousBe
               <div className={css.log}>
                 <Button variant="ghost" className={css.logBtn} aria-expanded={logOpen} aria-controls={logId} onClick={() => setLogOpen(v => !v)}>
                   <span>{X.logTitle}</span>
-                  <span className={css.chevron} data-open={logOpen} aria-hidden="true"><BackIcon /></span>
+                  <span className={css.chevron} data-open={logOpen} aria-hidden="true"><LineIcon name="hud/back" /></span>
                 </Button>
                 <dl id={logId} className={css.logList} hidden={!logOpen}>
                   <div><dt>{X.solved}</dt><dd>{log.solved}{X.unit}</dd></div>
@@ -158,12 +163,11 @@ export function ResultScreen({ state, controller, reviewDelta = null, previousBe
                 </dl>
               </div>
 
-              <ResultSaveStatus controller={controller} />
               {state.config.contentMode === 'development' && <p className={css.dev}>{T.dev}</p>}
               {/* 주 버튼은 짙은 바탕이 아니라 결과 창 안에 둔다(ui-rules-v3 §2 버튼 바탕). */}
               <div className={css.actions}>
-                <Button variant="primary" size="lg" className={css.again} onClick={onAgain}><RetryIcon size={24} />{T.again}</Button>
-                <Button size="lg" className={css.home} onClick={onHome}>{T.home}</Button>
+                <Button variant="primary" size="lg" className={css.again} onClick={onAgain}><LineIcon name="hud/play" />{T.again}</Button>
+                <Button size="lg" className={css.home} onClick={onHome}><LineIcon name="hud/back" />{T.home}</Button>
               </div>
             </Window>
           </div>
@@ -196,7 +200,7 @@ function WordCard({ item }: { item: ReviewItem }) {
             <span className={css.lemma}>{item.lemma}</span>
             <span className={css.answer}>{T.answer} {item.answer}</span>
           </span>
-          <span className={css.chevron} data-open={open} aria-hidden="true"><BackIcon /></span>
+          <span className={css.chevron} data-open={open} aria-hidden="true"><LineIcon name="hud/back" /></span>
         </Button>
         <div id={panelId} className={css.detail} hidden={!open}>
           <p className={css.stem}>{item.stem}</p>

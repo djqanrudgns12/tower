@@ -3,6 +3,7 @@ import { cleanPublicSchoolCode, cleanPublicSchoolName } from '../contracts/lobby
 import { ContentUnavailableError, contextFor, gradeContent, gradeLoadState, PILOT_TOWERS, PRACTICE, PRACTICE_BANK, practiceContext, reviewQuestions } from '../content';
 import type { GameContext } from '../domain/context';
 import { createRun } from '../domain/run';
+import type { RunState } from '../domain/types';
 import { clearLocalHistory, listQuestionHistory, listRecords, type RunRecord } from '../persistence/db';
 import { reportRunStarted } from '../persistence/lobbyClient';
 import { listReviewNoteItems, loadReviewNote, reviewSensesForRun, type ReviewDelta, type ReviewNoteItem } from '../persistence/reviewNote';
@@ -19,6 +20,7 @@ import {
   type VolumeStepSfx,
 } from '../persistence/settings';
 import { RunController } from './RunController';
+import { localBalanceSession, type LocalBalanceVersion } from './balanceSession';
 
 // 화면은 저장소를 직접 부르지 않고 이 세션 서비스를 쓴다(PRD §13.2).
 export type { FontScale, MotionMode, ReviewDelta, ReviewNoteItem, RunRecord, Settings, VolumeStepBgm, VolumeStepSfx };
@@ -40,34 +42,34 @@ function tryContext(grade: number, difficulty: DifficultyId): GameContext | null
 
 /** 새 정규 판. 판은 메모리에만 있고(이어하기 없음, PRD §14), 끝내기·패배 때만 기록에 남는다. */
 export async function startNewRun(
-  input: { grade: number; difficulty: DifficultyId; nickname: string; playerId: string; schoolName?: string; schoolCode?: string },
+  input: { grade: number; difficulty: DifficultyId; nickname: string; playerId: string; schoolName?: string; schoolCode?: string; balanceVersion?: LocalBalanceVersion },
   signal?: AbortSignal,
 ): Promise<StartResult> {
   signal?.throwIfAborted();
-  const { map, bank } = gradeContent(input.grade);
+  const { bank } = gradeContent(input.grade);
   if (!bank && gradeLoadState(input.grade) !== 'unavailable') return { ok: false, message: '문제를 불러온 뒤 다시 시작해 주세요.' };
   if (!bank) return { ok: false, message: '이 학년의 문제가 아직 준비되지 않았어요.' };
   // 학년·은행 판 번호와 무관한 원ID를 한 번만 읽는다. 실패해도 게임은 열 수 있다.
   const previousQuestionIds = await listQuestionHistory().then(rows => rows.map(row => row.questionId)).catch(() => [] as string[]);
   signal?.throwIfAborted();
   // 비동기 읽기 중 갱신된 철회 목록도 새 판에 반영한다.
-  const ctx = tryContext(input.grade, input.difficulty);
-  if (!ctx) return { ok: false, message: NO_QUESTIONS };
+  const source = tryContext(input.grade, input.difficulty);
+  if (!source) return { ok: false, message: NO_QUESTIONS };
   const seed = crypto.getRandomValues(new Uint32Array(1))[0]!;
   const schoolName = cleanPublicSchoolName(input.schoolName);
   const schoolCode = schoolName ? cleanPublicSchoolCode(input.schoolCode) : '';
-  const state = createRun(ctx, {
-    runId: crypto.randomUUID(), playerId: input.playerId, nickname: input.nickname, grade: input.grade, difficulty: input.difficulty, mapId: map.id, seed,
-    bankId: bank.bankId, bankVersion: bank.bankVersion, contentMode: bank.status === 'published' ? 'published' : 'development',
-    availableTowers: [...PILOT_TOWERS], rankingEligibility: 'personal', createdAt: new Date().toISOString(),
+  const { ctx, state } = localBalanceSession(input.balanceVersion ?? '2.0.0', input.grade, input.difficulty, {
+    runId: crypto.randomUUID(), playerId: input.playerId, nickname: input.nickname, seed,
+    rankingEligibility: 'personal', createdAt: new Date().toISOString(),
     ...(schoolName ? { schoolName } : {}),
     ...(schoolCode ? { schoolCode } : {}),
     // 판 밖 자료는 여기서 한 번만 읽어 RunState에 복사한다. 판 안의 출제는 이 복사본만 본다(결정성, A18).
     previousQuestionIds,
-    reviewSenses: reviewSensesForRun(loadReviewNote(), bank.bankId, ctx.questions),
-  });
+    reviewSenses: reviewSensesForRun(loadReviewNote(), bank.bankId, source.questions),
+  }, source);
   void reportRunStarted(state.config.runId, input.playerId).catch(() => undefined);
-  return { ok: true, controller: new RunController(ctx, state, { recordOnFinish: true }) };
+  // 컨트롤러의 공개 상태 타입은 기존 타워 ID를 쓴다. 판정에는 위에서 선택한 밸런스 계약을 전달한다.
+  return { ok: true, controller: new RunController(ctx, state as RunState, { recordOnFinish: true }) };
 }
 
 /**
@@ -81,9 +83,9 @@ export function bestWaveOf(records: readonly Pick<RunRecord, 'grade' | 'difficul
 }
 
 /** 판을 열 때 한 번 읽는 이 기기의 최고 기록(그 판 전까지). 저장소를 열 수 없으면 기록이 없는 것으로 본다. */
-export async function bestWaveFor(grade: number, difficulty: DifficultyId): Promise<number | null> {
+export async function bestWaveFor(grade: number, difficulty: DifficultyId, version: LocalBalanceVersion): Promise<number | null> {
   try {
-    return bestWaveOf(await listRecords(), grade, difficulty);
+    return bestWaveOf((await listRecords()).filter(record => record.balanceVersion === version), grade, difficulty);
   } catch {
     return null;
   }

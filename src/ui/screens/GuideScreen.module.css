@@ -29,19 +29,19 @@
   align-items: baseline;
   gap: 4px var(--s2);
   padding-bottom: 6px;
-  border-bottom: 1px solid var(--line);
+  border-bottom: 1px solid var(--border-hairline);
 }
 .chapterTitle {
   margin: 0;
   font-size: var(--fs-3);
   font-weight: 800;
   line-height: 1.25;
-  color: var(--ink);
+  color: var(--text-strong);
   white-space: nowrap;
 }
 .chapterTitle:focus { outline: none; }
 .headSep {
-  color: var(--brass-3);
+  color: var(--accent-amber);
   font-weight: 800;
 }
 @media (max-width: 639px) {
@@ -55,7 +55,7 @@
   font-size: var(--read-font);
   font-weight: 700;
   line-height: 1.3;
-  color: var(--ink-2);
+  color: var(--text-muted);
 }
 
 .chapterBody {
@@ -90,9 +90,9 @@
   width: 100%;
   height: 82px;
   object-fit: contain;
-  border-radius: var(--r-sm);
-  background: var(--parch-1);
-  box-shadow: inset 0 0 0 1px var(--line);
+  border-radius: var(--chamfer-sm);
+  background: var(--bg-card);
+  box-shadow: inset 0 0 0 1px var(--border-hairline);
 }
 /* 5장 그림은 납작한 띠(680×124, 2배 밀도)라 칸 높이를 그림 비율에 맞춘다. */
 .stage[data-chapter='5'] .stageArt {
@@ -102,24 +102,24 @@
 }
 
 .pane { display: grid; align-content: start; gap: 6px; min-width: 0; }
-.paneHead { font-size: var(--fs-1); font-weight: 800; color: var(--brass-3); }
+.paneHead { font-size: var(--fs-1); font-weight: 800; color: var(--accent-amber); }
 
 .canvasBox {
   position: relative;
   height: 84px;
   overflow: hidden;
-  border: 2px solid var(--walnut-3);
-  border-radius: var(--r-sm);
-  background: var(--paper-2);
+  border: 2px solid var(--border-hairline);
+  border-radius: var(--chamfer-sm);
+  background: var(--bg-pressed);
 }
 .stageCanvas { display: block; width: 100%; height: 100%; }
 .tagLeft, .tagRight {
   position: absolute;
   padding: 2px 6px;
-  border-radius: var(--r-sm);
-  background: var(--parch-1);
-  box-shadow: inset 0 0 0 1px var(--walnut-3);
-  color: var(--ink);
+  border-radius: var(--chamfer-sm);
+  background: var(--bg-card);
+  box-shadow: inset 0 0 0 1px var(--border-hairline);
+  color: var(--text-strong);
   font-size: var(--fs-1);
   font-weight: 800;
   line-height: 1.25;
@@ -131,7 +131,7 @@
 /* 2장: 상태 카드(머리판 재질)를 본뜬 판독 판. */
 .hudSim { display: grid; gap: 4px; padding: var(--s2) var(--s3); }
 .hudRow { display: flex; flex-wrap: wrap; align-items: center; gap: 4px var(--s3); }
-.hudGold { display: inline-flex; align-items: center; gap: var(--s1); color: var(--brass-1); font-size: var(--fs-2); font-weight: 800; font-variant-numeric: tabular-nums; }
+.hudGold { display: inline-flex; align-items: center; gap: var(--s1); color: var(--accent-amber); font-size: var(--fs-2); font-weight: 800; font-variant-numeric: tabular-nums; }
 .hudItem { display: inline-flex; align-items: center; gap: var(--s1); font-size: var(--fs-1); font-weight: 700; font-variant-numeric: tabular-nums; }
 .hudNote { font-size: var(--fs-1); line-height: 1.35; }
 .unlit { opacity: 0.25; }
@@ -144,7 +144,7 @@
 .branches li { display: flex; align-items: flex-start; gap: var(--s1); }
 .branches li > span { display: grid; gap: 1px; min-width: 0; }
 .branches strong { font-size: var(--fs-1); font-weight: 800; line-height: 1.25; }
-.branches strong + span { font-size: var(--fs-1); color: var(--ink-2); line-height: 1.25; }
+.branches strong + span { font-size: var(--fs-1); color: var(--text-muted); line-height: 1.25; }
 
 /* 4장: 난이도 판독(새 게임 창과 같은 함수) + 숫자키. */
 .readout { margin: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
@@ -153,26 +153,27 @@
   align-items: center;
   gap: var(--s1);
   padding: 2px var(--s2);
-  border-radius: var(--r-sm);
-  background: var(--parch-1);
-  box-shadow: inset 0 0 0 2px var(--line);
+  border-radius: var(--chamfer-sm);
+  background: var(--bg-card);
+  box-shadow: inset 0 0 0 2px var(--border-hairline);
   font-size: var(--fs-1);
   font-weight: 700;
   line-height: 1.4;
 }
-.readScope[data-advanced='true'] { color: var(--brass-3); box-shadow: inset 0 0 0 2px var(--brass-3); }
+.readScope[data-advanced='true'] { color: var(--accent-amber); box-shadow: inset 0 0 0 2px var(--accent-amber); }
 .keyRow { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s2); }
 .keycaps { display: inline-flex; gap: 6px; }
 @media (max-width: 399px) {
   .keycaps { gap: 4px; }
 }
 .keycap { width: var(--touch); padding: 0; font-variant-numeric: tabular-nums; }
-.keycap[aria-pressed='true'] { --face: var(--brass-1); transform: translateY(4px); box-shadow: inset 0 0 0 2px var(--walnut-3); }
-.keyHint { font-size: var(--fs-1); font-weight: 700; color: var(--ink-2); }
-.miniKey { display: inline-grid; place-items: center; width: 18px; height: 18px; border: 2px solid currentColor; border-radius: var(--r-sm); font-size: var(--fs-1); font-weight: 800; line-height: 1; }
+.keycap[aria-pressed='true'] { --face: var(--accent-amber); --text: var(--on-accent); transform: translateY(4px); box-shadow: inset 0 0 0 2px var(--border-hairline); }
+.keyHint { font-size: var(--fs-1); font-weight: 700; color: var(--text-muted); }
+.miniKey { display: inline-grid; place-items: center; width: 18px; height: 18px; border: 2px solid currentColor; border-radius: var(--chamfer-sm); font-size: var(--fs-1); font-weight: 800; line-height: 1; }
 
 /* 고르기 줄 격자: 4×2 적 특성 아이콘, 4칸 시연 고르기 */
 .pane .traitSeg, .pane .wrap4, .pane .wrapTiny {
+  display: grid;
   grid-auto-flow: row;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 2px;
@@ -199,7 +200,7 @@
 /* 5장: 적 특성 → 잘 잡는 타워. */
 .counter { display: grid; grid-template-columns: minmax(0, 1fr); gap: 4px var(--s2); align-items: center; }
 .counterEnemy { display: inline-flex; align-items: center; gap: 6px; font-size: var(--fs-2); font-weight: 800; }
-.counterLead { display: inline-flex; align-items: center; gap: 2px; font-size: var(--fs-1); font-weight: 700; color: var(--ink-2); }
+.counterLead { display: inline-flex; align-items: center; gap: 2px; font-size: var(--fs-1); font-weight: 700; color: var(--text-muted); }
 .counterLead svg { transform: rotate(180deg); }
 .counterTowers { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 4px var(--s2); }
 .counterTowers li { display: inline-flex; align-items: center; gap: 4px; font-size: var(--fs-1); font-weight: 700; }
@@ -218,9 +219,9 @@
   display: grid;
   gap: 2px;
   padding: 6px 10px;
-  border-radius: var(--r-md);
-  background: var(--parch-1);
-  box-shadow: inset 0 0 0 2px var(--line);
+  border-radius: var(--chamfer-sm);
+  background: var(--bg-card);
+  box-shadow: inset 0 0 0 2px var(--border-hairline);
 }
 .rowHead {
   display: flex;
@@ -234,21 +235,21 @@
   place-items: center;
   width: 24px;
   height: 24px;
-  color: var(--ink);
+  color: var(--text-strong);
 }
 .rowBadge {
   padding: 1px 6px;
-  border-radius: var(--r-sm);
-  background: var(--paper-2);
-  box-shadow: inset 0 0 0 1px var(--oak-2);
+  border-radius: var(--chamfer-sm);
+  background: var(--bg-pressed);
+  box-shadow: inset 0 0 0 1px var(--border-hairline);
   font-size: var(--fs-1);
   font-weight: 800;
   line-height: 1.25;
-  color: var(--brass-3);
+  color: var(--accent-amber);
   white-space: nowrap;
 }
-.rowTitle { font-size: var(--fs-2); font-weight: 800; line-height: 1.25; color: var(--ink); }
-.rowBody { margin: 0; font-size: var(--read-font); line-height: 1.3; color: var(--ink); }
+.rowTitle { font-size: var(--fs-2); font-weight: 800; line-height: 1.25; color: var(--text-strong); }
+.rowBody { margin: 0; font-size: var(--read-font); line-height: 1.3; color: var(--text-strong); }
 
 @media (min-width: 560px) {
   .towerRow { grid-template-columns: 152px minmax(0, 1fr); }
@@ -264,3 +265,49 @@
   .keycap[aria-pressed='true'] { transform: none; }
 }
 :global(:root[data-motion='minimal']) .keycap[aria-pressed='true'] { transform: none; }
+
+.tacticalMap {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  border: 1px solid var(--border-hairline);
+  background: var(--r04-carbon);
+}
+.tacticalMap img { display: block; width: 100%; height: auto; aspect-ratio: 5 / 3; }
+.tacticalMap[data-contrast] img { filter: contrast(1.5) brightness(1.18); }
+.tacticalMap svg { color: var(--r04-teal); }
+.installMarker, .enemyMarker, .gateMarker { position: absolute; }
+.installMarker { top: 49%; left: 33%; }
+.tacticalMap .enemyMarker { top: 54%; left: 48%; color: var(--r04-amber); }
+.gateMarker { top: 76%; right: 2%; }
+.rangeMarker {
+  position: absolute;
+  top: 50%;
+  left: 34%;
+  width: calc(2 * var(--range-radius));
+  aspect-ratio: 1;
+  transform: translate(-50%, -50%);
+  display: grid;
+  place-items: center;
+  border: 1px dashed var(--r04-teal);
+  border-radius: 50%;
+  background: rgb(47 181 163 / 14%);
+}
+.rangeMarker svg { background: var(--r04-carbon); }
+.stageReadout { display: grid; gap: 2px; font-size: var(--fs-1); color: var(--text-body); }
+.stageReadout strong { color: var(--text-strong); }
+.towerOptions { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.towerOptions button { display: flex; gap: 4px; align-items: center; justify-content: center; padding-inline: 4px; font-size: var(--fs-1); }
+.towerOptions svg { flex: none; }
+.weaponStages { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 4px; margin: 0; padding: 0; list-style: none; }
+.weaponStages li, .speciesReadout { display: grid; gap: 4px; padding: 6px; border: 1px solid var(--border-hairline); background: var(--bg-card); font-size: var(--fs-1); }
+.weaponStages li > span:first-child { color: var(--accent-amber); font-variant-numeric: tabular-nums; }
+.weaponStages li > span:last-child, .speciesReadout p { color: var(--text-body); }
+.speciesReadout { padding: var(--s3); }
+.speciesReadout strong { display: flex; align-items: center; gap: var(--s2); color: var(--accent-teal); }
+.stage[data-chapter='3'] .tacticalMap { width: min(100%, 200px); justify-self: center; }
+.chapter[data-r6] .stageCol { justify-content: start; padding: var(--sp-2); }
+.chapter[data-r6] .rows { align-content: start; }
+@media (max-width: 519px) {
+  .towerOptions, .weaponStages { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}

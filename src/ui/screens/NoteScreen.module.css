@@ -1,11 +1,10 @@
-/* 오답 노트(lg 860×580 고정 프레임 Window + 3탭: 전체 / 집중 복습 / 졸업 임박, ui-rules-v4 §4.7).
-   짙은 바탕 한가운데에 정돈된 양피지 공책(Window size="lg" fixed)이 놓이고, 퍼센트·점수 없이 ●○만 쓴다. */
+/* 오답 노트. 낱말 카드와 복습 진행을 2열로 표시한다. */
 .page {
   min-height: 100dvh;
   padding: var(--s4);
   display: grid;
   place-items: center;
-  background: var(--bg);
+  background: var(--bg-canvas);
 }
 .notebook {
   width: 100%;
@@ -25,9 +24,8 @@
 .header { display: flex; align-items: center; gap: var(--s3); flex-wrap: wrap; }
 .title { margin: 0; font-size: var(--fs-4); font-weight: 800; line-height: 1.25; }
 .title:focus { outline: none; }
-.count { margin: 0 0 0 auto; font-size: var(--fs-2); font-weight: 700; color: var(--ink-2); }
+.count { margin: 0 0 0 auto; font-size: var(--fs-2); font-weight: 700; color: var(--text-muted); }
 
-/* 낱말 카드 균일 2열 격자: 양피지 시트 위의 한 단 밝은 카드(--parch-1). 읽는 글은 글자 크기 단계를 따른다. */
 .list {
   list-style: none;
   margin: 0;
@@ -48,13 +46,13 @@
   display: grid;
   align-content: start;
   gap: var(--s1);
-  background: var(--parch-1);
+  --card-face: var(--bg-pressed);
 }
 .top { display: flex; align-items: center; justify-content: space-between; gap: var(--s3); }
 .lemma { font-size: var(--fs-3); font-weight: 800; overflow-wrap: anywhere; }
-.dots { flex: none; display: inline-flex; gap: var(--s1); color: var(--green); }
+.dots { flex: none; display: inline-flex; gap: var(--s1); color: var(--accent-teal); }
 .meaning { margin: 0; font-size: var(--read-font); font-weight: 700; line-height: 1.35; }
-.example { margin: 0; font-size: var(--read-font); color: var(--ink-2); line-height: 1.35; }
+.example { margin: var(--s1) 0 0; padding: var(--s2); font-size: var(--read-font); background: var(--quiz-bg); color: var(--quiz-ink); line-height: 1.35; }
 
 .tabEmpty {
   flex: 1 1 auto;
@@ -67,11 +65,10 @@
   margin: 0;
   font-size: var(--fs-2);
   font-weight: 700;
-  color: var(--ink-2);
+  color: var(--text-muted);
 }
 
-/* 빈 상태: 공책 가운데에 펼친 책 그림과 안내. */
 .empty { flex: 1; display: grid; place-content: center; justify-items: center; gap: var(--s2); padding: var(--s3) 0; text-align: center; }
-.emptyArt { display: block; width: min(240px, 60%); height: auto; aspect-ratio: 480 / 334; object-fit: contain; }
+.emptyArt { display: block; color: var(--accent-teal); }
 .emptyText { margin: 0; font-size: var(--fs-3); font-weight: 800; }
-.emptyHint { margin: 0; font-size: var(--fs-2); color: var(--ink-2); }
+.emptyHint { margin: 0; font-size: var(--fs-2); color: var(--text-muted); }

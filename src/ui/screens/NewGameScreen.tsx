@@ -4,11 +4,14 @@ import { cleanPublicSchoolName } from '../../contracts/lobby';
 import { isGradeAvailable, MAPS } from '../../content';
 import { useGradeContent } from '../useGradeContent';
 import type { Settings } from '../../application/session';
+import { getR6Battle, type LocalBalanceVersion } from '../../application/balanceSession';
 import { DIFFICULTY_COPY, HOME_COPY, MAP_NAMES } from '../copy';
-import { ArtIcon, Button, Card, Modal, Segmented, type SegmentOption } from '../kit';
+import { Button, Card, Modal, Segmented, type SegmentOption } from '../kit';
+import { LineIcon } from '../icons/LineIcon';
 import { difficultyReadout } from './guide/difficultyReadout';
 import { NEWGAME_COPY as N, nickProblemOf } from './home/homeCopy';
 import css from './home/lobby.module.css';
+import { R6_MAP_NAME, R6_MAP_PREVIEW, showMapDiagram } from './r6Map';
 
 const GRADES = [3, 4, 5, 6] as const;
 type Grade = (typeof GRADES)[number];
@@ -16,6 +19,7 @@ type Grade = (typeof GRADES)[number];
 const gradeReady = (g: Grade) => isGradeAvailable(g);
 
 interface Props {
+  balanceVersion: LocalBalanceVersion;
   settings: Settings;
   onBack(): void;
   /** '닉네임 바꾸기': 창을 닫고 홈의 닉네임 입력칸에 포커스를 준다(홈이 처리한다). */
@@ -27,7 +31,7 @@ interface Props {
  * 새 게임 창: 위에서 학년 · 난이도를 고르고(난이도 아래에 설명과 판독 한 줄, 오른쪽 열에 지도 썸네일), 창 맨 아래 고정 줄에서 '닉네임 ○○ · 바꾸기'를 보고 큰 '시작'을 누른다.
  * 시작 줄은 내용이 길어 스크롤되는 좁고 낮은 화면에서도 늘 보인다(R5 N1·N2). 닉네임은 홈에서 정한 것을 쓰고, 비면 이유를 보이며 시작을 막는다.
  */
-export function NewGameScreen({ settings, onBack, onEditNickname, onStart }: Props) {
+export function NewGameScreen({ balanceVersion, settings, onBack, onEditNickname, onStart }: Props) {
   const [grade, setGrade] = useState<Grade>(gradeReady(settings.lastGrade) ? settings.lastGrade : 3);
   const [difficulty, setDifficulty] = useState<DifficultyId>(
     (DIFFICULTY_IDS as readonly string[]).includes(settings.lastDifficulty) ? (settings.lastDifficulty as DifficultyId) : 'Normal',
@@ -38,8 +42,9 @@ export function NewGameScreen({ settings, onBack, onEditNickname, onStart }: Pro
   useEffect(() => () => { pending.current?.abort(); }, []);
   const { status, retry } = useGradeContent(grade);
   const problemId = useId();
-  const map = MAPS.find(m => m.grade === grade)!;
-  const mapName = MAP_NAMES[map.id] ?? map.id;
+  const r6 = balanceVersion === '2.0.0' ? getR6Battle() : null;
+  const map = r6?.map ?? MAPS.find(m => m.grade === grade)!;
+  const mapName = r6 ? R6_MAP_NAME : (MAP_NAMES[map.id] ?? map.id);
   const { nickname, problem } = nickProblemOf(settings.lastNickname);
   const schoolName = cleanPublicSchoolName(settings.lastSchoolName);
 
@@ -59,7 +64,7 @@ export function NewGameScreen({ settings, onBack, onEditNickname, onStart }: Pro
     value: `${g}`,
     label: (
       <>
-        {!gradeReady(g) && <ArtIcon name="lock" size={16} />}
+        {!gradeReady(g) && <LineIcon name="hud/lock" size={16} />}
         <span>{g}<span className={css.unit}>학년</span></span>
       </>
     ),
@@ -73,7 +78,6 @@ export function NewGameScreen({ settings, onBack, onEditNickname, onStart }: Pro
       titleId="newGameModalTitle"
       title="새 게임"
       size="md"
-      fixed
       onClose={onBack}
     >
       <div className={css.newGame}>
@@ -99,14 +103,15 @@ export function NewGameScreen({ settings, onBack, onEditNickname, onStart }: Pro
               {/* N3: 고른 난이도 설명 한 줄 + 판독 한 줄(성문 · 첫 정답 골드 · 낱말 범위). 고르면 읽히도록 polite. */}
               <Card sunk pad="sm" className={css.difficultyInfo} aria-live="polite">
                 <p className={css.groupNote}>{DIFFICULTY_COPY[difficulty].hint}</p>
-                <p className={css.readout}>{difficultyReadout(difficulty).line}</p>
+                <p className={css.readout}>{difficultyReadout(difficulty, r6?.balance).line}</p>
               </Card>
             </div>
           </div>
 
           <figure className={css.mapFigure}>
             <img
-              src={`${import.meta.env.BASE_URL}assets/maps/${map.id}.thumb.webp`}
+              src={r6 ? R6_MAP_PREVIEW : `${import.meta.env.BASE_URL}assets/maps/${map.id}.thumb.webp`}
+              onError={r6 ? showMapDiagram : undefined}
               width={204}
               height={122}
               alt={`${mapName} 지도`}
@@ -135,6 +140,7 @@ export function NewGameScreen({ settings, onBack, onEditNickname, onStart }: Pro
             aria-describedby={problem !== null ? problemId : undefined}
             onClick={() => { void start(); }}
           >
+            <LineIcon name="hud/play" size={18} />
             {starting ? '준비 중…' : HOME_COPY.start}
           </Button>
           {status === 'error' && <Button onClick={retry}>다시 불러오기</Button>}

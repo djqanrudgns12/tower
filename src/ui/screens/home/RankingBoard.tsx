@@ -11,7 +11,7 @@ import {
 import { isGradeAvailable } from '../../../content';
 import { fetchRanking } from '../../../application/lobby';
 import { DIFFICULTY_COPY, fmtNumber } from '../../copy';
-import { HomeUiArt, QrCodeIcon } from './HomeIcons';
+import { LineIcon } from '../../icons/LineIcon';
 import { RANKING_EXTRA } from './homeCopy';
 import css from './home.module.css';
 
@@ -27,12 +27,6 @@ export const PERIOD_LABELS: Record<RankingPeriod, string> = {
   season1: '시즌 1',
   all_time: '누적',
 };
-
-const PODIUM_SLOTS: readonly { rank: 1 | 2 | 3; title: string; sub: string }[] = [
-  { rank: 1, title: '금빛 1위 자리', sub: '첫 주인공 대기 중' },
-  { rank: 2, title: '은빛 2위 자리', sub: '도전 기록 대기 중' },
-  { rank: 3, title: '동빛 3위 자리', sub: '도전 기록 대기 중' },
-];
 
 export function formatPrimaryMetric(tab: RankingTabId, value: number): string {
   if (tab === 'best_wave') return `${fmtNumber(value)}웨이브`;
@@ -158,11 +152,11 @@ export function RankingBoard({
         : '실시간 순위';
 
   return (
-    <aside ref={boardRef} className={css.woodBoard} aria-label="랭킹">
+    <aside ref={boardRef} className={css.homeColumn} aria-label="랭킹">
       <div className={css.rankHeaderCard}>
         <div className={css.cardTitleWrap}>
           <span className={css.sectionIconBadge} aria-hidden="true">
-            <HomeUiArt file="icon.star.webp" className={css.sectionIcon} />
+            <LineIcon name="hud/score" size={18} />
           </span>
           <h2 className={css.sectionTitle}>랭킹</h2>
           <span className={css.syncStatusPill}>
@@ -192,7 +186,7 @@ export function RankingBoard({
             className={css.keyBtnSm}
             onClick={onOpenQrModal}
           >
-            <QrCodeIcon className={css.btnIconSvg} />
+            <LineIcon name="hud/qr" size={16} />
             교실 QR
           </button>
           <button
@@ -343,52 +337,14 @@ export function RankingBoard({
           <div className={css.rankBodyBox}>
             {bankMissing ? (
               <div className={css.emptyShowcase}>
-                <div className={css.emptyHero}>
-                  <div className={css.emptyVignette} aria-hidden="true">
-                    <HomeUiArt file="note.empty.webp" className={css.emptyBookArt} />
-                    <HomeUiArt file="icon.star.webp" className={css.emptyFloatStar} />
-                  </div>
-                  <div className={css.emptyHeroCopy}>
-                    <strong className={css.emptyTitle}>{effectiveGrade}학년 문제은행 준비 중</strong>
-                    <span className={css.emptyDesc}>문제가 공개되면 이 학년 순위표가 열려요</span>
-                  </div>
-                </div>
+                <strong>{effectiveGrade}학년 문제은행 준비 중</strong>
+                <p>문제가 공개되면 이 학년 순위표가 열려요.</p>
               </div>
             ) : !data || data.entries.length === 0 ? (
               <div className={css.emptyShowcase}>
-                <div className={css.emptyHero}>
-                  <div className={css.emptyVignette} aria-hidden="true">
-                    <HomeUiArt file="note.empty.webp" className={css.emptyBookArt} />
-                    <HomeUiArt file="icon.star.webp" className={css.emptyFloatStar} />
-                    <HomeUiArt file="icon.chest.webp" className={css.emptyFloatChest} />
-                  </div>
-                  <div className={css.emptyHeroCopy}>
-                    <strong className={css.emptyTitle}>
-                      {tab === 'local_device' ? '아직 기록이 없어요' : '아직 이 부문 기록이 없어요'}
-                    </strong>
-                    <span className={css.emptyDesc}>새 게임을 시작해 첫 기록을 남겨 보세요</span>
-                    <span className={css.emptyRewardTag}>1~3위 금·은·동 명패 수여</span>
-                  </div>
-                </div>
-
-                <div className={css.podiumPreviewList} aria-hidden="true">
-                  {PODIUM_SLOTS.map(slot => (
-                    <div key={slot.rank} className={css.podiumGhostRow} data-podium={slot.rank}>
-                      <span className={css.rankMedal} data-rank={slot.rank}>
-                        {slot.rank}
-                      </span>
-                      <div className={css.ghostRowMeta}>
-                        <span className={css.ghostRowTitle}>{slot.title}</span>
-                        <span className={css.ghostRowSub}>{slot.sub}</span>
-                      </div>
-                      <span className={css.ghostRowScore}>— 점</span>
-                    </div>
-                  ))}
-                </div>
-
-                <p className={css.emptyFooterTip}>
-                  학교 이름을 적으면 우리 학교 친구들의 기록도 한눈에 모여요
-                </p>
+                <LineIcon name="hud/score" size={32} />
+                <strong>{tab === 'local_device' ? '아직 기록이 없어요' : '아직 이 부문 기록이 없어요'}</strong>
+                <p>새 게임을 시작해 첫 기록을 남겨 보세요.</p>
               </div>
             ) : (
               // 안에서 스크롤하므로 키보드로 닿도록 포커스 가능한 이름 있는 영역으로 감싼다(WCAG 2.1.1).
@@ -426,7 +382,7 @@ export function RankingBoard({
 
           <div className={css.myRankDock} aria-label="내 순위 요약">
             <span className={css.myRankLabel}>
-              <HomeUiArt file="icon.star.webp" className={css.dockStarIcon} />
+              <LineIcon name="hud/score" size={16} />
               내 순위 · {displayName}
             </span>
             <span className={css.myRankValue} data-has-entry={myEntry ? 'true' : undefined}>

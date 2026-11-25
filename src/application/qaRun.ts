@@ -2,6 +2,7 @@ import { contextFor, loadGradeContent } from '../content';
 import { replaceUnavailableQuestion } from '../domain/run';
 import { RUN_STATE_VERSION, type RunState } from '../domain/types';
 import { RunController } from './RunController';
+import { localBalanceContext } from './balanceSession';
 
 // 개발 빌드 전용 QA 장면 로더(화면 점검 장비 tools/qa·e2e 시험이 쓴다). 이어하기가 없으므로 원하는 웨이브·형태의 장면으로
 // 바로 들어가는 길은 이것뿐이다. 장비가 RunState JSON을 sessionStorage에 넣고(page.addInitScript) `/?qaRun=1`로 열면
@@ -22,8 +23,9 @@ export async function startQaRun(json: string): Promise<RunController> {
   const state = JSON.parse(json) as RunState;
   if (state.v !== RUN_STATE_VERSION) throw new Error(`QA 장면 상태 버전이 다르다: ${state.v} (지금 ${RUN_STATE_VERSION})`);
   await loadGradeContent(state.config.grade);
-  const ctx = contextFor(state.config.grade, state.config.difficulty);
-  if (state.config.balanceVersion === '2.0.0' && !ctx.balance.r6) throw new Error('QA 장면과 전장의 밸런스 판이 다릅니다');
+  const ctx = state.config.balanceVersion === '2.0.0'
+    ? localBalanceContext('2.0.0', state.config.grade, state.config.difficulty)
+    : contextFor(state.config.grade, state.config.difficulty);
   // 장면을 만든 뒤 철회된 미제출 문항이 걸려 있으면 바꾼다(PRD §9.5).
   replaceUnavailableQuestion(ctx, state);
   state.pause = [...state.pause.filter(r => r === 'NUMERIC_LIMIT'), 'USER'];

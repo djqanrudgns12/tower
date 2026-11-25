@@ -1,5 +1,8 @@
 import { useEffect, useMemo, useState, useSyncExternalStore, type FocusEvent } from 'react';
-import { DIFFICULTY_IDS, type DifficultyId, type FoeTag, type TowerId } from '../../../contracts/balance';
+import { DIFFICULTY_IDS, type Balance, type DifficultyId, type FoeTag, type TowerId } from '../../../contracts/balance';
+import { battleTowerName } from '../../game/r6Display';
+import { LineIcon } from '../../icons/LineIcon';
+import { correctGoldAt } from '../../../domain/run';
 import { BALANCE } from '../../../content';
 import { DIFFICULTY_COPY } from '../../copy';
 import { BackIcon, CheckIcon, NoteIcon, PauseIcon, PlayIcon } from '../../icons/ControlIcons';
@@ -21,6 +24,8 @@ import {
   type QuizOutcomeId,
 } from './guideModel';
 import { GuideStageCanvas } from './GuideStageCanvas';
+import { R6_MAP_DIAGRAM, R6_MAP_NAME } from '../r6Map';
+import { R6SpeciesStage, R6TowerStage } from './R6GuideStages';
 
 // 장 시연(R5 G2~G7, 2db26f4 GuideVisualStages를 kit 위로 옮김). 고르기는 kit Segmented, 판독 판은 kit Card(머리판)로 그린다.
 
@@ -41,11 +46,11 @@ export function usePrefersReducedMotion(): boolean {
 /** 그림 이름 → 줄 아이콘(장 요약 행, G8). 상태는 원화, 조작은 선 아이콘 한 세트. */
 export function GuideRowIcon({ icon }: { icon: GuideRowIconId }) {
   switch (icon) {
-    case 'gold': return <ArtIcon name="coin" size={24} />;
-    case 'gate': return <ArtIcon name="gate" size={24} />;
-    case 'score': return <ArtIcon name="star" size={24} />;
-    case 'flame': return <ArtIcon name="flame" size={24} />;
-    case 'chest': return <ArtIcon name="chest" size={24} />;
+    case 'gold': return <LineIcon name="hud/gold" />;
+    case 'gate': return <LineIcon name="hud/gate" />;
+    case 'score': return <LineIcon name="hud/score" />;
+    case 'flame': return <LineIcon name="hud/streak" />;
+    case 'chest': return <LineIcon name="hud/chest" />;
     case 'note': return <NoteIcon size={20} />;
     case 'play': return <PlayIcon size={20} />;
     case 'seal': return <CheckIcon size={20} />;
@@ -88,7 +93,7 @@ function useHoldWhileInside() {
 }
 
 /** 1장(G2): 준비·설치·전투·회복 4박 수비 캔버스. 칸을 누르면 그 박에 고정되고, 다시 누르면 순환으로 돌아간다. 칸 안에 포커스·마우스가 있으면 멈춘다. */
-function Chapter1Stage({ animate, highContrastMap }: { animate: boolean; highContrastMap: boolean }) {
+function Chapter1Stage({ animate, highContrastMap, balance }: { animate: boolean; highContrastMap: boolean; balance: Balance }) {
   const [pinned, setPinned] = useState<GuideWaveBeatId | null>(null);
   const [autoBeat, setAutoBeat] = useState<GuideWaveBeatId>(2);
   const [hold, holdHandlers] = useHoldWhileInside();
@@ -105,14 +110,35 @@ function Chapter1Stage({ animate, highContrastMap }: { animate: boolean; highCon
   const readout = sampleGuideWaveLoop(320, 100, 1250, false, beat);
   // 멈춘 동안은 캔버스도 지금 박에 묶어 고르기 줄과 어긋나지 않게 한다(그 박 안의 움직임은 계속).
   const canvasBeat = pinned ?? (hold && animate ? autoBeat : null);
+  const r6 = balance.r6;
+  const rail = r6?.base.rail;
+  const normal = balance.difficulties.Normal;
+  const steps = [
+    [`준비 문제 · 첫 웨이브 ${balance.run.prepAttempts.firstWave}문제`, `정답 +${correctGoldAt(normal, 1)}골드`],
+    ['빈 받침에 타워를 놓아요', rail ? `${battleTowerName(balance, 'rail')} ${rail.cost}골드` : ''],
+    ['타워가 적을 막아요', '전투 중에도 문제를 풀어요'],
+    [`성문 ${normal.gateHp}/${normal.gateHp} 회복`, `보스 웨이브 +${normal.milestoneSurvivalGold}골드`],
+  ];
 
   return (
     <div className={css.pane} {...holdHandlers}>
-      <div className={css.canvasBox}>
-        <GuideStageCanvas mode="wave_loop" animate={animate} highContrastMap={highContrastMap} pinnedBeat={canvasBeat} className={css.stageCanvas} />
-        <span className={css.tagLeft}>{readout.statusTag}</span>
-        <span className={css.tagRight}>{readout.goldTag}</span>
-      </div>
+      {r6 ? (
+        <>
+          <div className={css.tacticalMap} data-contrast={highContrastMap || undefined} data-animate={animate || undefined}>
+            <img src={R6_MAP_DIAGRAM} width={960} height={576} alt={`${R6_MAP_NAME} 지도`} />
+            {beat === 1 || beat === 2 ? <LineIcon name="hud/stat-range" className={css.installMarker} /> : null}
+            {beat === 2 ? <LineIcon name="hud/enemies" className={css.enemyMarker} /> : null}
+            {beat === 3 ? <LineIcon name="hud/gate" className={css.gateMarker} /> : null}
+          </div>
+          <p className={css.stageReadout}>{steps[beat]!.join(' · ')}</p>
+        </>
+      ) : (
+        <div className={css.canvasBox}>
+          <GuideStageCanvas mode="wave_loop" animate={animate} highContrastMap={highContrastMap} pinnedBeat={canvasBeat} className={css.stageCanvas} />
+          <span className={css.tagLeft}>{readout.statusTag}</span>
+          <span className={css.tagRight}>{readout.goldTag}</span>
+        </div>
+      )}
       <Segmented<`${GuideWaveBeatId}`>
         label={U.beatGroup}
         className={`${css.wrapTiny} ${css.autoSeg}`}
@@ -128,9 +154,9 @@ function Chapter1Stage({ animate, highContrastMap }: { animate: boolean; highCon
 }
 
 /** 2장(G3): 결과마다 골드·점수·성문 메모와 연속 정답 칸. 움직임이 켜져 있고 아무것도 고르지 않았으면 2.4초마다 다음 결과로 넘어간다(칸 안에 포커스·마우스가 있으면 멈춤). */
-function Chapter2Stage({ animate }: { animate: boolean }) {
-  const outcomes = useMemo(() => buildQuizOutcomeSpecs(), []);
-  const streak = BALANCE.burning.streak;
+function Chapter2Stage({ animate, balance }: { animate: boolean; balance: Balance }) {
+  const outcomes = useMemo(() => buildQuizOutcomeSpecs(balance), [balance]);
+  const streak = balance.burning.streak;
   const [selected, setSelected] = useState<QuizOutcomeId | null>(null);
   const [autoIdx, setAutoIdx] = useState(0);
   const [hold, holdHandlers] = useHoldWhileInside();
@@ -148,11 +174,11 @@ function Chapter2Stage({ animate }: { animate: boolean }) {
       <Segmented<QuizOutcomeId> label={U.outcomeGroup} className={`${css.wrap4} ${css.autoSeg}`} options={outcomes.map(o => ({ value: o.id, label: o.label }))} value={active.id} onChange={setSelected} />
       <Card material="plaque" pad="sm" className={css.hudSim} data-outcome={active.id}>
         <span className={css.hudRow}>
-          <span className={css.hudGold}><ArtIcon name="coin" size={22} />{active.goldText}</span>
-          <span className={css.hudItem}><ArtIcon name="star" size={20} />{active.scoreText}</span>
+          <span className={css.hudGold}><LineIcon name="hud/gold" />{active.goldText}</span>
+          <span className={css.hudItem}><LineIcon name="hud/score" />{active.scoreText}</span>
           <span className={css.hudItem} role="img" aria-label={`연속 정답 ${active.litCount}/${streak}칸, ${active.gateNote}`}>
             {Array.from({ length: streak }, (_, i) => (
-              <ArtIcon key={i} name="flame" size={20} className={i < active.litCount ? css.lit : css.unlit} />
+              <LineIcon key={i} name="hud/streak" className={i < active.litCount ? css.lit : css.unlit} />
             ))}
             <span aria-hidden="true">{active.gateNote}</span>
           </span>
@@ -198,10 +224,10 @@ const KEYS = ['1', '2', '3', '4'] as const;
 type QuizKey = (typeof KEYS)[number];
 
 /** 4장(G5): 난이도 판독 한 줄(새 게임 창과 같은 difficultyReadout)과 실제 숫자키에 눌리는 1~4 키. */
-function Chapter4Stage() {
+function Chapter4Stage({ balance }: { balance: Balance }) {
   const [difficulty, setDifficulty] = useState<DifficultyId>('Normal');
   const [pressed, setPressed] = useState<QuizKey>('1');
-  const r = difficultyReadout(difficulty);
+  const r = difficultyReadout(difficulty, balance);
 
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
@@ -216,8 +242,8 @@ function Chapter4Stage() {
     <div className={css.pane}>
       <Segmented<DifficultyId> label={U.difficultyGroup} className={css.wrap4} options={DIFFICULTY_IDS.map(id => ({ value: id, label: DIFFICULTY_COPY[id].label }))} value={difficulty} onChange={setDifficulty} />
       <p className={css.readout} data-readout>
-        <span className={css.readItem}><ArtIcon name="gate" size={20} />{r.parts[0]}</span>
-        <span className={css.readItem}><ArtIcon name="coin" size={20} />{r.parts[1]}</span>
+        <span className={css.readItem}><LineIcon name="hud/gate" />{r.parts[0]}</span>
+        <span className={css.readItem}><LineIcon name="hud/gold" />{r.parts[1]}</span>
         <span className={css.readScope} data-advanced={r.advanced}>{r.parts[2]}</span>
       </p>
       <div className={css.keyRow}>
@@ -266,15 +292,16 @@ function Chapter5Stage() {
 }
 
 /** 장 시연 칸: 왼쪽 그림 + 오른쪽 시연. */
-export function GuideVisualStage({ chapter, animate, highContrastMap }: { chapter: GuideChapterSpec; animate: boolean; highContrastMap: boolean }) {
+export function GuideVisualStage({ chapter, balance = BALANCE, animate, highContrastMap }: { chapter: GuideChapterSpec; balance?: Balance | undefined; animate: boolean; highContrastMap: boolean }) {
+  const r6 = balance.r6;
   return (
     <div className={css.stage} data-chapter={chapter.id}>
-      <GuideArt chapter={chapter} className={css.stageArt} />
-      {chapter.id === 1 && <Chapter1Stage animate={animate} highContrastMap={highContrastMap} />}
-      {chapter.id === 2 && <Chapter2Stage animate={animate} />}
-      {chapter.id === 3 && <Chapter3Stage highContrastMap={highContrastMap} />}
-      {chapter.id === 4 && <Chapter4Stage />}
-      {chapter.id === 5 && <Chapter5Stage />}
+      {!r6 && <GuideArt chapter={chapter} className={css.stageArt} />}
+      {chapter.id === 1 && <Chapter1Stage animate={animate} highContrastMap={highContrastMap} balance={balance} />}
+      {chapter.id === 2 && <Chapter2Stage animate={animate} balance={balance} />}
+      {chapter.id === 3 && (r6 ? <R6TowerStage runtime={r6} balance={balance} highContrastMap={highContrastMap} /> : <Chapter3Stage highContrastMap={highContrastMap} />)}
+      {chapter.id === 4 && <Chapter4Stage balance={balance} />}
+      {chapter.id === 5 && (r6 ? <R6SpeciesStage runtime={r6} /> : <Chapter5Stage />)}
     </div>
   );
 }

@@ -15,17 +15,36 @@ function loadR6() {
 }
 let cached: ReturnType<typeof loadR6> | undefined;
 
+export type LocalBalanceVersion = '1.0.0' | '2.0.0';
+
+export function getR6Battle() {
+  return cached ??= loadR6();
+}
+
+export function localBalanceContext(
+  version: LocalBalanceVersion,
+  grade: number,
+  difficulty: DifficultyId,
+  source = contextFor(grade, difficulty),
+) {
+  if (version === '1.0.0') return source;
+  if (version !== '2.0.0') throw new Error('지원하지 않는 밸런스 판입니다');
+  const { map, path, balance } = getR6Battle();
+  return { ...source, map, path, balance, difficulty: balance.difficulties[difficulty], questionGrade: grade };
+}
+
 /** 로컬 전장과 시연용 진입점. 학년별 문제·읽기 기준을 유지하고 판별로 지도와 장착함을 고른다. */
 export function localBalanceSession(
-  version: '1.0.0' | '2.0.0',
+  version: LocalBalanceVersion,
   grade: number,
   difficulty: DifficultyId,
   input: Omit<
     NewRunInput,
     'grade' | 'difficulty' | 'availableTowers' | 'mapId' | 'bankId' | 'bankVersion' | 'contentMode'
   >,
+  source?: ReturnType<typeof contextFor>,
 ) {
-  const source = contextFor(grade, difficulty);
+  const ctx = localBalanceContext(version, grade, difficulty, source);
   const bank = gradeContent(grade).bank!;
   const common = {
     ...input,
@@ -38,11 +57,8 @@ export function localBalanceSession(
   if (version === '1.0.0')
     return {
       version,
-      ctx: source,
-      state: createRun(source, { ...common, mapId: source.map.id, availableTowers: [...PILOT_TOWERS] }),
+      ctx,
+      state: createRun(ctx, { ...common, mapId: ctx.map.id, availableTowers: [...PILOT_TOWERS] }),
     };
-  if (version !== '2.0.0') throw new Error('지원하지 않는 밸런스 판입니다');
-  const { map, path, balance, theme } = (cached ??= loadR6());
-  const ctx = { ...source, map, path, balance, difficulty: balance.difficulties[difficulty], questionGrade: grade };
-  return { version, ctx, theme, state: createRun(ctx, { ...common, mapId: map.id, availableTowers: [...R6_TOWERS] }) };
+  return { version, ctx, theme: getR6Battle().theme, state: createRun(ctx, { ...common, mapId: ctx.map.id, availableTowers: [...R6_TOWERS] }) };
 }

@@ -3,7 +3,7 @@
 .rows { display: grid; align-content: start; }
 .rows > :last-child { border-bottom: 0; }
 
-.row { display: grid; gap: 2px; padding: 2px 0; border-bottom: 1px solid var(--line); }
+.row { display: grid; gap: 2px; padding: 2px 0; border-bottom: 1px solid var(--border-hairline); }
 .rowsSpacious .row { padding: 8px 0; }
 
 .head {
@@ -13,7 +13,7 @@
   align-items: center;
   min-height: var(--touch);
 }
-.name { font-size: var(--fs-2); font-weight: 700; color: var(--ink); }
+.name { font-size: var(--fs-2); font-weight: 700; color: var(--text-strong); }
 .controlTrack { min-width: 0; width: 100%; }
 .controlTrack [role='radiogroup'] { width: 100%; }
 .controlTrack [role='radiogroup'] > button { padding-inline: 4px; }
@@ -34,8 +34,10 @@
 }
 
 /* 한 줄 설명(움직임·고대비·공개 기록·기록 지우기)은 13px 보조 글. */
-.hint { margin: 0; font-size: var(--fs-1); line-height: 1.35; color: var(--ink-2); }
+.hint { margin: 0; font-size: var(--fs-1); line-height: 1.35; color: var(--text-muted); }
 .preview {
+  --card-face: var(--quiz-bg);
+  color: var(--quiz-ink);
   margin: 4px 0;
   padding: var(--s2) var(--s3);
   font-size: var(--q-font);
@@ -57,21 +59,21 @@
 .cautionTag {
   flex: none;
   padding: 2px 6px;
-  border-radius: var(--r-sm);
-  background: var(--red);
-  color: var(--on-dark);
+  border-radius: var(--chamfer-sm);
+  background: var(--status-danger);
+  color: var(--on-danger);
   font-size: var(--fs-1);
   font-weight: 800;
   line-height: 1.2;
 }
 
 .actions { display: inline-flex; gap: var(--s2); flex-wrap: wrap; }
-.alert { margin: 0; font-size: var(--fs-2); font-weight: 700; color: var(--red); }
-.status { margin: 0; font-size: var(--fs-2); font-weight: 700; color: var(--green); }
+.alert { margin: 0; font-size: var(--fs-2); font-weight: 700; color: var(--status-danger); }
+.status { margin: 0; font-size: var(--fs-2); font-weight: 700; color: var(--accent-teal); }
 
 /* 기본값인 고르기 칸: 숫자·이름 아래 '(기본)'을 13px로 작게 붙인다. 두 줄이어도 칸은 44px 안에 든다. */
 .optTwo { display: grid; justify-items: center; line-height: 1.15; }
-.optMark { font-size: var(--fs-1); font-weight: 700; color: var(--ink-2); }
+.optMark { font-size: var(--fs-1); font-weight: 700; color: var(--text-muted); }
 
 @media (min-width: 640px) {
   .head {

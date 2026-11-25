@@ -1,6 +1,6 @@
 import { useEffect, useEffectEvent, useMemo, useRef, useState } from 'react';
 import { NOTE_COPY as T } from '../copy';
-import { BackIcon } from '../icons/ControlIcons';
+import { LineIcon } from '../icons/LineIcon';
 import { Button, Card, IconButton, ModalTabPanel, ModalTabs, ModalTabShell, Rule, Window, type ModalTabOption } from '../kit';
 import { NOTE_EXTRA as X } from './home/homeCopy';
 import { buildNoteEntries, NOTE_GRADUATE_CLEARS, type NoteEntry, type NoteItemLike } from './noteModel';
@@ -53,7 +53,7 @@ export function NoteScreen({ entries, onBack, loading = false, loadError = false
     <main className={css.page}>
       <Window size="lg" fixed className={css.notebook}>
         <header className={css.header}>
-          <IconButton label={T.back} icon={<BackIcon />} showLabel onClick={onBack} />
+          <IconButton label={T.back} icon={<LineIcon name="hud/back" />} showLabel onClick={onBack} />
           <h1 ref={titleRef} tabIndex={-1} className={css.title}>{T.title}</h1>
           {entries.length > 0 && <p className={css.count}>{T.count(entries.length)}</p>}
         </header>
@@ -66,14 +66,7 @@ export function NoteScreen({ entries, onBack, loading = false, loadError = false
           </div>
         ) : entries.length === 0 ? (
           <div className={css.empty}>
-            <img
-              src={`${import.meta.env.BASE_URL}assets/ui/note.empty.webp`}
-              width={240}
-              height={167}
-              alt=""
-              draggable={false}
-              className={css.emptyArt}
-            />
+            <LineIcon name="hud/note" size={64} className={css.emptyArt} />
             <p className={css.emptyText}>{T.empty}</p>
             <p className={css.emptyHint}>{X.emptyHint}</p>
           </div>

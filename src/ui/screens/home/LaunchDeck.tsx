@@ -3,7 +3,7 @@ import { recommendNickname } from '../../../application/lobby';
 import { searchNeisSchools, type NeisSchool } from '../../../application/neis';
 import { cleanNickname } from '../../copy';
 import { Button, Card, Modal } from '../../kit';
-import { HomeUiArt, PencilIcon, PracticeTargetIcon, SchoolIcon } from './HomeIcons';
+import { LineIcon } from '../../icons/LineIcon';
 import css from './home.module.css';
 
 interface Props {
@@ -191,7 +191,7 @@ export function LaunchDeck({
       <div className={css.cardHeaderRow}>
         <div className={css.cardTitleWrap}>
           <span className={css.sectionIconBadge} aria-hidden="true">
-            <HomeUiArt file="icon.gate.webp" className={css.sectionIcon} />
+            <LineIcon name="hud/play" size={18} />
           </span>
           <h2 className={css.sectionTitle}>새 게임 준비</h2>
         </div>
@@ -209,7 +209,6 @@ export function LaunchDeck({
         <div className={css.fieldGroup}>
           <div className={css.fieldLabelRow}>
             <label htmlFor="landingNickInput" className={css.fieldLabelTitle}>
-              <span className={css.stepNumBadge} aria-hidden="true">1</span>
               닉네임
             </label>
             <span
@@ -226,7 +225,7 @@ export function LaunchDeck({
 
           <div className={css.lockedInputRow}>
             <div className={css.inputIconWrap}>
-              <PencilIcon className={css.inputInnerIcon} />
+              <LineIcon name="hud/edit" className={css.inputInnerIcon} />
               <input
                 ref={inputRef}
                 id="landingNickInput"
@@ -281,7 +280,6 @@ export function LaunchDeck({
         <div className={css.fieldGroup}>
           <div className={css.fieldLabelRow}>
             <label htmlFor="landingSchoolInput" className={css.fieldLabelTitle}>
-              <span className={css.stepNumBadge} aria-hidden="true">2</span>
               학교 이름
               <span className={css.optionalTag}>(선택)</span>
             </label>
@@ -297,7 +295,7 @@ export function LaunchDeck({
 
           <div className={css.lockedInputRow}>
             <div className={css.inputIconWrap}>
-              <SchoolIcon className={css.inputInnerIcon} />
+              <LineIcon name="hud/school" className={css.inputInnerIcon} />
               <input
                 id="landingSchoolInput"
                 aria-label="학교 이름"
@@ -415,7 +413,7 @@ export function LaunchDeck({
           className={css.craftCtaPrimary}
           onClick={handleNewGameClick}
         >
-          <HomeUiArt file="icon.gate.webp" className={css.ctaArtIcon} />
+          <LineIcon name="hud/play" />
           새 게임
         </button>
         {onPractice && (
@@ -425,7 +423,7 @@ export function LaunchDeck({
             className={css.craftCtaSecondary}
             onClick={onPractice}
           >
-            <PracticeTargetIcon className={css.btnIconSvg} />
+            <LineIcon name="hud/stat-range" />
             {practiceLabel}
           </button>
         )}
