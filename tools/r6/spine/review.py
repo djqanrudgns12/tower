@@ -2,10 +2,11 @@
 
 import argparse
 from itertools import combinations, pairwise, product
+from math import dist
 from pathlib import Path
 from statistics import median
 
-from PIL import Image, ImageChops, ImageColor, ImageDraw, ImageOps
+from PIL import Image, ImageChops, ImageCms, ImageColor, ImageDraw, ImageOps
 
 from monsters import FAMILIES, read_json
 from pilot import write_json
@@ -14,6 +15,7 @@ from pilot import write_json
 SIZE = 32
 EVOLUTION_LIMIT = .92
 SPECIES_LIMIT = .55
+COLOR_LIMIT = 15
 BOSS_LIMIT = .70
 CONTRAST_LIMIT = 1.5
 # 초원 고원 맵 규격의 지형 바탕색과 길 표면색을 사용한다.
@@ -39,11 +41,11 @@ def ground_contrast(icon, mask):
     return scores
 
 
-def thumbnail(image):
+def thumbnail(image, size=SIZE):
     crop = image.crop(image.getbbox())
-    crop = ImageOps.contain(crop, (SIZE, SIZE), Image.Resampling.LANCZOS)
-    icon = Image.new("RGBA", (SIZE, SIZE))
-    icon.paste(crop, ((SIZE - crop.width) // 2, SIZE - crop.height))
+    crop = ImageOps.contain(crop, (size, size), Image.Resampling.LANCZOS)
+    icon = Image.new("RGBA", (size, size))
+    icon.paste(crop, ((size - crop.width) // 2, size - crop.height))
     return icon
 
 
@@ -62,6 +64,34 @@ def iou(a, b):
 def overlap(first, second, masks, limit):
     ratio = iou(masks[first], masks[second])
     return {"first": first, "second": second, "iou": ratio, "pass": ratio < limit}
+
+
+def path_composite(icon):
+    return Image.alpha_composite(Image.new("RGBA", icon.size, BACKGROUNDS["path"]), icon).convert("RGB")
+
+
+def color_distance(pair, labs, masks):
+    first, second = pair["first"], pair["second"]
+    shared = ImageChops.darker(masks[first], masks[second]).get_flattened_data()
+    return round(sum(dist(a, b) for a, b, visible in zip(labs[first], labs[second], shared) if visible)
+                 / sum(bool(visible) for visible in shared), 3)
+
+
+def write_color_board(out, paths, icons, pairs):
+    block_w, block_h = 374, 170
+    sheet = Image.new("RGB", (2 * block_w, 26 + block_h * ((len(pairs) + 1) // 2)), BACKGROUNDS["terrain"])
+    draw = ImageDraw.Draw(sheet)
+    draw.text((8, 7), "32px / 128px   IoU >= 0.55, delta E < 15", fill="#B8C0C8")
+    for index, pair in enumerate(pairs, 1):
+        x, y = (index - 1) % 2 * block_w + 8, 26 + (index - 1) // 2 * block_h
+        draw.text((x, y), f"{index:02d}  IoU {pair['iou']:.3f}   delta E {pair['deltaE']:.1f}", fill="#B8C0C8")
+        for actor, offset in ((pair["first"], 0), (pair["second"], 179)):
+            with Image.open(paths[actor]) as image:
+                large = thumbnail(image.convert("RGBA"), 128)
+            sheet.paste(path_composite(icons[actor]), (x + offset, y + 113))
+            sheet.paste(path_composite(large), (x + offset + 35, y + 17))
+            draw.text((x + offset, y + 149), actor, fill="#B8C0C8")
+    sheet.save(out / "cross-species-worst.webp", lossless=True)
 
 
 def review(packs, out):
@@ -122,14 +152,31 @@ def review_images(images, out):
         sheet.save(out / f"{species}-32px.webp", lossless=True)
     failures = sum(not pair["pass"] for pair in evolution) + sum(len(group["failures"]) for group in cross)
     boss_failures = sum(not pair["pass"] for pairs in boss_pairs.values() for pair in pairs)
+    transform = ImageCms.buildTransform(ImageCms.createProfile("sRGB"), ImageCms.createProfile("LAB"), "RGB", "LAB")
+    labs = {actor: [(light * 100 / 255, a, b) for light, a, b in
+                    ImageCms.applyTransform(path_composite(icon), transform).get_flattened_data()]
+            for actor, icon in icons.items()}
+    color_groups = {"A": [], "B": []}
+    for group in cross:
+        for pair in group["failures"]:
+            delta = color_distance(pair, labs, masks)
+            color_groups["A" if delta >= COLOR_LIMIT else "B"].append({
+                "first": pair["first"], "second": pair["second"], "iou": pair["iou"], "deltaE": delta,
+            })
+    color_groups["B"].sort(key=lambda pair: (-pair["iou"], pair["deltaE"], pair["first"], pair["second"]))
+    write_color_board(out, {actor: path for entries in images.values() for actor, path in entries.items()},
+                      icons, color_groups["B"][:20])
     write_json(out / "silhouettes.json", {
         "evolutionLimit": EVOLUTION_LIMIT, "speciesLimit": SPECIES_LIMIT, "evolution": evolution,
         "crossSpecies": cross, "failures": failures,
         "bossLimit": BOSS_LIMIT, "bossVsRegular": boss_pairs, "bossPairFailures": boss_failures,
         "contrastLimit": CONTRAST_LIMIT, "contrastBackgrounds": BACKGROUNDS, "groundContrast": contrast,
+        "crossSpeciesColor": {"size": SIZE, "background": BACKGROUNDS["path"], "deltaELimit": COLOR_LIMIT,
+                              "method": "mean-CIE76-on-shared-alpha128", **color_groups},
     })
     print(f"32px 실루엣 · 단계 {len(evolution)}쌍 · 종족 간 {sum(g['comparisons'] for g in cross)}쌍 · 기준 초과 {failures}쌍")
     print(f"32px 보스와 일반 · {sum(map(len, boss_pairs.values()))}쌍 · 재검수 {boss_failures}쌍")
+    print(f"32px 종족 간 색 판독 · A {len(color_groups['A'])}쌍 · B {len(color_groups['B'])}쌍")
     return failures
 
 

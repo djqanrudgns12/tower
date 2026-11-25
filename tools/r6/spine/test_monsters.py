@@ -15,7 +15,7 @@ from monsters import ACTORS, compose_rig, prepare, read_json
 from part_guides import CANVAS, SHEET, guide_data
 from parts import extract, suggest_pivot
 from pilot import write_json
-from review import ground_contrast, review, silhouette
+from review import ground_contrast, review, review_images, silhouette
 from rigs import VARIANTS, layout
 from sample import generate
 from swarm import animate_swarm
@@ -26,6 +26,26 @@ FIXTURE = Path(__file__).resolve().parents[3] / "asset-source/r6/monsters/_pipel
 
 
 class MonsterPipelineTest(unittest.TestCase):
+    def test_cross_species_color_keeps_silhouette_results(self):
+        with TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            images = {}
+            for species, color in (("machine", "#1D242C"), ("stone", "#1D242C"), ("elf", "#E69F24")):
+                actor = f"{species}-infantry-t1"
+                path = root / (actor + ".png")
+                Image.new("RGBA", (32, 48), color).save(path)
+                images[species] = {actor: path}
+            with redirect_stdout(StringIO()):
+                self.assertEqual(review_images(images, root), 3)
+            report = read_json(root / "silhouettes.json")
+            self.assertEqual(report["speciesLimit"], .55)
+            self.assertEqual([g["failures"][0]["iou"] for g in report["crossSpecies"]], [1, 1, 1])
+            color = report["crossSpeciesColor"]
+            self.assertEqual(len(color["A"]), 2)
+            self.assertEqual([(p["first"], p["second"], p["deltaE"]) for p in color["B"]],
+                             [("machine-infantry-t1", "stone-infantry-t1", 0)])
+            self.assertTrue((root / "cross-species-worst.webp").is_file())
+
     def test_white_key_edge_and_matted_pixel(self):
         image = Image.new("RGBA", (20, 20), "white")
         draw = ImageDraw.Draw(image)
