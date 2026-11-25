@@ -2,52 +2,44 @@
 
 import math
 
-from mathutils import Matrix, Vector
+import bpy
+
+from mathutils import Vector
 
 from mortar_kit import Kit
 from support_mesh import beam, polygon, radial, regular
 
 
 ANGLES = tuple(math.radians(a) for a in (114, 234, 354))
-FRAME_LEAN = -.25
-
-
-def frame_basis():
-    # Blender의 직교 카메라 축에서 A프레임의 폭과 윗부분 기울기를 정한다.
-    from mortar_render import CAMERA_RAY
-
-    right = Vector((0, 0, 1)).cross(CAMERA_RAY).normalized()
-    up = CAMERA_RAY.cross(right)
-    camera = Matrix((right, up, CAMERA_RAY))
-    profile = Matrix(((1, FRAME_LEAN, 0), (0, 1, 0), (0, 0, 1)))
-    return camera.transposed() @ profile @ camera
+FRAME_LEAN = 0.0
 
 
 def mount_point(height):
-    return frame_basis() @ Vector((0, 0, height))
+    return Vector((FRAME_LEAN * height, 0, height))
 
 
-def shape_frame(kit):
-    shape = frame_basis().to_4x4()
-    for groups in kit.groups.values():
-        for part in groups.children:
-            if part["mount"] == "ground":
-                for obj in part.objects:
-                    local = obj.matrix_basis
-                    obj.data.transform(local.inverted() @ shape @ local)
-
-
-
-def crystal(p, name, center, r, h, color="amber", phase=0):
-    rings = [[(*radial(radius, phase + i * math.pi / 3).xy, z) for i in range(6)]
-             for z, radius in ((-h / 2, .024), (-h * .13, r * .88), (h * .12, r), (h / 2, .022))]
-    p.mesh(name, rings, color, center)
+def crystal(p, name, center, radius, height, phase=0):
+    # 끝이 하나의 꼭짓점인 8면체. 겹치는 윤곽 메시를 쓰지 않는다.
+    points = [(*radial(radius, phase + i * math.pi / 2).xy, 0) for i in range(4)]
+    points.extend(((0, 0, -height / 2), (0, 0, height / 2)))
+    faces = [(i, (i + 1) % 4, 5) for i in range(4)]
+    faces += [((i + 1) % 4, i, 4) for i in range(4)]
+    mesh = bpy.data.meshes.new(name)
+    mesh.from_pydata(points, [], faces)
+    mesh.update()
+    obj = bpy.data.objects.new(name, mesh)
+    p.collection.objects.link(obj)
+    obj.location = center
+    obj["color"] = "amber"
+    return obj
 
 
 def frame(kit, tier, spread, height):
     triangle = regular(spread, 3, ANGLES[0])
-    trim = "amber" if tier == 4 else "silver"
+    trim = "silver"
     with kit.part("base", f"triangle-{tier}") as p:
+        polygon(p, "집속 기단 하부", regular(spread * .91, 6, ANGLES[0]),
+                [(0, .94), (.13, 1.02), (.33, 1), (.51, .73)], "slate")
         for i, (a, b) in enumerate(zip(triangle, triangle[1:] + triangle[:1])):
             beam(p, "기단 연결대", (*a, .17), (*b, .17), .27 + tier * .035, .30, "slate")
             beam(p, "기단 안쪽 띠", (*a, .32), (*b, .32), .10, .085, trim if tier > 2 else "line")
@@ -57,10 +49,21 @@ def frame(kit, tier, spread, height):
         for angle in ANGLES:
             low = radial(spread - .05, angle, .30)
             high = radial(.28 + .025 * tier, angle, height)
-            beam(p, "A프레임 지지대", low, high, .25 + tier * .026, .30, "surface")
-            offset = radial(.11, angle)
-            beam(p, "프레임 밝은 능선", low + offset, high + offset, .09, .105, trim)
-            p.rod("안쪽 하중 지지대", low.lerp(high, .10), radial(.35, angle, .68), .07, "line", steps=6)
+            bend = .39 if tier == 3 else .22
+            sections = [(0, spread - .05, .68), (.31, spread * .83 + bend, .61),
+                        (.61, spread * .62 + bend, .54), (.83, spread * .40 + bend, .48),
+                        (1, high.xy.length, .43)]
+            rings = []
+            for t, radius, width in sections:
+                center = radial(radius, angle, low.z + t * (high.z - low.z))
+                rings.append([tuple(center + radial(width * .67, corner)) for corner in
+                              (angle + .60, angle + 2.40, angle + 3.75, angle + 5.50)])
+            p.mesh("곡선 분할 장갑" if tier == 3 else "테이퍼 A프레임 장갑",
+                   rings, "surface", bevel=.027)
+            for a, b in zip(sections, sections[1:]):
+                z0, z1 = (low.z + t * (high.z - low.z) for t in (a[0], b[0]))
+                beam(p, "프레임 밝은 외곽 능선", radial(a[1] + .30, angle, z0),
+                     radial(b[1] + .30, angle, z1), .085, .10, "line" if tier == 4 else trim)
         polygon(p, "삼각 꼭짓점 결합판", regular(.47, 3, ANGLES[0]),
                 [(height - .08, 1), (height + .08, .9), (height + .16, .62)], trim)
         p.lathe("하단 집속 소켓", (0, 0, .33), [(0, .35), (.14, .42), (.31, .30), (.33, .20)],
@@ -71,14 +74,15 @@ def frame(kit, tier, spread, height):
                 "silver", steps=6, closed=True, forward=True)
         p.plate("비대칭 방위 표식", (-.19, .03, -.35), (.13, .32, .12), "line")
     with kit.part("weapon", f"crystal-{tier}", "charge") as p:
-        count = (0, 3, 1, 4)[tier - 1]
-        crystal(p, "주수정 밝은 외곽", (0, 0, .06), .30 + tier * .049, 1.04 + tier * .104, "silver")
-        crystal(p, "앰버 주수정", (.018, .032, .09), .30 + tier * .044, .94 + tier * .101, phase=.10)
-        for i in range(count):
-            a = i * math.tau / count + .30
-            q = radial(.72 + .035 * tier, a, (-.43 if i % 2 else .18) if count > 1 else -.70)
-            crystal(p, "위성 수정", q, .145 + tier * .016, .35 + tier * .05, phase=.24 + a)
-            p.plate("위성 홀더", q + radial(0, 0, -.26), (.22, .21, .12), "line")
+        crystal(p, "단일 앰버 주수정", (0, 0, .10), (.30 + tier * .044) * 1.65,
+                (.94 + tier * .101) * 1.35, phase=.10)
+    if tier > 1:
+        with kit.part("weapon", f"satellites-{tier}", "orbit") as p:
+            count = (0, 2, 3, 4)[tier - 1]
+            for i in range(count):
+                a = i * math.tau / count + .50
+                q = radial(1.43 + .102 * (tier - 1), a, -.43 if i % 2 else .27)
+                crystal(p, "외곽 위성 수정", q, .134 + tier * .022, .35 + tier * .062, phase=.24 + a)
 
 
 def build_kit():
@@ -91,10 +95,10 @@ def build_kit():
         ("base", "corner-bolts", 1, .57, .31, "teal"),
         ("armor", "outer-braces", 1, .94, 1.05, "silver"),
         ("armor", "alloy-shoes", 2, .80, .85, "line"),
-        ("marking", "triangle-circuit", 2, 1.03, .40, "amber"),
+        ("marking", "triangle-circuit", 2, .83, .40, "line"),
         ("detail", "mirror-banks", 3, .58, 1.23, "silver"),
         ("armor", "apex-bracket", 3, .22, 2.42, "line"),
-        ("armor", "gold-outriggers", 4, .63, 1.18, "amber"),
+        ("armor", "gold-outriggers", 4, .66, 1.18, "slate"),
     )
     for slot, name, tier, extent, z, color in upgrades:
         radius, top = frames[tier - 1]
@@ -108,22 +112,14 @@ def build_kit():
                 if name == "corner-bolts":
                     p.plate("외곽 모서리 볼트", outer, (.52, .54, .34), "slate").rotation_euler.z = angle
                     p.plate("볼트의 틸 마개", outer + radial(0, 0, .17), (.40, .42, .11), "teal").rotation_euler.z = angle
-                if name == "triangle-circuit":
-                    b = radial(.88, angle, top + .38)
-                    p.rod("상단 회로 갈래", radial(.20, angle, top), b, .11, "amber", steps=6)
+                if name == "gold-outriggers":
+                    beam(p, "버팀목의 얇은 은회 가장자리", outer + Vector((0, 0, .13)),
+                         inner + Vector((0, 0, .13)), .066, .068, "silver")
             if name in ("corner-bolts", "alloy-shoes", "triangle-circuit", "apex-bracket", "gold-outriggers"):
                 height = top + {"corner-bolts": .21, "alloy-shoes": .34, "triangle-circuit": .65,
-                                "apex-bracket": .67, "gold-outriggers": .63}[name]
-                radii = {
-                    "apex-bracket": (.53, .69),
-                    "triangle-circuit": (.77,),
-                }.get(name, (.50,))
-                for index, r in enumerate(radii):
-                    p.lathe("상단 집속 고리", (0, 0, height + index * .24),
-                            [(0, r - .03), (.05, r), (.13, r - .03), (.13, r - .16), (0, r - .16)],
-                            color, steps=12, closed=True)
-                for angle in ANGLES:
-                    a, b = radial(.24, angle, top), radial(.43, angle, height + .05)
-                    p.rod("고리 지지 핀", a, b, .068, color, steps=5)
-    shape_frame(kit)
+                                "apex-bracket": .57, "gold-outriggers": .58}[name]
+                r = {"triangle-circuit": .77, "apex-bracket": .69, "gold-outriggers": .90}.get(name, .50)
+                p.lathe("부유 광학 고리", (0, 0, height),
+                        [(0, r - .03), (.05, r), (.13, r - .03), (.13, r - .13), (0, r - .13)],
+                        "silver", steps=12, closed=True)
     return kit.scene

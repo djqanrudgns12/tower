@@ -22,7 +22,8 @@ def render(tower, kit_file, recipe_file, out):
     stages = json.loads(recipe_file.read_text())["stages"]
     out.mkdir(parents=True, exist_ok=False)
     bpy.ops.wm.open_mainfile(filepath=str(kit_file))
-    materials = {name: bpy.data.materials[f"R04 · {name}"] for name in PALETTE}
+    colors = (*PALETTE, "amber-charge") if tower == "prism" else PALETTE
+    materials = {name: bpy.data.materials[f"R04 · {name}"] for name in colors}
     if tower == "mortar":
         kit = bpy.data.scenes["곡사 포대 · 부품"]
         assemble = mortar_render.assemble

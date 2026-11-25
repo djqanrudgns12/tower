@@ -6,7 +6,11 @@ from mortar_kit import Kit
 from support_mesh import beam, polygon, radial, regular
 
 
-MAST = (1.02, 1.48)
+MAST = (1.02, 1.22)
+DECK_HEIGHTS = (.65, .85, 1.05, 1.25)
+MAST_TOPS = (1.32, 1.78, 2.32, 2.76)
+FLEET_HEIGHTS = (1.12, 1.18, 1.36, 1.52)
+DRONE_SCALE = 1.32
 POSITIONS = (
     ((-.21, -.15),),
     ((-.74, -.24), (.52, .20)),
@@ -16,7 +20,7 @@ POSITIONS = (
 
 
 def drone(p, tier, lead):
-    color = "amber" if tier == 4 and lead else "silver"
+    color = "silver"
     p.plates("무인기 동체", (0, 0, 0), [(-.075, .26, .55, .08), (.005, .32, .76, .13),
              (.09, .24, .61, .10)], color, .018)
     p.plate("전방 센서", (0, .31, .022), (.17, .19, .08), "carbon")
@@ -33,7 +37,7 @@ def drone(p, tier, lead):
             wing = [(side * x, y) for x, y in ((.06, .17), (.57, -.15), (.54, -.26), (.09, -.14))]
             polygon(p, "고정익", wing if side == 1 else wing[::-1], [(-.025, 1), (.047, 1)], color)
             p.plate("추진부", (side * .21, -.29, .04), (.13, .35, .14), "line")
-            p.plate("날개 끝 표식", (side * .48, -.185, .05), (.10, .08, .04), "amber")
+            p.plate("날개 끝 표식", (side * .48, -.185, .05), (.10, .08, .04), "amber" if tier == 4 and lead else "line")
     p.plate("등줄 패널", (-.085, -.05, .086), (.106, .27, .067), "slate")
 
 
@@ -52,34 +56,43 @@ def mast(p, low, high, color, trim):
 def build_kit():
     kit = Kit("hangar", "드론 격납고")
     for tier, radius in enumerate((1.48, 1.65, 1.79, 1.94), 1):
-        top = .30 + .055 * tier
+        top = DECK_HEIGHTS[tier - 1]
+        mast_top = MAST_TOPS[tier - 1]
         xy = regular(radius, 6, math.radians(8))
         with kit.part("base", f"deck-{tier}") as p:
-            polygon(p, "육각 발진 갑판", xy, [(0, .87), (.075, 1), (top - .065, 1),
-                    (top, .94)], "slate", .025)
-            polygon(p, "갑판 단면 띠", xy, [(top - .128, 1.012), (top - .074, 1.012)],
-                    "amber" if tier == 4 else "silver")
-            polygon(p, "갑판 상판", xy, [(top, .92), (top + .041, .90)], "surface")
+            polygon(p, "하단 격납 벙커", xy, [(0, .81), (.10, .95), (top * .60, .86)],
+                    "slate", .025)
+            polygon(p, "상단 육각 발진 갑판", xy, [(top * .60, .84), (top * .66, 1),
+                    (top - .07, 1), (top, .94)], "silver", .025)
+            polygon(p, "갑판 단면 띠", xy, [(top - .049, .989), (top - .020, .968)],
+                    "amber" if tier == 4 else "line")
+            polygon(p, "발진로 표면", xy, [(top, .76), (top + .039, .75)], "surface")
+            p.plate("전면 격납 출입문", (0, -radius * .81, top * .28),
+                    (radius * .84, .17, top * .47), "carbon", .11)
+            for x in (-radius * .46, radius * .46):
+                p.plate("격납 입구의 경사 장갑", (x, -radius * .76, top * .31),
+                        (.31, .24, top * .66), "line", .08).rotation_euler.y = x * -.22
+                p.plate("격납 출입등", (x, -radius * .867, top * .42), (.15, .04, .11), "teal")
             for i, x in enumerate((-.49, .49) if tier >= 3 else (0,)):
                 p.plate("발진 레일 홈", (x, -.10, top + .050), (.25, radius * 1.28, .046), "carbon")
                 p.plate("발진 레일 띠", (x, -.10, top + .074), (.073, radius * 1.24, .036),
                         "amber" if i == 0 else "silver")
         with kit.part("body", f"mast-{tier}") as p:
-            p.plate("마스트 자리", (*MAST, .31), (.594, .63, .37), "slate", .09)
-            beam(p, "갑판과 마스트 이음쇠", (.60, .81, .18), (*MAST, .22), .43, .28, "line")
+            p.plate("마스트 자리", (*MAST, top * .66), (.56, .55, top * 1.18), "slate", .09)
             if tier == 1:
-                p.rod("짧은 갑판 마스트", (*MAST, .34), (*MAST, 1.01), .096, "silver", steps=6)
+                p.rod("짧은 갑판 마스트", (*MAST, top), (*MAST, mast_top), .10, "line", steps=6)
             else:
-                for index in range(tier - 1):
-                    bottom = .43 + index * .63
-                    mast(p, bottom, bottom + .63, "silver", "line")
-                p.rod("마스트 안테나", (*MAST, .43 + .63 * (tier - 1)), (*MAST, .78 + .63 * (tier - 1)),
-                      .050, "amber" if tier == 4 else "silver", steps=6)
+                mast(p, top, mast_top - .15, "line", "slate")
+            if tier >= 3:
+                p.plate("관제실 캐빈", (*MAST, mast_top - .14), (.70, .63, .36), "silver", .13)
+                p.plate("관제실 전면 창", (MAST[0], MAST[1] - .31, mast_top - .14),
+                        (.55, .047, .16), "carbon")
+                p.plate("관제실 지붕 마감", (*MAST, mast_top + .043), (.73, .68, .034),
+                        "amber" if tier == 4 else "line", .14)
         with kit.part("head", f"antenna-{tier}", "mast-yaw") as p:
             p.plate("관제 안테나 머리", (0, .105, .0), (.33 + tier * .035, .16, .22 + tier * .041),
-                    "silver", .09)
-            p.plate("안테나 전면 띠", (0, .200, .04), (.25, .055, .095),
-                    "amber" if tier == 4 else "teal")
+                    "line", .09)
+            p.plate("틸 레이더 전면 띠", (0, .200, .04), (.25, .055, .095), "teal")
         with kit.part("weapon", f"fleet-{tier}", "fleet") as p:
             drone(p, tier, True)
         with kit.part("detail", f"wingman-{tier}", "wingman") as p:
@@ -90,15 +103,17 @@ def build_kit():
             p.plate("유도등 지지대", foot, (.52, .41, .20), "slate").rotation_euler.z = a
             p.plate("틸 유도등", radial(1.68, a, .26), (.26, .17, .09), "teal").rotation_euler.z = a
     with kit.part("base", "ramp") as p:
-        for x in (-.65, .45):
-            beam(p, "진입 경사로", (x, -1.97, .105), (x, -1.08, .39), .48, .15, "silver")
-            for i in range(3):
-                p.plate("경사로 접지 띠", (x, -1.79 + i * .18, .26 + i * .06), (.35, .075, .055), "line")
+        for x in (-.56, .56):
+            beam(p, "격납 아치 기둥", (x, -1.86, .17), (x * .87, -1.61, .86), .30, .28, "silver")
+            beam(p, "모따기 격납 아치", (x * .87, -1.61, .86), (x * .61, -1.49, 1.08),
+                 .27, .24, "silver")
+        beam(p, "격납 아치 윗턱", (-.37, -1.49, 1.08), (.37, -1.49, 1.08), .23, .24, "line")
+        p.plate("격납 아치 전면 표식", (0, -1.61, 1.071), (.33, .06, .080), "teal")
     with kit.part("armor", "windbreak") as p:
         beam(p, "발진대 방풍벽", (-1.53, -.49, .45), (-1.02, 1.08, .46), .26, .70, "line")
         beam(p, "방풍벽 밝은 턱", (-1.53, -.49, .81), (-1.02, 1.08, .82), .12, .10, "silver")
     with kit.part("detail", "mast-extensions") as p:
-        mast(p, 1.10, 1.69, "silver", "line")
+        mast(p, 1.10, 1.69, "slate", "line")
         p.rod("격자 보조 안테나", (*MAST, 1.69), (1.40, 1.83, 1.87), .055, "teal", steps=6)
         p.plate("합금 측면 스커트", (1.62, -.78, .23), (.53, .81, .33), "surface")
     with kit.part("body", "dock") as p:
@@ -106,23 +121,26 @@ def build_kit():
             beam(p, "충전 도크 연결대", (x * .67, .02, .20), (x, .02, .30), .32, .26, "line")
             p.plate("갑판 옆 충전 도크", (x, .12, .31), (.82, 1.02, .53), "slate", .13)
             p.plate("도크 상판", (x, .12, .64), (.70, .86, .19), "silver", .13)
-            p.plate("도크 단자", (x, .12, .77), (.38, .53, .15), "amber")
+            p.plate("도크 단자", (x, .12, .77), (.38, .53, .15), "teal")
     with kit.part("base", "outriggers") as p:
         for a in (.15, 1.65, 3.29, 4.79):
             p.plate("외곽 지지발", radial(1.86, a, .14), (.68, .61, .25), "slate").rotation_euler.z = a
             beam(p, "갑판 버팀목", radial(2.09, a, .21), radial(1.48, a, .52), .34, .18, "silver")
     with kit.part("detail", "extension-deck") as p:
-        mast(p, 1.71, 2.20, "silver", "line")
+        mast(p, 1.71, 2.20, "line", "slate")
         for a in (.1, 3.24):
             loc = radial(2.09, a, .26)
             p.plate("발진대 탄약 랙", loc, (.79, .70, .38), "line").rotation_euler.z = a
             p.plate("탄약 랙 모서리", (loc.x, loc.y, .48), (.65, .56, .11), "teal").rotation_euler.z = a
     with kit.part("marking", "hex-light") as p:
-        for radius, center in ((.62, (0, .25)), (.57, (-.72, -.34)), (.57, (.72, -.34))):
+        for radius, center in ((.58, (0, .23)), (.49, (-.59, -.34)), (.49, (.59, -.34))):
             xy = [(x + center[0], y + center[1]) for x, y in regular(radius, 6, .08)]
             for a, b in zip(xy, xy[1:] + xy[:1]):
-                beam(p, "갑판 앰버 육각 표시", (*a, .578), (*b, .578), .050, .031, "amber")
-        mast(p, 2.31, 2.76, "silver", "line")
+                beam(p, "갑판 앰버 육각 표시", (*a, 1.305), (*b, 1.305), .037, .022, "amber")
         for a in (-2.08, -.72, .90, 2.82):
-            beam(p, "외곽 금테 방풍턱", radial(2.42, a, .27), radial(1.65, a, .70), .42, .24, "amber")
+            p.plate("갑판 외곽 접지 리브", radial(1.65, a, .36),
+                    (.43, .19, .33), "silver", .06).rotation_euler.z = a
+    for tier, top in enumerate(DECK_HEIGHTS, 1):
+        with kit.part("marking", f"launch-guide-{tier}", "guide") as p:
+            p.plate("발진 레일 유도등", (0, -1.06, top + .085), (.20, .37, .041), "teal")
     return kit.scene

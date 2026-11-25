@@ -10,9 +10,8 @@ from mathutils import Matrix, Vector
 import bastion_kit
 import hangar_kit
 import prism_kit
-from mortar_kit import Part, SLOTS
+from mortar_kit import SLOTS
 from mortar_render import CAMERA_RAY, CENTER_HEIGHT, DIRECTIONS, SURFACES, TILE, VIEW, batch, configure, space_parts, toon_materials
-from support_mesh import arc
 
 
 KITS = {
@@ -21,9 +20,10 @@ KITS = {
     "bastion": (bastion_kit.build_kit, "방벽 기지", 8, 1.67),
 }
 PRISM_HEIGHTS = (1.69, 1.87, 2.00, 2.30)
-CHARGE = (0, .18, .37, .43, .34, .25, .10, 0)
-WALL_STROKE = (0, -.14, .34, .50, .31, .16, .07, 0)
-LAUNCH_HEIGHT = (0, .27, .53, .7, .62, .46, .31, 0)
+CHARGE = (0, .04, .15, .25, .21, .14, .06, 0)
+ORBIT = (0, .21, .61, 1.13, 1.76, 2.28, 2.62, 0)
+WALL_STROKE = (0, -.48, .32, .83, .60, .31, .13, 0)
+LAUNCH_HEIGHT = (0, .36, 0, 0, 0, 0, 0, 0)
 
 
 def mounts_for(tower, tier, frame, yaw, layer):
@@ -35,31 +35,35 @@ def mounts_for(tower, tier, frame, yaw, layer):
         if layer == "head":
             down = Matrix.Translation(Vector((0, 0, CENTER_HEIGHT)) - point)
         mount = down @ Matrix.Translation(point) @ yaw
-        charge = Matrix.Translation((0, 0, CHARGE[frame])) @ Matrix.Rotation(CHARGE[frame] * 1.65, 4, "Z")
-        mounts.update(yaw=[mount], charge=[mount @ charge])
+        stretch = 1 + CHARGE[frame]
+        charge = Matrix.Diagonal((stretch, stretch, stretch, 1))
+        mounts.update(yaw=[mount], charge=[mount @ charge],
+                      orbit=[mount @ Matrix.Rotation(ORBIT[frame], 4, "Z")])
     elif tower == "hangar":
-        aerial_height = (1.03, 1.31, 1.90, 2.50)[tier - 1]
-        mounts["mast-yaw"] = [down @ Matrix.Translation((*hangar_kit.MAST, aerial_height + frame * .022))
+        aerial_height = hangar_kit.MAST_TOPS[tier - 1] + .16
+        mounts["mast-yaw"] = [down @ Matrix.Translation((*hangar_kit.MAST, aerial_height))
                               @ yaw @ Matrix.Rotation(math.sin(frame * math.pi / 7) * .40, 4, "X")]
         spots = hangar_kit.POSITIONS[tier - 1]
-        height = .62 + .067 * tier
-        mounts["fleet"] = [down @ Matrix.Translation((*spots[0], height + LAUNCH_HEIGHT[frame])) @ yaw]
-        if layer == "head" and frame in range(2, 7):
+        height = hangar_kit.DECK_HEIGHTS[tier - 1] + hangar_kit.FLEET_HEIGHTS[tier - 1]
+        drone_scale = Matrix.Scale(hangar_kit.DRONE_SCALE, 4)
+        mounts["fleet"] = [down @ Matrix.Translation((*spots[0], height + LAUNCH_HEIGHT[frame]))
+                           @ yaw @ drone_scale]
+        if 2 <= frame <= 6:
             mounts["fleet"] = []
-        mounts["wingman"] = [down @ Matrix.Translation((x, y, height + index * .095)) @ yaw
+        mounts["wingman"] = [down @ Matrix.Translation((x, y, height + index * .095)) @ yaw @ drone_scale
                              for index, (x, y) in enumerate(spots[1:])]
+        mounts["guide"] = [down]
     else:
-        x, y = bastion_kit.BOOM_XY
         apex = bastion_kit.BOOM_HEIGHTS[tier - 1]
-        mounts["dish"] = [down @ Matrix.Translation((x - .40, y - .12, apex)) @ yaw
-                          @ Matrix.Rotation(CHARGE[frame] * 1.22, 4, "Z")]
+        mounts["dish"] = [down @ Matrix.Translation((*bastion_kit.DISH_XY, apex)) @ yaw
+                          @ Matrix.Rotation(math.sin(frame * math.pi / 7) * .52, 4, "Z")]
         push = WALL_STROKE[frame]
         mounts["wall"] = [down @ Matrix.Translation((0, -push * .24, 0))
-                          @ Matrix.Diagonal((1 + push * .24, 1 + push * .24, 1, 1))]
-    return mounts, down
+                          @ Matrix.Diagonal((1 + push * .21, 1 + push * .21, 1 - push * .07, 1))]
+    return mounts
 
 
-def copy_part(part, group, materials, finish, world, transforms):
+def copy_part(part, group, materials, finish, world, transforms, accent=None):
     for transform in transforms:
         for source in part.objects:
             if source.type != "MESH":
@@ -70,34 +74,8 @@ def copy_part(part, group, materials, finish, world, transforms):
             obj.matrix_world = world @ transform @ source.matrix_basis
             obj.material_slots[0].link = "OBJECT"
             color = source["color"]
-            obj.material_slots[0].material = materials[finish if color == "surface" else color]
-
-
-def effects(tower, tier, frame, yaw, world, group, materials):
-    p = Part(group)
-    objects = []
-    if tower == "prism" and frame in (2, 3, 4):
-        z = PRISM_HEIGHTS[tier - 1] + CHARGE[frame]
-        end = .97 + .11 * tier + .14 * (frame - 2)
-        objects.append(p.rod("앰버 집속 광선", (0, .35, z), (0, end, z), .033, "amber", steps=5))
-        if tier >= 2 and frame >= 3:
-            objects.append(p.rod("두 번째 굴절 선", (0, end, z), (.41, end + .26, z - .11),
-                                 .025, "amber", steps=5))
-        shift = prism_kit.mount_point(PRISM_HEIGHTS[tier - 1]) - Vector((0, 0, PRISM_HEIGHTS[tier - 1]))
-        world = world @ Matrix.Translation(shift) @ yaw
-    elif tower == "bastion":
-        if frame in (2, 3):
-            r = (1.39, 1.65, 1.88, 2.04)[tier - 1] + frame * .21
-            objects.append(arc(p, "전면 밀치기 선", (0, 0, 0), bastion_kit.START, bastion_kit.TURN,
-                               [(.19, r), (.22, r), (.22, r - .05), (.19, r - .05)], "amber"))
-        if 3 <= frame <= 6:
-            r = .77 + (.45 + tier * .011) * (frame - 2)
-            objects.append(p.lathe("주변 타워 강화 고리", (0, 0, .24),
-                                    [(0, r), (.026, r), (.026, r - .046), (0, r - .046)],
-                                    "teal", steps=36, closed=True))
-    for obj in objects:
-        obj.data.materials.append(materials[obj["color"]])
-        obj.matrix_world = world @ obj.matrix_basis
+            material = accent or (finish if color == "surface" else color)
+            obj.material_slots[0].material = materials[material]
 
 
 def assemble(tower, kit, materials, stage, group, tile, direction=0, layer="form", frame=0):
@@ -110,15 +88,18 @@ def assemble(tower, kit, materials, stage, group, tile, direction=0, layer="form
         transform = Matrix.Translation((0, 0, CENTER_HEIGHT)) @ Matrix.Diagonal((2.6, 2.6, 2.6, 1)) @ yaw
         copy_part(part, group, materials, finish, world, [transform])
         return
-    mounts, down = mounts_for(tower, tier, frame, yaw, layer)
+    mounts = mounts_for(tower, tier, frame, yaw, layer)
     for slot in SLOTS:
         for name in stage["slots"].get(slot, []):
             part = kit.collection.children[slot].children[f"{tower}/{name}"]
             mount = part["mount"]
             if layer == "form" or (mount == "ground") == (layer == "body"):
-                copy_part(part, group, materials, finish, world, mounts[mount])
-    if frame and layer != "body":
-        effects(tower, tier, frame, yaw, world @ down, group, materials)
+                accent = None
+                if mount == "guide":
+                    accent = ("teal", "silver", "line", "silver", "teal", "silver", "line", "teal")[frame]
+                elif mount == "charge" and frame in (2, 3, 4):
+                    accent = "amber-charge"
+                copy_part(part, group, materials, finish, world, mounts[mount], accent)
 
 
 def save_kit(tower, stage, path, palette, linear):
@@ -126,6 +107,13 @@ def save_kit(tower, stage, path, palette, linear):
     bpy.ops.wm.read_factory_settings(use_empty=True)
     kit = build()
     materials = toon_materials(palette, linear)
+    if tower == "prism":
+        charged = materials["amber"].copy()
+        charged.name = "R04 · amber-charge"
+        ramp = charged.node_tree.nodes.get("Color Ramp").color_ramp
+        for element in list(ramp.elements)[:-1]:
+            element.color = ramp.elements[-1].color
+        materials["amber-charge"] = charged
     for material in materials.values():
         material.use_fake_user = True
     space_parts(kit, materials)
@@ -160,7 +148,8 @@ def render(tower, stages, out, kit_file, palette, linear, forms_only=False):
         save_kit(tower, stages[-1], kit_file, palette, linear)
     bpy.ops.wm.open_mainfile(filepath=str(kit_file))
     kit = bpy.data.scenes[f"{title} · 부품"]
-    materials = {name: bpy.data.materials[f"R04 · {name}"] for name in palette}
+    colors = (*palette, "amber-charge") if tower == "prism" else palette
+    materials = {name: bpy.data.materials[f"R04 · {name}"] for name in colors}
     validate_parts(tower, kit, stages)
 
     tiers = [stage for stage in stages if stage["level"] in (1, 6, 12, 18)]
