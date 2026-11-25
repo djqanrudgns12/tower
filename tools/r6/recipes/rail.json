@@ -1,0 +1,156 @@
+{
+  "towerId": "rail",
+  "stages": [
+    {
+      "level": 1,
+      "tier": 1,
+      "materialStage": "steel",
+      "weaponStage": 1,
+      "slots": {
+        "base": ["chamfered-deck"],
+        "body": ["steel-neck"],
+        "head": ["yaw-bearing"],
+        "weapon": ["single-rail"]
+      },
+      "attack": {"mode": "hitscan", "fps": 20, "frames": 8, "targetCount": 1, "burstCount": 1, "pierceCount": 0, "recoil": 0.21}
+    },
+    {
+      "level": 2,
+      "tier": 1,
+      "materialStage": "steel",
+      "weaponStage": 1,
+      "slots": {
+        "base": ["chamfered-deck", "clamp-feet"],
+        "body": ["steel-neck"],
+        "head": ["yaw-bearing"],
+        "weapon": ["single-rail", "recoil-slider"]
+      },
+      "attack": {"mode": "hitscan", "fps": 20, "frames": 8, "targetCount": 1, "burstCount": 1, "pierceCount": 0, "recoil": 0.21}
+    },
+    {
+      "level": 4,
+      "tier": 1,
+      "materialStage": "steel",
+      "weaponStage": 1,
+      "slots": {
+        "base": ["chamfered-deck", "clamp-feet"],
+        "body": ["steel-neck"],
+        "armor": ["steel-bolsters"],
+        "head": ["yaw-bearing"],
+        "weapon": ["single-rail", "recoil-slider"]
+      },
+      "attack": {"mode": "hitscan", "fps": 20, "frames": 8, "targetCount": 1, "burstCount": 1, "pierceCount": 0, "recoil": 0.21}
+    },
+    {
+      "level": 6,
+      "tier": 2,
+      "materialStage": "alloy",
+      "weaponStage": 2,
+      "slots": {
+        "base": ["chamfered-deck", "clamp-feet"],
+        "body": ["alloy-neck"],
+        "head": ["yaw-bearing"],
+        "weapon": ["twin-rails"]
+      },
+      "attack": {"mode": "hitscan", "fps": 20, "frames": 8, "targetCount": 1, "burstCount": 2, "pierceCount": 0, "recoil": 0.25}
+    },
+    {
+      "level": 8,
+      "tier": 2,
+      "materialStage": "alloy",
+      "weaponStage": 2,
+      "slots": {
+        "base": ["chamfered-deck", "outriggers"],
+        "body": ["alloy-neck"],
+        "armor": ["twin-brace"],
+        "head": ["yaw-bearing"],
+        "weapon": ["twin-rails"]
+      },
+      "attack": {"mode": "hitscan", "fps": 20, "frames": 8, "targetCount": 1, "burstCount": 2, "pierceCount": 0, "recoil": 0.25}
+    },
+    {
+      "level": 10,
+      "tier": 2,
+      "materialStage": "alloy",
+      "weaponStage": 2,
+      "slots": {
+        "base": ["chamfered-deck", "outriggers"],
+        "body": ["alloy-neck"],
+        "armor": ["twin-brace"],
+        "head": ["yaw-bearing"],
+        "weapon": ["twin-rails"],
+        "detail": ["exhaust-blades"]
+      },
+      "attack": {"mode": "hitscan", "fps": 20, "frames": 8, "targetCount": 1, "burstCount": 2, "pierceCount": 0, "recoil": 0.25}
+    },
+    {
+      "level": 12,
+      "tier": 3,
+      "materialStage": "ceramic",
+      "weaponStage": 3,
+      "slots": {
+        "base": ["chamfered-deck", "outriggers"],
+        "body": ["ceramic-mast"],
+        "head": ["yaw-bearing"],
+        "weapon": ["triple-rails"]
+      },
+      "attack": {"mode": "hitscan", "fps": 20, "frames": 8, "targetCount": 1, "burstCount": 3, "pierceCount": 0, "recoil": 0.28}
+    },
+    {
+      "level": 14,
+      "tier": 3,
+      "materialStage": "ceramic",
+      "weaponStage": 3,
+      "slots": {
+        "base": ["chamfered-deck", "outriggers", "rear-deck"],
+        "body": ["ceramic-mast"],
+        "head": ["yaw-bearing"],
+        "weapon": ["triple-rails"],
+        "detail": ["ceramic-inductor"]
+      },
+      "attack": {"mode": "hitscan", "fps": 20, "frames": 8, "targetCount": 1, "burstCount": 3, "pierceCount": 0, "recoil": 0.28}
+    },
+    {
+      "level": 16,
+      "tier": 3,
+      "materialStage": "ceramic",
+      "weaponStage": 3,
+      "slots": {
+        "base": ["chamfered-deck", "outriggers", "rear-deck"],
+        "body": ["ceramic-mast"],
+        "armor": ["ceramic-cheeks"],
+        "head": ["yaw-bearing"],
+        "weapon": ["triple-rails"],
+        "detail": ["ceramic-inductor", "tracking-aerial"]
+      },
+      "attack": {"mode": "hitscan", "fps": 20, "frames": 8, "targetCount": 1, "burstCount": 3, "pierceCount": 0, "recoil": 0.28}
+    },
+    {
+      "level": 18,
+      "tier": 4,
+      "materialStage": "gold-trim",
+      "weaponStage": 4,
+      "slots": {
+        "base": ["chamfered-deck", "rear-deck"],
+        "body": ["tapered-spire"],
+        "head": ["yaw-bearing"],
+        "weapon": ["quad-accelerator"]
+      },
+      "attack": {"mode": "hitscan", "fps": 20, "frames": 8, "targetCount": 2, "burstCount": 1, "pierceCount": 1, "recoil": 0.32}
+    },
+    {
+      "level": 20,
+      "tier": 4,
+      "materialStage": "gold-trim",
+      "weaponStage": 4,
+      "slots": {
+        "base": ["chamfered-deck", "rear-deck", "gilded-rails"],
+        "body": ["tapered-spire"],
+        "head": ["yaw-bearing"],
+        "weapon": ["quad-accelerator"],
+        "marking": ["crown-inductor"]
+      },
+      "attack": {"mode": "hitscan", "fps": 20, "frames": 8, "targetCount": 2, "burstCount": 1, "pierceCount": 1, "recoil": 0.32}
+    }
+  ]
+}

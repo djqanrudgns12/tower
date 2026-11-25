@@ -1,0 +1,304 @@
+{
+  "assets": [
+    {
+      "id": "rail-forms",
+      "file": "rail-forms.webp",
+      "width": 1152,
+      "height": 384,
+      "artifactHash": "86c7c05c0424cf891c0e88f8d04898e7f820ddabf0e559ca4ec272bd20c71199",
+      "sprite": {
+        "frameWidth": 192,
+        "frameHeight": 192,
+        "frameCount": 11,
+        "pivot": [
+          96,
+          137
+        ]
+      }
+    },
+    {
+      "id": "rail-forms-2x",
+      "file": "rail-forms-2x.webp",
+      "width": 2304,
+      "height": 768,
+      "artifactHash": "9785e380ba2c9b59fa8b795f4f49f523efc28888fcc0dc9637d9fa492df51c5a",
+      "sprite": {
+        "frameWidth": 384,
+        "frameHeight": 384,
+        "frameCount": 11,
+        "pivot": [
+          192,
+          274
+        ]
+      }
+    },
+    {
+      "id": "rail-bodies",
+      "file": "rail-bodies.webp",
+      "width": 1152,
+      "height": 384,
+      "artifactHash": "a4bfef7e767ea8bbef18490c3041f8d427f819809771381c7d30af9d20dd430a",
+      "sprite": {
+        "frameWidth": 192,
+        "frameHeight": 192,
+        "frameCount": 11,
+        "pivot": [
+          96,
+          137
+        ]
+      }
+    },
+    {
+      "id": "rail-bodies-2x",
+      "file": "rail-bodies-2x.webp",
+      "width": 2304,
+      "height": 768,
+      "artifactHash": "8947d651e910eb22a87c3c7caf5d481bf214dd5a3b30f6ae7b69e83ccbbf9003",
+      "sprite": {
+        "frameWidth": 384,
+        "frameHeight": 384,
+        "frameCount": 11,
+        "pivot": [
+          192,
+          274
+        ]
+      }
+    },
+    {
+      "id": "rail-heads",
+      "file": "rail-heads.webp",
+      "width": 1920,
+      "height": 1920,
+      "artifactHash": "fd03e8861abb0646e1643baec1dd6a11168a53641692bb5886d526db83c8b723",
+      "sprite": {
+        "frameWidth": 192,
+        "frameHeight": 192,
+        "frameCount": 96,
+        "pivot": [
+          96,
+          122
+        ]
+      }
+    },
+    {
+      "id": "rail-heads-2x",
+      "file": "rail-heads-2x.webp",
+      "width": 3840,
+      "height": 3840,
+      "artifactHash": "cd5c9b6c2f322f94845bfb83eb94139f9d8128fc5d5b073e92c4e7ac39f9ec36",
+      "sprite": {
+        "frameWidth": 384,
+        "frameHeight": 384,
+        "frameCount": 96,
+        "pivot": [
+          192,
+          243
+        ]
+      }
+    },
+    {
+      "id": "rail-heads-armored",
+      "file": "rail-heads-armored.webp",
+      "width": 1920,
+      "height": 1536,
+      "artifactHash": "ac9124e2e50c5736edea55cedf32f8de30f2d3301a3c69ca0dc0be05c6d68a65",
+      "sprite": {
+        "frameWidth": 192,
+        "frameHeight": 192,
+        "frameCount": 80,
+        "pivot": [
+          96,
+          122
+        ]
+      }
+    },
+    {
+      "id": "rail-heads-armored-2x",
+      "file": "rail-heads-armored-2x.webp",
+      "width": 3840,
+      "height": 3072,
+      "artifactHash": "cff994c47c23011cb1aac193a8b5d037d05bd736f129f10ad302caf44a0d58c0",
+      "sprite": {
+        "frameWidth": 384,
+        "frameHeight": 384,
+        "frameCount": 80,
+        "pivot": [
+          192,
+          243
+        ]
+      }
+    },
+    {
+      "id": "rail-attack",
+      "file": "rail-attack.webp",
+      "width": 1536,
+      "height": 768,
+      "artifactHash": "52dcb43d05f3c5b165cf20587315c4efe935b54b83e7d4d78a463746fbe97164",
+      "sprite": {
+        "frameWidth": 192,
+        "frameHeight": 192,
+        "frameCount": 32,
+        "pivot": [
+          96,
+          137
+        ]
+      }
+    },
+    {
+      "id": "rail-attack-2x",
+      "file": "rail-attack-2x.webp",
+      "width": 3072,
+      "height": 1536,
+      "artifactHash": "d06a7371947dfe994b333a93ad3641501c80fd1ca83dec6aaee0e90ba43eac0f",
+      "sprite": {
+        "frameWidth": 384,
+        "frameHeight": 384,
+        "frameCount": 32,
+        "pivot": [
+          192,
+          274
+        ]
+      }
+    }
+  ],
+  "levels": [
+    1,
+    2,
+    4,
+    6,
+    8,
+    10,
+    12,
+    14,
+    16,
+    18,
+    20
+  ],
+  "directions": 16,
+  "headSheets": [
+    {
+      "asset": "rail-heads",
+      "asset2x": "rail-heads-2x",
+      "levels": [
+        1,
+        2,
+        4,
+        6,
+        8,
+        10
+      ]
+    },
+    {
+      "asset": "rail-heads-armored",
+      "asset2x": "rail-heads-armored-2x",
+      "levels": [
+        12,
+        14,
+        16,
+        18,
+        20
+      ]
+    }
+  ],
+  "headAnchors2x": [
+    [
+      192,
+      202
+    ],
+    [
+      192,
+      202
+    ],
+    [
+      192,
+      202
+    ],
+    [
+      192,
+      198
+    ],
+    [
+      192,
+      198
+    ],
+    [
+      192,
+      198
+    ],
+    [
+      192,
+      190
+    ],
+    [
+      192,
+      190
+    ],
+    [
+      192,
+      190
+    ],
+    [
+      192,
+      180
+    ],
+    [
+      192,
+      180
+    ]
+  ],
+  "reviewDirection": 6,
+  "weapons": [
+    {
+      "stage": 1,
+      "level": 1,
+      "attack": {
+        "mode": "hitscan",
+        "fps": 20,
+        "frames": 8,
+        "targetCount": 1,
+        "burstCount": 1,
+        "pierceCount": 0,
+        "recoil": 0.21
+      }
+    },
+    {
+      "stage": 2,
+      "level": 6,
+      "attack": {
+        "mode": "hitscan",
+        "fps": 20,
+        "frames": 8,
+        "targetCount": 1,
+        "burstCount": 2,
+        "pierceCount": 0,
+        "recoil": 0.25
+      }
+    },
+    {
+      "stage": 3,
+      "level": 12,
+      "attack": {
+        "mode": "hitscan",
+        "fps": 20,
+        "frames": 8,
+        "targetCount": 1,
+        "burstCount": 3,
+        "pierceCount": 0,
+        "recoil": 0.28
+      }
+    },
+    {
+      "stage": 4,
+      "level": 18,
+      "attack": {
+        "mode": "hitscan",
+        "fps": 20,
+        "frames": 8,
+        "targetCount": 2,
+        "burstCount": 1,
+        "pierceCount": 1,
+        "recoil": 0.32
+      }
+    }
+  ]
+}

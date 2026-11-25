@@ -180,18 +180,29 @@ def render(recipe, out):
 
 
 if __name__ == "__main__":
+    sys.dont_write_bytecode = True
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("recipe", type=Path)
     parser.add_argument("out", type=Path)
-    parser.add_argument("--kit", type=Path, help="곡사 포대의 편집된 Blender 부품 키트")
+    parser.add_argument("--kit", type=Path, help="편집한 Blender 부품 키트")
+    parser.add_argument("--forms-only", action="store_true", help="레일·냉각의 형태만 미리 렌더")
     args = parser.parse_args(sys.argv[sys.argv.index("--") + 1:])
     recipe = json.loads(args.recipe.read_text())
-    if recipe["towerId"] == "mortar":
+    tower = recipe["towerId"]
+    if args.forms_only and tower not in ("rail", "cryo"):
+        parser.error("--forms-only는 레일·냉각에만 적용됩니다.")
+    if tower == "mortar":
         sys.path.insert(0, str(Path(__file__).resolve().parent))
         from mortar_render import render as render_mortar
 
         render_mortar(args.recipe, args.out.resolve(), args.kit.resolve() if args.kit else None, PALETTE, linear)
+    elif tower in ("rail", "cryo"):
+        sys.path.insert(0, str(Path(__file__).resolve().parent))
+        from tower_render import render as render_tower
+
+        render_tower(tower, recipe["stages"], args.out.resolve(), args.kit.resolve() if args.kit else None,
+                     PALETTE, linear, args.forms_only)
     else:
         if args.kit:
-            parser.error("--kit 옵션은 곡사 포대에만 적용됩니다.")
+            parser.error("--kit 옵션은 곡사·레일·냉각에만 적용됩니다.")
         render(recipe, args.out.resolve())

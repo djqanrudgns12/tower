@@ -114,16 +114,21 @@ def pack(out):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("source", type=Path, help="Blender 출력 폴더")
-    parser.add_argument("--out", type=Path, help="곡사 포대 WebP 출력 폴더")
-    parser.add_argument("--reference", type=Path, help="곡사 포대 바이블 원화")
-    parser.add_argument("--font", type=Path, help="곡사 포대 비교판의 한글 글꼴")
+    parser.add_argument("--out", type=Path, help="WebP 출력 폴더")
+    parser.add_argument("--reference", type=Path, help="타워 바이블 원화")
+    parser.add_argument("--font", type=Path, help="비교판의 한글 글꼴")
     args = parser.parse_args()
     if args.out and args.reference:
         from mortar_pack import DEFAULT_FONT, pack_mortar
 
-        pack_mortar(args.source.resolve(), args.out.resolve(),
-                    args.reference.resolve(), args.font or DEFAULT_FONT)
+        layout = json.loads((args.source / "layout.json").read_text())
+        pack_assets = pack_mortar
+        if layout["towerId"] in ("rail", "cryo"):
+            from tower_pack import pack_tower
+
+            pack_assets = pack_tower
+        pack_assets(args.source.resolve(), args.out.resolve(), args.reference.resolve(), args.font or DEFAULT_FONT)
     elif args.out or args.reference or args.font:
-        parser.error("곡사 포대 패킹에는 --out과 --reference가 모두 필요합니다.")
+        parser.error("비교판 패킹에는 --out과 --reference가 모두 필요합니다.")
     else:
         pack(args.source.resolve())

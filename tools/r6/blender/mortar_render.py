@@ -191,7 +191,7 @@ def assemble(kit, materials, stage, group, tile, direction=0, layer="form", fram
             obj.matrix_world = world_pos @ recoil @ obj.matrix_basis
 
 
-def batch(kit, materials, path, cells, cols):
+def batch(kit, materials, path, cells, cols, assemble_cell=assemble):
     started = time.monotonic()
     rows = math.ceil(len(cells) / cols)
     scene = bpy.data.scenes.new(path.stem)
@@ -200,7 +200,7 @@ def batch(kit, materials, path, cells, cols):
         x = i % cols - (cols - 1) / 2
         y = (rows - 1) / 2 - i // cols
         tile = VIEW * (right * x + up * y)
-        assemble(kit, materials, stage, scene.collection, tile, direction, layer, frame)
+        assemble_cell(kit, materials, stage, scene.collection, tile, direction, layer, frame)
     scene.render.filepath = str(path)
     bpy.ops.render.render(write_still=True, scene=scene.name)
     seconds = round(time.monotonic() - started, 3)

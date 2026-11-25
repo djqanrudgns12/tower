@@ -12,8 +12,9 @@ YAW_HEIGHTS = {"steel": 1.52, "alloy": 1.52, "ceramic": 1.83, "gold-trim": 1.93}
 
 
 class Kit:
-    def __init__(self):
-        self.scene = bpy.data.scenes.new("곡사 포대 · 부품")
+    def __init__(self, tower_id="mortar", title="곡사 포대"):
+        self.tower_id = tower_id
+        self.scene = bpy.data.scenes.new(f"{title} · 부품")
         self.groups = {}
         for slot in SLOTS:
             group = bpy.data.collections.new(slot)
@@ -22,7 +23,7 @@ class Kit:
 
     @contextmanager
     def part(self, slot, name, mount="ground"):
-        part = bpy.data.collections.new(f"mortar/{name}")
+        part = bpy.data.collections.new(f"{self.tower_id}/{name}")
         part["mount"] = mount
         self.groups[slot].children.link(part)
         yield Part(part)
