@@ -1,5 +1,6 @@
 import type { MapConfig } from '../../contracts/maps';
 import type { FieldView } from '../../game/bridge';
+import { projectField, r6Pad, R6_MAP_SQUASH, unprojectField } from '../../game/r6/mapProjection';
 
 // 전장 DOM 겹층의 좌표 계산. 세계 좌표(칸 64px)와 화면 CSS px 사이를 카메라가 알려 준 보이는 영역으로 바꾼다.
 type Slot = MapConfig['slots'][number];
@@ -11,17 +12,31 @@ export const WORLD_ROWS = 9;
 /** 카메라 알림이 오기 전에는 전장 전체가 보인다고 본다. */
 export const FULL_VIEW: FieldView = { x: 0, y: 0, width: WORLD_COLS * WORLD_CELL, height: WORLD_ROWS * WORLD_CELL };
 
-export interface CellRect { left: number; top: number; size: number }
+export interface CellRect { left: number; top: number; size: number; height: number }
 
 /** 칸(x, y)이 화면(전장 상자 안 CSS px)에서 차지하는 사각형. */
 export function cellRect(view: FieldView, boxW: number, boxH: number, x: number, y: number): CellRect {
   const sx = boxW / view.width, sy = boxH / view.height;
-  return { left: (x * WORLD_CELL - view.x) * sx, top: (y * WORLD_CELL - view.y) * sy, size: WORLD_CELL * Math.min(sx, sy) };
+  if (view.projected) {
+    const center = toScreenPoint(view, boxW, boxH, (x + 0.5) * WORLD_CELL, (y + 0.5) * WORLD_CELL);
+    const size = r6Pad.radius * 2 * sx;
+    const height = r6Pad.radius * 2 * R6_MAP_SQUASH * sy;
+    return { left: center.x - size / 2, top: center.y - height / 2, size, height };
+  }
+  const size = WORLD_CELL * Math.min(sx, sy);
+  return { left: (x * WORLD_CELL - view.x) * sx, top: (y * WORLD_CELL - view.y) * sy, size, height: size };
 }
 
-/** 전장 상자 안 CSS px → 세계 px. */
+/** 격자 px → 전장 상자 안 CSS px. */
+export function toScreenPoint(view: FieldView, boxW: number, boxH: number, x: number, y: number) {
+  const p = view.projected ? projectField(x, y) : { x, y };
+  return { x: (p.x - view.x) * boxW / view.width, y: (p.y - view.y) * boxH / view.height };
+}
+
+/** 전장 상자 안 CSS px → 격자 px. */
 export function toWorldPoint(view: FieldView, boxW: number, boxH: number, px: number, py: number) {
-  return { x: view.x + (px / boxW) * view.width, y: view.y + (py / boxH) * view.height };
+  const x = view.x + (px / boxW) * view.width, y = view.y + (py / boxH) * view.height;
+  return view.projected ? unprojectField(x, y) : { x, y };
 }
 
 /**

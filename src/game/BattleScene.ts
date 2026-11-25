@@ -17,7 +17,7 @@ import { DEPTH, fieldPosition, type LayerContext } from './layers/shared';
 import { TowerLayer } from './layers/TowerLayer';
 import { R6BattleAssets, R6_GROUND_KEY } from './r6/BattleAssets';
 import { isR6Battlefield } from './r6/manifest';
-import { projectField, R6_MAP_SCALE } from './r6/mapProjection';
+import { projectField, r6Overview, R6_MAP_SCALE } from './r6/mapProjection';
 
 /**
  * 전장 장면: 층(지면·타워·적·효과·입력/선택 표시)을 만들고 카메라·미니맵과 사건 전달만 맡는다.
@@ -104,7 +104,8 @@ export class BattleScene extends Phaser.Scene {
     const cam = this.cameras.main;
     const w = this.scale.width, h = this.scale.height;
     cam.setViewport(0, 0, w, h);
-    const fit = Math.min(w / WORLD_W, h / WORLD_H);
+    const frame = this.layerContext.projected ? r6Overview : { x: 0, y: 0, width: WORLD_W, height: WORLD_H };
+    const fit = Math.min(w / frame.width, h / frame.height);
     this.cssCell = (fit * CELL_PX * (this.layerContext.projected ? R6_MAP_SCALE : 1)) / Math.max(1, window.devicePixelRatio || 1);
     const sel = selectedCell(this.bridge);
     if (this.bridge.magnify && sel) {
@@ -113,15 +114,15 @@ export class BattleScene extends Phaser.Scene {
       const x = (sel.x + 0.5) * CELL_PX, y = (sel.y + 0.5) * CELL_PX;
       const point = this.layerContext.projected ? projectField(x, y) : { x, y };
       cam.centerOn(point.x, point.y);
-      this.showMini(w);
+      this.showMini(w, frame);
     } else {
       cam.setZoom(fit);
-      cam.centerOn(WORLD_W / 2, WORLD_H / 2);
+      cam.centerOn(frame.x + frame.width / 2, frame.y + frame.height / 2);
       this.hideMini();
     }
   }
 
-  private showMini(canvasW: number) {
+  private showMini(canvasW: number, frame: { x: number; y: number; width: number; height: number }) {
     const dpr = Math.max(1, window.devicePixelRatio || 1);
     const mw = Math.round(90 * dpr), mh = Math.round(54 * dpr), pad = Math.round(6 * dpr);
     if (!this.miniCam) {
@@ -129,7 +130,9 @@ export class BattleScene extends Phaser.Scene {
       this.miniCam.setBackgroundColor('rgba(58,41,30,0.85)');
       this.miniCam.ignore([this.enemyLayer.hpBars, this.effects.callouts]);
     }
-    this.miniCam.setViewport(canvasW - mw - pad, pad, mw, mh).setZoom(mw / WORLD_W).centerOn(WORLD_W / 2, WORLD_H / 2);
+    const fit = Math.min(mw / frame.width, mh / frame.height);
+    this.miniCam.setViewport(canvasW - mw - pad, pad, mw, mh).setZoom(fit)
+      .centerOn(frame.x + frame.width / 2, frame.y + frame.height / 2);
     this.miniCam.setVisible(true);
   }
 

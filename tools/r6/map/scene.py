@@ -19,15 +19,17 @@ MAPS = json.loads((ROOT / "docs/contracts/maps.candidate.v0.4.json").read_text()
 PLATEAU = next(m for m in MAPS if m["id"] == "garden_u")
 PALETTE = {"carbon": (18, 22, 27), "slate": (29, 36, 44), "line": (74, 85, 99),
            "silver": (184, 192, 200), "amber": (230, 159, 36), "teal": (47, 181, 163)}
-RIDGES = ((1.1, 1.9, 3.9, 2.3, 44), (10.7, 3.5, 4.6, 3.3, 61),
-          (5.2, 7.5, 6.1, 3.4, 52), (6.0, 3.5, 2.4, 2.6, -41),
+RIDGES = ((1.1, 1.9, 3.9, 2.3, 24), (10.7, 3.5, 4.6, 3.3, 25),
+          (5.2, 7.5, 6.1, 3.4, 46), (6.0, 3.5, 2.4, 2.6, -30),
+          (6.9, 2.04, 4.6, .68, 57), (7.7, 4.06, 4.3, .75, 52),
           (-5.2, 7.0, 5.1, 8.3, 41), (14.9, -1.4, 5.3, 3.9, 48),
           (1.0, -5.6, 7.4, 3.9, 76), (10.7, -4.7, 7.2, 3.7, 64),
           (5.7, 11.2, 4.4, 4.3, 31), (20.8, 7.4, 5.4, 5.7, 43))
 CLUSTERS = ((5.45, .25), (14.35, 5.5), (4.25, 8.75), (.3, 6.4))
 STEP = .25
 LEVELS = (12, 22, 32, 42, 52, 62, 72, 82)
-TREADS = (-.91, -.85, -.77, -.66, -.56, -.45, -.34, -.24, -.11)
+TREADS = (-1.52, -1.38, -1.22, -1.04, -.84, -.65, -.46, -.27, -.09)
+SHADOW_BAND = 2.2
 WORLD = (960, 576)
 PPC = SPEC["pixelsPerCell"]
 RIGHT = Vector((0, 0, 1)).cross(CAMERA_RAY).normalized()
@@ -131,6 +133,10 @@ def terrain(mesh):
                     if len(section) < 3:
                         continue
                     mesh.face([xyz(x, y, TREADS[level]) for x, y, _ in section], f"land{level}")
+                    if level < len(LEVELS) and upper >= hi - SHADOW_BAND:
+                        # 한 단 아래의 등고선을 따라 좁은 그림자를 굽는다.
+                        shadow = clip(section, hi - SHADOW_BAND, True)
+                        mesh.face([xyz(x, y, TREADS[level] + .002) for x, y, _ in shadow], "ledge_shadow")
                     if level == 0:
                         continue
                     for p, q in zip(section, (*section[1:], section[0])):
@@ -139,9 +145,9 @@ def terrain(mesh):
                         x, y = p[:2]
                         u, v = q[:2]
                         z = TREADS[level]
-                        mesh.face([xyz(u, v, z), xyz(x, y, z), xyz(x, y, z - .025), xyz(u, v, z - .025)], f"lip{level}")
-                        mesh.face([xyz(u, v, z - .025), xyz(x, y, z - .025), xyz(x, y, TREADS[level - 1]),
-                                   xyz(u, v, TREADS[level - 1])], "cliff")
+                        mesh.face([xyz(u, v, z), xyz(x, y, z), xyz(x, y, z - .035), xyz(u, v, z - .035)], f"lip{level}")
+                        mesh.face([xyz(u, v, z - .035), xyz(x, y, z - .035), xyz(x, y, TREADS[level - 1]),
+                                   xyz(u, v, TREADS[level - 1])], "riser")
     mesh.finish("초원 고원 · 등고선 층계")
 
 
@@ -183,11 +189,11 @@ def ribbon(mesh, nodes, rings):
 
 def road(mesh):
     nodes = route()
-    cross_section = [(-.46, -.81, ""), (-.46, -.20, "carbon"), (-.431, -.10, "cliff"),
+    cross_section = [(-.46, TREADS[0], ""), (-.46, -.20, "carbon"), (-.431, -.10, "cliff"),
                      (-.399, -.10, "line"), (-.366, .026, "curb"), (-.315, .026, "line"),
                      (-.29, 0, "curb"), (.29, 0, "road"), (.315, .026, "curb"),
                      (.366, .026, "line"), (.399, -.10, "curb"), (.431, -.10, "line"),
-                     (.46, -.20, "cliff"), (.46, -.81, "carbon")]
+                     (.46, -.20, "cliff"), (.46, TREADS[0], "carbon")]
     ribbon(mesh, nodes, cross_section)
     for a, b, c in zip(PLATEAU["pathCells"], PLATEAU["pathCells"][1:], PLATEAU["pathCells"][2:]):
         if (b[0] - a[0], b[1] - a[1]) != (c[0] - b[0], c[1] - b[1]) or sum(b) % 3:
@@ -292,10 +298,11 @@ def render(out):
     colors = dict(PALETTE, cliff=blend("carbon", "slate", .48), curb=blend("line", "silver", .49),
                   road=blend("line", "silver", .19), joint=blend("slate", "line", .77),
                   pad=blend("slate", "line", .57), active_pad=blend("slate", "amber", .14),
-                  rock=blend("slate", "line", .62), survey=blend("carbon", "line", .35))
+                  rock=blend("slate", "line", .62), survey=blend("carbon", "line", .35),
+                  riser=blend("slate", "line", .15), ledge_shadow=blend("carbon", "slate", .23))
     for i in range(len(TREADS)):
-        colors[f"land{i}"] = blend("slate", "line", i * .025)
-        colors[f"lip{i}"] = blend("slate", "line", .49 + i * .035)
+        colors[f"land{i}"] = blend("slate", "line", i * .040)
+        colors[f"lip{i}"] = blend("slate", "line", .61 + i * .035)
 
     board = scene(*WORLD, (7.5, -4.5, 0), SPEC["center"])
     materials = toon_materials(colors, linear)
@@ -309,7 +316,7 @@ def render(out):
     # 받침 지주는 배경에 굽고, 윗부분은 상태별 스프라이트로 놓는다.
     supports = Mesh(materials)
     for slot in PLATEAU["slots"]:
-        bevel_box(supports, slot["x"] + .5, slot["y"] + .5, .42, .42, -.92, -.18, "carbon", "cliff")
+        bevel_box(supports, slot["x"] + .5, slot["y"] + .5, .42, .42, TREADS[0], -.18, "carbon", "cliff")
     supports.finish("설치대 지주")
     board.render.filepath = str(out / "meadow-plateau.png")
     bpy.ops.render.render(write_still=True)

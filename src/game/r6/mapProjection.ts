@@ -8,6 +8,7 @@ const rightX = -rayY / horizontal, rightY = rayX / horizontal;
 export const R6_MAP_SQUASH = rayZ / Math.hypot(horizontal, rayZ);
 export const R6_MAP_SCALE = spec.pixelsPerCell / 64;
 export const r6Pad = { radius: spec.padRadius * spec.pixelsPerCell, size: spec.padSize, pivot: spec.padPivot };
+export const r6Overview = spec.overview;
 
 /** 전투 격자 px의 벡터를 직교 카메라의 화면 축으로 옮긴다. */
 export function projectFieldDelta(x: number, y: number): Point {

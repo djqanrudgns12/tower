@@ -10,6 +10,7 @@ import type { Notice } from '../../application/view';
 import { relicBalance } from '../../domain/relics';
 import { buildCost } from '../../domain/towers';
 import { FieldBridgeHandle, type FieldDrag, type FieldSelection, type FieldTap, type FieldView } from '../../game/bridge';
+import { r6Overview } from '../../game/r6/mapProjection';
 import { PhaserBattlefield } from '../../game/PhaserBattlefield';
 import type { FontScale } from '../../application/session';
 import { DEFAULTS } from '../../content';
@@ -26,7 +27,7 @@ import { R6WaveForecast, Remaining, WaveForecast } from './ContextCard';
 import { EvolveCard } from './EvolveCard';
 import { evolutionChoices, previewForm, previewMarker, towerForm, undoBuildCommand, upgradeCommand, upgradeCost, type FormId } from './evolution';
 import { FieldOverlay, TowerTools, type FieldFlash } from './FieldOverlay';
-import { FULL_VIEW, WORLD_CELL } from './fieldGeometry';
+import { FULL_VIEW, toScreenPoint, WORLD_CELL } from './fieldGeometry';
 import { COACH_TEXT, currentCoach, markCoachDone, readCoachDone } from './firstRunCoach';
 import { NEXT_FOES } from './gameCopy';
 import css from './GameScreen.module.css';
@@ -134,11 +135,11 @@ export function GameScreen({
     const fieldPoint = (wx: number, wy: number) => {
       const box = fieldRef.current?.getBoundingClientRect();
       if (!box || box.width === 0) return null;
-      const v = cameraRef.current;
+      const p = toScreenPoint(cameraRef.current, box.width, box.height, wx, wy);
       const clamp = (n: number, lo: number, hi: number) => Math.min(hi, Math.max(lo, n));
       return {
-        x: clamp(box.left + ((wx - v.x) / v.width) * box.width, box.left, box.right),
-        y: clamp(box.top + ((wy - v.y) / v.height) * box.height, box.top, box.bottom),
+        x: clamp(box.left + p.x, box.left, box.right),
+        y: clamp(box.top + p.y, box.top, box.bottom),
       };
     };
     const gateCell = controller.ctx.map.pathCells[controller.ctx.map.pathCells.length - 1]!;
@@ -174,6 +175,15 @@ export function GameScreen({
   useEffect(() => { sound.setPaused(view.pause.length > 0 || view.phase === 'GAME_OVER'); }, [sound, view.pause.length, view.phase]);
 
   const layout = useLayout();
+  const r6Plateau = r6 && map.id === 'garden_u';
+  const shortLandscape = r6Plateau && layout.portraitHint;
+  const boardAspect = r6Overview.width / r6Overview.height;
+  const stackedHeight = r6Plateau && layout.mode === 'S' ? Math.ceil(layout.mapW / boardAspect) : layout.mapH;
+  // 가로 화면에서 HUD·회전 안내·바깥 여백에 120px을 두고 전장 높이를 맞춘다.
+  const mapH = shortLandscape
+    ? Math.min(stackedHeight, Math.max(96, Math.floor((window.visualViewport?.height ?? window.innerHeight) - 120)))
+    : stackedHeight;
+  const mapW = r6Plateau ? Math.min(layout.mapW, Math.ceil(mapH * boardAspect)) : layout.mapW;
   const [rawSelection, setSelection] = useState<FieldSelection>(EMPTY);
   const [evolveOpen, setEvolveOpen] = useState(false);
   const [icons, setIcons] = useState<Record<string, string>>({});
@@ -211,7 +221,7 @@ export function GameScreen({
   /** 먼저 골라 둔 타워: 빈 자리를 누르면 바로 설치한다. */
   const armed = selection.slotId === null && selection.towerId === null ? selection.previewType : null;
   const hasSelection = selection.slotId !== null || selection.towerId !== null;
-  const magnify = layout.cell < layout.magnifyBelow && hasSelection && !dragging;
+  const magnify = (r6Plateau ? mapW / 15 : layout.cell) < layout.magnifyBelow && hasSelection && !dragging;
   const trading = view.phase === 'BUILD' || view.phase === 'BATTLE';
   const lock = view.phase === 'PREP_QUIZ' ? '준비 문제를 먼저 풀어 주세요' : view.phase === 'WAVE_WRAPUP' ? '다음 웨이브 준비 중이에요' : null;
   // 가진 타워(새 타워로 늘어난다). 타워 칸·설치 메뉴·자리 목록은 이 타워만 보인다(엔진은 그 밖 설치를 NOT_OWNED로 막는다).
@@ -513,7 +523,7 @@ export function GameScreen({
   const canHitAir = (type: TowerId) => recruitCardInfo(b, type).air === true;
   const warning = forecast ? forecastWarning(b, forecast, canHitAir, towers, view.towers) : null;
   const remaining = view.phase === 'BATTLE' ? st.enemies.length + (st.battle ? Math.max(0, st.battle.spawnList.length - st.battle.spawnIndex) : 0) : 0;
-  const tools = r6 && selectedTower && !evolveOpen ? (
+  const tools = r6 && !camera.projected && selectedTower && !evolveOpen ? (
     <TowerTools key={selectedTower.id} tower={selectedTower} balance={b} gold={view.gold} dock
       onUpgrade={onUpgrade} onEvolve={onEvolve} onSell={onSell} onUndo={onUndo} />
   ) : null;
@@ -674,12 +684,12 @@ export function GameScreen({
     <div
       ref={fieldRef}
       className={`${css.field} ${layout.fieldBleed ? css.bleed : ''}`}
-      style={{ width: layout.mapW, height: layout.mapH, ...(layout.fieldBleed ? { marginInline: -layout.pad } : {}) }}
+      style={{ width: mapW, height: mapH, ...(layout.fieldBleed ? { marginInline: -layout.pad } : {}) }}
     >
       <PhaserBattlefield
         bridge={bridge}
-        width={layout.mapW}
-        height={layout.mapH}
+        width={mapW}
+        height={mapH}
         label={`전장: 웨이브 ${view.wave}, 성문 ${view.gateHp}/${view.gateMaxHp}, 타워 ${view.towers.length}개`}
         hintId="field-keys"
         onKeyDown={onFieldKey}
@@ -696,12 +706,12 @@ export function GameScreen({
           built={view.towers}
           gold={view.gold}
           icons={icons}
-          boxW={layout.mapW}
-          boxH={layout.mapH}
+          boxW={mapW}
+          boxH={mapH}
           camera={camera}
           slotId={trading || selection.slotId === null ? selection.slotId : null}
           // 진화 창이 열리면 도구 묶음은 닫는다(창 뒤에 겹쳐 보이지 않게).
-          tower={evolveOpen || r6 ? null : selectedTower}
+          tower={evolveOpen || (r6 && !camera.projected) ? null : selectedTower}
           flash={flash}
           pillar={pillar}
           onPillarDone={id => setPillar(p => (p?.id === id ? null : p))}
@@ -743,8 +753,8 @@ export function GameScreen({
   const mainStyle: CSSProperties = layout.mode === 'R'
     ? ({
         padding: layout.pad,
-        '--map-w': `${layout.mapW}px`,
-        '--map-h': `${layout.mapH}px`,
+        '--map-w': `${mapW}px`,
+        '--map-h': `${mapH}px`,
         '--rail-w': `${layout.railW}px`,
         '--q-h': `${layout.q}px`,
       } as CSSProperties)

@@ -13,10 +13,12 @@ import type * as QaGold from '../../src/application/qaGold';
 import type { RunState } from '../../src/domain/types';
 import { projectField } from '../../src/game/r6/mapProjection';
 import type { R6Manifest } from '../../src/game/r6/manifest';
+import type { BattleScene } from '../../src/game/BattleScene';
 import { expect, test, type Page } from './tower-browser';
 
 declare global {
   interface Window {
+    r6MeasureScene?: BattleScene;
     r6Field: {
       game: Phaser.Game;
       controller: RunController;
@@ -26,6 +28,15 @@ declare global {
       showWavePreview: () => Record<string, number>;
     };
   }
+}
+
+async function canvasPoint(page: Page, world: { x: number; y: number }) {
+  return page.evaluate(({ x, y }) => {
+    const { game } = window.r6Field;
+    const { worldView } = game.scene.getScene('battle').cameras.main;
+    const { width, height } = game.canvas.getBoundingClientRect();
+    return { x: (x - worldView.x) * width / worldView.width, y: (y - worldView.y) * height / worldView.height };
+  }, world);
 }
 
 async function openField(page: Page, r6: boolean, progression = false) {
@@ -130,6 +141,147 @@ async function railBody(page: Page) {
   });
 }
 
+async function openGameScreen(page: Page) {
+  await openField(page, true, true);
+  await page.evaluate(() => {
+    sessionStorage.setItem('vocabulary-td.qaRun', JSON.stringify(window.r6Field.controller.state));
+  });
+  await page.route(/\/\?qaRun=1$/, async route => {
+    const response = await route.fetch();
+    const body = (await response.text()).replace(
+      '<script type="module" src="/src/main.tsx"></script>',
+      `<script type="module">
+        import { BattleScene } from '/src/game/BattleScene.ts';
+        const layout = BattleScene.prototype.layout;
+        BattleScene.prototype.layout = function () {
+          layout.call(this);
+          window.r6MeasureScene = this;
+        };
+        await import('/src/main.tsx');
+      </script>`,
+    );
+    await route.fulfill({ response, body });
+  });
+  await page.goto('/?qaRun=1');
+  await page.getByRole('button', { name: '계속하기' }).click();
+  await expect.poll(() => page.evaluate(() => window.r6MeasureScene?.cameras.main.worldView.width ?? 0)).toBeGreaterThan(0);
+}
+
+async function padPoint(page: Page, id: string) {
+  return page.evaluate(slotId => {
+    const scene = window.r6MeasureScene!;
+    const pad = scene.children.getByName(`r6:pad:${slotId}`) as Phaser.GameObjects.Image;
+    const view = scene.cameras.main.worldView;
+    const box = scene.game.canvas.getBoundingClientRect();
+    return { x: box.left + (pad.x - view.x) * box.width / view.width,
+      y: box.top + (pad.y - view.y) * box.height / view.height };
+  }, id);
+}
+
+test('실제 전투 화면의 4개 해상도에서 전장 점유율과 설치·상세 팝오버를 확인한다', async ({ page }, testInfo) => {
+  await page.setViewportSize({ width: 1280, height: 720 });
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await openGameScreen(page);
+  const checkAnchor = async (roleName: string | RegExp, id: string) => {
+    const pad = await padPoint(page, id);
+    await page.mouse.click(pad.x, pad.y);
+    const popup = page.getByRole('group', { name: roleName });
+    await expect(popup).toBeVisible();
+    const box = (await popup.boundingBox())!;
+    const side = pad.x < box.x ? box.x : box.x + box.width;
+    expect(Math.abs(pad.x - side)).toBeLessThan(38);
+    expect(Math.abs(pad.y - (box.y + box.height / 2))).toBeLessThan(3);
+    return popup;
+  };
+  const menu = await checkAnchor('이 자리에 놓을 타워', 'garden_u-s12');
+  await menu.getByRole('button', { name: /^레일 포탑/ }).click();
+
+  const socket = page.getByRole('option', { name: /^곡사 포대/ });
+  const from = (await socket.boundingBox())!;
+  const drop = await padPoint(page, 'garden_u-s07');
+  await page.mouse.move(from.x + from.width / 2, from.y + from.height / 2);
+  await page.mouse.down();
+  await page.mouse.move(drop.x, drop.y, { steps: 8 });
+  await page.mouse.up();
+  await expect(page.getByRole('application')).toHaveAccessibleName(/타워 2개/);
+  const tools = await checkAnchor(/^곡사 포대 레벨 1$/, 'garden_u-s07');
+  await expect(tools.getByRole('button', { name: /^강화/ })).toBeVisible();
+  await tools.getByRole('button', { name: /^강화/ }).press('Escape');
+
+  // 전투를 시작해 문제판, HUD, 타워 도크가 표시되는 제품 화면으로 측정한다.
+  await page.getByRole('button', { name: '전투 시작' }).click();
+  const cdp = await page.context().newCDPSession(page);
+  try {
+    let previousField: number[] | null = null;
+    for (const [width, height] of [[1280, 720], [1366, 768], [1366, 650], [844, 390]] as const) {
+      const viewport = `${width}x${height}`;
+      await page.setViewportSize({ width, height });
+      if (width === 844) await cdp.send('Emulation.setTouchEmulationEnabled', { enabled: true });
+      await page.evaluate(() => window.scrollTo(0, 0));
+      // 옆 도크에서 아래 도크로 넘어가면 React가 캔버스를 새로 마운트한다.
+      await page.waitForFunction(previous => {
+        const scene = window.r6MeasureScene;
+        const camera = scene?.cameras?.main;
+        const canvas = scene?.game.canvas;
+        if (!camera?.worldView.width || !canvas?.isConnected || camera.width !== canvas.width || camera.height !== canvas.height) return false;
+        const box = canvas.getBoundingClientRect();
+        return !previous || box.width !== previous[0] || box.height !== previous[1];
+      }, previousField);
+      const measured = await page.evaluate(() => {
+        const scene = window.r6MeasureScene!;
+        const canvas = scene.game.canvas.getBoundingClientRect();
+        const view = scene.cameras.main.worldView;
+        const pads = scene.children.getAll().filter(obj => obj.name.startsWith('r6:pad:')) as Phaser.GameObjects.Image[];
+        // WebP 프레임에서 실제로 그리는 픽셀 범위를 읽는다. 최외곽 설치대가 길과 설치대 묶음의 네 변을 이룬다.
+        const sample = document.createElement('canvas');
+        const frame = pads[0]!.frame;
+        sample.width = frame.width;
+        sample.height = frame.height;
+        const ctx = sample.getContext('2d', { willReadFrequently: true })!;
+        ctx.drawImage(frame.source.image as HTMLImageElement, frame.cutX, frame.cutY, frame.cutWidth, frame.cutHeight,
+          0, 0, sample.width, sample.height);
+        const rgba = ctx.getImageData(0, 0, sample.width, sample.height).data;
+        const xs: number[] = [], ys: number[] = [];
+        for (let y = 0; y < sample.height; y++) {
+          for (let x = 0; x < sample.width; x++) {
+            if (rgba[(y * sample.width + x) * 4 + 3]! >= 128) { xs.push(x); ys.push(y); }
+          }
+        }
+        const left = Math.min(...pads.map(p => p.x)) + Math.min(...xs) - pads[0]!.displayOriginX;
+        const right = Math.max(...pads.map(p => p.x)) + Math.max(...xs) + 1 - pads[0]!.displayOriginX;
+        const top = Math.min(...pads.map(p => p.y)) + Math.min(...ys) - pads[0]!.displayOriginY;
+        const bottom = Math.max(...pads.map(p => p.y)) + Math.max(...ys) + 1 - pads[0]!.displayOriginY;
+        return {
+          horizontal: (right - left) / view.width * 100, vertical: (bottom - top) / view.height * 100,
+          inside: left >= view.x && top >= view.y && right <= view.right && bottom <= view.bottom,
+          field: [canvas.width, canvas.height], bottom: canvas.bottom,
+        };
+      });
+      previousField = measured.field;
+      console.log(`${viewport} · 전장 ${measured.field.join('×')} · 가로 ${measured.horizontal.toFixed(2)}% · 세로 ${measured.vertical.toFixed(2)}%`);
+      expect(measured.horizontal, viewport).toBeGreaterThanOrEqual(92);
+      expect(measured.vertical, viewport).toBeGreaterThanOrEqual(90);
+      expect(measured.inside, viewport).toBe(true);
+      expect(measured.bottom, viewport).toBeLessThanOrEqual(height);
+      const shot = await page.screenshot();
+      const webp = await page.evaluate(async png => {
+        const bitmap = await createImageBitmap(await (await fetch(`data:image/png;base64,${png}`)).blob());
+        const canvas = document.createElement('canvas');
+        canvas.width = bitmap.width;
+        canvas.height = bitmap.height;
+        canvas.getContext('2d')!.drawImage(bitmap, 0, 0);
+        bitmap.close();
+        return canvas.toDataURL('image/webp', 0.92).split(',')[1]!;
+      }, shot.toString('base64'));
+      const path = testInfo.outputPath(`${viewport}.webp`);
+      writeFileSync(path, Buffer.from(webp, 'base64'));
+      await testInfo.attach(viewport, { path, contentType: 'image/webp' });
+    }
+  } finally {
+    await cdp.detach();
+  }
+});
+
 test('초원 고원에서 설치·진화·포두 발사·Spine 보행을 재생하고 4배 감속을 측정한다', async ({ page, browser }, testInfo) => {
   await page.setViewportSize({ width: 1032, height: 648 });
   const errors: string[] = [];
@@ -149,7 +301,7 @@ test('초원 고원에서 설치·진화·포두 발사·Spine 보행을 재생�
   expect(requests.some(url => url.endsWith('/assets/manifest.json'))).toBe(false);
 
   const firstPad = projectField(32, 32);
-  await canvas.click({ position: firstPad });
+  await canvas.click({ position: await canvasPoint(page, firstPad) });
   await expect.poll(() => railBody(page)).toEqual({ slot: 'garden_u-s01', level: 1, sheet: 'r6.sheet.rail-bodies', frame: 0 });
   expect(await page.evaluate(() => {
     const { controller } = window.r6Field;
@@ -281,22 +433,26 @@ test('R6 새 판에서 레일 포탑 11형태, 웨이브 해금 순서와 종족
   const owned = ['rail', 'mortar', 'cryo'];
   expect(await readRun()).toEqual({ owned, version: '2.0.0', wave: 1, completed: 0 });
   const position = projectField(5.5 * 64, 4.5 * 64);
-  const padEdge = () => page.evaluate(({ x, y }) => new Promise<number>(resolve => {
+  const padEdge = () => page.evaluate(({ x, y }) => new Promise<number[]>(resolve => {
     const { game } = window.r6Field;
     game.events.once('postrender', () => {
       const { gl } = game.renderer as Phaser.Renderer.WebGL.WebGLRenderer;
-      const rgba = new Uint8Array(4);
-      gl.readPixels(Math.round(x), game.canvas.height - 1 - Math.round(y - 8.5), 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, rgba);
-      resolve(rgba[0]! + rgba[1]! + rgba[2]!);
+      const { worldView } = game.scene.getScene('battle').cameras.main;
+      const px = (x - worldView.x) * game.canvas.width / worldView.width;
+      const py = (y - 8.5 - worldView.y) * game.canvas.height / worldView.height;
+      // 확대 시 선이 픽셀 경계에 걸릴 수 있으므로 중심 주변의 같은 픽셀끼리 비교한다.
+      const rgba = new Uint8Array(3 * 3 * 4);
+      gl.readPixels(Math.round(px) - 1, game.canvas.height - 2 - Math.round(py), 3, 3, gl.RGBA, gl.UNSIGNED_BYTE, rgba);
+      resolve(Array.from({ length: 9 }, (_, i) => rgba[i * 4]! + rgba[i * 4 + 1]! + rgba[i * 4 + 2]!));
     });
   }), position);
-  await expect.poll(padEdge).toBeGreaterThan(50);
+  await expect.poll(async () => Math.max(...await padEdge())).toBeGreaterThan(50);
   const idle = await padEdge();
-  await canvas.hover({ position });
-  await expect.poll(padEdge).toBeGreaterThan(idle + 200);
+  await canvas.hover({ position: await canvasPoint(page, position) });
+  await expect.poll(async () => Math.max(...(await padEdge()).map((value, i) => value - idle[i]!))).toBeGreaterThan(200);
   await page.mouse.move(1020, 300);
-  await expect.poll(padEdge).toBe(idle);
-  await canvas.click({ position });
+  await expect.poll(padEdge).toEqual(idle);
+  await canvas.click({ position: await canvasPoint(page, position) });
   const pathFrames = [0, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8, 9, 9, 10];
   for (const [index, frame] of pathFrames.entries()) {
     const level = index + 1;

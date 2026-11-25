@@ -253,11 +253,11 @@ function Anchored({
     const el = ref.current;
     if (!el) return;
     const w = el.offsetWidth, h = el.offsetHeight;
-    const midX = cell.left + cell.size / 2 - w / 2, midY = cell.top + cell.size / 2 - h / 2;
+    const midX = cell.left + cell.size / 2 - w / 2, midY = cell.top + cell.height / 2 - h / 2;
     const sides = {
       right: { left: cell.left + cell.size + gap, top: midY },
       left: { left: cell.left - w - gap, top: midY },
-      below: { left: midX, top: cell.top + cell.size + gap },
+      below: { left: midX, top: cell.top + cell.height + gap },
       above: { left: midX, top: cell.top - h - gap },
     };
     // 칸을 가리지 않는 쪽 중 전장 안에 들어가고 고정 안내 요소(전체 지도·하단 쪽지)와 겹치지 않는 첫 자리.
@@ -276,7 +276,7 @@ function Anchored({
     const minTop = avoidTopLeft && left < 128 ? Math.min(maxTop, 56) : 4;
     const top = Math.max(minTop, Math.min(maxTop, pick.top));
     setPos(prev => (prev && prev.left === left && prev.top === top ? prev : { left, top }));
-  }, [cell.left, cell.top, cell.size, boxW, boxH, place, avoidTopLeft, avoidBottom]);
+  }, [cell.left, cell.top, cell.size, cell.height, boxW, boxH, place, avoidTopLeft, avoidBottom]);
   return (
     <div
       ref={ref}

@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { projectField, projectFieldDelta, unprojectField } from '../../src/game/r6/mapProjection';
+import { cellRect, snapSlot, toWorldPoint } from '../../src/ui/game/fieldGeometry';
 import maps from '../../docs/contracts/maps.candidate.v0.4.json';
 
 const garden = maps.maps.find(map => map.id === 'garden_u')!;
@@ -37,5 +38,19 @@ describe('초원 고원 3/4 투영', () => {
     expect(east.y).toBeGreaterThan(15);
     expect(south.x).toBeLessThan(-30);
     expect(south.y).toBeGreaterThan(20);
+  });
+
+  it('확대와 CSS 축소가 있는 화면에서 팝오버 기준점과 끌어 놓기가 같은 설치대를 가리킨다', () => {
+    const camera = { projected: true, x: 165, y: 90, width: 456, height: 273.6 };
+    const cssWidth = 380, cssHeight = 228;
+    const slot = garden.slots.find(s => s.id === 'garden_u-s12')!;
+    const expected = projectField((slot.x + 0.5) * 64, (slot.y + 0.5) * 64);
+    const padX = (expected.x - camera.x) * cssWidth / camera.width;
+    const padY = (expected.y - camera.y) * cssHeight / camera.height;
+    const rect = cellRect(camera, cssWidth, cssHeight, slot.x, slot.y);
+    expect(rect.left + rect.size / 2).toBeCloseTo(padX);
+    expect(rect.top + rect.height / 2).toBeCloseTo(padY);
+    const grid = toWorldPoint(camera, cssWidth, cssHeight, padX, padY);
+    expect(snapSlot(garden.slots, new Set(), grid.x, grid.y)).toBe(slot.id);
   });
 });
