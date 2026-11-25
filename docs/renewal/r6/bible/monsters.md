@@ -1,6 +1,7 @@
 # R6 몬스터 100개체 아트 설정표
 
 - 기준: `docs/renewal/r6/PRD-r6.md` §4.1~§4.4, `docs/renewal/r6/bible/world.md`
+- 관련 문서: [홈 초상 규격서](file:///Users/bodyking/Desktop/Architecture/towerdeffense/docs/renewal/r6/bible/portrait-spec.md) · [몬스터 G1 검수 보고서](file:///Users/bodyking/Desktop/Architecture/towerdeffense/docs/renewal/r6/bible/G1-review-monsters.md)
 - 구성: **5종족 × (4계통 × T1~T4 + 보스 4) = 100개체**
 - 제작 원칙:
   - 같은 종족·같은 계통의 `T1 → T2 → T3 → T4`는 **하나의 공유 Spine 뼈대**를 쓰고 스킨(갑옷·뿔·무기·체격 부품)을 교체·추가하여 단계별 진화를 표현한다.
@@ -30,7 +31,7 @@
 ---
 
 ## 2. 숲 엘프 (`elf`) — 20개체
-- 시트: [monsters-elf.webp](file:///Users/bodyking/Desktop/Architecture/towerdeffense/docs/renewal/r6/bible/sheets/monsters-elf.webp) *(429 할당량 리셋 후 생성 예정)*
+- 시트: [monsters-elf.webp](file:///Users/bodyking/Desktop/Architecture/towerdeffense/docs/renewal/r6/bible/sheets/monsters-elf.webp) · 파츠 분해도: [monsters-elf-parts.webp](file:///Users/bodyking/Desktop/Architecture/towerdeffense/docs/renewal/r6/bible/sheets/monsters-elf-parts.webp) · 초상 예시: [monsters-portrait-elf.webp](file:///Users/bodyking/Desktop/Architecture/towerdeffense/docs/renewal/r6/bible/sheets/monsters-portrait-elf.webp)
 - 특수 계통 테마: **비행 정령** · 주 강조색: 틸 `#2FB5A3` (30%), 슬레이트 `#1D242C` (25%)
 
 | ID | 가안 이름 | 계통·단계 | 크기 | T(n)→T(n+1) 변화 / 보스 기술 |
@@ -59,7 +60,7 @@
 ---
 
 ## 3. 철갑 인간 (`human`) — 20개체
-- 시트: [monsters-human.webp](file:///Users/bodyking/Desktop/Architecture/towerdeffense/docs/renewal/r6/bible/sheets/monsters-human.webp) *(429 할당량 리셋 후 생성 예정)*
+- 시트: [monsters-human.webp](file:///Users/bodyking/Desktop/Architecture/towerdeffense/docs/renewal/r6/bible/sheets/monsters-human.webp) · 파츠 분해도: [monsters-human-parts.webp](file:///Users/bodyking/Desktop/Architecture/towerdeffense/docs/renewal/r6/bible/sheets/monsters-human-parts.webp) · 초상 예시: [monsters-portrait-human.webp](file:///Users/bodyking/Desktop/Architecture/towerdeffense/docs/renewal/r6/bible/sheets/monsters-portrait-human.webp)
 - 특수 계통 테마: **공성 수레** · 주 강조색: 은회 `#B8C0C8` (30%), 회색 `#4A5563` (25%), 앰버 `#E69F24` (15%)
 
 | ID | 가안 이름 | 계통·단계 | 크기 | T(n)→T(n+1) 변화 / 보스 기술 |
@@ -88,7 +89,7 @@
 ---
 
 ## 4. 기계 군단 (`mech`) — 20개체
-- 시트: [monsters-mech.webp](file:///Users/bodyking/Desktop/Architecture/towerdeffense/docs/renewal/r6/bible/sheets/monsters-mech.webp) *(429 할당량 리셋 후 생성 예정)*
+- 시트: [monsters-mech.webp](file:///Users/bodyking/Desktop/Architecture/towerdeffense/docs/renewal/r6/bible/sheets/monsters-mech.webp) · 파츠 분해도: [monsters-mech-parts.webp](file:///Users/bodyking/Desktop/Architecture/towerdeffense/docs/renewal/r6/bible/sheets/monsters-mech-parts.webp) · 초상 예시: [monsters-portrait-mech.webp](file:///Users/bodyking/Desktop/Architecture/towerdeffense/docs/renewal/r6/bible/sheets/monsters-portrait-mech.webp)
 - 특수 계통 테마: **드론 모함(분열)** · 주 강조색: 슬레이트 `#1D242C` (35%), 회색 `#4A5563` (25%), 틸 `#2FB5A3` (8%)
 
 | ID | 가안 이름 | 계통·단계 | 크기 | T(n)→T(n+1) 변화 / 보스 기술 |
@@ -117,7 +118,7 @@
 ---
 
 ## 5. 군체 벌레 (`insect`) — 20개체
-- 시트: [monsters-insect.webp](file:///Users/bodyking/Desktop/Architecture/towerdeffense/docs/renewal/r6/bible/sheets/monsters-insect.webp) *(429 할당량 리셋 후 생성 예정)*
+- 시트: [monsters-insect.webp](file:///Users/bodyking/Desktop/Architecture/towerdeffense/docs/renewal/r6/bible/sheets/monsters-insect.webp) · 파츠 분해도: [monsters-insect-parts.webp](file:///Users/bodyking/Desktop/Architecture/towerdeffense/docs/renewal/r6/bible/sheets/monsters-insect-parts.webp) · 초상 예시: [monsters-portrait-insect.webp](file:///Users/bodyking/Desktop/Architecture/towerdeffense/docs/renewal/r6/bible/sheets/monsters-portrait-insect.webp)
 - 특수 계통 테마: **분열 유충떼** · 주 강조색: 카본 `#12161B` (25%), 앰버 `#E69F24` (25%), 슬레이트 `#1D242C` (25%)
 
 | ID | 가안 이름 | 계통·단계 | 크기 | T(n)→T(n+1) 변화 / 보스 기술 |
@@ -146,7 +147,7 @@
 ---
 
 ## 6. 바위 거인 (`golem`) — 20개체
-- 시트: [monsters-golem.webp](file:///Users/bodyking/Desktop/Architecture/towerdeffense/docs/renewal/r6/bible/sheets/monsters-golem.webp) *(429 할당량 리셋 후 생성 예정)*
+- 시트: [monsters-golem.webp](file:///Users/bodyking/Desktop/Architecture/towerdeffense/docs/renewal/r6/bible/sheets/monsters-golem.webp) · 파츠 분해도: [monsters-golem-parts.webp](file:///Users/bodyking/Desktop/Architecture/towerdeffense/docs/renewal/r6/bible/sheets/monsters-golem-parts.webp) · 초상 예시: [monsters-portrait-golem.webp](file:///Users/bodyking/Desktop/Architecture/towerdeffense/docs/renewal/r6/bible/sheets/monsters-portrait-golem.webp)
 - 특수 계통 테마: **재생 수정** · 주 강조색: 회색 `#4A5563` (35%), 슬레이트 `#1D242C` (25%), 앰버 `#E69F24` (18%)
 
 | ID | 가안 이름 | 계통·단계 | 크기 | T(n)→T(n+1) 변화 / 보스 기술 |
