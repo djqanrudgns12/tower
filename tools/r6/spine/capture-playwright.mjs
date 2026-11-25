@@ -9,6 +9,7 @@ import { createServer } from 'vite';
 const [work, shots, ...args] = process.argv.slice(2);
 if (!work || !shots) throw new Error('사용법 · node tools/r6/spine/capture-playwright.mjs <작업 폴더> <캡처 폴더>');
 const readJson = async file => JSON.parse(await readFile(file, 'utf8'));
+const allSpecies = ['machine', 'stone', 'elf', 'human', 'insect'];
 const inspect = work === '--inspect';
 const mixed = work === '--published';
 const published = mixed || inspect;
@@ -17,7 +18,7 @@ if (mixed && ![15, 20].includes(waveNumber)) throw new Error('혼합 전장 캡�
 const shotName = inspect ? 'battle-detail' : waveNumber === 15 ? 'battle-w15' : 'battle';
 const fragment = published ? null : await readJson(resolve(work, 'manifest-fragment.json'));
 const species = fragment && Object.keys(fragment.species)[0];
-const catalog = published ? Object.assign({}, ...await Promise.all(['machine', 'stone', 'elf', 'human', 'insect'].map(async s =>
+const catalog = published ? Object.assign({}, ...await Promise.all(allSpecies.map(async s =>
   (await readJson(`src/game/r6/monsters/${s}.json`)).entities))) : fragment.species[species].entities;
 let actors = Object.entries(catalog);
 if (inspect) {
@@ -72,7 +73,7 @@ h1{font-size:19px;margin:0 0 12px}#field{width:1408px;height:834px}</style>
 <main><h1>${mixed ? `혼합 웨이브 · W${waveNumber}` : `R6 전장 · ${actors.length}개체`}</h1><div id="field"></div></main></html>`,
   }));
   await page.goto(new URL('r6-monster-fixture', server.resolvedUrls.local[0]).href);
-  const selection = await page.evaluate(async ({ mixed, ids, waveNumber }) => {
+  const selection = await page.evaluate(async ({ mixed, ids, waveNumber, allSpecies }) => {
     const paths = ['/src/content/index.ts', '/src/application/balanceSession.ts', '/src/application/RunController.ts',
       '/src/game/bridge.ts', '/src/game/battlefieldGame.ts'];
     const [{ loadGradeContent }, { localBalanceSession }, { RunController }, { FieldBridgeHandle },
@@ -90,7 +91,7 @@ h1{font-size:19px;margin:0 0 12px}#field{width:1408px;height:834px}</style>
       const { previewR6Wave } = await import(mixerUrl);
       state.wave = waveNumber;
       const tiers = waveNumber === 15 ? [2, 3] : [3, 4];
-      const reviewed = ['machine', 'stone', 'human'].filter(s =>
+      const reviewed = allSpecies.filter(s =>
         ids.some(id => id.startsWith(s + '-') && tiers.includes(Number(id.at(-1)))));
       const hasBoss = ids.some(id => id.endsWith('-boss-t' + waveNumber / 5));
       // 실제 편성 중 서로 다른 전용 스킨을 가장 많이 볼 수 있는 시드를 고른다.
@@ -100,14 +101,13 @@ h1{font-size:19px;margin:0 0 12px}#field{width:1408px;height:834px}</style>
         const ready = wave.filter(m => ids.includes(m.id));
         if (!tiers.every(t => ready.some(m => m.tier === t)) ||
             !reviewed.every(s => ready.some(m => m.species === s)) ||
-            !wave.some(m => m.lineage === 'boss' && (!hasBoss || ids.includes(m.id))) ||
-            ready.length === wave.length) continue;
+            !wave.some(m => m.lineage === 'boss' && (!hasBoss || ids.includes(m.id)))) continue;
         const unique = new Set(ready.map(m => m.id)).size;
         if (!best || unique > best.unique || (unique === best.unique && ready.length > best.count)) {
           best = { unique, count: ready.length, seed: candidate, ids: wave.map(m => m.id) };
         }
       }
-      if (!best) throw new Error('대상 종족·단계·보스·기본 표시가 함께 나오는 웨이브를 찾지 못했습니다.');
+      if (!best) throw new Error('대상 종족·단계·보스가 함께 나오는 웨이브를 찾지 못했습니다.');
       ids = best.ids;
       seed = best.seed;
       state.config.seed = seed;
@@ -136,7 +136,7 @@ h1{font-size:19px;margin:0 0 12px}#field{width:1408px;height:834px}</style>
       window.qaMonsters = { state, game };
     });
     return { ids, seed, wave: state.wave };
-  }, { mixed, waveNumber, ids: actors.map(([id]) => id) });
+  }, { mixed, waveNumber, ids: actors.map(([id]) => id), allSpecies });
   actors = selection.ids.map(id => [id, catalog[id] ?? { skin: 'T' + id.at(-1), rig: 'g2-walker' }]);
   try {
     await page.waitForFunction(() => {
