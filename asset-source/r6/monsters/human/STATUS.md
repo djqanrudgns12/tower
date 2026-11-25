@@ -1,8 +1,7 @@
 # 철갑 인간 (`human`) 분해 시트 진행 현황
 
 - 기준: `docs/renewal/r6/PRD-r6.md` §4, `docs/renewal/r6/tech/monster-pipeline.md`, `docs/renewal/r6/bible/monsters.md`, `docs/renewal/r6/bible/sheets/monsters-human.webp`
-- 진행률: **13 / 20 완료** (`cut_parts.py` 절단 검증 통과 13개 · 3회차 `REDO.md` 2건(`infantry/T3`·`runner/T2`) 보정 반영 완료)
-- 중단 사유: 이미지 생성 서버 용량 부족 (`HTTP 503 UNAVAILABLE: No capacity available for model gemini-3.1-flash-image`, 2026-11-26 02:02~02:09 KST 3회 연속 실패로 신규 생성 중단)
+- 진행률: **20 / 20 완료** (`cut_parts.py` 절단 검증 통과 20개 · 3회차 `REDO.md` 2건 + 4회차 남은 7개체 전원 완료)
 
 ## 완료 목록 (13개체)
 
@@ -19,11 +18,16 @@
 | `armored/T1` | `armored-biped.json` | 1.10 | 13 | 없음(기본) | 통과 (`ready=true`, 비차단 `speck` 1건, IoU 0.594) |
 | `armored/T2` | `armored-biped.json` | 1.22 | 11 (`+gear`) | `arm-hand-far`, `leg-*` ← `T1` | 통과 (`issues=0`, IoU 0.578) |
 | `armored/T3` | `armored-biped.json` | 1.35 | 11 (`+gear`) | `arm-hand-far`, `leg-*` ← `T1` | 통과 (`issues=0`, IoU 0.599) |
+| `armored/T4` | `armored-biped.json` | 1.50 | 11 (`+gear`) | `arm-hand-far`, `leg-*`, `leg-foot-*` ← `T1` | 통과 (`issues=0`, 모의 `fitIoU` 0.741) |
 | `special/T1` | `special-wheeled.json` | 1.00 | 7 | 없음(기본) | 통과 (`ready=true`, 비차단 `speck` 2건, IoU 0.497) |
+| `special/T2` | `special-wheeled.json` | 1.12 | 6 (`+head`, `+armor`, `+mark`) | 없음(방패 공성 수레 신규) | 통과 (`issues=0`, 모의 `fitIoU` 0.766) |
+| `special/T3` | `special-wheeled.json` | 1.25 | 6 (`+head`, `+armor`, `+mark`) | 없음(쇠뇌 공성 포차 신규) | 통과 (`issues=0`, 모의 `fitIoU` 0.766) |
+| `special/T4` | `special-wheeled.json` | 1.38 | 5 (`+head`, `+armor`) | 없음(철갑 공성 전차 신규) | 통과 (`issues=0`, 모의 `fitIoU` 0.804) |
 | `boss-t1/T1` | `boss-biped.json` | 1.65 | 13 | 없음(기본) | 통과 (`ready=true`, 비차단 `speck` 1건, IoU 0.526) |
+| `boss-t2/T2` | `boss-quadruped.json` | 1.80 | 11 (`+gear`) | 없음(중장갑 전차 대장·기병창 신규) | 통과 (`issues=0`, 모의 `fitIoU` 0.786) |
+| `boss-t3/T3` | `boss-biped.json` | 2.00 | 12 (`+armor`, `+gear`) | 없음(모듈형 이동식 철갑 공성탑 신규) | 통과 (`issues=0`, 모의 `fitIoU` 0.825) |
+| `boss-t4/T4` | `boss-biped.json` | 2.20 | 12 (`+armor`, `+gear`) | 없음(왕국 총사령관 판금·대방패·할버드 신규) | 통과 (`issues=0`, 모의 `fitIoU` 0.752) |
 
-## 남은 목록 (7개체 · 429 한도 해제 후 재개)
+## 남은 목록
 
-- `armored` (`armored-biped.json`): `T4` (1.50 — 429로 파츠 생성 중단, 원화부터 재개)
-- `special` (`special-wheeled.json`): `T2` (1.12), `T3` (1.25), `T4` (1.38)
-- 보스: `boss-t2/T2` (`boss-quadruped.json`, 1.80), `boss-t3/T3` (`boss-biped.json`, 2.00), `boss-t4/T4` (`boss-biped.json`, 2.20)
+- 없음 (20/20 완료).
