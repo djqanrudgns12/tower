@@ -1,10 +1,11 @@
-"""32px 판독 띠와 단계·종족 사이 실루엣 겹침을 계산한다."""
+"""32px 판독 띠, 실루엣 겹침과 바닥 대비를 계산한다."""
 
 import argparse
 from itertools import combinations, pairwise, product
 from pathlib import Path
+from statistics import median
 
-from PIL import Image, ImageChops, ImageDraw, ImageOps
+from PIL import Image, ImageChops, ImageColor, ImageDraw, ImageOps
 
 from monsters import FAMILIES, read_json
 from pilot import write_json
@@ -13,6 +14,29 @@ from pilot import write_json
 SIZE = 32
 EVOLUTION_LIMIT = .92
 SPECIES_LIMIT = .55
+BOSS_LIMIT = .70
+CONTRAST_LIMIT = 1.5
+# 초원 고원 맵 규격의 지형 바탕색과 길 표면색을 사용한다.
+BACKGROUNDS = {"terrain": "#1D242C", "path": "#4A5563"}
+
+
+def luminance(rgb):
+    channels = [value / 255 for value in rgb]
+    linear = [value / 12.92 if value <= .04045 else ((value + .055) / 1.055) ** 2.4 for value in channels]
+    return sum(value * weight for value, weight in zip(linear, (.2126, .7152, .0722)))
+
+
+def ground_contrast(icon, mask):
+    scores = {}
+    for name, color in BACKGROUNDS.items():
+        background = ImageColor.getrgb(color)
+        ground = luminance(background)
+        composite = Image.alpha_composite(Image.new("RGBA", icon.size, color), icon)
+        pixels = (luminance(pixel[:3]) for pixel, visible in zip(composite.get_flattened_data(), mask.get_flattened_data()) if visible)
+        ratios = [(max(foreground, ground) + .05) / (min(foreground, ground) + .05) for foreground in pixels]
+        scores[name] = {"median": round(median(ratios), 3),
+                        "lowShare": round(sum(value < CONTRAST_LIMIT for value in ratios) / len(ratios), 3)}
+    return scores
 
 
 def thumbnail(image):
@@ -53,6 +77,7 @@ def review(packs, out):
 
 def review_images(images, out):
     masks, icons, species_ids, evolution, cross = {}, {}, {}, [], []
+    boss_pairs, contrast = {}, {}
     for species, paths in images.items():
         ids = tuple(paths)
         species_ids[species] = ids
@@ -62,6 +87,11 @@ def review_images(images, out):
             masks[actor] = silhouette(icons[actor])
             if not masks[actor].getbbox():
                 raise ValueError(f"{actor} · 32px 실루엣에 보이는 화소가 없습니다.")
+            contrast[actor] = ground_contrast(icons[actor], masks[actor])
+        bosses = [actor for actor in ids if actor.startswith(f"{species}-boss-")]
+        regulars = [actor for actor in ids if actor not in bosses]
+        pairs = [overlap(boss, regular, masks, BOSS_LIMIT) for boss, regular in product(bosses, regulars)]
+        boss_pairs[species] = sorted(pairs, key=lambda pair: pair["iou"], reverse=True)
         for family in (*FAMILIES, "boss"):
             family_ids = [f"{species}-{family}-t{tier}" for tier in range(1, 5)]
             evolution.extend(overlap(a, b, masks, EVOLUTION_LIMIT) for a, b in pairwise(family_ids)
@@ -87,15 +117,19 @@ def review_images(images, out):
             row, col = (*FAMILIES, "boss").index(family), int(tier) - 1
             y = 23 + row * 45
             x = 59 + col * 44
-            draw.rectangle((x, y, x + 35, y + 35), fill="#12161B", outline="#4A5563")
+            draw.rectangle((x, y, x + 35, y + 35), fill=BACKGROUNDS["path"], outline="#12161B")
             sheet.paste(icons[actor], (x + 2, y + 2), icons[actor])
         sheet.save(out / f"{species}-32px.webp", lossless=True)
     failures = sum(not pair["pass"] for pair in evolution) + sum(len(group["failures"]) for group in cross)
+    boss_failures = sum(not pair["pass"] for pairs in boss_pairs.values() for pair in pairs)
     write_json(out / "silhouettes.json", {
         "evolutionLimit": EVOLUTION_LIMIT, "speciesLimit": SPECIES_LIMIT, "evolution": evolution,
         "crossSpecies": cross, "failures": failures,
+        "bossLimit": BOSS_LIMIT, "bossVsRegular": boss_pairs, "bossPairFailures": boss_failures,
+        "contrastLimit": CONTRAST_LIMIT, "contrastBackgrounds": BACKGROUNDS, "groundContrast": contrast,
     })
     print(f"32px 실루엣 · 단계 {len(evolution)}쌍 · 종족 간 {sum(g['comparisons'] for g in cross)}쌍 · 기준 초과 {failures}쌍")
+    print(f"32px 보스와 일반 · {sum(map(len, boss_pairs.values()))}쌍 · 재검수 {boss_failures}쌍")
     return failures
 
 

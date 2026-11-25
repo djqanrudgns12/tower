@@ -15,7 +15,7 @@ from monsters import ACTORS, compose_rig, prepare, read_json
 from part_guides import CANVAS, SHEET, guide_data
 from parts import extract, suggest_pivot
 from pilot import write_json
-from review import review
+from review import ground_contrast, review, silhouette
 from rigs import VARIANTS, layout
 from sample import generate
 from swarm import animate_swarm
@@ -216,6 +216,19 @@ class MonsterPipelineTest(unittest.TestCase):
             self.assertEqual(cross["comparisons"], 400)
             self.assertEqual(cross["max"]["iou"], 1)
             self.assertFalse(cross["max"]["pass"])
+            for species, pairs in result["bossVsRegular"].items():
+                self.assertEqual(len(pairs), 64)
+                self.assertTrue(all(pair["first"].startswith(species + "-boss-") for pair in pairs))
+                self.assertTrue(all(pair["second"].startswith(species + "-") and "-boss-" not in pair["second"]
+                                    for pair in pairs))
+
+    def test_contrast_uses_visible_pixels_on_each_ground_color(self):
+        icon = Image.new("RGBA", (32, 32))
+        icon.putpixel((12, 12), (74, 85, 99, 255))
+        result = ground_contrast(icon, silhouette(icon))
+        self.assertEqual(result["path"], {"median": 1.0, "lowShare": 1.0})
+        self.assertGreater(result["terrain"]["median"], 1.5)
+        self.assertEqual(result["terrain"]["lowShare"], 0.0)
 
 
 if __name__ == "__main__":

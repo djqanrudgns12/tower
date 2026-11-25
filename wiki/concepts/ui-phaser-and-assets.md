@@ -4,7 +4,7 @@ type: hub
 title: 화면(R04 UI)·전장(Phaser/Spine)·제작 공정
 status: active
 updated: 2026-11-25
-verified: { commit: f0f635de, date: 2026-11-26 }
+verified: { commit: d114eccd, date: 2026-11-26 }
 sources:
   - path: src/game/bridge.ts
     sha256: d174fb7ea5c85ad93424afe0eb92a90508cb3488d66537edda17251254c868f8
@@ -15,7 +15,7 @@ sources:
   - path: docs/renewal/r6/tech/G2-spike.md
     sha256: "741013a9c3f010dafe49b23789095f6f36116d69412428d6ef1b4048aa76ef01"
   - path: docs/renewal/r6/tech/monster-pipeline.md
-    sha256: "882c044e9fb7e1ddd4e786749e2b736fb99c2ab39cefc1000c2a1125396b8305"
+    sha256: df0bfcd3fbba973e9a7e4c9a4fe5a70359a8aef7592c326f0c5ee4660987fbfe
   - path: docs/renewal/r6/tech/G5-perf.md
     sha256: f53b47482ca494b4723d1b72f04b485b4d69cdf3520ad2a0a8cf46433305b455
   - path: docs/renewal/r6/ui/system.md
@@ -51,7 +51,7 @@ sources:
 ## 3. R6 제작 공정 (Blender 헤드리스 · 레시피 · Spine 양산)
 
 - **타워 공정** ([G2-spike.md](../../docs/renewal/r6/tech/G2-spike.md)): AI 생성은 콘셉트 시트까지만 쓰고, 양산은 **Blender 5.2 LTS 헤드리스 파이썬**(`tools/r6/blender/`, `.blend` 부품 키트) + 진화 레시피 6종(`tools/r6/recipes/*.json`)으로 자동 조립·렌더한다(three.js는 제작 미사용). `tools/r6/qa/check.py`가 48px 실루엣 겹침(타 계열 IoU < 0.55), R04 팔레트, WebP 매니페스트 해시를 검사한다. **6종 66형태 전장 교체 완료**(165쌍 최대 IoU `0.5488`).
-- **몬스터 공정** ([monster-pipeline.md](../../docs/renewal/r6/tech/monster-pipeline.md)): 3/4 우향 분해 시트(`1536×1024`)와 조립 그림 한 쌍을 계통별 **파츠 안내판**(`asset-source/r6/monsters/_guides/*.{png,json}`) 규격으로 제작 → `tools/r6/spine/cut_parts.py` 자동 절단 → `monsters.py` + Spine Pro 4.3 CLI(종족당 일반 4뼈대×T1~T4 스킨 + 보스 4뼈대, 총 40뼈대·100개체) → `check-runtime.mjs`·`review.py`(인접 IoU < 0.92, 종족 간 < 0.55)·`capture-playwright.mjs` 검수. 일괄 양산은 `tools/r6/spine/batch.py`(IoU 0.70 미만은 종족별 `REDO.md`).
+- **몬스터 공정** ([monster-pipeline.md](../../docs/renewal/r6/tech/monster-pipeline.md)): 3/4 우향 분해 시트(`1536×1024`)와 조립 그림 한 쌍을 계통별 **파츠 안내판**(`asset-source/r6/monsters/_guides/*.{png,json}`) 규격으로 제작 → `tools/r6/spine/cut_parts.py` 자동 절단 → `monsters.py` + Spine Pro 4.3 CLI(종족당 일반 4뼈대×T1~T4 스킨 + 보스 4뼈대, 총 40뼈대·100개체) → `check-runtime.mjs`·`review.py`(32px 인접 IoU < 0.92, 종족 간 < 0.55, 보스·일반 재검수선 0.70 및 바닥 대비)·`capture-playwright.mjs` 검수. 일괄 양산은 `tools/r6/spine/batch.py`(조립 IoU 0.70 미만은 종족별 `REDO.md`).
 - **WebP 규칙 (`DEC-06`)**: `public/assets/**`는 WebP(기본 `cwebp -q 85 -alpha_q 100 -m 6`, 무손실 필요 시 상향)로 싣고 탈락 시안·생성 원본 PNG는 커밋하지 않는다.
 
 ## 4. 이전 판(v1) 보존 요약

@@ -259,9 +259,12 @@ def write_summary(rows, atlases, comparisons):
     if comparisons:
         adjacent = comparisons["evolution"]
         cross = comparisons["crossSpecies"]
+        bosses = comparisons["bossVsRegular"]
         table.append(f"- 인접 단계 {len(adjacent)}쌍 중 {sum(not p['pass'] for p in adjacent)}쌍, "
                      f"종족 간 {sum(g['comparisons'] for g in cross)}쌍 중 "
                      f"{sum(len(g['failures']) for g in cross)}쌍이 32px 구분 기준에 미달했다.")
+        table.append(f"- 같은 종족의 보스·일반 {sum(map(len, bosses.values()))}쌍 중 "
+                     f"{comparisons['bossPairFailures']}쌍의 IoU가 {comparisons['bossLimit']:.2f} 이상으로 재검수 대상이다.")
     doc = REVIEW.parent / "monster-pipeline.md"
     begin, end = "<!-- monster-batch:begin -->", "<!-- monster-batch:end -->"
     before, rest = doc.read_text().split(begin)
@@ -395,7 +398,11 @@ def main():
                     lines.append(f"- {other} 비교 {group['comparisons']}쌍 중 {len(group['failures'])}쌍 미달. "
                                  f"가장 비슷한 쌍은 `{worst['first']}`와 `{worst['second']}` (IoU {worst['iou']:.3f}).")
         if path.exists():
-            history = path.read_text().split("## 도구로 해결", 1)
+            existing = path.read_text()
+            _, marker, notes = existing.partition("\n## 32px 재작화\n")
+            if marker:
+                lines.append(marker + notes.split("\n## ", 1)[0].rstrip())
+            history = existing.split("## 도구로 해결", 1)
             accepted = {f"`{r['entry']}/{r['skin']}`": r for r in rows if r['species'] == species and r['accepted']}
             entries = []
             if len(history) == 2:
@@ -407,7 +414,7 @@ def main():
                     entries.append(f"- {key} 재작화 반영 · 조립 IoU {accepted[key]['iou']:.3f}")
             if entries:
                 lines.extend(["", "## 도구로 해결", "", *entries])
-            _, marker, notes = path.read_text().partition("\n## 32px 외곽선")
+            _, marker, notes = existing.partition("\n## 32px 외곽선")
             if marker:
                 lines.append("\n## 32px 외곽선 · 이전 검수 기록" + notes.removeprefix(" · 이전 검수 기록").rstrip())
         publish(path, ("\n".join(lines) + "\n").encode())
