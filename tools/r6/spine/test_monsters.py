@@ -8,6 +8,7 @@ import unittest
 
 from PIL import Image, ImageDraw
 
+from batch import white_patches
 from cut_parts import cut, orient_parts
 from fit_parts import fit
 from monsters import ACTORS, compose_rig, prepare, read_json
@@ -24,6 +25,16 @@ FIXTURE = Path(__file__).resolve().parents[3] / "asset-source/r6/monsters/_pipel
 
 
 class MonsterPipelineTest(unittest.TestCase):
+    def test_white_patch_requires_opaque_connected_near_white_pixels(self):
+        image = Image.new("RGBA", (24, 16), (255, 255, 255, 0))
+        draw = ImageDraw.Draw(image)
+        draw.rectangle((1, 1, 4, 3), fill=(240, 242, 255, 255))
+        draw.rectangle((5, 4, 8, 6), fill=(255, 255, 255, 255))
+        draw.rectangle((12, 1, 15, 5), fill=(255, 255, 255, 255))
+        draw.rectangle((1, 9, 9, 15), fill=(239, 255, 255, 255))
+        draw.rectangle((11, 9, 19, 15), fill=(255, 255, 255, 200))
+        self.assertEqual(white_patches(image), [{"pixels": 24, "box": [1, 1, 9, 7]}])
+
     def test_swarm_hinge_preserves_skin_positions_and_loops(self):
         covers = [{"x": x, "y": 2, "width": 30, "height": 20, "scaleX": .5, "scaleY": .5} for x in (4, 9)]
         rig = {"slots": [{"name": "armor", "bone": "body"}], "bones": [],

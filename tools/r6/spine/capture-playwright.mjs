@@ -6,10 +6,13 @@ import { basename, resolve } from 'node:path';
 import { chromium } from 'playwright';
 import { createServer } from 'vite';
 
-const [work, shots] = process.argv.slice(2);
+const [work, shots, waveArg] = process.argv.slice(2);
 if (!work || !shots) throw new Error('사용법 · node tools/r6/spine/capture-playwright.mjs <작업 폴더> <캡처 폴더>');
 const readJson = async file => JSON.parse(await readFile(file, 'utf8'));
 const published = work === '--published';
+const waveNumber = Number(waveArg ?? 20);
+if (published && ![15, 20].includes(waveNumber)) throw new Error('혼합 전장 캡처는 15 또는 20웨이브를 지정하세요.');
+const shotName = published && waveNumber === 15 ? 'battle-w15' : 'battle';
 const fragment = published ? null : await readJson(resolve(work, 'manifest-fragment.json'));
 const species = fragment && Object.keys(fragment.species)[0];
 const catalog = published ? Object.assign({}, ...await Promise.all(['machine', 'stone', 'elf', 'human', 'insect'].map(async s =>
@@ -60,10 +63,10 @@ try {
     body: `<!doctype html><html lang="ko"><meta charset="utf-8"><title>적 동작 확인</title>
 <style>body{margin:0;background:#12161b;color:#b8c0c8;font:16px system-ui}main{padding:16px}
 h1{font-size:19px;margin:0 0 12px}#field{width:1408px;height:834px}</style>
-<main><h1>${published ? '엘프·인간·벌레 혼합 웨이브' : `R6 전장 · ${actors.length}개체`}</h1><div id="field"></div></main></html>`,
+<main><h1>${published ? `혼합 웨이브 · W${waveNumber}` : `R6 전장 · ${actors.length}개체`}</h1><div id="field"></div></main></html>`,
   }));
   await page.goto(new URL('r6-monster-fixture', server.resolvedUrls.local[0]).href);
-  const selection = await page.evaluate(async ({ published, ids }) => {
+  const selection = await page.evaluate(async ({ published, ids, waveNumber }) => {
     const paths = ['/src/content/index.ts', '/src/application/balanceSession.ts', '/src/application/RunController.ts',
       '/src/game/bridge.ts', '/src/game/battlefieldGame.ts'];
     const [{ loadGradeContent }, { localBalanceSession }, { RunController }, { FieldBridgeHandle },
@@ -79,17 +82,28 @@ h1{font-size:19px;margin:0 0 12px}#field{width:1408px;height:834px}</style>
     if (published) {
       const mixerUrl = '/src/domain/r6Mixer.ts';
       const { previewR6Wave } = await import(mixerUrl);
-      state.wave = 5;
-      // 실제 혼합표에서 새 세 종족과 준비된 보스를 함께 볼 수 있는 첫 시드를 고른다.
-      for (seed = 0; seed < 500; seed++) {
-        const wave = previewR6Wave(ctx.balance.r6.rules, ctx.map.id, seed, state.wave);
-        if (['elf', 'human', 'insect'].every(s => wave.some(m => m.species === s && ids.includes(m.id))) &&
-            wave.some(m => m.lineage === 'boss' && ids.includes(m.id)) && wave.some(m => !ids.includes(m.id))) {
-          ids = wave.map(m => m.id);
-          break;
+      state.wave = waveNumber;
+      const tiers = waveNumber === 15 ? [2, 3] : [3, 4];
+      const reviewed = ['machine', 'stone', 'human'].filter(s =>
+        ids.some(id => id.startsWith(s + '-') && tiers.includes(Number(id.at(-1)))));
+      const hasBoss = ids.some(id => id.endsWith('-boss-t' + waveNumber / 5));
+      // 실제 편성 중 서로 다른 전용 스킨을 가장 많이 볼 수 있는 시드를 고른다.
+      let best;
+      for (let candidate = 0; candidate < 64; candidate++) {
+        const wave = previewR6Wave(ctx.balance.r6.rules, ctx.map.id, candidate, state.wave);
+        const ready = wave.filter(m => ids.includes(m.id));
+        if (!tiers.every(t => ready.some(m => m.tier === t)) ||
+            !reviewed.every(s => ready.some(m => m.species === s)) ||
+            !wave.some(m => m.lineage === 'boss' && (!hasBoss || ids.includes(m.id))) ||
+            ready.length === wave.length) continue;
+        const unique = new Set(ready.map(m => m.id)).size;
+        if (!best || unique > best.unique || (unique === best.unique && ready.length > best.count)) {
+          best = { unique, count: ready.length, seed: candidate, ids: wave.map(m => m.id) };
         }
       }
-      if (seed === 500) throw new Error('새 세 종족·보스·기본 표시가 함께 나오는 웨이브를 찾지 못했습니다.');
+      if (!best) throw new Error('대상 종족·단계·보스·기본 표시가 함께 나오는 웨이브를 찾지 못했습니다.');
+      ids = best.ids;
+      seed = best.seed;
       state.config.seed = seed;
     }
     state.pause = [];
@@ -116,7 +130,7 @@ h1{font-size:19px;margin:0 0 12px}#field{width:1408px;height:834px}</style>
       window.qaMonsters = { state, game };
     });
     return { ids, seed, wave: state.wave };
-  }, { published, ids: actors.map(([id]) => id) });
+  }, { published, waveNumber, ids: actors.map(([id]) => id) });
   actors = selection.ids.map(id => [id, catalog[id] ?? { skin: 'T' + id.at(-1), rig: 'g2-walker' }]);
   try {
     await page.waitForFunction(() => {
@@ -170,12 +184,21 @@ h1{font-size:19px;margin:0 0 12px}#field{width:1408px;height:834px}</style>
   assert.ok(rendered.every(unit => unit.renderer === 'phaser' && unit.track === 'walk' && unit.moved && unit.slots > 0),
     'Mesh2D 재생 또는 파츠 확인에 실패했습니다.');
   if (published) {
-    for (const s of ['elf', 'human', 'insect']) assert.ok(requests.has(s + '.webp'), s + ' 아틀라스 전송 확인');
+    for (const s of new Set(actors.filter(([id]) => catalog[id]).map(([id]) => id.split('-')[0]))) assert.ok(requests.has(s + '.webp'), s + ' 아틀라스 전송 확인');
     for (const [i, [, actor]] of actors.entries()) {
       if (actor.rig !== 'g2-walker') assert.ok(rendered[i].attachment.startsWith(actor.rig + '-'));
       else assert.ok(!Object.values(catalog).some(({ rig }) => rendered[i].attachment.startsWith(rig + '-')), '누락 개체 기본 표시');
     }
   } else assert.deepEqual([...requests].sort(), [...allowedFiles].sort());
+  const temporary = await mkdtemp(resolve(shots, '.capture-'));
+  try {
+    const png = resolve(temporary, 'battle-walk.png');
+    await page.screenshot({ path: png });
+    execFileSync('cwebp', ['-quiet', '-lossless', '-o', resolve(shots, shotName + '-walk.webp'), '--', png]);
+  } finally {
+    await rm(temporary, { recursive: true, force: true });
+  }
+
   const events = await page.evaluate(({ hitIndex, fallIndex, bossIndices }) => {
     const { game, state, units } = window.qaMonsters;
     const { enemyLayer } = game.scene.getScene('battle');
@@ -192,26 +215,18 @@ h1{font-size:19px;margin:0 0 12px}#field{width:1408px;height:834px}</style>
     const fall = units[fallIndex].animationState.getTrack(0)?.animation.name;
     return { hit, fall, skill };
   }, {
-    hitIndex: published ? actors.findIndex(([id]) => catalog[id] && id.startsWith('elf-')) : 0,
-    fallIndex: published ? actors.findIndex(([id]) => catalog[id] && id.startsWith('human-')) : Math.min(1, actors.length - 1),
+    hitIndex: published ? actors.findIndex(([id]) => catalog[id] && id.startsWith('machine-')) : 0,
+    fallIndex: published ? actors.findIndex(([id]) => catalog[id] && id.startsWith('stone-')) : Math.min(1, actors.length - 1),
     bossIndices: actors.flatMap(([id, actor], i) => id.includes('-boss-') && actor.rig !== 'g2-walker' ? [i] : []),
   });
   assert.deepEqual(events, {
     hit: 'hit', fall: 'fall',
     skill: actors.filter(([id, actor]) => id.includes('-boss-') && actor.rig !== 'g2-walker').map(() => 'boss-skill'),
   });
-  const temporary = await mkdtemp(resolve(shots, '.capture-'));
-  try {
-    const png = resolve(temporary, 'battle-walk.png');
-    await page.screenshot({ path: png });
-    execFileSync('cwebp', ['-quiet', '-lossless', '-o', resolve(shots, 'battle-walk.webp'), '--', png]);
-  } finally {
-    await rm(temporary, { recursive: true, force: true });
-  }
 
   assert.deepEqual(errors, []);
-  await writeFile(resolve(shots, 'battle-report.json'), JSON.stringify({
-    chromium: browser.version(), seed: selection.seed, wave: selection.wave, rendered: actors.map(([entity], i) => ({ entity, ...rendered[i] })), events,
+  await writeFile(resolve(shots, shotName + '-report.json'), JSON.stringify({
+    chromium: browser.version(), seed: selection.seed, wave: selection.wave, rendered: actors.map(([entity], i) => ({ entity, rig: actors[i][1].rig, ...rendered[i] })), events,
   }, null, 2) + '\n');
   console.log(`게임 전장 · Mesh2D ${actors.length}개체 · 걷기 진행·피격·쓰러짐 확인 · 보스 기술 ${events.skill.length}개`);
 } finally {

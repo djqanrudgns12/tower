@@ -10,7 +10,9 @@ import subprocess
 import sys
 from tempfile import TemporaryDirectory
 
-from cut_parts import cut, normalize_reference, open_rgba, orient_parts, read_guide
+import numpy as np
+
+from cut_parts import components, cut, normalize_reference, open_rgba, orient_parts, read_guide
 from fit_parts import fit
 from monsters import ACTORS, SPECIES, export, prepare, read_json
 from pilot import write_json
@@ -54,6 +56,12 @@ def actor_id(meta):
     return rig if meta["entry"].startswith("boss-") else rig + "-" + meta["skin"].lower()
 
 
+def white_patches(image):
+    pixels = np.asarray(image.convert("RGBA"))
+    mask = (pixels[:, :, 3] == 255) & (pixels[:, :, :3] >= 240).all(axis=2)
+    return [{"pixels": c.area, "box": list(c.box)} for c in components(mask) if c.area >= 24]
+
+
 def process_actor(folder, canonical, first_targets):
     meta = read_json(folder / "parts.json")
     species, entry, skin = folder.relative_to(SOURCE).parts
@@ -68,7 +76,7 @@ def process_actor(folder, canonical, first_targets):
     placement.update(scale=meta["scale"], armless=meta.get("armless", False))
     inputs = digest(folder / "parts.json", sheet, assembly, guide, canonical, HERE / "fit_parts.py",
                     HERE / "cut_parts.py", HERE / "part_guides.py", HERE / "parts.py")
-    config = {k: v for k, v in placement.items() if k not in ("fitKey", "fitScores", "artReview")}
+    config = {k: v for k, v in placement.items() if k not in ("fitKey", "fitScores", "artReview", "whiteMark")}
     if placement.get("fitKey") != digest(inputs, config):
         template = read_json(guide)
         issues = []
@@ -79,7 +87,7 @@ def process_actor(folder, canonical, first_targets):
                                          placement, canonical)
         else:
             placement["fitScores"] = []
-        config = {k: v for k, v in placement.items() if k not in ("fitKey", "fitScores", "artReview")}
+        config = {k: v for k, v in placement.items() if k not in ("fitKey", "fitScores", "artReview", "whiteMark")}
         placement["fitKey"] = digest(inputs, config)
         save(placement_path, placement)
     work = CACHE / species / entry / skin / placement["fitKey"]
@@ -96,8 +104,27 @@ def process_actor(folder, canonical, first_targets):
     if review and review["sourceHash"] == digest(sheet, assembly):
         report["artRedo"] = review["reason"]
         report["accepted"] = False
+    spots = {name: found for name in ("reference", "preview")
+             if (found := white_patches(open_rgba(work / f"assembly-{name}.webp")))}
+    if spots:
+        report["whitePatches"] = spots
+        mark = placement.get("whiteMark", {})
+        if mark.get("reviewKey") == digest(sheet, assembly, spots) and mark.get("reason"):
+            report["whiteMark"] = mark["reason"]
+        else:
+            details = []
+            for name, groups in spots.items():
+                g = max(groups, key=lambda group: group["pixels"])
+                label = "원화" if name == "reference" else "조립"
+                details.append(f"{label} {g['box']}에서 {g['pixels']}px")
+            reason = "흰 얼룩 · " + ", ".join(details) + ". 부품 사이에 남은 흰 면을 확인해 주세요."
+            report["artRedo"] = " ".join(filter(None, [report.get("artRedo"), reason]))
+            report["accepted"] = False
     if not report["accepted"]:
-        report["redo"] = report.get("artRedo") or placement.get("redoNote") or redo_reason(work, report)
+        reasons = [report["artRedo"]] if report.get("artRedo") else []
+        if not report["ready"] or report["silhouetteIoU"] < .70:
+            reasons.append(placement.get("redoNote") or redo_reason(work, report))
+        report["redo"] = " ".join(reasons)
     save(folder / "report.json", report)
     return meta, report, work
 
@@ -115,7 +142,7 @@ def redo_reason(work, report):
     return f"{', '.join(names)} 부위를 같은 자세·비율로 다시 분리해 주세요. 두 차례 정렬 후 IoU {report['silhouetteIoU']:.3f}."
 
 
-def pack_species(species, items):
+def pack_species(species, items, *, sync_source=True):
     accepted = [(m, r, w) for m, r, w in items if r["accepted"]]
     if not accepted:
         return None
@@ -155,7 +182,7 @@ def pack_species(species, items):
             work.rename(cache)
     # 기존 종족의 편집용 명세만 동기화한다. 새 명세는 저작 캐시에서 열 수 있다.
     source_config = SOURCE / species / "species.json"
-    if source_config.exists():
+    if sync_source and source_config.exists():
         publish(source_config, (cache / "species.json").read_bytes())
     stats = read_json(cache / "export/atlas-report.json")
     if stats["bytes"] > ATLAS_BUDGET:
@@ -252,7 +279,9 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--species", nargs="+", choices=SPECIES, default=SPECIES,
                         help="지정한 종족만 갱신하고 다른 종족의 게시 결과는 비교에 재사용한다.")
-    selected = set(parser.parse_args().species)
+    parser.add_argument("--runtime-only", action="store_true", help="원화 폴더의 종족 편집 명세는 제작자가 관리한다.")
+    args = parser.parse_args()
+    selected = set(args.species)
     receipt = CACHE / "batch-state.json"
     if receipt.exists() and read_json(receipt) == batch_signature():
         print("몬스터 원본·리그·아틀라스·검수 결과가 최신입니다.")
@@ -297,7 +326,7 @@ def main():
                              **({"artRedo": report["artRedo"]} if "artRedo" in report else {})})
         if species_images:
             images[species] = species_images
-        pack = pack_species(species, items)
+        pack = pack_species(species, items, sync_source=not args.runtime_only)
         if pack:
             atlases[species] = read_json(pack / "export/atlas-report.json")
         else:
@@ -310,14 +339,21 @@ def main():
     for species, redo in redos.items():
         lines = ["# 그림 재검수", "", "## 조립", "", *(redo or ["조립 기준 미달 개체 없음."])]
         path = SOURCE / species / "REDO.md"
-        # 지난 그림 검수 메모는 보존한다. 전체 종족의 최신 쌍별 결과는 silhouettes.json에서 관리한다.
+        if comparisons:
+            lines.extend(["", "## 32px 비교", ""])
+            for group in comparisons["crossSpecies"]:
+                if species in group["species"]:
+                    other, = [s for s in group["species"] if s != species]
+                    worst = group["max"]
+                    lines.append(f"- {other} 비교 {group['comparisons']}쌍 중 {len(group['failures'])}쌍 미달. "
+                                 f"가장 비슷한 쌍은 `{worst['first']}`와 `{worst['second']}` (IoU {worst['iou']:.3f}).")
         if path.exists():
             _, marker, notes = path.read_text().partition("\n## 32px 외곽선")
             if marker:
-                lines.append(marker.rstrip() + notes.rstrip())
+                lines.append("\n## 32px 외곽선 · 이전 검수 기록" + notes.removeprefix(" · 이전 검수 기록").rstrip())
         publish(path, ("\n".join(lines) + "\n").encode())
     write_summary(rows, atlases, comparisons)
-    if selected == set(SPECIES):
+    if selected == set(SPECIES) and not args.runtime_only:
         save(receipt, batch_signature())
 
 
