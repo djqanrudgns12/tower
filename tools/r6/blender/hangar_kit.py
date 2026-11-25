@@ -67,6 +67,10 @@ def build_kit():
             polygon(p, "갑판 단면 띠", xy, [(top - .049, .989), (top - .020, .968)],
                     "amber" if tier == 4 else "line")
             polygon(p, "발진로 표면", xy, [(top, .76), (top + .039, .75)], "surface")
+            if tier == 4:
+                for x in (-.70, .70):
+                    p.plate("은회 갑판 정비 유도로", (x, .01, top + .045), (.54, 1.65, .017),
+                            "line", .12, .005)
             p.plate("전면 격납 출입문", (0, -radius * .81, top * .28),
                     (radius * .84, .17, top * .47), "carbon", .11)
             for x in (-radius * .46, radius * .46):

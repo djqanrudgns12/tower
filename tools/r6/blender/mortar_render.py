@@ -191,7 +191,9 @@ def assemble(kit, materials, stage, group, tile, direction=0, layer="form", fram
                 group.objects.link(obj)
                 obj.matrix_world = world_pos @ transform @ source.matrix_basis
                 obj.material_slots[0].link = "OBJECT"
-                color = finish if source["color"] == "surface" else source["color"]
+                color = source["color"]
+                if color == "surface":
+                    color = "line" if name == "side-skirt" and stage["materialStage"] == "gold-trim" else finish
                 obj.material_slots[0].material = materials[color]
     if frame in (3, 4):
         p = Part(group)

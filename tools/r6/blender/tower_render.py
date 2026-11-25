@@ -39,7 +39,9 @@ def mount_height(tower, stage):
 
 def rail_action(stage, frame, head):
     tier = stage["weaponStage"] - 1
-    idle = RAIL_PITCH[tier] + (6 if stage["level"] == 20 else 0)
+    # 조준 센서가 붙는 Lv16부터 보강한 상부 받침이 포신을 더 세운다.
+    raised_mount = {16: 13, 20: 6}.get(stage["level"], 0)
+    idle = RAIL_PITCH[tier] + raised_mount
     pitch = math.radians(idle - RAIL_DIP[frame])
     bearing = head @ Matrix.Translation((0, .24, .45)) @ Matrix.Rotation(pitch, 4, "X")
     return bearing @ Matrix.Translation((0, -stage["attack"]["recoil"] * RAIL_KICK[tier][frame], 0))

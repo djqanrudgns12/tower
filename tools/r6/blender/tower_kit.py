@@ -154,7 +154,10 @@ def rail_upgrades(kit):
         for sign in (-1, 1):
             p.plates("포미 측면 볼스터", (sign * .46, -.39, 0), [(-.30, .45, 1.43, .13),
                      (-.17, .61, 1.67, .14), (.32, .49, 1.50, .13)], "line", .025)
-        p.plate("후방 균형추", (0, -1.22, .22), (1.05, .96, .57), "slate", .14)
+        p.plate("후방 균형추", (0, -1.38, .22), (1.20, 1.10, .60), "slate", .14)
+        for sign in (-1, 1):
+            p.plate("균형추 끝 은회 고정판", (sign * .58, -1.65, .26),
+                    (.28, .38, .36), "silver", .065)
     with kit.part("armor", "twin-brace", "recoil") as p:
         p.plate("쌍포신 지지대", (0, .83, -.055), (1.04, .29, .34), "slate", .09)
         p.plate("지지대 체결판", (0, .82, -.205), (.75, .36, .12), "silver", .079)
@@ -168,19 +171,20 @@ def rail_upgrades(kit):
         acceleration_ring(p, 1.13, "teal", radius=.83)
     with kit.part("armor", "ceramic-cheeks", "recoil") as p:
         for sign in (-1, 1):
-            p.plates("세라믹 옆 장갑", (sign * .81, -.60, 0), [(-.72, .34, 1.45, .12),
-                     (-.42, .80, 1.62, .17), (.32, .59, 1.26, .16)], "silver", .038)
-            p.plate("장갑 뒷면 맞물림 판", (sign * .84, -1.38, -.15), (.54, .64, .37), "slate", .090)
+            p.plates("세라믹 옆 장갑", (sign * 1.05, -.66, 0), [(-.72, .38, 1.51, .12),
+                     (-.42, .87, 1.78, .17), (.32, .64, 1.30, .16)], "silver", .038)
+            p.plate("장갑 뒷면 맞물림 판", (sign * 1.04, -1.48, -.15), (.59, .68, .39), "slate", .090)
         p.plates("포두 후방 보강 가대", (0, -1.57, 0), [(-.44, 1.21, .84, .15),
                  (-.22, 1.49, .95, .19), (.28, 1.49, .84, .16), (.51, 1.16, .75, .15)], "line", .04)
         p.plate("가대 뒤 은회 마감", (0, -1.98, .04), (1.22, .18, .53), "silver", .08)
     with kit.part("detail", "tracking-aerial", "yaw") as p:
-        p.plate("추적기 후방 거치대", (.35, -.71, .26), (.31, .81, .25), "slate", .071)
-        for x in (.21, .50):
-            p.rod("추적기 격자 마스트", (x, -1.14, .29), (x, -1.26, 1.59), .041, "line", steps=6)
-        for h in (.53, .82, 1.10):
-            p.rod("마스트 격자 가로대", (.21, -1.20, h), (.50, -1.20, h + .17), .034, "silver", steps=5)
-        p.plate("틸 추적기 센서", (.35, -1.25, 1.64), (.32, .20, .17), "teal", .036)
+        p.plate("추적기 후방 거치대", (.59, -.82, .26), (.35, .91, .25), "slate", .071)
+        for x in (.70, 1.00):
+            p.rod("추적기 격자 마스트", (x - .28, -1.22, .29), (x, -1.51, 1.63), .046, "line", steps=6)
+        for h in (.53, .82, 1.12):
+            x = .42 + .28 * (h - .29) / 1.34
+            p.rod("마스트 격자 가로대", (x, -1.37, h), (x + .30, -1.37, h + .17), .041, "silver", steps=5)
+        p.plate("틸 추적기 센서", (.85, -1.51, 1.68), (.33, .22, .20), "teal", .036)
     with kit.part("marking", "crown-inductor", "recoil") as p:
         acceleration_ring(p, 2.62, "amber")
         p.rod("표적 지시등 받침", (.59, -.67, .48), (.59, -.67, .94), .081, "slate")
@@ -190,11 +194,11 @@ def rail_upgrades(kit):
 def cryo_base(kit):
     with kit.part("base", "octagonal-deck") as p:
         p.lathe("팔각 기단", (0, 0, 0), [(0, .88), (.08, 1.07), (.23, 1.07), (.31, .94)], "slate", steps=8)
-        p.lathe("기단 윗판", (0, 0, .245), [(0, 1.04), (.09, .93), (.115, .82)], "line", steps=8)
+        p.lathe("기단 윗판", (0, 0, .245), [(0, 1.04), (.09, .93), (.115, .82)], "surface", steps=8)
         p.lathe("기둥 아래 그늘", (0, 0, .328), [(0, .53), (.10, .51)], "carbon", steps=10)
     with kit.part("base", "extended-deck") as p:
-        p.lathe("기단 확장판", (0, 0, .025), [(0, 1.26), (.12, 1.53), (.23, 1.51), (.33, 1.33)], "slate", steps=12)
-        p.lathe("확장판 윗 테", (0, 0, .28), [(0, 1.40), (.09, 1.31), (.13, 1.24)], "line", steps=12)
+        p.lathe("기단 확장판", (0, 0, .025), [(0, 1.38), (.12, 1.66), (.23, 1.64), (.35, 1.42)], "surface", steps=12)
+        p.lathe("확장판 윗 테", (0, 0, .28), [(0, 1.52), (.09, 1.44), (.13, 1.37)], "surface", steps=12)
     with kit.part("base", "ice-louvers") as p:
         for angle in (.42, 2.51, 4.61):
             radial_pod(p, angle, 1.04, .42, (.77, .51, .63), "line", "teal")
@@ -209,7 +213,7 @@ def cryo_base(kit):
             p.rod("냉매 회수관", (.24*x, .24*y, 1.30), (.67*x, .67*y, 1.13), .105, "line")
             p.rod("냉매 파이프 결합 링", (.67*x, .67*y, .48), (.67*x, .67*y, .61), .17, "slate")
     with kit.part("body", "pressure-foot") as p:
-        p.lathe("테이퍼 냉매 몸체", (0, 0, .34), [(0, .65), (.17, .64), (.49, .37), (1.25, .30)], "line", steps=12)
+        p.lathe("테이퍼 냉매 몸체", (0, 0, .34), [(0, .65), (.17, .64), (.49, .37), (1.25, .30)], "surface", steps=12)
         for angle in (.2, 1.77, 3.34, 4.91):
             radial_pod(p, angle, .50, .58, (.47, .60, .47), "slate", "silver")
     with kit.part("armor", "radiator-fins") as p:
@@ -250,7 +254,7 @@ def cryo_head(kit):
             width = (.16, .23, .24, .31)[index] * 1.45
             height = (1.76, 2.56, 2.98, 3.12)[index]
             p.lathe("냉각 코어 기둥", (0, 0, -.06), [(0, width * .80), (.24, width),
-                    (height - .21, width), (height, width * .96)], "line", steps=10)
+                    (height - .21, width), (height, width * .96)], "silver" if index == 3 else "line", steps=10)
             if index > 0:
                 for k in range(6):
                     angle = math.tau * k / 6
@@ -297,8 +301,8 @@ def cryo_head(kit):
     with kit.part("detail", "weather-nozzles", "yaw") as p:
         for angle in (.11, 2.20, 4.30):
             x, y = math.cos(angle), math.sin(angle)
-            p.rod("상단 노즐 지지대", (.23*x, .23*y, 2.46), (1.22*x, 1.22*y, 2.89), .116, "slate")
-            radial_pod(p, angle, 1.20, 2.93, (.63, .46, .32), "silver", "teal")
+            p.rod("상단 노즐 지지대", (.23*x, .23*y, 2.46), (1.30*x, 1.30*y, 2.96), .116, "slate")
+            radial_pod(p, angle, 1.30, 3.00, (.63, .46, .32), "silver", "teal")
     with kit.part("weapon", "crown-clips", "rotors") as p:
         for n in (0, 2, 4):
             z, radius = CRYO_BANKS[3][n]

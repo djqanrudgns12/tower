@@ -60,12 +60,17 @@ def build_kit():
                     [(z, outer), (z + .08, outer + .04), (h - .12, outer + .015),
                      (h, outer - .10), (h, outer - .21), (z, outer - .23)], color)
                 arc(p, "방벽의 틸 충격 슬롯", (0, 0, 0), START, TURN,
-                    [(h - .116, outer + .014), (h - .067, outer + .014),
-                     (h - .067, outer - .009), (h - .116, outer - .009)], "teal")
+                    [(h - .152, outer + .014), (h - .067, outer + .014),
+                     (h - .067, outer - .009), (h - .152, outer - .009)], "teal")
+                if tier == 4 and index == 0:
+                    arc(p, "외벽 은회 교체 장갑", (0, 0, 0), START + .38, TURN - .38,
+                        [(z + .10, outer + .044), (z + .31, outer + .036),
+                         (z + .32, outer + .019), (z + .10, outer + .025)], "silver", 14)
                 rim = "amber" if tier == 4 and index == tier - 1 else "silver"
                 arc(p, "방벽의 얇은 상단 마감", (0, 0, 0), START, TURN,
-                    [(h - .018, outer - .071), (h + .007, outer - .101),
-                     (h + .007, outer - .178), (h - .018, outer - .170)], rim)
+                    [(h - .018, outer - .067), (h + .007, outer - .097),
+                     (h + .007, outer - (.178 if rim == "amber" else .264)),
+                     (h - .018, outer - (.170 if rim == "amber" else .257))], rim)
             for a in tuple(START + (TURN - START) * i / (tier + 1) for i in range(1, tier + 1)):
                 beam(p, "충격 분산 리브", radial(radius + .13, a, .31), radial(radius - .043, a, top - .025),
                      .146, .122, "silver")

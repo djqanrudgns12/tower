@@ -30,7 +30,7 @@ PROPORTIONS = {
                 (.96, .71), (.97, .72), (1.02, .75), (1.06, .83), (1.06, .84), (1.10, .90)),
 }
 # 지도 설치점은 고정하고, 비대칭 갑판과 호형 외벽이 같은 칸 안에서 차지하는 위치를 조절한다.
-CHASSIS_OFFSET = {"prism": (-.29, -.22, 0), "hangar": (-.81, -.62, 0), "bastion": (.53, .40, 0)}
+CHASSIS_OFFSET = {"prism": (-.29, -.22, 0), "hangar": (-.81, -.62, 0), "bastion": (.84, .64, 0)}
 CHASSIS_WIDTH = {"prism": .95, "hangar": .91, "bastion": .88}
 CHASSIS_HEIGHT = {"prism": 1.02, "hangar": 1.0, "bastion": .91}
 PRISM_HEIGHTS = (1.69, 1.87, 2.00, 2.30)

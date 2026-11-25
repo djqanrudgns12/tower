@@ -157,13 +157,13 @@ def core(kit):
                 p.rod("피스톤", a.lerp(b, .53), b, .101, "silver")
                 p.rod("고정 핀", b + Vector((-.12, 0, 0)), b + Vector((.12, 0, 0)), .145, "line")
     with kit.part("body", "rear-dampers") as p:
-        p.plate("완충기 받침 가로대", (0, 2.00, .46), (3.22, .62, .39), "slate", .19)
+        p.plate("완충기 받침 가로대", (0, 2.00, .46), (3.22, .62, .39), "surface", .19)
         for x in (-1.42, 1.42):
             a, b = Vector((x * 1.11, 2.06, .47)), Vector((x * 1.32, 2.36, 2.64))
             p.rod("후방 완충기 하우징", a, a.lerp(b, .73), .34, "line")
             p.rod("후방 완충기 피스톤", a.lerp(b, .71), b, .19, "silver")
-            p.rod("완충기 상단 마개", b + Vector((0, 0, -.17)), b + Vector((0, 0, .13)), .30, "slate")
-            p.plate("후방 완충기 체결판", (a.x, a.y, .49), (.74, .71, .24), "line")
+            p.rod("완충기 상단 마개", b + Vector((0, 0, -.17)), b + Vector((0, 0, .13)), .30, "surface")
+            p.plate("후방 완충기 체결판", (a.x, a.y, .49), (.74, .71, .24), "surface")
             p.rod("완충기 연결대", (x, 1.04, .96), (a.x, a.y, .63), .16, "slate")
 
     for name, material, width, depth, trim in (
@@ -248,7 +248,7 @@ def armor(kit):
                      (.43, 1.20, 1.24, .15, 1.93), (1.32, .85, .65, .13, 1.46))]
             skirt = p.mesh("벙커 스커트 경사 장갑", rings, "slate", bevel=.034)
             skirt.rotation_euler.z = angle
-            tread = p.plate("스커트 밑단 테두리", (*toe.xy, .30), (1.25, 1.12, .08), "line", .16)
+            tread = p.plate("스커트 밑단 테두리", (*toe.xy, .30), (1.25, 1.12, .08), "silver", .16)
             tread.rotation_euler.z = angle
             lateral = Vector((math.cos(angle), math.sin(angle), 0))
             for shift in (-.34, .34):
