@@ -28,8 +28,10 @@
 | `boss-t3/T3` | `boss-quadruped.json` | 2.00 | 12 (`+armor`, `+gear`) | 없음(쌍동 항공기함·도킹베이·추진체 신규, 4족 착륙각 포함) | 통과 (`issues=0`, IoU 0.435) |
 | `boss-t4/T4` | `boss-quadruped.json` | 2.20 | 12 (`+armor`, `+gear`) | 없음(공성 차체·V방패·2연장 포탑 신규, 중량 4족 다리 포함) | 통과 (`issues=0`, IoU 0.474) |
 
-## 재요청 반영 (`REDO.md`, 2회차 완료)
+## 재요청 반영 (`REDO.md`, 2·3회차 완료)
 
 - `runner/T1/sheet.png`: 앞·뒷발(`leg-fore-foot-*`, `leg-hind-foot-*`) 4부위를 조립 원화와 같은 긴 바늘형 발끝으로 재작화 (`placement.json`·`report.json` 유지).
-- `runner/T3/sheet.png`: T2 재사용을 해제하고 T3 원화의 보폭·발목 각도에 맞춘 기계 늑대 다리·발 8부위로 신규 작화 (`placement.json`·`report.json` 유지).
+- `runner/T3/sheet.png`, `assembly.png`: 다량 `speck` 57건 제거 및 T1 관절·시트 파츠 비율에 맞춘 조립 정합 보정 (`cut_parts` `issues=0`, 모의 `fit_parts` IoU 0.845).
+- `special/T2~T4/sheet.png`, `assembly.png`: 미세 `speck` 제거 및 T1 `swarm-*` 관절 위치·시트 파츠 비율에 맞춘 조립 정합 보정 (`issues=0`, 모의 `fit_parts` IoU 0.816~0.955).
+- `boss-t2/T2/assembly.png`, `boss-t4/T4/sheet.png`, `assembly.png`: `boss-t4` 흰 잔여 점 122px/`speck` 제거 및 시트 파츠 비율·자세 기준 조립 정합 보정 (`issues=0`, 모의 `fit_parts` IoU 0.807~0.815).
 - `armored/T4`, `boss-t2~t4`: 32px 외곽선 차별화를 위해 넓은 상자형 몸통을 피하고 다리 사이 빈 공간과 V형 방패·2연장 포탑·스텔스 날개 돌출을 적용함.

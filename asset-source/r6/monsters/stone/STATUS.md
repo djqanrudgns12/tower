@@ -27,3 +27,8 @@
 | `boss-t2/T2` | `boss-biped.json` | 1.80 | 11 (`+armor`) | 없음(수정 갑옷·왕관·다리 신규, 원거리 다리/발 boss-t1 기반) | 통과 (`issues=0`, IoU 0.517) |
 | `boss-t3/T3` | `boss-biped.json` | 2.00 | 10 | 없음(용암 균열 몸통·팔·다리 신규, 발 boss-t1 기반) | 통과 (`issues=0`, IoU 0.370) |
 | `boss-t4/T4` | `boss-biped.json` | 2.20 | 11 (`+armor`) | 없음(산맥 성곽 어깨·수정 팔/다리 신규, 원거리 다리/발 boss-t1 기반) | 통과 (`issues=0`, IoU 0.523) |
+
+## 재요청 반영 (`REDO.md`, 3회차 완료)
+
+- `special/T2~T4/sheet.png`, `assembly.png`: T1 `crystal-far/near` 관절 기준 및 시트 파츠 비율에 맞춰 조립 정합 보정 (`issues=0`, 모의 `fit_parts` IoU 0.870~0.895).
+- `boss-t2/T2`, `boss-t3/T3/sheet.png`, `assembly.png`: 시트 파츠 비율·관절 자세에 맞춰 조립 정합 보정 (`issues=0`, 모의 `fit_parts` IoU 0.850~0.855).
