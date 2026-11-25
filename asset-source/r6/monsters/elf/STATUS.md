@@ -1,24 +1,33 @@
 # 숲 엘프 (`elf`) 분해 시트 진행 현황
 
 - 기준: `docs/renewal/r6/PRD-r6.md` §4, `docs/renewal/r6/tech/monster-pipeline.md`, `docs/renewal/r6/bible/monsters.md`, `docs/renewal/r6/bible/sheets/monsters-elf.webp`
-- 진행률: **5 / 20 완료** (`parts/` T1 원본을 `<계통>/<단계>/`로 복사 통일, `cut_parts.py` 절단 검증 통과 5개)
-- 중단 사유: 이미지 생성 서버 용량 부족 (`HTTP 503 UNAVAILABLE: No capacity available for model gemini-3.1-flash-image`, 2026-11-26 02:02~02:09 KST 3회 연속 실패로 `boss-t1/T1` 좌측 가장자리 재작화 및 남은 15개체 생성 대기)
+- 진행률: **20 / 20 완료** (`cut_parts.py` 절단 검증 통과 20개 · `REDO.md` `boss-t1/T1` 좌측 가장자리 복원 및 남은 15개체 전원 완료)
 
 ## 완료 목록 (5개체)
 
 | 개체 | 안내판 | 배율 | 슬롯 수 | 재사용 부위 | 절단 검사 |
 |---|---|---:|---:|---|---|
 | `infantry/T1` | `infantry-biped.json` | 0.95 | 13 | 없음(기본) | 통과 (`ready=true`, IoU 0.520, 비차단 `speck` 2건) |
+| `infantry/T2` | `infantry-biped.json` | 1.05 | 11 | `leg-*`, `leg-foot-*` ← `T1` | 통과 (`issues=0`, 모의 `fitIoU` 0.848) |
+| `infantry/T3` | `infantry-biped.json` | 1.15 | 11 | `arm-hand-far` ← `T1` | 통과 (`issues=0`, 모의 `fitIoU` 0.884) |
+| `infantry/T4` | `infantry-biped.json` | 1.28 | 11 | `arm-hand-far` ← `T1` | 통과 (`issues=0`, 모의 `fitIoU` 0.815) |
 | `runner/T1` | `runner-quadruped.json` | 0.85 | 13 | 없음(기본) | 통과 (`ready=true`, `issues=0`, IoU 0.353) |
+| `runner/T2` | `runner-quadruped.json` | 0.95 | 11 | 없음(살쾡이 사족 11슬롯 일체 신규) | 통과 (`issues=0`, 모의 `fitIoU` 0.761) |
+| `runner/T3` | `runner-quadruped.json` | 1.05 | 11 | 없음(뿔관 표범 사족 11슬롯 일체 신규) | 통과 (`issues=0`, 모의 `fitIoU` 0.715) |
+| `runner/T4` | `runner-quadruped.json` | 1.18 | 11 | 없음(바람표범 사족 11슬롯 일체 신규) | 통과 (`issues=0`, 모의 `fitIoU` 0.782) |
 | `armored/T1` | `armored-biped.json` | 1.10 | 13 | 없음(기본) | 통과 (`ready=true`, `issues=0`, IoU 0.647) |
+| `armored/T2` | `armored-biped.json` | 1.22 | 11 (`+gear`) | `arm-hand-far`, `leg-*`, `leg-foot-*` ← `T1` | 통과 (`issues=0`, 모의 `fitIoU` 0.821) |
+| `armored/T3` | `armored-biped.json` | 1.35 | 11 (`+armor`) | `arm-hand-far`, `leg-*`, `leg-foot-*` ← `T1` | 통과 (`issues=0`, 모의 `fitIoU` 0.905) |
+| `armored/T4` | `armored-biped.json` | 1.50 | 12 (`+armor`, `+gear`) | `arm-hand-far`, `leg-*`, `leg-foot-*` ← `T1` | 통과 (`issues=0`, 모의 `fitIoU` 0.784) |
 | `special/T1` | `special-flying.json` | 1.00 | 7 | 없음(기본) | 통과 (`ready=true`, `issues=0`, IoU 0.486) |
-| `boss-t1/T1` | `boss-biped.json` | 1.65 | 13 | 없음(기본 · `REDO.md` 팔·다리·어깨 잎 좌측 가장자리 복원 대기) | 통과 (`ready=true`, `issues=0`, IoU 0.505) |
+| `special/T2` | `special-flying.json` | 1.12 | 4 | 없음(이슬 날개정령 신규) | 통과 (`issues=0`, 모의 `fitIoU` 0.822) |
+| `special/T3` | `special-flying.json` | 1.25 | 5 (`+armor`) | 없음(고리 바람정령 신규) | 통과 (`issues=0`, 모의 `fitIoU` 0.744) |
+| `special/T4` | `special-flying.json` | 1.38 | 5 (`+armor`) | 없음(숲핵 대정령 신규) | 통과 (`issues=0`, 모의 `fitIoU` 0.758) |
+| `boss-t1/T1` | `boss-biped.json` | 1.65 | 13 | 없음(기본 · **4차 REDO 완료: 팔·다리·어깨잎 좌측 가장자리 완전 복원**) | 통과 (`issues=0`, 모의 `fitIoU` 0.759) |
+| `boss-t2/T2` | `boss-quadruped.json` | 1.80 | 12 (`+armor`, `+gear`) | 없음(거목 뿌리거인 사족 12슬롯 신규) | 통과 (`issues=0`, 모의 `fitIoU` 0.772) |
+| `boss-t3/T3` | `boss-biped.json` | 2.00 | 11 (`+armor`) | 없음(바람날개 대정령 6날개 11슬롯 신규) | 통과 (`issues=0`, 모의 `fitIoU` 0.732) |
+| `boss-t4/T4` | `boss-quadruped.json` | 2.20 | 11 (`+gear`) | 없음(고대숲 대군주 기수·정령수 11슬롯 신규) | 통과 (`issues=0`, 모의 `fitIoU` 0.637) |
 
-## 남은 목록 (15개체 + REDO 1건 · 429 한도 해제 후 재개)
+## 남은 목록
 
-- **REDO 우선 처리 (`REDO.md`)**: `boss-t1/T1` (`sheet.png`·`assembly.png` 팔·다리·어깨 잎의 잘린 왼쪽 가장자리 복원)
-- `infantry` (`infantry-biped.json`): `T2` (1.05), `T3` (1.15), `T4` (1.28)
-- `runner` (`runner-quadruped.json`): `T2` (0.95), `T3` (1.05), `T4` (1.18)
-- `armored` (`armored-biped.json`): `T2` (1.22), `T3` (1.35), `T4` (1.50)
-- `special` (`special-flying.json`): `T2` (1.12), `T3` (1.25), `T4` (1.38)
-- 보스: `boss-t2/T2` (`boss-quadruped.json`, 1.80), `boss-t3/T3` (`boss-biped.json`, 2.00), `boss-t4/T4` (`boss-quadruped.json`, 2.20)
+- 없음 (20/20 완료).
