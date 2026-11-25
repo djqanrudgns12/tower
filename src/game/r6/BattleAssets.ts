@@ -4,7 +4,7 @@ import { R6_TOWERS, SPECIES, type EntityId, type Species } from '../../contracts
 import type { GameContext } from '../../domain/context';
 import { previewR6Wave } from '../../domain/r6Mixer';
 import { r6Pad } from './mapProjection';
-import { r6ManifestSchema, type R6Manifest } from './manifest';
+import { r6ManifestSchema, type R6Manifest, type R6Sheet } from './manifest';
 
 const BASE = 'assets/r6/';
 const MANIFEST_KEY = 'r6.manifest';
@@ -21,6 +21,8 @@ export class R6BattleAssets {
   /** 적을 대역으로 그리는 중이면 새 파일이 준비됐을 때만 Spine으로 교체한다. */
   revision = 0;
   private readonly requested = new Set<string>();
+  private readonly baseTowerSheets = new Set<string>();
+  private readonly stagedTowerSheets = new Set<string>();
 
   constructor(private readonly scene: Phaser.Scene) {}
 
@@ -37,11 +39,35 @@ export class R6BattleAssets {
           frameWidth: r6Pad.size[0]!, frameHeight: r6Pad.size[1]!,
         });
       } else if (map) load.image(R6_GROUND_KEY, BASE + map);
-      for (const [id, spec] of Object.entries(this.manifest.sheets)) {
-        load.spritesheet(sheetKey(id), BASE + spec.file, { frameWidth: spec.width, frameHeight: spec.height, endFrame: spec.count - 1 });
+      for (const forms of Object.values(this.manifest.towers)) {
+        const first = forms[0]!;
+        this.baseTowerSheets.add(first.body).add(first.head);
       }
+      for (const id of this.baseTowerSheets) this.loadTowerSheet(id, this.manifest.sheets[id]!);
     });
     load.json(MANIFEST_KEY, BASE + 'manifest-v2.json');
+  }
+
+  /** 전장에 쓰는 형태만 적재한다. 사용할 그림을 적용한 뒤 이전 프레임의 텍스처를 정리한다. */
+  keepTowerSheets(ids: ReadonlySet<string>) {
+    if (!this.manifest) return;
+    const { load, textures } = this.scene;
+    let added = false;
+    for (const id of ids) {
+      if (this.baseTowerSheets.has(id) || this.stagedTowerSheets.has(id)) continue;
+      const spec = this.manifest.sheets[id];
+      if (!spec) continue;
+      this.stagedTowerSheets.add(id);
+      this.loadTowerSheet(id, spec);
+      added = true;
+    }
+    for (const id of this.stagedTowerSheets) {
+      const key = sheetKey(id);
+      if (ids.has(id) || !textures.exists(key)) continue;
+      textures.remove(key);
+      this.stagedTowerSheets.delete(id);
+    }
+    if (added && !load.isLoading()) load.start();
   }
 
   addTowerIcons(icons: Record<string, string>) {
@@ -98,6 +124,14 @@ export class R6BattleAssets {
     const { rig, skin, tierSkins } = pack.fallback;
     const tier = Number(entityId?.at(-1)) - 1;
     return { rig, skin: tierSkins?.[tier] ?? skin };
+  }
+
+  private loadTowerSheet(id: string, spec: R6Sheet) {
+    const high = this.scene.scale.zoom < .75 ? spec.file2x : undefined;
+    const density = high ? 2 : 1;
+    this.scene.load.spritesheet(sheetKey(id), BASE + (high ?? spec.file), {
+      frameWidth: spec.width * density, frameHeight: spec.height * density, endFrame: spec.count - 1,
+    });
   }
 
   private queue(key: string, add: () => void) {

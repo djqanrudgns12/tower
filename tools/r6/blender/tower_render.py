@@ -13,6 +13,9 @@ from tower_kit import CRYO_BANKS, CRYO_HEIGHT, RAIL_HEIGHTS, RAIL_PITCH, RAIL_PO
 
 
 HEAD_HEIGHT = .62
+RAIL_CENTER_HEIGHT = 2.99
+RAIL_MAST_SHIFT = .71
+CAMERA_RIGHT = Vector((0, 0, 1)).cross(CAMERA_RAY).normalized()
 REVIEW_DIRECTIONS = {"rail": 6, "cryo": 8}
 RAIL_KICK = (
     (0, .25, 1, .78, .54, .32, .13, 0),
@@ -95,8 +98,10 @@ def cryo_effect(group, materials, stage, world, frame):
 def assemble(tower, kit, materials, stage, group, tile, direction=0, layer="form", frame=0):
     world = Matrix.Translation(tile)
     height = HEAD_HEIGHT if layer == "head" else mount_height(tower, stage)
+    shift = CAMERA_RIGHT * RAIL_MAST_SHIFT if tower == "rail" and layer != "head" else Vector()
+    mast = Matrix.Translation(shift)
     yaw = Matrix.Rotation(direction * math.tau / DIRECTIONS, 4, "Z")
-    head = Matrix.Translation((0, 0, height)) @ yaw
+    head = mast @ Matrix.Translation((0, 0, height)) @ yaw
     mounts = {"ground": Matrix.Identity(4), "yaw": head}
     rotor_mounts = None
     if tower == "rail":
@@ -114,6 +119,8 @@ def assemble(tower, kit, materials, stage, group, tile, direction=0, layer="form
                 if source.type != "MESH":
                     continue
                 transform = rotor_mounts[source["ring"]] if mount == "rotors" else mounts[mount]
+                if tower == "rail" and slot == "body":
+                    transform = mast @ transform
                 obj = source.copy()
                 obj.parent = None
                 group.objects.link(obj)
@@ -124,7 +131,8 @@ def assemble(tower, kit, materials, stage, group, tile, direction=0, layer="form
     if tower == "rail":
         rail_effect(group, materials, stage, world @ mounts["recoil"], frame)
     else:
-        cryo_effect(group, materials, stage, world, frame)
+        effect_origin = world @ Matrix.Translation((0, 0, height - mount_height(tower, stage)))
+        cryo_effect(group, materials, stage, effect_origin, frame)
 
 
 def save_kit(tower, stage, path, palette, linear):
@@ -135,6 +143,8 @@ def save_kit(tower, stage, path, palette, linear):
     scene = bpy.context.scene
     scene.name = f"{TITLES[tower]} · Lv20 조립"
     configure(scene)
+    if tower == "rail":
+        scene.camera.location.z += RAIL_CENTER_HEIGHT - CENTER_HEIGHT
     assemble(tower, kit, materials, stage, scene.collection, Vector(), REVIEW_DIRECTIONS[tower])
     scene["recipe"] = f"{tower}.json"
     for area in (bpy.context.screen.areas if bpy.context.screen else ()):
@@ -168,10 +178,12 @@ def render(tower, stages, out, kit_file, palette, linear, forms_only=False):
     validate_parts(tower, kit, stages)
     review = REVIEW_DIRECTIONS[tower]
 
-    def project(z):
+    def project(z, center, offset=0):
         up_z = math.sqrt(1 - CAMERA_RAY.z ** 2)
-        return [TILE // 2, round(TILE * (.5 - (z - CENTER_HEIGHT) * up_z / VIEW))]
+        return [round(TILE * (.5 + offset / VIEW)), round(TILE * (.5 - (z - center) * up_z / VIEW))]
 
+    ground_center = RAIL_CENTER_HEIGHT if tower == "rail" else CENTER_HEIGHT
+    mount_offset = RAIL_MAST_SHIFT if tower == "rail" else 0
     tiers = [stage for stage in stages if stage["level"] in (1, 6, 12, 18)]
     head_groups = {"heads": stages[:6], "heads-armored": stages[6:]}
     specs = {"forms": ([(stage, review, "form", 0) for stage in stages], 6)}
@@ -185,13 +197,14 @@ def render(tower, stages, out, kit_file, palette, linear, forms_only=False):
         })
     layout = {
         "towerId": tower, "tile": TILE, "levels": [stage["level"] for stage in stages],
-        "bodyPivot": project(0), "headPivot": project(HEAD_HEIGHT),
-        "headAnchors": [project(mount_height(tower, stage)) for stage in stages],
+        "bodyPivot": project(0, ground_center), "headPivot": project(HEAD_HEIGHT, CENTER_HEIGHT),
+        "headAnchors": [project(mount_height(tower, stage), ground_center, mount_offset) for stage in stages],
         "headSheets": {name: [stage["level"] for stage in group] for name, group in head_groups.items()},
         "directions": DIRECTIONS, "reviewDirection": review,
         "weapons": [{"stage": stage["weaponStage"], "level": stage["level"], "attack": stage["attack"]}
                     for stage in tiers],
-        "grids": {name: batch(kit, materials, out / f"{name}.png", cells, cols, partial(assemble, tower))
+        "grids": {name: batch(kit, materials, out / f"{name}.png", cells, cols, partial(assemble, tower),
+                              CENTER_HEIGHT if name in head_groups else ground_center)
                   for name, (cells, cols) in specs.items()},
     }
     (out / "layout.json").write_text(json.dumps(layout, ensure_ascii=False, indent=2) + "\n")

@@ -10,13 +10,13 @@ from PIL import Image, ImageDraw, ImageFont
 
 from mortar_pack import DEFAULT_FONT, REFERENCE_LEVELS, check_evolution, read_cells
 from pack import finish_cell, pack_grid
-from check import R04, manifest_errors, palette_violations, read_image, silhouette_iou
+from check import R04, manifest_errors, mask_at_48, palette_violations, read_image, silhouette_iou
 
 
 LABELS = {
-    "rail": ("레일 포탑", ("단포신", "잠금 날개와 슬라이더", "옆 장갑과 균형추", "쌍포신", "유압 고정발",
-                         "후방 방열판", "세라믹 삼연장", "가속 고리와 확장 갑판", "옆 장갑과 안테나",
-                         "4열 레일과 3중 가속 고리", "4번째 가속 고리와 금테 기단")),
+    "rail": ("레일 포탑", ("원기둥 목과 단포신", "잠금 날개와 슬라이더", "옆 장갑과 균형추", "합금 목과 쌍포신", "유압 고정발",
+                         "후방 방열판", "장갑 기둥과 삼연장", "가속 고리와 옆 갑판", "옆 장갑과 안테나",
+                         "경사 기둥과 4열 포신", "4번째 가속 고리와 금테 기단")),
     "cryo": ("냉각 중계탑", ("3중 공명 고리", "냉매 회수관과 보호 캡", "중간 클램프와 벤트", "4중 공명 고리",
                           "하부 방열판", "고리 분할판", "분리한 두 고리 묶음", "냉매 탱크와 확장판",
                           "상단 분사 노즐", "5단 냉각 고리", "냉각 결정과 금테 노즐")),
@@ -50,7 +50,8 @@ def make_review(out, tower, reference, forms, levels, font_path):
     for index, (level, name, form) in enumerate(zip(levels, names, forms)):
         x, y = 24 + index % 6 * 260, 358 + index // 6 * 167
         draw.rectangle((x, y, x + 251, y + 156), fill=R04[1], outline=R04[2])
-        board.alpha_composite(form.resize((162, 162), Image.Resampling.LANCZOS), (x + 54, y - 4))
+        size, dx, dy = (130, 60, -2) if tower == "rail" else (162, 54, -4)
+        board.alpha_composite(form.resize((size, size), Image.Resampling.LANCZOS), (x + dx, y + dy))
         draw.text((x + 10, y + 10), f"Lv{level}", fill=R04[3], font=body)
         draw.text((x + 10, y + 144), name, fill=R04[3], font=body, anchor="ls")
     board.save(out / f"{tower}-review.webp", lossless=True, method=6)
@@ -167,7 +168,17 @@ def compare_towers(folders):
             results[pair][level] = round(iou, 4)
             if iou >= CROSS_IOU_LIMIT:
                 failures.append(f"{pair} Lv{level} ({iou:.4f})")
-    print(json.dumps(results, ensure_ascii=False, indent=2))
+    heights = {}
+    for level in levels:
+        row = {}
+        for tower, forms in towers.items():
+            mask, _ = mask_at_48(*forms[level])
+            _, top, _, bottom = mask.getbbox()
+            row[tower] = bottom - top
+        heights[level] = row
+        if "rail" in row and any(height >= row["rail"] for name, height in row.items() if name != "rail"):
+            failures.append(f"Lv{level} 레일 높이 {row}")
+    print(json.dumps({"48px IoU": results, "48px 높이": heights}, ensure_ascii=False, indent=2))
     if failures:
         raise SystemExit("48px 타워 간 실루엣 기준 미달: " + ", ".join(failures))
 

@@ -6,14 +6,14 @@ from mortar_kit import Kit
 
 
 TITLES = {"rail": "레일 포탑", "cryo": "냉각 중계탑"}
-RAIL_HEIGHTS = (1.46, 1.55, 1.72, 1.92)
+RAIL_HEIGHTS = (2.96, 3.54, 3.63, 3.65)
 CRYO_HEIGHT = 1.57
-RAIL_PITCH = (16, 23, 35, 51)
+RAIL_PITCH = (25, 36, 35, 51)
 RAIL_PORTS = (
     ((0, 1.98, .13),),
     ((-.29, 2.10, .13), (.29, 2.10, .13)),
     ((-.43, 2.21, .04), (.43, 2.21, .04), (0, 2.39, .49)),
-    ((-.48, 2.42, -.16), (.48, 2.42, -.16), (-.48, 2.68, .47), (.48, 2.68, .47)),
+    ((-.53, 2.14, -.23), (.53, 2.14, -.23), (-.53, 2.34, .53), (.53, 2.34, .53)),
 )
 CRYO_BANKS = (
     ((.39, .64), (1.10, .69), (1.86, .65)),
@@ -36,14 +36,21 @@ def rail_base(kit):
             p.plate("잠금 날개 밝은 이음새", (x * 1.31, .03, .22), (.33, .73, .079), "silver", .06)
     with kit.part("base", "outriggers") as p:
         for x in (-1, 1):
-            p.plate("유압 고정발", (x * 1.28, -.35, .14), (.94, .69, .25), "slate", .13)
-            p.plate("발판 보강 테", (x * 1.30, -.35, .26), (.89, .60, .10), "silver", .11)
-            p.rod("고정발 실린더", (x * .67, -.35, .79), (x * 1.41, -.35, .27), .13, "line")
+            p.plate("유압 고정발", (x * 1.28, -.10, .14), (.94, .69, .25), "slate", .13)
+            p.plate("발판 보강 테", (x * 1.30, -.10, .26), (.89, .60, .10), "silver", .11)
+            p.rod("고정발 실린더", (x * .67, -.10, .79), (x * 1.41, -.10, .27), .13, "line")
+        p.plate("후방 고정발", (-1.42, 1.06, .25), (.85, .91, .47), "slate", .16)
+        p.plate("고정발 윗 테", (-1.47, 1.09, .48), (.73, .75, .10), "silver", .12)
+        p.rod("후방 고정발 연결대", (-.65, .43, .39), (-1.42, 1.06, .36), .19, "line", steps=8)
     with kit.part("base", "rear-deck") as p:
         p.plates("확장 갑판", (0, .54, 0), [(.06, 1.69, 2.62, .29),
                  (.21, 1.96, 2.80, .38), (.32, 1.81, 2.62, .31)], "slate", .027)
         p.plate("확장 갑판 조임대", (0, 1.69, .36), (1.53, .45, .26), "line", .10)
         p.plate("조임대 윗 테", (0, 1.72, .50), (1.39, .35, .06), "silver", .09)
+    with kit.part("base", "rear-brace") as p:
+        p.plates("넓은 옆 갑판", (-1.85, .32, 0), [(.07, .97, 1.45, .16), (.26, 1.04, 1.58, .20),
+                 (.59, .88, 1.44, .15), (.77, .70, 1.09, .13)], "line", .025)
+        p.plate("옆 갑판 체결 띠", (-2.11, .32, .65), (.22, .97, .13), "silver", .067)
     with kit.part("base", "gilded-rails") as p:
         for sign in (-1, 1):
             p.plates("기단 외곽 경사 레일", (sign * .87, -.04, 0), [(.03, .88, 1.59, .20),
@@ -54,18 +61,31 @@ def rail_base(kit):
         (.74, .84, 1.10, 1.28), (.69, .84, .99, .90),
     )):
         with kit.part("body", name) as p:
-            p.plates("포두 받침 기둥", (0, 0, 0), [(.32, w, d, .14), (.52, w * .97, d, .15),
-                     (top - .17, w * .68, d * .77, .12), (top, w * .74, d * .80, .12)], "surface", .04)
-            p.plate("기둥 아랫단", (0, 0, .48), (w + .16, d + .15, .17), "slate", .19)
+            if index < 2:
+                p.lathe("원기둥 목", (0, 0, .32), [(0, w * .62), (.14, w * .62), (.22, w * .47),
+                        (top - .47, w * .47), (top - .38, w * .55), (top - .32, w * .55)],
+                        "surface", steps=12, closed=True)
+                p.lathe("기둥 아랫단", (0, 0, .35), [(0, w * .70), (.10, w * .70),
+                        (.18, w * .56)], "slate", steps=12)
+                p.lathe("목 위 띠", (0, 0, top - .25), [(0, w * .54), (.10, w * .54)],
+                        "line", steps=12)
+            else:
+                shoulder = .48 if index == 3 else .64
+                p.plates("높은 장갑 기둥", (0, 0, 0), [(.34, w * 1.26, d * 1.18, .24),
+                         (.55, w * 1.18, d * 1.06, .22), (top - .25, w * shoulder, d * .67, .13),
+                         (top - .02, w * shoulder, d * .67, .13)], "surface", .035)
+                p.plate("기둥 아랫단", (0, 0, .48), (w + .29, d + .22, .18), "slate", .19)
             p.lathe("회전판 아래 그늘", (0, 0, top - .08), [(0, w * .44), (.09, w * .44)], "carbon")
-            for sign in (-1, 1):
-                panel = p.plates("기둥 세로 이음판", (sign * w * .43, -.11, 0),
-                                 [(.45, .19, d * .71, .047), (.78, .22, d * .58, .055),
-                                  (top - .20, .13, d * .38, .037)], "line" if index == 2 else "slate", .012)
-                panel.rotation_euler.y = -sign * (.04 + index * .05)
-            if index == 3:
+            if index >= 2:
                 for sign in (-1, 1):
-                    p.plate("기둥 밑단 금테", (sign * .56, -.36, .53), (.33, .18, .31), "amber", .048)
+                    p.rod("기둥 장갑 이음선", (sign * w * .44, -d * .52, .57),
+                          (sign * w * .20, -d * .33, top - .26), .036, "line", steps=6)
+                    p.plates("기둥 경사 버팀대", (sign * w * .52, -d * .28, 0),
+                             [(.39, .37, .48, .08), (.66, .39, .43, .09),
+                              (1.08 if index == 3 else .93, .16, .24, .044)],
+                             "amber" if index == 3 else "silver", .022)
+                p.lathe("기둥 윗단 체결 띠", (0, 0, top - .18),
+                        [(0, .38), (.09, .41), (.14, .41)], "amber" if index == 3 else "line", steps=12)
 
 
 def rail_head(kit):
@@ -95,7 +115,7 @@ def rail_head(kit):
                     p.plate("평행 안내 레일", (x + .126 * sign, pair_y, z + .020),
                             (.096, tip - .43, .20), "silver" if sign > 0 or i > 1 else "line", .024)
                 p.plate("레일 홈 표시", (x, pair_y, z + .129), (.053, tip - .67, .025), "teal", .015)
-                p.muzzle((x, tip - .18, z), .179 if i != 3 else .202, "slate", "silver", depth=.19, sides=8)
+                p.muzzle((x, tip - .18, z), .179 if i != 3 else .225, "slate", "silver", depth=.19, sides=8)
             if i == 1:
                 p.rod("회전판 조준기 목", (0, -.48, .54), (0, -.48, .90), .079, "slate")
                 p.muzzle((0, -.54, .93), .18, "line", "silver", depth=.16, sides=8)
@@ -110,12 +130,12 @@ def acceleration_ring(p, y, accent, radius=1.01):
                    [(0, radius * .965), (.065, radius), (.15, radius),
                     (.20, radius * .96), (.20, radius * .87), (0, radius * .87)],
                    "slate", steps=12, closed=True, forward=True)
-    ring.scale.y = .66
+    ring.scale.y = .82 if radius >= 1 else .66
     trim = p.lathe("가속 고리 바깥 테", (0, y + .12, .13),
                    [(0, radius * 1.009), (.025, radius * 1.02), (.063, radius * .985),
                     (.064, radius * .939), (0, radius * .939)],
                    accent, steps=12, closed=True, forward=True)
-    trim.scale.y = .66
+    trim.scale.y = ring.scale.y
     for sign in (-1, 1):
         p.plate("가속 고리 체결쇠", (sign * radius * .82, y + .09, .39),
                 (.32, .26, .17), "silver", .056)
@@ -129,7 +149,7 @@ def rail_upgrades(kit):
         for sign in (-1, 1):
             p.plates("포미 측면 볼스터", (sign * .40, -.39, 0), [(-.30, .37, 1.43, .13),
                      (-.17, .53, 1.67, .14), (.32, .41, 1.50, .13)], "line", .025)
-        p.plate("후방 균형추", (0, -1.17, .18), (.78, .83, .48), "slate", .14)
+        p.plate("후방 균형추", (0, -1.22, .22), (1.05, .96, .57), "slate", .14)
     with kit.part("armor", "twin-brace", "recoil") as p:
         p.plate("쌍포신 지지대", (0, .83, -.055), (1.04, .29, .34), "slate", .09)
         p.plate("지지대 체결판", (0, .82, -.205), (.75, .36, .12), "silver", .079)
@@ -157,7 +177,7 @@ def rail_upgrades(kit):
                  (1.53, .48, .59, .097), (2.20, .35, .52, .080), (2.29, .21, .29, .061)], "silver", .031)
         p.plate("추적기 틸 표식", (.36, -1.49, 1.95), (.21, .09, .35), "teal", .031)
     with kit.part("marking", "crown-inductor", "recoil") as p:
-        acceleration_ring(p, 2.31, "amber", radius=.83)
+        acceleration_ring(p, 1.98, "amber")
         p.rod("표적 지시등 받침", (.59, -.67, .48), (.59, -.67, .94), .081, "slate")
         p.plate("표적 지시등", (.59, -.67, .95), (.26, .28, .22), "teal", .08)
 

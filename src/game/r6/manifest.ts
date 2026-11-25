@@ -10,17 +10,25 @@ const path = (ext: string) => z.string().refine(value =>
 const key = z.string().regex(/^[a-z0-9][a-z0-9_-]*$/);
 const size = z.int().min(1).max(2048);
 const pivot = z.tuple([z.int().min(0), z.int().min(0)]);
+const hash = z.string().regex(/^[a-f0-9]{64}$/);
 const sheet = z.strictObject({
   file: path('.webp'), width: size, height: size, count: z.int().min(1).max(256), pivot,
-}).refine(s => s.pivot[0] < s.width && s.pivot[1] < s.height);
+  file2x: path('.webp').optional(), artifactHash: hash.optional(), artifactHash2x: hash.optional(),
+}).refine(s => s.pivot[0] < s.width && s.pivot[1] < s.height && (!s.artifactHash2x || s.file2x));
 const frameIndex = z.int().min(0).max(255);
-const attack = z.strictObject({
+const directionalAttack = z.strictObject({
+  fps: z.int().min(1).max(60),
+  sheets: z.tuple([key, key]),
+  frames: z.literal(8),
+});
+const legacyAttack = z.strictObject({
   fps: z.int().min(1).max(60),
   recoilPixels: z.array(z.number().min(0).max(24)).min(1).max(30),
   clip: z.strictObject({
     sheet: key, direction: z.int().min(0).max(15), first: frameIndex, count: z.int().min(1).max(30),
   }).optional(),
 });
+const attack = z.union([directionalAttack, legacyAttack]);
 const towerForm = z.strictObject({
   body: key, bodyFrame: frameIndex, head: key,
   mount: pivot, scale: z.number().positive().max(3), attack,
@@ -46,11 +54,13 @@ export const r6ManifestSchema = z.strictObject({
 }).refine(m => Object.values(m.towers).every(forms => forms.every(form => {
   const body = m.sheets[form.body];
   const head = m.sheets[form.head];
-  const clip = form.attack.clip;
-  const clipSheet = clip && m.sheets[clip.sheet];
+  const { attack } = form;
+  const clip = 'clip' in attack && attack.clip;
+  const hasAttack = 'sheets' in attack
+    ? attack.sheets[0] !== attack.sheets[1] && attack.sheets.every(id => m.sheets[id]?.count === attack.frames * 8)
+    : !clip || clip.first + clip.count <= (m.sheets[clip.sheet]?.count ?? 0);
   return body && head?.count === 16 && form.bodyFrame < body.count &&
-    form.mount[0] < body.width && form.mount[1] < body.height &&
-    (!clip || (clipSheet && clip.first + clip.count <= clipSheet.count));
+    form.mount[0] < body.width && form.mount[1] < body.height && hasAttack;
 })), { message: '타워 시트·프레임 참조를 확인하세요' })
   .refine(m => Object.entries(m.species).every(([species, pack]) =>
     m.atlases[pack.atlas] && m.rigs[pack.fallback.rig] &&

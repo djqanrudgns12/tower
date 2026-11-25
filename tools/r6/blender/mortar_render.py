@@ -191,11 +191,12 @@ def assemble(kit, materials, stage, group, tile, direction=0, layer="form", fram
             obj.matrix_world = world_pos @ recoil @ obj.matrix_basis
 
 
-def batch(kit, materials, path, cells, cols, assemble_cell=assemble):
+def batch(kit, materials, path, cells, cols, assemble_cell=assemble, center_height=CENTER_HEIGHT):
     started = time.monotonic()
     rows = math.ceil(len(cells) / cols)
     scene = bpy.data.scenes.new(path.stem)
     right, up = configure(scene, cols, rows)
+    scene.camera.location.z += center_height - CENTER_HEIGHT
     for i, (stage, direction, layer, frame) in enumerate(cells):
         x = i % cols - (cols - 1) / 2
         y = (rows - 1) / 2 - i // cols
