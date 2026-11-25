@@ -9,16 +9,16 @@ import { createServer } from 'vite';
 const [work, shots] = process.argv.slice(2);
 if (!work || !shots) throw new Error('사용법 · node tools/r6/spine/capture-playwright.mjs <작업 폴더> <캡처 폴더>');
 const readJson = async file => JSON.parse(await readFile(file, 'utf8'));
-const fragment = await readJson(resolve(work, 'manifest-fragment.json'));
-const [species] = Object.keys(fragment.species);
-const pack = fragment.species[species];
-const actors = Object.entries(pack.entities);
-const manifest = await readJson('public/assets/r6/manifest-v2.json');
-for (const field of ['atlases', 'rigs', 'species']) Object.assign(manifest[field], fragment[field]);
-const allowedFiles = new Set([
+const published = work === '--published';
+const fragment = published ? null : await readJson(resolve(work, 'manifest-fragment.json'));
+const species = fragment && Object.keys(fragment.species)[0];
+const catalog = published ? Object.assign({}, ...await Promise.all(['machine', 'stone'].map(async s =>
+  (await readJson(`src/game/r6/monsters/${s}.json`)).entities))) : fragment.species[species].entities;
+let actors = Object.entries(catalog);
+const allowedFiles = new Set(fragment ? [
   ...Object.values(fragment.rigs).map(({ file }) => basename(file)),
   `${species}.atlas`, `${species}.webp`,
-]);
+] : []);
 const mime = { json: 'application/json', atlas: 'text/plain', webp: 'image/webp' };
 
 await mkdir(shots, { recursive: true });
@@ -34,22 +34,30 @@ try {
   page.on('console', message => {
     if (message.type() === 'error') errors.push(message.text());
   });
-  await page.route('**/assets/r6/manifest-v2.json', route => route.fulfill({ json: manifest }));
-  await page.route(`**/assets/r6/${species}/*`, async route => {
-    const file = basename(new URL(route.request().url()).pathname);
-    assert.ok(allowedFiles.has(file), `미등록 에셋 요청 · ${file}`);
-    requests.add(file);
-    await route.fulfill({ path: resolve(work, 'export', species, file), contentType: mime[file.split('.').at(-1)] });
-  });
+  if (fragment) {
+    const manifest = await readJson('public/assets/r6/manifest-v2.json');
+    for (const field of ['atlases', 'rigs', 'species']) Object.assign(manifest[field], fragment[field]);
+    await page.route('**/assets/r6/manifest-v2.json', route => route.fulfill({ json: manifest }));
+    await page.route(`**/assets/r6/${species}/*`, async route => {
+      const file = basename(new URL(route.request().url()).pathname);
+      assert.ok(allowedFiles.has(file), `미등록 에셋 요청 · ${file}`);
+      requests.add(file);
+      await route.fulfill({ path: resolve(work, 'export', species, file), contentType: mime[file.split('.').at(-1)] });
+    });
+  } else {
+    page.on('response', response => {
+      if (response.ok() && response.url().includes('/assets/r6/monsters/')) requests.add(basename(response.url()));
+    });
+  }
   await page.route('**/r6-monster-fixture', route => route.fulfill({
     contentType: 'text/html',
     body: `<!doctype html><html lang="ko"><meta charset="utf-8"><title>적 동작 확인</title>
 <style>body{margin:0;background:#12161b;color:#b8c0c8;font:16px system-ui}main{padding:16px}
 h1{font-size:19px;margin:0 0 12px}#field{width:1408px;height:834px}</style>
-<main><h1>R6 전장 · 파츠 ${actors.length}개체 확인</h1><div id="field"></div></main></html>`,
+<main><h1>${published ? '기계·바위 혼합 웨이브' : `R6 전장 · ${actors.length}개체`}</h1><div id="field"></div></main></html>`,
   }));
   await page.goto(new URL('r6-monster-fixture', server.resolvedUrls.local[0]).href);
-  await page.evaluate(async ({ species, ids }) => {
+  const selection = await page.evaluate(async ({ published, ids }) => {
     const paths = ['/src/content/index.ts', '/src/application/balanceSession.ts', '/src/application/RunController.ts',
       '/src/game/bridge.ts', '/src/game/battlefieldGame.ts'];
     const [{ loadGradeContent }, { localBalanceSession }, { RunController }, { FieldBridgeHandle },
@@ -61,6 +69,23 @@ h1{font-size:19px;margin:0 0 12px}#field{width:1408px;height:834px}</style>
     });
     state.phase = 'BUILD';
     state.wave = 1;
+    let seed = state.config.seed;
+    if (published) {
+      const mixerUrl = '/src/domain/r6Mixer.ts';
+      const { previewR6Wave } = await import(mixerUrl);
+      state.wave = 5;
+      // 실제 혼합표에서 두 종족과 준비된 보스를 함께 볼 수 있는 첫 시드를 고른다.
+      for (seed = 0; seed < 500; seed++) {
+        const wave = previewR6Wave(ctx.balance.r6.rules, ctx.map.id, seed, state.wave);
+        if (['machine', 'stone'].every(s => wave.some(m => m.species === s && ids.includes(m.id))) &&
+            wave.some(m => m.lineage === 'boss' && ids.includes(m.id)) && wave.some(m => !ids.includes(m.id))) {
+          ids = wave.map(m => m.id);
+          break;
+        }
+      }
+      if (seed === 500) throw new Error('두 종족·보스·기본 표시가 함께 나오는 웨이브를 찾지 못했습니다.');
+      state.config.seed = seed;
+    }
     state.pause = [];
     // 전장 로더가 이 종족만 불러오도록 실제 적 목록을 채운다.
     state.battle = { spawnList: [] };
@@ -68,8 +93,8 @@ h1{font-size:19px;margin:0 0 12px}#field{width:1408px;height:834px}</style>
       const boss = entityId.includes('-boss-');
       const spec = ctx.balance.r6.entities[entityId];
       return {
-        id: index + 1, entityId, faction: species, alive: true, derived: false,
-        kind: boss ? 'boss' : 'walker', bossTier: boss ? Number(entityId.at(-1)) : null, boss: null,
+        id: index + 1, entityId, faction: entityId.split('-')[0], alive: true, derived: false,
+        kind: spec.kind, bossTier: boss ? Number(entityId.at(-1)) : null, boss: null,
         flying: spec.flying ?? false, groundedUntilTick: 0, elite: null,
         progress: ids.length === 1 ? Math.round(ctx.path.length / 2)
           : Math.round(550 + index * (ctx.path.length - 1600) / (ids.length - 1)),
@@ -84,7 +109,9 @@ h1{font-size:19px;margin:0 0 12px}#field{width:1408px;height:834px}</style>
     startBattlefield(document.querySelector('#field'), bridge, new AbortController().signal, (game) => {
       window.qaMonsters = { state, game };
     });
-  }, { species, ids: actors.map(([id]) => id) });
+    return { ids, seed, wave: state.wave };
+  }, { published, ids: actors.map(([id]) => id) });
+  actors = selection.ids.map(id => [id, catalog[id] ?? { skin: 'T' + id.at(-1), rig: 'g2-walker' }]);
   try {
     await page.waitForFunction(() => {
       const qa = window.qaMonsters;
@@ -127,6 +154,7 @@ h1{font-size:19px;margin:0 0 12px}#field{width:1408px;height:834px}</style>
     });
   });
   const rendered = await page.evaluate(() => window.qaMonsters.units.map((unit, i) => ({
+    attachment: unit.skeleton.slots.find(slot => slot.pose.attachment).pose.attachment.path,
     skin: unit.skeleton.skin.name, renderer: unit.rendererType,
     track: unit.animationState.getTrack(0).animation.name,
     moved: unit.animationState.getTrack(0).trackTime > window.qaMonsters.start[i],
@@ -135,7 +163,37 @@ h1{font-size:19px;margin:0 0 12px}#field{width:1408px;height:834px}</style>
   assert.deepEqual(rendered.map(({ skin }) => skin), actors.map(([, actor]) => actor.skin));
   assert.ok(rendered.every(unit => unit.renderer === 'phaser' && unit.track === 'walk' && unit.moved && unit.slots > 0),
     'Mesh2D 재생 또는 파츠 확인에 실패했습니다.');
-  assert.deepEqual([...requests].sort(), [...allowedFiles].sort());
+  if (published) {
+    assert.ok(requests.has('machine.webp') && requests.has('stone.webp'), '두 종족 아틀라스 전송 확인');
+    for (const [i, [, actor]] of actors.entries()) {
+      if (actor.rig !== 'g2-walker') assert.ok(rendered[i].attachment.startsWith(actor.rig + '-'));
+      else assert.ok(!/^(machine|stone)-/.test(rendered[i].attachment), '누락 개체 기본 표시');
+    }
+  } else assert.deepEqual([...requests].sort(), [...allowedFiles].sort());
+  const events = await page.evaluate(({ hitIndex, fallIndex, bossIndices }) => {
+    const { game, state, units } = window.qaMonsters;
+    const { enemyLayer } = game.scene.getScene('battle');
+    const skill = bossIndices.map(i => {
+      enemyLayer.onBossSkill(state.enemies[i].id);
+      return units[i].animationState.getTrack(2)?.animation.name;
+    });
+    const hitId = state.enemies[hitIndex].id;
+    enemyLayer.onHit(hitId);
+    const hit = units[hitIndex].animationState.getTrack(1)?.animation.name;
+    const falling = state.enemies[fallIndex];
+    falling.alive = false;
+    enemyLayer.onKill(falling.id);
+    const fall = units[fallIndex].animationState.getTrack(0)?.animation.name;
+    return { hit, fall, skill };
+  }, {
+    hitIndex: published ? actors.findIndex(([id]) => catalog[id] && id.startsWith('machine-')) : 0,
+    fallIndex: published ? actors.findIndex(([id]) => catalog[id] && id.startsWith('stone-')) : Math.min(1, actors.length - 1),
+    bossIndices: actors.flatMap(([id, actor], i) => id.includes('-boss-') && actor.rig !== 'g2-walker' ? [i] : []),
+  });
+  assert.deepEqual(events, {
+    hit: 'hit', fall: 'fall',
+    skill: actors.filter(([id, actor]) => id.includes('-boss-') && actor.rig !== 'g2-walker').map(() => 'boss-skill'),
+  });
   const temporary = await mkdtemp(resolve(shots, '.capture-'));
   try {
     const png = resolve(temporary, 'battle-walk.png');
@@ -145,27 +203,9 @@ h1{font-size:19px;margin:0 0 12px}#field{width:1408px;height:834px}</style>
     await rm(temporary, { recursive: true, force: true });
   }
 
-  const events = await page.evaluate(() => {
-    const { game, state, units } = window.qaMonsters;
-    const { enemyLayer } = game.scene.getScene('battle');
-    const hitId = state.enemies[0].id;
-    enemyLayer.onHit(hitId);
-    const hit = units[0].animationState.getTrack(1)?.animation.name;
-    const fallIndex = units.length === 1 ? 0 : 1;
-    const falling = state.enemies[fallIndex];
-    falling.alive = false;
-    enemyLayer.onKill(falling.id);
-    const fall = units[fallIndex].animationState.getTrack(0)?.animation.name;
-    const skill = state.enemies.flatMap((enemy, i) => enemy.kind === 'boss'
-      ? [units[i].animationState.setAnimation(0, 'boss-skill', false).animation.name] : []);
-    return { hit, fall, skill };
-  });
-  assert.deepEqual(events, {
-    hit: 'hit', fall: 'fall', skill: actors.filter(([id]) => id.includes('-boss-')).map(() => 'boss-skill'),
-  });
   assert.deepEqual(errors, []);
   await writeFile(resolve(shots, 'battle-report.json'), JSON.stringify({
-    chromium: browser.version(), rendered: actors.map(([entity], i) => ({ entity, ...rendered[i] })), events,
+    chromium: browser.version(), seed: selection.seed, wave: selection.wave, rendered: actors.map(([entity], i) => ({ entity, ...rendered[i] })), events,
   }, null, 2) + '\n');
   console.log(`게임 전장 · Mesh2D ${actors.length}개체 · 걷기 진행·피격·쓰러짐 확인 · 보스 기술 ${events.skill.length}개`);
 } finally {

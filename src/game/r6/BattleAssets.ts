@@ -3,8 +3,10 @@ import type { Enemy, RunState } from '../../domain/types';
 import { R6_TOWERS, SPECIES, type EntityId, type R6TowerId, type Species } from '../../contracts/balanceV2';
 import type { GameContext } from '../../domain/context';
 import { previewR6Wave } from '../../domain/r6Mixer';
+import machine from './monsters/machine.json';
+import stone from './monsters/stone.json';
 import { r6Pad } from './mapProjection';
-import { r6ManifestSchema, r6TowerPackSchema, towerPackPath, type R6Manifest, type R6Sheet } from './manifest';
+import { monsterPackSchema, r6ManifestSchema, r6TowerPackSchema, towerPackPath, type R6Manifest, type R6Sheet } from './manifest';
 
 const BASE = 'assets/r6/';
 const MANIFEST_KEY = 'r6.manifest';
@@ -15,6 +17,10 @@ const atlasKey = (id: string) => `r6.atlas.${id}`;
 const rigKey = (id: string) => `r6.rig.${id}`;
 export const HANGAR_FLIGHT = 'hangar-flight';
 type SpeciesPack = NonNullable<R6Manifest['species'][Species]>;
+const monsterPacks = new Map([
+  ['machine', monsterPackSchema.parse(machine)], ['stone', monsterPackSchema.parse(stone)],
+]);
+
 type EnemyRef = { faction?: string };
 
 export class R6BattleAssets {
@@ -149,6 +155,13 @@ export class R6BattleAssets {
       const pack = manifest.species[species];
       if (!pack) continue;
       this.queue(atlasKey(pack.atlas), () => load.spineAtlas(atlasKey(pack.atlas), BASE + manifest.atlases[pack.atlas]!));
+      const monsters = monsterPacks.get(species);
+      if (monsters && pack.atlas !== species && Object.keys(monsters.rigs).length) {
+        this.queue(atlasKey(species), () => load.spineAtlas(atlasKey(species), BASE + monsters.atlas));
+        for (const [id, rig] of Object.entries(monsters.rigs)) {
+          this.queue(rigKey(id), () => load.spineSkeleton(rigKey(id), BASE + rig.file));
+        }
+      }
       // 분열·호위 파생체도 같은 종족 묶음에서 준비한다.
       for (const child of [pack.fallback, ...Object.values(pack.entities)]) {
         this.queue(rigKey(child.rig), () => load.spineSkeleton(rigKey(child.rig), BASE + manifest.rigs[child.rig]!.file));
@@ -163,12 +176,23 @@ export class R6BattleAssets {
     const { manifest, scene } = this;
     const species = SPECIES.find(id => id === enemy.faction);
     const pack = manifest && species && manifest.species[species];
-    if (!manifest || !pack) return null;
+    if (!manifest || !pack || !species) return null;
+    const monsters = monsterPacks.get(species);
+    const mapped = enemy.entityId && monsters?.entities[enemy.entityId];
+    if (mapped && monsters && enemy.entityId && !pack.entities[enemy.entityId]) {
+      const data = rigKey(mapped.rig);
+      const atlas = atlasKey(species);
+      if (scene.cache.json.exists(data) && scene.cache.text.exists(atlas) && scene.textures.exists(atlas + '!' + species + '.webp')) {
+        return { data, atlas, skin: mapped.skin, rig: monsters.rigs[mapped.rig]!, scale: mapped.scale };
+      }
+      if (scene.load.isLoading()) return null;
+    }
     const actor = this.actor(pack, enemy.entityId);
     const data = rigKey(actor.rig);
     const atlas = atlasKey(pack.atlas);
     if (!scene.cache.json.exists(data) || !scene.cache.text.exists(atlas)) return null;
-    return { data, atlas, skin: actor.skin, rig: manifest.rigs[actor.rig]! };
+    const rig = manifest.rigs[actor.rig]!;
+    return { data, atlas, skin: actor.skin, rig, scale: rig.scale * (enemy.kind === 'boss' ? 1.5 : 1) };
   }
 
   private actor(pack: SpeciesPack, entityId: EntityId | undefined) {

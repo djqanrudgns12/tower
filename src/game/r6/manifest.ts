@@ -56,6 +56,12 @@ const rig = z.strictObject({
   walk: key, hit: key.optional(), fall: key.optional(),
 });
 const actor = z.strictObject({ rig: key, skin: z.string().min(1) });
+export const monsterPackSchema = z.strictObject({
+  atlas: path('.atlas'),
+  rigs: z.record(key, rig),
+  entities: z.partialRecord(z.enum(ENTITY_IDS), actor.extend({ scale: z.number().positive().max(8) })),
+}).refine(pack => Object.values(pack.entities).every(entity => pack.rigs[entity.rig]));
+
 export const r6ManifestSchema = z.strictObject({
   version: z.literal(2),
   maps: z.record(key, path('.webp')),

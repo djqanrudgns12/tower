@@ -105,6 +105,13 @@ export class EnemyLayer {
     if (now - v.flashAt >= FLASH_GAP_MS) { v.flashAt = now; v.flashUntil = now + (this.assets ? R6_HIT_MS : HIT_MS); }
   }
 
+  onBossSkill(enemyId: number) {
+    const object = this.enemies.get(enemyId)?.spine?.object;
+    if (!object || this.c.bridge.reducedMotion || !object.skeleton.data.findAnimation('boss-skill')) return;
+    object.animationState.setAnimation(2, 'boss-skill', false);
+    object.animationState.addEmptyAnimation(2, 0.08, 0);
+  }
+
   onKill(enemyId: number) {
     const v = this.enemies.get(enemyId);
     const spine = v?.spine;
@@ -303,7 +310,7 @@ export class EnemyLayer {
       object.updatePose(0);
       v.spine = {
         object,
-        scale: art.rig.scale * (enemy.kind === 'boss' ? 1.5 : enemy.derived ? 0.8 : 1),
+        scale: art.scale * (enemy.derived ? 0.8 : 1),
         hit: art.rig.hit && data.findAnimation(art.rig.hit) ? art.rig.hit : undefined,
         fall: art.rig.fall && data.findAnimation(art.rig.fall) ? art.rig.fall : undefined,
         poseMs: 0,

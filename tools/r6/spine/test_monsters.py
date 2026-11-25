@@ -8,7 +8,8 @@ import unittest
 
 from PIL import Image, ImageDraw
 
-from cut_parts import cut
+from cut_parts import cut, orient_parts
+from fit_parts import fit
 from monsters import ACTORS, compose_rig, prepare, read_json
 from part_guides import CANVAS, SHEET, guide_data
 from parts import extract, suggest_pivot
@@ -22,6 +23,20 @@ FIXTURE = Path(__file__).resolve().parents[3] / "asset-source/r6/monsters/_pipel
 
 
 class MonsterPipelineTest(unittest.TestCase):
+    def test_rotated_part_preserves_source_box_and_fixed_joint(self):
+        part = Image.new("RGBA", (8, 24), (74, 85, 99, 255))
+        source_box = [12, 20, 20, 44]
+        pieces = orient_parts({"body": [(part, source_box)]}, {"body": -90})
+        (turned, original), = pieces["body"]
+        self.assertEqual((turned.size, original), ((24, 8), source_box))
+        reference = Image.new("RGBA", CANVAS)
+        reference.paste(turned, (105, 108))
+        placement = {"targets": {"body": [100, 108, 124, 116]}, "fixedTargets": ["body"]}
+        pivots = {"body": [107, 112]}
+        fit(pieces, guide_data("infantry", "biped"), reference, placement, pivots)
+        self.assertEqual(placement["targets"]["body"], [100, 108, 124, 116])
+        self.assertEqual(placement["pivots"], pivots)
+
     def test_guide_cut_reports_crossings_and_disconnected_pieces(self):
         with TemporaryDirectory() as tmp, redirect_stdout(StringIO()):
             root = Path(tmp)

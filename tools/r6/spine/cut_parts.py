@@ -215,6 +215,18 @@ def estimate_targets(guide, parts, reference):
     return targets, pivots
 
 
+def orient_parts(pieces, rotations):
+    for name, degrees in rotations.items():
+        if name not in pieces or type(degrees) not in (int, float) or not -180 <= degrees <= 180:
+            raise ValueError(f"슬롯의 회전각을 확인하세요 · {name}")
+        rotated = []
+        for part, source_box in pieces[name]:
+            image = part.rotate(degrees, Image.Resampling.BICUBIC, expand=True)
+            rotated.append((image.crop(image.getbbox()), source_box))
+        pieces[name] = rotated
+    return pieces
+
+
 def place(part, target):
     x1, y1, x2, y2 = target
     scale = min((x2 - x1) / part.width, (y2 - y1) / part.height)
@@ -292,6 +304,7 @@ def cut(sheet, reference_path, guide_path, out, species, entry, skin, placement_
         pieces = read_legacy(image, placement["legacy"], guide, issues)
     else:
         pieces = read_guide(foreground(image, None), guide, issues)
+    orient_parts(pieces, placement.get("rotations", {}))
     for name in pieces.keys() - intended.keys():
         issues.append({"code": "omitted_slot_present", "slot": name, "blocking": True})
     for name, slot in intended.items():

@@ -1,0 +1,156 @@
+{
+  "evolutionLimit": 0.92,
+  "speciesLimit": 0.55,
+  "evolution": [
+    {
+      "first": "machine-infantry-t1",
+      "second": "machine-infantry-t2",
+      "iou": 0.5566502463054187,
+      "pass": true
+    },
+    {
+      "first": "machine-infantry-t2",
+      "second": "machine-infantry-t3",
+      "iou": 0.6770601336302895,
+      "pass": true
+    },
+    {
+      "first": "machine-infantry-t3",
+      "second": "machine-infantry-t4",
+      "iou": 0.773972602739726,
+      "pass": true
+    },
+    {
+      "first": "machine-runner-t1",
+      "second": "machine-runner-t2",
+      "iou": 0.4196277495769882,
+      "pass": true
+    },
+    {
+      "first": "machine-runner-t2",
+      "second": "machine-runner-t3",
+      "iou": 0.5279850746268657,
+      "pass": true
+    },
+    {
+      "first": "machine-runner-t3",
+      "second": "machine-runner-t4",
+      "iou": 0.7595744680851064,
+      "pass": true
+    },
+    {
+      "first": "machine-armored-t1",
+      "second": "machine-armored-t2",
+      "iou": 0.6591230551626591,
+      "pass": true
+    },
+    {
+      "first": "machine-armored-t2",
+      "second": "machine-armored-t3",
+      "iou": 0.7007299270072993,
+      "pass": true
+    }
+  ],
+  "crossSpecies": [
+    {
+      "species": [
+        "machine",
+        "stone"
+      ],
+      "comparisons": 65,
+      "max": {
+        "first": "machine-armored-t2",
+        "second": "stone-armored-t1",
+        "iou": 0.6650185414091471,
+        "pass": false
+      },
+      "failures": [
+        {
+          "first": "machine-armored-t2",
+          "second": "stone-armored-t1",
+          "iou": 0.6650185414091471,
+          "pass": false
+        },
+        {
+          "first": "machine-armored-t2",
+          "second": "stone-boss-t1",
+          "iou": 0.6608344549125168,
+          "pass": false
+        },
+        {
+          "first": "machine-armored-t1",
+          "second": "stone-boss-t1",
+          "iou": 0.6524822695035462,
+          "pass": false
+        },
+        {
+          "first": "machine-armored-t2",
+          "second": "stone-special-t1",
+          "iou": 0.6376811594202898,
+          "pass": false
+        },
+        {
+          "first": "machine-armored-t2",
+          "second": "stone-infantry-t1",
+          "iou": 0.6225895316804407,
+          "pass": false
+        },
+        {
+          "first": "machine-armored-t1",
+          "second": "stone-special-t1",
+          "iou": 0.6223241590214067,
+          "pass": false
+        },
+        {
+          "first": "machine-armored-t3",
+          "second": "stone-boss-t1",
+          "iou": 0.6159217877094972,
+          "pass": false
+        },
+        {
+          "first": "machine-armored-t3",
+          "second": "stone-special-t1",
+          "iou": 0.6100917431192661,
+          "pass": false
+        },
+        {
+          "first": "machine-armored-t3",
+          "second": "stone-infantry-t1",
+          "iou": 0.6026200873362445,
+          "pass": false
+        },
+        {
+          "first": "machine-armored-t1",
+          "second": "stone-infantry-t1",
+          "iou": 0.6002886002886003,
+          "pass": false
+        },
+        {
+          "first": "machine-armored-t1",
+          "second": "stone-armored-t1",
+          "iou": 0.5915317559153176,
+          "pass": false
+        },
+        {
+          "first": "machine-armored-t3",
+          "second": "stone-armored-t1",
+          "iou": 0.5640394088669951,
+          "pass": false
+        },
+        {
+          "first": "machine-runner-t3",
+          "second": "stone-special-t1",
+          "iou": 0.5616438356164384,
+          "pass": false
+        },
+        {
+          "first": "machine-infantry-t3",
+          "second": "stone-boss-t1",
+          "iou": 0.5540334855403348,
+          "pass": false
+        }
+      ]
+    }
+  ],
+  "failures": 14
+}

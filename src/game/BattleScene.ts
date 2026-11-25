@@ -180,6 +180,7 @@ export class BattleScene extends Phaser.Scene {
         this.effects.onKill(e, splits ? CELL_PX * SPLIT_LABEL_RAISE_CELLS : 0);
         if (splits) this.effects.onSplit(e.x, e.y);
       } else if (e.type === 'bossSkill') {
+        this.enemyLayer.onBossSkill(e.enemyId);
         const boss = state.enemies.find(x => x.id === e.enemyId);
         const cue = bossCue(balance, boss, e.skill);
         if (cue && boss) {

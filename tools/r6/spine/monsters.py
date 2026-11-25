@@ -4,6 +4,8 @@ import argparse
 from contextlib import contextmanager
 import hashlib
 import json
+import os
+import shutil
 import subprocess
 from pathlib import Path
 from tempfile import TemporaryDirectory
@@ -136,9 +138,9 @@ def compose_rig(source, textures, canvas, root, ppu, rig_id, family, entry, skin
     return rig, previews, {"variant": variant, "pivots": points, "root": root}
 
 
-def prepare(source, out, actor=None):
+def prepare(source, out, actor=None, *, available=None):
     species, canvas, root, ppu, profiles = load_config(source)
-    actors = ACTORS
+    actors = ACTORS if available is None else available
     if actor:
         entry, skin = actor
         if skin not in ACTORS.get(entry, ()):
@@ -168,11 +170,11 @@ def prepare(source, out, actor=None):
             specs[rig_id] = {"file": f"{species}/{rig_id}.json", "scale": scale,
                              "walk": "walk", "hit": "hit", "fall": "fall"}
             for skin, img in previews.items():
-                actor = rig_id if family == "boss" else f"{rig_id}-{skin.lower()}"
-                links[actor] = {"rig": rig_id, "skin": skin}
-                img.save(stage / "silhouettes" / f"{actor}.png")
+                actor_id = rig_id if family == "boss" else f"{rig_id}-{skin.lower()}"
+                links[actor_id] = {"rig": rig_id, "skin": skin}
+                img.save(stage / "silhouettes" / f"{actor_id}.png")
         fallback = next(iter(links.values())).copy()
-        if actor is None:
+        if actor is None and available is None:
             fallback["tierSkins"] = list(SKINS)
         write_json(stage / "manifest-fragment.json", {
             "atlases": {species: f"{species}/{species}.atlas"}, "rigs": specs,
@@ -182,7 +184,7 @@ def prepare(source, out, actor=None):
     print(f"{species} · 뼈대 {len(specs)}개 · 개체 {len(links)}개 준비 완료")
 
 
-def export(work, cli):
+def export(work, cli, *, rig_cache=None):
     fragment = read_json(work / "manifest-fragment.json")
     species, = fragment["species"]
     names = tuple(fragment["rigs"])
@@ -191,11 +193,24 @@ def export(work, cli):
         for folder in (projects, runtime, imports):
             folder.mkdir()
         command = [cli]
+        new_rigs = {}
         for name in names:
             project = projects / f"{name}.spine"
             import_file = imports / f"{name}.json"
             source = read_json(work / "rigs" / import_file.name)
-            source["skeleton"]["images"] = str(work / "parts") + "/"
+            if rig_cache is not None:
+                # 같은 뼈대·스킨·부착물은 종족 아틀라스를 다시 묶을 때도 편집기 왕복을 재사용한다.
+                identity = hashlib.sha256((work / "rigs" / import_file.name).read_bytes())
+                identity.update(Path(__file__).read_bytes())
+                for texture in sorted((work / "parts").glob(f"{name}-*.png")):
+                    identity.update(hashlib.sha256(texture.read_bytes()).digest())
+                cached = rig_cache / name / identity.hexdigest()
+                if cached.exists():
+                    shutil.copyfile(cached / project.name, project)
+                    shutil.copyfile(cached / import_file.name, runtime / import_file.name)
+                    continue
+                new_rigs[name] = cached
+            source["skeleton"]["images"] = os.path.relpath(work / "parts", imports) + "/"
             write_json(import_file, source)
             command += ["-i", str(import_file), "-o", str(project), "-r",
                         "-i", str(project), "-o", str(runtime), "-e", "json"]
@@ -218,6 +233,10 @@ def export(work, cli):
                     return set(data[key]) if key == "animations" else {value["name"] for value in data[key]}
                 if names_of(final) != names_of(source):
                     raise ValueError(f"{name} · CLI 왕복 후 {key} 목록이 바뀌었습니다.")
+        for name, cached in new_rigs.items():
+            with new_directory(cached) as fresh:
+                for folder, ext in ((projects, ".spine"), (runtime, ".json")):
+                    shutil.copyfile(folder / (name + ext), fresh / (name + ext))
         stats = finish_atlas(runtime, species)
         write_json(stage / "atlas-report.json", stats)
     print(f"{species} · Spine 프로젝트 {len(names)}개 · WebP {stats['width']}×{stats['height']} · {stats['bytes']}바이트")

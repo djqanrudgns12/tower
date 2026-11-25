@@ -41,23 +41,31 @@ def overlap(first, second, masks, limit):
 
 
 def review(packs, out):
-    masks, icons, species_ids, evolution, cross = {}, {}, {}, [], []
+    images = {}
     for pack in packs:
         spec = read_json(pack / "manifest-fragment.json")["species"]
         species, = spec
-        if species in species_ids:
+        if species in images:
             raise ValueError(f"동일 종족을 두 번 지정했습니다 · {species}")
-        ids = tuple(spec[species]["entities"])
+        images[species] = {actor: pack / "silhouettes" / f"{actor}.png" for actor in spec[species]["entities"]}
+    return review_images(images, out)
+
+
+def review_images(images, out):
+    masks, icons, species_ids, evolution, cross = {}, {}, {}, [], []
+    for species, paths in images.items():
+        ids = tuple(paths)
         species_ids[species] = ids
         for actor in ids:
-            with Image.open(pack / "silhouettes" / f"{actor}.png") as image:
+            with Image.open(paths[actor]) as image:
                 icons[actor] = thumbnail(image.convert("RGBA"))
             masks[actor] = silhouette(icons[actor])
             if not masks[actor].getbbox():
                 raise ValueError(f"{actor} · 32px 실루엣에 보이는 화소가 없습니다.")
         for family in (*FAMILIES, "boss"):
             family_ids = [f"{species}-{family}-t{tier}" for tier in range(1, 5)]
-            evolution.extend(overlap(a, b, masks, EVOLUTION_LIMIT) for a, b in pairwise(family_ids))
+            evolution.extend(overlap(a, b, masks, EVOLUTION_LIMIT) for a, b in pairwise(family_ids)
+                             if a in masks and b in masks)
 
     for a, b in combinations(species_ids, 2):
         pairs = [overlap(x, y, masks, SPECIES_LIMIT) for x, y in product(species_ids[a], species_ids[b])]
@@ -68,15 +76,16 @@ def review(packs, out):
 
     out.mkdir(parents=True, exist_ok=True)
     for species, ids in species_ids.items():
-        sheet = Image.new("RGB", (240, 24 + len(ids) // 4 * 45), "#1D242C")
+        sheet = Image.new("RGB", (240, 24 + (len(FAMILIES) + 1) * 45), "#1D242C")
         draw = ImageDraw.Draw(sheet)
         for tier in range(4):
             draw.text((65 + 44 * tier, 6), f"T{tier + 1}", fill="#B8C0C8")
-        for index, actor in enumerate(ids):
-            row, col = divmod(index, 4)
+        for row, family in enumerate((*FAMILIES, "boss")):
+            draw.text((5, 32 + row * 45), family, fill="#B8C0C8")
+        for actor in ids:
+            family, tier = actor.removeprefix(species + "-").rsplit("-t", 1)
+            row, col = (*FAMILIES, "boss").index(family), int(tier) - 1
             y = 23 + row * 45
-            if col == 0:
-                draw.text((5, y + 9), (*FAMILIES, "boss")[row], fill="#B8C0C8")
             x = 59 + col * 44
             draw.rectangle((x, y, x + 35, y + 35), fill="#12161B", outline="#4A5563")
             sheet.paste(icons[actor], (x + 2, y + 2), icons[actor])

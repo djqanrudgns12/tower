@@ -77,3 +77,47 @@ node tools/r6/spine/check-runtime.mjs "$r6_work"
 Spine Professional 4.3.26으로 일반 계통 4개와 개별 보스 4개의 프로젝트를 내보냈다. 20개체의 기대 슬롯, 파츠 위치와 크기가 왕복 후 유지됐다. 모든 걷기 루프의 처음과 끝 변환은 일치했다. 임시 부품 아틀라스는 `1492×205`, 무손실 WebP **15,136바이트**, RGBA8 **1,223,440바이트**였다. 인접 단계 15쌍의 실루엣 IoU는 **0.453~0.891**이다. 종족 간 비교는 동일 실루엣을 의도적으로 넣은 시험에서 400쌍을 검사했다. 실제 5종족 양산 파츠의 실루엣과 텍스처 크기는 투입 뒤 측정한다.
 
 Chromium 156에서 실제 전장 길 위에 20개체를 배치했다. 개체마다 올바른 스킨과 걷기 트랙이 붙고 프레임이 진행됐다. 전장의 피격·쓰러짐 처리와 보스 4개체의 기술 트랙 등록을 확인했다. [전장 재생 캡처](../../../../asset-source/r6/monsters/_pipeline-test/battle-walk.webp), [개체별 검사 결과](../../../../asset-source/r6/monsters/_pipeline-test/battle-report.json).
+
+## 일괄 양산
+
+저장소 루트에서 아래 명령을 실행한다. 기계와 바위 폴더에 새 단계의 `sheet.png`, `assembly.png`, `parts.json`이 들어오면 같은 명령을 쓴다.
+
+```sh
+"$HOME/.agents/skills/spine-authoring/runtime/.venv/bin/python" -B tools/r6/spine/batch.py
+```
+
+- 각 부품의 가로세로 비율을 유지하면서 조립 원화에 맞춰 위치와 크기를 두 차례 조정한다. 제작자가 지정한 부품 영역은 `placement.json`의 `targets`, 수동 관절은 `jointHints`에 둔다. 관절 양끝을 직접 맞춘 부품은 `fixedTargets`로 고정한다. 시트에 그린 방향과 들고 있는 방향이 다른 부품은 `rotations`에 반시계 회전각을 적는다. 후속 스킨의 관절은 T1 회전축에 맞춘다. 최종 수치는 같은 256px 캔버스에서 측정한 알파 실루엣 IoU다.
+- 절단 오류나 조립 IoU 0.70 미만은 종족별 재요청 목록으로 보낸다. [기계 재요청](../../../../asset-source/r6/monsters/machine/REDO.md) · [바위 재요청](../../../../asset-source/r6/monsters/stone/REDO.md)
+- 편집기 왕복과 아틀라스 패킹은 자원 보호 아래에서 실행한다. 입력·관절·도구가 같은 개체는 캐시를 쓴다. 새 스킨이 들어오면 해당 계통의 리그와 종족 아틀라스를 갱신한다. 로컬 `.orchestrate/r6-monster-batch/<종족>/packs/<해시>/`에 저작 JSON, 부품, 편집 프로젝트, 런타임 검사 결과가 남는다.
+- 전장은 그 웨이브의 종족 아틀라스와 리그를 지연 적재한다. 아직 제작하지 않은 단계와 전송이 실패한 개체는 기존 단계별 보행체를 사용한다. 전송 예산은 **종족당 WebP 768KiB 이내, 최대 2048×2048 한 장**이다. 이 묶음의 동시 표시 검수 목표는 **25개체**로, 5웨이브 한 편성의 크기에 맞췄다. 실기 크롬북 프레임 예산은 G5에서 측정한다.
+- 32px 비교는 조립을 시도한 모든 개체의 그림자를 빼고 수행한다. 인접 단계와 다른 종족의 유사 쌍은 아트 검수에 남긴다. [기계 판독 띠](monsters/machine-32px.webp) · [바위 판독 띠](monsters/stone-32px.webp) · [쌍별 판정](monsters/silhouettes.json)
+- 혼합 웨이브 확인은 `resource-guard run --profile test --wait-seconds 900 -- node tools/r6/spine/capture-playwright.mjs --published docs/renewal/r6/tech/monsters`로 실행한다. 혼합기가 생성한 편성을 전장 경로에 펼쳐 놓고 걷기, 피격, 쓰러짐, 보스 기술 트랙을 검사한다. [전장 캡처](monsters/battle-walk.webp) · [재생 결과](monsters/battle-report.json)
+
+<!-- monster-batch:begin -->
+
+| 종족 | 개체 | 조립 IoU | 슬롯 | 내보낸 동작 |
+| --- | --- | ---: | ---: | --- |
+| machine | infantry/T1 | 0.873 | 6 | 걷기·피격·쓰러짐 |
+| machine | infantry/T2 | 0.823 | 11 | 걷기·피격·쓰러짐 |
+| machine | infantry/T3 | 0.859 | 11 | 걷기·피격·쓰러짐 |
+| machine | infantry/T4 | 0.868 | 11 | 걷기·피격·쓰러짐 |
+| machine | runner/T1 | 0.655 | 10 | 조립 재요청 |
+| machine | runner/T2 | 0.731 | 11 | 걷기·피격·쓰러짐 |
+| machine | runner/T3 | 0.639 | 12 | 조립 재요청 |
+| machine | runner/T4 | 0.731 | 12 | 걷기·피격·쓰러짐 |
+| machine | armored/T1 | 0.903 | 11 | 걷기·피격·쓰러짐 |
+| machine | armored/T2 | 0.872 | 11 | 걷기·피격·쓰러짐 |
+| machine | armored/T3 | 0.901 | 12 | 걷기·피격·쓰러짐 |
+| machine | special/T1 | 0.921 | 2 | 걷기·피격·쓰러짐 |
+| machine | boss-t1/T1 | 0.839 | 11 | 걷기·피격·쓰러짐·기술 |
+| stone | infantry/T1 | 0.909 | 10 | 걷기·피격·쓰러짐 |
+| stone | runner/T1 | 0.912 | 10 | 걷기·피격·쓰러짐 |
+| stone | armored/T1 | 0.933 | 11 | 걷기·피격·쓰러짐 |
+| stone | special/T1 | 0.947 | 3 | 걷기·피격·쓰러짐 |
+| stone | boss-t1/T1 | 0.827 | 11 | 걷기·피격·쓰러짐·기술 |
+
+- `machine` 아틀라스 1946×173, WebP 420,394바이트, RGBA8 1,346,632바이트.
+- `stone` 아틀라스 969×175, WebP 193,176바이트, RGBA8 678,300바이트.
+- 인접 단계 8쌍 중 0쌍, 종족 간 65쌍 중 14쌍이 32px 구분 기준에 미달했다.
+
+<!-- monster-batch:end -->
