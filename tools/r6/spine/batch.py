@@ -1,5 +1,6 @@
-"""기계·바위 원본 폴더를 찾아 검수한 개체를 종족별로 묶는다."""
+"""몬스터 다섯 종족의 원본 폴더를 찾아 검수한 개체를 종족별로 묶는다."""
 
+import argparse
 import hashlib
 import json
 import os
@@ -11,7 +12,7 @@ from tempfile import TemporaryDirectory
 
 from cut_parts import cut, normalize_reference, open_rgba, orient_parts, read_guide
 from fit_parts import fit
-from monsters import ACTORS, export, prepare, read_json
+from monsters import ACTORS, SPECIES, export, prepare, read_json
 from pilot import write_json
 from review import review_images
 
@@ -22,7 +23,6 @@ PUBLIC = ROOT / "public/assets/r6/monsters"
 CATALOG = ROOT / "src/game/r6/monsters"
 REVIEW = ROOT / "docs/renewal/r6/tech/monsters"
 CACHE = ROOT / ".orchestrate/r6-monster-batch"
-SPECIES = ("machine", "stone")
 ATLAS_BUDGET = 768 * 1024
 
 
@@ -141,7 +141,10 @@ def pack_species(species, items):
             subprocess.run(["node", HERE / "check-runtime.mjs", work], check=True)
             shutil.copyfile(source / "species.json", work / "species.json")
             work.rename(cache)
-    publish(SOURCE / species / "species.json", (cache / "species.json").read_bytes())
+    # 기존 종족의 편집용 명세만 동기화한다. 새 명세는 저작 캐시에서 열 수 있다.
+    source_config = SOURCE / species / "species.json"
+    if source_config.exists():
+        publish(source_config, (cache / "species.json").read_bytes())
     stats = read_json(cache / "export/atlas-report.json")
     if stats["bytes"] > ATLAS_BUDGET:
         raise ValueError(f"{species} · 아틀라스 전송 예산 초과 {stats['bytes']}")
@@ -199,11 +202,38 @@ def batch_signature():
             files.extend(folder.glob("*/*/" + name))
         files.extend(p for p in (folder / "REDO.md", folder / "species.json", CATALOG / f"{species}.json") if p.exists())
         files.extend(p for p in (PUBLIC / species).glob("*") if p.is_file())
-    files.extend(p for p in REVIEW.glob("*") if p.name in ("machine-32px.webp", "stone-32px.webp", "batch.json", "silhouettes.json"))
+    files.extend(p for p in REVIEW.glob("*") if p.name in ("batch.json", "silhouettes.json") or p.name.endswith("-32px.webp"))
     return digest([(str(p.relative_to(ROOT)), digest(p)) for p in sorted(files)])
 
 
+def published_preview(row):
+    species, entry, skin = (row[k] for k in ("species", "entry", "skin"))
+    folder = SOURCE / species / entry / skin
+    placement = folder / "placement.json"
+    work = CACHE / species / entry / skin / read_json(placement)["fitKey"]
+    preview = work / "assembly-preview.webp"
+    if not preview.exists():
+        preview = CACHE / "review" / species / entry / skin / work.name / preview.name
+    if not preview.exists():
+        # 다른 제작자가 원본을 교체하는 중이면 지난 판의 캐시에 새 원화를 섞지 않는다.
+        guide = SOURCE / "_guides" / read_json(folder / "parts.json")["guide"]
+        saved = read_json(folder / "report.json")
+        with TemporaryDirectory(dir=CACHE) as tmp:
+            rebuilt = Path(tmp) / "cut"
+            cut(folder / "sheet.png", folder / "assembly.png", guide, rebuilt, species, entry, skin, placement)
+            result = read_json(rebuilt / "report.json")
+            if any(saved[k] != result[k] for k in ("parts", "pivots", "silhouetteIoU", "issues")):
+                raise ValueError(f"{species}/{entry}/{skin} 원본이 바뀌었습니다. 해당 종족을 포함해 실행하세요.")
+            # 절단 캐시와 별개로 판독용 복원본만 저장한다.
+            publish(preview, (rebuilt / preview.name).read_bytes())
+    return preview
+
+
 def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--species", nargs="+", choices=SPECIES, default=SPECIES,
+                        help="지정한 종족만 갱신하고 다른 종족의 게시 결과는 비교에 재사용한다.")
+    selected = set(parser.parse_args().species)
     receipt = CACHE / "batch-state.json"
     if receipt.exists() and read_json(receipt) == batch_signature():
         print("몬스터 원본·리그·아틀라스·검수 결과가 최신입니다.")
@@ -211,9 +241,19 @@ def main():
     if os.environ.get("RESOURCE_GUARD_ACTIVE") != "1":
         guard = Path.home() / ".local/bin/resource-guard"
         os.execv(guard, [str(guard), "run", "--profile", "avatar", "--wait-seconds", "900", "--",
-                        sys.executable, "-B", str(Path(__file__).resolve())])
-    packs, rows, images, redos = [], [], {}, {}
-    for species in SPECIES:
+                        sys.executable, "-B", str(Path(__file__).resolve()), *sys.argv[1:]])
+    CACHE.mkdir(parents=True, exist_ok=True)
+    previous = read_json(REVIEW / "batch.json") if (REVIEW / "batch.json").exists() else {}
+    rows, images, redos = [], {}, {}
+    atlases = {s: stats for s, stats in previous.get("atlases", {}).items() if s not in selected}
+    for species in sorted(SPECIES, key=lambda s: (s not in ("machine", "stone"), s)):
+        if species not in selected:
+            for row in previous.get("actors", []):
+                if row["species"] != species:
+                    continue
+                rows.append(row)
+                images.setdefault(species, {})[actor_id(row)] = published_preview(row)
+            continue
         items, redo = [], []
         species_images = {}
         for entry, skins in ACTORS.items():
@@ -223,7 +263,8 @@ def main():
                 if not all((folder / f).is_file() for f in ("sheet.png", "assembly.png", "parts.json")):
                     continue
                 if skin != skins[0] and not canonical:
-                    raise ValueError(f"{species}/{entry} · 먼저 T1 관절이 필요합니다.")
+                    print(f"{species}/{entry}/{skin} · T1 관절이 준비되면 처리합니다.")
+                    continue
                 meta, report, work = process_actor(folder, canonical, first_targets)
                 if not canonical:
                     canonical = report["pivots"]
@@ -238,7 +279,7 @@ def main():
             images[species] = species_images
         pack = pack_species(species, items)
         if pack:
-            packs.append(pack)
+            atlases[species] = read_json(pack / "export/atlas-report.json")
         else:
             save(CATALOG / f"{species}.json", {"atlas": f"monsters/{species}/{species}.atlas", "entities": {}, "rigs": {}})
         redos[species] = redo
@@ -248,23 +289,19 @@ def main():
         comparisons = read_json(REVIEW / "silhouettes.json")
     for species, redo in redos.items():
         lines = ["# 그림 재검수", "", "## 조립", "", *(redo or ["조립 기준 미달 개체 없음."])]
-        if comparisons:
-            failures = [p for p in comparisons["evolution"] if not p["pass"]]
-            failures += [p for group in comparisons["crossSpecies"] for p in group["failures"]]
-            matches = [p for p in failures if any(p[k].startswith(species + "-") for k in ("first", "second"))]
-            if matches:
-                lines += ["", "## 32px 외곽선", "",
-                          "아래 조합은 판독 띠에서 겹치는 면적이 기준 이상이다. 두 원화의 몸통 폭, 장비와 다리 사이의 빈 공간을 함께 검토한다.", ""]
-                lines.extend(f"- `{p['first']}` · `{p['second']}` — IoU {p['iou']:.3f}" for p in matches)
-        publish(SOURCE / species / "REDO.md", ("\n".join(lines) + "\n").encode())
-    atlases = {
-        next(iter(read_json(p / "manifest-fragment.json")["species"])): read_json(p / "export/atlas-report.json")
-        for p in packs}
+        path = SOURCE / species / "REDO.md"
+        # 지난 그림 검수 메모는 보존한다. 전체 종족의 최신 쌍별 결과는 silhouettes.json에서 관리한다.
+        if path.exists():
+            _, marker, notes = path.read_text().partition("\n## 32px 외곽선")
+            if marker:
+                lines.append(marker.rstrip() + notes.rstrip())
+        publish(path, ("\n".join(lines) + "\n").encode())
     save(REVIEW / "batch.json", {"actors": rows, "atlases": atlases,
          "assemblyPassed": sum(row["accepted"] for row in rows),
          "silhouettePairFailures": comparisons["failures"] if comparisons else None})
     write_summary(rows, atlases, comparisons)
-    save(receipt, batch_signature())
+    if selected == set(SPECIES):
+        save(receipt, batch_signature())
 
 
 if __name__ == "__main__":
