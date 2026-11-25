@@ -24,3 +24,16 @@ it('기계 스킨은 종족 텍스처까지 준비되면 사용하고, 전송이
   const legacy = enemy({ faction: 'elf', entityId: 'elf-runner-t3' });
   expect(assets.enemyArt(legacy)).toMatchObject({ atlas: 'r6.atlas.g2-walker', skin: 'T3' });
 });
+
+it.each(['elf', 'human', 'insect'] as const)('%s 특수 T1은 해당 종족의 아틀라스와 리그로 그린다', faction => {
+  const atlas = 'r6.atlas.' + faction;
+  const scene = {
+    load: { on: vi.fn(), isLoading: () => false },
+    cache: { json: { exists: () => true }, text: { exists: () => true } },
+    textures: { exists: (key: string) => key === atlas + '!' + faction + '.webp' },
+  } as unknown as Phaser.Scene;
+  const assets = new R6BattleAssets(scene, () => false);
+  assets.manifest = r6ManifestSchema.parse(manifest);
+  const unit = enemy({ faction, entityId: `${faction}-special-t1` });
+  expect(assets.enemyArt(unit)).toMatchObject({ data: 'r6.rig.' + faction + '-special', atlas, skin: 'T1' });
+});

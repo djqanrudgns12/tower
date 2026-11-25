@@ -143,6 +143,131 @@
       "iou": 0.827,
       "slots": 11,
       "accepted": true
+    },
+    {
+      "species": "elf",
+      "entry": "infantry",
+      "skin": "T1",
+      "iou": 0.876,
+      "slots": 13,
+      "accepted": true
+    },
+    {
+      "species": "elf",
+      "entry": "runner",
+      "skin": "T1",
+      "iou": 0.879,
+      "slots": 13,
+      "accepted": true
+    },
+    {
+      "species": "elf",
+      "entry": "armored",
+      "skin": "T1",
+      "iou": 0.925,
+      "slots": 13,
+      "accepted": true
+    },
+    {
+      "species": "elf",
+      "entry": "special",
+      "skin": "T1",
+      "iou": 0.762,
+      "slots": 7,
+      "accepted": true
+    },
+    {
+      "species": "elf",
+      "entry": "boss-t1",
+      "skin": "T1",
+      "iou": 0.787,
+      "slots": 13,
+      "accepted": false,
+      "artRedo": "팔·다리와 어깨 잎의 잘린 좌측 가장자리를 복원해 주세요. 조립하면 왼팔과 무릎의 접점이 끊깁니다."
+    },
+    {
+      "species": "human",
+      "entry": "infantry",
+      "skin": "T1",
+      "iou": 0.634,
+      "slots": 13,
+      "accepted": false
+    },
+    {
+      "species": "human",
+      "entry": "runner",
+      "skin": "T1",
+      "iou": 0.794,
+      "slots": 13,
+      "accepted": false,
+      "artRedo": "몸통 시트의 기수 머리가 잘렸습니다. 목 위까지 보이는 기수와 말 몸통을 함께 분리해 주세요."
+    },
+    {
+      "species": "human",
+      "entry": "armored",
+      "skin": "T1",
+      "iou": 0.922,
+      "slots": 13,
+      "accepted": true
+    },
+    {
+      "species": "human",
+      "entry": "special",
+      "skin": "T1",
+      "iou": 0.956,
+      "slots": 7,
+      "accepted": true
+    },
+    {
+      "species": "human",
+      "entry": "boss-t1",
+      "skin": "T1",
+      "iou": 0.76,
+      "slots": 13,
+      "accepted": true
+    },
+    {
+      "species": "insect",
+      "entry": "infantry",
+      "skin": "T1",
+      "iou": 0.812,
+      "slots": 13,
+      "accepted": false,
+      "artRedo": "조립 기준의 왼쪽 팔과 몸통이 화면 가장자리에서 잘렸습니다. 양쪽 팔다리가 보이는 전신 기준으로 다시 맞춰 주세요."
+    },
+    {
+      "species": "insect",
+      "entry": "runner",
+      "skin": "T1",
+      "iou": 0.722,
+      "slots": 13,
+      "accepted": false,
+      "artRedo": "가까운 앞다리(leg-fore-near)에 다른 부위와 사각 배경이 남습니다. 날개·가슴의 잘린 좌측 가장자리도 함께 복원해 주세요."
+    },
+    {
+      "species": "insect",
+      "entry": "armored",
+      "skin": "T1",
+      "iou": 0.916,
+      "slots": 13,
+      "accepted": true
+    },
+    {
+      "species": "insect",
+      "entry": "special",
+      "skin": "T1",
+      "iou": 0.844,
+      "slots": 14,
+      "accepted": true
+    },
+    {
+      "species": "insect",
+      "entry": "boss-t1",
+      "skin": "T1",
+      "iou": 0.778,
+      "slots": 13,
+      "accepted": false,
+      "artRedo": "등날개(armor)의 불투명한 사각 배경을 제거하고 양쪽 다리와 발목을 맞물리는 길이로 분리해 주세요."
     }
   ],
   "atlases": {
@@ -159,8 +284,30 @@
       "bytes": 193176,
       "rgbaBytes": 678300,
       "sha256": "0f327f84726b014f8b2e27e24738cad4ae18a6084bdd7ca382b4537ae67d99a6"
+    },
+    "elf": {
+      "width": 691,
+      "height": 110,
+      "bytes": 107032,
+      "rgbaBytes": 304040,
+      "sha256": "5f607d9fa78d5895e170110031ca5ebf85cac264a88d3e1aa8bc730c7a62eefc"
+    },
+    "human": {
+      "width": 142,
+      "height": 596,
+      "bytes": 110988,
+      "rgbaBytes": 338528,
+      "sha256": "b3cd09fb69e38eb0b72bce8c41fc84c6e5c82300a1dad77c7c89f4c1d4375b94"
+    },
+    "insect": {
+      "width": 581,
+      "height": 142,
+      "bytes": 87470,
+      "rgbaBytes": 330008,
+      "sha256": "82f40c81098d92c66c990df7b622febe0dade1f65cd13543b50521006924ccca"
     }
   },
-  "assemblyPassed": 16,
-  "silhouettePairFailures": 14
+  "assemblyPassed": 30,
+  "publishedActors": 25,
+  "silhouettePairFailures": 59
 }

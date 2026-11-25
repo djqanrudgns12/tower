@@ -4,7 +4,7 @@ type: hub
 title: 화면(R04 UI)·전장(Phaser/Spine)·제작 공정
 status: active
 updated: 2026-11-25
-verified: { commit: c6c5a212, date: 2026-11-25 }
+verified: { commit: "57f594a1", date: 2026-11-25 }
 sources:
   - path: src/game/bridge.ts
     sha256: d174fb7ea5c85ad93424afe0eb92a90508cb3488d66537edda17251254c868f8
@@ -15,7 +15,7 @@ sources:
   - path: docs/renewal/r6/tech/G2-spike.md
     sha256: "741013a9c3f010dafe49b23789095f6f36116d69412428d6ef1b4048aa76ef01"
   - path: docs/renewal/r6/tech/monster-pipeline.md
-    sha256: afb78d5737ee22d04d615ab0a1a798373fc5865c8b9566d8e12f3f1760b8ed41
+    sha256: "607f4dac33090e4a9a7c428779ac7a7b45152475e3b69b9424a27519a13efb10"
   - path: docs/renewal/r6/tech/G5-perf.md
     sha256: f53b47482ca494b4723d1b72f04b485b4d69cdf3520ad2a0a8cf46433305b455
   - path: docs/renewal/r6/ui/system.md
@@ -44,7 +44,7 @@ sources:
   - 기존 `garden_u` 좌표(15×9 격자, 길 41칸, 설치대 20개)를 재사용하고 3/4 직교 카메라 `(6.1, −8.2, 6.05)` 등고선 지형으로 굽는다(`src/game/r6/mapProjection.json`). React 오버레이와 드래그 입력은 `projectField` / `unprojectField`로 변환한다.
   - 배경 `meadow-plateau.webp` **26,052B**(예산 ≤150KB), 육각 설치대 시트 `meadow-pads.webp` **2,610B**.
 - **타워 렌더·전투 효과**: [manifest.ts](../../src/game/r6/manifest.ts)(`public/assets/r6/manifest-v2.json`)가 타워 6종 11형태의 고정 몸체 + **16방향 포두** + 8프레임 공격 시트(기본 192px / 고해상도 384px)를 관리하며, `src/game/r6/CombatVfx.ts`가 타워별 예광선·포탄·냉기 파동·연쇄 광선·드론 비행·방벽 파동을 그린다.
-- **몬스터 Spine Mesh2D 및 종족 지연 적재**: `@esotericsoftware/spine-phaser-v4@4.3.13` 공식 Mesh2D 백엔드(Phaser 4.2.1 WebGL)로 재생한다. 첫 준비 화면부터 현재·다음 웨이브에 등장하는 종족 아틀라스만 지연 적재해 메모리를 아낀다(기계·바위 16개체는 종족 아틀라스 `public/assets/r6/monsters/<종족>/`로, 나머지는 G2 보행체로 그린다. 예산은 종족당 WebP 768KiB).
+- **몬스터 Spine Mesh2D 및 종족 지연 적재**: `@esotericsoftware/spine-phaser-v4@4.3.13` 공식 Mesh2D 백엔드(Phaser 4.2.1 WebGL)로 재생한다. 첫 준비 화면부터 현재·다음 웨이브에 등장하는 종족 아틀라스만 지연 적재해 메모리를 아낀다(다섯 종족의 조립·원화 검수를 통과한 개체는 종족 아틀라스 `public/assets/r6/monsters/<종족>/`로, 나머지는 G2 보행체로 그린다. 예산은 종족당 WebP 768KiB).
 - **자동 화질 3단계** ([G5-perf.md](../../docs/renewal/r6/tech/G5-perf.md)): 5초 평균 30fps 미만 시 단계 하향, 20초 연속 45fps 이상 시 상향.
   - `0단계`: 기본(고해상도 384px) → `1단계`: 192px 시트·연기/비행 그림자 생략 → `2단계`: 원거리 100ms/근거리 50ms Spine 자세 갱신(보스·이동은 매 프레임)·배경 움직임 생략 → `3단계`: 캔버스 내부 해상도 0.75배.
 

@@ -12,7 +12,7 @@ const readJson = async file => JSON.parse(await readFile(file, 'utf8'));
 const published = work === '--published';
 const fragment = published ? null : await readJson(resolve(work, 'manifest-fragment.json'));
 const species = fragment && Object.keys(fragment.species)[0];
-const catalog = published ? Object.assign({}, ...await Promise.all(['machine', 'stone'].map(async s =>
+const catalog = published ? Object.assign({}, ...await Promise.all(['machine', 'stone', 'elf', 'human', 'insect'].map(async s =>
   (await readJson(`src/game/r6/monsters/${s}.json`)).entities))) : fragment.species[species].entities;
 let actors = Object.entries(catalog);
 const allowedFiles = new Set(fragment ? [
@@ -22,7 +22,13 @@ const allowedFiles = new Set(fragment ? [
 const mime = { json: 'application/json', atlas: 'text/plain', webp: 'image/webp' };
 
 await mkdir(shots, { recursive: true });
-const server = await createServer({ server: { host: '127.0.0.1', port: 0 }, configFile: 'vite.config.ts' });
+const server = await createServer({
+  server: { host: '127.0.0.1', port: 0 },
+  configFile: 'vite.config.ts',
+  cacheDir: '.orchestrate/r6-monster-capture-vite',
+  optimizeDeps: { entries: ['src/game/battlefieldGame.ts', 'src/application/RunController.ts', 'src/content/index.ts'],
+    include: ['@esotericsoftware/spine-phaser-v4', 'phaser', 'idb', 'zod'] },
+});
 let browser;
 try {
   await server.listen();
@@ -54,7 +60,7 @@ try {
     body: `<!doctype html><html lang="ko"><meta charset="utf-8"><title>적 동작 확인</title>
 <style>body{margin:0;background:#12161b;color:#b8c0c8;font:16px system-ui}main{padding:16px}
 h1{font-size:19px;margin:0 0 12px}#field{width:1408px;height:834px}</style>
-<main><h1>${published ? '기계·바위 혼합 웨이브' : `R6 전장 · ${actors.length}개체`}</h1><div id="field"></div></main></html>`,
+<main><h1>${published ? '엘프·인간·벌레 혼합 웨이브' : `R6 전장 · ${actors.length}개체`}</h1><div id="field"></div></main></html>`,
   }));
   await page.goto(new URL('r6-monster-fixture', server.resolvedUrls.local[0]).href);
   const selection = await page.evaluate(async ({ published, ids }) => {
@@ -74,16 +80,16 @@ h1{font-size:19px;margin:0 0 12px}#field{width:1408px;height:834px}</style>
       const mixerUrl = '/src/domain/r6Mixer.ts';
       const { previewR6Wave } = await import(mixerUrl);
       state.wave = 5;
-      // 실제 혼합표에서 두 종족과 준비된 보스를 함께 볼 수 있는 첫 시드를 고른다.
+      // 실제 혼합표에서 새 세 종족과 준비된 보스를 함께 볼 수 있는 첫 시드를 고른다.
       for (seed = 0; seed < 500; seed++) {
         const wave = previewR6Wave(ctx.balance.r6.rules, ctx.map.id, seed, state.wave);
-        if (['machine', 'stone'].every(s => wave.some(m => m.species === s && ids.includes(m.id))) &&
+        if (['elf', 'human', 'insect'].every(s => wave.some(m => m.species === s && ids.includes(m.id))) &&
             wave.some(m => m.lineage === 'boss' && ids.includes(m.id)) && wave.some(m => !ids.includes(m.id))) {
           ids = wave.map(m => m.id);
           break;
         }
       }
-      if (seed === 500) throw new Error('두 종족·보스·기본 표시가 함께 나오는 웨이브를 찾지 못했습니다.');
+      if (seed === 500) throw new Error('새 세 종족·보스·기본 표시가 함께 나오는 웨이브를 찾지 못했습니다.');
       state.config.seed = seed;
     }
     state.pause = [];
@@ -164,10 +170,10 @@ h1{font-size:19px;margin:0 0 12px}#field{width:1408px;height:834px}</style>
   assert.ok(rendered.every(unit => unit.renderer === 'phaser' && unit.track === 'walk' && unit.moved && unit.slots > 0),
     'Mesh2D 재생 또는 파츠 확인에 실패했습니다.');
   if (published) {
-    assert.ok(requests.has('machine.webp') && requests.has('stone.webp'), '두 종족 아틀라스 전송 확인');
+    for (const s of ['elf', 'human', 'insect']) assert.ok(requests.has(s + '.webp'), s + ' 아틀라스 전송 확인');
     for (const [i, [, actor]] of actors.entries()) {
       if (actor.rig !== 'g2-walker') assert.ok(rendered[i].attachment.startsWith(actor.rig + '-'));
-      else assert.ok(!/^(machine|stone)-/.test(rendered[i].attachment), '누락 개체 기본 표시');
+      else assert.ok(!Object.values(catalog).some(({ rig }) => rendered[i].attachment.startsWith(rig + '-')), '누락 개체 기본 표시');
     }
   } else assert.deepEqual([...requests].sort(), [...allowedFiles].sort());
   const events = await page.evaluate(({ hitIndex, fallIndex, bossIndices }) => {
@@ -186,8 +192,8 @@ h1{font-size:19px;margin:0 0 12px}#field{width:1408px;height:834px}</style>
     const fall = units[fallIndex].animationState.getTrack(0)?.animation.name;
     return { hit, fall, skill };
   }, {
-    hitIndex: published ? actors.findIndex(([id]) => catalog[id] && id.startsWith('machine-')) : 0,
-    fallIndex: published ? actors.findIndex(([id]) => catalog[id] && id.startsWith('stone-')) : Math.min(1, actors.length - 1),
+    hitIndex: published ? actors.findIndex(([id]) => catalog[id] && id.startsWith('elf-')) : 0,
+    fallIndex: published ? actors.findIndex(([id]) => catalog[id] && id.startsWith('human-')) : Math.min(1, actors.length - 1),
     bossIndices: actors.flatMap(([id, actor], i) => id.includes('-boss-') && actor.rig !== 'g2-walker' ? [i] : []),
   });
   assert.deepEqual(events, {

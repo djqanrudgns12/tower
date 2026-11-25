@@ -80,17 +80,19 @@ Chromium 156에서 실제 전장 길 위에 20개체를 배치했다. 개체마�
 
 ## 일괄 양산
 
-저장소 루트에서 아래 명령을 실행한다. 기계와 바위 폴더에 새 단계의 `sheet.png`, `assembly.png`, `parts.json`이 들어오면 같은 명령을 쓴다.
+저장소 루트에서 아래 명령을 실행한다. 엘프·인간·기계·벌레·바위 폴더에 새 단계의 `sheet.png`, `assembly.png`, `parts.json`이 들어오면 같은 명령을 쓴다.
 
 ```sh
 "$HOME/.agents/skills/spine-authoring/runtime/.venv/bin/python" -B tools/r6/spine/batch.py
 ```
 
+- 다른 종족의 원화를 작업 중이면 명령 뒤에 `--species elf human insect`처럼 갱신할 종족을 지정한다. 나머지 종족은 지난 조립 결과를 쌍별 비교에 사용한다.
 - 각 부품의 가로세로 비율을 유지하면서 조립 원화에 맞춰 위치와 크기를 두 차례 조정한다. 제작자가 지정한 부품 영역은 `placement.json`의 `targets`, 수동 관절은 `jointHints`에 둔다. 관절 양끝을 직접 맞춘 부품은 `fixedTargets`로 고정한다. 시트에 그린 방향과 들고 있는 방향이 다른 부품은 `rotations`에 반시계 회전각을 적는다. 후속 스킨의 관절은 T1 회전축에 맞춘다. 최종 수치는 같은 256px 캔버스에서 측정한 알파 실루엣 IoU다.
-- 절단 오류나 조립 IoU 0.70 미만은 종족별 재요청 목록으로 보낸다. [기계 재요청](../../../../asset-source/r6/monsters/machine/REDO.md) · [바위 재요청](../../../../asset-source/r6/monsters/stone/REDO.md)
+- 절단 오류와 조립 IoU 0.70 미만은 종족별 재요청 목록에 기록한다. 수치를 통과해도 분리된 부위에 사각 배경이나 잘린 관절이 남으면 원화 교체까지 전장에서 기본 보행체를 쓴다. `placement.json`의 `artReview`에는 해당 시트·조립 원화의 해시와 사유를 기록한다. [기계 재요청](../../../../asset-source/r6/monsters/machine/REDO.md) · [바위 재요청](../../../../asset-source/r6/monsters/stone/REDO.md) · [엘프 재요청](../../../../asset-source/r6/monsters/elf/REDO.md) · [인간 재요청](../../../../asset-source/r6/monsters/human/REDO.md) · [벌레 재요청](../../../../asset-source/r6/monsters/insect/REDO.md)
 - 편집기 왕복과 아틀라스 패킹은 자원 보호 아래에서 실행한다. 입력·관절·도구가 같은 개체는 캐시를 쓴다. 새 스킨이 들어오면 해당 계통의 리그와 종족 아틀라스를 갱신한다. 로컬 `.orchestrate/r6-monster-batch/<종족>/packs/<해시>/`에 저작 JSON, 부품, 편집 프로젝트, 런타임 검사 결과가 남는다.
+- 특수 T1은 엘프 잎 정령의 두 잎과 몸통이 위아래로 움직인다. 인간 수레는 바퀴 중심을 축으로 한 바퀴 구른다. 벌레는 등딱지가 들리면서 작은 개체 셋이 서로 다른 박자로 움직인다. 벌레 특수의 펼친 날개 원화는 재작화 예정이다.
 - 전장은 그 웨이브의 종족 아틀라스와 리그를 지연 적재한다. 아직 제작하지 않은 단계와 전송이 실패한 개체는 기존 단계별 보행체를 사용한다. 전송 예산은 **종족당 WebP 768KiB 이내, 최대 2048×2048 한 장**이다. 이 묶음의 동시 표시 검수 목표는 **25개체**로, 5웨이브 한 편성의 크기에 맞췄다. 실기 크롬북 프레임 예산은 G5에서 측정한다.
-- 32px 비교는 조립을 시도한 모든 개체의 그림자를 빼고 수행한다. 인접 단계와 다른 종족의 유사 쌍은 아트 검수에 남긴다. [기계 판독 띠](monsters/machine-32px.webp) · [바위 판독 띠](monsters/stone-32px.webp) · [쌍별 판정](monsters/silhouettes.json)
+- 32px 비교는 조립을 시도한 모든 개체의 그림자를 빼고 수행한다. 인접 단계와 다른 종족의 유사 쌍은 아트 검수에 남긴다. [기계 판독 띠](monsters/machine-32px.webp) · [바위 판독 띠](monsters/stone-32px.webp) · [엘프 판독 띠](monsters/elf-32px.webp) · [인간 판독 띠](monsters/human-32px.webp) · [벌레 판독 띠](monsters/insect-32px.webp) · [쌍별 판정](monsters/silhouettes.json)
 - 혼합 웨이브 확인은 `resource-guard run --profile test --wait-seconds 900 -- node tools/r6/spine/capture-playwright.mjs --published docs/renewal/r6/tech/monsters`로 실행한다. 혼합기가 생성한 편성을 전장 경로에 펼쳐 놓고 걷기, 피격, 쓰러짐, 보스 기술 트랙을 검사한다. [전장 캡처](monsters/battle-walk.webp) · [재생 결과](monsters/battle-report.json)
 
 <!-- monster-batch:begin -->
@@ -115,9 +117,28 @@ Chromium 156에서 실제 전장 길 위에 20개체를 배치했다. 개체마�
 | stone | armored/T1 | 0.933 | 11 | 걷기·피격·쓰러짐 |
 | stone | special/T1 | 0.947 | 3 | 걷기·피격·쓰러짐 |
 | stone | boss-t1/T1 | 0.827 | 11 | 걷기·피격·쓰러짐·기술 |
+| elf | infantry/T1 | 0.876 | 13 | 걷기·피격·쓰러짐 |
+| elf | runner/T1 | 0.879 | 13 | 걷기·피격·쓰러짐 |
+| elf | armored/T1 | 0.925 | 13 | 걷기·피격·쓰러짐 |
+| elf | special/T1 | 0.762 | 7 | 걷기·피격·쓰러짐 |
+| elf | boss-t1/T1 | 0.787 | 13 | 원화 재요청 |
+| human | infantry/T1 | 0.634 | 13 | 조립 재요청 |
+| human | runner/T1 | 0.794 | 13 | 원화 재요청 |
+| human | armored/T1 | 0.922 | 13 | 걷기·피격·쓰러짐 |
+| human | special/T1 | 0.956 | 7 | 걷기·피격·쓰러짐 |
+| human | boss-t1/T1 | 0.760 | 13 | 걷기·피격·쓰러짐·기술 |
+| insect | infantry/T1 | 0.812 | 13 | 원화 재요청 |
+| insect | runner/T1 | 0.722 | 13 | 원화 재요청 |
+| insect | armored/T1 | 0.916 | 13 | 걷기·피격·쓰러짐 |
+| insect | special/T1 | 0.844 | 14 | 걷기·피격·쓰러짐 |
+| insect | boss-t1/T1 | 0.778 | 13 | 원화 재요청 |
 
+- 조립 IoU 0.70 이상 30/33개체, 전장 연결 25/33개체.
 - `machine` 아틀라스 1946×173, WebP 420,394바이트, RGBA8 1,346,632바이트.
 - `stone` 아틀라스 969×175, WebP 193,176바이트, RGBA8 678,300바이트.
-- 인접 단계 8쌍 중 0쌍, 종족 간 65쌍 중 14쌍이 32px 구분 기준에 미달했다.
+- `elf` 아틀라스 691×110, WebP 107,032바이트, RGBA8 304,040바이트.
+- `human` 아틀라스 142×596, WebP 110,988바이트, RGBA8 338,528바이트.
+- `insect` 아틀라스 581×142, WebP 87,470바이트, RGBA8 330,008바이트.
+- 인접 단계 8쌍 중 0쌍, 종족 간 410쌍 중 59쌍이 32px 구분 기준에 미달했다.
 
 <!-- monster-batch:end -->

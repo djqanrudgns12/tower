@@ -189,7 +189,12 @@ def write_summary(rows, atlases, comparisons):
         if row["accepted"] and row["entry"].startswith("boss-"):
             clips += "·기술"
         table.append(f"| {row['species']} | {row['entry']}/{row['skin']} | {row['iou']:.3f} | {row['slots']} | {clips} |")
-    table.append("")
+    passed = sum(row["iou"] >= .70 for row in rows)
+    connected = sum(row["accepted"] for row in rows)
+    atlases = {s: atlases[s] for s in dict.fromkeys(row["species"] for row in rows) if s in atlases}
+    save(REVIEW / "batch.json", {"actors": rows, "atlases": atlases, "assemblyPassed": passed,
+         "publishedActors": connected, "silhouettePairFailures": comparisons["failures"] if comparisons else None})
+    table += ["", f"- 조립 IoU 0.70 이상 {passed}/{len(rows)}개체, 전장 연결 {connected}/{len(rows)}개체."]
     for species, stats in atlases.items():
         table.append(f"- `{species}` 아틀라스 {stats['width']}×{stats['height']}, WebP {stats['bytes']:,}바이트, "
                      f"RGBA8 {stats['rgbaBytes']:,}바이트.")
@@ -311,9 +316,6 @@ def main():
             if marker:
                 lines.append(marker.rstrip() + notes.rstrip())
         publish(path, ("\n".join(lines) + "\n").encode())
-    save(REVIEW / "batch.json", {"actors": rows, "atlases": atlases,
-         "assemblyPassed": sum(row["accepted"] for row in rows),
-         "silhouettePairFailures": comparisons["failures"] if comparisons else None})
     write_summary(rows, atlases, comparisons)
     if selected == set(SPECIES):
         save(receipt, batch_signature())

@@ -3,6 +3,9 @@ import type { Enemy, RunState } from '../../domain/types';
 import { R6_TOWERS, SPECIES, type EntityId, type R6TowerId, type Species } from '../../contracts/balanceV2';
 import type { GameContext } from '../../domain/context';
 import { previewR6Wave } from '../../domain/r6Mixer';
+import elf from './monsters/elf.json';
+import human from './monsters/human.json';
+import insect from './monsters/insect.json';
 import machine from './monsters/machine.json';
 import stone from './monsters/stone.json';
 import { r6Pad } from './mapProjection';
@@ -17,9 +20,8 @@ const atlasKey = (id: string) => `r6.atlas.${id}`;
 const rigKey = (id: string) => `r6.rig.${id}`;
 export const HANGAR_FLIGHT = 'hangar-flight';
 type SpeciesPack = NonNullable<R6Manifest['species'][Species]>;
-const monsterPacks = new Map([
-  ['machine', monsterPackSchema.parse(machine)], ['stone', monsterPackSchema.parse(stone)],
-]);
+const catalogs = { elf, human, insect, machine, stone };
+const monsterPacks = new Map(SPECIES.map(species => [species, monsterPackSchema.parse(catalogs[species])]));
 
 type EnemyRef = { faction?: string };
 
