@@ -1,0 +1,43 @@
+{
+  "atlas": "monsters/human/human.atlas",
+  "rigs": {
+    "human-armored": {
+      "file": "monsters/human/human-armored.json",
+      "scale": 1,
+      "walk": "walk",
+      "hit": "hit",
+      "fall": "fall"
+    },
+    "human-special": {
+      "file": "monsters/human/human-special.json",
+      "scale": 1,
+      "walk": "walk",
+      "hit": "hit",
+      "fall": "fall"
+    },
+    "human-boss-t1": {
+      "file": "monsters/human/human-boss-t1.json",
+      "scale": 1,
+      "walk": "walk",
+      "hit": "hit",
+      "fall": "fall"
+    }
+  },
+  "entities": {
+    "human-armored-t1": {
+      "rig": "human-armored",
+      "skin": "T1",
+      "scale": 1.1
+    },
+    "human-special-t1": {
+      "rig": "human-special",
+      "skin": "T1",
+      "scale": 1.0
+    },
+    "human-boss-t1": {
+      "rig": "human-boss-t1",
+      "skin": "T1",
+      "scale": 1.65
+    }
+  }
+}
