@@ -177,13 +177,30 @@ export function GameScreen({
   const layout = useLayout();
   const r6Plateau = r6 && map.id === 'garden_u';
   const shortLandscape = r6Plateau && layout.portraitHint;
+  const sideDock = layout.mode === 'R' || shortLandscape;
+  const fitBattle = r6Plateau && sideDock;
   const boardAspect = r6Overview.width / r6Overview.height;
   const stackedHeight = r6Plateau && layout.mode === 'S' ? Math.ceil(layout.mapW / boardAspect) : layout.mapH;
-  // 가로 화면에서 HUD·회전 안내·바깥 여백에 120px을 두고 전장 높이를 맞춘다.
-  const mapH = shortLandscape
-    ? Math.min(stackedHeight, Math.max(96, Math.floor((window.visualViewport?.height ?? window.innerHeight) - 120)))
+  const boardWidth = r6Plateau ? Math.min(layout.mapW, Math.ceil(stackedHeight * boardAspect)) : layout.mapW;
+  const fieldTrack = useRef<HTMLDivElement>(null);
+  const [fieldSpace, setFieldSpace] = useState<{ width: number; height: number } | null>(null);
+  useLayoutEffect(() => {
+    const track = fieldTrack.current;
+    if (!fitBattle || !track) return;
+    const measure = () => {
+      const { clientWidth: width, clientHeight: height } = track;
+      setFieldSpace(prev => prev?.width === width && prev.height === height ? prev : { width, height });
+    };
+    measure();
+    const observer = new ResizeObserver(measure);
+    observer.observe(track);
+    return () => observer.disconnect();
+  }, [fitBattle]);
+  // 화면 높이에서 HUD와 문제판의 실제 높이를 뺀 자리에 투영 비율을 유지한다.
+  const mapH = fitBattle && fieldSpace
+    ? Math.max(1, Math.min(fieldSpace.height, Math.floor(fieldSpace.width / boardAspect)))
     : stackedHeight;
-  const mapW = r6Plateau ? Math.min(layout.mapW, Math.ceil(mapH * boardAspect)) : layout.mapW;
+  const mapW = fitBattle && fieldSpace ? Math.ceil(mapH * boardAspect) : boardWidth;
   const [rawSelection, setSelection] = useState<FieldSelection>(EMPTY);
   const [evolveOpen, setEvolveOpen] = useState(false);
   const [icons, setIcons] = useState<Record<string, string>>({});
@@ -503,7 +520,7 @@ export function GameScreen({
   };
 
   // ── 상황 카드: 고른 타워 → 능력치, 아무것도 안 고르고 웨이브 사이 → 다음 적, 전투 중 → 남은 적 ──
-  const compact = layout.compactRail;
+  const compact = layout.compactRail || shortLandscape;
   const detail = selectedTower ? (() => {
     const form = towerForm(selectedTower);
     const cost = upgradeCost(b, selectedTower.type, selectedTower.level);
@@ -652,7 +669,8 @@ export function GameScreen({
         phase={phase}
         prep={view.question.label.startsWith('준비') ? view.prep : null}
         correctGold={view.stakes.correctGold}
-        variant={layout.mode === 'R' ? 'seam' : layout.wideQuestion ? 'wide' : 'narrow'}
+        variant={shortLandscape ? 'narrow' : layout.mode === 'R' ? 'seam' : layout.wideQuestion ? 'wide' : 'narrow'}
+        keepTwoColumns={fitBattle}
         twoByTwoMinPx={DEFAULTS.layout.optionGrid.twoByTwoMinCellWidthPx}
         showKeyHints={showKeyHints}
         onAnswer={onAnswer}
@@ -750,10 +768,10 @@ export function GameScreen({
     </div>
   );
 
-  const mainStyle: CSSProperties = layout.mode === 'R'
+  const mainStyle: CSSProperties = sideDock
     ? ({
-        padding: layout.pad,
-        '--map-w': `${mapW}px`,
+        padding: shortLandscape ? 8 : layout.pad,
+        '--map-w': `${boardWidth}px`,
         '--map-h': `${mapH}px`,
         '--rail-w': `${layout.railW}px`,
         '--q-h': `${layout.q}px`,
@@ -775,16 +793,18 @@ export function GameScreen({
   return (
     <BattlePortraits.Provider value={portraits}>
       <main
-        className={`r04-panel-colors ${css.screen} ${layout.mode === 'R' ? css.modeR : css.modeS}`}
+        className={`r04-panel-colors ${css.screen} ${sideDock ? css.modeR : css.modeS}`}
         style={mainStyle}
         data-r6={r6 || undefined}
+        data-fit-battle={fitBattle || undefined}
+        data-short-landscape={shortLandscape || undefined}
         inert={paused || evolveOpen || recruitOpen}
       >
         <h1 className="sr-only">어휘력 타워 디펜스 · {Math.max(1, view.wave)}웨이브</h1>
-        {layout.mode === 'R' ? (
+        {sideDock ? (
           <>
             {r6 && <div className={css.hudRow}>{hud}</div>}
-            {field}
+            {fitBattle ? <div className={css.fieldTrack} ref={fieldTrack}>{field}</div> : field}
             <Card as="aside" material="board" pad="none" className={css.rail} style={r6 ? undefined : { height: layout.mapH }} aria-label="타워 관리">
               {!r6 && hud}
               {!practiceDone && (

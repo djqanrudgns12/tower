@@ -396,6 +396,12 @@
   max-height: 66px;
 }
 
+/* 낮은 가로 화면에서는 해설을 전장 쪽으로 열어 다음 문제 버튼이 화면 안에 남는다. */
+[data-short-landscape] .panel.narrow { padding-block: var(--s1); }
+[data-short-landscape] .narrow .stem { line-height: 1.25; }
+[data-short-landscape] .narrow .options { gap: var(--s1); }
+[data-short-landscape] .narrow .explainBox { top: auto; bottom: calc(100% + var(--s1)); }
+
 @keyframes rise {
   from { opacity: 0; transform: translateY(-6px); }
   to { opacity: 1; transform: translateY(0); }

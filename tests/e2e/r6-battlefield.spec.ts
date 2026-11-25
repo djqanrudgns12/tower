@@ -178,7 +178,7 @@ async function padPoint(page: Page, id: string) {
   }, id);
 }
 
-test('실제 전투 화면의 4개 해상도에서 전장 점유율과 설치·상세 팝오버를 확인한다', async ({ page }, testInfo) => {
+test('실제 전투 화면의 4개 해상도에서 문제판과 전장이 한 화면에 들어온다', async ({ page }, testInfo) => {
   await page.setViewportSize({ width: 1280, height: 720 });
   await page.emulateMedia({ reducedMotion: 'reduce' });
   await openGameScreen(page);
@@ -210,6 +210,8 @@ test('실제 전투 화면의 4개 해상도에서 전장 점유율과 설치·�
 
   // 전투를 시작해 문제판, HUD, 타워 도크가 표시되는 제품 화면으로 측정한다.
   await page.getByRole('button', { name: '전투 시작' }).click();
+  const quiz = page.getByRole('region', { name: '어휘 문제' });
+  await expect(quiz.getByRole('button', { name: '모르겠어요' })).toBeVisible();
   const cdp = await page.context().newCDPSession(page);
   try {
     let previousField: number[] | null = null;
@@ -263,6 +265,24 @@ test('실제 전투 화면의 4개 해상도에서 전장 점유율과 설치·�
       expect(measured.vertical, viewport).toBeGreaterThanOrEqual(90);
       expect(measured.inside, viewport).toBe(true);
       expect(measured.bottom, viewport).toBeLessThanOrEqual(height);
+      const question = await quiz.evaluate(panel => {
+        const stem = panel.querySelector<HTMLElement>('[data-content] > p')!;
+        const choices = [...panel.querySelectorAll<HTMLElement>('[data-option-text]')];
+        const skip = panel.querySelector<HTMLElement>('button[aria-describedby^="skip-note-"]')!;
+        const bounds = [panel, stem, ...choices.map(choice => choice.closest('button')!), skip].map(el => el.getBoundingClientRect());
+        return {
+          inside: bounds.every(r => r.top >= 0 && r.left >= 0 && r.right <= innerWidth && r.bottom <= innerHeight),
+          scroll: document.documentElement.scrollHeight - innerHeight,
+          stem: parseFloat(getComputedStyle(stem).fontSize),
+          choices: choices.map(choice => parseFloat(getComputedStyle(choice).fontSize)),
+        };
+      });
+      expect(question.inside, viewport).toBe(true);
+      expect(question.scroll, viewport).toBe(0);
+      expect(question.stem, viewport).toBeGreaterThanOrEqual(16);
+      expect(question.choices, viewport).toHaveLength(4);
+      expect(Math.min(...question.choices), viewport).toBeGreaterThanOrEqual(15);
+      console.log(`${viewport} · 본문 ${question.stem}px · 보기 ${question.choices.join('/')}px · 문서 스크롤 ${question.scroll}px`);
       const shot = await page.screenshot();
       const webp = await page.evaluate(async png => {
         const bitmap = await createImageBitmap(await (await fetch(`data:image/png;base64,${png}`)).blob());
@@ -280,6 +300,16 @@ test('실제 전투 화면의 4개 해상도에서 전장 점유율과 설치·�
   } finally {
     await cdp.detach();
   }
+});
+
+test('홈 미리보기는 초원 고원 3/4 전장 렌더를 표시한다', async ({ page }) => {
+  await page.goto('/');
+  const image = page.getByRole('img', { name: '초원 고원 전장 미리보기' });
+  await expect(image).toBeVisible();
+  await expect.poll(() => image.evaluate(img => {
+    const preview = img as HTMLImageElement;
+    return preview.complete && preview.naturalWidth > 0 ? new URL(preview.currentSrc).pathname : '';
+  })).toMatch(/\/assets\/r6\/map\/meadow-plateau\.webp$/);
 });
 
 test('초원 고원에서 설치·진화·포두 발사·Spine 보행을 재생하고 4배 감속을 측정한다', async ({ page, browser }, testInfo) => {
@@ -426,6 +456,12 @@ test('R6 새 판에서 레일 포탑 11형태, 웨이브 해금 순서와 종족
   page.on('pageerror', error => errors.push(error.message));
   await openField(page, true, true);
   const canvas = page.locator('#field canvas');
+  // 로딩 중의 기본 카메라가 아니라 설치대와 확대된 카메라가 그려진 뒤에 픽셀을 비교한다.
+  await expect.poll(() => page.evaluate(() => {
+    const scene = window.r6Field.game.scene.getScene('battle');
+    const view = scene.cameras?.main.worldView;
+    return Boolean(scene.children?.getByName('r6:pad:garden_u-s12') && view && view.width > 0 && view.width < scene.scale.width);
+  })).toBe(true);
   const readRun = () => page.evaluate(() => {
     const { state } = window.r6Field.controller;
     return { owned: state.owned, version: state.config.balanceVersion, wave: state.wave, completed: state.completedWave };

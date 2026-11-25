@@ -23,6 +23,7 @@ interface Props {
   correctGold: number;
   /** seam: R 모드(오른쪽 열이 레일과 수직선을 맞춘다), wide: 태블릿 두 칸, narrow: 휴대폰. */
   variant: 'seam' | 'wide' | 'narrow';
+  keepTwoColumns?: boolean;
   showKeyHints?: boolean;
   /** 2×2 배치에 필요한 칸 최소 너비(계약 layout.optionGrid). */
   twoByTwoMinPx?: number;
@@ -46,6 +47,7 @@ export function QuestionPanel({
   prep,
   correctGold,
   variant,
+  keepTwoColumns = false,
   showKeyHints = true,
   twoByTwoMinPx = GRID.twoByTwoMinCellWidthPx,
   onAnswer,
@@ -61,10 +63,10 @@ export function QuestionPanel({
   const fb = question.feedback;
   // 화면 회전·창 크기·글자 크기가 바뀌면 제출 뒤라도 다시 잰다. 채점 뒤에도 글자 굵기가 그대로라 제출 전후 결과가 같다.
   const measureKey = [question.encounterId, variant, showKeyHints ? 1 : 0, layout.mode, layout.mapW, layout.railW, layout.font].join(':');
-  const cols = columns.key === measureKey ? columns.cols : 2;
+  const cols = !keepTwoColumns && columns.key === measureKey ? columns.cols : 2;
 
   useLayoutEffect(() => {
-    if (columns.key === measureKey) return;
+    if (keepTwoColumns || columns.key === measureKey) return;
     const box = optionsRef.current;
     if (!box) return;
     // 2열로 그린 상태에서 칸 너비(계약 optionGrid)와 줄 수를 재어 열 수를 정한다.
@@ -76,7 +78,7 @@ export function QuestionPanel({
     const maxLines = variant === 'narrow' ? GRID.twoByTwoMaxLinesNarrow : GRID.twoByTwoMaxLines;
     const fits = cellWidth >= twoByTwoMinPx && texts.every(t => t.scrollHeight <= lineHeight * maxLines + 2);
     setColumns({ key: measureKey, cols: fits ? 2 : 1 });
-  }, [measureKey, columns.key, twoByTwoMinPx, variant]);
+  }, [measureKey, columns.key, keepTwoColumns, twoByTwoMinPx, variant]);
 
   useEffect(() => {
     keyReady.current = false;

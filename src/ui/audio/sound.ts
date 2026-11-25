@@ -1,5 +1,4 @@
-import type { TowerId } from '../../contracts/balance';
-import type { DomainEvent } from '../../domain/events';
+import type { DomainEvent, EngineTowerId } from '../../domain/engineTypes';
 
 // 소리(PRD §11.5). P1은 음원 파일 없이 WebAudio로 짧은 효과음과 배경 선율을 합성한다.
 // 도메인 사건을 듣기만 하고 판정·보상에 관여하지 않는다. 첫 사용자 입력 뒤에만 소리를 켜고, 실패하면 무음으로 진행한다.
@@ -16,7 +15,7 @@ export interface AudioConfig {
 }
 
 /** 효과음 종류. 정답·오답·누출이 가장 먼저이고, 넘치면 장식인 발사음부터 생략한다. */
-export type Sfx = `fire.${TowerId}` | 'kill' | 'leak' | 'correct' | 'wrong' | 'skipped' | 'wave' | 'milestone';
+export type Sfx = `fire.${EngineTowerId}` | 'kill' | 'leak' | 'correct' | 'wrong' | 'skipped' | 'wave' | 'milestone';
 const PRIORITY: Record<string, number> = { correct: 3, wrong: 3, leak: 3, skipped: 2, wave: 2, milestone: 2, kill: 1 };
 const priorityOf = (s: Sfx) => PRIORITY[s] ?? 0;
 
@@ -78,6 +77,11 @@ const SCORE: Record<Sfx, Note[]> = {
   'fire.wind': [{ f: 400, to: 250, t: 0, d: 0.12, type: 'sine', gain: 0.2 }],
   'fire.trap': [{ f: 260, to: 200, t: 0, d: 0.08, type: 'square', gain: 0.18 }],
   'fire.bell': [{ f: 523, t: 0, d: 0.25, type: 'sine', gain: 0.3 }],
+  'fire.rail': [{ f: 1100, to: 440, t: 0, d: 0.055, type: 'triangle', gain: 0.28 }],
+  'fire.cryo': [{ f: 930, to: 740, t: 0, d: 0.15, type: 'sine', gain: 0.26 }],
+  'fire.prism': [{ f: 760, to: 1520, t: 0, d: 0.11, type: 'sine', gain: 0.23 }],
+  'fire.hangar': [{ f: 540, t: 0, d: 0.045, type: 'triangle', gain: 0.23 }, { f: 645, t: 0.04, d: 0.045, type: 'triangle', gain: 0.2 }],
+  'fire.bastion': [{ f: 225, to: 115, t: 0, d: 0.12, type: 'triangle', gain: 0.4 }],
   kill: [{ f: 880, to: 1320, t: 0, d: 0.06, type: 'square', gain: 0.12 }],
   leak: [{ f: 140, to: 90, t: 0, d: 0.28, type: 'triangle', gain: 0.6 }],
   correct: [{ f: C6, t: 0, d: 0.09, type: 'triangle', gain: 0.5 }, { f: E6, t: 0.09, d: 0.14, type: 'triangle', gain: 0.5 }],

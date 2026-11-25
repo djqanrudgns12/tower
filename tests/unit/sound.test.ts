@@ -1,5 +1,6 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { DEFAULTS } from '../../src/content';
+import { R6_TOWERS } from '../../src/contracts/balanceV2';
 import type { DomainEvent } from '../../src/domain/events';
 import { admit, SoundDirector, sfxFor, type AudioConfig, type Voice } from '../../src/ui/audio/sound';
 
@@ -56,6 +57,18 @@ describe('SoundDirector', () => {
     const sound = new SoundDirector(cfg, 5, () => ctx as unknown as AudioContext);
     sound.handle([fire('archer')]);
     expect(ctx.oscillators).toBe(0);
+  });
+
+  it.each(R6_TOWERS)('R6 %s 발사를 처리하면 효과음 채널에 등록한다', towerType => {
+    const ctx = fakeContext();
+    const sound = new SoundDirector(cfg, 5, () => ctx as unknown as AudioContext);
+    sound.unlock();
+    try {
+      sound.handle([{ type: 'fire', projectileId: 1, towerId: 1, towerType }]);
+      expect(sound.activeVoices.map(v => v.sfx)).toEqual([`fire.${towerType}`]);
+    } finally {
+      sound.dispose();
+    }
   });
 
   it('음소거·정지·재개를 반복해도 배경 선율 타이머는 하나뿐이고, 꺼진 동안에는 효과음을 내지 않는다', () => {
