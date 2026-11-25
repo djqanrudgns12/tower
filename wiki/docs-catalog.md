@@ -10,15 +10,15 @@ generated_by: tools/wiki/gen.mjs
 
 > 이 파일은 `npm run wiki:sync` (`tools/wiki/gen.mjs`)가 코드·계약 JSON·SQL에서 결정적으로 자동 생성합니다. 직접 수정하지 마세요.
 
-- 스캔된 마크다운 총계: **254개 파일** · **1,916,533자** · 추정 **약 1,245,864 토큰**
+- 스캔된 마크다운 총계: **255개 파일** · **1,917,447자** · 추정 **약 1,246,458 토큰**
 - **경고**: `해시 고정(validate-plan)` 문서는 1바이트도 수정·이동하면 안 되며, `링크·참조 검사(validate-plan)` 및 `코드·시험 경로 참조` 문서도 기존 경로를 그대로 유지해야 합니다.
 
 ## 분류별 요약
 
 | 분류 | 파일 수 | 글자 수 | 추정 토큰 |
 | --- | ---: | ---: | ---: |
-| 01. 진입·규약 및 LLM Wiki | 34 | 168,404 | 109,478 |
-| 02. 리뉴얼 현행 기준 (PRD보다 우선) | 76 | 549,787 | 357,398 |
+| 01. 진입·규약 및 LLM Wiki | 34 | 168,548 | 109,571 |
+| 02. 리뉴얼 현행 기준 (PRD보다 우선) | 77 | 550,557 | 357,899 |
 | 03. 호스팅·배포·운영 기준 | 3 | 36,412 | 23,669 |
 | 04. 문제은행 CR-1000 공동검수 | 6 | 201,954 | 131,272 |
 | 05. 제작 PRD v0.5 및 계약 기준 | 6 | 143,424 | 93,229 |
@@ -51,7 +51,7 @@ generated_by: tools/wiki/gen.mjs
 | [wiki/concepts/ui-phaser-and-assets.md](../wiki/concepts/ui-phaser-and-assets.md) | 현행 활성 | Explanation | - | 6 | 4,960 |
 | [wiki/contracts.md](../wiki/contracts.md) | 현행 활성 | Reference / Navigation | - | 11 | 8,147 |
 | [wiki/decisions-index.md](../wiki/decisions-index.md) | 현행 활성 | Reference / Navigation | - | 1 | 2,901 |
-| [wiki/docs-catalog.md](../wiki/docs-catalog.md) | 현행 활성 | Reference / Navigation | - | 10 | 34,382 |
+| [wiki/docs-catalog.md](../wiki/docs-catalog.md) | 현행 활성 | Reference / Navigation | - | 10 | 34,526 |
 | [wiki/entities/tech-stack.md](../wiki/entities/tech-stack.md) | 현행 활성 | Reference / Navigation | - | 4 | 3,796 |
 | [wiki/entities/vocabulary-td.md](../wiki/entities/vocabulary-td.md) | 현행 활성 | Reference / Navigation | - | 5 | 3,349 |
 | [wiki/glossary.md](../wiki/glossary.md) | 현행 활성 | Reference / Navigation | - | 1 | 5,322 |
@@ -100,6 +100,7 @@ generated_by: tools/wiki/gen.mjs
 | [docs/renewal/r6/PRD-r6.md](../docs/renewal/r6/PRD-r6.md) | 현행 우선 기준 | Explanation / Spec | - | 21 | 9,770 |
 | [docs/renewal/r6/README.md](../docs/renewal/r6/README.md) | 현행 우선 기준 | Explanation / Spec | - | 9 | 4,398 |
 | [docs/renewal/r6/research.md](../docs/renewal/r6/research.md) | 현행 우선 기준 | Explanation / Spec | - | 8 | 4,924 |
+| [docs/renewal/r6/review/G4-monsters-notes.md](../docs/renewal/r6/review/G4-monsters-notes.md) | 현행 우선 기준 | Explanation / Spec | - | 5 | 770 |
 | [docs/renewal/r6/review/G4-towers-critique.md](../docs/renewal/r6/review/G4-towers-critique.md) | 현행 우선 기준 | Explanation / Spec | - | 18 | 15,743 |
 | [docs/renewal/r6/review/G4-towers-fix.md](../docs/renewal/r6/review/G4-towers-fix.md) | 현행 우선 기준 | Explanation / Spec | - | 2 | 2,317 |
 | [docs/renewal/r6/round2/concepts/N1/concept.md](../docs/renewal/r6/round2/concepts/N1/concept.md) | 현행 우선 기준 | Explanation / Spec | - | 13 | 5,937 |
