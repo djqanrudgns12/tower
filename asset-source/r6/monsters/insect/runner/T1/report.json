@@ -1,0 +1,337 @@
+{
+  "species": "insect",
+  "entry": "runner",
+  "skin": "T1",
+  "sheet": "sheet.png",
+  "reference": "assembly.png",
+  "guide": "runner-quadruped.json",
+  "placement": "placement.json",
+  "ready": true,
+  "silhouetteIoU": 0.722,
+  "parts": {
+    "leg-fore-far": {
+      "sourceBox": [
+        996,
+        85,
+        1059,
+        210
+      ],
+      "targetBox": [
+        126,
+        134,
+        159,
+        182
+      ],
+      "placedBox": [
+        130,
+        134,
+        154,
+        182
+      ]
+    },
+    "leg-hind-foot-far": {
+      "sourceBox": [
+        700,
+        94,
+        779,
+        202
+      ],
+      "targetBox": [
+        79,
+        153,
+        96,
+        175
+      ],
+      "placedBox": [
+        79,
+        153,
+        95,
+        175
+      ]
+    },
+    "leg-hind-far": {
+      "sourceBox": [
+        409,
+        102,
+        494,
+        194
+      ],
+      "targetBox": [
+        79,
+        143,
+        105,
+        184
+      ],
+      "placedBox": [
+        79,
+        149,
+        105,
+        177
+      ]
+    },
+    "head": {
+      "sourceBox": [
+        680,
+        310,
+        799,
+        465
+      ],
+      "targetBox": [
+        130,
+        90,
+        176,
+        141
+      ],
+      "placedBox": [
+        133,
+        90,
+        172,
+        141
+      ]
+    },
+    "armor": {
+      "sourceBox": [
+        963,
+        327,
+        1092,
+        448
+      ],
+      "targetBox": [
+        68,
+        67,
+        147,
+        158
+      ],
+      "placedBox": [
+        68,
+        75,
+        147,
+        149
+      ]
+    },
+    "body": {
+      "sourceBox": [
+        338,
+        334,
+        566,
+        441
+      ],
+      "targetBox": [
+        67,
+        125,
+        140,
+        173
+      ],
+      "placedBox": [
+        67,
+        132,
+        140,
+        166
+      ]
+    },
+    "leg-fore-foot-far": {
+      "sourceBox": [
+        105,
+        336,
+        222,
+        439
+      ],
+      "targetBox": [
+        138,
+        151,
+        162,
+        170
+      ],
+      "placedBox": [
+        139,
+        151,
+        161,
+        170
+      ]
+    },
+    "leg-fore-near": {
+      "sourceBox": [
+        914,
+        536,
+        1142,
+        720
+      ],
+      "targetBox": [
+        107,
+        128,
+        148,
+        179
+      ],
+      "placedBox": [
+        107,
+        137,
+        148,
+        170
+      ]
+    },
+    "leg-hind-near": {
+      "sourceBox": [
+        379,
+        555,
+        524,
+        701
+      ],
+      "targetBox": [
+        81,
+        137,
+        118,
+        192
+      ],
+      "placedBox": [
+        81,
+        146,
+        118,
+        183
+      ]
+    },
+    "mark": {
+      "sourceBox": [
+        103,
+        563,
+        225,
+        693
+      ],
+      "targetBox": [
+        93,
+        134,
+        103,
+        143
+      ],
+      "placedBox": [
+        94,
+        134,
+        102,
+        143
+      ]
+    },
+    "leg-hind-foot-near": {
+      "sourceBox": [
+        694,
+        581,
+        785,
+        674
+      ],
+      "targetBox": [
+        77,
+        173,
+        100,
+        205
+      ],
+      "placedBox": [
+        77,
+        177,
+        100,
+        201
+      ]
+    },
+    "gear": {
+      "sourceBox": [
+        389,
+        791,
+        514,
+        944
+      ],
+      "targetBox": [
+        147,
+        125,
+        187,
+        195
+      ],
+      "placedBox": [
+        147,
+        135,
+        187,
+        184
+      ]
+    },
+    "leg-fore-foot-near": {
+      "sourceBox": [
+        118,
+        819,
+        209,
+        917
+      ],
+      "targetBox": [
+        132,
+        156,
+        161,
+        177
+      ],
+      "placedBox": [
+        136,
+        156,
+        156,
+        177
+      ]
+    }
+  },
+  "pivots": {
+    "body": [
+      103,
+      159
+    ],
+    "head": [
+      152,
+      130
+    ],
+    "skill": [
+      167.66,
+      120.4
+    ],
+    "leg-hind-far": [
+      89,
+      155
+    ],
+    "leg-hind-foot-far": [
+      82,
+      158
+    ],
+    "leg-fore-far": [
+      139,
+      142
+    ],
+    "leg-fore-foot-far": [
+      144,
+      156
+    ],
+    "leg-hind-near": [
+      108,
+      156
+    ],
+    "leg-hind-foot-near": [
+      82,
+      184
+    ],
+    "leg-fore-near": [
+      127,
+      142
+    ],
+    "leg-fore-foot-near": [
+      143,
+      161
+    ]
+  },
+  "issues": [
+    {
+      "code": "speck",
+      "box": [
+        1139,
+        540,
+        1140,
+        541
+      ]
+    }
+  ],
+  "fitScores": [
+    0.687,
+    0.722
+  ],
+  "accepted": false,
+  "artRedo": "가까운 앞다리(leg-fore-near)에 다른 부위와 사각 배경이 남습니다. 날개·가슴의 잘린 좌측 가장자리도 함께 복원해 주세요.",
+  "redo": "가까운 앞다리(leg-fore-near)에 다른 부위와 사각 배경이 남습니다. 날개·가슴의 잘린 좌측 가장자리도 함께 복원해 주세요."
+}

@@ -1,0 +1,31 @@
+{
+  "atlas": "monsters/insect/insect.atlas",
+  "rigs": {
+    "insect-armored": {
+      "file": "monsters/insect/insect-armored.json",
+      "scale": 1,
+      "walk": "walk",
+      "hit": "hit",
+      "fall": "fall"
+    },
+    "insect-special": {
+      "file": "monsters/insect/insect-special.json",
+      "scale": 1,
+      "walk": "walk",
+      "hit": "hit",
+      "fall": "fall"
+    }
+  },
+  "entities": {
+    "insect-armored-t1": {
+      "rig": "insect-armored",
+      "skin": "T1",
+      "scale": 1.1
+    },
+    "insect-special-t1": {
+      "rig": "insect-special",
+      "skin": "T1",
+      "scale": 1.0
+    }
+  }
+}
