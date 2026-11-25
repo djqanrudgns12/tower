@@ -15,6 +15,7 @@ from fit_parts import fit
 from monsters import ACTORS, SPECIES, export, prepare, read_json
 from pilot import write_json
 from review import review_images
+from swarm import animate_swarm
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[2]
@@ -67,7 +68,7 @@ def process_actor(folder, canonical, first_targets):
     placement.update(scale=meta["scale"], armless=meta.get("armless", False))
     inputs = digest(folder / "parts.json", sheet, assembly, guide, canonical, HERE / "fit_parts.py",
                     HERE / "cut_parts.py", HERE / "part_guides.py", HERE / "parts.py")
-    config = {k: v for k, v in placement.items() if k not in ("fitKey", "fitScores")}
+    config = {k: v for k, v in placement.items() if k not in ("fitKey", "fitScores", "artReview")}
     if placement.get("fitKey") != digest(inputs, config):
         template = read_json(guide)
         issues = []
@@ -78,7 +79,7 @@ def process_actor(folder, canonical, first_targets):
                                          placement, canonical)
         else:
             placement["fitScores"] = []
-        config = {k: v for k, v in placement.items() if k not in ("fitKey", "fitScores")}
+        config = {k: v for k, v in placement.items() if k not in ("fitKey", "fitScores", "artReview")}
         placement["fitKey"] = digest(inputs, config)
         save(placement_path, placement)
     work = CACHE / species / entry / skin / placement["fitKey"]
@@ -91,8 +92,12 @@ def process_actor(folder, canonical, first_targets):
         report["ready"] = False
     report["fitScores"] = placement["fitScores"]
     report["accepted"] = report["ready"] and report["silhouetteIoU"] >= .70
+    review = placement.get("artReview")
+    if review and review["sourceHash"] == digest(sheet, assembly):
+        report["artRedo"] = review["reason"]
+        report["accepted"] = False
     if not report["accepted"]:
-        report["redo"] = placement.get("redoNote") or redo_reason(work, report)
+        report["redo"] = report.get("artRedo") or placement.get("redoNote") or redo_reason(work, report)
     save(folder / "report.json", report)
     return meta, report, work
 
@@ -117,6 +122,8 @@ def pack_species(species, items):
     # 변경된 개체만 절단·정렬하고, 아틀라스는 달라진 종족만 다시 묶는다.
     key = digest([(m, r, w.name) for m, r, w in accepted],
                  *(HERE / f for f in ("monsters.py", "rigs.py", "pilot.py", "check-runtime.mjs")))
+    if species == "insect":
+        key = digest(key, HERE / "swarm.py")
     cache = CACHE / species / "packs" / key
     if not (cache / "export/motion-report.json").exists():
         cache.parent.mkdir(parents=True, exist_ok=True)
@@ -137,6 +144,11 @@ def pack_species(species, items):
             config["rigs"] = profiles
             write_json(source / "species.json", config)
             prepare(source, work, available=available)
+            if species == "insect" and profiles.get("special", {}).get("variant") == "swarm":
+                path = work / "rigs/insect-special.json"
+                rig = read_json(path)
+                animate_swarm(rig)
+                write_json(path, rig)
             export(work, "spine-cli", rig_cache=CACHE / species / "rigs")
             subprocess.run(["node", HERE / "check-runtime.mjs", work], check=True)
             shutil.copyfile(source / "species.json", work / "species.json")
@@ -172,6 +184,8 @@ def write_summary(rows, atlases, comparisons):
              "| --- | --- | ---: | ---: | --- |"]
     for row in rows:
         clips = "걷기·피격·쓰러짐" if row["accepted"] else "조립 재요청"
+        if row.get("artRedo"):
+            clips = "원화 재요청"
         if row["accepted"] and row["entry"].startswith("boss-"):
             clips += "·기술"
         table.append(f"| {row['species']} | {row['entry']}/{row['skin']} | {row['iou']:.3f} | {row['slots']} | {clips} |")
@@ -274,7 +288,8 @@ def main():
                 if not report["accepted"]:
                     redo.append(f"- `{entry}/{skin}` {report['redo']}")
                 rows.append({"species": species, "entry": entry, "skin": skin, "iou": report["silhouetteIoU"],
-                             "slots": len(report["parts"]), "accepted": report["accepted"]})
+                             "slots": len(report["parts"]), "accepted": report["accepted"],
+                             **({"artRedo": report["artRedo"]} if "artRedo" in report else {})})
         if species_images:
             images[species] = species_images
         pack = pack_species(species, items)

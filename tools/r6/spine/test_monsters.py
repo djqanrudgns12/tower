@@ -17,12 +17,30 @@ from pilot import write_json
 from review import review
 from rigs import VARIANTS, layout
 from sample import generate
+from swarm import animate_swarm
 
 
 FIXTURE = Path(__file__).resolve().parents[3] / "asset-source/r6/monsters/_pipeline-test/species.json"
 
 
 class MonsterPipelineTest(unittest.TestCase):
+    def test_swarm_hinge_preserves_skin_positions_and_loops(self):
+        covers = [{"x": x, "y": 2, "width": 30, "height": 20, "scaleX": .5, "scaleY": .5} for x in (4, 9)]
+        rig = {"slots": [{"name": "armor", "bone": "body"}], "bones": [],
+               "skins": [{"attachments": {"armor": {"armor": cover}}} for cover in covers],
+               "animations": {"walk": {"bones": {"body": {"translate": [{"time": .8}]}, "swarm-1": {}}}}}
+        animate_swarm(rig)
+        hinge, = rig["bones"]
+        self.assertEqual(rig["slots"][0]["bone"], hinge["name"])
+        self.assertEqual(hinge["parent"], "body")
+        for x, cover in zip((4, 9), covers):
+            self.assertEqual((hinge["x"] + cover["x"], hinge["y"] + cover["y"]), (x, 2))
+        walk = rig["animations"]["walk"]["bones"]
+        for name in ("swarm-1", hinge["name"]):
+            keys = walk[name]["rotate"]
+            self.assertEqual(keys[0]["value"], keys[-1]["value"])
+            self.assertNotEqual(keys[1]["value"], keys[0]["value"])
+
     def test_rotated_part_preserves_source_box_and_fixed_joint(self):
         part = Image.new("RGBA", (8, 24), (74, 85, 99, 255))
         source_box = [12, 20, 20, 44]
