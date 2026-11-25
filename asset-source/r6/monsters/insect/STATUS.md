@@ -1,14 +1,16 @@
 # 군체 벌레 (`insect`) 분해 시트 진행 현황
 
 - 기준: `docs/renewal/r6/PRD-r6.md` §4, `docs/renewal/r6/tech/monster-pipeline.md`, `docs/renewal/r6/bible/monsters.md`, `docs/renewal/r6/bible/sheets/monsters-insect.webp`
-- 진행률: **18 / 20 완료** (`infantry` 4/4 · `runner` 4/4 · `armored` 4/4 · `special` 4/4 · `boss` 2/4)
+- 진행률: **20 / 20 완료** (`infantry` 4/4 · `runner` 4/4 · `armored` 4/4 · `special` 4/4 · `boss` 4/4)
 - 3회차 처리:
   - `REDO.md` `## 조립` 잔여 1건 완료: `runner/T1` (`leg-fore-near` 배경 정리 + 날개/가슴 복원, `infantry/T1`·`boss-t1/T1`은 `## 도구로 해결` 분류에 따라 유지)
   - `special` T1·T2 윤곽 재설계(낮은 원반형 비행체) 및 `special` T3·T4·`boss-t3/T3`(W15) 각진 다면체 틸 광물 장갑판 반영
   - `docs/renewal/r6/bible/sheets/monsters-insect.webp` `special` T1~T4·`boss` W15 칸 및 하단 32px 스트립(`특수 T4`·`보스 W15`) 갱신 완료
-- 중단 사유: 이미지 생성 한도 초과 (`HTTP 429 RESOURCE_EXHAUSTED`, 2026-11-26 03:57 KST 확인, 한도 해제 예정 시각 **2026-11-26 06:51 KST** / 대기 약 2시간 53분)
+- 4회차 처리:
+  - 잔여 보스 2개체(`boss-t2/T2`, `boss-t4/T4`) 신규 분해 시트·조립 기준판 제작 완료 (`boss-quadruped.json`, 마젠타 배경 완전 제거, `cut_parts.py` 및 `fit_parts.py` 모의 정합 통과)
+  - `docs/renewal/r6/bible/sheets/monsters-insect-parts-all.webp` 20/20 한눈판 갱신 완료
 
-## 완료 목록 (18개체)
+## 완료 목록 (20개체)
 
 | 개체 | 안내판 | 배율 | 슬롯 수 | 재사용 부위 | 절단 / 정합 검사 |
 |---|---|---:|---:|---|---|
@@ -29,9 +31,10 @@
 | `special/T3` | `special-swarm.json` | 1.25 | 6 | 없음(**각진 광물판 반영**) | 통과 (`ready=true`, `fitIoU=0.727`) |
 | `special/T4` | `special-swarm.json` | 1.38 | 13 | 없음(**6족+광물판+자충 3기**) | 통과 (`ready=true`, `fitIoU=0.831`) |
 | `boss-t1/T1` | `boss-biped.json` | 1.65 | 13 | 없음(기본 · 기존 유지) | 통과 (`ready=true`) |
+| `boss-t2/T2` | `boss-quadruped.json` | 1.80 | 11 | 없음(**W10 거대 장수대왕 · 4회차 신규**) | 통과 (`ready=true`, `fitIoU=0.826`) |
 | `boss-t3/T3` | `boss-quadruped.json` | 2.00 | 12 | 없음(**W15 광물 장갑판 반영**) | 통과 (`ready=true`, `fitIoU=0.811`) |
+| `boss-t4/T4` | `boss-quadruped.json` | 2.20 | 12 | 없음(**W20 황제 헤라클레스갑충 · 4회차 신규**) | 통과 (`ready=true`, `fitIoU=0.792`) |
 
-## 남은 목록 (2개체 · 한도 해제 `2026-11-26 06:51 KST` 이후 재개)
+## 남은 목록
 
-- `boss-t2/T2` (`boss-quadruped.json`, 배율 1.80 · W10 거대 장수대왕)
-- `boss-t4/T4` (`boss-quadruped.json`, 배율 2.20 · W20 황제 헤라클레스갑충)
+- 없음 (20/20 완료).
