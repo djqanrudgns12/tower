@@ -24,7 +24,7 @@
 
 ## 실행
 
-저장소 루트에서 공용 Spine 4.3.26과 Pillow, 저장소 Node 의존성 및 Playwright Chromium을 쓴다. 신규 출력 디렉터리를 사용한다.
+저장소 루트에서 공용 Spine 4.3.26과 Pillow, 저장소 Node 의존성, Playwright Chromium, `cwebp`를 쓴다. 신규 출력 디렉터리를 사용한다.
 
 ```sh
 r6_python="$HOME/.agents/skills/spine-authoring/runtime/.venv/bin/python"
@@ -56,3 +56,5 @@ node tools/r6/spine/check-runtime.mjs "$r6_work"
 ## 임시 파츠 시범
 
 Spine Professional 4.3.26으로 일반 계통 4개와 개별 보스 4개의 프로젝트를 내보냈다. 20개체의 기대 슬롯, 파츠 위치와 크기가 왕복 후 유지됐다. 모든 걷기 루프의 처음과 끝 변환은 일치했다. 임시 부품 아틀라스는 `1492×205`, 무손실 WebP **15,136바이트**, RGBA8 **1,223,440바이트**였다. 인접 단계 15쌍의 실루엣 IoU는 **0.453~0.891**이다. 종족 간 비교는 동일 실루엣을 의도적으로 넣은 시험에서 400쌍을 검사했다. 실제 5종족 양산 파츠의 실루엣과 텍스처 크기는 투입 뒤 측정한다.
+
+Chromium 156에서 실제 전장 길 위에 20개체를 배치했다. 개체마다 올바른 스킨과 걷기 트랙이 붙고 프레임이 진행됐다. 전장의 피격·쓰러짐 처리와 보스 4개체의 기술 트랙 등록을 확인했다. [전장 재생 캡처](../../../../asset-source/r6/monsters/_pipeline-test/battle-walk.webp), [개체별 검사 결과](../../../../asset-source/r6/monsters/_pipeline-test/battle-report.json).

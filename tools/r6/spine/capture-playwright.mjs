@@ -1,7 +1,7 @@
 /* global document, window */
 import assert from 'node:assert/strict';
 import { execFileSync } from 'node:child_process';
-import { mkdir, readFile, writeFile } from 'node:fs/promises';
+import { mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
 import { basename, resolve } from 'node:path';
 import { chromium } from 'playwright';
 import { createServer } from 'vite';
@@ -30,7 +30,7 @@ try {
   const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
   const errors = [];
   const requests = new Set();
-  page.on('pageerror', error => errors.push(error.message));
+  page.on('pageerror', error => errors.push(error.stack || error.message));
   page.on('console', message => {
     if (message.type() === 'error') errors.push(message.text());
   });
@@ -64,13 +64,20 @@ h1{font-size:19px;margin:0 0 12px}#field{width:1408px;height:834px}</style>
     state.pause = [];
     // 전장 로더가 이 종족만 불러오도록 실제 적 목록을 채운다.
     state.battle = { spawnList: [] };
-    state.enemies = ids.map((entityId, index) => ({
-      id: index + 1, entityId, faction: species, alive: true,
-      kind: entityId.includes('-boss-') ? 'boss' : 'walker', bossTier: null, derived: false,
-      flying: ctx.balance.r6.entities[entityId].flying ?? false, groundedUntilTick: 0,
-      progress: Math.round(550 + index * (ctx.path.length - 1600) / (ids.length - 1)),
-      hp: 100, maxHp: 100, speedBP: 10000, elite: null, boss: null,
-    }));
+    state.enemies = ids.map((entityId, index) => {
+      const boss = entityId.includes('-boss-');
+      const spec = ctx.balance.r6.entities[entityId];
+      return {
+        id: index + 1, entityId, faction: species, alive: true, derived: false,
+        kind: boss ? 'boss' : 'walker', bossTier: boss ? Number(entityId.at(-1)) : null, boss: null,
+        flying: spec.flying ?? false, groundedUntilTick: 0, elite: null,
+        progress: Math.round(550 + index * (ctx.path.length - 1600) / (ids.length - 1)),
+        hp: 100, maxHp: 100, moveRem: 0, speedBP: spec.speedBP,
+        physicalResistBP: spec.physicalResistBP, magicResistBP: spec.magicResistBP,
+        slows: [], stunUntilTick: 0, stunTicksUsed: 0, burns: [], burnNextTick: null,
+        burnRemainder: 0, vulns: [], shreds: [], knockbackUsed: 0,
+      };
+    });
     const controller = new RunController(ctx, state, { recordOnFinish: false });
     const bridge = new FieldBridgeHandle(controller);
     startBattlefield(document.querySelector('#field'), bridge, new AbortController().signal, (game) => {
@@ -128,14 +135,21 @@ h1{font-size:19px;margin:0 0 12px}#field{width:1408px;height:834px}</style>
   assert.ok(rendered.every(unit => unit.renderer === 'phaser' && unit.track === 'walk' && unit.moved && unit.slots > 0),
     'Mesh2D 재생 또는 파츠 확인에 실패했습니다.');
   assert.deepEqual([...requests].sort(), [...allowedFiles].sort());
-  const png = await page.screenshot();
-  execFileSync('cwebp', ['-quiet', '-lossless', '-o', resolve(shots, 'battle-walk.webp'), '--', '/dev/stdin'], { input: png });
+  const temporary = await mkdtemp(resolve(shots, '.capture-'));
+  try {
+    const png = resolve(temporary, 'battle-walk.png');
+    await page.screenshot({ path: png });
+    execFileSync('cwebp', ['-quiet', '-lossless', '-o', resolve(shots, 'battle-walk.webp'), '--', png]);
+  } finally {
+    await rm(temporary, { recursive: true, force: true });
+  }
 
   const events = await page.evaluate(() => {
-    const { game, units } = window.qaMonsters;
+    const { game, state, units } = window.qaMonsters;
     const { enemyLayer } = game.scene.getScene('battle');
     enemyLayer.onHit(1);
     const hit = units[0].animationState.getTrack(1)?.animation.name;
+    state.enemies[1].alive = false;
     enemyLayer.onKill(2);
     const fall = units[1].animationState.getTrack(0)?.animation.name;
     const bosses = units.slice(-4);
