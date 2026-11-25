@@ -8,8 +8,8 @@
 
 - machine 비교 400쌍 중 95쌍 미달. 가장 비슷한 쌍은 `machine-armored-t2`와 `human-armored-t3` (IoU 0.693).
 - stone 비교 400쌍 중 98쌍 미달. 가장 비슷한 쌍은 `stone-boss-t4`와 `human-armored-t3` (IoU 0.723).
-- elf 비교 100쌍 중 12쌍 미달. 가장 비슷한 쌍은 `elf-infantry-t1`와 `human-infantry-t1` (IoU 0.691).
-- insect 비교 100쌍 중 25쌍 미달. 가장 비슷한 쌍은 `human-armored-t1`와 `insect-armored-t1` (IoU 0.655).
+- elf 비교 400쌍 중 85쌍 미달. 가장 비슷한 쌍은 `elf-infantry-t4`와 `human-infantry-t4` (IoU 0.713).
+- insect 비교 400쌍 중 92쌍 미달. 가장 비슷한 쌍은 `human-special-t2`와 `insect-special-t4` (IoU 0.706).
 
 ## 도구로 해결
 

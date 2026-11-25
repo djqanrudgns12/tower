@@ -3,7 +3,7 @@ import { readFileSync } from 'node:fs';
 import type Phaser from 'phaser';
 import { expect, it, vi } from 'vitest';
 import batch from '../../docs/renewal/r6/tech/monsters/batch.json';
-import { ENTITY_IDS, entityId, SPECIES, type Lineage, type Tier } from '../../src/contracts/balanceV2';
+import { ENTITY_IDS, SPECIES } from '../../src/contracts/balanceV2';
 import manifest from '../../public/assets/r6/manifest-v2.json';
 import { R6BattleAssets } from '../../src/game/r6/BattleAssets';
 import { r6ManifestSchema } from '../../src/game/r6/manifest';
@@ -40,7 +40,7 @@ it.each(['elf', 'human', 'insect'] as const)('%s 특수 T1은 해당 종족의 �
   expect(assets.enemyArt(unit)).toMatchObject({ data: 'r6.rig.' + faction + '-special', atlas, skin: 'T1' });
 });
 
-it.each(SPECIES)('%s 아틀라스와 전장 스킨이 검수 결과와 일치한다', faction => {
+it.each(SPECIES)('%s 아틀라스가 예산 안에서 20개체 전용 스킨을 제공한다', faction => {
   const image = readFileSync(`public/assets/r6/monsters/${faction}/${faction}.webp`);
   expect(image.byteLength).toBeLessThanOrEqual(768 * 1024);
   expect(createHash('sha256').update(image).digest('hex')).toBe(batch.atlases[faction].sha256);
@@ -51,15 +51,18 @@ it.each(SPECIES)('%s 아틀라스와 전장 스킨이 검수 결과와 일치한
   } as unknown as Phaser.Scene;
   const assets = new R6BattleAssets(scene, () => false);
   assets.manifest = r6ManifestSchema.parse(manifest);
-  const published = new Map(batch.actors.filter(row => row.species === faction).map(row => {
-    const family = row.entry.startsWith('boss-') ? 'boss' : row.entry as Lineage;
-    const id = entityId(faction, family, Number(row.skin.slice(1)) as Tier);
-    return [id, row.accepted] as const;
-  }));
-  for (const id of ENTITY_IDS.filter(id => id.startsWith(faction + '-'))) {
+  const ids = ENTITY_IDS.filter(id => id.startsWith(faction + '-'));
+  expect(ids).toHaveLength(20);
+  for (const id of ids) {
+    const rig = id.includes('-boss-') ? id : id.slice(0, -3);
+    const skin = 'T' + id.at(-1);
+    const file = `monsters/${faction}/${rig}.json`;
     const art = assets.enemyArt(enemy({ faction, entityId: id }));
     expect(art, id).toMatchObject({
-      atlas: 'r6.atlas.' + (published.get(id) ? faction : 'g2-walker'), skin: 'T' + id.at(-1),
+      atlas: 'r6.atlas.' + faction, data: 'r6.rig.' + rig, skin, rig: { file },
     });
+    const skeleton = JSON.parse(readFileSync('public/assets/r6/' + file, 'utf8')) as { skins: { name: string }[] };
+    expect(skeleton.skins, id).toContainEqual(expect.objectContaining({ name: skin }));
   }
+  expect(batch.actors.filter(row => row.species === faction && row.accepted)).toHaveLength(ids.length);
 });
