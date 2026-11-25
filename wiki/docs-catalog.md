@@ -10,21 +10,21 @@ generated_by: tools/wiki/gen.mjs
 
 > 이 파일은 `npm run wiki:sync` (`tools/wiki/gen.mjs`)가 코드·계약 JSON·SQL에서 결정적으로 자동 생성합니다. 직접 수정하지 마세요.
 
-- 스캔된 마크다운 총계: **248개 파일** · **1,899,529자** · 추정 **약 1,234,809 토큰**
+- 스캔된 마크다운 총계: **251개 파일** · **1,905,460자** · 추정 **약 1,238,667 토큰**
 - **경고**: `해시 고정(validate-plan)` 문서는 1바이트도 수정·이동하면 안 되며, `링크·참조 검사(validate-plan)` 및 `코드·시험 경로 참조` 문서도 기존 경로를 그대로 유지해야 합니다.
 
 ## 분류별 요약
 
 | 분류 | 파일 수 | 글자 수 | 추정 토큰 |
 | --- | ---: | ---: | ---: |
-| 01. 진입·규약 및 LLM Wiki | 34 | 167,598 | 108,954 |
+| 01. 진입·규약 및 LLM Wiki | 34 | 168,001 | 109,216 |
 | 02. 리뉴얼 현행 기준 (PRD보다 우선) | 76 | 545,358 | 354,519 |
 | 03. 호스팅·배포·운영 기준 | 3 | 36,412 | 23,669 |
 | 04. 문제은행 CR-1000 공동검수 | 6 | 201,954 | 131,272 |
 | 05. 제작 PRD v0.5 및 계약 기준 | 6 | 143,424 | 93,229 |
 | 06. 밸런스 시뮬레이션 실험 기록 | 8 | 106,819 | 69,436 |
 | 07. 구판 PRD·초기 인계·아카이브 | 22 | 332,532 | 216,158 |
-| 08. 과거 작업 패키지 및 원화·배치 검수 이력 | 93 | 365,432 | 237,572 |
+| 08. 과거 작업 패키지 및 원화·배치 검수 이력 | 96 | 370,960 | 241,168 |
 
 ## 01. 진입·규약 및 LLM Wiki
 
@@ -51,7 +51,7 @@ generated_by: tools/wiki/gen.mjs
 | [wiki/concepts/ui-phaser-and-assets.md](../wiki/concepts/ui-phaser-and-assets.md) | 현행 활성 | Explanation | - | 6 | 4,943 |
 | [wiki/contracts.md](../wiki/contracts.md) | 현행 활성 | Reference / Navigation | - | 11 | 8,147 |
 | [wiki/decisions-index.md](../wiki/decisions-index.md) | 현행 활성 | Reference / Navigation | - | 1 | 2,901 |
-| [wiki/docs-catalog.md](../wiki/docs-catalog.md) | 현행 활성 | Reference / Navigation | - | 10 | 33,593 |
+| [wiki/docs-catalog.md](../wiki/docs-catalog.md) | 현행 활성 | Reference / Navigation | - | 10 | 33,996 |
 | [wiki/entities/tech-stack.md](../wiki/entities/tech-stack.md) | 현행 활성 | Reference / Navigation | - | 4 | 3,796 |
 | [wiki/entities/vocabulary-td.md](../wiki/entities/vocabulary-td.md) | 현행 활성 | Reference / Navigation | - | 5 | 3,349 |
 | [wiki/glossary.md](../wiki/glossary.md) | 현행 활성 | Reference / Navigation | - | 1 | 5,322 |
@@ -222,10 +222,13 @@ generated_by: tools/wiki/gen.mjs
 | --- | --- | --- | --- | ---: | ---: |
 | [asset-source/incoming/ART-002/PROGRESS.md](../asset-source/incoming/ART-002/PROGRESS.md) | 이력 보존 | Archive / Record | - | 12 | 10,226 |
 | [asset-source/incoming/ART-003/PROGRESS.md](../asset-source/incoming/ART-003/PROGRESS.md) | 이력 보존 | Archive / Record | - | 14 | 10,540 |
+| [asset-source/r6/monsters/elf/STATUS.md](../asset-source/r6/monsters/elf/STATUS.md) | 이력 보존 | Archive / Record | - | 3 | 1,497 |
+| [asset-source/r6/monsters/human/STATUS.md](../asset-source/r6/monsters/human/STATUS.md) | 이력 보존 | Archive / Record | - | 3 | 1,512 |
+| [asset-source/r6/monsters/insect/STATUS.md](../asset-source/r6/monsters/insect/STATUS.md) | 이력 보존 | Archive / Record | - | 4 | 1,987 |
 | [asset-source/r6/monsters/machine/REDO.md](../asset-source/r6/monsters/machine/REDO.md) | 이력 보존 | Archive / Record | - | 3 | 1,064 |
-| [asset-source/r6/monsters/machine/STATUS.md](../asset-source/r6/monsters/machine/STATUS.md) | 이력 보존 | Archive / Record | - | 3 | 2,355 |
+| [asset-source/r6/monsters/machine/STATUS.md](../asset-source/r6/monsters/machine/STATUS.md) | 이력 보존 | Archive / Record | - | 4 | 2,857 |
 | [asset-source/r6/monsters/stone/REDO.md](../asset-source/r6/monsters/stone/REDO.md) | 이력 보존 | Archive / Record | - | 3 | 892 |
-| [asset-source/r6/monsters/stone/STATUS.md](../asset-source/r6/monsters/stone/STATUS.md) | 이력 보존 | Archive / Record | - | 3 | 1,169 |
+| [asset-source/r6/monsters/stone/STATUS.md](../asset-source/r6/monsters/stone/STATUS.md) | 이력 보존 | Archive / Record | - | 3 | 1,199 |
 | [asset-source/renewal/ART-AG-EDIT/VERDICT.md](../asset-source/renewal/ART-AG-EDIT/VERDICT.md) | 이력 보존 | Archive / Record | - | 1 | 418 |
 | [asset-source/renewal/ART-AG-TRIAL/VERDICT.md](../asset-source/renewal/ART-AG-TRIAL/VERDICT.md) | 이력 보존 | Archive / Record | - | 1 | 287 |
 | [asset-source/renewal/ART-CY1/PROGRESS.md](../asset-source/renewal/ART-CY1/PROGRESS.md) | 이력 보존 | Archive / Record | - | 5 | 1,432 |
