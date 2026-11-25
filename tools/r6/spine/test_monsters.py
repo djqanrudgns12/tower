@@ -1,0 +1,109 @@
+"""합성 파츠로 입력 오류·좌표·단계 및 종족 검사를 검증한다."""
+
+from contextlib import redirect_stdout
+from io import StringIO
+from pathlib import Path
+from tempfile import TemporaryDirectory
+import unittest
+
+from PIL import Image, ImageDraw
+
+from monsters import ACTORS, compose_rig, prepare, read_json
+from parts import extract, suggest_pivot
+from pilot import write_json
+from review import review
+from rigs import VARIANTS, layout
+from sample import generate
+
+
+FIXTURE = Path(__file__).resolve().parents[3] / "asset-source/r6/monsters/_pipeline-test/species.json"
+
+
+class MonsterPipelineTest(unittest.TestCase):
+    def test_templates_have_motion_and_unique_slot_bindings(self):
+        for family, variants in VARIANTS.items():
+            for variant in variants:
+                with self.subTest(family=family, variant=variant):
+                    _, bones, slots, clips = layout(family, {"variant": variant})
+                    self.assertEqual(len({slot.name for slot in slots}), len(slots))
+                    self.assertTrue(all(slot.bone in bones for slot in slots))
+                    for timeline in clips["walk"]["bones"].values():
+                        for channel, keys in timeline.items():
+                            if channel == "rotate":
+                                self.assertAlmostEqual((keys[-1]["value"] - keys[0]["value"]) % 360, 0)
+                            else:
+                                self.assertEqual([keys[0]["x"], keys[0]["y"]], [keys[-1]["x"], keys[-1]["y"]])
+                    self.assertEqual("boss-skill" in clips, family == "boss")
+
+    def test_crop_keeps_setup_position_and_optional_slot_absence(self):
+        with TemporaryDirectory() as tmp:
+            out = Path(tmp)
+            generate(FIXTURE, out / "source")
+            textures = out / "parts"
+            textures.mkdir()
+            config = read_json(FIXTURE)
+            rig, preview, _ = compose_rig(out / "source", textures, tuple(config["canvas"]), config["root"],
+                                           config["pixelsPerUnit"], "qa", "infantry", "infantry", ACTORS["infantry"], {})
+            bones = {}
+            for bone in rig["bones"]:
+                px, py = bones.get(bone.get("parent"), (0, 0))
+                bones[bone["name"]] = (px + bone.get("x", 0), py + bone.get("y", 0))
+            body = rig["skins"][0]["attachments"]["body"]["body"]
+            bone_x, bone_y = bones["body"]
+            with Image.open(out / "source/infantry/T1/body.png") as image:
+                left, top, right, bottom = image.getbbox()
+            distance = config["pixelsPerUnit"]
+            self.assertAlmostEqual((bone_x + body["x"]) * distance + config["root"][0], (left + right) / 2)
+            self.assertAlmostEqual(config["root"][1] - (bone_y + body["y"]) * distance, (top + bottom) / 2)
+            self.assertAlmostEqual(body["width"] * body["scaleX"], (right - left) / distance)
+            self.assertNotIn("gear", rig["skins"][0]["attachments"])
+            self.assertIn("gear", rig["skins"][1]["attachments"])
+            self.assertIsNotNone(preview["T1"].getbbox())
+
+    def test_prepare_rejects_missing_required_part_without_partial_output(self):
+        with TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            generate(FIXTURE, root / "source")
+            (root / "source/infantry/T2/body.png").unlink()
+            with self.assertRaisesRegex(ValueError, "누락.*body"):
+                prepare(root / "source", root / "work")
+            self.assertFalse((root / "work").exists())
+
+    def test_mask_preserves_alpha_placement_and_peels_speckles(self):
+        with TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            image = Image.new("RGBA", (10, 10), (0, 120, 130, 180))
+            image.save(root / "source.png")
+            mask = Image.new("L", (10, 10))
+            ImageDraw.Draw(mask).rectangle((3, 3, 6, 6), fill=255)
+            mask.putpixel((0, 0), 255)
+            mask.save(root / "mask.png")
+            write_json(root / "spec.json", {"canvas": [16, 16], "parts": {"body": {
+                "box": [0, 0, 10, 10], "position": [2, 4], "mask": "mask.png", "removeSpecks": True,
+            }}})
+            extract(root / "source.png", root / "spec.json", root / "parts")
+            with Image.open(root / "parts/body.png") as part:
+                self.assertEqual(part.getbbox(), (5, 7, 9, 11))
+                self.assertEqual(part.getpixel((5, 7))[3], 180)
+                self.assertEqual(suggest_pivot(part, (4, 7), 3), (5.5, 7.5))
+
+    def test_review_gates_all_cross_species_pairs(self):
+        with TemporaryDirectory() as tmp, redirect_stdout(StringIO()):
+            root = Path(tmp)
+            for species in ("machine", "human"):
+                source, pack = root / f"{species}-source", root / species
+                generate(FIXTURE, source)
+                config = read_json(source / "species.json")
+                write_json(source / "species.json", {**config, "species": species})
+                prepare(source, pack)
+            self.assertGreater(review([root / "machine", root / "human"], root / "qa"), 0)
+            result = read_json(root / "qa/silhouettes.json")
+            self.assertTrue(all(pair["pass"] for pair in result["evolution"]))
+            cross, = result["crossSpecies"]
+            self.assertEqual(cross["comparisons"], 400)
+            self.assertEqual(cross["max"]["iou"], 1)
+            self.assertFalse(cross["max"]["pass"])
+
+
+if __name__ == "__main__":
+    unittest.main()
