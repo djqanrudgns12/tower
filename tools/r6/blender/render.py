@@ -185,12 +185,12 @@ if __name__ == "__main__":
     parser.add_argument("recipe", type=Path)
     parser.add_argument("out", type=Path)
     parser.add_argument("--kit", type=Path, help="편집한 Blender 부품 키트")
-    parser.add_argument("--forms-only", action="store_true", help="레일·냉각의 형태만 미리 렌더")
+    parser.add_argument("--forms-only", action="store_true", help="곡사 포대 외 타워의 형태만 미리 렌더")
     args = parser.parse_args(sys.argv[sys.argv.index("--") + 1:])
     recipe = json.loads(args.recipe.read_text())
     tower = recipe["towerId"]
-    if args.forms_only and tower not in ("rail", "cryo"):
-        parser.error("--forms-only는 레일·냉각에만 적용됩니다.")
+    if args.forms_only and tower == "mortar":
+        parser.error("곡사 포대는 --forms-only를 지원하지 않습니다.")
     if tower == "mortar":
         sys.path.insert(0, str(Path(__file__).resolve().parent))
         from mortar_render import render as render_mortar
@@ -202,7 +202,13 @@ if __name__ == "__main__":
 
         render_tower(tower, recipe["stages"], args.out.resolve(), args.kit.resolve() if args.kit else None,
                      PALETTE, linear, args.forms_only)
+    elif tower in ("prism", "hangar", "bastion"):
+        sys.path.insert(0, str(Path(__file__).resolve().parent))
+        from support_render import render as render_support
+
+        render_support(tower, recipe["stages"], args.out.resolve(), args.kit.resolve() if args.kit else None,
+                       PALETTE, linear, args.forms_only)
     else:
         if args.kit:
-            parser.error("--kit 옵션은 곡사·레일·냉각에만 적용됩니다.")
+            parser.error("지원하는 타워에만 --kit을 쓸 수 있습니다.")
         render(recipe, args.out.resolve())

@@ -8,11 +8,12 @@ from pathlib import Path
 from PIL import Image
 
 from pack import finish_cell
-from check import manifest_errors, read_image
+from check import manifest_errors, palette_violations, read_image
 from mortar_pack import read_cells
 
 
-TOWERS = ("rail", "mortar", "cryo")
+STARTING_TOWERS = ("rail", "mortar", "cryo")
+TOWERS = (*STARTING_TOWERS, "prism", "hangar", "bastion")
 TILE = 384
 SCALE = .60
 
@@ -41,6 +42,8 @@ def write_sheet(folder, name, cells, columns):
 def publish_sheet(sheets, folder, name, base, high, columns, pivot):
     file = write_sheet(folder, name, base, columns)
     file2x = write_sheet(folder, f"{name}-2x", high, columns)
+    if any(palette_violations(read_image(path)) for path in (file, file2x)):
+        raise ValueError(f"{name}: R04 팔레트 위반")
     width, height = base[0].size
     sheets[name] = {
         "file": f"towers/{folder.name}/{file.name}",
@@ -82,6 +85,18 @@ def publish_attacks(sheets, folder, attack_source, weapon, pivot2x):
     return {"fps": weapon["attack"]["fps"], "sheets": ids, "frames": count}
 
 
+def publish_drone(sheets, folder, tech, assets):
+    base, high = (list(cells_from_sheet(tech, assets[f"hangar-drone{suffix}"])) for suffix in ("", "-2x"))
+    px, py = assets["hangar-drone"]["sprite"]["pivot"]
+    bounds = [cell.getbbox() for cell in base] + [(px, py, px + 1, py + 1)]
+    bounds += [(x // 2, y // 2, (right + 1) // 2, (bottom + 1) // 2)
+               for x, y, right, bottom in (cell.getbbox() for cell in high)]
+    left, top = min(b[0] for b in bounds), min(b[1] for b in bounds)
+    box = (left, top, max(b[2] for b in bounds), max(b[3] for b in bounds))
+    publish_sheet(sheets, folder, "hangar-flight", [cell.crop(box) for cell in base],
+                  [cell.crop(tuple(2 * n for n in box)) for cell in high], 8, [px - left, py - top])
+
+
 def publish_tower(tower, tech, attacks, out, sheets):
     folder = out / tower
     folder.mkdir(parents=True)
@@ -118,6 +133,8 @@ def publish_tower(tower, tech, attacks, out, sheets):
                 clips[level] = publish_attacks(sheets, folder, attacks, attack_forms[level],
                                               attack_pivot or high_asset["sprite"]["pivot"])
 
+    if tower == "hangar":
+        publish_drone(sheets, folder, tech, assets)
     forms = []
     for index, level in enumerate(source["levels"]):
         weapon_level = max(start for start in clips if start <= level)
@@ -135,14 +152,19 @@ if __name__ == "__main__":
     parser.add_argument("attacks", type=Path, help="게임용 공격 렌더의 타워별 폴더가 있는 상위 폴더")
     parser.add_argument("manifest", type=Path, help="지도와 종족 항목을 이어받을 매니페스트")
     parser.add_argument("out", type=Path, help="게임 폴더에 반영할 새 출력 폴더")
+    parser.add_argument("--tower", choices=TOWERS, action="append")
     args = parser.parse_args()
     manifest = json.loads(args.manifest.read_text())
-    manifest["sheets"] = {}
-    # mortar_render.CAMERA_RAY의 +Y 방위와 지면 축소율이다.
-    manifest["projection"] = {"zeroBearingDeg": 36.645649, "squashY": .509407}
-    manifest["towers"] = {
-        tower: publish_tower(tower, args.source / tower, args.attacks / tower,
-                             args.out / "towers", manifest["sheets"])
-        for tower in TOWERS
-    }
+    for tower in dict.fromkeys(args.tower or STARTING_TOWERS):
+        sheets = {}
+        forms = publish_tower(tower, args.source / tower, args.attacks / tower, args.out / "towers", sheets)
+        if tower in STARTING_TOWERS:
+            manifest["sheets"].update(sheets)
+            manifest["towers"][tower] = forms
+        else:
+            folder = args.out / "towers" / tower
+            (folder / "pack.json").write_text(json.dumps({"forms": forms, "sheets": sheets}, indent=2) + "\n")
+            lazy = manifest.setdefault("lazyTowers", [])
+            if tower not in lazy:
+                lazy.append(tower)
     (args.out / "manifest-v2.json").write_text(json.dumps(manifest, ensure_ascii=False, indent=2) + "\n")

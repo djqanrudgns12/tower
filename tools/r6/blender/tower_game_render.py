@@ -14,6 +14,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 import mortar_render
 import tower_render
+import support_render
 from render import PALETTE
 
 
@@ -25,6 +26,11 @@ def render(tower, kit_file, recipe_file, out):
     if tower == "mortar":
         kit = bpy.data.scenes["곡사 포대 · 부품"]
         assemble = mortar_render.assemble
+        head_height = mortar_render.CENTER_HEIGHT
+    elif tower in support_render.KITS:
+        _, title, _, _ = support_render.KITS[tower]
+        kit = bpy.data.scenes[f"{title} · 부품"]
+        assemble = partial(support_render.assemble, tower)
         head_height = mortar_render.CENTER_HEIGHT
     else:
         kit = bpy.data.scenes[f"{tower_render.TITLES[tower]} · 부품"]
@@ -49,7 +55,7 @@ def render(tower, kit_file, recipe_file, out):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("tower", choices=("mortar", "rail", "cryo"))
+    parser.add_argument("tower", choices=("mortar", "rail", "cryo", *support_render.KITS))
     parser.add_argument("kit", type=Path)
     parser.add_argument("recipe", type=Path)
     parser.add_argument("out", type=Path)

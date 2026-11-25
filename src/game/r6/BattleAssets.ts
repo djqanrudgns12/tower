@@ -1,10 +1,10 @@
 import type Phaser from 'phaser';
 import type { Enemy, RunState } from '../../domain/types';
-import { R6_TOWERS, SPECIES, type EntityId, type Species } from '../../contracts/balanceV2';
+import { R6_TOWERS, SPECIES, type EntityId, type R6TowerId, type Species } from '../../contracts/balanceV2';
 import type { GameContext } from '../../domain/context';
 import { previewR6Wave } from '../../domain/r6Mixer';
 import { r6Pad } from './mapProjection';
-import { r6ManifestSchema, type R6Manifest, type R6Sheet } from './manifest';
+import { r6ManifestSchema, r6TowerPackSchema, towerPackPath, type R6Manifest, type R6Sheet } from './manifest';
 
 const BASE = 'assets/r6/';
 const MANIFEST_KEY = 'r6.manifest';
@@ -13,6 +13,7 @@ export const R6_PAD_KEY = 'r6.map.pad';
 export const sheetKey = (id: string) => `r6.sheet.${id}`;
 const atlasKey = (id: string) => `r6.atlas.${id}`;
 const rigKey = (id: string) => `r6.rig.${id}`;
+export const HANGAR_FLIGHT = 'hangar-flight';
 type SpeciesPack = NonNullable<R6Manifest['species'][Species]>;
 type EnemyRef = { faction?: string };
 
@@ -26,7 +27,7 @@ export class R6BattleAssets {
 
   constructor(private readonly scene: Phaser.Scene) {}
 
-  preload(mapId: string) {
+  preload(mapId: string, owned: readonly string[]) {
     const { load } = this.scene;
     load.once(`filecomplete-json-${MANIFEST_KEY}`, (_key: string, _type: string, data: unknown) => {
       const result = r6ManifestSchema.safeParse(data);
@@ -39,13 +40,51 @@ export class R6BattleAssets {
           frameWidth: r6Pad.size[0]!, frameHeight: r6Pad.size[1]!,
         });
       } else if (map) load.image(R6_GROUND_KEY, BASE + map);
-      for (const forms of Object.values(this.manifest.towers)) {
-        const first = forms[0]!;
-        this.baseTowerSheets.add(first.body).add(first.head);
-      }
-      for (const id of this.baseTowerSheets) this.loadTowerSheet(id, this.manifest.sheets[id]!);
+      for (const id of R6_TOWERS) if (owned.includes(id)) this.queueTowerIcon(id);
     });
     load.json(MANIFEST_KEY, BASE + 'manifest-v2.json');
+  }
+
+  towerUnlocked(id: R6TowerId, onReady: () => void) {
+    if (!this.queueTowerIcon(id)) return;
+    const { load } = this.scene;
+    load.once('complete', onReady);
+    if (!load.isLoading()) load.start();
+  }
+
+  prepareHangarFlight() {
+    const spec = this.manifest?.sheets[HANGAR_FLIGHT];
+    if (!spec) return;
+    const { load } = this.scene;
+    this.queue(sheetKey(HANGAR_FLIGHT), () => {
+      this.loadTowerSheet(HANGAR_FLIGHT, spec);
+      if (!load.isLoading()) load.start();
+    });
+  }
+
+  private queueTowerIcon(id: R6TowerId) {
+    const { manifest, scene: { load } } = this;
+    if (!manifest) return false;
+    const first = manifest.towers[id]?.[0];
+    if (!first) {
+      const key = `r6.tower-pack.${id}`;
+      if (!manifest.lazyTowers?.includes(id) || this.requested.has(key)) return false;
+      this.queue(key, () => load.json(key, BASE + towerPackPath(id)));
+      load.once(`filecomplete-json-${key}`, (_key: string, _type: string, data: unknown) => {
+        const pack = r6TowerPackSchema.safeParse(data);
+        if (!pack.success) return;
+        Object.assign(manifest.sheets, pack.data.sheets);
+        manifest.towers[id] = pack.data.forms;
+        this.queueTowerIcon(id);
+      });
+      return true;
+    }
+    if (this.baseTowerSheets.has(first.body)) return false;
+    for (const sheet of [first.body, first.head]) {
+      this.baseTowerSheets.add(sheet);
+      if (!this.stagedTowerSheets.delete(sheet)) this.loadTowerSheet(sheet, manifest.sheets[sheet]!);
+    }
+    return true;
   }
 
   /** 전장에 쓰는 형태만 적재한다. 사용할 그림을 적용한 뒤 이전 프레임의 텍스처를 정리한다. */

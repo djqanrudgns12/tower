@@ -1,0 +1,304 @@
+{
+  "assets": [
+    {
+      "id": "bastion-forms",
+      "file": "bastion-forms.webp",
+      "width": 1152,
+      "height": 384,
+      "artifactHash": "7d3db3b7b1fe6c6c2ce5ce02d6b8674f5a67371e644610e203d827f384e37b2b",
+      "sprite": {
+        "frameWidth": 192,
+        "frameHeight": 192,
+        "frameCount": 11,
+        "pivot": [
+          96,
+          137
+        ]
+      }
+    },
+    {
+      "id": "bastion-forms-2x",
+      "file": "bastion-forms-2x.webp",
+      "width": 2304,
+      "height": 768,
+      "artifactHash": "55adcaddbacaa14d2c9e7f2fe423ff85f4d08da73db14bb4ffc199e166480d6a",
+      "sprite": {
+        "frameWidth": 384,
+        "frameHeight": 384,
+        "frameCount": 11,
+        "pivot": [
+          192,
+          274
+        ]
+      }
+    },
+    {
+      "id": "bastion-bodies",
+      "file": "bastion-bodies.webp",
+      "width": 1152,
+      "height": 384,
+      "artifactHash": "f983c62445aaf6692981da7572c49f2f653a6f80e34d5922fc68b8e2f4778e14",
+      "sprite": {
+        "frameWidth": 192,
+        "frameHeight": 192,
+        "frameCount": 11,
+        "pivot": [
+          96,
+          137
+        ]
+      }
+    },
+    {
+      "id": "bastion-bodies-2x",
+      "file": "bastion-bodies-2x.webp",
+      "width": 2304,
+      "height": 768,
+      "artifactHash": "c56412642bc040d465fc165353b1596ff9fce49ca74955821c1f43fe84b83096",
+      "sprite": {
+        "frameWidth": 384,
+        "frameHeight": 384,
+        "frameCount": 11,
+        "pivot": [
+          192,
+          274
+        ]
+      }
+    },
+    {
+      "id": "bastion-heads",
+      "file": "bastion-heads.webp",
+      "width": 1920,
+      "height": 1920,
+      "artifactHash": "e9c454a5994976f29fa7503d70673a6ffb5f854016044c02ea9a97529a507487",
+      "sprite": {
+        "frameWidth": 192,
+        "frameHeight": 192,
+        "frameCount": 96,
+        "pivot": [
+          96,
+          96
+        ]
+      }
+    },
+    {
+      "id": "bastion-heads-2x",
+      "file": "bastion-heads-2x.webp",
+      "width": 3840,
+      "height": 3840,
+      "artifactHash": "ae22c81c389de2e5ea0d65af4f0896e30b490bc5d269c23d7be8f2c4eb871448",
+      "sprite": {
+        "frameWidth": 384,
+        "frameHeight": 384,
+        "frameCount": 96,
+        "pivot": [
+          192,
+          192
+        ]
+      }
+    },
+    {
+      "id": "bastion-heads-armored",
+      "file": "bastion-heads-armored.webp",
+      "width": 1920,
+      "height": 1536,
+      "artifactHash": "13ddafa2c5e3e223cb9814e975cfd16cf736358f7adbd13f1aff2c33e847712d",
+      "sprite": {
+        "frameWidth": 192,
+        "frameHeight": 192,
+        "frameCount": 80,
+        "pivot": [
+          96,
+          96
+        ]
+      }
+    },
+    {
+      "id": "bastion-heads-armored-2x",
+      "file": "bastion-heads-armored-2x.webp",
+      "width": 3840,
+      "height": 3072,
+      "artifactHash": "6fa65f5a49d54b9b2b41d02c9f302cb5a5df0ee2dedfc7d780bf526a5472d638",
+      "sprite": {
+        "frameWidth": 384,
+        "frameHeight": 384,
+        "frameCount": 80,
+        "pivot": [
+          192,
+          192
+        ]
+      }
+    },
+    {
+      "id": "bastion-attack",
+      "file": "bastion-attack.webp",
+      "width": 1536,
+      "height": 768,
+      "artifactHash": "ad4ae348862a8536fe12861c3e39b01d99e3db130d954998a8f651983a5a81d4",
+      "sprite": {
+        "frameWidth": 192,
+        "frameHeight": 192,
+        "frameCount": 32,
+        "pivot": [
+          96,
+          137
+        ]
+      }
+    },
+    {
+      "id": "bastion-attack-2x",
+      "file": "bastion-attack-2x.webp",
+      "width": 3072,
+      "height": 1536,
+      "artifactHash": "844225e096bda2d0e68eea55a30265d0f4fa8985c8dac44729723a86394ac20f",
+      "sprite": {
+        "frameWidth": 384,
+        "frameHeight": 384,
+        "frameCount": 32,
+        "pivot": [
+          192,
+          274
+        ]
+      }
+    }
+  ],
+  "levels": [
+    1,
+    2,
+    4,
+    6,
+    8,
+    10,
+    12,
+    14,
+    16,
+    18,
+    20
+  ],
+  "directions": 16,
+  "headSheets": [
+    {
+      "asset": "bastion-heads",
+      "asset2x": "bastion-heads-2x",
+      "levels": [
+        1,
+        2,
+        4,
+        6,
+        8,
+        10
+      ]
+    },
+    {
+      "asset": "bastion-heads-armored",
+      "asset2x": "bastion-heads-armored-2x",
+      "levels": [
+        12,
+        14,
+        16,
+        18,
+        20
+      ]
+    }
+  ],
+  "headAnchors2x": [
+    [
+      192,
+      192
+    ],
+    [
+      192,
+      192
+    ],
+    [
+      192,
+      192
+    ],
+    [
+      192,
+      192
+    ],
+    [
+      192,
+      192
+    ],
+    [
+      192,
+      192
+    ],
+    [
+      192,
+      192
+    ],
+    [
+      192,
+      192
+    ],
+    [
+      192,
+      192
+    ],
+    [
+      192,
+      192
+    ],
+    [
+      192,
+      192
+    ]
+  ],
+  "reviewDirection": 8,
+  "weapons": [
+    {
+      "stage": 1,
+      "level": 1,
+      "attack": {
+        "mode": "barrier",
+        "fps": 10,
+        "frames": 8,
+        "targetCount": 1,
+        "burstCount": 1,
+        "pierceCount": 0,
+        "recoil": 0
+      }
+    },
+    {
+      "stage": 2,
+      "level": 6,
+      "attack": {
+        "mode": "barrier",
+        "fps": 10,
+        "frames": 8,
+        "targetCount": 2,
+        "burstCount": 1,
+        "pierceCount": 0,
+        "recoil": 0
+      }
+    },
+    {
+      "stage": 3,
+      "level": 12,
+      "attack": {
+        "mode": "barrier",
+        "fps": 10,
+        "frames": 8,
+        "targetCount": 3,
+        "burstCount": 1,
+        "pierceCount": 0,
+        "recoil": 0
+      }
+    },
+    {
+      "stage": 4,
+      "level": 18,
+      "attack": {
+        "mode": "barrier",
+        "fps": 10,
+        "frames": 8,
+        "targetCount": 4,
+        "burstCount": 1,
+        "pierceCount": 0,
+        "recoil": 0
+      }
+    }
+  ]
+}

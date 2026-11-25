@@ -102,7 +102,7 @@ export function GameScreen({
   const map = controller.ctx.map;
   const r6Runtime = controller.ctx.balance.r6;
   const r6 = r6Runtime !== undefined;
-  const manifest = useBattlePortraits(r6);
+  const manifest = useBattlePortraits(r6, view.owned);
   const portraits = useMemo(() => ({ r6, manifest }), [r6, manifest]);
   const [unlocked, setUnlocked] = useState<{ tower: R6TowerId; wave: number } | null>(null);
   // 연출(ui-rules-v3 §2 움직임): 보상 금화 비행, 웨이브 띠, 진화 빛기둥. 보상은 이미 상태에 반영된 뒤의 그림이다.

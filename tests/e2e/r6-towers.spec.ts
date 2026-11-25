@@ -4,18 +4,26 @@ import { expect, test, type Page } from './tower-browser';
 import type { RunController } from '../../src/application/RunController';
 import type { BattleScene } from '../../src/game/BattleScene';
 import type { RunState } from '../../src/domain/types';
-import type { R6Manifest } from '../../src/game/r6/manifest';
+import { r6ManifestSchema, r6TowerPackSchema, towerPackPath } from '../../src/game/r6/manifest';
 import type * as Content from '../../src/content';
 import type * as Sessions from '../../src/application/balanceSession';
 import type * as Run from '../../src/domain/run';
+import type * as Draft from '../../src/domain/draft';
 import type * as QaGold from '../../src/application/qaGold';
 import type * as Controllers from '../../src/application/RunController';
 import type * as Bridges from '../../src/game/bridge';
 import type * as Battlefield from '../../src/game/battlefieldGame';
 import type * as Projection from '../../src/game/r6/mapProjection';
 
-const manifest = JSON.parse(readFileSync('public/assets/r6/manifest-v2.json', 'utf8')) as R6Manifest;
-const types = ['rail', 'mortar', 'cryo'] as const;
+const manifest = r6ManifestSchema.parse(JSON.parse(readFileSync('public/assets/r6/manifest-v2.json', 'utf8')));
+for (const id of manifest.lazyTowers ?? []) {
+  const pack = r6TowerPackSchema.parse(JSON.parse(readFileSync(`public/assets/r6/${towerPackPath(id)}`, 'utf8')));
+  manifest.towers[id] = pack.forms;
+  Object.assign(manifest.sheets, pack.sheets);
+}
+const startingTypes = ['rail', 'mortar', 'cryo'] as const;
+const types = [...startingTypes, 'prism', 'hangar', 'bastion'] as const;
+const slots = ['garden_u-s03', 'garden_u-s07', 'garden_u-s12', 'garden_u-s05', 'garden_u-s10', 'garden_u-s19'];
 const captureLevels = [1, 6, 12, 18, 20];
 
 declare global {
@@ -23,8 +31,9 @@ declare global {
     qaTowers: {
       game: Phaser.Game;
       controller: RunController;
-      image: (id: number, part: 'head' | 'body') => Phaser.GameObjects.Image | undefined;
+      image: (id: number, part: 'head' | 'body' | 'drone') => Phaser.GameObjects.Image | undefined;
       aim: (id: number, direction: number) => void;
+      unlockSupport: () => void;
     };
   }
 }
@@ -36,7 +45,7 @@ async function openField(page: Page) {
   }));
   await page.goto('/r6-towers-fixture');
   await page.evaluate(async urls => {
-    const [content, sessions, run, qa, controllers, bridges, battlefield, projection] = await Promise.all([
+    const [content, sessions, run, qa, controllers, bridges, battlefield, projection, draft] = await Promise.all([
       import(urls.content) as Promise<typeof Content>,
       import(urls.sessions) as Promise<typeof Sessions>,
       import(urls.run) as Promise<typeof Run>,
@@ -45,6 +54,7 @@ async function openField(page: Page) {
       import(urls.bridge) as Promise<typeof Bridges>,
       import(urls.battlefield) as Promise<typeof Battlefield>,
       import(urls.projection) as Promise<typeof Projection>,
+      import(urls.draft) as Promise<typeof Draft>,
     ]);
     await content.loadGradeContent(3);
     const { state, ctx } = sessions.localBalanceSession('2.0.0', 3, 'Easy', {
@@ -71,6 +81,17 @@ async function openField(page: Page) {
         window.qaTowers = {
           game, controller,
           image: (id, part) => scene().children.getByName(`r6:tower:${id}:${part}`) as Phaser.GameObjects.Image | undefined,
+          unlockSupport() {
+            const wave = runState.completedWave;
+            for (const completedWave of [3, 6, 9]) {
+              const events: Parameters<typeof draft.openDraft>[2] = [];
+              runState.completedWave = completedWave;
+              draft.openDraft(ctx.balance, runState, events);
+              // 화면 제어기가 기존 사건 타입으로 전달하는 경계와 같다.
+              scene()['onEvents'](events as Parameters<BattleScene['onEvents']>[0]);
+            }
+            runState.completedWave = wave;
+          },
           aim(id, direction) {
             const bearing = Math.atan2(6.1, 8.2) - direction * Math.PI / 8;
             const target = projection.unprojectField(480 + 30 * Math.sin(bearing),
@@ -79,7 +100,7 @@ async function openField(page: Page) {
             // 같은 전장 공격 수신부에 16방향을 차례로 보내 길 배치에 좌우되지 않게 검증한다.
             scene()['towerLayer'].onStrike({
               type: 'strike', towerId: id, towerType: tower.type, fromX: tower.x, fromY: tower.y,
-              targets: [{ enemyId: 0, x: tower.x + (target.x - 480) / 64, y: tower.y + (target.y - 288) / 64 }],
+              targets: [{ enemyId: 0, x: tower.x + (target.x - 480) * 1000 / 64, y: tower.y + (target.y - 288) * 1000 / 64 }],
             });
           },
         };
@@ -90,6 +111,7 @@ async function openField(page: Page) {
     content: '/src/content/index.ts', sessions: '/src/application/balanceSession.ts', run: '/src/domain/run.ts',
     qa: '/src/application/qaGold.ts', controller: '/src/application/RunController.ts',
     bridge: '/src/game/bridge.ts', battlefield: '/src/game/battlefieldGame.ts', projection: '/src/game/r6/mapProjection.ts',
+    draft: '/src/domain/draft.ts',
   });
 }
 
@@ -99,12 +121,11 @@ const bodyFrames = (page: Page) => page.evaluate(() => window.qaTowers.controlle
   return body ? [body.texture.key, Number(body.frame.name)] : null;
 }));
 
-async function buildThree(page: Page) {
-  const slots = ['garden_u-s03', 'garden_u-s07', 'garden_u-s12'];
+async function buildTowers(page: Page, lineup: readonly (typeof types)[number][]) {
   const results = await page.evaluate(({ types, slots }) => types.map((type, index) =>
     window.qaTowers.controller.dispatch({ type: 'build', slotId: slots[index]!, tower: type as RunState['owned'][number] }),
-  ), { types, slots });
-  expect(results.map(result => result.ok)).toEqual([true, true, true]);
+  ), { types: lineup, slots });
+  expect(results.map(result => result.ok)).toEqual(lineup.map(() => true));
 }
 
 async function measureUpgrade(page: Page, stage: number) {
@@ -163,19 +184,39 @@ async function watchAttack(page: Page, direction: number, stage: number, capture
     const keys = await textures(page);
     return clips.flat().every(id => keys.includes(`r6.sheet.${id}`));
   }).toBe(true);
-  const { observed, capture } = await page.evaluate(async ({ direction, clips }) => {
+  const { observed, travelled, droneFrames, capture } = await page.evaluate(async ({ direction, clips }) => {
     const { game, controller, image, aim } = window.qaTowers;
-    const scene = game.scene.getScene('battle');
+    const scene = game.scene.getScene('battle') as BattleScene;
     const attacks = controller.state.towers.map((tower, i) => ({
       id: tower.id,
       key: 'r6.sheet.' + clips[i]![direction < 8 ? 0 : 1],
       frames: new Set<number>(),
     }));
+    const hangar = controller.state.towers.find(tower => String(tower.type) === 'hangar')!;
+    const droneFrames = new Set<number>();
+    let travelled = 0;
     let capture: Promise<string> | undefined;
+    // 느린 검수 환경에서도 장면이 렌더할 때마다 40ms씩 진행해 20fps 공격 프레임을 건너뛰지 않는다.
+    const layer = scene['towerLayer'];
+    const sync = layer.sync;
+    let playbackTime = scene.time.now;
+    layer.sync = function(state) {
+      sync.call(this, state, playbackTime);
+      playbackTime += 40;
+    };
     await new Promise<void>((resolve, reject) => {
-      const stop = () => scene.events.off('postupdate', observe);
+      const stop = () => {
+        scene.events.off('postupdate', observe);
+        layer.sync = sync;
+      };
       const timeout = setTimeout(() => { stop(); reject(new Error('공격 그림이 대기 그림으로 돌아오지 않았습니다.')); }, 3500);
       function observe() {
+        const drone = image(hangar.id, 'drone');
+        if (drone?.visible && drone.texture.key === 'r6.sheet.hangar-flight') {
+          droneFrames.add(Number(drone.frame.name));
+          const body = image(hangar.id, 'body')!;
+          travelled = Math.max(travelled, Math.hypot(drone.x - body.x, drone.y - body.y));
+        }
         let animated = 0;
         for (const attack of attacks) {
           const head = image(attack.id, 'head')!;
@@ -185,10 +226,10 @@ async function watchAttack(page: Page, direction: number, stage: number, capture
             if (frame % 8 >= 2) animated++;
           }
         }
-        if (animated === attacks.length) capture ??= new Promise<string>(resolve => {
+        if (animated === attacks.length && drone?.visible) capture ??= new Promise<string>(resolve => {
           game.events.once('postrender', () => resolve(game.canvas.toDataURL('image/webp', .95)));
         });
-        if (attacks.every(attack => attack.frames.size && image(attack.id, 'head')!.texture.key !== attack.key)) {
+        if (!drone && attacks.every(attack => attack.frames.size && image(attack.id, 'head')!.texture.key !== attack.key)) {
           stop();
           clearTimeout(timeout);
           resolve();
@@ -199,20 +240,25 @@ async function watchAttack(page: Page, direction: number, stage: number, capture
     });
     return {
       observed: attacks.map(attack => ({ frames: [...attack.frames], aim: Number(image(attack.id, 'head')!.frame.name) })),
+      travelled, droneFrames: [...droneFrames],
       capture: await capture,
     };
   }, { direction, clips });
   for (const { frames, aim } of observed) {
     const first = (direction % 8) * 8;
-    expect(frames.length).toBeGreaterThan(2);
+    expect(frames).toHaveLength(8);
     expect(frames.every((frame, index) => frame >= first && frame < first + 8 && (!index || frame > frames[index - 1]!))).toBe(true);
     expect(aim).toBe(direction);
   }
+  const flightTier = stage >= 9 ? 3 : stage >= 6 ? 2 : stage >= 3 ? 1 : 0;
+  expect(droneFrames.length).toBeGreaterThan(2);
+  expect(droneFrames.every(frame => Math.floor(frame / 8) === flightTier)).toBe(true);
+  expect(travelled).toBeGreaterThan(25);
   expect(capture).toBeDefined();
   saveCapture(capture!, captureName);
 }
 
-test('R6 타워 세 종의 진화·조준·공격 그림을 전장에 표시한다', async ({ page }) => {
+test('R6 타워 여섯 종을 해금하고 진화·조준·공격 그림을 전장에 표시한다', async ({ page }) => {
   const requested: string[] = [];
   const errors: string[] = [];
   page.on('pageerror', error => errors.push(error.message));
@@ -227,7 +273,14 @@ test('R6 타워 세 종의 진화·조준·공격 그림을 전장에 표시한�
   await expect.poll(async () => (await textures(page)).filter(key => key.startsWith('r6.sheet.')).length).toBe(6);
   expect(requested).toHaveLength(6);
   expect(requested.every(path => !path.includes('-2x') && !path.includes('-attack'))).toBe(true);
-  await buildThree(page);
+  expect(requested.some(path => path.endsWith('/pack.json'))).toBe(false);
+  await page.evaluate(() => window.qaTowers.unlockSupport());
+  await expect.poll(async () => (await textures(page)).filter(key => key.startsWith('r6.sheet.')).length).toBe(12);
+  expect(requested.filter(path => path.endsWith('/pack.json'))).toHaveLength(3);
+  expect(requested.filter(path => /\/(prism|hangar|bastion)\/.*\.webp$/.test(path))).toHaveLength(6);
+  expect(requested.some(path => path.includes('hangar-flight'))).toBe(false);
+  await buildTowers(page, types);
+  await expect.poll(async () => (await textures(page)).includes('r6.sheet.hangar-flight')).toBe(true);
 
   for (let level = 1; level <= 20; level++) {
     const stage = Math.floor(level / 2);
@@ -239,7 +292,7 @@ test('R6 타워 세 종의 진화·조준·공격 그림을 전장에 표시한�
     } else if (level > 1) {
       const upgraded = await page.evaluate(() => window.qaTowers.controller.state.towers.map(tower =>
         window.qaTowers.controller.dispatch({ type: 'upgrade', towerId: tower.id }).ok));
-      expect(upgraded).toEqual([true, true, true]);
+      expect(upgraded).toEqual(types.map(() => true));
     }
     await expect.poll(() => bodyFrames(page)).toEqual(types.map(type => [`r6.sheet.${type}-bodies`, stage]));
     if (!captureLevels.includes(level)) continue;
@@ -249,11 +302,13 @@ test('R6 타워 세 종의 진화·조준·공격 그림을 전장에 표시한�
       const body = image(tower.id, 'body')!;
       const head = image(tower.id, 'head')!;
       const { mount, bodyPivot } = forms[index]!;
-      const mountY = body.y + (mount - bodyPivot) * body.displayWidth / 192;
-      return Math.abs(head.y - mountY) < .03;
-    }), forms.map(form => ({ mount: form.mount[1], bodyPivot: manifest.sheets[form.body]!.pivot[1] })))).toBe(true);
-    await capture(page, `lv${level}`);
-    await watchAttack(page, (level + 5) % 16, stage, `lv${level}-attack`);
+      const scale = body.displayWidth / 192;
+      const mountX = body.x + (mount[0] - bodyPivot[0]) * scale;
+      const mountY = body.y + (mount[1] - bodyPivot[1]) * scale;
+      return Math.abs(head.x - mountX) < .03 && Math.abs(head.y - mountY) < .03;
+    }), forms.map(form => ({ mount: form.mount, bodyPivot: manifest.sheets[form.body]!.pivot })))).toBe(true);
+    if (level === 20) await capture(page, 'six-lv20');
+    await watchAttack(page, (level + 5) % 16, stage, `six-lv${level}-attack`);
   }
 
   const directions = await page.evaluate(async () => {
@@ -283,7 +338,7 @@ test.describe('고해상도 화면', () => {
   test('같은 전장 크기로 384px 타워를 표시하고 곡사 포대의 실제 첫발을 재생한다', async ({ page }) => {
     await openField(page);
     await expect.poll(async () => (await textures(page)).includes('r6.sheet.cryo-lv1-heads')).toBe(true);
-    await buildThree(page);
+    await buildTowers(page, startingTypes);
     await expect.poll(() => page.evaluate(() => window.qaTowers.controller.state.towers.map(tower => {
       const body = window.qaTowers.image(tower.id, 'body');
       return body ? [body.frame.width, Math.round(body.displayWidth)] : null;
@@ -298,19 +353,25 @@ test.describe('고해상도 화면', () => {
       if (!started.ok) { reject(new Error(started.error)); return; }
       const timeout = setTimeout(() => {
         scene.events.off('postupdate', watch);
-        controller.stop();
         reject(new Error('곡사 포대의 첫발을 그리지 못했습니다.'));
-      }, 20000);
+      }, 5000);
       function watch() {
         const head = image(mortar.id, 'head');
         if (!head?.texture.key.startsWith('r6.sheet.mortar-attack-lv1-')) return;
         scene.events.off('postupdate', watch);
-        controller.stop();
         clearTimeout(timeout);
         resolve(mortar.attacks > 0);
       }
       scene.events.on('postupdate', watch);
-      controller.start();
+      // 전장 렌더 속도와 무관하게 제어기가 판정하고 구독자에게 발사 사건을 보내게 한다.
+      for (let ticks = 0; ticks < 600 && mortar.attacks === 0; ticks++) {
+        if (!controller['step']()) break;
+      }
+      if (mortar.attacks === 0) {
+        scene.events.off('postupdate', watch);
+        clearTimeout(timeout);
+        reject(new Error(`논리 틱 ${controller.state.tick}까지 곡사 포대가 발사하지 않았습니다.`));
+      }
     }));
     expect(fired).toBe(true);
   });

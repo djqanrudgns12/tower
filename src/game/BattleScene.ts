@@ -3,6 +3,7 @@ import { assetManifestSchema } from '../contracts/assetManifest';
 import { ENEMY_KINDS, TOWER_IDS } from '../contracts/balance';
 import { MAPS } from '../content';
 import type { DomainEvent } from '../domain/events';
+import { isR6Tower } from '../domain/r6Towers';
 import { positionAt } from '../domain/geometry';
 import { drawSprites } from './art';
 import { applyManifest, ASSETS, CELL_PX, entriesForMap, WORLD_H, WORLD_W } from './assets';
@@ -52,7 +53,7 @@ export class BattleScene extends Phaser.Scene {
     const mapId = ctx.map.id;
     if (isR6Battlefield(ctx)) {
       this.r6Assets = new R6BattleAssets(this);
-      this.r6Assets.preload(mapId);
+      this.r6Assets.preload(mapId, this.bridge.controller.state.owned);
       return;
     }
     this.load.json('asset-manifest', 'assets/manifest.json');
@@ -75,12 +76,7 @@ export class BattleScene extends Phaser.Scene {
     this.ground = new GroundLayer(c);
     this.ground.bake();
     drawSprites(this);
-    const icons: Record<string, string> = {};
-    for (const id of TOWER_IDS) for (const key of [`tower.${id}`, `tower.${id}.weapon`]) if (this.textures.exists(key)) icons[key] = this.textures.getBase64(key);
-    // 준비판의 다음 웨이브 미리보기·웨이브 띠의 대장 초상화도 전장과 같은 그림을 쓴다.
-    for (const kind of ENEMY_KINDS) { const key = `enemy.${kind}.0`; if (this.textures.exists(key)) icons[key] = this.textures.getBase64(key); }
-    this.r6Assets?.addTowerIcons(icons);
-    this.bridge.onIcons?.(icons);
+    this.publishIcons();
     this.ground.build();
     this.inputLayer = new InputLayer(c, p => Boolean(this.miniCam?.visible && p.x >= this.miniCam.x && p.y <= this.miniCam.y + this.miniCam.height));
     this.enemyLayer = new EnemyLayer(c, this.r6Assets);
@@ -97,6 +93,15 @@ export class BattleScene extends Phaser.Scene {
     this.events.once(Phaser.Scenes.Events.DESTROY, () => this.offEvents?.());
     this.layout();
     this.ground.applyMood(true);
+  }
+
+  private publishIcons() {
+    const icons: Record<string, string> = {};
+    for (const id of TOWER_IDS) for (const key of [`tower.${id}`, `tower.${id}.weapon`]) if (this.textures.exists(key)) icons[key] = this.textures.getBase64(key);
+    // 준비판의 다음 웨이브 미리보기·웨이브 띠의 대장 초상화도 전장과 같은 그림을 쓴다.
+    for (const kind of ENEMY_KINDS) { const key = `enemy.${kind}.0`; if (this.textures.exists(key)) icons[key] = this.textures.getBase64(key); }
+    this.r6Assets?.addTowerIcons(icons);
+    this.bridge.onIcons?.(icons);
   }
 
   /** 캔버스 크기가 바뀌면 React 쪽에서 호출한다. */
@@ -171,7 +176,9 @@ export class BattleScene extends Phaser.Scene {
         this.towerLayer.onFire(e);
       } else if (e.type === 'strike') {
         this.towerLayer.onStrike(e);
-        this.effects.onStrike(e, this.towerLayer.weaponLift(e.towerId), enemyLift);
+        this.effects.onStrike(e, this.towerLayer.weaponLift(e.towerId), enemyLift, this.towerLayer.weaponOffset(e.towerId));
+      } else if (e.type === 'towerUnlocked' && isR6Tower(e.tower)) {
+        this.r6Assets?.towerUnlocked(e.tower, () => this.publishIcons());
       } else if (e.type === 'hazardPlaced') {
         this.effects.onHazardPlaced(e);
       } else if (e.type === 'hazardTriggered') {

@@ -123,7 +123,7 @@ if __name__ == "__main__":
 
         layout = json.loads((args.source / "layout.json").read_text())
         pack_assets = pack_mortar
-        if layout["towerId"] in ("rail", "cryo"):
+        if layout["towerId"] in ("rail", "cryo", "prism", "hangar", "bastion"):
             from tower_pack import pack_tower
 
             pack_assets = pack_tower

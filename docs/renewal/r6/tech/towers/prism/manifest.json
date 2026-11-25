@@ -1,0 +1,304 @@
+{
+  "assets": [
+    {
+      "id": "prism-forms",
+      "file": "prism-forms.webp",
+      "width": 1152,
+      "height": 384,
+      "artifactHash": "2efd2f63a9f697ac14bd79c127d8d6130a9fe1cc073235d1906780d6e8f0f0ac",
+      "sprite": {
+        "frameWidth": 192,
+        "frameHeight": 192,
+        "frameCount": 11,
+        "pivot": [
+          96,
+          150
+        ]
+      }
+    },
+    {
+      "id": "prism-forms-2x",
+      "file": "prism-forms-2x.webp",
+      "width": 2304,
+      "height": 768,
+      "artifactHash": "30c18129634ea0fe4380c003cf29ca2b35ef3b716c565c54bb2d68fe4954bddd",
+      "sprite": {
+        "frameWidth": 384,
+        "frameHeight": 384,
+        "frameCount": 11,
+        "pivot": [
+          192,
+          300
+        ]
+      }
+    },
+    {
+      "id": "prism-bodies",
+      "file": "prism-bodies.webp",
+      "width": 1152,
+      "height": 384,
+      "artifactHash": "ba1e7a387ea7f9049b2e70c19d4f3799cf302bda696a12ba6a1f6063123766b6",
+      "sprite": {
+        "frameWidth": 192,
+        "frameHeight": 192,
+        "frameCount": 11,
+        "pivot": [
+          96,
+          150
+        ]
+      }
+    },
+    {
+      "id": "prism-bodies-2x",
+      "file": "prism-bodies-2x.webp",
+      "width": 2304,
+      "height": 768,
+      "artifactHash": "29c5746c660227f9c1c1db948d031f72ff57618f18ec1e87ed78ed344ae95115",
+      "sprite": {
+        "frameWidth": 384,
+        "frameHeight": 384,
+        "frameCount": 11,
+        "pivot": [
+          192,
+          300
+        ]
+      }
+    },
+    {
+      "id": "prism-heads",
+      "file": "prism-heads.webp",
+      "width": 1920,
+      "height": 1920,
+      "artifactHash": "ff6a42f070532111e23c9c662e820d0936c56928941a7850fca94e2cf371e3b3",
+      "sprite": {
+        "frameWidth": 192,
+        "frameHeight": 192,
+        "frameCount": 96,
+        "pivot": [
+          96,
+          96
+        ]
+      }
+    },
+    {
+      "id": "prism-heads-2x",
+      "file": "prism-heads-2x.webp",
+      "width": 3840,
+      "height": 3840,
+      "artifactHash": "2a969595b7870d57dc662d4efb8bea8d6fddf08de3fdb36fa4c6552378d92399",
+      "sprite": {
+        "frameWidth": 384,
+        "frameHeight": 384,
+        "frameCount": 96,
+        "pivot": [
+          192,
+          192
+        ]
+      }
+    },
+    {
+      "id": "prism-heads-armored",
+      "file": "prism-heads-armored.webp",
+      "width": 1920,
+      "height": 1536,
+      "artifactHash": "039d7be54b4a33d19797dcebfd8e731d813990aa0f84c4d0f3483867ce448a9a",
+      "sprite": {
+        "frameWidth": 192,
+        "frameHeight": 192,
+        "frameCount": 80,
+        "pivot": [
+          96,
+          96
+        ]
+      }
+    },
+    {
+      "id": "prism-heads-armored-2x",
+      "file": "prism-heads-armored-2x.webp",
+      "width": 3840,
+      "height": 3072,
+      "artifactHash": "70ab3bc0652fe64b3ec3a85153ddd15e7123f7ddb6cfd4f1069b7490c01a4a92",
+      "sprite": {
+        "frameWidth": 384,
+        "frameHeight": 384,
+        "frameCount": 80,
+        "pivot": [
+          192,
+          192
+        ]
+      }
+    },
+    {
+      "id": "prism-attack",
+      "file": "prism-attack.webp",
+      "width": 1536,
+      "height": 768,
+      "artifactHash": "aafcbc6b7d64c3d3d2bbe5bab9c1f2c8e9adbb8974d64421f00ec115061e506b",
+      "sprite": {
+        "frameWidth": 192,
+        "frameHeight": 192,
+        "frameCount": 32,
+        "pivot": [
+          96,
+          150
+        ]
+      }
+    },
+    {
+      "id": "prism-attack-2x",
+      "file": "prism-attack-2x.webp",
+      "width": 3072,
+      "height": 1536,
+      "artifactHash": "9ca33c8afd9dca2fec600551b7e51d434bd7fbeb1a7eb0b9ca669a6af0602b1e",
+      "sprite": {
+        "frameWidth": 384,
+        "frameHeight": 384,
+        "frameCount": 32,
+        "pivot": [
+          192,
+          300
+        ]
+      }
+    }
+  ],
+  "levels": [
+    1,
+    2,
+    4,
+    6,
+    8,
+    10,
+    12,
+    14,
+    16,
+    18,
+    20
+  ],
+  "directions": 16,
+  "headSheets": [
+    {
+      "asset": "prism-heads",
+      "asset2x": "prism-heads-2x",
+      "levels": [
+        1,
+        2,
+        4,
+        6,
+        8,
+        10
+      ]
+    },
+    {
+      "asset": "prism-heads-armored",
+      "asset2x": "prism-heads-armored-2x",
+      "levels": [
+        12,
+        14,
+        16,
+        18,
+        20
+      ]
+    }
+  ],
+  "headAnchors2x": [
+    [
+      171,
+      217
+    ],
+    [
+      171,
+      217
+    ],
+    [
+      171,
+      217
+    ],
+    [
+      169,
+      208
+    ],
+    [
+      169,
+      208
+    ],
+    [
+      169,
+      208
+    ],
+    [
+      168,
+      202
+    ],
+    [
+      168,
+      202
+    ],
+    [
+      168,
+      202
+    ],
+    [
+      164,
+      187
+    ],
+    [
+      164,
+      187
+    ]
+  ],
+  "reviewDirection": 9,
+  "weapons": [
+    {
+      "stage": 1,
+      "level": 1,
+      "attack": {
+        "mode": "chain",
+        "fps": 14,
+        "frames": 8,
+        "targetCount": 2,
+        "burstCount": 1,
+        "pierceCount": 0,
+        "recoil": 0
+      }
+    },
+    {
+      "stage": 2,
+      "level": 6,
+      "attack": {
+        "mode": "chain",
+        "fps": 14,
+        "frames": 8,
+        "targetCount": 3,
+        "burstCount": 1,
+        "pierceCount": 0,
+        "recoil": 0
+      }
+    },
+    {
+      "stage": 3,
+      "level": 12,
+      "attack": {
+        "mode": "chain",
+        "fps": 14,
+        "frames": 8,
+        "targetCount": 4,
+        "burstCount": 1,
+        "pierceCount": 0,
+        "recoil": 0
+      }
+    },
+    {
+      "stage": 4,
+      "level": 18,
+      "attack": {
+        "mode": "chain",
+        "fps": 14,
+        "frames": 8,
+        "targetCount": 5,
+        "burstCount": 1,
+        "pierceCount": 0,
+        "recoil": 0
+      }
+    }
+  ]
+}

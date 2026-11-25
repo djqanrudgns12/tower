@@ -30,6 +30,11 @@ export class R6TowerPlayback {
 
   weaponLift(towerId: number) { return this.views.get(towerId)?.shotLift ?? 0; }
 
+  weaponOffset(towerId: number) {
+    const view = this.views.get(towerId);
+    return view ? view.head.x - view.body.x : 0;
+  }
+
   attack(towerId: number, dx: number, dy: number) {
     const view = this.views.get(towerId);
     const projection = this.assets.manifest?.projection;

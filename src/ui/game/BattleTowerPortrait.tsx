@@ -2,16 +2,33 @@ import type { R6TowerId } from '../../contracts/balanceV2';
 import { createContext, useContext, useEffect, useState } from 'react';
 import type { TowerId } from '../../contracts/balance';
 import { evolutionAt, isR6Tower } from '../../domain/r6Towers';
-import { headDirection, r6ManifestSchema, type R6Manifest, type R6Sheet } from '../../game/r6/manifest';
+import { headDirection, r6ManifestSchema, r6TowerPackSchema, towerPackPath, type R6Manifest, type R6Sheet, type R6TowerPack } from '../../game/r6/manifest';
 import { TowerShieldPortrait } from '../icons/GameIcons';
 
 export const BattlePortraits = createContext<{ r6: boolean; manifest: R6Manifest | null }>({ r6: false, manifest: null });
 
 const assetRoot = `${import.meta.env.BASE_URL}assets/r6/`;
 let loaded: Promise<R6Manifest> | undefined;
+const towerPacks = new Map<R6TowerId, Promise<R6TowerPack | undefined>>();
 
-export function useBattlePortraits(r6: boolean) {
+function loadPortraitPack(id: R6TowerId) {
+  let pending = towerPacks.get(id);
+  if (!pending) {
+    pending = fetch(assetRoot + towerPackPath(id)).then(async response => {
+      if (!response.ok) throw new Error('해금한 타워 그림 목록을 읽지 못했어요');
+      return r6TowerPackSchema.parse(await response.json());
+    }).catch(() => {
+      towerPacks.delete(id);
+      return undefined;
+    });
+    towerPacks.set(id, pending);
+  }
+  return pending;
+}
+
+export function useBattlePortraits(r6: boolean, owned: readonly string[]) {
   const [manifest, setManifest] = useState<R6Manifest | null>(null);
+  const ownedKey = owned.join(',');
   useEffect(() => {
     if (!r6) return;
     let active = true;
@@ -22,9 +39,26 @@ export function useBattlePortraits(r6: boolean) {
       loaded = undefined;
       throw error;
     });
-    void loaded.then(result => { if (active) setManifest(result); }, () => {});
+    void loaded.then(async result => {
+      if (!active) return;
+      const unlocked = ownedKey.split(',').filter(isR6Tower).filter(id => result.lazyTowers?.includes(id));
+      if (!unlocked.length) {
+        setManifest(result);
+        return;
+      }
+      const packs = await Promise.all(unlocked.map(loadPortraitPack));
+      if (!active) return;
+      const towers = { ...result.towers };
+      const sheets = { ...result.sheets };
+      packs.forEach((pack, index) => {
+        if (!pack) return;
+        towers[unlocked[index]!] = pack.forms;
+        Object.assign(sheets, pack.sheets);
+      });
+      setManifest({ ...result, towers, sheets });
+    }, () => {});
     return () => { active = false; };
-  }, [r6]);
+  }, [r6, ownedKey]);
   return manifest;
 }
 

@@ -75,21 +75,38 @@ export class EffectLayer {
    * 번개는 타워→대상 순서로 이어지는 짧은 선, 화염은 맞은 자리의 불꽃, 근접은 맞은 자리의 섬광이다.
    * `lift`는 진화형 본체에 맞춰 올라간 무기 높이(TowerLayer.weaponLift)다.
    */
-  onStrike(e: Extract<DomainEvent, { type: 'strike' }>, lift = 0, enemyLift: (enemyId: number) => number = () => 0) {
+  onStrike(e: Extract<DomainEvent, { type: 'strike' }>, lift = 0, enemyLift: (enemyId: number) => number = () => 0, mountX = 0) {
     const { scene, bridge } = this.c;
     const first = e.targets[0];
     if (!first) return;
     const from = fieldPosition(this.c, e.fromX, e.fromY);
     const fx = from.x, fy = from.y - CELL_PX * 0.32 - lift;
     if (this.r6) {
+      const type: string = e.towerType;
+      if (!bridge.reducedMotion && (type === 'hangar' || type === 'bastion')) return;
+      if (type === 'prism') {
+        let previous = { x: fx + mountX, y: fy };
+        e.targets.forEach((target, index) => {
+          const point = fieldPosition(this.c, target.x, target.y);
+          const next = { x: point.x, y: point.y - 10 - enemyLift(target.enemyId) };
+          const start = previous;
+          previous = next;
+          const draw = () => {
+            const beam = scene.add.graphics().setDepth(DEPTH.fx);
+            beam.lineStyle(1.8, R6_COLORS.amber).lineBetween(start.x, start.y, next.x, next.y);
+            this.fadeR6(beam, 150);
+          };
+          if (bridge.reducedMotion) draw();
+          else scene.time.delayedCall(140 + index * 47, draw);
+        });
+        return;
+      }
       const g = scene.add.graphics().setDepth(DEPTH.fx);
       g.lineStyle(2, R6_COLORS.teal, 0.85);
-      let x = fx, y = fy;
       for (const target of e.targets) {
         const { x: tx, y: targetY } = fieldPosition(this.c, target.x, target.y);
         const ty = targetY - 10 - enemyLift(target.enemyId);
-        g.lineBetween(x, y, tx, ty);
-        if (String(e.towerType) === 'prism') { x = tx; y = ty; }
+        g.lineBetween(fx, fy, tx, ty);
       }
       this.fadeR6(g, 100);
       return;

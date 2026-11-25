@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { ENTITY_IDS, R6_TOWERS, SPECIES } from '../../contracts/balanceV2';
+import { ENTITY_IDS, R6_TOWERS, SPECIES, type R6TowerId } from '../../contracts/balanceV2';
 import type { GameContext } from '../../domain/context';
 
 export const isR6Battlefield = (ctx: GameContext) => ctx.balance.balanceVersion === '2.0.0';
@@ -33,6 +33,24 @@ const towerForm = z.strictObject({
   body: key, bodyFrame: frameIndex, head: key,
   mount: pivot, scale: z.number().positive().max(3), attack,
 });
+const forms = z.array(towerForm).length(11);
+const sheets = z.record(key, sheet);
+const towerReferences = (tower: TowerFormArt[], catalog: Record<string, R6Sheet>) => tower.every(form => {
+  const body = catalog[form.body];
+  const head = catalog[form.head];
+  const { attack } = form;
+  const clip = 'clip' in attack && attack.clip;
+  const hasAttack = 'sheets' in attack
+    ? attack.sheets[0] !== attack.sheets[1] && attack.sheets.every(id => catalog[id]?.count === attack.frames * 8)
+    : !clip || clip.first + clip.count <= (catalog[clip.sheet]?.count ?? 0);
+  return body && head?.count === 16 && form.bodyFrame < body.count &&
+    form.mount[0] < body.width && form.mount[1] < body.height && hasAttack;
+});
+
+export const r6TowerPackSchema = z.strictObject({ forms, sheets })
+  .refine(pack => towerReferences(pack.forms, pack.sheets), { message: '타워 시트·프레임 참조를 확인하세요' });
+export const towerPackPath = (id: R6TowerId) => `towers/${id}/pack.json`;
+
 const rig = z.strictObject({
   file: path('.json'), scale: z.number().positive().max(8),
   walk: key, hit: key.optional(), fall: key.optional(),
@@ -41,9 +59,10 @@ const actor = z.strictObject({ rig: key, skin: z.string().min(1) });
 export const r6ManifestSchema = z.strictObject({
   version: z.literal(2),
   maps: z.record(key, path('.webp')),
-  sheets: z.record(key, sheet),
+  sheets,
   projection: z.strictObject({ zeroBearingDeg: z.number(), squashY: z.number().positive().max(1) }),
-  towers: z.partialRecord(z.enum(R6_TOWERS), z.array(towerForm).length(11)),
+  towers: z.partialRecord(z.enum(R6_TOWERS), forms),
+  lazyTowers: z.array(z.enum(R6_TOWERS)).optional(),
   atlases: z.record(key, path('.atlas')),
   rigs: z.record(key, rig),
   species: z.partialRecord(z.enum(SPECIES), z.strictObject({
@@ -51,23 +70,15 @@ export const r6ManifestSchema = z.strictObject({
     fallback: actor.extend({ tierSkins: z.tuple([z.string(), z.string(), z.string(), z.string()]).optional() }),
     entities: z.partialRecord(z.enum(ENTITY_IDS), actor),
   })),
-}).refine(m => Object.values(m.towers).every(forms => forms.every(form => {
-  const body = m.sheets[form.body];
-  const head = m.sheets[form.head];
-  const { attack } = form;
-  const clip = 'clip' in attack && attack.clip;
-  const hasAttack = 'sheets' in attack
-    ? attack.sheets[0] !== attack.sheets[1] && attack.sheets.every(id => m.sheets[id]?.count === attack.frames * 8)
-    : !clip || clip.first + clip.count <= (m.sheets[clip.sheet]?.count ?? 0);
-  return body && head?.count === 16 && form.bodyFrame < body.count &&
-    form.mount[0] < body.width && form.mount[1] < body.height && hasAttack;
-})), { message: '타워 시트·프레임 참조를 확인하세요' })
+}).refine(m => Object.values(m.towers).every(tower => towerReferences(tower, m.sheets)),
+  { message: '타워 시트·프레임 참조를 확인하세요' })
   .refine(m => Object.entries(m.species).every(([species, pack]) =>
     m.atlases[pack.atlas] && m.rigs[pack.fallback.rig] &&
     Object.entries(pack.entities).every(([id, art]) => id.startsWith(species + '-') && m.rigs[art.rig])),
   { message: '종족 아틀라스·리그 참조를 확인하세요' });
 
 export type R6Manifest = z.infer<typeof r6ManifestSchema>;
+export type R6TowerPack = z.infer<typeof r6TowerPackSchema>;
 export type TowerFormArt = z.infer<typeof towerForm>;
 export type R6Sheet = z.infer<typeof sheet>;
 

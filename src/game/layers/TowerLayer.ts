@@ -1,14 +1,17 @@
 import Phaser from 'phaser';
 import type { TowerId } from '../../contracts/balance';
 import type { DomainEvent } from '../../domain/events';
+import { positionAt } from '../../domain/geometry';
+import { evolutionAt } from '../../domain/r6Towers';
 import { formBranch, type FormId } from '../../domain/towers';
 import type { RunState } from '../../domain/types';
 import { PALETTE } from '../art';
 import { ASSETS, CELL_PX, towerBodyArt, weaponMountOffset, type AssetSpec } from '../assets';
-import type { R6BattleAssets } from '../r6/BattleAssets';
+import { HANGAR_FLIGHT, sheetKey, type R6BattleAssets } from '../r6/BattleAssets';
+import { headDirection, R6_COLORS } from '../r6/manifest';
 import { R6TowerPlayback } from '../r6/TowerPlayback';
 import { topFit, WIND_SPIN, windSpinStep } from './cues';
-import { DEPTH, FIXED_WEAPON, toWorld, type LayerContext } from './shared';
+import { DEPTH, fieldPosition, FIXED_WEAPON, toWorld, type LayerContext } from './shared';
 
 /**
  * `form`은 본체 그림이 맞춰진 형태, `lift`는 무기를 기본 높이보다 올리는 높이(월드 px, 형태에 따른 올림 + 장착점이 정한 올림), `mountX`는 장착점이 정한 가로 이동(월드 px).
@@ -16,6 +19,17 @@ import { DEPTH, FIXED_WEAPON, toWorld, type LayerContext } from './shared';
  * `spin`·`spinBoost`·`spinAt`은 바람개비탑 날개의 각도(rad)·공격 순간 가속(rad/s)·마지막 갱신 시각(ms)이다.
  */
 interface TowerView { body: Phaser.GameObjects.Image; weapon: Phaser.GameObjects.Image | null; pips: Phaser.GameObjects.Graphics; level: number; branch: string | null; form: FormId | null; lift: number; mountX: number; recoilUntil: number; angle: number; x: number; y: number; footY: number; scale: number; shotLift: number; spin: number; spinBoost: number; spinAt: number }
+
+type Strike = Extract<DomainEvent, { type: 'strike' }>;
+interface DroneFlight {
+  image: Phaser.GameObjects.Image;
+  shots: Phaser.GameObjects.Graphics;
+  start: number;
+  fps: number;
+  weapon: number;
+  targetId: number;
+  target: { x: number; y: number };
+}
 
 /** 알파 경계 상자를 잴 때 이보다 옅은 픽셀(가장자리 잔여 알파)은 무시한다. */
 const TOP_ALPHA_MIN = 16;
@@ -31,14 +45,16 @@ export class TowerLayer {
   private lifts = new Map<string, number>();
 
   private readonly r6: R6TowerPlayback | null;
+  private readonly flights = new Map<number, DroneFlight>();
 
-  constructor(c: LayerContext, assets: R6BattleAssets | null = null) {
+  constructor(c: LayerContext, private readonly assets: R6BattleAssets | null = null) {
     this.c = c;
     this.r6 = assets ? new R6TowerPlayback(c, assets) : null;
   }
 
   /** 발사체·즉발 효과의 시작점도 무기와 같이 올린다(EffectLayer가 읽는다). */
   weaponLift(towerId: number): number { return this.r6?.weaponLift(towerId) ?? this.towers.get(towerId)?.shotLift ?? 0; }
+  weaponOffset(towerId: number): number { return this.r6?.weaponOffset(towerId) ?? 0; }
 
   onFire(e: Extract<DomainEvent, { type: 'fire' }>) {
     const t = this.towers.get(e.towerId);
@@ -51,17 +67,96 @@ export class TowerLayer {
   }
 
   /** 즉발 공격(PRD §11.4): 무기는 첫 대상 쪽으로 돌고 반동한다. */
-  onStrike(e: Extract<DomainEvent, { type: 'strike' }>) {
+  onStrike(e: Strike) {
     const t = this.towers.get(e.towerId);
     const first = e.targets[0];
     if (!first) return;
     if (this.r6) {
+      if (String(e.towerType) === 'hangar' && this.flyDrone(e, first)) return;
       this.r6.attack(e.towerId, first.x - e.fromX, first.y - e.fromY);
       return;
     }
     const fx = toWorld(e.fromX), fy = toWorld(e.fromY) - CELL_PX * 0.32 - (t?.shotLift ?? 0);
     if (t && e.towerType === 'wind') this.kickSpin(t);
     if (t && !FIXED_WEAPON.has(e.towerType)) { t.angle = Math.atan2(toWorld(first.y) - fy, toWorld(first.x) - fx); t.recoilUntil = this.c.scene.time.now + 120; }
+  }
+
+  private flyDrone(e: Strike, first: Strike['targets'][number]): boolean {
+    const { scene, bridge } = this.c;
+    if (bridge.reducedMotion) return false;
+    const manifest = this.assets?.manifest;
+    const art = manifest?.sheets[HANGAR_FLIGHT];
+    const key = sheetKey(HANGAR_FLIGHT);
+    if (!art || !scene.textures.exists(key)) return false;
+    const active = this.flights.get(e.towerId);
+    const target = fieldPosition(this.c, first.x, first.y);
+    if (active) {
+      // 후속 공격도 같은 발진에서 처리해 도킹 동작을 끝까지 보여 준다.
+      active.targetId = first.enemyId;
+      active.target = target;
+      return true;
+    }
+    const tower = bridge.controller.state.towers.find(value => value.id === e.towerId);
+    if (!tower) return false;
+    const { stage, weapon } = evolutionAt(tower.level);
+    const form = manifest?.towers.hangar?.[stage];
+    if (!form) return false;
+    const size = form.scale / 2.6;
+    const name = `r6:tower:${tower.id}:drone`;
+    const image = scene.add.image(0, 0, key, weapon * 8).setDepth(DEPTH.projectiles).setName(name)
+      .setOrigin(art.pivot[0] / art.width, art.pivot[1] / art.height)
+      .setDisplaySize(art.width * size, art.height * size).setVisible(false);
+    const shots = scene.add.graphics().setDepth(DEPTH.projectiles - 1).setName(name + ':shots');
+    this.flights.set(e.towerId, { image, shots, start: scene.time.now, fps: form.attack.fps,
+      weapon, targetId: first.enemyId, target });
+    return false;
+  }
+
+  private syncR6(s: RunState, time: number) {
+    this.r6?.sync(s, time);
+    const projection = this.assets?.manifest?.projection;
+    if (!projection) return;
+    const { bridge } = this.c;
+    if (!bridge.reducedMotion && s.towers.some(tower => String(tower.type) === 'hangar')) this.assets?.prepareHangarFlight();
+    for (const [id, flight] of this.flights) {
+      const { image, shots } = flight;
+      const tower = s.towers.find(value => value.id === id);
+      const frame = (time - flight.start) * flight.fps / 1000;
+      if (!tower || bridge.reducedMotion || frame >= 7) {
+        image.destroy();
+        shots.destroy();
+        this.flights.delete(id);
+        continue;
+      }
+      if (frame < 1.9) continue;
+      const enemy = s.enemies.find(value => value.id === flight.targetId);
+      if (enemy) {
+        const point = positionAt(bridge.controller.ctx.path, enemy.progress);
+        flight.target = fieldPosition(this.c, point.x, point.y);
+      }
+      const foot = fieldPosition(this.c, tower.x, tower.y);
+      const fromX = foot.x - 4;
+      const fromY = foot.y - CELL_PX * .32 - this.weaponLift(id) + 9;
+      const { x: targetX, y: groundY } = flight.target;
+      const targetY = groundY - 12;
+      const progress = Phaser.Math.Clamp((frame - 1.9) / 5.1, 0, 1);
+      const reach = Math.min(1, progress / .30, (1 - progress) / .29);
+      const spread = reach ** 2 * (3 - 2 * reach);
+      const orbit = Phaser.Math.Clamp((progress - .30) / .41, 0, 1) * Math.PI * 2;
+      const x = Phaser.Math.Linear(fromX, targetX, spread) + Math.sin(orbit) * 20 * spread;
+      const y = Phaser.Math.Linear(fromY, targetY - 14, spread) - (12 + Math.cos(orbit) * 7 * spread) * Math.sin(progress * Math.PI);
+      const dx = image.visible ? x - image.x : targetX - fromX;
+      const dy = image.visible ? y - image.y : targetY - fromY;
+      const aim = headDirection(dx, dy, projection);
+      image.setPosition(x, y).setFrame(flight.weapon * 8 + Math.round(aim / 2) % 8).setVisible(true);
+      shots.clear();
+      const volley = (progress - .33) * 8;
+      if (volley >= 0 && volley < 3 && volley % 1 < .48) {
+        shots.lineStyle(1.5, R6_COLORS.amber).lineBetween(
+          Phaser.Math.Linear(x, targetX, .30), Phaser.Math.Linear(y, targetY, .30),
+          Phaser.Math.Linear(x, targetX, .83), Phaser.Math.Linear(y, targetY, .83));
+      }
+    }
   }
 
   /** 바람개비탑이 돌풍을 날렸다: 날개가 순간 빨라진다. 움직임 줄이기면 돌지 않고 날개 투명도만 한 번 깜빡인다. */
@@ -73,7 +168,7 @@ export class TowerLayer {
   }
 
   sync(s: RunState, time: number) {
-    if (this.r6) { this.r6.sync(s, time); return; }
+    if (this.r6) { this.syncR6(s, time); return; }
     const { scene, bridge } = this.c;
     const seen = new Set<number>();
     for (const t of s.towers) {
