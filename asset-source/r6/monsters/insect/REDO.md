@@ -18,7 +18,6 @@
 - `runner/T1` 재작화 반영 · 조립 IoU 0.868
 - `boss-t2/T2` 새 시트와 먼 쪽 앞다리 접합 보정 반영 · 조립 IoU 0.868
 - `boss-t4/T4` 새 시트와 먼 쪽 앞다리 접합 보정 반영 · 조립 IoU 0.833
-- G4 리그 보정 아틀라스 SHA-256 `6c011587d5b4687e02c8738844371cd90ba8241be839e804a50c0cf2cf1cef55`
 - `armored/T1` 접합 leg-fore-far, leg-hind-near, leg-hind-foot-near · 조립 IoU 0.885 · 배치 SHA-256 `ed28cc66786d` · 추가 확인
 - `armored/T2` 접합 leg-fore-far, leg-hind-foot-near, leg-fore-foot-near · 조립 IoU 0.929 · 배치 SHA-256 `245ef2169322` · 추가 확인
 - `armored/T3` 접합 leg-hind-foot-far, leg-fore-far, leg-hind-near, leg-fore-foot-near · 조립 IoU 0.780 · 배치 SHA-256 `a544e440595e`
@@ -31,6 +30,7 @@
 - `infantry/T4` 접합 leg-foot-far, leg-near, leg-foot-near, arm-hand-near, 머리 표시 순서 · 조립 IoU 0.730 · 배치 SHA-256 `665a3759fc9b`
 - `runner/T1` 접합 leg-hind-foot-far, leg-fore-far, head, leg-hind-foot-near, leg-fore-foot-near · 조립 IoU 0.845 · 배치 SHA-256 `eda155206723`
 - `runner/T2` 접합 leg-hind-foot-far, leg-fore-far, leg-fore-foot-far, head, leg-fore-near · 조립 IoU 0.739 · 배치 SHA-256 `f31a6967297a`
-- `runner/T3` 접합 head, leg-hind-foot-near, 머리 표시 순서 · 조립 IoU 0.700 · 배치 SHA-256 `e2748568bcd9`
 - `runner/T4` 접합 leg-hind-foot-far, head, leg-fore-foot-near · 조립 IoU 0.768 · 배치 SHA-256 `52471bfd092f`
 - `special/T4` 접합 swarm-leg-1-near · 조립 IoU 0.804 · 배치 SHA-256 `25e72c801a22`
+- G4 리그 보정 아틀라스 SHA-256 `6c011587d5b4687e02c8738844371cd90ba8241be839e804a50c0cf2cf1cef55`
+- `runner/T3` 접합 head, leg-hind-foot-near, 머리 표시 순서 · 조립 IoU 0.714 · 배치 SHA-256 `eea1b8045d61`
