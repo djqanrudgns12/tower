@@ -6,10 +6,10 @@
 
 ## 32px 비교
 
-- machine 비교 400쌍 중 71쌍 미달. 가장 비슷한 쌍은 `machine-armored-t2`와 `insect-boss-t3` (IoU 0.701).
-- stone 비교 400쌍 중 86쌍 미달. 가장 비슷한 쌍은 `stone-boss-t4`와 `insect-boss-t3` (IoU 0.697).
-- elf 비교 400쌍 중 41쌍 미달. 가장 비슷한 쌍은 `elf-armored-t1`와 `insect-infantry-t3` (IoU 0.667).
-- human 비교 400쌍 중 92쌍 미달. 가장 비슷한 쌍은 `human-special-t2`와 `insect-special-t4` (IoU 0.706).
+- machine 비교 400쌍 중 65쌍 미달. 가장 비슷한 쌍은 `machine-boss-t3`와 `insect-boss-t3` (IoU 0.696).
+- stone 비교 400쌍 중 106쌍 미달. 가장 비슷한 쌍은 `stone-infantry-t3`와 `insect-armored-t1` (IoU 0.698).
+- elf 비교 400쌍 중 33쌍 미달. 가장 비슷한 쌍은 `elf-armored-t4`와 `insect-infantry-t4` (IoU 0.661).
+- human 비교 400쌍 중 79쌍 미달. 가장 비슷한 쌍은 `human-special-t2`와 `insect-special-t4` (IoU 0.697).
 
 ## 도구로 해결
 
@@ -32,5 +32,4 @@
 - `runner/T2` 접합 leg-hind-foot-far, leg-fore-far, leg-fore-foot-far, head, leg-fore-near · 조립 IoU 0.739 · 배치 SHA-256 `f31a6967297a`
 - `runner/T4` 접합 leg-hind-foot-far, head, leg-fore-foot-near · 조립 IoU 0.768 · 배치 SHA-256 `52471bfd092f`
 - `special/T4` 접합 swarm-leg-1-near · 조립 IoU 0.804 · 배치 SHA-256 `25e72c801a22`
-- G4 리그 보정 아틀라스 SHA-256 `6c011587d5b4687e02c8738844371cd90ba8241be839e804a50c0cf2cf1cef55`
 - `runner/T3` 접합 head, leg-hind-foot-near, 머리 표시 순서 · 조립 IoU 0.714 · 배치 SHA-256 `eea1b8045d61`

@@ -6,10 +6,10 @@
 
 ## 32px 비교
 
-- machine 비교 400쌍 중 78쌍 미달. 가장 비슷한 쌍은 `machine-armored-t2`와 `stone-infantry-t3` (IoU 0.693).
-- elf 비교 400쌍 중 15쌍 미달. 가장 비슷한 쌍은 `stone-boss-t3`와 `elf-boss-t2` (IoU 0.643).
-- human 비교 400쌍 중 98쌍 미달. 가장 비슷한 쌍은 `stone-boss-t4`와 `human-armored-t3` (IoU 0.723).
-- insect 비교 400쌍 중 86쌍 미달. 가장 비슷한 쌍은 `stone-boss-t4`와 `insect-boss-t3` (IoU 0.697).
+- machine 비교 400쌍 중 83쌍 미달. 가장 비슷한 쌍은 `machine-boss-t2`와 `stone-boss-t3` (IoU 0.638).
+- elf 비교 400쌍 중 21쌍 미달. 가장 비슷한 쌍은 `stone-boss-t3`와 `elf-boss-t2` (IoU 0.663).
+- human 비교 400쌍 중 114쌍 미달. 가장 비슷한 쌍은 `stone-special-t4`와 `human-special-t1` (IoU 0.705).
+- insect 비교 400쌍 중 106쌍 미달. 가장 비슷한 쌍은 `stone-infantry-t3`와 `insect-armored-t1` (IoU 0.698).
 
 ## 도구로 해결
 
@@ -25,7 +25,6 @@
 - `boss-t2/T2` 접합 arm-hand-near · 조립 IoU 0.798 · 배치 SHA-256 `4274e889ea1f`
 - `boss-t4/T4` 접합 arm-hand-far, arm-hand-near · 조립 IoU 0.719 · 배치 SHA-256 `1ac2fc5f38d1` · 추가 확인
 - `infantry/T2` 접합 arm-hand-far · 조립 IoU 0.772 · 배치 SHA-256 `79fb5974ee91`
-- G4 리그 보정 아틀라스 SHA-256 `ae514767eaf64a79dd1e0ff666cbf8b89469888376c314aff7af4dc972664f4e`
 - `armored/T4` 장비 부착 위치, 왼쪽 방패 · 조립 IoU 0.870 · 배치 SHA-256 `a3647a1d41ed`
 
 ## 32px 외곽선 · 이전 검수 기록

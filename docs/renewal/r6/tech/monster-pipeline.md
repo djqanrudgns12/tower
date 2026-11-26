@@ -134,114 +134,114 @@ Chromium 156에서 실제 전장 길 위에 20개체를 배치했다. 개체마�
 | 종족 | 개체 | 조립 IoU | 슬롯 | 내보낸 동작 |
 | --- | --- | ---: | ---: | --- |
 | machine | infantry/T1 | 0.873 | 6 | 걷기·피격·쓰러짐 |
-| machine | infantry/T2 | 0.809 | 11 | 걷기·피격·쓰러짐 |
+| machine | infantry/T2 | 0.803 | 11 | 걷기·피격·쓰러짐 |
 | machine | infantry/T3 | 0.917 | 11 | 걷기·피격·쓰러짐 |
 | machine | infantry/T4 | 0.869 | 11 | 걷기·피격·쓰러짐 |
-| machine | runner/T1 | 0.758 | 10 | 걷기·피격·쓰러짐 |
+| machine | runner/T1 | 0.728 | 10 | 걷기·피격·쓰러짐 |
 | machine | runner/T2 | 0.731 | 11 | 걷기·피격·쓰러짐 |
 | machine | runner/T3 | 0.837 | 12 | 걷기·피격·쓰러짐 |
 | machine | runner/T4 | 0.731 | 12 | 걷기·피격·쓰러짐 |
-| machine | armored/T1 | 0.903 | 11 | 걷기·피격·쓰러짐 |
-| machine | armored/T2 | 0.872 | 11 | 걷기·피격·쓰러짐 |
-| machine | armored/T3 | 0.901 | 12 | 걷기·피격·쓰러짐 |
-| machine | armored/T4 | 0.886 | 12 | 걷기·피격·쓰러짐 |
+| machine | armored/T1 | 0.892 | 11 | 걷기·피격·쓰러짐 |
+| machine | armored/T2 | 0.912 | 11 | 걷기·피격·쓰러짐 |
+| machine | armored/T3 | 0.889 | 12 | 걷기·피격·쓰러짐 |
+| machine | armored/T4 | 0.887 | 12 | 걷기·피격·쓰러짐 |
 | machine | special/T1 | 0.900 | 2 | 걷기·피격·쓰러짐 |
 | machine | special/T2 | 0.886 | 3 | 걷기·피격·쓰러짐 |
 | machine | special/T3 | 0.820 | 3 | 걷기·피격·쓰러짐 |
 | machine | special/T4 | 0.913 | 4 | 걷기·피격·쓰러짐 |
-| machine | boss-t1/T1 | 0.839 | 11 | 걷기·피격·쓰러짐·기술 |
-| machine | boss-t2/T2 | 0.829 | 12 | 걷기·피격·쓰러짐·기술 |
-| machine | boss-t3/T3 | 0.825 | 12 | 걷기·피격·쓰러짐·기술 |
-| machine | boss-t4/T4 | 0.815 | 12 | 걷기·피격·쓰러짐·기술 |
+| machine | boss-t1/T1 | 0.831 | 11 | 걷기·피격·쓰러짐·기술 |
+| machine | boss-t2/T2 | 0.817 | 12 | 걷기·피격·쓰러짐·기술 |
+| machine | boss-t3/T3 | 0.789 | 12 | 걷기·피격·쓰러짐·기술 |
+| machine | boss-t4/T4 | 0.804 | 12 | 걷기·피격·쓰러짐·기술 |
 | stone | infantry/T1 | 0.909 | 10 | 걷기·피격·쓰러짐 |
-| stone | infantry/T2 | 0.822 | 10 | 걷기·피격·쓰러짐 |
-| stone | infantry/T3 | 0.728 | 12 | 걷기·피격·쓰러짐 |
-| stone | infantry/T4 | 0.825 | 10 | 걷기·피격·쓰러짐 |
+| stone | infantry/T2 | 0.772 | 10 | 걷기·피격·쓰러짐 |
+| stone | infantry/T3 | 0.735 | 12 | 걷기·피격·쓰러짐 |
+| stone | infantry/T4 | 0.908 | 10 | 걷기·피격·쓰러짐 |
 | stone | runner/T1 | 0.912 | 10 | 걷기·피격·쓰러짐 |
-| stone | runner/T2 | 0.843 | 10 | 걷기·피격·쓰러짐 |
+| stone | runner/T2 | 0.920 | 10 | 걷기·피격·쓰러짐 |
 | stone | runner/T3 | 0.743 | 11 | 걷기·피격·쓰러짐 |
 | stone | runner/T4 | 0.905 | 11 | 걷기·피격·쓰러짐 |
 | stone | armored/T1 | 0.933 | 11 | 걷기·피격·쓰러짐 |
 | stone | armored/T2 | 0.883 | 11 | 걷기·피격·쓰러짐 |
-| stone | armored/T3 | 0.839 | 12 | 걷기·피격·쓰러짐 |
-| stone | armored/T4 | 0.778 | 11 | 걷기·피격·쓰러짐 |
+| stone | armored/T3 | 0.879 | 12 | 걷기·피격·쓰러짐 |
+| stone | armored/T4 | 0.870 | 11 | 걷기·피격·쓰러짐 |
 | stone | special/T1 | 0.947 | 3 | 걷기·피격·쓰러짐 |
 | stone | special/T2 | 0.776 | 3 | 걷기·피격·쓰러짐 |
 | stone | special/T3 | 0.821 | 3 | 걷기·피격·쓰러짐 |
-| stone | special/T4 | 0.823 | 3 | 걷기·피격·쓰러짐 |
-| stone | boss-t1/T1 | 0.827 | 11 | 걷기·피격·쓰러짐·기술 |
-| stone | boss-t2/T2 | 0.803 | 11 | 걷기·피격·쓰러짐·기술 |
-| stone | boss-t3/T3 | 0.749 | 10 | 걷기·피격·쓰러짐·기술 |
-| stone | boss-t4/T4 | 0.725 | 11 | 걷기·피격·쓰러짐·기술 |
-| elf | infantry/T1 | 0.876 | 13 | 걷기·피격·쓰러짐 |
-| elf | infantry/T2 | 0.827 | 11 | 걷기·피격·쓰러짐 |
-| elf | infantry/T3 | 0.904 | 11 | 걷기·피격·쓰러짐 |
-| elf | infantry/T4 | 0.781 | 11 | 걷기·피격·쓰러짐 |
+| stone | special/T4 | 0.804 | 3 | 걷기·피격·쓰러짐 |
+| stone | boss-t1/T1 | 0.746 | 11 | 걷기·피격·쓰러짐·기술 |
+| stone | boss-t2/T2 | 0.798 | 11 | 걷기·피격·쓰러짐·기술 |
+| stone | boss-t3/T3 | 0.707 | 10 | 걷기·피격·쓰러짐·기술 |
+| stone | boss-t4/T4 | 0.719 | 11 | 걷기·피격·쓰러짐·기술 |
+| elf | infantry/T1 | 0.872 | 13 | 걷기·피격·쓰러짐 |
+| elf | infantry/T2 | 0.823 | 11 | 걷기·피격·쓰러짐 |
+| elf | infantry/T3 | 0.917 | 11 | 걷기·피격·쓰러짐 |
+| elf | infantry/T4 | 0.774 | 11 | 걷기·피격·쓰러짐 |
 | elf | runner/T1 | 0.879 | 13 | 걷기·피격·쓰러짐 |
-| elf | runner/T2 | 0.853 | 11 | 걷기·피격·쓰러짐 |
+| elf | runner/T2 | 0.829 | 11 | 걷기·피격·쓰러짐 |
 | elf | runner/T3 | 0.706 | 11 | 걷기·피격·쓰러짐 |
-| elf | runner/T4 | 0.861 | 11 | 걷기·피격·쓰러짐 |
+| elf | runner/T4 | 0.826 | 11 | 걷기·피격·쓰러짐 |
 | elf | armored/T1 | 0.925 | 13 | 걷기·피격·쓰러짐 |
-| elf | armored/T2 | 0.847 | 11 | 걷기·피격·쓰러짐 |
-| elf | armored/T3 | 0.953 | 11 | 걷기·피격·쓰러짐 |
-| elf | armored/T4 | 0.822 | 12 | 걷기·피격·쓰러짐 |
-| elf | special/T1 | 0.762 | 7 | 걷기·피격·쓰러짐 |
-| elf | special/T2 | 0.749 | 4 | 걷기·피격·쓰러짐 |
-| elf | special/T3 | 0.753 | 5 | 걷기·피격·쓰러짐 |
-| elf | special/T4 | 0.701 | 5 | 걷기·피격·쓰러짐 |
-| elf | boss-t1/T1 | 0.826 | 13 | 걷기·피격·쓰러짐·기술 |
-| elf | boss-t2/T2 | 0.772 | 12 | 걷기·피격·쓰러짐·기술 |
-| elf | boss-t3/T3 | 0.732 | 11 | 걷기·피격·쓰러짐·기술 |
-| elf | boss-t4/T4 | 0.806 | 11 | 걷기·피격·쓰러짐·기술 |
+| elf | armored/T2 | 0.857 | 11 | 걷기·피격·쓰러짐 |
+| elf | armored/T3 | 0.947 | 11 | 걷기·피격·쓰러짐 |
+| elf | armored/T4 | 0.830 | 12 | 걷기·피격·쓰러짐 |
+| elf | special/T1 | 0.758 | 7 | 걷기·피격·쓰러짐 |
+| elf | special/T2 | 0.809 | 4 | 걷기·피격·쓰러짐 |
+| elf | special/T3 | 0.717 | 5 | 걷기·피격·쓰러짐 |
+| elf | special/T4 | 0.743 | 5 | 걷기·피격·쓰러짐 |
+| elf | boss-t1/T1 | 0.818 | 13 | 걷기·피격·쓰러짐·기술 |
+| elf | boss-t2/T2 | 0.768 | 12 | 걷기·피격·쓰러짐·기술 |
+| elf | boss-t3/T3 | 0.703 | 11 | 걷기·피격·쓰러짐·기술 |
+| elf | boss-t4/T4 | 0.795 | 11 | 걷기·피격·쓰러짐·기술 |
 | human | infantry/T1 | 0.778 | 13 | 걷기·피격·쓰러짐 |
-| human | infantry/T2 | 0.764 | 11 | 걷기·피격·쓰러짐 |
-| human | infantry/T3 | 0.795 | 11 | 걷기·피격·쓰러짐 |
-| human | infantry/T4 | 0.773 | 11 | 걷기·피격·쓰러짐 |
+| human | infantry/T2 | 0.753 | 11 | 걷기·피격·쓰러짐 |
+| human | infantry/T3 | 0.735 | 11 | 걷기·피격·쓰러짐 |
+| human | infantry/T4 | 0.772 | 11 | 걷기·피격·쓰러짐 |
 | human | runner/T1 | 0.772 | 13 | 걷기·피격·쓰러짐 |
 | human | runner/T2 | 0.773 | 12 | 걷기·피격·쓰러짐 |
-| human | runner/T3 | 0.744 | 12 | 걷기·피격·쓰러짐 |
-| human | runner/T4 | 0.775 | 12 | 걷기·피격·쓰러짐 |
+| human | runner/T3 | 0.808 | 12 | 걷기·피격·쓰러짐 |
+| human | runner/T4 | 0.773 | 12 | 걷기·피격·쓰러짐 |
 | human | armored/T1 | 0.922 | 13 | 걷기·피격·쓰러짐 |
-| human | armored/T2 | 0.752 | 11 | 걷기·피격·쓰러짐 |
-| human | armored/T3 | 0.813 | 11 | 걷기·피격·쓰러짐 |
+| human | armored/T2 | 0.784 | 11 | 걷기·피격·쓰러짐 |
+| human | armored/T3 | 0.854 | 11 | 걷기·피격·쓰러짐 |
 | human | armored/T4 | 0.930 | 11 | 걷기·피격·쓰러짐 |
 | human | special/T1 | 0.956 | 7 | 걷기·피격·쓰러짐 |
-| human | special/T2 | 0.917 | 6 | 걷기·피격·쓰러짐 |
-| human | special/T3 | 0.847 | 6 | 걷기·피격·쓰러짐 |
-| human | special/T4 | 0.935 | 5 | 걷기·피격·쓰러짐 |
-| human | boss-t1/T1 | 0.760 | 13 | 걷기·피격·쓰러짐·기술 |
+| human | special/T2 | 0.941 | 6 | 걷기·피격·쓰러짐 |
+| human | special/T3 | 0.854 | 6 | 걷기·피격·쓰러짐 |
+| human | special/T4 | 0.944 | 5 | 걷기·피격·쓰러짐 |
+| human | boss-t1/T1 | 0.738 | 13 | 걷기·피격·쓰러짐·기술 |
 | human | boss-t2/T2 | 0.786 | 11 | 걷기·피격·쓰러짐·기술 |
-| human | boss-t3/T3 | 0.782 | 12 | 걷기·피격·쓰러짐·기술 |
-| human | boss-t4/T4 | 0.752 | 12 | 걷기·피격·쓰러짐·기술 |
-| insect | infantry/T1 | 0.818 | 13 | 걷기·피격·쓰러짐 |
-| insect | infantry/T2 | 0.824 | 11 | 걷기·피격·쓰러짐 |
-| insect | infantry/T3 | 0.917 | 11 | 걷기·피격·쓰러짐 |
-| insect | infantry/T4 | 0.875 | 11 | 걷기·피격·쓰러짐 |
-| insect | runner/T1 | 0.868 | 13 | 걷기·피격·쓰러짐 |
-| insect | runner/T2 | 0.820 | 11 | 걷기·피격·쓰러짐 |
-| insect | runner/T3 | 0.788 | 11 | 걷기·피격·쓰러짐 |
-| insect | runner/T4 | 0.802 | 11 | 걷기·피격·쓰러짐 |
-| insect | armored/T1 | 0.916 | 13 | 걷기·피격·쓰러짐 |
-| insect | armored/T2 | 0.955 | 11 | 걷기·피격·쓰러짐 |
-| insect | armored/T3 | 0.924 | 11 | 걷기·피격·쓰러짐 |
-| insect | armored/T4 | 0.943 | 11 | 걷기·피격·쓰러짐 |
+| human | boss-t3/T3 | 0.750 | 12 | 걷기·피격·쓰러짐·기술 |
+| human | boss-t4/T4 | 0.749 | 12 | 걷기·피격·쓰러짐·기술 |
+| insect | infantry/T1 | 0.703 | 13 | 걷기·피격·쓰러짐 |
+| insect | infantry/T2 | 0.759 | 11 | 걷기·피격·쓰러짐 |
+| insect | infantry/T3 | 0.750 | 11 | 걷기·피격·쓰러짐 |
+| insect | infantry/T4 | 0.730 | 11 | 걷기·피격·쓰러짐 |
+| insect | runner/T1 | 0.845 | 13 | 걷기·피격·쓰러짐 |
+| insect | runner/T2 | 0.739 | 11 | 걷기·피격·쓰러짐 |
+| insect | runner/T3 | 0.714 | 11 | 걷기·피격·쓰러짐 |
+| insect | runner/T4 | 0.768 | 11 | 걷기·피격·쓰러짐 |
+| insect | armored/T1 | 0.885 | 13 | 걷기·피격·쓰러짐 |
+| insect | armored/T2 | 0.929 | 11 | 걷기·피격·쓰러짐 |
+| insect | armored/T3 | 0.780 | 11 | 걷기·피격·쓰러짐 |
+| insect | armored/T4 | 0.914 | 11 | 걷기·피격·쓰러짐 |
 | insect | special/T1 | 0.784 | 5 | 걷기·피격·쓰러짐 |
-| insect | special/T2 | 0.790 | 6 | 걷기·피격·쓰러짐 |
-| insect | special/T3 | 0.792 | 6 | 걷기·피격·쓰러짐 |
-| insect | special/T4 | 0.809 | 13 | 걷기·피격·쓰러짐 |
-| insect | boss-t1/T1 | 0.780 | 13 | 걷기·피격·쓰러짐·기술 |
-| insect | boss-t2/T2 | 0.868 | 11 | 걷기·피격·쓰러짐·기술 |
-| insect | boss-t3/T3 | 0.811 | 12 | 걷기·피격·쓰러짐·기술 |
-| insect | boss-t4/T4 | 0.833 | 12 | 걷기·피격·쓰러짐·기술 |
+| insect | special/T2 | 0.810 | 6 | 걷기·피격·쓰러짐 |
+| insect | special/T3 | 0.850 | 6 | 걷기·피격·쓰러짐 |
+| insect | special/T4 | 0.804 | 13 | 걷기·피격·쓰러짐 |
+| insect | boss-t1/T1 | 0.729 | 13 | 걷기·피격·쓰러짐·기술 |
+| insect | boss-t2/T2 | 0.886 | 11 | 걷기·피격·쓰러짐·기술 |
+| insect | boss-t3/T3 | 0.809 | 12 | 걷기·피격·쓰러짐·기술 |
+| insect | boss-t4/T4 | 0.822 | 12 | 걷기·피격·쓰러짐·기술 |
 
 - 조립 IoU 0.70 이상 100/100개체, 전장 연결 100/100개체.
-- `machine` 아틀라스 2014×348, WebP 370,686바이트, RGBA8 2,803,488바이트.
-- `stone` 아틀라스 1985×398, WebP 385,836바이트, RGBA8 3,160,120바이트.
-- `elf` 아틀라스 872×523, WebP 706,622바이트, RGBA8 1,824,224바이트.
-- `human` 아틀라스 1969×316, WebP 390,068바이트, RGBA8 2,488,816바이트.
-- `insect` 아틀라스 1524×396, WebP 332,868바이트, RGBA8 2,414,016바이트.
-- 인접 단계 75쌍 중 0쌍, 종족 간 4000쌍 중 696쌍이 32px 구분 기준에 미달했다.
-- 같은 종족의 보스·일반 320쌍 중 6쌍의 IoU가 0.70 이상으로 재검수 대상이다.
+- `machine` 아틀라스 1905×364, WebP 368,116바이트, RGBA8 2,773,680바이트.
+- `stone` 아틀라스 1841×461, WebP 411,288바이트, RGBA8 3,394,804바이트.
+- `elf` 아틀라스 1969×237, WebP 712,734바이트, RGBA8 1,866,612바이트.
+- `human` 아틀라스 2001×332, WebP 410,030바이트, RGBA8 2,657,328바이트.
+- `insect` 아틀라스 1540×396, WebP 333,722바이트, RGBA8 2,439,360바이트.
+- 인접 단계 75쌍 중 0쌍, 종족 간 4000쌍 중 705쌍이 32px 구분 기준에 미달했다.
+- 같은 종족의 보스·일반 320쌍 중 0쌍의 IoU가 0.70 이상으로 재검수 대상이다.
 
 <!-- monster-batch:end -->
 
