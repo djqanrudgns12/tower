@@ -21,6 +21,12 @@
 - `special/T4` 재작화 반영 · 조립 IoU 0.823
 - `boss-t2/T2` 재작화 반영 · 조립 IoU 0.803
 - `boss-t3/T3` 재작화 반영 · 조립 IoU 0.749
+- G4 리그 보정 아틀라스 SHA-256 `ae514767eaf64a79dd1e0ff666cbf8b89469888376c314aff7af4dc972664f4e`
+- `armored/T3` 접합 arm-hand-near, 장비 부착 위치 · 조립 IoU 0.879 · 배치 SHA-256 `16e4cbae68e6`
+- `armored/T4` 장비 부착 위치, 왼쪽 방패 · 조립 IoU 0.870 · 배치 SHA-256 `204e870a133d`
+- `boss-t2/T2` 접합 arm-hand-near · 조립 IoU 0.798 · 배치 SHA-256 `4274e889ea1f`
+- `boss-t4/T4` 접합 arm-hand-far, arm-hand-near · 조립 IoU 0.719 · 배치 SHA-256 `1ac2fc5f38d1` · 추가 확인
+- `infantry/T2` 접합 arm-hand-far · 조립 IoU 0.772 · 배치 SHA-256 `79fb5974ee91`
 
 ## 32px 외곽선 · 이전 검수 기록
 
