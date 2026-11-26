@@ -8,8 +8,9 @@ import { claimedDecorations, layoutFor, resolvePlacements, steleOriginY, type Ma
 import { PAD_FADE_MS, isPlacing, padAlpha } from './cues';
 import { selectedCell } from './InputLayer';
 import { R6_GROUND_KEY, R6_PAD_KEY } from '../r6/BattleAssets';
-import { projectField, r6Pad } from '../r6/mapProjection';
-import { DEPTH, type LayerContext } from './shared';
+import { projectField, R6_MAP_SQUASH, r6Pad } from '../r6/mapProjection';
+import { R6_COLORS } from '../r6/manifest';
+import { DEPTH, r6UnitDepth, type LayerContext } from './shared';
 
 /** deco.stele.r1 원화에서 비석 면 가운데의 세로 위치(원화 높이 대비, 면은 약 28~130/192px). */
 const STELE_FACE_Y = 0.41;
@@ -50,13 +51,24 @@ export class GroundLayer {
     const map = this.c.bridge.controller.ctx.map;
     if (scene.textures.exists(R6_GROUND_KEY)) {
       scene.add.image(0, 0, R6_GROUND_KEY).setOrigin(0).setDisplaySize(WORLD_W, WORLD_H).setDepth(DEPTH.ground);
+      if (this.c.projected) this.drawR6Directions(map.pathCells);
       if (this.c.projected && scene.textures.exists(R6_PAD_KEY)) {
+        const outlines = scene.add.graphics().setDepth(DEPTH.r6Marks).setName('r6:pad-outlines');
+        outlines.lineStyle(1, R6_COLORS.silver, .62);
         for (const slot of map.slots) {
           const p = projectField((slot.x + 0.5) * CELL_PX, (slot.y + 0.5) * CELL_PX);
           const pad = scene.add.image(p.x, p.y, R6_PAD_KEY, 0)
             .setOrigin(r6Pad.pivot[0]! / r6Pad.size[0]!, r6Pad.pivot[1]! / r6Pad.size[1]!)
-            .setDepth(DEPTH.ground + 0.5).setName(`r6:pad:${slot.id}`);
+            .setDepth(r6UnitDepth(p.y, 'pad')).setName(`r6:pad:${slot.id}`);
           this.pads.set(slot.id, pad);
+          // 윗면의 육각 테두리만 앞에 그려, 받침이 가려져도 설치 위치를 읽을 수 있게 한다.
+          const radius = r6Pad.radius * .83;
+          outlines.beginPath().moveTo(p.x + radius, p.y);
+          for (let i = 1; i < 6; i++) {
+            const angle = i * Math.PI / 3;
+            outlines.lineTo(p.x + radius * Math.cos(angle), p.y + radius * R6_MAP_SQUASH * Math.sin(angle));
+          }
+          outlines.lineTo(p.x + radius, p.y).strokePath();
         }
       }
       return;
@@ -84,6 +96,29 @@ export class GroundLayer {
       scene.add.text((x + 0.5) * CELL_PX, glyphY, '가', { fontFamily: 'Pretendard Variable, Pretendard, sans-serif', fontSize: '20px', fontStyle: '700', color: '#463c35', resolution: 2 }).setOrigin(0.5).setDepth(art ? art.depth + 0.1 : DEPTH.overlay);
     }
     this.mood = scene.add.rectangle(0, 0, WORLD_W, WORLD_H, 0xffffff, 0).setOrigin(0).setDepth(DEPTH.mood);
+  }
+
+  /** 긴 직선마다 한 개씩, 길 중심에서 비켜난 방향 표시를 그린다. */
+  private drawR6Directions(path: ReadonlyArray<readonly [number, number]>) {
+    const marks = this.c.scene.add.graphics().setDepth(DEPTH.r6Marks).setName('r6:route');
+    for (let start = 0, end = 1; end < path.length; start = end - 1) {
+      const [x, y] = path[start]!;
+      const [nx, ny] = path[end]!;
+      const dx = nx - x, dy = ny - y;
+      while (end < path.length && path[end]![0] === x + dx * (end - start) &&
+        path[end]![1] === y + dy * (end - start)) end++;
+      const steps = end - start - 1;
+      if (steps < 3) continue;
+      const mid = steps / 2;
+      const centerX = x + .5 + mid * dx - dy * .31;
+      const centerY = y + .5 + mid * dy + dx * .31;
+      const at = (along: number, across: number) => projectField(
+        (centerX + dx * along - dy * across) * CELL_PX, (centerY + dy * along + dx * across) * CELL_PX);
+      const a = at(-.10, -.10), b = at(.08, 0), c = at(-.10, .10);
+      for (const [weight, color] of [[3, R6_COLORS.carbon], [1.4, R6_COLORS.silver]] as const) {
+        marks.lineStyle(weight, color).beginPath().moveTo(a.x, a.y).lineTo(b.x, b.y).lineTo(c.x, c.y).strokePath();
+      }
+    }
   }
 
   private placeDecor(key: string, x: number, y: number) {

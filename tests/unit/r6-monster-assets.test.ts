@@ -1,11 +1,13 @@
 import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
+import { AtlasAttachmentLoader, MixFrom, Physics, Skeleton, SkeletonJson, TextureAtlas } from '@esotericsoftware/spine-core';
 import type Phaser from 'phaser';
 import { expect, it, vi } from 'vitest';
 import batch from '../../docs/renewal/r6/tech/monsters/batch.json';
 import { ENTITY_IDS, SPECIES } from '../../src/contracts/balanceV2';
 import manifest from '../../public/assets/r6/manifest-v2.json';
 import { R6BattleAssets } from '../../src/game/r6/BattleAssets';
+import { r6EnemyScale } from '../../src/game/r6/enemyDisplay';
 import { r6ManifestSchema } from '../../src/game/r6/manifest';
 import { enemy } from './review-core/fixtures';
 
@@ -65,4 +67,43 @@ it.each(SPECIES)('%s 아틀라스가 예산 안에서 20개체 전용 스킨을 
     expect(skeleton.skins, id).toContainEqual(expect.objectContaining({ name: skin }));
   }
   expect(batch.actors.filter(row => row.species === faction && row.accepted)).toHaveLength(ids.length);
+});
+
+it.each(SPECIES)('%s 보스와 같은 종족 일반 개체는 걷기 중 높이가 1.4배 이상 차이 난다', faction => {
+  const base = `public/assets/r6/monsters/${faction}/`;
+  const atlas = new TextureAtlas(readFileSync(base + faction + '.atlas', 'utf8'));
+  const loader = new SkeletonJson(new AtlasAttachmentLoader(atlas));
+  const data = new Map<string, ReturnType<SkeletonJson['readSkeletonData']>>();
+  const scene = {
+    load: { on: vi.fn(), isLoading: () => false },
+    cache: { json: { exists: () => true }, text: { exists: () => true } },
+    textures: { exists: () => true },
+  } as unknown as Phaser.Scene;
+  const assets = new R6BattleAssets(scene, () => false);
+  assets.manifest = r6ManifestSchema.parse(manifest);
+  let shortestBoss = Infinity, tallestRegular = 0;
+  for (const id of ENTITY_IDS.filter(id => id.startsWith(faction + '-'))) {
+    const art = assets.enemyArt(enemy({ faction, entityId: id }))!;
+    let definition = data.get(art.rig.file);
+    if (!definition) {
+      definition = loader.readSkeletonData(JSON.parse(readFileSync('public/assets/r6/' + art.rig.file, 'utf8')));
+      data.set(art.rig.file, definition);
+    }
+    const skeleton = new Skeleton(definition);
+    skeleton.setSkin(art.skin);
+    skeleton.setupPose();
+    skeleton.updateWorldTransform(Physics.none);
+    const boss = id.includes('-boss-');
+    const scale = r6EnemyScale(art.scale, skeleton.getBoundsRect().height, boss);
+    const walk = definition.findAnimation(art.rig.walk)!;
+    for (let sample = 0; sample < 16; sample++) {
+      skeleton.setupPose();
+      walk.apply(skeleton, -1, walk.duration * sample / 16, false, null, 1, MixFrom.setup, false, false, false);
+      skeleton.updateWorldTransform(Physics.none);
+      const height = skeleton.getBoundsRect().height * scale;
+      if (boss) shortestBoss = Math.min(shortestBoss, height);
+      else tallestRegular = Math.max(tallestRegular, height);
+    }
+  }
+  expect(shortestBoss).toBeGreaterThanOrEqual(tallestRegular * 1.4);
 });

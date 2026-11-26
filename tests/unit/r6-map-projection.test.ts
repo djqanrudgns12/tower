@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+import { r6UnitDepth } from '../../src/game/layers/shared';
 import { projectField, projectFieldDelta, unprojectField } from '../../src/game/r6/mapProjection';
 import { cellRect, snapSlot, toWorldPoint } from '../../src/ui/game/fieldGeometry';
 import maps from '../../docs/contracts/maps.candidate.v0.4.json';
@@ -38,6 +39,14 @@ describe('초원 고원 3/4 투영', () => {
     expect(east.y).toBeGreaterThan(15);
     expect(south.x).toBeLessThan(-30);
     expect(south.y).toBeGreaterThan(20);
+  });
+
+  it('같은 발밑에서는 받침, 적, 타워 순이고 1px 미만의 이동에도 앞뒤가 바뀐다', () => {
+    const { y } = projectField(4.5 * 64, 4.5 * 64);
+    expect(r6UnitDepth(y, 'pad')).toBeLessThan(r6UnitDepth(y, 'enemy'));
+    expect(r6UnitDepth(y, 'enemy')).toBeLessThan(r6UnitDepth(y, 'tower'));
+    expect(r6UnitDepth(y + .01, 'enemy')).toBeGreaterThan(r6UnitDepth(y, 'tower'));
+    expect(r6UnitDepth(y + .01, 'pad')).toBeGreaterThan(r6UnitDepth(y, 'enemy'));
   });
 
   it('확대와 CSS 축소가 있는 화면에서 팝오버 기준점과 끌어 놓기가 같은 설치대를 가리킨다', () => {

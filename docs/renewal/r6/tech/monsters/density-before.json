@@ -1,0 +1,971 @@
+{
+  "chromium": "156.0.8078.4",
+  "seed": 2,
+  "map": "garden_u",
+  "difficulty": "Easy",
+  "strategy": "balanced",
+  "accuracy": 0.8,
+  "readSeconds": 12,
+  "completedWave": 20,
+  "examinedTicks": {
+    "5": 965,
+    "15": 1355,
+    "20": 1295
+  },
+  "stoneBossSeed": 5,
+  "waves": {
+    "5": {
+      "tick": 12676,
+      "displayed": 12,
+      "enemyOverlap": 0.1686,
+      "gates": 20,
+      "pads": {
+        "max": 0.8767,
+        "mean": 0.1111,
+        "bySlot": {
+          "garden_u-s01": 0.8366,
+          "garden_u-s02": 0.4231,
+          "garden_u-s03": 0,
+          "garden_u-s04": 0.0857,
+          "garden_u-s05": 0.8767,
+          "garden_u-s06": 0,
+          "garden_u-s07": 0,
+          "garden_u-s08": 0,
+          "garden_u-s09": 0,
+          "garden_u-s10": 0,
+          "garden_u-s11": 0,
+          "garden_u-s12": 0,
+          "garden_u-s13": 0,
+          "garden_u-s14": 0,
+          "garden_u-s15": 0,
+          "garden_u-s16": 0,
+          "garden_u-s17": 0,
+          "garden_u-s18": 0,
+          "garden_u-s19": 0,
+          "garden_u-s20": 0
+        }
+      },
+      "towers": {
+        "max": 0,
+        "mean": 0,
+        "bySlot": {
+          "garden_u-s13": 0,
+          "garden_u-s09": 0,
+          "garden_u-s12": 0,
+          "garden_u-s08": 0
+        }
+      },
+      "enemyOcclusion": {
+        "pads": {
+          "max": 0,
+          "mean": 0
+        },
+        "towers": {
+          "max": 0.0183,
+          "mean": 0.0016
+        },
+        "any": {
+          "max": 0.0183,
+          "mean": 0.0016
+        },
+        "behind": {
+          "max": 0,
+          "mean": 0
+        },
+        "byEnemy": [
+          {
+            "id": 106,
+            "entity": "stone-infantry-t1",
+            "pads": 0,
+            "towers": 0,
+            "any": 0,
+            "behind": 0
+          },
+          {
+            "id": 107,
+            "entity": "stone-infantry-t2",
+            "pads": 0,
+            "towers": 0,
+            "any": 0,
+            "behind": 0
+          },
+          {
+            "id": 108,
+            "entity": "machine-infantry-t1",
+            "pads": 0,
+            "towers": 0,
+            "any": 0,
+            "behind": 0
+          },
+          {
+            "id": 109,
+            "entity": "machine-special-t1",
+            "pads": 0,
+            "towers": 0,
+            "any": 0,
+            "behind": 0
+          },
+          {
+            "id": 110,
+            "entity": "insect-infantry-t1",
+            "pads": 0,
+            "towers": 0,
+            "any": 0,
+            "behind": 0
+          },
+          {
+            "id": 111,
+            "entity": "machine-infantry-t2",
+            "pads": 0,
+            "towers": 0,
+            "any": 0,
+            "behind": 0
+          },
+          {
+            "id": 112,
+            "entity": "stone-infantry-t1",
+            "pads": 0,
+            "towers": 0,
+            "any": 0,
+            "behind": 0
+          },
+          {
+            "id": 113,
+            "entity": "insect-infantry-t1",
+            "pads": 0,
+            "towers": 0,
+            "any": 0,
+            "behind": 0
+          },
+          {
+            "id": 114,
+            "entity": "machine-infantry-t1",
+            "pads": 0,
+            "towers": 0,
+            "any": 0,
+            "behind": 0
+          },
+          {
+            "id": 115,
+            "entity": "machine-armored-t2",
+            "pads": 0,
+            "towers": 0.0013,
+            "any": 0.0013,
+            "behind": 0
+          },
+          {
+            "id": 116,
+            "entity": "stone-boss-t1",
+            "pads": 0,
+            "towers": 0.0183,
+            "any": 0.0183,
+            "behind": 0
+          },
+          {
+            "id": 117,
+            "entity": "insect-infantry-t2",
+            "pads": 0,
+            "towers": 0,
+            "any": 0,
+            "behind": 0
+          }
+        ]
+      },
+      "bossComparisons": [
+        {
+          "entity": "stone-boss-t1",
+          "height": 150,
+          "damaged": false,
+          "sourceHp": 64904,
+          "maxHp": 64904,
+          "sameSpecies": [
+            {
+              "entity": "stone-infantry-t1",
+              "height": 92,
+              "ratio": 1.6304
+            },
+            {
+              "entity": "stone-infantry-t2",
+              "height": 122,
+              "ratio": 1.2295
+            },
+            {
+              "entity": "stone-infantry-t1",
+              "height": 90,
+              "ratio": 1.6667
+            }
+          ]
+        }
+      ],
+      "entities": [
+        {
+          "entity": "stone-infantry-t1",
+          "progress": 12146,
+          "height": 92
+        },
+        {
+          "entity": "stone-infantry-t2",
+          "progress": 11134,
+          "height": 122
+        },
+        {
+          "entity": "machine-infantry-t1",
+          "progress": 13284,
+          "height": 90
+        },
+        {
+          "entity": "machine-special-t1",
+          "progress": 10932,
+          "height": 82
+        },
+        {
+          "entity": "insect-infantry-t1",
+          "progress": 10408,
+          "height": 84
+        },
+        {
+          "entity": "machine-infantry-t2",
+          "progress": 8155,
+          "height": 98
+        },
+        {
+          "entity": "stone-infantry-t1",
+          "progress": 5478,
+          "height": 90
+        },
+        {
+          "entity": "insect-infantry-t1",
+          "progress": 5557,
+          "height": 83
+        },
+        {
+          "entity": "machine-infantry-t1",
+          "progress": 3827,
+          "height": 92
+        },
+        {
+          "entity": "machine-armored-t2",
+          "progress": 2273,
+          "height": 107
+        },
+        {
+          "entity": "stone-boss-t1",
+          "progress": 849,
+          "height": 150
+        },
+        {
+          "entity": "insect-infantry-t2",
+          "progress": 61,
+          "height": 86
+        }
+      ]
+    },
+    "15": {
+      "tick": 36619,
+      "displayed": 17,
+      "enemyOverlap": 0.3206,
+      "gates": 20,
+      "pads": {
+        "max": 0.9589,
+        "mean": 0.1474,
+        "bySlot": {
+          "garden_u-s01": 0.061,
+          "garden_u-s02": 0.3077,
+          "garden_u-s03": 0.1734,
+          "garden_u-s04": 0.5994,
+          "garden_u-s05": 0.9589,
+          "garden_u-s06": 0,
+          "garden_u-s07": 0,
+          "garden_u-s08": 0,
+          "garden_u-s09": 0.848,
+          "garden_u-s10": 0,
+          "garden_u-s11": 0,
+          "garden_u-s12": 0,
+          "garden_u-s13": 0,
+          "garden_u-s14": 0,
+          "garden_u-s15": 0,
+          "garden_u-s16": 0,
+          "garden_u-s17": 0,
+          "garden_u-s18": 0,
+          "garden_u-s19": 0,
+          "garden_u-s20": 0
+        }
+      },
+      "towers": {
+        "max": 0.7159,
+        "mean": 0.179,
+        "bySlot": {
+          "garden_u-s13": 0,
+          "garden_u-s09": 0.7159,
+          "garden_u-s12": 0,
+          "garden_u-s08": 0
+        }
+      },
+      "enemyOcclusion": {
+        "pads": {
+          "max": 0,
+          "mean": 0
+        },
+        "towers": {
+          "max": 0.4386,
+          "mean": 0.0634
+        },
+        "any": {
+          "max": 0.4386,
+          "mean": 0.0634
+        },
+        "behind": {
+          "max": 0,
+          "mean": 0
+        },
+        "byEnemy": [
+          {
+            "id": 408,
+            "entity": "stone-armored-t3",
+            "pads": 0,
+            "towers": 0.219,
+            "any": 0.219,
+            "behind": 0
+          },
+          {
+            "id": 411,
+            "entity": "stone-infantry-t2",
+            "pads": 0,
+            "towers": 0.4386,
+            "any": 0.4386,
+            "behind": 0
+          },
+          {
+            "id": 412,
+            "entity": "machine-armored-t3",
+            "pads": 0,
+            "towers": 0.3872,
+            "any": 0.3872,
+            "behind": 0
+          },
+          {
+            "id": 414,
+            "entity": "stone-runner-t3",
+            "pads": 0,
+            "towers": 0,
+            "any": 0,
+            "behind": 0
+          },
+          {
+            "id": 415,
+            "entity": "stone-special-t3",
+            "pads": 0,
+            "towers": 0,
+            "any": 0,
+            "behind": 0
+          },
+          {
+            "id": 416,
+            "entity": "elf-infantry-t2",
+            "pads": 0,
+            "towers": 0,
+            "any": 0,
+            "behind": 0
+          },
+          {
+            "id": 417,
+            "entity": "human-infantry-t2",
+            "pads": 0,
+            "towers": 0,
+            "any": 0,
+            "behind": 0
+          },
+          {
+            "id": 418,
+            "entity": "elf-infantry-t2",
+            "pads": 0,
+            "towers": 0,
+            "any": 0,
+            "behind": 0
+          },
+          {
+            "id": 419,
+            "entity": "machine-boss-t3",
+            "pads": 0,
+            "towers": 0,
+            "any": 0,
+            "behind": 0
+          },
+          {
+            "id": 420,
+            "entity": "insect-infantry-t2",
+            "pads": 0,
+            "towers": 0,
+            "any": 0,
+            "behind": 0
+          },
+          {
+            "id": 421,
+            "entity": "machine-armored-t2",
+            "pads": 0,
+            "towers": 0,
+            "any": 0,
+            "behind": 0
+          },
+          {
+            "id": 422,
+            "entity": "stone-infantry-t2",
+            "pads": 0,
+            "towers": 0,
+            "any": 0,
+            "behind": 0
+          },
+          {
+            "id": 423,
+            "entity": "human-infantry-t2",
+            "pads": 0,
+            "towers": 0,
+            "any": 0,
+            "behind": 0
+          },
+          {
+            "id": 424,
+            "entity": "stone-armored-t2",
+            "pads": 0,
+            "towers": 0,
+            "any": 0,
+            "behind": 0
+          },
+          {
+            "id": 425,
+            "entity": "insect-special-t2",
+            "pads": 0,
+            "towers": 0,
+            "any": 0,
+            "behind": 0
+          },
+          {
+            "id": 426,
+            "entity": "elf-runner-t3",
+            "pads": 0,
+            "towers": 0.0332,
+            "any": 0.0332,
+            "behind": 0
+          },
+          {
+            "id": 427,
+            "entity": "elf-armored-t3",
+            "pads": 0,
+            "towers": 0,
+            "any": 0,
+            "behind": 0
+          }
+        ]
+      },
+      "bossComparisons": [
+        {
+          "entity": "machine-boss-t3",
+          "height": 223,
+          "damaged": true,
+          "sourceHp": 504219,
+          "maxHp": 513719,
+          "sameSpecies": [
+            {
+              "entity": "machine-armored-t3",
+              "height": 130,
+              "ratio": 1.7154
+            },
+            {
+              "entity": "machine-armored-t2",
+              "height": 106,
+              "ratio": 2.1038
+            }
+          ]
+        }
+      ],
+      "entities": [
+        {
+          "entity": "stone-armored-t3",
+          "progress": 16461,
+          "height": 167
+        },
+        {
+          "entity": "stone-infantry-t2",
+          "progress": 16464,
+          "height": 124
+        },
+        {
+          "entity": "machine-armored-t3",
+          "progress": 16077,
+          "height": 130
+        },
+        {
+          "entity": "stone-runner-t3",
+          "progress": 18235,
+          "height": 94
+        },
+        {
+          "entity": "stone-special-t3",
+          "progress": 12414,
+          "height": 109
+        },
+        {
+          "entity": "elf-infantry-t2",
+          "progress": 18288,
+          "height": 96
+        },
+        {
+          "entity": "human-infantry-t2",
+          "progress": 11694,
+          "height": 104
+        },
+        {
+          "entity": "elf-infantry-t2",
+          "progress": 11508,
+          "height": 97
+        },
+        {
+          "entity": "machine-boss-t3",
+          "progress": 5510,
+          "height": 223
+        },
+        {
+          "entity": "insect-infantry-t2",
+          "progress": 8910,
+          "height": 87
+        },
+        {
+          "entity": "machine-armored-t2",
+          "progress": 5033,
+          "height": 106
+        },
+        {
+          "entity": "stone-infantry-t2",
+          "progress": 4657,
+          "height": 125
+        },
+        {
+          "entity": "human-infantry-t2",
+          "progress": 5063,
+          "height": 103
+        },
+        {
+          "entity": "stone-armored-t2",
+          "progress": 2460,
+          "height": 142
+        },
+        {
+          "entity": "insect-special-t2",
+          "progress": 2872,
+          "height": 80
+        },
+        {
+          "entity": "elf-runner-t3",
+          "progress": 1982,
+          "height": 76
+        },
+        {
+          "entity": "elf-armored-t3",
+          "progress": 50,
+          "height": 132
+        }
+      ]
+    },
+    "20": {
+      "tick": 49571,
+      "displayed": 23,
+      "enemyOverlap": 0.2428,
+      "gates": 20,
+      "pads": {
+        "max": 1,
+        "mean": 0.2511,
+        "bySlot": {
+          "garden_u-s01": 0.4834,
+          "garden_u-s02": 0.6723,
+          "garden_u-s03": 0.8378,
+          "garden_u-s04": 0.9218,
+          "garden_u-s05": 1,
+          "garden_u-s06": 0,
+          "garden_u-s07": 0,
+          "garden_u-s08": 0.381,
+          "garden_u-s09": 0.7253,
+          "garden_u-s10": 0,
+          "garden_u-s11": 0,
+          "garden_u-s12": 0,
+          "garden_u-s13": 0,
+          "garden_u-s14": 0,
+          "garden_u-s15": 0,
+          "garden_u-s16": 0,
+          "garden_u-s17": 0,
+          "garden_u-s18": 0,
+          "garden_u-s19": 0,
+          "garden_u-s20": 0
+        }
+      },
+      "towers": {
+        "max": 0.3681,
+        "mean": 0.1012,
+        "bySlot": {
+          "garden_u-s13": 0,
+          "garden_u-s09": 0.2392,
+          "garden_u-s12": 0,
+          "garden_u-s08": 0.3681,
+          "garden_u-s14": 0,
+          "garden_u-s19": 0
+        }
+      },
+      "enemyOcclusion": {
+        "pads": {
+          "max": 0,
+          "mean": 0
+        },
+        "towers": {
+          "max": 0.4242,
+          "mean": 0.056
+        },
+        "any": {
+          "max": 0.4242,
+          "mean": 0.056
+        },
+        "behind": {
+          "max": 0,
+          "mean": 0
+        },
+        "byEnemy": [
+          {
+            "id": 566,
+            "entity": "stone-armored-t4",
+            "pads": 0,
+            "towers": 0.0071,
+            "any": 0.0071,
+            "behind": 0
+          },
+          {
+            "id": 572,
+            "entity": "machine-infantry-t4",
+            "pads": 0,
+            "towers": 0,
+            "any": 0,
+            "behind": 0
+          },
+          {
+            "id": 573,
+            "entity": "elf-infantry-t4",
+            "pads": 0,
+            "towers": 0,
+            "any": 0,
+            "behind": 0
+          },
+          {
+            "id": 574,
+            "entity": "stone-armored-t3",
+            "pads": 0,
+            "towers": 0,
+            "any": 0,
+            "behind": 0
+          },
+          {
+            "id": 575,
+            "entity": "stone-infantry-t4",
+            "pads": 0,
+            "towers": 0.2922,
+            "any": 0.2922,
+            "behind": 0
+          },
+          {
+            "id": 576,
+            "entity": "human-armored-t3",
+            "pads": 0,
+            "towers": 0,
+            "any": 0,
+            "behind": 0
+          },
+          {
+            "id": 577,
+            "entity": "human-infantry-t3",
+            "pads": 0,
+            "towers": 0.1825,
+            "any": 0.1825,
+            "behind": 0
+          },
+          {
+            "id": 579,
+            "entity": "human-infantry-t4",
+            "pads": 0,
+            "towers": 0.0045,
+            "any": 0.0045,
+            "behind": 0
+          },
+          {
+            "id": 580,
+            "entity": "machine-infantry-t3",
+            "pads": 0,
+            "towers": 0,
+            "any": 0,
+            "behind": 0
+          },
+          {
+            "id": 581,
+            "entity": "insect-infantry-t4",
+            "pads": 0,
+            "towers": 0.0179,
+            "any": 0.0179,
+            "behind": 0
+          },
+          {
+            "id": 582,
+            "entity": "stone-runner-t3",
+            "pads": 0,
+            "towers": 0,
+            "any": 0,
+            "behind": 0
+          },
+          {
+            "id": 583,
+            "entity": "stone-special-t3",
+            "pads": 0,
+            "towers": 0.0134,
+            "any": 0.0134,
+            "behind": 0
+          },
+          {
+            "id": 584,
+            "entity": "insect-boss-t4",
+            "pads": 0,
+            "towers": 0,
+            "any": 0,
+            "behind": 0
+          },
+          {
+            "id": 585,
+            "entity": "human-infantry-t4",
+            "pads": 0,
+            "towers": 0.2827,
+            "any": 0.2827,
+            "behind": 0
+          },
+          {
+            "id": 586,
+            "entity": "stone-infantry-t4",
+            "pads": 0,
+            "towers": 0,
+            "any": 0,
+            "behind": 0
+          },
+          {
+            "id": 587,
+            "entity": "stone-runner-t3",
+            "pads": 0,
+            "towers": 0.4242,
+            "any": 0.4242,
+            "behind": 0
+          },
+          {
+            "id": 588,
+            "entity": "elf-special-t3",
+            "pads": 0,
+            "towers": 0,
+            "any": 0,
+            "behind": 0
+          },
+          {
+            "id": 589,
+            "entity": "machine-infantry-t4",
+            "pads": 0,
+            "towers": 0,
+            "any": 0,
+            "behind": 0
+          },
+          {
+            "id": 590,
+            "entity": "insect-runner-t3",
+            "pads": 0,
+            "towers": 0,
+            "any": 0,
+            "behind": 0
+          },
+          {
+            "id": 591,
+            "entity": "insect-infantry-t3",
+            "pads": 0,
+            "towers": 0.0635,
+            "any": 0.0635,
+            "behind": 0
+          },
+          {
+            "id": 592,
+            "entity": "insect-special-t3",
+            "pads": 0,
+            "towers": 0,
+            "any": 0,
+            "behind": 0
+          },
+          {
+            "id": 593,
+            "entity": "insect-special-t3",
+            "pads": 0,
+            "towers": 0,
+            "any": 0,
+            "behind": 0
+          },
+          {
+            "id": 594,
+            "entity": "machine-armored-t3",
+            "pads": 0,
+            "towers": 0,
+            "any": 0,
+            "behind": 0
+          }
+        ]
+      },
+      "bossComparisons": [
+        {
+          "entity": "insect-boss-t4",
+          "height": 212,
+          "damaged": true,
+          "sourceHp": 993141,
+          "maxHp": 998141,
+          "sameSpecies": [
+            {
+              "entity": "insect-infantry-t4",
+              "height": 116,
+              "ratio": 1.8276
+            },
+            {
+              "entity": "insect-runner-t3",
+              "height": 77,
+              "ratio": 2.7532
+            },
+            {
+              "entity": "insect-infantry-t3",
+              "height": 110,
+              "ratio": 1.9273
+            },
+            {
+              "entity": "insect-special-t3",
+              "height": 71,
+              "ratio": 2.9859
+            },
+            {
+              "entity": "insect-special-t3",
+              "height": 69,
+              "ratio": 3.0725
+            }
+          ]
+        }
+      ],
+      "entities": [
+        {
+          "entity": "stone-armored-t4",
+          "progress": 20088,
+          "height": 165
+        },
+        {
+          "entity": "machine-infantry-t4",
+          "progress": 22232,
+          "height": 123
+        },
+        {
+          "entity": "elf-infantry-t4",
+          "progress": 23493,
+          "height": 118
+        },
+        {
+          "entity": "stone-armored-t3",
+          "progress": 12824,
+          "height": 168
+        },
+        {
+          "entity": "stone-infantry-t4",
+          "progress": 15763,
+          "height": 139
+        },
+        {
+          "entity": "human-armored-t3",
+          "progress": 14616,
+          "height": 134
+        },
+        {
+          "entity": "human-infantry-t3",
+          "progress": 15815,
+          "height": 112
+        },
+        {
+          "entity": "human-infantry-t4",
+          "progress": 13861,
+          "height": 142
+        },
+        {
+          "entity": "machine-infantry-t3",
+          "progress": 12738,
+          "height": 110
+        },
+        {
+          "entity": "insect-infantry-t4",
+          "progress": 14045,
+          "height": 116
+        },
+        {
+          "entity": "stone-runner-t3",
+          "progress": 11874,
+          "height": 89
+        },
+        {
+          "entity": "stone-special-t3",
+          "progress": 8602,
+          "height": 109
+        },
+        {
+          "entity": "insect-boss-t4",
+          "progress": 5751,
+          "height": 212
+        },
+        {
+          "entity": "human-infantry-t4",
+          "progress": 8044,
+          "height": 143
+        },
+        {
+          "entity": "stone-infantry-t4",
+          "progress": 6134,
+          "height": 137
+        },
+        {
+          "entity": "stone-runner-t3",
+          "progress": 7269,
+          "height": 91
+        },
+        {
+          "entity": "elf-special-t3",
+          "progress": 4556,
+          "height": 101
+        },
+        {
+          "entity": "machine-infantry-t4",
+          "progress": 3524,
+          "height": 123
+        },
+        {
+          "entity": "insect-runner-t3",
+          "progress": 3450,
+          "height": 77
+        },
+        {
+          "entity": "insect-infantry-t3",
+          "progress": 1309,
+          "height": 110
+        },
+        {
+          "entity": "insect-special-t3",
+          "progress": 17395,
+          "height": 71
+        },
+        {
+          "entity": "insect-special-t3",
+          "progress": 17635,
+          "height": 69
+        },
+        {
+          "entity": "machine-armored-t3",
+          "progress": 55,
+          "height": 131
+        }
+      ]
+    }
+  }
+}

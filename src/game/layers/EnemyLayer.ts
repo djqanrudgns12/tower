@@ -2,6 +2,7 @@ import Phaser from 'phaser';
 import type { SpineGameObject } from '@esotericsoftware/spine-phaser-v4';
 import type { R6BattleAssets } from '../r6/BattleAssets';
 import { R6_COLORS } from '../r6/manifest';
+import { r6EnemyScale } from '../r6/enemyDisplay';
 import { R6_HIT_MS } from '../r6/vfxTiming';
 import { positionAt } from '../../domain/geometry';
 import { enemyArtId } from '../../domain/factions';
@@ -11,7 +12,7 @@ import { acceptsHit, enemyPose, HIT_MS } from '../animation/pose';
 import { PALETTE } from '../art';
 import { ASSETS, CELL_PX, enemyArt, type EnemyArt } from '../assets';
 import { bossStatus, flyerLift, introFrame, wardDotOffsets, type BossStatus, type SpawnIntro } from './cues';
-import { DEPTH, fieldPosition, toWorld, type LayerContext } from './shared';
+import { DEPTH, fieldPosition, r6UnitDepth, toWorld, type LayerContext } from './shared';
 
 interface EnemyView {
   sprite: Phaser.GameObjects.Image | null; spine: EnemySpine | null; spineRevision: number; badge: Phaser.GameObjects.Image | null;
@@ -27,6 +28,7 @@ interface EnemyView {
 interface EnemySpine {
   object: SpineGameObject;
   scale: number;
+  headOffset: number;
   hit: string | undefined;
   fall: string | undefined;
   poseMs: number;
@@ -57,6 +59,7 @@ export class EnemyLayer {
   private enemies = new Map<number, EnemyView>();
   /** 그림 id·종류별로 고른 그림. 텍스처는 장면을 만든 뒤 바뀌지 않는다. */
   private arts = new Map<string, EnemyArt>();
+  private readonly spineBounds = new Map<string, { height: number; top: number }>();
   /** 아직 그리지 않은 적의 등장 연출(사건이 그림보다 먼저 온다). */
   private pendingIntros = new Map<number, SpawnIntro>();
   private lastTick = -1;
@@ -220,7 +223,7 @@ export class EnemyLayer {
       v.x = x; v.y = y;
       const { art } = v;
       if (e.flying && (quality === 0 || e.kind === 'boss')) this.flyerShadow(x, y + foot, art.displayCells * scaleK, v.lift);
-      const depth = DEPTH.units + y + 0.5;
+      const depth = this.c.projected ? r6UnitDepth(y, 'enemy') : DEPTH.units + y + 0.5;
       if (v.spine) {
         const { object, scale } = v.spine;
         object.setPosition(x, y + foot - v.lift - hop).setDepth(depth)
@@ -260,10 +263,18 @@ export class EnemyLayer {
       if (v.trait) v.trait.setPosition(x - 14 - TRAIT_BADGE_PX / 2 - 2, top - CELL_PX * 0.44 + 2).setDepth(DEPTH.ui).setAlpha(alphaK);
       const status = bossStatus(balance, e, s.tick);
       if (status) this.bossMarks(status, x, y, progress, time, moving);
-      if (e.hp < e.maxHp) {
-        const w = e.kind === 'boss' ? 44 : 28, bx = x - w / 2, by = top - CELL_PX * (e.kind === 'boss' ? 0.78 : 0.44);
+      const boss = e.kind === 'boss';
+      const r6Boss = Boolean(this.assets && boss);
+      if (e.hp < e.maxHp || r6Boss) {
+        const w = boss ? 44 : 28, bx = x - w / 2;
+        const bossBarY = top + foot - (v.spine?.headOffset ?? CELL_PX * .78) - 9;
+        const by = r6Boss ? Math.max(scene.cameras.main.worldView.y + 4, bossBarY) : top - CELL_PX * (boss ? .78 : .44);
         const k = under ? BURROW_ALPHA : 1;
         this.hpBars.fillStyle(PALETTE.outline, 0.9 * k).fillRect(bx - 1, by - 1, w + 2, 6).fillStyle(this.assets ? R6_COLORS.amber : 0xd94f3d, k).fillRect(bx, by, Math.max(1, (w * e.hp) / e.maxHp), 4);
+        if (r6Boss) {
+          this.hpBars.fillStyle(R6_COLORS.carbon, 1).fillTriangle(bx - 13, by - 2, bx - 2, by - 2, bx - 7.5, by + 8);
+          this.hpBars.fillStyle(R6_COLORS.amber, 1).fillTriangle(bx - 11, by - 1, bx - 4, by - 1, bx - 7.5, by + 5);
+        }
       }
     }
     for (const [id, v] of this.enemies) if (!seen.has(id)) { v.sprite?.destroy(); v.spine?.object.destroy(); v.badge?.destroy(); v.trait?.destroy(); this.enemies.delete(id); }
@@ -306,11 +317,23 @@ export class EnemyLayer {
       object.removeFromUpdateList();
       object.skeleton.setSkin(art.skin);
       object.skeleton.setupPoseSlots();
+      const boundsKey = art.data + ':' + art.skin;
+      let bounds = this.spineBounds.get(boundsKey);
+      if (!bounds) {
+        object.updatePose(0);
+        const setup = object.skeleton.getBoundsRect();
+        // Phaser용 Spine은 Y축이 아래로 증가한다.
+        bounds = { height: setup.height, top: -setup.y };
+        this.spineBounds.set(boundsKey, bounds);
+      }
+      const baseScale = art.scale * (enemy.derived ? 0.8 : 1);
+      const scale = this.c.projected ? r6EnemyScale(baseScale, bounds.height, enemy.kind === 'boss') : baseScale;
       object.animationState.setAnimation(0, art.rig.walk, true).trackTime = bridge.reducedMotion ? 0 : v.phase;
       object.updatePose(0);
       v.spine = {
         object,
-        scale: art.scale * (enemy.derived ? 0.8 : 1),
+        scale,
+        headOffset: bounds.top * scale,
         hit: art.rig.hit && data.findAnimation(art.rig.hit) ? art.rig.hit : undefined,
         fall: art.rig.fall && data.findAnimation(art.rig.fall) ? art.rig.fall : undefined,
         poseMs: 0,

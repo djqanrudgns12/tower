@@ -5,14 +5,16 @@ import { mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
 import { basename, resolve } from 'node:path';
 import { chromium } from 'playwright';
 import { createServer } from 'vite';
+import { captureDensity } from './density.mjs';
 
 const [work, shots, ...args] = process.argv.slice(2);
-if (!work || !shots) throw new Error('사용법 · node tools/r6/spine/capture-playwright.mjs <작업 폴더> <캡처 폴더>');
+if (!work || !shots) throw new Error('사용법 · node tools/r6/spine/capture-playwright.mjs <작업 폴더|--density|--inspect|--published> <캡처 폴더>');
 const readJson = async file => JSON.parse(await readFile(file, 'utf8'));
 const allSpecies = ['machine', 'stone', 'elf', 'human', 'insect'];
 const inspect = work === '--inspect';
+const density = work === '--density';
 const mixed = work === '--published';
-const published = mixed || inspect;
+const published = mixed || inspect || density;
 const waveNumber = mixed ? Number(args[0] ?? 20) : 1;
 if (mixed && ![15, 20].includes(waveNumber)) throw new Error('혼합 전장 캡처는 15 또는 20웨이브를 지정하세요.');
 const shotName = inspect ? 'battle-detail' : waveNumber === 15 ? 'battle-w15' : 'battle';
@@ -44,6 +46,7 @@ try {
   await server.listen();
   browser = await chromium.launch();
   const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
+  await page.routeWebSocket(url => url.hostname === 'localhost' || url.hostname === '127.0.0.1', () => undefined);
   const errors = [];
   const requests = new Set();
   page.on('pageerror', error => errors.push(error.stack || error.message));
@@ -70,9 +73,24 @@ try {
     body: `<!doctype html><html lang="ko"><meta charset="utf-8"><title>적 동작 확인</title>
 <style>body{margin:0;background:#12161b;color:#b8c0c8;font:16px system-ui}main{padding:16px}
 h1{font-size:19px;margin:0 0 12px}#field{width:1408px;height:834px}</style>
-<main><h1>${mixed ? `혼합 웨이브 · W${waveNumber}` : `R6 전장 · ${actors.length}개체`}</h1><div id="field"></div></main></html>`,
+<main><h1>${density ? '웨이브 진행' : mixed ? `혼합 웨이브 · W${waveNumber}` : `R6 전장 · ${actors.length}개체`}</h1><div id="field"></div></main></html>`,
   }));
   await page.goto(new URL('r6-monster-fixture', server.resolvedUrls.local[0]).href);
+  if (density) {
+    await captureDensity(page, shots, args);
+    assert.deepEqual(errors, []);
+  } else {
+    await captureWalk(page, errors, requests, actors);
+  }
+} finally {
+  try {
+    await browser?.close();
+  } finally {
+    await server.close();
+  }
+}
+
+async function captureWalk(page, errors, requests, actors) {
   const selection = await page.evaluate(async ({ mixed, ids, waveNumber, allSpecies }) => {
     const paths = ['/src/content/index.ts', '/src/application/balanceSession.ts', '/src/application/RunController.ts',
       '/src/game/bridge.ts', '/src/game/battlefieldGame.ts'];
@@ -185,7 +203,12 @@ h1{font-size:19px;margin:0 0 12px}#field{width:1408px;height:834px}</style>
     track: unit.animationState.getTrack(0).animation.name,
     moved: unit.animationState.getTrack(0).trackTime > window.qaMonsters.start[i],
     slots: unit.skeleton.slots.filter(slot => slot.pose.attachment).length,
-    ...(inspect ? { displayHeight: Number((unit.skeleton.getBoundsRect().height * unit.scaleY).toFixed(1)) } : {}),
+    ...(inspect ? {
+      displayHeight: Number((unit.skeleton.getBoundsRect().height * unit.scaleY).toFixed(1)),
+      screenHeight: Number((unit.skeleton.getBoundsRect().height * unit.scaleY *
+        window.qaMonsters.game.scene.getScene('battle').cameras.main.zoom *
+        window.qaMonsters.game.scale.zoom).toFixed(1)),
+    } : {}),
   })), inspect);
   assert.deepEqual(rendered.map(({ skin }) => skin), actors.map(([, actor]) => actor.skin));
   assert.ok(rendered.every(unit => unit.renderer === 'phaser' && unit.track === 'walk' && unit.moved && unit.slots > 0),
@@ -232,14 +255,15 @@ h1{font-size:19px;margin:0 0 12px}#field{width:1408px;height:834px}</style>
   });
 
   assert.deepEqual(errors, []);
+  const bossPairs = inspect ? rendered.flatMap((boss, i) => actors[i][0].includes('-boss-')
+    ? rendered.flatMap((regular, j) => {
+      const entity = actors[j][0];
+      return entity.split('-')[0] === actors[i][0].split('-')[0] && !entity.includes('-boss-')
+        ? [{ boss: actors[i][0], regular: entity, ratio: Number((boss.screenHeight / regular.screenHeight).toFixed(4)) }] : [];
+    }) : []) : [];
   await writeFile(resolve(shots, shotName + '-report.json'), JSON.stringify({
-    chromium: browser.version(), seed: selection.seed, wave: selection.wave, rendered: actors.map(([entity], i) => ({ entity, rig: actors[i][1].rig, ...rendered[i] })), events,
+    chromium: page.context().browser().version(), seed: selection.seed, wave: selection.wave, rendered: actors.map(([entity], i) => ({ entity, rig: actors[i][1].rig, ...rendered[i] })), events,
+    ...(inspect ? { bossPairs } : {}),
   }, null, 2) + '\n');
   console.log(`게임 전장 · Mesh2D ${actors.length}개체 · 걷기 진행·피격·쓰러짐 확인 · 보스 기술 ${events.skill.length}개`);
-} finally {
-  try {
-    await browser?.close();
-  } finally {
-    await server.close();
-  }
 }

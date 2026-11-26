@@ -4,7 +4,7 @@ import { evolutionAt, isR6Tower } from '../../domain/r6Towers';
 import type { RunState } from '../../domain/types';
 import { CELL_PX } from '../assets';
 import { topFit } from '../layers/cues';
-import { DEPTH, fieldPosition, type LayerContext } from '../layers/shared';
+import { DEPTH, fieldPosition, r6UnitDepth, type LayerContext } from '../layers/shared';
 import type { R6BattleAssets } from './BattleAssets';
 import { projectFieldDelta } from './mapProjection';
 import { headDirection, R6_COLORS, type R6Manifest, type TowerFormArt } from './manifest';
@@ -118,7 +118,7 @@ export class R6TowerPlayback {
     const scale = fit.scale * form.scale;
     const footY = foot + fit.drop;
     const headY = footY + (my - by) * scale;
-    const depth = DEPTH.units + y;
+    const depth = this.c.projected ? r6UnitDepth(y, 'tower') : DEPTH.units + y;
     v.shotLift = y - CELL_PX * 0.32 - headY;
 
     const bodyTexture = this.assets.towerTexture(form.body, sheets)!;
@@ -145,7 +145,7 @@ export class R6TowerPlayback {
     v.head.setOrigin(headArt.pivot[0] / headArt.width, headArt.pivot[1] / headArt.height)
       .setPosition(x + (mx - bx) * scale - Math.sin(theta) * recoil,
         headY - settle + Math.cos(theta) * recoil * manifest.projection.squashY)
-      .setDisplaySize(headArt.width * scale, headArt.height * scale).setDepth(depth + 1);
+      .setDisplaySize(headArt.width * scale, headArt.height * scale).setDepth(this.c.projected ? depth : depth + 1);
     this.drawDust(v, controller.renderQuality.current > 0 ? 1 : attach, x, footY, depth);
   }
 
@@ -156,7 +156,7 @@ export class R6TowerPlayback {
       return;
     }
     const spread = (progress - .48) / .52;
-    const dust = v.dust ??= this.c.scene.add.graphics().setDepth(depth + 2).setName(v.body.name + ':dust');
+    const dust = v.dust ??= this.c.scene.add.graphics().setDepth(this.c.projected ? depth : depth + 2).setName(v.body.name + ':dust');
     dust.clear().fillStyle(R6_COLORS.silver, .43 * (1 - spread));
     for (const offset of [-1, -.55, .55, 1]) {
       dust.fillCircle(x + offset * (9 + 12 * spread), y - 1 - 4 * spread / Math.abs(offset), 1.5 - spread);
@@ -168,7 +168,7 @@ export class R6TowerPlayback {
     const index = type ? R6_TOWERS.indexOf(type) : 0;
     const shape = this.c.scene.add.rectangle(x, y, 33 + index * 3, 34 - index * 2, R6_COLORS.line)
       .setOrigin(0.5, this.c.projected ? 1 : 0.5)
-      .setStrokeStyle(2, R6_COLORS.teal).setDepth(DEPTH.units + y).setName(`r6:tower:${id}:placeholder`);
+      .setStrokeStyle(2, R6_COLORS.teal).setDepth(this.c.projected ? r6UnitDepth(y, 'tower') : DEPTH.units + y).setName(`r6:tower:${id}:placeholder`);
     this.placeholders.set(id, shape);
   }
 

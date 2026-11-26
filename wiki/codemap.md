@@ -28,12 +28,12 @@ generated_by: tools/wiki/gen.mjs
 | `src/content` | 4 | 479 | 학년별 문제은행 지연 로더·의미 검사·철회 목록 적용 |
 | `src/application` | 12 | 1,892 | RunController(유일한 상태 작성자)·세션·로비·NEIS·QA 장면 상태 |
 | `src/persistence` | 5 | 1,244 | IndexedDB 로컬 기록·오답 노트·기기 인증·서버 동기화 큐 |
-| `src/game` | 27 | 4,772 | Phaser 4 전장 렌더러·레이어 6종·보행/자세 애니메이션·맵 지면 조립 |
+| `src/game` | 27 | 4,837 | Phaser 4 전장 렌더러·레이어 6종·보행/자세 애니메이션·맵 지면 조립 |
 | `src/ui` | 72 | 11,858 | React 19 화면(홈·새 게임·전투 HUD/카드·오답 노트·설명서·결과) 및 오디오 |
 | `server/src` | 14 | 1,603 | Cloudflare Workers + D1 기기 발급·판 재채점·통합 랭킹·일일 정리 서버 |
 | `tools/content & orchestrate` | 20 | 4,973 | 공개 은행 컴파일러·학년 띠 공유·CR-1000 다중 모델 공동검수 및 commit-lock |
 | `tools/sim, qa & assets` | 14 | 3,542 | 밸런스 봇 시뮬레이터·관문 평가기·성능/장면 QA·WebP 알파 보존 변환기 |
-| `tests/unit & e2e` | 128 | 22,159 | Vitest 단위/속성 시험 및 Playwright 실브라우저·로컬 서버 연결 시험 |
+| `tests/unit & e2e` | 128 | 22,209 | Vitest 단위/속성 시험 및 Playwright 실브라우저·로컬 서버 연결 시험 |
 
 ## 3. 영역별 대표 진입 모듈
 
@@ -101,7 +101,7 @@ generated_by: tools/wiki/gen.mjs
 | --- | ---: | --- | --- |
 | [src/game/layers/EffectLayer.ts](../src/game/layers/EffectLayer.ts) | 462 | `EffectLayer` | - |
 | [src/game/art.ts](../src/game/art.ts) | 448 | `PALETTE`, `rand01`, `isTreeCell`, `GroundSkip`, `GROUND_ART` | - |
-| [src/game/layers/EnemyLayer.ts](../src/game/layers/EnemyLayer.ts) | 386 | `EnemyLayer` | - |
+| [src/game/layers/EnemyLayer.ts](../src/game/layers/EnemyLayer.ts) | 409 | `EnemyLayer` | - |
 | [src/game/layers/TowerLayer.ts](../src/game/layers/TowerLayer.ts) | 369 | `TowerLayer` | - |
 | [src/game/layers/cues.ts](../src/game/layers/cues.ts) | 271 | `FLYER_LIFT_CELLS`, `INTRO_MS`, `SPLIT_HOP_CELLS`, `SPLIT_LABEL_RAISE_CELLS`, `BossStatus` | - |
 | [src/game/layouts/index.ts](../src/game/layouts/index.ts) | 266 | `PLACEMENT_KINDS`, `PlacementKind`, `mapLayoutSchema`, `MapLayout`, `LayoutPlacement` | - |

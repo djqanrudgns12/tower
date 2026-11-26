@@ -10,21 +10,21 @@ generated_by: tools/wiki/gen.mjs
 
 > 이 파일은 `npm run wiki:sync` (`tools/wiki/gen.mjs`)가 코드·계약 JSON·SQL에서 결정적으로 자동 생성합니다. 직접 수정하지 마세요.
 
-- 스캔된 마크다운 총계: **255개 파일** · **1,927,043자** · 추정 **약 1,252,697 토큰**
+- 스캔된 마크다운 총계: **256개 파일** · **1,959,353자** · 추정 **약 1,273,699 토큰**
 - **경고**: `해시 고정(validate-plan)` 문서는 1바이트도 수정·이동하면 안 되며, `링크·참조 검사(validate-plan)` 및 `코드·시험 경로 참조` 문서도 기존 경로를 그대로 유지해야 합니다.
 
 ## 분류별 요약
 
 | 분류 | 파일 수 | 글자 수 | 추정 토큰 |
 | --- | ---: | ---: | ---: |
-| 01. 진입·규약 및 LLM Wiki | 34 | 168,556 | 109,577 |
-| 02. 리뉴얼 현행 기준 (PRD보다 우선) | 77 | 555,990 | 361,431 |
+| 01. 진입·규약 및 LLM Wiki | 34 | 168,933 | 109,822 |
+| 02. 리뉴얼 현행 기준 (PRD보다 우선) | 78 | 579,288 | 376,575 |
 | 03. 호스팅·배포·운영 기준 | 3 | 36,412 | 23,669 |
 | 04. 문제은행 CR-1000 공동검수 | 6 | 201,954 | 131,272 |
 | 05. 제작 PRD v0.5 및 계약 기준 | 6 | 143,424 | 93,229 |
 | 06. 밸런스 시뮬레이션 실험 기록 | 8 | 106,819 | 69,436 |
 | 07. 구판 PRD·초기 인계·아카이브 | 22 | 332,532 | 216,158 |
-| 08. 과거 작업 패키지 및 원화·배치 검수 이력 | 99 | 381,356 | 247,925 |
+| 08. 과거 작업 패키지 및 원화·배치 검수 이력 | 99 | 389,991 | 253,538 |
 
 ## 01. 진입·규약 및 LLM Wiki
 
@@ -48,10 +48,10 @@ generated_by: tools/wiki/gen.mjs
 | [wiki/concepts/deploy-and-verification.md](../wiki/concepts/deploy-and-verification.md) | 현행 활성 | Explanation | - | 4 | 3,844 |
 | [wiki/concepts/persistence-and-ranking-server.md](../wiki/concepts/persistence-and-ranking-server.md) | 현행 활성 | Explanation | - | 5 | 3,892 |
 | [wiki/concepts/question-bank-and-cr1000.md](../wiki/concepts/question-bank-and-cr1000.md) | 현행 활성 | Explanation | - | 5 | 3,976 |
-| [wiki/concepts/ui-phaser-and-assets.md](../wiki/concepts/ui-phaser-and-assets.md) | 현행 활성 | Explanation | - | 6 | 4,964 |
+| [wiki/concepts/ui-phaser-and-assets.md](../wiki/concepts/ui-phaser-and-assets.md) | 현행 활성 | Explanation | - | 6 | 5,104 |
 | [wiki/contracts.md](../wiki/contracts.md) | 현행 활성 | Reference / Navigation | - | 11 | 8,147 |
 | [wiki/decisions-index.md](../wiki/decisions-index.md) | 현행 활성 | Reference / Navigation | - | 1 | 2,901 |
-| [wiki/docs-catalog.md](../wiki/docs-catalog.md) | 현행 활성 | Reference / Navigation | - | 10 | 34,530 |
+| [wiki/docs-catalog.md](../wiki/docs-catalog.md) | 현행 활성 | Reference / Navigation | - | 10 | 34,690 |
 | [wiki/entities/tech-stack.md](../wiki/entities/tech-stack.md) | 현행 활성 | Reference / Navigation | - | 4 | 3,796 |
 | [wiki/entities/vocabulary-td.md](../wiki/entities/vocabulary-td.md) | 현행 활성 | Reference / Navigation | - | 5 | 3,349 |
 | [wiki/glossary.md](../wiki/glossary.md) | 현행 활성 | Reference / Navigation | - | 1 | 5,322 |
@@ -60,7 +60,7 @@ generated_by: tools/wiki/gen.mjs
 | [wiki/lessons/ops-and-workflow.md](../wiki/lessons/ops-and-workflow.md) | 현행 활성 | Reference / Navigation | - | 5 | 2,623 |
 | [wiki/lessons/ui-art-and-balance.md](../wiki/lessons/ui-art-and-balance.md) | 현행 활성 | Reference / Navigation | - | 5 | 2,483 |
 | [wiki/log.md](../wiki/log.md) | 현행 활성 | Reference / Navigation | - | 3 | 2,012 |
-| [wiki/projects/roadmap-and-status.md](../wiki/projects/roadmap-and-status.md) | 현행 활성 | Reference / Navigation | - | 4 | 4,810 |
+| [wiki/projects/roadmap-and-status.md](../wiki/projects/roadmap-and-status.md) | 현행 활성 | Reference / Navigation | - | 4 | 4,887 |
 | [wiki/SCHEMA.md](../wiki/SCHEMA.md) | 현행 활성 | Reference / Navigation | - | 6 | 5,449 |
 | [wiki/templates/hub.md](../wiki/templates/hub.md) | 현행 활성 | Reference / Navigation | - | 5 | 666 |
 | [wiki/templates/lesson.md](../wiki/templates/lesson.md) | 현행 활성 | Reference / Navigation | - | 2 | 957 |
@@ -100,7 +100,8 @@ generated_by: tools/wiki/gen.mjs
 | [docs/renewal/r6/PRD-r6.md](../docs/renewal/r6/PRD-r6.md) | 현행 우선 기준 | Explanation / Spec | - | 21 | 9,770 |
 | [docs/renewal/r6/README.md](../docs/renewal/r6/README.md) | 현행 우선 기준 | Explanation / Spec | - | 9 | 4,398 |
 | [docs/renewal/r6/research.md](../docs/renewal/r6/research.md) | 현행 우선 기준 | Explanation / Spec | - | 8 | 4,924 |
-| [docs/renewal/r6/review/G4-monsters-notes.md](../docs/renewal/r6/review/G4-monsters-notes.md) | 현행 우선 기준 | Explanation / Spec | - | 6 | 2,531 |
+| [docs/renewal/r6/review/G4-monsters-critique.md](../docs/renewal/r6/review/G4-monsters-critique.md) | 현행 우선 기준 | Explanation / Spec | - | 26 | 20,060 |
+| [docs/renewal/r6/review/G4-monsters-notes.md](../docs/renewal/r6/review/G4-monsters-notes.md) | 현행 우선 기준 | Explanation / Spec | - | 6 | 3,117 |
 | [docs/renewal/r6/review/G4-towers-critique.md](../docs/renewal/r6/review/G4-towers-critique.md) | 현행 우선 기준 | Explanation / Spec | - | 18 | 15,743 |
 | [docs/renewal/r6/review/G4-towers-fix.md](../docs/renewal/r6/review/G4-towers-fix.md) | 현행 우선 기준 | Explanation / Spec | - | 2 | 2,317 |
 | [docs/renewal/r6/round2/concepts/N1/concept.md](../docs/renewal/r6/round2/concepts/N1/concept.md) | 현행 우선 기준 | Explanation / Spec | - | 13 | 5,937 |
@@ -129,7 +130,7 @@ generated_by: tools/wiki/gen.mjs
 | [docs/renewal/r6/tech/G3-precheck.md](../docs/renewal/r6/tech/G3-precheck.md) | 현행 우선 기준 | Explanation / Spec | - | 6 | 3,351 |
 | [docs/renewal/r6/tech/G5-perf.md](../docs/renewal/r6/tech/G5-perf.md) | 현행 우선 기준 | Explanation / Spec | - | 4 | 2,675 |
 | [docs/renewal/r6/tech/G5-server.md](../docs/renewal/r6/tech/G5-server.md) | 현행 우선 기준 | Explanation / Spec | - | 7 | 5,503 |
-| [docs/renewal/r6/tech/monster-pipeline.md](../docs/renewal/r6/tech/monster-pipeline.md) | 현행 우선 기준 | Explanation / Spec | - | 11 | 18,567 |
+| [docs/renewal/r6/tech/monster-pipeline.md](../docs/renewal/r6/tech/monster-pipeline.md) | 현행 우선 기준 | Explanation / Spec | - | 13 | 21,219 |
 | [docs/renewal/r6/tech/towers/bastion/review.md](../docs/renewal/r6/tech/towers/bastion/review.md) | 현행 우선 기준 | Explanation / Spec | - | 3 | 1,037 |
 | [docs/renewal/r6/tech/towers/bastion/six-towers-evidence.md](../docs/renewal/r6/tech/towers/bastion/six-towers-evidence.md) | 현행 우선 기준 | Explanation / Spec | - | 3 | 6,317 |
 | [docs/renewal/r6/tech/towers/bastion/six-towers-iou.md](../docs/renewal/r6/tech/towers/bastion/six-towers-iou.md) | 현행 우선 기준 | Explanation / Spec | - | 1 | 1,989 |
@@ -223,16 +224,16 @@ generated_by: tools/wiki/gen.mjs
 | --- | --- | --- | --- | ---: | ---: |
 | [asset-source/incoming/ART-002/PROGRESS.md](../asset-source/incoming/ART-002/PROGRESS.md) | 이력 보존 | Archive / Record | - | 12 | 10,226 |
 | [asset-source/incoming/ART-003/PROGRESS.md](../asset-source/incoming/ART-003/PROGRESS.md) | 이력 보존 | Archive / Record | - | 14 | 10,540 |
-| [asset-source/r6/monsters/elf/REDO.md](../asset-source/r6/monsters/elf/REDO.md) | 이력 보존 | Archive / Record | - | 4 | 590 |
-| [asset-source/r6/monsters/elf/STATUS.md](../asset-source/r6/monsters/elf/STATUS.md) | 이력 보존 | Archive / Record | - | 3 | 2,921 |
-| [asset-source/r6/monsters/human/REDO.md](../asset-source/r6/monsters/human/REDO.md) | 이력 보존 | Archive / Record | - | 4 | 785 |
-| [asset-source/r6/monsters/human/STATUS.md](../asset-source/r6/monsters/human/STATUS.md) | 이력 보존 | Archive / Record | - | 3 | 3,184 |
-| [asset-source/r6/monsters/insect/REDO.md](../asset-source/r6/monsters/insect/REDO.md) | 이력 보존 | Archive / Record | - | 4 | 623 |
-| [asset-source/r6/monsters/insect/STATUS.md](../asset-source/r6/monsters/insect/STATUS.md) | 이력 보존 | Archive / Record | - | 3 | 3,145 |
-| [asset-source/r6/monsters/machine/REDO.md](../asset-source/r6/monsters/machine/REDO.md) | 이력 보존 | Archive / Record | - | 5 | 1,781 |
-| [asset-source/r6/monsters/machine/STATUS.md](../asset-source/r6/monsters/machine/STATUS.md) | 이력 보존 | Archive / Record | - | 3 | 3,929 |
-| [asset-source/r6/monsters/stone/REDO.md](../asset-source/r6/monsters/stone/REDO.md) | 이력 보존 | Archive / Record | - | 5 | 1,603 |
-| [asset-source/r6/monsters/stone/STATUS.md](../asset-source/r6/monsters/stone/STATUS.md) | 이력 보존 | Archive / Record | - | 3 | 2,843 |
+| [asset-source/r6/monsters/elf/REDO.md](../asset-source/r6/monsters/elf/REDO.md) | 이력 보존 | Archive / Record | - | 4 | 1,875 |
+| [asset-source/r6/monsters/elf/STATUS.md](../asset-source/r6/monsters/elf/STATUS.md) | 이력 보존 | Archive / Record | - | 4 | 3,513 |
+| [asset-source/r6/monsters/human/REDO.md](../asset-source/r6/monsters/human/REDO.md) | 이력 보존 | Archive / Record | - | 4 | 1,950 |
+| [asset-source/r6/monsters/human/STATUS.md](../asset-source/r6/monsters/human/STATUS.md) | 이력 보존 | Archive / Record | - | 4 | 3,781 |
+| [asset-source/r6/monsters/insect/REDO.md](../asset-source/r6/monsters/insect/REDO.md) | 이력 보존 | Archive / Record | - | 4 | 2,411 |
+| [asset-source/r6/monsters/insect/STATUS.md](../asset-source/r6/monsters/insect/STATUS.md) | 이력 보존 | Archive / Record | - | 4 | 3,570 |
+| [asset-source/r6/monsters/machine/REDO.md](../asset-source/r6/monsters/machine/REDO.md) | 이력 보존 | Archive / Record | - | 5 | 2,898 |
+| [asset-source/r6/monsters/machine/STATUS.md](../asset-source/r6/monsters/machine/STATUS.md) | 이력 보존 | Archive / Record | - | 4 | 4,340 |
+| [asset-source/r6/monsters/stone/REDO.md](../asset-source/r6/monsters/stone/REDO.md) | 이력 보존 | Archive / Record | - | 5 | 2,100 |
+| [asset-source/r6/monsters/stone/STATUS.md](../asset-source/r6/monsters/stone/STATUS.md) | 이력 보존 | Archive / Record | - | 4 | 3,601 |
 | [asset-source/renewal/ART-AG-EDIT/VERDICT.md](../asset-source/renewal/ART-AG-EDIT/VERDICT.md) | 이력 보존 | Archive / Record | - | 1 | 418 |
 | [asset-source/renewal/ART-AG-TRIAL/VERDICT.md](../asset-source/renewal/ART-AG-TRIAL/VERDICT.md) | 이력 보존 | Archive / Record | - | 1 | 287 |
 | [asset-source/renewal/ART-CY1/PROGRESS.md](../asset-source/renewal/ART-CY1/PROGRESS.md) | 이력 보존 | Archive / Record | - | 5 | 1,432 |
