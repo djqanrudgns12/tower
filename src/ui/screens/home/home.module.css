@@ -485,17 +485,68 @@
 }
 
 .steleGardenFrame {
+  --portrait-cut: var(--chamfer-sm);
+  --portrait-cut-inner: calc(var(--chamfer-sm) - 0.6px);
+  --portrait-accent: var(--r04-line);
   position: relative;
   width: 100px;
   height: 100px;
+  aspect-ratio: 1 / 1;
   flex-shrink: 0;
-  border-radius: var(--chamfer-sm);
-  border: 1px solid var(--border-hairline);
-  background: var(--bg-pressed);
-  overflow: hidden;
+  padding: 1px;
+  background: var(--r04-line);
+  clip-path: polygon(
+    var(--portrait-cut) 0,
+    100% 0,
+    100% calc(100% - var(--portrait-cut)),
+    calc(100% - var(--portrait-cut)) 100%,
+    0 100%,
+    0 var(--portrait-cut)
+  );
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.steleGardenFrame[data-race='elf'],
+.steleGardenFrame[data-race='mech'] {
+  --portrait-accent: var(--r04-teal);
+}
+
+.steleGardenFrame[data-race='human'] {
+  --portrait-accent: var(--r04-silver);
+}
+
+.steleGardenFrame[data-race='insect'],
+.steleGardenFrame[data-race='golem'] {
+  --portrait-accent: var(--r04-amber);
+}
+
+.steleGardenInner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background: var(--r04-slate);
+  overflow: hidden;
+  clip-path: polygon(
+    var(--portrait-cut-inner) 0,
+    100% 0,
+    100% calc(100% - var(--portrait-cut-inner)),
+    calc(100% - var(--portrait-cut-inner)) 100%,
+    0 100%,
+    0 var(--portrait-cut-inner)
+  );
+}
+
+.steleGardenInner::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 3px;
+  background: var(--portrait-accent);
+  pointer-events: none;
 }
 
 .steleStudyArt {
@@ -1412,7 +1463,7 @@
   }
   .steleGardenFrame {
     width: 88px;
-    height: 172px;
+    height: 88px;
   }
   .noteGridBox {
     padding: 5px 9px;

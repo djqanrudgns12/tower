@@ -80,3 +80,14 @@
 | **철갑 인간 (`human`)** | `6 / 6` | `14.2 ~ 16.1 KB` (소계 `91.8 KB`) | `human_infantry_t4`, `human_rush_t4`, `human_heavy_t4`, `human_special_t4`, `human_boss_5`, `human_boss_20` | **완료 · 78px/실루엣 검수 통과** (`05` 앰버 독수리 문장 교체, `06`만 `q82`) |
 | **숲 엘프 (`elf`)** | `6 / 6` | `11.6 ~ 16.3 KB` (소계 `84.5 KB`) | `elf_infantry_t4`, `elf_rush_t4`, `elf_heavy_t4`, `elf_special_t4`, `elf_boss_5`, `elf_boss_20` | **완료 · 78px/실루엣 검수 통과** (`01·04·05·06` 신규, `04` 점유율 보정) |
 | **군체 벌레 (`insect`)** | `6 / 6` | `12.6 ~ 17.0 KB` (소계 `84.7 KB`) | `insect_infantry_t4`, `insect_rush_t4`, `insect_heavy_t4`, `insect_special_t4`, `insect_boss_5`, `insect_boss_20` | **완료 · 78px/실루엣 검수 통과** (`01~06` 신규 전용 1024px 흉상) |
+
+---
+
+## 6. 홈 화면 연결 상태
+
+- **연결 완료**: [portraitDeck.ts](file:///Users/bodyking/Desktop/Architecture/towerdeffense/src/ui/screens/home/portraitDeck.ts), [SteleStudyPanel.tsx](file:///Users/bodyking/Desktop/Architecture/towerdeffense/src/ui/screens/home/SteleStudyPanel.tsx), [home.module.css](file:///Users/bodyking/Desktop/Architecture/towerdeffense/src/ui/screens/home/home.module.css)
+- **구현 내용**:
+  - `STUDY_MONSTER_ARTS`를 R6 5종족×6장(`r6.portrait.<race>.<01~06>.webp`) 30장으로 교체하고, 옛 `study.monster.01~30.webp` 30장은 보존함(`HomeScreen`·`SteleStudyPanel`에 v1 분기가 없어 R6 초상만 사용).
+  - §4.2의 5종족 블록 라운드 로빈 셔플(`shufflePortraitDeck` · `advancePortraitDeck`) 및 `nextArt` 1장 백그라운드 예열 적용.
+  - `home.module.css`의 `88×172` 직사각 왜곡을 `88×88` 정사각으로 수정하고, §3.3의 `1px #4A5563` 테두리 + `--chamfer-sm` 모따기 + 하단 `3px` 종족 강조색 띠를 CSS로 적용함.
+- **검증 및 캡처**: 단위 시험 `tests/unit/ui/r6-home-portraits.test.ts`, e2e `tests/e2e/home.spec.ts`, 4개 뷰포트 캡처 `docs/renewal/r6/tech/home-portraits/` (`1366×768`, `1280×800`, `1920×1080`, `768×1024`).

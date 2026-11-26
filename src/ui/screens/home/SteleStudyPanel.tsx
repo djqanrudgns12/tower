@@ -7,62 +7,16 @@ import {
 import { LineIcon } from '../../icons/LineIcon';
 import { useGradeContent } from '../../useGradeContent';
 import css from './home.module.css';
+import {
+  STUDY_MONSTER_ARTS,
+  advancePortraitDeck,
+  createPortraitDeckState,
+} from './portraitDeck';
+
+export { STUDY_MONSTER_ARTS };
 
 interface Props {
   preferredGrade: number;
-}
-
-/** 오늘의 낱말 액자용 인게임 8종족 평화로운 일상 일러스트 30종 (192×192 불투명 WebP). */
-export const STUDY_MONSTER_ARTS = [
-  'assets/ui/study/study.monster.01.webp',
-  'assets/ui/study/study.monster.02.webp',
-  'assets/ui/study/study.monster.03.webp',
-  'assets/ui/study/study.monster.04.webp',
-  'assets/ui/study/study.monster.05.webp',
-  'assets/ui/study/study.monster.06.webp',
-  'assets/ui/study/study.monster.07.webp',
-  'assets/ui/study/study.monster.08.webp',
-  'assets/ui/study/study.monster.09.webp',
-  'assets/ui/study/study.monster.10.webp',
-  'assets/ui/study/study.monster.11.webp',
-  'assets/ui/study/study.monster.12.webp',
-  'assets/ui/study/study.monster.13.webp',
-  'assets/ui/study/study.monster.14.webp',
-  'assets/ui/study/study.monster.15.webp',
-  'assets/ui/study/study.monster.16.webp',
-  'assets/ui/study/study.monster.17.webp',
-  'assets/ui/study/study.monster.18.webp',
-  'assets/ui/study/study.monster.19.webp',
-  'assets/ui/study/study.monster.20.webp',
-  'assets/ui/study/study.monster.21.webp',
-  'assets/ui/study/study.monster.22.webp',
-  'assets/ui/study/study.monster.23.webp',
-  'assets/ui/study/study.monster.24.webp',
-  'assets/ui/study/study.monster.25.webp',
-  'assets/ui/study/study.monster.26.webp',
-  'assets/ui/study/study.monster.27.webp',
-  'assets/ui/study/study.monster.28.webp',
-  'assets/ui/study/study.monster.29.webp',
-  'assets/ui/study/study.monster.30.webp',
-] as const;
-
-/** crypto.getRandomValues 기반 Fisher-Yates 순열 덱 생성 (재셔플 경계 연속 중복 방지 포함). */
-function shuffleArtDeck(excludeFirst?: string): string[] {
-  const deck: string[] = [...STUDY_MONSTER_ARTS];
-  const rand = new Uint32Array(deck.length);
-  crypto.getRandomValues(rand);
-  for (let i = deck.length - 1; i > 0; i--) {
-    const j = (rand[i]! >>> 0) % (i + 1);
-    const tmp = deck[i]!;
-    deck[i] = deck[j]!;
-    deck[j] = tmp;
-  }
-  if (excludeFirst && deck.length > 1 && deck[0] === excludeFirst) {
-    const first = deck[0]!;
-    deck[0] = deck[1]!;
-    deck[1] = first;
-  }
-  return deck;
 }
 
 export function SteleStudyPanel({ preferredGrade }: Props) {
@@ -71,21 +25,18 @@ export function SteleStudyPanel({ preferredGrade }: Props) {
   const cards = useMemo(() => status === 'ready' ? selectDailySteleCards(preferredGrade, new Date(`${date}T00:00:00+09:00`)) : [], [preferredGrade, date, status]);
   const key = `${date}:${preferredGrade}`;
   const [selection, setSelection] = useState({ key, index: 0, visited: [0] });
-  const [artDeck, setArtDeck] = useState(() => ({
-    deck: shuffleArtDeck(),
-    cursor: 0,
-  }));
+  const [artDeck, setArtDeck] = useState(() => createPortraitDeckState());
 
   const index = selection.key === key ? selection.index : 0;
   const currentArt = artDeck.deck[artDeck.cursor]!;
   const nextArt = artDeck.deck[artDeck.cursor + 1];
 
-  // 다음 1장만 백그라운드로 예열하여 초기 네트워크 비용(~30KB)과 클릭 전환 지연(0ms)을 동시에 확보한다.
+  // 다음 1장만 백그라운드로 예열하여 초기 네트워크 비용(~14KB)과 클릭 전환 지연(0ms)을 동시에 확보한다.
   useEffect(() => {
     if (!nextArt || typeof Image === 'undefined') return;
     const preload = new Image();
     preload.decoding = 'async';
-    preload.src = `${import.meta.env.BASE_URL}${nextArt}`;
+    preload.src = `${import.meta.env.BASE_URL}${nextArt.path}`;
   }, [nextArt]);
 
   if (cards.length === 0) {
@@ -117,17 +68,7 @@ export function SteleStudyPanel({ preferredGrade }: Props) {
     const next = pickRandomStudyIndex(cards, safeIndex, visited);
     visited.add(next);
     setSelection({ key, index: next, visited: [...visited] });
-    setArtDeck(prev => {
-      const nextCursor = prev.cursor + 1;
-      if (nextCursor >= prev.deck.length - 1) {
-        const currentLast = prev.deck[prev.deck.length - 1]!;
-        return {
-          deck: [currentLast, ...shuffleArtDeck(currentLast)],
-          cursor: 0,
-        };
-      }
-      return { deck: prev.deck, cursor: nextCursor };
-    });
+    setArtDeck(prev => advancePortraitDeck(prev));
   };
 
   return (
@@ -153,17 +94,19 @@ export function SteleStudyPanel({ preferredGrade }: Props) {
       </div>
 
       <div className={css.wordStudyBody}>
-        <div className={css.steleGardenFrame} aria-hidden="true">
-          <img
-            src={`${import.meta.env.BASE_URL}${currentArt}`}
-            width={192}
-            height={192}
-            alt=""
-            aria-hidden="true"
-            decoding="async"
-            draggable={false}
-            className={css.steleStudyArt}
-          />
+        <div className={css.steleGardenFrame} data-race={currentArt.race} aria-hidden="true">
+          <div className={css.steleGardenInner}>
+            <img
+              src={`${import.meta.env.BASE_URL}${currentArt.path}`}
+              width={256}
+              height={256}
+              alt=""
+              aria-hidden="true"
+              decoding="async"
+              draggable={false}
+              className={css.steleStudyArt}
+            />
+          </div>
         </div>
 
         <div className={css.wordStudyContent}>
