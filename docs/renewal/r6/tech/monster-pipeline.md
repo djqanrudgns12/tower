@@ -287,3 +287,4 @@ Chromium 156에서 실제 전장 길 위에 20개체를 배치했다. 개체마�
 
 - 5종족 모두 지형·길 두 바닥에서 중앙값 **1.5배 이상**을 달성했다. 길 대비 1.5배 미만 잔여 19개체(`elf` 10·`human` 6·`machine` 2·`stone` 1)는 각 종족 `REDO.md`의 `## 32px 재작화`에 사유와 함께 기록했다.
 - 전장 전후 캡처: [W15 보정 전](monsters/contrast-w15-before.webp) · [W15 보정 후](monsters/contrast-w15-after.webp) · [W20 보정 전](monsters/contrast-w20-before.webp) · [W20 보정 후](monsters/contrast-w20-after.webp) · [최신 W15](monsters/battle-w15-walk.webp) · [최신 W20](monsters/battle-walk.webp).
+- 보정·비행 그림자 반영 후 `test:r6-perf`를 1회 실행했다. CPU 6배 감속과 1배에서 각각 평균 **59.4fps**와 **59.99fps**로 W10까지 진행했고, 두 구간 모두 화질 **0단계**, 자동 정지 **0회**였다.
