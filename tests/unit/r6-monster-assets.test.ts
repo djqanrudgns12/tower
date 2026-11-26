@@ -107,3 +107,39 @@ it.each(SPECIES)('%s 보스와 같은 종족 일반 개체는 걷기 중 높이�
   }
   expect(shortestBoss).toBeGreaterThanOrEqual(tallestRegular * 1.4);
 });
+
+it.each(SPECIES)('%s 모든 계통에서 T1~T4 전장 표시 높이가 줄어들지 않는다', faction => {
+  const base = `public/assets/r6/monsters/${faction}/`;
+  const atlas = new TextureAtlas(readFileSync(base + faction + '.atlas', 'utf8'));
+  const loader = new SkeletonJson(new AtlasAttachmentLoader(atlas));
+  const data = new Map<string, ReturnType<SkeletonJson['readSkeletonData']>>();
+  const scene = {
+    load: { on: vi.fn(), isLoading: () => false },
+    cache: { json: { exists: () => true }, text: { exists: () => true } },
+    textures: { exists: () => true },
+  } as unknown as Phaser.Scene;
+  const assets = new R6BattleAssets(scene, () => false);
+  assets.manifest = r6ManifestSchema.parse(manifest);
+  for (const lineage of ['infantry', 'runner', 'armored', 'special', 'boss'] as const) {
+    const heights: number[] = [];
+    for (const tier of [1, 2, 3, 4]) {
+      const id = `${faction}-${lineage}-t${tier}` as (typeof ENTITY_IDS)[number];
+      const art = assets.enemyArt(enemy({ faction, entityId: id }))!;
+      let definition = data.get(art.rig.file);
+      if (!definition) {
+        definition = loader.readSkeletonData(JSON.parse(readFileSync('public/assets/r6/' + art.rig.file, 'utf8')));
+        data.set(art.rig.file, definition);
+      }
+      const skeleton = new Skeleton(definition);
+      skeleton.setSkin(art.skin);
+      skeleton.setupPose();
+      skeleton.updateWorldTransform(Physics.none);
+      const setupHeight = skeleton.getBoundsRect().height;
+      const scale = r6EnemyScale(art.scale, setupHeight, lineage === 'boss');
+      heights.push(setupHeight * scale);
+    }
+    for (let i = 0; i < 3; i++) {
+      expect(heights[i + 1], `${faction}-${lineage} T${i + 1}→T${i + 2}`).toBeGreaterThanOrEqual(heights[i]!);
+    }
+  }
+});

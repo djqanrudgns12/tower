@@ -8,7 +8,7 @@ import unittest
 
 from PIL import Image, ImageDraw
 
-from batch import white_patches
+from batch import resolve_display_scale, white_patches
 from cut_parts import cut, orient_parts
 from fit_parts import fit
 from monsters import ACTORS, compose_rig, prepare, read_json
@@ -294,6 +294,13 @@ class MonsterPipelineTest(unittest.TestCase):
         self.assertEqual(result["path"], {"median": 1.0, "lowShare": 1.0})
         self.assertGreater(result["terrain"]["median"], 1.5)
         self.assertEqual(result["terrain"]["lowShare"], 0.0)
+
+    def test_placement_display_scale_overrides_parts_scale(self):
+        meta = {"scale": 1.0}
+        self.assertEqual(resolve_display_scale(meta, {}), 1.0)
+        self.assertEqual(resolve_display_scale(meta, {"displayScale": 1.45}), 1.45)
+        with self.assertRaises(ValueError):
+            resolve_display_scale(meta, {"displayScale": 0})
 
 
 if __name__ == "__main__":

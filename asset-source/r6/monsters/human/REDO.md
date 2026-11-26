@@ -6,10 +6,10 @@
 
 ## 32px 비교
 
-- machine 비교 400쌍 중 90쌍 미달. 가장 비슷한 쌍은 `machine-armored-t3`와 `human-runner-t4` (IoU 0.672).
-- stone 비교 400쌍 중 114쌍 미달. 가장 비슷한 쌍은 `stone-special-t4`와 `human-special-t1` (IoU 0.705).
-- elf 비교 400쌍 중 73쌍 미달. 가장 비슷한 쌍은 `elf-armored-t3`와 `human-infantry-t4` (IoU 0.710).
-- insect 비교 400쌍 중 79쌍 미달. 가장 비슷한 쌍은 `human-special-t2`와 `insect-special-t4` (IoU 0.697).
+- machine 비교 400쌍 중 91쌍 미달. 가장 비슷한 쌍은 `machine-armored-t3`와 `human-runner-t4` (IoU 0.672).
+- stone 비교 400쌍 중 113쌍 미달. 가장 비슷한 쌍은 `stone-special-t4`와 `human-special-t1` (IoU 0.705).
+- elf 비교 400쌍 중 75쌍 미달. 가장 비슷한 쌍은 `elf-armored-t3`와 `human-infantry-t4` (IoU 0.710).
+- insect 비교 400쌍 중 81쌍 미달. 가장 비슷한 쌍은 `human-special-t2`와 `insect-special-t4` (IoU 0.697).
 
 ## 도구로 해결
 

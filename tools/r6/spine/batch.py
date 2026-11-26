@@ -74,8 +74,15 @@ def actor_inputs(folder, placement):
     return cache / sheet.name, cache / assembly.name, stats
 
 
+def resolve_display_scale(meta, placement):
+    scale = placement.get("displayScale", meta["scale"])
+    if type(scale) not in (int, float) or not 0 < scale <= 8:
+        raise ValueError(f"displayScale은 0 초과 8 이하여야 합니다 · {scale}")
+    return scale
+
+
 def process_actor(folder, canonical, first_targets, *, publish_review=True):
-    meta = read_json(folder / "parts.json")
+    meta = dict(read_json(folder / "parts.json"))
     species, entry, skin = folder.relative_to(SOURCE).parts
     if (species, entry, skin) != tuple(meta[k] for k in ("species", "entry", "skin")):
         raise ValueError(f"폴더와 개체 식별자가 다릅니다 · {folder}")
@@ -85,7 +92,9 @@ def process_actor(folder, canonical, first_targets, *, publish_review=True):
     placement = read_json(placement_path) if placement_path.exists() else {}
     if first_targets and "targets" not in placement:
         placement["targets"] = {name: box for name, box in first_targets.items() if name in meta["slots"]}
-    placement.update(scale=meta["scale"], armless=meta.get("armless", False))
+    effective_scale = resolve_display_scale(meta, placement)
+    meta["scale"] = effective_scale
+    placement.update(scale=effective_scale, armless=meta.get("armless", False))
     clean_sheet, clean_assembly, white_key = actor_inputs(folder, placement)
     inputs = digest(folder / "parts.json", sheet, assembly, guide, canonical, HERE / "fit_parts.py",
                     HERE / "cut_parts.py", HERE / "part_guides.py", HERE / "parts.py", HERE / "slot_plan.py")
@@ -370,7 +379,11 @@ def main():
                         meta = {**old, "scale": catalog["entities"][actor_id(old)]["scale"],
                                 "armless": skin in source_profile.get("armlessSkins", ())}
                     else:
-                        meta = read_json(folder / "parts.json")
+                        meta = dict(read_json(folder / "parts.json"))
+                        if (folder / "placement.json").exists():
+                            existing_pl = read_json(folder / "placement.json")
+                            if "displayScale" in existing_pl:
+                                meta["scale"] = existing_pl["displayScale"]
                 else:
                     if not all((folder / f).is_file() for f in ("sheet.png", "assembly.png", "parts.json")):
                         if key in actors:
