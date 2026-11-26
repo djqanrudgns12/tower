@@ -7,7 +7,7 @@
   "guide": "armored-biped.json",
   "placement": "placement.json",
   "ready": true,
-  "silhouetteIoU": 0.947,
+  "silhouetteIoU": 0.952,
   "parts": {
     "leg-far": {
       "sourceBox": [
@@ -228,6 +228,26 @@
         123,
         143
       ]
+    },
+    "gear": {
+      "sourceBox": [
+        397,
+        778,
+        506,
+        958
+      ],
+      "targetBox": [
+        115,
+        111,
+        163,
+        200
+      ],
+      "placedBox": [
+        115,
+        116,
+        163,
+        195
+      ]
     }
   },
   "pivots": {
@@ -277,8 +297,20 @@
     ]
   },
   "issues": [],
+  "whiteKey": {
+    "applied": false,
+    "removedPixels": 0,
+    "sheet": {
+      "removedPixels": 0,
+      "fringePixels": 0
+    },
+    "assembly": {
+      "removedPixels": 0,
+      "fringePixels": 0
+    }
+  },
   "fitScores": [
-    0.947
+    0.952
   ],
   "accepted": true
 }

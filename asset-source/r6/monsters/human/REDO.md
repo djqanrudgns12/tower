@@ -7,9 +7,9 @@
 ## 32px 비교
 
 - machine 비교 400쌍 중 91쌍 미달. 가장 비슷한 쌍은 `machine-armored-t3`와 `human-runner-t4` (IoU 0.672).
-- stone 비교 400쌍 중 113쌍 미달. 가장 비슷한 쌍은 `stone-special-t4`와 `human-special-t1` (IoU 0.705).
-- elf 비교 400쌍 중 75쌍 미달. 가장 비슷한 쌍은 `elf-armored-t3`와 `human-infantry-t4` (IoU 0.710).
-- insect 비교 400쌍 중 81쌍 미달. 가장 비슷한 쌍은 `human-special-t2`와 `insect-special-t4` (IoU 0.697).
+- stone 비교 400쌍 중 112쌍 미달. 가장 비슷한 쌍은 `stone-special-t4`와 `human-special-t1` (IoU 0.705).
+- elf 비교 400쌍 중 78쌍 미달. 가장 비슷한 쌍은 `elf-infantry-t4`와 `human-infantry-t4` (IoU 0.708).
+- insect 비교 400쌍 중 84쌍 미달. 가장 비슷한 쌍은 `human-special-t2`와 `insect-special-t4` (IoU 0.697).
 
 ## 32px 재작화
 
@@ -43,3 +43,5 @@
 - `boss-t1/T1` 재작화·몸통/망토 배치 정렬 반영 · 조립 IoU 0.738
 - `boss-t4/T4` 재작화 반영 · 조립 IoU 0.749
 - `armored/T4` 단조 배율(`displayScale: 1.75`) 반영 · 조립 IoU 0.930
+- `boss-t1/T1` 종교 상징 제거(앰버 독수리 문장 교체) 재연결 · 조립 IoU 0.738 · 33자세 최소 접합 10px² · 지형 3.180배 / 길 1.830배
+- G4 최종 아틀라스 2001×332 · 410,058바이트 · SHA-256 `f00a349ddfc22f1e0f92c000cb162f89171e413ec7b13d0f7ace4bd82b30266d`

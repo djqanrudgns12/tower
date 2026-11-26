@@ -7,7 +7,7 @@
   "guide": "runner-quadruped.json",
   "placement": "placement.json",
   "ready": true,
-  "silhouetteIoU": 0.912,
+  "silhouetteIoU": 1.0,
   "parts": {
     "leg-hind-far": {
       "sourceBox": [
@@ -91,10 +91,10 @@
     },
     "head": {
       "sourceBox": [
-        624,
-        302,
-        856,
-        473
+        643,
+        298,
+        837,
+        478
       ],
       "targetBox": [
         138,
@@ -103,18 +103,18 @@
         178
       ],
       "placedBox": [
-        138,
+        145,
         120,
-        216,
-        177
+        208,
+        178
       ]
     },
     "body": {
       "sourceBox": [
-        336,
-        309,
-        568,
-        466
+        338,
+        317,
+        566,
+        458
       ],
       "targetBox": [
         58,
@@ -124,9 +124,9 @@
       ],
       "placedBox": [
         58,
-        94,
+        98,
         187,
-        181
+        178
       ]
     },
     "leg-hind-near": {
@@ -257,8 +257,20 @@
     ]
   },
   "issues": [],
+  "whiteKey": {
+    "applied": false,
+    "removedPixels": 0,
+    "sheet": {
+      "removedPixels": 0,
+      "fringePixels": 0
+    },
+    "assembly": {
+      "removedPixels": 0,
+      "fringePixels": 0
+    }
+  },
   "fitScores": [
-    0.912
+    1.0
   ],
   "accepted": true
 }
