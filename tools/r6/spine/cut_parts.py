@@ -14,6 +14,7 @@ from part_guides import CANVAS, PIXELS_PER_UNIT, ROOT, all_guides, guide_data, g
 from parts import suggest_pivot
 from pilot import write_json
 from rigs import layout
+from slot_plan import draw_plan
 
 
 MIN_AREA = 8
@@ -263,9 +264,14 @@ def assemble(pieces, guide, reference, placement, issues):
         bone = guide["slots"][name]["bone"]
         if name == bone and bone not in manual_pivots:
             pivots[bone] = suggest_pivot(layer, pivots[bone], 3 * PIXELS_PER_UNIT)
-    for name in guide["slots"]:
-        if name in layers and name != "shadow":
-            preview.alpha_composite(layers[name])
+    view = placement.get("view", {})
+    _, _, slots, _ = layout(guide["family"], {"variant": guide["variant"]})
+    if view.get("rearGear"):
+        valid_box(view["rearGear"], CANVAS)
+        layers["gear-rear"] = place(pieces["gear"][0][0].transpose(Image.Transpose.FLIP_LEFT_RIGHT), view["rearGear"])
+    for slot in draw_plan(slots, view):
+        if slot.part in layers and slot.part != "shadow":
+            preview.alpha_composite(layers[slot.part])
     pivots = {name: valid_point(point) for name, point in pivots.items()}
     a, b = [np.asarray(image.getchannel("A")) >= 128 for image in (preview, reference)]
     union = np.count_nonzero(a | b)
@@ -312,6 +318,8 @@ def cut(sheet, reference_path, guide_path, out, species, entry, skin, placement_
             issues.append({"code": "missing_slot", "slot": name, "blocking": True})
     layers, details, pivots, preview, iou = assemble(pieces, guide, reference, placement, issues)
     profile["pivots"] = pivots
+    if placement.get("view"):
+        profile["views"] = {skin: placement["view"]}
     ready = not any(issue.get("blocking") for issue in issues)
     with new_directory(out) as stage:
         silhouette = Image.new("RGBA", CANVAS, "#B8C0C8")

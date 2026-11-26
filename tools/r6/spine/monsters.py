@@ -14,7 +14,8 @@ from PIL import Image, ImageChops
 
 from parts import extract, load_part, suggest_pivot
 from pilot import SKINS, write_json
-from rigs import VARIANTS, layout, world_bones
+from rigs import VARIANTS, Slot, layout, world_bones
+from slot_plan import draw_plan
 
 
 SPECIES = ("elf", "human", "machine", "insect", "stone")
@@ -93,7 +94,18 @@ def load_skin(folder, slots, canvas):
 
 def compose_rig(source, textures, canvas, root, ppu, rig_id, family, entry, skins, profile):
     variant, bones, slots, animations, points = base_rig(family, profile, canvas, root, ppu)
-    layers = {skin: load_skin(source / entry / skin, slots_for_skin(slots, profile, skin), canvas) for skin in skins}
+    views = profile.get("views", {})
+    layers, plans = {}, {}
+    for skin in skins:
+        view = views.get(skin, {})
+        if set(view) - {"headFront", "gearBone", "rearGear"} or (
+                view.get("gearBone") is not None and view["gearBone"] not in bones):
+            raise ValueError(f"{rig_id}/{skin} · 부착 순서나 장비 뼈를 확인하세요.")
+        expected = slots_for_skin(slots, profile, skin)
+        if view.get("rearGear"):
+            expected = [*expected, Slot("gear-rear", "arm-hand-near")]
+        layers[skin] = load_skin(source / entry / skin, expected, canvas)
+        plans[skin] = draw_plan(slots, view)
     reference = layers[skins[0]]
     for slot in slots:
         if slot.name == slot.bone and slot.name in reference and slot.bone not in profile.get("pivots", {}):
@@ -108,24 +120,31 @@ def compose_rig(source, textures, canvas, root, ppu, rig_id, family, entry, skin
             x, y = points[name]
             bone.update(parent=parent, x=(x - px) / ppu, y=(py - y) / ppu)
         skeleton_bones.append(bone)
-    setup_slots = [{"name": slot.name, "bone": slot.bone, "attachment": slot.name} for slot in slots
-                   if any(slot.name in parts for parts in layers.values())]
+    # 스킨별 슬롯을 공용 순서에 삽입한다. 같은 개체에는 각 부품의 슬롯이 하나만 켜진다.
+    plan = draw_plan(slots, {"headFront": True, "rearGear": True})
+    plan.insert(next(i for i, slot in enumerate(plan) if slot.name == "armor"),
+                next(slot for slot in draw_plan(slots, {}) if slot.name == "head"))
+    alternates = {slot.name: slot for skin in skins for slot in plans[skin] if slot.name.startswith("gear-on-")}
+    plan[-1:-1] = alternates.values()
+    active = {slot.name for skin in skins for slot in plans[skin] if slot.part in layers[skin]}
+    setup_slots = [{"name": slot.name, "bone": slot.bone, "attachment": slot.part} for slot in plan
+                   if slot.name in active]
     skeleton_skins = []
     previews = {}
     for skin, parts in layers.items():
         attachments = {}
         preview = Image.new("RGBA", canvas)
-        for slot in slots:
-            part = parts.get(slot.name)
+        for slot in plans[skin]:
+            part = parts.get(slot.part)
             if part is None:
                 continue
-            if slot.name != "shadow":
+            if slot.part != "shadow":
                 preview.alpha_composite(part)
             left, top, right, bottom = part.getbbox()
-            path = f"{rig_id}-{skin.lower()}-{slot.name}"
+            path = f"{rig_id}-{skin.lower()}-{slot.part}"
             part.crop((left, top, right, bottom)).save(textures / f"{path}.png")
             px, py = points[slot.bone]
-            attachments[slot.name] = {slot.name: {
+            attachments[slot.name] = {slot.part: {
                 "path": path, "x": ((left + right) / 2 - px) / ppu, "y": (py - (top + bottom) / 2) / ppu,
                 "width": right - left, "height": bottom - top, "scaleX": 1 / ppu, "scaleY": 1 / ppu,
             }}
@@ -154,7 +173,7 @@ def prepare(source, out, actor=None, *, available=None):
             family = "boss" if entry.startswith("boss-") else entry
             rig_id = f"{species}-{entry}"
             profile = profiles.get(entry, {})
-            if not isinstance(profile, dict) or set(profile) - {"variant", "proportions", "pivots", "scale", "armlessSkins"}:
+            if not isinstance(profile, dict) or set(profile) - {"variant", "proportions", "pivots", "scale", "armlessSkins", "views"}:
                 raise ValueError(f"{entry} · 틀, 비례, 피벗 또는 표시 배율을 확인하세요.")
             armless = profile.get("armlessSkins", [])
             if (not isinstance(armless, list) or any(skin not in ACTORS[entry] for skin in armless)

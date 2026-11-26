@@ -74,7 +74,7 @@ def actor_inputs(folder, placement):
     return cache / sheet.name, cache / assembly.name, stats
 
 
-def process_actor(folder, canonical, first_targets):
+def process_actor(folder, canonical, first_targets, *, publish_review=True):
     meta = read_json(folder / "parts.json")
     species, entry, skin = folder.relative_to(SOURCE).parts
     if (species, entry, skin) != tuple(meta[k] for k in ("species", "entry", "skin")):
@@ -88,7 +88,7 @@ def process_actor(folder, canonical, first_targets):
     placement.update(scale=meta["scale"], armless=meta.get("armless", False))
     clean_sheet, clean_assembly, white_key = actor_inputs(folder, placement)
     inputs = digest(folder / "parts.json", sheet, assembly, guide, canonical, HERE / "fit_parts.py",
-                    HERE / "cut_parts.py", HERE / "part_guides.py", HERE / "parts.py")
+                    HERE / "cut_parts.py", HERE / "part_guides.py", HERE / "parts.py", HERE / "slot_plan.py")
     if white_key:
         inputs = digest(inputs, clean_sheet.parent.name)
     config = {k: v for k, v in placement.items() if k not in ("fitKey", "fitScores", "artReview", "whiteMark")}
@@ -99,7 +99,9 @@ def process_actor(folder, canonical, first_targets):
         if not any(i.get("blocking") for i in issues) and set(pieces) == set(meta["slots"]):
             orient_parts(pieces, placement.get("rotations", {}))
             reference = normalize_reference(open_rgba(clean_assembly), {})
-            if white_key and placement.get("targets"):
+            if set(placement.get("fixedTargets", ())) == pieces.keys() and placement.get("pivots"):
+                placement["fitScores"] = [assemble(pieces, template, reference, placement, [])[-1]]
+            elif white_key and placement.get("targets"):
                 # 배경만 달라지면 기존 좌표를 먼저 평가한다. T1의 회전축도 유지한다.
                 prior_iou = assemble(pieces, template, reference, placement, [])[-1]
                 if prior_iou >= .70:
@@ -123,7 +125,7 @@ def process_actor(folder, canonical, first_targets):
     report = read_json(work / "report.json")
     if white_key:
         report["whiteKey"] = white_key
-        if white_key["applied"]:
+        if white_key["applied"] and publish_review:
             publish(REVIEW / "white-key" / (actor_id(meta) + ".webp"), (clean_sheet.parent / "review.webp").read_bytes())
     missing = set(report["parts"]) ^ set(meta["slots"])
     if missing:
@@ -179,7 +181,7 @@ def pack_species(species, items, *, sync_source=True):
         return None
     # 변경된 개체만 절단·정렬하고, 아틀라스는 달라진 종족만 다시 묶는다.
     key = digest([(m, r, w.name) for m, r, w in accepted],
-                 *(HERE / f for f in ("monsters.py", "rigs.py", "pilot.py", "check-runtime.mjs")))
+                 *(HERE / f for f in ("monsters.py", "rigs.py", "pilot.py", "slot_plan.py", "check-runtime.mjs")))
     if species == "insect":
         key = digest(key, HERE / "swarm.py")
     cache = CACHE / species / "packs" / key
@@ -195,6 +197,8 @@ def pack_species(species, items, *, sync_source=True):
                                                        "pivots": report["pivots"], "armlessSkins": []})
                 if config["rigs"][entry]["variant"] != profile["variant"] or profile["pivots"] != report["pivots"]:
                     raise ValueError(f"{species}/{entry}/{skin} · T1 관절이나 보행 틀이 다릅니다.")
+                if view := config["rigs"][entry].get("views", {}).get(skin):
+                    profile.setdefault("views", {})[skin] = view
                 if meta.get("armless"):
                     profile["armlessSkins"].append(skin)
                 available.setdefault(entry, []).append(skin)
@@ -314,7 +318,11 @@ def main():
     parser.add_argument("--actor", nargs=3, metavar=("SPECIES", "ENTRY", "SKIN"), action="append",
                         help="지정한 개체만 다시 조립하고 나머지는 이전 검수 결과를 사용한다.")
     parser.add_argument("--runtime-only", action="store_true", help="원화 폴더의 종족 편집 명세는 제작자가 관리한다.")
+    parser.add_argument("--skip-shared-review", action="store_true",
+                        help="개체·게임 묶음·게시 기록을 갱신하고 공용 문서와 비교판은 보존한다.")
     args = parser.parse_args()
+    if args.skip_shared_review and not args.actor:
+        parser.error("--skip-shared-review는 --actor와 함께 사용하세요.")
     actors = {tuple(actor) for actor in args.actor or []}
     for species, entry, skin in actors:
         if species not in args.species or skin not in ACTORS.get(entry, ()):
@@ -339,10 +347,12 @@ def main():
                 if row["species"] != species:
                     continue
                 rows.append(row)
-                images.setdefault(species, {})[actor_id(row)] = published_work(row) / "assembly-preview.webp"
+                if not args.skip_shared_review:
+                    images.setdefault(species, {})[actor_id(row)] = published_work(row) / "assembly-preview.webp"
             continue
         items, redo = [], []
         species_images = {}
+        catalog = read_json(CATALOG / f"{species}.json") if args.skip_shared_review else {}
         for entry, skins in ACTORS.items():
             canonical, first_targets = {}, {}
             for skin in skins:
@@ -352,9 +362,15 @@ def main():
                 if actors and key not in actors:
                     if not old:
                         continue
-                    meta = read_json(folder / "parts.json")
                     report = read_json(folder / "report.json")
                     work = published_work(old)
+                    if args.skip_shared_review:
+                        # 유지할 스킨의 배율과 팔 사용 여부를 게시된 자료에서 가져온다.
+                        source_profile = read_json(work / "species.json")["rigs"][entry]
+                        meta = {**old, "scale": catalog["entities"][actor_id(old)]["scale"],
+                                "armless": skin in source_profile.get("armlessSkins", ())}
+                    else:
+                        meta = read_json(folder / "parts.json")
                 else:
                     if not all((folder / f).is_file() for f in ("sheet.png", "assembly.png", "parts.json")):
                         if key in actors:
@@ -363,7 +379,9 @@ def main():
                     if skin != skins[0] and not canonical:
                         print(f"{species}/{entry}/{skin} · T1 관절이 준비되면 처리합니다.")
                         continue
-                    meta, report, work = process_actor(folder, canonical, first_targets)
+                    meta, report, work = process_actor(folder, canonical, first_targets, publish_review=not args.skip_shared_review)
+                if args.skip_shared_review and old and old["accepted"] and not report["accepted"]:
+                    raise ValueError(f"{folder} · 이전 승인 스킨을 제외할 수 없습니다. {report['redo']}")
                 if not canonical:
                     canonical = report["pivots"]
                     first_targets = {k: v["targetBox"] for k, v in report["parts"].items()}
@@ -382,6 +400,12 @@ def main():
         else:
             save(CATALOG / f"{species}.json", {"atlas": f"monsters/{species}/{species}.atlas", "entities": {}, "rigs": {}})
         redos[species] = redo
+    if args.skip_shared_review:
+        # 게시 시험이 실제 WebP와 비교하는 종족별 SHA-256도 함께 갱신한다.
+        save(REVIEW / "batch.json", {**previous, "actors": rows, "atlases": atlases,
+             "assemblyPassed": sum(row["iou"] >= .70 for row in rows),
+             "publishedActors": sum(row["accepted"] for row in rows)})
+        return
     comparisons = None
     if images:
         review_images(images, REVIEW)

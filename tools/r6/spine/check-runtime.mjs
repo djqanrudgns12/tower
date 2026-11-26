@@ -79,7 +79,7 @@ for (const [id, actor] of Object.entries(manifest.species[species].entities)) {
     const name = slot.data.name;
     const region = slot.pose.attachment;
     if (!region) continue;
-    const input = expected[name][name];
+    const input = expected[name][slot.data.attachmentName];
     assert.equal(region.path, input.path, `${id}/${name} 아틀라스 연결 불일치`);
     const before = [input.x, input.y, input.width * input.scaleX, input.height * input.scaleY];
     const after = [region.x, region.y, region.width * region.scaleX, region.height * region.scaleY];

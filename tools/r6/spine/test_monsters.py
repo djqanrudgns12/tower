@@ -16,6 +16,7 @@ from part_guides import CANVAS, SHEET, guide_data
 from parts import extract, suggest_pivot
 from pilot import write_json
 from review import ground_contrast, review, review_images, silhouette
+from rig_audit import MIN_JOINT_PIXELS, hinge_pixels, measure, overlap_pixels, rasterize
 from rigs import VARIANTS, layout
 from sample import generate
 from swarm import animate_swarm
@@ -192,6 +193,50 @@ class MonsterPipelineTest(unittest.TestCase):
             self.assertNotIn("gear", rig["skins"][0]["attachments"])
             self.assertIn("gear", rig["skins"][1]["attachments"])
             self.assertIsNotNone(preview["T1"].getbbox())
+
+    def test_skin_slot_plan_keeps_other_skins_and_mounts_gear_on_the_far_hand(self):
+        with TemporaryDirectory() as tmp:
+            out = Path(tmp)
+            generate(FIXTURE, out / "source")
+            textures = out / "parts"
+            textures.mkdir()
+            config = read_json(FIXTURE)
+            profile = {"views": {"T2": {"headFront": True, "gearBone": "arm-hand-far"}}}
+            rig, _, _ = compose_rig(out / "source", textures, tuple(config["canvas"]), config["root"],
+                                    config["pixelsPerUnit"], "qa", "infantry", "infantry", ACTORS["infantry"], profile)
+            skins = {skin["name"]: skin["attachments"] for skin in rig["skins"]}
+            slots = {slot["name"]: slot["bone"] for slot in rig["slots"]}
+            self.assertLess(list(slots).index("head"), list(slots).index("head-front"))
+            self.assertIn("head", skins["T1"])
+            self.assertNotIn("head-front", skins["T1"])
+            self.assertNotIn("head", skins["T2"])
+            self.assertIn("head", skins["T2"]["head-front"])
+            self.assertEqual(slots["gear-on-arm-hand-far"], "arm-hand-far")
+            self.assertEqual(skins["T2"]["gear-on-arm-hand-far"]["gear"]["path"], "qa-t2-gear")
+            self.assertNotIn("gear", skins["T2"])
+
+    def test_joint_raster_counts_only_solid_pixels_around_the_pivot(self):
+        image = Image.new("L", (5, 3), 255)
+        image.putpixel((0, 0), 127)
+        first = rasterize(image, [[0, 0], [5/3, 0], [0, -1]])
+        second = rasterize(image, [[1, 0], [8/3, 0], [1, -1]])
+        self.assertEqual(overlap_pixels(first, second), MIN_JOINT_PIXELS - 1)
+        self.assertEqual(hinge_pixels(first, second, [1, -.5]), MIN_JOINT_PIXELS - 1)
+        self.assertEqual(hinge_pixels(first, second, [20, 0]), 0)
+
+    def test_joint_audit_records_the_worst_pose_in_consecutive_clips(self):
+        image = Image.new("RGBA", (12, 5), (0, 0, 0, 255))
+        def pose(clip, offset):
+            return {"clip": clip, "phase": .5, "pivots": {"arm-near": [1, 0]}, "slots": {
+                "body": {"box": [0, 0, 6, 5], "vertices": [[0, 0], [2, 0], [0, -5/3]]},
+                "arm-near": {"box": [6, 0, 12, 5],
+                             "vertices": [[offset, 0], [offset + 2, 0], [offset, -5/3]]},
+            }}
+        actor = {"slots": {"body": "body", "arm-near": "arm-near"}, "parents": {"body": "root", "arm-near": "body"},
+                 "poses": [pose("walk", 1)] * 13 + [pose("hit", 2)] * 10 + [pose("fall", 1)] * 10}
+        report = measure(actor, image)
+        self.assertEqual(report["poses"], 33)
+        self.assertEqual(report["joints"]["arm-near"], {"parent": "body", "pixels": 0, "pose": ["hit", .5]})
 
     def test_prepare_rejects_missing_required_part_without_partial_output(self):
         with TemporaryDirectory() as tmp:
