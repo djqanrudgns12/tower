@@ -42,4 +42,6 @@
 ## G4 비평 검수 재작화 (`docs/renewal/r6/review/G4-monsters-critique.md` 11항)
 
 - `boss-t1/T1` (비평 11항): 빈약한 왕관 인간형 벌을 폐기하고 설정표 원안의 횡폭이 넓은 비행형 거대 장갑 여왕말벌(4매 무광 날개 `armor`·앰버 줄무늬 대형 복부 `body`·큰턱/틸 겹눈 `head`·톱니 낫 앞다리·이족 13슬롯)로 재작화 (`cut_parts` `issues=0` · 13/13 슬롯, 모의 `fit_parts` IoU `0.729`, 32px 보스-일반 최대 IoU `0.483`, 지형/길 대비 `1.787/1.665`, 흰색·마젠타 잔여 `0/0`).
+- `special/T1` (2차 비평 1순위): 납작 저대비 원반을 체고 높은 아치형 등갑·굵은 앰버 줄무늬·틸 수정 보석·큰 틸 겹눈으로 재작화 (`cut_parts` `issues=0` · 5/5 슬롯, 모의 `fit_parts` IoU `0.752`, 32px 지형/길 대비 `1.832/1.563`, 흰색·마젠타 잔여 `0/0`).
+- `infantry/T4` (2차 비평 선택): `head` 슬롯을 밝은 3단 각면 명암·큰 틸 겹눈·앰버 능선으로 보강하여 어두운 구멍 인상 해소 (`cut_parts` `issues=0` · 11/11 슬롯, 모의 `fit_parts` IoU `0.868`, 32px 지형/길 대비 `1.546/1.387`, 흰색·마젠타 잔여 `0/0`).
 - `docs/renewal/r6/bible/sheets/monsters-insect-parts-all.webp` 갱신 완료.
