@@ -32,3 +32,10 @@
 
 - `special/T2~T4/sheet.png`, `assembly.png`: T1 `crystal-far/near` 관절 기준 및 시트 파츠 비율에 맞춰 조립 정합 보정 (`issues=0`, 모의 `fit_parts` IoU 0.870~0.895).
 - `boss-t2/T2`, `boss-t3/T3/sheet.png`, `assembly.png`: 시트 파츠 비율·관절 자세에 맞춰 조립 정합 보정 (`issues=0`, 모의 `fit_parts` IoU 0.850~0.855).
+
+## G4 비평 검수 재작화 (`docs/renewal/r6/review/G4-monsters-critique.md` 4·8·9항)
+
+- `boss-t1/T1` (비평 4항): 등 위 바위 아치·틸 수정 조각·초대형 비대칭 공성 망치를 갖춘 웅크린 보스 전용 실루엣으로 재작화 (`cut_parts` `issues=0` · 11/11 슬롯, 모의 `fit_parts` IoU `0.731`, 32px 보스-일반 최대 IoU `0.647`, 지형/길 대비 `1.590/1.531`, 흰색·마젠타 잔여 `0/0`).
+- `boss-t3/T3` (비평 8항): 쌍둥이 용암 굴뚝·분화구 어깨·비대칭 지면 충격 팔을 갖춘 화산 거신으로 재작화 (`cut_parts` `issues=0` · 10/10 슬롯, 모의 `fit_parts` IoU `0.763`, 32px 보스-일반 최대 IoU `0.683`, 지형/길 대비 `1.767/1.467`, 흰색·마젠타 잔여 `0/0`).
+- `special/T4` (비평 9항): 다단 육각 현무암 제단·부유 암석 고리·대형 틸 수정탑·좌우 위성 수정 다발로 T3를 상회하는 최종형으로 재작화 (`cut_parts` `issues=0` · 3/3 슬롯, T1 관절 기준 모의 `fit_parts` IoU `0.804`, 지형/길 대비 `2.068/1.462`, 흰색·마젠타 잔여 `0/0`).
+- `docs/renewal/r6/bible/sheets/monsters-stone-parts-all.webp` 갱신 완료.
