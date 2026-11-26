@@ -2,7 +2,7 @@ import Phaser from 'phaser';
 import type { SpineGameObject } from '@esotericsoftware/spine-phaser-v4';
 import type { R6BattleAssets } from '../r6/BattleAssets';
 import { R6_COLORS } from '../r6/manifest';
-import { isR6VisualFlyer, r6EnemyScale, r6VisualFlyerLiftCells } from '../r6/enemyDisplay';
+import { attachR6SilhouetteOutline, isR6VisualFlyer, r6EnemyScale, r6VisualFlyerLiftCells } from '../r6/enemyDisplay';
 import { R6_HIT_MS } from '../r6/vfxTiming';
 import { positionAt } from '../../domain/geometry';
 import { enemyArtId } from '../../domain/factions';
@@ -322,6 +322,7 @@ export class EnemyLayer {
       if (!data.findSkin(art.skin) || !data.findAnimation(art.rig.walk)) return;
       object = scene.add.spine(0, 0, art.data, art.atlas, { renderer: 'phaser' }).setName(`r6:enemy:${enemy.id}`);
       object.removeFromUpdateList();
+      if (this.c.projected) attachR6SilhouetteOutline(object, scene, () => bridge.controller.renderQuality.current);
       object.skeleton.setSkin(art.skin);
       object.skeleton.setupPoseSlots();
       const boundsKey = art.data + ':' + art.skin;
@@ -368,12 +369,11 @@ export class EnemyLayer {
     this.ground.fillStyle(PALETTE.outline, 0.3 * k + 0.05).fillEllipse(x, footY, w, h);
   }
 
-  /** 지상 R6 적의 발밑 접지 그림자: 어두운 길·지형과의 경계를 분명히 한다. */
+  /** 지상 R6 적의 발밑 접지 그림자: 발 크기에 맞춰 작고 옅게 깔아 번잡함을 덜어 낸다. */
   private groundShadow(x: number, footY: number, cells: number, boss: boolean) {
-    const w = CELL_PX * Math.min(boss ? 1.15 : 0.78, cells * 0.62);
-    const h = CELL_PX * (boss ? 0.22 : 0.16);
-    this.ground.fillStyle(R6_COLORS.carbon, 0.4).fillEllipse(x, footY, w, h);
-    this.ground.lineStyle(1, R6_COLORS.carbon, 0.58).strokeEllipse(x, footY, w, h);
+    const w = CELL_PX * Math.min(boss ? 0.74 : 0.44, cells * 0.36);
+    const h = CELL_PX * (boss ? 0.14 : 0.09);
+    this.ground.fillStyle(R6_COLORS.carbon, 0.24).fillEllipse(x, footY, w, h);
   }
 
   /** 대장이 지금 하는 일(상태로 읽는다): 북소리 원, 방패 고리, 돌진 먼지 줄(땅), 겹방패 점(머리 위). */

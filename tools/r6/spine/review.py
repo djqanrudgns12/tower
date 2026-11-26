@@ -8,6 +8,13 @@ from statistics import median
 
 from PIL import Image, ImageChops, ImageCms, ImageColor, ImageDraw, ImageOps
 
+from contrast import (
+    INTERIOR_DELTA_E_LIMIT,
+    OUTLINE_EFFECTIVE_ALPHA,
+    OUTLINE_HEX,
+    apply_outer_outline,
+    interior_color_delta_e,
+)
 from monsters import FAMILIES, read_json
 from pilot import write_json
 
@@ -106,8 +113,8 @@ def review(packs, out):
 
 
 def review_images(images, out):
-    masks, icons, species_ids, evolution, cross = {}, {}, {}, [], []
-    boss_pairs, contrast = {}, {}
+    masks, icons, outlined_icons, species_ids, evolution, cross = {}, {}, {}, {}, [], []
+    boss_pairs, contrast, raw_contrast, interior_delta_e = {}, {}, {}, {}
     for species, paths in images.items():
         ids = tuple(paths)
         species_ids[species] = ids
@@ -117,7 +124,13 @@ def review_images(images, out):
             masks[actor] = silhouette(icons[actor])
             if not masks[actor].getbbox():
                 raise ValueError(f"{actor} · 32px 실루엣에 보이는 화소가 없습니다.")
-            contrast[actor] = ground_contrast(icons[actor], masks[actor])
+            raw_contrast[actor] = ground_contrast(icons[actor], masks[actor])
+            padded_raw = Image.new("RGBA", (SIZE + 2, SIZE + 2))
+            padded_raw.paste(icons[actor], (1, 1))
+            outlined = apply_outer_outline(icons[actor], pad=1)
+            outlined_icons[actor] = outlined
+            contrast[actor] = ground_contrast(outlined, silhouette(outlined))
+            interior_delta_e[actor] = round(interior_color_delta_e(padded_raw, outlined), 3)
         bosses = [actor for actor in ids if actor.startswith(f"{species}-boss-")]
         regulars = [actor for actor in ids if actor not in bosses]
         pairs = [overlap(boss, regular, masks, BOSS_LIMIT) for boss, regular in product(bosses, regulars)]
@@ -148,7 +161,7 @@ def review_images(images, out):
             y = 23 + row * 45
             x = 59 + col * 44
             draw.rectangle((x, y, x + 35, y + 35), fill=BACKGROUNDS["path"], outline="#12161B")
-            sheet.paste(icons[actor], (x + 2, y + 2), icons[actor])
+            sheet.paste(outlined_icons[actor], (x + 1, y + 1), outlined_icons[actor])
         sheet.save(out / f"{species}-32px.webp", lossless=True)
     failures = sum(not pair["pass"] for pair in evolution) + sum(len(group["failures"]) for group in cross)
     boss_failures = sum(not pair["pass"] for pairs in boss_pairs.values() for pair in pairs)
@@ -170,7 +183,14 @@ def review_images(images, out):
         "evolutionLimit": EVOLUTION_LIMIT, "speciesLimit": SPECIES_LIMIT, "evolution": evolution,
         "crossSpecies": cross, "failures": failures,
         "bossLimit": BOSS_LIMIT, "bossVsRegular": boss_pairs, "bossPairFailures": boss_failures,
-        "contrastLimit": CONTRAST_LIMIT, "contrastBackgrounds": BACKGROUNDS, "groundContrast": contrast,
+        "contrastLimit": CONTRAST_LIMIT, "contrastBackgrounds": BACKGROUNDS,
+        "groundContrast": contrast, "groundContrastRaw": raw_contrast,
+        "outlineSpec": {"color": OUTLINE_HEX, "widthPx": 1, "effectiveAlpha": OUTLINE_EFFECTIVE_ALPHA, "neighbors": 8},
+        "interiorColorDeltaE": {
+            "limit": INTERIOR_DELTA_E_LIMIT,
+            "max": round(max(interior_delta_e.values(), default=0.0), 3),
+            "actors": interior_delta_e,
+        },
         "crossSpeciesColor": {"size": SIZE, "background": BACKGROUNDS["path"], "deltaELimit": COLOR_LIMIT,
                               "method": "mean-CIE76-on-shared-alpha128", **color_groups},
     })

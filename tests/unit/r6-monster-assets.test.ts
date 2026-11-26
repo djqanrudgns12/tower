@@ -4,10 +4,11 @@ import { AtlasAttachmentLoader, MixFrom, Physics, Skeleton, SkeletonJson, Textur
 import type Phaser from 'phaser';
 import { expect, it, vi } from 'vitest';
 import batch from '../../docs/renewal/r6/tech/monsters/batch.json';
+import silhouettes from '../../docs/renewal/r6/tech/monsters/silhouettes.json';
 import { ENTITY_IDS, SPECIES } from '../../src/contracts/balanceV2';
 import manifest from '../../public/assets/r6/manifest-v2.json';
 import { R6BattleAssets } from '../../src/game/r6/BattleAssets';
-import { isR6VisualFlyer, r6EnemyScale, r6VisualFlyerLiftCells } from '../../src/game/r6/enemyDisplay';
+import { isR6VisualFlyer, r6EnemyScale, r6OutlineStepPx, r6VisualFlyerLiftCells } from '../../src/game/r6/enemyDisplay';
 import { r6ManifestSchema } from '../../src/game/r6/manifest';
 import { enemy } from './review-core/fixtures';
 
@@ -154,4 +155,24 @@ it('R6 비행 개체는 시각적 비행 여부와 고도를 일관되게 판정
   expect(r6VisualFlyerLiftCells('insect-runner-t4', false, false)).toBe(0.20);
   expect(r6VisualFlyerLiftCells('elf-special-t1', true, true)).toBe(0);
   expect(r6VisualFlyerLiftCells('human-infantry-t1', false, false)).toBe(0);
+});
+
+it('바깥 1px 테두리 적용 후 모든 개체의 내부 평균 색은 원본 대비 CIELAB ΔE76 3 이하다', () => {
+  expect(silhouettes.outlineSpec).toEqual({
+    color: '#B8C0C8',
+    widthPx: 1,
+    effectiveAlpha: 0.58,
+    neighbors: 8,
+  });
+  expect(silhouettes.interiorColorDeltaE.limit).toBeLessThanOrEqual(3);
+  expect(silhouettes.interiorColorDeltaE.max).toBeLessThanOrEqual(3);
+  const actors = silhouettes.interiorColorDeltaE.actors as Record<string, number>;
+  for (const id of ENTITY_IDS) {
+    expect(actors[id], id).toBeTypeOf('number');
+    expect(actors[id]!, id).toBeLessThanOrEqual(3);
+  }
+  expect(r6OutlineStepPx(1, 1)).toBe(1);
+  expect(r6OutlineStepPx(0.8, 1)).toBeCloseTo(1.25, 4);
+  expect(r6OutlineStepPx(0.2, 1)).toBe(2.2);
+  expect(r6OutlineStepPx(4, 1)).toBe(0.5);
 });

@@ -4,7 +4,7 @@ type: hub
 title: 배포·보존 잠금·검증 예산 운영
 status: active
 updated: 2026-11-25
-verified: { commit: "7d3ef54a", date: 2026-11-25 }
+verified: { commit: b231561f, date: 2026-11-26 }
 sources:
   - path: AGENTS.md
     sha256: f22902d65d0a4e1a65acb94dcd3e46101332e9685f9ef2fb7d6213198e7d9534

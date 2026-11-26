@@ -4,7 +4,7 @@ type: lessons
 title: UI·아트·밸런스 교훈 원장
 status: active
 updated: 2026-11-16
-verified: { commit: a402d63f, date: 2026-11-24 }
+verified: { commit: b231561f, date: 2026-11-26 }
 sources:
   - path: AGENTS.md
     sha256: f22902d65d0a4e1a65acb94dcd3e46101332e9685f9ef2fb7d6213198e7d9534

@@ -190,7 +190,7 @@ def pack_species(species, items, *, sync_source=True):
         return None
     # 변경된 개체만 절단·정렬하고, 아틀라스는 달라진 종족만 다시 묶는다.
     key = digest([(m, r, w.name) for m, r, w in accepted],
-                 *(HERE / f for f in ("monsters.py", "rigs.py", "pilot.py", "slot_plan.py", "contrast.py", "check-runtime.mjs")))
+                 *(HERE / f for f in ("monsters.py", "rigs.py", "pilot.py", "slot_plan.py", "check-runtime.mjs")))
     if species == "insect":
         key = digest(key, HERE / "swarm.py")
     cache = CACHE / species / "packs" / key
@@ -410,9 +410,6 @@ def main():
         pack = pack_species(species, items, sync_source=not args.runtime_only)
         if pack:
             atlases[species] = read_json(pack / "export/atlas-report.json")
-            for meta, _, _ in items:
-                if (pack / "silhouettes" / f"{actor_id(meta)}.png").is_file():
-                    species_images[actor_id(meta)] = pack / "silhouettes" / f"{actor_id(meta)}.png"
         else:
             save(CATALOG / f"{species}.json", {"atlas": f"monsters/{species}/{species}.atlas", "entities": {}, "rigs": {}})
         redos[species] = redo

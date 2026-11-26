@@ -9,7 +9,7 @@ import unittest
 from PIL import Image, ImageDraw
 
 from batch import resolve_display_scale, white_patches
-from contrast import enhance_skin_layers, outer_rim_mask
+from contrast import INTERIOR_DELTA_E_LIMIT, OUTLINE_EFFECTIVE_ALPHA, OUTLINE_RGB, apply_outer_outline, interior_color_delta_e
 from cut_parts import cut, orient_parts
 from fit_parts import fit
 from monsters import ACTORS, compose_rig, prepare, read_json
@@ -303,31 +303,31 @@ class MonsterPipelineTest(unittest.TestCase):
         with self.assertRaises(ValueError):
             resolve_display_scale(meta, {"displayScale": 0})
 
-    def test_contrast_preserves_alpha_outlines_and_avoids_internal_seams(self):
+    def test_outer_outline_preserves_interior_colors_and_avoids_internal_seams(self):
         body = Image.new("RGBA", (32, 32))
         arm = Image.new("RGBA", (32, 32))
-        ImageDraw.Draw(body).rectangle((6, 6, 22, 22), fill=(52, 60, 72, 255))
+        ImageDraw.Draw(body).rectangle((6, 6, 22, 22), fill=(70, 80, 94, 255))
         ImageDraw.Draw(body).rectangle((6, 6, 22, 22), outline=(18, 22, 27, 255))
-        ImageDraw.Draw(arm).rectangle((14, 10, 26, 20), fill=(52, 60, 72, 255))
+        ImageDraw.Draw(arm).rectangle((14, 10, 26, 20), fill=(72, 78, 88, 255))
         ImageDraw.Draw(arm).rectangle((14, 10, 26, 20), outline=(18, 22, 27, 255))
-        shadow = Image.new("RGBA", (32, 32), (18, 22, 27, 128))
-        enhanced = enhance_skin_layers({"body": body, "arm": arm, "shadow": shadow}, "machine")
-        self.assertEqual(enhanced["shadow"].tobytes(), shadow.tobytes())
-        self.assertEqual(enhanced["body"].getchannel("A").tobytes(), body.getchannel("A").tobytes())
-        self.assertEqual(enhanced["arm"].getchannel("A").tobytes(), arm.getchannel("A").tobytes())
-        # 외곽 1px 카본 선 보존 및 흰 패치 없음 확인
-        self.assertEqual(enhanced["body"].getpixel((6, 6))[:3], (18, 22, 27))
-        self.assertEqual(white_patches(enhanced["body"]), [])
-        # 내부 이음매 (15, 14)에는 outer_rim_mask가 켜지지 않는다.
-        import numpy as np
-        union = (np.asarray(body.getchannel("A")) >= 128) | (np.asarray(arm.getchannel("A")) >= 128)
-        rim = outer_rim_mask(union)
-        self.assertFalse(bool(rim[14, 15]))
-        # 어두운 바닥 대비가 상승한다.
-        before = ground_contrast(body, silhouette(body))
-        after = ground_contrast(enhanced["body"], silhouette(enhanced["body"]))
-        self.assertGreater(after["terrain"]["median"], before["terrain"]["median"])
-        self.assertGreater(after["path"]["median"], before["path"]["median"])
+        composed = Image.alpha_composite(body, arm)
+        padded = Image.new("RGBA", (34, 34))
+        padded.paste(composed, (1, 1))
+        outlined = apply_outer_outline(composed, pad=1)
+        # 불투명 내부 화소 및 부위 이음매(15+1, 14+1)의 RGB는 원본과 완전히 같고 ΔE76은 3 이하(실측 0)다.
+        self.assertEqual(outlined.getpixel((16, 15)), padded.getpixel((16, 15)))
+        self.assertEqual(outlined.getpixel((8, 8)), padded.getpixel((8, 8)))
+        self.assertLessEqual(interior_color_delta_e(padded, outlined), INTERIOR_DELTA_E_LIMIT)
+        self.assertEqual(white_patches(outlined), [])
+        # 실루엣 바깥 1px에는 R04 은회 저불투명도 테두리가 생기고 2px 바깥은 투명하다.
+        expected_alpha = round(255 * OUTLINE_EFFECTIVE_ALPHA)
+        self.assertEqual(outlined.getpixel((6, 6)), (*OUTLINE_RGB, expected_alpha))
+        self.assertEqual(outlined.getpixel((5, 5))[3], 0)
+        # 어두운 개체의 저대비 화소 비율이 줄고 바닥 대비가 개선된다.
+        before = ground_contrast(composed, silhouette(composed))
+        after = ground_contrast(outlined, silhouette(outlined))
+        self.assertLess(after["path"]["lowShare"], before["path"]["lowShare"])
+        self.assertLessEqual(after["terrain"]["lowShare"], before["terrain"]["lowShare"])
 
 
 if __name__ == "__main__":

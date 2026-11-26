@@ -1,3 +1,9 @@
+import type Phaser from 'phaser';
+import type { SpineGameObject } from '@esotericsoftware/spine-phaser-v4';
+import { R6_COLORS } from './manifest';
+
+const TINT_MODE_FILL = 1 as Phaser.TintModes;
+
 /** 캐릭터가 큰 구간의 배율만 눌러 단계별 크기 차이를 남긴다. */
 export function r6EnemyScale(scale: number, setupHeight: number, boss: boolean): number {
   const height = scale * setupHeight;
@@ -29,4 +35,151 @@ export function r6VisualFlyerLiftCells(entityId: string | undefined, flying: boo
     }
   }
   return flying ? 0.25 : 0;
+}
+
+export const R6_OUTLINE_COLOR = R6_COLORS.silver;
+export const R6_OUTLINE_PASS_ALPHA = 0.25;
+export const R6_OUTLINE_CARDINAL_ALPHA = 0.45;
+
+const DIAG = Math.SQRT1_2;
+const R6_OUTLINE_OFFSETS_8: ReadonlyArray<readonly [number, number]> = [
+  [-1, 0], [1, 0], [0, -1], [0, 1],
+  [-DIAG, -DIAG], [DIAG, -DIAG], [-DIAG, DIAG], [DIAG, DIAG],
+];
+const R6_OUTLINE_OFFSETS_4: ReadonlyArray<readonly [number, number]> = [
+  [-1, 0], [1, 0], [0, -1], [0, 1],
+];
+
+/** 화면 1 CSS px에 대응하는 월드 좌표 보폭을 계산한다. */
+export function r6OutlineStepPx(cameraZoom: number, scaleZoom: number): number {
+  return Math.min(2.2, Math.max(0.5, 1 / Math.max(0.01, cameraZoom * scaleZoom)));
+}
+
+type TintedMesh2D = Phaser.GameObjects.Mesh2D & Phaser.GameObjects.Components.Tint & {
+  tint2: number;
+  setTint2(value: number): TintedMesh2D;
+};
+
+interface CapturedSlotMesh {
+  mesh: TintedMesh2D;
+  x: number;
+  y: number;
+  tint: number;
+  tint2: number;
+  tintMode: number;
+  alpha: number;
+}
+
+interface SpineMeshBackend {
+  type: string;
+  renderMesh: (
+    renderer: Phaser.Renderer.WebGL.WebGLRenderer,
+    mesh: TintedMesh2D,
+    baseContext: Phaser.Renderer.WebGL.DrawingContext,
+    currentContext: Phaser.Renderer.WebGL.DrawingContext,
+    parentMatrix?: Phaser.GameObjects.Components.TransformMatrix,
+  ) => Phaser.Renderer.WebGL.DrawingContext;
+}
+
+const capturedMeshes: CapturedSlotMesh[] = [];
+let capturingOutline = false;
+
+/**
+ * Spine 개체의 뒤쪽 실루엣을 R04 은회(`#B8C0C8`) FILL 모드로 1px 바깥에만 그려
+ * 내부 이음매와 원본 색을 건드리지 않고 바닥 대비를 보강한다.
+ */
+export function attachR6SilhouetteOutline(
+  object: SpineGameObject,
+  scene: Phaser.Scene,
+  getQuality: () => number,
+): void {
+  const baseRender = object.renderWebGL;
+  object.renderWebGL = function renderWithOuterOutline(
+    renderer,
+    src,
+    drawingContext,
+    parentMatrix,
+    renderStep,
+    displayList,
+    displayListIndex,
+  ) {
+    const quality = getQuality();
+    const backend = (src as unknown as { rendererBackend?: SpineMeshBackend }).rendererBackend;
+    if (capturingOutline || quality >= 2 || src.alpha <= 0.01 || !backend || backend.type !== 'phaser') {
+      baseRender.call(this, renderer, src, drawingContext, parentMatrix, renderStep, displayList, displayListIndex);
+      return;
+    }
+
+    const origRenderMesh = backend.renderMesh;
+    const prevLength = capturedMeshes.length;
+    capturingOutline = true;
+    backend.renderMesh = (_r, mesh, _baseCtx, currentCtx) => {
+      capturedMeshes.push({
+        mesh,
+        x: mesh.x,
+        y: mesh.y,
+        tint: mesh.tint,
+        tint2: mesh.tint2,
+        tintMode: mesh.tintMode,
+        alpha: mesh.alpha,
+      });
+      return currentCtx;
+    };
+    try {
+      baseRender.call(this, renderer, src, drawingContext, parentMatrix, renderStep, displayList, displayListIndex);
+    } finally {
+      backend.renderMesh = origRenderMesh;
+      capturingOutline = false;
+    }
+
+    const count = capturedMeshes.length - prevLength;
+    if (count <= 0) return;
+
+    const camera = drawingContext.camera ?? scene.cameras.main;
+    const step = r6OutlineStepPx(camera.zoom, scene.scale.zoom);
+    const offsets = quality === 0 ? R6_OUTLINE_OFFSETS_8 : R6_OUTLINE_OFFSETS_4;
+    const passAlpha = quality === 0 ? R6_OUTLINE_PASS_ALPHA : R6_OUTLINE_CARDINAL_ALPHA;
+
+    let currentContext = drawingContext;
+    try {
+      // 1) 실루엣 바깥 1px 은회 패스(뒤쪽)
+      for (let o = 0; o < offsets.length; o++) {
+        const [ox, oy] = offsets[o]!;
+        const dx = ox * step;
+        const dy = oy * step;
+        for (let i = prevLength; i < capturedMeshes.length; i++) {
+          const item = capturedMeshes[i]!;
+          const { mesh } = item;
+          mesh.x = item.x + dx;
+          mesh.y = item.y + dy;
+          mesh.setTint(R6_OUTLINE_COLOR);
+          mesh.setTint2(0x000000);
+          mesh.setTintMode(TINT_MODE_FILL);
+          mesh.alpha = item.alpha * passAlpha;
+          currentContext = origRenderMesh.call(backend, renderer, mesh, drawingContext, currentContext, parentMatrix);
+        }
+      }
+
+      // 2) 원본 색 정상 패스(앞쪽): 불투명 내부 색과 부위 이음매를 100% 보존한다.
+      for (let i = prevLength; i < capturedMeshes.length; i++) {
+        const item = capturedMeshes[i]!;
+        const { mesh } = item;
+        mesh.x = item.x;
+        mesh.y = item.y;
+        mesh.setTint(item.tint);
+        mesh.setTint2(item.tint2);
+        mesh.setTintMode(item.tintMode);
+        mesh.alpha = item.alpha;
+        currentContext = origRenderMesh.call(backend, renderer, mesh, drawingContext, currentContext, parentMatrix);
+      }
+
+      if (currentContext !== drawingContext) {
+        renderer.renderNodes.finishBatch();
+        currentContext.release();
+        drawingContext.beginDraw();
+      }
+    } finally {
+      capturedMeshes.length = prevLength;
+    }
+  };
 }

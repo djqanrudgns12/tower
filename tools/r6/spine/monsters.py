@@ -12,7 +12,6 @@ from tempfile import TemporaryDirectory
 
 from PIL import Image, ImageChops
 
-from contrast import enhance_skin_layers
 from parts import extract, load_part, suggest_pivot
 from pilot import SKINS, write_json
 from rigs import VARIANTS, Slot, layout, world_bones
@@ -132,9 +131,7 @@ def compose_rig(source, textures, canvas, root, ppu, rig_id, family, entry, skin
                    if slot.name in active]
     skeleton_skins = []
     previews = {}
-    species = rig_id.split("-", 1)[0]
-    for skin, raw_parts in layers.items():
-        parts = enhance_skin_layers(raw_parts, species)
+    for skin, parts in layers.items():
         attachments = {}
         preview = Image.new("RGBA", canvas)
         for slot in plans[skin]:
