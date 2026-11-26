@@ -37,3 +37,8 @@
 - `infantry/T3/sheet.png`, `assembly.png` (4차 REDO 반영): `armor` 중앙 목 아치 내부의 밝은 회색 구멍을 어두운 슬레이트 장갑(`#1D242C`)으로 채우고 흰 픽셀(1,301px → 0px) 톤다운 정리, T1 관절 기준 재조립(`cut_parts` `issues=0`, 모의 `fit_parts` IoU 0.879).
 - `boss-t3/T3/sheet.png`, `assembly.png` (4차 REDO 반영): 4족 다리 상·하단 관절 소켓 두께 보강 및 `body` 하단·발 소켓 겹침 깊게 재조립(`cut_parts` `issues=0`, 모의 `fit_parts` IoU 0.823).
 - `armored/T4`, `boss-t2~t4`: 32px 외곽선 차별화를 위해 넓은 상자형 몸통을 피하고 다리 사이 빈 공간과 V형 방패·2연장 포탑·스텔스 날개 돌출을 적용함.
+
+## G4 비평 검수 재작화 (`docs/renewal/r6/review/G4-monsters-critique.md` 5항)
+
+- `armored/T2` (비평 5항): 벌레 갑충형 돔을 폐기하고 T1~T3 중장갑 보행기 계통을 잇는 45° 모따기 직립 4족 장갑 보행기(이중 전면 방패 `armor`·상부 틸 센서 머리·4족 유압 다리)로 재작화 (`cut_parts` `issues=0` · 11/11 슬롯, T1 관절 기준 모의 `fit_parts` IoU `0.872`, 32px 벌레 중장갑군 최대 IoU `0.531`, 지형/길 대비 `1.986/1.349`, 흰색·마젠타 잔여 `0/0`).
+- `docs/renewal/r6/bible/sheets/monsters-machine-parts-all.webp` 갱신 완료.
