@@ -52,3 +52,27 @@ E2E_PORT=5197 VITE_API_BASE='' \
 | CPU 1배 · 마지막 재측정 | W10 완료 | 443.3초 | 59.96 | 0 유지 | 0회 |
 
 재측정 자료는 `test-results/r6-g5-perf-retry/`와 `test-results/r6-g5-perf-baseline/`의 각 `run.json`에 있다. 첫 측정과 재측정 사이에는 코드와 우선순위가 함께 바뀌었다. 일반 우선순위에서 완료한 두 실행의 브라우저 오류는 0건이었다. 단계 전환은 우선순위가 내려간 CPU 1배 측정과 별도 단위 시험에서 확인했고, 고해상도 브라우저에서 192px↔384px 전환을 확인했다. 실제 크롬북과 프로젝터 확인은 미실행이다.
+
+## W20 통주
+
+G5 통합 기준(CPU 6배 감속에서 W20 완주, 자동 정지 0회, 평균 50fps 이상)을 검증하기 위해 `tests/e2e/r6-perf.spec.ts`에 `W1~W20` 통주와 1초 창 최저 FPS, 웨이브별 최대 동시 적 수, 보스 등장 기록을 추가하고 학생 접속 0명·일반 우선순위에서 실행했다(기준 커밋 `d78e9563`).
+
+```sh
+E2E_PORT=5197 VITE_API_BASE='' \
+  /Users/bodyking/.local/bin/resource-guard run --profile test --wait-seconds 1800 -- \
+  npm run test:r6-perf -- --grep 'CPU 6배 · W1~W20' --output="test-results/r6-g5-perf-w20-cpu6"
+
+E2E_PORT=5197 VITE_API_BASE='' \
+  /Users/bodyking/.local/bin/resource-guard run --profile test --wait-seconds 1800 -- \
+  npm run test:r6-perf -- --grep 'CPU 1배 · W1~W20' --output="test-results/r6-g5-perf-w20-cpu1"
+```
+
+- **환경**: 헤드리스 Chromium, Apple M6 (ANGLE Metal), 844×390, 3학년·보통 난이도·시드 1(성문 15/15 유지), W1~W20(W5 `machine-boss-t1` · W10 `stone-boss-t2` · W15 `insect-boss-t3` · W20 `elf-boss-t4` 포함).
+
+| 조건 · 일반 우선순위 | 도달 | 경과 | 평균 FPS | 최저 구간 FPS (1초 창) | 최대 동시 적 | 품질 전환 | 자동 정지 | 오류 |
+| --- | --- | ---: | ---: | --- | ---: | --- | ---: | ---: |
+| CPU 6배 | W20 완료 | 905.0초 | 59.35 | 50.97fps (W6 · 적 1) | 22 (W19) · 20 (W20) | 0 유지 | 0회 | 0건 |
+| CPU 1배 | W20 완료 | 904.8초 | 59.98 | 56.95fps (W15 · 적 1) | 22 (W19) · 20 (W20) | 0 유지 | 0회 | 0건 |
+
+- **판정**: CPU 6배·1배 모두 W20 완주, 자동 정지 0회, 평균 FPS 59.35 / 59.98로 기준(평균 50fps 이상 · 자동 정지 0회)을 통과했다. W15(`insect-boss-t3`, 최대 동시 적 14, 최저 1초 55.45fps / 56.95fps)와 W20(`elf-boss-t4`, 최대 동시 적 20, 최저 1초 56.91fps / 59.06fps) 밀집 구간에서도 품질 하향 없이 55fps 이상을 유지했다.
+- **기록 위치**: `test-results/r6-g5-perf-w20-cpu6/` 및 `test-results/r6-g5-perf-w20-cpu1/`의 각 `run.json`(git 무시 경로). 실제 학교 크롬북(1366×768) 및 교실 프로젝터 실기기는 미실행이다.
