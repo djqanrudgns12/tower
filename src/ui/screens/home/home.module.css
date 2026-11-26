@@ -1752,3 +1752,8 @@
   --bg-elevated: var(--quiz-card-sunk);
   --bg-pressed: var(--quiz-card-sunk);
 }
+
+/* 밝은 학습 카드 안 선 아이콘은 currentColor를 쓰므로 카드 글자색을 따로 물려준다. */
+.studyCard .sectionIconBadge {
+  color: var(--quiz-ink);
+}
