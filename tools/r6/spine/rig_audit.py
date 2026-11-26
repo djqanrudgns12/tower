@@ -94,7 +94,7 @@ def measure(actor, atlas):
                 joints[child] = {"parent": parent, "pixels": area, "pose": where}
             hinge = hinge_pixels(a, b, pose["pivots"][pivot])
             hinges[child] = min(hinges.get(child, hinge), hinge)
-        for name in ("head", "gear", "armor"):
+        for name in ("head", "gear", "gear-rear", "armor"):
             if name in layers:
                 visible, total = visible_pixels(layers, name)
                 fraction = round(visible / total, 4) if total else 0
