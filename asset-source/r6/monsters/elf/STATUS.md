@@ -31,3 +31,9 @@
 ## 남은 목록
 
 - 없음 (20/20 완료).
+
+## G4 비평 검수 재작화 (`docs/renewal/r6/review/G4-monsters-critique.md` 10항)
+
+- `special/T3` (비평 10항 필수): 번잡한 가는 선 뭉치를 제거하고 R04 2중 기하학 바람 고리(`armor`)·다면체 틸 숲핵(`body`)·결정 관(`head`)·잎날개 2쌍으로 재작화 (`cut_parts` `issues=0` · 5/5 슬롯, T1 관절 기준 모의 `fit_parts` IoU `0.760`, 지형/길 대비 `2.341/1.570`, 흰색·마젠타 잔여 `0/0`).
+- `special/T4` (비평 10항 선택): 흰 점 눈 가면·엉킨 선을 제거하고 3겹 고목 왕관 틀(`armor`)·대형 다면체 숲핵(`body`)·결정 관(`head`)·잎날개 2쌍으로 재작화 (`cut_parts` `issues=0` · 5/5 슬롯, T1 관절 기준 모의 `fit_parts` IoU `0.772`, 지형/길 대비 `2.092/1.509`, 흰색·마젠타 잔여 `0/0`).
+- `docs/renewal/r6/bible/sheets/monsters-elf-parts-all.webp` 갱신 완료.
