@@ -4,7 +4,7 @@ type: hub
 title: 로컬 저장(IndexedDB) 및 기록·랭킹 서버(Workers/D1)
 status: active
 updated: 2026-11-25
-verified: { commit: a3838293, date: 2026-11-27 }
+verified: { commit: fa75c724, date: 2026-11-27 }
 sources:
   - path: src/persistence/reviewNote.ts
     sha256: "729abb95daffa0b758340070f97fd326647b7e00f7d23f1e0eb34734e6fcad41"

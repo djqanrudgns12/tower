@@ -2,21 +2,23 @@
 
 - 작성: 2026-11-27
 - 대상 판: R6 대개편 (`balanceVersion: 2.0.0`, 초원 고원 `garden_u`, 타워 6종·Lv20, 몬스터 5종족×20, 시즌 2)
-- 기준 문서: [PRD-r6.md](../PRD-r6.md), [G5-perf.md](./G5-perf.md), [G5-server.md](./G5-server.md), [G4-monsters-notes.md](../review/G4-monsters-notes.md)
+- 기준 문서: [PRD-r6.md](../PRD-r6.md), [G5-perf.md](./G5-perf.md), [G5-server.md](./G5-server.md), [G5-e2e-triage.md](./G5-e2e-triage.md), [G4-monsters-notes.md](../review/G4-monsters-notes.md)
 
 ## (가) 자동 검증 결과 표
 
 | 검사 항목 | 실행 명령 | 결과 | 기준 커밋 | 핵심 수치 / 비고 |
 | --- | --- | --- | --- | --- |
-| 프로덕션 빌드 | `/Users/bodyking/.local/bin/resource-guard run --profile build --wait-seconds 900 -- npm run build` | **통과** | `ae889b19` | `tsc -p tsconfig.json && vite build`, 398모듈 변환, 623ms |
-| 저장소 대표 검증 | `/Users/bodyking/.local/bin/resource-guard run --profile test --wait-seconds 900 -- npm run verify` | **통과** | `ae889b19` | `typecheck` · `lint` · 단위 시험 111파일 1,892개 · `validate:plan` 49/49 · `validate:content` 604/604 · `wiki:lint` 23페이지 오류 0·경고 0 |
-| 서버 시험 | `/Users/bodyking/.local/bin/resource-guard run --profile test --wait-seconds 900 -- npm run test:server` | **통과** | `ae889b19` | 서버 타입 검사 + Vitest 12파일 76개 통과 (7.88s) |
-| 전체 E2E (1회 통주) | `/Users/bodyking/.local/bin/resource-guard run --profile test --wait-seconds 1800 -- npx playwright test --workers=1` | **일부 실패** (54 통과 / 9 건너뜀 / 25 실패) | `ae889b19` | `home`·`guide`·`note`·`r6-battlefield`·`r6-vfx`·`school-entry` 등 54개 통과. `api-connected`(5)·`school-entry` 1건·`r6-full-run`(1)·`r6-perf` 통주(2)는 환경 변수 미설정으로 건너뜀. 실패 25건 중 R6 결함 2건·타이밍 1건은 아래 수정 후 재검증 통과, 22건은 구 R4/R5 미갱신 스펙((라) 참조) |
-| R6 E2E 수정 재검증 | `npx playwright test tests/e2e/r6-perf.spec.ts tests/e2e/r6-towers.spec.ts --workers=1` / `tests/e2e/play.spec.ts --grep '접근성' --workers=1` | **통과** | `d78e9563` | `가벼운 화면`(.2x 비동기 회수 `expect.poll`) 통과(1.8s), `r6-towers` 단독 통과(12.6s), `Armory.tsx` axe `label-content-name-mismatch` 해소 후 `접근성` 통과(2.9s) |
-| W20 성능 통주 · CPU 6배 | `E2E_PORT=5197 VITE_API_BASE='' ... npm run test:r6-perf -- --grep 'CPU 6배 · W1~W20'` | **통과** | `d78e9563` | W20 완주(905.0초, 성문 15/15), 평균 **59.35fps**, 최저(1초 창) **50.97fps**(W6), 품질 0 유지, 자동 정지 0회, W15·W20 보스 등장, 오류 0건 |
-| W20 성능 통주 · CPU 1배 | `E2E_PORT=5197 VITE_API_BASE='' ... npm run test:r6-perf -- --grep 'CPU 1배 · W1~W20'` | **통과** | `d78e9563` | W20 완주(904.8초, 성문 15/15), 평균 **59.98fps**, 최저(1초 창) **56.95fps**(W15), 품질 0 유지, 자동 정지 0회, W15·W20 보스 등장, 오류 0건 |
+| 프로덕션 빌드 | `/Users/bodyking/.local/bin/resource-guard run --profile build --wait-seconds 900 -- npm run build` | **통과(이전 기록)** | `ae889b19` | `tsc -p tsconfig.json && vite build`, 398모듈 변환, 623ms |
+| 저장소 대표 검증 | `/Users/bodyking/.local/bin/resource-guard run --profile test --wait-seconds 900 -- npm run verify` | **통과** | `fa75c724` | `typecheck` · `lint` · 단위 시험 111파일 1,892개 · `validate:plan` 49/49 · `validate:content` 604/604 · `wiki:lint` 23페이지 오류 0·경고 0 |
+| 서버 시험 | `/Users/bodyking/.local/bin/resource-guard run --profile test --wait-seconds 900 -- npm run test:server` | **통과(이전 기록)** | `ae889b19` | 서버 타입 검사 + Vitest 12파일 76개 통과 (7.88s) |
+| 전체 E2E (1회 통주) | `/Users/bodyking/.local/bin/resource-guard run --profile test --wait-seconds 1800 -- npx playwright test --workers=1` | **일부 실패(이전 기록)** (54 통과 / 9 건너뜀 / 25 실패) | `ae889b19` | R6 결함 3건 `d78e9563` 해소 후 잔여 22건 판별·수정 진행([G5-e2e-triage.md](./G5-e2e-triage.md)) |
+| R6 E2E 수정 재검증 | `npx playwright test tests/e2e/r6-perf.spec.ts tests/e2e/r6-towers.spec.ts --workers=1` / `tests/e2e/play.spec.ts --grep '접근성' --workers=1` | **통과(이전 기록)** | `d78e9563` | `가벼운 화면`(.2x 비동기 회수 `expect.poll`) 통과(1.8s), `r6-towers` 단독 통과(12.6s), `Armory.tsx` axe `label-content-name-mismatch` 해소 후 `접근성` 통과(2.9s) |
+| G5 E2E 22건 수정 재검증 | `/Users/bodyking/.local/bin/resource-guard run --profile test --wait-seconds 900 -- npx playwright test tests/e2e/layout.spec.ts tests/e2e/play.spec.ts tests/e2e/stage-animation.spec.ts --workers=1` | **통과 (42/42)** | `fa75c724` (커밋 직전) | 제품 결함 4건(`GameScreen.tsx`·`tokens.css` 13px·`PauseOverlay.module.css`) 수정 + 설계 변경 18건 R6 기준 이관 후 42/42 통과 (4.3m) |
+| 전체 E2E (2차 통주) | `/Users/bodyking/.local/bin/resource-guard run --profile test --wait-seconds 1800 -- npx playwright test --workers=1` | **통과 (79 통과 / 11 건너뜀 / 0 실패)** | `fa75c724` | 실패 **0건**. 건너뜀 11건은 환경 변수 미설정(`api-connected` 5건·`school-entry` 1건·`r6-full-run` 1건·`r6-perf` 통주 4건) (6.2m) |
+| W20 성능 통주 · CPU 6배 | `E2E_PORT=5197 VITE_API_BASE='' ... npm run test:r6-perf -- --grep 'CPU 6배 · W1~W20'` | **통과(이전 기록)** | `d78e9563` | W20 완주(905.0초, 성문 15/15), 평균 **59.35fps**, 최저(1초 창) **50.97fps**(W6), 품질 0 유지, 자동 정지 0회, W15·W20 보스 등장, 오류 0건 |
+| W20 성능 통주 · CPU 1배 | `E2E_PORT=5197 VITE_API_BASE='' ... npm run test:r6-perf -- --grep 'CPU 1배 · W1~W20'` | **통과(이전 기록)** | `d78e9563` | W20 완주(904.8초, 성문 15/15), 평균 **59.98fps**, 최저(1초 창) **56.95fps**(W15), 품질 0 유지, 자동 정지 0회, W15·W20 보스 등장, 오류 0건 |
 | 밸런스 v2 관문 (이전 기록) | `node tools/sim-gate.mjs --v2 --seeds 8` | **재사용** | 이전 커밋([sim-notes.md](../spec/sim-notes.md)) | 이번 세션 미실행. 기존 2차 조정 결과(보통 초보 11 · 균형 15 · 최적화 23, 쉬움 20 · 어려움 12 · 아주 어려움 9) 인용 |
-| W1~W15 실제 게임 E2E 통주 | `TOWER_R6_FULL_RUN=1 npx playwright test tests/e2e/r6-full-run.spec.ts` | **미실행** | - | 이번 세션 미실행(W20 성능 통주와 별도) |
+| W1~W15 실제 게임 E2E 통주 | `TOWER_R6_FULL_RUN=1 /Users/bodyking/.local/bin/resource-guard run --profile test --wait-seconds 1800 -- npx playwright test tests/e2e/r6-full-run.spec.ts --workers=1` | **통과** | `fa75c724` | W15 완주(641.2초, 성문 15/15, 최고 Lv20), 평균 **59.99fps**, 정답 142 · 오답 35, 오류 0 · 경고 1, 자동 정지 0회, W3·6·9 해금 · W5/10/15 보스 · IndexedDB 저장 확인 (10.8m) |
 
 ## (나) 실기기 확인 항목 (학교 크롬북 1366×768 · 교실 프로젝터)
 
@@ -36,7 +38,7 @@
 ### 중점 확인 3가지
 1. **길 대비 미달 44개체(G4 이월)**: 원색 보존과 바깥 1px 은회(`#B8C0C8`) 테두리를 적용했으나 길(`#4A5563`) 대비 1.5배 미만인 44개체(특히 `insect-special-t1`, `stone-runner-t1`, `elf-armored-t3`, `elf-special-t1`)가 교실 프로젝터에서 배경과 분리돼 보이는지 확인한다.
 2. **W15·W20 몬스터 혼잡도와 가림**: 최대 동시 적 20~22기 구간에서 겹침 판독이 가능한지, 발밑 Y순 정렬로 대형 타워 뒤에 적이 가려질 때 체력 막대만으로 위치 파악이 되는지 확인한다.
-3. **1366×768·프로젝터 글자 크기**: 보조 캡션(`--fs-caption`, 12px)과 문제 보기·HUD 숫자가 교실 뒷자리에서도 읽히는지, 밝은 교실에서 설정의 '밝은 화면'이 충분한 대비를 주는지 확인한다.
+3. **1366×768·프로젝터 글자 크기**: 보조 캡션(`--fs-caption`, 13px로 상향)과 문제 보기·HUD 숫자가 교실 뒷자리에서도 읽히는지, 밝은 교실에서 설정의 '밝은 화면'이 충분한 대비를 주는지 확인한다.
 
 ## (다) 운영 반영 순서 요약
 
@@ -60,8 +62,5 @@
 
 1. **실기기·교실 환경 미실행**: 본 검증의 성능·레이아웃 측정은 Mac(Apple M6, ANGLE Metal, Chromium CDP CPU 6배 감속) 기준이며, 학교 크롬북(1366×768) 실제 CPU/GPU·발열과 교실 프로젝터 색감·투사 시인성은 **미실행**이다.
 2. **G4 이월 시각 관찰 항목**: 길 대비 1.5배 미만 44개체(원색 보존 결정), 종족 간 색 판독 B 91쌍 동시 등장 시 구분, 발밑 Y정렬 이후 대형 타워 뒤 몬스터 일시 가림(52~74% 구간 존재)은 실기기에서 확인이 필요하다.
-3. **구 R4/R5 미갱신 E2E 스펙 22건**: `layout.spec.ts`(12건), `play.spec.ts`(9건 — `접근성` 제외), `stage-animation.spec.ts`(1건)가 R6 기본값(`2.0.0`)·R04 전술 UI 기준과 어긋나 실패 상태로 남아 있다(기대값 변조 없이 원인만 분리 기록).
-   - **v1 명칭·구성 잔존**: `궁수탑`·`서리탑`·`5. 새 타워와 적 특성`·홈 `전장 미리보기 canvas`(R6에서 `<img>`로 변경) 대기 타임아웃.
-   - **R04 UI 레이아웃·스타일 차이**: `layout.spec.ts` 수직선 Δ(4.5~188px), `1366×650` HUD 2행·칸 크기(39.2px < 44px), `1440×900` 칸 크기(68.73px ≤ 70px), R5 문제판 3D 키 그림자(`boxShadow` `"none"`), R5 준비 바 무한 애니메이션(`0`), 일시정지 끝내기 확인 높이 차(80px), 키보드 `설치 자리 목록`과 상황 카드 위치 차.
-   - **모바일·소형 글자 관찰**: `390×844` S 모드 오답 제출 시 문서 세로 넘침(+77px)과 `820×1060`·`390×844` 최소 글자 12px(`tokens.css` `--fs-caption`이 12px, 기존 `layout.spec.ts` 하한 13px 미만). 운영 반영 자체를 막지는 않으나 후속 UI 정리 또는 R6 E2E 정비 대상이다.
-4. **기타 미실행 항목**: `TOWER_R6_FULL_RUN=1`(`r6-full-run.spec.ts` W1~W15 실제 기록 저장 통주), `api-connected` 원격/로컬 서버 연동 E2E 5건, 운영 D1·Workers·GitHub Pages 반영(사용자 승인 후 총괄 실행 대상).
+3. **G5 E2E 22건 판별·해소 완료**: `layout.spec.ts`(12건), `play.spec.ts`(9건), `stage-animation.spec.ts`(1건) 전수 판별 결과([G5-e2e-triage.md](./G5-e2e-triage.md)), 제품 결함 4건(모바일 `390×844` S 모드 오답 세로 넘침 +78px, `tokens.css` `--fs-caption` 12px 교실 판독성 미달 2건, 일시정지 끝내기 확인 높이 80px 급변)은 제품을 수정해 해소했고, 설계 변경 18건은 원래 의도(정렬·44px·13px·비겹침·포커스·모션 설정)를 유지한 채 R6 기준으로 이관해 3개 파일 42/42 및 전체 E2E 79통과/11건너뜀/0실패를 확인했다(`fa75c724`).
+4. **기타 미실행 항목**: `api-connected` 원격/로컬 서버 연동 E2E 5건, `school-entry` 서버 연동 1건, `TOWER_R6_PERF_RUN=1` 통주 4건(본 세션 미실행, `d78e9563` W20 통주 통과 인용), 운영 D1·Workers·GitHub Pages 반영(사용자 승인 후 총괄 실행 대상). (참고: `TOWER_R6_FULL_RUN=1` W1~W15 실제 게임 통주는 `fa75c724` 기준 통과 완료)

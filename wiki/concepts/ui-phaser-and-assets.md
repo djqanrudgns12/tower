@@ -4,7 +4,7 @@ type: hub
 title: 화면(R04 UI)·전장(Phaser/Spine)·제작 공정
 status: active
 updated: 2026-11-26
-verified: { commit: a3838293, date: 2026-11-27 }
+verified: { commit: fa75c724, date: 2026-11-27 }
 sources:
   - path: src/game/bridge.ts
     sha256: d174fb7ea5c85ad93424afe0eb92a90508cb3488d66537edda17251254c868f8

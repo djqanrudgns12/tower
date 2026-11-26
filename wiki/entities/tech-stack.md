@@ -4,7 +4,7 @@ type: entity
 title: 기술스택 및 고정 의존성
 status: active
 updated: 2026-11-25
-verified: { commit: a3838293, date: 2026-11-27 }
+verified: { commit: fa75c724, date: 2026-11-27 }
 sources:
   - path: package.json
     sha256: "438e5fc906d190ae6ff3e75af936f686e94d883375aff3ab996bcf06cd749d08"

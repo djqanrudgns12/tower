@@ -10,15 +10,15 @@ generated_by: tools/wiki/gen.mjs
 
 > 이 파일은 `npm run wiki:sync` (`tools/wiki/gen.mjs`)가 코드·계약 JSON·SQL에서 결정적으로 자동 생성합니다. 직접 수정하지 마세요.
 
-- 스캔된 마크다운 총계: **259개 파일** · **2,012,073자** · 추정 **약 1,307,973 토큰**
+- 스캔된 마크다운 총계: **259개 파일** · **2,012,743자** · 추정 **약 1,308,409 토큰**
 - **경고**: `해시 고정(validate-plan)` 문서는 1바이트도 수정·이동하면 안 되며, `링크·참조 검사(validate-plan)` 및 `코드·시험 경로 참조` 문서도 기존 경로를 그대로 유지해야 합니다.
 
 ## 분류별 요약
 
 | 분류 | 파일 수 | 글자 수 | 추정 토큰 |
 | --- | ---: | ---: | ---: |
-| 01. 진입·규약 및 LLM Wiki | 34 | 170,322 | 110,727 |
-| 02. 리뉴얼 현행 기준 (PRD보다 우선) | 81 | 624,415 | 405,909 |
+| 01. 진입·규약 및 LLM Wiki | 34 | 170,416 | 110,788 |
+| 02. 리뉴얼 현행 기준 (PRD보다 우선) | 81 | 624,991 | 406,284 |
 | 03. 호스팅·배포·운영 기준 | 3 | 36,412 | 23,669 |
 | 04. 문제은행 CR-1000 공동검수 | 6 | 201,954 | 131,272 |
 | 05. 제작 PRD v0.5 및 계약 기준 | 6 | 143,424 | 93,229 |
@@ -60,7 +60,7 @@ generated_by: tools/wiki/gen.mjs
 | [wiki/lessons/ops-and-workflow.md](../wiki/lessons/ops-and-workflow.md) | 현행 활성 | Reference / Navigation | - | 5 | 2,623 |
 | [wiki/lessons/ui-art-and-balance.md](../wiki/lessons/ui-art-and-balance.md) | 현행 활성 | Reference / Navigation | - | 5 | 2,483 |
 | [wiki/log.md](../wiki/log.md) | 현행 활성 | Reference / Navigation | - | 3 | 2,012 |
-| [wiki/projects/roadmap-and-status.md](../wiki/projects/roadmap-and-status.md) | 현행 활성 | Reference / Navigation | - | 4 | 5,442 |
+| [wiki/projects/roadmap-and-status.md](../wiki/projects/roadmap-and-status.md) | 현행 활성 | Reference / Navigation | - | 4 | 5,536 |
 | [wiki/SCHEMA.md](../wiki/SCHEMA.md) | 현행 활성 | Reference / Navigation | - | 6 | 5,447 |
 | [wiki/templates/hub.md](../wiki/templates/hub.md) | 현행 활성 | Reference / Navigation | - | 5 | 666 |
 | [wiki/templates/lesson.md](../wiki/templates/lesson.md) | 현행 활성 | Reference / Navigation | - | 2 | 957 |
@@ -130,7 +130,7 @@ generated_by: tools/wiki/gen.mjs
 | [docs/renewal/r6/tech/G2-spike.md](../docs/renewal/r6/tech/G2-spike.md) | 현행 우선 기준 | Explanation / Spec | - | 8 | 7,793 |
 | [docs/renewal/r6/tech/G3-precheck.md](../docs/renewal/r6/tech/G3-precheck.md) | 현행 우선 기준 | Explanation / Spec | - | 6 | 3,351 |
 | [docs/renewal/r6/tech/G5-perf.md](../docs/renewal/r6/tech/G5-perf.md) | 현행 우선 기준 | Explanation / Spec | - | 5 | 4,260 |
-| [docs/renewal/r6/tech/G5-readiness.md](../docs/renewal/r6/tech/G5-readiness.md) | 현행 우선 기준 | Explanation / Spec | - | 7 | 6,906 |
+| [docs/renewal/r6/tech/G5-readiness.md](../docs/renewal/r6/tech/G5-readiness.md) | 현행 우선 기준 | Explanation / Spec | - | 7 | 7,482 |
 | [docs/renewal/r6/tech/G5-server.md](../docs/renewal/r6/tech/G5-server.md) | 현행 우선 기준 | Explanation / Spec | - | 7 | 5,503 |
 | [docs/renewal/r6/tech/monster-pipeline.md](../docs/renewal/r6/tech/monster-pipeline.md) | 현행 우선 기준 | Explanation / Spec | - | 14 | 24,293 |
 | [docs/renewal/r6/tech/monsters/g4-rig-fix.md](../docs/renewal/r6/tech/monsters/g4-rig-fix.md) | 현행 우선 기준 | Explanation / Spec | - | 10 | 9,222 |

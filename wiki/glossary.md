@@ -4,7 +4,7 @@ type: glossary
 title: 용어 및 약어 사전
 status: active
 updated: 2026-11-25
-verified: { commit: a3838293, date: 2026-11-27 }
+verified: { commit: fa75c724, date: 2026-11-27 }
 sources:
   - path: vocabulary_td_prd_v0_5.md
     sha256: "0ffd7049c672ae427f1b59b2ef80222ea745b24911b13e78d1ee5680a7902cf5"

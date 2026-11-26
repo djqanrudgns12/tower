@@ -4,7 +4,7 @@ type: project
 title: 프로젝트 계보 및 현행 코드 실체 판정
 status: active
 updated: 2026-11-26
-verified: { commit: a3838293, date: 2026-11-27 }
+verified: { commit: fa75c724, date: 2026-11-27 }
 sources:
   - path: package.json
     sha256: "438e5fc906d190ae6ff3e75af936f686e94d883375aff3ab996bcf06cd749d08"
@@ -23,7 +23,7 @@ sources:
   - path: docs/renewal/r6/tech/G5-server.md
     sha256: "895f648cac4edc29c8eadafdd6bcced05880e8b8609c5f49d33099f832099dae"
   - path: docs/renewal/r6/tech/G5-readiness.md
-    sha256: dc5a1d40aa2e907bd82ddbda3d0eef0d825312a7d3d57d1388238301790f63b9
+    sha256: aafe92626b826f08eb29de2dcec2c4950424114b43969e679ddfcf8535fbb703
   - path: docs/DEPLOY.md
     sha256: ddaf762fa130c340599cddb9a93d3d32e40f81ff5e4a76f96ebe4cec54bfc66f
   - path: docs/CR1000_HANDOFF.md
@@ -55,7 +55,7 @@ sources:
 | **G2 공정 스파이크** | **통과** | Blender 5.2 헤드리스 타워 11형태·16방향 포두 렌더, Spine Pro 4.3 + `spine-phaser-v4@4.3.13` Mesh2D 채택, `tools/r6/qa/` 자동 검수 ([G2-spike.md](../../docs/renewal/r6/tech/G2-spike.md)) | 없음 |
 | **G3 수직 단면** | **통과** | 초원 고원 3/4 맵·[map-spec.md](../../docs/renewal/r6/map-spec.md), 전투 엔진·해금·웨이브 혼합 통합, 4개 뷰포트·W1~W15 통주 확인 ([G3-precheck.md](../../docs/renewal/r6/tech/G3-precheck.md)) | 없음 |
 | **G4 양산** | **통과 (2026-11-27)** | 타워 6종 66형태 전장 반영(165쌍 최대 IoU 0.5488), 타워별 전투 VFX, R04 전 화면 UI, 몬스터 5종족 100/100개체 재작화·접합(33자세 0/100 미달)·단조 배율·원본 색 복원 + 런타임 바깥 1px 은회 실루엣 테두리·비행 이중 그림자 반영. 발밑 Y 정렬, 빈 칸 >50% 가림 R04 모서리 표식, 비행 그림자 절제, `human-armored-t3`·`stone-boss-t3` 보정, W5·W15·W20 피크 가림 재측정 완료. [타워 검수](../../docs/renewal/r6/review/G4-towers-fix.md) · [몬스터 공정](../../docs/renewal/r6/tech/monster-pipeline.md) | 없음. 필수 조건 2건 충족, 홈 초상 30장 연결. 길 대비 미달 44개체는 G5 실기기에서 재확인. [G4 판정](../../docs/renewal/r6/review/G4-monsters-notes.md) · [2차 비평](../../docs/renewal/r6/review/G4-monsters-critique-2.md) |
-| **G5 통합·운영** | **통합 검증 완료 · 실기기·운영 미반영** | **완료**: `npm run build`·`npm run verify`·`npm run test:server`(76/76), R6 E2E(`Armory` 접근성·`r6-perf` `.2x` 회수·`r6-towers` 수정 검증 통과), `test:r6-perf` **W20 통주** CPU 6배 59.35fps(최저 50.97fps)·1배 59.98fps(최저 56.95fps)·정지 0회([G5-perf.md](../../docs/renewal/r6/tech/G5-perf.md)), 점검표([G5-readiness.md](../../docs/renewal/r6/tech/G5-readiness.md)), 서버 시즌 2([G5-server.md](../../docs/renewal/r6/tech/G5-server.md)), 밸런스 v2 2차 조정(재사용, [sim-notes.md](../../docs/renewal/r6/spec/sim-notes.md)) | **실기기 크롬북(1366×768)·교실 프로젝터 확인**(길 대비 미달 44개체·혼잡도·글자 크기), 구 R4/R5 미갱신 E2E 22건 정비, **사용자 승인 후 운영(D1·Workers·Pages) 반영** |
+| **G5 통합·운영** | **자동 검증·E2E 통주 완료 · 실기기·운영 미반영** | **완료**: `npm run verify`(단위 1,892개·콘텐츠 604개·`fa75c724`), 전체 E2E **79통과/11건너뜀/0실패**([판별표](../../docs/renewal/r6/tech/G5-e2e-triage.md): 제품 결함 4건 수정·설계 변경 18건 R6 이관), `r6-full-run` **W15 통주** 59.99fps·성문 15/15·정지 0회, `test:r6-perf` **W20 통주** CPU 6배 59.35fps·1배 59.98fps([G5-perf.md](../../docs/renewal/r6/tech/G5-perf.md)), 이전 `npm run build`·`npm run test:server`(76/76, `ae889b19`), 점검표([G5-readiness.md](../../docs/renewal/r6/tech/G5-readiness.md)), 서버 시즌 2([G5-server.md](../../docs/renewal/r6/tech/G5-server.md)), 밸런스 v2 2차 조정(재사용, [sim-notes.md](../../docs/renewal/r6/spec/sim-notes.md)) | **실기기 크롬북(1366×768)·교실 프로젝터 확인**(길 대비 미달 44개체·혼잡도·글자 크기), **사용자 승인 후 운영(D1·Workers·Pages) 반영** |
 
 ## 3. 구식 문서 오독 주의
 
