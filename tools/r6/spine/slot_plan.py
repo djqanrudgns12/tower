@@ -18,8 +18,7 @@ def draw_plan(slots, view):
     if head_front:
         normal = [slot for slot in normal if slot.name != "head"]
     if view.get("rearGear"):
-        index = next(i for i, slot in enumerate(normal) if slot.name == "body")
-        normal.insert(index, AttachmentSlot("gear-rear", "gear-rear", "arm-hand-near"))
+        normal.insert(len(normal) - 1, AttachmentSlot("gear-rear", "gear-rear", "arm-hand-near"))
     if gear_bone:
         normal[-1] = AttachmentSlot(f"gear-on-{gear_bone}", "gear", gear_bone)
     if head_front:
