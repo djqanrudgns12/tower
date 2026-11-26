@@ -33,3 +33,17 @@
 - `infantry/T4` 접합 arm-hand-far, arm-hand-near · 조립 IoU 0.772 · 배치 SHA-256 `b64a1460eba8`
 - `runner/T3` 접합 leg-hind-foot-near, leg-fore-foot-near · 조립 IoU 0.808 · 배치 SHA-256 `6426f352e31a`
 - `runner/T4` 접합 leg-fore-foot-far, leg-fore-foot-near · 조립 IoU 0.773 · 배치 SHA-256 `7d80b26a6345`
+- `boss-t1/T1` 재작화·몸통/망토 배치 정렬 반영 · 조립 IoU 0.738
+- `boss-t4/T4` 재작화 반영 · 조립 IoU 0.749
+- `armored/T4` 단조 배율(`displayScale: 1.75`) 반영 · 조립 IoU 0.930
+- 바닥 대비 보정(종족 무광 톤 + 외곽 좌상단 림) 적용 · 지형 중앙값 2.184→3.175배(미달 0→0개체), 길 중앙값 1.472→1.623배(미달 11→6개체)
+- G4 최종 아틀라스 2001×332 · 416,356바이트 · SHA-256 `fad153fbeba477c14aaff384789e8b4e556f71e825ecb6be5d72e16eb283d5fc`
+
+## 32px 재작화
+
+아틀라스 대비 보정 후 아래 6개체는 길(`#4A5563`) 위 중앙값이 1.5배 미만이다.
+
+- `human-boss-t3`: 지형 2.486배 / 길 **1.319배** — 대형 목재·어두운 철제 공성탑 몸통 면적 비중이 높아 길 색과 명도 차이가 작음.
+- `human-special-t3`: 지형 2.430배 / 길 **1.324배** — 공성 수레 암갈색 차체 비중이 큼.
+- `human-runner-t1` (2.474 / 1.363), `human-runner-t2` (2.490 / 1.365), `human-runner-t3` (2.685 / 1.402) — 갈색·회색 말 몸통이 차지하는 면적이 커 길 색 위 대비가 낮음.
+- `human-boss-t2`: 지형 2.928배 / 길 **1.483배** — 기마·갑옷 중간 명도 면이 길 색과 근접.

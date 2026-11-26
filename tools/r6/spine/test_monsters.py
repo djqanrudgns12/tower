@@ -9,6 +9,7 @@ import unittest
 from PIL import Image, ImageDraw
 
 from batch import resolve_display_scale, white_patches
+from contrast import enhance_skin_layers, outer_rim_mask
 from cut_parts import cut, orient_parts
 from fit_parts import fit
 from monsters import ACTORS, compose_rig, prepare, read_json
@@ -301,6 +302,32 @@ class MonsterPipelineTest(unittest.TestCase):
         self.assertEqual(resolve_display_scale(meta, {"displayScale": 1.45}), 1.45)
         with self.assertRaises(ValueError):
             resolve_display_scale(meta, {"displayScale": 0})
+
+    def test_contrast_preserves_alpha_outlines_and_avoids_internal_seams(self):
+        body = Image.new("RGBA", (32, 32))
+        arm = Image.new("RGBA", (32, 32))
+        ImageDraw.Draw(body).rectangle((6, 6, 22, 22), fill=(52, 60, 72, 255))
+        ImageDraw.Draw(body).rectangle((6, 6, 22, 22), outline=(18, 22, 27, 255))
+        ImageDraw.Draw(arm).rectangle((14, 10, 26, 20), fill=(52, 60, 72, 255))
+        ImageDraw.Draw(arm).rectangle((14, 10, 26, 20), outline=(18, 22, 27, 255))
+        shadow = Image.new("RGBA", (32, 32), (18, 22, 27, 128))
+        enhanced = enhance_skin_layers({"body": body, "arm": arm, "shadow": shadow}, "machine")
+        self.assertEqual(enhanced["shadow"].tobytes(), shadow.tobytes())
+        self.assertEqual(enhanced["body"].getchannel("A").tobytes(), body.getchannel("A").tobytes())
+        self.assertEqual(enhanced["arm"].getchannel("A").tobytes(), arm.getchannel("A").tobytes())
+        # 외곽 1px 카본 선 보존 및 흰 패치 없음 확인
+        self.assertEqual(enhanced["body"].getpixel((6, 6))[:3], (18, 22, 27))
+        self.assertEqual(white_patches(enhanced["body"]), [])
+        # 내부 이음매 (15, 14)에는 outer_rim_mask가 켜지지 않는다.
+        import numpy as np
+        union = (np.asarray(body.getchannel("A")) >= 128) | (np.asarray(arm.getchannel("A")) >= 128)
+        rim = outer_rim_mask(union)
+        self.assertFalse(bool(rim[14, 15]))
+        # 어두운 바닥 대비가 상승한다.
+        before = ground_contrast(body, silhouette(body))
+        after = ground_contrast(enhanced["body"], silhouette(enhanced["body"]))
+        self.assertGreater(after["terrain"]["median"], before["terrain"]["median"])
+        self.assertGreater(after["path"]["median"], before["path"]["median"])
 
 
 if __name__ == "__main__":

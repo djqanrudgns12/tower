@@ -30,3 +30,15 @@
 - `runner/T2` 접합 leg-hind-foot-far, head · 조립 IoU 0.829 · 배치 SHA-256 `b061217c417e`
 - `runner/T4` 접합 leg-hind-foot-far, head · 조립 IoU 0.826 · 배치 SHA-256 `f1ca666fff83`
 - `special/T1` 접합 wing-near · 조립 IoU 0.758 · 배치 SHA-256 `8aced272b8f3`
+- `special/T3` 재작화·접합·단조 배율(`displayScale: 1.55`) 반영 · 조립 IoU 0.717
+- `special/T4` 재작화·단조 배율(`displayScale: 1.60`) 반영 · 조립 IoU 0.743
+- `boss-t3/T3` 접합 `arm-far`, `arm-hand-far`, `arm-hand-near`, 피벗 정렬 · 조립 IoU 0.712 · 33자세 최소 접합 22px²
+- 바닥 대비 보정(종족 무광 톤 + 외곽 좌상단 림) 적용 · 지형 중앙값 1.373→2.793배(미달 12→0개체), 길 중앙값 1.554→1.516배(미달 9→10개체)
+- G4 최종 아틀라스 2017×237 · 739,406바이트 · SHA-256 `bc3abded53099331b61b9874c0c5e0d48417b912decfa4262367fce0f2d20a05`
+
+## 32px 재작화
+
+아틀라스 무광 대비 보정 후 지형 대비 미달은 0개체로 해소됐으나, 아래 10개체는 길(`#4A5563`) 위 중앙값이 1.5배 미만이다.
+
+- `elf-armored-t3`: 지형 2.297배 / 길 **1.297배** — 넓은 어두운 녹회색 망토·갑옷 중앙 면적 비중이 높아 길 색과 명도 차이가 작음.
+- `elf-infantry-t3` (지형 2.576 / 길 1.384), `elf-infantry-t4` (1.915 / 1.397), `elf-armored-t1` (2.527 / 1.398), `elf-runner-t4` (2.533 / 1.400), `elf-runner-t3` (2.178 / 1.435), `elf-infantry-t1` (2.600 / 1.449), `elf-boss-t1` (2.712 / 1.471), `elf-infantry-t2` (2.803 / 1.483), `elf-boss-t4` (2.783 / 1.495) — 어두운 숲 갑옷·표범 털 중앙 면이 길 색(`#4A5563`)과 유사해 외곽 림만으로 중앙값이 1.5배에 소폭 미달.

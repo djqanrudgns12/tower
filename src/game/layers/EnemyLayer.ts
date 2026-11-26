@@ -2,7 +2,7 @@ import Phaser from 'phaser';
 import type { SpineGameObject } from '@esotericsoftware/spine-phaser-v4';
 import type { R6BattleAssets } from '../r6/BattleAssets';
 import { R6_COLORS } from '../r6/manifest';
-import { r6EnemyScale } from '../r6/enemyDisplay';
+import { isR6VisualFlyer, r6EnemyScale, r6VisualFlyerLiftCells } from '../r6/enemyDisplay';
 import { R6_HIT_MS } from '../r6/vfxTiming';
 import { positionAt } from '../../domain/geometry';
 import { enemyArtId } from '../../domain/factions';
@@ -186,8 +186,11 @@ export class EnemyLayer {
         const intro = this.pendingIntros.get(e.id);
         this.pendingIntros.delete(e.id);
         // 개체마다 보행 위상을 다르게 둔다(PRD §11.3).
+        const initLift = this.assets && this.c.projected
+          ? r6VisualFlyerLiftCells(e.entityId, e.flying, e.groundedUntilTick > s.tick) * CELL_PX
+          : flyerLift(e, s.tick) * CELL_PX;
         v = { sprite, spine: null, spineRevision: -1, badge, trait, kind: e.kind, art, prev: e.progress, cur: e.progress, phase: (e.id * 0.618034) % 1, flashUntil: 0, flashAt: -Infinity, hitAt: null, facing: 1,
-          x: 0, y: 0, lift: flyerLift(e, s.tick) * CELL_PX, intro: intro ? { ...intro, start: time } : null };
+          x: 0, y: 0, lift: initLift, intro: intro ? { ...intro, start: time } : null };
         this.enemies.set(e.id, v);
       }
       if (!v.spine && this.assets && v.spineRevision !== this.assets.revision) {
@@ -204,7 +207,9 @@ export class EnemyLayer {
       const foot = this.c.projected ? 0 : FOOT;
       const moving = v.cur !== v.prev && s.pause.length === 0;
       // 비행 몸 높이: 끌어내려지면 내려앉고 다시 떠오른다. 움직임 줄이기면 바로 바뀐다.
-      const liftTarget = flyerLift(e, s.tick) * CELL_PX;
+      const liftTarget = (this.assets && this.c.projected
+        ? r6VisualFlyerLiftCells(e.entityId, e.flying, e.groundedUntilTick > s.tick)
+        : flyerLift(e, s.tick)) * CELL_PX;
       v.lift = reduced || dt <= 0 ? liftTarget : v.lift + (liftTarget - v.lift) * Math.min(1, dt / LIFT_EASE_MS);
       // 등장 연출: 분열은 처치 지점에서 옆으로 튀어 제자리에 내려앉고, 호위병은 제자리에서 커지며 나타난다.
       const intro = v.intro ? introFrame(v.intro, time - v.intro.start, reduced) : null;
@@ -222,7 +227,9 @@ export class EnemyLayer {
       if (under) alphaK *= BURROW_ALPHA;
       v.x = x; v.y = y;
       const { art } = v;
-      if (e.flying && (quality === 0 || e.kind === 'boss')) this.flyerShadow(x, y + foot, art.displayCells * scaleK, v.lift);
+      const visualFlyer = this.assets && this.c.projected ? isR6VisualFlyer(e.entityId, e.flying) : e.flying;
+      if (visualFlyer && (quality < 2 || e.kind === 'boss')) this.flyerShadow(x, y + foot, art.displayCells * scaleK, v.lift);
+      else if (this.assets && this.c.projected && (quality === 0 || e.kind === 'boss')) this.groundShadow(x, y + foot, art.displayCells * scaleK, e.kind === 'boss');
       const depth = this.c.projected ? r6UnitDepth(y, 'enemy') : DEPTH.units + y + 0.5;
       if (v.spine) {
         const { object, scale } = v.spine;
@@ -345,10 +352,28 @@ export class EnemyLayer {
     }
   }
 
-  /** 비행 적의 땅 그림자: 몸이 높을수록 조금 작고 옅다. 몸은 그 위에 떠 있다. */
+  /** 비행 적의 땅 그림자: 몸이 높을수록 조금 작고 옅다. R6에서는 1px 이중 테두리로 고도를 구분한다. */
   private flyerShadow(x: number, footY: number, cells: number, lift: number) {
-    const k = 1 - 0.25 * Math.min(1, lift / (CELL_PX * 0.25));
-    this.ground.fillStyle(PALETTE.outline, 0.3 * k + 0.05).fillEllipse(x, footY, CELL_PX * cells * 0.62 * k, CELL_PX * 0.17 * k);
+    const k = 1 - 0.25 * Math.min(1, lift / (CELL_PX * 0.28));
+    const w = CELL_PX * cells * 0.62 * k;
+    const h = CELL_PX * 0.17 * k;
+    if (this.assets && this.c.projected) {
+      this.ground.fillStyle(R6_COLORS.carbon, 0.48 * k).fillEllipse(x, footY, w, h);
+      this.ground.lineStyle(1, R6_COLORS.carbon, 0.9 * k).strokeEllipse(x, footY, w, h);
+      if (w > 8 && h > 4) {
+        this.ground.lineStyle(1, R6_COLORS.teal, 0.78 * k).strokeEllipse(x, footY, w - 4, h - 3);
+      }
+      return;
+    }
+    this.ground.fillStyle(PALETTE.outline, 0.3 * k + 0.05).fillEllipse(x, footY, w, h);
+  }
+
+  /** 지상 R6 적의 발밑 접지 그림자: 어두운 길·지형과의 경계를 분명히 한다. */
+  private groundShadow(x: number, footY: number, cells: number, boss: boolean) {
+    const w = CELL_PX * Math.min(boss ? 1.15 : 0.78, cells * 0.62);
+    const h = CELL_PX * (boss ? 0.22 : 0.16);
+    this.ground.fillStyle(R6_COLORS.carbon, 0.4).fillEllipse(x, footY, w, h);
+    this.ground.lineStyle(1, R6_COLORS.carbon, 0.58).strokeEllipse(x, footY, w, h);
   }
 
   /** 대장이 지금 하는 일(상태로 읽는다): 북소리 원, 방패 고리, 돌진 먼지 줄(땅), 겹방패 점(머리 위). */

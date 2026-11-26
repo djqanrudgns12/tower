@@ -7,7 +7,7 @@ import batch from '../../docs/renewal/r6/tech/monsters/batch.json';
 import { ENTITY_IDS, SPECIES } from '../../src/contracts/balanceV2';
 import manifest from '../../public/assets/r6/manifest-v2.json';
 import { R6BattleAssets } from '../../src/game/r6/BattleAssets';
-import { r6EnemyScale } from '../../src/game/r6/enemyDisplay';
+import { isR6VisualFlyer, r6EnemyScale, r6VisualFlyerLiftCells } from '../../src/game/r6/enemyDisplay';
 import { r6ManifestSchema } from '../../src/game/r6/manifest';
 import { enemy } from './review-core/fixtures';
 
@@ -142,4 +142,16 @@ it.each(SPECIES)('%s 모든 계통에서 T1~T4 전장 표시 높이가 줄어들
       expect(heights[i + 1], `${faction}-${lineage} T${i + 1}→T${i + 2}`).toBeGreaterThanOrEqual(heights[i]!);
     }
   }
+});
+
+it('R6 비행 개체는 시각적 비행 여부와 고도를 일관되게 판정한다', () => {
+  expect(isR6VisualFlyer('elf-special-t1', true)).toBe(true);
+  expect(isR6VisualFlyer('machine-special-t3', false)).toBe(true);
+  expect(isR6VisualFlyer('insect-runner-t2', false)).toBe(true);
+  expect(isR6VisualFlyer('human-infantry-t1', false)).toBe(false);
+  expect(r6VisualFlyerLiftCells('elf-special-t1', true, false)).toBe(0.28);
+  expect(r6VisualFlyerLiftCells('machine-special-t2', false, false)).toBe(0.24);
+  expect(r6VisualFlyerLiftCells('insect-runner-t4', false, false)).toBe(0.20);
+  expect(r6VisualFlyerLiftCells('elf-special-t1', true, true)).toBe(0);
+  expect(r6VisualFlyerLiftCells('human-infantry-t1', false, false)).toBe(0);
 });
