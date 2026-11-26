@@ -4,7 +4,7 @@ type: hub
 title: 배포·보존 잠금·검증 예산 운영
 status: active
 updated: 2026-11-25
-verified: { commit: "9424ff2c", date: 2026-11-26 }
+verified: { commit: a3838293, date: 2026-11-27 }
 sources:
   - path: AGENTS.md
     sha256: f22902d65d0a4e1a65acb94dcd3e46101332e9685f9ef2fb7d6213198e7d9534
@@ -17,7 +17,7 @@ sources:
   - path: docs/renewal/r6/tech/G5-server.md
     sha256: "895f648cac4edc29c8eadafdd6bcced05880e8b8609c5f49d33099f832099dae"
   - path: docs/renewal/r6/tech/G5-perf.md
-    sha256: f53b47482ca494b4723d1b72f04b485b4d69cdf3520ad2a0a8cf46433305b455
+    sha256: "16b0d22d3fe0532d0cfa718fb55e71e4b9fa7b650ca7ea5bdb5549b69914e452"
   - path: tools/validate-plan.mjs
     sha256: "9335404b1bac48dccf79827a06dfcbf61ee4ba9b00824559507710b93ea192d9"
 ---
@@ -51,7 +51,7 @@ sources:
 
 - **범위 우선 검증**: 작업 중에는 바뀐 범위 시험(`npx vitest run <파일>`, `npm run typecheck`, `npm run lint`, `npm run wiki:check`)만 1회 실행하고 통과한 검사를 반복하지 않는다.
 - **R6 전용 시험 명령**:
-  - 저사양 자동 화질·W1~W10 CPU 6배/1배 성능 검증: `npm run test:r6-perf` ([G5-perf.md](../../docs/renewal/r6/tech/G5-perf.md), `resource-guard --profile test` 필수 · 학생 접속 0명 조건 권장)
+  - 저사양 자동 화질·W1~W10/W20 CPU 6배/1배 성능 검증: `npm run test:r6-perf` ([G5-perf.md](../../docs/renewal/r6/tech/G5-perf.md), `resource-guard --profile test` 필수 · 학생 접속 0명 조건 권장)
   - 전장·VFX·통주 E2E: `npm run test:e2e -- tests/e2e/r6-battlefield.spec.ts tests/e2e/r6-vfx.spec.ts` (전체 통주는 `TOWER_R6_FULL_RUN=1` + `r6-full-run.spec.ts`)
   - 밸런스 v2 관문: `npm run simulate:gate -- --v2 --seeds 8`
 - **고부하 명령 보호**: `npm run verify`, `npm run test:e2e`, `npm run test:r6-perf`, `npm run build`, `npm run simulate:gate`, Blender/Spine 대량 렌더는 `/Users/bodyking/.local/bin/resource-guard run --profile <test|build|avatar> --wait-seconds 900 -- <명령>`으로 감싼다(반환값 `75`는 자원 대기).

@@ -4,7 +4,7 @@ type: hub
 title: "3~6학년 문제은행 및 CR-1000 공동검수"
 status: active
 updated: 2026-11-25
-verified: { commit: "9424ff2c", date: 2026-11-26 }
+verified: { commit: a3838293, date: 2026-11-27 }
 sources:
   - path: src/content/questions/manifest.json
     sha256: a450a6db9097bba40c7c11c6ee806700816c4d7526564c1cffd837905bfbcfe0

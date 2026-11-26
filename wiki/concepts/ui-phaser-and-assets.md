@@ -4,7 +4,7 @@ type: hub
 title: 화면(R04 UI)·전장(Phaser/Spine)·제작 공정
 status: active
 updated: 2026-11-26
-verified: { commit: "6ea3d07c", date: 2026-11-27 }
+verified: { commit: a3838293, date: 2026-11-27 }
 sources:
   - path: src/game/bridge.ts
     sha256: d174fb7ea5c85ad93424afe0eb92a90508cb3488d66537edda17251254c868f8
@@ -17,7 +17,7 @@ sources:
   - path: docs/renewal/r6/tech/monster-pipeline.md
     sha256: "4ddd88e111db9d790eebe00a810a65de4dd35aaccdf0314357eaa90d24207603"
   - path: docs/renewal/r6/tech/G5-perf.md
-    sha256: f53b47482ca494b4723d1b72f04b485b4d69cdf3520ad2a0a8cf46433305b455
+    sha256: "16b0d22d3fe0532d0cfa718fb55e71e4b9fa7b650ca7ea5bdb5549b69914e452"
   - path: docs/renewal/r6/ui/system.md
     sha256: ec6f8ab15b65cf07cb475170c52201b190ba9c4d10258ce19191324ef0e4d7ab
   - path: public/assets/manifest.json

@@ -4,7 +4,7 @@ type: glossary
 title: 용어 및 약어 사전
 status: active
 updated: 2026-11-25
-verified: { commit: "9424ff2c", date: 2026-11-26 }
+verified: { commit: a3838293, date: 2026-11-27 }
 sources:
   - path: vocabulary_td_prd_v0_5.md
     sha256: "0ffd7049c672ae427f1b59b2ef80222ea745b24911b13e78d1ee5680a7902cf5"
@@ -15,7 +15,7 @@ sources:
   - path: docs/renewal/r6/map-spec.md
     sha256: "6d3c6ced8eb2a555ed6376d562ce3fd37d7d2e6c98e7e450ae726dcb08b5e594"
   - path: docs/renewal/r6/tech/G5-perf.md
-    sha256: f53b47482ca494b4723d1b72f04b485b4d69cdf3520ad2a0a8cf46433305b455
+    sha256: "16b0d22d3fe0532d0cfa718fb55e71e4b9fa7b650ca7ea5bdb5549b69914e452"
   - path: docs/renewal/r6/tech/G5-server.md
     sha256: "895f648cac4edc29c8eadafdd6bcced05880e8b8609c5f49d33099f832099dae"
   - path: docs/CR1000_HANDOFF.md
