@@ -68,6 +68,7 @@ export function Armory({ balance, towers, gold, armed, icons, variant, compact =
           const price = buildCost(balance, type);
           const short = gold < price;
           const label = battleTowerName(balance, type);
+          const role = balance.r6 ? ` ${battleTowerRole(balance, type)}` : '';
           // 호버·길게 누르기 안내: 이름 + 잘 잡는 적·약한 적(계약 strongVs·weakVs, prd-r4 §9.1).
           const counters = counterText(balance, type, 'base');
           return (
@@ -76,7 +77,7 @@ export function Armory({ balance, towers, gold, armed, icons, variant, compact =
               type="button"
               role="option"
               aria-selected={armed === type}
-              aria-label={`${label} ${price} 골드${short ? `, ${price - gold} 부족` : ''}`}
+              aria-label={`${label}${role} ${price} 골드${short ? `, ${price - gold} 부족` : ''}`}
               title={counters ? `${label} · ${counters}` : label}
               className={`r04-surface ${css.socket}`}
               data-short={short || undefined}
@@ -87,8 +88,12 @@ export function Armory({ balance, towers, gold, armed, icons, variant, compact =
               <span className={css.art}>
                 <BattleTowerPortrait type={type} icons={icons} size="fill" />
               </span>
-              {balance.r6 && <span className={css.identity}><strong>{label}</strong><span>{battleTowerRole(balance, type)}</span></span>}
-              <span className={css.price}>
+              {balance.r6 && (
+                <span className={css.identity} aria-hidden="true">
+                  <strong>{label}</strong>{' '}<span>{battleTowerRole(balance, type)}</span>
+                </span>
+              )}{' '}
+              <span className={css.price} aria-hidden="true">
                 <Icon name="coin" size={variant === 'strip' ? 12 : 14} />
                 {fmtNumber(price)}
               </span>
