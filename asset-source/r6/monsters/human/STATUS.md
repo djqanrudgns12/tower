@@ -34,6 +34,6 @@
 
 ## G4 비평 검수 재작화 (`docs/renewal/r6/review/G4-monsters-critique.md` 12항 선택)
 
-- `boss-t1/T1` (비평 12항): 넓은 지휘 망토·등 깃발(`armor`)·대형 양손 공성 망치(`gear`)로 `infantry-t4`와 실루엣 분리 (`cut_parts` `issues=0` · 13/13 슬롯, 모의 `fit_parts` IoU `0.778`, 32px 보스-일반 최대 IoU `0.683`, 지형/길 대비 `2.713/1.593`, 흰색·마젠타 잔여 `0/0`).
+- `boss-t1/T1` (비평 12항 + 2차 비평 종교 상징 제거): 넓은 지휘 망토·등 깃발(`armor`)·대형 양손 공성 망치(`gear`)로 `infantry-t4`와 실루엣 분리, 가슴·`mark` 십자 문장을 중립 R04 앰버 펼친 날개 독수리 문장으로 교체 (`cut_parts` `issues=0` · 13/13 슬롯, placement IoU `0.738`, 모의 `fit_parts` IoU `0.778`, 흰색·마젠타 잔여 `0/0`).
 - `boss-t4/T4` (비평 12항): 일반 중장갑 방패 복제를 제거하고 날개 견갑·쌍둥이 지휘 깃발(`armor`)·굵은 대형 할버드(`gear`)로 실루엣 차별화 (`cut_parts` `issues=0` · 12/12 슬롯, 모의 `fit_parts` IoU `0.771`, 32px 보스-일반 최대 IoU `0.579`, 지형/길 대비 `2.784/1.540`, 흰색·마젠타 잔여 `0/0`).
 - `docs/renewal/r6/bible/sheets/monsters-human-parts-all.webp` 갱신 완료.
