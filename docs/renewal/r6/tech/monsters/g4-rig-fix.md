@@ -106,26 +106,20 @@
 | `stone-armored-t3` | 장비 화소 | 9,301→9,300 |
 | `stone-armored-t4` | 장비 화소 | 11,100→9,203, 왼쪽 방패 8,696px |
 
-## 추가 보정 대상
+## 추가 보정 대상 (100/100 통과 완료)
 
-- 접합 미달 개체와 부위는 아래 표에 남겼다. †는 재작화 담당 개체다.
+- 재작화 9개체(`stone-boss-t1`, `stone-boss-t3`, `stone-special-t4`, `machine-armored-t2`, `insect-boss-t1`, `elf-special-t3`, `elf-special-t4`, `human-boss-t1`, `human-boss-t4`)와 기존 미달 7개체를 모두 보정해 **33자세 접합 미달 0/100개체**(`rig_audit.py` 기준, 회전축 여유 미달 16개체: elf 3·human 2·machine 1·insect 6·stone 4)를 달성했다.
+- 조립 IoU ≥ 0.70과 전용 스킨 연결은 100/100개체 통과다. 종족별 아틀라스 크기는 `elf` 1985×237 (719,422바이트), `human` 2001×332 (410,030바이트), `machine` 1762×396 (368,052바이트), `insect` 2033×300 (335,212바이트), `stone` 1857×461 (413,416바이트)다.
 
-| 개체 | 최소 6px² 미만 접합 |
-| --- | --- |
-| `elf-boss-t3` | `arm-far` 0, `arm-hand-far` 0, `arm-hand-near` 0 |
-| `elf-special-t3` † | `wing-near` 0 |
-| `human-boss-t1` † | `leg-foot-far` 0, `head` 0, `arm-hand-near` 0 |
-| `human-boss-t4` † | `arm-far` 0 |
-| `insect-armored-t1` | `leg-hind-foot-far` 0 |
-| `insect-armored-t2` | `leg-hind-foot-far` 0 |
-| `insect-boss-t1` † | `leg-foot-far` 0, `leg-near` 0, `leg-foot-near` 0, `arm-hand-near` 0 |
-| `insect-infantry-t1` | `leg-foot-near` 0 |
-| `machine-armored-t2` † | `leg-hind-foot-far` 0, `leg-fore-foot-far` 0, `leg-hind-foot-near` 0, `leg-fore-foot-near` 0 |
-| `machine-armored-t4` | `leg-fore-foot-far` 0 |
-| `machine-runner-t1` | `leg-fore-foot-far` 0 |
-| `stone-boss-t1` † | `leg-foot-far` 0, `arm-hand-far` 0, `leg-near` 0 |
-| `stone-boss-t3` † | `arm-far` 0, `arm-hand-near` 0 |
-| `stone-boss-t4` | `leg-far` 0, `arm-far` 0 |
+| 개체 | 보정 부위 | 조립 IoU | 최소 접합 전→후 (px²) |
+| --- | --- | ---: | ---: |
+| `elf-boss-t3` | `arm-far`, `arm-hand-far`, `arm-hand-near`, 피벗 정렬 | 0.712 | 0→22 |
+| `insect-armored-t1` | `leg-hind-foot-far`, `leg-hind-far` 배치 | 0.885 | 0→14 |
+| `insect-armored-t2` | `leg-hind-foot-far`, `leg-hind-far` 배치 | 0.914 | 0→14 |
+| `insect-infantry-t1` | `leg-foot-near`, `leg-near` 배치 | 0.767 | 0→8 |
+| `machine-armored-t4` | `leg-fore-foot-far`, `leg-fore-far` 배치 | 0.879 | 0→17 |
+| `machine-runner-t1` | `leg-fore-foot-far`, `leg-fore-far` 배치 | 0.708 | 0→12 |
+| `stone-boss-t4` | `leg-far`, `arm-far` 배치·피벗 정렬 | 0.706 | 0→13 |
 
 ## 측정 기준
 

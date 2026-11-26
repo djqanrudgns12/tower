@@ -23,7 +23,7 @@
     {
       "first": "machine-runner-t1",
       "second": "machine-runner-t2",
-      "iou": 0.5417439703153989,
+      "iou": 0.565377532228361,
       "pass": true
     },
     {
@@ -53,7 +53,7 @@
     {
       "first": "machine-armored-t3",
       "second": "machine-armored-t4",
-      "iou": 0.7600700525394045,
+      "iou": 0.7791519434628975,
       "pass": true
     },
     {
@@ -179,7 +179,7 @@
     {
       "first": "stone-boss-t3",
       "second": "stone-boss-t4",
-      "iou": 0.6126255380200861,
+      "iou": 0.5971830985915493,
       "pass": true
     },
     {
@@ -263,13 +263,13 @@
     {
       "first": "elf-boss-t2",
       "second": "elf-boss-t3",
-      "iou": 0.47058823529411764,
+      "iou": 0.5008818342151675,
       "pass": true
     },
     {
       "first": "elf-boss-t3",
       "second": "elf-boss-t4",
-      "iou": 0.39215686274509803,
+      "iou": 0.4133099824868651,
       "pass": true
     },
     {
@@ -365,7 +365,7 @@
     {
       "first": "insect-infantry-t1",
       "second": "insect-infantry-t2",
-      "iou": 0.5145348837209303,
+      "iou": 0.4716981132075472,
       "pass": true
     },
     {
@@ -401,13 +401,13 @@
     {
       "first": "insect-armored-t1",
       "second": "insect-armored-t2",
-      "iou": 0.6480263157894737,
+      "iou": 0.6454248366013072,
       "pass": true
     },
     {
       "first": "insect-armored-t2",
       "second": "insect-armored-t3",
-      "iou": 0.6770833333333334,
+      "iou": 0.6678141135972461,
       "pass": true
     },
     {
@@ -534,15 +534,15 @@
           "pass": false
         },
         {
-          "first": "machine-armored-t1",
-          "second": "stone-boss-t4",
-          "iou": 0.6121212121212121,
-          "pass": false
-        },
-        {
           "first": "machine-armored-t2",
           "second": "stone-special-t1",
           "iou": 0.61082910321489,
+          "pass": false
+        },
+        {
+          "first": "machine-armored-t1",
+          "second": "stone-boss-t4",
+          "iou": 0.6101949025487257,
           "pass": false
         },
         {
@@ -558,9 +558,15 @@
           "pass": false
         },
         {
-          "first": "machine-boss-t2",
+          "first": "machine-infantry-t3",
           "second": "stone-boss-t4",
-          "iou": 0.6088235294117647,
+          "iou": 0.6086956521739131,
+          "pass": false
+        },
+        {
+          "first": "machine-infantry-t4",
+          "second": "stone-boss-t4",
+          "iou": 0.6083032490974729,
           "pass": false
         },
         {
@@ -576,9 +582,9 @@
           "pass": false
         },
         {
-          "first": "machine-infantry-t4",
-          "second": "stone-boss-t4",
-          "iou": 0.6018181818181818,
+          "first": "machine-armored-t4",
+          "second": "stone-boss-t3",
+          "iou": 0.6017569546120058,
           "pass": false
         },
         {
@@ -589,8 +595,8 @@
         },
         {
           "first": "machine-armored-t4",
-          "second": "stone-boss-t3",
-          "iou": 0.6011730205278593,
+          "second": "stone-special-t4",
+          "iou": 0.6,
           "pass": false
         },
         {
@@ -630,15 +636,15 @@
           "pass": false
         },
         {
-          "first": "machine-armored-t4",
-          "second": "stone-special-t4",
-          "iou": 0.59375,
-          "pass": false
-        },
-        {
           "first": "machine-armored-t3",
           "second": "stone-infantry-t2",
           "iou": 0.5936139332365747,
+          "pass": false
+        },
+        {
+          "first": "machine-boss-t2",
+          "second": "stone-boss-t4",
+          "iou": 0.5930735930735931,
           "pass": false
         },
         {
@@ -660,6 +666,12 @@
           "pass": false
         },
         {
+          "first": "machine-armored-t4",
+          "second": "stone-boss-t4",
+          "iou": 0.5911251980982567,
+          "pass": false
+        },
+        {
           "first": "machine-boss-t3",
           "second": "stone-infantry-t2",
           "iou": 0.5911111111111111,
@@ -678,12 +690,6 @@
           "pass": false
         },
         {
-          "first": "machine-infantry-t3",
-          "second": "stone-boss-t4",
-          "iou": 0.5905797101449275,
-          "pass": false
-        },
-        {
           "first": "machine-boss-t2",
           "second": "stone-armored-t2",
           "iou": 0.5899014778325123,
@@ -697,20 +703,26 @@
         },
         {
           "first": "machine-armored-t3",
-          "second": "stone-special-t1",
-          "iou": 0.5883256528417818,
+          "second": "stone-boss-t4",
+          "iou": 0.5887708649468892,
           "pass": false
         },
         {
           "first": "machine-armored-t3",
-          "second": "stone-boss-t4",
-          "iou": 0.5880551301684533,
+          "second": "stone-special-t1",
+          "iou": 0.5883256528417818,
           "pass": false
         },
         {
           "first": "machine-infantry-t2",
           "second": "stone-boss-t1",
           "iou": 0.5875486381322957,
+          "pass": false
+        },
+        {
+          "first": "machine-armored-t4",
+          "second": "stone-armored-t3",
+          "iou": 0.5871934604904632,
           "pass": false
         },
         {
@@ -726,9 +738,9 @@
           "pass": false
         },
         {
-          "first": "machine-armored-t4",
+          "first": "machine-infantry-t2",
           "second": "stone-boss-t4",
-          "iou": 0.5846645367412141,
+          "iou": 0.5850091407678245,
           "pass": false
         },
         {
@@ -756,12 +768,6 @@
           "pass": false
         },
         {
-          "first": "machine-armored-t4",
-          "second": "stone-infantry-t2",
-          "iou": 0.581081081081081,
-          "pass": false
-        },
-        {
           "first": "machine-runner-t3",
           "second": "stone-boss-t1",
           "iou": 0.5798922800718133,
@@ -775,20 +781,26 @@
         },
         {
           "first": "machine-armored-t4",
-          "second": "stone-infantry-t3",
-          "iou": 0.5778443113772455,
-          "pass": false
-        },
-        {
-          "first": "machine-armored-t2",
-          "second": "stone-boss-t4",
-          "iou": 0.5759075907590759,
+          "second": "stone-infantry-t2",
+          "iou": 0.5793413173652695,
           "pass": false
         },
         {
           "first": "machine-armored-t4",
-          "second": "stone-armored-t3",
-          "iou": 0.575880758807588,
+          "second": "stone-runner-t4",
+          "iou": 0.5789473684210527,
+          "pass": false
+        },
+        {
+          "first": "machine-armored-t4",
+          "second": "stone-boss-t2",
+          "iou": 0.5784982935153583,
+          "pass": false
+        },
+        {
+          "first": "machine-armored-t4",
+          "second": "stone-infantry-t3",
+          "iou": 0.5761194029850746,
           "pass": false
         },
         {
@@ -810,6 +822,12 @@
           "pass": false
         },
         {
+          "first": "machine-armored-t2",
+          "second": "stone-boss-t4",
+          "iou": 0.5742251223491027,
+          "pass": false
+        },
+        {
           "first": "machine-boss-t2",
           "second": "stone-armored-t1",
           "iou": 0.5740072202166066,
@@ -819,12 +837,6 @@
           "first": "machine-armored-t1",
           "second": "stone-boss-t1",
           "iou": 0.5738461538461539,
-          "pass": false
-        },
-        {
-          "first": "machine-armored-t4",
-          "second": "stone-runner-t4",
-          "iou": 0.5734157650695518,
           "pass": false
         },
         {
@@ -855,18 +867,6 @@
           "first": "machine-boss-t3",
           "second": "stone-infantry-t1",
           "iou": 0.56973293768546,
-          "pass": false
-        },
-        {
-          "first": "machine-armored-t4",
-          "second": "stone-boss-t2",
-          "iou": 0.5697278911564626,
-          "pass": false
-        },
-        {
-          "first": "machine-infantry-t2",
-          "second": "stone-boss-t4",
-          "iou": 0.5695970695970696,
           "pass": false
         },
         {
@@ -918,6 +918,12 @@
           "pass": false
         },
         {
+          "first": "machine-armored-t4",
+          "second": "stone-boss-t1",
+          "iou": 0.5597381342062193,
+          "pass": false
+        },
+        {
           "first": "machine-boss-t4",
           "second": "stone-special-t1",
           "iou": 0.5596330275229358,
@@ -930,6 +936,12 @@
           "pass": false
         },
         {
+          "first": "machine-runner-t1",
+          "second": "stone-boss-t4",
+          "iou": 0.5570032573289903,
+          "pass": false
+        },
+        {
           "first": "machine-boss-t4",
           "second": "stone-infantry-t1",
           "iou": 0.5568513119533528,
@@ -939,12 +951,6 @@
           "first": "machine-runner-t3",
           "second": "stone-boss-t2",
           "iou": 0.5547445255474452,
-          "pass": false
-        },
-        {
-          "first": "machine-armored-t4",
-          "second": "stone-infantry-t1",
-          "iou": 0.5547226386806596,
           "pass": false
         },
         {
@@ -1001,7 +1007,7 @@
         {
           "first": "machine-armored-t4",
           "second": "elf-boss-t2",
-          "iou": 0.6412478336221837,
+          "iou": 0.6418685121107266,
           "pass": false
         },
         {
@@ -1036,8 +1042,26 @@
         },
         {
           "first": "machine-infantry-t4",
+          "second": "elf-boss-t3",
+          "iou": 0.6089743589743589,
+          "pass": false
+        },
+        {
+          "first": "machine-armored-t4",
+          "second": "elf-special-t2",
+          "iou": 0.6014625228519196,
+          "pass": false
+        },
+        {
+          "first": "machine-infantry-t4",
           "second": "elf-armored-t1",
           "iou": 0.6004842615012107,
+          "pass": false
+        },
+        {
+          "first": "machine-runner-t3",
+          "second": "elf-boss-t3",
+          "iou": 0.5987903225806451,
           "pass": false
         },
         {
@@ -1049,13 +1073,13 @@
         {
           "first": "machine-infantry-t3",
           "second": "elf-boss-t3",
-          "iou": 0.5982339955849889,
+          "iou": 0.5957446808510638,
           "pass": false
         },
         {
-          "first": "machine-infantry-t2",
+          "first": "machine-armored-t2",
           "second": "elf-boss-t3",
-          "iou": 0.5904977375565611,
+          "iou": 0.5934489402697495,
           "pass": false
         },
         {
@@ -1090,18 +1114,6 @@
         },
         {
           "first": "machine-infantry-t4",
-          "second": "elf-boss-t3",
-          "iou": 0.5838779956427015,
-          "pass": false
-        },
-        {
-          "first": "machine-armored-t4",
-          "second": "elf-special-t2",
-          "iou": 0.5833333333333334,
-          "pass": false
-        },
-        {
-          "first": "machine-infantry-t4",
           "second": "elf-infantry-t1",
           "iou": 0.5831265508684863,
           "pass": false
@@ -1110,6 +1122,12 @@
           "first": "machine-armored-t2",
           "second": "elf-special-t4",
           "iou": 0.5822784810126582,
+          "pass": false
+        },
+        {
+          "first": "machine-armored-t4",
+          "second": "elf-boss-t3",
+          "iou": 0.5802919708029197,
           "pass": false
         },
         {
@@ -1122,6 +1140,12 @@
           "first": "machine-boss-t2",
           "second": "elf-boss-t2",
           "iou": 0.5774436090225564,
+          "pass": false
+        },
+        {
+          "first": "machine-armored-t4",
+          "second": "elf-special-t4",
+          "iou": 0.5748502994011976,
           "pass": false
         },
         {
@@ -1149,12 +1173,6 @@
           "pass": false
         },
         {
-          "first": "machine-armored-t2",
-          "second": "elf-boss-t3",
-          "iou": 0.564453125,
-          "pass": false
-        },
-        {
           "first": "machine-boss-t3",
           "second": "elf-boss-t2",
           "iou": 0.5638126009693053,
@@ -1167,9 +1185,15 @@
           "pass": false
         },
         {
-          "first": "machine-armored-t4",
-          "second": "elf-special-t4",
-          "iou": 0.5615079365079365,
+          "first": "machine-armored-t3",
+          "second": "elf-boss-t3",
+          "iou": 0.5618556701030928,
+          "pass": false
+        },
+        {
+          "first": "machine-infantry-t2",
+          "second": "elf-boss-t3",
+          "iou": 0.5610278372591007,
           "pass": false
         },
         {
@@ -1182,6 +1206,12 @@
           "first": "machine-infantry-t3",
           "second": "elf-armored-t2",
           "iou": 0.5602836879432624,
+          "pass": false
+        },
+        {
+          "first": "machine-armored-t1",
+          "second": "elf-boss-t3",
+          "iou": 0.56,
           "pass": false
         },
         {
@@ -1326,6 +1356,12 @@
           "pass": false
         },
         {
+          "first": "machine-armored-t4",
+          "second": "human-armored-t3",
+          "iou": 0.6343692870201096,
+          "pass": false
+        },
+        {
           "first": "machine-infantry-t3",
           "second": "human-infantry-t4",
           "iou": 0.6313131313131313,
@@ -1363,14 +1399,26 @@
         },
         {
           "first": "machine-armored-t4",
-          "second": "human-armored-t3",
-          "iou": 0.6188747731397459,
+          "second": "human-armored-t1",
+          "iou": 0.6212624584717608,
+          "pass": false
+        },
+        {
+          "first": "machine-armored-t4",
+          "second": "human-special-t3",
+          "iou": 0.6207430340557275,
           "pass": false
         },
         {
           "first": "machine-runner-t3",
           "second": "human-armored-t1",
           "iou": 0.6182795698924731,
+          "pass": false
+        },
+        {
+          "first": "machine-armored-t4",
+          "second": "human-armored-t4",
+          "iou": 0.6181172291296625,
           "pass": false
         },
         {
@@ -1381,14 +1429,8 @@
         },
         {
           "first": "machine-armored-t4",
-          "second": "human-special-t3",
-          "iou": 0.615146831530139,
-          "pass": false
-        },
-        {
-          "first": "machine-armored-t4",
           "second": "human-runner-t4",
-          "iou": 0.611965811965812,
+          "iou": 0.6126279863481229,
           "pass": false
         },
         {
@@ -1441,14 +1483,8 @@
         },
         {
           "first": "machine-armored-t4",
-          "second": "human-armored-t1",
-          "iou": 0.6019736842105263,
-          "pass": false
-        },
-        {
-          "first": "machine-armored-t4",
-          "second": "human-armored-t4",
-          "iou": 0.6003521126760564,
+          "second": "human-boss-t3",
+          "iou": 0.6021897810218978,
           "pass": false
         },
         {
@@ -1471,8 +1507,8 @@
         },
         {
           "first": "machine-armored-t4",
-          "second": "human-boss-t2",
-          "iou": 0.5957095709570958,
+          "second": "human-armored-t2",
+          "iou": 0.5985401459854015,
           "pass": false
         },
         {
@@ -1506,12 +1542,6 @@
           "pass": false
         },
         {
-          "first": "machine-armored-t4",
-          "second": "human-boss-t3",
-          "iou": 0.5898366606170599,
-          "pass": false
-        },
-        {
           "first": "machine-infantry-t2",
           "second": "human-infantry-t2",
           "iou": 0.5894988066825776,
@@ -1524,15 +1554,15 @@
           "pass": false
         },
         {
-          "first": "machine-armored-t1",
-          "second": "human-armored-t3",
-          "iou": 0.5881383855024712,
+          "first": "machine-armored-t4",
+          "second": "human-boss-t2",
+          "iou": 0.5885245901639344,
           "pass": false
         },
         {
-          "first": "machine-armored-t4",
-          "second": "human-armored-t2",
-          "iou": 0.5862068965517241,
+          "first": "machine-armored-t1",
+          "second": "human-armored-t3",
+          "iou": 0.5881383855024712,
           "pass": false
         },
         {
@@ -1704,6 +1734,12 @@
           "pass": false
         },
         {
+          "first": "machine-armored-t4",
+          "second": "human-special-t2",
+          "iou": 0.5605006954102921,
+          "pass": false
+        },
+        {
           "first": "machine-runner-t3",
           "second": "human-armored-t2",
           "iou": 0.5592233009708738,
@@ -1748,13 +1784,13 @@
         {
           "first": "machine-armored-t4",
           "second": "human-special-t4",
-          "iou": 0.555895865237366,
+          "iou": 0.5565749235474006,
           "pass": false
         },
         {
           "first": "machine-armored-t4",
-          "second": "human-special-t2",
-          "iou": 0.5555555555555556,
+          "second": "human-boss-t1",
+          "iou": 0.5561497326203209,
           "pass": false
         },
         {
@@ -1809,6 +1845,12 @@
           "pass": false
         },
         {
+          "first": "machine-boss-t4",
+          "second": "insect-armored-t2",
+          "iou": 0.6713286713286714,
+          "pass": false
+        },
+        {
           "first": "machine-infantry-t3",
           "second": "insect-infantry-t4",
           "iou": 0.6642335766423357,
@@ -1818,12 +1860,6 @@
           "first": "machine-runner-t3",
           "second": "insect-armored-t3",
           "iou": 0.6631016042780749,
-          "pass": false
-        },
-        {
-          "first": "machine-boss-t4",
-          "second": "insect-armored-t2",
-          "iou": 0.6573913043478261,
           "pass": false
         },
         {
@@ -1845,12 +1881,6 @@
           "pass": false
         },
         {
-          "first": "machine-armored-t4",
-          "second": "insect-boss-t4",
-          "iou": 0.6448445171849427,
-          "pass": false
-        },
-        {
           "first": "machine-runner-t2",
           "second": "insect-armored-t3",
           "iou": 0.6404886561954625,
@@ -1860,6 +1890,12 @@
           "first": "machine-boss-t4",
           "second": "insect-armored-t3",
           "iou": 0.6402535657686212,
+          "pass": false
+        },
+        {
+          "first": "machine-armored-t4",
+          "second": "insect-boss-t4",
+          "iou": 0.6373983739837399,
           "pass": false
         },
         {
@@ -1887,9 +1923,9 @@
           "pass": false
         },
         {
-          "first": "machine-armored-t4",
-          "second": "insect-boss-t3",
-          "iou": 0.6181818181818182,
+          "first": "machine-boss-t4",
+          "second": "insect-armored-t1",
+          "iou": 0.620845921450151,
           "pass": false
         },
         {
@@ -1905,9 +1941,15 @@
           "pass": false
         },
         {
+          "first": "machine-armored-t4",
+          "second": "insect-boss-t3",
+          "iou": 0.6138763197586727,
+          "pass": false
+        },
+        {
           "first": "machine-armored-t3",
           "second": "insect-armored-t1",
-          "iou": 0.612184249628529,
+          "iou": 0.612759643916914,
           "pass": false
         },
         {
@@ -1930,12 +1972,6 @@
         },
         {
           "first": "machine-boss-t4",
-          "second": "insect-armored-t1",
-          "iou": 0.6105263157894737,
-          "pass": false
-        },
-        {
-          "first": "machine-boss-t4",
           "second": "insect-armored-t4",
           "iou": 0.6093023255813953,
           "pass": false
@@ -1947,21 +1983,27 @@
           "pass": false
         },
         {
+          "first": "machine-runner-t3",
+          "second": "insect-armored-t1",
+          "iou": 0.6076158940397351,
+          "pass": false
+        },
+        {
           "first": "machine-runner-t4",
           "second": "insect-armored-t1",
-          "iou": 0.6078431372549019,
+          "iou": 0.6058631921824105,
+          "pass": false
+        },
+        {
+          "first": "machine-boss-t3",
+          "second": "insect-armored-t1",
+          "iou": 0.6057401812688822,
           "pass": false
         },
         {
           "first": "machine-boss-t4",
           "second": "insect-boss-t3",
           "iou": 0.6043795620437956,
-          "pass": false
-        },
-        {
-          "first": "machine-runner-t3",
-          "second": "insect-armored-t1",
-          "iou": 0.6043046357615894,
           "pass": false
         },
         {
@@ -1989,15 +2031,9 @@
           "pass": false
         },
         {
-          "first": "machine-boss-t3",
-          "second": "insect-armored-t1",
-          "iou": 0.5978915662650602,
-          "pass": false
-        },
-        {
-          "first": "machine-armored-t1",
-          "second": "insect-armored-t1",
-          "iou": 0.5977011494252874,
+          "first": "machine-runner-t1",
+          "second": "insect-runner-t3",
+          "iou": 0.5962264150943396,
           "pass": false
         },
         {
@@ -2013,21 +2049,27 @@
           "pass": false
         },
         {
+          "first": "machine-armored-t1",
+          "second": "insect-armored-t1",
+          "iou": 0.5937052932761088,
+          "pass": false
+        },
+        {
           "first": "machine-boss-t2",
           "second": "insect-armored-t3",
           "iou": 0.5868005738880918,
           "pass": false
         },
         {
-          "first": "machine-runner-t1",
-          "second": "insect-runner-t3",
-          "iou": 0.5842911877394636,
-          "pass": false
-        },
-        {
           "first": "machine-boss-t3",
           "second": "insect-boss-t2",
           "iou": 0.5818759936406995,
+          "pass": false
+        },
+        {
+          "first": "machine-armored-t4",
+          "second": "insect-special-t4",
+          "iou": 0.5788643533123028,
           "pass": false
         },
         {
@@ -2043,12 +2085,6 @@
           "pass": false
         },
         {
-          "first": "machine-infantry-t2",
-          "second": "insect-infantry-t1",
-          "iou": 0.576,
-          "pass": false
-        },
-        {
           "first": "machine-runner-t3",
           "second": "insect-armored-t4",
           "iou": 0.5757575757575758,
@@ -2061,9 +2097,27 @@
           "pass": false
         },
         {
+          "first": "machine-armored-t4",
+          "second": "insect-armored-t3",
+          "iou": 0.571875,
+          "pass": false
+        },
+        {
+          "first": "machine-boss-t2",
+          "second": "insect-armored-t1",
+          "iou": 0.5714285714285714,
+          "pass": false
+        },
+        {
           "first": "machine-armored-t1",
           "second": "insect-special-t4",
           "iou": 0.5703812316715543,
+          "pass": false
+        },
+        {
+          "first": "machine-armored-t2",
+          "second": "insect-armored-t1",
+          "iou": 0.5678627145085804,
           "pass": false
         },
         {
@@ -2079,39 +2133,27 @@
           "pass": false
         },
         {
-          "first": "machine-boss-t2",
-          "second": "insect-armored-t1",
-          "iou": 0.5665294924554184,
-          "pass": false
-        },
-        {
-          "first": "machine-armored-t4",
-          "second": "insect-armored-t1",
-          "iou": 0.5662650602409639,
-          "pass": false
-        },
-        {
           "first": "machine-runner-t3",
           "second": "insect-boss-t3",
           "iou": 0.565149136577708,
           "pass": false
         },
         {
+          "first": "machine-armored-t4",
+          "second": "insect-armored-t1",
+          "iou": 0.562874251497006,
+          "pass": false
+        },
+        {
+          "first": "machine-runner-t1",
+          "second": "insect-boss-t3",
+          "iou": 0.5626911314984709,
+          "pass": false
+        },
+        {
           "first": "machine-runner-t2",
           "second": "insect-armored-t1",
-          "iou": 0.5641025641025641,
-          "pass": false
-        },
-        {
-          "first": "machine-armored-t4",
-          "second": "insect-special-t4",
-          "iou": 0.5633802816901409,
-          "pass": false
-        },
-        {
-          "first": "machine-armored-t2",
-          "second": "insect-armored-t1",
-          "iou": 0.5623052959501558,
+          "iou": 0.5623003194888179,
           "pass": false
         },
         {
@@ -2127,9 +2169,9 @@
           "pass": false
         },
         {
-          "first": "machine-armored-t4",
+          "first": "machine-runner-t1",
           "second": "insect-armored-t3",
-          "iou": 0.5614307931570762,
+          "iou": 0.5602605863192183,
           "pass": false
         },
         {
@@ -2151,9 +2193,21 @@
           "pass": false
         },
         {
+          "first": "machine-runner-t3",
+          "second": "insect-armored-t2",
+          "iou": 0.5555555555555556,
+          "pass": false
+        },
+        {
           "first": "machine-armored-t3",
           "second": "insect-runner-t2",
           "iou": 0.5550239234449761,
+          "pass": false
+        },
+        {
+          "first": "machine-boss-t1",
+          "second": "insect-infantry-t1",
+          "iou": 0.5549597855227882,
           "pass": false
         },
         {
@@ -2163,9 +2217,9 @@
           "pass": false
         },
         {
-          "first": "machine-runner-t3",
-          "second": "insect-armored-t2",
-          "iou": 0.5529197080291971,
+          "first": "machine-armored-t4",
+          "second": "insect-armored-t4",
+          "iou": 0.5523076923076923,
           "pass": false
         },
         {
@@ -2208,9 +2262,9 @@
           "pass": false
         },
         {
-          "first": "stone-boss-t4",
-          "second": "elf-boss-t2",
-          "iou": 0.6316666666666667,
+          "first": "stone-boss-t2",
+          "second": "elf-boss-t3",
+          "iou": 0.6408730158730159,
           "pass": false
         },
         {
@@ -2220,9 +2274,9 @@
           "pass": false
         },
         {
-          "first": "stone-boss-t2",
-          "second": "elf-boss-t3",
-          "iou": 0.6052104208416834,
+          "first": "stone-boss-t4",
+          "second": "elf-boss-t2",
+          "iou": 0.608130081300813,
           "pass": false
         },
         {
@@ -2235,6 +2289,12 @@
           "first": "stone-runner-t2",
           "second": "elf-runner-t3",
           "iou": 0.6023529411764705,
+          "pass": false
+        },
+        {
+          "first": "stone-boss-t1",
+          "second": "elf-boss-t3",
+          "iou": 0.601123595505618,
           "pass": false
         },
         {
@@ -2265,6 +2325,12 @@
           "first": "stone-armored-t3",
           "second": "elf-boss-t2",
           "iou": 0.5818431911966988,
+          "pass": false
+        },
+        {
+          "first": "stone-boss-t4",
+          "second": "elf-boss-t3",
+          "iou": 0.581151832460733,
           "pass": false
         },
         {
@@ -2379,12 +2445,6 @@
           "pass": false
         },
         {
-          "first": "stone-boss-t4",
-          "second": "human-armored-t1",
-          "iou": 0.6710963455149501,
-          "pass": false
-        },
-        {
           "first": "stone-boss-t1",
           "second": "human-boss-t4",
           "iou": 0.6710280373831776,
@@ -2415,6 +2475,12 @@
           "pass": false
         },
         {
+          "first": "stone-boss-t4",
+          "second": "human-armored-t1",
+          "iou": 0.662847790507365,
+          "pass": false
+        },
+        {
           "first": "stone-boss-t2",
           "second": "human-armored-t4",
           "iou": 0.660952380952381,
@@ -2441,7 +2507,7 @@
         {
           "first": "stone-boss-t4",
           "second": "human-boss-t4",
-          "iou": 0.6432337434094904,
+          "iou": 0.6434782608695652,
           "pass": false
         },
         {
@@ -2512,8 +2578,8 @@
         },
         {
           "first": "stone-boss-t4",
-          "second": "human-special-t3",
-          "iou": 0.6244343891402715,
+          "second": "human-armored-t3",
+          "iou": 0.6243478260869565,
           "pass": false
         },
         {
@@ -2532,6 +2598,12 @@
           "first": "stone-special-t1",
           "second": "human-runner-t4",
           "iou": 0.62,
+          "pass": false
+        },
+        {
+          "first": "stone-boss-t4",
+          "second": "human-special-t3",
+          "iou": 0.6199701937406855,
           "pass": false
         },
         {
@@ -2577,12 +2649,6 @@
           "pass": false
         },
         {
-          "first": "stone-boss-t4",
-          "second": "human-armored-t3",
-          "iou": 0.612565445026178,
-          "pass": false
-        },
-        {
           "first": "stone-infantry-t3",
           "second": "human-special-t4",
           "iou": 0.6110304789550073,
@@ -2619,6 +2685,18 @@
           "pass": false
         },
         {
+          "first": "stone-boss-t4",
+          "second": "human-boss-t1",
+          "iou": 0.6073943661971831,
+          "pass": false
+        },
+        {
+          "first": "stone-boss-t4",
+          "second": "human-special-t2",
+          "iou": 0.607192254495159,
+          "pass": false
+        },
+        {
           "first": "stone-armored-t4",
           "second": "human-special-t1",
           "iou": 0.6071428571428571,
@@ -2649,18 +2727,6 @@
           "pass": false
         },
         {
-          "first": "stone-boss-t4",
-          "second": "human-boss-t1",
-          "iou": 0.601063829787234,
-          "pass": false
-        },
-        {
-          "first": "stone-boss-t4",
-          "second": "human-armored-t4",
-          "iou": 0.6003401360544217,
-          "pass": false
-        },
-        {
           "first": "stone-infantry-t4",
           "second": "human-special-t3",
           "iou": 0.5989232839838493,
@@ -2673,15 +2739,21 @@
           "pass": false
         },
         {
-          "first": "stone-armored-t4",
-          "second": "human-special-t2",
-          "iou": 0.5979381443298969,
+          "first": "stone-boss-t4",
+          "second": "human-armored-t2",
+          "iou": 0.5986038394415357,
           "pass": false
         },
         {
           "first": "stone-boss-t4",
+          "second": "human-armored-t4",
+          "iou": 0.5983193277310924,
+          "pass": false
+        },
+        {
+          "first": "stone-armored-t4",
           "second": "human-special-t2",
-          "iou": 0.5955678670360111,
+          "iou": 0.5979381443298969,
           "pass": false
         },
         {
@@ -2698,8 +2770,8 @@
         },
         {
           "first": "stone-boss-t4",
-          "second": "human-armored-t2",
-          "iou": 0.5922671353251318,
+          "second": "human-special-t4",
+          "iou": 0.5933734939759037,
           "pass": false
         },
         {
@@ -2769,12 +2841,6 @@
           "pass": false
         },
         {
-          "first": "stone-boss-t4",
-          "second": "human-boss-t2",
-          "iou": 0.5781990521327014,
-          "pass": false
-        },
-        {
           "first": "stone-boss-t1",
           "second": "human-special-t2",
           "iou": 0.578125,
@@ -2787,15 +2853,15 @@
           "pass": false
         },
         {
-          "first": "stone-boss-t2",
-          "second": "human-special-t4",
-          "iou": 0.5764895330112721,
+          "first": "stone-boss-t4",
+          "second": "human-boss-t2",
+          "iou": 0.5765625,
           "pass": false
         },
         {
-          "first": "stone-boss-t4",
+          "first": "stone-boss-t2",
           "second": "human-special-t4",
-          "iou": 0.5759398496240602,
+          "iou": 0.5764895330112721,
           "pass": false
         },
         {
@@ -2820,6 +2886,12 @@
           "first": "stone-boss-t1",
           "second": "human-boss-t3",
           "iou": 0.573502722323049,
+          "pass": false
+        },
+        {
+          "first": "stone-boss-t4",
+          "second": "human-boss-t3",
+          "iou": 0.571917808219178,
           "pass": false
         },
         {
@@ -2895,21 +2967,9 @@
           "pass": false
         },
         {
-          "first": "stone-boss-t4",
-          "second": "human-runner-t1",
-          "iou": 0.5614035087719298,
-          "pass": false
-        },
-        {
           "first": "stone-armored-t2",
           "second": "human-runner-t4",
           "iou": 0.5605858854860186,
-          "pass": false
-        },
-        {
-          "first": "stone-boss-t4",
-          "second": "human-runner-t2",
-          "iou": 0.5596330275229358,
           "pass": false
         },
         {
@@ -2946,6 +3006,12 @@
           "first": "stone-special-t3",
           "second": "human-armored-t1",
           "iou": 0.5548387096774193,
+          "pass": false
+        },
+        {
+          "first": "stone-boss-t4",
+          "second": "human-runner-t1",
+          "iou": 0.5544041450777202,
           "pass": false
         },
         {
@@ -2991,12 +3057,6 @@
           "pass": false
         },
         {
-          "first": "stone-boss-t4",
-          "second": "human-boss-t3",
-          "iou": 0.5521367521367522,
-          "pass": false
-        },
-        {
           "first": "stone-infantry-t4",
           "second": "human-special-t4",
           "iou": 0.5515394912985274,
@@ -3037,14 +3097,14 @@
       "max": {
         "first": "stone-infantry-t3",
         "second": "insect-armored-t1",
-        "iou": 0.6976047904191617,
+        "iou": 0.6980568011958147,
         "pass": false
       },
       "failures": [
         {
           "first": "stone-infantry-t3",
           "second": "insect-armored-t1",
-          "iou": 0.6976047904191617,
+          "iou": 0.6980568011958147,
           "pass": false
         },
         {
@@ -3054,21 +3114,9 @@
           "pass": false
         },
         {
-          "first": "stone-boss-t4",
-          "second": "insect-boss-t3",
-          "iou": 0.6717325227963525,
-          "pass": false
-        },
-        {
           "first": "stone-armored-t2",
           "second": "insect-boss-t3",
           "iou": 0.6692406692406693,
-          "pass": false
-        },
-        {
-          "first": "stone-infantry-t2",
-          "second": "insect-armored-t1",
-          "iou": 0.6686303387334315,
           "pass": false
         },
         {
@@ -3078,15 +3126,21 @@
           "pass": false
         },
         {
-          "first": "stone-boss-t3",
-          "second": "insect-boss-t3",
-          "iou": 0.6643550624133149,
+          "first": "stone-infantry-t2",
+          "second": "insect-armored-t1",
+          "iou": 0.6666666666666666,
           "pass": false
         },
         {
           "first": "stone-armored-t3",
           "second": "insect-armored-t1",
-          "iou": 0.6639892904953146,
+          "iou": 0.6666666666666666,
+          "pass": false
+        },
+        {
+          "first": "stone-boss-t3",
+          "second": "insect-boss-t3",
+          "iou": 0.6643550624133149,
           "pass": false
         },
         {
@@ -3121,8 +3175,14 @@
         },
         {
           "first": "stone-boss-t4",
-          "second": "insect-boss-t4",
-          "iou": 0.6486486486486487,
+          "second": "insect-boss-t3",
+          "iou": 0.649331352154532,
+          "pass": false
+        },
+        {
+          "first": "stone-armored-t2",
+          "second": "insect-armored-t1",
+          "iou": 0.648508430609598,
           "pass": false
         },
         {
@@ -3132,27 +3192,27 @@
           "pass": false
         },
         {
+          "first": "stone-boss-t4",
+          "second": "insect-boss-t4",
+          "iou": 0.6462264150943396,
+          "pass": false
+        },
+        {
           "first": "stone-infantry-t3",
           "second": "insect-boss-t3",
           "iou": 0.6458923512747875,
           "pass": false
         },
         {
-          "first": "stone-armored-t2",
+          "first": "stone-infantry-t4",
           "second": "insect-armored-t1",
-          "iou": 0.6437823834196891,
+          "iou": 0.6412742382271468,
           "pass": false
         },
         {
           "first": "stone-infantry-t4",
           "second": "insect-boss-t3",
           "iou": 0.6409214092140921,
-          "pass": false
-        },
-        {
-          "first": "stone-infantry-t4",
-          "second": "insect-armored-t1",
-          "iou": 0.6407766990291263,
           "pass": false
         },
         {
@@ -3170,7 +3230,7 @@
         {
           "first": "stone-special-t3",
           "second": "insect-armored-t2",
-          "iou": 0.6373429084380611,
+          "iou": 0.6397849462365591,
           "pass": false
         },
         {
@@ -3180,15 +3240,15 @@
           "pass": false
         },
         {
-          "first": "stone-armored-t1",
+          "first": "stone-infantry-t1",
           "second": "insect-armored-t1",
-          "iou": 0.631979695431472,
+          "iou": 0.6335766423357664,
           "pass": false
         },
         {
-          "first": "stone-infantry-t1",
+          "first": "stone-armored-t1",
           "second": "insect-armored-t1",
-          "iou": 0.6306569343065693,
+          "iou": 0.632446134347275,
           "pass": false
         },
         {
@@ -3222,15 +3282,21 @@
           "pass": false
         },
         {
-          "first": "stone-boss-t1",
+          "first": "stone-boss-t3",
           "second": "insect-armored-t1",
-          "iou": 0.6236220472440945,
+          "iou": 0.623789764868603,
           "pass": false
         },
         {
           "first": "stone-armored-t3",
           "second": "insect-armored-t3",
           "iou": 0.6223118279569892,
+          "pass": false
+        },
+        {
+          "first": "stone-boss-t1",
+          "second": "insect-armored-t1",
+          "iou": 0.6216640502354788,
           "pass": false
         },
         {
@@ -3264,12 +3330,6 @@
           "pass": false
         },
         {
-          "first": "stone-boss-t3",
-          "second": "insect-armored-t1",
-          "iou": 0.6143250688705234,
-          "pass": false
-        },
-        {
           "first": "stone-armored-t3",
           "second": "insect-special-t4",
           "iou": 0.6134228187919463,
@@ -3279,12 +3339,6 @@
           "first": "stone-armored-t4",
           "second": "insect-special-t4",
           "iou": 0.6123919308357348,
-          "pass": false
-        },
-        {
-          "first": "stone-special-t1",
-          "second": "insect-armored-t1",
-          "iou": 0.6123680241327301,
           "pass": false
         },
         {
@@ -3306,9 +3360,15 @@
           "pass": false
         },
         {
+          "first": "stone-special-t1",
+          "second": "insect-armored-t1",
+          "iou": 0.6081081081081081,
+          "pass": false
+        },
+        {
           "first": "stone-boss-t4",
           "second": "insect-boss-t2",
-          "iou": 0.6070287539936102,
+          "iou": 0.6075949367088608,
           "pass": false
         },
         {
@@ -3330,6 +3390,12 @@
           "pass": false
         },
         {
+          "first": "stone-runner-t4",
+          "second": "insect-armored-t1",
+          "iou": 0.6034985422740525,
+          "pass": false
+        },
+        {
           "first": "stone-runner-t2",
           "second": "insect-special-t1",
           "iou": 0.6014150943396226,
@@ -3342,21 +3408,15 @@
           "pass": false
         },
         {
-          "first": "stone-runner-t4",
-          "second": "insect-armored-t1",
-          "iou": 0.6005830903790087,
+          "first": "stone-armored-t4",
+          "second": "insect-armored-t2",
+          "iou": 0.6003062787136294,
           "pass": false
         },
         {
           "first": "stone-infantry-t2",
           "second": "insect-boss-t4",
           "iou": 0.5982532751091703,
-          "pass": false
-        },
-        {
-          "first": "stone-armored-t4",
-          "second": "insect-armored-t2",
-          "iou": 0.5957120980091883,
           "pass": false
         },
         {
@@ -3378,9 +3438,9 @@
           "pass": false
         },
         {
-          "first": "stone-boss-t4",
+          "first": "stone-special-t3",
           "second": "insect-armored-t1",
-          "iou": 0.5928677563150074,
+          "iou": 0.5925925925925926,
           "pass": false
         },
         {
@@ -3402,12 +3462,6 @@
           "pass": false
         },
         {
-          "first": "stone-special-t3",
-          "second": "insect-armored-t1",
-          "iou": 0.5895061728395061,
-          "pass": false
-        },
-        {
           "first": "stone-boss-t1",
           "second": "insect-armored-t3",
           "iou": 0.5869218500797448,
@@ -3417,6 +3471,12 @@
           "first": "stone-special-t1",
           "second": "insect-armored-t3",
           "iou": 0.5867895545314901,
+          "pass": false
+        },
+        {
+          "first": "stone-boss-t4",
+          "second": "insect-armored-t1",
+          "iou": 0.5847953216374269,
           "pass": false
         },
         {
@@ -3438,6 +3498,12 @@
           "pass": false
         },
         {
+          "first": "stone-armored-t4",
+          "second": "insect-armored-t1",
+          "iou": 0.5788043478260869,
+          "pass": false
+        },
+        {
           "first": "stone-runner-t1",
           "second": "insect-special-t4",
           "iou": 0.5774410774410774,
@@ -3456,15 +3522,15 @@
           "pass": false
         },
         {
-          "first": "stone-armored-t4",
-          "second": "insect-armored-t1",
-          "iou": 0.5760869565217391,
-          "pass": false
-        },
-        {
           "first": "stone-infantry-t4",
           "second": "insect-armored-t3",
           "iou": 0.5755494505494505,
+          "pass": false
+        },
+        {
+          "first": "stone-armored-t3",
+          "second": "insect-armored-t2",
+          "iou": 0.5754189944134078,
           "pass": false
         },
         {
@@ -3486,9 +3552,9 @@
           "pass": false
         },
         {
-          "first": "stone-special-t1",
-          "second": "insect-armored-t2",
-          "iou": 0.5745033112582781,
+          "first": "stone-boss-t4",
+          "second": "insect-boss-t1",
+          "iou": 0.5736301369863014,
           "pass": false
         },
         {
@@ -3504,6 +3570,12 @@
           "pass": false
         },
         {
+          "first": "stone-special-t2",
+          "second": "insect-armored-t2",
+          "iou": 0.5709624796084829,
+          "pass": false
+        },
+        {
           "first": "stone-infantry-t4",
           "second": "insect-special-t4",
           "iou": 0.5708390646492435,
@@ -3512,19 +3584,7 @@
         {
           "first": "stone-infantry-t3",
           "second": "insect-armored-t2",
-          "iou": 0.5703245749613601,
-          "pass": false
-        },
-        {
-          "first": "stone-boss-t4",
-          "second": "insect-boss-t1",
-          "iou": 0.5699481865284974,
-          "pass": false
-        },
-        {
-          "first": "stone-armored-t3",
-          "second": "insect-armored-t2",
-          "iou": 0.5690376569037657,
+          "iou": 0.5676923076923077,
           "pass": false
         },
         {
@@ -3534,9 +3594,9 @@
           "pass": false
         },
         {
-          "first": "stone-special-t2",
+          "first": "stone-special-t1",
           "second": "insect-armored-t2",
-          "iou": 0.566068515497553,
+          "iou": 0.5665024630541872,
           "pass": false
         },
         {
@@ -3588,15 +3648,15 @@
           "pass": false
         },
         {
-          "first": "stone-boss-t2",
-          "second": "insect-armored-t1",
-          "iou": 0.5598755832037325,
-          "pass": false
-        },
-        {
           "first": "stone-runner-t3",
           "second": "insect-special-t4",
           "iou": 0.558974358974359,
+          "pass": false
+        },
+        {
+          "first": "stone-infantry-t2",
+          "second": "insect-armored-t2",
+          "iou": 0.55895865237366,
           "pass": false
         },
         {
@@ -3618,15 +3678,15 @@
           "pass": false
         },
         {
-          "first": "stone-infantry-t2",
-          "second": "insect-armored-t2",
-          "iou": 0.5567484662576687,
+          "first": "stone-runner-t4",
+          "second": "insect-runner-t2",
+          "iou": 0.5559055118110237,
           "pass": false
         },
         {
           "first": "stone-runner-t4",
-          "second": "insect-runner-t2",
-          "iou": 0.5559055118110237,
+          "second": "insect-armored-t2",
+          "iou": 0.555379746835443,
           "pass": false
         },
         {
@@ -3639,12 +3699,6 @@
           "first": "stone-runner-t4",
           "second": "insect-special-t2",
           "iou": 0.5544388609715243,
-          "pass": false
-        },
-        {
-          "first": "stone-boss-t4",
-          "second": "insect-armored-t3",
-          "iou": 0.553223388305847,
           "pass": false
         },
         {
@@ -3666,15 +3720,15 @@
           "pass": false
         },
         {
-          "first": "stone-armored-t1",
-          "second": "insect-armored-t3",
-          "iou": 0.5508684863523573,
+          "first": "stone-boss-t2",
+          "second": "insect-armored-t1",
+          "iou": 0.5509259259259259,
           "pass": false
         },
         {
-          "first": "stone-runner-t4",
-          "second": "insect-armored-t2",
-          "iou": 0.5506329113924051,
+          "first": "stone-armored-t1",
+          "second": "insect-armored-t3",
+          "iou": 0.5508684863523573,
           "pass": false
         }
       ]
@@ -3873,6 +3927,12 @@
           "pass": false
         },
         {
+          "first": "elf-boss-t3",
+          "second": "human-armored-t3",
+          "iou": 0.6146044624746451,
+          "pass": false
+        },
+        {
           "first": "elf-armored-t2",
           "second": "human-infantry-t2",
           "iou": 0.6141732283464567,
@@ -3888,6 +3948,12 @@
           "first": "elf-armored-t1",
           "second": "human-boss-t3",
           "iou": 0.6037296037296037,
+          "pass": false
+        },
+        {
+          "first": "elf-boss-t3",
+          "second": "human-boss-t1",
+          "iou": 0.6012396694214877,
           "pass": false
         },
         {
@@ -3910,8 +3976,8 @@
         },
         {
           "first": "elf-boss-t3",
-          "second": "human-armored-t3",
-          "iou": 0.5942028985507246,
+          "second": "human-armored-t2",
+          "iou": 0.5942622950819673,
           "pass": false
         },
         {
@@ -3957,21 +4023,33 @@
           "pass": false
         },
         {
-          "first": "elf-boss-t3",
-          "second": "human-boss-t3",
-          "iou": 0.5840336134453782,
-          "pass": false
-        },
-        {
           "first": "elf-infantry-t3",
           "second": "human-boss-t1",
           "iou": 0.582716049382716,
           "pass": false
         },
         {
+          "first": "elf-boss-t3",
+          "second": "human-armored-t4",
+          "iou": 0.5817120622568094,
+          "pass": false
+        },
+        {
           "first": "elf-boss-t4",
           "second": "human-boss-t2",
           "iou": 0.5798611111111112,
+          "pass": false
+        },
+        {
+          "first": "elf-boss-t3",
+          "second": "human-armored-t1",
+          "iou": 0.579136690647482,
+          "pass": false
+        },
+        {
+          "first": "elf-boss-t3",
+          "second": "human-boss-t3",
+          "iou": 0.5789473684210527,
           "pass": false
         },
         {
@@ -4005,6 +4083,12 @@
           "pass": false
         },
         {
+          "first": "elf-boss-t3",
+          "second": "human-runner-t1",
+          "iou": 0.5711340206185567,
+          "pass": false
+        },
+        {
           "first": "elf-boss-t1",
           "second": "human-infantry-t1",
           "iou": 0.5709876543209876,
@@ -4029,12 +4113,6 @@
           "pass": false
         },
         {
-          "first": "elf-boss-t3",
-          "second": "human-armored-t2",
-          "iou": 0.5666666666666667,
-          "pass": false
-        },
-        {
           "first": "elf-armored-t1",
           "second": "human-infantry-t1",
           "iou": 0.5653409090909091,
@@ -4053,15 +4131,15 @@
           "pass": false
         },
         {
-          "first": "elf-boss-t3",
-          "second": "human-runner-t1",
-          "iou": 0.5626326963906582,
-          "pass": false
-        },
-        {
           "first": "elf-boss-t2",
           "second": "human-runner-t2",
           "iou": 0.56,
+          "pass": false
+        },
+        {
+          "first": "elf-boss-t3",
+          "second": "human-boss-t4",
+          "iou": 0.5579150579150579,
           "pass": false
         },
         {
@@ -4078,8 +4156,8 @@
         },
         {
           "first": "elf-boss-t3",
-          "second": "human-armored-t4",
-          "iou": 0.5553359683794467,
+          "second": "human-infantry-t2",
+          "iou": 0.5562913907284768,
           "pass": false
         },
         {
@@ -4096,14 +4174,8 @@
         },
         {
           "first": "elf-boss-t3",
-          "second": "human-boss-t1",
-          "iou": 0.553941908713693,
-          "pass": false
-        },
-        {
-          "first": "elf-boss-t3",
-          "second": "human-infantry-t2",
-          "iou": 0.5537757437070938,
+          "second": "human-runner-t4",
+          "iou": 0.5541284403669725,
           "pass": false
         },
         {
@@ -4116,12 +4188,6 @@
           "first": "elf-boss-t2",
           "second": "human-armored-t3",
           "iou": 0.5530035335689046,
-          "pass": false
-        },
-        {
-          "first": "elf-boss-t3",
-          "second": "human-boss-t4",
-          "iou": 0.5526838966202783,
           "pass": false
         },
         {
@@ -4248,27 +4314,15 @@
           "pass": false
         },
         {
-          "first": "elf-infantry-t4",
-          "second": "insect-infantry-t1",
-          "iou": 0.5841269841269842,
+          "first": "elf-boss-t3",
+          "second": "insect-armored-t3",
+          "iou": 0.5818815331010453,
           "pass": false
         },
         {
           "first": "elf-special-t2",
           "second": "insect-armored-t1",
-          "iou": 0.5794701986754967,
-          "pass": false
-        },
-        {
-          "first": "elf-boss-t3",
-          "second": "insect-infantry-t4",
-          "iou": 0.5757575757575758,
-          "pass": false
-        },
-        {
-          "first": "elf-armored-t3",
-          "second": "insect-infantry-t1",
-          "iou": 0.5737179487179487,
+          "iou": 0.5749588138385503,
           "pass": false
         },
         {
@@ -4278,9 +4332,9 @@
           "pass": false
         },
         {
-          "first": "elf-special-t2",
-          "second": "insect-armored-t2",
-          "iou": 0.5655430711610487,
+          "first": "elf-infantry-t3",
+          "second": "insect-infantry-t1",
+          "iou": 0.5692771084337349,
           "pass": false
         },
         {
@@ -4309,14 +4363,20 @@
         },
         {
           "first": "elf-armored-t3",
+          "second": "insect-infantry-t1",
+          "iou": 0.5589123867069486,
+          "pass": false
+        },
+        {
+          "first": "elf-armored-t3",
           "second": "insect-infantry-t2",
           "iou": 0.5568862275449101,
           "pass": false
         },
         {
-          "first": "elf-boss-t3",
-          "second": "insect-armored-t3",
-          "iou": 0.5555555555555556,
+          "first": "elf-special-t2",
+          "second": "insect-armored-t2",
+          "iou": 0.5565862708719852,
           "pass": false
         },
         {
@@ -4338,9 +4398,9 @@
           "pass": false
         },
         {
-          "first": "elf-infantry-t3",
+          "first": "elf-infantry-t1",
           "second": "insect-infantry-t1",
-          "iou": 0.55,
+          "iou": 0.5517241379310345,
           "pass": false
         }
       ]
@@ -4371,21 +4431,15 @@
           "pass": false
         },
         {
-          "first": "human-infantry-t4",
-          "second": "insect-infantry-t1",
-          "iou": 0.6805111821086262,
-          "pass": false
-        },
-        {
-          "first": "human-infantry-t1",
-          "second": "insect-infantry-t1",
-          "iou": 0.6666666666666666,
-          "pass": false
-        },
-        {
           "first": "human-boss-t2",
           "second": "insect-boss-t4",
           "iou": 0.6617405582922824,
+          "pass": false
+        },
+        {
+          "first": "human-armored-t1",
+          "second": "insect-armored-t1",
+          "iou": 0.660377358490566,
           "pass": false
         },
         {
@@ -4413,12 +4467,6 @@
           "pass": false
         },
         {
-          "first": "human-armored-t1",
-          "second": "insect-armored-t1",
-          "iou": 0.6494522691705791,
-          "pass": false
-        },
-        {
           "first": "human-special-t4",
           "second": "insect-special-t4",
           "iou": 0.6484375,
@@ -4427,13 +4475,13 @@
         {
           "first": "human-special-t2",
           "second": "insect-armored-t1",
-          "iou": 0.6438356164383562,
+          "iou": 0.6465753424657534,
           "pass": false
         },
         {
           "first": "human-special-t3",
           "second": "insect-armored-t1",
-          "iou": 0.6423357664233577,
+          "iou": 0.6428571428571429,
           "pass": false
         },
         {
@@ -4458,6 +4506,12 @@
           "first": "human-armored-t1",
           "second": "insect-boss-t4",
           "iou": 0.6277955271565495,
+          "pass": false
+        },
+        {
+          "first": "human-infantry-t4",
+          "second": "insect-infantry-t1",
+          "iou": 0.6253687315634219,
           "pass": false
         },
         {
@@ -4487,7 +4541,7 @@
         {
           "first": "human-runner-t4",
           "second": "insect-armored-t1",
-          "iou": 0.6186708860759493,
+          "iou": 0.6167192429022083,
           "pass": false
         },
         {
@@ -4498,14 +4552,14 @@
         },
         {
           "first": "human-armored-t1",
-          "second": "insect-boss-t2",
-          "iou": 0.6091205211726385,
+          "second": "insect-armored-t2",
+          "iou": 0.6134020618556701,
           "pass": false
         },
         {
           "first": "human-armored-t1",
-          "second": "insect-armored-t2",
-          "iou": 0.6027397260273972,
+          "second": "insect-boss-t2",
+          "iou": 0.6091205211726385,
           "pass": false
         },
         {
@@ -4533,9 +4587,9 @@
           "pass": false
         },
         {
-          "first": "human-infantry-t2",
-          "second": "insect-infantry-t1",
-          "iou": 0.5971830985915493,
+          "first": "human-special-t2",
+          "second": "insect-armored-t2",
+          "iou": 0.5979381443298969,
           "pass": false
         },
         {
@@ -4548,12 +4602,6 @@
           "first": "human-special-t2",
           "second": "insect-boss-t4",
           "iou": 0.5937072503419972,
-          "pass": false
-        },
-        {
-          "first": "human-special-t2",
-          "second": "insect-armored-t2",
-          "iou": 0.593519882179676,
           "pass": false
         },
         {
@@ -4614,6 +4662,12 @@
           "first": "human-runner-t2",
           "second": "insect-boss-t3",
           "iou": 0.5838150289017341,
+          "pass": false
+        },
+        {
+          "first": "human-infantry-t2",
+          "second": "insect-infantry-t1",
+          "iou": 0.5828877005347594,
           "pass": false
         },
         {
@@ -4707,15 +4761,27 @@
           "pass": false
         },
         {
+          "first": "human-special-t4",
+          "second": "insect-armored-t1",
+          "iou": 0.5708154506437768,
+          "pass": false
+        },
+        {
+          "first": "human-boss-t3",
+          "second": "insect-infantry-t1",
+          "iou": 0.5694117647058824,
+          "pass": false
+        },
+        {
           "first": "human-runner-t4",
           "second": "insect-runner-t2",
           "iou": 0.5687285223367697,
           "pass": false
         },
         {
-          "first": "human-special-t4",
-          "second": "insect-armored-t1",
-          "iou": 0.5679542203147353,
+          "first": "human-infantry-t1",
+          "second": "insect-infantry-t1",
+          "iou": 0.5680473372781065,
           "pass": false
         },
         {
@@ -4755,6 +4821,12 @@
           "pass": false
         },
         {
+          "first": "human-armored-t3",
+          "second": "insect-armored-t1",
+          "iou": 0.5584,
+          "pass": false
+        },
+        {
           "first": "human-runner-t2",
           "second": "insect-boss-t2",
           "iou": 0.5583203732503889,
@@ -4767,9 +4839,21 @@
           "pass": false
         },
         {
+          "first": "human-special-t4",
+          "second": "insect-armored-t2",
+          "iou": 0.5571428571428572,
+          "pass": false
+        },
+        {
           "first": "human-boss-t4",
           "second": "insect-boss-t2",
           "iou": 0.5568760611205433,
+          "pass": false
+        },
+        {
+          "first": "human-runner-t1",
+          "second": "insect-armored-t1",
+          "iou": 0.5562913907284768,
           "pass": false
         },
         {
@@ -4779,9 +4863,9 @@
           "pass": false
         },
         {
-          "first": "human-runner-t1",
-          "second": "insect-armored-t1",
-          "iou": 0.5555555555555556,
+          "first": "human-armored-t4",
+          "second": "insect-armored-t2",
+          "iou": 0.5551601423487544,
           "pass": false
         },
         {
@@ -4804,20 +4888,14 @@
         },
         {
           "first": "human-armored-t3",
-          "second": "insect-armored-t1",
-          "iou": 0.5527156549520766,
-          "pass": false
-        },
-        {
-          "first": "human-special-t4",
           "second": "insect-armored-t2",
-          "iou": 0.5523809523809524,
+          "iou": 0.552536231884058,
           "pass": false
         },
         {
-          "first": "human-armored-t2",
+          "first": "human-armored-t4",
           "second": "insect-armored-t1",
-          "iou": 0.551219512195122,
+          "iou": 0.5508607198748043,
           "pass": false
         },
         {
@@ -4825,17 +4903,11 @@
           "second": "insect-boss-t3",
           "iou": 0.5503875968992248,
           "pass": false
-        },
-        {
-          "first": "human-runner-t1",
-          "second": "insect-armored-t2",
-          "iou": 0.5500945179584121,
-          "pass": false
         }
       ]
     }
   ],
-  "failures": 705,
+  "failures": 717,
   "bossLimit": 0.7,
   "bossVsRegular": {
     "machine": [
@@ -4858,6 +4930,12 @@
         "pass": true
       },
       {
+        "first": "machine-boss-t4",
+        "second": "machine-armored-t4",
+        "iou": 0.5761904761904761,
+        "pass": true
+      },
+      {
         "first": "machine-boss-t2",
         "second": "machine-armored-t3",
         "iou": 0.5702127659574469,
@@ -4870,18 +4948,6 @@
         "pass": true
       },
       {
-        "first": "machine-boss-t4",
-        "second": "machine-armored-t4",
-        "iou": 0.5655608214849921,
-        "pass": true
-      },
-      {
-        "first": "machine-boss-t1",
-        "second": "machine-armored-t4",
-        "iou": 0.5654761904761905,
-        "pass": true
-      },
-      {
         "first": "machine-boss-t3",
         "second": "machine-armored-t3",
         "iou": 0.5616438356164384,
@@ -4891,6 +4957,12 @@
         "first": "machine-boss-t3",
         "second": "machine-armored-t1",
         "iou": 0.5576923076923077,
+        "pass": true
+      },
+      {
+        "first": "machine-boss-t2",
+        "second": "machine-armored-t4",
+        "iou": 0.5555555555555556,
         "pass": true
       },
       {
@@ -4920,13 +4992,13 @@
       {
         "first": "machine-boss-t3",
         "second": "machine-armored-t4",
-        "iou": 0.5497630331753555,
+        "iou": 0.5480314960629922,
         "pass": true
       },
       {
-        "first": "machine-boss-t2",
+        "first": "machine-boss-t1",
         "second": "machine-armored-t4",
-        "iou": 0.5481049562682215,
+        "iou": 0.547945205479452,
         "pass": true
       },
       {
@@ -5009,6 +5081,18 @@
       },
       {
         "first": "machine-boss-t3",
+        "second": "machine-runner-t1",
+        "iou": 0.496,
+        "pass": true
+      },
+      {
+        "first": "machine-boss-t2",
+        "second": "machine-runner-t1",
+        "iou": 0.48755490483162517,
+        "pass": true
+      },
+      {
+        "first": "machine-boss-t3",
         "second": "machine-runner-t4",
         "iou": 0.4776357827476038,
         "pass": true
@@ -5020,21 +5104,9 @@
         "pass": true
       },
       {
-        "first": "machine-boss-t2",
-        "second": "machine-runner-t1",
-        "iou": 0.47703703703703704,
-        "pass": true
-      },
-      {
         "first": "machine-boss-t4",
         "second": "machine-infantry-t4",
         "iou": 0.4666666666666667,
-        "pass": true
-      },
-      {
-        "first": "machine-boss-t3",
-        "second": "machine-runner-t1",
-        "iou": 0.4656,
         "pass": true
       },
       {
@@ -5094,7 +5166,7 @@
       {
         "first": "machine-boss-t4",
         "second": "machine-runner-t1",
-        "iou": 0.4312210200927357,
+        "iou": 0.43617021276595747,
         "pass": true
       },
       {
@@ -5176,15 +5248,15 @@
         "pass": true
       },
       {
-        "first": "machine-boss-t4",
-        "second": "machine-special-t3",
-        "iou": 0.38221528861154447,
+        "first": "machine-boss-t1",
+        "second": "machine-runner-t1",
+        "iou": 0.38619402985074625,
         "pass": true
       },
       {
-        "first": "machine-boss-t1",
-        "second": "machine-runner-t1",
-        "iou": 0.3816793893129771,
+        "first": "machine-boss-t4",
+        "second": "machine-special-t3",
+        "iou": 0.38221528861154447,
         "pass": true
       },
       {
@@ -5244,12 +5316,6 @@
         "pass": true
       },
       {
-        "first": "stone-boss-t4",
-        "second": "stone-infantry-t3",
-        "iou": 0.6554878048780488,
-        "pass": true
-      },
-      {
         "first": "stone-boss-t3",
         "second": "stone-armored-t2",
         "iou": 0.6553884711779449,
@@ -5269,8 +5335,14 @@
       },
       {
         "first": "stone-boss-t4",
+        "second": "stone-infantry-t3",
+        "iou": 0.6309523809523809,
+        "pass": true
+      },
+      {
+        "first": "stone-boss-t4",
         "second": "stone-infantry-t2",
-        "iou": 0.624251497005988,
+        "iou": 0.6198224852071006,
         "pass": true
       },
       {
@@ -5298,12 +5370,6 @@
         "pass": true
       },
       {
-        "first": "stone-boss-t4",
-        "second": "stone-infantry-t4",
-        "iou": 0.6031073446327684,
-        "pass": true
-      },
-      {
         "first": "stone-boss-t2",
         "second": "stone-special-t4",
         "iou": 0.6018181818181818,
@@ -5311,8 +5377,8 @@
       },
       {
         "first": "stone-boss-t4",
-        "second": "stone-armored-t2",
-        "iou": 0.5836575875486382,
+        "second": "stone-infantry-t4",
+        "iou": 0.5880721220527045,
         "pass": true
       },
       {
@@ -5323,26 +5389,20 @@
       },
       {
         "first": "stone-boss-t4",
+        "second": "stone-armored-t2",
+        "iou": 0.5701530612244898,
+        "pass": true
+      },
+      {
+        "first": "stone-boss-t4",
         "second": "stone-armored-t3",
-        "iou": 0.568241469816273,
+        "iou": 0.5669700910273082,
         "pass": true
       },
       {
         "first": "stone-boss-t3",
         "second": "stone-runner-t4",
         "iou": 0.564625850340136,
-        "pass": true
-      },
-      {
-        "first": "stone-boss-t4",
-        "second": "stone-infantry-t1",
-        "iou": 0.5605839416058395,
-        "pass": true
-      },
-      {
-        "first": "stone-boss-t4",
-        "second": "stone-armored-t1",
-        "iou": 0.5572327044025157,
         "pass": true
       },
       {
@@ -5358,15 +5418,33 @@
         "pass": true
       },
       {
+        "first": "stone-boss-t4",
+        "second": "stone-armored-t1",
+        "iou": 0.5464684014869888,
+        "pass": true
+      },
+      {
         "first": "stone-boss-t3",
         "second": "stone-armored-t4",
         "iou": 0.5459183673469388,
         "pass": true
       },
       {
+        "first": "stone-boss-t4",
+        "second": "stone-infantry-t1",
+        "iou": 0.5458452722063037,
+        "pass": true
+      },
+      {
         "first": "stone-boss-t1",
         "second": "stone-armored-t3",
         "iou": 0.5448460508701473,
+        "pass": true
+      },
+      {
+        "first": "stone-boss-t4",
+        "second": "stone-special-t4",
+        "iou": 0.5409309791332263,
         "pass": true
       },
       {
@@ -5377,8 +5455,8 @@
       },
       {
         "first": "stone-boss-t4",
-        "second": "stone-special-t4",
-        "iou": 0.5273311897106109,
+        "second": "stone-special-t1",
+        "iou": 0.5274074074074074,
         "pass": true
       },
       {
@@ -5391,12 +5469,6 @@
         "first": "stone-boss-t1",
         "second": "stone-infantry-t1",
         "iou": 0.522962962962963,
-        "pass": true
-      },
-      {
-        "first": "stone-boss-t4",
-        "second": "stone-special-t1",
-        "iou": 0.5216095380029806,
         "pass": true
       },
       {
@@ -5480,7 +5552,7 @@
       {
         "first": "stone-boss-t4",
         "second": "stone-runner-t4",
-        "iou": 0.4809590973201692,
+        "iou": 0.4825174825174825,
         "pass": true
       },
       {
@@ -5526,6 +5598,12 @@
         "pass": true
       },
       {
+        "first": "stone-boss-t4",
+        "second": "stone-special-t3",
+        "iou": 0.4418604651162791,
+        "pass": true
+      },
+      {
         "first": "stone-boss-t2",
         "second": "stone-runner-t1",
         "iou": 0.4397993311036789,
@@ -5539,20 +5617,14 @@
       },
       {
         "first": "stone-boss-t4",
-        "second": "stone-special-t3",
-        "iou": 0.4377745241581259,
+        "second": "stone-special-t2",
+        "iou": 0.4325068870523416,
         "pass": true
       },
       {
         "first": "stone-boss-t4",
         "second": "stone-armored-t4",
-        "iou": 0.42930591259640105,
-        "pass": true
-      },
-      {
-        "first": "stone-boss-t4",
-        "second": "stone-special-t2",
-        "iou": 0.4206896551724138,
+        "iou": 0.42748091603053434,
         "pass": true
       },
       {
@@ -5574,6 +5646,12 @@
         "pass": true
       },
       {
+        "first": "stone-boss-t4",
+        "second": "stone-runner-t1",
+        "iou": 0.3762811127379209,
+        "pass": true
+      },
+      {
         "first": "stone-boss-t1",
         "second": "stone-runner-t1",
         "iou": 0.3740340030911901,
@@ -5581,20 +5659,14 @@
       },
       {
         "first": "stone-boss-t4",
-        "second": "stone-runner-t1",
-        "iou": 0.3656387665198238,
+        "second": "stone-runner-t3",
+        "iou": 0.36160714285714285,
         "pass": true
       },
       {
         "first": "stone-boss-t3",
         "second": "stone-runner-t2",
         "iou": 0.35864978902953587,
-        "pass": true
-      },
-      {
-        "first": "stone-boss-t4",
-        "second": "stone-runner-t3",
-        "iou": 0.35276532137518685,
         "pass": true
       },
       {
@@ -5606,11 +5678,17 @@
       {
         "first": "stone-boss-t4",
         "second": "stone-runner-t2",
-        "iou": 0.3101361573373676,
+        "iou": 0.3192771084337349,
         "pass": true
       }
     ],
     "elf": [
+      {
+        "first": "elf-boss-t3",
+        "second": "elf-special-t2",
+        "iou": 0.6483050847457628,
+        "pass": true
+      },
       {
         "first": "elf-boss-t1",
         "second": "elf-infantry-t3",
@@ -5625,8 +5703,8 @@
       },
       {
         "first": "elf-boss-t3",
-        "second": "elf-special-t2",
-        "iou": 0.603411513859275,
+        "second": "elf-special-t4",
+        "iou": 0.6144859813084113,
         "pass": true
       },
       {
@@ -5637,26 +5715,20 @@
       },
       {
         "first": "elf-boss-t3",
-        "second": "elf-armored-t2",
-        "iou": 0.5941320293398533,
-        "pass": true
-      },
-      {
-        "first": "elf-boss-t3",
-        "second": "elf-special-t4",
-        "iou": 0.5909090909090909,
-        "pass": true
-      },
-      {
-        "first": "elf-boss-t3",
         "second": "elf-armored-t4",
-        "iou": 0.5878220140515222,
+        "iou": 0.5855855855855856,
         "pass": true
       },
       {
         "first": "elf-boss-t1",
         "second": "elf-armored-t2",
         "iou": 0.5768115942028985,
+        "pass": true
+      },
+      {
+        "first": "elf-boss-t3",
+        "second": "elf-armored-t2",
+        "iou": 0.5730858468677494,
         "pass": true
       },
       {
@@ -5672,21 +5744,15 @@
         "pass": true
       },
       {
+        "first": "elf-boss-t3",
+        "second": "elf-armored-t1",
+        "iou": 0.5648148148148148,
+        "pass": true
+      },
+      {
         "first": "elf-boss-t1",
         "second": "elf-infantry-t2",
         "iou": 0.5639344262295082,
-        "pass": true
-      },
-      {
-        "first": "elf-boss-t3",
-        "second": "elf-armored-t1",
-        "iou": 0.5587529976019184,
-        "pass": true
-      },
-      {
-        "first": "elf-boss-t3",
-        "second": "elf-special-t1",
-        "iou": 0.5553435114503816,
         "pass": true
       },
       {
@@ -5696,15 +5762,15 @@
         "pass": true
       },
       {
-        "first": "elf-boss-t2",
-        "second": "elf-special-t3",
-        "iou": 0.5246478873239436,
+        "first": "elf-boss-t3",
+        "second": "elf-special-t1",
+        "iou": 0.5346715328467153,
         "pass": true
       },
       {
-        "first": "elf-boss-t3",
-        "second": "elf-armored-t3",
-        "iou": 0.5227272727272727,
+        "first": "elf-boss-t2",
+        "second": "elf-special-t3",
+        "iou": 0.5246478873239436,
         "pass": true
       },
       {
@@ -5714,14 +5780,26 @@
         "pass": true
       },
       {
-        "first": "elf-boss-t2",
-        "second": "elf-special-t4",
-        "iou": 0.5,
+        "first": "elf-boss-t3",
+        "second": "elf-armored-t3",
+        "iou": 0.5047846889952153,
         "pass": true
       },
       {
         "first": "elf-boss-t3",
         "second": "elf-infantry-t1",
+        "iou": 0.5046082949308756,
+        "pass": true
+      },
+      {
+        "first": "elf-boss-t3",
+        "second": "elf-infantry-t4",
+        "iou": 0.5023584905660378,
+        "pass": true
+      },
+      {
+        "first": "elf-boss-t2",
+        "second": "elf-special-t4",
         "iou": 0.5,
         "pass": true
       },
@@ -5733,14 +5811,8 @@
       },
       {
         "first": "elf-boss-t3",
-        "second": "elf-infantry-t4",
-        "iou": 0.4938875305623472,
-        "pass": true
-      },
-      {
-        "first": "elf-boss-t3",
         "second": "elf-infantry-t3",
-        "iou": 0.48292682926829267,
+        "iou": 0.47785547785547783,
         "pass": true
       },
       {
@@ -5753,6 +5825,12 @@
         "first": "elf-boss-t1",
         "second": "elf-special-t4",
         "iou": 0.46965699208443273,
+        "pass": true
+      },
+      {
+        "first": "elf-boss-t3",
+        "second": "elf-special-t3",
+        "iou": 0.46904315196998125,
         "pass": true
       },
       {
@@ -5780,12 +5858,6 @@
         "pass": true
       },
       {
-        "first": "elf-boss-t3",
-        "second": "elf-infantry-t2",
-        "iou": 0.4408866995073892,
-        "pass": true
-      },
-      {
         "first": "elf-boss-t2",
         "second": "elf-armored-t1",
         "iou": 0.43478260869565216,
@@ -5798,15 +5870,15 @@
         "pass": true
       },
       {
-        "first": "elf-boss-t4",
-        "second": "elf-special-t2",
-        "iou": 0.4258289703315881,
+        "first": "elf-boss-t3",
+        "second": "elf-infantry-t2",
+        "iou": 0.42757009345794394,
         "pass": true
       },
       {
-        "first": "elf-boss-t3",
-        "second": "elf-special-t3",
-        "iou": 0.409683426443203,
+        "first": "elf-boss-t4",
+        "second": "elf-special-t2",
+        "iou": 0.4258289703315881,
         "pass": true
       },
       {
@@ -5918,15 +5990,15 @@
         "pass": true
       },
       {
-        "first": "elf-boss-t1",
-        "second": "elf-runner-t3",
-        "iou": 0.24891774891774893,
+        "first": "elf-boss-t3",
+        "second": "elf-runner-t2",
+        "iou": 0.2651006711409396,
         "pass": true
       },
       {
-        "first": "elf-boss-t3",
-        "second": "elf-runner-t2",
-        "iou": 0.24871355060034306,
+        "first": "elf-boss-t1",
+        "second": "elf-runner-t3",
+        "iou": 0.24891774891774893,
         "pass": true
       },
       {
@@ -5936,15 +6008,15 @@
         "pass": true
       },
       {
-        "first": "elf-boss-t2",
+        "first": "elf-boss-t3",
         "second": "elf-runner-t3",
-        "iou": 0.2329192546583851,
+        "iou": 0.23867595818815332,
         "pass": true
       },
       {
-        "first": "elf-boss-t3",
+        "first": "elf-boss-t2",
         "second": "elf-runner-t3",
-        "iou": 0.22759856630824374,
+        "iou": 0.2329192546583851,
         "pass": true
       },
       {
@@ -5986,13 +6058,13 @@
       {
         "first": "elf-boss-t3",
         "second": "elf-runner-t4",
-        "iou": 0.15977443609022557,
+        "iou": 0.18198529411764705,
         "pass": true
       },
       {
         "first": "elf-boss-t3",
         "second": "elf-runner-t1",
-        "iou": 0.1378640776699029,
+        "iou": 0.1634980988593156,
         "pass": true
       }
     ],
@@ -6396,6 +6468,12 @@
         "pass": true
       },
       {
+        "first": "insect-boss-t3",
+        "second": "insect-armored-t1",
+        "iou": 0.6242937853107344,
+        "pass": true
+      },
+      {
         "first": "insect-boss-t4",
         "second": "insect-armored-t3",
         "iou": 0.6213292117465224,
@@ -6415,12 +6493,6 @@
       },
       {
         "first": "insect-boss-t3",
-        "second": "insect-armored-t1",
-        "iou": 0.6169014084507042,
-        "pass": true
-      },
-      {
-        "first": "insect-boss-t3",
         "second": "insect-special-t4",
         "iou": 0.6090116279069767,
         "pass": true
@@ -6428,13 +6500,13 @@
       {
         "first": "insect-boss-t4",
         "second": "insect-armored-t1",
-        "iou": 0.6026587887740029,
+        "iou": 0.6056129985228951,
         "pass": true
       },
       {
         "first": "insect-boss-t2",
         "second": "insect-armored-t1",
-        "iou": 0.5969696969696969,
+        "iou": 0.6024279210925645,
         "pass": true
       },
       {
@@ -6470,7 +6542,7 @@
       {
         "first": "insect-boss-t2",
         "second": "insect-armored-t2",
-        "iou": 0.5420098846787479,
+        "iou": 0.5495049504950495,
         "pass": true
       },
       {
@@ -6482,7 +6554,7 @@
       {
         "first": "insect-boss-t1",
         "second": "insect-armored-t1",
-        "iou": 0.536115569823435,
+        "iou": 0.5319488817891374,
         "pass": true
       },
       {
@@ -6500,7 +6572,7 @@
       {
         "first": "insect-boss-t4",
         "second": "insect-armored-t2",
-        "iou": 0.5180533751962323,
+        "iou": 0.5227629513343799,
         "pass": true
       },
       {
@@ -6524,7 +6596,7 @@
       {
         "first": "insect-boss-t3",
         "second": "insect-armored-t2",
-        "iou": 0.5014577259475219,
+        "iou": 0.5058309037900874,
         "pass": true
       },
       {
@@ -6552,12 +6624,6 @@
         "pass": true
       },
       {
-        "first": "insect-boss-t1",
-        "second": "insect-armored-t2",
-        "iou": 0.4849557522123894,
-        "pass": true
-      },
-      {
         "first": "insect-boss-t2",
         "second": "insect-runner-t4",
         "iou": 0.48006644518272423,
@@ -6567,6 +6633,12 @@
         "first": "insect-boss-t3",
         "second": "insect-special-t2",
         "iou": 0.4773413897280967,
+        "pass": true
+      },
+      {
+        "first": "insect-boss-t1",
+        "second": "insect-armored-t2",
+        "iou": 0.47719298245614034,
         "pass": true
       },
       {
@@ -6654,12 +6726,6 @@
         "pass": true
       },
       {
-        "first": "insect-boss-t1",
-        "second": "insect-infantry-t1",
-        "iou": 0.42572062084257206,
-        "pass": true
-      },
-      {
         "first": "insect-boss-t4",
         "second": "insect-infantry-t4",
         "iou": 0.42158516020236086,
@@ -6675,6 +6741,18 @@
         "first": "insect-boss-t1",
         "second": "insect-infantry-t2",
         "iou": 0.4117647058823529,
+        "pass": true
+      },
+      {
+        "first": "insect-boss-t4",
+        "second": "insect-infantry-t1",
+        "iou": 0.40636042402826855,
+        "pass": true
+      },
+      {
+        "first": "insect-boss-t1",
+        "second": "insect-infantry-t1",
+        "iou": 0.40336134453781514,
         "pass": true
       },
       {
@@ -6696,15 +6774,21 @@
         "pass": true
       },
       {
-        "first": "insect-boss-t4",
+        "first": "insect-boss-t3",
         "second": "insect-infantry-t1",
-        "iou": 0.38669064748201437,
+        "iou": 0.3744,
         "pass": true
       },
       {
         "first": "insect-boss-t2",
         "second": "insect-infantry-t4",
         "iou": 0.3739424703891709,
+        "pass": true
+      },
+      {
+        "first": "insect-boss-t2",
+        "second": "insect-infantry-t1",
+        "iou": 0.3734290843806104,
         "pass": true
       },
       {
@@ -6717,18 +6801,6 @@
         "first": "insect-boss-t2",
         "second": "insect-infantry-t2",
         "iou": 0.36347517730496454,
-        "pass": true
-      },
-      {
-        "first": "insect-boss-t3",
-        "second": "insect-infantry-t1",
-        "iou": 0.3605220228384992,
-        "pass": true
-      },
-      {
-        "first": "insect-boss-t2",
-        "second": "insect-infantry-t1",
-        "iou": 0.35283363802559414,
         "pass": true
       },
       {
@@ -6818,12 +6890,12 @@
     },
     "machine-runner-t1": {
       "terrain": {
-        "median": 2.207,
-        "lowShare": 0.248
+        "median": 2.164,
+        "lowShare": 0.263
       },
       "path": {
-        "median": 1.573,
-        "lowShare": 0.472
+        "median": 1.562,
+        "lowShare": 0.477
       }
     },
     "machine-runner-t2": {
@@ -6888,12 +6960,12 @@
     },
     "machine-armored-t4": {
       "terrain": {
-        "median": 1.655,
-        "lowShare": 0.4
+        "median": 1.653,
+        "lowShare": 0.405
       },
       "path": {
-        "median": 1.268,
-        "lowShare": 0.721
+        "median": 1.276,
+        "lowShare": 0.714
       }
     },
     "machine-special-t1": {
@@ -7168,12 +7240,12 @@
     },
     "stone-boss-t4": {
       "terrain": {
-        "median": 1.488,
-        "lowShare": 0.506
+        "median": 1.501,
+        "lowShare": 0.498
       },
       "path": {
-        "median": 1.473,
-        "lowShare": 0.525
+        "median": 1.481,
+        "lowShare": 0.515
       }
     },
     "elf-infantry-t1": {
@@ -7358,12 +7430,12 @@
     },
     "elf-boss-t3": {
       "terrain": {
-        "median": 2.051,
-        "lowShare": 0.299
+        "median": 2.115,
+        "lowShare": 0.286
       },
       "path": {
-        "median": 1.476,
-        "lowShare": 0.522
+        "median": 1.484,
+        "lowShare": 0.518
       }
     },
     "elf-boss-t4": {
@@ -7578,12 +7650,12 @@
     },
     "insect-infantry-t1": {
       "terrain": {
-        "median": 1.617,
-        "lowShare": 0.447
+        "median": 1.615,
+        "lowShare": 0.399
       },
       "path": {
-        "median": 1.448,
-        "lowShare": 0.602
+        "median": 1.379,
+        "lowShare": 0.616
       }
     },
     "insect-infantry-t2": {
@@ -7659,21 +7731,21 @@
     "insect-armored-t1": {
       "terrain": {
         "median": 1.316,
-        "lowShare": 0.72
+        "lowShare": 0.719
       },
       "path": {
-        "median": 1.593,
-        "lowShare": 0.38
+        "median": 1.597,
+        "lowShare": 0.381
       }
     },
     "insect-armored-t2": {
       "terrain": {
-        "median": 1.375,
-        "lowShare": 0.597
+        "median": 1.366,
+        "lowShare": 0.6
       },
       "path": {
-        "median": 1.48,
-        "lowShare": 0.525
+        "median": 1.477,
+        "lowShare": 0.524
       }
     },
     "insect-armored-t3": {
@@ -7844,10 +7916,10 @@
         "deltaE": 19.103
       },
       {
-        "first": "machine-infantry-t4",
-        "second": "stone-boss-t4",
-        "iou": 0.6018181818181818,
-        "deltaE": 15.258
+        "first": "machine-armored-t4",
+        "second": "stone-special-t4",
+        "iou": 0.6,
+        "deltaE": 21.143
       },
       {
         "first": "machine-armored-t1",
@@ -7866,12 +7938,6 @@
         "second": "stone-boss-t2",
         "iou": 0.5951417004048583,
         "deltaE": 18.587
-      },
-      {
-        "first": "machine-armored-t4",
-        "second": "stone-special-t4",
-        "iou": 0.59375,
-        "deltaE": 21.085
       },
       {
         "first": "machine-armored-t2",
@@ -7934,28 +8000,28 @@
         "deltaE": 17.849
       },
       {
-        "first": "machine-armored-t2",
-        "second": "stone-boss-t4",
-        "iou": 0.5759075907590759,
-        "deltaE": 16.605
+        "first": "machine-armored-t4",
+        "second": "stone-runner-t4",
+        "iou": 0.5789473684210527,
+        "deltaE": 19.726
       },
       {
         "first": "machine-armored-t4",
-        "second": "stone-runner-t4",
-        "iou": 0.5734157650695518,
-        "deltaE": 19.788
+        "second": "stone-boss-t2",
+        "iou": 0.5784982935153583,
+        "deltaE": 18.618
+      },
+      {
+        "first": "machine-armored-t2",
+        "second": "stone-boss-t4",
+        "iou": 0.5742251223491027,
+        "deltaE": 16.087
       },
       {
         "first": "machine-armored-t2",
         "second": "stone-boss-t1",
         "iou": 0.570446735395189,
         "deltaE": 17.209
-      },
-      {
-        "first": "machine-armored-t4",
-        "second": "stone-boss-t2",
-        "iou": 0.5697278911564626,
-        "deltaE": 18.738
       },
       {
         "first": "machine-boss-t4",
@@ -7986,6 +8052,12 @@
         "second": "stone-special-t1",
         "iou": 0.558641975308642,
         "deltaE": 33.371
+      },
+      {
+        "first": "machine-runner-t1",
+        "second": "stone-boss-t4",
+        "iou": 0.5570032573289903,
+        "deltaE": 20.37
       },
       {
         "first": "machine-boss-t4",
@@ -8055,9 +8127,27 @@
       },
       {
         "first": "machine-infantry-t4",
+        "second": "elf-boss-t3",
+        "iou": 0.6089743589743589,
+        "deltaE": 26.691
+      },
+      {
+        "first": "machine-armored-t4",
+        "second": "elf-special-t2",
+        "iou": 0.6014625228519196,
+        "deltaE": 28.574
+      },
+      {
+        "first": "machine-infantry-t4",
         "second": "elf-armored-t1",
         "iou": 0.6004842615012107,
         "deltaE": 18.945
+      },
+      {
+        "first": "machine-runner-t3",
+        "second": "elf-boss-t3",
+        "iou": 0.5987903225806451,
+        "deltaE": 25.989
       },
       {
         "first": "machine-infantry-t2",
@@ -8068,14 +8158,14 @@
       {
         "first": "machine-infantry-t3",
         "second": "elf-boss-t3",
-        "iou": 0.5982339955849889,
-        "deltaE": 26.052
+        "iou": 0.5957446808510638,
+        "deltaE": 25.81
       },
       {
-        "first": "machine-infantry-t2",
+        "first": "machine-armored-t2",
         "second": "elf-boss-t3",
-        "iou": 0.5904977375565611,
-        "deltaE": 25.765
+        "iou": 0.5934489402697495,
+        "deltaE": 26.325
       },
       {
         "first": "machine-infantry-t4",
@@ -8103,18 +8193,6 @@
       },
       {
         "first": "machine-infantry-t4",
-        "second": "elf-boss-t3",
-        "iou": 0.5838779956427015,
-        "deltaE": 26.284
-      },
-      {
-        "first": "machine-armored-t4",
-        "second": "elf-special-t2",
-        "iou": 0.5833333333333334,
-        "deltaE": 28.652
-      },
-      {
-        "first": "machine-infantry-t4",
         "second": "elf-infantry-t1",
         "iou": 0.5831265508684863,
         "deltaE": 17.683
@@ -8126,10 +8204,22 @@
         "deltaE": 20.735
       },
       {
+        "first": "machine-armored-t4",
+        "second": "elf-boss-t3",
+        "iou": 0.5802919708029197,
+        "deltaE": 23.24
+      },
+      {
         "first": "machine-infantry-t2",
         "second": "elf-infantry-t4",
         "iou": 0.5778364116094987,
         "deltaE": 16.238
+      },
+      {
+        "first": "machine-armored-t4",
+        "second": "elf-special-t4",
+        "iou": 0.5748502994011976,
+        "deltaE": 17.744
       },
       {
         "first": "machine-infantry-t2",
@@ -8156,22 +8246,22 @@
         "deltaE": 19.976
       },
       {
-        "first": "machine-armored-t2",
-        "second": "elf-boss-t3",
-        "iou": 0.564453125,
-        "deltaE": 26.317
-      },
-      {
         "first": "machine-infantry-t4",
         "second": "elf-special-t2",
         "iou": 0.5635245901639344,
         "deltaE": 35.065
       },
       {
-        "first": "machine-armored-t4",
-        "second": "elf-special-t4",
-        "iou": 0.5615079365079365,
-        "deltaE": 17.958
+        "first": "machine-armored-t3",
+        "second": "elf-boss-t3",
+        "iou": 0.5618556701030928,
+        "deltaE": 23.923
+      },
+      {
+        "first": "machine-infantry-t2",
+        "second": "elf-boss-t3",
+        "iou": 0.5610278372591007,
+        "deltaE": 26.141
       },
       {
         "first": "machine-armored-t2",
@@ -8184,6 +8274,12 @@
         "second": "elf-armored-t2",
         "iou": 0.5602836879432624,
         "deltaE": 24.23
+      },
+      {
+        "first": "machine-armored-t1",
+        "second": "elf-boss-t3",
+        "iou": 0.56,
+        "deltaE": 25.493
       },
       {
         "first": "machine-boss-t1",
@@ -8306,6 +8402,12 @@
         "deltaE": 15.683
       },
       {
+        "first": "machine-armored-t4",
+        "second": "human-armored-t3",
+        "iou": 0.6343692870201096,
+        "deltaE": 34.111
+      },
+      {
         "first": "machine-infantry-t3",
         "second": "human-infantry-t4",
         "iou": 0.6313131313131313,
@@ -8337,9 +8439,15 @@
       },
       {
         "first": "machine-armored-t4",
-        "second": "human-armored-t3",
-        "iou": 0.6188747731397459,
-        "deltaE": 33.813
+        "second": "human-armored-t1",
+        "iou": 0.6212624584717608,
+        "deltaE": 27.505
+      },
+      {
+        "first": "machine-armored-t4",
+        "second": "human-special-t3",
+        "iou": 0.6207430340557275,
+        "deltaE": 15.799
       },
       {
         "first": "machine-runner-t3",
@@ -8348,16 +8456,16 @@
         "deltaE": 29.855
       },
       {
+        "first": "machine-armored-t4",
+        "second": "human-armored-t4",
+        "iou": 0.6181172291296625,
+        "deltaE": 28.158
+      },
+      {
         "first": "machine-boss-t4",
         "second": "human-armored-t1",
         "iou": 0.6157556270096463,
         "deltaE": 28.48
-      },
-      {
-        "first": "machine-armored-t4",
-        "second": "human-special-t3",
-        "iou": 0.615146831530139,
-        "deltaE": 15.783
       },
       {
         "first": "machine-infantry-t3",
@@ -8408,18 +8516,6 @@
         "deltaE": 31.5
       },
       {
-        "first": "machine-armored-t4",
-        "second": "human-armored-t1",
-        "iou": 0.6019736842105263,
-        "deltaE": 27.555
-      },
-      {
-        "first": "machine-armored-t4",
-        "second": "human-armored-t4",
-        "iou": 0.6003521126760564,
-        "deltaE": 27.861
-      },
-      {
         "first": "machine-boss-t2",
         "second": "human-boss-t2",
         "iou": 0.6002994011976048,
@@ -8439,9 +8535,9 @@
       },
       {
         "first": "machine-armored-t4",
-        "second": "human-boss-t2",
-        "iou": 0.5957095709570958,
-        "deltaE": 17.645
+        "second": "human-armored-t2",
+        "iou": 0.5985401459854015,
+        "deltaE": 30.546
       },
       {
         "first": "machine-infantry-t4",
@@ -8486,16 +8582,16 @@
         "deltaE": 22.845
       },
       {
+        "first": "machine-armored-t4",
+        "second": "human-boss-t2",
+        "iou": 0.5885245901639344,
+        "deltaE": 17.73
+      },
+      {
         "first": "machine-armored-t1",
         "second": "human-armored-t3",
         "iou": 0.5881383855024712,
         "deltaE": 38.979
-      },
-      {
-        "first": "machine-armored-t4",
-        "second": "human-armored-t2",
-        "iou": 0.5862068965517241,
-        "deltaE": 30.431
       },
       {
         "first": "machine-infantry-t4",
@@ -8666,6 +8762,12 @@
         "deltaE": 35.231
       },
       {
+        "first": "machine-armored-t4",
+        "second": "human-special-t2",
+        "iou": 0.5605006954102921,
+        "deltaE": 24.785
+      },
+      {
         "first": "machine-runner-t3",
         "second": "human-armored-t2",
         "iou": 0.5592233009708738,
@@ -8710,14 +8812,14 @@
       {
         "first": "machine-armored-t4",
         "second": "human-special-t4",
-        "iou": 0.555895865237366,
-        "deltaE": 23.196
+        "iou": 0.5565749235474006,
+        "deltaE": 23.172
       },
       {
         "first": "machine-armored-t4",
-        "second": "human-special-t2",
-        "iou": 0.5555555555555556,
-        "deltaE": 24.764
+        "second": "human-boss-t1",
+        "iou": 0.5561497326203209,
+        "deltaE": 22.616
       },
       {
         "first": "machine-boss-t1",
@@ -8774,12 +8876,6 @@
         "deltaE": 16.402
       },
       {
-        "first": "machine-armored-t4",
-        "second": "insect-boss-t4",
-        "iou": 0.6448445171849427,
-        "deltaE": 16.046
-      },
-      {
         "first": "machine-runner-t2",
         "second": "insect-armored-t3",
         "iou": 0.6404886561954625,
@@ -8790,6 +8886,12 @@
         "second": "insect-armored-t3",
         "iou": 0.6402535657686212,
         "deltaE": 20.34
+      },
+      {
+        "first": "machine-armored-t4",
+        "second": "insect-boss-t4",
+        "iou": 0.6373983739837399,
+        "deltaE": 16.033
       },
       {
         "first": "machine-armored-t1",
@@ -8810,10 +8912,10 @@
         "deltaE": 16.442
       },
       {
-        "first": "machine-armored-t4",
-        "second": "insect-boss-t3",
-        "iou": 0.6181818181818182,
-        "deltaE": 16.5
+        "first": "machine-boss-t4",
+        "second": "insect-armored-t1",
+        "iou": 0.620845921450151,
+        "deltaE": 18.692
       },
       {
         "first": "machine-armored-t3",
@@ -8822,10 +8924,16 @@
         "deltaE": 15.658
       },
       {
+        "first": "machine-armored-t4",
+        "second": "insect-boss-t3",
+        "iou": 0.6138763197586727,
+        "deltaE": 16.476
+      },
+      {
         "first": "machine-armored-t3",
         "second": "insect-armored-t1",
-        "iou": 0.612184249628529,
-        "deltaE": 15.948
+        "iou": 0.612759643916914,
+        "deltaE": 15.811
       },
       {
         "first": "machine-runner-t3",
@@ -8841,33 +8949,33 @@
       },
       {
         "first": "machine-boss-t4",
-        "second": "insect-armored-t1",
-        "iou": 0.6105263157894737,
-        "deltaE": 18.871
-      },
-      {
-        "first": "machine-boss-t4",
         "second": "insect-armored-t4",
         "iou": 0.6093023255813953,
         "deltaE": 16.714
       },
       {
+        "first": "machine-runner-t3",
+        "second": "insect-armored-t1",
+        "iou": 0.6076158940397351,
+        "deltaE": 17.236
+      },
+      {
         "first": "machine-runner-t4",
         "second": "insect-armored-t1",
-        "iou": 0.6078431372549019,
-        "deltaE": 20.009
+        "iou": 0.6058631921824105,
+        "deltaE": 20.002
+      },
+      {
+        "first": "machine-boss-t3",
+        "second": "insect-armored-t1",
+        "iou": 0.6057401812688822,
+        "deltaE": 16.508
       },
       {
         "first": "machine-boss-t4",
         "second": "insect-boss-t3",
         "iou": 0.6043795620437956,
         "deltaE": 20.488
-      },
-      {
-        "first": "machine-runner-t3",
-        "second": "insect-armored-t1",
-        "iou": 0.6043046357615894,
-        "deltaE": 17.201
       },
       {
         "first": "machine-boss-t4",
@@ -8894,10 +9002,10 @@
         "deltaE": 18.15
       },
       {
-        "first": "machine-boss-t3",
-        "second": "insect-armored-t1",
-        "iou": 0.5978915662650602,
-        "deltaE": 16.608
+        "first": "machine-runner-t1",
+        "second": "insect-runner-t3",
+        "iou": 0.5962264150943396,
+        "deltaE": 20.13
       },
       {
         "first": "machine-boss-t2",
@@ -8906,16 +9014,16 @@
         "deltaE": 15.748
       },
       {
-        "first": "machine-runner-t1",
-        "second": "insect-runner-t3",
-        "iou": 0.5842911877394636,
-        "deltaE": 20.373
-      },
-      {
         "first": "machine-boss-t3",
         "second": "insect-boss-t2",
         "iou": 0.5818759936406995,
         "deltaE": 17.471
+      },
+      {
+        "first": "machine-armored-t4",
+        "second": "insect-special-t4",
+        "iou": 0.5788643533123028,
+        "deltaE": 17.725
       },
       {
         "first": "machine-runner-t2",
@@ -8930,16 +9038,28 @@
         "deltaE": 18.347
       },
       {
-        "first": "machine-infantry-t2",
-        "second": "insect-infantry-t1",
-        "iou": 0.576,
-        "deltaE": 17.098
+        "first": "machine-armored-t4",
+        "second": "insect-armored-t3",
+        "iou": 0.571875,
+        "deltaE": 16.538
+      },
+      {
+        "first": "machine-boss-t2",
+        "second": "insect-armored-t1",
+        "iou": 0.5714285714285714,
+        "deltaE": 15.231
       },
       {
         "first": "machine-armored-t1",
         "second": "insect-special-t4",
         "iou": 0.5703812316715543,
         "deltaE": 18.065
+      },
+      {
+        "first": "machine-armored-t2",
+        "second": "insect-armored-t1",
+        "iou": 0.5678627145085804,
+        "deltaE": 19.196
       },
       {
         "first": "machine-armored-t3",
@@ -8954,40 +9074,28 @@
         "deltaE": 20.467
       },
       {
-        "first": "machine-boss-t2",
-        "second": "insect-armored-t1",
-        "iou": 0.5665294924554184,
-        "deltaE": 15.267
-      },
-      {
-        "first": "machine-armored-t4",
-        "second": "insect-armored-t1",
-        "iou": 0.5662650602409639,
-        "deltaE": 17.09
-      },
-      {
         "first": "machine-runner-t3",
         "second": "insect-boss-t3",
         "iou": 0.565149136577708,
         "deltaE": 16.075
       },
       {
+        "first": "machine-armored-t4",
+        "second": "insect-armored-t1",
+        "iou": 0.562874251497006,
+        "deltaE": 16.973
+      },
+      {
+        "first": "machine-runner-t1",
+        "second": "insect-boss-t3",
+        "iou": 0.5626911314984709,
+        "deltaE": 21.039
+      },
+      {
         "first": "machine-runner-t2",
         "second": "insect-armored-t1",
-        "iou": 0.5641025641025641,
-        "deltaE": 16.418
-      },
-      {
-        "first": "machine-armored-t4",
-        "second": "insect-special-t4",
-        "iou": 0.5633802816901409,
-        "deltaE": 17.753
-      },
-      {
-        "first": "machine-armored-t2",
-        "second": "insect-armored-t1",
-        "iou": 0.5623052959501558,
-        "deltaE": 19.324
+        "iou": 0.5623003194888179,
+        "deltaE": 16.414
       },
       {
         "first": "machine-boss-t2",
@@ -9002,10 +9110,10 @@
         "deltaE": 15.758
       },
       {
-        "first": "machine-armored-t4",
+        "first": "machine-runner-t1",
         "second": "insect-armored-t3",
-        "iou": 0.5614307931570762,
-        "deltaE": 16.56
+        "iou": 0.5602605863192183,
+        "deltaE": 21.747
       },
       {
         "first": "machine-armored-t1",
@@ -9018,6 +9126,12 @@
         "second": "insect-runner-t2",
         "iou": 0.5550239234449761,
         "deltaE": 26.356
+      },
+      {
+        "first": "machine-boss-t1",
+        "second": "insect-infantry-t1",
+        "iou": 0.5549597855227882,
+        "deltaE": 22.26
       },
       {
         "first": "machine-armored-t2",
@@ -9038,16 +9152,16 @@
         "deltaE": 16.133
       },
       {
+        "first": "stone-boss-t2",
+        "second": "elf-boss-t3",
+        "iou": 0.6408730158730159,
+        "deltaE": 21.401
+      },
+      {
         "first": "stone-runner-t2",
         "second": "elf-runner-t2",
         "iou": 0.6124721603563474,
         "deltaE": 29.033
-      },
-      {
-        "first": "stone-boss-t2",
-        "second": "elf-boss-t3",
-        "iou": 0.6052104208416834,
-        "deltaE": 22.001
       },
       {
         "first": "stone-special-t1",
@@ -9060,6 +9174,12 @@
         "second": "elf-runner-t3",
         "iou": 0.6023529411764705,
         "deltaE": 17.212
+      },
+      {
+        "first": "stone-boss-t1",
+        "second": "elf-boss-t3",
+        "iou": 0.601123595505618,
+        "deltaE": 24.775
       },
       {
         "first": "stone-runner-t4",
@@ -9084,6 +9204,12 @@
         "second": "elf-special-t4",
         "iou": 0.5822784810126582,
         "deltaE": 19.889
+      },
+      {
+        "first": "stone-boss-t4",
+        "second": "elf-boss-t3",
+        "iou": 0.581151832460733,
+        "deltaE": 23.794
       },
       {
         "first": "stone-special-t4",
@@ -9170,12 +9296,6 @@
         "deltaE": 27.24
       },
       {
-        "first": "stone-boss-t4",
-        "second": "human-armored-t1",
-        "iou": 0.6710963455149501,
-        "deltaE": 28.942
-      },
-      {
         "first": "stone-boss-t1",
         "second": "human-boss-t4",
         "iou": 0.6710280373831776,
@@ -9206,6 +9326,12 @@
         "deltaE": 25.183
       },
       {
+        "first": "stone-boss-t4",
+        "second": "human-armored-t1",
+        "iou": 0.662847790507365,
+        "deltaE": 28.881
+      },
+      {
         "first": "stone-boss-t2",
         "second": "human-armored-t4",
         "iou": 0.660952380952381,
@@ -9232,8 +9358,8 @@
       {
         "first": "stone-boss-t4",
         "second": "human-boss-t4",
-        "iou": 0.6432337434094904,
-        "deltaE": 28.482
+        "iou": 0.6434782608695652,
+        "deltaE": 28.512
       },
       {
         "first": "stone-boss-t2",
@@ -9303,9 +9429,9 @@
       },
       {
         "first": "stone-boss-t4",
-        "second": "human-special-t3",
-        "iou": 0.6244343891402715,
-        "deltaE": 16.803
+        "second": "human-armored-t3",
+        "iou": 0.6243478260869565,
+        "deltaE": 35.496
       },
       {
         "first": "stone-boss-t3",
@@ -9324,6 +9450,12 @@
         "second": "human-runner-t4",
         "iou": 0.62,
         "deltaE": 32.244
+      },
+      {
+        "first": "stone-boss-t4",
+        "second": "human-special-t3",
+        "iou": 0.6199701937406855,
+        "deltaE": 16.599
       },
       {
         "first": "stone-special-t3",
@@ -9368,12 +9500,6 @@
         "deltaE": 22.19
       },
       {
-        "first": "stone-boss-t4",
-        "second": "human-armored-t3",
-        "iou": 0.612565445026178,
-        "deltaE": 35.157
-      },
-      {
         "first": "stone-infantry-t3",
         "second": "human-special-t4",
         "iou": 0.6110304789550073,
@@ -9410,6 +9536,18 @@
         "deltaE": 16.815
       },
       {
+        "first": "stone-boss-t4",
+        "second": "human-boss-t1",
+        "iou": 0.6073943661971831,
+        "deltaE": 23.856
+      },
+      {
+        "first": "stone-boss-t4",
+        "second": "human-special-t2",
+        "iou": 0.607192254495159,
+        "deltaE": 26.706
+      },
+      {
         "first": "stone-armored-t4",
         "second": "human-special-t1",
         "iou": 0.6071428571428571,
@@ -9440,18 +9578,6 @@
         "deltaE": 23.25
       },
       {
-        "first": "stone-boss-t4",
-        "second": "human-boss-t1",
-        "iou": 0.601063829787234,
-        "deltaE": 23.745
-      },
-      {
-        "first": "stone-boss-t4",
-        "second": "human-armored-t4",
-        "iou": 0.6003401360544217,
-        "deltaE": 29.544
-      },
-      {
         "first": "stone-infantry-t4",
         "second": "human-special-t3",
         "iou": 0.5989232839838493,
@@ -9464,16 +9590,22 @@
         "deltaE": 24.419
       },
       {
+        "first": "stone-boss-t4",
+        "second": "human-armored-t2",
+        "iou": 0.5986038394415357,
+        "deltaE": 30.609
+      },
+      {
+        "first": "stone-boss-t4",
+        "second": "human-armored-t4",
+        "iou": 0.5983193277310924,
+        "deltaE": 29.651
+      },
+      {
         "first": "stone-armored-t4",
         "second": "human-special-t2",
         "iou": 0.5979381443298969,
         "deltaE": 24.233
-      },
-      {
-        "first": "stone-boss-t4",
-        "second": "human-special-t2",
-        "iou": 0.5955678670360111,
-        "deltaE": 26.835
       },
       {
         "first": "stone-special-t4",
@@ -9489,9 +9621,9 @@
       },
       {
         "first": "stone-boss-t4",
-        "second": "human-armored-t2",
-        "iou": 0.5922671353251318,
-        "deltaE": 30.653
+        "second": "human-special-t4",
+        "iou": 0.5933734939759037,
+        "deltaE": 23.143
       },
       {
         "first": "stone-armored-t1",
@@ -9554,12 +9686,6 @@
         "deltaE": 21.609
       },
       {
-        "first": "stone-boss-t4",
-        "second": "human-boss-t2",
-        "iou": 0.5781990521327014,
-        "deltaE": 20.185
-      },
-      {
         "first": "stone-boss-t1",
         "second": "human-special-t2",
         "iou": 0.578125,
@@ -9572,16 +9698,16 @@
         "deltaE": 23.209
       },
       {
+        "first": "stone-boss-t4",
+        "second": "human-boss-t2",
+        "iou": 0.5765625,
+        "deltaE": 20.21
+      },
+      {
         "first": "stone-boss-t2",
         "second": "human-special-t4",
         "iou": 0.5764895330112721,
         "deltaE": 25.753
-      },
-      {
-        "first": "stone-boss-t4",
-        "second": "human-special-t4",
-        "iou": 0.5759398496240602,
-        "deltaE": 22.883
       },
       {
         "first": "stone-runner-t4",
@@ -9674,18 +9800,6 @@
         "deltaE": 30.791
       },
       {
-        "first": "stone-boss-t4",
-        "second": "human-runner-t1",
-        "iou": 0.5614035087719298,
-        "deltaE": 18.111
-      },
-      {
-        "first": "stone-boss-t4",
-        "second": "human-runner-t2",
-        "iou": 0.5596330275229358,
-        "deltaE": 16.971
-      },
-      {
         "first": "stone-armored-t2",
         "second": "human-special-t4",
         "iou": 0.55819774718398,
@@ -9720,6 +9834,12 @@
         "second": "human-armored-t1",
         "iou": 0.5548387096774193,
         "deltaE": 29.231
+      },
+      {
+        "first": "stone-boss-t4",
+        "second": "human-runner-t1",
+        "iou": 0.5544041450777202,
+        "deltaE": 17.933
       },
       {
         "first": "stone-runner-t4",
@@ -9796,8 +9916,8 @@
       {
         "first": "stone-infantry-t3",
         "second": "insect-armored-t1",
-        "iou": 0.6976047904191617,
-        "deltaE": 16.466
+        "iou": 0.6980568011958147,
+        "deltaE": 16.391
       },
       {
         "first": "stone-boss-t3",
@@ -9806,22 +9926,10 @@
         "deltaE": 17.529
       },
       {
-        "first": "stone-boss-t4",
-        "second": "insect-boss-t3",
-        "iou": 0.6717325227963525,
-        "deltaE": 17.808
-      },
-      {
         "first": "stone-armored-t2",
         "second": "insect-boss-t3",
         "iou": 0.6692406692406693,
         "deltaE": 19.486
-      },
-      {
-        "first": "stone-infantry-t2",
-        "second": "insect-armored-t1",
-        "iou": 0.6686303387334315,
-        "deltaE": 18.85
       },
       {
         "first": "stone-special-t3",
@@ -9830,16 +9938,22 @@
         "deltaE": 20.154
       },
       {
-        "first": "stone-boss-t3",
-        "second": "insect-boss-t3",
-        "iou": 0.6643550624133149,
-        "deltaE": 18.271
+        "first": "stone-infantry-t2",
+        "second": "insect-armored-t1",
+        "iou": 0.6666666666666666,
+        "deltaE": 18.801
       },
       {
         "first": "stone-armored-t3",
         "second": "insect-armored-t1",
-        "iou": 0.6639892904953146,
-        "deltaE": 15.802
+        "iou": 0.6666666666666666,
+        "deltaE": 15.783
+      },
+      {
+        "first": "stone-boss-t3",
+        "second": "insect-boss-t3",
+        "iou": 0.6643550624133149,
+        "deltaE": 18.271
       },
       {
         "first": "stone-runner-t4",
@@ -9873,9 +9987,21 @@
       },
       {
         "first": "stone-boss-t4",
+        "second": "insect-boss-t3",
+        "iou": 0.649331352154532,
+        "deltaE": 17.414
+      },
+      {
+        "first": "stone-armored-t2",
+        "second": "insect-armored-t1",
+        "iou": 0.648508430609598,
+        "deltaE": 18.937
+      },
+      {
+        "first": "stone-boss-t4",
         "second": "insect-boss-t4",
-        "iou": 0.6486486486486487,
-        "deltaE": 18.434
+        "iou": 0.6462264150943396,
+        "deltaE": 18.217
       },
       {
         "first": "stone-infantry-t3",
@@ -9884,22 +10010,16 @@
         "deltaE": 18.285
       },
       {
-        "first": "stone-armored-t2",
+        "first": "stone-infantry-t4",
         "second": "insect-armored-t1",
-        "iou": 0.6437823834196891,
-        "deltaE": 18.839
+        "iou": 0.6412742382271468,
+        "deltaE": 17.806
       },
       {
         "first": "stone-infantry-t4",
         "second": "insect-boss-t3",
         "iou": 0.6409214092140921,
         "deltaE": 17.47
-      },
-      {
-        "first": "stone-infantry-t4",
-        "second": "insect-armored-t1",
-        "iou": 0.6407766990291263,
-        "deltaE": 17.908
       },
       {
         "first": "stone-infantry-t3",
@@ -9916,8 +10036,8 @@
       {
         "first": "stone-special-t3",
         "second": "insect-armored-t2",
-        "iou": 0.6373429084380611,
-        "deltaE": 19.076
+        "iou": 0.6397849462365591,
+        "deltaE": 19.034
       },
       {
         "first": "stone-armored-t1",
@@ -9926,16 +10046,16 @@
         "deltaE": 16.396
       },
       {
-        "first": "stone-armored-t1",
-        "second": "insect-armored-t1",
-        "iou": 0.631979695431472,
-        "deltaE": 15.904
-      },
-      {
         "first": "stone-infantry-t1",
         "second": "insect-armored-t1",
-        "iou": 0.6306569343065693,
-        "deltaE": 16.126
+        "iou": 0.6335766423357664,
+        "deltaE": 16.128
+      },
+      {
+        "first": "stone-armored-t1",
+        "second": "insect-armored-t1",
+        "iou": 0.632446134347275,
+        "deltaE": 15.893
       },
       {
         "first": "stone-armored-t2",
@@ -9968,16 +10088,22 @@
         "deltaE": 17.771
       },
       {
-        "first": "stone-boss-t1",
+        "first": "stone-boss-t3",
         "second": "insect-armored-t1",
-        "iou": 0.6236220472440945,
-        "deltaE": 17.239
+        "iou": 0.623789764868603,
+        "deltaE": 16.907
       },
       {
         "first": "stone-armored-t3",
         "second": "insect-armored-t3",
         "iou": 0.6223118279569892,
         "deltaE": 16.478
+      },
+      {
+        "first": "stone-boss-t1",
+        "second": "insect-armored-t1",
+        "iou": 0.6216640502354788,
+        "deltaE": 17.196
       },
       {
         "first": "stone-infantry-t3",
@@ -10010,12 +10136,6 @@
         "deltaE": 18.434
       },
       {
-        "first": "stone-boss-t3",
-        "second": "insect-armored-t1",
-        "iou": 0.6143250688705234,
-        "deltaE": 16.881
-      },
-      {
         "first": "stone-armored-t3",
         "second": "insect-special-t4",
         "iou": 0.6134228187919463,
@@ -10026,12 +10146,6 @@
         "second": "insect-special-t4",
         "iou": 0.6123919308357348,
         "deltaE": 20.732
-      },
-      {
-        "first": "stone-special-t1",
-        "second": "insect-armored-t1",
-        "iou": 0.6123680241327301,
-        "deltaE": 40.312
       },
       {
         "first": "stone-infantry-t1",
@@ -10046,10 +10160,16 @@
         "deltaE": 16.947
       },
       {
+        "first": "stone-special-t1",
+        "second": "insect-armored-t1",
+        "iou": 0.6081081081081081,
+        "deltaE": 40.189
+      },
+      {
         "first": "stone-boss-t4",
         "second": "insect-boss-t2",
-        "iou": 0.6070287539936102,
-        "deltaE": 17.344
+        "iou": 0.6075949367088608,
+        "deltaE": 17.316
       },
       {
         "first": "stone-special-t2",
@@ -10072,20 +10192,20 @@
       {
         "first": "stone-runner-t4",
         "second": "insect-armored-t1",
-        "iou": 0.6005830903790087,
-        "deltaE": 24.664
+        "iou": 0.6034985422740525,
+        "deltaE": 24.77
+      },
+      {
+        "first": "stone-armored-t4",
+        "second": "insect-armored-t2",
+        "iou": 0.6003062787136294,
+        "deltaE": 18.597
       },
       {
         "first": "stone-infantry-t2",
         "second": "insect-boss-t4",
         "iou": 0.5982532751091703,
         "deltaE": 16.999
-      },
-      {
-        "first": "stone-armored-t4",
-        "second": "insect-armored-t2",
-        "iou": 0.5957120980091883,
-        "deltaE": 18.441
       },
       {
         "first": "stone-special-t2",
@@ -10106,10 +10226,10 @@
         "deltaE": 30.953
       },
       {
-        "first": "stone-boss-t4",
+        "first": "stone-special-t3",
         "second": "insect-armored-t1",
-        "iou": 0.5928677563150074,
-        "deltaE": 17.375
+        "iou": 0.5925925925925926,
+        "deltaE": 23.488
       },
       {
         "first": "stone-infantry-t2",
@@ -10130,12 +10250,6 @@
         "deltaE": 15.298
       },
       {
-        "first": "stone-special-t3",
-        "second": "insect-armored-t1",
-        "iou": 0.5895061728395061,
-        "deltaE": 23.535
-      },
-      {
         "first": "stone-boss-t1",
         "second": "insect-armored-t3",
         "iou": 0.5869218500797448,
@@ -10146,6 +10260,12 @@
         "second": "insect-armored-t3",
         "iou": 0.5867895545314901,
         "deltaE": 37.748
+      },
+      {
+        "first": "stone-boss-t4",
+        "second": "insect-armored-t1",
+        "iou": 0.5847953216374269,
+        "deltaE": 17.272
       },
       {
         "first": "stone-infantry-t1",
@@ -10166,6 +10286,12 @@
         "deltaE": 18.953
       },
       {
+        "first": "stone-armored-t4",
+        "second": "insect-armored-t1",
+        "iou": 0.5788043478260869,
+        "deltaE": 22.333
+      },
+      {
         "first": "stone-runner-t1",
         "second": "insect-special-t4",
         "iou": 0.5774410774410774,
@@ -10182,12 +10308,6 @@
         "second": "insect-armored-t3",
         "iou": 0.5761494252873564,
         "deltaE": 19.685
-      },
-      {
-        "first": "stone-armored-t4",
-        "second": "insect-armored-t1",
-        "iou": 0.5760869565217391,
-        "deltaE": 22.238
       },
       {
         "first": "stone-infantry-t4",
@@ -10214,10 +10334,10 @@
         "deltaE": 17.159
       },
       {
-        "first": "stone-special-t1",
-        "second": "insect-armored-t2",
-        "iou": 0.5745033112582781,
-        "deltaE": 34.345
+        "first": "stone-boss-t4",
+        "second": "insect-boss-t1",
+        "iou": 0.5736301369863014,
+        "deltaE": 21.588
       },
       {
         "first": "stone-boss-t2",
@@ -10232,22 +10352,22 @@
         "deltaE": 20.399
       },
       {
+        "first": "stone-special-t2",
+        "second": "insect-armored-t2",
+        "iou": 0.5709624796084829,
+        "deltaE": 19.732
+      },
+      {
         "first": "stone-infantry-t4",
         "second": "insect-special-t4",
         "iou": 0.5708390646492435,
         "deltaE": 21.43
       },
       {
-        "first": "stone-boss-t4",
-        "second": "insect-boss-t1",
-        "iou": 0.5699481865284974,
-        "deltaE": 21.66
-      },
-      {
-        "first": "stone-special-t2",
+        "first": "stone-special-t1",
         "second": "insect-armored-t2",
-        "iou": 0.566068515497553,
-        "deltaE": 19.812
+        "iou": 0.5665024630541872,
+        "deltaE": 34.301
       },
       {
         "first": "stone-runner-t4",
@@ -10292,16 +10412,16 @@
         "deltaE": 15.626
       },
       {
-        "first": "stone-boss-t2",
-        "second": "insect-armored-t1",
-        "iou": 0.5598755832037325,
-        "deltaE": 21.665
-      },
-      {
         "first": "stone-runner-t3",
         "second": "insect-special-t4",
         "iou": 0.558974358974359,
         "deltaE": 16.43
+      },
+      {
+        "first": "stone-infantry-t2",
+        "second": "insect-armored-t2",
+        "iou": 0.55895865237366,
+        "deltaE": 15.176
       },
       {
         "first": "stone-special-t3",
@@ -10316,16 +10436,16 @@
         "deltaE": 16.182
       },
       {
-        "first": "stone-infantry-t2",
-        "second": "insect-armored-t2",
-        "iou": 0.5567484662576687,
-        "deltaE": 15.176
-      },
-      {
         "first": "stone-runner-t4",
         "second": "insect-runner-t2",
         "iou": 0.5559055118110237,
         "deltaE": 26.088
+      },
+      {
+        "first": "stone-runner-t4",
+        "second": "insect-armored-t2",
+        "iou": 0.555379746835443,
+        "deltaE": 17.921
       },
       {
         "first": "stone-special-t1",
@@ -10338,12 +10458,6 @@
         "second": "insect-special-t2",
         "iou": 0.5544388609715243,
         "deltaE": 16.5
-      },
-      {
-        "first": "stone-boss-t4",
-        "second": "insect-armored-t3",
-        "iou": 0.553223388305847,
-        "deltaE": 18.612
       },
       {
         "first": "stone-infantry-t1",
@@ -10364,16 +10478,16 @@
         "deltaE": 20.662
       },
       {
+        "first": "stone-boss-t2",
+        "second": "insect-armored-t1",
+        "iou": 0.5509259259259259,
+        "deltaE": 21.635
+      },
+      {
         "first": "stone-armored-t1",
         "second": "insect-armored-t3",
         "iou": 0.5508684863523573,
         "deltaE": 16.58
-      },
-      {
-        "first": "stone-runner-t4",
-        "second": "insect-armored-t2",
-        "iou": 0.5506329113924051,
-        "deltaE": 17.803
       },
       {
         "first": "elf-armored-t3",
@@ -10556,6 +10670,12 @@
         "deltaE": 29.536
       },
       {
+        "first": "elf-boss-t3",
+        "second": "human-armored-t3",
+        "iou": 0.6146044624746451,
+        "deltaE": 40.277
+      },
+      {
         "first": "elf-armored-t2",
         "second": "human-infantry-t2",
         "iou": 0.6141732283464567,
@@ -10572,6 +10692,12 @@
         "second": "human-boss-t3",
         "iou": 0.6037296037296037,
         "deltaE": 21.456
+      },
+      {
+        "first": "elf-boss-t3",
+        "second": "human-boss-t1",
+        "iou": 0.6012396694214877,
+        "deltaE": 30.133
       },
       {
         "first": "elf-boss-t2",
@@ -10593,9 +10719,9 @@
       },
       {
         "first": "elf-boss-t3",
-        "second": "human-armored-t3",
-        "iou": 0.5942028985507246,
-        "deltaE": 40.129
+        "second": "human-armored-t2",
+        "iou": 0.5942622950819673,
+        "deltaE": 35.768
       },
       {
         "first": "elf-infantry-t3",
@@ -10640,22 +10766,34 @@
         "deltaE": 26.048
       },
       {
-        "first": "elf-boss-t3",
-        "second": "human-boss-t3",
-        "iou": 0.5840336134453782,
-        "deltaE": 25.603
-      },
-      {
         "first": "elf-infantry-t3",
         "second": "human-boss-t1",
         "iou": 0.582716049382716,
         "deltaE": 26.221
       },
       {
+        "first": "elf-boss-t3",
+        "second": "human-armored-t4",
+        "iou": 0.5817120622568094,
+        "deltaE": 34.803
+      },
+      {
         "first": "elf-boss-t4",
         "second": "human-boss-t2",
         "iou": 0.5798611111111112,
         "deltaE": 17.588
+      },
+      {
+        "first": "elf-boss-t3",
+        "second": "human-armored-t1",
+        "iou": 0.579136690647482,
+        "deltaE": 34.396
+      },
+      {
+        "first": "elf-boss-t3",
+        "second": "human-boss-t3",
+        "iou": 0.5789473684210527,
+        "deltaE": 25.845
       },
       {
         "first": "elf-special-t2",
@@ -10688,6 +10826,12 @@
         "deltaE": 32.391
       },
       {
+        "first": "elf-boss-t3",
+        "second": "human-runner-t1",
+        "iou": 0.5711340206185567,
+        "deltaE": 26.314
+      },
+      {
         "first": "elf-boss-t1",
         "second": "human-infantry-t1",
         "iou": 0.5709876543209876,
@@ -10712,12 +10856,6 @@
         "deltaE": 33.754
       },
       {
-        "first": "elf-boss-t3",
-        "second": "human-armored-t2",
-        "iou": 0.5666666666666667,
-        "deltaE": 36.043
-      },
-      {
         "first": "elf-armored-t1",
         "second": "human-infantry-t1",
         "iou": 0.5653409090909091,
@@ -10737,9 +10875,9 @@
       },
       {
         "first": "elf-boss-t3",
-        "second": "human-runner-t1",
-        "iou": 0.5626326963906582,
-        "deltaE": 25.142
+        "second": "human-boss-t4",
+        "iou": 0.5579150579150579,
+        "deltaE": 33.436
       },
       {
         "first": "elf-boss-t1",
@@ -10755,9 +10893,9 @@
       },
       {
         "first": "elf-boss-t3",
-        "second": "human-armored-t4",
-        "iou": 0.5553359683794467,
-        "deltaE": 33.424
+        "second": "human-infantry-t2",
+        "iou": 0.5562913907284768,
+        "deltaE": 27.926
       },
       {
         "first": "elf-armored-t4",
@@ -10773,15 +10911,9 @@
       },
       {
         "first": "elf-boss-t3",
-        "second": "human-boss-t1",
-        "iou": 0.553941908713693,
-        "deltaE": 30.928
-      },
-      {
-        "first": "elf-boss-t3",
-        "second": "human-infantry-t2",
-        "iou": 0.5537757437070938,
-        "deltaE": 28.344
+        "second": "human-runner-t4",
+        "iou": 0.5541284403669725,
+        "deltaE": 24.193
       },
       {
         "first": "elf-armored-t2",
@@ -10794,12 +10926,6 @@
         "second": "human-armored-t3",
         "iou": 0.5530035335689046,
         "deltaE": 37.18
-      },
-      {
-        "first": "elf-boss-t3",
-        "second": "human-boss-t4",
-        "iou": 0.5526838966202783,
-        "deltaE": 34.195
       },
       {
         "first": "elf-armored-t3",
@@ -10886,28 +11012,16 @@
         "deltaE": 17.95
       },
       {
-        "first": "elf-infantry-t4",
-        "second": "insect-infantry-t1",
-        "iou": 0.5841269841269842,
-        "deltaE": 19.368
+        "first": "elf-boss-t3",
+        "second": "insect-armored-t3",
+        "iou": 0.5818815331010453,
+        "deltaE": 29.189
       },
       {
         "first": "elf-special-t2",
         "second": "insect-armored-t1",
-        "iou": 0.5794701986754967,
-        "deltaE": 34.615
-      },
-      {
-        "first": "elf-boss-t3",
-        "second": "insect-infantry-t4",
-        "iou": 0.5757575757575758,
-        "deltaE": 27.57
-      },
-      {
-        "first": "elf-armored-t3",
-        "second": "insect-infantry-t1",
-        "iou": 0.5737179487179487,
-        "deltaE": 17.382
+        "iou": 0.5749588138385503,
+        "deltaE": 34.902
       },
       {
         "first": "elf-boss-t2",
@@ -10916,10 +11030,10 @@
         "deltaE": 15.526
       },
       {
-        "first": "elf-special-t2",
-        "second": "insect-armored-t2",
-        "iou": 0.5655430711610487,
-        "deltaE": 31.354
+        "first": "elf-infantry-t3",
+        "second": "insect-infantry-t1",
+        "iou": 0.5692771084337349,
+        "deltaE": 15.6
       },
       {
         "first": "elf-armored-t4",
@@ -10940,10 +11054,16 @@
         "deltaE": 18.542
       },
       {
-        "first": "elf-boss-t3",
-        "second": "insect-armored-t3",
-        "iou": 0.5555555555555556,
-        "deltaE": 27.81
+        "first": "elf-armored-t3",
+        "second": "insect-infantry-t1",
+        "iou": 0.5589123867069486,
+        "deltaE": 17.209
+      },
+      {
+        "first": "elf-special-t2",
+        "second": "insect-armored-t2",
+        "iou": 0.5565862708719852,
+        "deltaE": 31.672
       },
       {
         "first": "elf-runner-t2",
@@ -10964,10 +11084,10 @@
         "deltaE": 18.315
       },
       {
-        "first": "elf-infantry-t3",
+        "first": "elf-infantry-t1",
         "second": "insect-infantry-t1",
-        "iou": 0.55,
-        "deltaE": 16.148
+        "iou": 0.5517241379310345,
+        "deltaE": 22.272
       },
       {
         "first": "human-special-t2",
@@ -10982,22 +11102,16 @@
         "deltaE": 28.631
       },
       {
-        "first": "human-infantry-t4",
-        "second": "insect-infantry-t1",
-        "iou": 0.6805111821086262,
-        "deltaE": 31.017
-      },
-      {
-        "first": "human-infantry-t1",
-        "second": "insect-infantry-t1",
-        "iou": 0.6666666666666666,
-        "deltaE": 24.541
-      },
-      {
         "first": "human-boss-t2",
         "second": "insect-boss-t4",
         "iou": 0.6617405582922824,
         "deltaE": 19.363
+      },
+      {
+        "first": "human-armored-t1",
+        "second": "insect-armored-t1",
+        "iou": 0.660377358490566,
+        "deltaE": 32.845
       },
       {
         "first": "human-special-t3",
@@ -11024,12 +11138,6 @@
         "deltaE": 18.282
       },
       {
-        "first": "human-armored-t1",
-        "second": "insect-armored-t1",
-        "iou": 0.6494522691705791,
-        "deltaE": 32.98
-      },
-      {
         "first": "human-special-t4",
         "second": "insect-special-t4",
         "iou": 0.6484375,
@@ -11038,14 +11146,14 @@
       {
         "first": "human-special-t2",
         "second": "insect-armored-t1",
-        "iou": 0.6438356164383562,
-        "deltaE": 26.618
+        "iou": 0.6465753424657534,
+        "deltaE": 26.502
       },
       {
         "first": "human-special-t3",
         "second": "insect-armored-t1",
-        "iou": 0.6423357664233577,
-        "deltaE": 21.934
+        "iou": 0.6428571428571429,
+        "deltaE": 21.849
       },
       {
         "first": "human-special-t2",
@@ -11070,6 +11178,12 @@
         "second": "insect-boss-t4",
         "iou": 0.6277955271565495,
         "deltaE": 28.468
+      },
+      {
+        "first": "human-infantry-t4",
+        "second": "insect-infantry-t1",
+        "iou": 0.6253687315634219,
+        "deltaE": 30.455
       },
       {
         "first": "human-infantry-t4",
@@ -11098,8 +11212,8 @@
       {
         "first": "human-runner-t4",
         "second": "insect-armored-t1",
-        "iou": 0.6186708860759493,
-        "deltaE": 20.553
+        "iou": 0.6167192429022083,
+        "deltaE": 20.558
       },
       {
         "first": "human-special-t2",
@@ -11109,15 +11223,15 @@
       },
       {
         "first": "human-armored-t1",
-        "second": "insect-boss-t2",
-        "iou": 0.6091205211726385,
-        "deltaE": 31.566
+        "second": "insect-armored-t2",
+        "iou": 0.6134020618556701,
+        "deltaE": 29.566
       },
       {
         "first": "human-armored-t1",
-        "second": "insect-armored-t2",
-        "iou": 0.6027397260273972,
-        "deltaE": 29.744
+        "second": "insect-boss-t2",
+        "iou": 0.6091205211726385,
+        "deltaE": 31.566
       },
       {
         "first": "human-special-t4",
@@ -11144,10 +11258,10 @@
         "deltaE": 25.527
       },
       {
-        "first": "human-infantry-t2",
-        "second": "insect-infantry-t1",
-        "iou": 0.5971830985915493,
-        "deltaE": 20.636
+        "first": "human-special-t2",
+        "second": "insect-armored-t2",
+        "iou": 0.5979381443298969,
+        "deltaE": 24.218
       },
       {
         "first": "human-armored-t2",
@@ -11160,12 +11274,6 @@
         "second": "insect-boss-t4",
         "iou": 0.5937072503419972,
         "deltaE": 23.506
-      },
-      {
-        "first": "human-special-t2",
-        "second": "insect-armored-t2",
-        "iou": 0.593519882179676,
-        "deltaE": 24.39
       },
       {
         "first": "human-special-t1",
@@ -11226,6 +11334,12 @@
         "second": "insect-boss-t3",
         "iou": 0.5838150289017341,
         "deltaE": 17.605
+      },
+      {
+        "first": "human-infantry-t2",
+        "second": "insect-infantry-t1",
+        "iou": 0.5828877005347594,
+        "deltaE": 22.15
       },
       {
         "first": "human-special-t4",
@@ -11318,16 +11432,28 @@
         "deltaE": 22.518
       },
       {
+        "first": "human-special-t4",
+        "second": "insect-armored-t1",
+        "iou": 0.5708154506437768,
+        "deltaE": 29.012
+      },
+      {
+        "first": "human-boss-t3",
+        "second": "insect-infantry-t1",
+        "iou": 0.5694117647058824,
+        "deltaE": 16.487
+      },
+      {
         "first": "human-runner-t4",
         "second": "insect-runner-t2",
         "iou": 0.5687285223367697,
         "deltaE": 24.039
       },
       {
-        "first": "human-special-t4",
-        "second": "insect-armored-t1",
-        "iou": 0.5679542203147353,
-        "deltaE": 29.142
+        "first": "human-infantry-t1",
+        "second": "insect-infantry-t1",
+        "iou": 0.5680473372781065,
+        "deltaE": 24.612
       },
       {
         "first": "human-armored-t3",
@@ -11366,6 +11492,12 @@
         "deltaE": 30.196
       },
       {
+        "first": "human-armored-t3",
+        "second": "insect-armored-t1",
+        "iou": 0.5584,
+        "deltaE": 39.504
+      },
+      {
         "first": "human-runner-t2",
         "second": "insect-boss-t2",
         "iou": 0.5583203732503889,
@@ -11378,10 +11510,22 @@
         "deltaE": 29.982
       },
       {
+        "first": "human-special-t4",
+        "second": "insect-armored-t2",
+        "iou": 0.5571428571428572,
+        "deltaE": 26.587
+      },
+      {
         "first": "human-boss-t4",
         "second": "insect-boss-t2",
         "iou": 0.5568760611205433,
         "deltaE": 28.692
+      },
+      {
+        "first": "human-runner-t1",
+        "second": "insect-armored-t1",
+        "iou": 0.5562913907284768,
+        "deltaE": 21.663
       },
       {
         "first": "human-special-t1",
@@ -11390,10 +11534,10 @@
         "deltaE": 21.212
       },
       {
-        "first": "human-runner-t1",
-        "second": "insect-armored-t1",
-        "iou": 0.5555555555555556,
-        "deltaE": 21.703
+        "first": "human-armored-t4",
+        "second": "insect-armored-t2",
+        "iou": 0.5551601423487544,
+        "deltaE": 32.758
       },
       {
         "first": "human-special-t2",
@@ -11415,33 +11559,21 @@
       },
       {
         "first": "human-armored-t3",
-        "second": "insect-armored-t1",
-        "iou": 0.5527156549520766,
-        "deltaE": 39.704
-      },
-      {
-        "first": "human-special-t4",
         "second": "insect-armored-t2",
-        "iou": 0.5523809523809524,
-        "deltaE": 26.679
+        "iou": 0.552536231884058,
+        "deltaE": 39.629
       },
       {
-        "first": "human-armored-t2",
+        "first": "human-armored-t4",
         "second": "insect-armored-t1",
-        "iou": 0.551219512195122,
-        "deltaE": 36.415
+        "iou": 0.5508607198748043,
+        "deltaE": 35.489
       },
       {
         "first": "human-armored-t3",
         "second": "insect-boss-t3",
         "iou": 0.5503875968992248,
         "deltaE": 38.21
-      },
-      {
-        "first": "human-runner-t1",
-        "second": "insect-armored-t2",
-        "iou": 0.5500945179584121,
-        "deltaE": 16.86
       }
     ],
     "B": [
@@ -11458,6 +11590,12 @@
         "deltaE": 13.412
       },
       {
+        "first": "machine-boss-t4",
+        "second": "insect-armored-t2",
+        "iou": 0.6713286713286714,
+        "deltaE": 13.519
+      },
+      {
         "first": "machine-infantry-t3",
         "second": "insect-infantry-t4",
         "iou": 0.6642335766423357,
@@ -11468,12 +11606,6 @@
         "second": "elf-boss-t2",
         "iou": 0.662557781201849,
         "deltaE": 14.858
-      },
-      {
-        "first": "machine-boss-t4",
-        "second": "insect-armored-t2",
-        "iou": 0.6573913043478261,
-        "deltaE": 13.643
       },
       {
         "first": "machine-armored-t1",
@@ -11496,8 +11628,8 @@
       {
         "first": "machine-armored-t4",
         "second": "elf-boss-t2",
-        "iou": 0.6412478336221837,
-        "deltaE": 13.385
+        "iou": 0.6418685121107266,
+        "deltaE": 13.314
       },
       {
         "first": "machine-boss-t2",
@@ -11516,12 +11648,6 @@
         "second": "insect-boss-t3",
         "iou": 0.6355810616929699,
         "deltaE": 14.91
-      },
-      {
-        "first": "stone-boss-t4",
-        "second": "elf-boss-t2",
-        "iou": 0.6316666666666667,
-        "deltaE": 13.659
       },
       {
         "first": "machine-boss-t2",
@@ -11560,10 +11686,10 @@
         "deltaE": 14.443
       },
       {
-        "first": "machine-armored-t1",
-        "second": "stone-boss-t4",
-        "iou": 0.6121212121212121,
-        "deltaE": 14.197
+        "first": "machine-armored-t4",
+        "second": "human-runner-t4",
+        "iou": 0.6126279863481229,
+        "deltaE": 13.092
       },
       {
         "first": "stone-infantry-t3",
@@ -11572,16 +11698,16 @@
         "deltaE": 14.369
       },
       {
-        "first": "machine-armored-t4",
-        "second": "human-runner-t4",
-        "iou": 0.611965811965812,
-        "deltaE": 12.972
-      },
-      {
         "first": "machine-armored-t3",
         "second": "insect-armored-t4",
         "iou": 0.6110260336906586,
         "deltaE": 12.598
+      },
+      {
+        "first": "machine-armored-t1",
+        "second": "stone-boss-t4",
+        "iou": 0.6101949025487257,
+        "deltaE": 13.916
       },
       {
         "first": "elf-armored-t3",
@@ -11602,16 +11728,40 @@
         "deltaE": 14.948
       },
       {
-        "first": "machine-boss-t2",
+        "first": "machine-infantry-t3",
         "second": "stone-boss-t4",
-        "iou": 0.6088235294117647,
-        "deltaE": 14.189
+        "iou": 0.6086956521739131,
+        "deltaE": 14.072
+      },
+      {
+        "first": "machine-infantry-t4",
+        "second": "stone-boss-t4",
+        "iou": 0.6083032490974729,
+        "deltaE": 14.719
+      },
+      {
+        "first": "stone-boss-t4",
+        "second": "elf-boss-t2",
+        "iou": 0.608130081300813,
+        "deltaE": 13.73
       },
       {
         "first": "elf-infantry-t4",
         "second": "insect-infantry-t2",
         "iou": 0.6048632218844985,
         "deltaE": 14.91
+      },
+      {
+        "first": "machine-armored-t4",
+        "second": "human-boss-t3",
+        "iou": 0.6021897810218978,
+        "deltaE": 14.178
+      },
+      {
+        "first": "machine-armored-t4",
+        "second": "stone-boss-t3",
+        "iou": 0.6017569546120058,
+        "deltaE": 14.131
       },
       {
         "first": "machine-armored-t1",
@@ -11630,18 +11780,6 @@
         "second": "insect-armored-t4",
         "iou": 0.6011816838995568,
         "deltaE": 13.219
-      },
-      {
-        "first": "machine-armored-t4",
-        "second": "stone-boss-t3",
-        "iou": 0.6011730205278593,
-        "deltaE": 14.024
-      },
-      {
-        "first": "machine-armored-t1",
-        "second": "insect-armored-t1",
-        "iou": 0.5977011494252874,
-        "deltaE": 14.778
       },
       {
         "first": "machine-armored-t3",
@@ -11674,10 +11812,22 @@
         "deltaE": 12.983
       },
       {
+        "first": "machine-armored-t1",
+        "second": "insect-armored-t1",
+        "iou": 0.5937052932761088,
+        "deltaE": 14.706
+      },
+      {
         "first": "machine-armored-t3",
         "second": "stone-infantry-t2",
         "iou": 0.5936139332365747,
         "deltaE": 14.529
+      },
+      {
+        "first": "machine-boss-t2",
+        "second": "stone-boss-t4",
+        "iou": 0.5930735930735931,
+        "deltaE": 14.07
       },
       {
         "first": "machine-armored-t3",
@@ -11692,28 +11842,22 @@
         "deltaE": 11.11
       },
       {
+        "first": "machine-armored-t4",
+        "second": "stone-boss-t4",
+        "iou": 0.5911251980982567,
+        "deltaE": 12.849
+      },
+      {
         "first": "machine-boss-t3",
         "second": "stone-infantry-t2",
         "iou": 0.5911111111111111,
         "deltaE": 14.831
       },
       {
-        "first": "machine-infantry-t3",
-        "second": "stone-boss-t4",
-        "iou": 0.5905797101449275,
-        "deltaE": 14.572
-      },
-      {
         "first": "machine-boss-t2",
         "second": "stone-armored-t2",
         "iou": 0.5899014778325123,
         "deltaE": 13.732
-      },
-      {
-        "first": "machine-armored-t4",
-        "second": "human-boss-t3",
-        "iou": 0.5898366606170599,
-        "deltaE": 14.113
       },
       {
         "first": "machine-boss-t3",
@@ -11724,8 +11868,14 @@
       {
         "first": "machine-armored-t3",
         "second": "stone-boss-t4",
-        "iou": 0.5880551301684533,
-        "deltaE": 13.752
+        "iou": 0.5887708649468892,
+        "deltaE": 13.913
+      },
+      {
+        "first": "machine-armored-t4",
+        "second": "stone-armored-t3",
+        "iou": 0.5871934604904632,
+        "deltaE": 11.55
       },
       {
         "first": "machine-infantry-t4",
@@ -11746,10 +11896,10 @@
         "deltaE": 12.311
       },
       {
-        "first": "machine-armored-t4",
+        "first": "machine-infantry-t2",
         "second": "stone-boss-t4",
-        "iou": 0.5846645367412141,
-        "deltaE": 12.92
+        "iou": 0.5850091407678245,
+        "deltaE": 13.181
       },
       {
         "first": "machine-armored-t1",
@@ -11778,14 +11928,8 @@
       {
         "first": "machine-armored-t4",
         "second": "stone-infantry-t2",
-        "iou": 0.581081081081081,
-        "deltaE": 14.299
-      },
-      {
-        "first": "machine-armored-t4",
-        "second": "stone-infantry-t3",
-        "iou": 0.5778443113772455,
-        "deltaE": 13.213
+        "iou": 0.5793413173652695,
+        "deltaE": 14.365
       },
       {
         "first": "machine-boss-t2",
@@ -11795,9 +11939,9 @@
       },
       {
         "first": "machine-armored-t4",
-        "second": "stone-armored-t3",
-        "iou": 0.575880758807588,
-        "deltaE": 11.614
+        "second": "stone-infantry-t3",
+        "iou": 0.5761194029850746,
+        "deltaE": 13.245
       },
       {
         "first": "machine-runner-t3",
@@ -11810,6 +11954,12 @@
         "second": "stone-armored-t2",
         "iou": 0.5755208333333334,
         "deltaE": 13.625
+      },
+      {
+        "first": "stone-armored-t3",
+        "second": "insect-armored-t2",
+        "iou": 0.5754189944134078,
+        "deltaE": 10.852
       },
       {
         "first": "machine-boss-t2",
@@ -11848,16 +11998,16 @@
         "deltaE": 14.7
       },
       {
+        "first": "stone-boss-t4",
+        "second": "human-boss-t3",
+        "iou": 0.571917808219178,
+        "deltaE": 14.317
+      },
+      {
         "first": "machine-armored-t3",
         "second": "stone-infantry-t4",
         "iou": 0.5704514363885089,
         "deltaE": 14.669
-      },
-      {
-        "first": "stone-infantry-t3",
-        "second": "insect-armored-t2",
-        "iou": 0.5703245749613601,
-        "deltaE": 11.994
       },
       {
         "first": "machine-armored-t2",
@@ -11872,22 +12022,16 @@
         "deltaE": 12.243
       },
       {
-        "first": "machine-infantry-t2",
-        "second": "stone-boss-t4",
-        "iou": 0.5695970695970696,
-        "deltaE": 13.358
-      },
-      {
-        "first": "stone-armored-t3",
-        "second": "insect-armored-t2",
-        "iou": 0.5690376569037657,
-        "deltaE": 10.876
-      },
-      {
         "first": "machine-armored-t3",
         "second": "stone-armored-t2",
         "iou": 0.567979669631512,
         "deltaE": 12.28
+      },
+      {
+        "first": "stone-infantry-t3",
+        "second": "insect-armored-t2",
+        "iou": 0.5676923076923077,
+        "deltaE": 11.995
       },
       {
         "first": "stone-infantry-t1",
@@ -11968,6 +12112,12 @@
         "deltaE": 13.455
       },
       {
+        "first": "machine-armored-t4",
+        "second": "stone-boss-t1",
+        "iou": 0.5597381342062193,
+        "deltaE": 13.868
+      },
+      {
         "first": "stone-infantry-t3",
         "second": "elf-boss-t2",
         "iou": 0.5583832335329342,
@@ -11992,22 +12142,16 @@
         "deltaE": 14.387
       },
       {
-        "first": "machine-armored-t4",
-        "second": "stone-infantry-t1",
-        "iou": 0.5547226386806596,
-        "deltaE": 12.332
-      },
-      {
         "first": "machine-runner-t3",
         "second": "insect-armored-t2",
-        "iou": 0.5529197080291971,
-        "deltaE": 12.821
+        "iou": 0.5555555555555556,
+        "deltaE": 12.939
       },
       {
-        "first": "stone-boss-t4",
-        "second": "human-boss-t3",
-        "iou": 0.5521367521367522,
-        "deltaE": 14.194
+        "first": "machine-armored-t4",
+        "second": "insect-armored-t4",
+        "iou": 0.5523076923076923,
+        "deltaE": 14.146
       },
       {
         "first": "machine-infantry-t3",
