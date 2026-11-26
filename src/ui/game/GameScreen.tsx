@@ -787,7 +787,7 @@ export function GameScreen({
       r6={r6} remaining={remaining} onPause={() => controller.pause('USER')} />
   );
   const mobileContext = !practiceDone && contextBody && (r6 || view.phase !== 'BATTLE') && (
-    <Card className={css.contextS} data-covered={(!r6 && !layout.wideQuestion && !!view.question?.feedback && view.question.feedback.result !== 'correct') || undefined}>
+    <Card className={css.contextS} data-covered={(!layout.wideQuestion && !!view.question?.feedback && view.question.feedback.result !== 'correct') || undefined}>
       {contextBody}
       {!r6 && <RelicStrip balance={b} relics={view.relics} icons={icons} variant="icons" size={20} max={6} labeled />}
     </Card>
@@ -835,9 +835,8 @@ export function GameScreen({
                 {coachLine('panel')}
               </div>
             )}
-            {r6 && mobileContext}
             {bottom}
-            {!r6 && mobileContext}
+            {mobileContext}
             {!practiceDone && (
               <div className={css.phoneExtras}>
                 {skip}

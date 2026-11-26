@@ -2,6 +2,7 @@ import { existsSync, readFileSync } from 'node:fs';
 import AxeBuilder from '@axe-core/playwright';
 import { expect, test, type Page } from './tower-browser';
 import defaults from '../../docs/contracts/product.defaults.v0.5.json' with { type: 'json' };
+import { projectField, r6Overview } from '../../src/game/r6/mapProjection';
 import grade3 from '../../src/content/questions/grade3.json' with { type: 'json' };
 import grade3Dev from '../../src/content/questions/grade3.dev.json' with { type: 'json' };
 
@@ -117,21 +118,45 @@ async function advance(page: Page, outcome: Outcome) {
   await next.click();
 }
 
-/** R 모드 수직선: 전장 오른쪽+12px = 레일 왼쪽 = 하단 오른쪽 칸(해설 카드) 왼쪽. */
+/** R 모드 수직선: v1은 [전장 | 레일] / [문제판], R6은 상단 전폭 HUD + [전장 | 레일] / [문제판 | 레일]. */
 async function seams(page: Page) {
   return page.evaluate(() => {
+    const isR6 = document.querySelector('main')?.hasAttribute('data-r6') ?? false;
     const rail = document.querySelector('aside[aria-label="타워 관리"]')!;
-    const field = rail.previousElementSibling!;
     const panel = document.querySelector('section[aria-label="어휘 문제"]')!;
+    const canvas = document.querySelector('canvas')!;
+    const hud = document.querySelector('section[aria-label="전투 상태"]');
     const main = panel.children[0]!;
     const card = panel.children[1]!;
+    const fieldRect = canvas.getBoundingClientRect();
+    const railRect = rail.getBoundingClientRect();
+    const panelRect = panel.getBoundingClientRect();
+    const hudRect = hud?.getBoundingClientRect() ?? null;
     return {
-      fieldRight: field.getBoundingClientRect().right,
-      railLeft: rail.getBoundingClientRect().left,
+      isR6,
+      fieldLeft: fieldRect.left,
+      fieldRight: fieldRect.right,
+      railLeft: railRect.left,
+      railRight: railRect.right,
+      panelLeft: panelRect.left,
+      panelRight: panelRect.right,
+      hudLeft: hudRect?.left ?? null,
+      hudRight: hudRect?.right ?? null,
       cardLeft: card.getBoundingClientRect().left,
       mainRight: main.getBoundingClientRect().right,
     };
   });
+}
+
+async function r6CellCenter(page: Page, x: number, y: number) {
+  const box = (await page.locator('canvas').boundingBox())!;
+  const p = projectField((x + 0.5) * 64, (y + 0.5) * 64);
+  const fit = Math.min(box.width / r6Overview.width, box.height / r6Overview.height);
+  const viewW = box.width / fit;
+  const viewH = box.height / fit;
+  const viewX = r6Overview.x + r6Overview.width / 2 - viewW / 2;
+  const viewY = r6Overview.y + r6Overview.height / 2 - viewH / 2;
+  return { x: box.x + (p.x - viewX) * fit, y: box.y + (p.y - viewY) * fit };
 }
 
 const VIEWPORTS: Array<{ w: number; h: number; mode: 'R' | 'S' }> = [
@@ -183,9 +208,21 @@ for (const vp of VIEWPORTS) {
       }
       if (vp.mode === 'R') {
         const s = await seams(page);
-        const seamDelta = Math.max(Math.abs(s.fieldRight + railGap - s.railLeft), Math.abs(s.railLeft - s.cardLeft), Math.abs(s.fieldRight - s.mainRight));
-        report.push(`  수직선Δ=${seamDelta.toFixed(2)} (전장 ${s.fieldRight.toFixed(2)} 레일 ${s.railLeft.toFixed(2)} 카드 ${s.cardLeft.toFixed(2)})`);
-        expect(seamDelta, '수직선').toBeLessThanOrEqual(TOLERANCE);
+        if (s.isR6) {
+          const seamDelta = Math.max(
+            Math.abs(s.panelRight + railGap - s.railLeft),
+            Math.abs((s.hudLeft ?? s.panelLeft) - s.panelLeft),
+            Math.abs((s.hudRight ?? s.railRight) - s.railRight),
+          );
+          report.push(`  R6수직선Δ=${seamDelta.toFixed(2)} (전장 [${s.fieldLeft.toFixed(2)}, ${s.fieldRight.toFixed(2)}] 문제판 [${s.panelLeft.toFixed(2)}, ${s.panelRight.toFixed(2)}] 레일 [${s.railLeft.toFixed(2)}, ${s.railRight.toFixed(2)}] HUD [${s.hudLeft?.toFixed(2)}, ${s.hudRight?.toFixed(2)}])`);
+          expect(seamDelta, 'R6 수직선 정렬').toBeLessThanOrEqual(TOLERANCE);
+          expect(s.fieldLeft, '전장이 왼쪽 열 안에 수납').toBeGreaterThanOrEqual(s.panelLeft - TOLERANCE);
+          expect(s.fieldRight, '전장이 레일과 겹치지 않음').toBeLessThanOrEqual(s.railLeft - railGap + TOLERANCE);
+        } else {
+          const seamDelta = Math.max(Math.abs(s.fieldRight + railGap - s.railLeft), Math.abs(s.railLeft - s.cardLeft), Math.abs(s.fieldRight - s.mainRight));
+          report.push(`  수직선Δ=${seamDelta.toFixed(2)} (전장 ${s.fieldRight.toFixed(2)} 레일 ${s.railLeft.toFixed(2)} 카드 ${s.cardLeft.toFixed(2)})`);
+          expect(seamDelta, '수직선').toBeLessThanOrEqual(TOLERANCE);
+        }
       }
       await advance(page, outcome);
     }
@@ -195,9 +232,51 @@ for (const vp of VIEWPORTS) {
   });
 }
 
-test('1366×650 크롬북: R 모드 압축 HUD는 두 줄이고, 가로로 넘치지 않는다', async ({ page }) => {
+test('1366×650 크롬북: R 모드 상단 전술 HUD는 한 줄이고, 가로로 넘치지 않는다', async ({ page }) => {
   await startGame(page, 1366, 650);
   const rail = page.getByRole('complementary', { name: '타워 관리' });
+  const isR6 = await page.locator('main[data-r6]').count() > 0;
+  if (isR6) {
+    const hud = page.getByRole('region', { name: '전투 상태' });
+    const rows = await hud.evaluate(el => {
+      const cells = [...el.children].map(c => {
+        const r = c.getBoundingClientRect();
+        const walker = document.createTreeWalker(c, NodeFilter.SHOW_TEXT);
+        let wrapped = false;
+        let node: Node | null;
+        while ((node = walker.nextNode())) {
+          if (!node.textContent?.trim()) continue;
+          const parent = node.parentElement;
+          if (parent?.closest('.sr-only')) continue;
+          const range = document.createRange();
+          range.selectNodeContents(node);
+          if (range.getClientRects().length > 1) wrapped = true;
+        }
+        return {
+          centerY: Math.round(r.top + r.height / 2),
+          wrapped,
+        };
+      });
+      const ys = cells.map(c => c.centerY);
+      return {
+        cellCount: cells.length,
+        rowSpreadY: Math.max(...ys) - Math.min(...ys),
+        allSingleLine: cells.every(c => !c.wrapped),
+        hudH: el.getBoundingClientRect().height,
+        hudRight: el.getBoundingClientRect().right,
+      };
+    });
+    const railRight = await rail.evaluate(aside => aside.getBoundingClientRect().right);
+    console.log(`[tactical HUD 1366×650] ${JSON.stringify({ ...rows, railRight })}`);
+    expect(rows.cellCount).toBeGreaterThanOrEqual(6);
+    expect(rows.rowSpreadY).toBeLessThanOrEqual(4);
+    expect(rows.allSingleLine).toBe(true);
+    expect(rows.hudH).toBeLessThanOrEqual(60);
+    expect(Math.abs(rows.hudRight - railRight)).toBeLessThanOrEqual(TOLERANCE);
+    const overflowX = await page.evaluate(() => document.documentElement.scrollWidth - innerWidth);
+    expect(overflowX).toBeLessThanOrEqual(0);
+    return;
+  }
   const rows = await rail.evaluate(aside => {
     const hud = aside.firstElementChild!;
     const tops = new Set<number>();
@@ -469,8 +548,8 @@ test('13px·44px 하한: 홈·새 게임·전체 랭킹·설정·사용 설명�
   const guide = page.getByRole('dialog', { name: '사용 설명서' });
   await expect(guide.getByRole('heading', { level: 3, name: '제1장 · 한 판 흐름' })).toBeVisible();
   results.guideCh1 = await floors(page, '[role="dialog"]');
-  await guide.getByRole('tab', { name: '5. 새 타워와 적 특성' }).click();
-  await expect(guide.getByRole('heading', { level: 3, name: '제5장 · 새 타워와 적 특성' })).toBeVisible();
+  await guide.getByRole('tab', { name: '5. 적 종류와 보상' }).click();
+  await expect(guide.getByRole('heading', { level: 3, name: '제5장 · 적 종류와 보상' })).toBeVisible();
   results.guideCh5 = await floors(page, '[role="dialog"]');
   await page.keyboard.press('Escape');
 
@@ -596,23 +675,39 @@ for (const [w, h, mode] of [[1440, 900, 'R'], [1366, 650, 'R'], [1024, 690, 'R']
     expect(o.x).toBeLessThanOrEqual(0);
     expect(o.y).toBeLessThanOrEqual(0);
 
+    const isR6 = await page.locator('main[data-r6]').count() > 0;
     if (mode === 'R') {
-      // 전장 오른쪽 + 12px = 레일 왼쪽 = 하단 오른쪽 열 왼쪽.
       const field = (await page.locator('canvas').boundingBox())!;
       const rail = (await page.getByRole('complementary', { name: '타워 관리' }).boundingBox())!;
-      const side = (await panel(page).locator('[data-feedback]').boundingBox())!;
-      expect(Math.abs(field.x + field.width + 12 - rail.x)).toBeLessThanOrEqual(0.5);
-      expect(Math.abs(rail.x - side.x)).toBeLessThanOrEqual(0.5);
-      // 하단 판 바깥 오른쪽 끝 = 레일 바깥 오른쪽 끝.
       const board = (await panel(page).boundingBox())!;
-      expect(Math.abs(rail.x + rail.width - (board.x + board.width))).toBeLessThanOrEqual(0.5);
+      if (isR6) {
+        const hud = (await page.getByRole('region', { name: '전투 상태' }).boundingBox())!;
+        expect(Math.abs(board.x + board.width + 12 - rail.x)).toBeLessThanOrEqual(0.5);
+        expect(Math.abs(hud.x - board.x)).toBeLessThanOrEqual(0.5);
+        expect(Math.abs(hud.x + hud.width - (rail.x + rail.width))).toBeLessThanOrEqual(0.5);
+        expect(field.x).toBeGreaterThanOrEqual(board.x - 0.5);
+        expect(field.x + field.width).toBeLessThanOrEqual(rail.x - 12 + 0.5);
+      } else {
+        // 전장 오른쪽 + 12px = 레일 왼쪽 = 하단 오른쪽 열 왼쪽.
+        const side = (await panel(page).locator('[data-feedback]').boundingBox())!;
+        expect(Math.abs(field.x + field.width + 12 - rail.x)).toBeLessThanOrEqual(0.5);
+        expect(Math.abs(rail.x - side.x)).toBeLessThanOrEqual(0.5);
+        // 하단 판 바깥 오른쪽 끝 = 레일 바깥 오른쪽 끝.
+        expect(Math.abs(rail.x + rail.width - (board.x + board.width))).toBeLessThanOrEqual(0.5);
+      }
     }
     if (w === 1366) {
-      // 압축 상태 바는 두 줄(성문 줄 + 골드·점수·웨이브 줄)이다.
       const meter = (await page.getByRole('meter', { name: '성문' }).boundingBox())!;
       const gold = (await page.getByLabel(/^골드 \d+/).first().boundingBox())!;
-      expect(gold.y).toBeGreaterThan(meter.y + meter.height / 2);
-      expect(gold.y - meter.y).toBeLessThan(56);
+      if (isR6) {
+        const hud = (await page.getByRole('region', { name: '전투 상태' }).boundingBox())!;
+        expect(Math.abs((gold.y + gold.height / 2) - (meter.y + meter.height / 2))).toBeLessThanOrEqual(4);
+        expect(hud.height).toBeLessThanOrEqual(60);
+      } else {
+        // 압축 상태 바는 두 줄(성문 줄 + 골드·점수·웨이브 줄)이다.
+        expect(gold.y).toBeGreaterThan(meter.y + meter.height / 2);
+        expect(gold.y - meter.y).toBeLessThan(56);
+      }
     }
 
     const m = await minimums(page);
@@ -631,18 +726,22 @@ test('1440×900: 설치 뒤 도구 묶음·능력치 막대도 13px·44px 하한
   await page.setViewportSize({ width: 1440, height: 900 });
   await newGame(page);
   for (let i = 0; i < 12 && !(await page.getByRole('button', { name: '전투 시작' }).isVisible()); i++) {
-    if (await options(page).first().isEnabled({ timeout: 300 }).catch(() => false)) await options(page).first().click();
+    if (await options(page).first().isEnabled({ timeout: 300 }).catch(() => false)) {
+      const shown = await panel(page).locator('[data-option-text]').allInnerTexts();
+      const correct = answerBySet.get([...shown].sort().join('|'));
+      const idx = correct ? shown.findIndex(t => t === correct) : 0;
+      await options(page).nth(idx >= 0 ? idx : 0).click();
+    }
     await page.waitForTimeout(200);
     await nextQuestion(page);
   }
   await expect(page.getByRole('button', { name: '전투 시작' })).toBeVisible();
-  await page.getByRole('listbox', { name: '타워 칸' }).getByRole('option', { name: /궁수탑/ }).click();
-  const box = (await page.locator('canvas').boundingBox())!;
-  const cell = box.width / 15;
-  await page.mouse.click(box.x + 8.5 * cell, box.y + 2.5 * cell);
+  await page.getByRole('listbox', { name: '타워 칸' }).getByRole('option', { name: /레일 포탑/ }).click();
+  const at = await r6CellCenter(page, 8, 2);
+  await page.mouse.click(at.x, at.y);
   await expect(page.getByRole('application', { name: /타워 1개/ })).toBeVisible();
-  await page.mouse.click(box.x + 8.5 * cell, box.y + 2.5 * cell);
-  await expect(page.getByRole('group', { name: '궁수탑 레벨 1' })).toBeVisible();
+  await page.mouse.click(at.x, at.y);
+  await expect(page.getByRole('group', { name: '레일 포탑 레벨 1' })).toBeVisible();
   // 도구 묶음 등장(크기 0.94→1, 180ms)이 끝난 뒤 잰다.
   await page.waitForTimeout(400);
   const m = await minimums(page);

@@ -6,6 +6,7 @@ import { runnerImport } from 'vite';
 import type { TowerId } from '../../src/contracts/balance';
 import type * as QaStatesModule from '../../tools/qa/states';
 import maps from '../../docs/contracts/maps.candidate.v0.4.json' with { type: 'json' };
+import { projectField, r6Overview } from '../../src/game/r6/mapProjection';
 import grade3 from '../../src/content/questions/grade3.json' with { type: 'json' };
 import grade3Dev from '../../src/content/questions/grade3.dev.json' with { type: 'json' };
 
@@ -34,17 +35,23 @@ async function newGame(page: Page) {
   await expect(page.getByRole('img', { name: '준비 1/5' })).toBeVisible();
 }
 
-/** 첫 보기를 눌러 준비 문제를 끝낸다. 오답이면 4초 해설 뒤 ‘다음 문제’. */
+/** 정답을 골라 준비 문제를 끝낸다. 답을 찾지 못하면 첫 보기를 누른다. */
 async function finishPrep(page: Page) {
-  for (let i = 0; i < 8; i++) {
+  for (let i = 0; i < 12; i++) {
     if (await page.getByRole('button', { name: '전투 시작' }).isVisible()) return;
     const panel = page.getByRole('region', { name: '어휘 문제' });
-    const first = panel.getByRole('group', { name: '보기' }).getByRole('button').first();
-    await first.click();
-    // 답안은 다음 논리 틱(1/30초)에 채점된다. 채점되어 보기가 잠길 때까지 기다린다.
-    await expect(first).toBeDisabled();
+    const opts = panel.getByRole('group', { name: '보기' }).getByRole('button');
+    if (await opts.first().isEnabled({ timeout: 300 }).catch(() => false)) {
+      const shown = await panel.locator('[data-option-text]').allInnerTexts();
+      const correct = answerBySet.get([...shown].sort().join('|'));
+      const idx = correct ? shown.findIndex(t => t === correct) : 0;
+      const target = opts.nth(idx >= 0 ? idx : 0);
+      await target.click();
+      // 답안은 다음 논리 틱(1/30초)에 채점된다. 채점되어 보기가 잠길 때까지 기다린다.
+      await expect(target).toBeDisabled();
+    }
     const next = panel.getByRole('button', { name: '다음 문제' });
-    if (await next.isVisible({ timeout: 2500 }).catch(() => false) || await panel.getByText('해설을 읽어 주세요').isVisible().catch(() => false)) {
+    if (await next.isVisible({ timeout: 1500 }).catch(() => false) || await panel.getByText('해설을 읽어 주세요').isVisible().catch(() => false)) {
       await expect(next).toBeEnabled({ timeout: 6000 });
       await next.click();
     }
@@ -54,6 +61,16 @@ async function finishPrep(page: Page) {
 
 async function cellCenter(page: Page, x: number, y: number) {
   const box = (await page.locator('canvas').boundingBox())!;
+  const isR6 = await page.locator('main[data-r6]').count() > 0;
+  if (isR6) {
+    const p = projectField((x + 0.5) * 64, (y + 0.5) * 64);
+    const fit = Math.min(box.width / r6Overview.width, box.height / r6Overview.height);
+    const viewW = box.width / fit;
+    const viewH = box.height / fit;
+    const viewX = r6Overview.x + r6Overview.width / 2 - viewW / 2;
+    const viewY = r6Overview.y + r6Overview.height / 2 - viewH / 2;
+    return { x: box.x + (p.x - viewX) * fit, y: box.y + (p.y - viewY) * fit };
+  }
   const cell = box.width / 15;
   return { x: box.x + (x + 0.5) * cell, y: box.y + (y + 0.5) * cell };
 }
@@ -84,7 +101,8 @@ test('1440×900: 준비 → 설치 → 전투 → 정지 가림 → 재개', asy
   await newGame(page);
   await shot(page, 'desktop-prep');
   const cell = await page.locator('canvas').boundingBox();
-  expect(cell!.width / 15).toBeGreaterThan(70);
+  expect(cell!.width / 15).toBeGreaterThanOrEqual(64);
+  expect(cell!.y + cell!.height).toBeLessThanOrEqual(900);
   await finishPrep(page);
   await expect(page.getByRole('button', { name: '전투 시작' })).toBeVisible();
   // 첫 판 '놓기' 안내는 준비 바가 아니라 전장 쪽지 한 문장(R5 B11). 상시 문장 1개 규칙: 준비 바에는 같은 문장이 없다.
@@ -93,28 +111,29 @@ test('1440×900: 준비 → 설치 → 전투 → 정지 가림 → 재개', asy
   await expect(placeNote).toBeVisible();
   await expect(page.getByRole('region', { name: '전투 준비' }).getByText('타워를 끌어다 길 옆 돌 받침에 놓아요.')).toHaveCount(0);
   expect(await placeNote.evaluate(el => el.closest('aside, section') === null)).toBe(true);
-  // 준비 바에 다음 적 칩(초상화 × 수)이 보인다(R5 B5).
-  await expect(page.getByRole('region', { name: '전투 준비' }).getByRole('img', { name: /^다음 적 \d+마리/ })).toBeVisible();
+  // R6 우측 상황 카드에 웨이브 예고(다음 적 N + 종족 마릿수)가 보인다.
+  const forecast = page.getByRole('region', { name: '웨이브 미리보기' });
+  await expect(forecast.getByText(/^다음 적 \d+$/)).toBeVisible();
+  await expect(forecast.getByRole('listitem')).toHaveCount(2);
 
-  // 끌어 놓기: 칸 가운데에서 0.4칸 벗어나 놓아도 가장 가까운 빈 자리에 바로 설치된다(확인 단계 없음).
+  // 끌어 놓기: 칸 가운데에서 조금 벗어나 놓아도 가장 가까운 빈 자리에 바로 설치된다(확인 단계 없음).
   const slot = garden.slots.find(s => s.x === 8 && s.y === 2)!;
-  const cellPx = (await page.locator('canvas').boundingBox())!.width / 15;
-  await dragTower(page, /궁수탑/, slot.x, slot.y, { dx: cellPx * 0.4, dy: -cellPx * 0.3 });
+  await dragTower(page, /레일 포탑/, slot.x, slot.y, { dx: 14, dy: -8 });
   await towerCount(page, 1);
   // 놓은 뒤에는 쪽지가 사라진다(그 조작을 한 번 해 봤다).
   await expect(placeNote).toHaveCount(0);
   await shot(page, 'desktop-dragged');
   // 타워를 먼저 고르고 빈 자리를 누르면 바로 설치된다. 골드가 남으면 같은 타워가 계속 골라져 있다.
-  await page.getByRole('listbox', { name: '타워 칸' }).getByRole('option', { name: /궁수탑/ }).click();
-  await expect(page.getByRole('option', { name: /궁수탑/ })).toHaveAttribute('aria-selected', 'true');
+  await page.getByRole('listbox', { name: '타워 칸' }).getByRole('option', { name: /레일 포탑/ }).click();
+  await expect(page.getByRole('option', { name: /레일 포탑/ })).toHaveAttribute('aria-selected', 'true');
   const second = garden.slots.find(s => s.x === 5 && s.y === 4)!;
   await tapCell(page, second.x, second.y);
   await towerCount(page, 2);
-  // 설치된 타워를 누르면 옆에 도구 묶음(강화·판매)이 뜨고, 능력치 막대가 보인다.
+  // 설치된 타워를 누르면 레일에 도구 묶음(강화·판매)과 능력치 막대가 보인다.
   await tapCell(page, slot.x, slot.y);
-  await expect(page.getByRole('group', { name: '궁수탑 레벨 1' })).toBeVisible();
+  await expect(page.getByRole('group', { name: '레일 포탑 레벨 1' })).toBeVisible();
   await expect(page.getByRole('button', { name: /^강화 \d+ 골드$/ })).toBeVisible();
-  await expect(page.getByText('레벨 1', { exact: true })).toBeVisible();
+  await expect(page.getByText('Lv1 / 20', { exact: true })).toBeVisible();
   await shot(page, 'desktop-built');
 
   await page.getByRole('button', { name: '전투 시작' }).click();
@@ -188,7 +207,7 @@ test('390×844 휴대폰: 가로 넘침 없음, 문제 전체가 보이고 확�
   const menu = page.getByRole('group', { name: '이 자리에 놓을 타워' });
   await expect(menu).toBeVisible();
   await shot(page, 'phone-magnify');
-  await menu.getByRole('button', { name: /궁수탑/ }).click();
+  await menu.getByRole('button', { name: /레일 포탑/ }).click();
   await towerCount(page, 1);
   await expect(page.getByRole('button', { name: '전체 지도' })).toHaveCount(0);
   const after = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
@@ -221,11 +240,12 @@ test('키보드: 전장 화살표·Enter로 자리를 고르고, 설치 자리 �
   await summary.focus();
   expect(await clip()).toBe('none');
   await expect(summary).toBeInViewport();
-  // 포커스로 나타났을 때도 아래 상황 카드([data-context])를 덮지 않고, 펼치면 상황 카드가 숨어 레일 안에서만 자리잡는다.
+  // 포커스로 나타났을 때도 상황 카드([data-context])와 겹치지 않고, 펼치면 상황 카드가 숨어 레일 안에서만 자리잡는다.
   const details = page.locator('aside[aria-label="타워 관리"] details');
   const contextCard = page.locator('aside[aria-label="타워 관리"] [data-context]');
   const [dBox0, cBox0] = [(await details.boundingBox())!, (await contextCard.boundingBox())!];
-  expect(dBox0.y + dBox0.height, '설치 자리 목록 요약이 상황 카드와 겹치지 않음').toBeLessThanOrEqual(cBox0.y + 0.5);
+  const separated = dBox0.y + dBox0.height <= cBox0.y + 0.5 || cBox0.y + cBox0.height <= dBox0.y + 0.5;
+  expect(separated, '설치 자리 목록 요약이 상황 카드와 겹치지 않음').toBe(true);
   await page.keyboard.press('Enter');
   await expect(contextCard).toBeHidden();
   const [dBox1, railBox] = [(await details.boundingBox())!, (await page.locator('aside[aria-label="타워 관리"]').boundingBox())!];
@@ -233,7 +253,7 @@ test('키보드: 전장 화살표·Enter로 자리를 고르고, 설치 자리 �
   await page.getByRole('button', { name: '자리 9 · 가로 9, 세로 3 · 비어 있음' }).click();
   await expect(menu).toBeInViewport();
   // 목록은 접히고 포커스는 메뉴의 첫 타워로 간다. 엔터로 바로 설치한다.
-  await expect(menu.getByRole('button', { name: /궁수탑/ })).toBeFocused();
+  await expect(menu.getByRole('button', { name: /레일 포탑/ })).toBeFocused();
   await shot(page, 'desktop-slot-list');
   await page.keyboard.press('Enter');
   await towerCount(page, 1);
@@ -347,7 +367,7 @@ test('키보드: 설치·판매로 단추가 사라져도 포커스가 body로 �
   await newGame(page);
   await finishPrep(page);
   await tapCell(page, 8, 2);
-  await page.getByRole('group', { name: '이 자리에 놓을 타워' }).getByRole('button', { name: /궁수탑/ }).click();
+  await page.getByRole('group', { name: '이 자리에 놓을 타워' }).getByRole('button', { name: /레일 포탑/ }).click();
   await towerCount(page, 1);
   // 설치 메뉴가 사라지면 포커스를 전장으로 옮긴다(화살표로 다음 자리를 고를 수 있게).
   const field = page.getByRole('application', { name: /전장/ });
@@ -362,7 +382,7 @@ test('키보드: 설치·판매로 단추가 사라져도 포커스가 body로 �
   // 되돌리기 창(3초)이 지나면 도구 묶음의 판매가 보인다. 판매 확인 뒤 도구 묶음이 사라지면 다시 전장으로 옮긴다.
   await expect(page.getByRole('button', { name: /^설치 되돌리기/ })).toHaveCount(0, { timeout: 6000 });
   await tapCell(page, 8, 2);
-  const tools = page.getByRole('group', { name: '궁수탑 레벨 1' });
+  const tools = page.getByRole('group', { name: '레일 포탑 레벨 1' });
   await tools.getByRole('button', { name: /^판매 \+\d+ 골드$/ }).click();
   await tools.getByRole('button', { name: /^판매 확인 \+\d+ 골드$/ }).click();
   await towerCount(page, 0);
@@ -380,7 +400,7 @@ test('설치 되돌리기: 설치 직후 그 타워 위 칩을 누르면 전액 
   const goldOf = async () => Number((await page.getByLabel(/^골드 \d+$/).first().getAttribute('aria-label'))!.replace(/\D/g, ''));
   const gold0 = await goldOf();
   await tapCell(page, 8, 2);
-  await page.getByRole('group', { name: '이 자리에 놓을 타워' }).getByRole('button', { name: /궁수탑/ }).click();
+  await page.getByRole('group', { name: '이 자리에 놓을 타워' }).getByRole('button', { name: /레일 포탑/ }).click();
   await towerCount(page, 1);
   const undo = page.getByRole('button', { name: /^설치 되돌리기 \+\d+ 골드$/ });
   await expect(undo).toBeVisible();
@@ -390,7 +410,7 @@ test('설치 되돌리기: 설치 직후 그 타워 위 칩을 누르면 전액 
   await expect.poll(goldOf).toBe(gold0);
   // 다시 놓고 기다리면 칩이 사라지고 타워는 남는다.
   await tapCell(page, 8, 2);
-  await page.getByRole('group', { name: '이 자리에 놓을 타워' }).getByRole('button', { name: /궁수탑/ }).click();
+  await page.getByRole('group', { name: '이 자리에 놓을 타워' }).getByRole('button', { name: /레일 포탑/ }).click();
   await expect(undo).toBeVisible();
   await expect(undo).toHaveCount(0, { timeout: 6000 });
   await towerCount(page, 1);
@@ -400,24 +420,44 @@ test('1366×650 크롬북: R 모드와 칸 크기', async ({ page }) => {
   await page.setViewportSize({ width: 1366, height: 650 });
   await newGame(page);
   await expect(page.getByRole('complementary', { name: '타워 관리' })).toBeVisible();
-  const box = await page.locator('canvas').boundingBox();
-  expect(box!.width / 15).toBeGreaterThanOrEqual(44);
+  const box = (await page.locator('canvas').boundingBox())!;
+  expect(box.width).toBeGreaterThanOrEqual(512);
+  expect(box.height).toBeGreaterThanOrEqual(320);
+  expect(box.y + box.height).toBeLessThanOrEqual(650);
+  const docOverflow = await page.evaluate(() => ({
+    x: document.documentElement.scrollWidth - window.innerWidth,
+    y: document.documentElement.scrollHeight - window.innerHeight,
+  }));
+  expect(docOverflow.x).toBeLessThanOrEqual(0);
+  expect(docOverflow.y).toBeLessThanOrEqual(0);
   await shot(page, 'chromebook-prep');
-  // 압축 레일: 타워 칸(가진 4종 + 잠긴 칸 1, 4칸씩 2줄)과 고른 타워 요약(역할 낱말 + 아이콘·숫자 칩)이 레일 안에 스크롤 없이 들어간다.
+  // R6 레일: 타워 칸(시작 3종 + 잠긴 칸 1, 1열 배치)과 고른 타워 상세(역할·Lv1/20·능력치 3막대·무기 단계 I~IV)가 표시된다.
   await finishPrep(page);
   const rail = page.getByRole('complementary', { name: '타워 관리' });
-  await rail.getByRole('listbox', { name: '타워 칸' }).getByRole('option', { name: /서리탑/ }).click();
-  const detail = rail.getByRole('region', { name: '서리탑 능력치' });
+  await rail.getByRole('listbox', { name: '타워 칸' }).getByRole('option', { name: /냉각 중계탑/ }).click();
+  const detail = rail.getByRole('region', { name: '냉각 중계탑 능력치' });
   await expect(detail).toBeVisible();
-  await expect(detail.getByText('느리게', { exact: true })).toBeVisible();
-  await expect(detail.getByRole('listitem')).toHaveCount(3);
+  await expect(detail.getByText('주변 적의 이동 속도 감소', { exact: true })).toBeVisible();
+  await expect(detail.getByText('Lv1 / 20', { exact: true })).toBeVisible();
+  await expect(detail.getByRole('region', { name: '무기 단계 I ~ IV' }).getByRole('listitem')).toHaveCount(4);
+  await expect(detail.locator('dl > div')).toHaveCount(3);
   const fit = await rail.evaluate(aside => {
-    const body = aside.lastElementChild as HTMLElement;
     const sockets = [...aside.querySelectorAll('[role="listbox"] > *')].map(el => el.getBoundingClientRect());
-    return { over: body.scrollHeight - body.clientHeight, cells: sockets.length, rows: new Set(sockets.map(r => Math.round(r.top))).size, sameH: sockets.every(r => Math.abs(r.height - sockets[0]!.height) <= 0.5) };
+    const buttons = [...aside.querySelectorAll<HTMLButtonElement>('[role="listbox"] > button')].map(el => el.getBoundingClientRect());
+    return {
+      cells: sockets.length,
+      cols: new Set(sockets.map(r => Math.round(r.left))).size,
+      minBtnH: Math.min(...buttons.map(r => r.height)),
+      sameW: sockets.every(r => Math.abs(r.width - sockets[0]!.width) <= 0.5),
+      railHOverflow: aside.scrollWidth - aside.clientWidth,
+    };
   });
   await shot(page, 'chromebook-detail');
-  expect(fit).toEqual({ over: 0, cells: 5, rows: 2, sameH: true });
+  expect(fit.cells).toBe(4);
+  expect(fit.cols).toBe(1);
+  expect(fit.minBtnH).toBeGreaterThanOrEqual(44);
+  expect(fit.sameW).toBe(true);
+  expect(fit.railHOverflow).toBeLessThanOrEqual(0);
 });
 
 test('접근성: 홈·준비 화면 axe 위반 없음(캔버스 제외)', async ({ page }) => {
@@ -600,14 +640,38 @@ test('R5 문제판: 정답 보상 미리보기 +N 골드가 연속 정답에 커
   // 미리보기는 채점 뒤 사라진다(오답 −점수 칩은 없다).
   await expect(side.getByText(/^\+\d+ 골드$/)).toHaveCount(0);
 
-  // B10: 정답 키는 바닥 6px로 떠오르고, 오답 키는 바닥 0으로 눌린 채. 위치 이동(transform)은 없다.
+  // R04 고대비 모따기 키: 정답 키는 틸(--quiz-teal), 오답 키는 위험(--quiz-danger) 면·테·아이콘으로 구분되고 위치 이동(transform)은 없다.
   const keys = await panel.evaluate(p => {
-    const st = (sel: string) => getComputedStyle(p.querySelector(sel)!);
-    return { correct: st('[data-state="correct"]').boxShadow, wrong: st('[data-state="wrong"]').boxShadow, tf: [...p.querySelectorAll('[data-option-id]')].map(el => getComputedStyle(el).transform) };
+    const read = (sel: string) => {
+      const el = p.querySelector(sel)!;
+      return {
+        color: getComputedStyle(el).color,
+        bg: getComputedStyle(el, '::after').backgroundColor,
+        edge: getComputedStyle(el, '::before').backgroundColor,
+        sr: el.querySelector('.sr-only')?.textContent ?? '',
+        hasSvg: Boolean(el.querySelector('svg')),
+      };
+    };
+    return {
+      correct: read('[data-state="correct"]'),
+      wrong: read('[data-state="wrong"]'),
+      tf: [...p.querySelectorAll('[data-option-id]')].map(el => getComputedStyle(el).transform),
+    };
   });
-  // 계산된 그림자 문자열: 바깥 바닥은 "색 0px Npx 0px 0px", 안쪽 테는 "색 0px 0px 0px 2px inset".
-  expect(keys.correct).toMatch(/0px 6px 0px 0px(,|$)/);
-  expect(keys.wrong).not.toMatch(/0px [1-9]\d*px 0px 0px(,|$)/);
+  expect(keys.correct).toEqual({
+    color: 'rgb(14, 110, 98)',
+    bg: 'rgb(228, 245, 242)',
+    edge: 'rgb(14, 110, 98)',
+    sr: '정답',
+    hasSvg: true,
+  });
+  expect(keys.wrong).toEqual({
+    color: 'rgb(184, 50, 39)',
+    bg: 'rgb(253, 236, 235)',
+    edge: 'rgb(184, 50, 39)',
+    sr: '고른 답',
+    hasSvg: true,
+  });
   expect(keys.tf.every(t => t === 'none')).toBe(true);
   await expect(panel.getByRole('button', { name: '다음 문제' })).toBeEnabled({ timeout: 8000 });
 });
@@ -625,18 +689,26 @@ test('R5 복습 배지: 오답 노트 복습 문항에만 책 아이콘 + "복�
   await expect(panel.getByText('복습', { exact: true })).toHaveCount(0);
 });
 
-test('R5 준비 바: 타워가 있으면 놋쇠 전투 시작에 은은한 대기 움직임 하나, 움직임 줄이기(OS·설정)에서는 0(B5)', async ({ page }) => {
+test('R5 준비 바: R04 무광 원칙상 대기 중 무한 애니메이션은 0이고, 움직임 줄이기(OS·설정)에서는 전환·애니메이션 0s(B5)', async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
   await openQaScene(page, 'evolve-w7');
   const bar = page.getByRole('region', { name: '전투 준비' });
-  await expect(bar.getByRole('button', { name: '전투 시작' })).toBeVisible();
+  const startBtn = bar.getByRole('button', { name: '전투 시작' });
+  await expect(startBtn).toBeVisible();
   await expect(bar.getByRole('img', { name: /^다음 적 \d+마리/ })).toBeVisible();
   const looping = () => page.evaluate(() => document.getAnimations().filter(a => a.playState === 'running' && a.effect?.getTiming().iterations === Infinity).length);
-  await expect.poll(looping).toBe(1);
-  await page.evaluate(() => { document.documentElement.dataset.motion = 'minimal'; });
   await expect.poll(looping).toBe(0);
+  await page.evaluate(() => { document.documentElement.dataset.motion = 'minimal'; });
+  expect(await startBtn.evaluate(el => ({
+    td: getComputedStyle(el).transitionDuration,
+    ad: getComputedStyle(el).animationDuration,
+  }))).toEqual({ td: '0s', ad: '0s' });
   await page.evaluate(() => { delete document.documentElement.dataset.motion; });
   await page.emulateMedia({ reducedMotion: 'reduce' });
+  expect(await startBtn.evaluate(el => ({
+    td: getComputedStyle(el).transitionDuration,
+    ad: getComputedStyle(el).animationDuration,
+  }))).toEqual({ td: '0s', ad: '0s' });
   await expect.poll(looping).toBe(0);
 });
 
