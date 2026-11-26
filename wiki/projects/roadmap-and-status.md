@@ -4,7 +4,7 @@ type: project
 title: 프로젝트 계보 및 현행 코드 실체 판정
 status: active
 updated: 2026-11-26
-verified: { commit: fa75c724, date: 2026-11-27 }
+verified: { commit: "64ea2bd4", date: 2026-11-27 }
 sources:
   - path: package.json
     sha256: "438e5fc906d190ae6ff3e75af936f686e94d883375aff3ab996bcf06cd749d08"
@@ -23,7 +23,7 @@ sources:
   - path: docs/renewal/r6/tech/G5-server.md
     sha256: "895f648cac4edc29c8eadafdd6bcced05880e8b8609c5f49d33099f832099dae"
   - path: docs/renewal/r6/tech/G5-readiness.md
-    sha256: aafe92626b826f08eb29de2dcec2c4950424114b43969e679ddfcf8535fbb703
+    sha256: "907a680f8b779f86d5d56f7a97fd2a3ad3de0820d1a62c80b78e17fc3995c9f9"
   - path: docs/DEPLOY.md
     sha256: ddaf762fa130c340599cddb9a93d3d32e40f81ff5e4a76f96ebe4cec54bfc66f
   - path: docs/CR1000_HANDOFF.md
