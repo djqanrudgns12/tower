@@ -14,9 +14,9 @@ export function r6EnemyScale(scale: number, setupHeight: number, boss: boolean):
 }
 
 const R6_VISUAL_LIFT_CELLS: ReadonlyArray<readonly [prefix: string, liftCells: number]> = [
-  ['elf-special-', 0.28],
-  ['machine-special-', 0.24],
-  ['insect-runner-', 0.20],
+  ['elf-special-', 0.22],
+  ['machine-special-', 0.19],
+  ['insect-runner-', 0.16],
 ];
 
 /** R6 전장에서 비행 그림자와 띄운 높이를 적용할 개체인지 판별한다. */
@@ -34,7 +34,29 @@ export function r6VisualFlyerLiftCells(entityId: string | undefined, flying: boo
       if (entityId.startsWith(prefix)) return lift;
     }
   }
-  return flying ? 0.25 : 0;
+  return flying ? 0.20 : 0;
+}
+
+export interface FlyerShadowSpec {
+  width: number;
+  height: number;
+  offsetY: number;
+  fillAlpha: number;
+  outerAlpha: number;
+  tealAlpha: number;
+}
+
+/** R6 비행 그림자 크기·오프셋·불투명도를 계산해 본체에 붙어 보이게 절제한다. */
+export function r6FlyerShadowSpec(cells: number, lift: number, cellPx: number): FlyerShadowSpec {
+  const k = 1 - 0.22 * Math.min(1, lift / (cellPx * 0.22));
+  return {
+    width: cellPx * Math.min(0.46, cells * 0.48) * k,
+    height: cellPx * 0.13 * k,
+    offsetY: -lift * 0.12,
+    fillAlpha: 0.36 * k,
+    outerAlpha: 0.68 * k,
+    tealAlpha: 0.46 * k,
+  };
 }
 
 export const R6_OUTLINE_COLOR = R6_COLORS.silver;

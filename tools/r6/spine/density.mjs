@@ -149,16 +149,18 @@ function measurePeak(wave) {
     renderer.postRender();
     gl.readPixels(0, 0, width, height, gl.RGBA, gl.UNSIGNED_BYTE, buffer);
   };
-  const mask = objects => {
+  const maskAlpha = (objects, minAlpha = 128) => {
     draw(objects, 0, dark);
     draw(objects, 255, light);
     const result = new Set();
+    const maxDiff = 255 - minAlpha;
     for (let i = 0; i < pixelCount; i++) {
       // 불투명 흑백 바탕에 같은 그림을 그린 색차로 실효 알파를 얻는다.
-      if (light[i * 4] - dark[i * 4] <= 127) result.add(i);
+      if (light[i * 4] - dark[i * 4] <= maxDiff) result.add(i);
     }
     return result;
   };
+  const mask = objects => maskAlpha(objects, 128);
   const round = value => Number(value.toFixed(4));
   const hits = new Uint8Array(pixelCount);
   let overlap = 0;
@@ -214,15 +216,29 @@ function measurePeak(wave) {
   };
   const pads = bySlot(padTargets);
   const towers = bySlot(towerTargets);
+  const occupiedSlots = new Set(state.towers.map(tower => tower.slotId));
   const outlines = scene.children.getByName('r6:pad-outlines');
-  const outlinePixels = outlines ? mask([outlines]) : new Set();
+  const outlinePixels = outlines ? maskAlpha([outlines], 32) : new Set();
   const outlineOrder = list.indexOf(outlines);
-  const padOutlines = outlines ? bySlot(padTargets.map(({ id, pixels }) => {
-    const visibleOutline = new Map();
-    for (const p of pixels.keys()) if (outlinePixels.has(p)) visibleOutline.set(p, outlineOrder);
-    if (!visibleOutline.size) throw new Error(`설치 칸 윤곽이 없습니다 · ${id}`);
-    return { id, pixels: visibleOutline };
-  })) : null;
+  const activeOutlineSlots = [];
+  const emptyOver50Slots = [];
+  let occupiedOutlined = 0;
+  const padOutlines = outlines ? (() => {
+    const measured = padTargets.map(({ id, pixels }) => {
+      const visibleOutline = new Map();
+      for (const p of pixels.keys()) if (outlinePixels.has(p)) visibleOutline.set(p, outlineOrder);
+      if (occupiedSlots.has(id) && visibleOutline.size > 0) occupiedOutlined++;
+      if (!occupiedSlots.has(id) && pads.bySlot[id] > 0.5) emptyOver50Slots.push(id);
+      if (visibleOutline.size > 0) activeOutlineSlots.push(id);
+      return { id, pixels: visibleOutline };
+    });
+    if (occupiedOutlined > 0) {
+      throw new Error(`타워 설치 칸에 위층 윤곽이 남아 있습니다 · ${occupiedOutlined}칸`);
+    }
+    const activeTargets = measured.filter(({ pixels }) => pixels.size > 0);
+    const report = activeTargets.length ? bySlot(activeTargets) : { max: 0, mean: 0, bySlot: {} };
+    return { ...report, activeSlots: activeOutlineSlots, emptyOver50Slots, occupiedOutlined };
+  })() : null;
   const occludes = (targets, pixel, order) => targets.some(({ pixels }) => (pixels.get(pixel) ?? -1) > order);
   const enemyRows = enemies.map(({ enemy, mask, order }) => {
     const footY = scene.enemyLayer.placeOf(enemy.id).y;

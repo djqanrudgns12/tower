@@ -10,6 +10,16 @@ import { selectedCell } from './InputLayer';
 import { R6_GROUND_KEY, R6_PAD_KEY } from '../r6/BattleAssets';
 import { projectField, R6_MAP_SQUASH, r6Pad } from '../r6/mapProjection';
 import { R6_COLORS } from '../r6/manifest';
+import {
+  padCornerSegments,
+  padOcclusionRatio,
+  padSamplePoints,
+  R6_PAD_OCCLUSION_THRESHOLD,
+  R6_PAD_OUTLINE_COLOR,
+  R6_PAD_OUTLINE_RADIUS_RATIO,
+  type EnemyFootprint,
+  type PadSamplePoint,
+} from '../r6/padOutline';
 import { DEPTH, r6UnitDepth, type LayerContext } from './shared';
 
 /** deco.stele.r1 원화에서 비석 면 가운데의 세로 위치(원화 높이 대비, 면은 약 28~130/192px). */
@@ -27,6 +37,9 @@ export class GroundLayer {
   private pads = new Map<string, Phaser.GameObjects.Image>();
   private padList: PadSprite[] = [];
   private activePad: string | null = null;
+  private padOutlines: Phaser.GameObjects.Graphics | null = null;
+  private r6Slots: Array<{ id: string; x: number; y: number; samples: readonly PadSamplePoint[] }> = [];
+  private r6OutlinesActive = false;
 
   constructor(c: LayerContext) { this.c = c; }
 
@@ -53,22 +66,21 @@ export class GroundLayer {
       scene.add.image(0, 0, R6_GROUND_KEY).setOrigin(0).setDisplaySize(WORLD_W, WORLD_H).setDepth(DEPTH.ground);
       if (this.c.projected) this.drawR6Directions(map.pathCells);
       if (this.c.projected && scene.textures.exists(R6_PAD_KEY)) {
-        const outlines = scene.add.graphics().setDepth(DEPTH.r6Marks).setName('r6:pad-outlines');
-        outlines.lineStyle(1, R6_COLORS.silver, .62);
+        this.padOutlines = scene.add.graphics().setDepth(DEPTH.r6Marks).setName('r6:pad-outlines');
+        const radius = r6Pad.radius * R6_PAD_OUTLINE_RADIUS_RATIO;
+        this.r6Slots = [];
         for (const slot of map.slots) {
           const p = projectField((slot.x + 0.5) * CELL_PX, (slot.y + 0.5) * CELL_PX);
           const pad = scene.add.image(p.x, p.y, R6_PAD_KEY, 0)
             .setOrigin(r6Pad.pivot[0]! / r6Pad.size[0]!, r6Pad.pivot[1]! / r6Pad.size[1]!)
             .setDepth(r6UnitDepth(p.y, 'pad')).setName(`r6:pad:${slot.id}`);
           this.pads.set(slot.id, pad);
-          // 윗면의 육각 테두리만 앞에 그려, 받침이 가려져도 설치 위치를 읽을 수 있게 한다.
-          const radius = r6Pad.radius * .83;
-          outlines.beginPath().moveTo(p.x + radius, p.y);
-          for (let i = 1; i < 6; i++) {
-            const angle = i * Math.PI / 3;
-            outlines.lineTo(p.x + radius * Math.cos(angle), p.y + radius * R6_MAP_SQUASH * Math.sin(angle));
-          }
-          outlines.lineTo(p.x + radius, p.y).strokePath();
+          this.r6Slots.push({
+            id: slot.id,
+            x: p.x,
+            y: p.y,
+            samples: padSamplePoints(p.x, p.y, radius, R6_MAP_SQUASH),
+          });
         }
       }
       return;
@@ -140,15 +152,17 @@ export class GroundLayer {
    * 설치 받침 밝기: 평소 흐리게, 타워를 고르거나 끌어 놓는 동안에만 밝게(cues.padAlpha). 타워가 선 받침·선택·키보드 커서·고대비 설정이면 늘 밝다.
    * 움직임 줄이기면 바로 바뀌고, 아니면 PAD_FADE_MS 동안 부드럽게 바뀐다. 받침이 구운 지면에 섞인 경로에서는 할 일이 없다.
    */
-  syncPads(s: RunState, deltaMs: number) {
+  syncPads(s: RunState, deltaMs: number, enemies: readonly EnemyFootprint[] = []) {
     if (this.pads.size === 0) return;
     const { bridge } = this.c;
     if (this.c.projected) {
       const id = bridge.drag ? bridge.drag.slotId : selectedCell(bridge)?.id ?? null;
-      if (id === this.activePad) return;
-      if (this.activePad) this.pads.get(this.activePad)?.setFrame(0);
-      if (id) this.pads.get(id)?.setFrame(1);
-      this.activePad = id;
+      if (id !== this.activePad) {
+        if (this.activePad) this.pads.get(this.activePad)?.setFrame(0);
+        if (id) this.pads.get(id)?.setFrame(1);
+        this.activePad = id;
+      }
+      this.syncR6PadOutlines(s, enemies);
       return;
     }
     const placing = isPlacing(s.phase, bridge.selection, Boolean(bridge.drag));
@@ -160,6 +174,35 @@ export class GroundLayer {
       const target = padAlpha({ occupied: occupied.has(slotId), placing, focused: focus.has(slotId), highContrast });
       const d = target - img.alpha;
       if (Math.abs(d) > 0.004) img.setAlpha(Math.abs(d) <= step ? target : img.alpha + Math.sign(d) * step);
+    }
+  }
+
+  /**
+   * 비어 있는 설치 칸이 앞쪽 적에게 50% 넘게 가려질 때만 R04 1px 짧은 모서리 표식을 그린다.
+   * 이미 타워가 놓인 칸과 50% 이하 가림 칸에는 그리지 않는다.
+   */
+  private syncR6PadOutlines(s: RunState, enemies: readonly EnemyFootprint[]) {
+    if (!this.padOutlines || this.r6Slots.length === 0) return;
+    if (this.r6OutlinesActive) {
+      this.padOutlines.clear();
+      this.r6OutlinesActive = false;
+    }
+    if (enemies.length === 0) return;
+    const occupied = new Set(s.towers.map(t => t.slotId));
+    const radius = r6Pad.radius * R6_PAD_OUTLINE_RADIUS_RATIO;
+    for (const slot of this.r6Slots) {
+      if (occupied.has(slot.id)) continue;
+      if (padOcclusionRatio(slot.y, slot.samples, enemies) <= R6_PAD_OCCLUSION_THRESHOLD) continue;
+      const segments = padCornerSegments(slot.x, slot.y, radius, R6_MAP_SQUASH, slot.y, enemies);
+      for (const seg of segments) {
+        this.padOutlines
+          .lineStyle(1, R6_PAD_OUTLINE_COLOR, seg.alpha)
+          .beginPath()
+          .moveTo(seg.x1, seg.y1)
+          .lineTo(seg.x2, seg.y2)
+          .strokePath();
+      }
+      this.r6OutlinesActive = true;
     }
   }
 

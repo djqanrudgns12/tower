@@ -222,9 +222,9 @@ export class BattleScene extends Phaser.Scene {
     const alpha = controller.alpha;
     this.enemyLayer.advance(s);
     this.towerLayer.sync(s, time);
-    this.ground.syncPads(s, delta);
     this.ambient?.update(delta, controller.renderQuality.current >= 2);
     this.enemyLayer.sync(s, time, alpha, delta);
+    this.ground.syncPads(s, delta, this.enemyLayer.activeFootprints());
     this.effects.syncHazards(s, alpha);
     this.effects.syncShots(s, alpha, (id, a) => this.enemyLayer.progressOf(id, a), id => this.towerLayer.weaponLift(id), id => this.enemyLayer.liftOf(id));
     this.inputLayer.draw(s);

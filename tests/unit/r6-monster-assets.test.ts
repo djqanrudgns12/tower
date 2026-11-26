@@ -8,7 +8,7 @@ import silhouettes from '../../docs/renewal/r6/tech/monsters/silhouettes.json';
 import { ENTITY_IDS, SPECIES } from '../../src/contracts/balanceV2';
 import manifest from '../../public/assets/r6/manifest-v2.json';
 import { R6BattleAssets } from '../../src/game/r6/BattleAssets';
-import { isR6VisualFlyer, r6EnemyScale, r6OutlineStepPx, r6VisualFlyerLiftCells } from '../../src/game/r6/enemyDisplay';
+import { isR6VisualFlyer, r6EnemyScale, r6FlyerShadowSpec, r6OutlineStepPx, r6VisualFlyerLiftCells } from '../../src/game/r6/enemyDisplay';
 import { r6ManifestSchema } from '../../src/game/r6/manifest';
 import { enemy } from './review-core/fixtures';
 
@@ -150,11 +150,15 @@ it('R6 비행 개체는 시각적 비행 여부와 고도를 일관되게 판정
   expect(isR6VisualFlyer('machine-special-t3', false)).toBe(true);
   expect(isR6VisualFlyer('insect-runner-t2', false)).toBe(true);
   expect(isR6VisualFlyer('human-infantry-t1', false)).toBe(false);
-  expect(r6VisualFlyerLiftCells('elf-special-t1', true, false)).toBe(0.28);
-  expect(r6VisualFlyerLiftCells('machine-special-t2', false, false)).toBe(0.24);
-  expect(r6VisualFlyerLiftCells('insect-runner-t4', false, false)).toBe(0.20);
+  expect(r6VisualFlyerLiftCells('elf-special-t1', true, false)).toBe(0.22);
+  expect(r6VisualFlyerLiftCells('machine-special-t2', false, false)).toBe(0.19);
+  expect(r6VisualFlyerLiftCells('insect-runner-t4', false, false)).toBe(0.16);
   expect(r6VisualFlyerLiftCells('elf-special-t1', true, true)).toBe(0);
   expect(r6VisualFlyerLiftCells('human-infantry-t1', false, false)).toBe(0);
+  const shadow = r6FlyerShadowSpec(1.2, 0.22 * 64, 64);
+  expect(shadow.width).toBeLessThanOrEqual(64 * 0.46);
+  expect(shadow.offsetY).toBeLessThan(0);
+  expect(shadow.tealAlpha).toBeLessThan(0.5);
 });
 
 it('바깥 1px 테두리 적용 후 모든 개체의 내부 평균 색은 원본 대비 CIELAB ΔE76 3 이하다', () => {

@@ -4,7 +4,7 @@ type: hub
 title: 화면(R04 UI)·전장(Phaser/Spine)·제작 공정
 status: active
 updated: 2026-11-26
-verified: { commit: b231561f, date: 2026-11-26 }
+verified: { commit: "9424ff2c", date: 2026-11-26 }
 sources:
   - path: src/game/bridge.ts
     sha256: d174fb7ea5c85ad93424afe0eb92a90508cb3488d66537edda17251254c868f8
@@ -15,7 +15,7 @@ sources:
   - path: docs/renewal/r6/tech/G2-spike.md
     sha256: "741013a9c3f010dafe49b23789095f6f36116d69412428d6ef1b4048aa76ef01"
   - path: docs/renewal/r6/tech/monster-pipeline.md
-    sha256: eca7088a3a71820fabc94a80d1d33674c6edd0f9f40696812a00c2052ef9af85
+    sha256: "7227150faa68f6326e2e469d85af7018c2f303635cb9ca081a51f89e2db0e386"
   - path: docs/renewal/r6/tech/G5-perf.md
     sha256: f53b47482ca494b4723d1b72f04b485b4d69cdf3520ad2a0a8cf46433305b455
   - path: docs/renewal/r6/ui/system.md
@@ -44,7 +44,7 @@ sources:
   - 기존 `garden_u` 좌표(15×9 격자, 길 41칸, 설치대 20개)를 재사용하고 3/4 직교 카메라 `(6.1, −8.2, 6.05)` 등고선 지형으로 굽는다(`src/game/r6/mapProjection.json`). React 오버레이와 드래그 입력은 `projectField` / `unprojectField`로 변환한다.
   - 배경 `meadow-plateau.webp` **26,052B**(예산 ≤150KB), 육각 설치대 시트 `meadow-pads.webp` **2,610B**.
 - **타워 렌더·전투 효과**: [manifest.ts](../../src/game/r6/manifest.ts)(`public/assets/r6/manifest-v2.json`)가 타워 6종 11형태의 고정 몸체 + **16방향 포두** + 8프레임 공격 시트(기본 192px / 고해상도 384px)를 관리하며, `src/game/r6/CombatVfx.ts`가 타워별 예광선·포탄·냉기 파동·연쇄 광선·드론 비행·방벽 파동을 그린다.
-- **몬스터 Spine Mesh2D 및 종족 지연 적재**: `@esotericsoftware/spine-phaser-v4@4.3.13` 공식 Mesh2D 백엔드(Phaser 4.2.1 WebGL)로 재생한다. 다섯 종족 100개체에 전용 스킨을 연결했다. 현재·다음 웨이브에 등장하는 종족의 아틀라스(`public/assets/r6/monsters/<종족>/`, WebP 768KiB 이내)를 지연 적재하고, 전송에 실패하면 기본 보행체를 사용한다. 초원 고원에서는 큰 적의 표시 높이를 줄이고(`enemyDisplay.ts`, 계통 안 T1→T4 단조) 받침·적·타워를 발밑 Y순으로 그린다. 같은 Y에서는 타워를 적 앞에 두고, 설치 칸 위치는 위층의 1px 육각 윤곽으로 표시한다. 런타임에서는 `enemyDisplay.ts`가 슬롯 `Mesh2D`를 뒤쪽 실루엣 `TintModes.FILL`로 먼저 제출해 아틀라스 원본 색(내부 화소 ΔE76 ≤ 2.68)을 보존한 채 실루엣 바깥 1px 은회(`#B8C0C8`) 테두리를 두른다. 비행 개체(`elf-special`, `machine-special`, `insect-runner`)는 고도만큼 띄워 1px 카본/틸 이중 테두리 타원 그림자를, 지상 적은 작고 옅은 카본 접지 그림자를 그린다.
+- **몬스터 Spine Mesh2D 및 종족 지연 적재**: `@esotericsoftware/spine-phaser-v4@4.3.13` 공식 Mesh2D 백엔드(Phaser 4.2.1 WebGL)로 재생한다. 다섯 종족 100개체에 전용 스킨을 연결했다. 현재·다음 웨이브에 등장하는 종족의 아틀라스(`public/assets/r6/monsters/<종족>/`, WebP 768KiB 이내)를 지연 적재하고, 전송에 실패하면 기본 보행체를 사용한다. 초원 고원에서는 큰 적의 표시 높이를 줄이고(`enemyDisplay.ts`, 계통 안 T1→T4 단조) 받침·적·타워를 발밑 Y순으로 그린다. 같은 Y에서는 타워를 적 앞에 두고, 타워가 놓이지 않고 앞쪽 적에게 50% 넘게 가려진 빈 설치 칸만 위층의 짧은 1px R04 모서리 표식으로 표시한다(`padOutline.ts`). 런타임에서는 `enemyDisplay.ts`가 슬롯 `Mesh2D`를 뒤쪽 실루엣 `TintModes.FILL`로 먼저 제출해 아틀라스 원본 색(내부 화소 ΔE76 ≤ 2.68)을 보존한 채 실루엣 바깥 1px 은회(`#B8C0C8`) 테두리를 두른다. 비행 개체(`elf-special`·`machine-special`·`insect-runner`)는 고도(`0.16~0.22칸`)만큼 띄워 절제된 1px 카본/틸 이중 테두리 타원 그림자를, 지상 적은 작고 옅은 카본 접지 그림자를 그린다.
 - **자동 화질 3단계** ([G5-perf.md](../../docs/renewal/r6/tech/G5-perf.md)): 5초 평균 30fps 미만 시 단계 하향, 20초 연속 45fps 이상 시 상향.
   - `0단계`: 기본(고해상도 384px) → `1단계`: 192px 시트·연기/비행 그림자 생략 → `2단계`: 원거리 100ms/근거리 50ms Spine 자세 갱신(보스·이동은 매 프레임)·배경 움직임 생략 → `3단계`: 캔버스 내부 해상도 0.75배.
 

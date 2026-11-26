@@ -17,14 +17,14 @@
     "5": {
       "tick": 12676,
       "displayed": 12,
-      "enemyOverlap": 0.1303,
+      "enemyOverlap": 0.0911,
       "gates": 20,
       "pads": {
-        "max": 0.8316,
-        "mean": 0.097,
+        "max": 0.7741,
+        "mean": 0.0941,
         "bySlot": {
-          "garden_u-s01": 0.8316,
-          "garden_u-s02": 0.3324,
+          "garden_u-s01": 0.7741,
+          "garden_u-s02": 0.331,
           "garden_u-s03": 0,
           "garden_u-s04": 0.0763,
           "garden_u-s05": 0.6996,
@@ -50,26 +50,17 @@
         "mean": 0,
         "bySlot": {
           "garden_u-s01": 0,
-          "garden_u-s02": 0,
-          "garden_u-s03": 0,
-          "garden_u-s04": 0,
-          "garden_u-s05": 0,
-          "garden_u-s06": 0,
-          "garden_u-s07": 0,
-          "garden_u-s08": 0,
-          "garden_u-s09": 0,
-          "garden_u-s10": 0,
-          "garden_u-s11": 0,
-          "garden_u-s12": 0,
-          "garden_u-s13": 0,
-          "garden_u-s14": 0,
-          "garden_u-s15": 0,
-          "garden_u-s16": 0,
-          "garden_u-s17": 0,
-          "garden_u-s18": 0,
-          "garden_u-s19": 0,
-          "garden_u-s20": 0
-        }
+          "garden_u-s05": 0
+        },
+        "activeSlots": [
+          "garden_u-s01",
+          "garden_u-s05"
+        ],
+        "emptyOver50Slots": [
+          "garden_u-s01",
+          "garden_u-s05"
+        ],
+        "occupiedOutlined": 0
       },
       "towers": {
         "max": 0,
@@ -87,20 +78,20 @@
           "mean": 0
         },
         "towers": {
-          "max": 0.0186,
-          "mean": 0.0016
+          "max": 0.0202,
+          "mean": 0.0017
         },
         "any": {
-          "max": 0.0186,
-          "mean": 0.0016
+          "max": 0.0202,
+          "mean": 0.0017
         },
         "behind": {
           "max": 0,
           "mean": 0
         },
         "outline": {
-          "max": 0.0168,
-          "mean": 0.0059
+          "max": 0.0129,
+          "mean": 0.0028
         },
         "byEnemy": [
           {
@@ -110,7 +101,7 @@
             "towers": 0,
             "any": 0,
             "behind": 0,
-            "outline": 0.0158
+            "outline": 0.0119
           },
           {
             "id": 107,
@@ -119,7 +110,7 @@
             "towers": 0,
             "any": 0,
             "behind": 0,
-            "outline": 0.015
+            "outline": 0.0129
           },
           {
             "id": 108,
@@ -137,7 +128,7 @@
             "towers": 0,
             "any": 0,
             "behind": 0,
-            "outline": 0.0022
+            "outline": 0
           },
           {
             "id": 110,
@@ -155,7 +146,7 @@
             "towers": 0,
             "any": 0,
             "behind": 0,
-            "outline": 0.0096
+            "outline": 0
           },
           {
             "id": 112,
@@ -182,7 +173,7 @@
             "towers": 0,
             "any": 0,
             "behind": 0,
-            "outline": 0.0168
+            "outline": 0
           },
           {
             "id": 115,
@@ -197,10 +188,10 @@
             "id": 116,
             "entity": "stone-boss-t1",
             "pads": 0,
-            "towers": 0.0186,
-            "any": 0.0186,
+            "towers": 0.0202,
+            "any": 0.0202,
             "behind": 0,
-            "outline": 0.0101
+            "outline": 0.0084
           },
           {
             "id": 117,
@@ -209,14 +200,14 @@
             "towers": 0,
             "any": 0,
             "behind": 0,
-            "outline": 0.0007
+            "outline": 0
           }
         ]
       },
       "bossComparisons": [
         {
           "entity": "stone-boss-t1",
-          "height": 151,
+          "height": 153,
           "damaged": false,
           "sourceHp": 64904,
           "maxHp": 64904,
@@ -224,17 +215,17 @@
             {
               "entity": "stone-infantry-t1",
               "height": 73,
-              "ratio": 2.0685
+              "ratio": 2.0959
             },
             {
               "entity": "stone-infantry-t2",
               "height": 80,
-              "ratio": 1.8875
+              "ratio": 1.9125
             },
             {
               "entity": "stone-infantry-t1",
               "height": 72,
-              "ratio": 2.0972
+              "ratio": 2.125
             }
           ]
         }
@@ -258,12 +249,12 @@
         {
           "entity": "machine-special-t1",
           "progress": 10932,
-          "height": 68
+          "height": 67
         },
         {
           "entity": "insect-infantry-t1",
           "progress": 10408,
-          "height": 71
+          "height": 70
         },
         {
           "entity": "machine-infantry-t2",
@@ -288,12 +279,12 @@
         {
           "entity": "machine-armored-t2",
           "progress": 2273,
-          "height": 78
+          "height": 81
         },
         {
           "entity": "stone-boss-t1",
           "progress": 849,
-          "height": 151
+          "height": 153
         },
         {
           "entity": "insect-infantry-t2",
@@ -305,21 +296,21 @@
     "15": {
       "tick": 36619,
       "displayed": 17,
-      "enemyOverlap": 0.3126,
+      "enemyOverlap": 0.3049,
       "gates": 20,
       "pads": {
         "max": 0.6635,
-        "mean": 0.0659,
+        "mean": 0.066,
         "bySlot": {
           "garden_u-s01": 0.0383,
-          "garden_u-s02": 0.008,
-          "garden_u-s03": 0.0863,
+          "garden_u-s02": 0.01,
+          "garden_u-s03": 0.0866,
           "garden_u-s04": 0.3221,
           "garden_u-s05": 0.6635,
           "garden_u-s06": 0,
           "garden_u-s07": 0,
           "garden_u-s08": 0,
-          "garden_u-s09": 0.2002,
+          "garden_u-s09": 0.1991,
           "garden_u-s10": 0,
           "garden_u-s11": 0,
           "garden_u-s12": 0,
@@ -337,27 +328,15 @@
         "max": 0,
         "mean": 0,
         "bySlot": {
-          "garden_u-s01": 0,
-          "garden_u-s02": 0,
-          "garden_u-s03": 0,
-          "garden_u-s04": 0,
-          "garden_u-s05": 0,
-          "garden_u-s06": 0,
-          "garden_u-s07": 0,
-          "garden_u-s08": 0,
-          "garden_u-s09": 0,
-          "garden_u-s10": 0,
-          "garden_u-s11": 0,
-          "garden_u-s12": 0,
-          "garden_u-s13": 0,
-          "garden_u-s14": 0,
-          "garden_u-s15": 0,
-          "garden_u-s16": 0,
-          "garden_u-s17": 0,
-          "garden_u-s18": 0,
-          "garden_u-s19": 0,
-          "garden_u-s20": 0
-        }
+          "garden_u-s05": 0
+        },
+        "activeSlots": [
+          "garden_u-s05"
+        ],
+        "emptyOver50Slots": [
+          "garden_u-s05"
+        ],
+        "occupiedOutlined": 0
       },
       "towers": {
         "max": 0.0665,
@@ -375,11 +354,11 @@
           "mean": 0
         },
         "towers": {
-          "max": 0.7405,
+          "max": 0.7404,
           "mean": 0.118
         },
         "any": {
-          "max": 0.7405,
+          "max": 0.7404,
           "mean": 0.118
         },
         "behind": {
@@ -387,8 +366,8 @@
           "mean": 0
         },
         "outline": {
-          "max": 0.033,
-          "mean": 0.0065
+          "max": 0.0338,
+          "mean": 0.0038
         },
         "byEnemy": [
           {
@@ -404,8 +383,8 @@
             "id": 411,
             "entity": "stone-infantry-t2",
             "pads": 0,
-            "towers": 0.7405,
-            "any": 0.7405,
+            "towers": 0.7404,
+            "any": 0.7404,
             "behind": 0,
             "outline": 0
           },
@@ -434,7 +413,7 @@
             "towers": 0,
             "any": 0,
             "behind": 0,
-            "outline": 0.005
+            "outline": 0.0041
           },
           {
             "id": 416,
@@ -452,7 +431,7 @@
             "towers": 0,
             "any": 0,
             "behind": 0,
-            "outline": 0.033
+            "outline": 0.0262
           },
           {
             "id": 418,
@@ -461,7 +440,7 @@
             "towers": 0,
             "any": 0,
             "behind": 0,
-            "outline": 0.0322
+            "outline": 0.0338
           },
           {
             "id": 419,
@@ -470,7 +449,7 @@
             "towers": 0,
             "any": 0,
             "behind": 0,
-            "outline": 0.0027
+            "outline": 0
           },
           {
             "id": 420,
@@ -479,7 +458,7 @@
             "towers": 0,
             "any": 0,
             "behind": 0,
-            "outline": 0.0287
+            "outline": 0
           },
           {
             "id": 421,
@@ -524,7 +503,7 @@
             "towers": 0,
             "any": 0,
             "behind": 0,
-            "outline": 0.0015
+            "outline": 0
           },
           {
             "id": 426,
@@ -542,7 +521,7 @@
             "towers": 0,
             "any": 0,
             "behind": 0,
-            "outline": 0.0068
+            "outline": 0
           }
         ]
       },
@@ -561,8 +540,8 @@
             },
             {
               "entity": "machine-armored-t2",
-              "height": 76,
-              "ratio": 2.1447
+              "height": 79,
+              "ratio": 2.0633
             }
           ]
         }
@@ -621,7 +600,7 @@
         {
           "entity": "machine-armored-t2",
           "progress": 5033,
-          "height": 76
+          "height": 79
         },
         {
           "entity": "stone-infantry-t2",
@@ -658,21 +637,21 @@
     "20": {
       "tick": 49571,
       "displayed": 23,
-      "enemyOverlap": 0.1463,
+      "enemyOverlap": 0.1417,
       "gates": 20,
       "pads": {
         "max": 0.7696,
-        "mean": 0.198,
+        "mean": 0.196,
         "bySlot": {
           "garden_u-s01": 0.2722,
-          "garden_u-s02": 0.5492,
-          "garden_u-s03": 0.5709,
+          "garden_u-s02": 0.5193,
+          "garden_u-s03": 0.5574,
           "garden_u-s04": 0.7487,
           "garden_u-s05": 0.7696,
           "garden_u-s06": 0,
           "garden_u-s07": 0,
           "garden_u-s08": 0.3389,
-          "garden_u-s09": 0.7112,
+          "garden_u-s09": 0.7131,
           "garden_u-s10": 0,
           "garden_u-s11": 0,
           "garden_u-s12": 0,
@@ -690,34 +669,31 @@
         "max": 0,
         "mean": 0,
         "bySlot": {
-          "garden_u-s01": 0,
           "garden_u-s02": 0,
           "garden_u-s03": 0,
           "garden_u-s04": 0,
-          "garden_u-s05": 0,
-          "garden_u-s06": 0,
-          "garden_u-s07": 0,
-          "garden_u-s08": 0,
-          "garden_u-s09": 0,
-          "garden_u-s10": 0,
-          "garden_u-s11": 0,
-          "garden_u-s12": 0,
-          "garden_u-s13": 0,
-          "garden_u-s14": 0,
-          "garden_u-s15": 0,
-          "garden_u-s16": 0,
-          "garden_u-s17": 0,
-          "garden_u-s18": 0,
-          "garden_u-s19": 0,
-          "garden_u-s20": 0
-        }
+          "garden_u-s05": 0
+        },
+        "activeSlots": [
+          "garden_u-s02",
+          "garden_u-s03",
+          "garden_u-s04",
+          "garden_u-s05"
+        ],
+        "emptyOver50Slots": [
+          "garden_u-s02",
+          "garden_u-s03",
+          "garden_u-s04",
+          "garden_u-s05"
+        ],
+        "occupiedOutlined": 0
       },
       "towers": {
-        "max": 0.2128,
-        "mean": 0.0669,
+        "max": 0.2112,
+        "mean": 0.0666,
         "bySlot": {
           "garden_u-s13": 0,
-          "garden_u-s09": 0.2128,
+          "garden_u-s09": 0.2112,
           "garden_u-s12": 0,
           "garden_u-s08": 0.1884,
           "garden_u-s14": 0,
@@ -730,20 +706,20 @@
           "mean": 0
         },
         "towers": {
-          "max": 0.5237,
-          "mean": 0.0729
+          "max": 0.5239,
+          "mean": 0.0717
         },
         "any": {
-          "max": 0.5237,
-          "mean": 0.0729
+          "max": 0.5239,
+          "mean": 0.0717
         },
         "behind": {
           "max": 0,
           "mean": 0
         },
         "outline": {
-          "max": 0.0394,
-          "mean": 0.0109
+          "max": 0.0269,
+          "mean": 0.0038
         },
         "byEnemy": [
           {
@@ -771,7 +747,7 @@
             "towers": 0,
             "any": 0,
             "behind": 0,
-            "outline": 0.0394
+            "outline": 0
           },
           {
             "id": 574,
@@ -780,14 +756,14 @@
             "towers": 0,
             "any": 0,
             "behind": 0,
-            "outline": 0.0024
+            "outline": 0.0034
           },
           {
             "id": 575,
             "entity": "stone-infantry-t4",
             "pads": 0,
-            "towers": 0.3268,
-            "any": 0.3268,
+            "towers": 0.299,
+            "any": 0.299,
             "behind": 0,
             "outline": 0
           },
@@ -843,7 +819,7 @@
             "towers": 0,
             "any": 0,
             "behind": 0,
-            "outline": 0.0203
+            "outline": 0.0157
           },
           {
             "id": 583,
@@ -852,7 +828,7 @@
             "towers": 0,
             "any": 0,
             "behind": 0,
-            "outline": 0.028
+            "outline": 0.0206
           },
           {
             "id": 584,
@@ -879,16 +855,16 @@
             "towers": 0,
             "any": 0,
             "behind": 0,
-            "outline": 0.0121
+            "outline": 0.0097
           },
           {
             "id": 587,
             "entity": "stone-runner-t3",
             "pads": 0,
-            "towers": 0.5237,
-            "any": 0.5237,
+            "towers": 0.5239,
+            "any": 0.5239,
             "behind": 0,
-            "outline": 0.0018
+            "outline": 0
           },
           {
             "id": 588,
@@ -897,7 +873,7 @@
             "towers": 0,
             "any": 0,
             "behind": 0,
-            "outline": 0.0022
+            "outline": 0
           },
           {
             "id": 589,
@@ -906,7 +882,7 @@
             "towers": 0,
             "any": 0,
             "behind": 0,
-            "outline": 0.0347
+            "outline": 0.0269
           },
           {
             "id": 590,
@@ -915,14 +891,14 @@
             "towers": 0,
             "any": 0,
             "behind": 0,
-            "outline": 0.0304
+            "outline": 0.012
           },
           {
             "id": 591,
             "entity": "insect-infantry-t3",
             "pads": 0,
-            "towers": 0.1928,
-            "any": 0.1928,
+            "towers": 0.1929,
+            "any": 0.1929,
             "behind": 0,
             "outline": 0
           },
@@ -933,7 +909,7 @@
             "towers": 0,
             "any": 0,
             "behind": 0,
-            "outline": 0.033
+            "outline": 0
           },
           {
             "id": 593,
@@ -942,7 +918,7 @@
             "towers": 0,
             "any": 0,
             "behind": 0,
-            "outline": 0.0346
+            "outline": 0
           },
           {
             "id": 594,
@@ -951,7 +927,7 @@
             "towers": 0,
             "any": 0,
             "behind": 0,
-            "outline": 0.0128
+            "outline": 0
           }
         ]
       },
@@ -970,8 +946,8 @@
             },
             {
               "entity": "insect-runner-t3",
-              "height": 68,
-              "ratio": 2.3235
+              "height": 69,
+              "ratio": 2.2899
             },
             {
               "entity": "insect-infantry-t3",
@@ -995,7 +971,7 @@
         {
           "entity": "stone-armored-t4",
           "progress": 20088,
-          "height": 93
+          "height": 95
         },
         {
           "entity": "machine-infantry-t4",
@@ -1015,7 +991,7 @@
         {
           "entity": "stone-infantry-t4",
           "progress": 15763,
-          "height": 86
+          "height": 89
         },
         {
           "entity": "human-armored-t3",
@@ -1035,7 +1011,7 @@
         {
           "entity": "machine-infantry-t3",
           "progress": 12738,
-          "height": 79
+          "height": 78
         },
         {
           "entity": "insect-infantry-t4",
@@ -1065,7 +1041,7 @@
         {
           "entity": "stone-infantry-t4",
           "progress": 6134,
-          "height": 85
+          "height": 88
         },
         {
           "entity": "stone-runner-t3",
@@ -1085,7 +1061,7 @@
         {
           "entity": "insect-runner-t3",
           "progress": 3450,
-          "height": 68
+          "height": 69
         },
         {
           "entity": "insect-infantry-t3",

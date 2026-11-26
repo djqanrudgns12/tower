@@ -1,6 +1,15 @@
 import { describe, expect, it } from 'vitest';
 import { r6UnitDepth } from '../../src/game/layers/shared';
 import { projectField, projectFieldDelta, unprojectField } from '../../src/game/r6/mapProjection';
+import {
+  padCornerSegments,
+  padOcclusionRatio,
+  padSamplePoints,
+  R6_PAD_CORNER_ALPHA_CLEAR,
+  R6_PAD_CORNER_ALPHA_OVERLAP,
+  R6_PAD_CORNER_RATIO_CLEAR,
+  R6_PAD_CORNER_RATIO_OVERLAP,
+} from '../../src/game/r6/padOutline';
 import { cellRect, snapSlot, toWorldPoint } from '../../src/ui/game/fieldGeometry';
 import maps from '../../docs/contracts/maps.candidate.v0.4.json';
 
@@ -61,5 +70,32 @@ describe('초원 고원 3/4 투영', () => {
     expect(rect.top + rect.height / 2).toBeCloseTo(padY);
     const grid = toWorldPoint(camera, cssWidth, cssHeight, padX, padY);
     expect(snapSlot(garden.slots, new Set(), grid.x, grid.y)).toBe(slot.id);
+  });
+
+  it('빈 설치 칸은 앞쪽 적이 50% 넘게 가릴 때만 짧은 모서리 표식을 만들고 겹치는 꼭짓점을 절제한다', () => {
+    const cx = 300, cy = 200, radius = 18.7, squash = 0.506;
+    const samples = padSamplePoints(cx, cy, radius, squash);
+    expect(samples).toHaveLength(19);
+
+    // 1) 적이 칸 뒤쪽(footY < cy)에 있으면 가림 0
+    expect(padOcclusionRatio(cy, samples, [{ footY: cy - 1, left: cx - 30, top: cy - 40, right: cx + 30, bottom: cy + 20 }])).toBe(0);
+
+    // 2) 적이 칸 오른쪽 끝 일부만 스치면 50% 이하
+    const edgeRatio = padOcclusionRatio(cy, samples, [{ footY: cy + 5, left: cx + 10, top: cy - 15, right: cx + 30, bottom: cy + 15 }]);
+    expect(edgeRatio).toBeLessThanOrEqual(0.5);
+
+    // 3) 적이 앞쪽에서 칸 절반 넘게 덮으면 > 0.5, 겹치는 꼭짓점만 더 짧고 옅어짐
+    const bigEnemy = { footY: cy + 12, left: cx - 5, top: cy - 22, right: cx + 28, bottom: cy + 18 };
+    expect(padOcclusionRatio(cy, samples, [bigEnemy])).toBeGreaterThan(0.5);
+
+    const segments = padCornerSegments(cx, cy, radius, squash, cy, [bigEnemy]);
+    expect(segments).toHaveLength(12);
+    // 오른쪽 꼭짓점(i=0, x = cx + radius)은 적 내부에 있으므로 overlap 스타일, 왼쪽 꼭짓점(i=3, x = cx - radius)은 clear 스타일
+    expect(segments[0]!.alpha).toBe(R6_PAD_CORNER_ALPHA_OVERLAP);
+    expect(segments[6]!.alpha).toBe(R6_PAD_CORNER_ALPHA_CLEAR);
+    const len = (s: { x1: number; y1: number; x2: number; y2: number }) => Math.hypot(s.x2 - s.x1, s.y2 - s.y1);
+    const edgeLen = radius; // v[0] -> v[1] vs v[3] -> v[4] 길이는 대칭이므로 비율 차이가 그대로 드러남
+    expect(len(segments[0]!) / edgeLen).toBeLessThan(R6_PAD_CORNER_RATIO_CLEAR);
+    expect(len(segments[0]!) / len(segments[6]!)).toBeCloseTo(R6_PAD_CORNER_RATIO_OVERLAP / R6_PAD_CORNER_RATIO_CLEAR, 2);
   });
 });

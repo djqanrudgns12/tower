@@ -2,7 +2,8 @@ import Phaser from 'phaser';
 import type { SpineGameObject } from '@esotericsoftware/spine-phaser-v4';
 import type { R6BattleAssets } from '../r6/BattleAssets';
 import { R6_COLORS } from '../r6/manifest';
-import { attachR6SilhouetteOutline, isR6VisualFlyer, r6EnemyScale, r6VisualFlyerLiftCells } from '../r6/enemyDisplay';
+import { attachR6SilhouetteOutline, isR6VisualFlyer, r6EnemyScale, r6FlyerShadowSpec, r6VisualFlyerLiftCells } from '../r6/enemyDisplay';
+import type { EnemyFootprint } from '../r6/padOutline';
 import { R6_HIT_MS } from '../r6/vfxTiming';
 import { positionAt } from '../../domain/geometry';
 import { enemyArtId } from '../../domain/factions';
@@ -21,6 +22,8 @@ interface EnemyView {
   kind: Enemy['kind']; art: EnemyArt; prev: number; cur: number; phase: number; flashUntil: number; flashAt: number; hitAt: number | null; facing: 1 | -1;
   /** 지금 그린 길 위 위치(월드 px, 등장 연출 포함)와 비행 몸 높이(px). 효과 층이 맞힌 자리·기믹 위치를 맞출 때 쓴다. */
   x: number; y: number; lift: number;
+  /** 현재 프레임 화면 바운딩 박스(월드 px). 빈 설치 칸 가림 판정에 쓴다. */
+  bounds: EnemyFootprint | null;
   /** 분열·호위 등장 연출(시작 시각 ms). */
   intro: (SpawnIntro & { start: number }) | null;
 }
@@ -29,6 +32,7 @@ interface EnemySpine {
   object: SpineGameObject;
   scale: number;
   headOffset: number;
+  bounds: { width: number; height: number; left: number; top: number };
   hit: string | undefined;
   fall: string | undefined;
   poseMs: number;
@@ -59,7 +63,8 @@ export class EnemyLayer {
   private enemies = new Map<number, EnemyView>();
   /** 그림 id·종류별로 고른 그림. 텍스처는 장면을 만든 뒤 바뀌지 않는다. */
   private arts = new Map<string, EnemyArt>();
-  private readonly spineBounds = new Map<string, { height: number; top: number }>();
+  private readonly spineBounds = new Map<string, { width: number; height: number; left: number; top: number }>();
+  private readonly footprints: EnemyFootprint[] = [];
   /** 아직 그리지 않은 적의 등장 연출(사건이 그림보다 먼저 온다). */
   private pendingIntros = new Map<number, SpawnIntro>();
   private lastTick = -1;
@@ -150,6 +155,11 @@ export class EnemyLayer {
     return v ? { x: v.x, y: v.y } : null;
   }
 
+  /** 지금 그려진 모든 적의 발밑 Y와 바운딩 박스. GroundLayer가 빈 칸 윤곽 표시 여부에 쓴다. */
+  activeFootprints(): readonly EnemyFootprint[] {
+    return this.footprints;
+  }
+
   /** 떠 있는 비행 적의 몸 높이(월드 px). 맞힌 자리·투사체 겨냥을 몸에 맞춘다. */
   liftOf(enemyId: number): number {
     return this.enemies.get(enemyId)?.lift ?? 0;
@@ -170,6 +180,7 @@ export class EnemyLayer {
     const dt = this.lastTime === null ? 0 : Math.max(0, time - this.lastTime);
     this.lastTime = time;
     const seen = new Set<number>();
+    this.footprints.length = 0;
     this.hpBars.clear();
     this.ground.clear();
     for (const e of s.enemies) {
@@ -190,7 +201,7 @@ export class EnemyLayer {
           ? r6VisualFlyerLiftCells(e.entityId, e.flying, e.groundedUntilTick > s.tick) * CELL_PX
           : flyerLift(e, s.tick) * CELL_PX;
         v = { sprite, spine: null, spineRevision: -1, badge, trait, kind: e.kind, art, prev: e.progress, cur: e.progress, phase: (e.id * 0.618034) % 1, flashUntil: 0, flashAt: -Infinity, hitAt: null, facing: 1,
-          x: 0, y: 0, lift: initLift, intro: intro ? { ...intro, start: time } : null };
+          x: 0, y: 0, lift: initLift, bounds: null, intro: intro ? { ...intro, start: time } : null };
         this.enemies.set(e.id, v);
       }
       if (!v.spine && this.assets && v.spineRevision !== this.assets.revision) {
@@ -232,9 +243,21 @@ export class EnemyLayer {
       else if (this.assets && this.c.projected && (quality === 0 || e.kind === 'boss')) this.groundShadow(x, y + foot, art.displayCells * scaleK, e.kind === 'boss');
       const depth = this.c.projected ? r6UnitDepth(y, 'enemy') : DEPTH.units + y + 0.5;
       if (v.spine) {
-        const { object, scale } = v.spine;
-        object.setPosition(x, y + foot - v.lift - hop).setDepth(depth)
-          .setScale(v.facing * scale * scaleK, scale * scaleK).setAlpha(alphaK);
+        const { object, scale, bounds } = v.spine;
+        const originY = y + foot - v.lift - hop;
+        const sAbs = scale * scaleK;
+        object.setPosition(x, originY).setDepth(depth)
+          .setScale(v.facing * sAbs, sAbs).setAlpha(alphaK);
+        const topPx = originY - bounds.top * sAbs;
+        const leftPx = v.facing > 0 ? x + bounds.left * sAbs : x - (bounds.left + bounds.width) * sAbs;
+        v.bounds = {
+          footY: y,
+          left: leftPx,
+          top: topPx,
+          right: leftPx + bounds.width * sAbs,
+          bottom: topPx + bounds.height * sAbs,
+        };
+        this.footprints.push(v.bounds);
         object.animationState.timeScale = reduced || s.pause.length ? 0 : 1;
         const walk = object.animationState.getTrack(0);
         if (walk) walk.timeScale = moving ? e.speedBP / 10000 : 0;
@@ -253,9 +276,15 @@ export class EnemyLayer {
         const hitKey = `${art.base}.hit`;
         const hitArt = pose.hit && scene.textures.exists(hitKey);
         const size = CELL_PX * art.displayCells * scaleK;
+        const sprY = y + foot - pose.bob - v.lift - hop;
+        const sprH = size * pose.squashY;
         v.sprite!.setTexture(hitArt ? hitKey : art.framed ? `${art.base}.${pose.frame}` : art.base)
-          .setPosition(x, y + foot - pose.bob - v.lift - hop).setFlipX(v.facing < 0).setDepth(depth)
-          .setDisplaySize(size, size * pose.squashY).setAlpha(alphaK);
+          .setPosition(x, sprY).setFlipX(v.facing < 0).setDepth(depth)
+          .setDisplaySize(size, sprH).setAlpha(alphaK);
+        const leftPx = x - art.originX * size;
+        const topPx = sprY - art.originY * sprH;
+        v.bounds = { footY: y, left: leftPx, top: topPx, right: leftPx + size, bottom: topPx + sprH };
+        this.footprints.push(v.bounds);
         if (!this.assets) this.tint(v, e, time, hitArt);
       }
       const top = y - v.lift - hop;
@@ -331,7 +360,7 @@ export class EnemyLayer {
         object.updatePose(0);
         const setup = object.skeleton.getBoundsRect();
         // Phaser용 Spine은 Y축이 아래로 증가한다.
-        bounds = { height: setup.height, top: -setup.y };
+        bounds = { width: setup.width, height: setup.height, left: setup.x, top: -setup.y };
         this.spineBounds.set(boundsKey, bounds);
       }
       const baseScale = art.scale * (enemy.derived ? 0.8 : 1);
@@ -342,6 +371,7 @@ export class EnemyLayer {
         object,
         scale,
         headOffset: bounds.top * scale,
+        bounds,
         hit: art.rig.hit && data.findAnimation(art.rig.hit) ? art.rig.hit : undefined,
         fall: art.rig.fall && data.findAnimation(art.rig.fall) ? art.rig.fall : undefined,
         poseMs: 0,
@@ -353,19 +383,21 @@ export class EnemyLayer {
     }
   }
 
-  /** 비행 적의 땅 그림자: 몸이 높을수록 조금 작고 옅다. R6에서는 1px 이중 테두리로 고도를 구분한다. */
+  /** 비행 적의 땅 그림자: 몸이 높을수록 조금 작고 옅다. R6에서는 1px 이중 테두리를 절제해 본체에 붙여 보인다. */
   private flyerShadow(x: number, footY: number, cells: number, lift: number) {
-    const k = 1 - 0.25 * Math.min(1, lift / (CELL_PX * 0.28));
-    const w = CELL_PX * cells * 0.62 * k;
-    const h = CELL_PX * 0.17 * k;
     if (this.assets && this.c.projected) {
-      this.ground.fillStyle(R6_COLORS.carbon, 0.48 * k).fillEllipse(x, footY, w, h);
-      this.ground.lineStyle(1, R6_COLORS.carbon, 0.9 * k).strokeEllipse(x, footY, w, h);
-      if (w > 8 && h > 4) {
-        this.ground.lineStyle(1, R6_COLORS.teal, 0.78 * k).strokeEllipse(x, footY, w - 4, h - 3);
+      const spec = r6FlyerShadowSpec(cells, lift, CELL_PX);
+      const sy = footY + spec.offsetY;
+      this.ground.fillStyle(R6_COLORS.carbon, spec.fillAlpha).fillEllipse(x, sy, spec.width, spec.height);
+      this.ground.lineStyle(1, R6_COLORS.carbon, spec.outerAlpha).strokeEllipse(x, sy, spec.width, spec.height);
+      if (spec.width > 8 && spec.height > 4) {
+        this.ground.lineStyle(1, R6_COLORS.teal, spec.tealAlpha).strokeEllipse(x, sy, spec.width - 4, spec.height - 2.5);
       }
       return;
     }
+    const k = 1 - 0.25 * Math.min(1, lift / (CELL_PX * 0.28));
+    const w = CELL_PX * cells * 0.62 * k;
+    const h = CELL_PX * 0.17 * k;
     this.ground.fillStyle(PALETTE.outline, 0.3 * k + 0.05).fillEllipse(x, footY, w, h);
   }
 
