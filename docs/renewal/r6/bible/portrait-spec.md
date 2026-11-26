@@ -68,15 +68,15 @@
 
 ---
 
-## 5. 종족별 생성 현황 (20 / 30 완료 · 잔여 10장 429 한도 대기)
+## 5. 종족별 생성 현황 (30 / 30 완료)
 
-- **총괄 수치(2026-11-26 19:53 KST 기준)**: 완료 `20/30` (`256×256` 불투명 WebP 장당 `7.4 ~ 16.1 KB`, 예산 `≤ 18 KB` 전원 통과, 합계 `266.4 KB / 540 KB`).
-- **429 한도 초과**: `elf` 4장(`01·04·05·06`) 및 `insect` 6장(`01~06`) 생성 중 `RESOURCE_EXHAUSTED (HTTP 429)` 발생 — 한도 해제 예정: 약 `4h 22m` 뒤(**`2026-11-27 00:13 KST` / `2026-11-26T15:13Z`**).
+- **총괄 수치(2026-11-27 00:36 KST 기준)**: 완료 `30/30` (`256×256` 불투명 WebP 장당 `8.2 ~ 17.0 KB`, 예산 `≤ 18 KB` 전원 통과, 합계 `410.4 KB / 540 KB`).
+- **보정·교체 반영**: `mech-04`·`golem-04`·`elf-04` 점유율 크롭 보정 완료(원본 1024px 기준 가로·세로 점유 80~88%), `human-05` 가슴 십자 문장 → 중립 R04 앰버 독수리 문장 교체 완료(전 30장·전장 100개체 종교 상징 0건).
 
 | 종족 | 완료 수 | 게임용 256×256 WebP 범위 · 소계 | 모델 개체 (`01~06`) | 현재 상태 및 비고 |
 |---|---|---|---|---|
-| **기계 군단 (`mech`)** | `6 / 6` | `8.3 ~ 13.1 KB` (소계 `69.8 KB`) | `mech_infantry_t4`, `mech_rush_t3`, `mech_heavy_t4`, `mech_special_t2`, `mech_boss_5`, `mech_boss_20` | **완료 · 78px/실루엣 검수 통과** (`01` 기존 채택 원화, `02~06` 신규 1024px) |
-| **바위 거인 (`golem`)** | `6 / 6` | `7.4 ~ 15.3 KB` (소계 `77.4 KB`) | `golem_infantry_t4`, `golem_rush_t4`, `golem_heavy_t4`, `golem_special_t2`, `golem_boss_5`, `golem_boss_20` | **완료 · 78px/실루엣 검수 통과** (전용 1024px 흉상) |
-| **철갑 인간 (`human`)** | `6 / 6` | `14.2 ~ 16.1 KB` (소계 `91.4 KB`) | `human_infantry_t4`, `human_rush_t4`, `human_heavy_t4`, `human_special_t4`, `human_boss_5`, `human_boss_20` | **완료 · 78px/실루엣 검수 통과** (`06`만 `q82`, 나머지 `q88`) |
-| **숲 엘프 (`elf`)** | `2 / 6` | `12.0 ~ 15.7 KB` (소계 `27.7 KB`) | 완료: `02 elf_rush_t4`, `03 elf_heavy_t4` / 대기: `01 elf_infantry_t4`, `04 elf_special_t4`, `05 elf_boss_5`, `06 elf_boss_20` | **`02·03` 완료 · 검수 통과**, `01·04·05·06`은 429 한도 해제 후 생성 |
-| **군체 벌레 (`insect`)** | `0 / 6` | `-` (`0.0 KB`) | 대기: `insect_infantry_t4`, `insect_rush_t4`, `insect_heavy_t4`, `insect_special_t4`, `insect_boss_5`, `insect_boss_20` | **429 한도 해제(`2026-11-27 00:13 KST`) 후 생성 예정** |
+| **기계 군단 (`mech`)** | `6 / 6` | `9.8 ~ 13.1 KB` (소계 `71.3 KB`) | `mech_infantry_t4`, `mech_rush_t3`, `mech_heavy_t4`, `mech_special_t2`, `mech_boss_5`, `mech_boss_20` | **완료 · 78px/실루엣 검수 통과** (`04` 점유율 크롭 보정 반영) |
+| **바위 거인 (`golem`)** | `6 / 6` | `8.2 ~ 15.3 KB` (소계 `78.2 KB`) | `golem_infantry_t4`, `golem_rush_t4`, `golem_heavy_t4`, `golem_special_t2`, `golem_boss_5`, `golem_boss_20` | **완료 · 78px/실루엣 검수 통과** (`04` 점유율 크롭 보정 반영) |
+| **철갑 인간 (`human`)** | `6 / 6` | `14.2 ~ 16.1 KB` (소계 `91.8 KB`) | `human_infantry_t4`, `human_rush_t4`, `human_heavy_t4`, `human_special_t4`, `human_boss_5`, `human_boss_20` | **완료 · 78px/실루엣 검수 통과** (`05` 앰버 독수리 문장 교체, `06`만 `q82`) |
+| **숲 엘프 (`elf`)** | `6 / 6` | `11.6 ~ 16.3 KB` (소계 `84.5 KB`) | `elf_infantry_t4`, `elf_rush_t4`, `elf_heavy_t4`, `elf_special_t4`, `elf_boss_5`, `elf_boss_20` | **완료 · 78px/실루엣 검수 통과** (`01·04·05·06` 신규, `04` 점유율 보정) |
+| **군체 벌레 (`insect`)** | `6 / 6` | `12.6 ~ 17.0 KB` (소계 `84.7 KB`) | `insect_infantry_t4`, `insect_rush_t4`, `insect_heavy_t4`, `insect_special_t4`, `insect_boss_5`, `insect_boss_20` | **완료 · 78px/실루엣 검수 통과** (`01~06` 신규 전용 1024px 흉상) |
