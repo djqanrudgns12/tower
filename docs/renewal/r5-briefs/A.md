@@ -34,7 +34,7 @@
 - 화면 CSS의 반복 움직임은 OS `prefers-reduced-motion`과 `<html data-motion="minimal">` 둘 다를 따르게 한다.
 
 ## 그림·원화
-- 원화: `public/assets/ui/oak/*.webp` 12장. 쓰는 법은 [`asset-source/renewal/ART-OAK1/manifest.json`](../../../asset-source/renewal/ART-OAK1/manifest.json)·`preview.html`. `board`는 메인이 밝기를 보정했다(`a1e0adb`). 판 위 글은 `--ink`만.
+- 원화: `public/assets/ui/oak/*.webp` 12장. 쓰는 법은 `asset-source/renewal/ART-OAK1/manifest.json` (git 이력 보관)·`preview.html`. `board`는 메인이 밝기를 보정했다(`a1e0adb`). 판 위 글은 `--ink`만.
 - 원화 파일은 만들거나 고치지 않는다. 새 그림이 필요하면 메인에 요청한다(Antigravity가 그린다).
 
 ## 소유(이 경로만 고친다)

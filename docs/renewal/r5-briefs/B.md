@@ -27,7 +27,7 @@
 - `tests/e2e/layout.spec.ts`(메인 소유)의 "13px·44px 하한: … 사용 설명서(접힘·펼침)" 단언이 바뀌어야 하면 메인에 요청한다.
 
 ## 그림·원화
-- 재질 원화: `public/assets/ui/oak/*.webp`. 쓰는 법은 [`asset-source/renewal/ART-OAK1/manifest.json`](../../../asset-source/renewal/ART-OAK1/manifest.json)·`preview.html`. 원화 파일은 만들거나 고치지 않는다.
+- 재질 원화: `public/assets/ui/oak/*.webp`. 쓰는 법은 `asset-source/renewal/ART-OAK1/manifest.json` (git 이력 보관)·`preview.html`. 원화 파일은 만들거나 고치지 않는다.
 - 설명서 그림: `public/assets/guide/*.png`(지금 4장). 5장 그림(G6)은 메인이 Antigravity에 맡겨 `public/assets/guide/`로 넣어 준다.
 - 캔버스 스프라이트는 홈 미니 전장과 같은 `src/ui/screens/home/canvasAssets`를 읽기만 한다(C 소유, 고치지 않는다).
 

@@ -29,7 +29,7 @@
 - `RankingModal.tsx`는 P2 동안 K가 kit `Modal`로 옮겼다(첫 포커스 = 닫기, v4 결정 9). 이제 C 소유다.
 
 ## 그림·원화
-- 재질 원화: `public/assets/ui/oak/*.webp`. 쓰는 법은 [`asset-source/renewal/ART-OAK1/manifest.json`](../../../asset-source/renewal/ART-OAK1/manifest.json)·`preview.html`. 원화 파일은 만들거나 고치지 않는다. 새 그림이 필요하면 메인에 요청한다.
+- 재질 원화: `public/assets/ui/oak/*.webp`. 쓰는 법은 `asset-source/renewal/ART-OAK1/manifest.json` (git 이력 보관)·`preview.html`. 원화 파일은 만들거나 고치지 않는다. 새 그림이 필요하면 메인에 요청한다.
 
 ## 소유(이 경로만 고친다)
 - `src/ui/screens/NewGameScreen.tsx`, `ResultScreen.tsx`·`ResultScreen.module.css`, `SettingsModal.tsx`·`SettingsModal.module.css`, `NoteScreen.tsx`·`NoteScreen.module.css`, `HomeScreen.tsx`, `src/ui/screens/home/**`(`RankingModal.tsx`·`home.module.css` 포함), `tests/e2e/home.spec.ts`·`note.spec.ts`.

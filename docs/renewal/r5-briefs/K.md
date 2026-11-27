@@ -18,7 +18,7 @@
 - **C6(일부)** `src/ui/icons/GameIcons.tsx`의 쓰이지 않는 아이콘을 지우고(`grep`으로 사용처 0 확인), 도구 키 아이콘을 2px 선 세트로 맞춘다. 날아가는 금화(`src/ui/game/CoinFlight.tsx`)는 세션 A가 B8과 함께 한다.
 
 ## 재질 원화
-- **원화는 이미 들어와 있다(P1 관문 통과, 2026-11-04).** `public/assets/ui/oak/*.webp` 12장(합계 141KB)과 9-slice 값·권장 CSS가 [`asset-source/renewal/ART-OAK1/manifest.json`](../../../asset-source/renewal/ART-OAK1/manifest.json)에 있다. 실제 크기 검수판: `asset-source/renewal/ART-OAK1/contact-sheet-1366.png`·`preview.html`(쓰는 법 예시). 요청서: [`REQUEST.md`](../../../asset-source/renewal/ART-OAK1/REQUEST.md).
+- **원화는 이미 들어와 있다(P1 관문 통과, 2026-11-04).** `public/assets/ui/oak/*.webp` 12장(합계 141KB)과 9-slice 값·권장 CSS는 `asset-source/renewal/ART-OAK1/manifest.json` (git 이력 보관)에 있다. 실제 크기 검수판: `asset-source/renewal/ART-OAK1/contact-sheet-1366.png`·`preview.html`(쓰는 법 예시). 요청서: `asset-source/renewal/ART-OAK1/REQUEST.md` (git 이력 보관).
 - 쓰는 법(manifest 요약): 틀·홈·양피지·키는 `border: <폭> solid transparent` + `border-image`(틀 2장은 안쪽 투명이라 `fill` 없이 `background-clip: padding-box`). 키·배지·띠·선은 표시 높이를 원화의 절반(키 48·배지 24·띠 48·선 12px)으로 둔다. 다른 높이면 `border-image-width`를 비례로 바꾼다.
 - 총괄 판정 메모:
   - `frame.lg`는 조건부 합격이다. 표시 폭 18px에서는 결이 거의 안 보여 CSS 갈색 테처럼 읽힌다. 전장 틀·화면 바깥 틀은 표시 폭 24px 이상으로 쓰고, 그보다 얇은 테는 `frame.sm`을 쓴다.

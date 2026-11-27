@@ -1,6 +1,6 @@
 # UI 규정 v4 · 「참나무 작전실 v2」 (R5 기준)
 
-상태: **확정(2026-11-04, P0)** · 작성: Claude 서브에이전트(총괄 위임), 총괄 검토 · 근거: [R5 계획서](prd-r5-oak-v2.md) §0·§1·§3·§4·§8, [아트 기준 v2](art-bible-v2.md), [ART-OAK1 요청서](../../asset-source/renewal/ART-OAK1/REQUEST.md)
+상태: **확정(2026-11-04, P0)** · 작성: Claude 서브에이전트(총괄 위임), 총괄 검토 · 근거: [R5 계획서](prd-r5-oak-v2.md) §0·§1·§3·§4·§8, [아트 기준 v2](art-bible-v2.md), `asset-source/renewal/ART-OAK1/REQUEST.md` (git 이력 보관)
 
 [UI 규정 v3](ui-rules-v3.md)를 대체한다. 계획서의 결정은 바꾸지 않고 구체화만 한다. P2 세션 K(공용 부품 재질)와 P3 세션 A·B·C(화면)가 이 문서를 구현 기준으로 쓴다. 코드와 이 문서가 다르면 코드를 맞추고, 문서를 바꿔야 하면 메인에 요청한다.
 

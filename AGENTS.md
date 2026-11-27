@@ -8,7 +8,7 @@ Claude·Codex·Antigravity와 그 서브에이전트가 이 저장소에서 일�
 
 - **점진적 조회 (6,000자 예산)**: 대형 원천 문서를 통째로 읽지 않고 [wiki/index.md](wiki/index.md) → 도메인 허브(`wiki/concepts/*.md`) 및 자동 레지스트리([wiki/contracts.md](wiki/contracts.md), [wiki/codemap.md](wiki/codemap.md), [wiki/commands.md](wiki/commands.md)) → 필요한 원천 절만 `npm run wiki:query -- --section <파일> <절>`로 발췌한다. 전체 문서 생애주기 지도는 [docs/README.md](docs/README.md), 사이트맵은 [llms.txt](llms.txt)에 있다.
 - **자동 동기화**: `package.json`, `eslint.config.js`, `src/`, `server/`, `docs/contracts/*.json`, `src/content/questions/manifest.json`, `public/assets/manifest.json` 또는 문서를 수정했으면 커밋 전에 `npm run wiki:sync`를 실행한다(원본 대조 후 해시 갱신은 `npm run wiki:stamp`, 무결성 검사는 `npm run wiki:check`).
-- **경로 보존 및 무충돌 교훈**: 기존 `vocabulary_td_prd_*.md`, `docs/**`, `asset-source/**`, `content-source/**` 파일은 이동·삭제·이름 변경하지 않는다. 재발 방지 교훈은 원장을 직접 고치지 않고 `npm run wiki:delta`로 `wiki/_inbox/`에 제출한다(상세: [.agents/skills/wiki-maintain/SKILL.md](.agents/skills/wiki-maintain/SKILL.md)).
+- **경로 보존 및 무충돌 교훈**: 기존 `vocabulary_td_prd_*.md`, `docs/**`, `asset-source/**`, `content-source/**` 파일은 이동·삭제·이름 변경하지 않는다(예외: v1 옛 원본 `asset-source/renewal/`·`asset-source/incoming/` 397MB는 2026-11-27 사용자 결정으로 작업 폴더에서 정리·git 이력 보관했으며, 현행 보존 대상은 `asset-source/r6/**`다). 재발 방지 교훈은 원장을 직접 고치지 않고 `npm run wiki:delta`로 `wiki/_inbox/`에 제출한다(상세: [.agents/skills/wiki-maintain/SKILL.md](.agents/skills/wiki-maintain/SKILL.md)).
 
 ## 단일 폴더(2026-11-04 사용자 결정)
 

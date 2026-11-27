@@ -4,12 +4,12 @@ type: project
 title: 프로젝트 계보 및 현행 코드 실체 판정
 status: active
 updated: 2026-11-26
-verified: { commit: "1a7fe4eb", date: 2026-11-27 }
+verified: { commit: "11146ad4", date: 2026-11-27 }
 sources:
   - path: package.json
     sha256: "438e5fc906d190ae6ff3e75af936f686e94d883375aff3ab996bcf06cd749d08"
   - path: AGENTS.md
-    sha256: f22902d65d0a4e1a65acb94dcd3e46101332e9685f9ef2fb7d6213198e7d9534
+    sha256: "6a114bb3e7c1c01e63f75603742e3aa7811719234dc84c2471b0d045fbb26bf4"
   - path: docs/renewal/r6/PRD-r6.md
     sha256: a4bae91b43a1c2adb3a549c47b6f4250a1d6d1f45010b3facc530fdd3a7d9175
   - path: docs/renewal/r6/review/G4-towers-fix.md
