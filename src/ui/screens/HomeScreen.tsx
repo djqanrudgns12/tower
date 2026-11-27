@@ -12,6 +12,7 @@ import { SteleStudyPanel } from './home/SteleStudyPanel';
 import { TelemetryStrip } from './home/TelemetryStrip';
 import css from './home/home.module.css';
 import { NewGameScreen } from './NewGameScreen';
+import { RecordConsentModal } from './RecordConsentModal';
 import { SettingsModal } from './SettingsModal';
 import { R6_MAP_NAME, R6_MAP_PREVIEW, showMapDiagram } from './r6Map';
 
@@ -19,6 +20,7 @@ const GuideScreen = lazy(() => import('./GuideScreen').then(m => ({ default: m.G
 
 type ModalState =
   | null
+  | 'consent'
   | 'new'
   | 'settings'
   | 'guide'
@@ -201,7 +203,7 @@ export function HomeScreen({
               onOpenNewGame={nick => {
                 onSettings({ lastNickname: nick });
                 onClearMessage();
-                setActiveModal('new');
+                setActiveModal(!settings.shareRecordsAsked && !settings.shareRecords ? 'consent' : 'new');
               }}
             />
           </div>
@@ -222,6 +224,16 @@ export function HomeScreen({
           />
         </main>
       </div>
+
+      {activeModal === 'consent' && (
+        <RecordConsentModal
+          onDecide={shareRecords => {
+            onSettings({ shareRecords, shareRecordsAsked: true });
+            setActiveModal('new');
+          }}
+          onClose={() => setActiveModal(null)}
+        />
+      )}
 
       {activeModal === 'new' && (
         <NewGameScreen

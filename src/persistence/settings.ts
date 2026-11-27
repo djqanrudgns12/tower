@@ -12,6 +12,8 @@ export const SETTINGS_CHANGED_EVENT = 'vocabulary-td.settingsChanged';
 export interface Settings {
   /** 공개 기록은 명시적으로 켠 기기에서만 통신한다. 구 저장본은 false. */
   shareRecords?: boolean;
+  /** 첫 새 게임 진입 시 순위표 공유 여부 1회 동의를 이미 물었는지 여부. */
+  shareRecordsAsked?: boolean;
   fontScale: FontScale;
   /** motionMode === 'minimal'의 파생 호환 필드(PRD §17.1). */
   reducedMotion: boolean;
@@ -69,6 +71,7 @@ function normalizeFontScale(value: unknown): FontScale {
 const defaults = (): Settings => ({
   fontScale: 'base',
   shareRecords: false,
+  shareRecordsAsked: false,
   reducedMotion: typeof matchMedia === 'function' && matchMedia('(prefers-reduced-motion: reduce)').matches,
   lastDifficulty: 'Normal',
   lastNickname: '',
@@ -99,8 +102,13 @@ export function normalizeSettings(base: Settings, raw: Partial<Settings>): Setti
   const reducedMotion = motionMode === 'minimal';
   const motionCustomized =
     typeof raw.motionCustomized === 'boolean' ? raw.motionCustomized : Boolean(base.motionCustomized);
+  const shareRecords = typeof raw.shareRecords === 'boolean' ? raw.shareRecords : (base.shareRecords ?? false);
+  const shareRecordsAsked = shareRecords
+    ? true
+    : (typeof raw.shareRecordsAsked === 'boolean' ? raw.shareRecordsAsked : Boolean(base.shareRecordsAsked));
   return {
-    shareRecords: typeof raw.shareRecords === 'boolean' ? raw.shareRecords : (base.shareRecords ?? false),
+    shareRecords,
+    shareRecordsAsked,
     fontScale: raw.fontScale !== undefined ? normalizeFontScale(raw.fontScale) : base.fontScale,
     reducedMotion,
     lastDifficulty: typeof raw.lastDifficulty === 'string' && raw.lastDifficulty ? raw.lastDifficulty : base.lastDifficulty,
