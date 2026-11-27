@@ -55,6 +55,52 @@ def translate(*keys):
     return [{"time": time, "x": x, "y": y} for time, x, y in keys]
 
 
+def rotate_curved(*keys):
+    """정규화 베지어 핸들 (cx1, cy1, cx2, cy2)을 Spine 4.3 절대 좌표 curve로 변환한다."""
+    items = [(*k, None)[:3] for k in keys]
+    result = []
+    for idx, (t1, v1, ease) in enumerate(items):
+        entry = {"time": round(t1, 4), "value": round(v1, 4)}
+        if ease and idx + 1 < len(items):
+            t2, v2, _ = items[idx + 1]
+            dt = t2 - t1
+            dv = v2 - v1
+            if dt > 0:
+                cx1, cy1, cx2, cy2 = ease
+                entry["curve"] = [
+                    round(t1 + dt * cx1, 5), round(v1 + dv * cy1, 5),
+                    round(t1 + dt * cx2, 5), round(v1 + dv * cy2, 5),
+                ]
+        result.append(entry)
+    return result
+
+
+def translate_curved(*keys):
+    """2채널(translate/scale) 키프레임에 Spine 4.3 8원소 절대 좌표 curve를 붙인다."""
+    items = [(*k, None)[:4] for k in keys]
+    result = []
+    for idx, (t1, x1, y1, ease) in enumerate(items):
+        entry = {"time": round(t1, 4), "x": round(x1, 4), "y": round(y1, 4)}
+        if ease and idx + 1 < len(items):
+            t2, x2, y2, _ = items[idx + 1]
+            dt = t2 - t1
+            dx = x2 - x1
+            dy = y2 - y1
+            if dt > 0:
+                cx1, cy1, cx2, cy2 = ease
+                entry["curve"] = [
+                    round(t1 + dt * cx1, 5), round(x1 + dx * cy1, 5),
+                    round(t1 + dt * cx2, 5), round(x1 + dx * cy2, 5),
+                    round(t1 + dt * cx1, 5), round(y1 + dy * cy1, 5),
+                    round(t1 + dt * cx2, 5), round(y1 + dy * cy2, 5),
+                ]
+        result.append(entry)
+    return result
+
+
+scale_curved = translate_curved
+
+
 def animations():
     walk = {"hull": {"translate": translate((0, 0, 0), (0.25, 0, 2), (0.5, 0, 0),
                                              (0.75, 0, 2), (1, 0, 0))}}

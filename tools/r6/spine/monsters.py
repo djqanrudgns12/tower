@@ -60,8 +60,8 @@ def load_config(source):
     return species, canvas, root, ppu, profiles
 
 
-def base_rig(family, profile, canvas, root, ppu):
-    variant, bones, slots, animations = layout(family, profile)
+def base_rig(family, profile, canvas, root, ppu, *, species=None):
+    variant, bones, slots, animations = layout(family, profile, species=species)
     anchors = world_bones(bones)
     offsets = profile.get("pivots", {})
     if not isinstance(offsets, dict) or set(offsets) - anchors.keys() or "root" in offsets:
@@ -92,8 +92,8 @@ def load_skin(folder, slots, canvas):
     return {name: load_part(path, canvas) for name, path in parts.items()}
 
 
-def compose_rig(source, textures, canvas, root, ppu, rig_id, family, entry, skins, profile):
-    variant, bones, slots, animations, points = base_rig(family, profile, canvas, root, ppu)
+def compose_rig(source, textures, canvas, root, ppu, rig_id, family, entry, skins, profile, *, species=None):
+    variant, bones, slots, animations, points = base_rig(family, profile, canvas, root, ppu, species=species)
     views = profile.get("views", {})
     layers, plans = {}, {}
     for skin in skins:
@@ -183,7 +183,7 @@ def prepare(source, out, actor=None, *, available=None):
             if type(scale) not in (int, float) or not 0 < scale <= 8:
                 raise ValueError(f"{entry} · 게임 표시 배율은 0 초과 8 이하여야 합니다.")
             rig, previews, binding = compose_rig(source, stage / "parts", canvas, root, ppu,
-                                                rig_id, family, entry, skins, profile)
+                                                rig_id, family, entry, skins, profile, species=species)
             write_json(stage / "rigs" / f"{rig_id}.json", rig)
             bindings[rig_id] = binding
             specs[rig_id] = {"file": f"{species}/{rig_id}.json", "scale": scale,
@@ -235,10 +235,10 @@ def export(work, cli, *, rig_cache=None, atlas_budget=None):
                         "-i", str(project), "-o", str(runtime), "-e", "json"]
         command += [
             "-i", str(work / "parts"), "-o", str(runtime),
-            "--set", "maxWidth=2048", "--set", "maxHeight=2048", "--set", "pot=false",
+            "--set", "maxWidth=2048", "--set", "maxHeight=2048", "--set", "pot=true",
             "--set", "rotation=false", "--set", "useIndexes=false", "--set", "premultiplyAlpha=false",
             "--set", "alphaThreshold=0", "--set", "bleed=true", "--set", "duplicatePadding=true",
-            "--set", "filterMin=Linear", "--set", "filterMag=Linear", "-p", species,
+            "--set", "filterMin=MipMapLinearLinear", "--set", "filterMag=Linear", "-p", species,
         ]
         subprocess.run(command, check=True)
         for path in imports.iterdir():
@@ -276,12 +276,15 @@ def finish_atlas(runtime, species, budget=None):
         rgba = image.convert("RGBA")
         rgba.save(webp, lossless=True, method=6, exact=True)
     if budget is not None and webp.stat().st_size > budget:
-        # 전송 예산을 넘긴 경우 RGB만 압축하고 부품의 투명 경계는 원본을 유지한다.
-        subprocess.run(["cwebp", "-quiet", "-q", "92", "-alpha_q", "100", "-m", "6", "-exact",
-                        "-o", webp, "--", png], check=True)
-        with Image.open(webp) as packed:
-            if ImageChops.difference(packed.getchannel("A"), rgba.getchannel("A")).getbbox():
-                raise ValueError(f"{species} · WebP 변환 후 알파가 바뀌었습니다.")
+        # 전송 예산을 넘긴 경우 -sharp_yuv로 색도 번짐을 줄이며 RGB만 압축하고 투명 경계는 무손실 유지한다.
+        for q in ("92", "90", "88"):
+            subprocess.run(["cwebp", "-quiet", "-q", q, "-alpha_q", "100", "-m", "6", "-sharp_yuv", "-exact",
+                            "-o", webp, "--", png], check=True)
+            with Image.open(webp) as packed:
+                if ImageChops.difference(packed.getchannel("A"), rgba.getchannel("A")).getbbox():
+                    raise ValueError(f"{species} · WebP 변환 후 알파가 바뀌었습니다.")
+            if webp.stat().st_size <= budget:
+                break
         if webp.stat().st_size > budget:
             raise ValueError(f"{species} · 아틀라스 전송 예산 초과 {webp.stat().st_size}")
     png.unlink()

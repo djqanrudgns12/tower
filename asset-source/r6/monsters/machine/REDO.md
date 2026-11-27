@@ -6,10 +6,10 @@
 
 ## 32px 비교
 
-- stone 비교 400쌍 중 84쌍 미달. 가장 비슷한 쌍은 `machine-boss-t2`와 `stone-boss-t3` (IoU 0.638).
-- elf 비교 400쌍 중 45쌍 미달. 가장 비슷한 쌍은 `machine-armored-t2`와 `elf-boss-t2` (IoU 0.667).
+- stone 비교 400쌍 중 84쌍 미달. 가장 비슷한 쌍은 `machine-infantry-t3`와 `stone-boss-t2` (IoU 0.634).
+- elf 비교 400쌍 중 47쌍 미달. 가장 비슷한 쌍은 `machine-armored-t2`와 `elf-boss-t2` (IoU 0.667).
 - human 비교 400쌍 중 91쌍 미달. 가장 비슷한 쌍은 `machine-armored-t3`와 `human-runner-t4` (IoU 0.672).
-- insect 비교 400쌍 중 68쌍 미달. 가장 비슷한 쌍은 `machine-boss-t3`와 `insect-boss-t3` (IoU 0.696).
+- insect 비교 400쌍 중 73쌍 미달. 가장 비슷한 쌍은 `machine-boss-t3`와 `insect-boss-t3` (IoU 0.696).
 
 ## 32px 재작화
 
@@ -46,8 +46,6 @@
 - `armored/T2` 재작화 반영 · 조립 IoU 0.912
 - `runner/T1` 접합 `leg-fore-foot-far`, `leg-fore-far` 배치 보정 · 조립 IoU 0.708 · 33자세 최소 접합 12px²
 - `armored/T4` 접합 `leg-fore-foot-far`, `leg-fore-far` 배치 보정 · 조립 IoU 0.879 · 33자세 최소 접합 17px²
-- 바닥 대비 보정(원래 색 아틀라스 복원 + 런타임 바깥 1px 은회 `#B8C0C8` 실루엣 테두리) · 지형 중앙값 1.614→2.038배(미달 3→0개체), 길 중앙값 1.403→1.470배(미달 18→13개체) · 내부 색 ΔE76 최대 2.680
-- G4 최종 아틀라스 1762×396 · 368,052바이트 · SHA-256 `8ad4c608670e987ca96fa5bff83d2fc8705f59bbefbd84c8a83e02bbe25f590a`
 
 ## 32px 외곽선 · 이전 검수 기록
 

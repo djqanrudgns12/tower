@@ -104,11 +104,31 @@ def measure(actor, atlas):
             "white": {name: spots for name, crop in crops.items() if (spots := white_patches(crop))}}
 
 
+def budget_violations(catalog_path, atlas_root):
+    """내보낸 모든 리그가 본 수(일반 ≤24, 보스 ≤32)와 걷기 키프레임 상한(≤9)을 지키는지 점검한다."""
+    data = json.loads(catalog_path.read_text(encoding="utf-8"))
+    violations = []
+    for rig_id, meta in data["rigs"].items():
+        rig = json.loads((atlas_root / meta["file"]).read_text(encoding="utf-8"))
+        bone_limit = 32 if "-boss-" in rig_id else 24
+        if len(rig["bones"]) > bone_limit:
+            violations.append({"rig": rig_id, "reason": "bones", "count": len(rig["bones"]), "limit": bone_limit})
+        walk_bones = rig.get("animations", {}).get("walk", {}).get("bones", {})
+        for bname, channels in walk_bones.items():
+            for cname, keys in channels.items():
+                if len(keys) > 9:
+                    violations.append({"rig": rig_id, "reason": f"walk:{bname}.{cname}", "count": len(keys), "limit": 9})
+    return violations
+
+
 def audit(catalog=CATALOG, public=PUBLIC, species_list=SPECIES):
     actors = {}
+    budgets = []
     for species in species_list:
+        cat_file = catalog / f"{species}.json"
+        budgets.extend(budget_violations(cat_file, public.parent))
         result = json.loads(subprocess.check_output(
-            ["node", Path(__file__).with_name("rig-poses.mjs"), catalog / f"{species}.json", public.parent]))
+            ["node", Path(__file__).with_name("rig-poses.mjs"), cat_file, public.parent]))
         with Image.open(public / species / result["page"]) as packed:
             atlas = packed.convert("RGBA")
         actors.update({id: measure(actor, atlas) for id, actor in result["actors"].items()})
@@ -116,7 +136,7 @@ def audit(catalog=CATALOG, public=PUBLIC, species_list=SPECIES):
               if any(joint["pixels"] < MIN_JOINT_PIXELS for joint in row["joints"].values())]
     hinge_failed = [id for id, row in actors.items() if any(area < MIN_JOINT_PIXELS for area in row["hinges"].values())]
     return {"minJointPixels": MIN_JOINT_PIXELS, "jointRadius": JOINT_RADIUS,
-            "failed": failed, "hingeFailed": hinge_failed, "actors": actors}
+            "failed": failed, "hingeFailed": hinge_failed, "budgetViolations": budgets, "actors": actors}
 
 
 def main():
@@ -129,7 +149,8 @@ def main():
     report = audit(args.catalog, args.public, args.species)
     write_json(args.output, report)
     print(f"관절 접합 기준 미달 {len(report['failed'])}/{len(report['actors'])}개체 · "
-          f"회전축 주변 여유 미달 {len(report['hingeFailed'])}개체")
+          f"회전축 주변 여유 미달 {len(report['hingeFailed'])}개체 · "
+          f"예산 초과 {len(report['budgetViolations'])}건")
 
 
 if __name__ == "__main__":

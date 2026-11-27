@@ -36,7 +36,6 @@
 - `infantry/T3` (`displayScale: 1.35`), `armored/T4` (`displayScale: 1.56`), `special/T2` (`displayScale: 1.32`) 단조 배율 반영
 - `boss-t3/T3` 재작화 반영 · 조립 IoU 0.701
 - `runner/T1` 2차 비평 용암 균열·시인성 보강 반영 · 조립 IoU 1.000 · 33자세 최소 접합 62px² · 지형 2.241배 / 길 1.527배(1.434→1.527)
-- G4 최종 아틀라스 1841×461 · 409,524바이트 · SHA-256 `f959f6973647c5dd455339db867b21373da39851d537206f32af0fb635bf088f`
 
 ## 32px 외곽선 · 이전 검수 기록
 

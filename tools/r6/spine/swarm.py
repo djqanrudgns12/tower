@@ -1,6 +1,6 @@
 """벌레 특수 개체의 등딱지와 비행 개체를 군집 보행에 맞춰 움직인다."""
 
-from pilot import rotate
+from pilot import rotate_curved
 
 
 def animate_swarm(rig):
@@ -19,7 +19,12 @@ def animate_swarm(rig):
         cover["y"] -= y
     walk = rig["animations"]["walk"]["bones"]
     duration = walk["body"]["translate"][-1]["time"]
-    walk["wing-cover"] = {"rotate": rotate((0, 0), (duration * .25, -7), (duration * .5, 0),
-                                            (duration * .75, -7), (duration, 0))}
-    # 떨어져 나는 개체는 위아래로 움직이는 기존 트랙에 가벼운 기울임을 더한다.
-    walk["swarm-1"]["rotate"] = rotate((0, 0), (duration * .25, 6), (duration * .75, -6), (duration, 0))
+    ease = (0.35, 0.0, 0.35, 1.0)
+    walk["wing-cover"] = {"rotate": rotate_curved(
+        (0, 0, ease), (duration * .25, -8, ease), (duration * .5, 0, ease),
+        (duration * .75, -8, ease), (duration, 0),
+    )}
+    # 떨어져 나는 개체는 위아래로 움직이는 기존 트랙에 베지어 기울임을 더한다.
+    walk["swarm-1"]["rotate"] = rotate_curved(
+        (0, 0, ease), (duration * .25, 6.5, ease), (duration * .75, -6.5, ease), (duration, 0),
+    )

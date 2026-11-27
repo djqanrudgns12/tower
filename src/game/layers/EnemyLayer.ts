@@ -2,7 +2,17 @@ import Phaser from 'phaser';
 import type { SpineGameObject } from '@esotericsoftware/spine-phaser-v4';
 import type { R6BattleAssets } from '../r6/BattleAssets';
 import { R6_COLORS } from '../r6/manifest';
-import { attachR6SilhouetteOutline, isR6VisualFlyer, r6EnemyScale, r6FlyerShadowSpec, r6VisualFlyerLiftCells } from '../r6/enemyDisplay';
+import {
+  attachR6SilhouetteOutline,
+  isR6VisualFlyer,
+  r6EnemyScale,
+  r6EnemyStridePx,
+  r6FlyerShadowSpec,
+  r6MaxFallingSkeletons,
+  r6TurnStep,
+  r6VisualFlyerLiftCells,
+  r6WalkTimeScale,
+} from '../r6/enemyDisplay';
 import type { EnemyFootprint } from '../r6/padOutline';
 import { R6_HIT_MS } from '../r6/vfxTiming';
 import { positionAt } from '../../domain/geometry';
@@ -19,7 +29,11 @@ interface EnemyView {
   sprite: Phaser.GameObjects.Image | null; spine: EnemySpine | null; spineRevision: number; badge: Phaser.GameObjects.Image | null;
   /** 종족 특성 배지(prd-r4 §7.2 E): 원화 특성 아이콘. 특성이 없거나 그림을 못 실었으면 null. */
   trait: Phaser.GameObjects.Image | null;
-  kind: Enemy['kind']; art: EnemyArt; prev: number; cur: number; phase: number; flashUntil: number; flashAt: number; hitAt: number | null; facing: 1 | -1;
+  kind: Enemy['kind']; entityId: string | undefined; art: EnemyArt;
+  prev: number; cur: number; phase: number; flashUntil: number; flashAt: number; hitAt: number | null;
+  facing: 1 | -1; displayFacing: 1 | -1; turnStartMs: number;
+  prevX: number; prevY: number; emaSpeedPx: number; hasScreenPos: boolean;
+  knockUntil: number; knockDirX: number; knockDirY: number;
   /** 지금 그린 길 위 위치(월드 px, 등장 연출 포함)와 비행 몸 높이(px). 효과 층이 맞힌 자리·기믹 위치를 맞출 때 쓴다. */
   x: number; y: number; lift: number;
   /** 현재 프레임 화면 바운딩 박스(월드 px). 빈 설치 칸 가림 판정에 쓴다. */
@@ -31,6 +45,7 @@ interface EnemyView {
 interface EnemySpine {
   object: SpineGameObject;
   scale: number;
+  stridePx: number;
   headOffset: number;
   bounds: { width: number; height: number; left: number; top: number };
   hit: string | undefined;
@@ -67,6 +82,8 @@ export class EnemyLayer {
   private readonly footprints: EnemyFootprint[] = [];
   /** 아직 그리지 않은 적의 등장 연출(사건이 그림보다 먼저 온다). */
   private pendingIntros = new Map<number, SpawnIntro>();
+  /** 동시 낙하 재생 중인 쓰러진 Spine 스켈레톤(품질 상한 및 아웃라인 해제 관리). */
+  private readonly falling = new Set<SpineGameObject>();
   private lastTick = -1;
   private lastTime: number | null = null;
   /** 체력 막대와 겹방패 점. 미니맵 카메라에서는 감춘다. */
@@ -104,10 +121,14 @@ export class EnemyLayer {
     }
     if (!v || !acceptsHit(v.hitAt, now)) return;
     v.hitAt = now;
+    const quality = this.c.bridge.controller.renderQuality.current;
     const spine = v.spine;
-    if (spine?.hit && !this.c.bridge.reducedMotion) {
+    if (spine?.hit && !this.c.bridge.reducedMotion && (quality < 2 || v.kind === 'boss')) {
       spine.object.animationState.setAnimation(1, spine.hit, false);
       spine.object.animationState.addEmptyAnimation(1, 0.08, 0);
+    }
+    if (!this.c.bridge.reducedMotion) {
+      v.knockUntil = now + 120;
     }
     // 밝게 섞는 점멸은 같은 적에 300ms에 한 번만: 계속 맞는 대장이 하얀 실루엣으로 깨져 보이지 않게 한다.
     if (now - v.flashAt >= FLASH_GAP_MS) { v.flashAt = now; v.flashUntil = now + (this.assets ? R6_HIT_MS : HIT_MS); }
@@ -125,17 +146,31 @@ export class EnemyLayer {
     const spine = v?.spine;
     if (!v || !spine?.fall || this.c.bridge.reducedMotion) return;
     const { object, fall } = spine;
+    const quality = this.c.bridge.controller.renderQuality.current;
     object.setName(`r6:fallen:${enemyId}`);
+    v.badge?.destroy();
+    v.trait?.destroy();
+    this.enemies.delete(enemyId);
+    if (this.falling.size >= r6MaxFallingSkeletons(quality)) {
+      object.animationState.timeScale = 0;
+      this.falling.add(object);
+      this.c.scene.tweens.add({
+        targets: object, alpha: 0, duration: 150,
+        onComplete: () => { this.falling.delete(object); object.destroy(); },
+      });
+      return;
+    }
     object.animationState.clearTracks();
     object.skeleton.setupPose();
     object.animationState.timeScale = 1;
     object.animationState.setAnimation(0, fall, false);
     object.addToUpdateList();
-    v.badge?.destroy();
-    v.trait?.destroy();
-    this.enemies.delete(enemyId);
+    this.falling.add(object);
     const ms = object.skeleton.data.findAnimation(fall)!.duration * 1000;
-    this.c.scene.tweens.add({ targets: object, alpha: 0, delay: ms * 0.7, duration: ms * 0.3, onComplete: () => object.destroy() });
+    this.c.scene.tweens.add({
+      targets: object, alpha: 0, delay: ms * 0.7, duration: ms * 0.3,
+      onComplete: () => { this.falling.delete(object); object.destroy(); },
+    });
   }
 
   /** 분열 파생체·호위병의 등장 연출을 예약한다. 그 적을 처음 그릴 때 시작한다. */
@@ -200,7 +235,10 @@ export class EnemyLayer {
         const initLift = this.assets && this.c.projected
           ? r6VisualFlyerLiftCells(e.entityId, e.flying, e.groundedUntilTick > s.tick) * CELL_PX
           : flyerLift(e, s.tick) * CELL_PX;
-        v = { sprite, spine: null, spineRevision: -1, badge, trait, kind: e.kind, art, prev: e.progress, cur: e.progress, phase: (e.id * 0.618034) % 1, flashUntil: 0, flashAt: -Infinity, hitAt: null, facing: 1,
+        v = { sprite, spine: null, spineRevision: -1, badge, trait, kind: e.kind, entityId: e.entityId, art,
+          prev: e.progress, cur: e.progress, phase: (e.id * 0.618034) % 1, flashUntil: 0, flashAt: -Infinity, hitAt: null,
+          facing: 1, displayFacing: 1, turnStartMs: -1, prevX: 0, prevY: 0, emaSpeedPx: 0, hasScreenPos: false,
+          knockUntil: 0, knockDirX: -1, knockDirY: 0,
           x: 0, y: 0, lift: initLift, bounds: null, intro: intro ? { ...intro, start: time } : null };
         this.enemies.set(e.id, v);
       }
@@ -212,11 +250,39 @@ export class EnemyLayer {
       const p = positionAt(path, progress);
       const ahead = positionAt(path, Math.min(path.length, progress + 200));
       const point = fieldPosition(this.c, p.x, p.y);
-      const aheadX = fieldPosition(this.c, ahead.x, ahead.y).x;
-      if (aheadX !== point.x) v.facing = aheadX > point.x ? 1 : -1;
-      let { x, y } = point;
-      const foot = this.c.projected ? 0 : FOOT;
+      const aheadPt = fieldPosition(this.c, ahead.x, ahead.y);
+      const turn = r6TurnStep(aheadPt.x - point.x, v.facing, v.displayFacing, v.turnStartMs, time, reduced);
+      v.facing = turn.facing;
+      v.displayFacing = turn.displayFacing;
+      v.turnStartMs = turn.turnStartMs;
+
       const moving = v.cur !== v.prev && s.pause.length === 0;
+      const dtSec = dt / 1000;
+      if (v.hasScreenPos && dtSec > 0.0005 && moving) {
+        const dx = point.x - v.prevX;
+        const dy = point.y - v.prevY;
+        const dist = Math.hypot(dx, dy);
+        if (dist > 0.01) {
+          v.knockDirX = -dx / dist;
+          v.knockDirY = -dy / dist;
+        }
+        const inst = dist / dtSec;
+        v.emaSpeedPx = v.emaSpeedPx > 0 ? v.emaSpeedPx * 0.72 + inst * 0.28 : inst;
+      } else if (!moving) {
+        v.emaSpeedPx = 0;
+      }
+      v.prevX = point.x;
+      v.prevY = point.y;
+      v.hasScreenPos = true;
+
+      let { x, y } = point;
+      const knockRemaining = v.knockUntil - scene.time.now;
+      if (!reduced && knockRemaining > 0) {
+        const knockPx = 2 * (knockRemaining / 120);
+        x += v.knockDirX * knockPx;
+        y += v.knockDirY * knockPx;
+      }
+      const foot = this.c.projected ? 0 : FOOT;
       // 비행 몸 높이: 끌어내려지면 내려앉고 다시 떠오른다. 움직임 줄이기면 바로 바뀐다.
       const liftTarget = (this.assets && this.c.projected
         ? r6VisualFlyerLiftCells(e.entityId, e.flying, e.groundedUntilTick > s.tick)
@@ -243,11 +309,11 @@ export class EnemyLayer {
       else if (this.assets && this.c.projected && (quality === 0 || e.kind === 'boss')) this.groundShadow(x, y + foot, art.displayCells * scaleK, e.kind === 'boss');
       const depth = this.c.projected ? r6UnitDepth(y, 'enemy') : DEPTH.units + y + 0.5;
       if (v.spine) {
-        const { object, scale, bounds } = v.spine;
+        const { object, scale, stridePx, bounds } = v.spine;
         const originY = y + foot - v.lift - hop;
         const sAbs = scale * scaleK;
         object.setPosition(x, originY).setDepth(depth)
-          .setScale(v.facing * sAbs, sAbs).setAlpha(alphaK);
+          .setScale(turn.scaleXFactor * sAbs, sAbs).setAlpha(alphaK);
         const topPx = originY - bounds.top * sAbs;
         const leftPx = v.facing > 0 ? x + bounds.left * sAbs : x - (bounds.left + bounds.width) * sAbs;
         v.bounds = {
@@ -260,7 +326,11 @@ export class EnemyLayer {
         this.footprints.push(v.bounds);
         object.animationState.timeScale = reduced || s.pause.length ? 0 : 1;
         const walk = object.animationState.getTrack(0);
-        if (walk) walk.timeScale = moving ? e.speedBP / 10000 : 0;
+        if (walk) {
+          walk.timeScale = !moving ? 0 : v.emaSpeedPx > 0.5
+            ? r6WalkTimeScale(v.emaSpeedPx, stridePx, sAbs)
+            : e.speedBP / 10000;
+        }
         const far = path.length - progress > 6000;
         const interval = quality < 2 || e.kind === 'boss' ? 0 : far ? 100 : 50;
         v.spine.poseMs += delta;
@@ -289,10 +359,9 @@ export class EnemyLayer {
       }
       const top = y - v.lift - hop;
       if (this.assets) {
-        const flash = scene.time.now < v.flashUntil;
-        // v2 전투에서 감속은 냉각 중계탑의 타격에서만 적용된다. 타워 판매 뒤에도 대상의 만료 틱을 따른다.
+        // v2 전투에서 감속은 냉각 중계탑의 타격에서만 적용된다. 피격 하이라이트는 0-패스 ADD 틴트로 처리하므로 대괄호 표시는 생략한다.
         const frost = e.slows.some(slow => slow.untilTick > s.tick);
-        if (flash || frost) this.r6Marks(x, top, e.kind === 'boss', flash, frost, alphaK);
+        if (frost) this.r6Marks(x, top, e.kind === 'boss', false, frost, alphaK);
       }
       if (v.badge) v.badge.setPosition(x, top - CELL_PX * (e.kind === 'boss' ? 0.86 : 0.5)).setDepth(DEPTH.units + y + 0.6).setAlpha(alphaK);
       // 특성 배지: 체력 막대(폭 28px) 왼쪽 옆, 막대 높이. 대장에게는 붙지 않는다.
@@ -351,7 +420,14 @@ export class EnemyLayer {
       if (!data.findSkin(art.skin) || !data.findAnimation(art.rig.walk)) return;
       object = scene.add.spine(0, 0, art.data, art.atlas, { renderer: 'phaser' }).setName(`r6:enemy:${enemy.id}`);
       object.removeFromUpdateList();
-      if (this.c.projected) attachR6SilhouetteOutline(object, scene, () => bridge.controller.renderQuality.current);
+      if (this.c.projected) {
+        const fallenRef = object;
+        attachR6SilhouetteOutline(object, scene, () => bridge.controller.renderQuality.current, {
+          entityId: enemy.entityId,
+          getHitFlash: () => (scene.time.now < v.flashUntil ? 1 : 0),
+          isFalling: () => this.falling.has(fallenRef),
+        });
+      }
       object.skeleton.setSkin(art.skin);
       object.skeleton.setupPoseSlots();
       const boundsKey = art.data + ':' + art.skin;
@@ -370,6 +446,7 @@ export class EnemyLayer {
       v.spine = {
         object,
         scale,
+        stridePx: r6EnemyStridePx(enemy.entityId),
         headOffset: bounds.top * scale,
         bounds,
         hit: art.rig.hit && data.findAnimation(art.rig.hit) ? art.rig.hit : undefined,
