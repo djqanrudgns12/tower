@@ -106,6 +106,27 @@ interface SpineMeshBackend {
 const capturedMeshes: CapturedSlotMesh[] = [];
 let capturingOutline = false;
 
+/** 프레임별 Spine renderMesh 실제 제출 횟수를 계측하는 경량 카운터(HMR/이중 번들 간 단일 인스턴스 보장). */
+const PERF_COUNTER_KEY = Symbol.for('vocabulary-td.r6PerfCounters');
+const globalCounters = globalThis as Record<symbol, { renderMeshCalls: number }>;
+export const r6PerfCounters: { renderMeshCalls: number } = (globalCounters[PERF_COUNTER_KEY] ??= { renderMeshCalls: 0 });
+
+export function resetR6PerfCounters(): void {
+  r6PerfCounters.renderMeshCalls = 0;
+}
+
+const countedBackends = new WeakSet<object>();
+
+function ensureRenderMeshCounter(backend: SpineMeshBackend): void {
+  if (countedBackends.has(backend)) return;
+  const orig = backend.renderMesh;
+  backend.renderMesh = function countedRenderMesh(renderer, mesh, baseCtx, currentCtx, parentMatrix) {
+    r6PerfCounters.renderMeshCalls += 1;
+    return orig.call(this, renderer, mesh, baseCtx, currentCtx, parentMatrix);
+  };
+  countedBackends.add(backend);
+}
+
 /**
  * Spine 개체의 뒤쪽 실루엣을 R04 은회(`#B8C0C8`) FILL 모드로 1px 바깥에만 그려
  * 내부 이음매와 원본 색을 건드리지 않고 바닥 대비를 보강한다.
@@ -115,6 +136,10 @@ export function attachR6SilhouetteOutline(
   scene: Phaser.Scene,
   getQuality: () => number,
 ): void {
+  const initBackend = (object as unknown as { rendererBackend?: SpineMeshBackend }).rendererBackend;
+  if (initBackend && initBackend.type === 'phaser') {
+    ensureRenderMeshCounter(initBackend);
+  }
   const baseRender = object.renderWebGL;
   object.renderWebGL = function renderWithOuterOutline(
     renderer,
@@ -127,6 +152,9 @@ export function attachR6SilhouetteOutline(
   ) {
     const quality = getQuality();
     const backend = (src as unknown as { rendererBackend?: SpineMeshBackend }).rendererBackend;
+    if (backend && backend.type === 'phaser' && !capturingOutline) {
+      ensureRenderMeshCounter(backend);
+    }
     if (capturingOutline || quality >= 2 || src.alpha <= 0.01 || !backend || backend.type !== 'phaser') {
       baseRender.call(this, renderer, src, drawingContext, parentMatrix, renderStep, displayList, displayListIndex);
       return;
