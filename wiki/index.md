@@ -4,19 +4,21 @@ type: index
 title: 어휘력 타워 디펜스 에이전트 위키 색인
 status: active
 updated: 2026-11-25
-verified: { commit: "11146ad4", date: 2026-11-27 }
+verified: { commit: "8c5c3d25", date: 2026-11-27 }
 sources:
   - path: AGENTS.md
     sha256: "6a114bb3e7c1c01e63f75603742e3aa7811719234dc84c2471b0d045fbb26bf4"
   - path: package.json
     sha256: "438e5fc906d190ae6ff3e75af936f686e94d883375aff3ab996bcf06cd749d08"
   - path: docs/renewal/r6/PRD-r6.md
-    sha256: a4bae91b43a1c2adb3a549c47b6f4250a1d6d1f45010b3facc530fdd3a7d9175
+    sha256: "2ebe8c0d3e6c29822e5a15714f0a0a8b7a93ba5ce2e22031f83a3a7519be17b3"
+  - path: docs/renewal/r6/PRD-r6-v2.md
+    sha256: "645eaf462fb8c691e5fdd71ac4456b62978e15036186666f1a7d25691b21f95e"
 ---
 
 # 어휘력 타워 디펜스 LLM Wiki (`index`)
 
-> 에이전트가 최소 토큰으로 현행 규칙·살아있는 계약·원본 절을 찾는 **1홉 라우터**입니다. 규약과 권위 순서는 [SCHEMA.md](SCHEMA.md), R6 단일 기준은 [PRD-r6.md](../docs/renewal/r6/PRD-r6.md), 문서 전체 지도는 [docs/README.md](../docs/README.md), 사이트맵은 [llms.txt](../llms.txt)를 참조하세요.
+> 에이전트가 최소 토큰으로 현행 규칙·살아있는 계약·원본 절을 찾는 **1홉 라우터**입니다. 규약과 권위 순서는 [SCHEMA.md](SCHEMA.md), R6 V2 단일 기준은 [PRD-r6-v2.md](../docs/renewal/r6/PRD-r6-v2.md) ([V1 기준선](../docs/renewal/r6/PRD-r6.md)), 문서 전체 지도는 [docs/README.md](../docs/README.md), 사이트맵은 [llms.txt](../llms.txt)를 참조하세요.
 
 ## 1. 실시간 저장소 지표 (`WIKI-AUTO`)
 
@@ -25,7 +27,7 @@ sources:
 - **게임 규모**: 학년별 맵 `4`종(3~6학년, 15×9 격자·슬롯 20칸) · 타워 `20`종(Lv4/Lv7 3단 진화) · 적 역할 `10`종 × 종족 `8`종 · 원정 보물 `12`종
 - **공개 문제은행**: 3~6학년 자기 학년 승인 **5,547문항** · 공유 포함 총 출제 풀 **6,583문항** (3학년 1140 · 4학년 1563 · 5학년 1869 · 6학년 2011)
 - **서버·인프라**: 정적 게임 `https://voca.ssamuniverse.com` (GitHub Pages) · 기록/랭킹 API `https://voca-api.ssamuniverse.com` (Cloudflare Workers 라우트 `7`종 + D1 테이블 `12`종)
-- **지식 베이스**: 전체 마크다운 `221`개 · 핵심 의사결정 `10`건 · 루트 npm 명령 `36`개
+- **지식 베이스**: 전체 마크다운 `222`개 · 핵심 의사결정 `10`건 · 루트 npm 명령 `36`개
 <!-- WIKI-AUTO:END:repo-stats -->
 
 > 위 지표는 운영 v1(`1.0.0`) 기준이다. 코드 기본값은 R6(`2.0.0`, 운영 미반영)이고 `?balance=v1`로 이전 판을 연다.
@@ -40,7 +42,7 @@ sources:
 | **3~6학년 문제은행·CR-1000·commit-lock** | [문제은행·공동검수](concepts/question-bank-and-cr1000.md) | `npm run wiki:query -- --bank` |
 | **IndexedDB·오답 노트·시즌 2 랭킹 서버** | [로컬 저장·랭킹 서버](concepts/persistence-and-ranking-server.md) | `npm run wiki:query -- --route` · `--table` |
 | **배포·시즌 전환·보존 잠금·검증 예산** | [배포·검증·운영](concepts/deploy-and-verification.md) | [commands.md](commands.md) |
-| **R6 단계·관문 현황과 남은 작업** | [로드맵·현행 실체 상태](projects/roadmap-and-status.md) | [decisions-index.md](decisions-index.md) |
+| **R6 V2 단계·관문 현황과 남은 작업** | [로드맵·현행 실체 상태](projects/roadmap-and-status.md) | [decisions-index.md](decisions-index.md) |
 | **제품 정의·도메인·기술스택 고정 버전** | [제품 개요](entities/vocabulary-td.md) · [기술스택](entities/tech-stack.md) | [docs-catalog.md](docs-catalog.md) |
 
 ## 3. 자동 생성 레지스트리 5종 (`npm run wiki:sync`)

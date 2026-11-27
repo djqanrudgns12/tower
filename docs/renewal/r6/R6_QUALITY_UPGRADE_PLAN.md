@@ -1,13 +1,15 @@
-# R6 퀄리티 · 리깅 · 애니메이션 · UI/UX 고도화 작업 계획 (클로드 검수 반영)
+# R6 퀄리티 · 리깅 · 애니메이션 · UI/UX 고도화 작업 계획 (PRD V2 승격 · 클로드 검수 반영)
 
 - **작성일**: 2026-11-27
-- **기준 커밋**: `4a9b1069` (`p1/intake-round1`)
+- **기준 커밋**: `8c5c3d25` (`p1/intake-round1`)
+- **상위 단일 기준**: **[PRD-r6-v2.md](PRD-r6-v2.md)** (본 작업 계획의 확정 규약·10대 노하우·다중 세션 소유 경계를 PRD V2로 승격·통합함)
 - **검수 상태**: **클로드(`claude-opus-5-5/xhigh`) 성능·퀄리티·최적화 검수 완료** (`2026-11-27`, 스레드 `20261127T083745-7bb62e` / 답장 `20261127T085109-f84023`)
-- **대상 범위**: R6(`balanceVersion: 2.0.0`) 몬스터 밉맵·윤곽·리깅·애니메이션, 타워 회전/Idle/셰이더·전투 VFX, 홈·전투 UI/UX
-- **비범위 및 파일 경계 (다른 세션 초기 맵 개선과 충돌 방지)**:
-  - **절대 수정 금지**: `tools/r6/map/**`, `public/assets/r6/map/**`, `public/assets/r6/meadow-plateau.webp`, `docs/renewal/r6/map-spec.md`, `src/game/r6/mapProjection.*`, `src/game/layers/GroundLayer.ts`, `src/ui/screens/r6Map.ts`
+- **대상 범위 (본 세션 독점)**: R6(`balanceVersion: 2.0.0`) 몬스터 밉맵·윤곽·리깅·애니메이션, 타워 회전/Idle·전투 VFX·WebAudio 사운드, 공개 기록 1회 동의 모달
+- **비범위 및 다중 세션 파일 경계 (수정 금지 — 상세 매트릭스는 [PRD-r6-v2.md §1](PRD-r6-v2.md#1-다중-세션-소유-경계-및-무충돌-프로토콜-active-ownership-matrix))**:
+  - **타 세션 ① (맵·전투 레이아웃·타워 초상화·Lv1~5 강철 조명)**: `tools/r6/map/**`, `public/assets/r6/map/**`, `public/assets/r6/meadow-plateau.webp`, `docs/renewal/r6/map-spec.md`, `src/game/r6/mapProjection.*`, `src/game/layers/GroundLayer.ts`, `src/ui/screens/r6Map.ts`, `src/ui/useLayout.ts`, `src/ui/game/{GameScreen,Armory,ContextCard,QuestionPanel,FieldOverlay,TowerDetail,BattleTowerPortrait}.*`, `src/ui/styles/tokens.css`, `tools/r6/blender/{mortar_render,tower_pack,tower_game_pack,pack}.py`
+  - **타 세션 ② (학교 선택·공개 기능 제거)**: `src/application/neis.ts`, `src/ui/screens/home/{LaunchDeck,RankingBoard,RankingModal,ClassroomQrModal}.*`, `src/contracts/lobby.ts`, `src/persistence/lobbyClient.ts`, `server/**`, `src/ui/copy.ts`
   - **읽기 전용**: `src/game/layers/shared.ts`
-  - **직렬화·키 병합 필수**: `public/assets/r6/manifest-v2.json`(Q3·Q4·맵 세션이 공유하므로 각 도구는 자기 키만 병합하고 쓰기 시점을 직렬화), `EnemyLayer.ts`·`enemyDisplay.ts`(Q2·Q3 단일 담당자), `EnemyFootprint` 계약(`padOutline.ts` ↔ `EnemyLayer.activeFootprints` 연동 유지, 뒤집기 보간 중에도 목표 방향 기준 경계 계산)
+  - **직렬화·키 병합 필수**: `public/assets/r6/manifest-v2.json`(각 도구는 자기 키만 병합), `EnemyLayer.ts`·`enemyDisplay.ts`(Q2·Q3 단일 담당자), `EnemyFootprint` 계약(`padOutline.ts` ↔ `EnemyLayer.activeFootprints`), `BattleScene.ts`(세션 ① 완료 후 `prepareWave` 1회 직렬 패치)
   - **문제은행(CR-1000)**: 수량·출제 바닥 달성 완료 상태이며 세부 난이도·유형 보강은 후속 과제로 분리한다.
 
 ---
@@ -88,15 +90,13 @@
 3. **G0-3 텍셀 밀도 실측**: `1366×768 DPR1`, `1920×1080` 프로젝터, `DPR2` 노트북 세 환경의 실측 캔버스 크기 기반 텍셀/기기px 표 작성.
 4. **G0-4 맵 세션 경계·`manifest-v2.json` 쓰기 순서 합의** (맵 세션의 확정 `overview` 수치 확인 포함).
 
-### 트랙 A · UI/UX 개편 (`WP-Q1a` 즉시 / `WP-Q1b` 사용자 결정 후)
-- **WP-Q1a (즉시 착수 가능)**:
-  1. `LaunchDeck.tsx` 배지 이원화(`준비 완료 · 순위 연동` vs `준비 완료 · 이 기기에만 저장` + `공개 기록 켜기` 연결).
-  2. `copy.ts:208` 고지 문구에 **학교 이름** 공개 항목 추가, 판 시작 시점 공유 여부 스냅샷 저장 및 도중 켠 판 안내 문구 수정.
-  3. 홈 `.stageViewport` 자르기 없이 좌우 여백 웨이브·보스 정보 띠 배치, `1366×768` 닉네임·학교 입력칸 너비 개선.
-  4. `R6WaveForecast`에 전투 준비 시 Spine 기본 자세 48px 오프스크린 초상 연결(전송량 0).
-- **WP-Q1b (사용자 결정 후 착수)**:
-  - 첫 "새 게임" 시 동일 비중 동의 카드("순위표에 올리기" / "이 기기에만 저장", 학교 이름 공개 별도 토글 기본 끔 검토), `shareRecordsAsked` 호환 처리(`normalizeSettings`), 수업 QR 첫 화면 동의 카드 노출.
-  - *(사용자 결정 필요)* `shareRecords` 기본값(`false` 유지 권장), 만 14세 미만(초등 3~6학년) 닉네임+학교+학년 조합 공개 및 법정대리인 동의 정책.
+### 트랙 A · 공개 기록 동의 UX (`WP-Q1b` 확정 · 타 세션과 무충돌 직렬 연결)
+- **확정 사용자 결정 (2026-11-27)**:
+  1. `shareRecords` 기본값 `false` 유지 + 미선택 기기 "새 게임" 클릭 시 1회 동의 카드 표시 확정.
+  2. **학교 선택·공개 기능 제거**는 별도 타 세션 ②가 진행 중이므로 본 세션에서는 학교 입력칸·학교 필터·`copy.ts`·`LaunchDeck.tsx` 직접 수정을 건너뛴다. 동의 고지 항목은 **`닉네임 · 학년 · 난이도 · 점수 · 웨이브`**로 정립한다.
+  3. 홈 `.stageViewport`·전투 레이아웃·`R6WaveForecast` 초상화는 타 세션 ① 범위로 분리한다.
+- **본 세션 구현 (`WP-Q1b` 독립 모듈 우선)**:
+  - 독립 컴포넌트 `src/ui/screens/RecordConsentModal.*`("순위표에 올리기" / "이 기기에만 저장", 학교명 제외 고지) 및 `src/persistence/settings.ts`(`shareRecordsAsked`, 시작 시점 스냅샷) 먼저 구현 후, 타 세션 ② 완료 직후 `HomeScreen`/`NewGameScreen`에 최소 연결한다.
 
 ### 트랙 B · 몬스터 화질 · 윤곽 · 리깅 · 애니메이션 (`Q3 경량` → `Q2` + 취약 5개체 병렬)
 - **WP-Q3 경량 (선행, 1~1.5일)** — *리그 재생성 1회 통합 원칙*:
@@ -109,10 +109,11 @@
   2. `EnemyLayer.ts` 런타임: 화면 이동 속도(`px/s ÷ (보폭 × 표시배율)`, 세로 `R6_MAP_SQUASH` 반영) 스무스 `timeScale`, 코너 방향 히스테리시스(2px 차이 + 80~120ms 보간, `reducedMotion` 즉시), `onKill` 동시 쓰러짐 상한(0단계 `8`, 1단계 `6`, 2+단계 `4`, 초과 시 0.15초 페이드), 2+단계 비보스 `hit` 트랙 생략.
   3. `rig_audit.py` 확장: 위 본/정점/가중치 상한 + 33자세 접합 + 걷기 시작/끝 오차 0 + 접지 발 미끄럼 `≤ 1.5px` 자동 검증.
 
-### 트랙 C · 타워 회전 · Idle · VFX · 셰이더 (`Q4.1 + Q4.3` 병렬 → 1형태 A/B 후 `Q4.2`)
+### 트랙 C · 타워 런타임 · VFX · WebAudio 사운드 (`Q4.1 + Q4.3 + Q4.4` 병렬)
 1. **WP-Q4.1 (회전 · Idle)**: `TowerPlayback.ts` 표시 방향과 조준 방향 분리(프레임당 최대 2스텝, 공격 시 차이 > 4스텝 즉시 스냅), 새 텍스처 0 원칙 Idle(미표적 시 400~600ms 스캔, ±1px 상하, 드론 호버, 32px 방사형 광택 1쿼드 ADD — 타워당 추가 표시 객체 `≤ 1`, 1단계 광택 끔, 2+단계 Idle 끔).
-2. **WP-Q4.3 (VFX)**: 핵심 선만 `Graphics` 유지 + 장식(섬광·링·연기·균열·결정 파동)은 `256×256` 이하 VFX 아틀라스 1장(`≤ 30KB`) + 풀링 Image/파티클(ADD)로 분리. 프레임당 Graphics 도형 상한(0단계 `400` / 1단계 `200` / 2+단계 `100`), 파티클 `≤ 120`, 블렌드 전환 `≤ 4회`, 장식 원 분할 `20`, `MAX_CUES = 96`.
-3. **WP-Q4.2 (Blender 셰이더)**: 1형태 70px A/B 비교에서 4단계 재질 상승감이 명확할 때만 일괄 재렌더(공격 시트 64프레임×2장은 용량 점검 후 선별 제외 검토). 용량 상한: 전체 `≤ 16.1MB`, `1x` 합계 `≤ 5.0MB`, `pivot`·`mount`·프레임 수 변경 `0`.
+2. **WP-Q4.3 (VFX)**: 핵심 선만 `Graphics` 유지 + 장식(섬광·링·연기·균열·결정 파동·종족별 처치 파편)은 `256×256` 이하 VFX 아틀라스 1장(`≤ 30KB`) + 풀링 Image/파티클(ADD)로 분리. 프레임당 Graphics 도형 상한(0단계 `400` / 1단계 `200` / 2+단계 `100`), 파티클 `≤ 120`, 블렌드 전환 `≤ 4회`, 장식 원 분할 `20`, `MAX_CUES = 96`.
+3. **WP-Q4.4 (WebAudio 사운드 고도화, V2 신규)**: `src/ui/audio/sound.ts` 무파일(`0KB`) 합성 품질 강화 — 노이즈 버스트 어택 + ±4% 마이크로 피치 변주, 무기 단계(I~IV)별 음색 분화, 퀴즈 연속 정답 콤보 음계 상승, 2레벨 진화/해금 차임, 종족별 처치 질감음·보스 등장 펄스(기존 채널/우선순위 유지).
+4. *(참고: 타워 Lv1~5 강철 조명 재렌더 및 128×128 초상화 크롭은 타 세션 ① 영역으로 이관 — 중복 착수하지 않고 완료 후 `manifest-v2.json` 합류)*
 
 ### WP-Q5 · 단계별 병합 관문 & 최종 통합 회귀 검증
 - 각 트랙 병합 직후 `W20 CPU 6배 (1366×768)` 성능 관문 1회 실행 → 마지막에 `npm run verify`, `npm run build`, `tests/e2e/r6-*.spec.ts`, 연속 보행 스트립 시각 검수로 최종 마감.

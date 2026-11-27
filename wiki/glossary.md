@@ -4,14 +4,14 @@ type: glossary
 title: 용어 및 약어 사전
 status: active
 updated: 2026-11-25
-verified: { commit: "1a7fe4eb", date: 2026-11-27 }
+verified: { commit: "8c5c3d25", date: 2026-11-27 }
 sources:
   - path: vocabulary_td_prd_v0_5.md
     sha256: "0ffd7049c672ae427f1b59b2ef80222ea745b24911b13e78d1ee5680a7902cf5"
   - path: docs/renewal/README.md
     sha256: "7230e4d3bab99c364914af07ae0292643bf009590a8b63051ff7f97a80842e4c"
   - path: docs/renewal/r6/PRD-r6.md
-    sha256: a4bae91b43a1c2adb3a549c47b6f4250a1d6d1f45010b3facc530fdd3a7d9175
+    sha256: "2ebe8c0d3e6c29822e5a15714f0a0a8b7a93ba5ce2e22031f83a3a7519be17b3"
   - path: docs/renewal/r6/map-spec.md
     sha256: "6d3c6ced8eb2a555ed6376d562ce3fd37d7d2e6c98e7e450ae726dcb08b5e594"
   - path: docs/renewal/r6/tech/G5-perf.md

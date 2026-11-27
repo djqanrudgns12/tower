@@ -4,7 +4,7 @@ type: schema
 title: LLM Wiki 최고 규약
 status: active
 updated: 2026-11-25
-verified: { commit: "11146ad4", date: 2026-11-27 }
+verified: { commit: "8c5c3d25", date: 2026-11-27 }
 sources:
   - path: AGENTS.md
     sha256: "6a114bb3e7c1c01e63f75603742e3aa7811719234dc84c2471b0d045fbb26bf4"
@@ -13,7 +13,7 @@ sources:
   - path: docs/WIKI_PLAN.md
     sha256: "6cd1a4f2766b60ec3b05a18e3ed01c3c161d8f0869be27198860b1d17aa6776b"
   - path: docs/renewal/r6/PRD-r6.md
-    sha256: a4bae91b43a1c2adb3a549c47b6f4250a1d6d1f45010b3facc530fdd3a7d9175
+    sha256: "2ebe8c0d3e6c29822e5a15714f0a0a8b7a93ba5ce2e22031f83a3a7519be17b3"
 ---
 
 # LLM Wiki 최고 규약 (`SCHEMA`)

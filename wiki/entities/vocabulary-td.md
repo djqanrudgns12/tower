@@ -4,7 +4,7 @@ type: entity
 title: 어휘력 타워 디펜스 제품 정의
 status: active
 updated: 2026-11-25
-verified: { commit: fa75c724, date: 2026-11-27 }
+verified: { commit: "8c5c3d25", date: 2026-11-27 }
 sources:
   - path: package.json
     sha256: "438e5fc906d190ae6ff3e75af936f686e94d883375aff3ab996bcf06cd749d08"
@@ -17,7 +17,7 @@ sources:
   - path: docs/contracts/balance.candidate.v0.4.json
     sha256: e58e062f13209b1c955a5a6f46a5f4d6b861bc915ad3f8c6cee3904d9c76e486
   - path: docs/renewal/r6/PRD-r6.md
-    sha256: a4bae91b43a1c2adb3a549c47b6f4250a1d6d1f45010b3facc530fdd3a7d9175
+    sha256: "2ebe8c0d3e6c29822e5a15714f0a0a8b7a93ba5ce2e22031f83a3a7519be17b3"
 ---
 
 # 어휘력 타워 디펜스 (`vocabulary-tower-defense`)

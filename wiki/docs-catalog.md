@@ -10,15 +10,15 @@ generated_by: tools/wiki/gen.mjs
 
 > 이 파일은 `npm run wiki:sync` (`tools/wiki/gen.mjs`)가 코드·계약 JSON·SQL에서 결정적으로 자동 생성합니다. 직접 수정하지 마세요.
 
-- 스캔된 마크다운 총계: **221개 파일** · **1,957,568자** · 추정 **약 1,272,530 토큰**
+- 스캔된 마크다운 총계: **222개 파일** · **1,973,913자** · 추정 **약 1,283,154 토큰**
 - **경고**: `해시 고정(validate-plan)` 문서는 1바이트도 수정·이동하면 안 되며, `링크·참조 검사(validate-plan)` 및 `코드·시험 경로 참조` 문서도 기존 경로를 그대로 유지해야 합니다.
 
 ## 분류별 요약
 
 | 분류 | 파일 수 | 글자 수 | 추정 토큰 |
 | --- | ---: | ---: | ---: |
-| 01. 진입·규약 및 LLM Wiki | 34 | 165,655 | 107,694 |
-| 02. 리뉴얼 현행 기준 (PRD보다 우선) | 83 | 648,743 | 421,725 |
+| 01. 진입·규약 및 LLM Wiki | 34 | 166,373 | 108,160 |
+| 02. 리뉴얼 현행 기준 (PRD보다 우선) | 84 | 664,370 | 431,883 |
 | 03. 호스팅·배포·운영 기준 | 3 | 36,412 | 23,669 |
 | 04. 문제은행 CR-1000 공동검수 | 6 | 201,954 | 131,272 |
 | 05. 제작 PRD v0.5 및 계약 기준 | 6 | 143,424 | 93,229 |
@@ -44,24 +44,24 @@ generated_by: tools/wiki/gen.mjs
 | [wiki/codemap.md](../wiki/codemap.md) | 현행 활성 | Reference / Navigation | - | 15 | 14,211 |
 | [wiki/commands.md](../wiki/commands.md) | 현행 활성 | Reference / Navigation | - | 3 | 6,343 |
 | [wiki/concepts/architecture-and-layers.md](../wiki/concepts/architecture-and-layers.md) | 현행 활성 | Explanation | - | 5 | 4,480 |
-| [wiki/concepts/combat-towers-and-balance.md](../wiki/concepts/combat-towers-and-balance.md) | 현행 활성 | Explanation | - | 6 | 4,445 |
+| [wiki/concepts/combat-towers-and-balance.md](../wiki/concepts/combat-towers-and-balance.md) | 현행 활성 | Explanation | - | 6 | 4,449 |
 | [wiki/concepts/deploy-and-verification.md](../wiki/concepts/deploy-and-verification.md) | 현행 활성 | Explanation | - | 4 | 3,869 |
 | [wiki/concepts/persistence-and-ranking-server.md](../wiki/concepts/persistence-and-ranking-server.md) | 현행 활성 | Explanation | - | 5 | 3,889 |
 | [wiki/concepts/question-bank-and-cr1000.md](../wiki/concepts/question-bank-and-cr1000.md) | 현행 활성 | Explanation | - | 5 | 3,974 |
 | [wiki/concepts/ui-phaser-and-assets.md](../wiki/concepts/ui-phaser-and-assets.md) | 현행 활성 | Explanation | - | 6 | 5,513 |
 | [wiki/contracts.md](../wiki/contracts.md) | 현행 활성 | Reference / Navigation | - | 11 | 8,147 |
 | [wiki/decisions-index.md](../wiki/decisions-index.md) | 현행 활성 | Reference / Navigation | - | 1 | 2,901 |
-| [wiki/docs-catalog.md](../wiki/docs-catalog.md) | 현행 활성 | Reference / Navigation | - | 10 | 30,111 |
+| [wiki/docs-catalog.md](../wiki/docs-catalog.md) | 현행 활성 | Reference / Navigation | - | 10 | 30,229 |
 | [wiki/entities/tech-stack.md](../wiki/entities/tech-stack.md) | 현행 활성 | Reference / Navigation | - | 4 | 3,794 |
-| [wiki/entities/vocabulary-td.md](../wiki/entities/vocabulary-td.md) | 현행 활성 | Reference / Navigation | - | 5 | 3,347 |
-| [wiki/glossary.md](../wiki/glossary.md) | 현행 활성 | Reference / Navigation | - | 1 | 5,329 |
-| [wiki/index.md](../wiki/index.md) | 현행 활성 | Reference / Navigation | - | 5 | 3,517 |
+| [wiki/entities/vocabulary-td.md](../wiki/entities/vocabulary-td.md) | 현행 활성 | Reference / Navigation | - | 5 | 3,351 |
+| [wiki/glossary.md](../wiki/glossary.md) | 현행 활성 | Reference / Navigation | - | 1 | 5,331 |
+| [wiki/index.md](../wiki/index.md) | 현행 활성 | Reference / Navigation | - | 5 | 3,690 |
 | [wiki/lessons/engineering-and-content.md](../wiki/lessons/engineering-and-content.md) | 현행 활성 | Reference / Navigation | - | 6 | 2,950 |
 | [wiki/lessons/ops-and-workflow.md](../wiki/lessons/ops-and-workflow.md) | 현행 활성 | Reference / Navigation | - | 5 | 2,627 |
 | [wiki/lessons/ui-art-and-balance.md](../wiki/lessons/ui-art-and-balance.md) | 현행 활성 | Reference / Navigation | - | 5 | 2,487 |
 | [wiki/log.md](../wiki/log.md) | 현행 활성 | Reference / Navigation | - | 3 | 2,012 |
-| [wiki/projects/roadmap-and-status.md](../wiki/projects/roadmap-and-status.md) | 현행 활성 | Reference / Navigation | - | 4 | 5,598 |
-| [wiki/SCHEMA.md](../wiki/SCHEMA.md) | 현행 활성 | Reference / Navigation | - | 6 | 5,451 |
+| [wiki/projects/roadmap-and-status.md](../wiki/projects/roadmap-and-status.md) | 현행 활성 | Reference / Navigation | - | 4 | 6,013 |
+| [wiki/SCHEMA.md](../wiki/SCHEMA.md) | 현행 활성 | Reference / Navigation | - | 6 | 5,453 |
 | [wiki/templates/hub.md](../wiki/templates/hub.md) | 현행 활성 | Reference / Navigation | - | 5 | 666 |
 | [wiki/templates/lesson.md](../wiki/templates/lesson.md) | 현행 활성 | Reference / Navigation | - | 2 | 957 |
 
@@ -97,8 +97,9 @@ generated_by: tools/wiki/gen.mjs
 | [docs/renewal/r6/concepts/C4/concept.md](../docs/renewal/r6/concepts/C4/concept.md) | 현행 우선 기준 | Explanation / Spec | - | 9 | 5,256 |
 | [docs/renewal/r6/concepts/C5/concept.md](../docs/renewal/r6/concepts/C5/concept.md) | 현행 우선 기준 | Explanation / Spec | - | 9 | 5,277 |
 | [docs/renewal/r6/map-spec.md](../docs/renewal/r6/map-spec.md) | 현행 우선 기준 | Explanation / Spec | - | 7 | 3,940 |
-| [docs/renewal/r6/PRD-r6.md](../docs/renewal/r6/PRD-r6.md) | 현행 우선 기준 | Explanation / Spec | - | 21 | 9,770 |
-| [docs/renewal/r6/R6_QUALITY_UPGRADE_PLAN.md](../docs/renewal/r6/R6_QUALITY_UPGRADE_PLAN.md) | 현행 우선 기준 | Explanation / Spec | - | 21 | 12,647 |
+| [docs/renewal/r6/PRD-r6-v2.md](../docs/renewal/r6/PRD-r6-v2.md) | 현행 우선 기준 | Explanation / Spec | - | 23 | 14,713 |
+| [docs/renewal/r6/PRD-r6.md](../docs/renewal/r6/PRD-r6.md) | 현행 우선 기준 | Explanation / Spec | - | 21 | 9,906 |
+| [docs/renewal/r6/R6_QUALITY_UPGRADE_PLAN.md](../docs/renewal/r6/R6_QUALITY_UPGRADE_PLAN.md) | 현행 우선 기준 | Explanation / Spec | - | 21 | 13,425 |
 | [docs/renewal/r6/README.md](../docs/renewal/r6/README.md) | 현행 우선 기준 | Explanation / Spec | - | 9 | 4,398 |
 | [docs/renewal/r6/research.md](../docs/renewal/r6/research.md) | 현행 우선 기준 | Explanation / Spec | - | 8 | 4,924 |
 | [docs/renewal/r6/review/G4-monsters-critique-2.md](../docs/renewal/r6/review/G4-monsters-critique-2.md) | 현행 우선 기준 | Explanation / Spec | - | 13 | 21,228 |

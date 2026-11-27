@@ -4,12 +4,12 @@ type: hub
 title: 전투·타워 6종(Lv20)·몬스터 100개체·밸런스 v2
 status: active
 updated: 2026-11-25
-verified: { commit: fa75c724, date: 2026-11-27 }
+verified: { commit: "8c5c3d25", date: 2026-11-27 }
 sources:
   - path: docs/contracts/balance.v2.json
     sha256: bc3651292280f50ee9c5a73e422b69258453783ae69ed2ff4443a1947598c256
   - path: docs/renewal/r6/PRD-r6.md
-    sha256: a4bae91b43a1c2adb3a549c47b6f4250a1d6d1f45010b3facc530fdd3a7d9175
+    sha256: "2ebe8c0d3e6c29822e5a15714f0a0a8b7a93ba5ce2e22031f83a3a7519be17b3"
   - path: docs/renewal/r6/spec/engine-changes.md
     sha256: "70cf9e197cf0b2ebf68e75d5b68500d588d1f57e2764e457d8c88d3a5d2e8f85"
   - path: docs/renewal/r6/spec/sim-notes.md
