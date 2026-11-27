@@ -13,8 +13,8 @@ describe('R6 몬스터 아웃라인·속도·회전·낙하 정책', () => {
     expect(r6OutlineStyle('stone-special-t1', 0)).toEqual({ enabled: false, color: 0x12161b, alpha: 0 });
     expect(r6OutlineStyle('human-boss-t1', 0)).toEqual({ enabled: true, color: 0x12161b, alpha: 0.32 });
 
-    // 중대비 일반은 품질 0만 적용, 품질 1+부터 해제
-    expect(r6OutlineStyle('elf-infantry-t1', 0)).toEqual({ enabled: true, color: 0xb8c0c8, alpha: 0.24 });
+    // 중대비(path ≥ 1.5) 일반은 오프, 중대비 보스는 은회 유지
+    expect(r6OutlineStyle('elf-infantry-t1', 0).enabled).toBe(false);
     expect(r6OutlineStyle('elf-infantry-t1', 1).enabled).toBe(false);
     expect(r6OutlineStyle('insect-boss-t1', 1)).toEqual({ enabled: true, color: 0xb8c0c8, alpha: 0.36 });
 

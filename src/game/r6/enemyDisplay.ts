@@ -40,9 +40,7 @@ export function r6OutlineStyle(entityId: string | undefined, quality: number): O
     if (entityId.includes('-boss-')) {
       return { enabled: true, color: R6_COLORS.silver, alpha: 0.36 };
     }
-    return quality === 0
-      ? { enabled: true, color: R6_COLORS.silver, alpha: 0.24 }
-      : { enabled: false, color: R6_COLORS.silver, alpha: 0 };
+    return { enabled: false, color: R6_COLORS.silver, alpha: 0 };
   }
   return { enabled: true, color: R6_COLORS.silver, alpha: 0.42 };
 }
