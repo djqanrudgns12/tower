@@ -4,12 +4,12 @@ type: hub
 title: "3~6학년 문제은행 및 CR-1000 공동검수"
 status: active
 updated: 2026-11-25
-verified: { commit: fa75c724, date: 2026-11-27 }
+verified: { commit: e71cac75, date: 2026-11-28 }
 sources:
   - path: src/content/questions/manifest.json
     sha256: a450a6db9097bba40c7c11c6ee806700816c4d7526564c1cffd837905bfbcfe0
   - path: src/content/gradeLoader.ts
-    sha256: a2cf13e25538dadcd26fe3e13e0393e284dc24a75839bb9cdd0bd6a05aedac08
+    sha256: ab0efaee2bf225d5d7304754c38e7b215bcec3f1c7274c575b2507c0d59746dd
   - path: tools/build-bank.mjs
     sha256: "2d93c6ccc2c6de30eb4d90a9d64c22d6574618cc01e4b2d584916fde3d61e5fb"
   - path: tools/build-question-keys.mjs

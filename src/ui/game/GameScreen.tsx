@@ -15,6 +15,7 @@ import { r6Overview } from '../../game/r6/mapProjection';
 import { PhaserBattlefield } from '../../game/PhaserBattlefield';
 import type { FontScale } from '../../application/session';
 import { DEFAULTS } from '../../content';
+import { biomeFromMapId } from '../audio/scales';
 import { SoundDirector } from '../audio/sound';
 import { commandErrorText } from '../copy';
 import { LineIcon } from '../icons/LineIcon';
@@ -177,7 +178,30 @@ export function GameScreen({
       sfxVolume ?? DEFAULTS.audio.sfxVolume,
     );
   }, [sound, bgmVolume, sfxVolume]);
-  useEffect(() => { sound.setPaused(view.pause.length > 0 || view.phase === 'GAME_OVER'); }, [sound, view.pause.length, view.phase]);
+  useEffect(() => { sound.setPaused(view.pause.length > 0); }, [sound, view.pause.length]);
+  const audioPhase = view.phase === 'GAME_OVER' ? 'RESULT'
+    : view.phase === 'PREP_QUIZ' ? 'PREP_QUIZ'
+    : view.phase === 'BATTLE' ? 'BATTLE' : 'BUILD';
+  useEffect(() => {
+    sound.setSceneContext({
+      biome: biomeFromMapId(map.id, map.grade),
+      phase: audioPhase,
+      isBossWave: view.milestoneWave,
+      isBurning: view.burningSecondsLeft > 0,
+    });
+    sound.setQuality(controller.renderQuality.current);
+  }, [sound, map.id, map.grade, audioPhase, view.milestoneWave, view.burningSecondsLeft, controller]);
+  const fanfarePlayedRef = useRef(false);
+  useEffect(() => {
+    if (view.phase !== 'GAME_OVER' || fanfarePlayedRef.current) return;
+    fanfarePlayedRef.current = true;
+    const kind = view.endReason === 'DEFEAT'
+      ? 'defeat'
+      : bestWave !== null && view.completedWave > bestWave
+        ? 'newBest'
+        : 'clear';
+    sound.playResultFanfare(kind);
+  }, [sound, view.phase, view.endReason, view.completedWave, bestWave]);
 
   const layout = useLayout();
   const r6Plateau = r6 && map.id === 'garden_u';

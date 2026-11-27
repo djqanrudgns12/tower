@@ -86,7 +86,7 @@ export class BattleScene extends Phaser.Scene {
     this.enemyLayer = new EnemyLayer(c, this.r6Assets);
     this.effects = new EffectLayer(c, Boolean(this.r6Assets));
     this.towerLayer = new TowerLayer(c, this.r6Assets);
-    if (!this.r6Assets) this.ambient = new AmbientLayer(c);
+    if (!this.r6Assets || c.projected) this.ambient = new AmbientLayer(c);
     this.r6Assets?.prepareWave(this.bridge.controller.ctx, this.bridge.controller.state);
     this.miniFrame = this.add.graphics().setDepth(DEPTH.ui + 1);
     this.cameras.main.setBounds(0, 0, WORLD_W, WORLD_H).setRoundPixels(false);

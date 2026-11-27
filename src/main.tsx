@@ -1,5 +1,6 @@
 import 'pretendard/dist/web/variable/pretendardvariable-dynamic-subset.css';
 import './ui/styles/global.css';
+import './ui/styles/accessibility.css';
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { App } from './ui/App';

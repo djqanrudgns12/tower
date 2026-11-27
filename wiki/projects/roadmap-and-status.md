@@ -4,7 +4,7 @@ type: project
 title: 프로젝트 계보 및 현행 코드 실체 판정
 status: active
 updated: 2026-11-26
-verified: { commit: "11287ace", date: 2026-11-28 }
+verified: { commit: e71cac75, date: 2026-11-28 }
 sources:
   - path: package.json
     sha256: "438e5fc906d190ae6ff3e75af936f686e94d883375aff3ab996bcf06cd749d08"

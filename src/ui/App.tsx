@@ -17,7 +17,7 @@ import {
   type Settings,
 } from '../application/session';
 import type { DifficultyId } from '../contracts/balance';
-import { PILOT_TOWERS, reviewQuestions } from '../content';
+import { PILOT_TOWERS, prefetchGradeContent, reviewQuestions } from '../content';
 import type { RunState } from '../domain/types';
 import { cleanNickname } from './copy';
 import { HomeScreen } from './screens/HomeScreen';
@@ -64,14 +64,15 @@ export function App() {
     return () => { cancelled = true; };
   }, [settings.playerId]);
 
-  // 홈 첫 화면이 안정된 뒤 백그라운드에서 전투 화면·Phaser 청크를 미리 데워 두어 교실 와이파이 지연이나 순간 끊김에도 즉시 시작되게 한다.
+  // 홈 첫 화면이 안정된 뒤 백그라운드에서 전투 화면·Phaser 청크·현재 학년 문제은행을 미리 데워 두어 교실 와이파이 지연이나 순간 끊김에도 즉시 시작되게 한다.
   useEffect(() => {
     if (screen.name !== 'home') return;
     const timer = setTimeout(() => {
       void import('./game/GameScreen').catch(() => undefined);
+      prefetchGradeContent(settings.lastGrade);
     }, 900);
     return () => clearTimeout(timer);
-  }, [screen.name]);
+  }, [screen.name, settings.lastGrade]);
 
   // 기록 지우기 뒤 오답 노트 개수를 다시 읽게 App을 다시 그린다(noteItems는 렌더 때 저장소에서 읽는다).
   const [, setNoteTick] = useState(0);
@@ -82,6 +83,27 @@ export function App() {
   }, [settings.lightTheme]);
   // 움직임 단계(full·simple·minimal). CSS는 'minimal'에서 반복·위치 움직임을 멈춘다(ui-rules-v4 §7.3, global.css·kit).
   useEffect(() => { document.documentElement.dataset.motion = settings.motionMode; }, [settings.motionMode]);
+  useEffect(() => {
+    document.documentElement.dataset.colorblind = settings.colorblindPalette ? 'true' : 'false';
+  }, [settings.colorblindPalette]);
+
+  // 교실 수업 중 전역 M키로 즉시 소리를 켜고 끌 수 있다(입력 칸에서는 무시).
+  useEffect(() => {
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.defaultPrevented || e.altKey || e.ctrlKey || e.metaKey || e.repeat) return;
+      if (e.key.toLowerCase() !== 'm') return;
+      const target = e.target as HTMLElement | null;
+      if (target?.closest('input, textarea, select, [contenteditable=""], [contenteditable="true"]')) return;
+      e.preventDefault();
+      setSettings(prev => {
+        const next = normalizeSettings(prev, { soundOn: !prev.soundOn });
+        saveSettings(next);
+        return next;
+      });
+    };
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, []);
 
   const update = useCallback((patch: Partial<Settings>) => {
     setSettings(prev => {

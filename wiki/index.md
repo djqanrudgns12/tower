@@ -4,7 +4,7 @@ type: index
 title: 어휘력 타워 디펜스 에이전트 위키 색인
 status: active
 updated: 2026-11-25
-verified: { commit: "11287ace", date: 2026-11-28 }
+verified: { commit: e71cac75, date: 2026-11-28 }
 sources:
   - path: AGENTS.md
     sha256: "6a114bb3e7c1c01e63f75603742e3aa7811719234dc84c2471b0d045fbb26bf4"
@@ -27,7 +27,7 @@ sources:
 - **게임 규모**: 학년별 맵 `4`종(3~6학년, 15×9 격자·슬롯 20칸) · 타워 `20`종(Lv4/Lv7 3단 진화) · 적 역할 `10`종 × 종족 `8`종 · 원정 보물 `12`종
 - **공개 문제은행**: 3~6학년 자기 학년 승인 **5,547문항** · 공유 포함 총 출제 풀 **6,583문항** (3학년 1140 · 4학년 1563 · 5학년 1869 · 6학년 2011)
 - **서버·인프라**: 정적 게임 `https://voca.ssamuniverse.com` (GitHub Pages) · 기록/랭킹 API `https://voca-api.ssamuniverse.com` (Cloudflare Workers 라우트 `7`종 + D1 테이블 `12`종)
-- **지식 베이스**: 전체 마크다운 `225`개 · 핵심 의사결정 `10`건 · 루트 npm 명령 `36`개
+- **지식 베이스**: 전체 마크다운 `226`개 · 핵심 의사결정 `10`건 · 루트 npm 명령 `36`개
 <!-- WIKI-AUTO:END:repo-stats -->
 
 > 운영 v1(`1.0.0`) 지표. 코드 기본값은 R6(`2.0.0`), `?balance=v1`로 v1 실행.

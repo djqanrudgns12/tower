@@ -4,7 +4,7 @@ type: schema
 title: LLM Wiki 최고 규약
 status: active
 updated: 2026-11-25
-verified: { commit: "8c5c3d25", date: 2026-11-27 }
+verified: { commit: e71cac75, date: 2026-11-28 }
 sources:
   - path: AGENTS.md
     sha256: "6a114bb3e7c1c01e63f75603742e3aa7811719234dc84c2471b0d045fbb26bf4"

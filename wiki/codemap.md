@@ -24,16 +24,16 @@ generated_by: tools/wiki/gen.mjs
 | 영역 | 파일 수 | 총 줄 수 | 책임 |
 | --- | ---: | ---: | --- |
 | `src/domain` | 21 | 3,960 | 30Hz 고정 틱 전투·경제·징집·보물·퀴즈·시드 PRNG 순수 도메인 |
-| `src/contracts` | 8 | 1,487 | 밸런스·맵·문제은행·초안·로비·원화 manifest Zod 런타임 계약 |
-| `src/content` | 4 | 479 | 학년별 문제은행 지연 로더·의미 검사·철회 목록 적용 |
-| `src/application` | 12 | 1,892 | RunController(유일한 상태 작성자)·세션·로비·NEIS·QA 장면 상태 |
-| `src/persistence` | 5 | 1,244 | IndexedDB 로컬 기록·오답 노트·기기 인증·서버 동기화 큐 |
-| `src/game` | 29 | 5,280 | Phaser 4 전장 렌더러·레이어 6종·보행/자세 애니메이션·맵 지면 조립 |
-| `src/ui` | 73 | 11,968 | React 19 화면(홈·새 게임·전투 HUD/카드·오답 노트·설명서·결과) 및 오디오 |
+| `src/contracts` | 8 | 1,490 | 밸런스·맵·문제은행·초안·로비·원화 manifest Zod 런타임 계약 |
+| `src/content` | 4 | 485 | 학년별 문제은행 지연 로더·의미 검사·철회 목록 적용 |
+| `src/application` | 12 | 1,904 | RunController(유일한 상태 작성자)·세션·로비·NEIS·QA 장면 상태 |
+| `src/persistence` | 5 | 1,256 | IndexedDB 로컬 기록·오답 노트·기기 인증·서버 동기화 큐 |
+| `src/game` | 30 | 6,529 | Phaser 4 전장 렌더러·레이어 6종·보행/자세 애니메이션·맵 지면 조립 |
+| `src/ui` | 77 | 13,115 | React 19 화면(홈·새 게임·전투 HUD/카드·오답 노트·설명서·결과) 및 오디오 |
 | `server/src` | 14 | 1,603 | Cloudflare Workers + D1 기기 발급·판 재채점·통합 랭킹·일일 정리 서버 |
 | `tools/content & orchestrate` | 20 | 4,973 | 공개 은행 컴파일러·학년 띠 공유·CR-1000 다중 모델 공동검수 및 commit-lock |
 | `tools/sim, qa & assets` | 14 | 3,542 | 밸런스 봇 시뮬레이터·관문 평가기·성능/장면 QA·WebP 알파 보존 변환기 |
-| `tests/unit & e2e` | 129 | 22,754 | Vitest 단위/속성 시험 및 Playwright 실브라우저·로컬 서버 연결 시험 |
+| `tests/unit & e2e` | 137 | 23,490 | Vitest 단위/속성 시험 및 Playwright 실브라우저·로컬 서버 연결 시험 |
 
 ## 3. 영역별 대표 진입 모듈
 
@@ -56,8 +56,8 @@ generated_by: tools/wiki/gen.mjs
 | --- | ---: | --- | --- |
 | [src/contracts/balance.ts](../src/contracts/balance.ts) | 551 | `DIFFICULTY_IDS`, `ENEMY_KINDS`, `REGULAR_KINDS`, `BASE_ROLES`, `BOSS_TIERS` | - |
 | [src/contracts/balanceV2.ts](../src/contracts/balanceV2.ts) | 251 | `R6_TOWERS`, `SPECIES`, `FAMILIES`, `RELICS`, `R6TowerId` | - |
+| [src/contracts/lobby.ts](../src/contracts/lobby.ts) | 194 | `TelemetryStatus`, `TelemetrySnapshot`, `RANKING_TAB_IDS`, `RankingTabId`, `HOME_RANKING_TAB_IDS` | - |
 | [src/contracts/questions.ts](../src/contracts/questions.ts) | 194 | `OPTION_IDS`, `OptionId`, `QUESTION_TYPES`, `QuestionType`, `DIFFICULTY_TIERS` | - |
-| [src/contracts/lobby.ts](../src/contracts/lobby.ts) | 191 | `TelemetryStatus`, `TelemetrySnapshot`, `RANKING_TAB_IDS`, `RankingTabId`, `RANKING_PERIODS` | - |
 | [src/contracts/questionDraft.ts](../src/contracts/questionDraft.ts) | 126 | `questionDraftSchema`, `draftBatchSchema`, `draftSidecarSchema`, `blindReviewSchema`, `explanationReviewSchema` | - |
 | [src/contracts/levels.ts](../src/contracts/levels.ts) | 100 | `LEVEL_RUBRIC_VERSION`, `levelJudgeSchema`, `levelPrecomputedSchema`, `LEVEL_FLAGS`, `levelMergedSchema` | - |
 | [src/contracts/assetManifest.ts](../src/contracts/assetManifest.ts) | 45 | `ASSET_STATUS`, `assetEntrySchema`, `assetManifestSchema`, `AssetEntry`, `AssetManifest` | - |
@@ -68,9 +68,9 @@ generated_by: tools/wiki/gen.mjs
 | 파일 | 줄 수 | 주요 `export` | 상단 설명 |
 | --- | ---: | --- | --- |
 | [src/content/lint.ts](../src/content/lint.ts) | 232 | `LintInput`, `lintQuestion`, `lintBatchStrict`, `loadOf`, `lintBatchForGrade` | - |
-| [src/content/index.ts](../src/content/index.ts) | 149 | `BALANCE`, `MAPS`, `DEFAULTS`, `PILOT_TOWERS`, `RETRACTIONS` | - |
+| [src/content/index.ts](../src/content/index.ts) | 150 | `BALANCE`, `MAPS`, `DEFAULTS`, `PILOT_TOWERS`, `RETRACTIONS` | - |
 | [src/content/theme/index.ts](../src/content/theme/index.ts) | 54 | `loadR6Theme` | - |
-| [src/content/gradeLoader.ts](../src/content/gradeLoader.ts) | 44 | `GradeLoadState`, `BankLoader`, `createGradeLoader` | - |
+| [src/content/gradeLoader.ts](../src/content/gradeLoader.ts) | 49 | `GradeLoadState`, `BankLoader`, `createGradeLoader` | - |
 
 ### src/application
 
@@ -80,7 +80,7 @@ generated_by: tools/wiki/gen.mjs
 | [src/application/RunController.ts](../src/application/RunController.ts) | 321 | `TICK_MS`, `USER_CLEARABLE`, `RunControllerOptions`, `RunSaveStatus`, `RunController` | - |
 | [src/application/neis.ts](../src/application/neis.ts) | 182 | `NeisSchool`, `SearchOptions`, `searchNeisSchools` | NEIS(교육부 나이스) 오픈 API 학교 정보 연동 서비스. |
 | [src/application/view.ts](../src/application/view.ts) | 157 | `QuestionView`, `TowerView`, `QuestionStakesView`, `GameView`, `Notice` | - |
-| [src/application/entryUrl.ts](../src/application/entryUrl.ts) | 132 | `ParsedEntryUrl`, `parseEntrySearchParams`, `consumeEntryUrlPatch`, `buildClassroomShareUrl`, `detectInAppBrowser` | - |
+| [src/application/entryUrl.ts](../src/application/entryUrl.ts) | 144 | `ParsedEntryUrl`, `parseEntrySearchParams`, `consumeEntryUrlPatch`, `buildClassroomShareUrl`, `detectInAppBrowser` | - |
 | [src/application/mapPreview.ts](../src/application/mapPreview.ts) | 111 | `PREVIEW_PARAM`, `SAMPLE_TOWERS`, `MapPreviewRequest`, `parseMapPreview`, `startMapPreview` | - |
 | [src/application/session.ts](../src/application/session.ts) | 111 | `StartResult`, `startNewRun`, `bestWaveOf`, `bestWaveFor`, `reviewNoteItems` | - |
 | [src/application/balanceSession.ts](../src/application/balanceSession.ts) | 64 | `LocalBalanceVersion`, `getR6Battle`, `localBalanceContext`, `localBalanceSession` | - |
@@ -92,34 +92,34 @@ generated_by: tools/wiki/gen.mjs
 | [src/persistence/lobbyClient.ts](../src/persistence/lobbyClient.ts) | 501 | `buildLocalRanking`, `fetchRanking`, `computeLocalPlayCounts`, `fetchInitialTelemetry`, `cancelRunStartRetry` | - |
 | [src/persistence/db.ts](../src/persistence/db.ts) | 226 | `RunRecord`, `RunAnswer`, `PendingRunSync`, `QuestionHistory`, `db` | - |
 | [src/persistence/reviewNote.ts](../src/persistence/reviewNote.ts) | 218 | `REVIEW_NOTE_KEY`, `REVIEW_NOTE_MAX`, `REVIEW_GRADUATE_CLEARS`, `ReviewNoteItem`, `ReviewNote` | - |
-| [src/persistence/settings.ts](../src/persistence/settings.ts) | 179 | `FontScale`, `MotionMode`, `VolumeStepBgm`, `VolumeStepSfx`, `BGM_STEPS` | 환경설정은 기기에 따로 저장하며 전투 판정에 영향을 주지 않는다(PRD §2, §17.1). |
+| [src/persistence/settings.ts](../src/persistence/settings.ts) | 191 | `FontScale`, `MotionMode`, `VolumeStepBgm`, `VolumeStepSfx`, `BGM_STEPS` | 환경설정은 기기에 따로 저장하며 전투 판정에 영향을 주지 않는다(PRD §2, §17.1). |
 | [src/persistence/auth.ts](../src/persistence/auth.ts) | 120 | `ApiEnv`, `PublicRecordNotice`, `getPublicRecordNotice`, `subscribePublicRecordNotice`, `setPublicRecordNotice` | - |
 
 ### src/game
 
 | 파일 | 줄 수 | 주요 `export` | 상단 설명 |
 | --- | ---: | --- | --- |
-| [src/game/layers/EnemyLayer.ts](../src/game/layers/EnemyLayer.ts) | 466 | `EnemyLayer` | - |
-| [src/game/layers/EffectLayer.ts](../src/game/layers/EffectLayer.ts) | 462 | `EffectLayer` | - |
+| [src/game/r6/CombatVfx.ts](../src/game/r6/CombatVfx.ts) | 598 | `R6CombatVfx` | - |
+| [src/game/layers/EnemyLayer.ts](../src/game/layers/EnemyLayer.ts) | 552 | `EnemyLayer` | - |
+| [src/game/layers/EffectLayer.ts](../src/game/layers/EffectLayer.ts) | 479 | `EffectLayer` | - |
 | [src/game/art.ts](../src/game/art.ts) | 448 | `PALETTE`, `rand01`, `isTreeCell`, `GroundSkip`, `GROUND_ART` | - |
+| [src/game/layers/GroundLayer.ts](../src/game/layers/GroundLayer.ts) | 394 | `GroundLayer` | - |
+| [src/game/r6/enemyDisplay.ts](../src/game/r6/enemyDisplay.ts) | 388 | `OutlineStyle`, `r6OutlineStyle`, `r6EnemyStridePx`, `r6WalkTimeScale`, `TurnStepResult` | - |
 | [src/game/layers/TowerLayer.ts](../src/game/layers/TowerLayer.ts) | 369 | `TowerLayer` | - |
-| [src/game/layers/cues.ts](../src/game/layers/cues.ts) | 271 | `FLYER_LIFT_CELLS`, `INTRO_MS`, `SPLIT_HOP_CELLS`, `SPLIT_LABEL_RAISE_CELLS`, `BossStatus` | - |
-| [src/game/layouts/index.ts](../src/game/layouts/index.ts) | 266 | `PLACEMENT_KINDS`, `PlacementKind`, `mapLayoutSchema`, `MapLayout`, `LayoutPlacement` | - |
-| [src/game/layers/AmbientLayer.ts](../src/game/layers/AmbientLayer.ts) | 259 | `AmbientLayer` | - |
-| [src/game/ambient.ts](../src/game/ambient.ts) | 242 | `rng`, `ambientSeed`, `Tint`, `TintTable`, `DAY_WAVES` | - |
+| [src/game/layers/AmbientLayer.ts](../src/game/layers/AmbientLayer.ts) | 336 | `AmbientLayer` | - |
 
 ### src/ui
 
 | 파일 | 줄 수 | 주요 `export` | 상단 설명 |
 | --- | ---: | --- | --- |
-| [src/ui/game/GameScreen.tsx](../src/ui/game/GameScreen.tsx) | 902 | `GameScreen` | - |
+| [src/ui/game/GameScreen.tsx](../src/ui/game/GameScreen.tsx) | 932 | `GameScreen` | - |
 | [src/ui/screens/home/MiniStageCanvas.tsx](../src/ui/screens/home/MiniStageCanvas.tsx) | 718 | `DemoEnemy`, `DemoProjectile`, `StageDemoSnapshot`, `sampleStageDemo`, `MiniStageCanvas` | - |
 | [src/ui/screens/guide/guideModel.ts](../src/ui/screens/guide/guideModel.ts) | 560 | `GUIDE_CHAPTER_IDS`, `GuideChapterId`, `GuideRowIconId`, `GuideSummaryRow`, `GuideChapterSpec` | - |
 | [src/ui/screens/home/terrainBaker.ts](../src/ui/screens/home/terrainBaker.ts) | 501 | `TonePool`, `SplineSample`, `ArcSample`, `hash2d`, `lowFreqNoise` | - |
+| [src/ui/audio/sound.ts](../src/ui/audio/sound.ts) | 500 | `AudioConfig`, `Sfx`, `Voice`, `admit`, `sfxFor` | - |
 | [src/ui/utils/qr.ts](../src/ui/utils/qr.ts) | 452 | `canEncodeQr`, `encodeQrMatrix`, `qrMatrixToSvgPath` | 외부 의존성 없는 순수 TypeScript ISO/IEC 18004 QR 코드 행렬 생성기 (Byte 모드 · 오류 복원 수준 M · 버전 1~10). |
-| [src/ui/screens/home/LaunchDeck.tsx](../src/ui/screens/home/LaunchDeck.tsx) | 433 | `LaunchDeck` | - |
+| [src/ui/screens/home/RankingBoard.tsx](../src/ui/screens/home/RankingBoard.tsx) | 441 | `TAB_LABELS`, `PERIOD_LABELS`, `RANKING_PERIOD_OPTIONS`, `formatPrimaryMetric`, `RankingBoard` | - |
 | [src/ui/kit/index.tsx](../src/ui/kit/index.tsx) | 422 | `Button`, `IconButton`, `Card`, `Panel`, `Badge` | - |
-| [src/ui/screens/home/RankingBoard.tsx](../src/ui/screens/home/RankingBoard.tsx) | 394 | `TAB_LABELS`, `PERIOD_LABELS`, `RANKING_PERIOD_OPTIONS`, `formatPrimaryMetric`, `RankingBoard` | - |
 
 ### server/src
 
