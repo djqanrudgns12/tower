@@ -1,5 +1,13 @@
 import { describe, expect, it } from 'vitest';
-import { fragmentCount, prismDelay, railLanes, shellPoint } from '../../src/game/r6/vfxTiming';
+import {
+  fragmentCount,
+  prismDelay,
+  railLanes,
+  shellPoint,
+  speciesKillTint,
+  vfxGraphicsBudget,
+  vfxParticleCap,
+} from '../../src/game/r6/vfxTiming';
 
 describe('R6 공격 연출 시간과 품질', () => {
   it('무기 단계에 맞춰 동시에 보이는 예광선 수가 늘어난다', () => {
@@ -25,5 +33,14 @@ describe('R6 공격 연출 시간과 품질', () => {
     expect(shellPoint(from, to, 1, 32)).toEqual(to);
     expect(shellPoint(from, to, .5, 32)).toEqual({ x: 85, y: 25 });
     expect(shellPoint(from, to, .5, 0)).toEqual({ x: 85, y: 57 });
+  });
+
+  it('품질·모션 설정에 따라 도형 예산·파티클 상한·종족 색조를 정한다', () => {
+    expect([0, 1, 2, 3].map(vfxGraphicsBudget)).toEqual([400, 200, 100, 100]);
+    expect([0, 1, 2, 3].map(q => vfxParticleCap(q, false))).toEqual([120, 72, 36, 16]);
+    expect(vfxParticleCap(0, true)).toBe(16);
+    expect(speciesKillTint('elf-infantry-t1')).toBe(0x2fb5a3);
+    expect(speciesKillTint('machine-boss-t4')).toBe(0xe69f24);
+    expect(speciesKillTint(undefined)).toBe(0xb8c0c8);
   });
 });

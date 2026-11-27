@@ -106,4 +106,50 @@ describe('SoundDirector', () => {
     expect(sound.activeVoices.map(v => v.sfx)).toEqual(['fire.archer', 'fire.cannon', 'fire.frost', 'fire.crossbow']);
     sound.dispose();
   });
+
+  it('노이즈·필터 지원 환경과 연속 정답 피치·버닝/진화/해금·보스 처치 이벤트를 처리한다', () => {
+    const param = () => ({ value: 0, setValueAtTime: vi.fn(), linearRampToValueAtTime: vi.fn(), exponentialRampToValueAtTime: vi.fn() });
+    const freqs: number[] = [];
+    const ctx = {
+      ...fakeContext(),
+      sampleRate: 44100,
+      noiseSources: 0,
+      filters: 0,
+      createOscillator: () => ({
+        type: 'sine',
+        frequency: {
+          ...param(),
+          setValueAtTime: vi.fn((v: number) => { freqs.push(v); }),
+        },
+        connect: vi.fn(), start: vi.fn(), stop: vi.fn(),
+      }),
+      createBuffer: (_ch: number, len: number) => ({ getChannelData: () => new Float32Array(len) }),
+      createBufferSource: () => { ctx.noiseSources++; return { buffer: null, connect: vi.fn(), start: vi.fn(), stop: vi.fn() }; },
+      createBiquadFilter: () => { ctx.filters++; return { type: 'lowpass', frequency: param(), Q: param(), connect: vi.fn() }; },
+    };
+    const sound = new SoundDirector(cfg, 5, () => ctx as unknown as AudioContext);
+    sound.unlock();
+    sound.handle([
+      { type: 'answered', encounterId: 1, result: 'correct', pt: 10, gold: 5 },
+      { type: 'answered', encounterId: 2, result: 'correct', pt: 10, gold: 5 },
+    ]);
+    expect(sound.correctStreak).toBe(2);
+    expect(freqs[2]!).toBeGreaterThan(freqs[0]!);
+    sound.handle([{ type: 'answered', encounterId: 3, result: 'wrong', pt: 0, gold: 0 }]);
+    expect(sound.correctStreak).toBe(0);
+
+    sound.handle([
+      { type: 'burning', untilTick: 100 },
+      { type: 'towerUnlocked', tower: 'prism', wave: 3 },
+      { type: 'towerStage', towerId: 1, stage: 3, weapon: 1, tick: 10 },
+      { type: 'fire', projectileId: 1, towerId: 1, towerType: 'rail' },
+      { type: 'kill', enemyId: 99, kind: 'boss', elite: false, x: 100, y: 100, gold: 20, pt: 10 },
+    ]);
+    expect(sound.activeVoices.map(v => v.sfx)).toEqual(
+      expect.arrayContaining(['burning', 'towerUnlocked', 'towerStage', 'fire.rail', 'kill.boss']),
+    );
+    expect(ctx.noiseSources).toBeGreaterThanOrEqual(3);
+    expect(ctx.filters).toBeGreaterThanOrEqual(3);
+    sound.dispose();
+  });
 });

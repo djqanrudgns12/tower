@@ -9,12 +9,82 @@ import type { R6BattleAssets } from './BattleAssets';
 import { projectFieldDelta } from './mapProjection';
 import { headDirection, R6_COLORS, type R6Manifest, type TowerFormArt } from './manifest';
 
+const BLEND_ADD = 1 as Phaser.BlendModes;
+const TOWER_GLOW_KEY = 'r6.tower.glow';
+const TOWER_GLOW_COLORS: Readonly<Record<R6TowerId, number>> = {
+  rail: R6_COLORS.teal,
+  mortar: R6_COLORS.amber,
+  cryo: 0x7dd3fc,
+  prism: 0xc084fc,
+  hangar: 0x34d399,
+  bastion: R6_COLORS.amber,
+};
+
+/** 16방향 최단 거리 step(최대 2스텝/프레임, >4스텝 차이나면 즉시 스냅) 계산 순수 함수. */
+export function stepTowerDirection(
+  current: number,
+  target: number,
+  maxStep = 2,
+  snapThreshold = 4,
+): number {
+  const c = ((current % 16) + 16) % 16;
+  const t = ((target % 16) + 16) % 16;
+  let diff = t - c;
+  if (diff > 8) diff -= 16;
+  if (diff < -8) diff += 16;
+  if (Math.abs(diff) <= maxStep || Math.abs(diff) > snapThreshold) return t;
+  return (((c + Math.sign(diff) * maxStep) % 16) + 16) % 16;
+}
+
+/** 타워 대기(Idle) 미세 호흡·글로우·경계 스캔 계산. 품질 1에서 글로우 오프, 품질 2+/reducedMotion에서 전체 오프. */
+export function towerIdleSpec(
+  towerId: number,
+  type: R6TowerId | undefined,
+  timeMs: number,
+  idleMs: number,
+  quality: number,
+  reducedMotion: boolean,
+): { breathY: number; glowAlpha: number; glowColor: number; scanOffset: -1 | 0 | 1 } {
+  const glowColor = type ? TOWER_GLOW_COLORS[type] : R6_COLORS.teal;
+  if (reducedMotion || quality >= 2) {
+    return { breathY: 0, glowAlpha: 0, glowColor, scanOffset: 0 };
+  }
+  const phase = towerId * 1.37 + timeMs * 0.0024;
+  const breathY = Math.sin(phase) * 0.9;
+  const glowAlpha = quality === 0 ? 0.22 + 0.12 * (0.5 + 0.5 * Math.sin(phase * 1.15)) : 0;
+  let scanOffset: -1 | 0 | 1 = 0;
+  if (idleMs >= 1400) {
+    const cycle = Math.floor(((idleMs - 1400) / 520 + towerId) % 4);
+    scanOffset = cycle === 1 ? 1 : cycle === 3 ? -1 : 0;
+  }
+  return { breathY, glowAlpha, glowColor, scanOffset };
+}
+
+function ensureTowerGlowTexture(scene: Phaser.Scene): boolean {
+  if (scene.textures.exists(TOWER_GLOW_KEY)) return true;
+  if (typeof document === 'undefined') return false;
+  const tex = scene.textures.createCanvas(TOWER_GLOW_KEY, 32, 32);
+  if (!tex) return false;
+  const ctx = tex.getContext();
+  const grad = ctx.createRadialGradient(16, 16, 1, 16, 16, 15);
+  grad.addColorStop(0, 'rgba(255,255,255,1)');
+  grad.addColorStop(0.45, 'rgba(255,255,255,0.42)');
+  grad.addColorStop(1, 'rgba(255,255,255,0)');
+  ctx.fillStyle = grad;
+  ctx.fillRect(0, 0, 32, 32);
+  tex.refresh();
+  return true;
+}
+
 interface TowerView {
   body: Phaser.GameObjects.Image;
   head: Phaser.GameObjects.Image;
+  glow?: Phaser.GameObjects.Image | undefined;
   dust?: Phaser.GameObjects.Graphics | undefined;
+  type: R6TowerId | undefined;
   stage: number;
   weaponStage: number;
+  aimDirection: number;
   direction: number;
   attackAt: number;
   attachAt: number;
@@ -41,7 +111,8 @@ export class R6TowerPlayback {
     if (!view || !projection) return;
     if (dx || dy) {
       const p = this.c.projected ? projectFieldDelta(dx, dy) : { x: dx, y: dy };
-      view.direction = headDirection(p.x, p.y, projection);
+      view.aimDirection = headDirection(p.x, p.y, projection);
+      view.direction = stepTowerDirection(view.direction, view.aimDirection);
     }
     view.attackAt = this.c.scene.time.now;
   }
@@ -72,17 +143,23 @@ export class R6TowerPlayback {
         if (view) {
           const previous = forms[view.stage]!;
           this.wantForm(sheets, previous, bridge.reducedMotion);
-          this.draw(view, manifest, previous, x, y, time, sheets);
+          this.draw(tower.id, view, manifest, previous, x, y, time, sheets);
         } else this.placeholder(tower.id, x, y, type);
         continue;
       }
       this.placeholders.get(tower.id)?.destroy();
       this.placeholders.delete(tower.id);
       if (!view) {
+        const initDir = headDirection(0, -1, manifest.projection);
+        const glow = ensureTowerGlowTexture(scene)
+          ? scene.add.image(x, y, TOWER_GLOW_KEY).setBlendMode(BLEND_ADD).setVisible(false)
+          : undefined;
         view = {
           body: scene.add.image(x, y, bodyTexture, form.bodyFrame).setName(`r6:tower:${tower.id}:body`),
           head: scene.add.image(x, y, headTexture, 0).setName(`r6:tower:${tower.id}:head`),
-          stage, weaponStage: weapon, direction: headDirection(0, -1, manifest.projection),
+          glow,
+          type,
+          stage, weaponStage: weapon, aimDirection: initDir, direction: initDir,
           attackAt: -Infinity, attachAt: -Infinity, attachMs: 600, shotLift: 0,
         };
         this.views.set(tower.id, view);
@@ -93,7 +170,8 @@ export class R6TowerPlayback {
         view.attackAt = -Infinity;
         view.stage = stage;
       }
-      this.draw(view, manifest, form, x, y, time, sheets);
+      view.type = type;
+      this.draw(tower.id, view, manifest, form, x, y, time, sheets);
     }
     for (const id of this.views.keys()) if (!present.has(id)) this.removeView(id);
     for (const [id, shape] of this.placeholders) if (!present.has(id)) { shape.destroy(); this.placeholders.delete(id); }
@@ -106,8 +184,9 @@ export class R6TowerPlayback {
     else if (form.attack.clip) this.assets.towerTexture(form.attack.clip.sheet, sheets);
   }
 
-  private draw(v: TowerView, manifest: R6Manifest, form: TowerFormArt, x: number, y: number, time: number, sheets: Set<string>) {
+  private draw(towerId: number, v: TowerView, manifest: R6Manifest, form: TowerFormArt, x: number, y: number, time: number, sheets: Set<string>) {
     const { reducedMotion: reduced, controller } = this.c.bridge;
+    const quality = controller.renderQuality.current;
     const body = manifest.sheets[form.body]!;
     const head = manifest.sheets[form.head]!;
     const [bx, by] = body.pivot;
@@ -120,6 +199,13 @@ export class R6TowerPlayback {
     const headY = footY + (my - by) * scale;
     const depth = this.c.projected ? r6UnitDepth(y, 'tower') : DEPTH.units + y;
     v.shotLift = y - CELL_PX * 0.32 - headY;
+
+    const idleMs = Number.isFinite(v.attackAt) ? Math.max(0, time - v.attackAt) : 1400 + time;
+    const idle = towerIdleSpec(towerId, v.type, time, idleMs, quality, reduced);
+    const targetDir = idle.scanOffset !== 0 && idleMs >= 1400
+      ? (((v.aimDirection + idle.scanOffset) % 16) + 16) % 16
+      : v.aimDirection;
+    v.direction = reduced ? targetDir : stepTowerDirection(v.direction, targetDir);
 
     const bodyTexture = this.assets.towerTexture(form.body, sheets)!;
     if (v.body.texture.key !== bodyTexture || Number(v.body.frame.name) !== form.bodyFrame) v.body.setTexture(bodyTexture, form.bodyFrame);
@@ -139,14 +225,28 @@ export class R6TowerPlayback {
     const theta = (manifest.projection.zeroBearingDeg / 180 - v.direction / 8) * Math.PI;
     const attach = reduced ? 1 : Math.max(0, Math.min(1, (time - v.attachAt) / v.attachMs));
     const settle = (1 - attach) ** 2 * scale * 18;
+    const headX = x + (mx - bx) * scale - Math.sin(theta) * recoil;
+    const headDrawY = headY - settle + idle.breathY + Math.cos(theta) * recoil * manifest.projection.squashY;
     const headTexture = clipTexture ?? this.assets.towerTexture(form.head, sheets)!;
     const headFrame = useClip ? clip.first + attackFrame : v.direction;
     if (v.head.texture.key !== headTexture || Number(v.head.frame.name) !== headFrame) v.head.setTexture(headTexture, headFrame);
     v.head.setOrigin(headArt.pivot[0] / headArt.width, headArt.pivot[1] / headArt.height)
-      .setPosition(x + (mx - bx) * scale - Math.sin(theta) * recoil,
-        headY - settle + Math.cos(theta) * recoil * manifest.projection.squashY)
+      .setPosition(headX, headDrawY)
       .setDisplaySize(headArt.width * scale, headArt.height * scale).setDepth(this.c.projected ? depth : depth + 1);
-    this.drawDust(v, controller.renderQuality.current > 0 ? 1 : attach, x, footY, depth);
+    if (v.glow) {
+      if (idle.glowAlpha > 0) {
+        const glowSize = Math.max(22, CELL_PX * 0.55 * (1 + v.weaponStage * 0.12));
+        v.glow.setPosition(headX, headDrawY - headArt.pivot[1] * scale * 0.15)
+          .setDisplaySize(glowSize, glowSize * 0.72)
+          .setTint(idle.glowColor)
+          .setAlpha(idle.glowAlpha)
+          .setDepth((this.c.projected ? depth : depth + 1) + 0.05)
+          .setVisible(true);
+      } else {
+        v.glow.setVisible(false);
+      }
+    }
+    this.drawDust(v, quality > 0 ? 1 : attach, x, footY, depth);
   }
 
   private drawDust(v: TowerView, progress: number, x: number, y: number, depth: number) {
@@ -176,6 +276,7 @@ export class R6TowerPlayback {
     const view = this.views.get(id);
     view?.body.destroy();
     view?.head.destroy();
+    view?.glow?.destroy();
     view?.dust?.destroy();
     this.views.delete(id);
   }

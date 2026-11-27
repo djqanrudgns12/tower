@@ -1,6 +1,6 @@
 import type { DomainEvent, EngineTowerId } from '../../domain/engineTypes';
 
-// 소리(PRD §11.5). P1은 음원 파일 없이 WebAudio로 짧은 효과음과 배경 선율을 합성한다.
+// 소리(PRD §11.5 · V2 WP-Q4.4). 음원 파일(0KB) 없이 WebAudio 합성(오실레이터 + 노이즈 버스트 + BiquadFilter)을 사용한다.
 // 도메인 사건을 듣기만 하고 판정·보상에 관여하지 않는다. 첫 사용자 입력 뒤에만 소리를 켜고, 실패하면 무음으로 진행한다.
 
 export interface AudioConfig {
@@ -14,9 +14,34 @@ export interface AudioConfig {
   sameFireMinGapMs: number;
 }
 
-/** 효과음 종류. 정답·오답·누출이 가장 먼저이고, 넘치면 장식인 발사음부터 생략한다. */
-export type Sfx = `fire.${EngineTowerId}` | 'kill' | 'leak' | 'correct' | 'wrong' | 'skipped' | 'wave' | 'milestone';
-const PRIORITY: Record<string, number> = { correct: 3, wrong: 3, leak: 3, skipped: 2, wave: 2, milestone: 2, kill: 1 };
+/** 효과음 종류. 정답·오답·누출·버닝이 최우선이고, 넘치면 장식인 발사음부터 생략한다. */
+export type Sfx =
+  | `fire.${EngineTowerId}`
+  | 'kill'
+  | 'kill.boss'
+  | 'leak'
+  | 'correct'
+  | 'wrong'
+  | 'skipped'
+  | 'wave'
+  | 'milestone'
+  | 'burning'
+  | 'towerStage'
+  | 'towerUnlocked';
+
+const PRIORITY: Record<string, number> = {
+  correct: 3,
+  wrong: 3,
+  leak: 3,
+  burning: 3,
+  skipped: 2,
+  wave: 2,
+  milestone: 2,
+  towerUnlocked: 2,
+  towerStage: 2,
+  'kill.boss': 2,
+  kill: 1,
+};
 const priorityOf = (s: Sfx) => PRIORITY[s] ?? 0;
 
 export interface Voice { sfx: Sfx; startMs: number; endMs: number; stop(): void }
@@ -42,9 +67,12 @@ export function admit(active: readonly Voice[], sfx: Sfx, nowMs: number, lastFir
 export function sfxFor(e: DomainEvent, bossEveryWaves: number): Sfx | null {
   switch (e.type) {
     case 'fire': case 'strike': return `fire.${e.towerType}`;
-    case 'kill': return 'kill';
+    case 'kill': return e.kind === 'boss' ? 'kill.boss' : 'kill';
     case 'leak': return 'leak';
     case 'answered': return e.result === 'correct' ? 'correct' : e.result === 'wrong' ? 'wrong' : 'skipped';
+    case 'burning': return 'burning';
+    case 'towerUnlocked': return 'towerUnlocked';
+    case 'towerStage': return e.stage > 0 ? 'towerStage' : null;
     case 'waveComplete': return 'wave';
     case 'phase': return e.phase === 'BATTLE' && e.wave % bossEveryWaves === 0 ? 'milestone' : null;
     default: return null;
@@ -52,13 +80,16 @@ export function sfxFor(e: DomainEvent, bossEveryWaves: number): Sfx | null {
 }
 
 type Note = { f: number; t: number; d: number; type: OscillatorType; gain: number; to?: number };
-const C5 = 523.25, E5 = 659.25, G5 = 783.99, C6 = 1046.5, E6 = 1318.5;
+type NoiseLayer = { t: number; d: number; gain: number; filter: BiquadFilterType; freq: number; Q?: number };
+
+const C5 = 523.25, E5 = 659.25, G5 = 783.99, C6 = 1046.5, E6 = 1318.5, G6 = 1567.98;
+const STREAK_PITCH_RATIOS = [1, 1.0595, 1.1225, 1.1892, 1.2599, 1.3348] as const;
+
 /** 효과음 악보(초 단위 시작·길이). 짧고 부드럽게, 오답도 겁주지 않는 낮은 두 음이다. */
 const SCORE: Record<Sfx, Note[]> = {
   'fire.archer': [{ f: 740, to: 520, t: 0, d: 0.06, type: 'triangle', gain: 0.35 }],
   'fire.cannon': [{ f: 150, to: 70, t: 0, d: 0.14, type: 'sine', gain: 0.7 }],
   'fire.frost': [{ f: 1480, t: 0, d: 0.12, type: 'sine', gain: 0.25 }, { f: 1975, t: 0.03, d: 0.1, type: 'sine', gain: 0.15 }],
-  // P2 타워는 아직 전투에 없지만 종류마다 소리 자리를 둔다.
   'fire.crossbow': [{ f: 820, to: 560, t: 0, d: 0.06, type: 'triangle', gain: 0.35 }],
   'fire.mage': [{ f: 1200, to: 1600, t: 0, d: 0.1, type: 'sine', gain: 0.2 }],
   'fire.lightning': [{ f: 900, to: 300, t: 0, d: 0.08, type: 'sawtooth', gain: 0.2 }],
@@ -66,30 +97,51 @@ const SCORE: Record<Sfx, Note[]> = {
   'fire.spear': [{ f: 220, to: 160, t: 0, d: 0.08, type: 'square', gain: 0.2 }],
   'fire.guardian': [{ f: 180, to: 140, t: 0, d: 0.1, type: 'square', gain: 0.2 }],
   'fire.banner': [{ f: 600, t: 0, d: 0.08, type: 'triangle', gain: 0.2 }],
-  // 리뉴얼 신규 10종: 비슷한 공격의 소리를 빌려 쓴다(전용 소리는 소리 작업 때).
   'fire.sling': [{ f: 520, to: 380, t: 0, d: 0.06, type: 'triangle', gain: 0.3 }],
   'fire.ballista': [{ f: 640, to: 300, t: 0, d: 0.1, type: 'triangle', gain: 0.35 }],
   'fire.falcon': [{ f: 1600, to: 1100, t: 0, d: 0.08, type: 'sine', gain: 0.2 }],
-  'fire.mortar': [{ f: 120, to: 60, t: 0, d: 0.16, type: 'sine', gain: 0.7 }],
+  'fire.mortar': [{ f: 135, to: 58, t: 0, d: 0.16, type: 'sine', gain: 0.68 }, { f: 92, to: 48, t: 0, d: 0.12, type: 'triangle', gain: 0.32 }],
   'fire.hwacha': [{ f: 700, to: 500, t: 0, d: 0.05, type: 'triangle', gain: 0.25 }],
   'fire.roller': [{ f: 110, to: 90, t: 0, d: 0.18, type: 'triangle', gain: 0.4 }],
   'fire.alchemist': [{ f: 500, to: 800, t: 0, d: 0.1, type: 'sine', gain: 0.2 }],
   'fire.wind': [{ f: 400, to: 250, t: 0, d: 0.12, type: 'sine', gain: 0.2 }],
   'fire.trap': [{ f: 260, to: 200, t: 0, d: 0.08, type: 'square', gain: 0.18 }],
   'fire.bell': [{ f: 523, t: 0, d: 0.25, type: 'sine', gain: 0.3 }],
-  'fire.rail': [{ f: 1100, to: 440, t: 0, d: 0.055, type: 'triangle', gain: 0.28 }],
-  'fire.cryo': [{ f: 930, to: 740, t: 0, d: 0.15, type: 'sine', gain: 0.26 }],
-  'fire.prism': [{ f: 760, to: 1520, t: 0, d: 0.11, type: 'sine', gain: 0.23 }],
-  'fire.hangar': [{ f: 540, t: 0, d: 0.045, type: 'triangle', gain: 0.23 }, { f: 645, t: 0.04, d: 0.045, type: 'triangle', gain: 0.2 }],
-  'fire.bastion': [{ f: 225, to: 115, t: 0, d: 0.12, type: 'triangle', gain: 0.4 }],
-  kill: [{ f: 880, to: 1320, t: 0, d: 0.06, type: 'square', gain: 0.12 }],
+  'fire.rail': [{ f: 1240, to: 420, t: 0, d: 0.06, type: 'triangle', gain: 0.28 }],
+  'fire.cryo': [{ f: 980, to: 740, t: 0, d: 0.15, type: 'sine', gain: 0.26 }, { f: 1960, to: 1480, t: 0.015, d: 0.09, type: 'sine', gain: 0.12 }],
+  'fire.prism': [{ f: 760, to: 1520, t: 0, d: 0.11, type: 'sine', gain: 0.22 }, { f: 1140, to: 2280, t: 0.01, d: 0.09, type: 'sine', gain: 0.11 }],
+  'fire.hangar': [{ f: 540, t: 0, d: 0.045, type: 'triangle', gain: 0.22 }, { f: 645, t: 0.04, d: 0.045, type: 'triangle', gain: 0.18 }],
+  'fire.bastion': [{ f: 230, to: 110, t: 0, d: 0.13, type: 'triangle', gain: 0.4 }],
+  kill: [{ f: 880, to: 1320, t: 0, d: 0.06, type: 'square', gain: 0.11 }],
+  'kill.boss': [{ f: 220, to: 110, t: 0, d: 0.18, type: 'triangle', gain: 0.45 }, { f: 880, to: 1320, t: 0.04, d: 0.14, type: 'triangle', gain: 0.22 }],
   leak: [{ f: 140, to: 90, t: 0, d: 0.28, type: 'triangle', gain: 0.6 }],
   correct: [{ f: C6, t: 0, d: 0.09, type: 'triangle', gain: 0.5 }, { f: E6, t: 0.09, d: 0.14, type: 'triangle', gain: 0.5 }],
   wrong: [{ f: 330, t: 0, d: 0.12, type: 'sine', gain: 0.45 }, { f: 262, t: 0.12, d: 0.18, type: 'sine', gain: 0.45 }],
   skipped: [{ f: C5, t: 0, d: 0.08, type: 'sine', gain: 0.3 }],
   wave: [{ f: C5, t: 0, d: 0.1, type: 'triangle', gain: 0.4 }, { f: E5, t: 0.1, d: 0.1, type: 'triangle', gain: 0.4 }, { f: G5, t: 0.2, d: 0.2, type: 'triangle', gain: 0.4 }],
   milestone: [{ f: 196, t: 0, d: 0.18, type: 'triangle', gain: 0.5 }, { f: 196, t: 0.3, d: 0.3, type: 'triangle', gain: 0.5 }],
+  burning: [{ f: E5, to: G5, t: 0, d: 0.11, type: 'triangle', gain: 0.38 }, { f: C6, to: E6, t: 0.08, d: 0.18, type: 'sine', gain: 0.36 }],
+  towerStage: [{ f: G5, t: 0, d: 0.07, type: 'triangle', gain: 0.35 }, { f: C6, t: 0.06, d: 0.13, type: 'triangle', gain: 0.38 }],
+  towerUnlocked: [
+    { f: C5, t: 0, d: 0.08, type: 'triangle', gain: 0.38 },
+    { f: E5, t: 0.07, d: 0.08, type: 'triangle', gain: 0.38 },
+    { f: G5, t: 0.14, d: 0.1, type: 'triangle', gain: 0.4 },
+    { f: C6, t: 0.22, d: 0.22, type: 'triangle', gain: 0.42 },
+    { f: G6, t: 0.24, d: 0.18, type: 'sine', gain: 0.22 },
+  ],
 };
+
+/** 0KB 캐시 화이트 노이즈 + 필터 레이어(WebAudio 미지원 모의 컨텍스트는 자동 건너뜀). */
+const NOISE_SCORE: Partial<Record<Sfx, NoiseLayer>> = {
+  'fire.rail': { t: 0, d: 0.04, gain: 0.12, filter: 'highpass', freq: 2400 },
+  'fire.mortar': { t: 0, d: 0.14, gain: 0.26, filter: 'lowpass', freq: 460, Q: 1.2 },
+  'fire.cryo': { t: 0.01, d: 0.1, gain: 0.14, filter: 'bandpass', freq: 3800, Q: 3.0 },
+  'fire.hangar': { t: 0, d: 0.055, gain: 0.1, filter: 'bandpass', freq: 1400, Q: 2.0 },
+  'fire.bastion': { t: 0, d: 0.1, gain: 0.16, filter: 'lowpass', freq: 360, Q: 1.4 },
+  'kill.boss': { t: 0, d: 0.22, gain: 0.25, filter: 'lowpass', freq: 620, Q: 1.0 },
+  burning: { t: 0, d: 0.2, gain: 0.15, filter: 'bandpass', freq: 1700, Q: 1.4 },
+};
+
 const lengthOf = (notes: Note[]) => Math.max(...notes.map(n => n.t + n.d));
 
 /** 배경 선율: 5음 음계의 느린 8음 반복(한 바퀴 4초). */
@@ -100,8 +152,11 @@ export class SoundDirector {
   private ctx: AudioContext | null = null;
   private sfxBus: GainNode | null = null;
   private bgmBus: GainNode | null = null;
+  private noiseBuffer: AudioBuffer | null = null;
   private voices: Voice[] = [];
   private lastFire = new Map<Sfx, number>();
+  private readonly towerWeapons = new Map<number, number>();
+  private correctStreakCount = 0;
   private enabled = true;
   private backgroundUnlocked = false;
   private paused = false;
@@ -115,6 +170,9 @@ export class SoundDirector {
     this.bgmVolume = cfg.bgmVolume;
     this.sfxVolume = cfg.sfxVolume;
   }
+
+  /** 현재 퀴즈 연속 정답 단계(테스트·검증 조회용). */
+  get correctStreak(): number { return this.correctStreakCount; }
 
   /** 첫 사용자 입력에서 부른다. 만들 수 없으면 무음으로 둔다. */
   unlock() {
@@ -162,8 +220,23 @@ export class SoundDirector {
   handle(events: readonly DomainEvent[]) {
     if (!this.ctx || !this.enabled || this.paused) return;
     for (const e of events) {
+      if (e.type === 'towerStage') {
+        this.towerWeapons.set(e.towerId, e.weapon);
+      } else if (e.type === 'answered') {
+        if (e.result === 'correct') this.correctStreakCount = Math.min(5, this.correctStreakCount + 1);
+        else this.correctStreakCount = 0;
+      }
       const sfx = sfxFor(e, this.bossEveryWaves);
-      if (sfx) this.play(sfx);
+      if (!sfx) continue;
+      let pitchScale = 1;
+      if (sfx === 'correct') {
+        pitchScale = STREAK_PITCH_RATIOS[Math.max(0, this.correctStreakCount - 1)] ?? 1;
+      } else if ((e.type === 'fire' || e.type === 'strike')) {
+        const weapon = this.towerWeapons.get(e.towerId) ?? 0;
+        const jitter = 1 + (Math.random() * 2 - 1) * 0.04;
+        pitchScale = (1 + weapon * 0.05) * jitter;
+      }
+      this.play(sfx, pitchScale);
     }
   }
 
@@ -174,11 +247,14 @@ export class SoundDirector {
     this.stopBgm();
     for (const v of this.voices) v.stop();
     this.voices = [];
+    this.noiseBuffer = null;
+    this.towerWeapons.clear();
+    this.correctStreakCount = 0;
     void this.ctx?.close?.().catch(() => undefined);
     this.ctx = null;
   }
 
-  private play(sfx: Sfx) {
+  private play(sfx: Sfx, pitchScale = 1) {
     const ctx = this.ctx!;
     const nowMs = ctx.currentTime * 1000;
     this.voices = this.voices.filter(v => v.endMs > nowMs);
@@ -187,8 +263,52 @@ export class SoundDirector {
     if (slot) { slot.stop(); this.voices = this.voices.filter(v => v !== slot); }
     if (sfx.startsWith('fire.')) this.lastFire.set(sfx, nowMs);
     const notes = SCORE[sfx];
-    const stops = notes.map(n => this.tone(n, ctx.currentTime, this.sfxBus!));
+    const stops = notes.map(n => this.tone({
+      ...n,
+      f: n.f * pitchScale,
+      ...(n.to !== undefined ? { to: n.to * pitchScale } : {}),
+    }, ctx.currentTime, this.sfxBus!));
+    const noiseLayer = NOISE_SCORE[sfx];
+    if (noiseLayer) {
+      const stopNoise = this.noise(noiseLayer, pitchScale, ctx.currentTime, this.sfxBus!);
+      if (stopNoise) stops.push(stopNoise);
+    }
     this.voices.push({ sfx, startMs: nowMs, endMs: nowMs + lengthOf(notes) * 1000, stop: () => stops.forEach(s => s()) });
+  }
+
+  private ensureNoiseBuffer(ctx: AudioContext): AudioBuffer | null {
+    if (this.noiseBuffer) return this.noiseBuffer;
+    if (typeof ctx.createBuffer !== 'function') return null;
+    const rate = ctx.sampleRate || 44100;
+    const length = Math.max(1, Math.floor(rate * 0.35));
+    const buf = ctx.createBuffer(1, length, rate);
+    const ch = buf.getChannelData(0);
+    for (let i = 0; i < length; i++) ch[i] = Math.random() * 2 - 1;
+    this.noiseBuffer = buf;
+    return buf;
+  }
+
+  private noise(n: NoiseLayer, pitchScale: number, at: number, bus: GainNode): (() => void) | null {
+    const ctx = this.ctx!;
+    if (typeof ctx.createBufferSource !== 'function' || typeof ctx.createBiquadFilter !== 'function') return null;
+    const buf = this.ensureNoiseBuffer(ctx);
+    if (!buf) return null;
+    const src = ctx.createBufferSource();
+    src.buffer = buf;
+    const filter = ctx.createBiquadFilter();
+    filter.type = n.filter;
+    filter.frequency.setValueAtTime(n.freq * pitchScale, at + n.t);
+    if (n.Q !== undefined) filter.Q.setValueAtTime(n.Q, at + n.t);
+    const env = ctx.createGain();
+    env.gain.setValueAtTime(0.0001, at + n.t);
+    env.gain.linearRampToValueAtTime(n.gain, at + n.t + 0.008);
+    env.gain.exponentialRampToValueAtTime(0.0001, at + n.t + n.d);
+    src.connect(filter);
+    filter.connect(env);
+    env.connect(bus);
+    src.start(at + n.t);
+    src.stop(at + n.t + n.d + 0.02);
+    return () => { try { src.stop(); } catch { /* 이미 끝남 */ } };
   }
 
   /** 짧은 음 하나: 빠르게 올라갔다 지수로 사라진다. 돌려준 함수로 즉시 멈춘다. */
