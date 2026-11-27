@@ -4,7 +4,7 @@ type: glossary
 title: 용어 및 약어 사전
 status: active
 updated: 2026-11-25
-verified: { commit: fa75c724, date: 2026-11-27 }
+verified: { commit: "1a7fe4eb", date: 2026-11-27 }
 sources:
   - path: vocabulary_td_prd_v0_5.md
     sha256: "0ffd7049c672ae427f1b59b2ef80222ea745b24911b13e78d1ee5680a7902cf5"
@@ -17,7 +17,7 @@ sources:
   - path: docs/renewal/r6/tech/G5-perf.md
     sha256: "16b0d22d3fe0532d0cfa718fb55e71e4b9fa7b650ca7ea5bdb5549b69914e452"
   - path: docs/renewal/r6/tech/G5-server.md
-    sha256: "895f648cac4edc29c8eadafdd6bcced05880e8b8609c5f49d33099f832099dae"
+    sha256: a4dde2850b32b8b9153902259fd7a54a3d157f08e526b8e4dba0116b2a073036
   - path: docs/CR1000_HANDOFF.md
     sha256: c3c01581eceead622afc236790d68ce0c3f6f600317b819d9f549176dbb1707c
   - path: docs/DEPLOY.md
@@ -42,7 +42,7 @@ sources:
 | `초원 고원` (`garden_u`) | R6 전장 | 기존 `garden_u`(15×9·길 41칸·설치대 20개) 좌표 위에 3/4 직교 등고선 지형과 육각 설치대를 올린 R6 첫 맵. | [map-spec.md](../docs/renewal/r6/map-spec.md) |
 | `spine-phaser-v4` Mesh2D | R6 렌더링 | Phaser 4.2.1 WebGL에서 Spine 4.3 뼈대·스킨(T1~T4)을 직접 그리는 공식 플러그인 백엔드. 종족 아틀라스 지연 적재와 함께 쓴다. | [G2-spike.md](../docs/renewal/r6/tech/G2-spike.md) |
 | `자동 화질 3단계` | R6 성능 | `RenderQuality`가 5초 평균 FPS를 재어 `0→1→2→3` 단계로 해상도·효과·Spine 갱신 간격을 자동 조절하고 3단계 15fps 미만 10초 시 정지하는 장치. | [G5-perf.md](../docs/renewal/r6/tech/G5-perf.md) |
-| `ranking_seasons` | 시즌 2 서버 | `balance_version`(`1.0.0`/`2.0.0`)과 `season_id`(`season1`/`season2`), `submissions_open`을 연결하는 D1 표. 현재 운영 미반영. | [G5-server.md](../docs/renewal/r6/tech/G5-server.md) |
+| `ranking_seasons` | 시즌 2 서버 | `balance_version`(`1.0.0`/`2.0.0`)과 `season_id`(`season1`/`season2`), `submissions_open`을 연결하는 D1 표. 2026-11-27 운영 반영. | [G5-server.md](../docs/renewal/r6/tech/G5-server.md) |
 | `고비 (Milestone)` | 게임 규칙 | 5·10·15·20…웨이브마다 보스가 등장하고 생존 시 난이도별 추가 골드·PT를 지급하는 구간. | [product.defaults.v0.5.json](../docs/contracts/product.defaults.v0.5.json) |
 | `보물 (Relic)` | 전투 강화 | 판 안 특정 시점에 3종 중 1종을 골라 타워·경제에 지속 효과를 주는 강화 카드 12종. | [balance.v2.json](../docs/contracts/balance.v2.json) |
 | `R 모드` / `S 모드` | 반응형 화면 | 가로 여유가 충분해 우측 패널을 두는 `R 모드`와, 좁은 화면·폰에서 상하 배치하는 `S 모드`. | [vocabulary_td_prd_v0_5.md](../vocabulary_td_prd_v0_5.md) |

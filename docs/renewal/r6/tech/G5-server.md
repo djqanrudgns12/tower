@@ -83,3 +83,15 @@ gh run watch "$PAGES_RUN_ID" --exit-status
 - **시즌 2 신규 제출을 일시 중지할 때**. `d1 "UPDATE ranking_seasons SET submissions_open=0 WHERE balance_version='2.0.0'"`를 실행한다. 신규 제출은 503으로 재시도되고, 기존 제출의 동일한 재전송과 시즌별 조회는 계속된다. 복구 후 같은 조건에서 1로 되돌린다.
 - **Worker 자체를 되돌려야 할 때**. 이전 Pages 복구 후 2.0.0의 활성 조합을 기록하고 `d1 "UPDATE approved_run_conditions SET active=0 WHERE balance_version='2.0.0'"`로 닫은 뒤 `npx wrangler rollback "$OLD_WORKER_VERSION_ID" --config "$cfg"`를 실행한다. 이전 Worker는 시즌 표를 읽지 않는다. 이 동안 2.0.0 기록은 보관되고 공개 순위에서 빠지며, 이전 Worker는 늦은 2.0.0 제출을 영구 거절할 수 있다. 가능하면 시즌 인식 Worker에서 수정한다. 재개는 4절부터 진행한다. [Worker 버전 되돌리기](https://developers.cloudflare.com/workers/versions-and-deployments/rollbacks/)
 - **데이터 손상 시에만**. 현재 북마크와 반영 후 접수 건수를 먼저 기록한다. 북마크 이후의 정상 기록도 되감기므로 서비스 쓰기를 멈추고 별도 복원 승인을 받은 뒤 `npx wrangler d1 time-travel restore vocabulary-td --bookmark="$PRE_RELEASE_BOOKMARK" --config "$cfg"`를 실행한다. 출력의 역복원 북마크를 보관하고 대응하는 Worker·Pages 버전과 표·집계 수를 확인한다. [D1 북마크와 복원](https://developers.cloudflare.com/d1/reference/time-travel/)
+
+## 실행 기록 · 2026-11-27 (총괄, 사용자 승인 뒤)
+
+| 단계 | 시각(KST) | 결과 |
+| --- | --- | --- |
+| 1. 복구 지점 | 09:10 | 최근 홈 기기 0 · 미제출 판 0. 릴리스 SHA `1a7fe4eb45a877c357d60831a5fa8eaf39819c67`. D1 북마크 `00000024-00000000-00005130-19adfc843890b40d3f4d0bde3eec5f3e`. 이전 Worker `34198413-2cd3-4f04-bc20-48c8932aa759`. 이전 Pages 실행 `43746879229`(`8e02afec`). 1.0.0 승인 4개 · 2.0.0 0개 · 기록 0판 |
+| 2. 마이그레이션 | 09:10 | `0003_school_honor.sql`·`0004_ranking_seasons.sql` 적용, 대기 0. 시즌 표 `season1`·`season2` 각 1행 |
+| 3. 시드(닫힌 채) | 09:11 | 2.0.0 `garden_u` 3~6학년 4개 `active=0`, 검증 규칙 1.0.0·2.0.0 각 4난이도 |
+| 4. Worker | 09:11 | 새 버전 `7bfc8f40-6c71-4151-be4a-8c5f12a5d661`, `/v1/health` `{"ok":true}`. 시드 뒤 활성 조합 시즌별 4개, 제출 상태 둘 다 1 |
+| 5. Pages | 09:11~09:16 | `main` 빠른 전진 `8e02afec..1a7fe4eb`, 실행 `45915342315` 성공(검사·서버 시험 3분 19초, 빌드, 배포). 운영 홈 200, R6 홈·시즌 2 탭 표시, 콘솔 오류 0, R6 아틀라스·초상 크기 저장소와 일치 |
+
+남은 확인: 학생 화면에서 새 게임 한 판을 정상 종료해 시즌 2의 점수·웨이브·학교 필터와 내 기록을 본다. 실제 순위에 기록이 남는 일이라 담당 교사가 한다. 같은 기록이 시즌 1에 보이면 위 "되돌리기"의 시즌 2 제출 일시 중지부터 한다.
