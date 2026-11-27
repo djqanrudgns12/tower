@@ -4,7 +4,7 @@ type: project
 title: 프로젝트 계보 및 현행 코드 실체 판정
 status: active
 updated: 2026-11-26
-verified: { commit: c5001fd9, date: 2026-11-27 }
+verified: { commit: "12d66348", date: 2026-11-28 }
 sources:
   - path: package.json
     sha256: "438e5fc906d190ae6ff3e75af936f686e94d883375aff3ab996bcf06cd749d08"
@@ -13,7 +13,7 @@ sources:
   - path: docs/renewal/r6/PRD-r6.md
     sha256: "2ebe8c0d3e6c29822e5a15714f0a0a8b7a93ba5ce2e22031f83a3a7519be17b3"
   - path: docs/renewal/r6/PRD-r6-v2.md
-    sha256: ede514c9bea08115eb34a54c7905dda5a8f579587d326b7c6c7b166120a90b3b
+    sha256: "1bf6d3c15f279414b1c11d52ec0c5e00e66b9973a010af4f1c839c466dfe331f"
   - path: docs/renewal/r6/review/G4-towers-fix.md
     sha256: "87b41052a8a094586a2afbeb9a15a9c9a58fb17b5bf1acb6e48bc9ff893a4631"
   - path: docs/renewal/r6/tech/monster-pipeline.md

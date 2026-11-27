@@ -4,7 +4,7 @@ type: index
 title: 어휘력 타워 디펜스 에이전트 위키 색인
 status: active
 updated: 2026-11-25
-verified: { commit: c5001fd9, date: 2026-11-27 }
+verified: { commit: "12d66348", date: 2026-11-28 }
 sources:
   - path: AGENTS.md
     sha256: "6a114bb3e7c1c01e63f75603742e3aa7811719234dc84c2471b0d045fbb26bf4"
@@ -13,7 +13,7 @@ sources:
   - path: docs/renewal/r6/PRD-r6.md
     sha256: "2ebe8c0d3e6c29822e5a15714f0a0a8b7a93ba5ce2e22031f83a3a7519be17b3"
   - path: docs/renewal/r6/PRD-r6-v2.md
-    sha256: ede514c9bea08115eb34a54c7905dda5a8f579587d326b7c6c7b166120a90b3b
+    sha256: "1bf6d3c15f279414b1c11d52ec0c5e00e66b9973a010af4f1c839c466dfe331f"
 ---
 
 # 어휘력 타워 디펜스 LLM Wiki (`index`)
