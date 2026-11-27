@@ -26,6 +26,41 @@
 .title:focus { outline: none; }
 .count { margin: 0 0 0 auto; font-size: var(--fs-2); font-weight: 700; color: var(--text-muted); }
 
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s2);
+}
+.searchInput {
+  flex: 1 1 180px;
+  min-width: 0;
+  min-height: 40px;
+  padding: 6px var(--s3);
+  border: 2px solid var(--border-hairline);
+  border-radius: var(--chamfer-sm);
+  background: var(--bg-pressed);
+  color: var(--text-strong);
+  font: inherit;
+  font-size: var(--fs-2);
+}
+.lemmaRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s1);
+  min-width: 0;
+}
+.priorityBadge {
+  padding: 2px 6px;
+  border-radius: var(--chamfer-sm);
+  border: 1px solid var(--accent-teal);
+  color: var(--accent-teal);
+  font-size: var(--fs-1);
+  font-weight: 800;
+  line-height: 1.2;
+}
+
 .list {
   list-style: none;
   margin: 0;

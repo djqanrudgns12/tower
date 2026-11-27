@@ -20,10 +20,24 @@
 
 .previewBtns {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: var(--s2);
   width: 100%;
 }
+.shortcutBtn { width: 100%; justify-content: space-between; }
+.shortcutList {
+  margin: 0;
+  padding: var(--s2);
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--s1) var(--s3);
+  background: var(--bg-pressed);
+  border-radius: var(--chamfer-sm);
+  font-size: var(--fs-1);
+}
+.shortcutList > div { display: flex; justify-content: space-between; gap: var(--s2); }
+.shortcutList dt { font-weight: 800; color: var(--accent-teal); }
+.shortcutList dd { margin: 0; color: var(--text-muted); }
 
 /* 켜기·끄기 줄: 줄 전체가 스위치다(이름 왼쪽, 스위치 오른쪽). 설명이 붙으면 같은 .row 안에서 스위치 아래에 선다. */
 .row > .switchRow {

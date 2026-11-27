@@ -55,6 +55,15 @@ export class EffectLayer {
     else if (this.c.bridge.controller.renderQuality.current === 0) {
       for (let i = 0; i < 3; i++) this.fx(ASSETS.projectile.puff, toWorld(e.x) + (i - 1) * 9, toWorld(e.y) - 10 - (i % 2) * 6, 0.6);
     }
+    if (
+      this.r6
+      && e.kind === 'boss'
+      && this.c.bridge.controller.renderQuality.current === 0
+      && !this.c.bridge.reducedMotion
+      && typeof this.c.scene.cameras?.main?.shake === 'function'
+    ) {
+      this.c.scene.cameras.main.shake(120, 0.0024);
+    }
     this.spawnKillCallout(e.x, e.y, e.gold, e.pt, labelRaise);
   }
 
@@ -113,6 +122,10 @@ export class EffectLayer {
     const { scene, bridge } = this.c;
     const reduced = bridge.reducedMotion;
     if (cue.kind === 'ring') {
+      if (this.r6Vfx) {
+        this.r6Vfx.onBossTelegraph(at.x, at.y + FOOT);
+        return;
+      }
       // 방패 고리가 바깥에서 발밑으로 한 번 조여 든다. 움직임 줄이기면 상시 고리만 보인다.
       if (reduced) return;
       const g = scene.add.graphics().setDepth(DEPTH.overlay + 2).setPosition(at.x, at.y + FOOT);
@@ -123,6 +136,10 @@ export class EffectLayer {
     } else if (cue.kind === 'wardPop') {
       // 벗겨진 방패 점 자리에서 작은 조각이 튄다.
       const dx = wardDotOffsets(cue.of)[cue.index] ?? 0;
+      if (this.r6Vfx) {
+        this.r6Vfx.onSpecialHit(at.x + dx, at.y - CELL_PX * 0.92, 'wardBreak');
+        return;
+      }
       this.flash(ASSETS.projectile.shard, at.x + dx, at.y - CELL_PX * 0.92, 0.55, undefined, DEPTH.ui + 1);
     } else if (cue.kind === 'heal') {
       this.floatLabel(at.x, at.y - CELL_PX * 1.02, `+${cue.hp}`, `#${PALETTE.grassLight.toString(16).padStart(6, '0')}`);

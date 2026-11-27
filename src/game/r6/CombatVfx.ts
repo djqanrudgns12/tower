@@ -15,6 +15,7 @@ import {
   speciesKillTint,
   vfxGraphicsBudget,
   vfxParticleCap,
+  weaponStageScale,
 } from './vfxTiming';
 
 type Graphics = Phaser.GameObjects.Graphics;
@@ -232,6 +233,10 @@ export class R6CombatVfx {
       if (!scene.sys.isActive()) return;
       for (const e of events) {
         if (e.type === 'areaImpact') this.impact(e);
+        else if (e.type === 'towerStage') {
+          const tower = bridge.controller.state.towers.find(t => t.id === e.towerId);
+          if (tower) this.onTowerStage(tower.x, tower.y, e.weapon);
+        }
       }
     });
     scene.events.once('shutdown', () => { off(); this.destroyPool(); });
@@ -255,6 +260,7 @@ export class R6CombatVfx {
       const p = fieldPosition(this.c, target.x, target.y);
       return { x: p.x, y: p.y - 12 - enemyLift(target.enemyId) };
     };
+    const wScale = weaponStageScale(tower?.level ?? 1);
     const type: string = e.towerType;
     switch (type) {
       case 'rail': {
@@ -264,7 +270,7 @@ export class R6CombatVfx {
         if (tower) this.railVolleys.set(tower.id, tower.attacks);
         if (!emitted) {
           this.rail(muzzle, target, final, railLanes(tower?.level ?? 1));
-          this.spawnParticle('muzzle_cross', muzzle.x, muzzle.y, color.silver, 0.34, 0.14, 110, 0, 0, 0, Math.atan2(final.y - muzzle.y, final.x - muzzle.x), 0, true);
+          this.spawnParticle('muzzle_cross', muzzle.x, muzzle.y, color.silver, 0.34 * wScale, 0.14 * wScale, 110, 0, 0, 0, Math.atan2(final.y - muzzle.y, final.x - muzzle.x), 0, true);
         }
         break;
       }
@@ -273,22 +279,52 @@ export class R6CombatVfx {
         this.cryo(from, toWorld(range));
         for (const t of e.targets.slice(0, 4)) {
           const p = toBody(t);
-          this.spawnParticle('frost_hex', p.x, p.y - 6, color.teal, 0.28, 0.42, 320, 0, 14, 0, t.enemyId * 0.7, 2.2, true);
+          this.spawnParticle('frost_hex', p.x, p.y - 6, color.teal, 0.28 * wScale, 0.42 * wScale, 320, 0, 14, 0, t.enemyId * 0.7, 2.2, true);
         }
         break;
       }
       case 'prism':
         this.prism([muzzle, ...e.targets.slice(0, 5).map(toBody)]);
-        this.spawnParticle('glow_dot', muzzle.x, muzzle.y, color.amber, 0.36, 0.16, 150, 0, 0, 0, 0, 0, true);
+        this.spawnParticle('glow_dot', muzzle.x, muzzle.y, color.amber, 0.36 * wScale, 0.16 * wScale, 150, 0, 0, 0, 0, 0, true);
         break;
       case 'bastion': {
         const target = fieldPosition(this.c, first.x, first.y);
         const links = controller.state.towers.filter(ally =>
           tower && ally !== tower && String(ally.type) !== 'bastion' && auraReaches(controller.ctx.balance, tower, ally));
         this.bastion(from, target, links.map(ally => fieldPosition(this.c, ally.x, ally.y)));
-        this.spawnParticle('ring_shock', from.x, from.y, color.teal, 0.24, 0.65, 260, 0, 0, 0, 0, 0, true);
+        this.spawnParticle('ring_shock', from.x, from.y, color.teal, 0.24 * wScale, 0.65 * wScale, 260, 0, 0, 0, 0, 0, true);
         break;
       }
+    }
+  }
+
+  /** 타워 진화·무기 단계 승급 버스트(WP-C2-05). */
+  onTowerStage(milliX: number, milliY: number, weapon: number) {
+    const { controller, reducedMotion } = this.c.bridge;
+    if (reducedMotion || controller.renderQuality.current >= 2) return;
+    const at = fieldPosition(this.c, milliX, milliY);
+    const scale = weapon >= 1 ? 0.85 : 0.65;
+    this.spawnParticle('ring_shock', at.x, at.y - 12, color.teal, 0.25, scale, 340, 0, 0, 0, 0, 0, true);
+    const count = weapon >= 1 ? 5 : 3;
+    for (let i = 0; i < count; i++) {
+      const a = (i / count) * TAU;
+      this.spawnParticle('glow_dot', at.x, at.y - 16, i % 2 ? color.teal : color.amber, 0.24, 0.08, 320, Math.cos(a) * 34, Math.sin(a) * 24 - 14, 0, 0, 0, true);
+    }
+  }
+
+  /** 보스 스킬 전조 링(WP-C2-05). */
+  onBossTelegraph(worldX: number, worldY: number) {
+    if (this.c.bridge.reducedMotion || this.c.bridge.controller.renderQuality.current >= 2) return;
+    this.spawnParticle('ring_shock', worldX, worldY, color.amber, 0.72, 0.34, 420, 0, 0, 0, 0, 0, true);
+  }
+
+  /** 방패 파괴·은신 간파 특수 판정 파편(WP-C2-05). */
+  onSpecialHit(worldX: number, worldY: number, kind: 'wardBreak' | 'reveal') {
+    const tint = kind === 'wardBreak' ? color.teal : color.amber;
+    const count = this.c.bridge.controller.renderQuality.current > 0 ? 2 : 4;
+    for (let i = 0; i < count; i++) {
+      const a = (i / count) * TAU + 0.35;
+      this.spawnParticle('spark_shard', worldX, worldY, tint, 0.22, 0.08, 200, Math.cos(a) * 44, Math.sin(a) * 32, 0, a, 0, true);
     }
   }
 

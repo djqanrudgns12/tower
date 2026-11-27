@@ -36,6 +36,8 @@ export interface Settings {
   motionCustomized?: boolean;
   /** 전장 길·돌 받침 고대비 보조 윤곽선 표시. */
   highContrastMap: boolean;
+  /** 색약 보조 배색(Okabe-Ito 안전 색상 + 테두리 구분). */
+  colorblindPalette?: boolean;
   /** 밝은 화면 색상. 예전 저장본은 어두운 화면으로 연다. */
   lightTheme?: boolean;
   lightGraphics?: boolean;
@@ -84,6 +86,7 @@ const defaults = (): Settings => ({
   motionMode: typeof matchMedia === 'function' && matchMedia('(prefers-reduced-motion: reduce)').matches ? 'minimal' : 'full',
   motionCustomized: false,
   highContrastMap: false,
+  colorblindPalette: false,
   lightTheme: true,
   lightGraphics: false,
   showKeyHints: true,
@@ -122,6 +125,7 @@ export function normalizeSettings(base: Settings, raw: Partial<Settings>): Setti
     motionMode,
     motionCustomized,
     highContrastMap: typeof raw.highContrastMap === 'boolean' ? raw.highContrastMap : base.highContrastMap,
+    colorblindPalette: typeof raw.colorblindPalette === 'boolean' ? raw.colorblindPalette : Boolean(base.colorblindPalette),
     lightTheme: typeof raw.lightTheme === 'boolean' ? raw.lightTheme : (base.lightTheme ?? true),
     lightGraphics: typeof raw.lightGraphics === 'boolean' ? raw.lightGraphics : (base.lightGraphics ?? false),
     showKeyHints: typeof raw.showKeyHints === 'boolean' ? raw.showKeyHints : base.showKeyHints,

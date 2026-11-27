@@ -34,4 +34,14 @@ describe('R6 타워 회전 보간과 Zero-Texture Idle', () => {
     const rm = towerIdleSpec(1, 'rail', 1000, 2000, 0, true);
     expect(rm).toEqual({ breathY: 0, glowAlpha: 0, glowColor: 0x2fb5a3, scanOffset: 0 });
   });
+
+  it('WP-C2-05: 연속 정답 보너스(burning) 활성 시 품질 0에서만 앰버 오버클럭 글로우로 전환한다', () => {
+    const idle = towerIdleSpec(1, 'rail', 1000, 2000, 0, false, false);
+    const burning = towerIdleSpec(1, 'rail', 1000, 2000, 0, false, true);
+    expect(burning.glowColor).toBe(0xe69f24);
+    expect(burning.glowAlpha).toBeGreaterThan(idle.glowAlpha);
+    // 품질 1+ 또는 움직임 줄이기에서는 글로우 0 유지
+    expect(towerIdleSpec(1, 'rail', 1000, 2000, 1, false, true).glowAlpha).toBe(0);
+    expect(towerIdleSpec(1, 'rail', 1000, 2000, 0, true, true).glowAlpha).toBe(0);
+  });
 });

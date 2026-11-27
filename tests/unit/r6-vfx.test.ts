@@ -1,12 +1,15 @@
 import { describe, expect, it } from 'vitest';
 import {
+  bossPunchOffset,
   fragmentCount,
   prismDelay,
+  r6BiomeAmbientKind,
   railLanes,
   shellPoint,
   speciesKillTint,
   vfxGraphicsBudget,
   vfxParticleCap,
+  weaponStageScale,
 } from '../../src/game/r6/vfxTiming';
 
 describe('R6 공격 연출 시간과 품질', () => {
@@ -42,5 +45,16 @@ describe('R6 공격 연출 시간과 품질', () => {
     expect(speciesKillTint('elf-infantry-t1')).toBe(0x2fb5a3);
     expect(speciesKillTint('machine-boss-t4')).toBe(0xe69f24);
     expect(speciesKillTint(undefined)).toBe(0xb8c0c8);
+  });
+
+  it('WP-C2-05: 무기 단계별 VFX 스케일, 보스 펀치 120ms 감쇠, R6 4바이옴 입자 매핑이 정확하다', () => {
+    expect([1, 6, 12, 18].map(weaponStageScale)).toEqual([1.0, 1.12, 1.25, 1.4]);
+    expect(bossPunchOffset(0, 0, false)).toBeLessThanOrEqual(2.5);
+    expect(bossPunchOffset(60, 0, false)).toBeGreaterThan(0);
+    expect(bossPunchOffset(120, 0, false)).toBe(0);
+    expect(bossPunchOffset(10, 1, false)).toBe(0);
+    expect(bossPunchOffset(10, 0, true)).toBe(0);
+    expect(['meadow_easy', 'river_normal', 'ochre_hard', 'snow_crazy'].map(r6BiomeAmbientKind))
+      .toEqual(['meadow', 'river', 'ochre', 'snow']);
   });
 });

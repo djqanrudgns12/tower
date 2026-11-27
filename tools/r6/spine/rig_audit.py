@@ -9,6 +9,7 @@ import numpy as np
 from PIL import Image
 
 from batch import CATALOG, PUBLIC, SPECIES, white_patches
+from mesh_weights import audit_mesh_budget
 from part_guides import PIXELS_PER_UNIT
 from pilot import write_json
 
@@ -105,19 +106,40 @@ def measure(actor, atlas):
 
 
 def budget_violations(catalog_path, atlas_root):
-    """내보낸 모든 리그가 본 수(일반 ≤24, 보스 ≤32)와 걷기 키프레임 상한(≤9)을 지키는지 점검한다."""
+    """내보낸 모든 리그가 본/슬롯/메시/가중치 상한, 걷기 키(≤9·루프 폐합), fall 길이를 지키는지 점검한다."""
     data = json.loads(catalog_path.read_text(encoding="utf-8"))
     violations = []
     for rig_id, meta in data["rigs"].items():
         rig = json.loads((atlas_root / meta["file"]).read_text(encoding="utf-8"))
-        bone_limit = 32 if "-boss-" in rig_id else 24
-        if len(rig["bones"]) > bone_limit:
-            violations.append({"rig": rig_id, "reason": "bones", "count": len(rig["bones"]), "limit": bone_limit})
+        is_boss = "-boss-" in rig_id
+        for reason, count, limit in audit_mesh_budget(rig, is_boss=is_boss):
+            violations.append({"rig": rig_id, "reason": reason, "count": count, "limit": limit})
         walk_bones = rig.get("animations", {}).get("walk", {}).get("bones", {})
         for bname, channels in walk_bones.items():
             for cname, keys in channels.items():
                 if len(keys) > 9:
                     violations.append({"rig": rig_id, "reason": f"walk:{bname}.{cname}", "count": len(keys), "limit": 9})
+                if len(keys) >= 2:
+                    if cname == "rotate" and abs((keys[-1].get("value", 0) - keys[0].get("value", 0)) % 360) > 0.01:
+                        violations.append({"rig": rig_id, "reason": f"walk-loop:{bname}.{cname}", "count": 1, "limit": 0})
+                    elif cname == "translate" and (
+                        abs(keys[-1].get("x", 0) - keys[0].get("x", 0)) > 0.01
+                        or abs(keys[-1].get("y", 0) - keys[0].get("y", 0)) > 0.01
+                    ):
+                        violations.append({"rig": rig_id, "reason": f"walk-loop:{bname}.{cname}", "count": 1, "limit": 0})
+                    elif cname == "scale" and (
+                        abs(keys[-1].get("x", 1) - keys[0].get("x", 1)) > 0.01
+                        or abs(keys[-1].get("y", 1) - keys[0].get("y", 1)) > 0.01
+                    ):
+                        violations.append({"rig": rig_id, "reason": f"walk-loop:{bname}.{cname}", "count": 1, "limit": 0})
+        fall_bones = rig.get("animations", {}).get("fall", {}).get("bones", {})
+        fall_limit = 0.9 if is_boss else 0.6
+        fall_dur = max(
+            (k.get("time", 0) for ch in fall_bones.values() for keys in ch.values() for k in keys),
+            default=0.0,
+        )
+        if fall_dur > fall_limit:
+            violations.append({"rig": rig_id, "reason": "fall-duration", "count": fall_dur, "limit": fall_limit})
     return violations
 
 
@@ -141,11 +163,23 @@ def audit(catalog=CATALOG, public=PUBLIC, species_list=SPECIES):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("output", type=Path)
+    parser.add_argument("output", type=Path, nargs="?")
     parser.add_argument("--catalog", type=Path, default=CATALOG)
     parser.add_argument("--public", type=Path, default=PUBLIC)
     parser.add_argument("--species", nargs="+", choices=SPECIES, default=SPECIES)
+    parser.add_argument("--budget", action="store_true")
     args = parser.parse_args()
+    if args.budget:
+        budgets = []
+        for sp in args.species:
+            budgets.extend(budget_violations(args.catalog / f"{sp}.json", args.public.parent))
+        print(f"예산·제약·루프 위반 {len(budgets)}건")
+        if budgets:
+            print(json.dumps(budgets[:10], ensure_ascii=False, indent=2))
+            raise SystemExit(1)
+        return
+    if not args.output:
+        parser.error("output 경로 또는 --budget 플래그가 필요합니다.")
     report = audit(args.catalog, args.public, args.species)
     write_json(args.output, report)
     print(f"관절 접합 기준 미달 {len(report['failed'])}/{len(report['actors'])}개체 · "

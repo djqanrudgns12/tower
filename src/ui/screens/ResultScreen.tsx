@@ -9,7 +9,7 @@ import { LineIcon } from '../icons/LineIcon';
 import { Button, Card, Rule, Stat, Window } from '../kit';
 import { RESULT_EXTRA as X } from './home/homeCopy';
 import css from './ResultScreen.module.css';
-import { countUpAt, runLog } from './resultModel';
+import { countUpAt, runLog, summarizeR6Run } from './resultModel';
 
 /** 오답 노트에 새로 담은 낱말 수·외운(졸업한) 낱말 수. `controller.getView().reviewDelta`와 같은 모양이다. */
 export interface ResultReviewDelta { added: number; graduated: number }
@@ -36,9 +36,8 @@ const SAVE_STATUS_COPY: Record<Exclude<RunSaveStatus, 'untracked'>, string> = {
   pending: '랭킹 전송 대기 중',
 };
 
-function ResultSaveStatus({ controller }: Pick<Props, 'controller'>) {
+function ResultSaveStatus({ controller, sharing }: Pick<Props, 'controller'> & { sharing: boolean }) {
   const saveStatus = useSyncExternalStore(controller.subscribe, controller.getSaveStatus, controller.getSaveStatus);
-  const sharing = useSyncExternalStore(subscribeRecordSharing, isRecordSharingEnabled, isRecordSharingEnabled);
   const status = saveStatus === 'pending' && !sharing ? 'saved' : saveStatus;
   if (status === 'untracked') return null;
   return (
@@ -74,12 +73,13 @@ function useCountUp(target: number, still: boolean, ms = 420): number {
 }
 
 /**
- * 결과와 복습(R4 U3 → R5 R1·R2, PRD §10.1). 결과 창(성문 + 지킨 웨이브 + 한 줄 + 정답·처치·점수) 바로 아래에 다시 하기·홈이 붙는다.
+ * 결과와 복습(R4 U3 → R5 R1·R2 · WP-C2-03). 결과 창(성문 + 지킨 웨이브 + 한 줄 + 정답·처치·점수) 바로 아래에 다시 하기·홈이 붙는다.
  * '이번 판 기록'은 접어 두었다가 누르면 푼 문제·모르겠어요·만난 낱말을 보인다(퍼센트·숙련도는 없다, PRD §20.5).
  * 틀리거나 넘긴 낱말이 있을 때만 옆에 ‘틀린 낱말’ 창이 선다(없으면 빈 창을 그리지 않고 결과 창이 가운데에 선다).
  * 복습 재풀이는 보상이 없으므로(PRD §2.2) 여기서는 낱말 카드를 눌러 해설만 펼쳐 보인다.
  */
 export function ResultScreen({ state, controller, reviewDelta = null, previousBest = null, onOpenNote, onAgain, onHome }: Props) {
+  const sharing = useSyncExternalStore(subscribeRecordSharing, isRecordSharingEnabled, isRecordSharingEnabled);
   const questions = reviewQuestions(state.config.grade);
   const answers = state.quiz.history;
   const total = answers.length;
@@ -105,13 +105,17 @@ export function ResultScreen({ state, controller, reviewDelta = null, previousBe
     : [];
 
   const hasReview = items.length > 0;
-  // R1 이번 판 기록(푼 문제·모르겠어요·만난 낱말)과 R2 만점 칭찬의 숫자.
+  // R1 이번 판 기록(푼 문제·모르겠어요·만난 낱말), R2 만점 칭찬, WP-C2-03 R6 성취 요약.
   const log = runLog(state.stats, answers.filter(a => a.answer), id => questions.get(id)?.target.senseKey);
+  const r6Summary = summarizeR6Run(state);
 
   const [still] = useState(prefersStill);
   const wave = useCountUp(state.completedWave, still);
   const logId = useId();
   const [logOpen, setLogOpen] = useState(false);
+  const [expandGen, setExpandGen] = useState(0);
+  const [allExpanded, setAllExpanded] = useState(false);
+  const [hideAnswers, setHideAnswers] = useState(false);
 
   return (
     <main className={css.page}>
@@ -122,7 +126,7 @@ export function ResultScreen({ state, controller, reviewDelta = null, previousBe
             <Window as="section" className={css.summary} aria-labelledby="resultWave">
               <div className={css.resultHead}>
                 <p className={css.meta}>{state.config.nickname} · {state.config.grade}학년 · {DIFFICULTY_COPY[state.config.difficulty].label}</p>
-                <ResultSaveStatus controller={controller} />
+                <ResultSaveStatus controller={controller} sharing={sharing} />
               </div>
               <Rule />
               {/* 화면 읽기에는 처음부터 끝 값을 읽히고, 눈에 보이는 숫자만 올라간다. 움직임 줄이기면 올라가지 않고 투명도로만 나타난다. */}
@@ -136,6 +140,15 @@ export function ResultScreen({ state, controller, reviewDelta = null, previousBe
               </div>
               {log.perfect && <p className={css.praise}>{X.perfect}</p>}
 
+              {r6Summary && (
+                <ul className={css.r6Strip} aria-label="전장 성취 요약">
+                  <li><span>도달 구간</span><strong>{r6Summary.chapter.name}</strong></li>
+                  <li><span>보스 격파</span><strong>{fmtNumber(r6Summary.bossKills)}기</strong></li>
+                  <li><span>최고 연속</span><strong>{fmtNumber(r6Summary.maxStreak)}문제</strong></li>
+                  {r6Summary.topTower && <li><span>주력 타워</span><strong>{r6Summary.topTower.name}</strong></li>}
+                </ul>
+              )}
+
               <div className={css.stats}>
                 <Card sunk pad="sm" className={css.tile ?? ''}><Stat icon={null} value={`${state.stats.correct}/${total}`} label={T.correct} className={css.stat ?? ''} /></Card>
                 <Card sunk pad="sm" className={css.tile ?? ''}><Stat icon={null} value={fmtNumber(state.stats.kills)} label={T.kills} className={css.stat ?? ''} /></Card>
@@ -143,6 +156,9 @@ export function ResultScreen({ state, controller, reviewDelta = null, previousBe
               </div>
 
               <p className={css.ranking}>{T.ranking} <strong>{honorPt > 0 ? `+${fmtNumber(honorPt)}` : '0'}</strong></p>
+              {!sharing && state.completedWave >= 1 && (
+                <p className={css.shareHint}>순위표 공유가 꺼져 있어 이 기기에만 기록됐어요. 설정에서 켜면 다음 판부터 올라가요.</p>
+              )}
               {onOpenNote && noteParts.length > 0 && (
                 <div className={css.note}>
                   <p className={css.noteText}>{noteParts.join(' · ')}</p>
@@ -174,11 +190,38 @@ export function ResultScreen({ state, controller, reviewDelta = null, previousBe
 
           {hasReview && (
             <Window as="section" className={css.review} aria-labelledby="resultReview">
-              <h2 id="resultReview" className={css.reviewTitle}>{X.missedTitle}</h2>
+              <div className={css.reviewHead}>
+                <h2 id="resultReview" className={css.reviewTitle}>{X.missedTitle}</h2>
+                <div className={css.reviewTools}>
+                  <Button
+                    size="md"
+                    aria-pressed={hideAnswers}
+                    onClick={() => setHideAnswers(v => !v)}
+                  >
+                    {hideAnswers ? '정답 보이기' : '정답 가리기'}
+                  </Button>
+                  <Button
+                    size="md"
+                    onClick={() => {
+                      setAllExpanded(v => !v);
+                      setExpandGen(g => g + 1);
+                    }}
+                  >
+                    {allExpanded ? '모두 접기' : '모두 펼치기'}
+                  </Button>
+                </div>
+              </div>
               <Rule />
               {/* 낱말·뜻·해설은 문제 내용이라 data-content로 표시한다(상시 문장 계측에서 뺀다). */}
               <ul className={css.list} data-content>
-                {items.map(item => <WordCard key={item.id} item={item} />)}
+                {items.map(item => (
+                  <WordCard
+                    key={`${item.id}-${expandGen}`}
+                    item={item}
+                    initialOpen={allExpanded}
+                    hideAnswer={hideAnswers}
+                  />
+                ))}
               </ul>
             </Window>
           )}
@@ -189,8 +232,8 @@ export function ResultScreen({ state, controller, reviewDelta = null, previousBe
 }
 
 /** 낱말 카드: 낱말과 정답을 보이고, 누르거나 Enter·Space를 누르면 문제와 해설이 펼쳐진다. */
-function WordCard({ item }: { item: ReviewItem }) {
-  const [open, setOpen] = useState(false);
+function WordCard({ item, initialOpen, hideAnswer }: { item: ReviewItem; initialOpen: boolean; hideAnswer: boolean }) {
+  const [open, setOpen] = useState(initialOpen);
   const panelId = useId();
   return (
     <li>
@@ -198,7 +241,9 @@ function WordCard({ item }: { item: ReviewItem }) {
         <Button variant="ghost" className={css.wordBtn} aria-expanded={open} aria-controls={panelId} onClick={() => setOpen(v => !v)}>
           <span className={css.wordText}>
             <span className={css.lemma}>{item.lemma}</span>
-            <span className={css.answer}>{T.answer} {item.answer}</span>
+            <span className={css.answer}>
+              {hideAnswer && !open ? `${T.answer} (눌러서 확인)` : `${T.answer} ${item.answer}`}
+            </span>
           </span>
           <span className={css.chevron} data-open={open} aria-hidden="true"><LineIcon name="hud/back" /></span>
         </Button>

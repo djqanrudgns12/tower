@@ -1,0 +1,34 @@
+.difficultyWrap {
+  display: grid;
+  gap: var(--s1);
+}
+.projectorWrap {
+  display: grid;
+  justify-items: center;
+  gap: var(--s3);
+  padding: var(--s2) 0;
+  text-align: center;
+}
+.projectorBadge {
+  margin: 0;
+  font-size: var(--fs-3);
+  font-weight: 800;
+  color: var(--accent-teal);
+}
+.projectorBox {
+  padding: var(--s3);
+  background: #ffffff;
+  border: 3px solid var(--border-hairline);
+  border-radius: var(--chamfer-sm);
+}
+.projectorSvg {
+  display: block;
+  width: min(360px, 72vw);
+  height: min(360px, 72vw);
+}
+.projectorUrl {
+  margin: 0;
+  font-size: var(--fs-1);
+  color: var(--text-muted);
+  word-break: break-all;
+}

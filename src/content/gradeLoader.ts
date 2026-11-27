@@ -19,7 +19,13 @@ export function createGradeLoader(rawManifest: BankManifest, loaders: Readonly<R
     peek: (grade: number): BankFile | null => banks.get(grade) ?? null,
     state: (grade: number): GradeLoadState => states.get(grade) ?? (available(grade) ? 'unloaded' : 'unavailable'),
     subscribe(listener: () => void) { listeners.add(listener); return () => { listeners.delete(listener); }; },
-    load(grade: number): Promise<BankFile | null> {
+    load,
+    prefetch(grade: number): void {
+      if (banks.has(grade) || pending.has(grade) || !available(grade)) return;
+      void load(grade).catch(() => undefined);
+    },
+  };
+  function load(grade: number): Promise<BankFile | null> {
       if (banks.has(grade)) return Promise.resolve(banks.get(grade)!);
       const running = pending.get(grade);
       if (running) return running;
@@ -39,6 +45,5 @@ export function createGradeLoader(rawManifest: BankManifest, loaders: Readonly<R
       }).catch((error: unknown) => { states.set(grade, 'error'); notify(); throw error; }).finally(() => { pending.delete(grade); });
       pending.set(grade, promise); states.set(grade, 'loading'); notify();
       return promise;
-    },
-  };
+  }
 }

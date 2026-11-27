@@ -32,6 +32,19 @@
 .line[data-kind='nearMiss'] { font-weight: 800; color: var(--accent-amber); }
 /* R2: 틀린 문제 없는 판의 칭찬 한 줄. */
 .praise { font-size: var(--fs-2); font-weight: 700; color: var(--accent-teal); }
+.r6Strip {
+  list-style: none;
+  margin: var(--s1) 0 0;
+  padding: var(--s2);
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--s2);
+  background: var(--bg-pressed);
+  border-radius: var(--chamfer-sm);
+}
+.r6Strip > li { display: grid; gap: 2px; min-width: 0; }
+.r6Strip span { font-size: var(--fs-1); font-weight: 700; color: var(--text-muted); }
+.r6Strip strong { font-size: var(--fs-2); font-weight: 800; color: var(--text-strong); overflow-wrap: anywhere; }
 .stats { width: 100%; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--s2); margin-top: var(--s2); }
 /* 3지표 칸: Card sunk(음각 홈). 숫자는 크게, 이름은 13px. */
 .stats .tile { display: grid; place-items: center; }
@@ -39,6 +52,7 @@
 .stats .stat > span { max-width: 100%; overflow-wrap: anywhere; }
 .ranking { margin-top: var(--s1); font-size: var(--fs-2); color: var(--text-muted); }
 .ranking strong { color: var(--text-strong); font-weight: 800; }
+.shareHint { margin: 0; font-size: var(--fs-1); line-height: 1.35; color: var(--text-muted); }
 .note { width: 100%; display: flex; align-items: center; justify-content: space-between; gap: var(--s3); text-align: left; }
 .noteText { font-size: var(--fs-2); font-weight: 700; }
 .saveStatus { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s2); font-size: var(--fs-1); color: var(--accent-teal); }
@@ -56,7 +70,15 @@
 
 /* ── 낱말 창: 틀리거나 넘긴 낱말 ── */
 .review { display: flex; flex-direction: column; gap: var(--s2); min-height: 0; }
-.reviewTitle { font-size: var(--fs-3); font-weight: 800; }
+.reviewHead {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s2);
+}
+.reviewTitle { font-size: var(--fs-3); font-weight: 800; margin: 0; }
+.reviewTools { display: inline-flex; gap: var(--s2); flex-wrap: wrap; }
 .list { list-style: none; margin: 0; padding: var(--s2); display: grid; gap: var(--s2); min-height: 0; overflow-y: auto; }
 .word { padding: 0; }
 .word .wordBtn {

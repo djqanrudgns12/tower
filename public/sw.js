@@ -42,6 +42,18 @@ function isSafeDocumentResponse(response) {
   return contentType.includes('text/html');
 }
 
+async function notifyOfflineFallback() {
+  try {
+    if (!self.clients || typeof self.clients.matchAll !== 'function') return;
+    const list = await self.clients.matchAll({ type: 'window' });
+    for (const client of list) {
+      client.postMessage?.({ type: 'vocabulary-td.offlineFallback' });
+    }
+  } catch {
+    // 클라이언트 알림 실패는 무시하고 캐시 응답만 돌려준다.
+  }
+}
+
 async function cacheResponse(request, response) {
   try {
     const cache = await caches.open(CACHE_NAME);
@@ -81,7 +93,10 @@ self.addEventListener('fetch', event => {
           return fresh;
         } catch {
           const cached = await caches.match(shellUrl, { cacheName: CACHE_NAME }).catch(() => undefined);
-          if (cached) return cached;
+          if (cached) {
+            void notifyOfflineFallback();
+            return cached;
+          }
           return fetch(request);
         }
       })(),

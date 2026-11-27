@@ -139,9 +139,9 @@ export function buildGuideChapters(balance: Balance = BALANCE): readonly GuideCh
         },
         {
           badge: '진화',
-          title: r6 ? `최대 Lv${r6.levels.max}` : `레벨 ${evolveA}·${evolveB} 진화`,
+          title: r6 ? `최대 ${r6.levels.max}단계` : `레벨 ${evolveA}·${evolveB} 진화`,
           body: r6
-            ? `타워는 ${R6_TOWERS.length}종이에요. 짝수 레벨마다 모양이 바뀌고 Lv${r6.levels.weaponAt.slice(1).join('·')}에서 무기가 바뀌어요.`
+            ? `타워는 ${R6_TOWERS.length}종이에요. 짝수 단계마다 모양이 바뀌고 ${r6.levels.weaponAt.slice(1).join('·')}단계에서 무기가 바뀌어요.`
             : `${startNames}으로 시작해요. 레벨 ${evolveA}에서 두 갈래 중 하나를 고르고, 고른 길은 바꿀 수 없어요.`,
           icon: 'branch',
         },

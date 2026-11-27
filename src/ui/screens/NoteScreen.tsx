@@ -1,9 +1,19 @@
 import { useEffect, useEffectEvent, useMemo, useRef, useState } from 'react';
 import { NOTE_COPY as T } from '../copy';
 import { LineIcon } from '../icons/LineIcon';
-import { Button, Card, IconButton, ModalTabPanel, ModalTabs, ModalTabShell, Rule, Window, type ModalTabOption } from '../kit';
+import { Button, Card, IconButton, ModalTabPanel, ModalTabs, ModalTabShell, Rule, Segmented, Window, type ModalTabOption } from '../kit';
 import { NOTE_EXTRA as X } from './home/homeCopy';
-import { buildNoteEntries, NOTE_GRADUATE_CLEARS, type NoteEntry, type NoteItemLike } from './noteModel';
+import { NoteFlashcard } from './NoteFlashcard';
+import {
+  buildNoteEntries,
+  filterNoteEntries,
+  markNextRunPriority,
+  NOTE_GRADUATE_CLEARS,
+  sortNoteEntries,
+  type NoteEntry,
+  type NoteItemLike,
+  type NoteSortMode,
+} from './noteModel';
 import css from './NoteScreen.module.css';
 
 export { buildNoteEntries, NOTE_GRADUATE_CLEARS, type NoteEntry, type NoteItemLike };
@@ -18,16 +28,27 @@ interface Props {
   onRetry?(): void;
 }
 
+const SORT_OPTIONS: readonly { value: NoteSortMode; label: string }[] = [
+  { value: 'recent', label: '최근 순' },
+  { value: 'priority', label: '복습 우선' },
+];
+
 /**
- * 오답 노트 화면(lg 860×580 고정 프레임 Window + 3탭: 전체 / 집중 복습 / 졸업 임박, PRD §10.2).
- * 짙은 바탕 한가운데에 정돈된 양피지 공책 창이 놓이고, 복습 단계별로 낱말 카드를 균일 2열 격자에 보인다.
+ * 오답 노트 화면(lg 860×580 고정 프레임 Window + 3탭: 전체 / 집중 복습 / 졸업 임박, PRD §10.2 · WP-C2-02).
+ * 짙은 바탕 한가운데에 정돈된 공책 창이 놓이고, 검색·우선 출제 배지·무보상 카드 복습을 지원한다.
  */
 export function NoteScreen({ entries, onBack, loading = false, loadError = false, onRetry }: Props) {
   const titleRef = useRef<HTMLHeadingElement>(null);
   const [tab, setTab] = useState<NoteTabId>('all');
+  const [query, setQuery] = useState('');
+  const [sortMode, setSortMode] = useState<NoteSortMode>('recent');
+  const [flashOpen, setFlashOpen] = useState(false);
 
-  // 부모가 렌더마다 새 onBack을 넘겨도 효과가 다시 돌지 않게(포커스를 다시 뺏지 않게) 최신 onBack만 부른다.
-  const back = useEffectEvent(() => onBack());
+  // 부모가 렌더마다 새 onBack을 넘겨도 효과가 다시 돌지 않게 최신 onBack과 flashOpen만 읽는다.
+  const back = useEffectEvent(() => {
+    if (flashOpen) setFlashOpen(false);
+    else onBack();
+  });
 
   useEffect(() => {
     titleRef.current?.focus({ preventScroll: true });
@@ -36,9 +57,14 @@ export function NoteScreen({ entries, onBack, loading = false, loadError = false
     return () => window.removeEventListener('keydown', onKeyDown);
   }, []);
 
-  const focusEntries = useMemo(() => entries.filter(e => e.clears === 0), [entries]);
-  const gradEntries = useMemo(() => entries.filter(e => e.clears > 0 && e.clears < NOTE_GRADUATE_CLEARS), [entries]);
-  const visibleEntries = tab === 'focus' ? focusEntries : tab === 'graduating' ? gradEntries : entries;
+  const prioritized = useMemo(() => markNextRunPriority(entries), [entries]);
+  const focusEntries = useMemo(() => prioritized.filter(e => e.clears === 0), [prioritized]);
+  const gradEntries = useMemo(() => prioritized.filter(e => e.clears > 0 && e.clears < NOTE_GRADUATE_CLEARS), [prioritized]);
+  const tabEntries = tab === 'focus' ? focusEntries : tab === 'graduating' ? gradEntries : prioritized;
+  const visibleEntries = useMemo(
+    () => sortNoteEntries(filterNoteEntries(tabEntries, query), sortMode),
+    [tabEntries, query, sortMode],
+  );
 
   const tabOptions: readonly ModalTabOption<NoteTabId>[] = useMemo(
     () => [
@@ -70,6 +96,8 @@ export function NoteScreen({ entries, onBack, loading = false, loadError = false
             <p className={css.emptyText}>{T.empty}</p>
             <p className={css.emptyHint}>{X.emptyHint}</p>
           </div>
+        ) : flashOpen && visibleEntries.length > 0 ? (
+          <NoteFlashcard entries={visibleEntries} onClose={() => setFlashOpen(false)} />
         ) : (
           <ModalTabShell>
             <ModalTabs<NoteTabId>
@@ -80,11 +108,39 @@ export function NoteScreen({ entries, onBack, loading = false, loadError = false
               controls="note-tabpanel"
               aside={T.hint}
             />
+            <div className={css.toolbar}>
+              <input
+                type="search"
+                className={css.searchInput}
+                aria-label="낱말 검색"
+                placeholder="낱말·뜻 찾기"
+                value={query}
+                onChange={e => setQuery(e.target.value)}
+              />
+              <Segmented<NoteSortMode>
+                label="정렬 방식"
+                options={SORT_OPTIONS}
+                value={sortMode}
+                onChange={setSortMode}
+              />
+              <Button
+                variant="primary"
+                size="md"
+                disabled={visibleEntries.length === 0}
+                onClick={() => setFlashOpen(true)}
+              >
+                카드 복습
+              </Button>
+            </div>
             <ModalTabPanel id="note-tabpanel" labelledBy={`note-tab-${tab}`} pad="sm">
               {visibleEntries.length === 0 ? (
                 <Card sunk className={css.tabEmpty}>
                   <p className={css.tabEmptyText}>
-                    {tab === 'focus' ? '집중 복습할 낱말이 없어요' : '졸업 임박한 낱말이 없어요'}
+                    {query.trim()
+                      ? '찾는 낱말이 없어요'
+                      : tab === 'focus'
+                        ? '집중 복습할 낱말이 없어요'
+                        : '졸업 임박한 낱말이 없어요'}
                   </p>
                 </Card>
               ) : (
@@ -93,7 +149,10 @@ export function NoteScreen({ entries, onBack, loading = false, loadError = false
                     <li key={e.senseKey}>
                       <Card pad="sm" className={css.word}>
                         <div className={css.top}>
-                          <span className={css.lemma}>{e.lemma}</span>
+                          <span className={css.lemmaRow}>
+                            <span className={css.lemma}>{e.lemma}</span>
+                            {e.nextRunPriority && <span className={css.priorityBadge}>다음 판 출제 예정</span>}
+                          </span>
                           <Dots clears={e.clears} />
                         </div>
                         <p className={css.meaning} data-content>{e.meaning}</p>

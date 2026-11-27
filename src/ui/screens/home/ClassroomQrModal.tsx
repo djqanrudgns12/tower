@@ -1,14 +1,17 @@
 import { useMemo, useState } from 'react';
 import { buildClassroomShareUrl, detectInAppBrowser } from '../../../application/entryUrl';
 import { isGradeAvailable } from '../../../content';
-import { HOME_COPY } from '../../copy';
+import { DIFFICULTY_IDS, type DifficultyId } from '../../../contracts/balance';
+import { DIFFICULTY_COPY, HOME_COPY } from '../../copy';
 import { Button, Card, Modal, Segmented, type SegmentOption } from '../../kit';
 import { LineIcon } from '../../icons/LineIcon';
 import { canEncodeQr, encodeQrMatrix, qrMatrixToSvgPath } from '../../utils/qr';
 import css from './home.module.css';
+import qrCss from './ClassroomQrModal.module.css';
 
 const GRADES = [3, 4, 5, 6] as const;
 type Grade = (typeof GRADES)[number];
+type DifficultyPreset = 'none' | DifficultyId;
 
 interface Props {
   defaultGrade: Grade;
@@ -46,9 +49,14 @@ export function ClassroomQrModal({ defaultGrade, onClose }: Props) {
   const initialGrade: Grade = isGradeAvailable(defaultGrade) ? defaultGrade : 3;
 
   const [grade, setGrade] = useState<Grade>(initialGrade);
+  const [difficulty, setDifficulty] = useState<DifficultyPreset>('none');
+  const [projectorMode, setProjectorMode] = useState(false);
   const [statusMsg, setStatusMsg] = useState<string | null>(null);
 
-  const shareUrl = useMemo(() => buildClassroomShareUrl({ grade }), [grade]);
+  const shareUrl = useMemo(
+    () => buildClassroomShareUrl({ grade, ...(difficulty !== 'none' ? { difficulty } : {}) }),
+    [grade, difficulty],
+  );
 
   const qr = useMemo(() => {
     try {
@@ -74,68 +82,106 @@ export function ClassroomQrModal({ defaultGrade, onClose }: Props) {
     disabled: !isGradeAvailable(g),
   }));
 
+  const difficultyOptions: SegmentOption<DifficultyPreset>[] = [
+    { value: 'none', label: '자유 선택' },
+    ...DIFFICULTY_IDS.map(d => ({ value: d, label: DIFFICULTY_COPY[d].label })),
+  ];
+
   const handleCopy = async () => {
     const ok = await copyText(shareUrl);
     setStatusMsg(ok ? '입장 주소를 복사했어요.' : '주소를 길게 눌러 복사해 주세요.');
   };
 
   return (
-    <Modal titleId="classroomQrModalTitle" title="교실 입장 QR · 주소" size="sm" onClose={onClose}>
-      <div className={css.qrModalStack}>
-        <Segmented
-          label="입장 학년"
-          options={gradeOptions}
-          value={`${grade}`}
-          onChange={v => {
-            setStatusMsg(null);
-            setGrade(Number(v) as Grade);
-          }}
-          onBlocked={() => setStatusMsg(HOME_COPY.gradeSoon)}
-        />
-
-        {qr.svg ? (
-          <div className={css.qrFrameWrap}>
-            <div className={css.qrCanvasBox}>
-              <svg
-                viewBox={`0 0 ${qr.svg.viewBoxSize} ${qr.svg.viewBoxSize}`}
-                role="img"
-                aria-label="교실 입장 QR 코드"
-                shapeRendering="crispEdges"
-                className={css.qrSvg}
-              >
-                <rect width={qr.svg.viewBoxSize} height={qr.svg.viewBoxSize} fill="#ffffff" />
-                <path d={qr.svg.path} fill="#111111" />
-              </svg>
-            </div>
-            <p className={css.qrGuideText}>
-              태블릿·휴대전화 카메라로 비추면 선택한 학년으로 바로 열려요.
-            </p>
-          </div>
-        ) : (
-          <p className={css.qrGuideText} role="status">{qr.hint}</p>
-        )}
-
-        <Card sunk pad="sm" className={css.qrUrlBox}>
-          <span className={css.qrUrlText}>{shareUrl}</span>
-          <Button variant="primary" size="md" onClick={() => void handleCopy()}>
-            주소 복사
-          </Button>
-        </Card>
-
-        {statusMsg && (
-          <p className={css.qrStatusMsg} role="status" aria-live="polite">
-            {statusMsg}
+    <Modal titleId="classroomQrModalTitle" title="교실 입장 QR · 주소" size={projectorMode ? 'md' : 'sm'} onClose={onClose}>
+      {projectorMode && qr.svg ? (
+        <div className={qrCss.projectorWrap}>
+          <p className={qrCss.projectorBadge}>
+            {grade}학년{difficulty !== 'none' ? ` · ${DIFFICULTY_COPY[difficulty].label}` : ''}
           </p>
-        )}
+          <div className={qrCss.projectorBox}>
+            <svg
+              viewBox={`0 0 ${qr.svg.viewBoxSize} ${qr.svg.viewBoxSize}`}
+              role="img"
+              aria-label="교실 입장 QR 코드"
+              shapeRendering="crispEdges"
+              className={qrCss.projectorSvg}
+            >
+              <rect width={qr.svg.viewBoxSize} height={qr.svg.viewBoxSize} fill="#ffffff" />
+              <path d={qr.svg.path} fill="#111111" />
+            </svg>
+          </div>
+          <p className={qrCss.projectorUrl}>{shareUrl}</p>
+          <Button size="lg" onClick={() => setProjectorMode(false)}>작게 보기</Button>
+        </div>
+      ) : (
+        <div className={css.qrModalStack}>
+          <Segmented
+            label="입장 학년"
+            options={gradeOptions}
+            value={`${grade}`}
+            onChange={v => {
+              setStatusMsg(null);
+              setGrade(Number(v) as Grade);
+            }}
+            onBlocked={() => setStatusMsg(HOME_COPY.gradeSoon)}
+          />
 
-        {inAppName && (
-          <Card sunk pad="sm">
-            <p className={css.qrWebviewHint}>
-              {inAppName} 안에서는 오른쪽 위 메뉴의 ‘다른 브라우저로 열기’로 열면 소리·기록 저장이 더 안정적이에요.
-            </p>
+          <div className={qrCss.difficultyWrap}>
+            <Segmented<DifficultyPreset>
+              label="입장 난이도"
+              options={difficultyOptions}
+              value={difficulty}
+              onChange={v => {
+                setStatusMsg(null);
+                setDifficulty(v);
+              }}
+            />
+          </div>
+
+          {qr.svg ? (
+            <div className={css.qrFrameWrap}>
+              <div className={css.qrCanvasBox}>
+                <svg
+                  viewBox={`0 0 ${qr.svg.viewBoxSize} ${qr.svg.viewBoxSize}`}
+                  role="img"
+                  aria-label="교실 입장 QR 코드"
+                  shapeRendering="crispEdges"
+                  className={css.qrSvg}
+                >
+                  <rect width={qr.svg.viewBoxSize} height={qr.svg.viewBoxSize} fill="#ffffff" />
+                  <path d={qr.svg.path} fill="#111111" />
+                </svg>
+              </div>
+              <p className={css.qrGuideText}>
+                태블릿·휴대전화 카메라로 비추면 선택한 학년으로 바로 열려요.
+              </p>
+              <Button size="md" onClick={() => setProjectorMode(true)}>교실 화면 크게 보기</Button>
+            </div>
+          ) : (
+            <p className={css.qrGuideText} role="status">{qr.hint}</p>
+          )}
+
+          <Card sunk pad="sm" className={css.qrUrlBox}>
+            <span className={css.qrUrlText}>{shareUrl}</span>
+            <Button variant="primary" size="md" onClick={() => void handleCopy()}>
+              주소 복사
+            </Button>
           </Card>
-        )}
-      </div>
+
+          {inAppName && (
+            <p className={css.qrNotice}>
+              {inAppName} 안에서 열었을 때 화면이 어색하면 오른쪽 위 메뉴에서 &lsquo;다른 브라우저로 열기&rsquo;를 눌러 주세요.
+            </p>
+          )}
+
+          {statusMsg && (
+            <p className={css.qrStatus} role="status" aria-live="polite">
+              {statusMsg}
+            </p>
+          )}
+        </div>
+      )}
     </Modal>
   );
 }

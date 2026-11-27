@@ -1,10 +1,12 @@
 import { isGradeAvailable } from '../content';
+import { DIFFICULTY_IDS, type DifficultyId } from '../contracts/balance';
 import { cleanPublicSchoolCode, cleanPublicSchoolName } from '../contracts/lobby';
 import type { Settings } from '../persistence/settings';
 
 /** QR·공유 링크 진입 뒤 주소창에서 지워 재진입·새로고침 때 설정을 덮어쓰지 않게 하는 일회성 파라미터. */
 const CONSUMABLE_QUERY_KEYS = [
   'grade',
+  'difficulty',
   'school',
   'sc',
   'utm_source',
@@ -40,6 +42,14 @@ export function parseEntrySearchParams(search: string): ParsedEntryUrl {
     if (isGradeAvailable(g)) {
       patch.lastGrade = g;
     }
+  }
+
+  const rawDifficulty = params.get('difficulty')?.trim().toLowerCase();
+  const matchedDifficulty = rawDifficulty
+    ? DIFFICULTY_IDS.find(id => id.toLowerCase() === rawDifficulty)
+    : undefined;
+  if (matchedDifficulty) {
+    patch.lastDifficulty = matchedDifficulty;
   }
 
   const rawSchool = params.get('school');
@@ -91,6 +101,7 @@ export function buildClassroomShareUrl(opts: {
   origin?: string;
   pathname?: string;
   grade: 3 | 4 | 5 | 6;
+  difficulty?: DifficultyId;
   schoolName?: string;
   schoolCode?: string;
 }): string {
@@ -105,6 +116,7 @@ export function buildClassroomShareUrl(opts: {
 
   const params = new URLSearchParams();
   params.set('grade', String(opts.grade));
+  if (opts.difficulty) params.set('difficulty', opts.difficulty);
   const school = cleanPublicSchoolName(opts.schoolName);
   if (school) {
     params.set('school', school);

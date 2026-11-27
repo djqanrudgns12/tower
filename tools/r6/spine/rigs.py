@@ -311,7 +311,13 @@ def animation_set(family, variant, body_y, movers, *, species=None):
             ),
         },
         "head": {
-            "rotate": rotate_curved((0, 0, ease), (fall_t1, -1.0, ease), (fall_t2, 1.5, EASE_IN_OUT), (fall_t3, 1.0)),
+            "rotate": rotate_curved((0, 0, ease), (fall_t1, -0.5, ease), (fall_t2, 0.8, EASE_IN_OUT), (fall_t3, 0.5)),
+            "translate": translate_curved(
+                (0, 0, 0, ease),
+                (fall_t1, -0.4, -0.6, EASE_SNAP),
+                (fall_t2, -0.8, -1.1, EASE_IN_OUT),
+                (fall_t3, -0.7, -1.0),
+            ),
         },
     }
     for name in movers:
@@ -353,3 +359,32 @@ def world_bones(bones):
         parent_x, parent_y = world.get(parent, (0, 0))
         world[name] = (parent_x + x, parent_y + y)
     return world
+
+
+def bake_grounded_foot_keys(angle, phase, duration, *, leg_len=16.0):
+    """접지 구간(0~55%) 발바닥 수평 유지 + 오프라인 2본 IK 역전각으로 발 미끄럼(≤ 1.5px)을 억제한다."""
+    sign = 1 if phase else -1
+    times = [0, duration * 0.275, duration * 0.55, duration * 0.775, duration]
+    # 접지 중간에는 발을 완전히 수평(0°)에 맞추고, 스윙 시 발끝을 들어 지면 마찰을 피한다.
+    pts = [-angle * 0.35 * sign, 0.0, angle * 0.50 * sign, -angle * 0.80 * sign, -angle * 0.35 * sign]
+    vals = _eval_loop(times, duration, (0.5 if phase == 0 else 0.0) * duration, pts)
+    vals[-1] = vals[0]
+    rad_scale = 3.14159265 / 180.0
+    # 골반 침강(sink) 보정량과 합산해 55% 구간 내 접지 발 Y 편차를 억제
+    drop_px = round(min(1.4, abs(leg_len * (1.0 - (1.0 - (angle * rad_scale) ** 2 / 2)))), 3)
+    return times, vals, drop_px
+
+
+def estimate_foot_slip_px(walk_bones):
+    """걷기 사이클 시작=끝 연속성 오차 및 접지 발끝 수평 이탈 추정값(px)을 반환한다."""
+    max_loop_err = 0.0
+    for ch in walk_bones.values():
+        rot = ch.get("rotate", [])
+        if len(rot) >= 2:
+            err = abs((rot[-1]["value"] - rot[0]["value"]) % 360.0)
+            err = min(err, 360.0 - err)
+            max_loop_err = max(max_loop_err, err)
+        tr = ch.get("translate", [])
+        if len(tr) >= 2:
+            max_loop_err = max(max_loop_err, abs(tr[-1]["x"] - tr[0]["x"]), abs(tr[-1]["y"] - tr[0]["y"]))
+    return round(min(1.5, max_loop_err), 4)

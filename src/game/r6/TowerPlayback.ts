@@ -44,14 +44,19 @@ export function towerIdleSpec(
   idleMs: number,
   quality: number,
   reducedMotion: boolean,
+  burning = false,
 ): { breathY: number; glowAlpha: number; glowColor: number; scanOffset: -1 | 0 | 1 } {
-  const glowColor = type ? TOWER_GLOW_COLORS[type] : R6_COLORS.teal;
+  const glowColor = burning && quality === 0 && !reducedMotion
+    ? R6_COLORS.amber
+    : (type ? TOWER_GLOW_COLORS[type] : R6_COLORS.teal);
   if (reducedMotion || quality >= 2) {
     return { breathY: 0, glowAlpha: 0, glowColor, scanOffset: 0 };
   }
   const phase = towerId * 1.37 + timeMs * 0.0024;
   const breathY = Math.sin(phase) * 0.9;
-  const glowAlpha = quality === 0 ? 0.22 + 0.12 * (0.5 + 0.5 * Math.sin(phase * 1.15)) : 0;
+  const glowAlpha = quality === 0
+    ? (burning ? 0.36 + 0.14 * (0.5 + 0.5 * Math.sin(phase * 2.2)) : 0.22 + 0.12 * (0.5 + 0.5 * Math.sin(phase * 1.15)))
+    : 0;
   let scanOffset: -1 | 0 | 1 = 0;
   if (idleMs >= 1400) {
     const cycle = Math.floor(((idleMs - 1400) / 520 + towerId) % 4);
@@ -200,8 +205,9 @@ export class R6TowerPlayback {
     const depth = this.c.projected ? r6UnitDepth(y, 'tower') : DEPTH.units + y;
     v.shotLift = y - CELL_PX * 0.32 - headY;
 
+    const burning = controller.state.burningUntilTick > controller.state.tick;
     const idleMs = Number.isFinite(v.attackAt) ? Math.max(0, time - v.attackAt) : 1400 + time;
-    const idle = towerIdleSpec(towerId, v.type, time, idleMs, quality, reduced);
+    const idle = towerIdleSpec(towerId, v.type, time, idleMs, quality, reduced, burning);
     const targetDir = idle.scanOffset !== 0 && idleMs >= 1400
       ? (((v.aimDirection + idle.scanOffset) % 16) + 16) % 16
       : v.aimDirection;

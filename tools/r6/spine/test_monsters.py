@@ -18,7 +18,8 @@ from parts import extract, suggest_pivot
 from pilot import write_json
 from review import ground_contrast, review, review_images, silhouette
 from rig_audit import MIN_JOINT_PIXELS, hinge_pixels, measure, overlap_pixels, rasterize
-from rigs import VARIANTS, layout
+from rigs import VARIANTS, bake_grounded_foot_keys, estimate_foot_slip_px, layout
+from mesh_weights import audit_mesh_budget, build_soft_mesh, build_two_bone_limb_mesh
 from sample import generate
 from swarm import animate_swarm
 from white_key import clean
@@ -328,6 +329,30 @@ class MonsterPipelineTest(unittest.TestCase):
         after = ground_contrast(outlined, silhouette(outlined))
         self.assertLess(after["path"]["lowShare"], before["path"]["lowShare"])
         self.assertLessEqual(after["terrain"]["lowShare"], before["terrain"]["lowShare"])
+
+    def test_stage2b_weighted_mesh_budgets_and_foot_grounding(self):
+        limb = build_two_bone_limb_mesh("qa-leg", 24, 36, 0, -10, 0.33, 0.33, 2, 3)
+        wing = build_soft_mesh("qa-wing", 40, 30, -4, 4, 0.33, 0.33, 1, 4)
+        self.assertEqual(limb["type"], "mesh")
+        self.assertLessEqual(len(limb["uvs"]) // 2, 16)
+        self.assertLessEqual(len(wing["uvs"]) // 2, 24)
+        rig_ok = {
+            "bones": [{"name": f"b{i}"} for i in range(12)],
+            "slots": [{"name": "leg"}, {"name": "wing"}],
+            "skins": [{"name": "T1", "attachments": {"leg": {"leg": limb}, "wing": {"wing": wing}}}],
+        }
+        self.assertEqual(audit_mesh_budget(rig_ok, is_boss=False), [])
+        rig_bad = {**rig_ok, "ik": [{"name": "bad-ik"}]}
+        self.assertTrue(any(v[0] == "constraint:ik" for v in audit_mesh_budget(rig_bad, is_boss=False)))
+
+        times, vals, drop_px = bake_grounded_foot_keys(15, 0, 0.9)
+        self.assertEqual(len(times), 5)
+        self.assertEqual(vals[0], vals[-1])
+        self.assertLessEqual(drop_px, 1.5)
+        _, _, _, clips = layout("infantry", {"variant": "biped"}, species="human")
+        self.assertLessEqual(estimate_foot_slip_px(clips["walk"]["bones"]), 1.5)
+        _, _, _, boss_clips = layout("boss", {"variant": "biped"}, species="machine")
+        self.assertIn("translate", boss_clips["fall"]["bones"]["head"])
 
 
 if __name__ == "__main__":

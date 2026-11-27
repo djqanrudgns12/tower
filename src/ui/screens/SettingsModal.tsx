@@ -20,6 +20,7 @@ type SettingsTabId = 'sound' | 'display' | 'records';
 
 interface Props {
   settings: Settings;
+  inRun?: boolean;
   onUpdate(patch: Partial<Settings>): void;
   onHistoryCleared(): void;
   onClose(): void;
@@ -86,11 +87,12 @@ function SwitchRow({ label, checked, hint, contentHint = false, onChange }: { la
  * 환경설정(md 680×540 고정 프레임 + 3탭: 소리 / 화면·조작 / 기록 관리).
  * 탭을 전환해도 창 바깥 크기가 흔들리지 않고, 모든 조작 트랙이 오른쪽 고정 축에 정렬된다.
  */
-export function SettingsModal({ settings, onUpdate, onHistoryCleared, onClose }: Props) {
+export function SettingsModal({ settings, inRun = false, onUpdate, onHistoryCleared, onClose }: Props) {
   const [tab, setTab] = useState<SettingsTabId>('sound');
   const [historyError, setHistoryError] = useState('');
   const [confirmClear, setConfirmClear] = useState(false);
   const [clearedNotice, setClearedNotice] = useState(false);
+  const [shortcutsOpen, setShortcutsOpen] = useState(false);
   const [previewSound] = useState(() => new SoundDirector(DEFAULTS.audio, 5));
   const [fontChoices] = useState(fontOptions);
   const [motionChoices] = useState(() => motionOptions(typeof matchMedia === 'function' && matchMedia('(prefers-reduced-motion: reduce)').matches ? 'minimal' : 'full'));
@@ -139,7 +141,12 @@ export function SettingsModal({ settings, onUpdate, onHistoryCleared, onClose }:
         <ModalTabPanel id="settings-tabpanel" labelledBy={`settings-tab-${tab}`} pad="sm">
           {tab === 'sound' && (
             <div className={`${css.rows} ${css.rowsSpacious}`}>
-              <SwitchRow label={T.sound} checked={settings.soundOn} onChange={on => onUpdate({ soundOn: on })} />
+              <SwitchRow
+                label={T.sound}
+                checked={settings.soundOn}
+                hint="수업 중에는 소리를 끄거나 전투 중 M키로 바로 음소거할 수 있어요."
+                onChange={on => onUpdate({ soundOn: on })}
+              />
 
               <Row name={T.bgm}>
                 <Segmented
@@ -171,9 +178,16 @@ export function SettingsModal({ settings, onUpdate, onHistoryCleared, onClose }:
                   <Button
                     aria-label={`${T.fireSound} ${T.listen}`}
                     disabled={!settings.soundOn}
-                    onClick={() => previewSound.preview('fire.archer')}
+                    onClick={() => previewSound.preview('fire.rail')}
                   >
                     {T.fireSound}
+                  </Button>
+                  <Button
+                    aria-label="배경음 미리 듣기"
+                    disabled={!settings.soundOn}
+                    onClick={() => previewSound.previewBgm()}
+                  >
+                    배경음 듣기
                   </Button>
                 </div>
               </Row>
@@ -189,6 +203,12 @@ export function SettingsModal({ settings, onUpdate, onHistoryCleared, onClose }:
 
               <SwitchRow label="밝은 화면" checked={settings.lightTheme === true} onChange={lightTheme => onUpdate({ lightTheme })} />
               <SwitchRow label="가벼운 화면" checked={settings.lightGraphics === true} onChange={lightGraphics => onUpdate({ lightGraphics })} />
+              <SwitchRow
+                label="색약 보조 색상"
+                checked={settings.colorblindPalette === true}
+                hint="청록·주홍 구분이 뚜렷한 안전 배색과 테두리로 바꿔요."
+                onChange={colorblindPalette => onUpdate({ colorblindPalette })}
+              />
 
               <Row name={T.motion} hint={S.motionHint}>
                 <Segmented
@@ -201,6 +221,21 @@ export function SettingsModal({ settings, onUpdate, onHistoryCleared, onClose }:
 
               <SwitchRow label={T.contrast} checked={settings.highContrastMap} hint={S.contrastHint} onChange={highContrastMap => onUpdate({ highContrastMap })} />
               <SwitchRow label={T.keyHints} checked={settings.showKeyHints} onChange={showKeyHints => onUpdate({ showKeyHints })} />
+
+              <div className={css.row}>
+                <Button variant="ghost" className={css.shortcutBtn} aria-expanded={shortcutsOpen} onClick={() => setShortcutsOpen(v => !v)}>
+                  <span>단축키 안내</span>
+                  <span>{shortcutsOpen ? '접기' : '펼치기'}</span>
+                </Button>
+                {shortcutsOpen && (
+                  <dl className={css.shortcutList}>
+                    <div><dt>1~4</dt><dd>문제 보기 고르기</dd></div>
+                    <div><dt>1~6</dt><dd>타워 종류 선택</dd></div>
+                    <div><dt>Space</dt><dd>전투 시작 · 다음 문제</dd></div>
+                    <div><dt>Esc / M</dt><dd>창 닫기 · 소리 켜고 끄기</dd></div>
+                  </dl>
+                )}
+              </div>
             </div>
           )}
 
@@ -210,7 +245,7 @@ export function SettingsModal({ settings, onUpdate, onHistoryCleared, onClose }:
                 <SwitchRow
                   label={T.share}
                   checked={settings.shareRecords === true}
-                  hint={T.shareHint}
+                  hint={`${T.shareHint} ${inRun ? '지금 진행 중인 판을 포함해 ' : ''}진행 중인 판은 시작할 때 설정을 따르며, 바꾼 설정은 다음 판부터 적용돼요.`}
                   contentHint
                   onChange={shareRecords => onUpdate({ shareRecords })}
                 />

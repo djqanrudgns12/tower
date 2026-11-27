@@ -5,6 +5,7 @@ import {
   type AmbientSettings, type Bounds, type CloudSpec, type Drifter, type DriftKind, type Tint, type Wanderer, type WaterSpot,
 } from '../ambient';
 import { CELL_PX, WORLD_H, WORLD_W } from '../assets';
+import { r6BiomeAmbientKind, type R6BiomeAmbient } from '../r6/vfxTiming';
 import { layoutFor } from '../layouts';
 import { DEPTH, type LayerContext } from './shared';
 
@@ -19,11 +20,19 @@ const WING_BEATS_PER_SEC = 7;
 /** 코드로 그린 꽃잎·눈송이 텍스처 키와 꽃잎 색(곱하기 색조). */
 const DRIFT_KEY: Record<DriftKind, string> = { petal: 'ambient.petal', snow: 'ambient.snow' };
 const PETAL_TINTS = [0xffc9d6, 0xffe0e6, 0xffb3c6, 0xfff0f3] as const;
+const R6_MOTE_KEY = 'ambient.r6.mote';
+const R6_MOTE_STYLE: Readonly<Record<R6BiomeAmbient, { tint: number; vx: number; vy: number; alpha: number }>> = {
+  meadow: { tint: 0xd9f99d, vx: 7, vy: 5, alpha: 0.45 },
+  river: { tint: 0x7dd3fc, vx: 5, vy: 8, alpha: 0.42 },
+  ochre: { tint: 0xfde68a, vx: 11, vy: 4, alpha: 0.4 },
+  snow: { tint: 0xe0f2fe, vx: 4, vy: 10, alpha: 0.55 },
+};
 
 const split = (c: number) => ({ r: (c >> 16) & 255, g: (c >> 8) & 255, b: c & 255 });
 
 interface Fly { spec: Wanderer; img: Phaser.GameObjects.Image; phase: number; frames: readonly [string, string] | null }
 interface Flake { spec: Drifter; img: Phaser.GameObjects.Image; kind: DriftKind }
+interface R6Mote { img: Phaser.GameObjects.Image; x: number; y: number; vx: number; vy: number; phase: number; baseAlpha: number }
 
 /**
  * 살아 있는 분위기 층(은은하게, 개체 수 적게): 맵마다 설정 표(ambient.ts AMBIENT_SETTINGS)가 정한 요소만 그린다.
@@ -35,9 +44,11 @@ interface Flake { spec: Drifter; img: Phaser.GameObjects.Image; kind: DriftKind 
 export class AmbientLayer {
   private readonly c: LayerContext;
   private readonly cfg: AmbientSettings;
+  private readonly r6Mode: boolean;
   private readonly clouds: Array<{ spec: CloudSpec; img: Phaser.GameObjects.Image }> = [];
   private readonly flies: Fly[] = [];
   private readonly flakes: Flake[] = [];
+  private readonly r6Motes: R6Mote[] = [];
   private readonly bounds: Bounds;
   private readonly rand: () => number;
   private readonly water: WaterSpot[];
@@ -55,11 +66,21 @@ export class AmbientLayer {
   constructor(c: LayerContext) {
     this.c = c;
     const { scene, bridge } = c;
+    this.r6Mode = Boolean(c.projected);
     const map = bridge.controller.ctx.map;
     const cfg = (this.cfg = ambientSettings(map.id));
     const has = (key: string) => scene.textures.exists(key);
     this.bounds = butterflyBounds(WORLD_W, WORLD_H, CELL_PX);
     this.rand = rng(ambientSeed(map.id, 'flight'));
+
+    if (this.r6Mode) {
+      this.water = [];
+      this.ripples = scene.add.graphics().setDepth(DEPTH.mood + 0.2).setVisible(false);
+      this.tint = scene.add.rectangle(0, 0, WORLD_W, WORLD_H, 0xffffff, 0).setOrigin(0).setDepth(DEPTH.projectiles - 1).setVisible(false);
+      this.initR6Motes(map.id);
+      this.apply(0, bridge.reducedMotion);
+      return;
+    }
 
     if (cfg.clouds) {
       const art = cloudArt(has);
@@ -103,6 +124,49 @@ export class AmbientLayer {
     this.tint = scene.add.rectangle(0, 0, WORLD_W, WORLD_H, 0xffffff, 0).setOrigin(0).setDepth(DEPTH.projectiles - 1);
     this.syncTint(0, true);
     this.apply(0, bridge.reducedMotion);
+  }
+
+  /** R6 V2 외곽 디오라마 여백용 경량 바이옴 입자(≤ 8개, GroundLayer 50W 틴트와 비충돌). */
+  private initR6Motes(mapId: string) {
+    const t = this.c.scene.textures;
+    if (!t.exists(R6_MOTE_KEY)) {
+      const tex = t.createCanvas(R6_MOTE_KEY, 16, 16);
+      if (tex) {
+        const g = tex.getContext();
+        const grad = g.createRadialGradient(8, 8, 0, 8, 8, 7.5);
+        grad.addColorStop(0, 'rgba(255,255,255,1)');
+        grad.addColorStop(0.55, 'rgba(255,255,255,0.55)');
+        grad.addColorStop(1, 'rgba(255,255,255,0)');
+        g.fillStyle = grad;
+        g.fillRect(0, 0, 16, 16);
+        tex.refresh();
+      }
+    }
+    if (!t.exists(R6_MOTE_KEY)) return;
+    const style = R6_MOTE_STYLE[r6BiomeAmbientKind(mapId)];
+    const corners: ReadonlyArray<readonly [number, number]> = [
+      [0.08, 0.14], [0.15, 0.22], [0.12, 0.78], [0.24, 0.84],
+      [0.86, 0.82], [0.91, 0.74], [0.06, 0.45], [0.22, 0.11],
+    ];
+    for (let i = 0; i < corners.length; i++) {
+      const [rx, ry] = corners[i]!;
+      const x = WORLD_W * rx + (this.rand() - 0.5) * 32;
+      const y = WORLD_H * ry + (this.rand() - 0.5) * 24;
+      const img = this.c.scene.add.image(x, y, R6_MOTE_KEY)
+        .setTint(style.tint)
+        .setAlpha(style.alpha)
+        .setScale(0.32 + (i % 3) * 0.08)
+        .setDepth(DEPTH.projectiles - 2);
+      this.r6Motes.push({
+        img,
+        x,
+        y,
+        vx: style.vx * (0.85 + (i % 3) * 0.15),
+        vy: style.vy * (0.85 + ((i + 1) % 3) * 0.15),
+        phase: i * 1.1,
+        baseAlpha: style.alpha,
+      });
+    }
   }
 
   /** 구름 그림자 원화가 없을 때의 임시 그림: 바깥이 옅은 큰 타원. 같은 키가 이미 있으면 다시 만들지 않는다. */
@@ -179,11 +243,24 @@ export class AmbientLayer {
 
   /** 구름·나비·잔물결·꽃잎·눈송이를 보이거나 감춘다. 움직임 줄이기면 모두 감춘다. */
   private apply(deltaSec: number, reduced: boolean) {
+    for (const m of this.r6Motes) m.img.setVisible(!reduced);
     for (const c of this.clouds) c.img.setVisible(!reduced);
     for (const f of this.flies) f.img.setVisible(!reduced);
     for (const f of this.flakes) f.img.setVisible(!reduced);
     this.ripples.setVisible(!reduced);
     if (reduced) { this.ripples.clear(); return; }
+    if (this.r6Mode) {
+      const sec = this.clockMs / 1000;
+      for (const m of this.r6Motes) {
+        m.x += m.vx * deltaSec;
+        m.y += m.vy * deltaSec;
+        if (m.x > WORLD_W + 16) m.x = -16;
+        if (m.y > WORLD_H + 16) m.y = -16;
+        m.img.setPosition(m.x + Math.sin(sec * 1.4 + m.phase) * 5, m.y)
+          .setAlpha(m.baseAlpha * (0.65 + 0.35 * Math.sin(sec * 1.9 + m.phase)));
+      }
+      return;
+    }
     this.moveClouds(deltaSec);
     this.moveFlies(deltaSec);
     this.moveFlakes(deltaSec);
@@ -253,7 +330,7 @@ export class AmbientLayer {
     const paused = bridge.controller.state.pause.length > 0;
     const dt = paused ? 0 : Math.min(100, Math.max(0, deltaMs));
     this.clockMs += dt;
-    this.syncTint(deltaMs, reduced);
+    if (!this.r6Mode) this.syncTint(deltaMs, reduced);
     this.apply(dt / 1000, reduced);
   }
 }

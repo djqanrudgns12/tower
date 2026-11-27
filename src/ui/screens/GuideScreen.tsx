@@ -52,7 +52,7 @@ interface Props {
  * 시연 무대(왼쪽)와 핵심 3단계 요약 카드(오른쪽)를 한눈에 본다.
  */
 export function GuideScreen({ balanceVersion, motionMode = 'full', highContrastMap = false, onBack }: Props) {
-  const balance = balanceVersion === '2.0.0' ? getR6Battle().balance : undefined;
+  const balance = balanceVersion !== '1.0.0' ? getR6Battle().balance : undefined;
   const chapters = useMemo(() => buildGuideChapters(balance), [balance]);
   const [chapterId, setChapterId] = useState<GuideChapterId>(1);
   const osReduce = usePrefersReducedMotion();

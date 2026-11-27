@@ -1,7 +1,7 @@
 import { readFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import {
-  AtlasAttachmentLoader, MixFrom, Physics, RegionAttachment, Skeleton, SkeletonJson, TextureAtlas,
+  AtlasAttachmentLoader, MeshAttachment, MixFrom, Physics, RegionAttachment, Skeleton, SkeletonJson, TextureAtlas,
 } from '@esotericsoftware/spine-core';
 
 const json = async path => JSON.parse(await readFile(path, 'utf8'));
@@ -27,16 +27,34 @@ function sample(skeleton, clip, phase) {
   for (const slot of skeleton.drawOrder.appliedPose) {
     const { attachment } = slot.appliedPose;
     if (!attachment || slot.data.name === 'shadow') continue;
-    if (!(attachment instanceof RegionAttachment)) throw new Error(`지원하지 않는 파츠 · ${attachment.path}`);
+    if (!(attachment instanceof RegionAttachment) && !(attachment instanceof MeshAttachment)) {
+      throw new Error(`지원하지 않는 파츠 · ${attachment.path}`);
+    }
     const region = atlas.findRegion(attachment.path);
     if (region.degrees) throw new Error(`회전한 아틀라스 영역 · ${attachment.path}`);
-    const vertices = [];
-    attachment.computeWorldVertices(slot, attachment.getOffsets(slot.appliedPose), vertices, 0, 2);
-    slots[attachment.name] = {
-      // Spine UV 순서는 좌하단·좌상단·우상단·우하단이다.
-      vertices: [vertices.slice(2, 4), vertices.slice(4, 6), vertices.slice(0, 2)],
-      box: [region.x, region.y, region.x + region.width, region.y + region.height],
-    };
+    if (attachment instanceof RegionAttachment) {
+      const vertices = [];
+      attachment.computeWorldVertices(slot, attachment.getOffsets(slot.appliedPose), vertices, 0, 2);
+      slots[attachment.name] = {
+        // Spine UV 순서는 좌하단·좌상단·우상단·우하단이다.
+        vertices: [vertices.slice(2, 4), vertices.slice(4, 6), vertices.slice(0, 2)],
+        box: [region.x, region.y, region.x + region.width, region.y + region.height],
+      };
+    } else {
+      const vertices = [];
+      attachment.computeWorldVertices(slot, 0, attachment.worldVerticesLength, vertices, 0, 2);
+      let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+      for (let i = 0; i < vertices.length; i += 2) {
+        if (vertices[i] < minX) minX = vertices[i];
+        if (vertices[i] > maxX) maxX = vertices[i];
+        if (vertices[i + 1] < minY) minY = vertices[i + 1];
+        if (vertices[i + 1] > maxY) maxY = vertices[i + 1];
+      }
+      slots[attachment.name] = {
+        vertices: [[minX, maxY], [maxX, maxY], [minX, minY]],
+        box: [region.x, region.y, region.x + region.width, region.y + region.height],
+      };
+    }
   }
   const pivots = Object.fromEntries(skeleton.bones.map(({ data, appliedPose: p }) =>
     [data.name, [p.worldX, p.worldY]]));

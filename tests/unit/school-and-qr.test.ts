@@ -101,7 +101,15 @@ describe('교실 QR·공유 URL·학교 와이파이 내성 단위 검증', () =
     expect(html).toContain(url);
     expect(html).toContain('aria-label="교실 입장 QR 코드"');
     expect(html).toContain('주소 복사');
+    expect(html).toContain('교실 화면 크게 보기');
     expect(html).not.toContain('학교 이름 함께 전달');
+
+    const diffUrl = buildClassroomShareUrl({ grade: 5, difficulty: 'Hard' });
+    expect(diffUrl).toBe('https://voca.ssamuniverse.com/?grade=5&difficulty=Hard');
+    const parsedDiff = parseEntrySearchParams('?grade=5&difficulty=hard&previewMap=garden_u');
+    expect(parsedDiff.patch).toEqual({ lastGrade: 5, lastDifficulty: 'Hard' });
+    expect(parsedDiff.cleanedSearch).toBe('?previewMap=garden_u');
+    expect(parseEntrySearchParams('?difficulty=invalid').patch).toEqual({});
   });
 
   it('QR은 UTF-8 데이터 213바이트까지 담는다', () => {

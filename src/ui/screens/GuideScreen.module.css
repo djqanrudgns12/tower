@@ -305,6 +305,36 @@
 .weaponStages li > span:last-child, .speciesReadout p { color: var(--text-body); }
 .speciesReadout { padding: var(--s3); }
 .speciesReadout strong { display: flex; align-items: center; gap: var(--s2); color: var(--accent-teal); }
+.speciesHead { display: flex; align-items: center; gap: var(--s2); }
+.speciesPortrait {
+  flex: none;
+  border-radius: var(--chamfer-sm);
+  border: 2px solid var(--species-accent, var(--accent-teal));
+  object-fit: cover;
+}
+.speciesMeta { display: grid; gap: 4px; min-width: 0; }
+.speciesChips { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s1); }
+.chipLabel { font-size: var(--fs-1); font-weight: 700; color: var(--text-muted); }
+.counterChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  border-radius: var(--chamfer-sm);
+  background: var(--bg-pressed);
+  border: 1px solid var(--border-hairline);
+  font-size: var(--fs-1);
+  font-weight: 800;
+}
+.fieldTraitsBox {
+  display: grid;
+  gap: 2px;
+  padding: var(--s2) var(--s3);
+  border: 1px solid var(--border-hairline);
+  background: var(--bg-card);
+  font-size: var(--fs-1);
+}
+.fieldTraitsBox p { margin: 0; color: var(--text-body); line-height: 1.35; }
 .stage[data-chapter='3'] .tacticalMap { width: min(100%, 200px); justify-self: center; }
 .chapter[data-r6] .stageCol { justify-content: start; padding: var(--sp-2); }
 .chapter[data-r6] .rows { align-content: start; }

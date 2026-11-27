@@ -1,0 +1,92 @@
+.deck {
+  flex: 1 1 auto;
+  display: grid;
+  align-content: start;
+  gap: var(--s3);
+}
+.topBar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s2);
+}
+.notice {
+  margin: 0;
+  font-size: var(--fs-1);
+  font-weight: 700;
+  color: var(--text-muted);
+}
+.topRight {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s2);
+}
+.progress {
+  font-size: var(--fs-2);
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  color: var(--accent-teal);
+}
+.card, .finishCard {
+  display: grid;
+  gap: var(--s3);
+  padding: var(--s4);
+}
+.cardHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s2);
+  border-bottom: 1px solid var(--border-hairline);
+  padding-bottom: var(--s2);
+}
+.lemma {
+  font-size: var(--fs-5);
+  font-weight: 800;
+  overflow-wrap: anywhere;
+}
+.clearTag {
+  font-size: var(--fs-1);
+  font-weight: 700;
+  color: var(--accent-teal);
+}
+.front, .back {
+  display: grid;
+  gap: var(--s3);
+}
+.hint, .prompt {
+  margin: 0;
+  font-size: var(--q-font);
+  line-height: 1.4;
+  color: var(--text-muted);
+}
+.meaning {
+  margin: 0;
+  font-size: var(--fs-3);
+  font-weight: 800;
+  line-height: 1.35;
+}
+.example {
+  margin: 0;
+  padding: var(--s2) var(--s3);
+  font-size: var(--read-font);
+  background: var(--quiz-bg);
+  color: var(--quiz-ink);
+  line-height: 1.4;
+}
+.actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--s2);
+}
+.finishTitle {
+  margin: 0;
+  font-size: var(--fs-4);
+  font-weight: 800;
+}
+.finishSub {
+  margin: 0;
+  font-size: var(--fs-2);
+  color: var(--text-muted);
+}

@@ -1,6 +1,8 @@
 import type { DomainEvent, EngineTowerId } from '../../domain/engineTypes';
+import { BgmEngine, type BgmSceneContext } from './bgmEngine';
+import { RESULT_FANFARE, type ResultFanfareKind } from './scales';
 
-// 소리(PRD §11.5 · V2 WP-Q4.4). 음원 파일(0KB) 없이 WebAudio 합성(오실레이터 + 노이즈 버스트 + BiquadFilter)을 사용한다.
+// 소리(PRD §11.5 · V2 WP-Q4.4 · 동반 고도화 WP-C2-01). 음원 파일(0KB) 없이 WebAudio 합성을 사용한다.
 // 도메인 사건을 듣기만 하고 판정·보상에 관여하지 않는다. 첫 사용자 입력 뒤에만 소리를 켜고, 실패하면 무음으로 진행한다.
 
 export interface AudioConfig {
@@ -14,7 +16,7 @@ export interface AudioConfig {
   sameFireMinGapMs: number;
 }
 
-/** 효과음 종류. 정답·오답·누출·버닝이 최우선이고, 넘치면 장식인 발사음부터 생략한다. */
+/** 효과음 종류. 정답·오답·누출·버닝·결과가 최우선이고, 넘치면 장식인 발사음부터 생략한다. */
 export type Sfx =
   | `fire.${EngineTowerId}`
   | 'kill'
@@ -27,13 +29,17 @@ export type Sfx =
   | 'milestone'
   | 'burning'
   | 'towerStage'
-  | 'towerUnlocked';
+  | 'towerUnlocked'
+  | `result.${ResultFanfareKind}`;
 
 const PRIORITY: Record<string, number> = {
   correct: 3,
   wrong: 3,
   leak: 3,
   burning: 3,
+  'result.clear': 3,
+  'result.newBest': 3,
+  'result.defeat': 3,
   skipped: 2,
   wave: 2,
   milestone: 2,
@@ -86,7 +92,7 @@ const C5 = 523.25, E5 = 659.25, G5 = 783.99, C6 = 1046.5, E6 = 1318.5, G6 = 1567
 const STREAK_PITCH_RATIOS = [1, 1.0595, 1.1225, 1.1892, 1.2599, 1.3348] as const;
 
 /** 효과음 악보(초 단위 시작·길이). 짧고 부드럽게, 오답도 겁주지 않는 낮은 두 음이다. */
-const SCORE: Record<Sfx, Note[]> = {
+const SCORE: Record<Sfx, readonly Note[]> = {
   'fire.archer': [{ f: 740, to: 520, t: 0, d: 0.06, type: 'triangle', gain: 0.35 }],
   'fire.cannon': [{ f: 150, to: 70, t: 0, d: 0.14, type: 'sine', gain: 0.7 }],
   'fire.frost': [{ f: 1480, t: 0, d: 0.12, type: 'sine', gain: 0.25 }, { f: 1975, t: 0.03, d: 0.1, type: 'sine', gain: 0.15 }],
@@ -129,6 +135,9 @@ const SCORE: Record<Sfx, Note[]> = {
     { f: C6, t: 0.22, d: 0.22, type: 'triangle', gain: 0.42 },
     { f: G6, t: 0.24, d: 0.18, type: 'sine', gain: 0.22 },
   ],
+  'result.clear': RESULT_FANFARE.clear,
+  'result.newBest': RESULT_FANFARE.newBest,
+  'result.defeat': RESULT_FANFARE.defeat,
 };
 
 /** 0KB 캐시 화이트 노이즈 + 필터 레이어(WebAudio 미지원 모의 컨텍스트는 자동 건너뜀). */
@@ -142,30 +151,30 @@ const NOISE_SCORE: Partial<Record<Sfx, NoiseLayer>> = {
   burning: { t: 0, d: 0.2, gain: 0.15, filter: 'bandpass', freq: 1700, Q: 1.4 },
 };
 
-const lengthOf = (notes: Note[]) => Math.max(...notes.map(n => n.t + n.d));
-
-/** 배경 선율: 5음 음계의 느린 8음 반복(한 바퀴 4초). */
-const BGM = [392, 440, 523.25, 587.33, 523.25, 440, 392, 329.63];
-const BGM_STEP = 0.5;
+const lengthOf = (notes: readonly Note[]) => Math.max(...notes.map(n => n.t + n.d));
 
 export class SoundDirector {
   private ctx: AudioContext | null = null;
   private sfxBus: GainNode | null = null;
   private bgmBus: GainNode | null = null;
+  private compressor: DynamicsCompressorNode | null = null;
   private noiseBuffer: AudioBuffer | null = null;
   private voices: Voice[] = [];
   private lastFire = new Map<Sfx, number>();
   private readonly towerWeapons = new Map<number, number>();
+  private readonly bgmEngine = new BgmEngine();
   private correctStreakCount = 0;
   private synthSeed = 0x9e3779b9;
   private enabled = true;
   private backgroundUnlocked = false;
   private paused = false;
+  private hidden = false;
   private bgmVolume: number;
   private sfxVolume: number;
   private bgmTimer: ReturnType<typeof setInterval> | null = null;
   private bgmNext = 0;
-  private bgmStep = 0;
+  private previewStopTimer: ReturnType<typeof setTimeout> | null = null;
+  private visibilityListener: (() => void) | null = null;
 
   constructor(private readonly cfg: AudioConfig, private readonly bossEveryWaves: number, private readonly create: () => AudioContext = () => new AudioContext()) {
     this.bgmVolume = cfg.bgmVolume;
@@ -174,23 +183,73 @@ export class SoundDirector {
 
   /** 현재 퀴즈 연속 정답 단계(테스트·검증 조회용). */
   get correctStreak(): number { return this.correctStreakCount; }
+  get hasCompressor(): boolean { return this.compressor !== null; }
+  get sceneContext(): Readonly<BgmSceneContext> { return this.bgmEngine.currentContext; }
+
+  private ensureContext(): boolean {
+    if (this.ctx) return true;
+    try {
+      this.ctx = this.create();
+      this.sfxBus = this.ctx.createGain();
+      this.bgmBus = this.ctx.createGain();
+      this.sfxBus.gain.value = this.sfxVolume;
+      this.bgmBus.gain.value = this.bgmVolume;
+      if (typeof this.ctx.createDynamicsCompressor === 'function') {
+        const comp = this.ctx.createDynamicsCompressor();
+        comp.threshold.value = -14;
+        comp.knee.value = 12;
+        comp.ratio.value = 6;
+        comp.attack.value = 0.005;
+        comp.release.value = 0.18;
+        this.sfxBus.connect(comp);
+        this.bgmBus.connect(comp);
+        comp.connect(this.ctx.destination);
+        this.compressor = comp;
+      } else {
+        this.sfxBus.connect(this.ctx.destination);
+        this.bgmBus.connect(this.ctx.destination);
+        this.compressor = null;
+      }
+      this.attachVisibility();
+      return true;
+    } catch {
+      this.ctx = null;
+      this.sfxBus = null;
+      this.bgmBus = null;
+      this.compressor = null;
+      return false;
+    }
+  }
+
+  private attachVisibility(): void {
+    if (this.visibilityListener || typeof document === 'undefined' || typeof document.addEventListener !== 'function') return;
+    this.hidden = document.visibilityState === 'hidden';
+    const onChange = () => {
+      this.hidden = document.visibilityState === 'hidden';
+      this.sync();
+    };
+    document.addEventListener('visibilitychange', onChange);
+    this.visibilityListener = () => document.removeEventListener('visibilitychange', onChange);
+  }
 
   /** 첫 사용자 입력에서 부른다. 만들 수 없으면 무음으로 둔다. */
   unlock() {
     this.backgroundUnlocked = true;
-    if (this.ctx) { this.sync(); return; }
-    try {
-      this.ctx = this.create();
-      this.sfxBus = this.ctx.createGain(); this.sfxBus.gain.value = this.sfxVolume; this.sfxBus.connect(this.ctx.destination);
-      this.bgmBus = this.ctx.createGain(); this.bgmBus.gain.value = this.bgmVolume; this.bgmBus.connect(this.ctx.destination);
-    } catch {
-      this.ctx = null;
-    }
+    this.ensureContext();
     this.sync();
   }
 
   setEnabled(on: boolean) { this.enabled = on; this.sync(); }
   setPaused(paused: boolean) { this.paused = paused; this.sync(); }
+  setQuality(quality: number) { this.bgmEngine.setQuality(quality); }
+
+  /** 전장 국면·바이옴 변화 알림(오디오 국면 전환). */
+  setSceneContext(patch: Partial<BgmSceneContext>) {
+    this.bgmEngine.setContext(patch, this.ctx?.currentTime ?? 0);
+    if (patch.phase === 'RESULT') {
+      this.stopBgm();
+    }
+  }
 
   /** 배경 음악·효과음 크기를 즉시 갱신한다(설정 모달·전투 중 공통). */
   setVolumes(bgmVolume: number, sfxVolume: number) {
@@ -200,26 +259,38 @@ export class SoundDirector {
     if (this.sfxBus) this.sfxBus.gain.value = this.sfxVolume;
   }
 
-  /** 설정 모달의 소리 미리 듣기. 배경 선율은 켜지 않고 선택한 효과음만 한 번 들려준다. */
+  /** 설정 모달의 효과음 미리 듣기. 배경 선율은 켜지 않고 선택한 효과음만 한 번 들려준다. */
   preview(sfx: Sfx) {
     if (!this.enabled) return;
-    if (!this.ctx) {
-      try {
-        this.ctx = this.create();
-        this.sfxBus = this.ctx.createGain(); this.sfxBus.gain.value = this.sfxVolume; this.sfxBus.connect(this.ctx.destination);
-        this.bgmBus = this.ctx.createGain(); this.bgmBus.gain.value = this.bgmVolume; this.bgmBus.connect(this.ctx.destination);
-      } catch {
-        this.ctx = null;
-      }
-    }
-    if (!this.ctx || !this.sfxBus) return;
+    if (!this.ensureContext() || !this.ctx || !this.sfxBus) return;
     void this.ctx.resume?.().catch(() => undefined);
     this.play(sfx);
   }
 
+  /** 설정 모달에서 현재 바이옴 배경 선율을 짧게 미리 듣는다. */
+  previewBgm(durationMs = 1600) {
+    if (!this.enabled) return;
+    if (!this.ensureContext() || !this.ctx || !this.bgmBus) return;
+    void this.ctx.resume?.().catch(() => undefined);
+    if (this.previewStopTimer) {
+      clearTimeout(this.previewStopTimer);
+      this.previewStopTimer = null;
+    }
+    this.bgmEngine.setContext({ phase: 'BATTLE' }, this.ctx.currentTime);
+    const t0 = this.ctx.currentTime;
+    const step = this.bgmEngine.stepDurationSec();
+    for (let i = 0; i < 3; i++) {
+      this.bgmEngine.scheduleStep(t0 + i * step, this.bgmBus, (n, at, bus) => this.tone(n, at, bus));
+    }
+    this.previewStopTimer = setTimeout(() => {
+      this.previewStopTimer = null;
+      this.bgmEngine.setContext({ phase: 'PREP_QUIZ' }, this.ctx?.currentTime ?? 0);
+    }, durationMs);
+  }
+
   /** 소리를 낼 수 있는 상태(켜짐·정지 아님·준비됨)에서만 효과음을 낸다. */
   handle(events: readonly DomainEvent[]) {
-    if (!this.ctx || !this.enabled || this.paused) return;
+    if (!this.ctx || !this.enabled || this.paused || this.hidden) return;
     for (const e of events) {
       if (e.type === 'towerStage') {
         this.towerWeapons.set(e.towerId, e.weapon);
@@ -232,7 +303,7 @@ export class SoundDirector {
       let pitchScale = 1;
       if (sfx === 'correct') {
         pitchScale = STREAK_PITCH_RATIOS[Math.max(0, this.correctStreakCount - 1)] ?? 1;
-      } else if ((e.type === 'fire' || e.type === 'strike')) {
+      } else if (e.type === 'fire' || e.type === 'strike') {
         const weapon = this.towerWeapons.get(e.towerId) ?? 0;
         const jitter = 1 + (this.nextSynthRand() * 2 - 1) * 0.04;
         pitchScale = (1 + weapon * 0.05) * jitter;
@@ -246,9 +317,18 @@ export class SoundDirector {
 
   dispose() {
     this.stopBgm();
+    if (this.previewStopTimer) {
+      clearTimeout(this.previewStopTimer);
+      this.previewStopTimer = null;
+    }
+    this.visibilityListener?.();
+    this.visibilityListener = null;
     for (const v of this.voices) v.stop();
     this.voices = [];
     this.noiseBuffer = null;
+    this.compressor = null;
+    this.sfxBus = null;
+    this.bgmBus = null;
     this.towerWeapons.clear();
     this.correctStreakCount = 0;
     void this.ctx?.close?.().catch(() => undefined);
@@ -333,31 +413,37 @@ export class SoundDirector {
     return () => { try { osc.stop(); } catch { /* 이미 끝남 */ } };
   }
 
-  /** 켜짐·정지 상태를 맞춘다. 배경 선율 타이머는 하나만 둔다(음소거·정지·재개를 반복해도 겹치지 않는다). */
+  /** 켜짐·정지·숨김 상태를 맞춘다. 배경 선율 타이머는 하나만 둔다(음소거·정지·재개를 반복해도 겹치지 않는다). */
   private sync() {
     const ctx = this.ctx;
     if (!ctx) return;
-    const audible = this.enabled && !this.paused;
+    const audible = this.enabled && !this.paused && !this.hidden;
     if (audible) { void ctx.resume?.().catch(() => undefined); if (this.backgroundUnlocked) this.startBgm(); }
     else {
       this.stopBgm();
       for (const v of this.voices) v.stop();
       this.voices = [];
-      if (this.paused) void ctx.suspend?.().catch(() => undefined);
+      if (this.paused || this.hidden) void ctx.suspend?.().catch(() => undefined);
     }
   }
 
   private startBgm() {
     if (this.bgmTimer || !this.ctx) return;
+    if (this.bgmEngine.currentContext.phase === 'RESULT') return;
     this.bgmNext = this.ctx.currentTime + 0.1;
     // 0.2초마다 0.6초 앞까지 음을 예약한다(타이머가 늦어도 선율이 끊기지 않게).
     const schedule = () => {
       const ctx = this.ctx;
-      if (!ctx) return;
+      if (!ctx || !this.bgmBus) return;
       while (this.bgmNext < ctx.currentTime + 0.6) {
-        this.tone({ f: BGM[this.bgmStep % BGM.length]!, t: 0, d: BGM_STEP * 0.9, type: 'triangle', gain: 0.3 }, this.bgmNext, this.bgmBus!);
-        this.bgmNext += BGM_STEP;
-        this.bgmStep++;
+        const step = this.bgmEngine.stepDurationSec();
+        this.bgmEngine.scheduleStep(
+          this.bgmNext,
+          this.bgmBus,
+          (n, at, bus) => { this.tone(n, at, bus); },
+          (gain, freq, d, filter, at, bus) => { this.noise({ t: 0, d, gain, filter, freq, Q: 1.0 }, 1, at, bus); },
+        );
+        this.bgmNext += step;
       }
     };
     schedule();

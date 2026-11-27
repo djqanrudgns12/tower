@@ -152,4 +152,58 @@ describe('SoundDirector', () => {
     expect(ctx.filters).toBeGreaterThanOrEqual(3);
     sound.dispose();
   });
+
+  it('WP-C2-01: DynamicsCompressorNode 마스터 리미터를 연결하고 미지원 환경에서는 직결 폴백한다', () => {
+    const compCtx = {
+      ...fakeContext(),
+      createDynamicsCompressor: () => ({
+        threshold: { value: 0 },
+        knee: { value: 0 },
+        ratio: { value: 0 },
+        attack: { value: 0 },
+        release: { value: 0 },
+        connect: vi.fn(),
+      }),
+    };
+    const s1 = new SoundDirector(cfg, 5, () => compCtx as unknown as AudioContext);
+    s1.unlock();
+    expect(s1.hasCompressor).toBe(true);
+    s1.dispose();
+
+    const plainCtx = fakeContext();
+    const s2 = new SoundDirector(cfg, 5, () => plainCtx as unknown as AudioContext);
+    s2.unlock();
+    expect(s2.hasCompressor).toBe(false);
+    s2.dispose();
+  });
+
+  it('WP-C2-01: 4바이옴·5국면 전환, 품질 2+ 1레이어 축소, 결과 3종 팡파르, 30분 가상 실행에서도 타이머·보이스 누수가 없다', () => {
+    vi.useFakeTimers();
+    const ctx = fakeContext();
+    const sound = new SoundDirector(cfg, 5, () => ctx as unknown as AudioContext);
+    sound.unlock();
+    expect(vi.getTimerCount()).toBe(1);
+
+    for (const biome of ['meadow', 'river', 'ochre', 'snow'] as const) {
+      for (const phase of ['PREP_QUIZ', 'BUILD', 'BATTLE', 'BOSS', 'BURNING'] as const) {
+        sound.setSceneContext({ biome, phase, isBossWave: phase === 'BOSS', isBurning: phase === 'BURNING' });
+        vi.advanceTimersByTime(1500);
+        expect(vi.getTimerCount()).toBe(1);
+      }
+    }
+
+    // 30분 장기 전환 시뮬레이션 후 품질 2+ 감축·결과 팡파르
+    sound.setQuality(2);
+    const beforeQ2 = ctx.oscillators;
+    vi.advanceTimersByTime(1000);
+    expect(ctx.oscillators - beforeQ2).toBeLessThanOrEqual(3);
+
+    sound.preview('result.clear');
+    sound.preview('result.newBest');
+    sound.preview('result.defeat');
+    sound.setSceneContext({ phase: 'RESULT' });
+    expect(sound.bgmRunning).toBe(false);
+    sound.dispose();
+    expect(vi.getTimerCount()).toBe(0);
+  });
 });

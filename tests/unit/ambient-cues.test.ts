@@ -333,3 +333,44 @@ describe('흩날리는 꽃잎·눈송이', () => {
     expect(driftStep({ ...d, x: WORLD_W + DRIFT_MARGIN - 0.001, vx: 100, y: 10 }, 1, rng(3), WORLD_W, WORLD_H).x).toBe(-DRIFT_MARGIN);
   });
 });
+
+describe('WP-C2-05 R6 외곽 바이옴 입자(50웨이브 틴트 무충돌)', () => {
+  it('projected=true(R6)에서는 전면 tint 사각형을 칠하지 않고 외곽 입자 8개 이하만 만든다', () => {
+    const keys = new Set<string>();
+    const canvases: string[] = [];
+    const createdRects: Array<{ fillCalled: boolean }> = [];
+    const createdImages: Array<{ visible: boolean }> = [];
+    const proxy = <T extends object>(target: T): T => new Proxy(target, { get: (t, p) => (p in t ? (t as Record<string | symbol, unknown>)[p] : () => proxy(t)) });
+    const ctx2d = new Proxy({}, { get: () => () => ({ addColorStop: () => undefined }) });
+    const scene = {
+      textures: {
+        exists: (k: string) => keys.has(k),
+        createCanvas: (k: string) => { keys.add(k); canvases.push(k); return { getContext: () => ctx2d, refresh: () => undefined }; },
+        get: () => ({ getSourceImage: () => ({ width: 16, height: 16 }) }),
+      },
+      add: {
+        image: () => {
+          const item = { visible: true, setVisible: (v: boolean) => { item.visible = v; return proxy(item); } };
+          createdImages.push(item);
+          return proxy(item);
+        },
+        graphics: () => proxy({}),
+        rectangle: () => {
+          const rect = { fillCalled: false, setFillStyle: () => { rect.fillCalled = true; return proxy(rect); } };
+          createdRects.push(rect);
+          return proxy(rect);
+        },
+      },
+    };
+    const bridge = { controller: { ctx: { map: garden }, state: { wave: 17, pause: [] } }, reducedMotion: false };
+    const layer = new AmbientLayer({ scene, bridge, projected: true } as never);
+    layer.update(16);
+    expect(canvases).toEqual(['ambient.r6.mote']);
+    expect(createdImages.length).toBeLessThanOrEqual(8);
+    expect(createdImages.every(i => i.visible)).toBe(true);
+    expect(createdRects[0]!.fillCalled).toBe(false);
+    // 움직임 줄이기/가벼운 화면(light=true)에서는 모두 감춘다.
+    layer.update(16, true);
+    expect(createdImages.every(i => !i.visible)).toBe(true);
+  });
+});

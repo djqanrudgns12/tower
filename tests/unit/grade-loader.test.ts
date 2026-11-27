@@ -59,3 +59,20 @@ it.each([
   expect(loader.state(5)).toBe('error');
   expect(loader.peek(5)).toBeNull();
 });
+
+it('WP-C2-07: prefetch는 중복 요청을 내지 않고 실패를 외부로 던지지 않는다', async () => {
+  const fetchBank = vi.fn().mockRejectedValueOnce(new Error('offline')).mockResolvedValueOnce(bank);
+  const loader = createGradeLoader(manifest, { 5: fetchBank });
+  expect(() => loader.prefetch(6)).not.toThrow();
+  expect(fetchBank).not.toHaveBeenCalled();
+
+  loader.prefetch(5);
+  loader.prefetch(5);
+  await vi.waitFor(() => expect(loader.state(5)).toBe('error'));
+  expect(fetchBank).toHaveBeenCalledTimes(1);
+
+  await expect(loader.load(5)).resolves.toEqual(bank);
+  expect(loader.state(5)).toBe('ready');
+  loader.prefetch(5);
+  expect(fetchBank).toHaveBeenCalledTimes(2);
+});
