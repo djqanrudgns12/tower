@@ -4,7 +4,7 @@ type: project
 title: 프로젝트 계보 및 현행 코드 실체 판정
 status: active
 updated: 2026-11-26
-verified: { commit: "12d66348", date: 2026-11-28 }
+verified: { commit: ae5c1672, date: 2026-11-28 }
 sources:
   - path: package.json
     sha256: "438e5fc906d190ae6ff3e75af936f686e94d883375aff3ab996bcf06cd749d08"
@@ -13,7 +13,7 @@ sources:
   - path: docs/renewal/r6/PRD-r6.md
     sha256: "2ebe8c0d3e6c29822e5a15714f0a0a8b7a93ba5ce2e22031f83a3a7519be17b3"
   - path: docs/renewal/r6/PRD-r6-v2.md
-    sha256: "1bf6d3c15f279414b1c11d52ec0c5e00e66b9973a010af4f1c839c466dfe331f"
+    sha256: a4743bb1f86f834cc8e12b40576fd33d81fdc2cd6b30a291dc71307636f67337
   - path: docs/renewal/r6/review/G4-towers-fix.md
     sha256: "87b41052a8a094586a2afbeb9a15a9c9a58fb17b5bf1acb6e48bc9ff893a4631"
   - path: docs/renewal/r6/tech/monster-pipeline.md
@@ -47,7 +47,7 @@ sources:
 | **5. LLM Wiki 구축** (11/16) | `wiki/` 컴파일 지식 계층, `tools/wiki/` 동기화·조회·린트·교훈 델타, `llms.txt` | **현행 운영** ([SCHEMA.md](../SCHEMA.md)) |
 | **6. 학교 입장과 재방문 개선** (11/16) | 서비스워커 캐시, 교실 QR 입장, 우리 학교 랭킹 필터, `GET /v1/schools` 프록시 | **완료** (`8e02afec`) |
 | **7. R6 대개편 V1 (`balanceVersion: 2.0.0`)** (11/25~11/27) | R04 전술 지도·UI, 타워 6종 Lv20(66형태), 몬스터 5종족×20, 초원 고원 3/4 맵, Blender/Spine 공정, 자동 화질 3단계, 시즌 2 서버 | **V1 운영 반영 완료 (`1a7fe4eb`)** ([PRD-r6.md](../../docs/renewal/r6/PRD-r6.md)) |
-| **8. R6 V2 질적 고도화 (PRD V2 격상 · 시안 A 통합)** (11/27~) | 몬스터 밉맵·4방향 적응형 윤곽·Spine Bezier/메시/5종족 모션, 타워 회전/Idle·30KB VFX·WebAudio 사운드, 1회 동의 모달, 다중 세션 경계 분리 + **세션 A(`§7~§11`)**: 시안 A 풀블리드 2× 주간 고원·핀터레스트 타워 고도화·100% 한국어·학년×난이도 16전장·50웨이브(5단계 주기 10구간) 아우라·Gate 0→A1(초기맵 우선) 로드맵 | **몬스터/VFX/동의 모달 착수 · 시안 A Gate 0 승인 대기** ([PRD-r6-v2.md](../../docs/renewal/r6/PRD-r6-v2.md) · [계획서](../../docs/renewal/r6/R6_QUALITY_UPGRADE_PLAN.md)) |
+| **8. R6 V2 질적 고도화 (PRD V2 격상 · 선라이트 알라바스터 S+)** (11/27~) | 몬스터 밉맵·4방향 적응형 윤곽·Spine Bezier/메시/5종족 모션, 타워 회전/Idle·30KB VFX·WebAudio 사운드, 1회 동의 모달, 다중 세션 경계 분리 + **세션 A(`§7~§11`)**: 선라이트 알라바스터 S+ 3D 디오라마·성문 우측 후퇴 비잘림·우상단 슬림 도크·100% 한국어·학년×난이도 16전장·50웨이브(5단계 주기 10구간) 아우라·Gate 0→A1~A4(`WP-A1-01`~`WP-A4-02`) | **몬스터/VFX/동의 모달 구현 완료(`§12`) · S+ 마스터/세부 계획서 작성 및 Gate 0 승인 대기** ([PRD-r6-v2.md](../../docs/renewal/r6/PRD-r6-v2.md) · [마스터 계획서](../../docs/renewal/r6/v2/MASTER_PLAN.md) · [세부 실행 계획서](../../docs/renewal/r6/v2/DETAILED_EXECUTION_PLAN.md)) |
 
 ## 2. R6 단계·관문 현황
 
