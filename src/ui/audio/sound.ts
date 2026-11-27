@@ -157,6 +157,7 @@ export class SoundDirector {
   private lastFire = new Map<Sfx, number>();
   private readonly towerWeapons = new Map<number, number>();
   private correctStreakCount = 0;
+  private synthSeed = 0x9e3779b9;
   private enabled = true;
   private backgroundUnlocked = false;
   private paused = false;
@@ -233,7 +234,7 @@ export class SoundDirector {
         pitchScale = STREAK_PITCH_RATIOS[Math.max(0, this.correctStreakCount - 1)] ?? 1;
       } else if ((e.type === 'fire' || e.type === 'strike')) {
         const weapon = this.towerWeapons.get(e.towerId) ?? 0;
-        const jitter = 1 + (Math.random() * 2 - 1) * 0.04;
+        const jitter = 1 + (this.nextSynthRand() * 2 - 1) * 0.04;
         pitchScale = (1 + weapon * 0.05) * jitter;
       }
       this.play(sfx, pitchScale);
@@ -276,6 +277,11 @@ export class SoundDirector {
     this.voices.push({ sfx, startMs: nowMs, endMs: nowMs + lengthOf(notes) * 1000, stop: () => stops.forEach(s => s()) });
   }
 
+  private nextSynthRand(): number {
+    this.synthSeed = (Math.imul(this.synthSeed, 1664525) + 1013904223) >>> 0;
+    return this.synthSeed / 0x1_0000_0000;
+  }
+
   private ensureNoiseBuffer(ctx: AudioContext): AudioBuffer | null {
     if (this.noiseBuffer) return this.noiseBuffer;
     if (typeof ctx.createBuffer !== 'function') return null;
@@ -283,7 +289,7 @@ export class SoundDirector {
     const length = Math.max(1, Math.floor(rate * 0.35));
     const buf = ctx.createBuffer(1, length, rate);
     const ch = buf.getChannelData(0);
-    for (let i = 0; i < length; i++) ch[i] = Math.random() * 2 - 1;
+    for (let i = 0; i < length; i++) ch[i] = this.nextSynthRand() * 2 - 1;
     this.noiseBuffer = buf;
     return buf;
   }

@@ -88,8 +88,8 @@ test('R6 전장 Q0/Q5 통합 성능·밉맵·드로우콜 계측(1366x768 · CPU
     `${sp}-runner-t2`,
     `${sp}-armored-t2`,
     `${sp}-special-t2`,
-  ]);
-  const bossIds = ['stone-boss-t2', 'machine-boss-t4'];
+  ]) as Array<(typeof ENTITY_IDS)[number]>;
+  const bossIds = ['stone-boss-t2', 'machine-boss-t4'] as Array<(typeof ENTITY_IDS)[number]>;
 
   await page.evaluate(async ({ urls, towerIds, regularIds, bossIds }) => {
     const [content, sessions, run, qaGold, controllers, bridges, field, enemyDisplay] = await Promise.all([
@@ -141,7 +141,7 @@ test('R6 전장 Q0/Q5 통합 성능·밉맵·드로우콜 계측(1366x768 · CPU
       clone.id = nextId++;
       clone.faction = faction;
       clone.entityId = entityId;
-      clone.kind = entityId.includes('-armored-') ? 'armored' : entityId.includes('-runner-') ? 'runner' : entityId.includes('-special-') ? 'special' : 'infantry';
+      clone.kind = entityId.includes('-armored-') ? 'brute' : entityId.includes('-runner-') ? 'runner' : entityId.includes('-special-') ? 'flyer' : 'walker';
       clone.flying = entityId.startsWith('elf-special-') || entityId.startsWith('machine-special-') || entityId.startsWith('insect-runner-');
       clone.progress = 300 + Math.floor((i * (ctx.path.length * 0.45)) / totalRegular);
       clone.maxHp = clone.hp = 50_000_000;
