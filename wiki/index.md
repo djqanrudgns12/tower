@@ -4,7 +4,7 @@ type: index
 title: 어휘력 타워 디펜스 에이전트 위키 색인
 status: active
 updated: 2026-11-25
-verified: { commit: ae5c1672, date: 2026-11-28 }
+verified: { commit: b60037b4, date: 2026-11-28 }
 sources:
   - path: AGENTS.md
     sha256: "6a114bb3e7c1c01e63f75603742e3aa7811719234dc84c2471b0d045fbb26bf4"
@@ -13,7 +13,7 @@ sources:
   - path: docs/renewal/r6/PRD-r6.md
     sha256: "2ebe8c0d3e6c29822e5a15714f0a0a8b7a93ba5ce2e22031f83a3a7519be17b3"
   - path: docs/renewal/r6/PRD-r6-v2.md
-    sha256: a4743bb1f86f834cc8e12b40576fd33d81fdc2cd6b30a291dc71307636f67337
+    sha256: "6fda250a5019588b2cd560f1b5e73967279fd2114ccb5c271bb3268fdd73e922"
 ---
 
 # 어휘력 타워 디펜스 LLM Wiki (`index`)
@@ -27,7 +27,7 @@ sources:
 - **게임 규모**: 학년별 맵 `4`종(3~6학년, 15×9 격자·슬롯 20칸) · 타워 `20`종(Lv4/Lv7 3단 진화) · 적 역할 `10`종 × 종족 `8`종 · 원정 보물 `12`종
 - **공개 문제은행**: 3~6학년 자기 학년 승인 **5,547문항** · 공유 포함 총 출제 풀 **6,583문항** (3학년 1140 · 4학년 1563 · 5학년 1869 · 6학년 2011)
 - **서버·인프라**: 정적 게임 `https://voca.ssamuniverse.com` (GitHub Pages) · 기록/랭킹 API `https://voca-api.ssamuniverse.com` (Cloudflare Workers 라우트 `7`종 + D1 테이블 `12`종)
-- **지식 베이스**: 전체 마크다운 `222`개 · 핵심 의사결정 `10`건 · 루트 npm 명령 `36`개
+- **지식 베이스**: 전체 마크다운 `224`개 · 핵심 의사결정 `10`건 · 루트 npm 명령 `36`개
 <!-- WIKI-AUTO:END:repo-stats -->
 
 > 운영 v1(`1.0.0`) 지표. 코드 기본값은 R6(`2.0.0`), `?balance=v1`로 v1 실행.
@@ -38,7 +38,7 @@ sources:
 | --- | --- | --- |
 | 아키텍처·RunController | [아키텍처·계층 경계](concepts/architecture-and-layers.md) | [codemap.md](codemap.md) |
 | 타워·몬스터·밸런스 | [전투·타워·밸런스](concepts/combat-towers-and-balance.md) | [contracts.md](contracts.md) · `wiki:query -- --tower` |
-| UI·맵·아트·시안 A S+ V2 | [화면·전장·제작 공정](concepts/ui-phaser-and-assets.md) | `wiki:query -- --map` · [PRD-r6-v2 §7~11](../docs/renewal/r6/PRD-r6-v2.md) · [마스터 계획서](../docs/renewal/r6/v2/MASTER_PLAN.md) · [세부 계획서](../docs/renewal/r6/v2/DETAILED_EXECUTION_PLAN.md) |
+| UI·맵·아트·시안 A S++ V2 | [화면·전장·제작 공정](concepts/ui-phaser-and-assets.md) | `wiki:query -- --map` · [PRD-r6-v2 §7~11](../docs/renewal/r6/PRD-r6-v2.md) · [마스터 계획서](../docs/renewal/r6/v2/MASTER_PLAN.md) · [초선명 아키텍처](../docs/renewal/r6/v2/RENDERING_QUALITY_ARCHITECTURE.md) · [세부 계획서](../docs/renewal/r6/v2/DETAILED_EXECUTION_PLAN.md) |
 | 문제은행·CR-1000 | [문제은행·공동검수](concepts/question-bank-and-cr1000.md) | `wiki:query -- --bank` |
 | 저장·오답·랭킹 서버 | [로컬 저장·랭킹 서버](concepts/persistence-and-ranking-server.md) | `wiki:query -- --route` · `--table` |
 | 배포·시즌·검증 | [배포·검증·운영](concepts/deploy-and-verification.md) | [commands.md](commands.md) |
