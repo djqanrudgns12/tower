@@ -9,7 +9,11 @@ const NOTE_EMPTY = '틀린 낱말이 여기 모여요';
 async function freshHome(page: Page) {
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.goto('/');
-  await page.evaluate(() => { indexedDB.deleteDatabase('vocabulary-td'); localStorage.clear(); });
+  await page.evaluate(() => {
+    indexedDB.deleteDatabase('vocabulary-td');
+    localStorage.clear();
+    localStorage.setItem('vocabulary-td.settings', JSON.stringify({ shareRecordsAsked: true }));
+  });
   await page.reload();
 }
 
@@ -17,7 +21,6 @@ async function freshHome(page: Page) {
 async function startRun(page: Page, nickname: string) {
   await page.getByRole('textbox', { name: '닉네임' }).fill(nickname);
   await page.getByRole('button', { name: '새 게임', exact: true }).click();
-  await page.getByRole('dialog', { name: '새 게임' }).getByRole('button', { name: '시작', exact: true }).click();
   await expect(page.locator('main[data-r6="true"]')).toBeVisible();
   await expect(page.getByRole('img', { name: '준비 1/5' })).toBeVisible();
 }

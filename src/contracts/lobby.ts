@@ -15,6 +15,9 @@ export interface TelemetrySnapshot {
 export const RANKING_TAB_IDS = ['single_score', 'honor_points', 'best_wave', 'local_device'] as const;
 export type RankingTabId = (typeof RANKING_TAB_IDS)[number];
 
+export const HOME_RANKING_TAB_IDS = ['single_score', 'best_wave', 'local_device'] as const;
+export type HomeRankingTabId = (typeof HOME_RANKING_TAB_IDS)[number];
+
 export const RANKING_PERIODS = ['weekly', 'season1', 'all_time'] as const;
 export type RankingPeriod = (typeof RANKING_PERIODS)[number];
 
@@ -23,7 +26,7 @@ export interface RankingQuery {
   grade: 3 | 4 | 5 | 6 | 'all';
   difficulty: DifficultyId;
   period: RankingPeriod;
-  limit: 8 | 50;
+  limit: 8 | 50 | 100;
   offset: number;
   schoolCode?: string | undefined;
   schoolName?: string | undefined;

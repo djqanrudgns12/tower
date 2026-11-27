@@ -44,6 +44,18 @@
   --focus-ring: var(--accent-teal);
   --overlay: rgb(14 18 22 / 72%);
 
+  /* 홈 v3 표면·입체 음영 토큰 (다크 모드) */
+  --surface-shadow: 0 2px 6px rgb(0 0 0 / 36%);
+  --amber-lip: #9A5B00;
+  --teal-border: #1E494D;
+  --accent-teal-soft: #132C2F;
+  --control-border: #314052;
+  --track-bg: #24303E;
+  --cta-amber: #E69F24;
+  --cta-amber-hover: #F5B038;
+  --cta-amber-lip: #9A5B00;
+  --cta-amber-ink: #12161B;
+
   /* 3. 문제 패널 전용 밝은 고대비 면 (교실 프로젝터 대응 — 기본/밝은 화면 공통) */
   --quiz-bg: #F2F4F7;
   --quiz-card: #FFFFFF;
@@ -96,34 +108,46 @@
 :root[data-font="xlarge"],
 :root[data-font-scale="xlarge"] { --font-scale: 1.25; }
 
-/* "밝은 화면" 설정 대체 토큰 (교실 프로젝터 · 밝은 교실 환경용) */
+/* "밝은 화면" 설정 대체 토큰 (v3 Cool Mist Daylight — 교실·일반 웹 기본 테마) */
 :root[data-theme="light"] {
-  --bg-canvas: #E6EBF0;
-  --bg-panel: #F4F6F8;
+  --bg-canvas: #F4F6FA;
+  --bg-panel: #FFFFFF;
   --bg-card: #FFFFFF;
-  --bg-elevated: #EBF0F5;
-  --bg-pressed: #DCE3EB;
-  --border-hairline: #4A5563;
-  --border-strong: #1D242C;
+  --bg-elevated: #F8FAFC;
+  --bg-pressed: #EEF2F7;
+  --border-hairline: #DCE3EC;
+  --border-strong: #64748B;
 
-  --text-strong: #12161B;   /* #FFFFFF 대비 17.8:1 */
-  --text-body: #242D37;     /* #FFFFFF 대비 13.5:1 */
-  --text-muted: #4A5563;    /* #F4F6F8 대비 6.9:1 */
+  --text-strong: #0F172A;   /* #FFFFFF 대비 17.4:1 */
+  --text-body: #334155;     /* #FFFFFF 대비 10.7:1 */
+  --text-muted: #59677B;    /* #F8FAFC 대비 5.4:1 (AA ≥ 4.5:1) */
 
-  --accent-amber: #9A5B00;  /* #FFFFFF 대비 5.3:1 */
+  --accent-amber: #9A5B00;  /* 텍스트·배지용: #FFFFFF 대비 5.3:1 */
   --accent-amber-dim: #FDF3DF;
   --accent-amber-pressed: #7C4800;
 
   --accent-teal: #0E6E62;   /* #FFFFFF 대비 6.0:1 */
-  --accent-teal-dim: #E4F5F2;
+  --accent-teal-dim: #F0FDFA;
   --accent-teal-pressed: #0A544A;
 
   --status-danger: #B83227; /* #FFFFFF 대비 5.8:1 */
-  --status-danger-bg: #FDECEB;
+  --status-danger-bg: #FEF2F2;
   --status-success: #0E6E62;
   --status-warning: #9A5B00;
 
   --on-accent: #FFFFFF;
   --on-danger: #FFFFFF;
-  --overlay: rgb(29 36 44 / 56%);
+  --focus-ring: #0D9488;
+  --overlay: rgb(15 23 42 / 56%);
+
+  --surface-shadow: 0 1px 2px rgb(15 23 42 / 3%), 0 12px 32px -12px rgb(15 23 42 / 8%);
+  --amber-lip: #C27803;
+  --teal-border: #99F6E4;
+  --accent-teal-soft: #F0FDFA;
+  --control-border: #CBD5E1;
+  --track-bg: #EEF2F7;
+  --cta-amber: #F59E0B;
+  --cta-amber-hover: #FBBF24;
+  --cta-amber-lip: #C27803;
+  --cta-amber-ink: #111827;
 }

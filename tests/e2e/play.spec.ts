@@ -26,12 +26,13 @@ const shot = (page: Page, name: string) => page.screenshot({ path: `test-results
 
 async function newGame(page: Page) {
   await page.goto('/');
-  await page.evaluate(() => indexedDB.deleteDatabase('vocabulary-td'));
+  await page.evaluate(() => {
+    indexedDB.deleteDatabase('vocabulary-td');
+    localStorage.setItem('vocabulary-td.settings', JSON.stringify({ shareRecordsAsked: true }));
+  });
   await page.reload();
   await page.getByRole('textbox', { name: '닉네임' }).fill('하늘바람');
-  // 홈 '새 게임' → 새 게임 창의 '시작'.
   await page.getByRole('button', { name: '새 게임', exact: true }).click();
-  await page.getByRole('dialog', { name: '새 게임' }).getByRole('button', { name: '시작', exact: true }).click();
   await expect(page.getByRole('img', { name: '준비 1/5' })).toBeVisible();
 }
 
@@ -311,9 +312,10 @@ test('사용 설명서 완독 후 새 게임 시작: 목차에서 1장을 열어
   await expect(guide).toHaveCount(0);
 
   await page.getByRole('textbox', { name: '닉네임' }).fill('작전교범수호자');
-  // 홈 '새 게임' → 새 게임 창의 '시작'.
+  await page.evaluate(() => localStorage.setItem('vocabulary-td.settings', JSON.stringify({ shareRecordsAsked: true })));
+  await page.reload();
+  await page.getByRole('textbox', { name: '닉네임' }).fill('작전교범수호자');
   await page.getByRole('button', { name: '새 게임', exact: true }).click();
-  await page.getByRole('dialog', { name: '새 게임' }).getByRole('button', { name: '시작', exact: true }).click();
   await expect(page.getByRole('img', { name: '준비 1/5' })).toBeVisible();
 });
 
@@ -483,36 +485,31 @@ test('학년 단추는 공동검수를 통과한 공개 은행만 시작할 수 
 
   await page.setViewportSize({ width: 1280, height: 860 });
   await page.goto('/');
-  await page.evaluate(() => indexedDB.deleteDatabase('vocabulary-td'));
+  await page.evaluate(() => {
+    indexedDB.deleteDatabase('vocabulary-td');
+    localStorage.setItem('vocabulary-td.settings', JSON.stringify({ shareRecordsAsked: true }));
+  });
   await page.reload();
   await page.getByRole('textbox', { name: '닉네임' }).fill('어휘수호대');
-  await page.getByRole('button', { name: '새 게임', exact: true }).click();
 
-  const dialog = page.getByRole('dialog', { name: '새 게임' });
-  await expect(dialog).toBeVisible();
-  const gradeGroup = dialog.getByRole('radiogroup', { name: '학년' });
+  const gradeSelect = page.getByRole('combobox', { name: '학년', exact: true });
   for (const g of [3, 4, 5, 6]) {
+    const opt = gradeSelect.locator(`option[value="${g}"]`);
     if (!published.has(g)) {
-      // 공개 은행이 없는 학년은 잠금 아이콘과 '문제 준비 중' 이름으로 읽히고, 눌러도 고를 수 없으며 이유를 한 줄로 알린다.
-      const btn = gradeGroup.getByRole('radio', { name: `${g}학년, 문제 준비 중`, exact: true });
-      await expect(btn).toBeDisabled();
-      await btn.click({ force: true });
-      await expect(dialog.getByRole('status').filter({ hasText: '문제 준비 중이에요' })).toBeVisible();
-      await expect(btn).toHaveAttribute('aria-checked', 'false');
+      await expect(opt).toBeDisabled();
     } else {
-      const btn = gradeGroup.getByRole('radio', { name: `${g}학년`, exact: true });
-      await expect(btn).toBeEnabled();
+      await expect(opt).toBeEnabled();
     }
   }
 
   const top = Math.max(...published.keys());
-  await gradeGroup.getByRole('radio', { name: `${top}학년`, exact: true }).click();
-  await dialog.getByRole('radiogroup', { name: '난이도' }).getByRole('radio', { name: '아주 어려움', exact: true }).click();
+  await gradeSelect.selectOption(String(top));
+  await page.getByRole('combobox', { name: '난이도', exact: true }).selectOption('Crazy');
 
   const newGameA11y = await new AxeBuilder({ page }).analyze();
   expect(newGameA11y.violations.map(v => `${v.id}: ${v.nodes.length}`)).toEqual([]);
 
-  await dialog.getByRole('button', { name: '시작', exact: true }).click();
+  await page.getByRole('button', { name: '새 게임', exact: true }).click();
   await expect(page.getByRole('img', { name: '준비 1/5' })).toBeVisible();
   await expect(page.getByRole('region', { name: '어휘 문제' })).toBeVisible();
 

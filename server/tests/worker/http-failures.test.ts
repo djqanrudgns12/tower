@@ -111,7 +111,7 @@ describe('422 입력 오류', () => {
       'p_tab=single_score&p_grade=7&p_difficulty=Normal&p_period=all_time',
       'p_tab=single_score&p_grade=3&p_difficulty=Easy2&p_period=all_time',
       'p_tab=single_score&p_grade=3&p_difficulty=Normal&p_period=monthly',
-      'p_tab=single_score&p_grade=3&p_difficulty=Normal&p_period=all_time&p_limit=51',
+      'p_tab=single_score&p_grade=3&p_difficulty=Normal&p_period=all_time&p_limit=101',
       'p_tab=single_score&p_grade=3&p_difficulty=Normal&p_period=all_time&p_offset=10001',
       'p_tab=single_score&p_difficulty=Normal&p_period=all_time',
     ]) {

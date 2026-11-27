@@ -18,7 +18,7 @@ sources:
 
 # 어휘력 타워 디펜스 LLM Wiki (`index`)
 
-> 에이전트가 최소 토큰으로 현행 규칙·살아있는 계약·원본 절을 찾는 **1홉 라우터**입니다. 규약과 권위 순서는 [SCHEMA.md](SCHEMA.md), R6 V2 단일 기준은 [PRD-r6-v2.md](../docs/renewal/r6/PRD-r6-v2.md) ([V1 기준선](../docs/renewal/r6/PRD-r6.md)), 문서 전체 지도는 [docs/README.md](../docs/README.md), 사이트맵은 [llms.txt](../llms.txt)를 참조하세요.
+> 1홉 라우터: [SCHEMA.md](SCHEMA.md) · R6 V2 [PRD-r6-v2.md](../docs/renewal/r6/PRD-r6-v2.md) ([V1](../docs/renewal/r6/PRD-r6.md)) · [docs/README.md](../docs/README.md) · [llms.txt](../llms.txt)
 
 ## 1. 실시간 저장소 지표 (`WIKI-AUTO`)
 
@@ -30,32 +30,27 @@ sources:
 - **지식 베이스**: 전체 마크다운 `222`개 · 핵심 의사결정 `10`건 · 루트 npm 명령 `36`개
 <!-- WIKI-AUTO:END:repo-stats -->
 
-> 위 지표는 운영 v1(`1.0.0`) 기준이다. 코드 기본값은 R6(`2.0.0`, 운영 미반영)이고 `?balance=v1`로 이전 판을 연다.
+> 운영 v1(`1.0.0`) 지표. 코드 기본값은 R6(`2.0.0`), `?balance=v1`로 v1 실행.
 
-## 2. 작업별 1홉 바로가기
+## 2. 1홉 바로가기
 
-| 하려는 작업 | 먼저 읽을 위키 허브 | 자동 레지스트리 / 정밀 조회 |
+| 영역 | 위키 허브 | 자동 레지스트리 / 조회 |
 | --- | --- | --- |
-| **계층 규칙·RunController·계약 선택·자동 화질** | [아키텍처·계층 경계](concepts/architecture-and-layers.md) | [codemap.md](codemap.md) |
-| **R6 타워 6종(Lv20)·몬스터 100·밸런스 v2** | [전투·타워·밸런스](concepts/combat-towers-and-balance.md) | [contracts.md](contracts.md) · `npm run wiki:query -- --tower` |
-| **R04 UI·초원 고원·Blender/Spine 제작 공정 · 시안 A V2** | [화면·전장·제작 공정](concepts/ui-phaser-and-assets.md) | `npm run wiki:query -- --map` · [PRD-r6-v2.md §7~§11](../docs/renewal/r6/PRD-r6-v2.md) |
-| **3~6학년 문제은행·CR-1000·commit-lock** | [문제은행·공동검수](concepts/question-bank-and-cr1000.md) | `npm run wiki:query -- --bank` |
-| **IndexedDB·오답 노트·시즌 2 랭킹 서버** | [로컬 저장·랭킹 서버](concepts/persistence-and-ranking-server.md) | `npm run wiki:query -- --route` · `--table` |
-| **배포·시즌 전환·보존 잠금·검증 예산** | [배포·검증·운영](concepts/deploy-and-verification.md) | [commands.md](commands.md) |
-| **R6 V2 단계·관문 현황과 남은 작업** | [로드맵·현행 실체 상태](projects/roadmap-and-status.md) | [decisions-index.md](decisions-index.md) |
-| **제품 정의·도메인·기술스택 고정 버전** | [제품 개요](entities/vocabulary-td.md) · [기술스택](entities/tech-stack.md) | [docs-catalog.md](docs-catalog.md) |
+| 아키텍처·RunController | [아키텍처·계층 경계](concepts/architecture-and-layers.md) | [codemap.md](codemap.md) |
+| 타워·몬스터·밸런스 | [전투·타워·밸런스](concepts/combat-towers-and-balance.md) | [contracts.md](contracts.md) · `wiki:query -- --tower` |
+| UI·맵·아트·시안 A V2 | [화면·전장·제작 공정](concepts/ui-phaser-and-assets.md) | `wiki:query -- --map` · [PRD-r6-v2 §7~11](../docs/renewal/r6/PRD-r6-v2.md) |
+| 문제은행·CR-1000 | [문제은행·공동검수](concepts/question-bank-and-cr1000.md) | `wiki:query -- --bank` |
+| 저장·오답·랭킹 서버 | [로컬 저장·랭킹 서버](concepts/persistence-and-ranking-server.md) | `wiki:query -- --route` · `--table` |
+| 배포·시즌·검증 | [배포·검증·운영](concepts/deploy-and-verification.md) | [commands.md](commands.md) |
+| R6 V2 로드맵·현황 | [로드맵·현행 실체 상태](projects/roadmap-and-status.md) | [decisions-index.md](decisions-index.md) |
+| 제품·기술스택 | [제품 개요](entities/vocabulary-td.md) · [기술스택](entities/tech-stack.md) | [docs-catalog.md](docs-catalog.md) |
 
-## 3. 자동 생성 레지스트리 5종 (`npm run wiki:sync`)
+## 3. 자동 레지스트리 (`npm run wiki:sync`)
 
-- [commands.md](commands.md): 전체 `npm run` 스크립트(`test:r6-perf` 포함) · `tools/` CLI · `resource-guard`
-- [codemap.md](codemap.md): `src/` 7계층 · `server/` · `tools/` · ESLint 금지 의존성 지도
-- [contracts.md](contracts.md): 공개 은행 · v1 계약 요약 · 서버 API 7종 · D1 테이블 12종
-- [decisions-index.md](decisions-index.md): 분산된 확정 결정(`DEC-01`~`DEC-10`)과 원본 줄 번호
-- [docs-catalog.md](docs-catalog.md): 전체 마크다운 생애주기 · Diataxis 분류 · `validate-plan` 잠금
+- [commands.md](commands.md) · [codemap.md](codemap.md) · [contracts.md](contracts.md) · [decisions-index.md](decisions-index.md) · [docs-catalog.md](docs-catalog.md)
 
-## 4. 교훈 원장 · 용어 · 운영 도구
+## 4. 교훈 · 사전 · 도구
 
-- **교훈 원장**: [엔지니어링·콘텐츠](lessons/engineering-and-content.md) · [UI·아트·밸런스](lessons/ui-art-and-balance.md) · [운영·워크플로](lessons/ops-and-workflow.md)
-- **사전·이력·틀**: [용어 사전](glossary.md) · [연산 기록](log.md) · 틀([교훈](templates/lesson.md), [허브](templates/hub.md))
-- **공용 스킬**: [.agents/skills/wiki-maintain/SKILL.md](../.agents/skills/wiki-maintain/SKILL.md)
-- **필수 명령**: 조회 `npm run wiki:query -- --help` · 동기화 `npm run wiki:sync` · 엄격 검사 `npm run wiki:check`
+- **교훈**: [엔지니어링·콘텐츠](lessons/engineering-and-content.md) · [UI·아트·밸런스](lessons/ui-art-and-balance.md) · [운영·워크플로](lessons/ops-and-workflow.md)
+- **사전·틀**: [용어 사전](glossary.md) · [연산 기록](log.md) · [교훈](templates/lesson.md) · [허브](templates/hub.md)
+- **스킬·CLI**: [.agents/skills/wiki-maintain/SKILL.md](../.agents/skills/wiki-maintain/SKILL.md) · `wiki:query` · `wiki:sync` · `wiki:check`

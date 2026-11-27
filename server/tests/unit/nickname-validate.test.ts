@@ -71,7 +71,8 @@ describe('입력 검사', () => {
   it('랭킹 조건: RPC 기본값(8·0)과 범위', () => {
     const base = 'p_tab=single_score&p_grade=3&p_difficulty=Normal&p_period=all_time';
     expect(parseRankingParams(new URLSearchParams(base))).toEqual({ tab: 'single_score', grade: 3, difficulty: 'Normal', period: 'all_time', limit: 8, offset: 0 });
-    expect(parseRankingParams(new URLSearchParams(`${base}&p_limit=50&p_offset=10000`))).toMatchObject({ limit: 50, offset: 10000 });
+    expect(parseRankingParams(new URLSearchParams(`${base}&p_limit=100&p_offset=10000`))).toMatchObject({ limit: 100, offset: 10000 });
+    expect(parseRankingParams(new URLSearchParams(`${base}&p_limit=101`))).toBeNull();
     expect(parseRankingParams(new URLSearchParams(`${base}&p_limit=0`))).toBeNull();
     expect(parseRankingParams(new URLSearchParams(`${base}&p_offset=-1`))).toBeNull();
   });

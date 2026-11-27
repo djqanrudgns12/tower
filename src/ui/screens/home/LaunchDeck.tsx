@@ -1,33 +1,48 @@
 import { useEffect, useRef, useState, type RefObject } from 'react';
+import { DIFFICULTY_IDS, type DifficultyId } from '../../../contracts/balance';
+import { isGradeAvailable } from '../../../content';
+import { getR6Battle, type LocalBalanceVersion } from '../../../application/balanceSession';
 import { recommendNickname } from '../../../application/lobby';
-import { searchNeisSchools, type NeisSchool } from '../../../application/neis';
-import { cleanNickname } from '../../copy';
-import { Button, Card, Modal } from '../../kit';
+import { useGradeContent } from '../../useGradeContent';
+import { DIFFICULTY_COPY, cleanNickname } from '../../copy';
 import { LineIcon } from '../../icons/LineIcon';
+import { difficultyReadout } from '../guide/difficultyReadout';
+import { R6_HOME_HERO, R6_HOME_ICONS, R6_MAP_NAME, showMapDiagram } from '../r6Map';
 import css from './home.module.css';
 
+const GRADES = [3, 4, 5, 6] as const;
+type Grade = (typeof GRADES)[number];
+
 interface Props {
+  balanceVersion: LocalBalanceVersion;
   savedNickname: string;
-  savedSchoolName: string;
+  grade: Grade;
+  difficulty: DifficultyId;
+  starting: boolean;
   message: string | null;
   /** 처음 온 학생에게는 ‘처음이라면 연습부터’, 해 본 학생에게는 ‘연습하기’. */
   practiceLabel?: string;
   inputRef: RefObject<HTMLInputElement | null>;
+  onGradeChange(next: Grade): void;
+  onDifficultyChange(next: DifficultyId): void;
   onCommitNickname(nickname: string): void;
-  onCommitSchool?(schoolName: string, schoolCode: string): void;
-  onOpenNewGame(confirmedNickname: string): void;
+  onStartPlay(confirmedNickname: string): void;
   onPractice?(): void;
 }
 
 export function LaunchDeck({
+  balanceVersion,
   savedNickname,
-  savedSchoolName,
+  grade,
+  difficulty,
+  starting,
   message,
   practiceLabel = '연습하기',
   inputRef,
+  onGradeChange,
+  onDifficultyChange,
   onCommitNickname,
-  onCommitSchool,
-  onOpenNewGame,
+  onStartPlay,
   onPractice,
 }: Props) {
   const [draft, setDraft] = useState(savedNickname);
@@ -36,23 +51,14 @@ export function LaunchDeck({
   const prevSavedRef = useRef(savedNickname);
   const commitRef = useRef(onCommitNickname);
 
-  // 학교 이름 상태
-  const [schoolDraft, setSchoolDraft] = useState(savedSchoolName);
-  const [schoolResults, setSchoolResults] = useState<NeisSchool[]>([]);
-  const [isSearchingSchool, setIsSearchingSchool] = useState(false);
-  const [schoolModalOpen, setSchoolModalOpen] = useState(false);
-  const [schoolStatusMsg, setSchoolStatusMsg] = useState<string | null>(null);
-  const schoolSearchAbortRef = useRef<AbortController | null>(null);
-
-  useEffect(() => () => {
-    schoolSearchAbortRef.current?.abort();
-  }, []);
+  const { status, retry } = useGradeContent(grade);
+  const r6 = balanceVersion === '2.0.0' ? getR6Battle() : null;
+  const readoutLine = difficultyReadout(difficulty, r6?.balance).line;
 
   useEffect(() => {
     commitRef.current = onCommitNickname;
   }, [onCommitNickname]);
 
-  // 외부에서 닉네임이 변경된 경우 빈 입력칸을 동기화
   useEffect(() => {
     if (prevSavedRef.current !== savedNickname) {
       prevSavedRef.current = savedNickname;
@@ -62,14 +68,6 @@ export function LaunchDeck({
     }
   }, [savedNickname, draft]);
 
-  // 외부에서 학교 이름이 변경된 경우 동기화
-  const [prevSavedSchool, setPrevSavedSchool] = useState(savedSchoolName);
-  if (savedSchoolName !== prevSavedSchool) {
-    setPrevSavedSchool(savedSchoolName);
-    setSchoolDraft(savedSchoolName);
-  }
-
-  // 유효한 닉네임을 입력하면 자동으로 저장·순위표와 연동
   useEffect(() => {
     const cleaned = cleanNickname(draft);
     if (cleaned.error !== null || cleaned.value === savedNickname) return undefined;
@@ -82,21 +80,18 @@ export function LaunchDeck({
   const check = cleanNickname(draft);
   const isEmpty = draft.trim().length === 0;
   const showError = touched && check.error !== null;
-  const isReady = !showError && check.error === null;
-
-  const statusText = showError
+  const nickErrorText = showError
     ? isEmpty
       ? '새 게임 전에 닉네임(2~12자)을 먼저 적어 주세요.'
       : check.error!
-    : isReady
-      ? '내 순위와 자동 연동됨'
-      : '2~12자 입력 또는 랜덤 추천';
+    : null;
 
-  const headerBadgeText = showError
-    ? '닉네임 확인'
-    : isReady
-      ? '준비 완료 · 순위 연동'
-      : '닉네임 2~12자';
+  const contentStatusText =
+    status === 'error'
+      ? '문제를 불러오지 못했어요.'
+      : status !== 'ready' && status !== 'unavailable'
+        ? '문제를 불러오는 중이에요.'
+        : null;
 
   const applyCurrent = () => {
     setTouched(true);
@@ -117,316 +112,174 @@ export function LaunchDeck({
   };
 
   const handleNewGameClick = () => {
+    if (starting) return;
     setTouched(true);
     const cleaned = cleanNickname(draft);
     if (cleaned.error !== null) {
       inputRef.current?.focus();
       return;
     }
+    if (status !== 'ready') return;
     setDraft(cleaned.value);
     if (cleaned.value !== savedNickname) onCommitNickname(cleaned.value);
-
-    const trimmedSchool = schoolDraft.trim();
-    if (trimmedSchool !== savedSchoolName) {
-      onCommitSchool?.(trimmedSchool, '');
-    }
-
-    onOpenNewGame(cleaned.value);
+    onStartPlay(cleaned.value);
   };
 
-  // 학교 검색 실행(소형 모달에서 결과를 보여 아래 CTA와 겹치지 않게 한다)
-  const performSchoolSearch = async () => {
-    setSchoolModalOpen(true);
-    const query = schoolDraft.trim();
-    if (query.length < 2) {
-      schoolSearchAbortRef.current?.abort();
-      setSchoolResults([]);
-      setSchoolStatusMsg('학교명을 2자 이상 입력해 주세요.');
-      return;
-    }
-
-    schoolSearchAbortRef.current?.abort();
-    const ctrl = new AbortController();
-    schoolSearchAbortRef.current = ctrl;
-    setIsSearchingSchool(true);
-    setSchoolStatusMsg('NEIS에서 학교를 찾는 중...');
-
-    try {
-      const results = await searchNeisSchools(query, { signal: ctrl.signal });
-      if (ctrl.signal.aborted) return;
-      setSchoolResults(results);
-      if (results.length > 0) {
-        setSchoolStatusMsg(`검색 결과 ${results.length}건`);
-      } else {
-        setSchoolStatusMsg('검색된 학교가 없습니다. 직접 입력하실 수 있어요.');
-      }
-    } catch {
-      if (ctrl.signal.aborted) return;
-      setSchoolResults([]);
-      setSchoolStatusMsg('학교 검색 중 오류가 발생했습니다.');
-    } finally {
-      if (schoolSearchAbortRef.current === ctrl) {
-        setIsSearchingSchool(false);
-      }
-    }
-  };
-
-  const handleSelectSchool = (school: NeisSchool) => {
-    schoolSearchAbortRef.current?.abort();
-    setSchoolDraft(school.schoolName);
-    setSchoolModalOpen(false);
-    setSchoolStatusMsg(`${school.schoolName} (${school.schoolKind})`);
-    onCommitSchool?.(school.schoolName, school.schoolCode);
-  };
-
-  const handleSchoolBlur = () => {
-    const trimmed = schoolDraft.trim();
-    if (trimmed !== savedSchoolName) {
-      onCommitSchool?.(trimmed, '');
-    }
-  };
+  const startDisabled = starting || status !== 'ready';
 
   return (
-    <section className={`${css.subCard} ${css.launchCard}`} aria-label="새 게임 준비">
-      <div className={css.cardHeaderRow}>
-        <div className={css.cardTitleWrap}>
-          <span className={css.sectionIconBadge} aria-hidden="true">
-            <LineIcon name="hud/play" size={18} />
-          </span>
-          <h2 className={css.sectionTitle}>새 게임 준비</h2>
-        </div>
-        <span
-          className={css.readyStatusTag}
-          data-ready={isReady ? 'true' : undefined}
-          data-error={showError ? 'true' : undefined}
-        >
-          {headerBadgeText}
-        </span>
+    <section className={`${css.ceramicCard} ${css.launchCard}`} aria-label="새 게임 준비">
+      <div className={css.stageViewport}>
+        <img
+          src={R6_HOME_HERO}
+          onError={showMapDiagram}
+          width={960}
+          height={540}
+          alt={`${R6_MAP_NAME} 전장 미리보기`}
+          className={css.stageImage}
+          draggable={false}
+        />
+        <span className={css.stageTag}>{R6_MAP_NAME}</span>
       </div>
 
-      <div className={css.formFieldsTray}>
-        {/* 1. 닉네임 입력 영역 */}
-        <div className={css.fieldGroup}>
-          <div className={css.fieldLabelRow}>
-            <label htmlFor="landingNickInput" className={css.fieldLabelTitle}>
-              닉네임
-            </label>
-            <span
-              id="landingNickStatus"
-              role="status"
-              aria-live="polite"
-              className={css.nickStatus}
-              data-error={showError || undefined}
-              data-ready={isReady ? 'true' : undefined}
-            >
-              {statusText}
-            </span>
-          </div>
+      <div className={css.launchBody}>
+        <div className={css.launchHead}>
+          <h2 className={css.heroTitle}>낱말을 풀고, 타워로 성문을 지켜요</h2>
+          <p className={css.readoutCaption}>{readoutLine}</p>
+        </div>
 
-          <div className={css.lockedInputRow}>
-            <div className={css.inputIconWrap}>
-              <LineIcon name="hud/edit" className={css.inputInnerIcon} />
-              <input
-                ref={inputRef}
-                id="landingNickInput"
-                aria-label="닉네임"
-                aria-describedby="landingNickStatus"
-                aria-invalid={showError || undefined}
-                className={css.parchInput}
-                value={draft}
-                maxLength={24}
-                autoComplete="off"
-                placeholder="닉네임 입력 (2~12자)"
-                onCompositionStart={() => {
-                  composingRef.current = true;
-                }}
-                onCompositionEnd={e => {
-                  composingRef.current = false;
-                  setDraft(e.currentTarget.value);
-                }}
-                onChange={e => setDraft(e.target.value)}
-                onBlur={() => {
-                  if (composingRef.current) return;
-                  if (draft.trim().length > 0) {
-                    setTouched(true);
-                    const c = cleanNickname(draft);
-                    if (c.error === null) {
-                      setDraft(c.value);
-                      if (c.value !== savedNickname) onCommitNickname(c.value);
-                    }
+        <div className={css.controlRow}>
+          <div className={css.nickGroup}>
+            <input
+              ref={inputRef}
+              id="landingNickInput"
+              aria-label="닉네임"
+              aria-describedby={nickErrorText ? 'landingNickStatus' : undefined}
+              aria-invalid={showError || undefined}
+              className={css.nickInputField}
+              value={draft}
+              maxLength={24}
+              autoComplete="off"
+              placeholder="닉네임 (2~12자)"
+              onCompositionStart={() => {
+                composingRef.current = true;
+              }}
+              onCompositionEnd={e => {
+                composingRef.current = false;
+                setDraft(e.currentTarget.value);
+              }}
+              onChange={e => setDraft(e.target.value)}
+              onBlur={() => {
+                if (composingRef.current) return;
+                if (draft.trim().length > 0) {
+                  setTouched(true);
+                  const c = cleanNickname(draft);
+                  if (c.error === null) {
+                    setDraft(c.value);
+                    if (c.value !== savedNickname) onCommitNickname(c.value);
                   }
-                }}
-                onKeyDown={e => {
-                  if (e.key === 'Enter' && !e.nativeEvent.isComposing) {
-                    e.preventDefault();
-                    applyCurrent();
-                  }
-                }}
-              />
-            </div>
+                }
+              }}
+              onKeyDown={e => {
+                if (e.key === 'Enter' && !e.nativeEvent.isComposing) {
+                  e.preventDefault();
+                  applyCurrent();
+                }
+              }}
+            />
             <button
               type="button"
-              className={css.lockedSlotBtn}
+              className={css.diceBtn}
               onClick={handleRecommend}
             >
-              랜덤 추천
+              <span className={css.icon3dWrap} aria-hidden="true">
+                <img src={R6_HOME_ICONS.dice} width={20} height={20} alt="" className={`${css.diceIcon} ${css.icon3d}`} />
+              </span>
+              <span>랜덤 추천</span>
             </button>
+          </div>
+
+          <div className={css.selectGroup}>
+            <select
+              id="landingGradeSelect"
+              aria-label="학년"
+              className={css.controlSelect}
+              value={grade}
+              disabled={starting}
+              onChange={e => onGradeChange(Number(e.target.value) as Grade)}
+            >
+              {GRADES.map(g => (
+                <option key={g} value={g} disabled={!isGradeAvailable(g)}>
+                  {isGradeAvailable(g) ? `${g}학년` : `${g}학년 (준비 중)`}
+                </option>
+              ))}
+            </select>
+
+            <select
+              id="landingDiffSelect"
+              aria-label="난이도"
+              className={css.controlSelect}
+              value={difficulty}
+              disabled={starting}
+              onChange={e => onDifficultyChange(e.target.value as DifficultyId)}
+            >
+              {DIFFICULTY_IDS.map(d => (
+                <option key={d} value={d}>
+                  {DIFFICULTY_COPY[d].label}
+                </option>
+              ))}
+            </select>
           </div>
         </div>
 
-        <div className={css.trayDivider} aria-hidden="true" />
-
-        {/* 2. 학교 이름 입력 영역 (결과는 소형 모달로 열어 아래 CTA와 겹치지 않는다) */}
-        <div className={css.fieldGroup}>
-          <div className={css.fieldLabelRow}>
-            <label htmlFor="landingSchoolInput" className={css.fieldLabelTitle}>
-              학교 이름
-              <span className={css.optionalTag}>(선택)</span>
-            </label>
-            <span
-              id="landingSchoolStatus"
-              role="status"
-              aria-live="polite"
-              className={css.nickStatus}
-            >
-              {schoolStatusMsg ?? '검색하거나 직접 입력해요'}
-            </span>
+        {(nickErrorText || contentStatusText || message) && (
+          <div className={css.statusRow}>
+            {nickErrorText && (
+              <p id="landingNickStatus" role="status" aria-live="polite" className={css.inlineError}>
+                {nickErrorText}
+              </p>
+            )}
+            {contentStatusText && (
+              <p role="status" aria-live="polite" className={status === 'error' ? css.inlineError : css.inlineMuted}>
+                {contentStatusText}
+                {status === 'error' && (
+                  <button type="button" className={css.inlineRetryBtn} onClick={retry}>
+                    다시 불러오기
+                  </button>
+                )}
+              </p>
+            )}
+            {message && (
+              <p className={css.bannerNotice} role="status">
+                {message}
+              </p>
+            )}
           </div>
-
-          <div className={css.lockedInputRow}>
-            <div className={css.inputIconWrap}>
-              <LineIcon name="hud/school" className={css.inputInnerIcon} />
-              <input
-                id="landingSchoolInput"
-                aria-label="학교 이름"
-                aria-describedby="landingSchoolStatus"
-                className={css.parchInput}
-                value={schoolDraft}
-                maxLength={30}
-                autoComplete="off"
-                placeholder="학교 이름 입력 (예: 서울초등학교)"
-                onChange={e => {
-                  setSchoolDraft(e.target.value);
-                  setSchoolStatusMsg(null);
-                }}
-                onBlur={handleSchoolBlur}
-                onKeyDown={e => {
-                  if (e.key === 'Enter' && !e.nativeEvent.isComposing) {
-                    e.preventDefault();
-                    void performSchoolSearch();
-                  }
-                }}
-              />
-            </div>
-            <button
-              type="button"
-              className={css.lockedSlotBtn}
-              onClick={() => void performSchoolSearch()}
-              disabled={isSearchingSchool}
-            >
-              {isSearchingSchool ? '검색 중' : '학교 검색'}
-            </button>
-          </div>
-        </div>
-      </div>
-
-      {schoolModalOpen && (
-        <Modal
-          titleId="schoolModalTitle"
-          title="학교 찾기"
-          size="sm"
-          onClose={() => setSchoolModalOpen(false)}
-        >
-          <div className={css.schoolModalStack}>
-            <div className={css.schoolModalSearch}>
-              <input
-                id="schoolModalInput"
-                aria-label="학교 이름 검색"
-                className={css.nickInput}
-                value={schoolDraft}
-                maxLength={30}
-                autoComplete="off"
-                placeholder="학교 이름 (2자 이상)"
-                onChange={e => {
-                  setSchoolDraft(e.target.value);
-                  setSchoolStatusMsg(null);
-                }}
-                onKeyDown={e => {
-                  if (e.key === 'Enter' && !e.nativeEvent.isComposing) {
-                    e.preventDefault();
-                    void performSchoolSearch();
-                  }
-                }}
-              />
-              <Button
-                variant="secondary"
-                onClick={() => void performSchoolSearch()}
-                disabled={isSearchingSchool}
-              >
-                {isSearchingSchool ? '검색 중' : '검색'}
-              </Button>
-            </div>
-            <p className={css.schoolModalStatus} role="status" aria-live="polite">
-              {schoolStatusMsg ?? '학교 이름을 입력하고 검색을 눌러요.'}
-            </p>
-            <Card sunk pad="sm" className={css.schoolModalResults}>
-              {isSearchingSchool ? (
-                <p className={css.schoolEmpty}>NEIS에서 학교를 검색하고 있어요...</p>
-              ) : schoolResults.length === 0 ? (
-                <p className={css.schoolEmpty}>
-                  검색된 학교가 없습니다. 직접 이름을 입력해 사용할 수 있어요.
-                </p>
-              ) : (
-                <ul className={css.schoolList} aria-label="학교 검색 결과">
-                  {schoolResults.map(s => (
-                    <li key={`${s.officeCode}-${s.schoolCode}-${s.schoolName}`}>
-                      <button
-                        type="button"
-                        className={css.schoolItem}
-                        onClick={() => handleSelectSchool(s)}
-                      >
-                        <span className={css.schoolItemTop}>
-                          <span className={css.schoolItemName}>{s.schoolName}</span>
-                          {s.schoolKind && (
-                            <span className={css.schoolItemBadge}>{s.schoolKind}</span>
-                          )}
-                        </span>
-                        <span className={css.schoolItemAddress}>
-                          {s.officeName} · {s.roadAddress || s.locationName}
-                        </span>
-                      </button>
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </Card>
-          </div>
-        </Modal>
-      )}
-
-      {message && <p className={css.bannerNotice} role="status">{message}</p>}
-
-      <div className={css.ctaStack}>
-        <button
-          id="newGameBtn"
-          type="button"
-          className={css.craftCtaPrimary}
-          onClick={handleNewGameClick}
-        >
-          <LineIcon name="hud/play" />
-          새 게임
-        </button>
-        {onPractice && (
-          <button
-            id="practiceBtn"
-            type="button"
-            className={css.craftCtaSecondary}
-            onClick={onPractice}
-          >
-            <LineIcon name="hud/stat-range" />
-            {practiceLabel}
-          </button>
         )}
+
+        <div className={css.ctaStack}>
+          <button
+            id="newGameBtn"
+            type="button"
+            className={css.ctaPrimary}
+            aria-disabled={startDisabled || undefined}
+            aria-busy={starting || undefined}
+            onClick={handleNewGameClick}
+          >
+            <LineIcon name="hud/play" size={18} />
+            <span>{starting ? '준비 중…' : '새 게임'}</span>
+          </button>
+          {onPractice && (
+            <button
+              id="practiceBtn"
+              type="button"
+              className={css.ctaSecondary}
+              onClick={onPractice}
+            >
+              <span>{practiceLabel}</span>
+            </button>
+          )}
+        </div>
       </div>
     </section>
   );

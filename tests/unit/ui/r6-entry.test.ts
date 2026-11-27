@@ -30,11 +30,11 @@ describe('R6 새 게임', () => {
 });
 
 describe('밝은 화면 설정', () => {
-  it('이전 저장본은 어둡게 열고, 다른 설정을 바꿔도 밝은 화면 선택을 적용한다', () => {
-    const legacy = loadSettings();
-    expect(legacy.lightTheme).toBe(false);
-    const bright = normalizeSettings(legacy, { lightTheme: true });
-    expect(normalizeSettings(bright, { fontScale: 'xlarge' }).lightTheme).toBe(true);
-    expect(normalizeSettings(bright, { lightTheme: false }).lightTheme).toBe(false);
+  it('기본 저장본은 밝게 열고, 다른 설정을 바꿔도 어두운 화면 선택을 유지한다', () => {
+    const initial = loadSettings();
+    expect(initial.lightTheme).toBe(true);
+    const dark = normalizeSettings(initial, { lightTheme: false });
+    expect(normalizeSettings(dark, { fontScale: 'xlarge' }).lightTheme).toBe(false);
+    expect(normalizeSettings(dark, { lightTheme: true }).lightTheme).toBe(true);
   });
 });

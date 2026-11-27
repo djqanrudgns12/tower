@@ -1,7 +1,7 @@
 import { expect, test } from './tower-browser';
 
 test.describe('WP-Q1b 순위표 기록 공유 1회 동의 모달', () => {
-  test('첫 새 게임 클릭 시 1회 동의 모달을 띄우고, 선택 후에는 다시 묻지 않고 새 게임 창으로 이어진다', async ({ page }) => {
+  test('첫 새 게임 클릭 시 1회 동의 모달을 띄우고, 선택 후 즉시 전투로 진입하며 다시 묻지 않는다', async ({ page }) => {
     const errors: string[] = [];
     page.on('pageerror', err => errors.push(err.message));
 
@@ -34,18 +34,21 @@ test.describe('WP-Q1b 순위표 기록 공유 1회 동의 모달', () => {
 
     await agreeBtn.click();
     await expect(consent).toHaveCount(0);
-    await expect(page.getByRole('dialog', { name: '새 게임' })).toBeVisible();
+    await expect(page.getByRole('img', { name: '준비 1/5' })).toBeVisible();
 
     const stored = await page.evaluate(() => JSON.parse(localStorage.getItem('vocabulary-td.settings') ?? '{}'));
     expect(stored.shareRecords).toBe(true);
     expect(stored.shareRecordsAsked).toBe(true);
 
-    // 새 게임 창 닫고 다시 눌러도 동의 모달은 재등장하지 않는다.
-    await page.keyboard.press('Escape');
-    await expect(page.getByRole('dialog', { name: '새 게임' })).toHaveCount(0);
+    // 홈으로 돌아온 뒤 다시 새 게임을 눌러도 동의 모달은 재등장하지 않고 바로 전투로 진입한다.
+    await page.getByRole('button', { name: '일시정지' }).first().click();
+    await page.getByRole('dialog').getByRole('button', { name: '이번 판 끝내기' }).click();
+    await page.getByRole('dialog').getByRole('button', { name: '끝내기', exact: true }).click();
+    await page.getByRole('button', { name: '홈', exact: true }).click();
+    await expect(page.getByRole('button', { name: '새 게임', exact: true })).toBeVisible();
     await page.getByRole('button', { name: '새 게임', exact: true }).click();
     await expect(page.getByRole('dialog', { name: '순위표에 기록을 올릴까요?' })).toHaveCount(0);
-    await expect(page.getByRole('dialog', { name: '새 게임' })).toBeVisible();
+    await expect(page.getByRole('img', { name: '준비 1/5' })).toBeVisible();
     expect(errors).toEqual([]);
   });
 });

@@ -1,22 +1,23 @@
-import { lazy, Suspense, useEffect, useRef, useState } from 'react';
+import { lazy, Suspense, useCallback, useEffect, useRef, useState } from 'react';
 import { DIFFICULTY_IDS, type DifficultyId } from '../../contracts/balance';
-import type { RankingPeriod, RankingTabId } from '../../contracts/lobby';
+import type { HomeRankingTabId, RankingPeriod } from '../../contracts/lobby';
 import type { Settings } from '../../application/session';
-import { getR6Battle, type LocalBalanceVersion } from '../../application/balanceSession';
-import { LineIcon } from '../icons/LineIcon';
+import { isGradeAvailable } from '../../content';
+import { type LocalBalanceVersion } from '../../application/balanceSession';
 import { ClassroomQrModal } from './home/ClassroomQrModal';
 import { LaunchDeck } from './home/LaunchDeck';
 import { RankingBoard } from './home/RankingBoard';
 import { RankingModal } from './home/RankingModal';
 import { SteleStudyPanel } from './home/SteleStudyPanel';
-import { TelemetryStrip } from './home/TelemetryStrip';
 import css from './home/home.module.css';
 import { NewGameScreen } from './NewGameScreen';
 import { RecordConsentModal } from './RecordConsentModal';
 import { SettingsModal } from './SettingsModal';
-import { R6_MAP_NAME, R6_MAP_PREVIEW, showMapDiagram } from './r6Map';
+import { R6_HOME_CREST, R6_HOME_ICONS } from './r6Map';
 
 const GuideScreen = lazy(() => import('./GuideScreen').then(m => ({ default: m.GuideScreen })));
+
+type Grade = 3 | 4 | 5 | 6;
 
 type ModalState =
   | null
@@ -27,11 +28,10 @@ type ModalState =
   | 'qr'
   | {
       kind: 'ranking';
-      tab: RankingTabId;
-      grade: 3 | 4 | 5 | 6 | 'all';
+      tab: HomeRankingTabId;
+      grade: Grade | 'all';
       difficulty: DifficultyId;
       period: RankingPeriod;
-      schoolOnly: boolean;
     };
 
 interface Props {
@@ -47,14 +47,16 @@ interface Props {
   /** 설정에서 이 기기 기록을 지웠을 때(오답 노트 개수처럼 홈 밖에서 계산한 값을 다시 읽게 한다). */
   onHistoryCleared?(): void;
   onClearMessage(): void;
-  onStartNew(input: { grade: 3 | 4 | 5 | 6; difficulty: DifficultyId; nickname: string }, signal: AbortSignal): Promise<void>;
+  onStartNew(input: { grade: Grade; difficulty: DifficultyId; nickname: string }, signal: AbortSignal): Promise<void>;
   onPractice?(): void;
   onSettings(patch: Partial<Settings>): void;
 }
 
 /**
- * 처음 온 학생에게는 연습을 권한다(PRD §12.2).
- * 닉네임·학교 설정, 오늘의 낱말, 통합 랭킹, 오답 노트, 환경설정을 한 화면에서 제공한다.
+ * v3 데이라이트 랜딩 화면:
+ * 1) 초슬림 상단 헤더(엠블럼 + 유틸리티 4종)
+ * 2) 좌측 플레이 허브(전장 슬롯 + 닉네임/학년/난이도 1-Click 시작) + 오늘의 낱말
+ * 3) 우측 3탭 포디움 랭킹(1~100위 스크롤 + 내 순위 점프)
  */
 export function HomeScreen({
   balanceVersion,
@@ -71,10 +73,23 @@ export function HomeScreen({
   onSettings,
 }: Props) {
   const [activeModal, setActiveModal] = useState<ModalState>(initialModal);
-  const [rankingTab, setRankingTab] = useState<RankingTabId>('single_score');
+  const [rankingTab, setRankingTab] = useState<HomeRankingTabId>('single_score');
   const [refreshTick, setRefreshTick] = useState(0);
+  const [starting, setStarting] = useState(false);
+  const [startError, setStartError] = useState<string | null>(null);
   const nickInputRef = useRef<HTMLInputElement>(null);
   const rankingBoardRef = useRef<HTMLElement>(null);
+  const startPendingRef = useRef<AbortController | null>(null);
+  const consentPendingNickRef = useRef<string | null>(null);
+
+  const selectedGrade: Grade = isGradeAvailable(settings.lastGrade) ? settings.lastGrade : 3;
+  const selectedDifficulty: DifficultyId = (DIFFICULTY_IDS as readonly string[]).includes(settings.lastDifficulty)
+    ? (settings.lastDifficulty as DifficultyId)
+    : 'Normal';
+
+  useEffect(() => () => {
+    startPendingRef.current?.abort();
+  }, []);
 
   useEffect(() => {
     if (focusNicknameOnMount) {
@@ -82,7 +97,6 @@ export function HomeScreen({
     }
   }, [focusNicknameOnMount]);
 
-  // 새 게임 창의 '닉네임 바꾸기': 창을 닫은 뒤 닉네임 입력칸으로 포커스를 옮긴다.
   const focusNickAfterClose = useRef(false);
   useEffect(() => {
     if (activeModal === null && focusNickAfterClose.current) {
@@ -91,121 +105,144 @@ export function HomeScreen({
     }
   }, [activeModal]);
 
-  const bossWave = getR6Battle().balance.waves.bossEveryWaves;
-  const defaultDiff: DifficultyId = (DIFFICULTY_IDS as readonly string[]).includes(settings.lastDifficulty)
-    ? (settings.lastDifficulty as DifficultyId)
-    : 'Normal';
-
-  const handleMyRecordsShortcut = () => {
-    setRankingTab('local_device');
-    if (typeof window !== 'undefined' && window.innerWidth <= 959) {
-      rankingBoardRef.current?.scrollIntoView({
-        behavior: settings.reducedMotion ? 'auto' : 'smooth',
-        block: 'start',
-      });
+  const executeStart = useCallback(async (confirmedNickname: string) => {
+    if (startPendingRef.current) return;
+    const ctrl = new AbortController();
+    startPendingRef.current = ctrl;
+    setStarting(true);
+    setStartError(null);
+    onClearMessage();
+    try {
+      await onStartNew(
+        {
+          grade: selectedGrade,
+          difficulty: selectedDifficulty,
+          nickname: confirmedNickname,
+        },
+        ctrl.signal,
+      );
+    } catch {
+      if (!ctrl.signal.aborted) {
+        setStartError('시작하지 못했어요. 다시 눌러 주세요.');
+      }
+    } finally {
+      if (!ctrl.signal.aborted) {
+        startPendingRef.current = null;
+        setStarting(false);
+      }
     }
+  }, [onClearMessage, onStartNew, selectedDifficulty, selectedGrade]);
+
+  const handleStartPlay = (confirmedNickname: string) => {
+    onSettings({ lastNickname: confirmedNickname });
+    onClearMessage();
+    setStartError(null);
+    if (!settings.shareRecordsAsked && !settings.shareRecords) {
+      consentPendingNickRef.current = confirmedNickname;
+      setActiveModal('consent');
+      return;
+    }
+    void executeStart(confirmedNickname);
   };
 
   return (
     <div className={css.lobbyRoot}>
       <div className={css.foreground} inert={activeModal !== null}>
-        <header className={css.headerPlaque}>
+        <header className={css.headerBar}>
           <div className={css.brandGroup}>
-            <div className={css.crestBox} aria-hidden="true">
-              <LineIcon name="hud/gate" className={css.crestImg} />
+            <div className={css.crestWrap} aria-hidden="true">
+              <img src={R6_HOME_CREST} width={38} height={38} alt="" className={`${css.crestImg} ${css.icon3d}`} />
             </div>
             <div className={css.brandText}>
               <h1 className={css.brandTitle}>어휘력 타워 디펜스</h1>
-              <p className={css.brandSub}>낱말 문제를 풀고 타워로 성문을 지켜요</p>
+              <span className={css.seasonTag}>시즌 2</span>
             </div>
           </div>
 
-          <TelemetryStrip playerId={settings.playerId} refreshTick={refreshTick} />
-
-          <div className={css.headerActions}>
-            <button
-              id="guideBtn"
-              type="button"
-              className={css.plaqueKeyBtn}
-              onClick={() => setActiveModal('guide')}
-            >
-              <LineIcon name="hud/guide" />
-              사용 설명서
-            </button>
-            <button
-              id="recordsBtn"
-              type="button"
-              className={css.plaqueKeyBtn}
-              onClick={handleMyRecordsShortcut}
-            >
-              <LineIcon name="hud/score" />
-              내 기록
-            </button>
+          <nav className={css.headerActions} aria-label="상단 도구">
             {onOpenNote && (
               <button
                 id="noteBtn"
                 type="button"
-                className={css.plaqueKeyBtn}
-                aria-label={noteCount > 0 ? `오답 노트 ${noteCount}개` : undefined}
+                className={css.navGhostBtn}
+                aria-label={noteCount > 0 ? `오답 노트 ${noteCount}개` : '오답 노트'}
                 onClick={onOpenNote}
               >
-                <LineIcon name="hud/note" />
-                오답 노트
+                <span className={css.icon3dWrap} aria-hidden="true">
+                  <img src={R6_HOME_ICONS.note} width={22} height={22} alt="" className={`${css.navIconImg} ${css.icon3d}`} />
+                </span>
+                <span className={css.navLabel}>오답 노트</span>
                 {noteCount > 0 && (
-                  <span className={css.plaqueCount} aria-hidden="true">
+                  <span className={css.navCount} aria-hidden="true">
                     {noteCount > 99 ? '99+' : noteCount}
                   </span>
                 )}
               </button>
             )}
             <button
+              id="guideBtn"
+              type="button"
+              className={css.navGhostBtn}
+              onClick={() => setActiveModal('guide')}
+            >
+              <span className={css.icon3dWrap} aria-hidden="true">
+                <img src={R6_HOME_ICONS.guide} width={22} height={22} alt="" className={`${css.navIconImg} ${css.icon3d}`} />
+              </span>
+              <span className={css.navLabel}>사용 설명서</span>
+            </button>
+            <button
+              id="openQrModalBtn"
+              type="button"
+              className={css.navGhostBtn}
+              onClick={() => setActiveModal('qr')}
+            >
+              <span className={css.icon3dWrap} aria-hidden="true">
+                <img src={R6_HOME_ICONS.qr} width={22} height={22} alt="" className={`${css.navIconImg} ${css.icon3d}`} />
+              </span>
+              <span className={css.navLabel}>교실 QR</span>
+            </button>
+            <button
               id="settingsBtn"
               type="button"
-              className={css.plaqueKeyBtn}
+              className={css.navGhostBtn}
               onClick={() => setActiveModal('settings')}
             >
-              <LineIcon name="hud/settings" />
-              설정
+              <span className={css.icon3dWrap} aria-hidden="true">
+                <img src={R6_HOME_ICONS.settings} width={22} height={22} alt="" className={`${css.navIconImg} ${css.icon3d}`} />
+              </span>
+              <span className={css.navLabel}>설정</span>
             </button>
-          </div>
+          </nav>
         </header>
 
         <main className={css.homeGrid}>
-          <div className={css.homeColumn}>
-            <div className={css.stageViewport}>
-              <img src={R6_MAP_PREVIEW} onError={showMapDiagram} width={960} height={576} alt={`${R6_MAP_NAME} 전장 미리보기`} className={css.stageImage} />
-              <div className={css.stageOverlayTop}>
-                <span className={css.stageBadgeLeft}>
-                  <LineIcon name="hud/gate" size={16} />
-                  {R6_MAP_NAME}
-                </span>
-                <span className={css.stageBadgeRight}>
-                  <LineIcon name="hud/wave" size={16} />
-                  {bossWave}웨이브 보스
-                </span>
-              </div>
-            </div>
-
-            <SteleStudyPanel preferredGrade={settings.lastGrade} />
-
+          <div className={css.leftColumn}>
             <LaunchDeck
+              balanceVersion={balanceVersion}
               savedNickname={settings.lastNickname}
-              savedSchoolName={settings.lastSchoolName}
-              message={message}
+              grade={selectedGrade}
+              difficulty={selectedDifficulty}
+              starting={starting}
+              message={startError ?? message}
               practiceLabel={settings.practiceSeen ? '연습하기' : '처음이라면 연습부터'}
+              inputRef={nickInputRef}
+              onGradeChange={next => {
+                setStartError(null);
+                onSettings({ lastGrade: next });
+              }}
+              onDifficultyChange={next => {
+                setStartError(null);
+                onSettings({ lastDifficulty: next });
+              }}
+              onCommitNickname={nick => onSettings({ lastNickname: nick })}
+              onStartPlay={handleStartPlay}
               onPractice={() => {
                 onClearMessage();
                 onPractice?.();
               }}
-              inputRef={nickInputRef}
-              onCommitNickname={nick => onSettings({ lastNickname: nick })}
-              onCommitSchool={(name, code) => onSettings({ lastSchoolName: name, lastSchoolCode: code })}
-              onOpenNewGame={nick => {
-                onSettings({ lastNickname: nick });
-                onClearMessage();
-                setActiveModal(!settings.shareRecordsAsked && !settings.shareRecords ? 'consent' : 'new');
-              }}
             />
+
+            <SteleStudyPanel preferredGrade={selectedGrade} />
           </div>
 
           <RankingBoard
@@ -213,13 +250,11 @@ export function HomeScreen({
             onTabChange={setRankingTab}
             playerId={settings.playerId}
             currentNickname={settings.lastNickname}
-            schoolName={settings.lastSchoolName}
-            schoolCode={settings.lastSchoolCode}
-            defaultGrade={settings.lastGrade}
-            defaultDifficulty={defaultDiff}
+            defaultGrade={selectedGrade}
+            defaultDifficulty={selectedDifficulty}
             refreshTick={refreshTick}
+            reducedMotion={settings.reducedMotion}
             boardRef={rankingBoardRef}
-            onOpenQrModal={() => setActiveModal('qr')}
             onOpenDetailModal={initial => setActiveModal({ kind: 'ranking', ...initial })}
           />
         </main>
@@ -229,9 +264,17 @@ export function HomeScreen({
         <RecordConsentModal
           onDecide={shareRecords => {
             onSettings({ shareRecords, shareRecordsAsked: true });
-            setActiveModal('new');
+            setActiveModal(null);
+            const pendingNick = consentPendingNickRef.current;
+            consentPendingNickRef.current = null;
+            if (pendingNick) {
+              void executeStart(pendingNick);
+            }
           }}
-          onClose={() => setActiveModal(null)}
+          onClose={() => {
+            consentPendingNickRef.current = null;
+            setActiveModal(null);
+          }}
         />
       )}
 
@@ -276,9 +319,7 @@ export function HomeScreen({
 
       {activeModal === 'qr' && (
         <ClassroomQrModal
-          defaultGrade={settings.lastGrade}
-          schoolName={settings.lastSchoolName}
-          schoolCode={settings.lastSchoolCode}
+          defaultGrade={selectedGrade}
           onClose={() => {
             setActiveModal(null);
             requestAnimationFrame(() => document.getElementById('openQrModalBtn')?.focus());
@@ -292,11 +333,8 @@ export function HomeScreen({
           initialGrade={activeModal.grade}
           initialDifficulty={activeModal.difficulty}
           initialPeriod={activeModal.period}
-          initialSchoolOnly={activeModal.schoolOnly}
           playerId={settings.playerId}
           currentNickname={settings.lastNickname}
-          schoolName={settings.lastSchoolName}
-          schoolCode={settings.lastSchoolCode}
           onClose={() => setActiveModal(null)}
         />
       )}

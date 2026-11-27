@@ -1,12 +1,10 @@
 import { useEffect, useState } from 'react';
 import { DIFFICULTY_IDS, type DifficultyId } from '../../../contracts/balance';
 import {
-  cleanPublicSchoolCode,
-  cleanPublicSchoolName,
-  RANKING_TAB_IDS,
+  HOME_RANKING_TAB_IDS,
+  type HomeRankingTabId,
   type RankingPeriod,
   type RankingResponse,
-  type RankingTabId,
 } from '../../../contracts/lobby';
 import { fetchRanking } from '../../../application/lobby';
 import { DIFFICULTY_COPY } from '../../copy';
@@ -18,15 +16,12 @@ import css from './home.module.css';
 const periodOptions: SegmentOption<RankingPeriod>[] = RANKING_PERIOD_OPTIONS.map(period => ({ value: period, label: PERIOD_LABELS[period] }));
 
 interface Props {
-  initialTab: RankingTabId;
+  initialTab: HomeRankingTabId;
   initialGrade: 3 | 4 | 5 | 6 | 'all';
   initialDifficulty: DifficultyId;
   initialPeriod: RankingPeriod;
-  initialSchoolOnly?: boolean;
   playerId: string;
   currentNickname: string;
-  schoolName: string;
-  schoolCode: string;
   onClose(): void;
 }
 
@@ -35,23 +30,15 @@ export function RankingModal({
   initialGrade,
   initialDifficulty,
   initialPeriod,
-  initialSchoolOnly = false,
   playerId,
   currentNickname,
-  schoolName,
-  schoolCode,
   onClose,
 }: Props) {
-  const [tab, setTab] = useState<RankingTabId>(initialTab);
+  const [tab, setTab] = useState<HomeRankingTabId>(initialTab);
   const [grade, setGrade] = useState<3 | 4 | 5 | 6 | 'all'>(initialGrade);
   const [difficulty, setDifficulty] = useState<DifficultyId>(initialDifficulty);
   const [period, setPeriod] = useState<RankingPeriod>(initialPeriod);
-  const [schoolOnly, setSchoolOnly] = useState(initialSchoolOnly);
-  const [result, setResult] = useState<{ tab: RankingTabId; period: RankingPeriod; data: RankingResponse } | null>(null);
-
-  const cleanSchool = cleanPublicSchoolName(schoolName);
-  const cleanCode = cleanSchool ? cleanPublicSchoolCode(schoolCode) : '';
-  const activeSchoolOnly = schoolOnly && cleanSchool !== '';
+  const [result, setResult] = useState<{ tab: HomeRankingTabId; period: RankingPeriod; data: RankingResponse } | null>(null);
 
   const effectiveGrade: 3 | 4 | 5 | 6 | 'all' =
     (tab === 'single_score' || tab === 'best_wave') && grade === 'all' ? 3 : grade;
@@ -64,14 +51,8 @@ export function RankingModal({
         grade: effectiveGrade,
         difficulty,
         period,
-        limit: 50,
+        limit: 100,
         offset: 0,
-        ...(activeSchoolOnly
-          ? {
-              schoolName: cleanSchool,
-              ...(cleanCode ? { schoolCode: cleanCode } : {}),
-            }
-          : {}),
       },
       playerId,
       currentNickname,
@@ -79,16 +60,15 @@ export function RankingModal({
       if (active) setResult({ tab, period, data: res });
     });
     return () => { active = false; };
-  }, [tab, effectiveGrade, difficulty, period, activeSchoolOnly, cleanSchool, cleanCode, playerId, currentNickname]);
+  }, [tab, effectiveGrade, difficulty, period, playerId, currentNickname]);
 
-  // 상단 분류는 책갈피형 ModalTabs, 본문 안 학년·난이도·기간은 값 선택기(Segmented radiogroup)로 위계를 나눈다.
-  const tabOptions: ModalTabOption<RankingTabId>[] = RANKING_TAB_IDS.map(id => ({
+  const tabOptions: ModalTabOption<HomeRankingTabId>[] = HOME_RANKING_TAB_IDS.map(id => ({
     value: id,
     label: TAB_LABELS[id],
     id: `rank-modal-tab-${id}`,
   }));
   const gradeOptions: SegmentOption<string>[] = [
-    ...(tab === 'honor_points' || tab === 'local_device'
+    ...(tab === 'local_device'
       ? [{ value: 'all', label: '전체', ariaLabel: '전체 학년' }]
       : []),
     ...([3, 4, 5, 6] as const).map(g => ({ value: String(g), label: `${g}학년` })),
@@ -98,16 +78,14 @@ export function RankingModal({
   const offline = result?.tab === tab && result.data.source === 'local_fallback';
 
   return (
-    // 읽고 둘러보는 창이라 첫 포커스는 닫기다(탭 줄은 Tab 한 번으로 들어간다). md 680×540 고정 프레임으로 4탭 모두 크기가 같다.
-    <Modal titleId="rankingModalTitle" title="전체 랭킹 (상위 50위)" size="md" fixed initialFocus="close" onClose={onClose}>
+    <Modal titleId="rankingModalTitle" title="전체 랭킹 (상위 100위)" size="md" fixed initialFocus="close" onClose={onClose}>
       <ModalTabShell>
-        <ModalTabs<RankingTabId>
+        <ModalTabs<HomeRankingTabId>
           label="랭킹 분류"
           options={tabOptions}
           value={tab}
           onChange={setTab}
           controls="rank-modal-tabpanel"
-          aside={tab === 'honor_points' ? RANKING_EXTRA.honorShort : undefined}
         />
         <ModalTabPanel id="rank-modal-tabpanel" labelledBy={`rank-modal-tab-${tab}`} pad="sm" className={css.rankModalPanel}>
           <div className={css.modalFilterBar}>
@@ -134,19 +112,8 @@ export function RankingModal({
               value={period}
               onChange={setPeriod}
             />
-            {tab !== 'local_device' && offline && <span className={css.filterMeta}>오프라인 · 기기 기록</span>}
+            {tab !== 'local_device' && offline && <span className={css.filterMeta}>오프라인 · 이 기기 기록</span>}
             {tab === 'local_device' && <span className={css.filterMeta}>{RANKING_EXTRA.localShort}</span>}
-            {cleanSchool !== '' && (
-              <button
-                type="button"
-                className={css.keyBtnSm}
-                data-active={activeSchoolOnly ? 'true' : undefined}
-                aria-pressed={activeSchoolOnly}
-                onClick={() => setSchoolOnly(v => !v)}
-              >
-                우리 학교
-              </button>
-            )}
           </div>
 
           {!data ? (
@@ -156,20 +123,16 @@ export function RankingModal({
               <strong>{tab === 'local_device' ? '아직 기록이 없어요.' : '표시할 순위 기록이 아직 없어요.'}</strong>
             </Card>
           ) : (
-            // 안에서 스크롤하므로 Tab으로 닿고 방향키로 내릴 수 있게 포커스 가능한 이름 있는 영역으로 감싼다(WCAG 2.1.1).
             <div className={css.rankScrollModal} tabIndex={0} role="region" aria-label={RANKING_EXTRA.listLabel}>
               <ol className={`${css.rankList} ${css.rankListModal}`}>
                 {data.entries.map(entry => (
                   <li key={`${entry.rank}-${entry.playerIdHash}`} className={css.rankRow} data-me={entry.isMe || undefined}>
-                    <span className={css.rankMedal} data-rank={entry.rank <= 3 ? entry.rank : undefined}>
+                    <span className={css.rankNum} data-rank={entry.rank <= 3 ? entry.rank : undefined}>
                       {entry.rank}
                     </span>
                     <div className={css.rankInfo}>
                       <span className={css.rankNick}>{entry.nickname}</span>
-                      <span className={css.rankSub}>
-                        {entry.secondaryLabel}
-                        {!activeSchoolOnly && entry.schoolName ? ` · ${entry.schoolName}` : ''}
-                      </span>
+                      <span className={css.rankSub}>{entry.secondaryLabel}</span>
                     </div>
                     <strong className={css.rankScore}>{formatPrimaryMetric(tab, entry.primaryValue)}</strong>
                   </li>
@@ -180,10 +143,12 @@ export function RankingModal({
 
           {data?.myEntry && (
             <div className={`${css.myRankDock} ${css.myRankDockModal}`}>
-              <span className={css.myRankLabel}>내 순위 · {data.myEntry.nickname}</span>
-              <span className={css.myRankValue}>
-                {data.myEntry.rank}위 · {formatPrimaryMetric(tab, data.myEntry.primaryValue)}
-              </span>
+              <div className={css.myRankTop}>
+                <span className={css.myRankLabel}>내 순위 · {data.myEntry.nickname}</span>
+                <span className={css.myRankValue} data-has-entry="true">
+                  {data.myEntry.rank}위 · {formatPrimaryMetric(tab, data.myEntry.primaryValue)}
+                </span>
+              </div>
             </div>
           )}
         </ModalTabPanel>

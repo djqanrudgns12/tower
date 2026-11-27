@@ -1,9 +1,8 @@
 import { useMemo, useState } from 'react';
 import { buildClassroomShareUrl, detectInAppBrowser } from '../../../application/entryUrl';
-import { cleanPublicSchoolCode, cleanPublicSchoolName } from '../../../contracts/lobby';
 import { isGradeAvailable } from '../../../content';
 import { HOME_COPY } from '../../copy';
-import { Button, Card, Modal, Segmented, Toggle, type SegmentOption } from '../../kit';
+import { Button, Card, Modal, Segmented, type SegmentOption } from '../../kit';
 import { LineIcon } from '../../icons/LineIcon';
 import { canEncodeQr, encodeQrMatrix, qrMatrixToSvgPath } from '../../utils/qr';
 import css from './home.module.css';
@@ -13,8 +12,6 @@ type Grade = (typeof GRADES)[number];
 
 interface Props {
   defaultGrade: Grade;
-  schoolName: string;
-  schoolCode: string;
   onClose(): void;
 }
 
@@ -45,24 +42,13 @@ async function copyText(text: string): Promise<boolean> {
   }
 }
 
-export function ClassroomQrModal({ defaultGrade, schoolName, schoolCode, onClose }: Props) {
-  const cleanSchool = cleanPublicSchoolName(schoolName);
-  const cleanCode = cleanSchool ? cleanPublicSchoolCode(schoolCode) : '';
+export function ClassroomQrModal({ defaultGrade, onClose }: Props) {
   const initialGrade: Grade = isGradeAvailable(defaultGrade) ? defaultGrade : 3;
 
   const [grade, setGrade] = useState<Grade>(initialGrade);
-  const [includeSchool, setIncludeSchool] = useState(cleanSchool !== '');
   const [statusMsg, setStatusMsg] = useState<string | null>(null);
 
-  const shareUrl = useMemo(
-    () =>
-      buildClassroomShareUrl({
-        grade,
-        ...(includeSchool && cleanSchool ? { schoolName: cleanSchool } : {}),
-        ...(includeSchool && cleanCode ? { schoolCode: cleanCode } : {}),
-      }),
-    [grade, includeSchool, cleanSchool, cleanCode],
-  );
+  const shareUrl = useMemo(() => buildClassroomShareUrl({ grade }), [grade]);
 
   const qr = useMemo(() => {
     try {
@@ -107,17 +93,6 @@ export function ClassroomQrModal({ defaultGrade, schoolName, schoolCode, onClose
           onBlocked={() => setStatusMsg(HOME_COPY.gradeSoon)}
         />
 
-        {cleanSchool !== '' && (
-          <Toggle
-            label={`학교 이름 함께 전달 (${cleanSchool})`}
-            checked={includeSchool}
-            onChange={next => {
-              setStatusMsg(null);
-              setIncludeSchool(next);
-            }}
-          />
-        )}
-
         {qr.svg ? (
           <div className={css.qrFrameWrap}>
             <div className={css.qrCanvasBox}>
@@ -148,7 +123,7 @@ export function ClassroomQrModal({ defaultGrade, schoolName, schoolCode, onClose
         </Card>
 
         {statusMsg && (
-          <p className={css.schoolModalStatus} role="status" aria-live="polite">
+          <p className={css.qrStatusMsg} role="status" aria-live="polite">
             {statusMsg}
           </p>
         )}

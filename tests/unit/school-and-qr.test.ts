@@ -94,25 +94,14 @@ describe('교실 QR·공유 URL·학교 와이파이 내성 단위 검증', () =
     expect(detectInAppBrowser('Mozilla/5.0 (Macintosh; Intel Mac OS X 14_0) AppleWebKit/537.36 Chrome/130.0')).toBeNull();
   });
 
-  it.each(['7010057', ''])('30자 한글 학교 이름(학교 코드=%j)이 길어도 전체 입장 주소와 복사 버튼을 그린다', schoolCode => {
-    const schoolName = '가'.repeat(30);
-    const url = buildClassroomShareUrl({ grade: 3, schoolName, schoolCode });
-    expect(canEncodeQr(url)).toBe(false);
-    const html = renderToStaticMarkup(createElement(ClassroomQrModal, { defaultGrade: 3, schoolName, schoolCode, onClose: vi.fn() }));
-    expect(html).toContain(url.replaceAll('&', '&amp;'));
-    expect(html).toContain('주소 복사');
-    expect(html).toContain('주소가 길어 QR을 만들 수 없어요.');
-    expect(html).not.toContain('aria-label="교실 입장 QR 코드"');
-  });
-
-  it('짧은 학교 이름과 코드로 입장 QR과 복사 버튼을 함께 그린다', () => {
-    const url = buildClassroomShareUrl({ grade: 3, schoolName: '가락초등학교', schoolCode: '7010057' });
+  it('교실 입장 QR 모달이 학년별 입장 주소와 복사 버튼을 그린다', () => {
+    const url = buildClassroomShareUrl({ grade: 3 });
     expect(canEncodeQr(url)).toBe(true);
-    const html = renderToStaticMarkup(createElement(ClassroomQrModal, {
-      defaultGrade: 3, schoolName: '가락초등학교', schoolCode: '7010057', onClose: vi.fn(),
-    }));
+    const html = renderToStaticMarkup(createElement(ClassroomQrModal, { defaultGrade: 3, onClose: vi.fn() }));
+    expect(html).toContain(url);
     expect(html).toContain('aria-label="교실 입장 QR 코드"');
     expect(html).toContain('주소 복사');
+    expect(html).not.toContain('학교 이름 함께 전달');
   });
 
   it('QR은 UTF-8 데이터 213바이트까지 담는다', () => {
@@ -123,7 +112,7 @@ describe('교실 QR·공유 URL·학교 와이파이 내성 단위 검증', () =
   it('QR을 생성할 수 없는 환경에서도 주소 복사 버튼을 그린다', () => {
     vi.stubGlobal('TextEncoder', undefined);
     const html = renderToStaticMarkup(createElement(ClassroomQrModal, {
-      defaultGrade: 3, schoolName: '가락초등학교', schoolCode: '7010057', onClose: vi.fn(),
+      defaultGrade: 3, onClose: vi.fn(),
     }));
     expect(html).toContain('QR을 만들 수 없어요. 주소를 복사해 나눠 주세요.');
     expect(html).toContain('주소 복사');

@@ -42,12 +42,11 @@ async function startGame(page: Page, width: number, height: number) {
   await page.evaluate(() => {
     indexedDB.deleteDatabase('vocabulary-td');
     localStorage.clear();
+    localStorage.setItem('vocabulary-td.settings', JSON.stringify({ shareRecordsAsked: true }));
   });
   await page.reload();
   await page.getByRole('textbox', { name: '닉네임' }).fill('수직선검사');
-  // 홈 '새 게임' → 새 게임 창의 '시작'.
   await page.getByRole('button', { name: '새 게임', exact: true }).click();
-  await page.getByRole('dialog', { name: '새 게임' }).getByRole('button', { name: '시작', exact: true }).click();
   await expect(page.getByRole('img', { name: '준비 1/5' })).toBeVisible();
 }
 
@@ -394,7 +393,38 @@ test('모달 포커스: 열면 내용의 첫 요소, 키보드로 설정을 바�
   await expect(openRanking).toBeFocused();
 });
 
-test('전체 랭킹 탭: 방향키·Home·End가 선택과 포커스를 함께 옮긴다(roving tabindex)', async ({ page }) => {
+test('홈 랭킹 탭: 방향키·Home·End가 선택과 포커스를 함께 옮긴다(roving tabindex)', async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto('/');
+  const board = page.getByRole('complementary', { name: '랭킹', exact: true });
+  const tablist = board.getByRole('tablist', { name: '순위 분류' });
+  const tabs = tablist.getByRole('tab');
+  const count = await tabs.count();
+  expect(count).toBe(3);
+
+  await expect(tablist.locator('[role="tab"][tabindex="0"]')).toHaveCount(1);
+  await tabs.first().focus();
+  await expect(tabs.first()).toHaveAttribute('aria-selected', 'true');
+
+  await page.keyboard.press('ArrowRight');
+  await expect(tabs.nth(1)).toHaveAttribute('aria-selected', 'true');
+  await expect(tabs.nth(1)).toBeFocused();
+  await expect(tabs.nth(1)).toHaveAttribute('tabindex', '0');
+  await expect(tabs.first()).toHaveAttribute('tabindex', '-1');
+
+  await page.keyboard.press('End');
+  await expect(tabs.nth(count - 1)).toHaveAttribute('aria-selected', 'true');
+  await expect(tabs.nth(count - 1)).toBeFocused();
+  await page.keyboard.press('ArrowRight');
+  await expect(tabs.first()).toBeFocused();
+  await page.keyboard.press('ArrowLeft');
+  await expect(tabs.nth(count - 1)).toBeFocused();
+  await page.keyboard.press('Home');
+  await expect(tabs.first()).toHaveAttribute('aria-selected', 'true');
+  await expect(tabs.first()).toBeFocused();
+});
+
+test('전체 랭킹 창 탭: 방향키·Home·End가 선택과 포커스를 함께 옮긴다', async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.goto('/');
   await page
@@ -405,7 +435,7 @@ test('전체 랭킹 탭: 방향키·Home·End가 선택과 포커스를 함께 �
   const tablist = dialog.getByRole('tablist', { name: '랭킹 분류' });
   const tabs = tablist.getByRole('tab');
   const count = await tabs.count();
-  expect(count).toBeGreaterThanOrEqual(3);
+  expect(count).toBe(3);
 
   await expect(tablist.locator('[role="tab"][tabindex="0"]')).toHaveCount(1);
   await page.keyboard.press('Tab');
@@ -428,45 +458,6 @@ test('전체 랭킹 탭: 방향키·Home·End가 선택과 포커스를 함께 �
   await page.keyboard.press('Home');
   await expect(tabs.first()).toHaveAttribute('aria-selected', 'true');
   await expect(tabs.first()).toBeFocused();
-});
-
-test('새 게임 학년·난이도 radiogroup: 방향키가 선택과 포커스를 함께 옮긴다', async ({ page }) => {
-  await page.setViewportSize({ width: 1440, height: 900 });
-  await page.goto('/');
-  await page.getByRole('textbox', { name: '닉네임' }).fill('방향키검증');
-  await page.getByRole('button', { name: '새 게임', exact: true }).click();
-  const dialog = page.getByRole('dialog', { name: '새 게임' });
-  await expect(dialog).toBeVisible();
-
-  const grades = dialog.getByRole('radiogroup', { name: '학년', exact: true });
-  const radios = grades.getByRole('radio');
-  const checked = grades.locator('[role="radio"][aria-checked="true"]');
-  await expect(grades.locator('[role="radio"][tabindex="0"]')).toHaveCount(1);
-  await checked.focus();
-  const startIndex = await radios.evaluateAll(els => els.findIndex(el => el.getAttribute('aria-checked') === 'true'));
-  // 공개 은행이 없는 학년은 꺼져 있고 방향키가 건너뛴다(PRD §9.3). 켜진 학년이 하나뿐이면 제자리에 남는다.
-  const enabledCount = await radios.evaluateAll(els => els.filter(el => el.getAttribute('aria-disabled') !== 'true').length);
-  await page.keyboard.press('ArrowRight');
-  const nextIndex = await radios.evaluateAll(els => els.findIndex(el => el.getAttribute('aria-checked') === 'true'));
-  await expect(radios.nth(nextIndex)).toBeEnabled();
-  await expect(radios.nth(nextIndex)).toBeFocused();
-  await expect(radios.nth(nextIndex)).toHaveAttribute('tabindex', '0');
-  if (enabledCount > 1) {
-    expect(nextIndex).not.toBe(startIndex);
-    await expect(radios.nth(startIndex)).toHaveAttribute('tabindex', '-1');
-  } else {
-    expect(nextIndex).toBe(startIndex);
-  }
-
-  const diffs = dialog.getByRole('radiogroup', { name: '난이도', exact: true });
-  await diffs.locator('[role="radio"][aria-checked="true"]').focus();
-  await page.keyboard.press('Home');
-  await expect(diffs.getByRole('radio').first()).toHaveAttribute('aria-checked', 'true');
-  await expect(diffs.getByRole('radio').first()).toBeFocused();
-  await page.keyboard.press('ArrowRight');
-  await expect(diffs.getByRole('radio').nth(1)).toHaveAttribute('aria-checked', 'true');
-  await expect(diffs.getByRole('radio').nth(1)).toBeFocused();
-  await expect(diffs.locator('[role="radio"][tabindex="0"]')).toHaveCount(1);
 });
 
 /** 보이는 글자의 최소 계산 글자 크기와, 누르는 요소의 실제 누름 영역(elementFromPoint로 잰 가로·세로) 최소값. */
@@ -520,16 +511,11 @@ async function floors(page: Page, scope: string) {
   }, scope);
 }
 
-test('13px·44px 하한: 홈·새 게임·전체 랭킹·설정·사용 설명서(목차·장 화면)·오답 노트(1366×650)', async ({ page }) => {
+test('13px·44px 하한: 홈·전체 랭킹·설정·사용 설명서(목차·장 화면)·오답 노트(1366×650)', async ({ page }) => {
   await page.setViewportSize({ width: 1366, height: 650 });
   await page.goto('/');
   const results: Record<string, Awaited<ReturnType<typeof floors>>> = {};
   results.home = await floors(page, 'body');
-
-  await page.getByRole('textbox', { name: '닉네임' }).fill('하한검사');
-  await page.getByRole('button', { name: '새 게임', exact: true }).click();
-  results.newGame = await floors(page, '[role="dialog"]');
-  await page.keyboard.press('Escape');
 
   await page.getByRole('complementary', { name: '랭킹', exact: true }).getByRole('button', { name: '전체 보기' }).click();
   results.ranking = await floors(page, '[role="dialog"]');
@@ -570,12 +556,14 @@ test('13px·44px 하한: 홈·새 게임·전체 랭킹·설정·사용 설명�
 
 async function newGame(page: Page) {
   await page.goto('/');
-  await page.evaluate(() => { indexedDB.deleteDatabase('vocabulary-td'); localStorage.removeItem('vocabulary-td.coach'); });
+  await page.evaluate(() => {
+    indexedDB.deleteDatabase('vocabulary-td');
+    localStorage.removeItem('vocabulary-td.coach');
+    localStorage.setItem('vocabulary-td.settings', JSON.stringify({ shareRecordsAsked: true }));
+  });
   await page.reload();
   await page.getByRole('textbox', { name: '닉네임' }).fill('하늘바람');
-  // 홈 '새 게임' → 새 게임 창의 '시작'.
   await page.getByRole('button', { name: '새 게임', exact: true }).click();
-  await page.getByRole('dialog', { name: '새 게임' }).getByRole('button', { name: '시작', exact: true }).click();
   await expect(page.getByRole('img', { name: '준비 1/5' })).toBeVisible();
 }
 

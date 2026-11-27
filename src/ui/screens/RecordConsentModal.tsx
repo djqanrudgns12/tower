@@ -26,7 +26,7 @@ export function RecordConsentModal({ onDecide, onClose }: Props) {
           공유되는 항목: 닉네임 · 학년 · 난이도 · 점수 · 웨이브
         </p>
         <p className={css.note}>
-          어떤 쪽을 골라도 게임과 내 기기 기록 저장은 그대로 동작하며, 홈 화면 설정에서 언제든 바꿀 수 있어요.
+          어떤 쪽을 골라도 게임과 이 기기 기록 저장은 그대로 동작하며, 홈 화면 설정에서 언제든 바꿀 수 있어요.
         </p>
         <div className={css.actions}>
           <Button

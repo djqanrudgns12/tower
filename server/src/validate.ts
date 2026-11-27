@@ -161,7 +161,7 @@ export function parseRankingParams(params: URLSearchParams): RankingParams | nul
   if (tab === null || gradeText === null || difficulty === null || period === null || limit === null || offset === null) return null;
   const grade = /^\d$/.test(gradeText) ? Number(gradeText) : NaN;
   if (!(RANKING_TABS as readonly string[]).includes(tab) || !GRADES.includes(grade) || !DIFFICULTIES.includes(difficulty)
-    || !PERIODS.includes(period) || limit < 1 || limit > 50 || offset < 0 || offset > 10000) return null;
+    || !PERIODS.includes(period) || limit < 1 || limit > 100 || offset < 0 || offset > 10000) return null;
 
   const rawSchoolCode = params.get('p_school_code');
   const schoolCode = rawSchoolCode ? cleanPublicSchoolCode(rawSchoolCode) : '';

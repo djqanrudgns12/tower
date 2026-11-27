@@ -61,11 +61,9 @@ test.describe('새 서버 연결 모드', () => {
       await page.addInitScript(() => localStorage.setItem('vocabulary-td.settings', JSON.stringify({ shareRecords: true, soundOn: false })));
       await page.goto('/');
       await page.getByRole('textbox', { name: '닉네임' }).fill(`서버검수${grade}`);
-      await page.getByRole('button', { name: '새 게임', exact: true }).click();
-      const dialog = page.getByRole('dialog', { name: '새 게임' });
-      await dialog.getByRole('radio', { name: `${grade}학년`, exact: true }).click();
-      await dialog.getByRole('radio', { name: '보통', exact: true }).click();
-      const start = dialog.getByRole('button', { name: '시작', exact: true });
+      await page.getByRole('combobox', { name: '학년', exact: true }).selectOption(String(grade));
+      await page.getByRole('combobox', { name: '난이도', exact: true }).selectOption('Normal');
+      const start = page.getByRole('button', { name: '새 게임', exact: true });
       await expect(start).not.toHaveAttribute('aria-disabled', 'true');
       const started = page.waitForResponse(r => r.url() === `${apiBase}/v1/runs/start` && r.request().method() === 'POST');
       await start.click();
