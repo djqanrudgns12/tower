@@ -63,6 +63,7 @@
   min-height: var(--q-h, 208px);
   padding: var(--s3) var(--s4);
 }
+:global([data-r6]) .panel.seam { padding-block: 10px; }
 
 /* 크게·아주 크게: 문제 2줄 + 보기 2줄이면 예산(--q-h)을 4~5px 넘는다(R5 P2 인계, 1366×650 아주 크게). 위아래 여백만 12 → 8px로 줄여 흡수한다.
    좌우 여백(오른쪽 16px = SEAM_INSET_PX)은 수직선 잠금에 묶여 그대로다. */
@@ -268,11 +269,13 @@
 .seam .side,
 .wide .side {
   contain: size;
-  padding: var(--s3);
+  padding: var(--s2) var(--s3);
   border-radius: var(--r-md);
   background: var(--paper-2);
   box-shadow: inset 0 0 0 1px var(--line);
 }
+:global([data-r6]) .seam .explainBox { gap: var(--s1); }
+:global([data-r6]) .seam .explain { line-height: 1.38; }
 
 .seam .result,
 .wide .result { flex: 1; min-height: 0; }

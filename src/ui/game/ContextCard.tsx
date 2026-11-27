@@ -1,5 +1,6 @@
 import { Badge } from '../kit';
 import { LineIcon, type LineIconName } from '../icons/LineIcon';
+import { speciesPortraitUrl } from '../../game/r6/mapPhase';
 import type { r6Forecast } from './r6Forecast';
 import { BattleIcon } from './BattleIcon';
 import type { Balance } from '../../contracts/balance';
@@ -75,17 +76,31 @@ const TRAIT_NAMES: Partial<Record<LineIconName, string>> = {
   'traits/flying': '비행', 'traits/split': '분열', 'traits/regen': '재생', 'traits/siege': '공성',
 };
 
-export function R6WaveForecast({ preview, airGap }: { preview: ReturnType<typeof r6Forecast>; airGap: boolean }) {
+export function R6WaveForecast({ preview, airGap, wave }: { preview: ReturnType<typeof r6Forecast>; airGap: boolean; wave?: number }) {
   return (
     <section className={css.forecast} aria-label="웨이브 미리보기">
-      <h2 className={css.title}>웨이브 예고 <Badge tone="teal">다음 적 {preview.total}</Badge></h2>
+      <h2 className={css.title}>
+        {wave ? `${wave}웨이브 예고` : '웨이브 예고'}
+        <Badge tone="teal">다음 적 {preview.total}</Badge>
+      </h2>
       <ul className={css.species}>
-        {preview.species.map(({ id, count, name }) => <li key={id}>{name} {count}마리</li>)}
+        {preview.species.map(({ id, count, name }) => (
+          <li key={id} className={css.speciesItem}>
+            <img src={speciesPortraitUrl(id)} alt="" className={css.speciesArt} draggable={false} />
+            <span className={css.speciesText}>{name} {count}마리</span>
+          </li>
+        ))}
       </ul>
       <div className={css.traits}>
         {preview.boss && <Badge tone="amber">보스</Badge>}
         {preview.traits.map(icon => <Badge key={icon}><LineIcon name={icon} size={14} />{TRAIT_NAMES[icon]}</Badge>)}
       </div>
+      {preview.counters.length > 0 && (
+        <p className={css.counterRow}>
+          <span className={css.counterLabel}>추천 대응</span>
+          <span className={css.counterList}>{preview.counters.join(' · ')}</span>
+        </p>
+      )}
       {airGap && <p className={css.warn} role="status"><LineIcon name="traits/flying" />날아오는 적이 있어요. 공중 공격 타워를 준비해요.</p>}
     </section>
   );

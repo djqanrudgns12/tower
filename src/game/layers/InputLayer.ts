@@ -151,7 +151,7 @@ export class InputLayer {
     }
     const dragCell = drag?.slotId ? map.slots.find(slot => slot.id === drag.slotId) ?? null : null;
     const cell = drag ? dragCell : selectedCell(bridge);
-    if (hovered && hovered.id !== cell?.id) this.strokePad(hovered, 0xb8c0c8, 1.5);
+    if (hovered && hovered.id !== cell?.id) this.strokePad(hovered, bridge.lightTheme ? 0xffffff : 0xb8c0c8, bridge.lightTheme ? 2.2 : 1.5);
     if (cell) {
       let range = 0;
       // 끌고 있으면 끄는 종류의 Lv1 사거리를 그린다.

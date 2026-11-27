@@ -27,9 +27,25 @@ export interface OutlineStyle {
   alpha: number;
 }
 
-/** silhouettes.json의 groundContrastRaw 실측에 따른 개체·품질별 4방위 테두리 정책. */
-export function r6OutlineStyle(entityId: string | undefined, quality: number): OutlineStyle {
+/** silhouettes.json의 groundContrastRaw 및 V2 밝은 석판 도로 대비에 따른 개체·품질별 4방위 테두리 정책. */
+export function r6OutlineStyle(entityId: string | undefined, quality: number, lightGround = false): OutlineStyle {
   if (quality >= 2) return { enabled: false, color: R6_COLORS.silver, alpha: 0 };
+  if (lightGround) {
+    // V2 밝은 석판 도로(#ECF1F5) 위에서는 어두운 카본(#12161B) 1px 실루엣이 보스·저대비 개체 윤곽을 가장 또렷하게 세운다.
+    if (entityId && HIGH_CONTRAST_ENTITIES.has(entityId)) {
+      if (entityId.includes('-boss-')) {
+        return { enabled: true, color: R6_COLORS.carbon, alpha: 0.34 };
+      }
+      return { enabled: false, color: R6_COLORS.carbon, alpha: 0 };
+    }
+    if (entityId && MID_CONTRAST_ENTITIES.has(entityId)) {
+      if (entityId.includes('-boss-')) {
+        return { enabled: true, color: R6_COLORS.carbon, alpha: 0.40 };
+      }
+      return { enabled: true, color: R6_COLORS.carbon, alpha: 0.24 };
+    }
+    return { enabled: true, color: R6_COLORS.carbon, alpha: 0.44 };
+  }
   if (entityId && HIGH_CONTRAST_ENTITIES.has(entityId)) {
     if (entityId.includes('-boss-')) {
       return { enabled: true, color: R6_COLORS.carbon, alpha: 0.32 };
@@ -235,6 +251,7 @@ export interface SilhouetteOutlineOptions {
   entityId?: string | undefined;
   getHitFlash?: (() => number) | undefined;
   isFalling?: (() => boolean) | undefined;
+  isLightGround?: (() => boolean) | undefined;
 }
 
 /**
@@ -272,7 +289,7 @@ export function attachR6SilhouetteOutline(
     const falling = Boolean(options?.isFalling?.());
     const style = falling
       ? { enabled: false, color: R6_OUTLINE_COLOR, alpha: 0 }
-      : r6OutlineStyle(options?.entityId, quality);
+      : r6OutlineStyle(options?.entityId, quality, Boolean(options?.isLightGround?.()));
 
     if (
       capturingOutline

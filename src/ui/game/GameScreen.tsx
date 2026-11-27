@@ -10,6 +10,7 @@ import { remainingEnemies, type Notice } from '../../application/view';
 import { relicBalance } from '../../domain/relics';
 import { buildCost } from '../../domain/towers';
 import { FieldBridgeHandle, type FieldDrag, type FieldSelection, type FieldTap, type FieldView } from '../../game/bridge';
+import { mapThemeLabel } from '../../game/r6/mapPhase';
 import { r6Overview } from '../../game/r6/mapProjection';
 import { PhaserBattlefield } from '../../game/PhaserBattlefield';
 import type { FontScale } from '../../application/session';
@@ -55,6 +56,7 @@ interface Props {
   fontScale: FontScale;
   reducedMotion: boolean;
   lightGraphics?: boolean;
+  lightTheme?: boolean;
   soundOn: boolean;
   bgmVolume?: number;
   sfxVolume?: number;
@@ -86,6 +88,7 @@ export function GameScreen({
   fontScale,
   reducedMotion,
   lightGraphics = false,
+  lightTheme = true,
   soundOn,
   bgmVolume,
   sfxVolume,
@@ -338,11 +341,12 @@ export function GameScreen({
       keyboardSlotId,
       reducedMotion,
       highContrastMap,
+      lightTheme,
       onTap,
       onIcons: setIcons,
       onCamera,
     });
-  }, [bridge, selection, magnify, keyboardSlotId, reducedMotion, highContrastMap, onTap, onCamera]);
+  }, [bridge, selection, magnify, keyboardSlotId, reducedMotion, highContrastMap, lightTheme, onTap, onCamera]);
 
   const blockReason = useCallback((type: TowerId) => {
     if (!trading) return lock ?? '지금은 할 수 없어요';
@@ -548,7 +552,7 @@ export function GameScreen({
       onUpgrade={onUpgrade} onEvolve={onEvolve} onSell={onSell} onUndo={onUndo} />
   ) : null;
   const contextBody: ReactNode = detail ? <>{detail}{tools}</> : (r6Preview
-    ? <R6WaveForecast preview={r6Preview} airGap={r6Preview.traits.includes('traits/flying') && !towers.some(canHitAir)} />
+    ? <R6WaveForecast preview={r6Preview} wave={nextWave} airGap={r6Preview.traits.includes('traits/flying') && !towers.some(canHitAir)} />
     : between && forecast
       ? <WaveForecast balance={b} preview={forecast} urlOf={urlOf} icons={icons} warning={warning} compact={compact || layout.mode === 'S'} />
       : view.phase === 'BATTLE' ? <Remaining count={remaining} /> : null);
@@ -781,10 +785,12 @@ export function GameScreen({
       } as CSSProperties)
     : { padding: layout.pad };
 
+  const themeLabel = r6 ? mapThemeLabel(Math.max(1, view.wave), map.grade) : null;
   const hud = (
     <Hud view={view} burning={b.burning} relicInfo={b} icons={icons} mode={layout.mode} compactRail={compact}
       goldRef={goldRef} reducedMotion={reducedMotion} bestWave={bestWave}
-      r6={r6} remaining={remaining} onPause={() => controller.pause('USER')} />
+      r6={r6} remaining={remaining} biomeLabel={themeLabel?.biomeShort} phaseBadge={themeLabel?.chapterBadge}
+      onPause={() => controller.pause('USER')} />
   );
   const mobileContext = !practiceDone && contextBody && (r6 || view.phase !== 'BATTLE') && (
     <Card className={css.contextS} data-covered={(!layout.wideQuestion && !!view.question?.feedback && view.question.feedback.result !== 'correct') || undefined}>

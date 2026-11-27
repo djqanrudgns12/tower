@@ -166,6 +166,9 @@ h1, h2, h3, p { margin: 0; }
 }
 
 body[data-screen='battle'] { background: var(--bg-canvas); color: var(--text-body); }
+:root[data-theme='light'] body[data-screen='battle'] {
+  background: linear-gradient(180deg, #EDF3F7 0%, #E7EEE8 100%);
+}
 
 /* 홈 전환 중 쓰는 장식. */
 :root {

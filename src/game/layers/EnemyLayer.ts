@@ -307,13 +307,21 @@ export class EnemyLayer {
       const visualFlyer = this.assets && this.c.projected ? isR6VisualFlyer(e.entityId, e.flying) : e.flying;
       if (visualFlyer && (quality < 2 || e.kind === 'boss')) this.flyerShadow(x, y + foot, art.displayCells * scaleK, v.lift);
       else if (this.assets && this.c.projected && (quality === 0 || e.kind === 'boss')) this.groundShadow(x, y + foot, art.displayCells * scaleK, e.kind === 'boss');
-      const depth = this.c.projected ? r6UnitDepth(y, 'enemy') : DEPTH.units + y + 0.5;
+      const meta = this.assets?.mapMeta;
+      const remaining = path.length - progress;
+      const enteringGate = Boolean(this.c.projected && meta && remaining <= 1000);
+      const portalFade = enteringGate && remaining < 420 ? Math.max(0.18, remaining / 420) : 1;
+      alphaK *= portalFade;
+      const depth = enteringGate && meta
+        ? DEPTH.units + meta.gatePlaneY + 4
+        : this.c.projected ? r6UnitDepth(y, 'enemy') : DEPTH.units + y + 0.5;
       if (v.spine) {
         const { object, scale, stridePx, bounds } = v.spine;
         const originY = y + foot - v.lift - hop;
         const sAbs = scale * scaleK;
+        const widthFactor = portalFade < 1 ? 0.55 + 0.45 * portalFade : 1;
         object.setPosition(x, originY).setDepth(depth)
-          .setScale(turn.scaleXFactor * sAbs, sAbs).setAlpha(alphaK);
+          .setScale(turn.scaleXFactor * widthFactor * sAbs, sAbs).setAlpha(alphaK);
         const topPx = originY - bounds.top * sAbs;
         const leftPx = v.facing > 0 ? x + bounds.left * sAbs : x - (bounds.left + bounds.width) * sAbs;
         v.bounds = {
@@ -374,11 +382,11 @@ export class EnemyLayer {
         const w = boss ? 44 : 28, bx = x - w / 2;
         const bossBarY = top + foot - (v.spine?.headOffset ?? CELL_PX * .78) - 9;
         const by = r6Boss ? Math.max(scene.cameras.main.worldView.y + 4, bossBarY) : top - CELL_PX * (boss ? .78 : .44);
-        const k = under ? BURROW_ALPHA : 1;
+        const k = (under ? BURROW_ALPHA : 1) * portalFade;
         this.hpBars.fillStyle(PALETTE.outline, 0.9 * k).fillRect(bx - 1, by - 1, w + 2, 6).fillStyle(this.assets ? R6_COLORS.amber : 0xd94f3d, k).fillRect(bx, by, Math.max(1, (w * e.hp) / e.maxHp), 4);
         if (r6Boss) {
-          this.hpBars.fillStyle(R6_COLORS.carbon, 1).fillTriangle(bx - 13, by - 2, bx - 2, by - 2, bx - 7.5, by + 8);
-          this.hpBars.fillStyle(R6_COLORS.amber, 1).fillTriangle(bx - 11, by - 1, bx - 4, by - 1, bx - 7.5, by + 5);
+          this.hpBars.fillStyle(R6_COLORS.carbon, portalFade).fillTriangle(bx - 13, by - 2, bx - 2, by - 2, bx - 7.5, by + 8);
+          this.hpBars.fillStyle(R6_COLORS.amber, portalFade).fillTriangle(bx - 11, by - 1, bx - 4, by - 1, bx - 7.5, by + 5);
         }
       }
     }
@@ -426,6 +434,7 @@ export class EnemyLayer {
           entityId: enemy.entityId,
           getHitFlash: () => (scene.time.now < v.flashUntil ? 1 : 0),
           isFalling: () => this.falling.has(fallenRef),
+          isLightGround: () => bridge.lightTheme,
         });
       }
       object.skeleton.setSkin(art.skin);

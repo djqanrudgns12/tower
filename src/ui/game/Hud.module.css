@@ -310,4 +310,29 @@
 
 .metricLabel { font: 400 var(--fs-caption)/1.2 var(--font-body); color: var(--text-muted); white-space: nowrap; }
 .tactical .gate { flex-basis: 182px; }
+.tactical {
+  background: var(--r6-glass-panel);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-color: var(--r6-glass-border);
+  box-shadow: var(--r6-glass-shadow);
+}
+.themeBadges {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.biomeChip,
+.phaseChip {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font: 600 var(--fs-caption)/1.3 var(--font-body);
+  white-space: nowrap;
+  border: 1px solid var(--border-hairline);
+}
+.biomeChip { background: var(--accent-teal-dim); color: var(--accent-teal); border-color: var(--teal-border); }
+.phaseChip { background: var(--accent-amber-dim); color: var(--accent-amber); }
+@media (max-width: 720px) { .themeBadges { display: none; } }
 @media (max-width: 560px) { .tactical .gate { flex-basis: auto; } }

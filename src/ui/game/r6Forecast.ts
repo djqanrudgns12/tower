@@ -4,6 +4,14 @@ import type { LineIconName } from '../icons/LineIcon';
 import { previewR6Wave } from '../../domain/r6Mixer';
 import { battleTheme } from './r6Display';
 
+const COUNTER_HINT: Partial<Record<LineIconName, string>> = {
+  'traits/armor': '레일·프리즘',
+  'traits/ward': '곡사·방벽',
+  'traits/fast': '냉각',
+  'traits/flying': '격납고·레일',
+  'traits/split': '곡사',
+};
+
 export function r6Forecast({ rules, entities }: R6Runtime, map: string, seed: number, wave: number) {
   const roster = previewR6Wave(rules, map, seed, wave);
   const theme = battleTheme(rules);
@@ -22,10 +30,12 @@ export function r6Forecast({ rules, entities }: R6Runtime, map: string, seed: nu
     if (entity.regen) traits.add('traits/regen');
     if (entity.leakDamage > rules.leakDamage.regular) traits.add('traits/siege');
   }
+  const counters = [...new Set([...traits].map(t => COUNTER_HINT[t]).filter((v): v is string => Boolean(v)))];
   return {
     total: roster.length,
     boss,
     traits: [...traits],
+    counters,
     species: [...counts].map(([id, count]) => ({ id, count, name: theme.species[id].name })),
   };
 }

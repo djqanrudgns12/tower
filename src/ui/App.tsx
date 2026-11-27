@@ -183,6 +183,7 @@ export function App() {
             fontScale={settings.fontScale}
             reducedMotion={settings.reducedMotion}
             lightGraphics={settings.lightGraphics === true}
+            lightTheme={settings.lightTheme !== false}
             soundOn={settings.soundOn}
             bgmVolume={settings.bgmVolume}
             sfxVolume={settings.sfxVolume}

@@ -102,6 +102,40 @@ function SheetFrame({ sheet, frame, x, y }: { sheet: R6Sheet; frame: number; x: 
   );
 }
 
+const portraitStatus = new Map<string, Promise<boolean>>();
+
+function PortraitAtlasFrame({ type, stage, dimension }: {
+  type: R6TowerId;
+  stage: number;
+  dimension: number | string;
+}) {
+  const url = `${assetRoot}towers/${type}/${type}-portraits.webp`;
+  const [ready, setReady] = useState<boolean | null>(null);
+  useEffect(() => {
+    let pending = portraitStatus.get(url);
+    if (!pending) {
+      pending = new Promise<boolean>(resolve => {
+        const img = new Image();
+        img.onload = () => resolve(img.naturalWidth >= 512 && img.naturalHeight >= 384);
+        img.onerror = () => resolve(false);
+        img.src = url;
+      });
+      portraitStatus.set(url, pending);
+    }
+    let active = true;
+    void pending.then(ok => { if (active) setReady(ok); });
+    return () => { active = false; };
+  }, [url]);
+  if (ready !== true) return null;
+  const col = stage % 4;
+  const row = Math.floor(stage / 4);
+  return (
+    <svg width={dimension} height={dimension} viewBox="0 0 128 128" overflow="hidden" aria-hidden="true">
+      <image href={url} x={-col * 128} y={-row * 128} width={512} height={384} />
+    </svg>
+  );
+}
+
 export function BattleTowerPortrait({ type, icons, size = 42, level = 1 }: {
   type: TowerId | R6TowerId;
   icons: Record<string, string>;
@@ -109,9 +143,32 @@ export function BattleTowerPortrait({ type, icons, size = 42, level = 1 }: {
   level?: number;
 }) {
   const { r6, manifest } = useContext(BattlePortraits);
+  const [loadedUrl, setLoadedUrl] = useState<string | null>(null);
+  const stage = evolutionAt(level).stage;
+  const portraitUrl = r6 && isR6Tower(type) ? `${assetRoot}towers/${type}/${type}-portraits.webp` : null;
+  useEffect(() => {
+    if (!portraitUrl) return;
+    let pending = portraitStatus.get(portraitUrl);
+    if (!pending) {
+      pending = new Promise<boolean>(resolve => {
+        const img = new Image();
+        img.onload = () => resolve(img.naturalWidth >= 512 && img.naturalHeight >= 384);
+        img.onerror = () => resolve(false);
+        img.src = portraitUrl;
+      });
+      portraitStatus.set(portraitUrl, pending);
+    }
+    let active = true;
+    void pending.then(ok => { if (active && ok) setLoadedUrl(portraitUrl); });
+    return () => { active = false; };
+  }, [portraitUrl]);
+
   if (!r6 || !isR6Tower(type)) return <TowerShieldPortrait type={type as TowerId} icons={icons} size={size} bare />;
-  const form = manifest?.towers[type]?.[evolutionAt(level).stage];
   const dimension = size === 'fill' ? '100%' : size;
+  if (portraitUrl && loadedUrl === portraitUrl) {
+    return <PortraitAtlasFrame type={type} stage={stage} dimension={dimension} />;
+  }
+  const form = manifest?.towers[type]?.[stage];
   if (!manifest || !form) {
     return <svg width={dimension} height={dimension} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.25" aria-hidden="true"><path d={outlines[type]} /></svg>;
   }

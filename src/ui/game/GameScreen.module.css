@@ -345,15 +345,30 @@
 }
 
 .hudRow { grid-column: 1 / -1; }
-.modeR[data-r6] .rail { overflow: auto; scrollbar-width: thin; }
-.modeR[data-r6] .rail .context { flex: none; }
-.modeR[data-r6] .context[data-forecast] { order: -1; }
+.modeR[data-r6] .field {
+  border-radius: var(--chamfer-md);
+  box-shadow: var(--r6-glass-shadow);
+}
+.modeR[data-r6] .rail {
+  overflow: auto;
+  scrollbar-width: thin;
+  background: var(--r6-glass-panel);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-color: var(--r6-glass-border);
+  box-shadow: var(--r6-glass-shadow);
+}
+.modeR[data-r6] .rail .context {
+  flex: none;
+  background: var(--r6-glass-card);
+  border-color: var(--r6-glass-border);
+}
 .modeR[data-r6] .rail:has(details[open]) .slotDock > details[open] { min-height: 100px; }
 .modeS[data-r6] .contextS { margin: 0; }
-.modeR[data-r6] { --desktop-quiz-height: 150px; }
+.modeR[data-r6] { --desktop-quiz-height: clamp(142px, 19.5dvh, 158px); }
 .modeR[data-r6] .bottom {
   grid-column: 1;
-  --rail-w: 176px;
+  --rail-w: clamp(200px, 19vw, 236px);
   --q-h: var(--desktop-quiz-height);
   --quiz-option-min: var(--touch);
 }
@@ -365,7 +380,6 @@
   max-height: calc(var(--map-h) + var(--desktop-quiz-height) + var(--sp-2));
 }
 .modeS[data-r6] { grid-template-columns: minmax(0, 1fr); }
-.modeR[data-r6] .rail:has(.context:not([data-forecast])) .context { order: -1; }
 
 .modeR[data-fit-battle] {
   height: 100dvh;

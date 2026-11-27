@@ -311,7 +311,6 @@ test('사용 설명서 완독 후 새 게임 시작: 목차에서 1장을 열어
   await guide.getByRole('button', { name: '닫기' }).click();
   await expect(guide).toHaveCount(0);
 
-  await page.getByRole('textbox', { name: '닉네임' }).fill('작전교범수호자');
   await page.evaluate(() => localStorage.setItem('vocabulary-td.settings', JSON.stringify({ shareRecordsAsked: true })));
   await page.reload();
   await page.getByRole('textbox', { name: '닉네임' }).fill('작전교범수호자');

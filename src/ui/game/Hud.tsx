@@ -25,6 +25,8 @@ interface Props {
   icons?: Record<string, string>;
   r6?: boolean;
   remaining?: number;
+  biomeLabel?: string | undefined;
+  phaseBadge?: string | undefined;
   onPause(): void;
 }
 
@@ -43,7 +45,7 @@ export function streakGems(view: Pick<GameView, 'burningSecondsLeft' | 'battleSt
  * - R 압축(낮은 화면): 두 줄 — 성문·일시정지 / 골드·웨이브·점수·불꽃.
  * - S(휴대폰): 한 줄 — 성문·골드·웨이브·불꽃·일시정지(점수는 결과에서 본다).
  */
-export function Hud({ view, burning: rule, mode, compactRail = false, goldRef, reducedMotion = false, bestWave = null, relicInfo, icons = {}, r6 = false, remaining = 0, onPause }: Props) {
+export function Hud({ view, burning: rule, mode, compactRail = false, goldRef, reducedMotion = false, bestWave = null, relicInfo, icons = {}, r6 = false, remaining = 0, biomeLabel, phaseBadge, onPause }: Props) {
   const ratio = view.gateMaxHp ? view.gateHp / view.gateMaxHp : 0;
   const waveNo = Math.max(1, view.wave);
   const { burning, lit } = streakGems(view, rule);
@@ -130,6 +132,12 @@ export function Hud({ view, burning: rule, mode, compactRail = false, goldRef, r
         {gateMeter}
         {gold}
         {wave}
+        {!phone && (biomeLabel || phaseBadge) && (
+          <span className={css.themeBadges} aria-label={`${biomeLabel ?? ''} ${phaseBadge ?? ''}`.trim()}>
+            {biomeLabel && <span className={css.biomeChip}>{biomeLabel}</span>}
+            {phaseBadge && <span className={css.phaseChip}>{phaseBadge}</span>}
+          </span>
+        )}
         {!phone && <span className={css.stat} role="img" aria-label={`남은 적 ${remaining}마리`} title="남은 적"><LineIcon name="hud/enemies" size={18} /><span className={css.metricLabel} aria-hidden="true">남은 적</span>{fmtNumber(remaining)}</span>}
         {flames}
         {!phone && relics}

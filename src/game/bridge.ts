@@ -34,6 +34,8 @@ export interface FieldBridge {
   reducedMotion: boolean;
   /** 길·설치 받침 고대비 보조 윤곽선 표시. */
   highContrastMap: boolean;
+  /** 주간/어두운 전장 테마 (data-theme='light' 여부). */
+  lightTheme: boolean;
   /** 장착 홈에서 끌어 놓는 중. */
   drag: FieldDrag | null;
   onTap(tap: FieldTap): void;
@@ -50,11 +52,12 @@ export class FieldBridgeHandle implements FieldBridge {
   keyboardSlotId: string | null = null;
   reducedMotion = false;
   highContrastMap = false;
+  lightTheme = true;
   drag: FieldDrag | null = null;
   onTap: (tap: FieldTap) => void = () => undefined;
   onIcons?: (icons: Record<string, string>) => void;
   onCamera?: (view: FieldView) => void;
   readonly controller: RunController;
   constructor(controller: RunController) { this.controller = controller; }
-  update(next: Partial<Pick<FieldBridge, 'selection' | 'magnify' | 'keyboardSlotId' | 'reducedMotion' | 'highContrastMap' | 'drag' | 'onTap' | 'onIcons' | 'onCamera'>>) { Object.assign(this, next); }
+  update(next: Partial<Pick<FieldBridge, 'selection' | 'magnify' | 'keyboardSlotId' | 'reducedMotion' | 'highContrastMap' | 'lightTheme' | 'drag' | 'onTap' | 'onIcons' | 'onCamera'>>) { Object.assign(this, next); }
 }

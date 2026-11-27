@@ -266,6 +266,7 @@ function Anchored({
     const clearZones = (p: { left: number; top: number }) => {
       if (avoidTopLeft && p.left < 128 && p.top < 56) return false;
       if (avoidBottom && p.top + h > boxH - 56 && p.left + w > boxW * 0.15 && p.left < boxW * 0.85) return false;
+      if (p.left + w > boxW * 0.78 && p.top + h > boxH * 0.72) return false;
       return true;
     };
     const pick = order.map(k => sides[k]).find(p => inBounds(p) && clearZones(p))

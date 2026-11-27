@@ -41,6 +41,7 @@ export class BattleScene extends Phaser.Scene {
   private cssCell = 0;
   private cameraKey = '';
   private layoutKey = '';
+  private lastLightTheme = true;
 
   constructor() { super('battle'); }
 
@@ -55,7 +56,7 @@ export class BattleScene extends Phaser.Scene {
     const mapId = ctx.map.id;
     if (isR6Battlefield(ctx)) {
       this.r6Assets = new R6BattleAssets(this, () => this.bridge.controller.renderQuality.current === 0 && window.devicePixelRatio > 4 / 3);
-      this.r6Assets.preload(mapId, this.bridge.controller.state.owned);
+      this.r6Assets.preload(mapId, this.bridge.controller.state.owned, ctx.map.grade, this.bridge.lightTheme);
       return;
     }
     this.load.json('asset-manifest', 'assets/manifest.json');
@@ -75,7 +76,8 @@ export class BattleScene extends Phaser.Scene {
       projected: Boolean(this.r6Assets && this.bridge.controller.ctx.map.id === 'garden_u' && this.textures.exists(R6_GROUND_KEY)),
     };
     this.layerContext = c;
-    this.ground = new GroundLayer(c);
+    this.lastLightTheme = this.bridge.lightTheme;
+    this.ground = new GroundLayer(c, this.r6Assets);
     this.ground.bake();
     drawSprites(this);
     this.publishIcons();
@@ -218,11 +220,17 @@ export class BattleScene extends Phaser.Scene {
   override update(time: number, delta: number) {
     const { controller } = this.bridge;
     if (this.scale.zoom !== 1 / battlefieldDensity(controller.renderQuality.current)) this.resizeToHost();
+    if (this.layerContext.projected && this.r6Assets && this.bridge.lightTheme !== this.lastLightTheme) {
+      this.lastLightTheme = this.bridge.lightTheme;
+      const grade = controller.ctx.map.grade;
+      this.r6Assets.swapMapTheme(grade, this.lastLightTheme, key => this.ground.setGroundTexture(key, grade, this.lastLightTheme));
+    }
     const s = controller.state;
     const alpha = controller.alpha;
     this.enemyLayer.advance(s);
     this.towerLayer.sync(s, time);
     this.ambient?.update(delta, controller.renderQuality.current >= 2);
+    this.ground.syncAtmosphere(time, delta, s.phase);
     this.enemyLayer.sync(s, time, alpha, delta);
     this.ground.syncPads(s, delta, this.enemyLayer.activeFootprints());
     this.effects.syncHazards(s, alpha);

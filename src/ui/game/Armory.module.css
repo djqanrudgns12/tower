@@ -112,14 +112,44 @@
 
 .dock { display: grid; gap: var(--sp-1); min-width: 0; }
 .title { font: 700 var(--fs-body)/1.4 var(--font-display); }
-.rail[data-r6] { grid-template-columns: 1fr; gap: var(--sp-1); }
+.rail[data-r6] { grid-template-columns: 1fr; gap: 6px; }
 .rail[data-r6] :is(.socket, .locked) {
-  grid-template: auto / 36px minmax(0, 1fr) auto;
+  grid-template: auto / 44px minmax(0, 1fr) auto;
   justify-items: start;
-  padding: var(--sp-1) var(--sp-2);
+  padding: 5px var(--sp-2);
   text-align: start;
+  border-radius: var(--chamfer-sm);
+  transition: border-color 140ms var(--ease-out), background-color 140ms var(--ease-out);
 }
-.rail[data-r6] .art { width: 36px; height: 36px; }
+.rail[data-r6] .art {
+  position: relative;
+  width: 44px;
+  height: 44px;
+  border-radius: var(--chamfer-sm);
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-hairline);
+}
+.rail[data-r6][data-compact] :is(.socket, .locked) {
+  grid-template: auto / 36px minmax(0, 1fr) auto;
+  padding: var(--sp-1) var(--sp-2);
+}
+.rail[data-r6][data-compact] .art { width: 36px; height: 36px; }
+.rail[data-r6] .art[data-hotkey]::after {
+  content: attr(data-hotkey);
+  position: absolute;
+  top: -3px;
+  left: -3px;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 3px;
+  display: inline-grid;
+  place-items: center;
+  border-radius: 4px;
+  background: var(--bg-panel);
+  border: 1px solid var(--border-hairline);
+  color: var(--text-muted);
+  font: 800 13px/1 var(--font-display);
+}
 .identity { display: grid; min-width: 0; font-size: var(--fs-caption); line-height: 1.35; }
 .identity strong { font-size: var(--fs-body); }
 .identity > span { color: var(--text-muted); }

@@ -64,7 +64,7 @@ export function Armory({ balance, towers, gold, armed, icons, variant, compact =
         aria-orientation={variant === 'rail' ? 'vertical' : 'horizontal'}
         aria-describedby={locked ? lockId : undefined}
       >
-        {towers.map(type => {
+        {towers.map((type, index) => {
           const price = buildCost(balance, type);
           const short = gold < price;
           const label = battleTowerName(balance, type);
@@ -85,7 +85,7 @@ export function Armory({ balance, towers, gold, armed, icons, variant, compact =
               onPointerDown={e => onPress(type, e)}
               onClick={() => { if (takeClick()) onArm(type); }}
             >
-              <span className={css.art}>
+              <span className={css.art} data-hotkey={balance.r6 && variant === 'rail' ? String(index + 1) : undefined}>
                 <BattleTowerPortrait type={type} icons={icons} size="fill" />
               </span>
               {balance.r6 && (

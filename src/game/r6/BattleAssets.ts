@@ -8,13 +8,45 @@ import human from './monsters/human.json';
 import insect from './monsters/insect.json';
 import machine from './monsters/machine.json';
 import stone from './monsters/stone.json';
+import { biomeForGrade, type MapBiome } from './mapPhase';
 import { r6Pad } from './mapProjection';
 import { monsterPackSchema, r6ManifestSchema, r6TowerPackSchema, towerPackPath, type R6Manifest, type R6Sheet } from './manifest';
 
 const BASE = 'assets/r6/';
 const MANIFEST_KEY = 'r6.manifest';
 export const R6_GROUND_KEY = 'r6.ground';
+const R6_GROUND_ALT_KEY = 'r6.ground.alt';
 export const R6_PAD_KEY = 'r6.map.pad';
+export const R6_GATE_BACK_KEY = 'r6.gate.back';
+export const R6_GATE_FRONT_KEY = 'r6.gate.front';
+export const R6_AURA_KEY = 'r6.map.aura';
+export const R6_MAP_META_KEY = 'r6.map.v2meta';
+
+export interface MapV2LayerMeta {
+  readonly file: string;
+  readonly worldX: number;
+  readonly worldY: number;
+  readonly displayW: number;
+  readonly displayH: number;
+}
+
+export interface MapV2Meta {
+  readonly version: number;
+  readonly overview: { readonly x: number; readonly y: number; readonly width: number; readonly height: number };
+  readonly gatePlaneY: number;
+  readonly portalInteriorCells: readonly [number, number];
+  readonly gateBack: MapV2LayerMeta;
+  readonly gateFront: MapV2LayerMeta;
+  readonly aura: { readonly file: string; readonly size: readonly [number, number] };
+}
+
+function terrainFile(biome: MapBiome, lightTheme: boolean, high: boolean): string {
+  return `map/${biome}-${lightTheme ? 'day' : 'dark'}-${high ? '2x' : '1x'}.webp`;
+}
+
+function terrainSpec(biome: MapBiome, lightTheme: boolean, high: boolean): string {
+  return `${biome}:${lightTheme ? 'day' : 'dark'}:${high ? '2x' : '1x'}`;
+}
 const sheetKey = (id: string, high = false) => `r6.sheet.${id}${high ? '.2x' : ''}`;
 const atlasKey = (id: string) => `r6.atlas.${id}`;
 const rigKey = (id: string) => `r6.rig.${id}`;
@@ -33,6 +65,9 @@ export class R6BattleAssets {
   private readonly baseTowerSheets = new Set<string>();
   private readonly stagedTowerSheets = new Set<string>();
   private readonly failedTowerSheets = new Set<string>();
+  private currentTerrainKey = R6_GROUND_KEY;
+  private currentTerrainSpec = '';
+  private pendingTerrainSpec = '';
 
   constructor(private readonly scene: Phaser.Scene, private readonly useHighSheets: () => boolean) {
     scene.load.on('loaderror', (file: Phaser.Loader.File) => {
@@ -42,22 +77,63 @@ export class R6BattleAssets {
     });
   }
 
-  preload(mapId: string, owned: readonly string[]) {
+  get mapMeta(): MapV2Meta | null {
+    const raw = this.scene.cache.json.get(R6_MAP_META_KEY) as MapV2Meta | undefined;
+    return raw && typeof raw.gatePlaneY === 'number' ? raw : null;
+  }
+
+  preload(mapId: string, owned: readonly string[], grade = 3, lightTheme = true) {
     const { load } = this.scene;
+    if (mapId === 'garden_u') {
+      const biome = biomeForGrade(grade);
+      const high = this.useHighSheets();
+      this.currentTerrainKey = R6_GROUND_KEY;
+      this.currentTerrainSpec = terrainSpec(biome, lightTheme, high);
+      load.json(R6_MAP_META_KEY, BASE + 'map/map-v2-meta.json');
+      load.image(R6_GROUND_KEY, BASE + terrainFile(biome, lightTheme, high));
+      const padScale = high ? 2 : 1;
+      load.spritesheet(R6_PAD_KEY, BASE + (high ? 'map/meadow-pads-2x.webp' : 'map/meadow-pads.webp'), {
+        frameWidth: r6Pad.size[0]! * padScale, frameHeight: r6Pad.size[1]! * padScale,
+      });
+      load.image(R6_GATE_BACK_KEY, BASE + 'map/gate-back.webp');
+      load.image(R6_GATE_FRONT_KEY, BASE + 'map/gate-front.webp');
+      load.spritesheet(R6_AURA_KEY, BASE + 'map/wave-aura.webp', { frameWidth: 128, frameHeight: 128 });
+    }
     load.once(`filecomplete-json-${MANIFEST_KEY}`, (_key: string, _type: string, data: unknown) => {
       const result = r6ManifestSchema.safeParse(data);
       if (!result.success) return;
       this.manifest = result.data;
       const map = this.manifest.maps[mapId];
-      if (mapId === 'garden_u' && map) {
-        load.image(R6_GROUND_KEY, BASE + 'map/meadow-plateau.webp');
-        load.spritesheet(R6_PAD_KEY, BASE + 'map/meadow-pads.webp', {
-          frameWidth: r6Pad.size[0]!, frameHeight: r6Pad.size[1]!,
-        });
-      } else if (map) load.image(R6_GROUND_KEY, BASE + map);
+      if (map && mapId !== 'garden_u') load.image(R6_GROUND_KEY, BASE + map);
       for (const id of R6_TOWERS) if (owned.includes(id)) this.queueTowerIcon(id);
     });
     load.json(MANIFEST_KEY, BASE + 'manifest-v2.json');
+  }
+
+  /** 주간/야간 또는 1x/2x 지형을 비동기 교체하고 이전 지형 텍스처를 내려 VRAM 예산을 12 MiB 이하로 유지한다. */
+  swapMapTheme(grade: number, lightTheme: boolean, onSwapped: (key: string) => void) {
+    const biome = biomeForGrade(grade);
+    const high = this.useHighSheets();
+    const spec = terrainSpec(biome, lightTheme, high);
+    if (spec === this.currentTerrainSpec || spec === this.pendingTerrainSpec) return;
+    const { load, textures } = this.scene;
+    const nextKey = this.currentTerrainKey === R6_GROUND_KEY ? R6_GROUND_ALT_KEY : R6_GROUND_KEY;
+    this.pendingTerrainSpec = spec;
+    if (textures.exists(nextKey)) textures.remove(nextKey);
+    load.once(`filecomplete-image-${nextKey}`, () => {
+      if (this.pendingTerrainSpec !== spec) {
+        if (textures.exists(nextKey)) textures.remove(nextKey);
+        return;
+      }
+      const prevKey = this.currentTerrainKey;
+      this.currentTerrainKey = nextKey;
+      this.currentTerrainSpec = spec;
+      this.pendingTerrainSpec = '';
+      onSwapped(nextKey);
+      if (prevKey !== nextKey && textures.exists(prevKey)) textures.remove(prevKey);
+    });
+    load.image(nextKey, BASE + terrainFile(biome, lightTheme, high));
+    if (!load.isLoading()) load.start();
   }
 
   towerUnlocked(id: R6TowerId, onReady: () => void) {

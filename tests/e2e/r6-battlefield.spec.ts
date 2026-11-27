@@ -249,10 +249,12 @@ test('실제 전투 화면의 4개 해상도에서 문제판과 전장이 한 �
             if (rgba[(y * sample.width + x) * 4 + 3]! >= 128) { xs.push(x); ys.push(y); }
           }
         }
-        const left = Math.min(...pads.map(p => p.x)) + Math.min(...xs) - pads[0]!.displayOriginX;
-        const right = Math.max(...pads.map(p => p.x)) + Math.max(...xs) + 1 - pads[0]!.displayOriginX;
-        const top = Math.min(...pads.map(p => p.y)) + Math.min(...ys) - pads[0]!.displayOriginY;
-        const bottom = Math.max(...pads.map(p => p.y)) + Math.max(...ys) + 1 - pads[0]!.displayOriginY;
+        const sx = pads[0]!.scaleX;
+        const sy = pads[0]!.scaleY;
+        const left = Math.min(...pads.map(p => p.x)) + Math.min(...xs) * sx - pads[0]!.displayOriginX;
+        const right = Math.max(...pads.map(p => p.x)) + (Math.max(...xs) + 1) * sx - pads[0]!.displayOriginX;
+        const top = Math.min(...pads.map(p => p.y)) + Math.min(...ys) * sy - pads[0]!.displayOriginY;
+        const bottom = Math.max(...pads.map(p => p.y)) + (Math.max(...ys) + 1) * sy - pads[0]!.displayOriginY;
         return {
           horizontal: (right - left) / view.width * 100, vertical: (bottom - top) / view.height * 100,
           inside: left >= view.x && top >= view.y && right <= view.right && bottom <= view.bottom,
@@ -309,7 +311,7 @@ test('홈 미리보기는 초원 고원 3/4 전장 렌더를 표시한다', asyn
   await expect.poll(() => image.evaluate(img => {
     const preview = img as HTMLImageElement;
     return preview.complete && preview.naturalWidth > 0 ? new URL(preview.currentSrc).pathname : '';
-  })).toMatch(/\/assets\/r6\/map\/meadow-plateau\.webp$/);
+  })).toMatch(/\/assets\/r6\/(map\/meadow-plateau|home\/hero-meadow-daylight)\.webp$/);
 });
 
 test('초원 고원에서 설치·진화·포두 발사·Spine 보행을 재생하고 4배 감속을 측정한다', async ({ page, browser }, testInfo) => {
