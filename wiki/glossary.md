@@ -4,7 +4,7 @@ type: glossary
 title: 용어 및 약어 사전
 status: active
 updated: 2026-11-25
-verified: { commit: "8c5c3d25", date: 2026-11-27 }
+verified: { commit: c5001fd9, date: 2026-11-27 }
 sources:
   - path: vocabulary_td_prd_v0_5.md
     sha256: "0ffd7049c672ae427f1b59b2ef80222ea745b24911b13e78d1ee5680a7902cf5"
@@ -13,7 +13,7 @@ sources:
   - path: docs/renewal/r6/PRD-r6.md
     sha256: "2ebe8c0d3e6c29822e5a15714f0a0a8b7a93ba5ce2e22031f83a3a7519be17b3"
   - path: docs/renewal/r6/map-spec.md
-    sha256: "6d3c6ced8eb2a555ed6376d562ce3fd37d7d2e6c98e7e450ae726dcb08b5e594"
+    sha256: "9b36b9d3b65f57ae8c17d1995e36e642a91d520f42cce302699089f9ae2e46f5"
   - path: docs/renewal/r6/tech/G5-perf.md
     sha256: "16b0d22d3fe0532d0cfa718fb55e71e4b9fa7b650ca7ea5bdb5549b69914e452"
   - path: docs/renewal/r6/tech/G5-server.md
@@ -39,7 +39,7 @@ sources:
 | `밸런스 v2 (2.0.0)` | R6 계약 | 타워 6종 Lv20·무기 I~IV·순차 해금, 몬스터 5종족×20, 시드 혼합기(`r6-mix-1`)를 정의하는 계약. 개발 환경 `?balance=v1`으로 `1.0.0` 전환 가능. | [balance.v2.json](../docs/contracts/balance.v2.json) |
 | `무기 단계 I~IV · 11형태` | R6 타워 | `floor(L/2)`로 Lv1·2·4…20까지 11형태로 진화하고 Lv1/6/12/18마다 무기 단계와 재질(강철→합금→세라믹→금테)이 바뀌는 성장 체계. | [PRD-r6.md](../docs/renewal/r6/PRD-r6.md) |
 | `진화 레시피` | R6 제작 공정 | `tools/r6/recipes/<id>.json`에 11단계 부품 슬롯·재질·무기 파라미터를 담아 Blender 자동 렌더와 게임 수치를 동기화하는 규격. | [G2-spike.md](../docs/renewal/r6/tech/G2-spike.md) |
-| `초원 고원` (`garden_u`) | R6 전장 | 기존 `garden_u`(15×9·길 41칸·설치대 20개) 좌표 위에 3/4 직교 등고선 지형과 육각 설치대를 올린 R6 첫 맵. | [map-spec.md](../docs/renewal/r6/map-spec.md) |
+| `초원 고원` (`garden_u`) | R6 전장 | 기존 `garden_u`(15×9·길 41칸·설치대 20개) 좌표 위에 3/4 직교 등고선 지형과 육각 설치대를 올린 R6 2.0.0 기준 맵. V2(2.1.0 예정)는 초기맵 `meadow_easy`(45칸·24설치대)부터 학년×난이도 16전장으로 확장한다. | [map-spec.md](../docs/renewal/r6/map-spec.md) |
 | `spine-phaser-v4` Mesh2D | R6 렌더링 | Phaser 4.2.1 WebGL에서 Spine 4.3 뼈대·스킨(T1~T4)을 직접 그리는 공식 플러그인 백엔드. 종족 아틀라스 지연 적재와 함께 쓴다. | [G2-spike.md](../docs/renewal/r6/tech/G2-spike.md) |
 | `자동 화질 3단계` | R6 성능 | `RenderQuality`가 5초 평균 FPS를 재어 `0→1→2→3` 단계로 해상도·효과·Spine 갱신 간격을 자동 조절하고 3단계 15fps 미만 10초 시 정지하는 장치. | [G5-perf.md](../docs/renewal/r6/tech/G5-perf.md) |
 | `ranking_seasons` | 시즌 2 서버 | `balance_version`(`1.0.0`/`2.0.0`)과 `season_id`(`season1`/`season2`), `submissions_open`을 연결하는 D1 표. 2026-11-27 운영 반영. | [G5-server.md](../docs/renewal/r6/tech/G5-server.md) |

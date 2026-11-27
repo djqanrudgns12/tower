@@ -4,7 +4,7 @@ type: index
 title: 어휘력 타워 디펜스 에이전트 위키 색인
 status: active
 updated: 2026-11-25
-verified: { commit: c08d2667, date: 2026-11-27 }
+verified: { commit: c5001fd9, date: 2026-11-27 }
 sources:
   - path: AGENTS.md
     sha256: "6a114bb3e7c1c01e63f75603742e3aa7811719234dc84c2471b0d045fbb26bf4"
@@ -13,7 +13,7 @@ sources:
   - path: docs/renewal/r6/PRD-r6.md
     sha256: "2ebe8c0d3e6c29822e5a15714f0a0a8b7a93ba5ce2e22031f83a3a7519be17b3"
   - path: docs/renewal/r6/PRD-r6-v2.md
-    sha256: "4ca3913c09f410b148c65ff579b2cd6fe6f4796728620300fd8c74fadaad7333"
+    sha256: ede514c9bea08115eb34a54c7905dda5a8f579587d326b7c6c7b166120a90b3b
 ---
 
 # 어휘력 타워 디펜스 LLM Wiki (`index`)
@@ -38,7 +38,7 @@ sources:
 | --- | --- | --- |
 | **계층 규칙·RunController·계약 선택·자동 화질** | [아키텍처·계층 경계](concepts/architecture-and-layers.md) | [codemap.md](codemap.md) |
 | **R6 타워 6종(Lv20)·몬스터 100·밸런스 v2** | [전투·타워·밸런스](concepts/combat-towers-and-balance.md) | [contracts.md](contracts.md) · `npm run wiki:query -- --tower` |
-| **R04 UI·초원 고원·Blender/Spine 제작 공정** | [화면·전장·제작 공정](concepts/ui-phaser-and-assets.md) | `npm run wiki:query -- --map` |
+| **R04 UI·초원 고원·Blender/Spine 제작 공정 · 시안 A V2** | [화면·전장·제작 공정](concepts/ui-phaser-and-assets.md) | `npm run wiki:query -- --map` · [PRD-r6-v2.md §7~§11](../docs/renewal/r6/PRD-r6-v2.md) |
 | **3~6학년 문제은행·CR-1000·commit-lock** | [문제은행·공동검수](concepts/question-bank-and-cr1000.md) | `npm run wiki:query -- --bank` |
 | **IndexedDB·오답 노트·시즌 2 랭킹 서버** | [로컬 저장·랭킹 서버](concepts/persistence-and-ranking-server.md) | `npm run wiki:query -- --route` · `--table` |
 | **배포·시즌 전환·보존 잠금·검증 예산** | [배포·검증·운영](concepts/deploy-and-verification.md) | [commands.md](commands.md) |
