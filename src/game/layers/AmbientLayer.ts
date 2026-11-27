@@ -77,8 +77,8 @@ export class AmbientLayer {
       this.water = [];
       this.ripples = scene.add.graphics().setDepth(DEPTH.mood + 0.2).setVisible(false);
       this.tint = scene.add.rectangle(0, 0, WORLD_W, WORLD_H, 0xffffff, 0).setOrigin(0).setDepth(DEPTH.projectiles - 1).setVisible(false);
-      this.initR6Motes(map.id);
-      this.apply(0, bridge.reducedMotion);
+      this.initR6Motes(map.id, map.grade);
+      this.apply(0, bridge.reducedMotion || (bridge.controller.renderQuality?.current ?? 0) >= 1);
       return;
     }
 
@@ -127,7 +127,7 @@ export class AmbientLayer {
   }
 
   /** R6 V2 외곽 디오라마 여백용 경량 바이옴 입자(≤ 8개, GroundLayer 50W 틴트와 비충돌). */
-  private initR6Motes(mapId: string) {
+  private initR6Motes(mapId: string, grade?: number) {
     const t = this.c.scene.textures;
     if (!t.exists(R6_MOTE_KEY)) {
       const tex = t.createCanvas(R6_MOTE_KEY, 16, 16);
@@ -143,7 +143,7 @@ export class AmbientLayer {
       }
     }
     if (!t.exists(R6_MOTE_KEY)) return;
-    const style = R6_MOTE_STYLE[r6BiomeAmbientKind(mapId)];
+    const style = R6_MOTE_STYLE[r6BiomeAmbientKind(mapId, grade)];
     const corners: ReadonlyArray<readonly [number, number]> = [
       [0.08, 0.14], [0.15, 0.22], [0.12, 0.78], [0.24, 0.84],
       [0.86, 0.82], [0.91, 0.74], [0.06, 0.45], [0.22, 0.11],
@@ -326,7 +326,7 @@ export class AmbientLayer {
   /** 매 프레임. 일시정지 중에는 구름·나비·잔물결·꽃잎·눈송이가 멈춘다(색조는 웨이브에 따라서만 바뀐다). */
   update(deltaMs: number, light = false) {
     const { bridge } = this.c;
-    const reduced = bridge.reducedMotion || light;
+    const reduced = bridge.reducedMotion || light || (this.r6Mode && (bridge.controller.renderQuality?.current ?? 0) >= 1);
     const paused = bridge.controller.state.pause.length > 0;
     const dt = paused ? 0 : Math.min(100, Math.max(0, deltaMs));
     this.clockMs += dt;

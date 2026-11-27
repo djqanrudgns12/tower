@@ -13,9 +13,30 @@ interface Props {
  * localStorage·clears·점수를 전혀 수정하지 않고 세션 메모리 안의 덱 순서만 조정한다.
  */
 export function NoteFlashcard({ entries, onClose }: Props) {
-  const [deck, setDeck] = useState<readonly NoteEntry[]>(() => [...entries]);
-  const [cursor, setCursor] = useState(0);
+  const [queue, setQueue] = useState<readonly NoteEntry[]>(() => [...entries]);
+  const [mastered, setMastered] = useState(0);
   const [revealed, setRevealed] = useState(false);
+
+  const total = entries.length;
+  const done = queue.length === 0;
+  const current = queue[0];
+
+  const handleRestart = () => {
+    setQueue([...entries]);
+    setMastered(0);
+    setRevealed(false);
+  };
+
+  const handleKnown = () => {
+    setQueue(prev => prev.slice(1));
+    setMastered(m => Math.min(total, m + 1));
+    setRevealed(false);
+  };
+
+  const handleAgain = () => {
+    setQueue(prev => (prev.length > 1 ? [...prev.slice(1), prev[0]!] : prev));
+    setRevealed(false);
+  };
 
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
@@ -23,36 +44,29 @@ export function NoteFlashcard({ entries, onClose }: Props) {
         e.preventDefault();
         e.stopPropagation();
         onClose();
+        return;
+      }
+      if (done || !current || e.altKey || e.ctrlKey || e.metaKey || e.repeat) return;
+      const interactive = (e.target as HTMLElement | null)?.closest('button, a, input, textarea, select');
+      if (!revealed) {
+        if ((e.key === ' ' || e.key === 'Enter') && !interactive) {
+          e.preventDefault();
+          setRevealed(true);
+        }
+      } else if (e.key === '1') {
+        e.preventDefault();
+        setQueue(prev => (prev.length > 1 ? [...prev.slice(1), prev[0]!] : prev));
+        setRevealed(false);
+      } else if (e.key === '2') {
+        e.preventDefault();
+        setQueue(prev => prev.slice(1));
+        setMastered(m => Math.min(total, m + 1));
+        setRevealed(false);
       }
     };
     window.addEventListener('keydown', onKeyDown, true);
     return () => window.removeEventListener('keydown', onKeyDown, true);
-  }, [onClose]);
-
-  const total = deck.length;
-  const done = cursor >= total;
-  const current = done ? undefined : deck[cursor];
-
-  const handleRestart = () => {
-    setDeck([...entries]);
-    setCursor(0);
-    setRevealed(false);
-  };
-
-  const handleKnown = () => {
-    setRevealed(false);
-    setCursor(c => c + 1);
-  };
-
-  const handleAgain = () => {
-    if (!current) return;
-    setDeck(prev => {
-      const rest = prev.slice(cursor + 1);
-      return [...prev.slice(0, cursor + 1), ...rest, current];
-    });
-    setRevealed(false);
-    setCursor(c => c + 1);
-  };
+  }, [onClose, done, current, revealed, total]);
 
   return (
     <section className={css.deck} aria-label="낱말 카드 복습">
@@ -60,7 +74,7 @@ export function NoteFlashcard({ entries, onClose }: Props) {
         <p className={css.notice}>연습용 복습 카드예요. 다음 판에서 맞히면 졸업해요.</p>
         <div className={css.topRight}>
           <span className={css.progress} aria-live="polite">
-            {done ? `${total} / ${total}` : `${cursor + 1} / ${total}`}
+            {done ? `${total} / ${total}` : `${Math.min(total, mastered + 1)} / ${total}`}
           </span>
           <Button size="md" onClick={onClose}>목록으로</Button>
         </div>

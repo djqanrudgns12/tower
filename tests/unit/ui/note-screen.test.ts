@@ -2,6 +2,7 @@ import { createElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { MAX_REVIEW_SENSES } from '../../../src/domain/quiz';
+import { emptyReviewNote, listReviewNoteItems, reviewNoteItemKey } from '../../../src/persistence/reviewNote';
 import { NoteFlashcard } from '../../../src/ui/screens/NoteFlashcard';
 import { NoteScreen } from '../../../src/ui/screens/NoteScreen';
 import {
@@ -13,7 +14,7 @@ import {
   sortNoteEntries,
   type NoteEntry,
 } from '../../../src/ui/screens/noteModel';
-import { contextFor, loadGradeContent } from '../../../src/content';
+import { contextFor, gradeContent, loadGradeContent } from '../../../src/content';
 
 function sampleEntries(count = 5): NoteEntry[] {
   return Array.from({ length: count }, (_, i) => ({
@@ -90,5 +91,45 @@ describe('오답 노트 고도화 모델 (WP-C2-02)', () => {
     expect(cardHtml).toContain('연습용 복습 카드예요. 다음 판에서 맞히면 졸업해요.');
     expect(cardHtml).toContain('뜻 확인');
     expect(setItem).not.toHaveBeenCalled();
+  });
+
+  it('markNextRunPriority 상위 12개는 persistence listReviewNoteItems와 clears 혼합 시에도 정확히 일치한다', async () => {
+    await loadGradeContent(3);
+    const ctx = contextFor(3, 'Normal');
+    const bankId = gradeContent(3).bank!.bankId;
+    const pool = [...ctx.questions.values()].slice(0, 20);
+    const note = emptyReviewNote();
+    const noteItems = pool.map((q, idx) => {
+      const clears = idx % 2;
+      const misses = (idx * 7) % 11 + 1;
+      const lastSeenAt = `2026-11-${String((idx % 20) + 1).padStart(2, '0')}T00:00:00.000Z`;
+      note.items[reviewNoteItemKey(bankId, q.target.senseKey)] = {
+        lemma: q.target.lemma,
+        senseKey: q.target.senseKey,
+        bankId,
+        questionIds: [q.id],
+        misses,
+        clears,
+        addedAt: lastSeenAt,
+        lastSeenAt,
+      };
+      return {
+        lemma: q.target.lemma,
+        senseKey: q.target.senseKey,
+        questionIds: [q.id],
+        clears,
+        misses,
+        lastSeenAt,
+      };
+    });
+
+    const expectedTop12 = new Set(
+      listReviewNoteItems(note, bankId, ctx.questions)
+        .slice(0, MAX_REVIEW_SENSES)
+        .map(item => item.senseKey),
+    );
+    const uiEntries = markNextRunPriority(buildNoteEntries(noteItems, ctx.questions));
+    const uiTop12 = new Set(uiEntries.filter(e => e.nextRunPriority).map(e => e.senseKey));
+    expect(uiTop12).toEqual(expectedTop12);
   });
 });

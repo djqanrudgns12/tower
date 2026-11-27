@@ -174,6 +174,7 @@ export class SoundDirector {
   private bgmTimer: ReturnType<typeof setInterval> | null = null;
   private bgmNext = 0;
   private previewStopTimer: ReturnType<typeof setTimeout> | null = null;
+  private previewStops: Array<() => void> = [];
   private visibilityListener: (() => void) | null = null;
 
   constructor(private readonly cfg: AudioConfig, private readonly bossEveryWaves: number, private readonly create: () => AudioContext = () => new AudioContext()) {
@@ -239,8 +240,16 @@ export class SoundDirector {
     this.sync();
   }
 
-  setEnabled(on: boolean) { this.enabled = on; this.sync(); }
-  setPaused(paused: boolean) { this.paused = paused; this.sync(); }
+  setEnabled(on: boolean) {
+    this.enabled = on;
+    if (!on) this.stopPreview();
+    this.sync();
+  }
+  setPaused(paused: boolean) {
+    this.paused = paused;
+    if (paused) this.stopPreview();
+    this.sync();
+  }
   setQuality(quality: number) { this.bgmEngine.setQuality(quality); }
 
   /** 전장 국면·바이옴 변화 알림(오디오 국면 전환). */
@@ -248,6 +257,8 @@ export class SoundDirector {
     this.bgmEngine.setContext(patch, this.ctx?.currentTime ?? 0);
     if (patch.phase === 'RESULT') {
       this.stopBgm();
+    } else if (this.ctx && this.backgroundUnlocked) {
+      this.sync();
     }
   }
 
@@ -267,25 +278,55 @@ export class SoundDirector {
     this.play(sfx);
   }
 
-  /** 설정 모달에서 현재 바이옴 배경 선율을 짧게 미리 듣는다. */
+  /** 설정 모달에서 현재 바이옴 배경 선율을 짧게 미리 듣는다(기존 bgmEngine 상태를 덮어쓰지 않음). */
   previewBgm(durationMs = 1600) {
     if (!this.enabled) return;
     if (!this.ensureContext() || !this.ctx || !this.bgmBus) return;
     void this.ctx.resume?.().catch(() => undefined);
+    this.stopPreview();
+    const previewEngine = new BgmEngine();
+    previewEngine.setContextImmediate({
+      biome: this.bgmEngine.currentContext.biome,
+      phase: 'BATTLE',
+      isBossWave: false,
+      isBurning: false,
+    });
+    const t0 = this.ctx.currentTime;
+    const step = previewEngine.stepDurationSec();
+    for (let i = 0; i < 3; i++) {
+      previewEngine.scheduleStep(
+        t0 + i * step,
+        this.bgmBus,
+        (n, at, bus) => { this.previewStops.push(this.tone(n, at, bus)); },
+        (gain, freq, d, filter, at, bus) => {
+          const stop = this.noise({ t: 0, d, gain, filter, freq, Q: 1.0 }, 1, at, bus);
+          if (stop) this.previewStops.push(stop);
+        },
+      );
+    }
+    this.previewStopTimer = setTimeout(() => {
+      this.previewStopTimer = null;
+      this.stopPreview();
+    }, durationMs);
+  }
+
+  /** 결과 화면 3종 팡파르(clear · newBest · defeat)를 BGM 정지 직후 안전하게 울린다. */
+  playResultFanfare(kind: ResultFanfareKind) {
+    this.setSceneContext({ phase: 'RESULT' });
+    this.stopPreview();
+    if (!this.enabled || this.hidden) return;
+    if (!this.ensureContext() || !this.ctx || !this.sfxBus) return;
+    void this.ctx.resume?.().catch(() => undefined);
+    this.play(`result.${kind}`);
+  }
+
+  private stopPreview() {
     if (this.previewStopTimer) {
       clearTimeout(this.previewStopTimer);
       this.previewStopTimer = null;
     }
-    this.bgmEngine.setContext({ phase: 'BATTLE' }, this.ctx.currentTime);
-    const t0 = this.ctx.currentTime;
-    const step = this.bgmEngine.stepDurationSec();
-    for (let i = 0; i < 3; i++) {
-      this.bgmEngine.scheduleStep(t0 + i * step, this.bgmBus, (n, at, bus) => this.tone(n, at, bus));
-    }
-    this.previewStopTimer = setTimeout(() => {
-      this.previewStopTimer = null;
-      this.bgmEngine.setContext({ phase: 'PREP_QUIZ' }, this.ctx?.currentTime ?? 0);
-    }, durationMs);
+    for (const stop of this.previewStops) stop();
+    this.previewStops = [];
   }
 
   /** 소리를 낼 수 있는 상태(켜짐·정지 아님·준비됨)에서만 효과음을 낸다. */
@@ -317,10 +358,7 @@ export class SoundDirector {
 
   dispose() {
     this.stopBgm();
-    if (this.previewStopTimer) {
-      clearTimeout(this.previewStopTimer);
-      this.previewStopTimer = null;
-    }
+    this.stopPreview();
     this.visibilityListener?.();
     this.visibilityListener = null;
     for (const v of this.voices) v.stop();
@@ -431,11 +469,16 @@ export class SoundDirector {
     if (this.bgmTimer || !this.ctx) return;
     if (this.bgmEngine.currentContext.phase === 'RESULT') return;
     this.bgmNext = this.ctx.currentTime + 0.1;
-    // 0.2초마다 0.6초 앞까지 음을 예약한다(타이머가 늦어도 선율이 끊기지 않게).
+    // 0.2초마다 0.6초 앞까지 음을 예약한다(백그라운드 복귀 시 최대 4스텝 상한으로 스파이크 방지).
     const schedule = () => {
       const ctx = this.ctx;
       if (!ctx || !this.bgmBus) return;
-      while (this.bgmNext < ctx.currentTime + 0.6) {
+      if (this.bgmNext < ctx.currentTime - 0.1) {
+        this.bgmNext = ctx.currentTime + 0.05;
+      }
+      let steps = 0;
+      while (this.bgmNext < ctx.currentTime + 0.6 && steps < 4) {
+        steps++;
         const step = this.bgmEngine.stepDurationSec();
         this.bgmEngine.scheduleStep(
           this.bgmNext,

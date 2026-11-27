@@ -100,8 +100,12 @@ export const RESULT_FANFARE: Readonly<Record<ResultFanfareKind, readonly ResultN
   ],
 };
 
-/** 맵 ID에서 4대 월드 바이옴을 결정한다. */
-export function biomeFromMapId(mapId: string | undefined): AudioBiome {
+/** 맵 ID와 학년(R6 3~6학년 바이옴)에서 4대 월드 바이옴을 결정한다. */
+export function biomeFromMapId(mapId: string | undefined, grade?: number): AudioBiome {
+  if (grade === 4) return 'river';
+  if (grade === 5) return 'ochre';
+  if (grade === 6) return 'snow';
+  if (grade === 3) return 'meadow';
   if (!mapId) return 'meadow';
   const lower = mapId.toLowerCase();
   if (lower.startsWith('river')) return 'river';

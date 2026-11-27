@@ -54,7 +54,9 @@ describe('R6 공격 연출 시간과 품질', () => {
     expect(bossPunchOffset(120, 0, false)).toBe(0);
     expect(bossPunchOffset(10, 1, false)).toBe(0);
     expect(bossPunchOffset(10, 0, true)).toBe(0);
-    expect(['meadow_easy', 'river_normal', 'ochre_hard', 'snow_crazy'].map(r6BiomeAmbientKind))
+    expect(['meadow_easy', 'river_normal', 'ochre_hard', 'snow_crazy'].map(id => r6BiomeAmbientKind(id)))
+      .toEqual(['meadow', 'river', 'ochre', 'snow']);
+    expect([3, 4, 5, 6].map(g => r6BiomeAmbientKind('garden_u', g)))
       .toEqual(['meadow', 'river', 'ochre', 'snow']);
   });
 });

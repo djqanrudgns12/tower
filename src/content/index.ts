@@ -32,6 +32,7 @@ export const PUBLISHED_GRADES: readonly number[] = gradeLoader.publishedGrades;
 export const isGradeAvailable = gradeLoader.available;
 export const gradeLoadState = gradeLoader.state;
 export const subscribeGradeContent = gradeLoader.subscribe;
+export const prefetchGradeContent = gradeLoader.prefetch;
 
 export const DIFFICULTY_GATE: DifficultyGate = difficultyGateSchema.parse(defaultsJson.questionSelection.difficultyGate);
 

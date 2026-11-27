@@ -19,7 +19,7 @@ from pilot import write_json
 from review import ground_contrast, review, review_images, silhouette
 from rig_audit import MIN_JOINT_PIXELS, hinge_pixels, measure, overlap_pixels, rasterize
 from rigs import VARIANTS, bake_grounded_foot_keys, estimate_foot_slip_px, layout
-from mesh_weights import audit_mesh_budget, build_soft_mesh, build_two_bone_limb_mesh
+from mesh_weights import audit_mesh_budget, build_soft_mesh, build_two_bone_limb_mesh, parse_weighted_vertex_stats
 from sample import generate
 from swarm import animate_swarm
 from white_key import clean
@@ -353,6 +353,10 @@ class MonsterPipelineTest(unittest.TestCase):
         self.assertLessEqual(estimate_foot_slip_px(clips["walk"]["bones"]), 1.5)
         _, _, _, boss_clips = layout("boss", {"variant": "biped"}, species="machine")
         self.assertIn("translate", boss_clips["fall"]["bones"]["head"])
+        # Spine 4.3 생략 기본값 키 및 절단된 가중치 배열 방어
+        omitted = {"body": {"rotate": [{"time": 0}, {"time": 0.5, "value": 1.0}, {"time": 1.0}], "translate": [{"time": 0}, {"time": 1.0}]}}
+        self.assertEqual(estimate_foot_slip_px(omitted), 0.0)
+        self.assertEqual(parse_weighted_vertex_stats([2, 0, 0, 0, 0.5, 1, 0, 0, 0.5], 6), (2, 2))
 
 
 if __name__ == "__main__":

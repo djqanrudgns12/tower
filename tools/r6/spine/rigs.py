@@ -381,10 +381,14 @@ def estimate_foot_slip_px(walk_bones):
     for ch in walk_bones.values():
         rot = ch.get("rotate", [])
         if len(rot) >= 2:
-            err = abs((rot[-1]["value"] - rot[0]["value"]) % 360.0)
+            err = abs((rot[-1].get("value", 0) - rot[0].get("value", 0)) % 360.0)
             err = min(err, 360.0 - err)
             max_loop_err = max(max_loop_err, err)
         tr = ch.get("translate", [])
         if len(tr) >= 2:
-            max_loop_err = max(max_loop_err, abs(tr[-1]["x"] - tr[0]["x"]), abs(tr[-1]["y"] - tr[0]["y"]))
+            max_loop_err = max(
+                max_loop_err,
+                abs(tr[-1].get("x", 0) - tr[0].get("x", 0)),
+                abs(tr[-1].get("y", 0) - tr[0].get("y", 0)),
+            )
     return round(min(1.5, max_loop_err), 4)

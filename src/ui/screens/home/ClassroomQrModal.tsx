@@ -92,8 +92,22 @@ export function ClassroomQrModal({ defaultGrade, onClose }: Props) {
     setStatusMsg(ok ? '입장 주소를 복사했어요.' : '주소를 길게 눌러 복사해 주세요.');
   };
 
+  const handleDialogKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    if (projectorMode && e.key === 'Escape') {
+      e.preventDefault();
+      e.stopPropagation();
+      setProjectorMode(false);
+    }
+  };
+
   return (
-    <Modal titleId="classroomQrModalTitle" title="교실 입장 QR · 주소" size={projectorMode ? 'md' : 'sm'} onClose={onClose}>
+    <Modal
+      titleId="classroomQrModalTitle"
+      title="교실 입장 QR · 주소"
+      size={projectorMode ? 'md' : 'sm'}
+      onClose={onClose}
+      onDialogKeyDown={handleDialogKeyDown}
+    >
       {projectorMode && qr.svg ? (
         <div className={qrCss.projectorWrap}>
           <p className={qrCss.projectorBadge}>
@@ -154,7 +168,9 @@ export function ClassroomQrModal({ defaultGrade, onClose }: Props) {
                 </svg>
               </div>
               <p className={css.qrGuideText}>
-                태블릿·휴대전화 카메라로 비추면 선택한 학년으로 바로 열려요.
+                {difficulty !== 'none'
+                  ? '태블릿·휴대전화 카메라로 비추면 선택한 학년과 난이도로 바로 열려요.'
+                  : '태블릿·휴대전화 카메라로 비추면 선택한 학년으로 바로 열려요.'}
               </p>
               <Button size="md" onClick={() => setProjectorMode(true)}>교실 화면 크게 보기</Button>
             </div>

@@ -23,8 +23,12 @@ export function bossPunchOffset(elapsedMs: number, quality: number, reduced: boo
   return Number((2.4 * (1 - elapsedMs / 120)).toFixed(3));
 }
 
-/** R6 전장 ID에서 4대 월드 바이옴 외곽 입자 유형을 고른다. */
-export function r6BiomeAmbientKind(mapId: string): R6BiomeAmbient {
+/** R6 전장 ID·학년에서 4대 월드 바이옴 외곽 입자 유형을 고른다. */
+export function r6BiomeAmbientKind(mapId: string, grade?: number): R6BiomeAmbient {
+  if (grade === 4) return 'river';
+  if (grade === 5) return 'ochre';
+  if (grade === 6) return 'snow';
+  if (grade === 3) return 'meadow';
   const id = mapId.toLowerCase();
   if (id.startsWith('river')) return 'river';
   if (id.startsWith('ochre') || id.startsWith('courtyard')) return 'ochre';

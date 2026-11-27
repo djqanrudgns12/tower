@@ -88,7 +88,7 @@ export function ResultScreen({ state, controller, reviewDelta = null, previousBe
   const items: ReviewItem[] = [...new Map(missed.map(a => [a.questionId, a])).values()].flatMap(a => {
     const q = questions.get(a.questionId);
     if (!q) return [];
-    return [{ id: a.id, lemma: q.target.lemma, answer: q.options.find(o => o.id === q.correctOptionId)!.text, stem: q.stem, explanation: q.explanation }];
+    return [{ id: a.id, lemma: q.target.lemma, answer: q.options.find(o => o.id === q.correctOptionId)?.text ?? '', stem: q.stem, explanation: q.explanation }];
   });
   const honorPt = computeHonorPoints({
     pt: state.pt,

@@ -84,6 +84,14 @@ export class BgmEngine {
     }
   }
 
+  /** 크로스페이드 없이 즉시 목표 국면 믹스를 적용한다(배경음 미리듣기 등 단발성 재생용). */
+  setContextImmediate(patch: Partial<BgmSceneContext>): void {
+    this.context = { ...this.context, ...patch };
+    this.mix = PHASE_MIX[this.effectivePhase(this.context)];
+    this.fadeFrom = this.mix;
+    this.fadeStartSec = -1;
+  }
+
   setQuality(quality: number): void {
     this.quality = Math.max(0, Math.floor(quality));
   }

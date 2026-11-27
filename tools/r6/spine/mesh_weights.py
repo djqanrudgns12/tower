@@ -88,6 +88,8 @@ def parse_weighted_vertex_stats(vertices, uv_count):
     max_bones = 0
     total_weights = 0
     for _ in range(n):
+        if idx >= len(vertices):
+            break
         count = int(vertices[idx])
         idx += 1 + count * 4
         max_bones = max(max_bones, count)

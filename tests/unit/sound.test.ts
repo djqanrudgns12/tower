@@ -2,6 +2,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 import { DEFAULTS } from '../../src/content';
 import { R6_TOWERS } from '../../src/contracts/balanceV2';
 import type { DomainEvent } from '../../src/domain/events';
+import { biomeFromMapId } from '../../src/ui/audio/scales';
 import { admit, SoundDirector, sfxFor, type AudioConfig, type Voice } from '../../src/ui/audio/sound';
 
 // PRD §11.5: 발사음 4채널·전체 8채널·같은 발사 80ms, 정답·오답·누출 우선, 음소거·정지·재개에도 배경 루프 하나.
@@ -203,6 +204,63 @@ describe('SoundDirector', () => {
     sound.preview('result.defeat');
     sound.setSceneContext({ phase: 'RESULT' });
     expect(sound.bgmRunning).toBe(false);
+    sound.dispose();
+    expect(vi.getTimerCount()).toBe(0);
+  });
+
+  it('WP-C2-01 감사 보강: R6 학년별 바이옴·RESULT 복귀·previewBgm 비오염·백그라운드 스파이크 가드·결과 팡파르', () => {
+    vi.useFakeTimers();
+    expect([3, 4, 5, 6].map(g => biomeFromMapId('garden_u', g))).toEqual(['meadow', 'river', 'ochre', 'snow']);
+
+    const stops: Array<ReturnType<typeof vi.fn>> = [];
+    const ctx = {
+      ...fakeContext(),
+      createOscillator: () => {
+        ctx.oscillators++;
+        const stop = vi.fn();
+        stops.push(stop);
+        return {
+          type: 'sine',
+          frequency: { value: 0, setValueAtTime: vi.fn(), linearRampToValueAtTime: vi.fn(), exponentialRampToValueAtTime: vi.fn() },
+          connect: vi.fn(),
+          start: vi.fn(),
+          stop,
+        };
+      },
+    };
+    const sound = new SoundDirector(cfg, 5, () => ctx as unknown as AudioContext);
+    sound.unlock();
+    expect(sound.bgmRunning).toBe(true);
+
+    // previewBgm은 기존 sceneContext.phase를 오염시키지 않으며, 비활성화 시 미리듣기 오실레이터를 즉시 중단한다.
+    sound.setSceneContext({ phase: 'PREP_QUIZ', biome: 'river' });
+    const countBeforePreview = stops.length;
+    sound.previewBgm();
+    expect(sound.sceneContext.phase).toBe('PREP_QUIZ');
+    expect(sound.sceneContext.biome).toBe('river');
+    expect(stops.length).toBeGreaterThan(countBeforePreview);
+    const previewStopCount = stops.slice(countBeforePreview).length;
+    sound.setEnabled(false);
+    expect(stops.slice(countBeforePreview).filter(s => s.mock.calls.length > 0).length).toBeGreaterThanOrEqual(previewStopCount);
+
+    // 다시 켜고 백그라운드 탭 30초 스로틀링 복귀 시에도 스텝 폭주가 발생하지 않는다(최대 4스텝).
+    sound.setEnabled(true);
+    ctx.currentTime += 30;
+    const oscBeforeSpike = ctx.oscillators;
+    vi.advanceTimersByTime(200);
+    expect(ctx.oscillators - oscBeforeSpike).toBeLessThanOrEqual(16);
+
+    // RESULT 정지 후 새 판(PREP_QUIZ)으로 복귀하면 BGM이 정상 재개된다.
+    sound.setSceneContext({ phase: 'RESULT' });
+    expect(sound.bgmRunning).toBe(false);
+    sound.setSceneContext({ phase: 'PREP_QUIZ' });
+    expect(sound.bgmRunning).toBe(true);
+
+    // playResultFanfare는 BGM을 멈추고 result.newBest 보이스를 재생한다.
+    sound.playResultFanfare('newBest');
+    expect(sound.bgmRunning).toBe(false);
+    expect(sound.activeVoices.map(v => v.sfx)).toContain('result.newBest');
+
     sound.dispose();
     expect(vi.getTimerCount()).toBe(0);
   });

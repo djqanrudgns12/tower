@@ -1,13 +1,36 @@
 /*
- * 색약 보조 배색 레이어(Okabe-Ito 안전 팔레트, WP-C2-07).
- * tokens.css를 직접 건드리지 않고 html[data-colorblind='true']일 때만 보조 색상·테두리를 강화한다.
+ * 색약 보조 배색 레이어(Okabe-Ito 안전 팔레트, WCAG AA 대비 준수, WP-C2-07).
+ * tokens.css를 직접 건드리지 않고 html[data-colorblind='true']일 때 다크/라이트/문제패널 토큰과 선택 윤곽을 보강한다.
  */
 :root[data-colorblind='true'] {
-  --accent-teal: #0072b2;
+  --accent-teal: #56b4e9;
+  --accent-teal-pressed: #369dd8;
   --accent-amber: #e69f00;
+  --accent-amber-pressed: #c88700;
   --accent-gold: #f0e442;
-  --status-danger: #d55e00;
-  --status-success: #009e73;
+  --status-danger: #ff8a4c;
+  --status-success: #56b4e9;
+  --status-warning: #e69f00;
+  --focus-ring: #56b4e9;
+
+  /* 문제 패널(항상 흰 바탕 #ffffff 위 WCAG AA >= 4.5:1) */
+  --quiz-teal: #005a8d;
+  --quiz-teal-bg: #e6f2fa;
+  --quiz-amber: #8a5300;
+  --quiz-amber-bg: #fdf4e2;
+  --quiz-danger: #b33f00;
+  --quiz-danger-bg: #fdece4;
+}
+
+:root[data-theme='light'][data-colorblind='true'] {
+  --accent-teal: #005a8d;
+  --accent-teal-pressed: #00436b;
+  --accent-amber: #8a5300;
+  --accent-amber-pressed: #6b3f00;
+  --status-danger: #b33f00;
+  --status-success: #005a8d;
+  --status-warning: #8a5300;
+  --focus-ring: #005a8d;
 }
 
 :root[data-colorblind='true'] [aria-pressed='true'],

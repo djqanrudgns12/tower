@@ -98,14 +98,13 @@ export function sortNoteEntries(entries: readonly NoteEntry[], mode: NoteSortMod
     .map(({ entry }) => entry);
 }
 
-/** 다음 판 우선 출제 후보(최대 12개)에 `nextRunPriority`를 표시한다(목록 순서는 유지). */
+/** 다음 판 우선 출제 후보(최대 12개)에 `nextRunPriority`를 표시한다(목록 순서는 유지). `listReviewNoteItems`와 동일하게 오답 횟수 내림차순 → 오래 안 본 순이다. */
 export function markNextRunPriority(entries: readonly NoteEntry[], cap = NOTE_NEXT_RUN_CAP): NoteEntry[] {
   if (cap <= 0 || entries.length === 0) return entries.map(e => ({ ...e, nextRunPriority: false }));
   const ranked = entries
     .map((entry, index) => ({ entry, index }))
     .sort((a, b) =>
       (b.entry.misses ?? 1) - (a.entry.misses ?? 1)
-      || a.entry.clears - b.entry.clears
       || b.index - a.index,
     )
     .slice(0, cap)

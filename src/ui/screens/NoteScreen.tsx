@@ -79,7 +79,7 @@ export function NoteScreen({ entries, onBack, loading = false, loadError = false
     <main className={css.page}>
       <Window size="lg" fixed className={css.notebook}>
         <header className={css.header}>
-          <IconButton label={T.back} icon={<LineIcon name="hud/back" />} showLabel onClick={onBack} />
+          <IconButton label={T.back} icon={<LineIcon name="hud/back" />} showLabel onClick={() => (flashOpen ? setFlashOpen(false) : onBack())} />
           <h1 ref={titleRef} tabIndex={-1} className={css.title}>{T.title}</h1>
           {entries.length > 0 && <p className={css.count}>{T.count(entries.length)}</p>}
         </header>

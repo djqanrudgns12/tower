@@ -471,13 +471,14 @@ export class R6CombatVfx {
       ?? (tower ? towerStats(controller.ctx.balance, tower.type, tower.level, tower.form).splashRadius : 750);
     const at = fieldPosition(this.c, e.x, e.y);
     const radius = toWorld(milli);
+    const wScale = weaponStageScale(tower?.level ?? 1);
     const shell = e.part === 'shell';
     if (shell) {
       const worldR = radius * (this.c.projected ? R6_MAP_SCALE : 1);
-      const ringScale = Math.max(0.4, (worldR * 2) / 52);
+      const ringScale = Math.max(0.4, (worldR * 2) / 52) * wScale;
       this.spawnParticle('ground_crack', at.x, at.y, color.carbon, ringScale * 0.45, ringScale * 0.65, 360, 0, 0, 0, e.projectileId * 0.9, 0, false);
-      this.spawnParticle('ring_shock', at.x, at.y, color.amber, 0.25, ringScale, 220, 0, 0, 0, 0, 0, true);
-      this.spawnParticle('smoke_puff', at.x, at.y - 4, color.silver, 0.38, 0.85, 320, 0, -24, 0, 0, 0.7, false);
+      this.spawnParticle('ring_shock', at.x, at.y, color.amber, 0.25 * wScale, ringScale, 220, 0, 0, 0, 0, 0, true);
+      this.spawnParticle('smoke_puff', at.x, at.y - 4, color.silver, 0.38 * wScale, 0.85 * wScale, 320, 0, -24, 0, 0, 0.7, false);
     }
     this.add(shell ? MORTAR_SCORCH_MS : 240, (age, reduced) => {
       if (shell) this.ellipse(this.ground, at, radius * .34, color.carbon, .76 * (1 - age / MORTAR_SCORCH_MS), 0);
