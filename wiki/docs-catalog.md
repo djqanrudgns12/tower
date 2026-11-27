@@ -10,15 +10,15 @@ generated_by: tools/wiki/gen.mjs
 
 > 이 파일은 `npm run wiki:sync` (`tools/wiki/gen.mjs`)가 코드·계약 JSON·SQL에서 결정적으로 자동 생성합니다. 직접 수정하지 마세요.
 
-- 스캔된 마크다운 총계: **220개 파일** · **1,944,775자** · 추정 **약 1,264,214 토큰**
+- 스캔된 마크다운 총계: **221개 파일** · **1,957,568자** · 추정 **약 1,272,530 토큰**
 - **경고**: `해시 고정(validate-plan)` 문서는 1바이트도 수정·이동하면 안 되며, `링크·참조 검사(validate-plan)` 및 `코드·시험 경로 참조` 문서도 기존 경로를 그대로 유지해야 합니다.
 
 ## 분류별 요약
 
 | 분류 | 파일 수 | 글자 수 | 추정 토큰 |
 | --- | ---: | ---: | ---: |
-| 01. 진입·규약 및 LLM Wiki | 34 | 165,509 | 107,599 |
-| 02. 리뉴얼 현행 기준 (PRD보다 우선) | 82 | 636,096 | 413,504 |
+| 01. 진입·규약 및 LLM Wiki | 34 | 165,655 | 107,694 |
+| 02. 리뉴얼 현행 기준 (PRD보다 우선) | 83 | 648,743 | 421,725 |
 | 03. 호스팅·배포·운영 기준 | 3 | 36,412 | 23,669 |
 | 04. 문제은행 CR-1000 공동검수 | 6 | 201,954 | 131,272 |
 | 05. 제작 PRD v0.5 및 계약 기준 | 6 | 143,424 | 93,229 |
@@ -51,7 +51,7 @@ generated_by: tools/wiki/gen.mjs
 | [wiki/concepts/ui-phaser-and-assets.md](../wiki/concepts/ui-phaser-and-assets.md) | 현행 활성 | Explanation | - | 6 | 5,513 |
 | [wiki/contracts.md](../wiki/contracts.md) | 현행 활성 | Reference / Navigation | - | 11 | 8,147 |
 | [wiki/decisions-index.md](../wiki/decisions-index.md) | 현행 활성 | Reference / Navigation | - | 1 | 2,901 |
-| [wiki/docs-catalog.md](../wiki/docs-catalog.md) | 현행 활성 | Reference / Navigation | - | 10 | 29,965 |
+| [wiki/docs-catalog.md](../wiki/docs-catalog.md) | 현행 활성 | Reference / Navigation | - | 10 | 30,111 |
 | [wiki/entities/tech-stack.md](../wiki/entities/tech-stack.md) | 현행 활성 | Reference / Navigation | - | 4 | 3,794 |
 | [wiki/entities/vocabulary-td.md](../wiki/entities/vocabulary-td.md) | 현행 활성 | Reference / Navigation | - | 5 | 3,347 |
 | [wiki/glossary.md](../wiki/glossary.md) | 현행 활성 | Reference / Navigation | - | 1 | 5,329 |
@@ -98,6 +98,7 @@ generated_by: tools/wiki/gen.mjs
 | [docs/renewal/r6/concepts/C5/concept.md](../docs/renewal/r6/concepts/C5/concept.md) | 현행 우선 기준 | Explanation / Spec | - | 9 | 5,277 |
 | [docs/renewal/r6/map-spec.md](../docs/renewal/r6/map-spec.md) | 현행 우선 기준 | Explanation / Spec | - | 7 | 3,940 |
 | [docs/renewal/r6/PRD-r6.md](../docs/renewal/r6/PRD-r6.md) | 현행 우선 기준 | Explanation / Spec | - | 21 | 9,770 |
+| [docs/renewal/r6/R6_QUALITY_UPGRADE_PLAN.md](../docs/renewal/r6/R6_QUALITY_UPGRADE_PLAN.md) | 현행 우선 기준 | Explanation / Spec | - | 21 | 12,647 |
 | [docs/renewal/r6/README.md](../docs/renewal/r6/README.md) | 현행 우선 기준 | Explanation / Spec | - | 9 | 4,398 |
 | [docs/renewal/r6/research.md](../docs/renewal/r6/research.md) | 현행 우선 기준 | Explanation / Spec | - | 8 | 4,924 |
 | [docs/renewal/r6/review/G4-monsters-critique-2.md](../docs/renewal/r6/review/G4-monsters-critique-2.md) | 현행 우선 기준 | Explanation / Spec | - | 13 | 21,228 |
