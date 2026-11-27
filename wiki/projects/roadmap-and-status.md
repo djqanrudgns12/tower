@@ -4,7 +4,7 @@ type: project
 title: 프로젝트 계보 및 현행 코드 실체 판정
 status: active
 updated: 2026-11-26
-verified: { commit: "8c5c3d25", date: 2026-11-27 }
+verified: { commit: c08d2667, date: 2026-11-27 }
 sources:
   - path: package.json
     sha256: "438e5fc906d190ae6ff3e75af936f686e94d883375aff3ab996bcf06cd749d08"
@@ -13,11 +13,11 @@ sources:
   - path: docs/renewal/r6/PRD-r6.md
     sha256: "2ebe8c0d3e6c29822e5a15714f0a0a8b7a93ba5ce2e22031f83a3a7519be17b3"
   - path: docs/renewal/r6/PRD-r6-v2.md
-    sha256: "645eaf462fb8c691e5fdd71ac4456b62978e15036186666f1a7d25691b21f95e"
+    sha256: "4ca3913c09f410b148c65ff579b2cd6fe6f4796728620300fd8c74fadaad7333"
   - path: docs/renewal/r6/review/G4-towers-fix.md
     sha256: "87b41052a8a094586a2afbeb9a15a9c9a58fb17b5bf1acb6e48bc9ff893a4631"
   - path: docs/renewal/r6/tech/monster-pipeline.md
-    sha256: "4ddd88e111db9d790eebe00a810a65de4dd35aaccdf0314357eaa90d24207603"
+    sha256: f8d401512a957ade873e4934494e830c5a61329d532bfbca9eafa3e6ebe9ff1f
   - path: docs/renewal/r6/tech/G3-precheck.md
     sha256: "906225d8dbbf4156b53f4c1b771be93367f9fe4eb12995c8599b2f817b86db5e"
   - path: docs/renewal/r6/tech/G5-perf.md

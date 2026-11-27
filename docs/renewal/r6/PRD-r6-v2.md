@@ -164,3 +164,27 @@
 - **V1 → V2 변경 요약**:
   - 양적 구축([PRD-r6.md](PRD-r6.md)) → 질적 고도화(밉맵·적응형 윤곽·5종족 모션·투영 보폭·2계층 VFX·무파일 WebAudio·시작 전 동의·1366×768 p95 계측)로 기준 격상.
   - 동시 진행 중인 타 세션(① 맵·전투 레이아웃·타워 초상화·Lv1~5 강철, ② 학교 선택 제거)과의 파일 소유 경계 및 `manifest-v2.json` 직렬화 규약 명문화.
+
+---
+
+## §7. 2026-11-27 구현 실적 및 Q0/Q5 실측 비교 (세션 C 독점 범위)
+
+- **주요 발견 및 수정**:
+  - **Phaser 4 `_renderSteps[0]` 버그 수정**([enemyDisplay.ts](../../../src/game/r6/enemyDisplay.ts)): `GameObject` 생성자 시점에 캡처되는 `_renderSteps[0]`을 `attachR6SilhouetteOutline`에서 함께 교체하여 실루엣 아웃라인 파이프라인이 WebGL에서 실제로 동작하도록 복원.
+  - **선별적 4방위 아웃라인 + 0-추가패스 피격 플래시**: `silhouettes.json` `groundContrastRaw` 기반 저대비(68종) 및 보스만 4방위 아웃라인 적용(고대비 보스는 카본 `#12161B` α0.32, 고·중대비 일반 개체는 생략), 베이스 패스 `TintModes.ADD`로 추가 드로우콜 0의 피격 하이라이트 적용.
+  - **POT 밉맵 + `-sharp_yuv`**: 5종족 Spine 아틀라스 모두 `pot=true`, `filterMin=MipMapLinearLinear`, `filterMag=Linear`, `-q 92 -alpha_q 100 -m 6 -sharp_yuv` 재패킹 완료(`343KB~735KB`, 모두 `≤ 768KB`·단일 페이지).
+  - **5종족 Spine 베지어 모션 & 런타임 동기화**: `pilot.py` / `rigs.py` / `swarm.py`에 Spine 4.3 절대 좌표 Cubic Bezier 커브, 5종족 차별 모션·비대칭 보행 아크·다중 본 `hit`/`fall`/`boss-skill` 반영. `EnemyLayer.ts`에 EMA 실속도 보행 배속 동기화, 2px 코너 히스테리시스+100ms 스쿼시-턴, 2px 넉백, 동시 낙하 상한(8/6/4) 적용(`rig_audit` 99/100 통과, 기존 원화 겹침 여유 0px인 `machine-boss-t3` fall 1건 잔존).
+  - **타워·VFX·사운드·동의 모달**: `TowerPlayback.ts` 16방향 최단 회전 보간(최대 2스텝, >4스텝 스냅) + Zero-Texture Idle(`r6.tower.glow` 32×32), `CombatVfx.ts` 2계층 하이브리드(`r6.vfx.atlas` 256×256 8종 풀 120 + Graphics 예산 400/200/100 + 종족별 처치 파편), `sound.ts` 캐시 화이트 노이즈·`BiquadFilterNode`·결정론적 시드 PRNG ±4% 변조·연속 정답 피치 상승·`burning`/`towerStage`/`towerUnlocked`/`kill.boss` 추가, `RecordConsentModal.tsx`(`WP-Q1b`, 학교명 미포함) 구현 및 `HomeScreen.tsx` 연결.
+
+### Q0 vs Q5 정량 실측 비교 (`1366×768 DPR1`, CPU 6×, 40기+보스 2기, 20타워)
+| 지표 | Q0 베이스라인 (`ddfcdd4d`) | Q5 최종 (`2a83f2d6` / `task-643`) | 목표 / 판정 |
+| --- | --- | --- | --- |
+| 평균 FPS | `60.07 fps` | `59.85 fps` | `≥ 45 fps` (통과) |
+| 프레임 간격 `p95` / 최대 | `18.2 ms` / `38.5 ms` | `18.5 ms` / `43.1 ms` | 스파이크 억제 (통과) |
+| `> 50ms` / `> 100ms` 프레임 | `0` / `0` | `0` / `0` | `> 100ms = 0` (통과) |
+| 평균 `renderMesh` / 프레임 | `381` *(버그로 아웃라인 0패스 상태)* | `1,461` *(저대비+보스 4방위 실제 활성)* | `≤ 1,600` (통과, 8방위 대비 ~57% 절감) |
+| 5종족 아틀라스 POT / WebGL 필터 | `false` / `9729 (LINEAR)` | `true` / `9987 (LINEAR_MIPMAP_LINEAR)` | 5/5 POT + Mipmap 활성 (통과) |
+
+- **동시 세션 조율·보류 항목**:
+  - 동시 세션 B가 `settings.ts`, `HomeScreen.tsx` 연계 파일(`ClassroomQrModal.tsx`)을 수정 중이어서 `typecheck`·`lint`·`test`·`eslint` 검증은 우리 독점 범위 및 영향 테스트 대상으로 통과 확인했으며, `npm run build` 및 전체 저장소 `typecheck`는 세션 A/B의 미커밋 작업 완료 후 재확인 필요하다.
+  - `BattleScene.ts:prepareWave` 웨이브 선예열 패치는 세션 A 범위 보호를 위해 보류, 취약 몬스터 5종 2D 리페인트(`WP-Q3 리페인트`)는 범위 분리 계획대로 후속 유지.
